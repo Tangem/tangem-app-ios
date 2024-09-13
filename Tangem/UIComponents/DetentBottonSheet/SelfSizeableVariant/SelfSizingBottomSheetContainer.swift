@@ -36,8 +36,6 @@ struct SelfSizingDetentBottomSheetContainer<ContentView: View & SelfSizingBottom
             sheetContent
                 .frame(minWidth: mainWindowSize.width)
         }
-        .frame(alignment: .top) // TODO: Remove this frame when migrate to minimum iOS 16.
-        .ignoresSafeArea(edges: .bottom)
         .readGeometry(onChange: { geometry in
             containerHeight = geometry.size.height
         })
@@ -50,15 +48,20 @@ struct SelfSizingDetentBottomSheetContainer<ContentView: View & SelfSizingBottom
         let content = content()
             .setContentHeightBinding($contentHeight)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        let scrollDisabled = bottomSheetHeight <= containerHeight
 
         return Group {
-            if containerHeight < bottomSheetHeight {
-                ScrollView(showsIndicators: false) {
+            if #available(iOS 16.0, *) {
+                ScrollView(.vertical, showsIndicators: false) {
                     content
                         .padding(.bottom, scrollViewBottomOffset)
                 }
+                .scrollDisabled(scrollDisabled)
             } else {
-                content
+                ScrollView(scrollDisabled ? [] : .vertical, showsIndicators: false) {
+                    content
+                        .padding(.bottom, scrollViewBottomOffset)
+                }
             }
         }
     }

@@ -68,7 +68,7 @@ class StakingDetailsStakeViewDataBuilder {
             case .locked: Localization.stakingLocked
             case .warmup, .active: validator?.name ?? Localization.stakingValidator
             case .unbonding: Localization.stakingUnstaking
-            case .withdraw: Localization.stakingUnstaked
+            case .unstaked: Localization.stakingUnstaked
             }
         }()
 
@@ -76,7 +76,7 @@ class StakingDetailsStakeViewDataBuilder {
             switch balance.balanceType {
             case .rewards: .none
             case .locked: .locked
-            case .withdraw: .withdraw
+            case .unstaked: .withdraw
             case .warmup: .warmup(period: yield.warmupPeriod.formatted(formatter: daysFormatter))
             case .active:
                 validator?.apr.map { .active(apr: percentFormatter.format($0, option: .staking)) }
@@ -90,7 +90,7 @@ class StakingDetailsStakeViewDataBuilder {
             case .rewards, .warmup, .active: .image(url: validator?.iconURL)
             case .locked: .icon(Assets.lock, color: Colors.Icon.informative)
             case .unbonding: .icon(Assets.unstakedIcon, color: Colors.Icon.accent)
-            case .withdraw: .icon(Assets.unstakedIcon, color: Colors.Icon.informative)
+            case .unstaked: .icon(Assets.unstakedIcon, color: Colors.Icon.informative)
             }
         }()
 
@@ -108,7 +108,7 @@ class StakingDetailsStakeViewDataBuilder {
             switch balance.balanceType {
             case .rewards, .warmup, .unbonding:
                 return nil
-            case .active, .withdraw, .locked:
+            case .active, .unstaked, .locked:
                 return inProgress ? nil : action
             }
         }()

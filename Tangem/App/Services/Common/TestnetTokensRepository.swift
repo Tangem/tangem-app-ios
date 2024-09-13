@@ -21,6 +21,14 @@ class TestnetTokensRepository {
             .eraseToAnyPublisher()
     }
 
+    // Copy load coins method via async await implementation
+    func loadCoins(requestModel: CoinsList.Request) throws -> [CoinModel] {
+        let response = try JsonUtils.readBundleFile(with: Constants.testFilename, type: CoinsList.Response.self)
+        let mapper = CoinsResponseMapper(supportedBlockchains: requestModel.supportedBlockchains)
+        let coins = mapper.mapToCoinModels(response)
+        return coins
+    }
+
     private func readTestnetList() -> AnyPublisher<CoinsList.Response, Error> {
         Just(())
             .receive(on: DispatchQueue.global())

@@ -11,15 +11,15 @@ import CoreGraphics
 
 extension CGAffineTransform {
     /// Based on https://gist.github.com/wtsnz/f14575f4765568d2824ff350f521d1b3
+    /// - Note: Anchor point works the same way as `CALayer.anchorPoint`: (0.5, 0.5) represents the center of the bounds rectangle.
     static func scaleTransform(
         for bounds: CGSize,
         scaledBy scale: CGPoint,
-        aroundAnchorPoint relativeAnchorPoint: CGPoint,
-        translationCoefficient: CGFloat = 1.0
+        aroundAnchorPoint relativeAnchorPoint: CGPoint
     ) -> CGAffineTransform {
         let anchorPoint = CGPoint(
-            x: bounds.width * relativeAnchorPoint.x * translationCoefficient,
-            y: bounds.height * relativeAnchorPoint.y * translationCoefficient
+            x: bounds.width * (relativeAnchorPoint.x - 0.5),
+            y: bounds.height * (relativeAnchorPoint.y - 0.5)
         )
 
         return CGAffineTransform.identity

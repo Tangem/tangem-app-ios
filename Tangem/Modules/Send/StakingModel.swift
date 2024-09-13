@@ -165,7 +165,19 @@ private extension StakingModel {
             return validateError
         }
 
-        return .readyToStake(.init(amount: newAmount, validator: validator, fee: fee, isFeeIncluded: includeFee))
+        let hasPreviousStakeOnSameValidator = stakingManager.state.balances?.contains { balance in
+            balance.balanceType == .active && balance.validatorAddress == validator
+        } ?? false
+
+        return .readyToStake(
+            .init(
+                amount: newAmount,
+                validator: validator,
+                fee: fee,
+                isFeeIncluded: includeFee,
+                stakeOnDifferentValidator: stakingManager.state.isStaked && !hasPreviousStakeOnSameValidator
+            )
+        )
     }
 
     func validate(amount: Decimal, fee: Decimal) -> StakingModel.State? {
@@ -518,6 +530,7 @@ extension StakingModel {
             let validator: String
             let fee: Decimal
             let isFeeIncluded: Bool
+            let stakeOnDifferentValidator: Bool
         }
     }
 }

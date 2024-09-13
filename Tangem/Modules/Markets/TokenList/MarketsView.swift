@@ -13,11 +13,11 @@ import BlockchainSdk
 struct MarketsView: View {
     @ObservedObject var viewModel: MarketsViewModel
 
-    @Environment(\.overlayContentContainer) private var overlayContentContainer
-
     @StateObject private var navigationControllerConfigurator = MarketsViewNavigationControllerConfigurator()
 
-    @State private var overlayContentProgress: CGFloat = .zero
+    @Environment(\.overlayContentContainer) private var overlayContentContainer
+    @Environment(\.mainWindowSize) private var mainWindowSize
+
     @State private var defaultListOverlayTotalHeight: CGFloat = .zero
     @State private var defaultListOverlayRatingHeaderHeight: CGFloat = .zero
     @State private var searchResultListOverlayTotalHeight: CGFloat = .zero
@@ -31,15 +31,24 @@ struct MarketsView: View {
     private var showSearchResult: Bool { viewModel.isSearching }
 
     var body: some View {
-        ZStack(alignment: .topLeading) {
-            if showSearchResult {
-                searchResultView
-            } else {
-                defaultMarketsView
+        VStack(spacing: 0.0) {
+            MainBottomSheetHeaderView(viewModel: viewModel.headerViewModel)
+                .zIndex(100) // Required for the collapsible header to work
+
+            ZStack(alignment: .topLeading) {
+                if showSearchResult {
+                    searchResultView
+                } else {
+                    defaultMarketsView
+                }
             }
+            .opacity(viewModel.overlayContentHidingProgress)
+            .animation(
+                .easeInOut(duration: viewModel.overlayContentHidingAnimationDuration),
+                value: viewModel.overlayContentHidingProgress
+            )
+            .scrollDismissesKeyboardCompat(.immediately)
         }
-        .modifier(MarketsContentHidingViewModifier())
-        .scrollDismissesKeyboardCompat(.immediately)
         .alert(item: $viewModel.alert, content: { $0.alert })
         .background(Colors.Background.primary)
         // This dummy title won't be shown in the UI, but it's required since without it UIKit will allocate
@@ -59,25 +68,33 @@ struct MarketsView: View {
             // `UINavigationBar` may be installed into the view hierarchy quite late;
             // therefore, we're triggering introspection in the `onAppear` callback
             responderChainIntrospectionTrigger = UUID()
+
+            viewModel.onViewAppear()
         }
+        .onDisappear(perform: viewModel.onViewDisappear)
         .introspectResponderChain(
             introspectedType: UINavigationController.self,
             updateOnChangeOf: responderChainIntrospectionTrigger,
             action: navigationControllerConfigurator.configure(_:)
         )
-        .onOverlayContentProgressChange { progress in
-            overlayContentProgress = progress
+        .onOverlayContentProgressChange { [weak viewModel] progress in
+            viewModel?.onOverlayContentProgressChange(progress)
 
             if progress < 1 {
                 UIResponder.current?.resignFirstResponder()
             }
+        }
+        .onOverlayContentStateChange { [weak viewModel] state in
+            viewModel?.onOverlayContentStateChange(state)
         }
     }
 
     @ViewBuilder
     private var defaultMarketsView: some View {
         list
-            .safeAreaInset(edge: .top, spacing: 0.0) {
+            .overlay(alignment: .top) {
+                // Using plain old overlay + dummy `Color.clear` spacer in the scroll view due to the buggy
+                // `safeAreaInset(edge:alignment:spacing:content:)` iOS 15+ API which has both layout and touch-handling issues
                 defaultListOverlay
             }
 
@@ -101,7 +118,9 @@ struct MarketsView: View {
             errorStateView
         case .loading, .allDataLoaded, .idle:
             list
-                .safeAreaInset(edge: .top, spacing: 0.0) {
+                .overlay(alignment: .top) {
+                    // Using plain old overlay + dummy `Color.clear` spacer in the scroll view due to the buggy
+                    // `safeAreaInset(edge:alignment:spacing:content:)` iOS 15+ API which has both layout and touch-handling issues
                     searchResultListOverlay
                 }
                 .overlay(alignment: .top) {
@@ -156,12 +175,18 @@ struct MarketsView: View {
                 // ScrollView inserts default spacing between its content views.
                 // Wrapping content into a `VStack` prevents it.
                 VStack(spacing: 0.0) {
-                    Color.clear.frame(height: 0)
+                    Color.clear
+                        .frame(height: 0)
                         .id(scrollTopAnchorId)
+
+                    // Using plain old overlay + dummy `Color.clear` spacer in the scroll view due to the buggy
+                    // `safeAreaInset(edge:alignment:spacing:content:)` iOS 15+ API which has both layout and touch-handling issues
+                    Color.clear
+                        .frame(height: showSearchResult ? searchResultListOverlayTotalHeight : defaultListOverlayTotalHeight)
 
                     LazyVStack(spacing: 0) {
                         ForEach(viewModel.tokenViewModels) {
-                            MarketsItemView(viewModel: $0)
+                            MarketsItemView(viewModel: $0, cellWidth: mainWindowSize.width)
                         }
 
                         // Need for display list skeleton view
@@ -225,7 +250,7 @@ struct MarketsView: View {
     }
 
     private func updateListOverlayAppearance(contentOffset: CGPoint) {
-        guard abs(1.0 - overlayContentProgress) <= .ulpOfOne else {
+        guard abs(1.0 - viewModel.overlayContentProgress) <= .ulpOfOne, !overlayContentContainer.isScrollViewLocked else {
             listOverlayVerticalOffset = .zero
             isListOverlayShadowLineViewVisible = false
             return

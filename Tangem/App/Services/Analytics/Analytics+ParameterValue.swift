@@ -29,6 +29,9 @@ extension Analytics {
         case accessCode = "Access Code"
         case longTap = "Long tap"
         case passcode = "Passcode"
+        case market = "Market"
+        case chart = "Chart"
+        case blocks = "Blocks"
 
         case main = "Main"
         case token = "Token"

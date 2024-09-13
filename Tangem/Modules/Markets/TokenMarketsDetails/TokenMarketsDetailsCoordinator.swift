@@ -125,18 +125,6 @@ extension TokenMarketsDetailsCoordinator {
         }
     }
 
-    func openSend(for walletModel: WalletModel, with userWalletModel: UserWalletModel) {
-        let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] navigationInfo in
-            self?.sendCoordinator = nil
-        }
-
-        sendCoordinator = portfolioCoordinatorFactory.makeSendCoordinator(
-            for: walletModel,
-            with: userWalletModel,
-            dismissAction: dismissAction
-        )
-    }
-
     func openExchange(for walletModel: WalletModel, with userWalletModel: UserWalletModel) {
         let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] navigationInfo in
             self?.expressCoordinator = nil
@@ -147,50 +135,6 @@ extension TokenMarketsDetailsCoordinator {
             with: userWalletModel,
             dismissAction: dismissAction,
             popToRootAction: popToRootAction
-        )
-    }
-
-    func openStaking(for walletModel: WalletModel, with userWalletModel: UserWalletModel) {
-        let dismissAction: Action<Void> = { [weak self] _ in
-            self?.stakingDetailsCoordinator = nil
-        }
-
-        stakingDetailsCoordinator = portfolioCoordinatorFactory.makeStakingDetailsCoordinator(
-            for: walletModel,
-            with: userWalletModel,
-            dismissAction: dismissAction,
-            popToRootAction: popToRootAction
-        )
-    }
-
-    func openSell(for walletModel: WalletModel, with userWalletModel: UserWalletModel) {
-        if let disabledLocalizedReason = userWalletModel.config.getDisabledLocalizedReason(for: .exchange) {
-            error = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
-            return
-        }
-
-        guard let url = portfolioCoordinatorFactory.makeSellURL(for: walletModel) else {
-            return
-        }
-
-        safariHandle = safariManager.openURL(url) { [weak self] closeURL in
-            self?.safariHandle = nil
-
-            if let request = self?.portfolioCoordinatorFactory.makeSellCryptoRequest(from: closeURL, with: walletModel) {
-                self?.openSendToSell(with: request, for: walletModel, with: userWalletModel)
-            }
-        }
-    }
-
-    func openSendToSell(with request: SellCryptoRequest, for walletModel: WalletModel, with userWalletModel: UserWalletModel) {
-        let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] navigationInfo in
-            self?.sendCoordinator = nil
-        }
-
-        sendCoordinator = portfolioCoordinatorFactory.makeSendCoordinator(
-            for: walletModel,
-            with: userWalletModel,
-            dismissAction: dismissAction
         )
     }
 }
