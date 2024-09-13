@@ -195,21 +195,17 @@ struct SendDependenciesBuilder {
     func makeSendTransactionSummaryDescriptionBuilder() -> SendTransactionSummaryDescriptionBuilder {
         switch walletModel.tokenItem.blockchain {
         case .koinos:
-            return KoinosSendTransactionSummaryDescriptionBuilder(
+            KoinosSendTransactionSummaryDescriptionBuilder(
                 tokenItem: walletModel.tokenItem,
                 feeTokenItem: walletModel.feeTokenItem
             )
-        case .tron:
-            if walletModel.tokenItem.amountType != .coin {
-                return TronSendTransactionSummaryDescriptionBuilder(
-                    tokenItem: walletModel.tokenItem,
-                    feeTokenItem: walletModel.feeTokenItem
-                )
-            } else {
-                fallthrough
-            }
+        case .tron where walletModel.tokenItem.isToken:
+            TronSendTransactionSummaryDescriptionBuilder(
+                tokenItem: walletModel.tokenItem,
+                feeTokenItem: walletModel.feeTokenItem
+            )
         default:
-            return CommonSendTransactionSummaryDescriptionBuilder(
+            CommonSendTransactionSummaryDescriptionBuilder(
                 tokenItem: walletModel.tokenItem,
                 feeTokenItem: walletModel.feeTokenItem
             )
