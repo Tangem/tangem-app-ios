@@ -27,6 +27,7 @@ extension SendTransactionDispatcherResult {
 
         case transactionNotFound
         case userCancelled
+        case loadTransactionInfo(error: Swift.Error)
         case sendTxError(transaction: SendTransactionType, error: SendTxError)
 
         case demoAlert
@@ -34,6 +35,8 @@ extension SendTransactionDispatcherResult {
         var errorDescription: String? {
             switch self {
             case .sendTxError(_, let error):
+                return error.localizedDescription
+            case .loadTransactionInfo(let error):
                 return error.localizedDescription
             case .demoAlert:
                 return "Demo mode"

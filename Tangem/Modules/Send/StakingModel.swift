@@ -292,7 +292,7 @@ private extension StakingModel {
             proceed(error: error)
             throw error
         } catch {
-            throw error
+            throw SendTransactionDispatcherResult.Error.loadTransactionInfo(error: error)
         }
     }
 
@@ -303,12 +303,14 @@ private extension StakingModel {
 
     private func proceed(error: SendTransactionDispatcherResult.Error) {
         switch error {
-        case .informationRelevanceServiceError,
+        case .demoAlert,
+             .userCancelled,
+             .informationRelevanceServiceError,
              .informationRelevanceServiceFeeWasIncreased,
              .transactionNotFound,
-             .demoAlert,
-             .userCancelled,
-             .sendTxError:
+             .loadTransactionInfo:
+            break
+        case .sendTxError:
             Analytics.log(event: .stakingErrorTransactionRejected, params: [.token: tokenItem.currencySymbol])
         }
     }

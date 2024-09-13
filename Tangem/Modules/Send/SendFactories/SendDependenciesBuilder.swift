@@ -212,6 +212,10 @@ struct SendDependenciesBuilder {
         }
     }
 
+    func makeSendAlertBuilder() -> SendAlertBuilder {
+        CommonSendAlertBuilder()
+    }
+
     // MARK: - Staking
 
     func makeStakingModel(stakingManager: any StakingManager) -> StakingModel {
@@ -264,5 +268,9 @@ struct SendDependenciesBuilder {
             tokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem
         )
+    }
+
+    func makeStakingAlertBuilder() -> SendAlertBuilder {
+        StakingSendAlertBuilder()
     }
 }

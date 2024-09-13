@@ -14,6 +14,9 @@ enum StakingNotificationEvent {
     case stake(tokenSymbol: String, rewardScheduleType: RewardScheduleType)
     case unstake(periodFormatted: String)
     case withdraw
+    case claimRewards
+    case restakeRewards
+    case unlock(periodFormatted: String)
     case validationErrorEvent(ValidationErrorEvent)
     case networkUnreachable
     case feeWillBeSubtractFromSendingAmount(cryptoAmountFormatted: String, fiatAmountFormatted: String)
@@ -28,6 +31,9 @@ extension StakingNotificationEvent: NotificationEvent {
         case .stake: "stake".hashValue
         case .unstake: "unstake".hashValue
         case .withdraw: "withdraw".hashValue
+        case .claimRewards: "claimRewards".hashValue
+        case .restakeRewards: "restakeRewards".hashValue
+        case .unlock: "unlock".hashValue
         case .validationErrorEvent(let validationErrorEvent): validationErrorEvent.id
         case .networkUnreachable: "networkUnreachable".hashValue
         case .stakesWillMoveToNewValidator: "stakesWillMoveToNewValidator".hashValue
@@ -41,6 +47,9 @@ extension StakingNotificationEvent: NotificationEvent {
         case .stake: .string(Localization.stakingNotificationEarnRewardsTitle)
         case .unstake: .string(Localization.commonUnstake)
         case .withdraw: .string(Localization.stakingWithdraw)
+        case .claimRewards: .string(Localization.commonClaim)
+        case .restakeRewards: .string(Localization.stakingRestake)
+        case .unlock: .string(Localization.stakingUnlockedLocked)
         case .validationErrorEvent(let event): event.title
         case .networkUnreachable: .string(Localization.sendFeeUnreachableErrorTitle)
         case .stakesWillMoveToNewValidator: .string(Localization.stakingRevote)
@@ -65,6 +74,12 @@ extension StakingNotificationEvent: NotificationEvent {
             Localization.stakingNotificationUnstakeText(periodFormatted)
         case .withdraw:
             Localization.stakingNotificationWithdrawText
+        case .claimRewards:
+            Localization.stakingNotificationClaimRewardsText
+        case .restakeRewards:
+            Localization.stakingNotificationRestakeRewardsText
+        case .unlock(let period):
+            Localization.stakingNotificationUnlockText(period)
         case .validationErrorEvent(let event):
             event.description
         case .networkUnreachable:
@@ -76,9 +91,8 @@ extension StakingNotificationEvent: NotificationEvent {
 
     var colorScheme: NotificationView.ColorScheme {
         switch self {
-        case .approveTransactionInProgress, .feeWillBeSubtractFromSendingAmount, .stakesWillMoveToNewValidator:
-            .secondary
-        case .stake, .unstake, .networkUnreachable, .withdraw: .action
+        case .approveTransactionInProgress, .feeWillBeSubtractFromSendingAmount, .stakesWillMoveToNewValidator: .secondary
+        case .stake, .unstake, .networkUnreachable, .withdraw, .claimRewards, .restakeRewards, .unlock: .action
         case .validationErrorEvent(let event): event.colorScheme
         }
     }
@@ -89,7 +103,7 @@ extension StakingNotificationEvent: NotificationEvent {
             return .init(iconType: .image(Assets.attention.image))
         case .approveTransactionInProgress:
             return .init(iconType: .progressView)
-        case .stake, .unstake, .withdraw, .stakesWillMoveToNewValidator:
+        case .stake, .unstake, .withdraw, .claimRewards, .restakeRewards, .unlock, .stakesWillMoveToNewValidator:
             return .init(iconType: .image(Assets.blueCircleWarning.image))
         case .validationErrorEvent(let event):
             return event.icon
@@ -100,8 +114,15 @@ extension StakingNotificationEvent: NotificationEvent {
         switch self {
         case .networkUnreachable:
             return .critical
-        case .approveTransactionInProgress, .stake, .unstake,
-             .feeWillBeSubtractFromSendingAmount, .withdraw, .stakesWillMoveToNewValidator:
+        case .approveTransactionInProgress,
+             .stake,
+             .unstake,
+             .feeWillBeSubtractFromSendingAmount,
+             .withdraw,
+             .claimRewards,
+             .restakeRewards,
+             .unlock,
+             .stakesWillMoveToNewValidator:
             return .info
         case .validationErrorEvent(let event):
             return event.severity
@@ -114,8 +135,15 @@ extension StakingNotificationEvent: NotificationEvent {
             return .init(.refreshFee)
         case .validationErrorEvent(let event):
             return event.buttonAction
-        case .approveTransactionInProgress, .stake, .unstake,
-             .feeWillBeSubtractFromSendingAmount, .withdraw, .stakesWillMoveToNewValidator:
+        case .approveTransactionInProgress,
+             .stake,
+             .unstake,
+             .feeWillBeSubtractFromSendingAmount,
+             .withdraw,
+             .claimRewards,
+             .restakeRewards,
+             .unlock,
+             .stakesWillMoveToNewValidator:
             return nil
         }
     }
