@@ -30,7 +30,7 @@ struct StakingDetailsStakeView: View {
 
             FixedSpacer(width: 12)
 
-            VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 4) {
                 topLineView
 
                 bottomLineView
@@ -79,9 +79,10 @@ struct StakingDetailsStakeView: View {
 
     @ViewBuilder
     private var bottomLineView: some View {
-        HStack(alignment: .bottom, spacing: 0) {
+        HStack(alignment: .center, spacing: 0) {
             if let subtitle = data.subtitle {
                 Text(subtitle)
+                    .font(Fonts.Regular.caption1)
             }
 
             Spacer(minLength: 4)
