@@ -147,6 +147,8 @@ private extension TransactionHistoryMapper {
             } else {
                 return mapToInteractionAddressType(source: record.source)
             }
+        case .freezeBalanceV2Contract, .unfreezeBalanceV2Contract, .voteWitnessContract, .withdrawBalanceContract:
+            return .staking
         default:
             return mapToInteractionAddressType(destination: record.destination)
         }
@@ -204,6 +206,14 @@ private extension TransactionHistoryMapper {
             return transactionType(fromContractMethodName: name)
         case .contractMethodName(let name):
             return transactionType(fromContractMethodName: name)
+        case .freezeBalanceV2Contract:
+            return .stake
+        case .unfreezeBalanceV2Contract:
+            return .unstake
+        case .voteWitnessContract:
+            return .vote
+        case .withdrawBalanceContract:
+            return .withdraw
         }
     }
 
