@@ -86,6 +86,10 @@ private extension CommonStakingNotificationManager {
                 )
             }
 
+            if !tokenItem.supportsStakingOnDifferentValidators, readyToStake.stakeOnDifferentValidator {
+                events.append(.stakesWillMoveToNewValidator(blockchain: tokenItem.blockchain.displayName))
+            }
+
             show(events: events)
             hideErrorEvents()
 
@@ -195,4 +199,13 @@ extension CommonStakingNotificationManager: StakingNotificationManager {
     }
 
     func dismissNotification(with id: NotificationViewId) {}
+}
+
+private extension TokenItem {
+    var supportsStakingOnDifferentValidators: Bool {
+        switch blockchain {
+        case .tron: false
+        default: true
+        }
+    }
 }

@@ -461,10 +461,10 @@ extension MultiWalletMainContentViewModel: TokenItemContextActionDelegate {
             let tokenItem = tokenItemViewModel.tokenItem
             let analyticsParams: [Analytics.ParameterKey: String] = [
                 .source: Analytics.ParameterValue.longTap.rawValue,
-                .token: tokenItem.currencySymbol,
+                .token: tokenItem.currencySymbol.uppercased(),
                 .blockchain: tokenItem.blockchain.displayName,
             ]
-            Analytics.log(event: .marketsTokenChartScreenOpened, params: analyticsParams)
+            Analytics.log(event: .marketsChartScreenOpened, params: analyticsParams)
             tokenRouter.openMarketsTokenDetails(for: tokenItem)
             return
         default:

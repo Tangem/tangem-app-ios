@@ -107,7 +107,6 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     }
 
     func selectWalletActionDidTap() {
-        Analytics.log(event: .manageTokensButtonChooseWallet, params: [:])
         coordinator?.openWalletSelector(with: walletDataProvider)
     }
 
@@ -121,6 +120,8 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
                 guard let userWalletModel = viewModel.walletDataProvider.userWalletModels.first(where: { $0.userWalletId == userWalletId }) else {
                     return
                 }
+
+                Analytics.log(.marketsChartWalletSelected)
 
                 viewModel.setNeedSelectWallet(userWalletModel)
                 viewModel.readonlyTokens = viewModel.tokenItems.filter { viewModel.isAdded($0) }
@@ -180,6 +181,7 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
                 self.readonlyTokens.append(contentsOf: self.pendingAdd)
                 self.pendingAdd = []
                 self.updateSelectionByTokenItems()
+                self.sendAnalytics()
 
                 // It is used to synchronize the execution of the target action and hide bottom sheet
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
@@ -193,8 +195,6 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
         guard let userTokensManager = selectedUserWalletModel?.userTokensManager else {
             return
         }
-
-        sendAnalyticsOnChangeTokenState(tokenIsSelected: selected, tokenItem: tokenItem)
 
         if selected {
             guard !isAdded(tokenItem) else { return }
@@ -240,8 +240,15 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
             .updateSelection(with: bindSelection(tokenItem), isReadonly: isReadonly(tokenItem))
     }
 
-    private func sendAnalyticsOnChangeTokenState(tokenIsSelected: Bool, tokenItem: TokenItem) {
-        Analytics.log(event: .marketsTokenNetworkSelected, params: [.token: tokenItem.currencySymbol, .count: "\(pendingAdd.count)"])
+    private func sendAnalytics() {
+        Analytics.log(
+            event: .marketsChartTokenNetworkSelected,
+            params: [
+                .token: coinSymbol.uppercased(),
+                .count: "\(pendingAdd.count)",
+                .blockchain: pendingAdd.map { $0.blockchain.displayName.capitalizingFirstLetter() }.joined(separator: ","),
+            ]
+        )
     }
 
     private func setNeedSelectWallet(_ userWalletModel: UserWalletModel?) {

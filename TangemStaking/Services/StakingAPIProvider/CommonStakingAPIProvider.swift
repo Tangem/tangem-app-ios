@@ -37,24 +37,9 @@ class CommonStakingAPIProvider: StakingAPIProvider {
     }
 
     func estimateStakeFee(request: ActionGenericRequest) async throws -> Decimal {
-        let request = StakeKitDTO.EstimateGas.Enter.Request(
-            integrationId: request.integrationId,
-            addresses: .init(
-                address: request.address,
-                additionalAddresses: request.additionalAddresses.flatMap {
-                    StakeKitDTO.Address.AdditionalAddresses(cosmosPubKey: $0.cosmosPubKey)
-                }
-            ),
-            args: .init(
-                amount: request.amount.description,
-                validatorAddress: request.validator,
-                validatorAddresses: request.validator.map { [$0] },
-                inputToken: mapper.mapToTokenDTO(from: request.token),
-                tronResource: request.tronResource
-            )
-        )
-
+        let request = mapper.mapToEnterRequest(request: request)
         let response = try await service.estimateGasEnterAction(request: request)
+
         guard let result = Decimal(stringValue: response.amount) else {
             throw StakeKitMapperError.noData("EnterAction fee not found")
         }
@@ -63,24 +48,9 @@ class CommonStakingAPIProvider: StakingAPIProvider {
     }
 
     func estimateUnstakeFee(request: ActionGenericRequest) async throws -> Decimal {
-        let request = StakeKitDTO.EstimateGas.Exit.Request(
-            integrationId: request.integrationId,
-            addresses: .init(
-                address: request.address,
-                additionalAddresses: request.additionalAddresses.flatMap {
-                    StakeKitDTO.Address.AdditionalAddresses(cosmosPubKey: $0.cosmosPubKey)
-                }
-            ),
-            args: .init(
-                amount: request.amount.description,
-                validatorAddress: request.validator,
-                validatorAddresses: request.validator.map { [$0] },
-                inputToken: mapper.mapToTokenDTO(from: request.token),
-                tronResource: request.tronResource
-            )
-        )
-
+        let request = mapper.mapToExitRequest(request: request)
         let response = try await service.estimateGasExitAction(request: request)
+
         guard let result = Decimal(stringValue: response.amount) else {
             throw StakeKitMapperError.noData("ExitAction fee not found")
         }
@@ -88,27 +58,10 @@ class CommonStakingAPIProvider: StakingAPIProvider {
         return result
     }
 
-    func estimatePendingFee(request: ActionGenericRequest, type: StakingAction.PendingActionType) async throws -> Decimal {
-        let request = StakeKitDTO.EstimateGas.Pending.Request(
-            type: mapper.mapToActionType(from: type),
-            integrationId: request.integrationId,
-            passthrough: type.passthrough,
-            addresses: .init(
-                address: request.address,
-                additionalAddresses: request.additionalAddresses.flatMap {
-                    StakeKitDTO.Address.AdditionalAddresses(cosmosPubKey: $0.cosmosPubKey)
-                }
-            ),
-            args: .init(
-                amount: request.amount.description,
-                validatorAddress: request.validator,
-                validatorAddresses: request.validator.map { [$0] },
-                inputToken: mapper.mapToTokenDTO(from: request.token),
-                tronResource: request.tronResource
-            )
-        )
-
+    func estimatePendingFee(request: PendingActionRequest) async throws -> Decimal {
+        let request = mapper.mapToPendingRequest(request: request)
         let response = try await service.estimateGasPendingAction(request: request)
+
         guard let result = Decimal(stringValue: response.amount) else {
             throw StakeKitMapperError.noData("PendingAction fee not found")
         }
@@ -117,64 +70,21 @@ class CommonStakingAPIProvider: StakingAPIProvider {
     }
 
     func enterAction(request: ActionGenericRequest) async throws -> EnterAction {
-        let request = StakeKitDTO.Actions.Enter.Request(
-            integrationId: request.integrationId,
-            addresses: .init(
-                address: request.address,
-                additionalAddresses: request.additionalAddresses.flatMap {
-                    StakeKitDTO.Address.AdditionalAddresses(cosmosPubKey: $0.cosmosPubKey)
-                }
-            ),
-            args: .init(
-                amount: request.amount.description,
-                validatorAddress: request.validator,
-                validatorAddresses: request.validator.map { [$0] },
-                inputToken: mapper.mapToTokenDTO(from: request.token),
-                tronResource: request.tronResource
-            )
-        )
-
+        let request = mapper.mapToEnterRequest(request: request)
         let response = try await service.enterAction(request: request)
         let enterAction = try mapper.mapToEnterAction(from: response)
         return enterAction
     }
 
     func exitAction(request: ActionGenericRequest) async throws -> ExitAction {
-        let request = StakeKitDTO.Actions.Exit.Request(
-            integrationId: request.integrationId,
-            addresses: .init(
-                address: request.address,
-                additionalAddresses: request.additionalAddresses.flatMap {
-                    StakeKitDTO.Address.AdditionalAddresses(cosmosPubKey: $0.cosmosPubKey)
-                }
-            ),
-            args: .init(
-                amount: request.amount.description,
-                validatorAddress: request.validator,
-                validatorAddresses: request.validator.map { [$0] },
-                inputToken: mapper.mapToTokenDTO(from: request.token),
-                tronResource: request.tronResource
-            )
-        )
-
+        let request = mapper.mapToExitRequest(request: request)
         let response = try await service.exitAction(request: request)
         let enterAction = try mapper.mapToExitAction(from: response)
         return enterAction
     }
 
-    func pendingAction(request: ActionGenericRequest, type: StakingAction.PendingActionType) async throws -> PendingAction {
-        let request = StakeKitDTO.EstimateGas.Pending.Request(
-            type: mapper.mapToActionType(from: type),
-            integrationId: request.integrationId,
-            passthrough: type.passthrough,
-            addresses: .init(address: request.address),
-            args: .init(
-                amount: request.amount.description,
-                validatorAddress: request.validator,
-                validatorAddresses: request.validator.map { [$0] }
-            )
-        )
-
+    func pendingAction(request: PendingActionRequest) async throws -> PendingAction {
+        let request = mapper.mapToPendingRequest(request: request)
         let response = try await service.pendingAction(request: request)
         let enterAction = try mapper.mapToPendingAction(from: response)
         return enterAction
