@@ -138,11 +138,12 @@ private extension CommonStakingManager {
             return .temporaryUnavailable(yield)
         }
 
+        let balances = prepareStakingBalances(balances: balances, yield: yield)
+
         guard !balances.isEmpty else {
             return .availableToStake(yield)
         }
 
-        let balances = prepareStakingBalances(balances: balances, yield: yield)
         return .staked(.init(balances: balances, yieldInfo: yield, canStakeMore: canStakeMore))
     }
 
