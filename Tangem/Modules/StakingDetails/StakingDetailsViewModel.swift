@@ -75,11 +75,6 @@ final class StakingDetailsViewModel: ObservableObject {
         coordinator?.openStakingFlow()
     }
 
-    func userDidTapHideBanner() {
-        AppSettings.shared.hideStakingInfoBanner = true
-        hideStakingInfoBanner = true
-    }
-
     func onAppear() {
         loadValues()
         let balances = stakingManager.state.balances.flatMap { String($0.count) } ?? String(0)
@@ -166,7 +161,7 @@ private extension StakingDetailsViewModel {
     }
 
     func setupHeaderView(hasBalances: Bool) {
-        hideStakingInfoBanner = hasBalances || AppSettings.shared.hideStakingInfoBanner
+        hideStakingInfoBanner = hasBalances
     }
 
     func setupDetailsSection(yield: YieldInfo, staking: [StakingBalanceInfo]) {
