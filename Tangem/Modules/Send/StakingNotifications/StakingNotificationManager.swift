@@ -47,27 +47,14 @@ private extension CommonStakingNotificationManager {
     func update(state: StakingModel.State, yield: YieldInfo) {
         switch state {
         case .loading:
-            show(notification: .stake(
-                tokenSymbol: tokenItem.currencySymbol,
-                rewardScheduleType: yield.rewardScheduleType
-            ))
             hideErrorEvents()
         case .approveTransactionInProgress:
             show(notification: .approveTransactionInProgress)
             hideErrorEvents()
         case .readyToApprove:
-            show(notification: .stake(
-                tokenSymbol: tokenItem.currencySymbol,
-                rewardScheduleType: yield.rewardScheduleType
-            ))
             hideErrorEvents()
         case .readyToStake(let readyToStake):
-            var events: [StakingNotificationEvent] = [
-                .stake(
-                    tokenSymbol: tokenItem.currencySymbol,
-                    rewardScheduleType: yield.rewardScheduleType
-                ),
-            ]
+            var events: [StakingNotificationEvent] = []
 
             if readyToStake.isFeeIncluded {
                 let feeFiatValue = feeTokenItem.currencyId.flatMap {
@@ -107,6 +94,17 @@ private extension CommonStakingNotificationManager {
         switch (state, action.type) {
         case (.loading, .pending(.withdraw)), (.ready, .pending(.withdraw)):
             show(notification: .withdraw)
+            hideErrorEvents()
+        case (.loading, .pending(.claimRewards)), (.ready, .pending(.claimRewards)):
+            show(notification: .claimRewards)
+            hideErrorEvents()
+        case (.loading, .pending(.restakeRewards)), (.ready, .pending(.restakeRewards)):
+            show(notification: .restakeRewards)
+            hideErrorEvents()
+        case (.loading, .pending(.unlockLocked)), (.ready, .pending(.unlockLocked)):
+            show(notification: .unlock(
+                periodFormatted: yield.unbondingPeriod.formatted(formatter: daysFormatter)
+            ))
             hideErrorEvents()
         case (.loading, _), (.ready, _):
             show(notification: .unstake(

@@ -128,8 +128,8 @@ extension StakingDetailsStakeViewData {
     var priority: Int {
         switch subtitleType {
         case .none: -10
-        case .locked: -2
-        case .warmup: -1
+        case .warmup: -2
+        case .locked: -1
         case .active: 0
         case .unbonding, .unbondingPeriod: 1
         case .withdraw: 2
