@@ -19,6 +19,12 @@ extension SupportedBlockchains {
         SupportedBlockchains(version: .v1).blockchains()
     }
 
+    static var l2Blockchains: [Blockchain] {
+        all
+            .filter { $0.isL2EthereumNetwork }
+            .sorted(by: \.displayName)
+    }
+
     /// Blockchains which don't include in supported blockchains by default
     static var testableIDs: Set<String> {
         // Here version isn't important because we take only coinId
