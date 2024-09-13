@@ -46,6 +46,7 @@ final class SendViewModel: ObservableObject {
     private let interactor: SendBaseInteractor
     private let stepsManager: SendStepsManager
     private let userWalletModel: UserWalletModel
+    private let alertBuilder: SendAlertBuilder
     private let feeTokenItem: TokenItem
 
     private weak var coordinator: SendRoutable?
@@ -59,12 +60,14 @@ final class SendViewModel: ObservableObject {
         interactor: SendBaseInteractor,
         stepsManager: SendStepsManager,
         userWalletModel: UserWalletModel,
+        alertBuilder: SendAlertBuilder,
         feeTokenItem: TokenItem,
         coordinator: SendRoutable
     ) {
         self.interactor = interactor
         self.stepsManager = stepsManager
         self.userWalletModel = userWalletModel
+        self.alertBuilder = alertBuilder
         self.feeTokenItem = feeTokenItem
         self.coordinator = coordinator
 
@@ -129,7 +132,7 @@ final class SendViewModel: ObservableObject {
         ])
 
         if shouldShowDismissAlert {
-            alert = SendAlertBuilder.makeDismissAlert { [weak self] in
+            alert = alertBuilder.makeDismissAlert { [weak self] in
                 self?.coordinator?.dismiss()
             }
         } else {
@@ -198,23 +201,21 @@ private extension SendViewModel {
         case .userCancelled, .transactionNotFound:
             break
         case .informationRelevanceServiceError:
-            alert = SendAlertBuilder.makeFeeRetryAlert { [weak self] in
+            alert = alertBuilder.makeFeeRetryAlert { [weak self] in
                 self?.performAction()
             }
         case .informationRelevanceServiceFeeWasIncreased:
             alert = AlertBuilder.makeOkGotItAlert(message: Localization.sendNotificationHighFeeTitle)
         case .sendTxError(let transaction, let sendTxError):
-            alert = SendAlertBuilder.makeTransactionFailedAlert(sendTxError: sendTxError, openMailAction: { [weak self] in
+            alert = alertBuilder.makeTransactionFailedAlert(sendTxError: sendTxError) { [weak self] in
                 self?.openMail(transaction: transaction, error: sendTxError)
-            })
+            }
+        case .loadTransactionInfo(let error):
+            alert = error.alertBinder
         case .demoAlert:
-            alert = AlertBuilder.makeAlert(
-                title: "",
-                message: Localization.alertDemoFeatureDisabled,
-                primaryButton: .default(.init(Localization.commonOk)) { [weak self] in
-                    self?.coordinator?.dismiss()
-                }
-            )
+            alert = AlertBuilder.makeDemoAlert(Localization.alertDemoFeatureDisabled) { [weak self] in
+                self?.coordinator?.dismiss()
+            }
         }
     }
 
