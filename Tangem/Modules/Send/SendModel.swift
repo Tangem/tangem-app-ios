@@ -290,7 +290,7 @@ extension SendModel: SendSummaryInput, SendSummaryOutput {
     var summaryTransactionDataPublisher: AnyPublisher<SendSummaryTransactionData?, Never> {
         _transaction.map { transaction -> SendSummaryTransactionData? in
             transaction?.value.map {
-                .send(amount: $0.amount.value, fee: $0.fee.amount.value)
+                .send(amount: $0.amount.value, fee: $0.fee)
             }
         }
         .eraseToAnyPublisher()

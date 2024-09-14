@@ -16,6 +16,8 @@ public protocol StakingManager {
     func updateState() async throws
     func estimateFee(action: StakingAction) async throws -> Decimal
     func transaction(action: StakingAction) async throws -> StakingTransactionAction
+
+    func transactionDidSent(action: StakingAction)
 }
 
 public enum StakingManagerState: Hashable, CustomStringConvertible {
@@ -25,15 +27,6 @@ public enum StakingManagerState: Hashable, CustomStringConvertible {
     case temporaryUnavailable(YieldInfo)
     case availableToStake(YieldInfo)
     case staked(Staked)
-
-    public var isAvailable: Bool {
-        switch self {
-        case .loading, .notEnabled, .temporaryUnavailable:
-            return false
-        case .availableToStake, .staked:
-            return true
-        }
-    }
 
     public var isStaked: Bool {
         switch self {
@@ -53,10 +46,11 @@ public enum StakingManagerState: Hashable, CustomStringConvertible {
         }
     }
 
-    public var balances: [StakingBalanceInfo]? {
+    public var balances: [StakingBalance]? {
         guard case .staked(let stakeInfo) = self else {
             return nil
         }
+
         return stakeInfo.balances
     }
 
@@ -69,23 +63,12 @@ public enum StakingManagerState: Hashable, CustomStringConvertible {
         case .staked: "staked"
         }
     }
-
-    public func validator(for address: String) -> ValidatorInfo? {
-        guard case .staked(let stakedModel) = self else { return nil }
-        return stakedModel.yieldInfo.validators.first(
-            where: { $0.address == address }
-        )
-    }
 }
 
 public extension StakingManagerState {
     struct Staked: Hashable {
-        public let balances: [StakingBalanceInfo]
+        public let balances: [StakingBalance]
         public let yieldInfo: YieldInfo
         public let canStakeMore: Bool
-
-        public func balance(validator: String) -> StakingBalanceInfo? {
-            balances.first(where: { $0.validatorAddress == validator })
-        }
     }
 }

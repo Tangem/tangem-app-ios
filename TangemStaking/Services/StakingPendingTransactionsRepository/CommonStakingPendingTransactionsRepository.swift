@@ -6,18 +6,27 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
+import TangemFoundation
 import Foundation
-import TangemStaking
 import Combine
 
+public protocol StakingPendingTransactionsStorage {
+    func save(records: Set<StakingPendingTransactionRecord>)
+    func loadRecords() -> Set<StakingPendingTransactionRecord>
+}
+
 class CommonStakingPendingTransactionsRepository {
-    @Injected(\.persistentStorage) private var storage: PersistentStorageProtocol
+    private let storage: StakingPendingTransactionsStorage
+    private let logger: Logger
 
     private let lockQueue = DispatchQueue(label: "com.tangem.CommonStakingPendingTransactionsRepository.lockQueue")
     private var cachedRecords: CurrentValueSubject<Set<StakingPendingTransactionRecord>, Never> = .init([])
     private var savingSubscription: AnyCancellable?
 
-    init() {
+    init(storage: StakingPendingTransactionsStorage, logger: Logger) {
+        self.storage = storage
+        self.logger = logger
+
         loadPendingTransactions()
         bind()
     }
@@ -32,8 +41,8 @@ extension CommonStakingPendingTransactionsRepository: StakingPendingTransactions
         cachedRecords.removeDuplicates().eraseToAnyPublisher()
     }
 
-    func transactionDidSent(action: StakingAction, validator: ValidatorInfo?) {
-        let record = mapToStakingPendingTransactionRecord(action: action, validator: validator)
+    func transactionDidSent(action: StakingAction, integrationId: String) {
+        let record = mapToStakingPendingTransactionRecord(action: action, integrationId: integrationId)
         log("Will be add record - \(record)")
 
         cachedRecords.value.insert(record)
@@ -105,12 +114,8 @@ private extension CommonStakingPendingTransactionsRepository {
     }
 
     private func loadPendingTransactions() {
-        do {
-            cachedRecords.value = try storage.value(for: .pendingStakingTransactions) ?? []
-            checkOldRecords()
-        } catch {
-            log("Couldn't get the staking transactions list from the storage with error \(error)")
-        }
+        cachedRecords.value = storage.loadRecords()
+        checkOldRecords()
     }
 
     func checkOldRecords() {
@@ -128,11 +133,7 @@ private extension CommonStakingPendingTransactionsRepository {
     }
 
     func saveChanges() {
-        do {
-            try storage.store(value: cachedRecords.value, for: .pendingStakingTransactions)
-        } catch {
-            log("Failed to save changes in storage. Reason: \(error)")
-        }
+        storage.save(records: cachedRecords.value)
     }
 
     func compare(_ record: StakingPendingTransactionRecord, _ balance: StakingBalanceInfo, by types: [CompareType]) -> Bool {
@@ -150,7 +151,7 @@ private extension CommonStakingPendingTransactionsRepository {
         return equals.allConforms { $0 }
     }
 
-    func mapToStakingPendingTransactionRecord(action: StakingAction, validator: ValidatorInfo?) -> StakingPendingTransactionRecord {
+    func mapToStakingPendingTransactionRecord(action: StakingAction, integrationId: String) -> StakingPendingTransactionRecord {
         let type: StakingPendingTransactionRecord.ActionType = {
             switch action.type {
             case .stake: .stake
@@ -164,17 +165,23 @@ private extension CommonStakingPendingTransactionsRepository {
         }()
 
         let validator = StakingPendingTransactionRecord.Validator(
-            address: validator?.address ?? action.validator,
-            name: validator?.name,
-            iconURL: validator?.iconURL,
-            apr: validator?.apr
+            address: action.validatorInfo?.address,
+            name: action.validatorInfo?.name,
+            iconURL: action.validatorInfo?.iconURL,
+            apr: action.validatorInfo?.apr
         )
 
-        return StakingPendingTransactionRecord(amount: action.amount, validator: validator, type: type, date: Date())
+        return StakingPendingTransactionRecord(
+            integrationId: integrationId,
+            amount: action.amount,
+            validator: validator,
+            type: type,
+            date: Date()
+        )
     }
 
     func log<T>(_ message: @autoclosure () -> T) {
-        AppLog.shared.debug("[Staking Repository] \(message())")
+        logger.debug("[Staking Repository] \(message())")
     }
 }
 
@@ -182,6 +189,6 @@ private extension CommonStakingPendingTransactionsRepository {
     enum CompareType {
         case validator
         case amount
-        case type([StakingBalanceInfo.BalanceType])
+        case type([StakingBalanceType])
     }
 }
