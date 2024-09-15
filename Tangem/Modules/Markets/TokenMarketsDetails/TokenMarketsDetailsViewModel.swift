@@ -391,15 +391,17 @@ private extension TokenMarketsDetailsViewModel {
             )
         }
 
-        let pricePerformanceCurrentPricePublisher = currentPricePublisher
-            .compactMap { $0 }
-            .eraseToAnyPublisher()
+        if let pricePerformance = model.pricePerformance {
+            let pricePerformanceCurrentPricePublisher = currentPricePublisher
+                .compactMap { $0 }
+                .eraseToAnyPublisher()
 
-        pricePerformanceViewModel = .init(
-            tokenSymbol: model.symbol,
-            pricePerformanceData: model.pricePerformance,
-            currentPricePublisher: pricePerformanceCurrentPricePublisher
-        )
+            pricePerformanceViewModel = .init(
+                tokenSymbol: model.symbol,
+                pricePerformanceData: pricePerformance,
+                currentPricePublisher: pricePerformanceCurrentPricePublisher
+            )
+        }
 
         linksSections = MarketsTokenDetailsLinksMapper(
             openLinkAction: weakify(self, forFunction: TokenMarketsDetailsViewModel.openLinkAction(_:))

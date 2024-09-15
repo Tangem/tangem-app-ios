@@ -8,7 +8,6 @@
 
 import Foundation
 import Combine
-import TangemExpress
 
 class CommonExpressPendingTransactionRepository {
     @Injected(\.persistentStorage) private var storage: PersistentStorageProtocol

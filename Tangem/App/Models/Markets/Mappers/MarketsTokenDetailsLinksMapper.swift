@@ -13,13 +13,26 @@ struct MarketsTokenDetailsLinksMapper {
 
     let openLinkAction: (MarketsTokenDetailsLinks.LinkInfo) -> Void
 
-    func mapToSections(_ links: MarketsTokenDetailsLinks) -> [TokenMarketsDetailsLinkSection] {
-        return [
-            .init(section: .officialLinks, chips: mapLinksToChips(links.officialLinks)),
-            .init(section: .social, chips: mapLinksToChips(links.social)),
-            .init(section: .repository, chips: mapLinksToChips(links.repository)),
-            .init(section: .blockchainSite, chips: mapLinksToChips(links.blockchainSite)),
-        ]
+    func mapToSections(_ links: MarketsTokenDetailsLinks?) -> [TokenMarketsDetailsLinkSection] {
+        guard let links else {
+            return []
+        }
+
+        var sections = [TokenMarketsDetailsLinkSection]()
+        if let officialLinks = links.officialLinks {
+            sections.append(.init(section: .officialLinks, chips: mapLinksToChips(officialLinks)))
+        }
+        if let socialLinks = links.social {
+            sections.append(.init(section: .social, chips: mapLinksToChips(socialLinks)))
+        }
+        if let repositoryLinks = links.repository {
+            sections.append(.init(section: .repository, chips: mapLinksToChips(repositoryLinks)))
+        }
+        if let blockchainSiteLinks = links.blockchainSite {
+            sections.append(.init(section: .blockchainSite, chips: mapLinksToChips(blockchainSiteLinks)))
+        }
+
+        return sections
     }
 
     private func mapLinksToChips(_ links: [MarketsTokenDetailsLinks.LinkInfo]) -> [MarketsTokenDetailsLinkChipsData] {

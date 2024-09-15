@@ -10,9 +10,6 @@ import Foundation
 import TangemStaking
 
 class StakingDetailsStakeViewDataBuilder {
-    @Injected(\.stakingPendingTransactionsRepository)
-    private var stakingPendingTransactionsRepository: StakingPendingTransactionsRepository
-
     private lazy var balanceFormatter = BalanceFormatter()
     private lazy var percentFormatter = PercentFormatter()
     private lazy var daysFormatter: DateComponentsFormatter = {
@@ -28,39 +25,8 @@ class StakingDetailsStakeViewDataBuilder {
         self.tokenItem = tokenItem
     }
 
-    func mapToStakingDetailsStakeViewData(yield: YieldInfo, record: StakingPendingTransactionRecord) -> StakingDetailsStakeViewData? {
-        guard record.type == .stake else {
-            assertionFailure("We shouldn't add in list the balance with another type")
-            return nil
-        }
-
-        let title: String = record.validator.name ?? Localization.stakingValidator
-        let subtitle: StakingDetailsStakeViewData.SubtitleType? = record.validator.apr.map {
-            .active(apr: percentFormatter.format($0, option: .staking))
-        }
-        let icon: StakingDetailsStakeViewData.IconType = .image(url: record.validator.iconURL)
-
-        let balanceCryptoFormatted = balanceFormatter.formatCryptoBalance(
-            record.amount,
-            currencyCode: tokenItem.currencySymbol
-        )
-        let balanceFiat = tokenItem.currencyId.flatMap {
-            BalanceConverter().convertToFiat(record.amount, currencyId: $0)
-        }
-        let balanceFiatFormatted = balanceFormatter.formatFiatBalance(balanceFiat)
-
-        return StakingDetailsStakeViewData(
-            title: title,
-            icon: icon,
-            inProgress: true,
-            subtitleType: subtitle,
-            balance: .init(crypto: balanceCryptoFormatted, fiat: balanceFiatFormatted),
-            action: nil
-        )
-    }
-
-    func mapToStakingDetailsStakeViewData(yield: YieldInfo, balance: StakingBalanceInfo, action: @escaping () -> Void) -> StakingDetailsStakeViewData {
-        let validator = yield.validators.first(where: { $0.address == balance.validatorAddress })
+    func mapToStakingDetailsStakeViewData(yield: YieldInfo, balance: StakingBalance, action: @escaping () -> Void) -> StakingDetailsStakeViewData {
+        let validator = balance.validatorType.validator
 
         let title: String = {
             switch balance.balanceType {
@@ -102,7 +68,7 @@ class StakingDetailsStakeViewDataBuilder {
             BalanceConverter().convertToFiat(balance.amount, currencyId: $0)
         }
         let balanceFiatFormatted = balanceFormatter.formatFiatBalance(balanceFiat)
-        let inProgress = stakingPendingTransactionsRepository.hasPending(balance: balance)
+        let inProgress = balance.inProgress
 
         let action: (() -> Void)? = {
             switch balance.balanceType {
