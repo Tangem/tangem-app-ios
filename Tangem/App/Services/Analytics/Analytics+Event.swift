@@ -285,20 +285,6 @@ extension Analytics {
         case pushButtonPostpone = "[Push] Button - Later"
         case pushPermissionStatus = "[Push] Permission Status"
 
-        // MARK: - Markets
-
-        case marketsScreenOpened = "[Markets] Markets Screen Opened"
-        case marketsTokenChartScreenOpened = "[Markets] Token Chart Screen Opened"
-        case marketsTokensSort = "[Markets] Tokens Sort"
-        case marketsTokenPeriod = "[Markets] Token Period"
-        case marketsButtonPeriod = "[Markets] Button - Period"
-        case marketsButtonReadMore = "[Markets] Button - Read More"
-        case marketsButtonLinks = "[Markets] Button - Links"
-        case marketsButtonAddToPortfolio = "[Markets] Button - Add To Portfolio"
-        case marketsWalletSelected = "[Markets] Wallet Selected"
-        case marketsTokenNetworkSelected = "[Markets] Token Network Selected"
-        case marketsActionButtons = "[Markets] Action Buttons"
-
         // MARK: - Staking
 
         case stakingInfoScreenOpened = "[Staking] Staking Info Screen Opened"
@@ -324,5 +310,25 @@ extension Analytics {
         case stakingSelectedCurrency = "[Staking] Selected Currency"
         case stakingButtonShare = "[Staking] Button - Share"
         case stakingButtonExplore = "[Staking] Button - Explore"
+
+        // MARK: - Markets
+
+        case marketsScreenOpened = "[Markets] Markets Screen Opened"
+        case marketsTokensSort = "[Markets] Sort By"
+        case marketsDataError = "[Markets] Data Error"
+
+        // MARK: - Markets / Chart
+
+        case marketsChartScreenOpened = "[Markets / Chart] Token Chart Screen Opened"
+        case marketsChartButtonPeriod = "[Markets / Chart] Button - Period"
+        case marketsChartButtonReadMore = "[Markets / Chart] Button - Read More"
+        case marketsChartButtonLinks = "[Markets / Chart] Button - Links"
+        case marketsChartButtonAddToPortfolio = "[Markets / Chart] Button - Add To Portfolio"
+        case marketsChartWalletSelected = "[Markets / Chart] Wallet Selected"
+        case marketsChartTokenNetworkSelected = "[Markets / Chart] Token Network Selected"
+        case marketsChartButtonBuy = "[Markets / Chart] Button - Buy"
+        case marketsChartButtonReceive = "[Markets / Chart] Button - Receive"
+        case marketsChartButtonSwap = "[Markets / Chart] Button - Swap"
+        case marketsChartDataError = "[Markets / Chart] Data Error"
     }
 }

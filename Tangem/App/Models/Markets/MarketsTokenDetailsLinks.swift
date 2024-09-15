@@ -9,10 +9,10 @@
 import Foundation
 
 struct MarketsTokenDetailsLinks: Codable, Equatable {
-    let officialLinks: [LinkInfo]
-    let social: [LinkInfo]
-    let repository: [LinkInfo]
-    let blockchainSite: [LinkInfo]
+    let officialLinks: [LinkInfo]?
+    let social: [LinkInfo]?
+    let repository: [LinkInfo]?
+    let blockchainSite: [LinkInfo]?
 }
 
 extension MarketsTokenDetailsLinks {

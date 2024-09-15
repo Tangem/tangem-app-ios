@@ -19,8 +19,8 @@ struct TokenMarketsDetailsModel: Identifiable {
     let priceChangePercentage: [String: Decimal]
     let insights: TokenMarketsDetailsInsights?
     let metrics: MarketsTokenDetailsMetrics?
-    let pricePerformance: [MarketsPriceIntervalType: MarketsPricePerformanceData]
-    let links: MarketsTokenDetailsLinks
+    let pricePerformance: [MarketsPriceIntervalType: MarketsPricePerformanceData]?
+    let links: MarketsTokenDetailsLinks?
     let availableNetworks: [NetworkModel]
 }
 

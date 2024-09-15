@@ -144,10 +144,10 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
 
         let analyticsParams: [Analytics.ParameterKey: String] = [
             .source: Analytics.ParameterValue.token.rawValue,
-            .token: walletModel.tokenItem.currencySymbol,
+            .token: walletModel.tokenItem.currencySymbol.uppercased(),
             .blockchain: walletModel.tokenItem.blockchain.displayName,
         ]
-        Analytics.log(event: .marketsTokenChartScreenOpened, params: analyticsParams)
+        Analytics.log(event: .marketsChartScreenOpened, params: analyticsParams)
         super.openMarketsTokenDetails()
     }
 }
@@ -232,7 +232,7 @@ private extension TokenDetailsViewModel {
     private func bind() {
         Publishers.CombineLatest(
             walletModel.walletDidChangePublisher,
-            walletModel.stakingManagerStatePublisher
+            walletModel.stakingManagerStatePublisher.filter { $0 != .loading }
         )
         .receive(on: DispatchQueue.main)
         .sink { _ in } receiveValue: { [weak self] newState, _ in

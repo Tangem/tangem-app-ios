@@ -17,14 +17,23 @@ public struct TangemStakingFactory {
         integrationId: String,
         wallet: StakingWallet,
         provider: StakingAPIProvider,
+        repository: any StakingPendingTransactionsRepository,
         logger: Logger
     ) -> StakingManager {
         CommonStakingManager(
             integrationId: integrationId,
             wallet: wallet,
             provider: provider,
+            repository: repository,
             logger: logger
         )
+    }
+
+    public func makeStakingPendingTransactionsRepository(
+        storage: any StakingPendingTransactionsStorage,
+        logger: any Logger
+    ) -> StakingPendingTransactionsRepository {
+        CommonStakingPendingTransactionsRepository(storage: storage, logger: logger)
     }
 
     public func makeStakingAPIProvider(
