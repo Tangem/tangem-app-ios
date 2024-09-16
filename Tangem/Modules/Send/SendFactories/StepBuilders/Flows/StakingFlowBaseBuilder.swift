@@ -73,19 +73,14 @@ struct StakingFlowBaseBuilder {
 
         summary.step.set(router: stepsManager)
 
-        let interactor = CommonSendBaseInteractor(
-            input: stakingModel,
-            output: stakingModel,
-            walletModel: walletModel,
-            emailDataProvider: userWalletModel,
-            stakingModel: stakingModel
-        )
+        let interactor = CommonSendBaseInteractor(input: stakingModel, output: stakingModel)
 
         let viewModel = SendViewModel(
             interactor: interactor,
             stepsManager: stepsManager,
             userWalletModel: userWalletModel,
             alertBuilder: builder.makeStakingAlertBuilder(),
+            dataBuilder: builder.makeSendBaseDataBuilder(input: stakingModel),
             tokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem,
             coordinator: router

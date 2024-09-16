@@ -140,6 +140,10 @@ struct SendDependenciesBuilder {
         CommonFeeIncludedCalculator(validator: walletModel.transactionValidator)
     }
 
+    func makeSendBaseDataBuilder(input: SendBaseDataBuilderInput) -> SendBaseDataBuilder {
+        SendBaseDataBuilder(input: input, walletModel: walletModel, emailDataProvider: userWalletModel)
+    }
+
     // MARK: - Send, Sell
 
     func makeSendModel(

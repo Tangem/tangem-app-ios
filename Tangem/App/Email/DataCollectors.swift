@@ -105,24 +105,22 @@ struct SendScreenDataCollector: EmailDataCollector {
     private let isFeeIncluded: Bool
     private let lastError: SendTxError?
 
-    init(userWalletEmailData: [EmailCollectedData], walletModel: WalletModel, transaction: SendTransactionType, isFeeIncluded: Bool, lastError: SendTxError?) {
+    init(
+        userWalletEmailData: [EmailCollectedData],
+        walletModel: WalletModel,
+        fee: Amount,
+        destination: String,
+        amount: Amount,
+        isFeeIncluded: Bool,
+        lastError: SendTxError?
+    ) {
         self.userWalletEmailData = userWalletEmailData
         self.walletModel = walletModel
+        self.fee = fee
+        self.destination = destination
+        self.amount = amount
         self.isFeeIncluded = isFeeIncluded
         self.lastError = lastError
-
-        switch transaction {
-        case .transfer(let transaction):
-            fee = transaction.fee.amount
-            destination = transaction.destinationAddress
-            amount = transaction.amount
-        case .staking(let action):
-            fee = action.transactions.last.map {
-                .init(with: walletModel.feeTokenItem.blockchain, type: walletModel.feeTokenItem.amountType, value: $0.fee)
-            } ?? .zeroCoin(for: walletModel.tokenItem.blockchain)
-            destination = ""
-            amount = .init(with: walletModel.tokenItem.blockchain, type: walletModel.amountType, value: action.amount)
-        }
     }
 }
 
