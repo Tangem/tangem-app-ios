@@ -367,13 +367,7 @@ private extension MarketsViewModel {
             return list
         }
 
-        return list.filter {
-            guard $0.marketCap != nil else {
-                return false
-            }
-
-            return !($0.isUnderMarketCapLimit ?? false)
-        }
+        return list.filter { !($0.isUnderMarketCapLimit ?? false) }
     }
 
     func mapToTokenViewModel(index: Int, tokenItemModel: MarketsTokenModel) -> MarketsItemViewModel {
