@@ -62,6 +62,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
     private let tokensNotificationManager: NotificationManager
     private let bannerNotificationManager: NotificationManager?
     private let tokenSectionsAdapter: TokenSectionsAdapter
+    private let tooltipStorageProvider = TooltipStorageProvider()
     private let tokenRouter: SingleTokenRoutable
     private let optionsEditing: OrganizeTokensOptionsEditing
     private let rateAppController: RateAppInteractionController

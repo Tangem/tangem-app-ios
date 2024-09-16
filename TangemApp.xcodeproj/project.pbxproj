@@ -94,6 +94,9 @@
 		2DBE29C22B3C4A8100109D5E /* DetentBottomSheetContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBE29BF2B3C4A8100109D5E /* DetentBottomSheetContainer.swift */; };
 		2DBE29C32B3C4A8100109D5E /* DetentBottomSheetModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBE29C02B3C4A8100109D5E /* DetentBottomSheetModifier.swift */; };
 		2DBE29C42B3C4A8100109D5E /* View+DetentBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBE29C12B3C4A8100109D5E /* View+DetentBottomSheet.swift */; };
+		2DC46BA02C945C4400749F7C /* BasicTooltipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC46B9F2C945C4400749F7C /* BasicTooltipView.swift */; };
+		2DC46C362C97907B00749F7C /* TooltipStorageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC46C352C97907B00749F7C /* TooltipStorageProvider.swift */; };
+		2DC46C392C98022F00749F7C /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC46C382C98022F00749F7C /* Triangle.swift */; };
 		2DC567632B0DFFAF00B0244F /* MarketsItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC5675A2B0DFFAF00B0244F /* MarketsItemView.swift */; };
 		2DC567662B0DFFAF00B0244F /* MarketsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC5675D2B0DFFAF00B0244F /* MarketsView.swift */; };
 		2DC567672B0DFFAF00B0244F /* MarketsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC5675E2B0DFFAF00B0244F /* MarketsViewModel.swift */; };
@@ -2002,6 +2005,9 @@
 		2DBE29BF2B3C4A8100109D5E /* DetentBottomSheetContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetentBottomSheetContainer.swift; sourceTree = "<group>"; };
 		2DBE29C02B3C4A8100109D5E /* DetentBottomSheetModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetentBottomSheetModifier.swift; sourceTree = "<group>"; };
 		2DBE29C12B3C4A8100109D5E /* View+DetentBottomSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "View+DetentBottomSheet.swift"; sourceTree = "<group>"; };
+		2DC46B9F2C945C4400749F7C /* BasicTooltipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicTooltipView.swift; sourceTree = "<group>"; };
+		2DC46C352C97907B00749F7C /* TooltipStorageProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipStorageProvider.swift; sourceTree = "<group>"; };
+		2DC46C382C98022F00749F7C /* Triangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
 		2DC5675A2B0DFFAF00B0244F /* MarketsItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsItemView.swift; sourceTree = "<group>"; };
 		2DC5675D2B0DFFAF00B0244F /* MarketsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsView.swift; sourceTree = "<group>"; };
 		2DC5675E2B0DFFAF00B0244F /* MarketsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsViewModel.swift; sourceTree = "<group>"; };
@@ -4041,6 +4047,14 @@
 			path = WalletSelector;
 			sourceTree = "<group>";
 		};
+		2DADFF9E2C98A9F30029F390 /* Tooltip */ = {
+			isa = PBXGroup;
+			children = (
+				2DC46B9F2C945C4400749F7C /* BasicTooltipView.swift */,
+			);
+			path = Tooltip;
+			sourceTree = "<group>";
+		};
 		2DB361492C14FB9200BB1D38 /* SegmentPickerView */ = {
 			isa = PBXGroup;
 			children = (
@@ -4118,6 +4132,22 @@
 				B0EA18A72C465C380023B72A /* BottomSheetDetent.swift */,
 			);
 			path = DetentBottonSheet;
+			sourceTree = "<group>";
+		};
+		2DC46C342C97905C00749F7C /* Tooltips */ = {
+			isa = PBXGroup;
+			children = (
+				2DC46C352C97907B00749F7C /* TooltipStorageProvider.swift */,
+			);
+			path = Tooltips;
+			sourceTree = "<group>";
+		};
+		2DC46C372C98022500749F7C /* Shapes */ = {
+			isa = PBXGroup;
+			children = (
+				2DC46C382C98022F00749F7C /* Triangle.swift */,
+			);
+			path = Shapes;
 			sourceTree = "<group>";
 		};
 		2DC567592B0DFFAF00B0244F /* TokenList */ = {
@@ -5643,6 +5673,8 @@
 				DA7046152AAA180900808FA8 /* Charts */,
 				2DBE29BA2B3AE07200109D5E /* Tosts */,
 				2DB361492C14FB9200BB1D38 /* SegmentPickerView */,
+				2DC46C372C98022500749F7C /* Shapes */,
+				2DADFF9E2C98A9F30029F390 /* Tooltip */,
 			);
 			path = UIComponents;
 			sourceTree = "<group>";
@@ -7499,6 +7531,7 @@
 				DC0A5848282C07750031BECC /* WalletConnect */,
 				DC0A57F52822BDFB0031BECC /* CardImageLoader */,
 				B050F5012B613A5300B2E53C /* Visa */,
+				2DC46C342C97905C00749F7C /* Tooltips */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -11419,6 +11452,7 @@
 				EF661E3528C0ADC6005769E5 /* CommonError.swift in Sources */,
 				EFA5683C2C480D120064EBA1 /* SendTransactionType.swift in Sources */,
 				B0431B412919538700F84DEF /* IconWithBackground.swift in Sources */,
+				2DC46BA02C945C4400749F7C /* BasicTooltipView.swift in Sources */,
 				DAC53D0027BE63830027147D /* Web3StoryPage.swift in Sources */,
 				B06C085A2A73FC3B00D982BC /* MultiWalletMainContentViewModel.swift in Sources */,
 				B099339F2B554B1000240CDB /* MainHeaderProviderFactory.swift in Sources */,
@@ -11532,6 +11566,7 @@
 				B012A1172AA5CDBD0079BAB4 /* NotificationEvent.swift in Sources */,
 				DA8C67282B0B44EF00E1C9B8 /* SendDestinationAddressSummaryView.swift in Sources */,
 				EFC597BD2AA0B1B7001F6945 /* CommonTokenQuotesRepository.swift in Sources */,
+				2DC46C362C97907B00749F7C /* TooltipStorageProvider.swift in Sources */,
 				DAF59CC62ACC4D8C004FCA86 /* AddCustomTokenDerivationPathSelectorItemView.swift in Sources */,
 				DA8C33952BF38CB2002AE4F9 /* UserWalletFinder.swift in Sources */,
 				B02B74AA29879CC5006473F2 /* WalletConnectV2Factory.swift in Sources */,
@@ -11907,6 +11942,7 @@
 				B020A51426F1DBE700D38596 /* OnboardingInput.swift in Sources */,
 				B0A0911026D3636F00F46DF5 /* AnimationProgressObserverModifier.swift in Sources */,
 				EFB0194D2C417F01009EE857 /* YieldInfo+Mock.swift in Sources */,
+				2DC46C392C98022F00749F7C /* Triangle.swift in Sources */,
 				DA19EF612B8CBDE200F7BDFD /* TangemBlogUrlBuilder.swift in Sources */,
 				B0120A932A0E0F4400F485F1 /* FakeCardHeaderPreviewProvider.swift in Sources */,
 				EF59039A29091CFB00C527C9 /* EnvironmentSetupView.swift in Sources */,
