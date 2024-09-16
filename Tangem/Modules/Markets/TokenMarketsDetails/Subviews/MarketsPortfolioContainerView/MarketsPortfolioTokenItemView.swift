@@ -11,11 +11,12 @@ import SwiftUI
 struct MarketsPortfolioTokenItemView: View {
     @ObservedObject var viewModel: MarketsPortfolioTokenItemViewModel
 
+    let isExpanded: Bool
     @State private var textBlockSize: CGSize = .zero
 
     var body: some View {
-        CustomDisclosureGroup(animation: .easeInOut(duration: 0.1), isExpanded: $viewModel.isExpandedQuickActions) {
-            viewModel.isExpandedQuickActions.toggle()
+        CustomDisclosureGroup(isExpanded: isExpanded) {
+            viewModel.showContextActions()
         } prompt: {
             tokenView
         } expandedView: {
@@ -94,7 +95,11 @@ struct MarketsPortfolioTokenItemView: View {
                 }
             }
             .overlay(overlayView)
-            .readGeometry(\.size, bindTo: $textBlockSize)
+            .readGeometry(\.size, onChange: { newValue in
+                withAnimation(nil) {
+                    textBlockSize = newValue
+                }
+            })
         }
         .padding(.vertical, 14)
     }

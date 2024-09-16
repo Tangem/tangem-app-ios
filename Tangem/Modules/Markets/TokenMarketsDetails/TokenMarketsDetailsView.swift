@@ -12,6 +12,7 @@ struct TokenMarketsDetailsView: View {
     @ObservedObject var viewModel: TokenMarketsDetailsViewModel
 
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.mainWindowSize) private var mainWindowSize
 
     @State private var descriptionBottomSheetHeight: CGFloat = 0
     @State private var isNavigationBarShadowLineViewVisible = false
@@ -101,6 +102,7 @@ struct TokenMarketsDetailsView: View {
 
                     picker
                         .padding(.vertical, 8)
+                        .disabled(viewModel.isLoading)
                 }
                 .padding(.horizontal, 16.0)
 
@@ -117,7 +119,7 @@ struct TokenMarketsDetailsView: View {
 
                 content
                     .hidden(viewModel.allDataLoadFailed)
-                    .padding(.horizontal, 16.0)
+                    .padding(.horizontal, Constants.blockHorizontalPadding)
                     .transition(.opacity)
             }
             .padding(.top, Constants.scrollViewContentTopInset)
@@ -179,6 +181,7 @@ struct TokenMarketsDetailsView: View {
                         TokenPriceChangeView(state: priceChangeState, showSkeletonWhenLoading: true)
                     }
                 }
+                .id(UUID())
             }
 
             Spacer(minLength: 8)
@@ -208,15 +211,15 @@ struct TokenMarketsDetailsView: View {
     @ViewBuilder
     private var content: some View {
         VStack(spacing: 14) {
+            description
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            portfolioView
+
             switch viewModel.state {
             case .loading:
                 ContentBlockSkeletons()
-            case .loaded(let model):
-                description(shortDescription: model.shortDescription, fullDescription: model.fullDescription)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                portfolioView
-
+            case .loaded:
                 contentBlocks
             case .failedToLoadDetails:
                 MarketsUnableToLoadDataView(
@@ -240,54 +243,50 @@ struct TokenMarketsDetailsView: View {
     @ViewBuilder
     private var contentBlocks: some View {
         VStack(spacing: 14) {
+            let blocksWidth = mainWindowSize.width - Constants.blockHorizontalPadding * 2
             if let insightsViewModel = viewModel.insightsViewModel {
-                MarketsTokenDetailsInsightsView(viewModel: insightsViewModel)
-                    .transaction { transaction in
-                        transaction.animation = nil
-                    }
+                MarketsTokenDetailsInsightsView(viewModel: insightsViewModel, viewWidth: blocksWidth)
             }
 
             if let metricsViewModel = viewModel.metricsViewModel {
-                MarketsTokenDetailsMetricsView(viewModel: metricsViewModel)
-                    .transaction { transaction in
-                        transaction.animation = nil
-                    }
+                MarketsTokenDetailsMetricsView(viewModel: metricsViewModel, viewWidth: blocksWidth)
             }
 
             if let pricePerformanceViewModel = viewModel.pricePerformanceViewModel {
                 MarketsTokenDetailsPricePerformanceView(viewModel: pricePerformanceViewModel)
-                    .transaction { transaction in
-                        transaction.animation = nil
-                    }
             }
 
             if !viewModel.linksSections.isEmpty {
-                TokenMarketsDetailsLinksView(sections: viewModel.linksSections)
-                    .transaction { transaction in
-                        transaction.animation = nil
-                    }
+                TokenMarketsDetailsLinksView(viewWidth: blocksWidth, sections: viewModel.linksSections)
             }
         }
         .padding(.bottom, 46.0)
     }
 
     @ViewBuilder
-    private func description(shortDescription: String?, fullDescription: String?) -> some View {
-        if let shortDescription {
-            if fullDescription == nil {
-                Text(shortDescription)
-                    .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
-                    .multilineTextAlignment(.leading)
-            } else {
-                Button(action: viewModel.openFullDescription) {
-                    Group {
-                        Text("\(shortDescription) ")
-                            + readMoreText
+    private var description: some View {
+        switch viewModel.state {
+        case .loading:
+            DescriptionBlockSkeletons()
+        case .loaded(let model):
+            if let shortDescription = model.shortDescription {
+                if model.fullDescription == nil {
+                    Text(shortDescription)
+                        .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
+                        .multilineTextAlignment(.leading)
+                } else {
+                    Button(action: viewModel.openFullDescription) {
+                        Group {
+                            Text("\(shortDescription) ")
+                                + readMoreText
+                        }
+                        .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
+                        .multilineTextAlignment(.leading)
                     }
-                    .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
-                    .multilineTextAlignment(.leading)
                 }
             }
+        case .failedToLoadDetails, .failedToLoadAllData:
+            EmptyView()
         }
     }
 
@@ -322,6 +321,7 @@ private extension TokenMarketsDetailsView {
     enum Constants {
         static let chartHeight: CGFloat = 200.0
         static let scrollViewContentTopInset = 14.0
+        static let blockHorizontalPadding: CGFloat = 16.0
         static let priceLabelSizeMeasureText = "1234.0"
     }
 }

@@ -14,70 +14,84 @@ struct MarketsPortfolioContainerView: View {
     // MARK: - UI
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            headerView
-
-            contentView
-        }
-        .padding(.top, 12) // Need for top padding without bottom padding
-        .defaultRoundedBackground(with: Colors.Background.action, verticalPadding: .zero)
+        contentView
+            .if(viewModel.typeView != .list, transform: { view in
+                view
+                    .padding(.bottom, 12) // Bottom padding use for no list views
+            })
+            .padding(.top, 12) // Need for top padding without bottom padding
+            .defaultRoundedBackground(with: Colors.Background.action, verticalPadding: .zero)
     }
 
     private var headerView: some View {
-        VStack(alignment: .leading, spacing: .zero) {
-            HStack(alignment: .center) {
-                Text(Localization.marketsCommonMyPortfolio)
-                    .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+        HStack(alignment: .center) {
+            Text(Localization.marketsCommonMyPortfolio)
+                .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
 
-                Spacer()
+            Spacer()
 
-                if viewModel.isShowTopAddButton {
-                    Button(action: {
-                        viewModel.onAddTapAction()
-                    }, label: {
-                        HStack(spacing: 2) {
-                            Assets.plus24.image
-                                .resizable()
-                                .renderingMode(.template)
-                                .foregroundColor(Colors.Icon.primary1)
-                                .frame(size: .init(bothDimensions: 14))
-
-                            Text(Localization.marketsAddToken)
-                                .style(Fonts.Regular.footnote.bold(), color: Colors.Text.primary1)
-                        }
-                    })
-                    .padding(.leading, 8)
-                    .padding(.trailing, 10)
-                    .padding(.vertical, 4)
-                    .roundedBackground(with: Colors.Button.secondary, padding: .zero, radius: Constants.buttonCornerRadius)
-                }
-            }
+            addTokenButton
         }
     }
 
+    @ViewBuilder
+    private var addTokenButton: some View {
+        switch viewModel.typeView {
+        case .empty, .loading, .unavailable:
+            EmptyView()
+        case .list:
+            Button(action: {
+                viewModel.onAddTapAction()
+            }, label: {
+                HStack(spacing: 2) {
+                    Assets.plus24.image
+                        .resizable()
+                        .renderingMode(.template)
+                        .foregroundColor(Colors.Icon.primary1)
+                        .frame(size: .init(bothDimensions: 14))
+
+                    Text(Localization.marketsAddToken)
+                        .style(Fonts.Regular.footnote.bold(), color: Colors.Text.primary1)
+                }
+                .padding(.leading, 8)
+                .padding(.trailing, 10)
+                .padding(.vertical, 4)
+            })
+            .background(Colors.Button.secondary)
+            .cornerRadiusContinuous(Constants.buttonCornerRadius)
+            .skeletonable(isShown: viewModel.isLoadingNetworks, size: .init(width: 60, height: 18), radius: 3, paddings: .init(top: 3, leading: 0, bottom: 3, trailing: 0))
+            .disabled(viewModel.isAddTokenButtonDisabled)
+        }
+    }
+
+    @ViewBuilder
     private var contentView: some View {
-        VStack(spacing: .zero) {
-            switch viewModel.typeView {
-            case .empty:
-                emptyView
-            case .list:
-                listView
-            case .unavailable:
-                unavailableView
-            case .none:
-                // Need for dissmis side effect
-                EmptyView()
-            }
+        switch viewModel.typeView {
+        case .empty:
+            viewWithHeader(emptyView)
+                .transition(.opacity.combined(with: .identity))
+        case .loading:
+            viewWithHeader(loadingView)
+        case .list:
+            viewWithHeader(listView)
+        case .unavailable:
+            viewWithHeader(unavailableView)
+                .transition(.opacity.combined(with: .identity))
         }
     }
 
     @ViewBuilder
     private var listView: some View {
-        LazyVStack(spacing: .zero) {
+        // Right now we need to use here VStack instead of LazyVStack because of not resolved issues
+        // with expanding and collapsing animations for quick actions. Will be investigated in IOS-7971
+        VStack(spacing: .zero) {
             let elementItems = viewModel.tokenItemViewModels
 
             ForEach(indexed: elementItems.indexed()) { index, itemViewModel in
-                MarketsPortfolioTokenItemView(viewModel: itemViewModel)
+                MarketsPortfolioTokenItemView(
+                    viewModel: itemViewModel,
+                    isExpanded: viewModel.tokenWithExpandedQuickActions == itemViewModel
+                )
             }
         }
     }
@@ -104,6 +118,29 @@ struct MarketsPortfolioContainerView: View {
             }
         }
     }
+
+    private var loadingView: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            skeletonView(width: .infinity, height: 15)
+
+            skeletonView(width: 218, height: 15)
+        }
+    }
+
+    private func skeletonView(width: CGFloat, height: CGFloat) -> some View {
+        SkeletonView()
+            .cornerRadiusContinuous(3)
+            .frame(maxWidth: width, minHeight: height, maxHeight: height)
+    }
+
+    @ViewBuilder
+    private func viewWithHeader(_ view: some View) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            headerView
+
+            view
+        }
+    }
 }
 
 extension MarketsPortfolioContainerView {
@@ -111,6 +148,7 @@ extension MarketsPortfolioContainerView {
         case empty
         case list
         case unavailable
+        case loading
 
         var id: Int {
             rawValue

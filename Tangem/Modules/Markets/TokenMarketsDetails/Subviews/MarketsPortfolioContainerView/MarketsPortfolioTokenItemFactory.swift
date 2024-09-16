@@ -11,7 +11,6 @@ import Foundation
 struct MarketsPortfolioTokenItemFactory {
     private let contextActionsProvider: MarketsPortfolioContextActionsProvider
     private let contextActionsDelegate: MarketsPortfolioContextActionsDelegate
-    private var quickActionDisclosureTap: ((Int) -> Void)?
 
     private let tokenItemInfoProviderMapper = TokenItemInfoProviderMapper()
 
@@ -19,19 +18,16 @@ struct MarketsPortfolioTokenItemFactory {
 
     init(
         contextActionsProvider: MarketsPortfolioContextActionsProvider,
-        contextActionsDelegate: MarketsPortfolioContextActionsDelegate,
-        quickActionDisclosureTap: ((Int) -> Void)? = nil
+        contextActionsDelegate: MarketsPortfolioContextActionsDelegate
     ) {
         self.contextActionsProvider = contextActionsProvider
         self.contextActionsDelegate = contextActionsDelegate
-        self.quickActionDisclosureTap = quickActionDisclosureTap
     }
 
     // MARK: - Implementation
 
     func makeViewModels(
         coinId: String,
-        networks: [NetworkModel],
         walletModels: [WalletModel],
         entries: [StoredUserTokenList.Entry],
         userWalletInfo: UserWalletInfo
@@ -41,11 +37,9 @@ struct MarketsPortfolioTokenItemFactory {
             .map(\.blockchainNetwork)
             .toSet()
 
-        let networkIds = Set(networks.map { $0.networkId })
-
         let tokenItemTypes: [TokenItemType] = entries
             .filter { entry in
-                entry.id == coinId && networkIds.contains(entry.blockchainNetwork.blockchain.networkId)
+                entry.id == coinId
             }
             .compactMap { userToken in
                 if blockchainNetworksFromWalletModels.contains(userToken.blockchainNetwork) {
@@ -78,9 +72,7 @@ struct MarketsPortfolioTokenItemFactory {
             tokenItemInfoProvider: infoProviderItem.provider,
             contextActionsProvider: contextActionsProvider,
             contextActionsDelegate: contextActionsDelegate
-        ) { viewModelId in
-            quickActionDisclosureTap?(viewModelId)
-        }
+        )
     }
 }
 

@@ -9,25 +9,31 @@
 import SwiftUI
 
 struct CustomDisclosureGroup<Prompt: View, ExpandedView: View>: View {
-    @Binding var isExpanded: Bool
+    private let actionOnClick: () -> Void
+    private let animation: Animation?
+    private let isExpanded: Bool
+    private let prompt: Prompt
+    private let expandedView: ExpandedView
 
-    var actionOnClick: () -> Void
-    var animation: Animation?
-
-    let prompt: Prompt
-    let expandedView: ExpandedView
-
-    init(animation: Animation?, isExpanded: Binding<Bool>, actionOnClick: @escaping () -> Void, prompt: () -> Prompt, expandedView: () -> ExpandedView) {
+    init(
+        animation: Animation? = .default,
+        isExpanded: Bool,
+        actionOnClick: @escaping () -> Void,
+        prompt: () -> Prompt,
+        expandedView: () -> ExpandedView
+    ) {
         self.actionOnClick = actionOnClick
-        _isExpanded = isExpanded
+        self.isExpanded = isExpanded
         self.animation = animation
         self.prompt = prompt()
         self.expandedView = expandedView()
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: .zero) {
-            prompt
+        VStack(spacing: 0) {
+            Button(action: { actionOnClick() }, label: {
+                prompt
+            })
 
             if isExpanded {
                 expandedView
@@ -35,10 +41,6 @@ struct CustomDisclosureGroup<Prompt: View, ExpandedView: View>: View {
         }
         .clipped()
         .contentShape(Rectangle())
-        .onTapGesture {
-            withAnimation(animation) {
-                actionOnClick()
-            }
-        }
+        .drawingGroup()
     }
 }
