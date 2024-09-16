@@ -1,5 +1,5 @@
 //
-//  MarketsTooltipViewModifier.swift
+//  MarketsTooltipView.swift
 //  Tangem
 //
 //  Created by skibinalexander on 13.09.2024.
@@ -8,22 +8,17 @@
 
 import SwiftUI
 
-struct MarketsTooltipViewModifier: ViewModifier {
-    // MARK: - Utilits
+struct MarketsTooltipView: View {
+    // MARK: - Properties
 
-    @AppStorage(StorageKeys.tooltipWasShown.rawValue) private var tooltipWasShown: Bool = false
-
-    // MARK: - Pivate Properties
-
-    private(set) var needAppearTooltipView: Binding<Bool>
+    @Binding private(set) var isShowBindingValue: Bool
+    private(set) var onHideAction: (() -> Void)?
 
     // MARK: - UI
 
-    func body(content: Content) -> some View {
+    var body: some View {
         ZStack {
-            content
-
-            if needAppearTooltipView.wrappedValue {
+            if isShowBindingValue {
                 backgroundView
 
                 tooltipView
@@ -36,7 +31,10 @@ struct MarketsTooltipViewModifier: ViewModifier {
     private var backgroundView: some View {
         Color.black
             .ignoresSafeArea(.all)
-            .opacity(0.4)
+            .opacity(0.3)
+            .onTapGesture {
+                onHideAction?()
+            }
     }
 
     private var tooltipView: some View {
@@ -61,17 +59,5 @@ struct MarketsTooltipViewModifier: ViewModifier {
         }
         .padding(.horizontal, 64)
         .padding(.bottom, 96)
-    }
-}
-
-extension View {
-    func marketsTipViewModifier(with needAppearTooltipView: Binding<Bool>) -> some View {
-        modifier(MarketsTooltipViewModifier(needAppearTooltipView: needAppearTooltipView))
-    }
-}
-
-private extension MarketsTooltipViewModifier {
-    enum StorageKeys: String, RawRepresentable {
-        case tooltipWasShown = "tangem_markets_tooltip_was_shown"
     }
 }

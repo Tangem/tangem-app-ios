@@ -345,6 +345,7 @@
 "markets_common_my_portfolio" = "Мой портфель";
 "markets_common_title" = "Рынок";
 "markets_generate_addresses_notification" = "Чтобы создать адреса для выбранных сетей, отсканируйте вашу карту Tangem кошелька";
+"markets_hint" = "To add tokens pull this up or tap the search bar";
 "markets_insights_info_description_message" = "Данные раздела получены из следующих сетей: %@";
 "markets_loading_error_title" = "Невозможно загрузить данные";
 "markets_loading_no_data_title" = "Нет данных";

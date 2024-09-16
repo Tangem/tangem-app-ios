@@ -345,6 +345,7 @@
 "markets_common_my_portfolio" = "Mi portafolio";
 "markets_common_title" = "Mercado";
 "markets_generate_addresses_notification" = "Para generar direcciones para las redes seleccionadas, debe escanear su tarjeta Tangem";
+"markets_hint" = "Para agregar tokens, abra esta página o toque la barra de búsqueda";
 "markets_insights_info_description_message" = "Los datos de este apartado proceden de las siguientes redes: %@";
 "markets_loading_error_title" = "No se pueden cargar los datos…";
 "markets_loading_no_data_title" = "Sin datos";

@@ -50,8 +50,12 @@ class MainCoordinator: CoordinatorObject {
 
     @Published var modalOnboardingCoordinatorKeeper: Bool = false
     @Published var isAppStoreReviewRequested = false
+    @Published var isMarketsTooltipVisible = false
+
     private var safariHandle: SafariHandle?
     private var pushNotificationsViewModelSubscription: AnyCancellable?
+
+    private let tooltipStorageProvider = TooltipStorageProvider()
 
     required init(
         dismissAction: @escaping Action<Void>,
@@ -75,8 +79,17 @@ class MainCoordinator: CoordinatorObject {
 
         swipeDiscoveryHelper.delegate = viewModel
         mainViewModel = viewModel
+
+        setupUI()
         bind()
     }
+
+    func hideMarketsTootip() {
+        tooltipStorageProvider.marketsTooltipWasShown = true
+        isMarketsTooltipVisible = false
+    }
+
+    // MARK: - Private Implementation
 
     private func bind() {
         guard pushNotificationsViewModelSubscription == nil else {
@@ -92,6 +105,10 @@ class MainCoordinator: CoordinatorObject {
             .sink { previous, _ in
                 previous?.didDismissSheet()
             }
+    }
+
+    private func setupUI() {
+        isMarketsTooltipVisible = FeatureProvider.isAvailable(.markets) && !tooltipStorageProvider.marketsTooltipWasShown
     }
 }
 

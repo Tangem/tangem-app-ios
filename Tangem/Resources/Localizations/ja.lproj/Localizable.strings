@@ -345,6 +345,7 @@
 "markets_common_my_portfolio" = "私のポートフォリオ";
 "markets_common_title" = "マーケット";
 "markets_generate_addresses_notification" = "選択したネットワークのアドレスを生成するには、Tangemカードをスキャンする必要があります。";
+"markets_hint" = "To add tokens pull this up or tap the search bar";
 "markets_insights_info_description_message" = "このセクションのデータは、次のネットワークから取得されています: %@";
 "markets_loading_error_title" = "データを読み込めません…";
 "markets_loading_no_data_title" = "データなし";

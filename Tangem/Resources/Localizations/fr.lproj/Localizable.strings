@@ -345,6 +345,7 @@
 "markets_common_my_portfolio" = "Mon portfolio";
 "markets_common_title" = "Marché";
 "markets_generate_addresses_notification" = "Pour générer des adresses pour les réseaux sélectionnés, vous devez scanner votre carte Tangem";
+"markets_hint" = "Pour ajouter des jetons, faites-le apparaître ou appuyez sur la barre de recherche";
 "markets_insights_info_description_message" = "Les données de cette section proviennent des réseaux suivants : %@";
 "markets_loading_error_title" = "Impossible de charger les données…";
 "markets_loading_no_data_title" = "Aucune donnée";

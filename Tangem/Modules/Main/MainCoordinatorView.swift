@@ -11,8 +11,6 @@ import SwiftUI
 struct MainCoordinatorView: CoordinatorView {
     @ObservedObject var coordinator: MainCoordinator
 
-    @State var isNeedShowTooltip: Bool = false
-
     var body: some View {
         ZStack {
             if let mainViewModel = coordinator.mainViewModel {
@@ -20,19 +18,22 @@ struct MainCoordinatorView: CoordinatorView {
                     .navigationLinks(links)
             }
 
+            // Tooltip is placed on top of the other views
+            MarketsTooltipView(
+                isShowBindingValue: $coordinator.isMarketsTooltipVisible,
+                onHideAction: hideTooltipWithAnimation
+            )
+
             sheets
-        }
-        .onAppear {
-            isNeedShowTooltip = true
         }
         .onOverlayContentStateChange { state in
             if case .bottom = state {
-                isNeedShowTooltip = true
+                // I do not delete the state, but no logic is required either
+                return
             } else {
-                isNeedShowTooltip = false
+                hideTooltipWithAnimation()
             }
         }
-        .marketsTipViewModifier(with: $isNeedShowTooltip)
     }
 
     @ViewBuilder
@@ -108,17 +109,10 @@ struct MainCoordinatorView: CoordinatorView {
         NavHolder()
             .requestAppStoreReviewCompat($coordinator.isAppStoreReviewRequested)
     }
-}
 
-struct Triangle: Shape {
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-
-        path.move(to: CGPoint(x: rect.midX, y: rect.minY))
-        path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
-        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
-        path.addLine(to: CGPoint(x: rect.midX, y: rect.minY))
-
-        return path
+    private func hideTooltipWithAnimation() {
+        withAnimation(.easeInOut(duration: 0.3)) {
+            coordinator.hideMarketsTootip()
+        }
     }
 }
