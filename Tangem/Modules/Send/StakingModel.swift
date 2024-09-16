@@ -38,8 +38,6 @@ class StakingModel {
     private let tokenItem: TokenItem
     private let feeTokenItem: TokenItem
 
-    private let updateStateSubject = PassthroughSubject<Void, Never>()
-
     private var timerTask: Task<Void, Error>?
     private var estimatedFeeTask: Task<Void, Never>?
     private var sendTransactionTask: Task<Void, Never>?
@@ -90,18 +88,6 @@ extension StakingModel: StakingModelStateProvider {
 
 private extension StakingModel {
     func bind() {
-        Publishers
-            .CombineLatest4(
-                _amount.compactMap { $0?.crypto },
-                _selectedValidator.compactMap { $0.value },
-                _approvePolicy,
-                updateStateSubject.prepend(()) // CombineLatest has to have first element
-            )
-            .sink { [weak self] amount, validator, approvePolicy, _ in
-                self?.inputDataDidChange(amount: amount, validator: validator, approvePolicy: approvePolicy)
-            }
-            .store(in: &bag)
-
         stakingManager
             .statePublisher
             .compactMap { $0.yieldInfo }
@@ -119,13 +105,18 @@ private extension StakingModel {
             .store(in: &bag)
     }
 
-    func inputDataDidChange(amount: Decimal, validator: ValidatorInfo, approvePolicy: ApprovePolicy) {
+    func updateState() {
+        guard let amount = _amount.value?.crypto,
+              let validator = _selectedValidator.value.value else {
+            return
+        }
+
         estimatedFeeTask?.cancel()
 
         estimatedFeeTask = runTask(in: self) { model in
             do {
                 model.update(state: .loading)
-                let newState = try await model.state(amount: amount, validator: validator, approvePolicy: approvePolicy)
+                let newState = try await model.state(amount: amount, validator: validator, approvePolicy: model._approvePolicy.value)
                 model.update(state: newState)
             } catch {
                 model.update(state: .networkError(error))
@@ -163,9 +154,10 @@ private extension StakingModel {
             return validateError
         }
 
-        let hasPreviousStakeOnSameValidator = stakingManager.state.balances?.contains { balance in
-            balance.balanceType == .active && balance.validatorType.validator == validator
-        } ?? false
+        let balances = stakingManager.state.balances ?? []
+        let hasPreviousStakeOnDifferentValidator = balances.contains { balance in
+            balance.balanceType == .active && balance.validatorType.validator != validator
+        }
 
         return .readyToStake(
             .init(
@@ -173,7 +165,7 @@ private extension StakingModel {
                 validator: validator,
                 fee: fee,
                 isFeeIncluded: includeFee,
-                stakeOnDifferentValidator: stakingManager.state.isStaked && !hasPreviousStakeOnSameValidator
+                stakeOnDifferentValidator: hasPreviousStakeOnDifferentValidator
             )
         )
     }
@@ -253,7 +245,7 @@ private extension StakingModel {
             try await Task.sleep(seconds: 5)
 
             model.log("timer realised")
-            model.updateStateSubject.send(())
+            model.updateState()
 
             try Task.checkCancellation()
 
@@ -321,7 +313,9 @@ private extension StakingModel {
 // MARK: - SendFeeLoader
 
 extension StakingModel: SendFeeLoader {
-    func updateFees() {}
+    func updateFees() {
+        updateState()
+    }
 }
 
 // MARK: - SendAmountInput
@@ -462,7 +456,7 @@ extension StakingModel: NotificationTapDelegate {
     func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
         switch action {
         case .refreshFee:
-            updateStateSubject.send(())
+            updateState()
         default:
             assertionFailure("StakingModel doesn't support notification action \(action)")
         }
@@ -504,7 +498,7 @@ extension StakingModel: ApproveViewModelInput {
 
         _ = try await sendTransactionDispatcher.send(transaction: .transfer(transaction))
         allowanceProvider.didSendApproveTransaction(for: approveData.spender)
-        updateStateSubject.send(())
+        updateState()
 
         // Setup timer for autoupdate
         restartTimer()
