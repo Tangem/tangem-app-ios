@@ -114,7 +114,7 @@
 "common_in_progress" = "En progreso";
 "common_later" = "Más tarde";
 "common_learn_and_earn" = "Aprende y gane";
-"common_left" = "%1$@ left";
+"common_left" = "%1$@ quedan";
 "common_locked" = "Bloqueado";
 "common_main_network" = "Red principal";
 "common_network_fee_title" = "Tarifa de la red";
@@ -296,7 +296,7 @@
 "give_permission_unlimited" = "Ilimitado";
 "home_button_order" = "Ordenar ";
 "home_button_scan" = "Escanee";
-"information_generated_with_ai" = "This information was generated with AI";
+"information_generated_with_ai" = "Esta información fue generada con IA";
 "initial_message_change_access_code_body" = "Toque para cambiar la contraseña";
 "initial_message_change_passcode_body" = "Toque para cambiar la contraseña";
 "initial_message_create_wallet_body" = "Para crear la billetera, toque la tarjeta como se muestra arriba y no la retire hasta el final de la operación";
@@ -345,6 +345,7 @@
 "markets_common_my_portfolio" = "Mi portafolio";
 "markets_common_title" = "Mercado";
 "markets_generate_addresses_notification" = "Para generar direcciones para las redes seleccionadas, debe escanear su tarjeta Tangem";
+"markets_hint" = "Para agregar tokens, abra esta página o toque la barra de búsqueda";
 "markets_insights_info_description_message" = "Los datos de este apartado proceden de las siguientes redes: %@";
 "markets_loading_error_title" = "No se pueden cargar los datos…";
 "markets_loading_no_data_title" = "Sin datos";
@@ -355,12 +356,12 @@
 "markets_search_token_no_result_title" = "Sin resultado";
 "markets_select_network" = "Seleccione una red";
 "markets_select_wallet" = "Seleccione una billetera";
-"markets_selector_interval_1m_title" = "1 mes";
+"markets_selector_interval_1m_title" = "1 mo";
 "markets_selector_interval_1y_title" = "1 año";
-"markets_selector_interval_24h_title" = "24 horas";
-"markets_selector_interval_3m_title" = "3 meses";
-"markets_selector_interval_6m_title" = "6 meses";
-"markets_selector_interval_7d_title" = "7 días";
+"markets_selector_interval_24h_title" = "24h";
+"markets_selector_interval_3m_title" = "3mos";
+"markets_selector_interval_6m_title" = "6mos";
+"markets_selector_interval_7d_title" = "7d";
 "markets_selector_interval_all_title" = "Todo";
 "markets_sort_by_experienced_buyers_title" = "Compradores experimentados";
 "markets_sort_by_rating_title" = "Evaluación";
@@ -390,7 +391,7 @@
 "markets_token_details_liquidity_index" = "Índice de liquidez";
 "markets_token_details_liquidity_index_description" = "";
 "markets_token_details_low" = "Bajo";
-"markets_token_details_market_capitalization" = "Capitalización de mercado";
+"markets_token_details_market_capitalization" = "Capital. de mercado";
 "markets_token_details_market_capitalization_description" = "El valor total de una criptomoneda calculado multiplicando su precio por la cantidad de monedas en circulación";
 "markets_token_details_market_rating" = "Evaluación de mercado";
 "markets_token_details_market_rating_description" = "Posición en la clasificación de criptomonedas entre todas las monedas según la capitalización de mercado";
@@ -614,7 +615,7 @@
 "send_summary_transaction_description_no_fiat_fee" = "Está enviando**%1$@** y %2$@";
 "send_summary_transaction_description_prefix" = "You are sending **%1$@**";
 "send_summary_transaction_description_suffix_fee_covered" = "network fee will be covered by using %1$@ energy";
-"send_summary_transaction_description_suffix_fee_reduced" = "network fee will be reduced by spending %1$@";
+"send_summary_transaction_description_suffix_fee_reduced" = "network fee will be reduced by spending %1$@ energy";
 "send_summary_transaction_description_suffix_including" = "including a network fee of %1$@";
 "send_transaction_success" = "La transacción se firmó con éxito y se envió al nodo blockchain. El saldo de la billetera se actualizará después de un tiempo.";
 "send_tron_account_activation_error" = "%1$@  es un activo en la red Tron. Para calcular la tarifa y realizar una transacción, deba depositar algo de Tron (TRX) en su cuenta.";
@@ -626,6 +627,7 @@
 "staking_active" = "Activo";
 "staking_active_footer" = "Para eliminar el staking de sus activos, presione el bloque de arriba";
 "staking_amount_requirement_error" = "El monto del staking debe ser al menos %@";
+"staking_amount_tron_integer_error" = "El monto del staking se redondeará a %1$@ TRX debido a las reglas de la red.";
 "staking_claim_unstaked" = "Unstaking de la reclamación";
 "staking_details_annual_percentage_rate" = "Porcentaje de rendimiento anual";
 "staking_details_annual_percentage_rate_info" = "El porcentaje de rendimiento anual que podrá ganar como participante en el staking.";
@@ -649,8 +651,8 @@
 "staking_details_unbonding_period_info" = "El período que debes esperar después de solicitar el retiro de fondos del staking antes de que los tokens estén disponibles.";
 "staking_details_warmup_period" = "Periodo de calentamiento";
 "staking_details_warmup_period_info" = "El tiempo permitido para activar la participación en la apuesta.";
-"staking_dismiss_message" = "Are you sure you want to close the staking screen?";
-"staking_legal" = "By using staking functionality, you agree with provider’s %1$@ and %2$@";
+"staking_dismiss_message" = "¿Está seguro(a) de que desea cerrar la pantalla de staking?";
+"staking_legal" = "Al utilizar la función de staking, usted acepta %1$@ y  %2$@ del proveedor";
 "staking_locked" = "Bloqueado";
 "staking_migrate" = "Migrar";
 "staking_native" = "Native staking";
@@ -670,6 +672,7 @@
 "staking_notification_unstake_cosmos_text" = "Your funds will be available for use after the 21-day unbonding period. Reward will be withdrawn along with your unstaking funds.";
 "staking_notification_unstake_text" = "Sus fondos estarán disponibles para su uso después del período de desvinculación de %@.";
 "staking_notification_withdraw_text" = "Ya puede retirar sus fondos, estarán disponibles para usar de inmediato.";
+"staking_notifications_revote_tron_text" = "Hacer staking en la red Tron con un nuevo validador transferirá automáticamente todos los fondos de staking a este validador.";
 "staking_preparing" = "Preparing";
 "staking_ready_to_withdraw" = "Listo para retirar";
 "staking_rebond" = "Reunir";
@@ -691,11 +694,11 @@
 "staking_stake_locked" = "El stake está bloqueado";
 "staking_stake_more" = "Hacer más staking";
 "staking_summary_description_text" = "You stake %1$@ and will be receiving %2$@ yearly";
-"staking_tap_to_unlock" = "Tap to unlock";
-"staking_tap_to_withdraw" = "Tap to withdraw";
+"staking_tap_to_unlock" = "Toque para desbloquear";
+"staking_tap_to_withdraw" = "Toque para retirar";
 "staking_title_stake" = "Stake %@";
 "staking_title_unstake" = "El unstaking de %@";
-"staking_transaction_in_progress_text" = "The transaction is being processed! Validation is currently underway in the blockchain. This may take a few minutes.";
+"staking_transaction_in_progress_text" = "¡La transacción se está procesando! La validación está en curso en la cadena de bloques. Esto puede tardar unos minutos.";
 "staking_unbonding" = "Desunión";
 "staking_unbonding_in" = "Desunión en";
 "staking_unlocked_locked" = "Desbloquear";
@@ -708,7 +711,7 @@
 "staking_vote" = "Votar";
 "staking_vote_locked" = "Voto bloqueado";
 "staking_withdraw" = "Retirar";
-"staking_your_stakes" = "Your stakes";
+"staking_your_stakes" = "Sus stakes";
 "story_awe_description" = "Almacene sus activos crypto de forma segura manteniendo las claves privadas contenidas en su tarjeta";
 "story_awe_title" = "Billetera de hardware revolucionaria";
 "story_backup_description" = "Hasta 3 tarjetas físicas por billetera";
