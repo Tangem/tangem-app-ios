@@ -38,6 +38,10 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         )
     }
 
+    private(set) lazy var bottomSheetFooterViewModel: MainBottomSheetFooterViewModel? = FeatureProvider.isAvailable(.markets)
+        ? MainBottomSheetFooterViewModel()
+        : nil
+
     var isOrganizeTokensVisible: Bool {
         guard canManageTokens else { return false }
 

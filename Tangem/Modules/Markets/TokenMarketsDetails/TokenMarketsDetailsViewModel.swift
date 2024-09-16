@@ -20,9 +20,9 @@ class TokenMarketsDetailsViewModel: BaseMarketsViewModel {
     @Published var alert: AlertBinder?
 
     /// For unknown reasons, the `@self` and `@identity` of our view change when push navigation is performed in other
-    /// navigation controllers in the application, which causes the state of this property to be lost if it were stored
-    /// in the view as a `@State` variable.
-    /// Therefore, we store it here in the view model as the `@Published` property.
+    /// navigation controllers in the application (on the main screen for example), which causes the state of
+    /// this property to be lost if it were stored in the view as a `@State` variable.
+    /// Therefore, we store it here in the view model as the `@Published` property instead of storing it in a view.
     ///
     /// Our view is initially presented when the sheet is expanded, hence the `1.0` initial value.
     @Published private(set) var overlayContentHidingInitialProgress = 1.0
@@ -150,6 +150,7 @@ class TokenMarketsDetailsViewModel: BaseMarketsViewModel {
         bind()
         loadDetailedInfo()
         makeHistoryChartViewModel()
+        makePortfolioViewModel()
         bindToHistoryChartViewModel()
     }
 
@@ -250,10 +251,10 @@ private extension TokenMarketsDetailsViewModel {
     func setupUI(using model: TokenMarketsDetailsModel) {
         loadedTokenDetailsPriceChangeInfo = model.priceChangePercentage
         loadedInfo = model
+
         state = .loaded(model: model)
 
         makeBlocksViewModels(using: model)
-        makePortfolioViewModel(using: model)
     }
 
     @MainActor
@@ -380,6 +381,8 @@ private extension TokenMarketsDetailsViewModel {
     }
 
     func makeBlocksViewModels(using model: TokenMarketsDetailsModel) {
+        portfolioViewModel?.update(networks: model.availableNetworks)
+
         setupInsights(model.insights)
 
         if let metrics = model.metrics {
@@ -408,13 +411,13 @@ private extension TokenMarketsDetailsViewModel {
         ).mapToSections(model.links)
     }
 
-    func makePortfolioViewModel(using model: TokenMarketsDetailsModel) {
+    func makePortfolioViewModel() {
         guard style == .marketsSheet else {
             return
         }
 
         portfolioViewModel = .init(
-            inputData: .init(coinId: model.id, networks: model.availableNetworks),
+            inputData: .init(coinId: tokenInfo.id),
             walletDataProvider: walletDataProvider,
             coordinator: coordinator,
             addTokenTapAction: { [weak self] in

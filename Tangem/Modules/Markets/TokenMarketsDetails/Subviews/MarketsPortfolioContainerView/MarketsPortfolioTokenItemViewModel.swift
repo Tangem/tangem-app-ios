@@ -22,8 +22,6 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     @Published private var missingDerivation: Bool = false
     @Published private var networkUnreachable: Bool = false
 
-    @Published var isExpandedQuickActions: Bool = false
-
     var id: Int {
         hashValue
     }
@@ -61,7 +59,6 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
 
     private weak var contextActionsProvider: MarketsPortfolioContextActionsProvider?
     private weak var contextActionsDelegate: MarketsPortfolioContextActionsDelegate?
-    private var quickActionDisclosureTap: ((Int) -> Void)?
 
     private var bag = Set<AnyCancellable>()
 
@@ -73,8 +70,7 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
         tokenIcon: TokenIconInfo,
         tokenItemInfoProvider: TokenItemInfoProvider,
         contextActionsProvider: MarketsPortfolioContextActionsProvider?,
-        contextActionsDelegate: MarketsPortfolioContextActionsDelegate?,
-        quickActionDisclosureTap: ((Int) -> Void)?
+        contextActionsDelegate: MarketsPortfolioContextActionsDelegate?
     ) {
         self.userWalletId = userWalletId
         self.walletName = walletName
@@ -82,10 +78,15 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
         self.tokenItemInfoProvider = tokenItemInfoProvider
         self.contextActionsProvider = contextActionsProvider
         self.contextActionsDelegate = contextActionsDelegate
-        self.quickActionDisclosureTap = quickActionDisclosureTap
 
         bind()
         setupState(tokenItemInfoProvider.tokenItemState)
+    }
+
+    func showContextActions() {
+        let generator = UISelectionFeedbackGenerator()
+        generator.selectionChanged()
+        contextActionsDelegate?.showContextAction(for: self)
     }
 
     func didTapContextAction(_ actionType: TokenActionType) {
@@ -107,12 +108,6 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
             .sink { [weak self] in
                 self?.buildContextActions()
             }
-            .store(in: &bag)
-
-        $isExpandedQuickActions
-            .receive(on: DispatchQueue.main)
-            .removeDuplicates()
-            .sink(receiveValue: weakify(self, forFunction: MarketsPortfolioTokenItemViewModel.onDisclosureTap(_:)))
             .store(in: &bag)
     }
 
@@ -138,12 +133,6 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
 
         updatePendingTransactionsStateIfNeeded()
         buildContextActions()
-    }
-
-    private func onDisclosureTap(_ value: Bool) {
-        if value {
-            quickActionDisclosureTap?(id)
-        }
     }
 
     private func updatePendingTransactionsStateIfNeeded() {

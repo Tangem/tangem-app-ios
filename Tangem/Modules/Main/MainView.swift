@@ -30,10 +30,7 @@ struct MainView: View {
                 info.body
             },
             bottomOverlayFactory: { info, didScrollToBottom in
-                info.makeBottomOverlay(
-                    isMainBottomSheetEnabled: viewModel.isMainBottomSheetEnabled,
-                    didScrollToBottom: didScrollToBottom
-                )
+                info.makeBottomOverlay(didScrollToBottom: didScrollToBottom)
             },
             onPullToRefresh: viewModel.onPullToRefresh(completionHandler:)
         )
@@ -43,8 +40,7 @@ struct MainView: View {
         .onPageChange(viewModel.onPageChange(dueTo:))
         .onAppear(perform: viewModel.onViewAppear)
         .onDisappear(perform: viewModel.onViewDisappear)
-        .onDidAppear(viewModel.onDidAppear)
-        .onWillDisappear(viewModel.onWillDisappear)
+        .on(didAppear: viewModel.onDidAppear, willDisappear: viewModel.onWillDisappear)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .background(Colors.Background.secondary.edgesIgnoringSafeArea(.all))

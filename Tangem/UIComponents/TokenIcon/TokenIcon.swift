@@ -19,6 +19,7 @@ struct TokenIcon: View {
     private var customTokenColor: Color? { tokenIconInfo.customTokenColor }
     private var blockchainIconName: String? { tokenIconInfo.blockchainIconName }
     private var isCustom: Bool { tokenIconInfo.isCustom }
+    private var networkBorderColor: Color { tokenIconInfo.networkBorderColor }
 
     private let networkIconSize = CGSize(width: 14, height: 14)
     private let networkIconBorderWidth: Double = 2
@@ -54,7 +55,7 @@ struct TokenIcon: View {
                 size: networkIconSize
             )
             .background(
-                Colors.Background.primary
+                networkBorderColor
                     .clipShape(Circle())
                     .frame(size: networkIconSize + CGSize(width: 2 * networkIconBorderWidth, height: 2 * networkIconBorderWidth))
             )
