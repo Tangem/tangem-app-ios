@@ -557,8 +557,6 @@
 "send_custom_evm_max_fee_footer" = "Il s'agit du coût que vous êtes prêt à payer pour chaque unité de gaz. Plus le prix du gaz est élevé, plus votre transaction sera traitée rapidement. (Frais de priorité inclus)";
 "send_custom_evm_priority_fee" = "Frais de priorité";
 "send_custom_evm_priority_fee_footer" = "Les frais qu'un utilisateur peut payer aux mineurs ou aux validateurs pour accélérer l'inclusion de leur transaction dans un bloc.";
-"send_custom_kaspa_per_utxo_footer" = "Les frais requis pour l'utilisation de chaque sortie de transaction non dépensée (UTXO) dans le réseau Kaspa. Plus vous utilisez d’UTXO dans une transaction, plus les frais seront élevés.";
-"send_custom_kaspa_per_utxo_title" = "KAS pour UTXO";
 "send_date_format" = "%1$@, %2$@";
 "send_destination_tag_field" = "ID de destination";
 "send_dismiss_message" = "Êtes-vous sûr de vouloir fermer l'écran d'envoi ?";
@@ -702,6 +700,7 @@
 "staking_unbonding" = "Dissociation";
 "staking_unbonding_in" = "Dissociation en";
 "staking_unlocked_locked" = "Débloquer";
+"staking_unlocking" = "Unlocking";
 "staking_unstaked" = "Non-staké";
 "staking_unstaked_footer" = "Vérifiez non-stakés pour réclamer vos actifs";
 "staking_unstaking" = "Unstaking";
@@ -843,6 +842,8 @@
 "warning_backup_errors_message" = "Il semble que l'activation de la carte ne se soit pas déroulée correctement. Cela peut être dû à un problème avec le module NFC de votre appareil ou à une mauvaise connexion de la carte sur votre appareil. Veuillez contacter notre équipe de support pour obtenir de l’aide.";
 "warning_beacon_chain_retirement_content" = "Selon les développeurs du réseau BNB, le support de la norme BEP-2\nprendra fin en juin 2024. Pour éviter de perdre des actifs avec cette norme, veuillez les convertir à la norme BEP-20. Utilisez notre service de d'échange pour les transférer sur le réseau BNB Smart Chain.";
 "warning_beacon_chain_retirement_title" = "BNB Beacon Chain va s'arrêter de fonctionner";
+"warning_blocked_funds_for_fee_message" = "Please deposit some %1$@ to cover the network fee";
+"warning_blocked_funds_for_fee_title" = "Insufficient funds to cover the network fee";
 "warning_button_could_be_better" = "Pas terrible";
 "warning_button_ok" = "Ok, compris!";
 "warning_button_really_cool" = "Vraiment cool !";

@@ -557,8 +557,6 @@
 "send_custom_evm_max_fee_footer" = "Це вартість, яку ви готові платити за кожну одиницю газу. Чим вища ціна газу, тим швидше буде оброблено вашу транзакцію. (Пріоритетна плата входить у вартість)";
 "send_custom_evm_priority_fee" = "Пріоритетна плата";
 "send_custom_evm_priority_fee_footer" = "Комісія, яку користувач може заплатити майнерам або валідаторам, щоб прискорити включення їхньої транзакції в блок.";
-"send_custom_kaspa_per_utxo_footer" = "Комісія, необхідна за використання кожної невитраченої транзакції (UTXO) у мережі Kaspa. Чим більше UTXO ви використовуєте в транзакції, тим вищою буде комісія.";
-"send_custom_kaspa_per_utxo_title" = "KAS за UTXO";
 "send_date_format" = "%1$@, %2$@";
 "send_destination_tag_field" = "Тег призначення";
 "send_dismiss_message" = "Ви дійсно хочете закрити екран надсилання транзакції?";
@@ -702,6 +700,7 @@
 "staking_unbonding" = "Розблокування";
 "staking_unbonding_in" = "Розблокування через";
 "staking_unlocked_locked" = "Розблокувати";
+"staking_unlocking" = "Unlocking";
 "staking_unstaked" = "Вивід зі стейкінгу";
 "staking_unstaked_footer" = "Перевірити незастейкані, щоб отримати свої активи";
 "staking_unstaking" = "Зняти зі стейкінгу";
@@ -843,6 +842,8 @@
 "warning_backup_errors_message" = "Схоже, що активація картки була виконана неправильно. Це може бути пов'язано з проблемою з модулем NFC вашого пристрою або неправильним прикладанням картки до пристрою. Зверніться за допомогою до нашої служби підтримки.";
 "warning_beacon_chain_retirement_content" = "За рішенням розробників мережі BNB стандарт BEP-2 перестане підтримуватись у червні 2024 року. Щоб не втратити свої активи, їх необхідно конвертувати у стандарт BEP-20. Використовуйте функцію обміну, щоб перевести їх у мережу BNB Smart Chain.";
 "warning_beacon_chain_retirement_title" = "Відключення мережі BNB Beacon Chain";
+"warning_blocked_funds_for_fee_message" = "Please deposit some %1$@ to cover the network fee";
+"warning_blocked_funds_for_fee_title" = "Insufficient funds to cover the network fee";
 "warning_button_could_be_better" = "Можна краще";
 "warning_button_ok" = "Зрозуміло!";
 "warning_button_really_cool" = "Дуже круто!";
