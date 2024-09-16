@@ -112,8 +112,8 @@ private extension SendAmountViewModel {
             .infoTextPublisher
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
-            .sink { viewModel, error in
-                viewModel.error = error
+            .sink { viewModel, bottomInfoText in
+                viewModel.bottomInfoText = bottomInfoText
             }
             .store(in: &bag)
 
