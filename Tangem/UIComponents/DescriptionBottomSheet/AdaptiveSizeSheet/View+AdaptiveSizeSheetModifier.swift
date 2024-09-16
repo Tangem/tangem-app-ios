@@ -10,19 +10,7 @@ import SwiftUI
 
 @available(iOS 16.0, *)
 struct AdaptiveSizeSheetModifier: ViewModifier {
-    @State private var height: CGFloat = 0
-
-    private var scrollViewAxis: Axis.Set {
-        height >= screenHeight ? .vertical : []
-    }
-
-    private var scrollableContentBottomPadding: CGFloat {
-        height >= screenHeight ? defaultBottomPadding : 0
-    }
-
-    private let screenHeight = UIScreen.main.bounds.height
-    private let defaultBottomPadding: CGFloat = 20
-    private let cornerRadius: CGFloat = 24
+    @StateObject private var viewModel = AdaptiveSizeSheetViewModel()
 
     func body(content: Content) -> some View {
         scrollableSheetContnet {
@@ -35,16 +23,19 @@ struct AdaptiveSizeSheetModifier: ViewModifier {
     }
 
     private func scrollableSheetContnet<Body: View>(content: () -> Body) -> some View {
-        ScrollView(scrollViewAxis, showsIndicators: false) {
+        ScrollView(viewModel.scrollViewAxis, showsIndicators: false) {
             content()
-                .padding(.bottom, defaultBottomPadding)
-                .presentationDetents([.height(height)])
+                .padding(.bottom, viewModel.defaultBottomPadding)
+                .presentationDetents([.height(viewModel.contentHeight)])
                 .presentationDragIndicator(.hidden)
-                .presentationCornerRadiusBackport(cornerRadius)
+                .presentationCornerRadiusBackport(viewModel.cornerRadius)
                 .readGeometry(\.size.height) {
-                    height = $0
+                    viewModel.contentHeight = $0
                 }
-                .padding(.bottom, scrollableContentBottomPadding)
+                .padding(.bottom, viewModel.scrollableContentBottomPadding)
+        }
+        .readGeometry(\.size.height) {
+            viewModel.containerHeight = $0
         }
     }
 }

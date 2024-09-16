@@ -1256,6 +1256,7 @@
 		DC9632662C51434C009B250A /* CommonTokenFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9632652C51434C009B250A /* CommonTokenFinder.swift */; };
 		DC9632682C515566009B250A /* ExpressRefundedTokenHandlerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9632672C515566009B250A /* ExpressRefundedTokenHandlerMock.swift */; };
 		DC99D0C02C943C98006AE8FA /* View+AdaptiveSizeSheetModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC99D0BF2C943C98006AE8FA /* View+AdaptiveSizeSheetModifier.swift */; };
+		DC99D0DF2C982B23006AE8FA /* AdaptiveSizeSheetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC99D0DE2C982B23006AE8FA /* AdaptiveSizeSheetViewModel.swift */; };
 		DC9A4A2D2AB4ADD30031C7C2 /* UserCodeRecovering.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9A4A2C2AB4ADD30031C7C2 /* UserCodeRecovering.swift */; };
 		DC9A4A302AB4AE320031C7C2 /* UserCodeRecoveringCardInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9A4A2F2AB4AE320031C7C2 /* UserCodeRecoveringCardInteractor.swift */; };
 		DCA21D942BA1C77A000A3C1A /* ValidationMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA21D932BA1C77A000A3C1A /* ValidationMode.swift */; };
@@ -3232,6 +3233,7 @@
 		DC9632652C51434C009B250A /* CommonTokenFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonTokenFinder.swift; sourceTree = "<group>"; };
 		DC9632672C515566009B250A /* ExpressRefundedTokenHandlerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressRefundedTokenHandlerMock.swift; sourceTree = "<group>"; };
 		DC99D0BF2C943C98006AE8FA /* View+AdaptiveSizeSheetModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+AdaptiveSizeSheetModifier.swift"; sourceTree = "<group>"; };
+		DC99D0DE2C982B23006AE8FA /* AdaptiveSizeSheetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveSizeSheetViewModel.swift; sourceTree = "<group>"; };
 		DC9A4A2C2AB4ADD30031C7C2 /* UserCodeRecovering.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCodeRecovering.swift; sourceTree = "<group>"; };
 		DC9A4A2F2AB4AE320031C7C2 /* UserCodeRecoveringCardInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCodeRecoveringCardInteractor.swift; sourceTree = "<group>"; };
 		DCA21D932BA1C77A000A3C1A /* ValidationMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationMode.swift; sourceTree = "<group>"; };
@@ -6273,9 +6275,9 @@
 		B0EA18AB2C465D5D0023B72A /* DescriptionBottomSheet */ = {
 			isa = PBXGroup;
 			children = (
+				DC99D0DD2C982B08006AE8FA /* AdaptiveSizeSheet */,
 				B0EA18AC2C465D860023B72A /* DescriptionBottomSheetView.swift */,
 				B0EA18AE2C465DC60023B72A /* View+DescriptionBottomSheet.swift */,
-				DC99D0BF2C943C98006AE8FA /* View+AdaptiveSizeSheetModifier.swift */,
 			);
 			path = DescriptionBottomSheet;
 			sourceTree = "<group>";
@@ -8013,6 +8015,15 @@
 				DC9632652C51434C009B250A /* CommonTokenFinder.swift */,
 			);
 			path = TokenFinder;
+			sourceTree = "<group>";
+		};
+		DC99D0DD2C982B08006AE8FA /* AdaptiveSizeSheet */ = {
+			isa = PBXGroup;
+			children = (
+				DC99D0BF2C943C98006AE8FA /* View+AdaptiveSizeSheetModifier.swift */,
+				DC99D0DE2C982B23006AE8FA /* AdaptiveSizeSheetViewModel.swift */,
+			);
+			path = AdaptiveSizeSheet;
 			sourceTree = "<group>";
 		};
 		DC9A4A2E2AB4AE1C0031C7C2 /* UserCodeRecovering */ = {
@@ -10970,6 +10981,7 @@
 				DC295B542861F104006CB7B6 /* OnboardingRoutable.swift in Sources */,
 				DC2CD3442B0FE3D600C0D677 /* SendCurrencyView.swift in Sources */,
 				EF5A5AD528D86094002544AC /* CardImageProvider.swift in Sources */,
+				DC99D0DF2C982B23006AE8FA /* AdaptiveSizeSheetViewModel.swift in Sources */,
 				DC10A7C6295DED4E00367574 /* BindableError.swift in Sources */,
 				EF9E2A552B56A6E800418559 /* UserWalletModelMock.swift in Sources */,
 				DA6C7522292224E00070EEFD /* UserWalletEncryptionKey.swift in Sources */,
