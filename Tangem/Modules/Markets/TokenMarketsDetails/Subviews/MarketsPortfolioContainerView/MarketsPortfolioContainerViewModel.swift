@@ -190,8 +190,13 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
 
     private func bind() {
         let publishers = userWalletModels.map { $0.userTokenListManager.userTokensListPublisher }
+        let walletModelsPublishers = userWalletModels.map { $0.walletModelsManager.walletModelsPublisher }
 
-        Publishers.MergeMany(publishers)
+        let manyUserTokensListPublishers = Publishers.MergeMany(publishers)
+        let manyWalletModelsPublishers = Publishers.MergeMany(walletModelsPublishers)
+
+        manyUserTokensListPublishers
+            .combineLatest(manyWalletModelsPublishers)
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { viewModel, _ in
@@ -234,7 +239,7 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProv
 extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDelegate {
     func showContextAction(for viewModel: MarketsPortfolioTokenItemViewModel) {
         withAnimation {
-            if tokenWithExpandedQuickActions == viewModel {
+            if tokenWithExpandedQuickActions === viewModel {
                 tokenWithExpandedQuickActions = nil
             } else {
                 tokenWithExpandedQuickActions = viewModel

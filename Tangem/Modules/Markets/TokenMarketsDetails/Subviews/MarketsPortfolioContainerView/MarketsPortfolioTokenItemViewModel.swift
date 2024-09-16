@@ -22,10 +22,6 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     @Published private var missingDerivation: Bool = false
     @Published private var networkUnreachable: Bool = false
 
-    var id: Int {
-        hashValue
-    }
-
     var name: String { tokenIcon.name }
     var imageURL: URL? { tokenIcon.imageURL }
     var blockchainIconName: String? { tokenIcon.blockchainIconName }
@@ -49,6 +45,7 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
         return nil
     }
 
+    let id = UUID()
     let userWalletId: UserWalletId
     let walletName: String
 
@@ -150,16 +147,5 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     private func updateBalances() {
         balanceCrypto = .loaded(text: tokenItemInfoProvider.balance)
         balanceFiat = .loaded(text: tokenItemInfoProvider.fiatBalance)
-    }
-}
-
-extension MarketsPortfolioTokenItemViewModel: Hashable {
-    static func == (lhs: MarketsPortfolioTokenItemViewModel, rhs: MarketsPortfolioTokenItemViewModel) -> Bool {
-        lhs.hashValue == rhs.hashValue
-    }
-
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(userWalletId)
-        hasher.combine(tokenItemInfoProvider.id)
     }
 }

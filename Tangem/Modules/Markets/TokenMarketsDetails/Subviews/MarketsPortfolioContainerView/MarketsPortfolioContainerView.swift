@@ -90,7 +90,7 @@ struct MarketsPortfolioContainerView: View {
             ForEach(indexed: elementItems.indexed()) { index, itemViewModel in
                 MarketsPortfolioTokenItemView(
                     viewModel: itemViewModel,
-                    isExpanded: viewModel.tokenWithExpandedQuickActions == itemViewModel
+                    isExpanded: viewModel.tokenWithExpandedQuickActions === itemViewModel
                 )
             }
         }
