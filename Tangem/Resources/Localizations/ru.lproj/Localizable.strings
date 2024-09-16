@@ -345,6 +345,7 @@
 "markets_common_my_portfolio" = "Мой портфель";
 "markets_common_title" = "Рынок";
 "markets_generate_addresses_notification" = "Чтобы создать адреса для выбранных сетей, отсканируйте вашу карту Tangem кошелька";
+"markets_hint" = "To add tokens pull this up or tap the search bar";
 "markets_insights_info_description_message" = "Данные раздела получены из следующих сетей: %@";
 "markets_loading_error_title" = "Невозможно загрузить данные";
 "markets_loading_no_data_title" = "Нет данных";
@@ -612,10 +613,10 @@
 "send_summary_title" = "Отправка %@";
 "send_summary_transaction_description" = "Вы отправляете **%1$@**, включая комиссию сети %2$@";
 "send_summary_transaction_description_no_fiat_fee" = "Вы отправляете **%1$@** и %2$@";
-"send_summary_transaction_description_prefix" = "You are sending **%1$@**";
+"send_summary_transaction_description_prefix" = "Вы отправляете **%1$@**";
 "send_summary_transaction_description_suffix_fee_covered" = "network fee will be covered by using %1$@ energy";
-"send_summary_transaction_description_suffix_fee_reduced" = "network fee will be reduced by spending %1$@";
-"send_summary_transaction_description_suffix_including" = "including a network fee of %1$@";
+"send_summary_transaction_description_suffix_fee_reduced" = "network fee will be reduced by spending %1$@ energy";
+"send_summary_transaction_description_suffix_including" = "включая комиссию сети в размере %1$@";
 "send_transaction_success" = "Транзакция успешно подписана и отправлена в блокчейн. Баланс будет обновлен через некоторое время";
 "send_tron_account_activation_error" = "%1$@ — это монета в сети Tron. Чтобы рассчитать комиссию и совершить транзакцию, вам необходимо внести немного Tron (TRX) на свой адрес.";
 "sent_transaction_sent_title" = "Транзакция отправлена";
@@ -626,6 +627,7 @@
 "staking_active" = "Активно";
 "staking_active_footer" = "Для завершения стейкинга нажмите на блок выше";
 "staking_amount_requirement_error" = "Сумма для стейкинга должна быть не менее %@";
+"staking_amount_tron_integer_error" = "Staking amount will be rounded to %1$@ TRX due to network rules.";
 "staking_claim_unstaked" = "Забрать средства";
 "staking_details_annual_percentage_rate" = "Процентная ставка";
 "staking_details_annual_percentage_rate_info" = "Годовой процентный доход, который вы можете получить от участия в стейкинге.";
@@ -649,7 +651,7 @@
 "staking_details_unbonding_period_info" = "Период, который необходимо подождать после запроса на вывод средств из стейкинга, прежде чем токены станут доступны.";
 "staking_details_warmup_period" = "Период прогрева";
 "staking_details_warmup_period_info" = "Время, необходимое для начала процесса стейкинга и активации процесса начисления наград";
-"staking_dismiss_message" = "Are you sure you want to close the staking screen?";
+"staking_dismiss_message" = "Вы действительно хотите закрыть окно стейкинга?";
 "staking_legal" = "Пользуясь стейкинг сервисом, вы соглашаетесь с %1$@ и %2$@";
 "staking_locked" = "Заблокировано";
 "staking_migrate" = "Переместить";
@@ -666,10 +668,11 @@
 "staking_notification_earn_rewards_title" = "Получите награду за стейкинг";
 "staking_notification_new_validator_funds_transfer" = "Staking in the %1$@ network with a new validator will automatically transfer all previously staked funds to this validator";
 "staking_notification_restake_rewards_text" = "Reinvests your earned rewards in your staked amount, increasing potential earnings.";
-"staking_notification_unlock_text" = "Unlock your money to withdraw it from staking process. Unlocking takes %@.";
+"staking_notification_unlock_text" = "Разблокируйте свои средства, чтобы вывести их из стейкинга. Разблокировка займёт %@.";
 "staking_notification_unstake_cosmos_text" = "Your funds will be available for use after the 21-day unbonding period. Reward will be withdrawn along with your unstaking funds.";
 "staking_notification_unstake_text" = "Ваши средства будут доступны после %@ периода отзыва.";
 "staking_notification_withdraw_text" = "Вы можете вывести свои средства из стейкинга, они будут доступны для использования незамедлительно.";
+"staking_notifications_revote_tron_text" = "Staking in the Tron network with a new validator will automatically transfer all previously staked funds to this validator";
 "staking_preparing" = "Preparing";
 "staking_ready_to_withdraw" = "Ready to withdraw";
 "staking_rebond" = "Rebond";

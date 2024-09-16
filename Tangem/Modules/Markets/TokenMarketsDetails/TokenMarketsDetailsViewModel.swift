@@ -20,9 +20,9 @@ class TokenMarketsDetailsViewModel: BaseMarketsViewModel {
     @Published var alert: AlertBinder?
 
     /// For unknown reasons, the `@self` and `@identity` of our view change when push navigation is performed in other
-    /// navigation controllers in the application, which causes the state of this property to be lost if it were stored
-    /// in the view as a `@State` variable.
-    /// Therefore, we store it here in the view model as the `@Published` property.
+    /// navigation controllers in the application (on the main screen for example), which causes the state of
+    /// this property to be lost if it were stored in the view as a `@State` variable.
+    /// Therefore, we store it here in the view model as the `@Published` property instead of storing it in a view.
     ///
     /// Our view is initially presented when the sheet is expanded, hence the `1.0` initial value.
     @Published private(set) var overlayContentHidingInitialProgress = 1.0

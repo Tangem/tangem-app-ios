@@ -47,6 +47,10 @@ class LockedWalletMainContentViewModel: ObservableObject {
         )
     }
 
+    private(set) lazy var bottomSheetFooterViewModel: MainBottomSheetFooterViewModel? = FeatureProvider.isAvailable(.markets)
+        ? MainBottomSheetFooterViewModel()
+        : nil
+
     let isMultiWallet: Bool
 
     private let userWalletModel: UserWalletModel
