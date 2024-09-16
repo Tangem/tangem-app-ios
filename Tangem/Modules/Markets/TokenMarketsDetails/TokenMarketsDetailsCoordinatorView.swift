@@ -25,17 +25,11 @@ struct TokenMarketsDetailsCoordinatorView: CoordinatorView {
     @ViewBuilder
     var sheets: some View {
         NavHolder()
-            .sheet(item: $coordinator.sendCoordinator) {
-                SendCoordinatorView(coordinator: $0)
-            }
             .sheet(item: $coordinator.modalWebViewModel) {
                 WebViewContainer(viewModel: $0)
             }
             .iOS16UIKitSheet(item: $coordinator.expressCoordinator) {
                 ExpressCoordinatorView(coordinator: $0)
-            }
-            .sheet(item: $coordinator.stakingDetailsCoordinator) {
-                StakingDetailsCoordinatorView(coordinator: $0)
             }
             .detentBottomSheet(
                 item: $coordinator.tokenNetworkSelectorCoordinator,

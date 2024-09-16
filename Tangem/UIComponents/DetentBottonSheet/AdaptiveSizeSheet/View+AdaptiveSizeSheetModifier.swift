@@ -10,18 +10,18 @@ import SwiftUI
 
 struct AdaptiveSizeSheetModifier: ViewModifier {
     @StateObject private var viewModel = AdaptiveSizeSheetViewModel()
-    
+
     func body(content: Content) -> some View {
         scrollableSheetContent {
             VStack(spacing: 0) {
                 GrabberViewFactory()
                     .makeSwiftUIView()
-                
+
                 content
             }
         }
     }
-    
+
     private func scrollableSheetContent<Body: View>(content: () -> Body) -> some View {
         ScrollView(viewModel.scrollViewAxis, showsIndicators: false) {
             content()

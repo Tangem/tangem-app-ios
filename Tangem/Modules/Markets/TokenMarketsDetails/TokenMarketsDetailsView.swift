@@ -15,9 +15,9 @@ struct TokenMarketsDetailsView: View {
 
     @State private var isNavigationBarShadowLineViewVisible = false
 
-    private var navigationBarBackgroundColor: Color {
-        return colorScheme == .dark ? Colors.Background.primary : Colors.Background.secondary
-    }
+    private var isDarkColorScheme: Bool { colorScheme == .dark }
+    private var defaultBackgroundColor: Color { isDarkColorScheme ? Colors.Background.primary : Colors.Background.secondary }
+    private var overlayContentHidingBackgroundColor: Color { isDarkColorScheme ? defaultBackgroundColor : Colors.Background.plain }
 
     private let scrollViewFrameCoordinateSpaceName = UUID()
 
@@ -28,12 +28,22 @@ struct TokenMarketsDetailsView: View {
             scrollView
         }
         .navigationBarTitleDisplayMode(.inline)
-        .if(!viewModel.isMarketsSheetStyle, transform: { view in
+        .if(!viewModel.isMarketsSheetStyle) { view in
             view.navigationTitle(viewModel.tokenName)
-        })
+        }
         .onOverlayContentStateChange { [weak viewModel] state in
             viewModel?.onOverlayContentStateChange(state)
         }
+        .onOverlayContentProgressChange { [weak viewModel] progress in
+            viewModel?.onOverlayContentProgressChange(progress)
+        }
+        .background {
+            viewBackground
+        }
+        .animation(
+            .easeInOut(duration: viewModel.overlayContentHidingAnimationDuration),
+            value: viewModel.overlayContentHidingProgress
+        )
     }
 
     @ViewBuilder
@@ -43,7 +53,7 @@ struct TokenMarketsDetailsView: View {
                 title: viewModel.tokenName,
                 settings: .init(
                     titleColor: Colors.Text.primary1,
-                    backgroundColor: navigationBarBackgroundColor,
+                    backgroundColor: .clear, // Controlled by the `background` modifier in the body
                     height: 64.0,
                     alignment: .bottom
                 ),
@@ -53,8 +63,11 @@ struct TokenMarketsDetailsView: View {
                 rightItems: {}
             )
             .overlay(alignment: .bottom) {
-                Separator(height: .minimal, color: Colors.Stroke.primary)
-                    .hidden(!isNavigationBarShadowLineViewVisible)
+                Separator(
+                    height: .minimal,
+                    color: Colors.Stroke.primary.opacity(viewModel.overlayContentHidingProgress)
+                )
+                .hidden(!isNavigationBarShadowLineViewVisible)
             }
         }
     }
@@ -87,17 +100,16 @@ struct TokenMarketsDetailsView: View {
                     .padding(.horizontal, 16.0)
                     .transition(.opacity)
             }
-            .modifier(MarketsContentHidingViewModifier(initialProgress: viewModel.contentHidingInitialProgress))
             .padding(.top, Constants.scrollViewContentTopInset)
-            .if(viewModel.isMarketsSheetStyle, transform: { view in
+            .if(viewModel.isMarketsSheetStyle) { view in
                 view
                     .readContentOffset(inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName)) { contentOffset in
                         isNavigationBarShadowLineViewVisible = contentOffset.y > Constants.scrollViewContentTopInset
                     }
-            })
+            }
         }
+        .opacity(viewModel.overlayContentHidingProgress)
         .coordinateSpace(name: scrollViewFrameCoordinateSpaceName)
-        .background(Colors.Background.tertiary.ignoresSafeArea())
         .bindAlert($viewModel.alert)
         .descriptionBottomSheet(
             info: $viewModel.descriptionBottomSheetInfo,
@@ -113,13 +125,23 @@ struct TokenMarketsDetailsView: View {
         HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 6) {
                 if let price = viewModel.price {
-                    Text(price)
-                        .blinkForegroundColor(
-                            publisher: viewModel.$priceChangeAnimation,
-                            positiveColor: Colors.Text.accent,
-                            negativeColor: Colors.Text.warning,
-                            originalColor: Colors.Text.primary1
-                        )
+                    // This `Text` view acts as an invisible container, maintaining constant height
+                    // to prevent UI from jumping when the font of the price label is scaled down
+                    Text(Constants.priceLabelSizeMeasureText)
+                        .opacity(0.0)
+                        .infinityFrame(axis: .horizontal)
+                        .overlay(alignment: .leadingFirstTextBaseline) {
+                            Text(price)
+                                .blinkForegroundColor(
+                                    publisher: viewModel.$priceChangeAnimation,
+                                    positiveColor: Colors.Text.accent,
+                                    negativeColor: Colors.Text.warning,
+                                    originalColor: Colors.Text.primary1
+                                )
+                                .minimumScaleFactor(0.5)
+                        }
+                        .lineLimit(1)
+                        .truncationMode(.middle)
                         .style(Fonts.Bold.largeTitle, color: Colors.Text.primary1)
                 }
 
@@ -243,6 +265,25 @@ struct TokenMarketsDetailsView: View {
         }
     }
 
+    @ViewBuilder
+    private var viewBackground: some View {
+        ZStack {
+            Group {
+                // When a light color scheme is active, `defaultBackgroundColor` and `overlayContentHidingBackgroundColor`
+                // colors simulate color blending with the help of dynamic opacity.
+                //
+                // When the dark color scheme is active, no color blending is needed, and only `defaultBackgroundColor`
+                // is visible (btw in dark mode both colors are the same),
+                defaultBackgroundColor
+                    .opacity(isDarkColorScheme ? 1.0 : viewModel.overlayContentHidingProgress)
+
+                overlayContentHidingBackgroundColor
+                    .opacity(isDarkColorScheme ? 0.0 : 1.0 - viewModel.overlayContentHidingProgress)
+            }
+            .ignoresSafeArea()
+        }
+    }
+
     private var readMoreText: Text {
         let readMoreText = Localization.commonReadMore.replacingOccurrences(of: " ", with: AppConstants.unbreakableSpace)
         return Text(readMoreText).foregroundColor(Colors.Text.accent)
@@ -255,6 +296,7 @@ private extension TokenMarketsDetailsView {
     enum Constants {
         static let chartHeight: CGFloat = 200.0
         static let scrollViewContentTopInset = 14.0
+        static let priceLabelSizeMeasureText = "1234.0"
     }
 }
 

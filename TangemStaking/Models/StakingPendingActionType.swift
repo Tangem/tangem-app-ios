@@ -1,14 +1,14 @@
 //
-//  PendingActionType.swift
-//  TangemStaking
+//  StakingPendingActionType.swift
+//  TangemApp
 //
-//  Created by Sergey Balashov on 14.08.2024.
+//  Created by Sergey Balashov on 12.09.2024.
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
 import Foundation
 
-public struct PendingActionType: Hashable {
+public struct StakingPendingActionInfo: Hashable {
     public let type: ActionType
     public let passthrough: String
 

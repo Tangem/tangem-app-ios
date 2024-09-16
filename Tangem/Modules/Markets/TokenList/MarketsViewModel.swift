@@ -11,18 +11,17 @@ import SwiftUI
 import Combine
 import Kingfisher
 
-final class MarketsViewModel: ObservableObject {
+final class MarketsViewModel: BaseMarketsViewModel {
     // MARK: - Injected & Published Properties
 
     @Published var alert: AlertBinder?
-    @Published var tokenViewModels: [MarketsItemViewModel] = []
-    @Published var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
-    @Published var tokenListLoadingState: MarketsView.ListLoadingState = .idle
+    @Published private(set) var tokenViewModels: [MarketsItemViewModel] = []
+    @Published private(set) var headerViewModel: MainBottomSheetHeaderViewModel
+    @Published private(set) var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
+    @Published private(set) var tokenListLoadingState: MarketsView.ListLoadingState = .idle
+    @Published private(set) var isDataProviderBusy: Bool = false
 
     // MARK: - Properties
-
-    @Published var isViewVisible: Bool = false
-    @Published var isDataProviderBusy: Bool = false
 
     let resetScrollPositionPublisher = PassthroughSubject<Void, Never>()
 
@@ -51,6 +50,8 @@ final class MarketsViewModel: ObservableObject {
     private var marketCapFormatter: MarketCapFormatter
     private var bag = Set<AnyCancellable>()
     private var currentSearchValue: String = ""
+    private var isViewVisible: Bool = false
+    private var isBottomSheetExpanded: Bool = false
     private var showItemsBelowCapThreshold: Bool = false
 
     private var filterItemsBelowMarketCapThreshold: Bool {
@@ -60,19 +61,28 @@ final class MarketsViewModel: ObservableObject {
     // MARK: - Init
 
     init(
-        searchTextPublisher: some Publisher<String, Never>,
         quotesRepositoryUpdateHelper: MarketsQuotesUpdateHelper,
         coordinator: MarketsRoutable
     ) {
         self.quotesRepositoryUpdateHelper = quotesRepositoryUpdateHelper
         self.coordinator = coordinator
 
-        marketCapFormatter = .init(divisorsList: AmountNotationSuffixFormatter.Divisor.defaultList, baseCurrencyCode: AppSettings.shared.selectedCurrencyCode, notationFormatter: DefaultAmountNotationFormatter())
+        marketCapFormatter = .init(
+            divisorsList: AmountNotationSuffixFormatter.Divisor.defaultList,
+            baseCurrencyCode: AppSettings.shared.selectedCurrencyCode,
+            notationFormatter: DefaultAmountNotationFormatter()
+        )
 
+        headerViewModel = MainBottomSheetHeaderViewModel()
         marketsRatingHeaderViewModel = MarketsRatingHeaderViewModel(provider: filterProvider)
+
+        /// Our view is initially presented when the sheet is collapsed, hence the `0.0` initial value.
+        super.init(overlayContentProgressInitialValue: 0.0)
+
+        headerViewModel.delegate = self
         marketsRatingHeaderViewModel.delegate = self
 
-        searchTextBind(searchTextPublisher: searchTextPublisher)
+        searchTextBind(searchTextPublisher: headerViewModel.enteredSearchTextPublisher)
         searchFilterBind(filterPublisher: filterProvider.filterPublisher)
 
         bindToCurrencyCodeUpdate()
@@ -84,22 +94,34 @@ final class MarketsViewModel: ObservableObject {
         fetch(with: "", by: filterProvider.currentFilterValue)
     }
 
-    func onBottomSheetAppear() {
-        // Need for locked fetchMore process when bottom sheet not yet open
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.isViewVisible = true
-        }
-
-        onAppearPrepareImageCache()
-
-        Analytics.log(.marketsScreenOpened)
-
-        quotesUpdatesScheduler.forceUpdate()
+    /// Handles `SwiftUI.View.onAppear(perform:)`.
+    func onViewAppear() {
+        isViewVisible = true
     }
 
-    func onBottomSheetDisappear() {
+    /// Handles `SwiftUI.View.onDisappear(perform:)`.
+    func onViewDisappear() {
         isViewVisible = false
-        quotesUpdatesScheduler.cancelUpdates()
+    }
+
+    func onOverlayContentStateChange(_ state: OverlayContentState) {
+        switch state {
+        case .top:
+            // Need for locked fetchMore process when bottom sheet not yet open
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.isBottomSheetExpanded = true
+            }
+
+            onAppearPrepareImageCache()
+
+            Analytics.log(.marketsScreenOpened)
+
+            headerViewModel.onBottomSheetExpand(isTapGesture: state.isTapGesture)
+            quotesUpdatesScheduler.forceUpdate()
+        case .bottom:
+            isBottomSheetExpanded = false
+            quotesUpdatesScheduler.cancelUpdates()
+        }
     }
 
     func onShowUnderCapAction() {
@@ -135,7 +157,7 @@ private extension MarketsViewModel {
             .removeDuplicates()
             .withWeakCaptureOf(self)
             .sink { viewModel, value in
-                guard viewModel.isViewVisible else {
+                guard viewModel.isBottomSheetExpanded else {
                     return
                 }
 
@@ -147,7 +169,7 @@ private extension MarketsViewModel {
 
                 let currentFilter = viewModel.dataProvider.lastFilterValue ?? viewModel.filterProvider.currentFilterValue
 
-                // Always use raiting sorting for search
+                // Always use rating sorting for search
                 let searchFilter = MarketsListDataProvider.Filter(interval: currentFilter.interval, order: value.isEmpty ? currentFilter.order : .rating)
 
                 viewModel.fetch(with: value, by: searchFilter)
@@ -240,6 +262,7 @@ private extension MarketsViewModel {
                 case .failedToFetchData:
                     viewModel.isDataProviderBusy = false
                     if viewModel.dataProvider.items.isEmpty {
+                        Analytics.log(.marketsDataError)
                         viewModel.tokenListLoadingState = .error
                         viewModel.quotesUpdatesScheduler.cancelUpdates()
                     } else {
@@ -250,8 +273,13 @@ private extension MarketsViewModel {
                     viewModel.tokenViewModels.removeAll()
                     viewModel.resetScrollPositionPublisher.send(())
                     viewModel.isDataProviderBusy = true
-                    viewModel.quotesUpdatesScheduler.resetUpdates()
                     viewModel.quotesUpdatesScheduler.saveQuotesUpdateDate(Date())
+
+                    guard viewModel.isBottomSheetExpanded else {
+                        return
+                    }
+
+                    viewModel.quotesUpdatesScheduler.resetUpdates()
                 default:
                     break
                 }
@@ -335,6 +363,13 @@ private extension MarketsViewModel {
             chartsProvider: chartsHistoryProvider,
             filterProvider: filterProvider,
             onTapAction: { [weak self] in
+                let analyticsParams: [Analytics.ParameterKey: String] = [
+                    .source: Analytics.ParameterValue.market.rawValue,
+                    .token: tokenItemModel.symbol.uppercased(),
+                ]
+
+                Analytics.log(event: .marketsChartScreenOpened, params: analyticsParams)
+
                 self?.coordinator?.openTokenMarketsDetails(for: tokenItemModel)
             }
         )
@@ -360,6 +395,12 @@ extension MarketsViewModel: MarketsListDataFetcher {
 
     func fetchMore() {
         dataProvider.fetchMore()
+    }
+}
+
+extension MarketsViewModel: MainBottomSheetHeaderViewModelDelegate {
+    func isViewVisibleForHeaderViewModel(_ viewModel: MainBottomSheetHeaderViewModel) -> Bool {
+        return isViewVisible
     }
 }
 

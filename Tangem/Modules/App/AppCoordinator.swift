@@ -22,7 +22,7 @@ class AppCoordinator: CoordinatorObject {
 
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
     @Injected(\.walletConnectSessionsStorageInitializable) private var walletConnectSessionStorageInitializer: Initializable
-    @Injected(\.mainBottomSheetVisibility) private var bottomSheetVisibility: MainBottomSheetVisibility
+    @InjectedWritable(\.mainBottomSheetVisibility) private var bottomSheetVisibility: MainBottomSheetVisibility
 
     // MARK: - Child coordinators
 
@@ -181,6 +181,11 @@ class AppCoordinator: CoordinatorObject {
             newScan = false
         }
 
+        if FeatureProvider.isAvailable(.markets) {
+            __marketsCoordinator = nil
+            bottomSheetVisibility.hide()
+        }
+
         let options = AppCoordinator.Options(newScan: newScan)
 
         closeAllSheetsIfNeeded(animated: animated) {
@@ -195,9 +200,6 @@ class AppCoordinator: CoordinatorObject {
     }
 
     private func closeAllSheetsIfNeeded(animated: Bool, completion: @escaping () -> Void = {}) {
-        marketsCoordinator = nil
-        __marketsCoordinator = nil
-
         guard
             let topViewController = UIApplication.topViewController,
             topViewController.presentingViewController != nil

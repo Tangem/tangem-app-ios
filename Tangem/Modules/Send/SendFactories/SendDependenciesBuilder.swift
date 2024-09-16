@@ -195,10 +195,25 @@ struct SendDependenciesBuilder {
     func makeSendTransactionSummaryDescriptionBuilder() -> SendTransactionSummaryDescriptionBuilder {
         switch walletModel.tokenItem.blockchain {
         case .koinos:
-            KoinosSendTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
+            KoinosSendTransactionSummaryDescriptionBuilder(
+                tokenItem: walletModel.tokenItem,
+                feeTokenItem: walletModel.feeTokenItem
+            )
+        case .tron where walletModel.tokenItem.isToken:
+            TronSendTransactionSummaryDescriptionBuilder(
+                tokenItem: walletModel.tokenItem,
+                feeTokenItem: walletModel.feeTokenItem
+            )
         default:
-            CommonSendTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
+            CommonSendTransactionSummaryDescriptionBuilder(
+                tokenItem: walletModel.tokenItem,
+                feeTokenItem: walletModel.feeTokenItem
+            )
         }
+    }
+
+    func makeSendAlertBuilder() -> SendAlertBuilder {
+        CommonSendAlertBuilder()
     }
 
     // MARK: - Staking
@@ -253,5 +268,9 @@ struct SendDependenciesBuilder {
             tokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem
         )
+    }
+
+    func makeStakingAlertBuilder() -> SendAlertBuilder {
+        StakingSendAlertBuilder()
     }
 }

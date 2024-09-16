@@ -19,8 +19,8 @@ struct TokenMarketsDetailsMapper {
         tokenItemMapper = TokenItemMapper(supportedBlockchains: supportedBlockchains)
     }
 
-    func map(response: MarketsDTO.Coins.Response) -> TokenMarketsDetailsModel {
-        TokenMarketsDetailsModel(
+    func map(response: MarketsDTO.Coins.Response) throws -> TokenMarketsDetailsModel {
+        return TokenMarketsDetailsModel(
             id: response.id,
             name: response.name,
             symbol: response.symbol,
@@ -28,7 +28,7 @@ struct TokenMarketsDetailsMapper {
             currentPrice: response.currentPrice,
             shortDescription: response.shortDescription,
             fullDescription: response.fullDescription,
-            priceChangePercentage: response.priceChangePercentage,
+            priceChangePercentage: try mapPriceChangePercentage(response: response),
             insights: .init(dto: response.insights),
             metrics: response.metrics,
             pricePerformance: mapPricePerformance(response: response),
@@ -39,13 +39,32 @@ struct TokenMarketsDetailsMapper {
 
     // MARK: - Private Implementation
 
-    private func mapPricePerformance(response: MarketsDTO.Coins.Response) -> [MarketsPriceIntervalType: MarketsPricePerformanceData] {
-        return response.pricePerformance.reduce(into: [:]) { partialResult, pair in
+    private func mapPriceChangePercentage(response: MarketsDTO.Coins.Response) throws -> [String: Decimal] {
+        // We need to specify that our target type is Decimal, otherwise it will be Decimal?
+        guard let allTimeValue = response.priceChangePercentage[MarketsPriceIntervalType.all.rawValue] as? Decimal else {
+            throw MapperError.missingAllTimePriceChangeValue
+        }
+
+        return MarketsPriceIntervalType.allCases.reduce(into: [:]) {
+            let key = $1.rawValue
+            // We need to specify that our target type is Decimal, otherwise it will be Decimal?
+            $0[key] = (response.priceChangePercentage[key] as? Decimal) ?? allTimeValue
+        }
+    }
+
+    private func mapPricePerformance(response: MarketsDTO.Coins.Response) -> [MarketsPriceIntervalType: MarketsPricePerformanceData]? {
+        return response.pricePerformance?.reduce(into: [:]) { partialResult, pair in
             guard let intervalType = MarketsPriceIntervalType(rawValue: pair.key) else {
                 return
             }
 
             partialResult[intervalType] = pair.value
         }
+    }
+}
+
+extension TokenMarketsDetailsMapper {
+    enum MapperError: Error {
+        case missingAllTimePriceChangeValue
     }
 }

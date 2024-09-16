@@ -27,7 +27,7 @@ extension CommonSendTransactionSummaryDescriptionBuilder: SendTransactionSummary
         }
 
         let amountInFiat = tokenItem.id.flatMap { BalanceConverter().convertToFiat(amount, currencyId: $0) }
-        let feeInFiat = feeTokenItem.id.flatMap { BalanceConverter().convertToFiat(fee, currencyId: $0) }
+        let feeInFiat = feeTokenItem.id.flatMap { BalanceConverter().convertToFiat(fee.amount.value, currencyId: $0) }
         let totalInFiat = [amountInFiat, feeInFiat].compactMap { $0 }.reduce(0, +)
 
         let formattingOptions = BalanceFormattingOptions(
