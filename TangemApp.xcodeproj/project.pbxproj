@@ -94,7 +94,7 @@
 		2DBE29C22B3C4A8100109D5E /* DetentBottomSheetContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBE29BF2B3C4A8100109D5E /* DetentBottomSheetContainer.swift */; };
 		2DBE29C32B3C4A8100109D5E /* DetentBottomSheetModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBE29C02B3C4A8100109D5E /* DetentBottomSheetModifier.swift */; };
 		2DBE29C42B3C4A8100109D5E /* View+DetentBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBE29C12B3C4A8100109D5E /* View+DetentBottomSheet.swift */; };
-		2DC46BA02C945C4400749F7C /* MarketsTooltipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC46B9F2C945C4400749F7C /* MarketsTooltipView.swift */; };
+		2DC46BA02C945C4400749F7C /* BasicTooltipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC46B9F2C945C4400749F7C /* BasicTooltipView.swift */; };
 		2DC46C362C97907B00749F7C /* TooltipStorageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC46C352C97907B00749F7C /* TooltipStorageProvider.swift */; };
 		2DC46C392C98022F00749F7C /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC46C382C98022F00749F7C /* Triangle.swift */; };
 		2DC567632B0DFFAF00B0244F /* MarketsItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC5675A2B0DFFAF00B0244F /* MarketsItemView.swift */; };
@@ -2005,7 +2005,7 @@
 		2DBE29BF2B3C4A8100109D5E /* DetentBottomSheetContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetentBottomSheetContainer.swift; sourceTree = "<group>"; };
 		2DBE29C02B3C4A8100109D5E /* DetentBottomSheetModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetentBottomSheetModifier.swift; sourceTree = "<group>"; };
 		2DBE29C12B3C4A8100109D5E /* View+DetentBottomSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "View+DetentBottomSheet.swift"; sourceTree = "<group>"; };
-		2DC46B9F2C945C4400749F7C /* MarketsTooltipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTooltipView.swift; sourceTree = "<group>"; };
+		2DC46B9F2C945C4400749F7C /* BasicTooltipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicTooltipView.swift; sourceTree = "<group>"; };
 		2DC46C352C97907B00749F7C /* TooltipStorageProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipStorageProvider.swift; sourceTree = "<group>"; };
 		2DC46C382C98022F00749F7C /* Triangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
 		2DC5675A2B0DFFAF00B0244F /* MarketsItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsItemView.swift; sourceTree = "<group>"; };
@@ -4047,6 +4047,14 @@
 			path = WalletSelector;
 			sourceTree = "<group>";
 		};
+		2DADFF9E2C98A9F30029F390 /* Tooltip */ = {
+			isa = PBXGroup;
+			children = (
+				2DC46B9F2C945C4400749F7C /* BasicTooltipView.swift */,
+			);
+			path = Tooltip;
+			sourceTree = "<group>";
+		};
 		2DB361492C14FB9200BB1D38 /* SegmentPickerView */ = {
 			isa = PBXGroup;
 			children = (
@@ -4102,7 +4110,6 @@
 				2DB6487F2C35877000DA100D /* MarketsRatingHeaderViewModel.swift */,
 				2DB648802C35877000DA100D /* MarketsSkeletonItemView.swift */,
 				B0AEC7D62C5B857100E60A93 /* MarketsUnableToLoadDataView.swift */,
-				2DC46B9F2C945C4400749F7C /* MarketsTooltipView.swift */,
 			);
 			path = UIComponents;
 			sourceTree = "<group>";
@@ -5667,6 +5674,7 @@
 				2DBE29BA2B3AE07200109D5E /* Tosts */,
 				2DB361492C14FB9200BB1D38 /* SegmentPickerView */,
 				2DC46C372C98022500749F7C /* Shapes */,
+				2DADFF9E2C98A9F30029F390 /* Tooltip */,
 			);
 			path = UIComponents;
 			sourceTree = "<group>";
@@ -11444,7 +11452,7 @@
 				EF661E3528C0ADC6005769E5 /* CommonError.swift in Sources */,
 				EFA5683C2C480D120064EBA1 /* SendTransactionType.swift in Sources */,
 				B0431B412919538700F84DEF /* IconWithBackground.swift in Sources */,
-				2DC46BA02C945C4400749F7C /* MarketsTooltipView.swift in Sources */,
+				2DC46BA02C945C4400749F7C /* BasicTooltipView.swift in Sources */,
 				DAC53D0027BE63830027147D /* Web3StoryPage.swift in Sources */,
 				B06C085A2A73FC3B00D982BC /* MultiWalletMainContentViewModel.swift in Sources */,
 				B099339F2B554B1000240CDB /* MainHeaderProviderFactory.swift in Sources */,

@@ -18,11 +18,7 @@ struct MainCoordinatorView: CoordinatorView {
                     .navigationLinks(links)
             }
 
-            // Tooltip is placed on top of the other views
-            MarketsTooltipView(
-                isShowBindingValue: $coordinator.isMarketsTooltipVisible,
-                onHideAction: hideTooltipWithAnimation
-            )
+            marketsTooltipView
 
             sheets
         }
@@ -31,7 +27,9 @@ struct MainCoordinatorView: CoordinatorView {
                 // I do not delete the state, but no logic is required either
                 return
             } else {
-                hideTooltipWithAnimation()
+                withAnimation(.easeInOut(duration: Constants.tooltipAnimationDuration)) {
+                    coordinator.hideMarketsTootip()
+                }
             }
         }
     }
@@ -110,9 +108,23 @@ struct MainCoordinatorView: CoordinatorView {
             .requestAppStoreReviewCompat($coordinator.isAppStoreReviewRequested)
     }
 
-    private func hideTooltipWithAnimation() {
-        withAnimation(.easeInOut(duration: 0.3)) {
-            coordinator.hideMarketsTootip()
-        }
+    // Tooltip is placed on top of the other views
+    private var marketsTooltipView: some View {
+        BasicTooltipView(
+            isShowBindingValue: $coordinator.isMarketsTooltipVisible,
+            onHideAction: {
+                withAnimation(.easeInOut(duration: Constants.tooltipAnimationDuration)) {
+                    coordinator.hideMarketsTootip()
+                }
+            },
+            title: Localization.marketsTooltipTitle,
+            message: Localization.marketsTooltipMessage
+        )
+    }
+}
+
+extension MainCoordinatorView {
+    enum Constants {
+        static let tooltipAnimationDuration: Double = 0.3
     }
 }

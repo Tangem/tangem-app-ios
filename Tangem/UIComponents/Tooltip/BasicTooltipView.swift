@@ -1,5 +1,5 @@
 //
-//  MarketsTooltipView.swift
+//  BasicTooltipView.swift
 //  Tangem
 //
 //  Created by skibinalexander on 13.09.2024.
@@ -8,11 +8,13 @@
 
 import SwiftUI
 
-struct MarketsTooltipView: View {
+struct BasicTooltipView: View {
     // MARK: - Properties
 
     @Binding private(set) var isShowBindingValue: Bool
     private(set) var onHideAction: (() -> Void)?
+    private(set) var title: String
+    private(set) var message: String
 
     // MARK: - UI
 
@@ -42,11 +44,11 @@ struct MarketsTooltipView: View {
             Spacer()
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(Localization.marketsTooltipTitle)
+                Text(title)
                     .lineLimit(1)
                     .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
 
-                Text(Localization.marketsTooltipMessage)
+                Text(message)
                     .lineLimit(2)
                     .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
             }
