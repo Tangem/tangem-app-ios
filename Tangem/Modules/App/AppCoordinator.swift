@@ -22,7 +22,7 @@ class AppCoordinator: CoordinatorObject {
 
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
     @Injected(\.walletConnectSessionsStorageInitializable) private var walletConnectSessionStorageInitializer: Initializable
-    @InjectedWritable(\.mainBottomSheetVisibility) private var bottomSheetVisibility: MainBottomSheetVisibility
+    @Injected(\.mainBottomSheetUIManager) private var mainBottomSheetUIManager: MainBottomSheetUIManager
 
     // MARK: - Child coordinators
 
@@ -142,8 +142,8 @@ class AppCoordinator: CoordinatorObject {
         __marketsCoordinator = coordinator
 
         // If this condition evaluates to `false` here, the `mainBottomSheetCoordinator` property will be updated later
-        // based on the `bottomSheetVisibility.isShownPublisher` reactive stream
-        if bottomSheetVisibility.isShown {
+        // based on the `mainBottomSheetUIManager.isShownPublisher` reactive stream
+        if mainBottomSheetUIManager.isShown {
             marketsCoordinator = coordinator
         }
     }
@@ -158,7 +158,7 @@ class AppCoordinator: CoordinatorObject {
             }
             .store(in: &bag)
 
-        bottomSheetVisibility
+        mainBottomSheetUIManager
             .isShownPublisher
             .withWeakCaptureOf(self)
             .map { coordinator, isShown in
@@ -183,7 +183,7 @@ class AppCoordinator: CoordinatorObject {
 
         if FeatureProvider.isAvailable(.markets) {
             __marketsCoordinator = nil
-            bottomSheetVisibility.hide()
+            mainBottomSheetUIManager.hide()
         }
 
         let options = AppCoordinator.Options(newScan: newScan)

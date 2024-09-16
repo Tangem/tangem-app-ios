@@ -34,8 +34,17 @@ struct AppCoordinatorView: CoordinatorView {
         .navigationViewStyle(.stack)
         .accentColor(Colors.Text.primary1)
         .overlayContentContainer(item: $coordinator.marketsCoordinator) { coordinator in
-            MarketsCoordinatorView(coordinator: coordinator)
+            let viewHierarchySnapshotter = ViewHierarchySnapshottingContainerViewController()
+            let adapter = ViewHierarchySnapshottingWeakifyAdapter(adaptee: viewHierarchySnapshotter)
+            let marketsCoordinatorView = MarketsCoordinatorView(coordinator: coordinator)
                 .environment(\.mainWindowSize, mainWindowSize)
+                .environment(\.viewHierarchySnapshotter, adapter)
+
+            UIAppearanceBoundaryContainerView(
+                boundaryMarker: { viewHierarchySnapshotter },
+                content: { marketsCoordinatorView }
+            )
+            .ignoresSafeArea(.container, edges: .bottom)
         }
         .bottomSheet(
             item: $sensitiveTextVisibilityViewModel.informationHiddenBalancesViewModel,
