@@ -18,9 +18,11 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
 
     // MARK: - Published Properties
 
-    @Published var isShowTopAddButton: Bool = false
-    @Published var typeView: MarketsPortfolioContainerView.TypeView?
+    @Published var isAddTokenButtonDisabled: Bool = true
+    @Published var isLoadingNetworks: Bool = false
+    @Published var typeView: MarketsPortfolioContainerView.TypeView = .loading
     @Published var tokenItemViewModels: [MarketsPortfolioTokenItemViewModel] = []
+    @Published var tokenWithExpandedQuickActions: MarketsPortfolioTokenItemViewModel?
 
     // MARK: - Private Properties
 
@@ -33,7 +35,9 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     private weak var coordinator: MarketsPortfolioContainerRoutable?
     private var addTokenTapAction: (() -> Void)?
 
-    private var inputData: InputData
+    private var coinId: String
+    private var networks: [NetworkModel]?
+
     private var bag = Set<AnyCancellable>()
 
     // MARK: - Init
@@ -44,11 +48,12 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         coordinator: MarketsPortfolioContainerRoutable?,
         addTokenTapAction: (() -> Void)?
     ) {
-        self.inputData = inputData
+        coinId = inputData.coinId
         self.walletDataProvider = walletDataProvider
         self.coordinator = coordinator
         self.addTokenTapAction = addTokenTapAction
 
+        updateUI(availableNetworks: nil, animated: false)
         bind()
     }
 
@@ -58,21 +63,33 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         addTokenTapAction?()
     }
 
+    func update(networks: [NetworkModel]) {
+        updateUI(availableNetworks: networks, animated: true)
+    }
+
     // MARK: - Private Implementation
 
-    private func updateUI() {
+    private func updateUI(availableNetworks: [NetworkModel]?, animated: Bool) {
+        networks = availableNetworks
         updateTokenList()
         updateExpandedAction()
 
-        let canAddAvailableNetworks = canAddToPortfolio(with: inputData.networks)
+        var targetState: MarketsPortfolioContainerView.TypeView = .list
+        if let networks {
+            let canAddAvailableNetworks = canAddToPortfolio(with: networks)
+            isAddTokenButtonDisabled = !canAddAvailableNetworks
 
-        guard canAddAvailableNetworks else {
-            typeView = tokenItemViewModels.isEmpty ? .unavailable : .list
-            return
+            if tokenItemViewModels.isEmpty {
+                targetState = canAddAvailableNetworks ? .empty : .unavailable
+            }
+        } else if tokenItemViewModels.isEmpty {
+            targetState = .loading
         }
 
-        isShowTopAddButton = !tokenItemViewModels.isEmpty
-        typeView = tokenItemViewModels.isEmpty ? .empty : .list
+        withAnimation(animated ? .default : nil) {
+            typeView = targetState
+            isLoadingNetworks = availableNetworks == nil
+        }
     }
 
     /*
@@ -108,8 +125,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     private func updateTokenList() {
         let portfolioTokenItemFactory = MarketsPortfolioTokenItemFactory(
             contextActionsProvider: self,
-            contextActionsDelegate: self,
-            quickActionDisclosureTap: weakify(self, forFunction: MarketsPortfolioContainerViewModel.quickActionDisclosureHandler(_:))
+            contextActionsDelegate: self
         )
 
         let tokenItemViewModelByUserWalletModels: [MarketsPortfolioTokenItemViewModel] = userWalletModels
@@ -118,8 +134,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
                 let entries = userWalletModel.userTokenListManager.userTokensList.entries
 
                 let viewModels: [MarketsPortfolioTokenItemViewModel] = portfolioTokenItemFactory.makeViewModels(
-                    coinId: inputData.coinId,
-                    networks: inputData.networks,
+                    coinId: coinId,
                     walletModels: walletModels,
                     entries: entries,
                     userWalletInfo: MarketsPortfolioTokenItemFactory.UserWalletInfo(
@@ -142,16 +157,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             return
         }
 
-        tokenViewModel.isExpandedQuickActions = true
-    }
-
-    // It is necessary for mutually exclusive work and quick actions. Only one token can be disclosed
-    private func quickActionDisclosureHandler(_ viewModelId: Int) {
-        let filteredViewModels = tokenItemViewModels.filter { $0.id != viewModelId }
-
-        for viewModel in filteredViewModels {
-            viewModel.isExpandedQuickActions = false
-        }
+        tokenWithExpandedQuickActions = tokenViewModel
     }
 
     private func bind() {
@@ -161,7 +167,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { viewModel, _ in
-                viewModel.updateUI()
+                viewModel.updateUI(availableNetworks: viewModel.networks, animated: true)
             }
             .store(in: &bag)
     }
@@ -198,6 +204,16 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProv
 // MARK: - MarketsPortfolioContextActionsDelegate
 
 extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDelegate {
+    func showContextAction(for viewModel: MarketsPortfolioTokenItemViewModel) {
+        withAnimation {
+            if tokenWithExpandedQuickActions == viewModel {
+                tokenWithExpandedQuickActions = nil
+            } else {
+                tokenWithExpandedQuickActions = viewModel
+            }
+        }
+    }
+
     func didTapContextAction(_ action: TokenActionType, walletModelId: WalletModelId, userWalletId: UserWalletId) {
         let userWalletModel = userWalletModels.first(where: { $0.userWalletId == userWalletId })
         let walletModel = userWalletModel?.walletModelsManager.walletModels.first(where: { $0.id == walletModelId.id })
@@ -232,6 +248,5 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDele
 extension MarketsPortfolioContainerViewModel {
     struct InputData {
         let coinId: String
-        let networks: [NetworkModel]
     }
 }
