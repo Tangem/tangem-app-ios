@@ -296,7 +296,7 @@
 "give_permission_unlimited" = "無制限";
 "home_button_order" = "カードを注文";
 "home_button_scan" = "スキャン";
-"information_generated_with_ai" = "This information was generated with AI";
+"information_generated_with_ai" = "この情報はAIによって生成されました";
 "initial_message_change_access_code_body" = "アクセスコードを変更するには、上図のようにカードをタップし、操作が終了するまで取り外さないでください。";
 "initial_message_change_passcode_body" = "パスコードを変更するには、上記のようにカードをタップし、操作が終了するまで取り外さないでください。";
 "initial_message_create_wallet_body" = "ウォレットを作成するには、上記のようにカードをタップし、操作が終了するまで取り外さないでください。";
@@ -345,6 +345,7 @@
 "markets_common_my_portfolio" = "私のポートフォリオ";
 "markets_common_title" = "マーケット";
 "markets_generate_addresses_notification" = "選択したネットワークのアドレスを生成するには、Tangemカードをスキャンする必要があります。";
+"markets_hint" = "To add tokens pull this up or tap the search bar";
 "markets_insights_info_description_message" = "このセクションのデータは、次のネットワークから取得されています: %@";
 "markets_loading_error_title" = "データを読み込めません…";
 "markets_loading_no_data_title" = "データなし";
@@ -626,6 +627,7 @@
 "staking_active" = "アクティブ";
 "staking_active_footer" = "資産のステーキングを解除するには、上のブロックをタップしてください";
 "staking_amount_requirement_error" = "ステーキング金額は %@ 以上である必要があります";
+"staking_amount_tron_integer_error" = "Staking amount will be rounded to %1$@ TRX due to network rules.";
 "staking_claim_unstaked" = "ステーキング解除分を請求する";
 "staking_details_annual_percentage_rate" = "年率";
 "staking_details_annual_percentage_rate_info" = "ステーキングに参加することで得られる年間収益率。";
@@ -670,6 +672,7 @@
 "staking_notification_unstake_cosmos_text" = "資金は、21日間のロック解除期間後に使用可能になります。報酬は、ロック解除後の資金とともに引き出されます。";
 "staking_notification_unstake_text" = "%@のステーキング解除期間後、資金はすぐ利用可能となります。";
 "staking_notification_withdraw_text" = "資金を引き出すことができ、すぐに使用できます";
+"staking_notifications_revote_tron_text" = "Tronネットワークに新しいバリデーターでステーキングすると、以前にステーキングされた資金はすべてこのバリデーターに自動的に転送されます。";
 "staking_preparing" = "準備中";
 "staking_ready_to_withdraw" = "引き出し準備完了";
 "staking_rebond" = "再結束";
