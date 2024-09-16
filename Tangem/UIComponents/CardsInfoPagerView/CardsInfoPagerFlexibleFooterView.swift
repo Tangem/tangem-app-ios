@@ -15,22 +15,102 @@ struct CardsInfoPagerFlexibleFooterView: View {
     let headerHeight: CGFloat
     let bottomContentInset: CGFloat
 
-    private var footerViewHeight: CGFloat {
-        let minContentSizeHeight = viewportSize.height - bottomContentInset + .ulpOfOne
-        let maxContentSizeHeight = viewportSize.height + headerHeight + headerTopInset
-        let contentSizeHeight = contentSize.height
+    var minContentSizeHeight: CGFloat {
+        viewportSize.height - bottomContentInset + .ulpOfOne
+    }
 
+    var maxContentSizeHeight: CGFloat {
+        viewportSize.height + headerHeight + headerTopInset
+    }
+
+    var contentSizeHeight: CGFloat {
+        contentSize.height
+    }
+
+    var isMediumSizeContent: Bool {
+        contentSizeHeight >= minContentSizeHeight && contentSizeHeight < maxContentSizeHeight
+    }
+
+    var isLargeSizeContent: Bool {
+        contentSizeHeight >= maxContentSizeHeight
+    }
+
+    var isSmallSizeContent: Bool {
+        !isMediumSizeContent && !isLargeSizeContent
+    }
+
+    private var footerViewHeight: CGFloat {
         if contentSizeHeight >= minContentSizeHeight, contentSizeHeight < maxContentSizeHeight {
             return max(maxContentSizeHeight - contentSizeHeight, bottomContentInset)
         } else if contentSizeHeight >= maxContentSizeHeight {
-            return bottomContentInset
+            return bottomContentInset + Constants.marketsHitTooltipHeight
         }
 
-        return 0.0
+        let spaceContentSizeHeight = ((viewportSize.height - contentSizeHeight) - headerHeight) + headerTopInset
+
+        return spaceContentSizeHeight
     }
 
     var body: some View {
-        Color.clear
-            .frame(height: footerViewHeight)
+        ZStack {
+            Color.clear
+                .frame(height: footerViewHeight)
+                .background(.yellow)
+
+            if footerViewHeight > Constants.marketsHitTooltipComplexSpace {
+                containerMarketsHintView
+            }
+        }
+        .frame(height: footerViewHeight)
+    }
+
+    private var containerMarketsHintView: some View {
+        VStack(alignment: .center, spacing: .zero) {
+            topSpacerMarketsHintView
+
+            hintView
+
+            bottomSpacerMarketsHintView
+        }
+        .animation(.easeIn(duration: 0.3), value: UUID())
+    }
+
+    @ViewBuilder
+    private var topSpacerMarketsHintView: some View {
+        if isSmallSizeContent || isMediumSizeContent {
+            Spacer(minLength: 12)
+        } else if isLargeSizeContent {
+            FixedSpacer(height: 12)
+        }
+    }
+
+    @ViewBuilder
+    private var bottomSpacerMarketsHintView: some View {
+        if isSmallSizeContent {
+            FixedSpacer(height: Constants.marketsHitTooltipBottomSpace)
+        } else if isLargeSizeContent {
+            Spacer(minLength: Constants.marketsHitTooltipBottomSpace)
+        } else if isMediumSizeContent {
+            
+        }
+    }
+
+    private var hintView: some View {
+        VStack(alignment: .center, spacing: .zero) {
+            Text(Localization.marketsHint)
+                .multilineTextAlignment(.center)
+                .style(Fonts.Regular.footnote, color: Colors.Icon.informative)
+
+            Assets.chevronDown12.image
+        }
+        .frame(width: 160)
+    }
+}
+
+extension CardsInfoPagerFlexibleFooterView {
+    enum Constants {
+        static let marketsHitTooltipHeight: CGFloat = 56.0
+        static let marketsHitTooltipComplexSpace: CGFloat = 92.0
+        static let marketsHitTooltipBottomSpace: CGFloat = 24.0
     }
 }
