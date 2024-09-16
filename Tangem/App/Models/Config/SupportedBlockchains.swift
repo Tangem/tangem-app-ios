@@ -93,7 +93,7 @@ struct SupportedBlockchains {
             .optimism(testnet: false),
             .ton(curve: ed25519Curve(for: version), testnet: false),
             .kava(testnet: false),
-            .kaspa,
+            .kaspa(testnet: false),
             .ravencoin(testnet: false),
             .cosmos(testnet: false),
             .terraV1,
@@ -182,6 +182,7 @@ struct SupportedBlockchains {
             .koinos(testnet: true),
             .cyber(testnet: true),
             .blast(testnet: true),
+            .kaspa(testnet: true),
         ]
     }
 
