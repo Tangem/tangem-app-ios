@@ -27,9 +27,7 @@ struct MainCoordinatorView: CoordinatorView {
                 // I do not delete the state, but no logic is required either
                 return
             } else {
-                withAnimation(.easeInOut(duration: Constants.tooltipAnimationDuration)) {
-                    coordinator.hideMarketsTootip()
-                }
+                coordinator.hideMarketsTootip()
             }
         }
     }
@@ -112,19 +110,9 @@ struct MainCoordinatorView: CoordinatorView {
     private var marketsTooltipView: some View {
         BasicTooltipView(
             isShowBindingValue: $coordinator.isMarketsTooltipVisible,
-            onHideAction: {
-                withAnimation(.easeInOut(duration: Constants.tooltipAnimationDuration)) {
-                    coordinator.hideMarketsTootip()
-                }
-            },
+            onHideAction: coordinator.hideMarketsTootip,
             title: Localization.marketsTooltipTitle,
             message: Localization.marketsTooltipMessage
         )
-    }
-}
-
-extension MainCoordinatorView {
-    enum Constants {
-        static let tooltipAnimationDuration: Double = 0.3
     }
 }
