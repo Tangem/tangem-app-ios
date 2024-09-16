@@ -32,7 +32,8 @@ struct MarketsPortfolioTokenItemView: View {
                 customTokenColor: viewModel.customTokenColor,
                 blockchainIconName: viewModel.blockchainIconName,
                 hasMonochromeIcon: viewModel.hasMonochromeIcon,
-                isCustom: viewModel.isCustom
+                isCustom: viewModel.isCustom,
+                networkBorderColor: Colors.Background.action
             )
 
             VStack(spacing: 4) {
