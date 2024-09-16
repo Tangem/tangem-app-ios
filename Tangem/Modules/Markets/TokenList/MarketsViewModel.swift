@@ -9,6 +9,7 @@
 import Foundation
 import SwiftUI
 import Combine
+import CombineExt
 import Kingfisher
 
 final class MarketsViewModel: BaseMarketsViewModel {
@@ -20,6 +21,9 @@ final class MarketsViewModel: BaseMarketsViewModel {
     @Published private(set) var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
     @Published private(set) var tokenListLoadingState: MarketsView.ListLoadingState = .idle
     @Published private(set) var isDataProviderBusy: Bool = false
+    @Published var isViewSnapshotRequested: Bool = false
+
+    @Injected(\.mainBottomSheetUIManager) private var mainBottomSheetUIManager: MainBottomSheetUIManager
 
     // MARK: - Properties
 
@@ -27,6 +31,11 @@ final class MarketsViewModel: BaseMarketsViewModel {
 
     var isSearching: Bool {
         !currentSearchValue.isEmpty
+    }
+
+    override var overlayContentHidingProgress: CGFloat {
+        // Prevents unwanted content hiding (see https://tangem.slack.com/archives/C05UW00656X/p1725683301009589 for details)
+        isViewVisible ? super.overlayContentHidingProgress : 1.0
     }
 
     var shouldDisplayShowTokensUnderCapView: Bool {
@@ -87,6 +96,7 @@ final class MarketsViewModel: BaseMarketsViewModel {
 
         bindToCurrencyCodeUpdate()
         dataProviderBind()
+        bindToMainBottomSheetUIManager()
         bindToHotArea()
 
         // Need for preload markets list, when bottom sheet it has not been opened yet
@@ -140,6 +150,10 @@ final class MarketsViewModel: BaseMarketsViewModel {
     func onTryLoadList() {
         resetUI()
         fetch(with: currentSearchValue, by: filterProvider.currentFilterValue)
+    }
+
+    func onViewSnapshot(_ viewSnapshot: UIImage?) {
+        mainBottomSheetUIManager.setFooterSnapshot(viewSnapshot)
     }
 }
 
@@ -332,6 +346,14 @@ private extension MarketsViewModel {
 
                 viewModel.tokenListLoadingState = .idle
             }
+            .store(in: &bag)
+    }
+
+    func bindToMainBottomSheetUIManager() {
+        mainBottomSheetUIManager
+            .footerSnapshotUpdateTriggerPublisher
+            .mapToValue(true)
+            .assign(to: \.isViewSnapshotRequested, on: self, ownership: .weak)
             .store(in: &bag)
     }
 

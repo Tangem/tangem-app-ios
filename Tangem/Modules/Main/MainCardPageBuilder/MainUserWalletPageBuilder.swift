@@ -48,6 +48,19 @@ enum MainUserWalletPageBuilder: Identifiable {
         }
     }
 
+    private var bottomSheetFooterViewModel: MainBottomSheetFooterViewModel? {
+        switch self {
+        case .singleWallet(_, _, let bodyModel):
+            return bodyModel?.bottomSheetFooterViewModel
+        case .multiWallet(_, _, let bodyModel):
+            return bodyModel.bottomSheetFooterViewModel
+        case .lockedWallet(_, _, let bodyModel):
+            return bodyModel.bottomSheetFooterViewModel
+        case .visaWallet:
+            return nil
+        }
+    }
+
     @ViewBuilder
     var header: some View {
         switch self {
@@ -95,12 +108,9 @@ enum MainUserWalletPageBuilder: Identifiable {
     }
 
     @ViewBuilder
-    func makeBottomOverlay(
-        isMainBottomSheetEnabled: Bool,
-        didScrollToBottom: Bool
-    ) -> some View {
-        if isMainBottomSheetEnabled {
-            MainBottomSheetFooterView()
+    func makeBottomOverlay(didScrollToBottom: Bool) -> some View {
+        if let viewModel = bottomSheetFooterViewModel {
+            MainBottomSheetFooterView(viewModel: viewModel)
         } else if let viewModel = footerViewModel {
             MainFooterView(viewModel: viewModel, didScrollToBottom: didScrollToBottom)
         } else {
