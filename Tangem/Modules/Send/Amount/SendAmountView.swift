@@ -92,7 +92,7 @@ struct SendAmountView: View {
 
     private var bottomInfoText: some View {
         Group {
-            switch viewModel.error {
+            switch viewModel.bottomInfoText {
             case .none:
                 // Hold empty space
                 Text(" ")

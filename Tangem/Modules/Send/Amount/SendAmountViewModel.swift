@@ -27,7 +27,7 @@ class SendAmountViewModel: ObservableObject {
     @Published var decimalNumberTextFieldViewModel: DecimalNumberTextField.ViewModel
     @Published var alternativeAmount: String?
 
-    @Published var error: BottomInfoTextType?
+    @Published var bottomInfoText: BottomInfoTextType?
     @Published var currentFieldOptions: SendDecimalNumberTextField.PrefixSuffixOptions
     @Published var amountType: SendAmountCalculationType = .crypto
 
