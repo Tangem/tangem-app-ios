@@ -346,7 +346,7 @@ private extension MarketsViewModel {
         }
 
         return list.filter {
-            guard let marketCap = $0.marketCap else {
+            guard $0.marketCap != nil else {
                 return false
             }
 
