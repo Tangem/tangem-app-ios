@@ -14,7 +14,6 @@ struct TokenMarketsDetailsView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.mainWindowSize) private var mainWindowSize
 
-    @State private var descriptionBottomSheetHeight: CGFloat = 0
     @State private var isNavigationBarShadowLineViewVisible = false
 
     private var isDarkColorScheme: Bool { colorScheme == .dark }
@@ -135,14 +134,8 @@ struct TokenMarketsDetailsView: View {
         .bindAlert($viewModel.alert)
         .descriptionBottomSheet(
             info: $viewModel.descriptionBottomSheetInfo,
-            sheetHeight: $descriptionBottomSheetHeight,
             backgroundColor: Colors.Background.action
         )
-        .onChange(of: viewModel.descriptionBottomSheetInfo) { value in
-            if value == nil {
-                descriptionBottomSheetHeight = 0
-            }
-        }
         .animation(.default, value: viewModel.state)
         .animation(.default, value: viewModel.isLoading)
         .animation(.default, value: viewModel.allDataLoadFailed)
