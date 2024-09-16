@@ -12,21 +12,12 @@ extension View {
     @ViewBuilder
     func descriptionBottomSheet(
         info: Binding<DescriptionBottomSheetInfo?>,
-        sheetHeight: Binding<CGFloat>, backgroundColor: Color?
+        backgroundColor: Color?
     ) -> some View {
-        if #available(iOS 16, *) {
-            sheet(item: info) { info in
-                DescriptionBottomSheetView(info: info, sheetHeight: sheetHeight)
-                    .adaptivePresentationDetents()
-            }
-        } else {
-            selfSizingDetentBottomSheet(
-                item: info,
-                detents: [.custom(sheetHeight.wrappedValue)],
-                settings: .init(backgroundColor: backgroundColor, contentHeightBinding: sheetHeight)
-            ) { info in
-                DescriptionBottomSheetView(info: info, sheetHeight: sheetHeight)
-            }
+        sheet(item: info) { info in
+            DescriptionBottomSheetView(info: info)
+                .adaptivePresentationDetents()
+                .background(backgroundColor.ignoresSafeArea(.all, edges: .bottom))
         }
     }
 }

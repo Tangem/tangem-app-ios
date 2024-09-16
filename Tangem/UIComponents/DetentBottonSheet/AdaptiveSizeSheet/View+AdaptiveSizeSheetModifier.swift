@@ -8,27 +8,25 @@
 
 import SwiftUI
 
-@available(iOS 16.0, *)
 struct AdaptiveSizeSheetModifier: ViewModifier {
     @StateObject private var viewModel = AdaptiveSizeSheetViewModel()
-
+    
     func body(content: Content) -> some View {
-        scrollableSheetContnet {
+        scrollableSheetContent {
             VStack(spacing: 0) {
                 GrabberViewFactory()
                     .makeSwiftUIView()
+                
                 content
             }
         }
     }
-
-    private func scrollableSheetContnet<Body: View>(content: () -> Body) -> some View {
+    
+    private func scrollableSheetContent<Body: View>(content: () -> Body) -> some View {
         ScrollView(viewModel.scrollViewAxis, showsIndicators: false) {
             content()
                 .padding(.bottom, viewModel.defaultBottomPadding)
-                .presentationDetents([.height(viewModel.contentHeight)])
-                .presentationDragIndicator(.hidden)
-                .presentationCornerRadiusBackport(viewModel.cornerRadius)
+                .presentationDetents(contentHeight: viewModel.contentHeight, cornerRadius: viewModel.cornerRadius)
                 .readGeometry(\.size.height) {
                     viewModel.contentHeight = $0
                 }
@@ -40,10 +38,17 @@ struct AdaptiveSizeSheetModifier: ViewModifier {
     }
 }
 
-@available(iOS 16.0, *)
-extension View {
-    func adaptivePresentationDetents() -> some View {
-        modifier(AdaptiveSizeSheetModifier())
+private extension View {
+    @ViewBuilder
+    func presentationDetents(contentHeight: CGFloat, cornerRadius: CGFloat) -> some View {
+        if #available(iOS 16.0, *) {
+            self
+                .presentationDetents([.height(contentHeight)])
+                .presentationDragIndicator(.hidden)
+                .presentationCornerRadiusBackport(cornerRadius)
+        } else {
+            self
+        }
     }
 }
 
@@ -54,7 +59,16 @@ private extension View {
         if #available(iOS 16.4, *) {
             presentationCornerRadius(cornerRadius)
         } else {
-            self
+            presentationConfiguration { controller in
+                controller.preferredCornerRadius = cornerRadius
+            }
         }
+    }
+}
+
+extension View {
+    @ViewBuilder
+    func adaptivePresentationDetents() -> some View {
+        modifier(AdaptiveSizeSheetModifier())
     }
 }

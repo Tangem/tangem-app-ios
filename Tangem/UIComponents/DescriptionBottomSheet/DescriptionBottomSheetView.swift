@@ -23,18 +23,10 @@ struct DescriptionBottomSheetInfo: Identifiable, Equatable {
 struct DescriptionBottomSheetView: View {
     let info: DescriptionBottomSheetInfo
 
-    var sheetHeight: Binding<CGFloat> = .constant(0)
     @State private var containerHeight: CGFloat = 0
 
     var body: some View {
         textContent
-            .overlay {
-                textContent
-                    .opacity(0)
-                    .readGeometry(\.size.height, onChange: { value in
-                        sheetHeight.wrappedValue = value
-                    })
-            }
             .padding(.horizontal, 16)
     }
 
@@ -64,12 +56,6 @@ struct DescriptionBottomSheetView: View {
                 .multilineTextAlignment(.leading)
         }
         .padding(.bottom, 16)
-    }
-}
-
-extension DescriptionBottomSheetView: SelfSizingBottomSheetContent, Setupable {
-    func setContentHeightBinding(_ binding: ContentHeightBinding) -> Self {
-        map { $0.sheetHeight = binding }
     }
 }
 
