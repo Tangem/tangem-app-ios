@@ -83,6 +83,7 @@ struct TokenMarketsDetailsView: View {
 
                     picker
                         .padding(.vertical, 8)
+                        .disabled(viewModel.isLoading)
                 }
                 .padding(.horizontal, 16.0)
 
@@ -161,6 +162,7 @@ struct TokenMarketsDetailsView: View {
                         TokenPriceChangeView(state: priceChangeState, showSkeletonWhenLoading: true)
                     }
                 }
+                .id(UUID())
             }
 
             Spacer(minLength: 8)
@@ -191,6 +193,7 @@ struct TokenMarketsDetailsView: View {
     private var content: some View {
         VStack(spacing: 14) {
             description
+                .frame(maxWidth: .infinity, alignment: .leading)
 
             portfolioView
 
@@ -243,7 +246,10 @@ struct TokenMarketsDetailsView: View {
 
     @ViewBuilder
     private var description: some View {
-        if case .loaded(let model) = viewModel.state {
+        switch viewModel.state {
+        case .loading:
+            DescriptionBlockSkeletons()
+        case .loaded(let model):
             if let shortDescription = model.shortDescription {
                 if model.fullDescription == nil {
                     Text(shortDescription)
@@ -260,10 +266,8 @@ struct TokenMarketsDetailsView: View {
                     }
                 }
             }
-        }
-
-        if case .loading = viewModel.state {
-            DescriptionBlockSkeletons()
+        case .failedToLoadDetails, .failedToLoadAllData:
+            EmptyView()
         }
     }
 

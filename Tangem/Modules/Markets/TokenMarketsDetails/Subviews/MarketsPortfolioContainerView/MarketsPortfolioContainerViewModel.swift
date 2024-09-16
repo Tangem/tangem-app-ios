@@ -18,7 +18,8 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
 
     // MARK: - Published Properties
 
-    @Published var isShowTopAddButton: Bool = false
+    @Published var isAddTokenButtonDisabled: Bool = true
+    @Published var isLoadingNetworks: Bool = false
     @Published var typeView: MarketsPortfolioContainerView.TypeView = .loading
     @Published var tokenItemViewModels: [MarketsPortfolioTokenItemViewModel] = []
     @Published var tokenWithExpandedQuickActions: MarketsPortfolioTokenItemViewModel?
@@ -52,6 +53,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         self.coordinator = coordinator
         self.addTokenTapAction = addTokenTapAction
 
+        updateUI(availableNetworks: nil, animated: false)
         bind()
     }
 
@@ -62,20 +64,20 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     }
 
     func update(networks: [NetworkModel]) {
-        self.networks = networks
-        updateUI()
+        updateUI(availableNetworks: networks, animated: true)
     }
 
     // MARK: - Private Implementation
 
-    private func updateUI() {
+    private func updateUI(availableNetworks: [NetworkModel]?, animated: Bool) {
+        networks = availableNetworks
         updateTokenList()
         updateExpandedAction()
 
         var targetState: MarketsPortfolioContainerView.TypeView = .list
         if let networks {
             let canAddAvailableNetworks = canAddToPortfolio(with: networks)
-            isShowTopAddButton = !tokenItemViewModels.isEmpty && canAddAvailableNetworks
+            isAddTokenButtonDisabled = !canAddAvailableNetworks
 
             if tokenItemViewModels.isEmpty {
                 targetState = canAddAvailableNetworks ? .empty : .unavailable
@@ -84,8 +86,9 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             targetState = .loading
         }
 
-        withAnimation(.default) {
+        withAnimation(animated ? .default : nil) {
             typeView = targetState
+            isLoadingNetworks = availableNetworks == nil
         }
     }
 
@@ -164,7 +167,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { viewModel, _ in
-                viewModel.updateUI()
+                viewModel.updateUI(availableNetworks: viewModel.networks, animated: true)
             }
             .store(in: &bag)
     }

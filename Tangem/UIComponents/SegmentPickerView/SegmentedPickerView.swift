@@ -88,6 +88,10 @@ public struct SegmentedPickerView<Option: Hashable & Identifiable, SelectionView
                     namespaceID: namespaceID,
                     targetWidth: targetWidth,
                     action: {
+                        if selection == option {
+                            return
+                        }
+
                         withAnimation {
                             selection = option
                             selectedIndex = index

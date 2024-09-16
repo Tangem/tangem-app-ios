@@ -17,12 +17,15 @@ extension TokenMarketsDetailsView {
         }
 
         private var description: some View {
-            VStack(alignment: .leading, spacing: 4) {
+            // We need to use here odd value otherwise transition between skeleton and text will be with offset.
+            // We can't specify line height in text but we can adapt skeletons spacing
+            VStack(alignment: .leading, spacing: 5) {
                 ForEach(0 ... 1) { _ in
-                    skeletonView(width: .infinity, height: 18)
+                    skeletonView(width: .infinity, height: 14)
                 }
 
-                skeletonView(width: 270, height: 18)
+                skeletonView(width: .infinity, height: 14)
+                    .padding(.trailing, 72)
             }
         }
 
@@ -45,16 +48,6 @@ extension TokenMarketsDetailsView {
                 pricePerformance
 
                 links
-            }
-        }
-
-        private var description: some View {
-            VStack(alignment: .leading, spacing: 4) {
-                ForEach(0 ... 1) { _ in
-                    skeletonView(width: .infinity, height: 18)
-                }
-
-                skeletonView(width: 270, height: 18)
             }
         }
 
