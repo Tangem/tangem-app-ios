@@ -23,28 +23,47 @@ struct TokenMarketsDetailsView: View {
     private let scrollViewFrameCoordinateSpaceName = UUID()
 
     var body: some View {
-        VStack(spacing: 0.0) {
+        rootView
+            .if(!viewModel.isMarketsSheetStyle) { view in
+                view.navigationTitle(viewModel.tokenName)
+            }
+            .onOverlayContentStateChange { [weak viewModel] state in
+                viewModel?.onOverlayContentStateChange(state)
+            }
+            .onOverlayContentProgressChange { [weak viewModel] progress in
+                viewModel?.onOverlayContentProgressChange(progress)
+            }
+            .background {
+                viewBackground
+            }
+            .animation(
+                .easeInOut(duration: viewModel.overlayContentHidingAnimationDuration),
+                value: viewModel.overlayContentHidingProgress
+            )
+    }
+
+    @ViewBuilder
+    private var rootView: some View {
+        let content = VStack(spacing: 0.0) {
             navigationBar
 
             scrollView
         }
-        .navigationBarTitleDisplayMode(.inline)
-        .if(!viewModel.isMarketsSheetStyle) { view in
-            view.navigationTitle(viewModel.tokenName)
+
+        if #unavailable(iOS 17.0), viewModel.isMarketsSheetStyle {
+            // On iOS 16 and below, UIKit will always allocate a new instance of the `UINavigationBar` instance when push
+            // navigation is performed in other navigation controller(s) in the application (on the main screen, for example).
+            // This will happen asynchronously, after a couple of seconds after the navigation event in the other navigation controller(s).
+            // Therefore, we left with two options:
+            // - Perform swizzling in `UINavigationController` and manually hide that new navigation bar.
+            // - Hiding navigation bar using native `UINavigationController.setNavigationBarHidden(_:animated:)` from UIKit
+            //   and `navigationBarHidden(_:)` from SwiftUI, which in turn will break the swipe-to-pop gesture.
+            content
+                .navigationBarHidden(true)
+        } else {
+            content
+                .navigationBarTitleDisplayMode(.inline)
         }
-        .onOverlayContentStateChange { [weak viewModel] state in
-            viewModel?.onOverlayContentStateChange(state)
-        }
-        .onOverlayContentProgressChange { [weak viewModel] progress in
-            viewModel?.onOverlayContentProgressChange(progress)
-        }
-        .background {
-            viewBackground
-        }
-        .animation(
-            .easeInOut(duration: viewModel.overlayContentHidingAnimationDuration),
-            value: viewModel.overlayContentHidingProgress
-        )
     }
 
     @ViewBuilder

@@ -345,6 +345,7 @@
 "markets_common_my_portfolio" = "My portfolio";
 "markets_common_title" = "Market";
 "markets_generate_addresses_notification" = "To generate addresses for selected networks, you must scan your Tangem Wallet card";
+"markets_hint" = "To add tokens pull this up or tap the search bar";
 "markets_insights_info_description_message" = "This section’s data is sourced from the following networks: %@";
 "markets_loading_error_title" = "Unable to load the data…";
 "markets_loading_no_data_title" = "No data";
@@ -614,7 +615,7 @@
 "send_summary_transaction_description_no_fiat_fee" = "You are sending **%1$@** and %2$@";
 "send_summary_transaction_description_prefix" = "You are sending **%1$@**";
 "send_summary_transaction_description_suffix_fee_covered" = "network fee will be covered by using %1$@ energy";
-"send_summary_transaction_description_suffix_fee_reduced" = "network fee will be reduced by spending %1$@";
+"send_summary_transaction_description_suffix_fee_reduced" = "network fee will be reduced by spending %1$@ energy";
 "send_summary_transaction_description_suffix_including" = "including a network fee of %1$@";
 "send_transaction_success" = "La transazione è stata firmata con successo e inviata al nodo blockchain. Il saldo del portafoglio verrà aggiornato dopo un po' di tempo";
 "send_tron_account_activation_error" = "%1$@ is an asset in the Tron network. To calculate the fee and make a transaction you need to deposit some Tron (TRX) in your account.";
@@ -626,6 +627,7 @@
 "staking_active" = "Active";
 "staking_active_footer" = "To unstake your assets, tap the block above";
 "staking_amount_requirement_error" = "The amount to stake must be at least %@";
+"staking_amount_tron_integer_error" = "Staking amount will be rounded to %1$@ TRX due to network rules.";
 "staking_claim_unstaked" = "Claim unstaked";
 "staking_details_annual_percentage_rate" = "Annual percentage rate";
 "staking_details_annual_percentage_rate_info" = "The annual percentage return you can earn from participating in staking.";
@@ -670,6 +672,7 @@
 "staking_notification_unstake_cosmos_text" = "Your funds will be available for use after the 21-day unbonding period. Reward will be withdrawn along with your unstaking funds.";
 "staking_notification_unstake_text" = "Your funds will be available for use after the %@ unbonding period.";
 "staking_notification_withdraw_text" = "You can now withdraw your funds, it will be available to use immediately";
+"staking_notifications_revote_tron_text" = "Staking in the Tron network with a new validator will automatically transfer all previously staked funds to this validator";
 "staking_preparing" = "Preparing";
 "staking_ready_to_withdraw" = "Ready to withdraw";
 "staking_rebond" = "Rebond";

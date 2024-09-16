@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Combine
+import TangemFoundation
 
 /// A simple helper with RAII semantics to 'disable' scroll inside `UIScrollView` without using `isScrollEnabled`
 /// property and hence without breaking the entire pan gesture.
@@ -33,16 +34,12 @@ final class ScrollViewContentOffsetLocker {
     }
 
     func lock() {
-        #if DEBUG
-        dispatchPrecondition(condition: .onQueue(.main))
-        #endif // DEBUG
+        ensureOnMainQueue()
         isLocked = true
     }
 
     func unlock() {
-        #if DEBUG
-        dispatchPrecondition(condition: .onQueue(.main))
-        #endif // DEBUG
+        ensureOnMainQueue()
         isLocked = false
     }
 
@@ -52,9 +49,7 @@ final class ScrollViewContentOffsetLocker {
             .removeDuplicates()
             .withWeakCaptureOf(self)
             .sink { locker, _ in
-                #if DEBUG
-                dispatchPrecondition(condition: .onQueue(.main))
-                #endif // DEBUG
+                ensureOnMainQueue()
 
                 if locker.isLocked {
                     locker.scrollView.adjustedContentOffset = .zero
