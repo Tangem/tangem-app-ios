@@ -988,7 +988,6 @@
 		DA7444252A27889600F926A9 /* PromotionServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7444232A27889600F926A9 /* PromotionServiceProtocol.swift */; };
 		DA78444C2B3080AF002281B8 /* SuccessToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA78444B2B3080AF002281B8 /* SuccessToast.swift */; };
 		DA7859E12AB0451F004FAE04 /* GenerateAddressesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7859E02AB0451F004FAE04 /* GenerateAddressesView.swift */; };
-		DA794EA62C6A5CD600472FC9 /* KaspaFeeCalculationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA794EA52C6A5CD600472FC9 /* KaspaFeeCalculationModel.swift */; };
 		DA7B2C512B6B893500FB9622 /* SendNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7B2C4F2B6B893500FB9622 /* SendNotificationManager.swift */; };
 		DA7B2C522B6B893500FB9622 /* SendNotificationEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7B2C502B6B893500FB9622 /* SendNotificationEvent.swift */; };
 		DA7D86F22C584B6600D85866 /* CustomKaspaFeeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7D86F12C584B6600D85866 /* CustomKaspaFeeService.swift */; };
@@ -2960,10 +2959,9 @@
 		DA7444232A27889600F926A9 /* PromotionServiceProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromotionServiceProtocol.swift; sourceTree = "<group>"; };
 		DA78444B2B3080AF002281B8 /* SuccessToast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessToast.swift; sourceTree = "<group>"; };
 		DA7859E02AB0451F004FAE04 /* GenerateAddressesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateAddressesView.swift; sourceTree = "<group>"; };
-		DA794EA52C6A5CD600472FC9 /* KaspaFeeCalculationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KaspaFeeCalculationModel.swift; sourceTree = "<group>"; };
 		DA7B2C4F2B6B893500FB9622 /* SendNotificationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendNotificationManager.swift; sourceTree = "<group>"; };
 		DA7B2C502B6B893500FB9622 /* SendNotificationEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendNotificationEvent.swift; sourceTree = "<group>"; };
-		DA7D86F12C584B6600D85866 /* CustomKaspaFeeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CustomKaspaFeeService.swift; path = ../CustomKaspaFeeService.swift; sourceTree = "<group>"; };
+		DA7D86F12C584B6600D85866 /* CustomKaspaFeeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomKaspaFeeService.swift; sourceTree = "<group>"; };
 		DA81B0F02AB0A74000FA86D3 /* ChangeSignType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeSignType.swift; sourceTree = "<group>"; };
 		DA81CF2D2B060A5C008877F1 /* SendSuggestedDestinationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendSuggestedDestinationView.swift; sourceTree = "<group>"; };
 		DA81CF2E2B060A5D008877F1 /* SendSuggestedDestinationViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendSuggestedDestinationViewModel.swift; sourceTree = "<group>"; };
@@ -7191,15 +7189,6 @@
 			path = PromotionService;
 			sourceTree = "<group>";
 		};
-		DA794EA42C6A5CCA00472FC9 /* Kaspa */ = {
-			isa = PBXGroup;
-			children = (
-				DA7D86F12C584B6600D85866 /* CustomKaspaFeeService.swift */,
-				DA794EA52C6A5CD600472FC9 /* KaspaFeeCalculationModel.swift */,
-			);
-			path = Kaspa;
-			sourceTree = "<group>";
-		};
 		DA7B2C4E2B6B893500FB9622 /* SendNotifications */ = {
 			isa = PBXGroup;
 			children = (
@@ -7330,8 +7319,8 @@
 		DADBECD92BBE910C007E7885 /* CustomFeeService */ = {
 			isa = PBXGroup;
 			children = (
-				DA794EA42C6A5CCA00472FC9 /* Kaspa */,
 				DADBECDC2BBE910C007E7885 /* CustomFeeServiceFactory.swift */,
+				DA7D86F12C584B6600D85866 /* CustomKaspaFeeService.swift */,
 				DADBECDA2BBE910C007E7885 /* CustomFeeService.swift */,
 				DADBECDB2BBE910C007E7885 /* CustomBitcoinFeeService.swift */,
 				DADBECDD2BBE910C007E7885 /* CustomEvmFeeService.swift */,
@@ -10961,7 +10950,6 @@
 				B06B62E02B10D20C00042A39 /* ExpressAPIProviderFactory.swift in Sources */,
 				B68B356B2A4B0FAB0069129F /* UIAppearanceBoundaryContainerView.swift in Sources */,
 				2DDF91942A14DA2700B31113 /* TokenItemMenuActions.swift in Sources */,
-				DA794EA62C6A5CD600472FC9 /* KaspaFeeCalculationModel.swift in Sources */,
 				DA4055272ABDD3A300353F8A /* AddCustomTokenNetworkSelectorDelegate.swift in Sources */,
 				EF5A5ACF28D86089002544AC /* TotalBalanceProvider.swift in Sources */,
 				B656FCE62C46F3E8002B5BF2 /* OverlayContentStateObserverViewModifier.swift in Sources */,
