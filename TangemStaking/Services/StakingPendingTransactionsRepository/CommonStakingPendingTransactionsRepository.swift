@@ -89,9 +89,13 @@ extension CommonStakingPendingTransactionsRepository: StakingPendingTransactions
         let hasPending: Bool
         switch balance.balanceType {
         case .locked:
-            hasPending = records.contains { $0.amount == balance.amount }
+            hasPending = records.contains { record in
+                compare(record, balance, by: [.amount])
+            }
         case .active, .rewards, .unbonding, .warmup, .unstaked:
-            hasPending = records.contains { $0.validator.address == balance.validatorAddress }
+            hasPending = records.contains { record in
+                compare(record, balance, by: [.validator])
+            }
         }
 
         if hasPending {
@@ -140,11 +144,17 @@ private extension CommonStakingPendingTransactionsRepository {
         let equals = types.map { type in
             switch type {
             case .validator:
-                record.validator.address == balance.validatorAddress
+                // We should only compare validators with the value
+                if let recordValidator = record.validator.address,
+                   let balanceValidator = balance.validatorAddress {
+                    return recordValidator == balanceValidator
+                }
+
+                return false
             case .amount:
-                record.amount == balance.amount
+                return record.amount == balance.amount
             case .type(let array):
-                array.contains(where: { $0 == balance.balanceType })
+                return array.contains(where: { $0 == balance.balanceType })
             }
         }
 
