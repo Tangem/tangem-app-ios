@@ -557,8 +557,6 @@
 "send_custom_evm_max_fee_footer" = "This is the cost you are willing to pay for each unit of gas. The higher the gas price, the faster your transaction will be processed. (Priority fee included)";
 "send_custom_evm_priority_fee" = "Priority fee";
 "send_custom_evm_priority_fee_footer" = "The fee that a user can pay to miners or validators to expedite the inclusion of their transaction in a block.";
-"send_custom_kaspa_per_utxo_footer" = "The fee required for using each unspent transaction output (UTXO) in the Kaspa network. The more UTXOs you use in a transaction, the higher the fee will be.";
-"send_custom_kaspa_per_utxo_title" = "KAS per UTXO";
 "send_date_format" = "%1$@, %2$@";
 "send_destination_tag_field" = "Destination Tag";
 "send_dismiss_message" = "Are you sure you want to close the send screen?";
@@ -702,6 +700,7 @@
 "staking_unbonding" = "Unbonding";
 "staking_unbonding_in" = "Unbonding in";
 "staking_unlocked_locked" = "Unlock";
+"staking_unlocking" = "Unlocking";
 "staking_unstaked" = "Unstaked";
 "staking_unstaked_footer" = "Check unstaked to claim your assets";
 "staking_unstaking" = "Unstaking";
@@ -843,6 +842,8 @@
 "warning_backup_errors_message" = "It seems that the card activation was not completed correctly. This could be due to an issue with your device's NFC module or incorrect tapping of the card to your device. Please contact our Support team for assistance.";
 "warning_beacon_chain_retirement_content" = "According to BNB network developers, support for the BEP-2 standard will end in June 2024. To avoid losing assets with this standard, please convert them to the BEP-20 standard. Use our swap service or third-party services to transfer funds to the BNB Smart Chain network.";
 "warning_beacon_chain_retirement_title" = "BNB Beacon Chain will shut down";
+"warning_blocked_funds_for_fee_message" = "Please deposit some %1$@ to cover the network fee";
+"warning_blocked_funds_for_fee_title" = "Insufficient funds to cover the network fee";
 "warning_button_could_be_better" = "Could be better";
 "warning_button_ok" = "Ok, Got it!";
 "warning_button_really_cool" = "Really cool!";

@@ -345,7 +345,7 @@
 "markets_common_my_portfolio" = "私のポートフォリオ";
 "markets_common_title" = "マーケット";
 "markets_generate_addresses_notification" = "選択したネットワークのアドレスを生成するには、Tangemカードをスキャンする必要があります。";
-"markets_hint" = "To add tokens pull this up or tap the search bar";
+"markets_hint" = "トークンを追加するには、これをスワイプするか、検索バーをタップしてください。";
 "markets_insights_info_description_message" = "このセクションのデータは、次のネットワークから取得されています: %@";
 "markets_loading_error_title" = "データを読み込めません…";
 "markets_loading_no_data_title" = "データなし";
@@ -356,13 +356,13 @@
 "markets_search_token_no_result_title" = "検索結果はありません";
 "markets_select_network" = "ネットワークを選択";
 "markets_select_wallet" = "ウォレットを選択";
-"markets_selector_interval_1m_title" = "1ヶ月";
-"markets_selector_interval_1y_title" = "1年";
-"markets_selector_interval_24h_title" = "24時間";
-"markets_selector_interval_3m_title" = "3ヶ月";
-"markets_selector_interval_6m_title" = "6ヶ月";
-"markets_selector_interval_7d_title" = "7日";
-"markets_selector_interval_all_title" = "すべて";
+"markets_selector_interval_1m_title" = "1m";
+"markets_selector_interval_1y_title" = "1y";
+"markets_selector_interval_24h_title" = "24h";
+"markets_selector_interval_3m_title" = "3m";
+"markets_selector_interval_6m_title" = "6m";
+"markets_selector_interval_7d_title" = "7d";
+"markets_selector_interval_all_title" = "全部";
 "markets_sort_by_experienced_buyers_title" = "経験豊富な買い手";
 "markets_sort_by_rating_title" = "格付け";
 "markets_sort_by_title" = "並べ替え";
@@ -557,8 +557,6 @@
 "send_custom_evm_max_fee_footer" = "各ガスに支払う最大コストです。ガス代が高いほど、トランザクションは早く処理されます。(優先手数料を含みます）";
 "send_custom_evm_priority_fee" = "優先手数料";
 "send_custom_evm_priority_fee_footer" = "ブロックに自分の取引が含まれるのを早めるために、ユーザーがマイナーやバリデーターに支払う手数料です。";
-"send_custom_kaspa_per_utxo_footer" = "Kaspaネットワークで未使用の取引出力（UTXO）を使用するために必要な手数料です。取引で使用するUTXOが多ければ多いほど、手数料は高くなります。";
-"send_custom_kaspa_per_utxo_title" = "UTXOあたりのKAS";
 "send_date_format" = "%1$@ 、 %2$@";
 "send_destination_tag_field" = "宛先タグ";
 "send_dismiss_message" = "送金画面を閉じてもよろしいですか?";
@@ -615,7 +613,7 @@
 "send_summary_transaction_description_no_fiat_fee" = "**%1$@** と %2$@ を送金しています。";
 "send_summary_transaction_description_prefix" = "** %1$@ ** を送信しています";
 "send_summary_transaction_description_suffix_fee_covered" = "ネットワーク手数料は%1$@エネルギーを使用してカバーされます";
-"send_summary_transaction_description_suffix_fee_reduced" = "%1$@を使用するとネットワーク手数料が減額されます";
+"send_summary_transaction_description_suffix_fee_reduced" = "%1$@エネルギーを使用するとネットワーク手数料が減額されます";
 "send_summary_transaction_description_suffix_including" = "ネットワーク手数料%1$@を含む";
 "send_transaction_success" = "取引は正常に署名され、ブロックチェーンノードに送信されました。ウォレットの残高はしばらくして更新されます。";
 "send_tron_account_activation_error" = "%1$@はTronネットワークのアセットです。手数料を計算して取引を行うには、アカウントにTron（TRX）を入金する必要があります。";
@@ -627,7 +625,7 @@
 "staking_active" = "アクティブ";
 "staking_active_footer" = "資産のステーキングを解除するには、上のブロックをタップしてください";
 "staking_amount_requirement_error" = "ステーキング金額は %@ 以上である必要があります";
-"staking_amount_tron_integer_error" = "Staking amount will be rounded to %1$@ TRX due to network rules.";
+"staking_amount_tron_integer_error" = "ネットワークルールにより、ステーキング金額は%1$@ TRX に切り上げられます。";
 "staking_claim_unstaked" = "ステーキング解除分を請求する";
 "staking_details_annual_percentage_rate" = "年率";
 "staking_details_annual_percentage_rate_info" = "ステーキングに参加することで得られる年間収益率。";
@@ -671,7 +669,7 @@
 "staking_notification_unlock_text" = "資金をステーキングから引き出すには、ロックを解除してください。ロック解除には%@かかります。";
 "staking_notification_unstake_cosmos_text" = "資金は、21日間のロック解除期間後に使用可能になります。報酬は、ロック解除後の資金とともに引き出されます。";
 "staking_notification_unstake_text" = "%@のステーキング解除期間後、資金はすぐ利用可能となります。";
-"staking_notification_withdraw_text" = "資金を引き出すことができ、すぐに使用できます";
+"staking_notification_withdraw_text" = "資金を引き出して、すぐに使用できます";
 "staking_notifications_revote_tron_text" = "Tronネットワークに新しいバリデーターでステーキングすると、以前にステーキングされた資金はすべてこのバリデーターに自動的に転送されます。";
 "staking_preparing" = "準備中";
 "staking_ready_to_withdraw" = "引き出し準備完了";
@@ -701,7 +699,8 @@
 "staking_transaction_in_progress_text" = "取引を処理中です。現在、ブロックチェーンで検証が行われています。これには数分かかる場合があります。";
 "staking_unbonding" = "ステーキング解約中";
 "staking_unbonding_in" = "解約完了まで";
-"staking_unlocked_locked" = "ステーキング解除はロックされています";
+"staking_unlocked_locked" = "ロック解除";
+"staking_unlocking" = "Unlocking";
 "staking_unstaked" = "ステーキングされていない";
 "staking_unstaked_footer" = "資産を請求するために、unstakedを確認してください";
 "staking_unstaking" = "ステーキング解除";
@@ -843,6 +842,8 @@
 "warning_backup_errors_message" = "カードのアクティベーションが正しく完了しませんでした。デバイスの NFCモジュールに問題があるか、カードをデバイスに正しくタップしていないことが原因かもしれません。サポートチームにお問い合わせください。";
 "warning_beacon_chain_retirement_content" = "BNBネットワーク開発者によると、BEP-2規格のサポートは2024年6月に終了します。この規格の資産を失わないために、BEP-20規格に変換してください。BNBスマートチェーンネットワークへ移行するには、Tangemのスワップサービスをご利用ください。";
 "warning_beacon_chain_retirement_title" = "BNBビーコンチェーンは閉鎖されます。";
+"warning_blocked_funds_for_fee_message" = "Please deposit some %1$@ to cover the network fee";
+"warning_blocked_funds_for_fee_title" = "Insufficient funds to cover the network fee";
 "warning_button_could_be_better" = "もっと良くなるはず";
 "warning_button_ok" = "はい、わかりました!";
 "warning_button_really_cool" = "すごくクールだ！";

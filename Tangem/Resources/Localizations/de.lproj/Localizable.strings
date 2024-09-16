@@ -557,8 +557,6 @@
 "send_custom_evm_max_fee_footer" = "Dies sind die Kosten, die du für jede Gaseinheit zu zahlen bereit bist. Je höher der Gaspreis ist, desto schneller wird deine Transaktion bearbeitet. (Vorzugsgebühr inbegriffen)";
 "send_custom_evm_priority_fee" = "Prioritätsgebühr";
 "send_custom_evm_priority_fee_footer" = "Die Gebühr, die ein Nutzer an Miner oder Validierer zahlen kann, um die Aufnahme seiner Transaktion in einen Block zu beschleunigen.";
-"send_custom_kaspa_per_utxo_footer" = "Die Gebühr, die für die Nutzung jeder nicht ausgegebenen Transaktionsausgabe (UTXO) im Kaspa-Netzwerk erforderlich ist. Je mehr UTXOs du in einer Transaktion verwenden, desto höher ist die Gebühr.";
-"send_custom_kaspa_per_utxo_title" = "KAS per UTXO";
 "send_date_format" = "%1$@, %2$@";
 "send_destination_tag_field" = "Ziel-Tag";
 "send_dismiss_message" = "Möchtest du den Sendebildschirm wirklich schließen?";
@@ -702,6 +700,7 @@
 "staking_unbonding" = "Lösen der Bindungen";
 "staking_unbonding_in" = "Entbindung in";
 "staking_unlocked_locked" = "Gelocktes unlocken";
+"staking_unlocking" = "Unlocking";
 "staking_unstaked" = "Unstaken";
 "staking_unstaked_footer" = "Prüfe, was nicht eingesetzt wurde, um dein Vermögen zu beanspruchen";
 "staking_unstaking" = "Staking beenden";
@@ -843,6 +842,8 @@
 "warning_backup_errors_message" = "Es scheint, dass die Aktivierung der Karte nicht korrekt abgeschlossen wurde. Dies kann an einem Problem mit dem NFC-Modul deines Gerätes oder an einem falschen Tippen der Karte auf dein Gerät liegen. Bitte wende dich  an unser Support-Team, um Unterstützung zu erhalten.";
 "warning_beacon_chain_retirement_content" = "Laut den Entwicklern des BNB-Netzes wird die Unterstützung für den BEP-2-Standard im Juni 2024 enden. Um den Verlust von Vermögenswerten mit diesem Standard zu vermeiden, konvertiere bitte in den BEP-20 Standard. Nutze gerne unseren Swap-Service, um sie auf das BNB Smart Chain Netzwerk zu übertragen.";
 "warning_beacon_chain_retirement_title" = "BNB Beacon Chain wird abgeschaltet";
+"warning_blocked_funds_for_fee_message" = "Please deposit some %1$@ to cover the network fee";
+"warning_blocked_funds_for_fee_title" = "Insufficient funds to cover the network fee";
 "warning_button_could_be_better" = "Ausbaufähig";
 "warning_button_ok" = "OK, habe ich verstanden!";
 "warning_button_really_cool" = "Echt toll!";
