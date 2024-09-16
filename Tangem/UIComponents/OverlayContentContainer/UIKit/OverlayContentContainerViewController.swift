@@ -632,8 +632,10 @@ extension OverlayContentContainerViewController: UIGestureRecognizerDelegate {
         _ gestureRecognizer: UIGestureRecognizer,
         shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
     ) -> Bool {
-        if otherGestureRecognizer is UIPanGestureRecognizer, let scrollView = otherGestureRecognizer.view as? UIScrollView {
-            scrollViewContentOffsetLocker = .make(for: scrollView)
+        if let scrollView = otherGestureRecognizer.view as? UIScrollView {
+            if scrollViewContentOffsetLocker?.scrollView !== scrollView {
+                scrollViewContentOffsetLocker = .make(for: scrollView)
+            }
         } else {
             gestureConflictResolver.handleSwiftUIGestureIfNeeded(otherGestureRecognizer)
         }
