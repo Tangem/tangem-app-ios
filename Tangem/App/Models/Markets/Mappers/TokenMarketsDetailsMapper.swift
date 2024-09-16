@@ -13,6 +13,7 @@ struct TokenMarketsDetailsMapper {
     let supportedBlockchains: Set<Blockchain>
 
     private let tokenItemMapper: TokenItemMapper
+    private let l2Blockchains = SupportedBlockchains.l2Blockchains
 
     init(supportedBlockchains: Set<Blockchain>) {
         self.supportedBlockchains = supportedBlockchains
@@ -20,6 +21,17 @@ struct TokenMarketsDetailsMapper {
     }
 
     func map(response: MarketsDTO.Coins.Response) throws -> TokenMarketsDetailsModel {
+        var networks = response.networks ?? []
+
+        // add l2 networks
+        if response.id == Blockchain.ethereum(testnet: false).coinId {
+            let l2Items = l2Blockchains.map {
+                return NetworkModel(networkId: $0.networkId, contractAddress: nil, decimalCount: nil)
+            }
+
+            networks.append(contentsOf: l2Items)
+        }
+
         return TokenMarketsDetailsModel(
             id: response.id,
             name: response.name,
@@ -33,7 +45,7 @@ struct TokenMarketsDetailsMapper {
             metrics: response.metrics,
             pricePerformance: mapPricePerformance(response: response),
             links: response.links,
-            availableNetworks: response.networks ?? []
+            availableNetworks: networks
         )
     }
 

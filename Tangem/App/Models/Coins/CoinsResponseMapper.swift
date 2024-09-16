@@ -20,17 +20,35 @@ struct CoinsResponseMapper {
     }
 
     func mapToCoinModels(_ response: CoinsList.Response) -> [CoinModel] {
-        response.coins.compactMap { coin in
+        let l2Blockchains = SupportedBlockchains.l2Blockchains
+
+        return response.coins.compactMap { coin in
             let id = coin.id.trimmed()
+
+            // ignore l2 coin
+            if l2Blockchains.contains(where: { $0.coinId == id }) {
+                return nil
+            }
+
             let name = coin.name.trimmed()
             let symbol = coin.symbol.uppercased().trimmed()
 
-            let items: [CoinModel.Item] = coin.networks.compactMap { network in
+            var items: [CoinModel.Item] = coin.networks.compactMap { network in
                 guard let item = tokenItemMapper.mapToTokenItem(id: id, name: name, symbol: symbol, network: network) else {
                     return nil
                 }
 
-                return CoinModel.Item(id: id, tokenItem: item, exchangeable: network.exchangeable)
+                return CoinModel.Item(id: id, tokenItem: item)
+            }
+
+            // add l2 networks
+            if id == Blockchain.ethereum(testnet: false).coinId {
+                let l2Items = l2Blockchains.map {
+                    let tokenItm = TokenItem.blockchain(.init($0, derivationPath: nil))
+                    return CoinModel.Item(id: id, tokenItem: tokenItm)
+                }
+
+                items.append(contentsOf: l2Items)
             }
 
             if items.isEmpty {

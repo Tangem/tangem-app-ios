@@ -101,6 +101,10 @@ enum TokenItem: Hashable, Codable {
         case .token:
             return blockchain.tokenTypeName
         case .blockchain:
+            if SupportedBlockchains.l2Blockchains.contains(where: { $0.networkId == networkId }) {
+                return "MAIN L2"
+            }
+
             return "MAIN"
         }
     }
