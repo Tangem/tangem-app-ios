@@ -12,7 +12,7 @@ import TangemStaking
 enum StakingNotificationEvent {
     case approveTransactionInProgress
     case stake(tokenSymbol: String, rewardScheduleType: RewardScheduleType)
-    case unstake(periodFormatted: String)
+    case unstake(description: String)
     case withdraw
     case claimRewards
     case restakeRewards
@@ -70,8 +70,8 @@ extension StakingNotificationEvent: NotificationEvent {
             Localization.stakingNotificationEarnRewardsTextPeriodWeek(tokenSymbol)
         case .stake(let tokenSymbol, .month):
             Localization.stakingNotificationEarnRewardsTextPeriodMonth(tokenSymbol)
-        case .unstake(let periodFormatted):
-            Localization.stakingNotificationUnstakeText(periodFormatted)
+        case .unstake(let description):
+            description
         case .withdraw:
             Localization.stakingNotificationWithdrawText
         case .claimRewards:

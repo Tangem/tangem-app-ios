@@ -33,6 +33,7 @@ struct StakingFlowBaseBuilder {
             sendFeeLoader: stakingModel,
             sendQRCodeService: .none,
             sendAmountValidator: builder.makeStakingSendAmountValidator(stakingManager: manager),
+            amountModifier: builder.makeStakingAmountModifier(),
             source: .staking
         )
 
