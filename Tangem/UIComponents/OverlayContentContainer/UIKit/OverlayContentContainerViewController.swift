@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 
 final class OverlayContentContainerViewController: UIViewController {
+    weak var delegate: OverlayContentContainerViewControllerDelegate?
+
     // MARK: - Dependencies
 
     let overlayCornerRadius: CGFloat

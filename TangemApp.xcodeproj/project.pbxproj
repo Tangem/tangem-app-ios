@@ -730,6 +730,7 @@
 		B63B72892AF5F23B004B80BF /* TokenSectionsSourcePublisherFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63B72882AF5F23B004B80BF /* TokenSectionsSourcePublisherFactory.swift */; };
 		B63BAA6C2B7410AE00DA26C9 /* TangemWalletCoreBinariesWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = B63BAA6B2B7410AE00DA26C9 /* TangemWalletCoreBinariesWrapper */; };
 		B63D4CAD2B2B8C6200DB2420 /* MutableCollection+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63D4CAC2B2B8C6200DB2420 /* MutableCollection+.swift */; };
+		B63DC2642C99E2D0002B9FEF /* OverlayContentContainerViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63DC2632C99E2D0002B9FEF /* OverlayContentContainerViewControllerDelegate.swift */; };
 		B63FDB182A5F09F10080240F /* CardsInfoPagerFlexibleFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63FDB172A5F09F10080240F /* CardsInfoPagerFlexibleFooterView.swift */; };
 		B6421A8D2C9272800053DD8B /* MainBottomSheetHeaderViewModelDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6421A8C2C9272800053DD8B /* MainBottomSheetHeaderViewModelDelegate.swift */; };
 		B643B8072B1965EA002DE401 /* PerformanceMonitorConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B643B8062B1965EA002DE401 /* PerformanceMonitorConfigurator.swift */; };
@@ -2709,6 +2710,7 @@
 		B63B63BC2A44013E00A7CECF /* OrganizeTokensListFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensListFooter.swift; sourceTree = "<group>"; };
 		B63B72882AF5F23B004B80BF /* TokenSectionsSourcePublisherFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenSectionsSourcePublisherFactory.swift; sourceTree = "<group>"; };
 		B63D4CAC2B2B8C6200DB2420 /* MutableCollection+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MutableCollection+.swift"; sourceTree = "<group>"; };
+		B63DC2632C99E2D0002B9FEF /* OverlayContentContainerViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayContentContainerViewControllerDelegate.swift; sourceTree = "<group>"; };
 		B63FDB172A5F09F10080240F /* CardsInfoPagerFlexibleFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardsInfoPagerFlexibleFooterView.swift; sourceTree = "<group>"; };
 		B6421A8C2C9272800053DD8B /* MainBottomSheetHeaderViewModelDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainBottomSheetHeaderViewModelDelegate.swift; sourceTree = "<group>"; };
 		B643B8062B1965EA002DE401 /* PerformanceMonitorConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceMonitorConfigurator.swift; sourceTree = "<group>"; };
@@ -6656,6 +6658,7 @@
 				B6FCEE6E2C40E11400CA9252 /* ScrollViewContentOffsetLocker.swift */,
 				B657CE962C66FC3200A7AC8B /* OverlayContentContainerAppLifecycleHelper.swift */,
 				B6FCEE6C2C40E0BD00CA9252 /* OverlayContentContainerViewController.swift */,
+				B63DC2632C99E2D0002B9FEF /* OverlayContentContainerViewControllerDelegate.swift */,
 				B66655722C6ECD91001E2C68 /* OverlayContentContainerProgress.swift */,
 				B66655752C6ED3F5001E2C68 /* UIView+OverlayContentContainerProgress.swift */,
 			);
@@ -11093,6 +11096,7 @@
 				B6EE59432C8B2FE2003A0696 /* CALayerSnapshotOptions.swift in Sources */,
 				B63B63BD2A44013E00A7CECF /* OrganizeTokensListFooter.swift in Sources */,
 				B008E13C29802612006E0E31 /* WebSocketConnectionDelegate.swift in Sources */,
+				B63DC2642C99E2D0002B9FEF /* OverlayContentContainerViewControllerDelegate.swift in Sources */,
 				EFAD02402A7D17BB00E9B959 /* CommonTransactionHistoryService.swift in Sources */,
 				B06B62E02B10D20C00042A39 /* ExpressAPIProviderFactory.swift in Sources */,
 				B68B356B2A4B0FAB0069129F /* UIAppearanceBoundaryContainerView.swift in Sources */,
