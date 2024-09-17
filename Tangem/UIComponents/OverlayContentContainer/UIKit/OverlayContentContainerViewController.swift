@@ -107,6 +107,7 @@ final class OverlayContentContainerViewController: UIViewController {
         setupContent()
         setupBackgroundShadowView()
         setupTapGestureRecognizerHostingView()
+        setupOverlayHostingView()
         setupOverlayIfAvailable()
         setupAppLifecycleHelper()
     }
@@ -122,41 +123,41 @@ final class OverlayContentContainerViewController: UIViewController {
     // MARK: - Public API
 
     func installOverlay(_ newOverlayViewController: UIViewController) {
-        guard overlayViewController == nil else {
-            assertionFailure("Remove previous overlay view controller using `removeOverlay` before installing a new one")
-            return
-        }
-
-        guard isViewLoaded else {
-            // Overlay (if any) will be installed in `viewDidLoad` later on
-            return
-        }
-
-        overlayViewController = newOverlayViewController
-        setupOverlay(newOverlayViewController)
+//        guard overlayViewController == nil else {
+//            assertionFailure("Remove previous overlay view controller using `removeOverlay` before installing a new one")
+//            return
+//        }
+//
+//        guard isViewLoaded else {
+//            // Overlay (if any) will be installed in `viewDidLoad` later on
+//            return
+//        }
+//
+//        overlayViewController = newOverlayViewController
+//        setupOverlay(newOverlayViewController)
     }
 
     func removeOverlay() {
-        guard let overlayViewController else {
-            return
-        }
-
-        reset() // Crucial for tearing down the KVO observation (if any)
-
-        overlayViewController.willMove(toParent: nil)
-
-        overlayViewTopAnchorConstraint?.isActive = false
-        overlayViewTopAnchorConstraint = nil
-
-        grabberView = nil
-
-        let overlayView = overlayViewController.view!
-        overlayView.removeFromSuperview()
-
-        overlayViewController.removeFromParent()
-        self.overlayViewController = nil
-
-        updateProgress(verticalOffset: overlayCollapsedVerticalOffset, animationContext: nil)
+//        guard let overlayViewController else {
+//            return
+//        }
+//
+//        reset() // Crucial for tearing down the KVO observation (if any)
+//
+//        overlayViewController.willMove(toParent: nil)
+//
+//        overlayViewTopAnchorConstraint?.isActive = false
+//        overlayViewTopAnchorConstraint = nil
+//
+//        grabberView = nil
+//
+//        let overlayView = overlayViewController.view!
+//        overlayView.removeFromSuperview()
+//
+//        overlayViewController.removeFromParent()
+//        self.overlayViewController = nil
+//
+//        updateProgress(verticalOffset: overlayCollapsedVerticalOffset, animationContext: nil)
     }
 
     /// - Warning: This method maintains a strong reference to the given `observer` closure.
@@ -242,35 +243,75 @@ final class OverlayContentContainerViewController: UIViewController {
     }
 
     private func setupOverlay(_ overlayViewController: UIViewController) {
-        addChild(overlayViewController)
+//        addChild(overlayViewController)
+//
+//        let containerView = view!
+//        let overlayView = overlayViewController.view!
+//        containerView.translatesAutoresizingMaskIntoConstraints = false
+//        overlayView.translatesAutoresizingMaskIntoConstraints = false
+//        // `overlayView` always must be placed under `tapGestureRecognizerHostingView`
+//        containerView.insertSubview(overlayView, belowSubview: tapGestureRecognizerHostingView)
+//
+//        let overlayViewTopAnchorConstraint = overlayView
+//            .topAnchor
+//            .constraint(equalTo: containerView.topAnchor, constant: overlayCollapsedVerticalOffset)
+//        self.overlayViewTopAnchorConstraint = overlayViewTopAnchorConstraint
+//
+//        NSLayoutConstraint.activate([
+//            overlayViewTopAnchorConstraint,
+//            overlayView.heightAnchor.constraint(equalToConstant: screenBounds.height - contentExpandedVerticalOffset),
+//            overlayView.widthAnchor.constraint(equalToConstant: screenBounds.width),
+//        ])
+//
+//        let grabberViewFactory = GrabberViewFactory()
+//        let grabberView = grabberViewFactory.makeUIKitView()
+//        self.grabberView = grabberView
+//
+//        overlayView.addSubview(grabberView)
+//        grabberView.centerXAnchor.constraint(equalTo: overlayView.centerXAnchor).isActive = true
+//
+//        overlayView.layer.cornerRadius(overlayCornerRadius, corners: .topEdge)
+//        overlayViewController.didMove(toParent: self)
+    }
+
+    @available(*, deprecated, message: "Test only")
+    private var overlayHostingView: UIView!
+
+    private func setupOverlayHostingView() {
+        @available(*, deprecated, message: "Test only")
+        final class ___HostingView: UIView {}
 
         let containerView = view!
-        let overlayView = overlayViewController.view!
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-        overlayView.translatesAutoresizingMaskIntoConstraints = false
-        // `overlayView` always must be placed under `tapGestureRecognizerHostingView`
-        containerView.insertSubview(overlayView, belowSubview: tapGestureRecognizerHostingView)
+        let hostingView = ___HostingView()
+        hostingView.backgroundColor = .blue.withAlphaComponent(1.0 / 3.0)
+        hostingView.layer.borderWidth = 1.0
+        hostingView.layer.borderColor = UIColor.red.cgColor
 
-        let overlayViewTopAnchorConstraint = overlayView
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        hostingView.translatesAutoresizingMaskIntoConstraints = false
+        // `overlayView` always must be placed under `tapGestureRecognizerHostingView`
+        containerView.insertSubview(hostingView, belowSubview: tapGestureRecognizerHostingView)
+
+        let overlayViewTopAnchorConstraint = hostingView
             .topAnchor
             .constraint(equalTo: containerView.topAnchor, constant: overlayCollapsedVerticalOffset)
         self.overlayViewTopAnchorConstraint = overlayViewTopAnchorConstraint
 
         NSLayoutConstraint.activate([
             overlayViewTopAnchorConstraint,
-            overlayView.heightAnchor.constraint(equalToConstant: screenBounds.height - contentExpandedVerticalOffset),
-            overlayView.widthAnchor.constraint(equalToConstant: screenBounds.width),
+            hostingView.heightAnchor.constraint(equalToConstant: screenBounds.height - contentExpandedVerticalOffset),
+            hostingView.widthAnchor.constraint(equalToConstant: screenBounds.width),
         ])
 
         let grabberViewFactory = GrabberViewFactory()
         let grabberView = grabberViewFactory.makeUIKitView()
         self.grabberView = grabberView
 
-        overlayView.addSubview(grabberView)
-        grabberView.centerXAnchor.constraint(equalTo: overlayView.centerXAnchor).isActive = true
+        hostingView.addSubview(grabberView)
+        grabberView.centerXAnchor.constraint(equalTo: hostingView.centerXAnchor).isActive = true
 
-        overlayView.layer.cornerRadius(overlayCornerRadius, corners: .topEdge)
-        overlayViewController.didMove(toParent: self)
+        hostingView.layer.cornerRadius(overlayCornerRadius, corners: .topEdge)
+        overlayHostingView = hostingView
     }
 
     private func setupTapGestureRecognizerHostingView() {
@@ -586,7 +627,7 @@ final class OverlayContentContainerViewController: UIViewController {
             return Constants.defaultAnimationContext.duration
         }
 
-        let overlayViewFrame = overlayViewController?.view.frame ?? .zero
+        let overlayViewFrame = overlayHostingView.frame ?? .zero
 
         let remainingDistance = isCollapsing
             ? max(overlayCollapsedVerticalOffset - overlayViewFrame.minY, .zero)
@@ -613,10 +654,10 @@ extension OverlayContentContainerViewController: UIGestureRecognizerDelegate {
         let locationInScreenCoordinateSpace = touch.location(in: nil)
 
         panGestureStartLocationInScreenCoordinateSpace = locationInScreenCoordinateSpace
-        panGestureStartLocationInOverlayViewCoordinateSpace = touch.location(in: overlayViewController?.view)
+        panGestureStartLocationInOverlayViewCoordinateSpace = touch.location(in: overlayHostingView)
 
         // The gesture is completely disabled if no overlay view controller is set
-        return overlayViewController?.view.frame.contains(locationInScreenCoordinateSpace) ?? false
+        return overlayHostingView.frame.contains(locationInScreenCoordinateSpace) ?? false
     }
 
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -654,14 +695,14 @@ extension OverlayContentContainerViewController: TouchPassthroughViewDelegate {
         shouldPassthroughTouchAt point: CGPoint,
         with event: UIEvent?
     ) -> Bool {
-        guard
-            let overlayViewController,
-            overlayViewController.isViewLoaded
-        else {
-            return true
-        }
+//        guard
+//            let overlayViewController,
+//            overlayViewController.isViewLoaded
+//        else {
+//            return true
+//        }
 
-        let overlayViewFrame = overlayViewController.view.frame
+        let overlayViewFrame = overlayHostingView.frame
         let touchPoint = view.convert(point, from: passthroughView)
 
         // Tap gesture recognizer should only be triggered if the touch location is within the collapsed overlay view
