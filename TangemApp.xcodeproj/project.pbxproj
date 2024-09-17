@@ -1715,6 +1715,7 @@
 		EFC84B2C2C37FBB300546882 /* SendFinishStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84B232C37FBB200546882 /* SendFinishStep.swift */; };
 		EFC84B2D2C37FBB300546882 /* SendSummaryStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84B242C37FBB200546882 /* SendSummaryStep.swift */; };
 		EFC84B2F2C37FF1E00546882 /* SendDestinationRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC84B2E2C37FF1E00546882 /* SendDestinationRoutable.swift */; };
+		EFD0A14B2C9985CF0010E642 /* SendAmountModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD0A14A2C9985CD0010E642 /* SendAmountModifier.swift */; };
 		EFD32AE729ED93F20026353E /* FeatureStateRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD32AE629ED93F20026353E /* FeatureStateRowView.swift */; };
 		EFD32AE929ED94030026353E /* FeatureStateRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD32AE829ED94030026353E /* FeatureStateRowViewModel.swift */; };
 		EFD32AEB29EE7F390026353E /* Feature.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD32AEA29EE7F390026353E /* Feature.swift */; };
@@ -3732,6 +3733,7 @@
 		EFC84B242C37FBB200546882 /* SendSummaryStep.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendSummaryStep.swift; sourceTree = "<group>"; };
 		EFC84B2E2C37FF1E00546882 /* SendDestinationRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendDestinationRoutable.swift; sourceTree = "<group>"; };
 		EFCC66E028AA6FC500EC7757 /* UserTokenList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTokenList.swift; sourceTree = "<group>"; };
+		EFD0A14A2C9985CD0010E642 /* SendAmountModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendAmountModifier.swift; sourceTree = "<group>"; };
 		EFD32AE629ED93F20026353E /* FeatureStateRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureStateRowView.swift; sourceTree = "<group>"; };
 		EFD32AE829ED94030026353E /* FeatureStateRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureStateRowViewModel.swift; sourceTree = "<group>"; };
 		EFD32AEA29EE7F390026353E /* Feature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Feature.swift; sourceTree = "<group>"; };
@@ -8152,6 +8154,7 @@
 		EF031A7D2C0DD234001535C9 /* Interactor */ = {
 			isa = PBXGroup;
 			children = (
+				EFD0A14A2C9985CD0010E642 /* SendAmountModifier.swift */,
 				EF339E742C24820B00B5CDC9 /* SendAmountInteractor.swift */,
 				EF031A7E2C0DD243001535C9 /* SendAmountConverter.swift */,
 				EFAECCF02C1B702D0051710F /* SendAmountValidator.swift */,
@@ -11090,6 +11093,7 @@
 				EF5820482B33349300940387 /* CommonExpressExchangeDataDecoder.swift in Sources */,
 				B6A90A932AC6464D00108144 /* BottomScrollableSheetGrabberView.swift in Sources */,
 				5D3F77C624BF56D800E8695B /* AppDelegate.swift in Sources */,
+				EFD0A14B2C9985CF0010E642 /* SendAmountModifier.swift in Sources */,
 				B6AA137C2A2A37BD00B53937 /* CardInfoPageWarningIconAndTitleCellPreviewView.swift in Sources */,
 				B08394E42B299FDB0025176F /* VisaWalletMainContentViewModel.swift in Sources */,
 				B03AEEB229596EBD00212267 /* WalletConnectV2MessageComposer.swift in Sources */,

@@ -276,4 +276,8 @@ struct SendDependenciesBuilder {
     func makeStakingFeeIncludedCalculator() -> FeeIncludedCalculator {
         StakingFeeIncludedCalculator(tokenItem: walletModel.tokenItem, validator: walletModel.transactionValidator)
     }
+
+    func makeStakingAmountModifier() -> SendAmountModifier {
+        StakingAmountModifier(tokenItem: walletModel.tokenItem)
+    }
 }

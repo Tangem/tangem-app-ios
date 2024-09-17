@@ -34,6 +34,7 @@ struct SendFlowBaseBuilder {
             sendFeeLoader: fee.interactor,
             sendQRCodeService: sendQRCodeService,
             sendAmountValidator: builder.makeSendAmountValidator(),
+            amountModifier: .none,
             source: .send
         )
 

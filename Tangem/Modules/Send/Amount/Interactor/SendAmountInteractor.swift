@@ -29,11 +29,11 @@ class CommonSendAmountInteractor {
     private weak var input: SendAmountInput?
     private weak var output: SendAmountOutput?
     private let validator: SendAmountValidator
+    private let amountModifier: SendAmountModifier?
 
     private var type: SendAmountCalculationType
 
     private var _cachedAmount: CurrentValueSubject<SendAmount?, Never> = .init(nil)
-    private var _info: CurrentValueSubject<String?, Never> = .init(nil)
     private var _error: CurrentValueSubject<String?, Never> = .init(nil)
     private var _isValid: CurrentValueSubject<Bool, Never> = .init(false)
 
@@ -46,6 +46,7 @@ class CommonSendAmountInteractor {
         tokenItem: TokenItem,
         balanceValue: Decimal,
         validator: SendAmountValidator,
+        amountModifier: SendAmountModifier?,
         type: SendAmountCalculationType
     ) {
         self.input = input
@@ -53,6 +54,7 @@ class CommonSendAmountInteractor {
         self.tokenItem = tokenItem
         self.balanceValue = balanceValue
         self.validator = validator
+        self.amountModifier = amountModifier
         self.type = type
 
         bind()
@@ -69,7 +71,7 @@ class CommonSendAmountInteractor {
 
     private func validateAndUpdate(amount: SendAmount?) {
         do {
-            let amount = roundIfNeeded(amount: amount)
+            let amount = modifyIfNeeded(amount: amount)
 
             guard let crypto = amount?.crypto, crypto > 0 else {
                 // Field is empty or zero
@@ -90,17 +92,12 @@ class CommonSendAmountInteractor {
         output?.amountDidChanged(amount: amount)
     }
 
-    private func roundIfNeeded(amount: SendAmount?) -> SendAmount? {
-        guard let crypto = amount?.crypto, tokenItem.hasToBeRounded else {
+    private func modifyIfNeeded(amount: SendAmount?) -> SendAmount? {
+        guard let modified = amountModifier?.modify(cryptoAmount: amount?.crypto) else {
             return amount
         }
 
-        let rounded = crypto.rounded()
-        let isFloat = rounded != amount?.crypto
-        _info.send(isFloat ? Localization.stakingAmountTronIntegerError(rounded) : nil)
-
-        let roundedAmount = makeSendAmount(value: rounded)
-        return roundedAmount
+        return makeSendAmount(value: modified)
     }
 
     private func makeSendAmount(value: Decimal) -> SendAmount? {
@@ -137,8 +134,10 @@ class CommonSendAmountInteractor {
 
 extension CommonSendAmountInteractor: SendAmountInteractor {
     var infoTextPublisher: AnyPublisher<SendAmountViewModel.BottomInfoTextType?, Never> {
-        Publishers.Merge(
-            _info.removeDuplicates().map { $0.map { .info($0) } },
+        let info = amountModifier?.modifyingMessagePublisher ?? .just(output: nil)
+
+        return Publishers.Merge(
+            info.removeDuplicates().map { $0.map { .info($0) } },
             _error.removeDuplicates().map { $0.map { .error($0) } }
         )
         .eraseToAnyPublisher()
@@ -199,13 +198,4 @@ extension CommonSendAmountInteractor: SendAmountInteractor {
 enum SendAmountCalculationType {
     case crypto
     case fiat
-}
-
-private extension TokenItem {
-    var hasToBeRounded: Bool {
-        switch blockchain {
-        case .tron: true
-        default: false
-        }
-    }
 }
