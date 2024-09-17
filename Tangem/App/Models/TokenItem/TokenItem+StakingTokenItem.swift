@@ -28,6 +28,7 @@ private extension Blockchain {
     var stakeKitNetworkID: String {
         switch self {
         case .bsc: "binance"
+        case .avalanche: "avalanche-c"
         default: coinId
         }
     }

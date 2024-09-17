@@ -75,6 +75,7 @@ extension StakingFeatureProvider {
             StakingItem(network: .tron, contractAddress: nil),
             StakingItem(network: .ethereum, contractAddress: "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0"),
             StakingItem(network: .binance, contractAddress: nil),
+            StakingItem(network: .avalancheC, contractAddress: nil),
         ]
     }
 
@@ -90,6 +91,8 @@ extension StakingFeatureProvider {
             return "tron-trx-native-staking"
         case (.binance, .none):
             return "bsc-bnb-native-staking"
+        case (.avalancheC, .none), (.avalancheP, .none):
+            return "avalanche-avax-native-staking"
         default:
             return nil
         }
