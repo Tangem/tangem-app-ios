@@ -206,7 +206,7 @@ final class OverlayContentContainerViewController: UIViewController {
 
     /// - Note: The order in which this method is called matters. Must be called between `setupContent` and `setupOverlay`.
     private func setupBackgroundShadowView() {
-        // TODO: Andrey Fedorov - Add better support for dark mode (adjust content view contrast or background colors instead of using background shadow) (IOS-7664)
+        // TODO: Andrey Fedorov - Add better support for dark mode (adjust content view contrast or background colors instead of using background shadow) (IOS-7802)
         backgroundShadowView.backgroundColor = .black
         backgroundShadowView.alpha = Constants.minBackgroundShadowViewAlpha
         backgroundShadowView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -468,8 +468,7 @@ final class OverlayContentContainerViewController: UIViewController {
             return
         }
 
-        let startLocation = panGestureStartLocationInScreenCoordinateSpace
-        let verticalDirection = gestureRecognizer.verticalDirection(in: nil, relativeToGestureStartLocation: startLocation)
+        let verticalDirection = verticalDirection(for: gestureRecognizer)
 
         switch verticalDirection {
         case _ where scrollViewContentOffsetLocker == nil:
@@ -523,12 +522,11 @@ final class OverlayContentContainerViewController: UIViewController {
         }
 
         let velocity = gestureRecognizer.velocity(in: nil)
-        let startLocation = panGestureStartLocationInScreenCoordinateSpace
-        let verticalDirection = gestureRecognizer.verticalDirection(in: nil, relativeToGestureStartLocation: startLocation)
+        let verticalDirection = verticalDirection(for: gestureRecognizer)
         let decelerationRate = calculateDecelerationRate(gestureVerticalDirection: verticalDirection)
         let predictedEndLocation = gestureRecognizer.predictedEndLocation(in: nil, atDecelerationRate: decelerationRate)
-        let overlayViewFramePredictedOrigin = predictedEndLocation - panGestureStartLocationInOverlayViewCoordinateSpace
-        let isCollapsing = overlayViewFramePredictedOrigin.y > screenBounds.height / 2.0
+        let predictedOverlayViewFrameOrigin = predictedEndLocation - panGestureStartLocationInOverlayViewCoordinateSpace
+        let isCollapsing = predictedOverlayViewFrameOrigin.y > screenBounds.height / 2.0
 
         let animationDuration = calculateAnimationDuration(
             isCollapsing: isCollapsing,
@@ -552,6 +550,11 @@ final class OverlayContentContainerViewController: UIViewController {
     }
 
     // MARK: - Helpers
+
+    private func verticalDirection(for gestureRecognizer: UIPanGestureRecognizer) -> UIPanGestureRecognizer.VerticalDirection? {
+        let startLocation = panGestureStartLocationInScreenCoordinateSpace
+        return gestureRecognizer.verticalDirection(in: nil, relativeToGestureStartLocation: startLocation)
+    }
 
     private func calculateDecelerationRate(
         gestureVerticalDirection: UIPanGestureRecognizer.VerticalDirection?
