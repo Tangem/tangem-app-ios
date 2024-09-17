@@ -503,8 +503,9 @@ final class OverlayContentContainerViewController: UIViewController {
             currentVerticalOffset + translation.y,
             min: contentExpandedVerticalOffset,
             max: overlayCollapsedVerticalOffset
-        )
-        overlayViewTopAnchorConstraint?.constant = newVerticalOffset // TODO: Andrey Fedorov - Add rubber-banding (IOS-7664)
+        ) + calculateVerticalOffsetRubberbandingComponent(gestureRecognizer)
+
+        overlayViewTopAnchorConstraint?.constant = newVerticalOffset
         gestureRecognizer.setTranslation(.zero, in: nil)
 
         updateProgress(verticalOffset: newVerticalOffset, animationContext: nil)
@@ -591,6 +592,19 @@ final class OverlayContentContainerViewController: UIViewController {
             : max(overlayViewFrame.minY - contentExpandedVerticalOffset, .zero)
 
         return min(remainingDistance / abs(gestureVelocity.y), Constants.defaultAnimationContext.duration)
+    }
+
+    private func calculateVerticalOffsetRubberbandingComponent(_ gestureRecognizer: UIPanGestureRecognizer) -> CGFloat {
+        let gestureLocation = gestureRecognizer.location(in: nil)
+        let draggedOverlayViewFrameOrigin = gestureLocation - panGestureStartLocationInOverlayViewCoordinateSpace
+
+        // Rubberbanding is only applied when the overlay view is in the expanded state (to prevent a fake footer view,
+        // placed on the main view, from becoming visible); this condition ensures that
+        guard draggedOverlayViewFrameOrigin.y < contentExpandedVerticalOffset else {
+            return .zero
+        }
+
+        return (draggedOverlayViewFrameOrigin.y - contentExpandedVerticalOffset).withRubberbanding()
     }
 
     private static func calculateContentExpandedVerticalOffset(fromInput contentExpandedVerticalOffset: CGFloat) -> CGFloat {
