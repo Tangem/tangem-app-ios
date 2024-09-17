@@ -500,25 +500,19 @@ extension StakingModel: ApproveViewModelInput {
 // MARK: - SendBaseDataBuilderInput
 
 extension StakingModel: SendBaseDataBuilderInput {
-    var bsdkAmount: BSDKAmount? {
-        _amount.value?.crypto.map { makeAmount(value: $0) }
-    }
+    var bsdkAmount: BSDKAmount? { _amount.value?.crypto.map { makeAmount(value: $0) } }
 
-    var bsdkFee: BlockchainSdk.Fee? {
-        selectedFee.value.value
-    }
+    var bsdkFee: BlockchainSdk.Fee? { selectedFee.value.value }
 
-    var isFeeIncluded: Bool {
-        _isFeeIncluded.value
-    }
+    var isFeeIncluded: Bool { _isFeeIncluded.value }
 
-    var selectedPolicy: ApprovePolicy? {
-        _approvePolicy.value
-    }
+    var selectedPolicy: ApprovePolicy? { _approvePolicy.value }
 
-    var approveViewModelInput: (any ApproveViewModelInput)? {
-        self
-    }
+    var approveViewModelInput: (any ApproveViewModelInput)? { self }
+
+    var stakingAction: StakingAction.ActionType? { .stake }
+
+    var validator: ValidatorInfo? { _selectedValidator.value.value }
 }
 
 extension StakingModel {

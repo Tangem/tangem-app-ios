@@ -310,15 +310,13 @@ extension UnstakingModel: NotificationTapDelegate {
 // MARK: - SendBaseDataBuilderInput
 
 extension UnstakingModel: SendBaseDataBuilderInput {
-    var bsdkAmount: BSDKAmount? {
-        makeAmount(value: action.amount)
-    }
+    var bsdkAmount: BSDKAmount? { makeAmount(value: action.amount) }
 
-    var bsdkFee: BlockchainSdk.Fee? {
-        selectedFee.value.value
-    }
+    var bsdkFee: BlockchainSdk.Fee? { selectedFee.value.value }
 
     var isFeeIncluded: Bool { false }
+
+    var validator: ValidatorInfo? { action.validatorInfo }
 }
 
 extension UnstakingModel {

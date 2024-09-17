@@ -16,11 +16,17 @@ protocol SendBaseDataBuilderInput {
 
     var selectedPolicy: ApprovePolicy? { get }
     var approveViewModelInput: ApproveViewModelInput? { get }
+
+    var stakingAction: StakingAction.ActionType? { get }
+    var validator: ValidatorInfo? { get }
 }
 
 extension SendBaseDataBuilderInput {
     var selectedPolicy: ApprovePolicy? { nil }
     var approveViewModelInput: ApproveViewModelInput? { nil }
+
+    var stakingAction: StakingAction.ActionType? { nil }
+    var validator: ValidatorInfo? { nil }
 }
 
 struct SendBaseDataBuilder {
@@ -54,7 +60,9 @@ struct SendBaseDataBuilder {
             destination: "Staking",
             amount: amount,
             isFeeIncluded: input.isFeeIncluded,
-            lastError: .init(error: error)
+            lastError: .init(error: error),
+            stakingAction: input.stakingAction,
+            validator: input.validator
         )
 
         let recipient = emailDataProvider.emailConfig?.recipient ?? EmailConfig.default.recipient
@@ -79,7 +87,9 @@ struct SendBaseDataBuilder {
             destination: transaction.destinationAddress,
             amount: transaction.amount,
             isFeeIncluded: input.isFeeIncluded,
-            lastError: .init(error: error)
+            lastError: .init(error: error),
+            stakingAction: nil,
+            validator: nil
         )
 
         let recipient = emailDataProvider.emailConfig?.recipient ?? EmailConfig.default.recipient
@@ -99,7 +109,9 @@ struct SendBaseDataBuilder {
             destination: "Staking",
             amount: amount,
             isFeeIncluded: input.isFeeIncluded,
-            lastError: .init(error: error)
+            lastError: .init(error: error),
+            stakingAction: input.stakingAction,
+            validator: input.validator
         )
 
         let recipient = emailDataProvider.emailConfig?.recipient ?? EmailConfig.default.recipient
