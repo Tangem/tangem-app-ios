@@ -27,11 +27,12 @@ class StakingDetailsStakeViewDataBuilder {
 
     func mapToStakingDetailsStakeViewData(yield: YieldInfo, balance: StakingBalance, action: @escaping () -> Void) -> StakingDetailsStakeViewData {
         let validator = balance.validatorType.validator
+        let inProgress = balance.inProgress
 
         let title: String = {
             switch balance.balanceType {
             case .rewards: Localization.stakingRewards
-            case .locked: Localization.stakingLocked
+            case .locked: inProgress ? Localization.stakingUnlocking : Localization.stakingLocked
             case .warmup, .active: validator?.name ?? Localization.stakingValidator
             case .unbonding: Localization.stakingUnstaking
             case .unstaked: Localization.stakingUnstaked
@@ -54,7 +55,10 @@ class StakingDetailsStakeViewDataBuilder {
         let icon: StakingDetailsStakeViewData.IconType = {
             switch balance.balanceType {
             case .rewards, .warmup, .active: .image(url: validator?.iconURL)
-            case .locked: .icon(Assets.lock, color: Colors.Icon.informative)
+            case .locked: .icon(
+                    inProgress ? Assets.stakingUnlockingIcon : Assets.stakingLockIcon,
+                    color: inProgress ? Colors.Icon.accent : Colors.Icon.informative
+                )
             case .unbonding: .icon(Assets.unstakedIcon, color: Colors.Icon.accent)
             case .unstaked: .icon(Assets.unstakedIcon, color: Colors.Icon.informative)
             }
@@ -68,7 +72,6 @@ class StakingDetailsStakeViewDataBuilder {
             BalanceConverter().convertToFiat(balance.amount, currencyId: $0)
         }
         let balanceFiatFormatted = balanceFormatter.formatFiatBalance(balanceFiat)
-        let inProgress = balance.inProgress
 
         let action: (() -> Void)? = {
             switch balance.balanceType {
