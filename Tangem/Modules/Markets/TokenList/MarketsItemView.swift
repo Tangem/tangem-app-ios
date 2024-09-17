@@ -12,31 +12,31 @@ import SwiftUI
 struct MarketsItemView: View {
     @ObservedObject var viewModel: MarketsItemViewModel
 
-    private let iconSize = CGSize(bothDimensions: 36)
+    let cellWidth: CGFloat
+
+    private var textBlockWidth: CGFloat {
+        let textWidth = cellWidth - Constants.widthNeededForItemsExceptTextBlock
+        return textWidth
+    }
 
     var body: some View {
         Button(action: {
             viewModel.didTapAction?()
         }) {
-            HStack(spacing: .zero) {
-                HStack(spacing: 12) {
-                    IconView(url: viewModel.imageURL, size: iconSize, forceKingfisher: true)
+            HStack(spacing: Constants.itemsHorizontalSpacing) {
+                IconView(url: viewModel.imageURL, size: Constants.imageSize, forceKingfisher: true)
+                    .padding(.trailing, Constants.imageTrailingPadding)
 
+                VStack(spacing: 3) {
                     tokenInfoView
-                        .layoutPriority(2)
+
+                    tokenMarketPriceView
                 }
 
-                Spacer(minLength: 8)
-
-                HStack(spacing: 10) {
-                    tokenPriceView
-
-                    priceHistoryView
-                }
-                .layoutPriority(3)
+                priceHistoryView
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 15)
+            .padding(.horizontal, Constants.horizontalViewPadding)
+            .padding(.vertical, 14)
             .onAppear {
                 viewModel.onAppear()
             }
@@ -47,39 +47,21 @@ struct MarketsItemView: View {
     }
 
     private var tokenInfoView: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack(alignment: .firstBaselineCustom, spacing: 4) {
+        HStack(alignment: .firstTextBaseline, spacing: Constants.textBlockItemsSpacing) {
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
                 Text(viewModel.name)
                     .lineLimit(1)
+                    .truncationMode(.middle)
                     .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
 
                 Text(viewModel.symbol)
                     .lineLimit(1)
                     .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
             }
+            .frame(minWidth: 0.3 * textBlockWidth, maxWidth: .infinity, alignment: .leading)
 
-            HStack(spacing: 6) {
-                if let marketRating = viewModel.marketRating {
-                    Text(marketRating)
-                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-                        .padding(.horizontal, 5)
-                        .background(Colors.Field.primary)
-                        .cornerRadiusContinuous(4)
-                }
-
-                if let marketCap = viewModel.marketCap {
-                    Text(marketCap)
-                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-                }
-            }
-        }
-    }
-
-    private var tokenPriceView: some View {
-        VStack(alignment: .trailing, spacing: 3) {
             Text(viewModel.priceValue)
                 .lineLimit(1)
-                .truncationMode(.middle)
                 .blinkForegroundColor(
                     publisher: viewModel.$priceChangeAnimation,
                     positiveColor: Colors.Text.accent,
@@ -87,6 +69,22 @@ struct MarketsItemView: View {
                     originalColor: Colors.Text.primary1
                 )
                 .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
+        }
+    }
+
+    private var tokenMarketPriceView: some View {
+        HStack(spacing: .zero) {
+            HStack(alignment: .firstTextBaseline, spacing: Constants.textBlockItemsSpacing) {
+                if let marketRating = viewModel.marketRating {
+                    Text(marketRating)
+                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                        .roundedBackground(with: Colors.Field.primary, verticalPadding: .zero, horizontalPadding: 5, radius: 4)
+                }
+
+                Text(viewModel.marketCap)
+                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+            }
+            .frame(minWidth: 0.32 * textBlockWidth, maxWidth: .infinity, alignment: .leading)
 
             TokenPriceChangeView(state: viewModel.priceChangeState)
         }
@@ -103,7 +101,7 @@ struct MarketsItemView: View {
                 makeSkeletonView(by: Constants.skeletonMediumWidthValue)
             }
         }
-        .frame(width: 56, height: 24, alignment: .center)
+        .frame(size: Constants.chartSize, alignment: .center)
     }
 
     private func makeSkeletonView(by value: String) -> some View {
@@ -115,26 +113,38 @@ struct MarketsItemView: View {
 
 extension MarketsItemView {
     enum Constants {
+        static let textBlockItemsSpacing = 8.0
+        static let horizontalViewPadding: CGFloat = 16.0
+        static let imageSize: CGSize = .init(bothDimensions: 36)
+        static let imageTrailingPadding: CGFloat = 2
+        static let itemsHorizontalSpacing: CGFloat = 12.0
+        static let chartSize: CGSize = .init(width: 56, height: 24)
         static let skeletonMediumWidthValue: String = "---------"
         static let skeletonSmallWidthValue: String = "------"
+
+        static let widthNeededForItemsExceptTextBlock: CGFloat = horizontalViewPadding * 2 + imageSize.width + chartSize.width + itemsHorizontalSpacing * 2 + imageTrailingPadding
     }
 }
 
 #Preview {
     let tokens = DummyMarketTokenModelFactory().list()
 
-    return ScrollView(.vertical) {
-        ForEach(tokens.indexed(), id: \.1.id) { index, token in
-            MarketsItemView(
-                viewModel: .init(
-                    index: index,
-                    tokenModel: token,
-                    prefetchDataSource: nil,
-                    chartsProvider: .init(),
-                    filterProvider: .init(),
-                    onTapAction: nil
+    return GeometryReader { proxy in
+        ScrollView(.vertical) {
+            ForEach(tokens.indexed(), id: \.1.id) { index, token in
+                MarketsItemView(
+                    viewModel: .init(
+                        index: index,
+                        tokenModel: token,
+                        marketCapFormatter: .init(divisorsList: AmountNotationSuffixFormatter.Divisor.defaultList, baseCurrencyCode: "USD", notationFormatter: .init()),
+                        prefetchDataSource: nil,
+                        chartsProvider: .init(),
+                        filterProvider: .init(),
+                        onTapAction: nil
+                    ),
+                    cellWidth: proxy.size.width
                 )
-            )
+            }
         }
     }
 }

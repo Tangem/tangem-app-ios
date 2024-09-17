@@ -18,9 +18,11 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
 
     // MARK: - Published Properties
 
-    @Published var isShowTopAddButton: Bool = false
-    @Published var typeView: MarketsPortfolioContainerView.TypeView?
+    @Published var isAddTokenButtonDisabled: Bool = true
+    @Published var isLoadingNetworks: Bool = false
+    @Published var typeView: MarketsPortfolioContainerView.TypeView = .loading
     @Published var tokenItemViewModels: [MarketsPortfolioTokenItemViewModel] = []
+    @Published var tokenWithExpandedQuickActions: MarketsPortfolioTokenItemViewModel?
 
     // MARK: - Private Properties
 
@@ -33,7 +35,9 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     private weak var coordinator: MarketsPortfolioContainerRoutable?
     private var addTokenTapAction: (() -> Void)?
 
-    private var inputData: InputData
+    private var coinId: String
+    private var networks: [NetworkModel]?
+
     private var bag = Set<AnyCancellable>()
 
     // MARK: - Init
@@ -44,11 +48,12 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         coordinator: MarketsPortfolioContainerRoutable?,
         addTokenTapAction: (() -> Void)?
     ) {
-        self.inputData = inputData
+        coinId = inputData.coinId
         self.walletDataProvider = walletDataProvider
         self.coordinator = coordinator
         self.addTokenTapAction = addTokenTapAction
 
+        updateUI(availableNetworks: nil, animated: false)
         bind()
     }
 
@@ -58,20 +63,33 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         addTokenTapAction?()
     }
 
+    func update(networks: [NetworkModel]) {
+        updateUI(availableNetworks: networks, animated: true)
+    }
+
     // MARK: - Private Implementation
 
-    private func updateUI() {
+    private func updateUI(availableNetworks: [NetworkModel]?, animated: Bool) {
+        networks = availableNetworks
         updateTokenList()
+        updateExpandedAction()
 
-        let canAddAvailableNetworks = canAddToPortfolio(with: inputData.networks)
+        var targetState: MarketsPortfolioContainerView.TypeView = .list
+        if let networks {
+            let canAddAvailableNetworks = canAddToPortfolio(with: networks)
+            isAddTokenButtonDisabled = tokenAddedToAllNetworksAndWallets(availableNetworks: networks) && canAddAvailableNetworks
 
-        guard canAddAvailableNetworks else {
-            typeView = tokenItemViewModels.isEmpty ? .unavailable : .list
-            return
+            if tokenItemViewModels.isEmpty {
+                targetState = canAddAvailableNetworks ? .empty : .unavailable
+            }
+        } else if tokenItemViewModels.isEmpty {
+            targetState = .loading
         }
 
-        isShowTopAddButton = !tokenItemViewModels.isEmpty
-        typeView = tokenItemViewModels.isEmpty ? .empty : .list
+        withAnimation(animated ? .default : nil) {
+            typeView = targetState
+            isLoadingNetworks = availableNetworks == nil
+        }
     }
 
     /*
@@ -89,11 +107,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             return false
         }
 
-        var networkIds = Set<String>()
-
-        networks.forEach {
-            networkIds.insert($0.networkId)
-        }
+        let networkIds = networks.reduce(into: Set<String>()) { $0.insert($1.networkId) }
 
         for model in multiCurrencyUserWalletModels {
             if !networkIds.intersection(model.config.supportedBlockchains.map { $0.networkId }).isEmpty {
@@ -104,11 +118,40 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         return false
     }
 
+    private func tokenAddedToAllNetworksAndWallets(availableNetworks: [NetworkModel]) -> Bool {
+        if availableNetworks.isEmpty {
+            return false
+        }
+
+        let availableNetworksIds = availableNetworks.reduce(into: Set<String>()) { $0.insert($1.networkId) }
+
+        for userWalletModel in userWalletModels {
+            guard userWalletModel.config.hasFeature(.multiCurrency) else {
+                continue
+            }
+
+            var networkIds = availableNetworksIds
+            let userTokenList = userWalletModel.userTokenListManager.userTokensList
+            for entry in userTokenList.entries {
+                guard let id = entry.id, id == coinId else {
+                    continue
+                }
+
+                networkIds.remove(entry.blockchainNetwork.blockchain.networkId)
+            }
+
+            if !networkIds.isEmpty {
+                return false
+            }
+        }
+
+        return true
+    }
+
     private func updateTokenList() {
         let portfolioTokenItemFactory = MarketsPortfolioTokenItemFactory(
             contextActionsProvider: self,
-            contextActionsDelegate: self,
-            quickActionDisclosureTap: weakify(self, forFunction: MarketsPortfolioContainerViewModel.quickActionDisclosureHandler(_:))
+            contextActionsDelegate: self
         )
 
         let tokenItemViewModelByUserWalletModels: [MarketsPortfolioTokenItemViewModel] = userWalletModels
@@ -117,8 +160,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
                 let entries = userWalletModel.userTokenListManager.userTokensList.entries
 
                 let viewModels: [MarketsPortfolioTokenItemViewModel] = portfolioTokenItemFactory.makeViewModels(
-                    coinId: inputData.coinId,
-                    networks: inputData.networks,
+                    coinId: coinId,
                     walletModels: walletModels,
                     entries: entries,
                     userWalletInfo: MarketsPortfolioTokenItemFactory.UserWalletInfo(
@@ -131,25 +173,34 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             }
 
         tokenItemViewModels = tokenItemViewModelByUserWalletModels
+        updateExpandedAction()
     }
 
-    // It is necessary for mutually exclusive work and quick actions. Only one token can be disclosed
-    private func quickActionDisclosureHandler(_ viewModelId: Int) {
-        let filteredViewModels = tokenItemViewModels.filter { $0.id != viewModelId }
-
-        for viewModel in filteredViewModels {
-            viewModel.isExpandedQuickActions = false
+    private func updateExpandedAction() {
+        guard
+            tokenItemViewModels.count == 1, let tokenViewModel = tokenItemViewModels.first,
+            tokenViewModel.tokenItemInfoProvider.isZeroBalanceValue
+        else {
+            tokenWithExpandedQuickActions = nil
+            return
         }
+
+        tokenWithExpandedQuickActions = tokenViewModel
     }
 
     private func bind() {
         let publishers = userWalletModels.map { $0.userTokenListManager.userTokensListPublisher }
+        let walletModelsPublishers = userWalletModels.map { $0.walletModelsManager.walletModelsPublisher }
 
-        Publishers.MergeMany(publishers)
+        let manyUserTokensListPublishers = Publishers.MergeMany(publishers)
+        let manyWalletModelsPublishers = Publishers.MergeMany(walletModelsPublishers)
+
+        manyUserTokensListPublishers
+            .combineLatest(manyWalletModelsPublishers)
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { viewModel, _ in
-                viewModel.updateUI()
+                viewModel.updateUI(availableNetworks: viewModel.networks, animated: true)
             }
             .store(in: &bag)
     }
@@ -186,6 +237,16 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProv
 // MARK: - MarketsPortfolioContextActionsDelegate
 
 extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDelegate {
+    func showContextAction(for viewModel: MarketsPortfolioTokenItemViewModel) {
+        withAnimation {
+            if tokenWithExpandedQuickActions === viewModel {
+                tokenWithExpandedQuickActions = nil
+            } else {
+                tokenWithExpandedQuickActions = viewModel
+            }
+        }
+    }
+
     func didTapContextAction(_ action: TokenActionType, walletModelId: WalletModelId, userWalletId: UserWalletId) {
         let userWalletModel = userWalletModels.first(where: { $0.userWalletId == userWalletId })
         let walletModel = userWalletModel?.walletModelsManager.walletModels.first(where: { $0.id == walletModelId.id })
@@ -194,27 +255,24 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDele
             return
         }
 
-        Analytics.log(event: .marketsActionButtons, params: [.button: action.analyticsParameterValue])
+        let analyticsParams: [Analytics.ParameterKey: String] = [
+            .source: Analytics.ParameterValue.market.rawValue,
+            .token: walletModel.tokenItem.currencySymbol.uppercased(),
+            .blockchain: walletModel.tokenItem.blockchain.displayName,
+        ]
 
         switch action {
         case .buy:
+            Analytics.log(event: .marketsChartButtonBuy, params: analyticsParams)
             coordinator.openBuyCryptoIfPossible(for: walletModel, with: userWalletModel)
-        case .send:
-            coordinator.openSend(for: walletModel, with: userWalletModel)
         case .receive:
+            Analytics.log(event: .marketsChartButtonReceive, params: analyticsParams)
             coordinator.openReceive(walletModel: walletModel)
-        case .sell:
-            coordinator.openSell(for: walletModel, with: userWalletModel)
-        case .copyAddress:
-            UIPasteboard.general.string = walletModel.defaultAddress
-
-            Toast(view: SuccessToast(text: Localization.walletNotificationAddressCopied))
-                .present(layout: .bottom(padding: 80), type: .temporary())
         case .exchange:
+            Analytics.log(event: .marketsChartButtonSwap, params: analyticsParams)
             coordinator.openExchange(for: walletModel, with: userWalletModel)
-        case .stake:
-            coordinator.openStaking(for: walletModel, with: userWalletModel)
-        case .hide, .marketsDetails:
+        case .hide, .marketsDetails, .send, .stake, .sell, .copyAddress:
+            // An empty value because it is not available
             return
         }
     }
@@ -223,6 +281,5 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDele
 extension MarketsPortfolioContainerViewModel {
     struct InputData {
         let coinId: String
-        let networks: [NetworkModel]
     }
 }

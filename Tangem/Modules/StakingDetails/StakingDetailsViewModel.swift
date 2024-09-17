@@ -13,8 +13,6 @@ import TangemStaking
 import SwiftUI
 
 final class StakingDetailsViewModel: ObservableObject {
-    @Injected(\.stakingPendingTransactionsRepository) private var stakingPendingTransactionsRepository: StakingPendingTransactionsRepository
-
     // MARK: - ViewState
 
     var title: String { Localization.stakingDetailsTitle(walletModel.name) }
@@ -31,7 +29,7 @@ final class StakingDetailsViewModel: ObservableObject {
     @Published var actionSheet: ActionSheetBinder?
     @Published var alert: AlertBinder?
 
-    lazy var legalText: AttributedString? = makeLegalText()
+    lazy var legalText = makeLegalText()
 
     // MARK: - Dependencies
 
@@ -75,13 +73,13 @@ final class StakingDetailsViewModel: ObservableObject {
         coordinator?.openStakingFlow()
     }
 
-    func userDidTapHideBanner() {
-        AppSettings.shared.hideStakingInfoBanner = true
-        hideStakingInfoBanner = true
-    }
-
     func onAppear() {
         loadValues()
+        let balances = stakingManager.state.balances.flatMap { String($0.count) } ?? String(0)
+        Analytics.log(
+            event: .stakingInfoScreenOpened,
+            params: [.validatorsCount: balances]
+        )
     }
 }
 
@@ -136,14 +134,13 @@ private extension StakingDetailsViewModel {
             actionButtonType = .stake
         case .staked(let staked):
             setupView(yield: staked.yieldInfo, balances: staked.balances)
-            stakingPendingTransactionsRepository.checkIfConfirmed(balances: staked.balances)
 
             actionButtonLoading = false
             actionButtonType = staked.canStakeMore ? .stakeMore : .none
         }
     }
 
-    func setupView(yield: YieldInfo, balances: [StakingBalanceInfo]) {
+    func setupView(yield: YieldInfo, balances: [StakingBalance]) {
         setupHeaderView(hasBalances: !balances.isEmpty)
         setupDetailsSection(yield: yield, staking: balances.staking())
         setupStakes(yield: yield, staking: balances.staking())
@@ -151,10 +148,10 @@ private extension StakingDetailsViewModel {
     }
 
     func setupHeaderView(hasBalances: Bool) {
-        hideStakingInfoBanner = hasBalances || AppSettings.shared.hideStakingInfoBanner
+        hideStakingInfoBanner = hasBalances
     }
 
-    func setupDetailsSection(yield: YieldInfo, staking: [StakingBalanceInfo]) {
+    func setupDetailsSection(yield: YieldInfo, staking: [StakingBalance]) {
         var viewModels = [
             DefaultRowViewModel(
                 title: Localization.stakingDetailsAnnualPercentageRate,
@@ -238,7 +235,7 @@ private extension StakingDetailsViewModel {
         detailsViewModels = viewModels
     }
 
-    func setupRewardView(yield: YieldInfo, balances: [StakingBalanceInfo]) {
+    func setupRewardView(yield: YieldInfo, balances: [StakingBalance]) {
         guard !balances.isEmpty else {
             rewardViewData = nil
             return
@@ -263,6 +260,9 @@ private extension StakingDetailsViewModel {
                 state: .rewards(fiatFormatted: rewardsFiatFormatted, cryptoFormatted: rewardsCryptoFormatted) { [weak self] in
                     if rewards.count == 1, let balance = rewards.first {
                         self?.openUnstakingFlow(balance: balance)
+
+                        let name = balance.validatorType.validator?.name
+                        Analytics.log(event: .stakingButtonRewards, params: [.validator: name ?? ""])
                     } else {
                         self?.coordinator?.openMultipleRewards()
                     }
@@ -271,18 +271,18 @@ private extension StakingDetailsViewModel {
         }
     }
 
-    func setupStakes(yield: YieldInfo, staking: [StakingBalanceInfo]) {
-        let cachedStakes = stakingPendingTransactionsRepository.records.filter { $0.type == .stake }.compactMap { record in
-            stakingDetailsStakesProvider.mapToStakingDetailsStakeViewData(yield: yield, record: record)
-        }
-
+    func setupStakes(yield: YieldInfo, staking: [StakingBalance]) {
         let staking = staking.map { balance in
             stakingDetailsStakesProvider.mapToStakingDetailsStakeViewData(yield: yield, balance: balance) { [weak self] in
+                Analytics.log(
+                    event: .stakingButtonValidator,
+                    params: [.source: Analytics.ParameterValue.stakeSourceStakeInfo.rawValue]
+                )
                 self?.openUnstakingFlow(balance: balance)
             }
         }
 
-        stakes = (cachedStakes + staking).sorted(by: { lhs, rhs in
+        stakes = staking.sorted(by: { lhs, rhs in
             if lhs.priority != rhs.priority {
                 return lhs.priority < rhs.priority
             }
@@ -295,9 +295,9 @@ private extension StakingDetailsViewModel {
         descriptionBottomSheetInfo = DescriptionBottomSheetInfo(title: title, description: description)
     }
 
-    func openUnstakingFlow(balance: StakingBalanceInfo) {
+    func openUnstakingFlow(balance: StakingBalance) {
         do {
-            let action = try PendingActionMapper(balanceInfo: balance).getAction()
+            let action = try PendingActionMapper(balance: balance).getAction()
             switch action {
             case .single(let action):
                 coordinator?.openUnstakingFlow(action: action)
@@ -321,6 +321,32 @@ private extension StakingDetailsViewModel {
         case .polkadot, .binance: true
         default: false
         }
+    }
+
+    func makeLegalText() -> AttributedString {
+        let tos = Localization.commonTermsOfUse
+        let policy = Localization.commonPrivacyPolicy
+
+        func makeBaseAttributedString(for text: String) -> AttributedString {
+            var attributedString = AttributedString(text)
+            attributedString.font = Fonts.Regular.footnote
+            attributedString.foregroundColor = Colors.Text.tertiary
+            return attributedString
+        }
+
+        func formatLink(in attributedString: inout AttributedString, textToSearch: String, url: URL) {
+            guard let range = attributedString.range(of: textToSearch) else {
+                return
+            }
+
+            attributedString[range].link = url
+            attributedString[range].foregroundColor = Colors.Text.accent
+        }
+
+        var attributedString = makeBaseAttributedString(for: Localization.stakingLegal(tos, policy))
+        formatLink(in: &attributedString, textToSearch: tos, url: Constants.tosURL)
+        formatLink(in: &attributedString, textToSearch: policy, url: Constants.privacyPolicyURL)
+        return attributedString
     }
 }
 
@@ -378,19 +404,6 @@ private extension RewardRateValues {
     }
 }
 
-private extension BalanceType {
-    var priority: Int {
-        switch self {
-        case .locked: -2
-        case .warmup: -1
-        case .active: 0
-        case .unbonding: 1
-        case .withdraw: 2
-        case .rewards: -10 // Will not use to rewards
-        }
-    }
-}
-
 extension StakingAction.ActionType {
     var title: String {
         switch self {
@@ -402,34 +415,6 @@ extension StakingAction.ActionType {
         case .pending(.voteLocked): Localization.stakingVote
         case .pending(.unlockLocked): Localization.stakingUnlockedLocked
         }
-    }
-}
-
-extension StakingDetailsViewModel {
-    func makeLegalText() -> AttributedString {
-        let tos = Localization.commonTermsOfUse
-        let policy = Localization.commonPrivacyPolicy
-
-        func makeBaseAttributedString(for text: String) -> AttributedString {
-            var attributedString = AttributedString(text)
-            attributedString.font = Fonts.Regular.footnote
-            attributedString.foregroundColor = Colors.Text.tertiary
-            return attributedString
-        }
-
-        func formatLink(in attributedString: inout AttributedString, textToSearch: String, url: URL) {
-            guard let range = attributedString.range(of: textToSearch) else {
-                return
-            }
-
-            attributedString[range].link = url
-            attributedString[range].foregroundColor = Colors.Text.accent
-        }
-
-        var attributedString = makeBaseAttributedString(for: Localization.stakingLegal(tos, policy))
-        formatLink(in: &attributedString, textToSearch: tos, url: Constants.tosURL)
-        formatLink(in: &attributedString, textToSearch: policy, url: Constants.privacyPolicyURL)
-        return attributedString
     }
 }
 

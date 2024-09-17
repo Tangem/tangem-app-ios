@@ -18,7 +18,17 @@ struct MainCoordinatorView: CoordinatorView {
                     .navigationLinks(links)
             }
 
+            marketsTooltipView
+
             sheets
+        }
+        .onOverlayContentStateChange { state in
+            if case .bottom = state {
+                // I do not delete the state, but no logic is required either
+                return
+            } else {
+                coordinator.hideMarketsTootip()
+            }
         }
     }
 
@@ -94,5 +104,15 @@ struct MainCoordinatorView: CoordinatorView {
 
         NavHolder()
             .requestAppStoreReviewCompat($coordinator.isAppStoreReviewRequested)
+    }
+
+    // Tooltip is placed on top of the other views
+    private var marketsTooltipView: some View {
+        BasicTooltipView(
+            isShowBindingValue: $coordinator.isMarketsTooltipVisible,
+            onHideAction: coordinator.hideMarketsTootip,
+            title: Localization.marketsTooltipTitle,
+            message: Localization.marketsTooltipMessage
+        )
     }
 }

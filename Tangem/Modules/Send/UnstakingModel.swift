@@ -19,8 +19,6 @@ protocol UnstakingModelStateProvider {
 }
 
 class UnstakingModel {
-    @Injected(\.stakingPendingTransactionsRepository) private var stakingPendingTransactionsRepository: StakingPendingTransactionsRepository
-
     // MARK: - Data
 
     private let _state = CurrentValueSubject<State, Never>(.loading)
@@ -55,6 +53,7 @@ class UnstakingModel {
         self.feeTokenItem = feeTokenItem
 
         updateState()
+        logOpenScreen()
     }
 }
 
@@ -104,7 +103,7 @@ private extension UnstakingModel {
 
     func validate(amount: Decimal, fee: Decimal) -> UnstakingModel.State? {
         do {
-            try transactionValidator.validate(amount: makeAmount(value: amount), fee: makeFee(value: fee))
+            try transactionValidator.validate(fee: makeFee(value: fee).amount)
             return nil
         } catch let error as ValidationError {
             return .validationError(error, fee: fee)
@@ -145,31 +144,33 @@ private extension UnstakingModel {
             let transaction = try await stakingManager.transaction(action: action)
             let result = try await sendTransactionDispatcher.send(transaction: .staking(transaction))
             proceed(result: result)
-            stakingPendingTransactionsRepository.transactionDidSent(action: action, validator: nil)
+            stakingManager.transactionDidSent(action: action)
 
             return result
         } catch let error as SendTransactionDispatcherResult.Error {
             proceed(error: error)
             throw error
         } catch {
-            throw error
+            throw SendTransactionDispatcherResult.Error.loadTransactionInfo(error: error)
         }
     }
 
     private func proceed(result: SendTransactionDispatcherResult) {
         _transactionTime.send(Date())
+        logTransactionAnalytics()
     }
 
     private func proceed(error: SendTransactionDispatcherResult.Error) {
         switch error {
-        case .informationRelevanceServiceError,
+        case .demoAlert,
+             .userCancelled,
+             .informationRelevanceServiceError,
              .informationRelevanceServiceFeeWasIncreased,
              .transactionNotFound,
-             .demoAlert,
-             .userCancelled,
-             .sendTxError:
-            // TODO: Add analytics
+             .loadTransactionInfo:
             break
+        case .sendTxError:
+            Analytics.log(event: .stakingErrorTransactionRejected, params: [.token: tokenItem.currencySymbol])
         }
     }
 }
@@ -295,6 +296,19 @@ extension UnstakingModel: StakingNotificationManagerInput {
     }
 }
 
+// MARK: - NotificationTapDelegate
+
+extension UnstakingModel: NotificationTapDelegate {
+    func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
+        switch action {
+        case .refreshFee:
+            updateState()
+        default:
+            assertionFailure("StakingModel doesn't support notification action \(action)")
+        }
+    }
+}
+
 extension UnstakingModel {
     typealias Action = StakingAction
 
@@ -303,5 +317,50 @@ extension UnstakingModel {
         case ready(fee: Decimal)
         case validationError(ValidationError, fee: Decimal)
         case networkError(Error)
+    }
+}
+
+// MARK: Analytics
+
+private extension UnstakingModel {
+    func logOpenScreen() {
+        switch action.type {
+        case .pending(.claimRewards), .pending(.restakeRewards):
+            Analytics.log(
+                event: .stakingRewardScreenOpened,
+                params: [.validator: action.validatorInfo?.address ?? ""]
+            )
+        default:
+            break
+        }
+    }
+
+    func logTransactionAnalytics() {
+        guard let analyticsEvent = action.type.analyticsEvent else {
+            return
+        }
+
+        Analytics.log(event: analyticsEvent, params: [.validator: action.validatorInfo?.name ?? ""])
+    }
+}
+
+private extension StakingAction.PendingActionType {
+    var analyticsEvent: Analytics.Event? {
+        switch self {
+        case .withdraw: .stakingButtonWithdraw
+        case .claimRewards: .stakingButtonClaim
+        case .restakeRewards: .stakingButtonRestake
+        default: nil
+        }
+    }
+}
+
+extension UnstakingModel.Action.ActionType {
+    var analyticsEvent: Analytics.Event? {
+        switch self {
+        case .stake: .stakingButtonStake
+        case .unstake: .stakingButtonUnstake
+        case .pending(let pending): pending.analyticsEvent
+        }
     }
 }

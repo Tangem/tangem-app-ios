@@ -32,7 +32,7 @@ class ListDataLoader {
     private let supportedBlockchains: Set<Blockchain>
     private let exchangeable: Bool?
 
-    // MARK: Private
+    // MARK: Private Properties
 
     // Tracks last page loaded. Used to load next page (current + 1)
     private var currentPage = 0
@@ -40,11 +40,16 @@ class ListDataLoader {
     // Limit of records per page
     private let perPage = 50
 
-    private var cancellable: AnyCancellable?
+    // Total pages
+    private var totalPages: Int = 1
 
     private var cached: [CoinModel] = []
     private var cachedSearch: [String: [CoinModel]] = [:]
     private var lastSearchText: String?
+
+    private var taskCancellable: AnyCancellable?
+
+    // MARK: - Init
 
     init(supportedBlockchains: Set<Blockchain>, exchangeable: Bool? = nil) {
         self.supportedBlockchains = supportedBlockchains
@@ -52,6 +57,8 @@ class ListDataLoader {
     }
 
     func reset(_ searchText: String?) {
+        log("Reset loader list tokens")
+
         canFetchMore = true
         items = []
         currentPage = 0
@@ -60,24 +67,20 @@ class ListDataLoader {
     }
 
     func fetch(_ searchText: String) {
-        cancellable = nil
-
         if lastSearchText != searchText {
             reset(searchText)
         }
 
-        cancellable = loadItems(searchText)
-            .receive(on: DispatchQueue.global())
-            .sink { [weak self] items in
-                guard let self = self else { return }
+        taskCancellable?.cancel()
 
-                currentPage += 1
-                self.items.append(contentsOf: items)
-                // If count of data received is less than perPage value then it is last page.
-                if items.count < perPage {
-                    canFetchMore = false
-                }
+        taskCancellable = runTask(in: self) { provider in
+            do {
+                let items = try await provider.loadItems(searchText)
+                provider.handle(result: .success(items))
+            } catch {
+                provider.handle(result: .failure(error))
             }
+        }.eraseToAnyCancellable()
     }
 
     func fetchMore() {
@@ -85,12 +88,37 @@ class ListDataLoader {
             fetch(lastSearchText)
         }
     }
+
+    func handle(result: Result<[CoinModel], Error>) {
+        do {
+            let items = try result.get()
+
+            try Task.checkCancellation()
+
+            // If count of data received is less than perPage value then it is last page.
+            if currentPage < totalPages {
+                currentPage += 1
+            } else {
+                canFetchMore = false
+            }
+
+            log("Loaded new items for manage tokens list. New total tokens count: \(self.items.count + items.count)")
+
+            self.items.append(contentsOf: items)
+        } catch {
+            if error.isCancellationError {
+                return
+            }
+
+            log("Failed to load next page. Error: \(error)")
+        }
+    }
 }
 
 // MARK: Private
 
 private extension ListDataLoader {
-    func loadItems(_ searchText: String) -> AnyPublisher<[CoinModel], Never> {
+    func loadItems(_ searchText: String) async throws -> [CoinModel] {
         let searchText = searchText.trimmed()
         let requestModel = CoinsList.Request(
             supportedBlockchains: supportedBlockchains,
@@ -101,53 +129,48 @@ private extension ListDataLoader {
             active: true
         )
 
-        // If testnet then use local coins from testnet_tokens.json file.
-        if supportedBlockchains.contains(where: { $0.isTestnet }) {
-            return loadTestnetItems(requestModel)
-        }
-
-        return loadMainnetItems(requestModel)
+        return try await loadMainnetItems(requestModel)
     }
 
-    func loadTestnetItems(_ requestModel: CoinsList.Request) -> AnyPublisher<[CoinModel], Never> {
+    func loadTestnetItems(_ requestModel: CoinsList.Request) async -> [CoinModel] {
         let searchText = requestModel.searchText?.lowercased()
-        let itemsPublisher: AnyPublisher<[CoinModel], Never>
+        let itemsList: [CoinModel]
 
         if cached.isEmpty {
-            itemsPublisher = loadCoinsFromLocalJsonPublisher(requestModel: requestModel)
+            itemsList = (try? loadCoinsFromLocalJson(requestModel: requestModel)) ?? []
         } else {
-            itemsPublisher = .just(output: cached)
+            itemsList = cached
         }
 
-        return itemsPublisher
-            .map { [weak self] models -> [CoinModel] in
-                guard let self = self else { return [] }
+        totalPages = itemsList.count / perPage + (itemsList.count % perPage == 0 ? 0 : 1)
 
-                guard let searchText = searchText,
-                      !searchText.isEmpty else { return models }
+        guard let searchText = searchText, !searchText.isEmpty else {
+            return itemsList
+        }
 
-                if let cachedSearch = cachedSearch[searchText] {
-                    return cachedSearch
-                }
+        if let cachedSearch = cachedSearch[searchText] {
+            return cachedSearch
+        }
 
-                let foundItems = models.filter {
-                    "\($0.name) \($0.symbol)".lowercased().contains(searchText)
-                }
+        let foundItems = itemsList.filter {
+            "\($0.name) \($0.symbol)".lowercased().contains(searchText)
+        }
 
-                cachedSearch[searchText] = foundItems
+        cachedSearch[searchText] = foundItems
 
-                return foundItems
-            }
-            .map { [weak self] models -> [CoinModel] in
-                self?.getPage(for: models) ?? []
-            }
-            .eraseToAnyPublisher()
+        return getPage(for: itemsList)
     }
 
-    func loadMainnetItems(_ requestModel: CoinsList.Request) -> AnyPublisher<[CoinModel], Never> {
-        tangemApiService.loadCoins(requestModel: requestModel)
-            .replaceError(with: [])
-            .eraseToAnyPublisher()
+    func loadMainnetItems(_ requestModel: CoinsList.Request) async throws -> [CoinModel] {
+        let response = try await tangemApiService.loadCoins(requestModel: requestModel)
+
+        totalPages = response.total / perPage + (response.total % perPage == 0 ? 0 : 1)
+
+        return map(
+            response: response,
+            supportedBlockchains: requestModel.supportedBlockchains,
+            contractAddress: requestModel.contractAddress
+        )
     }
 
     func loadCoinsFromLocalJsonPublisher(requestModel: CoinsList.Request) -> AnyPublisher<[CoinModel], Never> {
@@ -159,7 +182,45 @@ private extension ListDataLoader {
             .eraseToAnyPublisher()
     }
 
+    func loadCoinsFromLocalJson(requestModel: CoinsList.Request) throws -> [CoinModel] {
+        try TestnetTokensRepository().loadCoins(requestModel: requestModel)
+    }
+
     func getPage(for items: [CoinModel]) -> [CoinModel] {
         Array(items.dropFirst(currentPage * perPage).prefix(perPage))
+    }
+
+    func map(
+        response: CoinsList.Response,
+        supportedBlockchains: Set<Blockchain>,
+        contractAddress: String?
+    ) -> [CoinModel] {
+        let mapper = CoinsResponseMapper(supportedBlockchains: supportedBlockchains)
+        let coinModels = mapper.mapToCoinModels(response)
+
+        guard let contractAddress = contractAddress else {
+            return coinModels
+        }
+
+        return coinModels.compactMap { coinModel in
+            let items = coinModel.items.filter { item in
+                item.token?.contractAddress.caseInsensitiveCompare(contractAddress) == .orderedSame
+            }
+
+            guard !items.isEmpty else {
+                return nil
+            }
+
+            return CoinModel(
+                id: coinModel.id,
+                name: coinModel.name,
+                symbol: coinModel.symbol,
+                items: items
+            )
+        }
+    }
+
+    private func log<T>(_ message: @autoclosure () -> T) {
+        AppLog.shared.debug("[ListDataLoader] - \(message())")
     }
 }

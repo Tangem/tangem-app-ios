@@ -9,6 +9,7 @@
 import SwiftUI
 
 struct TokenMarketsDetailsLinksView: View {
+    let viewWidth: CGFloat
     let sections: [TokenMarketsDetailsLinkSection]
 
     private let chipsSettings = MarketsTokenDetailsLinkChipsView.StyleSettings(
@@ -17,8 +18,6 @@ struct TokenMarketsDetailsLinksView: View {
         backgroundColor: Colors.Field.focused,
         font: Fonts.Bold.caption1
     )
-
-    @State private var width: CGFloat = 0
 
     var body: some View {
         if sections.isEmpty {
@@ -44,7 +43,7 @@ struct TokenMarketsDetailsLinksView: View {
 
                                 MarketsTokenDetailsChipsContainer(
                                     chipsData: sectionInfo.chips,
-                                    parentWidth: width - Constants.horizontalPadding * 2
+                                    parentWidth: viewWidth - Constants.horizontalPadding * 2
                                 )
                             }
                             .padding(.horizontal, Constants.horizontalPadding)
@@ -56,7 +55,6 @@ struct TokenMarketsDetailsLinksView: View {
                         }
                     }
                 }
-                .readGeometry(\.size.width, bindTo: $width)
             }
             .defaultRoundedBackground(with: Colors.Background.action, horizontalPadding: 0)
         }
@@ -71,30 +69,33 @@ extension TokenMarketsDetailsLinksView {
 }
 
 #Preview {
-    return TokenMarketsDetailsLinksView(sections: [
-        .init(
-            section: .officialLinks,
-            chips: [
-                .init(
-                    text: "Website",
-                    icon: .leading(Assets.arrowRightUp),
-                    link: "3243109",
-                    action: {}
-                ),
-                .init(
-                    text: "Whitepaper",
-                    icon: .leading(Assets.whitepaper),
-                    link: "s2dfopefew",
-                    action: {}
-                ),
-                .init(
-                    text: "Forum",
-                    icon: .leading(Assets.arrowRightUp),
-                    link: "jfdksofnv,cnxbkr   ",
-                    action: {}
-                ),
-            ]
-        ),
-    ])
+    return TokenMarketsDetailsLinksView(
+        viewWidth: 400,
+        sections: [
+            .init(
+                section: .officialLinks,
+                chips: [
+                    .init(
+                        text: "Website",
+                        icon: .leading(Assets.arrowRightUp),
+                        link: "3243109",
+                        action: {}
+                    ),
+                    .init(
+                        text: "Whitepaper",
+                        icon: .leading(Assets.whitepaper),
+                        link: "s2dfopefew",
+                        action: {}
+                    ),
+                    .init(
+                        text: "Forum",
+                        icon: .leading(Assets.arrowRightUp),
+                        link: "jfdksofnv,cnxbkr   ",
+                        action: {}
+                    ),
+                ]
+            ),
+        ]
+    )
     .padding(.horizontal, 16)
 }

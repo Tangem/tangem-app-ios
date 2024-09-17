@@ -20,7 +20,6 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
     @Published var charts: [Double]? = nil
 
     var marketRating: String?
-    var marketCap: String?
 
     // MARK: - Properties
 
@@ -29,6 +28,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
     let imageURL: URL?
     let name: String
     let symbol: String
+    let marketCap: String
     let didTapAction: (() -> Void)?
 
     // MARK: - Private Properties
@@ -37,7 +37,6 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
 
     private let priceChangeUtility = PriceChangeUtility()
     private let priceFormatter = MarketsTokenPriceFormatter()
-    private let marketCapFormatter = MarketCapFormatter()
 
     private weak var prefetchDataSource: MarketsListPrefetchDataSource?
     private weak var filterProvider: MarketsListDataFilterProvider?
@@ -47,6 +46,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
     init(
         index: Int,
         tokenModel: MarketsTokenModel,
+        marketCapFormatter: MarketCapFormatter,
         prefetchDataSource: MarketsListPrefetchDataSource?,
         chartsProvider: MarketsListChartsHistoryProvider,
         filterProvider: MarketsListDataFilterProvider,
@@ -62,19 +62,18 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         symbol = tokenModel.symbol.uppercased()
 
         didTapAction = onTapAction
+        marketCap = marketCapFormatter.formatMarketCap(tokenModel.marketCap)
 
         if let marketRating = tokenModel.marketRating {
             self.marketRating = "\(marketRating)"
-        }
-
-        if let marketCap = tokenModel.marketCap {
-            self.marketCap = marketCapFormatter.formatDecimal(marketCap)
         }
 
         setupPriceInfo(
             price: tokenModel.currentPrice,
             priceChangePercent: tokenModel.priceChangePercentage[filterProvider.currentFilterValue.interval.rawValue]
         )
+        findAndAssignChartsValue(from: chartsProvider.items, with: filterProvider.currentFilterValue.interval)
+
         bindToIntervalUpdates()
         bindToQuotesUpdates()
         bindWithProviders(charts: chartsProvider, filter: filterProvider)
@@ -128,7 +127,6 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         charts.$items
             .combineLatest(filter.filterPublisher)
             .receive(on: DispatchQueue.main)
-            .delay(for: 0.3, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { elements in
                 let (viewModel, (charts, filter)) = elements
@@ -136,9 +134,6 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
                 viewModel.findAndAssignChartsValue(from: charts, with: filter.interval)
             })
             .store(in: &bag)
-
-        // You need to immediately find the value of the graph if it is already present
-        findAndAssignChartsValue(from: charts.items, with: filter.currentFilterValue.interval)
     }
 
     private func findAndAssignChartsValue(
@@ -146,6 +141,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         with interval: MarketsPriceIntervalType
     ) {
         guard let chart = chartsDictionary.first(where: { $0.key == tokenId }) else {
+            charts = nil
             return
         }
 

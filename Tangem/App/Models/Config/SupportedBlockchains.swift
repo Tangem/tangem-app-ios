@@ -19,6 +19,12 @@ extension SupportedBlockchains {
         SupportedBlockchains(version: .v1).blockchains()
     }
 
+    static var l2Blockchains: [Blockchain] {
+        all
+            .filter { $0.isL2EthereumNetwork }
+            .sorted(by: \.displayName)
+    }
+
     /// Blockchains which don't include in supported blockchains by default
     static var testableIDs: Set<String> {
         // Here version isn't important because we take only coinId
@@ -59,6 +65,7 @@ struct SupportedBlockchains {
     private func testableBlockchains() -> Set<Blockchain> {
         [
             .internetComputer,
+            .sei(testnet: false),
         ]
     }
 
@@ -93,7 +100,7 @@ struct SupportedBlockchains {
             .optimism(testnet: false),
             .ton(curve: ed25519Curve(for: version), testnet: false),
             .kava(testnet: false),
-            .kaspa,
+            .kaspa(testnet: false),
             .ravencoin(testnet: false),
             .cosmos(testnet: false),
             .terraV1,
@@ -182,6 +189,8 @@ struct SupportedBlockchains {
             .koinos(testnet: true),
             .cyber(testnet: true),
             .blast(testnet: true),
+            .sei(testnet: true),
+            .kaspa(testnet: true),
         ]
     }
 

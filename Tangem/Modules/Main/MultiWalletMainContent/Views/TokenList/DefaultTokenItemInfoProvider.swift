@@ -36,16 +36,23 @@ extension DefaultTokenItemInfoProvider: TokenItemInfoProvider {
 
     var balance: String { walletModel.allBalanceFormatted.crypto }
 
+    var isZeroBalanceValue: Bool { walletModel.allBalance.crypto?.isZero ?? true }
+
     var fiatBalance: String { walletModel.allBalanceFormatted.fiat }
 
     var quote: TokenQuote? { walletModel.quote }
 
     var actionsUpdatePublisher: AnyPublisher<Void, Never> { walletModel.actionsUpdatePublisher }
 
-    var isStaked: Bool {
-        switch walletModel.stakingManagerState {
-        case .staked: true
-        case .loading, .availableToStake, .notEnabled, .temporaryUnavailable: false
-        }
+    var isStakedPublisher: AnyPublisher<Bool, Never> {
+        walletModel.stakingManagerStatePublisher
+            .filter { $0 != .loading }
+            .map { state in
+                switch state {
+                case .staked: true
+                case .loading, .availableToStake, .notEnabled, .temporaryUnavailable: false
+                }
+            }
+            .eraseToAnyPublisher()
     }
 }

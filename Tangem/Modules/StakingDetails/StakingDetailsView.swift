@@ -84,9 +84,6 @@ struct StakingDetailsView: View {
                     .padding(.leading, 14)
             }
         }
-        .overlay(alignment: .topTrailing) {
-            closeBannerButton
-        }
     }
 
     private var whatIsStakingText: some View {
@@ -99,21 +96,6 @@ struct StakingDetailsView: View {
                     endPoint: .trailing
                 )
             )
-    }
-
-    private var closeBannerButton: some View {
-        Button(action: {
-            withAnimation {
-                viewModel.userDidTapHideBanner()
-            }
-        }) {
-            Assets.cross.image
-                .renderingMode(.template)
-                .foregroundColor(Colors.Icon.constant)
-                .opacity(0.5)
-                .padding(.vertical, 12)
-                .padding(.horizontal, 14)
-        }
     }
 
     @ViewBuilder
@@ -147,10 +129,8 @@ struct StakingDetailsView: View {
 
     @ViewBuilder
     private var legalView: some View {
-        if let legalText = viewModel.legalText {
-            Text(legalText)
-                .multilineTextAlignment(.center)
-        }
+        Text(viewModel.legalText)
+            .multilineTextAlignment(.center)
     }
 
     @ViewBuilder
@@ -163,7 +143,6 @@ struct StakingDetailsView: View {
             ) {
                 viewModel.userDidTapActionButton()
             }
-            .padding(.horizontal, 16)
             .padding(.bottom, 8)
         }
     }

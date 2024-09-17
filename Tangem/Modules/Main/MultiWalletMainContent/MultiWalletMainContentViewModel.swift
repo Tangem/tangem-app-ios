@@ -38,6 +38,10 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         )
     }
 
+    private(set) lazy var bottomSheetFooterViewModel: MainBottomSheetFooterViewModel? = FeatureProvider.isAvailable(.markets)
+        ? MainBottomSheetFooterViewModel()
+        : nil
+
     var isOrganizeTokensVisible: Bool {
         guard canManageTokens else { return false }
 
@@ -58,6 +62,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
     private let tokensNotificationManager: NotificationManager
     private let bannerNotificationManager: NotificationManager?
     private let tokenSectionsAdapter: TokenSectionsAdapter
+    private let tooltipStorageProvider = TooltipStorageProvider()
     private let tokenRouter: SingleTokenRoutable
     private let optionsEditing: OrganizeTokensOptionsEditing
     private let rateAppController: RateAppInteractionController
@@ -461,10 +466,10 @@ extension MultiWalletMainContentViewModel: TokenItemContextActionDelegate {
             let tokenItem = tokenItemViewModel.tokenItem
             let analyticsParams: [Analytics.ParameterKey: String] = [
                 .source: Analytics.ParameterValue.longTap.rawValue,
-                .token: tokenItem.currencySymbol,
+                .token: tokenItem.currencySymbol.uppercased(),
                 .blockchain: tokenItem.blockchain.displayName,
             ]
-            Analytics.log(event: .marketsTokenChartScreenOpened, params: analyticsParams)
+            Analytics.log(event: .marketsChartScreenOpened, params: analyticsParams)
             tokenRouter.openMarketsTokenDetails(for: tokenItem)
             return
         default:
@@ -493,6 +498,7 @@ extension MultiWalletMainContentViewModel: TokenItemContextActionDelegate {
             Analytics.log(event: .buttonExchange, params: [.token: walletModel.tokenItem.currencySymbol])
             tokenRouter.openExchange(walletModel: walletModel)
         case .stake:
+            Analytics.log(event: .stakingClicked, params: [.token: walletModel.tokenItem.currencySymbol])
             tokenRouter.openStaking(walletModel: walletModel)
         case .marketsDetails, .hide:
             return

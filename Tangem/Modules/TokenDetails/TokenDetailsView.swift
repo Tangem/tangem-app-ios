@@ -81,6 +81,7 @@ struct TokenDetailsView: View {
                 bindTo: scrollState.contentOffsetSubject.asWriteOnlyBinding(.zero)
             )
         }
+        .animation(.default, value: viewModel.bannerNotificationInputs)
         .animation(.default, value: viewModel.tokenNotificationInputs)
         .animation(.default, value: viewModel.pendingExpressTransactions)
         .padding(.horizontal, 16)

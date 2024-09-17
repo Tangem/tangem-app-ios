@@ -17,4 +17,5 @@ class StakingManagerMock: StakingManager {
     func updateState() async throws {}
     func estimateFee(action: StakingAction) async throws -> Decimal { .zero }
     func transaction(action: StakingAction) async throws -> StakingTransactionAction { .mock }
+    func transactionDidSent(action: StakingAction) {}
 }

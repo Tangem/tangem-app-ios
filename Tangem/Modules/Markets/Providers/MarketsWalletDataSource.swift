@@ -33,9 +33,13 @@ class MarketsWalletDataProvider {
 
         _userWalletModels.send(userWalletModels)
 
-        let selectedUserWalletModel = userWalletModels.first { userWalletModel in
-            userWalletModel.userWalletId == userWalletRepository.selectedUserWalletId
-        } ?? userWalletModels.first
+        let selectedUserWalletModel = userWalletModels
+            .filter {
+                $0.config.hasFeature(.multiCurrency)
+            }
+            .first { userWalletModel in
+                userWalletModel.userWalletId == userWalletRepository.selectedUserWalletId
+            } ?? userWalletModels.first
 
         _selectedUserWalletModel.send(selectedUserWalletModel)
     }

@@ -29,9 +29,9 @@ enum Feature: String, Hashable, CaseIterable {
         switch self {
         case .disableFirmwareVersionLimit: return .unspecified
         case .learnToEarn: return .unspecified
-        case .markets: return .unspecified
+        case .markets: return .version("5.15")
         case .dynamicFonts: return .unspecified
-        case .staking: return .unspecified
+        case .staking: return .version("5.15")
         }
     }
 }

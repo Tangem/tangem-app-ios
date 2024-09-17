@@ -42,21 +42,21 @@ import UIKit
 /// private final class DummyMarkOnlyUIViewControllerSubclass: UIViewController {}
 /// ```
 /// Without using `UIAppearanceBoundaryContainerView` every `UICollectionView` in the app will have scroll disabled.
-struct UIAppearanceBoundaryContainerView<BoundaryMarker, Content>: UIViewControllerRepresentable where
-    Content: View,
-    BoundaryMarker: UIViewController {
+struct UIAppearanceBoundaryContainerView<BoundaryMarker, Content>: UIViewControllerRepresentable where Content: View, BoundaryMarker: UIViewController {
+    private let boundaryMarker: () -> BoundaryMarker
     private let content: () -> Content
 
     /// Convenience constructor to avoid explicit generic specialization by the caller.
     init(
-        boundaryMarker: BoundaryMarker.Type,
+        boundaryMarker: @escaping () -> BoundaryMarker,
         content: @escaping () -> Content
     ) {
+        self.boundaryMarker = boundaryMarker
         self.content = content
     }
 
     func makeUIViewController(context: Context) -> BoundaryMarker {
-        let containerController = BoundaryMarker()
+        let containerController = boundaryMarker()
         let hostingController = UIHostingController(rootView: content())
         containerController.addChild(hostingController)
 
@@ -78,4 +78,16 @@ struct UIAppearanceBoundaryContainerView<BoundaryMarker, Content>: UIViewControl
     }
 
     func updateUIViewController(_ uiViewController: BoundaryMarker, context: Context) {}
+}
+
+// MARK: - Convenience extensions
+
+extension UIAppearanceBoundaryContainerView {
+    /// Convenience constructor to avoid explicit constructor call and generic specialization by the caller.
+    init(
+        boundaryMarker: BoundaryMarker.Type,
+        content: @escaping () -> Content
+    ) {
+        self.init(boundaryMarker: boundaryMarker.init, content: content)
+    }
 }

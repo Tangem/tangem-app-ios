@@ -22,6 +22,7 @@ struct UnstakingFlowBaseBuilder {
         let unstakingModel = builder.makeUnstakingModel(stakingManager: manager, action: action)
         let notificationManager = builder.makeStakingNotificationManager()
         notificationManager.setup(provider: unstakingModel, input: unstakingModel)
+        notificationManager.setupManager(with: unstakingModel)
 
         let sendFeeCompactViewModel = sendFeeStepBuilder.makeSendFeeCompactViewModel(input: unstakingModel)
         sendFeeCompactViewModel.bind(input: unstakingModel)
@@ -30,7 +31,7 @@ struct UnstakingFlowBaseBuilder {
 
         let summary = sendSummaryStepBuilder.makeSendSummaryStep(
             io: (input: unstakingModel, output: unstakingModel),
-            actionType: .unstake,
+            actionType: builder.sendFlowActionType(actionType: action.type),
             descriptionBuilder: builder.makeStakingTransactionSummaryDescriptionBuilder(),
             notificationManager: notificationManager,
             editableType: .noEditable,
@@ -66,6 +67,7 @@ struct UnstakingFlowBaseBuilder {
             interactor: interactor,
             stepsManager: stepsManager,
             userWalletModel: userWalletModel,
+            alertBuilder: builder.makeStakingAlertBuilder(),
             feeTokenItem: walletModel.feeTokenItem,
             coordinator: router
         )

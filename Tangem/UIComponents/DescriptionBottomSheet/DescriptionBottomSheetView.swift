@@ -14,6 +14,7 @@ struct DescriptionBottomSheetInfo: Identifiable, Equatable {
 
     let title: String?
     let description: String
+    var isGeneratedWithAI: Bool = false
 
     static func == (lhs: DescriptionBottomSheetInfo, rhs: DescriptionBottomSheetInfo) -> Bool {
         lhs.id == rhs.id
@@ -23,22 +24,14 @@ struct DescriptionBottomSheetInfo: Identifiable, Equatable {
 struct DescriptionBottomSheetView: View {
     let info: DescriptionBottomSheetInfo
 
-    var sheetHeight: Binding<CGFloat> = .constant(0)
     @State private var containerHeight: CGFloat = 0
 
     var body: some View {
-        textContent
-            .overlay {
-                textContent
-                    .opacity(0)
-                    .readGeometry(\.size.height, onChange: { value in
-                        sheetHeight.wrappedValue = value
-                    })
-            }
+        content
             .padding(.horizontal, 16)
     }
 
-    private var textContent: some View {
+    private var content: some View {
         VStack(spacing: 14) {
             if let title = info.title {
                 Text(title)
@@ -49,18 +42,37 @@ struct DescriptionBottomSheetView: View {
 
             Markdown { info.description }
                 .markdownSoftBreakMode(.lineBreak)
+                .markdownTextStyle(\.text, textStyle: {
+                    FontFamily(.system())
+                    FontWeight(.regular)
+                    FontSize(16)
+                    ForegroundColor(Colors.Text.primary1)
+                })
+                .markdownBlockStyle(\.paragraph, body: { configuration in
+                    configuration.label
+                        .relativeLineSpacing(.em(0.2))
+                })
                 .frame(maxWidth: .infinity, alignment: .topLeading)
-                .style(Fonts.Regular.callout, color: Colors.Text.primary1)
                 .fixedSize(horizontal: false, vertical: true)
                 .multilineTextAlignment(.leading)
-        }
-        .padding(.bottom, 16)
-    }
-}
 
-extension DescriptionBottomSheetView: SelfSizingBottomSheetContent, Setupable {
-    func setContentHeightBinding(_ binding: ContentHeightBinding) -> Self {
-        map { $0.sheetHeight = binding }
+            if info.isGeneratedWithAI {
+                generatedWithAILabel
+            }
+        }
+        .padding(.bottom, 10)
+    }
+
+    private var generatedWithAILabel: some View {
+        HStack(spacing: 12) {
+            Assets.stars.image
+                .foregroundStyle(Colors.Icon.accent)
+
+            Text(Localization.informationGeneratedWithAi)
+                .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .defaultRoundedBackground(with: Colors.Background.tertiary)
     }
 }
 

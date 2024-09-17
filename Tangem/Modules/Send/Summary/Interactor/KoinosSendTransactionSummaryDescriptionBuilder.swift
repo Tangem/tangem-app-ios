@@ -40,7 +40,7 @@ extension KoinosSendTransactionSummaryDescriptionBuilder: SendTransactionSummary
 
         return Localization.sendSummaryTransactionDescriptionNoFiatFee(
             formatter.formatFiatBalance(amountInFiat, formattingOptions: formattingOptions),
-            feeFormatter.format(fee: fee, tokenItem: feeTokenItem)
+            feeFormatter.format(fee: fee.amount.value, tokenItem: feeTokenItem)
         )
     }
 }

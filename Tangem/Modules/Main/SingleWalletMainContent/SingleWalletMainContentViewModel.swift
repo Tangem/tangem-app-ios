@@ -15,6 +15,10 @@ final class SingleWalletMainContentViewModel: SingleTokenBaseViewModel, Observab
 
     @Published var notificationInputs: [NotificationViewInput] = []
 
+    private(set) lazy var bottomSheetFooterViewModel: MainBottomSheetFooterViewModel? = FeatureProvider.isAvailable(.markets)
+        ? MainBottomSheetFooterViewModel()
+        : nil
+
     // MARK: - Dependencies
 
     private let userWalletNotificationManager: NotificationManager
@@ -83,10 +87,10 @@ final class SingleWalletMainContentViewModel: SingleTokenBaseViewModel, Observab
 
         let analyticsParams: [Analytics.ParameterKey: String] = [
             .source: Analytics.ParameterValue.main.rawValue,
-            .token: walletModel.tokenItem.currencySymbol,
+            .token: walletModel.tokenItem.currencySymbol.uppercased(),
             .blockchain: walletModel.tokenItem.blockchain.displayName,
         ]
-        Analytics.log(event: .marketsTokenChartScreenOpened, params: analyticsParams)
+        Analytics.log(event: .marketsChartScreenOpened, params: analyticsParams)
         super.openMarketsTokenDetails()
     }
 

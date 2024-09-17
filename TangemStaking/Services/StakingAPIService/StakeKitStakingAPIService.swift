@@ -13,6 +13,7 @@ import TangemFoundation
 class StakeKitStakingAPIService: StakingAPIService {
     private let provider: MoyaProvider<StakeKitTarget>
     private let credential: StakingAPICredential
+    private let analyticsLogger: StakingAnalyticsLogger
 
     private let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
@@ -20,9 +21,10 @@ class StakeKitStakingAPIService: StakingAPIService {
         return decoder
     }()
 
-    init(provider: MoyaProvider<StakeKitTarget>, credential: StakingAPICredential) {
+    init(provider: MoyaProvider<StakeKitTarget>, credential: StakingAPICredential, analyticsLogger: StakingAnalyticsLogger) {
         self.provider = provider
         self.credential = credential
+        self.analyticsLogger = analyticsLogger
     }
 
     func enabledYields() async throws -> StakeKitDTO.Yield.Enabled.Response {
@@ -94,6 +96,7 @@ private extension StakeKitStakingAPIService {
         do {
             response = try response.filterSuccessfulStatusAndRedirectCodes()
         } catch {
+            analyticsLogger.logAPIError()
             if let stakeKitError = tryMapError(target: request, response: response) {
                 throw stakeKitError
             }

@@ -235,7 +235,7 @@ extension TangemApiTarget {
 extension TangemApiTarget: CachePolicyProvider {
     var cachePolicy: URLRequest.CachePolicy {
         switch type {
-        case .geo, .features, .apiList:
+        case .geo, .features, .apiList, .quotes, .coinsList, .tokenMarketsDetails:
             return .reloadIgnoringLocalAndRemoteCacheData
         default:
             return .useProtocolCachePolicy
