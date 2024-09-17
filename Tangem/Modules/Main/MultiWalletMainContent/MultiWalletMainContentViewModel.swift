@@ -38,6 +38,10 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         )
     }
 
+    private(set) lazy var bottomSheetFooterViewModel: MainBottomSheetFooterViewModel? = FeatureProvider.isAvailable(.markets)
+        ? MainBottomSheetFooterViewModel()
+        : nil
+
     var isOrganizeTokensVisible: Bool {
         guard canManageTokens else { return false }
 
@@ -58,6 +62,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
     private let tokensNotificationManager: NotificationManager
     private let bannerNotificationManager: NotificationManager?
     private let tokenSectionsAdapter: TokenSectionsAdapter
+    private let tooltipStorageProvider = TooltipStorageProvider()
     private let tokenRouter: SingleTokenRoutable
     private let optionsEditing: OrganizeTokensOptionsEditing
     private let rateAppController: RateAppInteractionController

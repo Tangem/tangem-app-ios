@@ -16,6 +16,7 @@ struct MarketsView: View {
     @StateObject private var navigationControllerConfigurator = MarketsViewNavigationControllerConfigurator()
 
     @Environment(\.overlayContentContainer) private var overlayContentContainer
+    @Environment(\.viewHierarchySnapshotter) private var viewHierarchySnapshotter
     @Environment(\.mainWindowSize) private var mainWindowSize
 
     @State private var defaultListOverlayTotalHeight: CGFloat = .zero
@@ -31,7 +32,25 @@ struct MarketsView: View {
     private var showSearchResult: Bool { viewModel.isSearching }
 
     var body: some View {
-        VStack(spacing: 0.0) {
+        rootView
+            .onAppear(perform: viewModel.onViewAppear)
+            .onDisappear(perform: viewModel.onViewDisappear)
+            .onOverlayContentProgressChange { [weak viewModel] progress in
+                viewModel?.onOverlayContentProgressChange(progress)
+
+                if progress < 1 {
+                    UIResponder.current?.resignFirstResponder()
+                }
+            }
+            .onOverlayContentStateChange { [weak viewModel] state in
+                viewModel?.onOverlayContentStateChange(state)
+            }
+            .onChange(of: viewModel.isViewSnapshotRequested, perform: makeViewSnapshotIfNeeded(isViewSnapshotRequested:))
+    }
+
+    @ViewBuilder
+    private var rootView: some View {
+        let content = VStack(spacing: 0.0) {
             MainBottomSheetHeaderView(viewModel: viewModel.headerViewModel)
                 .zIndex(100) // Required for the collapsible header to work
 
@@ -51,41 +70,42 @@ struct MarketsView: View {
         }
         .alert(item: $viewModel.alert, content: { $0.alert })
         .background(Colors.Background.primary)
-        // This dummy title won't be shown in the UI, but it's required since without it UIKit will allocate
-        // another `UINavigationBar` instance for use on the `Markets Token Details` page, and the code below
-        // (`navigationController.navigationBar.isHidden = true`) won't hide the navigation bar on that page
-        // (`Markets Token Details`).
-        .navigationTitle("Markets")
-        .navigationBarTitleDisplayMode(.inline)
-        .onWillAppear {
-            navigationControllerConfigurator.setCornerRadius(overlayContentContainer.cornerRadius)
-            // `UINavigationBar` may be installed into the view hierarchy quite late;
-            // therefore, we're triggering introspection in the `viewWillAppear` callback
-            responderChainIntrospectionTrigger = UUID()
-        }
-        .onAppear {
-            navigationControllerConfigurator.setCornerRadius(overlayContentContainer.cornerRadius)
-            // `UINavigationBar` may be installed into the view hierarchy quite late;
-            // therefore, we're triggering introspection in the `onAppear` callback
-            responderChainIntrospectionTrigger = UUID()
 
-            viewModel.onViewAppear()
-        }
-        .onDisappear(perform: viewModel.onViewDisappear)
-        .introspectResponderChain(
-            introspectedType: UINavigationController.self,
-            updateOnChangeOf: responderChainIntrospectionTrigger,
-            action: navigationControllerConfigurator.configure(_:)
-        )
-        .onOverlayContentProgressChange { [weak viewModel] progress in
-            viewModel?.onOverlayContentProgressChange(progress)
-
-            if progress < 1 {
-                UIResponder.current?.resignFirstResponder()
-            }
-        }
-        .onOverlayContentStateChange { [weak viewModel] state in
-            viewModel?.onOverlayContentStateChange(state)
+        if #available(iOS 17.0, *) {
+            content
+                // This dummy title won't be shown in the UI, but it's required since without it UIKit will allocate
+                // another `UINavigationBar` instance for use on the `Markets Token Details` page, and the code below
+                // (`navigationController.navigationBar.isHidden = true`) won't hide the navigation bar on that page
+                // (`Markets Token Details`).
+                .navigationTitle("Markets")
+                .navigationBarTitleDisplayMode(.inline)
+                .onWillAppear {
+                    navigationControllerConfigurator.setCornerRadius(overlayContentContainer.cornerRadius)
+                    // `UINavigationBar` may be installed into the view hierarchy quite late;
+                    // therefore, we're triggering introspection in the `viewWillAppear` callback
+                    responderChainIntrospectionTrigger = UUID()
+                }
+                .onAppear {
+                    navigationControllerConfigurator.setCornerRadius(overlayContentContainer.cornerRadius)
+                    // `UINavigationBar` may be installed into the view hierarchy quite late;
+                    // therefore, we're triggering introspection in the `onAppear` callback
+                    responderChainIntrospectionTrigger = UUID()
+                }
+                .introspectResponderChain(
+                    introspectedType: UINavigationController.self,
+                    updateOnChangeOf: responderChainIntrospectionTrigger,
+                    action: navigationControllerConfigurator.configure(_:)
+                )
+        } else {
+            // On iOS 16 and below, UIKit will always allocate a new instance of the `UINavigationBar` instance when push
+            // navigation is performed in other navigation controller(s) in the application (on the main screen, for example).
+            // This will happen asynchronously, after a couple of seconds after the navigation event in the other navigation controller(s).
+            // Therefore, we left with two options:
+            // - Perform swizzling in `UINavigationController` and manually hide that new navigation bar.
+            // - Hiding navigation bar using native `UINavigationController.setNavigationBarHidden(_:animated:)` from UIKit
+            //   and `navigationBarHidden(_:)` from SwiftUI, which in turn will break the swipe-to-pop gesture.
+            content
+                .navigationBarHidden(true)
         }
     }
 
@@ -272,6 +292,16 @@ struct MarketsView: View {
 
         listOverlayVerticalOffset = offSet
         isListOverlayShadowLineViewVisible = contentOffset.y >= (maxOffset + Constants.listOverlayBottomInset)
+    }
+
+    private func makeViewSnapshotIfNeeded(isViewSnapshotRequested: Bool) {
+        if isViewSnapshotRequested {
+            let snapshotter = viewHierarchySnapshotter
+            let viewSnapshot = snapshotter?.makeSnapshotLayerImage(options: .presentation, isOpaque: true)
+                ?? snapshotter?.makeSnapshotLayerImage(options: .default, isOpaque: true)
+            viewModel.isViewSnapshotRequested.toggle()
+            viewModel.onViewSnapshot(viewSnapshot)
+        }
     }
 }
 

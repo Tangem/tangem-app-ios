@@ -13,17 +13,6 @@ struct TokenMarketsDetailsStatisticsRecordView: View {
     let message: String
     let trend: Trend?
     let infoButtonAction: () -> Void
-    let containerWidth: CGFloat
-    var estimateTitleAndMessageSizes: Bool = true
-    var adaptiveLayout: Bool = false
-
-    @State private var titleTargetWidth: CGFloat = .zero
-    @State private var messageTargetWidth: CGFloat = .zero
-
-    private var minimumWidth: CGFloat {
-        let widthToCompare = max(titleTargetWidth, messageTargetWidth)
-        return widthToCompare >= containerWidth ? containerWidth : widthToCompare
-    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -31,24 +20,7 @@ struct TokenMarketsDetailsStatisticsRecordView: View {
 
             messageView
         }
-        .if(adaptiveLayout) { view in
-            view
-                .frame(minWidth: minimumWidth, maxWidth: containerWidth, alignment: .leading)
-                .overlay {
-                    titleView
-                        .opacity(0.0)
-                        .fixedSize()
-                        .readGeometry(\.size.width, bindTo: $titleTargetWidth)
-                }
-                .if(estimateTitleAndMessageSizes) { view in
-                    view.overlay {
-                        messageView
-                            .opacity(0.0)
-                            .fixedSize()
-                            .readGeometry(\.size.width, bindTo: $messageTargetWidth)
-                    }
-                }
-        }
+        .id(UUID())
     }
 
     private var titleView: some View {
@@ -97,24 +69,21 @@ extension TokenMarketsDetailsStatisticsRecordView {
             title: "Experienced buyers",
             message: "+44",
             trend: .positive,
-            infoButtonAction: {},
-            containerWidth: 300
+            infoButtonAction: {}
         )
 
         TokenMarketsDetailsStatisticsRecordView(
             title: "Market capitalization",
             message: "-$26,444,579,982,572,657.00",
             trend: .negative,
-            infoButtonAction: {},
-            containerWidth: 300
+            infoButtonAction: {}
         )
 
         TokenMarketsDetailsStatisticsRecordView(
             title: "Experienced buyers",
             message: "44",
             trend: nil,
-            infoButtonAction: {},
-            containerWidth: 300
+            infoButtonAction: {}
         )
     }
 }

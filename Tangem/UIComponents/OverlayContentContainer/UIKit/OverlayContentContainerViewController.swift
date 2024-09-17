@@ -70,6 +70,7 @@ final class OverlayContentContainerViewController: UIViewController {
 
     private var scrollViewContentOffsetLocker: ScrollViewContentOffsetLocker?
     private lazy var appLifecycleHelper = OverlayContentContainerAppLifecycleHelper()
+    private lazy var gestureConflictResolver = SwiftUIGestureConflictResolver()
 
     // MARK: - Initialization/Deinitialization
 
@@ -507,10 +508,12 @@ final class OverlayContentContainerViewController: UIViewController {
         gestureRecognizer.setTranslation(.zero, in: nil)
 
         updateProgress(verticalOffset: newVerticalOffset, animationContext: nil)
+        gestureConflictResolver.onUIKitGestureStart()
     }
 
     func onPanGestureEnded(_ gestureRecognizer: UIPanGestureRecognizer) {
         defer {
+            gestureConflictResolver.onUIKitGestureEnd()
             reset()
         }
 
@@ -629,8 +632,12 @@ extension OverlayContentContainerViewController: UIGestureRecognizerDelegate {
         _ gestureRecognizer: UIGestureRecognizer,
         shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
     ) -> Bool {
-        if otherGestureRecognizer is UIPanGestureRecognizer, let scrollView = otherGestureRecognizer.view as? UIScrollView {
-            scrollViewContentOffsetLocker = .make(for: scrollView)
+        if let scrollView = otherGestureRecognizer.view as? UIScrollView {
+            if scrollViewContentOffsetLocker?.scrollView !== scrollView {
+                scrollViewContentOffsetLocker = .make(for: scrollView)
+            }
+        } else {
+            gestureConflictResolver.handleSwiftUIGestureIfNeeded(otherGestureRecognizer)
         }
 
         return true

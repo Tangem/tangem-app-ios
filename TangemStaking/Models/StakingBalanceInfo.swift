@@ -11,59 +11,21 @@ import Foundation
 public struct StakingBalanceInfo: Hashable {
     public let item: StakingTokenItem
     public let amount: Decimal
-    public let balanceType: BalanceType
+    public let balanceType: StakingBalanceType
     public let validatorAddress: String?
-    public let actions: [PendingActionType]
+    public let actions: [StakingPendingActionInfo]
 
     public init(
         item: StakingTokenItem,
         amount: Decimal,
-        balanceType: BalanceType,
+        balanceType: StakingBalanceType,
         validatorAddress: String?,
-        actions: [PendingActionType]
+        actions: [StakingPendingActionInfo]
     ) {
         self.item = item
         self.amount = amount
         self.balanceType = balanceType
         self.validatorAddress = validatorAddress
         self.actions = actions
-    }
-}
-
-public extension Array where Element == StakingBalanceInfo {
-    func staking() -> [StakingBalanceInfo] {
-        filter { $0.balanceType != .rewards }
-    }
-
-    func rewards() -> [StakingBalanceInfo] {
-        filter { $0.balanceType == .rewards }
-    }
-
-    func sum() -> Decimal {
-        reduce(.zero) { $0 + $1.amount }
-    }
-}
-
-public extension StakingBalanceInfo {
-    enum BalanceType: Hashable {
-        case locked
-        case warmup
-        case active
-        case unbonding(date: Date?)
-        case unstaked
-        case rewards
-    }
-
-    struct PendingActionType: Hashable {
-        public let type: ActionType
-        public let passthrough: String
-
-        public enum ActionType: Hashable {
-            case withdraw
-            case claimRewards
-            case restakeRewards
-            case voteLocked
-            case unlockLocked
-        }
     }
 }

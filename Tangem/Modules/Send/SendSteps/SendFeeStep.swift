@@ -63,13 +63,13 @@ extension SendFeeStep: SendStep {
                 ])
 
                 alertPresenter?.showAlert(
-                    SendAlertBuilder.makeCustomFeeTooLowAlert(continueAction: continueAction)
+                    makeCustomFeeTooLowAlert(continueAction: continueAction)
                 )
 
                 return false
             case .customFeeTooHigh(let orderOfMagnitude):
                 alertPresenter?.showAlert(
-                    SendAlertBuilder.makeCustomFeeTooHighAlert(orderOfMagnitude, continueAction: continueAction)
+                    makeCustomFeeTooHighAlert(orderOfMagnitude, continueAction: continueAction)
                 )
 
                 return false
@@ -95,5 +95,29 @@ extension SendFeeStep: SendStep {
         // We have to send this event when user move on the next step
         let feeType = feeAnalyticsParameterBuilder.analyticsParameter(selectedFee: interactor.selectedFee?.option)
         Analytics.log(event: .sendFeeSelected, params: [.feeType: feeType.rawValue])
+    }
+}
+
+// MARK: - Alert
+
+extension SendFeeStep {
+    func makeCustomFeeTooLowAlert(continueAction: @escaping () -> Void) -> AlertBinder {
+        let continueButton = Alert.Button.default(Text(Localization.commonContinue), action: continueAction)
+        return AlertBuilder.makeAlert(
+            title: "",
+            message: Localization.sendAlertFeeTooLowText,
+            primaryButton: continueButton,
+            secondaryButton: .cancel()
+        )
+    }
+
+    func makeCustomFeeTooHighAlert(_ orderOfMagnitude: Int, continueAction: @escaping () -> Void) -> AlertBinder {
+        let continueButton = Alert.Button.default(Text(Localization.commonContinue), action: continueAction)
+        return AlertBuilder.makeAlert(
+            title: "",
+            message: Localization.sendAlertFeeTooHighText(orderOfMagnitude),
+            primaryButton: continueButton,
+            secondaryButton: .cancel()
+        )
     }
 }

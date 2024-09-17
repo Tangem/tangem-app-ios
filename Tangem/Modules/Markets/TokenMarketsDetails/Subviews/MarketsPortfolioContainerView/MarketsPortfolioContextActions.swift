@@ -13,5 +13,6 @@ protocol MarketsPortfolioContextActionsProvider: AnyObject {
 }
 
 protocol MarketsPortfolioContextActionsDelegate: AnyObject {
+    func showContextAction(for viewModel: MarketsPortfolioTokenItemViewModel)
     func didTapContextAction(_ action: TokenActionType, walletModelId: WalletModelId, userWalletId: UserWalletId)
 }

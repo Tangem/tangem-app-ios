@@ -17,8 +17,6 @@ protocol StakingModelStateProvider {
 }
 
 class StakingModel {
-    @Injected(\.stakingPendingTransactionsRepository) private var stakingPendingTransactionsRepository: StakingPendingTransactionsRepository
-
     // MARK: - Data
 
     private let _amount = CurrentValueSubject<SendAmount?, Never>(nil)
@@ -39,8 +37,6 @@ class StakingModel {
     private let allowanceProvider: AllowanceProvider
     private let tokenItem: TokenItem
     private let feeTokenItem: TokenItem
-
-    private let updateStateSubject = PassthroughSubject<Void, Never>()
 
     private var timerTask: Task<Void, Error>?
     private var estimatedFeeTask: Task<Void, Never>?
@@ -92,18 +88,6 @@ extension StakingModel: StakingModelStateProvider {
 
 private extension StakingModel {
     func bind() {
-        Publishers
-            .CombineLatest4(
-                _amount.compactMap { $0?.crypto },
-                _selectedValidator.compactMap { $0.value },
-                _approvePolicy,
-                updateStateSubject.prepend(()) // CombineLatest has to have first element
-            )
-            .sink { [weak self] amount, validator, approvePolicy, _ in
-                self?.inputDataDidChange(amount: amount, validator: validator.address, approvePolicy: approvePolicy)
-            }
-            .store(in: &bag)
-
         stakingManager
             .statePublisher
             .compactMap { $0.yieldInfo }
@@ -121,13 +105,18 @@ private extension StakingModel {
             .store(in: &bag)
     }
 
-    func inputDataDidChange(amount: Decimal, validator: String, approvePolicy: ApprovePolicy) {
+    func updateState() {
+        guard let amount = _amount.value?.crypto,
+              let validator = _selectedValidator.value.value else {
+            return
+        }
+
         estimatedFeeTask?.cancel()
 
         estimatedFeeTask = runTask(in: self) { model in
             do {
                 model.update(state: .loading)
-                let newState = try await model.state(amount: amount, validator: validator, approvePolicy: approvePolicy)
+                let newState = try await model.state(amount: amount, validator: validator, approvePolicy: model._approvePolicy.value)
                 model.update(state: newState)
             } catch {
                 model.update(state: .networkError(error))
@@ -135,7 +124,7 @@ private extension StakingModel {
         }
     }
 
-    func state(amount: Decimal, validator: String, approvePolicy: ApprovePolicy) async throws -> StakingModel.State {
+    func state(amount: Decimal, validator: ValidatorInfo, approvePolicy: ApprovePolicy) async throws -> StakingModel.State {
         if let allowanceState = try await allowanceState(amount: amount, validator: validator, approvePolicy: approvePolicy) {
             switch allowanceState {
             case .permissionRequired(let approveData):
@@ -165,9 +154,10 @@ private extension StakingModel {
             return validateError
         }
 
-        let hasPreviousStakeOnSameValidator = stakingManager.state.balances?.contains { balance in
-            balance.balanceType == .active && balance.validatorAddress == validator
-        } ?? false
+        let balances = stakingManager.state.balances ?? []
+        let hasPreviousStakeOnDifferentValidator = balances.contains { balance in
+            balance.balanceType == .active && balance.validatorType.validator != validator
+        }
 
         return .readyToStake(
             .init(
@@ -175,7 +165,7 @@ private extension StakingModel {
                 validator: validator,
                 fee: fee,
                 isFeeIncluded: includeFee,
-                stakeOnDifferentValidator: stakingManager.state.isStaked && !hasPreviousStakeOnSameValidator
+                stakeOnDifferentValidator: hasPreviousStakeOnDifferentValidator
             )
         )
     }
@@ -194,19 +184,19 @@ private extension StakingModel {
         }
     }
 
-    func estimateFee(amount: Decimal, validator: String) async throws -> Decimal {
+    func estimateFee(amount: Decimal, validator: ValidatorInfo) async throws -> Decimal {
         try await stakingManager.estimateFee(
-            action: StakingAction(amount: amount, type: .stake(validator: validator))
+            action: StakingAction(amount: amount, validatorType: .validator(validator), type: .stake)
         )
     }
 
-    func allowanceState(amount: Decimal, validator: String, approvePolicy: ApprovePolicy) async throws -> AllowanceState? {
+    func allowanceState(amount: Decimal, validator: ValidatorInfo, approvePolicy: ApprovePolicy) async throws -> AllowanceState? {
         guard allowanceProvider.isSupportAllowance else {
             return nil
         }
 
         return try await allowanceProvider
-            .allowanceState(amount: amount, spender: validator, approvePolicy: approvePolicy)
+            .allowanceState(amount: amount, spender: validator.address, approvePolicy: approvePolicy)
     }
 
     func mapToSendFee(_ state: State?) -> SendFee {
@@ -255,7 +245,7 @@ private extension StakingModel {
             try await Task.sleep(seconds: 5)
 
             model.log("timer realised")
-            model.updateStateSubject.send(())
+            model.updateState()
 
             try Task.checkCancellation()
 
@@ -281,10 +271,14 @@ private extension StakingModel {
         Analytics.log(.stakingButtonStake, params: [.source: .stakeSourceConfirmation])
 
         do {
-            let action = StakingAction(amount: readyToStake.amount, type: .stake(validator: readyToStake.validator))
+            let action = StakingAction(
+                amount: readyToStake.amount,
+                validatorType: .validator(readyToStake.validator),
+                type: .stake
+            )
             let transactionInfo = try await stakingManager.transaction(action: action)
             let result = try await stakingTransactionDispatcher.send(transaction: .staking(transactionInfo))
-            stakingPendingTransactionsRepository.transactionDidSent(action: action, validator: _selectedValidator.value.value)
+            stakingManager.transactionDidSent(action: action)
 
             proceed(result: result)
             return result
@@ -292,7 +286,7 @@ private extension StakingModel {
             proceed(error: error)
             throw error
         } catch {
-            throw error
+            throw SendTransactionDispatcherResult.Error.loadTransactionInfo(error: error)
         }
     }
 
@@ -303,12 +297,14 @@ private extension StakingModel {
 
     private func proceed(error: SendTransactionDispatcherResult.Error) {
         switch error {
-        case .informationRelevanceServiceError,
+        case .demoAlert,
+             .userCancelled,
+             .informationRelevanceServiceError,
              .informationRelevanceServiceFeeWasIncreased,
              .transactionNotFound,
-             .demoAlert,
-             .userCancelled,
-             .sendTxError:
+             .loadTransactionInfo:
+            break
+        case .sendTxError:
             Analytics.log(event: .stakingErrorTransactionRejected, params: [.token: tokenItem.currencySymbol])
         }
     }
@@ -317,7 +313,9 @@ private extension StakingModel {
 // MARK: - SendFeeLoader
 
 extension StakingModel: SendFeeLoader {
-    func updateFees() {}
+    func updateFees() {
+        updateState()
+    }
 }
 
 // MARK: - SendAmountInput
@@ -458,7 +456,7 @@ extension StakingModel: NotificationTapDelegate {
     func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
         switch action {
         case .refreshFee:
-            updateStateSubject.send(())
+            updateState()
         default:
             assertionFailure("StakingModel doesn't support notification action \(action)")
         }
@@ -500,7 +498,7 @@ extension StakingModel: ApproveViewModelInput {
 
         _ = try await sendTransactionDispatcher.send(transaction: .transfer(transaction))
         allowanceProvider.didSendApproveTransaction(for: approveData.spender)
-        updateStateSubject.send(())
+        updateState()
 
         // Setup timer for autoupdate
         restartTimer()
@@ -527,7 +525,7 @@ extension StakingModel {
 
         struct ReadyToStake {
             let amount: Decimal
-            let validator: String
+            let validator: ValidatorInfo
             let fee: Decimal
             let isFeeIncluded: Bool
             let stakeOnDifferentValidator: Bool

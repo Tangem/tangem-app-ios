@@ -10,54 +10,47 @@ import Foundation
 import TangemStaking
 
 struct PendingActionMapper {
-    private let balanceInfo: StakingBalanceInfo
+    private let balance: StakingBalance
 
-    init(balanceInfo: StakingBalanceInfo) {
-        self.balanceInfo = balanceInfo
+    init(balance: StakingBalance) {
+        self.balance = balance
     }
 
     func getAction() throws -> PendingActionMapper.Action {
-        switch balanceInfo.balanceType {
+        switch balance.balanceType {
         case .warmup, .unbonding:
             throw PendingActionMapperError.notSupported
         case .active:
-            let action = stakingAction(type: .unstake(validator: try validator()))
+            let action = stakingAction(type: .unstake)
             return .single(action)
         case .unstaked:
-            let withdraws = balanceInfo.actions.filter { $0.type == .withdraw }.map { $0.passthrough }
+            let withdraws = balance.actions.filter { $0.type == .withdraw }.map { $0.passthrough }
 
             guard !withdraws.isEmpty else {
                 throw PendingActionMapperError.notFound("Pending withdraw action")
             }
 
-            let type: StakingAction.PendingActionType = .withdraw(
-                validator: try validator(),
-                passthroughs: withdraws.toSet()
-            )
-
+            let type: StakingAction.PendingActionType = .withdraw(passthroughs: withdraws.toSet())
             return .single(stakingAction(type: .pending(type)))
         case .locked:
-            guard let unlockLockedAction = balanceInfo.actions.first(where: { $0.type == .unlockLocked }) else {
+            guard let unlockLockedAction = balance.actions.first(where: { $0.type == .unlockLocked }) else {
                 throw PendingActionMapperError.notFound("Pending unlockLocked action")
             }
 
             let type: StakingAction.PendingActionType = .unlockLocked(passthrough: unlockLockedAction.passthrough)
             return .single(stakingAction(type: .pending(type)))
         case .rewards:
-            guard let claimRewardsAction = balanceInfo.actions.first(where: { $0.type == .claimRewards }) else {
+            guard let claimRewardsAction = balance.actions.first(where: { $0.type == .claimRewards }) else {
                 throw PendingActionMapperError.notFound("Pending claimRewards action")
             }
 
-            // In the Tron network we don't validatorAddress for claim/restake rewards
-            let validator = balanceInfo.validatorAddress
-
             let claimRewards = stakingAction(
-                type: .pending(.claimRewards(validator: validator, passthrough: claimRewardsAction.passthrough))
+                type: .pending(.claimRewards(passthrough: claimRewardsAction.passthrough))
             )
 
-            if let restakeRewardsAction = balanceInfo.actions.first(where: { $0.type == .restakeRewards }) {
+            if let restakeRewardsAction = balance.actions.first(where: { $0.type == .restakeRewards }) {
                 let restakeRewards = stakingAction(
-                    type: .pending(.restakeRewards(validator: validator, passthrough: restakeRewardsAction.passthrough))
+                    type: .pending(.restakeRewards(passthrough: restakeRewardsAction.passthrough))
                 )
 
                 return .multiple([claimRewards, restakeRewards])
@@ -67,16 +60,8 @@ struct PendingActionMapper {
         }
     }
 
-    private func validator() throws -> String {
-        guard let validator = balanceInfo.validatorAddress else {
-            throw PendingActionMapperError.notFound("Balance.validator")
-        }
-
-        return validator
-    }
-
     private func stakingAction(type: StakingAction.ActionType) -> StakingAction {
-        StakingAction(amount: balanceInfo.amount, type: type)
+        StakingAction(amount: balance.amount, validatorType: balance.validatorType, type: type)
     }
 }
 

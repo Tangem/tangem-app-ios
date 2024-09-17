@@ -37,14 +37,23 @@ extension StakingTransactionSummaryDescriptionBuilder: SendTransactionSummaryDes
         let formatter = BalanceFormatter()
         let amountInFiatFormatted = formatter.formatFiatBalance(amountFiat, formattingOptions: amountFormattingOptions)
 
+        let amountPerYear = amountFiat * apr
+
+        let useRoundedValues = amountPerYear >= 1
+
+        let fractionDigits = useRoundedValues ? 0 : 2
+
         let incomeFormattingOptions = BalanceFormattingOptions(
-            minFractionDigits: 0,
-            maxFractionDigits: 0,
-            formatEpsilonAsLowestRepresentableValue: false,
-            roundingType: .shortestFraction(roundingMode: .down)
+            minFractionDigits: fractionDigits,
+            maxFractionDigits: fractionDigits,
+            formatEpsilonAsLowestRepresentableValue: true,
+            roundingType: .shortestFraction(roundingMode: .up)
         )
 
-        let income = formatter.formatFiatBalance(amountFiat * apr, formattingOptions: incomeFormattingOptions)
+        var income = formatter.formatFiatBalance(amountPerYear, formattingOptions: incomeFormattingOptions)
+        if useRoundedValues {
+            income = "~" + income
+        }
 
         return Localization.stakingSummaryDescriptionText(amountInFiatFormatted, income)
     }
