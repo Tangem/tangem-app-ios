@@ -229,7 +229,9 @@ private extension SendViewModel {
                 self?.openMail(transaction: transaction, error: sendTxError)
             }
         case .loadTransactionInfo(let error):
-            alert = error.alertBinder
+            alert = alertBuilder.makeTransactionFailedAlert(sendTxError: .init(error: error)) { [weak self] in
+                self?.openMail(error: error)
+            }
         case .demoAlert:
             alert = AlertBuilder.makeDemoAlert(Localization.alertDemoFeatureDisabled) { [weak self] in
                 self?.coordinator?.dismiss()
