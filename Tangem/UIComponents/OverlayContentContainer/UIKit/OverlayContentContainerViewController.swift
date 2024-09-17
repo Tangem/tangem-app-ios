@@ -580,8 +580,11 @@ final class OverlayContentContainerViewController: UIViewController {
         let isGestureFailed = (isCollapsing && gestureVerticalDirection == .up && gestureVelocityVerticalDirection == .up)
             || (!isCollapsing && gestureVerticalDirection == .down && gestureVelocityVerticalDirection == .down)
 
-        if isGestureFailed {
-            // We don't take gesture velocity into account if the gesture fails
+        let verticalOffset = overlayViewTopAnchorConstraint?.constant ?? .greatestFiniteMagnitude
+        let isOverScroll = verticalOffset < contentExpandedVerticalOffset
+
+        if isGestureFailed || isOverScroll {
+            // We don't take gesture velocity into account if the gesture fails or if there is an over-scroll
             return Constants.defaultAnimationContext.duration
         }
 
