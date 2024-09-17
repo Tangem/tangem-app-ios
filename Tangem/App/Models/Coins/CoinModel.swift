@@ -21,7 +21,6 @@ extension CoinModel {
     struct Item {
         let id: String
         let tokenItem: TokenItem
-        let exchangeable: Bool
 
         var token: Token? { tokenItem.token }
         var blockchain: Blockchain { tokenItem.blockchain }

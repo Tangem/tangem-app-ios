@@ -24,11 +24,10 @@ struct SegmentedPicker<Option: Hashable & Identifiable>: View {
             selectionView: selectionView,
             segmentContent: { option, _ in
                 segmentView(title: titleFactory(option), isSelected: selectedOption == option)
-                    .animation(.none, value: selectedOption)
             }
         )
         .insets(Constants.insets)
-        .segmentedControlSlidingAnimation(.easeInOut)
+        .segmentedControlSlidingAnimation(.default)
         .segmentedControl(interSegmentSpacing: Constants.interSegmentSpacing)
         .background(Colors.Button.secondary)
         .clipShape(RoundedRectangle(cornerRadius: Constants.containerCornerRadius))

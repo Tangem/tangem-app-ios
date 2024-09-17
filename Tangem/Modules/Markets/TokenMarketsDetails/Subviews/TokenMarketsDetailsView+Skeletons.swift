@@ -9,13 +9,36 @@
 import SwiftUI
 
 extension TokenMarketsDetailsView {
+    struct DescriptionBlockSkeletons: View {
+        var body: some View {
+            VStack(spacing: .zero) {
+                description
+            }
+        }
+
+        private var description: some View {
+            // We need to use here odd value otherwise transition between skeleton and text will be with offset.
+            // We can't specify line height in text but we can adapt skeletons spacing
+            VStack(alignment: .leading, spacing: 5) {
+                ForEach(0 ... 1) { _ in
+                    skeletonView(width: .infinity, height: 14)
+                }
+
+                skeletonView(width: .infinity, height: 14)
+                    .padding(.trailing, 72)
+            }
+        }
+
+        private func skeletonView(width: CGFloat, height: CGFloat) -> some View {
+            SkeletonView()
+                .cornerRadiusContinuous(3)
+                .frame(maxWidth: width, minHeight: height, maxHeight: height)
+        }
+    }
+
     struct ContentBlockSkeletons: View {
         var body: some View {
             VStack(spacing: 14) {
-                description
-
-                portfolio
-
                 insights
 
                 securityScore
@@ -25,16 +48,6 @@ extension TokenMarketsDetailsView {
                 pricePerformance
 
                 links
-            }
-        }
-
-        private var description: some View {
-            VStack(alignment: .leading, spacing: 4) {
-                ForEach(0 ... 1) { _ in
-                    skeletonView(width: .infinity, height: 18)
-                }
-
-                skeletonView(width: 270, height: 18)
             }
         }
 

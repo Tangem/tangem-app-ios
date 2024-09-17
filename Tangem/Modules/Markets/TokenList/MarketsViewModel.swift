@@ -367,13 +367,7 @@ private extension MarketsViewModel {
             return list
         }
 
-        return list.filter {
-            guard let marketCap = $0.marketCap else {
-                return false
-            }
-
-            return !($0.isUnderMarketCapLimit ?? false)
-        }
+        return list.filter { !($0.isUnderMarketCapLimit ?? false) }
     }
 
     func mapToTokenViewModel(index: Int, tokenItemModel: MarketsTokenModel) -> MarketsItemViewModel {
@@ -421,6 +415,11 @@ extension MarketsViewModel: MarketsListDataFetcher {
 }
 
 extension MarketsViewModel: MainBottomSheetHeaderViewModelDelegate {
+    func clearSearchInput() {
+        dataProvider.reset()
+        currentSearchValue = ""
+    }
+
     func isViewVisibleForHeaderViewModel(_ viewModel: MainBottomSheetHeaderViewModel) -> Bool {
         return isViewVisible
     }

@@ -12,5 +12,4 @@ struct NetworkModel: Codable {
     let networkId: String
     let contractAddress: String?
     let decimalCount: Int?
-    let exchangeable: Bool
 }
