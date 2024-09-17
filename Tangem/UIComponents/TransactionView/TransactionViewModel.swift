@@ -31,7 +31,7 @@ struct TransactionViewModel: Hashable, Identifiable {
         }
     }
 
-    var localizeDestination: String {
+    var localizeDestination: String? {
         if status == .failed {
             return Localization.commonTransactionFailed
         }
@@ -58,8 +58,8 @@ struct TransactionViewModel: Hashable, Identifiable {
         // Temp solution for Visa
         case .custom(let message):
             return message
-        case .staking:
-            return Localization.commonStaking
+        case .staking(let validator):
+            return validator.flatMap { Localization.stakingValidator + ": " + $0 }
         }
     }
 
@@ -164,7 +164,7 @@ extension TransactionViewModel {
         case multiple(_ addresses: [String])
         // Temp solution for Visa
         case custom(message: String)
-        case staking
+        case staking(validator: String?)
     }
 
     enum TransactionType: Hashable {
