@@ -256,7 +256,7 @@ final class OverlayContentContainerViewController: UIViewController {
 
         NSLayoutConstraint.activate([
             overlayViewTopAnchorConstraint,
-            overlayView.heightAnchor.constraint(equalToConstant: screenBounds.height - contentExpandedVerticalOffset),
+            overlayView.heightAnchor.constraint(equalToConstant: screenBounds.height),
             overlayView.widthAnchor.constraint(equalToConstant: screenBounds.width),
         ])
 
@@ -268,6 +268,7 @@ final class OverlayContentContainerViewController: UIViewController {
         grabberView.centerXAnchor.constraint(equalTo: overlayView.centerXAnchor).isActive = true
 
         overlayView.layer.cornerRadius(overlayCornerRadius, corners: .topEdge)
+        overlayViewController.additionalSafeAreaInsets.bottom = contentExpandedVerticalOffset // Over-scroll compensation
         overlayViewController.didMove(toParent: self)
     }
 
