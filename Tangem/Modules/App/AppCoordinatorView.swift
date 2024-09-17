@@ -44,7 +44,7 @@ struct AppCoordinatorView: CoordinatorView {
                 boundaryMarker: { viewHierarchySnapshotter },
                 content: { marketsCoordinatorView }
             )
-            .ignoresSafeArea(.container, edges: .bottom)
+            .ignoresSafeArea(.container, edges: .vertical) // Ensures that this is a full-screen container
         }
         .bottomSheet(
             item: $sensitiveTextVisibilityViewModel.informationHiddenBalancesViewModel,
