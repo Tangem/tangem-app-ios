@@ -85,12 +85,28 @@ struct SendAmountView: View {
                     .lineLimit(1)
                     .matchedGeometryEffect(id: namespace.names.amountFiatText, in: namespace.id)
 
-                Text(viewModel.error ?? " ")
-                    .style(Fonts.Regular.caption1, color: Colors.Text.warning)
-                    .multilineTextAlignment(.center)
-                    .lineLimit(2)
+                bottomInfoText
             }
         }
+    }
+
+    private var bottomInfoText: some View {
+        Group {
+            switch viewModel.bottomInfoText {
+            case .none:
+                // Hold empty space
+                Text(" ")
+                    .style(Fonts.Regular.caption1, color: Colors.Text.warning)
+            case .info(let string):
+                Text(string)
+                    .style(Fonts.Regular.caption1, color: Colors.Text.attention)
+            case .error(let string):
+                Text(string)
+                    .style(Fonts.Regular.caption1, color: Colors.Text.warning)
+            }
+        }
+        .multilineTextAlignment(.center)
+        .lineLimit(2)
     }
 
     private var segmentControl: some View {
