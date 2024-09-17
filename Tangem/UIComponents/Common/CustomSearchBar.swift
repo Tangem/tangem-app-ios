@@ -15,13 +15,15 @@ struct CustomSearchBar: View {
 
     @State private var isEditing: Bool = false
     private var onEditingChanged: ((_ isEditing: Bool) -> Void)?
+    private var clearButtonAction: (() -> Void)?
 
     @FocusState private var isFocused: Bool
 
-    init(searchText: Binding<String>, placeholder: String, keyboardType: UIKeyboardType = .default) {
+    init(searchText: Binding<String>, placeholder: String, keyboardType: UIKeyboardType = .default, clearButtonAction: (() -> Void)? = nil) {
         _searchText = searchText
         self.placeholder = placeholder
         self.keyboardType = keyboardType
+        self.clearButtonAction = clearButtonAction
     }
 
     var body: some View {
@@ -74,7 +76,11 @@ struct CustomSearchBar: View {
 
     private var clearButton: some View {
         Button {
-            searchText = ""
+            if let clearButtonAction {
+                clearButtonAction()
+            } else {
+                searchText = ""
+            }
         } label: {
             Assets.clear.image
                 .renderingMode(.template)
@@ -87,7 +93,11 @@ struct CustomSearchBar: View {
 
     private var cancelButton: some View {
         Button {
-            searchText = ""
+            if let clearButtonAction {
+                clearButtonAction()
+            } else {
+                searchText = ""
+            }
             UIApplication.shared.endEditing()
         } label: {
             Text(Localization.commonCancel)
@@ -102,6 +112,13 @@ extension CustomSearchBar: Setupable {
     }
 }
 
+extension CustomSearchBar {
+    enum InputResult {
+        case text(String)
+        case clear
+    }
+}
+
 struct CustomSearchBar_Previews: PreviewProvider {
     @State private static var text: String = ""
 
@@ -109,7 +126,8 @@ struct CustomSearchBar_Previews: PreviewProvider {
         StatefulPreviewWrapper(text) { text in
             CustomSearchBar(
                 searchText: text,
-                placeholder: Localization.commonSearch
+                placeholder: Localization.commonSearch,
+                clearButtonAction: {}
             )
             .padding(.horizontal, 16)
             .padding(.top, 20)
@@ -122,7 +140,8 @@ struct CustomSearchBar_Previews: PreviewProvider {
         StatefulPreviewWrapper(text) { text in
             CustomSearchBar(
                 searchText: text,
-                placeholder: Localization.commonSearch
+                placeholder: Localization.commonSearch,
+                clearButtonAction: {}
             )
             .padding(.horizontal, 16)
         }

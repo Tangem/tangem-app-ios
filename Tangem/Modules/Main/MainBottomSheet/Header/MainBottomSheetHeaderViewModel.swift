@@ -29,4 +29,9 @@ final class MainBottomSheetHeaderViewModel: ObservableObject {
 
         inputShouldBecomeFocused = true
     }
+
+    func clearSearchBarAction() {
+        delegate?.clearSearchInput()
+        enteredSearchText = ""
+    }
 }
