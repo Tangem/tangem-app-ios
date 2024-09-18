@@ -22,12 +22,12 @@ struct MainCoordinatorView: CoordinatorView {
 
             sheets
         }
-        .onOverlayContentStateChange { state in
+        .onOverlayContentStateChange { [weak coordinator] state in
             if case .bottom = state {
                 // I do not delete the state, but no logic is required either
                 return
             } else {
-                coordinator.hideMarketsTootip()
+                coordinator?.hideMarketsTooltip()
             }
         }
     }
