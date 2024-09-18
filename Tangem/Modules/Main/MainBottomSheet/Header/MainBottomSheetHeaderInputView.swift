@@ -17,6 +17,8 @@ struct MainBottomSheetHeaderInputView: View {
 
     let allowsHitTestingForTextField: Bool
 
+    let clearButtonAction: (() -> Void)?
+
     var body: some View {
         FocusableWrapperView(content: searchBar, isFocused: isTextFieldFocused)
     }
@@ -26,7 +28,8 @@ struct MainBottomSheetHeaderInputView: View {
         CustomSearchBar(
             searchText: $searchText,
             placeholder: Localization.commonSearch,
-            keyboardType: .alphabet
+            keyboardType: .alphabet,
+            clearButtonAction: clearButtonAction
         )
         .padding(.horizontal, 16)
         .allowsHitTesting(allowsHitTestingForTextField)
