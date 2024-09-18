@@ -244,10 +244,11 @@ final class SingleTokenNotificationManager {
 
         let description: String = {
             switch yield.rewardScheduleType {
+            // On this screen, we combine minute and hour schedule type in one text
+            case .minute, .hour:
+                Localization.stakingNotificationEarnRewardsTextHourly
             case .day:
                 Localization.stakingNotificationEarnRewardsTextDaily
-            case .hour:
-                Localization.stakingNotificationEarnRewardsTextHourly
             case .month:
                 Localization.stakingNotificationEarnRewardsTextMonthly
             case .week:
