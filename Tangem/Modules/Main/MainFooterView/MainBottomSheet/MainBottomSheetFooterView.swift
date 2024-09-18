@@ -19,7 +19,8 @@ struct MainBottomSheetFooterView: View {
             MainBottomSheetHeaderInputView(
                 searchText: .constant(""),
                 isTextFieldFocused: .constant(false),
-                allowsHitTestingForTextField: false
+                allowsHitTestingForTextField: false,
+                clearButtonAction: nil
             )
             .padding(.bottom, bottomInset)
             .background(Colors.Background.primary) // Fills a small gap at the bottom on notchless devices
