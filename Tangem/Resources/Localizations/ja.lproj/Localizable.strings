@@ -686,6 +686,7 @@
 "staking_reward_schedule_block" = "ブロック";
 "staking_reward_schedule_day" = "日";
 "staking_reward_schedule_each_day" = "毎日";
+"staking_reward_schedule_each_minute" = "Each minute";
 "staking_reward_schedule_each_sec" = "%1$@毎";
 "staking_reward_schedule_epoch" = "エポック";
 "staking_reward_schedule_era" = "時代";

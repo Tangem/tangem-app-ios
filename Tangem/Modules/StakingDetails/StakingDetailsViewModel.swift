@@ -385,6 +385,7 @@ private extension RewardClaimingType {
 private extension RewardScheduleType {
     var title: String {
         switch self {
+        case .minute: Localization.stakingRewardScheduleMinute
         case .hour: Localization.stakingRewardScheduleHour
         case .day: Localization.stakingRewardScheduleEachDay
         case .week: Localization.stakingRewardScheduleWeek

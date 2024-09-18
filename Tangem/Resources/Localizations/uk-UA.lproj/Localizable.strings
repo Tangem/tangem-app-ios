@@ -686,6 +686,7 @@
 "staking_reward_schedule_block" = "Блок";
 "staking_reward_schedule_day" = "День";
 "staking_reward_schedule_each_day" = "Щодня";
+"staking_reward_schedule_each_minute" = "Each minute";
 "staking_reward_schedule_each_sec" = "Each ~%1$@sec";
 "staking_reward_schedule_epoch" = "Епоха";
 "staking_reward_schedule_era" = "Ера";

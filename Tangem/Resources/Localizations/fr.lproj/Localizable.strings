@@ -686,6 +686,7 @@
 "staking_reward_schedule_block" = "Bloquer";
 "staking_reward_schedule_day" = "Jour";
 "staking_reward_schedule_each_day" = "Chaque jour";
+"staking_reward_schedule_each_minute" = "Each minute";
 "staking_reward_schedule_each_sec" = "Each ~%1$@sec";
 "staking_reward_schedule_epoch" = "Époque";
 "staking_reward_schedule_era" = "Ère";
