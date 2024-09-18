@@ -31,6 +31,7 @@ struct SendFlowBaseBuilder {
 
         let amount = sendAmountStepBuilder.makeSendAmountStep(
             io: (input: sendModel, output: sendModel),
+            actionType: .send,
             sendFeeLoader: fee.interactor,
             sendQRCodeService: sendQRCodeService,
             sendAmountValidator: builder.makeSendAmountValidator(),
@@ -102,6 +103,7 @@ struct SendFlowBaseBuilder {
             stepsManager: stepsManager,
             userWalletModel: userWalletModel,
             alertBuilder: builder.makeSendAlertBuilder(),
+            tokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem,
             coordinator: router
         )
