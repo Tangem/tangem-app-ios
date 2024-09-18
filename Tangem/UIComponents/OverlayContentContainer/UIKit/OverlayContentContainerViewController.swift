@@ -608,13 +608,16 @@ final class OverlayContentContainerViewController: UIViewController {
 
 extension OverlayContentContainerViewController: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        let locationInScreenCoordinateSpace = touch.location(in: nil)
+        guard let overlayView = overlayViewController?.viewIfLoaded else {
+            return false
+        }
 
+        let locationInScreenCoordinateSpace = touch.location(in: nil)
         panGestureStartLocationInScreenCoordinateSpace = locationInScreenCoordinateSpace
-        panGestureStartLocationInOverlayViewCoordinateSpace = touch.location(in: overlayViewController?.view)
+        panGestureStartLocationInOverlayViewCoordinateSpace = touch.location(in: overlayView)
 
         // The gesture is completely disabled if no overlay view controller is set
-        return overlayViewController?.view.frame.contains(locationInScreenCoordinateSpace) ?? false
+        return overlayView.frame.contains(locationInScreenCoordinateSpace)
     }
 
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -653,13 +656,12 @@ extension OverlayContentContainerViewController: TouchPassthroughViewDelegate {
         with event: UIEvent?
     ) -> Bool {
         guard
-            let overlayViewController,
-            overlayViewController.isViewLoaded
+            let overlayView = overlayViewController?.viewIfLoaded
         else {
             return true
         }
 
-        let overlayViewFrame = overlayViewController.view.frame
+        let overlayViewFrame = overlayView.frame
         let touchPoint = view.convert(point, from: passthroughView)
 
         // Tap gesture recognizer should only be triggered if the touch location is within the collapsed overlay view
