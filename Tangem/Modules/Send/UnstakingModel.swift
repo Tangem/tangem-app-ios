@@ -274,8 +274,6 @@ extension UnstakingModel: SendFinishInput {
 // MARK: - SendBaseInput, SendBaseOutput
 
 extension UnstakingModel: SendBaseInput, SendBaseOutput {
-    var isFeeIncluded: Bool { false }
-
     var actionInProcessing: AnyPublisher<Bool, Never> {
         _isLoading.eraseToAnyPublisher()
     }
@@ -307,6 +305,18 @@ extension UnstakingModel: NotificationTapDelegate {
             assertionFailure("StakingModel doesn't support notification action \(action)")
         }
     }
+}
+
+// MARK: - SendBaseDataBuilderInput
+
+extension UnstakingModel: SendBaseDataBuilderInput {
+    var bsdkAmount: BSDKAmount? { makeAmount(value: action.amount) }
+
+    var bsdkFee: BlockchainSdk.Fee? { selectedFee.value.value }
+
+    var isFeeIncluded: Bool { false }
+
+    var validator: ValidatorInfo? { action.validatorInfo }
 }
 
 extension UnstakingModel {

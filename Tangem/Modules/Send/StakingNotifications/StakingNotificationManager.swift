@@ -107,9 +107,18 @@ private extension CommonStakingNotificationManager {
             ))
             hideErrorEvents()
         case (.loading, _), (.ready, _):
-            show(notification: .unstake(
-                periodFormatted: yield.unbondingPeriod.formatted(formatter: daysFormatter)
-            ))
+            let description: String = {
+                switch tokenItem.blockchain {
+                case .cosmos:
+                    return Localization.stakingNotificationUnstakeCosmosText
+                default:
+                    return Localization.stakingNotificationUnstakeText(
+                        yield.unbondingPeriod.formatted(formatter: daysFormatter)
+                    )
+                }
+            }()
+
+            show(notification: .unstake(description: description))
             hideErrorEvents()
         case (.validationError(let validationError, _), _):
             let factory = BlockchainSDKNotificationMapper(tokenItem: tokenItem, feeTokenItem: feeTokenItem)

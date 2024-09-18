@@ -45,9 +45,9 @@ extension SendAmountStep: SendStep {
     func willAppear(previous step: any SendStep) {
         switch (source, step.type.isSummary) {
         case (.staking, false):
-            Analytics.log(.stakingAmountScreenOpened)
-        case (.staking, true):
             Analytics.log(.stakingScreenReopened, params: [.source: .amount])
+        case (.staking, true):
+            Analytics.log(.stakingAmountScreenOpened)
         case (_, true):
             Analytics.log(.sendScreenReopened, params: [.source: .amount])
         case (_, false):

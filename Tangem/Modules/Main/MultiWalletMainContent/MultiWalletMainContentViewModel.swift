@@ -498,7 +498,6 @@ extension MultiWalletMainContentViewModel: TokenItemContextActionDelegate {
             Analytics.log(event: .buttonExchange, params: [.token: walletModel.tokenItem.currencySymbol])
             tokenRouter.openExchange(walletModel: walletModel)
         case .stake:
-            Analytics.log(event: .stakingClicked, params: [.token: walletModel.tokenItem.currencySymbol])
             tokenRouter.openStaking(walletModel: walletModel)
         case .marketsDetails, .hide:
             return
