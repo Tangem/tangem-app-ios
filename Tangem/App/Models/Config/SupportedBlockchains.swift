@@ -192,6 +192,7 @@ struct SupportedBlockchains {
             .blast(testnet: true),
             .sei(testnet: true),
             .kaspa(testnet: true),
+            .sui(curve: ed25519Curve(for: version), testnet: true)
         ]
     }
 
