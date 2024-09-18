@@ -33,6 +33,10 @@ extension OverlayContentContainerViewControllerAdapter: OverlayContentContainer 
     func removeOverlay() {
         containerViewController?.removeOverlay()
     }
+
+    func setOverlayHidden(_ isHidden: Bool) {
+        containerViewController?.setOverlayHidden(isHidden)
+    }
 }
 
 // MARK: - OverlayContentStateObserver protocol conformance
