@@ -40,7 +40,7 @@
 "balance_hidden_title" = "Балансы скрыты";
 "biometry_touch_id_reason" = "Touch ID используется для сохранения карт в приложении";
 "button_start_backup_process" = "Начать резервное копирование";
-"buy_token_description" = "С помощью банковской карты или банковского аккаунта";
+"buy_token_description" = "Используйте банковскую карту или другие методы оплаты";
 "card_settings_access_code_recovery_disabled_description" = "Отключите эту опцию, если не хотите, чтобы эта карта использовалась для сброса кодов доступа на другие карты этого кошелька. Обратите внимание, сброс кода также не будет доступен на этой карте.";
 "card_settings_access_code_recovery_enabled_description" = "Использовать эту карту для сброса кода доступа на других картах в этом кошельке";
 "card_settings_access_code_recovery_footer" = "Отключить возможность сброса кода доступа на этой карте или других картах этого кошелька";
@@ -274,7 +274,7 @@
 "express_token_list_empty_search" = "Токены не найдены. Пожалуйста, попробуйте другой запрос";
 "express_transaction_id" = "ID: %@";
 "express_transaction_id_copied" = "ID транзакции скопирован";
-"exсhange_token_description" = "С другой валютой в вашем кошельке";
+"exсhange_token_description" = "Конвертируйте одну из ваших валют в другую";
 "feedback_preface_rate_negative" = "Расскажите, каких функций вам не хватает, и мы постараемся вам помочь.";
 "feedback_preface_scan_failed" = "Скажите, пожалуйста, какая у вас карта?";
 "feedback_preface_support" = "Привет, команда поддержки,";
@@ -345,11 +345,12 @@
 "markets_common_my_portfolio" = "Мой портфель";
 "markets_common_title" = "Рынок";
 "markets_generate_addresses_notification" = "Чтобы создать адреса для выбранных сетей, отсканируйте вашу карту Tangem кошелька";
-"markets_hint" = "To add tokens pull this up or tap the search bar";
+"markets_hint" = "Потяните вверх или коснитесь поисковой строки, чтобы добавить токен";
 "markets_insights_info_description_message" = "Данные раздела получены из следующих сетей: %@";
 "markets_loading_error_title" = "Невозможно загрузить данные";
 "markets_loading_no_data_title" = "Нет данных";
 "markets_quick_actions" = "Быстрые действия";
+"markets_search_header_title" = "Искать на маркете";
 "markets_search_result_title" = "Результат";
 "markets_search_see_tokens_under_100k" = "Токены с капитализацией меньше 100к USD";
 "markets_search_show_tokens" = "Показать токены";
@@ -504,7 +505,7 @@
 "qr_scanner_camera_denied_title" = "Доступ к камере запрещен";
 "receive_bottom_sheet_warning_message" = "%1$@ (%2$@) в сети %3$@";
 "receive_bottom_sheet_warning_message_full" = "Отправляйте только %@ на этот адрес. Использование другой сети может привести к утрате средств.";
-"receive_token_description" = "Покажи QR-код или поделись своим адресом";
+"receive_token_description" = "Переводите средства с другого кошелька или биржи";
 "referral_button_participate" = "Участвовать";
 "referral_error_failed_to_load_info" = "Не удалось загрузить информацию по реферальной программе. Пожалуйста, попробуйте позже.";
 "referral_error_failed_to_load_info_with_reason" = "Не удалось загрузить информацию по реферальной программе. Код ошибки: %@. Пожалуйста, попробуйте позже.";
@@ -625,8 +626,10 @@
 "staking_active" = "Активно";
 "staking_active_footer" = "Для завершения стейкинга нажмите на блок выше";
 "staking_amount_requirement_error" = "Сумма для стейкинга должна быть не менее %@";
-"staking_amount_tron_integer_error" = "Staking amount will be rounded to %1$@ TRX due to network rules.";
+"staking_amount_tron_integer_error" = "Согласно правилам сети, сумма стейкинга будет округлена до %1$@TRX.";
 "staking_claim_unstaked" = "Забрать средства";
+"staking_details_account_fee" = "Stake account fee";
+"staking_details_account_fee_info" = "Стейкинг аккаунт — это специальный счет, на котором хранятся застейканные токены SOL. Он создается при делегировании ваших токенов валидатору для участия в подтверждении транзакций и получении наград. За создание стейкинг аккаунта взимается небольшая комиссия, которая возвращается после завершения стейкинга.";
 "staking_details_annual_percentage_rate" = "Процентная ставка";
 "staking_details_annual_percentage_rate_info" = "Годовой процентный доход, который вы можете получить от участия в стейкинге.";
 "staking_details_apr" = "APR";
@@ -683,6 +686,7 @@
 "staking_reward_schedule_block" = "Блок";
 "staking_reward_schedule_day" = "День";
 "staking_reward_schedule_each_day" = "Каждый день";
+"staking_reward_schedule_each_sec" = "Каждые ~%1$@ сек";
 "staking_reward_schedule_epoch" = "Эпоха";
 "staking_reward_schedule_era" = "Эра";
 "staking_reward_schedule_hour" = "Час";

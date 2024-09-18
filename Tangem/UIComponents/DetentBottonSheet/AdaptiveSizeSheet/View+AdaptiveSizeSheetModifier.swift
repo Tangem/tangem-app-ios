@@ -13,11 +13,11 @@ struct AdaptiveSizeSheetModifier: ViewModifier {
     func body(content: Content) -> some View {
         VStack(spacing: 0) {
             handler
-            
+
             scrollableSheetContent(content: content)
         }
     }
-    
+
     private var handler: some View {
         Color.clear
             .frame(height: viewModel.handleHeight)
@@ -26,7 +26,7 @@ struct AdaptiveSizeSheetModifier: ViewModifier {
                     .makeSwiftUIView()
             }
     }
-    
+
     private func scrollableSheetContent(content: Content) -> some View {
         ScrollView(viewModel.scrollViewAxis, showsIndicators: false) {
             content
