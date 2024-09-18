@@ -19,16 +19,16 @@ struct MarketsTokenDetailsLinksMapper {
         }
 
         var sections = [TokenMarketsDetailsLinkSection]()
-        if let officialLinks = links.officialLinks {
+        if let officialLinks = links.officialLinks, !officialLinks.isEmpty {
             sections.append(.init(section: .officialLinks, chips: mapLinksToChips(officialLinks)))
         }
-        if let socialLinks = links.social {
+        if let socialLinks = links.social, !socialLinks.isEmpty {
             sections.append(.init(section: .social, chips: mapLinksToChips(socialLinks)))
         }
-        if let repositoryLinks = links.repository {
+        if let repositoryLinks = links.repository, !repositoryLinks.isEmpty {
             sections.append(.init(section: .repository, chips: mapLinksToChips(repositoryLinks)))
         }
-        if let blockchainSiteLinks = links.blockchainSite {
+        if let blockchainSiteLinks = links.blockchainSite, !blockchainSiteLinks.isEmpty {
             sections.append(.init(section: .blockchainSite, chips: mapLinksToChips(blockchainSiteLinks)))
         }
 

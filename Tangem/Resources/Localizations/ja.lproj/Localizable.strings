@@ -350,6 +350,7 @@
 "markets_loading_error_title" = "データを読み込めません…";
 "markets_loading_no_data_title" = "データなし";
 "markets_quick_actions" = "クイックアクション";
+"markets_search_header_title" = "マーケットから探す";
 "markets_search_result_title" = "結果";
 "markets_search_see_tokens_under_100k" = "時価総額10万ドル以下のトークンを見る";
 "markets_search_show_tokens" = "トークンを表示";
@@ -627,6 +628,8 @@
 "staking_amount_requirement_error" = "ステーキング金額は %@ 以上である必要があります";
 "staking_amount_tron_integer_error" = "ネットワークルールにより、ステーキング金額は%1$@ TRX に切り上げられます。";
 "staking_claim_unstaked" = "ステーキング解除分を請求する";
+"staking_details_account_fee" = "ステーキングアカウント手数料";
+"staking_details_account_fee_info" = "ステーキングアカウントは、ステーキングされたSOLトークンが保管される特別なアカウントです。取引の検証に参加して報酬を得るために、トークンをバリデーターに委任すると、このアカウントが作成されます。ステーキングアカウントの作成には少額の手数料がかかりますが、この手数料はステーキングが完了すると返金されます。";
 "staking_details_annual_percentage_rate" = "年率";
 "staking_details_annual_percentage_rate_info" = "ステーキングに参加することで得られる年間収益率。";
 "staking_details_apr" = "APR";
@@ -683,6 +686,7 @@
 "staking_reward_schedule_block" = "ブロック";
 "staking_reward_schedule_day" = "日";
 "staking_reward_schedule_each_day" = "毎日";
+"staking_reward_schedule_each_sec" = "%1$@毎";
 "staking_reward_schedule_epoch" = "エポック";
 "staking_reward_schedule_era" = "時代";
 "staking_reward_schedule_hour" = "時";
@@ -700,7 +704,7 @@
 "staking_unbonding" = "ステーキング解約中";
 "staking_unbonding_in" = "解約完了まで";
 "staking_unlocked_locked" = "ロック解除";
-"staking_unlocking" = "Unlocking";
+"staking_unlocking" = "ロック解除中";
 "staking_unstaked" = "ステーキングされていない";
 "staking_unstaked_footer" = "資産を請求するために、unstakedを確認してください";
 "staking_unstaking" = "ステーキング解除";
@@ -842,8 +846,8 @@
 "warning_backup_errors_message" = "カードのアクティベーションが正しく完了しませんでした。デバイスの NFCモジュールに問題があるか、カードをデバイスに正しくタップしていないことが原因かもしれません。サポートチームにお問い合わせください。";
 "warning_beacon_chain_retirement_content" = "BNBネットワーク開発者によると、BEP-2規格のサポートは2024年6月に終了します。この規格の資産を失わないために、BEP-20規格に変換してください。BNBスマートチェーンネットワークへ移行するには、Tangemのスワップサービスをご利用ください。";
 "warning_beacon_chain_retirement_title" = "BNBビーコンチェーンは閉鎖されます。";
-"warning_blocked_funds_for_fee_message" = "Please deposit some %1$@ to cover the network fee";
-"warning_blocked_funds_for_fee_title" = "Insufficient funds to cover the network fee";
+"warning_blocked_funds_for_fee_message" = "ネットワーク手数料をカバーするために%1$@を入金してください";
+"warning_blocked_funds_for_fee_title" = "ネットワーク手数料をカバーする資金が不足しています";
 "warning_button_could_be_better" = "もっと良くなるはず";
 "warning_button_ok" = "はい、わかりました!";
 "warning_button_really_cool" = "すごくクールだ！";
