@@ -11,18 +11,19 @@ import Combine
 
 class CustomKaspaFeeService {
     private let feeTokenItem: TokenItem
-    private let calculationModel: KaspaFeeCalculationModel
-    private let feeInfoSubject = CurrentValueSubject<KaspaFeeCalculationModel.FeeInfo?, Never>(nil)
+    private let customFee = CurrentValueSubject<Fee?, Never>(nil)
+    private let amount = CurrentValueSubject<Decimal?, Never>(nil)
 
     private var bag: Set<AnyCancellable> = []
 
     init(feeTokenItem: TokenItem) {
         self.feeTokenItem = feeTokenItem
-        calculationModel = KaspaFeeCalculationModel(feeTokenItem: feeTokenItem)
     }
 
     private func bind(output: CustomFeeServiceOutput) {
-        feePublisher
+        customFee
+            .compactMap { $0 }
+            .dropFirst()
             .sink { [weak output] fee in
                 output?.customFeeDidChanged(fee)
             }
@@ -48,14 +49,7 @@ extension CustomKaspaFeeService: CustomFeeService {
     }
 
     func initialSetupCustomFee(_ fee: Fee) {
-        assert(calculationModel.feeInfo == nil, "Duplicate initial setup")
-
-        guard let kaspaFeeParameters = fee.parameters as? KaspaFeeParameters else {
-            return
-        }
-
-        calculationModel.setup(utxoCount: kaspaFeeParameters.utxoCount)
-        feeInfoSubject.send(calculationModel.calculateWithValuePerUtxo(kaspaFeeParameters.valuePerUtxo))
+        amount.send(fee.amount.value)
     }
 
     func inputFieldModels() -> [SendCustomFeeInputFieldModel] {
@@ -63,52 +57,28 @@ extension CustomKaspaFeeService: CustomFeeService {
             title: Localization.sendMaxFee,
             amountPublisher: amountPublisher,
             fieldSuffix: feeTokenItem.currencySymbol,
-            fractionDigits: Blockchain.kaspa.decimalCount,
+            fractionDigits: feeTokenItem.blockchain.decimalCount,
             amountAlternativePublisher: amountAlternativePublisher,
             footer: Localization.sendCustomAmountFeeFooter,
             onFieldChange: { [weak self] decimalValue in
                 guard let decimalValue, let self else { return }
-                feeInfoSubject.send(calculationModel.calculateWithAmount(decimalValue))
+
+                let amount = Amount(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: decimalValue)
+                let fee = Fee(amount)
+                customFee.send(fee)
             }
         )
 
-        let customValuePerUtxoModel = SendCustomFeeInputFieldModel(
-            title: Localization.sendCustomKaspaPerUtxoTitle,
-            amountPublisher: valuePerUtxoPublisher,
-            fieldSuffix: nil,
-            fractionDigits: Blockchain.kaspa.decimalCount,
-            amountAlternativePublisher: .just(output: nil),
-            footer: Localization.sendCustomKaspaPerUtxoFooter,
-            onFieldChange: { [weak self] decimalValue in
-                guard let decimalValue, let self else { return }
-                feeInfoSubject.send(calculationModel.calculateWithValuePerUtxo(decimalValue))
-            }
-        )
-
-        return [customFeeModel, customValuePerUtxoModel]
+        return [customFeeModel]
     }
 }
 
 // MARK: - Publishers
 
 private extension CustomKaspaFeeService {
-    var feePublisher: AnyPublisher<Fee, Never> {
-        feeInfoSubject
-            .compactMap(\.?.fee)
-            .removeDuplicates()
-            .eraseToAnyPublisher()
-    }
-
     var amountPublisher: AnyPublisher<Decimal?, Never> {
-        feeInfoSubject
-            .map(\.?.fee.amount.value)
-            .removeDuplicates()
-            .eraseToAnyPublisher()
-    }
-
-    var valuePerUtxoPublisher: AnyPublisher<Decimal?, Never> {
-        feeInfoSubject
-            .map(\.?.params.valuePerUtxo)
+        amount
+            .compactMap { $0 }
             .removeDuplicates()
             .eraseToAnyPublisher()
     }

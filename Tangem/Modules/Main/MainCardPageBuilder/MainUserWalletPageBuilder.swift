@@ -108,9 +108,12 @@ enum MainUserWalletPageBuilder: Identifiable {
     }
 
     @ViewBuilder
-    func makeBottomOverlay(didScrollToBottom: Bool) -> some View {
+    func makeBottomOverlay(didScrollToBottom: Bool, scrollOffset: CGPoint) -> some View {
         if let viewModel = bottomSheetFooterViewModel {
             MainBottomSheetFooterView(viewModel: viewModel)
+                .overlay {
+                    MainBottomSheetHintView(scrollOffset: scrollOffset)
+                }
         } else if let viewModel = footerViewModel {
             MainFooterView(viewModel: viewModel, didScrollToBottom: didScrollToBottom)
         } else {

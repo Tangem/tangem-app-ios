@@ -11,6 +11,7 @@ import Combine
 import CombineExt
 import BlockchainSdk
 import TangemVisa
+import SwiftUI
 
 class MainCoordinator: CoordinatorObject {
     let dismissAction: Action<Void>
@@ -86,7 +87,10 @@ class MainCoordinator: CoordinatorObject {
 
     func hideMarketsTootip() {
         tooltipStorageProvider.marketsTooltipWasShown = true
-        isMarketsTooltipVisible = false
+
+        withAnimation(.easeInOut(duration: Constants.tooltipAnimationDuration)) {
+            isMarketsTooltipVisible = false
+        }
     }
 
     // MARK: - Private Implementation
@@ -411,5 +415,11 @@ extension MainCoordinator: RateAppRoutable {
 extension MainCoordinator: PushNotificationsPermissionRequestDelegate {
     func didFinishPushNotificationOnboarding() {
         pushNotificationsViewModel = nil
+    }
+}
+
+extension MainCoordinator {
+    enum Constants {
+        static let tooltipAnimationDuration: Double = 0.3
     }
 }
