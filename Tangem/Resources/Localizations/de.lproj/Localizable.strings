@@ -350,6 +350,7 @@
 "markets_loading_error_title" = "Die Daten konnten nicht geladen werden...";
 "markets_loading_no_data_title" = "Keine Daten";
 "markets_quick_actions" = "Schnelle Aktionen";
+"markets_search_header_title" = "Search through the market";
 "markets_search_result_title" = "Ergebnis";
 "markets_search_see_tokens_under_100k" = "Token unter 100k USD Marktkapitalisierung anzeigen";
 "markets_search_show_tokens" = "Token anzeigen";
@@ -627,6 +628,8 @@
 "staking_amount_requirement_error" = "Die Anzahl der zu stakenden Krypros muss mindesten %@ betragen";
 "staking_amount_tron_integer_error" = "Der Stakingbetrag wird aufgrund der Netzwerkregeln auf %1$@ TRX aufgerundet.";
 "staking_claim_unstaked" = "Nicht gestakte beanspruche";
+"staking_details_account_fee" = "Gebühr für das Staking-Konto";
+"staking_details_account_fee_info" = "Ein Staking-Konto ist ein spezielles Konto, auf dem eingesetzte SOL-Token gelagert werden. Es wird erstellt, wenn du deine Token an einen Validator delegierst, um an der Transaktionsvalidierung teilzunehmen und Belohnungen zu verdienen. Für die Erstellung des Staking-Kontos wird eine geringe Gebühr erhoben, die nach Abschluss des Stakings zurückgegeben wird.";
 "staking_details_annual_percentage_rate" = "Jährliche prozentuale Rendite";
 "staking_details_annual_percentage_rate_info" = "Die jährliche prozentuale Rendite, die du durch die Teilnahme am Staking erzielen kannst.";
 "staking_details_apr" = "Effektiver Jahreszins";
@@ -683,6 +686,7 @@
 "staking_reward_schedule_block" = "Block";
 "staking_reward_schedule_day" = "Tag";
 "staking_reward_schedule_each_day" = "Täglich";
+"staking_reward_schedule_each_sec" = "Jeder %1$@";
 "staking_reward_schedule_epoch" = "Epoche";
 "staking_reward_schedule_era" = "Ära";
 "staking_reward_schedule_hour" = "Stunde";
@@ -700,7 +704,7 @@
 "staking_unbonding" = "Lösen der Bindungen";
 "staking_unbonding_in" = "Entbindung in";
 "staking_unlocked_locked" = "Gelocktes unlocken";
-"staking_unlocking" = "Unlocking";
+"staking_unlocking" = "Entsperren";
 "staking_unstaked" = "Unstaken";
 "staking_unstaked_footer" = "Prüfe, was nicht eingesetzt wurde, um dein Vermögen zu beanspruchen";
 "staking_unstaking" = "Staking beenden";
@@ -842,8 +846,8 @@
 "warning_backup_errors_message" = "Es scheint, dass die Aktivierung der Karte nicht korrekt abgeschlossen wurde. Dies kann an einem Problem mit dem NFC-Modul deines Gerätes oder an einem falschen Tippen der Karte auf dein Gerät liegen. Bitte wende dich  an unser Support-Team, um Unterstützung zu erhalten.";
 "warning_beacon_chain_retirement_content" = "Laut den Entwicklern des BNB-Netzes wird die Unterstützung für den BEP-2-Standard im Juni 2024 enden. Um den Verlust von Vermögenswerten mit diesem Standard zu vermeiden, konvertiere bitte in den BEP-20 Standard. Nutze gerne unseren Swap-Service, um sie auf das BNB Smart Chain Netzwerk zu übertragen.";
 "warning_beacon_chain_retirement_title" = "BNB Beacon Chain wird abgeschaltet";
-"warning_blocked_funds_for_fee_message" = "Please deposit some %1$@ to cover the network fee";
-"warning_blocked_funds_for_fee_title" = "Insufficient funds to cover the network fee";
+"warning_blocked_funds_for_fee_message" = "Bitte zahle ein paar %1$@ ein, um die Netzwerkgebühr zu decken";
+"warning_blocked_funds_for_fee_title" = "Unzureichende Mittel zur Deckung der Netzgebühr";
 "warning_button_could_be_better" = "Ausbaufähig";
 "warning_button_ok" = "OK, habe ich verstanden!";
 "warning_button_really_cool" = "Echt toll!";

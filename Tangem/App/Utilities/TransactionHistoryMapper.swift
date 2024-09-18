@@ -147,6 +147,8 @@ private extension TransactionHistoryMapper {
             } else {
                 return mapToInteractionAddressType(source: record.source)
             }
+        case .staking(_, let validator):
+            return .staking(validator: validator)
         default:
             return mapToInteractionAddressType(destination: record.destination)
         }
@@ -204,6 +206,13 @@ private extension TransactionHistoryMapper {
             return transactionType(fromContractMethodName: name)
         case .contractMethodName(let name):
             return transactionType(fromContractMethodName: name)
+        case .staking(let type, let validator):
+            switch type {
+            case .stake: return .stake
+            case .unstake: return .unstake
+            case .vote: return .vote
+            case .withdraw: return .withdraw
+            }
         }
     }
 

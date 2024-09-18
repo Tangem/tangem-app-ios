@@ -158,7 +158,12 @@ private extension CommonStakingManager {
             try await provider.patchTransaction(id: transaction.id)
         }
 
-        return StakingTransactionAction(id: action.id, amount: action.amount, transactions: transactions)
+        return StakingTransactionAction(
+            id: action.id,
+            amount: action.amount,
+            validator: request.validator,
+            transactions: transactions
+        )
     }
 
     func getUnstakeTransactionInfo(request: ActionGenericRequest) async throws -> StakingTransactionAction {
@@ -172,7 +177,12 @@ private extension CommonStakingManager {
             try await provider.patchTransaction(id: transaction.id)
         }
 
-        return StakingTransactionAction(id: action.id, amount: action.amount, transactions: transactions)
+        return StakingTransactionAction(
+            id: action.id,
+            amount: action.amount,
+            validator: request.validator,
+            transactions: transactions
+        )
     }
 
     func getPendingTransactionInfo(request: ActionGenericRequest, type: StakingAction.PendingActionType) async throws -> StakingTransactionAction {
@@ -191,7 +201,12 @@ private extension CommonStakingManager {
                 return action
             }
 
-            return StakingTransactionAction(amount: request.amount, transactions: actions.flatMap { $0.transactions })
+            return StakingTransactionAction(
+                amount: request.amount,
+                validator: request.validator,
+                transactions: actions.flatMap { $0.transactions
+                }
+            )
         }
     }
 
@@ -206,7 +221,12 @@ private extension CommonStakingManager {
             try await provider.patchTransaction(id: transaction.id)
         }
 
-        return StakingTransactionAction(id: action.id, amount: action.amount, transactions: transactions)
+        return StakingTransactionAction(
+            id: action.id,
+            amount: action.amount,
+            validator: request.request.validator,
+            transactions: transactions
+        )
     }
 
     func getPendingEstimateFee(request: ActionGenericRequest, type: StakingAction.PendingActionType) async throws -> Decimal {

@@ -68,6 +68,7 @@ struct UnstakingFlowBaseBuilder {
             stepsManager: stepsManager,
             userWalletModel: userWalletModel,
             alertBuilder: builder.makeStakingAlertBuilder(),
+            tokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem,
             coordinator: router
         )
