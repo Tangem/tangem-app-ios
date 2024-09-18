@@ -9,6 +9,7 @@
 import Foundation
 
 struct CardsInfoPagerBottomOverlayFactoryParams {
+    let isDraggingHorizontally: Bool
     let didScrollToBottom: Bool
     let scrollOffset: CGPoint
     let viewportSize: CGSize

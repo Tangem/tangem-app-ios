@@ -30,9 +30,6 @@ struct CardsInfoPagerView<
 
     @State private var selectedIndex: Int
 
-    /// Show markets hint education tip, depency by scroll offset
-    @State private var showMarketsBottomSheetAnchorHintView: Bool = false
-
     /// `External` here means 'driven from the outside' (by the consumer of this pager view).
     @Binding private var externalSelectedIndex: Int
 
@@ -338,6 +335,7 @@ struct CardsInfoPagerView<
             bottomOverlayFactory(
                 element,
                 CardsInfoPagerBottomOverlayFactoryParams(
+                    isDraggingHorizontally: isDraggingHorizontally,
                     didScrollToBottom: scrollState.didScrollToBottom,
                     scrollOffset: scrollState.contentOffset,
                     viewportSize: scrollState.viewportSize,

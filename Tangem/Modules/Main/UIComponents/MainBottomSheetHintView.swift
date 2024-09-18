@@ -9,6 +9,7 @@
 import SwiftUI
 
 struct MainBottomSheetHintView: View {
+    let isDraggingHorizontally: Bool
     let didScrollToBottom: Bool
     let scrollOffset: CGPoint
     let viewportSize: CGSize
@@ -43,7 +44,7 @@ struct MainBottomSheetHintView: View {
         let viewportSizeHeight = viewportSize.height
         let diffContentSizeWithScrollOffset = viewportSizeHeight - (contentSizeHeight - scrollOffsetHeight)
 
-        guard scrollOffsetHeight > -Constants.headerVerticalPadding, didScrollToBottom else {
+        guard scrollOffsetHeight > -Constants.headerVerticalPadding, didScrollToBottom, !isDraggingHorizontally else {
             return 0
         }
 

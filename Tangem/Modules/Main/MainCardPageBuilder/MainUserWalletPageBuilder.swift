@@ -113,6 +113,7 @@ enum MainUserWalletPageBuilder: Identifiable {
             MainBottomSheetFooterView(viewModel: viewModel)
                 .overlay {
                     MainBottomSheetHintView(
+                        isDraggingHorizontally: overlayParams.isDraggingHorizontally,
                         didScrollToBottom: overlayParams.didScrollToBottom,
                         scrollOffset: overlayParams.scrollOffset,
                         viewportSize: overlayParams.viewportSize,
