@@ -308,10 +308,6 @@ extension SendModel: SendFinishInput {
 // MARK: - SendBaseInput, SendBaseOutput
 
 extension SendModel: SendBaseInput, SendBaseOutput {
-    var isFeeIncluded: Bool {
-        _isFeeIncluded.value
-    }
-
     var actionInProcessing: AnyPublisher<Bool, Never> {
         _isSending.eraseToAnyPublisher()
     }
@@ -390,6 +386,22 @@ extension SendModel: NotificationTapDelegate {
     private func reduceAmountTo(_ amount: Decimal) {
         // Amount will be changed automatically via SendAmountOutput
         sendAmountInteractor.externalUpdate(amount: amount)
+    }
+}
+
+// MARK: - SendBaseDataBuilderInput
+
+extension SendModel: SendBaseDataBuilderInput {
+    var bsdkAmount: BSDKAmount? {
+        _amount.value?.crypto.map { makeAmount(decimal: $0) }
+    }
+
+    var bsdkFee: BlockchainSdk.Fee? {
+        selectedFee.value.value
+    }
+
+    var isFeeIncluded: Bool {
+        _isFeeIncluded.value
     }
 }
 
