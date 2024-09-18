@@ -335,23 +335,21 @@ struct CardsInfoPagerView<
     @ViewBuilder
     private func makeBottomOverlay() -> some View {
         if let element = data[safe: clampedContentSelectedIndex] {
-            ZStack(alignment: .bottom) {
-                bottomOverlayFactory(
-                    element,
-                    CardsInfoPagerBottomOverlayFactoryParams(
-                        didScrollToBottom: scrollState.didScrollToBottom,
-                        scrollOffset: scrollState.contentOffset,
-                        viewportSize: scrollState.viewportSize,
-                        contentSize: scrollState.contentSize,
-                        scrollViewBottomContentInset: scrollViewBottomContentInset
-                    )
+            bottomOverlayFactory(
+                element,
+                CardsInfoPagerBottomOverlayFactoryParams(
+                    didScrollToBottom: scrollState.didScrollToBottom,
+                    scrollOffset: scrollState.contentOffset,
+                    viewportSize: scrollState.viewportSize,
+                    contentSize: scrollState.contentSize,
+                    scrollViewBottomContentInset: scrollViewBottomContentInset
                 )
-                .animation(.linear(duration: 0.1), value: scrollState.didScrollToBottom)
-                .modifier(contentAnimationModifier)
-                .readGeometry(\.size.height) { newValue in
-                    scrollViewBottomContentInset = newValue
-                    scrollState.bottomContentInsetSubject.send(newValue - Constants.scrollStateBottomContentInsetDiff)
-                }
+            )
+            .animation(.linear(duration: 0.1), value: scrollState.didScrollToBottom)
+            .modifier(contentAnimationModifier)
+            .readGeometry(\.size.height) { newValue in
+                scrollViewBottomContentInset = newValue
+                scrollState.bottomContentInsetSubject.send(newValue - Constants.scrollStateBottomContentInsetDiff)
             }
         }
     }
