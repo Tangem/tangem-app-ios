@@ -168,6 +168,7 @@ private extension MarketsViewModel {
 
     private func searchTextBind(publisher: some Publisher<SearchInput, Never>) {
         publisher
+            .dropFirst()
             .debounce(for: 0.5, scheduler: DispatchQueue.main)
             /// Ensure that clear input event will be delivered immediately
             .merge(with: publisher.filter { $0 == .clearInput })
@@ -176,11 +177,7 @@ private extension MarketsViewModel {
             .sink { viewModel, searchInput in
                 switch searchInput {
                 case .textInput(let value):
-                    guard viewModel.isBottomSheetExpanded else {
-                        return
-                    }
-
-                    if viewModel.currentSearchValue != value {
+                    if viewModel.currentSearchValue.compare(value) != .orderedSame {
                         viewModel.resetShowItemsBelowCapFlag()
                     }
 
