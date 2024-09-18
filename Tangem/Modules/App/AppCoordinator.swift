@@ -26,13 +26,12 @@ class AppCoordinator: CoordinatorObject {
 
     // MARK: - Child coordinators
 
-    // Published property, used by UI. `SwiftUI.Binding` API requires it to be writable,
-    // but in fact this is a read-only binding since the UI never mutates it.
+    /// Published property, used by UI. `SwiftUI.Binding` API requires it to be writable,
+    /// but in fact this is a read-only binding since the UI never mutates it.
     @Published var marketsCoordinator: MarketsCoordinator?
 
-    // Non-published property, used to preserve the state of the `MainBottomSheetCoordinator`
-    // instance between show-hide cycles
-    private var __marketsCoordinator: MarketsCoordinator?
+    /// An ugly workaround due to navigation issues in SwiftUI on iOS 18 and above, see IOS-7990 for details.
+    @Published private(set) var isOverlayContentContainerShown = false
 
     // MARK: - View State
 
@@ -61,8 +60,6 @@ class AppCoordinator: CoordinatorObject {
         case .uncompletedBackup:
             setupUncompletedBackup()
         }
-
-        setupMainBottomSheetCoordinatorIfNeeded()
     }
 
     private func restart(with options: AppCoordinator.Options = .default) {
@@ -124,14 +121,13 @@ class AppCoordinator: CoordinatorObject {
     private func setupMainBottomSheetCoordinatorIfNeeded() {
         guard
             FeatureProvider.isAvailable(.markets),
-            __marketsCoordinator == nil
+            marketsCoordinator == nil
         else {
             return
         }
 
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.marketsCoordinator = nil
-            self?.__marketsCoordinator = nil
         }
 
         let coordinator = MarketsCoordinator(
@@ -139,13 +135,7 @@ class AppCoordinator: CoordinatorObject {
             popToRootAction: popToRootAction
         )
         coordinator.start(with: .init())
-        __marketsCoordinator = coordinator
-
-        // If this condition evaluates to `false` here, the `mainBottomSheetCoordinator` property will be updated later
-        // based on the `mainBottomSheetUIManager.isShownPublisher` reactive stream
-        if mainBottomSheetUIManager.isShown {
-            marketsCoordinator = coordinator
-        }
+        marketsCoordinator = coordinator
     }
 
     private func bind() {
@@ -160,11 +150,16 @@ class AppCoordinator: CoordinatorObject {
 
         mainBottomSheetUIManager
             .isShownPublisher
+            .filter { $0 }
             .withWeakCaptureOf(self)
-            .map { coordinator, isShown in
-                return isShown ? coordinator.__marketsCoordinator : nil
+            .sink { coordinator, _ in
+                coordinator.setupMainBottomSheetCoordinatorIfNeeded()
             }
-            .assign(to: \.marketsCoordinator, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        mainBottomSheetUIManager
+            .isShownPublisher
+            .assign(to: \.isOverlayContentContainerShown, on: self, ownership: .weak)
             .store(in: &bag)
     }
 
@@ -182,7 +177,7 @@ class AppCoordinator: CoordinatorObject {
         }
 
         if FeatureProvider.isAvailable(.markets) {
-            __marketsCoordinator = nil
+            marketsCoordinator = nil
             mainBottomSheetUIManager.hide()
         }
 
