@@ -85,7 +85,7 @@ class MainCoordinator: CoordinatorObject {
         bind()
     }
 
-    func hideMarketsTootip() {
+    func hideMarketsTooltip() {
         tooltipStorageProvider.marketsTooltipWasShown = true
 
         withAnimation(.easeInOut(duration: Constants.tooltipAnimationDuration)) {
