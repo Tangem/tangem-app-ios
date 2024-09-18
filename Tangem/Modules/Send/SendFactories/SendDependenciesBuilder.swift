@@ -137,7 +137,11 @@ struct SendDependenciesBuilder {
     }
 
     func makeFeeIncludedCalculator() -> FeeIncludedCalculator {
-        FeeIncludedCalculator(validator: walletModel.transactionValidator)
+        CommonFeeIncludedCalculator(validator: walletModel.transactionValidator)
+    }
+
+    func makeSendBaseDataBuilder(input: SendBaseDataBuilderInput) -> SendBaseDataBuilder {
+        SendBaseDataBuilder(input: input, walletModel: walletModel, emailDataProvider: userWalletModel)
     }
 
     // MARK: - Send, Sell
@@ -146,7 +150,6 @@ struct SendDependenciesBuilder {
         predefinedSellParameters: PredefinedSellParameters? = .none
     ) -> SendModel {
         let sendTransactionDispatcher = makeSendTransactionDispatcher()
-        let feeIncludedCalculator = FeeIncludedCalculator(validator: walletModel.transactionValidator)
         let predefinedValues = mapToPredefinedValues(sellParameters: predefinedSellParameters)
 
         return SendModel(
@@ -154,7 +157,7 @@ struct SendDependenciesBuilder {
             sendTransactionDispatcher: sendTransactionDispatcher,
             transactionCreator: walletModel.transactionCreator,
             transactionSigner: userWalletModel.signer,
-            feeIncludedCalculator: feeIncludedCalculator,
+            feeIncludedCalculator: makeFeeIncludedCalculator(),
             feeAnalyticsParameterBuilder: makeFeeAnalyticsParameterBuilder(),
             predefinedValues: predefinedValues
         )
@@ -223,7 +226,7 @@ struct SendDependenciesBuilder {
             stakingManager: stakingManager,
             transactionCreator: walletModel.transactionCreator,
             transactionValidator: walletModel.transactionValidator,
-            feeIncludedCalculator: makeFeeIncludedCalculator(),
+            feeIncludedCalculator: makeStakingFeeIncludedCalculator(),
             stakingTransactionDispatcher: makeStakingTransactionDispatcher(),
             sendTransactionDispatcher: makeSendTransactionDispatcher(),
             allowanceProvider: makeAllowanceProvider(),
@@ -272,5 +275,13 @@ struct SendDependenciesBuilder {
 
     func makeStakingAlertBuilder() -> SendAlertBuilder {
         StakingSendAlertBuilder()
+    }
+
+    func makeStakingFeeIncludedCalculator() -> FeeIncludedCalculator {
+        StakingFeeIncludedCalculator(tokenItem: walletModel.tokenItem, validator: walletModel.transactionValidator)
+    }
+
+    func makeStakingAmountModifier() -> SendAmountModifier {
+        StakingAmountModifier(tokenItem: walletModel.tokenItem)
     }
 }

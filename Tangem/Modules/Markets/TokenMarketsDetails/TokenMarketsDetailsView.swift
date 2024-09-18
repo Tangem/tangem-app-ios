@@ -36,10 +36,6 @@ struct TokenMarketsDetailsView: View {
             .background {
                 viewBackground
             }
-            .animation(
-                .easeInOut(duration: viewModel.overlayContentHidingAnimationDuration),
-                value: viewModel.overlayContentHidingProgress
-            )
     }
 
     @ViewBuilder

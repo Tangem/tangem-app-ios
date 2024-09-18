@@ -23,4 +23,5 @@ final class AdaptiveSizeSheetViewModel: ObservableObject {
 
     let defaultBottomPadding: CGFloat = 20
     let cornerRadius: CGFloat = 24
+    let handleHeight: CGFloat = 20
 }
