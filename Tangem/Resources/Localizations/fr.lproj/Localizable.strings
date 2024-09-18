@@ -350,6 +350,7 @@
 "markets_loading_error_title" = "Impossible de charger les données…";
 "markets_loading_no_data_title" = "Aucune donnée";
 "markets_quick_actions" = "Actions rapides";
+"markets_search_header_title" = "Search through the market";
 "markets_search_result_title" = "Résultat";
 "markets_search_see_tokens_under_100k" = "Voir les jetons de moins de 100 000 $ de capitalisation boursière";
 "markets_search_show_tokens" = "Afficher les jetons";
@@ -627,6 +628,8 @@
 "staking_amount_requirement_error" = "Le montant à staker doit être au moins %@";
 "staking_amount_tron_integer_error" = "Le montant du staking sera arrondi à %1$@ TRX en raison des règles du réseau.";
 "staking_claim_unstaked" = "Réclamation déstakée";
+"staking_details_account_fee" = "Stake account fee";
+"staking_details_account_fee_info" = "A staking account is a special account where staked SOL tokens are stored. It is created when you delegate your tokens to a validator to participate in transaction validation and earn rewards. A small fee is charged for creating the staking account, which is returned after the staking is completed.";
 "staking_details_annual_percentage_rate" = "Pourcentage de rendement annuel";
 "staking_details_annual_percentage_rate_info" = "Le pourcentage de rendement annuel que vous pouvez gagner en participant au staking.";
 "staking_details_apr" = "APR";
@@ -683,6 +686,7 @@
 "staking_reward_schedule_block" = "Bloquer";
 "staking_reward_schedule_day" = "Jour";
 "staking_reward_schedule_each_day" = "Chaque jour";
+"staking_reward_schedule_each_sec" = "Each ~%1$@sec";
 "staking_reward_schedule_epoch" = "Époque";
 "staking_reward_schedule_era" = "Ère";
 "staking_reward_schedule_hour" = "Heure";
