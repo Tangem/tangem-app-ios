@@ -25,6 +25,7 @@ class StakingModel {
     private let _approvePolicy = CurrentValueSubject<ApprovePolicy, Never>(.unlimited)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
     private let _isLoading = CurrentValueSubject<Bool, Never>(false)
+    private let _isFeeIncluded = CurrentValueSubject<Bool, Never>(false)
 
     // MARK: - Private injections
 
@@ -65,14 +66,6 @@ class StakingModel {
         self.feeTokenItem = feeTokenItem
 
         bind()
-    }
-}
-
-// MARK: - Public
-
-extension StakingModel {
-    var selectedPolicy: ApprovePolicy {
-        _approvePolicy.value
     }
 }
 
@@ -149,6 +142,7 @@ private extension StakingModel {
         let fee = try await estimateFee(amount: amount, validator: validator)
         let includeFee = feeIncludedCalculator.shouldIncludeFee(makeFee(value: fee), into: makeAmount(value: amount))
         let newAmount = includeFee ? amount - fee : amount
+        _isFeeIncluded.send(includeFee)
 
         if let validateError = validate(amount: newAmount, fee: fee) {
             return validateError
@@ -428,8 +422,6 @@ extension StakingModel: SendFinishInput {
 // MARK: - SendBaseInput, SendBaseOutput
 
 extension StakingModel: SendBaseInput, SendBaseOutput {
-    var isFeeIncluded: Bool { false }
-
     var actionInProcessing: AnyPublisher<Bool, Never> {
         _isLoading.eraseToAnyPublisher()
     }
@@ -503,6 +495,24 @@ extension StakingModel: ApproveViewModelInput {
         // Setup timer for autoupdate
         restartTimer()
     }
+}
+
+// MARK: - SendBaseDataBuilderInput
+
+extension StakingModel: SendBaseDataBuilderInput {
+    var bsdkAmount: BSDKAmount? { _amount.value?.crypto.map { makeAmount(value: $0) } }
+
+    var bsdkFee: BlockchainSdk.Fee? { selectedFee.value.value }
+
+    var isFeeIncluded: Bool { _isFeeIncluded.value }
+
+    var selectedPolicy: ApprovePolicy? { _approvePolicy.value }
+
+    var approveViewModelInput: (any ApproveViewModelInput)? { self }
+
+    var stakingAction: StakingAction.ActionType? { .stake }
+
+    var validator: ValidatorInfo? { _selectedValidator.value.value }
 }
 
 extension StakingModel {
