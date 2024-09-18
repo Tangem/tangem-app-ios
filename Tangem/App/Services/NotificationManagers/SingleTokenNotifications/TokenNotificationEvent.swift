@@ -18,7 +18,7 @@ enum TokenNotificationEvent: Hashable {
     case notEnoughFeeForTransaction(configuration: NotEnoughFeeConfiguration)
     case bnbBeaconChainRetirement
     case hasUnfulfilledRequirements(configuration: UnfulfilledRequirementsConfiguration)
-    case staking(tokenIconInfo: TokenIconInfo, earnUpToFormatted: String, description: String)
+    case staking(tokenIconInfo: TokenIconInfo, earnUpToFormatted: String)
     case manaLevel(currentMana: String, maxMana: String)
     case maticMigration
 
@@ -58,7 +58,7 @@ extension TokenNotificationEvent: NotificationEvent {
             return .string(Localization.warningBeaconChainRetirementTitle)
         case .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation):
             return .string(Localization.warningHederaMissingTokenAssociationTitle)
-        case .staking(_, let earnUpToFormatted, _):
+        case .staking(_, let earnUpToFormatted):
             return .string(Localization.tokenDetailsStakingBlockTitle(earnUpToFormatted))
         case .manaLevel:
             return .string(Localization.koinosManaLevelTitle)
@@ -98,8 +98,8 @@ extension TokenNotificationEvent: NotificationEvent {
                 associationFee.formattedValue,
                 associationFee.currencySymbol
             )
-        case .staking(_, _, let description):
-            return description
+        case .staking:
+            return Localization.stakingNotificationEarnRewardsText
         case .manaLevel(let currentMana, let maxMana):
             return Localization.koinosManaLevelDescription(currentMana, maxMana)
         case .maticMigration:
@@ -139,7 +139,7 @@ extension TokenNotificationEvent: NotificationEvent {
             return .init(iconType: .image(Image(configuration.eventConfiguration.feeAmountTypeIconName)))
         case .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation):
             return .init(iconType: .image(Tokens.hederaFill.image))
-        case .staking(let tokenIconInfo, _, _):
+        case .staking(let tokenIconInfo, _):
             return .init(iconType: .icon(tokenIconInfo))
         }
     }

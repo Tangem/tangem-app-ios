@@ -14,6 +14,7 @@ struct AppCoordinatorView: CoordinatorView {
     @ObservedObject var sensitiveTextVisibilityViewModel = SensitiveTextVisibilityViewModel.shared
 
     @Environment(\.mainWindowSize) var mainWindowSize: CGSize
+    @Environment(\.overlayContentContainer) private var overlayContentContainer
 
     var body: some View {
         NavigationView {
@@ -51,6 +52,9 @@ struct AppCoordinatorView: CoordinatorView {
             backgroundColor: Colors.Background.primary
         ) {
             InformationHiddenBalancesView(viewModel: $0)
+        }
+        .onChange(of: coordinator.isOverlayContentContainerShown) { isShown in
+            overlayContentContainer.setOverlayHidden(!isShown)
         }
     }
 }
