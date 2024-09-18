@@ -40,7 +40,7 @@
 "balance_hidden_title" = "Balances are hidden";
 "biometry_touch_id_reason" = "Touch ID is used to save your cards in the app";
 "button_start_backup_process" = "Start backup process";
-"buy_token_description" = "With your bank card or bank account";
+"buy_token_description" = "Use a bank card or other payment methods";
 "card_settings_access_code_recovery_disabled_description" = "Disable this option if you don't want this card to be used to reset access codes on other cards in this wallet. Please note that this will also prevent you from resetting the access code on this card.";
 "card_settings_access_code_recovery_enabled_description" = "Allows you to use this card to reset access code on other cards in this wallet";
 "card_settings_access_code_recovery_footer" = "Disable the ability to reset the access code on this card or other cards in this wallet";
@@ -274,7 +274,7 @@
 "express_token_list_empty_search" = "No tokens found. Please try another request";
 "express_transaction_id" = "ID: %@";
 "express_transaction_id_copied" = "Transaction ID copied";
-"exсhange_token_description" = "With another currency in your wallet";
+"exсhange_token_description" = "Convert one of your currencies to another";
 "feedback_preface_rate_negative" = "Tell us what functions you are missing, and we will try to help you.";
 "feedback_preface_scan_failed" = "Please tell us what card do you have";
 "feedback_preface_support" = "Hi support team,";
@@ -350,6 +350,7 @@
 "markets_loading_error_title" = "Unable to load the data…";
 "markets_loading_no_data_title" = "No data";
 "markets_quick_actions" = "Quick actions";
+"markets_search_header_title" = "Search through the market";
 "markets_search_result_title" = "Result";
 "markets_search_see_tokens_under_100k" = "See tokens under 100k USD market cap";
 "markets_search_show_tokens" = "Show tokens";
@@ -504,7 +505,7 @@
 "qr_scanner_camera_denied_title" = "Camera access denied";
 "receive_bottom_sheet_warning_message" = "%1$@ (%2$@) on %3$@ network";
 "receive_bottom_sheet_warning_message_full" = "Send only %@ to this address. Sending any other currency will result in its irreversible loss.";
-"receive_token_description" = "Show a QR-code or share your address";
+"receive_token_description" = "Transfer funds from another wallet or exchange";
 "referral_button_participate" = "Participate";
 "referral_error_failed_to_load_info" = "Failed to load the information about the referral program. Please try again later.";
 "referral_error_failed_to_load_info_with_reason" = "Failed to load the information about the referral program. Error code: %@. Please try again later.";
@@ -546,7 +547,7 @@
 "scan_card_settings_message" = "Scan the card to change its settings. The changes will impact only the card you've scanned and will not affect other cards tied to your wallet.";
 "scan_card_settings_title" = "Get your card ready!";
 "send_additional_field_already_included" = "Already included in the entered address";
-"send_alert_fee_too_high_text" = "The commission amount is %@ times the recommended amount. Make sure that the custom settings are correct.";
+"send_alert_fee_too_high_text" = "Your commission amount is %@ times higher than the recommended amount. Please review and adjust your custom settings.";
 "send_alert_fee_too_low_text" = "You specified a commission below the recommended amount, which could cause a delay in your transaction. Continue?";
 "send_alert_transaction_failed_text" = "Reason: %1$@\nCode: %2$@";
 "send_alert_transaction_failed_title" = "The transaction is not completed";
@@ -579,7 +580,7 @@
 "send_notification_exceed_balance_title" = "Total exceeds balance";
 "send_notification_existential_deposit_text" = "A balance of at least %@ is required to keep your account on the blockchain to prevent security risks. This amount will remain in your balance and cannot be withdrawn.";
 "send_notification_existential_deposit_title" = "Existential deposit";
-"send_notification_fee_too_high_text" = "The commission amount is %@ times the recommended amount. Make sure that the custom settings are correct.";
+"send_notification_fee_too_high_text" = "Your commission amount is %@ times higher than the recommended amount. Please review and adjust your custom settings.";
 "send_notification_fee_too_high_title" = "Custom fee is high";
 "send_notification_high_fee_text" = "Due to the peculiarities of the %1$@ network, the fee for transferring the entire balance is higher. To reduce the commission, you can leave %2$@.";
 "send_notification_high_fee_title" = "The fee is higher";
@@ -627,6 +628,8 @@
 "staking_amount_requirement_error" = "The amount to stake must be at least %@";
 "staking_amount_tron_integer_error" = "Staking amount will be rounded to %1$@ TRX due to network rules.";
 "staking_claim_unstaked" = "Claim unstaked";
+"staking_details_account_fee" = "Stake account fee";
+"staking_details_account_fee_info" = "A staking account is a special account where staked SOL tokens are stored. It is created when you delegate your tokens to a validator to participate in transaction validation and earn rewards. A small fee is charged for creating the staking account, which is returned after the staking is completed.";
 "staking_details_annual_percentage_rate" = "Annual percentage rate";
 "staking_details_annual_percentage_rate_info" = "The annual percentage return you can earn from participating in staking.";
 "staking_details_apr" = "APR";
@@ -683,6 +686,7 @@
 "staking_reward_schedule_block" = "Block";
 "staking_reward_schedule_day" = "Day";
 "staking_reward_schedule_each_day" = "Each day";
+"staking_reward_schedule_each_sec" = "Each ~%1$@sec";
 "staking_reward_schedule_epoch" = "Epoch";
 "staking_reward_schedule_era" = "Era";
 "staking_reward_schedule_hour" = "Hour";
