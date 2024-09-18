@@ -27,7 +27,7 @@ struct MainBottomSheetHeaderInputView: View {
     private var searchBar: some View {
         CustomSearchBar(
             searchText: $searchText,
-            placeholder: Localization.commonSearch,
+            placeholder: Localization.marketsSearchHeaderTitle,
             keyboardType: .alphabet,
             clearButtonAction: clearButtonAction
         )
