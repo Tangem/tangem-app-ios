@@ -10,21 +10,26 @@ import SwiftUI
 
 struct AdaptiveSizeSheetModifier: ViewModifier {
     @StateObject private var viewModel = AdaptiveSizeSheetViewModel()
-
     func body(content: Content) -> some View {
-        scrollableSheetContent {
-            VStack(spacing: 0) {
-                GrabberViewFactory()
-                    .makeSwiftUIView()
-
-                content
-            }
+        VStack(spacing: 0) {
+            handler
+            
+            scrollableSheetContent(content: content)
         }
     }
-
-    private func scrollableSheetContent<Body: View>(content: () -> Body) -> some View {
+    
+    private var handler: some View {
+        Color.clear
+            .frame(height: viewModel.handleHeight)
+            .overlay(alignment: .top) {
+                GrabberViewFactory()
+                    .makeSwiftUIView()
+            }
+    }
+    
+    private func scrollableSheetContent(content: Content) -> some View {
         ScrollView(viewModel.scrollViewAxis, showsIndicators: false) {
-            content()
+            content
                 .padding(.bottom, viewModel.defaultBottomPadding)
                 .presentationDetents(contentHeight: viewModel.contentHeight, cornerRadius: viewModel.cornerRadius)
                 .readGeometry(\.size.height) {
