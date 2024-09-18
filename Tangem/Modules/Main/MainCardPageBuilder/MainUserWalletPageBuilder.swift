@@ -117,7 +117,6 @@ enum MainUserWalletPageBuilder: Identifiable {
                         scrollOffset: overlayParams.scrollOffset,
                         viewportSize: overlayParams.viewportSize,
                         contentSize: overlayParams.contentSize,
-                        headerHeight: overlayParams.headerHeight,
                         scrollViewBottomContentInset: overlayParams.scrollViewBottomContentInset
                     )
                 }

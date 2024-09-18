@@ -13,6 +13,5 @@ struct CardsInfoPagerBottomOverlayFactoryParams {
     let scrollOffset: CGPoint
     let viewportSize: CGSize
     let contentSize: CGSize
-    let headerHeight: CGFloat
     let scrollViewBottomContentInset: CGFloat
 }

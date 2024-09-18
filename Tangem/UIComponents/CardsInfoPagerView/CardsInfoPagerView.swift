@@ -343,7 +343,6 @@ struct CardsInfoPagerView<
                         scrollOffset: scrollState.contentOffset,
                         viewportSize: scrollState.viewportSize,
                         contentSize: scrollState.contentSize,
-                        headerHeight: headerHeight + Constants.headerAdditionalSpacingHeight,
                         scrollViewBottomContentInset: scrollViewBottomContentInset
                     )
                 )

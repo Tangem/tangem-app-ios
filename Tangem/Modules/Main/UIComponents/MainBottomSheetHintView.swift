@@ -1,5 +1,5 @@
 //
-//  MainBottomSheetHint.swift
+//  MainBottomSheetHintView.swift
 //  Tangem
 //
 //  Created by skibinalexander on 17.09.2024.
@@ -28,7 +28,7 @@ struct MainBottomSheetHintView: View {
     }
 
     private var hintView: some View {
-        VStack(alignment: .center, spacing: .zero) {
+        VStack(alignment: .center, spacing: 8) {
             Text(Localization.marketsHint)
                 .multilineTextAlignment(.center)
                 .style(Fonts.Regular.footnote, color: Colors.Icon.informative)

@@ -15,39 +15,22 @@ struct CardsInfoPagerFlexibleFooterView: View {
     let headerHeight: CGFloat
     let bottomContentInset: CGFloat
 
-    var minContentSizeHeight: CGFloat {
-        viewportSize.height - bottomContentInset + .ulpOfOne
-    }
-
-    var maxContentSizeHeight: CGFloat {
-        viewportSize.height + headerHeight + headerTopInset
-    }
-
-    var contentSizeHeight: CGFloat {
-        contentSize.height
-    }
-
     private var footerViewHeight: CGFloat {
+        let minContentSizeHeight = viewportSize.height - bottomContentInset + .ulpOfOne
+        let maxContentSizeHeight = viewportSize.height + headerHeight + headerTopInset
+        let contentSizeHeight = contentSize.height
+
         if contentSizeHeight >= minContentSizeHeight, contentSizeHeight < maxContentSizeHeight {
             return max(maxContentSizeHeight - contentSizeHeight, bottomContentInset)
         } else if contentSizeHeight >= maxContentSizeHeight {
             return bottomContentInset
         }
 
-        return 0
+        return 0.0
     }
 
     var body: some View {
         Color.clear
             .frame(height: footerViewHeight)
-            .background(.clear)
     }
 }
-
-// extension CardsInfoPagerFlexibleFooterView {
-//    enum Constants {
-//        static let marketsHitTooltipHeight: CGFloat = 56.0
-//        static let marketsHitTooltipComplexSpace: CGFloat = 92.0
-//        static let marketsHitTooltipBottomSpace: CGFloat = 24.0
-//    }
-// }
