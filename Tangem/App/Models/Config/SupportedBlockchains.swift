@@ -66,7 +66,7 @@ struct SupportedBlockchains {
         [
             .internetComputer,
             .sei(testnet: false),
-            .sui(testnet: false)
+            .sui(curve: ed25519Curve(for: version), testnet: false),
         ]
     }
 
