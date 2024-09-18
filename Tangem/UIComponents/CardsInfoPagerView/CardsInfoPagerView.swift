@@ -337,7 +337,7 @@ struct CardsInfoPagerView<
                 CardsInfoPagerBottomOverlayFactoryParams(
                     isDraggingHorizontally: isDraggingHorizontally,
                     didScrollToBottom: scrollState.didScrollToBottom,
-                    scrollOffset: scrollState.contentOffset,
+                    scrollOffset: scrollState.contentOffsetExceedingContentSize,
                     viewportSize: scrollState.viewportSize,
                     contentSize: scrollState.contentSize,
                     scrollViewBottomContentInset: scrollViewBottomContentInset

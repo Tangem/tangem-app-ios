@@ -17,12 +17,14 @@ struct MainBottomSheetHintView: View {
     let scrollViewBottomContentInset: CGFloat
 
     var body: some View {
+        let _ = Self._printChanges()
+
         VStack {
             hintView
                 .opacity(updateOpacity())
         }
         .background(.clear)
-        .frame(width: Constants.staticWidth)
+//        .frame(width: Constants.staticWidth)
         .offset(y: -Constants.staticOffset)
         .transition(.asymmetric(insertion: .move(edge: .top), removal: .opacity))
         .animation(.easeInOut(duration: 0.15))
@@ -32,6 +34,7 @@ struct MainBottomSheetHintView: View {
         VStack(alignment: .center, spacing: 8) {
             Text(Localization.marketsHint)
                 .multilineTextAlignment(.center)
+                .lineLimit(2)
                 .style(Fonts.Regular.footnote, color: Colors.Icon.informative)
 
             Assets.chevronDown12.image
