@@ -107,7 +107,7 @@ struct MainCoordinatorView: CoordinatorView {
     private var marketsTooltipView: some View {
         BasicTooltipView(
             isShowBindingValue: $coordinator.isMarketsTooltipVisible,
-            onHideAction: coordinator.hideMarketsTootip,
+            onHideAction: coordinator.hideMarketsTooltip,
             title: Localization.marketsTooltipTitle,
             message: Localization.marketsTooltipMessage
         )
