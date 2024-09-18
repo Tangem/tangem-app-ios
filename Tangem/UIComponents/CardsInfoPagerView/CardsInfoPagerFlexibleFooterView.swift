@@ -40,7 +40,7 @@ struct CardsInfoPagerFlexibleFooterView: View {
     var body: some View {
         Color.clear
             .frame(height: footerViewHeight)
-            .background(.yellow)
+            .background(.clear)
     }
 }
 

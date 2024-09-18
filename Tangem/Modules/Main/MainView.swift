@@ -29,8 +29,8 @@ struct MainView: View {
             contentFactory: { info in
                 info.body
             },
-            bottomOverlayFactory: { info, didScrollToBottom, scrollOffset in
-                info.makeBottomOverlay(didScrollToBottom: didScrollToBottom, scrollOffset: scrollOffset)
+            bottomOverlayFactory: { info, overlayParams in
+                info.makeBottomOverlay(overlayParams)
             },
             onPullToRefresh: viewModel.onPullToRefresh(completionHandler:)
         )

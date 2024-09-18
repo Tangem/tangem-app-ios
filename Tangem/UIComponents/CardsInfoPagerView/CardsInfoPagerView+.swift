@@ -29,7 +29,7 @@ extension CardsInfoPagerView where BottomOverlay == EmptyView {
             configStorageKey: configStorageKey,
             headerFactory: headerFactory,
             contentFactory: contentFactory,
-            bottomOverlayFactory: { _, _, _ in EmptyView() },
+            bottomOverlayFactory: { _, _ in EmptyView() },
             onPullToRefresh: onPullToRefresh
         )
     }
@@ -78,7 +78,7 @@ extension CardsInfoPagerView where Data.Element: Identifiable, Data.Element.ID =
             configStorageKey: configStorageKey,
             headerFactory: headerFactory,
             contentFactory: contentFactory,
-            bottomOverlayFactory: { _, _, _ in EmptyView() },
+            bottomOverlayFactory: { _, _ in EmptyView() },
             onPullToRefresh: onPullToRefresh
         )
     }

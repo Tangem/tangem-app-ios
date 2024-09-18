@@ -13,7 +13,7 @@ struct CardsInfoPagerView<
 >: View where Data: RandomAccessCollection, ID: Hashable, Header: View, Body: View, BottomOverlay: View, Data.Index == Int {
     typealias HeaderFactory = (_ element: Data.Element) -> Header
     typealias ContentFactory = (_ element: Data.Element) -> Body
-    typealias BottomOverlayFactory = (_ element: Data.Element, _ didScrollToBottom: Bool, _ scrollOffset: CGPoint) -> BottomOverlay
+    typealias BottomOverlayFactory = (_ element: Data.Element, _ overlayParams: CardsInfoPagerBottomOverlayFactoryParams) -> BottomOverlay
     typealias OnPullToRefresh = OnRefresh
     typealias OnPageChange = (_ pageChangeReason: CardsInfoPageChangeReason) -> Void
 
@@ -161,7 +161,6 @@ struct CardsInfoPagerView<
                         // `contentSelectedIndex` properties.
                         // Therefore, we sync them forcefully when vertical scrolling starts.
                         synchronizeContentSelectedIndexIfNeeded()
-//                        performUpdateDisplayHintView()
                     }
                     .onChange(of: externalSelectedIndex) { newValue in
                         // Synchronizing external and private selected indices if needed
@@ -337,13 +336,23 @@ struct CardsInfoPagerView<
     private func makeBottomOverlay() -> some View {
         if let element = data[safe: clampedContentSelectedIndex] {
             ZStack(alignment: .bottom) {
-                bottomOverlayFactory(element, scrollState.didScrollToBottom, scrollState.contentOffset)
-                    .animation(.linear(duration: 0.1), value: scrollState.didScrollToBottom)
-                    .modifier(contentAnimationModifier)
-                    .readGeometry(\.size.height) { newValue in
-                        scrollViewBottomContentInset = newValue
-                        scrollState.bottomContentInsetSubject.send(newValue - Constants.scrollStateBottomContentInsetDiff)
-                    }
+                bottomOverlayFactory(
+                    element,
+                    CardsInfoPagerBottomOverlayFactoryParams(
+                        didScrollToBottom: scrollState.didScrollToBottom,
+                        scrollOffset: scrollState.contentOffset,
+                        viewportSize: scrollState.viewportSize,
+                        contentSize: scrollState.contentSize,
+                        headerHeight: headerHeight + Constants.headerAdditionalSpacingHeight,
+                        scrollViewBottomContentInset: scrollViewBottomContentInset
+                    )
+                )
+                .animation(.linear(duration: 0.1), value: scrollState.didScrollToBottom)
+                .modifier(contentAnimationModifier)
+                .readGeometry(\.size.height) { newValue in
+                    scrollViewBottomContentInset = newValue
+                    scrollState.bottomContentInsetSubject.send(newValue - Constants.scrollStateBottomContentInsetDiff)
+                }
             }
         }
     }
@@ -536,45 +545,6 @@ struct CardsInfoPagerView<
                 scrollViewProxy.scrollTo(expandedHeaderScrollTargetIdentifier, anchor: .top)
             }
         }
-    }
-
-    private func performUpdateDisplayHintView() {
-        ////        print("rawContentOffset = \(scrollState.rawContentOffset)")
-        ////        print("contentOffset = \(scrollState.contentOffset)")
-//        print("viewportSize = \(scrollState.viewportSize)")
-        ////        print("contentSize = \(scrollState.contentSize)")
-        ////        print("diff viewportSize by height = \(scrollState.viewportSize.height - scrollState.contentSize.height)")
-        ////        print("scrollViewBottomContentInset = \(scrollViewBottomContentInset)")
-//
-//        let minContentSizeHeight = scrollState.viewportSize.height - scrollViewBottomContentInset + .ulpOfOne
-//        let maxContentSizeHeight = scrollState.viewportSize.height + headerHeight + Constants.headerVerticalPadding
-//
-//        let contentSizeHeight = scrollState.contentSize.height
-//
-//        print("minContentSizeHeight = \(minContentSizeHeight)")
-//        print("maxContentSizeHeight = \(maxContentSizeHeight)")
-//        print("contentSizeHeight = \(contentSizeHeight)")
-//        print("contentOffset = \(scrollState.contentOffset)")
-
-        guard scrollState.contentOffset.y > -Constants.headerVerticalPadding else {
-            withAnimation(.easeIn(duration: 0.3)) {
-                showMarketsBottomSheetAnchorHintView = false
-            }
-
-            return
-        }
-
-//        if abs(contentSizeHeight - scrollState.viewportSize.height) > scrollViewBottomContentInset + 92 {
-//            guard !showMarketsBottomSheetAnchorHintView else {
-//                return
-//            }
-//
-//            withAnimation(.easeIn(duration: 0.3)) {
-//                showMarketsBottomSheetAnchorHintView = true
-//            }
-//        } else {
-//            // Отслеживаем скролл
-//        }
     }
 
     // MARK: - Selected index management
