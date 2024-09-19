@@ -25,7 +25,7 @@ struct MainBottomSheetHintView: View {
         .frame(width: Constants.staticWidth)
         .offset(y: -Constants.staticOffset)
         .transition(.asymmetric(insertion: .move(edge: .top), removal: .opacity))
-        .animation(.easeInOut(duration: 0.2))
+        .animation(.easeInOut(duration: 0.2), value: UUID())
     }
 
     private var hintView: some View {
@@ -43,20 +43,26 @@ struct MainBottomSheetHintView: View {
         let contentSizeHeight = contentSize.height
         let scrollOffsetHeight = scrollOffset.y
         let viewportSizeHeight = viewportSize.height
+        let сontentSizeWithScrollOffset = viewportSizeHeight - (contentSizeHeight - scrollOffsetHeight)
 
         /*
          - The first part of the condition is needed to determine the pullToRefresh
          - The second part of the condition determines that the scroll borders are scrolled to the end
          - The third condition forcibly hides the animation if we use a horizontal pager
          */
-        guard scrollOffsetHeight > -Constants.headerVerticalPadding, didScrollToBottom, !isDraggingHorizontally else {
+        guard
+            scrollOffsetHeight > -Constants.headerVerticalPadding,
+            didScrollToBottom,
+            !isDraggingHorizontally,
+            viewportSizeHeight > 0
+        else {
             return .hide
         }
 
         if viewportSizeHeight - contentSizeHeight > scrollViewBottomContentInset + Constants.staticOffset {
             /// This condition is met when the list of tokens is significantly smaller than the visible area and we must always show a hint
             return .show
-        } else if scrollOffsetHeight > Constants.staticOffset {
+        } else if сontentSizeWithScrollOffset - scrollViewBottomContentInset > Constants.staticOffset {
             /// This condition determines that the size of the content borders on the visible area or is larger than the visible area, therefore, the use of overscroll logic is required.
             return .show
         }
