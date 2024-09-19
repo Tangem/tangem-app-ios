@@ -63,7 +63,7 @@ final class StakingDetailsViewModel: ObservableObject {
 
     func refresh(completion: @escaping () -> Void = {}) {
         Task {
-            try? await stakingManager.updateState()
+            await stakingManager.updateState()
             completion()
         }
     }
@@ -121,6 +121,9 @@ private extension StakingDetailsViewModel {
         switch state {
         case .loading:
             actionButtonLoading = true
+        case .loadingError:
+            actionButtonLoading = false
+            actionButtonType = .none
         case .notEnabled:
             actionButtonLoading = false
             actionButtonType = .none
