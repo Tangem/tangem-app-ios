@@ -383,7 +383,7 @@
 "markets_token_details_experienced_buyers_full" = "Досвідчені покупці";
 "markets_token_details_fully_diluted_valuation" = "Повн. розведена кап.";
 "markets_token_details_fully_diluted_valuation_description" = "Загальна теоретична вартість криптовалюти, якщо всі монети, які могли б існувати, перебувають в обігу, включаючи ті, що не перебувають в обігу в даний час";
-"markets_token_details_fully_diluted_valuation_full" = "Повн. розведена кап.";
+"markets_token_details_fully_diluted_valuation_full" = "Fully diluted valuation";
 "markets_token_details_genesis_date" = "Дата створення";
 "markets_token_details_genesis_date_description" = "";
 "markets_token_details_high" = "Високий";
@@ -400,7 +400,7 @@
 "markets_token_details_low" = "Низький";
 "markets_token_details_market_capitalization" = "Рин. кап.";
 "markets_token_details_market_capitalization_description" = "Загальна ринкова вартість криптовалюти, що розраховується шляхом множення поточної ціни монети на загальну кількість монет в обігу";
-"markets_token_details_market_capitalization_full" = "Рин. кап.";
+"markets_token_details_market_capitalization_full" = "Market cap";
 "markets_token_details_market_rating" = "Рейтинг";
 "markets_token_details_market_rating_description" = "Позиція в крипторейтингу між усіма монетами на основі ринкової капіталізації";
 "markets_token_details_market_rating_full" = "Рейтинг";

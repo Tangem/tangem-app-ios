@@ -72,6 +72,6 @@ struct MarketsTokenDetailsMetricsViewModel {
     }
 
     func showInfoBottomSheet(for type: MarketsTokenDetailsInfoDescriptionProvider) {
-        infoRouter?.openInfoBottomSheet(title: type.title, message: type.infoDescription)
+        infoRouter?.openInfoBottomSheet(title: type.titleFull, message: type.infoDescription)
     }
 }
