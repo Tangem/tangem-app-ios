@@ -100,8 +100,18 @@ extension StakingDetailsStakeViewData {
     }
 
     enum IconType: Hashable {
-        case icon(ImageType, color: Color)
+        case icon(ImageType, colors: Colors)
         case image(url: URL?)
+
+        struct Colors: Equatable {
+            let foreground: Color
+            let background: Color
+
+            init(foreground: Color, background: Color? = nil) {
+                self.foreground = foreground
+                self.background = background ?? foreground.opacity(0.1)
+            }
+        }
 
         func hash(into hasher: inout Hasher) {
             switch self {
