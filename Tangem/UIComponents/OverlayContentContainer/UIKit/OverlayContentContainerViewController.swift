@@ -541,22 +541,18 @@ final class OverlayContentContainerViewController: UIViewController {
         let predictedOverlayViewFrameOrigin = predictedEndLocation - panGestureStartLocationInOverlayViewCoordinateSpace
         let isCollapsing = predictedOverlayViewFrameOrigin.y > screenBounds.height / 2.0
 
-        let (animationDuration, remainingDistance) = calculateAnimationDuration(
+        let (animationDuration, remainingDistance) = calculateAnimationDurationAndRemainingDistance(
             isCollapsing: isCollapsing,
             gestureVelocity: velocity,
             gestureVerticalDirection: verticalDirection
         )
 
-        var animationContext = Constants.defaultAnimationContext
-        animationContext.duration = animationDuration
-
-        if remainingDistance > 0 {
-            animationContext.initialSpringVelocity = abs(velocity.y / remainingDistance)
-        }
-
-        if isCollapsing {
-            animationContext.disableSpringAnimation()
-        }
+        var animationContext = makeGestureDrivenAnimationContext(
+            isCollapsing: isCollapsing,
+            gestureVelocity: velocity,
+            animationDuration: animationDuration,
+            remainingDistance: remainingDistance
+        )
 
         let newVerticalOffset = isCollapsing ? overlayCollapsedVerticalOffset : contentExpandedVerticalOffset
         overlayViewTopAnchorConstraint?.constant = newVerticalOffset
@@ -580,6 +576,26 @@ final class OverlayContentContainerViewController: UIViewController {
         return gestureRecognizer.verticalDirection(in: nil, relativeToGestureStartLocation: startLocation)
     }
 
+    private func makeGestureDrivenAnimationContext(
+        isCollapsing: Bool,
+        gestureVelocity: CGPoint,
+        animationDuration: TimeInterval,
+        remainingDistance: CGFloat
+    ) -> OverlayContentContainerProgress.AnimationContext {
+        var animationContext = Constants.defaultAnimationContext
+        animationContext.duration = animationDuration
+
+        if remainingDistance > 0 {
+            animationContext.initialSpringVelocity = abs(gestureVelocity.y / remainingDistance)
+        }
+
+        if isCollapsing {
+            animationContext.disableSpringAnimation()
+        }
+
+        return animationContext
+    }
+
     private func calculateDecelerationRate(
         gestureVerticalDirection: UIPanGestureRecognizer.VerticalDirection?
     ) -> UIScrollView.DecelerationRate {
@@ -593,11 +609,11 @@ final class OverlayContentContainerViewController: UIViewController {
         }
     }
 
-    private func calculateAnimationDuration(
+    private func calculateAnimationDurationAndRemainingDistance(
         isCollapsing: Bool,
         gestureVelocity: CGPoint,
         gestureVerticalDirection: UIPanGestureRecognizer.VerticalDirection?
-    ) -> (TimeInterval, CGFloat) {
+    ) -> (animationDuration: TimeInterval, remainingDistance: CGFloat) {
         let gestureVelocityVerticalDirection: UIPanGestureRecognizer.VerticalDirection = gestureVelocity.y < .zero
             ? .up
             : .down
@@ -620,10 +636,13 @@ final class OverlayContentContainerViewController: UIViewController {
             return (Constants.failedGestureAnimationsDuration, remainingDistance)
         }
 
-        return (
-            clamp(remainingDistance / abs(gestureVelocity.y), min: Constants.minAnimationsDuration, max: Constants.maxAnimationsDuration),
-            remainingDistance
+        let animationDuration = clamp(
+            remainingDistance / abs(gestureVelocity.y),
+            min: Constants.minAnimationsDuration,
+            max: Constants.maxAnimationsDuration
         )
+
+        return (animationDuration, remainingDistance)
     }
 
     private func calculateVerticalOffsetRubberbandingComponent(_ gestureRecognizer: UIPanGestureRecognizer) -> CGFloat {
