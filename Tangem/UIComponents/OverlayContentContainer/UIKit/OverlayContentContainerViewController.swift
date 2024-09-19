@@ -779,7 +779,7 @@ private extension OverlayContentContainerViewController {
             duration: 0.5,
             curve: .easeOut,
             springDampingRatio: 0.85,
-            initialSpringVelocity: 0.0
+            initialSpringVelocity: 0.3
         )
     }
 }
