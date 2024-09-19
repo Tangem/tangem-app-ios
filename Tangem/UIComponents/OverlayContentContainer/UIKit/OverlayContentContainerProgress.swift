@@ -38,6 +38,7 @@ extension OverlayContentContainerProgress: Equatable {
 
 extension OverlayContentContainerProgress.AnimationContext {
     mutating func disableSpringAnimation() {
+        // To smoothly decelerate the animation without oscillation, use a value of 1 (Apple docs)
         springDampingRatio = 1.0
     }
 }

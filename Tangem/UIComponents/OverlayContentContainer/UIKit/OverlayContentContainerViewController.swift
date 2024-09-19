@@ -189,6 +189,10 @@ final class OverlayContentContainerViewController: UIViewController {
             self.view.layoutIfNeeded()
         }
 
+        // `auxiliary` animations (content scale, corner radius, etc) are baked by Core Animation and don't use
+        // spring animations. Since these are plain, non-spring animations, they don't oscillate and therefore
+        // have a slightly shorter duration than `animationContext.duration`.
+        // That difference in duration is provided by multiplying by `auxiliaryAnimationsDurationMultiplier`
         animationContext.duration *= Constants.auxiliaryAnimationsDurationMultiplier
 
         updateProgress(verticalOffset: newVerticalOffset, animationContext: animationContext)
@@ -203,6 +207,10 @@ final class OverlayContentContainerViewController: UIViewController {
             self.view.layoutIfNeeded()
         }
 
+        // `auxiliary` animations (content scale, corner radius, etc) are baked by Core Animation and don't use
+        // spring animations. Since these are plain, non-spring animations, they don't oscillate and therefore
+        // have a slightly shorter duration than `animationContext.duration`.
+        // That difference in duration is provided by multiplying by `auxiliaryAnimationsDurationMultiplier`
         animationContext.duration *= Constants.auxiliaryAnimationsDurationMultiplier
 
         updateProgress(verticalOffset: newVerticalOffset, animationContext: animationContext)
@@ -534,6 +542,9 @@ final class OverlayContentContainerViewController: UIViewController {
             return
         }
 
+        // The 'raw' and 'true' velocity of a pan gesture appeared to be too fast for the smooth gesture-driven animation.
+        // Therefore, we reduce the velocity a bit by multiplying it by `panGestureVerticalVelocityMultiplier`,
+        // while keeping the gesture-driven look & feel for the animation
         let velocity = gestureRecognizer.velocity(in: nil) * Constants.panGestureVerticalVelocityMultiplier
         let verticalDirection = verticalDirection(for: gestureRecognizer)
         let decelerationRate = calculateDecelerationRate(gestureVerticalDirection: verticalDirection)
@@ -564,6 +575,10 @@ final class OverlayContentContainerViewController: UIViewController {
             self.view.layoutIfNeeded()
         }
 
+        // `auxiliary` animations (content scale, corner radius, etc) are baked by Core Animation and don't use
+        // spring animations. Since these are plain, non-spring animations, they don't oscillate and therefore
+        // have a slightly shorter duration than `animationContext.duration`.
+        // That difference in duration is provided by multiplying by `auxiliaryAnimationsDurationMultiplier`
         animationContext.duration *= Constants.auxiliaryAnimationsDurationMultiplier
 
         updateProgress(verticalOffset: newVerticalOffset, animationContext: animationContext)
@@ -586,9 +601,13 @@ final class OverlayContentContainerViewController: UIViewController {
         animationContext.duration = animationDuration
 
         if remainingDistance > 0 {
+            // `UIView.animate(withDuration:delay:usingSpringWithDamping:initialSpringVelocity:options:animations:completion:)`
+            // uses quite weird velocity units - 'distances' per second, not points per second
             animationContext.initialSpringVelocity = abs(gestureVelocity.y / remainingDistance)
         }
 
+        // Spring animation is only applied when the overlay view is in the expanded state;
+        // to prevent a fake footer view, placed on the main view, from becoming visible
         if isCollapsing {
             animationContext.disableSpringAnimation()
         }
@@ -649,8 +668,8 @@ final class OverlayContentContainerViewController: UIViewController {
         let gestureLocation = gestureRecognizer.location(in: nil)
         let draggedOverlayViewFrameOrigin = gestureLocation - panGestureStartLocationInOverlayViewCoordinateSpace
 
-        // Rubberbanding is only applied when the overlay view is in the expanded state (to prevent a fake footer view,
-        // placed on the main view, from becoming visible); this condition ensures that
+        // Rubberbanding is only applied when the overlay view is in the expanded state;
+        // to prevent a fake footer view, placed on the main view, from becoming visible
         guard draggedOverlayViewFrameOrigin.y < contentExpandedVerticalOffset else {
             return .zero
         }
@@ -778,8 +797,8 @@ private extension OverlayContentContainerViewController {
         static let defaultAnimationContext = OverlayContentContainerProgress.AnimationContext(
             duration: 0.5,
             curve: .easeOut,
-            springDampingRatio: 0.85,
-            initialSpringVelocity: 0.3
+            springDampingRatio: 0.85, // Natural damping for smooth bounce
+            initialSpringVelocity: 0.3 // Smooth entry velocity, not too fast
         )
     }
 }
