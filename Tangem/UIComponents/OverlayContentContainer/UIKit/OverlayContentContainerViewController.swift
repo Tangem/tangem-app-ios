@@ -184,10 +184,12 @@ final class OverlayContentContainerViewController: UIViewController {
         let newVerticalOffset = contentExpandedVerticalOffset
         overlayViewTopAnchorConstraint?.constant = newVerticalOffset
 
-        let animationContext = Constants.defaultAnimationContext
+        var animationContext = Constants.defaultAnimationContext
         UIView.animate(with: animationContext) {
             self.view.layoutIfNeeded()
         }
+
+        animationContext.duration *= Constants.auxiliaryAnimationsDurationMultiplier
 
         updateProgress(verticalOffset: newVerticalOffset, animationContext: animationContext)
     }
@@ -196,10 +198,12 @@ final class OverlayContentContainerViewController: UIViewController {
         let newVerticalOffset = overlayCollapsedVerticalOffset
         overlayViewTopAnchorConstraint?.constant = newVerticalOffset
 
-        let animationContext = Constants.defaultAnimationContext
+        var animationContext = Constants.defaultAnimationContext
         UIView.animate(with: animationContext) {
             self.view.layoutIfNeeded()
         }
+
+        animationContext.duration *= Constants.auxiliaryAnimationsDurationMultiplier
 
         updateProgress(verticalOffset: newVerticalOffset, animationContext: animationContext)
     }
@@ -751,7 +755,7 @@ private extension OverlayContentContainerViewController {
         static let failedGestureAnimationsDuration = 0.4
 
         static let defaultAnimationContext = OverlayContentContainerProgress.AnimationContext(
-            duration: 0.3,
+            duration: 0.5,
             curve: .easeOut,
             springDampingRatio: 0.85,
             initialSpringVelocity: 0.0
