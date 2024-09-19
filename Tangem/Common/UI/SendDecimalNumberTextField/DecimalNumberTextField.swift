@@ -39,20 +39,27 @@ struct DecimalNumberTextField: View {
             .tint(appearance.textColor)
             .labelsHidden()
             .keyboardType(.decimalPad)
-            .onChange(of: viewModel.decimalValue) { newDecimalValue in
-                switch newDecimalValue {
-                case .none, .internal:
-                    // Do nothing. Because all internal values already updated
-                    break
-                case .external(let value):
-                    // If the decimalValue did updated from external place
-                    // We have to update the private values
-                    let formattedNewValue = viewModel.format(value: value)
-                    updateValues(with: formattedNewValue)
-                }
-            }
             .onChange(of: viewModel.textFieldText) { newValue in
                 updateValues(with: newValue)
+            }
+            .modifyView { view in
+                // We have to check `initial` decimalValue when textField is appearing
+                // On iOS 17 we have `initial: true` flag to support this behaviour
+                // On previous iOS we use `onAppear` to handle this behaviour
+                if #available(iOS 17.0, *) {
+                    view
+                        .onChange(of: viewModel.decimalValue, initial: true) { _, newDecimalValue in
+                            updateValues(decimalValue: newDecimalValue)
+                        }
+                } else {
+                    view
+                        .onChange(of: viewModel.decimalValue) { newDecimalValue in
+                            updateValues(decimalValue: newDecimalValue)
+                        }
+                        .onAppear {
+                            updateValues(decimalValue: viewModel.decimalValue)
+                        }
+                }
             }
     }
 
@@ -62,6 +69,19 @@ struct DecimalNumberTextField: View {
             // We should have the `Text` type
             .font(appearance.font)
             .foregroundColor(appearance.placeholderColor)
+    }
+
+    private func updateValues(decimalValue: ViewModel.DecimalValue?) {
+        switch decimalValue {
+        case .none, .internal:
+            // Do nothing. Because all internal values already updated
+            break
+        case .external(let value):
+            // If the decimalValue did updated from external place
+            // We have to update the private values
+            let formattedNewValue = viewModel.format(value: value)
+            updateValues(with: formattedNewValue)
+        }
     }
 
     private func updateValues(with newValue: String) {
