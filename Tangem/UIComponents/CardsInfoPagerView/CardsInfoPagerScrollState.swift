@@ -19,7 +19,7 @@ final class CardsInfoPagerScrollState: ObservableObject {
     var contentOffsetSubject: some Subject<CGPoint, Never> { _contentOffsetSubject }
     private let _contentOffsetSubject = CurrentValueSubject<CGPoint, Never>(.zero)
 
-    #warning("Нужен коммент")
+    /// A property specifically that subscribes to content offset changes offsets without throttle. It was required specifically to understand the overscroll
     @Published private(set) var contentOffsetExceedingContentSize: CGPoint = .zero
 
     @Published private(set) var contentSize: CGSize = .zero
@@ -98,24 +98,12 @@ final class CardsInfoPagerScrollState: ObservableObject {
                 $didScrollToBottom
             ) { contentOffset, didScrollToBottom in
                 guard didScrollToBottom else {
-                    return CGPoint(x: 0, y: 0)
+                    return CGPoint.zero
                 }
 
-                print("contentOffset = \(contentOffset)")
-
                 return contentOffset
-//                print("contentSize = \(contentSize)")
-//                print("viewportSize = \(viewportSize)")
-//
-//                // contentSizeHeight - (viewportSizeHeight + scrollOffsetHeight)
-//                print("\(contentSize.height - (viewportSize.height + contentOffset.y))")
-//
-//                let x = max(contentSize.width - (viewportSize.width + contentOffset.x))
-//                let y = (contentSize.height - (viewportSize.height + contentOffset.y)) + bottomContentInset
-//                return CGPoint(x: x, y: y)
             }
             .removeDuplicates()
-            .print("-->")
             .assign(to: \.contentOffsetExceedingContentSize, on: self, ownership: .weak)
             .store(in: &bag)
 
