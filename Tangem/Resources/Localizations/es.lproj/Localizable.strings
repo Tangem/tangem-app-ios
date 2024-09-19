@@ -350,6 +350,7 @@
 "markets_loading_error_title" = "No se pueden cargar los datos…";
 "markets_loading_no_data_title" = "Sin datos";
 "markets_quick_actions" = "Acciones rápidas";
+"markets_search_header_title" = "Search through the market";
 "markets_search_result_title" = "Resultado";
 "markets_search_see_tokens_under_100k" = "Ver tokens con una capitalización de mercado de menos de $100,000";
 "markets_search_show_tokens" = "Mostrar tokens";
@@ -557,8 +558,6 @@
 "send_custom_evm_max_fee_footer" = "Este es el coste que está dispuesto(a) a pagar por cada unidad de gas. Cuanto más alto sea el precio del gas, más rápido se procesará su transacción. (Tarifa prioritaria incluida)";
 "send_custom_evm_priority_fee" = "Tarifa prioritaria";
 "send_custom_evm_priority_fee_footer" = "La tarifa que un usuario puede pagar a los mineros o validadores para acelerar la inclusión de su transacción en un bloque.";
-"send_custom_kaspa_per_utxo_footer" = "La tarifa que se cobra por utilizar cada salida de transacción no gastada (UTXO) en la red Kaspa. Cuanto más UTXO utilice en una transacción, mayor será la tarifa.";
-"send_custom_kaspa_per_utxo_title" = "KAS por UTXO";
 "send_date_format" = "%1$@, %2$@";
 "send_destination_tag_field" = "ID de destino";
 "send_dismiss_message" = "¿Está seguro (a) de que quiere cerrar la pantalla de envío?";
@@ -629,6 +628,8 @@
 "staking_amount_requirement_error" = "El monto del staking debe ser al menos %@";
 "staking_amount_tron_integer_error" = "El monto del staking se redondeará a %1$@ TRX debido a las reglas de la red.";
 "staking_claim_unstaked" = "Unstaking de la reclamación";
+"staking_details_account_fee" = "Stake account fee";
+"staking_details_account_fee_info" = "A staking account is a special account where staked SOL tokens are stored. It is created when you delegate your tokens to a validator to participate in transaction validation and earn rewards. A small fee is charged for creating the staking account, which is returned after the staking is completed.";
 "staking_details_annual_percentage_rate" = "Porcentaje de rendimiento anual";
 "staking_details_annual_percentage_rate_info" = "El porcentaje de rendimiento anual que podrá ganar como participante en el staking.";
 "staking_details_apr" = "APR";
@@ -685,6 +686,7 @@
 "staking_reward_schedule_block" = "Bloquear";
 "staking_reward_schedule_day" = "Día";
 "staking_reward_schedule_each_day" = "Cada día";
+"staking_reward_schedule_each_sec" = "Each ~%1$@sec";
 "staking_reward_schedule_epoch" = "Época";
 "staking_reward_schedule_era" = "Era";
 "staking_reward_schedule_hour" = "Hora";
@@ -702,6 +704,7 @@
 "staking_unbonding" = "Desunión";
 "staking_unbonding_in" = "Desunión en";
 "staking_unlocked_locked" = "Desbloquear";
+"staking_unlocking" = "Unlocking";
 "staking_unstaked" = "Sin staking";
 "staking_unstaked_footer" = "Marque activos sin staking para reclamarlos";
 "staking_unstaking" = "Unstaking";
@@ -843,6 +846,8 @@
 "warning_backup_errors_message" = "Parece que la activación de la tarjeta no ha ido correctamente. Esto puede deberse a un problema con el módulo NFC de su dispositivo o a una mala conexión de la tarjeta de su dispositivo. Comuníquese con nuestro equipo de soporte para obtener ayuda.";
 "warning_beacon_chain_retirement_content" = "Según los desarrolladores de la red BNB, el soporte para el estándar BEP-2\nfinalizará en junio de 2024. Para evitar perder activos con este estándar, por favor conviértalos al estándar BEP-20. Usa nuestro servicio de swap para transferirlos a la red BNB Smart Chain.";
 "warning_beacon_chain_retirement_title" = "BNB Beacon Chain se cerrará";
+"warning_blocked_funds_for_fee_message" = "Please deposit some %1$@ to cover the network fee";
+"warning_blocked_funds_for_fee_title" = "Insufficient funds to cover the network fee";
 "warning_button_could_be_better" = "Podría ser mejor";
 "warning_button_ok" = "Entendido";
 "warning_button_really_cool" = "¡Realmente genial!";

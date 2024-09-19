@@ -62,6 +62,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
     private let tokensNotificationManager: NotificationManager
     private let bannerNotificationManager: NotificationManager?
     private let tokenSectionsAdapter: TokenSectionsAdapter
+    private let tooltipStorageProvider = TooltipStorageProvider()
     private let tokenRouter: SingleTokenRoutable
     private let optionsEditing: OrganizeTokensOptionsEditing
     private let rateAppController: RateAppInteractionController
@@ -497,7 +498,6 @@ extension MultiWalletMainContentViewModel: TokenItemContextActionDelegate {
             Analytics.log(event: .buttonExchange, params: [.token: walletModel.tokenItem.currencySymbol])
             tokenRouter.openExchange(walletModel: walletModel)
         case .stake:
-            Analytics.log(event: .stakingClicked, params: [.token: walletModel.tokenItem.currencySymbol])
             tokenRouter.openStaking(walletModel: walletModel)
         case .marketsDetails, .hide:
             return

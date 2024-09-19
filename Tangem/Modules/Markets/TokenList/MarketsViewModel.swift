@@ -415,6 +415,11 @@ extension MarketsViewModel: MarketsListDataFetcher {
 }
 
 extension MarketsViewModel: MainBottomSheetHeaderViewModelDelegate {
+    func clearSearchInput() {
+        dataProvider.reset()
+        currentSearchValue = ""
+    }
+
     func isViewVisibleForHeaderViewModel(_ viewModel: MainBottomSheetHeaderViewModel) -> Bool {
         return isViewVisible
     }

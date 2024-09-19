@@ -77,7 +77,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         var targetState: MarketsPortfolioContainerView.TypeView = .list
         if let networks {
             let canAddAvailableNetworks = canAddToPortfolio(with: networks)
-            isAddTokenButtonDisabled = !canAddAvailableNetworks
+            isAddTokenButtonDisabled = tokenAddedToAllNetworksAndWallets(availableNetworks: networks) && canAddAvailableNetworks
 
             if tokenItemViewModels.isEmpty {
                 targetState = canAddAvailableNetworks ? .empty : .unavailable
@@ -107,11 +107,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             return false
         }
 
-        var networkIds = Set<String>()
-
-        networks.forEach {
-            networkIds.insert($0.networkId)
-        }
+        let networkIds = networks.reduce(into: Set<String>()) { $0.insert($1.networkId) }
 
         for model in multiCurrencyUserWalletModels {
             if !networkIds.intersection(model.config.supportedBlockchains.map { $0.networkId }).isEmpty {
@@ -120,6 +116,36 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         }
 
         return false
+    }
+
+    private func tokenAddedToAllNetworksAndWallets(availableNetworks: [NetworkModel]) -> Bool {
+        if availableNetworks.isEmpty {
+            return false
+        }
+
+        let availableNetworksIds = availableNetworks.reduce(into: Set<String>()) { $0.insert($1.networkId) }
+
+        for userWalletModel in userWalletModels {
+            guard userWalletModel.config.hasFeature(.multiCurrency) else {
+                continue
+            }
+
+            var networkIds = availableNetworksIds
+            let userTokenList = userWalletModel.userTokenListManager.userTokensList
+            for entry in userTokenList.entries {
+                guard let id = entry.id, id == coinId else {
+                    continue
+                }
+
+                networkIds.remove(entry.blockchainNetwork.blockchain.networkId)
+            }
+
+            if !networkIds.isEmpty {
+                return false
+            }
+        }
+
+        return true
     }
 
     private func updateTokenList() {
@@ -147,6 +173,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             }
 
         tokenItemViewModels = tokenItemViewModelByUserWalletModels
+        updateExpandedAction()
     }
 
     private func updateExpandedAction() {
@@ -154,6 +181,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             tokenItemViewModels.count == 1, let tokenViewModel = tokenItemViewModels.first,
             tokenViewModel.tokenItemInfoProvider.isZeroBalanceValue
         else {
+            tokenWithExpandedQuickActions = nil
             return
         }
 
@@ -162,8 +190,13 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
 
     private func bind() {
         let publishers = userWalletModels.map { $0.userTokenListManager.userTokensListPublisher }
+        let walletModelsPublishers = userWalletModels.map { $0.walletModelsManager.walletModelsPublisher }
 
-        Publishers.MergeMany(publishers)
+        let manyUserTokensListPublishers = Publishers.MergeMany(publishers)
+        let manyWalletModelsPublishers = Publishers.MergeMany(walletModelsPublishers)
+
+        manyUserTokensListPublishers
+            .combineLatest(manyWalletModelsPublishers)
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { viewModel, _ in
@@ -206,7 +239,7 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProv
 extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDelegate {
     func showContextAction(for viewModel: MarketsPortfolioTokenItemViewModel) {
         withAnimation {
-            if tokenWithExpandedQuickActions == viewModel {
+            if tokenWithExpandedQuickActions === viewModel {
                 tokenWithExpandedQuickActions = nil
             } else {
                 tokenWithExpandedQuickActions = viewModel

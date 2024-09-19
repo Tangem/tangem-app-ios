@@ -24,14 +24,14 @@ use_frameworks!
 inhibit_all_warnings!
 
 def tangem_sdk_pod
-  pod 'TangemSdk', :git => 'https://github.com/Tangem/tangem-sdk-ios.git', :tag => 'develop-306'
+  pod 'TangemSdk', :git => 'https://github.com/Tangem/tangem-sdk-ios.git', :tag => 'develop-310'
   #pod 'TangemSdk', :path => '../tangem-sdk-ios'
 end
 
 def blockchain_sdk_pods
   # 'TangemWalletCore' dependency must be added via SPM
 
-  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :tag => 'develop-683'
+  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :tag => 'develop-687'
   #pod 'BlockchainSdk', :path => '../blockchain-sdk-swift'
 
   pod 'Solana.Swift', :git => 'https://github.com/tangem/Solana.Swift', :tag => '1.2.0-tangem11'
@@ -152,7 +152,7 @@ post_install do |installer|
         config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
       end
 
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.5'
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
     end
   end
 

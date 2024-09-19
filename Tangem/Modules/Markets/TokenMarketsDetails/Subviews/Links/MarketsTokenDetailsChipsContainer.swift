@@ -53,6 +53,11 @@ struct MarketsTokenDetailsChipsContainer: View {
                     return result
                 }
             }
+
+            // We need this view to fix items vertical alignment.
+            // SwiftUI on iOS 18 not correctly align elements in ZStack, it moves items up O_o
+            Color.clear
+                .frame(width: 1)
         })
     }
 }

@@ -44,14 +44,14 @@ struct MarketsPortfolioContainerView: View {
                 viewModel.onAddTapAction()
             }, label: {
                 HStack(spacing: 2) {
-                    Assets.plus24.image
-                        .resizable()
-                        .renderingMode(.template)
-                        .foregroundColor(Colors.Icon.primary1)
-                        .frame(size: .init(bothDimensions: 14))
+                    Assets.plus14.image
+                        .foregroundStyle(viewModel.isAddTokenButtonDisabled ? Colors.Icon.inactive : Colors.Icon.primary1)
 
                     Text(Localization.marketsAddToken)
-                        .style(Fonts.Regular.footnote.bold(), color: Colors.Text.primary1)
+                        .style(
+                            Fonts.Regular.footnote.bold(),
+                            color: viewModel.isAddTokenButtonDisabled ? Colors.Icon.inactive : Colors.Text.primary1
+                        )
                 }
                 .padding(.leading, 8)
                 .padding(.trailing, 10)
@@ -90,7 +90,7 @@ struct MarketsPortfolioContainerView: View {
             ForEach(indexed: elementItems.indexed()) { index, itemViewModel in
                 MarketsPortfolioTokenItemView(
                     viewModel: itemViewModel,
-                    isExpanded: viewModel.tokenWithExpandedQuickActions == itemViewModel
+                    isExpanded: viewModel.tokenWithExpandedQuickActions === itemViewModel
                 )
             }
         }
