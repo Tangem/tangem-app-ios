@@ -668,7 +668,7 @@
 "staking_migrate" = "移行";
 "staking_native" = "ネイティブステーキング";
 "staking_notification_claim_rewards_text" = "獲得した報酬はあなたのアドレスに直接送られ、すぐ使用可能です。";
-"staking_notification_earn_rewards_text" = "Stake securely and start earning your rewards";
+"staking_notification_earn_rewards_text" = "安全にステーキングして報酬を獲得しましょう";
 "staking_notification_earn_rewards_text_daily" = "安全にステーキングして、報酬を毎日獲得しましょう";
 "staking_notification_earn_rewards_text_hourly" = "安全にステーキングして、報酬を毎時間獲得しましょう";
 "staking_notification_earn_rewards_text_monthly" = "安全にステーキングして、報酬を毎月獲得しましょう";
@@ -678,6 +678,7 @@
 "staking_notification_earn_rewards_text_period_week" = "ステーキングにより%1$@を獲得できます。ステーキング報酬は毎週受け取れます。";
 "staking_notification_earn_rewards_text_weekly" = "安全にステーキングして、報酬を毎週獲得しましょう";
 "staking_notification_earn_rewards_title" = "ステーキング報酬を獲得";
+"staking_notification_network_error_text" = "Staking is currently unavailable due to network conditions. Please try again later.";
 "staking_notification_new_validator_funds_transfer" = "新しいバリデーターで%1$@ネットワークにステーキングすると、以前にステーキングされた資金はすべてこのバリデーターに自動的に転送されます。";
 "staking_notification_restake_rewards_text" = "獲得した報酬をステーキングに再投資し、潜在的な収益を増やします。";
 "staking_notification_unlock_text" = "資金をステーキングから引き出すには、ロックを解除してください。ロック解除には%@かかります。";
@@ -697,7 +698,7 @@
 "staking_reward_schedule_block" = "ブロック";
 "staking_reward_schedule_day" = "日";
 "staking_reward_schedule_each_day" = "毎日";
-"staking_reward_schedule_each_minute" = "Each minute";
+"staking_reward_schedule_each_minute" = "毎分";
 "staking_reward_schedule_each_sec" = "%1$@毎";
 "staking_reward_schedule_epoch" = "エポック";
 "staking_reward_schedule_era" = "時代";
