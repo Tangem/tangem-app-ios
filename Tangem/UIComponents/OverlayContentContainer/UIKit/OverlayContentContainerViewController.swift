@@ -548,6 +548,10 @@ final class OverlayContentContainerViewController: UIViewController {
             animationContext.initialSpringVelocity = abs(velocity.y / remainingDistance)
         }
 
+        if isCollapsing {
+            animationContext.disableSpringAnimation()
+        }
+
         let newVerticalOffset = isCollapsing ? overlayCollapsedVerticalOffset : contentExpandedVerticalOffset
         overlayViewTopAnchorConstraint?.constant = newVerticalOffset
 

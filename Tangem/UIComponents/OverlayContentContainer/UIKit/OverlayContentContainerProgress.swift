@@ -33,3 +33,11 @@ extension OverlayContentContainerProgress: Equatable {
         return lhs.value == rhs.value
     }
 }
+
+// MARK: - Convenience extensions
+
+extension OverlayContentContainerProgress.AnimationContext {
+    mutating func disableSpringAnimation() {
+        springDampingRatio = 1.0
+    }
+}
