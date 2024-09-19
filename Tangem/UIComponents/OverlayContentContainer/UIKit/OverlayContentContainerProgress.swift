@@ -12,8 +12,10 @@ import UIKit
 // Internal state used only by `OverlayContentContainerViewController`, do not use.
 struct OverlayContentContainerProgress {
     struct AnimationContext {
-        let duration: TimeInterval
-        let curve: UIView.AnimationCurve
+        var duration: TimeInterval
+        var curve: UIView.AnimationCurve
+        var springDampingRatio: CGFloat
+        var initialSpringVelocity: CGFloat
     }
 
     static var zero: Self { Self(value: .zero, context: nil) }
