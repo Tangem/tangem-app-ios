@@ -678,6 +678,7 @@
 "staking_notification_earn_rewards_text_period_week" = "Staking allows you to earn %1$@. Your staking rewards arrive every week.";
 "staking_notification_earn_rewards_text_weekly" = "Stake securely and start earning weekly rewards";
 "staking_notification_earn_rewards_title" = "Earn staking rewards";
+"staking_notification_network_error_text" = "Staking is currently unavailable due to network conditions. Please try again later.";
 "staking_notification_new_validator_funds_transfer" = "Staking in the %1$@ network with a new validator will automatically transfer all previously staked funds to this validator";
 "staking_notification_restake_rewards_text" = "Reinvests your earned rewards in your staked amount, increasing potential earnings.";
 "staking_notification_unlock_text" = "Unlock your money to withdraw it from staking process. Unlocking takes %@.";
