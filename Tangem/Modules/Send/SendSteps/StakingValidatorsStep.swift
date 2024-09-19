@@ -13,13 +13,16 @@ import SwiftUI
 class StakingValidatorsStep {
     private let viewModel: StakingValidatorsViewModel
     private let interactor: StakingValidatorsInteractor
+    private let sendFeeLoader: SendFeeLoader
 
     init(
         viewModel: StakingValidatorsViewModel,
-        interactor: StakingValidatorsInteractor
+        interactor: StakingValidatorsInteractor,
+        sendFeeLoader: SendFeeLoader
     ) {
         self.viewModel = viewModel
         self.interactor = interactor
+        self.sendFeeLoader = sendFeeLoader
     }
 }
 
@@ -34,5 +37,13 @@ extension StakingValidatorsStep: SendStep {
 
     var isValidPublisher: AnyPublisher<Bool, Never> {
         .just(output: true)
+    }
+
+    func willDisappear(next step: SendStep) {
+        guard step.type.isSummary else {
+            return
+        }
+
+        sendFeeLoader.updateFees()
     }
 }

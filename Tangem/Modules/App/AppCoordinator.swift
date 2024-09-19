@@ -178,7 +178,7 @@ class AppCoordinator: CoordinatorObject {
 
         if FeatureProvider.isAvailable(.markets) {
             marketsCoordinator = nil
-            mainBottomSheetUIManager.hide()
+            mainBottomSheetUIManager.hide(shouldUpdateFooterSnapshot: false)
         }
 
         let options = AppCoordinator.Options(newScan: newScan)

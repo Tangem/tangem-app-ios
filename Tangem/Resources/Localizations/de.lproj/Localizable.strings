@@ -40,7 +40,7 @@
 "balance_hidden_title" = "Guthaben sind ausgeblendet";
 "biometry_touch_id_reason" = "Touch ID wird zum Speichern deiner Karten in der App verwendet";
 "button_start_backup_process" = "Backup-Prozess starten";
-"buy_token_description" = "Von deiner Fiat-Karte oder deinem Bankkonto";
+"buy_token_description" = "Verwende eine Bankkarte oder eine andere Zahlungsmethode";
 "card_settings_access_code_recovery_disabled_description" = "Deaktiviere diese Option, wenn du nicht möchtest, dass diese Karte zum Zurücksetzen von Zugangscodes auf anderen Karten in dieser Wallets verwendet wird. Bitte beachte, dass du dann auch den Zugangscode auf dieser Karte nicht zurücksetzen kannst.";
 "card_settings_access_code_recovery_enabled_description" = "Ermöglicht die Verwendung dieser Karte zum Zurücksetzen des Zugangscodes auf anderen Karten in dieser Brieftasche";
 "card_settings_access_code_recovery_footer" = "Deaktiviere die Möglichkeit, den Zugangscode auf dieser Karte oder anderen Karten in dieser Wallets zurückzusetzen";
@@ -274,7 +274,7 @@
 "express_token_list_empty_search" = "Keine Token gefunden. Bitte versuche eine andere Anfrage";
 "express_transaction_id" = "ID: %@";
 "express_transaction_id_copied" = "Transaktions-ID kopiert";
-"exсhange_token_description" = "Aus einer anderen Währung in deiner Wallet";
+"exсhange_token_description" = "Wechsel eine Ihrer Währungen in eine andere";
 "feedback_preface_rate_negative" = "Teile uns mit, welche Funktionen du vermisst, und wir werden versuchen, dir zu helfen.";
 "feedback_preface_scan_failed" = "Bitte sag uns, welche Karte du hast";
 "feedback_preface_support" = "Hallo Support-Team,";
@@ -350,7 +350,7 @@
 "markets_loading_error_title" = "Die Daten konnten nicht geladen werden...";
 "markets_loading_no_data_title" = "Keine Daten";
 "markets_quick_actions" = "Schnelle Aktionen";
-"markets_search_header_title" = "Search through the market";
+"markets_search_header_title" = "Markt durchsuchen";
 "markets_search_result_title" = "Ergebnis";
 "markets_search_see_tokens_under_100k" = "Token unter 100k USD Marktkapitalisierung anzeigen";
 "markets_search_show_tokens" = "Token anzeigen";
@@ -399,7 +399,7 @@
 "markets_token_details_liquidity_index_description" = "Leer";
 "markets_token_details_low" = "Niedrig";
 "markets_token_details_market_capitalization" = "MarketCap";
-"markets_token_details_market_capitalization_description" = "Der Gesamtmarktwert einer Kryptowährung, berechnet durch Multiplikation des aktuellen Preises des Coins mit der Gesamtzahl der im Umlauf befindlichen Coins.";
+"markets_token_details_market_capitalization_description" = "Der Gesamtmarktwert einer Kryptowährung, berechnet sich durch Multiplikation des aktuellen Preises des Coins mit der Gesamtzahl der im Umlauf befindlichen Coins";
 "markets_token_details_market_capitalization_full" = "MarketCap";
 "markets_token_details_market_rating" = "Marktbewertung";
 "markets_token_details_market_rating_description" = "Position im Krypto-Rating zwischen allen Coins basierend auf der Marktkapitalisierung";
@@ -515,7 +515,7 @@
 "qr_scanner_camera_denied_title" = "Kamerazugriff verweigert";
 "receive_bottom_sheet_warning_message" = "%1$@ ( %2$@ ) im %3$@ Netzwerk";
 "receive_bottom_sheet_warning_message_full" = "Sende nur %@ an diese Adresse. Der Versand einer anderen Währung führt zu ihrem unwiderruflichen Verlust.";
-"receive_token_description" = "QR-Code anzeigen oder Adresse teilen";
+"receive_token_description" = "Überweise Geld von einem anderen Wallet oder einer anderen Börse";
 "referral_button_participate" = "Teilnehmen";
 "referral_error_failed_to_load_info" = "Die Informationen zum Empfehlungsprogramm konnten nicht geladen werden. Bitte versuche es später noch einmal.";
 "referral_error_failed_to_load_info_with_reason" = "Die Informationen über das Empfehlungsprogramm konnten nicht geladen werden. Fehlercode: %@. Bitte versuche es später noch einmal.";
@@ -590,7 +590,7 @@
 "send_notification_exceed_balance_title" = "Gesamtbetrag übersteigt den Saldo";
 "send_notification_existential_deposit_text" = "Ein Guthaben von mindestens %@ ist erforderlich, um dein Konto in der Blockchain aktiv zu halten und Sicherheitsrisiken zu vermeiden. Dieser Betrag verbleibt auf deinem Guthaben und kann nicht abgehoben werden.";
 "send_notification_existential_deposit_title" = "Mindesteinlage";
-"send_notification_fee_too_high_text" = "Der Kommissionsbetrag ist %@ mal der empfohlene Betrag. Stelle sicher, dass die benutzerdefinierten Einstellungen korrekt sind.";
+"send_notification_fee_too_high_text" = "Dein Provisionsbetrag ist %@ -mal höher als der empfohlene Betrag. Bitte überprüfe benutzerdefinierten Einstellungen und pass diese an.";
 "send_notification_fee_too_high_title" = "Die individuelle Gebühr ist hoch";
 "send_notification_high_fee_text" = "Aufgrund der Besonderheiten des Netzes %1$@ ist die Gebühr für die Überweisung des gesamten Guthabens höher. Um die Kommission zu reduzieren, Kannst du %2$@ verlassen.";
 "send_notification_high_fee_title" = "Die Gebühr ist höher";
@@ -624,7 +624,7 @@
 "send_summary_transaction_description_no_fiat_fee" = "Du sendest **%1$@** und %2$@";
 "send_summary_transaction_description_prefix" = "Du sendest **%1$@**";
 "send_summary_transaction_description_suffix_fee_covered" = "Die Netzwerkgebühr wird durch die Nutzung von %1$@ Energieträgern gedeckt.";
-"send_summary_transaction_description_suffix_fee_reduced" = "Die Netzwerkgebühr wird durch das Ausgeben von %1$@ Energieträgern reduziert.";
+"send_summary_transaction_description_suffix_fee_reduced" = "Die Netzwerkgebühr wird durch den Verbrauch von %1$@ Energie reduziert";
 "send_summary_transaction_description_suffix_including" = "inklusive einer Netzgebühr von %1$@";
 "send_transaction_success" = "Die Transaktion wurde erfolgreich signiert und an den Blockchain-Knoten gesendet. Die Walletbilanz wird aktualisiert";
 "send_tron_account_activation_error" = "%1$@ ist ein Vermögenswert im Tron-Netzwerk. Um die Gebühr zu berechnen und eine Transaktion durchzuführen, musst du etwas Tron (TRX) auf deinem Konto einzahlen.";
@@ -667,8 +667,8 @@
 "staking_locked" = "Gesperrt";
 "staking_migrate" = "Migrieren";
 "staking_native" = "Natives Staking";
-"staking_notification_claim_rewards_text" = "Verdiente Belohnungen werden an deine Wallet gesendet und stehen sofort zur Verwendung zur Verfügung";
-"staking_notification_earn_rewards_text" = "Stake securely and start earning your rewards";
+"staking_notification_claim_rewards_text" = "Verdiente Belohnungen werden an Deine Wallet gesendet und stehen Dir sofort zur Verfügung";
+"staking_notification_earn_rewards_text" = "Stake sicher und verdienen Belohnungen";
 "staking_notification_earn_rewards_text_daily" = "Sicher staken und tägliche Belohnungen verdienen.";
 "staking_notification_earn_rewards_text_hourly" = "Sicher staken und stündliche Belohnungen verdienen.";
 "staking_notification_earn_rewards_text_monthly" = "Sicher staken und monatliche Belohnungen verdienen.";
@@ -678,6 +678,7 @@
 "staking_notification_earn_rewards_text_period_week" = "Mit dem Staking kannst Du %1$@ verdienen. Deine Staking-Belohnungen erhältst Du jede Woche.";
 "staking_notification_earn_rewards_text_weekly" = "Sicher staken und wöchentliche Belohnungen verdienen.";
 "staking_notification_earn_rewards_title" = "Verdiene Staking-Belohnungen";
+"staking_notification_network_error_text" = "Staking is currently unavailable due to network conditions. Please try again later.";
 "staking_notification_new_validator_funds_transfer" = "Beim Staking im %1$@ -Netzwerk mit einem neuen Validator werden alle zuvor eingesetzten Kryptos automatisch an diesen Validator übertragen";
 "staking_notification_restake_rewards_text" = "Reinvestiert Deine verdienten Prämien in Deinen Einsatzbetrag und erhöht so den potenziellen Gewinn.";
 "staking_notification_unlock_text" = "Entsperre dein Geld, um es aus dem Staking-Prozess abzuheben. Das Freischalten nimmt %@.";
@@ -697,8 +698,8 @@
 "staking_reward_schedule_block" = "Block";
 "staking_reward_schedule_day" = "Tag";
 "staking_reward_schedule_each_day" = "Täglich";
-"staking_reward_schedule_each_minute" = "Each minute";
-"staking_reward_schedule_each_sec" = "Jeder %1$@";
+"staking_reward_schedule_each_minute" = "Minütlich";
+"staking_reward_schedule_each_sec" = "Alle ~ %1$@ Sek.";
 "staking_reward_schedule_epoch" = "Epoche";
 "staking_reward_schedule_era" = "Ära";
 "staking_reward_schedule_hour" = "Stunde";

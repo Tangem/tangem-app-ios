@@ -13,7 +13,7 @@ public protocol StakingManager {
     var state: StakingManagerState { get }
     var statePublisher: AnyPublisher<StakingManagerState, Never> { get }
 
-    func updateState() async throws
+    func updateState() async
     func estimateFee(action: StakingAction) async throws -> Decimal
     func transaction(action: StakingAction) async throws -> StakingTransactionAction
 
@@ -23,6 +23,7 @@ public protocol StakingManager {
 public enum StakingManagerState: Hashable, CustomStringConvertible {
     case loading
     case notEnabled
+    case loadingError(String)
     // When we turn off the YieldInfo in the admin panel
     case temporaryUnavailable(YieldInfo)
     case availableToStake(YieldInfo)
@@ -30,7 +31,7 @@ public enum StakingManagerState: Hashable, CustomStringConvertible {
 
     public var yieldInfo: YieldInfo? {
         switch self {
-        case .loading, .notEnabled:
+        case .loading, .notEnabled, .loadingError:
             return nil
         case .temporaryUnavailable(let yieldInfo), .availableToStake(let yieldInfo):
             return yieldInfo
@@ -51,6 +52,7 @@ public enum StakingManagerState: Hashable, CustomStringConvertible {
         switch self {
         case .loading: "loading"
         case .notEnabled: "notEnabled"
+        case .loadingError(let error): "loadingError \(error)"
         case .temporaryUnavailable: "temporaryUnavailable"
         case .availableToStake: "availableToStake"
         case .staked: "staked"
