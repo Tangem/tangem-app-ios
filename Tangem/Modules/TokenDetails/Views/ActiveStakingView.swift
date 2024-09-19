@@ -56,7 +56,7 @@ struct ActiveStakingView: View {
     private var balanceView: some View {
         switch data.balance {
         case .loadingError:
-            Text("Staking is currently unavailable due to network conditions. Please try again later.")
+            Text(Localization.stakingNotificationNetworkErrorText)
                 .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
         case .balance(let balance, _):
             HStack(spacing: 4) {
