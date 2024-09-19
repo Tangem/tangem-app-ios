@@ -52,7 +52,7 @@ class StakingModel {
         stakingTransactionDispatcher: SendTransactionDispatcher,
         sendTransactionDispatcher: SendTransactionDispatcher,
         allowanceProvider: AllowanceProvider,
-        amountTokenItem: TokenItem,
+        tokenItem: TokenItem,
         feeTokenItem: TokenItem
     ) {
         self.stakingManager = stakingManager
@@ -62,10 +62,8 @@ class StakingModel {
         self.stakingTransactionDispatcher = stakingTransactionDispatcher
         self.sendTransactionDispatcher = sendTransactionDispatcher
         self.allowanceProvider = allowanceProvider
-        tokenItem = amountTokenItem
+        self.tokenItem = tokenItem
         self.feeTokenItem = feeTokenItem
-
-        bind()
     }
 }
 
@@ -80,24 +78,6 @@ extension StakingModel: StakingModelStateProvider {
 // MARK: - Bind
 
 private extension StakingModel {
-    func bind() {
-        stakingManager
-            .statePublisher
-            .compactMap { $0.yieldInfo }
-            .map { yieldInfo -> LoadingValue<ValidatorInfo>in
-                let defaultValidator = yieldInfo.validators.first(where: { $0.address == yieldInfo.defaultValidator })
-                if let validator = defaultValidator ?? yieldInfo.validators.first {
-                    return .loaded(validator)
-                }
-
-                return .failedToLoad(error: StakingModelError.validatorNotFound)
-            }
-            // Only for initial set
-            .first()
-            .assign(to: \._selectedValidator.value, on: self, ownership: .weak)
-            .store(in: &bag)
-    }
-
     func updateState() {
         guard let amount = _amount.value?.crypto,
               let validator = _selectedValidator.value.value else {
@@ -156,7 +136,6 @@ private extension StakingModel {
         return .readyToStake(
             .init(
                 amount: newAmount,
-                validator: validator,
                 fee: fee,
                 isFeeIncluded: includeFee,
                 stakeOnDifferentValidator: hasPreviousStakeOnDifferentValidator
@@ -262,12 +241,16 @@ private extension StakingModel {
             throw StakingModelError.readyToStakeNotFound
         }
 
+        guard let validator = _selectedValidator.value.value else {
+            throw StakingModelError.validatorNotFound
+        }
+
         Analytics.log(.stakingButtonStake, params: [.source: .stakeSourceConfirmation])
 
         do {
             let action = StakingAction(
                 amount: readyToStake.amount,
-                validatorType: .validator(readyToStake.validator),
+                validatorType: .validator(validator),
                 type: .stake
             )
             let transactionInfo = try await stakingManager.transaction(action: action)
@@ -535,7 +518,6 @@ extension StakingModel {
 
         struct ReadyToStake {
             let amount: Decimal
-            let validator: ValidatorInfo
             let fee: Decimal
             let isFeeIncluded: Bool
             let stakeOnDifferentValidator: Bool
@@ -543,10 +525,12 @@ extension StakingModel {
     }
 }
 
-enum StakingModelError: String, Hashable, Error {
+enum StakingModelError: String, Hashable, LocalizedError {
     case readyToStakeNotFound
     case validatorNotFound
     case approveDataNotFound
+
+    var errorDescription: String? { rawValue }
 }
 
 // MARK: Analytics
