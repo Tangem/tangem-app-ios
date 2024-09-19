@@ -116,6 +116,11 @@ struct TokenMarketsDetailsView: View {
                     .hidden(viewModel.allDataLoadFailed)
                     .padding(.horizontal, Constants.blockHorizontalPadding)
                     .transition(.opacity)
+
+                // Idk why, but `additionalSafeAreaInsets.bottom` from `OverlayContentContainerViewController`
+                // doesn't propagate to this part of the view hierarchy. Adding it manually
+                Color.clear
+                    .frame(height: UIApplication.safeAreaInsets.bottom)
             }
             .padding(.top, Constants.scrollViewContentTopInset)
             .if(viewModel.isMarketsSheetStyle) { view in
