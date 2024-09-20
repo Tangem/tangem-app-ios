@@ -154,8 +154,11 @@ final class MarketsViewModel: BaseMarketsViewModel {
         fetch(with: currentSearchValue, by: filterProvider.currentFilterValue)
     }
 
-    func onViewSnapshot(_ viewSnapshot: UIImage?) {
-        mainBottomSheetUIManager.setFooterSnapshot(viewSnapshot)
+    func onViewSnapshot(lightAppearanceSnapshotImage: UIImage?, darkAppearanceSnapshotImage: UIImage?) {
+        mainBottomSheetUIManager.setFooterSnapshots(
+            lightAppearanceSnapshotImage: lightAppearanceSnapshotImage,
+            darkAppearanceSnapshotImage: darkAppearanceSnapshotImage
+        )
     }
 }
 

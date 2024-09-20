@@ -291,13 +291,16 @@ struct MarketsView: View {
     }
 
     private func makeViewSnapshotIfNeeded(isViewSnapshotRequested: Bool) {
-        if isViewSnapshotRequested {
-            let snapshotter = viewHierarchySnapshotter
-            let viewSnapshot = snapshotter?.makeSnapshotLayerImage(options: .presentation, isOpaque: true)
-                ?? snapshotter?.makeSnapshotLayerImage(options: .default, isOpaque: true)
-            viewModel.isViewSnapshotRequested.toggle()
-            viewModel.onViewSnapshot(viewSnapshot)
+        guard isViewSnapshotRequested else {
+            return
         }
+
+        let snapshotter = viewHierarchySnapshotter
+        let viewSnapshot = snapshotter?.makeSnapshotLayerImage(options: .presentation, isOpaque: true)
+            ?? snapshotter?.makeSnapshotLayerImage(options: .default, isOpaque: true)
+
+        viewModel.isViewSnapshotRequested.toggle()
+        viewModel.onViewSnapshot(lightAppearanceSnapshotImage: viewSnapshot, darkAppearanceSnapshotImage: viewSnapshot) // TODO: Andrey Fedorov - Make actual snapshots
     }
 }
 
