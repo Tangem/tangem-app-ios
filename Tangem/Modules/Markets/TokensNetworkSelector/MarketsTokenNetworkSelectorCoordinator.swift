@@ -48,10 +48,14 @@ extension MarketsTokenNetworkSelectorCoordinator {
 
 // MARK: - MarketsTokensNetworkRoutable
 
-extension MarketsTokenNetworkSelectorCoordinator: MarketsTokensNetworkRoutable {
+extension MarketsTokenNetworkSelectorCoordinator: MarketsTokensNetworkRoutable, WalletSelectorRoutable {
     func openWalletSelector(with provider: MarketsWalletDataProvider) {
-        let walletSelectorViewModel = WalletSelectorViewModel(dataSource: provider)
+        let walletSelectorViewModel = WalletSelectorViewModel(dataSource: provider, coordinator: self)
         self.walletSelectorViewModel = walletSelectorViewModel
+    }
+
+    func dissmisWalletSelectorModule() {
+        walletSelectorViewModel = nil
     }
 
     func dissmis() {

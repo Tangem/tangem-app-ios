@@ -24,16 +24,19 @@ struct WalletSelectorItemView: View {
     // MARK: - Private Implementation
 
     private var contentButton: some View {
-        HStack(spacing: 12) {
-            icon
+        VStack(spacing: .zero) {
+            HStack(spacing: 12) {
+                icon
 
-            textViews
+                textViews
 
-            Spacer(minLength: 0)
+                Spacer(minLength: 0)
 
-            selectedCheckmark
+                selectedCheckmark
+            }
         }
         .contentShape(Rectangle())
+        .padding(.vertical, 12)
     }
 
     @ViewBuilder
