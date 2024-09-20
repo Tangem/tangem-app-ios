@@ -11,27 +11,55 @@ import UIKit
 import TangemFoundation
 
 final class ViewHierarchySnapshottingContainerViewController: UIViewController {
+    /// For unknown reasons, in SwiftUI, child view controllers won't inherit `overrideUserInterfaceStyle`
+    /// from their parent view controller.
+    /// This behavior is still present on iOS 17 and above, despite improvements to the UIKit trait system
+    /// in this version of iOS (see https://developer.apple.com/videos/play/wwdc2023/10057/ for more details).
+    /// Enable this property to perform manual propagation of `overrideUserInterfaceStyle` to all child view controllers.
+    var shouldPropagateOverriddenUserInterfaceStyleToChildren = false
+
+    @discardableResult
     private func performWithOverridingUserInterfaceStyleIfNeeded<T>(
         _ overrideUserInterfaceStyle: UIUserInterfaceStyle?,
-        onView targetView: UIView,
         action: () -> T
     ) -> T {
-        // Restoring view state if needed
+        // Restoring view (and child VCs) state if needed
         defer {
             if overrideUserInterfaceStyle != nil {
-                targetView.overrideUserInterfaceStyle = .unspecified
+                viewIfLoaded?.overrideUserInterfaceStyle = .unspecified
+
+                if shouldPropagateOverriddenUserInterfaceStyleToChildren {
+                    propagateOverriddenUserInterfaceStyle(.unspecified, toChildrenOf: self)
+                }
             }
         }
 
         if let overrideUserInterfaceStyle {
-            targetView.overrideUserInterfaceStyle = overrideUserInterfaceStyle
+            viewIfLoaded?.overrideUserInterfaceStyle = overrideUserInterfaceStyle
+
+            if shouldPropagateOverriddenUserInterfaceStyleToChildren {
+                propagateOverriddenUserInterfaceStyle(overrideUserInterfaceStyle, toChildrenOf: self)
+            }
         }
 
         return action()
     }
 
-    private func overrideUserInterfaceStyleAssertion(_ style: UIUserInterfaceStyle?, afterScreenUpdates: Bool) {
-        if style != nil, !afterScreenUpdates {
+    private func propagateOverriddenUserInterfaceStyle(
+        _ overrideUserInterfaceStyle: UIUserInterfaceStyle,
+        toChildrenOf viewController: UIViewController
+    ) {
+        for child in viewController.children {
+            child.overrideUserInterfaceStyle = overrideUserInterfaceStyle
+            propagateOverriddenUserInterfaceStyle(overrideUserInterfaceStyle, toChildrenOf: child)
+        }
+    }
+
+    private func overrideUserInterfaceStyleAssertion(
+        _ overrideUserInterfaceStyle: UIUserInterfaceStyle?,
+        afterScreenUpdates: Bool
+    ) {
+        if overrideUserInterfaceStyle != nil, !afterScreenUpdates {
             assertionFailure("`afterScreenUpdates` isn't set, `overrideUserInterfaceStyle` will have no effect")
         }
     }
@@ -49,7 +77,7 @@ extension ViewHierarchySnapshottingContainerViewController: ViewHierarchySnapsho
 
         overrideUserInterfaceStyleAssertion(overrideUserInterfaceStyle, afterScreenUpdates: afterScreenUpdates)
 
-        return performWithOverridingUserInterfaceStyleIfNeeded(overrideUserInterfaceStyle, onView: snapshotView) {
+        return performWithOverridingUserInterfaceStyleIfNeeded(overrideUserInterfaceStyle) {
             return snapshotView.snapshotView(afterScreenUpdates: afterScreenUpdates)
         }
     }
@@ -63,7 +91,7 @@ extension ViewHierarchySnapshottingContainerViewController: ViewHierarchySnapsho
 
         overrideUserInterfaceStyleAssertion(overrideUserInterfaceStyle, afterScreenUpdates: afterScreenUpdates)
 
-        return performWithOverridingUserInterfaceStyleIfNeeded(overrideUserInterfaceStyle, onView: snapshotView) {
+        return performWithOverridingUserInterfaceStyleIfNeeded(overrideUserInterfaceStyle) {
             let format = UIGraphicsImageRendererFormat.preferred()
             format.opaque = isOpaque
 

@@ -36,12 +36,13 @@ struct AppCoordinatorView: CoordinatorView {
         .accentColor(Colors.Text.primary1)
         .overlayContentContainer(item: $coordinator.marketsCoordinator) { coordinator in
             let viewHierarchySnapshotter = ViewHierarchySnapshottingContainerViewController()
+            viewHierarchySnapshotter.shouldPropagateOverriddenUserInterfaceStyleToChildren = true
             let adapter = ViewHierarchySnapshottingWeakifyAdapter(adaptee: viewHierarchySnapshotter)
             let marketsCoordinatorView = MarketsCoordinatorView(coordinator: coordinator)
                 .environment(\.mainWindowSize, mainWindowSize)
                 .environment(\.viewHierarchySnapshotter, adapter)
 
-            UIAppearanceBoundaryContainerView(
+            return UIAppearanceBoundaryContainerView(
                 boundaryMarker: { viewHierarchySnapshotter },
                 content: { marketsCoordinatorView }
             )
