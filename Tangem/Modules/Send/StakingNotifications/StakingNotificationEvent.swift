@@ -11,7 +11,6 @@ import TangemStaking
 
 enum StakingNotificationEvent {
     case approveTransactionInProgress
-    case stake(tokenSymbol: String, rewardScheduleType: RewardScheduleType)
     case unstake(description: String)
     case withdraw
     case claimRewards
@@ -28,7 +27,6 @@ extension StakingNotificationEvent: NotificationEvent {
         switch self {
         case .approveTransactionInProgress: "approveTransactionInProgress".hashValue
         case .feeWillBeSubtractFromSendingAmount: "feeWillBeSubtractFromSendingAmount".hashValue
-        case .stake: "stake".hashValue
         case .unstake: "unstake".hashValue
         case .withdraw: "withdraw".hashValue
         case .claimRewards: "claimRewards".hashValue
@@ -44,7 +42,6 @@ extension StakingNotificationEvent: NotificationEvent {
         switch self {
         case .approveTransactionInProgress: .string(Localization.warningExpressApprovalInProgressTitle)
         case .feeWillBeSubtractFromSendingAmount: .string(Localization.sendNetworkFeeWarningTitle)
-        case .stake: .string(Localization.stakingNotificationEarnRewardsTitle)
         case .unstake: .string(Localization.commonUnstake)
         case .withdraw: .string(Localization.stakingWithdraw)
         case .claimRewards: .string(Localization.commonClaim)
@@ -62,14 +59,6 @@ extension StakingNotificationEvent: NotificationEvent {
             Localization.warningExpressApprovalInProgressMessage
         case .feeWillBeSubtractFromSendingAmount(let cryptoAmountFormatted, let fiatAmountFormatted):
             Localization.commonNetworkFeeWarningContent(cryptoAmountFormatted, fiatAmountFormatted)
-        case .stake(let tokenSymbol, .hour):
-            Localization.stakingNotificationEarnRewardsTextPeriodHour(tokenSymbol)
-        case .stake(let tokenSymbol, .day):
-            Localization.stakingNotificationEarnRewardsTextPeriodDay(tokenSymbol)
-        case .stake(let tokenSymbol, .week):
-            Localization.stakingNotificationEarnRewardsTextPeriodWeek(tokenSymbol)
-        case .stake(let tokenSymbol, .month):
-            Localization.stakingNotificationEarnRewardsTextPeriodMonth(tokenSymbol)
         case .unstake(let description):
             description
         case .withdraw:
@@ -92,7 +81,7 @@ extension StakingNotificationEvent: NotificationEvent {
     var colorScheme: NotificationView.ColorScheme {
         switch self {
         case .approveTransactionInProgress, .feeWillBeSubtractFromSendingAmount, .stakesWillMoveToNewValidator: .secondary
-        case .stake, .unstake, .networkUnreachable, .withdraw, .claimRewards, .restakeRewards, .unlock: .action
+        case .unstake, .networkUnreachable, .withdraw, .claimRewards, .restakeRewards, .unlock: .action
         case .validationErrorEvent(let event): event.colorScheme
         }
     }
@@ -103,7 +92,7 @@ extension StakingNotificationEvent: NotificationEvent {
             return .init(iconType: .image(Assets.attention.image))
         case .approveTransactionInProgress:
             return .init(iconType: .progressView)
-        case .stake, .unstake, .withdraw, .claimRewards, .restakeRewards, .unlock, .stakesWillMoveToNewValidator:
+        case .unstake, .withdraw, .claimRewards, .restakeRewards, .unlock, .stakesWillMoveToNewValidator:
             return .init(iconType: .image(Assets.blueCircleWarning.image))
         case .validationErrorEvent(let event):
             return event.icon
@@ -115,7 +104,6 @@ extension StakingNotificationEvent: NotificationEvent {
         case .networkUnreachable:
             return .critical
         case .approveTransactionInProgress,
-             .stake,
              .unstake,
              .feeWillBeSubtractFromSendingAmount,
              .withdraw,
@@ -136,7 +124,6 @@ extension StakingNotificationEvent: NotificationEvent {
         case .validationErrorEvent(let event):
             return event.buttonAction
         case .approveTransactionInProgress,
-             .stake,
              .unstake,
              .feeWillBeSubtractFromSendingAmount,
              .withdraw,

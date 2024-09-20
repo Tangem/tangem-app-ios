@@ -14,6 +14,7 @@ struct AppCoordinatorView: CoordinatorView {
     @ObservedObject var sensitiveTextVisibilityViewModel = SensitiveTextVisibilityViewModel.shared
 
     @Environment(\.mainWindowSize) var mainWindowSize: CGSize
+    @Environment(\.overlayContentContainer) private var overlayContentContainer
 
     var body: some View {
         NavigationView {
@@ -44,13 +45,17 @@ struct AppCoordinatorView: CoordinatorView {
                 boundaryMarker: { viewHierarchySnapshotter },
                 content: { marketsCoordinatorView }
             )
-            .ignoresSafeArea(.container, edges: .bottom)
+            // Ensures that this is a full-screen container and keyboard avoidance is disabled to mitigate IOS-7997
+            .ignoresSafeArea(.all, edges: .bottom)
         }
         .bottomSheet(
             item: $sensitiveTextVisibilityViewModel.informationHiddenBalancesViewModel,
             backgroundColor: Colors.Background.primary
         ) {
             InformationHiddenBalancesView(viewModel: $0)
+        }
+        .onChange(of: coordinator.isOverlayContentContainerShown) { isShown in
+            overlayContentContainer.setOverlayHidden(!isShown)
         }
     }
 }

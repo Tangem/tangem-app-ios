@@ -94,12 +94,21 @@ extension MarketsTokenDetailsInsightsView {
 
         var id: String { rawValue }
 
-        var title: String {
+        var titleShort: String {
             switch self {
             case .buyers: return Localization.marketsTokenDetailsExperiencedBuyers
             case .buyPressure: return Localization.marketsTokenDetailsBuyPressure
             case .holdersChange: return Localization.marketsTokenDetailsHolders
             case .liquidity: return Localization.marketsTokenDetailsLiquidity
+            }
+        }
+
+        var titleFull: String {
+            switch self {
+            case .buyers: return Localization.marketsTokenDetailsExperiencedBuyersFull
+            case .buyPressure: return Localization.marketsTokenDetailsBuyPressureFull
+            case .holdersChange: return Localization.marketsTokenDetailsHoldersFull
+            case .liquidity: return Localization.marketsTokenDetailsLiquidityFull
             }
         }
 
@@ -123,7 +132,7 @@ extension MarketsTokenDetailsInsightsView {
         }
 
         var title: String {
-            type.title
+            type.titleShort
         }
     }
 }

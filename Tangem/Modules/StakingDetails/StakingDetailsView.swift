@@ -23,40 +23,40 @@ struct StakingDetailsView: View {
     }
 
     var body: some View {
-        GroupedScrollView(alignment: .leading, spacing: .zero) {
-            VStack(spacing: 14) {
-                if !viewModel.hideStakingInfoBanner {
-                    banner
-                }
+        RefreshableScrollView(onRefresh: viewModel.refresh(completion:)) {
+            LazyVStack(spacing: 0) {
+                VStack(spacing: 14) {
+                    if !viewModel.hideStakingInfoBanner {
+                        banner
+                    }
 
-                GroupedSection(viewModel.detailsViewModels) { data in
-                    DefaultRowView(viewModel: data)
-                        .if(viewModel.detailsViewModels.first?.id == data.id) {
-                            $0.appearance(.init(detailsColor: Colors.Text.accent))
-                        }
-                }
+                    GroupedSection(viewModel.detailsViewModels) { data in
+                        DefaultRowView(viewModel: data)
+                            .if(viewModel.detailsViewModels.first?.id == data.id) {
+                                $0.appearance(.init(detailsColor: Colors.Text.accent))
+                            }
+                    }
 
-                rewardView
+                    rewardView
 
-                GroupedSection(viewModel.stakes) { data in
-                    StakingDetailsStakeView(data: data)
-                } header: {
-                    DefaultHeaderView(Localization.stakingYourStakes)
-                        .padding(.top, 12)
-                        .padding(.bottom, 8)
+                    GroupedSection(viewModel.stakes) { data in
+                        StakingDetailsStakeView(data: data)
+                    } header: {
+                        DefaultHeaderView(Localization.stakingYourStakes)
+                            .padding(.top, 12)
+                            .padding(.bottom, 8)
+                    }
+                    .separatorStyle(.none)
+                    .interItemSpacing(0)
+                    .innerContentPadding(0)
                 }
-                .separatorStyle(.none)
-                .interItemSpacing(0)
-                .innerContentPadding(0)
+                .readGeometry(\.frame.size, bindTo: $contentSize)
+
+                bottomView
             }
-            .readGeometry(\.frame.size, bindTo: $contentSize)
-
-            bottomView
+            .padding(.horizontal, 16)
         }
         .readGeometry(bindTo: $viewGeometryInfo)
-        .refreshable {
-            await Task { await viewModel.refresh() }.value
-        }
         .background(Colors.Background.secondary)
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)

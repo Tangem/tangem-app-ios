@@ -9,6 +9,5 @@
 import Foundation
 
 protocol MainBottomSheetHeaderViewModelDelegate: AnyObject {
-    func clearSearchInput()
     func isViewVisibleForHeaderViewModel(_ viewModel: MainBottomSheetHeaderViewModel) -> Bool
 }

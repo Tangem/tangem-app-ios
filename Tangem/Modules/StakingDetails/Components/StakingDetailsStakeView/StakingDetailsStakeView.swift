@@ -30,11 +30,11 @@ struct StakingDetailsStakeView: View {
 
             FixedSpacer(width: 12)
 
-            VStack(alignment: .leading, spacing: 4) {
-                topLineView
+            leftView
 
-                bottomLineView
-            }
+            Spacer(minLength: 4)
+
+            rightView
         }
         .lineLimit(1)
         .infinityFrame(axis: .horizontal)
@@ -44,23 +44,23 @@ struct StakingDetailsStakeView: View {
     @ViewBuilder
     private var image: some View {
         switch data.icon {
-        case .icon(let imageType, let color):
+        case .icon(let imageType, let colors):
             ZStack {
                 Circle()
-                    .fill(color.opacity(0.1))
+                    .fill(colors.background)
                     .frame(width: 36, height: 36)
 
                 imageType.image
                     .renderingMode(.template)
-                    .foregroundColor(color)
+                    .foregroundColor(colors.foreground)
             }
         case .image(let url):
             IconView(url: url, size: CGSize(width: 36, height: 36))
         }
     }
 
-    private var topLineView: some View {
-        HStack(alignment: .center, spacing: 0) {
+    private var leftView: some View {
+        VStack(alignment: .leading, spacing: 4) {
             HStack(alignment: .center, spacing: 6) {
                 Text(data.title)
                     .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
@@ -70,23 +70,17 @@ struct StakingDetailsStakeView: View {
                 }
             }
 
-            Spacer(minLength: 4)
-
-            SensitiveText(data.balance.fiat)
-                .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
-        }
-    }
-
-    @ViewBuilder
-    private var bottomLineView: some View {
-        HStack(alignment: .center, spacing: 0) {
             if let subtitle = data.subtitle {
                 Text(subtitle)
                     .font(Fonts.Regular.caption1)
             }
+        }
+    }
 
-            Spacer(minLength: 4)
-
+    private var rightView: some View {
+        VStack(alignment: .trailing, spacing: 4) {
+            SensitiveText(data.balance.fiat)
+                .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
             SensitiveText(data.balance.crypto)
                 .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
         }
