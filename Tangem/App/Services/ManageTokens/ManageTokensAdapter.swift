@@ -26,6 +26,8 @@ class ManageTokensAdapter {
     private var pendingAdd: [TokenItem] = []
     private var pendingRemove: [TokenItem] = []
 
+    private var expandedCoinIds: Set<String> = []
+
     private var bag = Set<AnyCancellable>()
 
     var hasNextPage: Bool {
@@ -61,9 +63,14 @@ class ManageTokensAdapter {
         pendingAdd = []
         pendingRemove = []
         isPendingListsEmptySubject.send(true)
+        expandedCoinIds.removeAll()
     }
 
     func fetch(_ text: String) {
+        if text != loader.lastSearchTextValue {
+            expandedCoinIds.removeAll()
+        }
+
         loader.fetch(text)
     }
 }
@@ -73,7 +80,9 @@ private extension ManageTokensAdapter {
         loader.$items
             .withWeakCaptureOf(self)
             .map { adapter, items -> [ManageTokensListItemViewModel] in
-                items.compactMap(adapter.mapToListItemViewModel(coinModel:))
+                let viewModels = items.compactMap(adapter.mapToListItemViewModel(coinModel:))
+                viewModels.forEach { $0.update(expanded: adapter.bindExpanded($0.coinId)) }
+                return viewModels
             }
             .receive(on: DispatchQueue.main)
             .assign(to: \.value, on: listItemsViewModelsSubject, ownership: .weak)
@@ -189,6 +198,16 @@ private extension ManageTokensAdapter {
         return binding
     }
 
+    func bindExpanded(_ coinId: String) -> Binding<Bool> {
+        let binding = Binding<Bool> { [weak self] in
+            self?.expandedCoinIds.contains(coinId) ?? false
+        } set: { [weak self] isExpanded in
+            self?.updateExpanded(state: isExpanded, for: coinId)
+        }
+
+        return binding
+    }
+
     func bindCopy() -> Binding<Bool> {
         let binding = Binding<Bool> {
             false
@@ -236,6 +255,14 @@ private extension ManageTokensAdapter {
                 dismissButton: okButton
             )
         ))
+    }
+
+    private func updateExpanded(state isExapanded: Bool, for coinId: String) {
+        if isExapanded {
+            expandedCoinIds.insert(coinId)
+        } else {
+            expandedCoinIds.remove(coinId)
+        }
     }
 }
 
