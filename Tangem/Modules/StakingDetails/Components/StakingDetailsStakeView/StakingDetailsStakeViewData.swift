@@ -45,11 +45,12 @@ struct StakingDetailsStakeViewData: Identifiable {
             return (Localization.stakingUnbonding, Localization.commonToday)
         }
 
-        guard let days = Calendar.current.dateComponents([.day], from: Date(), to: date).day else {
+        guard var days = Calendar.current.dateComponents([.day], from: Date(), to: date).day else {
             let formatted = date.formatted(.dateTime)
             return (Localization.stakingUnbondingIn, formatted)
         }
 
+        days += 1
         let formatter = DateComponentsFormatter()
         formatter.unitsStyle = .short
         formatter.allowedUnits = [.day]

@@ -54,19 +54,19 @@ extension CommonStakingPendingTransactionsRepository: StakingPendingTransactions
                 switch record.type {
                 case .stake, .voteLocked:
                     balances.contains { balance in
-                        compare(record, balance, by: [.validator, .type([.active, .warmup])])
+                        compare(record, balance, by: [.validator(.some), .type([.active, .warmup])])
                     }
                 case .unstake:
                     !balances.contains { balance in
-                        compare(record, balance, by: [.validator, .type([.active]), .amount])
+                        compare(record, balance, by: [.validator(.some), .type([.active]), .amount])
                     }
                 case .withdraw:
                     !balances.contains { balance in
-                        compare(record, balance, by: [.validator, .type([.unstaked]), .amount])
+                        compare(record, balance, by: [.validator(.some), .type([.unstaked]), .amount])
                     }
                 case .claimRewards, .restakeRewards:
                     !balances.contains { balance in
-                        compare(record, balance, by: [.validator, .type([.rewards]), .amount])
+                        compare(record, balance, by: [.validator(.some), .type([.rewards]), .amount])
                     }
                 case .unlockLocked:
                     !balances.contains { balance in
@@ -89,9 +89,13 @@ extension CommonStakingPendingTransactionsRepository: StakingPendingTransactions
         let hasPending: Bool
         switch balance.balanceType {
         case .locked:
-            hasPending = records.contains { $0.amount == balance.amount }
+            hasPending = records.contains { record in
+                compare(record, balance, by: [.amount, .validator(.none)])
+            }
         case .active, .rewards, .unbonding, .warmup, .unstaked:
-            hasPending = records.contains { $0.validator.address == balance.validatorAddress }
+            hasPending = records.contains { record in
+                compare(record, balance, by: [.validator(.some)])
+            }
         }
 
         if hasPending {
@@ -139,12 +143,20 @@ private extension CommonStakingPendingTransactionsRepository {
     func compare(_ record: StakingPendingTransactionRecord, _ balance: StakingBalanceInfo, by types: [CompareType]) -> Bool {
         let equals = types.map { type in
             switch type {
-            case .validator:
-                record.validator.address == balance.validatorAddress
+            case .validator(.some):
+                // We should only compare validators with the value
+                if let recordValidator = record.validator.address,
+                   let balanceValidator = balance.validatorAddress {
+                    return recordValidator == balanceValidator
+                }
+
+                return false
+            case .validator(.none):
+                return record.validator.address == .none && balance.validatorAddress == .none
             case .amount:
-                record.amount == balance.amount
+                return record.amount == balance.amount
             case .type(let array):
-                array.contains(where: { $0 == balance.balanceType })
+                return array.contains(where: { $0 == balance.balanceType })
             }
         }
 
@@ -187,8 +199,15 @@ private extension CommonStakingPendingTransactionsRepository {
 
 private extension CommonStakingPendingTransactionsRepository {
     enum CompareType {
-        case validator
+        case validator(ValidatorType)
         case amount
         case type([StakingBalanceType])
+    }
+
+    enum ValidatorType {
+        /// Has to have value
+        case some
+        /// Has to have not value
+        case none
     }
 }

@@ -27,7 +27,7 @@ class SendAmountViewModel: ObservableObject {
     @Published var decimalNumberTextFieldViewModel: DecimalNumberTextField.ViewModel
     @Published var alternativeAmount: String?
 
-    @Published var error: String?
+    @Published var bottomInfoText: BottomInfoTextType?
     @Published var currentFieldOptions: SendDecimalNumberTextField.PrefixSuffixOptions
     @Published var amountType: SendAmountCalculationType = .crypto
 
@@ -46,6 +46,7 @@ class SendAmountViewModel: ObservableObject {
     private let interactor: SendAmountInteractor
     private let sendQRCodeService: SendQRCodeService?
     private let prefixSuffixOptionsFactory: SendDecimalNumberTextField.PrefixSuffixOptionsFactory
+    private let actionType: SendFlowActionType
 
     private var bag: Set<AnyCancellable> = []
 
@@ -58,6 +59,7 @@ class SendAmountViewModel: ObservableObject {
         balance = initial.balanceFormatted
         tokenIconInfo = initial.tokenIconInfo
         currencyPickerData = initial.currencyPickerData
+        actionType = initial.actionType
 
         prefixSuffixOptionsFactory = .init(
             cryptoCurrencyCode: initial.tokenItem.currencySymbol,
@@ -79,6 +81,13 @@ class SendAmountViewModel: ObservableObject {
     }
 
     func userDidTapMaxAmount() {
+        switch actionType {
+        case .send:
+            Analytics.log(.sendMaxAmountTapped)
+        case .stake:
+            Analytics.log(.stakingButtonMax)
+        default: break
+        }
         let amount = interactor.updateToMaxAmount()
         decimalNumberTextFieldViewModel.update(value: amount?.main)
         alternativeAmount = amount?.formatAlternative(currencySymbol: tokenItem.currencySymbol, decimalCount: tokenItem.decimalCount)
@@ -109,11 +118,11 @@ private extension SendAmountViewModel {
             .store(in: &bag)
 
         interactor
-            .errorPublisher
+            .infoTextPublisher
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
-            .sink { viewModel, error in
-                viewModel.error = error?.localizedDescription
+            .sink { viewModel, bottomInfoText in
+                viewModel.bottomInfoText = bottomInfoText
             }
             .store(in: &bag)
 
@@ -206,5 +215,11 @@ extension SendAmountViewModel {
         let balanceValue: Decimal
         let balanceFormatted: String
         let currencyPickerData: SendCurrencyPickerData
+        let actionType: SendFlowActionType
+    }
+
+    enum BottomInfoTextType: Hashable {
+        case info(String)
+        case error(String)
     }
 }

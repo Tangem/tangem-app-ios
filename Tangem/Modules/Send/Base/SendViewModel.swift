@@ -47,6 +47,7 @@ final class SendViewModel: ObservableObject {
     private let stepsManager: SendStepsManager
     private let userWalletModel: UserWalletModel
     private let alertBuilder: SendAlertBuilder
+    private let tokenItem: TokenItem
     private let feeTokenItem: TokenItem
 
     private weak var coordinator: SendRoutable?
@@ -61,6 +62,7 @@ final class SendViewModel: ObservableObject {
         stepsManager: SendStepsManager,
         userWalletModel: UserWalletModel,
         alertBuilder: SendAlertBuilder,
+        tokenItem: TokenItem,
         feeTokenItem: TokenItem,
         coordinator: SendRoutable
     ) {
@@ -68,6 +70,7 @@ final class SendViewModel: ObservableObject {
         self.stepsManager = stepsManager
         self.userWalletModel = userWalletModel
         self.alertBuilder = alertBuilder
+        self.tokenItem = tokenItem
         self.feeTokenItem = feeTokenItem
         self.coordinator = coordinator
 
@@ -84,6 +87,9 @@ final class SendViewModel: ObservableObject {
         switch mainButtonType {
         case .next:
             stepsManager.performNext()
+            if flowActionType == .stake {
+                Analytics.log(.stakingButtonNext)
+            }
         case .continue:
             stepsManager.performContinue()
         case .action where flowActionType == .approve:
@@ -125,11 +131,19 @@ final class SendViewModel: ObservableObject {
     }
 
     func dismiss() {
-        Analytics.log(.sendButtonClose, params: [
-            .source: step.type.analyticsSourceParameterValue,
-            .fromSummary: .affirmativeOrNegative(for: step.type.isSummary),
-            .valid: .affirmativeOrNegative(for: actionIsAvailable),
-        ])
+        let source = step.type.analyticsSourceParameterValue
+        if flowActionType == .send {
+            Analytics.log(.sendButtonClose, params: [
+                .source: source,
+                .fromSummary: .affirmativeOrNegative(for: step.type.isSummary),
+                .valid: .affirmativeOrNegative(for: actionIsAvailable),
+            ])
+        } else {
+            Analytics.log(event: .stakingButtonCancel, params: [
+                .source: source.rawValue,
+                .token: tokenItem.currencySymbol,
+            ])
+        }
 
         if shouldShowDismissAlert {
             alert = alertBuilder.makeDismissAlert { [weak self] in
