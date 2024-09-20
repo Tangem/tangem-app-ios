@@ -132,7 +132,7 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     }
 
     private func makeWalletSelectorViewModel(by userWalletModel: UserWalletModel) {
-        guard walletDataProvider.isAvaialableWalletSelector else {
+        guard walletDataProvider.isWalletSelectorAvailable else {
             walletSelectorViewModel = nil
             return
         }

@@ -375,9 +375,11 @@ struct StakeKitMapper {
 
     func mapToRewardScheduleType(from type: StakeKitDTO.Yield.Info.Response.Metadata.RewardScheduleType) throws -> RewardScheduleType {
         switch type {
-        case .block: .minute
+        case .block: .block
         case .hour: .hour
-        case .epoch, .era, .day: .day
+        case .epoch: .epoch
+        case .era: .era
+        case .day: .day
         case .week: .week
         case .month: .month
         }
