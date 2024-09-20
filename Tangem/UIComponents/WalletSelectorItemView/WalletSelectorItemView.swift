@@ -68,11 +68,9 @@ struct WalletSelectorItemView: View {
     private var selectedCheckmark: some View {
         VStack {
             if viewModel.isSelected {
-                Assets.Checked.on.image
-                    .frame(size: Constants.checkedSelectedIconSize)
-            } else {
-                Assets.Checked.off.image
-                    .frame(size: Constants.checkedSelectedIconSize)
+                Assets.check.image
+                    .frame(width: 24, height: 24)
+                    .foregroundColor(Colors.Icon.accent)
             }
         }
     }
