@@ -21,8 +21,16 @@ struct PendingActionMapper {
         case .warmup, .unbonding:
             throw PendingActionMapperError.notSupported
         case .active:
-            let action = stakingAction(type: .unstake)
-            return .single(action)
+            let unstake = stakingAction(type: .unstake)
+
+            if let restakeAction = balance.actions.first(where: { $0.type == .restake }) {
+                let restake = stakingAction(
+                    type: .pending(.restake(passthrough: restakeAction.passthrough))
+                )
+
+                return .multiple([unstake, restake])
+            }
+            return .single(unstake)
         case .unstaked:
             let withdraws = balance.actions.filter { $0.type == .withdraw }.map { $0.passthrough }
 

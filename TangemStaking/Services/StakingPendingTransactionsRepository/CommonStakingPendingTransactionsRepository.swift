@@ -72,6 +72,10 @@ extension CommonStakingPendingTransactionsRepository: StakingPendingTransactions
                     !balances.contains { balance in
                         compare(record, balance, by: [.type([.locked]), .amount])
                     }
+                case .restake: // FIXME: copied from the first case, check correctness
+                    balances.contains { balance in
+                        compare(record, balance, by: [.validator(.some), .type([.active, .warmup])])
+                    }
                 }
             }()
 
@@ -173,6 +177,7 @@ private extension CommonStakingPendingTransactionsRepository {
             case .pending(.restakeRewards): .restakeRewards
             case .pending(.voteLocked): .voteLocked
             case .pending(.unlockLocked): .unlockLocked
+            case .pending(.restake): .restake
             }
         }()
 

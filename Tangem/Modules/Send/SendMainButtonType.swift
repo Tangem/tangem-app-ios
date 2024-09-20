@@ -24,6 +24,7 @@ enum SendFlowActionType: Hashable {
     case claimRewards
     case restakeRewards
     case unlockLocked
+    case restake
 
     var title: String {
         switch self {
@@ -35,6 +36,7 @@ enum SendFlowActionType: Hashable {
         case .claimRewards: Localization.commonClaimRewards
         case .restakeRewards: Localization.stakingRestakeRewards
         case .unlockLocked: Localization.stakingUnlockedLocked
+        case .restake: Localization.stakingRestakeRewards // FIXME: restake
         }
     }
 

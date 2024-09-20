@@ -407,7 +407,7 @@ private extension RewardRateValues {
 extension StakingAction.ActionType {
     var title: String {
         switch self {
-        case .stake: Localization.commonStake
+        case .stake, .pending(.restake): Localization.commonStake // FIXME: provide value for .pending(.restake)
         case .unstake: Localization.commonUnstake
         case .pending(.withdraw): Localization.stakingWithdraw
         case .pending(.claimRewards): Localization.commonClaimRewards

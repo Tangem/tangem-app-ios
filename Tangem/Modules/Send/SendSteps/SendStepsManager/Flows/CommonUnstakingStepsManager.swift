@@ -62,7 +62,7 @@ extension CommonUnstakingStepsManager: SendStepsManager {
             return .stake
         case .pending(.unlockLocked):
             return .unlockLocked
-        case .stake:
+        case .stake, .pending(.restake): // FIXME:
             assertionFailure("Doesn't support in UnstakingFlow")
             return .unstake
         }

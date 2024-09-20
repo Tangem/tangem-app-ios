@@ -28,6 +28,7 @@ struct SendDependenciesBuilder {
         case .pending(.restakeRewards): .restakeRewards
         case .pending(.voteLocked): .stake
         case .pending(.unlockLocked): .unlockLocked
+        case .pending(.restake): .restake
         }
     }
 
@@ -40,13 +41,14 @@ struct SendDependenciesBuilder {
         case .claimRewards: action.title
         case .restakeRewards: action.title
         case .unlockLocked: action.title
+        case .restake: action.title // FIXME: restake
         }
     }
 
     func summarySubtitle(action: SendFlowActionType) -> String? {
         switch action {
         case .send: walletName()
-        case .approve, .stake: walletName()
+        case .approve, .stake, .restake: walletName() // FIXME: restake
         case .unstake: nil
         case .withdraw: nil
         case .claimRewards: nil
