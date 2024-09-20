@@ -50,7 +50,6 @@ struct BasicTooltipView: View {
                     .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
 
                 Text(message)
-                    .lineLimit(3)
                     .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
             }
             .defaultRoundedBackground()

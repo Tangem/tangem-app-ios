@@ -24,16 +24,19 @@ struct WalletSelectorItemView: View {
     // MARK: - Private Implementation
 
     private var contentButton: some View {
-        HStack(spacing: 12) {
-            icon
+        VStack(spacing: .zero) {
+            HStack(spacing: 12) {
+                icon
 
-            textViews
+                textViews
 
-            Spacer(minLength: 0)
+                Spacer(minLength: 0)
 
-            selectedCheckmark
+                selectedCheckmark
+            }
         }
         .contentShape(Rectangle())
+        .padding(.vertical, 12)
     }
 
     @ViewBuilder
@@ -65,11 +68,9 @@ struct WalletSelectorItemView: View {
     private var selectedCheckmark: some View {
         VStack {
             if viewModel.isSelected {
-                Assets.Checked.on.image
-                    .frame(size: Constants.checkedSelectedIconSize)
-            } else {
-                Assets.Checked.off.image
-                    .frame(size: Constants.checkedSelectedIconSize)
+                Assets.check.image
+                    .frame(width: 24, height: 24)
+                    .foregroundColor(Colors.Icon.accent)
             }
         }
     }
