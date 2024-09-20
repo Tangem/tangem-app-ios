@@ -646,7 +646,7 @@
 "staking_details_auto_claiming_rewards_daily_text" = "Belohnungen sammeln sich täglich automatisch in deinem Staking-Konto an.";
 "staking_details_available" = "Verfügbar";
 "staking_details_average_reward_rate" = "Durchschnittliche Belohnungsquote";
-"staking_details_banner_text" = "Was sit Staking?";
+"staking_details_banner_text" = "Was ist Staking?";
 "staking_details_estimated_profit" = "%@ geschätzter Profit";
 "staking_details_market_rating" = "Marktbewertung";
 "staking_details_metrics_block_header" = "Metriken";

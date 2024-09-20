@@ -274,7 +274,7 @@
 "express_token_list_empty_search" = "Токены не найдены. Пожалуйста, попробуйте другой запрос";
 "express_transaction_id" = "ID: %@";
 "express_transaction_id_copied" = "ID транзакции скопирован";
-"exсhange_token_description" = "Конвертируйте одну из ваших валют в другую";
+"exсhange_token_description" = "Обменяйте любой актив в вашем портфеле на этот токен";
 "feedback_preface_rate_negative" = "Расскажите, каких функций вам не хватает, и мы постараемся вам помочь.";
 "feedback_preface_scan_failed" = "Скажите, пожалуйста, какая у вас карта?";
 "feedback_preface_support" = "Привет, команда поддержки,";
@@ -337,7 +337,7 @@
 "manage_tokens_unavailable_vote" = "Голосовать";
 "manage_tokens_wallet_selector_title" = "Выберите кошелек";
 "manage_tokens_wallet_support_only_one_network_title" = "Кошелёк не поддерживает более одной сети";
-"markets_add_to_my_portfolio_description" = "Чтобы купить, обменять или получить данный токен вам нужно добавить его к себе в портфель";
+"markets_add_to_my_portfolio_description" = "Чтобы купить, обменять или получить данный токен, вам нужно добавить его к себе в портфель";
 "markets_add_to_my_portfolio_unavailable_description" = "Этот актив недоступен";
 "markets_add_to_portfolio_button" = "Добавить в портфель";
 "markets_add_token" = "Добавить";
@@ -413,7 +413,7 @@
 "markets_token_details_security_score" = "Оценка безопасности";
 "markets_token_details_security_score_description" = "";
 "markets_token_details_social" = "Социальные";
-"markets_token_details_total_supply" = "Общее предложение";
+"markets_token_details_total_supply" = "Общ. предл.";
 "markets_token_details_total_supply_description" = "Максимальное количество монет или токенов, которое может когда-либо существовать для выбранной криптовалюты.";
 "markets_token_details_total_supply_full" = "Общее предложение";
 "markets_token_details_trading_volume" = "Объем торгов (24ч)";

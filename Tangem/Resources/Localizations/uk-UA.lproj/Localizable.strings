@@ -413,7 +413,7 @@
 "markets_token_details_security_score" = "Оцінка безпеки";
 "markets_token_details_security_score_description" = "";
 "markets_token_details_social" = "Соцмережі";
-"markets_token_details_total_supply" = "Загальна пропозиція";
+"markets_token_details_total_supply" = "Загальна проп.";
 "markets_token_details_total_supply_description" = "Максимальна кількість монет або токенів, яка може коли-небудь існувати для певної криптовалюти";
 "markets_token_details_total_supply_full" = "Загальна пропозиція";
 "markets_token_details_trading_volume" = "Обсяг торгів (24г)";

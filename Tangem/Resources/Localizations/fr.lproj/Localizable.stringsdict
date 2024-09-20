@@ -61,7 +61,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string></string>
+        <string>Vide</string>
         <key>other</key>
         <string>Écrivez ces %li mots dans l'ordre indiqué ci-dessous et conservez-les dans un endroit sûr et secret.</string>
       </dict>
@@ -77,7 +77,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string></string>
+        <string>Vide</string>
         <key>other</key>
         <string>%li mots</string>
       </dict>
