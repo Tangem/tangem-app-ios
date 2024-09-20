@@ -33,6 +33,10 @@ extension MainBottomSheetUIManager {
     func hide(shouldUpdateFooterSnapshot: Bool = true) {
         ensureOnMainQueue()
 
+        guard isShown else {
+            return
+        }
+
         let isShown = false
 
         guard shouldUpdateFooterSnapshot else {
