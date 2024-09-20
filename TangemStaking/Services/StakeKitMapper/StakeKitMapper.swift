@@ -269,7 +269,6 @@ struct StakeKitMapper {
             enterMinimumRequirement: enterAction.args.amount.minimum ?? .zero,
             exitMinimumRequirement: exitAction.args.amount.minimum ?? .zero,
             validators: validators,
-            defaultValidator: response.metadata.defaultValidator,
             item: mapToStakingTokenItem(from: response.token),
             unbondingPeriod: mapToPeriod(from: response.metadata.cooldownPeriod),
             warmupPeriod: mapToPeriod(from: response.metadata.warmupPeriod),
@@ -372,8 +371,9 @@ struct StakeKitMapper {
 
     func mapToRewardScheduleType(from type: StakeKitDTO.Yield.Info.Response.Metadata.RewardScheduleType) throws -> RewardScheduleType {
         switch type {
+        case .block: .minute
         case .hour: .hour
-        case .block, .epoch, .era, .day: .day
+        case .epoch, .era, .day: .day
         case .week: .week
         case .month: .month
         }

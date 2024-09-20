@@ -112,7 +112,20 @@ class MainCoordinator: CoordinatorObject {
     }
 
     private func setupUI() {
-        isMarketsTooltipVisible = FeatureProvider.isAvailable(.markets) && !tooltipStorageProvider.marketsTooltipWasShown
+        showMarketsTooltip()
+    }
+
+    private func showMarketsTooltip() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.tooltipAnimationDelay) { [weak self] in
+            guard let self else {
+                self?.isMarketsTooltipVisible = false
+                return
+            }
+
+            withAnimation(.easeInOut(duration: Constants.tooltipAnimationDuration)) {
+                self.isMarketsTooltipVisible = FeatureProvider.isAvailable(.markets) && !self.tooltipStorageProvider.marketsTooltipWasShown
+            }
+        }
     }
 }
 
@@ -421,5 +434,6 @@ extension MainCoordinator: PushNotificationsPermissionRequestDelegate {
 extension MainCoordinator {
     enum Constants {
         static let tooltipAnimationDuration: Double = 0.3
+        static let tooltipAnimationDelay: Double = 1.5
     }
 }

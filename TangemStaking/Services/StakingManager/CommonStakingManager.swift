@@ -53,7 +53,7 @@ extension CommonStakingManager: StakingManager {
         _state.eraseToAnyPublisher()
     }
 
-    func updateState() async throws {
+    func updateState() async {
         updateState(.loading)
         do {
             async let balances = provider.balances(wallet: wallet)
@@ -63,7 +63,7 @@ extension CommonStakingManager: StakingManager {
             try await updateState(state(balances: balances, yield: yield))
         } catch {
             logger.error(error)
-            throw error
+            updateState(.loadingError(error.localizedDescription))
         }
     }
 
@@ -113,10 +113,10 @@ extension CommonStakingManager: StakingManager {
 
         // We will update the state without requesting the API
         switch state {
-        case .loading, .notEnabled, .temporaryUnavailable:
+        case .loading, .notEnabled, .temporaryUnavailable, .loadingError:
             break
         case .availableToStake(let yieldInfo):
-            let balances = prepareStakingBalances(balances: [], yield: yieldInfo)
+            let balances = cachedStakingBalances(yield: yieldInfo)
             updateState(.staked(.init(balances: balances, yieldInfo: yieldInfo, canStakeMore: canStakeMore)))
         case .staked(let staked):
             let balances = cachedStakingBalances(yield: staked.yieldInfo) + staked.balances

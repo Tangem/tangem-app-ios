@@ -19,18 +19,13 @@ struct ManageTokensListItemView: View {
     @State private var isExpanded = false
 
     private var symbolFormatted: String { "  \(viewModel.symbol)" }
-    private var isSaturated: Bool {
-        isReadOnly ||
-            isExpanded ||
-            viewModel.items.contains(where: { $0.isSelected })
-    }
 
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
                 IconView(url: viewModel.imageURL, size: CGSize(width: iconWidth, height: iconWidth), forceKingfisher: true)
                     .padding(.trailing, 12)
-                    .saturation(isSaturated ? 1.0 : 0.0)
+                    .saturation((isReadOnly || viewModel.atLeastOneTokenSelected) ? 1.0 : 0.0)
 
                 VStack(alignment: .leading, spacing: 2) {
                     Group {

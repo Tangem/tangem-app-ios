@@ -66,7 +66,7 @@ extension MarketsTokenDetailsMetricsView {
 
         var id: String { rawValue }
 
-        var title: String {
+        var titleShort: String {
             switch self {
             case .marketCapitalization: return Localization.marketsTokenDetailsMarketCapitalization
             case .marketRating: return Localization.marketsTokenDetailsMarketRating
@@ -74,6 +74,17 @@ extension MarketsTokenDetailsMetricsView {
             case .fullyDilutedValuation: return Localization.marketsTokenDetailsFullyDilutedValuation
             case .circulatingSupply: return Localization.marketsTokenDetailsCirculatingSupply
             case .totalSupply: return Localization.marketsTokenDetailsTotalSupply
+            }
+        }
+
+        var titleFull: String {
+            switch self {
+            case .marketCapitalization: return Localization.marketsTokenDetailsMarketCapitalizationFull
+            case .marketRating: return Localization.marketsTokenDetailsMarketRatingFull
+            case .tradingVolume: return Localization.marketsTokenDetailsTradingVolumeFull
+            case .fullyDilutedValuation: return Localization.marketsTokenDetailsFullyDilutedValuationFull
+            case .circulatingSupply: return Localization.marketsTokenDetailsCirculatingSupplyFull
+            case .totalSupply: return Localization.marketsTokenDetailsTotalSupplyFull
             }
         }
 
@@ -98,7 +109,7 @@ extension MarketsTokenDetailsMetricsView {
         }
 
         var title: String {
-            type.title
+            type.titleShort
         }
     }
 }

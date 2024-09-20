@@ -61,8 +61,11 @@ final class StakingDetailsViewModel: ObservableObject {
         bind()
     }
 
-    func refresh() async {
-        try? await stakingManager.updateState()
+    func refresh(completion: @escaping () -> Void = {}) {
+        Task {
+            await stakingManager.updateState()
+            completion()
+        }
     }
 
     func userDidTapBanner() {
@@ -74,7 +77,7 @@ final class StakingDetailsViewModel: ObservableObject {
     }
 
     func onAppear() {
-        loadValues()
+        refresh()
         let balances = stakingManager.state.balances.flatMap { String($0.count) } ?? String(0)
         Analytics.log(
             event: .stakingInfoScreenOpened,
@@ -84,12 +87,6 @@ final class StakingDetailsViewModel: ObservableObject {
 }
 
 private extension StakingDetailsViewModel {
-    func loadValues() {
-        Task {
-            try await stakingManager.updateState()
-        }
-    }
-
     func bind() {
         stakingManager
             .statePublisher
@@ -124,6 +121,9 @@ private extension StakingDetailsViewModel {
         switch state {
         case .loading:
             actionButtonLoading = true
+        case .loadingError:
+            actionButtonLoading = false
+            actionButtonType = .none
         case .notEnabled:
             actionButtonLoading = false
             actionButtonType = .none
@@ -385,6 +385,7 @@ private extension RewardClaimingType {
 private extension RewardScheduleType {
     var title: String {
         switch self {
+        case .minute: Localization.stakingRewardScheduleEachMinute
         case .hour: Localization.stakingRewardScheduleHour
         case .day: Localization.stakingRewardScheduleEachDay
         case .week: Localization.stakingRewardScheduleWeek

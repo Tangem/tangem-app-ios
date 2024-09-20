@@ -8,6 +8,7 @@
 
 import Foundation
 import TangemStaking
+import SwiftUI
 
 class StakingDetailsStakeViewDataBuilder {
     private lazy var balanceFormatter = BalanceFormatter()
@@ -54,13 +55,20 @@ class StakingDetailsStakeViewDataBuilder {
 
         let icon: StakingDetailsStakeViewData.IconType = {
             switch balance.balanceType {
-            case .rewards, .warmup, .active: .image(url: validator?.iconURL)
-            case .locked: .icon(
+            case .rewards, .warmup, .active:
+                balance.validatorType == .disabled
+                    ? .icon(
+                        Assets.stakingIconFilled,
+                        colors: .init(foreground: Colors.Icon.inactive, background: Colors.Icon.primary1)
+                    )
+                    : .image(url: validator?.iconURL)
+            case .locked:
+                .icon(
                     inProgress ? Assets.stakingUnlockingIcon : Assets.stakingLockIcon,
-                    color: inProgress ? Colors.Icon.accent : Colors.Icon.informative
+                    colors: .init(foreground: inProgress ? Colors.Icon.accent : Colors.Icon.informative)
                 )
-            case .unbonding: .icon(Assets.unstakedIcon, color: Colors.Icon.accent)
-            case .unstaked: .icon(Assets.unstakedIcon, color: Colors.Icon.informative)
+            case .unbonding: .icon(Assets.unstakedIcon, colors: .init(foreground: Colors.Icon.accent))
+            case .unstaked: .icon(Assets.unstakedIcon, colors: .init(foreground: Colors.Icon.informative))
             }
         }()
 

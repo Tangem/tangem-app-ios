@@ -50,7 +50,7 @@ extension DefaultTokenItemInfoProvider: TokenItemInfoProvider {
             .map { state in
                 switch state {
                 case .staked: true
-                case .loading, .availableToStake, .notEnabled, .temporaryUnavailable: false
+                case .loading, .availableToStake, .notEnabled, .temporaryUnavailable, .loadingError: false
                 }
             }
             .eraseToAnyPublisher()
