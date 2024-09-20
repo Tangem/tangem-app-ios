@@ -616,7 +616,7 @@ extension WalletModel {
 extension WalletModel {
     func updateStakingManagerState() -> AnyPublisher<Void, Never> {
         Future.async { [weak self] in
-            try await self?._stakingManager?.updateState()
+            await self?._stakingManager?.updateState()
         }
         // Here we have to skip the error to let the PTR to complete
         .replaceError(with: ())

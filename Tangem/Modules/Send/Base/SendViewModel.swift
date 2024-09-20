@@ -47,6 +47,7 @@ final class SendViewModel: ObservableObject {
     private let stepsManager: SendStepsManager
     private let userWalletModel: UserWalletModel
     private let alertBuilder: SendAlertBuilder
+    private let dataBuilder: SendBaseDataBuilder
     private let tokenItem: TokenItem
     private let feeTokenItem: TokenItem
 
@@ -62,6 +63,7 @@ final class SendViewModel: ObservableObject {
         stepsManager: SendStepsManager,
         userWalletModel: UserWalletModel,
         alertBuilder: SendAlertBuilder,
+        dataBuilder: SendBaseDataBuilder,
         tokenItem: TokenItem,
         feeTokenItem: TokenItem,
         coordinator: SendRoutable
@@ -72,6 +74,7 @@ final class SendViewModel: ObservableObject {
         self.alertBuilder = alertBuilder
         self.tokenItem = tokenItem
         self.feeTokenItem = feeTokenItem
+        self.dataBuilder = dataBuilder
         self.coordinator = coordinator
 
         step = stepsManager.initialState.step
@@ -177,11 +180,12 @@ final class SendViewModel: ObservableObject {
 
 private extension SendViewModel {
     func performApprove() {
-        guard let (settings, approveViewModelInput) = interactor.makeDataForExpressApproveViewModel() else {
-            return
+        do {
+            let (settings, approveViewModelInput) = try dataBuilder.makeDataForExpressApproveViewModel()
+            coordinator?.openApproveView(settings: settings, approveViewModelInput: approveViewModelInput)
+        } catch {
+            alert = error.alertBinder
         }
-
-        coordinator?.openApproveView(settings: settings, approveViewModelInput: approveViewModelInput)
     }
 
     func performAction() {
@@ -225,7 +229,9 @@ private extension SendViewModel {
                 self?.openMail(transaction: transaction, error: sendTxError)
             }
         case .loadTransactionInfo(let error):
-            alert = error.alertBinder
+            alert = alertBuilder.makeTransactionFailedAlert(sendTxError: .init(error: error)) { [weak self] in
+                self?.openMail(error: error)
+            }
         case .demoAlert:
             alert = AlertBuilder.makeDemoAlert(Localization.alertDemoFeatureDisabled) { [weak self] in
                 self?.coordinator?.dismiss()
@@ -233,10 +239,21 @@ private extension SendViewModel {
         }
     }
 
+    func openMail(error: Error) {
+        Analytics.log(.requestSupport, params: [.source: .transactionSourceSend])
+
+        do {
+            let (emailDataCollector, recipient) = try dataBuilder.makeMailData(stakingRequestError: error)
+            coordinator?.openMail(with: emailDataCollector, recipient: recipient)
+        } catch {
+            alert = error.alertBinder
+        }
+    }
+
     func openMail(transaction: SendTransactionType, error: SendTxError) {
         Analytics.log(.requestSupport, params: [.source: .transactionSourceSend])
 
-        let (emailDataCollector, recipient) = interactor.makeMailData(transaction: transaction, error: error)
+        let (emailDataCollector, recipient) = dataBuilder.makeMailData(transaction: transaction, error: error)
         coordinator?.openMail(with: emailDataCollector, recipient: recipient)
     }
 
