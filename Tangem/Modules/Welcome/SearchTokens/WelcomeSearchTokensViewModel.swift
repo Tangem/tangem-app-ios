@@ -21,7 +21,7 @@ class WelcomeSearchTokensViewModel: Identifiable, ObservableObject {
     private lazy var loader = setupListDataLoader()
     private var bag = Set<AnyCancellable>()
 
-    private var expandedCoinIds: [String] = []
+    private var expandedCoinIds: Set<String> = []
 
     init() {
         manageTokensListViewModel = .init(
@@ -121,9 +121,11 @@ private extension WelcomeSearchTokensViewModel {
 
     private func updateExpanded(state isExapanded: Bool, for coinId: String) {
         if isExapanded {
-            expandedCoinIds.append(coinId)
+            expandedCoinIds.insert(coinId)
         } else {
-            expandedCoinIds.removeAll(where: { $0 == coinId })
+            if let indexToRemove = expandedCoinIds.firstIndex(of: coinId) {
+                expandedCoinIds.remove(at: indexToRemove)
+            }
         }
     }
 }

@@ -26,7 +26,7 @@ class ManageTokensAdapter {
     private var pendingAdd: [TokenItem] = []
     private var pendingRemove: [TokenItem] = []
 
-    private var expandedCoinIds: [String] = []
+    private var expandedCoinIds: Set<String> = []
 
     private var bag = Set<AnyCancellable>()
 
@@ -259,9 +259,11 @@ private extension ManageTokensAdapter {
 
     private func updateExpanded(state isExapanded: Bool, for coinId: String) {
         if isExapanded {
-            expandedCoinIds.append(coinId)
+            expandedCoinIds.insert(coinId)
         } else {
-            expandedCoinIds.removeAll(where: { $0 == coinId })
+            if let indexToRemove = expandedCoinIds.firstIndex(of: coinId) {
+                expandedCoinIds.remove(at: indexToRemove)
+            }
         }
     }
 }
