@@ -98,7 +98,7 @@
 "common_done" = "完成";
 "common_enabled" = "啟用";
 "common_error" = "錯誤";
-"common_exchange" = "Exchange";
+"common_exchange" = "Swap";
 "common_explore" = "Explore";
 "common_explore_transaction_history" = "Explore transaction history";
 "common_explorer" = "Explorer";
@@ -274,7 +274,7 @@
 "express_token_list_empty_search" = "No tokens found. Please try another request";
 "express_transaction_id" = "ID: %@";
 "express_transaction_id_copied" = "Transaction ID copied";
-"exсhange_token_description" = "Convert one of your currencies to another";
+"exсhange_token_description" = "Swap any asset in your portfolio for this token";
 "feedback_preface_rate_negative" = "告訴我們您缺少哪些功能，我們會盡力幫助您";
 "feedback_preface_scan_failed" = "請告訴我們你有什麼卡";
 "feedback_preface_support" = "嗨! 幫助團隊，";
@@ -697,7 +697,7 @@
 "staking_reward_claiming_manual" = "Manual";
 "staking_reward_schedule_block" = "Block";
 "staking_reward_schedule_day" = "Day";
-"staking_reward_schedule_each_day" = "Each day";
+"staking_reward_schedule_each_day" = "Daily";
 "staking_reward_schedule_each_minute" = "Each minute";
 "staking_reward_schedule_each_sec" = "Each ~%1$@sec";
 "staking_reward_schedule_epoch" = "Epoch";

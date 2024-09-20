@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import BlockchainSdk
 
 struct MarketsPortfolioTokenItemFactory {
     private let contextActionsProvider: MarketsPortfolioContextActionsProvider
@@ -37,9 +38,23 @@ struct MarketsPortfolioTokenItemFactory {
             .map(\.blockchainNetwork)
             .toSet()
 
+        let l2BlockchainsIds = SupportedBlockchains.l2Blockchains.map { $0.coinId }
+
         let tokenItemTypes: [TokenItemType] = entries
             .filter { entry in
-                entry.id == coinId
+
+                if entry.id == coinId {
+                    return true
+                }
+
+                // add l2 networks
+                if let entryId = entry.id,
+                   coinId == Blockchain.ethereum(testnet: false).coinId,
+                   l2BlockchainsIds.contains(entryId) {
+                    return true
+                }
+
+                return false
             }
             .compactMap { userToken in
                 if blockchainNetworksFromWalletModels.contains(userToken.blockchainNetwork) {
