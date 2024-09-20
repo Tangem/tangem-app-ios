@@ -99,7 +99,7 @@ private extension WelcomeSearchTokensViewModel {
         let binding = Binding<Bool> { [weak self] in
             self?.expandedCoinIds.contains(coinId) ?? false
         } set: { [weak self] isExpanded in
-            isExpanded ? self?.expandedCoinIds.append(coinId) : self?.expandedCoinIds.removeAll(where: { $0 == coinId })
+            self?.updateExpanded(state: isExpanded, for: coinId)
         }
 
         return binding
@@ -117,5 +117,13 @@ private extension WelcomeSearchTokensViewModel {
         }
 
         return ManageTokensListItemViewModel(with: coinModel, items: networkItems)
+    }
+
+    private func updateExpanded(state isExapanded: Bool, for coinId: String) {
+        if isExapanded {
+            expandedCoinIds.append(coinId)
+        } else {
+            expandedCoinIds.removeAll(where: { $0 == coinId })
+        }
     }
 }
