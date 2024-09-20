@@ -46,7 +46,7 @@ struct AppCoordinatorView: CoordinatorView {
                 content: { marketsCoordinatorView }
             )
             // Ensures that this is a full-screen container and keyboard avoidance is disabled to mitigate IOS-7997
-            .ignoresSafeArea(.all, edges: .bottom)
+            .ignoresSafeArea(.all, edges: .vertical)
         }
         .bottomSheet(
             item: $sensitiveTextVisibilityViewModel.informationHiddenBalancesViewModel,
