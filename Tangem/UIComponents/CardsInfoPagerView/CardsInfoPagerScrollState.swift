@@ -19,6 +19,9 @@ final class CardsInfoPagerScrollState: ObservableObject {
     var contentOffsetSubject: some Subject<CGPoint, Never> { _contentOffsetSubject }
     private let _contentOffsetSubject = CurrentValueSubject<CGPoint, Never>(.zero)
 
+    /// A property specifically that subscribes to content offset changes offsets without throttle. It was required specifically to understand the overscroll
+    @Published private(set) var contentOffsetExceedingContentSize: CGPoint = .zero
+
     @Published private(set) var contentSize: CGSize = .zero
     var contentSizeSubject: some Subject<CGSize, Never> { _contentSizeSubject }
     private let _contentSizeSubject = CurrentValueSubject<CGSize, Never>(.zero)
@@ -45,6 +48,10 @@ final class CardsInfoPagerScrollState: ObservableObject {
             .removeDuplicates()
             .share(replay: 1)
 
+        let contentSizeSubject = _contentSizeSubject
+            .removeDuplicates()
+            .share(replay: 1)
+
         contentOffsetSubject
             .throttle(for: Constants.throttleInterval, scheduler: DispatchQueue.main, latest: true)
             .assign(to: \.contentOffset, on: self, ownership: .weak)
@@ -61,7 +68,7 @@ final class CardsInfoPagerScrollState: ObservableObject {
 
         contentOffsetSubject
             .combineLatest(
-                _contentSizeSubject,
+                contentSizeSubject,
                 _viewportSizeSubject,
                 _bottomContentInsetSubject
             ) { contentOffset, contentSize, viewportSize, bottomContentInset in
@@ -74,7 +81,7 @@ final class CardsInfoPagerScrollState: ObservableObject {
             .assign(to: \.didScrollToBottom, on: self, ownership: .weak)
             .store(in: &bag)
 
-        _contentSizeSubject
+        contentSizeSubject
             .debounce(for: Constants.debounceInterval, scheduler: DispatchQueue.main)
             .removeDuplicates()
             .assign(to: \.contentSize, on: self, ownership: .weak)
@@ -84,6 +91,20 @@ final class CardsInfoPagerScrollState: ObservableObject {
             .debounce(for: Constants.debounceInterval, scheduler: DispatchQueue.main)
             .removeDuplicates()
             .assign(to: \.viewportSize, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        contentOffsetSubject
+            .combineLatest(
+                $didScrollToBottom
+            ) { contentOffset, didScrollToBottom in
+                guard didScrollToBottom else {
+                    return CGPoint.zero
+                }
+
+                return contentOffset
+            }
+            .removeDuplicates()
+            .assign(to: \.contentOffsetExceedingContentSize, on: self, ownership: .weak)
             .store(in: &bag)
 
         didBind = true

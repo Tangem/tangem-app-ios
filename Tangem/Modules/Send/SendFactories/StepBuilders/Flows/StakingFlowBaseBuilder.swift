@@ -40,7 +40,8 @@ struct StakingFlowBaseBuilder {
 
         let validators = stakingValidatorsStepBuilder.makeStakingValidatorsStep(
             io: (input: stakingModel, output: stakingModel),
-            manager: manager
+            manager: manager,
+            sendFeeLoader: stakingModel
         )
 
         let summary = sendSummaryStepBuilder.makeSendSummaryStep(

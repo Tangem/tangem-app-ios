@@ -14,7 +14,8 @@ protocol MarketsTokenDetailsBottomSheetRouter: AnyObject {
 }
 
 protocol MarketsTokenDetailsInfoDescriptionProvider {
-    var title: String { get }
+    var titleShort: String { get }
+    var titleFull: String { get }
     var infoDescription: String { get }
 }
 
@@ -73,7 +74,7 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
     }
 
     func showInfoBottomSheet(for infoProvider: MarketsTokenDetailsInfoDescriptionProvider) {
-        showInfoBottomSheet(title: infoProvider.title, message: infoProvider.infoDescription)
+        showInfoBottomSheet(title: infoProvider.titleFull, message: infoProvider.infoDescription)
     }
 
     func showInsightsSheetInfo() {

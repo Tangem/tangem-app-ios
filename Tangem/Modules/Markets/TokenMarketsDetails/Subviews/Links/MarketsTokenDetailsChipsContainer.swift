@@ -26,6 +26,8 @@ struct MarketsTokenDetailsChipsContainer: View {
         var height = CGFloat.zero
         ZStack(alignment: .topLeading, content: {
             ForEach(chipsData) { data in
+                let isFirstItem = data.id == chipsData.first?.id
+                let isLastItem = data.id == chipsData.last?.id
                 MarketsTokenDetailsLinkChipsView(
                     text: data.text,
                     icon: data.icon,
@@ -33,12 +35,15 @@ struct MarketsTokenDetailsChipsContainer: View {
                     action: data.action
                 )
                 .alignmentGuide(.leading) { dimension in
+                    if isFirstItem {
+                        width = 0
+                    }
                     if abs(width - dimension.width) > parentWidth {
                         width = 0
                         height -= dimension.height + verticalItemsSpacing
                     }
                     let result = width
-                    if data.id == chipsData.last?.id {
+                    if isLastItem {
                         width = 0
                     } else {
                         width -= dimension.width + horizontalItemsSpacing
@@ -46,8 +51,11 @@ struct MarketsTokenDetailsChipsContainer: View {
                     return result
                 }
                 .alignmentGuide(.top) { dimension in
+                    if isFirstItem {
+                        height = 0
+                    }
                     let result = height
-                    if data.id == chipsData.last?.id {
+                    if isLastItem {
                         height = 0
                     }
                     return result
