@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 class WelcomeSearchTokensViewModel: Identifiable, ObservableObject {
     // I can't use @Published here, because of swiftui redraw perfomance drop
@@ -19,6 +20,8 @@ class WelcomeSearchTokensViewModel: Identifiable, ObservableObject {
 
     private lazy var loader = setupListDataLoader()
     private var bag = Set<AnyCancellable>()
+
+    private var isExpandedItems: [ManageTokensListItemViewModel.ID] = []
 
     init() {
         manageTokensListViewModel = .init(
@@ -88,6 +91,16 @@ private extension WelcomeSearchTokensViewModel {
         return loader
     }
 
+    func bindExpanded(_ viewModelId: ManageTokensListItemViewModel.ID) -> Binding<Bool> {
+        let binding = Binding<Bool> { [weak self] in
+            self?.isExpandedItems.contains(viewModelId) ?? false
+        } set: { [weak self] isExpanded in
+            isExpanded ? self?.isExpandedItems.append(viewModelId) : self?.isExpandedItems.removeAll(where: { $0 == viewModelId })
+        }
+
+        return binding
+    }
+
     func mapToCoinViewModel(coinModel: CoinModel) -> ManageTokensListItemViewModel {
         let networkItems = coinModel.items.enumerated().map { index, item in
             ManageTokensItemNetworkSelectorViewModel(
@@ -99,6 +112,6 @@ private extension WelcomeSearchTokensViewModel {
             )
         }
 
-        return ManageTokensListItemViewModel(with: coinModel, items: networkItems)
+        return ManageTokensListItemViewModel(with: coinModel, items: networkItems, isExpanded: bindExpanded(coinModel.id))
     }
 }

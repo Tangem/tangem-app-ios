@@ -26,6 +26,8 @@ class ManageTokensAdapter {
     private var pendingAdd: [TokenItem] = []
     private var pendingRemove: [TokenItem] = []
 
+    private var isExpandedItems: [ManageTokensListItemViewModel.ID] = []
+
     private var bag = Set<AnyCancellable>()
 
     var hasNextPage: Bool {
@@ -189,6 +191,16 @@ private extension ManageTokensAdapter {
         return binding
     }
 
+    func bindExpanded(_ viewModelId: ManageTokensListItemViewModel.ID) -> Binding<Bool> {
+        let binding = Binding<Bool> { [weak self] in
+            self?.isExpandedItems.contains(viewModelId) ?? false
+        } set: { [weak self] isExpanded in
+            isExpanded ? self?.isExpandedItems.append(viewModelId) : self?.isExpandedItems.removeAll(where: { $0 == viewModelId })
+        }
+
+        return binding
+    }
+
     func bindCopy() -> Binding<Bool> {
         let binding = Binding<Bool> {
             false
@@ -214,7 +226,11 @@ private extension ManageTokensAdapter {
             )
         }
 
-        return ManageTokensListItemViewModel(with: coinModel, items: networkItems)
+        return ManageTokensListItemViewModel(
+            with: coinModel,
+            items: networkItems,
+            isExpanded: bindExpanded(coinModel.id)
+        )
     }
 
     func sendAnalyticsOnChangeTokenState(tokenIsSelected: Bool, tokenItem: TokenItem) {

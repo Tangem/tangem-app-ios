@@ -7,19 +7,26 @@
 //
 
 import Foundation
+import SwiftUI
 import Combine
 
 class ManageTokensListItemViewModel: ObservableObject, Identifiable {
     @Published var atLeastOneTokenSelected: Bool
-    let id: UUID = .init()
+    @Published var isExpanded: Bool = false
+
+    let id: String
     let imageURL: URL?
     let name: String
     let symbol: String
     let items: [ManageTokensItemNetworkSelectorViewModel]
 
     private var selectionUpdateSubscription: AnyCancellable?
+    private var expandedUpdateSubscription: AnyCancellable?
 
-    init(imageURL: URL?, name: String, symbol: String, items: [ManageTokensItemNetworkSelectorViewModel]) {
+    private var isExpandedBinding: Binding<Bool>?
+
+    init(id: String, imageURL: URL?, name: String, symbol: String, items: [ManageTokensItemNetworkSelectorViewModel]) {
+        self.id = id
         self.imageURL = imageURL
         self.name = name
         self.symbol = symbol
@@ -28,13 +35,17 @@ class ManageTokensListItemViewModel: ObservableObject, Identifiable {
         bindToSelectionUpdates()
     }
 
-    init(with model: CoinModel, items: [ManageTokensItemNetworkSelectorViewModel]) {
+    init(with model: CoinModel, items: [ManageTokensItemNetworkSelectorViewModel], isExpanded: Binding<Bool>?) {
+        id = model.id
         name = model.name
         symbol = model.symbol
         imageURL = IconURLBuilder().tokenIconURL(id: model.id, size: .large)
         self.items = items
+        isExpandedBinding = isExpanded
+        self.isExpanded = isExpanded?.wrappedValue ?? false
         atLeastOneTokenSelected = items.first(where: { $0.isSelected }) != nil
         bindToSelectionUpdates()
+        bindToExpandedUpdates()
     }
 
     func bindToSelectionUpdates() {
@@ -44,6 +55,15 @@ class ManageTokensListItemViewModel: ObservableObject, Identifiable {
             .sink { viewModel, itemsIsSelectedValues in
                 viewModel.atLeastOneTokenSelected = itemsIsSelectedValues.first(where: { $0 }) ?? false
             }
+    }
+
+    func bindToExpandedUpdates() {
+        expandedUpdateSubscription = $isExpanded
+            .removeDuplicates()
+            .withWeakCaptureOf(self)
+            .sink(receiveValue: { viewModel, value in
+                viewModel.isExpandedBinding?.wrappedValue = value
+            })
     }
 
     func hasContractAddress(_ contractAddress: String) -> Bool {
