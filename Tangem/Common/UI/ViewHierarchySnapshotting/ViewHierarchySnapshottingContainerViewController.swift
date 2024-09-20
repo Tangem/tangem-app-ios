@@ -10,32 +10,69 @@ import Foundation
 import UIKit
 import TangemFoundation
 
-final class ViewHierarchySnapshottingContainerViewController: UIViewController {}
+final class ViewHierarchySnapshottingContainerViewController: UIViewController {
+    private func performWithOverridingUserInterfaceStyleIfNeeded<T>(
+        _ overrideUserInterfaceStyle: UIUserInterfaceStyle?,
+        onView targetView: UIView,
+        action: () -> T
+    ) -> T {
+        // Restoring view state if needed
+        defer {
+            if overrideUserInterfaceStyle != nil {
+                targetView.overrideUserInterfaceStyle = .unspecified
+            }
+        }
+
+        if let overrideUserInterfaceStyle {
+            targetView.overrideUserInterfaceStyle = overrideUserInterfaceStyle
+        }
+
+        return action()
+    }
+
+    private func overrideUserInterfaceStyleAssertion(_ style: UIUserInterfaceStyle?, afterScreenUpdates: Bool) {
+        if style != nil, !afterScreenUpdates {
+            assertionFailure("`afterScreenUpdates` isn't set, `overrideUserInterfaceStyle` will have no effect")
+        }
+    }
+}
 
 // MARK: - ViewHierarchySnapshotting protocol conformance
 
 extension ViewHierarchySnapshottingContainerViewController: ViewHierarchySnapshotting {
-    func makeSnapshotView(afterScreenUpdates: Bool) -> UIView? {
-        ensureOnMainQueue()
-
-        return viewIfLoaded?.snapshotView(afterScreenUpdates: afterScreenUpdates)
-    }
-
-    func makeSnapshotViewImage(afterScreenUpdates: Bool, isOpaque: Bool) -> UIImage? {
+    func makeSnapshotView(afterScreenUpdates: Bool, overrideUserInterfaceStyle: UIUserInterfaceStyle?) -> UIView? {
         ensureOnMainQueue()
 
         guard let snapshotView = viewIfLoaded else {
             return nil
         }
 
-        let format = UIGraphicsImageRendererFormat.preferred()
-        format.opaque = isOpaque
+        overrideUserInterfaceStyleAssertion(overrideUserInterfaceStyle, afterScreenUpdates: afterScreenUpdates)
 
-        let bounds = snapshotView.bounds
-        let renderer = UIGraphicsImageRenderer(size: bounds.size, format: format)
+        return performWithOverridingUserInterfaceStyleIfNeeded(overrideUserInterfaceStyle, onView: snapshotView) {
+            return snapshotView.snapshotView(afterScreenUpdates: afterScreenUpdates)
+        }
+    }
 
-        return renderer.image { _ in
-            _ = snapshotView.drawHierarchy(in: bounds, afterScreenUpdates: afterScreenUpdates)
+    func makeSnapshotViewImage(afterScreenUpdates: Bool, isOpaque: Bool, overrideUserInterfaceStyle: UIUserInterfaceStyle?) -> UIImage? {
+        ensureOnMainQueue()
+
+        guard let snapshotView = viewIfLoaded else {
+            return nil
+        }
+
+        overrideUserInterfaceStyleAssertion(overrideUserInterfaceStyle, afterScreenUpdates: afterScreenUpdates)
+
+        return performWithOverridingUserInterfaceStyleIfNeeded(overrideUserInterfaceStyle, onView: snapshotView) {
+            let format = UIGraphicsImageRendererFormat.preferred()
+            format.opaque = isOpaque
+
+            let bounds = snapshotView.bounds
+            let renderer = UIGraphicsImageRenderer(size: bounds.size, format: format)
+
+            return renderer.image { _ in
+                _ = snapshotView.drawHierarchy(in: bounds, afterScreenUpdates: afterScreenUpdates)
+            }
         }
     }
 

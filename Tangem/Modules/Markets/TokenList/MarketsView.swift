@@ -296,11 +296,14 @@ struct MarketsView: View {
         }
 
         let snapshotter = viewHierarchySnapshotter
-        let viewSnapshot = snapshotter?.makeSnapshotLayerImage(options: .presentation, isOpaque: true)
-            ?? snapshotter?.makeSnapshotLayerImage(options: .default, isOpaque: true)
+        let lightAppearanceSnapshotImage = snapshotter?.makeSnapshotViewImage(afterScreenUpdates: true, isOpaque: true, overrideUserInterfaceStyle: .light)
+        let darkAppearanceSnapshotImage = snapshotter?.makeSnapshotViewImage(afterScreenUpdates: true, isOpaque: true, overrideUserInterfaceStyle: .dark)
 
         viewModel.isViewSnapshotRequested.toggle()
-        viewModel.onViewSnapshot(lightAppearanceSnapshotImage: viewSnapshot, darkAppearanceSnapshotImage: viewSnapshot) // TODO: Andrey Fedorov - Make actual snapshots
+        viewModel.onViewSnapshot(
+            lightAppearanceSnapshotImage: lightAppearanceSnapshotImage,
+            darkAppearanceSnapshotImage: darkAppearanceSnapshotImage
+        )
     }
 }
 
