@@ -36,6 +36,7 @@ struct SegmentedPicker<Option: Hashable & Identifiable>: View {
     private func segmentView(title: String, isSelected: Bool) -> some View {
         ZStack(alignment: .center) {
             Text(title)
+                .minimumScaleFactor(0.9)
                 .font(Fonts.Bold.footnote)
                 .foregroundStyle(Colors.Text.primary1)
                 .opacity(isSelected ? 1.0 : 0.0)
