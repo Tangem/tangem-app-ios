@@ -8,10 +8,9 @@
 
 import Foundation
 import Combine
+import BlockchainSdk
 
 protocol SendBaseInput: AnyObject {
-    var isFeeIncluded: Bool { get }
-
     var actionInProcessing: AnyPublisher<Bool, Never> { get }
 }
 

@@ -26,6 +26,7 @@ struct BasicTooltipView: View {
                 tooltipView
             }
         }
+        .transition(.asymmetric(insertion: .move(edge: .top), removal: .opacity))
     }
 
     // MARK: - Private Implementation
@@ -33,7 +34,7 @@ struct BasicTooltipView: View {
     private var backgroundView: some View {
         Color.black
             .ignoresSafeArea(.all)
-            .opacity(0.3)
+            .opacity(0.6)
             .onTapGesture {
                 onHideAction?()
             }
@@ -49,7 +50,7 @@ struct BasicTooltipView: View {
                     .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
 
                 Text(message)
-                    .lineLimit(2)
+                    .lineLimit(3)
                     .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
             }
             .defaultRoundedBackground()

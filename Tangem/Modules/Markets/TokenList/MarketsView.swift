@@ -62,10 +62,6 @@ struct MarketsView: View {
                 }
             }
             .opacity(viewModel.overlayContentHidingProgress)
-            .animation(
-                .easeInOut(duration: viewModel.overlayContentHidingAnimationDuration),
-                value: viewModel.overlayContentHidingProgress
-            )
             .scrollDismissesKeyboardCompat(.immediately)
         }
         .alert(item: $viewModel.alert, content: { $0.alert })

@@ -22,7 +22,6 @@ public struct YieldInfo: Hashable {
 
     // Validators
     public let validators: [ValidatorInfo]
-    public let defaultValidator: String?
 
     // Metadata
     public let item: StakingTokenItem
@@ -40,7 +39,6 @@ public struct YieldInfo: Hashable {
         enterMinimumRequirement: Decimal,
         exitMinimumRequirement: Decimal,
         validators: [ValidatorInfo],
-        defaultValidator: String?,
         item: StakingTokenItem,
         unbondingPeriod: Period,
         warmupPeriod: Period,
@@ -54,7 +52,6 @@ public struct YieldInfo: Hashable {
         self.enterMinimumRequirement = enterMinimumRequirement
         self.exitMinimumRequirement = exitMinimumRequirement
         self.validators = validators
-        self.defaultValidator = defaultValidator
         self.item = item
         self.unbondingPeriod = unbondingPeriod
         self.warmupPeriod = warmupPeriod

@@ -242,24 +242,7 @@ final class SingleTokenNotificationManager {
         let tokenIconInfo = TokenIconInfoBuilder().build(from: walletModel.tokenItem, isCustom: walletModel.isCustom)
         let apyFormatted = PercentFormatter().format(yield.rewardRateValues.max, option: .staking)
 
-        let description: String = {
-            switch yield.rewardScheduleType {
-            case .day:
-                Localization.stakingNotificationEarnRewardsTextDaily
-            case .hour:
-                Localization.stakingNotificationEarnRewardsTextHourly
-            case .month:
-                Localization.stakingNotificationEarnRewardsTextMonthly
-            case .week:
-                Localization.stakingNotificationEarnRewardsTextWeekly
-            }
-        }()
-
-        return .staking(
-            tokenIconInfo: tokenIconInfo,
-            earnUpToFormatted: apyFormatted,
-            description: description
-        )
+        return .staking(tokenIconInfo: tokenIconInfo, earnUpToFormatted: apyFormatted)
     }
 }
 

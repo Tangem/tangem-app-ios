@@ -55,19 +55,14 @@ struct UnstakingFlowBaseBuilder {
             action: action
         )
 
-        let interactor = CommonSendBaseInteractor(
-            input: unstakingModel,
-            output: unstakingModel,
-            walletModel: walletModel,
-            emailDataProvider: userWalletModel,
-            stakingModel: .none
-        )
+        let interactor = CommonSendBaseInteractor(input: unstakingModel, output: unstakingModel)
 
         let viewModel = SendViewModel(
             interactor: interactor,
             stepsManager: stepsManager,
             userWalletModel: userWalletModel,
             alertBuilder: builder.makeStakingAlertBuilder(),
+            dataBuilder: builder.makeSendBaseDataBuilder(input: unstakingModel),
             tokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem,
             coordinator: router
