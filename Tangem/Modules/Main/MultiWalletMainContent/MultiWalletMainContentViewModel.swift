@@ -106,6 +106,10 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         bind()
     }
 
+    deinit {
+        print("MultiWalletMainContentViewModel for \(userWalletModel.name) deinit")
+    }
+
     func onPullToRefresh(completionHandler: @escaping RefreshCompletionHandler) {
         if isUpdating {
             return
