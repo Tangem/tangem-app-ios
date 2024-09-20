@@ -26,7 +26,7 @@ class ManageTokensAdapter {
     private var pendingAdd: [TokenItem] = []
     private var pendingRemove: [TokenItem] = []
 
-    private var isExpandedItems: [ManageTokensListItemViewModel.ID] = []
+    private var expandedCoinIds: [String] = []
 
     private var bag = Set<AnyCancellable>()
 
@@ -63,9 +63,14 @@ class ManageTokensAdapter {
         pendingAdd = []
         pendingRemove = []
         isPendingListsEmptySubject.send(true)
+        expandedCoinIds.removeAll()
     }
 
     func fetch(_ text: String) {
+        if text != loader.lastSearchTextValue {
+            expandedCoinIds.removeAll()
+        }
+
         loader.fetch(text)
     }
 }
@@ -75,7 +80,9 @@ private extension ManageTokensAdapter {
         loader.$items
             .withWeakCaptureOf(self)
             .map { adapter, items -> [ManageTokensListItemViewModel] in
-                items.compactMap(adapter.mapToListItemViewModel(coinModel:))
+                let viewModels = items.compactMap(adapter.mapToListItemViewModel(coinModel:))
+                viewModels.forEach { $0.update(expanded: adapter.bindExpanded($0.coinId)) }
+                return viewModels
             }
             .receive(on: DispatchQueue.main)
             .assign(to: \.value, on: listItemsViewModelsSubject, ownership: .weak)
@@ -191,11 +198,11 @@ private extension ManageTokensAdapter {
         return binding
     }
 
-    func bindExpanded(_ viewModelId: ManageTokensListItemViewModel.ID) -> Binding<Bool> {
+    func bindExpanded(_ coinId: String) -> Binding<Bool> {
         let binding = Binding<Bool> { [weak self] in
-            self?.isExpandedItems.contains(viewModelId) ?? false
+            self?.expandedCoinIds.contains(coinId) ?? false
         } set: { [weak self] isExpanded in
-            isExpanded ? self?.isExpandedItems.append(viewModelId) : self?.isExpandedItems.removeAll(where: { $0 == viewModelId })
+            isExpanded ? self?.expandedCoinIds.append(coinId) : self?.expandedCoinIds.removeAll(where: { $0 == coinId })
         }
 
         return binding
@@ -226,11 +233,7 @@ private extension ManageTokensAdapter {
             )
         }
 
-        return ManageTokensListItemViewModel(
-            with: coinModel,
-            items: networkItems,
-            isExpanded: bindExpanded(coinModel.id)
-        )
+        return ManageTokensListItemViewModel(with: coinModel, items: networkItems)
     }
 
     func sendAnalyticsOnChangeTokenState(tokenIsSelected: Bool, tokenItem: TokenItem) {

@@ -21,7 +21,7 @@ class WelcomeSearchTokensViewModel: Identifiable, ObservableObject {
     private lazy var loader = setupListDataLoader()
     private var bag = Set<AnyCancellable>()
 
-    private var isExpandedItems: [ManageTokensListItemViewModel.ID] = []
+    private var expandedCoinIds: [String] = []
 
     init() {
         manageTokensListViewModel = .init(
@@ -53,6 +53,7 @@ extension WelcomeSearchTokensViewModel: ManageTokensListLoader {
     }
 
     func reset() {
+        expandedCoinIds.removeAll()
         loader.reset(enteredSearchText.value)
     }
 }
@@ -70,6 +71,7 @@ private extension WelcomeSearchTokensViewModel {
                     Analytics.log(.manageTokensSearched)
                 }
 
+                self?.expandedCoinIds.removeAll()
                 self?.loader.fetch(string)
             }
             .store(in: &bag)
@@ -82,7 +84,9 @@ private extension WelcomeSearchTokensViewModel {
         loader.$items
             .withWeakCaptureOf(self)
             .map { viewModel, items -> [ManageTokensListItemViewModel] in
-                items.compactMap(viewModel.mapToCoinViewModel(coinModel:))
+                let viewModels = items.compactMap(viewModel.mapToCoinViewModel(coinModel:))
+                viewModels.forEach { $0.update(expanded: viewModel.bindExpanded($0.coinId)) }
+                return viewModels
             }
             .receive(on: DispatchQueue.main)
             .assign(to: \.listItemsViewModels, on: self, ownership: .weak)
@@ -91,11 +95,11 @@ private extension WelcomeSearchTokensViewModel {
         return loader
     }
 
-    func bindExpanded(_ viewModelId: ManageTokensListItemViewModel.ID) -> Binding<Bool> {
+    func bindExpanded(_ coinId: String) -> Binding<Bool> {
         let binding = Binding<Bool> { [weak self] in
-            self?.isExpandedItems.contains(viewModelId) ?? false
+            self?.expandedCoinIds.contains(coinId) ?? false
         } set: { [weak self] isExpanded in
-            isExpanded ? self?.isExpandedItems.append(viewModelId) : self?.isExpandedItems.removeAll(where: { $0 == viewModelId })
+            isExpanded ? self?.expandedCoinIds.append(coinId) : self?.expandedCoinIds.removeAll(where: { $0 == coinId })
         }
 
         return binding
@@ -112,6 +116,6 @@ private extension WelcomeSearchTokensViewModel {
             )
         }
 
-        return ManageTokensListItemViewModel(with: coinModel, items: networkItems, isExpanded: bindExpanded(coinModel.id))
+        return ManageTokensListItemViewModel(with: coinModel, items: networkItems)
     }
 }

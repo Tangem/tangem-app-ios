@@ -88,7 +88,7 @@ struct ManageTokensListItemView_Previews: PreviewProvider {
             VStack(spacing: 0) {
                 StatefulPreviewWrapper(false) {
                     ManageTokensListItemView(viewModel: ManageTokensListItemViewModel(
-                        id: "tether",
+                        coinId: "tether",
                         imageURL: iconBuilder.tokenIconURL(id: "tether"),
                         name: "Tether",
                         symbol: "USDT",
@@ -98,7 +98,7 @@ struct ManageTokensListItemView_Previews: PreviewProvider {
 
                 StatefulPreviewWrapper(false) {
                     ManageTokensListItemView(viewModel: ManageTokensListItemViewModel(
-                        id: "binancecoin",
+                        coinId: "binancecoin",
                         imageURL: iconBuilder.tokenIconURL(id: "binancecoin"),
                         name: "Babananas United",
                         symbol: "BABASDT",
@@ -108,7 +108,7 @@ struct ManageTokensListItemView_Previews: PreviewProvider {
 
                 StatefulPreviewWrapper(false) {
                     ManageTokensListItemView(viewModel: ManageTokensListItemViewModel(
-                        id: "binancecoin",
+                        coinId: "binancecoin",
                         imageURL: iconBuilder.tokenIconURL(id: "binancecoin"),
                         name: "Binance USD",
                         symbol: "BUS",
@@ -118,7 +118,7 @@ struct ManageTokensListItemView_Previews: PreviewProvider {
 
                 StatefulPreviewWrapper(false) {
                     ManageTokensListItemView(viewModel: ManageTokensListItemViewModel(
-                        id: "avalanche-2",
+                        coinId: "avalanche-2",
                         imageURL: iconBuilder.tokenIconURL(id: "avalanche-2"),
                         name: "USDVVVSALN very-very-very-stupid-and-long-name",
                         symbol: "BUS",
@@ -128,7 +128,7 @@ struct ManageTokensListItemView_Previews: PreviewProvider {
 
                 StatefulPreviewWrapper(false) {
                     ManageTokensListItemView(viewModel: ManageTokensListItemViewModel(
-                        id: "ethereum",
+                        coinId: "ethereum",
                         imageURL: iconBuilder.tokenIconURL(id: "ethereum"),
                         name: "Ethereum",
                         symbol: "ETH",
