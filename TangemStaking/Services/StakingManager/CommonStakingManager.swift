@@ -53,6 +53,15 @@ extension CommonStakingManager: StakingManager {
         _state.eraseToAnyPublisher()
     }
 
+    var allowanceAddress: String? {
+        switch (wallet.item.network, wallet.item.contractAddress) {
+        case (.ethereum, "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0"):
+            return "0x5e3ef299fddf15eaa0432e6e66473ace8c13d908"
+        default:
+            return nil
+        }
+    }
+
     func updateState() async {
         updateState(.loading)
         do {
@@ -90,6 +99,8 @@ extension CommonStakingManager: StakingManager {
 
     func transaction(action: StakingAction) async throws -> StakingTransactionAction {
         switch (state, action.type) {
+        case (.loading, _):
+            throw StakingManagerError.stakingManagerIsLoading
         case (.availableToStake, .stake), (.staked, .stake):
             try await getStakeTransactionInfo(
                 request: mapToActionGenericRequest(action: action)
@@ -394,11 +405,12 @@ public enum StakingManagerError: LocalizedError {
     case transactionNotFound
     case notImplemented
     case notFound
+    case stakingManagerIsLoading
 
     public var errorDescription: String? {
         switch self {
         case .stakingManagerStateNotSupportTransactionAction(let action):
-            "stakingManagerStateNotSupportTransactionAction \(action)"
+            "StakingManagerNotSupportTransactionAction \(action)"
         case .stakedBalanceNotFound(let validator):
             "stakedBalanceNotFound \(validator)"
         case .pendingActionNotFound(let validator):
@@ -409,6 +421,8 @@ public enum StakingManagerError: LocalizedError {
             "notImplemented"
         case .notFound:
             "notFound"
+        case .stakingManagerIsLoading:
+            "StakingManagerIsLoading"
         }
     }
 }
