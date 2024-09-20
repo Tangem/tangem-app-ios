@@ -261,9 +261,7 @@ private extension ManageTokensAdapter {
         if isExapanded {
             expandedCoinIds.insert(coinId)
         } else {
-            if let indexToRemove = expandedCoinIds.firstIndex(of: coinId) {
-                expandedCoinIds.remove(at: indexToRemove)
-            }
+            expandedCoinIds.remove(coinId)
         }
     }
 }
