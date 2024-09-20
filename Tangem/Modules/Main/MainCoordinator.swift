@@ -29,7 +29,7 @@ class MainCoordinator: CoordinatorObject {
 
     // MARK: - Child coordinators (Push presentation)
 
-    // TODO: Andrey Fedorov - Add assertion using `UINavigationControllerDelegate` for a missing `mainBottomSheetUIManager.hide()` call
+    // TODO: Andrey Fedorov - Add assertion using `UINavigationControllerDelegate` for a missing `mainBottomSheetUIManager.hide()` call (IOS-8035)
     @Published var detailsCoordinator: DetailsCoordinator?
     @Published var tokenDetailsCoordinator: TokenDetailsCoordinator?
     @Published var marketsTokenDetailsCoordinator: TokenMarketsDetailsCoordinator?
