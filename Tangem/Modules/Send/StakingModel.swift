@@ -410,7 +410,11 @@ extension StakingModel: SendFinishInput {
 
 extension StakingModel: SendBaseInput, SendBaseOutput {
     var actionInProcessing: AnyPublisher<Bool, Never> {
-        _isLoading.eraseToAnyPublisher()
+        Publishers.Merge(
+            stakingManager.statePublisher.map { $0 == .loading },
+            _isLoading
+        )
+        .eraseToAnyPublisher()
     }
 
     func performAction() async throws -> SendTransactionDispatcherResult {
