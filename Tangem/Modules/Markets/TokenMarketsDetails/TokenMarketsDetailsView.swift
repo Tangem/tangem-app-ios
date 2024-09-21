@@ -69,16 +69,23 @@ struct TokenMarketsDetailsView: View {
                 title: viewModel.tokenName,
                 settings: .init(
                     title: .init(
-                        color: Colors.Text.primary1
+                        font: Fonts.Bold.body,
+                        color: Colors.Text.primary1,
+                        lineLimit: 1,
+                        minimumScaleFactor: 0.6
                     ),
                     backgroundColor: .clear, // Controlled by the `background` modifier in the body
                     height: 64.0,
                     alignment: .bottom
                 ),
                 leftItems: {
-                    BackButton(height: 44.0, isVisible: true, isEnabled: true, action: viewModel.onBackButtonTap)
+                    makeBackButton(action: viewModel.onBackButtonTap)
                 },
-                rightItems: {}
+                rightItems: {
+                    // Invisible view for centering the title label
+                    makeBackButton(action: {})
+                        .hidden()
+                }
             )
             .overlay(alignment: .bottom) {
                 Separator(
@@ -88,6 +95,11 @@ struct TokenMarketsDetailsView: View {
                 .hidden(!isNavigationBarShadowLineViewVisible)
             }
         }
+    }
+
+    @ViewBuilder
+    private func makeBackButton(action: @escaping () -> Void) -> some View {
+        BackButton(height: 44.0, isVisible: true, isEnabled: true, hPadding: 10.0, action: action)
     }
 
     @ViewBuilder
