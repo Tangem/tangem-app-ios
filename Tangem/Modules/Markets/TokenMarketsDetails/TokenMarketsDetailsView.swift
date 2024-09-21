@@ -82,7 +82,7 @@ struct TokenMarketsDetailsView: View {
                     makeBackButton(action: viewModel.onBackButtonTap)
                 },
                 rightItems: {
-                    // Invisible view for centering the title label
+                    // Dummy invisible back button for centering the title label
                     makeBackButton(action: {})
                         .hidden()
                 }

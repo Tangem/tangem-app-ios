@@ -80,8 +80,8 @@ struct NavigationBar<LeftButtons: View, RightButtons: View>: View {
         struct Title {
             var font: Font = .system(size: 17, weight: .medium)
             var color: Color = Colors.Old.tangemGrayDark6
-            var lineLimit: Int? = nil
-            var minimumScaleFactor: CGFloat = 1
+            var lineLimit: Int? = nil // Default system value
+            var minimumScaleFactor: CGFloat = 1 // Default system value
         }
 
         let title: Title
