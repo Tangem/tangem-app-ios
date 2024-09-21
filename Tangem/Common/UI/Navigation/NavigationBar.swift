@@ -123,7 +123,7 @@ struct NavigationBar<LeftButtons: View, RightButtons: View>: View {
     }
 
     var body: some View {
-        HStack {
+        HStack(alignment: .firstTextBaseline) {
             leftButtons
                 .layoutPriority(1)
 
