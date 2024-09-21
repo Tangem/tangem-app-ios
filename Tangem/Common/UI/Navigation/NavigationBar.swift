@@ -77,23 +77,27 @@ struct SupportButton: View {
 
 struct NavigationBar<LeftButtons: View, RightButtons: View>: View {
     struct Settings {
-        let titleFont: Font
-        let titleColor: Color
+        struct Title {
+            var font: Font = .system(size: 17, weight: .medium)
+            var color: Color = Colors.Old.tangemGrayDark6
+            var lineLimit: Int? = nil
+            var minimumScaleFactor: CGFloat = 1
+        }
+
+        let title: Title
         let backgroundColor: Color
         let horizontalPadding: CGFloat
         let height: CGFloat
         let alignment: Alignment
 
         init(
-            titleFont: Font = .system(size: 17, weight: .medium),
-            titleColor: Color = Colors.Old.tangemGrayDark6,
+            title: Title = .init(),
             backgroundColor: Color = Colors.Old.tangemBgGray,
             horizontalPadding: CGFloat = 0,
             height: CGFloat = 44,
             alignment: Alignment = .center
         ) {
-            self.titleFont = titleFont
-            self.titleColor = titleColor
+            self.title = title
             self.backgroundColor = backgroundColor
             self.horizontalPadding = horizontalPadding
             self.height = height
@@ -119,15 +123,23 @@ struct NavigationBar<LeftButtons: View, RightButtons: View>: View {
     }
 
     var body: some View {
-        ZStack {
-            HStack {
-                leftButtons
+        HStack {
+            leftButtons
+                .layoutPriority(1)
+
+            ZStack {
                 Spacer()
-                rightButtons
+                    .layoutPriority(1)
+
+                Text(title)
+                    .font(settings.title.font)
+                    .foregroundColor(settings.title.color)
+                    .lineLimit(settings.title.lineLimit)
+                    .minimumScaleFactor(settings.title.minimumScaleFactor)
             }
-            Text(title)
-                .font(settings.titleFont)
-                .foregroundColor(settings.titleColor)
+
+            rightButtons
+                .layoutPriority(1)
         }
         .padding(.horizontal, settings.horizontalPadding)
         .frame(height: settings.height, alignment: settings.alignment)

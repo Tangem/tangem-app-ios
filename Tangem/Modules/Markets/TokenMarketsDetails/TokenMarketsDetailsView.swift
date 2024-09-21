@@ -68,7 +68,9 @@ struct TokenMarketsDetailsView: View {
             NavigationBar(
                 title: viewModel.tokenName,
                 settings: .init(
-                    titleColor: Colors.Text.primary1,
+                    title: .init(
+                        color: Colors.Text.primary1
+                    ),
                     backgroundColor: .clear, // Controlled by the `background` modifier in the body
                     height: 64.0,
                     alignment: .bottom
