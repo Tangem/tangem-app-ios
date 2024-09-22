@@ -123,23 +123,17 @@ struct NavigationBar<LeftButtons: View, RightButtons: View>: View {
     }
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline) {
-            leftButtons
-                .layoutPriority(1)
+        ZStack {
+            HStack {
+                leftButtons
 
-            ZStack {
                 Spacer()
-                    .layoutPriority(1)
 
-                Text(title)
-                    .font(settings.title.font)
-                    .foregroundColor(settings.title.color)
-                    .lineLimit(settings.title.lineLimit)
-                    .minimumScaleFactor(settings.title.minimumScaleFactor)
+                rightButtons
             }
 
-            rightButtons
-                .layoutPriority(1)
+            Text(title)
+                .style(settings.title.font, color: settings.title.color)
         }
         .padding(.horizontal, settings.horizontalPadding)
         .frame(height: settings.height, alignment: settings.alignment)
