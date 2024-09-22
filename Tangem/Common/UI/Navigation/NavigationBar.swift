@@ -110,6 +110,8 @@ struct NavigationBar<LeftButtons: View, RightButtons: View>: View {
     private let leftButtons: LeftButtons
     private let rightButtons: RightButtons
 
+    @State private var titleHorizontalPadding: CGFloat = 0.0
+
     init(
         title: String,
         settings: Settings = .init(),
@@ -124,16 +126,36 @@ struct NavigationBar<LeftButtons: View, RightButtons: View>: View {
 
     var body: some View {
         ZStack {
-            HStack {
+            HStack(spacing: 0.0) {
                 leftButtons
+                    .readGeometry(\.size.width) { newValue in
+                        if newValue > titleHorizontalPadding {
+                            titleHorizontalPadding = newValue
+                        }
+                    }
 
                 Spacer()
 
                 rightButtons
+                    .readGeometry(\.size.width) { newValue in
+                        if newValue > titleHorizontalPadding {
+                            titleHorizontalPadding = newValue
+                        }
+                    }
             }
 
-            Text(title)
-                .style(settings.title.font, color: settings.title.color)
+            HStack(spacing: 0.0) {
+                FixedSpacer.horizontal(titleHorizontalPadding)
+                    .layoutPriority(1)
+
+                Text(title)
+                    .style(settings.title.font, color: settings.title.color)
+                    .lineLimit(settings.title.lineLimit)
+                    .minimumScaleFactor(settings.title.minimumScaleFactor)
+
+                FixedSpacer.horizontal(titleHorizontalPadding)
+                    .layoutPriority(1)
+            }
         }
         .padding(.horizontal, settings.horizontalPadding)
         .frame(height: settings.height, alignment: settings.alignment)
