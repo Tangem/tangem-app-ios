@@ -78,13 +78,14 @@ struct TokenMarketsDetailsView: View {
                     height: 64.0,
                     alignment: .bottom
                 ),
-                leftItems: {
-                    makeBackButton(action: viewModel.onBackButtonTap)
-                },
-                rightItems: {
-                    // Dummy invisible back button for centering the title label
-                    makeBackButton(action: {})
-                        .hidden()
+                leftButtons: {
+                    BackButton(
+                        height: 44.0,
+                        isVisible: true,
+                        isEnabled: true,
+                        hPadding: 10.0,
+                        action: viewModel.onBackButtonTap
+                    )
                 }
             )
             .overlay(alignment: .bottom) {
@@ -95,11 +96,6 @@ struct TokenMarketsDetailsView: View {
                 .hidden(!isNavigationBarShadowLineViewVisible)
             }
         }
-    }
-
-    @ViewBuilder
-    private func makeBackButton(action: @escaping () -> Void) -> some View {
-        BackButton(height: 44.0, isVisible: true, isEnabled: true, hPadding: 10.0, action: action)
     }
 
     @ViewBuilder
