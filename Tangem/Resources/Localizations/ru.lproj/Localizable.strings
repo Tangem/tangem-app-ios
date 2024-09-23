@@ -404,8 +404,9 @@
 "markets_token_details_market_rating" = "Рейтинг";
 "markets_token_details_market_rating_description" = "Позиция в рейтинге криптовалют среди всех монет на основе рыночной капитализации.";
 "markets_token_details_market_rating_full" = "Рейтинг";
-"markets_token_details_max_supply" = "Максимальный объем";
-"markets_token_details_max_supply_description" = "";
+"markets_token_details_max_supply" = "Макс. объем";
+"markets_token_details_max_supply_description" = "Максимальное количество монет или токенов, которое может когда-либо существовать для выбранной криптовалюты";
+"markets_token_details_max_supply_full" = "Максимальный объем";
 "markets_token_details_metrics" = "Метрики";
 "markets_token_details_official_links" = "Официальные ссылки";
 "markets_token_details_price_performance" = "Динамика цены";
@@ -414,7 +415,7 @@
 "markets_token_details_security_score_description" = "";
 "markets_token_details_social" = "Социальные";
 "markets_token_details_total_supply" = "Общ. предл.";
-"markets_token_details_total_supply_description" = "Максимальное количество монет или токенов, которое может когда-либо существовать для выбранной криптовалюты.";
+"markets_token_details_total_supply_description" = "Максимальное количество монет или токенов, которое может когда-либо существовать для выбранной криптовалюты";
 "markets_token_details_total_supply_full" = "Общее предложение";
 "markets_token_details_trading_volume" = "Объем торгов (24ч)";
 "markets_token_details_trading_volume_24h_description" = "Общая сумма криптовалюты, которая была продана за последние 24 часа, показывающая уровень активности и ликвидности на рынке.";

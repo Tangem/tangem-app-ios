@@ -405,7 +405,8 @@
 "markets_token_details_market_rating_description" = "Позиція в крипторейтингу між усіма монетами на основі ринкової капіталізації";
 "markets_token_details_market_rating_full" = "Рейтинг";
 "markets_token_details_max_supply" = "Максимальна пропозиція";
-"markets_token_details_max_supply_description" = "";
+"markets_token_details_max_supply_description" = "Максимальна кількість монет або токенів, яка може коли-небудь існувати для певної криптовалюти";
+"markets_token_details_max_supply_full" = "Максимальна пропозиція";
 "markets_token_details_metrics" = "Метрики";
 "markets_token_details_official_links" = "Офіційні посилання";
 "markets_token_details_price_performance" = "Цінова ефективність";

@@ -405,7 +405,8 @@
 "markets_token_details_market_rating_description" = "Position im Krypto-Rating zwischen allen Coins basierend auf der Marktkapitalisierung";
 "markets_token_details_market_rating_full" = "Marktbewertung";
 "markets_token_details_max_supply" = "Maximale Versorgung";
-"markets_token_details_max_supply_description" = "Leer";
+"markets_token_details_max_supply_description" = "Die maximale Anzahl von Coins oder Tokens, die jemals für eine bestimmte Kryptowährung existieren können";
+"markets_token_details_max_supply_full" = "Maximale Versorgung";
 "markets_token_details_metrics" = "Metriken";
 "markets_token_details_official_links" = "Offizielle Links";
 "markets_token_details_price_performance" = "Preisleistung";

@@ -405,7 +405,8 @@
 "markets_token_details_market_rating_description" = "Position dans le classement des crypto-monnaies entre toutes les pièces en fonction de la capitalisation boursière";
 "markets_token_details_market_rating_full" = "Évaluation du marché";
 "markets_token_details_max_supply" = "Approvisionnement maximal";
-"markets_token_details_max_supply_description" = "";
+"markets_token_details_max_supply_description" = "Le nombre maximal de pièces ou de jetons pouvant exister pour une crypto-monnaie particulière";
+"markets_token_details_max_supply_full" = "Approvisionnement maximal";
 "markets_token_details_metrics" = "Métriques";
 "markets_token_details_official_links" = "Official links";
 "markets_token_details_price_performance" = "Performance des prix";

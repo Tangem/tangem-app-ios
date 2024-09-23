@@ -405,7 +405,8 @@
 "markets_token_details_market_rating_description" = "Posición en la clasificación de criptomonedas entre todas las monedas según la capitalización de mercado";
 "markets_token_details_market_rating_full" = "Evaluación de mercado";
 "markets_token_details_max_supply" = "Suministro máximo";
-"markets_token_details_max_supply_description" = "";
+"markets_token_details_max_supply_description" = "La cantidad máxima de monedas o tokens que pueden existir para una criptomoneda en particular";
+"markets_token_details_max_supply_full" = "Suministro máximo";
 "markets_token_details_metrics" = "Métrica";
 "markets_token_details_official_links" = "Enlaces oficiales";
 "markets_token_details_price_performance" = "Rendimiento de precios";
