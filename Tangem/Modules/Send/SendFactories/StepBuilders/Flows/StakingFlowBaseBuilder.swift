@@ -88,6 +88,7 @@ struct StakingFlowBaseBuilder {
             coordinator: router
         )
         stepsManager.set(output: viewModel)
+        stakingModel.router = viewModel
 
         return viewModel
     }

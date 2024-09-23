@@ -93,21 +93,20 @@ class CommonSendAmountInteractor {
     }
 
     private func modifyIfNeeded(amount: SendAmount?) -> SendAmount? {
-        guard let modified = amountModifier?.modify(cryptoAmount: amount?.crypto) else {
+        guard let crypto = amountModifier?.modify(cryptoAmount: amount?.crypto) else {
             return amount
         }
 
-        return makeSendAmount(value: modified)
+        let fiat = convertToFiat(cryptoValue: crypto)
+        return makeSendAmount(crypto: crypto, fiat: fiat)
     }
 
-    private func makeSendAmount(value: Decimal) -> SendAmount? {
+    private func makeSendAmount(crypto: Decimal?, fiat: Decimal?) -> SendAmount {
         switch type {
         case .crypto:
-            let fiat = convertToFiat(cryptoValue: value)
-            return .init(type: .typical(crypto: value, fiat: fiat))
+            return .init(type: .typical(crypto: crypto, fiat: fiat))
         case .fiat:
-            let crypto = convertToCrypto(fiatValue: value)
-            return .init(type: .alternative(fiat: value, crypto: crypto))
+            return .init(type: .alternative(fiat: fiat, crypto: crypto))
         }
     }
 
@@ -157,7 +156,17 @@ extension CommonSendAmountInteractor: SendAmountInteractor {
             return nil
         }
 
-        let sendAmount = makeSendAmount(value: amount)
+        let sendAmount: SendAmount = {
+            switch type {
+            case .crypto:
+                let fiat = convertToFiat(cryptoValue: amount)
+                return makeSendAmount(crypto: amount, fiat: fiat)
+            case .fiat:
+                let crypto = convertToCrypto(fiatValue: amount)
+                return makeSendAmount(crypto: crypto, fiat: amount)
+            }
+        }()
+
         _cachedAmount.send(sendAmount)
 
         return sendAmount

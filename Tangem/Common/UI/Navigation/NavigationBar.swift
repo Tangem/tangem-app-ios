@@ -77,23 +77,27 @@ struct SupportButton: View {
 
 struct NavigationBar<LeftButtons: View, RightButtons: View>: View {
     struct Settings {
-        let titleFont: Font
-        let titleColor: Color
+        struct Title {
+            var font: Font = .system(size: 17, weight: .medium)
+            var color: Color = Colors.Old.tangemGrayDark6
+            var lineLimit: Int? = nil // Default system value
+            var minimumScaleFactor: CGFloat = 1 // Default system value
+        }
+
+        let title: Title
         let backgroundColor: Color
         let horizontalPadding: CGFloat
         let height: CGFloat
         let alignment: Alignment
 
         init(
-            titleFont: Font = .system(size: 17, weight: .medium),
-            titleColor: Color = Colors.Old.tangemGrayDark6,
+            title: Title = .init(),
             backgroundColor: Color = Colors.Old.tangemBgGray,
             horizontalPadding: CGFloat = 0,
             height: CGFloat = 44,
             alignment: Alignment = .center
         ) {
-            self.titleFont = titleFont
-            self.titleColor = titleColor
+            self.title = title
             self.backgroundColor = backgroundColor
             self.horizontalPadding = horizontalPadding
             self.height = height
@@ -105,6 +109,8 @@ struct NavigationBar<LeftButtons: View, RightButtons: View>: View {
     private let settings: Settings
     private let leftButtons: LeftButtons
     private let rightButtons: RightButtons
+
+    @State private var titleHorizontalPadding: CGFloat = 0.0
 
     init(
         title: String,
@@ -120,14 +126,36 @@ struct NavigationBar<LeftButtons: View, RightButtons: View>: View {
 
     var body: some View {
         ZStack {
-            HStack {
+            HStack(spacing: 0.0) {
                 leftButtons
+                    .readGeometry(\.size.width) { newValue in
+                        if newValue > titleHorizontalPadding {
+                            titleHorizontalPadding = newValue
+                        }
+                    }
+
                 Spacer()
+
                 rightButtons
+                    .readGeometry(\.size.width) { newValue in
+                        if newValue > titleHorizontalPadding {
+                            titleHorizontalPadding = newValue
+                        }
+                    }
             }
-            Text(title)
-                .font(settings.titleFont)
-                .foregroundColor(settings.titleColor)
+
+            HStack(spacing: 0.0) {
+                FixedSpacer.horizontal(titleHorizontalPadding)
+                    .layoutPriority(1)
+
+                Text(title)
+                    .style(settings.title.font, color: settings.title.color)
+                    .lineLimit(settings.title.lineLimit)
+                    .minimumScaleFactor(settings.title.minimumScaleFactor)
+
+                FixedSpacer.horizontal(titleHorizontalPadding)
+                    .layoutPriority(1)
+            }
         }
         .padding(.horizontal, settings.horizontalPadding)
         .frame(height: settings.height, alignment: settings.alignment)
