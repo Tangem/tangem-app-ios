@@ -13,6 +13,7 @@ import BlockchainSdk
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     @Injected(\.incomingActionHandler) private var incomingActionHandler: IncomingActionHandler
+    @Injected(\.appLockController) private var appLockController: AppLockController
 
     var window: UIWindow?
 
@@ -29,7 +30,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
-            appCoordinator.start(with: .init(newScan: nil))
+            appCoordinator.start(with: .default)
             let appView = AppCoordinatorView(coordinator: appCoordinator)
             let factory = RootViewControllerFactory()
             let rootViewController = factory.makeRootViewController(for: appView, window: window)
@@ -38,6 +39,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             window.overrideUserInterfaceStyle = AppSettings.shared.appTheme.interfaceStyle
             window.makeKeyAndVisible()
         }
+    }
+
+    func sceneDidEnterBackground(_ scene: UIScene) {
+        appLockController.sceneDidEnterBackground()
+        appCoordinator.sceneDidEnterBackground()
+    }
+
+    func sceneWillEnterForeground(_ scene: UIScene) {
+        appLockController.sceneWillEnterForeground()
+        appCoordinator.sceneWillEnterForeground()
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {

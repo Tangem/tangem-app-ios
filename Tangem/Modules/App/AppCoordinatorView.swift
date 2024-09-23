@@ -18,18 +18,8 @@ struct AppCoordinatorView: CoordinatorView {
 
     var body: some View {
         NavigationView {
-            switch coordinator.viewState {
-            case .welcome(let welcomeCoordinator):
-                WelcomeCoordinatorView(coordinator: welcomeCoordinator)
-            case .uncompleteBackup(let uncompletedBackupCoordinator):
-                UncompletedBackupCoordinatorView(coordinator: uncompletedBackupCoordinator)
-            case .auth(let authCoordinator):
-                AuthCoordinatorView(coordinator: authCoordinator)
-            case .main(let mainCoordinator):
-                MainCoordinatorView(coordinator: mainCoordinator)
-            case .none:
-                EmptyView()
-            }
+            content
+                .navigationLinks(links)
         }
         .animation(.default, value: coordinator.viewState)
         .navigationViewStyle(.stack)
@@ -57,5 +47,34 @@ struct AppCoordinatorView: CoordinatorView {
         .onChange(of: coordinator.isOverlayContentContainerShown) { isShown in
             overlayContentContainer.setOverlayHidden(!isShown)
         }
+        .overlay {
+            if coordinator.lockViewVisible {
+                LockView()
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        switch coordinator.viewState {
+        case .welcome(let welcomeCoordinator):
+            WelcomeCoordinatorView(coordinator: welcomeCoordinator)
+        case .uncompleteBackup(let uncompletedBackupCoordinator):
+            UncompletedBackupCoordinatorView(coordinator: uncompletedBackupCoordinator)
+        case .auth(let authCoordinator):
+            AuthCoordinatorView(coordinator: authCoordinator)
+        case .main(let mainCoordinator):
+            MainCoordinatorView(coordinator: mainCoordinator)
+        case .none:
+            EmptyView()
+        }
+    }
+
+    @ViewBuilder
+    private var links: some View {
+        NavHolder()
+            .navigation(item: $coordinator.pushedOnboardingCoordinator) {
+                OnboardingCoordinatorView(coordinator: $0)
+            }
     }
 }

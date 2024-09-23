@@ -12,14 +12,18 @@ import TangemSdk
 class StartupProcessor {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
 
+    var shouldOpenBiometry: Bool {
+        AppSettings.shared.saveUserWallets
+            && userWalletRepository.hasSavedWallets
+            && BiometricsUtil.isAvailable
+    }
+
     func getStartupOption() -> StartupOption {
         if BackupHelper().hasIncompletedBackup {
             return .uncompletedBackup
         }
 
-        if AppSettings.shared.saveUserWallets,
-           userWalletRepository.hasSavedWallets,
-           BiometricsUtil.isAvailable {
+        if shouldOpenBiometry {
             return .auth
         }
 

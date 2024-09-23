@@ -23,6 +23,7 @@ class AppCoordinator: CoordinatorObject {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
     @Injected(\.walletConnectSessionsStorageInitializable) private var walletConnectSessionStorageInitializer: Initializable
     @Injected(\.mainBottomSheetUIManager) private var mainBottomSheetUIManager: MainBottomSheetUIManager
+    @Injected(\.appLockController) private var appLockController: AppLockController
 
     // MARK: - Child coordinators
 
@@ -30,12 +31,15 @@ class AppCoordinator: CoordinatorObject {
     /// but in fact this is a read-only binding since the UI never mutates it.
     @Published var marketsCoordinator: MarketsCoordinator?
 
+    @Published var pushedOnboardingCoordinator: OnboardingCoordinator? = nil
+
     /// An ugly workaround due to navigation issues in SwiftUI on iOS 18 and above, see IOS-7990 for details.
     @Published private(set) var isOverlayContentContainerShown = false
 
     // MARK: - View State
 
     @Published private(set) var viewState: ViewState?
+    @Published private(set) var lockViewVisible: Bool = false
 
     // MARK: - Private
 
@@ -54,54 +58,87 @@ class AppCoordinator: CoordinatorObject {
 
         switch startupOption {
         case .welcome:
-            setupWelcome(with: options)
+            setupWelcome()
         case .auth:
-            setupAuth(with: options)
+            setupAuth()
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                self.tryUnlockWithBiometry()
+            }
+
         case .uncompletedBackup:
             setupUncompletedBackup()
         }
     }
 
-    private func restart(with options: AppCoordinator.Options = .default) {
-        start(with: options)
+    func sceneDidEnterBackground() {
+        withTransaction(.withoutAnimations()) {
+            mainBottomSheetUIManager.hide()
+            lockViewVisible = true
+        }
     }
 
-    private func setupWelcome(with options: AppCoordinator.Options) {
+    func sceneWillEnterForeground() {
+        guard lockViewVisible else {
+            return
+        }
+
+        if appLockController.isLocked {
+            handleLock(reason: .loggetOut) { [weak self] in
+                self?.tryUnlockWithBiometry()
+            }
+        } else {
+            lockViewVisible = false
+            mainBottomSheetUIManager.show()
+        }
+    }
+
+    private func tryUnlockWithBiometry() {
+        appLockController.unlockApp { [weak self] result in
+            guard let self else { return }
+
+            withAnimation(.easeOut(duration: 0.3)) { [weak self] in
+                self?.lockViewVisible = false
+            }
+
+            switch result {
+            case .openAuth:
+                setupAuth()
+            case .openMain(let model):
+                openMain(with: model)
+            case .openWelcome:
+                setupWelcome()
+            }
+        }
+    }
+
+    private func setupWelcome() {
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.start()
         }
 
-        let popToRootAction: Action<PopToRootOptions> = { [weak self] options in
-            self?.closeAllSheetsIfNeeded(animated: true) {
-                self?.start(with: .init(newScan: options.newScan))
-            }
-        }
-
-        let shouldScan = options.newScan ?? false
-
-        let welcomeCoordinator = WelcomeCoordinator(dismissAction: dismissAction, popToRootAction: popToRootAction)
-        welcomeCoordinator.start(with: .init(shouldScan: shouldScan))
+        let welcomeCoordinator = WelcomeCoordinator(dismissAction: dismissAction)
+        welcomeCoordinator.start(with: .init(shouldScan: false))
         // withTransaction call fixes stories animation on scenario: welcome -> onboarding -> main -> welcome
         withTransaction(.withoutAnimations()) {
             viewState = .welcome(welcomeCoordinator)
         }
     }
 
-    private func setupAuth(with options: AppCoordinator.Options) {
-        let dismissAction: Action<Void> = { [weak self] _ in
-            self?.start()
-        }
+    private func setupAuth() {
+        let dismissAction: Action<AuthDismissOptions> = { [weak self] options in
+            guard let self else { return }
 
-        let popToRootAction: Action<PopToRootOptions> = { [weak self] options in
-            self?.closeAllSheetsIfNeeded(animated: true) {
-                self?.start(with: .init(newScan: options.newScan))
+            switch options {
+            case .main(let model):
+                openMain(with: model)
+            case .onboarding(let input):
+                openOnboarding(with: input)
             }
         }
 
-        let unlockOnStart = options.newScan ?? true
-
-        let authCoordinator = AuthCoordinator(dismissAction: dismissAction, popToRootAction: popToRootAction)
-        authCoordinator.start(with: .init(unlockOnStart: unlockOnStart))
+        let authCoordinator = AuthCoordinator(dismissAction: dismissAction)
+        authCoordinator.start(with: .init())
 
         viewState = .auth(authCoordinator)
     }
@@ -142,8 +179,10 @@ class AppCoordinator: CoordinatorObject {
         userWalletRepository
             .eventProvider
             .sink { [weak self] event in
-                if case .locked(let reason) = event {
-                    self?.handleLock(reason: reason)
+                if case .locked(reason: .nothingToDisplay) = event {
+                    self?.handleLock(reason: .nothingToDisplay) { [weak self] in
+                        self?.setupWelcome()
+                    }
                 }
             }
             .store(in: &bag)
@@ -163,32 +202,20 @@ class AppCoordinator: CoordinatorObject {
             .store(in: &bag)
     }
 
-    private func handleLock(reason: UserWalletRepositoryLockReason) {
-        let animated: Bool
-        let newScan: Bool
-
-        switch reason {
-        case .loggedOut:
-            animated = false
-            newScan = AppSettings.shared.saveUserWallets
-        case .nothingToDisplay:
-            animated = true
-            newScan = false
-        }
+    private func handleLock(reason: LockReason, completion: @escaping () -> Void) {
+        let animated = reason.shouldAnimateLogout
 
         if FeatureProvider.isAvailable(.markets) {
             marketsCoordinator = nil
             mainBottomSheetUIManager.hide(shouldUpdateFooterSnapshot: false)
         }
 
-        let options = AppCoordinator.Options(newScan: newScan)
-
         closeAllSheetsIfNeeded(animated: animated) {
             if animated {
-                self.restart(with: options)
+                completion()
             } else {
                 UIApplication.performWithoutAnimations {
-                    self.restart(with: options)
+                    completion()
                 }
             }
         }
@@ -214,10 +241,8 @@ class AppCoordinator: CoordinatorObject {
 // MARK: - Options
 
 extension AppCoordinator {
-    struct Options {
-        let newScan: Bool?
-
-        static let `default`: Options = .init(newScan: false)
+    enum Options {
+        case `default`
     }
 }
 
@@ -237,6 +262,44 @@ extension AppCoordinator {
             default:
                 return false
             }
+        }
+    }
+}
+
+// Navigation
+
+extension AppCoordinator {
+    func openOnboarding(with input: OnboardingInput) {
+        let dismissAction: Action<OnboardingCoordinator.OutputOptions> = { [weak self] _ in
+            self?.pushedOnboardingCoordinator = nil
+        }
+
+        let coordinator = OnboardingCoordinator(dismissAction: dismissAction, popToRootAction: popToRootAction)
+        let options = OnboardingCoordinator.Options(input: input, destination: .main)
+        coordinator.start(with: options)
+        pushedOnboardingCoordinator = coordinator
+    }
+
+    func openMain(with userWalletModel: UserWalletModel) {
+        let coordinator = MainCoordinator(popToRootAction: popToRootAction)
+        let options = MainCoordinator.Options(userWalletModel: userWalletModel)
+        coordinator.start(with: options)
+        viewState = .main(coordinator)
+    }
+}
+
+// LockReason
+
+private enum LockReason {
+    case nothingToDisplay
+    case loggetOut
+
+    var shouldAnimateLogout: Bool {
+        switch self {
+        case .loggetOut:
+            false
+        case .nothingToDisplay:
+            true
         }
     }
 }

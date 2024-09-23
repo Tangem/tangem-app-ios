@@ -13,6 +13,8 @@ import BlockchainSdk
 class FakeUserWalletRepository: UserWalletRepository {
     var selectedUserWalletId: UserWalletId?
 
+    var isLocked: Bool { false }
+
     var hasSavedWallets: Bool { true }
 
     var models: [UserWalletModel] = []
@@ -55,6 +57,8 @@ class FakeUserWalletRepository: UserWalletRepository {
     func setSelectedUserWalletId(_ userWalletId: UserWalletId, reason: UserWalletRepositorySelectionChangeReason) {}
 
     func updateSelection() {}
+
+    func lock() {}
 
     func logoutIfNeeded() {}
 

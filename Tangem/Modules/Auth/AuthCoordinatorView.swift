@@ -17,35 +17,12 @@ struct AuthCoordinatorView: CoordinatorView {
 
     var body: some View {
         ZStack {
-            content
+            if let rootViewModel = coordinator.rootViewModel {
+                AuthView(viewModel: rootViewModel)
+            }
 
             sheets
         }
-        // modifiers order is changed intentionally (see OnboardingCoordinatorView, WelcomeCoordinatorView):
-        // navigation bar animation looks redundant in case of regular authentication
-        .animation(.default, value: coordinator.transitionAnimationValue)
-        .navigationBarHidden(coordinator.isNavigationBarHidden)
-    }
-
-    @ViewBuilder
-    private var content: some View {
-        switch coordinator.viewState {
-        case .auth(let authViewModel):
-            AuthView(viewModel: authViewModel)
-                .navigationLinks(links)
-        case .main(let mainCoordinator):
-            MainCoordinatorView(coordinator: mainCoordinator)
-        case .none:
-            EmptyView()
-        }
-    }
-
-    @ViewBuilder
-    private var links: some View {
-        NavHolder()
-            .navigation(item: $coordinator.pushedOnboardingCoordinator) {
-                OnboardingCoordinatorView(coordinator: $0)
-            }
     }
 
     @ViewBuilder

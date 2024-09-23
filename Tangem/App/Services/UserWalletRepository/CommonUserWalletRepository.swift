@@ -18,6 +18,11 @@ class CommonUserWalletRepository: UserWalletRepository {
     @Injected(\.analyticsContext) var analyticsContext: AnalyticsContext
     @Injected(\.pushNotificationsInteractor) private var pushNotificationsInteractor: PushNotificationsInteractor
 
+    var isLocked: Bool {
+        let hasUnlockedModels = models.contains(where: { !$0.isUserWalletLocked })
+        return !hasUnlockedModels
+    }
+
     var selectedModel: UserWalletModel? {
         return models.first {
             $0.userWalletId == selectedUserWalletId
@@ -46,39 +51,18 @@ class CommonUserWalletRepository: UserWalletRepository {
 
     private(set) var models = [UserWalletModel]()
 
-    var isLocked: Bool { models.contains { $0.isUserWalletLocked } }
-
     private var encryptionKeyByUserWalletId: [UserWalletId: UserWalletEncryptionKey] = [:]
 
     private let encryptionKeyStorage = UserWalletEncryptionKeyStorage()
 
     private let eventSubject = PassthroughSubject<UserWalletRepositoryEvent, Never>()
 
-    private let minimizedAppTimer = MinimizedAppTimer(interval: 5 * 60)
-
     private var bag: Set<AnyCancellable> = .init()
 
-    init() {
-        bind()
-    }
+    init() {}
 
     deinit {
         AppLog.shared.debug("UserWalletRepository deinit")
-    }
-
-    func bind() {
-        minimizedAppTimer
-            .timer
-            .filter { [weak self] in
-                guard let self else { return false }
-
-                return !isLocked
-            }
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in
-                self?.lock(reason: .loggedOut)
-            }
-            .store(in: &bag)
     }
 
     private func scanPublisher(_ scanner: CardScanner) -> AnyPublisher<UserWalletRepositoryResult?, Never> {
@@ -251,12 +235,22 @@ class CommonUserWalletRepository: UserWalletRepository {
         initializeServicesForSelectedModel()
     }
 
+    func lock() {
+        guard models.contains(where: { !$0.isUserWalletLocked }) else {
+            return
+        }
+
+        lockInternal()
+        sendEvent(.locked(reason: .loggedOut))
+    }
+
     func logoutIfNeeded() {
         if models.contains(where: { !$0.isUserWalletLocked }) {
             return
         }
 
-        lock(reason: .nothingToDisplay)
+        lockInternal()
+        sendEvent(.locked(reason: .nothingToDisplay))
     }
 
     func setSelectedUserWalletId(_ userWalletId: UserWalletId, reason: UserWalletRepositorySelectionChangeReason) {
@@ -316,13 +310,11 @@ class CommonUserWalletRepository: UserWalletRepository {
         sendEvent(.deleted(userWalletIds: [userWalletId]))
     }
 
-    func lock(reason: UserWalletRepositoryLockReason) {
+    private func lockInternal() {
         discardSensitiveData()
 
         resetServices()
         analyticsContext.clearSession()
-
-        sendEvent(.locked(reason: reason))
     }
 
     func clearNonSelectedUserWallets() {

@@ -23,16 +23,11 @@ final class AuthViewModel: ObservableObject {
 
     @Injected(\.failedScanTracker) private var failedCardScanTracker: FailedScanTrackable
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
-    @Injected(\.incomingActionManager) private var incomingActionManager: IncomingActionManaging
+    // @Injected(\.incomingActionManager) private var incomingActionManager: IncomingActionManaging
 
-    private var unlockOnStart: Bool
     private weak var coordinator: AuthRoutable?
 
-    init(
-        unlockOnStart: Bool,
-        coordinator: AuthRoutable
-    ) {
-        self.unlockOnStart = unlockOnStart
+    init(coordinator: AuthRoutable) {
         self.coordinator = coordinator
     }
 
@@ -102,29 +97,19 @@ final class AuthViewModel: ObservableObject {
 
     func onAppear() {
         Analytics.log(.signInScreenOpened)
-        incomingActionManager.becomeFirstResponder(self)
-    }
-
-    func onDidAppear() {
-        guard unlockOnStart else { return }
-
-        unlockOnStart = false
-
-        DispatchQueue.main.async {
-            self.unlockWithBiometry()
-        }
+        //  incomingActionManager.becomeFirstResponder(self)
     }
 
     func onDisappear() {
-        incomingActionManager.resignFirstResponder(self)
+        //   incomingActionManager.resignFirstResponder(self)
     }
 
     private func didFinishUnlocking(_ result: UserWalletRepositoryResult?) {
         isScanningCard = false
 
-        if result?.isSuccess != true {
-            incomingActionManager.discardIncomingAction()
-        }
+//        if result?.isSuccess != true {
+//            incomingActionManager.discardIncomingAction()
+//        }
 
         guard let result else { return }
 
@@ -164,19 +149,19 @@ extension AuthViewModel {
 
 // MARK: - IncomingActionResponder
 
-extension AuthViewModel: IncomingActionResponder {
-    func didReceiveIncomingAction(_ action: IncomingAction) -> Bool {
-        if !unlockOnStart {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                self.unlockWithBiometry()
-            }
-        }
-
-        switch action {
-        case .start:
-            return true
-        default:
-            return false
-        }
-    }
-}
+// extension AuthViewModel: IncomingActionResponder {
+//    func didReceiveIncomingAction(_ action: IncomingAction) -> Bool {
+//        if !unlockOnStart {
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+//                self.unlockWithBiometry()
+//            }
+//        }
+//
+//        switch action {
+//        case .start:
+//            return true
+//        default:
+//            return false
+//        }
+//    }
+// }

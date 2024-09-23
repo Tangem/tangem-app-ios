@@ -11,12 +11,14 @@ import Combine
 
 protocol UserWalletRepository: Initializable {
     var hasSavedWallets: Bool { get }
+    var isLocked: Bool { get }
     var models: [UserWalletModel] { get }
     var selectedModel: UserWalletModel? { get }
     var selectedUserWalletId: UserWalletId? { get }
     var selectedIndexUserWalletModel: Int? { get }
     var eventProvider: AnyPublisher<UserWalletRepositoryEvent, Never> { get }
 
+    func lock()
     func unlock(with method: UserWalletRepositoryUnlockMethod, completion: @escaping (UserWalletRepositoryResult?) -> Void)
     func setSelectedUserWalletId(_ userWalletId: UserWalletId, reason: UserWalletRepositorySelectionChangeReason)
     func updateSelection()
