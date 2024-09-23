@@ -304,9 +304,9 @@ private extension CommonStakingManager {
             actions: []
         )
     }
-    
+
     // MARK: - Staking transaction action
-    
+
     func mapToStakingTransactionAction(
         actionID: String? = nil,
         amount: Decimal,
