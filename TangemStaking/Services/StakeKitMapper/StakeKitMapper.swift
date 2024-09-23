@@ -306,7 +306,8 @@ struct StakeKitMapper {
         case .pending: .pending
         case .confirmed: .confirmed
         case .failed: .failed
-        case .notFound, .blocked, .signed, .skipped:
+        case .skipped: .skipped
+        case .notFound, .blocked, .signed:
             throw StakeKitMapperError.notImplement
         }
     }
