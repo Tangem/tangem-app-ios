@@ -35,7 +35,7 @@ public struct StakingBalance: Hashable {
 
 public extension Array where Element == StakingBalance {
     func staking() -> Self {
-        filter { $0.balanceType != .rewards }
+        filter { $0.balanceType != .pending && $0.balanceType != .rewards }
     }
 
     func rewards() -> Self {

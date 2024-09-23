@@ -18,7 +18,7 @@ struct PendingActionMapper {
 
     func getAction() throws -> PendingActionMapper.Action {
         switch balance.balanceType {
-        case .warmup, .unbonding:
+        case .warmup, .unbonding, .pending:
             throw PendingActionMapperError.notSupported
         case .active:
             let action = stakingAction(type: .unstake)
