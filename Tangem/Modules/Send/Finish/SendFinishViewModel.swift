@@ -48,7 +48,7 @@ class SendFinishViewModel: ObservableObject, Identifiable {
             Analytics.log(event: .stakingStakeInProgressScreenOpened, params: [
                 .validator: validatorName,
                 .token: tokenItem.currencySymbol,
-                .action: actionType.analyticsAction?.rawValue ?? ""
+                .action: actionType.analyticsAction?.rawValue ?? "",
             ])
         } else {
             Analytics.log(event: .sendTransactionSentScreenOpened, params: [

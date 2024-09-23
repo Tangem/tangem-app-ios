@@ -48,7 +48,7 @@ private extension SendFinishStepBuilder {
         sendFeeCompactViewModel: SendFeeCompactViewModel?
     ) -> SendFinishViewModel {
         SendFinishViewModel(
-            settings: .init(tokenItem: walletModel.tokenItem),
+            settings: .init(tokenItem: walletModel.tokenItem, actionType: actionType),
             input: input,
             sendDestinationCompactViewModel: sendDestinationCompactViewModel,
             sendAmountCompactViewModel: sendAmountCompactViewModel,

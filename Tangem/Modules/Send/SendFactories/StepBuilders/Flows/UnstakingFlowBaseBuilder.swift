@@ -30,7 +30,7 @@ struct UnstakingFlowBaseBuilder {
         let sendAmountCompactViewModel = sendAmountStepBuilder.makeSendAmountCompactViewModel(input: unstakingModel)
 
         let actionType = builder.sendFlowActionType(actionType: action.type)
-        
+
         let summary = sendSummaryStepBuilder.makeSendSummaryStep(
             io: (input: unstakingModel, output: unstakingModel),
             actionType: actionType,
