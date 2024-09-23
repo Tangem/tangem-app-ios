@@ -21,21 +21,26 @@ class MainCoordinator: CoordinatorObject {
 
     @Injected(\.safariManager) private var safariManager: SafariManager
     @Injected(\.pushNotificationsInteractor) private var pushNotificationsInteractor: PushNotificationsInteractor
+    @Injected(\.mainBottomSheetUIManager) private var mainBottomSheetUIManager: MainBottomSheetUIManager
 
     // MARK: - Root view model
 
     @Published private(set) var mainViewModel: MainViewModel?
 
-    // MARK: - Child coordinators
+    // MARK: - Child coordinators (Push presentation)
 
+    // TODO: Andrey Fedorov - Add assertion using `UINavigationControllerDelegate` for a missing `mainBottomSheetUIManager.hide()` call (IOS-8035)
     @Published var detailsCoordinator: DetailsCoordinator?
     @Published var tokenDetailsCoordinator: TokenDetailsCoordinator?
+    @Published var marketsTokenDetailsCoordinator: TokenMarketsDetailsCoordinator?
+    @Published var stakingDetailsCoordinator: StakingDetailsCoordinator?
+
+    // MARK: - Child coordinators (Other)
+
     @Published var modalOnboardingCoordinator: OnboardingCoordinator?
     @Published var sendCoordinator: SendCoordinator? = nil
     @Published var expressCoordinator: ExpressCoordinator? = nil
     @Published var legacyTokenListCoordinator: LegacyTokenListCoordinator? = nil
-    @Published var stakingDetailsCoordinator: StakingDetailsCoordinator? = nil
-    @Published var marketsTokenDetailsCoordinator: TokenMarketsDetailsCoordinator? = nil
 
     // MARK: - Child view models
 
@@ -141,6 +146,8 @@ extension MainCoordinator {
 
 extension MainCoordinator: MainRoutable {
     func openDetails(for userWalletModel: UserWalletModel) {
+        mainBottomSheetUIManager.hide()
+
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.detailsCoordinator = nil
         }
@@ -185,7 +192,10 @@ extension MainCoordinator: MainRoutable {
 
 extension MainCoordinator: MultiWalletMainContentRoutable {
     func openTokenDetails(for model: WalletModel, userWalletModel: UserWalletModel) {
+        mainBottomSheetUIManager.hide()
+
         Analytics.log(.tokenIsTapped)
+
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.tokenDetailsCoordinator = nil
         }
@@ -357,6 +367,8 @@ extension MainCoordinator: SingleTokenBaseRoutable {
     }
 
     func openStaking(options: StakingDetailsCoordinator.Options) {
+        mainBottomSheetUIManager.hide()
+
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.stakingDetailsCoordinator = nil
         }
@@ -389,8 +401,11 @@ extension MainCoordinator: SingleTokenBaseRoutable {
     }
 
     func openMarketsTokenDetails(tokenModel: MarketsTokenModel) {
+        mainBottomSheetUIManager.hide()
+
         let coordinator = TokenMarketsDetailsCoordinator()
         coordinator.start(with: .init(info: tokenModel, style: .defaultNavigationStack))
+
         marketsTokenDetailsCoordinator = coordinator
     }
 }
