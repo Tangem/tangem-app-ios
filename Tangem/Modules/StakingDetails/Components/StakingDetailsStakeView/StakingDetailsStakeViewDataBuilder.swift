@@ -34,7 +34,7 @@ class StakingDetailsStakeViewDataBuilder {
             switch balance.balanceType {
             case .rewards: Localization.stakingRewards
             case .locked: inProgress ? Localization.stakingUnlocking : Localization.stakingLocked
-            case .warmup, .active: validator?.name ?? Localization.stakingValidator
+            case .warmup, .active, .pending: validator?.name ?? Localization.stakingValidator
             case .unbonding: Localization.stakingUnstaking
             case .unstaked: Localization.stakingUnstaked
             }
@@ -46,7 +46,7 @@ class StakingDetailsStakeViewDataBuilder {
             case .locked: .locked
             case .unstaked: .withdraw
             case .warmup: .warmup(period: yield.warmupPeriod.formatted(formatter: daysFormatter))
-            case .active:
+            case .active, .pending:
                 validator?.apr.map { .active(apr: percentFormatter.format($0, option: .staking)) }
             case .unbonding(let date):
                 date.map { .unbonding(until: $0) } ?? .unbondingPeriod(period: yield.unbondingPeriod.formatted(formatter: daysFormatter))
@@ -55,7 +55,7 @@ class StakingDetailsStakeViewDataBuilder {
 
         let icon: StakingDetailsStakeViewData.IconType = {
             switch balance.balanceType {
-            case .rewards, .warmup, .active:
+            case .rewards, .warmup, .active, .pending:
                 balance.validatorType == .disabled
                     ? .icon(
                         Assets.stakingIconFilled,
@@ -83,7 +83,7 @@ class StakingDetailsStakeViewDataBuilder {
 
         let action: (() -> Void)? = {
             switch balance.balanceType {
-            case .rewards, .warmup, .unbonding:
+            case .rewards, .warmup, .unbonding, .pending:
                 return nil
             case .active, .unstaked, .locked:
                 return inProgress ? nil : action

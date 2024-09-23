@@ -298,7 +298,7 @@ private extension CommonStakingManager {
         return StakingBalance(
             item: yield.item,
             amount: record.amount,
-            balanceType: .active,
+            balanceType: .pending,
             validatorType: validatorType,
             inProgress: true,
             actions: []

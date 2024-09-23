@@ -29,9 +29,11 @@ struct UnstakingFlowBaseBuilder {
 
         let sendAmountCompactViewModel = sendAmountStepBuilder.makeSendAmountCompactViewModel(input: unstakingModel)
 
+        let actionType = builder.sendFlowActionType(actionType: action.type)
+
         let summary = sendSummaryStepBuilder.makeSendSummaryStep(
             io: (input: unstakingModel, output: unstakingModel),
-            actionType: builder.sendFlowActionType(actionType: action.type),
+            actionType: actionType,
             descriptionBuilder: builder.makeStakingTransactionSummaryDescriptionBuilder(),
             notificationManager: notificationManager,
             editableType: .noEditable,
@@ -43,6 +45,7 @@ struct UnstakingFlowBaseBuilder {
 
         let finish = sendFinishStepBuilder.makeSendFinishStep(
             input: unstakingModel,
+            actionType: actionType,
             sendDestinationCompactViewModel: .none,
             sendAmountCompactViewModel: sendAmountCompactViewModel,
             stakingValidatorsCompactViewModel: .none,
