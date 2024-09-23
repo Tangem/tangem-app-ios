@@ -40,6 +40,7 @@ struct SendDependenciesBuilder {
         case .claimRewards: action.title
         case .restakeRewards: action.title
         case .unlockLocked: action.title
+        default: action.title
         }
     }
 
@@ -52,6 +53,7 @@ struct SendDependenciesBuilder {
         case .claimRewards: nil
         case .restakeRewards: nil
         case .unlockLocked: nil
+        default: nil
         }
     }
 
