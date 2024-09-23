@@ -405,7 +405,8 @@
 "markets_token_details_market_rating_description" = "Position in crypto rating between all coins based on market capitalization";
 "markets_token_details_market_rating_full" = "Market rating";
 "markets_token_details_max_supply" = "Max supply";
-"markets_token_details_max_supply_description" = "";
+"markets_token_details_max_supply_description" = "The maximum number of coins or tokens that can ever exist for a particular cryptocurrency";
+"markets_token_details_max_supply_full" = "Max supply";
 "markets_token_details_metrics" = "Metrics";
 "markets_token_details_official_links" = "Official links";
 "markets_token_details_price_performance" = "Price performance";
