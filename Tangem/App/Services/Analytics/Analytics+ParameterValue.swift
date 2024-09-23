@@ -168,10 +168,20 @@ extension Analytics {
         case stakeSourceValidators = "Validators"
 
         case stakeActionStake = "Stake"
-        case stakeActionRestake = "Restake"
-        case stakeActionClaim = "Claim"
+        case stakeActionUnstake = "Unstake"
+        case stakeActionClaimRewards = "Claim Rewards"
+        case stakeActionRestakeRewards = "Restake Rewards"
         case stakeActionWithdraw = "Withdraw"
-        case stakeActionUnlock = "Unlock"
+        case stakeActionRestake = "Restake"
+        case stakeActionClaimUnstaked = "Claim Unstaked"
+        case stakeActionUnlockLocked = "Unlock Locked"
+        case stakeActionStakeLocked = "Stake Locked"
+        case stakeActionVote = "Vote"
+        case stakeActionRevoke = "Revoke"
+        case stakeActionVoteLocked = "Vote Locked"
+        case stakeActionRevote = "Revote"
+        case stakeActionRebond = "Rebond"
+        case stakeActionMigrate = "Migrate"
 
         // MARK: - Common
 

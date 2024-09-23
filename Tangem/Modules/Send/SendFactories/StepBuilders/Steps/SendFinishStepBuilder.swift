@@ -15,6 +15,7 @@ struct SendFinishStepBuilder {
 
     func makeSendFinishStep(
         input: SendFinishInput,
+        actionType: SendFlowActionType,
         sendDestinationCompactViewModel: SendDestinationCompactViewModel?,
         sendAmountCompactViewModel: SendAmountCompactViewModel?,
         stakingValidatorsCompactViewModel: StakingValidatorsCompactViewModel?,
@@ -22,6 +23,7 @@ struct SendFinishStepBuilder {
     ) -> ReturnValue {
         let viewModel = makeSendFinishViewModel(
             input: input,
+            actionType: actionType,
             sendDestinationCompactViewModel: sendDestinationCompactViewModel,
             sendAmountCompactViewModel: sendAmountCompactViewModel,
             stakingValidatorsCompactViewModel: stakingValidatorsCompactViewModel,
@@ -39,6 +41,7 @@ struct SendFinishStepBuilder {
 private extension SendFinishStepBuilder {
     func makeSendFinishViewModel(
         input: SendFinishInput,
+        actionType: SendFlowActionType,
         sendDestinationCompactViewModel: SendDestinationCompactViewModel?,
         sendAmountCompactViewModel: SendAmountCompactViewModel?,
         stakingValidatorsCompactViewModel: StakingValidatorsCompactViewModel?,

@@ -20,10 +20,19 @@ enum SendFlowActionType: Hashable {
     case approve
     case stake
     case unstake
-    case withdraw
     case claimRewards
     case restakeRewards
+    case withdraw
+    case restake
+    case claimUnstaked
     case unlockLocked
+    case stakeLocked
+    case vote
+    case revoke
+    case voteLocked
+    case revote
+    case rebond
+    case migrate
 
     var title: String {
         switch self {
@@ -31,20 +40,39 @@ enum SendFlowActionType: Hashable {
         case .approve: Localization.commonApprove
         case .stake: Localization.commonStake
         case .unstake: Localization.commonUnstake
-        case .withdraw: Localization.stakingWithdraw
         case .claimRewards: Localization.commonClaimRewards
         case .restakeRewards: Localization.stakingRestakeRewards
+        case .withdraw: Localization.stakingWithdraw
+        case .restake: Localization.stakingRestake
+        case .claimUnstaked: Localization.stakingClaimUnstaked
         case .unlockLocked: Localization.stakingUnlockedLocked
+        case .stakeLocked: Localization.stakingStakeLocked
+        case .vote: Localization.stakingVote
+        case .revoke: Localization.stakingRevoke
+        case .voteLocked: Localization.stakingVoteLocked
+        case .revote: Localization.stakingRevote
+        case .rebond: Localization.stakingRebond
+        case .migrate: Localization.stakingMigrate
         }
     }
 
     var analyticsAction: Analytics.ParameterValue? {
         switch self {
         case .stake: .stakeActionStake
+        case .unstake: .stakeActionUnstake
+        case .claimRewards: .stakeActionClaimRewards
+        case .restakeRewards: .stakeActionRestakeRewards
         case .withdraw: .stakeActionWithdraw
-        case .claimRewards: .stakeActionClaim
-        case .restakeRewards: .stakeActionRestake
-        case .unlockLocked: .stakeActionUnlock
+        case .restake: .stakeActionRestake
+        case .claimUnstaked: .stakeActionClaimUnstaked
+        case .unlockLocked: .stakeActionUnlockLocked
+        case .stakeLocked: .stakeActionStakeLocked
+        case .vote: .stakeActionVote
+        case .revoke: .stakeActionRevoke
+        case .voteLocked: .stakeActionVoteLocked
+        case .revote: .stakeActionRevote
+        case .rebond: .stakeActionRebond
+        case .migrate: .stakeActionMigrate
         default: nil
         }
     }
