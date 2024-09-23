@@ -58,11 +58,11 @@ extension CommonUnstakingStepsManager: SendStepsManager {
             return .claimRewards
         case .pending(.restakeRewards):
             return .restakeRewards
-        case .pending(.voteLocked):
+        case .pending(.voteLocked), .pending(.restake):
             return .stake
         case .pending(.unlockLocked):
             return .unlockLocked
-        case .stake, .pending(.restake): // FIXME:
+        case .stake:
             assertionFailure("Doesn't support in UnstakingFlow")
             return .unstake
         }

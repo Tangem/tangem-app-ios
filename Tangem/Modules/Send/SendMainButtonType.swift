@@ -36,7 +36,7 @@ enum SendFlowActionType: Hashable {
         case .claimRewards: Localization.commonClaimRewards
         case .restakeRewards: Localization.stakingRestakeRewards
         case .unlockLocked: Localization.stakingUnlockedLocked
-        case .restake: Localization.stakingRestakeRewards // FIXME: restake
+        case .restake: Localization.stakingRestake
         }
     }
 
