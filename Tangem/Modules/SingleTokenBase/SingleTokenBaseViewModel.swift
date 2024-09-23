@@ -127,6 +127,10 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
 
         Analytics.log(.refreshed)
 
+        if let id = walletModel.tokenItem.id, miniChartsProvider.items.isEmpty {
+            miniChartsProvider.fetch(for: [id], with: .day)
+        }
+
         isReloadingTransactionHistory = true
         updateSubscription = walletModel.generalUpdate(silent: false)
             .receive(on: DispatchQueue.main)
