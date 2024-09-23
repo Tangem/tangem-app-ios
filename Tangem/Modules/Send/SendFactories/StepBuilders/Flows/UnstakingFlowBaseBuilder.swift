@@ -68,6 +68,7 @@ struct UnstakingFlowBaseBuilder {
             coordinator: router
         )
         stepsManager.set(output: viewModel)
+        unstakingModel.router = viewModel
 
         return viewModel
     }
