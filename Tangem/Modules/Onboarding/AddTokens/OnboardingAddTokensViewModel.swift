@@ -57,6 +57,10 @@ class OnboardingAddTokensViewModel: ObservableObject {
     func saveChanges() {
         isSavingChanges = true
 
+        if hasPendingChanges {
+            Analytics.log(.manageTokensButtonLater)
+        }
+
         adapter.saveChanges { [weak self] result in
             self?.isSavingChanges = false
             switch result {
