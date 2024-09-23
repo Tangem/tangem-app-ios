@@ -17,7 +17,6 @@ protocol TangemApiService: AnyObject, Initializable {
 
     func loadCoins(requestModel: CoinsList.Request) -> AnyPublisher<[CoinModel], Error>
     func loadQuotes(requestModel: QuotesDTO.Request) -> AnyPublisher<[Quote], Error>
-    func loadRates(for coinIds: [String]) -> AnyPublisher<[String: Decimal], Error>
     func loadCurrencies() -> AnyPublisher<[CurrenciesResponse.Currency], Error>
 
     // Copy loadCoins request via async await
