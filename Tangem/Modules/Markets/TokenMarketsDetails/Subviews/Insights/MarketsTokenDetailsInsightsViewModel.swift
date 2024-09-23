@@ -119,6 +119,7 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
 
     private func bind() {
         $selectedInterval
+            .dropFirst()
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { value in
@@ -129,7 +130,7 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
                     event: .marketsChartButtonPeriod,
                     params: [
                         .token: weakSelf.tokenSymbol.uppercased(),
-                        .period: interval.rawValue,
+                        .period: interval.analyticsParameterValue,
                         .source: Analytics.MarketsIntervalTypeSourceType.insights.rawValue,
                     ]
                 )

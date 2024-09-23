@@ -177,11 +177,12 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
                     return
                 }
 
+                self.sendAnalytics()
+
                 // Copy tokens to readonly state, which have been success added
                 self.readonlyTokens.append(contentsOf: self.pendingAdd)
                 self.pendingAdd = []
                 self.updateSelectionByTokenItems()
-                self.sendAnalytics()
 
                 // It is used to synchronize the execution of the target action and hide bottom sheet
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
