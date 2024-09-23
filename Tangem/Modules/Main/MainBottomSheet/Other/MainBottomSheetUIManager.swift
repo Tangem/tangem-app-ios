@@ -30,8 +30,15 @@ extension MainBottomSheetUIManager {
         isShownSubject.send(true)
     }
 
-    func hide() {
+    func hide(shouldUpdateFooterSnapshot: Bool = true) {
         ensureOnMainQueue()
+
+        let isShown = false
+
+        guard shouldUpdateFooterSnapshot else {
+            isShownSubject.send(isShown)
+            return
+        }
 
         setFooterSnapshotNeedsUpdate { [weak self] in
             // Workaround: delaying hiding main bottom sheet roughly for the duration of one frame so that the UI
@@ -39,7 +46,7 @@ extension MainBottomSheetUIManager {
             // Dispatching to the next runloop tick (via `DispatchQueue.main.async`) doesn't work reliably enough
             // because not every runloop tick is used for rendering.
             DispatchQueue.main.asyncAfter(deadline: .now() + Constants.mainBottomSheetHidingDelay) {
-                self?.isShownSubject.send(false)
+                self?.isShownSubject.send(isShown)
             }
         }
     }

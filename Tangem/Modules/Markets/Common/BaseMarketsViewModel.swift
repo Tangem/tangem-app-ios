@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import func SwiftUI.withAnimation
 
 class BaseMarketsViewModel: ObservableObject {
     /// For unknown reasons, the `@self` and `@identity` of our view change when push navigation is performed in other
@@ -19,10 +20,6 @@ class BaseMarketsViewModel: ObservableObject {
         overlayContentProgress.interpolatedProgress(inRange: Constants.overlayContentHidingProgressInterpolationRange)
     }
 
-    var overlayContentHidingAnimationDuration: TimeInterval {
-        Constants.overlayContentHidingAnimationDuration
-    }
-
     init(
         overlayContentProgressInitialValue: CGFloat
     ) {
@@ -32,7 +29,9 @@ class BaseMarketsViewModel: ObservableObject {
     }
 
     func onOverlayContentProgressChange(_ progress: CGFloat) {
-        overlayContentProgress = progress
+        withAnimation(.easeInOut(duration: Constants.overlayContentHidingAnimationDuration)) {
+            overlayContentProgress = progress
+        }
     }
 }
 

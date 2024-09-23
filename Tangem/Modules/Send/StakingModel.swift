@@ -25,6 +25,7 @@ class StakingModel {
     private let _approvePolicy = CurrentValueSubject<ApprovePolicy, Never>(.unlimited)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
     private let _isLoading = CurrentValueSubject<Bool, Never>(false)
+    private let _isFeeIncluded = CurrentValueSubject<Bool, Never>(false)
 
     // MARK: - Private injections
 
@@ -51,7 +52,7 @@ class StakingModel {
         stakingTransactionDispatcher: SendTransactionDispatcher,
         sendTransactionDispatcher: SendTransactionDispatcher,
         allowanceProvider: AllowanceProvider,
-        amountTokenItem: TokenItem,
+        tokenItem: TokenItem,
         feeTokenItem: TokenItem
     ) {
         self.stakingManager = stakingManager
@@ -61,18 +62,8 @@ class StakingModel {
         self.stakingTransactionDispatcher = stakingTransactionDispatcher
         self.sendTransactionDispatcher = sendTransactionDispatcher
         self.allowanceProvider = allowanceProvider
-        tokenItem = amountTokenItem
+        self.tokenItem = tokenItem
         self.feeTokenItem = feeTokenItem
-
-        bind()
-    }
-}
-
-// MARK: - Public
-
-extension StakingModel {
-    var selectedPolicy: ApprovePolicy {
-        _approvePolicy.value
     }
 }
 
@@ -87,24 +78,6 @@ extension StakingModel: StakingModelStateProvider {
 // MARK: - Bind
 
 private extension StakingModel {
-    func bind() {
-        stakingManager
-            .statePublisher
-            .compactMap { $0.yieldInfo }
-            .map { yieldInfo -> LoadingValue<ValidatorInfo>in
-                let defaultValidator = yieldInfo.validators.first(where: { $0.address == yieldInfo.defaultValidator })
-                if let validator = defaultValidator ?? yieldInfo.validators.first {
-                    return .loaded(validator)
-                }
-
-                return .failedToLoad(error: StakingModelError.validatorNotFound)
-            }
-            // Only for initial set
-            .first()
-            .assign(to: \._selectedValidator.value, on: self, ownership: .weak)
-            .store(in: &bag)
-    }
-
     func updateState() {
         guard let amount = _amount.value?.crypto,
               let validator = _selectedValidator.value.value else {
@@ -149,6 +122,7 @@ private extension StakingModel {
         let fee = try await estimateFee(amount: amount, validator: validator)
         let includeFee = feeIncludedCalculator.shouldIncludeFee(makeFee(value: fee), into: makeAmount(value: amount))
         let newAmount = includeFee ? amount - fee : amount
+        _isFeeIncluded.send(includeFee)
 
         if let validateError = validate(amount: newAmount, fee: fee) {
             return validateError
@@ -162,7 +136,6 @@ private extension StakingModel {
         return .readyToStake(
             .init(
                 amount: newAmount,
-                validator: validator,
                 fee: fee,
                 isFeeIncluded: includeFee,
                 stakeOnDifferentValidator: hasPreviousStakeOnDifferentValidator
@@ -268,12 +241,16 @@ private extension StakingModel {
             throw StakingModelError.readyToStakeNotFound
         }
 
+        guard let validator = _selectedValidator.value.value else {
+            throw StakingModelError.validatorNotFound
+        }
+
         Analytics.log(.stakingButtonStake, params: [.source: .stakeSourceConfirmation])
 
         do {
             let action = StakingAction(
                 amount: readyToStake.amount,
-                validatorType: .validator(readyToStake.validator),
+                validatorType: .validator(validator),
                 type: .stake
             )
             let transactionInfo = try await stakingManager.transaction(action: action)
@@ -428,8 +405,6 @@ extension StakingModel: SendFinishInput {
 // MARK: - SendBaseInput, SendBaseOutput
 
 extension StakingModel: SendBaseInput, SendBaseOutput {
-    var isFeeIncluded: Bool { false }
-
     var actionInProcessing: AnyPublisher<Bool, Never> {
         _isLoading.eraseToAnyPublisher()
     }
@@ -505,6 +480,24 @@ extension StakingModel: ApproveViewModelInput {
     }
 }
 
+// MARK: - SendBaseDataBuilderInput
+
+extension StakingModel: SendBaseDataBuilderInput {
+    var bsdkAmount: BSDKAmount? { _amount.value?.crypto.map { makeAmount(value: $0) } }
+
+    var bsdkFee: BlockchainSdk.Fee? { selectedFee.value.value }
+
+    var isFeeIncluded: Bool { _isFeeIncluded.value }
+
+    var selectedPolicy: ApprovePolicy? { _approvePolicy.value }
+
+    var approveViewModelInput: (any ApproveViewModelInput)? { self }
+
+    var stakingAction: StakingAction.ActionType? { .stake }
+
+    var validator: ValidatorInfo? { _selectedValidator.value.value }
+}
+
 extension StakingModel {
     enum State {
         case loading
@@ -525,7 +518,6 @@ extension StakingModel {
 
         struct ReadyToStake {
             let amount: Decimal
-            let validator: ValidatorInfo
             let fee: Decimal
             let isFeeIncluded: Bool
             let stakeOnDifferentValidator: Bool
@@ -533,10 +525,12 @@ extension StakingModel {
     }
 }
 
-enum StakingModelError: String, Hashable, Error {
+enum StakingModelError: String, Hashable, LocalizedError {
     case readyToStakeNotFound
     case validatorNotFound
     case approveDataNotFound
+
+    var errorDescription: String? { rawValue }
 }
 
 // MARK: Analytics

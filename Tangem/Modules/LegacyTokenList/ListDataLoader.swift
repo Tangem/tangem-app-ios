@@ -35,7 +35,7 @@ class ListDataLoader {
     // MARK: Private Properties
 
     // Tracks last page loaded. Used to load next page (current + 1)
-    private var currentPage = 0
+    private var currentPageIndex = 0
 
     // Limit of records per page
     private let perPage = 50
@@ -61,7 +61,7 @@ class ListDataLoader {
 
         canFetchMore = true
         items = []
-        currentPage = 0
+        currentPageIndex = 0
         lastSearchText = searchText
         cachedSearch = [:]
     }
@@ -96,8 +96,8 @@ class ListDataLoader {
             try Task.checkCancellation()
 
             // If count of data received is less than perPage value then it is last page.
-            if currentPage < totalPages {
-                currentPage += 1
+            if (currentPageIndex + 1) < totalPages {
+                currentPageIndex += 1
             } else {
                 canFetchMore = false
             }
@@ -187,7 +187,7 @@ private extension ListDataLoader {
     }
 
     func getPage(for items: [CoinModel]) -> [CoinModel] {
-        Array(items.dropFirst(currentPage * perPage).prefix(perPage))
+        Array(items.dropFirst(currentPageIndex * perPage).prefix(perPage))
     }
 
     func map(

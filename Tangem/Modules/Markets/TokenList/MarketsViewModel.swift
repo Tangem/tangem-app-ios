@@ -13,6 +13,8 @@ import CombineExt
 import Kingfisher
 
 final class MarketsViewModel: BaseMarketsViewModel {
+    private typealias SearchInput = MainBottomSheetHeaderViewModel.SearchInput
+
     // MARK: - Injected & Published Properties
 
     @Published var alert: AlertBinder?
@@ -91,7 +93,7 @@ final class MarketsViewModel: BaseMarketsViewModel {
         headerViewModel.delegate = self
         marketsRatingHeaderViewModel.delegate = self
 
-        searchTextBind(searchTextPublisher: headerViewModel.enteredSearchTextPublisher)
+        searchTextBind(publisher: headerViewModel.enteredSearchInputPublisher)
         searchFilterBind(filterPublisher: filterProvider.filterPublisher)
 
         bindToCurrencyCodeUpdate()
@@ -148,7 +150,7 @@ final class MarketsViewModel: BaseMarketsViewModel {
     }
 
     func onTryLoadList() {
-        resetUI()
+        resetShowItemsBelowCapFlag()
         fetch(with: currentSearchValue, by: filterProvider.currentFilterValue)
     }
 
@@ -164,29 +166,40 @@ private extension MarketsViewModel {
         dataProvider.fetch(searchText, with: filter)
     }
 
-    func searchTextBind(searchTextPublisher: (some Publisher<String, Never>)?) {
-        searchTextPublisher?
+    private func searchTextBind(publisher: some Publisher<SearchInput, Never>) {
+        publisher
             .dropFirst()
             .debounce(for: 0.5, scheduler: DispatchQueue.main)
+            /// Ensure that clear input event will be delivered immediately
+            .merge(with: publisher.filter { $0 == .clearInput })
             .removeDuplicates()
             .withWeakCaptureOf(self)
-            .sink { viewModel, value in
-                guard viewModel.isBottomSheetExpanded else {
-                    return
+            .sink { viewModel, searchInput in
+                switch searchInput {
+                case .textInput(let value):
+                    if viewModel.currentSearchValue.compare(value) != .orderedSame {
+                        viewModel.resetShowItemsBelowCapFlag()
+                    }
+
+                    viewModel.currentSearchValue = value
+                    let currentFilter = viewModel.dataProvider.lastFilterValue ?? viewModel.filterProvider.currentFilterValue
+
+                    // Always use rating sorting for search
+                    let searchFilter = MarketsListDataProvider.Filter(
+                        interval: currentFilter.interval,
+                        order: value.isEmpty ? currentFilter.order : .rating
+                    )
+
+                    viewModel.fetch(with: value, by: searchFilter)
+                case .clearInput:
+                    if viewModel.currentSearchValue.isEmpty {
+                        return
+                    }
+
+                    viewModel.resetShowItemsBelowCapFlag()
+                    viewModel.currentSearchValue = ""
+                    viewModel.fetch(with: "", by: viewModel.filterProvider.currentFilterValue)
                 }
-
-                if viewModel.currentSearchValue != value {
-                    viewModel.resetUI()
-                }
-
-                viewModel.currentSearchValue = value
-
-                let currentFilter = viewModel.dataProvider.lastFilterValue ?? viewModel.filterProvider.currentFilterValue
-
-                // Always use rating sorting for search
-                let searchFilter = MarketsListDataProvider.Filter(interval: currentFilter.interval, order: value.isEmpty ? currentFilter.order : .rating)
-
-                viewModel.fetch(with: value, by: searchFilter)
             }
             .store(in: &bag)
     }
@@ -395,7 +408,7 @@ private extension MarketsViewModel {
         imageCache.memoryStorage.config.countLimit = 250
     }
 
-    func resetUI() {
+    func resetShowItemsBelowCapFlag() {
         showItemsBelowCapThreshold = false
     }
 }
@@ -415,11 +428,6 @@ extension MarketsViewModel: MarketsListDataFetcher {
 }
 
 extension MarketsViewModel: MainBottomSheetHeaderViewModelDelegate {
-    func clearSearchInput() {
-        dataProvider.reset()
-        currentSearchValue = ""
-    }
-
     func isViewVisibleForHeaderViewModel(_ viewModel: MainBottomSheetHeaderViewModel) -> Bool {
         return isViewVisible
     }

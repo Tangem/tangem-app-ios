@@ -16,7 +16,7 @@ public extension Publishers {
         public let upstream: Upstream
         public let priority: TaskPriority?
         public let transform: (Upstream.Output) async -> Output
-                
+        
         public init(upstream: Upstream, priority: TaskPriority?, transform: @escaping (Upstream.Output) async -> Output) {
             self.upstream = upstream
             self.priority = priority
@@ -26,28 +26,23 @@ public extension Publishers {
         public func receive<S>(subscriber: S) where S: Subscriber, Upstream.Failure == S.Failure, Output == S.Input {
             upstream
                 .flatMap { value in
-                    Deferred {
-                        let subject = PassthroughSubject<Output, Never>()
-                        var task: Task<Void, Never>? = nil
-                        
-                        let publisher = subject
-                            .handleEvents(
-                                receiveSubscription: { _ in
-                                    task = Task(priority: priority) {
-                                        guard !Task.isCancelled else { return }
-                                        
-                                        let output = await transform(value)
-                                        
-                                        guard !Task.isCancelled else { return }
-                                        
-                                        subject.send(output)
-                                        subject.send(completion: .finished)
-                                    }
-                                },
-                                receiveCancel: task?.cancel
-                            )
-                        return publisher
+                    var task: Task<Void, Never>? = nil
+                    
+                    let future = Deferred {
+                        Future<Output, Never> { promise in
+                            task = Task(priority: priority) {
+                                guard !Task.isCancelled else { return }
+                                
+                                let output = await transform(value)
+                                
+                                guard !Task.isCancelled else { return }
+                                
+                                promise(.success(output))
+                            }
+                        }
                     }
+                    
+                    return future.handleEvents(receiveCancel: task?.cancel)
                 }
                 .receive(subscriber: subscriber)
         }

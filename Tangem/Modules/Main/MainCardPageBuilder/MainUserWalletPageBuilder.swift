@@ -108,11 +108,21 @@ enum MainUserWalletPageBuilder: Identifiable {
     }
 
     @ViewBuilder
-    func makeBottomOverlay(didScrollToBottom: Bool) -> some View {
+    func makeBottomOverlay(_ overlayParams: CardsInfoPagerBottomOverlayFactoryParams) -> some View {
         if let viewModel = bottomSheetFooterViewModel {
             MainBottomSheetFooterView(viewModel: viewModel)
+                .overlay {
+                    MainBottomSheetHintView(
+                        isDraggingHorizontally: overlayParams.isDraggingHorizontally,
+                        didScrollToBottom: overlayParams.didScrollToBottom,
+                        scrollOffset: overlayParams.scrollOffset,
+                        viewportSize: overlayParams.viewportSize,
+                        contentSize: overlayParams.contentSize,
+                        scrollViewBottomContentInset: overlayParams.scrollViewBottomContentInset
+                    )
+                }
         } else if let viewModel = footerViewModel {
-            MainFooterView(viewModel: viewModel, didScrollToBottom: didScrollToBottom)
+            MainFooterView(viewModel: viewModel, didScrollToBottom: overlayParams.didScrollToBottom)
         } else {
             EmptyMainFooterView()
         }
