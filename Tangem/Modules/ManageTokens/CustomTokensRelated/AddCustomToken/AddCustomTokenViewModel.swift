@@ -76,7 +76,8 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
 
     func onAppear() {
         if !didLogScreenAnalytics {
-            Analytics.log(.customTokenScreenOpened)
+            let analyticsParams: [Analytics.ParameterKey: String] = [.source: settings.analyticsSourceRawValue]
+            Analytics.log(event: .manageTokensButtonCustomToken, params: analyticsParams)
             didLogScreenAnalytics = true
         }
     }
@@ -118,7 +119,12 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
             return
         }
 
-        Analytics.log(event: .manageTokensCustomTokenNetworkSelected, params: [.blockchain: blockchain.displayName])
+        let analyticsParams: [Analytics.ParameterKey: String] = [
+            .source: settings.analyticsSourceRawValue,
+            .blockchain: blockchain.displayName,
+        ]
+
+        Analytics.log(event: .manageTokensCustomTokenNetworkSelected, params: analyticsParams)
 
         selectedBlockchainNetworkId = blockchain.networkId
         selectedBlockchainName = blockchain.displayName
@@ -130,7 +136,12 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
     func setSelectedDerivationOption(derivationOption: AddCustomTokenDerivationOption) {
         selectedDerivationOption = derivationOption
 
-        Analytics.log(event: .manageTokensCustomTokenNetworkSelected, params: [.derivation: derivationOption.parameterValue])
+        let analyticsParams: [Analytics.ParameterKey: String] = [
+            .source: settings.analyticsSourceRawValue,
+            .derivation: derivationOption.parameterValue,
+        ]
+
+        Analytics.log(event: .manageTokensCustomTokenDerivationSelected, params: analyticsParams)
 
         validate()
     }
@@ -139,13 +150,15 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
     func onChangeFocusable(field: FocusableObserveField) {
         guard foundStandardToken == nil else { return }
 
+        let analyticsParams: [Analytics.ParameterKey: String] = [.source: settings.analyticsSourceRawValue]
+
         switch field {
         case .name where !name.isEmpty:
-            Analytics.log(.manageTokensCustomTokenName)
+            Analytics.log(event: .manageTokensCustomTokenName, params: analyticsParams)
         case .symbol where !symbol.isEmpty:
-            Analytics.log(.manageTokensCustomTokenSymbol)
+            Analytics.log(event: .manageTokensCustomTokenSymbol, params: analyticsParams)
         case .decimals where !decimals.isEmpty:
-            Analytics.log(.manageTokensCustomTokenDecimals)
+            Analytics.log(event: .manageTokensCustomTokenDecimals, params: analyticsParams)
         default:
             break
         }
@@ -175,15 +188,20 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
                         result = viewModel.findToken(contractAddress: enteredContractAddress)
                         contractAddressError = nil
 
-                        Analytics.log(.manageTokensCustomTokenAddress, params: [.validation: .ok])
-
                         viewModel.isLoading = true
                     }
                 } catch {
-                    Analytics.log(.manageTokensCustomTokenAddress, params: [.validation: .error])
                     result = .just(output: [])
                     contractAddressError = error
                 }
+
+                let analyticsParams: [Analytics.ParameterKey: String] = [
+                    .source: viewModel.settings.analyticsSourceRawValue,
+                    .validation: contractAddressError == nil ? Analytics.ParameterValue.ok.rawValue :
+                        Analytics.ParameterValue.error.rawValue,
+                ]
+
+                Analytics.log(event: .manageTokensCustomTokenAddress, params: analyticsParams)
 
                 self.contractAddressError = contractAddressError
                 return result
@@ -560,6 +578,9 @@ extension AddCustomTokenViewModel {
         let supportedBlockchains: [Blockchain]
         let hdWalletsSupported: Bool
         let derivationStyle: DerivationStyle?
+
+        // This parameter is required due to the fact that the adapter is used in various places
+        let analyticsSourceRawValue: String
     }
 }
 

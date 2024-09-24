@@ -322,13 +322,16 @@ extension Analytics {
 
         case manageTokensSearched = "[Manage Tokens] Token Searched"
         case manageTokensButtonSaveChanges = "[Manage Tokens] Button - Save Changes"
-        case manageTokensButtonCustomToken = "[Manage Tokens] Button - Custom Token"
         case manageTokensButtonAdd = "[Manage Tokens] Button - Add"
         case manageTokensButtonEdit = "[Manage Tokens] Button - Edit"
         case manageTokensButtonChooseWallet = "[Manage Tokens] Button - Choose Wallet"
         case manageTokensWalletSelected = "[Manage Tokens] Wallet Selected"
         case manageTokensNoticeNonNativeNetworkClicked = "[Manage Tokens] Notice - Non Native Network Clicked"
-        case manageTokensButtonGetAddresses = "[Manage Tokens] Button - Get Addresses"
+
+        // MARK: - Manange Tokens / Custom
+
+        case manageTokensButtonCustomToken = "[Manage Tokens] Button - Custom Token"
+        case manageTokensCustomTokenScreenOpened = "[Manage Tokens] Custom Token Screen Opened"
         case manageTokensCustomTokenWasAdded = "[Manage Tokens] Custom Token Was Added"
         case manageTokensCustomTokenNetworkSelected = "[Manage Tokens] Custom Token Network Selected"
         case manageTokensCustomTokenDerivationSelected = "[Manage Tokens] Custom Token Derivation Selected"
@@ -336,6 +339,5 @@ extension Analytics {
         case manageTokensCustomTokenName = "[Manage Tokens] Custom Token Name"
         case manageTokensCustomTokenSymbol = "[Manage Tokens] Custom Token Symbol"
         case manageTokensCustomTokenDecimals = "[Manage Tokens] Custom Token Decimals"
-        case customTokenScreenOpened = "[Manage Tokens] Custom Token Screen Opened"
     }
 }
