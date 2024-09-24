@@ -54,9 +54,9 @@ struct OnboardingAddTokensView: View {
             longHashesSupported: fakeModel.config.hasFeature(.longHashes),
             existingCurves: fakeModel.config.existingCurves,
             supportedBlockchains: fakeModel.config.supportedBlockchains,
-            userTokensManager: fakeModel.userTokensManager
-        ),
-        analyticsSourceRawValue: Analytics.ParameterValue.onboarding.rawValue
+            userTokensManager: fakeModel.userTokensManager,
+            analyticsSourceRawValue: "preview"
+        )
     )
 
     return OnboardingAddTokensView(viewModel: OnboardingAddTokensViewModel(adapter: adapter, delegate: nil))

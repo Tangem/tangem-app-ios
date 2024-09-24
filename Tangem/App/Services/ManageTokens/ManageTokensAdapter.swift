@@ -49,13 +49,12 @@ class ManageTokensAdapter {
         isPendingListsEmptySubject
     }
 
-    init(settings: Settings, analyticsSourceRawValue: String) {
+    init(settings: Settings) {
         longHashesSupported = settings.longHashesSupported
         existingCurves = settings.existingCurves
         userTokensManager = settings.userTokensManager
         loader = ListDataLoader(supportedBlockchains: settings.supportedBlockchains)
-
-        self.analyticsSourceRawValue = analyticsSourceRawValue
+        analyticsSourceRawValue = settings.analyticsSourceRawValue
 
         bind()
     }
@@ -316,5 +315,6 @@ extension ManageTokensAdapter {
         let existingCurves: [EllipticCurve]
         let supportedBlockchains: Set<Blockchain>
         let userTokensManager: UserTokensManager
+        let analyticsSourceRawValue: String
     }
 }

@@ -89,9 +89,9 @@ struct ManageTokensView: View {
             longHashesSupported: fakeModel.config.hasFeature(.longHashes),
             existingCurves: fakeModel.config.existingCurves,
             supportedBlockchains: fakeModel.config.supportedBlockchains,
-            userTokensManager: fakeModel.userTokensManager
-        ),
-        analyticsSourceRawValue: Analytics.ParameterValue.settings.rawValue
+            userTokensManager: fakeModel.userTokensManager,
+            analyticsSourceRawValue: "preview"
+        )
     )
 
     return NavigationView {

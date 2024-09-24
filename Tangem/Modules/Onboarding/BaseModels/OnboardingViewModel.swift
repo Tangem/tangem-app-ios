@@ -156,9 +156,9 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
                 longHashesSupported: userWalletModel.config.hasFeature(.longHashes),
                 existingCurves: userWalletModel.config.existingCurves,
                 supportedBlockchains: userWalletModel.config.supportedBlockchains,
-                userTokensManager: userWalletModel.userTokensManager
-            ),
-            analyticsSourceRawValue: analyticsSourceRawValue
+                userTokensManager: userWalletModel.userTokensManager,
+                analyticsSourceRawValue: analyticsSourceRawValue
+            )
         )
 
         return OnboardingAddTokensViewModel(

@@ -40,9 +40,9 @@ class ManageTokensCoordinator: CoordinatorObject {
                 longHashesSupported: config.hasFeature(.longHashes),
                 existingCurves: config.existingCurves,
                 supportedBlockchains: Set(config.supportedBlockchains),
-                userTokensManager: userWalletModel.userTokensManager
-            ),
-            analyticsSourceRawValue: analyticsSourceRawValue
+                userTokensManager: userWalletModel.userTokensManager,
+                analyticsSourceRawValue: analyticsSourceRawValue
+            )
         )
 
         rootViewModel = .init(
