@@ -39,24 +39,27 @@ final class SingleTokenNotificationManager {
     private func bind() {
         bag = []
 
-        walletModel
-            .walletDidChangePublisher
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] state in
-                self?.notificationsUpdateTask?.cancel()
+        Publishers.CombineLatest(
+            walletModel.walletDidChangePublisher,
+            walletModel.stakingManagerStatePublisher
+        )
+        .receive(on: DispatchQueue.main)
+        .sink { [weak self] walletState, stakingState in
+            self?.notificationsUpdateTask?.cancel()
 
-                switch state {
-                case .failed:
-                    self?.setupNetworkUnreachable()
-                case .noAccount(let message, _):
-                    self?.setupNoAccountNotification(with: message)
-                case .loading, .created:
-                    break
-                case .idle, .noDerivation:
-                    self?.setupLoadedStateNotifications()
-                }
+            switch walletState {
+            case .failed:
+                self?.setupNetworkUnreachable()
+            case .noAccount(let message, _):
+                self?.setupNoAccountNotification(with: message)
+            case .loading, .created:
+                break
+            case .idle, .noDerivation:
+                guard stakingState != .loading else { return } // fixes issue with staking notification animated re-appear
+                self?.setupLoadedStateNotifications()
             }
-            .store(in: &bag)
+        }
+        .store(in: &bag)
     }
 
     private func setupLoadedStateNotifications() {

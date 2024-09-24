@@ -13,7 +13,7 @@ import TangemFoundation
 
 final class MainBottomSheetUIManager {
     private let isShownSubject: CurrentValueSubject<Bool, Never> = .init(false)
-    private let footerSnapshotSubject: PassthroughSubject<UIImage?, Never> = .init()
+    private let footerSnapshotSubject: PassthroughSubject<FooterSnapshot, Never> = .init()
     private let footerSnapshotUpdateTriggerSubject: PassthroughSubject<Void, Never> = .init()
     private var pendingFooterSnapshotUpdateCompletions: [() -> Void] = []
 }
@@ -32,6 +32,10 @@ extension MainBottomSheetUIManager {
 
     func hide(shouldUpdateFooterSnapshot: Bool = true) {
         ensureOnMainQueue()
+
+        guard isShown else {
+            return
+        }
 
         let isShown = false
 
@@ -56,15 +60,20 @@ extension MainBottomSheetUIManager {
 
 extension MainBottomSheetUIManager {
     /// Provides updated snapshot.
-    var footerSnapshotPublisher: some Publisher<UIImage?, Never> { footerSnapshotSubject }
+    var footerSnapshotPublisher: some Publisher<FooterSnapshot, Never> { footerSnapshotSubject }
 
     /// Triggers snapshot update.
     var footerSnapshotUpdateTriggerPublisher: some Publisher<Void, Never> { footerSnapshotUpdateTriggerSubject }
 
-    func setFooterSnapshot(_ snapshotImage: UIImage?) {
+    func setFooterSnapshots(lightAppearanceSnapshotImage: UIImage?, darkAppearanceSnapshotImage: UIImage?) {
         ensureOnMainQueue()
 
-        footerSnapshotSubject.send(snapshotImage)
+        let footerSnapshot = FooterSnapshot(
+            lightAppearance: lightAppearanceSnapshotImage,
+            darkAppearance: darkAppearanceSnapshotImage
+        )
+
+        footerSnapshotSubject.send(footerSnapshot)
 
         let completions = pendingFooterSnapshotUpdateCompletions
         pendingFooterSnapshotUpdateCompletions.removeAll(keepingCapacity: true)
@@ -74,6 +83,15 @@ extension MainBottomSheetUIManager {
     private func setFooterSnapshotNeedsUpdate(with completion: @escaping () -> Void) {
         pendingFooterSnapshotUpdateCompletions.append(completion)
         footerSnapshotUpdateTriggerSubject.send()
+    }
+}
+
+// MARK: - Auxiliary types
+
+extension MainBottomSheetUIManager {
+    struct FooterSnapshot {
+        let lightAppearance: UIImage?
+        let darkAppearance: UIImage?
     }
 }
 

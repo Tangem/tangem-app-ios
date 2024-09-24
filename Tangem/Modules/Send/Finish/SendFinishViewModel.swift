@@ -20,6 +20,7 @@ class SendFinishViewModel: ObservableObject, Identifiable {
     @Published var stakingValidatorsCompactViewModel: StakingValidatorsCompactViewModel?
     @Published var sendFeeCompactViewModel: SendFeeCompactViewModel?
 
+    private let actionType: SendFlowActionType
     private let tokenItem: TokenItem
     private var feeTypeAnalyticsParameter: Analytics.ParameterValue = .null
     private var bag: Set<AnyCancellable> = []
@@ -33,6 +34,7 @@ class SendFinishViewModel: ObservableObject, Identifiable {
         sendFeeCompactViewModel: SendFeeCompactViewModel?
     ) {
         tokenItem = settings.tokenItem
+        actionType = settings.actionType
         self.sendDestinationCompactViewModel = sendDestinationCompactViewModel
         self.sendAmountCompactViewModel = sendAmountCompactViewModel
         self.stakingValidatorsCompactViewModel = stakingValidatorsCompactViewModel
@@ -45,6 +47,8 @@ class SendFinishViewModel: ObservableObject, Identifiable {
         if let validatorName = stakingValidatorsCompactViewModel?.selectedValidator?.name {
             Analytics.log(event: .stakingStakeInProgressScreenOpened, params: [
                 .validator: validatorName,
+                .token: tokenItem.currencySymbol,
+                .action: actionType.analyticsAction?.rawValue ?? "",
             ])
         } else {
             Analytics.log(event: .sendTransactionSentScreenOpened, params: [
@@ -85,5 +89,6 @@ extension SendFinishViewModel: SendStepViewAnimatable {
 extension SendFinishViewModel {
     struct Settings {
         let tokenItem: TokenItem
+        let actionType: SendFlowActionType
     }
 }

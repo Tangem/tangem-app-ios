@@ -13,19 +13,19 @@ import SwiftUI
 // MARK: - Convenience extensions
 
 extension View {
-    func onWillDisappear(_ perform: @escaping () -> Void) -> some View {
+    func onWillDisappear(perform: @escaping () -> Void) -> some View {
         modifier(WillDisappearModifier(callback: perform))
     }
 
-    func onDidDisappear(_ perform: @escaping () -> Void) -> some View {
+    func onDidDisappear(perform: @escaping () -> Void) -> some View {
         modifier(DidDisappearModifier(callback: perform))
     }
 
-    func onWillAppear(_ perform: @escaping () -> Void) -> some View {
+    func onWillAppear(perform: @escaping () -> Void) -> some View {
         modifier(WillAppearModifier(callback: perform))
     }
 
-    func onDidAppear(_ perform: @escaping () -> Void) -> some View {
+    func onDidAppear(perform: @escaping () -> Void) -> some View {
         modifier(DidAppearModifier(callback: perform))
     }
 

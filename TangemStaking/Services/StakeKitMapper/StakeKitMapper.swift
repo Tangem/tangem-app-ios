@@ -306,7 +306,8 @@ struct StakeKitMapper {
         case .pending: .pending
         case .confirmed: .confirmed
         case .failed: .failed
-        case .notFound, .blocked, .signed, .skipped:
+        case .skipped: .skipped
+        case .notFound, .blocked, .signed:
             throw StakeKitMapperError.notImplement
         }
     }
@@ -375,9 +376,11 @@ struct StakeKitMapper {
 
     func mapToRewardScheduleType(from type: StakeKitDTO.Yield.Info.Response.Metadata.RewardScheduleType) throws -> RewardScheduleType {
         switch type {
-        case .block: .minute
+        case .block: .block
         case .hour: .hour
-        case .epoch, .era, .day: .day
+        case .epoch: .epoch
+        case .era: .era
+        case .day: .day
         case .week: .week
         case .month: .month
         }

@@ -23,7 +23,6 @@ final class MarketsViewModel: BaseMarketsViewModel {
     @Published private(set) var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
     @Published private(set) var tokenListLoadingState: MarketsView.ListLoadingState = .idle
     @Published private(set) var isDataProviderBusy: Bool = false
-    @Published var isViewSnapshotRequested: Bool = false
 
     @Injected(\.mainBottomSheetUIManager) private var mainBottomSheetUIManager: MainBottomSheetUIManager
 
@@ -58,6 +57,7 @@ final class MarketsViewModel: BaseMarketsViewModel {
 
     private lazy var listDataController: MarketsListDataController = .init(dataFetcher: self, cellsStateUpdater: self)
 
+    private var viewHierarchySnapshotter: ViewHierarchySnapshotting?
     private var marketCapFormatter: MarketCapFormatter
     private var bag = Set<AnyCancellable>()
     private var currentSearchValue: String = ""
@@ -154,8 +154,8 @@ final class MarketsViewModel: BaseMarketsViewModel {
         fetch(with: currentSearchValue, by: filterProvider.currentFilterValue)
     }
 
-    func onViewSnapshot(_ viewSnapshot: UIImage?) {
-        mainBottomSheetUIManager.setFooterSnapshot(viewSnapshot)
+    func setViewHierarchySnapshotter(_ snapshotter: ViewHierarchySnapshotting?) {
+        viewHierarchySnapshotter = snapshotter
     }
 }
 
@@ -365,8 +365,7 @@ private extension MarketsViewModel {
     func bindToMainBottomSheetUIManager() {
         mainBottomSheetUIManager
             .footerSnapshotUpdateTriggerPublisher
-            .mapToValue(true)
-            .assign(to: \.isViewSnapshotRequested, on: self, ownership: .weak)
+            .sink(receiveValue: weakify(self, forFunction: MarketsViewModel.updateFooterSnapshot))
             .store(in: &bag)
     }
 
@@ -410,6 +409,26 @@ private extension MarketsViewModel {
 
     func resetShowItemsBelowCapFlag() {
         showItemsBelowCapThreshold = false
+    }
+
+    func updateFooterSnapshot() {
+        assert(viewHierarchySnapshotter != nil, "`viewHierarchySnapshotter` is not injected from the view hierarchy")
+
+        let lightAppearanceSnapshotImage = viewHierarchySnapshotter?.makeSnapshotViewImage(
+            afterScreenUpdates: true,
+            isOpaque: true,
+            overrideUserInterfaceStyle: .light
+        )
+        let darkAppearanceSnapshotImage = viewHierarchySnapshotter?.makeSnapshotViewImage(
+            afterScreenUpdates: true,
+            isOpaque: true,
+            overrideUserInterfaceStyle: .dark
+        )
+
+        mainBottomSheetUIManager.setFooterSnapshots(
+            lightAppearanceSnapshotImage: lightAppearanceSnapshotImage,
+            darkAppearanceSnapshotImage: darkAppearanceSnapshotImage
+        )
     }
 }
 
