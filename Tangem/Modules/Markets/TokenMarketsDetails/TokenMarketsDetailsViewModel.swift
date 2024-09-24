@@ -435,7 +435,7 @@ private extension TokenMarketsDetailsViewModel {
     func sendBlocksAnalyticsErrors() {
         Analytics.log(event: .marketsChartDataError, params: [
             .token: tokenInfo.symbol.uppercased(),
-            .source: Analytics.ParameterValue.chart.rawValue,
+            .source: Analytics.ParameterValue.blocks.rawValue,
         ])
     }
 
