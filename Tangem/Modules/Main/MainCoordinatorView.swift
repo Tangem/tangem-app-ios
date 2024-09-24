@@ -13,7 +13,7 @@ struct MainCoordinatorView: CoordinatorView {
 
     @State private var responderChainIntrospectionTrigger = UUID()
 
-    @StateObject private var navigationControllerAssertion = MainCoordinatorViewNavigationControllerAssertion()
+    @StateObject private var navigationAssertion = MainCoordinatorNavigationAssertion()
 
     var body: some View {
         ZStack {
@@ -37,8 +37,8 @@ struct MainCoordinatorView: CoordinatorView {
         .introspectResponderChain(
             introspectedType: UINavigationController.self,
             updateOnChangeOf: responderChainIntrospectionTrigger
-        ) { [weak navigationControllerAssertion] navigationController in
-            navigationController.setDelegateSafe(navigationControllerAssertion)
+        ) { [weak navigationAssertion] navigationController in
+            navigationController.setDelegateSafe(navigationAssertion)
         }
     }
 

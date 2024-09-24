@@ -1,5 +1,5 @@
 //
-//  MainCoordinatorViewNavigationControllerAssertion.swift
+//  MainCoordinatorNavigationAssertion.swift
 //  Tangem
 //
 //  Created by Andrey Fedorov on 24.09.2024.
@@ -9,13 +9,13 @@
 import Foundation
 import UIKit
 
-final class MainCoordinatorViewNavigationControllerAssertion: NSObject, ObservableObject {
+final class MainCoordinatorNavigationAssertion: NSObject, ObservableObject {
     @Injected(\.mainBottomSheetUIManager) private var mainBottomSheetUIManager: MainBottomSheetUIManager
 }
 
 // MARK: - UINavigationControllerDelegate protocol conformance
 
-extension MainCoordinatorViewNavigationControllerAssertion: UINavigationControllerDelegate {
+extension MainCoordinatorNavigationAssertion: UINavigationControllerDelegate {
     func navigationController(
         _ navigationController: UINavigationController,
         willShow viewController: UIViewController,
