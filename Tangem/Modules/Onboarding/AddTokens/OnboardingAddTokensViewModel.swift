@@ -17,11 +17,11 @@ class OnboardingAddTokensViewModel: ObservableObject {
     // We need to use @Published here, because our CustomSearchField doesn't work properly
     // with bindings created from CurrentValueSubject
     @Published var searchText: String = ""
-    @Published var hasPendingChanges: Bool = false
+    @Published var isPendingListsEmpty: Bool = false
     @Published var isSavingChanges: Bool = false
 
     var buttonSettings: MainButton.Settings {
-        if hasPendingChanges {
+        if isPendingListsEmpty {
             return .init(
                 title: Localization.commonLater,
                 style: .secondary,
@@ -57,7 +57,7 @@ class OnboardingAddTokensViewModel: ObservableObject {
     func saveChanges() {
         isSavingChanges = true
 
-        if hasPendingChanges {
+        if isPendingListsEmpty {
             Analytics.log(.manageTokensButtonLater)
         }
 
@@ -82,7 +82,7 @@ class OnboardingAddTokensViewModel: ObservableObject {
 
     private func bind() {
         adapter.isPendingListsEmptyPublisher
-            .assign(to: \.hasPendingChanges, on: self, ownership: .weak)
+            .assign(to: \.isPendingListsEmpty, on: self, ownership: .weak)
             .store(in: &bag)
 
         adapter.alertPublisher
