@@ -93,15 +93,19 @@ private extension UserWalletNameIndexationHelper {
 
 private extension [String: Set<Int>] {
     func nextIndex(for nameTemplate: String) -> Int {
-        let indexes = self[nameTemplate, default: []]
+        let indices = self[nameTemplate, default: []]
 
-        for i in 1 ... 100 {
-            if !indexes.contains(i) {
+        if indices.isEmpty {
+            return 1
+        }
+
+        for i in 1 ... indices.count {
+            if !indices.contains(i) {
                 return i
             }
         }
 
-        let defaultIndex = indexes.count + 1
+        let defaultIndex = indices.count + 1
         return defaultIndex
     }
 }
