@@ -184,10 +184,16 @@ final class OverlayContentContainerViewController: UIViewController {
         let newVerticalOffset = contentExpandedVerticalOffset
         overlayViewTopAnchorConstraint?.constant = newVerticalOffset
 
-        let animationContext = Constants.defaultAnimationContext
+        var animationContext = Constants.defaultAnimationContext
         UIView.animate(with: animationContext) {
             self.view.layoutIfNeeded()
         }
+
+        // `auxiliary` animations (content scale, corner radius, etc) are baked by Core Animation and don't use
+        // spring animations. Since these are plain, non-spring animations, they don't oscillate and therefore
+        // have a slightly shorter duration than `animationContext.duration`.
+        // That difference in duration is provided by multiplying by `auxiliaryAnimationsDurationMultiplier`
+        animationContext.duration *= Constants.auxiliaryAnimationsDurationMultiplier
 
         updateProgress(verticalOffset: newVerticalOffset, animationContext: animationContext)
     }
@@ -196,10 +202,16 @@ final class OverlayContentContainerViewController: UIViewController {
         let newVerticalOffset = overlayCollapsedVerticalOffset
         overlayViewTopAnchorConstraint?.constant = newVerticalOffset
 
-        let animationContext = Constants.defaultAnimationContext
+        var animationContext = Constants.defaultAnimationContext
         UIView.animate(with: animationContext) {
             self.view.layoutIfNeeded()
         }
+
+        // `auxiliary` animations (content scale, corner radius, etc) are baked by Core Animation and don't use
+        // spring animations. Since these are plain, non-spring animations, they don't oscillate and therefore
+        // have a slightly shorter duration than `animationContext.duration`.
+        // That difference in duration is provided by multiplying by `auxiliaryAnimationsDurationMultiplier`
+        animationContext.duration *= Constants.auxiliaryAnimationsDurationMultiplier
 
         updateProgress(verticalOffset: newVerticalOffset, animationContext: animationContext)
     }
@@ -212,7 +224,7 @@ final class OverlayContentContainerViewController: UIViewController {
 
     /// - Note: The order in which this method is called matters. Must be called between `setupContent` and `setupOverlay`.
     private func setupBackgroundShadowView() {
-        // TODO: Andrey Fedorov - Add better support for dark mode (adjust content view contrast or background colors instead of using background shadow) (IOS-7664)
+        // TODO: Andrey Fedorov - Add better support for dark mode (adjust content view contrast or background colors instead of using background shadow) (IOS-7802)
         backgroundShadowView.backgroundColor = .black
         backgroundShadowView.alpha = Constants.minBackgroundShadowViewAlpha
         backgroundShadowView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -262,7 +274,7 @@ final class OverlayContentContainerViewController: UIViewController {
 
         NSLayoutConstraint.activate([
             overlayViewTopAnchorConstraint,
-            overlayView.heightAnchor.constraint(equalToConstant: screenBounds.height - contentExpandedVerticalOffset),
+            overlayView.heightAnchor.constraint(equalToConstant: screenBounds.height),
             overlayView.widthAnchor.constraint(equalToConstant: screenBounds.width),
         ])
 
@@ -274,6 +286,7 @@ final class OverlayContentContainerViewController: UIViewController {
         grabberView.centerXAnchor.constraint(equalTo: overlayView.centerXAnchor).isActive = true
 
         overlayView.layer.cornerRadius(overlayCornerRadius, corners: .topEdge)
+        overlayViewController.additionalSafeAreaInsets.bottom = contentExpandedVerticalOffset // Over-scroll compensation
         overlayViewController.didMove(toParent: self)
     }
 
@@ -474,8 +487,7 @@ final class OverlayContentContainerViewController: UIViewController {
             return
         }
 
-        let startLocation = panGestureStartLocationInScreenCoordinateSpace
-        let verticalDirection = gestureRecognizer.verticalDirection(in: nil, relativeToGestureStartLocation: startLocation)
+        let verticalDirection = verticalDirection(for: gestureRecognizer)
 
         switch verticalDirection {
         case _ where scrollViewContentOffsetLocker == nil:
@@ -505,12 +517,15 @@ final class OverlayContentContainerViewController: UIViewController {
 
         let translation = gestureRecognizer.translation(in: nil)
         let currentVerticalOffset = overlayViewTopAnchorConstraint?.constant ?? .zero
-        let newVerticalOffset = clamp(
+        let clampedNewVerticalOffset = clamp(
             currentVerticalOffset + translation.y,
             min: contentExpandedVerticalOffset,
             max: overlayCollapsedVerticalOffset
         )
-        overlayViewTopAnchorConstraint?.constant = newVerticalOffset // TODO: Andrey Fedorov - Add rubber-banding (IOS-7664)
+        let verticalOffsetRubberbandingComponent = calculateVerticalOffsetRubberbandingComponent(gestureRecognizer)
+        let newVerticalOffset = max(clampedNewVerticalOffset + verticalOffsetRubberbandingComponent, .zero)
+
+        overlayViewTopAnchorConstraint?.constant = newVerticalOffset
         gestureRecognizer.setTranslation(.zero, in: nil)
 
         updateProgress(verticalOffset: newVerticalOffset, animationContext: nil)
@@ -527,36 +542,78 @@ final class OverlayContentContainerViewController: UIViewController {
             return
         }
 
-        let velocity = gestureRecognizer.velocity(in: nil)
-        let startLocation = panGestureStartLocationInScreenCoordinateSpace
-        let verticalDirection = gestureRecognizer.verticalDirection(in: nil, relativeToGestureStartLocation: startLocation)
+        // The 'raw' and 'true' velocity of a pan gesture appeared to be too fast for the smooth gesture-driven animation.
+        // Therefore, we reduce the velocity a bit by multiplying it by `panGestureVerticalVelocityMultiplier`,
+        // while keeping the gesture-driven look & feel for the animation
+        let velocity = gestureRecognizer.velocity(in: nil) * Constants.panGestureVerticalVelocityMultiplier
+        let verticalDirection = verticalDirection(for: gestureRecognizer)
         let decelerationRate = calculateDecelerationRate(gestureVerticalDirection: verticalDirection)
         let predictedEndLocation = gestureRecognizer.predictedEndLocation(in: nil, atDecelerationRate: decelerationRate)
-        let overlayViewFramePredictedOrigin = predictedEndLocation - panGestureStartLocationInOverlayViewCoordinateSpace
-        let isCollapsing = overlayViewFramePredictedOrigin.y > screenBounds.height / 2.0
+        let predictedOverlayViewFrameOrigin = predictedEndLocation - panGestureStartLocationInOverlayViewCoordinateSpace
+        let isCollapsing = predictedOverlayViewFrameOrigin.y > screenBounds.height / 2.0
 
-        let animationDuration = calculateAnimationDuration(
+        let (animationDuration, remainingDistance) = calculateAnimationDurationAndRemainingDistance(
             isCollapsing: isCollapsing,
             gestureVelocity: velocity,
             gestureVerticalDirection: verticalDirection
         )
 
-        let animationContext = OverlayContentContainerProgress.AnimationContext(
-            duration: animationDuration,
-            curve: Constants.defaultAnimationContext.curve
+        var animationContext = makeGestureDrivenAnimationContext(
+            isCollapsing: isCollapsing,
+            gestureVelocity: velocity,
+            animationDuration: animationDuration,
+            remainingDistance: remainingDistance
         )
 
         let newVerticalOffset = isCollapsing ? overlayCollapsedVerticalOffset : contentExpandedVerticalOffset
         overlayViewTopAnchorConstraint?.constant = newVerticalOffset
 
-        UIView.animate(with: animationContext) {
+        UIView.animate(
+            with: animationContext,
+            options: [.allowUserInteraction, .beginFromCurrentState]
+        ) {
             self.view.layoutIfNeeded()
         }
+
+        // `auxiliary` animations (content scale, corner radius, etc) are baked by Core Animation and don't use
+        // spring animations. Since these are plain, non-spring animations, they don't oscillate and therefore
+        // have a slightly shorter duration than `animationContext.duration`.
+        // That difference in duration is provided by multiplying by `auxiliaryAnimationsDurationMultiplier`
+        animationContext.duration *= Constants.auxiliaryAnimationsDurationMultiplier
 
         updateProgress(verticalOffset: newVerticalOffset, animationContext: animationContext)
     }
 
     // MARK: - Helpers
+
+    private func verticalDirection(for gestureRecognizer: UIPanGestureRecognizer) -> UIPanGestureRecognizer.VerticalDirection? {
+        let startLocation = panGestureStartLocationInScreenCoordinateSpace
+        return gestureRecognizer.verticalDirection(in: nil, relativeToGestureStartLocation: startLocation)
+    }
+
+    private func makeGestureDrivenAnimationContext(
+        isCollapsing: Bool,
+        gestureVelocity: CGPoint,
+        animationDuration: TimeInterval,
+        remainingDistance: CGFloat
+    ) -> OverlayContentContainerProgress.AnimationContext {
+        var animationContext = Constants.defaultAnimationContext
+        animationContext.duration = animationDuration
+
+        if remainingDistance > 0 {
+            // `UIView.animate(withDuration:delay:usingSpringWithDamping:initialSpringVelocity:options:animations:completion:)`
+            // uses quite weird velocity units - 'distances' per second, not points per second
+            animationContext.initialSpringVelocity = abs(gestureVelocity.y / remainingDistance)
+        }
+
+        // Spring animation is only applied when the overlay view is in the expanded state;
+        // to prevent a fake footer view, placed on the main view, from becoming visible
+        if isCollapsing {
+            animationContext.disableSpringAnimation()
+        }
+
+        return animationContext
+    }
 
     private func calculateDecelerationRate(
         gestureVerticalDirection: UIPanGestureRecognizer.VerticalDirection?
@@ -571,11 +628,11 @@ final class OverlayContentContainerViewController: UIViewController {
         }
     }
 
-    private func calculateAnimationDuration(
+    private func calculateAnimationDurationAndRemainingDistance(
         isCollapsing: Bool,
         gestureVelocity: CGPoint,
         gestureVerticalDirection: UIPanGestureRecognizer.VerticalDirection?
-    ) -> TimeInterval {
+    ) -> (animationDuration: TimeInterval, remainingDistance: CGFloat) {
         let gestureVelocityVerticalDirection: UIPanGestureRecognizer.VerticalDirection = gestureVelocity.y < .zero
             ? .up
             : .down
@@ -585,18 +642,39 @@ final class OverlayContentContainerViewController: UIViewController {
         let isGestureFailed = (isCollapsing && gestureVerticalDirection == .up && gestureVelocityVerticalDirection == .up)
             || (!isCollapsing && gestureVerticalDirection == .down && gestureVelocityVerticalDirection == .down)
 
-        if isGestureFailed {
-            // We don't take gesture velocity into account if the gesture fails
-            return Constants.defaultAnimationContext.duration
-        }
-
+        let verticalOffset = overlayViewTopAnchorConstraint?.constant ?? .greatestFiniteMagnitude
+        let isOverScroll = verticalOffset < contentExpandedVerticalOffset
         let overlayViewFrame = overlayViewController?.view.frame ?? .zero
 
         let remainingDistance = isCollapsing
             ? max(overlayCollapsedVerticalOffset - overlayViewFrame.minY, .zero)
             : max(overlayViewFrame.minY - contentExpandedVerticalOffset, .zero)
 
-        return min(remainingDistance / abs(gestureVelocity.y), Constants.defaultAnimationContext.duration)
+        if isGestureFailed || isOverScroll {
+            // We don't take gesture velocity into account if the gesture fails or if there is an over-scroll
+            return (Constants.failedGestureAnimationsDuration, remainingDistance)
+        }
+
+        let animationDuration = clamp(
+            remainingDistance / abs(gestureVelocity.y),
+            min: Constants.minAnimationsDuration,
+            max: Constants.maxAnimationsDuration
+        )
+
+        return (animationDuration, remainingDistance)
+    }
+
+    private func calculateVerticalOffsetRubberbandingComponent(_ gestureRecognizer: UIPanGestureRecognizer) -> CGFloat {
+        let gestureLocation = gestureRecognizer.location(in: nil)
+        let draggedOverlayViewFrameOrigin = gestureLocation - panGestureStartLocationInOverlayViewCoordinateSpace
+
+        // Rubberbanding is only applied when the overlay view is in the expanded state;
+        // to prevent a fake footer view, placed on the main view, from becoming visible
+        guard draggedOverlayViewFrameOrigin.y < contentExpandedVerticalOffset else {
+            return .zero
+        }
+
+        return (draggedOverlayViewFrameOrigin.y - contentExpandedVerticalOffset).withRubberbanding()
     }
 
     private static func calculateContentExpandedVerticalOffset(fromInput contentExpandedVerticalOffset: CGFloat) -> CGFloat {
@@ -710,6 +788,17 @@ private extension OverlayContentContainerViewController {
         static let minBackgroundShadowViewAlpha = 0.0
         static let maxBackgroundShadowViewAlpha = 0.4
         static let minAdjustedContentOffsetToLockScrollView = 10.0
-        static let defaultAnimationContext = OverlayContentContainerProgress.AnimationContext(duration: 0.3, curve: .easeOut)
+        static let panGestureVerticalVelocityMultiplier = 2.0 / 3.0
+        static let auxiliaryAnimationsDurationMultiplier = 3.0 / 4.0
+        static let minAnimationsDuration = 0.25
+        static let maxAnimationsDuration = 0.5
+        static let failedGestureAnimationsDuration = 0.4
+
+        static let defaultAnimationContext = OverlayContentContainerProgress.AnimationContext(
+            duration: 0.5,
+            curve: .easeOut,
+            springDampingRatio: 0.85, // Natural damping for smooth bounce
+            initialSpringVelocity: 0.3 // Smooth entry velocity, not too fast
+        )
     }
 }

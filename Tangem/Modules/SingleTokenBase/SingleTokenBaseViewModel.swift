@@ -69,6 +69,8 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
     lazy var pendingTransactionRecordMapper = PendingTransactionRecordMapper(formatter: BalanceFormatter())
     lazy var miniChartsProvider = MarketsListChartsHistoryProvider()
 
+    private let miniChartPriceIntervalType = MarketsPriceIntervalType.day
+
     init(
         userWalletModel: UserWalletModel,
         walletModel: WalletModel,
@@ -126,6 +128,10 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
         }
 
         Analytics.log(.refreshed)
+
+        if let id = walletModel.tokenItem.id, miniChartsProvider.items.isEmpty {
+            miniChartsProvider.fetch(for: [id], with: miniChartPriceIntervalType)
+        }
 
         isReloadingTransactionHistory = true
         updateSubscription = walletModel.generalUpdate(silent: false)
@@ -309,12 +315,15 @@ extension SingleTokenBaseViewModel {
             miniChartData = .failedToLoad(error: "")
             return
         }
-        miniChartsProvider.fetch(for: [id], with: .day)
+        miniChartsProvider.fetch(for: [id], with: miniChartPriceIntervalType)
 
         miniChartsProvider.$items
             .dropFirst()
             .receive(on: DispatchQueue.main)
-            .compactMap { $0[id]?[.day] }
+            .withWeakCaptureOf(self)
+            .compactMap { viewModel, items in
+                items[id]?[viewModel.miniChartPriceIntervalType]
+            }
             .withWeakCaptureOf(self)
             .sink { viewModel, chartsData in
                 viewModel.updateMiniChartState(using: chartsData)

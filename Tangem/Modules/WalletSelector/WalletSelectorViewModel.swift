@@ -13,12 +13,16 @@ class WalletSelectorViewModel: ObservableObject {
     var itemViewModels: [WalletSelectorItemViewModel] = []
 
     private weak var dataSource: WalletSelectorDataSource?
+    private weak var coordinator: WalletSelectorRoutable?
+
     private var bag = Set<AnyCancellable>()
 
     // MARK: - Init
 
-    init(dataSource: WalletSelectorDataSource?) {
+    init(dataSource: WalletSelectorDataSource?, coordinator: WalletSelectorRoutable? = nil) {
         self.dataSource = dataSource
+        self.coordinator = coordinator
+
         itemViewModels = dataSource?.itemViewModels ?? []
 
         bind()
@@ -26,9 +30,15 @@ class WalletSelectorViewModel: ObservableObject {
 
     private func bind() {
         dataSource?.selectedUserWalletIdPublisher
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] userWalletId in
                 self?.itemViewModels.forEach { item in
                     item.isSelected = item.userWalletId == userWalletId
+                }
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+                    self?.coordinator?.dissmisWalletSelectorModule()
                 }
             }
             .store(in: &bag)

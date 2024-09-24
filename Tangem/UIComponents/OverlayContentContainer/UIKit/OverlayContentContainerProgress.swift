@@ -12,8 +12,10 @@ import UIKit
 // Internal state used only by `OverlayContentContainerViewController`, do not use.
 struct OverlayContentContainerProgress {
     struct AnimationContext {
-        let duration: TimeInterval
-        let curve: UIView.AnimationCurve
+        var duration: TimeInterval
+        var curve: UIView.AnimationCurve
+        var springDampingRatio: CGFloat
+        var initialSpringVelocity: CGFloat
     }
 
     static var zero: Self { Self(value: .zero, context: nil) }
@@ -29,5 +31,14 @@ struct OverlayContentContainerProgress {
 extension OverlayContentContainerProgress: Equatable {
     static func == (lhs: Self, rhs: Self) -> Bool {
         return lhs.value == rhs.value
+    }
+}
+
+// MARK: - Convenience extensions
+
+extension OverlayContentContainerProgress.AnimationContext {
+    mutating func disableSpringAnimation() {
+        // To smoothly decelerate the animation without oscillation, use a value of 1 (Apple docs)
+        springDampingRatio = 1.0
     }
 }

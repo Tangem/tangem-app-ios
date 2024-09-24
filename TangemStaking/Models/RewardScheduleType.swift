@@ -9,7 +9,9 @@
 import Foundation
 
 public enum RewardScheduleType: String, Hashable {
-    case minute
+    case block
+    case epoch
+    case era
     case hour
     case day
     case week

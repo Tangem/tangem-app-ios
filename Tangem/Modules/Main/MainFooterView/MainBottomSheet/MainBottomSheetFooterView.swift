@@ -11,6 +11,8 @@ import SwiftUI
 struct MainBottomSheetFooterView: View {
     @ObservedObject var viewModel: MainBottomSheetFooterViewModel
 
+    @Environment(\.colorScheme) private var colorScheme
+
     var body: some View {
         VStack(spacing: 0.0) {
             FixedSpacer.vertical(14.0)
@@ -35,8 +37,20 @@ struct MainBottomSheetFooterView: View {
 
     @ViewBuilder
     private var snapshotOverlay: some View {
-        if let snapshotImage = viewModel.snapshotImage {
+        if let snapshotImage {
             Image(uiImage: snapshotImage)
+        }
+    }
+
+    private var snapshotImage: UIImage? {
+        switch colorScheme {
+        case .light:
+            return viewModel.footerSnapshot?.lightAppearance
+        case .dark:
+            return viewModel.footerSnapshot?.darkAppearance
+        @unknown default:
+            assertionFailure("Unknown color scheme '\(String(describing: colorScheme))' received")
+            return viewModel.footerSnapshot?.lightAppearance
         }
     }
 

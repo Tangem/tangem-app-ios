@@ -405,7 +405,8 @@
 "markets_token_details_market_rating_description" = "時価総額に基づくすべてのコイン間の暗号資産評価における位置";
 "markets_token_details_market_rating_full" = "市場格付け";
 "markets_token_details_max_supply" = "最大供給量";
-"markets_token_details_max_supply_description" = "";
+"markets_token_details_max_supply_description" = "特定の暗号資産に存在しうるコインまたはトークンの最大数";
+"markets_token_details_max_supply_full" = "最大供給量";
 "markets_token_details_metrics" = "指標";
 "markets_token_details_official_links" = "公式リンク";
 "markets_token_details_price_performance" = "値動き";
