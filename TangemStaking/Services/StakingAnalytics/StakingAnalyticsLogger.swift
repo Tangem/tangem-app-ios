@@ -9,5 +9,5 @@
 import Foundation
 
 public protocol StakingAnalyticsLogger {
-    func logAPIError()
+    func logAPIError(errorDescription: String)
 }

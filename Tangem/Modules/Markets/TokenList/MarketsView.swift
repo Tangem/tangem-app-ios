@@ -45,7 +45,9 @@ struct MarketsView: View {
             .onOverlayContentStateChange { [weak viewModel] state in
                 viewModel?.onOverlayContentStateChange(state)
             }
-            .onChange(of: viewModel.isViewSnapshotRequested, perform: makeViewSnapshotIfNeeded(isViewSnapshotRequested:))
+            .onAppear {
+                viewModel.setViewHierarchySnapshotter(viewHierarchySnapshotter)
+            }
     }
 
     @ViewBuilder
@@ -288,16 +290,6 @@ struct MarketsView: View {
 
         listOverlayVerticalOffset = offSet
         isListOverlayShadowLineViewVisible = contentOffset.y >= (maxOffset + Constants.listOverlayBottomInset)
-    }
-
-    private func makeViewSnapshotIfNeeded(isViewSnapshotRequested: Bool) {
-        if isViewSnapshotRequested {
-            let snapshotter = viewHierarchySnapshotter
-            let viewSnapshot = snapshotter?.makeSnapshotLayerImage(options: .presentation, isOpaque: true)
-                ?? snapshotter?.makeSnapshotLayerImage(options: .default, isOpaque: true)
-            viewModel.isViewSnapshotRequested.toggle()
-            viewModel.onViewSnapshot(viewSnapshot)
-        }
     }
 }
 

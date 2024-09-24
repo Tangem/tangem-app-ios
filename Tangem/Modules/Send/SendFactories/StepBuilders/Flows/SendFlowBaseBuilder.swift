@@ -60,6 +60,7 @@ struct SendFlowBaseBuilder {
 
         let finish = sendFinishStepBuilder.makeSendFinishStep(
             input: sendModel,
+            actionType: .send,
             sendDestinationCompactViewModel: destination.compact,
             sendAmountCompactViewModel: amount.compact,
             stakingValidatorsCompactViewModel: nil,

@@ -135,18 +135,6 @@ final class MainViewModel: ObservableObject {
         }
     }
 
-    /// Handles `UIKit.UIViewController.viewWillDisappear(_:)`.
-    func onWillDisappear() {
-        let uiManager = mainBottomSheetUIManager
-        // `DispatchQueue.main.async` here prevents runtime warnings 'Publishing changes from within view updates
-        // is not allowed, this will cause undefined behavior.' in `AppCoordinator.swift:19`
-        DispatchQueue.main.async {
-            if uiManager.isShown {
-                uiManager.hide()
-            }
-        }
-    }
-
     func onPullToRefresh(completionHandler: @escaping RefreshCompletionHandler) {
         Analytics.log(.mainRefreshed)
 

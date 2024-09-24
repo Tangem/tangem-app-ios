@@ -26,10 +26,6 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
 
     // MARK: - Private Properties
 
-    private var userWalletModels: [UserWalletModel] {
-        walletDataProvider.userWalletModels
-    }
-
     private let walletDataProvider: MarketsWalletDataProvider
 
     private weak var coordinator: MarketsPortfolioContainerRoutable?
@@ -38,7 +34,8 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     private var coinId: String
     private var networks: [NetworkModel]?
 
-    private var bag = Set<AnyCancellable>()
+    private var userWalletModelsListSubscription: AnyCancellable?
+    private var tokensListsUpdateSubscription: AnyCancellable?
 
     // MARK: - Init
 
@@ -77,7 +74,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         var targetState: MarketsPortfolioContainerView.TypeView = .list
         if let networks {
             let canAddAvailableNetworks = canAddToPortfolio(with: networks)
-            isAddTokenButtonDisabled = tokenAddedToAllNetworksAndWallets(availableNetworks: networks) && canAddAvailableNetworks
+            isAddTokenButtonDisabled = tokenAddedToAllNetworksAndWallets(availableNetworks: networks)
 
             if tokenItemViewModels.isEmpty {
                 targetState = canAddAvailableNetworks ? .empty : .unavailable
@@ -98,7 +95,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
      - Checking the lists of available networks
      */
     private func canAddToPortfolio(with networks: [NetworkModel]) -> Bool {
-        let multiCurrencyUserWalletModels = userWalletModels.filter { $0.config.hasFeature(.multiCurrency) }
+        let multiCurrencyUserWalletModels = walletDataProvider.userWalletModels.filter { $0.config.hasFeature(.multiCurrency) }
 
         guard
             !networks.isEmpty,
@@ -120,12 +117,13 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
 
     private func tokenAddedToAllNetworksAndWallets(availableNetworks: [NetworkModel]) -> Bool {
         if availableNetworks.isEmpty {
-            return false
+            return true
         }
 
         let availableNetworksIds = availableNetworks.reduce(into: Set<String>()) { $0.insert($1.networkId) }
+        let l2BlockchainsIds = SupportedBlockchains.l2Blockchains.map { $0.coinId }
 
-        for userWalletModel in userWalletModels {
+        for userWalletModel in walletDataProvider.userWalletModels {
             guard userWalletModel.config.hasFeature(.multiCurrency) else {
                 continue
             }
@@ -133,7 +131,18 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             var networkIds = availableNetworksIds
             let userTokenList = userWalletModel.userTokenListManager.userTokensList
             for entry in userTokenList.entries {
-                guard let id = entry.id, id == coinId else {
+                guard let entryId = entry.id else {
+                    continue
+                }
+
+                // L2 networks
+                if coinId == Blockchain.ethereum(testnet: false).coinId,
+                   l2BlockchainsIds.contains(entryId) {
+                    networkIds.remove(entry.blockchainNetwork.blockchain.networkId)
+                    continue
+                }
+
+                guard entryId == coinId else {
                     continue
                 }
 
@@ -154,7 +163,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             contextActionsDelegate: self
         )
 
-        let tokenItemViewModelByUserWalletModels: [MarketsPortfolioTokenItemViewModel] = userWalletModels
+        let tokenItemViewModelByUserWalletModels: [MarketsPortfolioTokenItemViewModel] = walletDataProvider.userWalletModels
             .reduce(into: []) { partialResult, userWalletModel in
                 let walletModels = userWalletModel.walletModelsManager.walletModels
                 let entries = userWalletModel.userTokenListManager.userTokensList.entries
@@ -189,26 +198,32 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     }
 
     private func bind() {
+        userWalletModelsListSubscription = walletDataProvider.userWalletModelsPublisher
+            .sink(receiveValue:
+                weakify(self, forFunction: MarketsPortfolioContainerViewModel.bindToTokensListsUpdates(userWalletModels:))
+            )
+    }
+
+    private func bindToTokensListsUpdates(userWalletModels: [UserWalletModel]) {
         let publishers = userWalletModels.map { $0.userTokenListManager.userTokensListPublisher }
         let walletModelsPublishers = userWalletModels.map { $0.walletModelsManager.walletModelsPublisher }
 
         let manyUserTokensListPublishers = Publishers.MergeMany(publishers)
         let manyWalletModelsPublishers = Publishers.MergeMany(walletModelsPublishers)
 
-        manyUserTokensListPublishers
+        tokensListsUpdateSubscription = manyUserTokensListPublishers
             .combineLatest(manyWalletModelsPublishers)
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { viewModel, _ in
                 viewModel.updateUI(availableNetworks: viewModel.networks, animated: true)
             }
-            .store(in: &bag)
     }
 }
 
 extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsProvider {
     func buildContextActions(tokenItem: TokenItem, walletModelId: WalletModelId, userWalletId: UserWalletId) -> [TokenActionType] {
-        guard let userWalletModel = userWalletModels.first(where: { $0.userWalletId == userWalletId }) else {
+        guard let userWalletModel = walletDataProvider.userWalletModels.first(where: { $0.userWalletId == userWalletId }) else {
             return []
         }
 
@@ -248,7 +263,7 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDele
     }
 
     func didTapContextAction(_ action: TokenActionType, walletModelId: WalletModelId, userWalletId: UserWalletId) {
-        let userWalletModel = userWalletModels.first(where: { $0.userWalletId == userWalletId })
+        let userWalletModel = walletDataProvider.userWalletModels.first(where: { $0.userWalletId == userWalletId })
         let walletModel = userWalletModel?.walletModelsManager.walletModels.first(where: { $0.id == walletModelId.id })
 
         guard let userWalletModel, let walletModel, let coordinator else {
