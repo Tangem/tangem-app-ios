@@ -40,7 +40,7 @@
 "balance_hidden_title" = "残高は非表示";
 "biometry_touch_id_reason" = "Touch IDは、アプリにカードを保存するために使用されます";
 "button_start_backup_process" = "バックアップ処理を開始する";
-"buy_token_description" = "銀行カードまたは銀行口座から";
+"buy_token_description" = "銀行カードまたはその他の支払い方法を使用する";
 "card_settings_access_code_recovery_disabled_description" = "このカードを使用して、このウォレット内の他のカードのアクセスコードをリセットしたくない場合は、このオプションを無効にしてください。これにより、このカードのアクセスコードもリセットできなくなりますのでご注意ください。";
 "card_settings_access_code_recovery_enabled_description" = "このカードを使用して、このウォレット内の他のカードのアクセスコードをリセットできます。";
 "card_settings_access_code_recovery_footer" = "このカードまたはこのウォレット内の他のカードのアクセスコードをリセットする機能を無効にします。";
@@ -98,7 +98,7 @@
 "common_done" = "完了";
 "common_enabled" = "有効";
 "common_error" = "エラー";
-"common_exchange" = "交換";
+"common_exchange" = "スワップ";
 "common_explore" = "移動する";
 "common_explore_transaction_history" = "取引履歴を調べる";
 "common_explorer" = "エクスプローラー";
@@ -274,7 +274,7 @@
 "express_token_list_empty_search" = "トークンが見つかりません。別のリクエストをお試しください。";
 "express_transaction_id" = "ID: %@";
 "express_transaction_id_copied" = "取引IDをコピーしました";
-"exсhange_token_description" = "ウォレット内の別の通貨から";
+"exсhange_token_description" = "ポートフォリオ内のアセットをこのトークンと交換する";
 "feedback_preface_rate_negative" = "どのような機能が不足しているかを教えください。解決できるよう尽力致します。";
 "feedback_preface_scan_failed" = "お持ちのカードについて教えてください";
 "feedback_preface_support" = "サポートチームの皆さん、こんにちは。";
@@ -339,6 +339,7 @@
 "manage_tokens_wallet_support_only_one_network_title" = "ウォレットは複数のネットワークをサポートしていません。";
 "markets_add_to_my_portfolio_description" = "このアセットの購入、交換、受け取りを開始するには、ポートフォリオに追加してください。";
 "markets_add_to_my_portfolio_unavailable_description" = "このアセットは利用できません";
+"markets_add_to_my_portfolio_unavailable_for_wallet_description" = "This asset is not available for this wallet";
 "markets_add_to_portfolio_button" = "ポートフォリオに追加";
 "markets_add_token" = "追加";
 "markets_available networks" = "利用可能なネットワーク";
@@ -516,7 +517,7 @@
 "qr_scanner_camera_denied_title" = "カメラへのアクセスが拒否されました";
 "receive_bottom_sheet_warning_message" = "%3$@ネットワーク上の%1$@ ( %2$@ )";
 "receive_bottom_sheet_warning_message_full" = "このアドレスには%@のみを送金してください。他のトークンを送信すると、取り返しのつかない損失が発生します。";
-"receive_token_description" = "QRコードを表示するか、アドレスを共有してください";
+"receive_token_description" = "ウォレットや取引所から資金を送金する";
 "referral_button_participate" = "参加する";
 "referral_error_failed_to_load_info" = "紹介プログラムに関する情報を読み込めませんでした。しばらくしてからもう一度お試しください。";
 "referral_error_failed_to_load_info_with_reason" = "紹介プログラムに関する情報を読み込めませんでした。エラー コード: %@ 。しばらくしてからもう一度お試しください。";
@@ -558,7 +559,7 @@
 "scan_card_settings_message" = "カードをスキャンして設定を変更します。変更はスキャンしたカードにのみ影響し、ウォレットに関連付けられている他のカードには影響しません。";
 "scan_card_settings_title" = "カードを準備してください!";
 "send_additional_field_already_included" = "入力したアドレスにすでに含まれています";
-"send_alert_fee_too_high_text" = "手数料額が推奨額の%@倍となっています。カスタム設定が正しいことを再度確認してください。";
+"send_alert_fee_too_high_text" = "手数料額が推奨額の%@倍となっています。設定を再度確認し、調整してください。";
 "send_alert_fee_too_low_text" = "推奨手数料を下回る手数料が指定されたため、取引に遅れが生じる可能性があります。続行しますか？";
 "send_alert_transaction_failed_text" = "理由: %1$@ \nコード: %2$@";
 "send_alert_transaction_failed_title" = "取引は完了していません";
@@ -591,7 +592,7 @@
 "send_notification_exceed_balance_title" = "合計が残高を超えています";
 "send_notification_existential_deposit_text" = "セキュリティリスクを防ぐため、ブロックチェーン上にアカウントを維持するには、少なくとも%@ の残高が必要です。この金額は残高に残り、引き出すことはできません。";
 "send_notification_existential_deposit_title" = "アカウント維持に必要な最低残高";
-"send_notification_fee_too_high_text" = "手数料額が推奨額の%@倍となっています。カスタム設定が正しいことを再度確認してください。";
+"send_notification_fee_too_high_text" = "手数料額が推奨額の%@倍となっています。設定を再度確認し、調整してください。";
 "send_notification_fee_too_high_title" = "カスタム手数料が高くなっています";
 "send_notification_high_fee_text" = "%1$@ネットワークの特殊性により、残高全体を転送する場合の手数料は高くなります。手数料を削減するには、 %2$@を残します。";
 "send_notification_high_fee_title" = "手数料が高くなっています";
@@ -679,7 +680,7 @@
 "staking_notification_earn_rewards_text_period_week" = "ステーキングにより%1$@を獲得できます。ステーキング報酬は毎週受け取れます。";
 "staking_notification_earn_rewards_text_weekly" = "安全にステーキングして、報酬を毎週獲得しましょう";
 "staking_notification_earn_rewards_title" = "ステーキング報酬を獲得";
-"staking_notification_network_error_text" = "Staking is currently unavailable due to network conditions. Please try again later.";
+"staking_notification_network_error_text" = "ネットワークの状態により、現在ステーキングはご利用いただけません。しばらくしてからもう一度お試しください。";
 "staking_notification_new_validator_funds_transfer" = "新しいバリデーターで%1$@ネットワークにステーキングすると、以前にステーキングされた資金はすべてこのバリデーターに自動的に転送されます。";
 "staking_notification_restake_rewards_text" = "獲得した報酬をステーキングに再投資し、潜在的な収益を増やします。";
 "staking_notification_unlock_text" = "資金をステーキングから引き出すには、ロックを解除してください。ロック解除には%@かかります。";
@@ -696,16 +697,15 @@
 "staking_revote" = "再投票";
 "staking_reward_claiming_auto" = "自動";
 "staking_reward_claiming_manual" = "手動";
-"staking_reward_schedule_block" = "ブロック";
-"staking_reward_schedule_day" = "日";
+"staking_reward_schedule_block" = "ブロック毎";
+"staking_reward_schedule_day" = "毎日";
 "staking_reward_schedule_each_day" = "毎日";
-"staking_reward_schedule_each_minute" = "毎分";
-"staking_reward_schedule_each_sec" = "%1$@毎";
-"staking_reward_schedule_epoch" = "エポック";
-"staking_reward_schedule_era" = "時代";
-"staking_reward_schedule_hour" = "時";
-"staking_reward_schedule_month" = "月";
-"staking_reward_schedule_week" = "週";
+"staking_reward_schedule_each_sec" = "%1$@秒毎";
+"staking_reward_schedule_epoch" = "エポック毎";
+"staking_reward_schedule_era" = "時代毎";
+"staking_reward_schedule_hour" = "毎時間";
+"staking_reward_schedule_month" = "毎月";
+"staking_reward_schedule_week" = "毎週";
 "staking_rewards" = "報酬";
 "staking_stake_locked" = "ステーキングはロックされています";
 "staking_stake_more" = "もっとステーキングする";
@@ -792,6 +792,7 @@
 "transaction_history_operation" = "オペレーション";
 "transaction_history_transaction_from_address" = "送金元: %@";
 "transaction_history_transaction_to_address" = "送金先: %@";
+"transaction_history_transaction_validator" = "validator: %@";
 "try_to_load_data_again_button_title" = "もう一度やり直してください";
 "twin_error_same_card" = "同じカードをスキャンしました。ツインウォレットを作成するには、番号%liのカードをスキャンする必要があります。";
 "twin_error_wrong_twin" = "間違ったツインカードをスキャンしました。別のカードをお試しください。";

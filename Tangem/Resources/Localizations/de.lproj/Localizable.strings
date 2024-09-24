@@ -339,6 +339,7 @@
 "manage_tokens_wallet_support_only_one_network_title" = "Das Wallet unterstützt nicht mehr als ein Netzwerk";
 "markets_add_to_my_portfolio_description" = "Um mit dem Kauf, Tausch oder Erhalt dieses Vermögenswerts zu beginnen, füge diesen Token zu mindestens 1 Netzwerk hinzu";
 "markets_add_to_my_portfolio_unavailable_description" = "Dieses Asset ist nicht verfügbar";
+"markets_add_to_my_portfolio_unavailable_for_wallet_description" = "This asset is not available for this wallet";
 "markets_add_to_portfolio_button" = "Zum Portfolio hinzufügen";
 "markets_add_token" = "Hinzufügen";
 "markets_available networks" = "Verfügbare Netzwerke";
@@ -679,7 +680,7 @@
 "staking_notification_earn_rewards_text_period_week" = "Mit dem Staking kannst Du %1$@ verdienen. Deine Staking-Belohnungen erhältst Du jede Woche.";
 "staking_notification_earn_rewards_text_weekly" = "Sicher staken und wöchentliche Belohnungen verdienen.";
 "staking_notification_earn_rewards_title" = "Verdiene Staking-Belohnungen";
-"staking_notification_network_error_text" = "Staking is currently unavailable due to network conditions. Please try again later.";
+"staking_notification_network_error_text" = "Aufgrund von Netzwerkproblemen ist Staking derzeit nicht verfügbar. Bitte versuche es später erneut.";
 "staking_notification_new_validator_funds_transfer" = "Beim Staking im %1$@ -Netzwerk mit einem neuen Validator werden alle zuvor eingesetzten Kryptos automatisch an diesen Validator übertragen";
 "staking_notification_restake_rewards_text" = "Reinvestiert Deine verdienten Prämien in Deinen Einsatzbetrag und erhöht so den potenziellen Gewinn.";
 "staking_notification_unlock_text" = "Entsperre dein Geld, um es aus dem Staking-Prozess abzuheben. Das Freischalten nimmt %@.";
@@ -699,7 +700,6 @@
 "staking_reward_schedule_block" = "Block";
 "staking_reward_schedule_day" = "Tag";
 "staking_reward_schedule_each_day" = "Täglich";
-"staking_reward_schedule_each_minute" = "Minütlich";
 "staking_reward_schedule_each_sec" = "Alle ~ %1$@ Sek.";
 "staking_reward_schedule_epoch" = "Epoche";
 "staking_reward_schedule_era" = "Ära";
@@ -792,6 +792,7 @@
 "transaction_history_operation" = "Operation";
 "transaction_history_transaction_from_address" = "von: %@";
 "transaction_history_transaction_to_address" = "zu: %@";
+"transaction_history_transaction_validator" = "Validierer: %@";
 "try_to_load_data_again_button_title" = "Versuche es erneut";
 "twin_error_same_card" = "Du hast dieselbe Karte gescannt. Um ein Zwillings-Wallet zu erstellen, musst du die Karte mit der Nummer %li scannen.";
 "twin_error_wrong_twin" = "Du hast die falsche Doppelkarte gescannt. Bitte versuche eine andere Karte";
