@@ -317,7 +317,7 @@ private extension CommonStakingManager {
             id: actionID,
             amount: amount,
             validator: validator,
-            transactions: transactions.filter { $0.status != .skipped }
+            transactions: transactions
         )
     }
 
