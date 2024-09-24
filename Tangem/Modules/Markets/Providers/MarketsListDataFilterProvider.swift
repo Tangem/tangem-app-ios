@@ -40,13 +40,13 @@ class MarketsListDataFilterProvider {
     }
 
     func didSelectMarketPriceInterval(_ interval: MarketsPriceIntervalType) {
-        sendAnalytics()
         _intervalTypeValue.send(interval)
+        sendAnalytics()
     }
 
     func didSelectMarketOrder(_ option: MarketsListOrderType) {
-        sendAnalytics()
         _orderTypeValue.send(option)
+        sendAnalytics()
     }
 
     // MARK: - Private Implementation
