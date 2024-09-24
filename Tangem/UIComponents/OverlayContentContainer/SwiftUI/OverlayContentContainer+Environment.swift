@@ -69,6 +69,10 @@ private struct DummyOverlayContentContainerViewControllerAdapter:
         assertIfNeeded(for: OverlayContentContainer.self)
     }
 
+    func setOverlayHidden(_ isHidden: Bool) {
+        assertIfNeeded(for: OverlayContentContainer.self)
+    }
+
     func addObserver(_ observer: @escaping OverlayContentStateObserver.StateObserver, forToken token: any Hashable) {
         assertIfNeeded(for: OverlayContentStateObserver.self)
     }

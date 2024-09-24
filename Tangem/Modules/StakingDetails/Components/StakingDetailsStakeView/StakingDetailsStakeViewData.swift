@@ -45,11 +45,12 @@ struct StakingDetailsStakeViewData: Identifiable {
             return (Localization.stakingUnbonding, Localization.commonToday)
         }
 
-        guard let days = Calendar.current.dateComponents([.day], from: Date(), to: date).day else {
+        guard var days = Calendar.current.dateComponents([.day], from: Date(), to: date).day else {
             let formatted = date.formatted(.dateTime)
             return (Localization.stakingUnbondingIn, formatted)
         }
 
+        days += 1
         let formatter = DateComponentsFormatter()
         formatter.unitsStyle = .short
         formatter.allowedUnits = [.day]
@@ -99,8 +100,18 @@ extension StakingDetailsStakeViewData {
     }
 
     enum IconType: Hashable {
-        case icon(ImageType, color: Color)
+        case icon(ImageType, colors: Colors)
         case image(url: URL?)
+
+        struct Colors: Equatable {
+            let foreground: Color
+            let background: Color
+
+            init(foreground: Color, background: Color? = nil) {
+                self.foreground = foreground
+                self.background = background ?? foreground.opacity(0.1)
+            }
+        }
 
         func hash(into hasher: inout Hasher) {
             switch self {

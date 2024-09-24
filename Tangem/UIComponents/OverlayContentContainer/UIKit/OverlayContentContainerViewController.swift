@@ -70,6 +70,7 @@ final class OverlayContentContainerViewController: UIViewController {
 
     private var scrollViewContentOffsetLocker: ScrollViewContentOffsetLocker?
     private lazy var appLifecycleHelper = OverlayContentContainerAppLifecycleHelper()
+    private lazy var gestureConflictResolver = SwiftUIGestureConflictResolver()
 
     // MARK: - Initialization/Deinitialization
 
@@ -154,6 +155,12 @@ final class OverlayContentContainerViewController: UIViewController {
         self.overlayViewController = nil
 
         updateProgress(verticalOffset: overlayCollapsedVerticalOffset, animationContext: nil)
+    }
+
+    /// An ugly workaround due to navigation issues in SwiftUI on iOS 18 and above, see IOS-7990 for details.
+    /// Normally, the overlay is intended to be hidden/shown using the `installOverlay`/`removeOverlay` API.
+    func setOverlayHidden(_ isHidden: Bool) {
+        overlayViewController?.viewIfLoaded?.isHidden = isHidden
     }
 
     /// - Warning: This method maintains a strong reference to the given `observer` closure.
@@ -507,10 +514,12 @@ final class OverlayContentContainerViewController: UIViewController {
         gestureRecognizer.setTranslation(.zero, in: nil)
 
         updateProgress(verticalOffset: newVerticalOffset, animationContext: nil)
+        gestureConflictResolver.onUIKitGestureStart()
     }
 
     func onPanGestureEnded(_ gestureRecognizer: UIPanGestureRecognizer) {
         defer {
+            gestureConflictResolver.onUIKitGestureEnd()
             reset()
         }
 
@@ -605,13 +614,16 @@ final class OverlayContentContainerViewController: UIViewController {
 
 extension OverlayContentContainerViewController: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        guard let overlayView = overlayViewController?.viewIfLoaded else {
+            return false
+        }
+
         let locationInScreenCoordinateSpace = touch.location(in: nil)
-
         panGestureStartLocationInScreenCoordinateSpace = locationInScreenCoordinateSpace
-        panGestureStartLocationInOverlayViewCoordinateSpace = touch.location(in: overlayViewController?.view)
+        panGestureStartLocationInOverlayViewCoordinateSpace = touch.location(in: overlayView)
 
-        // The gesture is completely disabled if no overlay view controller is set
-        return overlayViewController?.view.frame.contains(locationInScreenCoordinateSpace) ?? false
+        // The gesture is completely disabled if no overlay view controller is set or the overlay view isn't visible (hidden)
+        return overlayView.frame.contains(locationInScreenCoordinateSpace) && !overlayView.isHidden
     }
 
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -629,8 +641,12 @@ extension OverlayContentContainerViewController: UIGestureRecognizerDelegate {
         _ gestureRecognizer: UIGestureRecognizer,
         shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
     ) -> Bool {
-        if otherGestureRecognizer is UIPanGestureRecognizer, let scrollView = otherGestureRecognizer.view as? UIScrollView {
-            scrollViewContentOffsetLocker = .make(for: scrollView)
+        if let scrollView = otherGestureRecognizer.view as? UIScrollView {
+            if scrollViewContentOffsetLocker?.scrollView !== scrollView {
+                scrollViewContentOffsetLocker = .make(for: scrollView)
+            }
+        } else {
+            gestureConflictResolver.handleSwiftUIGestureIfNeeded(otherGestureRecognizer)
         }
 
         return true
@@ -646,17 +662,17 @@ extension OverlayContentContainerViewController: TouchPassthroughViewDelegate {
         with event: UIEvent?
     ) -> Bool {
         guard
-            let overlayViewController,
-            overlayViewController.isViewLoaded
+            let overlayView = overlayViewController?.viewIfLoaded
         else {
             return true
         }
 
-        let overlayViewFrame = overlayViewController.view.frame
+        let overlayViewFrame = overlayView.frame
         let touchPoint = view.convert(point, from: passthroughView)
 
         // Tap gesture recognizer should only be triggered if the touch location is within the collapsed overlay view
-        let shouldRecognizeTouch = overlayViewFrame.contains(touchPoint) && isCollapsedState
+        // and this view is visible (not hidden)
+        let shouldRecognizeTouch = overlayViewFrame.contains(touchPoint) && isCollapsedState && !overlayView.isHidden
 
         return !shouldRecognizeTouch
     }

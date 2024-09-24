@@ -9,9 +9,12 @@
 import Foundation
 import SwiftUI
 import Combine
+import CombineExt
 import Kingfisher
 
 final class MarketsViewModel: BaseMarketsViewModel {
+    private typealias SearchInput = MainBottomSheetHeaderViewModel.SearchInput
+
     // MARK: - Injected & Published Properties
 
     @Published var alert: AlertBinder?
@@ -20,6 +23,9 @@ final class MarketsViewModel: BaseMarketsViewModel {
     @Published private(set) var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
     @Published private(set) var tokenListLoadingState: MarketsView.ListLoadingState = .idle
     @Published private(set) var isDataProviderBusy: Bool = false
+    @Published var isViewSnapshotRequested: Bool = false
+
+    @Injected(\.mainBottomSheetUIManager) private var mainBottomSheetUIManager: MainBottomSheetUIManager
 
     // MARK: - Properties
 
@@ -27,6 +33,11 @@ final class MarketsViewModel: BaseMarketsViewModel {
 
     var isSearching: Bool {
         !currentSearchValue.isEmpty
+    }
+
+    override var overlayContentHidingProgress: CGFloat {
+        // Prevents unwanted content hiding (see https://tangem.slack.com/archives/C05UW00656X/p1725683301009589 for details)
+        isViewVisible ? super.overlayContentHidingProgress : 1.0
     }
 
     var shouldDisplayShowTokensUnderCapView: Bool {
@@ -82,11 +93,12 @@ final class MarketsViewModel: BaseMarketsViewModel {
         headerViewModel.delegate = self
         marketsRatingHeaderViewModel.delegate = self
 
-        searchTextBind(searchTextPublisher: headerViewModel.enteredSearchTextPublisher)
+        searchTextBind(publisher: headerViewModel.enteredSearchInputPublisher)
         searchFilterBind(filterPublisher: filterProvider.filterPublisher)
 
         bindToCurrencyCodeUpdate()
         dataProviderBind()
+        bindToMainBottomSheetUIManager()
         bindToHotArea()
 
         // Need for preload markets list, when bottom sheet it has not been opened yet
@@ -138,8 +150,12 @@ final class MarketsViewModel: BaseMarketsViewModel {
     }
 
     func onTryLoadList() {
-        resetUI()
+        resetShowItemsBelowCapFlag()
         fetch(with: currentSearchValue, by: filterProvider.currentFilterValue)
+    }
+
+    func onViewSnapshot(_ viewSnapshot: UIImage?) {
+        mainBottomSheetUIManager.setFooterSnapshot(viewSnapshot)
     }
 }
 
@@ -150,29 +166,40 @@ private extension MarketsViewModel {
         dataProvider.fetch(searchText, with: filter)
     }
 
-    func searchTextBind(searchTextPublisher: (some Publisher<String, Never>)?) {
-        searchTextPublisher?
+    private func searchTextBind(publisher: some Publisher<SearchInput, Never>) {
+        publisher
             .dropFirst()
             .debounce(for: 0.5, scheduler: DispatchQueue.main)
+            /// Ensure that clear input event will be delivered immediately
+            .merge(with: publisher.filter { $0 == .clearInput })
             .removeDuplicates()
             .withWeakCaptureOf(self)
-            .sink { viewModel, value in
-                guard viewModel.isBottomSheetExpanded else {
-                    return
+            .sink { viewModel, searchInput in
+                switch searchInput {
+                case .textInput(let value):
+                    if viewModel.currentSearchValue.compare(value) != .orderedSame {
+                        viewModel.resetShowItemsBelowCapFlag()
+                    }
+
+                    viewModel.currentSearchValue = value
+                    let currentFilter = viewModel.dataProvider.lastFilterValue ?? viewModel.filterProvider.currentFilterValue
+
+                    // Always use rating sorting for search
+                    let searchFilter = MarketsListDataProvider.Filter(
+                        interval: currentFilter.interval,
+                        order: value.isEmpty ? currentFilter.order : .rating
+                    )
+
+                    viewModel.fetch(with: value, by: searchFilter)
+                case .clearInput:
+                    if viewModel.currentSearchValue.isEmpty {
+                        return
+                    }
+
+                    viewModel.resetShowItemsBelowCapFlag()
+                    viewModel.currentSearchValue = ""
+                    viewModel.fetch(with: "", by: viewModel.filterProvider.currentFilterValue)
                 }
-
-                if viewModel.currentSearchValue != value {
-                    viewModel.resetUI()
-                }
-
-                viewModel.currentSearchValue = value
-
-                let currentFilter = viewModel.dataProvider.lastFilterValue ?? viewModel.filterProvider.currentFilterValue
-
-                // Always use rating sorting for search
-                let searchFilter = MarketsListDataProvider.Filter(interval: currentFilter.interval, order: value.isEmpty ? currentFilter.order : .rating)
-
-                viewModel.fetch(with: value, by: searchFilter)
             }
             .store(in: &bag)
     }
@@ -335,6 +362,14 @@ private extension MarketsViewModel {
             .store(in: &bag)
     }
 
+    func bindToMainBottomSheetUIManager() {
+        mainBottomSheetUIManager
+            .footerSnapshotUpdateTriggerPublisher
+            .mapToValue(true)
+            .assign(to: \.isViewSnapshotRequested, on: self, ownership: .weak)
+            .store(in: &bag)
+    }
+
     func mapToItemViewModel(_ list: [MarketsTokenModel], offset: Int) -> [MarketsItemViewModel] {
         let listToProcess = filterItemsBelowMarketCapIfNeeded(list)
         return listToProcess.enumerated().map { mapToTokenViewModel(index: $0 + offset, tokenItemModel: $1) }
@@ -345,13 +380,7 @@ private extension MarketsViewModel {
             return list
         }
 
-        return list.filter {
-            guard let marketCap = $0.marketCap else {
-                return false
-            }
-
-            return !($0.isUnderMarketCapLimit ?? false)
-        }
+        return list.filter { !($0.isUnderMarketCapLimit ?? false) }
     }
 
     func mapToTokenViewModel(index: Int, tokenItemModel: MarketsTokenModel) -> MarketsItemViewModel {
@@ -379,7 +408,7 @@ private extension MarketsViewModel {
         imageCache.memoryStorage.config.countLimit = 250
     }
 
-    func resetUI() {
+    func resetShowItemsBelowCapFlag() {
         showItemsBelowCapThreshold = false
     }
 }

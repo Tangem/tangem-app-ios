@@ -48,6 +48,19 @@ enum MainUserWalletPageBuilder: Identifiable {
         }
     }
 
+    private var bottomSheetFooterViewModel: MainBottomSheetFooterViewModel? {
+        switch self {
+        case .singleWallet(_, _, let bodyModel):
+            return bodyModel?.bottomSheetFooterViewModel
+        case .multiWallet(_, _, let bodyModel):
+            return bodyModel.bottomSheetFooterViewModel
+        case .lockedWallet(_, _, let bodyModel):
+            return bodyModel.bottomSheetFooterViewModel
+        case .visaWallet:
+            return nil
+        }
+    }
+
     @ViewBuilder
     var header: some View {
         switch self {
@@ -95,14 +108,21 @@ enum MainUserWalletPageBuilder: Identifiable {
     }
 
     @ViewBuilder
-    func makeBottomOverlay(
-        isMainBottomSheetEnabled: Bool,
-        didScrollToBottom: Bool
-    ) -> some View {
-        if isMainBottomSheetEnabled {
-            MainBottomSheetFooterView()
+    func makeBottomOverlay(_ overlayParams: CardsInfoPagerBottomOverlayFactoryParams) -> some View {
+        if let viewModel = bottomSheetFooterViewModel {
+            MainBottomSheetFooterView(viewModel: viewModel)
+                .overlay {
+                    MainBottomSheetHintView(
+                        isDraggingHorizontally: overlayParams.isDraggingHorizontally,
+                        didScrollToBottom: overlayParams.didScrollToBottom,
+                        scrollOffset: overlayParams.scrollOffset,
+                        viewportSize: overlayParams.viewportSize,
+                        contentSize: overlayParams.contentSize,
+                        scrollViewBottomContentInset: overlayParams.scrollViewBottomContentInset
+                    )
+                }
         } else if let viewModel = footerViewModel {
-            MainFooterView(viewModel: viewModel, didScrollToBottom: didScrollToBottom)
+            MainFooterView(viewModel: viewModel, didScrollToBottom: overlayParams.didScrollToBottom)
         } else {
             EmptyMainFooterView()
         }

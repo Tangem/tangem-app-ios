@@ -13,8 +13,6 @@ import TangemStaking
 import SwiftUI
 
 final class StakingDetailsViewModel: ObservableObject {
-    @Injected(\.stakingPendingTransactionsRepository) private var stakingPendingTransactionsRepository: StakingPendingTransactionsRepository
-
     // MARK: - ViewState
 
     var title: String { Localization.stakingDetailsTitle(walletModel.name) }
@@ -63,8 +61,11 @@ final class StakingDetailsViewModel: ObservableObject {
         bind()
     }
 
-    func refresh() async {
-        try? await stakingManager.updateState()
+    func refresh(completion: @escaping () -> Void = {}) {
+        Task {
+            await stakingManager.updateState()
+            completion()
+        }
     }
 
     func userDidTapBanner() {
@@ -75,13 +76,8 @@ final class StakingDetailsViewModel: ObservableObject {
         coordinator?.openStakingFlow()
     }
 
-    func userDidTapHideBanner() {
-        AppSettings.shared.hideStakingInfoBanner = true
-        hideStakingInfoBanner = true
-    }
-
     func onAppear() {
-        loadValues()
+        refresh()
         let balances = stakingManager.state.balances.flatMap { String($0.count) } ?? String(0)
         Analytics.log(
             event: .stakingInfoScreenOpened,
@@ -91,12 +87,6 @@ final class StakingDetailsViewModel: ObservableObject {
 }
 
 private extension StakingDetailsViewModel {
-    func loadValues() {
-        Task {
-            try await stakingManager.updateState()
-        }
-    }
-
     func bind() {
         stakingManager
             .statePublisher
@@ -115,16 +105,6 @@ private extension StakingDetailsViewModel {
                 viewModel.setupMainActionButton(state: state)
             }
             .store(in: &bag)
-
-        stakingPendingTransactionsRepository
-            .recordsPublisher
-            .combineLatest(stakingManager.statePublisher)
-            .withWeakCaptureOf(self)
-            .receive(on: DispatchQueue.main)
-            .sink { viewModel, state in
-                viewModel.setupView(state: state.1)
-            }
-            .store(in: &bag)
     }
 
     func setupMainActionButton(state: WalletModel.State) {
@@ -141,6 +121,9 @@ private extension StakingDetailsViewModel {
         switch state {
         case .loading:
             actionButtonLoading = true
+        case .loadingError:
+            actionButtonLoading = false
+            actionButtonType = .none
         case .notEnabled:
             actionButtonLoading = false
             actionButtonType = .none
@@ -150,7 +133,6 @@ private extension StakingDetailsViewModel {
             actionButtonLoading = false
             actionButtonType = .stake
         case .staked(let staked):
-            stakingPendingTransactionsRepository.checkIfConfirmed(balances: staked.balances)
             setupView(yield: staked.yieldInfo, balances: staked.balances)
 
             actionButtonLoading = false
@@ -158,7 +140,7 @@ private extension StakingDetailsViewModel {
         }
     }
 
-    func setupView(yield: YieldInfo, balances: [StakingBalanceInfo]) {
+    func setupView(yield: YieldInfo, balances: [StakingBalance]) {
         setupHeaderView(hasBalances: !balances.isEmpty)
         setupDetailsSection(yield: yield, staking: balances.staking())
         setupStakes(yield: yield, staking: balances.staking())
@@ -166,10 +148,10 @@ private extension StakingDetailsViewModel {
     }
 
     func setupHeaderView(hasBalances: Bool) {
-        hideStakingInfoBanner = hasBalances || AppSettings.shared.hideStakingInfoBanner
+        hideStakingInfoBanner = hasBalances
     }
 
-    func setupDetailsSection(yield: YieldInfo, staking: [StakingBalanceInfo]) {
+    func setupDetailsSection(yield: YieldInfo, staking: [StakingBalance]) {
         var viewModels = [
             DefaultRowViewModel(
                 title: Localization.stakingDetailsAnnualPercentageRate,
@@ -253,7 +235,7 @@ private extension StakingDetailsViewModel {
         detailsViewModels = viewModels
     }
 
-    func setupRewardView(yield: YieldInfo, balances: [StakingBalanceInfo]) {
+    func setupRewardView(yield: YieldInfo, balances: [StakingBalance]) {
         guard !balances.isEmpty else {
             rewardViewData = nil
             return
@@ -279,10 +261,8 @@ private extension StakingDetailsViewModel {
                     if rewards.count == 1, let balance = rewards.first {
                         self?.openUnstakingFlow(balance: balance)
 
-                        let validator = yield.validators.first(
-                            where: { $0.address == balance.validatorAddress }
-                        )
-                        Analytics.log(event: .stakingButtonRewards, params: [.validator: validator?.name ?? ""])
+                        let name = balance.validatorType.validator?.name
+                        Analytics.log(event: .stakingButtonRewards, params: [.validator: name ?? ""])
                     } else {
                         self?.coordinator?.openMultipleRewards()
                     }
@@ -291,11 +271,7 @@ private extension StakingDetailsViewModel {
         }
     }
 
-    func setupStakes(yield: YieldInfo, staking: [StakingBalanceInfo]) {
-        let cachedStakes = stakingPendingTransactionsRepository.records.filter { $0.type == .stake }.compactMap { record in
-            stakingDetailsStakesProvider.mapToStakingDetailsStakeViewData(yield: yield, record: record)
-        }
-
+    func setupStakes(yield: YieldInfo, staking: [StakingBalance]) {
         let staking = staking.map { balance in
             stakingDetailsStakesProvider.mapToStakingDetailsStakeViewData(yield: yield, balance: balance) { [weak self] in
                 Analytics.log(
@@ -306,7 +282,7 @@ private extension StakingDetailsViewModel {
             }
         }
 
-        stakes = (cachedStakes + staking).sorted(by: { lhs, rhs in
+        stakes = staking.sorted(by: { lhs, rhs in
             if lhs.priority != rhs.priority {
                 return lhs.priority < rhs.priority
             }
@@ -319,9 +295,9 @@ private extension StakingDetailsViewModel {
         descriptionBottomSheetInfo = DescriptionBottomSheetInfo(title: title, description: description)
     }
 
-    func openUnstakingFlow(balance: StakingBalanceInfo) {
+    func openUnstakingFlow(balance: StakingBalance) {
         do {
-            let action = try PendingActionMapper(balanceInfo: balance).getAction()
+            let action = try PendingActionMapper(balance: balance).getAction()
             switch action {
             case .single(let action):
                 coordinator?.openUnstakingFlow(action: action)
@@ -409,6 +385,7 @@ private extension RewardClaimingType {
 private extension RewardScheduleType {
     var title: String {
         switch self {
+        case .minute: Localization.stakingRewardScheduleEachMinute
         case .hour: Localization.stakingRewardScheduleHour
         case .day: Localization.stakingRewardScheduleEachDay
         case .week: Localization.stakingRewardScheduleWeek

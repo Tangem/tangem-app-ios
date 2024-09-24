@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TangemFoundation
 
 struct TokenMarketsHistoryChartMapper {
     /// - Note: Can be used for both 'preview' and 'history' charts.
@@ -111,9 +112,7 @@ extension TokenMarketsHistoryChartMapper {
         selectedPriceInterval: MarketsPriceIntervalType,
         yAxisLabelCount: Int
     ) throws -> LineChartViewData {
-        #if ALPHA_OR_BETA
-        dispatchPrecondition(condition: .notOnQueue(.main))
-        #endif // ALPHA_OR_BETA
+        ensureNotOnMainQueue()
         let yAxis = try mapYAxisData(from: model, yAxisLabelCount: yAxisLabelCount)
         let (xAxis, trend) = try mapXAxisDataAndTrend(from: model, selectedPriceInterval: selectedPriceInterval)
 

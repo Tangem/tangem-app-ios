@@ -131,7 +131,7 @@ final class SingleTokenRouter: SingleTokenRoutable {
     }
 
     func openMarketsTokenDetails(for tokenItem: TokenItem) {
-        guard let tokenId = tokenItem.id else {
+        guard let tokenId = getTokenItemId(for: tokenItem) else {
             return
         }
 
@@ -148,6 +148,14 @@ final class SingleTokenRouter: SingleTokenRoutable {
         )
 
         coordinator?.openMarketsTokenDetails(tokenModel: model)
+    }
+
+    private func getTokenItemId(for tokenItem: TokenItem) -> TokenItemId? {
+        guard tokenItem.isBlockchain, tokenItem.blockchain.isL2EthereumNetwork else {
+            return tokenItem.id
+        }
+
+        return Blockchain.ethereum(testnet: false).coinId
     }
 
     private func openBuy(for walletModel: WalletModel) {

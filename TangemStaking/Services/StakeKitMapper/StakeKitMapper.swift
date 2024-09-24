@@ -208,7 +208,7 @@ struct StakeKitMapper {
         }
     }
 
-    func mapToStakingBalanceInfoPendingAction(from balance: StakeKitDTO.Balances.Response.Balance) throws -> [StakingBalanceInfo.PendingActionType] {
+    func mapToStakingBalanceInfoPendingAction(from balance: StakeKitDTO.Balances.Response.Balance) throws -> [StakingPendingActionInfo] {
         try balance.pendingActions.compactMap { action in
             switch action.type {
             case .withdraw:
@@ -229,7 +229,7 @@ struct StakeKitMapper {
 
     func mapToBalanceType(
         from balance: StakeKitDTO.Balances.Response.Balance
-    ) throws -> StakingBalanceInfo.BalanceType {
+    ) throws -> StakingBalanceType {
         switch balance.type {
         case .available:
             throw StakeKitMapperError.notImplement
@@ -273,7 +273,6 @@ struct StakeKitMapper {
             enterMinimumRequirement: enterAction.args.amount.minimum,
             exitMinimumRequirement: exitAction.args.amount.minimum,
             validators: validators,
-            defaultValidator: response.metadata.defaultValidator,
             item: mapToStakingTokenItem(from: response.token),
             unbondingPeriod: mapToPeriod(from: response.metadata.cooldownPeriod),
             warmupPeriod: mapToPeriod(from: response.metadata.warmupPeriod),
@@ -376,8 +375,9 @@ struct StakeKitMapper {
 
     func mapToRewardScheduleType(from type: StakeKitDTO.Yield.Info.Response.Metadata.RewardScheduleType) throws -> RewardScheduleType {
         switch type {
+        case .block: .minute
         case .hour: .hour
-        case .block, .epoch, .era, .day: .day
+        case .epoch, .era, .day: .day
         case .week: .week
         case .month: .month
         }

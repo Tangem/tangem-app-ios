@@ -193,7 +193,8 @@ private extension SendModel {
              .informationRelevanceServiceFeeWasIncreased,
              .transactionNotFound,
              .demoAlert,
-             .userCancelled:
+             .userCancelled,
+             .loadTransactionInfo:
             break
         case .sendTxError:
             Analytics.log(event: .sendErrorTransactionRejected, params: [
@@ -289,7 +290,7 @@ extension SendModel: SendSummaryInput, SendSummaryOutput {
     var summaryTransactionDataPublisher: AnyPublisher<SendSummaryTransactionData?, Never> {
         _transaction.map { transaction -> SendSummaryTransactionData? in
             transaction?.value.map {
-                .send(amount: $0.amount.value, fee: $0.fee.amount.value)
+                .send(amount: $0.amount.value, fee: $0.fee)
             }
         }
         .eraseToAnyPublisher()
@@ -307,10 +308,6 @@ extension SendModel: SendFinishInput {
 // MARK: - SendBaseInput, SendBaseOutput
 
 extension SendModel: SendBaseInput, SendBaseOutput {
-    var isFeeIncluded: Bool {
-        _isFeeIncluded.value
-    }
-
     var actionInProcessing: AnyPublisher<Bool, Never> {
         _isSending.eraseToAnyPublisher()
     }
@@ -389,6 +386,22 @@ extension SendModel: NotificationTapDelegate {
     private func reduceAmountTo(_ amount: Decimal) {
         // Amount will be changed automatically via SendAmountOutput
         sendAmountInteractor.externalUpdate(amount: amount)
+    }
+}
+
+// MARK: - SendBaseDataBuilderInput
+
+extension SendModel: SendBaseDataBuilderInput {
+    var bsdkAmount: BSDKAmount? {
+        _amount.value?.crypto.map { makeAmount(decimal: $0) }
+    }
+
+    var bsdkFee: BlockchainSdk.Fee? {
+        selectedFee.value.value
+    }
+
+    var isFeeIncluded: Bool {
+        _isFeeIncluded.value
     }
 }
 

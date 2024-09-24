@@ -11,12 +11,14 @@ import Combine
 
 struct MarketsTokenDetailsInsightsView: View {
     @ObservedObject var viewModel: MarketsTokenDetailsInsightsViewModel
+    let viewWidth: CGFloat
 
-    @State private var gridWidth: CGFloat = .zero
+    private var itemWidth: CGFloat {
+        max(0, (viewWidth - Constants.itemsSpacing - Constants.backgroundHorizontalPadding * 2) / 2)
+    }
 
     private var gridItems: [GridItem] {
-        let itemWidth = max(0, gridWidth / 2 - Constants.itemsSpacing)
-        return [GridItem(.adaptive(minimum: itemWidth), spacing: Constants.itemsSpacing, alignment: .topLeading)]
+        [GridItem(.adaptive(minimum: itemWidth), spacing: Constants.itemsSpacing, alignment: .topLeading)]
     }
 
     var body: some View {
@@ -32,15 +34,14 @@ struct MarketsTokenDetailsInsightsView: View {
                         trend: info.trend,
                         infoButtonAction: {
                             viewModel.showInfoBottomSheet(for: info.type)
-                        },
-                        containerWidth: gridWidth
+                        }
                     )
+                    .frame(minWidth: itemWidth, alignment: .leading)
                 }
             })
-            .readGeometry(\.size.width, bindTo: $gridWidth)
+            .drawingGroup()
         }
-        .animation(.default, value: viewModel.selectedInterval)
-        .defaultRoundedBackground(with: Colors.Background.action)
+        .defaultRoundedBackground(with: Colors.Background.action, horizontalPadding: Constants.backgroundHorizontalPadding)
     }
 
     private var header: some View {
@@ -80,6 +81,7 @@ struct MarketsTokenDetailsInsightsView: View {
 extension MarketsTokenDetailsInsightsView {
     enum Constants {
         static let itemsSpacing: CGFloat = 12
+        static let backgroundHorizontalPadding: CGFloat = 14
     }
 }
 
@@ -92,12 +94,21 @@ extension MarketsTokenDetailsInsightsView {
 
         var id: String { rawValue }
 
-        var title: String {
+        var titleShort: String {
             switch self {
             case .buyers: return Localization.marketsTokenDetailsExperiencedBuyers
             case .buyPressure: return Localization.marketsTokenDetailsBuyPressure
             case .holdersChange: return Localization.marketsTokenDetailsHolders
             case .liquidity: return Localization.marketsTokenDetailsLiquidity
+            }
+        }
+
+        var titleFull: String {
+            switch self {
+            case .buyers: return Localization.marketsTokenDetailsExperiencedBuyersFull
+            case .buyPressure: return Localization.marketsTokenDetailsBuyPressureFull
+            case .holdersChange: return Localization.marketsTokenDetailsHoldersFull
+            case .liquidity: return Localization.marketsTokenDetailsLiquidityFull
             }
         }
 
@@ -121,7 +132,7 @@ extension MarketsTokenDetailsInsightsView {
         }
 
         var title: String {
-            type.title
+            type.titleShort
         }
     }
 }
@@ -158,6 +169,7 @@ extension MarketsTokenDetailsInsightsView {
             insightsPublisher: insights,
             notationFormatter: .init(),
             infoRouter: nil
-        )
+        ),
+        viewWidth: 300
     )
 }

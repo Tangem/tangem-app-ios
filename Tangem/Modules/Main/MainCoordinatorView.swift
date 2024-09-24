@@ -18,7 +18,14 @@ struct MainCoordinatorView: CoordinatorView {
                     .navigationLinks(links)
             }
 
+            marketsTooltipView
+
             sheets
+        }
+        .onOverlayContentStateChange { [weak coordinator] state in
+            if !state.isBottom {
+                coordinator?.hideMarketsTooltip()
+            }
         }
     }
 
@@ -94,5 +101,15 @@ struct MainCoordinatorView: CoordinatorView {
 
         NavHolder()
             .requestAppStoreReviewCompat($coordinator.isAppStoreReviewRequested)
+    }
+
+    // Tooltip is placed on top of the other views
+    private var marketsTooltipView: some View {
+        BasicTooltipView(
+            isShowBindingValue: $coordinator.isMarketsTooltipVisible,
+            onHideAction: coordinator.hideMarketsTooltip,
+            title: Localization.marketsTooltipTitle,
+            message: Localization.marketsTooltipMessage
+        )
     }
 }

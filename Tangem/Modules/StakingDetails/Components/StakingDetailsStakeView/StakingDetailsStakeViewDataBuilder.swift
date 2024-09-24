@@ -8,11 +8,9 @@
 
 import Foundation
 import TangemStaking
+import SwiftUI
 
 class StakingDetailsStakeViewDataBuilder {
-    @Injected(\.stakingPendingTransactionsRepository)
-    private var stakingPendingTransactionsRepository: StakingPendingTransactionsRepository
-
     private lazy var balanceFormatter = BalanceFormatter()
     private lazy var percentFormatter = PercentFormatter()
     private lazy var daysFormatter: DateComponentsFormatter = {
@@ -28,44 +26,14 @@ class StakingDetailsStakeViewDataBuilder {
         self.tokenItem = tokenItem
     }
 
-    func mapToStakingDetailsStakeViewData(yield: YieldInfo, record: StakingPendingTransactionRecord) -> StakingDetailsStakeViewData? {
-        guard record.type == .stake else {
-            assertionFailure("We shouldn't add in list the balance with another type")
-            return nil
-        }
-
-        let title: String = record.validator.name ?? Localization.stakingValidator
-        let subtitle: StakingDetailsStakeViewData.SubtitleType? = record.validator.apr.map {
-            .active(apr: percentFormatter.format($0, option: .staking))
-        }
-        let icon: StakingDetailsStakeViewData.IconType = .image(url: record.validator.iconURL)
-
-        let balanceCryptoFormatted = balanceFormatter.formatCryptoBalance(
-            record.amount,
-            currencyCode: tokenItem.currencySymbol
-        )
-        let balanceFiat = tokenItem.currencyId.flatMap {
-            BalanceConverter().convertToFiat(record.amount, currencyId: $0)
-        }
-        let balanceFiatFormatted = balanceFormatter.formatFiatBalance(balanceFiat)
-
-        return StakingDetailsStakeViewData(
-            title: title,
-            icon: icon,
-            inProgress: true,
-            subtitleType: subtitle,
-            balance: .init(crypto: balanceCryptoFormatted, fiat: balanceFiatFormatted),
-            action: nil
-        )
-    }
-
-    func mapToStakingDetailsStakeViewData(yield: YieldInfo, balance: StakingBalanceInfo, action: @escaping () -> Void) -> StakingDetailsStakeViewData {
-        let validator = yield.validators.first(where: { $0.address == balance.validatorAddress })
+    func mapToStakingDetailsStakeViewData(yield: YieldInfo, balance: StakingBalance, action: @escaping () -> Void) -> StakingDetailsStakeViewData {
+        let validator = balance.validatorType.validator
+        let inProgress = balance.inProgress
 
         let title: String = {
             switch balance.balanceType {
             case .rewards: Localization.stakingRewards
-            case .locked: Localization.stakingLocked
+            case .locked: inProgress ? Localization.stakingUnlocking : Localization.stakingLocked
             case .warmup, .active: validator?.name ?? Localization.stakingValidator
             case .unbonding: Localization.stakingUnstaking
             case .unstaked: Localization.stakingUnstaked
@@ -87,10 +55,20 @@ class StakingDetailsStakeViewDataBuilder {
 
         let icon: StakingDetailsStakeViewData.IconType = {
             switch balance.balanceType {
-            case .rewards, .warmup, .active: .image(url: validator?.iconURL)
-            case .locked: .icon(Assets.lock, color: Colors.Icon.informative)
-            case .unbonding: .icon(Assets.unstakedIcon, color: Colors.Icon.accent)
-            case .unstaked: .icon(Assets.unstakedIcon, color: Colors.Icon.informative)
+            case .rewards, .warmup, .active:
+                balance.validatorType == .disabled
+                    ? .icon(
+                        Assets.stakingIconFilled,
+                        colors: .init(foreground: Colors.Icon.inactive, background: Colors.Icon.primary1)
+                    )
+                    : .image(url: validator?.iconURL)
+            case .locked:
+                .icon(
+                    inProgress ? Assets.stakingUnlockingIcon : Assets.stakingLockIcon,
+                    colors: .init(foreground: inProgress ? Colors.Icon.accent : Colors.Icon.informative)
+                )
+            case .unbonding: .icon(Assets.unstakedIcon, colors: .init(foreground: Colors.Icon.accent))
+            case .unstaked: .icon(Assets.unstakedIcon, colors: .init(foreground: Colors.Icon.informative))
             }
         }()
 
@@ -102,7 +80,6 @@ class StakingDetailsStakeViewDataBuilder {
             BalanceConverter().convertToFiat(balance.amount, currencyId: $0)
         }
         let balanceFiatFormatted = balanceFormatter.formatFiatBalance(balanceFiat)
-        let inProgress = stakingPendingTransactionsRepository.hasPending(balance: balance)
 
         let action: (() -> Void)? = {
             switch balance.balanceType {
@@ -128,8 +105,8 @@ extension StakingDetailsStakeViewData {
     var priority: Int {
         switch subtitleType {
         case .none: -10
-        case .locked: -2
-        case .warmup: -1
+        case .warmup: -2
+        case .locked: -1
         case .active: 0
         case .unbonding, .unbondingPeriod: 1
         case .withdraw: 2

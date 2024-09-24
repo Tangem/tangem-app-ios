@@ -6,18 +6,27 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
+import TangemFoundation
 import Foundation
-import TangemStaking
 import Combine
 
+public protocol StakingPendingTransactionsStorage {
+    func save(records: Set<StakingPendingTransactionRecord>)
+    func loadRecords() -> Set<StakingPendingTransactionRecord>
+}
+
 class CommonStakingPendingTransactionsRepository {
-    @Injected(\.persistentStorage) private var storage: PersistentStorageProtocol
+    private let storage: StakingPendingTransactionsStorage
+    private let logger: Logger
 
     private let lockQueue = DispatchQueue(label: "com.tangem.CommonStakingPendingTransactionsRepository.lockQueue")
     private var cachedRecords: CurrentValueSubject<Set<StakingPendingTransactionRecord>, Never> = .init([])
     private var savingSubscription: AnyCancellable?
 
-    init() {
+    init(storage: StakingPendingTransactionsStorage, logger: Logger) {
+        self.storage = storage
+        self.logger = logger
+
         loadPendingTransactions()
         bind()
     }
@@ -32,8 +41,8 @@ extension CommonStakingPendingTransactionsRepository: StakingPendingTransactions
         cachedRecords.removeDuplicates().eraseToAnyPublisher()
     }
 
-    func transactionDidSent(action: StakingAction, validator: ValidatorInfo?) {
-        let record = mapToStakingPendingTransactionRecord(action: action, validator: validator)
+    func transactionDidSent(action: StakingAction, integrationId: String) {
+        let record = mapToStakingPendingTransactionRecord(action: action, integrationId: integrationId)
         log("Will be add record - \(record)")
 
         cachedRecords.value.insert(record)
@@ -45,19 +54,19 @@ extension CommonStakingPendingTransactionsRepository: StakingPendingTransactions
                 switch record.type {
                 case .stake, .voteLocked:
                     balances.contains { balance in
-                        compare(record, balance, by: [.validator, .type([.active, .warmup])])
+                        compare(record, balance, by: [.validator(.some), .type([.active, .warmup])])
                     }
                 case .unstake:
                     !balances.contains { balance in
-                        compare(record, balance, by: [.validator, .type([.active]), .amount])
+                        compare(record, balance, by: [.validator(.some), .type([.active]), .amount])
                     }
                 case .withdraw:
                     !balances.contains { balance in
-                        compare(record, balance, by: [.validator, .type([.unstaked]), .amount])
+                        compare(record, balance, by: [.validator(.some), .type([.unstaked]), .amount])
                     }
                 case .claimRewards, .restakeRewards:
                     !balances.contains { balance in
-                        compare(record, balance, by: [.validator, .type([.rewards]), .amount])
+                        compare(record, balance, by: [.validator(.some), .type([.rewards]), .amount])
                     }
                 case .unlockLocked:
                     !balances.contains { balance in
@@ -80,9 +89,13 @@ extension CommonStakingPendingTransactionsRepository: StakingPendingTransactions
         let hasPending: Bool
         switch balance.balanceType {
         case .locked:
-            hasPending = records.contains { $0.amount == balance.amount }
+            hasPending = records.contains { record in
+                compare(record, balance, by: [.amount, .validator(.none)])
+            }
         case .active, .rewards, .unbonding, .warmup, .unstaked:
-            hasPending = records.contains { $0.validator.address == balance.validatorAddress }
+            hasPending = records.contains { record in
+                compare(record, balance, by: [.validator(.some)])
+            }
         }
 
         if hasPending {
@@ -105,12 +118,8 @@ private extension CommonStakingPendingTransactionsRepository {
     }
 
     private func loadPendingTransactions() {
-        do {
-            cachedRecords.value = try storage.value(for: .pendingStakingTransactions) ?? []
-            checkOldRecords()
-        } catch {
-            log("Couldn't get the staking transactions list from the storage with error \(error)")
-        }
+        cachedRecords.value = storage.loadRecords()
+        checkOldRecords()
     }
 
     func checkOldRecords() {
@@ -128,29 +137,33 @@ private extension CommonStakingPendingTransactionsRepository {
     }
 
     func saveChanges() {
-        do {
-            try storage.store(value: cachedRecords.value, for: .pendingStakingTransactions)
-        } catch {
-            log("Failed to save changes in storage. Reason: \(error)")
-        }
+        storage.save(records: cachedRecords.value)
     }
 
     func compare(_ record: StakingPendingTransactionRecord, _ balance: StakingBalanceInfo, by types: [CompareType]) -> Bool {
         let equals = types.map { type in
             switch type {
-            case .validator:
-                record.validator.address == balance.validatorAddress
+            case .validator(.some):
+                // We should only compare validators with the value
+                if let recordValidator = record.validator.address,
+                   let balanceValidator = balance.validatorAddress {
+                    return recordValidator == balanceValidator
+                }
+
+                return false
+            case .validator(.none):
+                return record.validator.address == .none && balance.validatorAddress == .none
             case .amount:
-                record.amount == balance.amount
+                return record.amount == balance.amount
             case .type(let array):
-                array.contains(where: { $0 == balance.balanceType })
+                return array.contains(where: { $0 == balance.balanceType })
             }
         }
 
         return equals.allConforms { $0 }
     }
 
-    func mapToStakingPendingTransactionRecord(action: StakingAction, validator: ValidatorInfo?) -> StakingPendingTransactionRecord {
+    func mapToStakingPendingTransactionRecord(action: StakingAction, integrationId: String) -> StakingPendingTransactionRecord {
         let type: StakingPendingTransactionRecord.ActionType = {
             switch action.type {
             case .stake: .stake
@@ -164,24 +177,37 @@ private extension CommonStakingPendingTransactionsRepository {
         }()
 
         let validator = StakingPendingTransactionRecord.Validator(
-            address: validator?.address ?? action.validator,
-            name: validator?.name,
-            iconURL: validator?.iconURL,
-            apr: validator?.apr
+            address: action.validatorInfo?.address,
+            name: action.validatorInfo?.name,
+            iconURL: action.validatorInfo?.iconURL,
+            apr: action.validatorInfo?.apr
         )
 
-        return StakingPendingTransactionRecord(amount: action.amount, validator: validator, type: type, date: Date())
+        return StakingPendingTransactionRecord(
+            integrationId: integrationId,
+            amount: action.amount,
+            validator: validator,
+            type: type,
+            date: Date()
+        )
     }
 
     func log<T>(_ message: @autoclosure () -> T) {
-        AppLog.shared.debug("[Staking Repository] \(message())")
+        logger.debug("[Staking Repository] \(message())")
     }
 }
 
 private extension CommonStakingPendingTransactionsRepository {
     enum CompareType {
-        case validator
+        case validator(ValidatorType)
         case amount
-        case type([StakingBalanceInfo.BalanceType])
+        case type([StakingBalanceType])
+    }
+
+    enum ValidatorType {
+        /// Has to have value
+        case some
+        /// Has to have not value
+        case none
     }
 }

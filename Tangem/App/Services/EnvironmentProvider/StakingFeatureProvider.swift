@@ -65,14 +65,14 @@ class StakingFeatureProvider {
 extension StakingFeatureProvider {
     static var supportedBlockchainItems: Set<StakingItem> {
         [
+            StakingItem(network: .solana, contractAddress: nil),
+            StakingItem(network: .cosmos, contractAddress: nil),
+            StakingItem(network: .tron, contractAddress: nil),
         ]
     }
 
     static var testableBlockchainItems: Set<StakingItem> {
         [
-            StakingItem(network: .solana, contractAddress: nil),
-            StakingItem(network: .cosmos, contractAddress: nil),
-            StakingItem(network: .tron, contractAddress: nil),
             StakingItem(network: .ethereum, contractAddress: "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0"),
         ]
     }

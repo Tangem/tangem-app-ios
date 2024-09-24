@@ -13,38 +13,25 @@ public protocol StakingManager {
     var state: StakingManagerState { get }
     var statePublisher: AnyPublisher<StakingManagerState, Never> { get }
 
-    func updateState() async throws
+    func updateState() async
     func estimateFee(action: StakingAction) async throws -> Decimal
     func transaction(action: StakingAction) async throws -> StakingTransactionAction
+
+    func transactionDidSent(action: StakingAction)
 }
 
 public enum StakingManagerState: Hashable, CustomStringConvertible {
     case loading
     case notEnabled
+    case loadingError(String)
     // When we turn off the YieldInfo in the admin panel
     case temporaryUnavailable(YieldInfo)
     case availableToStake(YieldInfo)
     case staked(Staked)
 
-    public var isAvailable: Bool {
-        switch self {
-        case .loading, .notEnabled, .temporaryUnavailable:
-            return false
-        case .availableToStake, .staked:
-            return true
-        }
-    }
-
-    public var isStaked: Bool {
-        switch self {
-        case .staked: true
-        default: false
-        }
-    }
-
     public var yieldInfo: YieldInfo? {
         switch self {
-        case .loading, .notEnabled:
+        case .loading, .notEnabled, .loadingError:
             return nil
         case .temporaryUnavailable(let yieldInfo), .availableToStake(let yieldInfo):
             return yieldInfo
@@ -53,10 +40,11 @@ public enum StakingManagerState: Hashable, CustomStringConvertible {
         }
     }
 
-    public var balances: [StakingBalanceInfo]? {
+    public var balances: [StakingBalance]? {
         guard case .staked(let stakeInfo) = self else {
             return nil
         }
+
         return stakeInfo.balances
     }
 
@@ -64,28 +52,18 @@ public enum StakingManagerState: Hashable, CustomStringConvertible {
         switch self {
         case .loading: "loading"
         case .notEnabled: "notEnabled"
+        case .loadingError(let error): "loadingError \(error)"
         case .temporaryUnavailable: "temporaryUnavailable"
         case .availableToStake: "availableToStake"
         case .staked: "staked"
         }
     }
-
-    public func validator(for address: String) -> ValidatorInfo? {
-        guard case .staked(let stakedModel) = self else { return nil }
-        return stakedModel.yieldInfo.validators.first(
-            where: { $0.address == address }
-        )
-    }
 }
 
 public extension StakingManagerState {
     struct Staked: Hashable {
-        public let balances: [StakingBalanceInfo]
+        public let balances: [StakingBalance]
         public let yieldInfo: YieldInfo
         public let canStakeMore: Bool
-
-        public func balance(validator: String) -> StakingBalanceInfo? {
-            balances.first(where: { $0.validatorAddress == validator })
-        }
     }
 }

@@ -19,8 +19,6 @@ protocol UnstakingModelStateProvider {
 }
 
 class UnstakingModel {
-    @Injected(\.stakingPendingTransactionsRepository) private var stakingPendingTransactionsRepository: StakingPendingTransactionsRepository
-
     // MARK: - Data
 
     private let _state = CurrentValueSubject<State, Never>(.loading)
@@ -146,14 +144,14 @@ private extension UnstakingModel {
             let transaction = try await stakingManager.transaction(action: action)
             let result = try await sendTransactionDispatcher.send(transaction: .staking(transaction))
             proceed(result: result)
-            stakingPendingTransactionsRepository.transactionDidSent(action: action, validator: nil)
+            stakingManager.transactionDidSent(action: action)
 
             return result
         } catch let error as SendTransactionDispatcherResult.Error {
             proceed(error: error)
             throw error
         } catch {
-            throw error
+            throw SendTransactionDispatcherResult.Error.loadTransactionInfo(error: error)
         }
     }
 
@@ -164,12 +162,14 @@ private extension UnstakingModel {
 
     private func proceed(error: SendTransactionDispatcherResult.Error) {
         switch error {
-        case .informationRelevanceServiceError,
+        case .demoAlert,
+             .userCancelled,
+             .informationRelevanceServiceError,
              .informationRelevanceServiceFeeWasIncreased,
              .transactionNotFound,
-             .demoAlert,
-             .userCancelled,
-             .sendTxError:
+             .loadTransactionInfo:
+            break
+        case .sendTxError:
             Analytics.log(event: .stakingErrorTransactionRejected, params: [.token: tokenItem.currencySymbol])
         }
     }
@@ -274,8 +274,6 @@ extension UnstakingModel: SendFinishInput {
 // MARK: - SendBaseInput, SendBaseOutput
 
 extension UnstakingModel: SendBaseInput, SendBaseOutput {
-    var isFeeIncluded: Bool { false }
-
     var actionInProcessing: AnyPublisher<Bool, Never> {
         _isLoading.eraseToAnyPublisher()
     }
@@ -309,6 +307,18 @@ extension UnstakingModel: NotificationTapDelegate {
     }
 }
 
+// MARK: - SendBaseDataBuilderInput
+
+extension UnstakingModel: SendBaseDataBuilderInput {
+    var bsdkAmount: BSDKAmount? { makeAmount(value: action.amount) }
+
+    var bsdkFee: BlockchainSdk.Fee? { selectedFee.value.value }
+
+    var isFeeIncluded: Bool { false }
+
+    var validator: ValidatorInfo? { action.validatorInfo }
+}
+
 extension UnstakingModel {
     typealias Action = StakingAction
 
@@ -324,19 +334,23 @@ extension UnstakingModel {
 
 private extension UnstakingModel {
     func logOpenScreen() {
-        guard case .pending(let pendingType) = action.type else { return }
-        switch pendingType {
-        case .claimRewards(let validator, _),
-             .restakeRewards(let validator, _):
-            Analytics.log(event: .stakingRewardScreenOpened, params: [.validator: validator ?? ""])
-        default: break
+        switch action.type {
+        case .pending(.claimRewards), .pending(.restakeRewards):
+            Analytics.log(
+                event: .stakingRewardScreenOpened,
+                params: [.validator: action.validatorInfo?.address ?? ""]
+            )
+        default:
+            break
         }
     }
 
     func logTransactionAnalytics() {
-        guard let analyticsEvent = action.type.analyticsEvent else { return }
-        let validator = action.validator.flatMap { stakingManager.state.validator(for: $0) }
-        Analytics.log(event: analyticsEvent, params: [.validator: validator?.name ?? ""])
+        guard let analyticsEvent = action.type.analyticsEvent else {
+            return
+        }
+
+        Analytics.log(event: analyticsEvent, params: [.validator: action.validatorInfo?.name ?? ""])
     }
 }
 

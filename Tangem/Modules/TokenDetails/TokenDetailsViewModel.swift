@@ -232,7 +232,7 @@ private extension TokenDetailsViewModel {
     private func bind() {
         Publishers.CombineLatest(
             walletModel.walletDidChangePublisher,
-            walletModel.stakingManagerStatePublisher
+            walletModel.stakingManagerStatePublisher.filter { $0 != .loading }
         )
         .receive(on: DispatchQueue.main)
         .sink { _ in } receiveValue: { [weak self] newState, _ in
@@ -291,6 +291,8 @@ private extension TokenDetailsViewModel {
             break
         case .availableToStake, .notEnabled, .temporaryUnavailable:
             activeStakingViewData = nil
+        case .loadingError:
+            activeStakingViewData = .init(balance: .loadingError, rewards: .none)
         case .staked(let staked):
             let rewards: ActiveStakingViewData.RewardsState? = {
                 switch (staked.yieldInfo.rewardClaimingType, walletModel.stakedRewardsBalance.fiat) {
@@ -303,7 +305,12 @@ private extension TokenDetailsViewModel {
                 }
             }()
 
-            activeStakingViewData = ActiveStakingViewData(balance: walletModel.stakedBalanceFormatted, rewards: rewards)
+            activeStakingViewData = ActiveStakingViewData(
+                balance: .balance(walletModel.stakedBalanceFormatted, action: { [weak self] in
+                    self?.openStaking()
+                }),
+                rewards: rewards
+            )
         }
     }
 

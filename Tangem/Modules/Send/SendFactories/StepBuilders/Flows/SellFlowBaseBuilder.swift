@@ -82,18 +82,15 @@ struct SellFlowBaseBuilder {
 
         summary.step.set(router: stepsManager)
 
-        let interactor = CommonSendBaseInteractor(
-            input: sendModel,
-            output: sendModel,
-            walletModel: walletModel,
-            emailDataProvider: userWalletModel,
-            stakingModel: .none
-        )
+        let interactor = CommonSendBaseInteractor(input: sendModel, output: sendModel)
 
         let viewModel = SendViewModel(
             interactor: interactor,
             stepsManager: stepsManager,
             userWalletModel: userWalletModel,
+            alertBuilder: builder.makeSendAlertBuilder(),
+            dataBuilder: builder.makeSendBaseDataBuilder(input: sendModel),
+            tokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem,
             coordinator: router
         )

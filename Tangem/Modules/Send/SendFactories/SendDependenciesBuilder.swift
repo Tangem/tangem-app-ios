@@ -137,7 +137,11 @@ struct SendDependenciesBuilder {
     }
 
     func makeFeeIncludedCalculator() -> FeeIncludedCalculator {
-        FeeIncludedCalculator(validator: walletModel.transactionValidator)
+        CommonFeeIncludedCalculator(validator: walletModel.transactionValidator)
+    }
+
+    func makeSendBaseDataBuilder(input: SendBaseDataBuilderInput) -> SendBaseDataBuilder {
+        SendBaseDataBuilder(input: input, walletModel: walletModel, emailDataProvider: userWalletModel)
     }
 
     // MARK: - Send, Sell
@@ -146,7 +150,6 @@ struct SendDependenciesBuilder {
         predefinedSellParameters: PredefinedSellParameters? = .none
     ) -> SendModel {
         let sendTransactionDispatcher = makeSendTransactionDispatcher()
-        let feeIncludedCalculator = FeeIncludedCalculator(validator: walletModel.transactionValidator)
         let predefinedValues = mapToPredefinedValues(sellParameters: predefinedSellParameters)
 
         return SendModel(
@@ -154,7 +157,7 @@ struct SendDependenciesBuilder {
             sendTransactionDispatcher: sendTransactionDispatcher,
             transactionCreator: walletModel.transactionCreator,
             transactionSigner: userWalletModel.signer,
-            feeIncludedCalculator: feeIncludedCalculator,
+            feeIncludedCalculator: makeFeeIncludedCalculator(),
             feeAnalyticsParameterBuilder: makeFeeAnalyticsParameterBuilder(),
             predefinedValues: predefinedValues
         )
@@ -195,10 +198,25 @@ struct SendDependenciesBuilder {
     func makeSendTransactionSummaryDescriptionBuilder() -> SendTransactionSummaryDescriptionBuilder {
         switch walletModel.tokenItem.blockchain {
         case .koinos:
-            KoinosSendTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
+            KoinosSendTransactionSummaryDescriptionBuilder(
+                tokenItem: walletModel.tokenItem,
+                feeTokenItem: walletModel.feeTokenItem
+            )
+        case .tron where walletModel.tokenItem.isToken:
+            TronSendTransactionSummaryDescriptionBuilder(
+                tokenItem: walletModel.tokenItem,
+                feeTokenItem: walletModel.feeTokenItem
+            )
         default:
-            CommonSendTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
+            CommonSendTransactionSummaryDescriptionBuilder(
+                tokenItem: walletModel.tokenItem,
+                feeTokenItem: walletModel.feeTokenItem
+            )
         }
+    }
+
+    func makeSendAlertBuilder() -> SendAlertBuilder {
+        CommonSendAlertBuilder()
     }
 
     // MARK: - Staking
@@ -208,11 +226,11 @@ struct SendDependenciesBuilder {
             stakingManager: stakingManager,
             transactionCreator: walletModel.transactionCreator,
             transactionValidator: walletModel.transactionValidator,
-            feeIncludedCalculator: makeFeeIncludedCalculator(),
+            feeIncludedCalculator: makeStakingFeeIncludedCalculator(),
             stakingTransactionDispatcher: makeStakingTransactionDispatcher(),
             sendTransactionDispatcher: makeSendTransactionDispatcher(),
             allowanceProvider: makeAllowanceProvider(),
-            amountTokenItem: walletModel.tokenItem,
+            tokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem
         )
     }
@@ -253,5 +271,17 @@ struct SendDependenciesBuilder {
             tokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem
         )
+    }
+
+    func makeStakingAlertBuilder() -> SendAlertBuilder {
+        StakingSendAlertBuilder()
+    }
+
+    func makeStakingFeeIncludedCalculator() -> FeeIncludedCalculator {
+        StakingFeeIncludedCalculator(tokenItem: walletModel.tokenItem, validator: walletModel.transactionValidator)
+    }
+
+    func makeStakingAmountModifier() -> SendAmountModifier {
+        StakingAmountModifier(tokenItem: walletModel.tokenItem)
     }
 }
