@@ -120,7 +120,6 @@ class MarketsTokenDetailsInsightsViewModel: ObservableObject {
     private func bind() {
         $selectedInterval
             .dropFirst()
-            .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink(receiveValue: { value in
                 let weakSelf = value.0

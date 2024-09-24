@@ -39,11 +39,14 @@ class MarketsTokenDetailsPricePerformanceViewModel: ObservableObject {
     private func bind() {
         $selectedInterval
             .withWeakCaptureOf(self)
-            .sink { viewModel, interval in
+            .sink { value in
+                let weakSelf = value.0
+                let interval = value.1
+
                 Analytics.log(
                     event: .marketsChartButtonPeriod,
                     params: [
-                        .token: viewModel.tokenSymbol.uppercased(),
+                        .token: weakSelf.tokenSymbol.uppercased(),
                         .period: interval.analyticsParameterValue,
                         .source: Analytics.MarketsIntervalTypeSourceType.price.rawValue,
                     ]
