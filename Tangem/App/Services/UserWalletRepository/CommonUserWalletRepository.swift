@@ -527,12 +527,12 @@ class CommonUserWalletRepository: UserWalletRepository {
     }
 
     private func migrateNamesIfNeeded(_ wallets: inout [StoredUserWallet]) {
-        if AppSettings.shared.didMigrateUserWalletNames {
+        guard !AppSettings.shared.didMigrateUserWalletNames else {
             return
         }
 
         if let migratedWallets = UserWalletNameIndexationHelper.migratedWallets(wallets) {
-            UserWalletRepositoryUtil().saveUserWallets(wallets)
+            UserWalletRepositoryUtil().saveUserWallets(migratedWallets)
         }
 
         AppSettings.shared.didMigrateUserWalletNames = true
