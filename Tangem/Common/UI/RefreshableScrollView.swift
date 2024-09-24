@@ -14,15 +14,15 @@ typealias OnRefresh = (_ completionHandler: @escaping RefreshCompletionHandler) 
 /// Author: The SwiftUI Lab.
 /// Full article: https://swiftui-lab.com/scrollview-pull-to-refresh/.
 struct RefreshableScrollView<Content: View>: View {
-    let onRefresh: OnRefresh
     let content: Content
+    private let refreshContainer: RefreshContainer
 
     init(
         onRefresh: @escaping OnRefresh,
         @ViewBuilder content: () -> Content
     ) {
-        self.onRefresh = onRefresh
         self.content = content()
+        refreshContainer = RefreshContainer(onRefresh: onRefresh)
     }
 
     var body: some View {
@@ -30,20 +30,11 @@ struct RefreshableScrollView<Content: View>: View {
             ScrollView(.vertical, showsIndicators: false) {
                 content
             }
-            .refreshable {
-                await refreshAsync()
+            .refreshable { [weak refreshContainer] in
+                await refreshContainer?.refreshAsync()
             }
         } else {
-            RefreshableScrollViewCompat(onRefresh: onRefresh, content: content)
-        }
-    }
-
-    @MainActor
-    private func refreshAsync() async {
-        await withCheckedContinuation { continuation in
-            onRefresh {
-                continuation.resume()
-            }
+            RefreshableScrollViewCompat(onRefresh: refreshContainer.onRefresh, content: content)
         }
     }
 }
@@ -164,6 +155,27 @@ private struct RefreshableScrollViewCompat<Content: View>: View {
         let d = Double(scrollOffset)
         let v = max(min(d - (h * 0.6), h * 0.4), 0)
         return v / (h * 0.4)
+    }
+}
+
+// MARK: - RefreshContainer
+
+extension RefreshableScrollView {
+    private final class RefreshContainer {
+        let onRefresh: OnRefresh
+
+        init(onRefresh: @escaping OnRefresh) {
+            self.onRefresh = onRefresh
+        }
+
+        @MainActor
+        func refreshAsync() async {
+            await withCheckedContinuation { continuation in
+                onRefresh {
+                    continuation.resume()
+                }
+            }
+        }
     }
 }
 

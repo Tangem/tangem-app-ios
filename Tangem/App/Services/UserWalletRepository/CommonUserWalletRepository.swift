@@ -101,7 +101,7 @@ class CommonUserWalletRepository: UserWalletRepository {
                 let config = UserWalletConfigFactory(cardInfo).makeConfig()
                 Analytics.endLoggingCardScan()
 
-                let userWalletModel = CommonUserWalletModel(cardInfo: cardInfo)
+                let userWalletModel = CommonUserWalletModelFactory().makeModel(cardInfo: cardInfo)
                 if let userWalletModel {
                     initializeServices(for: userWalletModel)
                 }
@@ -492,7 +492,7 @@ class CommonUserWalletRepository: UserWalletRepository {
         let savedUserWallets = savedUserWallets(withSensitiveData: true)
 
         models = savedUserWallets.map { userWalletStorageItem in
-            if let userWallet = CommonUserWalletModel(userWallet: userWalletStorageItem) {
+            if let userWallet = CommonUserWalletModelFactory().makeModel(userWallet: userWalletStorageItem) {
                 return userWallet
             } else {
                 return LockedUserWalletModel(with: userWalletStorageItem)
@@ -505,7 +505,7 @@ class CommonUserWalletRepository: UserWalletRepository {
         guard let index = models.firstIndex(where: { $0.userWalletId == userWalletId }) else { return }
 
         guard let savedUserWallet = savedUserWallet(with: userWalletId),
-              let userWalletModel = CommonUserWalletModel(userWallet: savedUserWallet) else {
+              let userWalletModel = CommonUserWalletModelFactory().makeModel(userWallet: savedUserWallet) else {
             return
         }
 
