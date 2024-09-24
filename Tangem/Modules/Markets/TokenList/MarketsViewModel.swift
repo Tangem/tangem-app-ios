@@ -118,7 +118,7 @@ final class MarketsViewModel: BaseMarketsViewModel {
 
     func onOverlayContentStateChange(_ state: OverlayContentState) {
         switch state {
-        case .top:
+        case .expanded:
             // Need for locked fetchMore process when bottom sheet not yet open
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.isBottomSheetExpanded = true
@@ -130,7 +130,7 @@ final class MarketsViewModel: BaseMarketsViewModel {
 
             headerViewModel.onBottomSheetExpand(isTapGesture: state.isTapGesture)
             quotesUpdatesScheduler.forceUpdate()
-        case .bottom:
+        case .collapsed:
             isBottomSheetExpanded = false
             quotesUpdatesScheduler.cancelUpdates()
         }
