@@ -15,6 +15,7 @@ struct DescriptionBottomSheetInfo: Identifiable, Equatable {
     let title: String?
     let description: String
     var isGeneratedWithAI: Bool = false
+    var closeButtonAction: (() -> Void)?
 
     static func == (lhs: DescriptionBottomSheetInfo, rhs: DescriptionBottomSheetInfo) -> Bool {
         lhs.id == rhs.id
@@ -33,12 +34,7 @@ struct DescriptionBottomSheetView: View {
 
     private var content: some View {
         VStack(spacing: 14) {
-            if let title = info.title {
-                Text(title)
-                    .multilineTextAlignment(.center)
-                    .style(Fonts.Bold.body, color: Colors.Text.primary1)
-                    .padding(.vertical, 12)
-            }
+            headerView
 
             Markdown { info.description }
                 .markdownSoftBreakMode(.lineBreak)
@@ -61,6 +57,43 @@ struct DescriptionBottomSheetView: View {
             }
         }
         .padding(.bottom, 10)
+    }
+
+    @ViewBuilder
+    private var headerView: some View {
+        if let title = info.title {
+            if let closeButtonAction = info.closeButtonAction {
+                HStack(spacing: 0) {
+                    closeButton(closeButtonAction)
+                        .opacity(0.0)
+
+                    Spacer()
+
+                    titleView(text: title)
+
+                    Spacer()
+
+                    closeButton(closeButtonAction)
+                }
+            } else {
+                titleView(text: title)
+            }
+        }
+    }
+
+    private func titleView(text: String) -> some View {
+        Text(text)
+            .multilineTextAlignment(.center)
+            .style(Fonts.Bold.body, color: Colors.Text.primary1)
+            .padding(.vertical, 12)
+    }
+
+    private func closeButton(_ action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(Localization.commonClose)
+                .style(Fonts.Regular.body, color: Colors.Text.primary1)
+                .padding(.vertical, 8)
+        }
     }
 
     private var generatedWithAILabel: some View {

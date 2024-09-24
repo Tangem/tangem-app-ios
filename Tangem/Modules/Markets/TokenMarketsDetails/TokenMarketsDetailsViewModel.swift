@@ -206,7 +206,10 @@ class TokenMarketsDetailsViewModel: BaseMarketsViewModel {
         descriptionBottomSheetInfo = .init(
             title: Localization.marketsTokenDetailsAboutTokenTitle(tokenInfo.name),
             description: fullDescription,
-            isGeneratedWithAI: true
+            isGeneratedWithAI: true,
+            closeButtonAction: { [weak self] in
+                self?.descriptionBottomSheetInfo = nil
+            }
         )
     }
 
@@ -473,7 +476,11 @@ private extension TokenMarketsDetailsViewModel {
 
 extension TokenMarketsDetailsViewModel: MarketsTokenDetailsBottomSheetRouter {
     func openInfoBottomSheet(title: String, message: String) {
-        descriptionBottomSheetInfo = .init(title: title, description: message)
+        descriptionBottomSheetInfo = .init(
+            title: title,
+            description: message,
+            closeButtonAction: nil
+        )
     }
 }
 
