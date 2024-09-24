@@ -27,15 +27,23 @@ class ManageTokensCoordinator: CoordinatorObject {
     }
 
     func start(with options: Options) {
+        let analyticsSourceRawValue = Analytics.ParameterValue.settings.rawValue
+        let analyticsParams: [Analytics.ParameterKey: String] = [.source: analyticsSourceRawValue]
+
+        Analytics.log(event: .manageTokensScreenOpened, params: analyticsParams)
+
         selectedUserWalletModel = options.userWalletModel
         let userWalletModel = options.userWalletModel
         let config = userWalletModel.config
-        let adapter = ManageTokensAdapter(settings: .init(
-            longHashesSupported: config.hasFeature(.longHashes),
-            existingCurves: config.existingCurves,
-            supportedBlockchains: Set(config.supportedBlockchains),
-            userTokensManager: userWalletModel.userTokensManager
-        ))
+        let adapter = ManageTokensAdapter(
+            settings: .init(
+                longHashesSupported: config.hasFeature(.longHashes),
+                existingCurves: config.existingCurves,
+                supportedBlockchains: Set(config.supportedBlockchains),
+                userTokensManager: userWalletModel.userTokensManager,
+                analyticsSourceRawValue: analyticsSourceRawValue
+            )
+        )
 
         rootViewModel = .init(
             adapter: adapter,
