@@ -185,7 +185,7 @@ final class MainViewModel: ObservableObject {
         }
 
         walletNameFieldValidator = AlertFieldValidator { input in
-            !otherWalletNames.contains(input)
+            !(otherWalletNames.contains(input) || input.isEmpty)
         }
 
         let alert = AlertBuilder.makeAlertControllerWithTextField(
