@@ -54,6 +54,7 @@ struct SendDependenciesBuilder {
         case .claimRewards: nil
         case .restakeRewards: nil
         case .unlockLocked: nil
+        default: nil
         }
     }
 

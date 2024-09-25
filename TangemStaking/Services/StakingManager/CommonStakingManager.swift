@@ -158,8 +158,8 @@ private extension CommonStakingManager {
             try await provider.patchTransaction(id: transaction.id)
         }
 
-        return StakingTransactionAction(
-            id: action.id,
+        return mapToStakingTransactionAction(
+            actionID: action.id,
             amount: action.amount,
             validator: request.validator,
             transactions: transactions
@@ -177,8 +177,8 @@ private extension CommonStakingManager {
             try await provider.patchTransaction(id: transaction.id)
         }
 
-        return StakingTransactionAction(
-            id: action.id,
+        return mapToStakingTransactionAction(
+            actionID: action.id,
             amount: action.amount,
             validator: request.validator,
             transactions: transactions
@@ -202,11 +202,10 @@ private extension CommonStakingManager {
                 return action
             }
 
-            return StakingTransactionAction(
+            return mapToStakingTransactionAction(
                 amount: request.amount,
                 validator: request.validator,
-                transactions: actions.flatMap { $0.transactions
-                }
+                transactions: actions.flatMap { $0.transactions }
             )
         }
     }
@@ -222,8 +221,8 @@ private extension CommonStakingManager {
             try await provider.patchTransaction(id: transaction.id)
         }
 
-        return StakingTransactionAction(
-            id: action.id,
+        return mapToStakingTransactionAction(
+            actionID: action.id,
             amount: action.amount,
             validator: request.request.validator,
             transactions: transactions
@@ -301,10 +300,26 @@ private extension CommonStakingManager {
         return StakingBalance(
             item: yield.item,
             amount: record.amount,
-            balanceType: .active,
+            balanceType: .pending,
             validatorType: validatorType,
             inProgress: true,
             actions: []
+        )
+    }
+
+    // MARK: - Staking transaction action
+
+    func mapToStakingTransactionAction(
+        actionID: String? = nil,
+        amount: Decimal,
+        validator: String?,
+        transactions: [StakingTransactionInfo]
+    ) -> StakingTransactionAction {
+        StakingTransactionAction(
+            id: actionID,
+            amount: amount,
+            validator: validator,
+            transactions: transactions.filter { $0.status != .skipped }
         )
     }
 

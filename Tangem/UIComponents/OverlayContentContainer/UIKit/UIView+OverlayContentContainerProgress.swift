@@ -19,6 +19,8 @@ extension UIView {
         UIView.animate(
             withDuration: animationContext.duration,
             delay: .zero,
+            usingSpringWithDamping: animationContext.springDampingRatio,
+            initialSpringVelocity: animationContext.initialSpringVelocity,
             options: options.union(animationContext.curve.toAnimationOptions()),
             animations: animations,
             completion: completion

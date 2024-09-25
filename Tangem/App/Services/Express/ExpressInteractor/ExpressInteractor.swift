@@ -185,19 +185,19 @@ extension ExpressInteractor {
 
 extension ExpressInteractor: ApproveViewModelInput {
     var approveFeeValue: LoadingValue<Fee> {
-        mapToApproveFeeLoadingValue(state: getState())
+        mapToApproveFeeLoadingValue(state: getState()) ?? .failedToLoad(error: CommonError.noData)
     }
 
     var approveFeeValuePublisher: AnyPublisher<LoadingValue<BlockchainSdk.Fee>, Never> {
         state
             .withWeakCaptureOf(self)
-            .map { interactor, state in
+            .compactMap { interactor, state in
                 interactor.mapToApproveFeeLoadingValue(state: state)
             }
             .eraseToAnyPublisher()
     }
 
-    private func mapToApproveFeeLoadingValue(state: ExpressInteractor.State) -> LoadingValue<BlockchainSdk.Fee> {
+    private func mapToApproveFeeLoadingValue(state: ExpressInteractor.State) -> LoadingValue<BlockchainSdk.Fee>? {
         switch state {
         case .permissionRequired(let state, _):
             guard let fee = state.fees[getFeeOption()] else {
@@ -210,8 +210,7 @@ extension ExpressInteractor: ApproveViewModelInput {
         case .restriction(.requiredRefresh(let error), _):
             return .failedToLoad(error: error)
         default:
-            AppLog.shared.debug("Wrong state for this view \(state)")
-            return .failedToLoad(error: CommonError.notImplemented)
+            return nil
         }
     }
 }

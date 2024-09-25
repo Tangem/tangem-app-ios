@@ -25,6 +25,10 @@ class UnstakingModel {
     private let _transactionTime = PassthroughSubject<Date?, Never>()
     private let _isLoading = CurrentValueSubject<Bool, Never>(false)
 
+    // MARK: - Dependencies
+
+    weak var router: SendModelRoutable?
+
     // MARK: - Private injections
 
     private let stakingManager: StakingManager
@@ -301,6 +305,8 @@ extension UnstakingModel: NotificationTapDelegate {
         switch action {
         case .refreshFee:
             updateState()
+        case .openFeeCurrency:
+            router?.openNetworkCurrency()
         default:
             assertionFailure("StakingModel doesn't support notification action \(action)")
         }

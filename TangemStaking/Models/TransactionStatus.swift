@@ -15,4 +15,5 @@ public enum TransactionStatus: String, Hashable {
     case pending
     case confirmed
     case failed
+    case skipped
 }

@@ -63,6 +63,7 @@ extension MarketsTokenDetailsMetricsView {
         case fullyDilutedValuation
         case circulatingSupply
         case totalSupply
+        case maxSupply
 
         var id: String { rawValue }
 
@@ -74,6 +75,7 @@ extension MarketsTokenDetailsMetricsView {
             case .fullyDilutedValuation: return Localization.marketsTokenDetailsFullyDilutedValuation
             case .circulatingSupply: return Localization.marketsTokenDetailsCirculatingSupply
             case .totalSupply: return Localization.marketsTokenDetailsTotalSupply
+            case .maxSupply: return Localization.marketsTokenDetailsMaxSupply
             }
         }
 
@@ -85,6 +87,7 @@ extension MarketsTokenDetailsMetricsView {
             case .fullyDilutedValuation: return Localization.marketsTokenDetailsFullyDilutedValuationFull
             case .circulatingSupply: return Localization.marketsTokenDetailsCirculatingSupplyFull
             case .totalSupply: return Localization.marketsTokenDetailsTotalSupplyFull
+            case .maxSupply: return Localization.marketsTokenDetailsMaxSupplyFull
             }
         }
 
@@ -96,6 +99,7 @@ extension MarketsTokenDetailsMetricsView {
             case .fullyDilutedValuation: return Localization.marketsTokenDetailsFullyDilutedValuationDescription
             case .circulatingSupply: return Localization.marketsTokenDetailsCirculatingSupplyDescription
             case .totalSupply: return Localization.marketsTokenDetailsTotalSupplyDescription
+            case .maxSupply: return Localization.marketsTokenDetailsMaxSupplyDescription
             }
         }
     }
@@ -123,6 +127,7 @@ extension MarketsTokenDetailsMetricsView {
                 marketCap: 112234033891,
                 volume24H: 42854017104,
                 totalSupply: 112286364258.112,
+                maxSupply: 112286364258.112,
                 fullyDilutedValuation: 112234033891
             ),
             notationFormatter: .init(),

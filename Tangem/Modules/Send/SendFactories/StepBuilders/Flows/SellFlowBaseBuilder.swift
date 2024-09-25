@@ -51,6 +51,7 @@ struct SellFlowBaseBuilder {
 
         let finish = sendFinishStepBuilder.makeSendFinishStep(
             input: sendModel,
+            actionType: .send,
             sendDestinationCompactViewModel: sendDestinationCompactViewModel,
             sendAmountCompactViewModel: sendAmountCompactViewModel,
             stakingValidatorsCompactViewModel: nil,

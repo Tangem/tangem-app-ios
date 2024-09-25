@@ -27,6 +27,10 @@ class StakingModel {
     private let _isLoading = CurrentValueSubject<Bool, Never>(false)
     private let _isFeeIncluded = CurrentValueSubject<Bool, Never>(false)
 
+    // MARK: - Dependencies
+
+    weak var router: SendModelRoutable?
+
     // MARK: - Private injections
 
     private let stakingManager: StakingManager
@@ -432,6 +436,8 @@ extension StakingModel: NotificationTapDelegate {
         switch action {
         case .refreshFee:
             updateState()
+        case .openFeeCurrency:
+            router?.openNetworkCurrency()
         default:
             assertionFailure("StakingModel doesn't support notification action \(action)")
         }

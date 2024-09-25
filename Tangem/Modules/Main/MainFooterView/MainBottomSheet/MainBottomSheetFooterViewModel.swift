@@ -12,7 +12,7 @@ import CombineExt
 import class UIKit.UIImage
 
 final class MainBottomSheetFooterViewModel: ObservableObject {
-    @Published private(set) var snapshotImage: UIImage?
+    @Published private(set) var footerSnapshot: MainBottomSheetUIManager.FooterSnapshot?
 
     @Injected(\.mainBottomSheetUIManager) private var mainBottomSheetUIManager: MainBottomSheetUIManager
 
@@ -29,6 +29,7 @@ final class MainBottomSheetFooterViewModel: ObservableObject {
 
         subscription = mainBottomSheetUIManager
             .footerSnapshotPublisher
-            .assign(to: \.snapshotImage, on: self, ownership: .weak)
+            .eraseToOptional()
+            .assign(to: \.footerSnapshot, on: self, ownership: .weak)
     }
 }

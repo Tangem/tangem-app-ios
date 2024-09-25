@@ -22,12 +22,16 @@ final class ViewHierarchySnapshottingWeakifyAdapter {
 // MARK: - ViewHierarchySnapshotting protocol conformance
 
 extension ViewHierarchySnapshottingWeakifyAdapter: ViewHierarchySnapshotting {
-    func makeSnapshotView(afterScreenUpdates: Bool) -> UIView? {
-        adaptee?.makeSnapshotView(afterScreenUpdates: afterScreenUpdates)
+    func makeSnapshotView(afterScreenUpdates: Bool, overrideUserInterfaceStyle: UIUserInterfaceStyle?) -> UIView? {
+        adaptee?.makeSnapshotView(afterScreenUpdates: afterScreenUpdates, overrideUserInterfaceStyle: overrideUserInterfaceStyle)
     }
 
-    func makeSnapshotViewImage(afterScreenUpdates: Bool, isOpaque: Bool) -> UIImage? {
-        adaptee?.makeSnapshotViewImage(afterScreenUpdates: afterScreenUpdates, isOpaque: isOpaque)
+    func makeSnapshotViewImage(afterScreenUpdates: Bool, isOpaque: Bool, overrideUserInterfaceStyle: UIUserInterfaceStyle?) -> UIImage? {
+        adaptee?.makeSnapshotViewImage(
+            afterScreenUpdates: afterScreenUpdates,
+            isOpaque: isOpaque,
+            overrideUserInterfaceStyle: overrideUserInterfaceStyle
+        )
     }
 
     func makeSnapshotLayerImage(options: CALayerSnapshotOptions, isOpaque: Bool) -> UIImage? {
