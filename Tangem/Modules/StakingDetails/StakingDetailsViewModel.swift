@@ -142,8 +142,8 @@ private extension StakingDetailsViewModel {
 
     func setupView(yield: YieldInfo, balances: [StakingBalance]) {
         setupHeaderView(hasBalances: !balances.isEmpty)
-        setupDetailsSection(yield: yield, staking: balances.staking())
-        setupStakes(yield: yield, staking: balances.staking())
+        setupDetailsSection(yield: yield)
+        setupStakes(yield: yield, staking: balances.stakes())
         setupRewardView(yield: yield, balances: balances)
     }
 
@@ -151,7 +151,7 @@ private extension StakingDetailsViewModel {
         hideStakingInfoBanner = hasBalances
     }
 
-    func setupDetailsSection(yield: YieldInfo, staking: [StakingBalance]) {
+    func setupDetailsSection(yield: YieldInfo) {
         var viewModels = [
             DefaultRowViewModel(
                 title: Localization.stakingDetailsAnnualPercentageRate,
