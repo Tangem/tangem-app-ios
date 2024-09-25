@@ -11,7 +11,6 @@ import SwiftUI
 import Combine
 
 struct CurrencySelectView: View {
-    @Environment(\.dismiss) var dismiss
     @ObservedObject var viewModel: CurrencySelectViewModel
     @State private var searchText: String = ""
 
@@ -52,10 +51,7 @@ struct CurrencySelectView: View {
     }
 
     private func currencyView(_ currency: CurrenciesResponse.Currency) -> some View {
-        Button {
-            viewModel.onSelect(currency)
-            dismiss()
-        } label: {
+        Button(action: { viewModel.onSelect(currency) }) {
             HStack {
                 Text(currency.description)
                     .style(Fonts.Regular.callout, color: Colors.Text.primary1)
@@ -94,9 +90,17 @@ struct CurrencySelectView: View {
 }
 
 struct CurrencySelectView_Preview: PreviewProvider {
+    class CurrencySelectRoutableMock: CurrencySelectRoutable {
+        func dismissCurrencySelect() {}
+    }
+
     static var previews: some View {
         NavigationView {
-            CurrencySelectView(viewModel: .init())
+            CurrencySelectView(
+                viewModel: CurrencySelectViewModel(
+                    coordinator: CurrencySelectRoutableMock()
+                )
+            )
         }
     }
 }
