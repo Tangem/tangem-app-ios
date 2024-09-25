@@ -348,7 +348,7 @@ private extension MarketsViewModel {
 
                 viewModel.tokenViewModels.append(contentsOf: items)
 
-                if viewModel.tokenViewModels.isEmpty {
+                if viewModel.dataProvider.items.isEmpty {
                     viewModel.tokenListLoadingState = .noResults
                     return
                 }
