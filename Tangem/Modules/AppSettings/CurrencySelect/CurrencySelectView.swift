@@ -11,6 +11,7 @@ import SwiftUI
 import Combine
 
 struct CurrencySelectView: View {
+    @Environment(\.dismiss) var dismiss
     @ObservedObject var viewModel: CurrencySelectViewModel
     @State private var searchText: String = ""
 
@@ -41,7 +42,7 @@ struct CurrencySelectView: View {
                 .interItemSpacing(12)
             }
             .interContentPadding(8)
-            .searchable(text: $searchText)
+            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
 
         case .failedToLoad(let error):
             Text(error.localizedDescription)
@@ -51,7 +52,10 @@ struct CurrencySelectView: View {
     }
 
     private func currencyView(_ currency: CurrenciesResponse.Currency) -> some View {
-        Button(action: { viewModel.onSelect(currency) }) {
+        Button {
+            viewModel.onSelect(currency)
+            dismiss()
+        } label: {
             HStack {
                 Text(currency.description)
                     .style(Fonts.Regular.callout, color: Colors.Text.primary1)
@@ -72,13 +76,20 @@ struct CurrencySelectView: View {
 
     private func filter(currencies: [CurrenciesResponse.Currency]) -> [CurrenciesResponse.Currency] {
         let text = searchText.trimmed()
-        if text.isEmpty {
-            return currencies
+
+        let sortindPredicate: (CurrenciesResponse.Currency, CurrenciesResponse.Currency) -> Bool = { first, _ in
+            viewModel.isSelected(first)
         }
 
-        return currencies.filter {
-            $0.description.localizedStandardContains(text)
+        if text.isEmpty {
+            return currencies.sorted(by: sortindPredicate)
         }
+
+        return currencies
+            .filter {
+                $0.description.localizedStandardContains(text)
+            }
+            .sorted(by: sortindPredicate)
     }
 }
 
