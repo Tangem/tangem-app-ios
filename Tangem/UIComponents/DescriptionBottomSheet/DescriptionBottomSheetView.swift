@@ -64,7 +64,7 @@ struct DescriptionBottomSheetView: View {
 // View components
 private extension DescriptionBottomSheetView {
     @ViewBuilder
-    private var headerView: some View {
+    var headerView: some View {
         if info.showCloseButton {
             HStack(spacing: 0) {
                 closeButton
@@ -81,7 +81,7 @@ private extension DescriptionBottomSheetView {
     }
 
     @ViewBuilder
-    private var titleView: some View {
+    var titleView: some View {
         if let title = info.title {
             Text(title)
                 .multilineTextAlignment(.center)
@@ -90,7 +90,7 @@ private extension DescriptionBottomSheetView {
         }
     }
 
-    private var closeButton: some View {
+    var closeButton: some View {
         Button(action: {
             dismissSheetAction()
         }, label: {
@@ -100,7 +100,7 @@ private extension DescriptionBottomSheetView {
         })
     }
 
-    private var generatedWithAILabel: some View {
+    var generatedWithAILabel: some View {
         HStack(spacing: 12) {
             Assets.stars.image
                 .foregroundStyle(Colors.Icon.accent)
