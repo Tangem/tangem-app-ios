@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemSdk
 
 struct MainView: View {
     @ObservedObject var viewModel: MainViewModel
@@ -20,7 +21,12 @@ struct MainView: View {
                 info.header
                     .contextMenu {
                         if !info.isLockedWallet {
-                            Button(action: weakify(viewModel, forFunction: MainViewModel.didTapEditWallet), label: editButtonLabel)
+                            if BiometricsUtil.isAvailable {
+                                Button(
+                                    action: weakify(viewModel, forFunction: MainViewModel.didTapEditWallet),
+                                    label: editButtonLabel
+                                )
+                            }
 
                             Button(role: .destructive, action: weakify(viewModel, forFunction: MainViewModel.didTapDeleteWallet), label: deleteButtonLabel)
                         }
