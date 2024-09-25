@@ -84,12 +84,15 @@ struct ManageTokensView: View {
     let fakeModel = FakeUserWalletModel.wallet3Cards
     let fakeAPIService = FakeTangemApiService()
     InjectedValues[\.tangemApiService] = fakeAPIService
-    let adapter = ManageTokensAdapter(settings: .init(
-        longHashesSupported: fakeModel.config.hasFeature(.longHashes),
-        existingCurves: fakeModel.config.existingCurves,
-        supportedBlockchains: fakeModel.config.supportedBlockchains,
-        userTokensManager: fakeModel.userTokensManager
-    ))
+    let adapter = ManageTokensAdapter(
+        settings: .init(
+            longHashesSupported: fakeModel.config.hasFeature(.longHashes),
+            existingCurves: fakeModel.config.existingCurves,
+            supportedBlockchains: fakeModel.config.supportedBlockchains,
+            userTokensManager: fakeModel.userTokensManager,
+            analyticsSourceRawValue: "preview"
+        )
+    )
 
     return NavigationView {
         ManageTokensView(viewModel: .init(

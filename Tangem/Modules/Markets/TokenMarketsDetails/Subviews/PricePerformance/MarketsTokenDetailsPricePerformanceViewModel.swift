@@ -37,6 +37,23 @@ class MarketsTokenDetailsPricePerformanceViewModel: ObservableObject {
     }
 
     private func bind() {
+        $selectedInterval
+            .withWeakCaptureOf(self)
+            .sink { value in
+                let weakSelf = value.0
+                let interval = value.1
+
+                Analytics.log(
+                    event: .marketsChartButtonPeriod,
+                    params: [
+                        .token: weakSelf.tokenSymbol.uppercased(),
+                        .period: interval.analyticsParameterValue,
+                        .source: Analytics.MarketsIntervalTypeSourceType.price.rawValue,
+                    ]
+                )
+            }
+            .store(in: &bag)
+
         currentPricePublisher
             .combineLatest($selectedInterval)
             .receive(on: DispatchQueue.main)
@@ -44,15 +61,6 @@ class MarketsTokenDetailsPricePerformanceViewModel: ObservableObject {
             .sink(receiveValue: { value in
                 let weakSelf = value.0
                 let (currentPrice, interval) = value.1
-
-                Analytics.log(
-                    event: .marketsChartButtonPeriod,
-                    params: [
-                        .token: weakSelf.tokenSymbol.uppercased(),
-                        .period: interval.rawValue,
-                        .source: Analytics.MarketsIntervalTypeSourceType.price.rawValue,
-                    ]
-                )
 
                 weakSelf.updateProgressUI(currentPrice: currentPrice, selectedInterval: interval)
             })
