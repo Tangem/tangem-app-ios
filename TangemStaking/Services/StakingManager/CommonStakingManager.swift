@@ -22,7 +22,7 @@ class CommonStakingManager {
     private let _state = CurrentValueSubject<StakingManagerState, Never>(.loading)
     private var canStakeMore: Bool {
         switch wallet.item.network {
-        case .solana, .cosmos, .tron: true
+        case .solana, .cosmos, .tron, .ethereum: true
         default: false
         }
     }
