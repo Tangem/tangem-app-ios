@@ -15,7 +15,7 @@ struct DescriptionBottomSheetInfo: Identifiable, Equatable {
     let title: String?
     let description: String
     var isGeneratedWithAI: Bool = false
-    var closeButtonAction: (() -> Void)?
+    var showCloseButton: Bool = false
 
     static func == (lhs: DescriptionBottomSheetInfo, rhs: DescriptionBottomSheetInfo) -> Bool {
         lhs.id == rhs.id
@@ -25,6 +25,7 @@ struct DescriptionBottomSheetInfo: Identifiable, Equatable {
 struct DescriptionBottomSheetView: View {
     let info: DescriptionBottomSheetInfo
 
+    @Environment(\.dismiss) private var dismissSheetAction
     @State private var containerHeight: CGFloat = 0
 
     var body: some View {
@@ -58,42 +59,45 @@ struct DescriptionBottomSheetView: View {
         }
         .padding(.bottom, 10)
     }
+}
 
+// View components
+private extension DescriptionBottomSheetView {
     @ViewBuilder
     private var headerView: some View {
-        if let title = info.title {
-            if let closeButtonAction = info.closeButtonAction {
-                HStack(spacing: 0) {
-                    closeButton(closeButtonAction)
-                        .opacity(0.0)
+        if info.showCloseButton {
+            HStack(spacing: 0) {
+                closeButton
+                    .opacity(0.0)
 
-                    Spacer()
+                titleView
+                    .frame(maxWidth: .infinity)
 
-                    titleView(text: title)
-
-                    Spacer()
-
-                    closeButton(closeButtonAction)
-                }
-            } else {
-                titleView(text: title)
+                closeButton
             }
+        } else {
+            titleView
         }
     }
 
-    private func titleView(text: String) -> some View {
-        Text(text)
-            .multilineTextAlignment(.center)
-            .style(Fonts.Bold.body, color: Colors.Text.primary1)
-            .padding(.vertical, 12)
+    @ViewBuilder
+    private var titleView: some View {
+        if let title = info.title {
+            Text(title)
+                .multilineTextAlignment(.center)
+                .style(Fonts.Bold.body, color: Colors.Text.primary1)
+                .padding(.vertical, 12)
+        }
     }
 
-    private func closeButton(_ action: @escaping () -> Void) -> some View {
-        Button(action: action) {
+    private var closeButton: some View {
+        Button(action: {
+            dismissSheetAction()
+        }, label: {
             Text(Localization.commonClose)
                 .style(Fonts.Regular.body, color: Colors.Text.primary1)
                 .padding(.vertical, 8)
-        }
+        })
     }
 
     private var generatedWithAILabel: some View {
