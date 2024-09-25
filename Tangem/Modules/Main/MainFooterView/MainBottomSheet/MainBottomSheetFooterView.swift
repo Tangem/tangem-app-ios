@@ -30,7 +30,7 @@ struct MainBottomSheetFooterView: View {
                 snapshotOverlay
             }
             .cornerRadius(cornerRadius, corners: .topEdge)
-            overlay(alignment: .top) {
+            .overlay(alignment: .top) {
                 GrabberViewFactory()
                     .makeSwiftUIView()
             }
