@@ -339,6 +339,7 @@
 "manage_tokens_wallet_support_only_one_network_title" = "Гаманець не підтримує більше однієї мережі";
 "markets_add_to_my_portfolio_description" = "Щоб почати купувати, обмінювати або отримувати цей актив, додайте цей токен принаймні в 1 мережу";
 "markets_add_to_my_portfolio_unavailable_description" = "Цей актив недоступний";
+"markets_add_to_my_portfolio_unavailable_for_wallet_description" = "This asset is not available for this wallet";
 "markets_add_to_portfolio_button" = "Додати в портфоліо";
 "markets_add_token" = "Додати";
 "markets_available networks" = "Доступні мережі";
@@ -404,7 +405,7 @@
 "markets_token_details_market_rating" = "Рейтинг";
 "markets_token_details_market_rating_description" = "Позиція в крипторейтингу між усіма монетами на основі ринкової капіталізації";
 "markets_token_details_market_rating_full" = "Рейтинг";
-"markets_token_details_max_supply" = "Максимальна пропозиція";
+"markets_token_details_max_supply" = "Max supply";
 "markets_token_details_max_supply_description" = "Максимальна кількість монет або токенів, яка може коли-небудь існувати для певної криптовалюти";
 "markets_token_details_max_supply_full" = "Максимальна пропозиція";
 "markets_token_details_metrics" = "Метрики";
@@ -699,7 +700,6 @@
 "staking_reward_schedule_block" = "Блок";
 "staking_reward_schedule_day" = "День";
 "staking_reward_schedule_each_day" = "Щодня";
-"staking_reward_schedule_each_minute" = "Щохвилини";
 "staking_reward_schedule_each_sec" = "Кожні ~%1$@сек";
 "staking_reward_schedule_epoch" = "Епоха";
 "staking_reward_schedule_era" = "Ера";
@@ -792,6 +792,7 @@
 "transaction_history_operation" = "Операція";
 "transaction_history_transaction_from_address" = "від: %@";
 "transaction_history_transaction_to_address" = "до: %@";
+"transaction_history_transaction_validator" = "validator: %@";
 "try_to_load_data_again_button_title" = "Спробуйте знову";
 "twin_error_same_card" = "Ви відсканували одну й ту саму картку. Для створення twin-гаманця вам потрібно відсканувати картку з номером %li";
 "twin_error_wrong_twin" = "Ви відсканували не ту twin-картку. Будь ласка, спробуйте відсканувати іншу";

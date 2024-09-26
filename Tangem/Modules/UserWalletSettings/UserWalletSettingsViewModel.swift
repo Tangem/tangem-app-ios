@@ -167,6 +167,8 @@ private extension UserWalletSettingsViewModel {
             return
         }
 
+        Analytics.log(.settingsButtonManageTokens)
+
         coordinator?.openManageTokens(userWalletModel: userWalletModel)
     }
 

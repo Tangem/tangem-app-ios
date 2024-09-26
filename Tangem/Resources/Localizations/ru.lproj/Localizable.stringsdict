@@ -2,7 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
   <dict>
-    <key>card_label_card_count</key>
+    <key>onboarding_seed_generate_words_count</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
       <string>%#@format@</string>
@@ -13,33 +13,13 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%li карта</string>
+        <string>%li слово</string>
         <key>few</key>
-        <string>%li карты</string>
+        <string>%li слова</string>
         <key>many</key>
-        <string>%li карт</string>
+        <string>%li слов</string>
         <key>other</key>
-        <string>%li карт</string>
-      </dict>
-    </dict>
-    <key>manage_tokens_number_of_wallets_ios</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%li из %#@total_wallets@</string>
-      <key>total_wallets</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>one</key>
-        <string>%li кошелька</string>
-        <key>few</key>
-        <string>%li кошельков</string>
-        <key>many</key>
-        <string>%li кошельков</string>
-        <key>other</key>
-        <string>%li кошельков</string>
+        <string>%li слов</string>
       </dict>
     </dict>
     <key>markets_token_details_based_on_ratings</key>
@@ -82,7 +62,7 @@
         <string>Запишите эти %li слов в порядке, указанном ниже, и сохраните их в надежном месте.</string>
       </dict>
     </dict>
-    <key>onboarding_seed_generate_words_count</key>
+    <key>warning_missing_derivation_message</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
       <string>%#@format@</string>
@@ -93,13 +73,33 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%li слово</string>
+        <string>Используйте вашу карту, чтобы получить адрес для %li сети</string>
         <key>few</key>
-        <string>%li слова</string>
+        <string>Используйте вашу карту, чтобы получить адреса для %li сетей</string>
         <key>many</key>
-        <string>%li слов</string>
+        <string>Используйте вашу карту, чтобы получить адреса для %li сетей</string>
         <key>other</key>
-        <string>%li слов</string>
+        <string>Используйте вашу карту, чтобы получить адреса для %li сетей</string>
+      </dict>
+    </dict>
+    <key>manage_tokens_number_of_wallets_ios</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%li из %#@total_wallets@</string>
+      <key>total_wallets</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>%li кошелька</string>
+        <key>few</key>
+        <string>%li кошельков</string>
+        <key>many</key>
+        <string>%li кошельков</string>
+        <key>other</key>
+        <string>%li кошельков</string>
       </dict>
     </dict>
     <key>referral_number_of_wallets</key>
@@ -142,7 +142,7 @@
         <string>%li кошельков</string>
       </dict>
     </dict>
-    <key>warning_missing_derivation_message</key>
+    <key>card_label_card_count</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
       <string>%#@format@</string>
@@ -153,13 +153,13 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Используйте вашу карту, чтобы получить адрес для %li сети</string>
+        <string>%li карта</string>
         <key>few</key>
-        <string>Используйте вашу карту, чтобы получить адреса для %li сетей</string>
+        <string>%li карты</string>
         <key>many</key>
-        <string>Используйте вашу карту, чтобы получить адреса для %li сетей</string>
+        <string>%li карт</string>
         <key>other</key>
-        <string>Используйте вашу карту, чтобы получить адреса для %li сетей</string>
+        <string>%li карт</string>
       </dict>
     </dict>
   </dict>
