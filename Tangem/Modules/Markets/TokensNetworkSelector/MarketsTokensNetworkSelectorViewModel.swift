@@ -113,20 +113,29 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     // MARK: - Private Implementation
 
     private func bind() {
-        walletDataProvider.selectedUserWalletModelPublisher
+        let selectedUserWalletModelPublisher = walletDataProvider
+            .selectedUserWalletModelPublisher
             .removeDuplicates()
+
+        selectedUserWalletModelPublisher
             .withWeakCaptureOf(self)
             .sink { viewModel, userWalletId in
                 guard let userWalletModel = viewModel.walletDataProvider.userWalletModels.first(where: { $0.userWalletId == userWalletId }) else {
                     return
                 }
 
-                Analytics.log(.marketsChartWalletSelected)
-
                 viewModel.setNeedSelectWallet(userWalletModel)
                 viewModel.readonlyTokens = viewModel.tokenItems.filter { viewModel.isAdded($0) }
                 viewModel.reloadSelectorItemsFromTokenItems()
                 viewModel.makeWalletSelectorViewModel(by: userWalletModel)
+            }
+            .store(in: &bag)
+
+        // This subscription is only used to send analytics
+        selectedUserWalletModelPublisher
+            .dropFirst()
+            .sink { _ in
+                Analytics.log(.marketsChartWalletSelected)
             }
             .store(in: &bag)
     }
@@ -253,11 +262,6 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     }
 
     private func setNeedSelectWallet(_ userWalletModel: UserWalletModel?) {
-        Analytics.log(
-            event: .manageTokensWalletSelected,
-            params: [.source: Analytics.ParameterValue.mainToken.rawValue]
-        )
-
         pendingAdd = []
         reloadSelectorItemsFromTokenItems()
     }
