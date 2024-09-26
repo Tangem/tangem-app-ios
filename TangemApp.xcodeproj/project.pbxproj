@@ -869,6 +869,8 @@
 		B6DA215E2C52BC790047B1A0 /* FakeMarketsHistoryChartViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DA215D2C52BC790047B1A0 /* FakeMarketsHistoryChartViewModelFactory.swift */; };
 		B6DD245E2B1A77860097F674 /* BottomScrollableSheetStateObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DD245D2B1A77860097F674 /* BottomScrollableSheetStateObserver.swift */; };
 		B6DF7E792AA95DBB007C92BD /* ListFooterOverlayShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF7E782AA95DBB007C92BD /* ListFooterOverlayShadowView.swift */; };
+		B6DF90572CA2FA0F0099FED5 /* UINavigationController+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF90562CA2FA0F0099FED5 /* UINavigationController+.swift */; };
+		B6DF90592CA302280099FED5 /* MainCoordinatorNavigationAssertion.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF90582CA302270099FED5 /* MainCoordinatorNavigationAssertion.swift */; };
 		B6E31B5F2C89F72400604C8F /* ViewHierarchySnapshottingContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E31B5E2C89F72400604C8F /* ViewHierarchySnapshottingContainerViewController.swift */; };
 		B6E31B642C8A240400604C8F /* MainBottomSheetFooterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E31B632C8A240400604C8F /* MainBottomSheetFooterViewModel.swift */; };
 		B6E8BBFB2A2F209B0012E7D3 /* InfinityFrameModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E8BBFA2A2F209B0012E7D3 /* InfinityFrameModifier.swift */; };
@@ -2851,6 +2853,8 @@
 		B6DA215D2C52BC790047B1A0 /* FakeMarketsHistoryChartViewModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeMarketsHistoryChartViewModelFactory.swift; sourceTree = "<group>"; };
 		B6DD245D2B1A77860097F674 /* BottomScrollableSheetStateObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomScrollableSheetStateObserver.swift; sourceTree = "<group>"; };
 		B6DF7E782AA95DBB007C92BD /* ListFooterOverlayShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListFooterOverlayShadowView.swift; sourceTree = "<group>"; };
+		B6DF90562CA2FA0F0099FED5 /* UINavigationController+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+.swift"; sourceTree = "<group>"; };
+		B6DF90582CA302270099FED5 /* MainCoordinatorNavigationAssertion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCoordinatorNavigationAssertion.swift; sourceTree = "<group>"; };
 		B6E31B5E2C89F72400604C8F /* ViewHierarchySnapshottingContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHierarchySnapshottingContainerViewController.swift; sourceTree = "<group>"; };
 		B6E31B632C8A240400604C8F /* MainBottomSheetFooterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainBottomSheetFooterViewModel.swift; sourceTree = "<group>"; };
 		B6E8BBFA2A2F209B0012E7D3 /* InfinityFrameModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfinityFrameModifier.swift; sourceTree = "<group>"; };
@@ -5413,6 +5417,7 @@
 				B06243062AA9B75F00F7B9B2 /* Utilities */,
 				B06C08472A73FB4D00D982BC /* MainCoordinator.swift */,
 				B06C08482A73FB4D00D982BC /* MainCoordinatorView.swift */,
+				B6DF90582CA302270099FED5 /* MainCoordinatorNavigationAssertion.swift */,
 				B06C08492A73FB4D00D982BC /* MainView.swift */,
 				B06C084A2A73FB4D00D982BC /* MainViewModel.swift */,
 				B64598FC2B59A81D000FD73F /* MainViewPage.swift */,
@@ -5522,6 +5527,7 @@
 				5DF2522C24F95E390015B429 /* UIScreen+.swift */,
 				5D80ED412550172A0008DEF0 /* UIApplication+.swift */,
 				5DDE22EE2608EFDB008657C6 /* UIViewController+.swift */,
+				B6DF90562CA2FA0F0099FED5 /* UINavigationController+.swift */,
 				B0C6B4C226CE678900FA990B /* CGSize+.swift */,
 				B6FCEE742C40E28700CA9252 /* CGPoint+.swift */,
 				B6176A792A5B743A0062C399 /* CGRect+.swift */,
@@ -11311,6 +11317,7 @@
 				EFEE22BF2BFCF3450099917E /* BlockchainSDKNotificationMapper.swift in Sources */,
 				DC70C0002B924DA6002205BA /* SecurityOptionChangingMock.swift in Sources */,
 				DAFD691627CDEB7F00B36C71 /* CombinedExchangeService.swift in Sources */,
+				B6DF90572CA2FA0F0099FED5 /* UINavigationController+.swift in Sources */,
 				DC295B3A28615D03006CB7B6 /* NavHolder.swift in Sources */,
 				DCFE143E294B31C00053106B /* AppPresenter.swift in Sources */,
 				2D3E1DF52C9ACE80006AF975 /* CardsInfoPagerBottomOverlayFactoryParams.swift in Sources */,
@@ -11935,6 +11942,7 @@
 				B6C957A32ACBDDBE00671B37 /* IOS15AndBelowScrollDisabledModifier.swift in Sources */,
 				B0E1564D26B941AF005B33E4 /* SingleCardOnboardingViewModel.swift in Sources */,
 				B0BDF9BA2B4D3BB300EEBE4F /* MainHeaderUserWalletStateInfoProvider.swift in Sources */,
+				B6DF90592CA302280099FED5 /* MainCoordinatorNavigationAssertion.swift in Sources */,
 				B09BB85F259A075600B92000 /* TangemButton.swift in Sources */,
 				B0DB73FC2A8CA28800F6376E /* UnlockUserWalletBottomSheetViewModel.swift in Sources */,
 				B03FF89E2B5E4FC000202EC0 /* AppVisaBalances.swift in Sources */,

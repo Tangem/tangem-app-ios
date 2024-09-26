@@ -11,6 +11,10 @@ import SwiftUI
 struct MainCoordinatorView: CoordinatorView {
     @ObservedObject var coordinator: MainCoordinator
 
+    @State private var responderChainIntrospectionTrigger = UUID()
+
+    @StateObject private var navigationAssertion = MainCoordinatorNavigationAssertion()
+
     var body: some View {
         ZStack {
             if let mainViewModel = coordinator.mainViewModel {
@@ -26,6 +30,15 @@ struct MainCoordinatorView: CoordinatorView {
             if !state.isBottom {
                 coordinator?.hideMarketsTooltip()
             }
+        }
+        .onAppear {
+            responderChainIntrospectionTrigger = UUID()
+        }
+        .introspectResponderChain(
+            introspectedType: UINavigationController.self,
+            updateOnChangeOf: responderChainIntrospectionTrigger
+        ) { [weak navigationAssertion] navigationController in
+            navigationController.setDelegateSafe(navigationAssertion)
         }
     }
 
