@@ -94,12 +94,17 @@ class CommonUserWalletRepository: UserWalletRepository {
                 failedCardScanTracker.resetCounter()
                 sendEvent(.scan(isScanning: false))
 
-                let cardInfo = response.getCardInfo()
+                var cardInfo = response.getCardInfo()
                 updateAssociatedCard(for: cardInfo)
                 resetServices()
                 initializeAnalyticsContext(with: cardInfo)
                 let config = UserWalletConfigFactory(cardInfo).makeConfig()
                 Analytics.endLoggingCardScan()
+
+                cardInfo.name = UserWalletNameIndexationHelper.suggestedName(
+                    config.cardName,
+                    names: models.map(\.name)
+                )
 
                 let userWalletModel = CommonUserWalletModel(cardInfo: cardInfo)
                 if let userWalletModel {
@@ -489,7 +494,8 @@ class CommonUserWalletRepository: UserWalletRepository {
     }
 
     private func loadModels() {
-        let savedUserWallets = savedUserWallets(withSensitiveData: true)
+        var savedUserWallets = savedUserWallets(withSensitiveData: true)
+        migrateNamesIfNeeded(&savedUserWallets)
 
         models = savedUserWallets.map { userWalletStorageItem in
             if let userWallet = CommonUserWalletModel(userWallet: userWalletStorageItem) {
@@ -518,6 +524,18 @@ class CommonUserWalletRepository: UserWalletRepository {
         guard let selectedModel else { return }
 
         initializeServices(for: selectedModel)
+    }
+
+    private func migrateNamesIfNeeded(_ wallets: inout [StoredUserWallet]) {
+        guard !AppSettings.shared.didMigrateUserWalletNames else {
+            return
+        }
+
+        if let migratedWallets = UserWalletNameIndexationHelper.migratedWallets(wallets) {
+            UserWalletRepositoryUtil().saveUserWallets(migratedWallets)
+        }
+
+        AppSettings.shared.didMigrateUserWalletNames = true
     }
 
     private func sendEvent(_ event: UserWalletRepositoryEvent) {
