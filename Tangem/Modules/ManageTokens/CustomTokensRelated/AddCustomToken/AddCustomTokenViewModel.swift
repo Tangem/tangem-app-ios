@@ -72,12 +72,13 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
         networkSelectorViewModel.delegate = self
 
         bind()
+        bindAnalytics()
     }
 
     func onAppear() {
         if !didLogScreenAnalytics {
             let analyticsParams: [Analytics.ParameterKey: String] = [.source: settings.analyticsSourceRawValue]
-            Analytics.log(event: .manageTokensButtonCustomToken, params: analyticsParams)
+            Analytics.log(event: .manageTokensCustomTokenScreenOpened, params: analyticsParams)
             didLogScreenAnalytics = true
         }
     }
@@ -119,12 +120,15 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
             return
         }
 
-        let analyticsParams: [Analytics.ParameterKey: String] = [
-            .source: settings.analyticsSourceRawValue,
-            .blockchain: blockchain.displayName,
-        ]
+        // Send events only when changes have occurred
+        if selectedBlockchainNetworkId != nil, selectedBlockchainNetworkId != networkId {
+            let analyticsParams: [Analytics.ParameterKey: String] = [
+                .source: settings.analyticsSourceRawValue,
+                .blockchain: blockchain.displayName,
+            ]
 
-        Analytics.log(event: .manageTokensCustomTokenNetworkSelected, params: analyticsParams)
+            Analytics.log(event: .manageTokensCustomTokenNetworkSelected, params: analyticsParams)
+        }
 
         selectedBlockchainNetworkId = blockchain.networkId
         selectedBlockchainName = blockchain.displayName
@@ -134,14 +138,14 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
     }
 
     func setSelectedDerivationOption(derivationOption: AddCustomTokenDerivationOption) {
-        selectedDerivationOption = derivationOption
-
         let analyticsParams: [Analytics.ParameterKey: String] = [
             .source: settings.analyticsSourceRawValue,
             .derivation: derivationOption.parameterValue,
         ]
 
         Analytics.log(event: .manageTokensCustomTokenDerivationSelected, params: analyticsParams)
+
+        selectedDerivationOption = derivationOption
 
         validate()
     }
@@ -195,14 +199,6 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
                     contractAddressError = error
                 }
 
-                let analyticsParams: [Analytics.ParameterKey: String] = [
-                    .source: viewModel.settings.analyticsSourceRawValue,
-                    .validation: contractAddressError == nil ? Analytics.ParameterValue.ok.rawValue :
-                        Analytics.ParameterValue.error.rawValue,
-                ]
-
-                Analytics.log(event: .manageTokensCustomTokenAddress, params: analyticsParams)
-
                 self.contractAddressError = contractAddressError
                 return result
             }
@@ -222,6 +218,40 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
             self?.validate()
         }
         .store(in: &bag)
+    }
+
+    private func bindAnalytics() {
+        $contractAddress
+            .removeDuplicates()
+            .dropFirst()
+            .debounce(for: 1.0, scheduler: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, contractAddress in
+                guard !contractAddress.isEmpty else {
+                    return
+                }
+
+                let contractAddressError: Error?
+
+                do {
+                    let _ = try viewModel.enteredContractAddress(
+                        in: viewModel.enteredBlockchain()
+                    )
+                    contractAddressError = nil
+                } catch {
+                    contractAddressError = error
+                }
+
+                let analyticsParams: [Analytics.ParameterKey: String] = [
+                    .source: viewModel.settings.analyticsSourceRawValue,
+                    .validation: contractAddressError == nil ? Analytics.ParameterValue.ok.rawValue :
+                        Analytics.ParameterValue.error.rawValue,
+                ]
+
+                Analytics.log(event: .manageTokensCustomTokenAddress, params: analyticsParams)
+            }
+            .store(in: &bag)
     }
 
     private func enteredTokenItem() throws -> TokenItem {
@@ -428,6 +458,8 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
             params[.networkId] = blockchainNetwork.blockchain.networkId
             params[.contractAddress] = token.contractAddress
         }
+
+        params[.source] = settings.analyticsSourceRawValue
 
         Analytics.log(event: .manageTokensCustomTokenWasAdded, params: params)
     }
