@@ -117,6 +117,7 @@ class SendDestinationViewModel: ObservableObject, Identifiable {
         interactor
             .destinationValid
             .removeDuplicates()
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] destinationValid in
                 self?.showSuggestedDestinations = !destinationValid
             }
