@@ -246,6 +246,7 @@ private extension MarketsViewModel {
             .dropFirst()
             .debounce(for: 0.3, scheduler: DispatchQueue.main)
             .removeDuplicates()
+            .receive(on: DispatchQueue.global(qos: .userInitiated))
             .map { $0.range }
             .withWeakCaptureOf(self)
             .sink { viewModel, hotAreaRange in
@@ -347,7 +348,7 @@ private extension MarketsViewModel {
 
                 viewModel.tokenViewModels.append(contentsOf: items)
 
-                if viewModel.tokenViewModels.isEmpty {
+                if viewModel.dataProvider.items.isEmpty {
                     viewModel.tokenListLoadingState = .noResults
                     return
                 }

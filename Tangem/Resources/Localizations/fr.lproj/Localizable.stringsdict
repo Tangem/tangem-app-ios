@@ -2,6 +2,38 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
   <dict>
+    <key>onboarding_seed_generate_words_count</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>Vide</string>
+        <key>other</key>
+        <string>%li mots</string>
+      </dict>
+    </dict>
+    <key>onboarding_seed_generate_message_words_count</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>Vide</string>
+        <key>other</key>
+        <string>Écrivez ces %li mots dans l'ordre indiqué ci-dessous et conservez-les dans un endroit sûr et secret.</string>
+      </dict>
+    </dict>
     <key>card_label_card_count</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
@@ -50,38 +82,6 @@
         <string>Basé sur %li évaluations</string>
       </dict>
     </dict>
-    <key>onboarding_seed_generate_message_words_count</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%#@format@</string>
-      <key>format</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>one</key>
-        <string>Vide</string>
-        <key>other</key>
-        <string>Écrivez ces %li mots dans l'ordre indiqué ci-dessous et conservez-les dans un endroit sûr et secret.</string>
-      </dict>
-    </dict>
-    <key>onboarding_seed_generate_words_count</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%#@format@</string>
-      <key>format</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>one</key>
-        <string>Vide</string>
-        <key>other</key>
-        <string>%li mots</string>
-      </dict>
-    </dict>
     <key>referral_number_of_wallets</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
@@ -98,22 +98,6 @@
         <string>pour les portefeuilles %li </string>
       </dict>
     </dict>
-    <key>referral_wallets_purchased_count</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%#@format@</string>
-      <key>format</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>one</key>
-        <string>%li portefeuille</string>
-        <key>other</key>
-        <string>%li portefeuilles</string>
-      </dict>
-    </dict>
     <key>warning_missing_derivation_message</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
@@ -128,6 +112,22 @@
         <string>Utilisez votre carte pour obtenir une adresse pour le réseau %li</string>
         <key>other</key>
         <string>Utilisez votre carte pour obtenir des adresses pour les réseaux %li</string>
+      </dict>
+    </dict>
+    <key>referral_wallets_purchased_count</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>%li portefeuille</string>
+        <key>other</key>
+        <string>%li portefeuilles</string>
       </dict>
     </dict>
   </dict>

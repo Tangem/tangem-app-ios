@@ -212,6 +212,7 @@ private extension TransactionHistoryMapper {
             case .unstake: return .unstake
             case .vote: return .vote
             case .withdraw: return .withdraw
+            case .claimRewards: return .claimRewards
             }
         }
     }

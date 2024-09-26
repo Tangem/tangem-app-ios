@@ -2,7 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
   <dict>
-    <key>card_label_card_count</key>
+    <key>onboarding_seed_generate_words_count</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
       <string>%#@format@</string>
@@ -13,21 +13,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>other</key>
-        <string>%li カード</string>
-      </dict>
-    </dict>
-    <key>manage_tokens_number_of_wallets_ios</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%li / %#@total_wallets@</string>
-      <key>total_wallets</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>other</key>
-        <string>%li ウォレット\n%li ウォレット</string>
+        <string>%li 単語</string>
       </dict>
     </dict>
     <key>markets_token_details_based_on_ratings</key>
@@ -44,7 +30,7 @@
         <string>%li のレーティングに基づいて</string>
       </dict>
     </dict>
-    <key>onboarding_seed_generate_message_words_count</key>
+    <key>card_label_card_count</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
       <string>%#@format@</string>
@@ -55,35 +41,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>other</key>
-        <string>これらの %li 単語を以下の順番通りに書き留め、安全かつ秘密の場所に保管してください。</string>
-      </dict>
-    </dict>
-    <key>onboarding_seed_generate_words_count</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%#@format@</string>
-      <key>format</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>other</key>
-        <string>%li 単語</string>
-      </dict>
-    </dict>
-    <key>referral_number_of_wallets</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%#@format@</string>
-      <key>format</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>other</key>
-        <string>%liのウォレット</string>
+        <string>%li カード</string>
       </dict>
     </dict>
     <key>referral_wallets_purchased_count</key>
@@ -100,6 +58,20 @@
         <string>%li ウォレット</string>
       </dict>
     </dict>
+    <key>referral_number_of_wallets</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>other</key>
+        <string>%liのウォレット</string>
+      </dict>
+    </dict>
     <key>warning_missing_derivation_message</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
@@ -112,6 +84,34 @@
         <string>li</string>
         <key>other</key>
         <string>%li ネットワークのアドレスを取得するために、カードを利用してください</string>
+      </dict>
+    </dict>
+    <key>manage_tokens_number_of_wallets_ios</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%li / %#@total_wallets@</string>
+      <key>total_wallets</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>other</key>
+        <string>%li ウォレット\n%li ウォレット</string>
+      </dict>
+    </dict>
+    <key>onboarding_seed_generate_message_words_count</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>other</key>
+        <string>これらの %li 単語を以下の順番通りに書き留め、安全かつ秘密の場所に保管してください。</string>
       </dict>
     </dict>
   </dict>
