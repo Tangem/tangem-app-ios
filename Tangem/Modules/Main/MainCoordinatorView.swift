@@ -27,7 +27,7 @@ struct MainCoordinatorView: CoordinatorView {
             sheets
         }
         .onOverlayContentStateChange { [weak coordinator] state in
-            if !state.isBottom {
+            if !state.isCollapsed {
                 coordinator?.hideMarketsTooltip()
             }
         }
