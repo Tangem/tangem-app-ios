@@ -12,13 +12,22 @@ import Combine
 class SendAmountCompactViewModel: ObservableObject, Identifiable {
     // Use the estimated size as initial value
     @Published var viewSize: CGSize = .init(width: 361, height: 143)
+
     @Published var amount: String?
+    @Published private(set) var amountFieldOptions: SendDecimalNumberTextField.PrefixSuffixOptions?
+
     @Published var alternativeAmount: String?
+    @Published private(set) var alternativeAmountFieldOptions: SendDecimalNumberTextField.PrefixSuffixOptions?
 
     let tokenIconInfo: TokenIconInfo
 
-    private let tokenItem: TokenItem
     private weak var input: SendAmountInput?
+    private let tokenItem: TokenItem
+
+    private lazy var prefixSuffixOptionsFactory = SendDecimalNumberTextField.PrefixSuffixOptionsFactory(
+        cryptoCurrencyCode: tokenItem.currencySymbol,
+        fiatCurrencyCode: AppSettings.shared.selectedCurrencyCode
+    )
 
     private var bag: Set<AnyCancellable> = []
 
@@ -34,7 +43,7 @@ class SendAmountCompactViewModel: ObservableObject, Identifiable {
         bind(input: input)
     }
 
-    func bind(input: SendAmountInput) {
+    private func bind(input: SendAmountInput) {
         input.amountPublisher
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
@@ -48,7 +57,23 @@ class SendAmountCompactViewModel: ObservableObject, Identifiable {
                     currencySymbol: viewModel.tokenItem.currencySymbol,
                     decimalCount: viewModel.tokenItem.decimalCount
                 )
+
+                viewModel.updateFieldOptions(from: amount)
             }
             .store(in: &bag)
+    }
+
+    private func updateFieldOptions(from amount: SendAmount?) {
+        switch amount?.type {
+        case .typical:
+            amountFieldOptions = prefixSuffixOptionsFactory.makeCryptoOptions()
+            alternativeAmountFieldOptions = prefixSuffixOptionsFactory.makeFiatOptions()
+        case .alternative:
+            amountFieldOptions = prefixSuffixOptionsFactory.makeFiatOptions()
+            alternativeAmountFieldOptions = prefixSuffixOptionsFactory.makeCryptoOptions()
+        case nil:
+            amountFieldOptions = nil
+            alternativeAmountFieldOptions = nil
+        }
     }
 }
