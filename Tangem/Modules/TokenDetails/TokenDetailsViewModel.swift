@@ -289,9 +289,9 @@ private extension TokenDetailsViewModel {
         case .loading:
             // Do nothing
             break
-        case .availableToStake, .notEnabled, .temporaryUnavailable:
+        case .availableToStake, .notEnabled:
             activeStakingViewData = nil
-        case .loadingError:
+        case .loadingError, .temporaryUnavailable:
             activeStakingViewData = .init(balance: .loadingError, rewards: .none)
         case .staked(let staked):
             let rewards: ActiveStakingViewData.RewardsState? = {

@@ -146,12 +146,20 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
             return nil
         }
 
-        let manageTokensAdapter = ManageTokensAdapter(settings: .init(
-            longHashesSupported: userWalletModel.config.hasFeature(.longHashes),
-            existingCurves: userWalletModel.config.existingCurves,
-            supportedBlockchains: userWalletModel.config.supportedBlockchains,
-            userTokensManager: userWalletModel.userTokensManager
-        ))
+        let analyticsSourceRawValue = Analytics.ParameterValue.onboarding.rawValue
+        let analyticsParams: [Analytics.ParameterKey: String] = [.source: analyticsSourceRawValue]
+
+        Analytics.log(event: .manageTokensScreenOpened, params: analyticsParams)
+
+        let manageTokensAdapter = ManageTokensAdapter(
+            settings: .init(
+                longHashesSupported: userWalletModel.config.hasFeature(.longHashes),
+                existingCurves: userWalletModel.config.existingCurves,
+                supportedBlockchains: userWalletModel.config.supportedBlockchains,
+                userTokensManager: userWalletModel.userTokensManager,
+                analyticsSourceRawValue: analyticsSourceRawValue
+            )
+        )
 
         return OnboardingAddTokensViewModel(
             adapter: manageTokensAdapter,
@@ -165,6 +173,10 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
         }
         return PushNotificationsPermissionRequestViewModel(permissionManager: permissionManager, delegate: self)
     }()
+
+    private var analyticsSourceParameterValue: Analytics.ParameterValue {
+        .onboarding
+    }
 
     let input: OnboardingInput
 

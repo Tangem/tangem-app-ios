@@ -144,6 +144,10 @@ private extension UnstakingModel {
 
 private extension UnstakingModel {
     private func send() async throws -> SendTransactionDispatcherResult {
+        if let analyticsEvent = action.type.analyticsEvent {
+            Analytics.log(event: analyticsEvent, params: [.validator: action.validatorInfo?.name ?? ""])
+        }
+
         do {
             let transaction = try await stakingManager.transaction(action: action)
             let result = try await sendTransactionDispatcher.send(transaction: .staking(transaction))
@@ -161,7 +165,12 @@ private extension UnstakingModel {
 
     private func proceed(result: SendTransactionDispatcherResult) {
         _transactionTime.send(Date())
-        logTransactionAnalytics()
+        Analytics.log(event: .transactionSent, params: [
+            .source: Analytics.ParameterValue.transactionSourceStaking.rawValue,
+            .token: tokenItem.currencySymbol,
+            .blockchain: tokenItem.blockchain.displayName,
+            .feeType: selectedFee.option.rawValue,
+        ])
     }
 
     private func proceed(error: SendTransactionDispatcherResult.Error) {
@@ -349,14 +358,6 @@ private extension UnstakingModel {
         default:
             break
         }
-    }
-
-    func logTransactionAnalytics() {
-        guard let analyticsEvent = action.type.analyticsEvent else {
-            return
-        }
-
-        Analytics.log(event: analyticsEvent, params: [.validator: action.validatorInfo?.name ?? ""])
     }
 }
 

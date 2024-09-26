@@ -206,12 +206,13 @@ private extension TransactionHistoryMapper {
             return transactionType(fromContractMethodName: name)
         case .contractMethodName(let name):
             return transactionType(fromContractMethodName: name)
-        case .staking(let type, let validator):
+        case .staking(let type, _):
             switch type {
             case .stake: return .stake
             case .unstake: return .unstake
             case .vote: return .vote
             case .withdraw: return .withdraw
+            case .claimRewards: return .claimRewards
             }
         }
     }
