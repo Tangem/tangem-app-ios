@@ -19,6 +19,9 @@ class ManageTokensAdapter {
     private let userTokensManager: UserTokensManager
     private let loader: ListDataLoader
 
+    // This parameter is required due to the fact that the adapter is used in various places
+    private let analyticsSourceRawValue: String
+
     private let listItemsViewModelsSubject = CurrentValueSubject<[ManageTokensListItemViewModel], Never>([])
     private let alertSubject = CurrentValueSubject<AlertBinder?, Never>(nil)
     private let isPendingListsEmptySubject = CurrentValueSubject<Bool, Never>(true)
@@ -51,12 +54,32 @@ class ManageTokensAdapter {
         existingCurves = settings.existingCurves
         userTokensManager = settings.userTokensManager
         loader = ListDataLoader(supportedBlockchains: settings.supportedBlockchains)
+        analyticsSourceRawValue = settings.analyticsSourceRawValue
 
         bind()
     }
 
     func saveChanges(completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
-        userTokensManager.update(itemsToRemove: pendingRemove, itemsToAdd: pendingAdd, completion: completion)
+        userTokensManager.update(
+            itemsToRemove: pendingRemove,
+            itemsToAdd: pendingAdd
+        ) { [weak self] result in
+            guard let self else {
+                return
+            }
+
+            // Send analytics event with parameters for success added tokens
+            if case .success = result {
+                let analyticsParams: [Analytics.ParameterKey: String] = [
+                    .count: "\(pendingAdd.count)",
+                    .source: analyticsSourceRawValue,
+                ]
+
+                Analytics.log(event: .manageTokensTokenAdded, params: analyticsParams)
+            }
+
+            completion(result)
+        }
     }
 
     func resetAdapter() {
@@ -80,6 +103,9 @@ private extension ManageTokensAdapter {
         loader.$items
             .withWeakCaptureOf(self)
             .map { adapter, items -> [ManageTokensListItemViewModel] in
+                // Send analytics event for empty search tokens
+                adapter.sendIfNeededEmptySearchValueAnalyticsEvent()
+
                 let viewModels = items.compactMap(adapter.mapToListItemViewModel(coinModel:))
                 viewModels.forEach { $0.update(expanded: adapter.bindExpanded($0.coinId)) }
                 return viewModels
@@ -236,13 +262,6 @@ private extension ManageTokensAdapter {
         return ManageTokensListItemViewModel(with: coinModel, items: networkItems)
     }
 
-    func sendAnalyticsOnChangeTokenState(tokenIsSelected: Bool, tokenItem: TokenItem) {
-        Analytics.log(event: .manageTokensSwitcherChanged, params: [
-            .state: Analytics.ParameterValue.toggleState(for: tokenIsSelected).rawValue,
-            .token: tokenItem.currencySymbol,
-        ])
-    }
-
     func displayAlertAndUpdateSelection(for tokenItem: TokenItem, title: String, message: String) {
         let okButton = Alert.Button.default(Text(Localization.commonOk)) {
             self.updateSelection(tokenItem)
@@ -266,11 +285,36 @@ private extension ManageTokensAdapter {
     }
 }
 
+// MARK: - Analytics
+
+private extension ManageTokensAdapter {
+    func sendAnalyticsOnChangeTokenState(tokenIsSelected: Bool, tokenItem: TokenItem) {
+        let analyticsParams: [Analytics.ParameterKey: String] = [
+            .state: Analytics.ParameterValue.toggleState(for: tokenIsSelected).rawValue,
+            .token: tokenItem.currencySymbol,
+            .source: analyticsSourceRawValue,
+        ]
+
+        Analytics.log(event: .manageTokensSwitcherChanged, params: analyticsParams)
+    }
+
+    /// Send analytics event for empty search tokens
+    func sendIfNeededEmptySearchValueAnalyticsEvent() {
+        guard let searchValue = loader.lastSearchTextValue, !searchValue.isEmpty, loader.items.isEmpty else {
+            return
+        }
+
+        let analyticsParams: [Analytics.ParameterKey: String] = [.input: searchValue]
+        Analytics.log(event: .manageTokensTokenIsNotFound, params: analyticsParams)
+    }
+}
+
 extension ManageTokensAdapter {
     struct Settings {
         let longHashesSupported: Bool
         let existingCurves: [EllipticCurve]
         let supportedBlockchains: Set<Blockchain>
         let userTokensManager: UserTokensManager
+        let analyticsSourceRawValue: String
     }
 }

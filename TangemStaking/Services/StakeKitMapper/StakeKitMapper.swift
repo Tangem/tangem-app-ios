@@ -79,7 +79,8 @@ struct StakeKitMapper {
     // MARK: - Actions
 
     func mapToEnterAction(from response: StakeKitDTO.Actions.Enter.Response) throws -> EnterAction {
-        guard let transactions = response.transactions, !transactions.isEmpty else {
+        guard let transactions = response.transactions?.filter({ $0.status != .skipped }),
+              !transactions.isEmpty else {
             throw StakeKitMapperError.noData("EnterAction.transactions not found")
         }
 
@@ -87,12 +88,8 @@ struct StakeKitMapper {
             throw StakeKitMapperError.noData("EnterAction.amount not found")
         }
 
-        let actionTransaction: [ActionTransaction] = try transactions.map { transaction in
-            try ActionTransaction(
-                id: transaction.id,
-                stepIndex: transaction.stepIndex,
-                status: mapToTransactionStatus(from: transaction.status)
-            )
+        let actionTransaction: [ActionTransaction] = transactions.map { transaction in
+            ActionTransaction(id: transaction.id, stepIndex: transaction.stepIndex)
         }
 
         return try EnterAction(
@@ -105,20 +102,17 @@ struct StakeKitMapper {
     }
 
     func mapToExitAction(from response: StakeKitDTO.Actions.Exit.Response) throws -> ExitAction {
-        guard let transactions = response.transactions, !transactions.isEmpty else {
-            throw StakeKitMapperError.noData("EnterAction.transactions not found")
+        guard let transactions = response.transactions?.filter({ $0.status != .skipped }),
+              !transactions.isEmpty else {
+            throw StakeKitMapperError.noData("ExitAction.transactions not found")
         }
 
         guard let amount = Decimal(string: response.amount) else {
-            throw StakeKitMapperError.noData("EnterAction.amount not found")
+            throw StakeKitMapperError.noData("ExitAction.amount not found")
         }
 
-        let actionTransaction: [ActionTransaction] = try transactions.map { transaction in
-            try ActionTransaction(
-                id: transaction.id,
-                stepIndex: transaction.stepIndex,
-                status: mapToTransactionStatus(from: transaction.status)
-            )
+        let actionTransaction: [ActionTransaction] = transactions.map { transaction in
+            ActionTransaction(id: transaction.id, stepIndex: transaction.stepIndex)
         }
 
         return try ExitAction(
@@ -131,20 +125,17 @@ struct StakeKitMapper {
     }
 
     func mapToPendingAction(from response: StakeKitDTO.Actions.Pending.Response) throws -> PendingAction {
-        guard let transactions = response.transactions, !transactions.isEmpty else {
-            throw StakeKitMapperError.noData("EnterAction.transactions not found")
+        guard let transactions = response.transactions?.filter({ $0.status != .skipped }),
+              !transactions.isEmpty else {
+            throw StakeKitMapperError.noData("PendingAction.transactions not found")
         }
 
         guard let amount = Decimal(string: response.amount) else {
-            throw StakeKitMapperError.noData("EnterAction.amount not found")
+            throw StakeKitMapperError.noData("PendingAction.amount not found")
         }
 
-        let actionTransaction: [ActionTransaction] = try transactions.map { transaction in
-            try ActionTransaction(
-                id: transaction.id,
-                stepIndex: transaction.stepIndex,
-                status: mapToTransactionStatus(from: transaction.status)
-            )
+        let actionTransaction: [ActionTransaction] = transactions.map { transaction in
+            ActionTransaction(id: transaction.id, stepIndex: transaction.stepIndex)
         }
 
         return try PendingAction(
@@ -175,7 +166,6 @@ struct StakeKitMapper {
             id: response.id,
             actionId: stakeId,
             network: response.network.rawValue,
-            status: mapToTransactionStatus(from: response.status),
             unsignedTransactionData: mapToTransactionUnsignedData(from: unsignedTransaction, network: response.network),
             fee: fee
         )
@@ -297,20 +287,6 @@ struct StakeKitMapper {
     }
 
     // MARK: - Inner types
-
-    func mapToTransactionStatus(from status: StakeKitDTO.Transaction.Response.Status) throws -> TransactionStatus {
-        switch status {
-        case .created: .created
-        case .waitingForSignature: .waitingForSignature
-        case .broadcasted: .broadcasted
-        case .pending: .pending
-        case .confirmed: .confirmed
-        case .failed: .failed
-        case .skipped: .skipped
-        case .notFound, .blocked, .signed:
-            throw StakeKitMapperError.notImplement
-        }
-    }
 
     func mapToTransactionUnsignedData(from unsignedData: String, network: StakeKitNetworkType) throws -> String {
         switch network {
