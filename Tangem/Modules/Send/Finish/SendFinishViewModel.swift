@@ -44,11 +44,11 @@ class SendFinishViewModel: ObservableObject, Identifiable {
     }
 
     func onAppear() {
-        if let validatorName = stakingValidatorsCompactViewModel?.selectedValidator?.name {
+        if let stakingAnalyticsAction = actionType.stakingAnalyticsAction {
             Analytics.log(event: .stakingStakeInProgressScreenOpened, params: [
-                .validator: validatorName,
+                .validator: stakingValidatorsCompactViewModel?.selectedValidator?.name ?? "",
                 .token: tokenItem.currencySymbol,
-                .action: actionType.analyticsAction?.rawValue ?? "",
+                .action: stakingAnalyticsAction.rawValue,
             ])
         } else {
             Analytics.log(event: .sendTransactionSentScreenOpened, params: [

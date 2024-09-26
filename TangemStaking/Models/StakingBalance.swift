@@ -34,8 +34,15 @@ public struct StakingBalance: Hashable {
 }
 
 public extension Array where Element == StakingBalance {
-    func staking() -> Self {
+    /// All staked / blocked balances that were received from the blockchain
+    func blocked() -> Self {
         filter { $0.balanceType != .pending && $0.balanceType != .rewards }
+    }
+
+    /// The balance of "stakes" includes the `pending` balance from the local cache
+    /// DO NOT use for get the balance
+    func stakes() -> Self {
+        filter { $0.balanceType != .rewards }
     }
 
     func rewards() -> Self {

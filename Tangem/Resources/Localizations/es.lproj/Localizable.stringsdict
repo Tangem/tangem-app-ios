@@ -2,54 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
   <dict>
-    <key>card_label_card_count</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%#@format@</string>
-      <key>format</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>one</key>
-        <string>%li tarjeta</string>
-        <key>other</key>
-        <string>%li tarjetas </string>
-      </dict>
-    </dict>
-    <key>manage_tokens_number_of_wallets_ios</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%li %#@total_wallets@</string>
-      <key>total_wallets</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>one</key>
-        <string>%li billetera</string>
-        <key>other</key>
-        <string>%li billeteras</string>
-      </dict>
-    </dict>
-    <key>markets_token_details_based_on_ratings</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%#@format@</string>
-      <key>format</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>one</key>
-        <string>Basado en %li evaluación </string>
-        <key>other</key>
-        <string>Basado en %li evaluaciónes</string>
-      </dict>
-    </dict>
     <key>onboarding_seed_generate_message_words_count</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
@@ -82,7 +34,7 @@
         <string>%li palabras</string>
       </dict>
     </dict>
-    <key>referral_number_of_wallets</key>
+    <key>card_label_card_count</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
       <string>%#@format@</string>
@@ -93,9 +45,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>para %li billetera </string>
+        <string>%li tarjeta</string>
         <key>other</key>
-        <string>para %li billeteras</string>
+        <string>%li tarjetas </string>
       </dict>
     </dict>
     <key>referral_wallets_purchased_count</key>
@@ -112,6 +64,54 @@
         <string>%li billetera</string>
         <key>other</key>
         <string>%li billeteras</string>
+      </dict>
+    </dict>
+    <key>referral_number_of_wallets</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>para %li billetera </string>
+        <key>other</key>
+        <string>para %li billeteras</string>
+      </dict>
+    </dict>
+    <key>manage_tokens_number_of_wallets_ios</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%li %#@total_wallets@</string>
+      <key>total_wallets</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>%li billetera</string>
+        <key>other</key>
+        <string>%li billeteras</string>
+      </dict>
+    </dict>
+    <key>markets_token_details_based_on_ratings</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>Basado en %li evaluación </string>
+        <key>other</key>
+        <string>Basado en %li evaluaciónes</string>
       </dict>
     </dict>
     <key>warning_missing_derivation_message</key>

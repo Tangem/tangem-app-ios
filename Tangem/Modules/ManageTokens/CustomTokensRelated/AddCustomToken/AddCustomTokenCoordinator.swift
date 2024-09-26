@@ -42,7 +42,8 @@ class AddCustomTokenCoordinator: CoordinatorObject {
         let settings = AddCustomTokenViewModel.ManageTokensSettings(
             supportedBlockchains: supportedBlockchains,
             hdWalletsSupported: userWalletModel.config.hasFeature(.hdWallets),
-            derivationStyle: userWalletModel.config.derivationStyle
+            derivationStyle: userWalletModel.config.derivationStyle,
+            analyticsSourceRawValue: options.analyticsSourceRawValue
         )
 
         rootViewModel = AddCustomTokenViewModel(
@@ -58,6 +59,7 @@ class AddCustomTokenCoordinator: CoordinatorObject {
 extension AddCustomTokenCoordinator {
     struct Options {
         let userWalletModel: UserWalletModel
+        let analyticsSourceRawValue: String
     }
 }
 
