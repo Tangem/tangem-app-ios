@@ -14,18 +14,18 @@ enum OverlayContentState: Equatable {
         case tapGesture
     }
 
-    case top(trigger: Trigger)
-    case bottom
+    case expanded(trigger: Trigger)
+    case collapsed
 
-    var isBottom: Bool {
-        if case .bottom = self {
+    var isCollapsed: Bool {
+        if case .collapsed = self {
             return true
         }
         return false
     }
 
     var isTapGesture: Bool {
-        if case .top(.tapGesture) = self {
+        if case .expanded(.tapGesture) = self {
             return true
         }
         return false

@@ -30,8 +30,13 @@ struct MainBottomSheetFooterView: View {
                 snapshotOverlay
             }
             .cornerRadius(cornerRadius, corners: .topEdge)
-            .bottomScrollableSheetGrabber()
-            .bottomScrollableSheetShadow()
+            .overlay(alignment: .top) {
+                GrabberViewFactory()
+                    .makeSwiftUIView()
+            }
+            .background(alignment: .top) {
+                MainBottomSheetFooterShadowView(colorScheme: colorScheme, shadowColor: .black)
+            }
         }
     }
 

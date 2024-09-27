@@ -496,7 +496,7 @@ struct CardsInfoPagerView<
     private func gestureProperties(from method: PageSwitchMethod) -> (translation: CGSize, velocity: CGSize) {
         switch method {
         case .byGesture(let gestureValue):
-            return (gestureValue.translation, gestureValue.velocityCompat)
+            return (gestureValue.translation, gestureValue.velocity)
         case .programmatically:
             return (.zero, .zero)
         }

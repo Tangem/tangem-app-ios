@@ -66,3 +66,9 @@ extension StoredUserWallet: Decodable {
         }
     }
 }
+
+protocol NameableWallet {
+    var name: String { get set }
+}
+
+extension StoredUserWallet: NameableWallet {}
