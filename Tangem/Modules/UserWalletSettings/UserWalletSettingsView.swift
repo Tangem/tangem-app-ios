@@ -40,7 +40,7 @@ struct UserWalletSettingsView: View {
         DefaultTextFieldRowView(
             title: Localization.settingsWalletNameTitle,
             text: $viewModel.name,
-            isReadonly: !BiometricsUtil.isAvailable
+            isReadonly: !AppSettings.shared.saveUserWallets
         )
         .defaultRoundedBackground()
     }

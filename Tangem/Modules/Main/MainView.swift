@@ -21,7 +21,7 @@ struct MainView: View {
                 info.header
                     .contextMenu {
                         if !info.isLockedWallet {
-                            if BiometricsUtil.isAvailable {
+                            if AppSettings.shared.saveUserWallets {
                                 Button(
                                     action: weakify(viewModel, forFunction: MainViewModel.didTapEditWallet),
                                     label: editButtonLabel
