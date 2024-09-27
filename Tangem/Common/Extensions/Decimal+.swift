@@ -23,6 +23,10 @@ extension Decimal {
         (self as NSDecimalNumber).doubleValue
     }
 
+    var cgFloatValue: CGFloat {
+        (self as NSDecimalNumber).doubleValue
+    }
+
     func intValue(roundingMode: NSDecimalNumber.RoundingMode = .down) -> Int {
         (rounded(roundingMode: roundingMode) as NSDecimalNumber).intValue
     }

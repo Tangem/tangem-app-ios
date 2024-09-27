@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import class UIKit.UIScreen
 
 extension BinaryFloatingPoint {
     /// An Apple-like rubberbanding transformation for an arbitrary value of binary floating-point type.
@@ -40,5 +41,11 @@ extension BinaryFloatingPoint {
         }
 
         return 1.0
+    }
+
+    var roundedToDisplayScale: Self {
+        let displayScale = Self(UIScreen.main.scale)
+
+        return ceil(self * displayScale) / displayScale
     }
 }
