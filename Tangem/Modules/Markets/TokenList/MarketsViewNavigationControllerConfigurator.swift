@@ -23,13 +23,7 @@ final class MarketsViewNavigationControllerConfigurator: NSObject, ObservableObj
             navigationController.navigationBar.isHidden = true
         }
 
-        if navigationController.delegate != nil, navigationController.delegate !== self {
-            assertionFailure("Erasing internal SwiftUI delegate \(String(describing: navigationController.delegate))")
-        }
-
-        if navigationController.delegate !== self {
-            navigationController.delegate = self
-        }
+        navigationController.setDelegateSafe(self)
     }
 }
 

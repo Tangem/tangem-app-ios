@@ -143,7 +143,7 @@ private extension CommonExpressManager {
 
         try Task.checkCancellation()
 
-        try await updateSelectedProviderIfNeeded()
+        await updateSelectedProvider()
 
         return try await selectedProviderState()
     }
@@ -195,17 +195,11 @@ private extension CommonExpressManager {
         }
     }
 
-    func updateSelectedProviderIfNeeded() async throws {
-        let selectedIsError = await selectedProvider?.getState().isError
+    func updateSelectedProvider() async {
+        selectedProvider = await bestProvider()
 
-        // If we don't have selectedProvider
-        // Or if selectedProvider has an error
-        // just update it
-        if selectedProvider == nil || selectedIsError == true {
-            selectedProvider = await bestProvider()
-            if let selectedProvider {
-                analyticsLogger.bestProviderSelected(selectedProvider)
-            }
+        if let selectedProvider {
+            analyticsLogger.bestProviderSelected(selectedProvider)
         }
     }
 

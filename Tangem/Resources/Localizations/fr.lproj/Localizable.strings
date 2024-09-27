@@ -339,6 +339,7 @@
 "manage_tokens_wallet_support_only_one_network_title" = "Le portefeuille ne prend pas en charge plus d'un réseau";
 "markets_add_to_my_portfolio_description" = "Pour commencer à acheter, échanger ou recevoir cet actif, ajoutez ce jeton à au moins 1 réseau";
 "markets_add_to_my_portfolio_unavailable_description" = "Cet actif n'est pas disponible";
+"markets_add_to_my_portfolio_unavailable_for_wallet_description" = "This asset is not available for this wallet";
 "markets_add_to_portfolio_button" = "Ajouter au portfolio";
 "markets_add_token" = "Ajoutez un jeton";
 "markets_available networks" = "Réseaux disponibles";
@@ -699,7 +700,6 @@
 "staking_reward_schedule_block" = "Bloquer";
 "staking_reward_schedule_day" = "Jour";
 "staking_reward_schedule_each_day" = "Chaque jour";
-"staking_reward_schedule_each_minute" = "Chaque minute";
 "staking_reward_schedule_each_sec" = "Toute(s) les ~%1$@seconde(s)";
 "staking_reward_schedule_epoch" = "Époque";
 "staking_reward_schedule_era" = "Ère";
@@ -792,6 +792,7 @@
 "transaction_history_operation" = "Opération";
 "transaction_history_transaction_from_address" = "de : %@";
 "transaction_history_transaction_to_address" = "à : %@";
+"transaction_history_transaction_validator" = "validator: %@";
 "try_to_load_data_again_button_title" = "Réessayez";
 "twin_error_same_card" = "Vous avez scanné la même carte. Pour créer un portefeuille jumeau, vous devez scanner la carte portant le numéro %li";
 "twin_error_wrong_twin" = "Vous avez scanné une mauvaise carte jumelle. S'il vous plaît, essayez-en un autre";

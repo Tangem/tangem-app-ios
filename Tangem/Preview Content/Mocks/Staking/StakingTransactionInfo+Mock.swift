@@ -22,7 +22,6 @@ extension StakingTransactionInfo {
         id: UUID().uuidString,
         actionId: UUID().uuidString,
         network: "solana",
-        status: .created,
         unsignedTransactionData: "",
         fee: 1.23
     )

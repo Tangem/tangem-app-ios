@@ -156,7 +156,7 @@ class LegacyAddCustomTokenViewModel: ObservableObject {
     }
 
     func onAppear() {
-        Analytics.log(.customTokenScreenOpened)
+        Analytics.log(.manageTokensCustomTokenScreenOpened)
         updateBlockchains(supportedBlockchains)
         updateDerivationPaths()
     }

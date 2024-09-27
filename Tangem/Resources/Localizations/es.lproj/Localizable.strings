@@ -74,8 +74,8 @@
 "common_approve" = "Aprobar";
 "common_attention" = "Atención";
 "common_back" = "Atrás";
-"common_balance" = "Soldo: %@";
-"common_balance_title" = "Soldo";
+"common_balance" = "Saldo: %@";
+"common_balance_title" = "Saldo";
 "common_buy" = "Comprar";
 "common_buy_currency" = "Ir a %1$@";
 "common_camera_alert_button_settings" = "Ajustes";
@@ -98,7 +98,7 @@
 "common_done" = "Listo";
 "common_enabled" = "Activado";
 "common_error" = "Error";
-"common_exchange" = "Intercambie";
+"common_exchange" = "Intercambiar";
 "common_explore" = "Explore";
 "common_explore_transaction_history" = "Explore historial de transacciones";
 "common_explorer" = "Explorador(a)";
@@ -210,7 +210,7 @@
 "details_row_description_flip_to_hide" = "Gire la pantalla de su dispositivo hacia abajo para ocultar y mostrar rápidamente los saldos";
 "details_row_subtitle_signed_hashes_format" = "%@ hashes";
 "details_row_title_cid" = "ID de la tarjeta";
-"details_row_title_contact_to_support" = "Contacta con el equipo de soporte";
+"details_row_title_contact_to_support" = "Contactar con el equipo de soporte";
 "details_row_title_create_backup" = "Vincular más tarjetas";
 "details_row_title_create_backup_footer" = "Puede sincronizar hasta tres tarjetas en una sola billetera. Solo se puede hacer una vez.";
 "details_row_title_currency" = "Moneda de la aplicación";
@@ -339,13 +339,14 @@
 "manage_tokens_wallet_support_only_one_network_title" = "La billetera no admite más de una red";
 "markets_add_to_my_portfolio_description" = "Para comprar, intercambiar o recibir este activo, agréguelo a su cartera";
 "markets_add_to_my_portfolio_unavailable_description" = "Este activo no está disponible";
+"markets_add_to_my_portfolio_unavailable_for_wallet_description" = "This asset is not available for this wallet";
 "markets_add_to_portfolio_button" = "Añadir al portafolio";
 "markets_add_token" = "Agregue un token";
 "markets_available networks" = "Redes disponibles";
 "markets_common_my_portfolio" = "Mi portafolio";
 "markets_common_title" = "Mercado";
 "markets_generate_addresses_notification" = "Para generar direcciones para las redes seleccionadas, debe escanear su tarjeta Tangem";
-"markets_hint" = "Para agregar tokens, abra esta página o toque la barra de búsqueda";
+"markets_hint" = "Para agregar tokens, abra esta página o pulse sobre la barra de búsqueda";
 "markets_insights_info_description_message" = "Los datos de este apartado proceden de las siguientes redes: %@";
 "markets_loading_error_title" = "No se pueden cargar los datos…";
 "markets_loading_no_data_title" = "Sin datos";
@@ -357,11 +358,11 @@
 "markets_search_token_no_result_title" = "Sin resultado";
 "markets_select_network" = "Seleccione una red";
 "markets_select_wallet" = "Seleccione una billetera";
-"markets_selector_interval_1m_title" = "1 mo";
-"markets_selector_interval_1y_title" = "1 año";
+"markets_selector_interval_1m_title" = "1m";
+"markets_selector_interval_1y_title" = "1a";
 "markets_selector_interval_24h_title" = "24h";
-"markets_selector_interval_3m_title" = "3mos";
-"markets_selector_interval_6m_title" = "6mos";
+"markets_selector_interval_3m_title" = "3m";
+"markets_selector_interval_6m_title" = "6m";
 "markets_selector_interval_7d_title" = "7d";
 "markets_selector_interval_all_title" = "Todo";
 "markets_sort_by_experienced_buyers_title" = "Compradores experimentados";
@@ -699,7 +700,6 @@
 "staking_reward_schedule_block" = "Bloquear";
 "staking_reward_schedule_day" = "Día";
 "staking_reward_schedule_each_day" = "Cada día";
-"staking_reward_schedule_each_minute" = "Cada minuto";
 "staking_reward_schedule_each_sec" = "Cada ~%1$@ segundo(s)";
 "staking_reward_schedule_epoch" = "Época";
 "staking_reward_schedule_era" = "Era";
@@ -792,6 +792,7 @@
 "transaction_history_operation" = "Operación";
 "transaction_history_transaction_from_address" = "desde: %@";
 "transaction_history_transaction_to_address" = "a: %@";
+"transaction_history_transaction_validator" = "validator: %@";
 "try_to_load_data_again_button_title" = "Inténtelo de nuevo";
 "twin_error_same_card" = "Ha escaneado la misma tarjeta. Para crear una billetera gemela, necesite escanear la tarjeta con no. %li";
 "twin_error_wrong_twin" = "Ha escaneado la tarjeta gemela incorrecta. Por favor, intente con otra";
