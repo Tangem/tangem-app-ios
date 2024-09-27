@@ -1,5 +1,5 @@
 //
-//  SendViewModel.swift
+//  SendBaseViewModel.swift
 //  Tangem
 //
 //  Created by Sergey Balashov on 06.06.2024.
@@ -14,7 +14,7 @@ protocol SendViewAlertPresenter: AnyObject {
     func showAlert(_ alert: AlertBinder)
 }
 
-final class SendViewModel: ObservableObject {
+final class SendBaseViewModel: ObservableObject {
     // MARK: - ViewState
 
     @Published var step: SendStep
@@ -178,7 +178,7 @@ final class SendViewModel: ObservableObject {
 
 // MARK: - Private
 
-private extension SendViewModel {
+private extension SendBaseViewModel {
     func performApprove() {
         do {
             let (settings, approveViewModelInput) = try dataBuilder.makeDataForExpressApproveViewModel()
@@ -283,7 +283,7 @@ private extension SendViewModel {
 
 // MARK: - SendModelRoutable
 
-extension SendViewModel: SendModelRoutable {
+extension SendBaseViewModel: SendModelRoutable {
     func openNetworkCurrency() {
         let walletModels = userWalletModel.walletModelsManager.walletModels
         guard let feeCurrencyWalletModel = walletModels.first(where: { $0.tokenItem == feeTokenItem }) else {
@@ -297,7 +297,7 @@ extension SendViewModel: SendModelRoutable {
 
 // MARK: - SendViewAlertPresenter
 
-extension SendViewModel: SendViewAlertPresenter {
+extension SendBaseViewModel: SendViewAlertPresenter {
     func showAlert(_ alert: AlertBinder) {
         self.alert = alert
     }
@@ -305,7 +305,7 @@ extension SendViewModel: SendViewAlertPresenter {
 
 // MARK: - SendStepsManagerOutput
 
-extension SendViewModel: SendStepsManagerOutput {
+extension SendBaseViewModel: SendStepsManagerOutput {
     func update(state: SendStepsManagerViewState) {
         step.willDisappear(next: state.step)
         step.sendStepViewAnimatable.viewDidChangeVisibilityState(

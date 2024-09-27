@@ -18,7 +18,7 @@ struct SendFlowFactory {
         self.walletModel = walletModel
     }
 
-    func makeSendViewModel(router: SendRoutable) -> SendViewModel {
+    func makeSendViewModel(router: SendRoutable) -> SendBaseViewModel {
         let builder = SendDependenciesBuilder(userWalletModel: userWalletModel, walletModel: walletModel)
         let sendDestinationStepBuilder = SendDestinationStepBuilder(walletModel: walletModel, builder: builder)
         let sendAmountStepBuilder = SendAmountStepBuilder(walletModel: walletModel, builder: builder)
@@ -40,7 +40,7 @@ struct SendFlowFactory {
         return baseBuilder.makeSendViewModel(router: router)
     }
 
-    func makeSellViewModel(sellParameters: PredefinedSellParameters, router: SendRoutable) -> SendViewModel {
+    func makeSellViewModel(sellParameters: PredefinedSellParameters, router: SendRoutable) -> SendBaseViewModel {
         let builder = SendDependenciesBuilder(userWalletModel: userWalletModel, walletModel: walletModel)
         let sendDestinationStepBuilder = SendDestinationStepBuilder(walletModel: walletModel, builder: builder)
         let sendAmountStepBuilder = SendAmountStepBuilder(walletModel: walletModel, builder: builder)
@@ -62,7 +62,11 @@ struct SendFlowFactory {
         return baseBuilder.makeSendViewModel(sellParameters: sellParameters, router: router)
     }
 
+<<<<<<< HEAD:Tangem/Modules/Send/SendFactories/SendFlowFactory.swift
     func makeStakingViewModel(manager: some StakingManager, router: SendRoutable) -> SendViewModel {
+=======
+    func makeStakingViewModel(manager: any StakingManager, router: SendRoutable) -> SendBaseViewModel {
+>>>>>>> 38eeb8483 (IOS-7634 Folders):Tangem/Modules/Send/Factories/SendFlowFactory.swift
         let builder = SendDependenciesBuilder(userWalletModel: userWalletModel, walletModel: walletModel)
         let stakingValidatorsStepBuilder = StakingValidatorsStepBuilder()
         let sendAmountStepBuilder = SendAmountStepBuilder(walletModel: walletModel, builder: builder)
@@ -84,7 +88,11 @@ struct SendFlowFactory {
         return baseBuilder.makeSendViewModel(manager: manager, router: router)
     }
 
+<<<<<<< HEAD:Tangem/Modules/Send/SendFactories/SendFlowFactory.swift
     func makeUnstakingViewModel(manager: some StakingManager, action: UnstakingModel.Action, router: SendRoutable) -> SendViewModel {
+=======
+    func makeUnstakingViewModel(manager: any StakingManager, action: UnstakingModel.Action, router: SendRoutable) -> SendBaseViewModel {
+>>>>>>> 38eeb8483 (IOS-7634 Folders):Tangem/Modules/Send/Factories/SendFlowFactory.swift
         let builder = SendDependenciesBuilder(userWalletModel: userWalletModel, walletModel: walletModel)
         let sendAmountStepBuilder = SendAmountStepBuilder(walletModel: walletModel, builder: builder)
         let sendFeeStepBuilder = SendFeeStepBuilder(walletModel: walletModel, builder: builder)

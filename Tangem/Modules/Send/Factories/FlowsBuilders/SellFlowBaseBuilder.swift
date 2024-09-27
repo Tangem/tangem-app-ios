@@ -1,48 +1,39 @@
 //
-//  SendFlowBaseBuilder.swift
+//  SellFlowBaseBuilder.swift
 //  Tangem
 //
-//  Created by Sergey Balashov on 28.06.2024.
+//  Created by Sergey Balashov on 09.07.2024.
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
 import Foundation
 
-struct SendFlowBaseBuilder {
+struct SellFlowBaseBuilder {
     let userWalletModel: UserWalletModel
     let walletModel: WalletModel
-    let sendAmountStepBuilder: SendAmountStepBuilder
+
     let sendDestinationStepBuilder: SendDestinationStepBuilder
+    let sendAmountStepBuilder: SendAmountStepBuilder
     let sendFeeStepBuilder: SendFeeStepBuilder
     let sendSummaryStepBuilder: SendSummaryStepBuilder
     let sendFinishStepBuilder: SendFinishStepBuilder
     let builder: SendDependenciesBuilder
 
-    func makeSendViewModel(router: SendRoutable) -> SendViewModel {
+    func makeSendViewModel(sellParameters: PredefinedSellParameters, router: SendRoutable) -> SendBaseViewModel {
         let notificationManager = builder.makeSendNotificationManager()
-        let sendQRCodeService = builder.makeSendQRCodeService()
-        let sendModel = builder.makeSendModel()
+        let sendModel = builder.makeSendModel(predefinedSellParameters: sellParameters)
+
+        let sendDestinationCompactViewModel = sendDestinationStepBuilder.makeSendDestinationCompactViewModel(
+            input: sendModel
+        )
+
+        let sendAmountCompactViewModel = sendAmountStepBuilder.makeSendAmountCompactViewModel(
+            input: sendModel
+        )
 
         let fee = sendFeeStepBuilder.makeFeeSendStep(
             io: (input: sendModel, output: sendModel),
             notificationManager: notificationManager,
-            router: router
-        )
-
-        let amount = sendAmountStepBuilder.makeSendAmountStep(
-            io: (input: sendModel, output: sendModel),
-            actionType: .send,
-            sendFeeLoader: fee.interactor,
-            sendQRCodeService: sendQRCodeService,
-            sendAmountValidator: builder.makeSendAmountValidator(),
-            amountModifier: .none,
-            source: .send
-        )
-
-        let destination = sendDestinationStepBuilder.makeSendDestinationStep(
-            io: (input: sendModel, output: sendModel),
-            sendFeeInteractor: fee.interactor,
-            sendQRCodeService: sendQRCodeService,
             router: router
         )
 
@@ -51,9 +42,9 @@ struct SendFlowBaseBuilder {
             actionType: .send,
             descriptionBuilder: builder.makeSendTransactionSummaryDescriptionBuilder(),
             notificationManager: notificationManager,
-            editableType: .editable,
-            sendDestinationCompactViewModel: destination.compact,
-            sendAmountCompactViewModel: amount.compact,
+            editableType: .disable,
+            sendDestinationCompactViewModel: sendDestinationCompactViewModel,
+            sendAmountCompactViewModel: sendAmountCompactViewModel,
             stakingValidatorsCompactViewModel: nil,
             sendFeeCompactViewModel: fee.compact
         )
@@ -61,39 +52,43 @@ struct SendFlowBaseBuilder {
         let finish = sendFinishStepBuilder.makeSendFinishStep(
             input: sendModel,
             actionType: .send,
-            sendDestinationCompactViewModel: destination.compact,
-            sendAmountCompactViewModel: amount.compact,
+            sendDestinationCompactViewModel: sendDestinationCompactViewModel,
+            sendAmountCompactViewModel: sendAmountCompactViewModel,
             stakingValidatorsCompactViewModel: nil,
             sendFeeCompactViewModel: fee.compact
         )
 
         // We have to set dependicies here after all setups is completed
-        sendModel.sendAmountInteractor = amount.interactor
         sendModel.sendFeeInteractor = fee.interactor
         sendModel.informationRelevanceService = builder.makeInformationRelevanceService(
             sendFeeInteractor: fee.interactor
         )
 
-        notificationManager.setup(input: sendModel)
-        notificationManager.setupManager(with: sendModel)
+        // Update the fees in case we in the sell flow
+        fee.interactor.updateFees()
+
+        // If we want to notifications in the sell flow
+        // 1. Uncomment code below
+        // 2. Set the `sendAmountInteractor` into `sendModel`
+        // to support the amount changes from the notification's buttons
+
+        // notificationManager.setup(input: sendModel)
+        // notificationManager.setupManager(with: sendModel)
 
         // We have to do it after sendModel fully setup
         fee.compact.bind(input: sendModel)
 
-        let stepsManager = CommonSendStepsManager(
-            destinationStep: destination.step,
-            amountStep: amount.step,
+        let stepsManager = CommonSellStepsManager(
             feeStep: fee.step,
             summaryStep: summary.step,
             finishStep: finish
         )
 
         summary.step.set(router: stepsManager)
-        destination.step.set(stepRouter: stepsManager)
 
         let interactor = CommonSendBaseInteractor(input: sendModel, output: sendModel)
 
-        let viewModel = SendViewModel(
+        let viewModel = SendBaseViewModel(
             interactor: interactor,
             stepsManager: stepsManager,
             userWalletModel: userWalletModel,
@@ -103,8 +98,8 @@ struct SendFlowBaseBuilder {
             feeTokenItem: walletModel.feeTokenItem,
             coordinator: router
         )
-
         stepsManager.set(output: viewModel)
+
         fee.step.set(alertPresenter: viewModel)
         sendModel.router = viewModel
 

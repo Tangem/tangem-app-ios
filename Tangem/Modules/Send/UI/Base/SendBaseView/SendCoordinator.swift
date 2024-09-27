@@ -21,7 +21,7 @@ class SendCoordinator: CoordinatorObject {
 
     // MARK: - Root view model
 
-    @Published private(set) var rootViewModel: SendViewModel?
+    @Published private(set) var rootViewModel: SendBaseViewModel?
 
     // MARK: - Child coordinators
 

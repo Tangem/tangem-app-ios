@@ -1,5 +1,5 @@
 //
-//  SendView.swift
+//  SendBaseView.swift
 //  Tangem
 //
 //  Created by Andrey Chukavin on 30.10.2023.
@@ -8,8 +8,8 @@
 
 import SwiftUI
 
-struct SendView: View {
-    @ObservedObject var viewModel: SendViewModel
+struct SendBaseView: View {
+    @ObservedObject var viewModel: SendBaseViewModel
     let transitionService: SendTransitionService
 
     @Namespace private var namespace
@@ -236,7 +236,7 @@ private struct SendViewBackButton: View {
  struct SendView_Preview: PreviewProvider {
      static let card = FakeUserWalletModel.wallet3Cards
 
-     static let viewModel = SendViewModel(
+     static let viewModel = SendBaseViewModel(
          walletName: card.userWalletName,
          walletModel: card.walletModelsManager.walletModels.first!,
          userWalletModel: card,
@@ -248,12 +248,12 @@ private struct SendViewBackButton: View {
      )
 
      static var previews: some View {
-         SendView(viewModel: viewModel)
+         SendBaseView(viewModel: viewModel)
              .previewDisplayName("Full screen")
 
          NavHolder()
              .sheet(isPresented: .constant(true)) {
-                 SendView(viewModel: viewModel)
+                 SendBaseView(viewModel: viewModel)
              }
              .previewDisplayName("Sheet")
      }
