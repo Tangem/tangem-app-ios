@@ -56,7 +56,7 @@ enum SendFlowActionType: Hashable {
         }
     }
 
-    var analyticsAction: Analytics.ParameterValue? {
+    var stakingAnalyticsAction: Analytics.ParameterValue? {
         switch self {
         case .stake: .stakeActionStake
         case .unstake: .stakeActionUnstake

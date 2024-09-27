@@ -415,10 +415,10 @@ final class OverlayContentContainerViewController: UIViewController {
     private func notifyStateObserversIfNeeded(isCollapsedState: Bool, isExpandedState: Bool) {
         for stateObserver in stateObservers.values {
             if isCollapsedState {
-                stateObserver(.bottom)
+                stateObserver(.collapsed)
             } else if isExpandedState {
                 let trigger: OverlayContentState.Trigger = didTap ? .tapGesture : .dragGesture
-                stateObserver(.top(trigger: trigger))
+                stateObserver(.expanded(trigger: trigger))
             } else {
                 // No-op
             }

@@ -1,5 +1,5 @@
 //
-//  WeakifyFuncion.swift
+//  WeakifyFunction.swift
 //  Tangem
 //
 //  Created by Andrew Son on 04/10/23.
