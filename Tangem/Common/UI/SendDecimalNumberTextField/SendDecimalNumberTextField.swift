@@ -203,13 +203,12 @@ struct SendDecimalNumberTextField: View {
             //
             // The workaround here prevents this by placing the view into a `scaled` state, even if text scaling
             // is not actually needed at the moment. This scaled state should not affect view dimensions at all, because
-            // it mimics the absence of scaling (by increasing the scale by 1% and decreasing the width by the same value, 1%)
-            let onePercent = 0.01
-            let multiplierBase = 1.0
-            let defaultScaleMultiplier = multiplierBase + onePercent
-            let defaultWidthMultiplier = multiplierBase - onePercent
+            // it mimics the absence of scaling (by increasing the scale by 1% and decreasing the width by roughly the same value, ~1%)
+            let widthMultiplier = Decimal(stringValue: "0.99")!
+            let newMaxWidth = (Decimal(maxWidth) * widthMultiplier).cgFloatValue.roundedToDisplayScale
+            let scaleMultiplier = newMaxWidth / maxWidth
 
-            return (1.0 * defaultScaleMultiplier, maxWidth * defaultWidthMultiplier)
+            return (1.0 * scaleMultiplier, newMaxWidth)
         }
 
         // It turns out that in some cases, HStack inserts some space (1pt) between neighboring child views,
