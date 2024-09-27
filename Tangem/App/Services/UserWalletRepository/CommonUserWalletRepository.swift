@@ -105,7 +105,7 @@ class CommonUserWalletRepository: UserWalletRepository {
                     config.cardName,
                     names: models.map(\.name)
                 )
-                
+
                 let userWalletModel = CommonUserWalletModelFactory().makeModel(cardInfo: cardInfo)
                 if let userWalletModel {
                     initializeServices(for: userWalletModel)

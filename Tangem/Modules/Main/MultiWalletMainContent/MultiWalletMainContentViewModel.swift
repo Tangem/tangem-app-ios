@@ -81,7 +81,6 @@ final class MultiWalletMainContentViewModel: ObservableObject {
     private var isUpdating = false
 
     private var bag = Set<AnyCancellable>()
-    private var tokenListSyncSubscription: AnyCancellable?
 
     init(
         userWalletModel: UserWalletModel,
@@ -274,12 +273,14 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         let sectionsPublisher = sectionsPublisher
             .replaceEmpty(with: [])
 
+        var tokenListSyncSubscription: AnyCancellable?
         tokenListSyncSubscription = Publishers.Zip(tokenListSyncPublisher, sectionsPublisher)
+            .prefix(1)
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { viewModel, _ in
                 viewModel.isLoadingTokenList = false
-                viewModel.tokenListSyncSubscription = nil
+                withExtendedLifetime(tokenListSyncSubscription) {}
             }
     }
 
