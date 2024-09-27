@@ -24,21 +24,29 @@ struct UnstakingFlowBaseBuilder {
         notificationManager.setup(provider: unstakingModel, input: unstakingModel)
         notificationManager.setupManager(with: unstakingModel)
 
+        let actionType = builder.sendFlowActionType(actionType: action.type)
+
+        let amount = sendAmountStepBuilder.makeSendAmountStep(
+            io: (input: unstakingModel, output: unstakingModel),
+            actionType: actionType,
+            sendFeeLoader: unstakingModel,
+            sendQRCodeService: .none,
+            sendAmountValidator: builder.makeStakingSendAmountValidator(stakingManager: manager),
+            amountModifier: builder.makeStakingAmountModifier(),
+            source: .staking
+        )
+
         let sendFeeCompactViewModel = sendFeeStepBuilder.makeSendFeeCompactViewModel(input: unstakingModel)
         sendFeeCompactViewModel.bind(input: unstakingModel)
-
-        let sendAmountCompactViewModel = sendAmountStepBuilder.makeSendAmountCompactViewModel(input: unstakingModel)
-
-        let actionType = builder.sendFlowActionType(actionType: action.type)
 
         let summary = sendSummaryStepBuilder.makeSendSummaryStep(
             io: (input: unstakingModel, output: unstakingModel),
             actionType: actionType,
             descriptionBuilder: builder.makeStakingTransactionSummaryDescriptionBuilder(),
             notificationManager: notificationManager,
-            editableType: .noEditable,
+            editableType: .editable,
             sendDestinationCompactViewModel: .none,
-            sendAmountCompactViewModel: sendAmountCompactViewModel,
+            sendAmountCompactViewModel: amount.compact,
             stakingValidatorsCompactViewModel: .none,
             sendFeeCompactViewModel: sendFeeCompactViewModel
         )
@@ -47,16 +55,19 @@ struct UnstakingFlowBaseBuilder {
             input: unstakingModel,
             actionType: actionType,
             sendDestinationCompactViewModel: .none,
-            sendAmountCompactViewModel: sendAmountCompactViewModel,
+            sendAmountCompactViewModel: amount.compact,
             stakingValidatorsCompactViewModel: .none,
             sendFeeCompactViewModel: sendFeeCompactViewModel
         )
 
         let stepsManager = CommonUnstakingStepsManager(
+            amountStep: amount.step,
             summaryStep: summary.step,
             finishStep: finish,
             action: action
         )
+
+        summary.step.set(router: stepsManager)
 
         let interactor = CommonSendBaseInteractor(input: unstakingModel, output: unstakingModel)
 

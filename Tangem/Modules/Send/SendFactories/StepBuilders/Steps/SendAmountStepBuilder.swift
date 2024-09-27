@@ -30,6 +30,7 @@ struct SendAmountStepBuilder {
             amountModifier: amountModifier
         )
         let viewModel = makeSendAmountViewModel(
+            io: io,
             interactor: interactor,
             actionType: actionType,
             sendQRCodeService: sendQRCodeService
@@ -59,6 +60,7 @@ struct SendAmountStepBuilder {
 
 private extension SendAmountStepBuilder {
     func makeSendAmountViewModel(
+        io: IO,
         interactor: SendAmountInteractor,
         actionType: SendFlowActionType,
         sendQRCodeService: SendQRCodeService?
@@ -67,6 +69,7 @@ private extension SendAmountStepBuilder {
             userWalletName: builder.walletName(),
             tokenItem: walletModel.tokenItem,
             tokenIconInfo: builder.makeTokenIconInfo(),
+            prefilledAmount: io.input.amount?.crypto,
             balanceValue: walletModel.balanceValue ?? 0,
             balanceFormatted: Localization.commonCryptoFiatFormat(walletModel.balance, walletModel.fiatBalance),
             currencyPickerData: builder.makeCurrencyPickerData(),

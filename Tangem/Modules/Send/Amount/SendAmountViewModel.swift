@@ -73,6 +73,9 @@ class SendAmountViewModel: ObservableObject {
         self.interactor = interactor
         self.sendQRCodeService = sendQRCodeService
 
+        if let prefilledAmount = initial.prefilledAmount, prefilledAmount > 0 {
+            decimalNumberTextFieldViewModel.update(value: prefilledAmount)
+        }
         bind()
     }
 
@@ -212,6 +215,7 @@ extension SendAmountViewModel {
         let userWalletName: String
         let tokenItem: TokenItem
         let tokenIconInfo: TokenIconInfo
+        let prefilledAmount: Decimal?
         let balanceValue: Decimal
         let balanceFormatted: String
         let currencyPickerData: SendCurrencyPickerData

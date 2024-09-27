@@ -57,6 +57,8 @@ class CommonSendAmountInteractor {
         self.amountModifier = amountModifier
         self.type = type
 
+        _cachedAmount.send(input.amount)
+
         bind()
     }
 
