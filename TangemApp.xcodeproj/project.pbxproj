@@ -911,6 +911,7 @@
 		DA19DBD229477E7C00E43675 /* ContinuousCornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA19DBD129477E7C00E43675 /* ContinuousCornerRadius.swift */; };
 		DA19EF5F2B8CBB2600F7BDFD /* SendFeeRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA19EF5E2B8CBB2600F7BDFD /* SendFeeRoutable.swift */; };
 		DA19EF612B8CBDE200F7BDFD /* TangemBlogUrlBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA19EF602B8CBDE200F7BDFD /* TangemBlogUrlBuilder.swift */; };
+		DA1CD4402CA4396F0055057F /* CurrencySelectRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1CD43F2CA4396F0055057F /* CurrencySelectRoutable.swift */; };
 		DA1D3B712B56C7E900247393 /* QRScanViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1D3B702B56C7E900247393 /* QRScanViewCoordinator.swift */; };
 		DA1D3B732B56C82C00247393 /* QRScanViewCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1D3B722B56C82C00247393 /* QRScanViewCoordinatorView.swift */; };
 		DA1D3B752B56C87200247393 /* PhotoSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1D3B742B56C87200247393 /* PhotoSelectorView.swift */; };
@@ -2893,6 +2894,7 @@
 		DA19DBD129477E7C00E43675 /* ContinuousCornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContinuousCornerRadius.swift; sourceTree = "<group>"; };
 		DA19EF5E2B8CBB2600F7BDFD /* SendFeeRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendFeeRoutable.swift; sourceTree = "<group>"; };
 		DA19EF602B8CBDE200F7BDFD /* TangemBlogUrlBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemBlogUrlBuilder.swift; sourceTree = "<group>"; };
+		DA1CD43F2CA4396F0055057F /* CurrencySelectRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencySelectRoutable.swift; sourceTree = "<group>"; };
 		DA1D3B702B56C7E900247393 /* QRScanViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScanViewCoordinator.swift; sourceTree = "<group>"; };
 		DA1D3B722B56C82C00247393 /* QRScanViewCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScanViewCoordinatorView.swift; sourceTree = "<group>"; };
 		DA1D3B742B56C87200247393 /* PhotoSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSelectorView.swift; sourceTree = "<group>"; };
@@ -4339,6 +4341,7 @@
 			children = (
 				5D73C9852513C85D00487CA5 /* CurrencySelectView.swift */,
 				5D3951662559A87E002CC452 /* CurrencySelectViewModel.swift */,
+				DA1CD43F2CA4396F0055057F /* CurrencySelectRoutable.swift */,
 			);
 			path = CurrencySelect;
 			sourceTree = "<group>";
@@ -11638,6 +11641,7 @@
 				DC261CA8292CF56600875E64 /* AuthCoordinator.swift in Sources */,
 				EFC84B262C37FBB300546882 /* SendStep.swift in Sources */,
 				DC66BBE92859A8CC00CDF765 /* MailViewModel.swift in Sources */,
+				DA1CD4402CA4396F0055057F /* CurrencySelectRoutable.swift in Sources */,
 				B66913622C41790E0016B0EE /* OverlayContentContainer+Environment.swift in Sources */,
 				EF0FBB6F2C53BE300095A6BD /* SendAmountCompactViewModel.swift in Sources */,
 				DAA5E30128D21369003C0E80 /* UserWalletStorageAgreementViewModel.swift in Sources */,
