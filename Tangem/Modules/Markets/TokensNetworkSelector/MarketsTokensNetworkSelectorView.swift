@@ -41,11 +41,8 @@ struct MarketsTokensNetworkSelectorView: View {
 
     private var contentView: some View {
         VStack(alignment: .leading, spacing: .zero) {
-            VStack(alignment: .leading, spacing: Constants.headerTokenInfoSpace) {
-                Text(Localization.marketsSelectNetwork)
-                    .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
-                    .padding(.top, 12)
-                    .padding(.bottom, 8)
+            VStack(alignment: .leading, spacing: .zero) {
+                CommonHeaderTitleView(title: Localization.marketsSelectNetwork)
 
                 tokenInfoView
             }
@@ -118,6 +115,5 @@ struct MarketsTokensNetworkSelectorView: View {
 private extension MarketsTokensNetworkSelectorView {
     enum Constants {
         static let cornerRadius = 14.0
-        static let headerTokenInfoSpace = 8.0
     }
 }

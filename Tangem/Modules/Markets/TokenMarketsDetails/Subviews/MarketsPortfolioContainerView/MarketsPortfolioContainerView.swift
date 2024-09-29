@@ -19,7 +19,6 @@ struct MarketsPortfolioContainerView: View {
                 view
                     .padding(.bottom, 12) // Bottom padding use for no list views
             })
-            .padding(.top, 12) // Need for top padding without bottom padding
             .defaultRoundedBackground(with: Colors.Background.action, verticalPadding: .zero)
     }
 
@@ -27,9 +26,9 @@ struct MarketsPortfolioContainerView: View {
     private var headerView: some View {
         switch viewModel.typeView {
         case .empty, .loading, .unavailable:
-            EmptyView()
+            CommonHeaderTitleView(title: Localization.marketsCommonMyPortfolio)
         case .list:
-            CommonHeaderButtonView(
+            CommonHeaderTitleButtonView(
                 title: Localization.marketsCommonMyPortfolio,
                 button: .init(
                     asset: Assets.plus14,
@@ -114,7 +113,7 @@ struct MarketsPortfolioContainerView: View {
 
     @ViewBuilder
     private func viewWithHeader(_ view: some View) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: .zero) {
             headerView
 
             view

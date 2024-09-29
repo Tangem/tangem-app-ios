@@ -24,13 +24,8 @@ struct TokenMarketsDetailsLinksView: View {
             EmptyView()
         } else {
             VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
-                HStack {
-                    Text(Localization.marketsTokenDetailsLinks)
-                        .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
-
-                    Spacer()
-                }
-                .padding(.horizontal, Constants.horizontalPadding)
+                CommonHeaderTitleView(title: Localization.marketsTokenDetailsLinks)
+                    .padding(.horizontal, Constants.horizontalPadding)
 
                 ForEach(sections) { sectionInfo in
                     if sectionInfo.chips.isEmpty {
@@ -56,7 +51,7 @@ struct TokenMarketsDetailsLinksView: View {
                     }
                 }
             }
-            .defaultRoundedBackground(with: Colors.Background.action, horizontalPadding: 0)
+            .defaultRoundedBackground(with: Colors.Background.action, verticalPadding: .zero, horizontalPadding: .zero)
         }
     }
 }
