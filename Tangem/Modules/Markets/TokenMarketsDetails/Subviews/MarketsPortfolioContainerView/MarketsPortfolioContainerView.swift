@@ -23,44 +23,23 @@ struct MarketsPortfolioContainerView: View {
             .defaultRoundedBackground(with: Colors.Background.action, verticalPadding: .zero)
     }
 
-    private var headerView: some View {
-        HStack(alignment: .center) {
-            Text(Localization.marketsCommonMyPortfolio)
-                .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
-
-            Spacer()
-
-            addTokenButton
-        }
-    }
-
     @ViewBuilder
-    private var addTokenButton: some View {
+    private var headerView: some View {
         switch viewModel.typeView {
         case .empty, .loading, .unavailable:
             EmptyView()
         case .list:
-            Button(action: {
+            CommonHeaderButtonView(
+                title: Localization.marketsCommonMyPortfolio,
+                button: .init(
+                    asset: Assets.plus14,
+                    title: Localization.marketsAddToken,
+                    isDisabled: $viewModel.isAddTokenButtonDisabled,
+                    isLoading: $viewModel.isLoadingNetworks
+                )
+            ) {
                 viewModel.onAddTapAction()
-            }, label: {
-                HStack(spacing: 2) {
-                    Assets.plus14.image
-                        .foregroundStyle(viewModel.isAddTokenButtonDisabled ? Colors.Icon.inactive : Colors.Icon.primary1)
-
-                    Text(Localization.marketsAddToken)
-                        .style(
-                            Fonts.Regular.footnote.bold(),
-                            color: viewModel.isAddTokenButtonDisabled ? Colors.Icon.inactive : Colors.Text.primary1
-                        )
-                }
-                .padding(.leading, 8)
-                .padding(.trailing, 10)
-                .padding(.vertical, 4)
-            })
-            .background(Colors.Button.secondary)
-            .cornerRadiusContinuous(Constants.buttonCornerRadius)
-            .skeletonable(isShown: viewModel.isLoadingNetworks, size: .init(width: 60, height: 18), radius: 3, paddings: .init(top: 3, leading: 0, bottom: 3, trailing: 0))
-            .disabled(viewModel.isAddTokenButtonDisabled)
+            }
         }
     }
 

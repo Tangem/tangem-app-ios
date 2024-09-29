@@ -44,13 +44,20 @@ struct MarketsTokensNetworkSelectorView: View {
             VStack(alignment: .leading, spacing: Constants.headerTokenInfoSpace) {
                 Text(Localization.marketsSelectNetwork)
                     .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+                    .padding(.top, 12)
+                    .padding(.bottom, 8)
 
                 tokenInfoView
             }
 
             networkListView
         }
-        .roundedBackground(with: Colors.Background.action, padding: 14, radius: Constants.cornerRadius)
+        .roundedBackground(
+            with: Colors.Background.action,
+            verticalPadding: .zero,
+            horizontalPadding: 14,
+            radius: Constants.cornerRadius
+        )
     }
 
     private var tokenInfoView: some View {
