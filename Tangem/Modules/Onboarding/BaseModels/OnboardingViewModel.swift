@@ -203,7 +203,7 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
     }
 
     func initializeUserWallet(from cardInfo: CardInfo) {
-        guard let userWallet = CommonUserWalletModel(cardInfo: cardInfo) else { return }
+        guard let userWallet = CommonUserWalletModelFactory().makeModel(cardInfo: cardInfo) else { return }
 
         userWalletRepository.initializeServices(for: userWallet)
 

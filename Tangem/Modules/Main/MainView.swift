@@ -20,7 +20,12 @@ struct MainView: View {
                 info.header
                     .contextMenu {
                         if !info.isLockedWallet {
-                            Button(action: weakify(viewModel, forFunction: MainViewModel.didTapEditWallet), label: editButtonLabel)
+                            if AppSettings.shared.saveUserWallets {
+                                Button(
+                                    action: weakify(viewModel, forFunction: MainViewModel.didTapEditWallet),
+                                    label: editButtonLabel
+                                )
+                            }
 
                             Button(role: .destructive, action: weakify(viewModel, forFunction: MainViewModel.didTapDeleteWallet), label: deleteButtonLabel)
                         }

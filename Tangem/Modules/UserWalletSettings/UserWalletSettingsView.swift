@@ -36,8 +36,12 @@ struct UserWalletSettingsView: View {
     }
 
     private var nameSection: some View {
-        DefaultTextFieldRowView(title: Localization.settingsWalletNameTitle, text: $viewModel.name)
-            .defaultRoundedBackground()
+        DefaultTextFieldRowView(
+            title: Localization.settingsWalletNameTitle,
+            text: $viewModel.name,
+            isReadonly: !AppSettings.shared.saveUserWallets
+        )
+        .defaultRoundedBackground()
     }
 
     private var backupSection: some View {
