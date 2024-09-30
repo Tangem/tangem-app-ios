@@ -66,6 +66,8 @@ struct SupportedBlockchains {
         [
             .internetComputer,
             .sei(testnet: false),
+            .energyWebChain(testnet: false),
+            .energyWebX(curve: ed25519Curve(for: version), testnet: false),
         ]
     }
 
