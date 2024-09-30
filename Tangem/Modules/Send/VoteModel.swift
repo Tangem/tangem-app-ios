@@ -57,8 +57,7 @@ class VoteModel {
         self.tokenItem = tokenItem
         self.feeTokenItem = feeTokenItem
 
-        updateState()
-        logOpenScreen()
+        bind()
     }
 }
 
@@ -81,6 +80,17 @@ extension VoteModel: VoteModelStateProvider {
 // MARK: - Private
 
 private extension VoteModel {
+    func bind() {
+        _selectedValidator
+            .removeDuplicates()
+            .compactMap { $0.value }
+            .withWeakCaptureOf(self)
+            .sink { model, _ in
+                model.updateState()
+            }
+            .store(in: &bag)
+    }
+
     func updateState() {
         guard let validator = _selectedValidator.value.value else {
             return
@@ -374,32 +384,5 @@ extension VoteModel {
         case ready(fee: Decimal)
         case validationError(ValidationError, fee: Decimal)
         case networkError(Error)
-    }
-}
-
-// MARK: Analytics
-
-private extension VoteModel {
-    func logOpenScreen() {
-        switch action.type {
-        case .pending(.claimRewards), .pending(.restakeRewards):
-            Analytics.log(
-                event: .stakingRewardScreenOpened,
-                params: [.validator: action.validatorInfo?.address ?? ""]
-            )
-        default:
-            break
-        }
-    }
-}
-
-private extension StakingAction.PendingActionType {
-    var analyticsEvent: Analytics.Event? {
-        switch self {
-        case .withdraw: .stakingButtonWithdraw
-        case .claimRewards: .stakingButtonClaim
-        case .restakeRewards: .stakingButtonRestake
-        default: nil
-        }
     }
 }

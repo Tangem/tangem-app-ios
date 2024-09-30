@@ -17,6 +17,7 @@ protocol StakingNotificationManagerInput {
 protocol StakingNotificationManager: NotificationManager {
     func setup(provider: StakingModelStateProvider, input: StakingNotificationManagerInput)
     func setup(provider: UnstakingModelStateProvider, input: StakingNotificationManagerInput)
+    func setup(provider: VoteModelStateProvider, input: StakingNotificationManagerInput)
 }
 
 class CommonStakingNotificationManager {
@@ -129,6 +130,23 @@ private extension CommonStakingNotificationManager {
             show(error: .networkUnreachable)
         }
     }
+
+    func update(state: VoteModel.State) {
+        switch state {
+        case .loading, .ready:
+            switch tokenItem.blockchain {
+            case .tron:
+                show(notification: .revote(description: Localization.stakingNotificationsRevoteTronText))
+            default:
+                break
+            }
+
+            hideErrorEvents()
+        case .networkError:
+            show(error: .networkUnreachable)
+        case .validationError: break
+        }
+    }
 }
 
 // MARK: - Show/Hide
@@ -190,6 +208,17 @@ extension CommonStakingNotificationManager: StakingNotificationManager {
         .withWeakCaptureOf(self)
         .sink { manager, state in
             manager.update(state: state.0, yield: state.1, action: provider.stakingAction)
+        }
+    }
+
+    func setup(provider: VoteModelStateProvider, input: StakingNotificationManagerInput) {
+        stateSubscription = Publishers.CombineLatest(
+            provider.statePublisher,
+            input.stakingManagerStatePublisher.compactMap { $0.yieldInfo }.removeDuplicates()
+        )
+        .withWeakCaptureOf(self)
+        .sink { manager, state in
+            manager.update(state: state.0)
         }
     }
 

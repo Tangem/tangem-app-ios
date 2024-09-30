@@ -22,6 +22,8 @@ struct VoteFlowBaseBuilder {
     func makeSendViewModel(manager: any StakingManager, action: UnstakingModel.Action, router: SendRoutable) -> SendViewModel {
         let voteModel = builder.makeVoteModel(stakingManager: manager, action: action)
         let notificationManager = builder.makeStakingNotificationManager()
+        notificationManager.setup(provider: voteModel, input: voteModel)
+        notificationManager.setupManager(with: voteModel)
 
         let sendFeeCompactViewModel = sendFeeStepBuilder.makeSendFeeCompactViewModel(input: voteModel)
         sendFeeCompactViewModel.bind(input: voteModel)
@@ -61,6 +63,8 @@ struct VoteFlowBaseBuilder {
             finishStep: finish,
             action: action
         )
+
+        summary.step.set(router: stepsManager)
 
         let interactor = CommonSendBaseInteractor(input: voteModel, output: voteModel)
 

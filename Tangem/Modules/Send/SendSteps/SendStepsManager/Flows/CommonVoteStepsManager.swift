@@ -12,7 +12,7 @@ class CommonVoteStepsManager {
     private let validatorsStep: StakingValidatorsStep
     private let summaryStep: SendSummaryStep
     private let finishStep: SendFinishStep
-    private let action: UnstakingModel.Action
+    private let action: VoteModel.Action
 
     private var stack: [SendStep]
     private var bag: Set<AnyCancellable> = []
@@ -32,6 +32,14 @@ class CommonVoteStepsManager {
         stack = [summaryStep]
     }
 
+    private func currentStep() -> SendStep {
+        let last = stack.last
+
+        assert(last != nil, "Stack is empty")
+
+        return last ?? initialState.step
+    }
+
     private func next(step: SendStep) {
         stack.append(step)
 
@@ -47,12 +55,16 @@ class CommonVoteStepsManager {
         }
     }
 
-    private func currentStep() -> SendStep {
-        let last = stack.last
+    private func back() {
+        stack.removeLast()
+        let step = currentStep()
 
-        assert(last != nil, "Stack is empty")
-
-        return last ?? initialState.step
+        switch step.type {
+        case .summary:
+            output?.update(state: .init(step: step, action: .action))
+        default:
+            assertionFailure("There is no back step")
+        }
     }
 }
 
@@ -90,7 +102,9 @@ extension CommonVoteStepsManager: SendStepsManager {
     }
 
     func performContinue() {
-        assertionFailure("There's not continue action in this flow")
+        assert(stack.contains(where: { $0.type.isSummary }), "Continue is possible only after summary")
+
+        back()
     }
 }
 
