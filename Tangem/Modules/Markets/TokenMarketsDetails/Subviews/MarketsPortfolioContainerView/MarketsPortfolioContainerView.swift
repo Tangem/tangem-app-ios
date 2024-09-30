@@ -37,7 +37,7 @@ struct MarketsPortfolioContainerView: View {
     @ViewBuilder
     private var addTokenButton: some View {
         switch viewModel.typeView {
-        case .empty, .loading, .unavailable:
+        case .empty, .loading, .unavailable, .unsupported:
             EmptyView()
         case .list:
             Button(action: {
