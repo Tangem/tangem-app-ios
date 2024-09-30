@@ -744,8 +744,10 @@
 "story_web3_title" = "Web 3.0 сумісність";
 "swap_promo_text" = "Обмінюйте більше токенів за вигіднішим курсом прямо у своєму гаманці.";
 "swap_promo_title" = "З'явився новий провайдер обмінів!";
-"swapping_alert_cex_description" = "Сума включає: \n• комісію постачальника послуг\n• комісію мережі за відправлення %@ з біржі назад на адресу користувача.";
-"swapping_alert_dex_description" = "Сума включає комісію постачальника послуг.";
+"swapping_alert_cex_description" = "The amount includes:\n• service provider's fee\n• network fee for sending %@ from the exchange back to the user's address. \n\n Provider slippage is up to %@ \n At maximum slippage, the amount to be received will be %@";
+"swapping_alert_cex_description_without_slippage" = "Сума включає: \n• комісію постачальника послуг\n• комісію мережі за відправлення %@ з біржі назад на адресу користувача.";
+"swapping_alert_dex_description" = "The amount includes the service provider's fee. \n\nProvider slippage is up to %@ \n At maximum slippage, the amount to be received will be %@";
+"swapping_alert_dex_description_without_slippage" = "Сума включає комісію постачальника послуг.";
 "swapping_alert_title" = "Комісії";
 "swapping_approve_information_text" = "Всі децентралізовані біржі вимагають схвалення, щоб запобігти доступу смарт-контрактів до вашого гаманця без вашого дозволу. За задумом смарт-контракти не можуть отримати доступ до ваших токенів без вашого схвалення. \"Розблоковуючи\" свої токени, ви дозволяєте смарт-контракту 1inch витрачати ваші активи. Майнери мережі отримують плату за газ (сплачену вами), щоб зафіксувати цю дію в блокчейні. Ви можете обміняти свій токен після того, як дасте дозвіл.";
 "swapping_approve_information_title" = "Підтвердити";

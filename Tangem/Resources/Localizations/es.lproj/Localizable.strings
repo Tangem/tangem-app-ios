@@ -744,8 +744,10 @@
 "story_web3_title" = "Compatible con Web 3.0";
 "swap_promo_text" = "Intercambie más tokens a mejores tasas directamente en su billetera.";
 "swap_promo_title" = "¡Nuevo proveedor de intercambio disponible!";
-"swapping_alert_cex_description" = "El monto incluye:\n• Tarifas del proveedor de servicios\n• Tarifas de red por enviar %@ desde el intercambio a la dirección del usuario.";
-"swapping_alert_dex_description" = "El importe incluye los honorarios del proveedor de servicios.";
+"swapping_alert_cex_description" = "The amount includes:\n• service provider's fee\n• network fee for sending %@ from the exchange back to the user's address. \n\n Provider slippage is up to %@ \n At maximum slippage, the amount to be received will be %@";
+"swapping_alert_cex_description_without_slippage" = "El monto incluye:\n• Tarifas del proveedor de servicios\n• Tarifas de red por enviar %@ desde el intercambio a la dirección del usuario.";
+"swapping_alert_dex_description" = "The amount includes the service provider's fee. \n\nProvider slippage is up to %@ \n At maximum slippage, the amount to be received will be %@";
+"swapping_alert_dex_description_without_slippage" = "El importe incluye los honorarios del proveedor de servicios.";
 "swapping_alert_title" = "Tarifa";
 "swapping_approve_information_text" = "Todos los exchanges descentralizados requieren aprobaciones para evitar que los smart contracts accedan a su billetera sin su permiso. Por diseño, los smart contracts no pueden acceder a tus tokens a menos que lo apruebes. Al \"desbloquear\" sus tokens, autoriza al smart contract de 1-inch a gastarlos. Los mineros de la red reciben una tarifa de gas (pagada por voz) para registrar esta acción en la blockchain. Puede intercambiar su token después de dar la aprobación.";
 "swapping_approve_information_title" = "Aprobar";
