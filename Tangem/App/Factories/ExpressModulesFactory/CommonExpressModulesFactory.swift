@@ -39,7 +39,7 @@ extension CommonExpressModulesFactory: ExpressModulesFactory {
         let model = ExpressViewModel(
             initialWallet: initialWalletModel,
             userWalletModel: userWalletModel,
-            feeFormatter: fee
+            feeFormatter: feeFormatter,
             balanceFormatter: balanceFormatter,
             expressProviderFormatter: expressProviderFormatter,
             notificationManager: notificationManager,
