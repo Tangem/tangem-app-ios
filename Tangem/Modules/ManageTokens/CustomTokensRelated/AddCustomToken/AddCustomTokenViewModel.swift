@@ -72,7 +72,6 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
         networkSelectorViewModel.delegate = self
 
         bind()
-        bindAnalytics()
     }
 
     func onAppear() {
@@ -152,9 +151,17 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
 
     /// This method is needed to comply with the conditions for sending events. We send an event only when the text field has lost focus
     func onChangeFocusable(field: FocusableObserveField) {
-        guard foundStandardToken == nil else { return }
+        var analyticsParams: [Analytics.ParameterKey: String] = [.source: settings.analyticsSourceRawValue]
 
-        let analyticsParams: [Analytics.ParameterKey: String] = [.source: settings.analyticsSourceRawValue]
+        // Specified before the token search condition as follows from the event sending condition
+        if case .address = field {
+            analyticsParams[.validation] = contractAddressError == nil ? Analytics.ParameterValue.ok.rawValue :
+                Analytics.ParameterValue.error.rawValue
+
+            Analytics.log(event: .manageTokensCustomTokenAddress, params: analyticsParams)
+        }
+
+        guard foundStandardToken == nil else { return }
 
         switch field {
         case .name where !name.isEmpty:
@@ -218,40 +225,6 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
             self?.validate()
         }
         .store(in: &bag)
-    }
-
-    private func bindAnalytics() {
-        $contractAddress
-            .removeDuplicates()
-            .dropFirst()
-            .debounce(for: 1.0, scheduler: DispatchQueue.main)
-            .receive(on: DispatchQueue.main)
-            .withWeakCaptureOf(self)
-            .sink { viewModel, contractAddress in
-                guard !contractAddress.isEmpty else {
-                    return
-                }
-
-                let contractAddressError: Error?
-
-                do {
-                    let _ = try viewModel.enteredContractAddress(
-                        in: viewModel.enteredBlockchain()
-                    )
-                    contractAddressError = nil
-                } catch {
-                    contractAddressError = error
-                }
-
-                let analyticsParams: [Analytics.ParameterKey: String] = [
-                    .source: viewModel.settings.analyticsSourceRawValue,
-                    .validation: contractAddressError == nil ? Analytics.ParameterValue.ok.rawValue :
-                        Analytics.ParameterValue.error.rawValue,
-                ]
-
-                Analytics.log(event: .manageTokensCustomTokenAddress, params: analyticsParams)
-            }
-            .store(in: &bag)
     }
 
     private func enteredTokenItem() throws -> TokenItem {
@@ -620,6 +593,7 @@ extension AddCustomTokenViewModel {
 
 extension AddCustomTokenViewModel {
     enum FocusableObserveField {
+        case address
         case name
         case symbol
         case decimals
