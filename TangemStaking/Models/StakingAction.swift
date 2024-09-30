@@ -38,5 +38,12 @@ public extension StakingAction {
         case restakeRewards(passthrough: String)
         case voteLocked(passthrough: String)
         case unlockLocked(passthrough: String)
+
+        public var isVoteLocked: Bool {
+            switch self {
+            case .voteLocked(let passthrough): true
+            default: false
+            }
+        }
     }
 }
