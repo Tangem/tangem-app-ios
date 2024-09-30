@@ -77,6 +77,9 @@ struct MarketsPortfolioContainerView: View {
         case .unavailable:
             viewWithHeader(unavailableView)
                 .transition(.opacity.combined(with: .identity))
+        case .unsupported:
+            viewWithHeader(unsupportedView)
+                .transition(.opacity.combined(with: .identity))
         }
     }
 
@@ -109,6 +112,17 @@ struct MarketsPortfolioContainerView: View {
     }
 
     private var unavailableView: some View {
+        VStack(alignment: .leading, spacing: .zero) {
+            HStack {
+                Text(Localization.marketsAddToMyPortfolioUnavailableForWalletDescription)
+                    .style(.footnote, color: Colors.Text.tertiary)
+
+                Spacer()
+            }
+        }
+    }
+
+    private var unsupportedView: some View {
         VStack(alignment: .leading, spacing: .zero) {
             HStack {
                 Text(Localization.marketsAddToMyPortfolioUnavailableDescription)
@@ -147,6 +161,7 @@ extension MarketsPortfolioContainerView {
     enum TypeView: Int, Identifiable, Hashable {
         case empty
         case list
+        case unsupported
         case unavailable
         case loading
 

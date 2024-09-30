@@ -37,6 +37,10 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     private var userWalletModelsListSubscription: AnyCancellable?
     private var tokensListsUpdateSubscription: AnyCancellable?
 
+    private var hasMultiCurrencyWallet: Bool {
+        walletDataProvider.userWalletModels.contains(where: { $0.config.hasFeature(.multiCurrency) })
+    }
+
     // MARK: - Init
 
     init(
@@ -77,7 +81,14 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             isAddTokenButtonDisabled = tokenAddedToAllNetworksAndWallets(availableNetworks: networks)
 
             if tokenItemViewModels.isEmpty {
-                targetState = canAddAvailableNetworks ? .empty : .unavailable
+                switch canAddAvailableNetworks {
+                case .available:
+                    targetState = .empty
+                case .unavailable:
+                    targetState = .unavailable
+                case .unsupported:
+                    targetState = .unsupported
+                }
             }
         } else if tokenItemViewModels.isEmpty {
             targetState = .loading
@@ -94,25 +105,22 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
      - We get a list of available blockchains that came in the coin model
      - Checking the lists of available networks
      */
-    private func canAddToPortfolio(with networks: [NetworkModel]) -> Bool {
-        let multiCurrencyUserWalletModels = walletDataProvider.userWalletModels.filter { $0.config.hasFeature(.multiCurrency) }
+    private func canAddToPortfolio(with networks: [NetworkModel]) -> CanAddOption {
+        let userWalletModels = walletDataProvider.userWalletModels
 
-        guard
-            !networks.isEmpty,
-            !multiCurrencyUserWalletModels.isEmpty
-        else {
-            return false
+        guard !networks.isEmpty else {
+            return .unsupported
         }
 
         let networkIds = networks.reduce(into: Set<String>()) { $0.insert($1.networkId) }
 
-        for model in multiCurrencyUserWalletModels {
+        for model in userWalletModels {
             if !networkIds.intersection(model.config.supportedBlockchains.map { $0.networkId }).isEmpty {
-                return true
+                return .available
             }
         }
 
-        return false
+        return hasMultiCurrencyWallet ? .unsupported : .unavailable
     }
 
     private func tokenAddedToAllNetworksAndWallets(availableNetworks: [NetworkModel]) -> Bool {
@@ -296,5 +304,11 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDele
 extension MarketsPortfolioContainerViewModel {
     struct InputData {
         let coinId: String
+    }
+
+    enum CanAddOption {
+        case available
+        case unavailable
+        case unsupported
     }
 }
