@@ -378,11 +378,5 @@ extension VoteModel: SendBaseDataBuilderInput {
 
 extension VoteModel {
     typealias Action = StakingAction
-
-    enum State {
-        case loading
-        case ready(fee: Decimal)
-        case validationError(ValidationError, fee: Decimal)
-        case networkError(Error)
-    }
+    typealias State = UnstakingModel.State
 }
