@@ -108,22 +108,30 @@ final class ExpressViewModel: ObservableObject {
     }
 
     func userDidTapPriceChangeInfoButton(isBigLoss: Bool) {
-        runTask(in: self) { viewModel in
-            guard let providerType = await viewModel.interactor.getSelectedProvider()?.provider.type else {
+        runTask(in: self) { [weak self] viewModel in
+            guard
+                let selectedProvider = await viewModel.interactor.getSelectedProvider()?.provider,
+                let tokenItemSymbol = viewModel.interactor.getDestination()?.tokenItem.currencySymbol
+            else {
                 return
             }
 
-            let message: String = {
-                switch providerType {
-                case .cex:
-                    let tokenItemSymbol = viewModel.interactor.getDestination()?.tokenItem.currencySymbol ?? ""
-                    return Localization.swappingAlertCexDescription(tokenItemSymbol)
-                case .dex, .dexBridge:
-                    if isBigLoss {
-                        return "\(Localization.swappingHighPriceImpactDescription)\n\n\(Localization.swappingAlertDexDescription)"
-                    }
+            let message: String = { [weak self] in
 
-                    return Localization.swappingAlertDexDescription
+                guard let self else { return "" }
+
+                switch selectedProvider.type {
+                case .cex:
+                    return formSlippageMessage(
+                        tokenItemSymbol: tokenItemSymbol,
+                        providerName: selectedProvider.name
+                    )
+                case .dex, .dexBridge:
+                    return formSlippageMessage(
+                        tokenItemSymbol: tokenItemSymbol,
+                        providerName: selectedProvider.name,
+                        isBigLoss: isBigLoss
+                    )
                 }
             }()
 
@@ -163,6 +171,55 @@ final class ExpressViewModel: ObservableObject {
 
     func didTapCloseButton() {
         coordinator?.closeSwappingView()
+    }
+}
+
+// MARK: - Provider slippage message
+
+private extension ExpressViewModel {
+    // a crutch for the time being while this information is not on the backend
+    func fetchMaximumSlippage(for providerName: String) -> Decimal {
+        switch providerName.lowercased() {
+        case "changenow": 3
+        case "changelly", "simpleswap", "changehero": 5
+        case "1inch", "okx onchain": 2
+        case "okx crosschain": 3.5
+        default: 0
+        }
+    }
+
+    func fetchAmountAfterSlippage(for providerName: String) -> Decimal {
+        let slippagePercent = (100 - fetchMaximumSlippage(for: providerName)) / 100
+        let expectAmount: Decimal = receiveCurrencyViewModel?.expectAmount ?? 0
+
+        return expectAmount * slippagePercent
+    }
+
+    func formattedAmountAfterSlippage(for providerName: String) -> String {
+        let formatter = DecimalNumberFormatter(maximumFractionDigits: receiveCurrencyViewModel?.expectAmountDecimals ?? 8)
+
+        return formatter.format(value: fetchAmountAfterSlippage(for: providerName))
+    }
+
+    func formSlippageMessage(tokenItemSymbol: String, providerName: String) -> String {
+        Localization.swappingAlertCexDescription(
+            tokenItemSymbol,
+            "\(fetchMaximumSlippage(for: providerName))%",
+            "\(formattedAmountAfterSlippage(for: providerName)) " + tokenItemSymbol
+        )
+    }
+
+    func formSlippageMessage(tokenItemSymbol: String, providerName: String, isBigLoss: Bool) -> String {
+        let swappingAlertDexDescription = Localization.swappingAlertDexDescription(
+            "\(fetchMaximumSlippage(for: providerName))%",
+            "\(formattedAmountAfterSlippage(for: providerName)) " + tokenItemSymbol
+        )
+
+        if isBigLoss {
+            return "\(Localization.swappingHighPriceImpactDescription)\n\n\(swappingAlertDexDescription)"
+        }
+
+        return swappingAlertDexDescription
     }
 }
 

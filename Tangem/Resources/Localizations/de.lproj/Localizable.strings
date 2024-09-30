@@ -744,7 +744,7 @@
 "story_web3_title" = "Web 3.0-kompatibel";
 "swap_promo_text" = "Tausche mehr Token zu besseren Kursen direkt in deiner Brieftasche.";
 "swap_promo_title" = "Neuer Swap-Anbieter verfügbar!";
-"swapping_alert_cex_description" = "Der Betrag umfasst:\n- Gebühr des Dienstanbieters\n- Netzgebühr für die Rücksendung von %@ von der Vermittlungsstelle an die Adresse des Nutzers.";
+"swapping_alert_cex_description" = "Der Betrag beinhaltet:\n• Honorar des Dienstleisters\n• Netzwerkgebühr für das Senden %@ von der Börse zurück an die Adresse des Benutzers. \n\n Provider-Slippage kann bis zu %@ \n Bei maximaler Abweichung beträgt der zu erhaltende Betrag %@";
 "swapping_alert_dex_description" = "Der Betrag enthält die Gebühren des Dienstleisters.";
 "swapping_alert_title" = "Gebühren";
 "swapping_approve_information_text" = "Alle dezentralen Börsen benötigen Genehmigungen, um zu verhindern, dass intelligente Verträge ohne Ihre Erlaubnis auf Ihre Geldbörse zugreifen. Smart Contracts können nicht auf Ihre Token zugreifen, wenn Sie nicht zustimmen. Indem Sie Ihre Token \"freischalten\", ermächtigen Sie den 1-Zoll-Smart-Contract, sie auszugeben. Die Miner des Netzwerks erhalten eine (von Ihnen bezahlte) Gasgebühr, um diese Aktion in der Blockchain aufzuzeichnen. Sie können Ihre Token tauschen, nachdem Sie Ihre Zustimmung gegeben haben.";
