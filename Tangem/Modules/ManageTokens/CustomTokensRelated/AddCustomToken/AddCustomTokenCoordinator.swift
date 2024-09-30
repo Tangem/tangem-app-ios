@@ -42,7 +42,8 @@ class AddCustomTokenCoordinator: CoordinatorObject {
         let settings = AddCustomTokenViewModel.ManageTokensSettings(
             supportedBlockchains: supportedBlockchains,
             hdWalletsSupported: userWalletModel.config.hasFeature(.hdWallets),
-            derivationStyle: userWalletModel.config.derivationStyle
+            derivationStyle: userWalletModel.config.derivationStyle,
+            analyticsSourceRawValue: options.analyticsSourceRawValue
         )
 
         rootViewModel = AddCustomTokenViewModel(
@@ -58,14 +59,15 @@ class AddCustomTokenCoordinator: CoordinatorObject {
 extension AddCustomTokenCoordinator {
     struct Options {
         let userWalletModel: UserWalletModel
+        let analyticsSourceRawValue: String
     }
 }
 
 // MARK: - AddCustomTokenRoutable
 
-extension AddCustomTokenCoordinator: AddCustomTokenRoutable {
+extension AddCustomTokenCoordinator: AddCustomTokenRoutable, WalletSelectorRoutable {
     func openWalletSelector(with dataSource: WalletSelectorDataSource) {
-        let walletSelectorViewModel = WalletSelectorViewModel(dataSource: dataSource)
+        let walletSelectorViewModel = WalletSelectorViewModel(dataSource: dataSource, coordinator: self)
         self.walletSelectorViewModel = walletSelectorViewModel
     }
 
@@ -90,6 +92,10 @@ extension AddCustomTokenCoordinator: AddCustomTokenRoutable {
         )
         derivationSelectorModel.delegate = self
         self.derivationSelectorModel = derivationSelectorModel
+    }
+
+    func dissmisWalletSelectorModule() {
+        walletSelectorViewModel = nil
     }
 }
 

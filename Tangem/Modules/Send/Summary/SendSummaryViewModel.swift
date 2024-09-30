@@ -104,7 +104,7 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
                 event: .stakingConfirmationScreenOpened,
                 params: [
                     .validator: stakingValidatorsCompactViewModel?.selectedValidator?.address ?? "",
-                    .action: actionType.analyticsAction?.rawValue ?? "",
+                    .action: actionType.stakingAnalyticsAction?.rawValue ?? "",
                 ]
             )
         }

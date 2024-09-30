@@ -20,7 +20,12 @@ struct MainView: View {
                 info.header
                     .contextMenu {
                         if !info.isLockedWallet {
-                            Button(action: weakify(viewModel, forFunction: MainViewModel.didTapEditWallet), label: editButtonLabel)
+                            if AppSettings.shared.saveUserWallets {
+                                Button(
+                                    action: weakify(viewModel, forFunction: MainViewModel.didTapEditWallet),
+                                    label: editButtonLabel
+                                )
+                            }
 
                             Button(role: .destructive, action: weakify(viewModel, forFunction: MainViewModel.didTapDeleteWallet), label: deleteButtonLabel)
                         }
@@ -40,7 +45,7 @@ struct MainView: View {
         .onPageChange(viewModel.onPageChange(dueTo:))
         .onAppear(perform: viewModel.onViewAppear)
         .onDisappear(perform: viewModel.onViewDisappear)
-        .on(didAppear: viewModel.onDidAppear, willDisappear: viewModel.onWillDisappear)
+        .onDidAppear(perform: viewModel.onDidAppear)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .background(Colors.Background.secondary.edgesIgnoringSafeArea(.all))

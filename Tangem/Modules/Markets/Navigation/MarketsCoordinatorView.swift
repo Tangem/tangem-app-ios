@@ -21,6 +21,7 @@ struct MarketsCoordinatorView: CoordinatorView {
 
                     sheets
                 }
+                .ignoresSafeArea(.container, edges: .top) // Without it, the content won't go into the safe area top zone on over-scroll
             }
             .navigationViewStyle(.stack)
             .tint(Colors.Text.primary1)
@@ -43,6 +44,7 @@ struct MarketsCoordinatorView: CoordinatorView {
         NavHolder()
             .navigation(item: $coordinator.tokenMarketsDetailsCoordinator) {
                 TokenMarketsDetailsCoordinatorView(coordinator: $0)
+                    .ignoresSafeArea(.container, edges: .top) // Without it, the content won't go into the safe area top zone on over-scroll
             }
             .emptyNavigationLink()
     }

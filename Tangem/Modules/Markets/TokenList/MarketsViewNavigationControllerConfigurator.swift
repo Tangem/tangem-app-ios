@@ -23,9 +23,7 @@ final class MarketsViewNavigationControllerConfigurator: NSObject, ObservableObj
             navigationController.navigationBar.isHidden = true
         }
 
-        if navigationController.delegate !== self {
-            navigationController.delegate = self
-        }
+        navigationController.setDelegateSafe(self)
     }
 }
 

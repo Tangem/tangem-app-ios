@@ -40,6 +40,8 @@ final class MainViewModel: ObservableObject {
     private var pendingUserWalletIdsToUpdate: Set<UserWalletId> = []
     private var pendingUserWalletModelsToAdd: [UserWalletModel] = []
     private var shouldRecreatePagesAfterAddingPendingWalletModels = false
+    private var walletNameFieldValidator: AlertFieldValidator?
+
     private var shouldDelayBottomSheetVisibility = true
     private var isLoggingOut = false
 
@@ -135,18 +137,6 @@ final class MainViewModel: ObservableObject {
         }
     }
 
-    /// Handles `UIKit.UIViewController.viewWillDisappear(_:)`.
-    func onWillDisappear() {
-        let uiManager = mainBottomSheetUIManager
-        // `DispatchQueue.main.async` here prevents runtime warnings 'Publishing changes from within view updates
-        // is not allowed, this will cause undefined behavior.' in `AppCoordinator.swift:19`
-        DispatchQueue.main.async {
-            if uiManager.isShown {
-                uiManager.hide()
-            }
-        }
-    }
-
     func onPullToRefresh(completionHandler: @escaping RefreshCompletionHandler) {
         Analytics.log(.mainRefreshed)
 
@@ -188,10 +178,21 @@ final class MainViewModel: ObservableObject {
 
         guard let userWalletModel = userWalletRepository.selectedModel else { return }
 
+        let otherWalletNames = userWalletRepository.models.compactMap { model -> String? in
+            guard model.userWalletId != userWalletModel.userWalletId else { return nil }
+
+            return model.name
+        }
+
+        walletNameFieldValidator = AlertFieldValidator { input in
+            !(otherWalletNames.contains(input) || input.isEmpty)
+        }
+
         let alert = AlertBuilder.makeAlertControllerWithTextField(
             title: Localization.userWalletListRenamePopupTitle,
             fieldPlaceholder: Localization.userWalletListRenamePopupPlaceholder,
-            fieldText: userWalletModel.name
+            fieldText: userWalletModel.name,
+            fieldValidator: walletNameFieldValidator
         ) { newName in
             guard userWalletModel.name != newName else { return }
 

@@ -155,7 +155,7 @@ final class MarketsHistoryChartViewModel: ObservableObject {
             params: [
                 .token: tokenSymbol.uppercased(),
                 .source: Analytics.ParameterValue.chart.rawValue,
-                .period: selectedPriceInterval.rawValue,
+                .period: selectedPriceInterval.analyticsParameterValue,
             ]
         )
 

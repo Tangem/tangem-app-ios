@@ -92,7 +92,7 @@ extension CommonStakingPendingTransactionsRepository: StakingPendingTransactions
             hasPending = records.contains { record in
                 compare(record, balance, by: [.amount, .validator(.none)])
             }
-        case .active, .rewards, .unbonding, .warmup, .unstaked:
+        case .active, .rewards, .unbonding, .warmup, .unstaked, .pending:
             hasPending = records.contains { record in
                 compare(record, balance, by: [.validator(.some)])
             }

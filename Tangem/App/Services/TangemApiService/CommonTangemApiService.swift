@@ -16,7 +16,7 @@ class CommonTangemApiService {
     private let provider = TangemProvider<TangemApiTarget>(plugins: [
         CachePolicyPlugin(),
         TimeoutIntervalPlugin(),
-        TangemNetworkLoggerPlugin(configuration: .init(
+        TangemApiServiceLoggerPlugin(configuration: .init(
             output: TangemNetworkLoggerPlugin.tangemSdkLoggerOutput,
             logOptions: .verbose
         )),
@@ -160,22 +160,6 @@ extension CommonTangemApiService: TangemApiService {
             .map { $0.currencies.sorted(by: { $0.name < $1.name }) }
             .mapError { _ in AppError.serverUnavailable }
             .subscribe(on: currenciesQueue)
-            .eraseToAnyPublisher()
-    }
-
-    func loadRates(for coinIds: [String]) -> AnyPublisher<[String: Decimal], Error> {
-        provider
-            .requestPublisher(TangemApiTarget(
-                type: .rates(
-                    coinIds: coinIds,
-                    currencyId: AppSettings.shared.selectedCurrencyCode
-                ),
-                authData: authData
-            ))
-            .filterSuccessfulStatusAndRedirectCodes()
-            .map(RatesResponse.self)
-            .eraseError()
-            .map { $0.rates }
             .eraseToAnyPublisher()
     }
 
