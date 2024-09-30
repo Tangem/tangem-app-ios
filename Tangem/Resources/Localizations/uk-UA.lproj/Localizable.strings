@@ -711,6 +711,7 @@
 "staking_stake_more" = "Застейкати більше";
 "staking_summary_description_text" = "Ви стейкаєте %1$@ і будете отримувати %2$@ щороку";
 "staking_tap_to_unlock" = "Натисніть, щоб розблокувати";
+"staking_tap_to_unlock_or_vote" = "Tap to unlock or vote";
 "staking_tap_to_withdraw" = "Натисніть, щоб вивести кошти";
 "staking_title_stake" = "Застейкати %@";
 "staking_title_unstake" = "Зняти зі стейкінгу %@";

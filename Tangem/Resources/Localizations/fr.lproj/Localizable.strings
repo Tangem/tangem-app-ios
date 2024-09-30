@@ -711,6 +711,7 @@
 "staking_stake_more" = "Staker plus";
 "staking_summary_description_text" = "Vous stakez %1$@ et recevrez %2$@ par an";
 "staking_tap_to_unlock" = "Appuyez pour déverrouiller";
+"staking_tap_to_unlock_or_vote" = "Tap to unlock or vote";
 "staking_tap_to_withdraw" = "Appuyez pour retirer";
 "staking_title_stake" = "Stake %@";
 "staking_title_unstake" = "déstaker %@";

@@ -711,6 +711,7 @@
 "staking_stake_more" = "Stake more";
 "staking_summary_description_text" = "You stake %1$@ and will be receiving %2$@ yearly";
 "staking_tap_to_unlock" = "Tap to unlock";
+"staking_tap_to_unlock_or_vote" = "Tap to unlock or vote";
 "staking_tap_to_withdraw" = "Tap to withdraw";
 "staking_title_stake" = "Stake %@";
 "staking_title_unstake" = "Unstake %@";
