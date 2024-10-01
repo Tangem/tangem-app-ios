@@ -45,7 +45,7 @@ struct MarketsTokenDetailsInsightsView: View {
     }
 
     private var header: some View {
-        HStack(alignment: .center) {
+        HStack {
             if viewModel.shouldShowHeaderInfoButton {
                 Button(action: viewModel.showInsightsSheetInfo) {
                     HStack(spacing: 4) {

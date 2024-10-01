@@ -11,7 +11,7 @@ import SwiftUI
 /// This is a common component of the system design - a common header + button.
 /// Required due to specific dimensions
 struct CommonHeaderTitleView: View {
-    private(set) var title: String
+    let title: String
 
     // MARK: - UI
 

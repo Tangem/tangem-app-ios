@@ -33,8 +33,8 @@ struct MarketsPortfolioContainerView: View {
                 button: .init(
                     asset: Assets.plus14,
                     title: Localization.marketsAddToken,
-                    isDisabled: $viewModel.isAddTokenButtonDisabled,
-                    isLoading: $viewModel.isLoadingNetworks
+                    isDisabled: viewModel.isAddTokenButtonDisabled,
+                    isLoading: viewModel.isLoadingNetworks
                 )
             ) {
                 viewModel.onAddTapAction()

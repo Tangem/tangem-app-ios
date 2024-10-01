@@ -23,33 +23,36 @@ struct TokenMarketsDetailsLinksView: View {
         if sections.isEmpty {
             EmptyView()
         } else {
-            VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+            VStack(alignment: .leading, spacing: .zero) {
                 CommonHeaderTitleView(title: Localization.marketsTokenDetailsLinks)
                     .padding(.horizontal, Constants.horizontalPadding)
 
-                ForEach(sections) { sectionInfo in
-                    if sectionInfo.chips.isEmpty {
-                        EmptyView()
-                    } else {
-                        VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
-                            Group {
-                                Text(sectionInfo.section.title)
-                                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                VStack(alignment: .leading) {
+                    ForEach(sections) { sectionInfo in
+                        if sectionInfo.chips.isEmpty {
+                            EmptyView()
+                        } else {
+                            VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+                                Group {
+                                    Text(sectionInfo.section.title)
+                                        .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
 
-                                MarketsTokenDetailsChipsContainer(
-                                    chipsData: sectionInfo.chips,
-                                    parentWidth: viewWidth - Constants.horizontalPadding * 2
-                                )
-                            }
-                            .padding(.horizontal, Constants.horizontalPadding)
+                                    MarketsTokenDetailsChipsContainer(
+                                        chipsData: sectionInfo.chips,
+                                        parentWidth: viewWidth - Constants.horizontalPadding * 2
+                                    )
+                                }
+                                .padding(.horizontal, Constants.horizontalPadding)
 
-                            if sectionInfo.id != sections.last?.id {
-                                Separator(color: Colors.Stroke.primary, axis: .horizontal)
-                                    .padding(.leading, Constants.horizontalPadding)
+                                if sectionInfo.id != sections.last?.id {
+                                    Separator(color: Colors.Stroke.primary, axis: .horizontal)
+                                        .padding(.leading, Constants.horizontalPadding)
+                                }
                             }
                         }
                     }
                 }
+                .padding(.vertical, Constants.verticalSpacing)
             }
             .defaultRoundedBackground(with: Colors.Background.action, verticalPadding: .zero, horizontalPadding: .zero)
         }
