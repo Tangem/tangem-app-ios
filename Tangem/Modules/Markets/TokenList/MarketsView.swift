@@ -24,8 +24,8 @@ struct MarketsView: View {
     @State private var defaultListOverlayRatingHeaderHeight: CGFloat = .zero
     @State private var searchResultListOverlayTotalHeight: CGFloat = .zero
     @State private var listOverlayVerticalOffset: CGFloat = .zero
-    @State private var isListOverlayShadowLineViewVisible = false
     @State private var listOverlayTitleOpacity: CGFloat = 1.0
+    @State private var isListContentObscured = false
     @State private var responderChainIntrospectionTrigger = UUID()
 
     private let scrollTopAnchorId = UUID()
@@ -118,6 +118,7 @@ struct MarketsView: View {
     private var navigationBarBackground: some View {
         Rectangle()
             .fill(.ultraThinMaterial)
+            .visible(isListContentObscured)
             .frame(height: headerHeight + overlayHeight)
             .overlay(alignment: .bottom) {
                 Group {
@@ -131,6 +132,8 @@ struct MarketsView: View {
             .overlay(alignment: .bottom) {
                 listOverlaySeparator
             }
+            .opacity(viewModel.overlayContentHidingProgress)
+            .animation(.linear(duration: 0.1), value: isListContentObscured)
             .offset(y: listOverlayVerticalOffset)
             .infinityFrame(axis: .vertical, alignment: .top)
     }
@@ -193,7 +196,7 @@ struct MarketsView: View {
     @ViewBuilder
     private var listOverlaySeparator: some View {
         Separator(height: .minimal, color: Colors.Stroke.primary)
-            .hidden(!isListOverlayShadowLineViewVisible)
+            .visible(isListContentObscured)
     }
 
     @ViewBuilder
@@ -285,7 +288,7 @@ struct MarketsView: View {
     private func updateListOverlayAppearance(contentOffset: CGPoint) {
         guard abs(1.0 - viewModel.overlayContentProgress) <= .ulpOfOne, !overlayContentContainer.isScrollViewLocked else {
             listOverlayVerticalOffset = .zero
-            isListOverlayShadowLineViewVisible = false
+            isListContentObscured = false
             listOverlayTitleOpacity = 1.0
             return
         }
@@ -306,7 +309,7 @@ struct MarketsView: View {
 
         listOverlayTitleOpacity = maxOffset.isZero ? 1.0 : 1.0 - offSet / maxOffset // Division by zero protection
         listOverlayVerticalOffset = -offSet
-        isListOverlayShadowLineViewVisible = contentOffset.y >= (maxOffset + Constants.listOverlayBottomInset)
+        isListContentObscured = contentOffset.y >= (maxOffset + Constants.listOverlayBottomInset)
     }
 }
 
