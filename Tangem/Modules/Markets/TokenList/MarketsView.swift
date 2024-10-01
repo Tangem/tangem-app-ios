@@ -116,26 +116,31 @@ struct MarketsView: View {
 
     @ViewBuilder
     private var navigationBarBackground: some View {
-        Rectangle()
-            .fill(.ultraThinMaterial)
-            .visible(isListContentObscured)
-            .frame(height: headerHeight + overlayHeight)
-            .overlay(alignment: .bottom) {
-                Group {
-                    if showSearchResult {
-                        searchResultListOverlay
-                    } else {
-                        defaultListOverlay
+        ZStack {
+            Colors.Background.primary
+                .hidden(1.0 - viewModel.overlayContentHidingProgress <= .ulpOfOne)
+
+            Rectangle()
+                .fill(.ultraThinMaterial)
+                .visible(isListContentObscured)
+                .overlay(alignment: .bottom) {
+                    Group {
+                        if showSearchResult {
+                            searchResultListOverlay
+                        } else {
+                            defaultListOverlay
+                        }
                     }
                 }
-            }
-            .overlay(alignment: .bottom) {
-                listOverlaySeparator
-            }
-            .opacity(viewModel.overlayContentHidingProgress)
-            .animation(.linear(duration: 0.1), value: isListContentObscured)
-            .offset(y: listOverlayVerticalOffset)
-            .infinityFrame(axis: .vertical, alignment: .top)
+                .overlay(alignment: .bottom) {
+                    listOverlaySeparator
+                }
+                .opacity(viewModel.overlayContentHidingProgress)
+        }
+        .frame(height: headerHeight + overlayHeight)
+        .animation(.linear(duration: 0.1), value: isListContentObscured)
+        .offset(y: listOverlayVerticalOffset)
+        .infinityFrame(axis: .vertical, alignment: .top)
     }
 
     @ViewBuilder
