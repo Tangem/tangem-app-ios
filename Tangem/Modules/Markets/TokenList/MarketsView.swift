@@ -33,7 +33,10 @@ struct MarketsView: View {
 
     var body: some View {
         rootView
-            .onAppear(perform: viewModel.onViewAppear)
+            .onAppear {
+                viewModel.setViewHierarchySnapshotter(viewHierarchySnapshotter)
+                viewModel.onViewAppear()
+            }
             .onDisappear(perform: viewModel.onViewDisappear)
             .onOverlayContentProgressChange { [weak viewModel] progress in
                 viewModel?.onOverlayContentProgressChange(progress)
@@ -44,9 +47,6 @@ struct MarketsView: View {
             }
             .onOverlayContentStateChange { [weak viewModel] state in
                 viewModel?.onOverlayContentStateChange(state)
-            }
-            .onAppear {
-                viewModel.setViewHierarchySnapshotter(viewHierarchySnapshotter)
             }
     }
 
