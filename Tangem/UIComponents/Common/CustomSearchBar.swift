@@ -64,7 +64,8 @@ struct CustomSearchBar: View {
         .padding(.horizontal, 12)
         .background(
             RoundedRectangle(cornerRadius: 14)
-                .fill(Colors.Field.primary)
+                .fill(.ultraThinMaterial) // TODO: Andrey Fedorov - Inject proper bg
+//                .fill(Colors.Field.primary)
         )
     }
 

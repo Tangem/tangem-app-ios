@@ -19,6 +19,7 @@ struct MarketsView: View {
     @Environment(\.viewHierarchySnapshotter) private var viewHierarchySnapshotter
     @Environment(\.mainWindowSize) private var mainWindowSize
 
+    @State private var headerHeight: CGFloat = .zero
     @State private var defaultListOverlayTotalHeight: CGFloat = .zero
     @State private var defaultListOverlayRatingHeaderHeight: CGFloat = .zero
     @State private var searchResultListOverlayTotalHeight: CGFloat = .zero
@@ -29,6 +30,7 @@ struct MarketsView: View {
     private let scrollTopAnchorId = UUID()
     private let scrollViewFrameCoordinateSpaceName = UUID()
 
+    private var overlayHeight: CGFloat { showSearchResult ? searchResultListOverlayTotalHeight : defaultListOverlayTotalHeight }
     private var showSearchResult: Bool { viewModel.isSearching }
 
     var body: some View {
@@ -52,11 +54,13 @@ struct MarketsView: View {
 
     @ViewBuilder
     private var rootView: some View {
-        let content = VStack(spacing: 0.0) {
+        let content = ZStack {
             MainBottomSheetHeaderView(viewModel: viewModel.headerViewModel)
                 .zIndex(100) // Required for the collapsible header to work
+                .readGeometry(\.size.height, bindTo: $headerHeight)
+                .infinityFrame(axis: .vertical, alignment: .top)
 
-            ZStack(alignment: .topLeading) {
+            Group {
                 if showSearchResult {
                     searchResultView
                 } else {
@@ -65,6 +69,8 @@ struct MarketsView: View {
             }
             .opacity(viewModel.overlayContentHidingProgress)
             .scrollDismissesKeyboardCompat(.immediately)
+
+            navigationBarBackground
         }
         .alert(item: $viewModel.alert, content: { $0.alert })
         .background(Colors.Background.primary)
@@ -108,13 +114,29 @@ struct MarketsView: View {
     }
 
     @ViewBuilder
+    private var navigationBarBackground: some View {
+        Rectangle()
+            .fill(.ultraThinMaterial)
+            .frame(height: headerHeight + overlayHeight)
+            .overlay(alignment: .bottom) {
+                Group {
+                    if showSearchResult {
+                        searchResultListOverlay
+                    } else {
+                        defaultListOverlay
+                    }
+                }
+            }
+            .overlay(alignment: .bottom) {
+                listOverlaySeparator
+            }
+            .offset(y: listOverlayVerticalOffset)
+            .infinityFrame(axis: .vertical, alignment: .top)
+    }
+
+    @ViewBuilder
     private var defaultMarketsView: some View {
         list
-            .overlay(alignment: .top) {
-                // Using plain old overlay + dummy `Color.clear` spacer in the scroll view due to the buggy
-                // `safeAreaInset(edge:alignment:spacing:content:)` iOS 15+ API which has both layout and touch-handling issues
-                defaultListOverlay
-            }
 
         if case .error = viewModel.tokenListLoadingState {
             errorStateView
@@ -136,14 +158,6 @@ struct MarketsView: View {
             errorStateView
         case .loading, .allDataLoaded, .idle:
             list
-                .overlay(alignment: .top) {
-                    // Using plain old overlay + dummy `Color.clear` spacer in the scroll view due to the buggy
-                    // `safeAreaInset(edge:alignment:spacing:content:)` iOS 15+ API which has both layout and touch-handling issues
-                    searchResultListOverlay
-                }
-                .overlay(alignment: .top) {
-                    listOverlaySeparator
-                }
         }
     }
 
@@ -160,12 +174,7 @@ struct MarketsView: View {
         .padding(.top, Constants.listOverlayTopInset)
         .padding(.bottom, Constants.listOverlayBottomInset)
         .padding(.horizontal, 16)
-        .background(Colors.Background.primary)
-        .overlay(alignment: .bottom) {
-            listOverlaySeparator
-        }
         .readGeometry(\.size.height, bindTo: $defaultListOverlayTotalHeight)
-        .offset(y: listOverlayVerticalOffset)
     }
 
     @ViewBuilder
@@ -175,9 +184,7 @@ struct MarketsView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.top, Constants.listOverlayTopInset)
             .padding(.horizontal, 16)
-            .background(Colors.Background.primary)
             .readGeometry(\.size.height, bindTo: $searchResultListOverlayTotalHeight)
-            .offset(y: listOverlayVerticalOffset)
     }
 
     @ViewBuilder
@@ -200,7 +207,12 @@ struct MarketsView: View {
                     // Using plain old overlay + dummy `Color.clear` spacer in the scroll view due to the buggy
                     // `safeAreaInset(edge:alignment:spacing:content:)` iOS 15+ API which has both layout and touch-handling issues
                     Color.clear
-                        .frame(height: showSearchResult ? searchResultListOverlayTotalHeight : defaultListOverlayTotalHeight)
+                        .frame(height: headerHeight)
+
+                    // Using plain old overlay + dummy `Color.clear` spacer in the scroll view due to the buggy
+                    // `safeAreaInset(edge:alignment:spacing:content:)` iOS 15+ API which has both layout and touch-handling issues
+                    Color.clear
+                        .frame(height: overlayHeight)
 
                     LazyVStack(spacing: 0) {
                         ForEach(viewModel.tokenViewModels) {
