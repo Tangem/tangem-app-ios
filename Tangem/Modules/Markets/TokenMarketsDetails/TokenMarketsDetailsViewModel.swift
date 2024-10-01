@@ -206,7 +206,6 @@ class TokenMarketsDetailsViewModel: BaseMarketsViewModel {
         descriptionBottomSheetInfo = .init(
             title: Localization.marketsTokenDetailsAboutTokenTitle(tokenInfo.name),
             description: fullDescription,
-            isGeneratedWithAI: true,
             showCloseButton: true
         )
     }

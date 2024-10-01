@@ -138,9 +138,12 @@ struct TokenMarketsDetailsView: View {
         .opacity(viewModel.overlayContentHidingProgress)
         .coordinateSpace(name: scrollViewFrameCoordinateSpaceName)
         .bindAlert($viewModel.alert)
-        .descriptionBottomSheet(
+        .tokenDescriptionBottomSheet(
             info: $viewModel.descriptionBottomSheetInfo,
-            backgroundColor: Colors.Background.action
+            backgroundColor: Colors.Background.action,
+            onGeneratedAITapAction: {
+                print("print tap action")
+            }
         )
         .animation(.default, value: viewModel.state)
         .animation(.default, value: viewModel.isLoading)
