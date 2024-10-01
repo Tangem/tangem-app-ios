@@ -248,6 +248,7 @@
 "express_exchange_status_exchanging" = "En cours d'échange";
 "express_exchange_status_exchanging_active" = "En cours d'échange";
 "express_exchange_status_failed" = "Échoué";
+"express_exchange_status_paused" = "Paused";
 "express_exchange_status_received" = "Dépôt reçu";
 "express_exchange_status_receiving" = "En attente du dépôt";
 "express_exchange_status_receiving_active" = "En attente du dépôt";
@@ -379,6 +380,7 @@
 "markets_token_details_circulating_supply" = "Approvisionnement en circulation";
 "markets_token_details_circulating_supply_description" = "Le nombre total de pièces disponibles pour le trading et en circulation sur le marché";
 "markets_token_details_circulating_supply_full" = "Approvisionnement en circulation";
+"markets_token_details_empty_exchanges" = "No exchanges found";
 "markets_token_details_experienced_buyers" = "Acheteurs expérimentés";
 "markets_token_details_experienced_buyers_description" = "Acheteurs nets avec l'exigence supplémentaire d'avoir au moins 100 transactions sortantes";
 "markets_token_details_experienced_buyers_full" = "Acheteurs expérimentés";
@@ -398,6 +400,7 @@
 "markets_token_details_liquidity_full" = "Liquidité";
 "markets_token_details_liquidity_index" = "Indice de liquidité";
 "markets_token_details_liquidity_index_description" = "";
+"markets_token_details_listed_on" = "Listed on";
 "markets_token_details_low" = "Faible";
 "markets_token_details_market_capitalization" = "Cap. boursière";
 "markets_token_details_market_capitalization_description" = "La valeur d'une crypto-monnaie est calculée en multipliant son prix par le nombre de pièces en circulation";
@@ -711,6 +714,7 @@
 "staking_stake_more" = "Staker plus";
 "staking_summary_description_text" = "Vous stakez %1$@ et recevrez %2$@ par an";
 "staking_tap_to_unlock" = "Appuyez pour déverrouiller";
+"staking_tap_to_unlock_or_vote" = "Tap to unlock or vote";
 "staking_tap_to_withdraw" = "Appuyez pour retirer";
 "staking_title_stake" = "Stake %@";
 "staking_title_unstake" = "déstaker %@";
