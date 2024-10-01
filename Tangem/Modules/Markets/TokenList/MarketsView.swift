@@ -25,6 +25,7 @@ struct MarketsView: View {
     @State private var searchResultListOverlayTotalHeight: CGFloat = .zero
     @State private var listOverlayVerticalOffset: CGFloat = .zero
     @State private var isListOverlayShadowLineViewVisible = false
+    @State private var listOverlayTitleOpacity: CGFloat = 1.0
     @State private var responderChainIntrospectionTrigger = UUID()
 
     private let scrollTopAnchorId = UUID()
@@ -166,6 +167,7 @@ struct MarketsView: View {
         VStack(alignment: .leading, spacing: 12) {
             Text(Localization.marketsCommonTitle)
                 .style(Fonts.Bold.title3, color: Colors.Text.primary1)
+                .opacity(listOverlayTitleOpacity)
 
             MarketsRatingHeaderView(viewModel: viewModel.marketsRatingHeaderViewModel)
                 .readGeometry(\.size.height, bindTo: $defaultListOverlayRatingHeaderHeight)
@@ -181,6 +183,7 @@ struct MarketsView: View {
     private var searchResultListOverlay: some View {
         Text(Localization.marketsSearchResultTitle)
             .style(Fonts.Bold.title3, color: Colors.Text.primary1)
+            .opacity(listOverlayTitleOpacity)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.top, Constants.listOverlayTopInset)
             .padding(.horizontal, 16)
@@ -283,6 +286,7 @@ struct MarketsView: View {
         guard abs(1.0 - viewModel.overlayContentProgress) <= .ulpOfOne, !overlayContentContainer.isScrollViewLocked else {
             listOverlayVerticalOffset = .zero
             isListOverlayShadowLineViewVisible = false
+            listOverlayTitleOpacity = 1.0
             return
         }
 
@@ -291,16 +295,17 @@ struct MarketsView: View {
 
         if showSearchResult {
             maxOffset = searchResultListOverlayTotalHeight
-            offSet = -clamp(contentOffset.y, min: .zero, max: maxOffset)
+            offSet = clamp(contentOffset.y, min: .zero, max: maxOffset)
         } else {
             maxOffset = max(
                 defaultListOverlayTotalHeight - defaultListOverlayRatingHeaderHeight - Constants.listOverlayBottomInset,
                 .zero
             )
-            offSet = -clamp(contentOffset.y, min: .zero, max: maxOffset)
+            offSet = clamp(contentOffset.y, min: .zero, max: maxOffset)
         }
 
-        listOverlayVerticalOffset = offSet
+        listOverlayTitleOpacity = maxOffset.isZero ? 1.0 : 1.0 - offSet / maxOffset // Division by zero protection
+        listOverlayVerticalOffset = -offSet
         isListOverlayShadowLineViewVisible = contentOffset.y >= (maxOffset + Constants.listOverlayBottomInset)
     }
 }
