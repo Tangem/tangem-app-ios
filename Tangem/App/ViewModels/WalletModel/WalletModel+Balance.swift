@@ -22,7 +22,7 @@ extension WalletModel {
 
     var allBalance: Balance {
         let cryptoBalance: Decimal? = {
-            switch (availableBalance.crypto, stakingManager?.state.balances?.sum()) {
+            switch (availableBalance.crypto, stakedBalance.crypto) {
             case (.none, _): nil
             // What we have to do if we have only blocked balance?
             case (.some(let available), .none): available
@@ -61,6 +61,19 @@ extension WalletModel {
         return .init(crypto: cryptoBalance, fiat: fiatBalance)
     }
 
+    var stakedWithPendingBalance: Balance {
+        let stakingBalance = stakingManagerState.balances?.stakes().sum()
+        let fiatBalance: Decimal? = {
+            guard let stakingBalance, let currencyId = tokenItem.currencyId else {
+                return nil
+            }
+
+            return converter.convertToFiat(stakingBalance, currencyId: currencyId)
+        }()
+
+        return .init(crypto: stakingBalance, fiat: fiatBalance)
+    }
+
     var stakedBalance: Balance {
         let stakingBalance = stakingManagerState.balances?.blocked().sum()
         let fiatBalance: Decimal? = {
@@ -75,7 +88,7 @@ extension WalletModel {
     }
 
     var stakedRewardsBalance: Balance {
-        let rewardsToClaim = stakingManagerState.rewardsToClaim
+        let rewardsToClaim = stakingManagerState.balances?.rewards().sum()
         let fiatBalance: Decimal? = {
             guard let rewardsToClaim, let currencyId = tokenItem.currencyId else {
                 return nil
@@ -91,12 +104,16 @@ extension WalletModel {
         formatted(allBalance)
     }
 
-    var stakedBalanceFormatted: BalanceFormatted {
-        formatted(stakedBalance)
-    }
-
     var availableBalanceFormatted: BalanceFormatted {
         formatted(availableBalance)
+    }
+
+    var stakedWithPendingBalanceFormatted: BalanceFormatted {
+        formatted(stakedWithPendingBalance)
+    }
+
+    var stakedBalanceFormatted: BalanceFormatted {
+        formatted(stakedBalance)
     }
 
     var stakedRewardsBalanceFormatted: BalanceFormatted {
@@ -108,23 +125,5 @@ extension WalletModel {
         let fiatFormatted = formatter.formatFiatBalance(balance.fiat)
 
         return .init(crypto: cryptoFormatted, fiat: fiatFormatted)
-    }
-}
-
-private extension StakingManagerState {
-    var balances: [StakingBalance]? {
-        guard case .staked(let staked) = self else {
-            return nil
-        }
-
-        return staked.balances
-    }
-
-    var rewardsToClaim: Decimal? {
-        guard case .staked(let staked) = self else {
-            return nil
-        }
-
-        return staked.balances.rewards().sum()
     }
 }

@@ -28,7 +28,6 @@ class ExpressModulesFactoryMock: ExpressModulesFactory {
             initialWallet: initialWalletModel,
             userWalletModel: userWalletModel,
             feeFormatter: feeFormatter,
-            balanceConverter: balanceConverter,
             balanceFormatter: balanceFormatter,
             expressProviderFormatter: expressProviderFormatter,
             notificationManager: notificationManager,
