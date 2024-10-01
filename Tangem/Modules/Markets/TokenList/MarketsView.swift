@@ -175,7 +175,7 @@ struct MarketsView: View {
         .infinityFrame(axis: .horizontal)
         .padding(.top, Constants.listOverlayTopInset)
         .padding(.bottom, Constants.listOverlayBottomInset)
-        .padding(.horizontal, 16)
+        .padding(.horizontal, Constants.defaultHorizontalInset)
         .readGeometry(\.size.height, bindTo: $defaultListOverlayTotalHeight)
     }
 
@@ -186,7 +186,7 @@ struct MarketsView: View {
             .opacity(listOverlayTitleOpacity)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.top, Constants.listOverlayTopInset)
-            .padding(.horizontal, 16)
+            .padding(.horizontal, Constants.defaultHorizontalInset)
             .readGeometry(\.size.height, bindTo: $searchResultListOverlayTotalHeight)
     }
 
@@ -270,7 +270,7 @@ struct MarketsView: View {
         Text(Localization.marketsSearchTokenNoResultTitle)
             .style(Fonts.Bold.caption1, color: Colors.Text.tertiary)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding(.horizontal, 16)
+            .padding(.horizontal, Constants.defaultHorizontalInset)
     }
 
     private var errorStateView: some View {
@@ -279,7 +279,7 @@ struct MarketsView: View {
             retryButtonAction: viewModel.onTryLoadList
         )
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(.horizontal, 16)
+        .padding(.horizontal, Constants.defaultHorizontalInset)
     }
 
     private func updateListOverlayAppearance(contentOffset: CGPoint) {
@@ -314,6 +314,7 @@ struct MarketsView: View {
 
 private extension MarketsView {
     enum Constants {
+        static let defaultHorizontalInset = 16.0
         static let listOverlayTopInset = 10.0
         static let listOverlayBottomInset = 12.0
     }
