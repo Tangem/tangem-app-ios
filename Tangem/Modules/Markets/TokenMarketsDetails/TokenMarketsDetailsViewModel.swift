@@ -221,8 +221,12 @@ class TokenMarketsDetailsViewModel: BaseMarketsViewModel {
     }
 
     func onGenerateAITapAction() {
-        let dataCollector = TokenErrorDescriptionDataCollector(tokenDescriptionEmailData: [])
-        coordinator?.openMail(with: dataCollector, emailType: .tokenDescriptionError)
+        descriptionBottomSheetInfo = nil
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+            let dataCollector = TokenErrorDescriptionDataCollector(tokenDescriptionEmailData: [])
+            self?.coordinator?.openMail(with: dataCollector, emailType: .tokenDescriptionError)
+        }
     }
 }
 

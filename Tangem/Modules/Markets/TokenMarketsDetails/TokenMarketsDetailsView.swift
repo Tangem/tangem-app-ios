@@ -141,9 +141,7 @@ struct TokenMarketsDetailsView: View {
         .tokenDescriptionBottomSheet(
             info: $viewModel.descriptionBottomSheetInfo,
             backgroundColor: Colors.Background.action,
-            onGeneratedAITapAction: {
-                print("print tap action")
-            }
+            onGeneratedAITapAction: viewModel.onGenerateAITapAction
         )
         .animation(.default, value: viewModel.state)
         .animation(.default, value: viewModel.isLoading)

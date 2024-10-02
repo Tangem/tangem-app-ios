@@ -269,9 +269,7 @@ struct DetailsFeedbackData {
 }
 
 struct TokenErrorDescriptionDataCollector: EmailDataCollector {
-    var logData: Data? {
-        formatData(tokenDescriptionEmailData)
-    }
+    var logData: Data? { nil }
 
     private let tokenDescriptionEmailData: [EmailCollectedData]
 
