@@ -42,7 +42,7 @@ struct MarketsTokensNetworkSelectorView: View {
     private var contentView: some View {
         VStack(alignment: .leading, spacing: .zero) {
             VStack(alignment: .leading, spacing: .zero) {
-                CommonHeaderTitleView(title: Localization.marketsSelectNetwork)
+                BlockHeaderTitleView(title: Localization.marketsSelectNetwork)
 
                 tokenInfoView
             }

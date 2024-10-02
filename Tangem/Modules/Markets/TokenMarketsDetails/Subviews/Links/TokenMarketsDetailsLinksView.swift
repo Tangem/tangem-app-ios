@@ -24,7 +24,7 @@ struct TokenMarketsDetailsLinksView: View {
             EmptyView()
         } else {
             VStack(alignment: .leading, spacing: .zero) {
-                CommonHeaderTitleView(title: Localization.marketsTokenDetailsLinks)
+                BlockHeaderTitleView(title: Localization.marketsTokenDetailsLinks)
                     .padding(.horizontal, Constants.horizontalPadding)
 
                 VStack(alignment: .leading) {

@@ -26,9 +26,9 @@ struct MarketsPortfolioContainerView: View {
     private var headerView: some View {
         switch viewModel.typeView {
         case .empty, .loading, .unavailable:
-            CommonHeaderTitleView(title: Localization.marketsCommonMyPortfolio)
+            BlockHeaderTitleView(title: Localization.marketsCommonMyPortfolio)
         case .list:
-            CommonHeaderTitleButtonView(
+            BlockHeaderTitleButtonView(
                 title: Localization.marketsCommonMyPortfolio,
                 button: .init(
                     asset: Assets.plus14,

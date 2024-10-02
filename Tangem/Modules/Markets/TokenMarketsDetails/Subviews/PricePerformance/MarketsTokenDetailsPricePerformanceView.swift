@@ -22,12 +22,7 @@ struct MarketsTokenDetailsPricePerformanceView: View {
     }
 
     private var header: some View {
-        HStack(content: {
-            Text(Localization.marketsTokenDetailsPricePerformance)
-                .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
-
-            Spacer(minLength: 8)
-
+        BlockHeaderTitleView(title: Localization.marketsTokenDetailsPricePerformance) {
             MarketsPickerView(
                 marketPriceIntervalType: $viewModel.selectedInterval,
                 options: viewModel.intervalOptions,
@@ -35,9 +30,7 @@ struct MarketsTokenDetailsPricePerformanceView: View {
                 style: .init(textVerticalPadding: 2),
                 titleFactory: { $0.tokenDetailsNameLocalized }
             )
-        })
-        .padding(.top, 12)
-        .padding(.bottom, 6)
+        }
     }
 
     private var content: some View {

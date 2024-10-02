@@ -1,5 +1,5 @@
 //
-//  CommonHeaderTitleButtonView.swift
+//  BlockHeaderTitleButtonView.swift
 //  Tangem
 //
 //  Created by Alexander Skibin on 29.09.2024.
@@ -10,7 +10,7 @@ import SwiftUI
 
 /// This is a common component of the system design - a common header + button.
 /// Required due to specific dimensions
-struct CommonHeaderTitleButtonView: View {
+struct BlockHeaderTitleButtonView: View {
     let title: String
     let button: ButtonInput
     let action: (() -> Void)?
@@ -18,20 +18,9 @@ struct CommonHeaderTitleButtonView: View {
     // MARK: - UI
 
     var body: some View {
-        HStack(alignment: .center) {
-            headerView
-
-            Spacer()
-
+        BlockHeaderTitleView(title: title) {
             addTokenButton
         }
-    }
-
-    private var headerView: some View {
-        Text(title)
-            .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
-            .padding(.top, Constants.topPaddingTitle)
-            .padding(.bottom, Constants.topPaddingTitle)
     }
 
     @ViewBuilder
@@ -62,7 +51,7 @@ struct CommonHeaderTitleButtonView: View {
     }
 }
 
-extension CommonHeaderTitleButtonView {
+extension BlockHeaderTitleButtonView {
     struct ButtonInput: Identifiable {
         let id: UUID = .init()
 
@@ -73,10 +62,10 @@ extension CommonHeaderTitleButtonView {
     }
 }
 
-private extension CommonHeaderTitleButtonView {
+private extension BlockHeaderTitleButtonView {
     enum Constants {
         static let buttonCornerRadius: CGFloat = 8.0
-        static let topPaddingTitle: CGFloat = 15.0
-        static let bottomPaddingTitle: CGFloat = 9.0
+        static let topPaddingTitle: CGFloat = 12.0
+        static let bottomPaddingTitle: CGFloat = 6.0
     }
 }

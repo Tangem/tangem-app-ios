@@ -22,7 +22,7 @@ struct MarketsTokenDetailsMetricsView: View {
 
     var body: some View {
         VStack(spacing: .zero) {
-            CommonHeaderTitleView(title: Localization.marketsTokenDetailsMetrics)
+            BlockHeaderTitleView(title: Localization.marketsTokenDetailsMetrics)
 
             LazyVGrid(columns: gridItems, alignment: .center, spacing: 16, content: {
                 ForEach(viewModel.records.indexed(), id: \.1.id) { index, info in
