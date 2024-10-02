@@ -40,7 +40,7 @@ public extension Array where Element == StakingBalance {
     }
 
     /// The balance of "stakes" includes the `pending` balance from the local cache
-    /// DO NOT use for get the balance
+    /// DO NOT use it to calculate the all balance. It can affect the balance, more that there is
     func stakes() -> Self {
         filter { $0.balanceType != .rewards }
     }

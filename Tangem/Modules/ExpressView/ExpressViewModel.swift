@@ -44,7 +44,6 @@ final class ExpressViewModel: ObservableObject {
     private let initialWallet: WalletModel
     private let userWalletModel: UserWalletModel
     private let feeFormatter: FeeFormatter
-    private let balanceConverter: BalanceConverter
     private let balanceFormatter: BalanceFormatter
     private let expressProviderFormatter: ExpressProviderFormatter
     private let notificationManager: NotificationManager
@@ -62,7 +61,6 @@ final class ExpressViewModel: ObservableObject {
         initialWallet: WalletModel,
         userWalletModel: UserWalletModel,
         feeFormatter: FeeFormatter,
-        balanceConverter: BalanceConverter,
         balanceFormatter: BalanceFormatter,
         expressProviderFormatter: ExpressProviderFormatter,
         notificationManager: NotificationManager,
@@ -73,7 +71,6 @@ final class ExpressViewModel: ObservableObject {
         self.initialWallet = initialWallet
         self.userWalletModel = userWalletModel
         self.feeFormatter = feeFormatter
-        self.balanceConverter = balanceConverter
         self.balanceFormatter = balanceFormatter
         self.expressProviderFormatter = expressProviderFormatter
         self.notificationManager = notificationManager
@@ -336,7 +333,11 @@ private extension ExpressViewModel {
         let roundedAmount = amount.rounded(scale: wallet.decimalCount, roundingMode: .down)
 
         // Exclude unnecessary update
-        guard roundedAmount != amount else { return }
+        guard roundedAmount != amount else {
+            // update only fiat in case of another walletModel selection with another quote
+            updateSendFiatValue(amount: amount)
+            return
+        }
 
         updateSendDecimalValue(to: roundedAmount)
     }

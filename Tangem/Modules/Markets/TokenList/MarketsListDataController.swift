@@ -11,10 +11,6 @@ import Combine
 import CombineExt
 
 class MarketsListDataController {
-    var visibleRangeAreaPublisher: some Publisher<VisibleArea, Never> {
-        visibleRangeAreaSubject
-    }
-
     var hotAreaPublisher: some Publisher<VisibleArea, Never> {
         hotAreaSubject
     }
@@ -101,7 +97,7 @@ class MarketsListDataController {
                 let lowerBound = max(0, newVisibleArea.range.lowerBound - numberOfItemsInBufferZone)
                 let upperBound = min(dataFetcher.totalItems - 1, newVisibleArea.range.upperBound + numberOfItemsInBufferZone)
                 return .init(
-                    range: lowerBound ... upperBound,
+                    range: min(lowerBound, upperBound) ... max(lowerBound, upperBound),
                     direction: newVisibleArea.direction
                 )
             }
