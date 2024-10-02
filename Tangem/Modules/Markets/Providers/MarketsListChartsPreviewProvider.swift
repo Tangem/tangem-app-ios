@@ -36,19 +36,25 @@ final class MarketsListChartsHistoryProvider {
             return
         }
 
-        runTask(in: self) { provider in
-            let filteredItems = provider.filterItemsToRequest(coinIds, interval: interval)
+        Task(priority: .medium) { [weak self] in
+            guard let filteredItems = self?.filterItemsToRequest(coinIds, interval: interval) else {
+                return
+            }
 
             do {
                 if filteredItems.isEmpty {
-                    provider.log("Filtered items list to request is empty. Skip loading")
+                    self?.log("Filtered items list to request is empty. Skip loading")
                     return
                 }
 
-                provider.log("Filtered items list to request is not empty. Attempting to fetch \(filteredItems.count) items")
-                let responses = try await provider.fetchItems(ids: filteredItems, interval: interval)
+                self?.log("Filtered items list to request is not empty. Attempting to fetch \(filteredItems.count) items")
 
-                var copyItems: TokensChartsHistory = provider.items
+                guard
+                    let responses = try await self?.fetchItems(ids: filteredItems, interval: interval),
+                    var copyItems: TokensChartsHistory = self?.items
+                else {
+                    return
+                }
 
                 for response in responses {
                     for (key, value) in response {
@@ -56,12 +62,12 @@ final class MarketsListChartsHistoryProvider {
                     }
                 }
 
-                provider.items = copyItems
+                self?.items = copyItems
             } catch {
-                provider.log("Loaded charts history preview list tokens did receive error \(error.localizedDescription)")
+                self?.log("Loaded charts history preview list tokens did receive error \(error.localizedDescription)")
             }
 
-            provider.registerLoadedItems(requestedItemsIds: filteredItems, interval: interval)
+            self?.registerLoadedItems(requestedItemsIds: filteredItems, interval: interval)
         }
     }
 

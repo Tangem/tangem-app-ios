@@ -38,7 +38,8 @@ enum SendDestinationAdditionalFieldType {
              .terraV2,
              .algorand,
              .hedera,
-             .sei:
+             .sei,
+             .internetComputer:
             return .memo
         case .xrp:
             return .destinationTag
