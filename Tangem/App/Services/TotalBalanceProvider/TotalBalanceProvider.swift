@@ -148,7 +148,7 @@ private extension TotalBalanceProvider {
             }
 
             let currentValue = balance ?? 0
-            let allBalance = token.allBalance
+            let allBalance = token.totalBalance
             balance = currentValue + (allBalance.fiat ?? 0)
             if allBalance.fiat == nil, !token.isCustom {
                 allTokensBalancesIncluded = false
