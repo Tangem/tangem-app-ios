@@ -11,5 +11,6 @@ import Foundation
 protocol TokenMarketsDetailsRoutable: AnyObject, MarketsPortfolioContainerRoutable {
     func openURL(_ url: URL)
     func openTokenSelector(with model: TokenMarketsDetailsModel, walletDataProvider: MarketsWalletDataProvider)
+    func openMail(with dataCollector: EmailDataCollector, emailType: EmailType)
     func closeModule()
 }

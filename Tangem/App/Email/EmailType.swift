@@ -14,6 +14,7 @@ enum EmailType {
     case failedToSendTx
     case failedToPushTx
     case appFeedback(subject: String)
+    case tokenDescriptionError
 
     var emailSubject: String {
         switch self {
@@ -23,6 +24,7 @@ enum EmailType {
         case .appFeedback(let subject):
             return subject
         case .failedToPushTx: return Localization.feedbackSubjectTxPushFailed
+        case .tokenDescriptionError: return "emailSubject"
         }
     }
 
@@ -33,6 +35,7 @@ enum EmailType {
         case .failedToSendTx: return Localization.feedbackPrefaceTxFailed
         case .appFeedback: return Localization.feedbackPrefaceSupport
         case .failedToPushTx: return Localization.feedbackPrefaceTxFailed
+        case .tokenDescriptionError: return "emailPreface"
         }
     }
 

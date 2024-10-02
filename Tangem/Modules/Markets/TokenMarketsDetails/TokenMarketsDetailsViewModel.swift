@@ -219,6 +219,11 @@ class TokenMarketsDetailsViewModel: BaseMarketsViewModel {
         // In this case, content should be hidden (i.e. the initial progress should be zero)
         overlayContentHidingInitialProgress = state.isCollapsed ? 0.0 : 1.0
     }
+
+    func onGenerateAITapAction() {
+        let dataCollector = TokenErrorDescriptionDataCollector(tokenDescriptionEmailData: [])
+        coordinator?.openMail(with: dataCollector, emailType: .tokenDescriptionError)
+    }
 }
 
 // MARK: - Details response processing
