@@ -255,6 +255,8 @@ struct StakeKitMapper {
             rewardRate: response.rewardRate
         )
 
+        let item = try mapToStakingTokenItem(from: response.token)
+
         return try YieldInfo(
             id: response.id,
             isAvailable: response.isAvailable,
@@ -263,11 +265,11 @@ struct StakeKitMapper {
             enterMinimumRequirement: enterAction.args.amount.minimum,
             exitMinimumRequirement: exitAction.args.amount.minimum,
             validators: validators,
-            item: mapToStakingTokenItem(from: response.token),
+            item: item,
             unbondingPeriod: mapToPeriod(from: response.metadata.cooldownPeriod),
             warmupPeriod: mapToPeriod(from: response.metadata.warmupPeriod),
             rewardClaimingType: mapToRewardClaimingType(from: response.metadata.rewardClaiming),
-            rewardScheduleType: mapToRewardScheduleType(from: response.metadata.rewardSchedule)
+            rewardScheduleType: mapToRewardScheduleType(from: response.metadata.rewardSchedule, network: item.network)
         )
     }
 
@@ -348,15 +350,17 @@ struct StakeKitMapper {
         }
     }
 
-    func mapToRewardScheduleType(from type: StakeKitDTO.Yield.Info.Response.Metadata.RewardScheduleType) throws -> RewardScheduleType {
-        switch type {
-        case .block: .block
-        case .hour: .hour
-        case .epoch: .epoch
-        case .era: .era
-        case .day: .day
-        case .week: .week
-        case .month: .month
+    func mapToRewardScheduleType(
+        from type: StakeKitDTO.Yield.Info.Response.Metadata.RewardScheduleType,
+        network: StakeKitNetworkType
+    ) throws -> RewardScheduleType {
+        switch network {
+        case .solana: .days(min: 2, max: 3)
+        case .cosmos: .seconds(min: 5, max: 12)
+        case .tron: .daily
+        case .binance: .daily
+        case .ethereum: .daily
+        default: .generic(type.rawValue)
         }
     }
 }

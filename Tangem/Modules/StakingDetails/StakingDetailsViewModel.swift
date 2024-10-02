@@ -40,12 +40,7 @@ final class StakingDetailsViewModel: ObservableObject {
 
     private let balanceFormatter = BalanceFormatter()
     private let percentFormatter = PercentFormatter()
-    private let daysFormatter: DateComponentsFormatter = {
-        let formatter = DateComponentsFormatter()
-        formatter.unitsStyle = .short
-        formatter.allowedUnits = [.day]
-        return formatter
-    }()
+    private let daysFormatter: DateComponentsFormatter = .stakingFormatter()
 
     private var bag: Set<AnyCancellable> = []
 
@@ -221,16 +216,22 @@ private extension StakingDetailsViewModel {
             ))
         }
 
-        viewModels.append(DefaultRowViewModel(
-            title: Localization.stakingDetailsRewardSchedule,
-            detailsType: .text(yield.rewardScheduleType.title),
-            secondaryAction: { [weak self] in
-                self?.openBottomSheet(
-                    title: Localization.stakingDetailsRewardSchedule,
-                    description: Localization.stakingDetailsRewardScheduleInfo
-                )
-            }
-        ))
+        viewModels.append(
+            DefaultRowViewModel(
+                title: Localization.stakingDetailsRewardSchedule,
+                detailsType: .text(
+                    Localization.stakingRewardScheduleEach(
+                        yield.rewardScheduleType.formatted(formatter: daysFormatter)
+                    )
+                ),
+                secondaryAction: { [weak self] in
+                    self?.openBottomSheet(
+                        title: Localization.stakingDetailsRewardSchedule,
+                        description: Localization.stakingDetailsRewardScheduleInfo
+                    )
+                }
+            )
+        )
 
         detailsViewModels = viewModels
     }
@@ -393,16 +394,19 @@ private extension RewardClaimingType {
     }
 }
 
-private extension RewardScheduleType {
-    var title: String {
+extension RewardScheduleType {
+    func formatted(formatter: DateComponentsFormatter) -> String {
         switch self {
-        case .block: Localization.stakingRewardScheduleBlock
-        case .era: Localization.stakingRewardScheduleEra
-        case .epoch: Localization.stakingRewardScheduleEpoch
-        case .hour: Localization.stakingRewardScheduleHour
-        case .day: Localization.stakingRewardScheduleEachDay
-        case .week: Localization.stakingRewardScheduleWeek
-        case .month: Localization.stakingRewardScheduleMonth
+        case .generic(let string):
+            return string
+        case .seconds(let min, let max):
+            let suffix = formatter.string(from: DateComponents(second: max)) ?? max.formatted()
+            return "\(min) - \(suffix)"
+        case .daily:
+            return Localization.commonDaysNoParam(1)
+        case .days(let min, let max):
+            let suffix = formatter.string(from: DateComponents(day: max)) ?? max.formatted()
+            return "\(min) - \(suffix)"
         }
     }
 }
