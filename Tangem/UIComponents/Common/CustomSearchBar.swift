@@ -12,6 +12,7 @@ struct CustomSearchBar: View {
     @Binding var searchText: String
     private let placeholder: String
     private let keyboardType: UIKeyboardType
+    private let style: Style
 
     @State private var isEditing: Bool = false
     private var onEditingChanged: ((_ isEditing: Bool) -> Void)?
@@ -19,10 +20,17 @@ struct CustomSearchBar: View {
 
     @FocusState private var isFocused: Bool
 
-    init(searchText: Binding<String>, placeholder: String, keyboardType: UIKeyboardType = .default, clearButtonAction: (() -> Void)? = nil) {
+    init(
+        searchText: Binding<String>,
+        placeholder: String,
+        keyboardType: UIKeyboardType = .default,
+        style: Style = .default,
+        clearButtonAction: (() -> Void)? = nil
+    ) {
         _searchText = searchText
         self.placeholder = placeholder
         self.keyboardType = keyboardType
+        self.style = style
         self.clearButtonAction = clearButtonAction
     }
 
@@ -62,11 +70,7 @@ struct CustomSearchBar: View {
         }
         .padding(.vertical, 12)
         .padding(.horizontal, 12)
-        .background(
-            RoundedRectangle(cornerRadius: 14)
-                .fill(.ultraThinMaterial) // TODO: Andrey Fedorov - Inject proper bg
-//                .fill(Colors.Field.primary)
-        )
+        .background(background)
     }
 
     private var placeholderView: Text {
@@ -105,6 +109,20 @@ struct CustomSearchBar: View {
                 .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
         }
     }
+
+    @ViewBuilder
+    private var background: some View {
+        let background = RoundedRectangle(cornerRadius: 14)
+
+        switch style {
+        case .default:
+            background
+                .fill(Colors.Field.primary)
+        case .translucent:
+            background
+                .fill(.ultraThinMaterial)
+        }
+    }
 }
 
 extension CustomSearchBar: Setupable {
@@ -117,6 +135,11 @@ extension CustomSearchBar {
     enum InputResult {
         case text(String)
         case clear
+    }
+
+    enum Style {
+        case `default`
+        case translucent
     }
 }
 

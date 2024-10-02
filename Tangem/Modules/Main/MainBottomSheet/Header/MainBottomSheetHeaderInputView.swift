@@ -29,6 +29,7 @@ struct MainBottomSheetHeaderInputView: View {
             searchText: $searchText,
             placeholder: Localization.marketsSearchHeaderTitle,
             keyboardType: .alphabet,
+            style: .translucent,
             clearButtonAction: clearButtonAction
         )
         .padding(.horizontal, 16)
