@@ -91,7 +91,7 @@ public struct SegmentedPickerView<Option: Hashable & Identifiable, SelectionView
                     namespaceID: namespaceID,
                     targetWidth: targetWidth,
                     action: {
-                        if selection == option, !isDisabled {
+                        if selection == option, isDisabled {
                             return
                         }
 
