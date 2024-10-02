@@ -218,7 +218,9 @@ private extension RestakingModel {
 // MARK: - SendFeeLoader
 
 extension RestakingModel: SendFeeLoader {
-    func updateFees() {}
+    func updateFees() {
+        updateState()
+    }
 }
 
 // MARK: - SendAmountInput
