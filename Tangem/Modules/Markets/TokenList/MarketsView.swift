@@ -291,10 +291,11 @@ struct MarketsView: View {
     }
 
     private func updateListOverlayAppearance(contentOffset: CGPoint) {
-        guard abs(1.0 - viewModel.overlayContentProgress) <= .ulpOfOne, !overlayContentContainer.isScrollViewLocked else {
+        // Early exit to prevent list overlay 'jiggling' due to small fluctuations of content offset while dragging the list
+        if overlayContentContainer.isScrollViewLocked {
             listOverlayVerticalOffset = .zero
-            isListContentObscured = false
             listOverlayTitleOpacity = 1.0
+            isListContentObscured = false
             return
         }
 
