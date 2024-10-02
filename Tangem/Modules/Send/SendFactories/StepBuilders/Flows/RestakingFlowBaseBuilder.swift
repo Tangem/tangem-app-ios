@@ -1,5 +1,5 @@
 //
-//  VoteFlowBaseBuilder.swift
+//  RestakingFlowBaseBuilder.swift
 //  TangemApp
 //
 //  Created by Dmitry Fedorov on 30.09.2024.
@@ -9,7 +9,7 @@
 import Foundation
 import TangemStaking
 
-struct VoteFlowBaseBuilder {
+struct RestakingFlowBaseBuilder {
     let userWalletModel: UserWalletModel
     let walletModel: WalletModel
     let stakingValidatorsStepBuilder: StakingValidatorsStepBuilder
@@ -20,24 +20,24 @@ struct VoteFlowBaseBuilder {
     let builder: SendDependenciesBuilder
 
     func makeSendViewModel(manager: any StakingManager, action: UnstakingModel.Action, router: SendRoutable) -> SendViewModel {
-        let voteModel = builder.makeVoteModel(stakingManager: manager, action: action)
+        let restakingModel = builder.makeVoteModel(stakingManager: manager, action: action)
         let notificationManager = builder.makeStakingNotificationManager()
-        notificationManager.setup(provider: voteModel, input: voteModel)
-        notificationManager.setupManager(with: voteModel)
+        notificationManager.setup(provider: restakingModel, input: restakingModel)
+        notificationManager.setupManager(with: restakingModel)
 
-        let sendFeeCompactViewModel = sendFeeStepBuilder.makeSendFeeCompactViewModel(input: voteModel)
-        sendFeeCompactViewModel.bind(input: voteModel)
+        let sendFeeCompactViewModel = sendFeeStepBuilder.makeSendFeeCompactViewModel(input: restakingModel)
+        sendFeeCompactViewModel.bind(input: restakingModel)
 
         let validators = stakingValidatorsStepBuilder.makeStakingValidatorsStep(
-            io: (input: voteModel, output: voteModel),
+            io: (input: restakingModel, output: restakingModel),
             manager: manager,
-            sendFeeLoader: voteModel
+            sendFeeLoader: restakingModel
         )
 
-        let sendAmountCompactViewModel = sendAmountStepBuilder.makeSendAmountCompactViewModel(input: voteModel)
+        let sendAmountCompactViewModel = sendAmountStepBuilder.makeSendAmountCompactViewModel(input: restakingModel)
 
         let summary = sendSummaryStepBuilder.makeSendSummaryStep(
-            io: (input: voteModel, output: voteModel),
+            io: (input: restakingModel, output: restakingModel),
             actionType: .voteLocked,
             descriptionBuilder: builder.makeStakingTransactionSummaryDescriptionBuilder(),
             notificationManager: notificationManager,
@@ -49,7 +49,7 @@ struct VoteFlowBaseBuilder {
         )
 
         let finish = sendFinishStepBuilder.makeSendFinishStep(
-            input: voteModel,
+            input: restakingModel,
             actionType: .voteLocked,
             sendDestinationCompactViewModel: .none,
             sendAmountCompactViewModel: sendAmountCompactViewModel,
@@ -57,7 +57,7 @@ struct VoteFlowBaseBuilder {
             sendFeeCompactViewModel: sendFeeCompactViewModel
         )
 
-        let stepsManager = CommonVoteStepsManager(
+        let stepsManager = CommonRestakingStepsManager(
             validatorsStep: validators.step,
             summaryStep: summary.step,
             finishStep: finish,
@@ -66,20 +66,20 @@ struct VoteFlowBaseBuilder {
 
         summary.step.set(router: stepsManager)
 
-        let interactor = CommonSendBaseInteractor(input: voteModel, output: voteModel)
+        let interactor = CommonSendBaseInteractor(input: restakingModel, output: restakingModel)
 
         let viewModel = SendViewModel(
             interactor: interactor,
             stepsManager: stepsManager,
             userWalletModel: userWalletModel,
             alertBuilder: builder.makeStakingAlertBuilder(),
-            dataBuilder: builder.makeSendBaseDataBuilder(input: voteModel),
+            dataBuilder: builder.makeSendBaseDataBuilder(input: restakingModel),
             tokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem,
             coordinator: router
         )
         stepsManager.set(output: viewModel)
-        voteModel.router = viewModel
+        restakingModel.router = viewModel
 
         return viewModel
     }

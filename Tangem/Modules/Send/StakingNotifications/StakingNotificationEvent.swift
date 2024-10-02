@@ -15,7 +15,7 @@ enum StakingNotificationEvent {
     case withdraw
     case claimRewards
     case restakeRewards
-    case revote(description: String)
+    case revote
     case unlock(periodFormatted: String)
     case validationErrorEvent(ValidationErrorEvent)
     case networkUnreachable
@@ -70,8 +70,9 @@ extension StakingNotificationEvent: NotificationEvent {
             Localization.stakingNotificationClaimRewardsText
         case .restakeRewards:
             Localization.stakingNotificationRestakeRewardsText
-        case .revote(let description):
-            description
+        case .revote:
+            // revote is implemented only for Tron
+            Localization.stakingNotificationsRevoteTronText
         case .unlock(let period):
             Localization.stakingNotificationUnlockText(period)
         case .validationErrorEvent(let event):

@@ -1,5 +1,5 @@
 //
-//  VoteModel.swift
+//  RestakingModel.swift
 //  Tangem
 //
 //  Created by Dmitry Fedorov on 30.09.2024.
@@ -11,14 +11,14 @@ import TangemStaking
 import Combine
 import BlockchainSdk
 
-protocol VoteModelStateProvider {
-    var stakingAction: VoteModel.Action { get }
+protocol RestakingModelStateProvider {
+    var stakingAction: RestakingModel.Action { get }
 
-    var state: VoteModel.State { get }
-    var statePublisher: AnyPublisher<VoteModel.State, Never> { get }
+    var state: RestakingModel.State { get }
+    var statePublisher: AnyPublisher<RestakingModel.State, Never> { get }
 }
 
-class VoteModel {
+class RestakingModel {
     // MARK: - Data
 
     private let _selectedValidator = CurrentValueSubject<LoadingValue<ValidatorInfo>, Never>(.loading)
@@ -63,7 +63,7 @@ class VoteModel {
 
 // MARK: - UnstakingModelStateProvider
 
-extension VoteModel: VoteModelStateProvider {
+extension RestakingModel: RestakingModelStateProvider {
     var stakingAction: Action {
         action
     }
@@ -79,11 +79,12 @@ extension VoteModel: VoteModelStateProvider {
 
 // MARK: - Private
 
-private extension VoteModel {
+private extension RestakingModel {
     func bind() {
         _selectedValidator
             .removeDuplicates()
             .compactMap { $0.value }
+            .first()
             .withWeakCaptureOf(self)
             .sink { model, _ in
                 model.updateState()
@@ -109,7 +110,7 @@ private extension VoteModel {
         }
     }
 
-    func state(amount: Decimal, validator: ValidatorInfo) async throws -> VoteModel.State {
+    func state(amount: Decimal, validator: ValidatorInfo) async throws -> RestakingModel.State {
         let estimateFee = try await stakingManager.estimateFee(
             action: StakingAction(amount: amount, validatorType: .validator(validator), type: action.type)
         )
@@ -121,7 +122,7 @@ private extension VoteModel {
         return .ready(fee: estimateFee)
     }
 
-    func validate(amount: Decimal, fee: Decimal) -> VoteModel.State? {
+    func validate(amount: Decimal, fee: Decimal) -> RestakingModel.State? {
         do {
             try transactionValidator.validate(fee: makeFee(value: fee).amount)
             return nil
@@ -132,7 +133,7 @@ private extension VoteModel {
         }
     }
 
-    func update(state: VoteModel.State) {
+    func update(state: RestakingModel.State) {
         _state.send(state)
     }
 
@@ -158,7 +159,7 @@ private extension VoteModel {
 
 // MARK: - Send
 
-private extension VoteModel {
+private extension RestakingModel {
     private func send() async throws -> SendTransactionDispatcherResult {
         if let analyticsEvent = action.type.analyticsEvent {
             Analytics.log(event: analyticsEvent, params: [.validator: action.validatorInfo?.name ?? ""])
@@ -216,13 +217,13 @@ private extension VoteModel {
 
 // MARK: - SendFeeLoader
 
-extension VoteModel: SendFeeLoader {
+extension RestakingModel: SendFeeLoader {
     func updateFees() {}
 }
 
 // MARK: - SendAmountInput
 
-extension VoteModel: SendAmountInput {
+extension RestakingModel: SendAmountInput {
     var amount: SendAmount? {
         let fiat = tokenItem.currencyId.flatMap {
             BalanceConverter().convertToFiat(action.amount, currencyId: $0)
@@ -238,7 +239,7 @@ extension VoteModel: SendAmountInput {
 
 // MARK: - SendAmountOutput
 
-extension VoteModel: SendAmountOutput {
+extension RestakingModel: SendAmountOutput {
     func amountDidChanged(amount: SendAmount?) {
         assertionFailure("We can not change amount in unstaking")
     }
@@ -246,7 +247,7 @@ extension VoteModel: SendAmountOutput {
 
 // MARK: - StakingValidatorsInput
 
-extension VoteModel: StakingValidatorsInput {
+extension RestakingModel: StakingValidatorsInput {
     var selectedValidatorPublisher: AnyPublisher<TangemStaking.ValidatorInfo, Never> {
         _selectedValidator.compactMap { $0.value }.eraseToAnyPublisher()
     }
@@ -254,7 +255,7 @@ extension VoteModel: StakingValidatorsInput {
 
 // MARK: - StakingValidatorsOutput
 
-extension VoteModel: StakingValidatorsOutput {
+extension RestakingModel: StakingValidatorsOutput {
     func userDidSelected(validator: TangemStaking.ValidatorInfo) {
         _selectedValidator.send(.loaded(validator))
     }
@@ -262,7 +263,7 @@ extension VoteModel: StakingValidatorsOutput {
 
 // MARK: - SendFeeInput
 
-extension VoteModel: SendFeeInput {
+extension RestakingModel: SendFeeInput {
     var selectedFee: SendFee {
         mapToSendFee(_state.value)
     }
@@ -292,7 +293,7 @@ extension VoteModel: SendFeeInput {
 
 // MARK: - SendFeeOutput
 
-extension VoteModel: SendFeeOutput {
+extension RestakingModel: SendFeeOutput {
     func feeDidChanged(fee: SendFee) {
         assertionFailure("We can not change fee in staking")
     }
@@ -300,7 +301,7 @@ extension VoteModel: SendFeeOutput {
 
 // MARK: - SendSummaryInput, SendSummaryOutput
 
-extension VoteModel: SendSummaryInput, SendSummaryOutput {
+extension RestakingModel: SendSummaryInput, SendSummaryOutput {
     var isReadyToSendPublisher: AnyPublisher<Bool, Never> {
         _state.map { state in
             switch state {
@@ -313,14 +314,14 @@ extension VoteModel: SendSummaryInput, SendSummaryOutput {
     }
 
     var summaryTransactionDataPublisher: AnyPublisher<SendSummaryTransactionData?, Never> {
-        // Do not show any text in the unstaking flow
+        // Do not show any text in the restaking flow
         .just(output: nil)
     }
 }
 
 // MARK: - SendFinishInput
 
-extension VoteModel: SendFinishInput {
+extension RestakingModel: SendFinishInput {
     var transactionSentDate: AnyPublisher<Date, Never> {
         _transactionTime.compactMap { $0 }.first().eraseToAnyPublisher()
     }
@@ -328,7 +329,7 @@ extension VoteModel: SendFinishInput {
 
 // MARK: - SendBaseInput, SendBaseOutput
 
-extension VoteModel: SendBaseInput, SendBaseOutput {
+extension RestakingModel: SendBaseInput, SendBaseOutput {
     var actionInProcessing: AnyPublisher<Bool, Never> {
         _isLoading.eraseToAnyPublisher()
     }
@@ -343,7 +344,7 @@ extension VoteModel: SendBaseInput, SendBaseOutput {
 
 // MARK: - StakingNotificationManagerInput
 
-extension VoteModel: StakingNotificationManagerInput {
+extension RestakingModel: StakingNotificationManagerInput {
     var stakingManagerStatePublisher: AnyPublisher<StakingManagerState, Never> {
         stakingManager.statePublisher
     }
@@ -351,7 +352,7 @@ extension VoteModel: StakingNotificationManagerInput {
 
 // MARK: - NotificationTapDelegate
 
-extension VoteModel: NotificationTapDelegate {
+extension RestakingModel: NotificationTapDelegate {
     func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
         switch action {
         case .refreshFee:
@@ -366,7 +367,7 @@ extension VoteModel: NotificationTapDelegate {
 
 // MARK: - SendBaseDataBuilderInput
 
-extension VoteModel: SendBaseDataBuilderInput {
+extension RestakingModel: SendBaseDataBuilderInput {
     var bsdkAmount: BSDKAmount? { makeAmount(value: action.amount) }
 
     var bsdkFee: BlockchainSdk.Fee? { selectedFee.value.value }
@@ -376,7 +377,7 @@ extension VoteModel: SendBaseDataBuilderInput {
     var validator: ValidatorInfo? { action.validatorInfo }
 }
 
-extension VoteModel {
+extension RestakingModel {
     typealias Action = StakingAction
     typealias State = UnstakingModel.State
 }

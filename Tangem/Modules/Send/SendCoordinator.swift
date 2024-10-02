@@ -50,12 +50,9 @@ class SendCoordinator: CoordinatorObject {
         case .staking(let manager):
             rootViewModel = factory.makeStakingViewModel(manager: manager, router: self)
         case .unstaking(let manager, let action):
-            switch action.type {
-            case .pending(let pendingType) where pendingType.isVoteLocked:
-                rootViewModel = factory.makeVoteViewModel(manager: manager, action: action, router: self)
-            default:
-                rootViewModel = factory.makeUnstakingViewModel(manager: manager, action: action, router: self)
-            }
+            rootViewModel = factory.makeUnstakingViewModel(manager: manager, action: action, router: self)
+        case .restaking(let manager, let action):
+            rootViewModel = factory.makeRestakingViewModel(manager: manager, action: action, router: self)
         }
     }
 }

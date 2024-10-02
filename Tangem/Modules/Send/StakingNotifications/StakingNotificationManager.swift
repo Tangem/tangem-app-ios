@@ -17,7 +17,7 @@ protocol StakingNotificationManagerInput {
 protocol StakingNotificationManager: NotificationManager {
     func setup(provider: StakingModelStateProvider, input: StakingNotificationManagerInput)
     func setup(provider: UnstakingModelStateProvider, input: StakingNotificationManagerInput)
-    func setup(provider: VoteModelStateProvider, input: StakingNotificationManagerInput)
+    func setup(provider: RestakingModelStateProvider, input: StakingNotificationManagerInput)
 }
 
 class CommonStakingNotificationManager {
@@ -131,12 +131,12 @@ private extension CommonStakingNotificationManager {
         }
     }
 
-    func update(state: VoteModel.State) {
+    func update(state: RestakingModel.State) {
         switch state {
         case .loading, .ready:
             switch tokenItem.blockchain {
             case .tron:
-                show(notification: .revote(description: Localization.stakingNotificationsRevoteTronText))
+                show(notification: .revote)
             default:
                 break
             }
@@ -144,7 +144,11 @@ private extension CommonStakingNotificationManager {
             hideErrorEvents()
         case .networkError:
             show(error: .networkUnreachable)
-        case .validationError: break
+        case .validationError(let validationError, _):
+            let factory = BlockchainSDKNotificationMapper(tokenItem: tokenItem, feeTokenItem: feeTokenItem)
+            let validationErrorEvent = factory.mapToValidationErrorEvent(validationError)
+
+            show(error: .validationErrorEvent(validationErrorEvent))
         }
     }
 }
@@ -211,7 +215,7 @@ extension CommonStakingNotificationManager: StakingNotificationManager {
         }
     }
 
-    func setup(provider: VoteModelStateProvider, input: StakingNotificationManagerInput) {
+    func setup(provider: RestakingModelStateProvider, input: StakingNotificationManagerInput) {
         stateSubscription = Publishers.CombineLatest(
             provider.statePublisher,
             input.stakingManagerStatePublisher.compactMap { $0.yieldInfo }.removeDuplicates()

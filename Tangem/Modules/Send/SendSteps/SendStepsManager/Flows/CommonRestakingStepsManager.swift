@@ -1,5 +1,5 @@
 //
-//  CommonVoteStepsManager 2.swift
+//  CommonRestakingStepsManager 2.swift
 //  TangemApp
 //
 //  Created by Dmitry Fedorov on 30.09.2024.
@@ -8,11 +8,11 @@
 import Combine
 import TangemStaking
 
-class CommonVoteStepsManager {
+class CommonRestakingStepsManager {
     private let validatorsStep: StakingValidatorsStep
     private let summaryStep: SendSummaryStep
     private let finishStep: SendFinishStep
-    private let action: VoteModel.Action
+    private let action: RestakingModel.Action
 
     private var stack: [SendStep]
     private var bag: Set<AnyCancellable> = []
@@ -70,7 +70,7 @@ class CommonVoteStepsManager {
 
 // MARK: - SendStepsManager
 
-extension CommonVoteStepsManager: SendStepsManager {
+extension CommonRestakingStepsManager: SendStepsManager {
     var initialKeyboardState: Bool { false }
 
     var initialFlowActionType: SendFlowActionType {
@@ -110,7 +110,7 @@ extension CommonVoteStepsManager: SendStepsManager {
 
 // MARK: - SendSummaryStepsRoutable
 
-extension CommonVoteStepsManager: SendSummaryStepsRoutable {
+extension CommonRestakingStepsManager: SendSummaryStepsRoutable {
     func summaryStepRequestEditValidators() {
         guard case .summary = currentStep().type else {
             assertionFailure("This code should only be called from summary")
