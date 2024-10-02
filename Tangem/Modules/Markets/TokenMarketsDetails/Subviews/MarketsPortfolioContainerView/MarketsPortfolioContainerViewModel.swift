@@ -37,10 +37,6 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
     private var userWalletModelsListSubscription: AnyCancellable?
     private var tokensListsUpdateSubscription: AnyCancellable?
 
-    private var hasMultiCurrencyWallet: Bool {
-        walletDataProvider.userWalletModels.contains(where: { $0.config.hasFeature(.multiCurrency) })
-    }
-
     // MARK: - Init
 
     init(
@@ -113,8 +109,13 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
         }
 
         let networkIds = networks.reduce(into: Set<String>()) { $0.insert($1.networkId) }
+        var hasMultiCurrencyWallet = false
 
         for model in userWalletModels {
+            if !hasMultiCurrencyWallet, model.config.hasFeature(.multiCurrency) {
+                hasMultiCurrencyWallet = true
+            }
+
             if !networkIds.intersection(model.config.supportedBlockchains.map { $0.networkId }).isEmpty {
                 return .available
             }
