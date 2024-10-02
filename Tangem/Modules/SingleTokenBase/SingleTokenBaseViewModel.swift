@@ -129,7 +129,7 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
 
         Analytics.log(.refreshed)
 
-        if let id = walletModel.tokenItem.id, miniChartsProvider.items.isEmpty {
+        if let id = walletModel.tokenItem.currencyId, miniChartsProvider.items.isEmpty {
             miniChartsProvider.fetch(for: [id], with: miniChartPriceIntervalType)
         }
 
@@ -311,7 +311,7 @@ extension SingleTokenBaseViewModel {
     }
 
     private func setupMiniChart() {
-        guard let id = walletModel.tokenItem.id else {
+        guard let id = walletModel.tokenItem.currencyId else {
             miniChartData = .failedToLoad(error: "")
             return
         }
