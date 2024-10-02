@@ -19,13 +19,8 @@ class StakingFeatureProvider {
         isFeatureAvailable = config.isFeatureVisible(.staking)
     }
 
-    static var isStakingAvailable: Bool {
-        FeatureProvider.isAvailable(.staking)
-    }
-
     func yieldId(for tokenItem: TokenItem) -> String? {
-        guard StakingFeatureProvider.isStakingAvailable,
-              isFeatureAvailable else {
+        guard isFeatureAvailable else {
             return nil
         }
 

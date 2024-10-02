@@ -26,7 +26,7 @@ struct SendTransactionParametersBuilder {
             if let destinationTag = UInt32(value) {
                 return XRPTransactionParams(destinationTag: destinationTag)
             } else {
-                throw SendTransactionParametersBuilderError.invalidDestinationTag
+                throw SendTransactionParametersBuilderError.invalidMemoDestinationTag
             }
         case .stellar:
             if let memoID = UInt64(value) {
@@ -42,6 +42,12 @@ struct SendTransactionParametersBuilder {
             return AlgorandTransactionParams(nonce: value)
         case .hedera:
             return HederaTransactionParams(memo: value)
+        case .internetComputer:
+            if let memo = UInt64(value) {
+                return ICPTransactionParams(memo: memo)
+            } else {
+                throw SendTransactionParametersBuilderError.invalidMemoDestinationTag
+            }
         case .bitcoin,
              .litecoin,
              .ethereum,
@@ -97,7 +103,6 @@ struct SendTransactionParametersBuilder {
              .bittensor,
              .joystream,
              .koinos,
-             .internetComputer,
              .cyber,
              .blast,
              .filecoin:
@@ -107,13 +112,13 @@ struct SendTransactionParametersBuilder {
 }
 
 private enum SendTransactionParametersBuilderError {
-    case invalidDestinationTag
+    case invalidMemoDestinationTag
 }
 
 extension SendTransactionParametersBuilderError: LocalizedError {
     var errorDescription: String? {
         switch self {
-        case .invalidDestinationTag:
+        case .invalidMemoDestinationTag:
             return Localization.sendMemoDestinationTagError
         }
     }
