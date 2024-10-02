@@ -125,11 +125,15 @@ struct CustomSearchBar: View {
     }
 }
 
+// MARK: - Setupable protocol conformance
+
 extension CustomSearchBar: Setupable {
     func onEditingChanged(_ closure: ((_ isEditing: Bool) -> Void)?) -> Self {
         map { $0.onEditingChanged = closure }
     }
 }
+
+// MARK: - Auxiliary types
 
 extension CustomSearchBar {
     enum InputResult {
@@ -142,6 +146,8 @@ extension CustomSearchBar {
         case translucent
     }
 }
+
+// MARK: - Previews
 
 struct CustomSearchBar_Previews: PreviewProvider {
     @State private static var text: String = ""
