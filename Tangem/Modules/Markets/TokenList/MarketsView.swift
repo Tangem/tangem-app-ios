@@ -32,9 +32,11 @@ struct MarketsView: View {
     private let scrollViewFrameCoordinateSpaceName = UUID()
 
     private var overlayHeight: CGFloat { showSearchResult ? searchResultListOverlayTotalHeight : defaultListOverlayTotalHeight }
+    private var isNavigationBarBackgroundBackdropViewHidden: Bool { 1.0 - viewModel.overlayContentHidingProgress <= .ulpOfOne }
     private var showSearchResult: Bool { viewModel.isSearching }
 
     var body: some View {
+        let _ = Self.printChanges()
         rootView
             .onAppear {
                 viewModel.setViewHierarchySnapshotter(viewHierarchySnapshotter)
@@ -68,7 +70,7 @@ struct MarketsView: View {
                     defaultMarketsView
                 }
             }
-            .opacity(viewModel.overlayContentHidingProgress)
+            .opacity(viewModel.overlayContentHidingProgress) // Hides list content on bottom sheet minimizing
             .scrollDismissesKeyboardCompat(.immediately)
 
             navigationBarBackground
@@ -117,9 +119,14 @@ struct MarketsView: View {
     @ViewBuilder
     private var navigationBarBackground: some View {
         ZStack {
+            // A backdrop view with a solid background color, paced underneath the translucent navigation bar background
+            // and visible when this translucent navigation bar background becomes transparent on bottom sheet minimizing.
+            // Prevents the content of the list from being visible through the transparent translucent navigation bar background
+            // (it just looks ugly).
             Colors.Background.primary
-                .hidden(1.0 - viewModel.overlayContentHidingProgress <= .ulpOfOne)
+                .hidden(isNavigationBarBackgroundBackdropViewHidden)
 
+            // Translucent navigation bar background, visible when list content is obscured by the navigation bar/overlay
             Rectangle()
                 .fill(.ultraThinMaterial)
                 .visible(isListContentObscured)
@@ -135,7 +142,7 @@ struct MarketsView: View {
                 .overlay(alignment: .bottom) {
                     listOverlaySeparator
                 }
-                .opacity(viewModel.overlayContentHidingProgress)
+                .opacity(viewModel.overlayContentHidingProgress) // Hides overlays and separator on bottom sheet minimizing
         }
         .frame(height: headerHeight + overlayHeight)
         .animation(.linear(duration: 0.1), value: isListContentObscured)
