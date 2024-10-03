@@ -145,7 +145,6 @@ struct MarketsView: View {
                 .opacity(viewModel.overlayContentHidingProgress) // Hides overlays and separator on bottom sheet minimizing
         }
         .frame(height: headerHeight + overlayHeight)
-        .animation(.linear(duration: 0.1), value: isListContentObscured)
         .offset(y: listOverlayVerticalOffset)
         .infinityFrame(axis: .vertical, alignment: .top)
     }

@@ -91,7 +91,6 @@ struct TokenMarketsDetailsView: View {
                 }
             )
             .background(navigationBarBackground)
-            .animation(.linear(duration: 0.1), value: isListContentObscured)
             .zIndex(100) // Navigation bar is placed over the scroll view
             .readGeometry(\.size.height, bindTo: $headerHeight)
             .infinityFrame(axis: .vertical, alignment: .top)
