@@ -22,9 +22,8 @@ struct MarketsTokenDetailsInsightsView: View {
     }
 
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: .zero) {
             header
-                .padding(.bottom, 6)
 
             LazyVGrid(columns: gridItems, alignment: .center, spacing: 16, content: {
                 ForEach(viewModel.records.indexed(), id: \.0) { index, info in
@@ -40,8 +39,9 @@ struct MarketsTokenDetailsInsightsView: View {
                 }
             })
             .drawingGroup()
+            .padding(.vertical, Constants.itemsSpacing)
         }
-        .defaultRoundedBackground(with: Colors.Background.action, horizontalPadding: Constants.backgroundHorizontalPadding)
+        .defaultRoundedBackground(with: Colors.Background.action, verticalPadding: .zero, horizontalPadding: Constants.backgroundHorizontalPadding)
     }
 
     private var header: some View {
@@ -70,6 +70,8 @@ struct MarketsTokenDetailsInsightsView: View {
                 titleFactory: { $0.tokenDetailsNameLocalized }
             )
         }
+        .padding(.top, 12)
+        .padding(.bottom, 6)
     }
 
     private var headerLabel: some View {
