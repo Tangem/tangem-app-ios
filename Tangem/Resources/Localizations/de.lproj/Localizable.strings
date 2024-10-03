@@ -124,7 +124,7 @@
 "common_no_address" = "Keine Adresse";
 "common_now" = "Jetzt";
 "common_ok" = "OK";
-"common_origin_card" = "Primär Karte";
+"common_origin_card" = "Hauptkarte";
 "common_passphrase" = "Passphrase";
 "common_paste" = "Einfügen";
 "common_privacy_policy" = "Datenschutzbestimmungen";
@@ -248,6 +248,7 @@
 "express_exchange_status_exchanging" = "Tauschen läuft";
 "express_exchange_status_exchanging_active" = "Austauschen...";
 "express_exchange_status_failed" = "Fehlgeschlagen";
+"express_exchange_status_paused" = "Paused";
 "express_exchange_status_received" = "Einzahlung empfangen";
 "express_exchange_status_receiving" = "Einzahlung wird erwartet";
 "express_exchange_status_receiving_active" = "Warten auf Einzahlung...";
@@ -274,7 +275,7 @@
 "express_token_list_empty_search" = "Keine Token gefunden. Bitte versuche eine andere Anfrage";
 "express_transaction_id" = "ID: %@";
 "express_transaction_id_copied" = "Transaktions-ID kopiert";
-"exсhange_token_description" = "Wechsel eine Ihrer Währungen in eine andere";
+"exсhange_token_description" = "Tauschen jeden Vermögenswert in Deinem Portfolio gegen diesen Token";
 "feedback_preface_rate_negative" = "Teile uns mit, welche Funktionen du vermisst, und wir werden versuchen, dir zu helfen.";
 "feedback_preface_scan_failed" = "Bitte sag uns, welche Karte du hast";
 "feedback_preface_support" = "Hallo Support-Team,";
@@ -339,7 +340,7 @@
 "manage_tokens_wallet_support_only_one_network_title" = "Das Wallet unterstützt nicht mehr als ein Netzwerk";
 "markets_add_to_my_portfolio_description" = "Um mit dem Kauf, Tausch oder Erhalt dieses Vermögenswerts zu beginnen, füge diesen Token zu mindestens 1 Netzwerk hinzu";
 "markets_add_to_my_portfolio_unavailable_description" = "Dieses Asset ist nicht verfügbar";
-"markets_add_to_my_portfolio_unavailable_for_wallet_description" = "This asset is not available for this wallet";
+"markets_add_to_my_portfolio_unavailable_for_wallet_description" = "Dieses Asset ist für dieses Wallet nicht verfügbar";
 "markets_add_to_portfolio_button" = "Zum Portfolio hinzufügen";
 "markets_add_token" = "Hinzufügen";
 "markets_available networks" = "Verfügbare Netzwerke";
@@ -379,6 +380,7 @@
 "markets_token_details_circulating_supply" = "Umlaufmenge";
 "markets_token_details_circulating_supply_description" = "Die Gesamtzahl der Coins, die für den Handel verfügbar sind und auf dem Markt zirkulieren";
 "markets_token_details_circulating_supply_full" = "Umlaufmenge";
+"markets_token_details_empty_exchanges" = "No exchanges found";
 "markets_token_details_experienced_buyers" = "Erfahrene Käufer";
 "markets_token_details_experienced_buyers_description" = "Nettokäufer mit der zusätzlichen Anforderung, mindestens 100 ausgehende Transaktionen zu haben";
 "markets_token_details_experienced_buyers_full" = "Erfahrene Käufer";
@@ -398,6 +400,7 @@
 "markets_token_details_liquidity_full" = "Liquidität";
 "markets_token_details_liquidity_index" = "Liquiditätsindex";
 "markets_token_details_liquidity_index_description" = "Leer";
+"markets_token_details_listed_on" = "Listed on";
 "markets_token_details_low" = "Niedrig";
 "markets_token_details_market_capitalization" = "MarketCap";
 "markets_token_details_market_capitalization_description" = "Der Gesamtmarktwert einer Kryptowährung, berechnet sich durch Multiplikation des aktuellen Preises des Coins mit der Gesamtzahl der im Umlauf befindlichen Coins";
@@ -540,7 +543,7 @@
 "referral_tos_enroled_prefix" = "Du hast akzeptiert";
 "referral_tos_not_enroled_prefix" = "Durch Tippen auf diese Schaltfläche akzeptierst du";
 "referral_tos_suffix" = "des Empfehlungsprogramms";
-"reset_card_to_factory_button_title" = "Zurücksetzen der Karte";
+"reset_card_to_factory_button_title" = "Karte zurücksetzen";
 "reset_card_to_factory_condition_1" = "Mir ist bewusst, dass ich nach der Durchführung dieser Aktion keinen Zugriff mehr auf die aktuelle Wallet habe.";
 "reset_card_to_factory_condition_2" = "Mir ist klar, dass ich diese Karte nicht verwenden kann, um meinen Zugangscode auf den anderen Karten der aktuellen Wallet wiederherzustellen";
 "reset_card_with_backup_to_factory_message" = "Durch das Zurücksetzen auf Werkseinstellungen wird die Wallet vollständig von der ausgewählten Karte gelöscht. Du kannst die aktuelle Wallet nicht wiederherstellen oder die Karte verwenden, um den Zugangscode wiederherzustellen.";
@@ -665,7 +668,7 @@
 "staking_details_warmup_period" = "Aufwärmphase";
 "staking_details_warmup_period_info" = "Die zugewiesene Zeit für die Aktivierung der Teilnahme am Staking.";
 "staking_dismiss_message" = "Möchtest du den Staking-Bildschirm wirklich schließen?";
-"staking_legal" = "Indem Du die Staking-Funktionalität nutzen, stimmst Du den %1$@ und %2$@ des Anbieters zu.";
+"staking_legal" = "Indem Du die Staking-Funktionalität nutzt, stimmst Du den %1$@ und %2$@ des Anbieters zu.";
 "staking_locked" = "Gesperrt";
 "staking_migrate" = "Migrieren";
 "staking_native" = "Natives Staking";
@@ -697,20 +700,21 @@
 "staking_revote" = "Neuwahl";
 "staking_reward_claiming_auto" = "Automatisch";
 "staking_reward_claiming_manual" = "Händisch";
-"staking_reward_schedule_block" = "Block";
-"staking_reward_schedule_day" = "Tag";
+"staking_reward_schedule_block" = "Pro Block";
+"staking_reward_schedule_day" = "Täglich";
 "staking_reward_schedule_each_day" = "Täglich";
 "staking_reward_schedule_each_sec" = "Alle ~ %1$@ Sek.";
-"staking_reward_schedule_epoch" = "Epoche";
-"staking_reward_schedule_era" = "Ära";
-"staking_reward_schedule_hour" = "Stunde";
-"staking_reward_schedule_month" = "Monat";
-"staking_reward_schedule_week" = "Woche";
+"staking_reward_schedule_epoch" = "Pro Epoche";
+"staking_reward_schedule_era" = "Pro Ära";
+"staking_reward_schedule_hour" = "Stündlich";
+"staking_reward_schedule_month" = "Monatlich";
+"staking_reward_schedule_week" = "Wöchentlich";
 "staking_rewards" = "Belohnungen";
 "staking_stake_locked" = "Stake gesperrt";
 "staking_stake_more" = "Mehr staken";
 "staking_summary_description_text" = "Du setzt %1$@ ein und erhältst jährlich %2$@";
 "staking_tap_to_unlock" = "Zum Entsperren antippen";
+"staking_tap_to_unlock_or_vote" = "Tap to unlock or vote";
 "staking_tap_to_withdraw" = "Zum abheben antippen";
 "staking_title_stake" = "Stake %@";
 "staking_title_unstake" = "Staking beenden%@";

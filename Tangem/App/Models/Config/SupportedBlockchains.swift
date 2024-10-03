@@ -137,6 +137,7 @@ struct SupportedBlockchains {
             .filecoin,
             .internetComputer,
             .sei(testnet: false),
+            .sui(curve: ed25519Curve(for: version), testnet: false),
         ]
     }
 
@@ -190,6 +191,7 @@ struct SupportedBlockchains {
             .blast(testnet: true),
             .sei(testnet: true),
             .kaspa(testnet: true),
+            .sui(curve: ed25519Curve(for: version), testnet: true),
         ]
     }
 

@@ -26,7 +26,7 @@ struct SendDependenciesBuilder {
         case .pending(.claimRewards): .claimRewards
         case .pending(.withdraw): .withdraw
         case .pending(.restakeRewards): .restakeRewards
-        case .pending(.voteLocked): .stake
+        case .pending(.voteLocked): .voteLocked
         case .pending(.unlockLocked): .unlockLocked
         }
     }
@@ -239,6 +239,17 @@ struct SendDependenciesBuilder {
 
     func makeUnstakingModel(stakingManager: any StakingManager, action: UnstakingModel.Action) -> UnstakingModel {
         UnstakingModel(
+            stakingManager: stakingManager,
+            sendTransactionDispatcher: makeStakingTransactionDispatcher(),
+            transactionValidator: walletModel.transactionValidator,
+            action: action,
+            tokenItem: walletModel.tokenItem,
+            feeTokenItem: walletModel.feeTokenItem
+        )
+    }
+
+    func makeVoteModel(stakingManager: any StakingManager, action: UnstakingModel.Action) -> RestakingModel {
+        RestakingModel(
             stakingManager: stakingManager,
             sendTransactionDispatcher: makeStakingTransactionDispatcher(),
             transactionValidator: walletModel.transactionValidator,

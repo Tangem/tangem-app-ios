@@ -248,6 +248,7 @@
 "express_exchange_status_exchanging" = "交換中";
 "express_exchange_status_exchanging_active" = "交換中...";
 "express_exchange_status_failed" = "失敗しました";
+"express_exchange_status_paused" = "停止中";
 "express_exchange_status_received" = "入金済み";
 "express_exchange_status_receiving" = "入金待ち";
 "express_exchange_status_receiving_active" = "入金待ち...";
@@ -339,7 +340,7 @@
 "manage_tokens_wallet_support_only_one_network_title" = "ウォレットは複数のネットワークをサポートしていません。";
 "markets_add_to_my_portfolio_description" = "このアセットの購入、交換、受け取りを開始するには、ポートフォリオに追加してください。";
 "markets_add_to_my_portfolio_unavailable_description" = "このアセットは利用できません";
-"markets_add_to_my_portfolio_unavailable_for_wallet_description" = "This asset is not available for this wallet";
+"markets_add_to_my_portfolio_unavailable_for_wallet_description" = "このアセットはこのウォレットでは使用できません。";
 "markets_add_to_portfolio_button" = "ポートフォリオに追加";
 "markets_add_token" = "追加";
 "markets_available networks" = "利用可能なネットワーク";
@@ -379,6 +380,7 @@
 "markets_token_details_circulating_supply" = "循環供給量";
 "markets_token_details_circulating_supply_description" = "取引可能で市場に流通しているコインの総数";
 "markets_token_details_circulating_supply_full" = "循環供給量";
+"markets_token_details_empty_exchanges" = "取引所が見つかりません";
 "markets_token_details_experienced_buyers" = "経験豊富な買い手";
 "markets_token_details_experienced_buyers_description" = "少なくとも100の発信取引を持つネット・バイヤー";
 "markets_token_details_experienced_buyers_full" = "経験豊富な買い手";
@@ -398,6 +400,7 @@
 "markets_token_details_liquidity_full" = "流動性";
 "markets_token_details_liquidity_index" = "流動性指数";
 "markets_token_details_liquidity_index_description" = "";
+"markets_token_details_listed_on" = "上場先";
 "markets_token_details_low" = "低い";
 "markets_token_details_market_capitalization" = "時価総額";
 "markets_token_details_market_capitalization_description" = "暗号資産の市場価値の合計。コインの現在の価格と、流通しているコインの総数を掛けて計算されます。";
@@ -711,6 +714,7 @@
 "staking_stake_more" = "もっとステーキングする";
 "staking_summary_description_text" = "%1$@をステーキングし、年間 %2$@を受け取ります";
 "staking_tap_to_unlock" = "タップしてロック解除";
+"staking_tap_to_unlock_or_vote" = "タップしてロック解除もしくは投票";
 "staking_tap_to_withdraw" = "タップして引き出す";
 "staking_title_stake" = "%@をステーキングする";
 "staking_title_unstake" = "%@のステーキング解除";
@@ -726,7 +730,7 @@
 "staking_validator" = "バリデーター";
 "staking_validators" = "バリデーター";
 "staking_vote" = "投票する";
-"staking_vote_locked" = "投票はロックされています";
+"staking_vote_locked" = "投票する";
 "staking_withdraw" = "引き出す";
 "staking_your_stakes" = "あなたのステーキング";
 "story_awe_description" = "カード内に秘密鍵を保管しながら暗号資産を安全に保管します";
@@ -792,7 +796,7 @@
 "transaction_history_operation" = "オペレーション";
 "transaction_history_transaction_from_address" = "送金元: %@";
 "transaction_history_transaction_to_address" = "送金先: %@";
-"transaction_history_transaction_validator" = "validator: %@";
+"transaction_history_transaction_validator" = "バリデーター: %@";
 "try_to_load_data_again_button_title" = "もう一度やり直してください";
 "twin_error_same_card" = "同じカードをスキャンしました。ツインウォレットを作成するには、番号%liのカードをスキャンする必要があります。";
 "twin_error_wrong_twin" = "間違ったツインカードをスキャンしました。別のカードをお試しください。";

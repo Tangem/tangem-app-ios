@@ -77,7 +77,7 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
     func onAppear() {
         if !didLogScreenAnalytics {
             let analyticsParams: [Analytics.ParameterKey: String] = [.source: settings.analyticsSourceRawValue]
-            Analytics.log(event: .manageTokensButtonCustomToken, params: analyticsParams)
+            Analytics.log(event: .manageTokensCustomTokenScreenOpened, params: analyticsParams)
             didLogScreenAnalytics = true
         }
     }
@@ -119,12 +119,15 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
             return
         }
 
-        let analyticsParams: [Analytics.ParameterKey: String] = [
-            .source: settings.analyticsSourceRawValue,
-            .blockchain: blockchain.displayName,
-        ]
+        // Send events only when changes have occurred
+        if selectedBlockchainNetworkId != nil, selectedBlockchainNetworkId != networkId {
+            let analyticsParams: [Analytics.ParameterKey: String] = [
+                .source: settings.analyticsSourceRawValue,
+                .blockchain: blockchain.displayName,
+            ]
 
-        Analytics.log(event: .manageTokensCustomTokenNetworkSelected, params: analyticsParams)
+            Analytics.log(event: .manageTokensCustomTokenNetworkSelected, params: analyticsParams)
+        }
 
         selectedBlockchainNetworkId = blockchain.networkId
         selectedBlockchainName = blockchain.displayName
@@ -134,8 +137,6 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
     }
 
     func setSelectedDerivationOption(derivationOption: AddCustomTokenDerivationOption) {
-        selectedDerivationOption = derivationOption
-
         let analyticsParams: [Analytics.ParameterKey: String] = [
             .source: settings.analyticsSourceRawValue,
             .derivation: derivationOption.parameterValue,
@@ -143,14 +144,24 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
 
         Analytics.log(event: .manageTokensCustomTokenDerivationSelected, params: analyticsParams)
 
+        selectedDerivationOption = derivationOption
+
         validate()
     }
 
     /// This method is needed to comply with the conditions for sending events. We send an event only when the text field has lost focus
     func onChangeFocusable(field: FocusableObserveField) {
-        guard foundStandardToken == nil else { return }
+        var analyticsParams: [Analytics.ParameterKey: String] = [.source: settings.analyticsSourceRawValue]
 
-        let analyticsParams: [Analytics.ParameterKey: String] = [.source: settings.analyticsSourceRawValue]
+        // Specified before the token search condition as follows from the event sending condition
+        if case .address = field {
+            analyticsParams[.validation] = contractAddressError == nil ? Analytics.ParameterValue.ok.rawValue :
+                Analytics.ParameterValue.error.rawValue
+
+            Analytics.log(event: .manageTokensCustomTokenAddress, params: analyticsParams)
+        }
+
+        guard foundStandardToken == nil else { return }
 
         switch field {
         case .name where !name.isEmpty:
@@ -194,14 +205,6 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
                     result = .just(output: [])
                     contractAddressError = error
                 }
-
-                let analyticsParams: [Analytics.ParameterKey: String] = [
-                    .source: viewModel.settings.analyticsSourceRawValue,
-                    .validation: contractAddressError == nil ? Analytics.ParameterValue.ok.rawValue :
-                        Analytics.ParameterValue.error.rawValue,
-                ]
-
-                Analytics.log(event: .manageTokensCustomTokenAddress, params: analyticsParams)
 
                 self.contractAddressError = contractAddressError
                 return result
@@ -429,6 +432,8 @@ final class AddCustomTokenViewModel: ObservableObject, Identifiable {
             params[.contractAddress] = token.contractAddress
         }
 
+        params[.source] = settings.analyticsSourceRawValue
+
         Analytics.log(event: .manageTokensCustomTokenWasAdded, params: params)
     }
 
@@ -588,6 +593,7 @@ extension AddCustomTokenViewModel {
 
 extension AddCustomTokenViewModel {
     enum FocusableObserveField {
+        case address
         case name
         case symbol
         case decimals

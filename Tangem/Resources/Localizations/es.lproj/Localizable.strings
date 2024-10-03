@@ -248,6 +248,7 @@
 "express_exchange_status_exchanging" = "En intercambio";
 "express_exchange_status_exchanging_active" = "En intercambio";
 "express_exchange_status_failed" = "Fallido";
+"express_exchange_status_paused" = "Paused";
 "express_exchange_status_received" = "Depósito recibido";
 "express_exchange_status_receiving" = "Esperando depósito";
 "express_exchange_status_receiving_active" = "Esperando depósito";
@@ -379,6 +380,7 @@
 "markets_token_details_circulating_supply" = "Suministro circulante";
 "markets_token_details_circulating_supply_description" = "El número total de monedas que están disponibles para el comercio y que circulan en el mercado.";
 "markets_token_details_circulating_supply_full" = "Suministro circulante";
+"markets_token_details_empty_exchanges" = "No exchanges found";
 "markets_token_details_experienced_buyers" = "Compradores experimentados";
 "markets_token_details_experienced_buyers_description" = "Compradores netos con el requisito adicional de tener al menos 100 transacciones salientes";
 "markets_token_details_experienced_buyers_full" = "Compradores experimentados";
@@ -398,6 +400,7 @@
 "markets_token_details_liquidity_full" = "Liquidez";
 "markets_token_details_liquidity_index" = "Índice de liquidez";
 "markets_token_details_liquidity_index_description" = "";
+"markets_token_details_listed_on" = "Listed on";
 "markets_token_details_low" = "Bajo";
 "markets_token_details_market_capitalization" = "Capital. de mercado";
 "markets_token_details_market_capitalization_description" = "El valor total de una criptomoneda calculado multiplicando su precio por la cantidad de monedas en circulación";
@@ -711,6 +714,7 @@
 "staking_stake_more" = "Hacer más staking";
 "staking_summary_description_text" = "Haga staking de %1$@ y recibirá %2$@ anualmente";
 "staking_tap_to_unlock" = "Toque para desbloquear";
+"staking_tap_to_unlock_or_vote" = "Tap to unlock or vote";
 "staking_tap_to_withdraw" = "Toque para retirar";
 "staking_title_stake" = "Stake %@";
 "staking_title_unstake" = "El unstaking de %@";
@@ -780,7 +784,7 @@
 "token_details_staking_block_subtitle" = "El staking le permite ganar %1$@ y obtener recompensas cada %2$@ días";
 "token_details_staking_block_title" = "Gane hasta %@ recompensa del staking por año";
 "token_details_token_type_subtitle" = "Token de %1$@ en la red %%image%% %2$@";
-"token_details_token_type_subtitle_no_standard" = "Token en la %image% red %1$@";
+"token_details_token_type_subtitle_no_standard" = "Token en la %%image%% red %1$@";
 "token_details_unable_hide_alert_message" = "El token %1$@ (%2$@) es la moneda principal en la red %3$@ y no se puede ocultar mientras tengas otros tokens de esta red en la lista";
 "token_details_unable_hide_alert_title" = "No se puede ocultar %@";
 "token_swap_promotion_button" = "Intercambie ahora";
