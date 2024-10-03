@@ -259,7 +259,7 @@ private extension StakingDetailsViewModel {
             rewardViewData = RewardViewData(
                 state: .rewards(fiatFormatted: rewardsFiatFormatted, cryptoFormatted: rewardsCryptoFormatted) { [weak self] in
                     if rewards.count == 1, let balance = rewards.first {
-                        self?.openUnstakingFlow(balance: balance)
+                        self?.openFlow(balance: balance)
 
                         let name = balance.validatorType.validator?.name
                         Analytics.log(event: .stakingButtonRewards, params: [.validator: name ?? ""])
@@ -278,7 +278,7 @@ private extension StakingDetailsViewModel {
                     event: .stakingButtonValidator,
                     params: [.source: Analytics.ParameterValue.stakeSourceStakeInfo.rawValue]
                 )
-                self?.openUnstakingFlow(balance: balance)
+                self?.openFlow(balance: balance)
             }
         }
 
@@ -295,16 +295,16 @@ private extension StakingDetailsViewModel {
         descriptionBottomSheetInfo = DescriptionBottomSheetInfo(title: title, description: description)
     }
 
-    func openUnstakingFlow(balance: StakingBalance) {
+    func openFlow(balance: StakingBalance) {
         do {
             let action = try PendingActionMapper(balance: balance).getAction()
             switch action {
             case .single(let action):
-                coordinator?.openUnstakingFlow(action: action)
+                openFlow(for: action)
             case .multiple(let actions):
                 var buttons: [Alert.Button] = actions.map { action in
                     .default(Text(action.type.title)) { [weak self] in
-                        self?.coordinator?.openUnstakingFlow(action: action)
+                        self?.openFlow(for: action)
                     }
                 }
 
@@ -313,6 +313,17 @@ private extension StakingDetailsViewModel {
             }
         } catch {
             alert = AlertBuilder.makeOkErrorAlert(message: error.localizedDescription)
+        }
+    }
+
+    private func openFlow(for action: StakingAction) {
+        switch action.type {
+        case .stake:
+            coordinator?.openStakingFlow()
+        case .pending(.voteLocked):
+            coordinator?.openRestakingFlow(action: action)
+        case .unstake, .pending:
+            coordinator?.openUnstakingFlow(action: action)
         }
     }
 
