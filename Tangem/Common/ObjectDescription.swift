@@ -20,9 +20,17 @@ func objectDescription(
 ) -> String {
     let typeName = String(describing: type(of: object))
     let memoryAddress = String(describing: Unmanaged.passUnretained(object).toOpaque())
-    let description = userInfo.reduce(into: [typeName + ": " + memoryAddress]) { partialResult, pair in
-        partialResult.append(String(describing: pair.key) + " = " + String(describing: pair.value))
-    }
+    let objectDescription = typeName + ": " + memoryAddress
 
-    return "<" + description.joined(separator: "; ") + ">"
+    return ObjectDescriptionFormatter.format(objectDescription: objectDescription, userInfo: userInfo)
+}
+
+enum ObjectDescriptionFormatter {
+    static func format(objectDescription: String, userInfo: KeyValuePairs<AnyHashable, Any>) -> String {
+        let description = userInfo.reduce(into: [objectDescription]) { partialResult, pair in
+            partialResult.append(String(describing: pair.key) + " = " + String(describing: pair.value))
+        }
+
+        return "<" + description.joined(separator: "; ") + ">"
+    }
 }

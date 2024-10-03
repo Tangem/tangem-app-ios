@@ -23,11 +23,11 @@ class CardSettingsViewModel: ObservableObject {
     @Published var resetToFactoryViewModel: DefaultRowViewModel?
 
     var isResetToFactoryAvailable: Bool {
-        !cardModel.resetToFactoryAvailability.isHidden
+        input.isResetToFactoryAvailable
     }
 
     var resetToFactoryFooterMessage: String {
-        if cardModel.hasBackupCards {
+        if input.backupCardsCount > 0 {
             return Localization.resetCardWithBackupToFactoryMessage
         } else {
             return Localization.resetCardWithoutBackupToFactoryMessage
@@ -39,30 +39,31 @@ class CardSettingsViewModel: ObservableObject {
             return Localization.cardSettingsChangeAccessCodeFooter
         }
 
-        return cardModel.currentSecurityOption.description
+        return input.securityOptionChangeInteractor.currentSecurityOption.description
     }
 
     // MARK: Dependencies
 
-    private unowned let coordinator: CardSettingsRoutable
-    private let cardModel: CardViewModel
+    private weak var coordinator: CardSettingsRoutable?
+    private let input: Input
 
     // MARK: Private
 
     private var isChangeAccessCodeVisible: Bool {
-        cardModel.currentSecurityOption == .accessCode
+        input.securityOptionChangeInteractor.currentSecurityOption == .accessCode
     }
 
     private var bag: Set<AnyCancellable> = []
 
     init(
-        cardModel: CardViewModel,
+        input: Input,
         coordinator: CardSettingsRoutable
     ) {
-        self.cardModel = cardModel
+        self.input = input
         self.coordinator = coordinator
-        securityModeTitle = cardModel.currentSecurityOption.title
-        hasSingleSecurityMode = cardModel.availableSecurityOptions.count <= 1
+
+        securityModeTitle = input.securityOptionChangeInteractor.currentSecurityOption.title
+        hasSingleSecurityMode = input.securityOptionChangeInteractor.availableSecurityOptions.count <= 1
 
         bind()
         setupView()
@@ -73,41 +74,41 @@ class CardSettingsViewModel: ObservableObject {
 
 private extension CardSettingsViewModel {
     func bind() {
-        cardModel.$currentSecurityOption
+        input.securityOptionChangeInteractor.currentSecurityOptionPublisher
             .receiveValue { [weak self] newMode in
                 self?.securityModeTitle = newMode.titleForDetails
                 self?.setupSecurityOptions()
             }
             .store(in: &bag)
 
-        cardModel.$accessCodeRecoveryEnabled
-            .receiveValue { [weak self] enabled in
+        input.recoveryInteractor.isUserCodeRecoveryAllowedPublisher
+            .sink { [weak self] enabled in
                 self?.setupAccessCodeRecoveryModel(enabled: enabled)
             }
             .store(in: &bag)
     }
 
     func prepareTwinOnboarding() {
-        if let twinInput = cardModel.twinInput {
-            coordinator.openOnboarding(with: twinInput)
+        if let twinInput = input.twinInput {
+            coordinator?.openOnboarding(with: twinInput)
         }
     }
 
     func setupView() {
         cardInfoSection = [
-            DefaultRowViewModel(title: Localization.detailsRowTitleCid, detailsType: .text(cardModel.cardIdFormatted)),
-            DefaultRowViewModel(title: Localization.detailsRowTitleIssuer, detailsType: .text(cardModel.cardIssuer)),
+            DefaultRowViewModel(title: Localization.detailsRowTitleCid, detailsType: .text(input.cardIdFormatted)),
+            DefaultRowViewModel(title: Localization.detailsRowTitleIssuer, detailsType: .text(input.cardIssuer)),
         ]
 
-        if cardModel.canDisplayHashesCount {
+        if input.canDisplayHashesCount {
             cardInfoSection.append(DefaultRowViewModel(
                 title: Localization.detailsRowTitleSignedHashes,
-                detailsType: .text(Localization.detailsRowSubtitleSignedHashesFormat("\(cardModel.cardSignedHashes)"))
+                detailsType: .text(Localization.detailsRowSubtitleSignedHashesFormat("\(input.cardSignedHashes)"))
             ))
         }
 
         setupSecurityOptions()
-        setupAccessCodeRecoveryModel(enabled: cardModel.accessCodeRecoveryEnabled)
+        setupAccessCodeRecoveryModel(enabled: input.recoveryInteractor.isUserCodeRecoveryAllowed)
 
         if isResetToFactoryAvailable {
             resetToFactoryViewModel = DefaultRowViewModel(
@@ -136,7 +137,7 @@ private extension CardSettingsViewModel {
     }
 
     func setupAccessCodeRecoveryModel(enabled: Bool) {
-        if cardModel.canChangeAccessCodeRecoverySettings {
+        if input.canChangeAccessCodeRecoverySettings {
             accessCodeRecoverySection = DefaultRowViewModel(
                 title: Localization.cardSettingsAccessCodeRecoveryTitle,
                 detailsType: .text(enabled ? Localization.commonEnabled : Localization.commonDisabled),
@@ -150,10 +151,15 @@ private extension CardSettingsViewModel {
 
 extension CardSettingsViewModel {
     func openChangeAccessCodeWarningView() {
+        if let disabledLocalizedReason = input.resetToFactoryDisabledLocalizedReason {
+            alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
+            return
+        }
+
         Analytics.log(.buttonChangeUserCode)
         isChangeAccessCodeLoading = true
         setupSecurityOptions()
-        cardModel.changeSecurityOption(.accessCode) { [weak self] result in
+        input.securityOptionChangeInteractor.changeSecurityOption(.accessCode) { [weak self] result in
             DispatchQueue.main.async {
                 self?.isChangeAccessCodeLoading = false
                 self?.setupSecurityOptions()
@@ -162,30 +168,59 @@ extension CardSettingsViewModel {
     }
 
     func openSecurityMode() {
-        Analytics.log(.buttonChangeSecurityMode)
-        coordinator.openSecurityMode(cardModel: cardModel)
-    }
-
-    func openResetCard() {
-        if let disabledLocalizedReason = cardModel.getDisabledLocalizedReason(for: .resetToFactory) {
+        if let disabledLocalizedReason = input.resetToFactoryDisabledLocalizedReason {
             alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
             return
         }
 
-        if cardModel.canTwin {
+        Analytics.log(.buttonChangeSecurityMode)
+        coordinator?.openSecurityMode(with: input.securityOptionChangeInteractor)
+    }
+
+    func openResetCard() {
+        if let disabledLocalizedReason = input.resetToFactoryDisabledLocalizedReason {
+            alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
+            return
+        }
+
+        if input.canTwin {
             prepareTwinOnboarding()
         } else {
             let input = ResetToFactoryViewModel.Input(
-                cardInteractor: cardModel.cardInteractor,
-                hasBackupCards: cardModel.hasBackupCards,
-                userWalletId: cardModel.userWalletId
+                cardInteractor: input.factorySettingsResettingCardInteractor,
+                backupCardsCount: input.backupCardsCount,
+                userWalletId: input.userWalletId
             )
-            coordinator.openResetCardToFactoryWarning(with: input)
+            coordinator?.openResetCardToFactoryWarning(with: input)
         }
     }
 
     func openAccessCodeSettings() {
+        if let disabledLocalizedReason = input.resetToFactoryDisabledLocalizedReason {
+            alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
+            return
+        }
+
         Analytics.log(.cardSettingsButtonAccessCodeRecovery)
-        coordinator.openAccessCodeRecoverySettings(using: cardModel)
+        coordinator?.openAccessCodeRecoverySettings(with: input.recoveryInteractor)
+    }
+}
+
+extension CardSettingsViewModel {
+    struct Input {
+        let userWalletId: UserWalletId
+        let recoveryInteractor: UserCodeRecovering
+        let securityOptionChangeInteractor: SecurityOptionChanging
+        let factorySettingsResettingCardInteractor: FactorySettingsResettingCardInteractor
+        let isResetToFactoryAvailable: Bool
+        let backupCardsCount: Int
+        let canTwin: Bool
+        let twinInput: OnboardingInput?
+        let cardIdFormatted: String
+        let cardIssuer: String
+        let canDisplayHashesCount: Bool
+        let cardSignedHashes: Int
+        let canChangeAccessCodeRecoverySettings: Bool
+        let resetToFactoryDisabledLocalizedReason: String?
     }
 }

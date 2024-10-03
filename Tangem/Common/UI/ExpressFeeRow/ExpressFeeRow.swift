@@ -59,8 +59,7 @@ struct ExpressFeeRowView: View {
     ]) {
         ExpressFeeRowView(viewModel: $0)
     }
-    .interSectionPadding(14)
-    .interSectionPadding(12)
+    .innerContentPadding(12)
     .padding()
     .background(Colors.Background.secondary.ignoresSafeArea())
 }

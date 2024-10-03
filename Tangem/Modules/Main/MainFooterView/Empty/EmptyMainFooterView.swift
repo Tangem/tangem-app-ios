@@ -16,6 +16,6 @@ struct EmptyMainFooterView: View {
     }
 
     var body: some View {
-        FixedSpacer(height: footerHeight, length: footerHeight)
+        FixedSpacer.vertical(footerHeight)
     }
 }

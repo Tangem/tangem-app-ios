@@ -9,27 +9,13 @@
 // Configuration settings file format documentation can be found at:
 // https://help.apple.com/xcode/#/dev745c5c974
 
+#include "Common.xcconfig"
+
 // Config name
 ENVIRONMENT_NAME = Beta
 
-// Prefix from developer.apple.com, TEAM_ID in this case
-APP_ID_PREFIX = 4897UJ6D8C
-
-// Will use in TangemApp as BUNDLE_IDENTIFIER
-APP_BUNDLE_IDENTIFIER = com.tangem.TangemBeta
-
-// Storage container name
-SUITE_NAME = group.$(APP_BUNDLE_IDENTIFIER)
-
 // Path to *.entitlements file
 ENTITLEMENTS_PATH = Tangem/Configurations/TangemBeta.entitlements
-
-// Overriding (do NOT change key name)
-// app name
-PRODUCT_NAME = Tangem $(ENVIRONMENT_NAME)
-
-// app icon
-ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon_$(ENVIRONMENT_NAME)
 
 // Additional swift compiler flags
 SWIFT_ACTIVE_COMPILATION_CONDITIONS = BETA ALPHA_OR_BETA

@@ -9,5 +9,5 @@
 import Combine
 
 protocol TotalBalanceProviding {
-    func totalBalancePublisher() -> AnyPublisher<LoadingValue<TotalBalanceProvider.TotalBalance>, Never>
+    var totalBalancePublisher: AnyPublisher<LoadingValue<TotalBalance>, Never> { get }
 }

@@ -9,37 +9,33 @@
 import Combine
 import TangemSdk
 
-protocol AccessCodeRecoverySettingsProvider {
-    var accessCodeRecoveryEnabled: Bool { get }
-    func setAccessCodeRecovery(to enabled: Bool, _ completionHandler: @escaping (Result<Void, TangemSdkError>) -> Void)
-}
-
 class AccessCodeRecoverySettingsViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var viewModels: [DefaultSelectableRowViewModel<Bool>] = []
-    @Published var accessCodeRecoveryEnabled: Bool
+    @Published var isUserCodeRecoveryAllowed: Bool
     @Published var errorAlert: AlertBinder?
 
     var actionButtonDisabled: Bool {
-        accessCodeRecoveryEnabled == settingsProvider.accessCodeRecoveryEnabled
+        isUserCodeRecoveryAllowed == recoveryInteractor.isUserCodeRecoveryAllowed
     }
 
-    private let settingsProvider: AccessCodeRecoverySettingsProvider
+    private let recoveryInteractor: UserCodeRecovering
 
-    init(settingsProvider: AccessCodeRecoverySettingsProvider) {
-        self.settingsProvider = settingsProvider
-        accessCodeRecoveryEnabled = settingsProvider.accessCodeRecoveryEnabled
+    init(with recoveryInteractor: UserCodeRecovering) {
+        self.recoveryInteractor = recoveryInteractor
+        isUserCodeRecoveryAllowed = recoveryInteractor.isUserCodeRecoveryAllowed
         setupViews()
     }
 
     func actionButtonDidTap() {
         isLoading = true
-        settingsProvider.setAccessCodeRecovery(to: accessCodeRecoveryEnabled) { [weak self] result in
+
+        recoveryInteractor.toggleUserCodeRecoveryAllowed { [weak self] result in
             guard let self else { return }
 
             switch result {
-            case .success:
-                Analytics.log(.cardSettingsAccessCodeRecoveryChanged, params: [.status: accessCodeRecoveryEnabled ? .enabled : .disabled])
+            case .success(let newValue):
+                Analytics.log(.cardSettingsAccessCodeRecoveryChanged, params: [.status: newValue ? .enabled : .disabled])
             case .failure(let error):
                 if error.isUserCancelled {
                     break
@@ -47,6 +43,7 @@ class AccessCodeRecoverySettingsViewModel: ObservableObject {
 
                 errorAlert = error.alertBinder
             }
+
             DispatchQueue.main.async {
                 self.isLoading = false
             }

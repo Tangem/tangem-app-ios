@@ -11,7 +11,7 @@ import Combine
 import WalletConnectSwiftV2
 import BlockchainSdk
 
-protocol WalletConnectUserWalletInfoProvider {
+protocol WalletConnectUserWalletInfoProvider: AnyObject {
     var userWalletId: UserWalletId { get }
     var signer: TangemSigner { get }
     var wcWalletModelProvider: WalletConnectWalletModelProvider { get }
@@ -32,7 +32,10 @@ final class WalletConnectV2Service {
     private var messagesSubscriptions = Set<AnyCancellable>()
 
     private lazy var pairApi: PairingInteracting = Pair.instance
-    private lazy var signApi: SignClient = Sign.instance
+    private lazy var signApi: SignClient = {
+        Sign.configure(crypto: WalletConnectCryptoProvider())
+        return Sign.instance
+    }()
 
     var canEstablishNewSessionPublisher: AnyPublisher<Bool, Never> {
         canEstablishNewSessionSubject
@@ -45,7 +48,7 @@ final class WalletConnectV2Service {
         }
     }
 
-    private var infoProvider: WalletConnectUserWalletInfoProvider?
+    private weak var infoProvider: WalletConnectUserWalletInfoProvider?
 
     init(
         uiDelegate: WalletConnectUIDelegate,
@@ -57,6 +60,7 @@ final class WalletConnectV2Service {
         self.wcHandlersService = wcHandlersService
 
         Networking.configure(
+            groupIdentifier: AppEnvironment.current.suiteName,
             projectId: keysManager.walletConnectProjectId,
             socketFactory: factory,
             socketConnectionType: .automatic
@@ -65,7 +69,8 @@ final class WalletConnectV2Service {
             name: "Tangem iOS",
             description: "Tangem is a card-shaped self-custodial cold hardware wallet",
             url: "tangem.com",
-            icons: ["https://user-images.githubusercontent.com/24321494/124071202-72a00900-da58-11eb-935a-dcdab21de52b.png"]
+            icons: ["https://user-images.githubusercontent.com/24321494/124071202-72a00900-da58-11eb-935a-dcdab21de52b.png"],
+            redirect: .init(native: IncomingActionConstants.universalLinkScheme, universal: IncomingActionConstants.tangemDomain)
         ))
 
         setupSessionSubscriptions()
@@ -83,7 +88,6 @@ final class WalletConnectV2Service {
         canEstablishNewSessionSubject.send(false)
         runTask(withTimeout: 20) { [weak self] in
             await self?.pairClient(with: uri)
-            self?.canEstablishNewSessionSubject.send(true)
         } onTimeout: { [weak self] in
             self?.displayErrorUI(WalletConnectV2Error.sessionConnetionTimeout)
             self?.canEstablishNewSessionSubject.send(true)
@@ -91,9 +95,13 @@ final class WalletConnectV2Service {
     }
 
     func disconnectSession(with id: Int) async {
-        guard let session = await sessionsStorage.session(with: id) else { return }
+        guard let session = await sessionsStorage.session(with: id) else {
+            log("Failed to find session with id: \(id). Attempt to disconnect session failed")
+            return
+        }
 
         do {
+            log("Attempt to disconnect session with topic: \(session.topic)")
             try await signApi.disconnect(topic: session.topic)
 
             Analytics.log(
@@ -104,12 +112,17 @@ final class WalletConnectV2Service {
                 ]
             )
 
+            log("Session with topic: \(session.topic) was disconnected from SignAPI. Removing from storage")
             await sessionsStorage.remove(session)
         } catch {
             let internalError = WalletConnectV2ErrorMappingUtils().mapWCv2Error(error)
-            if case .sessionForTopicNotFound = internalError {
+            switch internalError {
+            case .sessionForTopicNotFound, .symmetricKeyForTopicNotFound:
+                log("Failed to remove session with \(session.topic) from SignAPI. Reason: \(internalError.localizedDescription). Removing anyway from storage")
                 await sessionsStorage.remove(session)
                 return
+            default:
+                break
             }
             AppLog.shared.error("[WC 2.0] Failed to disconnect session with topic: \(session.topic) with error: \(error)")
         }
@@ -130,12 +143,52 @@ final class WalletConnectV2Service {
         }
     }
 
+    private func checkSocketConnection() async -> Bool {
+        guard let socket = factory.lastCreatedSocket else {
+            return false
+        }
+
+        if socket.currentState == .connected {
+            return true
+        }
+
+        do {
+            let newState = try await socket.statePublisher
+                .filter { $0 == .connected }
+                .eraseError()
+                .timeout(.seconds(10), scheduler: DispatchQueue.main, customError: {
+                    WalletConnectV2Error.socketConnectionTimeout
+                })
+                .eraseToAnyPublisher()
+                .async()
+
+            return newState == .connected
+        } catch {
+            log("Failed to get new connection state.\nError: \(error)")
+            return false
+        }
+    }
+
     private func pairClient(with url: WalletConnectURI) async {
+        guard await checkSocketConnection() else {
+            Analytics.debugLog(eventInfo: Analytics.WalletConnectDebugEvent.webSocketConnectionTimeout)
+            displayErrorUI(WalletConnectV2Error.socketIsNotConnected)
+            canEstablishNewSessionSubject.send(true)
+            return
+        }
+
         log("Trying to pair client: \(url)")
         do {
             try await pairApi.pair(uri: url)
             try Task.checkCancellation()
             log("Established pair for \(url)")
+            DispatchQueue.main.async {
+                Toast(view: SuccessToast(text: Localization.walletConnectToastAwaitingSessionProposal))
+                    .present(
+                        layout: .top(padding: 20),
+                        type: .temporary()
+                    )
+            }
         } catch {
             displayErrorUI(WalletConnectV2Error.pairClientError(error.localizedDescription))
             AppLog.shared.error("[WC 2.0] Failed to connect to \(url) with error: \(error)")
@@ -143,6 +196,7 @@ final class WalletConnectV2Service {
             // Hack to delete the topic from the user default storage inside the WC 2.0 SDK
             await disconnect(topic: url.topic)
         }
+        canEstablishNewSessionSubject.send(true)
     }
 
     private func disconnect(topic: String) async {
@@ -189,6 +243,9 @@ final class WalletConnectV2Service {
                     ]
                 )
 
+                canEstablishNewSessionSubject.send(true)
+
+                log("Saving session with topic: \(savedSession.topic).\ndApp url: \(savedSession.sessionInfo.dAppInfo.url)")
                 await sessionsStorage.save(savedSession)
             }
             .sink()
@@ -202,6 +259,7 @@ final class WalletConnectV2Service {
                 log("Receive Delete session message with topic: \(topic). Delete reason: \(reason)")
 
                 guard let session = await sessionsStorage.session(with: topic) else {
+                    log("Receive Delete session message with topic: \(topic). Delete reason: \(reason). But session not found.")
                     return
                 }
 
@@ -270,6 +328,7 @@ final class WalletConnectV2Service {
             AppLog.shared.error("[WC 2.0] \(error)")
             displayErrorUI(.unknown(error.localizedDescription))
         }
+        canEstablishNewSessionSubject.send(true)
     }
 
     // MARK: - UI Related
@@ -314,7 +373,7 @@ final class WalletConnectV2Service {
 
             do {
                 log("Namespaces to approve for session connection: \(namespaces)")
-                try await signApi.approve(proposalId: id, namespaces: namespaces)
+                _ = try await signApi.approve(proposalId: id, namespaces: namespaces)
             } catch let error as WalletConnectV2Error {
                 self.displayErrorUI(error)
             } catch {
@@ -328,11 +387,12 @@ final class WalletConnectV2Service {
     private func sessionRejected(with proposal: Session.Proposal) {
         runTask { [weak self] in
             do {
-                try await self?.signApi.reject(proposalId: proposal.id, reason: .userRejected)
+                try await self?.signApi.rejectSession(proposalId: proposal.id, reason: .userRejected)
                 self?.log("User reject WC connection")
             } catch {
                 AppLog.shared.error("[WC 2.0] Failed to reject WC connection with error: \(error)")
             }
+            self?.canEstablishNewSessionSubject.send(true)
         }
     }
 
@@ -369,7 +429,7 @@ final class WalletConnectV2Service {
             return
         }
 
-        if userWalletRepository.isLocked, userWalletRepository.models.isEmpty {
+        if userWalletRepository.models.isEmpty {
             log("User wallet repository is locked")
             await respond(with: .userWalletRepositoryIsLocked, session: nil, blockchainCurrencySymbol: targetBlockchain.currencySymbol)
             return
@@ -387,7 +447,7 @@ final class WalletConnectV2Service {
             return
         }
 
-        if userWallet.userWallet.isLocked {
+        if userWallet.isUserWalletLocked {
             log("Attempt to handle message with locked user wallet")
             await respond(with: .userWalletIsLocked, session: session, blockchainCurrencySymbol: targetBlockchain.currencySymbol)
             return
@@ -448,8 +508,16 @@ final class WalletConnectV2Service {
         if let error {
             params[.validation] = Analytics.ParameterValue.fail.rawValue
             params[.errorCode] = "\(error.code)"
+            let errorDescription: String
+            if case .unknown(let externalErrorMessage) = error {
+                errorDescription = externalErrorMessage
+            } else {
+                errorDescription = error.errorDescription ?? "No error description"
+            }
+            params[.errorDescription] = errorDescription
         } else {
             params[.validation] = Analytics.ParameterValue.success.rawValue
+            params[.errorCode] = "0"
         }
 
         Analytics.log(event: .requestHandled, params: params)
@@ -463,7 +531,12 @@ final class WalletConnectV2Service {
 public typealias WalletConnectV2URI = WalletConnectURI
 
 private struct DApps {
-    private let unsupportedList: [String] = ["dydx.exchange"]
+    private let unsupportedList: [String] = [
+        "dydx.exchange",
+        "pro.apex.exchange",
+        "services.dfx.swiss",
+        "sandbox.game",
+    ]
 
     func isSupported(_ dAppURL: String) -> Bool {
         for dApp in unsupportedList {

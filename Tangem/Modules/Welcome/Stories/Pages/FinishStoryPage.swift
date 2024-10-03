@@ -45,8 +45,8 @@ struct FinishStoryPage: View {
                         .edgesIgnoringSafeArea(.bottom)
                         .overlay(
                             LinearGradient(stops: [
-                                Gradient.Stop(color: Color("tangem_story_background").opacity(0), location: 0.7),
-                                Gradient.Stop(color: Color("tangem_story_background"), location: 1),
+                                Gradient.Stop(color: Colors.Old.tangemStoryBackground.opacity(0), location: 0.7),
+                                Gradient.Stop(color: Colors.Old.tangemStoryBackground, location: 1),
                             ], startPoint: .top, endPoint: .bottom)
                                 .frame(minWidth: 1000)
                         ),
@@ -57,10 +57,10 @@ struct FinishStoryPage: View {
 
             StoriesBottomButtons(scanColorStyle: .primary, orderColorStyle: .secondary, isScanning: $isScanning, scanCard: scanCard, orderCard: orderCard)
                 .padding(.horizontal)
-                .padding(.bottom)
+                .padding(.bottom, 6)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color("tangem_story_background").edgesIgnoringSafeArea(.all))
+        .background(Colors.Old.tangemStoryBackground.edgesIgnoringSafeArea(.all))
     }
 }
 

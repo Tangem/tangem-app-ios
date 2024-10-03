@@ -41,7 +41,6 @@ public extension TokenItemMenuActions {
         case buy
         case send
         case exchange
-        case stake
 
         public var title: String {
             switch self {
@@ -56,9 +55,7 @@ public extension TokenItemMenuActions {
             case .send:
                 return Localization.commonSend
             case .exchange:
-                return Localization.commonExchange
-            case .stake:
-                return Localization.commonStake
+                return Localization.swappingSwapAction
             }
         }
 
@@ -76,8 +73,6 @@ public extension TokenItemMenuActions {
                 return Assets.TokenItemContextMenu.menuArrowUpMini
             case .exchange:
                 return Assets.TokenItemContextMenu.menuExchangeMini
-            case .stake:
-                return Assets.TokenItemContextMenu.menuStaking
             }
         }
     }

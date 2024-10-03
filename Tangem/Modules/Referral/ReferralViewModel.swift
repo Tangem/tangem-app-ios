@@ -18,7 +18,6 @@ class ReferralViewModel: ObservableObject {
     @Published var isProcessingRequest: Bool = false
     @Published private(set) var referralProgramInfo: ReferralProgramInfo?
     @Published var errorAlert: AlertBinder?
-    @Published var showCodeCopiedToast: Bool = false
 
     @Published var expectedAwardsExpanded = false
 
@@ -76,7 +75,7 @@ class ReferralViewModel: ObservableObject {
         }
 
         do {
-            let address = try await userTokensManager.add(.token(token, blockchain), derivationPath: nil)
+            let address = try await userTokensManager.add(.token(token, .init(blockchain, derivationPath: nil)))
             isProcessingRequest = false
 
             let referralProgramInfo: ReferralProgramInfo? = try await runInTask { [weak self] in
@@ -100,7 +99,12 @@ class ReferralViewModel: ObservableObject {
     func copyPromoCode() {
         Analytics.log(.referralButtonCopyCode)
         UIPasteboard.general.string = referralProgramInfo?.referral?.promoCode
-        showCodeCopiedToast = true
+
+        Toast(view: SuccessToast(text: Localization.referralPromoCodeCopied))
+            .present(
+                layout: .top(padding: 12),
+                type: .temporary()
+            )
     }
 
     func sharePromoCode() {
@@ -306,7 +310,6 @@ private struct TangemRichTextFormatter {
             attributedString.replaceCharacters(in: richTextRange, with: String(plainText))
 
             let plainTextRange = NSRange(location: match.range.location, length: plainText.count)
-            let attributedStringColor = [NSAttributedString.Key.foregroundColor: highlightColor]
             attributedString.addAttribute(.foregroundColor, value: highlightColor, range: plainTextRange)
         }
 

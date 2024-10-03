@@ -625,6 +625,104 @@
                     "exchangeable": false
                 }
             ]
+        },
+        {
+            "id": "decimal",
+            "symbol": "DEL",
+            "name": "Decimal",
+            "networks":
+            [
+                {
+                    "networkId": "decimal/test",
+                    "exchangeable": false
+                }
+            ]
+        },
+        {
+            "id": "vechain",
+            "symbol": "VET",
+            "name": "VeChain",
+            "networks":
+            [
+                {
+                    "networkId": "vechain/test",
+                    "exchangeable": false
+                }
+            ]
+        },
+        {
+            "id": "vethor-token",
+            "symbol": "VTHO",
+            "name": "VeThor",
+            "networks":
+            [
+                {
+                    "networkId": "vechain/test",
+                    "exchangeable": false,
+                    "contractAddress": "0x0000000000000000000000000000456e65726779",
+                    "decimalCount": 18
+                }
+            ]
+        },
+        {
+            "id": "algorand",
+            "symbol": "ALGO",
+            "name": "Algorand",
+            "networks":
+            [
+                {
+                    "networkId": "algorand/test",
+                    "exchangeable": false
+                }
+            ]
+        },
+        {
+            "id": "aptos",
+            "symbol": "APT",
+            "name": "Aptos",
+            "networks":
+            [
+                {
+                    "networkId": "aptos/test",
+                    "exchangeable": false
+                }
+            ]
+        },
+        {
+            "id": "hedera-hashgraph",
+            "symbol": "HBAR",
+            "name": "Hedera",
+            "networks":
+            [
+                {
+                    "networkId": "hedera-hashgraph/test",
+                    "exchangeable": false
+                }
+            ]
+        },
+        {
+            "id": "radiant",
+            "symbol": "RXD",
+            "name": "Radiant",
+            "networks":
+            [
+                {
+                    "networkId": "radiant/test",
+                    "exchangeable": false
+                }
+            ]
+        },
+        {
+            "id": "base-ethereum",
+            "symbol": "ETH",
+            "name": "Base",
+            "networks":
+            [
+                {
+                    "networkId": "base/test",
+                    "exchangeable": false
+                }
+            ]
         }
     ],
     "total": 0,

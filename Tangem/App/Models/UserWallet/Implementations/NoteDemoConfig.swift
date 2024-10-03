@@ -39,7 +39,7 @@ extension NoteDemoConfig: UserWalletConfig {
         "Note"
     }
 
-    var mandatoryCurves: [EllipticCurve] {
+    var createWalletCurves: [EllipticCurve] {
         [defaultBlockchain.curve]
     }
 
@@ -70,8 +70,6 @@ extension NoteDemoConfig: UserWalletConfig {
 
         return warnings
     }
-
-    var tangemSigner: TangemSigner { .init(with: card.cardId, sdk: makeTangemSdk()) }
 
     var emailData: [EmailCollectedData] {
         CardEmailDataFactory().makeEmailData(for: card, walletData: noteData)
@@ -132,7 +130,7 @@ extension NoteDemoConfig: UserWalletConfig {
         case .onlineImage:
             return card.firmwareVersion.type == .release ? .available : .hidden
         case .staking:
-            return .available
+            return .hidden
         case .topup:
             return .available
         case .tokenSynchronization:
@@ -153,7 +151,7 @@ extension NoteDemoConfig: UserWalletConfig {
     }
 
     func makeWalletModelsFactory() -> WalletModelsFactory {
-        return DemoWalletModelsFactory(derivationStyle: nil)
+        return DemoWalletModelsFactory(config: self)
     }
 
     func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {

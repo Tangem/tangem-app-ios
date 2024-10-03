@@ -14,7 +14,7 @@ protocol DerivationManager {
     var hasPendingDerivations: AnyPublisher<Bool, Never> { get }
     var pendingDerivationsCount: AnyPublisher<Int, Never> { get }
 
-    func deriveKeys(cardInteractor: CardDerivable, completion: @escaping (Result<Void, TangemSdkError>) -> Void)
+    func deriveKeys(cardInteractor: KeysDeriving, completion: @escaping (Result<Void, TangemSdkError>) -> Void)
 }
 
 // TODO: refactor keys storage to single source and remove this delegate

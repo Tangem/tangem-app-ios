@@ -20,30 +20,32 @@ struct TransactionView: View {
                 .background(viewModel.iconBackgroundColor)
                 .cornerRadiusContinuous(20)
 
-            VStack(alignment: .leading, spacing: 4) {
-                HStack(spacing: 8) {
-                    Text(viewModel.name)
-                        .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+            HStack(spacing: 8) {
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(spacing: 8) {
+                        Text(viewModel.name)
+                            .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
 
-                    if viewModel.inProgress {
-                        Assets.pendingTxIndicator.image
+                        if viewModel.inProgress {
+                            Assets.pendingTxIndicator.image
+                        }
                     }
 
-                    Spacer()
-
-                    if let amount = viewModel.formattedAmount {
-                        SensitiveText(amount)
-                            .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+                    if let localizeDestination = viewModel.localizeDestination {
+                        Text(localizeDestination)
+                            .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
                     }
                 }
 
-                HStack(spacing: 6) {
-                    Text(viewModel.localizeDestination)
-                        .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-                        .lineLimit(1)
-                        .truncationMode(.middle)
+                Spacer()
 
-                    Spacer()
+                VStack(alignment: .trailing, spacing: 4) {
+                    if let amount = viewModel.formattedAmount {
+                        SensitiveText(amount)
+                            .style(Fonts.Regular.subheadline, color: viewModel.amountColor)
+                    }
 
                     Text(viewModel.subtitleText)
                         .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
@@ -59,6 +61,7 @@ struct TransactionView_Previews: PreviewProvider {
     static let previewViewModels: [TransactionViewModel] = [
         TransactionViewModel(
             hash: UUID().uuidString,
+            index: 0,
             interactionAddress: .user("0xeEDBa2484aAF940f37cd3CD21a5D7C4A7DAfbfC0"),
             timeFormatted: "10:45",
             amount: "443 wxDAI",
@@ -68,6 +71,7 @@ struct TransactionView_Previews: PreviewProvider {
         ),
         TransactionViewModel(
             hash: UUID().uuidString,
+            index: 0,
             interactionAddress: .user("0xeEDBa2484aAF940f37cd3CD21a5D7C4A7DAfbfC0"),
             timeFormatted: "05:10",
             amount: "50 wxDAI",
@@ -77,6 +81,7 @@ struct TransactionView_Previews: PreviewProvider {
         ),
         TransactionViewModel(
             hash: UUID().uuidString,
+            index: 0,
             interactionAddress: .contract("0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"),
             timeFormatted: "00:04",
             amount: "0 wxDAI",
@@ -86,6 +91,7 @@ struct TransactionView_Previews: PreviewProvider {
         ),
         TransactionViewModel(
             hash: UUID().uuidString,
+            index: 0,
             interactionAddress: .contract("0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"),
             timeFormatted: "15:00",
             amount: "15 wxDAI",
@@ -95,6 +101,7 @@ struct TransactionView_Previews: PreviewProvider {
         ),
         TransactionViewModel(
             hash: UUID().uuidString,
+            index: 0,
             interactionAddress: .user("0xeEDBa2484aAF940f37cd3CD21a5D7C4A7DAfbfC0"),
             timeFormatted: "16:23",
             amount: "0.000000532154 ETH",
@@ -104,6 +111,7 @@ struct TransactionView_Previews: PreviewProvider {
         ),
         TransactionViewModel(
             hash: UUID().uuidString,
+            index: 0,
             interactionAddress: .user("0xeEDBa2484aAF940f37cd3CD21a5D7C4A7DAfbfC0"),
             timeFormatted: "16:23",
             amount: "0.532154 USDT",
@@ -113,6 +121,7 @@ struct TransactionView_Previews: PreviewProvider {
         ),
         TransactionViewModel(
             hash: UUID().uuidString,
+            index: 0,
             interactionAddress: .user("0xeEDBa2484aAF940f37cd3CD21a5D7C4A7DAfbfC0"),
             timeFormatted: "18:32",
             amount: "0.0012 ETH",
@@ -122,6 +131,7 @@ struct TransactionView_Previews: PreviewProvider {
         ),
         TransactionViewModel(
             hash: UUID().uuidString,
+            index: 0,
             interactionAddress: .user("0xeEDBa2484aAF940f37cd3CD21a5D7C4A7DAfbfC0"),
             timeFormatted: "18:32",
             amount: "0.0012 ETH",
@@ -134,6 +144,7 @@ struct TransactionView_Previews: PreviewProvider {
     static let figmaViewModels1: [TransactionViewModel] = [
         TransactionViewModel(
             hash: UUID().uuidString,
+            index: 0,
             interactionAddress: .user("33BdfS...ga2B"),
             timeFormatted: "10:45",
             amount: "−0.500913 BTC",
@@ -143,6 +154,7 @@ struct TransactionView_Previews: PreviewProvider {
         ),
         TransactionViewModel(
             hash: UUID().uuidString,
+            index: 0,
             interactionAddress: .contract("33BdfS...ga2B"),
             timeFormatted: "10:45",
             amount: "+0.500913 BTC",
@@ -152,6 +164,7 @@ struct TransactionView_Previews: PreviewProvider {
         ),
         TransactionViewModel(
             hash: UUID().uuidString,
+            index: 0,
             interactionAddress: .contract("33BdfS...ga2B"),
             timeFormatted: "10:45",
             amount: "+0.500913 BTC",
@@ -161,6 +174,7 @@ struct TransactionView_Previews: PreviewProvider {
         ),
         TransactionViewModel(
             hash: UUID().uuidString,
+            index: 0,
             interactionAddress: .contract("33BdfS...ga2B"),
             timeFormatted: "10:45",
             amount: "+0.500913 BTC",
@@ -173,6 +187,7 @@ struct TransactionView_Previews: PreviewProvider {
     static let figmaViewModels2: [TransactionViewModel] = [
         TransactionViewModel(
             hash: UUID().uuidString,
+            index: 0,
             interactionAddress: .user("33BdfS...ga2B"),
             timeFormatted: "10:45",
             amount: "−0.500913 BTC",
@@ -182,6 +197,7 @@ struct TransactionView_Previews: PreviewProvider {
         ),
         TransactionViewModel(
             hash: UUID().uuidString,
+            index: 0,
             interactionAddress: .contract("33BdfS...ga2B"),
             timeFormatted: "10:45",
             amount: "+0.500913 BTC",
@@ -191,6 +207,7 @@ struct TransactionView_Previews: PreviewProvider {
         ),
         TransactionViewModel(
             hash: UUID().uuidString,
+            index: 0,
             interactionAddress: .contract("33BdfS...ga2B"),
             timeFormatted: "10:45",
             amount: "+0.500913 BTC",
@@ -201,11 +218,30 @@ struct TransactionView_Previews: PreviewProvider {
     ]
 
     static var previews: some View {
-        VStack {
-            ForEach(previewViewModels) {
-                TransactionView(viewModel: $0)
+        Group {
+            VStack {
+                ForEach(previewViewModels) {
+                    TransactionView(viewModel: $0)
+                }
             }
+            .padding()
+            .previewDisplayName("previewViewModels")
+
+            VStack {
+                ForEach(figmaViewModels1) {
+                    TransactionView(viewModel: $0)
+                }
+            }
+            .padding()
+            .previewDisplayName("figmaViewModels1")
+
+            VStack {
+                ForEach(figmaViewModels2) {
+                    TransactionView(viewModel: $0)
+                }
+            }
+            .padding()
+            .previewDisplayName("figmaViewModels2")
         }
-        .padding()
     }
 }

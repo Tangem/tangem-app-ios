@@ -23,10 +23,10 @@ enum PreviewCard {
     case tangemWalletEmpty
     case tangemWalletBackuped
 
-    var cardModel: CardViewModel {
+    var userWalletModel: CommonUserWalletModel {
         let card = CardDTO(card: card)
         let ci = CardInfo(card: card, walletData: walletData, name: "Name")
-        let vm = CardViewModel(cardInfo: ci)!
+        let vm = CommonUserWalletModelFactory().makeModel(cardInfo: ci)!
         if let blockchain = blockchain {
             let factory = WalletManagerFactory(
                 config: .init(
@@ -34,25 +34,32 @@ enum PreviewCard {
                     blockcypherTokens: [],
                     infuraProjectId: "",
                     nowNodesApiKey: "",
-                    getBlockApiKey: "",
+                    getBlockCredentials: .init(credentials: []),
                     kaspaSecondaryApiUrl: nil,
                     tronGridApiKey: "",
+                    hederaArkhiaApiKey: "",
+                    polygonScanApiKey: "",
+                    koinosProApiKey: "",
                     tonCenterApiKeys: .init(mainnetApiKey: "", testnetApiKey: ""),
                     fireAcademyApiKeys: .init(mainnetApiKey: "", testnetApiKey: ""),
                     chiaTangemApiKeys: .init(mainnetApiKey: ""),
                     quickNodeSolanaCredentials: .init(apiKey: "", subdomain: ""),
                     quickNodeBscCredentials: .init(apiKey: "", subdomain: ""),
-                    blockscoutCredentials: .init(login: "", password: "")
-                )
+                    bittensorDwellirKey: "",
+                    bittensorOnfinalityKey: ""
+                ),
+                dependencies: .init(
+                    accountCreator: BlockchainAccountCreatorStub(),
+                    dataStorage: FakeBlockchainDataStorage()
+                ),
+                apiList: [:]
             )
-            let walletManager = try! factory.makeWalletManager(
+            // TODO: Inject preview models into CommonUserWalletModel
+            _ = try! factory.makeWalletManager(
                 blockchain: blockchain,
                 publicKey: .init(seedKey: publicKey, derivationType: .none)
             )
         }
-
-        // TODO: Add preview models
-//        vm.state = .loaded(walletModel: walletModels)
         return vm
     }
 
@@ -89,7 +96,7 @@ enum PreviewCard {
     }
 
     var blockchainNetwork: BlockchainNetwork? {
-        blockchain.map { BlockchainNetwork($0) }
+        blockchain.map { BlockchainNetwork($0, derivationPath: nil) }
     }
 
     var publicKey: Data {
@@ -112,9 +119,9 @@ enum PreviewCard {
     private var card: Card {
         switch self {
         case .tangemWalletBackuped:
-            return .walletWithBackup
+            return CardMock.wallet.card
         default:
-            return .walletV2
+            return CardMock.wallet2.card
         }
     }
 }

@@ -34,7 +34,7 @@ struct CommonWalletConnectWalletModelProvider: WalletConnectWalletModelProvider 
     func getModel(with address: String, blockchainId: String) throws -> WalletModel {
         guard
             let model = mainWalletModels.first(where: {
-                $0.blockchainNetwork.blockchain.coinId == blockchainId
+                $0.blockchainNetwork.blockchain.networkId == blockchainId
                     && $0.wallet.address.caseInsensitiveCompare(address) == .orderedSame
             })
         else {
@@ -45,6 +45,6 @@ struct CommonWalletConnectWalletModelProvider: WalletConnectWalletModelProvider 
     }
 
     func getModels(with blockchainId: String) -> [WalletModel] {
-        return mainWalletModels.filter { $0.blockchainNetwork.blockchain.coinId == blockchainId }
+        return mainWalletModels.filter { $0.blockchainNetwork.blockchain.networkId == blockchainId }
     }
 }

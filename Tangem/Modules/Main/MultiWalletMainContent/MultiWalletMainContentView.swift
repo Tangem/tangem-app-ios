@@ -13,6 +13,11 @@ struct MultiWalletMainContentView: View {
 
     var body: some View {
         VStack(spacing: 14) {
+            ForEach(viewModel.bannerNotificationInputs) { input in
+                NotificationView(input: input)
+                    .transition(.notificationTransition)
+            }
+
             ForEach(viewModel.notificationInputs) { input in
                 NotificationView(input: input)
                     .setButtonsLoadingState(to: viewModel.isScannerBusy)
@@ -30,30 +35,37 @@ struct MultiWalletMainContentView: View {
                 FixedSizeButtonWithLeadingIcon(
                     title: Localization.organizeTokensTitle,
                     icon: Assets.OrganizeTokens.filterIcon.image,
+                    style: .default,
                     action: viewModel.onOpenOrganizeTokensButtonTap
                 )
                 .infinityFrame(axis: .horizontal)
             }
         }
+        .animation(.default, value: viewModel.bannerNotificationInputs)
         .animation(.default, value: viewModel.notificationInputs)
         .animation(.default, value: viewModel.tokensNotificationInputs)
         .padding(.horizontal, 16)
         .bindAlert($viewModel.error)
     }
 
+    @ViewBuilder
     private var tokensContent: some View {
-        Group {
-            if viewModel.isLoadingTokenList {
-                TokenListLoadingPlaceholderView()
+        if viewModel.isLoadingTokenList {
+            TokenListLoadingPlaceholderView()
+                .cornerRadiusContinuous(Constants.cornerRadius)
+        } else if viewModel.sections.isEmpty {
+            emptyList
+                .cornerRadiusContinuous(Constants.cornerRadius)
+        } else {
+            // Don't apply `.cornerRadiusContinuous` modifier to this view on iOS 16.0 and above,
+            // this will cause clipping of iOS context menu previews in `TokenItemView` view
+            if #available(iOS 16.0, *) {
+                tokensList
             } else {
-                if viewModel.sections.isEmpty {
-                    emptyList
-                } else {
-                    tokensList
-                }
+                tokensList
+                    .cornerRadiusContinuous(Constants.cornerRadius)
             }
         }
-        .cornerRadiusContinuous(Constants.cornerRadius)
     }
 
     private var emptyList: some View {
@@ -74,16 +86,39 @@ struct MultiWalletMainContentView: View {
 
     private var tokensList: some View {
         LazyVStack(spacing: 0) {
-            ForEach(viewModel.sections) { section in
-                TokenSectionView(title: section.model.title)
-                    .background(Colors.Background.primary)
+            ForEach(indexed: viewModel.sections.indexed()) { sectionIndex, section in
+                let cornerRadius = Constants.cornerRadius
+                let hasTitle = section.model.title != nil
 
-                ForEach(section.items) { item in
-                    TokenItemView(viewModel: item)
+                if #available(iOS 16.0, *) {
+                    let isFirstVisibleSection = hasTitle && sectionIndex == 0
+                    let topEdgeCornerRadius = isFirstVisibleSection ? cornerRadius : nil
+
+                    TokenSectionView(title: section.model.title, cornerRadius: topEdgeCornerRadius)
+                } else {
+                    TokenSectionView(title: section.model.title)
+                }
+
+                ForEach(indexed: section.items.indexed()) { itemIndex, item in
+                    if #available(iOS 16.0, *) {
+                        let isFirstItem = !hasTitle && sectionIndex == 0 && itemIndex == 0
+                        let isLastItem = sectionIndex == viewModel.sections.count - 1 && itemIndex == section.items.count - 1
+
+                        if isFirstItem {
+                            let isSingleItem = section.items.count == 1
+                            TokenItemView(viewModel: item, cornerRadius: cornerRadius, roundedCornersVerticalEdge: isSingleItem ? .all : .topEdge)
+                        } else if isLastItem {
+                            TokenItemView(viewModel: item, cornerRadius: cornerRadius, roundedCornersVerticalEdge: .bottomEdge)
+                        } else {
+                            TokenItemView(viewModel: item, cornerRadius: cornerRadius, roundedCornersVerticalEdge: nil)
+                        }
+                    } else {
+                        TokenItemView(viewModel: item, cornerRadius: cornerRadius)
+                    }
                 }
             }
         }
-        .background(Colors.Background.primary)
+        .background(Colors.Background.primary.cornerRadiusContinuous(Constants.cornerRadius))
     }
 }
 
@@ -110,9 +145,12 @@ struct MultiWalletContentView_Preview: PreviewProvider {
             userWalletModel: userWalletModel,
             userWalletNotificationManager: FakeUserWalletNotificationManager(),
             tokensNotificationManager: FakeUserWalletNotificationManager(),
-            coordinator: mainCoordinator,
+            bannerNotificationManager: nil,
+            rateAppController: RateAppControllerStub(),
             tokenSectionsAdapter: tokenSectionsAdapter,
-            tokenRouter: SingleTokenRoutableMock()
+            tokenRouter: SingleTokenRoutableMock(),
+            optionsEditing: optionsManager,
+            coordinator: mainCoordinator
         )
     }()
 
@@ -128,6 +166,6 @@ struct MultiWalletContentView_Preview: PreviewProvider {
 
 private extension MultiWalletMainContentView {
     enum Constants {
-        static let cornerRadius = 14.0
+        static let cornerRadius: CGFloat = 14.0
     }
 }

@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import AlertToast
 
 struct ReceiveBottomSheetView: View {
     @ObservedObject var viewModel: ReceiveBottomSheetViewModel
@@ -16,45 +15,9 @@ struct ReceiveBottomSheetView: View {
 
     var body: some View {
         VStack {
-            if viewModel.isUserUnderstandsAddressNetworkRequirements {
-                mainContent
-            } else {
-                addressNetworkUnderstandingConfirmationView
-            }
+            mainContent
         }
-        .toast(isPresenting: $viewModel.showToast, alert: {
-            AlertToast(type: .complete(Colors.Icon.accent), title: Localization.walletNotificationAddressCopied)
-        })
         .onAppear(perform: viewModel.onViewAppear)
-    }
-
-    @ViewBuilder
-    private var addressNetworkUnderstandingConfirmationView: some View {
-        VStack(spacing: 56) {
-            TokenIcon(
-                tokenIconInfo: .init(
-                    name: "",
-                    blockchainIconName: nil,
-                    imageURL: viewModel.iconURL,
-                    isCustom: false,
-                    customTokenColor: viewModel.customTokenColor
-                ),
-                size: IconViewSizeSettings.receive.iconSize
-            )
-            .padding(.top, 56)
-
-            Text(viewModel.networkWarningMessage)
-                .multilineTextAlignment(.center)
-                .style(Fonts.Bold.title3, color: Colors.Text.primary1)
-                .padding(.horizontal, 60)
-
-            MainButton(
-                title: Localization.commonUnderstand,
-                action: viewModel.understandNetworkRequirements
-            )
-            .padding(.horizontal, 16)
-            .padding(.bottom, 8)
-        }
     }
 
     @ViewBuilder
@@ -122,16 +85,18 @@ struct ReceiveBottomSheetView: View {
 struct ReceiveBottomSheet_Previews: PreviewProvider {
     static var btcAddressBottomSheet: ReceiveBottomSheetViewModel {
         ReceiveBottomSheetViewModel(
-            tokenItem: .blockchain(.bitcoin(testnet: false)),
+            tokenItem: .blockchain(.init(.bitcoin(testnet: false), derivationPath: nil)),
             addressInfos: [
                 .init(
                     address: "bc1qeguhvlnxu4lwg48p5sfhxqxz679v3l5fma9u0c",
                     type: .default,
+                    localizedName: "default",
                     addressQRImage: QrCodeGenerator.generateQRCode(from: "bc1qeguhvlnxu4lwg48p5sfhxqxz679v3l5fma9u0c")
                 ),
                 .init(
                     address: "18VEbRSEASi1npnXnoJ6pVVBrhT5zE6qRz",
                     type: .legacy,
+                    localizedName: "legacy",
                     addressQRImage: QrCodeGenerator.generateQRCode(from: "18VEbRSEASi1npnXnoJ6pVVBrhT5zE6qRz")
                 ),
             ]
@@ -140,11 +105,12 @@ struct ReceiveBottomSheet_Previews: PreviewProvider {
 
     static var singleAddressBottomSheet: ReceiveBottomSheetViewModel {
         ReceiveBottomSheetViewModel(
-            tokenItem: .token(.tetherMock, .polygon(testnet: false)),
+            tokenItem: .token(.tetherMock, .init(.polygon(testnet: false), derivationPath: nil)),
             addressInfos: [
                 .init(
                     address: "0xEF08EA3531D219EDE813FB521e6D89220198bcB1",
                     type: .default,
+                    localizedName: "default",
                     addressQRImage: QrCodeGenerator.generateQRCode(from: "0xEF08EA3531D219EDE813FB521e6D89220198bcB1")
                 ),
             ]
@@ -179,7 +145,7 @@ struct ReceiveBottomSheet_Previews: PreviewProvider {
                         NavHolder()
                             .bottomSheet(
                                 item: viewModel,
-                                settings: .init(backgroundColor: Colors.Background.primary)
+                                backgroundColor: Colors.Background.primary
                             ) { model in
                                 ReceiveBottomSheetView(viewModel: model)
                             }
@@ -201,7 +167,7 @@ struct ReceiveBottomSheet_Previews: PreviewProvider {
                         NavHolder()
                             .bottomSheet(
                                 item: viewModel,
-                                settings: .init(backgroundColor: Colors.Background.primary)
+                                backgroundColor: Colors.Background.primary
                             ) { model in
                                 ReceiveBottomSheetView(viewModel: model)
                             }

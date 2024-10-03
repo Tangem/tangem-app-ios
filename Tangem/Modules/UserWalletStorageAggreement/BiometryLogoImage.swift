@@ -15,6 +15,8 @@ struct BiometryLogoImage {
             return Assets.Biometry.faceId
         case .touchID:
             return Assets.Biometry.touchId
+        case .opticID:
+            return ImageType(name: "opticid") // Built-in from SF Symbols
         case .none:
             return ImageType(name: "")
         @unknown default:

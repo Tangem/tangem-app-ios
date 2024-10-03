@@ -9,22 +9,22 @@
 import Foundation
 import Combine
 
-class FakeTokenBalanceProvider: BalanceProvider, ActionButtonsProvider {
-    private let buttons: [ButtonWithIconInfo]
+class FakeTokenBalanceProvider {
+    private let buttons: [FixedSizeButtonWithIconInfo]
     private let delay: TimeInterval
-    private let cryptoBalanceInfo: BalanceInfo
+    private let cryptoBalanceInfo: WalletModel.BalanceFormatted
 
-    private let valueSubject = CurrentValueSubject<LoadingValue<BalanceInfo>, Never>(.loading)
-    private let buttonsSubject: CurrentValueSubject<[ButtonWithIconInfo], Never>
+    private let valueSubject = CurrentValueSubject<LoadingValue<BalanceWithButtonsViewModel.Balances>, Never>(.loading)
+    private let buttonsSubject: CurrentValueSubject<[FixedSizeButtonWithIconInfo], Never>
 
-    var balancePublisher: AnyPublisher<LoadingValue<BalanceInfo>, Never> {
+    var balancesPublisher: AnyPublisher<LoadingValue<BalanceWithButtonsViewModel.Balances>, Never> {
         scheduleSendingValue()
         return valueSubject.eraseToAnyPublisher()
     }
 
-    var buttonsPublisher: AnyPublisher<[ButtonWithIconInfo], Never> { buttonsSubject.eraseToAnyPublisher() }
+    var buttonsPublisher: AnyPublisher<[FixedSizeButtonWithIconInfo], Never> { buttonsSubject.eraseToAnyPublisher() }
 
-    init(buttons: [ButtonWithIconInfo], delay: TimeInterval, cryptoBalanceInfo: BalanceInfo) {
+    init(buttons: [FixedSizeButtonWithIconInfo], delay: TimeInterval, cryptoBalanceInfo: WalletModel.BalanceFormatted) {
         self.buttons = buttons
         buttonsSubject = .init(buttons)
         self.delay = delay
@@ -43,17 +43,17 @@ class FakeTokenBalanceProvider: BalanceProvider, ActionButtonsProvider {
     }
 
     private func sendInfo() {
-        if cryptoBalanceInfo.balance.contains("-1") {
+        if cryptoBalanceInfo.crypto.contains("-1") {
             valueSubject.send(.failedToLoad(error: "Failed to load balance. Network unreachable"))
             buttonsSubject.send(disabledButtons())
         } else {
-            valueSubject.send(.loaded(cryptoBalanceInfo))
+            valueSubject.send(.loaded(.init(all: cryptoBalanceInfo, available: cryptoBalanceInfo)))
         }
     }
 
-    private func disabledButtons() -> [ButtonWithIconInfo] {
+    private func disabledButtons() -> [FixedSizeButtonWithIconInfo] {
         buttons.map { button in
-            .init(title: button.title, icon: button.icon, action: button.action, disabled: true)
+            .init(title: button.title, icon: button.icon, disabled: true, action: button.action)
         }
     }
 }

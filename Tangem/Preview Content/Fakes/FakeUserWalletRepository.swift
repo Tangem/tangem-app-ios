@@ -11,23 +11,15 @@ import Combine
 import BlockchainSdk
 
 class FakeUserWalletRepository: UserWalletRepository {
+    var selectedUserWalletId: UserWalletId?
+
     var hasSavedWallets: Bool { true }
 
     var models: [UserWalletModel] = []
 
-    var userWallets: [UserWallet] = []
-
-    var selectedModel: CardViewModel?
-
-    var selectedUserWalletId: Data?
+    var selectedModel: UserWalletModel?
 
     var selectedIndexUserWalletModel: Int?
-
-    var isEmpty: Bool { models.isEmpty }
-
-    var count: Int { models.count }
-
-    var isLocked: Bool = false
 
     var eventProvider: AnyPublisher<UserWalletRepositoryEvent, Never> {
         eventSubject.eraseToAnyPublisher()
@@ -49,9 +41,9 @@ class FakeUserWalletRepository: UserWalletRepository {
             switch method {
             case .biometry:
                 completion(.troubleshooting)
-            case .card(let userWallet):
-                if let userWallet, let cardViewModel = CardViewModel(userWallet: userWallet) {
-                    completion(.success(cardViewModel))
+            case .card(let userWalletId, _):
+                if let userWalletId, let userWalletModel = self.models.first(where: { $0.userWalletId == userWalletId }) {
+                    completion(.success(userWalletModel))
                     return
                 }
 
@@ -60,7 +52,7 @@ class FakeUserWalletRepository: UserWalletRepository {
         }
     }
 
-    func setSelectedUserWalletId(_ userWalletId: Data?, unlockIfNeeded: Bool, reason: UserWalletRepositorySelectionChangeReason) {}
+    func setSelectedUserWalletId(_ userWalletId: UserWalletId, reason: UserWalletRepositorySelectionChangeReason) {}
 
     func updateSelection() {}
 
@@ -68,17 +60,7 @@ class FakeUserWalletRepository: UserWalletRepository {
 
     func add(_ userWalletModel: UserWalletModel) {}
 
-    func add(_ completion: @escaping (UserWalletRepositoryResult?) -> Void) {}
-
-    func addOrScan(completion: @escaping (UserWalletRepositoryResult?) -> Void) {}
-
-    func save(_ cardViewModel: UserWalletModel) {}
-
-    func contains(_ userWallet: UserWallet) -> Bool {
-        return false
-    }
-
-    func save(_ userWallet: UserWallet) {}
+    func addOrScan(scanner: CardScanner, completion: @escaping (UserWalletRepositoryResult?) -> Void) {}
 
     func delete(_ userWalletId: UserWalletId, logoutIfNeeded shouldAutoLogout: Bool) {}
 
@@ -86,9 +68,11 @@ class FakeUserWalletRepository: UserWalletRepository {
 
     func initialize() {}
 
-    func initializeServices(for cardModel: CardViewModel, cardInfo: CardInfo) {}
+    func initializeServices(for userWalletModel: UserWalletModel) {}
 
     func initialClean() {}
 
     func setSaving(_ enabled: Bool) {}
+
+    func save() {}
 }

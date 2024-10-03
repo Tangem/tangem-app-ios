@@ -226,7 +226,7 @@ struct OrganizeTokensListItemPreviewProvider {
                         id: .random(),
                         tokenIcon: TokenIconInfoBuilder().build(
                             for: .coin,
-                            in: .bitcoinCash(testnet: false),
+                            in: .bitcoinCash,
                             isCustom: false
                         ),
                         balance: .loading,

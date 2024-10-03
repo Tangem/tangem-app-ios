@@ -16,8 +16,8 @@ class CommonTangemApiService {
     private let provider = TangemProvider<TangemApiTarget>(plugins: [
         CachePolicyPlugin(),
         TimeoutIntervalPlugin(),
-        NetworkLoggerPlugin(configuration: .init(
-            output: NetworkLoggerPlugin.tangemSdkLoggerOutput,
+        TangemApiServiceLoggerPlugin(configuration: .init(
+            output: TangemNetworkLoggerPlugin.tangemSdkLoggerOutput,
             logOptions: .verbose
         )),
     ])
@@ -31,13 +31,19 @@ class CommonTangemApiService {
     private let coinsQueue = DispatchQueue(label: "coins_request_queue", qos: .default)
     private let currenciesQueue = DispatchQueue(label: "currencies_request_queue", qos: .default)
 
+    private var snakeCaseJSONDecoder: JSONDecoder {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return decoder
+    }
+
     deinit {
         AppLog.shared.debug("CommonTangemApiService deinit")
     }
 
-    private func request<D: Decodable>(for type: TangemApiTarget.TargetType) async throws -> D {
+    private func request<D: Decodable>(for type: TangemApiTarget.TargetType, decoder: JSONDecoder = .init()) async throws -> D {
         let target = TangemApiTarget(type: type, authData: authData)
-        return try await provider.asyncRequest(for: target).mapAPIResponse()
+        return try await provider.asyncRequest(target).mapAPIResponse(decoder: decoder)
     }
 }
 
@@ -81,6 +87,18 @@ extension CommonTangemApiService: TangemApiService {
             .eraseToAnyPublisher()
     }
 
+    func createAccount(networkId: String, publicKey: String) -> AnyPublisher<BlockchainAccountCreateResult, TangemAPIError> {
+        let parameters = BlockchainAccountCreateParameters(networkId: networkId, walletPublicKey: publicKey)
+        let target = TangemApiTarget(type: .createAccount(parameters), authData: authData)
+
+        return provider
+            .requestPublisher(target)
+            .filterSuccessfulStatusCodes()
+            .map(BlockchainAccountCreateResult.self)
+            .mapTangemAPIError()
+            .eraseToAnyPublisher()
+    }
+
     func loadCoins(requestModel: CoinsList.Request) -> AnyPublisher<[CoinModel], Error> {
         provider
             .requestPublisher(TangemApiTarget(type: .coins(requestModel), authData: authData))
@@ -116,6 +134,10 @@ extension CommonTangemApiService: TangemApiService {
             .eraseToAnyPublisher()
     }
 
+    func loadCoins(requestModel: CoinsList.Request) async throws -> CoinsList.Response {
+        return try await request(for: .coins(requestModel), decoder: snakeCaseJSONDecoder)
+    }
+
     func loadQuotes(requestModel: QuotesDTO.Request) -> AnyPublisher<[Quote], Error> {
         let target = TangemApiTarget(type: .quotes(requestModel), authData: authData)
 
@@ -141,28 +163,12 @@ extension CommonTangemApiService: TangemApiService {
             .eraseToAnyPublisher()
     }
 
-    func loadRates(for coinIds: [String]) -> AnyPublisher<[String: Decimal], Error> {
-        provider
-            .requestPublisher(TangemApiTarget(
-                type: .rates(
-                    coinIds: coinIds,
-                    currencyId: AppSettings.shared.selectedCurrencyCode
-                ),
-                authData: authData
-            ))
-            .filterSuccessfulStatusAndRedirectCodes()
-            .map(RatesResponse.self)
-            .eraseError()
-            .map { $0.rates }
-            .eraseToAnyPublisher()
-    }
-
     func loadReferralProgramInfo(for userWalletId: String, expectedAwardsLimit: Int) async throws -> ReferralProgramInfo {
         let target = TangemApiTarget(
             type: .loadReferralProgramInfo(userWalletId: userWalletId, expectedAwardsLimit: expectedAwardsLimit),
             authData: authData
         )
-        let response = try await provider.asyncRequest(for: target)
+        let response = try await provider.asyncRequest(target)
         let filteredResponse = try response.filterSuccessfulStatusAndRedirectCodes()
         return try JSONDecoder().decode(ReferralProgramInfo.self, from: filteredResponse.data)
     }
@@ -182,13 +188,22 @@ extension CommonTangemApiService: TangemApiService {
             type: .participateInReferralProgram(userInfo: userInfo),
             authData: authData
         )
-        let response = try await provider.asyncRequest(for: target)
+        let response = try await provider.asyncRequest(target)
         let filteredResponse = try response.filterSuccessfulStatusAndRedirectCodes()
         return try JSONDecoder().decode(ReferralProgramInfo.self, from: filteredResponse.data)
     }
 
+    func expressPromotion(request model: ExpressPromotion.Request) async throws -> ExpressPromotion.Response {
+        let decoder = JSONDecoder()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        decoder.dateDecodingStrategy = .formatted(dateFormatter)
+
+        return try await request(for: .promotion(request: model), decoder: decoder)
+    }
+
     func promotion(programName: String, timeout: TimeInterval?) async throws -> PromotionParameters {
-        try await request(for: .promotion(programName: programName, timeout: timeout))
+        try await request(for: .promotion(request: .init(programName: programName)))
     }
 
     @discardableResult
@@ -216,13 +231,45 @@ extension CommonTangemApiService: TangemApiService {
         try await request(for: .resetAward(cardId: cardId))
     }
 
+    func loadAPIList() async throws -> APIListDTO {
+        try await request(for: .apiList)
+    }
+
+    func loadFeatures() async throws -> [String: Bool] {
+        try await request(for: .features)
+    }
+
+    // MARK: - Markets Implementation
+
+    func loadCoinsList(requestModel: MarketsDTO.General.Request) async throws -> MarketsDTO.General.Response {
+        return try await request(for: .coinsList(requestModel), decoder: snakeCaseJSONDecoder)
+    }
+
+    func loadCoinsHistoryChartPreview(
+        requestModel: MarketsDTO.ChartsHistory.PreviewRequest
+    ) async throws -> MarketsDTO.ChartsHistory.PreviewResponse {
+        return try await request(for: .coinsHistoryChartPreview(requestModel), decoder: snakeCaseJSONDecoder)
+    }
+
+    func loadTokenMarketsDetails(requestModel: MarketsDTO.Coins.Request) async throws -> MarketsDTO.Coins.Response {
+        return try await request(for: .tokenMarketsDetails(requestModel), decoder: snakeCaseJSONDecoder)
+    }
+
+    func loadHistoryChart(
+        requestModel: MarketsDTO.ChartsHistory.HistoryRequest
+    ) async throws -> MarketsDTO.ChartsHistory.HistoryResponse {
+        return try await request(for: .historyChart(requestModel), decoder: snakeCaseJSONDecoder)
+    }
+
+    // MARK: - Init
+
     func initialize() {
         provider
             .requestPublisher(TangemApiTarget(type: .geo, authData: authData))
             .filterSuccessfulStatusAndRedirectCodes()
             .map(GeoResponse.self)
             .map(\.code)
-            .map(Optional.some)
+            .eraseToOptional()
             .replaceError(with: fallbackRegionCode)
             .subscribe(on: DispatchQueue.global())
             .assign(to: \._geoIpRegionCode, on: self, ownership: .weak)
@@ -237,13 +284,13 @@ extension CommonTangemApiService: TangemApiService {
 }
 
 private extension Response {
-    func mapAPIResponse<D: Decodable>() throws -> D {
+    func mapAPIResponse<D: Decodable>(decoder: JSONDecoder = .init()) throws -> D {
         let filteredResponse = try filterSuccessfulStatusCodes()
 
         if let baseError = try? filteredResponse.map(TangemBaseAPIError.self) {
             throw baseError.error
         }
 
-        return try filteredResponse.map(D.self)
+        return try filteredResponse.map(D.self, using: decoder)
     }
 }

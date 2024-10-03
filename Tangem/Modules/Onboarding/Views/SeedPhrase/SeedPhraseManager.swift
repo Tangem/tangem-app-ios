@@ -9,13 +9,12 @@
 import TangemSdk
 
 class SeedPhraseManager {
-    private(set) var mnemonic: Mnemonic?
-    var seedPhrase: [String] { mnemonic?.mnemonicComponents ?? [] }
+    private(set) var mnemonics: [EntropyLength: Mnemonic] = [:]
 
-    @discardableResult
-    func generateSeedPhrase() throws -> [String] {
-        let mnemonic = try Mnemonic(with: .bits128, wordList: .en)
-        self.mnemonic = mnemonic
-        return mnemonic.mnemonicComponents
+    func generateSeedPhrase() throws {
+        let shortMnemonic = try Mnemonic(with: .bits128, wordList: .en)
+        mnemonics[.bits128] = shortMnemonic
+        let longMnemonic = try Mnemonic(with: .bits256, wordList: .en)
+        mnemonics[.bits256] = longMnemonic
     }
 }

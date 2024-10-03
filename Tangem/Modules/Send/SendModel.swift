@@ -11,275 +11,458 @@ import SwiftUI
 import Combine
 import BlockchainSdk
 
+protocol SendModelRoutable: AnyObject {
+    func openNetworkCurrency()
+}
+
 class SendModel {
-    var amountValid: AnyPublisher<Bool, Never> {
-        amount
-            .map {
-                $0 != nil
-            }
-            .eraseToAnyPublisher()
-    }
-
-    var destinationValid: AnyPublisher<Bool, Never> {
-        Publishers.CombineLatest(destination, destinationAdditionalFieldError)
-            .map {
-                $0 != nil && $1 == nil
-            }
-            .eraseToAnyPublisher()
-    }
-
-    var feeValid: AnyPublisher<Bool, Never> {
-        .just(output: true)
-    }
-
-    var transactionFinished: AnyPublisher<Bool, Never> {
-        _transactionTime
-            .map {
-                $0 != nil
-            }
-            .removeDuplicates()
-            .eraseToAnyPublisher()
-    }
-
     // MARK: - Data
 
-    private let amount = CurrentValueSubject<Amount?, Never>(nil)
-    private let destination = CurrentValueSubject<String?, Never>(nil)
-    private let destinationAdditionalField = CurrentValueSubject<String?, Never>(nil)
-    private let fee = CurrentValueSubject<Fee?, Never>(nil)
+    private let _destination: CurrentValueSubject<SendAddress?, Never>
+    private let _destinationAdditionalField: CurrentValueSubject<SendDestinationAdditionalField, Never>
+    private let _amount: CurrentValueSubject<SendAmount?, Never>
+    private let _selectedFee = CurrentValueSubject<SendFee, Never>(.init(option: .market, value: .loading))
+    private let _isFeeIncluded = CurrentValueSubject<Bool, Never>(false)
 
-    private let transaction = CurrentValueSubject<BlockchainSdk.Transaction?, Never>(nil)
-
-    // MARK: - Raw data
-
-    private var _amountText: String = ""
-    private var _destinationText: String = ""
-    private var _destinationAdditionalFieldText: String = ""
-    private var _feeText: String = ""
-
+    private let _transaction = CurrentValueSubject<Result<BSDKTransaction, Error>?, Never>(nil)
+    private let _transactionTime = PassthroughSubject<Date?, Never>()
     private let _isSending = CurrentValueSubject<Bool, Never>(false)
-    private let _transactionTime = CurrentValueSubject<Date?, Never>(nil)
 
-    // MARK: - Errors (raw implementation)
+    private let _withdrawalNotification = CurrentValueSubject<WithdrawalNotification?, Never>(nil)
 
-    private let _amountError = CurrentValueSubject<Error?, Never>(nil)
-    private let _destinationError = CurrentValueSubject<Error?, Never>(nil)
-    private let _destinationAdditionalFieldError = CurrentValueSubject<Error?, Never>(nil)
+    // MARK: - Dependencies
 
-    // MARK: - Private stuff
+    var sendAmountInteractor: SendAmountInteractor!
+    var sendFeeInteractor: SendFeeInteractor!
+    var informationRelevanceService: InformationRelevanceService!
+    weak var router: SendModelRoutable?
+
+    // MARK: - Private injections
 
     private let walletModel: WalletModel
+    private let sendTransactionDispatcher: SendTransactionDispatcher
     private let transactionSigner: TransactionSigner
-    private let sendType: SendType
+    private let transactionCreator: TransactionCreator
+    private let feeIncludedCalculator: FeeIncludedCalculator
+    private let feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder
+
+    private let source: PredefinedValues.Source
     private var bag: Set<AnyCancellable> = []
 
     // MARK: - Public interface
 
-    init(walletModel: WalletModel, transactionSigner: TransactionSigner, sendType: SendType) {
+    init(
+        walletModel: WalletModel,
+        sendTransactionDispatcher: SendTransactionDispatcher,
+        transactionCreator: TransactionCreator,
+        transactionSigner: TransactionSigner,
+        feeIncludedCalculator: FeeIncludedCalculator,
+        feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder,
+        predefinedValues: PredefinedValues
+    ) {
         self.walletModel = walletModel
+        self.sendTransactionDispatcher = sendTransactionDispatcher
         self.transactionSigner = transactionSigner
-        self.sendType = sendType
+        self.transactionCreator = transactionCreator
+        self.feeIncludedCalculator = feeIncludedCalculator
+        self.feeAnalyticsParameterBuilder = feeAnalyticsParameterBuilder
 
-        if let amount = sendType.predefinedAmount {
-            #warning("TODO")
-            setAmount("\(amount)")
-        }
+        source = predefinedValues.source
+        _destination = .init(predefinedValues.destination)
+        _destinationAdditionalField = .init(predefinedValues.tag)
+        _amount = .init(predefinedValues.amount)
 
-        if let destination = sendType.predefinedDestination {
-            setDestination(destination)
-        }
-
-        validateAmount()
-        validateDestination()
-        validateDestinationAdditionalField()
         bind()
     }
+}
 
-    func useMaxAmount() {
-        setAmount("1000")
+// MARK: - Validation
+
+private extension SendModel {
+    private func bind() {
+        Publishers
+            .CombineLatest3(
+                _amount.compactMap { $0?.crypto },
+                _destination.compactMap { $0?.value },
+                _selectedFee.compactMap { $0.value.value }
+            )
+            .withWeakCaptureOf(self)
+            .asyncMap { manager, args async -> Result<BSDKTransaction, Error> in
+                do {
+                    let transaction = try await manager.makeTransaction(
+                        amountValue: args.0,
+                        destination: args.1,
+                        fee: args.2
+                    )
+                    return .success(transaction)
+                } catch {
+                    return .failure(error)
+                }
+            }
+            .sink { [weak self] result in
+                self?._transaction.send(result)
+            }
+            .store(in: &bag)
     }
 
-    func send() {
-        guard var transaction = transaction.value else {
-            return
+    private func makeTransaction(amountValue: Decimal, destination: String, fee: Fee) async throws -> BSDKTransaction {
+        var amount = makeAmount(decimal: amountValue)
+        let includeFee = feeIncludedCalculator.shouldIncludeFee(fee, into: amount)
+        _isFeeIncluded.send(includeFee)
+
+        if includeFee {
+            amount = makeAmount(decimal: amount.value - fee.amount.value)
         }
 
-        #warning("TODO: memo")
-        #warning("TODO: loading view")
-        #warning("TODO: demo")
+        var transaction = try await transactionCreator.createTransaction(
+            amount: amount,
+            fee: fee,
+            destinationAddress: destination
+        )
 
-        _isSending.send(true)
-        walletModel.send(transaction, signer: transactionSigner)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] completion in
-                guard let self else { return }
+        if case .filled(_, _, let params) = _destinationAdditionalField.value {
+            transaction.params = params
+        }
 
-                _isSending.send(false)
-
-                print("SEND FINISH ", completion)
-                #warning("TODO: handle result")
-            } receiveValue: { [weak self] result in
-                guard let self else { return }
-
-                _transactionTime.send(Date())
-            }
-            .store(in: &bag)
+        return transaction
     }
 
-    private func bind() {
-        #warning("TODO: fee retry?")
-        Publishers.CombineLatest(amount, destination)
-            .flatMap { [weak self] amount, destination -> AnyPublisher<[Fee], Never> in
-                guard
-                    let self,
-                    let amount,
-                    let destination
-                else {
-                    return .just(output: [])
-                }
+    private func makeAmount(decimal: Decimal) -> Amount {
+        Amount(
+            with: walletModel.tokenItem.blockchain,
+            type: walletModel.tokenItem.amountType,
+            value: decimal
+        )
+    }
+}
 
-                #warning("TODO: loading fees indicator")
-                return walletModel
-                    .getFee(amount: amount, destination: destination)
-                    .receive(on: DispatchQueue.main)
-                    .catch { [weak self] error in
-                        #warning("TODO: handle error")
-                        return Just([Fee]())
-                    }
-                    .eraseToAnyPublisher()
-            }
-            .receive(on: RunLoop.main)
+// MARK: - Send
+
+private extension SendModel {
+    private func sendIfInformationIsActual() async throws -> SendTransactionDispatcherResult {
+        if informationRelevanceService.isActual {
+            return try await send()
+        }
+
+        let result = try await informationRelevanceService.updateInformation().mapToResult().async()
+        switch result {
+        case .failure:
+            throw SendTransactionDispatcherResult.Error.informationRelevanceServiceError
+        case .success(.feeWasIncreased):
+            throw SendTransactionDispatcherResult.Error.informationRelevanceServiceFeeWasIncreased
+        case .success(.ok):
+            return try await send()
+        }
+    }
+
+    private func send() async throws -> SendTransactionDispatcherResult {
+        guard let transaction = _transaction.value?.value else {
+            throw SendTransactionDispatcherResult.Error.transactionNotFound
+        }
+
+        do {
+            let result = try await sendTransactionDispatcher.send(transaction: .transfer(transaction))
+            proceed(transaction: transaction, result: result)
+            return result
+        } catch let error as SendTransactionDispatcherResult.Error {
+            proceed(error: error)
+            // rethrows the error forward to display alert
+            throw error
+        } catch {
+            // rethrows the error forward to display alert
+            throw error
+        }
+    }
+
+    private func proceed(transaction: BSDKTransaction, result: SendTransactionDispatcherResult) {
+        _transactionTime.send(Date())
+        logTransactionAnalytics()
+
+        transaction.amount.type.token.map { token in
+            UserWalletFinder().addToken(
+                token,
+                in: walletModel.tokenItem.blockchain,
+                for: transaction.destinationAddress
+            )
+        }
+    }
+
+    private func proceed(error: SendTransactionDispatcherResult.Error) {
+        switch error {
+        case .informationRelevanceServiceError,
+             .informationRelevanceServiceFeeWasIncreased,
+             .transactionNotFound,
+             .demoAlert,
+             .userCancelled,
+             .loadTransactionInfo:
+            break
+        case .sendTxError:
+            Analytics.log(event: .sendErrorTransactionRejected, params: [
+                .token: walletModel.tokenItem.currencySymbol,
+            ])
+        }
+    }
+}
+
+// MARK: - SendDestinationInput
+
+extension SendModel: SendDestinationInput {
+    var destinationPublisher: AnyPublisher<SendAddress, Never> {
+        _destination
+            .compactMap { $0 }
             .eraseToAnyPublisher()
-            .sink { [weak self] fees in
-                guard let self else { return }
+    }
 
-                #warning("TODO: save fee options")
-                fee.send(fees.first)
+    var additionalFieldPublisher: AnyPublisher<SendDestinationAdditionalField, Never> {
+        _destinationAdditionalField.eraseToAnyPublisher()
+    }
+}
 
-                print("fetched fees:", fees)
+// MARK: - SendDestinationOutput
+
+extension SendModel: SendDestinationOutput {
+    func destinationDidChanged(_ address: SendAddress?) {
+        _destination.send(address)
+    }
+
+    func destinationAdditionalParametersDidChanged(_ type: SendDestinationAdditionalField) {
+        _destinationAdditionalField.send(type)
+    }
+}
+
+// MARK: - SendAmountInput
+
+extension SendModel: SendAmountInput {
+    var amount: SendAmount? { _amount.value }
+
+    var amountPublisher: AnyPublisher<SendAmount?, Never> {
+        _amount.eraseToAnyPublisher()
+    }
+}
+
+// MARK: - SendAmountOutput
+
+extension SendModel: SendAmountOutput {
+    func amountDidChanged(amount: SendAmount?) {
+        _amount.send(amount)
+    }
+}
+
+// MARK: - SendFeeInput
+
+extension SendModel: SendFeeInput {
+    var selectedFee: SendFee {
+        _selectedFee.value
+    }
+
+    var selectedFeePublisher: AnyPublisher<SendFee, Never> {
+        _selectedFee.eraseToAnyPublisher()
+    }
+
+    var feesPublisher: AnyPublisher<[SendFee], Never> {
+        sendFeeInteractor.feesPublisher
+    }
+
+    var cryptoAmountPublisher: AnyPublisher<Decimal, Never> {
+        _amount.compactMap { $0?.crypto }.eraseToAnyPublisher()
+    }
+
+    var destinationAddressPublisher: AnyPublisher<String?, Never> {
+        _destination.map { $0?.value }.eraseToAnyPublisher()
+    }
+}
+
+// MARK: - SendFeeOutput
+
+extension SendModel: SendFeeOutput {
+    func feeDidChanged(fee: SendFee) {
+        _selectedFee.send(fee)
+    }
+}
+
+// MARK: - SendSummaryInput, SendSummaryOutput
+
+extension SendModel: SendSummaryInput, SendSummaryOutput {
+    var isReadyToSendPublisher: AnyPublisher<Bool, Never> {
+        _transaction.map { $0?.value != nil }.eraseToAnyPublisher()
+    }
+
+    var summaryTransactionDataPublisher: AnyPublisher<SendSummaryTransactionData?, Never> {
+        _transaction.map { transaction -> SendSummaryTransactionData? in
+            transaction?.value.map {
+                .send(amount: $0.amount.value, fee: $0.fee)
             }
-            .store(in: &bag)
-
-        Publishers.CombineLatest4(amount, destination, destinationAdditionalField, fee)
-            .map { [weak self] amount, destination, destinationAdditionalField, fee -> BlockchainSdk.Transaction? in
-                guard
-                    let self,
-                    let amount,
-                    let destination,
-                    let fee
-                else {
-                    return nil
-                }
-
-                #warning("TODO: Show error alert?")
-                return try? walletModel.createTransaction(
-                    amountToSend: amount,
-                    fee: fee,
-                    destinationAddress: destination
-                )
-            }
-            .sink { transaction in
-                self.transaction.send(transaction)
-                print("TX built", transaction != nil)
-            }
-            .store(in: &bag)
-    }
-
-    // MARK: - Amount
-
-    private func setAmount(_ amountText: String) {
-        _amountText = amountText
-        validateAmount()
-    }
-
-    private func validateAmount() {
-        let amount: Amount?
-        let error: Error?
-
-        #warning("validate")
-        let blockchain = walletModel.blockchainNetwork.blockchain
-        let amountType = walletModel.amountType
-
-        let value = Decimal(string: _amountText, locale: Locale.current) ?? 0
-        amount = Amount(with: blockchain, type: amountType, value: value)
-        error = nil
-
-        self.amount.send(amount)
-        _amountError.send(error)
-    }
-
-    // MARK: - Destination and memo
-
-    private func setDestination(_ destinationText: String) {
-        _destinationText = destinationText
-        validateDestination()
-    }
-
-    private func validateDestination() {
-        let destination: String?
-        let error: Error?
-
-        #warning("validate")
-        destination = _destinationText
-        error = nil
-
-        self.destination.send(destination)
-        _destinationError.send(error)
-    }
-
-    private func setDestinationAdditionalField(_ destinationAdditionalFieldText: String) {
-        _destinationAdditionalFieldText = destinationAdditionalFieldText
-        validateDestinationAdditionalField()
-    }
-
-    private func validateDestinationAdditionalField() {
-        let destinationAdditionalField: String?
-        let error: Error?
-
-        #warning("validate")
-        destinationAdditionalField = _destinationAdditionalFieldText
-        error = nil
-
-        self.destinationAdditionalField.send(destinationAdditionalField)
-        _destinationAdditionalFieldError.send(error)
-    }
-
-    // MARK: - Fees
-
-    private func setFee(_ feeText: String) {
-        #warning("set and validate")
-        _feeText = feeText
+        }
+        .eraseToAnyPublisher()
     }
 }
 
-// MARK: - Subview model inputs
+// MARK: - SendFinishInput
 
-extension SendModel: SendAmountViewModelInput {
-    var amountTextBinding: Binding<String> { Binding(get: { self._amountText }, set: { self.setAmount($0) }) }
-    var amountError: AnyPublisher<Error?, Never> { _amountError.eraseToAnyPublisher() }
-}
-
-extension SendModel: SendDestinationViewModelInput {
-    var destinationTextBinding: Binding<String> { Binding(get: { self._destinationText }, set: { self.setDestination($0) }) }
-    var destinationAdditionalFieldTextBinding: Binding<String> { Binding(get: { self._destinationAdditionalFieldText }, set: { self.setDestinationAdditionalField($0) }) }
-    var destinationError: AnyPublisher<Error?, Never> { _destinationError.eraseToAnyPublisher() }
-    var destinationAdditionalFieldError: AnyPublisher<Error?, Never> { _destinationAdditionalFieldError.eraseToAnyPublisher() }
-}
-
-extension SendModel: SendFeeViewModelInput {
-    var feeTextBinding: Binding<String> { Binding(get: { self._feeText }, set: { self.setFee($0) }) }
-}
-
-extension SendModel: SendSummaryViewModelInput {
-    var canEditAmount: Bool {
-        sendType.predefinedAmount == nil
+extension SendModel: SendFinishInput {
+    var transactionSentDate: AnyPublisher<Date, Never> {
+        _transactionTime.compactMap { $0 }.first().eraseToAnyPublisher()
     }
+}
 
-    var canEditDestination: Bool {
-        sendType.predefinedDestination == nil
-    }
+// MARK: - SendBaseInput, SendBaseOutput
 
-    var isSending: AnyPublisher<Bool, Never> {
+extension SendModel: SendBaseInput, SendBaseOutput {
+    var actionInProcessing: AnyPublisher<Bool, Never> {
         _isSending.eraseToAnyPublisher()
+    }
+
+    func performAction() async throws -> SendTransactionDispatcherResult {
+        _isSending.send(true)
+        defer { _isSending.send(false) }
+
+        return try await sendIfInformationIsActual()
+    }
+}
+
+// MARK: - SendNotificationManagerInput
+
+extension SendModel: SendNotificationManagerInput {
+    var feeValues: AnyPublisher<[SendFee], Never> {
+        sendFeeInteractor.feesPublisher
+    }
+
+    var isFeeIncludedPublisher: AnyPublisher<Bool, Never> {
+        _isFeeIncluded.eraseToAnyPublisher()
+    }
+
+    var bsdkTransactionPublisher: AnyPublisher<BSDKTransaction?, Never> {
+        _transaction.map { $0?.value }.eraseToAnyPublisher()
+    }
+
+    var transactionCreationError: AnyPublisher<Error?, Never> {
+        _transaction.map { $0?.error }.eraseToAnyPublisher()
+    }
+}
+
+// MARK: - NotificationTapDelegate
+
+extension SendModel: NotificationTapDelegate {
+    func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
+        switch action {
+        case .refreshFee:
+            sendFeeInteractor.updateFees()
+        case .openFeeCurrency:
+            router?.openNetworkCurrency()
+        case .leaveAmount(let amount, _):
+            walletModel.balanceValue.map { reduceAmountBy(amount, source: $0) }
+        case .reduceAmountBy(let amount, _):
+            _amount.value?.crypto.flatMap { reduceAmountBy(amount, source: $0) }
+        case .reduceAmountTo(let amount, _):
+            reduceAmountTo(amount)
+        case .generateAddresses,
+             .backupCard,
+             .buyCrypto,
+             .refresh,
+             .goToProvider,
+             .addHederaTokenAssociation,
+             .stake,
+             .openLink,
+             .swap,
+             .openFeedbackMail,
+             .openAppStoreReview,
+             .empty,
+             .support,
+             .openCurrency:
+            assertionFailure("Notification tap not handled")
+        }
+    }
+
+    private func reduceAmountBy(_ amount: Decimal, source: Decimal) {
+        var newAmount = source - amount
+        if _isFeeIncluded.value, let feeValue = selectedFee.value.value?.amount.value {
+            newAmount = newAmount - feeValue
+        }
+
+        // Amount will be changed automatically via SendAmountOutput
+        sendAmountInteractor.externalUpdate(amount: newAmount)
+    }
+
+    private func reduceAmountTo(_ amount: Decimal) {
+        // Amount will be changed automatically via SendAmountOutput
+        sendAmountInteractor.externalUpdate(amount: amount)
+    }
+}
+
+// MARK: - SendBaseDataBuilderInput
+
+extension SendModel: SendBaseDataBuilderInput {
+    var bsdkAmount: BSDKAmount? {
+        _amount.value?.crypto.map { makeAmount(decimal: $0) }
+    }
+
+    var bsdkFee: BlockchainSdk.Fee? {
+        selectedFee.value.value
+    }
+
+    var isFeeIncluded: Bool {
+        _isFeeIncluded.value
+    }
+}
+
+// MARK: - Analytics
+
+private extension SendModel {
+    func logTransactionAnalytics() {
+        let feeType = feeAnalyticsParameterBuilder.analyticsParameter(selectedFee: selectedFee.option)
+
+        Analytics.log(event: .transactionSent, params: [
+            .source: source.analyticsValue.rawValue,
+            .token: walletModel.tokenItem.currencySymbol,
+            .blockchain: walletModel.tokenItem.blockchain.displayName,
+            .feeType: feeType.rawValue,
+            .memo: additionalFieldAnalyticsParameter().rawValue,
+        ])
+
+        switch amount?.type {
+        case .none:
+            break
+        case .typical:
+            Analytics.log(.sendSelectedCurrency, params: [.commonType: .token])
+
+        case .alternative:
+            Analytics.log(.sendSelectedCurrency, params: [.commonType: .selectedCurrencyApp])
+        }
+    }
+
+    func additionalFieldAnalyticsParameter() -> Analytics.ParameterValue {
+        // If the blockchain doesn't support additional field -- return null
+        // Otherwise return full / empty
+        switch _destinationAdditionalField.value {
+        case .notSupported: .null
+        case .empty: .empty
+        case .filled: .full
+        }
+    }
+}
+
+// MARK: - Models
+
+extension SendModel {
+    struct PredefinedValues {
+        let source: Source
+
+        let destination: SendAddress?
+        let tag: SendDestinationAdditionalField
+        let amount: SendAmount?
+
+        enum Source {
+            case send
+            case sell
+            case staking
+
+            var analyticsValue: Analytics.ParameterValue {
+                switch self {
+                case .send: .transactionSourceSend
+                case .sell: .transactionSourceSell
+                case .staking: .transactionSourceStaking
+                }
+            }
+        }
     }
 }

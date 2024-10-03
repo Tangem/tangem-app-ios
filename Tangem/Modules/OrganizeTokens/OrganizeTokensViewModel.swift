@@ -23,7 +23,7 @@ final class OrganizeTokensViewModel: ObservableObject, Identifiable {
 
     let id = UUID()
 
-    private unowned let coordinator: OrganizeTokensRoutable
+    private weak var coordinator: OrganizeTokensRoutable?
 
     private let userWalletModel: UserWalletModel
     private let tokenSectionsAdapter: TokenSectionsAdapter
@@ -68,7 +68,7 @@ final class OrganizeTokensViewModel: ObservableObject, Identifiable {
 
     func onCancelButtonTap() {
         Analytics.log(.organizeTokensButtonCancel)
-        coordinator.didTapCancelButton()
+        coordinator?.didTapCancelButton()
     }
 
     func onApplyButtonTap() {
@@ -137,12 +137,12 @@ final class OrganizeTokensViewModel: ObservableObject, Identifiable {
                     .flatMap(\.items)
                     .map(\.id.walletModelId)
 
-                return viewModel.optionsEditing.save(reorderedWalletModelIds: walletModelIds)
+                return viewModel.optionsEditing.save(reorderedWalletModelIds: walletModelIds, source: .organizeTokens)
             }
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, _ in
-                viewModel.coordinator.didTapSaveButton()
+                viewModel.coordinator?.didTapSaveButton()
             }
             .store(in: &bag)
 
@@ -279,7 +279,7 @@ extension OrganizeTokensViewModel {
             )
 
             dragAndDropActionsCache.addDragAndDropAction(isGroupingEnabled: isGroupingEnabled) { sectionsToMutate in
-                sectionsToMutate.move(
+                try sectionsToMutate.tryMove(
                     fromOffsets: IndexSet(integer: sourceIndexPath.section),
                     toOffset: destinationIndexPath.section + diff
                 )
@@ -297,7 +297,11 @@ extension OrganizeTokensViewModel {
             )
 
             dragAndDropActionsCache.addDragAndDropAction(isGroupingEnabled: isGroupingEnabled) { sectionsToMutate in
-                sectionsToMutate[sourceIndexPath.section].items.move(
+                guard sectionsToMutate.indices.contains(sourceIndexPath.section) else {
+                    throw Error.sectionOffsetOutOfBound(offset: sourceIndexPath.section, count: sectionsToMutate.count)
+                }
+
+                try sectionsToMutate[sourceIndexPath.section].items.tryMove(
                     fromOffsets: IndexSet(integer: sourceIndexPath.item),
                     toOffset: destinationIndexPath.item + diff
                 )
@@ -387,5 +391,13 @@ extension OrganizeTokensViewModel: OrganizeTokensDragAndDropControllerDataSource
         listViewIdentifierForItemAt indexPath: IndexPath
     ) -> AnyHashable {
         return section(at: indexPath)?.id ?? itemViewModel(at: indexPath).id.asAnyHashable
+    }
+}
+
+// MARK: - Auxiliary types
+
+extension OrganizeTokensViewModel {
+    enum Error: Swift.Error {
+        case sectionOffsetOutOfBound(offset: Int, count: Int)
     }
 }

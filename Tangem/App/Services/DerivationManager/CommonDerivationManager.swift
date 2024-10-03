@@ -19,7 +19,7 @@ class CommonDerivationManager {
     private var bag = Set<AnyCancellable>()
     private let pendingDerivations: CurrentValueSubject<[Data: [DerivationPath]], Never> = .init([:])
 
-    internal init(keysRepository: KeysRepository, userTokenListManager: UserTokenListManager) {
+    init(keysRepository: KeysRepository, userTokenListManager: UserTokenListManager) {
         self.keysRepository = keysRepository
         self.userTokenListManager = userTokenListManager
         bind()
@@ -77,7 +77,7 @@ extension CommonDerivationManager: DerivationManager {
             .eraseToAnyPublisher()
     }
 
-    func deriveKeys(cardInteractor: CardDerivable, completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
+    func deriveKeys(cardInteractor: KeysDeriving, completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
         guard !pendingDerivations.value.isEmpty else {
             completion(.success(()))
             return

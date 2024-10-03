@@ -25,6 +25,7 @@ private enum QueryKey: String {
     case signature
     case baseCurrencyAmount
     case depositWalletAddress
+    case depositWalletAddressTag
 }
 
 private struct IpCheckResponse: Decodable {
@@ -48,53 +49,9 @@ private struct MoonpayCurrency: Decodable {
         case fiat
     }
 
-    enum NetworkCode: String, Decodable {
-        case bitcoin
-        case bitcoinCash = "bitcoin_cash"
-        case ethereum
-        case bnbChain = "bnb_chain"
-        case stellar
-        case litecoin
-        case solana
-        case tron
-        case polygon
-        case unknown
-
-        func blockchainId() -> String? {
-            switch self {
-            case .unknown:
-                return nil
-            case .bitcoin:
-                return Blockchain.bitcoin(testnet: false).coinId
-            case .bitcoinCash:
-                return Blockchain.bitcoinCash(testnet: false).coinId
-            case .ethereum:
-                return Blockchain.ethereum(testnet: false).coinId
-            case .bnbChain:
-                return Blockchain.binance(testnet: false).coinId
-            case .solana:
-                return Blockchain.solana(curve: .ed25519_slip0010, testnet: false).coinId
-            case .litecoin:
-                return Blockchain.litecoin.coinId
-            case .stellar:
-                return Blockchain.stellar(curve: .ed25519_slip0010, testnet: false).coinId
-            case .tron:
-                return Blockchain.tron(testnet: false).coinId
-            case .polygon:
-                return Blockchain.polygon(testnet: false).coinId
-            }
-        }
-
-        init(from decoder: Decoder) throws {
-            let container = try decoder.singleValueContainer()
-            let value = try container.decode(String.self)
-            self = NetworkCode(rawValue: value) ?? .unknown
-        }
-    }
-
     struct Metadata: Decodable {
         let contractAddress: String?
-        let networkCode: NetworkCode
+        let networkCode: String
     }
 
     let type: CurrencyType
@@ -108,7 +65,8 @@ private struct MoonpayCurrency: Decodable {
 }
 
 private struct MoonpaySupportedCurrency: Hashable {
-    let networkCode: MoonpayCurrency.NetworkCode
+    let currencyCode: String
+    let networkCode: String
     let contractAddress: String?
 }
 
@@ -119,20 +77,12 @@ class MoonPayService {
 
     @Published private var initialized = false
 
+    // TODO: pk_test doesn't
     private var keys: MoonPayKeys { keysManager.moonPayKeys }
 
-    private var availableToBuy: Set<String> = [
-        "ZRX", "AAVE", "ALGO", "AXS", "BAT", "BNB", "BUSD", "BTC", "BCH", "BTT", "ADA", "CELO", "CUSD", "LINK", "CHZ", "COMP", "ATOM", "DAI", "DASH", "MANA", "DGB", "DOGE", "EGLD",
-        "ENJ", "EOS", "ETC", "ETH", "KETH", "RINKETH", "FIL", "HBAR", "MIOTA", "KAVA", "KLAY", "LBC", "LTC", "LUNA", "MKR", "OM", "MATIC", "NANO", "NEAR", "XEM", "NEO", "NIM", "OKB",
-        "OMG", "ONG", "ONT", "DOT", "QTUM", "RVN", "RFUEL", "KEY", "SRM", "SOL", "XLM", "STMX", "SNX", "KRT", "UST", "USDT", "XTZ", "RUNE", "SAND", "TOMO", "AVA", "TRX", "TUSD", "UNI",
-        "USDC", "UTK", "VET", "WAXP", "WBTC", "XRP", "ZEC", "ZIL",
-    ]
+    private var availableToBuy: Set<MoonpaySupportedCurrency> = []
 
-    private var availableToSell: Set<MoonpaySupportedCurrency> = [
-        MoonpaySupportedCurrency(networkCode: .bitcoin, contractAddress: nil),
-        MoonpaySupportedCurrency(networkCode: .ethereum, contractAddress: nil),
-        MoonpaySupportedCurrency(networkCode: .bnbChain, contractAddress: nil),
-    ]
+    private var availableToSell: Set<MoonpaySupportedCurrency> = []
 
     private var useDarkTheme: Bool {
         UITraitCollection.isDarkMode
@@ -161,14 +111,14 @@ extension MoonPayService: ExchangeService {
 
     var successCloseUrl: String { "https://success.tangem.com" }
 
-    var sellRequestUrl: String { "https://sell-request.tangem.com" }
+    var sellRequestUrl: String { SellActionURLHelper().buildURL(scheme: .universalLink).absoluteString }
 
     func canBuy(_ currencySymbol: String, amountType: Amount.AmountType, blockchain: Blockchain) -> Bool {
-        if currencySymbol.uppercased() == "BNB", blockchain == .bsc(testnet: true) || blockchain == .bsc(testnet: false) {
+        guard canBuyCrypto else {
             return false
         }
 
-        return availableToBuy.contains(currencySymbol.uppercased()) && canBuyCrypto
+        return getCryptoCurrency(amountType: amountType, blockchain: blockchain, fromCurrencies: availableToBuy) != nil
     }
 
     func canSell(_ currencySymbol: String, amountType: Amount.AmountType, blockchain: Blockchain) -> Bool {
@@ -176,20 +126,36 @@ extension MoonPayService: ExchangeService {
             return false
         }
 
-        return availableToSell.contains(where: {
+        return getCryptoCurrency(amountType: amountType, blockchain: blockchain, fromCurrencies: availableToSell) != nil
+    }
+
+    private func getCryptoCurrency(
+        amountType: Amount.AmountType,
+        blockchain: Blockchain,
+        fromCurrencies: Set<MoonpaySupportedCurrency>
+    ) -> MoonpaySupportedCurrency? {
+        guard let moonpayNetwork = blockchain.moonpayNetwork,
+              let moonpayMainCurrencyCode = blockchain.moonpayMainCurrencyCode else {
+            return nil
+        }
+
+        let cryptoCurrency = fromCurrencies.first(where: {
             switch amountType {
             case .coin:
-                return $0.networkCode.blockchainId() == blockchain.coinId
+                return $0.networkCode == moonpayNetwork && $0.currencyCode == moonpayMainCurrencyCode
             case .token(let value):
-                return $0.contractAddress?.caseInsensitiveCompare(value.contractAddress) == .orderedSame
-            case .reserve:
+                return $0.networkCode == moonpayNetwork &&
+                    $0.contractAddress?.caseInsensitiveCompare(value.contractAddress) == .orderedSame
+            case .reserve, .feeResource:
                 return false
             }
         })
+
+        return cryptoCurrency
     }
 
     func getBuyUrl(currencySymbol: String, amountType: Amount.AmountType, blockchain: Blockchain, walletAddress: String) -> URL? {
-        guard canBuy(currencySymbol, amountType: amountType, blockchain: blockchain) else {
+        guard let currency = getCryptoCurrency(amountType: amountType, blockchain: blockchain, fromCurrencies: availableToBuy) else {
             return nil
         }
 
@@ -199,7 +165,7 @@ extension MoonPayService: ExchangeService {
 
         var queryItems = [URLQueryItem]()
         queryItems.append(.init(key: .apiKey, value: keys.apiKey.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
-        queryItems.append(.init(key: .currencyCode, value: currencySymbol.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
+        queryItems.append(.init(key: .currencyCode, value: currency.currencyCode.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
         queryItems.append(.init(key: .walletAddress, value: walletAddress.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
         queryItems.append(.init(key: .redirectURL, value: successCloseUrl.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)))
         queryItems.append(.init(key: .baseCurrencyCode, value: "USD".addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
@@ -218,7 +184,7 @@ extension MoonPayService: ExchangeService {
     }
 
     func getSellUrl(currencySymbol: String, amountType: Amount.AmountType, blockchain: Blockchain, walletAddress: String) -> URL? {
-        guard canSell(currencySymbol, amountType: amountType, blockchain: blockchain) else {
+        guard let currency = getCryptoCurrency(amountType: amountType, blockchain: blockchain, fromCurrencies: availableToSell) else {
             return nil
         }
 
@@ -228,7 +194,7 @@ extension MoonPayService: ExchangeService {
 
         var queryItems = [URLQueryItem]()
         queryItems.append(.init(key: .apiKey, value: keys.apiKey.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
-        queryItems.append(.init(key: .baseCurrencyCode, value: currencySymbol.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
+        queryItems.append(.init(key: .baseCurrencyCode, value: currency.currencyCode.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
         queryItems.append(.init(key: .refundWalletAddress, value: walletAddress.addingPercentEncoding(withAllowedCharacters: .afURLQueryAllowed)))
         queryItems.append(.init(key: .redirectURL, value: sellRequestUrl.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)))
 
@@ -259,7 +225,9 @@ extension MoonPayService: ExchangeService {
             return nil
         }
 
-        return .init(currencyCode: currencyCode, amount: amount, targetAddress: targetAddress)
+        let tag = items.first(where: { $0.name == QueryKey.depositWalletAddressTag.rawValue })?.value
+
+        return .init(currencyCode: currencyCode, amount: amount, targetAddress: targetAddress, tag: tag)
     }
 
     func initialize() {
@@ -293,18 +261,19 @@ extension MoonPayService: ExchangeService {
                 AppLog.shared.error(error)
             }
             do {
-                var currenciesToBuy = Set<String>()
+                var currenciesToBuy = Set<MoonpaySupportedCurrency>()
                 var currenciesToSell = Set<MoonpaySupportedCurrency>()
                 let decodedResponse = try decoder.decode([MoonpayCurrency].self, from: currenciesOutput.data)
                 decodedResponse.forEach {
                     guard
                         $0.type == .crypto,
                         let isSuspended = $0.isSuspended, !isSuspended,
-                        let supportsLiveMode = $0.supportsLiveMode, supportsLiveMode
+                        let supportsLiveMode = $0.supportsLiveMode, supportsLiveMode,
+                        let metadata = $0.metadata
                     else { return }
 
                     if countryCode == "USA" {
-                        if let isSupportedInUS = $0.isSupportedInUS, !isSupportedInUS {
+                        if $0.isSupportedInUS == false {
                             return
                         }
 
@@ -313,12 +282,16 @@ extension MoonPayService: ExchangeService {
                         }
                     }
 
-                    currenciesToBuy.insert($0.code.uppercased())
+                    let moonpayCurrency = MoonpaySupportedCurrency(
+                        currencyCode: $0.code,
+                        networkCode: metadata.networkCode,
+                        contractAddress: metadata.contractAddress
+                    )
 
-                    if let isSellSupported = $0.isSellSupported, isSellSupported, let metadata = $0.metadata {
-                        currenciesToSell.insert(
-                            MoonpaySupportedCurrency(networkCode: metadata.networkCode, contractAddress: metadata.contractAddress)
-                        )
+                    currenciesToBuy.insert(moonpayCurrency)
+
+                    if $0.isSellSupported == true {
+                        currenciesToSell.insert(moonpayCurrency)
                     }
                 }
                 availableToBuy = currenciesToBuy
@@ -337,5 +310,161 @@ extension MoonPayService: ExchangeService {
 private extension URLQueryItem {
     init(key: QueryKey, value: String?) {
         self.init(name: key.rawValue, value: value)
+    }
+}
+
+private extension Blockchain {
+    /// https://api.moonpay.com/v3/currencies
+    var moonpayNetwork: String? {
+        switch self {
+        case .algorand: return "algorand"
+        case .aptos: return "aptos"
+        case .arbitrum: return "arbitrum"
+        case .avalanche: return "avalanche_c_chain"
+        case .azero: return nil
+        case .binance: return "bnb_chain"
+        case .bitcoin: return "bitcoin"
+        case .bitcoinCash: return "bitcoin_cash"
+        case .bsc: return "binance_smart_chain"
+        case .cardano: return "cardano"
+        case .chia: return nil
+        case .cosmos: return "cosmos"
+        case .cronos: return nil
+        case .dash: return nil
+        case .decimal: return nil
+        case .disChain: return nil
+        case .dogecoin: return "dogecoin"
+        case .ducatus: return nil
+        case .ethereum: return "ethereum"
+        case .ethereumClassic: return "ethereum_classic"
+        case .ethereumPoW: return nil
+        case .fantom: return nil
+        case .gnosis: return nil
+        case .hedera: return "hedera"
+        case .kaspa: return nil
+        case .kava: return nil
+        case .kusama: return nil
+        case .litecoin: return "litecoin"
+        case .near: return "near"
+        case .octa: return nil
+        case .optimism: return "optimism"
+        case .polkadot: return "polkadot"
+        case .polygon: return "polygon"
+        case .ravencoin: return "ravencoin"
+        case .rsk: return nil
+        case .shibarium: return nil
+        case .solana: return "solana"
+        case .stellar: return "stellar"
+        case .telos: return nil
+        case .terraV1: return nil
+        case .terraV2: return nil
+        case .tezos: return "tezos"
+        case .ton: return "ton"
+        case .tron: return "tron"
+        case .veChain: return "vechain"
+        case .xdc: return nil
+        case .xrp: return "ripple"
+        case .areon: return nil
+        case .playa3ullGames: return nil
+        case .pulsechain: return nil
+        case .aurora: return nil
+        case .manta: return nil
+        case .zkSync: return nil
+        case .moonbeam: return nil
+        case .polygonZkEVM: return nil
+        case .moonriver: return nil
+        case .mantle: return nil
+        case .flare: return nil
+        case .taraxa: return nil
+        case .radiant: return nil
+        case .base: return "base"
+        case .joystream: return nil
+        case .bittensor: return nil
+        case .koinos: return nil
+        case .internetComputer: return nil
+        case .cyber: return nil
+        case .blast: return nil
+        case .filecoin: return "filecoin"
+        case .sei: return "sei"
+        case .sui: return "sui"
+            // Did you get a compilation error here? If so, check whether the network is supported at https://api.moonpay.com/v3/currencies
+        }
+    }
+
+    /// We can't compare just by contractAddress presence because of MATIC's  contractAddress
+    var moonpayMainCurrencyCode: String? {
+        switch self {
+        case .algorand: return "algo"
+        case .aptos: return "apt"
+        case .arbitrum: return "eth_arbitrum"
+        case .avalanche: return "avax_cchain"
+        case .azero: return nil
+        case .binance: return "bnb"
+        case .bitcoin: return "btc"
+        case .bitcoinCash: return "bch"
+        case .bsc: return "bnb_bsc"
+        case .cardano: return "ada"
+        case .chia: return nil
+        case .cosmos: return "atom"
+        case .cronos: return nil
+        case .dash: return nil
+        case .decimal: return nil
+        case .disChain: return nil
+        case .dogecoin: return "doge"
+        case .ducatus: return nil
+        case .ethereum: return "eth"
+        case .ethereumClassic: return "etc"
+        case .ethereumPoW: return nil
+        case .fantom: return nil
+        case .gnosis: return nil
+        case .hedera: return "hbar"
+        case .kaspa: return nil
+        case .kava: return nil
+        case .kusama: return nil
+        case .litecoin: return "ltc"
+        case .near: return "near"
+        case .octa: return nil
+        case .optimism: return "eth_optimism"
+        case .polkadot: return "dot"
+        case .polygon: return "matic_polygon"
+        case .ravencoin: return "rvn"
+        case .rsk: return nil
+        case .shibarium: return nil
+        case .solana: return "sol"
+        case .stellar: return "xlm"
+        case .telos: return nil
+        case .terraV1: return nil
+        case .terraV2: return nil
+        case .tezos: return "xtz"
+        case .ton: return "ton"
+        case .tron: return "trx"
+        case .veChain: return "vet"
+        case .xdc: return nil
+        case .xrp: return "xrp"
+        case .areon: return nil
+        case .playa3ullGames: return nil
+        case .pulsechain: return nil
+        case .aurora: return nil
+        case .manta: return nil
+        case .zkSync: return nil
+        case .moonbeam: return nil
+        case .polygonZkEVM: return nil
+        case .moonriver: return nil
+        case .mantle: return nil
+        case .flare: return nil
+        case .taraxa: return nil
+        case .radiant: return nil
+        case .base: return "eth_base"
+        case .joystream: return nil
+        case .bittensor: return nil
+        case .koinos: return nil
+        case .internetComputer: return nil
+        case .cyber: return nil
+        case .blast: return nil
+        case .filecoin: return "fil"
+        case .sei: return "sei_sei"
+        case .sui: return "sui"
+            // Did you get a compilation error here? If so, check whether the network is supported at https://api.moonpay.com/v3/currencies
+        }
     }
 }

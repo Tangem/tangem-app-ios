@@ -23,7 +23,7 @@ struct TokenSectionsSourcePublisherFactory {
 
         // Fiat balance changes for the coins and tokens for the user wallet
         let walletModelsBalanceChangesPublisher = userWalletModel
-            .totalBalancePublisher()
+            .totalBalancePublisher
             .filter { !$0.isLoading }
             .withLatestFrom(walletModelsPublisher)
             .eraseToAnyPublisher()

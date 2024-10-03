@@ -1,0 +1,119 @@
+{
+    "backupStatus" : {
+        "status" : "active",
+        "cardsCount" : 2
+    },
+    "isAccessCodeSet" : true,
+    "linkedTerminalStatus" : "none",
+    "supportedCurves" : [
+        "secp256k1",
+        "ed25519",
+        "secp256r1",
+        "bls12381_G2",
+        "bls12381_G2_AUG",
+        "bls12381_G2_POP"
+    ],
+    "cardPublicKey" : "026D5FACEA9BAB187A770AB31A9D7F330A7BFA25898A853E537200755A6770FB7D",
+    "settings" : {
+        "maxWalletsCount" : 20,
+        "isLinkedTerminalEnabled" : true,
+        "isFilesAllowed" : true,
+        "isOverwritingIssuerExtraDataRestricted" : false,
+        "isIssuerDataProtectedAgainstReplay" : true,
+        "supportedEncryptionModes" : [
+            "strong",
+            "fast",
+            "none"
+        ],
+        "securityDelay" : 15000,
+        "isBackupAllowed" : true,
+        "isSettingAccessCodeAllowed" : true,
+        "isRemovingUserCodesAllowed" : false,
+        
+        "isSelectBlockchainAllowed" : true,
+        "isHDWalletAllowed" : true,
+        "isSettingPasscodeAllowed" : true,
+
+        "isPermanentWallet": false,
+        "isKeysImportAllowed" : false
+    },
+    "userSettings" : {
+      "isUserCodeRecoveryAllowed" : true
+    },
+    "issuer" : {
+        "name" : "TANGEM AG",
+        "publicKey" : "0356E7C3376329DFAE7388DF1695670386103C92486A87644FA9E512C9CF4E92FE"
+    },
+    "firmwareVersion" : {
+        "minor" : 52,
+        "patch" : 0,
+        "major" : 4,
+        "stringValue" : "4.52r",
+        "type" : "r"
+    },
+    "batchId" : "AC07",
+    "isPasscodeSet" : false,
+    "manufacturer" : {
+        "name" : "TANGEM",
+        "manufactureDate" : "2022-06-02",
+        "signature" : "7FA19C0FEDBF642092B677DA50206C97E5496B109DF5A204D512D87652527DBF511111A1C99980C38C9D45B4EE2522DA4AEFC741CAF477CD3A43EA097D59A000"
+    },
+    "attestation" : {
+        "cardKeyAttestation" : "verified",
+        "walletKeysAttestation" : "skipped",
+        "firmwareAttestation" : "skipped",
+        "cardUniquenessAttestation" : "skipped"
+    },
+    "cardId" : "AC01000000043486",
+    "wallets" : [
+        {
+            "totalSignedHashes" : 0,
+            "index" : 0,
+            "hasBackup" : true,
+            "isImported" : false,
+            "derivedKeys" : {
+                "m/44'/0'/0'/0/0" : {
+                    "depth" : 0,
+                    "parentFingerprint" : "00000000",
+                    "chainCode" : "3665484A4E44F86CCB22483786E52B486C7C35A742D3A64C1D52B2D16CE0F5F4",
+                    "childNumber" : 0,
+                    "publicKey" : "033FC9999345E02E80194D74AFB47B16AEB6433B1B9297521BEA7DB0894CD174AF"
+                },
+                "m/44'/60'/0'/0/0" : {
+                    "chainCode" : "172B41C2D943C03219CB3D5A825698766A16C5BB0207FDFF770C5B757463F975",
+                    "childNumber" : 0,
+                    "parentFingerprint" : "00000000",
+                    "depth" : 0,
+                    "publicKey" : "036E3E1C1D98F64CF2E05E82F99F22EE97B436F54CCD5F73E1D660996ED4A03B9A"
+                }
+            },
+            "curve" : "secp256k1",
+            "publicKey" : "02BC15494B8349EB2E41C96B9C38E8D1BB32F19DE388DDDD6AB4935623EEE44641",
+            "chainCode" : "59A8B5F8010116B1B63171EAB44E8F35B123077A84F1C796A3BF784CABD4962E",
+            "settings" : {
+                "isPermanent" : false
+            }
+        },
+        {
+            "totalSignedHashes" : 0,
+            "index" : 1,
+            "hasBackup" : true,
+            "isImported" : false,
+            "derivedKeys" : {
+                "m/44'/501'/0'" : {
+                    "publicKey" : "25599BE19A2B890C7086203530AF5BBE15A86FFFA625D856A4C6FA6F534DE129",
+                    "chainCode" : "8ECC3E797AE918C32AC09AEC0FA63AEAFDF477147B106A170207E0E1DB41A93E",
+                    "depth" : 0,
+                    "childNumber" : 0,
+                    "parentFingerprint" : "00000000"
+                }
+            },
+            "curve" : "ed25519",
+            "publicKey" : "76D300FD1D54224DD6F79AD0712C08B8CBC88EF0F32E3F6842FB1EA08015E819",
+            "chainCode" : "6D41CD0BD3C3121C81072FCAC0E0B7865EF8AA7D8409896D5092BF14D20CEF64",
+            "settings" : {
+                "isPermanent" : false
+            }
+        }
+    ]
+}

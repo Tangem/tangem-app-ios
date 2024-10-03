@@ -63,7 +63,7 @@ mint run swiftgen@6.6.2 config run --config swiftgen.yml
 
 if [ "$OPT_COCOAPODS" = true ] ; then
     echo "🚀 Running pod install"
-	pod install
+	pod install --repo-update 
 fi
 
 if [ "$OPT_SUBMODULE" = true ] ; then

@@ -7,7 +7,7 @@
 // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md
 import Foundation
 import BigInt
-import BlockchainSdk
+import CryptoSwift
 
 /// A struct represents EIP712 type tuple
 public struct EIP712Type: Codable {

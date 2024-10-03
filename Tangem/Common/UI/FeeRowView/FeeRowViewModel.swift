@@ -8,20 +8,17 @@
 
 import Foundation
 
-struct FeeRowViewModel: Hashable, Identifiable {
+struct FeeRowViewModel: Identifiable, Hashable {
     var id: Int { hashValue }
 
     let option: FeeOption
-    let subtitle: String
-    let isSelected: BindingValue<Bool>
+    let components: LoadingValue<FormattedFeeComponents>
+    let style: Style
+}
 
-    init(
-        option: FeeOption,
-        subtitle: String,
-        isSelected: BindingValue<Bool>
-    ) {
-        self.option = option
-        self.subtitle = subtitle
-        self.isSelected = isSelected
+extension FeeRowViewModel {
+    enum Style: Hashable {
+        case plain
+        case selectable(isSelected: BindingValue<Bool>)
     }
 }

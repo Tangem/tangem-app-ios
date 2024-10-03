@@ -8,10 +8,8 @@
 
 import Combine
 import SwiftUI
-import TangemSwapping
+import TangemExpress
 
-// TODO: All data and logic will be update in
-// https://tangem.atlassian.net/browse/IOS-4941
 final class ExpressSuccessSentViewModel: ObservableObject, Identifiable {
     // MARK: - ViewState
 
@@ -20,73 +18,129 @@ final class ExpressSuccessSentViewModel: ObservableObject, Identifiable {
     @Published var provider: ProviderRowViewModel?
     @Published var expressFee: ExpressFeeRowData?
 
+    var isStatusButtonVisible: Bool {
+        data.expressTransactionData.externalTxUrl != nil
+    }
+
     var dateFormatted: String {
         let formatter = DateFormatter()
         formatter.dateStyle = .long
         formatter.timeStyle = .short
 
-        return formatter.string(from: Date())
+        return formatter.string(from: data.date)
     }
 
     // MARK: - Dependencies
 
-    private unowned let coordinator: ExpressSuccessSentRoutable
+    private let data: SentExpressTransactionData
+    private let initialWallet: WalletModel
+    private let balanceConverter: BalanceConverter
+    private let balanceFormatter: BalanceFormatter
+    private let providerFormatter: ExpressProviderFormatter
+    private let feeFormatter: FeeFormatter
+    private weak var coordinator: ExpressSuccessSentRoutable?
 
     init(
-        input: InputModel,
+        data: SentExpressTransactionData,
+        initialWallet: WalletModel,
+        balanceConverter: BalanceConverter,
+        balanceFormatter: BalanceFormatter,
+        providerFormatter: ExpressProviderFormatter,
+        feeFormatter: FeeFormatter,
         coordinator: ExpressSuccessSentRoutable
     ) {
+        self.data = data
+        self.initialWallet = initialWallet
+        self.balanceConverter = balanceConverter
+        self.balanceFormatter = balanceFormatter
+        self.providerFormatter = providerFormatter
+        self.feeFormatter = feeFormatter
         self.coordinator = coordinator
+
         setupView()
+        Analytics.log(
+            event: .swapSwapInProgressScreenOpened,
+            params: [
+                .provider: data.provider.name,
+                .commission: data.feeOption.rawValue.capitalizingFirstLetter(),
+                .sendToken: data.source.tokenItem.currencySymbol,
+                .receiveToken: data.destination.tokenItem.currencySymbol,
+                .sendBlockchain: data.source.tokenItem.blockchain.displayName,
+                .receiveBlockchain: data.destination.tokenItem.blockchain.displayName,
+            ]
+        )
     }
 
-    func openExplore() {}
+    func openExplore() {
+        guard let exploreURL = data.source.exploreTransactionURL(for: data.hash) else {
+            return
+        }
 
-    func openShare() {}
+        Analytics.log(event: .swapButtonExplore, params: [.token: initialWallet.tokenItem.currencySymbol])
+        coordinator?.openWebView(url: exploreURL)
+    }
 
-    func closeView() {}
+    func openCEXStatus() {
+        guard let externalTxUrl = data.expressTransactionData.externalTxUrl.map(URL.init(string:)) else {
+            return
+        }
+
+        Analytics.log(event: .swapButtonStatus, params: [.token: initialWallet.tokenItem.currencySymbol])
+        coordinator?.openWebView(url: externalTxUrl)
+    }
+
+    func closeView() {
+        coordinator?.close()
+    }
 }
 
 private extension ExpressSuccessSentViewModel {
     func setupView() {
+        let fromAmount = data.expressTransactionData.fromAmount
+        let toAmount = data.expressTransactionData.toAmount
+        let sourceTokenItem = data.source.tokenItem
+        let destinationTokenItem = data.destination.tokenItem
+
+        let sourceAmountFormatted = balanceFormatter.formatCryptoBalance(fromAmount, currencyCode: sourceTokenItem.currencySymbol)
+        let sourceFiatAmount = balanceConverter.convertToFiat(fromAmount, currencyId: sourceTokenItem.currencyId ?? "")
+        let sourceFiatAmountFormatted = balanceFormatter.formatFiatBalance(sourceFiatAmount)
+
         sourceData = AmountSummaryViewData(
-            amount: "1 000 DAI",
-            amountFiat: "568,65 $",
-            tokenIconName: "dai",
-            tokenIconURL: TokenIconURLBuilder().iconURL(id: "dai"),
-            tokenIconCustomTokenColor: nil,
-            tokenIconBlockchainIconName: "ethereum",
-            isCustomToken: false
+            title: Localization.swappingFromTitle,
+            amount: sourceAmountFormatted,
+            amountFiat: sourceFiatAmountFormatted,
+            tokenIconInfo: TokenIconInfoBuilder().build(from: sourceTokenItem, isCustom: false)
         )
 
+        let destinationAmountFormatted = balanceFormatter.formatCryptoBalance(toAmount, currencyCode: destinationTokenItem.currencySymbol)
+        let destinationFiatAmount = balanceConverter.convertToFiat(toAmount, currencyId: destinationTokenItem.currencyId ?? "")
+        let destinationFiatAmountFormatted = balanceFormatter.formatFiatBalance(destinationFiatAmount)
+
         destinationData = AmountSummaryViewData(
-            amount: "1 000 DAI",
-            amountFiat: "568,65 $",
-            tokenIconName: "dai",
-            tokenIconURL: TokenIconURLBuilder().iconURL(id: "dai"),
-            tokenIconCustomTokenColor: nil,
-            tokenIconBlockchainIconName: "ethereum",
-            isCustomToken: false
+            title: Localization.swappingToTitle,
+            amount: destinationAmountFormatted,
+            amountFiat: destinationFiatAmountFormatted,
+            tokenIconInfo: TokenIconInfoBuilder().build(from: destinationTokenItem, isCustom: false)
+        )
+
+        let subtitle = providerFormatter.mapToRateSubtitle(
+            fromAmount: fromAmount,
+            toAmount: toAmount,
+            senderCurrencyCode: sourceTokenItem.currencySymbol,
+            destinationCurrencyCode: destinationTokenItem.currencySymbol,
+            option: .exchangeRate
         )
 
         provider = ProviderRowViewModel(
-            provider: .init(
-                iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/changenow_512.png")!,
-                name: "ChangeNOW",
-                type: "CEX"
-            ),
+            provider: providerFormatter.mapToProvider(provider: data.provider),
+            titleFormat: .name,
             isDisabled: false,
             badge: .none,
-            subtitles: [.text("0,64554846 DAI ≈ 1 MATIC ")],
-            detailsType: .none,
-            // Should be replaced on id
-            tapAction: {}
+            subtitles: [subtitle],
+            detailsType: .none
         )
 
-        expressFee = ExpressFeeRowData(title: "Fee", subtitle: "0.117 MATIC (0.14 $)", action: nil)
+        let feeFormatted = feeFormatter.format(fee: data.fee, tokenItem: data.source.feeTokenItem)
+        expressFee = ExpressFeeRowData(title: Localization.commonNetworkFeeTitle, subtitle: feeFormatted)
     }
-}
-
-extension ExpressSuccessSentViewModel {
-    struct InputModel {}
 }

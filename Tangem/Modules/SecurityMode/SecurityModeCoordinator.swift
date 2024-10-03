@@ -29,13 +29,13 @@ class SecurityModeCoordinator: CoordinatorObject {
     }
 
     func start(with options: SecurityModeCoordinator.Options) {
-        securityModeViewModel = SecurityModeViewModel(cardModel: options.cardModel, coordinator: self)
+        securityModeViewModel = SecurityModeViewModel(securityOptionChangeInteractor: options.securityOptionChangeInteractor, coordinator: self)
     }
 }
 
 extension SecurityModeCoordinator {
     struct Options {
-        let cardModel: CardViewModel
+        let securityOptionChangeInteractor: SecurityOptionChanging
     }
 }
 

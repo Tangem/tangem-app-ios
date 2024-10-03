@@ -35,7 +35,7 @@ class IncomingActionsTests: XCTestCase {
 
     func testWC2Link() {
         let parser = WalletConnectURLParser()
-        let uri = parser.parse(URL(string: "tangem://wc?uri=wc:8ad9144fec726c592b3bae26e2fa797e61b08d523fe9036ac7fe4f3c54b7b9f4@2?relay-protocol=irn&symKey=cc2f1426571a59111059b7661c6aecadc08784d299a2dce36c576844e40d6c81")!)
+        let uri = parser.parse(url: URL(string: "tangem://wc?uri=wc:8ad9144fec726c592b3bae26e2fa797e61b08d523fe9036ac7fe4f3c54b7b9f4@2?relay-protocol=irn&symKey=cc2f1426571a59111059b7661c6aecadc08784d299a2dce36c576844e40d6c81")!)
 
         switch uri {
         case .v2:
@@ -47,7 +47,7 @@ class IncomingActionsTests: XCTestCase {
 
     func testWC2LinkFromString() {
         let parser = WalletConnectURLParser()
-        let uri = parser.parse("wc:8ad9144fec726c592b3bae26e2fa797e61b08d523fe9036ac7fe4f3c54b7b9f4@2?relay-protocol=irn&symKey=cc2f1426571a59111059b7661c6aecadc08784d299a2dce36c576844e40d6c81")
+        let uri = parser.parse(uriString: "wc:8ad9144fec726c592b3bae26e2fa797e61b08d523fe9036ac7fe4f3c54b7b9f4@2?relay-protocol=irn&symKey=cc2f1426571a59111059b7661c6aecadc08784d299a2dce36c576844e40d6c81")
 
         switch uri {
         case .v2:
@@ -55,5 +55,32 @@ class IncomingActionsTests: XCTestCase {
         default:
             XCTAssertTrue(false)
         }
+    }
+
+    func testSafariClose() {
+        let urlString1 = "tangem://redirect?action=dismissBrowser"
+        let urlString2 = "https://tangem.com/redirect?action=dismissBrowser"
+
+        let helper = DismissSafariActionURLHelper()
+        XCTAssertEqual(helper.buildURL(scheme: .universalLink).absoluteString, urlString1)
+        XCTAssertEqual(helper.buildURL(scheme: .redirectLink).absoluteString, urlString2)
+
+        let dismissURL1 = URL(string: urlString1)!
+        XCTAssertTrue(helper.parse(dismissURL1) == .dismissSafari(dismissURL1))
+
+        let dismissURL2 = URL(string: urlString2)!
+        XCTAssertTrue(helper.parse(dismissURL2) == .dismissSafari(dismissURL2))
+    }
+
+    func testSell() {
+        let helper = SellActionURLHelper()
+        XCTAssertEqual(helper.buildURL(scheme: .universalLink).absoluteString, "tangem://redirect_sell")
+        XCTAssertEqual(helper.buildURL(scheme: .redirectLink).absoluteString, "https://tangem.com/redirect_sell")
+
+        let dismissURL1 = URL(string: "tangem://redirect_sell?transaction=xxxx")!
+        XCTAssertTrue(helper.parse(dismissURL1) == .dismissSafari(dismissURL1))
+
+        let dismissURL2 = URL(string: "https://tangem.com/redirect_sell?transaction=xxxx")!
+        XCTAssertTrue(helper.parse(dismissURL2) == .dismissSafari(dismissURL2))
     }
 }

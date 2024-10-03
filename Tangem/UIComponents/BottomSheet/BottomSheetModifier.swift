@@ -84,10 +84,19 @@ struct BottomSheetModifier<Item: Identifiable, ContentView: View>: ViewModifier 
     }
 
     func hideController() {
-        controller?.dismiss(animated: false) {
+        // If we have a first responder
+        // Will be better to dismiss the UIViewController with animation
+        // Because it provides a good animation for opening the keyboard
+        // If we don't have a responder we have to dismiss the UIViewController without animation
+        // Because it provide a freeze screen in 0.2 seconds
+
+        let hasFirstResponder = UIResponder.current != nil
+
+        controller?.dismiss(animated: hasFirstResponder) {
             // We should deinit controller to avoid unnecessary call update(item:) method
             controller = nil
             item = nil
+            stateObject.viewDidHidden = {}
         }
     }
 }

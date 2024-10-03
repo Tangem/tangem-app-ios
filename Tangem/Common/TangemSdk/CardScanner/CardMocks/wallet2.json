@@ -1,0 +1,175 @@
+{
+  "supportedCurves" : [
+    "secp256k1",
+    "ed25519",
+    "ed25519_slip0010",
+    "secp256r1",
+    "bls12381_G2",
+    "bls12381_G2_AUG",
+    "bls12381_G2_POP",
+    "bip0340"
+  ],
+  "settings" : {
+    "isLinkedTerminalEnabled" : true,
+    "supportedEncryptionModes" : [
+      "strong",
+      "fast",
+      "none"
+    ],
+    "isRemovingUserCodesAllowed" : false,
+    "isFilesAllowed" : true,
+    "isHDWalletAllowed" : true,
+    "isKeysImportAllowed" : true,
+    "maxWalletsCount" : 20,
+    "isSettingAccessCodeAllowed" : true,
+    "isBackupAllowed" : true,
+    "securityDelay" : 5000,
+    "isSettingPasscodeAllowed" : true,
+    "isPermanentWallet": false,
+    "isOverwritingIssuerExtraDataRestricted" : false,
+    "isIssuerDataProtectedAgainstReplay" : true,
+    "isSelectBlockchainAllowed" : true
+  },
+  "userSettings" : {
+    "isUserCodeRecoveryAllowed" : true
+  },
+  "isPasscodeSet" : false,
+  "batchId" : "CB79",
+  "cardPublicKey" : "03A0073A9601D1B747518A716CF5FD7C1540962F9A7F317287E74AC35F42E9A5BC",
+  "cardId" : "CB79000000000001",
+  "attestation" : {
+    "cardKeyAttestation" : "failed",
+    "firmwareAttestation" : "skipped",
+    "walletKeysAttestation" : "skipped",
+    "cardUniquenessAttestation" : "skipped"
+  },
+  "wallets" : [
+    {
+      "hasBackup" : true,
+      "totalSignedHashes" : 0,
+      "isImported" : false,
+      "derivedKeys" : {
+        "m/84'/0'/0'/0/0" : {
+            "publicKey" : "02F36B0FF248779B7F1F51B42DB4A803781E1870B14FB0673F3D80C4408DE687A5",
+            "childNumber" : 0,
+            "chainCode" : "38244CD0C1CF98F958CF639C9AE4BF0457F6E0F96FFF2C187E66C6006F51CAEE",
+            "depth" : 0,
+            "parentFingerprint" : "00000000"
+          },
+        "m/44'/60'/0'/0/0" : {
+            "depth" : 0,
+            "publicKey" : "02CD3E6119534BB11706D6A22D5BBE39B0B5D913A85F843227728A1B8630BB0791",
+            "chainCode" : "4D3F458EE76985D6A96B56D52E5CB295B8AF9A2D4B6188F6761BDECEA4032F82",
+            "childNumber" : 0,
+            "parentFingerprint" : "00000000"
+          }
+      },
+      "chainCode" : "AFDD6D9AA67FBDCCC95DE65223171E01CBF6590DD06EEF9F69BEDE1CCBEE8A16",
+      "settings" : {
+        "isPermanent" : false
+      },
+      "publicKey" : "02ABDD35AA09B35CA72513F01685453FA1C8CA48F9A5F272BF09AADBF63EF66BCC",
+      "curve" : "secp256k1",
+      "index" : 0
+    },
+    {
+      "curve" : "ed25519",
+      "totalSignedHashes" : 0,
+      "publicKey" : "CEFF0340710855A0F539DCD6ABBD645BA8ACF52E43325B117D286FF8DC036207",
+      "chainCode" : "B2DAF8ED36BA8A11BE60A50F99F6FDF992B435421AC81778188134A16612AF75",
+      "index" : 1,
+      "isImported" : false,
+      "hasBackup" : true,
+      "settings" : {
+        "isPermanent" : false
+      },
+      "derivedKeys" : {
+        "m/1852'/1815'/0'/0/0" : {
+            "publicKey" : "BDB6A30E6498113F0CACEC6775D62E4E00CA409F2D7A523D9B21D92872ED879C",
+            "parentFingerprint" : "00000000",
+            "childNumber" : 0,
+            "chainCode" : "08DB15A23B966C14F482F27DE05AFCBCB3DBB54BA905B8AC243B3C727218CBE9",
+            "depth" : 0
+          },
+        "m/1852'/1815'/0'/2/0" : {
+            "parentFingerprint" : "00000000",
+            "publicKey" : "13A7D4E4C98C284451CBB6CDED67B55C6BA23818029FA2FED070DFC5D701CDFF",
+            "depth" : 0,
+            "chainCode" : "CC1E5567C8B15B9D6BA2814AD00F849FCFADC5F2ACE39042F68BB759EEA92510",
+            "childNumber" : 0
+          }
+      }
+    },
+    {
+      "totalSignedHashes" : 0,
+      "settings" : {
+        "isPermanent" : false
+      },
+      "publicKey" : "A3EAE83EA35645FBAEC5DA893D8253E0E3365FD2DA867DFCF8FC33F3E8B086972D60E61604C3DE31E76582EBB2EBFEFE",
+      "derivedKeys" : {
+
+      },
+      "hasBackup" : true,
+      "curve" : "bls12381_G2_AUG",
+      "isImported" : false,
+      "index" : 2
+    },
+    {
+      "derivedKeys" : {
+      },
+      "settings" : {
+        "isPermanent" : false
+      },
+      "chainCode" : "BD7FED05E1DCA629095B105135434AE78107A99BB564381BB0B0B46D6A0FD047",
+      "hasBackup" : true,
+      "totalSignedHashes" : 0,
+      "index" : 3,
+      "isImported" : false,
+      "publicKey" : "D01FF6E1EA15D202E049E9AB8C8D07C5D37DF52DD09AD4A2691930EA30A5F9FB",
+      "curve" : "bip0340"
+    },
+    {
+      "chainCode" : "43182B4F799FD697DA348EB139909C01852AB7128504735D768563D89DB549A7",
+      "settings" : {
+        "isPermanent" : false
+      },
+      "totalSignedHashes" : 0,
+      "hasBackup" : true,
+      "curve" : "ed25519_slip0010",
+      "publicKey" : "28638A8786D5D9B808DC9E51B86B832724351E715C739E8DA2FA77A67949DD0F",
+      "index" : 4,
+      "isImported" : false,
+      "derivedKeys" : {
+        "m/44'/501'/0'" : {
+            "childNumber" : 0,
+            "chainCode" : "0F3DE3161E2DCDC4053EA9DD369FFBD4CA95F289FD5C5B4BBE1A70537AE7C028",
+            "parentFingerprint" : "00000000",
+            "publicKey" : "1E93D921A2B77932B55666FEB6E93FFD4FAE996A52AA95C1D2680712D70FA9D5",
+            "depth" : 0
+          }
+      }
+    }
+  ],
+  "isAccessCodeSet" : true,
+  "linkedTerminalStatus" : "none",
+  "backupStatus" : {
+    "cardsCount" : 1,
+    "status" : "active"
+  },
+  "issuer" : {
+    "name" : "TANGEM SDK",
+    "publicKey" : "025F16BD1D2EAFE463E62A335A09E6B2BBCBD04452526885CB679FC4D27AF1BD22"
+  },
+  "manufacturer" : {
+    "name" : "TANGEM",
+    "manufactureDate" : "2021-03-15",
+    "signature" : "F3F61FA1864251641964237C039AEC3D12D3F060507F80F33A22C0A9393BE5BE66AEE4273639D661797F1406584F4A01364B8F6D9C5AE600C339D29487C7A3AC"
+  },
+  "firmwareVersion" : {
+    "major" : 6,
+    "patch" : 0,
+    "minor" : 33,
+    "stringValue" : "6.33d SDK",
+    "type" : "d SDK"
+  }
+}

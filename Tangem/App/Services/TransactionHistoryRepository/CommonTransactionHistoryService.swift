@@ -9,7 +9,7 @@
 import Foundation
 import BlockchainSdk
 import Combine
-import class TangemSwapping.ThreadSafeContainer
+import TangemFoundation
 
 class CommonTransactionHistoryService {
     private let tokenItem: TokenItem
@@ -18,9 +18,7 @@ class CommonTransactionHistoryService {
     private let transactionHistoryProvider: TransactionHistoryProvider
 
     private var _state = CurrentValueSubject<TransactionHistoryServiceState, Never>(.initial)
-    private var totalPages = 0
-    private var currentPage = 0
-    private let pageSize: Int = 20
+    private let pageSize: Int = 100
     private var cancellable: AnyCancellable?
     private var storage: ThreadSafeContainer<[TransactionRecord]> = []
 
@@ -50,14 +48,13 @@ extension CommonTransactionHistoryService: TransactionHistoryService {
         return storage.read()
     }
 
-    var canFetchMore: Bool {
-        currentPage < totalPages
+    var canFetchHistory: Bool {
+        transactionHistoryProvider.canFetchHistory
     }
 
-    func reset() {
+    func clearHistory() {
         cancellable = nil
-        currentPage = 0
-        totalPages = 0
+        transactionHistoryProvider.reset()
         cleanStorage()
         AppLog.shared.debug("\(self) was reset")
     }
@@ -78,7 +75,7 @@ private extension CommonTransactionHistoryService {
     func fetch(result: @escaping (Result<Void, Never>) -> Void) {
         cancellable = nil
 
-        guard currentPage == 0 || canFetchMore else {
+        guard canFetchHistory else {
             AppLog.shared.debug("\(self) reached the end of list")
             result(.success(()))
             return
@@ -87,10 +84,15 @@ private extension CommonTransactionHistoryService {
         AppLog.shared.debug("\(self) start loading")
         _state.send(.loading)
 
-        let nextPage = Page(number: currentPage + 1, size: pageSize)
-        let request = TransactionHistory.Request(address: address, page: nextPage, amountType: tokenItem.amountType)
+        let request = TransactionHistory.Request(address: address, amountType: tokenItem.amountType, limit: pageSize)
+
         cancellable = transactionHistoryProvider
             .loadTransactionHistory(request: request)
+            .handleEvents(receiveCancel: {
+                // Resolves conflicting requests for tracking history from different consumers so as not to lose output from the update process
+                AppLog.shared.debug("\(String(describing: self)) canceled")
+                result(.success(()))
+            })
             .sink { [weak self] completion in
                 switch completion {
                 case .failure(let error):
@@ -99,13 +101,11 @@ private extension CommonTransactionHistoryService {
                     result(.success(()))
                 case .finished:
                     self?._state.send(.loaded)
+                    AppLog.shared.debug("\(String(describing: self)) loaded")
+                    result(.success(()))
                 }
             } receiveValue: { [weak self] response in
-                self?.totalPages = response.totalPages
-                self?.currentPage = response.page.number
                 self?.addToStorage(records: response.records)
-                AppLog.shared.debug("\(String(describing: self)) loaded")
-                result(.success(()))
             }
     }
 
@@ -132,8 +132,7 @@ extension CommonTransactionHistoryService: CustomStringConvertible {
                 "name": tokenItem.name,
                 "type": tokenItem.isToken ? "Token" : "Coin",
                 "address": address,
-                "totalPages": totalPages,
-                "currentPage": currentPage,
+                "request": transactionHistoryProvider.description,
             ]
         )
     }

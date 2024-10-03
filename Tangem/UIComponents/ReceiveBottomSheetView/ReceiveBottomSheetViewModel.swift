@@ -13,9 +13,6 @@ import Combine
 import CombineExt
 
 class ReceiveBottomSheetViewModel: ObservableObject, Identifiable {
-    @Published var isUserUnderstandsAddressNetworkRequirements: Bool
-    @Published var showToast: Bool = false
-
     let addressInfos: [ReceiveAddressInfo]
     let networkWarningMessage: String
 
@@ -39,7 +36,7 @@ class ReceiveBottomSheetViewModel: ObservableObject, Identifiable {
 
     init(tokenItem: TokenItem, addressInfos: [ReceiveAddressInfo]) {
         self.tokenItem = tokenItem
-        iconURL = tokenItem.id != nil ? TokenIconURLBuilder().iconURL(id: tokenItem.id!) : nil
+        iconURL = tokenItem.id != nil ? IconURLBuilder().tokenIconURL(id: tokenItem.id!) : nil
         self.addressInfos = addressInfos
 
         networkWarningMessage = Localization.receiveBottomSheetWarningMessage(
@@ -47,8 +44,6 @@ class ReceiveBottomSheetViewModel: ObservableObject, Identifiable {
             tokenItem.currencySymbol,
             tokenItem.networkName
         )
-
-        isUserUnderstandsAddressNetworkRequirements = true
 
         bind()
     }
@@ -58,24 +53,27 @@ class ReceiveBottomSheetViewModel: ObservableObject, Identifiable {
     }
 
     func headerForAddress(with info: ReceiveAddressInfo) -> String {
-        Localization.receiveBottomSheetTitle(
-            addressInfos.count > 1 ? info.type.rawValue.capitalizingFirstLetter() : "",
-            tokenItem.currencySymbol,
-            tokenItem.networkName
-        )
-    }
-
-    func understandNetworkRequirements() {
-        Analytics.log(event: .buttonUnderstand, params: [.token: tokenItem.currencySymbol])
-
-        AppSettings.shared.understandsAddressNetworkRequirements.append(tokenItem.networkName)
-        isUserUnderstandsAddressNetworkRequirements = true
+        let name: String
+        if addressInfos.count > 1 {
+            name = "\(info.localizedName.capitalizingFirstLetter()) \(tokenItem.name)"
+        } else {
+            name = tokenItem.name
+        }
+        return Localization.receiveBottomSheetWarningMessage(name, tokenItem.currencySymbol, tokenItem.networkName)
     }
 
     func copyToClipboard() {
-        Analytics.log(event: .buttonCopyAddress, params: [.token: tokenItem.currencySymbol])
+        Analytics.log(event: .buttonCopyAddress, params: [
+            .token: tokenItem.currencySymbol,
+            .source: Analytics.ParameterValue.receive.rawValue,
+        ])
         UIPasteboard.general.string = addressInfos[currentIndex].address
-        showToast = true
+
+        Toast(view: SuccessToast(text: Localization.walletNotificationAddressCopied))
+            .present(
+                layout: .top(padding: 12),
+                type: .temporary()
+            )
     }
 
     func share() {

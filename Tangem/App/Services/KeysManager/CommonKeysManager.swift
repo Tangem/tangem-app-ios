@@ -40,18 +40,22 @@ extension CommonKeysManager: KeysManager {
             blockcypherTokens: keys.blockcypherTokens,
             infuraProjectId: keys.infuraProjectId,
             nowNodesApiKey: keys.nowNodesApiKey,
-            getBlockApiKey: keys.getBlockApiKey,
+            getBlockCredentials: .init(keys.getBlockAccessTokens),
             kaspaSecondaryApiUrl: keys.kaspaSecondaryApiUrl,
             tronGridApiKey: keys.tronGridApiKey,
+            hederaArkhiaApiKey: keys.hederaArkhiaKey,
+            polygonScanApiKey: keys.polygonScanApiKey,
+            koinosProApiKey: keys.koinosProApiKey,
             tonCenterApiKeys: .init(mainnetApiKey: keys.tonCenterApiKey.mainnet, testnetApiKey: keys.tonCenterApiKey.testnet),
             fireAcademyApiKeys: .init(mainnetApiKey: keys.chiaFireAcademyApiKey, testnetApiKey: keys.chiaFireAcademyApiKey),
             chiaTangemApiKeys: .init(mainnetApiKey: keys.chiaTangemApiKey),
             // TODO: rename to solana
             quickNodeSolanaCredentials: .init(apiKey: keys.quiknodeApiKey, subdomain: keys.quiknodeSubdomain),
             quickNodeBscCredentials: .init(apiKey: keys.bscQuiknodeApiKey, subdomain: keys.bscQuiknodeSubdomain),
-            blockscoutCredentials: .init(login: "", password: ""), // used for saltpay tx history
-            defaultNetworkProviderConfiguration: .init(logger: .verbose, urlSessionConfiguration: .standart),
-            networkProviderConfigurations: [:]
+            defaultNetworkProviderConfiguration: .init(logger: .verbose, urlSessionConfiguration: .standard),
+            networkProviderConfigurations: [:],
+            bittensorDwellirKey: keys.bittensorDwellirKey,
+            bittensorOnfinalityKey: keys.bittensorOnfinalityKey
         )
     }
 
@@ -75,16 +79,20 @@ extension CommonKeysManager: KeysManager {
         keys.infuraProjectId
     }
 
-    var swapReferrerAccount: SwapReferrerAccount? {
-        keys.swapReferrerAccount
+    var expressKeys: ExpressKeys {
+        keys.express
+    }
+
+    var devExpressKeys: ExpressKeys? {
+        keys.devExpress
     }
 
     var walletConnectProjectId: String {
         keys.walletConnectProjectId
     }
 
-    var tangemExpressApiKey: String {
-        keys.tangemExpressApiKey
+    var stakeKitKey: String {
+        keys.stakeKitApiKey
     }
 }
 
@@ -99,6 +107,7 @@ extension CommonKeysManager {
         let infuraProjectId: String
         let nowNodesApiKey: String
         let getBlockApiKey: String
+        let getBlockAccessTokens: [String: [String: String]]
         let kaspaSecondaryApiUrl: String
         let tonCenterApiKey: TonCenterApiKeys
         let chiaFireAcademyApiKey: String
@@ -106,14 +115,20 @@ extension CommonKeysManager {
         let appsFlyer: AppsFlyerConfig
         let amplitudeApiKey: String
         let tronGridApiKey: String
+        let hederaArkhiaKey: String
         let quiknodeApiKey: String
         let quiknodeSubdomain: String
         let bscQuiknodeApiKey: String
         let bscQuiknodeSubdomain: String
+        let polygonScanApiKey: String
+        let koinosProApiKey: String
         let tangemComAuthorization: String?
-        let swapReferrerAccount: SwapReferrerAccount?
         let walletConnectProjectId: String
         let sprinklr: SprinklrConfig
-        let tangemExpressApiKey: String
+        let express: ExpressKeys
+        let devExpress: ExpressKeys?
+        let stakeKitApiKey: String
+        let bittensorDwellirKey: String
+        let bittensorOnfinalityKey: String
     }
 }

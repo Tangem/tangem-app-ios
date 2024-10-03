@@ -27,15 +27,8 @@ enum TwinCardsUtils {
         return pairCidWithoutValidation + "\(validationNumber)"
     }
 
-    static func makeCombinedWalletKey(for card: CardDTO, pairData: TwinData?) -> Data? {
-        guard
-            let walletPubKey = card.wallets.first?.publicKey,
-            let pairWalletPubKey = pairData?.pairPublicKey
-        else {
-            return nil
-        }
-
-        return try? Secp256k1Utils().sum(compressedPubKey1: walletPubKey, compressedPubKey2: pairWalletPubKey)
+    static func makeCombinedWalletKey(for walletPublicKey: Data, pairPublicKey: Data) -> Data? {
+        return try? Secp256k1Utils().sum(compressedPubKey1: walletPublicKey, compressedPubKey2: pairPublicKey)
     }
 
     private static func calculateLuhn(for cid: String) -> Int {

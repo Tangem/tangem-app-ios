@@ -46,7 +46,7 @@ class LegacyAddCustomTokenViewModel: ObservableObject {
 
     private var selectedBlockchainSupportsTokens: Bool {
         let blockchain = try? enteredBlockchain()
-        return blockchain?.canHandleTokens ?? false
+        return blockchain?.canHandleCustomTokens ?? false
     }
 
     private var bag: Set<AnyCancellable> = []
@@ -78,7 +78,7 @@ class LegacyAddCustomTokenViewModel: ObservableObject {
 
         $contractAddress.removeDuplicates()
             .dropFirst()
-            .debounce(for: 0.5, scheduler: RunLoop.main)
+            .debounce(for: 0.5, scheduler: DispatchQueue.main)
             .flatMap { [unowned self] contractAddress -> AnyPublisher<[CoinModel], Never> in
                 isLoading = true
 
@@ -88,7 +88,7 @@ class LegacyAddCustomTokenViewModel: ObservableObject {
 
                 return findToken(contractAddress: contractAddress)
             }
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [unowned self] currencyModels in
                 didFinishTokenSearch(currencyModels)
             }
@@ -99,9 +99,21 @@ class LegacyAddCustomTokenViewModel: ObservableObject {
             $derivationsPicker.map { $0.selection }.removeDuplicates(),
             $customDerivationPath.removeDuplicates()
         )
-        .debounce(for: 0.1, scheduler: RunLoop.main)
+        .debounce(for: 0.1, scheduler: DispatchQueue.main)
         .sink { [unowned self] _ in
             didChangeBlockchain()
+        }
+        .store(in: &bag)
+
+        // It is necessary to ensure that the steps of validating the existence of a token are not lost, since the validation includes a check for these fields (Line - 243)
+        Publishers.CombineLatest3(
+            $name.removeDuplicates(),
+            $symbol.removeDuplicates(),
+            $decimals.removeDuplicates()
+        )
+        .debounce(for: 0.1, scheduler: DispatchQueue.main)
+        .sink { [weak self] _ in
+            self?.validate()
         }
         .store(in: &bag)
     }
@@ -110,31 +122,29 @@ class LegacyAddCustomTokenViewModel: ObservableObject {
         UIApplication.shared.endEditing()
 
         let tokenItem: TokenItem
-        let derivationPath: DerivationPath?
         do {
             tokenItem = try enteredTokenItem()
-            derivationPath = enteredDerivationPath()
 
             try validateExistingCurves(for: tokenItem)
 
-            if case .token(_, let blockchain) = tokenItem,
-               case .solana = blockchain,
+            if case .token(_, let blockchainNetwork) = tokenItem,
+               case .solana = blockchainNetwork.blockchain,
                !settings.longHashesSupported {
-                throw TokenCreationErrors.tokensNotSupported(blockchainDisplayName: blockchain.displayName)
+                throw TokenCreationErrors.tokensNotSupported(blockchainDisplayName: blockchainNetwork.blockchain.displayName)
             }
         } catch {
             self.error = error.alertBinder
             return
         }
 
-        userTokensManager.add(tokenItem, derivationPath: derivationPath) { [weak self] result in
+        userTokensManager.add(tokenItem) { [weak self] result in
             guard let self = self else { return }
 
             switch result {
             case .success:
                 closeModule()
 
-                logSuccess(tokenItem: tokenItem, derivationPath: derivationPath)
+                logSuccess(tokenItem: tokenItem)
             case .failure(let error):
                 if case TangemSdkError.userCancelled = error {
                     return
@@ -146,7 +156,7 @@ class LegacyAddCustomTokenViewModel: ObservableObject {
     }
 
     func onAppear() {
-        Analytics.log(.customTokenScreenOpened)
+        Analytics.log(.manageTokensCustomTokenScreenOpened)
         updateBlockchains(supportedBlockchains)
         updateDerivationPaths()
     }
@@ -221,10 +231,11 @@ class LegacyAddCustomTokenViewModel: ObservableObject {
 
     private func enteredTokenItem() throws -> TokenItem {
         let blockchain = try enteredBlockchain()
+        let derivationPath = enteredDerivationPath()
 
         let missingTokenInformation = contractAddress.isEmpty && name.isEmpty && symbol.isEmpty && decimals.isEmpty
-        if !blockchain.canHandleTokens || missingTokenInformation {
-            return .blockchain(blockchain)
+        if !blockchain.canHandleCustomTokens || missingTokenInformation {
+            return .blockchain(.init(blockchain, derivationPath: derivationPath))
         } else {
             let enteredContractAddress = try enteredContractAddress(in: blockchain)
 
@@ -250,7 +261,7 @@ class LegacyAddCustomTokenViewModel: ObservableObject {
                 id: foundStandardTokenItem?.id
             )
 
-            return .token(token, blockchain)
+            return .token(token, .init(blockchain, derivationPath: derivationPath))
         }
     }
 
@@ -298,20 +309,6 @@ class LegacyAddCustomTokenViewModel: ObservableObject {
         return blockchain
     }
 
-    private func enteredContractAddress(in blockchain: Blockchain) throws -> String {
-        if case .binance = blockchain, !contractAddress.trimmed().isEmpty {
-            return contractAddress // skip validation for binance
-        }
-
-        let addressService = AddressServiceFactory(blockchain: blockchain).makeAddressService()
-
-        guard addressService.validate(contractAddress) else {
-            throw TokenCreationErrors.invalidContractAddress
-        }
-
-        return contractAddress
-    }
-
     private func enteredDerivationPath() -> DerivationPath? {
         let derivationItemID = derivationsPicker.selection
 
@@ -326,19 +323,41 @@ class LegacyAddCustomTokenViewModel: ObservableObject {
         }
     }
 
+    private func enteredContractAddress(in blockchain: Blockchain) throws -> String {
+        let contractAddress = convertContractAddressIfPossible(contractAddress, in: blockchain)
+        let validator = ContractAddressValidatorFactory(blockchain: blockchain).makeValidator()
+
+        guard validator.validate(contractAddress) else {
+            throw TokenCreationErrors.invalidContractAddress
+        }
+
+        return contractAddress
+    }
+
+    private func convertContractAddressIfPossible(_ contractAddress: String, in blockchain: Blockchain?) -> String {
+        guard let blockchain else {
+            return contractAddress
+        }
+
+        let converter = CustomTokenContractAddressConverter(blockchain: blockchain)
+        let enteredSymbol = symbol.isEmpty ? nil : symbol
+        return converter.convert(contractAddress, symbol: enteredSymbol)
+    }
+
     private func checkLocalStorage() throws {
         guard let tokenItem = try? enteredTokenItem() else {
             return
         }
 
-        let derivationPath = enteredDerivationPath()
-
-        if userTokensManager.contains(tokenItem, derivationPath: derivationPath) {
+        if userTokensManager.contains(tokenItem) {
             throw TokenSearchError.alreadyAdded
         }
     }
 
     private func findToken(contractAddress: String) -> AnyPublisher<[CoinModel], Never> {
+        let blockchain = try? enteredBlockchain()
+        let contractAddress = convertContractAddressIfPossible(contractAddress, in: blockchain)
+
         if let currentCurrencyModel = foundStandardToken,
            let token = currentCurrencyModel.items.first?.token,
            token.contractAddress.caseInsensitiveCompare(contractAddress) == .orderedSame {
@@ -374,6 +393,7 @@ class LegacyAddCustomTokenViewModel: ObservableObject {
             decimals = "\(token.decimalCount)"
             symbol = token.symbol
             name = token.name
+            contractAddress = token.contractAddress
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 UIApplication.shared.endEditing()
@@ -410,22 +430,22 @@ class LegacyAddCustomTokenViewModel: ObservableObject {
         }
     }
 
-    private func logSuccess(tokenItem: TokenItem, derivationPath: DerivationPath?) {
+    private func logSuccess(tokenItem: TokenItem) {
         var params: [Analytics.ParameterKey: String] = [
             .token: tokenItem.currencySymbol,
         ]
 
         if let derivationStyle = settings.derivationStyle,
-           let usedDerivationPath = derivationPath ?? tokenItem.blockchain.derivationPath(for: derivationStyle) {
+           let usedDerivationPath = tokenItem.blockchainNetwork.derivationPath ?? tokenItem.blockchain.derivationPath(for: derivationStyle) {
             params[.derivationPath] = usedDerivationPath.rawPath
         }
 
-        if case .token(let token, let blockchain) = tokenItem {
-            params[.networkId] = blockchain.networkId
+        if case .token(let token, let blockchainNetwork) = tokenItem {
+            params[.networkId] = blockchainNetwork.blockchain.networkId
             params[.contractAddress] = token.contractAddress
         }
 
-        Analytics.log(event: .customTokenWasAdded, params: params)
+        Analytics.log(event: .manageTokensCustomTokenWasAdded, params: params)
     }
 }
 

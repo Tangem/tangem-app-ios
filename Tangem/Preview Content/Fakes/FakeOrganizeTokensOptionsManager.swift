@@ -45,7 +45,7 @@ extension FakeOrganizeTokensOptionsManager: OrganizeTokensOptionsEditing {
         _sortingOption.send(sortingOption)
     }
 
-    func save(reorderedWalletModelIds: [WalletModel.ID]) -> AnyPublisher<Void, Never> {
+    func save(reorderedWalletModelIds: [WalletModel.ID], source: UserTokensReorderingSource) -> AnyPublisher<Void, Never> {
         return .just
     }
 }

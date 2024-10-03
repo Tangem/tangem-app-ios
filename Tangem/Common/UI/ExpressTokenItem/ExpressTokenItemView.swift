@@ -75,7 +75,7 @@ struct ExpressTokenItemView_Previews: PreviewProvider {
             tokenIconInfo: TokenIconInfo(
                 name: "",
                 blockchainIconName: "bitcoin",
-                imageURL: TokenIconURLBuilder().iconURL(id: "", size: .large),
+                imageURL: IconURLBuilder().tokenIconURL(id: "", size: .large),
                 isCustom: false,
                 customTokenColor: Color.red
             ),
@@ -90,7 +90,7 @@ struct ExpressTokenItemView_Previews: PreviewProvider {
             tokenIconInfo: TokenIconInfo(
                 name: "",
                 blockchainIconName: "ethereum",
-                imageURL: TokenIconURLBuilder().iconURL(id: "tether", size: .large),
+                imageURL: IconURLBuilder().tokenIconURL(id: "tether", size: .large),
                 isCustom: false,
                 customTokenColor: Color.red
             ),
@@ -105,7 +105,7 @@ struct ExpressTokenItemView_Previews: PreviewProvider {
             tokenIconInfo: TokenIconInfo(
                 name: "",
                 blockchainIconName: "ethereum",
-                imageURL: TokenIconURLBuilder().iconURL(id: "dai", size: .large),
+                imageURL: IconURLBuilder().tokenIconURL(id: "dai", size: .large),
                 isCustom: false,
                 customTokenColor: Color.red
             ),

@@ -12,16 +12,19 @@ struct ProviderRowView: View {
     let viewModel: ProviderRowViewModel
 
     var body: some View {
-        Button(action: viewModel.tapAction) {
+        if let action = viewModel.tapAction {
+            Button(action: action) { content }
+                .disabled(viewModel.isDisabled)
+        } else {
             content
         }
-        .disabled(viewModel.isDisabled)
     }
 
     private var content: some View {
         HStack(spacing: 12) {
-            IconView(url: viewModel.provider.iconURL, size: CGSize(bothDimensions: 36))
+            IconView(url: viewModel.provider.iconURL, size: CGSize(bothDimensions: 36), forceKingfisher: true)
                 .saturation(viewModel.isDisabled ? 0 : 1)
+                .opacity(viewModel.isDisabled ? 0.4 : 1)
 
             VStack(alignment: .leading, spacing: 4) {
                 titleView
@@ -37,19 +40,27 @@ struct ProviderRowView: View {
     }
 
     private var titleView: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 4) {
-            Text(viewModel.provider.name)
-                .style(
-                    Fonts.Bold.subheadline,
-                    color:
-                    viewModel.isDisabled ? Colors.Text.secondary : Colors.Text.primary1
-                )
+        HStack(alignment: .center, spacing: 4) {
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                switch viewModel.providerTitle {
+                case .attributed(let text):
+                    Text(text)
 
-            Text(viewModel.provider.type)
-                .style(Fonts.Bold.caption1, color: Colors.Text.tertiary)
+                case .text(let text):
+                    Text(text)
+                        .style(
+                            Fonts.Bold.footnote,
+                            color: viewModel.isDisabled ? Colors.Text.secondary : Colors.Text.tertiary
+                        )
+                }
+
+                Text(viewModel.provider.type)
+                    .style(Fonts.Bold.footnote, color: Colors.Text.primary1)
+            }
 
             badgeView
         }
+        .lineLimit(1)
     }
 
     private var subtitleView: some View {
@@ -58,11 +69,11 @@ struct ProviderRowView: View {
                 switch subtitle {
                 case .text(let text):
                     Text(text)
-                        .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                        .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
                         .multilineTextAlignment(.leading)
                 case .percent(let text, let signType):
                     Text(text)
-                        .style(Fonts.Regular.footnote, color: signType.textColor)
+                        .style(Fonts.Regular.subheadline, color: signType.textColor)
                         .multilineTextAlignment(.leading)
                 }
             }
@@ -89,7 +100,14 @@ struct ProviderRowView: View {
                 .style(Fonts.Bold.caption2, color: Colors.Icon.accent)
                 .padding(.vertical, 2)
                 .padding(.horizontal, 6)
-                .background(Colors.Icon.accent.opacity(0.3))
+                .background(Colors.Icon.accent.opacity(0.1))
+                .cornerRadiusContinuous(8)
+        case .recommended:
+            Text(Localization.expressProviderRecommended)
+                .style(Fonts.Bold.caption2, color: Colors.Icon.accent)
+                .padding(.vertical, 2)
+                .padding(.horizontal, 6)
+                .background(Colors.Icon.accent.opacity(0.1))
                 .cornerRadiusContinuous(8)
         }
     }
@@ -122,30 +140,32 @@ struct ProviderRowViewModel_Preview: PreviewProvider {
 
     static var views: some View {
         GroupedSection([
-            viewModel(badge: .none, detailsType: .chevron),
-            viewModel(badge: .bestRate, detailsType: .selected),
+            viewModel(titleFormat: .prefixAndName, badge: .none, detailsType: .chevron),
+            viewModel(titleFormat: .prefixAndName, badge: .bestRate, detailsType: .selected),
             viewModel(
+                titleFormat: .name,
                 badge: .permissionNeeded,
                 subtitles: [.percent("-1.2%", signType: .negative)]
             ),
             viewModel(
+                titleFormat: .name,
                 badge: .permissionNeeded,
                 subtitles: [.percent("0.7%", signType: .positive)]
             ),
-            viewModel(badge: .none, isDisabled: true),
-            viewModel(badge: .bestRate, isDisabled: true),
-            viewModel(badge: .permissionNeeded, isDisabled: true),
+            viewModel(titleFormat: .name, badge: .none, isDisabled: true),
+            viewModel(titleFormat: .name, badge: .bestRate, isDisabled: true),
+            viewModel(titleFormat: .name, badge: .permissionNeeded, isDisabled: true),
         ]) {
             ProviderRowView(viewModel: $0)
         }
-        .separatorStyle(.minimum)
         .interItemSpacing(14)
-        .interSectionPadding(12)
+        .innerContentPadding(12)
         .padding()
         .background(Colors.Background.secondary)
     }
 
     static func viewModel(
+        titleFormat: ProviderRowViewModel.TitleFormat,
         badge: ProviderRowViewModel.Badge?,
         isDisabled: Bool = false,
         subtitles: [ProviderRowViewModel.Subtitle] = [],
@@ -153,10 +173,12 @@ struct ProviderRowViewModel_Preview: PreviewProvider {
     ) -> ProviderRowViewModel {
         ProviderRowViewModel(
             provider: .init(
+                id: UUID().uuidString,
                 iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/1inch_512.png")!,
                 name: "1inch",
                 type: "DEX"
             ),
+            titleFormat: titleFormat,
             isDisabled: isDisabled,
             badge: badge,
             subtitles: [.text("1 132,46 MATIC")] + subtitles,

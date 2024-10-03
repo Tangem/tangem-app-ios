@@ -11,37 +11,52 @@ import SwiftUI
 
 struct AppCoordinatorView: CoordinatorView {
     @ObservedObject var coordinator: AppCoordinator
+    @ObservedObject var sensitiveTextVisibilityViewModel = SensitiveTextVisibilityViewModel.shared
+
+    @Environment(\.mainWindowSize) var mainWindowSize: CGSize
+    @Environment(\.overlayContentContainer) private var overlayContentContainer
 
     var body: some View {
         NavigationView {
-            if let welcomeCoordinator = coordinator.welcomeCoordinator {
+            switch coordinator.viewState {
+            case .welcome(let welcomeCoordinator):
                 WelcomeCoordinatorView(coordinator: welcomeCoordinator)
-            } else if let uncompletedBackupCoordinator = coordinator.uncompletedBackupCoordinator {
+            case .uncompleteBackup(let uncompletedBackupCoordinator):
                 UncompletedBackupCoordinatorView(coordinator: uncompletedBackupCoordinator)
-            } else if let authCoordinator = coordinator.authCoordinator {
+            case .auth(let authCoordinator):
                 AuthCoordinatorView(coordinator: authCoordinator)
-                    .if(coordinator.mainBottomSheetCoordinator != nil) { view in
-                        view.animation(nil) // Fixes weird animations on appear when the view has a bottom scrollable sheet
-                    }
+            case .main(let mainCoordinator):
+                MainCoordinatorView(coordinator: mainCoordinator)
+            case .none:
+                EmptyView()
             }
         }
+        .animation(.default, value: coordinator.viewState)
         .navigationViewStyle(.stack)
         .accentColor(Colors.Text.primary1)
-        .modifier(ifLet: coordinator.mainBottomSheetCoordinator) { view, mainBottomSheetCoordinator in
-            // Unfortunately, we can't just apply the `bottomScrollableSheet` modifier here conditionally when
-            // `mainBottomSheetCoordinator.headerViewModel != nil` or `mainBottomSheetCoordinator.contentViewModel != nil`
-            // because this will change the structural identity of `AppCoordinatorView` and therefore all its state.
-            //
-            // Therefore, the `bottomScrollableSheet` view modifier is always applied when the main bottom sheet
-            // coordinator exists, but `header`/`content` views are created only when there is a non-nil
-            // `mainBottomSheetCoordinator.headerViewModel` or `mainBottomSheetCoordinator.contentViewModel`
-            view.bottomScrollableSheet(
-                isHiddenWhenCollapsed: true,
-                allowsHitTesting: coordinator.isMainBottomSheetShown,
-                header: { MainBottomSheetHeaderCoordinatorView(coordinator: mainBottomSheetCoordinator) },
-                content: { MainBottomSheetContentCoordinatorView(coordinator: mainBottomSheetCoordinator) },
-                overlay: { MainBottomSheetOverlayCoordinatorView(coordinator: mainBottomSheetCoordinator) }
+        .overlayContentContainer(item: $coordinator.marketsCoordinator) { coordinator in
+            let viewHierarchySnapshotter = ViewHierarchySnapshottingContainerViewController()
+            viewHierarchySnapshotter.shouldPropagateOverriddenUserInterfaceStyleToChildren = true
+            let adapter = ViewHierarchySnapshottingWeakifyAdapter(adaptee: viewHierarchySnapshotter)
+            let marketsCoordinatorView = MarketsCoordinatorView(coordinator: coordinator)
+                .environment(\.mainWindowSize, mainWindowSize)
+                .environment(\.viewHierarchySnapshotter, adapter)
+
+            return UIAppearanceBoundaryContainerView(
+                boundaryMarker: { viewHierarchySnapshotter },
+                content: { marketsCoordinatorView }
             )
+            // Ensures that this is a full-screen container and keyboard avoidance is disabled to mitigate IOS-7997
+            .ignoresSafeArea(.all, edges: .vertical)
+        }
+        .bottomSheet(
+            item: $sensitiveTextVisibilityViewModel.informationHiddenBalancesViewModel,
+            backgroundColor: Colors.Background.primary
+        ) {
+            InformationHiddenBalancesView(viewModel: $0)
+        }
+        .onChange(of: coordinator.isOverlayContentContainerShown) { isShown in
+            overlayContentContainer.setOverlayHidden(!isShown)
         }
     }
 }

@@ -12,10 +12,7 @@ struct WalletOnboardingView: View {
     @ObservedObject var viewModel: WalletOnboardingViewModel
 
     private let screenSize: CGSize = UIScreen.main.bounds.size
-    private let infoPagerHeight: CGFloat = 146
-    private let progressBarHeight: CGFloat = 5
-    private let progressBarPadding: CGFloat = 10
-    private let disclaimerTopPadding: CGFloat = 8
+    private let infoPagerHeight: CGFloat = 156
 
     var currentStep: WalletOnboardingStep {
         viewModel.currentStep
@@ -41,18 +38,20 @@ struct WalletOnboardingView: View {
     var customContent: some View {
         switch viewModel.currentStep {
         case .saveUserWallet:
-            UserWalletStorageAgreementView(viewModel: viewModel.userWalletStorageAgreementViewModel)
+            UserWalletStorageAgreementView(
+                viewModel: viewModel.userWalletStorageAgreementViewModel,
+                topInset: -viewModel.progressBarPadding
+            )
         case .seedPhraseIntro:
             OnboardingSeedPhraseIntroView(
                 readMoreAction: viewModel.openReadMoreAboutSeedPhraseScreen,
-                generateSeedAction: viewModel.mainButtonAction,
+                generateSeedAction: viewModel.generateSeedPhrase,
                 importWalletAction: viewModel.supplementButtonAction
             )
         case .seedPhraseGeneration:
-            OnboardingSeedPhraseGenerateView(
-                words: viewModel.seedPhrase,
-                continueAction: viewModel.mainButtonAction
-            )
+            if let model = viewModel.generateSeedPhraseModel {
+                OnboardingSeedPhraseGenerateView(viewModel: model)
+            }
         case .seedPhraseImport:
             if let model = viewModel.importSeedPhraseModel {
                 OnboardingSeedPhraseImportView(viewModel: model)
@@ -61,17 +60,20 @@ struct WalletOnboardingView: View {
             if let model = viewModel.validationUserSeedPhraseModel {
                 OnboardingSeedPhraseUserValidationView(viewModel: model)
             }
+        case .addTokens:
+            if let model = viewModel.addTokensViewModel {
+                OnboardingAddTokensView(viewModel: model)
+            }
+        case .pushNotifications:
+            if let pushNotificationsViewModel = viewModel.pushNotificationsViewModel {
+                PushNotificationsPermissionRequestView(
+                    viewModel: pushNotificationsViewModel,
+                    topInset: -viewModel.progressBarPadding,
+                    buttonsAxis: .vertical
+                )
+            }
         default:
             EmptyView()
-        }
-    }
-
-    @ViewBuilder
-    var disclaimerContent: some View {
-        if let disclaimerModel = viewModel.disclaimerModel {
-            DisclaimerView(viewModel: disclaimerModel)
-                .offset(y: progressBarHeight + progressBarPadding + disclaimerTopPadding)
-                .offset(y: viewModel.isNavBarVisible ? viewModel.navbarSize.height : 0)
         }
     }
 
@@ -81,12 +83,6 @@ struct WalletOnboardingView: View {
                 .allowsHitTesting(false)
                 .frame(maxWidth: screenSize.width)
                 .zIndex(110)
-
-            disclaimerContent
-                .layoutPriority(1)
-                .readGeometry(\.size) { size in
-                    viewModel.setupContainer(with: size)
-                }
 
             VStack(spacing: 0) {
                 GeometryReader { geom in
@@ -102,7 +98,10 @@ struct WalletOnboardingView: View {
                         // and cards jumps instead of smooth transition
                         NavigationBar(
                             title: viewModel.navbarTitle,
-                            settings: .init(titleFont: .system(size: 17, weight: .semibold), backgroundColor: .clear),
+                            settings: .init(
+                                title: .init(font: .system(size: 17, weight: .semibold)),
+                                backgroundColor: .clear
+                            ),
                             leftItems: {
                                 BackButton(
                                     height: viewModel.navbarSize.height,
@@ -113,28 +112,28 @@ struct WalletOnboardingView: View {
                                 }
                             },
                             rightItems: {
-                                ChatButton(
+                                SupportButton(
                                     height: viewModel.navbarSize.height,
-                                    isVisible: true,
+                                    isVisible: viewModel.isSupportButtonVisible,
                                     isEnabled: true
                                 ) {
-                                    viewModel.openSupportChat()
+                                    viewModel.openSupport()
                                 }
                             }
                         )
                         .offset(x: 0, y: -geom.size.height / 2 + (isNavbarVisible ? viewModel.navbarSize.height / 2 + 4 : 0))
                         .opacity(isNavbarVisible ? 1.0 : 0.0)
 
-                        ProgressBar(height: progressBarHeight, currentProgress: viewModel.currentProgress)
+                        ProgressBar(height: viewModel.progressBarHeight, currentProgress: viewModel.currentProgress)
                             .opacity(isProgressBarVisible ? 1.0 : 0.0)
                             .frame(width: screenSize.width - 32)
-                            .offset(x: 0, y: -size.height / 2 + viewModel.navbarSize.height + progressBarPadding)
+                            .offset(x: 0, y: -size.height / 2 + viewModel.navbarSize.height + viewModel.progressBarPadding)
 
                         if !viewModel.isCustomContentVisible {
                             AnimatedView(settings: viewModel.$thirdCardSettings) {
                                 OnboardingCardView(
                                     placeholderCardType: secondCardPlaceholder,
-                                    cardImage: viewModel.secondImage ?? viewModel.cardImage,
+                                    cardImage: viewModel.thirdImage,
                                     cardScanned: viewModel.canShowThirdCardImage && (viewModel.backupCardsAddedCount >= 2 || currentStep == .backupIntro) && viewModel.canDisplayCardImage
                                 )
                             }
@@ -142,7 +141,7 @@ struct WalletOnboardingView: View {
                             AnimatedView(settings: viewModel.$supplementCardSettings) {
                                 OnboardingCardView(
                                     placeholderCardType: secondCardPlaceholder,
-                                    cardImage: viewModel.secondImage ?? viewModel.cardImage,
+                                    cardImage: viewModel.secondImage,
                                     cardScanned: (viewModel.backupCardsAddedCount >= 1 || currentStep == .backupIntro) && viewModel.canDisplayCardImage
                                 )
                             }
@@ -151,7 +150,7 @@ struct WalletOnboardingView: View {
                                 ZStack(alignment: .topTrailing) {
                                     OnboardingCardView(
                                         placeholderCardType: .dark,
-                                        cardImage: viewModel.customOnboardingImage ?? viewModel.cardImage,
+                                        cardImage: viewModel.customOnboardingImage ?? viewModel.mainImage,
                                         cardScanned: viewModel.isInitialAnimPlayed
                                     )
                                     Text(Localization.commonOriginCard)
@@ -201,7 +200,7 @@ struct WalletOnboardingView: View {
                         }
                 }
 
-                if viewModel.isButtonsVisible {
+                if !viewModel.isCustomContentVisible {
                     OnboardingTextButtonView(
                         title: viewModel.title,
                         subtitle: viewModel.subtitle,
@@ -214,7 +213,6 @@ struct WalletOnboardingView: View {
                     ) {
                         viewModel.closeOnboarding()
                     }
-                    .padding(.horizontal, 40)
                     .padding(.top, 8)
                 }
             }

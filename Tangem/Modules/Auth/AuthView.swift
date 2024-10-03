@@ -19,13 +19,14 @@ struct AuthView: View {
         unlockView
             .alert(item: $viewModel.error, content: { $0.alert })
             .onAppear(perform: viewModel.onAppear)
-            .onDidAppear(viewModel.onDidAppear)
+            .onDidAppear(perform: viewModel.onDidAppear)
             .onDisappear(perform: viewModel.onDisappear)
             .background(
                 ScanTroubleshootingView(
                     isPresented: $viewModel.showTroubleshootingView,
                     tryAgainAction: viewModel.tryAgain,
-                    requestSupportAction: viewModel.requestSupport
+                    requestSupportAction: viewModel.requestSupport,
+                    openScanCardManualAction: viewModel.openScanCardManual
                 )
             )
             .background(Colors.Background.primary.edgesIgnoringSafeArea(.all))
@@ -45,6 +46,7 @@ struct AuthView: View {
 
             Text(Localization.welcomeUnlockTitle)
                 .style(Fonts.Bold.title1, color: Colors.Text.primary1)
+                .multilineTextAlignment(.center)
                 .padding(.bottom, 14)
 
             Text(Localization.welcomeUnlockDescription(BiometricAuthorizationUtils.biometryType.name))
@@ -69,7 +71,8 @@ struct AuthView: View {
                 action: viewModel.unlockWithCard
             )
         }
-        .padding()
+        .padding([.top, .horizontal])
+        .padding(.bottom, 6)
     }
 }
 

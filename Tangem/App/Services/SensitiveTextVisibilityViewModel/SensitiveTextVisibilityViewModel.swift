@@ -89,6 +89,7 @@ private extension SensitiveTextVisibilityViewModel {
         NotificationCenter.default
             .publisher(for: UIApplication.didEnterBackgroundNotification)
             .sink(receiveValue: { [weak self] _ in
+                self?.previousIsFaceDown = false // IOS-5520: avoid toggle upon device unlock
                 self?.endUpdates()
             })
             .store(in: &bag)
@@ -177,6 +178,7 @@ private extension SensitiveTextVisibilityViewModel {
 extension SensitiveTextVisibilityViewModel: InformationHiddenBalancesRoutable {
     func hiddenBalancesSheetDidRequestClose() {
         informationHiddenBalancesViewModel = nil
+        presentToast()
     }
 
     func hiddenBalancesSheetDidRequestDoNotShowAgain() {

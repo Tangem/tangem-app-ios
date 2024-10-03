@@ -79,7 +79,7 @@ final class PromotionViewModel: ObservableObject {
 
     // MARK: - Dependencies
 
-    private unowned let coordinator: PromotionRoutable
+    private weak var coordinator: PromotionRoutable?
 
     init(options: PromotionCoordinator.Options, coordinator: PromotionRoutable) {
         self.options = options
@@ -105,7 +105,7 @@ final class PromotionViewModel: ObservableObject {
 
     func handleReadyForAward(url: String) {
         promotionService.didBecomeReadyForAward()
-        coordinator.closeModule()
+        coordinator?.closeModule()
     }
 
     func handleAnalyticsEvent(url: String) {
@@ -126,6 +126,6 @@ final class PromotionViewModel: ObservableObject {
     }
 
     func close() {
-        coordinator.closeModule()
+        coordinator?.closeModule()
     }
 }

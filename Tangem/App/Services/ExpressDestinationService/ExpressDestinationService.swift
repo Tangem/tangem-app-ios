@@ -9,5 +9,10 @@
 import Foundation
 
 protocol ExpressDestinationService {
-    func getDestination(source: WalletModel) -> WalletModel?
+    func canBeSwapped(wallet: WalletModel) async -> Bool
+    func getDestination(source: WalletModel) async throws -> WalletModel
+}
+
+enum ExpressDestinationServiceError: Error {
+    case destinationNotFound
 }

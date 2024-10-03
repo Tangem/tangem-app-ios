@@ -12,47 +12,50 @@ import BlockchainSdk
 struct CoinsResponseMapper {
     let supportedBlockchains: Set<Blockchain>
 
+    private let tokenItemMapper: TokenItemMapper
+
     init(supportedBlockchains: Set<Blockchain>) {
         self.supportedBlockchains = supportedBlockchains
+        tokenItemMapper = TokenItemMapper(supportedBlockchains: supportedBlockchains)
     }
 
     func mapToCoinModels(_ response: CoinsList.Response) -> [CoinModel] {
-        response.coins.map { coin in
+        let l2Blockchains = SupportedBlockchains.l2Blockchains
+
+        return response.coins.compactMap { coin in
             let id = coin.id.trimmed()
+
+            // ignore l2 coin
+            if l2Blockchains.contains(where: { $0.coinId == id }) {
+                return nil
+            }
+
             let name = coin.name.trimmed()
             let symbol = coin.symbol.uppercased().trimmed()
 
-            let items: [CoinModel.Item] = coin.networks.compactMap { network in
-                guard let item = mapToTokenItem(id: id, name: name, symbol: symbol, network: network) else {
+            var items: [CoinModel.Item] = coin.networks.compactMap { network in
+                guard let item = tokenItemMapper.mapToTokenItem(id: id, name: name, symbol: symbol, network: network) else {
                     return nil
                 }
 
-                return CoinModel.Item(id: id, tokenItem: item, exchangeable: network.exchangeable)
+                return CoinModel.Item(id: id, tokenItem: item)
+            }
+
+            // add l2 networks
+            if id == Blockchain.ethereum(testnet: false).coinId {
+                let l2Items = l2Blockchains.map {
+                    let tokenItm = TokenItem.blockchain(.init($0, derivationPath: nil))
+                    return CoinModel.Item(id: id, tokenItem: tokenItm)
+                }
+
+                items.append(contentsOf: l2Items)
+            }
+
+            if items.isEmpty {
+                return nil
             }
 
             return CoinModel(id: id, name: name, symbol: symbol, items: items)
         }
-    }
-
-    private func mapToTokenItem(id: String, name: String, symbol: String, network: CoinsList.Network) -> TokenItem? {
-        // We should find and use a exactly same blockchain that in the supportedBlockchains set
-        guard let blockchain = supportedBlockchains[network.networkId] else {
-            return nil
-        }
-
-        guard let contractAddress = network.contractAddress,
-              let decimalCount = network.decimalCount else {
-            return .blockchain(blockchain)
-        }
-
-        let token = Token(
-            name: name,
-            symbol: symbol,
-            contractAddress: contractAddress.trimmed(),
-            decimalCount: decimalCount,
-            id: id
-        )
-
-        return .token(token, blockchain)
     }
 }

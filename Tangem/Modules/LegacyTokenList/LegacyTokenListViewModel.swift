@@ -17,35 +17,15 @@ class LegacyTokenListViewModel: ObservableObject {
     // I can't use @Published here, because of swiftui redraw perfomance drop
     var enteredSearchText = CurrentValueSubject<String, Never>("")
 
-    @Published var coinViewModels: [LegacyCoinViewModel] = []
+    @Published var coinViewModels: [ManageTokensCoinViewModel] = []
 
     @Published var isSaving: Bool = false
-    @Published var isLoading: Bool = true
     @Published var alert: AlertBinder?
     @Published var pendingAdd: [TokenItem] = []
     @Published var pendingRemove: [TokenItem] = []
-    @Published var showToast: Bool = false
-
-    var titleKey: String {
-        switch mode {
-        case .add:
-            return Localization.addTokensTitle
-        case .show:
-            return Localization.commonSearchTokens
-        }
-    }
-
-    var isReadonlyMode: Bool {
-        switch mode {
-        case .add:
-            return false
-        case .show:
-            return true
-        }
-    }
 
     var shouldShowAlert: Bool {
-        mode.settings?.shouldShowLegacyDerivationAlert ?? false
+        settings.shouldShowLegacyDerivationAlert
     }
 
     var isSaveDisabled: Bool {
@@ -57,29 +37,25 @@ class LegacyTokenListViewModel: ObservableObject {
     }
 
     private lazy var loader = setupListDataLoader()
-    private let mode: Mode
+    private let settings: LegacyManageTokensSettings
+    private let userTokensManager: UserTokensManager
     private var bag = Set<AnyCancellable>()
     private unowned let coordinator: LegacyTokenListRoutable
 
-    init(mode: Mode, coordinator: LegacyTokenListRoutable) {
-        self.mode = mode
+    init(settings: LegacyManageTokensSettings, userTokensManager: UserTokensManager, coordinator: LegacyTokenListRoutable) {
+        self.settings = settings
+        self.userTokensManager = userTokensManager
         self.coordinator = coordinator
 
         bind()
     }
 
     func saveChanges() {
-        guard let userTokensManager = mode.userTokensManager else {
-            closeModule()
-            return
-        }
-
         isSaving = true
 
         userTokensManager.update(
             itemsToRemove: pendingRemove,
-            itemsToAdd: pendingAdd,
-            derivationPath: nil
+            itemsToAdd: pendingAdd
         ) { [weak self] result in
             DispatchQueue.main.async {
                 self?.isSaving = false
@@ -104,10 +80,7 @@ class LegacyTokenListViewModel: ObservableObject {
     }
 
     func onAppear() {
-        if !isReadonlyMode {
-            Analytics.log(.manageTokensScreenOpened)
-        }
-
+        Analytics.log(.manageTokensScreenOpened)
         loader.reset(enteredSearchText.value)
     }
 
@@ -132,10 +105,8 @@ extension LegacyTokenListViewModel {
     }
 
     func openAddCustom() {
-        if let settings = mode.settings, let userTokensManager = mode.userTokensManager {
-            Analytics.log(.manageTokensButtonCustomToken)
-            coordinator.openAddCustom(settings: settings, userTokensManager: userTokensManager)
-        }
+        Analytics.log(.manageTokensButtonCustomToken)
+        coordinator.openAddCustom(settings: settings, userTokensManager: userTokensManager)
     }
 }
 
@@ -157,21 +128,12 @@ private extension LegacyTokenListViewModel {
             .store(in: &bag)
     }
 
-    func showAddButton(_ tokenItem: TokenItem) -> Bool {
-        switch mode {
-        case .add:
-            return true
-        case .show:
-            return false
-        }
-    }
-
     func setupListDataLoader() -> ListDataLoader {
-        let supportedBlockchains = mode.settings?.supportedBlockchains ?? SupportedBlockchains.all
+        let supportedBlockchains = settings.supportedBlockchains
         let loader = ListDataLoader(supportedBlockchains: supportedBlockchains)
 
         loader.$items
-            .map { [weak self] items -> [LegacyCoinViewModel] in
+            .map { [weak self] items -> [ManageTokensCoinViewModel] in
                 items.compactMap { self?.mapToCoinViewModel(coinModel: $0) }
             }
             .receive(on: DispatchQueue.main)
@@ -182,19 +144,11 @@ private extension LegacyTokenListViewModel {
     }
 
     func isAdded(_ tokenItem: TokenItem) -> Bool {
-        guard let userTokensManager = mode.userTokensManager else {
-            return false
-        }
-
-        return userTokensManager.contains(tokenItem, derivationPath: nil)
+        return userTokensManager.contains(tokenItem)
     }
 
     func canRemove(_ tokenItem: TokenItem) -> Bool {
-        guard let userTokensManager = mode.userTokensManager else {
-            return false
-        }
-
-        return userTokensManager.canRemove(tokenItem, derivationPath: nil)
+        return userTokensManager.canRemove(tokenItem)
     }
 
     func isSelected(_ tokenItem: TokenItem) -> Bool {
@@ -210,31 +164,27 @@ private extension LegacyTokenListViewModel {
     }
 
     func onSelect(_ selected: Bool, _ tokenItem: TokenItem) {
-        guard let settings = mode.settings else {
-            return
-        }
+        if selected {
+            if tokenItem.hasLongHashes,
+               !settings.longHashesSupported {
+                displayAlertAndUpdateSelection(
+                    for: tokenItem,
+                    title: Localization.commonAttention,
+                    message: Localization.alertManageTokensUnsupportedMessage(tokenItem.blockchain.displayName)
+                )
 
-        if selected,
-           case .token(_, let blockchain) = tokenItem,
-           case .solana = blockchain,
-           !settings.longHashesSupported {
-            displayAlertAndUpdateSelection(
-                for: tokenItem,
-                title: Localization.commonAttention,
-                message: Localization.alertManageTokensUnsupportedMessage(blockchain.displayName)
-            )
+                return
+            }
 
-            return
-        }
+            if !settings.existingCurves.contains(tokenItem.blockchain.curve) {
+                displayAlertAndUpdateSelection(
+                    for: tokenItem,
+                    title: Localization.commonAttention,
+                    message: Localization.alertManageTokensUnsupportedCurveMessage(tokenItem.blockchain.displayName)
+                )
 
-        if selected, !settings.existingCurves.contains(tokenItem.blockchain.curve) {
-            displayAlertAndUpdateSelection(
-                for: tokenItem,
-                title: Localization.commonAttention,
-                message: Localization.alertManageTokensUnsupportedCurveMessage(tokenItem.blockchain.displayName)
-            )
-
-            return
+                return
+            }
         }
 
         sendAnalyticsOnChangeTokenState(tokenIsSelected: selected, tokenItem: tokenItem)
@@ -277,33 +227,35 @@ private extension LegacyTokenListViewModel {
     }
 
     func bindCopy() -> Binding<Bool> {
-        let binding = Binding<Bool> { [weak self] in
-            self?.showToast ?? false
-        } set: { [weak self] isSelected in
-            self?.showToast = isSelected
+        let binding = Binding<Bool> {
+            false
+        } set: { _ in
+            Toast(view: SuccessToast(text: Localization.contractAddressCopiedMessage))
+                .present(
+                    layout: .top(padding: 12),
+                    type: .temporary()
+                )
         }
 
         return binding
     }
 
-    func mapToCoinViewModel(coinModel: CoinModel) -> LegacyCoinViewModel {
+    func mapToCoinViewModel(coinModel: CoinModel) -> ManageTokensCoinViewModel {
         let currencyItems = coinModel.items.enumerated().map { index, item in
-            LegacyCoinItemViewModel(
+            ManageTokensCoinItemViewModel(
                 tokenItem: item.tokenItem,
-                isReadonly: isReadonlyMode,
+                isReadonly: false,
                 isSelected: bindSelection(item.tokenItem),
                 isCopied: bindCopy(),
                 position: .init(with: index, total: coinModel.items.count)
             )
         }
 
-        return LegacyCoinViewModel(with: coinModel, items: currencyItems)
+        return ManageTokensCoinViewModel(with: coinModel, items: currencyItems)
     }
 
     func showWarningDeleteAlertIfNeeded(isSelected: Bool, tokenItem: TokenItem) {
-        guard !isSelected,
-              !pendingAdd.contains(tokenItem),
-              isTokenAvailable(tokenItem) else {
+        guard !isSelected, userTokensManager.contains(tokenItem) else {
             onSelect(isSelected, tokenItem)
             return
         }
@@ -331,6 +283,7 @@ private extension LegacyTokenListViewModel {
             let title = Localization.tokenDetailsUnableHideAlertTitle(tokenItem.blockchain.currencySymbol)
 
             let message = Localization.tokenDetailsUnableHideAlertMessage(
+                tokenItem.name,
                 tokenItem.blockchain.currencySymbol,
                 tokenItem.blockchain.displayName
             )
@@ -343,24 +296,6 @@ private extension LegacyTokenListViewModel {
                 })
             ))
         }
-    }
-
-    func isTokenAvailable(_ tokenItem: TokenItem) -> Bool {
-        guard let settings = mode.settings else {
-            return false
-        }
-
-        if case .token(_, let blockchain) = tokenItem,
-           case .solana = blockchain,
-           !settings.longHashesSupported {
-            return false
-        }
-
-        if !settings.existingCurves.contains(tokenItem.blockchain.curve) {
-            return false
-        }
-
-        return true
     }
 
     func sendAnalyticsOnChangeTokenState(tokenIsSelected: Bool, tokenItem: TokenItem) {
@@ -382,34 +317,5 @@ private extension LegacyTokenListViewModel {
             message: Text(message),
             dismissButton: okButton
         ))
-    }
-}
-
-// TODO: refactor, split into separate viewModels
-extension LegacyTokenListViewModel {
-    enum Mode {
-        case add(
-            settings: LegacyManageTokensSettings,
-            userTokensManager: UserTokensManager
-        )
-        case show
-
-        fileprivate var settings: LegacyManageTokensSettings? {
-            switch self {
-            case .add(let settings, _):
-                return settings
-            case .show:
-                return nil
-            }
-        }
-
-        fileprivate var userTokensManager: UserTokensManager? {
-            switch self {
-            case .add(_, let userTokensManager):
-                return userTokensManager
-            case .show:
-                return nil
-            }
-        }
     }
 }

@@ -29,26 +29,26 @@ struct ExpressCoordinatorView: CoordinatorView {
     @ViewBuilder
     private var sheets: some View {
         NavHolder()
-            .sheet(item: $coordinator.expressTokensListViewModel) {
+            .iOS16UIKitSheet(item: $coordinator.expressTokensListViewModel) {
                 ExpressTokensListView(viewModel: $0)
             }
             .bottomSheet(
-                item: $coordinator.swappingApproveViewModel,
-                settings: .init(backgroundColor: Colors.Background.tertiary)
+                item: $coordinator.expressApproveViewModel,
+                backgroundColor: Colors.Background.tertiary
             ) {
-                SwappingApproveView(viewModel: $0)
+                ExpressApproveView(viewModel: $0)
             }
             .bottomSheet(
                 item: $coordinator.expressFeeSelectorViewModel,
-                settings: .init(backgroundColor: Colors.Background.tertiary)
+                backgroundColor: Colors.Background.tertiary
             ) {
-                ExpressFeeBottomSheetView(viewModel: $0)
+                ExpressFeeSelectorView(viewModel: $0)
             }
             .bottomSheet(
-                item: $coordinator.expressProvidersBottomSheetViewModel,
-                settings: .init(backgroundColor: Colors.Background.tertiary)
+                item: $coordinator.expressProvidersSelectorViewModel,
+                backgroundColor: Colors.Background.tertiary
             ) {
-                ExpressProvidersBottomSheetView(viewModel: $0)
+                ExpressProvidersSelectorView(viewModel: $0)
             }
 
         NavHolder()

@@ -10,5 +10,5 @@ import Foundation
 
 enum AnalyticsContextScope {
     case common
-    case userWallet
+    case userWallet(UserWalletId)
 }

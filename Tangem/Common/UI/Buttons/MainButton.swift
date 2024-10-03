@@ -70,32 +70,34 @@ struct MainButton: View {
 
     @ViewBuilder
     private var content: some View {
-        if isLoading {
-            ProgressView()
-                .progressViewStyle(CircularProgressViewStyle(tint: style.loaderColor()))
-        } else {
-            VStack(spacing: 0) {
-                switch icon {
-                case .none:
+        VStack(spacing: 0) {
+            switch icon {
+            case .none:
+                titleView
+
+            case .leading(let icon):
+                HStack(alignment: .center, spacing: 6) {
+                    iconView(icon: icon)
+
+                    titleView
+                }
+            case .trailing(let icon):
+                HStack(alignment: .center, spacing: 6) {
                     titleView
 
-                case .leading(let icon):
-                    HStack(alignment: .center, spacing: 6) {
-                        iconView(icon: icon)
-
-                        titleView
-                    }
-                case .trailing(let icon):
-                    HStack(alignment: .center, spacing: 6) {
-                        titleView
-
-                        iconView(icon: icon)
-                    }
+                    iconView(icon: icon)
                 }
-
-                subtitleView
             }
-            .padding(.horizontal, 16)
+
+            subtitleView
+        }
+        .padding(.horizontal, 16)
+        .hidden(isLoading)
+        .overlay {
+            if isLoading {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: style.loaderColor()))
+            }
         }
     }
 
@@ -129,10 +131,8 @@ struct MainButton: View {
 
     @ViewBuilder
     private var border: some View {
-        if let borderColor = style.border(isDisabled: isDisabled) {
-            RoundedRectangle(cornerRadius: style.cornerRadius(for: size), style: .continuous)
-                .stroke(borderColor)
-        }
+        RoundedRectangle(cornerRadius: style.cornerRadius(for: size), style: .continuous)
+            .stroke(style.border(isDisabled: isDisabled) ?? Color.clear)
     }
 }
 

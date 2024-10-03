@@ -14,6 +14,7 @@ import BlockchainSdk
 class TotalBalanceProvider {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
 
+    private let userWalletId: UserWalletId
     private let walletModelsManager: WalletModelsManager
     private let derivationManager: DerivationManager?
 
@@ -23,9 +24,11 @@ class TotalBalanceProvider {
     private var updateSubscription: AnyCancellable?
 
     init(
+        userWalletId: UserWalletId,
         walletModelsManager: WalletModelsManager,
         derivationManager: DerivationManager?
     ) {
+        self.userWalletId = userWalletId
         self.walletModelsManager = walletModelsManager
         self.derivationManager = derivationManager
 
@@ -36,18 +39,8 @@ class TotalBalanceProvider {
 // MARK: - TotalBalanceProviding protocol conformance
 
 extension TotalBalanceProvider: TotalBalanceProviding {
-    func totalBalancePublisher() -> AnyPublisher<LoadingValue<TotalBalance>, Never> {
+    var totalBalancePublisher: AnyPublisher<LoadingValue<TotalBalance>, Never> {
         totalBalanceSubject.eraseToAnyPublisher()
-    }
-}
-
-// MARK: - Auxiliary types
-
-extension TotalBalanceProvider {
-    struct TotalBalance {
-        let balance: Decimal?
-        let currencyCode: String
-        let hasError: Bool
     }
 }
 
@@ -87,7 +80,7 @@ private extension TotalBalanceProvider {
                 }
 
                 balanceProvider.updateTotalBalance(
-                    withСurrencyCode: currencyCode,
+                    withCurrencyCode: currencyCode,
                     walletModels: walletModels,
                     hasEntriesWithoutDerivation: hasEntriesWithoutDerivation
                 )
@@ -109,7 +102,7 @@ private extension TotalBalanceProvider {
             .sink { balanceProvider, input in
                 let (walletModels, hasEntriesWithoutDerivation) = input
                 balanceProvider.updateTotalBalance(
-                    withСurrencyCode: AppSettings.shared.selectedCurrencyCode,
+                    withCurrencyCode: AppSettings.shared.selectedCurrencyCode,
                     walletModels: walletModels,
                     hasEntriesWithoutDerivation: hasEntriesWithoutDerivation
                 )
@@ -117,12 +110,12 @@ private extension TotalBalanceProvider {
     }
 
     func updateTotalBalance(
-        withСurrencyCode currencyCode: String,
+        withCurrencyCode currencyCode: String,
         walletModels: [WalletModel],
         hasEntriesWithoutDerivation: Bool
     ) {
         if hasEntriesWithoutDerivation {
-            totalBalanceSubject.send(.loaded(.init(balance: nil, currencyCode: currencyCode, hasError: false)))
+            totalBalanceSubject.send(.loaded(.init(balance: nil, currencyCode: currencyCode, hasError: false, allTokensBalancesIncluded: false)))
             return
         }
 
@@ -142,19 +135,24 @@ private extension TotalBalanceProvider {
         var hasError = false
         var balance: Decimal?
         var hasCryptoError = false
+        var allTokensBalancesIncluded = true
 
         for token in walletModels {
             if case .failed = token.state {
                 hasCryptoError = true
             }
 
-            if !token.state.isSuccesfullyLoaded {
+            if !token.state.isSuccessfullyLoaded {
                 balance = nil
                 break
             }
 
             let currentValue = balance ?? 0
-            balance = currentValue + (token.fiatValue ?? 0)
+            let allBalance = token.totalBalance
+            balance = currentValue + (allBalance.fiat ?? 0)
+            if allBalance.fiat == nil, !token.isCustom {
+                allTokensBalancesIncluded = false
+            }
 
             if token.rateFormatted.isEmpty {
                 // Just show warning for custom tokens
@@ -169,7 +167,7 @@ private extension TotalBalanceProvider {
 
         // It is also empty when derivation is missing
         if let balance, !hasEntriesWithoutDerivation {
-            Analytics.logTopUpIfNeeded(balance: balance)
+            Analytics.logTopUpIfNeeded(balance: balance, for: userWalletId)
         }
 
         Analytics.log(
@@ -180,10 +178,40 @@ private extension TotalBalanceProvider {
                     hasError: hasError,
                     balance: balance
                 ),
-            ]
+            ],
+            limit: .userWalletSession(userWalletId: userWalletId)
         )
 
-        return TotalBalance(balance: balance, currencyCode: currencyCode, hasError: hasError)
+        let mainCoinModels = walletModels.filter { $0.isMainToken }
+        let trackedModels = mainCoinModels.filter {
+            switch $0.blockchainNetwork.blockchain {
+            case .polkadot, .kusama, .azero:
+                return true
+            default:
+                return false
+            }
+        }
+
+        for trackedModel in trackedModels {
+            let balanceValue = trackedModel.balanceValue ?? 0
+
+            Analytics.log(
+                event:
+                .tokenBalanceLoaded,
+                params: [
+                    .token: trackedModel.blockchainNetwork.blockchain.currencySymbol,
+                    .state: balanceValue > 0 ? Analytics.ParameterValue.full.rawValue : Analytics.ParameterValue.empty.rawValue,
+                ],
+                limit: .userWalletSession(userWalletId: userWalletId, extraEventId: trackedModel.blockchainNetwork.blockchain.currencySymbol)
+            )
+        }
+
+        return TotalBalance(
+            balance: balance,
+            currencyCode: currencyCode,
+            hasError: hasError,
+            allTokensBalancesIncluded: allTokensBalancesIncluded
+        )
     }
 
     private func mapToBalanceParameterValue(

@@ -18,12 +18,28 @@ extension Publisher where Failure == MoyaError {
             }
 
             let decoder = JSONDecoder()
-            do {
-                let base = try decoder.decode(TangemBaseAPIError.self, from: body)
-                return base.error
-            } catch {
-                return TangemAPIError(code: .decode)
+
+            if let error = try? mapBaseAPIError(from: body, using: decoder) {
+                return error
             }
+
+            if let error = try? mapInputAPIError(from: body, using: decoder) {
+                return error
+            }
+
+            return TangemAPIError(code: .decode)
         }
+    }
+
+    private func mapBaseAPIError(from body: Data, using decoder: JSONDecoder) throws -> TangemAPIError {
+        return try decoder
+            .decode(TangemBaseAPIError.self, from: body)
+            .error
+    }
+
+    private func mapInputAPIError(from body: Data, using decoder: JSONDecoder) throws -> TangemAPIError {
+        let error = try decoder.decode(TangemInputAPIError.self, from: body)
+
+        return TangemAPIError(code: error.statusCode, message: error.message.first ?? error.error)
     }
 }

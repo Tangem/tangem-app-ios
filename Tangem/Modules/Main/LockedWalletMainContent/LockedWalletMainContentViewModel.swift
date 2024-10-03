@@ -15,22 +15,25 @@ protocol MainLockedUserWalletDelegate: AnyObject {
 class LockedWalletMainContentViewModel: ObservableObject {
     lazy var lockedNotificationInput: NotificationViewInput = {
         let factory = NotificationsFactory()
+        let event: WarningEvent = .walletLocked
         return .init(
-            style: .tappable(action: { [weak self] _ in
+            style: .tappable { [weak self] _ in
                 self?.onLockedWalletNotificationTap()
-            }),
-            settings: factory.lockedWalletNotificationSettings()
+            },
+            severity: event.severity,
+            settings: .init(event: event, dismissAction: nil)
         )
     }()
 
-    lazy var singleWalletButtonsInfo: [ButtonWithIconInfo] = TokenActionListBuilder()
+    lazy var singleWalletButtonsInfo: [FixedSizeButtonWithIconInfo] = TokenActionListBuilder()
         .buildActionsForLockedSingleWallet()
         .map {
-            ButtonWithIconInfo(
+            FixedSizeButtonWithIconInfo(
                 title: $0.title,
                 icon: $0.icon,
-                action: {},
-                disabled: true
+                disabled: true,
+                style: .disabled,
+                action: {}
             )
         }
 
@@ -44,12 +47,16 @@ class LockedWalletMainContentViewModel: ObservableObject {
         )
     }
 
+    private(set) lazy var bottomSheetFooterViewModel: MainBottomSheetFooterViewModel? = FeatureProvider.isAvailable(.markets)
+        ? MainBottomSheetFooterViewModel()
+        : nil
+
     let isMultiWallet: Bool
 
     private let userWalletModel: UserWalletModel
     private let contextData: AnalyticsContextData?
 
-    private var canManageTokens: Bool { userWalletModel.isMultiWallet }
+    private var canManageTokens: Bool { userWalletModel.config.hasFeature(.multiCurrency) }
     private weak var lockedUserWalletDelegate: MainLockedUserWalletDelegate?
 
     init(

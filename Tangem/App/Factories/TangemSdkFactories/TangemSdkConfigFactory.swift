@@ -19,6 +19,8 @@ struct TangemSdkConfigFactory {
             "0030",
             "0031",
             "0035",
+            "DA88", // Dau cards
+            "AF56", // Clique
         ])
 
         config.filter.issuerFilter = .deny(["TTM BANK"])

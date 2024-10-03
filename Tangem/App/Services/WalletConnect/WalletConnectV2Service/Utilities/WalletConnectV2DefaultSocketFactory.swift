@@ -9,9 +9,16 @@
 import Foundation
 import WalletConnectSwiftV2
 
-struct WalletConnectV2DefaultSocketFactory: WebSocketFactory {
+class WalletConnectV2DefaultSocketFactory: WebSocketFactory {
+    /// `create(with url: URL)` is called from internal entities of WalletConnectSwiftV2 lib
+    /// but we also need to have access to `WebSocket` to be able to get current connection status
+    /// otherwise continuation issues may occur during new session connection
+    private(set) var lastCreatedSocket: WebSocket?
+
     func create(with url: URL) -> WebSocketConnecting {
-        WebSocket(url: url)
+        let socket = WebSocket(url: url)
+        lastCreatedSocket = socket
+        return socket
     }
 }
 

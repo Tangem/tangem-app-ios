@@ -12,6 +12,7 @@ typealias NotificationViewId = Int
 
 struct NotificationViewInput: Identifiable, Equatable {
     let style: NotificationView.Style
+    let severity: NotificationView.Severity
     let settings: NotificationView.Settings
 
     var id: NotificationViewId { settings.id }

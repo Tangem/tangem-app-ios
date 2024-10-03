@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import AlertToast
 
 struct MainView: View {
     @ObservedObject var viewModel: MainViewModel
@@ -21,24 +20,22 @@ struct MainView: View {
                 info.header
                     .contextMenu {
                         if !info.isLockedWallet {
-                            Button(action: viewModel.didTapEditWallet, label: editButtonLabel)
-
-                            if #available(iOS 15, *) {
-                                Button(role: .destructive, action: viewModel.didTapDeleteWallet, label: deleteButtonLabel)
-                            } else {
-                                Button(action: viewModel.didTapDeleteWallet, label: deleteButtonLabel)
+                            if AppSettings.shared.saveUserWallets {
+                                Button(
+                                    action: weakify(viewModel, forFunction: MainViewModel.didTapEditWallet),
+                                    label: editButtonLabel
+                                )
                             }
+
+                            Button(role: .destructive, action: weakify(viewModel, forFunction: MainViewModel.didTapDeleteWallet), label: deleteButtonLabel)
                         }
                     }
             },
             contentFactory: { info in
                 info.body
             },
-            bottomOverlayFactory: { info, didScrollToBottom in
-                info.makeBottomOverlay(
-                    isMainBottomSheetEnabled: viewModel.isMainBottomSheetEnabled,
-                    didScrollToBottom: didScrollToBottom
-                )
+            bottomOverlayFactory: { info, overlayParams in
+                info.makeBottomOverlay(overlayParams)
             },
             onPullToRefresh: viewModel.onPullToRefresh(completionHandler:)
         )
@@ -48,6 +45,7 @@ struct MainView: View {
         .onPageChange(viewModel.onPageChange(dueTo:))
         .onAppear(perform: viewModel.onViewAppear)
         .onDisappear(perform: viewModel.onViewDisappear)
+        .onDidAppear(perform: viewModel.onDidAppear)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .background(Colors.Background.secondary.edgesIgnoringSafeArea(.all))
@@ -59,30 +57,20 @@ struct MainView: View {
             }
 
             ToolbarItem(placement: .navigationBarTrailing) {
-                HStack(spacing: 0) {
-                    if #unavailable(iOS 15) {
-                        // Offset didn't work for iOS 14 if there are no other view in toolbar
-                        Spacer()
-                            .frame(width: 10)
-                    }
-                    detailsNavigationButton
-                }
+                detailsNavigationButton
             }
         })
         .actionSheet(item: $viewModel.actionSheet) { $0.sheet }
         .bottomSheet(
             item: $viewModel.unlockWalletBottomSheetViewModel,
-            settings: .init(backgroundColor: Colors.Background.primary)
+            backgroundColor: Colors.Background.primary
         ) { model in
             UnlockUserWalletBottomSheetView(viewModel: model)
         }
-        .toast(isPresenting: $viewModel.showAddressCopiedToast, alert: {
-            AlertToast(type: .complete(Colors.Icon.accent), title: Localization.walletNotificationAddressCopied)
-        })
     }
 
     var detailsNavigationButton: some View {
-        Button(action: viewModel.openDetails) {
+        Button(action: weakify(viewModel, forFunction: MainViewModel.openDetails)) {
             NavbarDotsImage()
         }
         .buttonStyle(PlainButtonStyle())
@@ -115,7 +103,8 @@ struct MainView_Preview: PreviewProvider {
         let viewModel = MainViewModel(
             coordinator: coordinator,
             swipeDiscoveryHelper: swipeDiscoveryHelper,
-            mainUserWalletPageBuilderFactory: CommonMainUserWalletPageBuilderFactory(coordinator: coordinator)
+            mainUserWalletPageBuilderFactory: CommonMainUserWalletPageBuilderFactory(coordinator: coordinator),
+            pushNotificationsAvailabilityProvider: PushNotificationsAvailabilityProviderStub()
         )
         swipeDiscoveryHelper.delegate = viewModel
 

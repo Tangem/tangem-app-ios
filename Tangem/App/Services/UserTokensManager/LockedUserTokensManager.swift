@@ -16,19 +16,21 @@ struct LockedUserTokensManager: UserTokensManager {
 
     func deriveIfNeeded(completion: @escaping (Result<Void, TangemSdkError>) -> Void) {}
 
-    func update(itemsToRemove: [TokenItem], itemsToAdd: [TokenItem], derivationPath: DerivationPath?, completion: @escaping (Result<Void, TangemSdkError>) -> Void) {}
+    func update(itemsToRemove: [TokenItem], itemsToAdd: [TokenItem], completion: @escaping (Result<Void, TangemSdkError>) -> Void) {}
 
-    func update(itemsToRemove: [TokenItem], itemsToAdd: [TokenItem], derivationPath: DerivationPath?) {}
+    func update(itemsToRemove: [TokenItem], itemsToAdd: [TokenItem]) throws {}
 
-    func add(_ tokenItem: TokenItem, derivationPath: DerivationPath?) async throws -> String {
+    func addTokenItemPrecondition(_ tokenItem: TokenItem) throws {}
+
+    func add(_ tokenItem: TokenItem) async throws -> String {
         return ""
     }
 
-    func add(_ tokenItems: [TokenItem], derivationPath: DerivationPath?, completion: @escaping (Result<Void, TangemSdkError>) -> Void) {}
+    func add(_ tokenItems: [TokenItem], completion: @escaping (Result<Void, TangemSdkError>) -> Void) {}
 
-    func add(_ tokenItem: TokenItem, derivationPath: DerivationPath?, completion: @escaping (Result<Void, TangemSdkError>) -> Void) {}
+    func add(_ tokenItem: TokenItem, completion: @escaping (Result<Void, TangemSdkError>) -> Void) {}
 
-    func contains(_ tokenItem: TokenItem, derivationPath: DerivationPath?) -> Bool {
+    func contains(_ tokenItem: TokenItem) -> Bool {
         return false
     }
 
@@ -36,11 +38,11 @@ struct LockedUserTokensManager: UserTokensManager {
         return []
     }
 
-    func canRemove(_ tokenItem: TokenItem, derivationPath: DerivationPath?) -> Bool {
+    func canRemove(_ tokenItem: TokenItem) -> Bool {
         return false
     }
 
-    func remove(_ tokenItem: TokenItem, derivationPath: DerivationPath?) {}
+    func remove(_ tokenItem: TokenItem) {}
 
     func sync(completion: @escaping () -> Void) {}
 }
@@ -54,5 +56,5 @@ extension LockedUserTokensManager: UserTokensReordering {
 
     var sortingOption: AnyPublisher<UserTokensReorderingOptions.Sorting, Never> { .just(output: .dragAndDrop) }
 
-    func reorder(_ reorderingActions: [UserTokensReorderingAction]) -> AnyPublisher<Void, Never> { .just }
+    func reorder(_ actions: [UserTokensReorderingAction], source: UserTokensReorderingSource) -> AnyPublisher<Void, Never> { .just }
 }

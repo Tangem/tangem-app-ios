@@ -19,11 +19,12 @@ struct WalletConnectV2Utils {
     /// `Bool` that indicates that all blockchains in session proposal is supported
     func allChainsSupported(in namespaces: [String: ProposalNamespace]) -> Bool {
         for (namespace, proposals) in namespaces {
-            if namespace != evmNamespace {
+            guard isNamespaceSupported(namespace) else {
                 return false
             }
 
             let blockchains = proposals.chains?.compactMap(createBlockchain(for:))
+
             if blockchains?.count != proposals.chains?.count {
                 return false
             }
@@ -110,8 +111,8 @@ struct WalletConnectV2Utils {
             }
 
             let sessionNamespace = SessionNamespace(
-                chains: supportedChains,
-                accounts: Set(accounts.reduce([], +)),
+                chains: Array(supportedChains),
+                accounts: accounts.reduce([], +),
                 methods: proposalNamespace.methods,
                 events: proposalNamespace.events
             )
@@ -119,7 +120,10 @@ struct WalletConnectV2Utils {
         }
 
         for (namespace, proposalNamespace) in optionalNamespaces ?? [:] {
-            guard let chains = proposalNamespace.chains else {
+            guard
+                isNamespaceSupported(namespace),
+                let chains = proposalNamespace.chains
+            else {
                 continue
             }
 
@@ -137,23 +141,28 @@ struct WalletConnectV2Utils {
 
                 return filteredWallets.compactMap { Account("\(wcBlockchain.absoluteString):\($0.wallet.address)") }
             }
+            let flattenedAccounts = accounts.reduce([], +)
+            if flattenedAccounts.isEmpty {
+                continue
+            }
 
             let sessionNamespace = SessionNamespace(
-                chains: supportedChains,
-                accounts: Set(accounts.reduce([], +)),
+                chains: Array(supportedChains),
+                accounts: flattenedAccounts,
                 methods: proposalNamespace.methods,
                 events: proposalNamespace.events
             )
 
             // TODO: TBF WTF? :)
             if let existingNamespace = sessionNamespaces[namespace] {
-                let unionChains = existingNamespace.chains?.union(sessionNamespace.chains ?? [])
-                let unionAccounts = existingNamespace.accounts.union(sessionNamespace.accounts)
-                let unionMethods = existingNamespace.methods.union(sessionNamespace.methods)
-                let unionEvents = existingNamespace.events.union(sessionNamespace.events)
+                let unionChains = Set(existingNamespace.chains ?? []).union(sessionNamespace.chains ?? [])
+                let unionAccounts = Set(existingNamespace.accounts).union(sessionNamespace.accounts)
+                let unionMethods = Set(existingNamespace.methods).union(sessionNamespace.methods)
+                let unionEvents = Set(existingNamespace.events).union(sessionNamespace.events)
+
                 sessionNamespaces[namespace] = SessionNamespace(
-                    chains: unionChains,
-                    accounts: unionAccounts,
+                    chains: Array(unionChains),
+                    accounts: Array(unionAccounts),
                     methods: unionMethods,
                     events: unionEvents
                 )
@@ -204,7 +213,7 @@ struct WalletConnectV2Utils {
                 .first(where: { $0.chainId == wcChainId })
                 .map {
                     BlockchainMeta(
-                        id: $0.coinId,
+                        id: $0.networkId,
                         currencySymbol: $0.currencySymbol,
                         displayName: $0.displayName
                     )
@@ -212,6 +221,10 @@ struct WalletConnectV2Utils {
         default:
             return nil
         }
+    }
+
+    private func isNamespaceSupported(_ namespace: String) -> Bool {
+        return namespace == evmNamespace
     }
 
     private func mapBlockchainNetworks(from namespaces: [String: SessionNamespace], walletModelProvider: WalletConnectWalletModelProvider) -> [BlockchainNetwork] {

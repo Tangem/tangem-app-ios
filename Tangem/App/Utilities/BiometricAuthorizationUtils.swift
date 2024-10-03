@@ -45,6 +45,8 @@ extension LABiometryType {
             return "Face ID"
         case .touchID:
             return "Touch ID"
+        case .opticID:
+            return "Optic ID"
         case .none:
             return ""
         @unknown default:

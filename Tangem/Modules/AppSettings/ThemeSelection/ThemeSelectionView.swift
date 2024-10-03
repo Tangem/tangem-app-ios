@@ -13,18 +13,13 @@ struct ThemeSelectionView: View {
 
     var body: some View {
         GroupedScrollView {
-            SelectableGropedSection(
-                viewModel.themeViewModels,
-                selection: $viewModel.currentThemeOption,
-                content: {
-                    DefaultSelectableRowView(viewModel: $0)
-                },
-                footer: {
-                    Text(Localization.appSettingsThemeSelectionFooter)
-                        .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-                }
-            )
+            GroupedSection(viewModel.themeViewModels) {
+                DefaultSelectableRowView(data: $0, selection: $viewModel.currentThemeOption)
+            } footer: {
+                DefaultFooterView(Localization.appSettingsThemeSelectionFooter)
+            }
         }
+        .interContentPadding(8)
         .background(Colors.Background.secondary.ignoresSafeArea(edges: .all))
         .navigationTitle(Text(Localization.appSettingsThemeSelectorTitle))
         .navigationBarTitleDisplayMode(.inline)

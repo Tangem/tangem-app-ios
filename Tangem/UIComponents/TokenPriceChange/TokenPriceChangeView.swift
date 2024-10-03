@@ -53,7 +53,7 @@ struct TokenPriceChangeView: View {
     @ViewBuilder
     private func styledText(_ text: String, textColor: Color = Colors.Text.tertiary) -> some View {
         Text(text)
-            .style(Fonts.Regular.footnote, color: textColor)
+            .style(Fonts.Regular.caption1, color: textColor)
             .lineLimit(1)
     }
 }
@@ -65,5 +65,13 @@ extension TokenPriceChangeView {
         case empty
         case loading
         case loaded(signType: ChangeSignType, text: String)
+
+        var signType: ChangeSignType? {
+            if case .loaded(let signType, _) = self {
+                return signType
+            }
+
+            return nil
+        }
     }
 }

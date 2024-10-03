@@ -15,14 +15,21 @@ final class SingleWalletMainContentViewModel: SingleTokenBaseViewModel, Observab
 
     @Published var notificationInputs: [NotificationViewInput] = []
 
+    private(set) lazy var bottomSheetFooterViewModel: MainBottomSheetFooterViewModel? = FeatureProvider.isAvailable(.markets)
+        ? MainBottomSheetFooterViewModel()
+        : nil
+
     // MARK: - Dependencies
 
     private let userWalletNotificationManager: NotificationManager
+    private let rateAppController: RateAppInteractionController
+
+    private let isPageSelectedSubject = PassthroughSubject<Bool, Never>()
 
     private var updateSubscription: AnyCancellable?
     private var bag: Set<AnyCancellable> = []
 
-    private weak var mainViewDelegate: MainViewDelegate?
+    private weak var delegate: SingleWalletMainContentDelegate?
 
     init(
         userWalletModel: UserWalletModel,
@@ -30,11 +37,13 @@ final class SingleWalletMainContentViewModel: SingleTokenBaseViewModel, Observab
         exchangeUtility: ExchangeCryptoUtility,
         userWalletNotificationManager: NotificationManager,
         tokenNotificationManager: NotificationManager,
-        mainViewDelegate: MainViewDelegate?,
-        tokenRouter: SingleTokenRoutable
+        rateAppController: RateAppInteractionController,
+        tokenRouter: SingleTokenRoutable,
+        delegate: SingleWalletMainContentDelegate?
     ) {
         self.userWalletNotificationManager = userWalletNotificationManager
-        self.mainViewDelegate = mainViewDelegate
+        self.rateAppController = rateAppController
+        self.delegate = delegate
 
         super.init(
             userWalletModel: userWalletModel,
@@ -48,14 +57,66 @@ final class SingleWalletMainContentViewModel: SingleTokenBaseViewModel, Observab
     }
 
     override func presentActionSheet(_ actionSheet: ActionSheetBinder) {
-        mainViewDelegate?.present(actionSheet: actionSheet)
+        delegate?.present(actionSheet: actionSheet)
+    }
+
+    override func copyDefaultAddress() {
+        super.copyDefaultAddress()
+        Analytics.log(event: .buttonCopyAddress, params: [
+            .token: walletModel.tokenItem.currencySymbol,
+            .source: Analytics.ParameterValue.main.rawValue,
+        ])
+        delegate?.displayAddressCopiedToast()
+    }
+
+    override func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
+        switch action {
+        case .openFeedbackMail:
+            rateAppController.openFeedbackMail()
+        case .openAppStoreReview:
+            rateAppController.openAppStoreReview()
+        default:
+            super.didTapNotification(with: id, action: action)
+        }
+    }
+
+    override func openMarketsTokenDetails() {
+        guard isMarketsDetailsAvailable else {
+            return
+        }
+
+        let analyticsParams: [Analytics.ParameterKey: String] = [
+            .source: Analytics.ParameterValue.main.rawValue,
+            .token: walletModel.tokenItem.currencySymbol.uppercased(),
+            .blockchain: walletModel.tokenItem.blockchain.displayName,
+        ]
+        Analytics.log(event: .marketsChartScreenOpened, params: analyticsParams)
+        super.openMarketsTokenDetails()
     }
 
     private func bind() {
-        userWalletNotificationManager.notificationPublisher
+        userWalletNotificationManager
+            .notificationPublisher
             .receive(on: DispatchQueue.main)
             .removeDuplicates()
             .assign(to: \.notificationInputs, on: self, ownership: .weak)
             .store(in: &bag)
+
+        rateAppController.bind(
+            isPageSelectedPublisher: isPageSelectedSubject,
+            notificationsPublisher: $notificationInputs
+        )
+    }
+}
+
+// MARK: - MainViewPage protocol conformance
+
+extension SingleWalletMainContentViewModel: MainViewPage {
+    func onPageAppear() {
+        isPageSelectedSubject.send(true)
+    }
+
+    func onPageDisappear() {
+        isPageSelectedSubject.send(false)
     }
 }

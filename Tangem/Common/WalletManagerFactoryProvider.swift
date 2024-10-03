@@ -12,7 +12,18 @@ import BlockchainSdk
 class WalletManagerFactoryProvider {
     @Injected(\.keysManager) private var keysManager: KeysManager
 
-    lazy var factory: WalletManagerFactory = .init(config: keysManager.blockchainConfig)
+    let apiList: APIList
 
-    init() {}
+    lazy var factory: WalletManagerFactory = .init(
+        config: keysManager.blockchainConfig,
+        dependencies: .init(
+            accountCreator: BlockchainAccountCreator(),
+            dataStorage: UserDefaultsBlockchainDataStorage(suiteName: AppEnvironment.current.blockchainDataStorageSuiteName)
+        ),
+        apiList: apiList
+    )
+
+    init(apiList: APIList) {
+        self.apiList = apiList
+    }
 }

@@ -80,10 +80,8 @@ struct StorageEntryConverter {
 
     func convertToTokenItem(_ entries: [StoredUserTokenList.Entry]) -> [TokenItem] {
         entries.map {
-            let blockchain = $0.blockchainNetwork.blockchain
-
             guard let contractAddress = $0.contractAddress else {
-                return .blockchain(blockchain)
+                return .blockchain($0.blockchainNetwork)
             }
 
             let token = Token(
@@ -93,16 +91,15 @@ struct StorageEntryConverter {
                 decimalCount: $0.decimalCount,
                 id: $0.id
             )
-            return .token(token, blockchain)
+            return .token(token, $0.blockchainNetwork)
         }
     }
 
     func convertToTokenItems(_ entries: [StorageEntry]) -> [TokenItem] {
         entries.flatMap { entry in
-            let blockchain = entry.blockchainNetwork.blockchain
-            let blockchainToken = TokenItem.blockchain(blockchain)
+            let blockchainToken = TokenItem.blockchain(entry.blockchainNetwork)
             let tokens = entry.tokens.map {
-                TokenItem.token($0, blockchain)
+                TokenItem.token($0, entry.blockchainNetwork)
             }
 
             return [blockchainToken] + tokens

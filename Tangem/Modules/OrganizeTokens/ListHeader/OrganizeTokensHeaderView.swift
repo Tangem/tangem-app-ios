@@ -30,6 +30,7 @@ struct OrganizeTokensHeaderView: View {
             .background(
                 Colors.Background
                     .primary
+                    .opacity(0.5)
                     .cornerRadiusContinuous(10.0)
             )
             .onAppear(perform: viewModel.onViewAppear)

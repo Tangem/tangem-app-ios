@@ -41,7 +41,7 @@ extension GenericConfig: UserWalletConfig {
         "Wallet"
     }
 
-    var mandatoryCurves: [EllipticCurve] {
+    var createWalletCurves: [EllipticCurve] {
         [.secp256k1, .ed25519, .bls12381_G2_AUG]
     }
 
@@ -108,12 +108,6 @@ extension GenericConfig: UserWalletConfig {
 
     var emailData: [EmailCollectedData] {
         CardEmailDataFactory().makeEmailData(for: card, walletData: nil)
-    }
-
-    var tangemSigner: TangemSigner {
-        let shouldSkipCardId = card.backupStatus?.isActive ?? false
-        let cardId = shouldSkipCardId ? nil : card.cardId
-        return .init(with: cardId, sdk: makeTangemSdk())
     }
 
     var userWalletIdSeed: Data? {
@@ -236,7 +230,7 @@ extension GenericConfig: UserWalletConfig {
     }
 
     func makeWalletModelsFactory() -> WalletModelsFactory {
-        return CommonWalletModelsFactory(derivationStyle: derivationStyle)
+        return CommonWalletModelsFactory(config: self)
     }
 
     func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {

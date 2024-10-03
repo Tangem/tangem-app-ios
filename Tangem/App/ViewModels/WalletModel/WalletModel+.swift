@@ -8,25 +8,7 @@
 
 import Foundation
 import BlockchainSdk
-
-extension WalletModel {
-    enum SendBlockedReason {
-        case cantSignLongTransactions
-        case hasPendingCoinTx(symbol: String)
-        case notEnoughFeeForTokenTx(tokenName: String, networkName: String, coinSymbol: String, networkIconName: String)
-
-        var description: String {
-            switch self {
-            case .cantSignLongTransactions:
-                return Localization.warningLongTransactionMessage
-            case .hasPendingCoinTx(let symbol):
-                return Localization.warningSendBlockedPendingTransactionsMessage(symbol)
-            case .notEnoughFeeForTokenTx(let tokenName, let networkName, let coinSymbol, _):
-                return Localization.warningSendBlockedFundsForFeeMessage(tokenName, networkName, tokenName, networkName, coinSymbol)
-            }
-        }
-    }
-}
+import TangemStaking
 
 extension WalletModel: Equatable {
     static func == (lhs: WalletModel, rhs: WalletModel) -> Bool {

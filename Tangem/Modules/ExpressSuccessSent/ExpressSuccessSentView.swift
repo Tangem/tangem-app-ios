@@ -17,7 +17,7 @@ struct ExpressSuccessSentView: View {
 
     var body: some View {
         ZStack(alignment: .top) {
-            Colors.Background.secondary.edgesIgnoringSafeArea(.all)
+            Colors.Background.tertiary.edgesIgnoringSafeArea(.all)
 
             VStack(spacing: .zero) {
                 titleView
@@ -26,26 +26,26 @@ struct ExpressSuccessSentView: View {
                     GroupedSection(viewModel.sourceData) {
                         AmountSummaryView(data: $0)
                     }
-                    .interSectionPadding(12)
-                    .verticalPadding(0)
+                    .innerContentPadding(12)
+                    .backgroundColor(Colors.Background.action)
 
                     GroupedSection(viewModel.destinationData) {
                         AmountSummaryView(data: $0)
                     }
-                    .interSectionPadding(12)
-                    .verticalPadding(0)
+                    .innerContentPadding(12)
+                    .backgroundColor(Colors.Background.action)
 
                     GroupedSection(viewModel.provider) {
                         ProviderRowView(viewModel: $0)
                     }
-                    .interSectionPadding(12)
-                    .verticalPadding(0)
+                    .innerContentPadding(12)
+                    .backgroundColor(Colors.Background.action)
 
                     GroupedSection(viewModel.expressFee) {
                         ExpressFeeRowView(viewModel: $0)
                     }
-                    .interSectionPadding(12)
-                    .verticalPadding(0)
+                    .innerContentPadding(12)
+                    .backgroundColor(Colors.Background.action)
                 }
             }
             .padding(.horizontal, 14)
@@ -61,7 +61,7 @@ struct ExpressSuccessSentView: View {
                 .foregroundColor(Colors.Icon.inactive)
 
             VStack(spacing: 4) {
-                Text(Localization.swappingSuccessViewTitle)
+                Text(Localization.commonInProgress)
                     .style(Fonts.Bold.title3, color: Colors.Text.primary1)
 
                 Text(viewModel.dateFormatted)
@@ -84,12 +84,14 @@ struct ExpressSuccessSentView: View {
                         action: viewModel.openExplore
                     )
 
-                    MainButton(
-                        title: Localization.commonShare,
-                        icon: .leading(Assets.share),
-                        style: .secondary,
-                        action: viewModel.openShare
-                    )
+                    if viewModel.isStatusButtonVisible {
+                        MainButton(
+                            title: Localization.expressCexStatusButtonTitle,
+                            icon: .leading(Assets.share),
+                            style: .secondary,
+                            action: viewModel.openCEXStatus
+                        )
+                    }
                 }
 
                 MainButton(
@@ -104,8 +106,8 @@ struct ExpressSuccessSentView: View {
 }
 
 struct ExpressSuccessSentView_Preview: PreviewProvider {
-    static let viewModel = ExpressSuccessSentViewModel(
-        input: .init(),
+    static let viewModel = ExpressModulesFactoryMock().makeExpressSuccessSentViewModel(
+        data: .mock,
         coordinator: ExpressSuccessSentRoutableMock()
     )
 
@@ -116,5 +118,3 @@ struct ExpressSuccessSentView_Preview: PreviewProvider {
             }
     }
 }
-
-class ExpressSuccessSentRoutableMock: ExpressSuccessSentRoutable {}

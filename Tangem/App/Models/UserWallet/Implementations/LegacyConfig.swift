@@ -55,7 +55,7 @@ extension LegacyConfig: UserWalletConfig {
         "Tangem Card"
     }
 
-    var mandatoryCurves: [EllipticCurve] {
+    var createWalletCurves: [EllipticCurve] {
         if let defaultBlockchain {
             return [defaultBlockchain.curve]
         }
@@ -94,7 +94,7 @@ extension LegacyConfig: UserWalletConfig {
             ]
 
             return blockchains.map {
-                StorageEntry(blockchainNetwork: .init($0), token: nil)
+                StorageEntry(blockchainNetwork: .init($0, derivationPath: nil), token: nil)
             }
         }
     }
@@ -125,8 +125,6 @@ extension LegacyConfig: UserWalletConfig {
 
         return warnings
     }
-
-    var tangemSigner: TangemSigner { .init(with: card.cardId, sdk: makeTangemSdk()) }
 
     var emailData: [EmailCollectedData] {
         CardEmailDataFactory().makeEmailData(for: card, walletData: walletData)
@@ -227,7 +225,7 @@ extension LegacyConfig: UserWalletConfig {
     }
 
     func makeWalletModelsFactory() -> WalletModelsFactory {
-        return CommonWalletModelsFactory(derivationStyle: nil)
+        return CommonWalletModelsFactory(config: self)
     }
 
     func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {

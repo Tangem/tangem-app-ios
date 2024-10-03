@@ -48,7 +48,7 @@ struct NotificationView: View {
                     settings.dismissAction?(settings.id)
                 }) {
                     Assets.cross.image
-                        .foregroundColor(Colors.Icon.inactive)
+                        .foregroundColor(settings.event.colorScheme.dismissButtonColor)
                 }
             }
             .padding(.top, -4)
@@ -101,13 +101,21 @@ struct NotificationView: View {
             icon
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(settings.event.title)
-                    .style(Fonts.Bold.footnote, color: Colors.Text.primary1)
+                switch settings.event.title {
+                case .string(let string):
+                    Text(string)
+                        .style(Fonts.Bold.footnote, color: settings.event.colorScheme.titleColor)
+                        .fixedSize(horizontal: false, vertical: true)
+                case .attributed(let attributedString):
+                    Text(attributedString)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
 
                 if let description = settings.event.description {
-                    Text(description)
+                    // We use the `LocalizedStringKey` here for the `RichText` support
+                    Text(LocalizedStringKey(description))
                         .multilineTextAlignment(.leading)
-                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                        .style(Fonts.Regular.footnote, color: settings.event.colorScheme.messageColor)
                         .infinityFrame(axis: .horizontal, alignment: .leading)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -124,13 +132,15 @@ struct NotificationView: View {
                 image
                     .resizable()
                     .foregroundColor(settings.event.icon.color)
+            case .icon(let tokenIconInfo):
+                TokenIcon(tokenIconInfo: tokenIconInfo, size: settings.event.icon.size)
             case .progressView:
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle())
                     .foregroundColor(Colors.Icon.informative)
             }
         }
-        .frame(size: .init(bothDimensions: 20))
+        .frame(size: settings.event.icon.size)
     }
 }
 
@@ -153,6 +163,7 @@ struct NotificationView_Previews: PreviewProvider {
 
                     }, actionType: .backupCard, isWithLoader: false),
                 ]),
+                severity: .info,
                 settings: NotificationView.Settings(event: WarningEvent.missingBackup, dismissAction: { [weak self] id in
                     self?.removeNotification(with: id)
                 })
@@ -163,12 +174,14 @@ struct NotificationView_Previews: PreviewProvider {
 
                     }, actionType: .generateAddresses, isWithLoader: false),
                 ]),
+                severity: .warning,
                 settings: NotificationView.Settings(event: WarningEvent.missingDerivation(numberOfNetworks: 1), dismissAction: { [weak self] id in
                     self?.removeNotification(with: id)
                 })
             ),
             .init(
                 style: .plain,
+                severity: .critical,
                 settings: NotificationView.Settings(
                     event: WarningEvent.devCard,
                     dismissAction: nil

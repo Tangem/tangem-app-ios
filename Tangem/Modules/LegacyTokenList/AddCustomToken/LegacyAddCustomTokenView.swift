@@ -54,7 +54,7 @@ struct LegacyAddCustomTokenView: View {
             .padding(.horizontal, 16)
             .padding(.vertical, 8)
         }
-        .background(Color.tangemBgGray.edgesIgnoringSafeArea(.all))
+        .background(Colors.Old.tangemBgGray.edgesIgnoringSafeArea(.all))
         .onAppear(perform: viewModel.onAppear)
         .onDisappear(perform: viewModel.onDisappear)
         .alert(item: $viewModel.error, content: { $0.alert })
@@ -77,7 +77,7 @@ private struct TextInputWithTitle: View {
         VStack(alignment: .leading, spacing: 4) {
             Text(title)
                 .font(.system(size: 13, weight: .regular))
-                .foregroundColor(Color.tangemGrayDark6)
+                .foregroundColor(Colors.Old.tangemGrayDark6)
 
             HStack {
                 CustomTextField(text: text, isResponder: .constant(nil), actionButtonTapped: .constant(false), handleKeyboard: true, keyboard: keyboardType, textColor: isEnabled ? UIColor.tangemGrayDark4 : .lightGray, font: UIFont.systemFont(ofSize: 17, weight: .regular), placeholder: placeholder, isEnabled: isEnabled)
@@ -103,7 +103,7 @@ private struct PickerInputWithTitle: View {
         VStack(alignment: .leading, spacing: 4) {
             Text(title)
                 .font(.system(size: 13, weight: .regular))
-                .foregroundColor(Color.tangemGrayDark6)
+                .foregroundColor(Colors.Old.tangemGrayDark6)
 
             HStack {
                 Picker("", selection: $model.selection) {
@@ -115,7 +115,7 @@ private struct PickerInputWithTitle: View {
                 }
                 .id(model.id)
                 .accentColor(Colors.Button.positive)
-                .modifier(PickerStyleModifier())
+                .pickerStyle(.menu)
                 .disabled(!model.isEnabled)
                 .modifier(PickerAlignmentModifier())
 
@@ -137,18 +137,6 @@ private struct PickerAlignmentModifier: ViewModifier {
                 .padding(.leading, -12)
         } else {
             content
-        }
-    }
-}
-
-private struct PickerStyleModifier: ViewModifier {
-    func body(content: Content) -> some View {
-        if #available(iOS 15, *) {
-            content
-                .pickerStyle(.menu)
-        } else {
-            content
-                .pickerStyle(.wheel)
         }
     }
 }

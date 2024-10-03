@@ -26,7 +26,7 @@ final class AuthViewModel: ObservableObject {
     @Injected(\.incomingActionManager) private var incomingActionManager: IncomingActionManaging
 
     private var unlockOnStart: Bool
-    private unowned let coordinator: AuthRoutable
+    private weak var coordinator: AuthRoutable?
 
     init(
         unlockOnStart: Bool,
@@ -37,11 +37,17 @@ final class AuthViewModel: ObservableObject {
     }
 
     func tryAgain() {
+        Analytics.log(.cantScanTheCardTryAgainButton, params: [.source: .signIn])
         unlockWithCard()
     }
 
+    func openScanCardManual() {
+        Analytics.log(.cantScanTheCardButtonBlog, params: [.source: .signIn])
+        coordinator?.openScanCardManual()
+    }
+
     func requestSupport() {
-        Analytics.log(.buttonRequestSupport)
+        Analytics.log(.requestSupport, params: [.source: .signIn])
         failedCardScanTracker.resetCounter()
         openMail()
     }
@@ -58,11 +64,11 @@ final class AuthViewModel: ObservableObject {
             didFinishUnlocking(result)
 
             switch result {
-            case .success(let cardViewModel), .partial(let cardViewModel, _):
-                let walletHasBackup = Analytics.ParameterValue.affirmativeOrNegative(for: cardViewModel.hasBackupCards)
+            case .success(let model), .partial(let model, _):
+                let walletHasBackup = Analytics.ParameterValue.affirmativeOrNegative(for: model.hasBackupCards)
                 Analytics.log(event: .signedIn, params: [
                     .signInType: Analytics.ParameterValue.signInTypeBiometrics.rawValue,
-                    .walletsCount: "\(userWalletRepository.count)",
+                    .walletsCount: "\(userWalletRepository.models.count)",
                     .walletHasBackup: walletHasBackup.rawValue,
                 ])
             default:
@@ -75,17 +81,17 @@ final class AuthViewModel: ObservableObject {
         isScanningCard = true
         Analytics.beginLoggingCardScan(source: .auth)
 
-        userWalletRepository.unlock(with: .card(userWallet: nil)) { [weak self] result in
+        userWalletRepository.unlock(with: .card(userWalletId: nil, scanner: CardScannerFactory().makeDefaultScanner())) { [weak self] result in
             guard let self else { return }
 
             didFinishUnlocking(result)
 
             switch result {
-            case .success(let cardViewModel), .partial(let cardViewModel, _):
-                let walletHasBackup = Analytics.ParameterValue.affirmativeOrNegative(for: cardViewModel.hasBackupCards)
+            case .success(let model), .partial(let model, _):
+                let walletHasBackup = Analytics.ParameterValue.affirmativeOrNegative(for: model.hasBackupCards)
                 Analytics.log(event: .signedIn, params: [
                     .signInType: Analytics.ParameterValue.signInTypeCard.rawValue,
-                    .walletsCount: "\(userWalletRepository.count)",
+                    .walletsCount: "\(userWalletRepository.models.count)",
                     .walletHasBackup: walletHasBackup.rawValue,
                 ])
             default:
@@ -124,6 +130,7 @@ final class AuthViewModel: ObservableObject {
 
         switch result {
         case .troubleshooting:
+            Analytics.log(.cantScanTheCard, params: [.source: .signIn])
             showTroubleshootingView = true
         case .onboarding(let input):
             openOnboarding(with: input)
@@ -133,8 +140,8 @@ final class AuthViewModel: ObservableObject {
             } else {
                 self.error = error.alertBinder
             }
-        case .success(let cardModel), .partial(let cardModel, _):
-            openMain(with: cardModel)
+        case .success(let model), .partial(let model, _):
+            openMain(with: model)
         }
     }
 }
@@ -143,15 +150,15 @@ final class AuthViewModel: ObservableObject {
 
 extension AuthViewModel {
     func openMail() {
-        coordinator.openMail(with: failedCardScanTracker, recipient: EmailConfig.default.recipient)
+        coordinator?.openMail(with: failedCardScanTracker, recipient: EmailConfig.default.recipient)
     }
 
     func openOnboarding(with input: OnboardingInput) {
-        coordinator.openOnboarding(with: input)
+        coordinator?.openOnboarding(with: input)
     }
 
-    func openMain(with cardModel: CardViewModel) {
-        coordinator.openMain(with: cardModel)
+    func openMain(with model: UserWalletModel) {
+        coordinator?.openMain(with: model)
     }
 }
 
@@ -168,7 +175,7 @@ extension AuthViewModel: IncomingActionResponder {
         switch action {
         case .start:
             return true
-        case .walletConnect:
+        default:
             return false
         }
     }

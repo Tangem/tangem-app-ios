@@ -9,40 +9,91 @@
 import SwiftUI
 
 struct SendDestinationView: View {
-    let namespace: Namespace.ID
     @ObservedObject var viewModel: SendDestinationViewModel
+    let transitionService: SendTransitionService
+    let namespace: Namespace
 
     var body: some View {
-        VStack {
-            VStack {
-                TextField("Enter address", text: viewModel.destination)
+        GroupedScrollView(spacing: 20) {
+            GroupedSection(viewModel.addressViewModel) {
+                SendDestinationTextView(viewModel: $0)
+                    .setNamespace(namespace.id)
+                    .setContainerNamespaceId(namespace.names.addressContainer)
+                    .setTitleNamespaceId(namespace.names.addressTitle)
+                    .setIconNamespaceId(namespace.names.addressIcon)
+                    .setTextNamespaceId(namespace.names.addressText)
+                    .setClearButtonNamespaceId(namespace.names.addressClearButton)
+            } footer: {
+                if viewModel.auxiliaryViewsVisible {
+                    Text(viewModel.addressDescription)
+                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                        .transition(transitionService.destinationAuxiliaryViewTransition)
+                }
             }
-            .padding()
-            .border(Color.purple, width: 5)
-            .matchedGeometryEffect(id: "dest", in: namespace)
+            .backgroundColor(Colors.Background.action)
+            .geometryEffect(.init(
+                id: namespace.names.addressBackground,
+                namespace: namespace.id
+            ))
 
-            Text(viewModel.destinationErrorText ?? " ")
-                .foregroundColor(.red)
-
-            VStack {
-                TextField("Enter memo", text: viewModel.additionalField)
+            // We show as auxiliaryView without value
+            // And We show with GeometryEffect if it has value
+            if viewModel.additionalFieldViewModelHasValue || viewModel.auxiliaryViewsVisible {
+                GroupedSection(viewModel.additionalFieldViewModel) {
+                    SendDestinationTextView(viewModel: $0)
+                        .setNamespace(namespace.id)
+                        .setContainerNamespaceId(namespace.names.addressAdditionalFieldContainer)
+                        .setTitleNamespaceId(namespace.names.addressAdditionalFieldTitle)
+                        .setIconNamespaceId(namespace.names.addressAdditionalFieldIcon)
+                        .setTextNamespaceId(namespace.names.addressAdditionalFieldText)
+                        .setClearButtonNamespaceId(namespace.names.addressAdditionalFieldClearButton)
+                        .padding(.vertical, 2)
+                } footer: {
+                    if viewModel.auxiliaryViewsVisible {
+                        Text(viewModel.additionalFieldDescription)
+                            .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                            .transition(transitionService.destinationAuxiliaryViewTransition)
+                    }
+                }
+                .backgroundColor(Colors.Background.action)
+                .geometryEffect(.init(
+                    id: namespace.names.addressAdditionalFieldBackground,
+                    namespace: namespace.id
+                ))
+                .transition(transitionService.destinationAuxiliaryViewTransition)
             }
-            .padding()
-            .border(Color.purple, width: 5)
 
-            Text(viewModel.destinationAdditionalFieldErrorText ?? " ")
-                .foregroundColor(.red)
-
-            Spacer()
+            if viewModel.showSuggestedDestinations,
+               let suggestedDestinationViewModel = viewModel.suggestedDestinationViewModel {
+                SendSuggestedDestinationView(viewModel: suggestedDestinationViewModel)
+            }
         }
-        .padding(.horizontal)
+        .transition(transitionService.transitionToDestinationStep(isEditMode: viewModel.isEditMode))
+        .animation(SendTransitionService.Constants.auxiliaryViewAnimation, value: viewModel.auxiliaryViewsVisible)
+        .animation(SendTransitionService.Constants.auxiliaryViewAnimation, value: viewModel.showSuggestedDestinations)
+        .onAppear(perform: viewModel.onAppear)
     }
 }
 
-struct SendDestinationView_Previews: PreviewProvider {
-    @Namespace static var namespace
-
-    static var previews: some View {
-        SendDestinationView(namespace: namespace, viewModel: SendDestinationViewModel(input: SendDestinationViewModelInputMock()))
+extension SendDestinationView {
+    struct Namespace {
+        let id: SwiftUI.Namespace.ID
+        let names: any SendDestinationViewGeometryEffectNames
     }
 }
+
+/*
+ struct SendDestinationView_Previews: PreviewProvider {
+     @Namespace static var namespace
+
+     static var previews: some View {
+         SendDestinationView(
+             viewModel: SendDestinationViewModel(
+                 input: SendSendDestinationInputMock(),
+                 addressTextViewHeightModel: .init()
+             ),
+             namespace: namespace
+         )
+     }
+ }
+ */

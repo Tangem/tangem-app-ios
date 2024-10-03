@@ -42,7 +42,7 @@ class FakeWalletModelsManager: WalletModelsManager {
             .MergeMany(publishers)
             .collect(publishers.count)
             .mapToVoid()
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .receiveCompletion { _ in
                 completion()
             }

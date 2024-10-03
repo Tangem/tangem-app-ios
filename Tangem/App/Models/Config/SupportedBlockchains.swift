@@ -19,6 +19,12 @@ extension SupportedBlockchains {
         SupportedBlockchains(version: .v1).blockchains()
     }
 
+    static var l2Blockchains: [Blockchain] {
+        all
+            .filter { $0.isL2EthereumNetwork }
+            .sorted(by: \.displayName)
+    }
+
     /// Blockchains which don't include in supported blockchains by default
     static var testableIDs: Set<String> {
         // Here version isn't important because we take only coinId
@@ -65,10 +71,10 @@ struct SupportedBlockchains {
             .ethereum(testnet: false),
             .ethereumClassic(testnet: false),
             .ethereumPoW(testnet: false),
-            .ethereumFair,
+            .disChain,
             .litecoin,
             .bitcoin(testnet: false),
-            .bitcoinCash(testnet: false),
+            .bitcoinCash,
             .cardano(extended: version == .v2),
             .xrp(curve: .secp256k1),
             .rsk,
@@ -91,7 +97,7 @@ struct SupportedBlockchains {
             .optimism(testnet: false),
             .ton(curve: ed25519Curve(for: version), testnet: false),
             .kava(testnet: false),
-            .kaspa,
+            .kaspa(testnet: false),
             .ravencoin(testnet: false),
             .cosmos(testnet: false),
             .terraV1,
@@ -102,6 +108,36 @@ struct SupportedBlockchains {
             .ducatus,
             .near(curve: ed25519Curve(for: version), testnet: false),
             .telos(testnet: false),
+            .decimal(testnet: false),
+            .veChain(testnet: false),
+            .xdc(testnet: false),
+            .shibarium(testnet: false),
+            .algorand(curve: ed25519Curve(for: version), testnet: false),
+            .aptos(curve: ed25519Curve(for: version), testnet: false),
+            .hedera(curve: ed25519Curve(for: version), testnet: false),
+            .areon(testnet: false),
+            .pulsechain(testnet: false),
+            .aurora(testnet: false),
+            .base(testnet: false),
+            .playa3ullGames,
+            .zkSync(testnet: false),
+            .moonbeam(testnet: false),
+            .polygonZkEVM(testnet: false),
+            .moonriver(testnet: false),
+            .flare(testnet: false),
+            .taraxa(testnet: false),
+            .joystream(curve: ed25519Curve(for: version)),
+            .manta(testnet: false),
+            .radiant(testnet: false),
+            .bittensor(curve: ed25519Curve(for: version)),
+            .koinos(testnet: false),
+            .mantle(testnet: false),
+            .cyber(testnet: false),
+            .blast(testnet: false),
+            .filecoin,
+            .internetComputer,
+            .sei(testnet: false),
+            .sui(curve: ed25519Curve(for: version), testnet: false),
         ]
     }
 
@@ -130,6 +166,32 @@ struct SupportedBlockchains {
             .octa,
             .chia(testnet: true),
             .near(curve: ed25519Curve(for: version), testnet: true),
+            .telos(testnet: true),
+            .decimal(testnet: true),
+            .veChain(testnet: true),
+            .xdc(testnet: true),
+            .algorand(curve: ed25519Curve(for: version), testnet: true),
+            .shibarium(testnet: true),
+            .aptos(curve: ed25519Curve(for: version), testnet: true),
+            .hedera(curve: ed25519Curve(for: version), testnet: true),
+            .areon(testnet: true),
+            .pulsechain(testnet: true),
+            .aurora(testnet: true),
+            .manta(testnet: true),
+            .zkSync(testnet: true),
+            .moonbeam(testnet: true),
+            .polygonZkEVM(testnet: true),
+            .moonriver(testnet: true),
+            .mantle(testnet: true),
+            .flare(testnet: true),
+            .taraxa(testnet: true),
+            .base(testnet: true),
+            .koinos(testnet: true),
+            .cyber(testnet: true),
+            .blast(testnet: true),
+            .sei(testnet: true),
+            .kaspa(testnet: true),
+            .sui(curve: ed25519Curve(for: version), testnet: true),
         ]
     }
 

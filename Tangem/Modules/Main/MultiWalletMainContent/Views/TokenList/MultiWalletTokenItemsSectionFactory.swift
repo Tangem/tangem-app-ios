@@ -61,18 +61,18 @@ struct MultiWalletTokenItemsSectionFactory {
         case .withoutDerivation(let userToken):
             let converter = StorageEntryConverter()
             let walletModelId = userToken.walletModelId
-            let blockchain = userToken.blockchainNetwork.blockchain
+            let blockchainNetwork = userToken.blockchainNetwork
 
             if let token = converter.convertToToken(userToken) {
                 return TokenWithoutDerivationInfoProvider(
                     id: walletModelId,
-                    tokenItem: .token(token, blockchain)
+                    tokenItem: .token(token, blockchainNetwork)
                 )
             }
 
             return TokenWithoutDerivationInfoProvider(
                 id: walletModelId,
-                tokenItem: .blockchain(blockchain)
+                tokenItem: .blockchain(blockchainNetwork)
             )
         }
     }

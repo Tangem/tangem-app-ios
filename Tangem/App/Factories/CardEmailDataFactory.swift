@@ -14,6 +14,9 @@ struct CardEmailDataFactory {
         var data: [EmailCollectedData] = [
             .init(type: .card(.cardId), data: card.cardId),
             .init(type: .card(.firmwareVersion), data: card.firmwareVersion.stringValue),
+            .init(type: .card(.linkedCardsCount), data: "\(card.backupStatus.flatMap { $0.linkedCardsCount } ?? 0)"),
+            .init(type: .card(.backupCardsCount), data: "\(card.backupStatus.flatMap { $0.backupCardsCount } ?? 0)"),
+            .init(type: .wallet(.hasSeedPhrase), data: "\(card.wallets.contains(where: { $0.isImported ?? false }))"),
         ]
 
         if let walletData = walletData {

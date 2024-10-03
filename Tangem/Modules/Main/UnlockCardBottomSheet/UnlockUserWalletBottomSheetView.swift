@@ -49,7 +49,8 @@ struct UnlockUserWalletBottomSheetView: View {
             ScanTroubleshootingView(
                 isPresented: $viewModel.showTroubleshootingView,
                 tryAgainAction: viewModel.unlockWithCard,
-                requestSupportAction: viewModel.requestSupport
+                requestSupportAction: viewModel.requestSupport,
+                openScanCardManualAction: viewModel.openScanCardManual
             )
         )
     }
@@ -67,6 +68,10 @@ struct UnlockUserWalletBottomSheetView_Previews: PreviewProvider {
 
         func userWalletUnlocked(_ userWalletModel: UserWalletModel) {
             print("Unlocked with card: \(userWalletModel.userWalletId.stringValue)")
+        }
+
+        func openScanCardManual() {
+            print("Open card scan manual")
         }
     }
 
@@ -89,7 +94,7 @@ struct UnlockUserWalletBottomSheetView_Previews: PreviewProvider {
                 }
 
                 NavHolder()
-                    .bottomSheet(item: state, settings: .init(backgroundColor: Colors.Background.primary)) { model in
+                    .bottomSheet(item: state, backgroundColor: Colors.Background.primary) { model in
                         UnlockUserWalletBottomSheetView(viewModel: model)
                     }
             }

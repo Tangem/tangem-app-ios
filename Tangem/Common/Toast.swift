@@ -44,8 +44,11 @@ class Toast<V: View> {
             break
 
         case .temporary(let interval):
-            Timer.scheduledTimer(withTimeInterval: interval, repeats: false) { [weak self] _ in
-                self?.dismiss(animated: true)
+            Timer.scheduledTimer(withTimeInterval: interval, repeats: false) { _ in
+                self.dismiss(animated: true) {
+                    // Retain a reference to `self` to prevent its deallocation before the dismissal animation completes.
+                    withExtendedLifetime(self) {}
+                }
             }
         }
 
@@ -88,6 +91,10 @@ class Toast<V: View> {
         hostingController.view.center.x = keyWindow.center.x
 
         switch layout {
+        case .top(let padding):
+            let hostingViewHeight = hostingController.view.frame.size.height
+            let topPadding = padding + hostingViewHeight / 2 + keyWindow.safeAreaInsets.top
+            hostingController.view.center.y = topPadding
         case .bottom(let padding):
             let hostingViewHeight = hostingController.view.frame.size.height
             let bottomPadding = padding + hostingViewHeight / 2 + keyWindow.safeAreaInsets.bottom
@@ -103,6 +110,7 @@ extension Toast {
     }
 
     enum Layout {
+        case top(padding: CGFloat = 80)
         case bottom(padding: CGFloat = 80)
     }
 }

@@ -7,20 +7,28 @@
 //
 
 import Foundation
+import TangemFoundation
 
 class CommonAnalyticsContext: AnalyticsContext {
-    private(set) var contextData: AnalyticsContextData?
+    var contextData: AnalyticsContextData? {
+        contextDataContainer.read()
+    }
 
+    private let contextDataContainer = ThreadSafeContainer<AnalyticsContextData?>(nil)
     private var analyticsStorage = AnalyticsStorage()
 
     init() {}
 
     func setupContext(with contextData: AnalyticsContextData) {
-        self.contextData = contextData
+        contextDataContainer.mutate { $0 = contextData }
     }
 
     func clearContext() {
-        contextData = nil
+        contextDataContainer.mutate { $0 = nil }
+    }
+
+    func clearSession() {
+        analyticsStorage.clearSessionStorage()
     }
 
     func value(forKey: AnalyticsStorageKey, scope: AnalyticsContextScope) -> Any? {
@@ -43,8 +51,8 @@ class CommonAnalyticsContext: AnalyticsContext {
 
     private func makeId(for scope: AnalyticsContextScope) -> String? {
         switch scope {
-        case .userWallet:
-            return contextData?.id
+        case .userWallet(let userWalletId):
+            return userWalletId.stringValue
         case .common:
             return Constants.commonContextId
         }
@@ -63,6 +71,10 @@ private extension CommonAnalyticsContext {
 
 private class AnalyticsStorage {
     private var tempStorage: [String: Any] = [:]
+
+    func clearSessionStorage() {
+        tempStorage = [:]
+    }
 
     func value(_ storageKey: AnalyticsStorageKey, id: String) -> Any? {
         let rawKey = makeRawKey(from: storageKey, id: id)

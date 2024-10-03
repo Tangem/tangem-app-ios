@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import BlockchainSdk
 
 class FakeTangemApiService: TangemApiService {
     var geoIpRegionCode: String
@@ -17,7 +18,17 @@ class FakeTangemApiService: TangemApiService {
     }
 
     func loadCoins(requestModel: CoinsList.Request) -> AnyPublisher<[CoinModel], Error> {
-        .anyFail(error: "Not implemented")
+        let provider = FakeCoinListProvider()
+        do {
+            return .justWithError(output: try provider.parseCoinModels())
+        } catch {
+            return .anyFail(error: error)
+        }
+    }
+
+    func loadCoins(requestModel: CoinsList.Request) async throws -> CoinsList.Response {
+        let provider = FakeCoinListProvider()
+        return try provider.parseCoinResponse()
     }
 
     func loadQuotes(requestModel: QuotesDTO.Request) -> AnyPublisher<[Quote], Error> {
@@ -40,11 +51,19 @@ class FakeTangemApiService: TangemApiService {
         .anyFail(error: .init(code: .notFound))
     }
 
+    func createAccount(networkId: String, publicKey: String) -> AnyPublisher<BlockchainAccountCreateResult, TangemAPIError> {
+        .anyFail(error: .init(code: .notFound))
+    }
+
     func loadReferralProgramInfo(for userWalletId: String, expectedAwardsLimit: Int) async throws -> ReferralProgramInfo {
         throw "Not implemented"
     }
 
     func participateInReferralProgram(using token: AwardToken, for address: String, with userWalletId: String) async throws -> ReferralProgramInfo {
+        throw "Not implemented"
+    }
+
+    func expressPromotion(request: ExpressPromotion.Request) async throws -> ExpressPromotion.Response {
         throw "Not implemented"
     }
 
@@ -72,7 +91,48 @@ class FakeTangemApiService: TangemApiService {
         throw "Not implemented"
     }
 
+    func loadAPIList() async throws -> APIListDTO {
+        throw "Not implemented"
+    }
+
+    func loadFeatures() async throws -> [String: Bool] {
+        throw "Not implemented"
+    }
+
     func setAuthData(_ authData: TangemApiTarget.AuthData) {}
 
     func initialize() {}
+
+    func loadCoinsList(requestModel: MarketsDTO.General.Request) async throws -> MarketsDTO.General.Response {
+        throw "Not implemented"
+    }
+
+    func loadCoinsHistoryChartPreview(
+        requestModel: MarketsDTO.ChartsHistory.PreviewRequest
+    ) async throws -> MarketsDTO.ChartsHistory.PreviewResponse {
+        throw "Not implemented"
+    }
+
+    func loadTokenMarketsDetails(requestModel: MarketsDTO.Coins.Request) async throws -> MarketsDTO.Coins.Response {
+        throw "Not implemented"
+    }
+
+    func loadHistoryChart(
+        requestModel: MarketsDTO.ChartsHistory.HistoryRequest
+    ) async throws -> MarketsDTO.ChartsHistory.HistoryResponse {
+        throw "Not implemented"
+    }
+}
+
+private struct FakeCoinListProvider {
+    func parseCoinModels() throws -> [CoinModel] {
+        let response = try JsonUtils.readBundleFile(with: "coinsResponse", type: CoinsList.Response.self)
+        let mapper = CoinsResponseMapper(supportedBlockchains: Set(Blockchain.allMainnetCases))
+        let coinModels = mapper.mapToCoinModels(response)
+        return coinModels
+    }
+
+    func parseCoinResponse() throws -> CoinsList.Response {
+        try JsonUtils.readBundleFile(with: "coinsResponse", type: CoinsList.Response.self)
+    }
 }

@@ -8,7 +8,7 @@ final class ___VARIABLE_moduleName:identifier___ViewModel: ObservableObject {
 
     // MARK: - Dependencies
 
-    private unowned let coordinator: ___VARIABLE_moduleName___Routable
+    private weak var coordinator: ___VARIABLE_moduleName___Routable?
 
     init(
         coordinator: ___VARIABLE_moduleName___Routable

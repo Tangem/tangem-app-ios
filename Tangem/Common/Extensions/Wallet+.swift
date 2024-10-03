@@ -11,39 +11,34 @@ import BlockchainSdk
 import SwiftUI
 
 public extension Wallet {
-    func canSend(amountType: Amount.AmountType) -> Bool {
-        if hasPendingTransactions {
-            return false
-        }
+    func feeCurrencyBalance(amountType: Amount.AmountType) -> Decimal {
+        let feeAmountType = feeAmountType(transactionAmountType: amountType)
+        let feeAmount = amounts[feeAmountType]?.value ?? 0
 
-        if amounts.isEmpty { // not loaded from blockchain
-            return false
-        }
-
-        if amounts.values.first(where: { $0.value > 0 }) == nil { // empty wallet
-            return false
-        }
-
-        let amount = amounts[amountType]?.value ?? 0
-        if amount <= 0 {
-            return false
-        }
-
-        let coinAmount = amounts[.coin]?.value ?? 0
-        if coinAmount <= 0 { // not enough fee
-            return false
-        }
-
-        return true
+        return feeAmount
     }
 
-    private var hasPendingTransactions: Bool {
-        // For bitcoin we check only outgoing transaction
-        // because we will not use unconfirmed utxo
-        if case .bitcoin = blockchain {
-            return pendingTransactions.contains { !$0.isIncoming }
-        }
+    func hasFeeCurrency(amountType: Amount.AmountType) -> Bool {
+        feeCurrencyBalance(amountType: amountType) > 0
+    }
 
-        return hasPendingTx
+    private func feeAmountType(transactionAmountType: Amount.AmountType) -> Amount.AmountType {
+        switch blockchain.feePaidCurrency {
+        case .coin:
+            return .coin
+        case .token(let value):
+            return .token(value: value)
+        case .sameCurrency:
+            return transactionAmountType
+        // Currently, we use this only for Koinos.
+        // The MANA (fee resource) amount can only be zero if the KOIN (coin) amount is zero.
+        // There is a network restriction that prohibits sending the maximum amount of KOIN,
+        // which explicitly means there will always be some KOIN.
+        // This also implicitly means there will always be some amount of MANA,
+        // because 1 KOIN is able to recharge at a rate of 0.00000231 Mana per second,
+        // and this recharge rate scales correspondingly to the amount of KOIN in the balance.
+        case .feeResource(let type):
+            return .feeResource(type)
+        }
     }
 }

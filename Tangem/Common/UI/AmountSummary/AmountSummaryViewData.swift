@@ -12,11 +12,8 @@ import SwiftUI
 struct AmountSummaryViewData: Identifiable {
     let id = UUID()
 
+    let title: String
     let amount: String
     let amountFiat: String
-    let tokenIconName: String
-    let tokenIconURL: URL?
-    let tokenIconCustomTokenColor: Color?
-    let tokenIconBlockchainIconName: String?
-    let isCustomToken: Bool
+    let tokenIconInfo: TokenIconInfo
 }

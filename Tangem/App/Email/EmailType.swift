@@ -72,6 +72,7 @@ enum EmailCollectedDataType {
     case logs
     case card(CardData)
     case send(SendData)
+    case staking(StakingData)
     case wallet(WalletData)
     case error
     case separator(SeparatorType)
@@ -85,6 +86,8 @@ enum EmailCollectedDataType {
         case derivationPath = "Derivation path"
         case token
         case userWalletId
+        case linkedCardsCount = "Linked cards count"
+        case backupCardsCount = "Backup cards count"
     }
 
     enum SendData: String {
@@ -98,14 +101,21 @@ enum EmailCollectedDataType {
         case pushingFee = "Pushing Transaction New Fee"
     }
 
+    enum StakingData: String {
+        case validatorName = "Validator Name"
+        case validatorAddress = "Validator Address"
+        case stakingAction = "Staking Action"
+    }
+
     enum WalletData: String {
         case walletAddress = "Wallet address"
         case explorerLink = "Explorer link"
         case signedHashes = "Signed hashes"
         case walletManagerHost = "Host"
+        case exceptionWalletManagerHost = "Exception Host"
         case outputsCount = "Outputs count"
         case derivationPath = "Derivation path"
-        case xpub = "XPUB"
+        case hasSeedPhrase = "Has seed phrase"
     }
 
     enum TokenData: String {
@@ -125,6 +135,7 @@ enum EmailCollectedDataType {
         case .logs: return "Logs: "
         case .card(let data): return data.rawValue.capitalizingFirstLetter() + ": "
         case .send(let data): return data.rawValue.capitalizingFirstLetter() + ": "
+        case .staking(let data): return data.rawValue.capitalizingFirstLetter() + ": "
         case .wallet(let data): return data.rawValue + ": "
         case .token(let data): return data.rawValue + ": "
         case .error: return "Error: "

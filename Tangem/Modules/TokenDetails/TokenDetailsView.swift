@@ -11,25 +11,12 @@ import SwiftUI
 struct TokenDetailsView: View {
     @ObservedObject var viewModel: TokenDetailsViewModel
 
-    @State private var contentOffset: CGPoint = .zero
+    @StateObject private var scrollState = TokenDetailsScrollState(
+        tokenIconSizeSettings: Constants.tokenIconSizeSettings,
+        headerTopPadding: Constants.headerTopPadding
+    )
 
-    private let tokenIconSizeSettings: IconViewSizeSettings = .tokenDetails
-    private let headerTopPadding: CGFloat = 14
-    private let coorditateSpaceName = "token_details_scroll_space"
-
-    private var toolbarIconOpacity: Double {
-        let iconSize = tokenIconSizeSettings.iconSize
-        let startAppearingOffset = headerTopPadding + iconSize.height
-
-        let fullAppearanceDistance = iconSize.height / 2
-        let fullAppearanceOffset = startAppearingOffset + fullAppearanceDistance
-
-        return clamp(
-            (contentOffset.y - startAppearingOffset) / (fullAppearanceOffset - startAppearingOffset),
-            min: 0,
-            max: 1
-        )
-    }
+    private let coordinateSpaceName = UUID()
 
     var body: some View {
         RefreshableScrollView(onRefresh: viewModel.onPullToRefresh(completionHandler:)) {
@@ -38,18 +25,36 @@ struct TokenDetailsView: View {
 
                 BalanceWithButtonsView(viewModel: viewModel.balanceWithButtonsModel)
 
-                ForEach(viewModel.tokenNotificationInputs) { input in
+                ForEach(viewModel.bannerNotificationInputs) { input in
                     NotificationView(input: input)
-                        .transition(viewModel.shouldShowNotificationsWithAnimation ? .notificationTransition : .identity)
+                        .transition(.notificationTransition)
                 }
 
-                if viewModel.isMarketPriceAvailable {
+                ForEach(viewModel.tokenNotificationInputs) { input in
+                    NotificationView(input: input)
+                        .transition(.notificationTransition)
+                }
+
+                if viewModel.isMarketsDetailsAvailable {
                     MarketPriceView(
                         currencySymbol: viewModel.currencySymbol,
                         price: viewModel.rateFormatted,
                         priceChangeState: viewModel.priceChangeState,
-                        tapAction: nil
+                        miniChartData: viewModel.miniChartData,
+                        tapAction: viewModel.openMarketsTokenDetails
                     )
+                }
+
+                if let activeStakingViewData = viewModel.activeStakingViewData {
+                    ActiveStakingView(data: activeStakingViewData)
+                        .padding(14)
+                        .background(Colors.Background.primary)
+                        .cornerRadiusContinuous(14)
+                }
+
+                ForEach(viewModel.pendingExpressTransactions) { transactionInfo in
+                    PendingExpressTransactionView(info: transactionInfo)
+                        .transition(.notificationTransition)
                 }
 
                 PendingTransactionsListView(
@@ -61,28 +66,30 @@ struct TokenDetailsView: View {
                     state: viewModel.transactionHistoryState,
                     exploreAction: viewModel.openExplorer,
                     exploreTransactionAction: viewModel.openTransactionExplorer,
-                    reloadButtonAction: viewModel.reloadHistory,
+                    reloadButtonAction: viewModel.onButtonReloadHistory,
                     isReloadButtonBusy: viewModel.isReloadingTransactionHistory,
                     fetchMore: viewModel.fetchMoreHistory()
                 )
                 .padding(.bottom, 40)
             }
-            .padding(.top, headerTopPadding)
+            .padding(.top, Constants.headerTopPadding)
             .readContentOffset(
-                inCoordinateSpace: .named(coorditateSpaceName),
-                bindTo: $contentOffset
+                inCoordinateSpace: .named(coordinateSpaceName),
+                bindTo: scrollState.contentOffsetSubject.asWriteOnlyBinding(.zero)
             )
         }
+        .animation(.default, value: viewModel.bannerNotificationInputs)
         .animation(.default, value: viewModel.tokenNotificationInputs)
+        .animation(.default, value: viewModel.pendingExpressTransactions)
         .padding(.horizontal, 16)
         .edgesIgnoringSafeArea(.bottom)
         .background(Colors.Background.secondary.edgesIgnoringSafeArea(.all))
         .ignoresSafeArea(.keyboard)
         .onAppear(perform: viewModel.onAppear)
-        .onDidAppear(viewModel.onDidAppear)
+        .onAppear(perform: scrollState.onViewAppear)
         .alert(item: $viewModel.alert) { $0.alert }
         .actionSheet(item: $viewModel.actionSheet) { $0.sheet }
-        .coordinateSpace(name: coorditateSpaceName)
+        .coordinateSpace(name: coordinateSpaceName)
         .toolbar(content: {
             ToolbarItem(placement: .principal) {
                 TokenIcon(
@@ -95,7 +102,7 @@ struct TokenDetailsView: View {
                     ),
                     size: IconViewSizeSettings.tokenDetailsToolbar.iconSize
                 )
-                .opacity(toolbarIconOpacity)
+                .opacity(scrollState.toolbarIconOpacity)
             }
 
             ToolbarItem(placement: .navigationBarTrailing) { navbarTrailingButton }
@@ -105,16 +112,62 @@ struct TokenDetailsView: View {
 
     @ViewBuilder
     private var navbarTrailingButton: some View {
-        if viewModel.canHideToken {
+        if viewModel.hasDotsMenu {
             Menu {
-                if #available(iOS 15.0, *) {
+                if viewModel.canGenerateXPUB {
+                    Button(Localization.tokenDetailsGenerateXpub, action: viewModel.generateXPUBButtonAction)
+                }
+
+                if viewModel.canHideToken {
                     Button(Localization.tokenDetailsHideToken, role: .destructive, action: viewModel.hideTokenButtonAction)
-                } else {
-                    Button(Localization.tokenDetailsHideToken, action: viewModel.hideTokenButtonAction)
                 }
             } label: {
                 NavbarDotsImage()
             }
         }
     }
+}
+
+// MARK: - Constants
+
+private extension TokenDetailsView {
+    enum Constants {
+        static let tokenIconSizeSettings: IconViewSizeSettings = .tokenDetails
+        static let headerTopPadding: CGFloat = 14.0
+    }
+}
+
+#Preview {
+    let userWalletModel = FakeUserWalletModel.wallet3Cards
+    let walletModel = userWalletModel.walletModelsManager.walletModels.first ?? .mockETH
+    let exchangeUtility = ExchangeCryptoUtility(
+        blockchain: walletModel.blockchainNetwork.blockchain,
+        address: walletModel.defaultAddress,
+        amountType: walletModel.tokenItem.amountType
+    )
+    let notifManager = SingleTokenNotificationManager(
+        walletModel: walletModel,
+        walletModelsManager: userWalletModel.walletModelsManager,
+        contextDataProvider: nil
+    )
+    let pendingTxsManager = CommonPendingExpressTransactionsManager(
+        userWalletId: userWalletModel.userWalletId.stringValue,
+        walletModel: walletModel,
+        expressRefundedTokenHandler: ExpressRefundedTokenHandlerMock()
+    )
+    let coordinator = TokenDetailsCoordinator()
+
+    let bannerNotificationManager = BannerNotificationManager(placement: .tokenDetails(walletModel.tokenItem), contextDataProvider: nil)
+
+    return TokenDetailsView(viewModel: .init(
+        userWalletModel: userWalletModel,
+        walletModel: walletModel,
+        exchangeUtility: exchangeUtility,
+        notificationManager: notifManager,
+        bannerNotificationManager: bannerNotificationManager,
+        pendingExpressTransactionsManager: pendingTxsManager,
+        xpubGenerator: nil,
+        coordinator: coordinator,
+        tokenRouter: SingleTokenRouter(userWalletModel: userWalletModel, coordinator: coordinator)
+    ))
 }

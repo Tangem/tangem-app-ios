@@ -33,7 +33,8 @@ struct OrganizeTokensListSectionView: View {
             }
         }
         .padding(.horizontal, 14.0)
-        .padding(.vertical, 12)
+        .padding(.top, 12)
+        .padding(.bottom, 6)
     }
 }
 

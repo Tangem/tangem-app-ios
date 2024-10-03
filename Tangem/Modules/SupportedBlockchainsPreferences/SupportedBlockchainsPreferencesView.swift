@@ -18,6 +18,7 @@ struct SupportedBlockchainsPreferencesView: View {
                 DefaultToggleRowView(viewModel: $0)
             }
         }
+        .interContentPadding(8)
         .background(Colors.Background.secondary.ignoresSafeArea())
         .navigationTitle(Text("Supported blockchains"))
         .navigationBarTitleDisplayMode(.inline)

@@ -30,6 +30,6 @@ struct BottomSheetHeaderView: View {
         }
         .frame(maxWidth: .infinity)
         .multilineTextAlignment(.center)
-        .padding(.vertical, 10)
+        .padding(.vertical, 12)
     }
 }

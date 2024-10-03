@@ -17,14 +17,4 @@ enum WalletConnectAction: String {
     case signTypedData = "eth_signTypedData"
     case signTypedDataV4 = "eth_signTypedData_v4"
     case switchChain = "wallet_switchEthereumChain"
-
-    var successMessage: String {
-        switch self {
-        case .personalSign, .signTypedData, .signTypedDataV4: return Localization.walletConnectMessageSigned
-        case .signTransaction: return Localization.walletConnectTransactionSigned
-        case .sendTransaction: return Localization.walletConnectTransactionSignedAndSend
-        case .bnbSign: return Localization.walletConnectBnbTransactionSigned
-        case .bnbTxConfirmation, .switchChain: return ""
-        }
-    }
 }

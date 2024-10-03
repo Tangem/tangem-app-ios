@@ -19,7 +19,7 @@ struct AppSettingsView: View {
         ZStack {
             Colors.Background.secondary.edgesIgnoringSafeArea(.all)
 
-            GroupedScrollView {
+            GroupedScrollView(spacing: 24) {
                 appCurrencySection
 
                 warningSection
@@ -32,6 +32,7 @@ struct AppSettingsView: View {
 
                 themeSettingsSection
             }
+            .interContentPadding(8)
         }
         .alert(item: $viewModel.alert) { $0.alert }
         .navigationBarTitle(Text(Localization.appSettingsTitle), displayMode: .inline)

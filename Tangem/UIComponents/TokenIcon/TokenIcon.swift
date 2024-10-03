@@ -12,11 +12,14 @@ import Kingfisher
 struct TokenIcon: View {
     let tokenIconInfo: TokenIconInfo
     let size: CGSize
+    var isWithOverlays: Bool = true
+    var forceKingfisher: Bool = true
 
     private var imageURL: URL? { tokenIconInfo.imageURL }
     private var customTokenColor: Color? { tokenIconInfo.customTokenColor }
     private var blockchainIconName: String? { tokenIconInfo.blockchainIconName }
     private var isCustom: Bool { tokenIconInfo.isCustom }
+    private var networkBorderColor: Color { tokenIconInfo.networkBorderColor }
 
     private let networkIconSize = CGSize(width: 14, height: 14)
     private let networkIconBorderWidth: Double = 2
@@ -37,14 +40,14 @@ struct TokenIcon: View {
     }
 
     private var tokenIcon: some View {
-        IconView(url: imageURL, size: size, forceKingfisher: true)
+        IconView(url: imageURL, size: size, forceKingfisher: forceKingfisher)
             .overlay(networkIcon, alignment: .topTrailing)
             .overlay(customTokenIndicator, alignment: .bottomTrailing)
     }
 
     @ViewBuilder
     private var networkIcon: some View {
-        if let iconName = blockchainIconName {
+        if let iconName = blockchainIconName, isWithOverlays {
             NetworkIcon(
                 imageName: iconName,
                 isActive: true,
@@ -52,7 +55,7 @@ struct TokenIcon: View {
                 size: networkIconSize
             )
             .background(
-                Colors.Background.primary
+                networkBorderColor
                     .clipShape(Circle())
                     .frame(size: networkIconSize + CGSize(width: 2 * networkIconBorderWidth, height: 2 * networkIconBorderWidth))
             )
@@ -62,7 +65,7 @@ struct TokenIcon: View {
 
     @ViewBuilder
     private var customTokenIndicator: some View {
-        if isCustom {
+        if isCustom, isWithOverlays {
             Circle()
                 .foregroundColor(Colors.Icon.informative)
                 .frame(size: customTokenIndicatorSize)
@@ -116,7 +119,7 @@ struct TokenIcon_Preview: PreviewProvider {
                         tokenIconInfo: .init(
                             name: "",
                             blockchainIconName: coin.iconName,
-                            imageURL: TokenIconURLBuilder().iconURL(id: coin.id, size: .large),
+                            imageURL: IconURLBuilder().tokenIconURL(id: coin.id, size: .large),
                             isCustom: true,
                             customTokenColor: nil
                         ),

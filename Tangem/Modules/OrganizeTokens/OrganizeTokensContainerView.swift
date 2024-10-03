@@ -57,9 +57,7 @@ struct OrganizeTokensContainerView: View {
             uiAppearance.compactAppearance = navBarAppearance
             uiAppearance.standardAppearance = navBarAppearance
             uiAppearance.scrollEdgeAppearance = navBarAppearance
-            if #available(iOS 15.0, *) {
-                uiAppearance.compactScrollEdgeAppearance = navBarAppearance
-            }
+            uiAppearance.compactScrollEdgeAppearance = navBarAppearance
 
             didSetupUIAppearance = true
         }

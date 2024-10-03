@@ -145,7 +145,7 @@ struct CardStackAnimator<Card: View>: View {
     }
 
     @ViewBuilder
-    private func modify<Card: View>(_ view: Card, at index: Int) -> some View {
+    private func modify(_ view: Card, at index: Int) -> some View {
         let delta = index - selectedIndex
         let cardIndex = selectedIndex > index ? cards.count + delta : delta
         let settings: CardAnimSettings = CGFloat(index) == hiddenIndex ?

@@ -33,7 +33,7 @@ class AppSettingsViewModel: ObservableObject {
 
     // MARK: Dependencies
 
-    private unowned let coordinator: AppSettingsRoutable
+    private weak var coordinator: AppSettingsRoutable?
 
     // MARK: Properties
 
@@ -73,14 +73,14 @@ private extension AppSettingsViewModel {
         $selectedCurrencyCode
             .dropFirst()
             .sink { [weak self] _ in
-                self?.setupView()
+                self?.updateCurrencySelectionViewModel()
             }
             .store(in: &bag)
 
         AppSettings.shared.$appTheme
             .withWeakCaptureOf(self)
-            .sink { viewModel, input in
-                viewModel.setupView()
+            .sink { viewModel, _ in
+                viewModel.updateThemeSettingsViewModel()
             }
             .store(in: &bag)
 
@@ -168,7 +168,7 @@ private extension AppSettingsViewModel {
         currencySelectionViewModel = DefaultRowViewModel(
             title: Localization.detailsRowTitleCurrency,
             detailsType: .text(selectedCurrencyCode),
-            action: coordinator.openCurrencySelection
+            action: coordinator?.openCurrencySelection
         )
 
         sensitiveTextAvailabilityViewModel = DefaultToggleRowViewModel(
@@ -179,8 +179,16 @@ private extension AppSettingsViewModel {
         themeSettingsViewModel = DefaultRowViewModel(
             title: Localization.appSettingsThemeSelectorTitle,
             detailsType: .text(AppSettings.shared.appTheme.titleForDetails),
-            action: coordinator.openThemeSelection
+            action: coordinator?.openThemeSelection
         )
+    }
+
+    func updateCurrencySelectionViewModel() {
+        currencySelectionViewModel?.update(detailsType: .text(selectedCurrencyCode))
+    }
+
+    func updateThemeSettingsViewModel() {
+        themeSettingsViewModel?.update(detailsType: .text(AppSettings.shared.appTheme.titleForDetails))
     }
 
     func isSavingWalletBinding() -> BindingValue<Bool> {
@@ -294,15 +302,15 @@ private extension AppSettingsViewModel {
 
 extension AppSettingsViewModel {
     func openTokenSynchronization() {
-        coordinator.openTokenSynchronization()
+        coordinator?.openTokenSynchronization()
     }
 
     func openResetSavedCards() {
-        coordinator.openResetSavedCards()
+        coordinator?.openResetSavedCards()
     }
 
     func openBiometrySettings() {
         Analytics.log(.buttonEnableBiometricAuthentication)
-        coordinator.openAppSettings()
+        coordinator?.openAppSettings()
     }
 }

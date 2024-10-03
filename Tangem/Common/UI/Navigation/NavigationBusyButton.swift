@@ -16,12 +16,13 @@ struct NavigationBusyButton: View {
 
     var body: some View {
         if isBusy {
-            ActivityIndicatorView(isAnimating: true, style: .medium, color: color)
+            ProgressView()
+                .progressViewStyle(.circular)
+                .tint(Color(uiColor: color))
         } else {
             Button(action: action, label: {
                 image
                     .foregroundColor(Color(color))
-                    .frame(width: 44, height: 44)
             })
         }
     }

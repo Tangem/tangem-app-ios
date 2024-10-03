@@ -9,30 +9,33 @@
 import Foundation
 
 class OnboardingCoordinator: CoordinatorObject {
-    // MARK: - Dependencies
-
     var dismissAction: Action<OutputOptions>
     var popToRootAction: Action<PopToRootOptions>
 
+    var isNavigationBarHidden: Bool {
+        viewState?.isMain == false
+    }
+
+    var transitionAnimationValue: Bool {
+        viewState?.isMain == false
+    }
+
+    // MARK: - Dependencies
+
+    @Injected(\.safariManager) private var safariManager: SafariManager
+
     // MARK: - Main view models
 
-    @Published private(set) var singleCardViewModel: SingleCardOnboardingViewModel? = nil
-    @Published private(set) var twinsViewModel: TwinsOnboardingViewModel? = nil
-    @Published private(set) var walletViewModel: WalletOnboardingViewModel? = nil
-
-    // MARK: - Child coordinators
-
-    @Published var legacyMainCoordinator: LegacyMainCoordinator? = nil
-    @Published var mainCoordinator: MainCoordinator? = nil
+    @Published private(set) var viewState: ViewState? = nil
 
     // MARK: - Child view models
 
-    @Published var buyCryptoModel: WebViewContainerViewModel? = nil
     @Published var warningBankCardViewModel: WarningBankCardViewModel? = nil
     @Published var modalWebViewModel: WebViewContainerViewModel? = nil
     @Published var accessCodeModel: OnboardingAccessCodeViewModel? = nil
     @Published var addressQrBottomSheetContentViewModel: AddressQrBottomSheetContentViewModel? = nil
     @Published var supportChatViewModel: SupportChatViewModel? = nil
+    @Published var mailViewModel: MailViewModel? = nil
 
     // MARK: - Helpers
 
@@ -42,6 +45,7 @@ class OnboardingCoordinator: CoordinatorObject {
     // MARK: - Private
 
     private var options: OnboardingCoordinator.Options!
+    private var safariHandle: SafariHandle?
 
     required init(dismissAction: @escaping Action<OutputOptions>, popToRootAction: @escaping Action<PopToRootOptions>) {
         self.dismissAction = dismissAction
@@ -55,15 +59,15 @@ class OnboardingCoordinator: CoordinatorObject {
         case .singleWallet:
             let model = SingleCardOnboardingViewModel(input: input, coordinator: self)
             onDismissalAttempt = model.backButtonAction
-            singleCardViewModel = model
+            viewState = .singleCard(model)
         case .twins:
             let model = TwinsOnboardingViewModel(input: input, coordinator: self)
             onDismissalAttempt = model.backButtonAction
-            twinsViewModel = model
+            viewState = .twins(model)
         case .wallet:
             let model = WalletOnboardingViewModel(input: input, coordinator: self)
             onDismissalAttempt = model.backButtonAction
-            walletViewModel = model
+            viewState = .wallet(model)
         }
 
         Analytics.log(.onboardingStarted)
@@ -92,19 +96,11 @@ extension OnboardingCoordinator {
 // MARK: - OnboardingTopupRoutable
 
 extension OnboardingCoordinator: OnboardingTopupRoutable {
-    func openCryptoShop(at url: URL, closeUrl: String, action: @escaping (String) -> Void) {
-        buyCryptoModel = .init(
-            url: url,
-            title: Localization.commonBuy,
-            addLoadingIndicator: true,
-            withCloseButton: true,
-            urlActions: [closeUrl: { [weak self] response in
-                DispatchQueue.main.async {
-                    action(response)
-                    self?.buyCryptoModel = nil
-                }
-            }]
-        )
+    func openCryptoShop(at url: URL, action: @escaping () -> Void) {
+        safariHandle = safariManager.openURL(url) { [weak self] _ in
+            self?.safariHandle = nil
+            action()
+        }
     }
 
     func openBankWarning(confirmCallback: @escaping () -> Void, declineCallback: @escaping () -> Void) {
@@ -147,6 +143,11 @@ extension OnboardingCoordinator: WalletOnboardingRoutable {
         })
     }
 
+    func openMail(with dataCollector: EmailDataCollector, recipient: String, emailType: EmailType) {
+        let logsComposer = LogsComposer(infoProvider: dataCollector)
+        mailViewModel = .init(logsComposer: logsComposer, recipient: recipient, emailType: emailType)
+    }
+
     func openSupportChat(input: SupportChatInputModel) {
         Analytics.log(.chatScreenOpened)
         supportChatViewModel = SupportChatViewModel(input: input)
@@ -165,11 +166,11 @@ extension OnboardingCoordinator: WalletOnboardingRoutable {
 // MARK: - OnboardingRoutable
 
 extension OnboardingCoordinator: OnboardingRoutable {
-    func onboardingDidFinish(userWallet: CardViewModel?) {
+    func onboardingDidFinish(userWalletModel: UserWalletModel?) {
         switch options.destination {
         case .main:
-            if let userWallet {
-                openMain(with: userWallet)
+            if let userWalletModel {
+                openMain(with: userWalletModel)
                 return
             }
 
@@ -185,18 +186,30 @@ extension OnboardingCoordinator: OnboardingRoutable {
         dismiss(with: .init(isSuccessful: false))
     }
 
-    private func openMain(with cardModel: CardViewModel) {
-        if FeatureProvider.isAvailable(.mainV2) {
-            let coordinator = MainCoordinator(popToRootAction: popToRootAction)
-            let options = MainCoordinator.Options(userWalletModel: cardModel)
-            coordinator.start(with: options)
-            mainCoordinator = coordinator
-            return
-        }
+    private func openMain(with userWalletModel: UserWalletModel) {
+        let coordinator = MainCoordinator(popToRootAction: popToRootAction)
 
-        let coordinator = LegacyMainCoordinator(popToRootAction: popToRootAction)
-        let options = LegacyMainCoordinator.Options(cardModel: cardModel)
+        let options = MainCoordinator.Options(userWalletModel: userWalletModel)
         coordinator.start(with: options)
-        legacyMainCoordinator = coordinator
+
+        viewState = .main(coordinator)
+    }
+}
+
+// MARK: ViewState
+
+extension OnboardingCoordinator {
+    enum ViewState {
+        case singleCard(SingleCardOnboardingViewModel)
+        case twins(TwinsOnboardingViewModel)
+        case wallet(WalletOnboardingViewModel)
+        case main(MainCoordinator)
+
+        var isMain: Bool {
+            if case .main = self {
+                return true
+            }
+            return false
+        }
     }
 }

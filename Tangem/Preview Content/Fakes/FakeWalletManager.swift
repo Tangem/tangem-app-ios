@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import BlockchainSdk
+import TangemVisa
 
 class FakeWalletManager: WalletManager {
     @Published var wallet: Wallet
@@ -25,10 +26,17 @@ class FakeWalletManager: WalletManager {
 
     private var loadingStateObserver: AnyCancellable?
 
-    init(wallet: BlockchainSdk.Wallet, derivationStyle: DerivationStyle? = .v2) {
+    init(wallet: BlockchainSdk.Wallet) {
         self.wallet = wallet
         cardTokens = wallet.amounts.compactMap { $0.key.token }
-        walletModels = CommonWalletModelsFactory(derivationStyle: derivationStyle).makeWalletModels(from: self)
+        walletModels = CommonWalletModelsFactory(
+            config: Wallet2Config(
+                card: CardDTO(card: CardMock.wallet.card),
+                isDemo: false,
+                isRing: false
+            )
+        ).makeWalletModels(from: self)
+
         bind()
         updateWalletModels()
     }
@@ -36,7 +44,7 @@ class FakeWalletManager: WalletManager {
     func scheduleSwitchFromLoadingState() {
         print("Scheduling switch from loading state")
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-            self.state = .loaded(self.wallet)
+            self.state = .loaded
         }
     }
 
@@ -66,8 +74,12 @@ class FakeWalletManager: WalletManager {
         tokens.forEach { wallet.add(tokenValue: 0, for: $0) }
     }
 
-    func send(_ transaction: BlockchainSdk.Transaction, signer: BlockchainSdk.TransactionSigner) -> AnyPublisher<BlockchainSdk.TransactionSendResult, Error> {
-        .justWithError(output: .init(hash: Data.randomData(count: 32).hexString))
+    func send(
+        _ transaction: BlockchainSdk.Transaction,
+        signer: BlockchainSdk.TransactionSigner
+    ) -> AnyPublisher<BlockchainSdk.TransactionSendResult, SendTxError> {
+        Fail(error: SendTxError(error: WalletError.empty, tx: Data.randomData(count: 32).hexString))
+            .eraseToAnyPublisher()
     }
 
     func validate(fee: BlockchainSdk.Fee) throws {}
@@ -93,11 +105,9 @@ class FakeWalletManager: WalletManager {
     private func nextState() -> WalletManagerState {
         switch state {
         case .initial: return .loading
-        case .loading: return .loaded(wallet)
+        case .loading: return .loaded
         case .loaded: return .failed("Some Wallet manager error")
         case .failed: return .loading
-        @unknown default:
-            preconditionFailure()
         }
     }
 
@@ -148,6 +158,13 @@ extension FakeWalletManager {
     static let xlmManager: FakeWalletManager = {
         var wallet = Wallet.xlmWalletStub
         wallet.add(coinValue: 390192)
+        return FakeWalletManager(wallet: wallet)
+    }()
+
+    static let visaWalletManager: FakeWalletManager = {
+        var wallet = Wallet.polygonWalletStub
+        wallet.add(coinValue: 0)
+        wallet.add(tokenValue: 354.123, for: VisaUtilities().mockToken)
         return FakeWalletManager(wallet: wallet)
     }()
 }

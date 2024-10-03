@@ -11,26 +11,31 @@ import Combine
 import TangemSdk
 
 class WelcomeCoordinator: CoordinatorObject {
-    // MARK: - Dependencies
-
     var dismissAction: Action<Void>
     var popToRootAction: Action<PopToRootOptions>
 
+    var isNavigationBarHidden: Bool {
+        viewState?.isMain == false
+    }
+
+    // MARK: - Dependencies
+
+    @Injected(\.safariManager) private var safariManager: SafariManager
+    @Injected(\.pushNotificationsInteractor) private var pushNotificationsInteractor: PushNotificationsInteractor
+
     // MARK: - Main view model
 
-    @Published private(set) var welcomeViewModel: WelcomeViewModel? = nil
+    @Published private(set) var viewState: ViewState? = nil
 
     // MARK: - Child coordinators
 
-    @Published var legacyMainCoordinator: LegacyMainCoordinator? = nil
-    @Published var mainCoordinator: MainCoordinator? = nil
     @Published var pushedOnboardingCoordinator: OnboardingCoordinator? = nil
-    @Published var shopCoordinator: ShopCoordinator? = nil
-    @Published var legacyTokenListCoordinator: LegacyTokenListCoordinator? = nil
     @Published var promotionCoordinator: PromotionCoordinator? = nil
+    @Published var welcomeOnboardingCoordinator: WelcomeOnboardingCoordinator? = nil
 
     // MARK: - Child view models
 
+    @Published var searchTokensViewModel: WelcomeSearchTokensViewModel? = nil
     @Published var mailViewModel: MailViewModel? = nil
 
     // MARK: - Private
@@ -38,12 +43,12 @@ class WelcomeCoordinator: CoordinatorObject {
     private var welcomeLifecycleSubscription: AnyCancellable?
 
     private var lifecyclePublisher: AnyPublisher<Bool, Never> {
-        // Only modals, because the modal presentation will not trigger onAppear/onDissapear events
+        // Only modals, because the modal presentation will not trigger onAppear/onDisappear events
         var publishers: [AnyPublisher<Bool, Never>] = []
         publishers.append($mailViewModel.dropFirst().map { $0 == nil }.eraseToAnyPublisher())
-        publishers.append($shopCoordinator.dropFirst().map { $0 == nil }.eraseToAnyPublisher())
-        publishers.append($legacyTokenListCoordinator.dropFirst().map { $0 == nil }.eraseToAnyPublisher())
+        publishers.append($searchTokensViewModel.dropFirst().map { $0 == nil }.eraseToAnyPublisher())
         publishers.append($promotionCoordinator.dropFirst().map { $0 == nil }.eraseToAnyPublisher())
+        publishers.append($welcomeOnboardingCoordinator.dropFirst().map { $0 == nil }.eraseToAnyPublisher())
 
         return Publishers.MergeMany(publishers)
             .eraseToAnyPublisher()
@@ -55,8 +60,9 @@ class WelcomeCoordinator: CoordinatorObject {
     }
 
     func start(with options: WelcomeCoordinator.Options) {
-        welcomeViewModel = .init(shouldScanOnAppear: options.shouldScan, coordinator: self)
+        viewState = .welcome(WelcomeViewModel(shouldScanOnAppear: options.shouldScan, coordinator: self))
         subscribeToWelcomeLifecycle()
+        showWelcomeOnboardingIfNeeded()
     }
 
     private func subscribeToWelcomeLifecycle() {
@@ -65,11 +71,30 @@ class WelcomeCoordinator: CoordinatorObject {
                 guard let self else { return }
 
                 if viewDismissed {
-                    welcomeViewModel?.becomeActive()
+                    viewState?.welcomeViewModel?.becomeActive()
                 } else {
-                    welcomeViewModel?.resignActve()
+                    viewState?.welcomeViewModel?.resignActive()
                 }
             }
+    }
+
+    private func showWelcomeOnboardingIfNeeded() {
+        let factory = PushNotificationsHelpersFactory()
+        let availabilityProvider = factory.makeAvailabilityProviderForWelcomeOnboarding(using: pushNotificationsInteractor)
+        let permissionManager = factory.makePermissionManagerForWelcomeOnboarding(using: pushNotificationsInteractor)
+        let builder = WelcomeOnboardingStepsBuilder(isPushNotificationsAvailable: availabilityProvider.isAvailable)
+        let steps = builder.buildSteps()
+        guard !steps.isEmpty else {
+            return
+        }
+
+        let dismissAction: Action<WelcomeOnboardingCoordinator.OutputOptions> = { [weak self] _ in
+            self?.welcomeOnboardingCoordinator = nil
+        }
+
+        let coordinator = WelcomeOnboardingCoordinator(dismissAction: dismissAction)
+        coordinator.start(with: .init(steps: steps, pushNotificationsPermissionManager: permissionManager))
+        welcomeOnboardingCoordinator = coordinator
     }
 }
 
@@ -95,19 +120,11 @@ extension WelcomeCoordinator: WelcomeRoutable {
         pushedOnboardingCoordinator = coordinator
     }
 
-    func openMain(with cardModel: CardViewModel) {
-        if FeatureProvider.isAvailable(.mainV2) {
-            let coordinator = MainCoordinator(popToRootAction: popToRootAction)
-            let options = MainCoordinator.Options(userWalletModel: cardModel)
-            coordinator.start(with: options)
-            mainCoordinator = coordinator
-            return
-        }
-
-        let coordinator = LegacyMainCoordinator(popToRootAction: popToRootAction)
-        let options = LegacyMainCoordinator.Options(cardModel: cardModel)
+    func openMain(with userWalletModel: UserWalletModel) {
+        let coordinator = MainCoordinator(popToRootAction: popToRootAction)
+        let options = MainCoordinator.Options(userWalletModel: userWalletModel)
         coordinator.start(with: options)
-        legacyMainCoordinator = coordinator
+        viewState = .main(coordinator)
     }
 
     func openMail(with dataCollector: EmailDataCollector, recipient: String) {
@@ -126,18 +143,47 @@ extension WelcomeCoordinator: WelcomeRoutable {
     }
 
     func openTokensList() {
-        let dismissAction: Action<Void> = { [weak self] _ in
-            self?.legacyTokenListCoordinator = nil
-        }
-
-        let coordinator = LegacyTokenListCoordinator(dismissAction: dismissAction)
-        coordinator.start(with: .show)
-        legacyTokenListCoordinator = coordinator
+        searchTokensViewModel = .init()
     }
 
     func openShop() {
-        let coordinator = ShopCoordinator()
-        coordinator.start()
-        shopCoordinator = coordinator
+        Analytics.log(.shopScreenOpened)
+        safariManager.openURL(AppConstants.webShopUrl)
+    }
+
+    func openScanCardManual() {
+        safariManager.openURL(TangemBlogUrlBuilder().url(post: .scanCard))
+    }
+}
+
+// MARK: ViewState
+
+extension WelcomeCoordinator {
+    enum ViewState: Equatable {
+        case welcome(WelcomeViewModel)
+        case main(MainCoordinator)
+
+        var isMain: Bool {
+            if case .main = self {
+                return true
+            }
+            return false
+        }
+
+        var welcomeViewModel: WelcomeViewModel? {
+            if case .welcome(let viewModel) = self {
+                return viewModel
+            }
+            return nil
+        }
+
+        static func == (lhs: WelcomeCoordinator.ViewState, rhs: WelcomeCoordinator.ViewState) -> Bool {
+            switch (lhs, rhs) {
+            case (.welcome, .welcome), (.main, .main):
+                return true
+            default:
+                return false
+            }
+        }
     }
 }

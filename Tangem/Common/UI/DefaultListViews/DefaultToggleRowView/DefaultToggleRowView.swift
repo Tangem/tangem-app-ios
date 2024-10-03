@@ -21,7 +21,7 @@ struct DefaultToggleRowView: View {
         HStack {
             Text(viewModel.title)
                 .style(
-                    Fonts.Regular.body,
+                    Fonts.Regular.callout,
                     color: viewModel.isDisabled ? Colors.Text.disabled : Colors.Text.primary1
                 )
 
@@ -29,7 +29,7 @@ struct DefaultToggleRowView: View {
 
             Toggle("", isOn: $isOn)
                 .labelsHidden()
-                .toggleStyleCompat(Colors.Control.checked)
+                .tint(Colors.Control.checked)
                 .disabled(viewModel.isDisabled)
         }
         .padding(.vertical, 8)

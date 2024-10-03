@@ -14,23 +14,31 @@ class TokenDetailsCoordinator: CoordinatorObject {
     let dismissAction: Action<Void>
     let popToRootAction: Action<PopToRootOptions>
 
+    // MARK: - Dependencies
+
+    @Injected(\.safariManager) private var safariManager: SafariManager
+
     // MARK: - Root view model
 
     @Published private(set) var tokenDetailsViewModel: TokenDetailsViewModel? = nil
 
     // MARK: - Child coordinators
 
-    @Published var legacySendCoordinator: LegacySendCoordinator? = nil
     @Published var sendCoordinator: SendCoordinator? = nil
-    @Published var swappingCoordinator: SwappingCoordinator? = nil
     @Published var expressCoordinator: ExpressCoordinator? = nil
     @Published var tokenDetailsCoordinator: TokenDetailsCoordinator? = nil
+    @Published var stakingDetailsCoordinator: StakingDetailsCoordinator? = nil
+    @Published var marketsTokenDetailsCoordinator: TokenMarketsDetailsCoordinator? = nil
 
     // MARK: - Child view models
 
     @Published var warningBankCardViewModel: WarningBankCardViewModel? = nil
     @Published var modalWebViewModel: WebViewContainerViewModel? = nil
     @Published var receiveBottomSheetViewModel: ReceiveBottomSheetViewModel? = nil
+    @Published var pendingExpressTxStatusBottomSheetViewModel: PendingExpressTxStatusBottomSheetViewModel? = nil
+
+    private var safariHandle: SafariHandle?
+    private var options: Options?
 
     required init(
         dismissAction: @escaping Action<Void>,
@@ -41,27 +49,55 @@ class TokenDetailsCoordinator: CoordinatorObject {
     }
 
     func start(with options: Options) {
+        self.options = options
+
         let exchangeUtility = ExchangeCryptoUtility(
             blockchain: options.walletModel.blockchainNetwork.blockchain,
             address: options.walletModel.wallet.address,
             amountType: options.walletModel.amountType
         )
-        let notificationManager = SingleTokenNotificationManager(walletModel: options.walletModel, contextDataProvider: options.cardModel)
+
+        let notificationManager = SingleTokenNotificationManager(
+            walletModel: options.walletModel,
+            walletModelsManager: options.userWalletModel.walletModelsManager,
+            contextDataProvider: options.userWalletModel
+        )
 
         let tokenRouter = SingleTokenRouter(
-            userWalletModel: options.cardModel,
+            userWalletModel: options.userWalletModel,
             coordinator: self
         )
 
+        let expressFactory = CommonExpressModulesFactory(
+            inputModel: .init(
+                userWalletModel: options.userWalletModel,
+                initialWalletModel: options.walletModel
+            )
+        )
+
+        let pendingExpressTransactionsManager = expressFactory.makePendingExpressTransactionsManager()
+
+        let bannerNotificationManager = options.userWalletModel.config.hasFeature(.multiCurrency)
+            ? BannerNotificationManager(placement: .tokenDetails(options.walletModel.tokenItem), contextDataProvider: options.userWalletModel)
+            : nil
+
+        let factory = XPUBGeneratorFactory(cardInteractor: options.userWalletModel.keysDerivingInteractor)
+        let xpubGenerator = factory.makeXPUBGenerator(
+            for: options.walletModel.blockchainNetwork.blockchain,
+            publicKey: options.walletModel.wallet.publicKey
+        )
+
         tokenDetailsViewModel = .init(
-            cardModel: options.cardModel,
+            userWalletModel: options.userWalletModel,
             walletModel: options.walletModel,
             exchangeUtility: exchangeUtility,
             notificationManager: notificationManager,
+            bannerNotificationManager: bannerNotificationManager,
+            pendingExpressTransactionsManager: pendingExpressTransactionsManager,
+            xpubGenerator: xpubGenerator,
             coordinator: self,
             tokenRouter: tokenRouter
         )
-        notificationManager.setupManager(with: tokenDetailsViewModel)
     }
 }
 
@@ -69,7 +105,7 @@ class TokenDetailsCoordinator: CoordinatorObject {
 
 extension TokenDetailsCoordinator {
     struct Options {
-        let cardModel: CardViewModel
+        let userWalletModel: UserWalletModel
         let walletModel: WalletModel
         let userTokensManager: UserTokensManager
     }
@@ -77,120 +113,121 @@ extension TokenDetailsCoordinator {
 
 // MARK: - TokenDetailsRoutable
 
-extension TokenDetailsCoordinator: TokenDetailsRoutable {}
+extension TokenDetailsCoordinator: TokenDetailsRoutable {
+    func openPendingExpressTransactionDetails(
+        for pendingTransaction: PendingExpressTransaction,
+        tokenItem: TokenItem,
+        pendingTransactionsManager: PendingExpressTransactionsManager
+    ) {
+        pendingExpressTxStatusBottomSheetViewModel = .init(
+            pendingTransaction: pendingTransaction,
+            currentTokenItem: tokenItem,
+            pendingTransactionsManager: pendingTransactionsManager,
+            router: self
+        )
+    }
+}
+
+// MARK: - PendingExpressTxStatusRoutable
+
+extension TokenDetailsCoordinator: PendingExpressTxStatusRoutable {
+    func openURL(_ url: URL) {
+        safariManager.openURL(url)
+    }
+
+    func openCurrency(tokenItem: TokenItem) {
+        pendingExpressTxStatusBottomSheetViewModel = nil
+
+        guard let userWalletModel = options?.userWalletModel else {
+            return
+        }
+
+        // We don't have info about derivation here, so we have to find first non-custom walletModel.
+        guard let walletModel = userWalletModel.walletModelsManager.walletModels.first(where: {
+            $0.tokenItem.blockchain == tokenItem.blockchain
+                && $0.tokenItem.token == tokenItem.token
+                && !$0.isCustom
+        }) else {
+            return
+        }
+
+        openTokenDetails(for: walletModel)
+    }
+}
 
 extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
-    func openReceiveScreen(amountType: Amount.AmountType, blockchain: Blockchain, addressInfos: [ReceiveAddressInfo]) {
-        let tokenItem: TokenItem
-        switch amountType {
-        case .token(let token):
-            tokenItem = .token(token, blockchain)
-        default:
-            tokenItem = .blockchain(blockchain)
-        }
+    func openReceiveScreen(tokenItem: TokenItem, addressInfos: [ReceiveAddressInfo]) {
         receiveBottomSheetViewModel = .init(tokenItem: tokenItem, addressInfos: addressInfos)
     }
 
-    func openBuyCrypto(at url: URL, closeUrl: String, action: @escaping (String) -> Void) {
+    func openBuyCrypto(at url: URL, action: @escaping () -> Void) {
         Analytics.log(.topupScreenOpened)
-        modalWebViewModel = WebViewContainerViewModel(
-            url: url,
-            title: Localization.commonBuy,
-            addLoadingIndicator: true,
-            withCloseButton: true,
-            urlActions: [
-                closeUrl: { [weak self] response in
-                    self?.modalWebViewModel = nil
-                    action(response)
-                },
-            ]
-        )
+
+        safariHandle = safariManager.openURL(url) { [weak self] _ in
+            self?.safariHandle = nil
+            action()
+        }
     }
 
-    func openNetworkCurrency(for model: WalletModel, userWalletModel: UserWalletModel) {
-        // TODO: Remove this stuff after Send screen refactoring
-        guard let cardViewModel = userWalletModel as? CardViewModel else {
-            return
-        }
-
-        #warning("TODO: Add analytics")
-        let dismissAction: Action<Void> = { [weak self] _ in
-            self?.tokenDetailsCoordinator = nil
-        }
-        let coordinator = TokenDetailsCoordinator(dismissAction: dismissAction)
-        coordinator.start(
-            with: .init(
-                cardModel: cardViewModel,
-                walletModel: model,
-                userTokensManager: userWalletModel.userTokensManager
-            )
-        )
-
-        tokenDetailsCoordinator = coordinator
+    // TODO: remove userWalletModel from params
+    func openFeeCurrency(for model: WalletModel, userWalletModel: UserWalletModel) {
+        openTokenDetails(for: model)
     }
 
-    func openSellCrypto(at url: URL, sellRequestUrl: String, action: @escaping (String) -> Void) {
+    func openSellCrypto(at url: URL, action: @escaping (String) -> Void) {
         Analytics.log(.withdrawScreenOpened)
-        modalWebViewModel = WebViewContainerViewModel(
-            url: url,
-            title: Localization.commonSell,
-            addLoadingIndicator: true,
-            withCloseButton: true,
-            urlActions: [sellRequestUrl: action]
-        )
+
+        safariHandle = safariManager.openURL(url) { [weak self] closeURL in
+            self?.safariHandle = nil
+            action(closeURL.absoluteString)
+        }
     }
 
-    func openSend(amountToSend: Amount, blockchainNetwork: BlockchainNetwork, cardViewModel: CardViewModel, walletModel: WalletModel) {
-        guard FeatureProvider.isAvailable(.sendV2) else {
-            let coordinator = LegacySendCoordinator { [weak self] in
-                self?.legacySendCoordinator = nil
-            }
-            let options = LegacySendCoordinator.Options(
-                amountToSend: amountToSend,
-                destination: nil,
-                blockchainNetwork: blockchainNetwork,
-                cardViewModel: cardViewModel
-            )
-            coordinator.start(with: options)
-            legacySendCoordinator = coordinator
+    func openSend(userWalletModel: UserWalletModel, walletModel: WalletModel) {
+        guard SendFeatureProvider.shared.isAvailable else {
             return
         }
 
-        let coordinator = SendCoordinator { [weak self] in
+        let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] navigationInfo in
             self?.sendCoordinator = nil
+
+            if let navigationInfo {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                    self?.openFeeCurrency(for: navigationInfo.walletModel, userWalletModel: navigationInfo.userWalletModel)
+                }
+            }
         }
+
+        let coordinator = SendCoordinator(dismissAction: dismissAction)
         let options = SendCoordinator.Options(
             walletModel: walletModel,
-            transactionSigner: cardViewModel.signer,
+            userWalletModel: userWalletModel,
             type: .send
         )
         coordinator.start(with: options)
         sendCoordinator = coordinator
     }
 
-    func openSendToSell(amountToSend: Amount, destination: String, blockchainNetwork: BlockchainNetwork, cardViewModel: CardViewModel, walletModel: WalletModel) {
-        guard FeatureProvider.isAvailable(.sendV2) else {
-            let coordinator = LegacySendCoordinator { [weak self] in
-                self?.legacySendCoordinator = nil
-            }
-            let options = LegacySendCoordinator.Options(
-                amountToSend: amountToSend,
-                destination: destination,
-                blockchainNetwork: blockchainNetwork,
-                cardViewModel: cardViewModel
-            )
-            coordinator.start(with: options)
-            legacySendCoordinator = coordinator
+    func openSendToSell(amountToSend: Amount, destination: String, tag: String?, userWalletModel: UserWalletModel, walletModel: WalletModel) {
+        guard SendFeatureProvider.shared.isAvailable else {
             return
         }
 
-        let coordinator = SendCoordinator { [weak self] in
+        let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] navigationInfo in
             self?.sendCoordinator = nil
+
+            if let navigationInfo {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                    self?.openFeeCurrency(for: navigationInfo.walletModel, userWalletModel: navigationInfo.userWalletModel)
+                }
+            }
         }
+
+        let coordinator = SendCoordinator(dismissAction: dismissAction)
         let options = SendCoordinator.Options(
             walletModel: walletModel,
-            transactionSigner: cardViewModel.signer,
-            type: .sell(amount: amountToSend.value, destination: destination)
+            userWalletModel: userWalletModel,
+            type: .sell(parameters: .init(amount: amountToSend.value, destination: destination, tag: tag))
         )
         coordinator.start(with: options)
         sendCoordinator = coordinator
@@ -221,29 +258,7 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
         )
     }
 
-    func openSwapping(input: CommonSwappingModulesFactory.InputModel) {
-        if FeatureProvider.isAvailable(.express) {
-            openExpress(input: input)
-            return
-        }
-
-        let dismissAction: Action<Void> = { [weak self] _ in
-            self?.swappingCoordinator = nil
-        }
-
-        let factory = CommonSwappingModulesFactory(inputModel: input)
-        let coordinator = SwappingCoordinator(
-            factory: factory,
-            dismissAction: dismissAction,
-            popToRootAction: popToRootAction
-        )
-
-        coordinator.start(with: .default)
-
-        swappingCoordinator = coordinator
-    }
-
-    func openExpress(input: CommonSwappingModulesFactory.InputModel) {
+    func openExpress(input: CommonExpressModulesFactory.InputModel) {
         let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] navigationInfo in
             self?.expressCoordinator = nil
 
@@ -251,10 +266,10 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
                 return
             }
 
-            self?.openNetworkCurrency(for: navigationInfo.walletModel, userWalletModel: navigationInfo.userWalletModel)
+            self?.openFeeCurrency(for: navigationInfo.walletModel, userWalletModel: navigationInfo.userWalletModel)
         }
 
-        let factory = CommonSwappingModulesFactory(inputModel: input)
+        let factory = CommonExpressModulesFactory(inputModel: input)
         let coordinator = ExpressCoordinator(
             factory: factory,
             dismissAction: dismissAction,
@@ -266,11 +281,54 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
         expressCoordinator = coordinator
     }
 
-    func openExplorer(at url: URL, blockchainDisplayName: String) {
-        modalWebViewModel = WebViewContainerViewModel(
-            url: url,
-            title: Localization.commonExplorerFormat(blockchainDisplayName),
-            withCloseButton: true
+    func openStaking(options: StakingDetailsCoordinator.Options) {
+        let dismissAction: Action<Void> = { [weak self] _ in
+            self?.stakingDetailsCoordinator = nil
+        }
+
+        let coordinator = StakingDetailsCoordinator(
+            dismissAction: dismissAction,
+            popToRootAction: popToRootAction
         )
+
+        coordinator.start(with: options)
+        stakingDetailsCoordinator = coordinator
+    }
+
+    func openInSafari(url: URL) {
+        safariManager.openURL(url)
+    }
+
+    func openMarketsTokenDetails(tokenModel: MarketsTokenModel) {
+        let coordinator = TokenMarketsDetailsCoordinator()
+        coordinator.start(with: .init(info: tokenModel, style: .defaultNavigationStack))
+        marketsTokenDetailsCoordinator = coordinator
+    }
+}
+
+// MARK: - Private
+
+private extension TokenDetailsCoordinator {
+    func openTokenDetails(for walletModel: WalletModel) {
+        guard let options = options,
+              walletModel.tokenItem != options.walletModel.tokenItem else {
+            return
+        }
+
+        #warning("TODO: Add analytics")
+        let dismissAction: Action<Void> = { [weak self] _ in
+            self?.tokenDetailsCoordinator = nil
+        }
+
+        let coordinator = TokenDetailsCoordinator(dismissAction: dismissAction)
+        coordinator.start(
+            with: .init(
+                userWalletModel: options.userWalletModel,
+                walletModel: walletModel,
+                userTokensManager: options.userWalletModel.userTokensManager
+            )
+        )
+
+        tokenDetailsCoordinator = coordinator
     }
 }

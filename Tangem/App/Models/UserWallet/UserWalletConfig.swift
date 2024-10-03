@@ -13,17 +13,17 @@ import BlockchainSdk
 protocol UserWalletConfig: OnboardingStepsBuilderFactory, BackupServiceFactory, TangemSdkFactory {
     var emailConfig: EmailConfig? { get }
 
-    var tou: TOU { get }
-
     var cardsCount: Int { get }
 
     var cardSetLabel: String? { get }
 
     var cardName: String { get }
 
-    var walletCurves: [EllipticCurve] { get }
+    /// Actual state of current card's curves or main card's curves in case of biometrics
+    var existingCurves: [EllipticCurve] { get }
 
-    var mandatoryCurves: [EllipticCurve] { get }
+    /// Curves to create during card initialization
+    var createWalletCurves: [EllipticCurve] { get }
 
     var derivationStyle: DerivationStyle? { get }
 
@@ -34,6 +34,8 @@ protocol UserWalletConfig: OnboardingStepsBuilderFactory, BackupServiceFactory, 
     var canSkipBackup: Bool { get }
 
     var canImportKeys: Bool { get }
+
+    var isWalletsCreated: Bool { get }
     /// All blockchains supported by this user wallet.
     var supportedBlockchains: Set<Blockchain> { get }
 
@@ -58,11 +60,17 @@ protocol UserWalletConfig: OnboardingStepsBuilderFactory, BackupServiceFactory, 
 
     var customScanImage: ImageType? { get }
 
+    var cardSessionFilter: SessionFilter { get }
+
+    var hasDefaultToken: Bool { get }
+
     func getFeatureAvailability(_ feature: UserWalletFeature) -> UserWalletFeature.Availability
 
     func makeWalletModelsFactory() -> WalletModelsFactory
 
     func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory
+
+    func makeMainHeaderProviderFactory() -> MainHeaderProviderFactory
 }
 
 extension UserWalletConfig {
@@ -76,11 +84,6 @@ extension UserWalletConfig {
 
     func getDisabledLocalizedReason(for feature: UserWalletFeature) -> String? {
         getFeatureAvailability(feature).disabledLocalizedReason
-    }
-
-    var tou: TOU {
-        let url = URL(string: "https://tangem.com/tangem_tos.html")!
-        return TOU(id: url.absoluteString, url: url)
     }
 
     var emailConfig: EmailConfig? {
@@ -102,6 +105,10 @@ extension UserWalletConfig {
     var customOnboardingImage: ImageType? { nil }
 
     var customScanImage: ImageType? { nil }
+
+    var hasDefaultToken: Bool {
+        (defaultBlockchains.first?.tokens.count ?? 0) > 0
+    }
 }
 
 struct EmailConfig {
@@ -126,8 +133,28 @@ protocol CardContainer {
 }
 
 extension UserWalletConfig where Self: CardContainer {
-    var walletCurves: [EllipticCurve] {
+    var existingCurves: [EllipticCurve] {
         card.walletCurves
+    }
+
+    var tangemSigner: TangemSigner {
+        .init(filter: cardSessionFilter, sdk: makeTangemSdk(), twinKey: nil)
+    }
+
+    var isWalletsCreated: Bool {
+        !card.wallets.isEmpty
+    }
+
+    var cardSessionFilter: SessionFilter {
+        let shouldSkipCardId = card.backupStatus?.isActive ?? false
+
+        if shouldSkipCardId, let userWalletIdSeed {
+            let userWalletId = UserWalletId(with: userWalletIdSeed)
+            let filter = UserWalletIdPreflightReadFilter(userWalletId: userWalletId)
+            return .custom(filter)
+        }
+
+        return .cardId(card.cardId)
     }
 
     func makeTangemSdk() -> TangemSdk {
@@ -138,5 +165,9 @@ extension UserWalletConfig where Self: CardContainer {
     func makeBackupService() -> BackupService {
         let factory = GenericBackupServiceFactory(isAccessCodeSet: card.isAccessCodeSet)
         return factory.makeBackupService()
+    }
+
+    func makeMainHeaderProviderFactory() -> MainHeaderProviderFactory {
+        return CommonMainHeaderProviderFactory()
     }
 }

@@ -13,12 +13,28 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%li card</string>
+        <string>%li carte</string>
         <key>other</key>
-        <string>%li cards</string>
+        <string>%li cartes</string>
       </dict>
     </dict>
-    <key>main_learn_subtitle</key>
+    <key>manage_tokens_number_of_wallets_ios</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%li %#@total_wallets@</string>
+      <key>total_wallets</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>%li portefeuille</string>
+        <key>other</key>
+        <string>%li portefeuilles</string>
+      </dict>
+    </dict>
+    <key>markets_token_details_amount_exchanges</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
       <string>%#@format@</string>
@@ -29,25 +45,57 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Complete three lessons and receive %li 1INCH token to your wallet</string>
+        <string>%1$s exchange</string>
         <key>other</key>
-        <string>Complete three lessons and receive %li 1INCH tokens to your wallet</string>
+        <string>%1$s exchanges</string>
       </dict>
     </dict>
-    <key>manage_tokens_number_of_wallets_ios</key>
+    <key>markets_token_details_based_on_ratings</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
-      <string>%li of %#@total_wallets@</string>
-      <key>total_wallets</key>
+      <string>%#@format@</string>
+      <key>format</key>
       <dict>
         <key>NSStringFormatSpecTypeKey</key>
         <string>NSStringPluralRuleType</string>
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%li wallet</string>
+        <string>Basé sur %li évaluation</string>
         <key>other</key>
-        <string>%li wallets</string>
+        <string>Basé sur %li évaluations</string>
+      </dict>
+    </dict>
+    <key>onboarding_seed_generate_message_words_count</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>Vide</string>
+        <key>other</key>
+        <string>Écrivez ces %li mots dans l'ordre indiqué ci-dessous et conservez-les dans un endroit sûr et secret.</string>
+      </dict>
+    </dict>
+    <key>onboarding_seed_generate_words_count</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>Vide</string>
+        <key>other</key>
+        <string>%li mots</string>
       </dict>
     </dict>
     <key>referral_number_of_wallets</key>
@@ -61,9 +109,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>for %li wallet</string>
+        <string>pour le portefeuille %li</string>
         <key>other</key>
-        <string>for %li wallets</string>
+        <string>pour les portefeuilles %li </string>
       </dict>
     </dict>
     <key>referral_wallets_purchased_count</key>
@@ -77,25 +125,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%li wallet</string>
+        <string>%li portefeuille</string>
         <key>other</key>
-        <string>%li wallets</string>
-      </dict>
-    </dict>
-    <key>token_count</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%#@format@</string>
-      <key>format</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>one</key>
-        <string>%li token</string>
-        <key>other</key>
-        <string>%li tokens</string>
+        <string>%li portefeuilles</string>
       </dict>
     </dict>
     <key>warning_missing_derivation_message</key>
@@ -109,9 +141,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Use your card to generate an address for %li new network</string>
+        <string>Utilisez votre carte pour obtenir une adresse pour le réseau %li</string>
         <key>other</key>
-        <string>Use your card to generate an addresses for %li new networks</string>
+        <string>Utilisez votre carte pour obtenir des adresses pour les réseaux %li</string>
       </dict>
     </dict>
   </dict>

@@ -28,7 +28,7 @@ public protocol IncomingActionResponder: AnyObject {
     func didReceiveIncomingAction(_ action: IncomingAction) -> Bool
 }
 
-// MARK: - DI
+// MARK: - Dependencies
 
 private struct IncomingActionManagerKey: InjectionKey {
     static var currentValue: IncomingActionManager = CommonIncomingActionManager()

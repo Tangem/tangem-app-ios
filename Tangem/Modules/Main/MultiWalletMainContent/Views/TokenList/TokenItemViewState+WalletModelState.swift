@@ -17,7 +17,7 @@ extension TokenItemViewState {
             self = .loaded
         case .loading:
             self = .loading
-        case .noAccount(let message):
+        case .noAccount(let message, _):
             self = .noAccount(message: message)
         case .failed(let error):
             self = .networkError(error)

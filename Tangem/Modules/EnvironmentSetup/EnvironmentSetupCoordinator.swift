@@ -20,6 +20,7 @@ class EnvironmentSetupCoordinator: CoordinatorObject {
     // MARK: - Child view models
 
     @Published var supportedBlockchainsPreferencesViewModel: SupportedBlockchainsPreferencesViewModel?
+    @Published var stakingBlockchainsPreferencesViewModel: SupportedBlockchainsPreferencesViewModel?
 
     required init(
         dismissAction: @escaping Action<Void>,
@@ -44,6 +45,16 @@ extension EnvironmentSetupCoordinator {
 
 extension EnvironmentSetupCoordinator: EnvironmentSetupRoutable {
     func openSupportedBlockchainsPreferences() {
-        supportedBlockchainsPreferencesViewModel = SupportedBlockchainsPreferencesViewModel()
+        supportedBlockchainsPreferencesViewModel = SupportedBlockchainsPreferencesViewModel(
+            blockchainIds: SupportedBlockchains.testableIDs.map { .init(name: $0, id: $0) }.toSet(),
+            featureStorageKeyPath: \.supportedBlockchainsIds
+        )
+    }
+
+    func openStakingBlockchainsPreferences() {
+        stakingBlockchainsPreferencesViewModel = SupportedBlockchainsPreferencesViewModel(
+            blockchainIds: StakingFeatureProvider.testableBlockchainItems.map { .init(name: $0.name, id: $0.id) }.toSet(),
+            featureStorageKeyPath: \.stakingBlockchainsIds
+        )
     }
 }

@@ -1,5 +1,5 @@
 //
-//  OnWillDissapear.swift
+//  ViewStateHandler.swift
 //  Tangem
 //
 //  Created by Alexander Osokin on 29.08.2020.
@@ -10,10 +10,51 @@ import Foundation
 import UIKit
 import SwiftUI
 
-struct ViewStateHandler: UIViewControllerRepresentable {
+// MARK: - Convenience extensions
+
+extension View {
+    func onWillDisappear(perform: @escaping () -> Void) -> some View {
+        modifier(WillDisappearModifier(callback: perform))
+    }
+
+    func onDidDisappear(perform: @escaping () -> Void) -> some View {
+        modifier(DidDisappearModifier(callback: perform))
+    }
+
+    func onWillAppear(perform: @escaping () -> Void) -> some View {
+        modifier(WillAppearModifier(callback: perform))
+    }
+
+    func onDidAppear(perform: @escaping () -> Void) -> some View {
+        modifier(DidAppearModifier(callback: perform))
+    }
+
+    /// Consider using this method if you're using two and more life cycle callbacks for the same view.
+    /// Using this method is more efficient than using multiple individual lifecycle callbacks.
+    func on(
+        willAppear: (() -> Void)? = nil,
+        didAppear: (() -> Void)? = nil,
+        willDisappear: (() -> Void)? = nil,
+        didDisappear: (() -> Void)? = nil
+    ) -> some View {
+        modifier(
+            AggregateLifecycleModifier(
+                onWillAppear: willAppear,
+                onDidAppear: didAppear,
+                onWillDisappear: willDisappear,
+                onDidDisappear: didDisappear
+            )
+        )
+    }
+}
+
+// MARK: - Private implementation
+
+private struct ViewStateHandler: UIViewControllerRepresentable {
     let onWillAppear: (() -> Void)?
     let onDidAppear: (() -> Void)?
     let onWillDisappear: (() -> Void)?
+    let onDidDisappear: (() -> Void)?
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<ViewStateHandler>) -> UIViewController {
         context.coordinator
@@ -23,20 +64,23 @@ struct ViewStateHandler: UIViewControllerRepresentable {
         context.coordinator.onWillAppear = onWillAppear
         context.coordinator.onDidAppear = onDidAppear
         context.coordinator.onWillDisappear = onWillDisappear
+        context.coordinator.onDidDisappear = onDidDisappear
     }
 
     func makeCoordinator() -> ViewStateHandler.Coordinator {
-        Coordinator(onWillAppear: onWillAppear, onDidAppear: onDidAppear, onWillDisappear: onWillDisappear)
+        Coordinator(onWillAppear: onWillAppear, onDidAppear: onDidAppear, onWillDisappear: onWillDisappear, onDidDisappear: onDidDisappear)
     }
 
     class Coordinator: UIViewController {
-        var onWillDisappear: (() -> Void)?
         var onWillAppear: (() -> Void)?
         var onDidAppear: (() -> Void)?
+        var onWillDisappear: (() -> Void)?
+        var onDidDisappear: (() -> Void)?
 
-        init(onWillAppear: (() -> Void)?, onDidAppear: (() -> Void)?, onWillDisappear: (() -> Void)?) {
+        init(onWillAppear: (() -> Void)?, onDidAppear: (() -> Void)?, onWillDisappear: (() -> Void)?, onDidDisappear: (() -> Void)?) {
             self.onWillDisappear = onWillDisappear
             self.onWillAppear = onWillAppear
+            self.onDidDisappear = onDidDisappear
             self.onDidAppear = onDidAppear
             super.init(nibName: nil, bundle: nil)
         }
@@ -59,10 +103,15 @@ struct ViewStateHandler: UIViewControllerRepresentable {
             super.viewWillDisappear(animated)
             onWillDisappear?()
         }
+
+        override func viewDidDisappear(_ animated: Bool) {
+            super.viewDidDisappear(animated)
+            onDidDisappear?()
+        }
     }
 }
 
-struct WillDisappearModifier: ViewModifier {
+private struct WillDisappearModifier: ViewModifier {
     let callback: () -> Void
 
     func body(content: Content) -> some View {
@@ -70,12 +119,27 @@ struct WillDisappearModifier: ViewModifier {
             .background(ViewStateHandler(
                 onWillAppear: nil,
                 onDidAppear: nil,
-                onWillDisappear: callback
+                onWillDisappear: callback,
+                onDidDisappear: nil
             ))
     }
 }
 
-struct WillAppearModifier: ViewModifier {
+private struct DidDisappearModifier: ViewModifier {
+    let callback: () -> Void
+
+    func body(content: Content) -> some View {
+        content
+            .background(ViewStateHandler(
+                onWillAppear: nil,
+                onDidAppear: nil,
+                onWillDisappear: nil,
+                onDidDisappear: callback
+            ))
+    }
+}
+
+private struct WillAppearModifier: ViewModifier {
     let callback: () -> Void
 
     func body(content: Content) -> some View {
@@ -83,12 +147,13 @@ struct WillAppearModifier: ViewModifier {
             .background(ViewStateHandler(
                 onWillAppear: callback,
                 onDidAppear: nil,
-                onWillDisappear: nil
+                onWillDisappear: nil,
+                onDidDisappear: nil
             ))
     }
 }
 
-struct DidAppearModifier: ViewModifier {
+private struct DidAppearModifier: ViewModifier {
     let callback: () -> Void
 
     func body(content: Content) -> some View {
@@ -96,21 +161,25 @@ struct DidAppearModifier: ViewModifier {
             .background(ViewStateHandler(
                 onWillAppear: nil,
                 onDidAppear: callback,
-                onWillDisappear: nil
+                onWillDisappear: nil,
+                onDidDisappear: nil
             ))
     }
 }
 
-extension View {
-    func onWillDisappear(_ perform: @escaping () -> Void) -> some View {
-        modifier(WillDisappearModifier(callback: perform))
-    }
+private struct AggregateLifecycleModifier: ViewModifier {
+    let onWillAppear: (() -> Void)?
+    let onDidAppear: (() -> Void)?
+    let onWillDisappear: (() -> Void)?
+    let onDidDisappear: (() -> Void)?
 
-    func onWillAppear(_ perform: @escaping () -> Void) -> some View {
-        modifier(WillAppearModifier(callback: perform))
-    }
-
-    func onDidAppear(_ perform: @escaping () -> Void) -> some View {
-        modifier(DidAppearModifier(callback: perform))
+    func body(content: Content) -> some View {
+        content
+            .background(ViewStateHandler(
+                onWillAppear: onWillAppear,
+                onDidAppear: onDidAppear,
+                onWillDisappear: onWillDisappear,
+                onDidDisappear: onDidDisappear
+            ))
     }
 }

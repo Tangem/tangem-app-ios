@@ -14,13 +14,14 @@ protocol AnalyticsContext {
     func setupContext(with: AnalyticsContextData)
 
     func clearContext()
+    func clearSession()
 
     func value(forKey: AnalyticsStorageKey, scope: AnalyticsContextScope) -> Any?
     func set(value: Any, forKey storageKey: AnalyticsStorageKey, scope: AnalyticsContextScope)
     func removeValue(forKey storageKey: AnalyticsStorageKey, scope: AnalyticsContextScope)
 }
 
-// MARK: - DI
+// MARK: - Dependencies
 
 private struct AnalyticsContextKey: InjectionKey {
     static var currentValue: AnalyticsContext = CommonAnalyticsContext()

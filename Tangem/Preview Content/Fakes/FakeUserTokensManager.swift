@@ -20,39 +20,41 @@ class FakeUserTokensManager: UserTokensManager {
         self.userTokenListManager = userTokenListManager
     }
 
-    func add(_ tokenItems: [TokenItem], derivationPath: DerivationPath?, completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
+    func addTokenItemPrecondition(_ tokenItem: TokenItem) throws {}
+
+    func add(_ tokenItems: [TokenItem], completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
         completion(.success(()))
     }
 
-    func add(_ tokenItem: TokenItem, derivationPath: DerivationPath?) async throws -> String {
+    func add(_ tokenItem: TokenItem) async throws -> String {
         ""
     }
 
     func deriveIfNeeded(completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
-        derivationManager?.deriveKeys(cardInteractor: CardInteractor(cardId: ""), completion: { result in
+        derivationManager?.deriveKeys(cardInteractor: KeysDerivingMock(), completion: { result in
             completion(result)
         })
     }
 
-    func contains(_ tokenItem: TokenItem, derivationPath: DerivationPath?) -> Bool {
-        userTokenListManager.userTokens.contains(where: { $0.blockchainNetwork == .init(tokenItem.blockchain, derivationPath: derivationPath) })
+    func contains(_ tokenItem: TokenItem) -> Bool {
+        userTokenListManager.userTokens.contains(where: { $0.blockchainNetwork == tokenItem.blockchainNetwork })
     }
 
     func getAllTokens(for blockchainNetwork: BlockchainNetwork) -> [BlockchainSdk.Token] {
         userTokenListManager.userTokens.first(where: { $0.blockchainNetwork == blockchainNetwork })?.tokens ?? []
     }
 
-    func update(itemsToRemove: [TokenItem], itemsToAdd: [TokenItem], derivationPath: DerivationPath?, completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
+    func update(itemsToRemove: [TokenItem], itemsToAdd: [TokenItem], completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
         completion(.success(()))
     }
 
-    func update(itemsToRemove: [TokenItem], itemsToAdd: [TokenItem], derivationPath: DerivationPath?) {}
+    func update(itemsToRemove: [TokenItem], itemsToAdd: [TokenItem]) throws {}
 
-    func canRemove(_ tokenItem: TokenItem, derivationPath: DerivationPath?) -> Bool {
+    func canRemove(_ tokenItem: TokenItem) -> Bool {
         false
     }
 
-    func remove(_ tokenItem: TokenItem, derivationPath: DerivationPath?) {}
+    func remove(_ tokenItem: TokenItem) {}
 
     func sync(completion: @escaping () -> Void) {}
 }
@@ -66,5 +68,5 @@ extension FakeUserTokensManager: UserTokensReordering {
 
     var sortingOption: AnyPublisher<UserTokensReorderingOptions.Sorting, Never> { .just(output: .dragAndDrop) }
 
-    func reorder(_ reorderingActions: [UserTokensReorderingAction]) -> AnyPublisher<Void, Never> { .just }
+    func reorder(_ actions: [UserTokensReorderingAction], source: UserTokensReorderingSource) -> AnyPublisher<Void, Never> { .just }
 }

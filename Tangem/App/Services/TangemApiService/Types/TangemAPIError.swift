@@ -8,11 +8,7 @@
 
 import Foundation
 
-struct TangemBaseAPIError: Decodable {
-    let error: TangemAPIError
-}
-
-struct TangemAPIError: Decodable, Error, LocalizedError {
+struct TangemAPIError: Decodable, LocalizedError {
     let code: ErrorCode
     let message: String?
 
@@ -43,13 +39,30 @@ extension TangemAPIError {
         case promotionProgramNotFound = 106
         case promotionProgramEnded = 107
 
+        // Blockchain account creation service
+        case networkAccountServiceInternalError = 120
+        case networkAccountsPerCardLimitReached = 121
+
         // Misc
+        case badRequest = 400
+        case forbidden = 403
         case notFound = 404
 
         /// The description for local errors, for server errors description will be gotten from api
         var description: String? {
             switch self {
-            case .notFound, .promotionCodeNotFound, .promotionCodeNotApplied, .promotionCodeAlreadyUsed, .promotionWalletAlreadyAwarded, .promotionCardAlreadyAwarded, .promotionProgramNotFound, .promotionProgramEnded:
+            case .badRequest,
+                 .forbidden,
+                 .notFound,
+                 .promotionCodeNotFound,
+                 .promotionCodeNotApplied,
+                 .promotionCodeAlreadyUsed,
+                 .promotionWalletAlreadyAwarded,
+                 .promotionCardAlreadyAwarded,
+                 .promotionProgramNotFound,
+                 .promotionProgramEnded,
+                 .networkAccountServiceInternalError,
+                 .networkAccountsPerCardLimitReached:
                 return nil
             case .decode:
                 return "Decoding error"

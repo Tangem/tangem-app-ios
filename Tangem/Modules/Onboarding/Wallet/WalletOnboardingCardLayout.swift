@@ -28,7 +28,7 @@ enum WalletOnboardingCardLayout {
                 targetSettings: fanStackCalculator.settingsForCard(at: cardFanStackIndex),
                 intermediateSettings: nil
             )
-        case (_, .success):
+        case (_, .success), (_, .addTokens), (_, .saveUserWallet):
             return .zero
         case (.origin, _), (.firstBackup, _), (.secondBackup, _):
             let targetSettings = CardAnimSettings(
@@ -77,7 +77,7 @@ enum WalletOnboardingCardLayout {
 
     func opacity(at step: WalletOnboardingStep, in container: CGSize) -> Double {
         switch (self, step) {
-        case (.secondBackup, .createWallet), (_, .success): return 0
+        case (.secondBackup, .createWallet), (_, .success), (_, .saveUserWallet), (_, .addTokens): return 0
         default:
             return 1
         }

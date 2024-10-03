@@ -15,7 +15,7 @@ struct CardSettingsView: View {
         ZStack {
             Colors.Background.secondary.edgesIgnoringSafeArea(.all)
 
-            GroupedScrollView {
+            GroupedScrollView(spacing: 24) {
                 GroupedSection(viewModel.cardInfoSection) {
                     DefaultRowView(viewModel: $0)
                 }
@@ -34,10 +34,12 @@ struct CardSettingsView: View {
 
                 GroupedSection(viewModel.resetToFactoryViewModel) {
                     DefaultRowView(viewModel: $0)
+                        .appearance(.destructiveButton)
                 } footer: {
                     DefaultFooterView(viewModel.resetToFactoryFooterMessage)
                 }
             }
+            .interContentPadding(8)
         }
         .alert(item: $viewModel.alert) { $0.alert }
         .navigationBarTitle(Text(Localization.cardSettingsTitle), displayMode: .inline)

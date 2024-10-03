@@ -24,7 +24,7 @@ struct UserTokenListStubs {
         decoder.keyDecodingStrategy = .useDefaultKeys
         do {
             print(dataStr)
-            print("Data count: \(dataStr.data(using: .utf8)?.count)")
+            print("Data count: \(String(describing: dataStr.data(using: .utf8)?.count))")
             return try decoder.decode(UserTokenList.self, from: dataStr.data(using: .utf8)!)
         } catch {
             print("Failed to decode card. Reason: \(error)")

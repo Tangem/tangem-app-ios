@@ -46,7 +46,7 @@ actor CommonWalletConnectSessionsStorage {
     private var sessionsFilteringSubscription: AnyCancellable?
 
     func loadSessions() {
-        var savedSessions: [WalletConnectSavedSession] = (try? storage.value(for: .allWalletConnectSessions)) ?? []
+        let savedSessions: [WalletConnectSavedSession] = (try? storage.value(for: .allWalletConnectSessions)) ?? []
         allSessions.value = savedSessions
     }
 
@@ -58,8 +58,12 @@ actor CommonWalletConnectSessionsStorage {
         do {
             try storage.store(value: sessions, for: .allWalletConnectSessions)
         } catch {
-            AppLog.shared.error(error)
+            log("Failed to save session file to disk. Error: \(error)")
         }
+    }
+
+    private func log<T>(_ message: @autoclosure () -> T) {
+        AppLog.shared.debug("[WC Sessions Storage] - \(message())")
     }
 }
 
@@ -67,6 +71,7 @@ extension CommonWalletConnectSessionsStorage: WalletConnectSessionsStorage {
     func save(_ session: WalletConnectSavedSession) {
         allSessions.value.append(session)
         saveCachedSessions()
+        log("Session with topic: \(session.topic) saved to disk.\nSession URL: \(session.sessionInfo.dAppInfo.url)")
     }
 
     func session(with id: Int) -> WalletConnectSavedSession? {
@@ -80,6 +85,7 @@ extension CommonWalletConnectSessionsStorage: WalletConnectSessionsStorage {
     func remove(_ session: WalletConnectSavedSession) {
         allSessions.value.remove(session)
         saveCachedSessions()
+        log("Session with topic: \(session.topic) was removed from storage.\nSession URL: \(session.sessionInfo.dAppInfo.url)")
     }
 
     func removeSessions(for userWalletId: String) -> [WalletConnectSavedSession] {
@@ -104,6 +110,7 @@ extension CommonWalletConnectSessionsStorage: WalletConnectSessionsStorage {
 
         saveSessionsToFile(sessions)
         allSessions.value = sessions
+        log("All sessions for \(userWalletId) was removed. Number of removed sessions: \(removedSessions.count)")
         return removedSessions
     }
 }
@@ -118,10 +125,10 @@ extension CommonWalletConnectSessionsStorage: Initializable {
 
     private func migrateSavedSessions() {
         var sessionsToSave = [WalletConnectSavedSession]()
-        for userWallet in userWalletRepository.userWallets {
-            if let oldSavedSessions: [WalletConnectSavedSession] = try? storage.value(for: .walletConnectSessions(userWalletId: userWallet.userWalletId.hexString)) {
+        for userWallet in userWalletRepository.models {
+            if let oldSavedSessions: [WalletConnectSavedSession] = try? storage.value(for: .walletConnectSessions(userWalletId: userWallet.userWalletId.stringValue)) {
                 sessionsToSave.append(contentsOf: oldSavedSessions)
-                try? storage.store(value: [WalletConnectSavedSession]?(nil), for: .walletConnectSessions(userWalletId: userWallet.userWalletId.hexString))
+                try? storage.store(value: [WalletConnectSavedSession]?(nil), for: .walletConnectSessions(userWalletId: userWallet.userWalletId.stringValue))
             }
         }
 

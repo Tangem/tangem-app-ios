@@ -8,6 +8,7 @@
 
 import Combine
 import SwiftUI
+import TangemExpress
 
 final class EnvironmentSetupViewModel: ObservableObject {
     @Injected(\.promotionService) var promotionService: PromotionServiceProtocol
@@ -15,9 +16,13 @@ final class EnvironmentSetupViewModel: ObservableObject {
     // MARK: - ViewState
 
     @Published var appSettingsTogglesViewModels: [DefaultToggleRowViewModel] = []
+    @Published var pickerViewModels: [DefaultPickerRowViewModel] = []
     @Published var featureStateViewModels: [FeatureStateRowViewModel] = []
     @Published var additionalSettingsViewModels: [DefaultRowViewModel] = []
     @Published var alert: AlertBinder?
+
+    // Demo
+    @Published var forcedDemoCardId: String = ""
 
     // Promotion
     @Published var currentPromoCode: String = ""
@@ -27,7 +32,7 @@ final class EnvironmentSetupViewModel: ObservableObject {
     // MARK: - Dependencies
 
     private let featureStorage = FeatureStorage()
-    private unowned let coordinator: EnvironmentSetupRoutable
+    private weak var coordinator: EnvironmentSetupRoutable?
     private var bag: Set<AnyCancellable> = []
 
     init(coordinator: EnvironmentSetupRoutable) {
@@ -48,7 +53,7 @@ final class EnvironmentSetupViewModel: ObservableObject {
                 )
             ),
             DefaultToggleRowViewModel(
-                title: "Use dev API",
+                title: "[Tangem] Use develop API",
                 isOn: BindingValue<Bool>(
                     root: featureStorage,
                     default: false,
@@ -57,12 +62,43 @@ final class EnvironmentSetupViewModel: ObservableObject {
                 )
             ),
             DefaultToggleRowViewModel(
-                title: "Use fake tx history",
+                title: "Enable Performance Monitor",
                 isOn: BindingValue<Bool>(
                     root: featureStorage,
                     default: false,
-                    get: { $0.useFakeTxHistory },
-                    set: { $0.useFakeTxHistory = $1 }
+                    get: { $0.isPerformanceMonitorEnabled },
+                    set: { $0.isPerformanceMonitorEnabled = $1 }
+                )
+            ),
+            DefaultToggleRowViewModel(
+                title: "Mocked CardScanner Enabled",
+                isOn: BindingValue<Bool>(
+                    root: featureStorage,
+                    default: false,
+                    get: { $0.isMockedCardScannerEnabled },
+                    set: { $0.isMockedCardScannerEnabled = $1 }
+                )
+            ),
+            DefaultToggleRowViewModel(
+                title: "Visa Testnet",
+                isOn: BindingValue<Bool>(
+                    root: featureStorage,
+                    default: false,
+                    get: { $0.isVisaTestnet },
+                    set: { $0.isVisaTestnet = $1 }
+                )
+            ),
+        ]
+
+        pickerViewModels = [
+            DefaultPickerRowViewModel(
+                title: "Express api type",
+                options: ExpressAPIType.allCases.map { $0.rawValue },
+                selection: BindingValue<String>(
+                    root: featureStorage,
+                    default: ExpressAPIType.production.rawValue,
+                    get: { $0.apiExpress },
+                    set: { $0.apiExpress = $1 }
                 )
             ),
         ]
@@ -88,9 +124,12 @@ final class EnvironmentSetupViewModel: ObservableObject {
         }
 
         additionalSettingsViewModels = [
-            DefaultRowViewModel(title: "Supported Blockchains") { [weak self] in
-                self?.coordinator.openSupportedBlockchainsPreferences()
-            },
+            DefaultRowViewModel(title: "Supported Blockchains", action: { [weak self] in
+                self?.coordinator?.openSupportedBlockchainsPreferences()
+            }),
+            DefaultRowViewModel(title: "Staking Blockchains", action: { [weak self] in
+                self?.coordinator?.openStakingBlockchainsPreferences()
+            }),
         ]
 
         updateCurrentPromoCode()
@@ -98,6 +137,15 @@ final class EnvironmentSetupViewModel: ObservableObject {
         updateFinishedPromotionNames()
 
         updateAwardedPromotionNames()
+
+        forcedDemoCardId = AppSettings.shared.forcedDemoCardId ?? ""
+
+        $forcedDemoCardId
+            .removeDuplicates()
+            .sink { newValue in
+                AppSettings.shared.forcedDemoCardId = newValue.nilIfEmpty
+            }
+            .store(in: &bag)
     }
 
     func copyCurrentPromoCode() {

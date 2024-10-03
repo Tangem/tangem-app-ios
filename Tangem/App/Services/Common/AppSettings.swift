@@ -15,18 +15,6 @@ class AppSettings {
     @AppStorageCompat(StorageType.numberOfAppLaunches)
     var numberOfLaunches: Int = 0
 
-    @AppStorageCompat(StorageType.didUserRespondToRateApp)
-    var didUserRespondToRateApp: Bool = false
-
-    @AppStorageCompat(StorageType.dismissRateAppAtLaunch)
-    var dismissRateAppAtLaunch: Int? = nil
-
-    @AppStorageCompat(StorageType.positiveBalanceAppearanceDate)
-    var positiveBalanceAppearanceDate: Date? = nil
-
-    @AppStorageCompat(StorageType.positiveBalanceAppearanceLaunch)
-    var positiveBalanceAppearanceLaunch: Int? = nil
-
     @AppStorageCompat(StorageType.cardsStartedActivation)
     var cardsStartedActivation: [String] = []
 
@@ -69,11 +57,26 @@ class AppSettings {
     @AppStorageCompat(StorageType.shouldHidingSensitiveInformationSheetShowing)
     var shouldHidingSensitiveInformationSheetShowing: Bool = true
 
-    @AppStorageCompat(StorageType.appTheme)
+    @AppStorageCompat(StorageType.appTheme, store: .standard)
     var appTheme: ThemeOption = .system
 
     @AppStorageCompat(StorageType.userDidSwipeWalletsOnMainScreen)
     var userDidSwipeWalletsOnMainScreen: Bool = false
+
+    @AppStorageCompat(StorageType.mainPromotionDismissed)
+    var mainPromotionDismissed: [String] = []
+
+    @AppStorageCompat(StorageType.tokenPromotionDismissed)
+    var tokenPromotionDismissed: [String] = []
+
+    @AppStorageCompat(StorageType.userDidTapSendScreenSummary)
+    var userDidTapSendScreenSummary: Bool = false
+
+    @AppStorageCompat(StorageType.forcedDemoCardId)
+    var forcedDemoCardId: String? = nil
+
+    @AppStorageCompat(StorageType.didMigrateUserWalletNames)
+    var didMigrateUserWalletNames: Bool = false
 
     static let shared: AppSettings = .init()
 

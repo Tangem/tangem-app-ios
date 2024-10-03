@@ -228,7 +228,7 @@ extension PromotionService {
         }
 
         do {
-            let address = try await userTokensManager.add(.token(awardToken, awardBlockchain), derivationPath: nil)
+            let address = try await userTokensManager.add(.token(awardToken, .init(awardBlockchain, derivationPath: nil)))
             return AwardDetails(blockchain: awardBlockchain, address: address)
         } catch {
             if error.toTangemSdkError().isUserCancelled {

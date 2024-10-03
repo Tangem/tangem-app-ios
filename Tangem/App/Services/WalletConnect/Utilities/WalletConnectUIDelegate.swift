@@ -28,34 +28,40 @@ protocol WalletConnectUIDelegate {
     func getResponseFromUser<Result>(with request: WalletConnectAsyncUIRequest<Result>) async -> (() async throws -> Result)
 }
 
-struct WalletConnectAlertUIDelegate: WalletConnectUIDelegate {
+class WalletConnectAlertUIDelegate: WalletConnectUIDelegate {
     private let appPresenter: AppPresenter = .shared
+    private let queue: DispatchQueue = .init(label: "com.tangem.wc.alertUIDelegate", qos: .userInitiated)
 
     func showScreen(with request: WalletConnectUIRequest) {
-        let alert = WalletConnectUIBuilder.makeAlert(
-            for: request.event,
-            message: request.message,
-            onAcceptAction: request.approveAction,
-            onReject: request.rejectAction ?? {}
-        )
+        queue.async { [weak self] in
+            let alert = WalletConnectUIBuilder.makeAlert(
+                for: request.event,
+                message: request.message,
+                onAcceptAction: request.approveAction,
+                onReject: request.rejectAction ?? {}
+            )
 
-        appPresenter.show(alert)
+            self?.appPresenter.show(alert)
+        }
     }
 
     @MainActor
     func getResponseFromUser<Result>(with request: WalletConnectAsyncUIRequest<Result>) async -> (() async throws -> Result) {
-        await withCheckedContinuation { continuation in
-            let alert = WalletConnectUIBuilder.makeAlert(
-                for: request.event,
-                message: request.message,
-                onAcceptAction: {
-                    continuation.resume(returning: request.approveAction)
-                },
-                onReject: {
-                    continuation.resume(returning: request.rejectAction)
-                }
-            )
-            appPresenter.show(alert)
+        await withCheckedContinuation { [weak self] continuation in
+            self?.queue.async { [weak self] in
+                let alert = WalletConnectUIBuilder.makeAlert(
+                    for: request.event,
+                    message: request.message,
+                    onAcceptAction: {
+                        continuation.resume(returning: request.approveAction)
+                    },
+                    onReject: {
+                        continuation.resume(returning: request.rejectAction)
+                    }
+                )
+
+                self?.appPresenter.show(alert)
+            }
         }
     }
 }

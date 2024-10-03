@@ -26,7 +26,7 @@ struct InformationHiddenBalancesView: View {
             buttonView
         }
         .padding(.top, 46)
-        .padding(.horizontal, 40)
+        .padding(.horizontal, 16)
     }
 
     private var textView: some View {
@@ -38,6 +38,7 @@ struct InformationHiddenBalancesView: View {
                 .style(Fonts.Regular.subheadline, color: Colors.Text.secondary)
         }
         .multilineTextAlignment(.center)
+        .padding(.horizontal, 24)
     }
 
     private var buttonView: some View {
@@ -70,7 +71,7 @@ struct InformationHiddenBalancesView_Preview: PreviewProvider {
                 .offset(y: -200)
 
                 NavHolder()
-                    .bottomSheet(item: $coordinator.item) {
+                    .bottomSheet(item: $coordinator.item, backgroundColor: Colors.Background.tertiary) {
                         InformationHiddenBalancesView(viewModel: $0)
                     }
             }

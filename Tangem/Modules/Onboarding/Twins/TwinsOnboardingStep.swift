@@ -23,7 +23,7 @@ extension SuccessStep {
 }
 
 enum TwinsOnboardingStep: Equatable {
-    case disclaimer
+    case pushNotifications
     case intro(pairNumber: String)
     case first
     case second
@@ -77,8 +77,8 @@ enum TwinsOnboardingStep: Equatable {
 
     var navbarTitle: String {
         switch self {
-        case .disclaimer:
-            return Localization.disclaimerTitle
+        case .pushNotifications:
+            return Localization.onboardingTitleNotifications
         default:
             return Localization.twinsRecreateToolbar
         }
@@ -88,8 +88,6 @@ enum TwinsOnboardingStep: Equatable {
         switch self {
         case .topup, .done:
             return defaultBackgroundFrameSize(in: container)
-        case .disclaimer:
-            return .zero
         default: return .init(width: 10, height: 10)
         }
     }
@@ -97,7 +95,6 @@ enum TwinsOnboardingStep: Equatable {
     func backgroundCornerRadius(in container: CGSize) -> CGFloat {
         switch self {
         case .topup, .done: return defaultBackgroundCornerRadius
-        case .disclaimer: return 0
         default: return backgroundFrame(in: container).height / 2
         }
     }
@@ -146,13 +143,12 @@ extension TwinsOnboardingStep: SuccessStep {}
 extension TwinsOnboardingStep: OnboardingMessagesProvider {
     var title: String? {
         switch self {
-        case .disclaimer: return ""
         case .intro: return Localization.twinsOnboardingSubtitle
         case .first, .third: return Localization.twinsRecreateTitleFormat("1")
         case .second: return Localization.twinsRecreateTitleFormat("2")
         case .topup: return Localization.onboardingTopupTitle
         case .done: return Localization.onboardingDoneHeader
-        case .saveUserWallet: return nil
+        case .saveUserWallet, .pushNotifications: return nil
         case .success: return successTitle
         case .alert: return Localization.commonWarning
         }
@@ -160,11 +156,10 @@ extension TwinsOnboardingStep: OnboardingMessagesProvider {
 
     var subtitle: String? {
         switch self {
-        case .disclaimer: return ""
         case .intro(let pairNumber): return Localization.twinsOnboardingDescriptionFormat(pairNumber)
         case .first, .second, .third: return Localization.onboardingTwinsInterruptWarning
         case .topup: return Localization.onboardingTopUpBody
-        case .saveUserWallet: return nil
+        case .saveUserWallet, .pushNotifications: return nil
         case .done, .success: return Localization.onboardingDoneBody
         case .alert: return Localization.twinsRecreateWarning
         }
@@ -180,15 +175,9 @@ extension TwinsOnboardingStep: OnboardingMessagesProvider {
 extension TwinsOnboardingStep: OnboardingButtonsInfoProvider {
     var mainButtonTitle: String {
         switch self {
-        case .disclaimer: return ""
-        case .intro: return Localization.commonContinue
-        case .first, .third: return Localization.twinsRecreateButtonFormat("1")
-        case .second: return Localization.twinsRecreateButtonFormat("2")
         case .topup: return Localization.onboardingTopUpButtonButCrypto
-        case .done: return Localization.commonContinue
         case .saveUserWallet: return BiometricAuthorizationUtils.allowButtonTitle
-        case .success: return successButtonTitle
-        case .alert: return Localization.commonContinue
+        default: return ""
         }
     }
 
@@ -203,15 +192,27 @@ extension TwinsOnboardingStep: OnboardingButtonsInfoProvider {
 
     var supplementButtonTitle: String {
         switch self {
-        case .disclaimer: return Localization.commonAccept
         case .topup: return Localization.onboardingTopUpButtonShowWalletAddress
+        case .first, .third: return Localization.twinsRecreateButtonFormat("1")
+        case .second: return Localization.twinsRecreateButtonFormat("2")
+        case .success: return successButtonTitle
+        case .done, .alert, .intro: return Localization.commonContinue
         default: return ""
+        }
+    }
+
+    var supplementButtonIcon: ImageType? {
+        switch self {
+        case .first, .second, .third:
+            return Assets.tangemIcon
+        default:
+            return nil
         }
     }
 
     var isSupplementButtonVisible: Bool {
         switch self {
-        case .topup, .disclaimer: return true
+        case .topup: return true
         default: return false
         }
     }

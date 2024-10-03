@@ -22,13 +22,18 @@ struct UserWalletConfigFactory {
     func makeConfig() -> UserWalletConfig {
         let isDemo = DemoUtil().isDemoCard(cardId: cardInfo.card.cardId)
         let isS2CCard = cardInfo.card.issuer.name.lowercased() == "start2coin"
-        let isRing = cardInfo.card.batchId == "AC17"
+        let isRing = cardInfo.card.batchId == "AC17" || cardInfo.card.batchId == "BA01"
+        let isVisa = cardInfo.card.batchId == "AE04"
 
         switch cardInfo.walletData {
         case .none:
             // old multiwallet
             if cardInfo.card.firmwareVersion <= .backupAvailable {
                 return LegacyConfig(card: cardInfo.card, walletData: nil)
+            }
+
+            if FirmwareVersion.visaRange.contains(cardInfo.card.firmwareVersion.doubleValue), isVisa {
+                return VisaConfig(card: cardInfo.card)
             }
 
             let isWallet2 = cardInfo.card.firmwareVersion >= .ed25519Slip0010Available

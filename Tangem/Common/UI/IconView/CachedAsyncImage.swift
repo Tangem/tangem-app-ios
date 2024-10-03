@@ -63,7 +63,6 @@ import SwiftUI
 ///         }
 ///     }
 ///
-@available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 public struct CachedAsyncImage<Content>: View where Content: View {
     @State private var phase: AsyncImagePhase
 
@@ -79,7 +78,7 @@ public struct CachedAsyncImage<Content>: View where Content: View {
 
     public var body: some View {
         content(phase)
-            .task(id: urlRequest, load)
+            .task(id: urlRequest) { await load() }
     }
 
     /// Loads and displays an image from the specified URL.
@@ -133,11 +132,7 @@ public struct CachedAsyncImage<Content>: View where Content: View {
     ///     would name with the `@2x` suffix if stored in a file on disk.
     public init(urlRequest: URLRequest?, urlCache: URLCache = .shared, scale: CGFloat = 1) where Content == Image {
         self.init(urlRequest: urlRequest, urlCache: urlCache, scale: scale) { phase in
-            #if os(macOS)
-            phase.image ?? Image(nsImage: .init())
-            #else
             phase.image ?? Image(uiImage: .init())
-            #endif
         }
     }
 
@@ -312,7 +307,6 @@ public struct CachedAsyncImage<Content>: View where Content: View {
         }
     }
 
-    @Sendable
     private func load() async {
         do {
             if let urlRequest = urlRequest {
@@ -340,14 +334,12 @@ public struct CachedAsyncImage<Content>: View where Content: View {
 
 // MARK: - LoadingError
 
-@available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 private extension AsyncImage {
     struct LoadingError: Error {}
 }
 
 // MARK: - Helpers
 
-@available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 private extension CachedAsyncImage {
     private func remoteImage(from request: URLRequest, session: URLSession) async throws -> (Image, URLSessionTaskMetrics) {
         let (data, _, metrics) = try await session.data(for: request)
@@ -366,19 +358,11 @@ private extension CachedAsyncImage {
     }
 
     private func image(from data: Data) throws -> Image {
-        #if os(macOS)
-        if let nsImage = NSImage(data: data) {
-            return Image(nsImage: nsImage)
-        } else {
-            throw AsyncImage<Content>.LoadingError()
-        }
-        #else
         if let uiImage = UIImage(data: data, scale: scale) {
             return Image(uiImage: uiImage)
         } else {
             throw AsyncImage<Content>.LoadingError()
         }
-        #endif
     }
 }
 
@@ -392,7 +376,6 @@ private class URLSessionTaskController: NSObject, URLSessionTaskDelegate {
     }
 }
 
-@available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 private extension URLSession {
     func data(for request: URLRequest) async throws -> (Data, URLResponse, URLSessionTaskMetrics) {
         let controller = URLSessionTaskController()

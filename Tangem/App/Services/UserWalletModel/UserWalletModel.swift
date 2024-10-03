@@ -8,20 +8,33 @@
 
 import BlockchainSdk
 import Combine
+import TangemSdk
 
-protocol UserWalletModel: MainHeaderInfoProvider, TotalBalanceProviding, MultiWalletMainHeaderSubtitleDataSource, AnalyticsContextDataProvider, AnyObject {
-    var isMultiWallet: Bool { get }
+protocol UserWalletModel: MainHeaderSupplementInfoProvider, TotalBalanceProviding, MultiWalletMainHeaderSubtitleDataSource, AnalyticsContextDataProvider, MainHeaderUserWalletStateInfoProvider, EmailDataProvider, WalletConnectUserWalletInfoProvider, KeysDerivingProvider, AnyObject {
     var tokensCount: Int? { get }
+    var analyticsContextData: AnalyticsContextData { get }
+    var hasBackupCards: Bool { get }
     var config: UserWalletConfig { get }
     var userWalletId: UserWalletId { get }
-    var userWallet: UserWallet { get }
+    var tangemApiAuthData: TangemApiTarget.AuthData { get }
     var walletModelsManager: WalletModelsManager { get }
     var userTokensManager: UserTokensManager { get }
     var userTokenListManager: UserTokenListManager { get }
+    var keysRepository: KeysRepository { get }
     var signer: TangemSigner { get }
     var updatePublisher: AnyPublisher<Void, Never> { get }
     var emailData: [EmailCollectedData] { get }
     var backupInput: OnboardingInput? { get } // TODO: refactor
-    var twinInput: OnboardingInput? { get }
+    var cardImagePublisher: AnyPublisher<CardImageResult, Never> { get }
+    var totalSignedHashes: Int { get }
+    var name: String { get }
+    func validate() -> Bool
+    func onBackupUpdate(type: BackupUpdateType)
     func updateWalletName(_ name: String)
+    func addAssociatedCard(_ cardId: String)
+}
+
+enum BackupUpdateType {
+    case primaryCardBackuped(card: Card)
+    case backupCompleted
 }

@@ -23,7 +23,7 @@ struct OrganizeTokensListItemView: View {
             )
 
             // Fixed size spacer
-            FixedSpacer(width: Constants.spacerLength, length: Constants.spacerLength)
+            FixedSpacer.horizontal(Constants.spacerLength)
                 .layoutPriority(1000.0)
 
             VStack(alignment: .leading, spacing: 4) {

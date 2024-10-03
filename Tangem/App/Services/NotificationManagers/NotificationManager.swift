@@ -16,9 +16,3 @@ protocol NotificationManager: AnyObject {
     func setupManager(with delegate: NotificationTapDelegate?)
     func dismissNotification(with id: NotificationViewId)
 }
-
-extension NotificationManager {
-    func setupManager() {
-        setupManager(with: nil)
-    }
-}

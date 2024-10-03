@@ -23,7 +23,7 @@ class TokenDetailsHeaderViewModel {
         self.tokenItem = tokenItem
 
         if let id = tokenItem.id {
-            imageURL = TokenIconURLBuilder().iconURL(id: id)
+            imageURL = IconURLBuilder().tokenIconURL(id: id)
         } else {
             imageURL = nil
         }

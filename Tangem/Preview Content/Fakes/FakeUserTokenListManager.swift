@@ -84,7 +84,7 @@ class FakeUserTokenListManager: UserTokenListManager {
     func updateLocalRepositoryFromServer(_ completion: @escaping (Result<Void, Error>) -> Void) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
             let converter = StorageEntryConverter()
-            let blockchainNetwork = BlockchainNetwork(.ethereum(testnet: false))
+            let blockchainNetwork = BlockchainNetwork(.ethereum(testnet: false), derivationPath: nil)
             let tokens: [Token] = [
                 .sushiMock,
                 .shibaInuMock,

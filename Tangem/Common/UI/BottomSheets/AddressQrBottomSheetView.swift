@@ -41,7 +41,7 @@ struct AddressQrBottomSheetContent: View {
                 .frame(maxWidth: 225)
                 .font(.system(size: 18, weight: .regular))
                 .multilineTextAlignment(.center)
-                .foregroundColor(.tangemGrayDark)
+                .foregroundColor(Colors.Old.tangemGrayDark)
             HStack(spacing: 10) {
                 Button(action: {
                     showCheckmark = true
@@ -62,7 +62,7 @@ struct AddressQrBottomSheetContent: View {
                             .truncationMode(.middle)
                             .frame(maxWidth: 100)
                             .font(.system(size: 15, weight: .semibold))
-                            .foregroundColor(.tangemGrayDark6)
+                            .foregroundColor(Colors.Icon.primary1)
 
                         Group {
                             showCheckmark ?
@@ -76,7 +76,7 @@ struct AddressQrBottomSheetContent: View {
                     }
                     .frame(height: 40)
                     .padding(.horizontal, 16)
-                    .background(Color.tangemBgGray)
+                    .background(Colors.Old.tangemBgGray)
                     .cornerRadius(20)
                 })
                 Button(action: { showShareSheet() }, label: {
@@ -84,7 +84,7 @@ struct AddressQrBottomSheetContent: View {
                         .frame(height: 40)
                         .foregroundColor(Colors.Icon.accent)
                         .padding(.horizontal, 16)
-                        .background(Color.tangemBgGray)
+                        .background(Colors.Old.tangemBgGray)
                         .cornerRadius(20)
                 })
             }
@@ -100,35 +100,16 @@ struct AddressQrBottomSheetContent: View {
     }
 }
 
-struct AddressQrBottomSheetPreviewView: View {
-    @ObservedObject var model: BottomSheetPreviewProvider
-
-    var body: some View {
-        ZStack {
-            Button(action: {
-                model.isBottomSheetPresented.toggle()
-            }, label: {
-                Text("Show bottom sheet")
-                    .padding()
-            })
-            NavHolder()
-                .bottomSheet(isPresented: $model.isBottomSheetPresented, viewModelSettings: .qr) {
-                    AddressQrBottomSheetContent(viewModel: .init(
-                        shareAddress: "eth:0x01232483902f903678a098bce",
-                        address: "0x01232483902f903678a098bce",
-                        qrNotice: "BTC"
-                    ))
-                }
-        }
-    }
-}
-
 struct AddressQrBottomSheet_Previews: PreviewProvider {
     static var previews: some View {
-        AddressQrBottomSheetPreviewView(model: BottomSheetPreviewProvider())
+        AddressQrBottomSheetPreviewView()
             .previewGroup(devices: [.iPhoneX], withZoomed: false)
 
-        AddressQrBottomSheetContent(viewModel: .init(
+        Self.makeBottomSheetContent()
+    }
+
+    fileprivate static func makeBottomSheetContent() -> some View {
+        return AddressQrBottomSheetContent(viewModel: .init(
             shareAddress: "eth:0x01232483902f903678a098bce",
             address: "0x01232483902f903678a098bce",
             qrNotice: "BTC"
@@ -136,6 +117,23 @@ struct AddressQrBottomSheet_Previews: PreviewProvider {
     }
 }
 
-class BottomSheetPreviewProvider: ObservableObject {
-    @Published var isBottomSheetPresented: Bool = false
+private struct AddressQrBottomSheetPreviewView: View {
+    private final class Trigger: Identifiable {}
+
+    @State private var isBottomSheetPresented: Trigger?
+
+    var body: some View {
+        ZStack {
+            Button(action: {
+                isBottomSheetPresented = (isBottomSheetPresented == nil) ? Trigger() : nil
+            }, label: {
+                Text("Show bottom sheet")
+                    .padding()
+            })
+            NavHolder()
+                .bottomSheet(item: $isBottomSheetPresented, backgroundColor: Colors.Background.tertiary) { _ in
+                    AddressQrBottomSheet_Previews.makeBottomSheetContent()
+                }
+        }
+    }
 }

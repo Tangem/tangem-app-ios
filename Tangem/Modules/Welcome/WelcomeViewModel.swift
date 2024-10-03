@@ -23,7 +23,7 @@ class WelcomeViewModel: ObservableObject {
     private var storiesModelSubscription: AnyCancellable?
     private var shouldScanOnAppear: Bool = false
 
-    private unowned let coordinator: WelcomeRoutable
+    private weak var coordinator: WelcomeRoutable?
 
     init(shouldScanOnAppear: Bool, coordinator: WelcomeRoutable) {
         self.shouldScanOnAppear = shouldScanOnAppear
@@ -40,11 +40,17 @@ class WelcomeViewModel: ObservableObject {
     }
 
     func tryAgain() {
+        Analytics.log(.cantScanTheCardTryAgainButton, params: [.source: .introduction])
         scanCard()
     }
 
+    func openScanCardManual() {
+        Analytics.log(.cantScanTheCardButtonBlog, params: [.source: .introduction])
+        coordinator?.openScanCardManual()
+    }
+
     func requestSupport() {
-        Analytics.log(.buttonRequestSupport)
+        Analytics.log(.requestSupport, params: [.source: .introduction])
         failedCardScanTracker.resetCounter()
         openMail()
     }
@@ -78,7 +84,7 @@ class WelcomeViewModel: ObservableObject {
         isScanningCard = true
         Analytics.beginLoggingCardScan(source: .welcome)
 
-        userWalletRepository.unlock(with: .card(userWallet: nil)) { [weak self] result in
+        userWalletRepository.unlock(with: .card(userWalletId: nil, scanner: CardScannerFactory().makeDefaultScanner())) { [weak self] result in
             self?.isScanningCard = false
 
             if result?.isSuccess != true {
@@ -93,18 +99,19 @@ class WelcomeViewModel: ObservableObject {
 
             switch result {
             case .troubleshooting:
+                Analytics.log(.cantScanTheCard, params: [.source: .introduction])
                 showTroubleshootingView = true
             case .onboarding(let input):
                 openOnboarding(with: input)
             case .error(let error):
                 self.error = error.alertBinder
-            case .success(let cardModel), .partial(let cardModel, _): // partial unlock is impossible in this case
+            case .success(let model), .partial(let model, _): // partial unlock is impossible in this case
                 Analytics.log(event: .signedIn, params: [
                     .signInType: Analytics.ParameterValue.signInTypeCard.rawValue,
                     .walletsCount: "1", // we don't have any saved wallets, just log one,
-                    .walletHasBackup: Analytics.ParameterValue.affirmativeOrNegative(for: cardModel.hasBackupCards).rawValue,
+                    .walletHasBackup: Analytics.ParameterValue.affirmativeOrNegative(for: model.hasBackupCards).rawValue,
                 ])
-                openMain(with: cardModel)
+                openMain(with: model)
             }
         }
     }
@@ -114,12 +121,12 @@ class WelcomeViewModel: ObservableObject {
 
 extension WelcomeViewModel {
     func openMail() {
-        coordinator.openMail(with: failedCardScanTracker, recipient: EmailConfig.default.recipient)
+        coordinator?.openMail(with: failedCardScanTracker, recipient: EmailConfig.default.recipient)
     }
 
     func openPromotion() {
         Analytics.log(.introductionProcessLearn)
-        coordinator.openPromotion()
+        coordinator?.openPromotion()
     }
 
     func openTokensList() {
@@ -127,27 +134,27 @@ extension WelcomeViewModel {
         guard !isScanningCard else { return }
 
         Analytics.log(.buttonTokensList)
-        coordinator.openTokensList()
+        coordinator?.openTokensList()
     }
 
     func openShop() {
-        coordinator.openShop()
+        coordinator?.openShop()
     }
 
     func openOnboarding(with input: OnboardingInput) {
-        coordinator.openOnboarding(with: input)
+        coordinator?.openOnboarding(with: input)
     }
 
-    func openMain(with cardModel: CardViewModel) {
-        coordinator.openMain(with: cardModel)
+    func openMain(with userWalletModel: UserWalletModel) {
+        coordinator?.openMain(with: userWalletModel)
     }
 }
 
 // MARK: - WelcomeViewLifecycleListener
 
 extension WelcomeViewModel: WelcomeViewLifecycleListener {
-    func resignActve() {
-        storiesModel.resignActve()
+    func resignActive() {
+        storiesModel.resignActive()
     }
 
     func becomeActive() {
@@ -166,7 +173,7 @@ extension WelcomeViewModel: IncomingActionResponder {
         switch action {
         case .start:
             return true
-        case .walletConnect:
+        default:
             return false
         }
     }

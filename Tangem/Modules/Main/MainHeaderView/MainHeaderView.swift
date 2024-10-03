@@ -15,52 +15,66 @@ struct MainHeaderView: View {
     private let horizontalSpacing: CGFloat = 6
     private let cornerRadius = 14.0
 
+    @State private var containerSize: CGSize = .zero
+    @State private var balanceTextSize: CGSize = .zero
+
     var body: some View {
-        GeometryReader { proxy in
-            HStack(spacing: 0) {
-                let contentSettings = contentSettings(containerWidth: proxy.size.width)
+        let contentSettings = contentSettings(containerWidth: containerSize.width)
 
-                VStack(alignment: .leading, spacing: 0) {
-                    titleView
+        return HStack(alignment: .bottom, spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
+                titleView
 
-                    Spacer(minLength: 0)
+                Spacer(minLength: 6)
 
-                    if viewModel.isUserWalletLocked {
-                        Colors.Field.primary
-                            .frame(width: 102, height: 24)
-                            .cornerRadiusContinuous(6)
-                            .padding(.vertical, 5)
-                    } else {
-                        BalanceTitleView(balance: viewModel.balance, isLoading: viewModel.isLoadingFiatBalance)
-                    }
-
-                    Spacer(minLength: 10)
-
-                    subtitleText
+                if viewModel.isUserWalletLocked {
+                    Colors.Field.primary
+                        .frame(width: 102, height: 24)
+                        .cornerRadiusContinuous(6)
+                        .padding(.vertical, 5)
+                } else {
+                    BalanceTitleView(balance: viewModel.balance, isLoading: viewModel.isLoadingFiatBalance)
+                        .overlay(
+                            SensitiveText(viewModel.balance)
+                                .multilineTextAlignment(.leading)
+                                .fixedSize(horizontal: true, vertical: true)
+                                .readGeometry(\.size, bindTo: $balanceTextSize)
+                                .opacity(0.0),
+                            alignment: .leading
+                        )
                 }
-                .lineLimit(1)
-                .padding(.top, 14)
-                .padding(.bottom, 12)
-                .frame(width: contentSettings.leadingContentWidth, height: imageSize.height, alignment: .leading)
 
-                if contentSettings.shouldShowTrailingContent {
-                    Spacer(minLength: horizontalSpacing)
+                Spacer(minLength: 10)
 
-                    // A transparent 1px image is used to preserve the structural identity of the view,
-                    // otherwise visual glitches may ocurr during the header swipe animation
-                    //
-                    // Do not replace nil coalescing operator here with any kind of operators
-                    // that breaks the view's structural identity (`if`, `switch`, etc)
-                    Image(viewModel.cardImage?.name ?? Assets.clearColor1px.name)
-                        .frame(size: imageSize)
+                HStack {
+                    subtitleText
+
+                    Spacer()
                 }
             }
+            .lineLimit(1)
+            .padding(.vertical, 12)
         }
-        .frame(height: imageSize.height)
+        .background(alignment: .bottom, content: {
+            HStack {
+                Spacer(minLength: horizontalSpacing)
+
+                // A transparent 1px image is used to preserve the structural identity of the view,
+                // otherwise visual glitches may ocurr during the header swipe animation
+                //
+                // Do not replace nil coalescing operator here with any kind of operators
+                // that breaks the view's structural identity (`if`, `switch`, etc)
+                Image(viewModel.cardImage?.name ?? Assets.clearColor1px.name)
+                    .frame(size: imageSize)
+            }
+            .hidden(!contentSettings.shouldShowTrailingContent)
+        })
+        .readGeometry(\.size, bindTo: $containerSize)
         .padding(.horizontal, 14)
         .background(Colors.Background.primary)
         .cornerRadiusContinuous(cornerRadius)
         .previewContentShape(cornerRadius: cornerRadius)
+        .frame(minHeight: imageSize.height)
     }
 
     @ViewBuilder private var titleView: some View {
@@ -70,16 +84,16 @@ struct MainHeaderView: View {
 
     @ViewBuilder private var subtitleText: some View {
         Group {
-            if viewModel.subtitleContainsSensitiveInfo {
-                SensitiveText(viewModel.subtitleInfo.messages.first ?? "")
-            } else {
-                HStack(spacing: 6) {
-                    ForEach(viewModel.subtitleInfo.messages, id: \.self) { message in
+            HStack(spacing: 6) {
+                ForEach(viewModel.subtitleInfo.messages, id: \.self) { message in
+                    if viewModel.subtitleContainsSensitiveInfo {
+                        SensitiveText(message)
+                    } else {
                         Text(message)
+                    }
 
-                        if message != viewModel.subtitleInfo.messages.last {
-                            SubtitleSeparator()
-                        }
+                    if message != viewModel.subtitleInfo.messages.last {
+                        SubtitleSeparator()
                     }
                 }
             }
@@ -94,26 +108,23 @@ struct MainHeaderView: View {
         }
     }
 
-    private func calculateTextWidth(_ text: NSAttributedString) -> CGFloat {
-        return text.string
-            .size(withAttributes: text.attributes(at: 0, effectiveRange: nil))
-            .width
-    }
-
     private func widthForBalanceWithImage(containerWidth: CGFloat) -> CGFloat {
-        let imageWidth = viewModel.cardImage != nil ? imageSize.width : 0
-        return containerWidth - imageWidth - horizontalSpacing
-    }
-
-    private func contentSettings(containerWidth: CGFloat) -> (leadingContentWidth: CGFloat, shouldShowTrailingContent: Bool) {
-        let balanceWidth = calculateTextWidth(viewModel.balance)
-
-        let widthForBalanceWithImage = widthForBalanceWithImage(containerWidth: containerWidth)
-        if balanceWidth > widthForBalanceWithImage {
-            return (containerWidth, false)
+        if viewModel.cardImage == nil {
+            return containerWidth
         }
 
-        return (max(widthForBalanceWithImage, 0), true)
+        return containerWidth - imageSize.width - horizontalSpacing
+    }
+
+    private func contentSettings(containerWidth: CGFloat) -> (leadingContentSize: CGSize, shouldShowTrailingContent: Bool) {
+        let widthForBalanceWithImage = widthForBalanceWithImage(containerWidth: containerWidth)
+        if balanceTextSize.width > widthForBalanceWithImage {
+            return (.init(width: containerWidth, height: balanceTextSize.height), false)
+        }
+
+        let hasImage = viewModel.cardImage != nil
+        let balanceAvailableWidth = max(widthForBalanceWithImage, 0)
+        return (.init(width: balanceAvailableWidth, height: balanceTextSize.height), hasImage)
     }
 }
 

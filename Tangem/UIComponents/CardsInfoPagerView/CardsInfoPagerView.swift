@@ -13,7 +13,7 @@ struct CardsInfoPagerView<
 >: View where Data: RandomAccessCollection, ID: Hashable, Header: View, Body: View, BottomOverlay: View, Data.Index == Int {
     typealias HeaderFactory = (_ element: Data.Element) -> Header
     typealias ContentFactory = (_ element: Data.Element) -> Body
-    typealias BottomOverlayFactory = (_ element: Data.Element, _ didScrollToBottom: Bool) -> BottomOverlay
+    typealias BottomOverlayFactory = (_ element: Data.Element, _ overlayParams: CardsInfoPagerBottomOverlayFactoryParams) -> BottomOverlay
     typealias OnPullToRefresh = OnRefresh
     typealias OnPageChange = (_ pageChangeReason: CardsInfoPageChangeReason) -> Void
 
@@ -122,6 +122,7 @@ struct CardsInfoPagerView<
     private let collapsedHeaderScrollTargetIdentifier = UUID()
     private let scrollViewFrameCoordinateSpaceName = UUID()
 
+    // TODO: Will be updated in IOS-5884
     /// Different headers for different pages are expected to have the same height (otherwise visual glitches may occur).
     @available(iOS, introduced: 13.0, deprecated: 15.0, message: "Replace with native .safeAreaInset()")
     @State private var headerHeight: CGFloat = .zero
@@ -151,7 +152,7 @@ struct CardsInfoPagerView<
                         scrollState.onViewAppear()
                     }
                     .onDisappear(perform: scrollDetector.stopDetectingScroll)
-                    .onChange(of: scrollState.contentOffset) { _ in
+                    .onChange(of: scrollState.contentOffset) { offset in
                         // Vertical scrolling may delay or even cancel horizontal scroll animations,
                         // which in turn may lead to desynchronization between `selectedIndex` and
                         // `contentSelectedIndex` properties.
@@ -315,7 +316,6 @@ struct CardsInfoPagerView<
             .readGeometry(\.size, bindTo: scrollState.contentSizeSubject.asWriteOnlyBinding(.zero))
             .readContentOffset(
                 inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName),
-                throttleInterval: .zero,
                 bindTo: scrollState.contentOffsetSubject.asWriteOnlyBinding(.zero)
             )
 
@@ -332,13 +332,23 @@ struct CardsInfoPagerView<
     @ViewBuilder
     private func makeBottomOverlay() -> some View {
         if let element = data[safe: clampedContentSelectedIndex] {
-            bottomOverlayFactory(element, scrollState.didScrollToBottom)
-                .animation(.linear(duration: 0.1), value: scrollState.didScrollToBottom)
-                .modifier(contentAnimationModifier)
-                .readGeometry(\.size.height) { newValue in
-                    scrollViewBottomContentInset = newValue
-                    scrollState.bottomContentInsetSubject.send(newValue - Constants.scrollStateBottomContentInsetDiff)
-                }
+            bottomOverlayFactory(
+                element,
+                CardsInfoPagerBottomOverlayFactoryParams(
+                    isDraggingHorizontally: isDraggingHorizontally,
+                    didScrollToBottom: scrollState.didScrollToBottom,
+                    scrollOffset: scrollState.contentOffsetExceedingContentSize,
+                    viewportSize: scrollState.viewportSize,
+                    contentSize: scrollState.contentSize,
+                    scrollViewBottomContentInset: scrollViewBottomContentInset
+                )
+            )
+            .animation(.linear(duration: 0.1), value: scrollState.didScrollToBottom)
+            .modifier(contentAnimationModifier)
+            .readGeometry(\.size.height) { newValue in
+                scrollViewBottomContentInset = newValue
+                scrollState.bottomContentInsetSubject.send(newValue - Constants.scrollStateBottomContentInsetDiff)
+            }
         }
     }
 
@@ -486,7 +496,7 @@ struct CardsInfoPagerView<
     private func gestureProperties(from method: PageSwitchMethod) -> (translation: CGSize, velocity: CGSize) {
         switch method {
         case .byGesture(let gestureValue):
-            return (gestureValue.translation, gestureValue.velocityCompat)
+            return (gestureValue.translation, gestureValue.velocity)
         case .programmatically:
             return (.zero, .zero)
         }
@@ -584,7 +594,10 @@ struct CardsInfoPagerView<
 
         scheduledContentSelectedIndexUpdate?.cancel()
 
-        let scheduledUpdate = DispatchWorkItem { contentSelectedIndex = newValue }
+        let scheduledUpdate = DispatchWorkItem {
+            contentSelectedIndex = newValue
+            scheduledContentSelectedIndexUpdate = nil
+        }
         scheduledContentSelectedIndexUpdate = scheduledUpdate
         DispatchQueue.main.async(execute: scheduledUpdate)
     }

@@ -7,21 +7,21 @@
 //
 
 import Foundation
-import TangemSwapping
+import TangemExpress
 
 extension TokenItem {
-    var expressCurrency: TangemSwapping.ExpressCurrency {
+    var expressCurrency: TangemExpress.ExpressCurrency {
         switch self {
-        case .blockchain(let blockchain):
-            return TangemSwapping.ExpressCurrency(
+        case .blockchain:
+            return TangemExpress.ExpressCurrency(
                 // Fixed constant value for the main token contract address
                 contractAddress: ExpressConstants.coinContractAddress,
-                network: blockchain.networkId
+                network: networkId
             )
-        case .token(let token, let blockchain):
-            return TangemSwapping.ExpressCurrency(
+        case .token(let token, _):
+            return TangemExpress.ExpressCurrency(
                 contractAddress: token.contractAddress,
-                network: blockchain.networkId
+                network: networkId
             )
         }
     }

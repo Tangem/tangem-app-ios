@@ -12,7 +12,7 @@ import SwiftUI
 final class UserWalletStorageAgreementViewModel: ObservableObject, Identifiable {
     // MARK: - Dependencies
 
-    private unowned let coordinator: UserWalletStorageAgreementRoutable?
+    private weak var coordinator: UserWalletStorageAgreementRoutable?
 
     init(coordinator: UserWalletStorageAgreementRoutable?) {
         self.coordinator = coordinator

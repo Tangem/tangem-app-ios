@@ -8,4 +8,7 @@
 
 import Foundation
 
-protocol ExpressSuccessSentRoutable: AnyObject {}
+protocol ExpressSuccessSentRoutable: AnyObject {
+    func openWebView(url: URL?)
+    func close()
+}

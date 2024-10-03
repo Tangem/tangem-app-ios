@@ -37,6 +37,7 @@ extension WebSocket {
 
         func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
             if let error {
+                Analytics.debugLog(eventInfo: Analytics.WalletConnectDebugEvent.webSocketConnectionError(source: .webSocketConnectionDelegate, error: error))
                 eventHandler(.connnectionError(error))
             } else {
                 // Possibly not really necessary since connection closure would likely have been reported

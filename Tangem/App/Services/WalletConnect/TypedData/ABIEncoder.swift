@@ -4,8 +4,9 @@
 // terms governing use, modification, and redistribution, is contained in the
 // file LICENSE at the root of the source code distribution tree.
 
-import BigInt
 import Foundation
+import BigInt
+import CryptoSwift
 
 /// Encodes fields according to Ethereum's Application Binary Interface Specification
 ///

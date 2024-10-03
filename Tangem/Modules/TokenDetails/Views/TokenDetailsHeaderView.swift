@@ -55,7 +55,7 @@ struct TokenDetailsHeaderView: View {
 
 struct SwiftUIView_Previews: PreviewProvider {
     private static var tokenItem: TokenItem {
-        .token(.inverseBTCBlaBlaBlaMock, .polygon(testnet: false))
+        .token(.inverseBTCBlaBlaBlaMock, .init(.polygon(testnet: false), derivationPath: nil))
         //        .blockchain(.avalanche(testnet: false))
         //        .token(.sushiMock, .ethereum(testnet: false))
     }

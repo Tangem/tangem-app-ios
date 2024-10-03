@@ -22,7 +22,7 @@ final class TokenSectionsAdapter {
         case group(by: BlockchainNetwork)
     }
 
-    enum SectionItem {
+    enum SectionItem: Equatable {
         /// `Default` means `coin/token with derivation`,  unlike `withoutDerivation` case.
         case `default`(WalletModel)
         case withoutDerivation(TokenSectionsAdapter.UserToken)
@@ -196,7 +196,7 @@ final class TokenSectionsAdapter {
             // Keeping existing sort order
             return sections
         case .byBalance:
-            return sections.sorted { $0.fiatValue > $1.fiatValue }
+            return sections.sorted { $0.totalFiatValue > $1.totalFiatValue }
         }
     }
 
@@ -209,6 +209,28 @@ final class TokenSectionsAdapter {
             // Keeping existing sort order
             return sectionItems
         case .byBalance:
+            let allWalletModels = sectionItems
+                .compactMap(\.walletModel)
+
+            // We don't sort section items by balance if some of them don't have balance information
+            let hasWalletModelsWithoutBalanceInfo = allWalletModels
+                .contains { $0.balanceValue == nil }
+
+            if hasWalletModelsWithoutBalanceInfo {
+                return sectionItems
+            }
+
+            // We don't sort section items by balance if some of them don't have quotes information
+            // This rule doesn't apply to custom wallet models (with `canUseQuotes` == false),
+            // because such wallet models can't have quotes
+            let hasWalletModelsWithoutQuotesInfo = allWalletModels
+                .filter { $0.canUseQuotes }
+                .contains { $0.quote == nil }
+
+            if hasWalletModelsWithoutQuotesInfo {
+                return sectionItems
+            }
+
             // The underlying sorting algorithm is guaranteed to be stable in Swift 5.0 and above
             // For cases when both lhs and rhs values are w/o derivation we also maintain a stable order of such elements
             return sectionItems.sorted { lhs, rhs in
@@ -226,8 +248,8 @@ final class TokenSectionsAdapter {
 
     private func compareWalletModels(_ lhs: WalletModel, _ rhs: WalletModel) -> Bool {
         // Fiat balances that aren't loaded (e.g. due to network failures) fallback to zero
-        let lFiatValue = lhs.fiatValue ?? .zero
-        let rFiatValue = rhs.fiatValue ?? .zero
+        let lFiatValue = lhs.totalBalance.fiat ?? .zero
+        let rFiatValue = rhs.totalBalance.fiat ?? .zero
 
         return lFiatValue > rFiatValue
     }
@@ -256,13 +278,13 @@ final class TokenSectionsAdapter {
 
 // MARK: - Convenience extensions
 
-private extension TokenSectionsAdapter.SectionItem {
-    var blockchainNetwork: BlockchainNetwork {
+extension TokenSectionsAdapter.SectionItem {
+    var walletModel: WalletModel? {
         switch self {
         case .default(let walletModel):
-            return walletModel.blockchainNetwork
-        case .withoutDerivation(let userToken):
-            return userToken.blockchainNetwork
+            return walletModel
+        case .withoutDerivation:
+            return nil
         }
     }
 
@@ -276,12 +298,23 @@ private extension TokenSectionsAdapter.SectionItem {
     }
 }
 
+private extension TokenSectionsAdapter.SectionItem {
+    var blockchainNetwork: BlockchainNetwork {
+        switch self {
+        case .default(let walletModel):
+            return walletModel.blockchainNetwork
+        case .withoutDerivation(let userToken):
+            return userToken.blockchainNetwork
+        }
+    }
+}
+
 private extension TokenSectionsAdapter.Section {
-    var fiatValue: Decimal {
+    var totalFiatValue: Decimal {
         return items.reduce(into: .zero) { partialResult, item in
             switch item {
             case .default(let walletModel):
-                if let fiatValue = walletModel.fiatValue {
+                if let fiatValue = walletModel.totalBalance.fiat {
                     partialResult += fiatValue
                 }
             case .withoutDerivation:

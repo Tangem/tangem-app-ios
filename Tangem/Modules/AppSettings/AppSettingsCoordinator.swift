@@ -57,11 +57,16 @@ extension AppSettingsCoordinator: AppSettingsRoutable {
     }
 
     func openCurrencySelection() {
-        currencySelectViewModel = CurrencySelectViewModel()
-        currencySelectViewModel?.dismissAfterSelection = false
+        currencySelectViewModel = CurrencySelectViewModel(coordinator: self)
     }
 
     func openThemeSelection() {
         themeSelectionViewModel = ThemeSelectionViewModel()
+    }
+}
+
+extension AppSettingsCoordinator: CurrencySelectRoutable {
+    func dismissCurrencySelect() {
+        currencySelectViewModel = nil
     }
 }

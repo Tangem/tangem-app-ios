@@ -15,11 +15,7 @@ struct PreviewContentShapeModifier: ViewModifier {
     func body(content: Content) -> some View {
         let shape = RoundedRectangle(cornerRadius: cornerRadius, style: roundedCornerStyle)
 
-        if #available(iOS 15.0, *) {
-            content.contentShape(.contextMenuPreview, shape)
-        } else {
-            content.contentShape(shape)
-        }
+        content.contentShape(.contextMenuPreview, shape)
     }
 }
 

@@ -29,7 +29,7 @@ class WalletConnectViewModel: ObservableObject {
     private var pendingURI: WalletConnectRequestURI?
     private var scannedQRCode: CurrentValueSubject<String?, Never> = .init(nil)
 
-    private unowned let coordinator: WalletConnectRoutable
+    private weak var coordinator: WalletConnectRoutable?
 
     init(disabledLocalizedReason: String?, coordinator: WalletConnectRoutable) {
         self.disabledLocalizedReason = disabledLocalizedReason
@@ -60,7 +60,7 @@ class WalletConnectViewModel: ObservableObject {
     func tryReadFromClipboard() -> WalletConnectRequestURI? {
         guard
             let pasteboardValue = UIPasteboard.general.string,
-            let uri = WalletConnectURLParser().parse(pasteboardValue)
+            let uri = WalletConnectURLParser().parse(uriString: pasteboardValue)
         else {
             return nil
         }
@@ -111,7 +111,7 @@ class WalletConnectViewModel: ObservableObject {
 
         scannedQRCode
             .compactMap { $0 }
-            .compactMap { WalletConnectURLParser().parse($0) }
+            .compactMap { WalletConnectURLParser().parse(uriString: $0) }
             .sink { [weak self] uri in
                 self?.openSession(with: uri)
             }
@@ -148,7 +148,7 @@ extension WalletConnectViewModel {
                 }
             )
 
-            coordinator.openQRScanner(with: binding)
+            coordinator?.openQRScanner(with: binding)
         }
     }
 }

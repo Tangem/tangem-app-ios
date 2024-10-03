@@ -13,7 +13,9 @@ import TangemSdk
 class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable> {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
 
-    let navbarSize: CGSize = .init(width: UIScreen.main.bounds.width, height: 44)
+    var navbarSize: CGSize { OnboardingLayoutConstants.navbarSize }
+    var progressBarHeight: CGFloat { OnboardingLayoutConstants.progressBarHeight }
+    var progressBarPadding: CGFloat { OnboardingLayoutConstants.progressBarPadding }
     let resetAnimDuration: Double = 0.3
 
     @Published var steps: [Step] = []
@@ -26,9 +28,10 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
     @Published var supplementCardSettings: AnimatedViewSettings = .zero
     @Published var isNavBarVisible: Bool = false
     @Published var alert: AlertBinder?
-    @Published var cardImage: Image?
+    @Published var mainImage: Image?
     @Published var customOnboardingImage: Image?
     @Published var secondImage: Image?
+    @Published var thirdImage: Image?
 
     private var confettiFired: Bool = false
     var bag: Set<AnyCancellable> = []
@@ -79,24 +82,34 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
         return nil
     }
 
-    var supplementButtonSettings: TangemButtonSettings? {
+    var supplementButtonSettings: MainButton.Settings? {
         .init(
             title: supplementButtonTitle,
-            size: .wide,
-            action: supplementButtonAction,
-            isBusy: isSupplementButtonBusy,
-            isEnabled: isSupplementButtonEnabled,
-            isVisible: isSupplementButtonVisible,
-            color: supplementButtonColor
+            icon: supplementButtonIcon,
+            style: supplementButtonStyle,
+            size: .default,
+            isLoading: isSupplementButtonBusy,
+            isDisabled: !isSupplementButtonEnabled,
+            action: { [weak self] in
+                self?.supplementButtonAction()
+            }
         )
+    }
+
+    var supplementButtonIcon: MainButton.Icon? {
+        if let icon = currentStep.supplementButtonIcon {
+            return .trailing(icon)
+        }
+
+        return nil
     }
 
     var isSupplementButtonEnabled: Bool {
         return true
     }
 
-    var supplementButtonColor: ButtonColorStyle {
-        .transparentWhite
+    var supplementButtonStyle: MainButton.Style {
+        return .secondary
     }
 
     var supplementButtonTitle: String {
@@ -115,84 +128,103 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
         return true
     }
 
+    var isSupportButtonVisible: Bool {
+        return true
+    }
+
     var isBackButtonEnabled: Bool {
         true
     }
 
-    var isSupplementButtonVisible: Bool { currentStep.isSupplementButtonVisible }
-
     lazy var userWalletStorageAgreementViewModel = UserWalletStorageAgreementViewModel(coordinator: self)
-
-    var disclaimerModel: DisclaimerViewModel? {
-        guard let url = input.cardInput.disclaimer?.url else {
+    lazy var addTokensViewModel: OnboardingAddTokensViewModel? = {
+        guard
+            let userWalletModel,
+            userWalletModel.config.hasFeature(.multiCurrency)
+        else {
+            goToNextStep()
             return nil
         }
 
-        return .init(url: url, style: .onboarding)
+        let analyticsSourceRawValue = Analytics.ParameterValue.onboarding.rawValue
+        let analyticsParams: [Analytics.ParameterKey: String] = [.source: analyticsSourceRawValue]
+
+        Analytics.log(event: .manageTokensScreenOpened, params: analyticsParams)
+
+        let manageTokensAdapter = ManageTokensAdapter(
+            settings: .init(
+                longHashesSupported: userWalletModel.config.hasFeature(.longHashes),
+                existingCurves: userWalletModel.config.existingCurves,
+                supportedBlockchains: userWalletModel.config.supportedBlockchains,
+                userTokensManager: userWalletModel.userTokensManager,
+                analyticsSourceRawValue: analyticsSourceRawValue
+            )
+        )
+
+        return OnboardingAddTokensViewModel(
+            adapter: manageTokensAdapter,
+            delegate: self
+        )
+    }()
+
+    lazy var pushNotificationsViewModel: PushNotificationsPermissionRequestViewModel? = {
+        guard let permissionManager = input.pushNotificationsPermissionManager else {
+            return nil
+        }
+        return PushNotificationsPermissionRequestViewModel(permissionManager: permissionManager, delegate: self)
+    }()
+
+    private var analyticsSourceParameterValue: Analytics.ParameterValue {
+        .onboarding
     }
 
     let input: OnboardingInput
 
     var isFromMain: Bool = false
     private(set) var containerSize: CGSize = .zero
-    unowned let coordinator: Coordinator
+    weak var coordinator: Coordinator?
 
-    var cardModel: CardViewModel?
+    var userWalletModel: UserWalletModel?
 
     init(input: OnboardingInput, coordinator: Coordinator) {
         self.input = input
         self.coordinator = coordinator
 
-        // TODO: remove
-        if let cardModel = input.cardInput.cardModel {
-            self.cardModel = cardModel
+        if let userWalletModel = input.cardInput.userWalletModel {
+            self.userWalletModel = userWalletModel
         }
 
         isFromMain = input.isStandalone
         isNavBarVisible = input.isStandalone
 
-        let loadImageInput = input.cardInput.imageLoadInput
-        loadImage(
-            supportsOnlineImage: loadImageInput.supportsOnlineImage,
-            cardId: loadImageInput.cardId,
-            cardPublicKey: loadImageInput.cardPublicKey
-        )
+        loadMainImage(imageLoadInput: input.cardInput.imageLoadInput)
 
         bindAnalytics()
     }
 
     func initializeUserWallet(from cardInfo: CardInfo) {
-        guard let userWallet = CardViewModel(cardInfo: cardInfo) else { return }
+        guard let userWallet = CommonUserWalletModelFactory().makeModel(cardInfo: cardInfo) else { return }
 
-        userWalletRepository.initializeServices(for: userWallet, cardInfo: userWallet.cardInfo)
+        userWalletRepository.initializeServices(for: userWallet)
 
-        Analytics.logTopUpIfNeeded(balance: 0)
+        Analytics.logTopUpIfNeeded(balance: 0, for: userWallet.userWalletId)
 
-        cardModel = userWallet
+        userWalletModel = userWallet
     }
 
     func handleUserWalletOnFinish() throws {
-        guard let cardModel = cardModel else {
+        guard let userWalletModel else {
             return
         }
 
-        userWalletRepository.add(cardModel)
+        userWalletRepository.add(userWalletModel)
     }
 
-    func loadImage(supportsOnlineImage: Bool, cardId: String?, cardPublicKey: Data?) {
-        guard let cardId = cardId, let cardPublicKey = cardPublicKey else {
-            return
-        }
-
+    func loadImage(supportsOnlineImage: Bool, cardId: String, cardPublicKey: Data) -> AnyPublisher<Image, Never> {
         CardImageProvider(supportsOnlineImage: supportsOnlineImage)
             .loadImage(cardId: cardId, cardPublicKey: cardPublicKey)
             .map { $0.image }
-            .sink { [weak self] image in
-                withAnimation {
-                    self?.cardImage = image
-                }
-            }
-            .store(in: &bag)
+            .eraseToAnyPublisher()
     }
 
     func setupContainer(with size: CGSize) {
@@ -251,7 +283,7 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
                 self.onboardingDidFinish()
             }
 
-            onOnboardingFinished(for: input.cardInput.cardId)
+            onOnboardingFinished(for: input.primaryCardId)
 
             return
         }
@@ -294,12 +326,18 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
         Analytics.log(.onboardingEnableBiometric, params: [.state: Analytics.ParameterValue.toggleState(for: agreed)])
     }
 
-    func disclaimerAccepted() {
-        guard let id = input.cardInput.disclaimer?.id else {
-            return
+    private func loadMainImage(imageLoadInput: OnboardingInput.ImageLoadInput) {
+        loadImage(
+            supportsOnlineImage: imageLoadInput.supportsOnlineImage,
+            cardId: imageLoadInput.cardId,
+            cardPublicKey: imageLoadInput.cardPublicKey
+        )
+        .sink { [weak self] image in
+            withAnimation {
+                self?.mainImage = image
+            }
         }
-
-        AppSettings.shared.termsOfServicesAccepted.append(id)
+        .store(in: &bag)
     }
 
     private func bindAnalytics() {
@@ -360,29 +398,37 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
 
 extension OnboardingViewModel {
     func onboardingDidFinish() {
-        coordinator.onboardingDidFinish(userWallet: cardModel)
+        coordinator?.onboardingDidFinish(userWalletModel: userWalletModel)
     }
 
     func closeOnboarding() {
         // reset services before exit
         userWalletRepository.updateSelection()
-        coordinator.closeOnboarding()
+        coordinator?.closeOnboarding()
     }
 
-    func openSupportChat() {
-        Analytics.log(.onboardingButtonChat)
+    func openSupport() {
+        Analytics.log(.requestSupport, params: [.source: .onboarding])
 
         // Hide keyboard on set pin screen
         UIApplication.shared.endEditing()
 
         let dataCollector = DetailsFeedbackDataCollector(
-            walletModels: cardModel?.walletModelsManager.walletModels ?? [],
-            userWalletEmailData: input.cardInput.emailData
+            data: [
+                .init(
+                    userWalletEmailData: input.cardInput.emailData,
+                    walletModels: userWalletModel?.walletModelsManager.walletModels ?? []
+                ),
+            ]
         )
 
-        coordinator.openSupportChat(input: .init(
-            logsComposer: .init(infoProvider: dataCollector)
-        ))
+        let emailConfig = input.cardInput.config?.emailConfig ?? .default
+
+        coordinator?.openMail(
+            with: dataCollector,
+            recipient: emailConfig.recipient,
+            emailType: .appFeedback(subject: emailConfig.subject)
+        )
     }
 }
 
@@ -415,6 +461,18 @@ extension OnboardingViewModel: UserWalletStorageAgreementRoutable {
 
     func didDeclineToSaveUserWallets() {
         didAskToSaveUserWallets(agreed: false)
+        goToNextStep()
+    }
+}
+
+extension OnboardingViewModel: OnboardingAddTokensDelegate {
+    func showAlert(_ alert: AlertBinder) {
+        self.alert = alert
+    }
+}
+
+extension OnboardingViewModel: PushNotificationsPermissionRequestDelegate {
+    func didFinishPushNotificationOnboarding() {
         goToNextStep()
     }
 }

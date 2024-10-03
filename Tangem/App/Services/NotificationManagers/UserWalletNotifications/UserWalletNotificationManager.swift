@@ -1,5 +1,5 @@
 //
-//  UserWalletNotificationService.swift
+//  UserWalletNotificationManager.swift
 //  Tangem
 //
 //  Created by Andrew Son on 26/08/23.
@@ -11,8 +11,7 @@ import Combine
 import BlockchainSdk
 
 protocol NotificationTapDelegate: AnyObject {
-    func didTapNotification(with id: NotificationViewId)
-    func didTapNotificationButton(with id: NotificationViewId, action: NotificationButtonActionType)
+    func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType)
 }
 
 /// Manager for handling Notifications related to UserWalletModel.
@@ -23,30 +22,54 @@ final class UserWalletNotificationManager {
     private let analyticsService: NotificationsAnalyticsService = .init()
     private let userWalletModel: UserWalletModel
     private let signatureCountValidator: SignatureCountValidator?
+    private let rateAppController: RateAppNotificationController
     private let notificationInputsSubject: CurrentValueSubject<[NotificationViewInput], Never> = .init([])
 
     private weak var delegate: NotificationTapDelegate?
     private var bag = Set<AnyCancellable>()
     private var numberOfPendingDerivations: Int = 0
 
+    private var showAppRateNotification = false
+    private var shownAppRateNotificationId: NotificationViewId?
+
     init(
         userWalletModel: UserWalletModel,
         signatureCountValidator: SignatureCountValidator?,
+        rateAppController: RateAppNotificationController,
         contextDataProvider: AnalyticsContextDataProvider?
     ) {
         self.userWalletModel = userWalletModel
         self.signatureCountValidator = signatureCountValidator
+        self.rateAppController = rateAppController
 
         analyticsService.setup(with: self, contextDataProvider: contextDataProvider)
     }
 
     private func createNotifications() {
         let factory = NotificationsFactory()
-        let action: NotificationView.NotificationAction = delegate?.didTapNotification(with:) ?? { _ in }
-        let buttonAction = delegate?.didTapNotificationButton(with:action:) ?? { _, _ in }
+        let action: NotificationView.NotificationAction = { [weak self] id in
+            self?.delegate?.didTapNotification(with: id, action: .empty)
+        }
+
+        let buttonAction: NotificationView.NotificationButtonTapAction = { [weak self] id, action in
+            self?.delegate?.didTapNotification(with: id, action: action)
+        }
+
         let dismissAction: NotificationView.NotificationAction = weakify(self, forFunction: UserWalletNotificationManager.dismissNotification)
 
         var inputs: [NotificationViewInput] = []
+
+        if !userWalletModel.validate() {
+            inputs.append(
+                factory.buildNotificationInput(
+                    for: .backupErrors,
+                    action: action,
+                    buttonAction: buttonAction,
+                    dismissAction: dismissAction
+                )
+            )
+        }
+
         inputs.append(contentsOf: factory.buildNotificationInputs(
             for: deprecationService.deprecationWarnings,
             action: action,
@@ -87,7 +110,59 @@ final class UserWalletNotificationManager {
 
         notificationInputsSubject.send(inputs)
 
+        showAppRateNotificationIfNeeded()
+
         validateHashesCount()
+    }
+
+    private func hideNotification(with id: NotificationViewId) {
+        notificationInputsSubject.value.removeAll(where: { $0.id == id })
+    }
+
+    private func showAppRateNotificationIfNeeded() {
+        guard showAppRateNotification else {
+            hideShownAppRateNotificationIfNeeded()
+            return
+        }
+
+        let factory = NotificationsFactory()
+
+        let action: NotificationView.NotificationAction = { [weak self] id in
+            self?.delegate?.didTapNotification(with: id, action: .empty)
+        }
+
+        let buttonAction: NotificationView.NotificationButtonTapAction = { [weak self] id, action in
+            self?.delegate?.didTapNotification(with: id, action: action)
+        }
+
+        let dismissAction: NotificationView.NotificationAction = weakify(self, forFunction: UserWalletNotificationManager.dismissNotification)
+
+        let input = factory.buildNotificationInput(
+            for: .rateApp,
+            action: action,
+            buttonAction: buttonAction,
+            dismissAction: dismissAction
+        )
+        shownAppRateNotificationId = input.id
+
+        addInputIfNeeded(input)
+    }
+
+    private func hideShownAppRateNotificationIfNeeded() {
+        guard let shownAppRateNotificationId else {
+            return
+        }
+
+        hideNotification(with: shownAppRateNotificationId)
+        self.shownAppRateNotificationId = nil
+    }
+
+    private func addInputIfNeeded(_ input: NotificationViewInput) {
+        guard !notificationInputsSubject.value.contains(where: { $0.id == input.id }) else {
+            return
+        }
+
+        notificationInputsSubject.value.insert(input, at: 0)
     }
 
     private func bind() {
@@ -103,14 +178,21 @@ final class UserWalletNotificationManager {
             .removeDuplicates()
             .sink(receiveValue: weakify(self, forFunction: UserWalletNotificationManager.addMissingDerivationWarningIfNeeded(pendingDerivationsCount:)))
             .store(in: &bag)
+
+        rateAppController
+            .showAppRateNotificationPublisher
+            .withWeakCaptureOf(self)
+            .sink(receiveValue: { manager, shouldShow in
+                manager.showAppRateNotification = shouldShow
+                manager.showAppRateNotificationIfNeeded()
+            })
+            .store(in: &bag)
     }
 
     // TODO: Move this logic into separate entity (IOS-4430)
     private func validateHashesCount() {
-        let card = userWalletModel.userWallet.card
         let config = userWalletModel.config
-        let cardId = card.cardId
-        let cardSignedHashes = card.walletSignedHashes
+        let cardSignedHashes = userWalletModel.totalSignedHashes
         let isMultiWallet = config.hasFeature(.multiCurrency)
         let canCountHashes = config.hasFeature(.signedHashesCounter)
 
@@ -118,7 +200,7 @@ final class UserWalletNotificationManager {
             AppLog.shared.debug("⚠️ Hashes counted")
         }
 
-        guard !AppSettings.shared.validatedSignedHashesCards.contains(cardId) else {
+        guard !AppSettings.shared.validatedSignedHashesCards.contains(userWalletModel.userWalletId.stringValue) else {
             didFinishCountingHashes()
             return
         }
@@ -145,7 +227,9 @@ final class UserWalletNotificationManager {
             didFinishCountingHashes()
             let notification = factory.buildNotificationInput(
                 for: .numberOfSignedHashesIncorrect,
-                action: delegate?.didTapNotification(with:) ?? { _ in },
+                action: { [weak self] id in
+                    self?.delegate?.didTapNotification(with: id, action: .empty)
+                },
                 buttonAction: { _, _ in },
                 dismissAction: weakify(self, forFunction: UserWalletNotificationManager.dismissNotification(with:))
             )
@@ -167,7 +251,7 @@ final class UserWalletNotificationManager {
                 case .failure:
                     let notification = factory.buildNotificationInput(
                         for: .numberOfSignedHashesIncorrect,
-                        action: { id in self?.delegate?.didTapNotification(with: id) },
+                        action: { id in self?.delegate?.didTapNotification(with: id, action: .empty) },
                         buttonAction: { _, _ in },
                         dismissAction: { id in self?.dismissNotification(with: id) }
                     )
@@ -189,8 +273,7 @@ final class UserWalletNotificationManager {
     }
 
     private func recordUserWalletHashesCountValidation() {
-        let cardId = userWalletModel.userWallet.card.cardId
-        AppSettings.shared.validatedSignedHashesCards.append(cardId)
+        AppSettings.shared.validatedSignedHashesCards.append(userWalletModel.userWalletId.stringValue)
     }
 
     private func recordDeprecationNotificationDismissal() {
@@ -219,19 +302,19 @@ extension UserWalletNotificationManager: NotificationManager {
             return
         }
 
-        guard let event = notification.settings.event as? WarningEvent else {
-            return
+        if let event = notification.settings.event as? WarningEvent {
+            switch event {
+            case .systemDeprecationTemporary, .systemDeprecationPermanent:
+                recordDeprecationNotificationDismissal()
+            case .numberOfSignedHashesIncorrect:
+                recordUserWalletHashesCountValidation()
+            case .rateApp:
+                rateAppController.dismissAppRate()
+            default:
+                break
+            }
         }
 
-        switch event {
-        case .systemDeprecationTemporary, .systemDeprecationPermanent:
-            recordDeprecationNotificationDismissal()
-        case .numberOfSignedHashesIncorrect:
-            recordUserWalletHashesCountValidation()
-        default:
-            break
-        }
-
-        notificationInputsSubject.value.removeAll(where: { $0.id == id })
+        hideNotification(with: id)
     }
 }

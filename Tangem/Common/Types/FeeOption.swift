@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum FeeOption: String, Hashable {
+enum FeeOption: String, Hashable, Equatable {
     case slow
     case market
     case fast
@@ -36,7 +36,20 @@ enum FeeOption: String, Hashable {
         case .fast:
             return Localization.commonFeeSelectorOptionFast
         case .custom:
-            return Localization.commonFeeSelectorOptionCustom
+            return Localization.commonCustom
+        }
+    }
+
+    var analyticsValue: Analytics.ParameterValue {
+        switch self {
+        case .slow:
+            return .transactionFeeMin
+        case .market:
+            return .transactionFeeNormal
+        case .fast:
+            return .transactionFeeMax
+        case .custom:
+            return .transactionFeeCustom
         }
     }
 }
