@@ -268,12 +268,25 @@ struct DetailsFeedbackData {
     let walletModels: [WalletModel]
 }
 
+// MARK: - TokenErrorDescriptionDataCollector
+
 struct TokenErrorDescriptionDataCollector: EmailDataCollector {
-    var logData: Data? { nil }
+    var logData: Data? {
+        var dataToFormat: [EmailCollectedData] = []
+        dataToFormat.append(.separator(.dashes))
 
-    private let tokenDescriptionEmailData: [EmailCollectedData]
+        dataToFormat.append(EmailCollectedData(type: .token(.id), data: tokenId))
+        dataToFormat.append(EmailCollectedData(type: .token(.name), data: tokenName))
 
-    init(tokenDescriptionEmailData: [EmailCollectedData]) {
-        self.tokenDescriptionEmailData = tokenDescriptionEmailData
+        dataToFormat.append(.separator(.dashes))
+        return formatData(dataToFormat)
+    }
+
+    private let tokenId: String
+    private let tokenName: String
+
+    init(tokenId: String, tokenName: String) {
+        self.tokenId = tokenId
+        self.tokenName = tokenName
     }
 }

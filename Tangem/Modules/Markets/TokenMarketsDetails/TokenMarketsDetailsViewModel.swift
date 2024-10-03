@@ -224,8 +224,10 @@ class TokenMarketsDetailsViewModel: BaseMarketsViewModel {
         descriptionBottomSheetInfo = nil
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
-            let dataCollector = TokenErrorDescriptionDataCollector(tokenDescriptionEmailData: [])
-            self?.coordinator?.openMail(with: dataCollector, emailType: .tokenDescriptionError)
+            guard let self else { return }
+
+            let dataCollector = TokenErrorDescriptionDataCollector(tokenId: tokenInfo.id, tokenName: tokenInfo.name)
+            coordinator?.openMail(with: dataCollector, emailType: .appFeedback(subject: "ttt"))
         }
     }
 }
