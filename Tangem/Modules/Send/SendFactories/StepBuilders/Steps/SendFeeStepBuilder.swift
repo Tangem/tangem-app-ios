@@ -28,7 +28,7 @@ struct SendFeeStepBuilder {
             viewModel: viewModel,
             interactor: interactor,
             notificationManager: notificationManager,
-            tokenItem: walletModel.tokenItem,
+            feeTokenItem: walletModel.feeTokenItem,
             feeAnalyticsParameterBuilder: builder.makeFeeAnalyticsParameterBuilder()
         )
 
@@ -54,7 +54,7 @@ private extension SendFeeStepBuilder {
         notificationManager: NotificationManager,
         router: SendFeeRoutable
     ) -> SendFeeViewModel {
-        let settings = SendFeeViewModel.Settings(tokenItem: walletModel.tokenItem)
+        let settings = SendFeeViewModel.Settings(feeTokenItem: walletModel.feeTokenItem)
 
         return SendFeeViewModel(
             settings: settings,

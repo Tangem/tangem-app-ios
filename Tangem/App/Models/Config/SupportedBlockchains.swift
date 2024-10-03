@@ -64,8 +64,6 @@ struct SupportedBlockchains {
     /// Blockchains for test. They don't include in supported blockchains by default
     private func testableBlockchains() -> Set<Blockchain> {
         [
-            .internetComputer,
-            .sei(testnet: false),
             .core(testnet: false),
         ]
     }
@@ -139,6 +137,8 @@ struct SupportedBlockchains {
             .cyber(testnet: false),
             .blast(testnet: false),
             .filecoin,
+            .internetComputer,
+            .sei(testnet: false),
         ]
     }
 

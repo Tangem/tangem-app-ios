@@ -14,7 +14,7 @@ class SendFeeStep {
     private let viewModel: SendFeeViewModel
     private let interactor: SendFeeInteractor
     private let notificationManager: NotificationManager
-    private let tokenItem: TokenItem
+    private let feeTokenItem: TokenItem
     private let feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder
 
     // We have to use this `SendViewAlertPresenter`
@@ -25,13 +25,13 @@ class SendFeeStep {
         viewModel: SendFeeViewModel,
         interactor: SendFeeInteractor,
         notificationManager: NotificationManager,
-        tokenItem: TokenItem,
+        feeTokenItem: TokenItem,
         feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder
     ) {
         self.viewModel = viewModel
         self.interactor = interactor
         self.notificationManager = notificationManager
-        self.tokenItem = tokenItem
+        self.feeTokenItem = feeTokenItem
         self.feeAnalyticsParameterBuilder = feeAnalyticsParameterBuilder
     }
 
@@ -59,7 +59,7 @@ extension SendFeeStep: SendStep {
             switch event {
             case .customFeeTooLow:
                 Analytics.log(event: .sendNoticeTransactionDelaysArePossible, params: [
-                    .token: tokenItem.currencySymbol,
+                    .token: feeTokenItem.currencySymbol,
                 ])
 
                 alertPresenter?.showAlert(

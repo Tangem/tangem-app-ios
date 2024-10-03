@@ -26,7 +26,7 @@ class SendFeeViewModel: ObservableObject, Identifiable {
         )
     }
 
-    private let tokenItem: TokenItem
+    private let feeTokenItem: TokenItem
     private let interactor: SendFeeInteractor
     private let notificationManager: NotificationManager
 
@@ -49,7 +49,7 @@ class SendFeeViewModel: ObservableObject, Identifiable {
         notificationManager: NotificationManager,
         router: SendFeeRoutable
     ) {
-        tokenItem = settings.tokenItem
+        feeTokenItem = settings.feeTokenItem
 
         self.interactor = interactor
         self.notificationManager = notificationManager
@@ -147,7 +147,7 @@ class SendFeeViewModel: ObservableObject, Identifiable {
         case .loading:
             return .loading
         case .loaded(let value):
-            let feeComponents = feeFormatter.formattedFeeComponents(fee: value.amount.value, tokenItem: tokenItem)
+            let feeComponents = feeFormatter.formattedFeeComponents(fee: value.amount.value, tokenItem: feeTokenItem)
             return .loaded(feeComponents)
         case .failedToLoad(let error):
             return .failedToLoad(error: error)
@@ -182,6 +182,6 @@ extension SendFeeViewModel: SendStepViewAnimatable {
 
 extension SendFeeViewModel {
     struct Settings {
-        let tokenItem: TokenItem
+        let feeTokenItem: TokenItem
     }
 }
