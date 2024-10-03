@@ -729,6 +729,7 @@
 "staking_unstaking_item_name" = "Unstake Assets %@";
 "staking_validator" = "Validator/ Prüfer";
 "staking_validators" = "Validatoren";
+"staking_validators_label" = "Strategischer Partner";
 "staking_vote" = "Abstimmung";
 "staking_vote_locked" = "Abstimmung gesperrt";
 "staking_withdraw" = "Zurückziehen";

@@ -729,6 +729,7 @@
 "staking_unstaking_item_name" = "ステーキング解除中の資産%@";
 "staking_validator" = "バリデーター";
 "staking_validators" = "バリデーター";
+"staking_validators_label" = "戦略的パートナー";
 "staking_vote" = "投票する";
 "staking_vote_locked" = "投票する";
 "staking_withdraw" = "引き出す";
