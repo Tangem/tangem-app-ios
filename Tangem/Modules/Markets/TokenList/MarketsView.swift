@@ -36,7 +36,6 @@ struct MarketsView: View {
     private var showSearchResult: Bool { viewModel.isSearching }
 
     var body: some View {
-        let _ = Self.printChanges()
         rootView
             .onAppear {
                 viewModel.setViewHierarchySnapshotter(viewHierarchySnapshotter)
