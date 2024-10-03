@@ -33,7 +33,7 @@ jobs:
          action: getBranchSummary
          branch-name: ${{ github.ref_name }}
 
-      # - name: Find sec identities
+      # - name: Find sec identities test
         # run: echo `security find-identity -p codesigning -v`
 
  build:
