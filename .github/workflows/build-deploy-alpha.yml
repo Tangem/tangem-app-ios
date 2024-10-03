@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.head_ref || github.ref_name }}
+  group: '${{ github.workflow }}-${{ github.head_ref || github.ref_name }}'
   cancel-in-progress: true
 
 jobs:
@@ -36,7 +36,7 @@ jobs:
 
       - name: Find sec identities test
         run: |
-          echo 'conc_group: ${{ github.head_ref || github.ref_name }}'
+          echo 'conc_group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}'
           echo `security find-identity -p codesigning -v`
 
   build:
