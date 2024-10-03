@@ -14,11 +14,13 @@ struct TokenMarketsDetailsView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.mainWindowSize) private var mainWindowSize
 
-    @State private var isNavigationBarShadowLineViewVisible = false
+    @State private var headerHeight: CGFloat = .zero
+    @State private var isListContentObscured = false
 
     private var isDarkColorScheme: Bool { colorScheme == .dark }
     private var defaultBackgroundColor: Color { isDarkColorScheme ? Colors.Background.primary : Colors.Background.secondary }
     private var overlayContentHidingBackgroundColor: Color { isDarkColorScheme ? defaultBackgroundColor : Colors.Background.plain }
+    private var isNavigationBarBackgroundBackdropViewHidden: Bool { 1.0 - viewModel.overlayContentHidingProgress <= .ulpOfOne }
 
     private let scrollViewFrameCoordinateSpaceName = UUID()
 
@@ -40,7 +42,7 @@ struct TokenMarketsDetailsView: View {
 
     @ViewBuilder
     private var rootView: some View {
-        let content = VStack(spacing: 0.0) {
+        let content = ZStack {
             navigationBar
 
             scrollView
@@ -74,7 +76,7 @@ struct TokenMarketsDetailsView: View {
                         lineLimit: 1,
                         minimumScaleFactor: 0.6
                     ),
-                    backgroundColor: .clear, // Controlled by the `background` modifier in the body
+                    backgroundColor: .clear, // Controlled by the `background` modifier in the view's body and `background` modifier below
                     height: 64.0,
                     alignment: .bottom
                 ),
@@ -88,13 +90,38 @@ struct TokenMarketsDetailsView: View {
                     )
                 }
             )
-            .overlay(alignment: .bottom) {
-                Separator(
-                    height: .minimal,
-                    color: Colors.Stroke.primary.opacity(viewModel.overlayContentHidingProgress)
-                )
-                .hidden(!isNavigationBarShadowLineViewVisible)
-            }
+            .background(navigationBarBackground)
+            .animation(.linear(duration: 0.1), value: isListContentObscured)
+            .zIndex(100) // Navigation bar is placed over the scroll view
+            .readGeometry(\.size.height, bindTo: $headerHeight)
+            .infinityFrame(axis: .vertical, alignment: .top)
+        }
+    }
+
+    @ViewBuilder
+    private var listOverlaySeparator: some View {
+        Separator(height: .minimal, color: Colors.Stroke.primary)
+            .visible(isListContentObscured)
+    }
+
+    @ViewBuilder
+    private var navigationBarBackground: some View {
+        ZStack {
+            // A backdrop view with a solid background color, paced underneath the translucent navigation bar background
+            // and visible when this translucent navigation bar background becomes transparent on bottom sheet minimizing.
+            // Prevents the content of the list from being visible through the transparent translucent navigation bar background
+            // (it just looks ugly).
+            viewBackground
+                .hidden(isNavigationBarBackgroundBackdropViewHidden)
+
+            // Translucent navigation bar background, visible when list content is obscured by the navigation bar/overlay
+            Rectangle()
+                .fill(.ultraThinMaterial)
+                .visible(isListContentObscured)
+                .overlay(alignment: .bottom) {
+                    listOverlaySeparator
+                }
+                .opacity(viewModel.overlayContentHidingProgress) // Hides translucent navigation bar background on bottom sheet minimizing
         }
     }
 
@@ -102,6 +129,11 @@ struct TokenMarketsDetailsView: View {
     private var scrollView: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .center, spacing: 16) {
+                // Using plain old overlay + dummy `Color.clear` spacer in the scroll view due to the buggy
+                // `safeAreaInset(edge:alignment:spacing:content:)` iOS 15+ API which has both layout and touch-handling issues
+                Color.clear
+                    .frame(height: headerHeight)
+
                 Group {
                     header
 
@@ -131,7 +163,7 @@ struct TokenMarketsDetailsView: View {
             .if(viewModel.isMarketsSheetStyle) { view in
                 view
                     .readContentOffset(inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName)) { contentOffset in
-                        isNavigationBarShadowLineViewVisible = contentOffset.y > Constants.scrollViewContentTopInset
+                        isListContentObscured = contentOffset.y > Constants.scrollViewContentTopInset
                     }
             }
         }
