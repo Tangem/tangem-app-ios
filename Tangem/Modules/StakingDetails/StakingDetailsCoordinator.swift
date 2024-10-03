@@ -127,17 +127,25 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
             self?.sendCoordinator = nil
         })
 
-        let sendType: SendType = switch action.type {
-        case .stake: fatalError("Use openStakingFlow function")
-        case .pending(let pendingActionType) where pendingActionType.isVoteLocked:
-            .restaking(manager: options.manager, action: action)
-        case .unstake, .pending: .unstaking(manager: options.manager, action: action)
-        }
+        coordinator.start(with: .init(
+            walletModel: options.walletModel,
+            userWalletModel: options.userWalletModel,
+            type: .unstaking(manager: options.manager, action: action)
+        ))
+        sendCoordinator = coordinator
+    }
+
+    func openRestakingFlow(action: RestakingModel.Action) {
+        guard let options else { return }
+
+        let coordinator = SendCoordinator(dismissAction: { [weak self] _ in
+            self?.sendCoordinator = nil
+        })
 
         coordinator.start(with: .init(
             walletModel: options.walletModel,
             userWalletModel: options.userWalletModel,
-            type: sendType
+            type: .restaking(manager: options.manager, action: action)
         ))
         sendCoordinator = coordinator
     }
