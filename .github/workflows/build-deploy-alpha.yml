@@ -10,6 +10,9 @@ jobs:
  prepare:
    name: Prepare information
    runs-on: self-hosted
+   concurrency:
+    group: ${{ github.ref }}_${{ github.jobs[github.job].name }}
+    cancel-in-progress: true
    outputs:
      version: ${{ steps.jira.outputs.key }}
      stage: "Alpha"
@@ -49,6 +52,9 @@ jobs:
  deploy:
    name: Google Distribution
    needs: [prepare,build]
+   concurrency:
+    group: ${{ github.ref }}_${{ github.jobs[github.job].name }}
+    cancel-in-progress: true
    uses: tangem/actions/.github/workflows/deploy-firebase.yml@main
    if: false # temp disabled
    with:
