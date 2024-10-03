@@ -110,6 +110,7 @@
 "common_generate_addresses" = "Adressen abrufen";
 "common_go_to_provider" = "Zum Anbieter gehen";
 "common_go_to_token" = "Zum Token";
+"common_hour" = "hour";
 "common_import" = "Importieren";
 "common_in_progress" = "In Arbeit";
 "common_later" = "Später";
@@ -117,6 +118,7 @@
 "common_left" = "%1$@ übrig";
 "common_locked" = "Gesperrt";
 "common_main_network" = "Hauptnetz";
+"common_month" = "month";
 "common_network_fee_title" = "Netzgebühr";
 "common_network_fee_warning_content" = "Der überwiesene Betrag wird um %1$@ (%2$@) gekürzt, um die gewählte Gebührenhöhe zu decken.";
 "common_next" = "Weiter";
@@ -140,6 +142,7 @@
 "common_save_changes" = "Änderungen speichern";
 "common_search" = "Suchen";
 "common_search_tokens" = "Token suchen";
+"common_second_no_param" = "sek.";
 "common_seed_phrase" = "Seed phrase";
 "common_select_action" = "Aktion auswählen";
 "common_sell" = "Verkaufen";
@@ -166,6 +169,7 @@
 "common_unreachable" = "Nicht erreichbar";
 "common_unstake" = "staking beenden";
 "common_warning" = "Warnung";
+"common_week" = "week";
 "common_yes" = "Ja";
 "contract_address_copied_message" = "Vertragsadresse kopiert!";
 "currency_subtitle_expanded" = "Verfügbare Netzwerke";
@@ -248,7 +252,7 @@
 "express_exchange_status_exchanging" = "Tauschen läuft";
 "express_exchange_status_exchanging_active" = "Austauschen...";
 "express_exchange_status_failed" = "Fehlgeschlagen";
-"express_exchange_status_paused" = "Paused";
+"express_exchange_status_paused" = "Pausiert";
 "express_exchange_status_received" = "Einzahlung empfangen";
 "express_exchange_status_receiving" = "Einzahlung wird erwartet";
 "express_exchange_status_receiving_active" = "Warten auf Einzahlung...";
@@ -338,7 +342,7 @@
 "manage_tokens_unavailable_vote" = "Hochstimmen";
 "manage_tokens_wallet_selector_title" = "Wallet auswählen";
 "manage_tokens_wallet_support_only_one_network_title" = "Das Wallet unterstützt nicht mehr als ein Netzwerk";
-"markets_add_to_my_portfolio_description" = "Um mit dem Kauf, Tausch oder Erhalt dieses Vermögenswerts zu beginnen, füge diesen Token zu mindestens 1 Netzwerk hinzu";
+"markets_add_to_my_portfolio_description" = "Um dieses Asset zu kaufen, zu tauschen oder zu erhalten, füge diesen Deinem Portfolio hinzu";
 "markets_add_to_my_portfolio_unavailable_description" = "Dieses Asset ist nicht verfügbar";
 "markets_add_to_my_portfolio_unavailable_for_wallet_description" = "Dieses Asset ist für dieses Wallet nicht verfügbar";
 "markets_add_to_portfolio_button" = "Zum Portfolio hinzufügen";
@@ -380,7 +384,12 @@
 "markets_token_details_circulating_supply" = "Umlaufmenge";
 "markets_token_details_circulating_supply_description" = "Die Gesamtzahl der Coins, die für den Handel verfügbar sind und auf dem Markt zirkulieren";
 "markets_token_details_circulating_supply_full" = "Umlaufmenge";
-"markets_token_details_empty_exchanges" = "No exchanges found";
+"markets_token_details_empty_exchanges" = "Keine Börsen gefunden";
+"markets_token_details_exchange" = "Umtausch";
+"markets_token_details_exchange_trust_score_caution" = "Vorsicht";
+"markets_token_details_exchange_trust_score_risky" = "Riskant";
+"markets_token_details_exchange_trust_score_trusted" = "Vertrauenswürdig";
+"markets_token_details_exchanges_title" = "Börsen";
 "markets_token_details_experienced_buyers" = "Erfahrene Käufer";
 "markets_token_details_experienced_buyers_description" = "Nettokäufer mit der zusätzlichen Anforderung, mindestens 100 ausgehende Transaktionen zu haben";
 "markets_token_details_experienced_buyers_full" = "Erfahrene Käufer";
@@ -400,7 +409,7 @@
 "markets_token_details_liquidity_full" = "Liquidität";
 "markets_token_details_liquidity_index" = "Liquiditätsindex";
 "markets_token_details_liquidity_index_description" = "Leer";
-"markets_token_details_listed_on" = "Listed on";
+"markets_token_details_listed_on" = "Gelistet auf";
 "markets_token_details_low" = "Niedrig";
 "markets_token_details_market_capitalization" = "MarketCap";
 "markets_token_details_market_capitalization_description" = "Der Gesamtmarktwert einer Kryptowährung, berechnet sich durch Multiplikation des aktuellen Preises des Coins mit der Gesamtzahl der im Umlauf befindlichen Coins";
@@ -424,6 +433,7 @@
 "markets_token_details_trading_volume" = "Handelsvolumen (24h)";
 "markets_token_details_trading_volume_24h_description" = "Der Gesamtbetrag einer Kryptowährung, der innerhalb der letzten 24 Stunden gehandelt wurde, wobei das Aktivitäts- und Liquiditätsniveau auf dem Markt angegeben wird";
 "markets_token_details_trading_volume_full" = "Handelsvolumen (24h)";
+"markets_token_details_volume" = "Volumen";
 "markets_tooltip_message" = "Rufe dies auf oder tippe auf die Suchleiste, um Token direkt vom Markt hinzuzufügen";
 "markets_tooltip_title" = "Token hinzufügen";
 "onboarding_access_code_feature_1_description" = "Du musst einen einzigen Zugangscode einrichten, um alle deine Karten zu schützen";
@@ -702,8 +712,9 @@
 "staking_reward_claiming_manual" = "Händisch";
 "staking_reward_schedule_block" = "Pro Block";
 "staking_reward_schedule_day" = "Täglich";
+"staking_reward_schedule_each" = "Alle %@";
 "staking_reward_schedule_each_day" = "Täglich";
-"staking_reward_schedule_each_sec" = "Alle ~ %1$@ Sek.";
+"staking_reward_schedule_each_sec" = "Alle %1$@ Sek.";
 "staking_reward_schedule_epoch" = "Pro Epoche";
 "staking_reward_schedule_era" = "Pro Ära";
 "staking_reward_schedule_hour" = "Stündlich";
@@ -714,7 +725,7 @@
 "staking_stake_more" = "Mehr staken";
 "staking_summary_description_text" = "Du setzt %1$@ ein und erhältst jährlich %2$@";
 "staking_tap_to_unlock" = "Zum Entsperren antippen";
-"staking_tap_to_unlock_or_vote" = "Tap to unlock or vote";
+"staking_tap_to_unlock_or_vote" = "Tippe zum Entsperren oder Abstimmen";
 "staking_tap_to_withdraw" = "Zum abheben antippen";
 "staking_title_stake" = "Stake %@";
 "staking_title_unstake" = "Staking beenden%@";
@@ -731,7 +742,7 @@
 "staking_validators" = "Validatoren";
 "staking_validators_label" = "Strategischer Partner";
 "staking_vote" = "Abstimmung";
-"staking_vote_locked" = "Abstimmung gesperrt";
+"staking_vote_locked" = "Abstimmung";
 "staking_withdraw" = "Zurückziehen";
 "staking_your_stakes" = "Deine Einsätze";
 "story_awe_description" = "Bewahre deine Krypto-Assets sicher auf, während die privaten Schlüssel auf deiner Karte bleiben";
@@ -750,7 +761,9 @@
 "swap_promo_text" = "Tausche mehr Token zu besseren Kursen direkt in deiner Brieftasche.";
 "swap_promo_title" = "Neuer Swap-Anbieter verfügbar!";
 "swapping_alert_cex_description" = "Der Betrag umfasst:\n- Gebühr des Dienstanbieters\n- Netzgebühr für die Rücksendung von %@ von der Vermittlungsstelle an die Adresse des Nutzers.";
+"swapping_alert_cex_description_with_slippage" = "Der Betrag beinhaltet:\n• Honorar des Dienstleisters\n• Netzwerkgebühr für das Senden %1$@ von der Börse zurück an die Adresse des Benutzers. \n\n Provider-Slippage kann bis zu %2$@ \n Bei maximaler Abweichung beträgt der zu erhaltende Betrag %3$@";
 "swapping_alert_dex_description" = "Der Betrag enthält die Gebühren des Dienstleisters.";
+"swapping_alert_dex_description_with_slippage" = "Der Betrag beinhaltet die Gebühr des Dienstleisters. \n\nProvider-Slippage kann bis zu %1$@ \n Bei maximaler Abweichung beträgt der zu erhaltende Betrag %2$@";
 "swapping_alert_title" = "Gebühren";
 "swapping_approve_information_text" = "Alle dezentralen Börsen benötigen Genehmigungen, um zu verhindern, dass intelligente Verträge ohne Ihre Erlaubnis auf Ihre Geldbörse zugreifen. Smart Contracts können nicht auf Ihre Token zugreifen, wenn Sie nicht zustimmen. Indem Sie Ihre Token \"freischalten\", ermächtigen Sie den 1-Zoll-Smart-Contract, sie auszugeben. Die Miner des Netzwerks erhalten eine (von Ihnen bezahlte) Gasgebühr, um diese Aktion in der Blockchain aufzuzeichnen. Sie können Ihre Token tauschen, nachdem Sie Ihre Zustimmung gegeben haben.";
 "swapping_approve_information_title" = "Genehmigen";

@@ -110,6 +110,7 @@
 "common_generate_addresses" = "Get addresses";
 "common_go_to_provider" = "Go to provider";
 "common_go_to_token" = "Go to token";
+"common_hour" = "hour";
 "common_import" = "Import";
 "common_in_progress" = "In progress";
 "common_later" = "Later";
@@ -117,6 +118,7 @@
 "common_left" = "%1$@ left";
 "common_locked" = "Locked";
 "common_main_network" = "Main network";
+"common_month" = "month";
 "common_network_fee_title" = "Costi della rete";
 "common_network_fee_warning_content" = "Amount sent will be reduced by %1$@ (%2$@) to cover the selected fee level";
 "common_next" = "Next";
@@ -140,6 +142,7 @@
 "common_save_changes" = "Mantieni le modifiche";
 "common_search" = "Search";
 "common_search_tokens" = "Search tokens";
+"common_second_no_param" = "sec";
 "common_seed_phrase" = "Seed phrase";
 "common_select_action" = "Select action";
 "common_sell" = "Sell";
@@ -166,6 +169,7 @@
 "common_unreachable" = "Unreachable";
 "common_unstake" = "Unstake";
 "common_warning" = "Avviso";
+"common_week" = "week";
 "common_yes" = "Yes";
 "contract_address_copied_message" = "Contract address copied!";
 "currency_subtitle_expanded" = "Available networks";
@@ -381,6 +385,11 @@
 "markets_token_details_circulating_supply_description" = "The total number of coins that are available for trading and are circulating in the market";
 "markets_token_details_circulating_supply_full" = "Circulating supply";
 "markets_token_details_empty_exchanges" = "No exchanges found";
+"markets_token_details_exchange" = "Exchange";
+"markets_token_details_exchange_trust_score_caution" = "Caution";
+"markets_token_details_exchange_trust_score_risky" = "Risky";
+"markets_token_details_exchange_trust_score_trusted" = "Trusted";
+"markets_token_details_exchanges_title" = "Exchanges";
 "markets_token_details_experienced_buyers" = "Experienced buyers";
 "markets_token_details_experienced_buyers_description" = "Net buyers with the additional requirement of having at least 100 outgoing transactions";
 "markets_token_details_experienced_buyers_full" = "Experienced buyers";
@@ -424,6 +433,7 @@
 "markets_token_details_trading_volume" = "Trading volume (24h)";
 "markets_token_details_trading_volume_24h_description" = "The total amount of a cryptocurrency that has been traded within the last 24 hours, indicating the level of activity and liquidity in the market";
 "markets_token_details_trading_volume_full" = "Trading volume (24h)";
+"markets_token_details_volume" = "Volume";
 "markets_tooltip_message" = "Pull this up or tap the search bar to add tokens directly from the market";
 "markets_tooltip_title" = "Add tokens";
 "onboarding_access_code_feature_1_description" = "You have to set up a single access code to protect all your cards";
@@ -488,7 +498,7 @@
 "onboarding_subtitle_scan_primary_card_format" = "Prepare the primary card with number %@";
 "onboarding_subtitle_success_tangem_wallet_onboarding" = "Your wallet card is configured and ready for use.";
 "onboarding_subtitle_two_backup_cards" = "Max number of cards added. Finalize the backup process.";
-"onboarding_title" = "Activating card";
+"onboarding_title" = "Activating wallet";
 "onboarding_title_backup_card_format" = "Backup card #%li";
 "onboarding_title_no_backup_cards" = "No backup cards";
 "onboarding_title_notifications" = "Notifications";
@@ -660,7 +670,7 @@
 "staking_details_reward_claiming" = "Reward claiming";
 "staking_details_reward_claiming_info" = "Method of receiving staking rewards.\nIt can be either automatic, where the reward is credited to your address, or manual, where you need to withdraw the reward by creating a transaction to receive it.";
 "staking_details_reward_schedule" = "Reward schedule";
-"staking_details_reward_schedule_info" = "This is a schedule that determines when participants in staking receive their rewards.";
+"staking_details_reward_schedule_info" = "This is a schedule that determines when participants in staking receive their rewards. The reward distribution time may vary slightly depending on the validator and network load.";
 "staking_details_rewards_to_claim" = "Rewards: %@";
 "staking_details_title" = "Staking %@";
 "staking_details_unbonding_period" = "Unbonding Period";
@@ -702,8 +712,9 @@
 "staking_reward_claiming_manual" = "Manual";
 "staking_reward_schedule_block" = "Per Block";
 "staking_reward_schedule_day" = "Daily";
-"staking_reward_schedule_each_day" = "Daily";
-"staking_reward_schedule_each_sec" = "Each ~%1$@sec";
+"staking_reward_schedule_each" = "Each %@";
+"staking_reward_schedule_each_day" = "Each day";
+"staking_reward_schedule_each_sec" = "Each %1$@ sec";
 "staking_reward_schedule_epoch" = "Per Epoch";
 "staking_reward_schedule_era" = "Per Era";
 "staking_reward_schedule_hour" = "Hourly";
@@ -712,7 +723,7 @@
 "staking_rewards" = "Rewards";
 "staking_stake_locked" = "Stake locked";
 "staking_stake_more" = "Stake more";
-"staking_summary_description_text" = "You stake %1$@ and will be receiving %2$@ yearly";
+"staking_summary_description_text" = "You stake %1$@ and will be receiving your reward each %2$@";
 "staking_tap_to_unlock" = "Tap to unlock";
 "staking_tap_to_unlock_or_vote" = "Tap to unlock or vote";
 "staking_tap_to_withdraw" = "Tap to withdraw";
@@ -750,7 +761,9 @@
 "swap_promo_text" = "Exchange more tokens at better rates directly in your wallet.";
 "swap_promo_title" = "New Swap Provider Available!";
 "swapping_alert_cex_description" = "The amount includes:\n• service provider's fee\n• network fee for sending %@ from the exchange back to the user's address.";
+"swapping_alert_cex_description_with_slippage" = "The amount includes:\n• service provider's fee\n• network fee for sending %1$@ from the exchange back to the user's address. \n\nProvider slippage is up to %2$@ \n At maximum slippage, the amount to be received will be %3$@";
 "swapping_alert_dex_description" = "The amount includes the service provider's fee.";
+"swapping_alert_dex_description_with_slippage" = "The amount includes the service provider's fee. \n\nProvider slippage is up to %1$@ \n At maximum slippage, the amount to be received will be %2$@";
 "swapping_alert_title" = "Fees";
 "swapping_approve_information_text" = "All decentralized exchanges require approvals to prevent smart contracts from accessing your wallet without your permission. By design, smart contracts can't access your tokens unless you approve. By \"unlocking\" your tokens, you authorize the 1-inch smart contract to spend them. The network's miners receive a gas fee (paid by you) to record this action on the blockchain. You can swap your token after giving approval.";
 "swapping_approve_information_title" = "Approve";

@@ -110,6 +110,7 @@
 "common_generate_addresses" = "Obtenir des adresses";
 "common_go_to_provider" = "Aller au fournisseur";
 "common_go_to_token" = "Aller au jeton";
+"common_hour" = "hour";
 "common_import" = "Importez";
 "common_in_progress" = "En cours";
 "common_later" = "Plus tard";
@@ -117,6 +118,7 @@
 "common_left" = "Il reste %1$@";
 "common_locked" = "Verrouillé";
 "common_main_network" = "Réseau principal";
+"common_month" = "month";
 "common_network_fee_title" = "Commissions du réseau";
 "common_network_fee_warning_content" = "Le montant envoyé sera réduit de %1$@(%2$@) pour couvrir le niveau de frais sélectionné";
 "common_next" = "Suivant";
@@ -140,6 +142,7 @@
 "common_save_changes" = "Sauvegarder les modifications";
 "common_search" = "Rechercher";
 "common_search_tokens" = "Rechercher des jetons";
+"common_second_no_param" = "sec";
 "common_seed_phrase" = "Seed phrase";
 "common_select_action" = "Sélectionnez une action";
 "common_sell" = "Vendre";
@@ -166,6 +169,7 @@
 "common_unreachable" = "Inaccessible";
 "common_unstake" = "Unstakez";
 "common_warning" = "Alerte";
+"common_week" = "week";
 "common_yes" = "Oui";
 "contract_address_copied_message" = "Adresse du contrat copiée !";
 "currency_subtitle_expanded" = "Réseaux disponibles";
@@ -381,6 +385,11 @@
 "markets_token_details_circulating_supply_description" = "Le nombre total de pièces disponibles pour le trading et en circulation sur le marché";
 "markets_token_details_circulating_supply_full" = "Approvisionnement en circulation";
 "markets_token_details_empty_exchanges" = "No exchanges found";
+"markets_token_details_exchange" = "Exchange";
+"markets_token_details_exchange_trust_score_caution" = "Caution";
+"markets_token_details_exchange_trust_score_risky" = "Risky";
+"markets_token_details_exchange_trust_score_trusted" = "Trusted";
+"markets_token_details_exchanges_title" = "Exchanges";
 "markets_token_details_experienced_buyers" = "Acheteurs expérimentés";
 "markets_token_details_experienced_buyers_description" = "Acheteurs nets avec l'exigence supplémentaire d'avoir au moins 100 transactions sortantes";
 "markets_token_details_experienced_buyers_full" = "Acheteurs expérimentés";
@@ -424,6 +433,7 @@
 "markets_token_details_trading_volume" = "Volume des échanges (24h)";
 "markets_token_details_trading_volume_24h_description" = "Le montant total d'une crypto-monnaie qui a été échangé au cours des dernières 24 heures, indiquant le niveau d'activité et de liquidité du marché";
 "markets_token_details_trading_volume_full" = "Volume des échanges (24h)";
+"markets_token_details_volume" = "Volume";
 "markets_tooltip_message" = "Tirez vers le haut ou appuyez sur la barre de recherche pour ajouter des jetons directement depuis le marché";
 "markets_tooltip_title" = "Ajouter des jetons";
 "onboarding_access_code_feature_1_description" = "Vous devez définir un seul code d'accès pour protéger toutes vos cartes";
@@ -702,8 +712,9 @@
 "staking_reward_claiming_manual" = "Manuel";
 "staking_reward_schedule_block" = "Bloquer";
 "staking_reward_schedule_day" = "Jour";
+"staking_reward_schedule_each" = "Each %@";
 "staking_reward_schedule_each_day" = "Chaque jour";
-"staking_reward_schedule_each_sec" = "Toute(s) les ~%1$@seconde(s)";
+"staking_reward_schedule_each_sec" = "Toute(s) les %1$@ seconde(s)";
 "staking_reward_schedule_epoch" = "Époque";
 "staking_reward_schedule_era" = "Ère";
 "staking_reward_schedule_hour" = "Heure";
@@ -731,7 +742,7 @@
 "staking_validators" = "Validateurs";
 "staking_validators_label" = "Partenaire stratégique";
 "staking_vote" = "Voter";
-"staking_vote_locked" = "Vote bloqué";
+"staking_vote_locked" = "Voter";
 "staking_withdraw" = "Retirer";
 "staking_your_stakes" = "Vos stakes";
 "story_awe_description" = "Stockez vos actifs crypto en toute sécurité tout en conservant les clés privées contenues dans votre carte";
@@ -750,7 +761,9 @@
 "swap_promo_text" = "Échangez plus de jetons à de meilleurs taux directement dans votre portefeuille.";
 "swap_promo_title" = "Nouveau fournisseur d'échange disponible !";
 "swapping_alert_cex_description" = "Le montant comprend :\n• les frais du fournisseur de services\n• les frais de réseau pour l'envoi de %@ depuis l'échange vers l'adresse de l'utilisateur.";
+"swapping_alert_cex_description_with_slippage" = "The amount includes:\n• service provider's fee\n• network fee for sending %1$@ from the exchange back to the user's address. \n\nProvider slippage is up to %2$@ \n At maximum slippage, the amount to be received will be %3$@";
 "swapping_alert_dex_description" = "Le montant comprend les frais du fournisseur de services.";
+"swapping_alert_dex_description_with_slippage" = "The amount includes the service provider's fee. \n\nProvider slippage is up to %1$@ \n At maximum slippage, the amount to be received will be %2$@";
 "swapping_alert_title" = "Frais";
 "swapping_approve_information_text" = "Tous les échanges décentralisés nécessitent des approbations pour empêcher les smart contracts d'accéder à votre portefeuille sans votre permission. Par conception, les smart contracts ne peuvent pas accéder à vos jetons sans votre approbation. En « déverrouillant » vos jetons, vous autorisez le smart contract 1-inch à les dépenser. Les mineurs du réseau reçoivent des frais de gaz (payés par vous) pour enregistrer cette action sur la blockchain. Vous pouvez échanger votre jeton après avoir donné votre approbation.";
 "swapping_approve_information_title" = "Approuver";
