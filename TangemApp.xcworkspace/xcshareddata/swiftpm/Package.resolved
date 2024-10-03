@@ -267,8 +267,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/ton-swift.git",
       "state" : {
-        "revision" : "7030234ff239796c5f71f0e65eb4e9ffec5a83cb",
-        "version" : "1.0.10-tangem1"
+        "revision" : "723cfeb8da0ea024158b4274fced8a1891bff88e",
+        "version" : "1.0.10-tangem3"
       }
     },
     {

@@ -248,6 +248,7 @@
 "express_exchange_status_exchanging" = "Обмен";
 "express_exchange_status_exchanging_active" = "Обмен...";
 "express_exchange_status_failed" = "Неудачно";
+"express_exchange_status_paused" = "Приостановлен";
 "express_exchange_status_received" = "Депозит получен";
 "express_exchange_status_receiving" = "Ожидание депозита";
 "express_exchange_status_receiving_active" = "Ожидаем пополнения...";
@@ -379,6 +380,7 @@
 "markets_token_details_circulating_supply" = "Циркулир. предл.";
 "markets_token_details_circulating_supply_description" = "Общее количество монет, доступных для торговли и находящихся в обращении на рынке";
 "markets_token_details_circulating_supply_full" = "Циркулирующее предложение";
+"markets_token_details_empty_exchanges" = "Биржи не найдены";
 "markets_token_details_experienced_buyers" = "Опытные трейдеры";
 "markets_token_details_experienced_buyers_description" = "Покупатели, у которых было как минимум 100 исходящих транзакций.";
 "markets_token_details_experienced_buyers_full" = "Опытные трейдеры";
@@ -398,6 +400,7 @@
 "markets_token_details_liquidity_full" = "Ликвидность";
 "markets_token_details_liquidity_index" = "Индекс ликвидности";
 "markets_token_details_liquidity_index_description" = "";
+"markets_token_details_listed_on" = "Листинг на";
 "markets_token_details_low" = "Низкий";
 "markets_token_details_market_capitalization" = "Рын. кап.";
 "markets_token_details_market_capitalization_description" = "Общая рыночная стоимость криптовалюты, рассчитываемая путем умножения текущей цены монеты на общее количество монет в обращении.";
@@ -421,7 +424,7 @@
 "markets_token_details_trading_volume" = "Объем торгов (24ч)";
 "markets_token_details_trading_volume_24h_description" = "Общая сумма криптовалюты, которая была продана за последние 24 часа, показывающая уровень активности и ликвидности на рынке.";
 "markets_token_details_trading_volume_full" = "Объем торгов (24ч)";
-"markets_tooltip_message" = "Потяните вверх или коснитесь поисковой строки, чтобы добавить токены напрямую из маркета";
+"markets_tooltip_message" = "Потяните вверх или коснитесь поисковой строки, чтобы добавить токены напрямую из рынка";
 "markets_tooltip_title" = "Добавить токены";
 "onboarding_access_code_feature_1_description" = "Вам необходимо установить единый код доступа для защиты всех ваших карт";
 "onboarding_access_code_feature_1_title" = "Защита";
@@ -711,6 +714,7 @@
 "staking_stake_more" = "Застейкать еще";
 "staking_summary_description_text" = "Вы стейкаете %1$@ и будете получать %2$@ ежегодно";
 "staking_tap_to_unlock" = "Нажмите для разблокировки";
+"staking_tap_to_unlock_or_vote" = "Нажмите для разблокировки или голосования";
 "staking_tap_to_withdraw" = "Нажмите для вывода";
 "staking_title_stake" = "Застейкать %@";
 "staking_title_unstake" = "Вывести %@";
@@ -726,7 +730,7 @@
 "staking_validator" = "Валидатор";
 "staking_validators" = "Валидаторы";
 "staking_vote" = "Проголосовать";
-"staking_vote_locked" = "Голосование заблокировано";
+"staking_vote_locked" = "Проголосовать";
 "staking_withdraw" = "Вывод";
 "staking_your_stakes" = "Застейканные средства";
 "story_awe_description" = "Держите свои криптосбережения в безопасности. Приватные ключи надежно хранятся на карте.";
