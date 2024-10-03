@@ -17,7 +17,7 @@ struct TokenDescriptionBottomSheetView: View {
     @State private var containerHeight: CGFloat = 0
 
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(alignment: .leading, spacing: 10) {
             DescriptionBottomSheetView(info: info)
 
             Button {
@@ -39,6 +39,7 @@ private extension TokenDescriptionBottomSheetView {
                 .foregroundStyle(Colors.Icon.accent)
 
             Text(Localization.informationGeneratedWithAi)
+                .multilineTextAlignment(.leading)
                 .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }

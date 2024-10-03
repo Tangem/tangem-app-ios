@@ -227,7 +227,7 @@ class TokenMarketsDetailsViewModel: BaseMarketsViewModel {
             guard let self else { return }
 
             let dataCollector = TokenErrorDescriptionDataCollector(tokenId: tokenInfo.id, tokenName: tokenInfo.name)
-            coordinator?.openMail(with: dataCollector, emailType: .appFeedback(subject: "ttt"))
+            coordinator?.openMail(with: dataCollector, emailType: .appFeedback(subject: Localization.feedbackTokenDescriptionError))
         }
     }
 }
