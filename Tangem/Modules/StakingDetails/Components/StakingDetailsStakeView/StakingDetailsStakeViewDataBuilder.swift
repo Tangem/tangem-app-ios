@@ -43,7 +43,8 @@ class StakingDetailsStakeViewDataBuilder {
         let subtitle: StakingDetailsStakeViewData.SubtitleType? = {
             switch balance.balanceType {
             case .rewards: .none
-            case .locked: .locked
+            case .locked:
+                .locked(hasVoteLocked: balance.actions.contains(where: { $0.type == .voteLocked }))
             case .unstaked: .withdraw
             case .warmup: .warmup(period: yield.warmupPeriod.formatted(formatter: daysFormatter))
             case .active, .pending:

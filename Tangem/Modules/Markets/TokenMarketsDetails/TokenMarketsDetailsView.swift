@@ -195,6 +195,7 @@ struct TokenMarketsDetailsView: View {
             marketPriceIntervalType: $viewModel.selectedPriceChangeIntervalType,
             options: viewModel.priceChangeIntervalOptions,
             shouldStretchToFill: true,
+            isDisabled: viewModel.isLoading && !viewModel.allDataLoadFailed,
             style: .init(textVerticalPadding: 4),
             titleFactory: { $0.tokenDetailsNameLocalized }
         )
