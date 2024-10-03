@@ -290,6 +290,7 @@
 "feedback_subject_support_tangem" = "Feedback zu Tangem";
 "feedback_subject_tx_failed" = "Eine Transaktion kann nicht gesendet werden";
 "feedback_subject_tx_push_failed" = "Transaktion kann nicht gepusht werden";
+"feedback_token_description_error" = "Coin description error";
 "give_permission_current_transaction" = "Nur diese";
 "give_permission_fee_footer" = "Das Netzwerk erhebt eine Token-Genehmigungsgebühr, um zu überprüfen, ob Sie die Verwendung Ihres Tokens für den Swap genehmigen.";
 "give_permission_policy_type_footer" = "Gib das Genehmigungslimit für das ausgewählte Token an";

@@ -290,6 +290,7 @@
 "feedback_subject_support_tangem" = "Tangem feedback";
 "feedback_subject_tx_failed" = "Can't send a transaction";
 "feedback_subject_tx_push_failed" = "Can't push a transaction";
+"feedback_token_description_error" = "Coin description error";
 "give_permission_current_transaction" = "Transaction";
 "give_permission_fee_footer" = "The network will charge a token approval fee to verify that you are authorizing the use of your token for the swap.";
 "give_permission_policy_type_footer" = "Specify the approve limit for the selected token";
