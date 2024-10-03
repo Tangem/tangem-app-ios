@@ -73,11 +73,11 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
 
         var targetState: MarketsPortfolioContainerView.TypeView = .list
         if let networks {
-            let canAddAvailableNetworks = canAddToPortfolio(with: networks)
+            let supportedStateNetworks = supportedState(networks: networks)
             isAddTokenButtonDisabled = tokenAddedToAllNetworksAndWallets(availableNetworks: networks)
 
             if tokenItemViewModels.isEmpty {
-                switch canAddAvailableNetworks {
+                switch supportedStateNetworks {
                 case .available:
                     targetState = .empty
                 case .unavailable:
@@ -101,27 +101,27 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
      - We get a list of available blockchains that came in the coin model
      - Checking the lists of available networks
      */
-    private func canAddToPortfolio(with networks: [NetworkModel]) -> CanAddOption {
+    private func supportedState(networks: [NetworkModel]) -> SupportedStateOption {
         let userWalletModels = walletDataProvider.userWalletModels
 
+        // When there are no available networks to choose
         guard !networks.isEmpty else {
             return .unsupported
         }
 
         let networkIds = networks.reduce(into: Set<String>()) { $0.insert($1.networkId) }
-        var hasMultiCurrencyWallet = false
+        let multiCurrencyWallets = userWalletModels.filter { $0.config.hasFeature(.multiCurrency) }
 
-        for model in userWalletModels {
-            if !hasMultiCurrencyWallet, model.config.hasFeature(.multiCurrency) {
-                hasMultiCurrencyWallet = true
-            }
-
-            if !networkIds.intersection(model.config.supportedBlockchains.map { $0.networkId }).isEmpty {
-                return .available
-            }
+        if multiCurrencyWallets.isEmpty {
+            // For single currency wallet, we show only that it is not available for this wallet
+            return .unavailable
+        } else {
+            // If the wallets is multicurrencies, then we check networkId if there are available networks
+            // And if there are none, we show it is not supported
+            return multiCurrencyWallets.first(where: { model in
+                !networkIds.intersection(model.config.supportedBlockchains.map { $0.networkId }).isEmpty
+            }) == nil ? .unsupported : .available
         }
-
-        return hasMultiCurrencyWallet ? .unsupported : .unavailable
     }
 
     private func tokenAddedToAllNetworksAndWallets(availableNetworks: [NetworkModel]) -> Bool {
@@ -307,7 +307,7 @@ extension MarketsPortfolioContainerViewModel {
         let coinId: String
     }
 
-    enum CanAddOption {
+    enum SupportedStateOption {
         case available
         case unavailable
         case unsupported
