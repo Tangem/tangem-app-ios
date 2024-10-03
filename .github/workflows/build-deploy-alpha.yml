@@ -38,6 +38,7 @@ jobs:
         run: |
           echo 'conc_group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}'
           echo `security find-identity -p codesigning -v`
+          echo `ls -ltra ~/Library/MobileDevice/Provisioning\ Profiles`
 
   build:
     name: Tangem Alpha
