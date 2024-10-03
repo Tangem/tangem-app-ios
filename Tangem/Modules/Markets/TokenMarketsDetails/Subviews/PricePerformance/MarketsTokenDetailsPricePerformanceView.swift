@@ -13,55 +13,59 @@ struct MarketsTokenDetailsPricePerformanceView: View {
     @ObservedObject var viewModel: MarketsTokenDetailsPricePerformanceViewModel
 
     var body: some View {
-        VStack(spacing: 18) {
-            HStack(content: {
-                Text(Localization.marketsTokenDetailsPricePerformance)
-                    .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+        VStack(spacing: .zero) {
+            header
+
+            content
+        }
+        .defaultRoundedBackground(with: Colors.Background.action, verticalPadding: .zero)
+    }
+
+    private var header: some View {
+        BlockHeaderTitleView(title: Localization.marketsTokenDetailsPricePerformance) {
+            MarketsPickerView(
+                marketPriceIntervalType: $viewModel.selectedInterval,
+                options: viewModel.intervalOptions,
+                shouldStretchToFill: false,
+                style: .init(textVerticalPadding: 2),
+                titleFactory: { $0.tokenDetailsNameLocalized }
+            )
+        }
+    }
+
+    private var content: some View {
+        VStack(spacing: 12) {
+            HStack {
+                Text(Localization.marketsTokenDetailsLow)
+                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
 
                 Spacer(minLength: 8)
 
-                MarketsPickerView(
-                    marketPriceIntervalType: $viewModel.selectedInterval,
-                    options: viewModel.intervalOptions,
-                    shouldStretchToFill: false,
-                    style: .init(textVerticalPadding: 2),
-                    titleFactory: { $0.tokenDetailsNameLocalized }
-                )
-            })
+                Text(Localization.marketsTokenDetailsHigh)
+                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+            }
 
-            VStack(spacing: 12) {
-                HStack {
-                    Text(Localization.marketsTokenDetailsLow)
-                        .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+            ProgressView(value: viewModel.pricePerformanceProgress)
+                .progressViewStyle(TangemProgressViewStyle(
+                    height: 6,
+                    backgroundColor: Colors.Background.tertiary,
+                    progressColor: Colors.Text.accent
+                ))
+                .animation(.default, value: viewModel.pricePerformanceProgress)
 
-                    Spacer(minLength: 8)
+            HStack {
+                Text(viewModel.lowValue)
+                    .style(Fonts.Regular.callout, color: Colors.Text.primary1)
+                    .animation(.default, value: viewModel.lowValue)
 
-                    Text(Localization.marketsTokenDetailsHigh)
-                        .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-                }
+                Spacer(minLength: 8)
 
-                ProgressView(value: viewModel.pricePerformanceProgress)
-                    .progressViewStyle(TangemProgressViewStyle(
-                        height: 6,
-                        backgroundColor: Colors.Background.tertiary,
-                        progressColor: Colors.Text.accent
-                    ))
-                    .animation(.default, value: viewModel.pricePerformanceProgress)
-
-                HStack {
-                    Text(viewModel.lowValue)
-                        .style(Fonts.Regular.callout, color: Colors.Text.primary1)
-                        .animation(.default, value: viewModel.lowValue)
-
-                    Spacer(minLength: 8)
-
-                    Text(viewModel.highValue)
-                        .style(Fonts.Regular.callout, color: Colors.Text.primary1)
-                        .animation(.default, value: viewModel.highValue)
-                }
+                Text(viewModel.highValue)
+                    .style(Fonts.Regular.callout, color: Colors.Text.primary1)
+                    .animation(.default, value: viewModel.highValue)
             }
         }
-        .defaultRoundedBackground(with: Colors.Background.action)
+        .padding(.vertical, 12)
     }
 }
 
