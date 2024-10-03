@@ -729,6 +729,7 @@
 "staking_unstaking_item_name" = "Завершение стейкинга %@";
 "staking_validator" = "Валидатор";
 "staking_validators" = "Валидаторы";
+"staking_validators_label" = "Стратегический партнер";
 "staking_vote" = "Проголосовать";
 "staking_vote_locked" = "Проголосовать";
 "staking_withdraw" = "Вывод";

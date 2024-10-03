@@ -729,6 +729,7 @@
 "staking_unstaking_item_name" = "Виведення зі стейкінгу %@";
 "staking_validator" = "Валідатор";
 "staking_validators" = "Валідатори";
+"staking_validators_label" = "Стратегічний партнер";
 "staking_vote" = "Проголосувати";
 "staking_vote_locked" = "Голос заблоковано";
 "staking_withdraw" = "Зняти";
