@@ -74,7 +74,7 @@ class SettingsUserWalletRowViewModel: ObservableObject, Identifiable {
             .withWeakCaptureOf(self)
             .sink { viewModel, result in
                 guard !viewModel.isUserWalletLocked else {
-                    viewModel.balanceState = .noData
+                    viewModel.balanceState = .loaded(text: Localization.commonLocked)
                     return
                 }
 
@@ -90,7 +90,7 @@ class SettingsUserWalletRowViewModel: ObservableObject, Identifiable {
                     let formatted = viewModel.balanceFormatter.formatFiatBalance(totalBalance.balance)
                     viewModel.balanceState = .loaded(text: formatted)
                 case .failedToLoad:
-                    viewModel.balanceState = .noData
+                    viewModel.balanceState = .loaded(text: Localization.commonUnreachable)
                 }
             }
             .store(in: &bag)
