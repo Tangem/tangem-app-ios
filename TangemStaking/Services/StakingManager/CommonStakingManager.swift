@@ -291,7 +291,14 @@ private extension CommonStakingManager {
             }
 
             return .validator(
-                .init(address: address, name: name, preferred: true, iconURL: record.validator.iconURL, apr: record.validator.apr)
+                .init(
+                    address: address,
+                    name: name,
+                    preferred: true,
+                    partner: false,
+                    iconURL: record.validator.iconURL,
+                    apr: record.validator.apr
+                )
             )
         }()
 

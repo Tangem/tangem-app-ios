@@ -278,6 +278,7 @@ struct StakeKitMapper {
             address: validator.address,
             name: validator.name ?? "No name",
             preferred: validator.preferred ?? false,
+            partner: validator.address == Constants.partnerValidator,
             iconURL: validator.image.flatMap { URL(string: $0) },
             apr: validator.apr
         )
@@ -357,6 +358,12 @@ struct StakeKitMapper {
         case .week: .week
         case .month: .month
         }
+    }
+}
+
+extension StakeKitMapper {
+    enum Constants {
+        static let partnerValidator = "cosmosvaloper1wrx0x9m9ykdhw9sg04v7uljme53wuj03aa5d4f"
     }
 }
 
