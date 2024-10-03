@@ -77,16 +77,18 @@ struct SettingsUserWalletRowView: View {
                 Text(viewModel.cardsCount)
                     .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
 
-                Text(AppConstants.dotSign)
-                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                if viewModel.balanceState != .noData {
+                    Text(AppConstants.dotSign)
+                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
 
-                LoadableTextView(
-                    state: viewModel.balanceState,
-                    font: Fonts.Regular.caption1,
-                    textColor: Colors.Text.tertiary,
-                    loaderSize: CGSize(width: 40, height: 12),
-                    isSensitiveText: true
-                )
+                    LoadableTextView(
+                        state: viewModel.balanceState,
+                        font: Fonts.Regular.caption1,
+                        textColor: Colors.Text.tertiary,
+                        loaderSize: CGSize(width: 40, height: 12),
+                        isSensitiveText: true
+                    )
+                }
             }
             .lineLimit(1)
         }

@@ -18,7 +18,7 @@ extension StakeKitDTO {
 
         enum Info {
             struct Request: Encodable {
-                let preferredValidatorsOnly: Bool = true
+                let preferredValidatorsOnly: Bool = false
             }
 
             struct Response: Decodable {

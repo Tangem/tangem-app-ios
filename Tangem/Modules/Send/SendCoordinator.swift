@@ -51,6 +51,8 @@ class SendCoordinator: CoordinatorObject {
             rootViewModel = factory.makeStakingViewModel(manager: manager, router: self)
         case .unstaking(let manager, let action):
             rootViewModel = factory.makeUnstakingViewModel(manager: manager, action: action, router: self)
+        case .restaking(let manager, let action):
+            rootViewModel = factory.makeRestakingViewModel(manager: manager, action: action, router: self)
         }
     }
 }

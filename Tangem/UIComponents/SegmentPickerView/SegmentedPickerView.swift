@@ -24,6 +24,7 @@ public struct SegmentedPickerView<Option: Hashable & Identifiable, SelectionView
     private let selectionView: () -> SelectionView
     private let segmentContent: (Option, Bool) -> SegmentContent
     private let shouldStretchToFill: Bool
+    private let isDisabled: Bool
 
     @State private var optionIsPressed: [Option.ID: Bool] = [:]
     @State private var selectedIndex: Int
@@ -48,6 +49,7 @@ public struct SegmentedPickerView<Option: Hashable & Identifiable, SelectionView
         selection: Binding<Option>,
         options: [Option],
         shouldStretchToFill: Bool,
+        isDisabled: Bool,
         selectionView: @escaping () -> SelectionView,
         @ViewBuilder segmentContent: @escaping (Option, Bool) -> SegmentContent
     ) {
@@ -56,6 +58,7 @@ public struct SegmentedPickerView<Option: Hashable & Identifiable, SelectionView
         self.selectionView = selectionView
         self.segmentContent = segmentContent
         self.shouldStretchToFill = shouldStretchToFill
+        self.isDisabled = isDisabled
         optionIsPressed = Dictionary(uniqueKeysWithValues: options.lazy.map { ($0.id, false) })
         selectedIndex = options.firstIndex(of: selection.wrappedValue) ?? 0
     }
@@ -88,7 +91,7 @@ public struct SegmentedPickerView<Option: Hashable & Identifiable, SelectionView
                     namespaceID: namespaceID,
                     targetWidth: targetWidth,
                     action: {
-                        if selection == option {
+                        if selection == option || isDisabled {
                             return
                         }
 
@@ -194,6 +197,7 @@ public extension SegmentedPickerView {
         selection: Binding<Option>,
         options: [Option],
         shouldStretchToFill: Bool,
+        isDisabled: Bool,
         selectionView: SelectionView,
         @ViewBuilder segmentContent: @escaping (Option, Bool) -> SegmentContent
     ) {
@@ -201,6 +205,7 @@ public extension SegmentedPickerView {
             selection: selection,
             options: options,
             shouldStretchToFill: shouldStretchToFill,
+            isDisabled: isDisabled,
             selectionView: { selectionView },
             segmentContent: segmentContent
         )

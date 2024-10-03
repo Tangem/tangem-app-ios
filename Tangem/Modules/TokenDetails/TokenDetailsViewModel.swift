@@ -296,13 +296,13 @@ private extension TokenDetailsViewModel {
             activeStakingViewData = .init(balance: .loadingError, rewards: .none)
         case .staked(let staked):
             let rewards: ActiveStakingViewData.RewardsState? = {
-                switch (staked.yieldInfo.rewardClaimingType, walletModel.stakedRewardsBalance.fiat) {
+                switch (staked.yieldInfo.rewardClaimingType, walletModel.stakedRewards.fiat) {
                 case (.auto, _):
                     return nil
                 case (.manual, .none):
                     return .noRewards
                 case (.manual, .some):
-                    return .rewardsToClaim(walletModel.stakedRewardsBalanceFormatted.fiat)
+                    return .rewardsToClaim(walletModel.stakedRewardsFormatted.fiat)
                 }
             }()
 

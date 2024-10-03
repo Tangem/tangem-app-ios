@@ -12,15 +12,27 @@ import TangemStaking
 // MARK: - Balance
 
 extension WalletModel {
-    struct Balance: Hashable {
-        let crypto, fiat: Decimal?
+    var balanceValue: Decimal? {
+        availableBalance.crypto
     }
 
-    struct BalanceFormatted: Hashable {
-        let crypto, fiat: String
+    var balance: String {
+        availableBalanceFormatted.crypto
     }
 
-    var allBalance: Balance {
+    var isZeroAmount: Bool {
+        wallet.amounts[amountType]?.isZero ?? true
+    }
+
+    var fiatBalance: String {
+        availableBalanceFormatted.fiat
+    }
+
+    var fiatValue: Decimal? {
+        availableBalance.fiat
+    }
+
+    var totalBalance: Balance {
         let cryptoBalance: Decimal? = {
             switch (availableBalance.crypto, stakedBalance.crypto) {
             case (.none, _): nil
@@ -61,33 +73,7 @@ extension WalletModel {
         return .init(crypto: cryptoBalance, fiat: fiatBalance)
     }
 
-    var stakedWithPendingBalance: Balance {
-        let stakingBalance = stakingManagerState.balances?.stakes().sum()
-        let fiatBalance: Decimal? = {
-            guard let stakingBalance, let currencyId = tokenItem.currencyId else {
-                return nil
-            }
-
-            return converter.convertToFiat(stakingBalance, currencyId: currencyId)
-        }()
-
-        return .init(crypto: stakingBalance, fiat: fiatBalance)
-    }
-
-    var stakedBalance: Balance {
-        let stakingBalance = stakingManagerState.balances?.blocked().sum()
-        let fiatBalance: Decimal? = {
-            guard let stakingBalance, let currencyId = tokenItem.currencyId else {
-                return nil
-            }
-
-            return converter.convertToFiat(stakingBalance, currencyId: currencyId)
-        }()
-
-        return .init(crypto: stakingBalance, fiat: fiatBalance)
-    }
-
-    var stakedRewardsBalance: Balance {
+    var stakedRewards: Balance {
         let rewardsToClaim = stakingManagerState.balances?.rewards().sum()
         let fiatBalance: Decimal? = {
             guard let rewardsToClaim, let currencyId = tokenItem.currencyId else {
@@ -101,7 +87,7 @@ extension WalletModel {
     }
 
     var allBalanceFormatted: BalanceFormatted {
-        formatted(allBalance)
+        formatted(totalBalance)
     }
 
     var availableBalanceFormatted: BalanceFormatted {
@@ -116,8 +102,34 @@ extension WalletModel {
         formatted(stakedBalance)
     }
 
-    var stakedRewardsBalanceFormatted: BalanceFormatted {
-        formatted(stakedRewardsBalance)
+    var stakedRewardsFormatted: BalanceFormatted {
+        formatted(stakedRewards)
+    }
+
+    private var stakedBalance: Balance {
+        let stakingBalance = stakingManagerState.balances?.blocked().sum()
+        let fiatBalance: Decimal? = {
+            guard let stakingBalance, let currencyId = tokenItem.currencyId else {
+                return nil
+            }
+
+            return converter.convertToFiat(stakingBalance, currencyId: currencyId)
+        }()
+
+        return .init(crypto: stakingBalance, fiat: fiatBalance)
+    }
+
+    private var stakedWithPendingBalance: Balance {
+        let stakingBalance = stakingManagerState.balances?.stakes().sum()
+        let fiatBalance: Decimal? = {
+            guard let stakingBalance, let currencyId = tokenItem.currencyId else {
+                return nil
+            }
+
+            return converter.convertToFiat(stakingBalance, currencyId: currencyId)
+        }()
+
+        return .init(crypto: stakingBalance, fiat: fiatBalance)
     }
 
     private func formatted(_ balance: Balance) -> BalanceFormatted {
@@ -125,5 +137,15 @@ extension WalletModel {
         let fiatFormatted = formatter.formatFiatBalance(balance.fiat)
 
         return .init(crypto: cryptoFormatted, fiat: fiatFormatted)
+    }
+}
+
+extension WalletModel {
+    struct Balance: Hashable {
+        let crypto, fiat: Decimal?
+    }
+
+    struct BalanceFormatted: Hashable {
+        let crypto, fiat: String
     }
 }
