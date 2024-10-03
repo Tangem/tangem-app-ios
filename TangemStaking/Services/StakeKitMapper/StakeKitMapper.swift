@@ -247,11 +247,11 @@ struct StakeKitMapper {
         }
 
         let validators = response.validators
-            .compactMap(mapToValidatorInfo)
+            .map(mapToValidatorInfo)
             .sorted(by: { $0.apr ?? 0 > $1.apr ?? 0 })
 
         let rewardRateValues = RewardRateValues(
-            aprs: validators.compactMap(\.apr),
+            aprs: validators.filter { $0.preferred }.compactMap(\.apr),
             rewardRate: response.rewardRate
         )
 
@@ -273,14 +273,12 @@ struct StakeKitMapper {
 
     // MARK: - Validators
 
-    func mapToValidatorInfo(from validator: StakeKitDTO.Validator) -> ValidatorInfo? {
-        guard validator.preferred == true else {
-            return nil
-        }
-
-        return ValidatorInfo(
+    func mapToValidatorInfo(from validator: StakeKitDTO.Validator) -> ValidatorInfo {
+        ValidatorInfo(
             address: validator.address,
             name: validator.name ?? "No name",
+            preferred: validator.preferred ?? false,
+            partner: validator.address == Constants.partnerValidator,
             iconURL: validator.image.flatMap { URL(string: $0) },
             apr: validator.apr
         )
@@ -360,6 +358,12 @@ struct StakeKitMapper {
         case .week: .week
         case .month: .month
         }
+    }
+}
+
+extension StakeKitMapper {
+    enum Constants {
+        static let partnerValidator = "cosmosvaloper1wrx0x9m9ykdhw9sg04v7uljme53wuj03aa5d4f"
     }
 }
 
