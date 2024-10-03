@@ -135,6 +135,21 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
         sendCoordinator = coordinator
     }
 
+    func openRestakingFlow(action: RestakingModel.Action) {
+        guard let options else { return }
+
+        let coordinator = SendCoordinator(dismissAction: { [weak self] _ in
+            self?.sendCoordinator = nil
+        })
+
+        coordinator.start(with: .init(
+            walletModel: options.walletModel,
+            userWalletModel: options.userWalletModel,
+            type: .restaking(manager: options.manager, action: action)
+        ))
+        sendCoordinator = coordinator
+    }
+
     func openWhatIsStaking() {
         Analytics.log(.stakingLinkWhatIsStaking)
         safariManager.openURL(TangemBlogUrlBuilder().url(post: .whatIsStaking))
