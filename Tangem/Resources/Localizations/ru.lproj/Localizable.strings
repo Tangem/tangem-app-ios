@@ -110,6 +110,7 @@
 "common_generate_addresses" = "Получить адреса";
 "common_go_to_provider" = "К провайдеру";
 "common_go_to_token" = "Перейти в токен";
+"common_hour" = "hour";
 "common_import" = "Импортировать";
 "common_in_progress" = "В процессе";
 "common_later" = "Позже";
@@ -117,6 +118,7 @@
 "common_left" = "Осталось %1$@";
 "common_locked" = "Заблокирован";
 "common_main_network" = "Основная сеть";
+"common_month" = "month";
 "common_network_fee_title" = "Сетевая комиссия";
 "common_network_fee_warning_content" = "Сумма отправки будет уменьшена на %1$@ (%2$@) для покрытия выбранного уровня комиссии";
 "common_next" = "Далее";
@@ -140,6 +142,7 @@
 "common_save_changes" = "Сохранить изменения";
 "common_search" = "Поиск";
 "common_search_tokens" = "Поиск токенов";
+"common_second_no_param" = "сек";
 "common_seed_phrase" = "Seed-фраза";
 "common_select_action" = "Выберите действие";
 "common_sell" = "Продать";
@@ -166,6 +169,7 @@
 "common_unreachable" = "Недоступно";
 "common_unstake" = "Завершить стейкинг";
 "common_warning" = "Предупреждение";
+"common_week" = "week";
 "common_yes" = "Да";
 "contract_address_copied_message" = "Адрес контракта скопирован!";
 "currency_subtitle_expanded" = "Доступные сети";
@@ -286,6 +290,7 @@
 "feedback_subject_support_tangem" = "Обращение в поддержку Tangem";
 "feedback_subject_tx_failed" = "Не могу отправить транзакцию";
 "feedback_subject_tx_push_failed" = "Не могу протолкнуть транзакцию";
+"feedback_token_description_error" = "Ошибка в описании монеты";
 "give_permission_current_transaction" = "Транзакция";
 "give_permission_fee_footer" = "Комиссия сети за одобрение токена будет взиматься за подтверждение того, что именно вы разрешаете использовать ваш токен для обмена.";
 "give_permission_policy_type_footer" = "Укажите лимит доступа к выбранному токену";
@@ -381,6 +386,11 @@
 "markets_token_details_circulating_supply_description" = "Общее количество монет, доступных для торговли и находящихся в обращении на рынке";
 "markets_token_details_circulating_supply_full" = "Циркулирующее предложение";
 "markets_token_details_empty_exchanges" = "Биржи не найдены";
+"markets_token_details_exchange" = "Биржа";
+"markets_token_details_exchange_trust_score_caution" = "Осторожно";
+"markets_token_details_exchange_trust_score_risky" = "Рискованно";
+"markets_token_details_exchange_trust_score_trusted" = "Надежно";
+"markets_token_details_exchanges_title" = "Биржи";
 "markets_token_details_experienced_buyers" = "Опытные трейдеры";
 "markets_token_details_experienced_buyers_description" = "Покупатели, у которых было как минимум 100 исходящих транзакций.";
 "markets_token_details_experienced_buyers_full" = "Опытные трейдеры";
@@ -424,6 +434,7 @@
 "markets_token_details_trading_volume" = "Объем торгов (24ч)";
 "markets_token_details_trading_volume_24h_description" = "Общая сумма криптовалюты, которая была продана за последние 24 часа, показывающая уровень активности и ликвидности на рынке.";
 "markets_token_details_trading_volume_full" = "Объем торгов (24ч)";
+"markets_token_details_volume" = "Объем";
 "markets_tooltip_message" = "Потяните вверх или коснитесь поисковой строки, чтобы добавить токены напрямую из рынка";
 "markets_tooltip_title" = "Добавить токены";
 "onboarding_access_code_feature_1_description" = "Вам необходимо установить единый код доступа для защиты всех ваших карт";
@@ -488,7 +499,7 @@
 "onboarding_subtitle_scan_primary_card_format" = "Подготовьте основную карту с номером %@";
 "onboarding_subtitle_success_tangem_wallet_onboarding" = "Ваша карта настроена и готова к использованию.";
 "onboarding_subtitle_two_backup_cards" = "Добавлено максимальное количество карт. Завершите процесс резервного копирования.";
-"onboarding_title" = "Активация карты";
+"onboarding_title" = "Активация кошелька";
 "onboarding_title_backup_card_format" = "Резервная карта #%li";
 "onboarding_title_no_backup_cards" = "Нет резервных карт";
 "onboarding_title_notifications" = "Уведомления";
@@ -702,8 +713,9 @@
 "staking_reward_claiming_manual" = "Вручную";
 "staking_reward_schedule_block" = "За блок";
 "staking_reward_schedule_day" = "Ежедневно";
+"staking_reward_schedule_each" = "Each %@";
 "staking_reward_schedule_each_day" = "Каждый день";
-"staking_reward_schedule_each_sec" = "Каждые ~%1$@ сек";
+"staking_reward_schedule_each_sec" = "Каждые %1$@ сек";
 "staking_reward_schedule_epoch" = "За эпоху";
 "staking_reward_schedule_era" = "За эру";
 "staking_reward_schedule_hour" = "Ежечасно";
@@ -714,7 +726,7 @@
 "staking_stake_more" = "Застейкать еще";
 "staking_summary_description_text" = "Вы стейкаете %1$@ и будете получать %2$@ ежегодно";
 "staking_tap_to_unlock" = "Нажмите для разблокировки";
-"staking_tap_to_unlock_or_vote" = "Нажмите для разблокировки или голосования";
+"staking_tap_to_unlock_or_vote" = "Нажмите для разблокировки";
 "staking_tap_to_withdraw" = "Нажмите для вывода";
 "staking_title_stake" = "Застейкать %@";
 "staking_title_unstake" = "Вывести %@";
@@ -749,8 +761,10 @@
 "story_web3_title" = "Поддержка Web 3.0";
 "swap_promo_text" = "Обменивайте больше токенов по лучшим курсам прямо в вашем кошельке.";
 "swap_promo_title" = "Новый провайдер обмена!";
-"swapping_alert_cex_description" = "В сумму включено: \n• комиссия провайдера сервиса\n• комиссия сети за отправку %@ от биржи обратно на адрес пользователя";
+"swapping_alert_cex_description" = "В сумму включено: \n• комиссия провайдера сервиса\n• комиссия сети за отправку %@ от биржи обратно на адрес пользователя.";
+"swapping_alert_cex_description_with_slippage" = "В сумму включено: \n• комиссия провайдера сервиса\n• комиссия сети за отправку %1$@ от биржи обратно на адрес пользователя \n\nПроскальзывание провайдера составляет до %2$@ \nПри максимальном проскальзывании сумма к получению будет %3$@";
 "swapping_alert_dex_description" = "В сумму включена комиссия провайдера сервиса.";
+"swapping_alert_dex_description_with_slippage" = "В сумму включена комиссия провайдера сервиса. \n\nПроскальзывание провайдера составляет до %1$@ \nПри максимальном проскальзывании сумма к получению будет %2$@";
 "swapping_alert_title" = "Комиссии";
 "swapping_approve_information_text" = "Подтверждения считаются отраслевым стандартом для всех децентрализованных бирж и защищают ваш кошелек от доступа со стороны смарт-контракта без вашего разрешения. По замыслу смарт-контракты не могут получить доступ к вашим токенам, если вы не одобрите доступ со своей стороны. «Разблокируя» свои токены, вы даете смарт-контракту 1inch разрешение тратить ваши активы. Майнеры сети получают компенсацию за газ (оплачиваемый вами) за запись этого действия в блокчейне. Как только разрешение будет предоставлено, вы сможете обменять свой токен.";
 "swapping_approve_information_title" = "Подтвердить";

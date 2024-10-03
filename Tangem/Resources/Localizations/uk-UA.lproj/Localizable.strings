@@ -110,6 +110,7 @@
 "common_generate_addresses" = "Отримати адреси";
 "common_go_to_provider" = "Перейти до провайдера";
 "common_go_to_token" = "Перейти до токену";
+"common_hour" = "hour";
 "common_import" = "Імпортувати";
 "common_in_progress" = "В процесі";
 "common_later" = "Пізніше";
@@ -117,6 +118,7 @@
 "common_left" = "Залишилося %1$@";
 "common_locked" = "Заблокований";
 "common_main_network" = "Основна мережа";
+"common_month" = "month";
 "common_network_fee_title" = "Комісія мережі";
 "common_network_fee_warning_content" = "Сума відправлення буде зменшена на %1$@ (%2$@) для покриття обраного рівня комісії";
 "common_next" = "Далі";
@@ -140,6 +142,7 @@
 "common_save_changes" = "Зберегти зміни";
 "common_search" = "Пошук";
 "common_search_tokens" = "Пошук токенів";
+"common_second_no_param" = "sec";
 "common_seed_phrase" = "Seed-фраза";
 "common_select_action" = "Оберіть дію";
 "common_sell" = "Продати";
@@ -166,6 +169,7 @@
 "common_unreachable" = "Недоступно";
 "common_unstake" = "Скасувати стейкінг";
 "common_warning" = "Увага";
+"common_week" = "week";
 "common_yes" = "Так";
 "contract_address_copied_message" = "Адреса контракту скопійована!";
 "currency_subtitle_expanded" = "Доступні мережі";
@@ -286,6 +290,7 @@
 "feedback_subject_support_tangem" = "Звернення в підтримку Tangem";
 "feedback_subject_tx_failed" = "Не вдається відправити транзакцію";
 "feedback_subject_tx_push_failed" = "Не можу проштовхнути транзакцію";
+"feedback_token_description_error" = "Coin description error";
 "give_permission_current_transaction" = "Транзакція";
 "give_permission_fee_footer" = "Мережа стягує комісію за схвалення токену за підтвердження, що саме ви дозволяєте використовувати ваш токен для обміну.";
 "give_permission_policy_type_footer" = "Вкажіть ліміт доступу для обраного токена";
@@ -381,6 +386,11 @@
 "markets_token_details_circulating_supply_description" = "Загальна кількість монет, які доступні для торгівлі та перебувають в обігу на ринку";
 "markets_token_details_circulating_supply_full" = "Циркуляційний запас";
 "markets_token_details_empty_exchanges" = "No exchanges found";
+"markets_token_details_exchange" = "Exchange";
+"markets_token_details_exchange_trust_score_caution" = "Caution";
+"markets_token_details_exchange_trust_score_risky" = "Risky";
+"markets_token_details_exchange_trust_score_trusted" = "Trusted";
+"markets_token_details_exchanges_title" = "Exchanges";
 "markets_token_details_experienced_buyers" = "Досвідчені покупці";
 "markets_token_details_experienced_buyers_description" = "Мережеві покупці з додатковою вимогою мати не менше 100 вихідних транзакцій";
 "markets_token_details_experienced_buyers_full" = "Досвідчені покупці";
@@ -424,6 +434,7 @@
 "markets_token_details_trading_volume" = "Обсяг торгів (24г)";
 "markets_token_details_trading_volume_24h_description" = "Загальна сума криптовалюти, якою торгували протягом останніх 24 годин, що вказує на рівень активності та ліквідності на ринку";
 "markets_token_details_trading_volume_full" = "Обсяг торгів (24г)";
+"markets_token_details_volume" = "Volume";
 "markets_tooltip_message" = "Потягніть вгору або торкніться панелі пошуку, щоб додати токени безпосередньо з маркету";
 "markets_tooltip_title" = "Додати токени";
 "onboarding_access_code_feature_1_description" = "Вам потрібно встановити єдиний код доступу для захисту всіх ваших карток";
@@ -702,8 +713,9 @@
 "staking_reward_claiming_manual" = "Вручну";
 "staking_reward_schedule_block" = "Блок";
 "staking_reward_schedule_day" = "День";
+"staking_reward_schedule_each" = "Each %@";
 "staking_reward_schedule_each_day" = "Щодня";
-"staking_reward_schedule_each_sec" = "Кожні ~%1$@сек";
+"staking_reward_schedule_each_sec" = "Кожні %1$@ сек";
 "staking_reward_schedule_epoch" = "Епоха";
 "staking_reward_schedule_era" = "Ера";
 "staking_reward_schedule_hour" = "Година";
@@ -750,7 +762,9 @@
 "swap_promo_text" = "Обмінюйте більше токенів за вигіднішим курсом прямо у своєму гаманці.";
 "swap_promo_title" = "З'явився новий провайдер обмінів!";
 "swapping_alert_cex_description" = "Сума включає: \n• комісію постачальника послуг\n• комісію мережі за відправлення %@ з біржі назад на адресу користувача.";
+"swapping_alert_cex_description_with_slippage" = "The amount includes:\n• service provider's fee\n• network fee for sending %1$@ from the exchange back to the user's address. \n\nProvider slippage is up to %2$@ \n At maximum slippage, the amount to be received will be %3$@";
 "swapping_alert_dex_description" = "Сума включає комісію постачальника послуг.";
+"swapping_alert_dex_description_with_slippage" = "The amount includes the service provider's fee. \n\nProvider slippage is up to %1$@ \n At maximum slippage, the amount to be received will be %2$@";
 "swapping_alert_title" = "Комісії";
 "swapping_approve_information_text" = "Всі децентралізовані біржі вимагають схвалення, щоб запобігти доступу смарт-контрактів до вашого гаманця без вашого дозволу. За задумом смарт-контракти не можуть отримати доступ до ваших токенів без вашого схвалення. \"Розблоковуючи\" свої токени, ви дозволяєте смарт-контракту 1inch витрачати ваші активи. Майнери мережі отримують плату за газ (сплачену вами), щоб зафіксувати цю дію в блокчейні. Ви можете обміняти свій токен після того, як дасте дозвіл.";
 "swapping_approve_information_title" = "Підтвердити";
