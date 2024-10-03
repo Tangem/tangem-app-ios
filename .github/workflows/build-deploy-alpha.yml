@@ -36,7 +36,7 @@ jobs:
 
       - name: Find sec identities test
         run: |
-          echo 'conc_group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}'
+          echo 'concurrency_group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}'
           echo `security find-identity -p codesigning -v`
           echo `ls -ltra ~/Library/MobileDevice/Provisioning\ Profiles`
 
