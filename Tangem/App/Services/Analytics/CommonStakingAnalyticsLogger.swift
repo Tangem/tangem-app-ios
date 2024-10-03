@@ -10,7 +10,7 @@ import Foundation
 import TangemStaking
 
 struct CommonStakingAnalyticsLogger: StakingAnalyticsLogger {
-    func logAPIError() {
-        Analytics.log(.stakingErrors)
+    func logAPIError(errorDescription: String) {
+        Analytics.log(event: .stakingErrors, params: [.errorDescription: errorDescription])
     }
 }

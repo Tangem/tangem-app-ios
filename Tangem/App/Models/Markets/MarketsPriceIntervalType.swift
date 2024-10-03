@@ -20,6 +20,18 @@ enum MarketsPriceIntervalType: String, CaseIterable, Codable, Identifiable, Equa
     var id: String {
         rawValue
     }
+
+    /// 24h/7d/1m/3m/6m/1y/All
+    var analyticsParameterValue: String {
+        switch self {
+        case .day, .month, .quarter, .halfYear, .year:
+            return rawValue
+        case .week:
+            return "7d"
+        case .all:
+            return "All"
+        }
+    }
 }
 
 // MARK: - Custom localized string representation

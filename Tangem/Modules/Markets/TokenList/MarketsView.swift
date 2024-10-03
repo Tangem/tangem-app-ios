@@ -45,7 +45,9 @@ struct MarketsView: View {
             .onOverlayContentStateChange { [weak viewModel] state in
                 viewModel?.onOverlayContentStateChange(state)
             }
-            .onChange(of: viewModel.isViewSnapshotRequested, perform: makeViewSnapshotIfNeeded(isViewSnapshotRequested:))
+            .onAppear {
+                viewModel.setViewHierarchySnapshotter(viewHierarchySnapshotter)
+            }
     }
 
     @ViewBuilder
@@ -65,7 +67,7 @@ struct MarketsView: View {
             .scrollDismissesKeyboardCompat(.immediately)
         }
         .alert(item: $viewModel.alert, content: { $0.alert })
-        .background(Colors.Background.primary)
+        .background(Colors.Background.primary.ignoresSafeArea())
 
         if #available(iOS 17.0, *) {
             content
@@ -288,16 +290,6 @@ struct MarketsView: View {
 
         listOverlayVerticalOffset = offSet
         isListOverlayShadowLineViewVisible = contentOffset.y >= (maxOffset + Constants.listOverlayBottomInset)
-    }
-
-    private func makeViewSnapshotIfNeeded(isViewSnapshotRequested: Bool) {
-        if isViewSnapshotRequested {
-            let snapshotter = viewHierarchySnapshotter
-            let viewSnapshot = snapshotter?.makeSnapshotLayerImage(options: .presentation, isOpaque: true)
-                ?? snapshotter?.makeSnapshotLayerImage(options: .default, isOpaque: true)
-            viewModel.isViewSnapshotRequested.toggle()
-            viewModel.onViewSnapshot(viewSnapshot)
-        }
     }
 }
 

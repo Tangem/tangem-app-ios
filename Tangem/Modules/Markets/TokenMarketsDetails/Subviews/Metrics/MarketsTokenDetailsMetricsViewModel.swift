@@ -61,13 +61,22 @@ struct MarketsTokenDetailsMetricsViewModel {
         if let marketRating = metrics.marketRating, marketRating > 0 {
             rating = balanceFormatter.formatCryptoBalance(Decimal(marketRating), currencyCode: "", formattingOptions: formattingOptions)
         }
+
+        var maxSupplyString = emptyValue
+        if let maxSupply = metrics.maxSupply {
+            if maxSupply == 0 {
+                maxSupplyString = AppConstants.infinitySign
+            } else {
+                maxSupplyString = notationFormatter.format(maxSupply, notationFormatter: amountNotationFormatter, numberFormatter: cryptoFormatter, addingSignPrefix: false)
+            }
+        }
         records = [
             .init(type: .marketCapitalization, recordData: notationFormatter.format(metrics.marketCap, notationFormatter: amountNotationFormatter, numberFormatter: fiatFormatter, addingSignPrefix: false)),
             .init(type: .marketRating, recordData: rating),
             .init(type: .tradingVolume, recordData: notationFormatter.format(metrics.volume24H, notationFormatter: amountNotationFormatter, numberFormatter: fiatFormatter, addingSignPrefix: false)),
             .init(type: .fullyDilutedValuation, recordData: notationFormatter.format(metrics.fullyDilutedValuation, notationFormatter: amountNotationFormatter, numberFormatter: fiatFormatter, addingSignPrefix: false)),
             .init(type: .circulatingSupply, recordData: notationFormatter.format(metrics.circulatingSupply, notationFormatter: amountNotationFormatter, numberFormatter: cryptoFormatter, addingSignPrefix: false)),
-            .init(type: .totalSupply, recordData: notationFormatter.format(metrics.totalSupply, notationFormatter: amountNotationFormatter, numberFormatter: cryptoFormatter, addingSignPrefix: false)),
+            .init(type: .maxSupply, recordData: maxSupplyString),
         ]
     }
 

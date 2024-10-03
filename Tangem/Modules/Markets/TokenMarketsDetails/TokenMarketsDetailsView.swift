@@ -68,15 +68,25 @@ struct TokenMarketsDetailsView: View {
             NavigationBar(
                 title: viewModel.tokenName,
                 settings: .init(
-                    titleColor: Colors.Text.primary1,
+                    title: .init(
+                        font: Fonts.Bold.body,
+                        color: Colors.Text.primary1,
+                        lineLimit: 1,
+                        minimumScaleFactor: 0.6
+                    ),
                     backgroundColor: .clear, // Controlled by the `background` modifier in the body
                     height: 64.0,
                     alignment: .bottom
                 ),
-                leftItems: {
-                    BackButton(height: 44.0, isVisible: true, isEnabled: true, action: viewModel.onBackButtonTap)
-                },
-                rightItems: {}
+                leftButtons: {
+                    BackButton(
+                        height: 44.0,
+                        isVisible: true,
+                        isEnabled: true,
+                        hPadding: 10.0,
+                        action: viewModel.onBackButtonTap
+                    )
+                }
             )
             .overlay(alignment: .bottom) {
                 Separator(

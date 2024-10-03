@@ -223,6 +223,24 @@ private extension TokenItemView {
     }
 }
 
+// MARK: - Auxiliary types
+
+extension TokenItemView {
+    @available(iOS 16.0, *)
+    enum RoundedCornersVerticalEdge {
+        case topEdge
+        case bottomEdge
+        case all
+    }
+
+    private struct RoundedCornersConfiguration {
+        var topLeadingRadius: CGFloat = 0.0
+        var bottomLeadingRadius: CGFloat = 0.0
+        var bottomTrailingRadius: CGFloat = 0.0
+        var topTrailingRadius: CGFloat = 0.0
+    }
+}
+
 // MARK: - Previews
 
 struct TokenItemView_Previews: PreviewProvider {

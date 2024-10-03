@@ -21,8 +21,6 @@ struct TangemApiTarget: TargetType {
 
     var path: String {
         switch type {
-        case .rates:
-            return "/rates"
         case .currencies:
             return "/currencies"
         case .coins:
@@ -68,8 +66,7 @@ struct TangemApiTarget: TargetType {
 
     var method: Moya.Method {
         switch type {
-        case .rates,
-             .currencies,
+        case .currencies,
              .coins,
              .quotes,
              .geo,
@@ -99,14 +96,6 @@ struct TangemApiTarget: TargetType {
 
     var task: Task {
         switch type {
-        case .rates(let coinIds, let currencyId):
-            return .requestParameters(
-                parameters: [
-                    "coinIds": coinIds.joined(separator: ","),
-                    "currencyId": currencyId.lowercased(),
-                ],
-                encoding: URLEncoding.default
-            )
         case .coins(let pageModel):
             return .requestParameters(pageModel)
         case .quotes(let pageModel):
@@ -196,7 +185,6 @@ struct TangemApiTarget: TargetType {
 
 extension TangemApiTarget {
     enum TargetType {
-        case rates(coinIds: [String], currencyId: String)
         case currencies
         case coins(_ requestModel: CoinsList.Request)
         case quotes(_ requestModel: QuotesDTO.Request)

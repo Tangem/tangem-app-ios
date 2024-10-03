@@ -106,6 +106,10 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         bind()
     }
 
+    deinit {
+        print("MultiWalletMainContentViewModel for \(userWalletModel.name) deinit")
+    }
+
     func onPullToRefresh(completionHandler: @escaping RefreshCompletionHandler) {
         if isUpdating {
             return
@@ -271,6 +275,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
 
         var tokenListSyncSubscription: AnyCancellable?
         tokenListSyncSubscription = Publishers.Zip(tokenListSyncPublisher, sectionsPublisher)
+            .prefix(1)
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { viewModel, _ in

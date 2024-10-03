@@ -30,6 +30,7 @@ struct StakingAmountModifier: SendAmountModifier {
 
     func modify(cryptoAmount amount: Decimal?) -> Decimal? {
         guard let crypto = amount, tokenItem.hasToBeRounded else {
+            _message.send(.none)
             return amount
         }
 

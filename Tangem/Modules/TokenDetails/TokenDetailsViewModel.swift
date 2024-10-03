@@ -232,10 +232,11 @@ private extension TokenDetailsViewModel {
     private func bind() {
         Publishers.CombineLatest(
             walletModel.walletDidChangePublisher,
-            walletModel.stakingManagerStatePublisher.filter { $0 != .loading }
+            walletModel.stakingManagerStatePublisher
         )
+        .filter { $1 != .loading }
         .receive(on: DispatchQueue.main)
-        .sink { _ in } receiveValue: { [weak self] newState, _ in
+        .receiveValue { [weak self] newState, _ in
             AppLog.shared.debug("Token details receive new wallet model state: \(newState)")
             self?.updateBalance(walletModelState: newState)
         }
@@ -289,9 +290,9 @@ private extension TokenDetailsViewModel {
         case .loading:
             // Do nothing
             break
-        case .availableToStake, .notEnabled, .temporaryUnavailable:
+        case .availableToStake, .notEnabled:
             activeStakingViewData = nil
-        case .loadingError:
+        case .loadingError, .temporaryUnavailable:
             activeStakingViewData = .init(balance: .loadingError, rewards: .none)
         case .staked(let staked):
             let rewards: ActiveStakingViewData.RewardsState? = {
@@ -306,7 +307,7 @@ private extension TokenDetailsViewModel {
             }()
 
             activeStakingViewData = ActiveStakingViewData(
-                balance: .balance(walletModel.stakedBalanceFormatted, action: { [weak self] in
+                balance: .balance(walletModel.stakedWithPendingBalanceFormatted, action: { [weak self] in
                     self?.openStaking()
                 }),
                 rewards: rewards

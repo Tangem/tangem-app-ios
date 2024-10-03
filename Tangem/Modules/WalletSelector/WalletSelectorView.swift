@@ -19,7 +19,7 @@ struct WalletSelectorView: View {
                     WalletSelectorItemView(viewModel: itemViewModel)
                 }
             }
-            .defaultRoundedBackground(with: Colors.Background.action)
+            .defaultRoundedBackground(with: Colors.Background.action, verticalPadding: .zero)
 
             Spacer()
         }

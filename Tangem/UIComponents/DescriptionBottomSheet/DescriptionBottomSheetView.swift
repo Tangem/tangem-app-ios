@@ -15,6 +15,7 @@ struct DescriptionBottomSheetInfo: Identifiable, Equatable {
     let title: String?
     let description: String
     var isGeneratedWithAI: Bool = false
+    var showCloseButton: Bool = false
 
     static func == (lhs: DescriptionBottomSheetInfo, rhs: DescriptionBottomSheetInfo) -> Bool {
         lhs.id == rhs.id
@@ -24,6 +25,7 @@ struct DescriptionBottomSheetInfo: Identifiable, Equatable {
 struct DescriptionBottomSheetView: View {
     let info: DescriptionBottomSheetInfo
 
+    @Environment(\.dismiss) private var dismissSheetAction
     @State private var containerHeight: CGFloat = 0
 
     var body: some View {
@@ -33,12 +35,7 @@ struct DescriptionBottomSheetView: View {
 
     private var content: some View {
         VStack(spacing: 14) {
-            if let title = info.title {
-                Text(title)
-                    .multilineTextAlignment(.center)
-                    .style(Fonts.Bold.body, color: Colors.Text.primary1)
-                    .padding(.vertical, 12)
-            }
+            headerView
 
             Markdown { info.description }
                 .markdownSoftBreakMode(.lineBreak)
@@ -62,8 +59,48 @@ struct DescriptionBottomSheetView: View {
         }
         .padding(.bottom, 10)
     }
+}
 
-    private var generatedWithAILabel: some View {
+// View components
+private extension DescriptionBottomSheetView {
+    @ViewBuilder
+    var headerView: some View {
+        if info.showCloseButton {
+            HStack(spacing: 0) {
+                closeButton
+                    .opacity(0.0)
+
+                titleView
+                    .frame(maxWidth: .infinity)
+
+                closeButton
+            }
+        } else {
+            titleView
+        }
+    }
+
+    @ViewBuilder
+    var titleView: some View {
+        if let title = info.title {
+            Text(title)
+                .multilineTextAlignment(.center)
+                .style(Fonts.Bold.body, color: Colors.Text.primary1)
+                .padding(.vertical, 12)
+        }
+    }
+
+    var closeButton: some View {
+        Button(action: {
+            dismissSheetAction()
+        }, label: {
+            Text(Localization.commonClose)
+                .style(Fonts.Regular.body, color: Colors.Text.primary1)
+                .padding(.vertical, 8)
+        })
+    }
+
+    var generatedWithAILabel: some View {
         HStack(spacing: 12) {
             Assets.stars.image
                 .foregroundStyle(Colors.Icon.accent)

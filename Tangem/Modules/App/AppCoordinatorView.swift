@@ -36,17 +36,18 @@ struct AppCoordinatorView: CoordinatorView {
         .accentColor(Colors.Text.primary1)
         .overlayContentContainer(item: $coordinator.marketsCoordinator) { coordinator in
             let viewHierarchySnapshotter = ViewHierarchySnapshottingContainerViewController()
+            viewHierarchySnapshotter.shouldPropagateOverriddenUserInterfaceStyleToChildren = true
             let adapter = ViewHierarchySnapshottingWeakifyAdapter(adaptee: viewHierarchySnapshotter)
             let marketsCoordinatorView = MarketsCoordinatorView(coordinator: coordinator)
                 .environment(\.mainWindowSize, mainWindowSize)
                 .environment(\.viewHierarchySnapshotter, adapter)
 
-            UIAppearanceBoundaryContainerView(
+            return UIAppearanceBoundaryContainerView(
                 boundaryMarker: { viewHierarchySnapshotter },
                 content: { marketsCoordinatorView }
             )
             // Ensures that this is a full-screen container and keyboard avoidance is disabled to mitigate IOS-7997
-            .ignoresSafeArea(.all, edges: .bottom)
+            .ignoresSafeArea(.all, edges: .vertical)
         }
         .bottomSheet(
             item: $sensitiveTextVisibilityViewModel.informationHiddenBalancesViewModel,

@@ -2,38 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
   <dict>
-    <key>card_label_card_count</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%#@format@</string>
-      <key>format</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>one</key>
-        <string>%li card</string>
-        <key>other</key>
-        <string>%li cards</string>
-      </dict>
-    </dict>
-    <key>manage_tokens_number_of_wallets_ios</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%li of %#@total_wallets@</string>
-      <key>total_wallets</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>one</key>
-        <string>%li wallet</string>
-        <key>other</key>
-        <string>%li wallets</string>
-      </dict>
-    </dict>
     <key>markets_token_details_based_on_ratings</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
@@ -48,6 +16,22 @@
         <string>Based on %li rating</string>
         <key>other</key>
         <string>Based on %li ratings</string>
+      </dict>
+    </dict>
+    <key>onboarding_seed_generate_words_count</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string></string>
+        <key>other</key>
+        <string>%li words</string>
       </dict>
     </dict>
     <key>onboarding_seed_generate_message_words_count</key>
@@ -66,7 +50,7 @@
         <string>Write these %li words down in the order given below and store them in a safe and secret place.</string>
       </dict>
     </dict>
-    <key>onboarding_seed_generate_words_count</key>
+    <key>warning_missing_derivation_message</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
       <string>%#@format@</string>
@@ -77,9 +61,25 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string></string>
+        <string>Use your card to get an address for %li network</string>
         <key>other</key>
-        <string>%li words</string>
+        <string>Use your card to get an addresses for %li networks</string>
+      </dict>
+    </dict>
+    <key>manage_tokens_number_of_wallets_ios</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%li of %#@total_wallets@</string>
+      <key>total_wallets</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>%li wallet</string>
+        <key>other</key>
+        <string>%li wallets</string>
       </dict>
     </dict>
     <key>referral_number_of_wallets</key>
@@ -114,7 +114,7 @@
         <string>%li wallets</string>
       </dict>
     </dict>
-    <key>warning_missing_derivation_message</key>
+    <key>card_label_card_count</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
       <string>%#@format@</string>
@@ -125,9 +125,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Use your card to get an address for %li network</string>
+        <string>%li card</string>
         <key>other</key>
-        <string>Use your card to get an addresses for %li networks</string>
+        <string>%li cards</string>
       </dict>
     </dict>
   </dict>
