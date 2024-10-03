@@ -83,7 +83,7 @@ class SettingsUserWalletRowViewModel: ObservableObject, Identifiable {
                     viewModel.balanceState = .loading
                 case .loaded(let totalBalance):
                     guard totalBalance.allTokensBalancesIncluded else {
-                        viewModel.balanceState = .loaded(text: BalanceFormatter.defaultEmptyBalanceString)
+                        viewModel.balanceState = .noData
                         return
                     }
 

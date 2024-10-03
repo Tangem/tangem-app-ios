@@ -729,6 +729,7 @@
 "staking_unstaking_item_name" = "En train de destaker les actifs %@";
 "staking_validator" = "Validateur";
 "staking_validators" = "Validateurs";
+"staking_validators_label" = "Partenaire stratégique";
 "staking_vote" = "Voter";
 "staking_vote_locked" = "Vote bloqué";
 "staking_withdraw" = "Retirer";

@@ -22,6 +22,7 @@ extension YieldInfo {
                 address: UUID().uuidString,
                 name: "InfStones",
                 preferred: true,
+                partner: false,
                 iconURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
                 apr: 0.08
             ),
@@ -29,6 +30,7 @@ extension YieldInfo {
                 address: UUID().uuidString,
                 name: "Aconcagua",
                 preferred: true,
+                partner: false,
                 iconURL: URL(string: "https://assets.stakek.it/validators/aconcagua.png"),
                 apr: 0.032
             ),
