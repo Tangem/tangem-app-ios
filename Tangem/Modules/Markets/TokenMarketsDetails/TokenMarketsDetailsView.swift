@@ -255,6 +255,12 @@ struct TokenMarketsDetailsView: View {
                 MarketsTokenDetailsPricePerformanceView(viewModel: pricePerformanceViewModel)
             }
 
+            if let numberOfExchangesListedOn = viewModel.numberOfExchangesListedOn {
+                MarketsTokenDetailsListedOnExchangesView(exchangesCount: numberOfExchangesListedOn) {
+                    viewModel.openExchangesList()
+                }
+            }
+
             if !viewModel.linksSections.isEmpty {
                 TokenMarketsDetailsLinksView(viewWidth: blocksWidth, sections: viewModel.linksSections)
             }
@@ -339,5 +345,11 @@ private extension TokenMarketsDetailsView {
         isUnderMarketCapLimit: false
     )
 
-    return TokenMarketsDetailsView(viewModel: .init(tokenInfo: tokenInfo, style: .marketsSheet, dataProvider: .init(), marketsQuotesUpdateHelper: CommonMarketsQuotesUpdateHelper(), coordinator: nil))
+    return TokenMarketsDetailsView(viewModel: .init(
+        tokenInfo: tokenInfo,
+        presentationStyle: .marketsSheet,
+        dataProvider: .init(),
+        marketsQuotesUpdateHelper: CommonMarketsQuotesUpdateHelper(),
+        coordinator: nil
+    ))
 }

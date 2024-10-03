@@ -378,6 +378,12 @@
 "markets_token_details_circulating_supply" = "Suministro circulante";
 "markets_token_details_circulating_supply_description" = "El número total de monedas que están disponibles para el comercio y que circulan en el mercado.";
 "markets_token_details_circulating_supply_full" = "Suministro circulante";
+"markets_token_details_empty_exchanges" = "No exchanges found";
+"markets_token_details_exchange" = "Exchange";
+"markets_token_details_exchange_trust_score_caution" = "Caution";
+"markets_token_details_exchange_trust_score_risky" = "Risky";
+"markets_token_details_exchange_trust_score_trusted" = "Trusted";
+"markets_token_details_exchanges_title" = "Exchanges";
 "markets_token_details_experienced_buyers" = "Compradores experimentados";
 "markets_token_details_experienced_buyers_description" = "Compradores netos con el requisito adicional de tener al menos 100 transacciones salientes";
 "markets_token_details_experienced_buyers_full" = "Compradores experimentados";
@@ -397,6 +403,7 @@
 "markets_token_details_liquidity_full" = "Liquidez";
 "markets_token_details_liquidity_index" = "Índice de liquidez";
 "markets_token_details_liquidity_index_description" = "";
+"markets_token_details_listed_on" = "Listed on";
 "markets_token_details_low" = "Bajo";
 "markets_token_details_market_capitalization" = "Capital. de mercado";
 "markets_token_details_market_capitalization_description" = "El valor total de una criptomoneda calculado multiplicando su precio por la cantidad de monedas en circulación";
@@ -420,6 +427,7 @@
 "markets_token_details_trading_volume" = "Volumen de operaciones (24 horas)";
 "markets_token_details_trading_volume_24h_description" = "La cantidad total de una criptomoneda que se ha negociado en las últimas 24 horas, lo que indica el nivel de actividad y liquidez en el mercado.";
 "markets_token_details_trading_volume_full" = "Volumen de operaciones (24 horas)";
+"markets_token_details_volume" = "Volume";
 "markets_tooltip_message" = "Tire hacia arriba o toque la barra de búsqueda para agregar tokens directamente desde el mercado";
 "markets_tooltip_title" = "Agregar tokens";
 "onboarding_access_code_feature_1_description" = "Deba configurar un único código de acceso para proteger todas sus tarjetas";

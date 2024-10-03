@@ -24,6 +24,7 @@ class TokenMarketsDetailsCoordinator: CoordinatorObject {
     @Published var receiveBottomSheetViewModel: ReceiveBottomSheetViewModel? = nil
     @Published var warningBankCardViewModel: WarningBankCardViewModel? = nil
     @Published var modalWebViewModel: WebViewContainerViewModel? = nil
+    @Published var exchangesListViewModel: MarketsTokenDetailsExchangesListViewModel? = nil
 
     // MARK: - Child Coordinators
 
@@ -49,7 +50,7 @@ class TokenMarketsDetailsCoordinator: CoordinatorObject {
     func start(with options: Options) {
         rootViewModel = .init(
             tokenInfo: options.info,
-            style: options.style,
+            presentationStyle: options.style,
             dataProvider: .init(),
             marketsQuotesUpdateHelper: CommonMarketsQuotesUpdateHelper(),
             coordinator: self
@@ -60,7 +61,7 @@ class TokenMarketsDetailsCoordinator: CoordinatorObject {
 extension TokenMarketsDetailsCoordinator {
     struct Options {
         let info: MarketsTokenModel
-        let style: TokenMarketsDetailsViewModel.Style
+        let style: MarketsTokenDetailsPresentationStyle
     }
 }
 
@@ -85,6 +86,17 @@ extension TokenMarketsDetailsCoordinator: TokenMarketsDetailsRoutable {
 
     func closeModule() {
         dismiss()
+    }
+
+    func openExchangesList(tokenId: String, numberOfExchangesListedOn: Int, presentationStyle: MarketsTokenDetailsPresentationStyle) {
+        exchangesListViewModel = MarketsTokenDetailsExchangesListViewModel(
+            tokenId: tokenId,
+            numberOfExchangesListedOn: numberOfExchangesListedOn,
+            presentationStyle: presentationStyle,
+            exchangesListLoader: MarketsTokenDetailsDataProvider()
+        ) { [weak self] in
+            self?.exchangesListViewModel = nil
+        }
     }
 }
 

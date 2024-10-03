@@ -15,6 +15,7 @@ struct TokenMarketsDetailsCoordinatorView: CoordinatorView {
         ZStack {
             if let viewModel = coordinator.rootViewModel {
                 TokenMarketsDetailsView(viewModel: viewModel)
+                    .navigationLinks(links)
             }
 
             sheets
@@ -53,5 +54,15 @@ struct TokenMarketsDetailsCoordinatorView: CoordinatorView {
             ) {
                 ReceiveBottomSheetView(viewModel: $0)
             }
+    }
+
+    @ViewBuilder
+    private var links: some View {
+        NavHolder()
+            .navigation(item: $coordinator.exchangesListViewModel) {
+                MarketsTokenDetailsExchangesListView(viewModel: $0)
+                    .ignoresSafeArea(.container, edges: .top) // Without it, the content won't go into the safe area top zone on over-scroll
+            }
+            .emptyNavigationLink()
     }
 }
