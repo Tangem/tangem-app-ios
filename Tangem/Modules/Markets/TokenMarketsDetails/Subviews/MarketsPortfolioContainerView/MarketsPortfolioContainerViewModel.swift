@@ -73,11 +73,18 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
 
         var targetState: MarketsPortfolioContainerView.TypeView = .list
         if let networks {
-            let canAddAvailableNetworks = canAddToPortfolio(with: networks)
+            let supportedStateNetworks = supportedState(networks: networks)
             isAddTokenButtonDisabled = tokenAddedToAllNetworksAndWallets(availableNetworks: networks)
 
             if tokenItemViewModels.isEmpty {
-                targetState = canAddAvailableNetworks ? .empty : .unavailable
+                switch supportedStateNetworks {
+                case .available:
+                    targetState = .empty
+                case .unavailable:
+                    targetState = .unavailable
+                case .unsupported:
+                    targetState = .unsupported
+                }
             }
         } else if tokenItemViewModels.isEmpty {
             targetState = .loading
@@ -94,25 +101,22 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
      - We get a list of available blockchains that came in the coin model
      - Checking the lists of available networks
      */
-    private func canAddToPortfolio(with networks: [NetworkModel]) -> Bool {
+    private func supportedState(networks: [NetworkModel]) -> SupportedStateOption {
         let multiCurrencyUserWalletModels = walletDataProvider.userWalletModels.filter { $0.config.hasFeature(.multiCurrency) }
 
-        guard
-            !networks.isEmpty,
-            !multiCurrencyUserWalletModels.isEmpty
-        else {
-            return false
+        guard !networks.isEmpty else {
+            return .unsupported
         }
 
         let networkIds = networks.reduce(into: Set<String>()) { $0.insert($1.networkId) }
 
         for model in multiCurrencyUserWalletModels {
             if !networkIds.intersection(model.config.supportedBlockchains.map { $0.networkId }).isEmpty {
-                return true
+                return .available
             }
         }
 
-        return false
+        return .unavailable
     }
 
     private func tokenAddedToAllNetworksAndWallets(availableNetworks: [NetworkModel]) -> Bool {
@@ -296,5 +300,11 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDele
 extension MarketsPortfolioContainerViewModel {
     struct InputData {
         let coinId: String
+    }
+
+    enum SupportedStateOption {
+        case available
+        case unavailable
+        case unsupported
     }
 }
