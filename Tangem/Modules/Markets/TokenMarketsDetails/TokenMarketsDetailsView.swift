@@ -43,9 +43,9 @@ struct TokenMarketsDetailsView: View {
     @ViewBuilder
     private var rootView: some View {
         let content = ZStack {
-            navigationBar
-
             scrollView
+
+            navigationBar
         }
 
         if #unavailable(iOS 17.0), viewModel.isMarketsSheetStyle {
@@ -91,7 +91,6 @@ struct TokenMarketsDetailsView: View {
                 }
             )
             .background(navigationBarBackground)
-            .zIndex(100) // Navigation bar is placed over the scroll view
             .readGeometry(\.size.height, bindTo: $headerHeight)
             .infinityFrame(axis: .vertical, alignment: .top)
         }

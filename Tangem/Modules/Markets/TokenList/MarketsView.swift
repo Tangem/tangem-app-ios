@@ -58,11 +58,6 @@ struct MarketsView: View {
     @ViewBuilder
     private var rootView: some View {
         let content = ZStack {
-            MainBottomSheetHeaderView(viewModel: viewModel.headerViewModel)
-                .zIndex(100) // Required for the collapsible header to work
-                .readGeometry(\.size.height, bindTo: $headerHeight)
-                .infinityFrame(axis: .vertical, alignment: .top)
-
             Group {
                 if showSearchResult {
                     searchResultView
@@ -74,6 +69,10 @@ struct MarketsView: View {
             .scrollDismissesKeyboardCompat(.immediately)
 
             navigationBarBackground
+
+            MainBottomSheetHeaderView(viewModel: viewModel.headerViewModel)
+                .readGeometry(\.size.height, bindTo: $headerHeight)
+                .infinityFrame(axis: .vertical, alignment: .top)
         }
         .alert(item: $viewModel.alert, content: { $0.alert })
         .background(Colors.Background.primary)
