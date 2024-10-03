@@ -42,6 +42,7 @@ extension CommonIncomingActionManager: IncomingActionManaging {
         for responder in responders.allDelegates.reversed() {
             if responder.didReceiveIncomingAction(pendingAction) {
                 self.pendingAction = nil // handled
+                AppLog.shared.debug("Incoming action handled: \(pendingAction)")
                 break
             }
         }
@@ -74,9 +75,4 @@ extension CommonIncomingActionManager: IncomingActionHandler {
         tryHandleLastAction()
         return true
     }
-}
-
-public enum IncomingAction {
-    case walletConnect(WalletConnectRequestURI)
-    case start // Run scan or request biometrics
 }

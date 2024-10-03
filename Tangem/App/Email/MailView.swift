@@ -8,6 +8,7 @@
 
 import SwiftUI
 import MessageUI
+import ZIPFoundation
 
 struct MailView: UIViewControllerRepresentable {
     let viewModel: MailViewModel
@@ -66,8 +67,18 @@ struct MailView: UIViewControllerRepresentable {
         messageBody.append("\n\n")
         vc.setMessageBody(messageBody, isHTML: false)
 
-        viewModel.logsComposer.getLogsData().forEach {
-            vc.addAttachmentData($0.value, mimeType: "text/plain", fileName: $0.key)
+        let logFiles = viewModel.logsComposer.getLogFiles()
+
+        logFiles.forEach { originalURL in
+            guard originalURL.lastPathComponent != LogFilesNames.infoLogs else {
+                attachPlainTextData(at: originalURL, to: vc)
+                return
+            }
+            do {
+                try attachZipData(at: originalURL, to: vc)
+            } catch {
+                attachPlainTextData(at: originalURL, to: vc)
+            }
         }
 
         return vc
@@ -77,9 +88,25 @@ struct MailView: UIViewControllerRepresentable {
         _ uiViewController: UIViewController,
         context: UIViewControllerRepresentableContext<MailView>
     ) {}
+
+    private func attachPlainTextData(at url: URL, to viewController: MFMailComposeViewController) {
+        if let data = try? Data(contentsOf: url) {
+            viewController.addAttachmentData(data, mimeType: "text/plain", fileName: url.lastPathComponent)
+        }
+    }
+
+    private func attachZipData(at url: URL, to viewController: MFMailComposeViewController) throws {
+        let fileManager = FileManager.default
+        let archiveName = url.appendingPathExtension(for: .zip).lastPathComponent
+        let destinationURL = fileManager.temporaryDirectory.appendingPathComponent(archiveName, conformingTo: .zip)
+        try? fileManager.removeItem(at: destinationURL)
+        try fileManager.zipItem(at: url, to: destinationURL, shouldKeepParent: false, compressionMethod: .deflate)
+        let data = try Data(contentsOf: destinationURL)
+        viewController.addAttachmentData(data, mimeType: "application/zip", fileName: archiveName)
+    }
 }
 
-fileprivate struct MailViewPlaceholder: View {
+private struct MailViewPlaceholder: View {
     @Binding var presentationMode: PresentationMode
 
     var body: some View {

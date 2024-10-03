@@ -14,40 +14,22 @@ struct CoinModel {
     let id: String
     let name: String
     let symbol: String
-    let imageURL: URL?
-    let items: [TokenItem]
+    let items: [Item]
 }
 
 extension CoinModel {
-    init(with entity: CoinsResponse.Coin, baseImageURL: URL?) {
-        let id = entity.id.trimmed()
-        let name = entity.name.trimmed()
-        let symbol = entity.symbol.uppercased().trimmed()
-        let url = baseImageURL?.appendingPathComponent("large")
-            .appendingPathComponent("\(id).png")
+    struct Item {
+        let id: String
+        let tokenItem: TokenItem
 
-        items = entity.networks.compactMap { network in
-            guard let blockchain = Blockchain(from: network.networkId) else {
-                return nil
-            }
+        var token: Token? { tokenItem.token }
+        var blockchain: Blockchain { tokenItem.blockchain }
+    }
+}
 
-            if let contractAddress = network.contractAddress, let decimalCount = network.decimalCount {
-                return .token(Token(
-                    name: name,
-                    symbol: symbol,
-                    contractAddress: contractAddress.trimmed(),
-                    decimalCount: decimalCount,
-                    id: id,
-                    exchangeable: network.exchangeable
-                ), blockchain)
-            } else {
-                return .blockchain(blockchain)
-            }
-        }
-
-        self.id = id
-        self.name = name
-        self.symbol = symbol
-        imageURL = url
+extension CoinModel {
+    // Need for loading state skeleton view
+    static var dummy: CoinModel {
+        CoinModel(id: "\(Int.random(in: 0 ... 1000))", name: "----------------", symbol: "", items: [])
     }
 }

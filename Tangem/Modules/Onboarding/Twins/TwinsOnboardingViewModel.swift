@@ -20,12 +20,6 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
 
     var retwinMode: Bool = false
 
-    override var disclaimerModel: DisclaimerViewModel? {
-        guard currentStep == .disclaimer else { return nil }
-
-        return super.disclaimerModel
-    }
-
     override var navbarTitle: String {
         currentStep.navbarTitle
     }
@@ -49,22 +43,16 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
         return super.title
     }
 
+    override var isSupportButtonVisible: Bool {
+        switch currentStep {
+        case .success, .done: return false
+        default: return super.isSupportButtonVisible
+        }
+    }
+
+    // MARK: - Main Button settings
+
     override var mainButtonTitle: String {
-        if !isInitialAnimPlayed {
-            return super.mainButtonTitle
-        }
-
-        if twinCardSeries.number != 1 {
-            switch currentStep {
-            case .first, .third:
-                return TwinsOnboardingStep.second.mainButtonTitle
-            case .second:
-                return TwinsOnboardingStep.first.mainButtonTitle
-            default:
-                break
-            }
-        }
-
         if case .topup = currentStep, !canBuy {
             return Localization.onboardingButtonReceiveCrypto
         }
@@ -72,56 +60,77 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
         return super.mainButtonTitle
     }
 
-    override var supplementButtonColor: ButtonColorStyle {
+    override var mainButtonSettings: MainButton.Settings? {
         switch currentStep {
-        case .disclaimer:
-            return .black
+        case .topup, .saveUserWallet:
+            return super.mainButtonSettings
         default:
-            return super.supplementButtonColor
+            return nil
         }
     }
 
-    override var isSupplementButtonVisible: Bool {
-        switch currentStep {
-        case .topup:
-            return currentStep.isSupplementButtonVisible && canBuy
-        default:
-            return currentStep.isSupplementButtonVisible
+    // MARK: - Supplement button settings
+
+    override var supplementButtonTitle: String {
+        if !isInitialAnimPlayed {
+            return super.supplementButtonTitle
         }
+
+        if twinCardSeries.number != 1 {
+            switch currentStep {
+            case .first, .third:
+                return TwinsOnboardingStep.second.supplementButtonTitle
+            case .second:
+                return TwinsOnboardingStep.first.supplementButtonTitle
+            default:
+                break
+            }
+        }
+
+        return super.supplementButtonTitle
+    }
+
+    override var supplementButtonSettings: MainButton.Settings? {
+        var settings = super.supplementButtonSettings
+
+        switch currentStep {
+        case .alert:
+            settings?.isDisabled = !alertAccepted
+        default:
+            break
+        }
+
+        return settings
+    }
+
+    override var supplementButtonStyle: MainButton.Style {
+        switch currentStep {
+        case .intro, .success, .first, .second, .third, .done, .alert:
+            return .primary
+        default:
+            return super.supplementButtonStyle
+        }
+    }
+
+    override var supplementButtonIcon: MainButton.Icon? {
+        if let icon = currentStep.supplementButtonIcon {
+            return .trailing(icon)
+        }
+
+        return nil
     }
 
     var isCustomContentVisible: Bool {
         switch currentStep {
-        case .saveUserWallet, .disclaimer:
+        case .saveUserWallet, .pushNotifications:
             return true
         default:
             return false
         }
     }
 
-    var isButtonsVisible: Bool {
-        switch currentStep {
-        case .saveUserWallet: return false
-        default: return true
-        }
-    }
-
     var infoText: String? {
         currentStep.infoText
-    }
-
-    override var mainButtonSettings: MainButton.Settings? {
-        var settings = super.mainButtonSettings
-
-        switch currentStep {
-        case .disclaimer:
-            return nil
-        case .alert:
-            settings?.isDisabled = !alertAccepted
-        default: break
-        }
-
-        return settings
     }
 
     private var stackCalculator: StackCalculator = .init()
@@ -135,11 +144,11 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
         let twinData = input.twinData!
 
         twinCardSeries = twinData.series
-        twinsService = .init(cardId: input.cardInput.cardId, twinData: twinData)
+        twinsService = .init(cardId: input.primaryCardId, twinData: twinData)
 
         super.init(input: input, coordinator: coordinator)
 
-        if let walletModel = cardModel?.walletModels.first {
+        if let walletModel = userWalletModel?.walletModelsManager.walletModels.first {
             updateCardBalanceText(for: walletModel)
         }
 
@@ -203,17 +212,34 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
         }
     }
 
+    // MARK: - Main button action
+
     override func mainButtonAction() {
         switch currentStep {
-        case .disclaimer:
+        case .pushNotifications, .first, .second, .third, .saveUserWallet, .done, .intro, .success, .alert:
             break
-        case .intro:
-            fallthrough
-        case .done, .success, .alert:
+        case .topup:
+            if canBuy {
+                openCryptoShopIfPossible()
+            } else {
+                supplementButtonAction()
+            }
+        }
+    }
+
+    // MARK: - Supplement button action
+
+    override func supplementButtonAction() {
+        switch currentStep {
+        case .intro, .success, .done, .alert:
             goToNextStep()
+        case .topup:
+            withAnimation {
+                openQR()
+            }
         case .first:
-            if !retwinMode, let cardId = cardModel?.cardId {
-                AppSettings.shared.cardsStartedActivation.insert(cardId)
+            if !retwinMode {
+                AppSettings.shared.cardsStartedActivation.insert(twinsService.firstTwinCid)
             }
 
             Analytics.log(.twinSetupStarted)
@@ -230,26 +256,6 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
             isMainButtonBusy = true
             subscribeToStepUpdates()
             twinsService.executeCurrentStep()
-        case .topup:
-            if canBuy {
-                openCryptoShopIfPossible()
-            } else {
-                supplementButtonAction()
-            }
-        case .saveUserWallet:
-            break
-        }
-    }
-
-    override func supplementButtonAction() {
-        switch currentStep {
-        case .topup:
-            withAnimation {
-                openQR()
-            }
-        case .disclaimer:
-            disclaimerAccepted()
-            goToNextStep()
         default:
             break
         }
@@ -272,10 +278,10 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
                 // This part is related only to the twin cards, because for other card types
                 // reset to factory settings goes not through onboarding screens. If back button
                 // appearance logic will change in future - recheck also this code and update it accordingly
-                if self.isOnboardingFinished {
-                    self.onboardingDidFinish()
+                if isOnboardingFinished {
+                    onboardingDidFinish()
                 } else {
-                    self.closeOnboarding()
+                    closeOnboarding()
                 }
             }
         }
@@ -287,6 +293,14 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
             .receive(on: DispatchQueue.main)
             .sink { [weak self] isServiceBudy in
                 self?.isMainButtonBusy = isServiceBudy
+            }
+            .store(in: &bag)
+
+        twinsService
+            .occuredError
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] error in
+                self?.alert = error.alertBinder
             }
             .store(in: &bag)
 
@@ -316,20 +330,28 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
         stepUpdatesSubscription = twinsService.step
             .receive(on: DispatchQueue.main)
             .combineLatest(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification))
-            .sink(receiveValue: { [unowned self] newStep, _ in
-                switch (self.currentStep, newStep) {
+            .withWeakCaptureOf(self)
+            .sink { values in
+                let (viewModel, (newStep, _)) = values
+                switch (viewModel.currentStep, newStep) {
                 case (.first, .second):
-                    if let originalUserWallet = self.input.userWalletToDelete {
-                        userWalletRepository.delete(originalUserWallet, logoutIfNeeded: false)
+                    if let originalUserWalletId = viewModel.input.userWalletToDelete {
+                        viewModel.userWalletRepository.delete(
+                            originalUserWalletId,
+                            logoutIfNeeded: false
+                        )
                     }
                     fallthrough
                 case (.second, .third), (.third, .done):
                     if case .done(let cardInfo) = newStep {
-                        self.initializeUserWallet(from: cardInfo)
-                        if input.isStandalone {
-                            self.fireConfetti()
+                        if !viewModel.retwinMode {
+                            // userwallet remains deleted after retwin
+                            viewModel.initializeUserWallet(from: cardInfo)
+                        }
+                        if viewModel.input.isStandalone {
+                            viewModel.fireConfetti()
                         } else {
-                            self.updateCardBalance()
+                            viewModel.updateCardBalance()
                         }
                     }
 
@@ -341,28 +363,30 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
                         }
                     }
                 default:
-                    AppLog.shared.debug("Wrong state while twinning cards: current - \(self.currentStep), new - \(newStep)")
+                    AppLog.shared.debug(
+                        "Wrong state while twinning cards: current - \(viewModel.currentStep), new - \(newStep)"
+                    )
                 }
 
-                if !retwinMode {
-                    if let pairCardId = twinsService.twinPairCardId {
+                if !viewModel.retwinMode {
+                    if let pairCardId = viewModel.twinsService.twinPairCardId {
                         AppSettings.shared.cardsStartedActivation.insert(pairCardId)
                     }
                 }
-            })
+            }
     }
 
     private func loadSecondTwinImage() {
         CardImageProvider()
             .loadTwinImage(for: twinCardSeries.pair.number)
             .map { $0.image }
-            .zip($cardImage.compactMap { $0 })
+            .zip($mainImage.compactMap { $0 })
             .receive(on: DispatchQueue.main)
             .sink { [weak self] paired, main in
                 guard let self = self else { return }
 
-                self.firstTwinImage = main
-                self.secondTwinImage = paired
+                firstTwinImage = main
+                secondTwinImage = paired
             }
             .store(in: &bag)
     }

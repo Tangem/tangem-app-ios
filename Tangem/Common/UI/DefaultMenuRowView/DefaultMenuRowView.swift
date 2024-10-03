@@ -21,7 +21,7 @@ struct DefaultMenuRowView<Action: DefaultMenuRowViewModelAction>: View {
     var body: some View {
         HStack(alignment: .center, spacing: 0) {
             Text(viewModel.title)
-                .style(Fonts.Regular.body, color: Colors.Text.primary1)
+                .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
 
             Spacer()
 

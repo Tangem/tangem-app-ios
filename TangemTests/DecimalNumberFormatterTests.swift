@@ -111,6 +111,20 @@ class DecimalNumberFormatterTests: XCTestCase {
                 decimal: "1000.123456789012345678",
                 string: "1.000,12345678"
             ),
+            TestCase(
+                groupingSeparator: ".",
+                decimalSeparator: ",",
+                digits: 0,
+                decimal: "1000.123456789012345678",
+                string: "1.000"
+            ),
+            TestCase(
+                groupingSeparator: ".",
+                decimalSeparator: ",",
+                digits: 0,
+                decimal: "1000.123456789012345678",
+                string: "1.000"
+            ),
         ]
 
         cases.forEach { testCase in
@@ -122,10 +136,10 @@ class DecimalNumberFormatterTests: XCTestCase {
                 maximumFractionDigits: testCase.digits
             )
 
-            let decimalToString = formatter.format(value: testCase.decimal)
+            let decimalToString: String = formatter.format(value: testCase.decimal)
             XCTAssertEqual(decimalToString, testCase.string)
 
-            let stringToString = formatter.format(value: testCase.string)
+            let stringToString: String = formatter.format(value: testCase.string)
             XCTAssertEqual(stringToString, testCase.string)
         }
     }

@@ -15,27 +15,8 @@ class AppSettings {
     @AppStorageCompat(StorageType.numberOfAppLaunches)
     var numberOfLaunches: Int = 0
 
-    @AppStorageCompat(StorageType.didUserRespondToRateApp)
-    var didUserRespondToRateApp: Bool = false
-
-    @AppStorageCompat(StorageType.dismissRateAppAtLaunch)
-    var dismissRateAppAtLaunch: Int? = nil
-
-    @AppStorageCompat(StorageType.positiveBalanceAppearanceDate)
-    var positiveBalanceAppearanceDate: Date? = nil
-
-    @AppStorageCompat(StorageType.positiveBalanceAppearanceLaunch)
-    var positiveBalanceAppearanceLaunch: Int? = nil
-
     @AppStorageCompat(StorageType.cardsStartedActivation)
     var cardsStartedActivation: [String] = []
-
-    @AppStorageCompat(StorageType.didDisplayMainScreenStories)
-    var didDisplayMainScreenStories: Bool = false
-
-    // Temp migrated cards storage. Remove with LegacyCardMigrator
-    @AppStorageCompat(StorageType.migratedCardsWithDefaultTokens)
-    var migratedCardsWithDefaultTokens: [String] = []
 
     @AppStorageCompat(StorageType.validatedSignedHashesCards)
     var validatedSignedHashesCards: [String] = []
@@ -60,6 +41,42 @@ class AppSettings {
 
     @AppStorageCompat(StorageType.systemDeprecationWarningDismissDate)
     var systemDeprecationWarningDismissalDate: Date? = nil
+
+    @AppStorageCompat(StorageType.understandsAddressNetworkRequirements)
+    var understandsAddressNetworkRequirements: [String] = []
+
+    @AppStorageCompat(StorageType.promotionQuestionnaireFinished)
+    var promotionQuestionnaireFinished: Bool = false
+
+    @AppStorageCompat(StorageType.hideSensitiveInformation)
+    var isHidingSensitiveInformation: Bool = false
+
+    @AppStorageCompat(StorageType.hideSensitiveAvailable)
+    var isHidingSensitiveAvailable: Bool = false
+
+    @AppStorageCompat(StorageType.shouldHidingSensitiveInformationSheetShowing)
+    var shouldHidingSensitiveInformationSheetShowing: Bool = true
+
+    @AppStorageCompat(StorageType.appTheme, store: .standard)
+    var appTheme: ThemeOption = .system
+
+    @AppStorageCompat(StorageType.userDidSwipeWalletsOnMainScreen)
+    var userDidSwipeWalletsOnMainScreen: Bool = false
+
+    @AppStorageCompat(StorageType.mainPromotionDismissed)
+    var mainPromotionDismissed: [String] = []
+
+    @AppStorageCompat(StorageType.tokenPromotionDismissed)
+    var tokenPromotionDismissed: [String] = []
+
+    @AppStorageCompat(StorageType.userDidTapSendScreenSummary)
+    var userDidTapSendScreenSummary: Bool = false
+
+    @AppStorageCompat(StorageType.forcedDemoCardId)
+    var forcedDemoCardId: String? = nil
+
+    @AppStorageCompat(StorageType.didMigrateUserWalletNames)
+    var didMigrateUserWalletNames: Bool = false
 
     static let shared: AppSettings = .init()
 

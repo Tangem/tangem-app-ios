@@ -31,24 +31,33 @@ struct AppScanTaskResponse {
     let primaryCard: PrimaryCard?
 
     func getCardInfo() -> CardInfo {
-        return CardInfo(
+        var cardInfo = CardInfo(
             card: CardDTO(card: card),
             walletData: walletData,
             name: "",
             primaryCard: primaryCard
         )
+
+        let config = UserWalletConfigFactory(cardInfo).makeConfig()
+        cardInfo.name = config.cardName
+        return cardInfo
     }
 }
 
 final class AppScanTask: CardSessionRunnable {
     let shouldAskForAccessCode: Bool
 
+    private let performDerivations: Bool
     private var walletData: DefaultWalletData = .none
     private var primaryCard: PrimaryCard?
-    private var linkingCommand: StartPrimaryCardLinkingTask?
+    private var linkingCommand: StartPrimaryCardLinkingCommand?
 
-    init(shouldAskForAccessCode: Bool = false) {
+    init(
+        shouldAskForAccessCode: Bool = false,
+        performDerivations: Bool = true
+    ) {
         self.shouldAskForAccessCode = shouldAskForAccessCode
+        self.performDerivations = performDerivations
     }
 
     deinit {
@@ -57,6 +66,18 @@ final class AppScanTask: CardSessionRunnable {
 
     /// read ->  readTwinData or note Data or derive wallet's keys -> appendWallets(createwallets+ scan)  -> attestation
     public func run(in session: CardSession, completion: @escaping CompletionResult<AppScanTaskResponse>) {
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+
+        // tmp disable reading cards with imported wallets
+        if card.firmwareVersion < .ed25519Slip0010Available,
+           card.wallets.contains(where: { $0.isImported == true }) {
+            completion(.failure(.wrongCardType(nil)))
+            return
+        }
+
         if let legacyWalletData = session.environment.walletData,
            legacyWalletData.blockchain != "ANY" {
             walletData = .legacy(legacyWalletData)
@@ -66,7 +87,10 @@ final class AppScanTask: CardSessionRunnable {
     }
 
     private func readExtra(session: CardSession, completion: @escaping CompletionResult<AppScanTaskResponse>) {
-        let card = session.environment.card!
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
 
         if TwinCardSeries.series(for: card.cardId) != nil {
             readTwin(card, session: session, completion: completion)
@@ -182,7 +206,7 @@ final class AppScanTask: CardSessionRunnable {
     }
 
     private func readPrimaryCard(_ session: CardSession, _ completion: @escaping CompletionResult<AppScanTaskResponse>) {
-        linkingCommand = StartPrimaryCardLinkingTask()
+        linkingCommand = StartPrimaryCardLinkingCommand()
         linkingCommand!.run(in: session) { result in
             switch result {
             case .success(let primaryCard):
@@ -200,13 +224,14 @@ final class AppScanTask: CardSessionRunnable {
             return
         }
 
-        guard !plainCard.wallets.isEmpty, plainCard.settings.isHDWalletAllowed else {
+        guard performDerivations,
+              !plainCard.wallets.isEmpty,
+              plainCard.settings.isHDWalletAllowed else {
             runScanTask(session, completion)
             return
         }
 
         let card = CardDTO(card: plainCard)
-        migrate(card: card)
         let config = config(for: card)
         var derivations: [EllipticCurve: [DerivationPath]] = [:]
 
@@ -215,15 +240,15 @@ final class AppScanTask: CardSessionRunnable {
 
             // Force add blockchains for demo cards
             if let persistentBlockchains = config.persistentBlockchains {
-                tokenItemsRepository.append(persistentBlockchains)
+                let converter = StorageEntryConverter()
+                tokenItemsRepository.append(converter.convertToStoredUserTokens(persistentBlockchains))
             }
 
-            let savedItems = tokenItemsRepository.getItems()
+            let savedItems = tokenItemsRepository.getList().entries
 
             savedItems.forEach { item in
-                if let wallet = card.wallets.first(where: { $0.curve == item.blockchainNetwork.blockchain.curve }),
-                   let path = item.blockchainNetwork.derivationPath {
-                    derivations[wallet.curve, default: []].append(path)
+                if let wallet = card.wallets.first(where: { $0.curve == item.blockchainNetwork.blockchain.curve }) {
+                    derivations[wallet.curve, default: []].append(contentsOf: item.blockchainNetwork.derivationPaths())
                 }
             }
         }
@@ -257,9 +282,6 @@ final class AppScanTask: CardSessionRunnable {
             return
         }
 
-        let cardDto = CardDTO(card: card)
-        migrate(card: cardDto)
-
         completion(.success(AppScanTaskResponse(
             card: card,
             walletData: walletData,
@@ -270,19 +292,5 @@ final class AppScanTask: CardSessionRunnable {
     private func config(for card: CardDTO) -> UserWalletConfig {
         let cardInfo = CardInfo(card: card, walletData: walletData, name: "")
         return UserWalletConfigFactory(cardInfo).makeConfig()
-    }
-
-    private func migrate(card: CardDTO) {
-        let config = config(for: card)
-        if let legacyCardMigrator = LegacyCardMigrator(cardId: card.cardId, config: config) {
-            legacyCardMigrator.migrateIfNeeded()
-        }
-
-        if card.hasWallets,
-           let seed = config.userWalletIdSeed {
-            let userWalletId = UserWalletId(with: seed)
-            let tokenMigrator = TokenItemsRepositoryMigrator(card: card, userWalletId: userWalletId.value)
-            tokenMigrator.migrate()
-        }
     }
 }

@@ -15,7 +15,7 @@ struct WalletConnectView: View {
     var navBarButton: some View {
         NavigationBusyButton(
             isBusy: viewModel.isServiceBusy,
-            color: .tangemBlue,
+            color: UIColor.iconAccent,
             systemImageName: "plus",
             action: viewModel.openSession
         )
@@ -36,20 +36,11 @@ struct WalletConnectView: View {
                         .padding(.horizontal, 40)
                 } else {
                     List {
-                        ForEach(viewModel.v1Sessions, id: \.id) { item -> WalletConnectSessionItemView in
-                            WalletConnectSessionItemView(
-                                dAppName: item.session.dAppInfo.peerMeta.name
-                            ) {
-                                viewModel.disconnectV1Session(item)
-                            }
-                        }
-                        .listRowInsets(.none)
-
-                        ForEach(viewModel.v2Sessions, id: \.id) { item -> WalletConnectSessionItemView in
+                        ForEach(viewModel.sessions, id: \.id) { item -> WalletConnectSessionItemView in
                             WalletConnectSessionItemView(
                                 dAppName: item.sessionInfo.dAppInfo.name
                             ) {
-                                viewModel.disconnectV2Session(item)
+                                viewModel.disconnectSession(item)
                             }
                         }
                     }
@@ -73,7 +64,7 @@ struct WalletConnectView: View {
                 .alert(item: $viewModel.alert) { $0.alert }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.tangemBgGray.edgesIgnoringSafeArea(.all))
+        .background(Colors.Old.tangemBgGray.edgesIgnoringSafeArea(.all))
         .navigationBarTitle(Text(Localization.walletConnectSessionsTitle))
         .navigationBarItems(trailing: navBarButton)
         .onAppear(perform: viewModel.onAppear)
@@ -82,7 +73,7 @@ struct WalletConnectView: View {
 
 struct WalletConnectView_Previews: PreviewProvider {
     static var previews: some View {
-        WalletConnectView(viewModel: .init(cardModel: PreviewCard.cardanoNote.cardModel, coordinator: WalletConnectCoordinator()))
+        WalletConnectView(viewModel: .init(disabledLocalizedReason: nil, coordinator: WalletConnectCoordinator()))
             .previewGroup(devices: [.iPhone12Pro])
     }
 }

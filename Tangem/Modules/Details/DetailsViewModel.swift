@@ -9,23 +9,44 @@
 import Foundation
 import SwiftUI
 import Combine
-import TangemSdk
 import BlockchainSdk
 
 class DetailsViewModel: ObservableObject {
+    // MARK: - Injected
+
+    @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
+    @Injected(\.failedScanTracker) private var failedCardScanTracker: FailedScanTrackable
+
     // MARK: - View State
 
     @Published var walletConnectRowViewModel: WalletConnectRowViewModel?
+    var walletsSectionTypes: [WalletSectionType] {
+        var viewModels: [WalletSectionType] = userWalletsViewModels.map { .wallet($0) }
+        addOrScanNewUserWalletViewModel.map { viewModel in
+            viewModels.append(.addOrScanNewUserWalletButton(viewModel))
+        }
+
+        return viewModels
+    }
+
+    @Published var buyWalletViewModel: DefaultRowViewModel?
+    @Published var appSettingsViewModel: DefaultRowViewModel?
     @Published var supportSectionModels: [DefaultRowViewModel] = []
-    @Published var settingsSectionViewModels: [DefaultRowViewModel] = []
-    @Published var legalSectionViewModel: DefaultRowViewModel?
     @Published var environmentSetupViewModel: DefaultRowViewModel?
-
-    @Published var cardModel: CardViewModel
     @Published var alert: AlertBinder?
+    @Published var showTroubleshootingView: Bool = false
 
-    var canCreateBackup: Bool {
-        cardModel.canCreateBackup
+    @Published private var userWalletsViewModels: [SettingsUserWalletRowViewModel] = []
+    @Published private var addOrScanNewUserWalletViewModel: DefaultRowViewModel?
+
+    private var isScanning: Bool = false {
+        didSet {
+            updateAddOrScanNewUserWalletButton()
+        }
+    }
+
+    private var selectedUserWalletModel: UserWalletModel? {
+        userWalletRepository.selectedModel
     }
 
     var applicationInfoFooter: String? {
@@ -50,28 +71,12 @@ class DetailsViewModel: ObservableObject {
     // MARK: - Private
 
     private var bag = Set<AnyCancellable>()
-    private unowned let coordinator: DetailsRoutable
+    private weak var coordinator: DetailsRoutable?
 
-    /// Change to @AppStorage and move to model with IOS 14.5 minimum deployment target
-    @AppStorageCompat(StorageType.selectedCurrencyCode)
-    private var selectedCurrencyCode: String = "USD"
-
-    init(cardModel: CardViewModel, coordinator: DetailsRoutable) {
-        self.cardModel = cardModel
+    init(coordinator: DetailsRoutable) {
         self.coordinator = coordinator
 
         bind()
-        setupView()
-    }
-
-    func prepareBackup() {
-        Analytics.log(.buttonCreateBackup)
-        if let input = cardModel.backupInput {
-            openOnboarding(with: input)
-        }
-    }
-
-    func didFinishOnboarding() {
         setupView()
     }
 }
@@ -79,57 +84,75 @@ class DetailsViewModel: ObservableObject {
 // MARK: - Navigation
 
 extension DetailsViewModel {
+    func openWalletConnect() {
+        Analytics.log(.buttonWalletConnect)
+        coordinator?.openWalletConnect(with: selectedUserWalletModel?.config.getDisabledLocalizedReason(for: .walletConnect))
+    }
+
     func openOnboarding(with input: OnboardingInput) {
-        coordinator.openOnboardingModal(with: input)
+        coordinator?.openOnboardingModal(with: input)
     }
 
     func openMail() {
-        Analytics.log(.buttonSendFeedback)
+        Analytics.log(.requestSupport, params: [.source: .settings])
+        guard let selectedUserWalletModel,
+              let emailConfig = selectedUserWalletModel.config.emailConfig else {
+            return
+        }
 
-        guard let emailConfig = cardModel.emailConfig else { return }
+        let data = userWalletRepository.models.map {
+            DetailsFeedbackData(
+                userWalletEmailData: $0.emailData,
+                walletModels: $0.walletModelsManager.walletModels
+            )
+        }
 
         let dataCollector = DetailsFeedbackDataCollector(
-            walletModels: cardModel.walletModels,
-            userWalletEmailData: cardModel.emailData
+            data: data
         )
 
-        coordinator.openMail(
+        coordinator?.openMail(
             with: dataCollector,
             recipient: emailConfig.recipient,
             emailType: .appFeedback(subject: emailConfig.subject)
         )
     }
 
-    func openWalletConnect() {
-        Analytics.log(.buttonWalletConnect)
-        coordinator.openWalletConnect(with: cardModel)
-    }
-
-    func openCardSettings() {
-        Analytics.log(.buttonCardSettings)
-        coordinator.openScanCardSettings(with: cardModel.userWalletId.value, sdk: cardModel.makeTangemSdk()) // TODO: refactor.
-    }
-
     func openAppSettings() {
         Analytics.log(.buttonAppSettings)
-        coordinator.openAppSettings(userWallet: cardModel)
+        coordinator?.openAppSettings()
+    }
+
+    func openBuyWallet() {
+        Analytics.log(.shopScreenOpened)
+        coordinator?.openShop()
     }
 
     func openSupportChat() {
+        guard selectedUserWalletModel != nil else {
+            return
+        }
+
         Analytics.log(.settingsButtonChat)
 
+        let data = userWalletRepository.models.map {
+            DetailsFeedbackData(
+                userWalletEmailData: $0.emailData,
+                walletModels: $0.walletModelsManager.walletModels
+            )
+        }
+
         let dataCollector = DetailsFeedbackDataCollector(
-            walletModels: cardModel.walletModels,
-            userWalletEmailData: cardModel.emailData
+            data: data
         )
 
-        coordinator.openSupportChat(input: .init(
+        coordinator?.openSupportChat(input: .init(
             logsComposer: .init(infoProvider: dataCollector)
         ))
     }
 
-    func openDisclaimer() {
-        coordinator.openDisclaimer(at: cardModel.cardDisclaimer.url)
+    func openTOS() {
+        coordinator?.openTOS()
     }
 
     func openSocialNetwork(network: SocialNetwork) {
@@ -140,56 +163,72 @@ extension DetailsViewModel {
         Analytics.log(event: .buttonSocialNetwork, params: [
             .network: network.name,
         ])
-        coordinator.openInSafari(url: url)
+        coordinator?.openSocialNetwork(url: url)
     }
 
     func openEnvironmentSetup() {
-        coordinator.openEnvironmentSetup()
-    }
-
-    func openReferral() {
-        if let disabledLocalizedReason = cardModel.getDisabledLocalizedReason(for: .referralProgram) {
-            alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
-            return
-        }
-
-        coordinator.openReferral(with: cardModel, userWalletId: cardModel.userWalletId.value)
+        coordinator?.openEnvironmentSetup()
     }
 
     func onAppear() {
         Analytics.log(.settingsScreenOpened)
     }
+
+    func tryAgain() {
+        Analytics.log(.cantScanTheCardTryAgainButton, params: [.source: .settings])
+        addOrScanNewUserWallet()
+    }
+
+    func openScanCardManual() {
+        Analytics.log(.cantScanTheCardButtonBlog, params: [.source: .settings])
+        coordinator?.openScanCardManual()
+    }
+
+    func requestSupport() {
+        Analytics.log(.requestSupport, params: [.source: .settings])
+        failedCardScanTracker.resetCounter()
+        coordinator?.openMail(with: failedCardScanTracker, recipient: EmailConfig.default.recipient, emailType: .failedToScanCard)
+    }
 }
 
 // MARK: - Private
 
-extension DetailsViewModel {
+private extension DetailsViewModel {
     func setupView() {
         setupWalletConnectRowViewModel()
+        setupUserWalletViewModels()
+        setupBuyWalletViewModel()
+        setupAppSettingsViewModel()
         setupSupportSectionModels()
-        setupSettingsSectionViewModels()
-        setupLegalSectionViewModels()
         setupEnvironmentSetupSection()
     }
 
     func bind() {
-        cardModel.objectWillChange
-            .receive(on: RunLoop.main)
-            .sink { [weak self] in
-                self?.objectWillChange.send()
+        AppSettings.shared.$saveUserWallets
+            .dropFirst()
+            .withWeakCaptureOf(self)
+            .sink { viewModel, _ in
+                viewModel.updateAddOrScanNewUserWalletButton()
             }
             .store(in: &bag)
 
-        $selectedCurrencyCode
-            .dropFirst()
-            .sink { [weak self] _ in
-                self?.setupSettingsSectionViewModels()
+        userWalletRepository.eventProvider
+            .withWeakCaptureOf(self)
+            .sink { viewModel, event in
+                switch event {
+                case .scan:
+                    break
+                default:
+                    viewModel.setupUserWalletViewModels()
+                }
             }
             .store(in: &bag)
     }
 
     func setupWalletConnectRowViewModel() {
-        guard cardModel.shouldShowWC else {
+        guard
+            let selectedUserWalletModel,
+            !selectedUserWalletModel.config.getFeatureAvailability(.walletConnect).isHidden else {
             walletConnectRowViewModel = nil
             return
         }
@@ -197,67 +236,110 @@ extension DetailsViewModel {
         walletConnectRowViewModel = WalletConnectRowViewModel(
             title: Localization.walletConnectTitle,
             subtitle: Localization.walletConnectSubtitle,
-            action: openWalletConnect
+            action: weakify(self, forFunction: DetailsViewModel.openWalletConnect)
+        )
+    }
+
+    func setupUserWalletViewModels() {
+        userWalletsViewModels = userWalletRepository.models.map { userWallet in
+            .init(userWallet: userWallet) { [weak self] in
+                self?.coordinator?.openWalletSettings(options: userWallet)
+            }
+        }
+
+        addOrScanNewUserWalletViewModel = DefaultRowViewModel(
+            title: AppSettings.shared.saveUserWallets ? Localization.userWalletListAddButton : Localization.scanCardSettingsButton,
+            detailsType: isScanning ? .loader : .none,
+            action: isScanning ? nil : weakify(self, forFunction: DetailsViewModel.addOrScanNewUserWallet)
+        )
+    }
+
+    func updateAddOrScanNewUserWalletButton() {
+        addOrScanNewUserWalletViewModel?.update(title: AppSettings.shared.saveUserWallets ? Localization.userWalletListAddButton : Localization.scanCardSettingsButton)
+        addOrScanNewUserWalletViewModel?.update(detailsType: isScanning ? .loader : .none)
+        addOrScanNewUserWalletViewModel?.update(action: isScanning ? nil : weakify(self, forFunction: DetailsViewModel.addOrScanNewUserWallet))
+    }
+
+    func setupBuyWalletViewModel() {
+        buyWalletViewModel = DefaultRowViewModel(
+            title: Localization.detailsBuyWallet,
+            action: weakify(self, forFunction: DetailsViewModel.openBuyWallet)
+        )
+    }
+
+    func setupAppSettingsViewModel() {
+        appSettingsViewModel = DefaultRowViewModel(
+            title: Localization.appSettingsTitle,
+            action: weakify(self, forFunction: DetailsViewModel.openAppSettings)
         )
     }
 
     func setupSupportSectionModels() {
         supportSectionModels = [
-            DefaultRowViewModel(title: Localization.detailsChat, action: openSupportChat),
+            DefaultRowViewModel(
+                title: Localization.detailsRowTitleContactToSupport,
+                action: weakify(self, forFunction: DetailsViewModel.openMail)
+            ),
+            DefaultRowViewModel(
+                title: Localization.disclaimerTitle,
+                action: weakify(self, forFunction: DetailsViewModel.openTOS)
+            ),
         ]
-
-        if cardModel.canParticipateInReferralProgram {
-            supportSectionModels.append(DefaultRowViewModel(title: Localization.detailsReferralTitle, action: openReferral))
-        }
-
-        if cardModel.emailConfig != nil {
-            supportSectionModels.append(DefaultRowViewModel(title: Localization.detailsRowTitleSendFeedback, action: openMail))
-        }
-    }
-
-    func setupSettingsSectionViewModels() {
-        var viewModels: [DefaultRowViewModel] = []
-
-        if !cardModel.isMultiWallet {
-            viewModels.append(DefaultRowViewModel(
-                title: Localization.detailsRowTitleCurrency,
-                detailsType: .text(selectedCurrencyCode),
-                action: coordinator.openCurrencySelection
-            ))
-        }
-
-        viewModels.append(DefaultRowViewModel(
-            title: Localization.cardSettingsTitle,
-            action: openCardSettings
-        ))
-
-        // TODO: Saving card implementation
-
-        viewModels.append(DefaultRowViewModel(
-            title: Localization.appSettingsTitle,
-            action: openAppSettings
-        ))
-
-        if canCreateBackup {
-            viewModels.append(DefaultRowViewModel(
-                title: Localization.detailsRowTitleCreateBackup,
-                action: prepareBackup
-            ))
-        }
-
-        settingsSectionViewModels = viewModels
-    }
-
-    func setupLegalSectionViewModels() {
-        legalSectionViewModel = DefaultRowViewModel(
-            title: Localization.disclaimerTitle,
-            action: openDisclaimer
-        )
     }
 
     func setupEnvironmentSetupSection() {
         if !AppEnvironment.current.isProduction {
-            environmentSetupViewModel = DefaultRowViewModel(title: "Environment setup", action: openEnvironmentSetup)
+            environmentSetupViewModel = DefaultRowViewModel(
+                title: "Environment setup",
+                action: weakify(self, forFunction: DetailsViewModel.openEnvironmentSetup)
+            )
+        }
+    }
+
+    func addOrScanNewUserWallet() {
+        Analytics.beginLoggingCardScan(source: .settings)
+        isScanning = true
+
+        userWalletRepository.addOrScan(scanner: CardScannerFactory().makeDefaultScanner()) { [weak self] result in
+            guard let self else {
+                return
+            }
+
+            isScanning = false
+
+            switch result {
+            case .none:
+                break
+            case .troubleshooting:
+                Analytics.log(.cantScanTheCard, params: [.source: .settings])
+                showTroubleshootingView = true
+            case .onboarding(let input):
+                coordinator?.openOnboardingModal(with: input)
+            case .error(let error):
+                if let userWalletRepositoryError = error as? UserWalletRepositoryError {
+                    alert = userWalletRepositoryError.alertBinder
+                } else {
+                    alert = error.alertBinder
+                }
+            case .success, .partial:
+                coordinator?.dismiss()
+            }
+        }
+    }
+}
+
+extension DetailsViewModel {
+    enum WalletSectionType: Identifiable {
+        case wallet(SettingsUserWalletRowViewModel)
+        case addOrScanNewUserWalletButton(DefaultRowViewModel)
+
+        var id: Int {
+            switch self {
+            case .wallet(let viewModel):
+                return viewModel.id.hashValue
+            case .addOrScanNewUserWalletButton(let viewModel):
+                return viewModel.id.hashValue
+            }
         }
     }
 }

@@ -18,7 +18,7 @@ struct StoriesProgressView: View {
 
     var body: some View {
         HStack(spacing: barSpacing) {
-            ForEach(0 ..< pages.count) { index in
+            ForEach(0 ..< pages.count, id: \.self) { index in
                 GeometryReader { geo in
                     Rectangle()
                         .fill(Color.primary.opacity(barBackgroundOpacity))

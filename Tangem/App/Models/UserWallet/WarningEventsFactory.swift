@@ -15,7 +15,7 @@ struct WarningEventsFactory {
 
         if card.firmwareVersion.type != .sdk,
            card.attestation.status == .failed {
-            warnings.append(.failedToValidateCard)
+            warnings.append(.failedToVerifyCard)
         }
 
         for wallet in card.wallets {

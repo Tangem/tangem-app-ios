@@ -46,15 +46,15 @@ struct OnboardingProgressCircle: View {
         ZStack {
             Rectangle()
                 .modifier(AnimatableGradient(
-                    backgroundColor: .tangemGreen2,
-                    progressColor: .tangemGreen,
+                    backgroundColor: Colors.Icon.accent,
+                    progressColor: Colors.Icon.accent,
                     gradientStop: gradientStop
                 )
                 )
                 .frame(width: circleDiameter, height: circleDiameter)
                 .cornerRadius(circleDiameter / 2)
             Rectangle()
-                .foregroundColor(state == .passed ? .tangemGreen : .white)
+                .foregroundColor(state == .passed ? Colors.Icon.accent : .white)
                 .frame(width: circleDiameter - lineWidth * 2, height: circleDiameter - lineWidth * 2)
                 .cornerRadius(circleDiameter / 2)
             Checkmark(filled: state == .passed)

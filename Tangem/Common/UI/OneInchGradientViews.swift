@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-fileprivate struct OneInchGradientView: View {
+private struct OneInchGradientView: View {
     let startColor: Color
     let stopColor: Color
     let radius: Double

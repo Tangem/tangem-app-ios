@@ -39,7 +39,7 @@ extension NoteConfig: UserWalletConfig {
         "Note"
     }
 
-    var mandatoryCurves: [EllipticCurve] {
+    var createWalletCurves: [EllipticCurve] {
         [defaultBlockchain.curve]
     }
 
@@ -65,8 +65,6 @@ extension NoteConfig: UserWalletConfig {
         WarningEventsFactory().makeWarningEvents(for: card)
     }
 
-    var tangemSigner: TangemSigner { .init(with: card.cardId, sdk: makeTangemSdk()) }
-
     var emailData: [EmailCollectedData] {
         CardEmailDataFactory().makeEmailData(for: card, walletData: noteData)
     }
@@ -77,6 +75,18 @@ extension NoteConfig: UserWalletConfig {
 
     var productType: Analytics.ProductType {
         .note
+    }
+
+    var cardHeaderImage: ImageType? {
+        switch defaultBlockchain {
+        case .bitcoin: return Assets.Cards.noteBitcoin
+        case .ethereum: return Assets.Cards.noteEthereum
+        case .cardano: return Assets.Cards.noteCardano
+        case .bsc: return Assets.Cards.noteBinance
+        case .dogecoin: return Assets.Cards.noteDoge
+        case .xrp: return Assets.Cards.noteXrp
+        default: return nil
+        }
     }
 
     func getFeatureAvailability(_ feature: UserWalletFeature) -> UserWalletFeature.Availability {
@@ -118,7 +128,7 @@ extension NoteConfig: UserWalletConfig {
         case .onlineImage:
             return card.firmwareVersion.type == .release ? .available : .hidden
         case .staking:
-            return .available
+            return .hidden
         case .topup:
             return .available
         case .tokenSynchronization:
@@ -131,27 +141,19 @@ extension NoteConfig: UserWalletConfig {
             return .available
         case .transactionHistory:
             return .hidden
-        case .seedPhrase:
-            return .hidden
         case .accessCodeRecoverySettings:
+            return .hidden
+        case .promotion:
             return .hidden
         }
     }
 
-    func makeWalletModel(for token: StorageEntry) throws -> WalletModel {
-        let blockchain = token.blockchainNetwork.blockchain
+    func makeWalletModelsFactory() -> WalletModelsFactory {
+        return CommonWalletModelsFactory(config: self)
+    }
 
-        guard let walletPublicKey = card.wallets.first(where: { $0.curve == blockchain.curve })?.publicKey else {
-            throw CommonError.noData
-        }
-
-        let factory = WalletModelFactory()
-        return try factory.makeSingleWallet(
-            walletPublicKey: walletPublicKey,
-            blockchain: blockchain,
-            token: token.tokens.first,
-            derivationStyle: card.derivationStyle
-        )
+    func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {
+        return SimpleWalletManagerFactory()
     }
 }
 

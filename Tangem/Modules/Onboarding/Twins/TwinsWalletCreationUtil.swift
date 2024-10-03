@@ -33,12 +33,12 @@ class TwinsWalletCreationUtil {
     }
 
     private let twinFileEncoder: TwinCardFileEncoder = TwinCardTlvFileEncoder()
-    private var firstTwinCid: String = ""
     private var twinData: TwinData
 
     private var firstTwinPublicKey: Data?
     private var secondTwinPublicKey: Data?
 
+    private(set) var firstTwinCid: String = ""
     private(set) var step = CurrentValueSubject<CreationStep, Never>(.first)
     private(set) var occuredError = PassthroughSubject<Error, Never>()
     private(set) var isServiceBusy = CurrentValueSubject<Bool, Never>(false)
@@ -123,11 +123,11 @@ class TwinsWalletCreationUtil {
             case .success(let response):
                 Analytics.log(.walletCreatedSuccessfully, params: [.creationType: .walletCreationTypePrivateKey])
 
-                self.step.send(.done(response.getCardInfo()))
+                step.send(.done(response.getCardInfo()))
             case .failure(let error):
-                self.occuredError.send(error)
+                occuredError.send(error)
             }
-            self.isServiceBusy.send(false)
+            isServiceBusy.send(false)
         }
     }
 

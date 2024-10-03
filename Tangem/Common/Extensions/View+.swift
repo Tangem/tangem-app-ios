@@ -11,46 +11,6 @@ import SwiftUI
 import Combine
 
 extension View {
-    func toAnyView() -> AnyView {
-        AnyView(self)
-    }
-
-    @ViewBuilder
-    func tintCompat(_ color: Color) -> some View {
-        if #available(iOS 15.0, *) {
-            self.tint(color)
-        } else {
-            self
-        }
-    }
-
-    @ViewBuilder
-    func toggleStyleCompat(_ color: Color) -> some View {
-        if #available(iOS 15.0, *) {
-            self.tint(color)
-        } else {
-            toggleStyle(SwitchToggleStyle(tint: color))
-        }
-    }
-
-    @ViewBuilder
-    func searchableCompat(text: Binding<String>) -> some View {
-        if #available(iOS 15.0, *) {
-            self.searchable(text: text, placement: .navigationBarDrawer(displayMode: .always))
-        } else {
-            self
-        }
-    }
-
-    @ViewBuilder
-    func interactiveDismissDisabledCompat() -> some View {
-        if #available(iOS 15, *) {
-            self.interactiveDismissDisabled()
-        } else {
-            self
-        }
-    }
-
     @ViewBuilder
     func `if`<Content: View>(_ condition: Bool, transform: (Self) -> Content) -> some View {
         if condition {
@@ -68,5 +28,33 @@ extension View {
     /// See https://developer.apple.com/tutorials/swiftui-concepts/choosing-the-right-way-to-hide-a-view for details
     func hidden(_ shouldHide: Bool) -> some View {
         opacity(shouldHide ? 0.0 : 1.0)
+    }
+
+    func visible(_ shouldShow: Bool) -> some View {
+        opacity(shouldShow ? 1 : 0)
+    }
+
+    @ViewBuilder
+    func matchedGeometryEffectOptional<ID>(id: ID?, in namespace: Namespace.ID?, properties: MatchedGeometryProperties = .frame, anchor: UnitPoint = .center, isSource: Bool = true) -> some View where ID: Hashable {
+        if let id, let namespace {
+            matchedGeometryEffect(id: id, in: namespace, properties: properties, anchor: anchor, isSource: isSource)
+        } else if id == nil, namespace == nil {
+            self
+        } else {
+            #if DEBUG
+            fatalError("You must set either both ID and namespace or neither")
+            #else
+            self
+            #endif
+        }
+    }
+
+    @ViewBuilder
+    func matchedGeometryEffect(_ effect: GeometryEffect?) -> some View {
+        if let effect {
+            matchedGeometryEffect(id: effect.id, in: effect.namespace, isSource: effect.isSource)
+        } else {
+            self
+        }
     }
 }

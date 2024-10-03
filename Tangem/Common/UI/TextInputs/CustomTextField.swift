@@ -11,31 +11,35 @@ import SwiftUI
 
 struct CustomTextField: UIViewRepresentable {
     class Coordinator: NSObject, UITextFieldDelegate {
-        @Binding var text: String
-        @Binding var isResponder: Bool?
-        @Binding var actionButtonTapped: Bool
-        let placeholder: String
+        typealias OnEditingChanged = (_ isResponder: Bool) -> Void
+        typealias OnTextChanged = (_ text: String) -> Void
+
         var decimalCount: Int?
-        let defaultStringToClear: String?
         var isEnabled = true
-        var maxCount: Int?
+
+        private let actionButtonTapped: Binding<Bool>
+        private let placeholder: String
+        private let defaultStringToClear: String?
+        private let maxCount: Int?
+        private let onEditingChanged: OnEditingChanged
+        private let onTextChanged: OnTextChanged
 
         init(
-            text: Binding<String>,
-            placeholder: String,
-            decimalCount: Int?,
-            defaultStringToClear: String?,
-            isResponder: Binding<Bool?>,
             actionButtonTapped: Binding<Bool>,
-            maxCount: Int?
+            placeholder: String,
+            defaultStringToClear: String?,
+            decimalCount: Int?,
+            maxCount: Int?,
+            onEditingChanged: @escaping OnEditingChanged,
+            onTextChanged: @escaping OnTextChanged
         ) {
-            _text = text
-            _isResponder = isResponder
-            _actionButtonTapped = actionButtonTapped
+            self.actionButtonTapped = actionButtonTapped
             self.placeholder = placeholder
-            self.decimalCount = decimalCount
             self.defaultStringToClear = defaultStringToClear
+            self.decimalCount = decimalCount
             self.maxCount = maxCount
+            self.onEditingChanged = onEditingChanged
+            self.onTextChanged = onTextChanged
         }
 
         func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
@@ -43,13 +47,11 @@ struct CustomTextField: UIViewRepresentable {
         }
 
         func textFieldDidChangeSelection(_ textField: UITextField) {
-            text = textField.text ?? ""
+            onTextChanged(textField.text ?? "")
         }
 
         func textFieldDidBeginEditing(_ textField: UITextField) {
-            DispatchQueue.main.async {
-                self.isResponder = true
-            }
+            onEditingChanged(true)
 
             if let toClear = defaultStringToClear {
                 if textField.text == toClear {
@@ -59,9 +61,7 @@ struct CustomTextField: UIViewRepresentable {
         }
 
         func textFieldDidEndEditing(_ textField: UITextField) {
-            DispatchQueue.main.async {
-                self.isResponder = false
-            }
+            onEditingChanged(false)
 
             if let toClear = defaultStringToClear {
                 if textField.text == "" {
@@ -72,7 +72,7 @@ struct CustomTextField: UIViewRepresentable {
 
         @objc
         func actionTapped() {
-            actionButtonTapped.toggle()
+            actionButtonTapped.wrappedValue.toggle()
         }
 
         @objc
@@ -132,15 +132,17 @@ struct CustomTextField: UIViewRepresentable {
     var keyboard: UIKeyboardType = .default
     var clearButtonMode: UITextField.ViewMode = .never
     var textColor: UIColor = .tangemGrayDark4
-    var font: UIFont = UIFont.systemFont(ofSize: 16.0)
+    var font: UIFont = .systemFont(ofSize: 16.0)
     let placeholder: String
     let toolbarItems: [UIBarButtonItem]? = nil
     var decimalCount: Int?
     var isEnabled = true
     var maxCount: Int?
+    var onPaste: () -> Void = {}
 
     func makeUIView(context: UIViewRepresentableContext<CustomTextField>) -> UITextField {
-        let textField = UITextField(frame: .zero)
+        let textField = CustomUITextField(frame: .zero)
+        textField.onPaste = onPaste
         textField.isSecureTextEntry = isSecured
         textField.clearsOnBeginEditing = clearsOnBeginEditing
         textField.autocapitalizationType = .none
@@ -185,8 +187,7 @@ struct CustomTextField: UIViewRepresentable {
         if !toolbarItems.isEmpty {
             let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44))
             toolbar.items = toolbarItems
-            toolbar.backgroundColor = UIColor.tangemBgGray
-            toolbar.tintColor = UIColor.black
+            toolbar.tintColor = UIColor.inputAccessoryViewTintColor
             textField.inputAccessoryView = toolbar
         }
 
@@ -195,13 +196,25 @@ struct CustomTextField: UIViewRepresentable {
 
     func makeCoordinator() -> CustomTextField.Coordinator {
         return Coordinator(
-            text: $text,
-            placeholder: placeholder,
-            decimalCount: decimalCount,
-            defaultStringToClear: defaultStringToClear,
-            isResponder: $isResponder,
             actionButtonTapped: $actionButtonTapped,
-            maxCount: maxCount
+            placeholder: placeholder,
+            defaultStringToClear: defaultStringToClear,
+            decimalCount: decimalCount,
+            maxCount: maxCount,
+            onEditingChanged: { isResponder in
+                // This check prevents redundant setting of the variable, which could
+                // lead to `publishing changes during view update` SwiftUI warning
+                if self.isResponder != isResponder {
+                    self.isResponder = isResponder
+                }
+            },
+            onTextChanged: { text in
+                // This check prevents redundant setting of the variable, which could
+                // lead to `publishing changes during view update` SwiftUI warning
+                if self.text != text {
+                    self.text = text
+                }
+            }
         )
     }
 
@@ -216,5 +229,14 @@ struct CustomTextField: UIViewRepresentable {
                 uiView.becomeFirstResponder()
             }
         }
+    }
+}
+
+private class CustomUITextField: UITextField {
+    var onPaste: () -> Void = {}
+
+    override func paste(_ sender: Any?) {
+        onPaste()
+        super.paste(sender)
     }
 }

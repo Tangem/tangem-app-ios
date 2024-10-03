@@ -7,18 +7,21 @@
 //
 
 import Foundation
-import TangemSdk
 
 protocol DetailsRoutable: AnyObject {
+    func openWalletConnect(with disabledLocalizedReason: String?)
+    func openWalletSettings(options: UserWalletSettingsCoordinator.Options)
+
     func openOnboardingModal(with input: OnboardingInput)
+
+    func openAppSettings()
     func openMail(with dataCollector: EmailDataCollector, recipient: String, emailType: EmailType)
-    func openWalletConnect(with cardModel: CardViewModel)
-    func openCurrencySelection()
-    func openDisclaimer(at url: URL)
-    func openScanCardSettings(with userWalletId: Data, sdk: TangemSdk)
-    func openAppSettings(userWallet: CardViewModel)
     func openSupportChat(input: SupportChatInputModel)
-    func openInSafari(url: URL)
+    func openTOS()
+    func openScanCardManual()
+    func openShop()
+    func openSocialNetwork(url: URL)
+
     func openEnvironmentSetup()
-    func openReferral(with cardModel: CardViewModel, userWalletId: Data)
+    func dismiss()
 }

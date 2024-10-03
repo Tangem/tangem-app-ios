@@ -1,4 +1,5 @@
-NFCReaderUsageDescription = "掃描智能卡";
-NSCameraUsageDescription = "掃描二維碼或拍照以獲得客服支援";
-NSPhotoLibraryUsageDescription = "分享至文字客服";
-NSFaceIDUsageDescription = "Face ID 用於將您的卡片保存在應用程序中";
+"NFCReaderUsageDescription" = "掃描智能卡";
+"NSCameraUsageDescription" = "掃描二維碼或拍照以獲得客服支援";
+"NSPhotoLibraryUsageDescription" = "分享至文字客服";
+"NSFaceIDUsageDescription" = "Face ID 用於將您的卡片保存在應用程序中";
+"NSMicrophoneUsageDescription" = "To record video for chat support";

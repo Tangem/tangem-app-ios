@@ -16,19 +16,19 @@ class WalletConnectV2SendTransactionHandler {
     private let walletModel: WalletModel
     private let transactionBuilder: WalletConnectEthTransactionBuilder
     private let messageComposer: WalletConnectV2MessageComposable
-    private let signer: TangemSigner
     private let uiDelegate: WalletConnectUIDelegate
+    private let transactionDispatcher: SendTransactionDispatcher
 
     private var transactionToSend: Transaction?
 
     init(
         requestParams: AnyCodable,
-        blockchain: Blockchain,
+        blockchainId: String,
         transactionBuilder: WalletConnectEthTransactionBuilder,
         messageComposer: WalletConnectV2MessageComposable,
         signer: TangemSigner,
-        uiDelegate: WalletConnectUIDelegate,
-        walletModelProvider: WalletConnectV2WalletModelProvider
+        walletModelProvider: WalletConnectWalletModelProvider,
+        uiDelegate: WalletConnectUIDelegate
     ) throws {
         do {
             let params = try requestParams.get([WalletConnectEthTransaction].self)
@@ -38,7 +38,7 @@ class WalletConnectV2SendTransactionHandler {
             }
 
             self.wcTransaction = wcTransaction
-            walletModel = try walletModelProvider.getModel(with: wcTransaction.from, in: blockchain)
+            walletModel = try walletModelProvider.getModel(with: wcTransaction.from, blockchainId: blockchainId)
         } catch {
             AppLog.shared.debug("[WC 2.0] Failed to create Send transaction handler. \(error)")
             throw error
@@ -46,8 +46,8 @@ class WalletConnectV2SendTransactionHandler {
 
         self.messageComposer = messageComposer
         self.transactionBuilder = transactionBuilder
-        self.signer = signer
         self.uiDelegate = uiDelegate
+        transactionDispatcher = CommonSendTransactionDispatcher(walletModel: walletModel, transactionSigner: signer)
     }
 }
 
@@ -67,26 +67,16 @@ extension WalletConnectV2SendTransactionHandler: WalletConnectMessageHandler {
             throw WalletConnectV2Error.missingTransaction
         }
 
-        try await walletModel.send(transaction, signer: signer).async()
+        let result = try await transactionDispatcher.send(transaction: .transfer(transaction))
 
-        Analytics.log(.transactionSent, params: [.commonSource: .transactionSourceWalletConnect])
+        Analytics.log(.transactionSent, params: [.source: .transactionSourceWalletConnect])
 
-        let selectedAction = await uiDelegate.getResponseFromUser(with: WalletConnectAsyncUIRequest<RPCResult>(
+        uiDelegate.showScreen(with: .init(
             event: .success,
             message: Localization.sendTransactionSuccess,
-            approveAction: { [weak self] in
-                guard
-                    let lastTx = self?.walletModel.wallet.transactions.last,
-                    let txHash = lastTx.hash
-                else {
-                    throw WalletConnectV2Error.transactionSentButNotFoundInManager
-                }
-
-                return RPCResult.response(AnyCodable(txHash))
-            },
-            rejectAction: { throw WalletConnectV2Error.unknown("Impossible case") }
+            approveAction: {}
         ))
 
-        return try await selectedAction()
+        return RPCResult.response(AnyCodable(result.hash))
     }
 }

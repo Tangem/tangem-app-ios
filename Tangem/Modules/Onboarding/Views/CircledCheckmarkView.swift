@@ -10,7 +10,7 @@ import SwiftUI
 
 struct CircledCheckmarkView: View {
     var borderColor: Color = .white
-    var foregroundColor: Color = .tangemGreen
+    var foregroundColor: Color = Colors.Icon.accent
     var filled: Bool
 
     var body: some View {

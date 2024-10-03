@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "slowFeeIcon.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

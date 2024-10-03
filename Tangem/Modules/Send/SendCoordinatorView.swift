@@ -2,20 +2,24 @@
 //  SendCoordinatorView.swift
 //  Tangem
 //
-//  Created by Alexander Osokin on 16.06.2022.
-//  Copyright © 2022 Tangem AG. All rights reserved.
+//  Created by Andrey Chukavin on 30.10.2023.
+//  Copyright © 2023 Tangem AG. All rights reserved.
 //
 
-import Foundation
 import SwiftUI
 
 struct SendCoordinatorView: CoordinatorView {
     @ObservedObject var coordinator: SendCoordinator
 
+    init(coordinator: SendCoordinator) {
+        self.coordinator = coordinator
+    }
+
     var body: some View {
         ZStack {
-            if let model = coordinator.sendViewModel {
-                SendView(viewModel: model)
+            if let rootViewModel = coordinator.rootViewModel {
+                SendView(viewModel: rootViewModel, transitionService: .init())
+                    .navigationLinks(links)
             }
 
             sheets
@@ -23,16 +27,25 @@ struct SendCoordinatorView: CoordinatorView {
     }
 
     @ViewBuilder
+    private var links: some View {
+        EmptyView()
+    }
+
+    @ViewBuilder
     private var sheets: some View {
-        VStack {
-            NavHolder()
-                .sheet(item: $coordinator.mailViewModel) {
-                    MailView(viewModel: $0)
-                }
-                .sheet(item: $coordinator.qrScanViewModel) {
-                    QRScanView(viewModel: $0)
-                        .edgesIgnoringSafeArea(.all)
-                }
-        }
+        NavHolder()
+            .bottomSheet(
+                item: $coordinator.expressApproveViewModel,
+                backgroundColor: Colors.Background.tertiary
+            ) {
+                ExpressApproveView(viewModel: $0)
+            }
+            .sheet(item: $coordinator.mailViewModel) {
+                MailView(viewModel: $0)
+            }
+            .sheet(item: $coordinator.qrScanViewCoordinator) {
+                QRScanViewCoordinatorView(coordinator: $0)
+                    .edgesIgnoringSafeArea(.all)
+            }
     }
 }

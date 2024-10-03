@@ -1,0 +1,132 @@
+{
+    "sort": "manual",
+    "group": "none",
+    "tokens": [
+        {
+            "id": "ethereum",
+            "name": "Ethereum Testnet",
+            "symbol": "ETH",
+            "decimals": 18,
+            "networkId": "ethereum/test",
+            "derivationPath": "m/44'/1'/0'/0/0"
+        },
+        {
+            "id": "bitcoin",
+            "name": "Bitcoin Testnet",
+            "symbol": "BTC",
+            "decimals": 8,
+            "networkId": "bitcoin/test",
+            "derivationPath": "m/44'/1'/0'/0/0"
+        },
+        {
+            "id": "matic-network",
+            "name": "Polygon Testnet",
+            "symbol": "MATIC",
+            "decimals": 18,
+            "networkId": "polygon-pos/test",
+            "derivationPath": "m/44'/1'/0'/0/0"
+        },
+        {
+            "id": "binancecoin",
+            "name": "BNB Smart Chain",
+            "symbol": "BNB",
+            "decimals": 18,
+            "networkId": "binance-smart-chain",
+            "derivationPath": "m/44'/60'/0'/0/0"
+        },
+        {
+            "id": "cosmos",
+            "name": "Cosmos Hub",
+            "symbol": "ATOM",
+            "decimals": 18,
+            "networkId": "binance-smart-chain",
+            "derivationPath": "m/44'/60'/0'/0/0",
+            "contractAddress": "0x0eb3a705fc54725037cc9e008bdede697f62f335"
+        },
+        {
+            "id": "avalanche-2",
+            "name": "Avalanche C-Chain",
+            "symbol": "AVAX",
+            "decimals": 18,
+            "networkId": "avalanche",
+            "derivationPath": "m/44'/60'/0'/0/0"
+        },
+        {
+            "id": "tether",
+            "name": "Tether",
+            "symbol": "USDT",
+            "decimals": 6,
+            "networkId": "avalanche",
+            "derivationPath": "m/44'/60'/0'/0/0",
+            "contractAddress": "0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7"
+        },
+        {
+            "id": "sushi",
+            "name": "Sushi",
+            "symbol": "SUSHI",
+            "decimals": 18,
+            "networkId": "avalanche",
+            "derivationPath": "m/44'/60'/0'/0/0",
+            "contractAddress": "0x37b608519f91f70f2eeb0e5ed9af4061722e4f76"
+        },
+        {
+            "id": "bitcoin-avalanche-bridged-btc-b",
+            "name": "Bitcoin Avalanche Bridged (BTC.b)",
+            "symbol": "BTC.B",
+            "decimals": 8,
+            "networkId": "avalanche",
+            "derivationPath": "m/44'/60'/0'/0/0",
+            "contractAddress": "0x152b9d0fdc40c096757f570a51e494bd4b943e50"
+        },
+        {
+            "id": "stellar",
+            "name": "Stellar",
+            "symbol": "XLM",
+            "decimals": 7,
+            "networkId": "stellar",
+            "derivationPath": "m/44'/148'/0'"
+        },
+        {
+            "id": "binancecoin",
+            "name": "BNB Smart Chain Testnet",
+            "symbol": "BNB",
+            "decimals": 18,
+            "networkId": "binance-smart-chain/test",
+            "derivationPath": "m/44'/1'/0'/0/0"
+        },
+        {
+            "id": "optimistic-ethereum",
+            "name": "Optimistic Ethereum",
+            "symbol": "ETH",
+            "decimals": 18,
+            "networkId": "optimistic-ethereum",
+            "derivationPath": "m/44'/60'/0'/0/0"
+        },
+        {
+            "id": "optimism",
+            "name": "Optimism",
+            "symbol": "OP",
+            "decimals": 18,
+            "networkId": "optimistic-ethereum",
+            "derivationPath": "m/44'/60'/0'/0/0",
+            "contractAddress": "0x4200000000000000000000000000000000000042"
+        },
+        {
+            "id": "litecoin",
+            "name": "Litecoin",
+            "symbol": "LTC",
+            "decimals": 8,
+            "networkId": "litecoin",
+            "derivationPath": "m/44'/2'/0'/0/0"
+        },
+        {
+            "id": "solana",
+            "name": "Solana Testnet",
+            "symbol": "SOL",
+            "decimals": 9,
+            "networkId": "solana/test",
+            "derivationPath": "m/44'/1'/0'"
+        }
+    ],
+    "version": 0
+}

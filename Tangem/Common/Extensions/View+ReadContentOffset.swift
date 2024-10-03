@@ -9,64 +9,66 @@
 import SwiftUI
 
 extension View {
-    /**
-     1. Assign stable coordinate space to the scroll view itself.
-     2. Use this modifier on container view (like `VStack` or `HStack`) used inside scroll view.
-     ```
-     struct SomeView: View {
-        private let name = UUID()
-        @State private var contentOffset: CGPoint = .zero
-
-        func body(content: Content) -> some View {
-            ScrollView {
-                LazyVStack() {
-                    // Some scrollable content
-                }
-                .readContentOffset(to: $contentOffset, inCoordinateSpace: .named(name)
-            )
-            .coordinateSpace(name: name)
-        }
-     }
-     ```
-     */
+    /// 1. Assign stable coordinate space to the scroll view itself.
+    /// 2. Use this modifier on the container view (e.g. `VStack` or `HStack`) that is used inside the scroll view.
+    ///
+    /// ```
+    /// struct SomeView: View {
+    ///     private let name = UUID()
+    ///     @State private var contentOffset: CGPoint = .zero
+    ///
+    ///     var body: some View {
+    ///         ScrollView {
+    ///             LazyVStack() {
+    ///                 // Some scrollable content
+    ///             }
+    ///             .readContentOffset(inCoordinateSpace: .named(name), bindTo: $contentOffset)
+    ///         }
+    ///         .coordinateSpace(name: name)
+    ///     }
+    /// }
+    /// ```
     func readContentOffset(
-        to contentOffset: Binding<CGPoint>,
-        inCoordinateSpace coordinateSpace: CoordinateSpace
+        inCoordinateSpace coordinateSpace: CoordinateSpace,
+        throttleInterval: GeometryInfo.ThrottleInterval = .zero,
+        bindTo contentOffset: Binding<CGPoint>
     ) -> some View {
         modifier(
             ContentOffsetReaderViewModifier(
-                contentOffset: contentOffset,
-                coordinateSpace: coordinateSpace
+                coordinateSpace: coordinateSpace,
+                throttleInterval: throttleInterval
+            ) { contentOffset.wrappedValue = $0 }
+        )
+    }
+
+    func readContentOffset(
+        inCoordinateSpace coordinateSpace: CoordinateSpace,
+        throttleInterval: GeometryInfo.ThrottleInterval = .standard,
+        onChange: @escaping (_ value: CGPoint) -> Void
+    ) -> some View {
+        modifier(
+            ContentOffsetReaderViewModifier(
+                coordinateSpace: coordinateSpace,
+                throttleInterval: throttleInterval,
+                onChange: onChange
             )
         )
     }
 }
 
+// MARK: - Private implementation
+
 private struct ContentOffsetReaderViewModifier: ViewModifier {
-    let contentOffset: Binding<CGPoint>
     let coordinateSpace: CoordinateSpace
+    let throttleInterval: GeometryInfo.ThrottleInterval
+    let onChange: (_ geometryInfo: CGPoint) -> Void
 
     func body(content: Content) -> some View {
         content
-            .background(
-                GeometryReader { proxy in
-                    Color.clear.preference(
-                        key: ContentOffsetReaderPreferenceKey.self,
-                        value: proxy.frame(in: coordinateSpace).origin
-                    )
-                }
-            )
-            .onPreferenceChange(ContentOffsetReaderPreferenceKey.self) { value in
-                contentOffset.wrappedValue = CGPoint(
-                    x: -value.x,
-                    y: -value.y
-                )
-            }
+            .readGeometry(
+                \.frame.origin,
+                inCoordinateSpace: coordinateSpace,
+                throttleInterval: throttleInterval
+            ) { onChange(CGPoint(x: -$0.x, y: -$0.y)) }
     }
-}
-
-private struct ContentOffsetReaderPreferenceKey: PreferenceKey {
-    static var defaultValue: CGPoint { .zero }
-
-    static func reduce(value: inout CGPoint, nextValue: () -> CGPoint) {}
 }

@@ -15,10 +15,16 @@ struct SecurityModeCoordinatorView: CoordinatorView {
     var body: some View {
         if let model = coordinator.securityModeViewModel {
             SecurityModeView(viewModel: model)
-                .navigation(item: $coordinator.cardOperationViewModel) {
-                    CardOperationView(viewModel: $0)
-                }
-                .emptyNavigationLink()
+                .navigationLinks(links)
         }
+    }
+
+    @ViewBuilder
+    private var links: some View {
+        NavHolder()
+            .navigation(item: $coordinator.cardOperationViewModel) {
+                CardOperationView(viewModel: $0)
+            }
+            .emptyNavigationLink()
     }
 }

@@ -9,25 +9,25 @@
 import Foundation
 import BlockchainSdk
 
-fileprivate struct UtorgResponse<SuccessResult: Decodable>: Decodable {
+private struct UtorgResponse<SuccessResult: Decodable>: Decodable {
     let success: Bool
     let timestamp: Double
     let data: SuccessResult?
     let error: UtorgError?
 }
 
-fileprivate enum UtorgErrorType: String, Decodable {
+private enum UtorgErrorType: String, Decodable {
     case unauthorized = "UNAUTHORIZED"
     case unknownError = "UNKNOWN_ERROR"
     case badRequest = "BAD_REQUEST"
 }
 
-fileprivate struct UtorgError: Decodable {
+private struct UtorgError: Decodable {
     let type: UtorgErrorType
     let message: String?
 }
 
-fileprivate struct UtorgCurrency: Decodable {
+private struct UtorgCurrency: Decodable {
     let currency: String
     let symbol: String
     let enabled: Bool
@@ -36,16 +36,16 @@ fileprivate struct UtorgCurrency: Decodable {
     let chain: String?
 }
 
-fileprivate struct UtorgSuccessURLResponse: Decodable {
+private struct UtorgSuccessURLResponse: Decodable {
     let successUrl: String
 }
 
-fileprivate enum CurrencyType: String, Decodable {
+private enum CurrencyType: String, Decodable {
     case crypto = "CRYPTO"
     case fiat = "FIAT"
 }
 
-fileprivate enum UtorgEndpoint: String {
+private enum UtorgEndpoint: String {
     case currency
     case successUrl
 }
@@ -55,6 +55,7 @@ class UtorgService {
     @Published private var initialized: Bool = false
 
     private var supportedCurrencies = [UtorgCurrency]()
+    private let supportedBlockchains = SupportedBlockchains.all
 
     private var host: String {
         if AppEnvironment.current.isTestnet {
@@ -68,7 +69,8 @@ class UtorgService {
         return supportedCurrencies.first(where: {
             guard
                 let chain = $0.chain,
-                let utorgBlockchain = Blockchain(from: chain.lowercased()),
+                // TODO: Make sure that the blockchain has been correctly founded from the SupportedBlockchains
+                let utorgBlockchain = supportedBlockchains[chain.lowercased()],
                 $0.enabled,
                 $0.symbol.lowercased() == symbol.lowercased(),
                 utorgBlockchain == blockchain
@@ -134,9 +136,9 @@ extension UtorgService: ExchangeService {
         runTask { [weak self] in
             guard let self else { return }
             do {
-                try await self.loadCurrencies()
-                self.initialized = true
-                try await self.setSuccessURL()
+                try await loadCurrencies()
+                initialized = true
+                try await setSuccessURL()
             } catch {
                 AppLog.shared.debug("[Utorg] Failed to initialize Utorg service. Error: \(error)")
             }

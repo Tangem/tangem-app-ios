@@ -30,7 +30,7 @@ struct OnboardingProgressCheckmarksView: View {
         VStack {
             ZStack(alignment: .leading) {
                 Rectangle()
-                    .foregroundColor(.tangemGreen2)
+                    .foregroundColor(Colors.Icon.accent)
                     .frame(size: .init(width: outerCircleDiameter, height: outerCircleDiameter))
                     .cornerRadius(outerCircleDiameter / 2)
                     .scaleEffect(selectionBackScale)
@@ -46,13 +46,13 @@ struct OnboardingProgressCheckmarksView: View {
                     }
                 Rectangle()
                     .modifier(AnimatableGradient(
-                        backgroundColor: .tangemGreen2,
-                        progressColor: .tangemGreen,
+                        backgroundColor: Colors.Icon.accent,
+                        progressColor: Colors.Icon.accent,
                         gradientStop: currentProgress
                     )
                     )
                     .frame(width: containerSize.width, height: 3)
-                ForEach(0 ..< numberOfSteps) { stepIndex in
+                ForEach(0 ..< numberOfSteps, id: \.self) { stepIndex in
                     OnboardingProgressCircle(index: stepIndex, selectedIndex: animatedSelectedIndex)
                         .offset(
                             x: calculateCircleOffset(for: stepIndex),
@@ -61,9 +61,7 @@ struct OnboardingProgressCheckmarksView: View {
                 }
             }
             .frame(maxWidth: .infinity)
-            .readSize { size in
-                containerSize = size
-            }
+            .readGeometry(\.size, bindTo: $containerSize)
         }
         .onReceive(currentStep, perform: { newStep in
             animateSelection(at: newStep, animated: initialized)
@@ -94,7 +92,7 @@ struct OnboardingProgressCheckmarksView: View {
     }
 }
 
-fileprivate class Provider: ObservableObject {
+private class Provider: ObservableObject {
     @Published var currentStep: Int = 10
 
     var numberOfSteps: Int { 6 }

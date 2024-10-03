@@ -9,13 +9,19 @@
 import Foundation
 import FirebaseAnalytics
 import FirebaseCrashlytics
-import AppsFlyerLib
 import BlockchainSdk
-import Amplitude
+import AmplitudeSwift
 import TangemSdk
 
 class Analytics {
     @Injected(\.analyticsContext) private static var analyticsContext: AnalyticsContext
+    private static var amplitude: Amplitude? = {
+        guard !AppEnvironment.current.isDebug else {
+            return nil
+        }
+
+        return Amplitude(configuration: Configuration(apiKey: try! CommonKeysManager().amplitudeApiKey))
+    }()
 
     private init() {}
 
@@ -23,7 +29,7 @@ class Analytics {
 
     static func beginLoggingCardScan(source: CardScanSource) {
         analyticsContext.set(value: source, forKey: .scanSource, scope: .common)
-        logInternal(source.cardScanButtonEvent)
+        logEventInternal(source.cardScanButtonEvent)
     }
 
     static func endLoggingCardScan() {
@@ -33,68 +39,72 @@ class Analytics {
         }
 
         analyticsContext.removeValue(forKey: .scanSource, scope: .common)
-        logInternal(.cardWasScanned, params: [.commonSource: source.cardWasScannedParameterValue.rawValue])
+        logEventInternal(.cardWasScanned, params: [.source: source.cardWasScannedParameterValue.rawValue])
     }
 
     // MARK: - Others
 
-    static func logTopUpIfNeeded(balance: Decimal) {
-        let hasPreviousPositiveBalance = analyticsContext.value(forKey: .hasPositiveBalance, scope: .userWallet) as? Bool
+    static func logTopUpIfNeeded(balance: Decimal, for userWalletId: UserWalletId) {
+        let hasPreviousPositiveBalance = analyticsContext.value(forKey: .hasPositiveBalance, scope: .userWallet(userWalletId)) as? Bool
 
         // Send only first topped up event. Do not send the event to analytics on following topup events.
         if balance > 0, hasPreviousPositiveBalance == false {
-            logInternal(.toppedUp)
-            analyticsContext.set(value: true, forKey: .hasPositiveBalance, scope: .userWallet)
+            logEventInternal(.toppedUp)
+            analyticsContext.set(value: true, forKey: .hasPositiveBalance, scope: .userWallet(userWalletId))
         } else if hasPreviousPositiveBalance == nil { // Do not save in a withdrawal case
             // Register the first app launch with balance.
-            analyticsContext.set(value: balance > 0, forKey: .hasPositiveBalance, scope: .userWallet)
+            analyticsContext.set(value: balance > 0, forKey: .hasPositiveBalance, scope: .userWallet(userWalletId))
         }
     }
 
-    static func logShopifyOrder(_ order: Order) {
-        var appsFlyerDiscountParams: [String: Any] = [:]
-        var firebaseDiscountParams: [String: Any] = [:]
-        var amplitudeDiscountParams: [ParameterKey: String] = [:]
+    static func logDestinationAddress(isAddressValid: Bool, source: DestinationAddressSource) {
+        let validationResult: Analytics.ParameterValue = isAddressValid ? .success : .fail
+        guard let parameterValue = source.parameterValue else { return }
 
-        if let discountCode = order.discount?.code {
-            appsFlyerDiscountParams[AFEventParamCouponCode] = discountCode
-            firebaseDiscountParams[AnalyticsParameterCoupon] = discountCode
-            amplitudeDiscountParams[.couponCode] = discountCode
+        Analytics.log(
+            .sendAddressEntered,
+            params: [
+                .source: parameterValue,
+                .validation: validationResult,
+            ]
+        )
+    }
+
+    static func logPromotionEvent(_ event: Event, programName: String, newClient: Bool? = nil) {
+        var params = [
+            ParameterKey.programName: programName,
+        ]
+
+        if let newClient {
+            let clientType: ParameterValue = newClient ? .new : .old
+            params[.clientType] = clientType.rawValue
         }
-
-        let sku = order.lineItems.first?.sku ?? "unknown"
-
-        AppsFlyerLib.shared().logEvent(AFEventPurchase, withValues: appsFlyerDiscountParams.merging([
-            AFEventParamContentId: sku,
-            AFEventParamRevenue: order.total,
-            AFEventParamCurrency: order.currencyCode,
-        ], uniquingKeysWith: { $1 }))
-
-        FirebaseAnalytics.Analytics.logEvent(AnalyticsEventPurchase, parameters: firebaseDiscountParams.merging([
-            AnalyticsParameterItems: [
-                [AnalyticsParameterItemID: sku],
-            ],
-            AnalyticsParameterValue: order.total,
-            AnalyticsParameterCurrency: order.currencyCode,
-        ], uniquingKeysWith: { $1 }))
-
-        logInternal(.purchased, params: amplitudeDiscountParams.merging([
-            .sku: sku,
-            .count: "\(order.lineItems.count)",
-            .amount: "\(order.total) \(order.currencyCode)",
-        ], uniquingKeysWith: { $1 }))
+        Analytics.log(event: event, params: params)
     }
 
     // MARK: - Common
 
-    static func log(_ event: Event, params: [ParameterKey: ParameterValue] = [:]) {
-        log(event: event, params: params.mapValues { $0.rawValue })
+    static func log(_ event: Event, params: [ParameterKey: ParameterValue] = [:], limit: Analytics.EventLimit = .unlimited) {
+        log(event: event, params: params.mapValues { $0.rawValue }, limit: limit)
     }
 
-    static func log(event: Event, params: [ParameterKey: String]) {
+    static func log(
+        event: Event,
+        params: [ParameterKey: String],
+        analyticsSystems: [Analytics.AnalyticsSystem] = [.firebase, .amplitude, .crashlytics],
+        limit: Analytics.EventLimit = .unlimited
+    ) {
         assert(event.canBeLoggedDirectly)
 
-        logInternal(event, params: params)
+        logEventInternal(event, params: params, analyticsSystems: analyticsSystems, limit: limit)
+    }
+
+    static func debugLog(eventInfo: any AnalyticsDebugEvent) {
+        logInternal(
+            eventInfo.title,
+            params: eventInfo.analyticsParams,
+            analyticsSystems: [.crashlytics]
+        )
     }
 
     // MARK: - Private
@@ -107,7 +117,7 @@ class Analytics {
             let nsError = NSError(
                 domain: "WalletConnect Error",
                 code: 0,
-                userInfo: params.firebaseParams
+                userInfo: params.dictionaryParams
             )
             Crashlytics.crashlytics().record(error: nsError)
         } else if let sdkError = error as? TangemSdkError {
@@ -115,7 +125,7 @@ class Analytics {
             let nsError = NSError(
                 domain: "Tangem SDK Error #\(sdkError.code)",
                 code: sdkError.code,
-                userInfo: params.firebaseParams
+                userInfo: params.dictionaryParams
             )
             Crashlytics.crashlytics().record(error: nsError)
         } else if let detailedDescription = (error as? DetailedError)?.detailedDescription {
@@ -123,7 +133,7 @@ class Analytics {
             let nsError = NSError(
                 domain: "DetailedError",
                 code: 1,
-                userInfo: params.firebaseParams
+                userInfo: params.dictionaryParams
             )
             Crashlytics.crashlytics().record(error: nsError)
         } else {
@@ -131,10 +141,50 @@ class Analytics {
         }
     }
 
-    private static func logInternal(
+    private static func assertCanSend(event: Event, limit: EventLimit) -> Bool {
+        guard limit.isLimited else {
+            return true
+        }
+
+        let extraEventId = limit.extraEventId.map { "_\($0)" } ?? ""
+        let eventId = event.rawValue + extraEventId
+
+        var eventIds = analyticsContext.value(forKey: .limitedEvents, scope: limit.contextScope) as? [String] ?? []
+
+        if eventIds.contains(eventId) {
+            return false
+        }
+
+        eventIds.append(eventId)
+        analyticsContext.set(value: eventIds, forKey: .limitedEvents, scope: limit.contextScope)
+        return true
+    }
+
+    private static func logEventInternal(
         _ event: Event,
         params: [ParameterKey: String] = [:],
-        analyticsSystems: [Analytics.AnalyticsSystem] = [.firebase, .appsflyer, .amplitude, .crashlytics]
+        analyticsSystems: [Analytics.AnalyticsSystem] = [.firebase, .amplitude, .crashlytics],
+        limit: Analytics.EventLimit = .unlimited
+    ) {
+        if AppEnvironment.current.isXcodePreview {
+            return
+        }
+
+        guard assertCanSend(event: event, limit: limit) else {
+            return
+        }
+
+        logInternal(
+            event.rawValue,
+            params: params.dictionaryParams,
+            analyticsSystems: analyticsSystems
+        )
+    }
+
+    private static func logInternal(
+        _ event: String,
+        params: [String: Any] = [:],
+        analyticsSystems: [Analytics.AnalyticsSystem]
     ) {
         if AppEnvironment.current.isXcodePreview {
             return
@@ -142,32 +192,26 @@ class Analytics {
 
         var params = params
 
-        if let contextualParams = analyticsContext.contextData?.analyticsParams {
-            params.merge(contextualParams, uniquingKeysWith: { _, new in new })
+        if let contextualParams = analyticsContext.contextData?.analyticsParams.dictionaryParams {
+            params.merge(contextualParams, uniquingKeysWith: { old, _ in old })
         }
-
-        let key = event.rawValue
-        let values = params.firebaseParams
 
         for system in analyticsSystems {
             switch system {
-            case .appsflyer:
-                AppsFlyerLib.shared().logEvent(key, withValues: values)
             case .firebase:
-                FirebaseAnalytics.Analytics.logEvent(key, parameters: values)
+                FirebaseAnalytics.Analytics.logEvent(event, parameters: params)
             case .crashlytics:
-                let message = "\(key).\(values)"
+                let message = "\(event).\(params)"
                 Crashlytics.crashlytics().log(message)
             case .amplitude:
-                let convertedParams = params.reduce(into: [:]) { $0[$1.key.rawValue] = $1.value }
-                Amplitude.instance().logEvent(event.rawValue, withEventProperties: convertedParams)
+                amplitude?.track(eventType: event, eventProperties: params)
             }
         }
 
-        let printableParams: [String: String] = params.reduce(into: [:]) { $0[$1.key.rawValue] = $1.value }
+        let printableParams: [String: String] = params.reduce(into: [:]) { $0[$1.key] = String(describing: $1.value) }
         if let data = try? JSONSerialization.data(withJSONObject: printableParams, options: .sortedKeys),
            let paramsString = String(data: data, encoding: .utf8)?.replacingOccurrences(of: ",\"", with: ", \"") {
-            let logMessage = "Analytics event: \(event.rawValue). Params: \(paramsString)"
+            let logMessage = "Analytics event: \(event). Params: \(paramsString)"
             AppLog.shared.debug(logMessage)
         }
     }
@@ -175,20 +219,19 @@ class Analytics {
 
 // MARK: - Private
 
-fileprivate extension Dictionary where Key == Analytics.ParameterKey, Value == String {
-    var firebaseParams: [String: Any] {
+private extension Dictionary where Key == Analytics.ParameterKey, Value == String {
+    var dictionaryParams: [String: Any] {
         var convertedParams = [String: Any]()
         forEach { convertedParams[$0.key.rawValue] = $0.value }
         return convertedParams
     }
 }
 
-fileprivate extension Analytics.Event {
+private extension Analytics.Event {
     var canBeLoggedDirectly: Bool {
         switch self {
         case .introductionProcessButtonScanCard,
-             .buttonScanCard,
-             .buttonScanNewCard,
+             .buttonScanNewCardSettings,
              .buttonCardSignIn,
              .cardWasScanned,
              .toppedUp,

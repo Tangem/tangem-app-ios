@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-fileprivate func normalize(progress: Double, start: Double, end: Double) -> Double {
+private func normalize(progress: Double, start: Double, end: Double) -> Double {
     let value = (progress - start) / (end - start)
     return max(0, min(value, 1))
 }

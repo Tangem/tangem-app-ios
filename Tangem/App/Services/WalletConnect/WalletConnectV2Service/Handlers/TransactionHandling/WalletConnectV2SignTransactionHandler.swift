@@ -21,11 +21,11 @@ class WalletConnectV2SignTransactionHandler {
 
     init(
         requestParams: AnyCodable,
-        blockchain: Blockchain,
+        blockchainId: String,
         transactionBuilder: WalletConnectEthTransactionBuilder,
         messageComposer: WalletConnectV2MessageComposable,
         signer: TangemSigner,
-        walletModelProvider: WalletConnectV2WalletModelProvider
+        walletModelProvider: WalletConnectWalletModelProvider
     ) throws {
         do {
             let params = try requestParams.get([WalletConnectEthTransaction].self)
@@ -34,7 +34,7 @@ class WalletConnectV2SignTransactionHandler {
             }
 
             self.ethTransaction = ethTransaction
-            walletModel = try walletModelProvider.getModel(with: ethTransaction.from, in: blockchain)
+            walletModel = try walletModelProvider.getModel(with: ethTransaction.from, blockchainId: blockchainId)
         } catch {
             AppLog.shared.error(error)
             throw error
@@ -58,7 +58,7 @@ extension WalletConnectV2SignTransactionHandler: WalletConnectMessageHandler {
     }
 
     func handle() async throws -> RPCResult {
-        guard let ethSigner = walletModel.walletManager as? EthereumTransactionSigner else {
+        guard let ethSigner = walletModel.ethereumTransactionSigner else {
             throw WalletConnectV2Error.missingEthTransactionSigner
         }
 

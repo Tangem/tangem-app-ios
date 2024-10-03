@@ -11,9 +11,11 @@ import Combine
 
 struct SeedPhraseTextView: UIViewRepresentable {
     private unowned var inputProcessor: SeedPhraseInputProcessor
+    private let shouldBecomeFirstResponderAtStart: Bool
 
-    init(inputProcessor: SeedPhraseInputProcessor) {
+    init(inputProcessor: SeedPhraseInputProcessor, shouldBecomeFirstResponderAtStart: Bool) {
         self.inputProcessor = inputProcessor
+        self.shouldBecomeFirstResponderAtStart = shouldBecomeFirstResponderAtStart
     }
 
     func makeUIView(context: UIViewRepresentableContext<SeedPhraseTextView>) -> UITextView {
@@ -51,8 +53,12 @@ struct SeedPhraseTextView: UIViewRepresentable {
         if !toolbarItems.isEmpty {
             let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44))
             toolbar.items = toolbarItems
-            toolbar.tintColor = UIColor(Colors.Button.primary)
+            toolbar.tintColor = UIColor.inputAccessoryViewTintColor
             textView.inputAccessoryView = toolbar
+        }
+
+        if shouldBecomeFirstResponderAtStart {
+            textView.becomeFirstResponder()
         }
 
         return textView
@@ -120,6 +126,9 @@ extension SeedPhraseTextView {
             // If user typed or pasted something we can safely invalidate all previous results
             inputProcessor.resetValidation()
 
+            let isNewLine = text.rangeOfCharacter(from: CharacterSet.newlines) != nil
+            let text = isNewLine ? " " : text
+
             let oldText = textView.text ?? ""
             guard let oldTextRange = Range(range, in: oldText) else {
                 return true
@@ -140,6 +149,9 @@ extension SeedPhraseTextView {
                 return false
             }
 
+            let oldCaretPosition = textView.selectedRange
+            let newCaretPosition = NSRange(location: oldCaretPosition.location + (text.isEmpty ? -1 : text.count), length: 0)
+
             // If removing characters or if it is a letter we should check for suggestion
             // Text will be empty if user removes characters
             var needToClearSuggestions = true
@@ -147,11 +159,9 @@ extension SeedPhraseTextView {
                 // Save caret position and attributed text before inserting new character
                 // to give system ability to manually replace characters and do validation
                 // with debounce after text update.
-                let oldCaretPosition = textView.selectedRange
-                let oldAttributedText = textView.attributedText
 
+                let oldAttributedText = textView.attributedText
                 let textWithNewInput = textView.text.replacingCharacters(in: oldTextRange, with: text)
-                let newCaretPosition = NSRange(location: oldCaretPosition.location + (text.isEmpty ? -1 : text.count), length: 0)
 
                 textView.text = textWithNewInput
                 textView.selectedRange = newCaretPosition
@@ -193,6 +203,15 @@ extension SeedPhraseTextView {
                     .foregroundColor: inputProcessor.defaultTextColor,
                     .font: inputProcessor.defaultTextFont,
                 ]
+            }
+
+            // This need to prevent inserting new lines in text view and saving correct text coloring
+            if isNewLine {
+                let mutableAttrString = NSMutableAttributedString(attributedString: textView.attributedText)
+                mutableAttrString.mutableString.replaceCharacters(in: range, with: text)
+                textView.attributedText = mutableAttrString
+                textView.selectedRange = newCaretPosition
+                return false
             }
 
             return true

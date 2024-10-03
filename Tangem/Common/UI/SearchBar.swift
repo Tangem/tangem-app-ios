@@ -9,6 +9,7 @@
 import Foundation
 import SwiftUI
 import Combine
+import CombineExt
 
 struct SearchBar: UIViewRepresentable {
     @Binding var text: String
@@ -25,7 +26,7 @@ struct SearchBar: UIViewRepresentable {
             super.init()
             cancellable = $inputText
                 .dropFirst()
-                .weakAssign(to: \.text, on: self)
+                .assign(to: \.text, on: self, ownership: .weak)
         }
 
         func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {

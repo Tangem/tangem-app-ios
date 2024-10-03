@@ -7,55 +7,84 @@
 //
 
 import Combine
+import SwiftUI
 import BlockchainSdk
 
 typealias WalletModelId = Int
+
+protocol TokenItemContextActionsProvider: AnyObject {
+    func buildContextActions(for tokenItemViewModel: TokenItemViewModel) -> [TokenContextActionsSection]
+}
+
+protocol TokenItemContextActionDelegate: AnyObject {
+    func didTapContextAction(_ action: TokenActionType, for tokenItemViewModel: TokenItemViewModel)
+}
 
 final class TokenItemViewModel: ObservableObject, Identifiable {
     let id: WalletModelId
 
     @Published var balanceCrypto: LoadableTextView.State = .loading
     @Published var balanceFiat: LoadableTextView.State = .loading
-    @Published var changePercentage: LoadableTextView.State = .noData
-    @Published var missingDerivation: Bool = false
-    @Published var networkUnreachable: Bool = false
+    @Published var priceChangeState: TokenPriceChangeView.State = .loading
+    @Published var tokenPrice: LoadableTextView.State = .loading
     @Published var hasPendingTransactions: Bool = false
+    @Published var contextActionSections: [TokenContextActionsSection] = []
+    @Published var isStaked: Bool = false
+
+    @Published private var missingDerivation: Bool = false
+    @Published private var networkUnreachable: Bool = false
 
     var name: String { tokenIcon.name }
     var imageURL: URL? { tokenIcon.imageURL }
     var blockchainIconName: String? { tokenIcon.blockchainIconName }
+    var hasMonochromeIcon: Bool { networkUnreachable || missingDerivation || isTestnetToken }
+    var isCustom: Bool { tokenIcon.isCustom }
+    var customTokenColor: Color? { tokenIcon.customTokenColor }
+    var tokenItem: TokenItem { infoProvider.tokenItem }
 
-    private let tokenIcon: TokenIconInfo
-    private let amountType: Amount.AmountType
-    private let tokenTapped: (WalletModelId) -> Void
-    private unowned let infoProvider: TokenItemInfoProvider
-    private unowned let priceChangeProvider: PriceChangeProvider
+    var hasError: Bool { missingDerivation || networkUnreachable }
+    var errorMessage: String? {
+        // Don't forget to add check in trailing item in `TokenItemView` when adding new error here
+        if missingDerivation {
+            return Localization.commonNoAddress
+        }
 
-    private let cryptoFormattingOptions: BalanceFormattingOptions
-    private var fiatFormattingOptions: BalanceFormattingOptions {
-        .defaultFiatFormattingOptions
+        if networkUnreachable {
+            return Localization.commonUnreachable
+        }
+
+        return nil
     }
 
+    private let tokenIcon: TokenIconInfo
+    private let isTestnetToken: Bool
+    private let tokenTapped: (WalletModelId) -> Void
+    private let infoProvider: TokenItemInfoProvider
+    private let priceChangeUtility = PriceChangeUtility()
+    private let priceFormatter = TokenItemPriceFormatter()
+
     private var bag = Set<AnyCancellable>()
-    private var balanceUpdateTask: Task<Void, Error>?
+    private weak var contextActionsProvider: TokenItemContextActionsProvider?
+    private weak var contextActionsDelegate: TokenItemContextActionDelegate?
 
     init(
         id: Int,
         tokenIcon: TokenIconInfo,
-        amountType: Amount.AmountType,
-        tokenTapped: @escaping (WalletModelId) -> Void,
+        isTestnetToken: Bool,
         infoProvider: TokenItemInfoProvider,
-        priceChangeProvider: PriceChangeProvider,
-        cryptoFormattingOptions: BalanceFormattingOptions
+        tokenTapped: @escaping (WalletModelId) -> Void,
+        contextActionsProvider: TokenItemContextActionsProvider,
+        contextActionsDelegate: TokenItemContextActionDelegate
     ) {
         self.id = id
         self.tokenIcon = tokenIcon
-        self.amountType = amountType
-        self.tokenTapped = tokenTapped
+        self.isTestnetToken = isTestnetToken
         self.infoProvider = infoProvider
-        self.priceChangeProvider = priceChangeProvider
-        self.cryptoFormattingOptions = cryptoFormattingOptions
+        self.tokenTapped = tokenTapped
+        self.contextActionsProvider = contextActionsProvider
+        self.contextActionsDelegate = contextActionsDelegate
 
+        setupState(infoProvider.tokenItemState)
         bind()
     }
 
@@ -63,88 +92,85 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
         tokenTapped(id)
     }
 
+    func didTapContextAction(_ actionType: TokenActionType) {
+        contextActionsDelegate?.didTapContextAction(actionType, for: self)
+    }
+
     private func bind() {
-        infoProvider.walletStatePublisher
+        infoProvider.tokenItemStatePublisher
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] newState in
+            // We need this debounce to prevent initial sequential state updates that can skip `loading` state
+            .debounce(for: 0.1, scheduler: DispatchQueue.main)
+            .sink(receiveValue: weakify(self, forFunction: TokenItemViewModel.setupState(_:)))
+            .store(in: &bag)
+
+        infoProvider.actionsUpdatePublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                self?.buildContextActions()
+            }
+            .store(in: &bag)
+
+        infoProvider.isStakedPublisher
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] isStaked in
                 guard let self else { return }
-
-                switch newState {
-                case .noDerivation:
-                    self.missingDerivation = true
-                    self.networkUnreachable = false
-                case .failed:
-                    self.missingDerivation = false
-                    self.networkUnreachable = true
-                case .noAccount(let message):
-                    self.balanceCrypto = .loaded(text: message)
-                    fallthrough
-                case .created:
-                    self.missingDerivation = false
-                    self.networkUnreachable = false
-                case .idle:
-                    self.missingDerivation = false
-                    self.networkUnreachable = false
-                    self.updateBalances()
-                case .loading:
-                    break
-                }
-            }
-            .store(in: &bag)
-
-        infoProvider.pendingTransactionPublisher
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] id, hasPendingTransactions in
-                guard self?.id == id else {
-                    return
-                }
-
-                self?.hasPendingTransactions = hasPendingTransactions
-            }
-            .store(in: &bag)
-
-        priceChangeProvider.priceChangePublisher
-            .receive(on: DispatchQueue.main)
-            .compactMap { [weak self] _ -> String? in
-                guard let self else { return nil }
-
-                // TODO: https://tangem.atlassian.net/browse/IOS-3525
-                // An API has not been provided and also not all states was described in design.
-                // To be added after implementation on the backend and design update
-                return " "
-            }
-            .sink { [weak self] priceChange in
-                self?.changePercentage = .loaded(text: priceChange)
-            }
+                self.isStaked = isStaked
+                // balances may be updated on changing staking state
+                setupState(infoProvider.tokenItemState)
+            })
             .store(in: &bag)
     }
 
-    private func updateBalances() {
-        let formatter = BalanceFormatter()
-        let balance = infoProvider.balance(for: amountType)
-        let formattedBalance = formatter.formatCryptoBalance(balance, formattingOptions: cryptoFormattingOptions)
-        balanceCrypto = .loaded(text: formattedBalance)
-
-        balanceUpdateTask?.cancel()
-        balanceUpdateTask = Task { [weak self] in
-            guard let self else { return }
-
-            let formattedFiat: String
-            do {
-                let fiatBalance = try await BalanceConverter().convertToFiat(
-                    value: balance,
-                    from: cryptoFormattingOptions.currencyCode,
-                    to: self.fiatFormattingOptions.currencyCode
-                )
-                formattedFiat = formatter.formatFiatBalance(fiatBalance, formattingOptions: self.fiatFormattingOptions)
-            } catch {
-                formattedFiat = "-"
-            }
-
-            try Task.checkCancellation()
-            await MainActor.run {
-                self.balanceFiat = .loaded(text: formattedFiat)
-            }
+    private func setupState(_ state: TokenItemViewState) {
+        switch state {
+        case .noDerivation:
+            missingDerivation = true
+            networkUnreachable = false
+            updateBalances()
+            updatePriceChange()
+        case .networkError:
+            missingDerivation = false
+            networkUnreachable = true
+        case .notLoaded:
+            missingDerivation = false
+            networkUnreachable = false
+        case .loaded, .noAccount:
+            missingDerivation = false
+            networkUnreachable = false
+            updateBalances()
+            updatePriceChange()
+        case .loading:
+            break
         }
+
+        updatePendingTransactionsStateIfNeeded()
+        buildContextActions()
+    }
+
+    private func updatePendingTransactionsStateIfNeeded() {
+        hasPendingTransactions = infoProvider.hasPendingTransactions
+    }
+
+    private func updateBalances() {
+        balanceCrypto = .loaded(text: infoProvider.balance)
+        balanceFiat = .loaded(text: infoProvider.fiatBalance)
+    }
+
+    private func updatePriceChange() {
+        guard let quote = infoProvider.quote else {
+            tokenPrice = .noData
+            priceChangeState = .empty
+            return
+        }
+
+        priceChangeState = priceChangeUtility.convertToPriceChangeState(changePercent: quote.priceChange24h)
+
+        let priceText = priceFormatter.formatPrice(quote.price)
+        tokenPrice = .loaded(text: priceText)
+    }
+
+    private func buildContextActions() {
+        contextActionSections = contextActionsProvider?.buildContextActions(for: self) ?? []
     }
 }

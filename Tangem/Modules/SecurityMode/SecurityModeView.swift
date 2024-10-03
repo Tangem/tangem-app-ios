@@ -17,13 +17,11 @@ struct SecurityModeView: View {
             Colors.Background.secondary.edgesIgnoringSafeArea(.all)
 
             GroupedScrollView {
-                SelectableGropedSection(
-                    viewModel.securityViewModels,
-                    selection: $viewModel.currentSecurityOption
-                ) {
-                    DefaultSelectableRowView(viewModel: $0)
+                GroupedSection(viewModel.securityViewModels) {
+                    DefaultSelectableRowView(data: $0, selection: $viewModel.currentSecurityOption)
                 }
             }
+            .interContentPadding(8)
 
             actionButton
         }
@@ -47,7 +45,7 @@ struct SecurityModeView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             SecurityModeView(viewModel: .init(
-                cardModel: PreviewCard.tangemWalletEmpty.cardModel,
+                securityOptionChangeInteractor: SecurityOptionChangingMock(),
                 coordinator: SecurityModeCoordinator()
             ))
         }

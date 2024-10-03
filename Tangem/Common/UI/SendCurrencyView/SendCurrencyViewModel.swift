@@ -7,81 +7,30 @@
 //
 
 import Foundation
+import Combine
 
-struct SendCurrencyViewModel: Identifiable {
-    var id: Int { hashValue }
-
-    // ViewState
-    private(set) var maximumFractionDigits: Int
-    private(set) var canChangeCurrency: Bool
-    private(set) var balance: State
-    private(set) var fiatValue: State
-
-    let tokenIcon: SwappingTokenIconViewModel
-
-    var balanceString: String {
-        let balance = balance.value ?? 0
-        return Localization.commonBalance(balance.groupedFormatted())
-    }
-
-    var fiatValueString: String {
-        let fiatValue = fiatValue.value ?? 0
-        return fiatValue.currencyFormatted(code: AppSettings.shared.selectedCurrencyCode)
-    }
+class SendCurrencyViewModel: ObservableObject, Identifiable {
+    @Published private(set) var expressCurrencyViewModel: ExpressCurrencyViewModel
+    @Published private(set) var decimalNumberTextFieldViewModel: DecimalNumberTextField.ViewModel
 
     init(
-        balance: State,
-        fiatValue: State,
-        maximumFractionDigits: Int,
-        canChangeCurrency: Bool,
-        tokenIcon: SwappingTokenIconViewModel
+        expressCurrencyViewModel: ExpressCurrencyViewModel,
+        decimalNumberTextFieldViewModel: DecimalNumberTextField.ViewModel
     ) {
-        self.balance = balance
-        self.fiatValue = fiatValue
-        self.maximumFractionDigits = maximumFractionDigits
-        self.canChangeCurrency = canChangeCurrency
-        self.tokenIcon = tokenIcon
+        self.expressCurrencyViewModel = expressCurrencyViewModel
+        self.decimalNumberTextFieldViewModel = decimalNumberTextFieldViewModel
     }
 
     func textFieldDidTapped() {
         Analytics.log(.swapSendTokenBalanceClicked)
     }
 
-    mutating func update(balance: State) {
-        self.balance = balance
+    func update(wallet: WalletModel, initialWalletId: Int) {
+        expressCurrencyViewModel.update(wallet: .loaded(wallet), initialWalletId: initialWalletId)
+        decimalNumberTextFieldViewModel.update(maximumFractionDigits: wallet.decimalCount)
     }
 
-    mutating func update(fiatValue: State) {
-        self.fiatValue = fiatValue
-    }
-
-    mutating func update(maximumFractionDigits: Int) {
-        self.maximumFractionDigits = maximumFractionDigits
-    }
-}
-
-extension SendCurrencyViewModel {
-    enum State: Hashable {
-        case loading
-        case loaded(_ value: Decimal)
-
-        var value: Decimal? {
-            switch self {
-            case .loaded(let value):
-                return value
-            default:
-                return nil
-            }
-        }
-    }
-}
-
-extension SendCurrencyViewModel: Hashable {
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(balance)
-        hasher.combine(fiatValue)
-        hasher.combine(maximumFractionDigits)
-        hasher.combine(canChangeCurrency)
-        hasher.combine(tokenIcon)
+    func updateSendFiatValue(amount: Decimal?, tokenItem: TokenItem) {
+        expressCurrencyViewModel.updateFiatValue(expectAmount: amount, tokenItem: tokenItem)
     }
 }

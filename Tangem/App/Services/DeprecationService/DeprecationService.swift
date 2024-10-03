@@ -9,12 +9,12 @@
 import UIKit
 
 class DeprecationService {
-    private let firstSupportedSystemVersion = "14.5"
+    private let firstSupportedSystemVersion = "15.0"
     private let systemVersion = UIDevice.current.systemVersion
 
     private let daysBetweenWarnings = 7
-    private let permanentSystemDeprecationWarningDate = DateComponents(calendar: Calendar(identifier: .gregorian), year: 2023, month: 2, day: 15).date!
-    private let systemDeprecationDate = DateComponents(calendar: Calendar(identifier: .gregorian), year: 2023, month: 4, day: 1).date!
+    private let permanentSystemDeprecationWarningDate = DateComponents(calendar: Calendar(identifier: .gregorian), year: 2024, month: 1, day: 1).date!
+    private let systemDeprecationDate = DateComponents(calendar: Calendar(identifier: .gregorian), year: 2024, month: 2, day: 1).date!
 
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()

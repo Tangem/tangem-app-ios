@@ -11,22 +11,31 @@ import Combine
 import TangemSdk
 
 class WelcomeCoordinator: CoordinatorObject {
-    var dismissAction: Action
-    var popToRootAction: ParamsAction<PopToRootOptions>
+    var dismissAction: Action<Void>
+    var popToRootAction: Action<PopToRootOptions>
+
+    var isNavigationBarHidden: Bool {
+        viewState?.isMain == false
+    }
+
+    // MARK: - Dependencies
+
+    @Injected(\.safariManager) private var safariManager: SafariManager
+    @Injected(\.pushNotificationsInteractor) private var pushNotificationsInteractor: PushNotificationsInteractor
 
     // MARK: - Main view model
 
-    @Published private(set) var welcomeViewModel: WelcomeViewModel? = nil
+    @Published private(set) var viewState: ViewState? = nil
 
     // MARK: - Child coordinators
 
-    @Published var mainCoordinator: LegacyMainCoordinator? = nil
     @Published var pushedOnboardingCoordinator: OnboardingCoordinator? = nil
-    @Published var shopCoordinator: ShopCoordinator? = nil
-    @Published var tokenListCoordinator: TokenListCoordinator? = nil
+    @Published var promotionCoordinator: PromotionCoordinator? = nil
+    @Published var welcomeOnboardingCoordinator: WelcomeOnboardingCoordinator? = nil
 
     // MARK: - Child view models
 
+    @Published var searchTokensViewModel: WelcomeSearchTokensViewModel? = nil
     @Published var mailViewModel: MailViewModel? = nil
 
     // MARK: - Private
@@ -34,24 +43,26 @@ class WelcomeCoordinator: CoordinatorObject {
     private var welcomeLifecycleSubscription: AnyCancellable?
 
     private var lifecyclePublisher: AnyPublisher<Bool, Never> {
-        // Only modals, because the modal presentation will not trigger onAppear/onDissapear events
+        // Only modals, because the modal presentation will not trigger onAppear/onDisappear events
         var publishers: [AnyPublisher<Bool, Never>] = []
         publishers.append($mailViewModel.dropFirst().map { $0 == nil }.eraseToAnyPublisher())
-        publishers.append($shopCoordinator.dropFirst().map { $0 == nil }.eraseToAnyPublisher())
-        publishers.append($tokenListCoordinator.dropFirst().map { $0 == nil }.eraseToAnyPublisher())
+        publishers.append($searchTokensViewModel.dropFirst().map { $0 == nil }.eraseToAnyPublisher())
+        publishers.append($promotionCoordinator.dropFirst().map { $0 == nil }.eraseToAnyPublisher())
+        publishers.append($welcomeOnboardingCoordinator.dropFirst().map { $0 == nil }.eraseToAnyPublisher())
 
         return Publishers.MergeMany(publishers)
             .eraseToAnyPublisher()
     }
 
-    required init(dismissAction: @escaping Action, popToRootAction: @escaping ParamsAction<PopToRootOptions>) {
+    required init(dismissAction: @escaping Action<Void>, popToRootAction: @escaping Action<PopToRootOptions>) {
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
     }
 
     func start(with options: WelcomeCoordinator.Options) {
-        welcomeViewModel = .init(shouldScanOnAppear: options.shouldScan, coordinator: self)
+        viewState = .welcome(WelcomeViewModel(shouldScanOnAppear: options.shouldScan, coordinator: self))
         subscribeToWelcomeLifecycle()
+        showWelcomeOnboardingIfNeeded()
     }
 
     private func subscribeToWelcomeLifecycle() {
@@ -60,13 +71,34 @@ class WelcomeCoordinator: CoordinatorObject {
                 guard let self else { return }
 
                 if viewDismissed {
-                    self.welcomeViewModel?.becomeActive()
+                    viewState?.welcomeViewModel?.becomeActive()
                 } else {
-                    self.welcomeViewModel?.resignActve()
+                    viewState?.welcomeViewModel?.resignActive()
                 }
             }
     }
+
+    private func showWelcomeOnboardingIfNeeded() {
+        let factory = PushNotificationsHelpersFactory()
+        let availabilityProvider = factory.makeAvailabilityProviderForWelcomeOnboarding(using: pushNotificationsInteractor)
+        let permissionManager = factory.makePermissionManagerForWelcomeOnboarding(using: pushNotificationsInteractor)
+        let builder = WelcomeOnboardingStepsBuilder(isPushNotificationsAvailable: availabilityProvider.isAvailable)
+        let steps = builder.buildSteps()
+        guard !steps.isEmpty else {
+            return
+        }
+
+        let dismissAction: Action<WelcomeOnboardingCoordinator.OutputOptions> = { [weak self] _ in
+            self?.welcomeOnboardingCoordinator = nil
+        }
+
+        let coordinator = WelcomeOnboardingCoordinator(dismissAction: dismissAction)
+        coordinator.start(with: .init(steps: steps, pushNotificationsPermissionManager: permissionManager))
+        welcomeOnboardingCoordinator = coordinator
+    }
 }
+
+// MARK: - Options
 
 extension WelcomeCoordinator {
     struct Options {
@@ -74,9 +106,11 @@ extension WelcomeCoordinator {
     }
 }
 
+// MARK: - WelcomeRoutable
+
 extension WelcomeCoordinator: WelcomeRoutable {
     func openOnboarding(with input: OnboardingInput) {
-        let dismissAction: Action = { [weak self] in
+        let dismissAction: Action<OnboardingCoordinator.OutputOptions> = { [weak self] _ in
             self?.pushedOnboardingCoordinator = nil
         }
 
@@ -84,14 +118,13 @@ extension WelcomeCoordinator: WelcomeRoutable {
         let options = OnboardingCoordinator.Options(input: input, destination: .main)
         coordinator.start(with: options)
         pushedOnboardingCoordinator = coordinator
-        Analytics.log(.onboardingStarted)
     }
 
-    func openMain(with cardModel: CardViewModel) {
-        let coordinator = LegacyMainCoordinator(popToRootAction: popToRootAction)
-        let options = LegacyMainCoordinator.Options(cardModel: cardModel)
+    func openMain(with userWalletModel: UserWalletModel) {
+        let coordinator = MainCoordinator(popToRootAction: popToRootAction)
+        let options = MainCoordinator.Options(userWalletModel: userWalletModel)
         coordinator.start(with: options)
-        mainCoordinator = coordinator
+        viewState = .main(coordinator)
     }
 
     func openMail(with dataCollector: EmailDataCollector, recipient: String) {
@@ -99,18 +132,58 @@ extension WelcomeCoordinator: WelcomeRoutable {
         mailViewModel = MailViewModel(logsComposer: logsComposer, recipient: recipient, emailType: .failedToScanCard)
     }
 
-    func openTokensList() {
-        let dismissAction: Action = { [weak self] in
-            self?.tokenListCoordinator = nil
+    func openPromotion() {
+        let dismissAction: Action<Void> = { [weak self] _ in
+            self?.promotionCoordinator = nil
         }
-        let coordinator = TokenListCoordinator(dismissAction: dismissAction)
-        coordinator.start(with: .show)
-        tokenListCoordinator = coordinator
+
+        let coordinator = PromotionCoordinator(dismissAction: dismissAction)
+        coordinator.start(with: .newUser)
+        promotionCoordinator = coordinator
+    }
+
+    func openTokensList() {
+        searchTokensViewModel = .init()
     }
 
     func openShop() {
-        let coordinator = ShopCoordinator()
-        coordinator.start()
-        shopCoordinator = coordinator
+        Analytics.log(.shopScreenOpened)
+        safariManager.openURL(AppConstants.webShopUrl)
+    }
+
+    func openScanCardManual() {
+        safariManager.openURL(TangemBlogUrlBuilder().url(post: .scanCard))
+    }
+}
+
+// MARK: ViewState
+
+extension WelcomeCoordinator {
+    enum ViewState: Equatable {
+        case welcome(WelcomeViewModel)
+        case main(MainCoordinator)
+
+        var isMain: Bool {
+            if case .main = self {
+                return true
+            }
+            return false
+        }
+
+        var welcomeViewModel: WelcomeViewModel? {
+            if case .welcome(let viewModel) = self {
+                return viewModel
+            }
+            return nil
+        }
+
+        static func == (lhs: WelcomeCoordinator.ViewState, rhs: WelcomeCoordinator.ViewState) -> Bool {
+            switch (lhs, rhs) {
+            case (.welcome, .welcome), (.main, .main):
+                return true
+            default:
+                return false
+            }
+        }
     }
 }

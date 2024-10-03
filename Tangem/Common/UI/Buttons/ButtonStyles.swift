@@ -88,26 +88,22 @@ enum ButtonColorStyle {
     case black
     case gray
     case transparentWhite
-    case grayAlt
-    case grayAlt2
     case grayAlt3
 
     #warning("TODO: add all buttons styles properly")
     var bgColor: Color {
         switch self {
-        case .black: return .tangemGrayDark6
-        case .gray: return .tangemGrayLight4
+        case .black: return Colors.Old.tangemGrayDark6
+        case .gray: return Colors.Button.secondary
         case .transparentWhite: return .clear
-        case .grayAlt: return .tangemBgGray
-        case .grayAlt2: return .tangemBgGray3
         case .grayAlt3: return Colors.Button.secondary
         }
     }
 
     var bgPressedColor: Color {
         switch self {
-        case .black: return .tangemGrayDark5
-        case .gray, .grayAlt, .grayAlt2: return .tangemGrayDark
+        case .black: return Colors.Old.tangemGrayDark5
+        case .gray: return Colors.Old.tangemGrayDark
         case .transparentWhite: return .clear
         case .grayAlt3: return Colors.Button.secondary
         }
@@ -115,15 +111,17 @@ enum ButtonColorStyle {
 
     var fgColor: Color {
         switch self {
-        case .transparentWhite, .grayAlt, .grayAlt2, .grayAlt3: return .tangemGrayDark6
-        default: return .white
+        case .gray:
+            return Colors.Text.primary1
+        case .transparentWhite, .grayAlt3: return Colors.Old.tangemGrayDark6
+        default: return Colors.Old.tangemBg
         }
     }
 
     var fgPressedColor: Color {
         switch self {
         case .transparentWhite:
-            return .tangemGrayDark3
+            return Colors.Old.tangemGrayDark3
         default:
             return fgColor
         }
@@ -131,8 +129,8 @@ enum ButtonColorStyle {
 
     var indicatorColor: UIColor {
         switch self {
-        case .transparentWhite, .grayAlt, .grayAlt2, .grayAlt3: return .tangemGrayDark6
-        default: return .white
+        case .transparentWhite, .grayAlt3: return .tangemGrayDark6
+        default: return .tangemBg
         }
     }
 }
@@ -261,7 +259,7 @@ struct ButtonStyles_Previews: PreviewProvider {
 
             Button(action: {}) { Text("Go to shop") }
                 .buttonStyle(TangemButtonStyle(
-                    colorStyle: .grayAlt,
+                    colorStyle: .grayAlt3,
                     layout: .flexibleWidth,
                     font: .system(size: 18)
                 ))
@@ -272,6 +270,6 @@ struct ButtonStyles_Previews: PreviewProvider {
 struct TangemTokenButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .background(configuration.isPressed ? Color.tangemHoverButton : Color.white)
+            .background(configuration.isPressed ? Colors.Old.tangemBtnHoverBg : Color.white)
     }
 }

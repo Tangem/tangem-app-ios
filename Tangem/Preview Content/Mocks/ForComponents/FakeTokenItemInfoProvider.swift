@@ -10,146 +10,61 @@ import Foundation
 import Combine
 import BlockchainSdk
 
-class FakeTokenItemInfoProvider: TokenItemInfoProvider, PriceChangeProvider, ObservableObject {
-    var walletStatePublisher: AnyPublisher<WalletModel.State, Never> { walletStateSubject.eraseToAnyPublisher() }
-    var priceChangePublisher: AnyPublisher<Void, Never> { priceChangedSubject.eraseToAnyPublisher() }
-    var pendingTransactionPublisher: AnyPublisher<(WalletModelId, Bool), Never> { pendingTransactionNotifier.eraseToAnyPublisher() }
-
-    let walletStateSubject = CurrentValueSubject<WalletModel.State, Never>(.created)
+class FakeTokenItemInfoProvider: ObservableObject {
     let pendingTransactionNotifier = PassthroughSubject<(WalletModelId, Bool), Never>()
-
-    let priceChangedSubject = PassthroughSubject<Void, Never>()
-    let blockchain = Blockchain.ethereum(testnet: false)
 
     private var amountsIndex = 0
     private var previouslyTappedModelId: Int?
     private var bag = Set<AnyCancellable>()
 
-    private(set) lazy var viewModels: [TokenItemViewModel] = {
-        [
-            .init(
-                id: makeId(for: amounts[amountsIndex][.coin]!),
-                tokenIcon: coinInfo,
-                amountType: .coin,
+    var hasPendingTransactions: Bool { false }
+
+    private(set) var viewModels: [TokenItemViewModel] = []
+
+    private var walletModels: [WalletModel] = []
+
+    init(walletManagers: [FakeWalletManager]) {
+        walletModels = walletManagers.flatMap { $0.walletModels }
+        viewModels = walletModels.map { walletModel in
+            TokenItemViewModel(
+                id: walletModel.id,
+                tokenIcon: makeTokenIconInfo(for: walletModel),
+                isTestnetToken: walletModel.blockchainNetwork.blockchain.isTestnet,
+                infoProvider: DefaultTokenItemInfoProvider(walletModel: walletModel),
                 tokenTapped: modelTapped(with:),
-                infoProvider: self,
-                priceChangeProvider: self,
-                cryptoFormattingOptions: .makeDefaultCryptoFormattingOptions(for: blockchain.currencySymbol)
-            ),
-            .init(
-                id: makeId(for: amounts[amountsIndex][.token(value: wxDaiToken)]!),
-                tokenIcon: makeTokenIconInfo(for: wxDaiToken),
-                amountType: .token(value: wxDaiToken),
-                tokenTapped: modelTapped(with:),
-                infoProvider: self,
-                priceChangeProvider: self,
-                cryptoFormattingOptions: .makeDefaultCryptoFormattingOptions(for: wxDaiToken.symbol)
-            ),
-            .init(
-                id: makeId(for: amounts[amountsIndex][.token(value: tetherToken)]!),
-                tokenIcon: makeTokenIconInfo(for: tetherToken),
-                amountType: .token(value: tetherToken),
-                tokenTapped: modelTapped(with:),
-                infoProvider: self,
-                priceChangeProvider: self,
-                cryptoFormattingOptions: .makeDefaultCryptoFormattingOptions(for: tetherToken.symbol)
-            ),
-        ]
-    }()
-
-    private var coinInfo: TokenIconInfo {
-        TokenIconInfoBuilder()
-            .build(for: .coin, in: blockchain)
-    }
-
-    private var wxDaiToken: Token {
-        Token(
-            name: "Wrapped XDAI",
-            symbol: "WXDAI",
-            contractAddress: "0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d",
-            decimalCount: 18,
-            id: "wrapped-xdai"
-        )
-    }
-
-    private var tetherToken: Token {
-        Token(
-            name: "Tether",
-            symbol: "USDT",
-            contractAddress: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
-            decimalCount: 18,
-            id: "tether"
-        )
-    }
-
-    private lazy var amounts: [[Amount.AmountType: Amount]] = [
-        [
-            .coin: .init(with: .ethereum(testnet: false), value: 5),
-            .token(value: wxDaiToken): .init(with: wxDaiToken, value: 150),
-            .token(value: tetherToken): .init(with: tetherToken, value: 0.000005),
-        ],
-        [
-            .coin: .init(with: .ethereum(testnet: false), value: 59),
-            .token(value: wxDaiToken): .init(with: wxDaiToken, value: 10),
-            .token(value: tetherToken): .init(with: tetherToken, value: 6.0000000005),
-        ],
-    ]
-
-    func balance(for amountType: BlockchainSdk.Amount.AmountType) -> Decimal {
-        amounts[amountsIndex][amountType]?.value ?? 0
-    }
-
-    func change(for currencyCode: String, in blockchain: BlockchainSdk.Blockchain) -> Double {
-        0
+                contextActionsProvider: self,
+                contextActionsDelegate: self
+            )
+        }
     }
 
     func modelTapped(with id: Int) {
-        if let previouslyTappedModelId = previouslyTappedModelId {
-            pendingTransactionNotifier.send((previouslyTappedModelId, false))
+        guard let tappedWalletManager = walletModels.first(where: { $0.id == id }) else {
+            return
         }
-
-        if previouslyTappedModelId != id {
-            previouslyTappedModelId = id
-            pendingTransactionNotifier.send((id, true))
-        } else {
-            previouslyTappedModelId = nil
-            walletStateSubject.send(.loading)
-        }
-
-        switch walletStateSubject.value {
-        case .created:
-            walletStateSubject.send(.loading)
-        case .loading:
-            let index = viewModels.firstIndex(where: { $0.id == id })
-            switch index {
-            case 0:
-                amountsIndex = amountsIndex == 0 ? 1 : 0
-                walletStateSubject.send(.idle)
-            case 1:
-                walletStateSubject.send(.failed(error: "Failed i failed, che eshe tut skazat?.."))
-            default:
-                walletStateSubject.send(.noDerivation)
+        print("Tapped wallet model: \(tappedWalletManager)")
+        var updateSubscription: AnyCancellable?
+        updateSubscription = tappedWalletManager.update(silent: true)
+            .sink { newState in
+                print("Receive new state \(newState) for \(tappedWalletManager)")
+                withExtendedLifetime(updateSubscription) {}
             }
-        case .idle:
-            walletStateSubject.send(.loading)
-        case .noDerivation:
-            walletStateSubject.send(.noAccount(message: "You need to topup account to use it"))
-        case .noAccount:
-            walletStateSubject.send(.created)
-        case .failed:
-            walletStateSubject.send(.loading)
-        }
     }
 
-    private func makeTokenIconInfo(for token: Token) -> TokenIconInfo {
+    private func makeTokenIconInfo(for walletModel: WalletModel) -> TokenIconInfo {
         return TokenIconInfoBuilder()
-            .build(for: .token(value: token), in: blockchain)
+            .build(
+                for: walletModel.tokenItem.amountType,
+                in: walletModel.blockchainNetwork.blockchain,
+                isCustom: walletModel.isCustom
+            )
+    }
+}
+
+extension FakeTokenItemInfoProvider: TokenItemContextActionsProvider, TokenItemContextActionDelegate {
+    func buildContextActions(for tokenItemViewModel: TokenItemViewModel) -> [TokenContextActionsSection] {
+        [.init(items: [.copyAddress, .hide])]
     }
 
-    private func makeId(for amount: Amount) -> Int {
-        var hasher = Hasher()
-        hasher.combine(amount.type)
-        hasher.combine(amount.currencySymbol)
-        return hasher.finalize()
-    }
+    func didTapContextAction(_ action: TokenActionType, for tokenItemViewModel: TokenItemViewModel) {}
 }

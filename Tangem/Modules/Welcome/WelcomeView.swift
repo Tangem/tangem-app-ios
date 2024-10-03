@@ -14,14 +14,16 @@ struct WelcomeView: View {
     var body: some View {
         storiesView
             .alert(item: $viewModel.error, content: { $0.alert })
+            .environment(\.colorScheme, .dark)
             .onAppear(perform: viewModel.onAppear)
-            .onDidAppear(viewModel.onDidAppear)
+            .onDidAppear(perform: viewModel.onDidAppear)
             .onDisappear(perform: viewModel.onDisappear)
             .background(
                 ScanTroubleshootingView(
                     isPresented: $viewModel.showTroubleshootingView,
                     tryAgainAction: viewModel.tryAgain,
-                    requestSupportAction: viewModel.requestSupport
+                    requestSupportAction: viewModel.requestSupport,
+                    openScanCardManualAction: viewModel.openScanCardManual
                 )
             )
     }
@@ -33,12 +35,11 @@ struct WelcomeView: View {
                     isScanning: $viewModel.isScanningCard,
                     scanCard: viewModel.scanCardTapped,
                     orderCard: viewModel.orderCard,
+                    openPromotion: viewModel.openPromotion,
                     searchTokens: viewModel.openTokensList
                 )
             }
         }
-        .statusBar(hidden: true)
-        .environment(\.colorScheme, viewModel.storiesModel.currentPage.colorScheme)
     }
 }
 

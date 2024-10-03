@@ -57,11 +57,13 @@ class SeedPhraseInputProcessor {
     }
 
     func prepare(copiedText: String) -> NSAttributedString {
+        // Replace all new lines before trying to create mnemonic, because new line is not a valid separator
+        let textToParse = copiedText.components(separatedBy: CharacterSet.newlines).joined(separator: " ")
         do {
-            let mnemonic = try Mnemonic(with: copiedText)
+            let mnemonic = try Mnemonic(with: textToParse)
             return processInput(words: mnemonic.mnemonicComponents).attributedText
         } catch {
-            let parsed = parse(input: copiedText)
+            let parsed = parse(input: textToParse)
             return processInput(words: parsed).attributedText
         }
     }
@@ -133,7 +135,7 @@ class SeedPhraseInputProcessor {
         }
 
         switch mnemonicError {
-        case .invalidEntropyLength, .invalidWordCount, .invalidWordsFile, .mnenmonicCreationFailed, .normalizationFailed, .wrongWordCount:
+        case .invalidEntropyLength, .invalidWordCount, .invalidWordsFile, .mnenmonicCreationFailed, .normalizationFailed, .wrongWordCount, .invalidMnemonic:
             inputError = nil
         case .invalidCheksum:
             inputError = Localization.onboardingSeedMnemonicInvalidChecksum

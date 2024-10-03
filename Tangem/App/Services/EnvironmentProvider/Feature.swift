@@ -9,45 +9,33 @@
 import Foundation
 
 enum Feature: String, Hashable, CaseIterable {
-    case exchange
-    case walletConnectV2
-    case importSeedPhrase
-    case accessCodeRecoverySettings
     case disableFirmwareVersionLimit
-    case abilityChooseCommissionRate
-    case abilityChooseApproveAmount
     case learnToEarn
+    case markets
+    case dynamicFonts
 
     var name: String {
         switch self {
-        case .exchange: return "Exchange"
-        case .walletConnectV2: return "WalletConnect V2"
-        case .importSeedPhrase: return "Import seed phrase (Firmware 6.11 and above)"
-        case .accessCodeRecoverySettings: return "Access Code Recovery Settings"
         case .disableFirmwareVersionLimit: return "Disable firmware version limit"
-        case .abilityChooseCommissionRate: return "Ability Choose Commission Rate"
-        case .abilityChooseApproveAmount: return "Ability Choose Approve Amount"
         case .learnToEarn: return "Learn to Earn"
+        case .markets: return "Markets"
+        case .dynamicFonts: return "Dynamic fonts"
         }
     }
 
     var releaseVersion: ReleaseVersion {
         switch self {
-        case .exchange: return .version("4.2")
-        case .walletConnectV2: return .unspecified
-        case .importSeedPhrase: return .unspecified
-        case .accessCodeRecoverySettings: return .unspecified
         case .disableFirmwareVersionLimit: return .unspecified
-        case .abilityChooseCommissionRate: return .version("4.6")
-        case .abilityChooseApproveAmount: return .version("4.6")
         case .learnToEarn: return .unspecified
+        case .markets: return .version("5.15")
+        case .dynamicFonts: return .unspecified
         }
     }
 }
 
 extension Feature {
     enum ReleaseVersion: Hashable {
-        /// This case is for an unterminated release date
+        /// This case is for an undetermined release date
         case unspecified
 
         /// Version in the format "1.1.0" or "1.2"

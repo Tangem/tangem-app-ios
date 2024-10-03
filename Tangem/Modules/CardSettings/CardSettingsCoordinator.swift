@@ -9,8 +9,14 @@
 import Foundation
 
 class CardSettingsCoordinator: CoordinatorObject {
-    let dismissAction: Action
-    let popToRootAction: ParamsAction<PopToRootOptions>
+    // MARK: - Dependencies
+
+    let dismissAction: Action<Void>
+    let popToRootAction: Action<PopToRootOptions>
+
+    // MARK: - Injected
+
+    @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
 
     // MARK: - Main view model
 
@@ -30,47 +36,53 @@ class CardSettingsCoordinator: CoordinatorObject {
 
     @Published var modalOnboardingCoordinatorKeeper: Bool = false
 
-    required init(dismissAction: @escaping Action, popToRootAction: @escaping ParamsAction<PopToRootOptions>) {
+    required init(dismissAction: @escaping Action<Void>, popToRootAction: @escaping Action<PopToRootOptions>) {
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
     }
 
     func start(with options: Options) {
         cardSettingsViewModel = CardSettingsViewModel(
-            cardModel: options.cardModel,
+            input: options.input,
             coordinator: self
         )
     }
 }
 
+// MARK: - Options
+
 extension CardSettingsCoordinator {
     struct Options {
-        let cardModel: CardViewModel
+        let input: CardSettingsViewModel.Input
     }
 }
 
 // MARK: - CardSettingsRoutable
 
 extension CardSettingsCoordinator: CardSettingsRoutable {
-    func openOnboarding(with input: OnboardingInput, hasOtherCards: Bool) {
-        let dismissAction: Action = { [weak self] in
+    func openOnboarding(with input: OnboardingInput) {
+        let dismissAction: Action<OnboardingCoordinator.OutputOptions> = { [weak self] _ in
             self?.modalOnboardingCoordinator = nil
         }
 
-        let popToMainAction: ParamsAction<PopToRootOptions> = { [weak self] _ in
+        let popToMainAction: Action<PopToRootOptions> = { [weak self] _ in
             self?.modalOnboardingCoordinator = nil
             self?.dismiss()
         }
 
-        let coordinator = OnboardingCoordinator(dismissAction: dismissAction, popToRootAction: hasOtherCards ? popToMainAction : popToRootAction)
+        let hasOtherCards = AppSettings.shared.saveUserWallets && userWalletRepository.models.count > 1
+        let coordinator = OnboardingCoordinator(
+            dismissAction: dismissAction,
+            popToRootAction: hasOtherCards ? popToMainAction : popToRootAction
+        )
         let options = OnboardingCoordinator.Options(input: input, destination: .root)
         coordinator.start(with: options)
         modalOnboardingCoordinator = coordinator
     }
 
-    func openSecurityMode(cardModel: CardViewModel) {
+    func openSecurityMode(with securityOptionChangeInteractor: SecurityOptionChanging) {
         let coordinator = SecurityModeCoordinator(popToRootAction: popToRootAction)
-        let options = SecurityModeCoordinator.Options(cardModel: cardModel)
+        let options = SecurityModeCoordinator.Options(securityOptionChangeInteractor: securityOptionChangeInteractor)
         coordinator.start(with: options)
         securityManagementCoordinator = coordinator
     }
@@ -83,15 +95,19 @@ extension CardSettingsCoordinator: CardSettingsRoutable {
         )
     }
 
-    func openAccessCodeRecoverySettings(using provider: AccessCodeRecoverySettingsProvider) {
-        accessCodeRecoverySettingsViewModel = .init(settingsProvider: provider)
+    func openAccessCodeRecoverySettings(with recoveryInteractor: UserCodeRecovering) {
+        accessCodeRecoverySettingsViewModel = .init(with: recoveryInteractor)
     }
 }
 
 // MARK: - ResetToFactoryViewRoutable
 
 extension CardSettingsCoordinator: ResetToFactoryViewRoutable {
-    func didResetCard() {
-        cardSettingsViewModel?.didResetCard()
+    func dismiss() {
+        if userWalletRepository.selectedModel == nil {
+            popToRoot()
+        } else {
+            dismissAction(())
+        }
     }
 }

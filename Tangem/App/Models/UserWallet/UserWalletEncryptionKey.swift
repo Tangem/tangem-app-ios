@@ -11,9 +11,11 @@ import CryptoKit
 
 struct UserWalletEncryptionKey {
     let symmetricKey: SymmetricKey
+}
 
-    init(with walletPublicKey: Data) {
-        let keyHash = walletPublicKey.getSha256()
+extension UserWalletEncryptionKey {
+    init(userWalletIdSeed: Data) {
+        let keyHash = userWalletIdSeed.getSha256()
         let key = SymmetricKey(data: keyHash)
         let message = AppConstants.messageForTokensKey.data(using: .utf8)!
         let tokensSymmetricKey = HMAC<SHA256>.authenticationCode(for: message, using: key)

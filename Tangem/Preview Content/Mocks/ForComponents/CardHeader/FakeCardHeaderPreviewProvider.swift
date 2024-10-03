@@ -10,121 +10,95 @@ import Foundation
 import Combine
 
 final class FakeCardHeaderPreviewProvider: ObservableObject {
-    @Published var models: [MultiWalletCardHeaderViewModel] = []
+    @Published var models: [MainHeaderViewModel] = []
 
-    let infoProviders = [
+    let infoProviders: [CardInfoProvider] = [
         CardInfoProvider(
-            cardName: "William Wallet",
-            numberOfCards: 3,
-            cardImage: Assets.Cards.wallet2Triple,
-            isWalletImported: true,
+            walletModel: FakeUserWalletModel.wallet3Cards,
             tapAction: { provider in
-                provider.cardName = provider.cardName == "William Wallet" ? "Uilleam Uallet" : "William Wallet"
+                provider.walletModel.updateWalletName(provider.walletModel.userWalletName == "William Wallet" ? "Uilleam Uallet" : "William Wallet")
+                let firstValue: Decimal = 4346824.2189
+                let secondValue: Decimal = 4346820004.2189
+                let thirdValue: Decimal = 4346213820004.2189
+                let fourthValue: Decimal? = nil
                 switch provider.balance {
                 case .loading:
-                    provider.balance = .loaded(TotalBalanceProvider.TotalBalance(
-                        balance: 4346437892534324.2189,
+                    provider.balance = .loaded(TotalBalance(
+                        balance: firstValue,
                         currencyCode: "USD",
-                        hasError: false
+                        hasError: false,
+                        allTokensBalancesIncluded: true
                     ))
-                case .loaded:
+                case .loaded(let total):
+                    let newValue: Decimal?
+                    switch total.balance {
+                    case .none:
+                        newValue = firstValue
+                    case firstValue:
+                        newValue = secondValue
+                    case secondValue:
+                        newValue = thirdValue
+                    case thirdValue:
+                        newValue = fourthValue
+                    default:
+                        newValue = firstValue
+                    }
+                    provider.balance = .loaded(TotalBalance(
+                        balance: newValue,
+                        currencyCode: "USD",
+                        hasError: false,
+                        allTokensBalancesIncluded: true
+                    ))
+                case .failedToLoad:
                     provider.balance = .loading
                 }
             }
         ),
-
         CardInfoProvider(
-            cardName: "Wallet 2 Twins",
-            numberOfCards: 2,
-            cardImage: Assets.Cards.wallet2Double,
-            isWalletImported: true,
+            walletModel: FakeUserWalletModel.twins,
             tapAction: { provider in
-                provider.cardName = provider.cardName == "Wallet Hannah" ? "Wallet Jane" : "Wallet Hannah"
+                provider.walletModel.updateWalletName(provider.walletModel.userWalletName == "Wallet Hannah" ? "Wallet Jane" : "Wallet Hannah")
                 switch provider.balance {
                 case .loading:
-                    provider.balance = .loaded(TotalBalanceProvider.TotalBalance(
+                    provider.balance = .loaded(TotalBalance(
                         balance: 92324.2133654889,
                         currencyCode: "EUR",
-                        hasError: false
+                        hasError: false,
+                        allTokensBalancesIncluded: true
                     ))
-                case .loaded:
+                case .loaded, .failedToLoad:
                     provider.balance = .loading
                 }
             }
         ),
-
         CardInfoProvider(
-            cardName: "Plain Old Wallet wallet wallet wallet wallet wallet wallet",
-            numberOfCards: 2,
-            cardImage: Assets.Cards.wallet,
-            isWalletImported: true,
-            tapAction: { provider in
-                provider.cardName = provider.cardName == "POWwwwwwww" ? "Plain Old Wallet wallet wallet wallet wallet wallet wallet" : "POWwwwwwww"
-                switch provider.balance {
-                case .loading:
-                    provider.balance = .loaded(TotalBalanceProvider.TotalBalance(
-                        balance: 0.0,
-                        currencyCode: "EUR",
-                        hasError: false
-                    ))
-                case .loaded:
-                    provider.balance = .loading
-                }
-            }
-        ),
-
-        CardInfoProvider(
-            cardName: "Note",
-            numberOfCards: 1,
-            cardImage: Assets.Cards.noteDoge,
-            isWalletImported: false,
+            walletModel: FakeUserWalletModel.xrpNote,
             tapAction: { provider in
                 switch provider.balance {
                 case .loading:
-                    provider.balance = .loaded(TotalBalanceProvider.TotalBalance(
-                        balance: nil,
-                        currencyCode: "RUB",
-                        hasError: true
-                    ))
-                case .loaded:
-                    provider.balance = .loading
-                }
-            }
-        ),
-
-        CardInfoProvider(
-            cardName: "BTC bird",
-            numberOfCards: 1,
-            cardImage: nil,
-            isWalletImported: false,
-            tapAction: { provider in
-                switch provider.balance {
-                case .loading:
-                    provider.balance = .loaded(TotalBalanceProvider.TotalBalance(
-                        balance: 454.2114313,
-                        currencyCode: "USD",
-                        hasError: false
-                    ))
-                case .loaded:
-                    provider.balance = .loading
-                }
-            }
-        ),
-
-        CardInfoProvider(
-            cardName: "BTC bird kookee kookee kookoo-kooroo-kookoo kookoo-kooroo-kookoo kookee kookee",
-            numberOfCards: 1,
-            cardImage: nil,
-            isWalletImported: false,
-            tapAction: { provider in
-                switch provider.balance {
-                case .loading:
-                    provider.balance = .loaded(TotalBalanceProvider.TotalBalance(
+                    provider.balance = .loaded(TotalBalance(
                         balance: 4567575476468896456534878754.2114313,
                         currencyCode: "USD",
-                        hasError: false
+                        hasError: false,
+                        allTokensBalancesIncluded: true
                     ))
-                case .loaded:
+                case .loaded, .failedToLoad:
+                    provider.balance = .loading
+                }
+            }
+        ),
+        CardInfoProvider(
+            walletModel: FakeUserWalletModel.xlmBird,
+            tapAction: { provider in
+                switch provider.balance {
+                case .loading:
+                    provider.balance = .loaded(TotalBalance(
+                        balance: 4567575476468896456532344878754.2114313,
+                        currencyCode: "USD",
+                        hasError: false,
+                        allTokensBalancesIncluded: true
+                    ))
+                case .loaded, .failedToLoad:
                     provider.balance = .loading
                 }
             }
@@ -136,38 +110,38 @@ final class FakeCardHeaderPreviewProvider: ObservableObject {
     }
 
     private func initializeModels() {
-        models = infoProviders.map {
-            .init(cardInfoProvider: $0, balanceProvider: $0)
-        }
+        models = infoProviders
+            .map {
+                .init(
+                    isUserWalletLocked: $0.walletModel.isUserWalletLocked,
+                    supplementInfoProvider: $0.walletModel,
+                    subtitleProvider: $0.headerSubtitleProvider,
+                    balanceProvider: CommonMainHeaderBalanceProvider(
+                        totalBalanceProvider: $0,
+                        userWalletStateInfoProvider: $0.walletModel,
+                        mainBalanceFormatter: CommonMainHeaderBalanceFormatter()
+                    )
+                )
+            }
     }
 }
 
 extension FakeCardHeaderPreviewProvider {
-    final class CardInfoProvider: MultiWalletCardHeaderInfoProvider, TotalBalanceProviding {
-        @Published var cardName: String
-        @Published var numberOfCards: Int
-        @Published var balance: LoadingValue<TotalBalanceProvider.TotalBalance> = .loading
+    final class CardInfoProvider: TotalBalanceProviding {
+        @Published var balance: LoadingValue<TotalBalance> = .loading
 
-        let cardImage: ImageType?
+        let walletModel: FakeUserWalletModel
+        let headerSubtitleProvider: MainHeaderSubtitleProvider
 
         var tapAction: (CardInfoProvider) -> Void
 
-        private(set) var isWalletImported: Bool
-
-        var cardNamePublisher: AnyPublisher<String, Never> { $cardName.eraseToAnyPublisher() }
-
-        var numberOfCardsPublisher: AnyPublisher<Int, Never> { $numberOfCards.eraseToAnyPublisher() }
-
-        init(cardName: String, numberOfCards: Int, cardImage: ImageType?, isWalletImported: Bool, tapAction: @escaping (CardInfoProvider) -> Void) {
-            self.cardName = cardName
-            self.numberOfCards = numberOfCards
-            self.cardImage = cardImage
-            self.isWalletImported = isWalletImported
-
+        init(walletModel: FakeUserWalletModel, tapAction: @escaping (CardInfoProvider) -> Void) {
+            self.walletModel = walletModel
+            headerSubtitleProvider = CommonMainHeaderProviderFactory().makeHeaderSubtitleProvider(for: walletModel, isMultiWallet: walletModel.config.hasFeature(.multiCurrency))
             self.tapAction = tapAction
         }
 
-        func totalBalancePublisher() -> AnyPublisher<LoadingValue<TotalBalanceProvider.TotalBalance>, Never> {
+        var totalBalancePublisher: AnyPublisher<LoadingValue<TotalBalance>, Never> {
             $balance.eraseToAnyPublisher()
         }
     }

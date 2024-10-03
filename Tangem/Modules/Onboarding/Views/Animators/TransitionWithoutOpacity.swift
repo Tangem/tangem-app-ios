@@ -21,4 +21,5 @@ struct TransitionWithoutOpacity: AnimatableModifier {
 
 extension AnyTransition {
     static let withoutOpacity: AnyTransition = .modifier(active: TransitionWithoutOpacity(1), identity: TransitionWithoutOpacity(0))
+    static let scaleOpacity: AnyTransition = .scale.combined(with: .opacity)
 }

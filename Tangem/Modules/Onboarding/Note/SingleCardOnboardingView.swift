@@ -13,9 +13,6 @@ struct SingleCardOnboardingView: View {
 
     private let horizontalPadding: CGFloat = 16
     private let screenSize: CGSize = UIScreen.main.bounds.size
-    private let progressBarHeight: CGFloat = 5
-    private let progressBarPadding: CGFloat = 10
-    private let disclaimerTopPadding: CGFloat = 8
 
     var currentStep: SingleCardOnboardingStep { viewModel.currentStep }
 
@@ -31,18 +28,24 @@ struct SingleCardOnboardingView: View {
     var customContent: some View {
         switch viewModel.currentStep {
         case .saveUserWallet:
-            UserWalletStorageAgreementView(viewModel: viewModel.userWalletStorageAgreementViewModel)
+            UserWalletStorageAgreementView(
+                viewModel: viewModel.userWalletStorageAgreementViewModel,
+                topInset: -viewModel.progressBarPadding
+            )
+        case .addTokens:
+            if let addTokensViewModel = viewModel.addTokensViewModel {
+                OnboardingAddTokensView(viewModel: addTokensViewModel)
+            }
+        case .pushNotifications:
+            if let pushNotificationsViewModel = viewModel.pushNotificationsViewModel {
+                PushNotificationsPermissionRequestView(
+                    viewModel: pushNotificationsViewModel,
+                    topInset: -viewModel.progressBarPadding,
+                    buttonsAxis: .vertical
+                )
+            }
         default:
             EmptyView()
-        }
-    }
-
-    @ViewBuilder
-    var disclaimerContent: some View {
-        if let disclaimerModel = viewModel.disclaimerModel {
-            DisclaimerView(viewModel: disclaimerModel)
-                .offset(y: progressBarHeight + progressBarPadding + disclaimerTopPadding)
-                .offset(y: viewModel.isNavBarVisible ? viewModel.navbarSize.height : 0)
         }
     }
 
@@ -53,19 +56,16 @@ struct SingleCardOnboardingView: View {
                 .frame(maxWidth: screenSize.width)
                 .zIndex(100)
 
-            disclaimerContent
-                .layoutPriority(1)
-                .readSize { size in
-                    viewModel.setupContainer(with: size)
-                }
-
             VStack(spacing: 0) {
                 GeometryReader { proxy in
                     let size = proxy.size
                     ZStack(alignment: .center) {
                         NavigationBar(
                             title: viewModel.navbarTitle,
-                            settings: .init(titleFont: .system(size: 17, weight: .semibold), backgroundColor: .clear),
+                            settings: .init(
+                                title: .init(font: .system(size: 17, weight: .semibold)),
+                                backgroundColor: .clear
+                            ),
                             leftItems: {
                                 BackButton(
                                     height: viewModel.navbarSize.height,
@@ -77,12 +77,12 @@ struct SingleCardOnboardingView: View {
                                 }
                             },
                             rightItems: {
-                                ChatButton(
+                                SupportButton(
                                     height: viewModel.navbarSize.height,
-                                    isVisible: true,
+                                    isVisible: viewModel.isSupportButtonVisible,
                                     isEnabled: true
                                 ) {
-                                    viewModel.openSupportChat()
+                                    viewModel.openSupport()
                                 }
                             }
                         )
@@ -90,8 +90,8 @@ struct SingleCardOnboardingView: View {
                         .offset(x: 0, y: -size.height / 2 + (isTopItemsVisible ? viewModel.navbarSize.height / 2 : 0))
                         .opacity(isTopItemsVisible ? 1.0 : 0.0)
 
-                        ProgressBar(height: progressBarHeight, currentProgress: viewModel.currentProgress)
-                            .offset(x: 0, y: -size.height / 2 + (isTopItemsVisible ? viewModel.navbarSize.height + progressBarPadding : 0))
+                        ProgressBar(height: viewModel.progressBarHeight, currentProgress: viewModel.currentProgress)
+                            .offset(x: 0, y: -size.height / 2 + (isTopItemsVisible ? viewModel.navbarSize.height + viewModel.progressBarPadding : 0))
                             .opacity(isTopItemsVisible && isProgressBarVisible ? 1.0 : 0.0)
                             .padding(.horizontal, horizontalPadding)
 
@@ -109,7 +109,7 @@ struct SingleCardOnboardingView: View {
                             AnimatedView(settings: viewModel.$mainCardSettings) {
                                 OnboardingCardView(
                                     placeholderCardType: .dark,
-                                    cardImage: viewModel.cardImage,
+                                    cardImage: viewModel.mainImage,
                                     cardScanned: viewModel.isInitialAnimPlayed && viewModel.isCardScanned
                                 )
                             }
@@ -140,9 +140,9 @@ struct SingleCardOnboardingView: View {
                     }
                     .position(x: size.width / 2, y: size.height / 2)
                 }
-                .readSize { value in
+                .readGeometry(\.size) { size in
                     if !viewModel.isCustomContentVisible {
-                        viewModel.setupContainer(with: value)
+                        viewModel.setupContainer(with: size)
                     }
                 }
                 .frame(minHeight: viewModel.navbarSize.height + 20)
@@ -150,12 +150,12 @@ struct SingleCardOnboardingView: View {
                 if viewModel.isCustomContentVisible {
                     customContent
                         .layoutPriority(1)
-                        .readSize { size in
+                        .readGeometry(\.size) { size in
                             viewModel.setupContainer(with: size)
                         }
                 }
 
-                if viewModel.isButtonsVisible {
+                if !viewModel.isCustomContentVisible {
                     OnboardingTextButtonView(
                         title: viewModel.title,
                         subtitle: viewModel.subtitle,
@@ -168,12 +168,12 @@ struct SingleCardOnboardingView: View {
                     ) {
                         viewModel.closeOnboarding()
                     }
-                    .padding(.horizontal, 40)
                 }
             }
         }
         .alert(item: $viewModel.alert, content: { $0.alert })
         .onAppear(perform: viewModel.onAppear)
+        .background(Colors.Background.primary.edgesIgnoringSafeArea(.all))
     }
 }
 
@@ -196,12 +196,12 @@ struct CardOnboardingBackgroundCircle: View {
             .padding(10)
             .overlay(
                 Circle()
-                    .foregroundColor(.tangemBgGray)
+                    .foregroundColor(Colors.Old.tangemBgGray)
                     .padding(38)
             )
             .background(
                 Circle()
-                    .foregroundColor(.tangemBgGray)
+                    .foregroundColor(Colors.Old.tangemBgGray)
             )
             .edgesIgnoringSafeArea(.all)
             .scaleEffect(scale)

@@ -2,20 +2,23 @@
 //  TokenDetailsCoordinatorView.swift
 //  Tangem
 //
-//  Created by Alexander Osokin on 21.06.2022.
-//  Copyright © 2022 Tangem AG. All rights reserved.
+//  Created by Andrew Son on 09/06/23.
+//  Copyright © 2023 Tangem AG. All rights reserved.
 //
 
-import Foundation
 import SwiftUI
 
 struct TokenDetailsCoordinatorView: CoordinatorView {
     @ObservedObject var coordinator: TokenDetailsCoordinator
 
+    init(coordinator: TokenDetailsCoordinator) {
+        self.coordinator = coordinator
+    }
+
     var body: some View {
         ZStack {
-            if let model = coordinator.tokenDetailsViewModel {
-                TokenDetailsView(viewModel: model)
+            if let viewModel = coordinator.tokenDetailsViewModel {
+                TokenDetailsView(viewModel: viewModel)
                     .navigationLinks(links)
             }
 
@@ -26,11 +29,14 @@ struct TokenDetailsCoordinatorView: CoordinatorView {
     @ViewBuilder
     private var links: some View {
         NavHolder()
-            .navigation(item: $coordinator.pushedWebViewModel) {
-                WebViewContainer(viewModel: $0)
+            .navigation(item: $coordinator.tokenDetailsCoordinator) {
+                TokenDetailsCoordinatorView(coordinator: $0)
             }
-            .navigation(item: $coordinator.swappingCoordinator) {
-                SwappingCoordinatorView(coordinator: $0)
+            .navigation(item: $coordinator.stakingDetailsCoordinator) {
+                StakingDetailsCoordinatorView(coordinator: $0)
+            }
+            .navigation(item: $coordinator.marketsTokenDetailsCoordinator) {
+                TokenMarketsDetailsCoordinatorView(coordinator: $0)
             }
     }
 
@@ -40,19 +46,32 @@ struct TokenDetailsCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.sendCoordinator) {
                 SendCoordinatorView(coordinator: $0)
             }
-            .sheet(item: $coordinator.pushTxCoordinator) {
-                PushTxCoordinatorView(coordinator: $0)
-            }
             .sheet(item: $coordinator.modalWebViewModel) {
                 WebViewContainer(viewModel: $0)
+            }
+            .iOS16UIKitSheet(item: $coordinator.expressCoordinator) {
+                ExpressCoordinatorView(coordinator: $0)
             }
 
         NavHolder()
             .bottomSheet(
                 item: $coordinator.warningBankCardViewModel,
-                viewModelSettings: .warning
+                backgroundColor: Colors.Background.primary
             ) {
                 WarningBankCardView(viewModel: $0)
+                    .padding(.bottom, 10)
+            }
+            .bottomSheet(
+                item: $coordinator.receiveBottomSheetViewModel,
+                settings: .init(backgroundColor: Colors.Background.primary, contentScrollsHorizontally: true)
+            ) {
+                ReceiveBottomSheetView(viewModel: $0)
+            }
+            .bottomSheet(
+                item: $coordinator.pendingExpressTxStatusBottomSheetViewModel,
+                backgroundColor: Colors.Background.tertiary
+            ) {
+                PendingExpressTxStatusBottomSheetView(viewModel: $0)
             }
     }
 }

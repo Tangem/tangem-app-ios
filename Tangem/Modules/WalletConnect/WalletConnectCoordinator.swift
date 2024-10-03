@@ -10,35 +10,41 @@ import Foundation
 import SwiftUI
 
 class WalletConnectCoordinator: CoordinatorObject {
-    var dismissAction: Action
-    var popToRootAction: ParamsAction<PopToRootOptions>
+    var dismissAction: Action<Void>
+    var popToRootAction: Action<PopToRootOptions>
 
     // MARK: - Main view model
 
     @Published private(set) var walletConnectViewModel: WalletConnectViewModel? = nil
 
-    // MARK: - Child view models
+    // MARK: - Child coordinators
 
-    @Published var qrScanViewModel: QRScanViewModel? = nil
+    @Published var qrScanViewCoordinator: QRScanViewCoordinator? = nil
 
-    required init(dismissAction: @escaping Action, popToRootAction: @escaping ParamsAction<PopToRootOptions>) {
+    required init(dismissAction: @escaping Action<Void>, popToRootAction: @escaping Action<PopToRootOptions>) {
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
     }
 
     func start(with options: WalletConnectCoordinator.Options) {
-        walletConnectViewModel = WalletConnectViewModel(cardModel: options.cardModel, coordinator: self)
+        walletConnectViewModel = WalletConnectViewModel(disabledLocalizedReason: options.disabledLocalizedReason, coordinator: self)
     }
 }
 
 extension WalletConnectCoordinator {
     struct Options {
-        let cardModel: CardViewModel
+        let disabledLocalizedReason: String?
     }
 }
 
 extension WalletConnectCoordinator: WalletConnectRoutable {
     func openQRScanner(with codeBinding: Binding<String>) {
-        qrScanViewModel = .init(code: codeBinding)
+        let coordinator = QRScanViewCoordinator { [weak self] in
+            self?.qrScanViewCoordinator = nil
+        }
+
+        let options = QRScanViewCoordinator.Options(code: codeBinding, text: "")
+        coordinator.start(with: options)
+        qrScanViewCoordinator = coordinator
     }
 }

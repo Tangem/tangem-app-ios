@@ -1,0 +1,35 @@
+//
+//  Common.xcconfig
+//  TangemApp
+//
+//  Created by Andrey Fedorov on 14.02.2024.
+//  Copyright © 2024 Tangem AG. All rights reserved.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+// Prefix from developer.apple.com, TEAM_ID in this case
+APP_ID_PREFIX = 4897UJ6D8C
+
+// `BUNDLE_IDENTIFIER` common prefix, shared by all child configurations
+APP_BUNDLE_IDENTIFIER_COMMON = com.tangem.Tangem
+
+// Will use in TangemApp as BUNDLE_IDENTIFIER
+APP_BUNDLE_IDENTIFIER = $(APP_BUNDLE_IDENTIFIER_COMMON)$(ENVIRONMENT_NAME)
+
+// `CFBundleName` common prefix, shared by all child configurations
+PRODUCT_NAME_COMMON = Tangem
+
+// Overriding (do NOT change key name)
+// app name
+PRODUCT_NAME = $(PRODUCT_NAME_COMMON) $(ENVIRONMENT_NAME)
+
+// Storage container name
+SUITE_NAME = group.$(APP_BUNDLE_IDENTIFIER)
+
+// Storage container name for BSDK (`BlockchainDataStorage`)
+BSDK_SUITE_NAME = bsdk.$(APP_BUNDLE_IDENTIFIER)
+
+// app icon
+ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon_$(ENVIRONMENT_NAME)

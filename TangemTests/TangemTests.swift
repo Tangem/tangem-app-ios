@@ -54,4 +54,80 @@ class TangemTests: XCTestCase {
             XCTAssertEqual(roundedDoubleValue, expectedValue, accuracy: 0.000000000000000001)
         }
     }
+
+    func testExpressPendingTransactionRecordMigration() throws {
+        let legacyRec =
+            """
+            {
+              "sourceTokenTxInfo": {
+                "isCustom": false,
+                "amountString": "0.1234132",
+                "tokenItem": {
+                  "blockchain": {
+                    "_0": {
+                      "testnet": false,
+                      "key": "tezos",
+                      "curve": "ed25519_slip0010"
+                    }
+                  }
+                },
+                "blockchainNetwork": {
+                  "blockchain": {
+                    "curve": "ed25519_slip0010",
+                    "testnet": false,
+                    "key": "tezos"
+                  },
+                  "derivationPath": "m/44'/0"
+                }
+              },
+              "transactionType": "swap",
+              "provider": {
+                "type": "cex",
+                "id": "asdfadf",
+                "name": "asdfadf"
+              },
+              "feeString": "afadf",
+              "date": 729430967.809831,
+              "transactionHash": "afasdf",
+              "transactionStatus": "confirming",
+              "expressTransactionId": "Adfasdfasd",
+              "userWalletId": "adfadfasdf",
+              "isHidden": false,
+              "externalTxId": "adfadf",
+              "destinationTokenTxInfo": {
+                "amountString": "0.1234132",
+                "blockchainNetwork": {
+                  "derivationPath": "m/44'/0",
+                  "blockchain": {
+                    "key": "ethereum",
+                    "testnet": false,
+                    "curve": "secp256k1"
+                  }
+                },
+                "isCustom": false,
+                "tokenItem": {
+                  "token": {
+                    "_1": {
+                      "curve": "secp256k1",
+                      "testnet": false,
+                      "key": "ethereum"
+                    },
+                    "_0": {
+                      "name": "Name",
+                      "contractAddress": "ox124123412341234",
+                      "decimalCount": 18,
+                      "symbol": "SYM"
+                    }
+                  }
+                }
+              }
+            }
+            """
+
+        let decoded = try JSONDecoder().decode(ExpressPendingTransactionRecord.self, from: legacyRec.data(using: .utf8)!)
+        XCTAssertEqual(decoded.sourceTokenTxInfo.tokenItem.blockchainNetwork.blockchain.networkId, "tezos")
+        XCTAssertEqual(decoded.destinationTokenTxInfo.tokenItem.blockchainNetwork.blockchain.networkId, "ethereum")
+        XCTAssertEqual(decoded.sourceTokenTxInfo.tokenItem.blockchainNetwork.derivationPath?.rawPath, "m/44'/0")
+        XCTAssertEqual(decoded.destinationTokenTxInfo.tokenItem.blockchainNetwork.derivationPath?.rawPath, "m/44'/0")
+    }
 }

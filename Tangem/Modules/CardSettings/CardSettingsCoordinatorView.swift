@@ -16,19 +16,25 @@ struct CardSettingsCoordinatorView: CoordinatorView {
         ZStack {
             if let model = coordinator.cardSettingsViewModel {
                 CardSettingsView(viewModel: model)
-                    .navigation(item: $coordinator.securityManagementCoordinator) {
-                        SecurityModeCoordinatorView(coordinator: $0)
-                    }
-                    .navigation(item: $coordinator.resetToFactoryViewModel) {
-                        ResetToFactoryView(viewModel: $0)
-                    }
-                    .navigation(item: $coordinator.accessCodeRecoverySettingsViewModel) {
-                        AccessCodeRecoverySettingsView(viewModel: $0)
-                    }
+                    .navigationLinks(links)
             }
 
             sheets
         }
+    }
+
+    @ViewBuilder
+    private var links: some View {
+        NavHolder()
+            .navigation(item: $coordinator.securityManagementCoordinator) {
+                SecurityModeCoordinatorView(coordinator: $0)
+            }
+            .navigation(item: $coordinator.resetToFactoryViewModel) {
+                ResetToFactoryView(viewModel: $0)
+            }
+            .navigation(item: $coordinator.accessCodeRecoverySettingsViewModel) {
+                AccessCodeRecoverySettingsView(viewModel: $0)
+            }
     }
 
     @ViewBuilder

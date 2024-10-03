@@ -13,17 +13,20 @@ struct ScrollableButtonsView: View {
     /// This is usefull when your parent view has paddings, but scroll must
     /// go to the edge of the scree
     let itemsHorizontalOffset: CGFloat
-    let buttonsInfo: [ButtonWithIconInfo]
+    let buttonsInfo: [FixedSizeButtonWithIconInfo]
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 ForEach(buttonsInfo) { button in
-                    ButtonWithLeadingIcon(
+                    FixedSizeButtonWithLeadingIcon(
                         title: button.title,
                         icon: button.icon.image,
-                        action: button.action
+                        style: button.style,
+                        action: button.action,
+                        longPressAction: button.longPressAction
                     )
+                    .disabled(button.disabled)
                 }
             }
             .padding(.horizontal, itemsHorizontalOffset)
@@ -38,32 +41,32 @@ struct ScrollableButtonsView_Previews: PreviewProvider {
             ScrollableButtonsView(
                 itemsHorizontalOffset: 16,
                 buttonsInfo: [
-                    ButtonWithIconInfo(title: "Buy", icon: Assets.plusMini, action: {}),
-                    ButtonWithIconInfo(title: "Send", icon: Assets.arrowUpMini, action: {}),
-                    ButtonWithIconInfo(title: "Receive", icon: Assets.arrowDownMini, action: {}),
-                    ButtonWithIconInfo(title: "Exchange", icon: Assets.exchangeMini, action: {}),
-                    ButtonWithIconInfo(title: "Organize tokens", icon: Assets.sliders, action: {}),
-                    ButtonWithIconInfo(title: "", icon: Assets.horizontalDots, action: {}),
+                    FixedSizeButtonWithIconInfo(title: "Buy", icon: Assets.plusMini, disabled: true, action: {}),
+                    FixedSizeButtonWithIconInfo(title: "Send", icon: Assets.arrowUpMini, disabled: true, action: {}),
+                    FixedSizeButtonWithIconInfo(title: "Receive", icon: Assets.arrowDownMini, disabled: true, action: {}),
+                    FixedSizeButtonWithIconInfo(title: "Exchange", icon: Assets.exchangeMini, disabled: false, action: {}),
+                    FixedSizeButtonWithIconInfo(title: "Organize tokens", icon: Assets.sliders, disabled: false, action: {}),
+                    FixedSizeButtonWithIconInfo(title: "", icon: Assets.horizontalDots, disabled: true, action: {}),
                 ]
             )
 
             ScrollableButtonsView(
                 itemsHorizontalOffset: 0,
                 buttonsInfo: [
-                    ButtonWithIconInfo(title: "Buy", icon: Assets.plusMini, action: {}),
-                    ButtonWithIconInfo(title: "Send", icon: Assets.arrowUpMini, action: {}),
-                    ButtonWithIconInfo(title: "Receive", icon: Assets.arrowDownMini, action: {}),
-                    ButtonWithIconInfo(title: "Exchange", icon: Assets.exchangeMini, action: {}),
-                    ButtonWithIconInfo(title: "Organize tokens", icon: Assets.sliders, action: {}),
-                    ButtonWithIconInfo(title: "", icon: Assets.horizontalDots, action: {}),
+                    FixedSizeButtonWithIconInfo(title: "Buy", icon: Assets.plusMini, action: {}),
+                    FixedSizeButtonWithIconInfo(title: "Send", icon: Assets.arrowUpMini, action: {}),
+                    FixedSizeButtonWithIconInfo(title: "Receive", icon: Assets.arrowDownMini, action: {}),
+                    FixedSizeButtonWithIconInfo(title: "Exchange", icon: Assets.exchangeMini, action: {}),
+                    FixedSizeButtonWithIconInfo(title: "Organize tokens", icon: Assets.sliders, action: {}),
+                    FixedSizeButtonWithIconInfo(title: "", icon: Assets.horizontalDots, action: {}),
                 ]
             )
 
             ScrollableButtonsView(
                 itemsHorizontalOffset: 0,
                 buttonsInfo: [
-                    ButtonWithIconInfo(title: "Buy", icon: Assets.plusMini, action: {}),
-                    ButtonWithIconInfo(title: "Send", icon: Assets.arrowUpMini, action: {}),
+                    FixedSizeButtonWithIconInfo(title: "Buy", icon: Assets.plusMini, action: {}),
+                    FixedSizeButtonWithIconInfo(title: "Send", icon: Assets.arrowUpMini, action: {}),
                 ]
             )
         }

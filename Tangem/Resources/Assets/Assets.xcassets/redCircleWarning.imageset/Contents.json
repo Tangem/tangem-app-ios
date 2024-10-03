@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "warning.red.circle.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

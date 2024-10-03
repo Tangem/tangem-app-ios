@@ -26,26 +26,20 @@ struct DetailsCoordinatorView: CoordinatorView {
     @ViewBuilder
     private var links: some View {
         NavHolder()
-            .navigation(item: $coordinator.currencySelectViewModel) {
-                CurrencySelectView(viewModel: $0)
+            .navigation(item: $coordinator.walletConnectCoordinator) {
+                WalletConnectCoordinatorView(coordinator: $0)
             }
-            .navigation(item: $coordinator.cardSettingsCoordinator) {
-                CardSettingsCoordinatorView(coordinator: $0)
+            .navigation(item: $coordinator.userWalletSettingsCoordinator) {
+                UserWalletSettingsCoordinatorView(coordinator: $0)
             }
             .navigation(item: $coordinator.appSettingsCoordinator) {
                 AppSettingsCoordinatorView(coordinator: $0)
             }
-            .navigation(item: $coordinator.walletConnectCoordinator) {
-                WalletConnectCoordinatorView(coordinator: $0)
+            .navigation(item: $coordinator.tosViewModel) {
+                TOSView(viewModel: $0)
             }
-            .navigation(item: $coordinator.disclaimerViewModel) {
-                DisclaimerView(viewModel: $0)
-            }
-            .navigation(item: $coordinator.setupEnvironmentViewModel) {
-                EnvironmentSetupView(viewModel: $0)
-            }
-            .navigation(item: $coordinator.referralCoordinator) {
-                ReferralCoordinatorView(coordinator: $0)
+            .navigation(item: $coordinator.environmentSetupCoordinator) {
+                EnvironmentSetupCoordinatorView(coordinator: $0)
             }
     }
 
@@ -62,12 +56,9 @@ struct DetailsCoordinatorView: CoordinatorView {
                         coordinator.modalOnboardingCoordinatorKeeper = value
                     })
             }
-            .sheet(item: $coordinator.supportChatViewModel) {
+            .fullScreenCover(item: $coordinator.supportChatViewModel) {
                 SupportChatView(viewModel: $0)
                     .edgesIgnoringSafeArea(.vertical)
-            }
-            .sheet(item: $coordinator.scanCardSettingsViewModel) {
-                ScanCardSettingsView(viewModel: $0)
             }
     }
 }

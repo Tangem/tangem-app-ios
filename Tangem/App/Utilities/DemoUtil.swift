@@ -11,15 +11,19 @@ import BlockchainSdk
 
 struct DemoUtil {
     func isDemoCard(cardId: String) -> Bool {
-        demoCardIds.contains(cardId)
+        if cardId == AppSettings.shared.forcedDemoCardId {
+            return true
+        }
+
+        return demoCardIds.contains(cardId)
     }
 
-    func getDemoBlockchains(isTestnet: Bool) -> [Blockchain] {
+    func getDemoBlockchains(isTestnet: Bool) -> [String] {
         [
-            .bitcoin(testnet: isTestnet),
-            .ethereum(testnet: isTestnet),
-            .dogecoin,
-            .solana(testnet: isTestnet),
+            Blockchain.bitcoin(testnet: isTestnet).coinId,
+            Blockchain.ethereum(testnet: isTestnet).coinId,
+            Blockchain.dogecoin.coinId,
+            Blockchain.solana(curve: .ed25519, testnet: isTestnet).coinId,
         ]
     }
 
@@ -63,6 +67,9 @@ extension DemoUtil {
             "AB01000000046704",
             "AB02000000051000",
             "AB02000000050911",
+            "AB02000000000007", // NOTE ETH
+            "AC03000000076229", // Wallet 1
+            "AF04000000000118", // Wallet 2
 
             // etc
             "AC03000000091418",
@@ -409,6 +416,23 @@ extension DemoUtil {
             "AB02000000049533",
             "AB02000000049541",
             "AB02000000049830",
+
+            // Wallet2
+            "AF04000000012006",
+            "AF04000000012014",
+            "AF04000000012022",
+            "AF04000000012030",
+            "FB04000000000152",
+            "AF15000000257889",
+            "AF15000000257897",
+            "AF15000000637809",
+            "AF15000000640282",
+            "AF15000001187424",
+            "AF15000001187408",
+            "AF15000001187416",
+            "AF15000001195781",
+            "AF15000001195773",
+            "AF15000001195799",
         ]
     }
 }

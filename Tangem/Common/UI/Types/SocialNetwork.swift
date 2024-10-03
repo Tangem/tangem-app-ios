@@ -11,14 +11,15 @@ import Foundation
 enum SocialNetwork: Hashable, CaseIterable, Identifiable {
     var id: Int { hashValue }
 
-    case telegram
     case twitter
-    case facebook
-    case instagram
-    case github
-    case youtube
-    case linkedin
+    case telegram
     case discord
+    case reddit
+    case instagram
+    case facebook
+    case linkedin
+    case youtube
+    case github
 
     var icon: ImageType {
         switch self {
@@ -30,14 +31,16 @@ enum SocialNetwork: Hashable, CaseIterable, Identifiable {
             return Assets.SocialNetwork.facebook
         case .instagram:
             return Assets.SocialNetwork.instagram
-        case .github:
-            return Assets.SocialNetwork.gitHub
         case .youtube:
-            return Assets.SocialNetwork.youTube
+            return Assets.SocialNetwork.youtube
         case .linkedin:
-            return Assets.SocialNetwork.linkedIn
+            return Assets.SocialNetwork.linkedin
         case .discord:
             return Assets.SocialNetwork.discord
+        case .reddit:
+            return Assets.SocialNetwork.reddit
+        case .github:
+            return Assets.SocialNetwork.github
         }
     }
 
@@ -53,17 +56,19 @@ enum SocialNetwork: Hashable, CaseIterable, Identifiable {
         case .twitter:
             return URL(string: "https://twitter.com/tangem")
         case .facebook:
-            return URL(string: "https://facebook.com/TangemCards/")
+            return URL(string: "https://www.facebook.com/tangemwallet")
         case .instagram:
-            return URL(string: "https://instagram.com/tangemcards")
-        case .github:
-            return URL(string: "https://github.com/tangem")
+            return URL(string: "https://www.instagram.com/tangemwallet")
         case .youtube:
             return URL(string: "https://youtube.com/channel/UCFGwLS7yggzVkP6ozte0m1w")
         case .linkedin:
             return URL(string: "https://www.linkedin.com/company/tangem")
         case .discord:
             return URL(string: "https://discord.gg/7AqTVyqdGS")
+        case .reddit:
+            return URL(string: "https://www.reddit.com/r/Tangem/")
+        case .github:
+            return URL(string: "https://github.com/tangem")
         }
     }
 
@@ -77,14 +82,23 @@ enum SocialNetwork: Hashable, CaseIterable, Identifiable {
             return "Facebook"
         case .instagram:
             return "Instagram"
-        case .github:
-            return "GitHub"
         case .youtube:
             return "YouTube"
         case .linkedin:
             return "LinkedIn"
         case .discord:
             return "Discord"
+        case .reddit:
+            return "Reddit"
+        case .github:
+            return "GitHub"
         }
+    }
+
+    static var list: [[SocialNetwork]] {
+        [
+            [.twitter, .telegram, .instagram, .facebook, .linkedin, .youtube],
+            [.discord, .reddit, .github],
+        ]
     }
 }

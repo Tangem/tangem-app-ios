@@ -9,19 +9,42 @@
 import SwiftUI
 
 struct Separator: View {
-    let height: Double
-    let padding: Double
-    let color: Color
+    @Environment(\.displayScale) private var displayScale
 
-    var body: some View {
-        color
-            .frame(width: nil, height: height, alignment: .center)
-            .padding(.vertical, padding)
+    private let height: Height
+    private let color: Color
+    private let axis: Axis
+
+    private var heightValue: Double {
+        switch height {
+        case .exact(let value):
+            return value
+        case .minimal:
+            return 1.0 / displayScale
+        }
     }
 
-    init(height: Double = 1.0, padding: Double = 4, color: Color = Color.tangemGrayLight5) {
+    var body: some View {
+        switch axis {
+        case .horizontal:
+            color
+                .frame(height: heightValue)
+        case .vertical:
+            color
+                .frame(width: heightValue)
+        }
+    }
+
+    init(height: Height = .exact(1), color: Color, axis: Axis = .horizontal) {
         self.height = height
-        self.padding = padding
         self.color = color
+        self.axis = axis
+    }
+}
+
+extension Separator {
+    enum Height {
+        case exact(Double)
+        case minimal
     }
 }

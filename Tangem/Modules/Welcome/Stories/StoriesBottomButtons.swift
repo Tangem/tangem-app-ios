@@ -21,6 +21,7 @@ struct StoriesBottomButtons: View {
         HStack {
             MainButton(
                 title: Localization.homeButtonScan,
+                icon: .trailing(Assets.tangemIcon),
                 style: scanColorStyle,
                 isLoading: isScanning,
                 action: scanCard

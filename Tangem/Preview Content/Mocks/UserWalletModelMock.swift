@@ -2,49 +2,79 @@
 //  UserWalletModelMock.swift
 //  Tangem
 //
-//  Created by Sergey Balashov on 25.01.2023.
-//  Copyright © 2023 Tangem AG. All rights reserved.
+//  Created by Sergey Balashov on 16.01.2024.
+//  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
+import Foundation
 import Combine
-import BlockchainSdk
+import TangemSdk
 
 class UserWalletModelMock: UserWalletModel {
-    var isMultiWallet: Bool { false }
+    var keysDerivingInteractor: any KeysDeriving { KeysDerivingMock() }
+    var keysRepository: KeysRepository { CommonKeysRepository(with: []) }
+    var name: String { "" }
+    var hasBackupCards: Bool { false }
+    var emailConfig: EmailConfig? { nil }
+    var tokensCount: Int? { 7 }
+    var config: UserWalletConfig { fatalError("UserWalletConfigMock doesn't exist") }
+    var userWalletId: UserWalletId { .init(value: Data()) }
 
-    var userWalletId: UserWalletId { .init(with: Data()) }
+    var walletModelsManager: WalletModelsManager { WalletModelsManagerMock() }
 
-    var walletModels: [WalletModel] { [] }
+    var userTokensManager: UserTokensManager { UserTokensManagerMock() }
 
     var userTokenListManager: UserTokenListManager { UserTokenListManagerMock() }
 
-    var userWallet: UserWallet {
-        UserWallet(userWalletId: Data(), name: "", card: .init(card: .card), associatedCardIds: [], walletData: .none, artwork: nil, isHDWalletAllowed: false)
+    var signer: TangemSigner { fatalError("TangemSignerMock doesn't exist") }
+
+    var updatePublisher: AnyPublisher<Void, Never> { Empty().eraseToAnyPublisher() }
+
+    var emailData: [EmailCollectedData] { [] }
+
+    var tangemApiAuthData: TangemApiTarget.AuthData {
+        .init(cardId: "", cardPublicKey: Data())
     }
 
-    var totalBalanceProvider: TotalBalanceProviding { TotalBalanceProviderMock() }
+    var backupInput: OnboardingInput? { nil }
 
-    func subscribeToWalletModels() -> AnyPublisher<[WalletModel], Never> { .just(output: []) }
+    var cardImagePublisher: AnyPublisher<CardImageResult, Never> { Empty().eraseToAnyPublisher() }
 
-    func getSavedEntries() -> [StorageEntry] { [] }
+    var cardHeaderImagePublisher: AnyPublisher<ImageType?, Never> { Empty().eraseToAnyPublisher() }
 
-    func getEntriesWithoutDerivation() -> [StorageEntry] { [] }
+    var userWalletNamePublisher: AnyPublisher<String, Never> { Empty().eraseToAnyPublisher() }
 
-    func subscribeToEntriesWithoutDerivation() -> AnyPublisher<[StorageEntry], Never> { .just(output: []) }
+    var totalBalancePublisher: AnyPublisher<LoadingValue<TotalBalance>, Never> { Empty().eraseToAnyPublisher() }
 
-    func canManage(amountType: BlockchainSdk.Amount.AmountType, blockchainNetwork: BlockchainNetwork) -> Bool { false }
+    var cardsCount: Int { 3 }
 
-    func update(entries: [StorageEntry]) {}
+    var isUserWalletLocked: Bool { false }
 
-    func append(entries: [StorageEntry]) {}
+    var isTokensListEmpty: Bool { false }
 
-    func remove(amountType: Amount.AmountType, blockchainNetwork: BlockchainNetwork) {}
+    var analyticsContextData: AnalyticsContextData {
+        .init(
+            productType: .other,
+            batchId: "",
+            firmware: "",
+            baseCurrency: "",
+            userWalletId: userWalletId
+        )
+    }
 
-    func initialUpdate() {}
+    var wcWalletModelProvider: WalletConnectWalletModelProvider {
+        CommonWalletConnectWalletModelProvider(walletModelsManager: walletModelsManager)
+    }
+
+    var totalSignedHashes: Int { 0 }
 
     func updateWalletName(_ name: String) {}
 
-    func updateWalletModels() {}
+    func getAnalyticsContextData() -> AnalyticsContextData? { nil }
 
-    func updateAndReloadWalletModels(silent: Bool, completion: @escaping () -> Void) {}
+    func validate() -> Bool { true }
+
+    func onBackupUpdate(type: BackupUpdateType) {}
+
+    func addAssociatedCard(_ cardId: String) {}
 }

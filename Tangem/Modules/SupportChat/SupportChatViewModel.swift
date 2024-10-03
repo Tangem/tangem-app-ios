@@ -11,28 +11,10 @@ import Combine
 import SwiftUI
 
 class SupportChatViewModel: ObservableObject, Identifiable {
-    @Published var showSupportActionSheet: ActionSheetBinder?
-    @Published var zendeskViewModel: ZendeskSupportChatViewModel?
-    @Injected(\.keysManager) private var keysManager: KeysManager
-
+//    @Published var sprinklrViewModel = SprinklrSupportChatViewModel()
     private let input: SupportChatInputModel
 
     init(input: SupportChatInputModel) {
         self.input = input
-        zendeskViewModel = .init(
-            logsComposer: input.logsComposer,
-            showSupportChatSheet: { [weak self] sheet in
-                DispatchQueue.main.async {
-                    self?.showSupportActionSheet = ActionSheetBinder(sheet: sheet)
-                }
-            }
-        )
-    }
-}
-
-extension SupportChatViewModel {
-    enum ViewState {
-        case webView(_ url: URL)
-        case zendesk(_ viewModel: ZendeskSupportChatViewModel)
     }
 }

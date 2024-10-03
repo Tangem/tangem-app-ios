@@ -9,8 +9,8 @@
 import Foundation
 
 class SecurityModeCoordinator: CoordinatorObject {
-    var dismissAction: Action
-    var popToRootAction: ParamsAction<PopToRootOptions>
+    var dismissAction: Action<Void>
+    var popToRootAction: Action<PopToRootOptions>
 
     // MARK: - Main view model
 
@@ -21,21 +21,21 @@ class SecurityModeCoordinator: CoordinatorObject {
     @Published var cardOperationViewModel: CardOperationViewModel?
 
     required init(
-        dismissAction: @escaping Action,
-        popToRootAction: @escaping ParamsAction<PopToRootOptions>
+        dismissAction: @escaping Action<Void>,
+        popToRootAction: @escaping Action<PopToRootOptions>
     ) {
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
     }
 
     func start(with options: SecurityModeCoordinator.Options) {
-        securityModeViewModel = SecurityModeViewModel(cardModel: options.cardModel, coordinator: self)
+        securityModeViewModel = SecurityModeViewModel(securityOptionChangeInteractor: options.securityOptionChangeInteractor, coordinator: self)
     }
 }
 
 extension SecurityModeCoordinator {
     struct Options {
-        let cardModel: CardViewModel
+        let securityOptionChangeInteractor: SecurityOptionChanging
     }
 }
 

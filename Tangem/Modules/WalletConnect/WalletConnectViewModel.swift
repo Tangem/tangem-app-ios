@@ -18,24 +18,21 @@ class WalletConnectViewModel: ObservableObject {
     @Published var showCameraDeniedAlert: Bool = false
     @Published var alert: AlertBinder?
     @Published var isServiceBusy: Bool = true
-    @Published var v1Sessions: [WalletConnectSession] = []
 
-    @Published @MainActor var v2Sessions: [WalletConnectSavedSession] = []
+    @Published @MainActor var sessions: [WalletConnectSavedSession] = []
 
     @MainActor
-    var noActiveSessions: Bool {
-        v1Sessions.isEmpty && v2Sessions.isEmpty
-    }
+    var noActiveSessions: Bool { sessions.isEmpty }
 
-    private var cardModel: CardViewModel
+    private let disabledLocalizedReason: String?
     private var bag = Set<AnyCancellable>()
     private var pendingURI: WalletConnectRequestURI?
     private var scannedQRCode: CurrentValueSubject<String?, Never> = .init(nil)
 
-    private unowned let coordinator: WalletConnectRoutable
+    private weak var coordinator: WalletConnectRoutable?
 
-    init(cardModel: CardViewModel, coordinator: WalletConnectRoutable) {
-        self.cardModel = cardModel
+    init(disabledLocalizedReason: String?, coordinator: WalletConnectRoutable) {
+        self.disabledLocalizedReason = disabledLocalizedReason
         self.coordinator = coordinator
     }
 
@@ -48,18 +45,10 @@ class WalletConnectViewModel: ObservableObject {
         bind()
     }
 
-    func disconnectV1Session(_ session: WalletConnectSession) {
-        Analytics.log(.buttonStopWalletConnectSession)
-        walletConnectService.disconnectSession(with: session.id)
-        withAnimation {
-            self.objectWillChange.send()
-        }
-    }
-
-    func disconnectV2Session(_ session: WalletConnectSavedSession) {
+    func disconnectSession(_ session: WalletConnectSavedSession) {
         Analytics.log(.buttonStopWalletConnectSession)
         Task { [weak self] in
-            await self?.walletConnectService.disconnectV2Session(with: session.id)
+            await self?.walletConnectService.disconnectSession(with: session.id)
             await runOnMain {
                 withAnimation {
                     self?.objectWillChange.send()
@@ -69,9 +58,10 @@ class WalletConnectViewModel: ObservableObject {
     }
 
     func tryReadFromClipboard() -> WalletConnectRequestURI? {
-        guard let pasteboardValue = UIPasteboard.general.string,
-              let uri = WalletConnectURLParser().parse(pasteboardValue),
-              walletConnectService.canOpenSession(with: uri) else {
+        guard
+            let pasteboardValue = UIPasteboard.general.string,
+            let uri = WalletConnectURLParser().parse(uriString: pasteboardValue)
+        else {
             return nil
         }
 
@@ -88,7 +78,7 @@ class WalletConnectViewModel: ObservableObject {
     func openSession() {
         Analytics.log(.buttonStartWalletConnectSession)
 
-        if let disabledLocalizedReason = cardModel.getDisabledLocalizedReason(for: .walletConnect) {
+        if let disabledLocalizedReason {
             alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
             return
         }
@@ -103,11 +93,7 @@ class WalletConnectViewModel: ObservableObject {
     }
 
     private func openSession(with uri: WalletConnectRequestURI) {
-        guard walletConnectService.canOpenSession(with: uri) else {
-            alert = WalletConnectServiceError.failedToConnect.alertBinder
-            return
-        }
-
+        Analytics.debugLog(eventInfo: Analytics.WalletConnectDebugEvent.attemptingToOpenSession(url: uri.debugString))
         walletConnectService.openSession(with: uri)
     }
 
@@ -123,19 +109,9 @@ class WalletConnectViewModel: ObservableObject {
             }
             .store(in: &bag)
 
-        walletConnectService.sessionsPublisher
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] in
-                guard let self = self else { return }
-
-                self.v1Sessions = $0
-                AppLog.shared.debug("Loaded v1 sessions: \($0)")
-            })
-            .store(in: &bag)
-
         scannedQRCode
             .compactMap { $0 }
-            .compactMap { WalletConnectURLParser().parse($0) }
+            .compactMap { WalletConnectURLParser().parse(uriString: $0) }
             .sink { [weak self] uri in
                 self?.openSession(with: uri)
             }
@@ -148,7 +124,7 @@ class WalletConnectViewModel: ObservableObject {
                 AppLog.shared.debug("Loaded v2 sessions: \(sessions)")
                 await MainActor.run {
                     withAnimation {
-                        self.v2Sessions = sessions
+                        self.sessions = sessions
                     }
                 }
             }
@@ -172,7 +148,7 @@ extension WalletConnectViewModel {
                 }
             )
 
-            coordinator.openQRScanner(with: binding)
+            coordinator?.openQRScanner(with: binding)
         }
     }
 }

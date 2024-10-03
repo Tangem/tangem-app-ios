@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1420"
+   LastUpgradeVersion = "1500"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -53,9 +53,42 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EF46619A2923AFC400346B6C"
-               BuildableName = "TangemSwappingTests.xctest"
-               BlueprintName = "TangemSwappingTests"
+               BlueprintIdentifier = "EF9E299B2B4F0C8C00418559"
+               BuildableName = "TangemExpressTests.xctest"
+               BlueprintName = "TangemExpressTests"
+               ReferencedContainer = "container:TangemApp.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B099337D2B5517E600240CDB"
+               BuildableName = "TangemVisaTests.xctest"
+               BlueprintName = "TangemVisaTests"
+               ReferencedContainer = "container:TangemApp.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "EF2D9C8E2BBDA87A0055C485"
+               BuildableName = "TangemFoundationTests.xctest"
+               BlueprintName = "TangemFoundationTests"
+               ReferencedContainer = "container:TangemApp.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "EFEE23902BFF62D60099917E"
+               BuildableName = "TangemStakingTests.xctest"
+               BlueprintName = "TangemStakingTests"
                ReferencedContainer = "container:TangemApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -88,6 +121,10 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-FIRDebugEnabled"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-com.tangem.PerformanceMonitorEnabled YES"
             isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>

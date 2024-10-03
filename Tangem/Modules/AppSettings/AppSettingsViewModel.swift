@@ -18,40 +18,42 @@ class AppSettingsViewModel: ObservableObject {
     @Published var warningViewModel: DefaultWarningRowViewModel?
     @Published var savingWalletViewModel: DefaultToggleRowViewModel?
     @Published var savingAccessCodesViewModel: DefaultToggleRowViewModel?
+    @Published var currencySelectionViewModel: DefaultRowViewModel?
+    @Published var sensitiveTextAvailabilityViewModel: DefaultToggleRowViewModel?
+    @Published var themeSettingsViewModel: DefaultRowViewModel?
+    @Published var isSavingWallet: Bool {
+        didSet { AppSettings.shared.saveUserWallets = isSavingWallet }
+    }
+
+    @Published var isSavingAccessCodes: Bool {
+        didSet { AppSettings.shared.saveAccessCodes = isSavingAccessCodes }
+    }
 
     @Published var alert: AlertBinder?
 
     // MARK: Dependencies
 
-    private unowned let coordinator: AppSettingsRoutable
+    private weak var coordinator: AppSettingsRoutable?
 
     // MARK: Properties
 
     private var bag: Set<AnyCancellable> = []
-    private let userWallet: CardViewModel
     private var isBiometryAvailable: Bool = true
 
-    private var isSavingWallet: Bool {
-        didSet {
-            savingWalletViewModel?.update(isOn: isSavingWalletBinding())
-            AppSettings.shared.saveUserWallets = isSavingWallet
-        }
+    /// Change to @AppStorage and move to model with IOS 14.5 minimum deployment target
+    @AppStorageCompat(StorageType.selectedCurrencyCode)
+    private var selectedCurrencyCode: String = "USD"
+
+    private var showingBiometryWarning: Bool {
+        warningViewModel != nil
     }
 
-    private var isSavingAccessCodes: Bool {
-        didSet {
-            savingAccessCodesViewModel?.update(isOn: isSavingAccessCodesBinding())
-            AppSettings.shared.saveAccessCodes = isSavingAccessCodes
-        }
-    }
-
-    init(userWallet: CardViewModel, coordinator: AppSettingsRoutable) {
+    init(coordinator: AppSettingsRoutable) {
         self.coordinator = coordinator
 
         let isSavingWallet = AppSettings.shared.saveUserWallets
         self.isSavingWallet = isSavingWallet
         isSavingAccessCodes = isSavingWallet && AppSettings.shared.saveAccessCodes
-        self.userWallet = userWallet
 
         updateView()
         bind()
@@ -67,12 +69,39 @@ private extension AppSettingsViewModel {
                 self?.updateView()
             }
             .store(in: &bag)
+
+        $selectedCurrencyCode
+            .dropFirst()
+            .sink { [weak self] _ in
+                self?.updateCurrencySelectionViewModel()
+            }
+            .store(in: &bag)
+
+        AppSettings.shared.$appTheme
+            .withWeakCaptureOf(self)
+            .sink { viewModel, _ in
+                viewModel.updateThemeSettingsViewModel()
+            }
+            .store(in: &bag)
+
+        $warningViewModel
+            .map {
+                $0 != nil
+            }
+            .removeDuplicates()
+            .sink { showingBiometryWarning in
+                // Can't do this in onAppear, the view could be updated and the warning displayed after biometry disabled in the settings
+                if showingBiometryWarning {
+                    Analytics.log(.settingsNoticeEnableBiometrics)
+                }
+            }
+            .store(in: &bag)
     }
 
     func isSavingWalletRequestChange(saveWallet: Bool) {
         Analytics.log(
             .saveUserWalletSwitcherChanged,
-            params: [.state: Analytics.ParameterValue.state(for: saveWallet)]
+            params: [.state: Analytics.ParameterValue.toggleState(for: saveWallet)]
         )
 
         if saveWallet {
@@ -89,10 +118,10 @@ private extension AppSettingsViewModel {
             guard let self else { return }
 
             if case .failure = result {
-                self.updateView()
+                updateView()
                 completion(false)
             } else {
-                let _ = self.userWalletRepository.save(self.userWallet)
+                userWalletRepository.setSaving(true)
                 completion(true)
             }
         }
@@ -101,7 +130,7 @@ private extension AppSettingsViewModel {
     func isSavingAccessCodesRequestChange(saveAccessCodes: Bool) {
         Analytics.log(
             .saveAccessCodeSwitcherChanged,
-            params: [.state: Analytics.ParameterValue.state(for: saveAccessCodes)]
+            params: [.state: Analytics.ParameterValue.toggleState(for: saveAccessCodes)]
         )
 
         if saveAccessCodes {
@@ -135,10 +164,35 @@ private extension AppSettingsViewModel {
             isDisabled: !isBiometryAvailable,
             isOn: isSavingAccessCodesBinding()
         )
+
+        currencySelectionViewModel = DefaultRowViewModel(
+            title: Localization.detailsRowTitleCurrency,
+            detailsType: .text(selectedCurrencyCode),
+            action: coordinator?.openCurrencySelection
+        )
+
+        sensitiveTextAvailabilityViewModel = DefaultToggleRowViewModel(
+            title: Localization.detailsRowTitleFlipToHide,
+            isOn: isSensitiveTextAvailability()
+        )
+
+        themeSettingsViewModel = DefaultRowViewModel(
+            title: Localization.appSettingsThemeSelectorTitle,
+            detailsType: .text(AppSettings.shared.appTheme.titleForDetails),
+            action: coordinator?.openThemeSelection
+        )
     }
 
-    func isSavingWalletBinding() -> Binding<Bool> {
-        Binding<Bool>(
+    func updateCurrencySelectionViewModel() {
+        currencySelectionViewModel?.update(detailsType: .text(selectedCurrencyCode))
+    }
+
+    func updateThemeSettingsViewModel() {
+        themeSettingsViewModel?.update(detailsType: .text(AppSettings.shared.appTheme.titleForDetails))
+    }
+
+    func isSavingWalletBinding() -> BindingValue<Bool> {
+        BindingValue<Bool>(
             root: self,
             default: false,
             get: { $0.isSavingWallet },
@@ -149,14 +203,24 @@ private extension AppSettingsViewModel {
         )
     }
 
-    func isSavingAccessCodesBinding() -> Binding<Bool> {
-        Binding<Bool>(
+    func isSavingAccessCodesBinding() -> BindingValue<Bool> {
+        BindingValue<Bool>(
             root: self,
             default: false,
             get: { $0.isSavingAccessCodes },
             set: { root, newValue in
                 root.isSavingAccessCodes = newValue
                 root.isSavingAccessCodesRequestChange(saveAccessCodes: newValue)
+            }
+        )
+    }
+
+    func isSensitiveTextAvailability() -> BindingValue<Bool> {
+        BindingValue<Bool>(
+            get: { AppSettings.shared.isHidingSensitiveAvailable },
+            set: { enabled in
+                Analytics.log(.hideBalanceChanged, params: [.state: Analytics.ParameterValue.toggleState(for: enabled)])
+                AppSettings.shared.isHidingSensitiveAvailable = enabled
             }
         )
     }
@@ -204,7 +268,7 @@ private extension AppSettingsViewModel {
         // If saved wallets is turn off we should delete access codes too
         if !saveWallets {
             setSaveAccessCodes(false)
-            userWalletRepository.clear()
+            userWalletRepository.setSaving(false)
         }
     }
 
@@ -238,15 +302,15 @@ private extension AppSettingsViewModel {
 
 extension AppSettingsViewModel {
     func openTokenSynchronization() {
-        coordinator.openTokenSynchronization()
+        coordinator?.openTokenSynchronization()
     }
 
     func openResetSavedCards() {
-        coordinator.openResetSavedCards()
+        coordinator?.openResetSavedCards()
     }
 
     func openBiometrySettings() {
         Analytics.log(.buttonEnableBiometricAuthentication)
-        coordinator.openAppSettings()
+        coordinator?.openAppSettings()
     }
 }

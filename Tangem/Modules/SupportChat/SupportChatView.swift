@@ -11,11 +11,16 @@ import SwiftUI
 
 struct SupportChatView: View {
     @ObservedObject var viewModel: SupportChatViewModel
+    @Environment(\.dismiss) var dismissAction
 
     var body: some View {
-        if let zendeskViewModel = viewModel.zendeskViewModel {
-            ZendeskSupportChatView(viewModel: zendeskViewModel)
-                .actionSheet(item: $viewModel.showSupportActionSheet, content: { $0.sheet })
+        VStack {
+            //        SprinklrSupportChatView(viewModel: viewModel.sprinklrViewModel)
+            Text("Not implemented")
+
+            Button(action: { dismissAction() }, label: {
+                Text("Dismiss")
+            })
         }
     }
 }

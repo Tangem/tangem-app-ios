@@ -10,7 +10,10 @@ import Foundation
 import TangemSdk
 
 protocol OnboardingStepsBuilderFactory {
-    func makeOnboardingStepsBuilder(backupService: BackupService) -> OnboardingStepsBuilder
+    func makeOnboardingStepsBuilder(
+        backupService: BackupService,
+        isPushNotificationsAvailable: Bool
+    ) -> OnboardingStepsBuilder
 }
 
 // MARK: - Wallets
@@ -18,10 +21,19 @@ protocol OnboardingStepsBuilderFactory {
 protocol WalletOnboardingStepsBuilderFactory: OnboardingStepsBuilderFactory, CardContainer {}
 
 extension UserWalletConfig where Self: WalletOnboardingStepsBuilderFactory {
-    func makeOnboardingStepsBuilder(backupService: BackupService) -> OnboardingStepsBuilder {
+    func makeOnboardingStepsBuilder(
+        backupService: BackupService,
+        isPushNotificationsAvailable: Bool
+    ) -> OnboardingStepsBuilder {
         return WalletOnboardingStepsBuilder(
-            card: card,
-            touId: tou.id,
+            cardId: card.cardId,
+            hasWallets: isWalletsCreated,
+            isBackupAllowed: card.settings.isBackupAllowed,
+            isKeysImportAllowed: canImportKeys,
+            canBackup: card.backupStatus?.canBackup ?? false,
+            hasBackup: card.backupStatus?.isActive ?? false,
+            canSkipBackup: canSkipBackup,
+            isPushNotificationsAvailable: isPushNotificationsAvailable,
             backupService: backupService
         )
     }
@@ -32,10 +44,15 @@ extension UserWalletConfig where Self: WalletOnboardingStepsBuilderFactory {
 protocol SingleCardOnboardingStepsBuilderFactory: OnboardingStepsBuilderFactory, CardContainer {}
 
 extension UserWalletConfig where Self: SingleCardOnboardingStepsBuilderFactory {
-    func makeOnboardingStepsBuilder(backupService: BackupService) -> OnboardingStepsBuilder {
+    func makeOnboardingStepsBuilder(
+        backupService: BackupService,
+        isPushNotificationsAvailable: Bool
+    ) -> OnboardingStepsBuilder {
         return SingleCardOnboardingStepsBuilder(
-            card: card,
-            touId: tou.id
+            cardId: card.cardId,
+            hasWallets: !card.wallets.isEmpty,
+            isMultiCurrency: hasFeature(.multiCurrency),
+            isPushNotificationsAvailable: isPushNotificationsAvailable
         )
     }
 }
@@ -45,10 +62,29 @@ extension UserWalletConfig where Self: SingleCardOnboardingStepsBuilderFactory {
 protocol NoteCardOnboardingStepsBuilderFactory: OnboardingStepsBuilderFactory, CardContainer {}
 
 extension UserWalletConfig where Self: NoteCardOnboardingStepsBuilderFactory {
-    func makeOnboardingStepsBuilder(backupService: BackupService) -> OnboardingStepsBuilder {
+    func makeOnboardingStepsBuilder(
+        backupService: BackupService,
+        isPushNotificationsAvailable: Bool
+    ) -> OnboardingStepsBuilder {
         return NoteOnboardingStepsBuilder(
-            card: card,
-            touId: tou.id
+            cardId: card.cardId,
+            hasWallets: !card.wallets.isEmpty,
+            isPushNotificationsAvailable: isPushNotificationsAvailable
+        )
+    }
+}
+
+// MARK: - Visa cards
+
+protocol VisaCardOnboardingStepsBuilderFactory: OnboardingStepsBuilderFactory, CardContainer {}
+
+extension UserWalletConfig where Self: VisaCardOnboardingStepsBuilderFactory {
+    func makeOnboardingStepsBuilder(
+        backupService: BackupService,
+        isPushNotificationsAvailable: Bool
+    ) -> OnboardingStepsBuilder {
+        return VisaOnboardingStepsBuilder(
+            isPushNotificationsAvailable: isPushNotificationsAvailable
         )
     }
 }

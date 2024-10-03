@@ -12,9 +12,8 @@ extension Analytics {
     enum CardScanSource {
         case welcome
         case auth
-        case main
-        case myWalletsNewCard
-        case myWalletsUnlock
+        case mainUnlock
+        case settings
 
         var cardScanButtonEvent: Analytics.Event {
             switch self {
@@ -22,25 +21,23 @@ extension Analytics {
                 return .introductionProcessButtonScanCard
             case .auth:
                 return .buttonCardSignIn
-            case .main:
-                return .buttonScanCard
-            case .myWalletsNewCard:
-                return .buttonScanNewCard
-            case .myWalletsUnlock:
-                return .walletUnlockTapped
+            case .settings:
+                return .buttonScanNewCardSettings
+            case .mainUnlock:
+                return .buttonUnlockWithCardScan
             }
         }
 
         var cardWasScannedParameterValue: Analytics.ParameterValue {
             switch self {
             case .welcome:
-                return .scanSourceWelcome
+                return .introduction
             case .auth:
-                return .scanSourceAuth
-            case .main:
-                return .scanSourceMain
-            case .myWalletsNewCard, .myWalletsUnlock:
-                return .scanSourceMyWallets
+                return .signIn
+            case .mainUnlock:
+                return .main
+            case .settings:
+                return .settings
             }
         }
     }

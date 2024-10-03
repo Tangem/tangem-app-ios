@@ -9,5 +9,5 @@
 import Foundation
 
 protocol ScanCardSettingsRoutable: AnyObject {
-    func openCardSettings(cardModel: CardViewModel)
+    func openCardSettings(with input: CardSettingsViewModel.Input)
 }

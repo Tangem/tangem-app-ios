@@ -9,35 +9,49 @@
 import Foundation
 import TangemSdk
 
-class WalletOnboardingStepsBuilder {
-    private let card: CardDTO
+struct WalletOnboardingStepsBuilder {
+    private let cardId: String
+    private let hasWallets: Bool
+    private let isBackupAllowed: Bool
+    private let isKeysImportAllowed: Bool
+    private let canBackup: Bool
+    private let hasBackup: Bool
+    private let canSkipBackup: Bool
+    private let isPushNotificationsAvailable: Bool
     private let backupService: BackupService
-    private let touId: String
 
-    private var userWalletSavingSteps: [WalletOnboardingStep] {
-        guard BiometricsUtil.isAvailable,
-              !AppSettings.shared.saveUserWallets,
-              !AppSettings.shared.askedToSaveUserWallets else {
-            return []
+    private var otherSteps: [WalletOnboardingStep] {
+        var steps: [WalletOnboardingStep] = []
+
+        if BiometricsUtil.isAvailable,
+           !AppSettings.shared.saveUserWallets,
+           !AppSettings.shared.askedToSaveUserWallets {
+            steps.append(.saveUserWallet)
         }
 
-        return [.saveUserWallet]
+        if isPushNotificationsAvailable {
+            steps.append(.pushNotifications)
+        }
+
+        return steps
     }
 
     private var backupSteps: [WalletOnboardingStep] {
-        if card.backupStatus?.isActive == true {
+        if !canBackup {
             return []
         }
 
-        if !card.settings.isBackupAllowed {
+        if !isBackupAllowed {
             return []
         }
 
         var steps: [WalletOnboardingStep] = []
 
-        steps.append(.backupIntro)
+        if canSkipBackup {
+            steps.append(.backupIntro)
+        }
 
-        if !card.wallets.isEmpty, !backupService.primaryCardIsSet {
+        if hasWallets, !backupService.primaryCardIsSet {
             steps.append(.scanPrimaryCard)
         }
 
@@ -50,9 +64,29 @@ class WalletOnboardingStepsBuilder {
         return steps
     }
 
-    init(card: CardDTO, touId: String, backupService: BackupService) {
-        self.card = card
-        self.touId = touId
+    private var addTokensSteps: [WalletOnboardingStep] {
+        FeatureProvider.isAvailable(.markets) ? [.addTokens] : []
+    }
+
+    init(
+        cardId: String,
+        hasWallets: Bool,
+        isBackupAllowed: Bool,
+        isKeysImportAllowed: Bool,
+        canBackup: Bool,
+        hasBackup: Bool,
+        canSkipBackup: Bool,
+        isPushNotificationsAvailable: Bool,
+        backupService: BackupService
+    ) {
+        self.cardId = cardId
+        self.hasWallets = hasWallets
+        self.isBackupAllowed = isBackupAllowed
+        self.isKeysImportAllowed = isKeysImportAllowed
+        self.canBackup = canBackup
+        self.hasBackup = hasBackup
+        self.canSkipBackup = canSkipBackup
+        self.isPushNotificationsAvailable = isPushNotificationsAvailable
         self.backupService = backupService
     }
 }
@@ -61,29 +95,23 @@ extension WalletOnboardingStepsBuilder: OnboardingStepsBuilder {
     func buildOnboardingSteps() -> OnboardingSteps {
         var steps = [WalletOnboardingStep]()
 
-        if !AppSettings.shared.termsOfServicesAccepted.contains(touId) {
-            steps.append(.disclaimer)
-        }
+        if hasWallets {
+            let forceBackup = !canSkipBackup && !hasBackup && canBackup // canBackup is false for cardLinked state
 
-        if card.wallets.isEmpty {
+            if AppSettings.shared.cardsStartedActivation.contains(cardId) || forceBackup {
+                steps.append(contentsOf: backupSteps + otherSteps + addTokensSteps + [.success])
+            } else {
+                steps.append(contentsOf: otherSteps)
+            }
+        } else {
             // Check is card supports seed phrase, if so add seed phrase steps
             let initialSteps: [WalletOnboardingStep]
-            if FeatureProvider.isAvailable(.importSeedPhrase), card.settings.isKeysImportAllowed {
+            if isKeysImportAllowed {
                 initialSteps = [.createWalletSelector] + [.seedPhraseIntro, .seedPhraseGeneration, .seedPhraseUserValidation, .seedPhraseImport]
             } else {
                 initialSteps = [.createWallet]
             }
-            steps.append(contentsOf: initialSteps + backupSteps + userWalletSavingSteps + [.success])
-        } else {
-            let isBackupActive = card.backupStatus?.isActive ?? false
-            let supportsKeyImport = card.firmwareVersion >= .keysImportAvailable
-            let forceBackup = supportsKeyImport && !isBackupActive
-
-            if AppSettings.shared.cardsStartedActivation.contains(card.cardId) || forceBackup {
-                steps.append(contentsOf: backupSteps + userWalletSavingSteps + [.success])
-            } else {
-                steps.append(contentsOf: userWalletSavingSteps)
-            }
+            steps.append(contentsOf: initialSteps + backupSteps + otherSteps + addTokensSteps + [.success])
         }
 
         return .wallet(steps)

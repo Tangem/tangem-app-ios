@@ -8,7 +8,9 @@
 
 import Foundation
 import TangemSdk
-import TangemSwapping
+import TangemExpress
+import TangemVisa
+import TangemStaking
 
 class AppLog {
     static let shared = AppLog()
@@ -39,16 +41,26 @@ class AppLog {
         Log.debug(message())
     }
 
+    // TODO: Andrey Fedorov - Get rid of this method and pass file/line as arguments to `debug` (IOS-6440)
+    func debugDetailed<T>(file: StaticString = #fileID, line: UInt = #line, _ message: @autoclosure () -> T) {
+        Log.debug("\(file):\(line): \(message())")
+    }
+
     func error(_ error: Error) {
         self.error(error: error, params: [:])
     }
 
     func logAppLaunch(_ currentLaunch: Int) {
         let dashSeparator = String(repeating: "-", count: 25)
-        let launchNumberMessage = "\(dashSeparator) New session. Current launch number: \(currentLaunch) \(dashSeparator)"
+        let sessionMessage = "\(dashSeparator) New session. Session id: \(AppConstants.sessionId) \(dashSeparator)"
+        let launchNumberMessage = "\(dashSeparator) Current launch number: \(currentLaunch) \(dashSeparator)"
         let deviceInfoMessage = "\(dashSeparator) \(DeviceInfoProvider.Subject.allCases.map { $0.description }.joined(separator: ", ")) \(dashSeparator)"
-        debug("\n\(launchNumberMessage)\n\(deviceInfoMessage)\n\n")
+        debug("\n\(sessionMessage)\n\(launchNumberMessage)\n\(deviceInfoMessage)\n\n")
     }
 }
 
-extension AppLog: SwappingLogger {}
+extension AppLog: TangemExpress.Logger {}
+
+extension AppLog: VisaLogger {}
+
+extension AppLog: TangemStaking.Logger {}

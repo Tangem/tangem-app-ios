@@ -21,51 +21,46 @@ struct FinishStoryPage: View {
 
             VStack(spacing: 18) {
                 Text(Localization.storyFinishTitle)
-                    .font(.system(size: 36, weight: .semibold))
+                    .style(Fonts.Bold.largeTitle, color: Colors.Text.primary1)
                     .minimumScaleFactor(0.5)
                     .multilineTextAlignment(.center)
-                    .foregroundColor(.white)
-                    .padding(.horizontal)
                     .storyTextAppearanceModifier(progress: progress, type: .title, textBlockAppearance: .minorDelay)
 
                 Text(Localization.storyFinishDescription)
-                    .font(.system(size: 24))
+                    .style(Fonts.Regular.callout, color: Colors.Text.tertiary)
                     .multilineTextAlignment(.center)
-                    .foregroundColor(.gray)
-                    .padding(.horizontal)
                     .storyTextAppearanceModifier(progress: progress, type: .description, textBlockAppearance: .minorDelay)
             }
+            .padding(.horizontal, 28)
             .fixedSize(horizontal: false, vertical: true)
 
             Spacer()
 
-            Assets.Stories.amazement.image
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .overlay(
-                    LinearGradient(stops: [
-                        Gradient.Stop(color: Color("tangem_story_background").opacity(0), location: 0.5),
-                        Gradient.Stop(color: Color("tangem_story_background"), location: 1),
-                    ], startPoint: .top, endPoint: .bottom)
-                        .frame(minWidth: 1000)
-                )
-                .storyImageAppearanceModifier(
-                    progress: progress,
-                    start: 0,
-                    fastMovementStartCoefficient: 1,
-                    fastMovementSpeedCoefficient: -45,
-                    fastMovementEnd: 0.15,
-                    slowMovementSpeedCoefficient: 0.15
+            Color.clear
+                .background(
+                    Assets.Stories.handWithCard.image
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .edgesIgnoringSafeArea(.bottom)
+                        .overlay(
+                            LinearGradient(stops: [
+                                Gradient.Stop(color: Colors.Old.tangemStoryBackground.opacity(0), location: 0.7),
+                                Gradient.Stop(color: Colors.Old.tangemStoryBackground, location: 1),
+                            ], startPoint: .top, endPoint: .bottom)
+                                .frame(minWidth: 1000)
+                        ),
+                    alignment: .top
                 )
 
             Spacer()
 
             StoriesBottomButtons(scanColorStyle: .primary, orderColorStyle: .secondary, isScanning: $isScanning, scanCard: scanCard, orderCard: orderCard)
                 .padding(.horizontal)
-                .padding(.bottom)
+                .padding(.bottom, 6)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color("tangem_story_background").edgesIgnoringSafeArea(.all))
+        .background(Colors.Old.tangemStoryBackground.edgesIgnoringSafeArea(.all))
     }
 }
 

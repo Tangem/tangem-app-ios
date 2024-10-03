@@ -9,24 +9,14 @@
 import Foundation
 import Combine
 
-extension AnyPublisher {
-    static func just(output: Output) -> AnyPublisher<Output, Never> {
+extension AnyPublisher where Failure == Never {
+    static func just(output: Output) -> AnyPublisher<Output, Failure> {
         Just(output).eraseToAnyPublisher()
     }
+}
 
-    func async() async throws -> Output {
-        try await withCheckedThrowingContinuation { continuation in
-            var cancellable: AnyCancellable?
-
-            cancellable = first()
-                .sink { completion in
-                    if case .failure(let error) = completion {
-                        continuation.resume(throwing: error)
-                    }
-                    cancellable?.cancel()
-                } receiveValue: { output in
-                    continuation.resume(returning: output)
-                }
-        }
+extension AnyPublisher where Failure: Error {
+    static func just(output: Output) -> AnyPublisher<Output, Failure> {
+        Just(output).setFailureType(to: Failure.self).eraseToAnyPublisher()
     }
 }

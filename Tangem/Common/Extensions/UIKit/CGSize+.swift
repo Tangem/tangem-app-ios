@@ -15,6 +15,12 @@ extension CGSize: CustomStringConvertible {
 }
 
 extension CGSize {
+    init(bothDimensions value: CGFloat) {
+        self.init(width: value, height: value)
+    }
+}
+
+extension CGSize {
     static func * (lhs: CGSize, rhs: CGFloat) -> CGSize {
         .init(width: lhs.width * rhs, height: lhs.height * rhs)
     }

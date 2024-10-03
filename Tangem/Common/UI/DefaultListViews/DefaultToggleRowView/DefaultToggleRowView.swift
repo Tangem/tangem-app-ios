@@ -10,27 +10,30 @@ import SwiftUI
 
 struct DefaultToggleRowView: View {
     private let viewModel: DefaultToggleRowViewModel
+    @State private var isOn: Bool
 
     init(viewModel: DefaultToggleRowViewModel) {
         self.viewModel = viewModel
+        isOn = viewModel.isOn.value
     }
 
     var body: some View {
         HStack {
             Text(viewModel.title)
                 .style(
-                    Fonts.Regular.body,
+                    Fonts.Regular.callout,
                     color: viewModel.isDisabled ? Colors.Text.disabled : Colors.Text.primary1
                 )
 
             Spacer()
 
-            Toggle("", isOn: viewModel.$isOn)
+            Toggle("", isOn: $isOn)
                 .labelsHidden()
-                .toggleStyleCompat(Colors.Control.checked)
+                .tint(Colors.Control.checked)
                 .disabled(viewModel.isDisabled)
         }
         .padding(.vertical, 8)
+        .connect(state: $isOn, to: viewModel.isOn)
     }
 }
 

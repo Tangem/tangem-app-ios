@@ -13,38 +13,61 @@ struct LoadableTextView: View {
     let font: Font
     let textColor: Color
     let loaderSize: CGSize
-    /// Use this to adjust loader position in vertical direction to prevent jumping behaviour
-    /// when view changes state from `loading` to `loaded`
-    let loaderTopPadding: CGFloat
+    var loaderCornerRadius: CGFloat = 3.0
 
+    var prefix: String? = nil
     var lineLimit: Int = 1
+    var isSensitiveText: Bool = false
 
     var body: some View {
+        content
+    }
+
+    @ViewBuilder
+    private var content: some View {
         switch state {
         case .initialized:
-            Text(" ")
-                .frame(size: loaderSize)
+            styledDashText
+                .opacity(0.01)
         case .noData:
-            Text("–")
-                .style(font, color: textColor)
-                .frame(minHeight: loaderSize.height)
+            styledDashText
         case .loading:
-            SkeletonView()
-                .frame(size: loaderSize)
-                .padding(.top, loaderTopPadding)
+            ZStack {
+                styledDashText
+                    .opacity(0.01)
+                SkeletonView()
+                    .frame(size: loaderSize)
+                    .cornerRadiusContinuous(loaderCornerRadius)
+            }
         case .loaded(let text):
-            Text(text)
-                .style(font, color: textColor)
-                .lineLimit(lineLimit)
-                .frame(minHeight: loaderSize.height)
+            if let prefix {
+                styledText("\(prefix)\(AppConstants.unbreakableSpace)\(text)", isSensitive: isSensitiveText)
+            } else {
+                styledText(text, isSensitive: isSensitiveText)
+            }
         }
+    }
+
+    private var styledDashText: some View {
+        styledText("–", isSensitive: false)
+    }
+
+    @ViewBuilder
+    private func styledText(_ text: String, isSensitive: Bool) -> some View {
+        Group {
+            if isSensitive {
+                SensitiveText(text)
+            } else {
+                Text(text)
+            }
+        }
+        .style(font, color: textColor)
+        .lineLimit(lineLimit)
     }
 }
 
 extension LoadableTextView {
-    enum State: Hashable, Identifiable {
-        var id: Int { hashValue }
-
+    enum State: Hashable {
         case initialized
         case noData
         case loading
@@ -53,19 +76,37 @@ extension LoadableTextView {
 }
 
 struct LoadableTextView_Preview: PreviewProvider {
-    static let states: [LoadableTextView.State] = [
-        .initialized, .noData, .loading, .loaded(text: "Some random text"),
+    static let states: [(LoadableTextView.State, UUID)] = [
+        (.initialized, UUID()),
+        (.noData, UUID()),
+        (.loading, UUID()),
+        (.loaded(text: "Some random text"), UUID()),
+        (.loading, UUID()),
     ]
 
     static var previews: some View {
         VStack {
-            ForEach(states) { state in
+            HStack(spacing: 0) {
                 LoadableTextView(
-                    state: .initialized,
+                    state: .loading,
                     font: Fonts.Regular.subheadline,
                     textColor: Colors.Text.primary1,
-                    loaderSize: .init(width: 100, height: 20),
-                    loaderTopPadding: 4
+                    loaderSize: .init(width: 40, height: 12)
+                )
+
+                LoadableTextView(
+                    state: .loaded(text: "0.21432543264 ETH"),
+                    font: Fonts.Regular.subheadline,
+                    textColor: Colors.Text.primary1,
+                    loaderSize: .init(width: 40, height: 12)
+                )
+            }
+            ForEach(states.indexed(), id: \.1.1) { index, state in
+                LoadableTextView(
+                    state: state.0,
+                    font: Fonts.Regular.subheadline,
+                    textColor: Colors.Text.primary1,
+                    loaderSize: .init(width: 100, height: 20)
                 )
             }
         }

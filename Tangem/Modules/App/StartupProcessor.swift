@@ -18,7 +18,7 @@ class StartupProcessor {
         }
 
         if AppSettings.shared.saveUserWallets,
-           !userWalletRepository.isEmpty,
+           userWalletRepository.hasSavedWallets,
            BiometricsUtil.isAvailable {
             return .auth
         }

@@ -11,13 +11,11 @@ import UIKit
 import Combine
 
 class WebSocket {
-    enum ConnectionState {
+    enum ConnectionState: String {
         case notConnected
         case connecting
         case connected
     }
-
-    let url: URL
 
     var request: URLRequest
     var onConnect: (() -> Void)?
@@ -27,10 +25,19 @@ class WebSocket {
     private let pingInterval: TimeInterval = 30
     private let timeoutInterval: TimeInterval = 20
 
-    var isConnected: Bool { state == .connected }
+    var isConnected: Bool { stateSubject.value == .connected }
 
-    private var state: ConnectionState = .notConnected
+    var statePublisher: AnyPublisher<ConnectionState, Never> {
+        stateSubject.eraseToAnyPublisher()
+    }
+
+    var currentState: ConnectionState {
+        stateSubject.value
+    }
+
+    private var stateSubject: CurrentValueSubject<ConnectionState, Never> = .init(.notConnected)
     private var isWaitingForMessage: Bool = false
+    private var wasConnectedAtLeastOnce: Bool = false
 
     private lazy var session: URLSession = {
         let delegate = WebSocketConnectionDelegate(eventHandler: { [weak self] event in
@@ -47,6 +54,10 @@ class WebSocket {
     // needed to keep connection alive
     private var pingTimer: Timer?
     private var task: URLSessionWebSocketTask?
+    private var connectionSetupDispatchWorkItem: DispatchWorkItem?
+    // This stuff is need to find doubling write requests. If everything is OK - remove debug stuff in IOS-5937
+    private let accessQueue = DispatchQueue(label: "com.tangem.WebSocket.properties", attributes: .concurrent)
+    private var pendingMessagesToWrite: Set<String> = []
 
     private var bag = Set<AnyCancellable>()
 
@@ -56,7 +67,6 @@ class WebSocket {
         onDisconnect: ((Error?) -> Void)? = nil,
         onText: ((String) -> Void)? = nil
     ) {
-        self.url = url
         self.onConnect = onConnect
         self.onDisconnect = onDisconnect
         self.onText = onText
@@ -88,30 +98,18 @@ class WebSocket {
 
     deinit {
         session.invalidateAndCancel()
-        pingTimer?.invalidate()
+        invalidateTimer()
     }
 
     func connect() {
-        log("Attempting to connect WebSocket with state \(state) to \(url)")
-        guard state == .notConnected else {
-            return
-        }
-
-        // If state is `notConnected` then task shouldn't exist
-        if task != nil {
-            disconnect()
-        }
-        state = .connecting
-        task = session.webSocketTask(with: request)
-        task?.resume()
-        receive()
+        log("Attempting to connect WebSocket with state \(stateSubject.value) to \(String(describing: request.url))")
+        scheduleConnectionSetup()
     }
 
     func disconnect() {
-        log("Disconnecting WebSocket with state: \(state) with \(url)")
-        pingTimer?.invalidate()
-        pingTimer = nil
-        state = .notConnected
+        Analytics.debugLog(eventInfo: Analytics.WalletConnectDebugEvent.webSocketDisconnected(closeCode: "Disconnect function", connectionState: "Before disconnect() execution: \(stateSubject.value.rawValue)"))
+        invalidateTimer()
+        stateSubject.value = .notConnected
         isWaitingForMessage = false
         if task == nil {
             return
@@ -122,15 +120,37 @@ class WebSocket {
     }
 
     func write(string text: String, completion: (() -> Void)?) {
-        guard isConnected else { return }
+        // Crash happens when completion is called multiple times for single handler.
+        // This cause sending more than one `resume()` in continuation inside WC library
+        let isMessagePendingToWrite = accessQueue.sync { pendingMessagesToWrite.contains(text) }
+        if isMessagePendingToWrite {
+            Analytics.debugLog(eventInfo: Analytics.WalletConnectDebugEvent.attemptingToWriteMessageMultipleTimes)
+            log("Attempting to write same message multiple times. \n\(text)")
+            return
+        }
+
+        guard isConnected else {
+            // We need to send completion event, because otherwise WC2 library will stuck and won't work anymore...
+            completion?()
+            return
+        }
+
+        accessQueue.async(flags: .barrier) { [weak self] in
+            self?.pendingMessagesToWrite.insert(text)
+        }
 
         log("Writing text: \(text) to socket")
         task?.send(.string(text)) { [weak self] error in
+            guard let self else { return }
             if let error = error {
-                self?.handleEvent(.connnectionError(error))
+                Analytics.debugLog(eventInfo: Analytics.WalletConnectDebugEvent.webSocketConnectionError(source: .send, error: error))
+                handleEvent(.connnectionError(error))
             } else {
-                completion?()
-                self?.handleEvent(.messageSent(text))
+                handleEvent(.messageSent(text))
+            }
+            completion?()
+            accessQueue.async(flags: .barrier) {
+                self.pendingMessagesToWrite.remove(text)
             }
         }
     }
@@ -159,23 +179,8 @@ class WebSocket {
                 self?.receive()
             case .failure(let error):
                 self?.log("Socket receive failure message with error: \(error)")
+                Analytics.debugLog(eventInfo: Analytics.WalletConnectDebugEvent.webSocketConnectionError(source: .receive, error: error))
                 self?.handleEvent(.connnectionError(error))
-            }
-        }
-    }
-
-    private func setupPingTimer() {
-        if pingTimer != nil {
-            pingTimer?.invalidate()
-            pingTimer = nil
-        }
-
-        DispatchQueue.main.async {
-            self.pingTimer = Timer.scheduledTimer(
-                withTimeInterval: self.pingInterval,
-                repeats: true
-            ) { [weak self] timer in
-                self?.sendPing()
             }
         }
     }
@@ -185,6 +190,7 @@ class WebSocket {
 
         task?.sendPing(pongReceiveHandler: { [weak self] error in
             if let error {
+                Analytics.debugLog(eventInfo: Analytics.WalletConnectDebugEvent.webSocketConnectionError(source: .pingPong, error: error))
                 self?.handleEvent(.connnectionError(error))
                 return
             }
@@ -197,17 +203,22 @@ class WebSocket {
     private func handleEvent(_ event: WebSocketEvent) {
         switch event {
         case .connected:
-            state = .connected
+            log("Receive connected event")
+            stateSubject.value = .connected
             setupPingTimer()
+            Analytics.debugLog(eventInfo: Analytics.WalletConnectDebugEvent.webSocketConnected)
             onConnect?()
         case .disconnected(let closeCode):
             let closeCodeRawValue = String(describing: closeCode.rawValue)
+            Analytics.debugLog(eventInfo: Analytics.WalletConnectDebugEvent.webSocketDisconnected(
+                closeCode: closeCodeRawValue,
+                connectionState: stateSubject.value.rawValue
+            ))
 
             log("Receive disconnect event. Close code: \(closeCodeRawValue)")
             guard isConnected else { break }
 
-            state = .notConnected
-            pingTimer?.invalidate()
+            disconnect()
 
             var error: Error?
             switch closeCode {
@@ -226,6 +237,7 @@ class WebSocket {
 
             notifyOnDisconnectOnMainThread(with: error)
         case .messageReceived(let text):
+            Analytics.debugLog(eventInfo: Analytics.WalletConnectDebugEvent.webSocketReceiveText(connectionState: stateSubject.value.rawValue))
             onText?(text)
         case .messageSent(let text):
             log("==> Message successfully sent \(text)")
@@ -234,10 +246,22 @@ class WebSocket {
         case .pongReceived:
             log("<== Pong received")
         case .connnectionError(let error):
-            // If occured connection error Socket delegate will send `disconnected` event
-            // with corresponding closure code. So no need to notify here about disconnection
-            // because this is not actual disconnection.
+            // We need to check if task is still running, and if not - recreate it and start observing messages
+            // Otherwise WC will stuck with not connected state, and only app restart will fix this problem
             log("Connection error: \(error.localizedDescription)")
+            let nsError = error as NSError
+            if nsError.code == -1011 {
+                disconnect()
+                notifyOnDisconnectOnMainThread(with: nsError)
+            }
+
+            if task?.state != .running {
+                log("URLSessionWebSocketTask is not running. Resetting WebSocket state and attempting to reconnect")
+                stateSubject.value = .notConnected
+                connect()
+                return
+            }
+            log("URLSessionWebSocketTask is running, no action is needed")
         }
     }
 
@@ -270,6 +294,81 @@ class WebSocket {
         // some of the UIApplication components from current thread.
         DispatchQueue.main.async {
             self.onDisconnect?(error)
+        }
+    }
+
+    private func setupPingTimer() {
+        DispatchQueue.main.async {
+            self.invalidateTimer()
+            self.pingTimer = Timer.scheduledTimer(
+                withTimeInterval: self.pingInterval,
+                repeats: true
+            ) { [weak self] timer in
+                self?.sendPing()
+            }
+        }
+    }
+
+    // Some crash logs and debug events indicating that there are multiple sequentials disconnect/connect requests
+    // This function attempting to address this issue. Added debug log events to see if it helps...
+    private func scheduleConnectionSetup() {
+        log("Attempting to schedule connection setup: \(String(describing: request.url))")
+        Analytics.debugLog(eventInfo: Analytics.WalletConnectDebugEvent.connectionSetupMessage(message: "Attempting to schedule connection setup"))
+        guard connectionSetupDispatchWorkItem == nil else {
+            log("Connection setup already scheduled, no need to reschedule")
+            Analytics.debugLog(eventInfo: Analytics.WalletConnectDebugEvent.connectionSetupMessage(message: "Connection setup already scheduled, no need to reschedule"))
+            return
+        }
+
+        let connectionSetupDelay: TimeInterval = wasConnectedAtLeastOnce ? 1 : 0
+        log("Scheduling connection setup. Delay: \(connectionSetupDelay)")
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self, stateSubject.value == .notConnected else {
+                self?.log("No need to setup web socket connection. State: \(self?.stateSubject.value.rawValue ?? "self is nil")")
+                Analytics.debugLog(eventInfo: Analytics.WalletConnectDebugEvent.connectionSetupMessage(message: "No need to setup web socket connection. State: \(self?.stateSubject.value.rawValue ?? "self is nil")"))
+                self?.connectionSetupDispatchWorkItem = nil
+                return
+            }
+
+            // If state is `notConnected` then task shouldn't exist
+            if task != nil {
+                Analytics.debugLog(eventInfo: Analytics.WalletConnectDebugEvent.connectionSetupMessage(message: "WebSocketTask is not nil, disconnecting old task"))
+                disconnect()
+            }
+            stateSubject.value = .connecting
+            task = session.webSocketTask(with: request)
+            task?.resume()
+            receive()
+            connectionSetupDispatchWorkItem = nil
+            Analytics.debugLog(eventInfo: Analytics.WalletConnectDebugEvent.connectionSetupMessage(message: "Finished connection setup"))
+            wasConnectedAtLeastOnce = true
+            log("Scheduled connection setup finished")
+        }
+        connectionSetupDispatchWorkItem = workItem
+
+        Analytics.debugLog(eventInfo: Analytics.WalletConnectDebugEvent.connectionSetupMessage(message: "Adding message to global queue"))
+        DispatchQueue.global().asyncAfter(deadline: .now() + connectionSetupDelay, execute: workItem)
+    }
+
+    /// `invalidate()` should be called from the same thread where it is was setup
+    /// https://developer.apple.com/documentation/foundation/timer/1415405-invalidate#
+    private func invalidateTimer() {
+        func invalidate() {
+            if pingTimer != nil {
+                pingTimer?.invalidate()
+                pingTimer = nil
+            }
+        }
+
+        if Thread.isMainThread {
+            log("Attempting to invalidate ping timer from main thread.")
+            invalidate()
+            return
+        }
+
+        log("Attempting to invalidate ping timer from different thread. Switching to main thread")
+        DispatchQueue.main.async {
+            invalidate()
         }
     }
 }

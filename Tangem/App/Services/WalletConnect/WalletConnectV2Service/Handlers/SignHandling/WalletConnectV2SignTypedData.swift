@@ -19,9 +19,9 @@ struct WalletConnectV2SignTypedDataHandler {
 
     init(
         requestParams: AnyCodable,
-        blockchain: Blockchain,
+        blockchainId: String,
         signer: WalletConnectSigner,
-        walletModelProvider: WalletConnectV2WalletModelProvider
+        walletModelProvider: WalletConnectWalletModelProvider
     ) throws {
         let params = try requestParams.get([String].self)
 
@@ -32,7 +32,7 @@ struct WalletConnectV2SignTypedDataHandler {
         message = params[1]
 
         let targetAddress = params[0]
-        walletModel = try walletModelProvider.getModel(with: targetAddress, in: blockchain)
+        walletModel = try walletModelProvider.getModel(with: targetAddress, blockchainId: blockchainId)
         guard
             let messageData = message.data(using: .utf8),
             let typedData = try? JSONDecoder().decode(EIP712TypedData.self, from: messageData)

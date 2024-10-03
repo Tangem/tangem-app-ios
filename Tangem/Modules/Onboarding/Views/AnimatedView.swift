@@ -96,7 +96,7 @@ struct AnimatedView<Content: View>: View {
     }
 
     @ViewBuilder
-    func applySettings<Content: View>(to view: Content, settings: CardAnimSettings) -> some View {
+    func applySettings(to view: Content, settings: CardAnimSettings) -> some View {
         view
             .frame(size: settings.frame)
             .rotationEffect(settings.rotationAngle)
@@ -107,7 +107,7 @@ struct AnimatedView<Content: View>: View {
     }
 
     @ViewBuilder
-    private func applySettings<Content: View>(_ view: Content) -> some View {
+    private func applySettings(_ view: Content) -> some View {
         if let settings = selectSettings() {
             applySettings(to: view, settings: settings)
         } else {
@@ -128,7 +128,7 @@ struct AnimatedView<Content: View>: View {
     }
 }
 
-fileprivate class AnimatedViewPreviewModel: ObservableObject {
+private class AnimatedViewPreviewModel: ObservableObject {
     enum Step: String {
         case zero
         case first
@@ -265,7 +265,7 @@ fileprivate class AnimatedViewPreviewModel: ObservableObject {
     }
 }
 
-fileprivate struct AnimatedViewPreview: View {
+private struct AnimatedViewPreview: View {
     @ObservedObject var viewModel: AnimatedViewPreviewModel
 
     var body: some View {

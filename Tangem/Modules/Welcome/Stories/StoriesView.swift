@@ -17,6 +17,22 @@ struct StoriesView<Content: View>: View {
     }
 
     var body: some View {
+        ZStack {
+            if viewModel.checkingPromotionAvailability {
+                Color.black
+                    .ignoresSafeArea()
+                    .task {
+                        await viewModel.checkPromotion()
+                    }
+            } else {
+                contentView
+            }
+        }
+        .animation(.default, value: viewModel.checkingPromotionAvailability)
+    }
+
+    @ViewBuilder
+    var contentView: some View {
         GeometryReader { geo in
             ZStack(alignment: .top) {
                 content()

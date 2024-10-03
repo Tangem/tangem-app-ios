@@ -16,9 +16,31 @@ struct BottomSheetContainer<ContentView: View>: View {
 
     // MARK: - Internal
 
-    private let indicatorSize = CGSize(width: 32, height: 4)
+    @State private var isContentViewGestureActive = false
+    @State private var isBottomSheetContainerGestureActive = false
+    @State private var shouldCheckBottomSheetContainerGesture = true
+
     private var opacity: CGFloat {
         max(0, settings.backgroundOpacity * stateObject.dragPercentage)
+    }
+
+    private var gestureMask: GestureMask {
+        // Exclusively enable our drag gesture and disable all gestures in the subview hierarchy
+        if isBottomSheetContainerGestureActive {
+            return .gesture
+        }
+
+        // Enable all gestures in the subview hierarchy but disable our drag gesture
+        if isContentViewGestureActive {
+            return .subviews
+        }
+
+        // Default behavior, all gestures are enabled
+        return .all
+    }
+
+    private var transitionAnimation: Animation {
+        .easeOut(duration: settings.animationDuration)
     }
 
     init(
@@ -40,6 +62,7 @@ struct BottomSheetContainer<ContentView: View>: View {
                         stateObject.viewDidHidden()
                     }
                 }
+                .animation(.default.delay(settings.backgroundAnimationDelay), value: opacity)
 
             sheetView
                 .transition(.move(edge: .bottom))
@@ -53,8 +76,6 @@ struct BottomSheetContainer<ContentView: View>: View {
                 .offset(y: -1)
         }
         .edgesIgnoringSafeArea(.all)
-        .animation(.default, value: opacity)
-        .animation(.interactiveSpring(), value: stateObject.isDragging)
     }
 
     private var sheetView: some View {
@@ -63,47 +84,70 @@ struct BottomSheetContainer<ContentView: View>: View {
 
             content()
                 .padding(.bottom, UIApplication.safeAreaInsets.bottom)
+                .if(settings.contentScrollsHorizontally) { view in
+                    view.modifier(ContentHorizontalScrollDetectionViewModifier())
+                }
+                .onPreferenceChange(ContentHorizontalScrollDetectionViewModifier.PreferenceKey.self) { newValue in
+                    isContentViewGestureActive = newValue
+
+                    // The content view gesture has ended, therefore there may be an opportunity for our drag gesture
+                    // to start again. Resetting the state of our drag gesture to allow it to start
+                    if !newValue {
+                        resetGestureState()
+                    }
+                }
         }
         .frame(maxWidth: .infinity)
         .background(settings.backgroundColor)
         .cornerRadius(settings.cornerRadius, corners: [.topLeft, .topRight])
-        .readSize { stateObject.contentHeight = $0.height }
-        .gesture(dragGesture)
+        .readGeometry(\.size.height, bindTo: $stateObject.contentHeight)
+        .simultaneousGesture(dragGesture, including: gestureMask)
         .offset(y: stateObject.offset)
     }
 
     private var indicator: some View {
         ZStack {
-            Capsule(style: .continuous)
-                .fill(Colors.Icon.inactive)
-                .frame(size: indicatorSize)
-                .padding(.vertical, 10)
+            GrabberViewFactory()
+                .makeSwiftUIView()
+                .padding(.bottom, 10)
         }
         .frame(maxWidth: .infinity)
         .background(settings.backgroundColor)
     }
 
     private var dragGesture: some Gesture {
-        DragGesture(minimumDistance: 0, coordinateSpace: .global)
+        DragGesture(coordinateSpace: .global)
             .onChanged { value in
+                // One-time (the cycle ends with an `onEnded` closure call) check if we should start our drag gesture
+                if shouldCheckBottomSheetContainerGesture {
+                    shouldCheckBottomSheetContainerGesture = false
+
+                    if value.isMovingInVerticalDirection, !isContentViewGestureActive {
+                        isBottomSheetContainerGestureActive = true
+                    }
+                }
+
+                guard isBottomSheetContainerGestureActive else {
+                    return
+                }
+
                 if !stateObject.isDragging {
                     stateObject.isDragging = true
                 }
 
-                let dragValue = value.translation.height - stateObject.previousDragTranslation.height
                 let locationChange = value.startLocation.y - value.location.y
 
                 if locationChange > 0 {
-                    stateObject.offset += dragValue / 3
+                    // If user drags on up then reduce the dragging value
+                    stateObject.offset = 0 - locationChange / 3
                 } else {
-                    stateObject.offset += dragValue
+                    stateObject.offset = 0 - locationChange
                 }
-
-                stateObject.previousDragTranslation = value.translation
             }
             .onEnded { value in
-                stateObject.previousDragTranslation = .zero
                 stateObject.isDragging = false
+
+                resetGestureState()
 
                 // If swipe was been enough to hide view
                 if value.translation.height > settings.distanceToHide {
@@ -112,7 +156,9 @@ struct BottomSheetContainer<ContentView: View>: View {
                     }
                     // Otherwise set the view to default state
                 } else {
-                    stateObject.offset = 0
+                    withAnimation(.default) {
+                        stateObject.offset = 0
+                    }
                 }
             }
     }
@@ -120,19 +166,31 @@ struct BottomSheetContainer<ContentView: View>: View {
     // MARK: - Methods
 
     func hideView(completion: @escaping () -> Void) {
-        let duration = settings.animationDuration
-
-        withAnimation(.linear(duration: duration)) {
+        let animationBody = {
             stateObject.offset = UIScreen.main.bounds.height
         }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
-            completion()
+        if #available(iOS 17, *) {
+            withAnimation(transitionAnimation, animationBody, completion: completion)
+        } else {
+            withAnimation(transitionAnimation, animationBody)
+
+            let duration = settings.animationDuration
+            DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+                completion()
+            }
         }
     }
 
     func showView() {
-        stateObject.offset = 0
+        withAnimation(transitionAnimation) {
+            stateObject.offset = 0
+        }
+    }
+
+    private func resetGestureState() {
+        shouldCheckBottomSheetContainerGesture = true
+        isBottomSheetContainerGestureActive = false
     }
 }
 
@@ -145,19 +203,27 @@ extension BottomSheetContainer {
         let backgroundOpacity: CGFloat
         let distanceToHide: CGFloat
         let animationDuration: Double
+        let backgroundAnimationDelay: TimeInterval
+        /// Enable to prevent vertical/horizontal gesture conflicts when the bottom sheet content view
+        /// contains a horizontal scroll. Disabled by default.
+        let contentScrollsHorizontally: Bool
 
         init(
-            cornerRadius: CGFloat = 16,
-            backgroundColor: Color = Colors.Background.secondary,
-            backgroundOpacity: CGFloat = 0.5,
+            cornerRadius: CGFloat = 24,
+            backgroundColor: Color,
+            backgroundOpacity: CGFloat = 0.4,
             distanceToHide: CGFloat = UIScreen.main.bounds.height * 0.1,
-            animationDuration: Double = 0.35
+            animationDuration: Double = 0.25,
+            backgroundAnimationDelay: TimeInterval = 0.0,
+            contentScrollsHorizontally: Bool = false
         ) {
             self.cornerRadius = cornerRadius
             self.backgroundColor = backgroundColor
             self.backgroundOpacity = backgroundOpacity
             self.distanceToHide = distanceToHide
             self.animationDuration = animationDuration
+            self.backgroundAnimationDelay = backgroundAnimationDelay
+            self.contentScrollsHorizontally = contentScrollsHorizontally
         }
     }
 }
@@ -168,7 +234,6 @@ extension BottomSheetContainer {
     class StateObject: ObservableObject {
         @Published var contentHeight: CGFloat = UIScreen.main.bounds.height / 2
         @Published var isDragging: Bool = false
-        @Published var previousDragTranslation: CGSize = .zero
         @Published var offset: CGFloat = UIScreen.main.bounds.height
 
         public var dragPercentage: CGFloat {
@@ -181,6 +246,41 @@ extension BottomSheetContainer {
     }
 }
 
+// MARK: - Content horizontal scrolling compatibility
+
+private extension BottomSheetContainer {
+    /// Detects horizontal scrolling in the content view, helps resolve conflicts between the bottom sheet
+    /// vertical drag gesture and the horizontal drag gesture in the content view.
+    /// Native SwiftUI approaches such as `Gesture.sequenced(before:)` and `Gesture.exclusively(before:)` can't be used
+    /// here because bottom sheet is a content-agnostic UI component and knows nothing about its child view hierarchy.
+    struct ContentHorizontalScrollDetectionViewModifier: ViewModifier {
+        struct PreferenceKey: SwiftUI.PreferenceKey {
+            static var defaultValue: Bool { false }
+
+            static func reduce(value: inout Bool, nextValue: () -> Bool) {}
+        }
+
+        @GestureState
+        private var isContentViewGestureActive = false
+
+        /// A dummy drag gesture used to detect horizontal scrolling in the content view.
+        private var dragGesture: some Gesture {
+            DragGesture()
+                .updating($isContentViewGestureActive) { value, state, _ in
+                    if value.isMovingInHorizontalDirection {
+                        state = true
+                    }
+                }
+        }
+
+        func body(content: Content) -> some View {
+            content
+                .simultaneousGesture(dragGesture)
+                .preference(key: PreferenceKey.self, value: isContentViewGestureActive)
+        }
+    }
+}
+
 // MARK: - Previews
 
 struct BottomSheetContainer_Previews: PreviewProvider {
@@ -189,7 +289,7 @@ struct BottomSheetContainer_Previews: PreviewProvider {
 
         var body: some View {
             ZStack {
-                Color.green
+                Colors.Background.primary
                     .edgesIgnoringSafeArea(.all)
 
                 Button("Bottom sheet isShowing \((coordinator.item != nil).description)") {
@@ -199,7 +299,7 @@ struct BottomSheetContainer_Previews: PreviewProvider {
                 .offset(y: -200)
 
                 NavHolder()
-                    .bottomSheet(item: $coordinator.item) {
+                    .bottomSheet(item: $coordinator.item, backgroundColor: Colors.Background.tertiary) {
                         BottomSheetView(viewModel: $0)
                     }
             }
@@ -253,5 +353,6 @@ struct BottomSheetContainer_Previews: PreviewProvider {
 
     static var previews: some View {
         StatableContainer()
+            .preferredColorScheme(.dark)
     }
 }

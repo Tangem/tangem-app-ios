@@ -42,8 +42,9 @@ enum UserWalletFeature: Int, CaseIterable { // TODO: Add comments
     case displayHashesCount
     case transactionHistory
 
-    case seedPhrase
     case accessCodeRecoverySettings
+
+    case promotion
 }
 
 extension UserWalletFeature {
@@ -74,6 +75,10 @@ extension UserWalletFeature {
             }
 
             return false
+        }
+
+        static var demoStub: Availability {
+            .disabled(localizedReason: Localization.alertDemoFeatureDisabled)
         }
     }
 }

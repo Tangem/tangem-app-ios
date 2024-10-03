@@ -10,7 +10,8 @@ import Foundation
 
 extension ResetToFactoryViewModel {
     struct Input {
-        let cardInteractor: CardResettable
-        let hasBackupCards: Bool
+        let cardInteractor: FactorySettingsResetting
+        let backupCardsCount: Int
+        let userWalletId: UserWalletId
     }
 }

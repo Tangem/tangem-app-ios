@@ -1,14 +1,9 @@
 PODS:
-  - Alamofire (5.6.2)
-  - AlertToast (1.3.7)
-  - Amplitude (8.8.0):
-    - AnalyticsConnector (~> 1.0.0)
-  - AnalyticsConnector (1.0.0)
+  - Alamofire (5.9.1)
+  - AmplitudeSwift (1.6.2):
+    - AnalyticsConnector (~> 1.0.1)
+  - AnalyticsConnector (1.0.3)
   - AnyCodable-FlightSchool (0.6.7)
-  - AppsFlyerFramework (6.5.4):
-    - AppsFlyerFramework/Main (= 6.5.4)
-  - AppsFlyerFramework/Main (6.5.4)
-  - BigInt (5.2.0)
   - BinanceChain (1.0.1-beta):
     - BinanceChain/Core (= 1.0.1-beta)
   - BinanceChain/Core (1.0.1-beta):
@@ -16,268 +11,239 @@ PODS:
     - BinanceChain/Libraries
     - BinanceChain/Protobuf
     - BinanceChain/Util
-    - HDWalletKit
-    - secp256k1.swift
-    - Starscream
     - SwiftDate
-    - SwiftProtobuf
     - SwiftyJSON
-    - XCGLogger
   - BinanceChain/Libraries (1.0.1-beta)
   - BinanceChain/Protobuf (1.0.1-beta)
   - BinanceChain/Util (1.0.1-beta)
   - BitcoinCore.swift (0.15.4)
   - BlockchainSdk (0.0.1):
-    - AnyCodable-FlightSchool
-    - BigInt
+    - AnyCodable-FlightSchool (= 0.6.7)
     - BinanceChain
     - BitcoinCore.swift
-    - HDWalletKit
-    - Moya
-    - ScaleCodec
-    - Sodium
+    - Moya (= 15.0.0)
+    - Sodium (= 0.9.1)
     - Solana.Swift
-    - stellar-ios-mac-sdk (= 2.3.2)
+    - stellar-ios-mac-sdk (= 2.5.4)
     - SwiftCBOR (= 0.4.5)
-    - SwiftProtobuf
-    - SwiftyJSON
+    - SwiftyJSON (= 5.0.1)
     - TangemSdk
-    - TangemWalletCore
-    - web3swift
-  - CryptoSwift (1.5.1)
-  - Firebase/Analytics (10.7.0):
+  - BlockiesSwift (0.1.2)
+  - CombineExt (1.8.0)
+  - Firebase/Analytics (10.29.0):
     - Firebase/Core
-  - Firebase/Core (10.7.0):
+  - Firebase/Core (10.29.0):
     - Firebase/CoreOnly
-    - FirebaseAnalytics (~> 10.7.0)
-  - Firebase/CoreOnly (10.7.0):
-    - FirebaseCore (= 10.7.0)
-  - Firebase/Crashlytics (10.7.0):
+    - FirebaseAnalytics (~> 10.29.0)
+  - Firebase/CoreOnly (10.29.0):
+    - FirebaseCore (= 10.29.0)
+  - Firebase/Crashlytics (10.29.0):
     - Firebase/CoreOnly
-    - FirebaseCrashlytics (~> 10.7.0)
-  - FirebaseAnalytics (10.7.0):
-    - FirebaseAnalytics/AdIdSupport (= 10.7.0)
+    - FirebaseCrashlytics (~> 10.29.0)
+  - Firebase/Messaging (10.29.0):
+    - Firebase/CoreOnly
+    - FirebaseMessaging (~> 10.29.0)
+  - FirebaseAnalytics (10.29.0):
+    - FirebaseAnalytics/AdIdSupport (= 10.29.0)
     - FirebaseCore (~> 10.0)
     - FirebaseInstallations (~> 10.0)
-    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
-    - GoogleUtilities/MethodSwizzler (~> 7.8)
-    - GoogleUtilities/Network (~> 7.8)
-    - "GoogleUtilities/NSData+zlib (~> 7.8)"
-    - nanopb (< 2.30910.0, >= 2.30908.0)
-  - FirebaseAnalytics/AdIdSupport (10.7.0):
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
+    - GoogleUtilities/MethodSwizzler (~> 7.11)
+    - GoogleUtilities/Network (~> 7.11)
+    - "GoogleUtilities/NSData+zlib (~> 7.11)"
+    - nanopb (< 2.30911.0, >= 2.30908.0)
+  - FirebaseAnalytics/AdIdSupport (10.29.0):
     - FirebaseCore (~> 10.0)
     - FirebaseInstallations (~> 10.0)
-    - GoogleAppMeasurement (= 10.7.0)
-    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
-    - GoogleUtilities/MethodSwizzler (~> 7.8)
-    - GoogleUtilities/Network (~> 7.8)
-    - "GoogleUtilities/NSData+zlib (~> 7.8)"
-    - nanopb (< 2.30910.0, >= 2.30908.0)
-  - FirebaseCore (10.7.0):
+    - GoogleAppMeasurement (= 10.29.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
+    - GoogleUtilities/MethodSwizzler (~> 7.11)
+    - GoogleUtilities/Network (~> 7.11)
+    - "GoogleUtilities/NSData+zlib (~> 7.11)"
+    - nanopb (< 2.30911.0, >= 2.30908.0)
+  - FirebaseCore (10.29.0):
     - FirebaseCoreInternal (~> 10.0)
-    - GoogleUtilities/Environment (~> 7.8)
-    - GoogleUtilities/Logger (~> 7.8)
-  - FirebaseCoreExtension (10.7.0):
+    - GoogleUtilities/Environment (~> 7.12)
+    - GoogleUtilities/Logger (~> 7.12)
+  - FirebaseCoreExtension (10.29.0):
     - FirebaseCore (~> 10.0)
-  - FirebaseCoreInternal (10.7.0):
+  - FirebaseCoreInternal (10.29.0):
     - "GoogleUtilities/NSData+zlib (~> 7.8)"
-  - FirebaseCrashlytics (10.7.0):
+  - FirebaseCrashlytics (10.29.0):
     - FirebaseCore (~> 10.5)
     - FirebaseInstallations (~> 10.0)
+    - FirebaseRemoteConfigInterop (~> 10.23)
     - FirebaseSessions (~> 10.5)
     - GoogleDataTransport (~> 9.2)
     - GoogleUtilities/Environment (~> 7.8)
-    - nanopb (< 2.30910.0, >= 2.30908.0)
+    - nanopb (< 2.30911.0, >= 2.30908.0)
     - PromisesObjC (~> 2.1)
-  - FirebaseInstallations (10.7.0):
+  - FirebaseInstallations (10.29.0):
     - FirebaseCore (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
     - PromisesObjC (~> 2.1)
-  - FirebaseSessions (10.7.0):
+  - FirebaseMessaging (10.29.0):
+    - FirebaseCore (~> 10.0)
+    - FirebaseInstallations (~> 10.0)
+    - GoogleDataTransport (~> 9.3)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
+    - GoogleUtilities/Environment (~> 7.8)
+    - GoogleUtilities/Reachability (~> 7.8)
+    - GoogleUtilities/UserDefaults (~> 7.8)
+    - nanopb (< 2.30911.0, >= 2.30908.0)
+  - FirebaseRemoteConfigInterop (10.29.0)
+  - FirebaseSessions (10.29.0):
     - FirebaseCore (~> 10.5)
     - FirebaseCoreExtension (~> 10.0)
     - FirebaseInstallations (~> 10.0)
     - GoogleDataTransport (~> 9.2)
-    - GoogleUtilities/Environment (~> 7.10)
-    - nanopb (< 2.30910.0, >= 2.30908.0)
+    - GoogleUtilities/Environment (~> 7.13)
+    - GoogleUtilities/UserDefaults (~> 7.13)
+    - nanopb (< 2.30911.0, >= 2.30908.0)
     - PromisesSwift (~> 2.1)
-  - GoogleAppMeasurement (10.7.0):
-    - GoogleAppMeasurement/AdIdSupport (= 10.7.0)
-    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
-    - GoogleUtilities/MethodSwizzler (~> 7.8)
-    - GoogleUtilities/Network (~> 7.8)
-    - "GoogleUtilities/NSData+zlib (~> 7.8)"
-    - nanopb (< 2.30910.0, >= 2.30908.0)
-  - GoogleAppMeasurement/AdIdSupport (10.7.0):
-    - GoogleAppMeasurement/WithoutAdIdSupport (= 10.7.0)
-    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
-    - GoogleUtilities/MethodSwizzler (~> 7.8)
-    - GoogleUtilities/Network (~> 7.8)
-    - "GoogleUtilities/NSData+zlib (~> 7.8)"
-    - nanopb (< 2.30910.0, >= 2.30908.0)
-  - GoogleAppMeasurement/WithoutAdIdSupport (10.7.0):
-    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
-    - GoogleUtilities/MethodSwizzler (~> 7.8)
-    - GoogleUtilities/Network (~> 7.8)
-    - "GoogleUtilities/NSData+zlib (~> 7.8)"
-    - nanopb (< 2.30910.0, >= 2.30908.0)
-  - GoogleDataTransport (9.2.1):
+  - GDPerformanceView-Swift (2.1.1)
+  - GoogleAppMeasurement (10.29.0):
+    - GoogleAppMeasurement/AdIdSupport (= 10.29.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
+    - GoogleUtilities/MethodSwizzler (~> 7.11)
+    - GoogleUtilities/Network (~> 7.11)
+    - "GoogleUtilities/NSData+zlib (~> 7.11)"
+    - nanopb (< 2.30911.0, >= 2.30908.0)
+  - GoogleAppMeasurement/AdIdSupport (10.29.0):
+    - GoogleAppMeasurement/WithoutAdIdSupport (= 10.29.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
+    - GoogleUtilities/MethodSwizzler (~> 7.11)
+    - GoogleUtilities/Network (~> 7.11)
+    - "GoogleUtilities/NSData+zlib (~> 7.11)"
+    - nanopb (< 2.30911.0, >= 2.30908.0)
+  - GoogleAppMeasurement/WithoutAdIdSupport (10.29.0):
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
+    - GoogleUtilities/MethodSwizzler (~> 7.11)
+    - GoogleUtilities/Network (~> 7.11)
+    - "GoogleUtilities/NSData+zlib (~> 7.11)"
+    - nanopb (< 2.30911.0, >= 2.30908.0)
+  - GoogleDataTransport (9.4.1):
     - GoogleUtilities/Environment (~> 7.7)
-    - nanopb (< 2.30910.0, >= 2.30908.0)
+    - nanopb (< 2.30911.0, >= 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleUtilities/AppDelegateSwizzler (7.11.0):
+  - GoogleUtilities/AppDelegateSwizzler (7.13.3):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
     - GoogleUtilities/Network
-  - GoogleUtilities/Environment (7.11.0):
+    - GoogleUtilities/Privacy
+  - GoogleUtilities/Environment (7.13.3):
+    - GoogleUtilities/Privacy
     - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleUtilities/Logger (7.11.0):
+  - GoogleUtilities/Logger (7.13.3):
     - GoogleUtilities/Environment
-  - GoogleUtilities/MethodSwizzler (7.11.0):
+    - GoogleUtilities/Privacy
+  - GoogleUtilities/MethodSwizzler (7.13.3):
     - GoogleUtilities/Logger
-  - GoogleUtilities/Network (7.11.0):
+    - GoogleUtilities/Privacy
+  - GoogleUtilities/Network (7.13.3):
     - GoogleUtilities/Logger
     - "GoogleUtilities/NSData+zlib"
+    - GoogleUtilities/Privacy
     - GoogleUtilities/Reachability
-  - "GoogleUtilities/NSData+zlib (7.11.0)"
-  - GoogleUtilities/Reachability (7.11.0):
+  - "GoogleUtilities/NSData+zlib (7.13.3)":
+    - GoogleUtilities/Privacy
+  - GoogleUtilities/Privacy (7.13.3)
+  - GoogleUtilities/Reachability (7.13.3):
     - GoogleUtilities/Logger
-  - GoogleUtilities/UserDefaults (7.11.0):
+    - GoogleUtilities/Privacy
+  - GoogleUtilities/UserDefaults (7.13.3):
     - GoogleUtilities/Logger
-  - HDWalletKit (0.3.6):
-    - CryptoSwift
-    - secp256k1.swift
-  - Kingfisher (6.3.1)
-  - Mobile-Buy-SDK (7.1.0)
+    - GoogleUtilities/Privacy
+  - Kingfisher (7.11.0)
   - Moya (15.0.0):
     - Moya/Core (= 15.0.0)
   - Moya/Core (15.0.0):
     - Alamofire (~> 5.0)
-  - nanopb (2.30909.0):
-    - nanopb/decode (= 2.30909.0)
-    - nanopb/encode (= 2.30909.0)
-  - nanopb/decode (2.30909.0)
-  - nanopb/encode (2.30909.0)
-  - ObjcExceptionBridging (1.0.1):
-    - ObjcExceptionBridging/ObjcExceptionBridging (= 1.0.1)
-  - ObjcExceptionBridging/ObjcExceptionBridging (1.0.1)
-  - PromiseKit (6.18.1):
-    - PromiseKit/CorePromise (= 6.18.1)
-    - PromiseKit/Foundation (= 6.18.1)
-    - PromiseKit/UIKit (= 6.18.1)
-  - PromiseKit/CorePromise (6.18.1)
-  - PromiseKit/Foundation (6.18.1):
-    - PromiseKit/CorePromise
-  - PromiseKit/UIKit (6.18.1):
-    - PromiseKit/CorePromise
-  - PromisesObjC (2.2.0)
-  - PromisesSwift (2.2.0):
-    - PromisesObjC (= 2.2.0)
-  - ScaleCodec (0.2.1):
-    - BigInt (~> 5.2)
-  - secp256k1.swift (0.1.4)
+  - nanopb (2.30910.0):
+    - nanopb/decode (= 2.30910.0)
+    - nanopb/encode (= 2.30910.0)
+  - nanopb/decode (2.30910.0)
+  - nanopb/encode (2.30910.0)
+  - PromisesObjC (2.4.0)
+  - PromisesSwift (2.4.0):
+    - PromisesObjC (= 2.4.0)
   - Sodium (0.9.1)
   - Solana.Swift (1.1):
-    - secp256k1.swift
-    - Starscream (~> 4.0.0)
-    - TweetNacl (~> 1.0.2)
-  - Starscream (4.0.4)
-  - stellar-ios-mac-sdk (2.3.2)
+    - Starscream (= 4.0.8)
+  - Starscream (4.0.8)
+  - stellar-ios-mac-sdk (2.5.4)
   - SwiftCBOR (0.4.5)
-  - SwiftDate (6.3.1)
-  - SwiftProtobuf (1.21.0)
+  - SwiftDate (7.0.0)
   - SwiftyJSON (5.0.1)
-  - TangemSdk (3.8.0)
-  - TangemWalletCore (3.1.9-tangem1):
-    - SwiftProtobuf
-  - TweetNacl (1.0.2)
-  - WalletConnectSwift (1.7.0):
-    - CryptoSwift (~> 1.5)
-  - WalletConnectSwiftV2 (1.6.6):
-    - WalletConnectSwiftV2/WalletConnect (= 1.6.6)
-  - WalletConnectSwiftV2/Commons (1.6.6)
-  - WalletConnectSwiftV2/HTTPClient (1.6.6)
-  - WalletConnectSwiftV2/JSONRPC (1.6.6):
+  - TangemSdk (3.10.0)
+  - WalletConnectSwiftV2 (1.18.7):
+    - WalletConnectSwiftV2/WalletConnect (= 1.18.7)
+  - WalletConnectSwiftV2/Commons (1.18.7)
+  - WalletConnectSwiftV2/HTTPClient (1.18.7)
+  - WalletConnectSwiftV2/JSONRPC (1.18.7):
     - WalletConnectSwiftV2/Commons
-  - WalletConnectSwiftV2/WalletConnect (1.6.6):
-    - WalletConnectSwiftV2/WalletConnectPairing
+  - WalletConnectSwiftV2/WalletConnect (1.18.7):
+    - WalletConnectSwiftV2/WalletConnectAuth
+    - WalletConnectSwiftV2/WalletConnectPush
+    - WalletConnectSwiftV2/WalletConnectSign
     - WalletConnectSwiftV2/WalletConnectVerify
-  - WalletConnectSwiftV2/WalletConnectJWT (1.6.6):
+  - WalletConnectSwiftV2/WalletConnectAuth (1.18.7):
+    - WalletConnectSwiftV2/WalletConnectPairing
+    - WalletConnectSwiftV2/WalletConnectSigner
+    - WalletConnectSwiftV2/WalletConnectVerify
+  - WalletConnectSwiftV2/WalletConnectJWT (1.18.7):
     - WalletConnectSwiftV2/WalletConnectKMS
-  - WalletConnectSwiftV2/WalletConnectKMS (1.6.6):
+  - WalletConnectSwiftV2/WalletConnectKMS (1.18.7):
     - WalletConnectSwiftV2/WalletConnectUtils
-  - WalletConnectSwiftV2/WalletConnectNetworking (1.6.6):
+  - WalletConnectSwiftV2/WalletConnectNetworking (1.18.7):
     - WalletConnectSwiftV2/HTTPClient
     - WalletConnectSwiftV2/WalletConnectRelay
-  - WalletConnectSwiftV2/WalletConnectPairing (1.6.6):
+  - WalletConnectSwiftV2/WalletConnectPairing (1.18.7):
     - WalletConnectSwiftV2/WalletConnectNetworking
-  - WalletConnectSwiftV2/WalletConnectRelay (1.6.6):
+  - WalletConnectSwiftV2/WalletConnectPush (1.18.7):
     - WalletConnectSwiftV2/WalletConnectJWT
-  - WalletConnectSwiftV2/WalletConnectUtils (1.6.6):
+    - WalletConnectSwiftV2/WalletConnectNetworking
+  - WalletConnectSwiftV2/WalletConnectRelay (1.18.7):
+    - WalletConnectSwiftV2/WalletConnectJWT
+  - WalletConnectSwiftV2/WalletConnectSign (1.18.7):
+    - WalletConnectSwiftV2/WalletConnectPairing
+    - WalletConnectSwiftV2/WalletConnectSigner
+    - WalletConnectSwiftV2/WalletConnectVerify
+  - WalletConnectSwiftV2/WalletConnectSigner (1.18.7):
+    - WalletConnectSwiftV2/WalletConnectNetworking
+  - WalletConnectSwiftV2/WalletConnectUtils (1.18.7):
     - WalletConnectSwiftV2/JSONRPC
-  - WalletConnectSwiftV2/WalletConnectVerify (1.6.6):
+  - WalletConnectSwiftV2/WalletConnectVerify (1.18.7):
     - WalletConnectSwiftV2/WalletConnectNetworking
     - WalletConnectSwiftV2/WalletConnectUtils
-  - web3swift (2.2.1):
-    - BigInt
-    - CryptoSwift
-    - PromiseKit
-    - secp256k1.swift
-    - Starscream
-  - XCGLogger (7.0.1):
-    - XCGLogger/Core (= 7.0.1)
-  - XCGLogger/Core (7.0.1):
-    - ObjcExceptionBridging
-  - ZendeskChatProvidersSDK (2.12.0)
-  - ZendeskChatSDK (2.12.0):
-    - ZendeskChatProvidersSDK (= 2.12.0)
-    - ZendeskMessagingSDK (= 3.8.5)
-  - ZendeskCommonUISDK (6.1.4)
-  - ZendeskCoreSDK (2.7.0)
-  - ZendeskMessagingAPISDK (3.8.5):
-    - ZendeskSDKConfigurationsSDK (= 1.1.11)
-  - ZendeskMessagingSDK (3.8.5):
-    - ZendeskCommonUISDK (= 6.1.4)
-    - ZendeskMessagingAPISDK (= 3.8.5)
-  - ZendeskSDKConfigurationsSDK (1.1.11)
-  - ZendeskSupportProvidersSDK (5.5.0):
-    - ZendeskCoreSDK (= 2.7.0)
-  - ZendeskSupportSDK (5.5.0):
-    - ZendeskMessagingSDK (= 3.8.5)
-    - ZendeskSupportProvidersSDK (= 5.5.0)
 
 DEPENDENCIES:
-  - AlertToast (from `https://github.com/elai950/AlertToast`, commit `a437862bb6605080a5816e866cbd4ac8c8657b49`)
-  - Amplitude (~> 8.8.0)
-  - AppsFlyerFramework
-  - BinanceChain (from `https://github.com/tangem/swiftbinancechain.git`, tag `0.0.9`)
-  - BitcoinCore.swift (from `https://github.com/tangem/bitcoincore.git`, tag `0.0.19`)
-  - BlockchainSdk (from `https://github.com/tangem/blockchain-sdk-swift.git`, tag `develop-302`)
-  - Firebase/Analytics
-  - Firebase/Crashlytics
-  - HDWalletKit (from `https://github.com/tangem/hdwallet.git`, tag `0.3.12`)
-  - Kingfisher (from `https://github.com/onevcat/Kingfisher.git`, branch `version6-xcode13`)
-  - Mobile-Buy-SDK
+  - AmplitudeSwift (= 1.6.2)
+  - BinanceChain (from `https://github.com/tangem/swiftbinancechain.git`, tag `0.0.11`)
+  - BitcoinCore.swift (from `https://github.com/tangem/bitcoincore.git`, tag `0.0.20`)
+  - BlockchainSdk (from `https://github.com/tangem/blockchain-sdk-swift.git`, tag `develop-695`)
+  - BlockiesSwift (~> 0.1.2)
+  - CombineExt (~> 1.8.0)
+  - Firebase/Analytics (= 10.29.0)
+  - Firebase/Crashlytics (= 10.29.0)
+  - Firebase/Messaging (= 10.29.0)
+  - GDPerformanceView-Swift (~> 2.1)
+  - Kingfisher (~> 7.11.0)
   - Moya
-  - Solana.Swift (from `https://github.com/tangem/Solana.Swift`, tag `add-external-signer-7`)
-  - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-248`)
-  - TangemWalletCore (from `https://github.com/tangem/wallet-core-binaries-ios.git`, tag `3.1.9-tangem4`)
-  - WalletConnectSwift (from `https://github.com/WalletConnect/WalletConnectSwift`, tag `1.7.0`)
-  - WalletConnectSwiftV2 (from `https://github.com/WalletConnect/WalletConnectSwiftV2`, tag `1.6.6`)
-  - web3swift (from `https://github.com/tangem/web3swift.git`, tag `2.2.12`)
-  - ZendeskChatSDK (~> 2.12.0)
-  - ZendeskSupportSDK (~> 5.5.0)
+  - Solana.Swift (from `https://github.com/tangem/Solana.Swift`, tag `1.2.0-tangem11`)
+  - SwiftyJSON (from `https://github.com/tangem/SwiftyJSON.git`, tag `5.0.1-tangem1`)
+  - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-312`)
+  - WalletConnectSwiftV2 (from `https://github.com/WalletConnect/WalletConnectSwiftV2`, tag `1.18.7`)
 
 SPEC REPOS:
   trunk:
     - Alamofire
-    - Amplitude
+    - AmplitudeSwift
     - AnalyticsConnector
     - AnyCodable-FlightSchool
-    - AppsFlyerFramework
-    - BigInt
-    - CryptoSwift
+    - BlockiesSwift
+    - CombineExt
     - Firebase
     - FirebaseAnalytics
     - FirebaseCore
@@ -285,173 +251,109 @@ SPEC REPOS:
     - FirebaseCoreInternal
     - FirebaseCrashlytics
     - FirebaseInstallations
+    - FirebaseMessaging
+    - FirebaseRemoteConfigInterop
     - FirebaseSessions
+    - GDPerformanceView-Swift
     - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleUtilities
-    - Mobile-Buy-SDK
+    - Kingfisher
     - Moya
     - nanopb
-    - ObjcExceptionBridging
-    - PromiseKit
     - PromisesObjC
     - PromisesSwift
-    - ScaleCodec
-    - secp256k1.swift
     - Sodium
     - Starscream
     - stellar-ios-mac-sdk
     - SwiftCBOR
     - SwiftDate
-    - SwiftProtobuf
-    - SwiftyJSON
-    - TweetNacl
-    - XCGLogger
-    - ZendeskChatProvidersSDK
-    - ZendeskChatSDK
-    - ZendeskCommonUISDK
-    - ZendeskCoreSDK
-    - ZendeskMessagingAPISDK
-    - ZendeskMessagingSDK
-    - ZendeskSDKConfigurationsSDK
-    - ZendeskSupportProvidersSDK
-    - ZendeskSupportSDK
 
 EXTERNAL SOURCES:
-  AlertToast:
-    :commit: a437862bb6605080a5816e866cbd4ac8c8657b49
-    :git: https://github.com/elai950/AlertToast
   BinanceChain:
     :git: https://github.com/tangem/swiftbinancechain.git
-    :tag: 0.0.9
+    :tag: 0.0.11
   BitcoinCore.swift:
     :git: https://github.com/tangem/bitcoincore.git
-    :tag: 0.0.19
+    :tag: 0.0.20
   BlockchainSdk:
     :git: https://github.com/tangem/blockchain-sdk-swift.git
-    :tag: develop-302
-  HDWalletKit:
-    :git: https://github.com/tangem/hdwallet.git
-    :tag: 0.3.12
-  Kingfisher:
-    :branch: version6-xcode13
-    :git: https://github.com/onevcat/Kingfisher.git
+    :tag: develop-695
   Solana.Swift:
     :git: https://github.com/tangem/Solana.Swift
-    :tag: add-external-signer-7
+    :tag: 1.2.0-tangem11
+  SwiftyJSON:
+    :git: https://github.com/tangem/SwiftyJSON.git
+    :tag: 5.0.1-tangem1
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
-    :tag: develop-248
-  TangemWalletCore:
-    :git: https://github.com/tangem/wallet-core-binaries-ios.git
-    :tag: 3.1.9-tangem4
-  WalletConnectSwift:
-    :git: https://github.com/WalletConnect/WalletConnectSwift
-    :tag: 1.7.0
+    :tag: develop-312
   WalletConnectSwiftV2:
     :git: https://github.com/WalletConnect/WalletConnectSwiftV2
-    :tag: 1.6.6
-  web3swift:
-    :git: https://github.com/tangem/web3swift.git
-    :tag: 2.2.12
+    :tag: 1.18.7
 
 CHECKOUT OPTIONS:
-  AlertToast:
-    :commit: a437862bb6605080a5816e866cbd4ac8c8657b49
-    :git: https://github.com/elai950/AlertToast
   BinanceChain:
     :git: https://github.com/tangem/swiftbinancechain.git
-    :tag: 0.0.9
+    :tag: 0.0.11
   BitcoinCore.swift:
     :git: https://github.com/tangem/bitcoincore.git
-    :tag: 0.0.19
+    :tag: 0.0.20
   BlockchainSdk:
     :git: https://github.com/tangem/blockchain-sdk-swift.git
-    :tag: develop-302
-  HDWalletKit:
-    :git: https://github.com/tangem/hdwallet.git
-    :tag: 0.3.12
-  Kingfisher:
-    :commit: 2742b4de5036f9352d94c891495a3af3b9bdb67c
-    :git: https://github.com/onevcat/Kingfisher.git
+    :tag: develop-695
   Solana.Swift:
     :git: https://github.com/tangem/Solana.Swift
-    :tag: add-external-signer-7
+    :tag: 1.2.0-tangem11
+  SwiftyJSON:
+    :git: https://github.com/tangem/SwiftyJSON.git
+    :tag: 5.0.1-tangem1
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
-    :tag: develop-248
-  TangemWalletCore:
-    :git: https://github.com/tangem/wallet-core-binaries-ios.git
-    :tag: 3.1.9-tangem4
-  WalletConnectSwift:
-    :git: https://github.com/WalletConnect/WalletConnectSwift
-    :tag: 1.7.0
+    :tag: develop-312
   WalletConnectSwiftV2:
     :git: https://github.com/WalletConnect/WalletConnectSwiftV2
-    :tag: 1.6.6
-  web3swift:
-    :git: https://github.com/tangem/web3swift.git
-    :tag: 2.2.12
+    :tag: 1.18.7
 
 SPEC CHECKSUMS:
-  Alamofire: d368e1ff8a298e6dde360e35a3e68e6c610e7204
-  AlertToast: 8c9d5efb2df6ea728b32b62bce99d876ec3e5393
-  Amplitude: 710116f3539c225e86fb70a8abdcd20015683132
-  AnalyticsConnector: 4c386d5972ac9da86e22d668564dbbac97558754
+  Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
+  AmplitudeSwift: cc22038404dc5581e2dea5dc2501302959dd3c90
+  AnalyticsConnector: a53214d38ae22734c6266106c0492b37832633a9
   AnyCodable-FlightSchool: 261cbe76757802b17d471b9059b21e6fa5edf57b
-  AppsFlyerFramework: e309a6cab366296bf891dc68b175de1e9a44f86c
-  BigInt: f668a80089607f521586bbe29513d708491ef2f7
-  BinanceChain: b77d4c0e496efbf13bdb1f428621480fd52f4ba1
+  BinanceChain: f727abc7a20ba71f4497e46b7400124027b25692
   BitcoinCore.swift: 64ac4e69d9a6ef917bcbb0c23f1324cf57a822fb
-  BlockchainSdk: 595295c1d028307a0473d7ef4641589eed7e5c78
-  CryptoSwift: c4f2debceb38bf44c80659afe009f71e23e4a082
-  Firebase: 0219acf760880eeec8ce479895bd7767466d9f81
-  FirebaseAnalytics: f8133442ee6f8512e28ff19e62ce15398bfaeace
-  FirebaseCore: e317665b9d744727a97e623edbbed009320afdd7
-  FirebaseCoreExtension: f17247ba8c61e4d3c8d136b5e2de3cb4ac6a85b6
-  FirebaseCoreInternal: 8845798510aae74703467480f71ac613788d0696
-  FirebaseCrashlytics: 35fdd1a433b31e28adcf5c8933f4c526691a1e0b
-  FirebaseInstallations: 59c0e4c7a816a0f76710d83f77e5369b3e45eb96
-  FirebaseSessions: 34e5c084da010ef3802cbc062b822e513c9e6318
-  GoogleAppMeasurement: fe17c92a32207dd5cdd4e8d742767f2da74857f6
-  GoogleDataTransport: ea169759df570f4e37bdee1623ec32a7e64e67c4
-  GoogleUtilities: c2bdc4cf2ce786c4d2e6b3bcfd599a25ca78f06f
-  HDWalletKit: 602ec664633cc6bae1c697e4e17af42efb69bfad
-  Kingfisher: 8b783c3d7be73a99b2172a743a5bc0a4dd331d79
-  Mobile-Buy-SDK: 29812838f06cbf78fd80728d9f84e9eaf49c7843
+  BlockchainSdk: b744a57e39d5b5e76c8ecfaa8feb41753f9fa7df
+  BlockiesSwift: 22d8d56dd187e6bfd16cb8c8fbd4fd4896c3e65d
+  CombineExt: c4daa97ef75754d8ef319bd79edeef82652f3eea
+  Firebase: cec914dab6fd7b1bd8ab56ea07ce4e03dd251c2d
+  FirebaseAnalytics: 23717de130b779aa506e757edb9713d24b6ffeda
+  FirebaseCore: 30e9c1cbe3d38f5f5e75f48bfcea87d7c358ec16
+  FirebaseCoreExtension: 705ca5b14bf71d2564a0ddc677df1fc86ffa600f
+  FirebaseCoreInternal: df84dd300b561c27d5571684f389bf60b0a5c934
+  FirebaseCrashlytics: 34647b41e18de773717fdd348a22206f2f9bc774
+  FirebaseInstallations: 913cf60d0400ebd5d6b63a28b290372ab44590dd
+  FirebaseMessaging: 7b5d8033e183ab59eb5b852a53201559e976d366
+  FirebaseRemoteConfigInterop: 6efda51fb5e2f15b16585197e26eaa09574e8a4d
+  FirebaseSessions: dbd14adac65ce996228652c1fc3a3f576bdf3ecc
+  GDPerformanceView-Swift: 22d964fe40b19e3d914dba2586237d064de8fd77
+  GoogleAppMeasurement: f9de05ee17401e3355f68e8fc8b5064d429f5918
+  GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
+  GoogleUtilities: ea963c370a38a8069cc5f7ba4ca849a60b6d7d15
+  Kingfisher: b9c985d864d43515f404f1ef4a8ce7d802ace3ac
   Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
-  nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
-  ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
-  PromiseKit: 49d70c53d5d20e346beaea4b276b5dd2ab446bb4
-  PromisesObjC: 09985d6d70fbe7878040aa746d78236e6946d2ef
-  PromisesSwift: cf9eb58666a43bbe007302226e510b16c1e10959
-  ScaleCodec: 5d7d0439940c600f49babad6ea265a09377c404b
-  secp256k1.swift: a7e7a214f6db6ce5db32cc6b2b45e5c4dd633634
+  nanopb: 438bc412db1928dac798aa6fd75726007be04262
+  PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
+  PromisesSwift: 9d77319bbe72ebf6d872900551f7eeba9bce2851
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
-  Solana.Swift: 81d52fee263fded11b0d4e7859863ae489fe753e
-  Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
-  stellar-ios-mac-sdk: d8ab1ff49ac48e25ac3097da4deebcef77af6047
+  Solana.Swift: b926815c93f483628ce51d9a51c96567ae14709e
+  Starscream: 19b5533ddb925208db698f0ac508a100b884a1b9
+  stellar-ios-mac-sdk: 01055b326a62d1e9bb50999eadeb85c9dec60658
   SwiftCBOR: ac340b74d3b2cf1f8884bb748bd09875848e3873
-  SwiftDate: 72d28954e8e1c6c1c0f917ccc8005e4f83c7d4b2
-  SwiftProtobuf: afced68785854575756db965e9da52bbf3dc45e7
-  SwiftyJSON: 2f33a42c6fbc52764d96f13368585094bfd8aa5e
-  TangemSdk: 467241af06c09b4fb14980a985413bef48672a25
-  TangemWalletCore: 87a4637456e46c2aa3d49a6a1dc07a8054783183
-  TweetNacl: 3abf4d1d2082b0114e7a67410e300892448951e6
-  WalletConnectSwift: 6309bf3011b0b30e3e9d1e7449535302a9240f71
-  WalletConnectSwiftV2: d8cf002f96b4b3ca23c2c3019711ecef93f2d2ed
-  web3swift: 93f68f5430c11a78bba2351c139d2d22f2c04b5e
-  XCGLogger: 1943831ef907df55108b0b18657953f868de973b
-  ZendeskChatProvidersSDK: b3f5a914ed9d518770c994f0f04683952087b00a
-  ZendeskChatSDK: 12fbe34d67b73895882786736329236e7e092b67
-  ZendeskCommonUISDK: ba160fe413b491af9e7bfcb9808afcd494dc83a5
-  ZendeskCoreSDK: 4236eb56f9386cf0770900df04c857b9b4d79d03
-  ZendeskMessagingAPISDK: 410f9bcf07c79fe98d6f251da102368d6b356c54
-  ZendeskMessagingSDK: 95d396c981dacfab83cc7b9736e8561d51a3052b
-  ZendeskSDKConfigurationsSDK: ebced171fd1f4eb57760e8537d8cfa6a450122be
-  ZendeskSupportProvidersSDK: 77a62fe6bacc05bb10ff20edce75612fa109fd61
-  ZendeskSupportSDK: ba72e90e327635b5fde3d023a3de33242a6ee8ab
+  SwiftDate: bbc26e26fc8c0c33fbee8c140c5e8a68293a148a
+  SwiftyJSON: c0bd75b5969785b3d9ae41d5709fe75bc5de4002
+  TangemSdk: 943099314a07e448307f994dca6217bb27366b66
+  WalletConnectSwiftV2: 5ea47db4d86e39fc749b66a05a661af9e87b277d
 
-PODFILE CHECKSUM: a7df7eb8dd2c6b7bf7bf9685d45fdab68a8b4b86
+PODFILE CHECKSUM: 6a418c3867466f28945147c7549374fb9c7f6c7a
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.15.2

@@ -7,11 +7,11 @@
 //
 
 import Foundation
+
 extension Analytics {
     enum AnalyticsSystem {
         case firebase
         case amplitude
-        case appsflyer
         case crashlytics
     }
 }

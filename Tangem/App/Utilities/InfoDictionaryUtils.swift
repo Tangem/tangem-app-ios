@@ -14,6 +14,7 @@ enum InfoDictionaryUtils {
     case bundleVersion
     case bundleURLTypes
     case bundleURLSchemes
+    case bundleIdentifier
 
     func value<T>() -> T? {
         let infoDictionary = Bundle.main.infoDictionary ?? [:]
@@ -26,6 +27,8 @@ enum InfoDictionaryUtils {
             return infoDictionary["CFBundleVersion"] as? T
         case .bundleURLTypes:
             return infoDictionary["CFBundleURLTypes"] as? T
+        case .bundleIdentifier:
+            return infoDictionary["CFBundleIdentifier"] as? T
         case .bundleURLSchemes:
             guard let dictionary: [[String: Any]] = InfoDictionaryUtils.bundleURLTypes.value() else {
                 return nil

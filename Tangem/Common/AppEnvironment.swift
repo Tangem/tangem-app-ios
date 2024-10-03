@@ -40,10 +40,27 @@ extension AppEnvironment {
         return identifier
     }
 
+    var blockchainDataStorageSuiteName: String {
+        guard let identifier = infoDictionary["BSDK_SUITE_NAME"] as? String else {
+            assertionFailure("BSDK_SUITE_NAME not found")
+            return ""
+        }
+
+        return identifier
+    }
+
     var apiBaseUrl: URL {
         FeatureStorage().useDevApi ?
             URL(string: "https://devapi.tangem-tech.com/v1")! :
             URL(string: "https://api.tangem-tech.com/v1")!
+    }
+
+    var tangemComBaseUrl: URL {
+        if FeatureStorage().useDevApi {
+            return URL(string: "https://devweb.tangem.com")!
+        } else {
+            return URL(string: "https://tangem.com")!
+        }
     }
 
     var isTestnet: Bool {

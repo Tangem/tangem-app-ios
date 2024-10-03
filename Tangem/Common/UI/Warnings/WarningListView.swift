@@ -10,7 +10,7 @@ import SwiftUI
 
 struct WarningListView: View {
     var warnings: WarningsContainer
-    var warningButtonAction: (Int, WarningPriority, WarningButton) -> Void
+    var warningButtonAction: (Int, WarningPriority, WarningView.WarningButton) -> Void
     var spacing: CGFloat = 10
 
     private let transition = AnyTransition.scale.combined(with: .opacity)
@@ -19,28 +19,28 @@ struct WarningListView: View {
         Group {
             ForEach(Array(warnings.criticals.enumerated()), id: \.element.id) { i, item in
                 WarningView(warning: warnings.criticals[i], buttonAction: { b in
-                    self.buttonAction(at: i, priority: .critical, button: b)
+                    buttonAction(at: i, priority: .critical, button: b)
                 })
                 .transition(transition)
             }
             ForEach(Array(warnings.warnings.enumerated()), id: \.element.id) { i, item in
                 WarningView(warning: warnings.warnings[i], buttonAction: { b in
-                    self.buttonAction(at: i, priority: .warning, button: b)
+                    buttonAction(at: i, priority: .warning, button: b)
                 })
                 .transition(transition)
             }
             ForEach(Array(warnings.infos.enumerated()), id: \.element.id) { i, item in
                 WarningView(warning: warnings.infos[i], buttonAction: { b in
-                    self.buttonAction(at: i, priority: .info, button: b)
+                    buttonAction(at: i, priority: .info, button: b)
                 })
                 .transition(transition)
             }
         }
     }
 
-    private func buttonAction(at index: Int, priority: WarningPriority, button: WarningButton) {
+    private func buttonAction(at index: Int, priority: WarningPriority, button: WarningView.WarningButton) {
         withAnimation {
-            self.warningButtonAction(index, priority, button)
+            warningButtonAction(index, priority, button)
         }
     }
 }

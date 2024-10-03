@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "positive_quote_icon.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

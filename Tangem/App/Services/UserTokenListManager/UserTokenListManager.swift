@@ -9,11 +9,16 @@
 import Combine
 import BlockchainSdk
 
-protocol UserTokenListManager {
-    var didPerformInitialLoading: Bool { get }
-    func update(_ type: CommonUserTokenListManager.UpdateType)
+// TODO: Andrey Fedorov - The interface and responsibilities of this entity are one big mess, refactoring needed (IOS-4403)
+protocol UserTokenListManager: UserTokensSyncService {
+    var userTokens: [StorageEntry] { get }
+    var userTokensPublisher: AnyPublisher<[StorageEntry], Never> { get }
 
-    func updateLocalRepositoryFromServer(result: @escaping (Result<UserTokenList, Error>) -> Void)
-    func getEntriesFromRepository() -> [StorageEntry]
-    func clearRepository(completion: @escaping () -> Void)
+    var userTokensList: StoredUserTokenList { get }
+    var userTokensListPublisher: AnyPublisher<StoredUserTokenList, Never> { get }
+
+    func update(with userTokenList: StoredUserTokenList)
+    func update(_ type: UserTokenListUpdateType, shouldUpload: Bool)
+    func updateLocalRepositoryFromServer(_ completion: @escaping (Result<Void, Error>) -> Void)
+    func upload()
 }

@@ -1,12 +1,15 @@
 {
   "images" : [
     {
-      "filename" : "Solana.pdf",
+      "filename" : "solana.pdf",
       "idiom" : "universal"
     }
   ],
   "info" : {
     "author" : "xcode",
     "version" : 1
+  },
+  "properties" : {
+    "preserves-vector-representation" : true
   }
 }

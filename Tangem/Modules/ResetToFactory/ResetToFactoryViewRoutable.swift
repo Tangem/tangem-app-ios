@@ -9,5 +9,5 @@
 import Foundation
 
 protocol ResetToFactoryViewRoutable: AnyObject {
-    func didResetCard()
+    func dismiss()
 }

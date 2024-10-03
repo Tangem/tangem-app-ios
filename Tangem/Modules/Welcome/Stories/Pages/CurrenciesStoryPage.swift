@@ -25,19 +25,17 @@ struct CurrenciesStoryPage: View {
 
             VStack(spacing: 16) {
                 Text(Localization.storyCurrenciesTitle)
-                    .font(.system(size: 36, weight: .semibold))
+                    .style(Fonts.Bold.largeTitle, color: Colors.Text.primary1)
                     .minimumScaleFactor(0.5)
                     .multilineTextAlignment(.center)
-                    .padding(.horizontal)
                     .storyTextAppearanceModifier(progress: progress, type: .title, textBlockAppearance: .almostImmediate)
 
                 Text(Localization.storyCurrenciesDescription)
-                    .font(.system(size: 22))
+                    .style(Fonts.Regular.callout, color: Colors.Text.tertiary)
                     .multilineTextAlignment(.center)
-                    .foregroundColor(.gray)
-                    .padding(.horizontal)
                     .storyTextAppearanceModifier(progress: progress, type: .description, textBlockAppearance: .almostImmediate)
             }
+            .padding(.horizontal, 28)
             .fixedSize(horizontal: false, vertical: true)
 
             ZStack(alignment: .bottom) {
@@ -45,7 +43,7 @@ struct CurrenciesStoryPage: View {
                     .background(
                         VStack {
                             Group {
-                                ForEach(0 ..< numberOfRows) { index in
+                                ForEach(0 ..< numberOfRows, id: \.self) { index in
                                     let odd = (index % 2 == 0)
                                     Image("currency-\(index % numberOfRowImages)")
                                         .offset(x: odd ? 50 : 0, y: 0)
@@ -63,14 +61,14 @@ struct CurrenciesStoryPage: View {
                         GeometryReader { geometry in
                             VStack {
                                 Spacer()
-                                LinearGradient(colors: [.white.opacity(0), Color("tangem_story_background")], startPoint: .top, endPoint: .bottom)
+                                LinearGradient(colors: [.clear, Colors.Old.tangemStoryBackground], startPoint: .top, endPoint: .bottom)
                                     .frame(height: geometry.size.height / 3)
                             }
                         }
                     )
 
                 MainButton(
-                    title: Localization.homeButtonSearchTokens,
+                    title: Localization.commonSearchTokens,
                     icon: .leading(Assets.search),
                     style: .secondary,
                     isDisabled: isScanning,
@@ -79,11 +77,11 @@ struct CurrenciesStoryPage: View {
                 .padding(.horizontal, 16)
             }
 
-            StoriesBottomButtons(scanColorStyle: .secondary, orderColorStyle: .primary, isScanning: $isScanning, scanCard: scanCard, orderCard: orderCard)
+            StoriesBottomButtons(scanColorStyle: .primary, orderColorStyle: .secondary, isScanning: $isScanning, scanCard: scanCard, orderCard: orderCard)
                 .padding(.horizontal)
-                .padding(.bottom)
+                .padding(.bottom, 6)
         }
-        .background(Color("tangem_story_background").edgesIgnoringSafeArea(.all))
+        .background(Colors.Old.tangemStoryBackground.edgesIgnoringSafeArea(.all))
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }

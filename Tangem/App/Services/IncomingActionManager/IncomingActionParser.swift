@@ -12,18 +12,23 @@ import UIKit
 public class IncomingActionParser {
     @Injected(\.walletConnectService) private var walletConnectService: WalletConnectService
 
+    private var incomingActionURLParsers: [IncomingActionURLParser] = [
+        NDEFURLParser(),
+        DismissSafariActionURLHelper(),
+        SellActionURLHelper(),
+        WalletConnectURLParser(),
+        BlockchainURLSchemesParser(),
+    ]
+
     public init() {}
 
     public func parseDeeplink(_ url: URL) -> IncomingAction? {
         guard validateURL(url) else { return nil }
 
-        if url.absoluteString.starts(with: Constants.ndefURL) {
-            return .start
-        }
-
-        let parser = WalletConnectURLParser()
-        if let uri = parser.parse(url) {
-            return .walletConnect(uri)
+        for parser in incomingActionURLParsers {
+            if let action = parser.parse(url) {
+                return action
+            }
         }
 
         return nil
@@ -42,9 +47,10 @@ public class IncomingActionParser {
     private func validateURL(_ url: URL) -> Bool {
         let urlString = url.absoluteString
 
-        if urlString.starts(with: Constants.tangemDomain)
-            || urlString.starts(with: Constants.appTangemDomain)
-            || urlString.starts(with: Constants.universalLinkScheme) {
+        if urlString.starts(with: IncomingActionConstants.tangemDomain)
+            || urlString.starts(with: IncomingActionConstants.appTangemDomain)
+            || url.absoluteString.starts(with: IncomingActionConstants.universalLinkScheme)
+            || SupportedURLSchemeCheck.isURLSchemeSupported(for: url) {
             return true
         }
 
@@ -56,11 +62,14 @@ private extension IncomingActionParser {
     enum AppIntent: String {
         case scanCard = "ScanTangemCardIntent"
     }
+}
 
-    enum Constants {
-        static var appTangemDomain = "https://app.tangem.com"
-        static var universalLinkScheme = "tangem://"
-        static var tangemDomain = AppConstants.tangemDomainUrl.absoluteString
-        static var ndefURL = "\(appTangemDomain)/ndef"
+enum SupportedURLSchemeCheck {
+    static func isURLSchemeSupported(for url: URL) -> Bool {
+        guard let supportedSchemes: [[String]] = InfoDictionaryUtils.bundleURLSchemes.value() else {
+            // impossible case
+            return false
+        }
+        return supportedSchemes.flatMap { $0 }.contains(url.scheme ?? "")
     }
 }

@@ -7,16 +7,36 @@
 //
 
 import Foundation
+import TangemSdk
 import BlockchainSdk
-import struct TangemSdk.DerivationPath
 
 struct BlockchainNetwork: Codable, Hashable, Equatable {
     let blockchain: Blockchain
     let derivationPath: DerivationPath?
 
-    // TODO: Remove optional
-    init(_ blockchain: Blockchain, derivationPath: DerivationPath? = nil) {
+    init(_ blockchain: Blockchain, derivationPath: DerivationPath?) {
         self.blockchain = blockchain
         self.derivationPath = derivationPath
+    }
+
+    // Get all derivation paths for current Blockchain
+    func derivationPaths() -> [DerivationPath] {
+        guard let derivationPath else {
+            return []
+        }
+
+        // If we use the extended cardano then
+        // we should have two derivations for collect correct PublicKey
+        guard case .cardano(let extended) = blockchain, extended else {
+            return [derivationPath]
+        }
+
+        do {
+            let extendedPath = try CardanoUtil().extendedDerivationPath(for: derivationPath)
+            return [derivationPath, extendedPath]
+        } catch {
+            AppLog.shared.error(error)
+            return [derivationPath]
+        }
     }
 }

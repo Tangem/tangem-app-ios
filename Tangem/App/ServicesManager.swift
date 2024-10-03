@@ -9,32 +9,53 @@
 import Foundation
 import Combine
 import Firebase
-import AppsFlyerLib
-import Amplitude
+import BlockchainSdk
+import TangemStaking
 
 class ServicesManager {
     @Injected(\.exchangeService) private var exchangeService: ExchangeService
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
+    @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
+    @Injected(\.accountHealthChecker) private var accountHealthChecker: AccountHealthChecker
+    @Injected(\.apiListProvider) private var apiListProvider: APIListProvider
+    @Injected(\.pushNotificationsInteractor) private var pushNotificationsInteractor: PushNotificationsInteractor
+
+    private var stakingPendingHashesSender: StakingPendingHashesSender?
 
     private var bag = Set<AnyCancellable>()
 
+    init() {
+        stakingPendingHashesSender = StakingDependenciesFactory().makePendingHashesSender()
+    }
+
     func initialize() {
-        AppLog.shared.debug("Start services initializing")
         AppLog.shared.configure()
+
+        let initialLaunches = AppSettings.shared.numberOfLaunches
+        let currentLaunches = initialLaunches + 1
+        AppSettings.shared.numberOfLaunches = currentLaunches
+
+        AppLog.shared.logAppLaunch(currentLaunches)
+
+        if initialLaunches == 0 {
+            userWalletRepository.initialClean()
+        }
+
+        AppLog.shared.debug("Start services initializing")
 
         if !AppEnvironment.current.isDebug {
             configureFirebase()
-            configureAppsFlyer()
-            configureAmplitude()
         }
 
-        let currentLaunches = AppSettings.shared.numberOfLaunches + 1
-        AppSettings.shared.numberOfLaunches = currentLaunches
-        AppLog.shared.logAppLaunch(currentLaunches)
-        S2CTOUMigrator().migrate()
+        configureBlockchainSdkExceptionHandler()
 
         exchangeService.initialize()
         tangemApiService.initialize()
+        accountHealthChecker.initialize()
+        apiListProvider.initialize()
+        pushNotificationsInteractor.initialize()
+        SendFeatureProvider.shared.loadFeaturesAvailability()
+        stakingPendingHashesSender?.sendHashesIfNeeded()
     }
 
     private func configureFirebase() {
@@ -49,23 +70,8 @@ class ServicesManager {
         FirebaseApp.configure(options: options)
     }
 
-    private func configureAppsFlyer() {
-        guard AppEnvironment.current.isProduction else {
-            return
-        }
-
-        do {
-            let keysManager = try CommonKeysManager()
-            AppsFlyerLib.shared().appsFlyerDevKey = keysManager.appsFlyer.appsFlyerDevKey
-            AppsFlyerLib.shared().appleAppID = keysManager.appsFlyer.appsFlyerAppID
-        } catch {
-            assertionFailure("CommonKeysManager not initialized with error: \(error.localizedDescription)")
-        }
-    }
-
-    private func configureAmplitude() {
-        Amplitude.instance().trackingSessionEvents = true
-        Amplitude.instance().initializeApiKey(try! CommonKeysManager().amplitudeApiKey)
+    private func configureBlockchainSdkExceptionHandler() {
+        ExceptionHandler.shared.append(output: Analytics.BlockchainExceptionHandler())
     }
 }
 

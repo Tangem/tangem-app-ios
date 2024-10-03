@@ -9,12 +9,14 @@
 import Foundation
 import SwiftUI
 
+@available(*, deprecated, message: "Use NotificationManager instead")
 enum WarningPriority: String, Decodable {
     case info
     case warning
     case critical
 }
 
+@available(*, deprecated, message: "Use NotificationManager instead")
 enum WarningType: String, Decodable {
     case temporary
     case permanent
@@ -24,12 +26,14 @@ enum WarningType: String, Decodable {
     }
 }
 
+@available(*, deprecated, message: "Use NotificationManager instead")
 enum WarningsLocation: String, Decodable {
     case main
     case send
     case manageTokens
 }
 
+@available(*, deprecated, message: "Use NotificationManager instead")
 struct AppWarning: Identifiable, Equatable, Hashable {
     let id: UUID = .init()
     let title: String

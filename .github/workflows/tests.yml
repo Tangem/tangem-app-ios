@@ -13,6 +13,9 @@ on:
       - reopened
       - synchronize
       - ready_for_review
+  merge_group:
+    types:
+      - checks_requested
   workflow_dispatch:
   
 
@@ -22,7 +25,7 @@ concurrency:
 
 jobs:
   test:
-    name: Test1
+    name: Test
     if: github.event.pull_request.draft == false
     uses: tangem/actions/.github/workflows/test.yml@main
     with:

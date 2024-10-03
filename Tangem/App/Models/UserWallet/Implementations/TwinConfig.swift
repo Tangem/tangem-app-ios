@@ -19,6 +19,15 @@ struct TwinConfig: CardContainer {
         Blockchain.from(blockchainName: walletData.blockchain, curve: card.supportedCurves[0])!
     }
 
+    private var twinKey: TwinKey? {
+        if let walletPublicKey = card.wallets.first?.publicKey,
+           let pairWalletPublicKey = twinData.pairPublicKey {
+            return TwinKey(key1: walletPublicKey, key2: pairWalletPublicKey)
+        }
+
+        return nil
+    }
+
     init(card: CardDTO, walletData: WalletData, twinData: TwinData) {
         self.card = card
         self.walletData = walletData
@@ -39,7 +48,7 @@ extension TwinConfig: UserWalletConfig {
         "Twin"
     }
 
-    var mandatoryCurves: [EllipticCurve] {
+    var createWalletCurves: [EllipticCurve] {
         [.secp256k1]
     }
 
@@ -66,13 +75,11 @@ extension TwinConfig: UserWalletConfig {
     }
 
     var tangemSigner: TangemSigner {
-        guard let walletPublicKey = card.wallets.first?.publicKey,
-              let pairWalletPublicKey = twinData.pairPublicKey else {
-            return .init(with: card.cardId, sdk: makeTangemSdk())
+        if let twinKey {
+            return .init(filter: cardSessionFilter, sdk: makeTangemSdk(), twinKey: twinKey)
         }
 
-        let twinKey = TwinKey(key1: walletPublicKey, key2: pairWalletPublicKey)
-        return .init(with: twinKey, sdk: makeTangemSdk())
+        return .init(filter: cardSessionFilter, sdk: makeTangemSdk(), twinKey: nil)
     }
 
     var emailData: [EmailCollectedData] {
@@ -80,11 +87,29 @@ extension TwinConfig: UserWalletConfig {
     }
 
     var userWalletIdSeed: Data? {
-        TwinCardsUtils.makeCombinedWalletKey(for: card, pairData: twinData)
+        if let firstWalletPiblicKey = card.wallets.first?.publicKey,
+           let pairWalletPiblicKey = twinData.pairPublicKey {
+            return TwinCardsUtils.makeCombinedWalletKey(for: firstWalletPiblicKey, pairPublicKey: pairWalletPiblicKey)
+        }
+
+        return nil
     }
 
     var productType: Analytics.ProductType {
         .twin
+    }
+
+    var cardHeaderImage: ImageType? {
+        Assets.Cards.twins
+    }
+
+    var cardSessionFilter: SessionFilter {
+        if let twinKey {
+            let filter = TwinPreflightReadFilter(twinKey: twinKey)
+            return .custom(filter)
+        }
+
+        return .cardId(card.cardId)
     }
 
     func getFeatureAvailability(_ feature: UserWalletFeature) -> UserWalletFeature.Availability {
@@ -126,7 +151,7 @@ extension TwinConfig: UserWalletConfig {
         case .onlineImage:
             return .available
         case .staking:
-            return .available
+            return .hidden
         case .topup:
             return .available
         case .tokenSynchronization:
@@ -139,31 +164,35 @@ extension TwinConfig: UserWalletConfig {
             return .hidden
         case .transactionHistory:
             return .hidden
-        case .seedPhrase:
-            return .hidden
         case .accessCodeRecoverySettings:
+            return .hidden
+        case .promotion:
             return .hidden
         }
     }
 
-    func makeWalletModel(for token: StorageEntry) throws -> WalletModel {
-        guard let savedPairKey = twinData.pairPublicKey,
-              let walletPublicKey = card.wallets.first?.publicKey else {
+    func makeWalletModelsFactory() -> WalletModelsFactory {
+        return CommonWalletModelsFactory(config: self)
+    }
+
+    func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {
+        guard let savedPairKey = twinData.pairPublicKey else {
             throw CommonError.noData
         }
 
-        let factory = WalletManagerFactoryProvider().factory
-        let twinManager = try factory.makeTwinWalletManager(
-            walletPublicKey: walletPublicKey,
-            pairKey: savedPairKey,
-            isTestnet: AppEnvironment.current.isTestnet
-        )
-
-        return WalletModel(walletManager: twinManager, derivationStyle: card.derivationStyle)
+        return TwinWalletManagerFactory(pairPublicKey: savedPairKey)
     }
 
-    func makeOnboardingStepsBuilder(backupService: BackupService) -> OnboardingStepsBuilder {
-        return TwinOnboardingStepsBulder(card: card, twinData: twinData, touId: tou.id)
+    func makeOnboardingStepsBuilder(
+        backupService: BackupService,
+        isPushNotificationsAvailable: Bool
+    ) -> OnboardingStepsBuilder {
+        return TwinOnboardingStepsBuilder(
+            cardId: card.cardId,
+            hasWallets: !card.wallets.isEmpty,
+            twinData: twinData,
+            isPushNotificationsAvailable: isPushNotificationsAvailable
+        )
     }
 
     func makeTangemSdk() -> TangemSdk {

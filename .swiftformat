@@ -46,6 +46,7 @@
 --enable redundantSelf
 --enable redundantType
 --enable redundantVoidReturnType
+--enable redundantFileprivate
 
 --enable semicolons
 --enable typeSugar
@@ -74,6 +75,7 @@
 
 --enable blankLinesBetweenScopes
 --enable blankLinesBetweenImports
+--enable blankLineAfterImports
 --enable blankLinesAtStartOfScope
 --enable blankLinesAtEndOfScope
 --enable blankLinesAroundMark

@@ -145,7 +145,7 @@ struct FanStackView: View {
                 }
                 .position(x: geom.size.width / 2, y: geom.size.height / 2)
             }
-            .readSize { size in
+            .readGeometry(\.size) { size in
                 model.setupContainer(with: size)
             }
             Spacer()

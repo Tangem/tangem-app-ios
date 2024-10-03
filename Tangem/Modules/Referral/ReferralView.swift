@@ -7,10 +7,13 @@
 //
 
 import SwiftUI
-import AlertToast
 
 struct ReferralView: View {
+    @Environment(\.colorScheme) var colorScheme
+
     @ObservedObject var viewModel: ReferralViewModel
+
+    private let dudePadding: CGFloat = 14
 
     var body: some View {
         GeometryReader { geometry in
@@ -19,7 +22,20 @@ struct ReferralView: View {
                     Assets.referralDude.image
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .padding(.horizontal, 40)
+                        .background(
+                            RadialGradient(
+                                colors: [
+                                    Colors.Control.unchecked,
+                                    // DO NOT replace it with Color.clear. Apparently it is not the same on iOS 15
+                                    Colors.Control.unchecked.opacity(0),
+                                ],
+                                center: .bottom,
+                                startRadius: (colorScheme == .light ? 0.5 : 0.30) * (geometry.size.width - 2 * dudePadding),
+                                endRadius: 0.65 * (geometry.size.width - 2 * dudePadding)
+                            )
+                            .cornerRadiusContinuous(14)
+                        )
+                        .padding(.horizontal, dudePadding)
 
                     Text(Localization.referralTitle)
                         .style(Fonts.Bold.title1, color: Colors.Text.primary1)
@@ -36,9 +52,6 @@ struct ReferralView: View {
                 .frame(minHeight: geometry.size.height + geometry.safeAreaInsets.bottom)
             }
             .edgesIgnoringSafeArea(.bottom)
-            .toast(isPresenting: $viewModel.showCodeCopiedToast) {
-                AlertToast(type: .complete(Color.tangemGreen), title: Localization.referralPromoCodeCopied)
-            }
         }
         .alert(item: $viewModel.errorAlert, content: { $0.alert })
         .navigationBarTitle(Text(Localization.detailsReferralTitle), displayMode: .inline)
@@ -61,9 +74,7 @@ struct ReferralView: View {
                 Assets.cryptoCurrencies,
                 header: { Text(Localization.referralPointCurrenciesTitle) },
                 description: {
-                    Text(Localization.referralPointCurrenciesDescriptionPrefix + " ") +
-                        Text(viewModel.award).foregroundColor(Colors.Text.primary1) +
-                        Text(viewModel.awardDescriptionSuffix)
+                    Text(viewModel.awardDescription(highlightColor: Colors.Text.primary1))
                 }
             )
 
@@ -86,7 +97,7 @@ struct ReferralView: View {
                 notReferralView
             }
         }
-        .padding(.horizontal, 16)
+        .padding(.horizontal, 14)
     }
 
     @ViewBuilder
@@ -98,7 +109,7 @@ struct ReferralView: View {
 
             Spacer()
         }
-        .padding(.horizontal, 16)
+        .padding(.horizontal, 14)
     }
 
     @ViewBuilder
@@ -119,22 +130,6 @@ struct ReferralView: View {
     private var alreadyReferralBottomView: some View {
         VStack(spacing: 14) {
             Spacer()
-
-            HStack {
-                Text(Localization.referralFriendsBoughtTitle)
-                    .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
-
-                Spacer()
-
-                Text(viewModel.numberOfWalletsBought)
-                    .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
-            }
-            .roundedBackground(
-                with: Colors.Background.primary,
-                padding: 16,
-                radius: 14
-            )
-            .padding(.top, 24)
 
             VStack(spacing: 8) {
                 Text(Localization.referralPromoCodeTitle)
@@ -182,7 +177,89 @@ struct ReferralView: View {
                 ))
             }
 
+            VStack(spacing: 0) {
+                HStack {
+                    Text(Localization.referralFriendsBoughtTitle)
+                        .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+
+                    Spacer()
+
+                    Text(viewModel.numberOfWalletsBought)
+                        .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+                }
+                .padding(14)
+
+                if viewModel.isExpectingAwards {
+                    Separator(height: .minimal, color: Colors.Stroke.primary)
+                        .padding(.vertical, 4)
+
+                    expectedAwards
+                }
+            }
+            .roundedBackground(
+                with: Colors.Background.primary,
+                padding: 0,
+                radius: 14
+            )
+
             tosButton
+        }
+    }
+
+    @ViewBuilder
+    private var expectedAwards: some View {
+        VStack(spacing: 0) {
+            if viewModel.hasExpectedAwards {
+                HStack(spacing: 0) {
+                    Text(Localization.referralExpectedAwards)
+                        .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+
+                    Spacer()
+
+                    Text(viewModel.numberOfWalletsForPayments)
+                        .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                }
+                .padding(14)
+            } else {
+                Text(Localization.referralNoExpectedAwards)
+                    .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(14)
+            }
+
+            ForEach(viewModel.expectedAwards, id: \.date) { expectedAward in
+                HStack {
+                    Text(expectedAward.date)
+                        .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
+
+                    Spacer()
+
+                    Text(expectedAward.amount)
+                        .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+                }
+                .padding(14)
+            }
+
+            if viewModel.canExpandExpectedAwards {
+                Button {
+                    withAnimation(nil) {
+                        viewModel.expectedAwardsExpanded.toggle()
+                    }
+                } label: {
+                    HStack(spacing: 4) {
+                        Text(viewModel.expandButtonText)
+                            .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+
+                        Image(systemName: viewModel.expectedAwardsExpanded ? "chevron.up" : "chevron.down")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 9)
+                            .foregroundColor(Colors.Text.tertiary)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .padding(14)
+            }
         }
     }
 
@@ -191,21 +268,13 @@ struct ReferralView: View {
         VStack(spacing: 12) {
             tosButton
 
-            TangemButton(
+            MainButton(
                 title: Localization.referralButtonParticipate,
-                image: "tangemIcon",
-                iconPosition: .trailing,
-                iconPadding: 10,
+                icon: .trailing(Assets.tangemIcon),
+                style: .primary,
                 action: {
                     runTask(viewModel.participateInReferralProgram)
                 }
-            )
-            .buttonStyle(
-                TangemButtonStyle(
-                    colorStyle: .black,
-                    layout: .flexibleWidth,
-                    isLoading: viewModel.isProcessingRequest
-                )
             )
         }
     }
@@ -217,8 +286,11 @@ struct ReferralView_Previews: PreviewProvider {
         NavigationView {
             ReferralView(
                 viewModel: ReferralViewModel(
-                    cardModel: demoCard.cardModel,
-                    userWalletId: Data(),
+                    input: .init(
+                        userWalletId: Data(),
+                        supportedBlockchains: SupportedBlockchains.all,
+                        userTokensManager: UserTokensManagerMock()
+                    ),
                     coordinator: ReferralCoordinator()
                 )
             )
@@ -228,8 +300,11 @@ struct ReferralView_Previews: PreviewProvider {
         NavigationView {
             ReferralView(
                 viewModel: ReferralViewModel(
-                    cardModel: demoCard.cardModel,
-                    userWalletId: Data(hexString: "6772C99F8B400E6F59FFCE0C4A66193BFD49DE2D9738868DE36F5E16569BB4F9"),
+                    input: .init(
+                        userWalletId: Data(hexString: "6772C99F8B400E6F59FFCE0C4A66193BFD49DE2D9738868DE36F5E16569BB4F9"),
+                        supportedBlockchains: SupportedBlockchains.all,
+                        userTokensManager: UserTokensManagerMock()
+                    ),
                     coordinator: ReferralCoordinator()
                 )
             )

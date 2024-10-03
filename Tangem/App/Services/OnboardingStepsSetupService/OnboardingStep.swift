@@ -39,8 +39,13 @@ protocol OnboardingMessagesProvider {
 
 protocol OnboardingButtonsInfoProvider {
     var mainButtonTitle: String { get }
+    var mainButtonIcon: ImageType? { get }
     var supplementButtonTitle: String { get }
-    var isSupplementButtonVisible: Bool { get }
+    var supplementButtonIcon: ImageType? { get }
     var checkmarkText: String? { get }
     var infoText: String? { get }
+}
+
+extension OnboardingButtonsInfoProvider {
+    var supplementButtonIcon: ImageType? { nil }
 }

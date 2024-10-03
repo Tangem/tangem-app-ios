@@ -40,7 +40,7 @@ struct BlinkingModifier: ViewModifier {
                         targetColor = originalColor
                     }
                 })
-                DispatchQueue.main.asyncAfter(deadline: .now() + self.duration, execute: item!)
+                DispatchQueue.main.asyncAfter(deadline: .now() + duration, execute: item!)
             })
     }
 }

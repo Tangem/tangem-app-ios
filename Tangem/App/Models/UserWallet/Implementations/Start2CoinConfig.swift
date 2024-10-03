@@ -32,10 +32,6 @@ extension Start2CoinConfig: UserWalletConfig {
         )
     }
 
-    var tou: TOU {
-        TOUBuilder().makeTOU(for: card.cardId)
-    }
-
     var cardsCount: Int {
         1
     }
@@ -48,7 +44,7 @@ extension Start2CoinConfig: UserWalletConfig {
         "Start2Coin"
     }
 
-    var mandatoryCurves: [EllipticCurve] {
+    var createWalletCurves: [EllipticCurve] {
         [.secp256k1]
     }
 
@@ -74,8 +70,6 @@ extension Start2CoinConfig: UserWalletConfig {
         WarningEventsFactory().makeWarningEvents(for: card)
     }
 
-    var tangemSigner: TangemSigner { .init(with: card.cardId, sdk: makeTangemSdk()) }
-
     var emailData: [EmailCollectedData] {
         CardEmailDataFactory().makeEmailData(for: card, walletData: walletData)
     }
@@ -86,6 +80,10 @@ extension Start2CoinConfig: UserWalletConfig {
 
     var productType: Analytics.ProductType {
         .start2coin
+    }
+
+    var cardHeaderImage: ImageType? {
+        Assets.Cards.s2c
     }
 
     func getFeatureAvailability(_ feature: UserWalletFeature) -> UserWalletFeature.Availability {
@@ -127,7 +125,7 @@ extension Start2CoinConfig: UserWalletConfig {
         case .onlineImage:
             return card.firmwareVersion.type == .release ? .available : .hidden
         case .staking:
-            return .available
+            return .hidden
         case .topup:
             return .available
         case .tokenSynchronization:
@@ -140,127 +138,28 @@ extension Start2CoinConfig: UserWalletConfig {
             return .available
         case .transactionHistory:
             return .hidden
-        case .seedPhrase:
-            return .hidden
         case .accessCodeRecoverySettings:
+            return .hidden
+        case .promotion:
             return .hidden
         }
     }
 
-    func makeWalletModel(for token: StorageEntry) throws -> WalletModel {
-        guard let walletPublicKey = card.wallets.first(where: { $0.curve == defaultBlockchain.curve })?.publicKey else {
-            throw CommonError.noData
-        }
-
-        let factory = WalletModelFactory()
-        return try factory.makeSingleWallet(
-            walletPublicKey: walletPublicKey,
-            blockchain: defaultBlockchain,
-            token: nil,
-            derivationStyle: card.derivationStyle
+    func makeOnboardingStepsBuilder(
+        backupService: BackupService,
+        isPushNotificationsAvailable: Bool
+    ) -> OnboardingStepsBuilder {
+        return Start2CoinOnboardingStepsBuilder(
+            hasWallets: !card.wallets.isEmpty,
+            isPushNotificationsAvailable: isPushNotificationsAvailable
         )
     }
 
-    func makeOnboardingStepsBuilder(backupService: BackupService) -> OnboardingStepsBuilder {
-        return Start2CoinOnboardingStepsBuilder(card: card, touId: tou.id)
-    }
-}
-
-// MARK: - TOU
-
-fileprivate struct TOUBuilder {
-    func makeTOU(for cardId: String) -> TOU {
-        let regionCode = regionCode(for: cardId)
-        let url = TOUItem.makeFrom(languageCode: Locale.current.languageCode, regionCode: regionCode).url
-        let id = TOUItem.makeFrom(languageCode: nil, regionCode: regionCode).urlString
-
-        return TOU(id: id, url: url)
+    func makeWalletModelsFactory() -> WalletModelsFactory {
+        return CommonWalletModelsFactory(config: self)
     }
 
-    private func regionCode(for cardId: String) -> String {
-        let cardIdPrefix = cardId[cardId.index(cardId.startIndex, offsetBy: 1)]
-        switch cardIdPrefix {
-        case "0":
-            return "fr"
-        case "1":
-            return "ch"
-        case "2":
-            return "at"
-        default:
-            return "fr"
-        }
-    }
-}
-
-fileprivate enum TOUItem: CaseIterable {
-    case deAt
-    case deCh
-    case enCh
-    case frCh
-    case frFr
-    case itCh
-
-    var url: URL { .init(string: urlString)! }
-
-    var urlString: String {
-        switch self {
-        case .deAt: return "https://tangem.com/start2coin-de-at-tangem.html"
-        case .deCh: return "https://tangem.com/start2coin-de-ch-tangem.html"
-        case .enCh: return "https://tangem.com/start2coin-en-ch-tangem.html"
-        case .frCh: return "https://tangem.com/start2coin-fr-ch-tangem.html"
-        case .frFr: return "https://tangem.com/start2coin-fr-fr-tangem.html"
-        case .itCh: return "https://tangem.com/start2coin-it-ch-tangem.html"
-        }
-    }
-
-    var urlStringLegacy: String {
-        switch self {
-        case .deAt: return "https://app.tangem.com/tou/Start2Coin-de-at-tangem.pdf"
-        case .deCh: return "https://app.tangem.com/tou/Start2Coin-de-ch-tangem.pdf"
-        case .enCh: return "https://app.tangem.com/tou/Start2Coin-en-ch-tangem.pdf"
-        case .frCh: return "https://app.tangem.com/tou/Start2Coin-fr-ch-tangem.pdf"
-        case .frFr: return "https://app.tangem.com/tou/Start2Coin-fr-fr-atangem.pdf"
-        case .itCh: return "https://app.tangem.com/tou/Start2Coin-it-ch-tangem.pdf"
-        }
-    }
-
-    static func makeFrom(languageCode: String?, regionCode: String) -> Self {
-        switch (languageCode, regionCode) {
-        case ("fr", "ch"):
-            return .frCh
-        case ("de", "ch"):
-            return .deCh
-        case ("en", "ch"):
-            return .enCh
-        case ("it", "ch"):
-            return .itCh
-        case ("fr", "fr"):
-            return .frFr
-        case ("de", "at"):
-            return .deAt
-        case (_, "fr"):
-            return .frFr
-        case (_, "ch"):
-            return .enCh
-        case (_, "at"):
-            return .deAt
-        default:
-            return .frFr
-        }
-    }
-}
-
-struct S2CTOUMigrator {
-    func migrate() {
-        var termsOfServicesAccepted = AppSettings.shared.termsOfServicesAccepted
-
-        for tou in TOUItem.allCases {
-            if termsOfServicesAccepted.contains(tou.urlStringLegacy) {
-                termsOfServicesAccepted.remove(tou.urlStringLegacy)
-                termsOfServicesAccepted.append(tou.urlString)
-            }
-        }
-
-        AppSettings.shared.termsOfServicesAccepted = termsOfServicesAccepted
+    func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {
+        return SimpleWalletManagerFactory()
     }
 }

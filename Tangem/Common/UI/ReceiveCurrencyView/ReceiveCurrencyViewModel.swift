@@ -7,77 +7,48 @@
 //
 
 import Foundation
+import Combine
+import TangemExpress
 
-struct ReceiveCurrencyViewModel: Identifiable {
-    var id: Int { hashValue }
-
-    private(set) var canChangeCurrency: Bool
-    private(set) var cryptoAmountState: State
-    private(set) var fiatAmountState: State
-
-    let tokenIcon: SwappingTokenIconViewModel
-
-    var balanceString: String? {
-        Localization.commonBalance((balance ?? 0).groupedFormatted())
-    }
-
-    var cryptoAmountFormatted: String {
-        cryptoAmountState.value?.groupedFormatted() ?? "0"
-    }
-
-    var fiatAmountFormatted: String {
-        fiatAmountState.value?.currencyFormatted(code: AppSettings.shared.selectedCurrencyCode) ?? "0"
-    }
-
-    private let balance: Decimal?
+class ReceiveCurrencyViewModel: ObservableObject, Identifiable {
+    @Published private(set) var expressCurrencyViewModel: ExpressCurrencyViewModel
+    @Published private(set) var cryptoAmountState: LoadableTextView.State
 
     init(
-        balance: Decimal?,
-        canChangeCurrency: Bool,
-        cryptoAmountState: State,
-        fiatAmountState: State,
-        tokenIcon: SwappingTokenIconViewModel
+        expressCurrencyViewModel: ExpressCurrencyViewModel,
+        cryptoAmountState: LoadableTextView.State = .initialized
     ) {
-        self.balance = balance
-        self.canChangeCurrency = canChangeCurrency
-        self.cryptoAmountState = cryptoAmountState
-        self.fiatAmountState = fiatAmountState
-        self.tokenIcon = tokenIcon
-    }
-
-    mutating func update(cryptoAmountState: State) {
+        self.expressCurrencyViewModel = expressCurrencyViewModel
         self.cryptoAmountState = cryptoAmountState
     }
 
-    mutating func update(fiatAmountState: State) {
-        self.fiatAmountState = fiatAmountState
+    func update(wallet: LoadingValue<WalletModel>, initialWalletId: Int) {
+        expressCurrencyViewModel.update(wallet: wallet, initialWalletId: initialWalletId)
+    }
+
+    func updateFiatValue(expectAmount: Decimal?, tokenItem: TokenItem?) {
+        expressCurrencyViewModel.updateFiatValue(expectAmount: expectAmount, tokenItem: tokenItem)
+
+        guard let expectAmount else {
+            update(cryptoAmountState: .loaded(text: "0"))
+            return
+        }
+
+        let decimals = tokenItem?.decimalCount ?? 8
+        let formatter = DecimalNumberFormatter(maximumFractionDigits: decimals)
+        let formatted: String = formatter.format(value: expectAmount)
+        update(cryptoAmountState: .loaded(text: formatted))
+    }
+
+    func update(cryptoAmountState: LoadableTextView.State) {
+        self.cryptoAmountState = cryptoAmountState
     }
 }
 
 extension ReceiveCurrencyViewModel {
     enum State: Hashable {
+        case idle
         case loading
-        case loaded(_ value: Decimal)
-
-        var value: Decimal? {
-            switch self {
-            case .loaded(let value):
-                return value
-            default:
-                return nil
-            }
-        }
-    }
-}
-
-extension ReceiveCurrencyViewModel: Hashable {
-    static func == (lhs: ReceiveCurrencyViewModel, rhs: ReceiveCurrencyViewModel) -> Bool {
-        lhs.hashValue == rhs.hashValue
-    }
-
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(cryptoAmountState)
-        hasher.combine(fiatAmountState)
-        hasher.combine(tokenIcon)
+        case formatted(_ value: String)
     }
 }

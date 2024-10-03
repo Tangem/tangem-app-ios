@@ -19,5 +19,7 @@ extension Analytics {
         case start2coin = "Start2Coin"
         case other = "Other"
         case twin = "Twin"
+        case wallet2 = "Wallet 2.0"
+        case ring = "Ring"
     }
 }

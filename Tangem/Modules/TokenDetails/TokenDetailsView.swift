@@ -2,154 +2,172 @@
 //  TokenDetailsView.swift
 //  Tangem
 //
-//  Created by Alexander Osokin on 25.02.2021.
-//  Copyright © 2021 Tangem AG. All rights reserved.
+//  Created by Andrew Son on 09/06/23.
+//  Copyright © 2023 Tangem AG. All rights reserved.
 //
 
 import SwiftUI
-import BlockchainSdk
 
 struct TokenDetailsView: View {
     @ObservedObject var viewModel: TokenDetailsViewModel
 
-    var pendingTransactionViews: [LegacyPendingTxView] {
-        let incTx = viewModel.incomingTransactions.map {
-            LegacyPendingTxView(pendingTx: $0)
-        }
+    @StateObject private var scrollState = TokenDetailsScrollState(
+        tokenIconSizeSettings: Constants.tokenIconSizeSettings,
+        headerTopPadding: Constants.headerTopPadding
+    )
 
-        let outgTx = viewModel.outgoingTransactions.enumerated().map { index, pendingTx in
-            LegacyPendingTxView(pendingTx: pendingTx) {
-                viewModel.openPushTx(for: index)
-            }
-        }
-
-        return incTx + outgTx
-    }
-
-    @ViewBuilder var bottomButtons: some View {
-        HStack(alignment: .center) {
-            exchangeButton
-            sendButton
-        }
-    }
+    private let coordinateSpaceName = UUID()
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(viewModel.title)
-                .font(Font.system(size: 36, weight: .bold, design: .default))
-                .padding(.horizontal, 16)
-                .animation(nil)
+        RefreshableScrollView(onRefresh: viewModel.onPullToRefresh(completionHandler:)) {
+            VStack(spacing: 14) {
+                TokenDetailsHeaderView(viewModel: viewModel.tokenDetailsHeaderModel)
 
-            if let subtitle = viewModel.tokenSubtitle {
-                Text(subtitle)
-                    .font(.system(size: 14, weight: .regular, design: .default))
-                    .foregroundColor(.tangemGrayDark)
-                    .padding(.bottom, 8)
-                    .padding(.horizontal, 16)
-                    .animation(nil)
-            }
+                BalanceWithButtonsView(viewModel: viewModel.balanceWithButtonsModel)
 
-            GeometryReader { geometry in
-                RefreshableScrollView(onRefresh: { viewModel.onRefresh($0) }) {
-                    VStack(spacing: 8.0) {
-                        ForEach(self.pendingTransactionViews) { $0 }
-
-                        if let walletModel = viewModel.walletModel {
-                            BalanceAddressView(
-                                walletModel: walletModel,
-                                amountType: viewModel.amountType,
-                                isRefreshing: viewModel.isRefreshing,
-                                showExplorerURL: viewModel.showExplorerURL
-                            )
-                        }
-
-                        bottomButtons
-                            .padding(.top, 16)
-
-                        if let sendBlockedReason = viewModel.sendBlockedReason {
-                            AlertCardView(title: "", message: sendBlockedReason)
-                        }
-
-                        if let existentialDepositWarning = viewModel.existentialDepositWarning {
-                            AlertCardView(title: Localization.commonWarning, message: existentialDepositWarning)
-                        }
-
-                        if let transactionLengthWarning = viewModel.transactionLengthWarning {
-                            AlertCardView(title: Localization.commonWarning, message: transactionLengthWarning)
-                        }
-
-                        if let solanaRentWarning = viewModel.solanaRentWarning {
-                            AlertCardView(title: Localization.commonWarning, message: solanaRentWarning)
-                        }
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 32)
-                    .frame(width: geometry.size.width)
+                ForEach(viewModel.bannerNotificationInputs) { input in
+                    NotificationView(input: input)
+                        .transition(.notificationTransition)
                 }
+
+                ForEach(viewModel.tokenNotificationInputs) { input in
+                    NotificationView(input: input)
+                        .transition(.notificationTransition)
+                }
+
+                if viewModel.isMarketsDetailsAvailable {
+                    MarketPriceView(
+                        currencySymbol: viewModel.currencySymbol,
+                        price: viewModel.rateFormatted,
+                        priceChangeState: viewModel.priceChangeState,
+                        miniChartData: viewModel.miniChartData,
+                        tapAction: viewModel.openMarketsTokenDetails
+                    )
+                }
+
+                if let activeStakingViewData = viewModel.activeStakingViewData {
+                    ActiveStakingView(data: activeStakingViewData)
+                        .padding(14)
+                        .background(Colors.Background.primary)
+                        .cornerRadiusContinuous(14)
+                }
+
+                ForEach(viewModel.pendingExpressTransactions) { transactionInfo in
+                    PendingExpressTransactionView(info: transactionInfo)
+                        .transition(.notificationTransition)
+                }
+
+                PendingTransactionsListView(
+                    items: viewModel.pendingTransactionViews,
+                    exploreTransactionAction: viewModel.openTransactionExplorer
+                )
+
+                TransactionsListView(
+                    state: viewModel.transactionHistoryState,
+                    exploreAction: viewModel.openExplorer,
+                    exploreTransactionAction: viewModel.openTransactionExplorer,
+                    reloadButtonAction: viewModel.onButtonReloadHistory,
+                    isReloadButtonBusy: viewModel.isReloadingTransactionHistory,
+                    fetchMore: viewModel.fetchMoreHistory()
+                )
+                .padding(.bottom, 40)
             }
+            .padding(.top, Constants.headerTopPadding)
+            .readContentOffset(
+                inCoordinateSpace: .named(coordinateSpaceName),
+                bindTo: scrollState.contentOffsetSubject.asWriteOnlyBinding(.zero)
+            )
         }
+        .animation(.default, value: viewModel.bannerNotificationInputs)
+        .animation(.default, value: viewModel.tokenNotificationInputs)
+        .animation(.default, value: viewModel.pendingExpressTransactions)
+        .padding(.horizontal, 16)
         .edgesIgnoringSafeArea(.bottom)
-        .navigationBarTitle("", displayMode: .inline)
-        .navigationBarItems(trailing: trailingButton)
-        .background(Color.tangemBgGray.edgesIgnoringSafeArea(.all))
+        .background(Colors.Background.secondary.edgesIgnoringSafeArea(.all))
         .ignoresSafeArea(.keyboard)
         .onAppear(perform: viewModel.onAppear)
+        .onAppear(perform: scrollState.onViewAppear)
         .alert(item: $viewModel.alert) { $0.alert }
-    }
-
-    @ViewBuilder
-    private var trailingButton: some View {
-        Button(action: viewModel.onRemove) {
-            Text(Localization.tokenDetailsHideToken)
-                .foregroundColor(.tangemGrayDark6)
-                .font(.system(size: 17))
-        }
-        .animation(nil)
-    }
-
-    @ViewBuilder
-    var exchangeButton: some View {
-        switch viewModel.exchangeButtonState {
-        case .single(let option):
-            MainButton(
-                title: option.title,
-                icon: .leading(option.icon),
-                isDisabled: !viewModel.isAvailable(type: option)
-            ) {
-                viewModel.didTapExchangeButtonAction(type: option)
+        .actionSheet(item: $viewModel.actionSheet) { $0.sheet }
+        .coordinateSpace(name: coordinateSpaceName)
+        .toolbar(content: {
+            ToolbarItem(placement: .principal) {
+                TokenIcon(
+                    tokenIconInfo: .init(
+                        name: "",
+                        blockchainIconName: nil,
+                        imageURL: viewModel.iconUrl,
+                        isCustom: false,
+                        customTokenColor: viewModel.customTokenColor
+                    ),
+                    size: IconViewSizeSettings.tokenDetailsToolbar.iconSize
+                )
+                .opacity(scrollState.toolbarIconOpacity)
             }
 
-        case .multi:
-            MainButton(
-                title: Localization.walletButtonActions,
-                icon: .leading(Assets.exchangeIcon),
-                action: viewModel.openExchangeActionSheet
-            )
-            .actionSheet(item: $viewModel.exchangeActionSheet, content: { $0.sheet })
-        }
+            ToolbarItem(placement: .navigationBarTrailing) { navbarTrailingButton }
+        })
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     @ViewBuilder
-    var sendButton: some View {
-        MainButton(
-            title: Localization.commonSend,
-            icon: .leading(Assets.arrowRightMini),
-            isDisabled: !viewModel.canSend,
-            action: viewModel.openSend
-        )
+    private var navbarTrailingButton: some View {
+        if viewModel.hasDotsMenu {
+            Menu {
+                if viewModel.canGenerateXPUB {
+                    Button(Localization.tokenDetailsGenerateXpub, action: viewModel.generateXPUBButtonAction)
+                }
+
+                if viewModel.canHideToken {
+                    Button(Localization.tokenDetailsHideToken, role: .destructive, action: viewModel.hideTokenButtonAction)
+                }
+            } label: {
+                NavbarDotsImage()
+            }
+        }
     }
 }
 
-struct TokenDetailsView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationView {
-            TokenDetailsView(viewModel: TokenDetailsViewModel(
-                cardModel: PreviewCard.cardanoNote.cardModel,
-                blockchainNetwork: PreviewCard.cardanoNote.blockchainNetwork!,
-                amountType: .coin,
-                coordinator: TokenDetailsCoordinator()
-            ))
-            .deviceForPreviewZoomed(.iPhone7)
-        }
+// MARK: - Constants
+
+private extension TokenDetailsView {
+    enum Constants {
+        static let tokenIconSizeSettings: IconViewSizeSettings = .tokenDetails
+        static let headerTopPadding: CGFloat = 14.0
     }
+}
+
+#Preview {
+    let userWalletModel = FakeUserWalletModel.wallet3Cards
+    let walletModel = userWalletModel.walletModelsManager.walletModels.first ?? .mockETH
+    let exchangeUtility = ExchangeCryptoUtility(
+        blockchain: walletModel.blockchainNetwork.blockchain,
+        address: walletModel.defaultAddress,
+        amountType: walletModel.tokenItem.amountType
+    )
+    let notifManager = SingleTokenNotificationManager(
+        walletModel: walletModel,
+        walletModelsManager: userWalletModel.walletModelsManager,
+        contextDataProvider: nil
+    )
+    let pendingTxsManager = CommonPendingExpressTransactionsManager(
+        userWalletId: userWalletModel.userWalletId.stringValue,
+        walletModel: walletModel,
+        expressRefundedTokenHandler: ExpressRefundedTokenHandlerMock()
+    )
+    let coordinator = TokenDetailsCoordinator()
+
+    let bannerNotificationManager = BannerNotificationManager(placement: .tokenDetails(walletModel.tokenItem), contextDataProvider: nil)
+
+    return TokenDetailsView(viewModel: .init(
+        userWalletModel: userWalletModel,
+        walletModel: walletModel,
+        exchangeUtility: exchangeUtility,
+        notificationManager: notifManager,
+        bannerNotificationManager: bannerNotificationManager,
+        pendingExpressTransactionsManager: pendingTxsManager,
+        xpubGenerator: nil,
+        coordinator: coordinator,
+        tokenRouter: SingleTokenRouter(userWalletModel: userWalletModel, coordinator: coordinator)
+    ))
 }

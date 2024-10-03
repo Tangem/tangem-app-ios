@@ -7,17 +7,28 @@
 //
 
 import Foundation
+import Combine
 
 struct UserTokenListManagerMock: UserTokenListManager {
-    var didPerformInitialLoading: Bool { false }
+    var initialized: Bool { true }
 
-    func update(userWalletId: Data) {}
+    var initializedPublisher: AnyPublisher<Bool, Never> { .just(output: true) }
 
-    func update(_ type: CommonUserTokenListManager.UpdateType) {}
+    var userTokens: [StorageEntry] { [] }
 
-    func updateLocalRepositoryFromServer(result: @escaping (Result<UserTokenList, Error>) -> Void) {}
+    var userTokensPublisher: AnyPublisher<[StorageEntry], Never> { .just(output: []) }
 
-    func getEntriesFromRepository() -> [StorageEntry] { [] }
+    var userTokensList: StoredUserTokenList { .empty }
 
-    func clearRepository(completion: @escaping () -> Void) {}
+    var userTokensListPublisher: AnyPublisher<StoredUserTokenList, Never> { .just(output: .empty) }
+
+    func update(with userTokenList: StoredUserTokenList) {}
+
+    func update(_ type: UserTokenListUpdateType, shouldUpload: Bool) {}
+
+    func updateLocalRepositoryFromServer(_ completion: @escaping (Result<Void, Error>) -> Void) {
+        completion(.success(()))
+    }
+
+    func upload() {}
 }

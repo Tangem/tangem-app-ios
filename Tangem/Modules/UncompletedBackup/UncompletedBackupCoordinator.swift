@@ -10,8 +10,10 @@ import Foundation
 import Combine
 
 class UncompletedBackupCoordinator: CoordinatorObject {
-    let dismissAction: Action
-    let popToRootAction: ParamsAction<PopToRootOptions>
+    // MARK: - Dependencies
+
+    let dismissAction: Action<Void>
+    let popToRootAction: Action<PopToRootOptions>
 
     // MARK: - Root view model
 
@@ -21,15 +23,13 @@ class UncompletedBackupCoordinator: CoordinatorObject {
 
     @Published var modalOnboardingCoordinator: OnboardingCoordinator?
 
-    // MARK: - Child view models
-
     // MARK: - Helpers
 
     @Published var modalOnboardingCoordinatorKeeper: Bool = false
 
     required init(
-        dismissAction: @escaping Action,
-        popToRootAction: @escaping ParamsAction<PopToRootOptions>
+        dismissAction: @escaping Action<Void>,
+        popToRootAction: @escaping Action<PopToRootOptions>
     ) {
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
@@ -52,7 +52,7 @@ extension UncompletedBackupCoordinator {
 
 extension UncompletedBackupCoordinator: UncompletedBackupRoutable {
     func openOnboardingModal(with input: OnboardingInput) {
-        let dismissAction: Action = { [weak self] in
+        let dismissAction: Action<OnboardingCoordinator.OutputOptions> = { [weak self] _ in
             self?.modalOnboardingCoordinator = nil
             self?.dismiss()
         }

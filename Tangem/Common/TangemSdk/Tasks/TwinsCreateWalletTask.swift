@@ -46,7 +46,7 @@ class TwinsCreateWalletTask: CardSessionRunnable {
 
         if let firstTwinCardId = firstTwinCardId {
             guard let firstSeries = TwinCardSeries.series(for: firstTwinCardId) else {
-                completion(.failure(.underlying(error: Localization.twinErrorNotATwinCard)))
+                completion(.failure(TangemSdkError.missingIssuerPublicKey))
                 return
             }
 

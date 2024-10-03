@@ -23,10 +23,10 @@ struct BackUpWarningButton: View {
                     .padding(.vertical, 8)
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(Localization.mainNoBackupWarningTitle)
+                    Text(Localization.warningNoBackupTitle)
                         .font(.system(size: 15, weight: .medium))
 
-                    Text(Localization.mainNoBackupWarningSubtitle)
+                    Text(Localization.warningNoBackupMessage)
                         .font(.system(size: 13, weight: .regular))
                         .foregroundColor(Color.tangemTextGray)
                 }

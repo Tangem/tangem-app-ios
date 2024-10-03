@@ -10,14 +10,17 @@ import Combine
 import SwiftUI
 
 class StoriesViewModel: ObservableObject {
-    @Published var currentPage: WelcomeStoryPage
+    @Injected(\.promotionService) var promotionService: PromotionServiceProtocol
+
+    @Published var currentPage: WelcomeStoryPage = .meetTangem
     @Published var currentProgress = 0.0
+    @Published var checkingPromotionAvailability = true
 
     var currentPageIndex: Int {
         pages.firstIndex(of: currentPage) ?? 0
     }
 
-    let pages: [WelcomeStoryPage]
+    private(set) var pages: [WelcomeStoryPage] = []
     private var timerSubscription: AnyCancellable?
     private var timerStartDate: Date?
     private var longTapTimerSubscription: AnyCancellable?
@@ -25,22 +28,17 @@ class StoriesViewModel: ObservableObject {
     private var currentDragLocation: CGPoint?
     private var bag: Set<AnyCancellable> = []
 
-    private let showLearnPage: Bool
+    private var showLearnPage: Bool = false
     private let longTapDuration = 0.25
     private let minimumSwipeDistance = 100.0
+    private let promotionCheckTimeout: TimeInterval = 5
+    private var shouldStartTimer: Bool = true
 
-    init() {
-        showLearnPage = FeatureProvider.isAvailable(.learnToEarn)
-
-        var pages: [WelcomeStoryPage] = WelcomeStoryPage.allCases
-        if !showLearnPage,
-           let learnIndex = pages.firstIndex(of: .learn) {
-            pages.remove(at: learnIndex)
-        }
-
-        self.pages = pages
-
-        currentPage = pages[0]
+    func checkPromotion() async {
+        let isNewCard = true
+        let userWalletId: String? = nil
+        await promotionService.checkPromotion(isNewCard: isNewCard, userWalletId: userWalletId, timeout: promotionCheckTimeout)
+        await didFinishCheckingPromotion()
     }
 
     func onAppear() {
@@ -51,13 +49,18 @@ class StoriesViewModel: ObservableObject {
             .store(in: &bag)
 
         NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
-            .sink { [weak self] _ in
-                self?.resumeTimer()
+            .withWeakCaptureOf(self)
+            .sink { viewModel, _ in
+                if viewModel.shouldStartTimer {
+                    viewModel.resumeTimer()
+                }
             }
             .store(in: &bag)
 
-        DispatchQueue.main.async {
-            self.restartTimer()
+        if shouldStartTimer {
+            DispatchQueue.main.async {
+                self.restartTimer()
+            }
         }
     }
 
@@ -71,6 +74,7 @@ class StoriesViewModel: ObservableObject {
         isScanning: Binding<Bool>,
         scanCard: @escaping () -> Void,
         orderCard: @escaping () -> Void,
+        openPromotion: @escaping () -> Void,
         searchTokens: @escaping () -> Void
     ) -> some View {
         let progressBinding = Binding<Double> { [weak self] in
@@ -81,9 +85,9 @@ class StoriesViewModel: ObservableObject {
 
         switch currentPage {
         case WelcomeStoryPage.learn:
-            LearnAndEarnStoryPage(learn: searchTokens)
+            LearnAndEarnStoryPage(learn: openPromotion)
         case WelcomeStoryPage.meetTangem:
-            MeetTangemStoryPage(progress: progressBinding, immediatelyShowTangemLogo: showLearnPage, immediatelyShowButtons: AppSettings.shared.didDisplayMainScreenStories, isScanning: isScanning, scanCard: scanCard, orderCard: orderCard)
+            MeetTangemStoryPage(progress: progressBinding, isScanning: isScanning, scanCard: scanCard, orderCard: orderCard)
         case WelcomeStoryPage.awe:
             AweStoryPage(progress: progressBinding, isScanning: isScanning, scanCard: scanCard, orderCard: orderCard)
         case WelcomeStoryPage.backup:
@@ -109,7 +113,7 @@ class StoriesViewModel: ObservableObject {
         currentDragLocation = current
         pauseTimer()
 
-        longTapTimerSubscription = Timer.publish(every: longTapDuration, on: RunLoop.main, in: .default)
+        longTapTimerSubscription = Timer.publish(every: longTapDuration, on: .main, in: .default)
             .autoconnect()
             .sink { [weak self] _ in
                 self?.currentDragLocation = nil
@@ -139,6 +143,23 @@ class StoriesViewModel: ObservableObject {
         longTapDetected = false
     }
 
+    @MainActor
+    private func didFinishCheckingPromotion() {
+        showLearnPage = promotionService.promotionAvailable
+
+        var pages: [WelcomeStoryPage] = WelcomeStoryPage.allCases
+        if !showLearnPage,
+           let learnIndex = pages.firstIndex(of: .learn) {
+            pages.remove(at: learnIndex)
+        }
+
+        self.pages = pages
+
+        currentPage = pages[0]
+
+        checkingPromotionAvailability = false
+    }
+
     private func move(forward: Bool) {
         guard let currentPageIndex = pages.firstIndex(of: currentPage) else { return }
 
@@ -153,9 +174,6 @@ class StoriesViewModel: ObservableObject {
 
         currentPage = nextPage
         restartTimer()
-        if currentPage != pages.first {
-            AppSettings.shared.didDisplayMainScreenStories = true
-        }
     }
 
     private func timerIsRunning() -> Bool {
@@ -211,20 +229,25 @@ class StoriesViewModel: ObservableObject {
 }
 
 extension StoriesViewModel: WelcomeViewLifecycleListener {
-    func resignActve() {
+    func resignActive() {
         if timerIsRunning() {
             pauseTimer()
+        } else {
+            // First start of the app with welcome onboarding
+            shouldStartTimer = false
         }
     }
 
     func becomeActive() {
+        shouldStartTimer = true
+
         if !timerIsRunning() {
             resumeTimer()
         }
     }
 }
 
-fileprivate extension CGPoint {
+private extension CGPoint {
     func distance(to other: CGPoint) -> CGFloat {
         return sqrt(pow(x - other.x, 2) + pow(y - other.y, 2))
     }

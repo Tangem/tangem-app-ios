@@ -19,19 +19,19 @@ class SecurityModeViewModel: ObservableObject {
     @Published var isLoading: Bool = false
 
     var isActionButtonEnabled: Bool {
-        currentSecurityOption != cardModel.currentSecurityOption
+        currentSecurityOption != securityOptionChangeInteractor.currentSecurityOption
     }
 
     // MARK: Private
 
-    private let cardModel: CardViewModel
+    private let securityOptionChangeInteractor: SecurityOptionChanging
     private var bag = Set<AnyCancellable>()
-    private unowned let coordinator: SecurityModeRoutable
+    private weak var coordinator: SecurityModeRoutable?
 
-    init(cardModel: CardViewModel, coordinator: SecurityModeRoutable) {
-        self.cardModel = cardModel
+    init(securityOptionChangeInteractor: SecurityOptionChanging, coordinator: SecurityModeRoutable) {
+        self.securityOptionChangeInteractor = securityOptionChangeInteractor
         self.coordinator = coordinator
-        currentSecurityOption = cardModel.currentSecurityOption
+        currentSecurityOption = securityOptionChangeInteractor.currentSecurityOption
 
         updateView()
         bind()
@@ -43,7 +43,7 @@ class SecurityModeViewModel: ObservableObject {
             openPinChange(option: currentSecurityOption)
         case .longTap:
             isLoading = true
-            cardModel.changeSecurityOption(.longTap) { [weak self] result in
+            securityOptionChangeInteractor.changeSecurityOption(.longTap) { [weak self] result in
                 self?.logSecurityModeChange()
 
                 self?.isLoading = false
@@ -61,15 +61,13 @@ class SecurityModeViewModel: ObservableObject {
     }
 
     private func bind() {
-        cardModel.$currentSecurityOption
-            .sink { [weak self] option in
-                self?.currentSecurityOption = option
-            }
+        securityOptionChangeInteractor.currentSecurityOptionPublisher
+            .assign(to: \.currentSecurityOption, on: self, ownership: .weak)
             .store(in: &bag)
     }
 
     private func updateView() {
-        securityViewModels = cardModel.availableSecurityOptions.map { option in
+        securityViewModels = securityOptionChangeInteractor.availableSecurityOptions.map { option in
             DefaultSelectableRowViewModel(
                 id: option,
                 title: option.title,
@@ -139,12 +137,11 @@ enum SecurityModeOption: String, CaseIterable, Identifiable, Equatable {
 
 extension SecurityModeViewModel {
     func openPinChange(option: SecurityModeOption) {
-        coordinator.openPinChange(with: option.title) { [weak self] coordinatorCompletion in
+        coordinator?.openPinChange(with: option.title) { [weak self] coordinatorCompletion in
             guard let self = self else { return }
 
-            self.cardModel.changeSecurityOption(option) { [weak self] result in
+            securityOptionChangeInteractor.changeSecurityOption(option) { [weak self] result in
                 self?.logSecurityModeChange()
-
                 coordinatorCompletion(result)
             }
         }

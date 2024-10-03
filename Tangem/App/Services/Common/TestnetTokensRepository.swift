@@ -11,25 +11,32 @@ import TangemSdk
 import Combine
 
 class TestnetTokensRepository {
-    func loadCoins(requestModel: CoinsListRequestModel) -> AnyPublisher<[CoinModel], Error> {
+    func loadCoins(requestModel: CoinsList.Request) -> AnyPublisher<[CoinModel], Error> {
         readTestnetList()
             .map { list in
-                list.coins.compactMap {
-                    CoinModel(with: $0, baseImageURL: list.imageHost)
-                        .withFiltered(networkIds: requestModel.networkIds)
-                }
+                let mapper = CoinsResponseMapper(supportedBlockchains: requestModel.supportedBlockchains)
+                let coins = mapper.mapToCoinModels(list)
+                return coins
             }
             .eraseToAnyPublisher()
     }
 
-    private func readTestnetList() -> AnyPublisher<CoinsResponse, Error> {
+    // Copy load coins method via async await implementation
+    func loadCoins(requestModel: CoinsList.Request) throws -> [CoinModel] {
+        let response = try JsonUtils.readBundleFile(with: Constants.testFilename, type: CoinsList.Response.self)
+        let mapper = CoinsResponseMapper(supportedBlockchains: requestModel.supportedBlockchains)
+        let coins = mapper.mapToCoinModels(response)
+        return coins
+    }
+
+    private func readTestnetList() -> AnyPublisher<CoinsList.Response, Error> {
         Just(())
             .receive(on: DispatchQueue.global())
             .tryMap { _ in
                 do {
                     return try JsonUtils.readBundleFile(
                         with: Constants.testFilename,
-                        type: CoinsResponse.self
+                        type: CoinsList.Response.self
                     )
                 } catch {
                     Log.error("Unable to read testnet mock file due to error: \"\(error)\"")
@@ -40,31 +47,8 @@ class TestnetTokensRepository {
     }
 }
 
-fileprivate extension TestnetTokensRepository {
+private extension TestnetTokensRepository {
     enum Constants {
         static let testFilename: String = "testnet_tokens"
-    }
-}
-
-private extension CoinModel {
-    /// Filter the `tokenItems` for supportedCurves. Used only for testnet coinds from a local file
-    func withFiltered(networkIds: String?) -> CoinModel? {
-        let networks = networkIds?
-            .split(separator: ",")
-            .compactMap { String($0) }
-
-        let filteredItems = items.filter { item in
-            networks?.contains(item.blockchain.networkId) ?? true
-        }
-
-        if filteredItems.isEmpty {
-            return nil
-        }
-
-        return makeCopy(with: filteredItems)
-    }
-
-    private func makeCopy(with items: [TokenItem]) -> CoinModel {
-        CoinModel(id: id, name: name, symbol: symbol, imageURL: imageURL, items: items)
     }
 }

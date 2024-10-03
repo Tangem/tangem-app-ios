@@ -12,9 +12,11 @@ import BlockchainSdk
 
 struct GenericConfig {
     let card: CardDTO
+    private let isRing: Bool
 
-    init(card: CardDTO) {
+    init(card: CardDTO, isRing: Bool) {
         self.card = card
+        self.isRing = isRing
     }
 }
 
@@ -39,31 +41,36 @@ extension GenericConfig: UserWalletConfig {
         "Wallet"
     }
 
-    var mandatoryCurves: [EllipticCurve] {
-        [.secp256k1, .ed25519]
+    var createWalletCurves: [EllipticCurve] {
+        [.secp256k1, .ed25519, .bls12381_G2_AUG]
     }
 
-    var canSkipBackup: Bool {
-        card.firmwareVersion < .keysImportAvailable
+    var derivationStyle: DerivationStyle? {
+        guard hasFeature(.hdWallets) else {
+            return nil
+        }
+
+        let batchId = card.batchId.uppercased()
+        if BatchId.isDetached(batchId) {
+            return .v1
+        }
+
+        return .v2
     }
 
     var supportedBlockchains: Set<Blockchain> {
-        let allBlockchains = AppEnvironment.current.isTestnet ? Blockchain.supportedTestnetBlockchains
-            : Blockchain.supportedBlockchains
-
-        return allBlockchains.filter { card.walletCurves.contains($0.curve) }
+        SupportedBlockchains(version: .v1).blockchains()
     }
 
     var defaultBlockchains: [StorageEntry] {
-        if let persistentBlockchains = persistentBlockchains {
-            return persistentBlockchains
-        }
-
         let isTestnet = AppEnvironment.current.isTestnet
-        let blockchains: [Blockchain] = [.ethereum(testnet: isTestnet), .bitcoin(testnet: isTestnet)]
+        let blockchains: [Blockchain] = [
+            .bitcoin(testnet: isTestnet),
+            .ethereum(testnet: isTestnet),
+        ]
 
         let entries: [StorageEntry] = blockchains.map {
-            if let derivationStyle = card.derivationStyle {
+            if let derivationStyle = derivationStyle {
                 let derivationPath = $0.derivationPath(for: derivationStyle)
                 let network = BlockchainNetwork($0, derivationPath: derivationPath)
                 return .init(blockchainNetwork: network, tokens: [])
@@ -84,10 +91,15 @@ extension GenericConfig: UserWalletConfig {
         return nil
     }
 
+    var canSkipBackup: Bool {
+        // Shiba cards have new firmware, but old config, except backup skipping.
+        card.firmwareVersion < .keysImportAvailable
+    }
+
     var warningEvents: [WarningEvent] {
         var warnings = WarningEventsFactory().makeWarningEvents(for: card)
 
-        if hasFeature(.hdWallets), card.derivationStyle == .legacy {
+        if hasFeature(.hdWallets), derivationStyle == .v1 {
             warnings.append(.legacyDerivation)
         }
 
@@ -98,18 +110,56 @@ extension GenericConfig: UserWalletConfig {
         CardEmailDataFactory().makeEmailData(for: card, walletData: nil)
     }
 
-    var tangemSigner: TangemSigner {
-        let shouldSkipCardId = card.backupStatus?.isActive ?? false
-        let cardId = shouldSkipCardId ? nil : card.cardId
-        return .init(with: cardId, sdk: makeTangemSdk())
-    }
-
     var userWalletIdSeed: Data? {
         card.wallets.first?.publicKey
     }
 
     var productType: Analytics.ProductType {
-        card.firmwareVersion.doubleValue >= 4.39 ? .wallet : .other
+        if isRing {
+            return .ring
+        }
+
+        return card.firmwareVersion.doubleValue >= 4.39 ? .wallet : .other
+    }
+
+    var cardHeaderImage: ImageType? {
+        if isRing {
+            return nil
+        }
+
+        switch card.batchId {
+        // Shiba cards
+        case "AF02", "AF03":
+            // There can't be more than 3 cards in single UserWallet
+            switch cardsCount {
+            case 2: return Assets.Cards.shibaDouble
+            case 3: return Assets.Cards.shibaTriple
+            default: return Assets.Cards.shibaSingle
+            }
+        default:
+            // There can't be more than 3 cards in single UserWallet
+            switch cardsCount {
+            case 2: return Assets.Cards.walletDouble
+            case 3: return Assets.Cards.walletTriple
+            default: return Assets.Cards.walletSingle
+            }
+        }
+    }
+
+    var customOnboardingImage: ImageType? {
+        if isRing {
+            return Assets.ring
+        }
+
+        return nil
+    }
+
+    var customScanImage: ImageType? {
+        if isRing {
+            return Assets.ringShapeScan
+        }
+
+        return nil
     }
 
     func getFeatureAvailability(_ feature: UserWalletFeature) -> UserWalletFeature.Availability {
@@ -172,36 +222,22 @@ extension GenericConfig: UserWalletConfig {
             return .available
         case .transactionHistory:
             return .hidden
-        case .seedPhrase:
-            return card.settings.isKeysImportAllowed ? .available : .hidden
         case .accessCodeRecoverySettings:
-            return card.firmwareVersion >= .keysImportAvailable ? .available : .hidden
+            return .hidden
+        case .promotion:
+            return .available
         }
     }
 
-    func makeWalletModel(for token: StorageEntry) throws -> WalletModel {
-        let walletPublicKeys: [EllipticCurve: Data] = card.wallets.reduce(into: [:]) { partialResult, cardWallet in
-            partialResult[cardWallet.curve] = cardWallet.publicKey
-        }
+    func makeWalletModelsFactory() -> WalletModelsFactory {
+        return CommonWalletModelsFactory(config: self)
+    }
 
-        let factory = WalletModelFactory()
-        if card.settings.isHDWalletAllowed {
-            let derivedKeys: [EllipticCurve: [DerivationPath: ExtendedPublicKey]] = card.wallets.reduce(into: [:]) { partialResult, cardWallet in
-                partialResult[cardWallet.curve] = cardWallet.derivedKeys
-            }
-
-            return try factory.makeMultipleWallet(
-                seedKeys: walletPublicKeys,
-                entry: token,
-                derivedKeys: derivedKeys,
-                derivationStyle: card.derivationStyle
-            )
+    func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {
+        if hasFeature(.hdWallets) {
+            return GenericWalletManagerFactory()
         } else {
-            return try factory.makeMultipleWallet(
-                walletPublicKeys: walletPublicKeys,
-                entry: token,
-                derivationStyle: card.derivationStyle
-            )
+            return SimpleWalletManagerFactory()
         }
     }
 }
@@ -212,7 +248,7 @@ extension GenericConfig: WalletOnboardingStepsBuilderFactory {}
 
 // MARK: - Private extensions
 
-fileprivate extension Card.BackupStatus {
+private extension Card.BackupStatus {
     var backupCardsCount: Int? {
         if case .active(let backupCards) = self {
             return backupCards

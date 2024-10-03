@@ -8,24 +8,9 @@
 
 import SwiftUI
 
-struct TangemButtonSettings {
-    let title: String
-    let size: ButtonLayout
-    let action: (() -> Void)?
-    let isBusy: Bool
-    var isEnabled: Bool
-    let isVisible: Bool
-
-    var color: ButtonColorStyle = .black
-    var customIconName: String = ""
-    var systemIconName: String = ""
-    var iconPosition: TangemButton.IconPosition = .trailing
-}
-
 struct OnboardingBottomButtonsSettings {
     let main: MainButton.Settings?
-
-    var supplement: TangemButtonSettings?
+    let supplement: MainButton.Settings?
 }
 
 struct OnboardingTextButtonView: View {
@@ -38,38 +23,37 @@ struct OnboardingTextButtonView: View {
     var checkmarkText: String?
     var isCheckmarkChecked: Binding<Bool> = .constant(false)
 
-    @ViewBuilder
     var buttons: some View {
         VStack(spacing: 10) {
-            if let mainSettings = buttonsSettings.main {
-                MainButton(
-                    title: mainSettings.title,
-                    icon: mainSettings.icon,
-                    style: mainSettings.style,
-                    isLoading: mainSettings.isLoading,
-                    isDisabled: mainSettings.isDisabled
-                ) {
-                    withAnimation {
-                        mainSettings.action()
-                    }
+            MainButton(
+                title: buttonsSettings.main?.title ?? "",
+                icon: buttonsSettings.main?.icon,
+                style: buttonsSettings.main?.style ?? .primary,
+                isLoading: buttonsSettings.main?.isLoading ?? false,
+                isDisabled: buttonsSettings.main?.isDisabled ?? false
+            ) {
+                withAnimation {
+                    buttonsSettings.main?.action()
                 }
             }
+            // For now we need to leave view in the hierarchy to prevent
+            // issues with drawing card images
+            .hidden(buttonsSettings.main == nil)
 
-            // TODO: Refactor to `MainButton` and for dark theme
-            if let settings = buttonsSettings.supplement {
-                //            if buttonsSettings.containSupplementButton {
-                TangemButton(title: settings.title) {
-                    settings.action?()
+            MainButton(
+                title: buttonsSettings.supplement?.title ?? "",
+                icon: buttonsSettings.supplement?.icon,
+                style: buttonsSettings.supplement?.style ?? .secondary,
+                isLoading: buttonsSettings.supplement?.isLoading ?? false,
+                isDisabled: buttonsSettings.supplement?.isDisabled ?? false
+            ) {
+                withAnimation {
+                    buttonsSettings.supplement?.action()
                 }
-                .opacity(settings.isVisible ? 1.0 : 0.0)
-                .buttonStyle(TangemButtonStyle(
-                    colorStyle: settings.color,
-                    layout: settings.size,
-                    isDisabled: !settings.isEnabled,
-                    isLoading: settings.isBusy
-                ))
-                .overlay(infoTextView)
             }
+            // For now we need to leave view in the hierarchy to prevent
+            // issues with drawing card images
+            .hidden(buttonsSettings.supplement == nil)
         }
     }
 
@@ -85,7 +69,7 @@ struct OnboardingTextButtonView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if let title = self.title, let subtitle = self.subtitle {
+            if let title = title, let subtitle = subtitle {
                 OnboardingMessagesView(
                     title: title,
                     subtitle: subtitle
@@ -93,12 +77,13 @@ struct OnboardingTextButtonView: View {
                     titleAction?()
                 }
                 .frame(alignment: .top)
+                .padding(.horizontal, 34)
                 .offset(textOffset)
 
                 Spacer()
             }
 
-            if let checkmarkText = self.checkmarkText {
+            if let checkmarkText = checkmarkText {
                 HStack {
                     CheckmarkSwitch(
                         isChecked: isCheckmarkChecked,
@@ -117,7 +102,8 @@ struct OnboardingTextButtonView: View {
             }
 
             buttons
-                .padding(.bottom, buttonsSettings.supplement != nil ? 16 : 20)
+                .padding(.bottom, 6)
+                .padding(.horizontal, 16)
         }
         .frame(maxHeight: 304)
     }
@@ -139,38 +125,15 @@ struct OnboardingTextButtonView_Previews: PreviewProvider {
                     isDisabled: false,
                     action: {}
                 ),
-                supplement: TangemButtonSettings(
-                    title: "What does it mean?",
-                    size: .wide,
-                    action: {},
-                    isBusy: false,
-                    isEnabled: false,
-                    isVisible: true,
-                    color: .grayAlt,
-                    systemIconName: "plus",
-                    iconPosition: .leading
+                supplement: .init(
+                    title: "Other options",
+                    action: {}
                 )
             ),
             infoText: nil,
             titleAction: {},
             checkmarkText: "I understand",
             isCheckmarkChecked: $isChecked
-            //                .init(
-            //                mainTitle: "Create wallet",
-            //                mainSize: .wide,
-            //                mainAction: {
-            //
-            //                },
-            //                mainIsBusy: false,
-            //                isMainEnabled: true,
-            //                supplementTitle: "What does it mean?",
-            //                supplementSize: .wide,
-            //                supplementAction: {
-            //
-            //                },
-            //                isVisible: true,
-            //                containSupplementButton: false),
-            //            titleAction: { }
         )
         .padding(.horizontal, 40)
     }

@@ -15,10 +15,14 @@ public struct SkeletonView: View {
     @State var gradientPoints = Constants.idlePoints
     @State var oldShouldAnimateSkeleton: Bool?
 
-    private let secondary: Color = .tangemSkeletonGray
-    private let primary: Color = .tangemSkeletonGray2
-    private let base: Color = .white
     private let backgroundOpacity: Double = 1
+    private let colors: [Color] = [
+        Colors.Old.tangemSkeletonGray,
+        Colors.Old.tangemSkeletonGray2,
+        Colors.Old.tangemSkeletonGray3,
+        Colors.Old.tangemSkeletonGray2,
+        Colors.Old.tangemSkeletonGray,
+    ]
 
     private let activeAnimation = Animation.linear(duration: 1).repeatForever(autoreverses: false)
     private let stopAnimation = Animation.linear(duration: 0)
@@ -35,13 +39,13 @@ public struct SkeletonView: View {
 
     var backgroundView: some View {
         Rectangle()
-            .foregroundColor(secondary)
+            .foregroundColor(Colors.Old.tangemSkeletonGray)
             .opacity(backgroundOpacity)
     }
 
     var gradientView: some View {
         LinearGradient(
-            gradient: Gradient(colors: [secondary, primary, base, primary, secondary]),
+            gradient: Gradient(colors: colors),
             startPoint: gradientPoints.start,
             endPoint: gradientPoints.end
         )

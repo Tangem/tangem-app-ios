@@ -1,0 +1,85 @@
+name: Create release
+on:
+  workflow_dispatch:
+    inputs:
+      versionName:
+        description: 'Name of version  (ie 1.3.0)'
+        required: true
+      versionType:
+        type: choice
+        description: 'Release or Hotfix'
+        required: true
+        options: 
+        - release
+        - hotfix
+
+jobs:
+ prepare:
+   name: Prepare Release
+   uses: tangem/actions/.github/workflows/build.yml@main
+   with:
+    versionName: ${{ github.event.inputs.versionName }}
+    versionType: ${{ github.event.inputs.versionType }}
+   secrets:
+    GH_MOBILE_PAT: ${{ secrets.GH_MOBILE_PAT}}
+    JIRA_BASE_URL: ${{ secrets.JIRA_URL }}
+    JIRA_USER_EMAIL: ${{ secrets.JIRA_USER }}
+    JIRA_API_TOKEN: ${{ secrets.JIRA_TOKEN }}
+ 
+ build:
+   name: Tangem RC
+   needs: prepare
+   uses: tangem/actions/.github/workflows/build.yml@main
+   with:
+    stage: ${{needs.prepare.outputs.stage}}
+    version: "${{ github.event.inputs.name }}"
+    build_number: ${{needs.prepare.outputs.build_number}}
+    path: "fastlane/builds/"
+    filename: "Tangem-${{needs.prepare.outputs.stage}}-${{needs.prepare.outputs.version}}(${{needs.prepare.outputs.build_number}}).ipa"
+   secrets:
+    GH_MOBILE_PAT: ${{ secrets.GH_MOBILE_PAT}}
+     
+ deploy:
+   name: TestFlight
+   needs: [prepare,build]
+   uses: tangem/actions/.github/workflows/deploy-testflight.yml@main
+   with:
+    stage: ${{needs.prepare.outputs.stage}}
+    version: "${{needs.prepare.outputs.version}}"
+    build_number: ${{needs.prepare.outputs.build_number}}
+    changelog: "${{needs.prepare.outputs.changelog}}"
+    filename: "Tangem-${{needs.prepare.outputs.stage}}-${{needs.prepare.outputs.version}}(${{needs.prepare.outputs.build_number}}).ipa"
+   secrets:
+    FIREBASE_APP_ID: ${{ secrets.FIREBASE_IOS_ALPHA_ID}}
+    FIREBASE_CLI_TOKEN: ${{ secrets.FIREBASE_CLI_TOKEN}}
+   
+ notification:
+   name: Deploy Notification
+   needs: [prepare,deploy]
+   uses: tangem/actions/.github/workflows/notification.yml@main
+   with: 
+    channel: ${{vars.SLACK_CHANNEL_DEPLOYMENTS_IOS}}
+    status: "success"
+    app_name: ${{vars.APP_RC}}
+    deploy_to: ${{vars.DEPLOYMENT_GOOGLE_DISTRIBUTION}}
+    version: ${{needs.prepare.outputs.version}}
+    build_number: ${{needs.prepare.outputs.build_number}}
+    changelog: ${{needs.prepare.outputs.changelog}}
+   secrets:
+    SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN}}
+    
+ error_notification:
+   name: Error Notification
+   if: failure()
+   needs: [prepare,deploy]
+   uses: tangem/actions/.github/workflows/notification.yml@main
+   with: 
+    channel: ${{vars.SLACK_CHANNEL_DEPLOYMENTS_IOS}}
+    status: "error"
+    app_name: ${{vars.APP_RC}}
+    deploy_to: ${{vars.DEPLOYMENT_GOOGLE_DISTRIBUTION}}
+    version: ${{needs.prepare.outputs.version}}
+    build_number: ${{needs.prepare.outputs.build_number}}
+    changelog: ${{needs.prepare.outputs.changelog}}
+   secrets:
+    SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN}}

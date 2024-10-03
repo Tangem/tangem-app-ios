@@ -9,163 +9,61 @@
 import Foundation
 import SwiftUI
 
-extension Color {
-    // MARK: Primary
-
-    @nonobjc static var tangemGreen: Color {
-        return Color("tangem_green")
-    }
-
-    @nonobjc static var tangemGreen1: Color {
-        return Color("tangem_green1")
-    }
-
-    @nonobjc static var tangemGreen2: Color {
-        return Color("tangem_green2")
-    }
-
-    // MARK: Complimentary
-
-    @nonobjc static var tangemWarning: Color {
-        return Color("tangem_warning")
-    }
-
-    @nonobjc static var tangemBlue: Color {
-        return Color("tangem_blue")
-    }
-
-    @nonobjc static var tangemBlue1: Color {
-        return Color("tangem_blue1")
-    }
-
-    @nonobjc static var tangemBlue2: Color {
-        return Color("tangem_blue2")
-    }
-
-    @nonobjc static var tangemBlue3: Color {
-        return Color("tangem_blue3")
-    }
-
-    @nonobjc static var tangemCritical: Color {
-        return Color(.tangemCritical)
-    }
-
-    // MARK: Gray Dark
-
-    @nonobjc static var tangemGrayDark1: Color {
-        return Color("tangem_gray_dark_1")
-    }
-
-    @nonobjc static var tangemGrayDark: Color {
-        return Color("tangem_gray_dark")
-    }
-
-    @nonobjc static var tangemGrayDark2: Color {
-        return Color("tangem_gray_dark2")
-    }
-
-    @nonobjc static var tangemGrayDark3: Color {
-        return Color("tangem_gray_dark3")
-    }
-
-    @nonobjc static var tangemGrayDark4: Color {
-        return Color("tangem_gray_dark4")
-    }
-
-    @nonobjc static var tangemGrayDark5: Color {
-        return Color("tangem_gray_dark5")
-    }
-
-    @nonobjc static var tangemGrayDark6: Color {
-        return Color("tangem_gray_dark6")
-    }
-
-    // MARK: Gray Light
-
-    @nonobjc static var tangemGrayLight4: Color {
-        return Color("tangem_gray_light4")
-    }
-
-    @nonobjc static var tangemGrayLight5: Color {
-        return Color("tangem_gray_light5")
-    }
-
-    @nonobjc static var tangemGrayLight6: Color {
-        return Color("tangem_gray_light6")
-    }
-
-    @nonobjc static var tangemTextGray: Color {
-        return Color("tangem_text_gray")
-    }
-
-    @nonobjc static var tangemGrayLight7: Color {
-        return Color("tangem_gray_light7")
-    }
-
-    @nonobjc static var tangemSkeletonGray: Color {
-        return Color("tangem_skeleton_gray")
-    }
-
-    @nonobjc static var tangemSkeletonGray2: Color {
-        return Color("tangem_skeleton_gray2")
-    }
-
-    @nonobjc static var tangemHoverButton: Color {
-        return Color("tangem_btn_hover_bg")
-    }
-
-    // MARK: Background
-
-    @nonobjc static var tangemBgGray: Color {
-        return Color(.tangemBgGray)
-    }
-
-    @nonobjc static var tangemBgGray2: Color {
-        return Color(.tangemBgGray2)
-    }
-
-    @nonobjc static var tangemBgGray3: Color {
-        return Color(.tangemBgGray3)
-    }
-
-    @nonobjc static var tangemBg: Color {
-        return Color("tangem_bg")
-    }
-
-    // MARK: Tints
-
-    @nonobjc static var tangemBlueLight: Color {
-        return Color("tangem_blue_light")
-    }
-
-    @nonobjc static var tangemBlueLight2: Color {
-        return Color("tangem_blue_light2")
-    }
-
-    // MARK: Misc
-
-    @nonobjc static var underlyingCardBackground1: Color {
-        return Color("underlying-card-background1")
-    }
-
-    @nonobjc static var underlyingCardBackground2: Color {
-        return Color("underlying-card-background2")
-    }
-}
-
 extension UIColor {
+    // DO NOT remove this
+    // This is a UIColor from the new palette, used in UITextField's accessory view
+    // There's no good way to convert SwiftUI dynamic Color to UIColor and retain the dark/light appearance
+    // 👇👇👇 ------------------------------------ 👇👇👇
+    @nonobjc static var backgroundPrimary: UIColor {
+        return UIColor(named: "BackgroundPrimary")!
+    }
+
+    @nonobjc static var inputAccessoryViewTintColor: UIColor {
+        return UIColor(named: "ButtonPrimary")!
+    }
+
+    @nonobjc static var textWarningColor: UIColor {
+        return UIColor(named: "TextWarning")!
+    }
+
+    @nonobjc static var textAccent: UIColor {
+        return UIColor(named: "TextAccent")!
+    }
+
+    @nonobjc static var textPrimary1: UIColor {
+        return UIColor(named: "TextPrimary1")!
+    }
+
+    @nonobjc static var textDisabled: UIColor {
+        return UIColor(named: "TextDisabled")!
+    }
+
+    @nonobjc static var iconInformative: UIColor {
+        return UIColor(named: "IconInformative")!
+    }
+
+    @nonobjc static var iconAccent: UIColor {
+        UIColor(named: "IconAccent")!
+    }
+
+    @nonobjc static var iconInactive: UIColor {
+        UIColor(named: "IconInactive")!
+    }
+
+    @nonobjc static var iconWarning: UIColor {
+        UIColor(named: "IconWarning")!
+    }
+
+    @nonobjc static var textTertiary: UIColor {
+        UIColor(named: "TextTertiary")!
+    }
+
+    // ☝️☝️☝️ End of UIColors from the new palette ☝️☝️☝️
+
     // MARK: Background
 
-    @nonobjc static var tangemBgGray: UIColor {
-        return UIColor(named: "tangem_bg_gray")!
-    }
-
-    @nonobjc static var tangemBgGray2: UIColor {
-        return UIColor(named: "tangem_bg_gray2")!
-    }
-
-    @nonobjc static var tangemBgGray3: UIColor {
-        return UIColor(named: "tangem_bg_gray3")!
+    @nonobjc static var tangemBg: UIColor {
+        return UIColor(named: "tangem_bg")!
     }
 
     @nonobjc static var tangemGrayDark4: UIColor {
@@ -182,10 +80,6 @@ extension UIColor {
 
     @nonobjc static var tangemGrayDark: UIColor {
         return UIColor(named: "tangem_gray_dark")!
-    }
-
-    @nonobjc static var tangemCritical: UIColor {
-        UIColor(named: "tangem_critical")!
     }
 }
 
