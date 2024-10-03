@@ -44,6 +44,7 @@ jobs:
    name: Google Distribution
    needs: [prepare,build]
    uses: tangem/actions/.github/workflows/deploy-firebase.yml@main
+   if: false # temp disabled
    with:
     stage: ${{needs.prepare.outputs.stage}}
     version: "${{needs.prepare.outputs.version}}"
@@ -58,6 +59,7 @@ jobs:
  notification:
    name: Deploy Notification
    needs: [prepare,deploy]
+   if: false # temp disabled
    uses: tangem/actions/.github/workflows/notification.yml@main
    with: 
     channel: ${{vars.SLACK_CHANNEL_DEPLOYMENTS_IOS}}
@@ -72,7 +74,8 @@ jobs:
     
  error_notification:
    name: Error Notification
-   if: failure()
+   #if: failure()
+   if: false # temp disabled
    needs: [prepare,deploy]
    uses: tangem/actions/.github/workflows/notification.yml@main
    with: 
