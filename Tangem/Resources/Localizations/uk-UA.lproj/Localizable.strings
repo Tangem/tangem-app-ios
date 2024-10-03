@@ -290,6 +290,7 @@
 "feedback_subject_support_tangem" = "Звернення в підтримку Tangem";
 "feedback_subject_tx_failed" = "Не вдається відправити транзакцію";
 "feedback_subject_tx_push_failed" = "Не можу проштовхнути транзакцію";
+"feedback_token_description_error" = "Coin description error";
 "give_permission_current_transaction" = "Транзакція";
 "give_permission_fee_footer" = "Мережа стягує комісію за схвалення токену за підтвердження, що саме ви дозволяєте використовувати ваш токен для обміну.";
 "give_permission_policy_type_footer" = "Вкажіть ліміт доступу для обраного токена";

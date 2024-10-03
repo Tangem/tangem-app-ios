@@ -290,6 +290,7 @@
 "feedback_subject_support_tangem" = "Tangemへのフィードバック";
 "feedback_subject_tx_failed" = "取引を送信できません";
 "feedback_subject_tx_push_failed" = "取引をプッシュできません";
+"feedback_token_description_error" = "Coin description error";
 "give_permission_current_transaction" = "取引";
 "give_permission_fee_footer" = "ネットワークは、あなたがトークンのスワップを承認していることを確認するために、トークン承認手数料を請求します。";
 "give_permission_policy_type_footer" = "選択したトークンの承認制限を指定します";

@@ -290,6 +290,7 @@
 "feedback_subject_support_tangem" = "Commentaires sur Tangem";
 "feedback_subject_tx_failed" = "Impossible d'effectuer une transaction";
 "feedback_subject_tx_push_failed" = "Impossible d'effectuer une transaction";
+"feedback_token_description_error" = "Coin description error";
 "give_permission_current_transaction" = "Cette transaction";
 "give_permission_fee_footer" = "Le réseau facturera des frais d'approbation de jeton pour vérifier que vous autorisez l'utilisation de votre jeton pour l'échange.";
 "give_permission_policy_type_footer" = "Spécifiez la limite approuvée pour le jeton sélectionné";
