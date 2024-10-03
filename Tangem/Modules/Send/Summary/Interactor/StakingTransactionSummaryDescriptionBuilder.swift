@@ -12,7 +12,7 @@ import TangemFoundation
 struct StakingTransactionSummaryDescriptionBuilder {
     private let tokenItem: TokenItem
     private let balanceFormatter = BalanceFormatter()
-    private let dateFormatter = DateComponentsFormatter.stakingFormatter()
+    private let dateFormatter = DateComponentsFormatter.staking()
 
     init(tokenItem: TokenItem) {
         self.tokenItem = tokenItem

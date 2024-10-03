@@ -13,12 +13,7 @@ import SwiftUI
 class StakingDetailsStakeViewDataBuilder {
     private lazy var balanceFormatter = BalanceFormatter()
     private lazy var percentFormatter = PercentFormatter()
-    private lazy var daysFormatter: DateComponentsFormatter = {
-        let formatter = DateComponentsFormatter()
-        formatter.unitsStyle = .short
-        formatter.allowedUnits = [.day]
-        return formatter
-    }()
+    private lazy var dateFormatter = DateComponentsFormatter.staking()
 
     private let tokenItem: TokenItem
 
@@ -46,11 +41,11 @@ class StakingDetailsStakeViewDataBuilder {
             case .locked:
                 .locked(hasVoteLocked: balance.actions.contains(where: { $0.type == .voteLocked }))
             case .unstaked: .withdraw
-            case .warmup: .warmup(period: yield.warmupPeriod.formatted(formatter: daysFormatter))
+            case .warmup: .warmup(period: yield.warmupPeriod.formatted(formatter: dateFormatter))
             case .active, .pending:
                 validator?.apr.map { .active(apr: percentFormatter.format($0, option: .staking)) }
             case .unbonding(let date):
-                date.map { .unbonding(until: $0) } ?? .unbondingPeriod(period: yield.unbondingPeriod.formatted(formatter: daysFormatter))
+                date.map { .unbonding(until: $0) } ?? .unbondingPeriod(period: yield.unbondingPeriod.formatted(formatter: dateFormatter))
             }
         }()
 

@@ -1530,7 +1530,6 @@
 		EF842DEB2AFA58C5006E472E /* ExpressTokensListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF842DE62AFA58C5006E472E /* ExpressTokensListViewModel.swift */; };
 		EF842DEC2AFA58C5006E472E /* ExpressTokensListRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF842DE72AFA58C5006E472E /* ExpressTokensListRoutable.swift */; };
 		EF842DEE2AFA6D07006E472E /* ProviderRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF842DED2AFA6D07006E472E /* ProviderRowViewModel.swift */; };
-		EF88289A2CAEA9C6001E9024 /* DateComponentsFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8828992CAEA9C6001E9024 /* DateComponentsFormatter.swift */; };
 		EF8D780F2981458500B67418 /* UserTokenListManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8D780E2981458500B67418 /* UserTokenListManagerMock.swift */; };
 		EF8DBCDD2C060A03009072CF /* StakingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8DBCDC2C060A03009072CF /* StakingManager.swift */; };
 		EF8DBCE02C060CCE009072CF /* StakingDependenciesFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8DBCDF2C060CCE009072CF /* StakingDependenciesFactory.swift */; };
@@ -3542,7 +3541,6 @@
 		EF842DE62AFA58C5006E472E /* ExpressTokensListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressTokensListViewModel.swift; sourceTree = "<group>"; };
 		EF842DE72AFA58C5006E472E /* ExpressTokensListRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressTokensListRoutable.swift; sourceTree = "<group>"; };
 		EF842DED2AFA6D07006E472E /* ProviderRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderRowViewModel.swift; sourceTree = "<group>"; };
-		EF8828992CAEA9C6001E9024 /* DateComponentsFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateComponentsFormatter.swift; sourceTree = "<group>"; };
 		EF8D780E2981458500B67418 /* UserTokenListManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTokenListManagerMock.swift; sourceTree = "<group>"; };
 		EF8DBCDC2C060A03009072CF /* StakingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingManager.swift; sourceTree = "<group>"; };
 		EF8DBCDF2C060CCE009072CF /* StakingDependenciesFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingDependenciesFactory.swift; sourceTree = "<group>"; };
@@ -8369,7 +8367,6 @@
 		EF2D9CBD2BBDAAA30055C485 /* Foundation */ = {
 			isa = PBXGroup;
 			children = (
-				EF8828992CAEA9C6001E9024 /* DateComponentsFormatter.swift */,
 				EFFA9A9C2C93379100320298 /* Collection+.swift */,
 				EF9E29BD2B4F0CCE00418559 /* Sequence+Async.swift */,
 				EFEE236F2BFE3A8A0099917E /* DateFormatter+.swift */,
@@ -12433,7 +12430,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EF88289A2CAEA9C6001E9024 /* DateComponentsFormatter.swift in Sources */,
 				EF2D9CC52BBDAB3E0055C485 /* ThreadSafeContainer+ExpressibleByDictionaryLiteral.swift in Sources */,
 				EF2D9CB82BBDA9090055C485 /* Lock.swift in Sources */,
 				EFEE23702BFE3A8A0099917E /* DateFormatter+.swift in Sources */,

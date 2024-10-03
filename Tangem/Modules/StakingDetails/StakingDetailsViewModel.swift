@@ -35,12 +35,14 @@ final class StakingDetailsViewModel: ObservableObject {
 
     private let walletModel: WalletModel
     private let stakingManager: StakingManager
-    private lazy var stakingDetailsStakesProvider = StakingDetailsStakeViewDataBuilder(tokenItem: walletModel.tokenItem)
     private weak var coordinator: StakingDetailsRoutable?
 
-    private let balanceFormatter = BalanceFormatter()
-    private let percentFormatter = PercentFormatter()
-    private let daysFormatter: DateComponentsFormatter = .stakingFormatter()
+    private lazy var balanceFormatter = BalanceFormatter()
+    private lazy var percentFormatter = PercentFormatter()
+    private lazy var dateFormatter = DateComponentsFormatter.staking()
+    private lazy var stakesBuilder = StakingDetailsStakeViewDataBuilder(
+        tokenItem: walletModel.tokenItem
+    )
 
     private var bag: Set<AnyCancellable> = []
 
@@ -182,7 +184,7 @@ private extension StakingDetailsViewModel {
             contentsOf: [
                 DefaultRowViewModel(
                     title: Localization.stakingDetailsUnbondingPeriod,
-                    detailsType: .text(yield.unbondingPeriod.formatted(formatter: daysFormatter)),
+                    detailsType: .text(yield.unbondingPeriod.formatted(formatter: dateFormatter)),
                     secondaryAction: { [weak self] in
                         self?.openBottomSheet(
                             title: Localization.stakingDetailsUnbondingPeriod,
@@ -206,7 +208,7 @@ private extension StakingDetailsViewModel {
         if !yield.warmupPeriod.isZero {
             viewModels.append(DefaultRowViewModel(
                 title: Localization.stakingDetailsWarmupPeriod,
-                detailsType: .text(yield.warmupPeriod.formatted(formatter: daysFormatter)),
+                detailsType: .text(yield.warmupPeriod.formatted(formatter: dateFormatter)),
                 secondaryAction: { [weak self] in
                     self?.openBottomSheet(
                         title: Localization.stakingDetailsWarmupPeriod,
@@ -221,7 +223,7 @@ private extension StakingDetailsViewModel {
                 title: Localization.stakingDetailsRewardSchedule,
                 detailsType: .text(
                     Localization.stakingRewardScheduleEach(
-                        yield.rewardScheduleType.formatted(formatter: daysFormatter)
+                        yield.rewardScheduleType.formatted(formatter: dateFormatter)
                     )
                 ),
                 secondaryAction: { [weak self] in
@@ -274,7 +276,7 @@ private extension StakingDetailsViewModel {
 
     func setupStakes(yield: YieldInfo, staking: [StakingBalance]) {
         let staking = staking.map { balance in
-            stakingDetailsStakesProvider.mapToStakingDetailsStakeViewData(yield: yield, balance: balance) { [weak self] in
+            stakesBuilder.mapToStakingDetailsStakeViewData(yield: yield, balance: balance) { [weak self] in
                 Analytics.log(
                     event: .stakingButtonValidator,
                     params: [.source: Analytics.ParameterValue.stakeSourceStakeInfo.rawValue]
@@ -433,6 +435,15 @@ extension StakingAction.ActionType {
         case .pending(.voteLocked): Localization.stakingVote
         case .pending(.unlockLocked): Localization.stakingUnlockedLocked
         }
+    }
+}
+
+extension DateComponentsFormatter {
+    static func staking() -> DateComponentsFormatter {
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .short
+        formatter.allowedUnits = [.second, .day]
+        return formatter
     }
 }
 
