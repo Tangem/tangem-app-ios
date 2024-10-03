@@ -6,13 +6,14 @@ on:
       - test/IOS-8112_ci_cd_alpha_builds_workflow # TODO: Test only, remove
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
 jobs:
   prepare:
     name: Prepare information
     runs-on: self-hosted
-    concurrency:
-      group: '${{ github.ref_name }}_${{ github.jobs[github.job].name }}'
-      cancel-in-progress: true
     outputs:
       version: '${{ steps.jira.outputs.key }}'
       stage: Alpha
@@ -35,7 +36,7 @@ jobs:
 
       - name: Find sec identities test
         run: |
-          echo 'conc_group: ${{ github.ref_name }}_${{ github.jobs[github.job].name }}'
+          echo 'conc_group: ${{ github.head_ref || github.ref_name }}'
           echo `security find-identity -p codesigning -v`
 
   build:
@@ -56,9 +57,6 @@ jobs:
     needs:
       - prepare
       - build
-    concurrency:
-      group: '${{ github.ref_name }}_${{ github.jobs[github.job].name }}'
-      cancel-in-progress: true
     uses: tangem/actions/.github/workflows/deploy-firebase.yml@main
     if: false # TODO: Temp disabled, enable
     with:
