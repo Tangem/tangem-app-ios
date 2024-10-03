@@ -320,7 +320,7 @@ private extension StakingDetailsViewModel {
         switch action.type {
         case .stake:
             coordinator?.openStakingFlow()
-        case .pending(let pendingAction) where pendingAction.isVoteLocked:
+        case .pending(.voteLocked):
             coordinator?.openRestakingFlow(action: action)
         case .unstake, .pending:
             coordinator?.openUnstakingFlow(action: action)
