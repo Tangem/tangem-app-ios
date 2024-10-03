@@ -330,14 +330,14 @@ extension Analytics {
 
         // MARK: - Manange Tokens / Custom
 
-        case manageTokensButtonCustomToken = "[Manage Tokens] Button - Custom Token"
-        case manageTokensCustomTokenScreenOpened = "[Manage Tokens] Custom Token Screen Opened"
-        case manageTokensCustomTokenWasAdded = "[Manage Tokens] Custom Token Was Added"
-        case manageTokensCustomTokenNetworkSelected = "[Manage Tokens] Custom Token Network Selected"
-        case manageTokensCustomTokenDerivationSelected = "[Manage Tokens] Custom Token Derivation Selected"
-        case manageTokensCustomTokenAddress = "[Manage Tokens] Custom Token Address"
-        case manageTokensCustomTokenName = "[Manage Tokens] Custom Token Name"
-        case manageTokensCustomTokenSymbol = "[Manage Tokens] Custom Token Symbol"
-        case manageTokensCustomTokenDecimals = "[Manage Tokens] Custom Token Decimals"
+        case manageTokensButtonCustomToken = "[Manage Tokens / Custom] Button - Custom Token"
+        case manageTokensCustomTokenScreenOpened = "[Manage Tokens / Custom] Custom Token Screen Opened"
+        case manageTokensCustomTokenWasAdded = "[Manage Tokens / Custom] Custom Token Was Added"
+        case manageTokensCustomTokenNetworkSelected = "[Manage Tokens / Custom] Custom Token Network Selected"
+        case manageTokensCustomTokenDerivationSelected = "[Manage Tokens / Custom] Custom Token Derivation Selected"
+        case manageTokensCustomTokenAddress = "[Manage Tokens / Custom] Custom Token Address"
+        case manageTokensCustomTokenName = "[Manage Tokens / Custom] Custom Token Name"
+        case manageTokensCustomTokenSymbol = "[Manage Tokens / Custom] Custom Token Symbol"
+        case manageTokensCustomTokenDecimals = "[Manage Tokens / Custom] Custom Token Decimals"
     }
 }
