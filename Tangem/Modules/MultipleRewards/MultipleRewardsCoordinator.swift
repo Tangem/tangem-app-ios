@@ -62,10 +62,17 @@ extension MultipleRewardsCoordinator: MultipleRewardsRoutable {
             self?.dismiss()
         })
 
+        let sendType: SendType = switch action.type {
+        case .stake:
+            fatalError("Use openStakingFrom function")
+        case .unstake: .unstaking(manager: options.manager, action: action)
+        case .pending: .rewards(manager: options.manager, action: action)
+        }
+
         coordinator.start(with: .init(
             walletModel: options.walletModel,
             userWalletModel: options.userWalletModel,
-            type: .unstaking(manager: options.manager, action: action)
+            type: sendType
         ))
         sendCoordinator = coordinator
     }

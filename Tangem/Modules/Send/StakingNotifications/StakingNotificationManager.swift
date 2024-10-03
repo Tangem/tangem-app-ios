@@ -18,6 +18,7 @@ protocol StakingNotificationManager: NotificationManager {
     func setup(provider: StakingModelStateProvider, input: StakingNotificationManagerInput)
     func setup(provider: UnstakingModelStateProvider, input: StakingNotificationManagerInput)
     func setup(provider: RestakingModelStateProvider, input: StakingNotificationManagerInput)
+    func setup(provider: StakingSingleActionModelStateProvider, input: StakingNotificationManagerInput)
 }
 
 class CommonStakingNotificationManager {
@@ -223,6 +224,17 @@ extension CommonStakingNotificationManager: StakingNotificationManager {
         .withWeakCaptureOf(self)
         .sink { manager, state in
             manager.update(state: state.0)
+        }
+    }
+
+    func setup(provider: StakingSingleActionModelStateProvider, input: StakingNotificationManagerInput) {
+        stateSubscription = Publishers.CombineLatest(
+            provider.statePublisher,
+            input.stakingManagerStatePublisher.compactMap { $0.yieldInfo }.removeDuplicates()
+        )
+        .withWeakCaptureOf(self)
+        .sink { manager, state in
+            manager.update(state: state.0, yield: state.1, action: provider.stakingAction)
         }
     }
 

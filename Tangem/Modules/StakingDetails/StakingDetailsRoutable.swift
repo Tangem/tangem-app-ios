@@ -14,5 +14,6 @@ protocol StakingDetailsRoutable: AnyObject {
     func openMultipleRewards()
     func openUnstakingFlow(action: UnstakingModel.Action)
     func openRestakingFlow(action: RestakingModel.Action)
+    func openRewardsFlow(action: StakingSingleActionModel.Action)
     func openWhatIsStaking()
 }

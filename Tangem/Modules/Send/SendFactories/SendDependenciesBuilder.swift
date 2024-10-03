@@ -248,8 +248,19 @@ struct SendDependenciesBuilder {
         )
     }
 
-    func makeVoteModel(stakingManager: any StakingManager, action: UnstakingModel.Action) -> RestakingModel {
+    func makeRestakingModel(stakingManager: any StakingManager, action: UnstakingModel.Action) -> RestakingModel {
         RestakingModel(
+            stakingManager: stakingManager,
+            sendTransactionDispatcher: makeStakingTransactionDispatcher(),
+            transactionValidator: walletModel.transactionValidator,
+            action: action,
+            tokenItem: walletModel.tokenItem,
+            feeTokenItem: walletModel.feeTokenItem
+        )
+    }
+
+    func makeStakingSingleActionModel(stakingManager: any StakingManager, action: UnstakingModel.Action) -> StakingSingleActionModel {
+        StakingSingleActionModel(
             stakingManager: stakingManager,
             sendTransactionDispatcher: makeStakingTransactionDispatcher(),
             transactionValidator: walletModel.transactionValidator,
