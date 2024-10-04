@@ -102,26 +102,6 @@ class WalletModel {
         }
     }
 
-    var balanceValue: Decimal? {
-        availableBalance.crypto
-    }
-
-    var balance: String {
-        availableBalanceFormatted.crypto
-    }
-
-    var isZeroAmount: Bool {
-        wallet.amounts[amountType]?.isZero ?? true
-    }
-
-    var fiatBalance: String {
-        availableBalanceFormatted.fiat
-    }
-
-    var fiatValue: Decimal? {
-        availableBalance.fiat
-    }
-
     var rateFormatted: String {
         guard let rate = quote?.price else {
             return BalanceFormatter.defaultEmptyBalanceString

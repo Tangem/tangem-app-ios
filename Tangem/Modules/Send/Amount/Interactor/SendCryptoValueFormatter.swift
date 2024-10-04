@@ -11,7 +11,7 @@ import Foundation
 /// Formatter that can work around NumberFormatter's limitations on Decimal numbers with currency
 struct SendCryptoValueFormatter {
     private let decimalNumberFormatter: DecimalNumberFormatter
-    private let preffixSuffixOptions: SendDecimalNumberTextField.PrefixSuffixOptions
+    private let prefixSuffixOptions: SendDecimalNumberTextField.PrefixSuffixOptions
     private let trimFractions: Bool
     private let locale: Locale
 
@@ -26,7 +26,7 @@ struct SendCryptoValueFormatter {
             fiatCurrencyCode: "",
             locale: locale
         )
-        preffixSuffixOptions = optionsFactory.makeCryptoOptions()
+        prefixSuffixOptions = optionsFactory.makeCryptoOptions()
 
         self.trimFractions = trimFractions
         self.locale = locale
@@ -38,7 +38,7 @@ struct SendCryptoValueFormatter {
         let formattedAmount = decimalNumberFormatter.format(value: formatterInput)
         let nbsp = AppConstants.unbreakableSpace
 
-        switch preffixSuffixOptions {
+        switch prefixSuffixOptions {
         case .prefix(let text, let hasSpace):
             guard let text else { return nil }
             return text + (hasSpace ? nbsp : "") + formattedAmount

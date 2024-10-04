@@ -13,6 +13,7 @@ struct SegmentedPicker<Option: Hashable & Identifiable>: View {
 
     let options: [Option]
     let shouldStretchToFill: Bool
+    let isDisabled: Bool
     let style: Style
     let titleFactory: (Option) -> String
 
@@ -21,6 +22,7 @@ struct SegmentedPicker<Option: Hashable & Identifiable>: View {
             selection: $selectedOption,
             options: options,
             shouldStretchToFill: shouldStretchToFill,
+            isDisabled: isDisabled,
             selectionView: selectionView,
             segmentContent: { option, _ in
                 segmentView(title: titleFactory(option), isSelected: selectedOption == option)
@@ -38,12 +40,12 @@ struct SegmentedPicker<Option: Hashable & Identifiable>: View {
             Text(title)
                 .minimumScaleFactor(0.9)
                 .font(Fonts.Bold.footnote)
-                .foregroundStyle(Colors.Text.primary1)
+                .foregroundStyle(isDisabled ? Colors.Text.disabled : Colors.Text.primary1)
                 .opacity(isSelected ? 1.0 : 0.0)
 
             Text(title)
                 .font(Fonts.Regular.footnote)
-                .foregroundStyle(Colors.Text.primary1)
+                .foregroundStyle(isDisabled ? Colors.Text.disabled : Colors.Text.primary1)
                 .opacity(isSelected ? 0.0 : 1.0)
         }
         .animation(.default, value: isSelected)

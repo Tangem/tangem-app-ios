@@ -23,40 +23,38 @@ struct TokenMarketsDetailsLinksView: View {
         if sections.isEmpty {
             EmptyView()
         } else {
-            VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
-                HStack {
-                    Text(Localization.marketsTokenDetailsLinks)
-                        .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+            VStack(alignment: .leading, spacing: .zero) {
+                BlockHeaderTitleView(title: Localization.marketsTokenDetailsLinks)
+                    .padding(.horizontal, Constants.horizontalPadding)
 
-                    Spacer()
-                }
-                .padding(.horizontal, Constants.horizontalPadding)
+                VStack(alignment: .leading) {
+                    ForEach(sections) { sectionInfo in
+                        if sectionInfo.chips.isEmpty {
+                            EmptyView()
+                        } else {
+                            VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+                                Group {
+                                    Text(sectionInfo.section.title)
+                                        .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
 
-                ForEach(sections) { sectionInfo in
-                    if sectionInfo.chips.isEmpty {
-                        EmptyView()
-                    } else {
-                        VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
-                            Group {
-                                Text(sectionInfo.section.title)
-                                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                                    MarketsTokenDetailsChipsContainer(
+                                        chipsData: sectionInfo.chips,
+                                        parentWidth: viewWidth - Constants.horizontalPadding * 2
+                                    )
+                                }
+                                .padding(.horizontal, Constants.horizontalPadding)
 
-                                MarketsTokenDetailsChipsContainer(
-                                    chipsData: sectionInfo.chips,
-                                    parentWidth: viewWidth - Constants.horizontalPadding * 2
-                                )
-                            }
-                            .padding(.horizontal, Constants.horizontalPadding)
-
-                            if sectionInfo.id != sections.last?.id {
-                                Separator(color: Colors.Stroke.primary, axis: .horizontal)
-                                    .padding(.leading, Constants.horizontalPadding)
+                                if sectionInfo.id != sections.last?.id {
+                                    Separator(color: Colors.Stroke.primary, axis: .horizontal)
+                                        .padding(.leading, Constants.horizontalPadding)
+                                }
                             }
                         }
                     }
                 }
+                .padding(.vertical, Constants.verticalSpacing)
             }
-            .defaultRoundedBackground(with: Colors.Background.action, horizontalPadding: 0)
+            .defaultRoundedBackground(with: Colors.Background.action, verticalPadding: .zero, horizontalPadding: .zero)
         }
     }
 }

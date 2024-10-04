@@ -386,13 +386,13 @@ extension StakingModel: SendSummaryInput, SendSummaryOutput {
     }
 
     var summaryTransactionDataPublisher: AnyPublisher<SendSummaryTransactionData?, Never> {
-        Publishers.CombineLatest3(_amount, _state, _selectedValidator)
-            .map { amount, state, selectedValidator in
-                guard let amount, let fee = state?.fee, let apr = selectedValidator.value?.apr else {
+        Publishers.CombineLatest(_amount, stakingManager.statePublisher)
+            .map { amount, state in
+                guard let amount, let schedule = state.yieldInfo?.rewardScheduleType else {
                     return nil
                 }
 
-                return .staking(amount: amount, fee: fee, apr: apr)
+                return .staking(amount: amount, schedule: schedule)
             }
             .eraseToAnyPublisher()
     }
