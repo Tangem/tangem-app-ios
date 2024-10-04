@@ -145,6 +145,8 @@ extension TokenMarketsDetailsView {
 
                     skeletonView(width: 82, height: 20)
                 }
+
+                Spacer()
             }
             .defaultRoundedBackground(with: Colors.Background.action)
         }
