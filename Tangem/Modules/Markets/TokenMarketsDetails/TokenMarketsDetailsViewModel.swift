@@ -207,7 +207,8 @@ class TokenMarketsDetailsViewModel: BaseMarketsViewModel {
         descriptionBottomSheetInfo = .init(
             title: Localization.marketsTokenDetailsAboutTokenTitle(tokenInfo.name),
             description: fullDescription,
-            isGeneratedWithAI: true
+            isGeneratedWithAI: true,
+            showCloseButton: true
         )
     }
 
@@ -218,7 +219,7 @@ class TokenMarketsDetailsViewModel: BaseMarketsViewModel {
     func onOverlayContentStateChange(_ state: OverlayContentState) {
         // Our view can be recreated when the bottom sheet is in a collapsed state
         // In this case, content should be hidden (i.e. the initial progress should be zero)
-        overlayContentHidingInitialProgress = state.isBottom ? 0.0 : 1.0
+        overlayContentHidingInitialProgress = state.isCollapsed ? 0.0 : 1.0
     }
 
     func openExchangesList() {
@@ -445,7 +446,7 @@ private extension TokenMarketsDetailsViewModel {
     func sendBlocksAnalyticsErrors() {
         Analytics.log(event: .marketsChartDataError, params: [
             .token: tokenInfo.symbol.uppercased(),
-            .source: Analytics.ParameterValue.chart.rawValue,
+            .source: Analytics.ParameterValue.blocks.rawValue,
         ])
     }
 
@@ -483,7 +484,10 @@ private extension TokenMarketsDetailsViewModel {
 
 extension TokenMarketsDetailsViewModel: MarketsTokenDetailsBottomSheetRouter {
     func openInfoBottomSheet(title: String, message: String) {
-        descriptionBottomSheetInfo = .init(title: title, description: message)
+        descriptionBottomSheetInfo = .init(
+            title: title,
+            description: message
+        )
     }
 }
 

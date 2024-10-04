@@ -76,6 +76,17 @@ struct ValidatorView: View {
                     namespace.map { .init(id: $0.names.validatorTitle(id: data.address), namespace: $0.id) }
                 )
 
+            if data.isPartner {
+                FixedSpacer(width: 6)
+
+                Text(Localization.stakingValidatorsLabel)
+                    .style(Fonts.Bold.caption2, color: Colors.Icon.primary2)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 2)
+                    .background(Colors.Text.accent)
+                    .cornerRadiusContinuous(6)
+            }
+
             if case .balance(let balance, _) = data.detailsType {
                 Spacer(minLength: 4)
 

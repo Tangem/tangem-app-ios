@@ -67,7 +67,7 @@ struct MarketsView: View {
             .scrollDismissesKeyboardCompat(.immediately)
         }
         .alert(item: $viewModel.alert, content: { $0.alert })
-        .background(Colors.Background.primary)
+        .background(Colors.Background.primary.ignoresSafeArea())
 
         if #available(iOS 17.0, *) {
             content

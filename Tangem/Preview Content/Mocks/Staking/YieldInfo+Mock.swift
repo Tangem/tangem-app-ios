@@ -21,12 +21,16 @@ extension YieldInfo {
             .init(
                 address: UUID().uuidString,
                 name: "InfStones",
+                preferred: true,
+                partner: false,
                 iconURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
                 apr: 0.08
             ),
             .init(
                 address: UUID().uuidString,
                 name: "Aconcagua",
+                preferred: true,
+                partner: false,
                 iconURL: URL(string: "https://assets.stakek.it/validators/aconcagua.png"),
                 apr: 0.032
             ),
@@ -35,6 +39,6 @@ extension YieldInfo {
         unbondingPeriod: .days(14),
         warmupPeriod: .days(0),
         rewardClaimingType: .manual,
-        rewardScheduleType: .day
+        rewardScheduleType: .daily
     )
 }

@@ -12,17 +12,29 @@ import TangemStaking
 // MARK: - Balance
 
 extension WalletModel {
-    struct Balance: Hashable {
-        let crypto, fiat: Decimal?
+    var balanceValue: Decimal? {
+        availableBalance.crypto
     }
 
-    struct BalanceFormatted: Hashable {
-        let crypto, fiat: String
+    var balance: String {
+        availableBalanceFormatted.crypto
     }
 
-    var allBalance: Balance {
+    var isZeroAmount: Bool {
+        wallet.amounts[amountType]?.isZero ?? true
+    }
+
+    var fiatBalance: String {
+        availableBalanceFormatted.fiat
+    }
+
+    var fiatValue: Decimal? {
+        availableBalance.fiat
+    }
+
+    var totalBalance: Balance {
         let cryptoBalance: Decimal? = {
-            switch (availableBalance.crypto, stakingManager?.state.balances?.sum()) {
+            switch (availableBalance.crypto, stakedBalance.crypto) {
             case (.none, _): nil
             // What we have to do if we have only blocked balance?
             case (.some(let available), .none): available
@@ -61,21 +73,8 @@ extension WalletModel {
         return .init(crypto: cryptoBalance, fiat: fiatBalance)
     }
 
-    var stakedBalance: Balance {
-        let stakingBalance = stakingManagerState.balances?.staking().sum()
-        let fiatBalance: Decimal? = {
-            guard let stakingBalance, let currencyId = tokenItem.currencyId else {
-                return nil
-            }
-
-            return converter.convertToFiat(stakingBalance, currencyId: currencyId)
-        }()
-
-        return .init(crypto: stakingBalance, fiat: fiatBalance)
-    }
-
-    var stakedRewardsBalance: Balance {
-        let rewardsToClaim = stakingManagerState.rewardsToClaim
+    var stakedRewards: Balance {
+        let rewardsToClaim = stakingManagerState.balances?.rewards().sum()
         let fiatBalance: Decimal? = {
             guard let rewardsToClaim, let currencyId = tokenItem.currencyId else {
                 return nil
@@ -88,19 +87,49 @@ extension WalletModel {
     }
 
     var allBalanceFormatted: BalanceFormatted {
-        formatted(allBalance)
-    }
-
-    var stakedBalanceFormatted: BalanceFormatted {
-        formatted(stakedBalance)
+        formatted(totalBalance)
     }
 
     var availableBalanceFormatted: BalanceFormatted {
         formatted(availableBalance)
     }
 
-    var stakedRewardsBalanceFormatted: BalanceFormatted {
-        formatted(stakedRewardsBalance)
+    var stakedWithPendingBalanceFormatted: BalanceFormatted {
+        formatted(stakedWithPendingBalance)
+    }
+
+    var stakedBalanceFormatted: BalanceFormatted {
+        formatted(stakedBalance)
+    }
+
+    var stakedRewardsFormatted: BalanceFormatted {
+        formatted(stakedRewards)
+    }
+
+    private var stakedBalance: Balance {
+        let stakingBalance = stakingManagerState.balances?.blocked().sum()
+        let fiatBalance: Decimal? = {
+            guard let stakingBalance, let currencyId = tokenItem.currencyId else {
+                return nil
+            }
+
+            return converter.convertToFiat(stakingBalance, currencyId: currencyId)
+        }()
+
+        return .init(crypto: stakingBalance, fiat: fiatBalance)
+    }
+
+    private var stakedWithPendingBalance: Balance {
+        let stakingBalance = stakingManagerState.balances?.stakes().sum()
+        let fiatBalance: Decimal? = {
+            guard let stakingBalance, let currencyId = tokenItem.currencyId else {
+                return nil
+            }
+
+            return converter.convertToFiat(stakingBalance, currencyId: currencyId)
+        }()
+
+        return .init(crypto: stakingBalance, fiat: fiatBalance)
     }
 
     private func formatted(_ balance: Balance) -> BalanceFormatted {
@@ -111,20 +140,12 @@ extension WalletModel {
     }
 }
 
-private extension StakingManagerState {
-    var balances: [StakingBalance]? {
-        guard case .staked(let staked) = self else {
-            return nil
-        }
-
-        return staked.balances
+extension WalletModel {
+    struct Balance: Hashable {
+        let crypto, fiat: Decimal?
     }
 
-    var rewardsToClaim: Decimal? {
-        guard case .staked(let staked) = self else {
-            return nil
-        }
-
-        return staked.balances.rewards().sum()
+    struct BalanceFormatted: Hashable {
+        let crypto, fiat: String
     }
 }

@@ -291,7 +291,14 @@ private extension CommonStakingManager {
             }
 
             return .validator(
-                .init(address: address, name: name, iconURL: record.validator.iconURL, apr: record.validator.apr)
+                .init(
+                    address: address,
+                    name: name,
+                    preferred: true,
+                    partner: false,
+                    iconURL: record.validator.iconURL,
+                    apr: record.validator.apr
+                )
             )
         }()
 
@@ -317,7 +324,7 @@ private extension CommonStakingManager {
             id: actionID,
             amount: amount,
             validator: validator,
-            transactions: transactions.filter { $0.status != .skipped }
+            transactions: transactions
         )
     }
 

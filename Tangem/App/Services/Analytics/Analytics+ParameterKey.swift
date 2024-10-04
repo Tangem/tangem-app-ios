@@ -12,7 +12,7 @@ extension Analytics {
     enum ParameterKey: String {
         case blockchain
         case firmware = "Firmware"
-        case action
+        case action = "Action"
         case errorDescription = "Error Description"
         case errorCode = "Error Code"
         case newSecOption = "new_security_option"

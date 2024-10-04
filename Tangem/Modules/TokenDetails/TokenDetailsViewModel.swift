@@ -232,10 +232,11 @@ private extension TokenDetailsViewModel {
     private func bind() {
         Publishers.CombineLatest(
             walletModel.walletDidChangePublisher,
-            walletModel.stakingManagerStatePublisher.filter { $0 != .loading }
+            walletModel.stakingManagerStatePublisher
         )
+        .filter { $1 != .loading }
         .receive(on: DispatchQueue.main)
-        .sink { _ in } receiveValue: { [weak self] newState, _ in
+        .receiveValue { [weak self] newState, _ in
             AppLog.shared.debug("Token details receive new wallet model state: \(newState)")
             self?.updateBalance(walletModelState: newState)
         }
@@ -289,24 +290,24 @@ private extension TokenDetailsViewModel {
         case .loading:
             // Do nothing
             break
-        case .availableToStake, .notEnabled, .temporaryUnavailable:
+        case .availableToStake, .notEnabled:
             activeStakingViewData = nil
-        case .loadingError:
+        case .loadingError, .temporaryUnavailable:
             activeStakingViewData = .init(balance: .loadingError, rewards: .none)
         case .staked(let staked):
             let rewards: ActiveStakingViewData.RewardsState? = {
-                switch (staked.yieldInfo.rewardClaimingType, walletModel.stakedRewardsBalance.fiat) {
+                switch (staked.yieldInfo.rewardClaimingType, walletModel.stakedRewards.fiat) {
                 case (.auto, _):
                     return nil
                 case (.manual, .none):
                     return .noRewards
                 case (.manual, .some):
-                    return .rewardsToClaim(walletModel.stakedRewardsBalanceFormatted.fiat)
+                    return .rewardsToClaim(walletModel.stakedRewardsFormatted.fiat)
                 }
             }()
 
             activeStakingViewData = ActiveStakingViewData(
-                balance: .balance(walletModel.stakedBalanceFormatted, action: { [weak self] in
+                balance: .balance(walletModel.stakedWithPendingBalanceFormatted, action: { [weak self] in
                     self?.openStaking()
                 }),
                 rewards: rewards

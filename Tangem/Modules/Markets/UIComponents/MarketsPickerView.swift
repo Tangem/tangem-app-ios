@@ -13,6 +13,7 @@ struct MarketsPickerView: View {
 
     let options: [MarketsPriceIntervalType]
     let shouldStretchToFill: Bool
+    let isDisabled: Bool
     let style: SegmentedPicker<MarketsPriceIntervalType>.Style
     let titleFactory: (MarketsPriceIntervalType) -> String
 
@@ -21,6 +22,7 @@ struct MarketsPickerView: View {
             selectedOption: $marketPriceIntervalType,
             options: options,
             shouldStretchToFill: shouldStretchToFill,
+            isDisabled: isDisabled,
             style: style,
             titleFactory: titleFactory
         )
@@ -39,6 +41,7 @@ struct MarketsPickerView: View {
                     marketPriceIntervalType: $firstInterval,
                     options: [.day, .week, .month],
                     shouldStretchToFill: false,
+                    isDisabled: false,
                     style: .init(textVerticalPadding: 2),
                     titleFactory: { $0.marketsListId }
                 )
@@ -47,6 +50,7 @@ struct MarketsPickerView: View {
                     marketPriceIntervalType: $secondInterval,
                     options: MarketsPriceIntervalType.allCases,
                     shouldStretchToFill: false,
+                    isDisabled: false,
                     style: .init(textVerticalPadding: 2),
                     titleFactory: { $0.rawValue }
                 )
@@ -55,6 +59,7 @@ struct MarketsPickerView: View {
                     marketPriceIntervalType: $secondInterval,
                     options: MarketsPriceIntervalType.allCases,
                     shouldStretchToFill: true,
+                    isDisabled: false,
                     style: .init(textVerticalPadding: 2),
                     titleFactory: { $0.rawValue }
                 )
