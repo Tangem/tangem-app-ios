@@ -84,8 +84,8 @@ private extension MarketsTokenDetailsExchangesListViewModel {
                 let response = try await exchangesListLoader.loadExchangesList(for: tokenId)
                 await handleLoadResult(.success(response))
             } catch {
+                self?.lastLoadAttemptDate = Date()
                 await self?.handleLoadResult(.failure(error))
-                self?.lastLoadAttemptDate = date
             }
         }.eraseToAnyCancellable()
     }

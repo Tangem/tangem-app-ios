@@ -61,7 +61,6 @@ struct TokenMarketsDetailsCoordinatorView: CoordinatorView {
         NavHolder()
             .navigation(item: $coordinator.exchangesListViewModel) {
                 MarketsTokenDetailsExchangesListView(viewModel: $0)
-                    .ignoresSafeArea(.container, edges: .top) // Without it, the content won't go into the safe area top zone on over-scroll
             }
             .emptyNavigationLink()
     }

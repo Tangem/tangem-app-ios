@@ -28,5 +28,5 @@ struct ExchangeListItemInfo: Decodable {
     let image: String?
     let centralized: Bool
     let volumeUsd: Decimal
-    let trustScore: ExchangeTrustScore?
+    let trustScore: MarketsExchangeTrustScore?
 }

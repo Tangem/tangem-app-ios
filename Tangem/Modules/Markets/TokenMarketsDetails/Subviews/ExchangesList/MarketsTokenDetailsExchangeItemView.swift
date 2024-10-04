@@ -46,7 +46,7 @@ struct MarketsTokenDetailsExchangeItemView: View {
                 }
             }
         }
-        .padding(14.0)
+        .padding(14)
     }
 }
 

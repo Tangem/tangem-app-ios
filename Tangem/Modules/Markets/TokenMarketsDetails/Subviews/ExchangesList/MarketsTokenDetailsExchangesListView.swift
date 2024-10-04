@@ -34,7 +34,12 @@ struct MarketsTokenDetailsExchangesListView: View {
             .onOverlayContentProgressChange { [weak viewModel] progress in
                 viewModel?.onOverlayContentProgressChange(progress)
             }
-            .background(Colors.Background.primary)
+            .background { viewBackground }
+            .if(viewModel.isMarketsSheetStyle) { content in
+                content
+                    .ignoresSafeArea(.container, edges: .top) // Without it, the content won't go into the safe area top zone on over-scroll
+            }
+            .animation(.default, value: viewModel.exchangesList)
     }
 
     @ViewBuilder
@@ -42,17 +47,15 @@ struct MarketsTokenDetailsExchangesListView: View {
         let content = VStack(spacing: 0) {
             navigationBar
 
-            Group {
+            VStack(spacing: 0) {
                 header
 
                 listContent
-                    .animation(.default, value: viewModel.exchangesList)
-                    .transition(.opacity)
             }
             .opacity(viewModel.overlayContentHidingProgress)
         }
 
-        if #unavailable(iOS 17.0) {
+        if #unavailable(iOS 17.0), viewModel.isMarketsSheetStyle {
             // On iOS 16 and below, UIKit will always allocate a new instance of the `UINavigationBar` instance when push
             // navigation is performed in other navigation controller(s) in the application (on the main screen, for example).
             // This will happen asynchronously, after a couple of seconds after the navigation event in the other navigation controller(s).
@@ -68,30 +71,33 @@ struct MarketsTokenDetailsExchangesListView: View {
         }
     }
 
+    @ViewBuilder
     private var navigationBar: some View {
-        NavigationBar(
-            title: navigationBarTitle,
-            settings: .init(
-                title: .init(
-                    font: Fonts.Bold.body,
-                    color: Colors.Text.primary1,
-                    lineLimit: 1,
-                    minimumScaleFactor: 0.6
+        if viewModel.isMarketsSheetStyle {
+            NavigationBar(
+                title: navigationBarTitle,
+                settings: .init(
+                    title: .init(
+                        font: Fonts.Bold.body,
+                        color: Colors.Text.primary1,
+                        lineLimit: 1,
+                        minimumScaleFactor: 0.6
+                    ),
+                    backgroundColor: .clear, // Controlled by the `background` modifier in the body
+                    height: 64.0,
+                    alignment: .bottom
                 ),
-                backgroundColor: .clear, // Controlled by the `background` modifier in the body
-                height: 64.0,
-                alignment: .bottom
-            ),
-            leftButtons: {
-                BackButton(
-                    height: 44.0,
-                    isVisible: true,
-                    isEnabled: true,
-                    hPadding: 10.0,
-                    action: viewModel.onBackButtonAction
-                )
-            }
-        )
+                leftButtons: {
+                    BackButton(
+                        height: 44.0,
+                        isVisible: true,
+                        isEnabled: true,
+                        hPadding: 10.0,
+                        action: viewModel.onBackButtonAction
+                    )
+                }
+            )
+        }
     }
 
     private var header: some View {
@@ -131,48 +137,39 @@ struct MarketsTokenDetailsExchangesListView: View {
         case .loading, .loaded:
             scrollContent
         case .failedToLoad:
-            VStack {
-                Spacer()
-
-                MarketsUnableToLoadDataView(
-                    isButtonBusy: false,
-                    retryButtonAction: {
-                        viewModel.reloadExchangesList()
-                    }
-                )
-
-                Spacer()
-            }
+            MarketsUnableToLoadDataView(
+                isButtonBusy: false,
+                retryButtonAction: {
+                    viewModel.reloadExchangesList()
+                }
+            )
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(.horizontal, 16)
         }
     }
 
     @ViewBuilder
     private var scrollContent: some View {
         ScrollView(showsIndicators: false) {
-            switch viewModel.exchangesList {
-            case .loading:
-                VStack(spacing: 0) {
+            VStack(spacing: 0) {
+                switch viewModel.exchangesList {
+                case .loading:
                     ForEach(0 ... (viewModel.numberOfExchangesListedOn - 1)) { _ in
                         ExchangeLoaderView()
                     }
-                }
-            case .loaded(let itemsList):
-                VStack(spacing: 0) {
+                case .loaded(let itemsList):
                     ForEach(indexed: itemsList.indexed()) { item in
                         MarketsTokenDetailsExchangeItemView(info: item.1)
                     }
+                case .failedToLoad:
+                    EmptyView()
                 }
-            case .failedToLoad:
-                EmptyView()
+            }
+            .readContentOffset(inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName)) { contentOffset in
+                isNavigationBarShadowLineViewVisible = contentOffset.y > scrollViewContentTopInset
             }
         }
         .coordinateSpace(name: scrollViewFrameCoordinateSpaceName)
-        .if(viewModel.isMarketsSheetStyle) { view in
-            view
-                .readContentOffset(inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName)) { contentOffset in
-                    isNavigationBarShadowLineViewVisible = contentOffset.y > scrollViewContentTopInset
-                }
-        }
     }
 
     @ViewBuilder
