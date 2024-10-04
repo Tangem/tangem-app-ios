@@ -61,15 +61,16 @@ private extension UINavigationController {
             let subclassNameUTF8 = (subclassName as NSString).utf8String,
             let subclass = objc_allocateClassPair(navigationBarClass, subclassNameUTF8, 0)
         else {
-            assertionFailure("Unable to allocate class pair for subclass \(subclassName) and class \(navigationBarClass)")
+            assertionFailure("Unable to allocate class pair for subclass \(subclassName) and parent class \(navigationBarClass)")
             return nil
         }
 
         let selector = #selector(UINavigationBar.layoutSubviews)
 
         if let method = class_getInstanceMethod(UINavigationBar.self, selector) {
-            let methodHook: @convention(block) (_ navigationBar: UINavigationBar) -> Void = { navigationBar in
-                navigationBar.isHidden = true
+            let methodHook: @convention(block) (_ instance: UINavigationBar) -> Void = { instance in
+                // Default implementation does nothing, no need to call super
+                instance.isHidden = true
             }
             let implementation = imp_implementationWithBlock(methodHook)
             let typeEncoding = method_getTypeEncoding(method)
