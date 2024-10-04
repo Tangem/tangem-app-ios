@@ -80,7 +80,7 @@ struct ValidatorView: View {
                 FixedSpacer(width: 6)
 
                 Text(Localization.stakingValidatorsLabel)
-                    .style(Fonts.Bold.caption2, color: Colors.Icon.primary2)
+                    .style(Fonts.Bold.caption2, color: Colors.Text.constantWhite)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 2)
                     .background(Colors.Text.accent)
