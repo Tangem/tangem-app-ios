@@ -687,6 +687,7 @@
 		B0FB4EFA2A8512210057F4C2 /* walletUserWalletList.json in Resources */ = {isa = PBXBuildFile; fileRef = B0FB4EF92A8511DA0057F4C2 /* walletUserWalletList.json */; };
 		B0FB98A52598D24300B769A3 /* Card+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0FB98A42598D24300B769A3 /* Card+.swift */; };
 		B0FC72EB29B7991A001930D4 /* OnboardingSeedPhraseIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0FC72EA29B7991A001930D4 /* OnboardingSeedPhraseIntroView.swift */; };
+		B0FD60D52CB0311B001A59CA /* MarketsTokenDetailsExchangesListContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0FD60D42CB0311A001A59CA /* MarketsTokenDetailsExchangesListContainerView.swift */; };
 		B0FE0B3529712C170046EE2C /* WalletConnectV2Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0FE0B3429712C170046EE2C /* WalletConnectV2Utils.swift */; };
 		B0FE0B37297138CC0046EE2C /* WalletConnectSavedSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0FE0B36297138CC0046EE2C /* WalletConnectSavedSession.swift */; };
 		B0FE0B3A297140D10046EE2C /* WalletConnectV2Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0FE0B39297140D10046EE2C /* WalletConnectV2Error.swift */; };
@@ -2676,6 +2677,7 @@
 		B0FB4EF92A8511DA0057F4C2 /* walletUserWalletList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = walletUserWalletList.json; sourceTree = "<group>"; };
 		B0FB98A42598D24300B769A3 /* Card+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Card+.swift"; sourceTree = "<group>"; };
 		B0FC72EA29B7991A001930D4 /* OnboardingSeedPhraseIntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSeedPhraseIntroView.swift; sourceTree = "<group>"; };
+		B0FD60D42CB0311A001A59CA /* MarketsTokenDetailsExchangesListContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenDetailsExchangesListContainerView.swift; sourceTree = "<group>"; };
 		B0FE0B3429712C170046EE2C /* WalletConnectV2Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectV2Utils.swift; sourceTree = "<group>"; };
 		B0FE0B36297138CC0046EE2C /* WalletConnectSavedSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectSavedSession.swift; sourceTree = "<group>"; };
 		B0FE0B39297140D10046EE2C /* WalletConnectV2Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectV2Error.swift; sourceTree = "<group>"; };
@@ -6330,6 +6332,7 @@
 				B0290CDA2CAED78A008ABBD2 /* MarketsExchangeTrustScore.swift */,
 				B0290CDC2CAED941008ABBD2 /* MarketsTokenDetailsExchangeItemView.swift */,
 				B0290CDE2CAED9AF008ABBD2 /* MarketsTokenDetailsExchangesListView+Skeletons.swift */,
+				B0FD60D42CB0311A001A59CA /* MarketsTokenDetailsExchangesListContainerView.swift */,
 			);
 			path = ExchangesList;
 			sourceTree = "<group>";
@@ -11914,6 +11917,7 @@
 				EFEE23B32BFF69FE0099917E /* ScanCardSettingsViewModel.swift in Sources */,
 				EF5F1BAC29D1A2BE0093307B /* TotalBalanceProviderMock.swift in Sources */,
 				B08EE5172BFDE0C400E8A07C /* WelcomeSearchTokensView.swift in Sources */,
+				B0FD60D52CB0311B001A59CA /* MarketsTokenDetailsExchangesListContainerView.swift in Sources */,
 				DAAA3C6F2B3D79FA0002DBB0 /* SendTransactionParametersBuilder.swift in Sources */,
 				B0DD16282A331C2100CB23AA /* TokenDetailsCoordinator.swift in Sources */,
 				DC261CB3292CF6B700875E64 /* UncompletedBackupCoordinator.swift in Sources */,
