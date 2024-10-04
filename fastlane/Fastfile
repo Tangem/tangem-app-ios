@@ -16,6 +16,9 @@ before_all do |lane, options|
   Dir.chdir("..") do
     sh("./bootstrap.sh") 
   end
+
+  ENV["FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT"] = "120"
+  ENV["FASTLANE_XCODEBUILD_SETTINGS_RETRIES"] = "4"
 end
 
 desc """
