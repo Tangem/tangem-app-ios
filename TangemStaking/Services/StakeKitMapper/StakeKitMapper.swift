@@ -269,7 +269,7 @@ struct StakeKitMapper {
             unbondingPeriod: mapToPeriod(from: response.metadata.cooldownPeriod),
             warmupPeriod: mapToPeriod(from: response.metadata.warmupPeriod),
             rewardClaimingType: mapToRewardClaimingType(from: response.metadata.rewardClaiming),
-            rewardScheduleType: mapToRewardScheduleType(from: response.metadata.rewardSchedule, network: item.network)
+            rewardScheduleType: mapToRewardScheduleType(from: response.metadata.rewardSchedule, item: item)
         )
     }
 
@@ -352,22 +352,16 @@ struct StakeKitMapper {
 
     func mapToRewardScheduleType(
         from type: StakeKitDTO.Yield.Info.Response.Metadata.RewardScheduleType,
-        network: StakeKitNetworkType
+        item: StakingTokenItem
     ) throws -> RewardScheduleType {
-        switch network {
+        switch item.network {
         case .solana: .days(min: 2, max: 3)
         case .cosmos: .seconds(min: 5, max: 12)
         case .tron: .daily
         case .binance: .daily
-        case .ethereum: .daily
+        case .ethereum where item.contractAddress == Constants.polygonContactAddress: .daily
         default: .generic(type.rawValue)
         }
-    }
-}
-
-extension StakeKitMapper {
-    enum Constants {
-        static let partnerValidator = "cosmosvaloper1wrx0x9m9ykdhw9sg04v7uljme53wuj03aa5d4f"
     }
 }
 
