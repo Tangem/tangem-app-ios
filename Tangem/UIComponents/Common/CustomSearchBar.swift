@@ -66,6 +66,9 @@ struct CustomSearchBar: View {
             RoundedRectangle(cornerRadius: 14)
                 .fill(Colors.Field.primary)
         )
+        .onTapGesture {
+            isFocused = true
+        }
     }
 
     private var placeholderView: Text {
