@@ -250,7 +250,7 @@ struct OrganizeTokensView: View {
             horizontalInset: Constants.contentHorizontalInset,
             bottomInset: Constants.headerBottomInset
         )
-        .background(.ultraThinMaterial.hidden(scrollState.isNavigationBarBackgroundHidden))
+        .background(.bar.hidden(scrollState.isNavigationBarBackgroundHidden))
         .padding(.bottom, Constants.headerAdditionalBottomInset)
         .readGeometry(\.size.height, bindTo: $scrollViewTopContentInset)
         .infinityFrame(alignment: .top)

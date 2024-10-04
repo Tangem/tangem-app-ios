@@ -28,7 +28,7 @@ struct MarketsNavigationBarBackgroundView<Overlay>: View where Overlay: View {
 
             // Translucent navigation bar background, visible when list content is obscured by the navigation bar/overlay
             Rectangle()
-                .fill(.ultraThinMaterial)
+                .fill(.bar)
                 .visible(isListContentObscured)
                 .overlay(alignment: .bottom) {
                     overlay()

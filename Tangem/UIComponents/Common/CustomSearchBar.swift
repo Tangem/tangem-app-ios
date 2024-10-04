@@ -120,7 +120,7 @@ struct CustomSearchBar: View {
                 .fill(Colors.Field.primary)
         case .translucent:
             background
-                .fill(.ultraThinMaterial)
+                .fill(.bar)
         }
     }
 }
