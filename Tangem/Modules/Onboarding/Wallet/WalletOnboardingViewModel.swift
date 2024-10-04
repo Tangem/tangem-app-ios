@@ -77,7 +77,8 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
                 return Localization.onboardingSubtitleScanPrimaryCardFormat(cardIdFormatted)
             case .finalizingBackupCard(let index):
-                let cardId = backupService.backupCardIds[index - 1]
+                let backupCardIds = backupService.backupCards.map { $0.cardId }
+                let cardId = backupCardIds[index - 1]
                 guard let cardIdFormatted = CardIdFormatter(style: cardIdDisplayFormat).string(from: cardId) else {
                     return super.subtitle
                 }
@@ -288,10 +289,6 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
         if isFromMain {
             canDisplayCardImage = true
-        }
-
-        if let customOnboardingImage = input.cardInput.config?.customOnboardingImage {
-            self.customOnboardingImage = customOnboardingImage.image
         }
 
         bind()
@@ -730,32 +727,44 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
         isMainButtonBusy = true
 
-        // Ring onboarding. Set custom image for first step
-        if let customOnboardingImage = input.cardInput.config?.customScanImage,
-           backupService.currentState == .finalizingPrimaryCard {
-            backupService.config.style.scanTagImage = .image(uiImage: customOnboardingImage.uiImage, verticalOffset: 0)
+        let ringUtil = RingUtil()
+
+        // Ring onboarding. Set custom image for ring
+        if let finalizingBatchId = backupService.finalizingBatchId,
+           RingUtil().isRing(batchId: finalizingBatchId) {
+            backupService.config.style.scanTagImage = .image(uiImage: Assets.ringShapeScan.uiImage, verticalOffset: 0)
         }
+
+        let containsRing = backupService.allBatchIds.contains(where: { ringUtil.isRing(batchId: $0) })
 
         stepPublisher =
             Deferred {
                 Future { [weak self] promise in
                     guard let self else { return }
 
-                    backupService.proceedBackup { result in
+                    backupService.proceedBackup { [weak self] result in
+                        guard let self else { return }
+
                         // Ring onboarding. Reset to defaults
-                        self.backupService.config.style.scanTagImage = .genericCard
+                        backupService.config.style.scanTagImage = .genericCard
 
                         switch result {
                         case .success(let updatedCard):
-                            self.userWalletModel?.addAssociatedCard(updatedCard.cardId)
-                            self.pendingBackupManager.onProceedBackup(updatedCard)
-                            if updatedCard.cardId == self.backupService.primaryCard?.cardId {
-                                self.userWalletModel?.onBackupUpdate(type: .primaryCardBackuped(card: updatedCard))
+                            userWalletModel?.addAssociatedCard(updatedCard.cardId)
+                            pendingBackupManager.onProceedBackup(updatedCard)
+                            if updatedCard.cardId == backupService.primaryCard?.cardId {
+                                userWalletModel?.onBackupUpdate(type: .primaryCardBackuped(card: updatedCard))
                             }
 
-                            if self.backupServiceState == .finished {
-                                self.pendingBackupManager.onBackupCompleted()
-                                self.userWalletModel?.onBackupUpdate(type: .backupCompleted)
+                            if backupServiceState == .finished {
+                                // Ring onboarding. Save userWalletId with ring, except interrupted backups
+                                if containsRing,
+                                   let userWalletId = userWalletModel?.userWalletId.stringValue {
+                                    AppSettings.shared.userWalletIdsWithRing.insert(userWalletId)
+                                }
+
+                                pendingBackupManager.onBackupCompleted()
+                                userWalletModel?.onBackupUpdate(type: .backupCompleted)
                                 Analytics.log(
                                     event: .backupFinished,
                                     params: [.cardsCount: String((updatedCard.backupStatus?.backupCardsCount ?? 0) + 1)]
@@ -1005,5 +1014,27 @@ extension NotificationCenter {
 }
 
 private extension BackupService {
-    var allCardIds: [String] { [primaryCard?.cardId].compactMap { $0 } + backupCardIds }
+    var allCardIds: [String] {
+        [primaryCard?.cardId].compactMap { $0 } + backupCards.map { $0.cardId }
+    }
+
+    // for ring onboarding
+    var allBatchIds: [String] {
+        [primaryCard?.batchId].compactMap { $0 } + backupCards.compactMap { $0.batchId }
+    }
+
+    // for ring onboarding
+    var finalizingBatchId: String? {
+        if currentState == .finalizingPrimaryCard,
+           let batchId = primaryCard?.batchId {
+            return batchId
+        }
+
+        if case .finalizingBackupCard(let index) = currentState,
+           let batchId = backupCards[index - 1].batchId {
+            return batchId
+        }
+
+        return nil
+    }
 }

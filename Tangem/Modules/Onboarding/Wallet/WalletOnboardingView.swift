@@ -150,7 +150,7 @@ struct WalletOnboardingView: View {
                                 ZStack(alignment: .topTrailing) {
                                     OnboardingCardView(
                                         placeholderCardType: .dark,
-                                        cardImage: viewModel.customOnboardingImage ?? viewModel.mainImage,
+                                        cardImage: viewModel.mainImage,
                                         cardScanned: viewModel.isInitialAnimPlayed
                                     )
                                     Text(Localization.commonOriginCard)

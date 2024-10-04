@@ -14,12 +14,10 @@ import BlockchainSdk
 struct Wallet2Config {
     let card: CardDTO
     private let isDemo: Bool
-    private let isRing: Bool
 
-    init(card: CardDTO, isDemo: Bool, isRing: Bool) {
+    init(card: CardDTO, isDemo: Bool) {
         self.card = card
         self.isDemo = isDemo
-        self.isRing = isRing
     }
 }
 
@@ -141,18 +139,10 @@ extension Wallet2Config: UserWalletConfig {
     }
 
     var productType: Analytics.ProductType {
-        if isRing {
-            return .ring
-        }
-
         return .wallet2
     }
 
     var cardHeaderImage: ImageType? {
-        if isRing {
-            return nil
-        }
-
         // Case with broken backup (e.g. CardLinked)
         if cardsCount == 1 {
             return nil
@@ -234,22 +224,6 @@ extension Wallet2Config: UserWalletConfig {
         default:
             return cardsCount == 2 ? Assets.Cards.wallet2Double : Assets.Cards.wallet2Triple
         }
-    }
-
-    var customOnboardingImage: ImageType? {
-        if isRing {
-            return Assets.ring
-        }
-
-        return nil
-    }
-
-    var customScanImage: ImageType? {
-        if isRing {
-            return Assets.ringShapeScan
-        }
-
-        return nil
     }
 
     func getFeatureAvailability(_ feature: UserWalletFeature) -> UserWalletFeature.Availability {
