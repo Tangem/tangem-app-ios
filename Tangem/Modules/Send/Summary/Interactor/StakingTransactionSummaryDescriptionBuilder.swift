@@ -7,14 +7,15 @@
 //
 
 import Foundation
+import TangemFoundation
 
 struct StakingTransactionSummaryDescriptionBuilder {
     private let tokenItem: TokenItem
-    private let feeTokenItem: TokenItem
+    private let balanceFormatter = BalanceFormatter()
+    private let dateFormatter = DateComponentsFormatter.staking()
 
-    init(tokenItem: TokenItem, feeTokenItem: TokenItem) {
+    init(tokenItem: TokenItem) {
         self.tokenItem = tokenItem
-        self.feeTokenItem = feeTokenItem
     }
 }
 
@@ -22,7 +23,7 @@ struct StakingTransactionSummaryDescriptionBuilder {
 
 extension StakingTransactionSummaryDescriptionBuilder: SendTransactionSummaryDescriptionBuilder {
     func makeDescription(transactionType: SendSummaryTransactionData) -> String? {
-        guard case .staking(let amount, _, let apr) = transactionType,
+        guard case .staking(let amount, let schedule) = transactionType,
               let amountFiat = amount.fiat else {
             return nil
         }
@@ -34,27 +35,9 @@ extension StakingTransactionSummaryDescriptionBuilder: SendTransactionSummaryDes
             roundingType: BalanceFormattingOptions.defaultFiatFormattingOptions.roundingType
         )
 
-        let formatter = BalanceFormatter()
-        let amountInFiatFormatted = formatter.formatFiatBalance(amountFiat, formattingOptions: amountFormattingOptions)
+        let amountInFiatFormatted = balanceFormatter.formatFiatBalance(amountFiat, formattingOptions: amountFormattingOptions)
 
-        let amountPerYear = amountFiat * apr
-
-        let useRoundedValues = amountPerYear >= 1
-
-        let fractionDigits = useRoundedValues ? 0 : 2
-
-        let incomeFormattingOptions = BalanceFormattingOptions(
-            minFractionDigits: fractionDigits,
-            maxFractionDigits: fractionDigits,
-            formatEpsilonAsLowestRepresentableValue: true,
-            roundingType: .shortestFraction(roundingMode: .up)
-        )
-
-        var income = formatter.formatFiatBalance(amountPerYear, formattingOptions: incomeFormattingOptions)
-        if useRoundedValues {
-            income = "~" + income
-        }
-
-        return Localization.stakingSummaryDescriptionText(amountInFiatFormatted, income)
+        let scheduleFormatted = schedule.formatted(formatter: dateFormatter)
+        return Localization.stakingSummaryDescriptionText(amountInFiatFormatted, scheduleFormatted)
     }
 }
