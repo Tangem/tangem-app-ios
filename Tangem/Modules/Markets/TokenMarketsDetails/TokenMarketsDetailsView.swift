@@ -20,7 +20,6 @@ struct TokenMarketsDetailsView: View {
     private var isDarkColorScheme: Bool { colorScheme == .dark }
     private var defaultBackgroundColor: Color { isDarkColorScheme ? Colors.Background.primary : Colors.Background.secondary }
     private var overlayContentHidingBackgroundColor: Color { isDarkColorScheme ? defaultBackgroundColor : Colors.Background.plain }
-    private var isNavigationBarBackgroundBackdropViewHidden: Bool { 1.0 - viewModel.overlayContentHidingProgress <= .ulpOfOne }
 
     private let scrollViewFrameCoordinateSpaceName = UUID()
 
@@ -94,7 +93,7 @@ struct TokenMarketsDetailsView: View {
                 MarketsNavigationBarBackgroundView(
                     backdropViewColor: overlayContentHidingBackgroundColor,
                     overlayContentHidingProgress: viewModel.overlayContentHidingProgress,
-                    isNavigationBarBackgroundBackdropViewHidden: isNavigationBarBackgroundBackdropViewHidden,
+                    isNavigationBarBackgroundBackdropViewHidden: viewModel.isNavigationBarBackgroundBackdropViewHidden,
                     isListContentObscured: isListContentObscured
                 )
             )

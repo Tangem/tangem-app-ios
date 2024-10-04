@@ -32,7 +32,6 @@ struct MarketsView: View {
     private let scrollViewFrameCoordinateSpaceName = UUID()
 
     private var overlayHeight: CGFloat { showSearchResult ? searchResultListOverlayTotalHeight : defaultListOverlayTotalHeight }
-    private var isNavigationBarBackgroundBackdropViewHidden: Bool { 1.0 - viewModel.overlayContentHidingProgress <= .ulpOfOne }
     private var showSearchResult: Bool { viewModel.isSearching }
 
     var body: some View {
@@ -119,7 +118,7 @@ struct MarketsView: View {
         MarketsNavigationBarBackgroundView(
             backdropViewColor: Colors.Background.primary,
             overlayContentHidingProgress: viewModel.overlayContentHidingProgress,
-            isNavigationBarBackgroundBackdropViewHidden: isNavigationBarBackgroundBackdropViewHidden,
+            isNavigationBarBackgroundBackdropViewHidden: viewModel.isNavigationBarBackgroundBackdropViewHidden,
             isListContentObscured: isListContentObscured
         ) {
             Group {
