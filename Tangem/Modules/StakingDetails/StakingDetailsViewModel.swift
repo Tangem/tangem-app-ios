@@ -325,7 +325,7 @@ private extension StakingDetailsViewModel {
         case .unstake:
             coordinator?.openUnstakingFlow(action: action)
         case .pending:
-            coordinator?.openRewardsFlow(action: action)
+            coordinator?.openStakingSingleActionFlow(action: action)
         }
     }
 

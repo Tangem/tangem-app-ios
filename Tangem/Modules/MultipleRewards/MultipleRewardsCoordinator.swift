@@ -54,7 +54,7 @@ extension MultipleRewardsCoordinator {
 // MARK: - MultipleRewardsRoutable
 
 extension MultipleRewardsCoordinator: MultipleRewardsRoutable {
-    func openUnstakingFlow(action: UnstakingModel.Action) {
+    func openStakingSingleActionFlow(action: UnstakingModel.Action) {
         guard let options else { return }
 
         let coordinator = SendCoordinator(dismissAction: { [weak self] _ in
@@ -62,17 +62,10 @@ extension MultipleRewardsCoordinator: MultipleRewardsRoutable {
             self?.dismiss()
         })
 
-        let sendType: SendType = switch action.type {
-        case .stake:
-            fatalError("Use openStakingFrom function")
-        case .unstake: .unstaking(manager: options.manager, action: action)
-        case .pending: .rewards(manager: options.manager, action: action)
-        }
-
         coordinator.start(with: .init(
             walletModel: options.walletModel,
             userWalletModel: options.userWalletModel,
-            type: sendType
+            type: .stakingSingleAction(manager: options.manager, action: action)
         ))
         sendCoordinator = coordinator
     }

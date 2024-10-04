@@ -132,10 +132,10 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
         openFlow(for: action, options: options, sendType: .restaking(manager: options.manager, action: action))
     }
 
-    func openRewardsFlow(action: StakingSingleActionModel.Action) {
+    func openStakingSingleActionFlow(action: StakingSingleActionModel.Action) {
         guard let options else { return }
 
-        openFlow(for: action, options: options, sendType: .rewards(manager: options.manager, action: action))
+        openFlow(for: action, options: options, sendType: .stakingSingleAction(manager: options.manager, action: action))
     }
 
     func openFlow(for action: StakingAction, options: Options, sendType: SendType) {
