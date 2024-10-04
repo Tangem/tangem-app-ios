@@ -280,7 +280,7 @@ private extension Blockchain {
              .filecoin,
              .sei,
              .sui,
-             .energyWebChain,
+             .energyWebEVM,
              .energyWebX:
             // Did you get a compilation error here? If so, check whether the network is supported at https://api.mercuryo.io/v1.6/lib/currencies
             return nil

@@ -107,7 +107,7 @@ struct SendTransactionParametersBuilder {
              .blast,
              .filecoin,
              .sui,
-             .energyWebChain,
+             .energyWebEVM,
              .energyWebX:
             return nil
         }

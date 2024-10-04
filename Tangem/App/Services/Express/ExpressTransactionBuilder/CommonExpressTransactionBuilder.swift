@@ -160,7 +160,7 @@ private extension CommonExpressTransactionBuilder {
              .blast,
              .filecoin,
              .sui,
-             .energyWebChain,
+             .energyWebEVM,
              .energyWebX:
             throw ExpressTransactionBuilderError.blockchainDonNotSupportedExtraId
         }
