@@ -12,16 +12,13 @@ struct MainHeaderView: View {
     @ObservedObject var viewModel: MainHeaderViewModel
 
     private let imageSize: CGSize = .init(width: 120, height: 106)
-    private let horizontalSpacing: CGFloat = 6
     private let cornerRadius = 14.0
 
     @State private var containerSize: CGSize = .zero
     @State private var balanceTextSize: CGSize = .zero
 
     var body: some View {
-        let contentSettings = contentSettings(containerWidth: containerSize.width)
-
-        return HStack(alignment: .bottom, spacing: 0) {
+        HStack(alignment: .bottom, spacing: 0) {
             VStack(alignment: .leading, spacing: 0) {
                 titleView
 
@@ -55,20 +52,6 @@ struct MainHeaderView: View {
             .lineLimit(1)
             .padding(.vertical, 12)
         }
-        .background(alignment: .bottom, content: {
-            HStack {
-                Spacer(minLength: horizontalSpacing)
-
-                // A transparent 1px image is used to preserve the structural identity of the view,
-                // otherwise visual glitches may ocurr during the header swipe animation
-                //
-                // Do not replace nil coalescing operator here with any kind of operators
-                // that breaks the view's structural identity (`if`, `switch`, etc)
-                Image(viewModel.cardImage?.name ?? Assets.clearColor1px.name)
-                    .frame(size: imageSize)
-            }
-            .hidden(!contentSettings.shouldShowTrailingContent)
-        })
         .readGeometry(\.size, bindTo: $containerSize)
         .padding(.horizontal, 14)
         .background(Colors.Background.primary)
@@ -106,25 +89,6 @@ struct MainHeaderView: View {
         .modifier(if: !viewModel.isUserWalletLocked) {
             $0.skeletonable(isShown: viewModel.isLoadingSubtitle, size: .init(width: 52, height: 12), radius: 3)
         }
-    }
-
-    private func widthForBalanceWithImage(containerWidth: CGFloat) -> CGFloat {
-        if viewModel.cardImage == nil {
-            return containerWidth
-        }
-
-        return containerWidth - imageSize.width - horizontalSpacing
-    }
-
-    private func contentSettings(containerWidth: CGFloat) -> (leadingContentSize: CGSize, shouldShowTrailingContent: Bool) {
-        let widthForBalanceWithImage = widthForBalanceWithImage(containerWidth: containerWidth)
-        if balanceTextSize.width > widthForBalanceWithImage {
-            return (.init(width: containerWidth, height: balanceTextSize.height), false)
-        }
-
-        let hasImage = viewModel.cardImage != nil
-        let balanceAvailableWidth = max(widthForBalanceWithImage, 0)
-        return (.init(width: balanceAvailableWidth, height: balanceTextSize.height), hasImage)
     }
 }
 
