@@ -116,32 +116,19 @@ struct MarketsView: View {
 
     @ViewBuilder
     private var navigationBarBackground: some View {
-        ZStack {
-            // A backdrop view with a solid background color, paced underneath the translucent navigation bar background
-            // and visible when this translucent navigation bar background becomes transparent on bottom sheet minimizing.
-            // Prevents the content of the list from being visible through the transparent translucent navigation bar background
-            // (it just looks ugly).
-            Colors.Background.primary
-                .hidden(isNavigationBarBackgroundBackdropViewHidden)
-                .animation(.linear(duration: 0.1), value: isNavigationBarBackgroundBackdropViewHidden)
-
-            // Translucent navigation bar background, visible when list content is obscured by the navigation bar/overlay
-            Rectangle()
-                .fill(.ultraThinMaterial)
-                .visible(isListContentObscured)
-                .overlay(alignment: .bottom) {
-                    Group {
-                        if showSearchResult {
-                            searchResultListOverlay
-                        } else {
-                            defaultListOverlay
-                        }
-                    }
+        MarketsNavigationBarBackgroundView(
+            backdropViewColor: Colors.Background.primary,
+            overlayContentHidingProgress: viewModel.overlayContentHidingProgress,
+            isNavigationBarBackgroundBackdropViewHidden: isNavigationBarBackgroundBackdropViewHidden,
+            isListContentObscured: isListContentObscured
+        ) {
+            Group {
+                if showSearchResult {
+                    searchResultListOverlay
+                } else {
+                    defaultListOverlay
                 }
-                .overlay(alignment: .bottom) {
-                    listOverlaySeparator
-                }
-                .opacity(viewModel.overlayContentHidingProgress) // Hides overlays and separator on bottom sheet minimizing
+            }
         }
         .frame(height: headerHeight + overlayHeight)
         .offset(y: listOverlayVerticalOffset)
@@ -201,12 +188,6 @@ struct MarketsView: View {
             .padding(.top, Constants.listOverlayTopInset)
             .padding(.horizontal, Constants.defaultHorizontalInset)
             .readGeometry(\.size.height, bindTo: $searchResultListOverlayTotalHeight)
-    }
-
-    @ViewBuilder
-    private var listOverlaySeparator: some View {
-        Separator(height: .minimal, color: Colors.Stroke.primary)
-            .visible(isListContentObscured)
     }
 
     @ViewBuilder

@@ -90,37 +90,16 @@ struct TokenMarketsDetailsView: View {
                     )
                 }
             )
-            .background(navigationBarBackground)
+            .background(
+                MarketsNavigationBarBackgroundView(
+                    backdropViewColor: overlayContentHidingBackgroundColor,
+                    overlayContentHidingProgress: viewModel.overlayContentHidingProgress,
+                    isNavigationBarBackgroundBackdropViewHidden: isNavigationBarBackgroundBackdropViewHidden,
+                    isListContentObscured: isListContentObscured
+                )
+            )
             .readGeometry(\.size.height, bindTo: $headerHeight)
             .infinityFrame(axis: .vertical, alignment: .top)
-        }
-    }
-
-    @ViewBuilder
-    private var listOverlaySeparator: some View {
-        Separator(height: .minimal, color: Colors.Stroke.primary)
-            .visible(isListContentObscured)
-    }
-
-    @ViewBuilder
-    private var navigationBarBackground: some View {
-        ZStack {
-            // A backdrop view with a solid background color, paced underneath the translucent navigation bar background
-            // and visible when this translucent navigation bar background becomes transparent on bottom sheet minimizing.
-            // Prevents the content of the list from being visible through the transparent translucent navigation bar background
-            // (it just looks ugly).
-            overlayContentHidingBackgroundColor
-                .hidden(isNavigationBarBackgroundBackdropViewHidden)
-                .animation(.linear(duration: 0.1), value: isNavigationBarBackgroundBackdropViewHidden)
-
-            // Translucent navigation bar background, visible when list content is obscured by the navigation bar/overlay
-            Rectangle()
-                .fill(.ultraThinMaterial)
-                .visible(isListContentObscured)
-                .overlay(alignment: .bottom) {
-                    listOverlaySeparator
-                }
-                .opacity(viewModel.overlayContentHidingProgress) // Hides translucent navigation bar background on bottom sheet minimizing
         }
     }
 
