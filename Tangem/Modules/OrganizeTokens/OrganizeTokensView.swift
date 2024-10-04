@@ -244,20 +244,13 @@ struct OrganizeTokensView: View {
         }
     }
 
-    private var navigationBarBackground: some View {
-        VisualEffectView(style: .systemUltraThinMaterial)
-            .edgesIgnoringSafeArea(.top)
-            .hidden(scrollState.isNavigationBarBackgroundHidden)
-            .infinityFrame(alignment: .bottom)
-    }
-
     private var tokenListHeader: some View {
         OrganizeTokensListHeader(
             viewModel: viewModel.headerViewModel,
             horizontalInset: Constants.contentHorizontalInset,
             bottomInset: Constants.headerBottomInset
         )
-        .background(navigationBarBackground)
+        .background(.bar.hidden(scrollState.isNavigationBarBackgroundHidden))
         .padding(.bottom, Constants.headerAdditionalBottomInset)
         .readGeometry(\.size.height, bindTo: $scrollViewTopContentInset)
         .infinityFrame(alignment: .top)
