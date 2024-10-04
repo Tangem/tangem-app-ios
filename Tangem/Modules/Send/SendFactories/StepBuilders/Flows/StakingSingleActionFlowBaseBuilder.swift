@@ -19,20 +19,20 @@ struct StakingSingleActionFlowBaseBuilder {
     let builder: SendDependenciesBuilder
 
     func makeSendViewModel(manager: any StakingManager, action: UnstakingModel.Action, router: SendRoutable) -> SendViewModel {
-        let rewardsModel = builder.makeStakingSingleActionModel(stakingManager: manager, action: action)
+        let actionModel = builder.makeStakingSingleActionModel(stakingManager: manager, action: action)
         let notificationManager = builder.makeStakingNotificationManager()
-        notificationManager.setup(provider: rewardsModel, input: rewardsModel)
-        notificationManager.setupManager(with: rewardsModel)
+        notificationManager.setup(provider: actionModel, input: actionModel)
+        notificationManager.setupManager(with: actionModel)
 
-        let sendAmountCompactViewModel = sendAmountStepBuilder.makeSendAmountCompactViewModel(input: rewardsModel)
+        let sendAmountCompactViewModel = sendAmountStepBuilder.makeSendAmountCompactViewModel(input: actionModel)
 
         let actionType = builder.sendFlowActionType(actionType: action.type)
 
-        let sendFeeCompactViewModel = sendFeeStepBuilder.makeSendFeeCompactViewModel(input: rewardsModel)
-        sendFeeCompactViewModel.bind(input: rewardsModel)
+        let sendFeeCompactViewModel = sendFeeStepBuilder.makeSendFeeCompactViewModel(input: actionModel)
+        sendFeeCompactViewModel.bind(input: actionModel)
 
         let summary = sendSummaryStepBuilder.makeSendSummaryStep(
-            io: (input: rewardsModel, output: rewardsModel),
+            io: (input: actionModel, output: actionModel),
             actionType: actionType,
             descriptionBuilder: builder.makeStakingTransactionSummaryDescriptionBuilder(),
             notificationManager: notificationManager,
@@ -44,7 +44,7 @@ struct StakingSingleActionFlowBaseBuilder {
         )
 
         let finish = sendFinishStepBuilder.makeSendFinishStep(
-            input: rewardsModel,
+            input: actionModel,
             actionType: actionType,
             sendDestinationCompactViewModel: .none,
             sendAmountCompactViewModel: sendAmountCompactViewModel,
@@ -58,20 +58,20 @@ struct StakingSingleActionFlowBaseBuilder {
             action: action
         )
 
-        let interactor = CommonSendBaseInteractor(input: rewardsModel, output: rewardsModel)
+        let interactor = CommonSendBaseInteractor(input: actionModel, output: actionModel)
 
         let viewModel = SendViewModel(
             interactor: interactor,
             stepsManager: stepsManager,
             userWalletModel: userWalletModel,
             alertBuilder: builder.makeStakingAlertBuilder(),
-            dataBuilder: builder.makeSendBaseDataBuilder(input: rewardsModel),
+            dataBuilder: builder.makeSendBaseDataBuilder(input: actionModel),
             tokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem,
             coordinator: router
         )
         stepsManager.set(output: viewModel)
-        rewardsModel.router = viewModel
+        actionModel.router = viewModel
 
         return viewModel
     }

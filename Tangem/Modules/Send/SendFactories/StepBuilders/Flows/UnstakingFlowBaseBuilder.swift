@@ -26,8 +26,10 @@ struct UnstakingFlowBaseBuilder {
 
         let actionType = builder.sendFlowActionType(actionType: action.type)
 
+        let io = (input: unstakingModel, output: unstakingModel)
+
         let amount = sendAmountStepBuilder.makeSendAmountStep(
-            io: (input: unstakingModel, output: unstakingModel),
+            io: io,
             actionType: actionType,
             sendFeeLoader: unstakingModel,
             sendQRCodeService: .none,
@@ -36,11 +38,13 @@ struct UnstakingFlowBaseBuilder {
             source: .staking
         )
 
+        amount.interactor.externalUpdate(amount: io.input.amount?.crypto)
+
         let sendFeeCompactViewModel = sendFeeStepBuilder.makeSendFeeCompactViewModel(input: unstakingModel)
         sendFeeCompactViewModel.bind(input: unstakingModel)
 
         let summary = sendSummaryStepBuilder.makeSendSummaryStep(
-            io: (input: unstakingModel, output: unstakingModel),
+            io: io,
             actionType: actionType,
             descriptionBuilder: builder.makeStakingTransactionSummaryDescriptionBuilder(),
             notificationManager: notificationManager,

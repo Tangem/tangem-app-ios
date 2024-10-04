@@ -248,7 +248,7 @@ struct SendDependenciesBuilder {
         )
     }
 
-    func makeRestakingModel(stakingManager: any StakingManager, action: UnstakingModel.Action) -> RestakingModel {
+    func makeRestakingModel(stakingManager: any StakingManager, action: RestakingModel.Action) -> RestakingModel {
         RestakingModel(
             stakingManager: stakingManager,
             sendTransactionDispatcher: makeStakingTransactionDispatcher(),
