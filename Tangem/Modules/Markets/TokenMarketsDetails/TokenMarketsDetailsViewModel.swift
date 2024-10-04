@@ -10,7 +10,7 @@ import Foundation
 import Combine
 import CombineExt
 
-class TokenMarketsDetailsViewModel: BaseMarketsViewModel {
+class TokenMarketsDetailsViewModel: MarketsBaseViewModel {
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
 
     @Published private(set) var priceChangeAnimation: ForegroundBlinkAnimationModifier.Change = .neutral
