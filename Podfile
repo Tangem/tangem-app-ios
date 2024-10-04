@@ -24,7 +24,7 @@ use_frameworks!
 inhibit_all_warnings!
 
 def tangem_sdk_pod
-  pod 'TangemSdk', :git => 'https://github.com/Tangem/tangem-sdk-ios.git', :tag => 'develop-310'
+  pod 'TangemSdk', :git => 'https://github.com/Tangem/tangem-sdk-ios.git', :tag => 'develop-312'
   #pod 'TangemSdk', :path => '../tangem-sdk-ios'
 end
 
@@ -200,7 +200,7 @@ post_install do |installer|
    "BlockchainSdk",
    "https://github.com/tangem/ton-swift.git",
    "TonSwift",
-   { :kind => "exactVersion", :version => "1.0.10-tangem1" }
+   { :kind => "exactVersion", :version => "1.0.10-tangem3" }
   )
   
   # `ScaleCodec` SPM package for `BlockchainSdk` pod
@@ -218,7 +218,7 @@ post_install do |installer|
    "BlockchainSdk",
    "https://github.com/tangem/IcpKit.git",
    "IcpKit",
-   { :kind => "exactVersion", :version => "0.1.2-tangem3" }
+   { :kind => "exactVersion", :version => "0.1.2-tangem4" }
   )
 
   # `SwiftProtobuf` SPM package for `BinanceChain` pod
