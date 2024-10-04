@@ -24,7 +24,7 @@ desc """
   Options:
   - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 """
-lane :test |options| do
+lane :test do |options|
   run_tests(
     workspace: "TangemApp.xcworkspace",
     scheme: PRODUCTION_SCHEME,
