@@ -19,21 +19,27 @@ struct MarketsView: View {
     @Environment(\.viewHierarchySnapshotter) private var viewHierarchySnapshotter
     @Environment(\.mainWindowSize) private var mainWindowSize
 
+    @State private var headerHeight: CGFloat = .zero
     @State private var defaultListOverlayTotalHeight: CGFloat = .zero
     @State private var defaultListOverlayRatingHeaderHeight: CGFloat = .zero
     @State private var searchResultListOverlayTotalHeight: CGFloat = .zero
     @State private var listOverlayVerticalOffset: CGFloat = .zero
-    @State private var isListOverlayShadowLineViewVisible = false
+    @State private var listOverlayTitleOpacity: CGFloat = 1.0
+    @State private var isListContentObscured = false
     @State private var responderChainIntrospectionTrigger = UUID()
 
     private let scrollTopAnchorId = UUID()
     private let scrollViewFrameCoordinateSpaceName = UUID()
 
+    private var overlayHeight: CGFloat { showSearchResult ? searchResultListOverlayTotalHeight : defaultListOverlayTotalHeight }
     private var showSearchResult: Bool { viewModel.isSearching }
 
     var body: some View {
         rootView
-            .onAppear(perform: viewModel.onViewAppear)
+            .onAppear {
+                viewModel.setViewHierarchySnapshotter(viewHierarchySnapshotter)
+                viewModel.onViewAppear()
+            }
             .onDisappear(perform: viewModel.onViewDisappear)
             .onOverlayContentProgressChange { [weak viewModel] progress in
                 viewModel?.onOverlayContentProgressChange(progress)
@@ -45,26 +51,26 @@ struct MarketsView: View {
             .onOverlayContentStateChange { [weak viewModel] state in
                 viewModel?.onOverlayContentStateChange(state)
             }
-            .onAppear {
-                viewModel.setViewHierarchySnapshotter(viewHierarchySnapshotter)
-            }
     }
 
     @ViewBuilder
     private var rootView: some View {
-        let content = VStack(spacing: 0.0) {
-            MainBottomSheetHeaderView(viewModel: viewModel.headerViewModel)
-                .zIndex(100) // Required for the collapsible header to work
-
-            ZStack(alignment: .topLeading) {
+        let content = ZStack {
+            Group {
                 if showSearchResult {
                     searchResultView
                 } else {
                     defaultMarketsView
                 }
             }
-            .opacity(viewModel.overlayContentHidingProgress)
+            .opacity(viewModel.overlayContentHidingProgress) // Hides list content on bottom sheet minimizing
             .scrollDismissesKeyboardCompat(.immediately)
+
+            navigationBarBackground
+
+            MainBottomSheetHeaderView(viewModel: viewModel.headerViewModel)
+                .readGeometry(\.size.height, bindTo: $headerHeight)
+                .infinityFrame(axis: .vertical, alignment: .top)
         }
         .alert(item: $viewModel.alert, content: { $0.alert })
         .background(Colors.Background.primary.ignoresSafeArea())
@@ -108,13 +114,29 @@ struct MarketsView: View {
     }
 
     @ViewBuilder
+    private var navigationBarBackground: some View {
+        MarketsNavigationBarBackgroundView(
+            backdropViewColor: Colors.Background.primary,
+            overlayContentHidingProgress: viewModel.overlayContentHidingProgress,
+            isNavigationBarBackgroundBackdropViewHidden: viewModel.isNavigationBarBackgroundBackdropViewHidden,
+            isListContentObscured: isListContentObscured
+        ) {
+            Group {
+                if showSearchResult {
+                    searchResultListOverlay
+                } else {
+                    defaultListOverlay
+                }
+            }
+        }
+        .frame(height: headerHeight + overlayHeight)
+        .offset(y: listOverlayVerticalOffset)
+        .infinityFrame(axis: .vertical, alignment: .top)
+    }
+
+    @ViewBuilder
     private var defaultMarketsView: some View {
         list
-            .overlay(alignment: .top) {
-                // Using plain old overlay + dummy `Color.clear` spacer in the scroll view due to the buggy
-                // `safeAreaInset(edge:alignment:spacing:content:)` iOS 15+ API which has both layout and touch-handling issues
-                defaultListOverlay
-            }
 
         if case .error = viewModel.tokenListLoadingState {
             errorStateView
@@ -136,14 +158,6 @@ struct MarketsView: View {
             errorStateView
         case .loading, .allDataLoaded, .idle:
             list
-                .overlay(alignment: .top) {
-                    // Using plain old overlay + dummy `Color.clear` spacer in the scroll view due to the buggy
-                    // `safeAreaInset(edge:alignment:spacing:content:)` iOS 15+ API which has both layout and touch-handling issues
-                    searchResultListOverlay
-                }
-                .overlay(alignment: .top) {
-                    listOverlaySeparator
-                }
         }
     }
 
@@ -152,6 +166,7 @@ struct MarketsView: View {
         VStack(alignment: .leading, spacing: 12) {
             Text(Localization.marketsCommonTitle)
                 .style(Fonts.Bold.title3, color: Colors.Text.primary1)
+                .opacity(listOverlayTitleOpacity)
 
             MarketsRatingHeaderView(viewModel: viewModel.marketsRatingHeaderViewModel)
                 .readGeometry(\.size.height, bindTo: $defaultListOverlayRatingHeaderHeight)
@@ -159,31 +174,19 @@ struct MarketsView: View {
         .infinityFrame(axis: .horizontal)
         .padding(.top, Constants.listOverlayTopInset)
         .padding(.bottom, Constants.listOverlayBottomInset)
-        .padding(.horizontal, 16)
-        .background(Colors.Background.primary)
-        .overlay(alignment: .bottom) {
-            listOverlaySeparator
-        }
+        .padding(.horizontal, Constants.defaultHorizontalInset)
         .readGeometry(\.size.height, bindTo: $defaultListOverlayTotalHeight)
-        .offset(y: listOverlayVerticalOffset)
     }
 
     @ViewBuilder
     private var searchResultListOverlay: some View {
         Text(Localization.marketsSearchResultTitle)
             .style(Fonts.Bold.title3, color: Colors.Text.primary1)
+            .opacity(listOverlayTitleOpacity)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.top, Constants.listOverlayTopInset)
-            .padding(.horizontal, 16)
-            .background(Colors.Background.primary)
+            .padding(.horizontal, Constants.defaultHorizontalInset)
             .readGeometry(\.size.height, bindTo: $searchResultListOverlayTotalHeight)
-            .offset(y: listOverlayVerticalOffset)
-    }
-
-    @ViewBuilder
-    private var listOverlaySeparator: some View {
-        Separator(height: .minimal, color: Colors.Stroke.primary)
-            .hidden(!isListOverlayShadowLineViewVisible)
     }
 
     @ViewBuilder
@@ -200,7 +203,12 @@ struct MarketsView: View {
                     // Using plain old overlay + dummy `Color.clear` spacer in the scroll view due to the buggy
                     // `safeAreaInset(edge:alignment:spacing:content:)` iOS 15+ API which has both layout and touch-handling issues
                     Color.clear
-                        .frame(height: showSearchResult ? searchResultListOverlayTotalHeight : defaultListOverlayTotalHeight)
+                        .frame(height: headerHeight)
+
+                    // Using plain old overlay + dummy `Color.clear` spacer in the scroll view due to the buggy
+                    // `safeAreaInset(edge:alignment:spacing:content:)` iOS 15+ API which has both layout and touch-handling issues
+                    Color.clear
+                        .frame(height: overlayHeight)
 
                     LazyVStack(spacing: 0) {
                         ForEach(viewModel.tokenViewModels) {
@@ -255,7 +263,7 @@ struct MarketsView: View {
         Text(Localization.marketsSearchTokenNoResultTitle)
             .style(Fonts.Bold.caption1, color: Colors.Text.tertiary)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding(.horizontal, 16)
+            .padding(.horizontal, Constants.defaultHorizontalInset)
     }
 
     private var errorStateView: some View {
@@ -264,13 +272,15 @@ struct MarketsView: View {
             retryButtonAction: viewModel.onTryLoadList
         )
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(.horizontal, 16)
+        .padding(.horizontal, Constants.defaultHorizontalInset)
     }
 
     private func updateListOverlayAppearance(contentOffset: CGPoint) {
-        guard abs(1.0 - viewModel.overlayContentProgress) <= .ulpOfOne, !overlayContentContainer.isScrollViewLocked else {
+        // Early exit to prevent list overlay 'jiggling' due to small fluctuations of content offset while dragging the list
+        if overlayContentContainer.isScrollViewLocked {
             listOverlayVerticalOffset = .zero
-            isListOverlayShadowLineViewVisible = false
+            listOverlayTitleOpacity = 1.0
+            isListContentObscured = false
             return
         }
 
@@ -279,17 +289,18 @@ struct MarketsView: View {
 
         if showSearchResult {
             maxOffset = searchResultListOverlayTotalHeight
-            offSet = -clamp(contentOffset.y, min: .zero, max: maxOffset)
+            offSet = clamp(contentOffset.y, min: .zero, max: maxOffset)
         } else {
             maxOffset = max(
                 defaultListOverlayTotalHeight - defaultListOverlayRatingHeaderHeight - Constants.listOverlayBottomInset,
                 .zero
             )
-            offSet = -clamp(contentOffset.y, min: .zero, max: maxOffset)
+            offSet = clamp(contentOffset.y, min: .zero, max: maxOffset)
         }
 
-        listOverlayVerticalOffset = offSet
-        isListOverlayShadowLineViewVisible = contentOffset.y >= (maxOffset + Constants.listOverlayBottomInset)
+        listOverlayTitleOpacity = maxOffset.isZero ? 1.0 : 1.0 - offSet / maxOffset // Division by zero protection
+        listOverlayVerticalOffset = -offSet
+        isListContentObscured = contentOffset.y >= (maxOffset + Constants.listOverlayBottomInset)
     }
 }
 
@@ -297,6 +308,7 @@ struct MarketsView: View {
 
 private extension MarketsView {
     enum Constants {
+        static let defaultHorizontalInset = 16.0
         static let listOverlayTopInset = 10.0
         static let listOverlayBottomInset = 12.0
     }

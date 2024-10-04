@@ -12,7 +12,7 @@ import Combine
 import CombineExt
 import Kingfisher
 
-final class MarketsViewModel: BaseMarketsViewModel {
+final class MarketsViewModel: MarketsBaseViewModel {
     private typealias SearchInput = MainBottomSheetHeaderViewModel.SearchInput
 
     // MARK: - Injected & Published Properties
