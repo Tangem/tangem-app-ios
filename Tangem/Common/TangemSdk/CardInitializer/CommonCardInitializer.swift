@@ -30,8 +30,8 @@ extension CommonCardInitializer: CardInitializer {
         let initialMessage = Message(header: nil, body: Localization.initialMessageCreateWalletBody)
 
         // Ring onboarding. Set custom image
-        if let customOnboardingImage = config.customScanImage {
-            tangemSdk.config.style.scanTagImage = .image(uiImage: customOnboardingImage.uiImage, verticalOffset: 0)
+        if RingUtil().isRing(batchId: cardInfo.card.batchId) {
+            tangemSdk.config.style.scanTagImage = .image(uiImage: Assets.ringShapeScan.uiImage, verticalOffset: 0)
         }
 
         let didBecomeActivePublisher = NotificationCenter.didBecomeActivePublisher

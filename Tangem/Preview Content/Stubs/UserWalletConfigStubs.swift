@@ -13,8 +13,7 @@ import BlockchainSdk
 struct UserWalletConfigStubs {
     static var walletV2Stub: UserWalletConfig = Wallet2Config(
         card: .init(card: CardMock.wallet2.card),
-        isDemo: false,
-        isRing: false
+        isDemo: false
     )
 
     static var twinStub: UserWalletConfig = TwinConfig(
