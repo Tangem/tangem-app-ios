@@ -14,6 +14,7 @@ struct ValidatorViewData: Hashable, Identifiable {
     let address: String
     let name: String
     let imageURL: URL?
+    let isPartner: Bool
     let subtitleType: SubtitleType?
     let detailsType: DetailsType?
 
@@ -26,6 +27,22 @@ struct ValidatorViewData: Hashable, Identifiable {
         case .active(let apr):
             return string(Localization.stakingDetailsApr, accent: apr)
         }
+    }
+
+    init(
+        address: String,
+        name: String,
+        imageURL: URL?,
+        isPartner: Bool = false,
+        subtitleType: SubtitleType?,
+        detailsType: DetailsType?
+    ) {
+        self.address = address
+        self.name = name
+        self.imageURL = imageURL
+        self.isPartner = isPartner
+        self.subtitleType = subtitleType
+        self.detailsType = detailsType
     }
 
     private func string(_ text: String, accent: String? = nil) -> AttributedString {

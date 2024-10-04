@@ -69,5 +69,7 @@ extension SendAmountStep: SendStep {
 extension SendAmountStep {
     enum Constants {
         static let amountMinTextScale = 0.5
+        /// Fiat always has 2 fraction digits.
+        static let fiatMaximumFractionDigits = 2
     }
 }

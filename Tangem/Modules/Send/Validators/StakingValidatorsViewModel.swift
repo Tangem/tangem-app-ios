@@ -62,6 +62,7 @@ private extension StakingValidatorsViewModel {
                         address: validatorInfo.address,
                         name: validatorInfo.name,
                         imageURL: validatorInfo.iconURL,
+                        isPartner: validatorInfo.partner,
                         subtitleType: .selection(percentFormatted: percentFormatted ?? ""),
                         detailsType: .checkmark
                     )

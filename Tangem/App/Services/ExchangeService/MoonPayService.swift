@@ -385,7 +385,8 @@ private extension Blockchain {
         case .cyber: return nil
         case .blast: return nil
         case .filecoin: return "filecoin"
-        case .sei: return nil
+        case .sei: return "sei"
+        case .sui: return "sui"
         case .energyWebChain: return nil
         case .energyWebX: return nil
             // Did you get a compilation error here? If so, check whether the network is supported at https://api.moonpay.com/v3/currencies
@@ -463,7 +464,8 @@ private extension Blockchain {
         case .cyber: return nil
         case .blast: return nil
         case .filecoin: return "fil"
-        case .sei: return nil
+        case .sei: return "sei_sei"
+        case .sui: return "sui"
         case .energyWebChain: return nil
         case .energyWebX: return nil
             // Did you get a compilation error here? If so, check whether the network is supported at https://api.moonpay.com/v3/currencies

@@ -64,8 +64,6 @@ struct SupportedBlockchains {
     /// Blockchains for test. They don't include in supported blockchains by default
     private func testableBlockchains() -> Set<Blockchain> {
         [
-            .internetComputer,
-            .sei(testnet: false),
             .energyWebChain(testnet: false),
             .energyWebX(curve: ed25519Curve(for: version), testnet: false),
         ]
@@ -140,6 +138,9 @@ struct SupportedBlockchains {
             .cyber(testnet: false),
             .blast(testnet: false),
             .filecoin,
+            .internetComputer,
+            .sei(testnet: false),
+            .sui(curve: ed25519Curve(for: version), testnet: false),
         ]
     }
 
@@ -193,6 +194,7 @@ struct SupportedBlockchains {
             .blast(testnet: true),
             .sei(testnet: true),
             .kaspa(testnet: true),
+            .sui(curve: ed25519Curve(for: version), testnet: true),
         ]
     }
 

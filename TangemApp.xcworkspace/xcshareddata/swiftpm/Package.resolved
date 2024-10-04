@@ -78,8 +78,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/IcpKit.git",
       "state" : {
-        "revision" : "02aad763a1ebb0847b1f0eaff755159b3a95707a",
-        "version" : "0.1.2-tangem3"
+        "revision" : "48d906f7a3eca66dd4cbc239f21fd829dfc9decf",
+        "version" : "0.1.2-tangem4"
       }
     },
     {
@@ -267,8 +267,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/ton-swift.git",
       "state" : {
-        "revision" : "7030234ff239796c5f71f0e65eb4e9ffec5a83cb",
-        "version" : "1.0.10-tangem1"
+        "revision" : "723cfeb8da0ea024158b4274fced8a1891bff88e",
+        "version" : "1.0.10-tangem3"
       }
     },
     {

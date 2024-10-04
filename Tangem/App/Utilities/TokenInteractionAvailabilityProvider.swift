@@ -101,6 +101,7 @@ struct TokenInteractionAvailabilityProvider {
              .blast,
              .filecoin,
              .sei,
+             .sui,
              .energyWebChain,
              .energyWebX:
 
