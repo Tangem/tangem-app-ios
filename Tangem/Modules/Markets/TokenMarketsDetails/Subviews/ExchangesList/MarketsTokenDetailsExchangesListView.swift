@@ -8,12 +8,61 @@
 
 import SwiftUI
 
+struct MarketsTokenDetailsExchangesListContainerView: View {
+    private static var didSetupUIAppearance = false
+
+    private let viewModel: MarketsTokenDetailsExchangesListViewModel
+
+    var body: some View {
+        if #available(iOS 16.0, *) {
+            exchangesListView
+                .toolbarBackground(.hidden, for: .navigationBar)
+        } else {
+            UIAppearanceBoundaryContainerView(boundaryMarker: MarketsTokenDetailsExchangesListViewUIAppearanceBoundaryMarker.self) {
+                exchangesListView.onAppear {
+                    Self.setupUIAppearanceIfNeeded()
+                }
+            }
+        }
+    }
+
+    private var exchangesListView: some View {
+        MarketsTokenDetailsExchangesListView(viewModel: viewModel)
+    }
+
+    init(viewModel: MarketsTokenDetailsExchangesListViewModel) {
+        self.viewModel = viewModel
+    }
+
+    @available(iOS, obsoleted: 16.0, message: "Use native 'toolbarBackground(_:for:)' instead")
+    private static func setupUIAppearanceIfNeeded() {
+        if #unavailable(iOS 16.0), !didSetupUIAppearance {
+            let navBarAppearance = UINavigationBarAppearance()
+            navBarAppearance.configureWithTransparentBackground()
+
+            let uiAppearance = UINavigationBar.appearance(
+                whenContainedInInstancesOf: [MarketsTokenDetailsExchangesListViewUIAppearanceBoundaryMarker.self]
+            )
+            uiAppearance.compactAppearance = navBarAppearance
+            uiAppearance.standardAppearance = navBarAppearance
+            uiAppearance.scrollEdgeAppearance = navBarAppearance
+            uiAppearance.compactScrollEdgeAppearance = navBarAppearance
+
+            didSetupUIAppearance = true
+        }
+    }
+}
+
+private class MarketsTokenDetailsExchangesListViewUIAppearanceBoundaryMarker: UIViewController {}
+
 struct MarketsTokenDetailsExchangesListView: View {
     @ObservedObject var viewModel: MarketsTokenDetailsExchangesListViewModel
 
     @Environment(\.colorScheme) private var colorScheme
 
-    @State private var isNavigationBarShadowLineViewVisible = false
+    @State private var safeArea: EdgeInsets = .init()
+    @State private var isListContentObscured = false
+    @State private var headerHeight: CGFloat = .zero
 
     private var isDarkColorScheme: Bool { colorScheme == .dark }
     private var defaultBackgroundColor: Color { isDarkColorScheme ? Colors.Background.primary : Colors.Background.secondary }
@@ -35,24 +84,34 @@ struct MarketsTokenDetailsExchangesListView: View {
                 viewModel?.onOverlayContentProgressChange(progress)
             }
             .background { viewBackground }
-            .if(viewModel.isMarketsSheetStyle) { content in
-                content
-                    .ignoresSafeArea(.container, edges: .top) // Without it, the content won't go into the safe area top zone on over-scroll
-            }
             .animation(.default, value: viewModel.exchangesList)
+            .ignoresSafeArea(.container, edges: .top) // Without it, the content won't go into the safe area top zone on over-scroll
+            .readGeometry(\.safeAreaInsets, bindTo: $safeArea)
     }
 
     @ViewBuilder
     private var rootView: some View {
-        let content = VStack(spacing: 0) {
-            navigationBar
+        let content = ZStack(alignment: .top) {
+            listContent
+                .opacity(viewModel.overlayContentHidingProgress)
 
             VStack(spacing: 0) {
-                header
+                navigationBar
 
-                listContent
+                header
+                    .opacity(viewModel.overlayContentHidingProgress)
+                    .padding(.top, safeArea.top)
             }
-            .opacity(viewModel.overlayContentHidingProgress)
+            .background(
+                MarketsNavigationBarBackgroundView(
+                    backdropViewColor: overlayContentHidingBackgroundColor,
+                    overlayContentHidingProgress: viewModel.overlayContentHidingProgress,
+                    isNavigationBarBackgroundBackdropViewHidden: viewModel.isNavigationBarBackgroundBackdropViewHidden,
+                    isListContentObscured: isListContentObscured
+                )
+            )
+            .readGeometry(\.size.height, bindTo: $headerHeight)
+            .infinityFrame(axis: .vertical, alignment: .top)
         }
 
         if #unavailable(iOS 17.0), viewModel.isMarketsSheetStyle {
@@ -122,13 +181,6 @@ struct MarketsTokenDetailsExchangesListView: View {
         .padding(.horizontal, 14)
         .padding(.top, 12)
         .padding(.bottom, 8)
-        .overlay(alignment: .bottom) {
-            Separator(
-                height: .minimal,
-                color: Colors.Stroke.primary.opacity(viewModel.overlayContentHidingProgress)
-            )
-            .hidden(!isNavigationBarShadowLineViewVisible)
-        }
     }
 
     @ViewBuilder
@@ -145,6 +197,7 @@ struct MarketsTokenDetailsExchangesListView: View {
             )
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding(.horizontal, 16)
+            .padding(.top, headerHeight)
         }
     }
 
@@ -152,6 +205,9 @@ struct MarketsTokenDetailsExchangesListView: View {
     private var scrollContent: some View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 0) {
+                Color.clear
+                    .frame(height: headerHeight)
+
                 switch viewModel.exchangesList {
                 case .loading:
                     ForEach(0 ... (viewModel.numberOfExchangesListedOn - 1)) { _ in
@@ -166,7 +222,7 @@ struct MarketsTokenDetailsExchangesListView: View {
                 }
             }
             .readContentOffset(inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName)) { contentOffset in
-                isNavigationBarShadowLineViewVisible = contentOffset.y > scrollViewContentTopInset
+                isListContentObscured = contentOffset.y > scrollViewContentTopInset
             }
         }
         .coordinateSpace(name: scrollViewFrameCoordinateSpaceName)

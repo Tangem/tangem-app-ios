@@ -60,7 +60,7 @@ struct TokenMarketsDetailsCoordinatorView: CoordinatorView {
     private var links: some View {
         NavHolder()
             .navigation(item: $coordinator.exchangesListViewModel) {
-                MarketsTokenDetailsExchangesListView(viewModel: $0)
+                MarketsTokenDetailsExchangesListContainerView(viewModel: $0)
             }
             .emptyNavigationLink()
     }

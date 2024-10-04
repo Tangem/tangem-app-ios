@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 
-class MarketsTokenDetailsExchangesListViewModel: BaseMarketsViewModel {
+class MarketsTokenDetailsExchangesListViewModel: MarketsBaseViewModel {
     @Published var exchangesList: LoadingValue<[MarketsTokenDetailsExchangeItemInfo]> = .loading
 
     /// For unknown reasons, the `@self` and `@identity` of our view change when push navigation is performed in other
@@ -58,7 +58,7 @@ class MarketsTokenDetailsExchangesListViewModel: BaseMarketsViewModel {
     func onOverlayContentStateChange(_ state: OverlayContentState) {
         // Our view can be recreated when the bottom sheet is in a collapsed state
         // In this case, content should be hidden (i.e. the initial progress should be zero)
-        overlayContentHidingInitialProgress = state.isBottom ? 0.0 : 1.0
+        overlayContentHidingInitialProgress = state.isCollapsed ? 0.0 : 1.0
     }
 }
 
