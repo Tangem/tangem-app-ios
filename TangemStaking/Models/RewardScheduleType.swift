@@ -8,12 +8,10 @@
 
 import Foundation
 
-public enum RewardScheduleType: String, Hashable {
-    case block
-    case epoch
-    case era
-    case hour
-    case day
-    case week
-    case month
+public enum RewardScheduleType: Hashable {
+    case generic(String)
+
+    case seconds(min: Int, max: Int)
+    case daily
+    case days(min: Int, max: Int)
 }
