@@ -7,7 +7,11 @@ ALPHA_SCHEME = "Tangem Alpha"
 FIREBASE_TESTERS_GROUP = "testers"
 
 before_all do |lane, options|
-  xcode_select("/Applications/Xcode.app")
+  if options[:xcode_version_override].nil?
+    xcodes() # Will use the Xcode version from the .xcode-version file
+  else
+    xcodes(version: options[:xcode_version_override])
+  end
 
   Dir.chdir("..") do
     sh("./bootstrap.sh") 
@@ -17,8 +21,10 @@ end
 desc """
   A lane that builds and tests the scheme \"Tangem\" using a clean and build application.
   Using enviroment: Production
+  Options:
+  - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 """
-lane :test do
+lane :test |options| do
   run_tests(
     workspace: "TangemApp.xcworkspace",
     scheme: PRODUCTION_SCHEME,
@@ -34,6 +40,7 @@ desc """
   - version: app version
   - build: optional build number
   - changelog: string for description archive
+  - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
   """
 lane :release do |options|
   app_store_connect_api_key(duration: 1200, is_key_content_base64: true)
@@ -62,6 +69,7 @@ Options:
 - version: app version
 - build: optional build number
 - changelog: string for description archive
+- xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 """
 lane :beta do |options|
   increment_version_number(version_number: options[:version])
@@ -88,6 +96,7 @@ Options:
 - version: app version
 - build: optional build number
 - changelog: string for description archive
+- xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 """
 lane :alpha do |options|
   increment_version_number(version_number: options[:version])
