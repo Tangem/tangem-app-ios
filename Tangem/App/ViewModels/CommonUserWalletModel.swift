@@ -89,7 +89,6 @@ class CommonUserWalletModel {
 
     private let _updatePublisher: PassthroughSubject<Void, Never> = .init()
     private let _userWalletNamePublisher: CurrentValueSubject<String, Never>
-    private let _cardHeaderImagePublisher: CurrentValueSubject<ImageType?, Never>
     private var bag = Set<AnyCancellable>()
     private var signSubscription: AnyCancellable?
 
@@ -140,7 +139,6 @@ class CommonUserWalletModel {
 
         _signer = config.tangemSigner
         _userWalletNamePublisher = .init(cardInfo.name)
-        _cardHeaderImagePublisher = .init(config.cardHeaderImage)
         appendPersistentBlockchains()
         bind()
 
@@ -195,7 +193,6 @@ class CommonUserWalletModel {
     private func onUpdate() {
         AppLog.shared.debug("🔄 Updating CommonUserWalletModel with new Card")
         config = UserWalletConfigFactory(cardInfo).makeConfig()
-        _cardHeaderImagePublisher.send(config.cardHeaderImage)
         _signer = config.tangemSigner
         // prevent save until onboarding completed
         if userWalletRepository.models.first(where: { $0.userWalletId == userWalletId }) != nil {
@@ -348,8 +345,6 @@ extension CommonUserWalletModel: UserWalletModel {
 }
 
 extension CommonUserWalletModel: MainHeaderSupplementInfoProvider {
-    var cardHeaderImagePublisher: AnyPublisher<ImageType?, Never> { _cardHeaderImagePublisher.removeDuplicates().eraseToAnyPublisher() }
-
     var userWalletNamePublisher: AnyPublisher<String, Never> { _userWalletNamePublisher.eraseToAnyPublisher() }
 }
 
