@@ -31,7 +31,7 @@ extension View {
     }
 
     func visible(_ shouldShow: Bool) -> some View {
-        opacity(shouldShow ? 1 : 0)
+        hidden(!shouldShow)
     }
 
     @ViewBuilder
