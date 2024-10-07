@@ -1,5 +1,5 @@
 //
-//  WarningEventsFactory.swift
+//  GeneralNotificationEventsFactory.swift
 //  Tangem
 //
 //  Created by Alexander Osokin on 11.08.2022.
@@ -9,29 +9,29 @@
 import Foundation
 import TangemSdk
 
-struct WarningEventsFactory {
-    func makeWarningEvents(for card: CardDTO) -> [WarningEvent] {
-        var warnings: [WarningEvent] = []
+struct GeneralNotificationEventsFactory {
+    func makeNotifications(for card: CardDTO) -> [GeneralNotificationEvent] {
+        var notifications: [GeneralNotificationEvent] = []
 
         if card.firmwareVersion.type != .sdk,
            card.attestation.status == .failed {
-            warnings.append(.failedToVerifyCard)
+            notifications.append(.failedToVerifyCard)
         }
 
         for wallet in card.wallets {
             if let remainingSignatures = wallet.remainingSignatures,
                remainingSignatures <= 10 {
-                warnings.append(.lowSignatures(count: remainingSignatures))
+                notifications.append(.lowSignatures(count: remainingSignatures))
                 break
             }
         }
 
         if AppEnvironment.current.isTestnet {
-            warnings.append(.testnetCard)
+            notifications.append(.testnetCard)
         } else if card.firmwareVersion.type == .sdk, !DemoUtil().isDemoCard(cardId: card.cardId) {
-            warnings.append(.devCard)
+            notifications.append(.devCard)
         }
 
-        return warnings
+        return notifications
     }
 }
