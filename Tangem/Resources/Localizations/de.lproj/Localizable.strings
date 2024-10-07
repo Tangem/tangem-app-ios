@@ -559,6 +559,8 @@
 "reset_card_to_factory_condition_2" = "Mir ist klar, dass ich diese Karte nicht verwenden kann, um meinen Zugangscode auf den anderen Karten der aktuellen Wallet wiederherzustellen";
 "reset_card_with_backup_to_factory_message" = "Durch das Zurücksetzen auf Werkseinstellungen wird die Wallet vollständig von der ausgewählten Karte gelöscht. Du kannst die aktuelle Wallet nicht wiederherstellen oder die Karte verwenden, um den Zugangscode wiederherzustellen.";
 "reset_card_without_backup_to_factory_message" = "Beim Zurücksetzen auf die Werkseinstellungen wird die Wallet der ausgewählten Karte vollständig gelöscht und aus der App entfernt. Es ist nicht möglich, die aktuelle Wallet wiederherzustellen.";
+"ring_promo_text" = "Ring owners get 3 commission-free swaps on Changelly until 15.11!";
+"ring_promo_title" = "Swap With 0%% Fees Now!";
 "russian_bank_card_warning_subtitle" = "Besitzt du eine Bankkarte aus einem anderen Land und eine Aufenthaltserlaubnis oder Registrierung außerhalb der Russischen Föderation?";
 "russian_bank_card_warning_title" = "Russische Bankkarten werden derzeit nicht akzeptiert";
 "save_user_wallet_agreement_access_description" = "Melde dich bei der App an und überprüfe dein Guthaben, ohne die Karte zu scannen";
@@ -683,6 +685,7 @@
 "staking_locked" = "Gesperrt";
 "staking_migrate" = "Migrieren";
 "staking_native" = "Natives Staking";
+"staking_no_validators_error_message" = "Derzeit sind keine aktiven Validatoren für das Staking verfügbar. Bitte versuchen Sie es später erneut.";
 "staking_notification_claim_rewards_text" = "Verdiente Belohnungen werden an Deine Wallet gesendet und stehen Dir sofort zur Verfügung";
 "staking_notification_earn_rewards_text" = "Stake sicher und verdienen Belohnungen";
 "staking_notification_earn_rewards_text_daily" = "Sicher staken und tägliche Belohnungen verdienen.";

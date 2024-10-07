@@ -344,7 +344,7 @@
 "manage_tokens_wallet_selector_title" = "ウォレットを選択";
 "manage_tokens_wallet_support_only_one_network_title" = "ウォレットは複数のネットワークをサポートしていません。";
 "markets_add_to_my_portfolio_description" = "このアセットを購入・交換・受け取るには、ポートフォリオに追加してください。";
-"markets_add_to_my_portfolio_unavailable_description" = "このアセットは利用できません";
+"markets_add_to_my_portfolio_unavailable_description" = "このアセットは現在ウォレットで利用できません";
 "markets_add_to_my_portfolio_unavailable_for_wallet_description" = "このアセットはこのウォレットでは使用できません。";
 "markets_add_to_portfolio_button" = "ポートフォリオに追加";
 "markets_add_token" = "追加";
@@ -559,6 +559,8 @@
 "reset_card_to_factory_condition_2" = "このカードを使用して、現在のウォレットの他のカードのアクセスコードを回復させられないことを認識しています。";
 "reset_card_with_backup_to_factory_message" = "工場出荷時設定にリセットすると、選択したカードからウォレットが完全に削除されます。現在のウォレットを復元したり、カードを使用してアクセスコードを回復したりすることはできません。";
 "reset_card_without_backup_to_factory_message" = "工場出荷時の状態にリセットすると、選択したカードからウォレットが完全に削除され、アプリから削除されます。現在のウォレットを復元することはできません。";
+"ring_promo_text" = "Tangem Ringユーザーは、11/15日までChangelly経由でスワップを3回手数料ゼロで行えます！";
+"ring_promo_title" = "今すぐ手数料0%でスワップしましょう！";
 "russian_bank_card_warning_subtitle" = "他の国の銀行カードと、ロシア連邦外での居住許可証または登録をお持ちですか?";
 "russian_bank_card_warning_title" = "ロシアの銀行カードは現在ご利用いただけません";
 "save_user_wallet_agreement_access_description" = "アプリにログインして、カードをスキャンせずに残高を確認できます";
@@ -683,6 +685,7 @@
 "staking_locked" = "ロック中";
 "staking_migrate" = "移行";
 "staking_native" = "ネイティブステーキング";
+"staking_no_validators_error_message" = "現在、ステーキングに使用できるアクティブなバリデータは見つかりません。しばらくしてからもう一度お試しください。";
 "staking_notification_claim_rewards_text" = "獲得した報酬はあなたのアドレスに直接送られ、すぐ使用可能です。";
 "staking_notification_earn_rewards_text" = "安全にステーキングして報酬を獲得しましょう";
 "staking_notification_earn_rewards_text_daily" = "安全にステーキングして、報酬を毎日獲得しましょう";
