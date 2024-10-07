@@ -330,7 +330,7 @@
 "manage_tokens_list_header_title" = "Рыночная капитализация";
 "manage_tokens_network_selector_native_subtitle" = "Blockchain the cryptocurrency was initially created";
 "manage_tokens_network_selector_native_title" = "Основная сеть";
-"manage_tokens_network_selector_non_native_info" = "Using non-native networks for tokens enables cross-blockchain interoperability, allowing assets to be utilized in diverse decentralized applications and smart contracts across platforms. However, this often involves a custodian or smart contract to hold the original asset securely, introducing centralization and counterparty risk.";
+"manage_tokens_network_selector_non_native_info" = "Using non-native networks for tokens enables cross-blockchain interoperability, allowing assets to be utilized in diverse decentralized applications and smart contracts across platforms. However, this often involves a custodian or smart contract to hold the original asset securely, introducing centralization and counterparty risk.";
 "manage_tokens_network_selector_non_native_subtitle" = "Не основной или основной блокчейн, на котором размещен токен";
 "manage_tokens_network_selector_non_native_title" = "Не основные сети";
 "manage_tokens_network_selector_title" = "Выберите сети";

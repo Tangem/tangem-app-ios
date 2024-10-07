@@ -330,7 +330,7 @@
 "manage_tokens_list_header_title" = "Coin market cap";
 "manage_tokens_network_selector_native_subtitle" = "Blockchain the cryptocurrency was initially created";
 "manage_tokens_network_selector_native_title" = "Native network";
-"manage_tokens_network_selector_non_native_info" = "Using non-native networks for tokens enables cross-blockchain interoperability, allowing assets to be utilized in diverse decentralized applications and smart contracts across platforms. However, this often involves a custodian or smart contract to hold the original asset securely, introducing centralization and counterparty risk.";
+"manage_tokens_network_selector_non_native_info" = "Using non-native networks for tokens enables cross-blockchain interoperability, allowing assets to be utilized in diverse decentralized applications and smart contracts across platforms. However, this often involves a custodian or smart contract to hold the original asset securely, introducing centralization and counterparty risk.";
 "manage_tokens_network_selector_non_native_subtitle" = "Not original or primary blockchain the token is hosted";
 "manage_tokens_network_selector_non_native_title" = "Non-native networks";
 "manage_tokens_network_selector_title" = "Choose networks";
