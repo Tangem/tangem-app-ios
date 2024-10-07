@@ -80,11 +80,11 @@ struct FeeRowView: View {
 
             if let fiatFee = components.fiatFee {
                 Text(AppConstants.dotSign)
-                    .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
+                    .style(Fonts.RegularStatic.footnote, color: Colors.Text.primary1)
                     .layoutPriority(3)
 
                 Text(fiatFee)
-                    .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
+                    .style(Fonts.RegularStatic.subheadline, color: Colors.Text.tertiary)
                     .layoutPriority(2)
             }
         }
@@ -93,9 +93,9 @@ struct FeeRowView: View {
     private var leadingFont: Font {
         switch viewModel.style {
         case .plain:
-            Fonts.Regular.subheadline
+            Fonts.RegularStatic.subheadline
         case .selectable(let isSelected):
-            isSelected.value ? Fonts.Bold.subheadline : Fonts.Regular.subheadline
+            isSelected.value ? Fonts.BoldStatic.subheadline : Fonts.RegularStatic.subheadline
         }
     }
 
