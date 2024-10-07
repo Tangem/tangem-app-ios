@@ -42,7 +42,10 @@ extension UINavigationController {
 
         let subclassName = className.appending(classNamePrefix)
 
-        if let subclass = NSClassFromString(subclassName) ?? makeNavigationBarSubclass(subclassName: subclassName, navigationBarClass: navigationBarClass) {
+        if let subclass = NSClassFromString(subclassName) ?? makeAlwaysHiddenNavigationBarSubclass(
+            subclassName: subclassName,
+            navigationBarClass: navigationBarClass
+        ) {
             object_setClass(navigationBar, subclass)
         } else {
             assertionFailure("Unable to find existing or create new class \(subclassName)")
@@ -56,7 +59,7 @@ extension UINavigationController {
 // MARK: - Private implementation
 
 private extension UINavigationController {
-    func makeNavigationBarSubclass(subclassName: String, navigationBarClass: AnyClass) -> AnyClass? {
+    func makeAlwaysHiddenNavigationBarSubclass(subclassName: String, navigationBarClass: AnyClass) -> AnyClass? {
         guard
             let subclassNameUTF8 = (subclassName as NSString).utf8String,
             let subclass = objc_allocateClassPair(navigationBarClass, subclassNameUTF8, 0)
