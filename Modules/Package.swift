@@ -64,4 +64,35 @@ private extension Target {
             plugins: plugins
         )
     }
+
+    static func tangemTestTarget(
+        name: String,
+        dependencies: [PackageDescription.Target.Dependency] = [],
+        exclude: [String] = [],
+        sources: [String]? = nil,
+        resources: [PackageDescription.Resource]? = nil,
+        packageAccess: Bool = true,
+        cSettings: [PackageDescription.CSetting]? = nil,
+        cxxSettings: [PackageDescription.CXXSetting]? = nil,
+        swiftSettings: [PackageDescription.SwiftSetting]? = nil,
+        linkerSettings: [PackageDescription.LinkerSetting]? = nil,
+        plugins: [PackageDescription.Target.PluginUsage]? = nil
+    ) -> PackageDescription.Target {
+        let path = name
+
+        return testTarget(
+            name: name,
+            dependencies: dependencies,
+            path: path,
+            exclude: exclude,
+            sources: sources,
+            resources: resources,
+            packageAccess: packageAccess,
+            cSettings: cSettings,
+            cxxSettings: cxxSettings,
+            swiftSettings: swiftSettings,
+            linkerSettings: linkerSettings,
+            plugins: plugins
+        )
+    }
 }
