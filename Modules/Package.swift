@@ -8,6 +8,9 @@ let shimPackageName = "TangemDependenciesShim"
 // TODO: Andrey Fedorov - Update swift-tools-version to 6.0 after upgrade to Xcode 16.0
 let package = Package(
     name: shimPackageName,
+    platforms: [
+        .iOS(.v15),
+    ],
     products: [
         .library(
             name: shimPackageName,
@@ -22,10 +25,18 @@ let package = Package(
             dependencies: [
                 "TangemModule1",
                 "TangemModule2",
+                "TangemFoundationSPM",
             ]
         ),
         .tangemTarget(name: "TangemModule1"),
         .tangemTarget(name: "TangemModule2"),
+        .tangemTarget(name: "TangemFoundationSPM"), // TODO: Andrey Fedorov - Rename after final migration to SPM
+        .tangemTestTarget(
+            name: "TangemFoundationTestsSPM", // TODO: Andrey Fedorov - Rename after final migration to SPM
+            dependencies: [
+                "TangemFoundationSPM",
+            ]
+        ),
     ]
 )
 
