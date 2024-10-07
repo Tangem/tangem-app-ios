@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -787,6 +787,7 @@
 		B675C3762BACB8AA007BE1DC /* PolkadotAccountHealthChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B675C3752BACB8AA007BE1DC /* PolkadotAccountHealthChecker.swift */; };
 		B67688EF2B078EDB006C94F7 /* MainBottomSheetOverlayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67688EE2B078EDB006C94F7 /* MainBottomSheetOverlayViewModel.swift */; };
 		B67688F12B078F71006C94F7 /* MainBottomSheetOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67688F02B078F71006C94F7 /* MainBottomSheetOverlayView.swift */; };
+		B676B7952CB44095002825E3 /* TangemDependenciesShim in Frameworks */ = {isa = PBXBuildFile; productRef = B676B7942CB44095002825E3 /* TangemDependenciesShim */; };
 		B6796E7B2C65C16E005D7292 /* TouchPassthroughView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6796E7A2C65C16E005D7292 /* TouchPassthroughView.swift */; };
 		B67DC1E62B7C45DD008ACB0E /* UserDefaultsBlockchainDataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67DC1E52B7C45DD008ACB0E /* UserDefaultsBlockchainDataStorage.swift */; };
 		B67DC1E82B7C4716008ACB0E /* BlockchainAccountCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67DC1E72B7C4716008ACB0E /* BlockchainAccountCreator.swift */; };
@@ -3826,6 +3827,7 @@
 				B6F625302C85E1A600DEF098 /* DGCharts in Frameworks */,
 				5DAC0888251391D900B73E8B /* CoreNFC.framework in Frameworks */,
 				B099338A2B5517EC00240CDB /* TangemVisa.framework in Frameworks */,
+				B676B7952CB44095002825E3 /* TangemDependenciesShim in Frameworks */,
 				B63BAA6C2B7410AE00DA26C9 /* TangemWalletCoreBinariesWrapper in Frameworks */,
 				0A81B38E2BB3018E0008F21C /* ZIPFoundation in Frameworks */,
 				0ABC61152C410AFD00065EBA /* TweetNacl in Frameworks */,
@@ -10031,6 +10033,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				B676B7A12CB44120002825E3 /* PBXTargetDependency */,
 				EF9E297D2B4F0C4900418559 /* PBXTargetDependency */,
 				B09933892B5517EC00240CDB /* PBXTargetDependency */,
 				EF2D9C9A2BBDA87D0055C485 /* PBXTargetDependency */,
@@ -10047,6 +10050,7 @@
 				B6EE3B612C789C6E00B464FC /* DGCharts */,
 				B0B11A072C787FE70018A2A6 /* MarkdownUI */,
 				B6F6252F2C85E1A600DEF098 /* DGCharts */,
+				B676B7942CB44095002825E3 /* TangemDependenciesShim */,
 			);
 			productName = "Tangem Tap";
 			productReference = 5D3F77C224BF56D800E8695B /* Tangem.app */;
@@ -10324,6 +10328,7 @@
 				0ABC61132C410AFD00065EBA /* XCRemoteSwiftPackageReference "tweetnacl-swiftwrap" */,
 				B0B11A062C787FE70018A2A6 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 				B6F6252E2C85E1A600DEF098 /* XCRemoteSwiftPackageReference "DGCharts" */,
+				B676B7932CB44095002825E3 /* XCLocalSwiftPackageReference "Modules/TangemDependenciesShim" */,
 			);
 			productRefGroup = 5D3F77C324BF56D800E8695B /* Products */;
 			projectDirPath = "";
@@ -12624,6 +12629,10 @@
 			isa = PBXTargetDependency;
 			target = B09933762B5517E300240CDB /* TangemVisa */;
 			targetProxy = B09933882B5517EC00240CDB /* PBXContainerItemProxy */;
+		};
+		B676B7A12CB44120002825E3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = B676B7A02CB44120002825E3 /* TangemDependenciesShim */;
 		};
 		EF2D9C922BBDA87B0055C485 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -18269,6 +18278,13 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		B676B7932CB44095002825E3 /* XCLocalSwiftPackageReference "Modules/TangemDependenciesShim" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Modules/TangemDependenciesShim;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		0A81B38C2BB3018E0008F21C /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -18348,6 +18364,15 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B6F525902B6C05210079ADD1 /* XCRemoteSwiftPackageReference "wallet-core-binaries-ios" */;
 			productName = TangemWalletCoreBinariesWrapper;
+		};
+		B676B7942CB44095002825E3 /* TangemDependenciesShim */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TangemDependenciesShim;
+		};
+		B676B7A02CB44120002825E3 /* TangemDependenciesShim */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B676B7932CB44095002825E3 /* XCLocalSwiftPackageReference "Modules/TangemDependenciesShim" */;
+			productName = TangemDependenciesShim;
 		};
 		B6C1BE6C2B6C2F4E008FE5A0 /* secp256k1 */ = {
 			isa = XCSwiftPackageProductDependency;
