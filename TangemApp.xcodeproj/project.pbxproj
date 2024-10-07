@@ -700,6 +700,7 @@
 		B60B203A2AC5B5100098C09D /* MainBottomSheetFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60B20392AC5B5100098C09D /* MainBottomSheetFooterView.swift */; };
 		B60B9FDB2A95D96B00A7E905 /* OrganizeTokensListSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60B9FDA2A95D96B00A7E905 /* OrganizeTokensListSectionViewModel.swift */; };
 		B60C13B32A530C500003F68F /* ScrollDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60C13B22A530C500003F68F /* ScrollDetector.swift */; };
+		B60E7B472CB47DA800A5859E /* TangemDependenciesShim in Frameworks */ = {isa = PBXBuildFile; productRef = B60E7B462CB47DA800A5859E /* TangemDependenciesShim */; };
 		B612AFD42B2884B80058A13A /* RateAppRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B612AFD32B2884B80058A13A /* RateAppRequest.swift */; };
 		B6157AAD2C322733000640B4 /* OnboardingFeatureDescriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6157AAC2C322733000640B4 /* OnboardingFeatureDescriptionView.swift */; };
 		B6176A7A2A5B743A0062C399 /* CGRect+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6176A792A5B743A0062C399 /* CGRect+.swift */; };
@@ -3821,6 +3822,7 @@
 				B0B11A082C787FE70018A2A6 /* MarkdownUI in Frameworks */,
 				B6C1BE6D2B6C2F4E008FE5A0 /* secp256k1 in Frameworks */,
 				EF2D9C9B2BBDA87D0055C485 /* TangemFoundation.framework in Frameworks */,
+				B60E7B472CB47DA800A5859E /* TangemDependenciesShim in Frameworks */,
 				EF9E29A82B4F0C9900418559 /* TangemExpress.framework in Frameworks */,
 				EFEE239D2BFF62D60099917E /* TangemStaking.framework in Frameworks */,
 				B620FCAE2C5D337900AD0FD1 /* DGCharts in Frameworks */,
@@ -10033,7 +10035,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				B676B7A12CB44120002825E3 /* PBXTargetDependency */,
+				B60E7B492CB47E8400A5859E /* PBXTargetDependency */,
 				EF9E297D2B4F0C4900418559 /* PBXTargetDependency */,
 				B09933892B5517EC00240CDB /* PBXTargetDependency */,
 				EF2D9C9A2BBDA87D0055C485 /* PBXTargetDependency */,
@@ -10051,6 +10053,7 @@
 				B0B11A072C787FE70018A2A6 /* MarkdownUI */,
 				B6F6252F2C85E1A600DEF098 /* DGCharts */,
 				B676B7942CB44095002825E3 /* TangemDependenciesShim */,
+				B60E7B462CB47DA800A5859E /* TangemDependenciesShim */,
 			);
 			productName = "Tangem Tap";
 			productReference = 5D3F77C224BF56D800E8695B /* Tangem.app */;
@@ -10328,7 +10331,7 @@
 				0ABC61132C410AFD00065EBA /* XCRemoteSwiftPackageReference "tweetnacl-swiftwrap" */,
 				B0B11A062C787FE70018A2A6 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 				B6F6252E2C85E1A600DEF098 /* XCRemoteSwiftPackageReference "DGCharts" */,
-				B676B7932CB44095002825E3 /* XCLocalSwiftPackageReference "Modules/TangemDependenciesShim" */,
+				B60E7B452CB47DA800A5859E /* XCLocalSwiftPackageReference "Modules" */,
 			);
 			productRefGroup = 5D3F77C324BF56D800E8695B /* Products */;
 			projectDirPath = "";
@@ -12630,9 +12633,9 @@
 			target = B09933762B5517E300240CDB /* TangemVisa */;
 			targetProxy = B09933882B5517EC00240CDB /* PBXContainerItemProxy */;
 		};
-		B676B7A12CB44120002825E3 /* PBXTargetDependency */ = {
+		B60E7B492CB47E8400A5859E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			productRef = B676B7A02CB44120002825E3 /* TangemDependenciesShim */;
+			productRef = B60E7B482CB47E8400A5859E /* TangemDependenciesShim */;
 		};
 		EF2D9C922BBDA87B0055C485 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -18279,9 +18282,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		B676B7932CB44095002825E3 /* XCLocalSwiftPackageReference "Modules/TangemDependenciesShim" */ = {
+		B60E7B452CB47DA800A5859E /* XCLocalSwiftPackageReference "Modules" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = Modules/TangemDependenciesShim;
+			relativePath = Modules;
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -18352,6 +18355,15 @@
 			package = B0B11A062C787FE70018A2A6 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
 			productName = MarkdownUI;
 		};
+		B60E7B462CB47DA800A5859E /* TangemDependenciesShim */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TangemDependenciesShim;
+		};
+		B60E7B482CB47E8400A5859E /* TangemDependenciesShim */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B60E7B452CB47DA800A5859E /* XCLocalSwiftPackageReference "Modules" */;
+			productName = TangemDependenciesShim;
+		};
 		B620FC9F2C5D326D00AD0FD1 /* DGCharts */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DGCharts;
@@ -18367,11 +18379,6 @@
 		};
 		B676B7942CB44095002825E3 /* TangemDependenciesShim */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = TangemDependenciesShim;
-		};
-		B676B7A02CB44120002825E3 /* TangemDependenciesShim */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B676B7932CB44095002825E3 /* XCLocalSwiftPackageReference "Modules/TangemDependenciesShim" */;
 			productName = TangemDependenciesShim;
 		};
 		B6C1BE6C2B6C2F4E008FE5A0 /* secp256k1 */ = {
