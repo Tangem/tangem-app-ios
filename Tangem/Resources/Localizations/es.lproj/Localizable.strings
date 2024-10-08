@@ -559,6 +559,8 @@
 "reset_card_to_factory_condition_2" = "Entiendo que no puedo usar esta tarjeta para recuperar mi código de acceso en las otras tarjetas de la wallet actual";
 "reset_card_with_backup_to_factory_message" = "El restablecimiento de fábrica eliminará completamente la billetera de la tarjeta seleccionada. No podrá restaurar la billetera actual ni usar la tarjeta para recuperar el código de acceso.";
 "reset_card_without_backup_to_factory_message" = "El restablecimiento de fábrica eliminará completamente la billetera de la tarjeta seleccionada y lo eliminará de la app. No podrá restaurar la billetera actual.";
+"ring_promo_text" = "Si tienes un Anillo Tangem, ¡3 swaps sin comisión en Changelly hasta el 15/11!";
+"ring_promo_title" = "¡Intercambia con 0%% de comisión!";
 "russian_bank_card_warning_subtitle" = "¿Tiene una tarjeta bancaria de otro país y un permiso de residencia o registro fuera de la Federación Rusa?";
 "russian_bank_card_warning_title" = "Las tarjetas bancarias rusas no se aceptan actualmente";
 "save_user_wallet_agreement_access_description" = "Inicie sesión en la app y comprueba su saldo sin escanear la tarjeta";
@@ -683,6 +685,7 @@
 "staking_locked" = "Bloqueado";
 "staking_migrate" = "Migrar";
 "staking_native" = "Native staking";
+"staking_no_validators_error_message" = "No hay validadores activos disponibles para hacer staking en este momento. Por favor, inténtalo de nuevo más tarde.";
 "staking_notification_claim_rewards_text" = "Recomp. won se le enviará y estará disponible para su uso inmediato";
 "staking_notification_earn_rewards_text" = "Haga staking de forma segura y comience a ganar recompensas";
 "staking_notification_earn_rewards_text_daily" = "Haga de forma segura y comience a ganar recompensas diarias";
@@ -774,7 +777,7 @@
 "swapping_insufficient_funds" = "Fondos insuficientes";
 "swapping_permission_header" = "Dar autorización";
 "swapping_permit_and_swap" = "Autorisar y Hacer Swap";
-"swapping_swap_action" = "Intercambie";
+"swapping_swap_action" = "Intercambiar";
 "swapping_to_title" = "Usted recibe";
 "swapping_token_list_title" = "Elige token";
 "swapping_token_not_available" = "no disponible";

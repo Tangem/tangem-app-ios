@@ -142,7 +142,7 @@ extension Analytics {
 
         // MARK: - Promotion banners
 
-        case okx = "OKX"
+        case ring = "Ring"
 
         case clicked = "Clicked"
         case closed = "Closed"

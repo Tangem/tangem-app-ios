@@ -74,15 +74,18 @@ extension NotificationView {
         case action
 
         // Customs
-        case okx
+        case ring
 
         @ViewBuilder
-        var color: some View {
+        var background: some View {
             switch self {
             case .primary: Colors.Background.primary
             case .secondary: Colors.Button.disabled
             case .action: Colors.Background.action
-            case .okx: Color(hex: "#1E1E1E")!
+            case .ring: Assets.promoRing.image
+                .resizable()
+                .scaledToFill()
+                .background(Color(hex: "#1E1E1E")!)
             }
         }
 
@@ -90,8 +93,8 @@ extension NotificationView {
             switch self {
             case .primary, .secondary, .action:
                 return Colors.Icon.inactive
-            case .okx:
-                return Colors.Text.constantWhite
+            case .ring:
+                return Colors.Icon.informative
             }
         }
 
@@ -99,17 +102,15 @@ extension NotificationView {
             switch self {
             case .primary, .secondary, .action:
                 return Colors.Text.primary1
-            case .okx:
-                return Color(hex: "#BCFF2F")!
+            case .ring:
+                return Colors.Text.constantWhite
             }
         }
 
         var messageColor: Color {
             switch self {
-            case .primary, .secondary, .action:
+            case .primary, .secondary, .action, .ring:
                 return Colors.Text.tertiary
-            case .okx:
-                return Colors.Text.constantWhite
             }
         }
     }
@@ -118,6 +119,7 @@ extension NotificationView {
         case image(Image)
         case icon(TokenIconInfo)
         case progressView
+        case placeholder
     }
 
     struct MessageIcon {
