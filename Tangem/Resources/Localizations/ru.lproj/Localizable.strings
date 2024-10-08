@@ -118,7 +118,7 @@
 "common_left" = "Осталось %1$@";
 "common_locked" = "Заблокирован";
 "common_main_network" = "Основная сеть";
-"common_month" = "month";
+"common_month" = "месяц";
 "common_network_fee_title" = "Сетевая комиссия";
 "common_network_fee_warning_content" = "Сумма отправки будет уменьшена на %1$@ (%2$@) для покрытия выбранного уровня комиссии";
 "common_next" = "Далее";
@@ -127,6 +127,7 @@
 "common_now" = "Сейчас";
 "common_ok" = "OK";
 "common_origin_card" = "Основная карта";
+"common_origin_ring" = "Основное кольцо";
 "common_passphrase" = "Парольная фраза";
 "common_paste" = "Вставить";
 "common_privacy_policy" = "Политикой конфиденциальности";
@@ -306,6 +307,7 @@
 "initial_message_change_access_code_body" = "Чтобы изменить код доступа, приложите карту или кольцо как показано выше и не убирайте до окончания операции";
 "initial_message_change_passcode_body" = "Чтобы изменить пароль, приложите карту как показано выше и не убирайте до окончания операции";
 "initial_message_create_wallet_body" = "Чтобы создать кошелек, приложите карту как показано выше и не убирайте до окончания операции";
+"initial_message_create_wallet_body_ring" = "Чтобы создать кошелек, приложите кольцо как показано выше и не убирайте до окончания операции";
 "initial_message_purge_wallet_body" = "Чтобы сбросить настройки до заводских, приложите карту или кольцо как показано выше и не убирайте до окончания операции";
 "initial_message_reset_backup_card_header" = "Приложите карту #%@ для сброса";
 "initial_message_sign_body" = "Чтобы подписать транзакцию, приложите карту или кольцо как показано выше и не убирайте до окончания операции";
@@ -328,7 +330,7 @@
 "manage_tokens_add" = "Добавить";
 "manage_tokens_edit" = "Изменить";
 "manage_tokens_list_header_title" = "Рыночная капитализация";
-"manage_tokens_network_selector_native_subtitle" = "Blockchain the cryptocurrency was initially created";
+"manage_tokens_network_selector_native_subtitle" = "Блокчейн, в котором криптовалюта изначально была создана";
 "manage_tokens_network_selector_native_title" = "Основная сеть";
 "manage_tokens_network_selector_non_native_info" = "Using non-native networks for tokens enables cross-blockchain interoperability, allowing assets to be utilized in diverse decentralized applications and smart contracts across platforms. However, this often involves a custodian or smart contract to hold the original asset securely, introducing centralization and counterparty risk.";
 "manage_tokens_network_selector_non_native_subtitle" = "Не основной или основной блокчейн, на котором размещен токен";
@@ -457,9 +459,11 @@
 "onboarding_backup_exit_warning" = "Процесс резервного копирования почти завершен. Вы не можете выйти из него сейчас.";
 "onboarding_bottom_sheet_passphrase_description" = "Парольная фраза — это расширенная функция безопасности, которую используют криптокошельки. Она добавляет дополнительное слово или фразу по вашему выбору к уже существующей seed - фразе, чтобы разблокировать совершенно новый набор адресов.";
 "onboarding_button_add_backup_card" = "Добавить карту или кольцо";
+"onboarding_button_backup_card" = "Сканировать карту";
 "onboarding_button_backup_card_format" = "Сканировать карту #%li";
 "onboarding_button_backup_now" = "Создать резервную копию";
 "onboarding_button_backup_origin" = "Сканировать карту";
+"onboarding_button_backup_ring" = "Сканировать кольцо";
 "onboarding_button_continue_wallet" = "Перейти к моему кошельку";
 "onboarding_button_finalize_backup" = "Завершение бэкапа";
 "onboarding_button_receive_crypto" = "Получить криптовалюту";
@@ -469,7 +473,7 @@
 "onboarding_create_wallet_body" = "Давайте сгенерируем все ключи на вашей карте или кольце и создадим безопасный кошелек";
 "onboarding_create_wallet_button_create_wallet" = "Создать кошелек";
 "onboarding_create_wallet_options_button_options" = "Другие опции";
-"onboarding_create_wallet_options_message" = "Ваши ключи будут надежно сгенерированы внутри карты или кольца. Никакой seed-фразы, а это значит, что никто не может экспортировать или украсть ее.";
+"onboarding_create_wallet_options_message" = "Ваши ключи будут надежно сгенерированы внутри чипа. Никакой seed-фразы, а это значит, что никто не может экспортировать или украсть ее.";
 "onboarding_create_wallet_options_title" = "Cоздавайте ключи приватно";
 "onboarding_done_body" = "Ваша карта активирована и готова к использованию";
 "onboarding_done_header" = "Успешно!";
@@ -497,11 +501,14 @@
 "onboarding_subtitle_scan_backup_card_format" = "Подготовьте резервную карту с номером %@";
 "onboarding_subtitle_scan_primary" = "Отсканируйте основную карту или кольцо, чтобы начать процесс резервного копирования.";
 "onboarding_subtitle_scan_primary_card_format" = "Подготовьте основную карту с номером %@";
+"onboarding_subtitle_scan_ring" = "Приготовьте кольцо и нажмите кнопку сканирования кольца внизу";
 "onboarding_subtitle_success_tangem_wallet_onboarding" = "Ваш кошелек настроен и готов к использованию.";
 "onboarding_subtitle_two_backup_cards" = "Добавлено максимальное количество устройств. Завершите процесс резервного копирования.";
 "onboarding_title" = "Активация кошелька";
+"onboarding_title_backup_card" = "Резервная карта";
 "onboarding_title_backup_card_format" = "Резервная карта #%li";
-"onboarding_title_no_backup_cards" = "Нет резервных карт или колец";
+"onboarding_title_backup_ring" = "Резервное кольцо";
+"onboarding_title_no_backup_cards" = "Нет резервных устройств";
 "onboarding_title_notifications" = "Уведомления";
 "onboarding_title_one_backup_card" = "Добавлено одно резервное устройство";
 "onboarding_title_scan_origin_card" = "Подготовьте свою карту";
@@ -765,9 +772,9 @@
 "swap_promo_text" = "Обменивайте больше токенов по лучшим курсам прямо в вашем кошельке.";
 "swap_promo_title" = "Новый провайдер обмена!";
 "swapping_alert_cex_description" = "В сумму включено: \n• комиссия провайдера сервиса\n• комиссия сети за отправку %@ от биржи обратно на адрес пользователя.";
-"swapping_alert_cex_description_with_slippage" = "В сумму включено: \n• комиссия провайдера сервиса\n• комиссия сети за отправку %1$@ от биржи обратно на адрес пользователя \n\nПроскальзывание провайдера составляет до %2$@ \nПри максимальном проскальзывании сумма к получению будет %3$@";
+"swapping_alert_cex_description_with_slippage" = "В сумму включено: \n• комиссия провайдера сервиса\n• комиссия сети за отправку %1$@ от биржи обратно на адрес пользователя \n\nПроскальзывание провайдера составляет до %2$@";
 "swapping_alert_dex_description" = "В сумму включена комиссия провайдера сервиса.";
-"swapping_alert_dex_description_with_slippage" = "В сумму включена комиссия провайдера сервиса. \n\nПроскальзывание провайдера составляет до %1$@ \nПри максимальном проскальзывании сумма к получению будет %2$@";
+"swapping_alert_dex_description_with_slippage" = "В сумму включена комиссия провайдера сервиса. \n\nПроскальзывание провайдера составляет до %@";
 "swapping_alert_title" = "Комиссии";
 "swapping_approve_information_text" = "Подтверждения считаются отраслевым стандартом для всех децентрализованных бирж и защищают ваш кошелек от доступа со стороны смарт-контракта без вашего разрешения. По замыслу смарт-контракты не могут получить доступ к вашим токенам, если вы не одобрите доступ со своей стороны. «Разблокируя» свои токены, вы даете смарт-контракту 1inch разрешение тратить ваши активы. Майнеры сети получают компенсацию за газ (оплачиваемый вами) за запись этого действия в блокчейне. Как только разрешение будет предоставлено, вы сможете обменять свой токен.";
 "swapping_approve_information_title" = "Подтвердить";

@@ -127,6 +127,7 @@
 "common_now" = "Зараз";
 "common_ok" = "ОК";
 "common_origin_card" = "Основна картка";
+"common_origin_ring" = "Primary ring";
 "common_passphrase" = "Парольна фраза";
 "common_paste" = "Вставити";
 "common_privacy_policy" = "Політикою конфіденційності";
@@ -306,6 +307,7 @@
 "initial_message_change_access_code_body" = "Щоб змінити код доступу, прикладіть картку, як показано вище, і не прибирайте її до закінчення операції";
 "initial_message_change_passcode_body" = "Щоб змінити пароль, прикладіть картку, як показано вище, і не прибирайте її до закінчення операції";
 "initial_message_create_wallet_body" = "Щоб створити гаманець, прикладіть картку, як показано вище, і не прибирайте її до завершення операції";
+"initial_message_create_wallet_body_ring" = "To create the wallet tap the ring as shown above and do not remove until the end of the operation";
 "initial_message_purge_wallet_body" = "Щоб скинути налаштування до заводських, прикладіть картку, як показано вище, і не прибирайте її до завершення операції";
 "initial_message_reset_backup_card_header" = "Прикладіть картку #%@ для скидання";
 "initial_message_sign_body" = "Щоб підписати транзакцію, прикладіть картку, як показано вище, і не прибирайте її до кінця операції";
@@ -457,9 +459,11 @@
 "onboarding_backup_exit_warning" = "Процес резервного копіювання частково завершено. Ви не можете вийти з нього зараз.";
 "onboarding_bottom_sheet_passphrase_description" = "Парольна фраза – це розширена функція безпеки, яку використовують криптогаманці. Вона додає додаткове слово або фразу на ваш вибір до вже існуючої seed - фрази, щоб розблокувати абсолютно новий набір адрес.";
 "onboarding_button_add_backup_card" = "Додати резервну картку";
+"onboarding_button_backup_card" = "Scan card";
 "onboarding_button_backup_card_format" = "Відсканувати картку #%li";
 "onboarding_button_backup_now" = "Створити резервну копію";
 "onboarding_button_backup_origin" = "Відсканувати основну картку";
+"onboarding_button_backup_ring" = "Scan ring";
 "onboarding_button_continue_wallet" = "Перейти до мого гаманця";
 "onboarding_button_finalize_backup" = "Завершення бекапу";
 "onboarding_button_receive_crypto" = "Отримати криптовалюту";
@@ -497,10 +501,13 @@
 "onboarding_subtitle_scan_backup_card_format" = "Підготуйте резервну картку з номером %@";
 "onboarding_subtitle_scan_primary" = "Відскануйте основну картку, щоб почати процес резервного копіювання.";
 "onboarding_subtitle_scan_primary_card_format" = "Підготуйте основну картку з номером %@";
+"onboarding_subtitle_scan_ring" = "Prepare the ring and press the scan button below";
 "onboarding_subtitle_success_tangem_wallet_onboarding" = "Ваша картка налаштована та готова до використання.";
 "onboarding_subtitle_two_backup_cards" = "Додано максимальну кількість карток. Завершіть процес резервного копіювання.";
 "onboarding_title" = "Активація картки";
+"onboarding_title_backup_card" = "Backup card";
 "onboarding_title_backup_card_format" = "Резервна картка #%li";
+"onboarding_title_backup_ring" = "Backup ring";
 "onboarding_title_no_backup_cards" = "Немає резервних карток";
 "onboarding_title_notifications" = "Сповіщення";
 "onboarding_title_one_backup_card" = "Додано одну резервну картку";
@@ -765,9 +772,9 @@
 "swap_promo_text" = "Обмінюйте більше токенів за вигіднішим курсом прямо у своєму гаманці.";
 "swap_promo_title" = "З'явився новий провайдер обмінів!";
 "swapping_alert_cex_description" = "Сума включає: \n• комісію постачальника послуг\n• комісію мережі за відправлення %@ з біржі назад на адресу користувача.";
-"swapping_alert_cex_description_with_slippage" = "У суму входить:\n- комісія провайдера\n- мережева комісія за відправку %1$@ з біржі назад на адресу користувача. \n\nПроскакування провайдера становить до %2$@ \n При максимальному проскакуванні сума до отримання складе %3$@";
+"swapping_alert_cex_description_with_slippage" = "У суму входить:\n- комісія провайдера\n- мережева комісія за відправку %1$@ з біржі назад на адресу користувача. \n\nПроскакування провайдера становить до %2$@";
 "swapping_alert_dex_description" = "Сума включає комісію постачальника послуг.";
-"swapping_alert_dex_description_with_slippage" = "Сума включає комісію провайдера послуг. \n\nПроскакування провайдера до %1$@ \n При максимальному проскакуванні сума до отримання становитиме %2$@";
+"swapping_alert_dex_description_with_slippage" = "Сума включає комісію провайдера послуг. \n\nПроскакування провайдера до %@";
 "swapping_alert_title" = "Комісії";
 "swapping_approve_information_text" = "Всі децентралізовані біржі вимагають схвалення, щоб запобігти доступу смарт-контрактів до вашого гаманця без вашого дозволу. За задумом смарт-контракти не можуть отримати доступ до ваших токенів без вашого схвалення. \"Розблоковуючи\" свої токени, ви дозволяєте смарт-контракту 1inch витрачати ваші активи. Майнери мережі отримують плату за газ (сплачену вами), щоб зафіксувати цю дію в блокчейні. Ви можете обміняти свій токен після того, як дасте дозвіл.";
 "swapping_approve_information_title" = "Підтвердити";

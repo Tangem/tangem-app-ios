@@ -153,7 +153,7 @@ struct WalletOnboardingView: View {
                                         cardImage: viewModel.mainImage,
                                         cardScanned: viewModel.isInitialAnimPlayed
                                     )
-                                    Text(Localization.commonOriginCard)
+                                    Text(viewModel.primaryLabel)
                                         .font(.system(size: 13, weight: .semibold))
                                         .foregroundColor(.white)
                                         .padding(.horizontal, 12)

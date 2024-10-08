@@ -127,6 +127,7 @@
 "common_now" = "Now";
 "common_ok" = "OK";
 "common_origin_card" = "Primary card";
+"common_origin_ring" = "Primary ring";
 "common_passphrase" = "Passphrase";
 "common_paste" = "Paste";
 "common_privacy_policy" = "Privacy Policy";
@@ -306,6 +307,7 @@
 "initial_message_change_access_code_body" = "To change the access code tap the card or ring as shown above and do not remove until the end of the operation";
 "initial_message_change_passcode_body" = "To change the passcode tap the card as shown above and do not remove until the end of the operation";
 "initial_message_create_wallet_body" = "To create the wallet tap the card as shown above and do not remove until the end of the operation";
+"initial_message_create_wallet_body_ring" = "To create the wallet tap the ring as shown above and do not remove until the end of the operation";
 "initial_message_purge_wallet_body" = "To reset to factory settings tap the card or ring as shown above and do not remove until the end of the operation";
 "initial_message_reset_backup_card_header" = "Tap the card #%@ of the wallet";
 "initial_message_sign_body" = "To sign tap the card or ring as shown above and do not remove until the end of the operation";
@@ -457,9 +459,11 @@
 "onboarding_backup_exit_warning" = "The backup process is partly complete. You can't exit it now.";
 "onboarding_bottom_sheet_passphrase_description" = "The passphrase is an advanced security feature that crypto wallets use. It adds an extra word or phrase of your own choosing to your already existing recovery phrase to unlock a brand-new set of addresses.";
 "onboarding_button_add_backup_card" = "Add a card or ring";
+"onboarding_button_backup_card" = "Scan card";
 "onboarding_button_backup_card_format" = "Scan card #%li";
 "onboarding_button_backup_now" = "Backup now";
 "onboarding_button_backup_origin" = "Scan card";
+"onboarding_button_backup_ring" = "Scan ring";
 "onboarding_button_continue_wallet" = "Continue to my wallet";
 "onboarding_button_finalize_backup" = "Finalize backup";
 "onboarding_button_receive_crypto" = "Receive crypto";
@@ -469,7 +473,7 @@
 "onboarding_create_wallet_body" = "Let's generate all the keys on your card or ring and create a secure wallet";
 "onboarding_create_wallet_button_create_wallet" = "Create wallet";
 "onboarding_create_wallet_options_button_options" = "Other options";
-"onboarding_create_wallet_options_message" = "Your keys will be securely generated inside the card or ring. There is no seed phrase, which means nobody can export or steal it.";
+"onboarding_create_wallet_options_message" = "Your keys will be securely generated inside the chip. There is no seed phrase, which means nobody can export or steal it.";
 "onboarding_create_wallet_options_title" = "Generate keys privately";
 "onboarding_done_body" = "Your card is activated and ready to be used";
 "onboarding_done_header" = "Success!";
@@ -497,11 +501,14 @@
 "onboarding_subtitle_scan_backup_card_format" = "Prepare the backup card with number %@";
 "onboarding_subtitle_scan_primary" = "Scan the primary card or ring to start the backup process.";
 "onboarding_subtitle_scan_primary_card_format" = "Prepare the primary card with number %@";
+"onboarding_subtitle_scan_ring" = "Prepare the ring and press the scan button below";
 "onboarding_subtitle_success_tangem_wallet_onboarding" = "Your wallet is configured and ready for use.";
 "onboarding_subtitle_two_backup_cards" = "Max number of devices added. Finalize the backup process.";
 "onboarding_title" = "Activating wallet";
+"onboarding_title_backup_card" = "Backup card";
 "onboarding_title_backup_card_format" = "Backup card #%li";
-"onboarding_title_no_backup_cards" = "No backup cards or rings";
+"onboarding_title_backup_ring" = "Backup ring";
+"onboarding_title_no_backup_cards" = "No backup devices";
 "onboarding_title_notifications" = "Notifications";
 "onboarding_title_one_backup_card" = "One backup device added";
 "onboarding_title_scan_origin_card" = "Prepare your card";
@@ -765,9 +772,9 @@
 "swap_promo_text" = "Exchange more tokens at better rates directly in your wallet.";
 "swap_promo_title" = "New Swap Provider Available!";
 "swapping_alert_cex_description" = "The amount includes:\n• service provider's fee\n• network fee for sending %@ from the exchange back to the user's address.";
-"swapping_alert_cex_description_with_slippage" = "The amount includes:\n• service provider's fee\n• network fee for sending %1$@ from the exchange back to the user's address. \n\nProvider slippage is up to %2$@ \n At maximum slippage, the amount to be received will be %3$@";
+"swapping_alert_cex_description_with_slippage" = "The amount includes:\n• service provider's fee\n• network fee for sending %1$@ from the exchange back to the user's address. \n\nProvider slippage is up to %2$@";
 "swapping_alert_dex_description" = "The amount includes the service provider's fee.";
-"swapping_alert_dex_description_with_slippage" = "The amount includes the service provider's fee. \n\nProvider slippage is up to %1$@ \n At maximum slippage, the amount to be received will be %2$@";
+"swapping_alert_dex_description_with_slippage" = "The amount includes the service provider's fee. \n\nProvider slippage is up to %@";
 "swapping_alert_title" = "Fees";
 "swapping_approve_information_text" = "All decentralized exchanges require approvals to prevent smart contracts from accessing your wallet without your permission. By design, smart contracts can't access your tokens unless you approve. By \"unlocking\" your tokens, you authorize the 1-inch smart contract to spend them. The network's miners receive a gas fee (paid by you) to record this action on the blockchain. You can swap your token after giving approval.";
 "swapping_approve_information_title" = "Approve";
@@ -827,7 +834,7 @@
 "twins_recreate_toolbar" = "Tangem Twin";
 "twins_recreate_warning" = "This action is irreversible. You will not have access to the old wallet.";
 "twins_scan_twin_with_number" = "Tap the twin card with number %@ and do not remove until the end of the operation";
-"unlock_wallet_description_full" = "Use %@ or scan a card/ring to have an access to your wallet";
+"unlock_wallet_description_full" = "Use %@ or scan a card/ring to have access to your wallet";
 "user_push_notification_agreement_argument_one" = "Stay up to date with the latest features and news";
 "user_push_notification_agreement_argument_two" = "Be the first to know about new promotions";
 "user_push_notification_agreement_header" = "Would you like to use\nPush-notifications?";
@@ -956,7 +963,7 @@
 "welcome_interrupted_backup_alert_message" = "You have an interrupted backup. Do you want to resume?";
 "welcome_interrupted_backup_alert_resume" = "Yes, resume";
 "welcome_interrupted_backup_discard_discard" = "Discard";
-"welcome_interrupted_backup_discard_message" = "If you will discard the backup now, then you will have to reset the devices to factory settings to start over again";
+"welcome_interrupted_backup_discard_message" = "If you discard the backup now, then you will have to reset the devices to factory settings to start over again";
 "welcome_interrupted_backup_discard_resume" = "Resume backup";
 "welcome_interrupted_backup_discard_title" = "This is an irreversible action";
 "welcome_unlock" = "Log in with %@";

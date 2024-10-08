@@ -151,6 +151,7 @@ struct NavigationBar<LeftButtons: View, RightButtons: View>: View {
                 Text(title)
                     .style(settings.title.font, color: settings.title.color)
                     .lineLimit(settings.title.lineLimit)
+                    .multilineTextAlignment(.center)
                     .minimumScaleFactor(settings.title.minimumScaleFactor)
 
                 FixedSpacer.horizontal(titleHorizontalPadding)
