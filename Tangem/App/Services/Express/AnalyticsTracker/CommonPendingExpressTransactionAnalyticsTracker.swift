@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import TangemFoundationSPM
+import TangemFoundation
 
 class CommonPendingExpressTransactionAnalyticsTracker: PendingExpressTransactionAnalyticsTracker {
     typealias PendingTransactionId = String

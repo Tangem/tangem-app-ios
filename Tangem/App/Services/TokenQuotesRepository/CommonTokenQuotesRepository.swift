@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 import BlockchainSdk
-import TangemFoundationSPM
+import TangemFoundation
 
 class CommonTokenQuotesRepository {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService

@@ -8,7 +8,7 @@
 
 import Combine
 import BlockchainSdk
-import TangemFoundationSPM
+import TangemFoundation
 import TangemStaking
 import SwiftUI
 

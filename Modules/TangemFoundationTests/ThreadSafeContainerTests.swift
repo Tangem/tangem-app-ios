@@ -8,15 +8,9 @@
 
 import Foundation
 import XCTest
-
-// TODO: Andrey Fedorov - Remove after final migration to SPM
-#if SWIFT_PACKAGE
-@testable import TangemFoundationSPM
-#else
 @testable import TangemFoundation
-#endif // SWIFT_PACKAGE
 
-class ThreadSafeContainerTests: XCTestCase {
+final class ThreadSafeContainerTests: XCTestCase {
     func testConcurrentReadWriteOperationsCountUsingSingleQueue() {
         let readCount = 20000
         let writeCount = 20000

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import TangemFoundationSPM
+import TangemFoundation
 
 final class MarketsListChartsHistoryProvider {
     typealias TokensChartsHistory = [String: [MarketsPriceIntervalType: MarketsChartModel]]

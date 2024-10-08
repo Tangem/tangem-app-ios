@@ -7,7 +7,7 @@
 //
 
 import TangemStaking
-import TangemFoundationSPM
+import TangemFoundation
 
 struct CommonStakingPendingTransactionsStorage: StakingPendingTransactionsStorage {
     @Injected(\.persistentStorage) private var storage: PersistentStorageProtocol

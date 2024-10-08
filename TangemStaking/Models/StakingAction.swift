@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import TangemFoundationSPM
+import TangemFoundation
 
 public struct StakingAction: Hashable {
     public let amount: Decimal

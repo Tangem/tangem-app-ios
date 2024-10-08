@@ -9,7 +9,7 @@
 import Foundation
 import BlockchainSdk
 import Combine
-import TangemFoundationSPM
+import TangemFoundation
 
 class MultipleAddressTransactionHistoryService {
     private let tokenItem: TokenItem

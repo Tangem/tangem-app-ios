@@ -10,7 +10,7 @@ import Combine
 import UIKit
 import TangemSdk
 import Kingfisher
-import TangemFoundationSPM
+import TangemFoundation
 
 struct CardImageProvider {
     private static let cardArtworkCache: ThreadSafeContainer<[String: CardArtwork]> = [:]

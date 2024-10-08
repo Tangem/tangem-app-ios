@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import TangemFoundationSPM
+import TangemFoundation
 
 struct TokenMarketsHistoryChartMapper {
     /// - Note: Can be used for both 'preview' and 'history' charts.

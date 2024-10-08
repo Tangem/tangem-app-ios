@@ -8,7 +8,7 @@
 
 import Foundation
 import Moya
-import TangemFoundationSPM
+import TangemFoundation
 
 struct CommonExpressAPIService {
     private let provider: MoyaProvider<ExpressAPITarget>
