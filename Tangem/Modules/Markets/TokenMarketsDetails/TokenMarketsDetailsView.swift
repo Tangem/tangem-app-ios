@@ -49,43 +49,22 @@ struct TokenMarketsDetailsView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 
-    @ViewBuilder
     private var navigationBar: some View {
-        if viewModel.isMarketsSheetStyle {
-            NavigationBar(
-                title: viewModel.tokenName,
-                settings: .init(
-                    title: .init(
-                        font: Fonts.Bold.body,
-                        color: Colors.Text.primary1,
-                        lineLimit: 1,
-                        minimumScaleFactor: 0.6
-                    ),
-                    backgroundColor: .clear, // Controlled by the `background` modifier in the view's body and `background` modifier below
-                    height: 64.0,
-                    alignment: .bottom
-                ),
-                leftButtons: {
-                    BackButton(
-                        height: 44.0,
-                        isVisible: true,
-                        isEnabled: true,
-                        hPadding: 10.0,
-                        action: viewModel.onBackButtonTap
-                    )
-                }
+        MarketsNavigationBar(
+            isMarketsSheetStyle: viewModel.isMarketsSheetStyle,
+            title: viewModel.tokenName,
+            onBackButtonAction: viewModel.onBackButtonTap
+        )
+        .background(
+            MarketsNavigationBarBackgroundView(
+                backdropViewColor: overlayContentHidingBackgroundColor,
+                overlayContentHidingProgress: viewModel.overlayContentHidingProgress,
+                isNavigationBarBackgroundBackdropViewHidden: viewModel.isNavigationBarBackgroundBackdropViewHidden,
+                isListContentObscured: isListContentObscured
             )
-            .background(
-                MarketsNavigationBarBackgroundView(
-                    backdropViewColor: overlayContentHidingBackgroundColor,
-                    overlayContentHidingProgress: viewModel.overlayContentHidingProgress,
-                    isNavigationBarBackgroundBackdropViewHidden: viewModel.isNavigationBarBackgroundBackdropViewHidden,
-                    isListContentObscured: isListContentObscured
-                )
-            )
-            .readGeometry(\.size.height, bindTo: $headerHeight)
-            .infinityFrame(axis: .vertical, alignment: .top)
-        }
+        )
+        .readGeometry(\.size.height, bindTo: $headerHeight)
+        .infinityFrame(axis: .vertical, alignment: .top)
     }
 
     @ViewBuilder

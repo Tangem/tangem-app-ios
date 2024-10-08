@@ -27,7 +27,7 @@ class MarketsTokenDetailsExchangesListViewModel: MarketsBaseViewModel {
     private let tokenId: String
     private let presentationStyle: MarketsTokenDetailsPresentationStyle
 
-    private let minIntervalBetweenRequestsSeconds: TimeInterval = 10.0
+    private let exchangesListMinReloadInterval: TimeInterval = 10.0
 
     private var loadingCancellable: AnyCancellable?
     private var lastLoadAttemptDate: Date?
@@ -71,7 +71,7 @@ private extension MarketsTokenDetailsExchangesListViewModel {
         let date = Date()
         let remainingTime: TimeInterval
         if let lastLoadAttemptDate {
-            remainingTime = max(minIntervalBetweenRequestsSeconds - date.timeIntervalSince(lastLoadAttemptDate), 0)
+            remainingTime = max(exchangesListMinReloadInterval - date.timeIntervalSince(lastLoadAttemptDate), 0)
         } else {
             remainingTime = 0
         }
@@ -84,7 +84,6 @@ private extension MarketsTokenDetailsExchangesListViewModel {
                 let response = try await exchangesListLoader.loadExchangesList(for: tokenId)
                 await handleLoadResult(.success(response))
             } catch {
-                self?.lastLoadAttemptDate = Date()
                 await self?.handleLoadResult(.failure(error))
             }
         }.eraseToAnyCancellable()
@@ -92,6 +91,7 @@ private extension MarketsTokenDetailsExchangesListViewModel {
 
     @MainActor
     func handleLoadResult(_ result: Result<[MarketsTokenDetailsExchangeItemInfo], Error>) async {
+        lastLoadAttemptDate = Date()
         do {
             let list = try result.get()
 
@@ -103,6 +103,7 @@ private extension MarketsTokenDetailsExchangesListViewModel {
 
             exchangesList = .failedToLoad(error: error)
         }
+
         loadingCancellable = nil
     }
 }

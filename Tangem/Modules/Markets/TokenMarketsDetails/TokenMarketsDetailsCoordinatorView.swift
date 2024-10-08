@@ -59,14 +59,16 @@ struct TokenMarketsDetailsCoordinatorView: CoordinatorView {
     @ViewBuilder
     private var links: some View {
         NavHolder()
-            .navigation(item: $coordinator.exchangesListViewModel) {
-                let container = MarketsTokenDetailsExchangesListContainerView(viewModel: $0)
+            .navigation(item: $coordinator.exchangesListViewModel) { viewModel in
+                let container = NavigationBarHiddingView(shouldWrapInNavigationView: false) {
+                    MarketsTokenDetailsExchangesListView(viewModel: viewModel)
+                }
 
-                if #unavailable(iOS 16) {
+                if #available(iOS 16, *) {
                     container
-                        .ignoresSafeArea(.container, edges: .vertical) // Without this on iOS 15 content won't ignore safe area and don't go below navbar
                 } else {
                     container
+                        .ignoresSafeArea(.container, edges: .vertical) // Without this on iOS 15 content won't ignore safe area and don't go below navbar
                 }
             }
             .emptyNavigationLink()

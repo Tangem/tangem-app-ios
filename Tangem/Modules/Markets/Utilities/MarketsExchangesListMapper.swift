@@ -22,11 +22,14 @@ struct MarketsExchangesListMapper {
             forCurrencyCode: AppConstants.usdCurrencyCode,
             formattingOptions: formattingOptions
         )
+        let iconURLBuilder = IconURLBuilder()
 
         return list.map {
-            var iconURL: URL?
+            let iconURL: URL?
             if let link = $0.image {
                 iconURL = URL(string: link)
+            } else {
+                iconURL = iconURLBuilder.exchangesIconURL(exchangeId: $0.exchangeId)
             }
 
             let formattedVolumeUSD = notationFormatter.format(

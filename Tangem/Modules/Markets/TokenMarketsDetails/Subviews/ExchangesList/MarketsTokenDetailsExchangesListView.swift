@@ -18,8 +18,7 @@ struct MarketsTokenDetailsExchangesListView: View {
     @State private var headerHeight: CGFloat = .zero
 
     private var isDarkColorScheme: Bool { colorScheme == .dark }
-    private var defaultBackgroundColor: Color { isDarkColorScheme ? Colors.Background.primary : Colors.Background.secondary }
-    private var overlayContentHidingBackgroundColor: Color { isDarkColorScheme ? defaultBackgroundColor : Colors.Background.plain }
+    private var defaultBackgroundColor: Color { Colors.Background.primary }
 
     private let scrollViewFrameCoordinateSpaceName = UUID()
     private let scrollViewContentTopInset = 14.0
@@ -36,7 +35,7 @@ struct MarketsTokenDetailsExchangesListView: View {
             .onOverlayContentProgressChange { [weak viewModel] progress in
                 viewModel?.onOverlayContentProgressChange(progress)
             }
-            .background { viewBackground }
+            .background(defaultBackgroundColor.ignoresSafeArea())
             .animation(.default, value: viewModel.exchangesList)
             .ignoresSafeArea(.container, edges: .top) // Without it, the content won't go into the safe area top zone on over-scroll
             .readGeometry(\.safeAreaInsets, bindTo: $safeArea)
@@ -44,12 +43,16 @@ struct MarketsTokenDetailsExchangesListView: View {
 
     @ViewBuilder
     private var rootView: some View {
-        let content = ZStack(alignment: .top) {
+        ZStack(alignment: .top) {
             listContent
                 .opacity(viewModel.overlayContentHidingProgress)
 
             VStack(spacing: 0) {
-                navigationBar
+                MarketsNavigationBar(
+                    isMarketsSheetStyle: viewModel.isMarketsSheetStyle,
+                    title: navigationBarTitle,
+                    onBackButtonAction: viewModel.onBackButtonAction
+                )
 
                 header
                     .opacity(viewModel.overlayContentHidingProgress)
@@ -57,7 +60,7 @@ struct MarketsTokenDetailsExchangesListView: View {
             }
             .background {
                 MarketsNavigationBarBackgroundView(
-                    backdropViewColor: overlayContentHidingBackgroundColor,
+                    backdropViewColor: defaultBackgroundColor,
                     overlayContentHidingProgress: viewModel.overlayContentHidingProgress,
                     isNavigationBarBackgroundBackdropViewHidden: viewModel.isNavigationBarBackgroundBackdropViewHidden,
                     isListContentObscured: isListContentObscured
@@ -66,50 +69,7 @@ struct MarketsTokenDetailsExchangesListView: View {
             .readGeometry(\.size.height, bindTo: $headerHeight)
             .infinityFrame(axis: .vertical, alignment: .top)
         }
-
-        if #unavailable(iOS 17.0), viewModel.isMarketsSheetStyle {
-            // On iOS 16 and below, UIKit will always allocate a new instance of the `UINavigationBar` instance when push
-            // navigation is performed in other navigation controller(s) in the application (on the main screen, for example).
-            // This will happen asynchronously, after a couple of seconds after the navigation event in the other navigation controller(s).
-            // Therefore, we left with two options:
-            // - Perform swizzling in `UINavigationController` and manually hide that new navigation bar.
-            // - Hiding navigation bar using native `UINavigationController.setNavigationBarHidden(_:animated:)` from UIKit
-            //   and `navigationBarHidden(_:)` from SwiftUI, which in turn will break the swipe-to-pop gesture.
-            content
-                .navigationBarHidden(true)
-        } else {
-            content
-                .navigationBarTitleDisplayMode(.inline)
-        }
-    }
-
-    @ViewBuilder
-    private var navigationBar: some View {
-        if viewModel.isMarketsSheetStyle {
-            NavigationBar(
-                title: navigationBarTitle,
-                settings: .init(
-                    title: .init(
-                        font: Fonts.Bold.body,
-                        color: Colors.Text.primary1,
-                        lineLimit: 1,
-                        minimumScaleFactor: 0.6
-                    ),
-                    backgroundColor: .clear, // Controlled by the `background` modifier in the body
-                    height: 64.0,
-                    alignment: .bottom
-                ),
-                leftButtons: {
-                    BackButton(
-                        height: 44.0,
-                        isVisible: true,
-                        isEnabled: true,
-                        hPadding: 10.0,
-                        action: viewModel.onBackButtonAction
-                    )
-                }
-            )
-        }
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     private var header: some View {
@@ -148,7 +108,7 @@ struct MarketsTokenDetailsExchangesListView: View {
                     viewModel.reloadExchangesList()
                 }
             )
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .infinityFrame()
             .padding(.horizontal, 16)
             .padding(.top, headerHeight)
         }
@@ -163,12 +123,12 @@ struct MarketsTokenDetailsExchangesListView: View {
 
                 switch viewModel.exchangesList {
                 case .loading:
-                    ForEach(0 ... (viewModel.numberOfExchangesListedOn - 1)) { _ in
+                    ForEach(0 ... max(viewModel.numberOfExchangesListedOn - 1, 0)) { _ in
                         ExchangeLoaderView()
                     }
                 case .loaded(let itemsList):
-                    ForEach(indexed: itemsList.indexed()) { item in
-                        MarketsTokenDetailsExchangeItemView(info: item.1)
+                    ForEach(itemsList) { item in
+                        MarketsTokenDetailsExchangeItemView(info: item)
                     }
                 case .failedToLoad:
                     EmptyView()
@@ -179,25 +139,6 @@ struct MarketsTokenDetailsExchangesListView: View {
             }
         }
         .coordinateSpace(name: scrollViewFrameCoordinateSpaceName)
-    }
-
-    @ViewBuilder
-    private var viewBackground: some View {
-        ZStack {
-            Group {
-                // When a light color scheme is active, `defaultBackgroundColor` and `overlayContentHidingBackgroundColor`
-                // colors simulate color blending with the help of dynamic opacity.
-                //
-                // When the dark color scheme is active, no color blending is needed, and only `defaultBackgroundColor`
-                // is visible (btw in dark mode both colors are the same),
-                defaultBackgroundColor
-                    .opacity(isDarkColorScheme ? 1.0 : viewModel.overlayContentHidingProgress)
-
-                overlayContentHidingBackgroundColor
-                    .opacity(isDarkColorScheme ? 0.0 : 1.0 - viewModel.overlayContentHidingProgress)
-            }
-            .ignoresSafeArea()
-        }
     }
 }
 

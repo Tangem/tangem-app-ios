@@ -423,7 +423,7 @@ private extension TokenMarketsDetailsViewModel {
     }
 
     func makePortfolioViewModel() {
-        guard presentationStyle == .marketsSheet else {
+        guard isMarketsSheetStyle else {
             return
         }
 
