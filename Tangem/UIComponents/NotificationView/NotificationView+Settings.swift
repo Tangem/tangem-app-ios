@@ -82,10 +82,22 @@ extension NotificationView {
             case .primary: Colors.Background.primary
             case .secondary: Colors.Button.disabled
             case .action: Colors.Background.action
-            case .ring: Assets.promoRing.image
-                .resizable()
-                .scaledToFill()
-                .background(Color(hex: "#1E1E1E")!)
+            case .ring:
+                Assets.promoRingBg.image
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .background(Color(hex: "#1E1E1E")!)
+                    .overlay {
+                        HStack {
+                            Assets.promoRingIcon.image
+                                .resizable()
+                                .frame(width: 60, height: 119)
+                                .offset(CGSize(width: 0, height: 30.0))
+                                .padding(.top, 12)
+                                .padding(.leading, 14)
+                            Spacer()
+                        }
+                    }
             }
         }
 
