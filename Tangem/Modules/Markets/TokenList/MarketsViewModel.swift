@@ -258,6 +258,11 @@ private extension MarketsViewModel {
     func requestMiniCharts(forRange range: ClosedRange<Int>) {
         let items = tokenViewModels
         let itemsToFetch: Array<MarketsItemViewModel>.SubSequence
+        if items.isEmpty || items.count <= range.lowerBound {
+            // If items array was cleared or previous visible range was sent we can skip mini-charts loading step
+            return
+        }
+
         if items.count <= range.upperBound {
             itemsToFetch = items[range.lowerBound...]
         } else {
