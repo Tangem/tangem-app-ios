@@ -733,6 +733,7 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
         if let finalizingBatchId = backupService.finalizingBatchId,
            RingUtil().isRing(batchId: finalizingBatchId) {
             backupService.config.style.scanTagImage = .image(uiImage: Assets.ringShapeScan.uiImage, verticalOffset: 0)
+            backupService.config.cardIdDisplayFormat = .none
         }
 
         let containsRing = backupService.allBatchIds.contains(where: { ringUtil.isRing(batchId: $0) })
@@ -747,6 +748,7 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
                         // Ring onboarding. Reset to defaults
                         backupService.config.style.scanTagImage = .genericCard
+                        backupService.config.cardIdDisplayFormat = .full
 
                         switch result {
                         case .success(let updatedCard):

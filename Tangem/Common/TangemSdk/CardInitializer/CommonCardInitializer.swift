@@ -32,6 +32,7 @@ extension CommonCardInitializer: CardInitializer {
         // Ring onboarding. Set custom image
         if RingUtil().isRing(batchId: cardInfo.card.batchId) {
             tangemSdk.config.style.scanTagImage = .image(uiImage: Assets.ringShapeScan.uiImage, verticalOffset: 0)
+            tangemSdk.config.cardIdDisplayFormat = .none
         }
 
         let didBecomeActivePublisher = NotificationCenter.didBecomeActivePublisher
@@ -55,6 +56,7 @@ extension CommonCardInitializer: CardInitializer {
         .sink(receiveCompletion: { [weak self] completionResult in
             // Ring onboarding. Reset the image
             self?.tangemSdk.config.style.scanTagImage = .genericCard
+            self?.tangemSdk.config.cardIdDisplayFormat = .full
 
             switch completionResult {
             case .finished:
