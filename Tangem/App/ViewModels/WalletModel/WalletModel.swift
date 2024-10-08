@@ -11,7 +11,7 @@ import Combine
 import CombineExt
 import BlockchainSdk
 import TangemStaking
-import TangemFoundation
+import TangemFoundationSPM
 
 class WalletModel {
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository

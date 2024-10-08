@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import TangemFoundation
+import TangemFoundationSPM
 
 class MarketsQuotesUpdatesScheduler {
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository

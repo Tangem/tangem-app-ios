@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 import class UIKit.UIImage
-import TangemFoundation
+import TangemFoundationSPM
 
 final class MainBottomSheetUIManager {
     private(set) var hasPendingSnapshotUpdate = false

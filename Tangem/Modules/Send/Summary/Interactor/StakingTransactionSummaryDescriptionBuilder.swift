@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import TangemFoundation
+import TangemFoundationSPM
 
 struct StakingTransactionSummaryDescriptionBuilder {
     private let tokenItem: TokenItem

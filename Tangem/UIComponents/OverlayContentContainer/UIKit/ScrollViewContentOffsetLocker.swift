@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 import Combine
-import TangemFoundation
+import TangemFoundationSPM
 
 /// A simple helper with RAII semantics to 'disable' scroll inside `UIScrollView` without using `isScrollEnabled`
 /// property and hence without breaking the entire pan gesture.

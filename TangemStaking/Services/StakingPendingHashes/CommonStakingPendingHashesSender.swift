@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import TangemFoundation
+import TangemFoundationSPM
 
 class CommonStakingPendingHashesSender: StakingPendingHashesSender {
     let repository: StakingPendingHashesRepository

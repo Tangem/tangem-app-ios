@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import TangemFoundation
+import TangemFoundationSPM
 import TangemExpress
 import BlockchainSdk
 

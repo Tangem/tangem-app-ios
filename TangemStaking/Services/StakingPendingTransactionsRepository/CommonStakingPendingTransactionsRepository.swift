@@ -6,7 +6,7 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-import TangemFoundation
+import TangemFoundationSPM
 import Foundation
 import Combine
 

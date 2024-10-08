@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 import TangemVisa
-import TangemFoundation
+import TangemFoundationSPM
 
 class VisaTransactionHistoryService {
     private let apiService: VisaAPIService

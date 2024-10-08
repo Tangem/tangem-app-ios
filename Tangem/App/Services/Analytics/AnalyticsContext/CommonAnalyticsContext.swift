@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import TangemFoundation
+import TangemFoundationSPM
 
 class CommonAnalyticsContext: AnalyticsContext {
     var contextData: AnalyticsContextData? {

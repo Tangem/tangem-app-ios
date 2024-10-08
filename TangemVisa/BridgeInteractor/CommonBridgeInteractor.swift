@@ -8,7 +8,7 @@
 
 import Foundation
 import BlockchainSdk
-import TangemFoundation
+import TangemFoundationSPM
 
 struct CommonBridgeInteractor {
     private let logger: InternalLogger

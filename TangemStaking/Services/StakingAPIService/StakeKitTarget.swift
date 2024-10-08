@@ -8,6 +8,7 @@
 
 import Foundation
 import Moya
+import TangemFoundationSPM
 
 struct StakeKitTarget: Moya.TargetType {
     let apiKey: String

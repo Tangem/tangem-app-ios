@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import TangemFoundation
+import TangemFoundationSPM
 
 final class ViewHierarchySnapshottingContainerViewController: UIViewController {
     /// For unknown reasons, in SwiftUI, child view controllers won't inherit `overrideUserInterfaceStyle`

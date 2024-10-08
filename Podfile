@@ -31,8 +31,9 @@ end
 def blockchain_sdk_pods
   # 'TangemWalletCore' dependency must be added via SPM
 
-  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :tag => 'develop-699'
+  #pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :tag => 'develop-699'
   #pod 'BlockchainSdk', :path => '../blockchain-sdk-swift'
+  pod 'BlockchainSdk', :path => '../../blockchain-sdk-swift'  # For git worktree users
 
   pod 'Solana.Swift', :git => 'https://github.com/tangem/Solana.Swift', :tag => '1.2.0-tangem11'
   #pod 'Solana.Swift', :path => '../Solana.Swift'
@@ -113,14 +114,6 @@ target 'TangemStaking' do
   pod 'Moya'
 
   target 'TangemStakingTests' do
-    inherit! :search_paths
-  end
-end
-
-target 'TangemFoundation' do
-  pod 'Moya'
-
-  target 'TangemFoundationTests' do
     inherit! :search_paths
   end
 end
