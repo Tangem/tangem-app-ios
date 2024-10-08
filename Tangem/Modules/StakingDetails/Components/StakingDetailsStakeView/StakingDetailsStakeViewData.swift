@@ -24,6 +24,8 @@ struct StakingDetailsStakeViewData: Identifiable {
         switch subtitleType {
         case .none:
             return nil
+        case .locked(let hasVoteLocked) where hasVoteLocked:
+            return string(Localization.stakingTapToUnlockOrVote)
         case .locked:
             return string(Localization.stakingTapToUnlock)
         case .warmup(let period):
@@ -96,7 +98,7 @@ extension StakingDetailsStakeViewData {
         case unbonding(until: Date)
         case unbondingPeriod(period: String)
         case withdraw
-        case locked
+        case locked(hasVoteLocked: Bool)
     }
 
     enum IconType: Hashable {

@@ -45,6 +45,7 @@ struct BalanceWithButtonsView: View {
                 selectedOption: $viewModel.selectedBalanceType,
                 options: balanceTypeValues,
                 shouldStretchToFill: false,
+                isDisabled: false,
                 style: .init(textVerticalPadding: 2)
             ) { $0.title }
         } else {

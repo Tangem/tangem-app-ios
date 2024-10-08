@@ -1,5 +1,5 @@
 //
-//  BaseMarketsViewModel.swift
+//  MarketsBaseViewModel.swift
 //  Tangem
 //
 //  Created by Andrey Fedorov on 11.09.2024.
@@ -9,7 +9,7 @@
 import Foundation
 import func SwiftUI.withAnimation
 
-class BaseMarketsViewModel: ObservableObject {
+class MarketsBaseViewModel: ObservableObject {
     /// For unknown reasons, the `@self` and `@identity` of our view change when push navigation is performed in other
     /// navigation controllers in the application (on the main screen for example), which causes the state of
     /// this property to be lost if it were stored in the view as a `@State` variable.
@@ -20,10 +20,14 @@ class BaseMarketsViewModel: ObservableObject {
         overlayContentProgress.interpolatedProgress(inRange: Constants.overlayContentHidingProgressInterpolationRange)
     }
 
+    var isNavigationBarBackgroundBackdropViewHidden: Bool {
+        1.0 - overlayContentHidingProgress <= .ulpOfOne
+    }
+
     init(
         overlayContentProgressInitialValue: CGFloat
     ) {
-        precondition(type(of: self) != BaseMarketsViewModel.self, "Abstract class")
+        precondition(type(of: self) != MarketsBaseViewModel.self, "Abstract class")
 
         _overlayContentProgress = .init(initialValue: overlayContentProgressInitialValue)
     }
@@ -37,7 +41,7 @@ class BaseMarketsViewModel: ObservableObject {
 
 // MARK: - Constants
 
-private extension BaseMarketsViewModel {
+private extension MarketsBaseViewModel {
     enum Constants {
         static let overlayContentHidingProgressInterpolationRange: ClosedRange<CGFloat> = 0.0 ... 0.2
         static let overlayContentHidingAnimationDuration: TimeInterval = 0.2

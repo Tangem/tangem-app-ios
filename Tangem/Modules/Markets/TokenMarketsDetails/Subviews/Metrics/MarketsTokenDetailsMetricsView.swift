@@ -21,13 +21,8 @@ struct MarketsTokenDetailsMetricsView: View {
     }
 
     var body: some View {
-        VStack(spacing: 20) {
-            HStack {
-                Text(Localization.marketsTokenDetailsMetrics)
-                    .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
-
-                Spacer()
-            }
+        VStack(spacing: .zero) {
+            BlockHeaderTitleView(title: Localization.marketsTokenDetailsMetrics)
 
             LazyVGrid(columns: gridItems, alignment: .center, spacing: 16, content: {
                 ForEach(viewModel.records.indexed(), id: \.1.id) { index, info in
@@ -43,8 +38,9 @@ struct MarketsTokenDetailsMetricsView: View {
                 }
             })
             .drawingGroup()
+            .padding(.vertical, Constants.itemsSpacing)
         }
-        .defaultRoundedBackground(with: Colors.Background.action, horizontalPadding: Constants.backgroundHorizontalPadding)
+        .defaultRoundedBackground(with: Colors.Background.action, verticalPadding: .zero, horizontalPadding: Constants.backgroundHorizontalPadding)
     }
 }
 

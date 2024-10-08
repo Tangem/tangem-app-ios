@@ -9,53 +9,65 @@
 import SwiftUI
 
 enum Fonts {
-    enum Regular {
-        static let largeTitle: Font = FeatureProvider.isAvailable(.dynamicFonts) ? DynamicFonts.largeTitle : StaticFonts.largeTitle
+    struct RegularFont {
+        let isDynamic: () -> Bool
 
-        static let title1: Font = FeatureProvider.isAvailable(.dynamicFonts) ? DynamicFonts.title1 : StaticFonts.title1
+        var largeTitle: Font { isDynamic() ? DynamicFonts.largeTitle : StaticFonts.largeTitle }
 
-        static let title2: Font = FeatureProvider.isAvailable(.dynamicFonts) ? DynamicFonts.title2 : StaticFonts.title2
+        var title1: Font { isDynamic() ? DynamicFonts.title1 : StaticFonts.title1 }
 
-        static let title3: Font = FeatureProvider.isAvailable(.dynamicFonts) ? DynamicFonts.title3 : StaticFonts.title3
+        var title2: Font { isDynamic() ? DynamicFonts.title2 : StaticFonts.title2 }
 
-        static let headline: Font = FeatureProvider.isAvailable(.dynamicFonts) ? DynamicFonts.headline : StaticFonts.headline
+        var title3: Font { isDynamic() ? DynamicFonts.title3 : StaticFonts.title3 }
 
-        static let body: Font = FeatureProvider.isAvailable(.dynamicFonts) ? DynamicFonts.body : StaticFonts.body
+        var headline: Font { isDynamic() ? DynamicFonts.headline : StaticFonts.headline }
 
-        static let callout: Font = FeatureProvider.isAvailable(.dynamicFonts) ? DynamicFonts.callout : StaticFonts.callout
+        var body: Font { isDynamic() ? DynamicFonts.body : StaticFonts.body }
 
-        static let subheadline: Font = FeatureProvider.isAvailable(.dynamicFonts) ? DynamicFonts.subheadline : StaticFonts.subheadline
+        var callout: Font { isDynamic() ? DynamicFonts.callout : StaticFonts.callout }
 
-        static let footnote: Font = FeatureProvider.isAvailable(.dynamicFonts) ? DynamicFonts.footnote : StaticFonts.footnote
+        var subheadline: Font { isDynamic() ? DynamicFonts.subheadline : StaticFonts.subheadline }
 
-        static let caption1: Font = FeatureProvider.isAvailable(.dynamicFonts) ? DynamicFonts.caption1 : StaticFonts.caption1
+        var footnote: Font { isDynamic() ? DynamicFonts.footnote : StaticFonts.footnote }
 
-        static let caption2: Font = FeatureProvider.isAvailable(.dynamicFonts) ? DynamicFonts.caption2 : StaticFonts.caption2
+        var caption1: Font { isDynamic() ? DynamicFonts.caption1 : StaticFonts.caption1 }
+
+        var caption2: Font { isDynamic() ? DynamicFonts.caption2 : StaticFonts.caption2 }
     }
 
-    enum Bold {
-        static let largeTitle: Font = FeatureProvider.isAvailable(.dynamicFonts) ? DynamicFonts.largeTitleBold : StaticFonts.largeTitleBold
+    struct BoldFont {
+        let isDynamic: () -> Bool
 
-        static let title1: Font = FeatureProvider.isAvailable(.dynamicFonts) ? DynamicFonts.title1Bold : StaticFonts.title1Bold
+        var largeTitle: Font { isDynamic() ? DynamicFonts.largeTitleBold : StaticFonts.largeTitleBold }
 
-        static let title2: Font = FeatureProvider.isAvailable(.dynamicFonts) ? DynamicFonts.title2Bold : StaticFonts.title2Bold
+        var title1: Font { isDynamic() ? DynamicFonts.title1Bold : StaticFonts.title1Bold }
 
-        static let title3: Font = FeatureProvider.isAvailable(.dynamicFonts) ? DynamicFonts.title3Bold : StaticFonts.title3Bold
+        var title2: Font { isDynamic() ? DynamicFonts.title2Bold : StaticFonts.title2Bold }
 
-        static let headline = FeatureProvider.isAvailable(.dynamicFonts) ? DynamicFonts.headline : StaticFonts.headline
+        var title3: Font { isDynamic() ? DynamicFonts.title3Bold : StaticFonts.title3Bold }
 
-        static let body: Font = FeatureProvider.isAvailable(.dynamicFonts) ? DynamicFonts.bodySemibold : StaticFonts.bodySemibold
+        var headline: Font { isDynamic() ? DynamicFonts.headline : StaticFonts.headline }
 
-        static let callout: Font = FeatureProvider.isAvailable(.dynamicFonts) ? DynamicFonts.calloutMedium : StaticFonts.calloutMedium
+        var body: Font { isDynamic() ? DynamicFonts.bodySemibold : StaticFonts.bodySemibold }
 
-        static let subheadline: Font = FeatureProvider.isAvailable(.dynamicFonts) ? DynamicFonts.subheadlineMedium : StaticFonts.subheadlineMedium
+        var callout: Font { isDynamic() ? DynamicFonts.calloutMedium : StaticFonts.calloutMedium }
 
-        static let footnote: Font = FeatureProvider.isAvailable(.dynamicFonts) ? DynamicFonts.footnoteSemibold : StaticFonts.footnoteSemibold
+        var subheadline: Font { isDynamic() ? DynamicFonts.subheadlineMedium : StaticFonts.subheadlineMedium }
 
-        static let caption1: Font = FeatureProvider.isAvailable(.dynamicFonts) ? DynamicFonts.caption1Medium : StaticFonts.caption1Medium
+        var footnote: Font { isDynamic() ? DynamicFonts.footnoteSemibold : StaticFonts.footnoteSemibold }
 
-        static let caption2: Font = FeatureProvider.isAvailable(.dynamicFonts) ? DynamicFonts.caption2Semibold : StaticFonts.caption2Semibold
+        var caption1: Font { isDynamic() ? DynamicFonts.caption1Medium : StaticFonts.caption1Medium }
+
+        var caption2: Font { isDynamic() ? DynamicFonts.caption2Semibold : StaticFonts.caption2Semibold }
     }
+
+    static let Bold = BoldFont(isDynamic: { FeatureProvider.isAvailable(.dynamicFonts) })
+
+    static let BoldStatic = BoldFont(isDynamic: { false })
+
+    static let Regular = RegularFont(isDynamic: { FeatureProvider.isAvailable(.dynamicFonts) })
+
+    static let RegularStatic = RegularFont(isDynamic: { false })
 }
 
 private enum StaticFonts {

@@ -14,7 +14,8 @@ struct TokenMarketsDetailsView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.mainWindowSize) private var mainWindowSize
 
-    @State private var isNavigationBarShadowLineViewVisible = false
+    @State private var headerHeight: CGFloat = .zero
+    @State private var isListContentObscured = false
 
     private var isDarkColorScheme: Bool { colorScheme == .dark }
     private var defaultBackgroundColor: Color { isDarkColorScheme ? Colors.Background.primary : Colors.Background.secondary }
@@ -40,26 +41,12 @@ struct TokenMarketsDetailsView: View {
 
     @ViewBuilder
     private var rootView: some View {
-        let content = VStack(spacing: 0.0) {
-            navigationBar
-
+        ZStack {
             scrollView
-        }
 
-        if #unavailable(iOS 17.0), viewModel.isMarketsSheetStyle {
-            // On iOS 16 and below, UIKit will always allocate a new instance of the `UINavigationBar` instance when push
-            // navigation is performed in other navigation controller(s) in the application (on the main screen, for example).
-            // This will happen asynchronously, after a couple of seconds after the navigation event in the other navigation controller(s).
-            // Therefore, we left with two options:
-            // - Perform swizzling in `UINavigationController` and manually hide that new navigation bar.
-            // - Hiding navigation bar using native `UINavigationController.setNavigationBarHidden(_:animated:)` from UIKit
-            //   and `navigationBarHidden(_:)` from SwiftUI, which in turn will break the swipe-to-pop gesture.
-            content
-                .navigationBarHidden(true)
-        } else {
-            content
-                .navigationBarTitleDisplayMode(.inline)
+            navigationBar
         }
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     @ViewBuilder
@@ -74,7 +61,7 @@ struct TokenMarketsDetailsView: View {
                         lineLimit: 1,
                         minimumScaleFactor: 0.6
                     ),
-                    backgroundColor: .clear, // Controlled by the `background` modifier in the body
+                    backgroundColor: .clear, // Controlled by the `background` modifier in the view's body and `background` modifier below
                     height: 64.0,
                     alignment: .bottom
                 ),
@@ -88,13 +75,16 @@ struct TokenMarketsDetailsView: View {
                     )
                 }
             )
-            .overlay(alignment: .bottom) {
-                Separator(
-                    height: .minimal,
-                    color: Colors.Stroke.primary.opacity(viewModel.overlayContentHidingProgress)
+            .background(
+                MarketsNavigationBarBackgroundView(
+                    backdropViewColor: overlayContentHidingBackgroundColor,
+                    overlayContentHidingProgress: viewModel.overlayContentHidingProgress,
+                    isNavigationBarBackgroundBackdropViewHidden: viewModel.isNavigationBarBackgroundBackdropViewHidden,
+                    isListContentObscured: isListContentObscured
                 )
-                .hidden(!isNavigationBarShadowLineViewVisible)
-            }
+            )
+            .readGeometry(\.size.height, bindTo: $headerHeight)
+            .infinityFrame(axis: .vertical, alignment: .top)
         }
     }
 
@@ -102,6 +92,11 @@ struct TokenMarketsDetailsView: View {
     private var scrollView: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .center, spacing: 16) {
+                // Using plain old overlay + dummy `Color.clear` spacer in the scroll view due to the buggy
+                // `safeAreaInset(edge:alignment:spacing:content:)` iOS 15+ API which has both layout and touch-handling issues
+                Color.clear
+                    .frame(height: headerHeight)
+
                 Group {
                     header
 
@@ -131,7 +126,7 @@ struct TokenMarketsDetailsView: View {
             .if(viewModel.isMarketsSheetStyle) { view in
                 view
                     .readContentOffset(inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName)) { contentOffset in
-                        isNavigationBarShadowLineViewVisible = contentOffset.y > Constants.scrollViewContentTopInset
+                        isListContentObscured = contentOffset.y > Constants.scrollViewContentTopInset
                     }
             }
         }
@@ -195,6 +190,7 @@ struct TokenMarketsDetailsView: View {
             marketPriceIntervalType: $viewModel.selectedPriceChangeIntervalType,
             options: viewModel.priceChangeIntervalOptions,
             shouldStretchToFill: true,
+            isDisabled: viewModel.isLoading && !viewModel.allDataLoadFailed,
             style: .init(textVerticalPadding: 4),
             titleFactory: { $0.tokenDetailsNameLocalized }
         )
