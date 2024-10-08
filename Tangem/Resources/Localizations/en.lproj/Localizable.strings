@@ -762,9 +762,9 @@
 "swap_promo_text" = "Exchange more tokens at better rates directly in your wallet.";
 "swap_promo_title" = "New Swap Provider Available!";
 "swapping_alert_cex_description" = "The amount includes:\n• service provider's fee\n• network fee for sending %@ from the exchange back to the user's address.";
-"swapping_alert_cex_description_with_slippage" = "The amount includes:\n• service provider's fee\n• network fee for sending %1$@ from the exchange back to the user's address. \n\nProvider slippage is up to %2$@ \n At maximum slippage, the amount to be received will be %3$@";
+"swapping_alert_cex_description_with_slippage" = "The amount includes:\n• service provider's fee\n• network fee for sending %1$@ from the exchange back to the user's address. \n\nProvider slippage is up to %2$@";
 "swapping_alert_dex_description" = "The amount includes the service provider's fee.";
-"swapping_alert_dex_description_with_slippage" = "The amount includes the service provider's fee. \n\nProvider slippage is up to %1$@ \n At maximum slippage, the amount to be received will be %2$@";
+"swapping_alert_dex_description_with_slippage" = "The amount includes the service provider's fee. \n\nProvider slippage is up to %1$@";
 "swapping_alert_title" = "Fees";
 "swapping_approve_information_text" = "All decentralized exchanges require approvals to prevent smart contracts from accessing your wallet without your permission. By design, smart contracts can't access your tokens unless you approve. By \"unlocking\" your tokens, you authorize the 1-inch smart contract to spend them. The network's miners receive a gas fee (paid by you) to record this action on the blockchain. You can swap your token after giving approval.";
 "swapping_approve_information_title" = "Approve";

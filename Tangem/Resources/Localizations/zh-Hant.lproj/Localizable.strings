@@ -762,9 +762,9 @@
 "swap_promo_text" = "Exchange more tokens at better rates directly in your wallet.";
 "swap_promo_title" = "New Swap Provider Available!";
 "swapping_alert_cex_description" = "The amount includes:\n• service provider's fee\n• network fee for sending %@ from the exchange back to the user's address.";
-"swapping_alert_cex_description_with_slippage" = "The amount includes:\n• service provider's fee\n• network fee for sending %1$@ from the exchange back to the user's address. \n\nProvider slippage is up to %2$@ \n At maximum slippage, the amount to be received will be %3$@";
+"swapping_alert_cex_description_with_slippage" = "The amount includes:\n• service provider's fee\n• network fee for sending %1$@ from the exchange back to the user's address. \n\nProvider slippage is up to %2$@";
 "swapping_alert_dex_description" = "The amount includes the service provider's fee.";
-"swapping_alert_dex_description_with_slippage" = "The amount includes the service provider's fee. \n\nProvider slippage is up to %1$@ \n At maximum slippage, the amount to be received will be %2$@";
+"swapping_alert_dex_description_with_slippage" = "The amount includes the service provider's fee. \n\nProvider slippage is up to %1$@";
 "swapping_alert_title" = "Fees";
 "swapping_approve_information_text" = "批准被視為所有去中心化交易所的行業標準，並保護您的錢包在未經您許可的情況下不被智能合約訪問。按照設計，智能合約無法訪問您的代幣，除非您從您的終端批准訪問。通過“解鎖”您的代幣，您將獲得 1inch 智能合約使用您的資產的權限。網絡的礦工將獲得Gas Fee（由您支付）作為補償，以在區塊鏈上記錄此操作。一旦獲得許可，您就可以交易您的代幣。";
 "swapping_approve_information_title" = "批准";

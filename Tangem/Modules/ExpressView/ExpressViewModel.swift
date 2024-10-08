@@ -243,9 +243,9 @@ private extension ExpressViewModel {
         _ formattedAmountAfterSlippage: String
     ) -> String {
         if case .unknown = Provider(rawValue: providerName) {
-            return Localization.swappingAlertCexDescriptionWithoutSlippage(tokenItemSymbol)
+            return Localization.swappingAlertCexDescription(tokenItemSymbol)
         } else {
-            return Localization.swappingAlertCexDescription(tokenItemSymbol, "\(slippage)%", formattedAmountAfterSlippage)
+            return Localization.swappingAlertCexDescriptionWithSlippage(tokenItemSymbol, "\(slippage)%")
         }
     }
 
@@ -258,9 +258,9 @@ private extension ExpressViewModel {
     ) -> String {
         let swappingAlertDexDescription: String = {
             if case .unknown = Provider(rawValue: providerName) {
-                Localization.swappingAlertDexDescriptionWithoutSlippage
+                Localization.swappingAlertDexDescription
             } else {
-                Localization.swappingAlertDexDescription("\(slippage)%", formattedAmountAfterSlippage)
+                Localization.swappingAlertDexDescriptionWithSlippage("\(slippage)%", formattedAmountAfterSlippage)
             }
         }()
 
