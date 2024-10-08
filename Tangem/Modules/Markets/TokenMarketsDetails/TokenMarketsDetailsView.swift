@@ -41,26 +41,12 @@ struct TokenMarketsDetailsView: View {
 
     @ViewBuilder
     private var rootView: some View {
-        let content = ZStack {
+        ZStack {
             scrollView
 
             navigationBar
         }
-
-        if #unavailable(iOS 17.0), viewModel.isMarketsSheetStyle {
-            // On iOS 16 and below, UIKit will always allocate a new instance of the `UINavigationBar` instance when push
-            // navigation is performed in other navigation controller(s) in the application (on the main screen, for example).
-            // This will happen asynchronously, after a couple of seconds after the navigation event in the other navigation controller(s).
-            // Therefore, we left with two options:
-            // - Perform swizzling in `UINavigationController` and manually hide that new navigation bar.
-            // - Hiding navigation bar using native `UINavigationController.setNavigationBarHidden(_:animated:)` from UIKit
-            //   and `navigationBarHidden(_:)` from SwiftUI, which in turn will break the swipe-to-pop gesture.
-            content
-                .navigationBarHidden(true)
-        } else {
-            content
-                .navigationBarTitleDisplayMode(.inline)
-        }
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     @ViewBuilder
