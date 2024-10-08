@@ -31,9 +31,8 @@ end
 def blockchain_sdk_pods
   # 'TangemWalletCore' dependency must be added via SPM
 
-  #pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :tag => 'develop-699'
+  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :tag => 'develop-699'
   #pod 'BlockchainSdk', :path => '../blockchain-sdk-swift'
-  pod 'BlockchainSdk', :path => '../../blockchain-sdk-swift'  # For git worktree users
 
   pod 'Solana.Swift', :git => 'https://github.com/tangem/Solana.Swift', :tag => '1.2.0-tangem11'
   #pod 'Solana.Swift', :path => '../Solana.Swift'
@@ -52,6 +51,7 @@ target 'Tangem' do
   tangem_sdk_pod
   
   # Pods for Tangem
+  pod 'Moya'
   pod 'WalletConnectSwiftV2', :git => 'https://github.com/WalletConnect/WalletConnectSwiftV2', :tag => '1.18.7'
   pod 'Kingfisher', '~> 7.11.0'
 
@@ -81,30 +81,36 @@ target 'Tangem' do
 
   target 'TangemTests' do
     inherit! :search_paths
+    # Pods for testing
   end
 
   target 'TangemUITests' do
+    # Pods for testing
   end
 end
 
 target 'TangemExpress' do 
   blockchain_sdk_pods
+  pod 'Moya'
 
   target 'TangemExpressTests' do
     inherit! :search_paths
+    # Pods for testing
   end
 end
 
 target 'TangemVisa' do
   blockchain_sdk_pods
+  pod 'Moya'
 
   target 'TangemVisaTests' do
-    inherit! :search_paths
+    blockchain_sdk_pods
   end
 end
 
 target 'TangemStaking' do
   blockchain_sdk_pods
+  pod 'Moya'
 
   target 'TangemStakingTests' do
     inherit! :search_paths
@@ -112,6 +118,7 @@ target 'TangemStaking' do
 end
 
 target 'TangemFoundation' do
+  pod 'Moya'
 
   target 'TangemFoundationTests' do
     inherit! :search_paths
@@ -212,15 +219,6 @@ post_install do |installer|
    "https://github.com/tangem/IcpKit.git",
    "IcpKit",
    { :kind => "exactVersion", :version => "0.1.2-tangem4" }
-  )
-
-  # `Moya` SPM package for `BlockchainSdk` pod
-  add_spm_package_to_target(
-    installer.pods_project,
-    "BlockchainSdk",
-    "https://github.com/Moya/Moya.git",
-    "Moya",
-    { :kind => "upToNextMajorVersion", :minimumVersion => "15.0.0" }
   )
 
   # `SwiftProtobuf` SPM package for `BinanceChain` pod
