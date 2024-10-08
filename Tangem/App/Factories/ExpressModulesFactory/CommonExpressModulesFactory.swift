@@ -159,7 +159,7 @@ private extension CommonExpressModulesFactory {
     var providerFormatter: ExpressProviderFormatter { .init(balanceFormatter: balanceFormatter) }
     var walletModelsManager: WalletModelsManager { userWalletModel.walletModelsManager }
     var userWalletId: String { userWalletModel.userWalletId.stringValue }
-    var signer: TransactionSigner { userWalletModel.signer }
+    var signer: TangemSigner { userWalletModel.signer }
     var logger: Logger { AppLog.shared }
     var analyticsLogger: ExpressAnalyticsLogger { CommonExpressAnalyticsLogger() }
 
