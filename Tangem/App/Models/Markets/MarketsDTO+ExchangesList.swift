@@ -10,6 +10,10 @@ import Foundation
 
 extension MarketsDTO {
     enum ExchangesList {}
+
+    typealias ExchangesRequest = MarketsDTO.ExchangesList.Request
+    typealias ExchangesResponse = MarketsDTO.ExchangesList.Response
+    typealias ExchangesListItemInfo = MarketsDTO.ExchangesList.ItemInfo
 }
 
 extension MarketsDTO.ExchangesList {
@@ -18,15 +22,15 @@ extension MarketsDTO.ExchangesList {
     }
 
     struct Response: Decodable {
-        let exchanges: [ExchangeListItemInfo]
+        let exchanges: [ItemInfo]
     }
-}
 
-struct ExchangeListItemInfo: Decodable {
-    let exchangeId: String
-    let name: String
-    let image: String?
-    let centralized: Bool
-    let volumeUsd: Decimal
-    let trustScore: MarketsExchangeTrustScore?
+    struct ItemInfo: Decodable {
+        let exchangeId: String
+        let name: String
+        let image: String?
+        let centralized: Bool
+        let volumeUsd: Decimal
+        let trustScore: MarketsExchangeTrustScore?
+    }
 }

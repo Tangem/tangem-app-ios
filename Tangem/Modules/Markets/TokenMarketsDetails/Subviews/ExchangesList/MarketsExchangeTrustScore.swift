@@ -34,25 +34,25 @@ enum MarketsExchangeTrustScore: Int, Decodable {
 
     var title: String {
         switch self {
-        case .risky: return Localization.marketsTokenDetailsExchangeTrustScoreRisky
-        case .caution: return Localization.marketsTokenDetailsExchangeTrustScoreCaution
-        case .trusted: return Localization.marketsTokenDetailsExchangeTrustScoreTrusted
+        case .risky: Localization.marketsTokenDetailsExchangeTrustScoreRisky
+        case .caution: Localization.marketsTokenDetailsExchangeTrustScoreCaution
+        case .trusted: Localization.marketsTokenDetailsExchangeTrustScoreTrusted
         }
     }
 
     var textColor: Color {
         switch self {
-        case .risky: return Colors.Text.warning
-        case .caution: return Colors.Text.attention
-        case .trusted: return Colors.Text.accent
+        case .risky: Colors.Text.warning
+        case .caution: Colors.Text.attention
+        case .trusted: Colors.Text.accent
         }
     }
 
     var backgroundColor: Color {
         switch self {
-        case .risky: return Colors.Icon.warning.opacity(0.1)
-        case .caution: return Colors.Icon.attention.opacity(0.1)
-        case .trusted: return Colors.Icon.accent.opacity(0.1)
+        case .risky: Colors.Icon.warning.opacity(0.1)
+        case .caution: Colors.Icon.attention.opacity(0.1)
+        case .trusted: Colors.Icon.accent.opacity(0.1)
         }
     }
 }

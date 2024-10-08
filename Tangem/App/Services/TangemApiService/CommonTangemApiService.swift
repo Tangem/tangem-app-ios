@@ -262,8 +262,8 @@ extension CommonTangemApiService: TangemApiService {
     }
 
     func loadTokenExchangesListDetails(
-        requestModel: MarketsDTO.ExchangesList.Request
-    ) async throws -> MarketsDTO.ExchangesList.Response {
+        requestModel: MarketsDTO.ExchangesRequest
+    ) async throws -> MarketsDTO.ExchangesResponse {
         return try await request(for: .tokenExchangesList(requestModel), decoder: snakeCaseJSONDecoder)
     }
 

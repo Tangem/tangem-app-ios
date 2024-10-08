@@ -9,7 +9,7 @@
 import Foundation
 
 struct MarketsExchangesListMapper {
-    func mapListToItemInfo(_ list: [ExchangeListItemInfo]) -> [MarketsTokenDetailsExchangeItemInfo] {
+    func mapListToItemInfo(_ list: [MarketsDTO.ExchangesListItemInfo]) -> [MarketsTokenDetailsExchangeItemInfo] {
         let notationFormatter = DefaultAmountNotationFormatter()
         let amountSuffixNotationFormatter: AmountNotationSuffixFormatter = .init(divisorsList: AmountNotationSuffixFormatter.Divisor.withHundredThousands)
         let formattingOptions = BalanceFormattingOptions(

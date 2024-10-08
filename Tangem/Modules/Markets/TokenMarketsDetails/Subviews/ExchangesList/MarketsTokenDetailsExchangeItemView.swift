@@ -13,40 +13,47 @@ struct MarketsTokenDetailsExchangeItemView: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            if let iconURL = info.iconURL {
-                IconView(
-                    url: iconURL,
-                    size: .init(bothDimensions: 36),
-                    cornerRadius: 18
-                )
-            } else {
-                SkeletonView()
-                    .frame(size: .init(bothDimensions: 36))
-                    .cornerRadiusContinuous(18)
-            }
+            icon
 
-            VStack(spacing: 2) {
-                HStack(alignment: .firstTextBaseline) {
-                    Text(info.name)
-                        .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
-
-                    Spacer()
-
-                    Text("\(info.formattedVolume)")
-                        .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
-                }
-
-                HStack(alignment: .firstTextBaseline) {
-                    Text(info.exchangeType.title)
-                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-
-                    Spacer()
-
-                    ExchangeTrustScoreView(trustScore: info.trustScore)
-                }
-            }
+            content
         }
         .padding(14)
+    }
+
+    @ViewBuilder
+    private var icon: some View {
+        if let iconURL = info.iconURL {
+            IconView(
+                url: iconURL,
+                size: .init(bothDimensions: 36),
+                cornerRadius: 18
+            )
+        } else {
+            SkeletonView()
+                .frame(size: .init(bothDimensions: 36))
+                .cornerRadiusContinuous(18)
+        }
+    }
+
+    private var content: some View {
+        VStack(spacing: 2) {
+            HStack(alignment: .firstTextBaseline) {
+                Text(info.name)
+                    .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                Text("\(info.formattedVolume)")
+                    .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
+            }
+
+            HStack(alignment: .firstTextBaseline) {
+                Text(info.exchangeType.title)
+                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                ExchangeTrustScoreView(trustScore: info.trustScore)
+            }
+        }
     }
 }
 

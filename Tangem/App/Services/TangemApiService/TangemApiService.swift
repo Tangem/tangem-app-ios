@@ -39,7 +39,7 @@ protocol TangemApiService: AnyObject, Initializable {
         requestModel: MarketsDTO.ChartsHistory.HistoryRequest
     ) async throws -> MarketsDTO.ChartsHistory.HistoryResponse
 
-    func loadTokenExchangesListDetails(requestModel: MarketsDTO.ExchangesList.Request) async throws -> MarketsDTO.ExchangesList.Response
+    func loadTokenExchangesListDetails(requestModel: MarketsDTO.ExchangesRequest) async throws -> MarketsDTO.ExchangesResponse
 
     // MARK: - User token list management
 
