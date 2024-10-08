@@ -13,7 +13,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>other</key>
-        <string>%li カード</string>
+        <string>%li デバイス</string>
       </dict>
     </dict>
     <key>common_days_no_param</key>
@@ -139,7 +139,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>other</key>
-        <string>%li ネットワークのアドレスを取得するために、カードを利用してください</string>
+        <string>%li ネットワークのアドレスを取得するために、カードまたはリングを利用してください</string>
       </dict>
     </dict>
   </dict>

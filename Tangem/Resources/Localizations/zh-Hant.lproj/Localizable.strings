@@ -127,6 +127,7 @@
 "common_now" = "Now";
 "common_ok" = "OK";
 "common_origin_card" = "主卡片";
+"common_origin_ring" = "Primary ring";
 "common_passphrase" = "Passphrase";
 "common_paste" = "Paste";
 "common_privacy_policy" = "Privacy Policy";
@@ -306,6 +307,7 @@
 "initial_message_change_access_code_body" = "要更改訪問密碼，請完全按照上圖所示連接手機和卡片";
 "initial_message_change_passcode_body" = "要更改密碼，請完全按照上圖所示連接手機和卡";
 "initial_message_create_wallet_body" = "要創建錢包，請完全按照上圖所示連接手機和卡";
+"initial_message_create_wallet_body_ring" = "To create the wallet tap the ring as shown above and do not remove until the end of the operation";
 "initial_message_purge_wallet_body" = "要重置為出廠設置，請完全按照上圖所示連接手機和卡片";
 "initial_message_reset_backup_card_header" = "Tap the card #%@ of the wallet";
 "initial_message_sign_body" = "要簽名，請完全按照上圖所示連接手機和卡";
@@ -457,9 +459,11 @@
 "onboarding_backup_exit_warning" = "備份過程已部分完成。你現在不能退出";
 "onboarding_bottom_sheet_passphrase_description" = "The passphrase is an advanced security feature that crypto wallets use. It adds an extra word or phrase of your own choosing to your already existing recovery phrase to unlock a brand-new set of addresses.";
 "onboarding_button_add_backup_card" = "添加備用卡";
+"onboarding_button_backup_card" = "Scan card";
 "onboarding_button_backup_card_format" = "掃描卡片 #%li";
 "onboarding_button_backup_now" = "立即備份";
 "onboarding_button_backup_origin" = "掃描主卡";
+"onboarding_button_backup_ring" = "Scan ring";
 "onboarding_button_continue_wallet" = "繼續至我的錢包";
 "onboarding_button_finalize_backup" = "完成備份過程";
 "onboarding_button_receive_crypto" = "接收貨幣";
@@ -497,10 +501,13 @@
 "onboarding_subtitle_scan_backup_card_format" = "準備編號為 %@ 的備份卡";
 "onboarding_subtitle_scan_primary" = "掃描主卡以啟動備份過程";
 "onboarding_subtitle_scan_primary_card_format" = "準備編號為 %@ 的主卡";
+"onboarding_subtitle_scan_ring" = "Prepare the ring and press the scan button below";
 "onboarding_subtitle_success_tangem_wallet_onboarding" = "您的錢包卡已配置完畢，可以使用了";
 "onboarding_subtitle_two_backup_cards" = "已添加至最大數量。完成備份過程";
 "onboarding_title" = "啟用卡片";
+"onboarding_title_backup_card" = "Backup card";
 "onboarding_title_backup_card_format" = "備份卡 #%li";
+"onboarding_title_backup_ring" = "Backup ring";
 "onboarding_title_no_backup_cards" = "沒有備用卡";
 "onboarding_title_notifications" = "Notifications";
 "onboarding_title_one_backup_card" = "添加了一張備用卡";
@@ -765,9 +772,9 @@
 "swap_promo_text" = "Exchange more tokens at better rates directly in your wallet.";
 "swap_promo_title" = "New Swap Provider Available!";
 "swapping_alert_cex_description" = "The amount includes:\n• service provider's fee\n• network fee for sending %@ from the exchange back to the user's address.";
-"swapping_alert_cex_description_with_slippage" = "The amount includes:\n• service provider's fee\n• network fee for sending %1$@ from the exchange back to the user's address. \n\nProvider slippage is up to %2$@ \n At maximum slippage, the amount to be received will be %3$@";
+"swapping_alert_cex_description_with_slippage" = "The amount includes:\n• service provider's fee\n• network fee for sending %1$@ from the exchange back to the user's address. \n\nProvider slippage is up to %2$@";
 "swapping_alert_dex_description" = "The amount includes the service provider's fee.";
-"swapping_alert_dex_description_with_slippage" = "The amount includes the service provider's fee. \n\nProvider slippage is up to %1$@ \n At maximum slippage, the amount to be received will be %2$@";
+"swapping_alert_dex_description_with_slippage" = "The amount includes the service provider's fee. \n\nProvider slippage is up to %@";
 "swapping_alert_title" = "Fees";
 "swapping_approve_information_text" = "批准被視為所有去中心化交易所的行業標準，並保護您的錢包在未經您許可的情況下不被智能合約訪問。按照設計，智能合約無法訪問您的代幣，除非您從您的終端批准訪問。通過“解鎖”您的代幣，您將獲得 1inch 智能合約使用您的資產的權限。網絡的礦工將獲得Gas Fee（由您支付）作為補償，以在區塊鏈上記錄此操作。一旦獲得許可，您就可以交易您的代幣。";
 "swapping_approve_information_title" = "批准";
@@ -827,7 +834,7 @@
 "twins_recreate_toolbar" = "Tangem Twin";
 "twins_recreate_warning" = "這個動作是不可逆的。您將無法訪問舊錢包";
 "twins_scan_twin_with_number" = "將您的 iPhone 靠近編號為 %@ 的雙胞胎卡";
-"unlock_wallet_description_full" = "Use %@ or scan a card/ring to have an access to your wallet";
+"unlock_wallet_description_full" = "Use %@ or scan a card/ring to have access to your wallet";
 "user_push_notification_agreement_argument_one" = "Stay up to date with the latest features and news";
 "user_push_notification_agreement_argument_two" = "Be the first to know about new promotions";
 "user_push_notification_agreement_header" = "Would you like to use\nPush-notifications?";

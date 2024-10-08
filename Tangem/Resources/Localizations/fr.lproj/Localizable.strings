@@ -127,6 +127,7 @@
 "common_now" = "Maintenant";
 "common_ok" = "OK";
 "common_origin_card" = "Carte principale";
+"common_origin_ring" = "Primary ring";
 "common_passphrase" = "Passphrase";
 "common_paste" = "Coller";
 "common_privacy_policy" = "Politique de confidentialité";
@@ -306,6 +307,7 @@
 "initial_message_change_access_code_body" = "Touchez, pour modifier le code d'accès";
 "initial_message_change_passcode_body" = "Touchez, pour modifier le mot de passe";
 "initial_message_create_wallet_body" = "Pour créer le portefeuille, appuyez sur la carte comme indiqué ci-dessus et ne la retirez pas jusqu'à la fin de l'opération";
+"initial_message_create_wallet_body_ring" = "To create the wallet tap the ring as shown above and do not remove until the end of the operation";
 "initial_message_purge_wallet_body" = "Pour réinitialiser aux paramètres d'usine, appuyez sur la carte comme indiqué ci-dessus et ne la retirez pas jusqu'à la fin de l'opération";
 "initial_message_reset_backup_card_header" = "Appuyez sur la carte n°%@ du portefeuille";
 "initial_message_sign_body" = "Pour signer, appuyez sur la carte comme indiqué ci-dessus et ne la retirez pas jusqu'à la fin de l'opération";
@@ -344,7 +346,7 @@
 "manage_tokens_wallet_selector_title" = "Choisissez un portefeuille";
 "manage_tokens_wallet_support_only_one_network_title" = "Le portefeuille ne prend pas en charge plus d'un réseau";
 "markets_add_to_my_portfolio_description" = "Pour acheter, échanger ou recevoir cet actif, ajoutez-le à votre portefeuille";
-"markets_add_to_my_portfolio_unavailable_description" = "Cet actif n'est pas disponible";
+"markets_add_to_my_portfolio_unavailable_description" = "Cet actif n'est plus pris en charge dans le portefeuille";
 "markets_add_to_my_portfolio_unavailable_for_wallet_description" = "This asset is not available for this wallet";
 "markets_add_to_portfolio_button" = "Ajouter au portfolio";
 "markets_add_token" = "Ajoutez un jeton";
@@ -457,9 +459,11 @@
 "onboarding_backup_exit_warning" = "Le processus de sauvegarde est partiellement terminé. Vous ne pouvez pas le quitter maintenant.";
 "onboarding_bottom_sheet_passphrase_description" = "La phrase secrète est une fonctionnalité de sécurité avancée utilisée par les portefeuilles cryptographiques. Il ajoute un mot ou une phrase supplémentaire de votre choix à votre phrase de récupération déjà existante pour débloquer un tout nouvel ensemble d'adresses.";
 "onboarding_button_add_backup_card" = "Ajouter une carte de sauvegarde";
+"onboarding_button_backup_card" = "Scan card";
 "onboarding_button_backup_card_format" = "Scannez la carte n°%li";
 "onboarding_button_backup_now" = "Sauvegarder maintenant";
 "onboarding_button_backup_origin" = "Scannez la carte principale";
+"onboarding_button_backup_ring" = "Scan ring";
 "onboarding_button_continue_wallet" = "Continuer vers mon portefeuille";
 "onboarding_button_finalize_backup" = "Finaliser la sauvegarde";
 "onboarding_button_receive_crypto" = "Recevoir des crypto-monnaies";
@@ -497,10 +501,13 @@
 "onboarding_subtitle_scan_backup_card_format" = "Préparez la carte de sauvegarde avec le numéro %@";
 "onboarding_subtitle_scan_primary" = "Scannez la carte principale pour démarrer le processus de sauvegarde.";
 "onboarding_subtitle_scan_primary_card_format" = "Préparez la carte principale avec le numéro %@";
+"onboarding_subtitle_scan_ring" = "Prepare the ring and press the scan button below";
 "onboarding_subtitle_success_tangem_wallet_onboarding" = "Votre carte de portefeuille est configurée et prête à l'emploi.";
 "onboarding_subtitle_two_backup_cards" = "Nombre maximum de cartes ajoutées. Finalisez le processus de sauvegarde.";
 "onboarding_title" = "Activation de la carte";
+"onboarding_title_backup_card" = "Backup card";
 "onboarding_title_backup_card_format" = "Carte de sauvegarde n°%li";
+"onboarding_title_backup_ring" = "Backup ring";
 "onboarding_title_no_backup_cards" = "Aucune carte de sauvegarde";
 "onboarding_title_notifications" = "Notifications";
 "onboarding_title_one_backup_card" = "Une carte de sauvegarde ajoutée";
@@ -765,9 +772,9 @@
 "swap_promo_text" = "Échangez plus de jetons à de meilleurs taux directement dans votre portefeuille.";
 "swap_promo_title" = "Nouveau fournisseur d'échange disponible !";
 "swapping_alert_cex_description" = "Le montant comprend :\n• les frais du fournisseur de services\n• les frais de réseau pour l'envoi de %@ depuis l'échange vers l'adresse de l'utilisateur.";
-"swapping_alert_cex_description_with_slippage" = "The amount includes:\n• service provider's fee\n• network fee for sending %1$@ from the exchange back to the user's address. \n\nProvider slippage is up to %2$@ \n At maximum slippage, the amount to be received will be %3$@";
+"swapping_alert_cex_description_with_slippage" = "The amount includes:\n• service provider's fee\n• network fee for sending %1$@ from the exchange back to the user's address. \n\nProvider slippage is up to %2$@";
 "swapping_alert_dex_description" = "Le montant comprend les frais du fournisseur de services.";
-"swapping_alert_dex_description_with_slippage" = "The amount includes the service provider's fee. \n\nProvider slippage is up to %1$@ \n At maximum slippage, the amount to be received will be %2$@";
+"swapping_alert_dex_description_with_slippage" = "The amount includes the service provider's fee. \n\nProvider slippage is up to %@";
 "swapping_alert_title" = "Frais";
 "swapping_approve_information_text" = "Tous les échanges décentralisés nécessitent des approbations pour empêcher les smart contracts d'accéder à votre portefeuille sans votre permission. Par conception, les smart contracts ne peuvent pas accéder à vos jetons sans votre approbation. En « déverrouillant » vos jetons, vous autorisez le smart contract 1-inch à les dépenser. Les mineurs du réseau reçoivent des frais de gaz (payés par vous) pour enregistrer cette action sur la blockchain. Vous pouvez échanger votre jeton après avoir donné votre approbation.";
 "swapping_approve_information_title" = "Approuver";

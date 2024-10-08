@@ -18,6 +18,14 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
     @Published var thirdCardSettings: AnimatedViewSettings = .zero
     @Published var canDisplayCardImage: Bool = false
 
+    var primaryLabel: String {
+        if backupService.isPrimaryRing {
+            Localization.commonOriginRing
+        } else {
+            Localization.commonOriginCard
+        }
+    }
+
     private var stackCalculator: StackCalculator = .init()
     private var fanStackCalculator: FanStackCalculator = .init()
     private var accessCode: String?
@@ -44,8 +52,10 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
             return ""
         case .backupCards:
             switch backupServiceState {
-            case .finalizingPrimaryCard: return Localization.commonOriginCard
-            case .finalizingBackupCard(let index): return Localization.onboardingTitleBackupCardFormat(index)
+            case .finalizingPrimaryCard: return backupService.isPrimaryRing ? Localization.commonOriginRing : Localization.commonOriginCard
+            case .finalizingBackupCard:
+                return backupService.isFinalizingRing ? Localization.onboardingTitleBackupRing :
+                    Localization.onboardingTitleBackupCard
             default: break
             }
         default: break
@@ -70,6 +80,10 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
         case .backupCards:
             switch backupServiceState {
             case .finalizingPrimaryCard:
+                if backupService.isFinalizingRing {
+                    return Localization.onboardingSubtitleScanRing
+                }
+
                 guard let primaryCardId = backupService.primaryCard?.cardId,
                       let cardIdFormatted = CardIdFormatter(style: cardIdDisplayFormat).string(from: primaryCardId) else {
                     return super.subtitle
@@ -77,6 +91,10 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
                 return Localization.onboardingSubtitleScanPrimaryCardFormat(cardIdFormatted)
             case .finalizingBackupCard(let index):
+                if backupService.isFinalizingRing {
+                    return Localization.onboardingSubtitleScanRing
+                }
+
                 let backupCardIds = backupService.backupCards.map { $0.cardId }
                 let cardId = backupCardIds[index - 1]
                 guard let cardIdFormatted = CardIdFormatter(style: cardIdDisplayFormat).string(from: cardId) else {
@@ -112,12 +130,6 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
         switch currentStep {
         case .selectBackupCards:
             return Localization.onboardingButtonAddBackupCard
-        case .backupCards:
-            switch backupServiceState {
-            case .finalizingPrimaryCard: return Localization.onboardingButtonBackupOrigin
-            case .finalizingBackupCard(let index): return Localization.onboardingButtonBackupCardFormat(index)
-            default: break
-            }
         case .success:
             return input.isStandalone ? Localization.commonContinue : super.mainButtonTitle
         default: break
@@ -145,8 +157,8 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
         switch currentStep {
         case .backupCards:
             switch backupServiceState {
-            case .finalizingPrimaryCard: return Localization.onboardingButtonBackupOrigin
-            case .finalizingBackupCard(let index): return Localization.onboardingButtonBackupCardFormat(index)
+            case .finalizingPrimaryCard, .finalizingBackupCard:
+                return backupService.isFinalizingRing ? Localization.onboardingButtonBackupRing : Localization.onboardingButtonBackupCard
             default: break
             }
         case .success:
@@ -730,11 +742,7 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
         let ringUtil = RingUtil()
 
         // Ring onboarding. Set custom image for ring
-        if let finalizingBatchId = backupService.finalizingBatchId,
-           RingUtil().isRing(batchId: finalizingBatchId) {
-            backupService.config.style.scanTagImage = .image(uiImage: Assets.ringShapeScan.uiImage, verticalOffset: 0)
-            backupService.config.cardIdDisplayFormat = .none
-        }
+        backupService.config.setupForProduct(backupService.isFinalizingRing ? .ring : .card)
 
         let containsRing = backupService.allBatchIds.contains(where: { ringUtil.isRing(batchId: $0) })
 
@@ -747,8 +755,7 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
                         guard let self else { return }
 
                         // Ring onboarding. Reset to defaults
-                        backupService.config.style.scanTagImage = .genericCard
-                        backupService.config.cardIdDisplayFormat = .full
+                        backupService.config.setupForProduct(.any)
 
                         switch result {
                         case .success(let updatedCard):
@@ -1025,8 +1032,25 @@ private extension BackupService {
         [primaryCard?.batchId].compactMap { $0 } + backupCards.compactMap { $0.batchId }
     }
 
+    var isFinalizingRing: Bool {
+        if let finalizingBatchId,
+           RingUtil().isRing(batchId: finalizingBatchId) {
+            return true
+        }
+
+        return false
+    }
+
+    var isPrimaryRing: Bool {
+        if let primaryCardBatchId = primaryCard?.batchId {
+            return RingUtil().isRing(batchId: primaryCardBatchId)
+        }
+
+        return false
+    }
+
     // for ring onboarding
-    var finalizingBatchId: String? {
+    private var finalizingBatchId: String? {
         if currentState == .finalizingPrimaryCard,
            let batchId = primaryCard?.batchId {
             return batchId

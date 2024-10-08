@@ -110,7 +110,7 @@
 "common_generate_addresses" = "Adressen abrufen";
 "common_go_to_provider" = "Zum Anbieter gehen";
 "common_go_to_token" = "Zum Token";
-"common_hour" = "hour";
+"common_hour" = "Stunde";
 "common_import" = "Importieren";
 "common_in_progress" = "In Arbeit";
 "common_later" = "Später";
@@ -118,7 +118,7 @@
 "common_left" = "%1$@ übrig";
 "common_locked" = "Gesperrt";
 "common_main_network" = "Hauptnetz";
-"common_month" = "month";
+"common_month" = "Monat";
 "common_network_fee_title" = "Netzgebühr";
 "common_network_fee_warning_content" = "Der überwiesene Betrag wird um %1$@ (%2$@) gekürzt, um die gewählte Gebührenhöhe zu decken.";
 "common_next" = "Weiter";
@@ -127,6 +127,7 @@
 "common_now" = "Jetzt";
 "common_ok" = "OK";
 "common_origin_card" = "Hauptkarte";
+"common_origin_ring" = "Primärring";
 "common_passphrase" = "Passphrase";
 "common_paste" = "Einfügen";
 "common_privacy_policy" = "Datenschutzbestimmungen";
@@ -169,7 +170,7 @@
 "common_unreachable" = "Nicht erreichbar";
 "common_unstake" = "staking beenden";
 "common_warning" = "Warnung";
-"common_week" = "week";
+"common_week" = "Woche";
 "common_yes" = "Ja";
 "contract_address_copied_message" = "Vertragsadresse kopiert!";
 "currency_subtitle_expanded" = "Verfügbare Netzwerke";
@@ -290,7 +291,7 @@
 "feedback_subject_support_tangem" = "Feedback zu Tangem";
 "feedback_subject_tx_failed" = "Eine Transaktion kann nicht gesendet werden";
 "feedback_subject_tx_push_failed" = "Transaktion kann nicht gepusht werden";
-"feedback_token_description_error" = "Coin description error";
+"feedback_token_description_error" = "Fehler in der Coinbeschreibung";
 "give_permission_current_transaction" = "Nur diese";
 "give_permission_fee_footer" = "Das Netzwerk erhebt eine Token-Genehmigungsgebühr, um zu überprüfen, ob Sie die Verwendung Ihres Tokens für den Swap genehmigen.";
 "give_permission_policy_type_footer" = "Gib das Genehmigungslimit für das ausgewählte Token an";
@@ -306,6 +307,7 @@
 "initial_message_change_access_code_body" = "Um den Zugangscode zu ändern, halte die Karte wie oben gezeigt an das Gerät und entferne sie erst am Ende des Vorgangs.";
 "initial_message_change_passcode_body" = "Um den Passcode zu ändern, halte die Karte wie oben gezeigt an das Gerät und entferne sie erst am Ende des Vorgangs.";
 "initial_message_create_wallet_body" = "Um die Wallet zu erstellen, halte die Karte wie oben gezeigt an das Gerät und entferne sie erst am Ende des Vorgangs.";
+"initial_message_create_wallet_body_ring" = "Um die Wallet zu erstellen, tippe auf den Ring wie oben gezeigt und entferne ihn erst am Ende des Vorgangs";
 "initial_message_purge_wallet_body" = "Um die Karte auf die Werkseinstellungen zurückzusetzen, halte die Karte wie oben gezeigt an und entferne sie erst am Ende des Vorgangs.";
 "initial_message_reset_backup_card_header" = "Halte deine Karte Nr. %@ des Sets an dein Smartphone";
 "initial_message_sign_body" = "Zum Signieren, halte die Karte wie oben gezeigt an und entfernen sie erst am Ende des Vorgangs.";
@@ -344,7 +346,7 @@
 "manage_tokens_wallet_selector_title" = "Wallet auswählen";
 "manage_tokens_wallet_support_only_one_network_title" = "Das Wallet unterstützt nicht mehr als ein Netzwerk";
 "markets_add_to_my_portfolio_description" = "Um dieses Asset zu kaufen, zu tauschen oder zu erhalten, füge diesen Deinem Portfolio hinzu";
-"markets_add_to_my_portfolio_unavailable_description" = "Dieses Asset ist nicht verfügbar";
+"markets_add_to_my_portfolio_unavailable_description" = "Dieses Asset wird derzeit in der Wallet nicht unterstützt.";
 "markets_add_to_my_portfolio_unavailable_for_wallet_description" = "Dieses Asset ist für dieses Wallet nicht verfügbar";
 "markets_add_to_portfolio_button" = "Zum Portfolio hinzufügen";
 "markets_add_token" = "Hinzufügen";
@@ -457,9 +459,11 @@
 "onboarding_backup_exit_warning" = "Der Sicherungsvorgang ist teilweise abgeschlossen. Du kannst ihn jetzt nicht beenden.";
 "onboarding_bottom_sheet_passphrase_description" = "Die Passphrase ist eine fortschrittliche Sicherheitsfunktion, die von Krypto-Wallets verwendet wird. Sie fügt ein zusätzliches Wort oder eine Phrase deiner Wahl zu der bereits bestehenden Wiederherstellungsphrase hinzu, um einen brandneuen Satz von Adressen zu erzeugen.";
 "onboarding_button_add_backup_card" = "Hinzufügen einer Sicherungskarte";
+"onboarding_button_backup_card" = "Karte scannen";
 "onboarding_button_backup_card_format" = "Scanne die Karte Nr. %li";
 "onboarding_button_backup_now" = "Jetzt sichern";
 "onboarding_button_backup_origin" = "Scannen der Hauptkarte";
+"onboarding_button_backup_ring" = "Ring scannen";
 "onboarding_button_continue_wallet" = "Weiter zu meiner Wallet";
 "onboarding_button_finalize_backup" = "Backup abschließen";
 "onboarding_button_receive_crypto" = "Krypto empfangen";
@@ -497,10 +501,13 @@
 "onboarding_subtitle_scan_backup_card_format" = "Bereite die Sicherungskarte mit der Nummer %@ vor.";
 "onboarding_subtitle_scan_primary" = "Scanne die primär-Karte, um den Sicherungsvorgang zu starten.";
 "onboarding_subtitle_scan_primary_card_format" = "Bereite die primäre Karte mit der Nummer %@ vor.";
+"onboarding_subtitle_scan_ring" = "Prepare the ring and press the scan button below";
 "onboarding_subtitle_success_tangem_wallet_onboarding" = "Deine Tangem-Karte ist konfiguriert und einsatzbereit.";
 "onboarding_subtitle_two_backup_cards" = "Maximale Anzahl an Karten hinzugefügt. Schließe den Sicherungsvorgang ab.";
 "onboarding_title" = "Karte aktivieren";
+"onboarding_title_backup_card" = "Backup card";
 "onboarding_title_backup_card_format" = "Sicherungskarte Nr. %li";
+"onboarding_title_backup_ring" = "Backup ring";
 "onboarding_title_no_backup_cards" = "Keine Sicherungskarten";
 "onboarding_title_notifications" = "Benachrichtigungen";
 "onboarding_title_one_backup_card" = "Eine Backup-Karte hinzugefügt";
@@ -559,8 +566,8 @@
 "reset_card_to_factory_condition_2" = "Mir ist klar, dass ich diese Karte nicht verwenden kann, um meinen Zugangscode auf den anderen Karten der aktuellen Wallet wiederherzustellen";
 "reset_card_with_backup_to_factory_message" = "Durch das Zurücksetzen auf Werkseinstellungen wird die Wallet vollständig von der ausgewählten Karte gelöscht. Du kannst die aktuelle Wallet nicht wiederherstellen oder die Karte verwenden, um den Zugangscode wiederherzustellen.";
 "reset_card_without_backup_to_factory_message" = "Beim Zurücksetzen auf die Werkseinstellungen wird die Wallet der ausgewählten Karte vollständig gelöscht und aus der App entfernt. Es ist nicht möglich, die aktuelle Wallet wiederherzustellen.";
-"ring_promo_text" = "Ring owners get 3 commission-free swaps on Changelly until 15.11!";
-"ring_promo_title" = "Swap With 0%% Fees Now!";
+"ring_promo_text" = "Ringbesitzer erhalten bis zum 15.11. 3 provisionsfreie Swaps auf Changelly!";
+"ring_promo_title" = "Jetzt mit 0 %% Gebühren tauschen!";
 "russian_bank_card_warning_subtitle" = "Besitzt du eine Bankkarte aus einem anderen Land und eine Aufenthaltserlaubnis oder Registrierung außerhalb der Russischen Föderation?";
 "russian_bank_card_warning_title" = "Russische Bankkarten werden derzeit nicht akzeptiert";
 "save_user_wallet_agreement_access_description" = "Melde dich bei der App an und überprüfe dein Guthaben, ohne die Karte zu scannen";
@@ -765,9 +772,9 @@
 "swap_promo_text" = "Tausche mehr Token zu besseren Kursen direkt in deiner Brieftasche.";
 "swap_promo_title" = "Neuer Swap-Anbieter verfügbar!";
 "swapping_alert_cex_description" = "Der Betrag umfasst:\n- Gebühr des Dienstanbieters\n- Netzgebühr für die Rücksendung von %@ von der Vermittlungsstelle an die Adresse des Nutzers.";
-"swapping_alert_cex_description_with_slippage" = "Der Betrag beinhaltet:\n• Honorar des Dienstleisters\n• Netzwerkgebühr für das Senden %1$@ von der Börse zurück an die Adresse des Benutzers. \n\n Provider-Slippage kann bis zu %2$@ \n Bei maximaler Abweichung beträgt der zu erhaltende Betrag %3$@";
+"swapping_alert_cex_description_with_slippage" = "Der Betrag beinhaltet:\n• Honorar des Dienstleisters\n• Netzwerkgebühr für das Senden %1$@ von der Börse zurück an die Adresse des Benutzers. \n\n Provider-Slippage kann bis zu %2$@";
 "swapping_alert_dex_description" = "Der Betrag enthält die Gebühren des Dienstleisters.";
-"swapping_alert_dex_description_with_slippage" = "Der Betrag beinhaltet die Gebühr des Dienstleisters. \n\nProvider-Slippage kann bis zu %1$@ \n Bei maximaler Abweichung beträgt der zu erhaltende Betrag %2$@";
+"swapping_alert_dex_description_with_slippage" = "Der Betrag beinhaltet die Gebühr des Dienstleisters. \n\nProvider-Slippage kann bis zu %@";
 "swapping_alert_title" = "Gebühren";
 "swapping_approve_information_text" = "Alle dezentralen Börsen benötigen Genehmigungen, um zu verhindern, dass intelligente Verträge ohne Ihre Erlaubnis auf Ihre Geldbörse zugreifen. Smart Contracts können nicht auf Ihre Token zugreifen, wenn Sie nicht zustimmen. Indem Sie Ihre Token \"freischalten\", ermächtigen Sie den 1-Zoll-Smart-Contract, sie auszugeben. Die Miner des Netzwerks erhalten eine (von Ihnen bezahlte) Gasgebühr, um diese Aktion in der Blockchain aufzuzeichnen. Sie können Ihre Token tauschen, nachdem Sie Ihre Zustimmung gegeben haben.";
 "swapping_approve_information_title" = "Genehmigen";
