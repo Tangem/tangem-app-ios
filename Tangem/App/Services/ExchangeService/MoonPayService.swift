@@ -8,7 +8,6 @@
 
 import Foundation
 import CryptoKit
-import Alamofire
 import Combine
 import BlockchainSdk
 
