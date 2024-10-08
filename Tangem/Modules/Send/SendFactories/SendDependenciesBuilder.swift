@@ -223,7 +223,7 @@ struct SendDependenciesBuilder {
 
     // MARK: - Staking
 
-    func makeStakingModel(stakingManager: any StakingManager) -> StakingModel {
+    func makeStakingModel(stakingManager: some StakingManager) -> StakingModel {
         StakingModel(
             stakingManager: stakingManager,
             transactionCreator: walletModel.transactionCreator,
@@ -237,7 +237,7 @@ struct SendDependenciesBuilder {
         )
     }
 
-    func makeUnstakingModel(stakingManager: any StakingManager, action: UnstakingModel.Action) -> UnstakingModel {
+    func makeUnstakingModel(stakingManager: some StakingManager, action: UnstakingModel.Action) -> UnstakingModel {
         UnstakingModel(
             stakingManager: stakingManager,
             sendTransactionDispatcher: makeStakingTransactionDispatcher(),
@@ -248,7 +248,7 @@ struct SendDependenciesBuilder {
         )
     }
 
-    func makeRestakingModel(stakingManager: any StakingManager, action: RestakingModel.Action) -> RestakingModel {
+    func makeRestakingModel(stakingManager: some StakingManager, action: RestakingModel.Action) -> RestakingModel {
         RestakingModel(
             stakingManager: stakingManager,
             sendTransactionDispatcher: makeStakingTransactionDispatcher(),
@@ -259,7 +259,7 @@ struct SendDependenciesBuilder {
         )
     }
 
-    func makeStakingSingleActionModel(stakingManager: any StakingManager, action: UnstakingModel.Action) -> StakingSingleActionModel {
+    func makeStakingSingleActionModel(stakingManager: some StakingManager, action: UnstakingModel.Action) -> StakingSingleActionModel {
         StakingSingleActionModel(
             stakingManager: stakingManager,
             sendTransactionDispatcher: makeStakingTransactionDispatcher(),
@@ -274,7 +274,7 @@ struct SendDependenciesBuilder {
         CommonStakingNotificationManager(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
     }
 
-    func makeStakingSendAmountValidator(stakingManager: any StakingManager) -> SendAmountValidator {
+    func makeStakingSendAmountValidator(stakingManager: some StakingManager) -> SendAmountValidator {
         StakingSendAmountValidator(
             tokenItem: walletModel.tokenItem,
             validator: walletModel.transactionValidator,

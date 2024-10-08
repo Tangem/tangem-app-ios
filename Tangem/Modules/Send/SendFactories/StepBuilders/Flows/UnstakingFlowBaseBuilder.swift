@@ -18,7 +18,7 @@ struct UnstakingFlowBaseBuilder {
     let sendFinishStepBuilder: SendFinishStepBuilder
     let builder: SendDependenciesBuilder
 
-    func makeSendViewModel(manager: any StakingManager, action: UnstakingModel.Action, router: SendRoutable) -> SendViewModel {
+    func makeSendViewModel(manager: some StakingManager, action: UnstakingModel.Action, router: SendRoutable) -> SendViewModel {
         let unstakingModel = builder.makeUnstakingModel(stakingManager: manager, action: action)
         let notificationManager = builder.makeStakingNotificationManager()
         notificationManager.setup(provider: unstakingModel, input: unstakingModel)
