@@ -110,6 +110,7 @@
 "common_generate_addresses" = "アドレスを取得する";
 "common_go_to_provider" = "プロバイダーへ移動";
 "common_go_to_token" = "トークンへ移動";
+"common_hour" = "時間";
 "common_import" = "インポート";
 "common_in_progress" = "進行中";
 "common_later" = "後で";
@@ -117,6 +118,7 @@
 "common_left" = "残り%1$@";
 "common_locked" = "ロックされています";
 "common_main_network" = "メインネットワーク";
+"common_month" = "月";
 "common_network_fee_title" = "ネットワーク手数料";
 "common_network_fee_warning_content" = "送金額は、選択された手数料レベルをカバーするため、%1$@ (%2$@) 減額されます。";
 "common_next" = "次";
@@ -140,6 +142,7 @@
 "common_save_changes" = "変更内容を保存";
 "common_search" = "検索";
 "common_search_tokens" = "トークンを検索";
+"common_second_no_param" = "秒";
 "common_seed_phrase" = "シードフレーズ";
 "common_select_action" = "アクションを選択";
 "common_sell" = "売る";
@@ -166,6 +169,7 @@
 "common_unreachable" = "アクセスできません";
 "common_unstake" = "ステーキング解除";
 "common_warning" = "警告";
+"common_week" = "週";
 "common_yes" = "はい";
 "contract_address_copied_message" = "コントラクトアドレスをコピーしました!";
 "currency_subtitle_expanded" = "利用可能なネットワーク";
@@ -286,6 +290,7 @@
 "feedback_subject_support_tangem" = "Tangemへのフィードバック";
 "feedback_subject_tx_failed" = "取引を送信できません";
 "feedback_subject_tx_push_failed" = "取引をプッシュできません";
+"feedback_token_description_error" = "コインの説明エラー";
 "give_permission_current_transaction" = "取引";
 "give_permission_fee_footer" = "ネットワークは、あなたがトークンのスワップを承認していることを確認するために、トークン承認手数料を請求します。";
 "give_permission_policy_type_footer" = "選択したトークンの承認制限を指定します";
@@ -338,7 +343,7 @@
 "manage_tokens_unavailable_vote" = "賛成票を投じる";
 "manage_tokens_wallet_selector_title" = "ウォレットを選択";
 "manage_tokens_wallet_support_only_one_network_title" = "ウォレットは複数のネットワークをサポートしていません。";
-"markets_add_to_my_portfolio_description" = "このアセットの購入、交換、受け取りを開始するには、ポートフォリオに追加してください。";
+"markets_add_to_my_portfolio_description" = "このアセットを購入・交換・受け取るには、ポートフォリオに追加してください。";
 "markets_add_to_my_portfolio_unavailable_description" = "このアセットは利用できません";
 "markets_add_to_my_portfolio_unavailable_for_wallet_description" = "このアセットはこのウォレットでは使用できません。";
 "markets_add_to_portfolio_button" = "ポートフォリオに追加";
@@ -381,6 +386,11 @@
 "markets_token_details_circulating_supply_description" = "取引可能で市場に流通しているコインの総数";
 "markets_token_details_circulating_supply_full" = "循環供給量";
 "markets_token_details_empty_exchanges" = "取引所が見つかりません";
+"markets_token_details_exchange" = "取引所";
+"markets_token_details_exchange_trust_score_caution" = "注意";
+"markets_token_details_exchange_trust_score_risky" = "危険";
+"markets_token_details_exchange_trust_score_trusted" = "信頼できる";
+"markets_token_details_exchanges_title" = "取引所";
 "markets_token_details_experienced_buyers" = "経験豊富な買い手";
 "markets_token_details_experienced_buyers_description" = "少なくとも100の発信取引を持つネット・バイヤー";
 "markets_token_details_experienced_buyers_full" = "経験豊富な買い手";
@@ -424,6 +434,7 @@
 "markets_token_details_trading_volume" = "取引量（24時間）";
 "markets_token_details_trading_volume_24h_description" = "過去24時間以内に取引された暗号資産の合計額。市場の活発さと流動性を示します。";
 "markets_token_details_trading_volume_full" = "取引量（24時間）";
+"markets_token_details_volume" = "取引量";
 "markets_tooltip_message" = "これをドラッグするか、検索窓をタップして、マーケットから直接トークンを追加します";
 "markets_tooltip_title" = "トークンを追加";
 "onboarding_access_code_feature_1_description" = "すべてのカードを保護するには、単一のアクセスコードを設定する必要があります";
@@ -702,6 +713,7 @@
 "staking_reward_claiming_manual" = "手動";
 "staking_reward_schedule_block" = "ブロック毎";
 "staking_reward_schedule_day" = "毎日";
+"staking_reward_schedule_each" = "%@ごと";
 "staking_reward_schedule_each_day" = "毎日";
 "staking_reward_schedule_each_sec" = "%1$@秒毎";
 "staking_reward_schedule_epoch" = "エポック毎";
@@ -750,7 +762,9 @@
 "swap_promo_text" = "より多くのトークンをより良いレートで、ウォレット内にて直接交換します。";
 "swap_promo_title" = "新しいスワッププロバイダーが利用可能になりました！";
 "swapping_alert_cex_description" = "この金額には以下が含まれます：\n- サービスプロバイダーの手数料\n- 取引所からユーザーのアドレスに%@ を送り返すためのネットワーク手数料。";
+"swapping_alert_cex_description_with_slippage" = "金額には以下が含まれます: \n • サービス プロバイダーの手数料\n • 取引所からユーザーのアドレスに%1$@を送金するためのネットワーク手数料。 \n\nプロバイダーのスリッページは最大%2$@です\n最大スリッページの場合、受け取る金額は%3$@になります。";
 "swapping_alert_dex_description" = "この金額には、サービスプロバイダーの手数料が含まれています。";
+"swapping_alert_dex_description_with_slippage" = "金額にはサービスプロバイダーの手数料が含まれます。 \n\nプロバイダーのスリッページは最大%1$@ です\n。最大スリッページの場合、受け取る金額は%2$@ になります。";
 "swapping_alert_title" = "手数料";
 "swapping_approve_information_text" = "すべての分散型取引所は、スマートコントラクトがあなたの許可なくウォレットにアクセスするのを防ぐために承認を必要とします。設計上、スマートコントラクトは承認なしでトークンにアクセスできません。トークンを「ロック解除」することで、あなたは1-inchのスマートコントラクトがトークンを使うことを承認します。ネットワークのマイナーは、このアクションをブロックチェーンに記録するためのガス料金（あなたが支払う）を受け取ります。承認後、トークンを交換することができます。";
 "swapping_approve_information_title" = "承認";

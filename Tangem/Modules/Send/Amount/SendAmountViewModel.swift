@@ -19,7 +19,6 @@ class SendAmountViewModel: ObservableObject {
     let currencyPickerData: SendCurrencyPickerData
 
     @Published var id: UUID = .init()
-    @Published var text: String = ""
 
     @Published var auxiliaryViewsVisible: Bool = true
     @Published var isEditMode: Bool = false
@@ -172,7 +171,7 @@ private extension SendAmountViewModel {
             decimalNumberTextFieldViewModel.update(value: amount?.crypto)
         case .fiat:
             currentFieldOptions = prefixSuffixOptionsFactory.makeFiatOptions()
-            decimalNumberTextFieldViewModel.update(maximumFractionDigits: 2)
+            decimalNumberTextFieldViewModel.update(maximumFractionDigits: SendAmountStep.Constants.fiatMaximumFractionDigits)
             decimalNumberTextFieldViewModel.update(value: amount?.fiat)
         }
     }

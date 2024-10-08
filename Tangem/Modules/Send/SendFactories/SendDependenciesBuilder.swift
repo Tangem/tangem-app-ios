@@ -283,7 +283,7 @@ struct SendDependenciesBuilder {
     }
 
     func makeStakingTransactionSummaryDescriptionBuilder() -> SendTransactionSummaryDescriptionBuilder {
-        StakingTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
+        StakingTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem)
     }
 
     func makeAllowanceProvider() -> AllowanceProvider {

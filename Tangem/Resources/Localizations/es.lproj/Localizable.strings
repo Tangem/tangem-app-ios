@@ -110,6 +110,7 @@
 "common_generate_addresses" = "Obtener direcciones";
 "common_go_to_provider" = "Ir al proveedor";
 "common_go_to_token" = "Ir al token";
+"common_hour" = "hour";
 "common_import" = "Importe";
 "common_in_progress" = "En progreso";
 "common_later" = "Más tarde";
@@ -117,6 +118,7 @@
 "common_left" = "%1$@ quedan";
 "common_locked" = "Bloqueado";
 "common_main_network" = "Red principal";
+"common_month" = "month";
 "common_network_fee_title" = "Tarifa de la red";
 "common_network_fee_warning_content" = "La cantidad enviada se reducirá en %1$@ (%2$@) para cubrir el nivel de tarifa seleccionado";
 "common_next" = "Siguiente";
@@ -140,6 +142,7 @@
 "common_save_changes" = "Guardar cambios";
 "common_search" = "Buscar en el mercado";
 "common_search_tokens" = "Buscar tokens";
+"common_second_no_param" = "sec";
 "common_seed_phrase" = "Seed phrase";
 "common_select_action" = "Seleccione una acción";
 "common_sell" = "Vender";
@@ -166,6 +169,7 @@
 "common_unreachable" = "Inaccesible";
 "common_unstake" = "Termine el staking";
 "common_warning" = "Alerta";
+"common_week" = "week";
 "common_yes" = "Sí";
 "contract_address_copied_message" = "Dirección del contract copiada";
 "currency_subtitle_expanded" = "Redes disponibles";
@@ -286,6 +290,7 @@
 "feedback_subject_support_tangem" = "Comentarios en Tangem";
 "feedback_subject_tx_failed" = "No se puede completar una transacción";
 "feedback_subject_tx_push_failed" = "No se puede enviar una transacción";
+"feedback_token_description_error" = "Coin description error";
 "give_permission_current_transaction" = "Esta transacción";
 "give_permission_fee_footer" = "La red cobrará una tarifa de aprobación de token para verificar que está autorizando el uso de su token para el swap.";
 "give_permission_policy_type_footer" = "Especifique el límite aprobado para el token seleccionado.";
@@ -333,12 +338,12 @@
 "manage_tokens_nothing_found" = "No se pudo encontrar este token, puedes añadirlo manualmente";
 "manage_tokens_remove" = "Eliminar";
 "manage_tokens_search_placeholder" = "por ejemplo, BTC I trust, hodl I must";
-"manage_tokens_toast_portfolio_updated" = "Su cartera ha sido actualizada";
+"manage_tokens_toast_portfolio_updated" = "Su portafolio ha sido actualizada";
 "manage_tokens_unavailable_description" = "El token seleccionado no está disponible actualmente para acciones dentro de la billetera cripto. Pero no se preocupa, puede expresar su interés votando a favor.";
 "manage_tokens_unavailable_vote" = "Votar a favor";
 "manage_tokens_wallet_selector_title" = "Elegir wallet";
 "manage_tokens_wallet_support_only_one_network_title" = "La billetera no admite más de una red";
-"markets_add_to_my_portfolio_description" = "Para comprar, intercambiar o recibir este activo, agréguelo a su cartera";
+"markets_add_to_my_portfolio_description" = "Para comprar, intercambiar o recibir este activo, agréguelo a su portafolio";
 "markets_add_to_my_portfolio_unavailable_description" = "Este activo no está disponible";
 "markets_add_to_my_portfolio_unavailable_for_wallet_description" = "This asset is not available for this wallet";
 "markets_add_to_portfolio_button" = "Añadir al portafolio";
@@ -369,7 +374,7 @@
 "markets_sort_by_experienced_buyers_title" = "Compradores experimentados";
 "markets_sort_by_rating_title" = "Evaluación";
 "markets_sort_by_title" = "Ordenar por";
-"markets_sort_by_top_gainers_title" = "Mejores Ganadores";
+"markets_sort_by_top_gainers_title" = "Top Ganadores";
 "markets_sort_by_top_losers_title" = "Top Perdedores";
 "markets_sort_by_trending_title" = "Tendencias";
 "markets_token_details_about_token_title" = "Acerca de %@";
@@ -381,6 +386,11 @@
 "markets_token_details_circulating_supply_description" = "El número total de monedas que están disponibles para el comercio y que circulan en el mercado.";
 "markets_token_details_circulating_supply_full" = "Suministro circulante";
 "markets_token_details_empty_exchanges" = "No exchanges found";
+"markets_token_details_exchange" = "Exchange";
+"markets_token_details_exchange_trust_score_caution" = "Caution";
+"markets_token_details_exchange_trust_score_risky" = "Risky";
+"markets_token_details_exchange_trust_score_trusted" = "Trusted";
+"markets_token_details_exchanges_title" = "Exchanges";
 "markets_token_details_experienced_buyers" = "Compradores experimentados";
 "markets_token_details_experienced_buyers_description" = "Compradores netos con el requisito adicional de tener al menos 100 transacciones salientes";
 "markets_token_details_experienced_buyers_full" = "Compradores experimentados";
@@ -424,6 +434,7 @@
 "markets_token_details_trading_volume" = "Volumen de operaciones (24 horas)";
 "markets_token_details_trading_volume_24h_description" = "La cantidad total de una criptomoneda que se ha negociado en las últimas 24 horas, lo que indica el nivel de actividad y liquidez en el mercado.";
 "markets_token_details_trading_volume_full" = "Volumen de operaciones (24 horas)";
+"markets_token_details_volume" = "Volume";
 "markets_tooltip_message" = "Tire hacia arriba o toque la barra de búsqueda para agregar tokens directamente desde el mercado";
 "markets_tooltip_title" = "Agregar tokens";
 "onboarding_access_code_feature_1_description" = "Deba configurar un único código de acceso para proteger todas sus tarjetas";
@@ -702,8 +713,9 @@
 "staking_reward_claiming_manual" = "Manual";
 "staking_reward_schedule_block" = "Bloquear";
 "staking_reward_schedule_day" = "Día";
+"staking_reward_schedule_each" = "Each %@";
 "staking_reward_schedule_each_day" = "Cada día";
-"staking_reward_schedule_each_sec" = "Cada ~%1$@ segundo(s)";
+"staking_reward_schedule_each_sec" = "Cada %1$@ segundo(s)";
 "staking_reward_schedule_epoch" = "Época";
 "staking_reward_schedule_era" = "Era";
 "staking_reward_schedule_hour" = "Hora";
@@ -731,7 +743,7 @@
 "staking_validators" = "Validadores";
 "staking_validators_label" = "Socio estratégico";
 "staking_vote" = "Votar";
-"staking_vote_locked" = "Voto bloqueado";
+"staking_vote_locked" = "Votar";
 "staking_withdraw" = "Retirar";
 "staking_your_stakes" = "Sus stakes";
 "story_awe_description" = "Almacene sus activos crypto de forma segura manteniendo las claves privadas contenidas en su tarjeta";
@@ -750,7 +762,9 @@
 "swap_promo_text" = "Intercambie más tokens a mejores tasas directamente en su billetera.";
 "swap_promo_title" = "¡Nuevo proveedor de intercambio disponible!";
 "swapping_alert_cex_description" = "El monto incluye:\n• Tarifas del proveedor de servicios\n• Tarifas de red por enviar %@ desde el intercambio a la dirección del usuario.";
+"swapping_alert_cex_description_with_slippage" = "The amount includes:\n• service provider's fee\n• network fee for sending %1$@ from the exchange back to the user's address. \n\nProvider slippage is up to %2$@ \n At maximum slippage, the amount to be received will be %3$@";
 "swapping_alert_dex_description" = "El importe incluye los honorarios del proveedor de servicios.";
+"swapping_alert_dex_description_with_slippage" = "The amount includes the service provider's fee. \n\nProvider slippage is up to %1$@ \n At maximum slippage, the amount to be received will be %2$@";
 "swapping_alert_title" = "Tarifa";
 "swapping_approve_information_text" = "Todos los exchanges descentralizados requieren aprobaciones para evitar que los smart contracts accedan a su billetera sin su permiso. Por diseño, los smart contracts no pueden acceder a tus tokens a menos que lo apruebes. Al \"desbloquear\" sus tokens, autoriza al smart contract de 1-inch a gastarlos. Los mineros de la red reciben una tarifa de gas (pagada por voz) para registrar esta acción en la blockchain. Puede intercambiar su token después de dar la aprobación.";
 "swapping_approve_information_title" = "Aprobar";

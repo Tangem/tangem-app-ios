@@ -106,7 +106,8 @@ struct SendTransactionParametersBuilder {
              .cyber,
              .blast,
              .filecoin,
-             .sui:
+             .sui,
+             .core:
             return nil
         }
     }
