@@ -71,6 +71,9 @@ struct CustomSearchBar: View {
         .padding(.vertical, 12)
         .padding(.horizontal, 12)
         .background(background)
+        .onTapGesture {
+            isFocused = true
+        }
     }
 
     private var placeholderView: Text {

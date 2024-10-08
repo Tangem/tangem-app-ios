@@ -343,7 +343,7 @@
 "manage_tokens_unavailable_vote" = "Votar a favor";
 "manage_tokens_wallet_selector_title" = "Elegir wallet";
 "manage_tokens_wallet_support_only_one_network_title" = "La billetera no admite más de una red";
-"markets_add_to_my_portfolio_description" = "Para comprar, intercambiar o recibir este activo, agréguelo a su cartera";
+"markets_add_to_my_portfolio_description" = "Para comprar, intercambiar o recibir este activo, agréguelo a su portafolio";
 "markets_add_to_my_portfolio_unavailable_description" = "Este activo no está disponible";
 "markets_add_to_my_portfolio_unavailable_for_wallet_description" = "This asset is not available for this wallet";
 "markets_add_to_portfolio_button" = "Añadir al portafolio";

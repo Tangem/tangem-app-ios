@@ -248,7 +248,13 @@ struct StakeKitMapper {
 
         let validators = response.validators
             .map(mapToValidatorInfo)
-            .sorted(by: { $0.apr ?? 0 > $1.apr ?? 0 })
+            .sorted(by: { lhs, rhs in
+                if lhs.apr == rhs.apr {
+                    return lhs.partner
+                }
+
+                return lhs.apr ?? 0 > rhs.apr ?? 0
+            })
 
         let rewardRateValues = RewardRateValues(
             aprs: validators.filter { $0.preferred }.compactMap(\.apr),
@@ -280,7 +286,7 @@ struct StakeKitMapper {
             address: validator.address,
             name: validator.name ?? "No name",
             preferred: validator.preferred ?? false,
-            partner: validator.address == Constants.partnerValidator,
+            partner: validator.address == StakingConstants.partnerValidator,
             iconURL: validator.image.flatMap { URL(string: $0) },
             apr: validator.apr
         )
@@ -359,7 +365,7 @@ struct StakeKitMapper {
         case .cosmos: .seconds(min: 5, max: 12)
         case .tron: .daily
         case .binance: .daily
-        case .ethereum where item.contractAddress == Constants.polygonContactAddress: .daily
+        case .ethereum where item.contractAddress == StakingConstants.polygonContactAddress: .daily
         default: .generic(type.rawValue)
         }
     }
