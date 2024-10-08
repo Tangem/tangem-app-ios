@@ -207,7 +207,6 @@ class TokenMarketsDetailsViewModel: MarketsBaseViewModel {
         descriptionBottomSheetInfo = .init(
             title: Localization.marketsTokenDetailsAboutTokenTitle(tokenInfo.name),
             description: fullDescription,
-            isGeneratedWithAI: true,
             showCloseButton: true
         )
     }
@@ -228,6 +227,17 @@ class TokenMarketsDetailsViewModel: MarketsBaseViewModel {
         }
 
         coordinator?.openExchangesList(tokenId: tokenInfo.id, numberOfExchangesListedOn: numberOfExchangesListedOn, presentationStyle: presentationStyle)
+    }
+
+    func onGenerateAITapAction() {
+        descriptionBottomSheetInfo = nil
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+            guard let self else { return }
+
+            let dataCollector = TokenErrorDescriptionDataCollector(tokenId: tokenInfo.id, tokenName: tokenInfo.name)
+            coordinator?.openMail(with: dataCollector, emailType: .appFeedback(subject: Localization.feedbackTokenDescriptionError))
+        }
     }
 }
 

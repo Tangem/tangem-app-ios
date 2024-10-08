@@ -302,7 +302,7 @@
 "give_permission_unlimited" = "Unlimited";
 "home_button_order" = "Order card";
 "home_button_scan" = "Scan card";
-"information_generated_with_ai" = "This information was generated with AI";
+"information_generated_with_ai" = "This information was generated with AI.\nTap here, If you find any errors.";
 "initial_message_change_access_code_body" = "To change the access code tap the card as shown above and do not remove until the end of the operation";
 "initial_message_change_passcode_body" = "To change the passcode tap the card as shown above and do not remove until the end of the operation";
 "initial_message_create_wallet_body" = "To create the wallet tap the card as shown above and do not remove until the end of the operation";
