@@ -224,7 +224,7 @@ final class OverlayContentContainerViewController: UIViewController {
 
     /// - Note: The order in which this method is called matters. Must be called between `setupContent` and `setupOverlay`.
     private func setupBackgroundShadowView() {
-        // TODO: Andrey Fedorov - Add better support for dark mode (adjust content view contrast or background colors instead of using background shadow) (IOS-7802)
+        // TODO: Andrey Fedorov - Add better support for dark mode (adjust content view contrast or background colors instead of using background shadow) (IOS-8130)
         backgroundShadowView.backgroundColor = .black
         backgroundShadowView.alpha = Constants.minBackgroundShadowViewAlpha
         backgroundShadowView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -415,10 +415,10 @@ final class OverlayContentContainerViewController: UIViewController {
     private func notifyStateObserversIfNeeded(isCollapsedState: Bool, isExpandedState: Bool) {
         for stateObserver in stateObservers.values {
             if isCollapsedState {
-                stateObserver(.bottom)
+                stateObserver(.collapsed)
             } else if isExpandedState {
                 let trigger: OverlayContentState.Trigger = didTap ? .tapGesture : .dragGesture
-                stateObserver(.top(trigger: trigger))
+                stateObserver(.expanded(trigger: trigger))
             } else {
                 // No-op
             }

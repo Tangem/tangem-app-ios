@@ -11,6 +11,7 @@ import SwiftUI
 struct AddCustomTokenView: View {
     @ObservedObject var viewModel: AddCustomTokenViewModel
 
+    @FocusState private var isFocusedAddressField: Bool
     @FocusState private var isFocusedNameField: Bool
     @FocusState private var isFocusedSymbolField: Bool
     @FocusState private var isFocusedDecimalsField: Bool
@@ -93,6 +94,11 @@ struct AddCustomTokenView: View {
                 isLoading: false,
                 error: viewModel.contractAddressError
             )
+            .focused($isFocusedAddressField)
+            .onChange(of: isFocusedAddressField) { isFocused in
+                guard !isFocused else { return }
+                viewModel.onChangeFocusable(field: .address)
+            }
 
             separator
 
@@ -236,7 +242,7 @@ private struct TextInputWithTitle: View {
 #Preview {
     let userWalletModel = FakeUserWalletModel.wallet3Cards
     let coordinator = AddCustomTokenCoordinator()
-    coordinator.start(with: .init(userWalletModel: userWalletModel))
+    coordinator.start(with: .init(userWalletModel: userWalletModel, analyticsSourceRawValue: "preview"))
 
     return AddCustomTokenCoordinatorView(coordinator: coordinator)
 }

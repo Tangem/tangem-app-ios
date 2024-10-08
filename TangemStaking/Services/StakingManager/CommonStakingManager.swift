@@ -22,7 +22,7 @@ class CommonStakingManager {
     private let _state = CurrentValueSubject<StakingManagerState, Never>(.loading)
     private var canStakeMore: Bool {
         switch wallet.item.network {
-        case .solana, .cosmos, .tron: true
+        case .solana, .cosmos, .tron, .ethereum: true
         default: false
         }
     }
@@ -51,6 +51,15 @@ extension CommonStakingManager: StakingManager {
 
     var statePublisher: AnyPublisher<StakingManagerState, Never> {
         _state.eraseToAnyPublisher()
+    }
+
+    var allowanceAddress: String? {
+        switch (wallet.item.network, wallet.item.contractAddress) {
+        case (.ethereum, StakingConstants.polygonContactAddress):
+            return "0x5e3ef299fddf15eaa0432e6e66473ace8c13d908"
+        default:
+            return nil
+        }
     }
 
     func updateState() async {
@@ -90,6 +99,8 @@ extension CommonStakingManager: StakingManager {
 
     func transaction(action: StakingAction) async throws -> StakingTransactionAction {
         switch (state, action.type) {
+        case (.loading, _):
+            throw StakingManagerError.stakingManagerIsLoading
         case (.availableToStake, .stake), (.staked, .stake):
             try await getStakeTransactionInfo(
                 request: mapToActionGenericRequest(action: action)
@@ -293,7 +304,14 @@ private extension CommonStakingManager {
             }
 
             return .validator(
-                .init(address: address, name: name, iconURL: record.validator.iconURL, apr: record.validator.apr)
+                .init(
+                    address: address,
+                    name: name,
+                    preferred: true,
+                    partner: false,
+                    iconURL: record.validator.iconURL,
+                    apr: record.validator.apr
+                )
             )
         }()
 
@@ -319,7 +337,7 @@ private extension CommonStakingManager {
             id: actionID,
             amount: amount,
             validator: validator,
-            transactions: transactions.filter { $0.status != .skipped }
+            transactions: transactions
         )
     }
 
@@ -389,11 +407,12 @@ public enum StakingManagerError: LocalizedError {
     case transactionNotFound
     case notImplemented
     case notFound
+    case stakingManagerIsLoading
 
     public var errorDescription: String? {
         switch self {
         case .stakingManagerStateNotSupportTransactionAction(let action):
-            "stakingManagerStateNotSupportTransactionAction \(action)"
+            "StakingManagerNotSupportTransactionAction \(action)"
         case .stakedBalanceNotFound(let validator):
             "stakedBalanceNotFound \(validator)"
         case .pendingActionNotFound(let validator):
@@ -404,6 +423,8 @@ public enum StakingManagerError: LocalizedError {
             "notImplemented"
         case .notFound:
             "notFound"
+        case .stakingManagerIsLoading:
+            "StakingManagerIsLoading"
         }
     }
 }

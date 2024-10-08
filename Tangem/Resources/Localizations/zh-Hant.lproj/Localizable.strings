@@ -110,6 +110,7 @@
 "common_generate_addresses" = "Get addresses";
 "common_go_to_provider" = "Go to provider";
 "common_go_to_token" = "Go to token";
+"common_hour" = "hour";
 "common_import" = "導入";
 "common_in_progress" = "進行中";
 "common_later" = "Later";
@@ -117,6 +118,7 @@
 "common_left" = "%1$@ left";
 "common_locked" = "Locked";
 "common_main_network" = "Main network";
+"common_month" = "month";
 "common_network_fee_title" = "網路費";
 "common_network_fee_warning_content" = "Amount sent will be reduced by %1$@ (%2$@) to cover the selected fee level";
 "common_next" = "Next";
@@ -140,6 +142,7 @@
 "common_save_changes" = "保存設置";
 "common_search" = "搜索";
 "common_search_tokens" = "搜尋代幣";
+"common_second_no_param" = "sec";
 "common_seed_phrase" = "Seed phrase";
 "common_select_action" = "選擇";
 "common_sell" = "銷售";
@@ -166,6 +169,7 @@
 "common_unreachable" = "無法觸達";
 "common_unstake" = "Unstake";
 "common_warning" = "警告";
+"common_week" = "week";
 "common_yes" = "是";
 "contract_address_copied_message" = "已複製代幣地址";
 "currency_subtitle_expanded" = "支持的網路";
@@ -248,6 +252,7 @@
 "express_exchange_status_exchanging" = "Exchanging";
 "express_exchange_status_exchanging_active" = "Exchanging...";
 "express_exchange_status_failed" = "Failed";
+"express_exchange_status_paused" = "Paused";
 "express_exchange_status_received" = "Deposit received";
 "express_exchange_status_receiving" = "Awaiting deposit";
 "express_exchange_status_receiving_active" = "Awaiting deposit...";
@@ -285,6 +290,7 @@
 "feedback_subject_support_tangem" = "Tangem反饋";
 "feedback_subject_tx_failed" = "無法發送交易";
 "feedback_subject_tx_push_failed" = "無法推送交易";
+"feedback_token_description_error" = "Coin description error";
 "give_permission_current_transaction" = "Transaction";
 "give_permission_fee_footer" = "The network will charge a token approval fee to verify that you are authorizing the use of your token for the swap.";
 "give_permission_policy_type_footer" = "Specify the approve limit for the selected token";
@@ -339,6 +345,7 @@
 "manage_tokens_wallet_support_only_one_network_title" = "The wallet doesn't support more than one network";
 "markets_add_to_my_portfolio_description" = "To buy, exchange, or receive this asset, add it to your portfolio";
 "markets_add_to_my_portfolio_unavailable_description" = "This asset is not available";
+"markets_add_to_my_portfolio_unavailable_for_wallet_description" = "This asset is not available for this wallet";
 "markets_add_to_portfolio_button" = "Add to portfolio";
 "markets_add_token" = "Add";
 "markets_available networks" = "Available networks";
@@ -378,6 +385,12 @@
 "markets_token_details_circulating_supply" = "Circulating supply";
 "markets_token_details_circulating_supply_description" = "The total number of coins that are available for trading and are circulating in the market";
 "markets_token_details_circulating_supply_full" = "Circulating supply";
+"markets_token_details_empty_exchanges" = "No exchanges found";
+"markets_token_details_exchange" = "Exchange";
+"markets_token_details_exchange_trust_score_caution" = "Caution";
+"markets_token_details_exchange_trust_score_risky" = "Risky";
+"markets_token_details_exchange_trust_score_trusted" = "Trusted";
+"markets_token_details_exchanges_title" = "Exchanges";
 "markets_token_details_experienced_buyers" = "Experienced buyers";
 "markets_token_details_experienced_buyers_description" = "Net buyers with the additional requirement of having at least 100 outgoing transactions";
 "markets_token_details_experienced_buyers_full" = "Experienced buyers";
@@ -397,6 +410,7 @@
 "markets_token_details_liquidity_full" = "Liquidity";
 "markets_token_details_liquidity_index" = "Liquidity index";
 "markets_token_details_liquidity_index_description" = "";
+"markets_token_details_listed_on" = "Listed on";
 "markets_token_details_low" = "Low";
 "markets_token_details_market_capitalization" = "Market cap";
 "markets_token_details_market_capitalization_description" = "The total market value of a cryptocurrency, calculated by multiplying the current price of the coin by the total number of coins in circulation";
@@ -420,6 +434,7 @@
 "markets_token_details_trading_volume" = "Trading volume (24h)";
 "markets_token_details_trading_volume_24h_description" = "The total amount of a cryptocurrency that has been traded within the last 24 hours, indicating the level of activity and liquidity in the market";
 "markets_token_details_trading_volume_full" = "Trading volume (24h)";
+"markets_token_details_volume" = "Volume";
 "markets_tooltip_message" = "Pull this up or tap the search bar to add tokens directly from the market";
 "markets_tooltip_title" = "Add tokens";
 "onboarding_access_code_feature_1_description" = "You have to set up a single access code to protect all your cards";
@@ -516,7 +531,7 @@
 "qr_scanner_camera_denied_title" = "Camera access denied";
 "receive_bottom_sheet_warning_message" = "%1$@ (%2$@) on %3$@ network";
 "receive_bottom_sheet_warning_message_full" = "Send only %@ to this address. Sending any other currency will result in its irreversible loss.";
-"receive_token_description" = "Transfer funds from another wallet or exchange";
+"receive_token_description" = "Transfer funds from any wallet or exchange";
 "referral_button_participate" = "參與";
 "referral_error_failed_to_load_info" = "無法加載有關推薦計劃的消息。請稍後再試";
 "referral_error_failed_to_load_info_with_reason" = "無法加載有關推薦計劃的消息。原因：%@。請稍後再試";
@@ -656,7 +671,7 @@
 "staking_details_reward_claiming" = "Reward claiming";
 "staking_details_reward_claiming_info" = "Method of receiving staking rewards.\nIt can be either automatic, where the reward is credited to your address, or manual, where you need to withdraw the reward by creating a transaction to receive it.";
 "staking_details_reward_schedule" = "Reward schedule";
-"staking_details_reward_schedule_info" = "This is a schedule that determines when participants in staking receive their rewards.";
+"staking_details_reward_schedule_info" = "This is a schedule that determines when participants in staking receive their rewards. The reward distribution time may vary slightly depending on the validator and network load.";
 "staking_details_rewards_to_claim" = "Rewards: %@";
 "staking_details_title" = "Staking %@";
 "staking_details_unbonding_period" = "Unbonding Period";
@@ -696,21 +711,22 @@
 "staking_revote" = "Revote";
 "staking_reward_claiming_auto" = "Auto";
 "staking_reward_claiming_manual" = "Manual";
-"staking_reward_schedule_block" = "Block";
-"staking_reward_schedule_day" = "Day";
-"staking_reward_schedule_each_day" = "Daily";
-"staking_reward_schedule_each_minute" = "Each minute";
-"staking_reward_schedule_each_sec" = "Each ~%1$@sec";
-"staking_reward_schedule_epoch" = "Epoch";
-"staking_reward_schedule_era" = "Era";
-"staking_reward_schedule_hour" = "Hour";
-"staking_reward_schedule_month" = "Month";
-"staking_reward_schedule_week" = "Week";
+"staking_reward_schedule_block" = "Per Block";
+"staking_reward_schedule_day" = "Daily";
+"staking_reward_schedule_each" = "Each %@";
+"staking_reward_schedule_each_day" = "Each day";
+"staking_reward_schedule_each_sec" = "Each %1$@ sec";
+"staking_reward_schedule_epoch" = "Per Epoch";
+"staking_reward_schedule_era" = "Per Era";
+"staking_reward_schedule_hour" = "Hourly";
+"staking_reward_schedule_month" = "Monthly";
+"staking_reward_schedule_week" = "Weekly";
 "staking_rewards" = "Rewards";
 "staking_stake_locked" = "Stake locked";
 "staking_stake_more" = "Stake more";
-"staking_summary_description_text" = "You stake %1$@ and will be receiving %2$@ yearly";
+"staking_summary_description_text" = "You stake %1$@ and will be receiving your reward each %2$@";
 "staking_tap_to_unlock" = "Tap to unlock";
+"staking_tap_to_unlock_or_vote" = "Tap to unlock or vote";
 "staking_tap_to_withdraw" = "Tap to withdraw";
 "staking_title_stake" = "Stake %@";
 "staking_title_unstake" = "Unstake %@";
@@ -725,8 +741,9 @@
 "staking_unstaking_item_name" = "Unstaking assets %@";
 "staking_validator" = "Validator";
 "staking_validators" = "Validators";
+"staking_validators_label" = "Strategic partner";
 "staking_vote" = "Vote";
-"staking_vote_locked" = "Vote locked";
+"staking_vote_locked" = "Vote";
 "staking_withdraw" = "Withdraw";
 "staking_your_stakes" = "Your stakes";
 "story_awe_description" = "安全地存儲您的加密貨幣，同時將私鑰保存在您的卡中";
@@ -745,7 +762,9 @@
 "swap_promo_text" = "Exchange more tokens at better rates directly in your wallet.";
 "swap_promo_title" = "New Swap Provider Available!";
 "swapping_alert_cex_description" = "The amount includes:\n• service provider's fee\n• network fee for sending %@ from the exchange back to the user's address.";
+"swapping_alert_cex_description_with_slippage" = "The amount includes:\n• service provider's fee\n• network fee for sending %1$@ from the exchange back to the user's address. \n\nProvider slippage is up to %2$@ \n At maximum slippage, the amount to be received will be %3$@";
 "swapping_alert_dex_description" = "The amount includes the service provider's fee.";
+"swapping_alert_dex_description_with_slippage" = "The amount includes the service provider's fee. \n\nProvider slippage is up to %1$@ \n At maximum slippage, the amount to be received will be %2$@";
 "swapping_alert_title" = "Fees";
 "swapping_approve_information_text" = "批准被視為所有去中心化交易所的行業標準，並保護您的錢包在未經您許可的情況下不被智能合約訪問。按照設計，智能合約無法訪問您的代幣，除非您從您的終端批准訪問。通過“解鎖”您的代幣，您將獲得 1inch 智能合約使用您的資產的權限。網絡的礦工將獲得Gas Fee（由您支付）作為補償，以在區塊鏈上記錄此操作。一旦獲得許可，您就可以交易您的代幣。";
 "swapping_approve_information_title" = "批准";
@@ -792,6 +811,7 @@
 "transaction_history_operation" = "Operation";
 "transaction_history_transaction_from_address" = "from: %@";
 "transaction_history_transaction_to_address" = "to: %@";
+"transaction_history_transaction_validator" = "validator: %@";
 "try_to_load_data_again_button_title" = "Try again";
 "twin_error_same_card" = "您掃描了同一張卡片。要創建雙錢包，您需要掃描編號為 %li 的卡";
 "twin_error_wrong_twin" = "你掃描錯了胞胎卡。請嘗試另一個";

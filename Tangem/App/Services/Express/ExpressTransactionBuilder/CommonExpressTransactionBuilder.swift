@@ -158,7 +158,9 @@ private extension CommonExpressTransactionBuilder {
              .internetComputer,
              .cyber,
              .blast,
-             .filecoin:
+             .filecoin,
+             .sui,
+             .core:
             throw ExpressTransactionBuilderError.blockchainDonNotSupportedExtraId
         }
     }

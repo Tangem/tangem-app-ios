@@ -40,4 +40,5 @@ enum StorageType: String {
     case pendingBackups = "pending_backups"
     case pendingBackupsCurrentID = "pending_backups_current_id"
     case forcedDemoCardId = "forced_demo_card_id"
+    case didMigrateUserWalletNames = "did_migrate_user_wallet_names"
 }

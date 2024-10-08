@@ -12,7 +12,7 @@ import Combine
 import CombineExt
 import Kingfisher
 
-final class MarketsViewModel: BaseMarketsViewModel {
+final class MarketsViewModel: MarketsBaseViewModel {
     private typealias SearchInput = MainBottomSheetHeaderViewModel.SearchInput
 
     // MARK: - Injected & Published Properties
@@ -118,7 +118,7 @@ final class MarketsViewModel: BaseMarketsViewModel {
 
     func onOverlayContentStateChange(_ state: OverlayContentState) {
         switch state {
-        case .top:
+        case .expanded:
             // Need for locked fetchMore process when bottom sheet not yet open
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.isBottomSheetExpanded = true
@@ -130,7 +130,7 @@ final class MarketsViewModel: BaseMarketsViewModel {
 
             headerViewModel.onBottomSheetExpand(isTapGesture: state.isTapGesture)
             quotesUpdatesScheduler.forceUpdate()
-        case .bottom:
+        case .collapsed:
             isBottomSheetExpanded = false
             quotesUpdatesScheduler.cancelUpdates()
         }
@@ -246,6 +246,7 @@ private extension MarketsViewModel {
             .dropFirst()
             .debounce(for: 0.3, scheduler: DispatchQueue.main)
             .removeDuplicates()
+            .receive(on: DispatchQueue.global(qos: .userInitiated))
             .map { $0.range }
             .withWeakCaptureOf(self)
             .sink { viewModel, hotAreaRange in
@@ -347,7 +348,7 @@ private extension MarketsViewModel {
 
                 viewModel.tokenViewModels.append(contentsOf: items)
 
-                if viewModel.tokenViewModels.isEmpty {
+                if viewModel.dataProvider.items.isEmpty {
                     viewModel.tokenListLoadingState = .noResults
                     return
                 }

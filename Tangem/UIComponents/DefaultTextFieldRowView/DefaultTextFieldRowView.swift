@@ -12,6 +12,13 @@ import SwiftUI
 struct DefaultTextFieldRowView: View {
     let title: String
     @Binding var text: String
+    let isReadonly: Bool
+
+    init(title: String, text: Binding<String>, isReadonly: Bool = false) {
+        self.title = title
+        _text = text
+        self.isReadonly = isReadonly
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -23,6 +30,7 @@ struct DefaultTextFieldRowView: View {
                 .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
                 .tint(Colors.Text.primary1)
                 .labelsHidden()
+                .disabled(isReadonly)
         }
         .infinityFrame(axis: .horizontal, alignment: .leading)
     }

@@ -19,13 +19,8 @@ class StakingFeatureProvider {
         isFeatureAvailable = config.isFeatureVisible(.staking)
     }
 
-    static var isStakingAvailable: Bool {
-        FeatureProvider.isAvailable(.staking)
-    }
-
     func yieldId(for tokenItem: TokenItem) -> String? {
-        guard StakingFeatureProvider.isStakingAvailable,
-              isFeatureAvailable else {
+        guard isFeatureAvailable else {
             return nil
         }
 
@@ -73,7 +68,7 @@ extension StakingFeatureProvider {
 
     static var testableBlockchainItems: Set<StakingItem> {
         [
-            StakingItem(network: .ethereum, contractAddress: "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0"),
+            StakingItem(network: .ethereum, contractAddress: StakingConstants.polygonContactAddress),
             StakingItem(network: .binance, contractAddress: nil),
         ]
     }
@@ -84,7 +79,7 @@ extension StakingFeatureProvider {
             return "solana-sol-native-multivalidator-staking"
         case (.cosmos, .none):
             return "cosmos-atom-native-staking"
-        case (.ethereum, "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0"):
+        case (.ethereum, StakingConstants.polygonContactAddress):
             return "ethereum-matic-native-staking"
         case (.tron, .none):
             return "tron-trx-native-staking"

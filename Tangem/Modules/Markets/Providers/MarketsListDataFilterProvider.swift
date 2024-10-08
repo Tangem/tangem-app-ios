@@ -40,13 +40,13 @@ class MarketsListDataFilterProvider {
     }
 
     func didSelectMarketPriceInterval(_ interval: MarketsPriceIntervalType) {
-        sendAnalytics()
         _intervalTypeValue.send(interval)
+        sendAnalytics()
     }
 
     func didSelectMarketOrder(_ option: MarketsListOrderType) {
-        sendAnalytics()
         _orderTypeValue.send(option)
+        sendAnalytics()
     }
 
     // MARK: - Private Implementation
@@ -55,7 +55,7 @@ class MarketsListDataFilterProvider {
         Analytics.log(
             event: .marketsTokensSort,
             params: [
-                .type: _orderTypeValue.value.rawValue.capitalizingFirstLetter(),
+                .commonType: _orderTypeValue.value.rawValue.capitalizingFirstLetter(),
                 .period: _intervalTypeValue.value.rawValue,
             ]
         )

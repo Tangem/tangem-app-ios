@@ -12,7 +12,6 @@ public struct StakingTransactionInfo: Hashable {
     public let id: String
     public let actionId: String
     public let network: String
-    public let status: TransactionStatus
     public let unsignedTransactionData: String
     public let fee: Decimal
 
@@ -20,14 +19,12 @@ public struct StakingTransactionInfo: Hashable {
         id: String,
         actionId: String,
         network: String,
-        status: TransactionStatus,
         unsignedTransactionData: String,
         fee: Decimal
     ) {
         self.id = id
         self.actionId = actionId
         self.network = network
-        self.status = status
         self.unsignedTransactionData = unsignedTransactionData
         self.fee = fee
     }
