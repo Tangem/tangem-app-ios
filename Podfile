@@ -50,6 +50,7 @@ target 'Tangem' do
   tangem_sdk_pod
   
   # Pods for Tangem
+  pod 'Moya'
   pod 'WalletConnectSwiftV2', :git => 'https://github.com/WalletConnect/WalletConnectSwiftV2', :tag => '1.18.7'
   pod 'Kingfisher', '~> 7.11.0'
 
@@ -88,6 +89,7 @@ end
 
 target 'TangemExpress' do 
   blockchain_sdk_pods
+  pod 'Moya'
 
   target 'TangemExpressTests' do
     inherit! :search_paths
@@ -96,6 +98,7 @@ end
 
 target 'TangemVisa' do
   blockchain_sdk_pods
+  pod 'Moya'
 
   target 'TangemVisaTests' do
     inherit! :search_paths
@@ -104,6 +107,7 @@ end
 
 target 'TangemStaking' do
   blockchain_sdk_pods
+  pod 'Moya'
 
   target 'TangemStakingTests' do
     inherit! :search_paths

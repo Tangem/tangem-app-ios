@@ -155,6 +155,10 @@ PODS:
     - GoogleUtilities/Logger
     - GoogleUtilities/Privacy
   - Kingfisher (7.11.0)
+  - Moya (15.0.0):
+    - Moya/Core (= 15.0.0)
+  - Moya/Core (15.0.0):
+    - Alamofire (~> 5.0)
   - nanopb (2.30910.0):
     - nanopb/decode (= 2.30910.0)
     - nanopb/encode (= 2.30910.0)
@@ -225,6 +229,7 @@ DEPENDENCIES:
   - Firebase/Messaging (= 10.29.0)
   - GDPerformanceView-Swift (~> 2.1)
   - Kingfisher (~> 7.11.0)
+  - Moya
   - Solana.Swift (from `https://github.com/tangem/Solana.Swift`, tag `1.2.0-tangem11`)
   - SwiftyJSON (from `https://github.com/tangem/SwiftyJSON.git`, tag `5.0.1-tangem1`)
   - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-312`)
@@ -253,6 +258,7 @@ SPEC REPOS:
     - GoogleDataTransport
     - GoogleUtilities
     - Kingfisher
+    - Moya
     - nanopb
     - PromisesObjC
     - PromisesSwift
@@ -329,6 +335,7 @@ SPEC CHECKSUMS:
   GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
   GoogleUtilities: ea963c370a38a8069cc5f7ba4ca849a60b6d7d15
   Kingfisher: b9c985d864d43515f404f1ef4a8ce7d802ace3ac
+  Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
   nanopb: 438bc412db1928dac798aa6fd75726007be04262
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   PromisesSwift: 9d77319bbe72ebf6d872900551f7eeba9bce2851
@@ -342,6 +349,6 @@ SPEC CHECKSUMS:
   TangemSdk: 943099314a07e448307f994dca6217bb27366b66
   WalletConnectSwiftV2: 5ea47db4d86e39fc749b66a05a661af9e87b277d
 
-PODFILE CHECKSUM: 3f6f3e434ef716026cd8e45e79904105cd5cf887
+PODFILE CHECKSUM: e54671152c69bb89a1626b53f7f09b24d24c4821
 
 COCOAPODS: 1.15.2
