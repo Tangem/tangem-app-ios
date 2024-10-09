@@ -68,7 +68,7 @@ struct TransactionHistoryMapper {
             index: record.index,
             interactionAddress: interactionAddress(from: record),
             timeFormatted: timeFormatted,
-            amount: transferAmount(from: record),
+            amount: transferAmount(from: record).formatted,
             isOutgoing: record.isOutgoing,
             transactionType: transactionType(from: record),
             status: status(from: record)
@@ -84,7 +84,7 @@ struct TransactionHistoryMapper {
             return nil
         }
 
-        let amountFormatted = transferAmount(from: record)
+        let (amount, amountFormatted) = transferAmount(from: record)
         let date = record.date ?? Date()
         let dateFormatted = dateTimeFormatter.string(from: date)
 
@@ -93,6 +93,7 @@ struct TransactionHistoryMapper {
             additionalField: nil, // TODO: Add memo/tag to the record
             isOutgoing: record.isOutgoing,
             date: date,
+            amount: amount,
             amountFormatted: amountFormatted,
             dateFormatted: dateFormatted
         )
@@ -102,7 +103,7 @@ struct TransactionHistoryMapper {
 // MARK: - TransactionHistoryMapper
 
 private extension TransactionHistoryMapper {
-    func transferAmount(from record: TransactionRecord) -> String {
+    func transferAmount(from record: TransactionRecord) -> (amount: Decimal, formatted: String) {
         if record.isOutgoing {
             let sent: Decimal = {
                 switch record.source {
@@ -123,7 +124,7 @@ private extension TransactionHistoryMapper {
             }()
 
             let amount = sent - change
-            return formatted(amount: amount, isOutgoing: record.isOutgoing)
+            return (amount, formatted(amount: amount, isOutgoing: record.isOutgoing))
 
         } else {
             let received: Decimal = {
@@ -135,7 +136,7 @@ private extension TransactionHistoryMapper {
                 }
             }()
 
-            return formatted(amount: received, isOutgoing: record.isOutgoing)
+            return (received, formatted(amount: received, isOutgoing: record.isOutgoing))
         }
     }
 

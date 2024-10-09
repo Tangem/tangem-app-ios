@@ -127,6 +127,7 @@ extension CommonSendDestinationInteractor: SendDestinationInteractor {
             .map { interactor, records in
                 records
                     .compactMap { interactor.transactionHistoryMapper.mapSuggestedRecord($0) }
+                    .filter { $0.amount != 0 }
                     .prefix(Constants.numberOfRecentTransactions)
                     .sorted { $0.date > $1.date }
             }
