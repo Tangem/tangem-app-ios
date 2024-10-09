@@ -531,18 +531,6 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
         backupService.discardIncompletedBackup()
     }
 
-    override func handleUserWalletOnFinish() throws {
-        if AppSettings.shared.saveAccessCodes,
-           let accessCode = accessCode,
-           let cardIds = cardIds {
-            let accessCodeData: Data = accessCode.sha256()
-            let accessCodeRepository = AccessCodeRepository()
-            try accessCodeRepository.save(accessCodeData, for: cardIds)
-        }
-
-        try super.handleUserWalletOnFinish()
-    }
-
     private func fireConfettiIfNeeded() {
         if currentStep.requiresConfetti {
             fireConfetti()
@@ -770,6 +758,14 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
                                 if containsRing,
                                    let userWalletId = userWalletModel?.userWalletId.stringValue {
                                     AppSettings.shared.userWalletIdsWithRing.insert(userWalletId)
+                                }
+
+                                if AppSettings.shared.saveAccessCodes,
+                                   let accessCode = accessCode,
+                                   let cardIds = cardIds {
+                                    let accessCodeData: Data = accessCode.sha256()
+                                    let accessCodeRepository = AccessCodeRepository()
+                                    try? accessCodeRepository.save(accessCodeData, for: cardIds)
                                 }
 
                                 pendingBackupManager.onBackupCompleted()
