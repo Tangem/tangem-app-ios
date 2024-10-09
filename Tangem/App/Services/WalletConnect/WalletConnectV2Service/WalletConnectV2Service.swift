@@ -26,7 +26,6 @@ final class WalletConnectV2Service {
     private let uiDelegate: WalletConnectUIDelegate
     private let messageComposer: WalletConnectV2MessageComposable
     private let wcHandlersService: WalletConnectV2HandlersServicing
-    private let walletKit = WalletKit.instance
 
     private var canEstablishNewSessionSubject: CurrentValueSubject<Bool, Never> = .init(true)
     private var sessionSubscriptions = Set<AnyCancellable>()
@@ -72,7 +71,7 @@ final class WalletConnectV2Service {
     }
 
     func configureWalletKit() throws {
-        let walletKitRedirect = try AppMetadata.Redirect(
+        let redirect = try AppMetadata.Redirect(
             native: IncomingActionConstants.universalLinkScheme,
             universal: IncomingActionConstants.tangemDomain
         )
@@ -82,7 +81,7 @@ final class WalletConnectV2Service {
             description: "Tangem is a card-shaped self-custodial cold hardware wallet",
             url: "https://tangem.com",
             icons: ["https://user-images.githubusercontent.com/24321494/124071202-72a00900-da58-11eb-935a-dcdab21de52b.png"],
-            redirect: walletKitRedirect
+            redirect: redirect
         )
 
         WalletKit.configure(metadata: metadata, crypto: WalletConnectCryptoProvider())
@@ -113,7 +112,7 @@ final class WalletConnectV2Service {
 
         do {
             log("Attempt to disconnect session with topic: \(session.topic)")
-            try await walletKit.disconnect(topic: session.topic)
+            try await WalletKit.instance.disconnect(topic: session.topic)
 
             Analytics.log(
                 event: .sessionDisconnected,
@@ -146,7 +145,7 @@ final class WalletConnectV2Service {
             let removedSessions = await sessionsStorage.removeSessions(for: userWalletId)
             for session in removedSessions {
                 do {
-                    try await walletKit.disconnect(topic: session.topic)
+                    try await WalletKit.instance.disconnect(topic: session.topic)
                 } catch {
                     AppLog.shared.error("[WC 2.0] Failed to disconnect session while disconnecting all sessions for user wallet with id: \(userWalletId). Error: \(error)")
                 }
@@ -159,12 +158,12 @@ final class WalletConnectV2Service {
             return false
         }
 
-        if socket.currentState == .connected {
+        if socket.currentState == .connected || socket.currentState == .readyToConnect {
             return true
         }
 
         do {
-            let newState = try await walletKit.socketConnectionStatusPublisher
+            let newState = try await WalletKit.instance.socketConnectionStatusPublisher
                 .filter {
                     $0 == .connected
                 }
@@ -192,7 +191,7 @@ final class WalletConnectV2Service {
 
         log("Trying to pair client: \(url)")
         do {
-            try await walletKit.pair(uri: url)
+            try await WalletKit.instance.pair(uri: url)
             try Task.checkCancellation()
             log("Established pair for \(url)")
             DispatchQueue.main.async {
@@ -214,7 +213,7 @@ final class WalletConnectV2Service {
 
     private func disconnect(topic: String) async {
         do {
-            try await walletKit.disconnect(topic: topic)
+            try await WalletKit.instance.disconnect(topic: topic)
             log("Success disconnect/delete topic \(topic)")
         } catch {
             AppLog.shared.error("[WC 2.0] Failed to disconnect/delete topic \(topic) with error: \(error)")
@@ -224,7 +223,7 @@ final class WalletConnectV2Service {
     // MARK: - Subscriptions
 
     private func setupSessionSubscriptions() {
-        walletKit.sessionProposalPublisher
+        WalletKit.instance.sessionProposalPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] sessionProposal, context in
                 self?.log("Session proposal: \(sessionProposal) with verify context: \(String(describing: context))")
@@ -233,7 +232,7 @@ final class WalletConnectV2Service {
             }
             .store(in: &sessionSubscriptions)
 
-        walletKit.sessionSettlePublisher
+        WalletKit.instance.sessionSettlePublisher
             .receive(on: DispatchQueue.main)
             .asyncMap { [weak self] session in
                 guard let self else { return }
@@ -264,7 +263,7 @@ final class WalletConnectV2Service {
             .sink()
             .store(in: &sessionSubscriptions)
 
-        walletKit.sessionDeletePublisher
+        WalletKit.instance.sessionDeletePublisher
             .receive(on: DispatchQueue.main)
             .asyncMap { [weak self] topic, reason in
                 guard let self else { return }
@@ -292,7 +291,7 @@ final class WalletConnectV2Service {
     }
 
     private func setupMessagesSubscriptions() {
-        walletKit.sessionRequestPublisher
+        WalletKit.instance.sessionRequestPublisher
             .receive(on: DispatchQueue.main)
             .asyncMap { [weak self] request, context in
                 guard let self else { return }
@@ -386,7 +385,7 @@ final class WalletConnectV2Service {
 
             do {
                 log("Namespaces to approve for session connection: \(namespaces)")
-                _ = try await walletKit.approve(proposalId: id, namespaces: namespaces)
+                _ = try await WalletKit.instance.approve(proposalId: id, namespaces: namespaces)
             } catch let error as WalletConnectV2Error {
                 self.displayErrorUI(error)
             } catch {
@@ -400,7 +399,7 @@ final class WalletConnectV2Service {
     private func sessionRejected(with proposal: Session.Proposal) {
         runTask { [weak self] in
             do {
-                try await self?.walletKit.rejectSession(proposalId: proposal.id, reason: .userRejected)
+                try await WalletKit.instance.rejectSession(proposalId: proposal.id, reason: .userRejected)
                 self?.log("User reject WC connection")
             } catch {
                 AppLog.shared.error("[WC 2.0] Failed to reject WC connection with error: \(error)")
@@ -426,7 +425,7 @@ final class WalletConnectV2Service {
                 error: error
             )
 
-            try? await walletKit.respond(
+            try? await WalletKit.instance.respond(
                 topic: request.topic,
                 requestId: request.id,
                 response: .error(.init(code: 0, message: error.localizedDescription))
@@ -476,7 +475,7 @@ final class WalletConnectV2Service {
             )
 
             log("Receive result from user \(result) for \(logSuffix)")
-            try await walletKit.respond(topic: session.topic, requestId: request.id, response: result)
+            try await WalletKit.instance.respond(topic: session.topic, requestId: request.id, response: result)
 
             logAnalytics(
                 request: request,
