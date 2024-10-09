@@ -67,9 +67,12 @@ extension CommonStakingManager: StakingManager {
         do {
             async let balances = provider.balances(wallet: wallet)
             async let yield = provider.yield(integrationId: integrationId)
+            async let actions = provider.actions(wallet: wallet)
 
-            try await repository.checkIfConfirmed(balances: balances)
-            try await updateState(state(balances: balances, yield: yield))
+            let result = try await (balances, yield, actions)
+
+            repository.checkIfConfirmed(balances: result.0)
+            updateState(state(balances: result.0, yield: result.1))
         } catch {
             logger.error(error)
             updateState(.loadingError(error.localizedDescription))
@@ -236,6 +239,7 @@ private extension CommonStakingManager {
             amount: action.amount,
             validator: request.request.validator,
             transactions: transactions
+//            transactions: [transactions.first!]
         )
     }
 

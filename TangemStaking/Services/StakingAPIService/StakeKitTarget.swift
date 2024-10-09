@@ -30,6 +30,7 @@ struct StakeKitTarget: Moya.TargetType {
         case constructTransaction(id: String, body: StakeKitDTO.ConstructTransaction.Request)
         case submitTransaction(id: String, body: StakeKitDTO.SubmitTransaction.Request)
         case submitHash(id: String, body: StakeKitDTO.SubmitHash.Request)
+        case actions(StakeKitDTO.Actions.List.Request)
     }
 
     var baseURL: URL {
@@ -62,12 +63,14 @@ struct StakeKitTarget: Moya.TargetType {
             return "transactions/\(id)/submit"
         case .submitHash(let id, _):
             return "transactions/\(id)/submit_hash"
+        case .actions(let request):
+            return "actions"
         }
     }
 
     var method: Moya.Method {
         switch target {
-        case .getYield, .enabledYields, .transaction:
+        case .getYield, .enabledYields, .transaction, .actions:
             return .get
         case .enterAction, .exitAction, .pendingAction, .getBalances, .submitTransaction, .submitHash,
              .estimateGasEnterAction, .estimateGasExitAction, .estimateGasPendingAction:
@@ -103,6 +106,14 @@ struct StakeKitTarget: Moya.TargetType {
             return .requestJSONEncodable(request)
         case .estimateGasPendingAction(let request):
             return .requestJSONEncodable(request)
+        case .actions(let request):
+            return .requestParameters(
+                parameters: [
+                    "walletAddress": request.walletAddress,
+                    "network": request.network.rawValue,
+                ],
+                encoding: URLEncoding.queryString
+            )
         }
     }
 
