@@ -26,7 +26,7 @@ struct MarketsTokenDetailsMetricsView: View {
 
             LazyVGrid(columns: gridItems, alignment: .center, spacing: 16, content: {
                 ForEach(viewModel.records.indexed(), id: \.1.id) { index, info in
-                    TokenMarketsDetailsStatisticsRecordView(
+                    MarketsTokenDetailsStatisticsRecordView(
                         title: info.title,
                         message: info.recordData,
                         trend: nil,

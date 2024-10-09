@@ -1,5 +1,5 @@
 //
-//  TokenMarketsDetailsPriceInfoHelper.swift
+//  MarketsTokenDetailsPriceInfoHelper.swift
 //  Tangem
 //
 //  Created by Andrey Fedorov on 05.08.2024.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-final class TokenMarketsDetailsPriceInfoHelper {
+final class MarketsTokenDetailsPriceInfoHelper {
     typealias PriceInfo = (price: String, priceChangeState: TokenPriceChangeView.State)
 
     private let priceChangeUtility = PriceChangeUtility()

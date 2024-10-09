@@ -55,7 +55,7 @@ struct MainCoordinatorView: CoordinatorView {
                 StakingDetailsCoordinatorView(coordinator: $0)
             }
             .navigation(item: $coordinator.marketsTokenDetailsCoordinator) {
-                TokenMarketsDetailsCoordinatorView(coordinator: $0)
+                MarketsTokenDetailsCoordinatorView(coordinator: $0)
             }
     }
 
