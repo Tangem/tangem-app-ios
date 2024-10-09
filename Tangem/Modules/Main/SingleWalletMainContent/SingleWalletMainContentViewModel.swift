@@ -15,9 +15,7 @@ final class SingleWalletMainContentViewModel: SingleTokenBaseViewModel, Observab
 
     @Published var notificationInputs: [NotificationViewInput] = []
 
-    private(set) lazy var bottomSheetFooterViewModel: MainBottomSheetFooterViewModel? = FeatureProvider.isAvailable(.markets)
-        ? MainBottomSheetFooterViewModel()
-        : nil
+    private(set) lazy var bottomSheetFooterViewModel = MainBottomSheetFooterViewModel()
 
     // MARK: - Dependencies
 

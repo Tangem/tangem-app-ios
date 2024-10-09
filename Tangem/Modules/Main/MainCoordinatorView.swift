@@ -88,9 +88,6 @@ struct MainCoordinatorView: CoordinatorView {
                         .navigationBarTitleDisplayMode(.inline)
                 }
             }
-            .sheet(item: $coordinator.legacyTokenListCoordinator) {
-                LegacyTokenListCoordinatorView(coordinator: $0)
-            }
             .sheet(item: $coordinator.visaTransactionDetailsViewModel) {
                 VisaTransactionDetailsView(viewModel: $0)
             }

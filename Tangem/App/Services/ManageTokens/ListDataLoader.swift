@@ -11,7 +11,7 @@ import Combine
 import TangemSdk
 import BlockchainSdk
 
-class ListDataLoader {
+class TokensListDataLoader {
     // MARK: Dependencies
 
     @Injected(\.tangemApiService) var tangemApiService: TangemApiService
@@ -57,7 +57,7 @@ class ListDataLoader {
     }
 
     func reset(_ searchText: String?) {
-        log("Reset loader list tokens")
+        log("Reset Tokens loader list tokens")
 
         canFetchMore = true
         items = []
@@ -117,7 +117,7 @@ class ListDataLoader {
 
 // MARK: Private
 
-private extension ListDataLoader {
+private extension TokensListDataLoader {
     func loadItems(_ searchText: String) async throws -> [CoinModel] {
         let searchText = searchText.trimmed()
         let requestModel = CoinsList.Request(
@@ -221,6 +221,6 @@ private extension ListDataLoader {
     }
 
     private func log<T>(_ message: @autoclosure () -> T) {
-        AppLog.shared.debug("[ListDataLoader] - \(message())")
+        AppLog.shared.debug("[TokensListDataLoader] - \(message())")
     }
 }
