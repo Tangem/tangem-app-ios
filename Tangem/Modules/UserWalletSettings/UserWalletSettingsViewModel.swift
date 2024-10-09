@@ -81,7 +81,7 @@ private extension UserWalletSettingsViewModel {
             backupViewModel = nil
         }
 
-        if FeatureProvider.isAvailable(.markets), userWalletModel.config.hasFeature(.multiCurrency) {
+        if userWalletModel.config.hasFeature(.multiCurrency) {
             manageTokensViewModel = .init(
                 title: Localization.mainManageTokens,
                 action: weakify(self, forFunction: UserWalletSettingsViewModel.openManageTokens)
@@ -163,10 +163,6 @@ private extension UserWalletSettingsViewModel {
     }
 
     func openManageTokens() {
-        guard FeatureProvider.isAvailable(.markets) else {
-            return
-        }
-
         Analytics.log(.settingsButtonManageTokens)
 
         coordinator?.openManageTokens(userWalletModel: userWalletModel)
