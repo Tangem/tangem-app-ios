@@ -501,13 +501,13 @@
 "onboarding_subtitle_scan_backup_card_format" = "番号%@のバックアップカードを準備してください";
 "onboarding_subtitle_scan_primary" = "プライマリカードまたはリングをスキャンして、バックアップ処理を開始します。";
 "onboarding_subtitle_scan_primary_card_format" = "番号%@のプライマリカードを準備してください";
-"onboarding_subtitle_scan_ring" = "Prepare the ring and press the scan button below";
+"onboarding_subtitle_scan_ring" = "リングを準備して、下のスキャンボタンを押してください";
 "onboarding_subtitle_success_tangem_wallet_onboarding" = "ウォレットが設定され、使用できるようになりました。";
 "onboarding_subtitle_two_backup_cards" = "最大数のデバイスが追加されました。バックアップ処理を完了します。";
 "onboarding_title" = "ウォレットの有効化";
-"onboarding_title_backup_card" = "Backup card";
+"onboarding_title_backup_card" = "バックアップカード";
 "onboarding_title_backup_card_format" = "バックアップカード # %li";
-"onboarding_title_backup_ring" = "Backup ring";
+"onboarding_title_backup_ring" = "バックアップリング";
 "onboarding_title_no_backup_cards" = "バックアップカードまたはリングなし";
 "onboarding_title_notifications" = "通知";
 "onboarding_title_one_backup_card" = "バックアップデバイスが1つ追加されました";

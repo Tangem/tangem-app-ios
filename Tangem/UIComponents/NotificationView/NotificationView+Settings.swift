@@ -83,21 +83,32 @@ extension NotificationView {
             case .secondary: Colors.Button.disabled
             case .action: Colors.Background.action
             case .ring:
-                Assets.promoRingBg.image
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .background(Color(hex: "#1E1E1E")!)
-                    .overlay {
-                        HStack {
-                            Assets.promoRingIcon.image
-                                .resizable()
-                                .frame(width: 60, height: 119)
-                                .offset(CGSize(width: 0, height: 30.0))
-                                .padding(.top, 12)
-                                .padding(.leading, 14)
-                            Spacer()
-                        }
+                ZStack {
+                    Assets.promoRingBg.image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                }
+                .background(Color(hex: "#1E1E1E")!)
+            }
+        }
+
+        @ViewBuilder
+        var overlay: some View {
+            switch self {
+            case .ring:
+                VStack(alignment: .leading) {
+                    HStack(alignment: .top) {
+                        Assets.promoRingIcon.image
+                            .resizable()
+                            .frame(width: 60, height: 119)
+                            .offset(CGSize(width: 0, height: 25.0))
+                            .padding(.top, 12)
+                            .padding(.leading, 14)
+                        Spacer()
                     }
+                }
+            default:
+                EmptyView()
             }
         }
 

@@ -48,7 +48,7 @@
 "card_settings_action_sheet_reset" = "Сбросить";
 "card_settings_action_sheet_title" = "Вы уверены, что хотите это сделать?";
 "card_settings_change_access_code" = "Смена кода доступа";
-"card_settings_change_access_code_footer" = "Код доступа будет изменен только на данной карте";
+"card_settings_change_access_code_footer" = "Код доступа будет изменен только на данной карте или кольце";
 "card_settings_completed_reset_alert_message" = "Все устройства Tangem выбранного кошелька сброшены до заводских настроек, вы можете создать новый кошелек";
 "card_settings_completed_reset_alert_title" = "Сброс завершён";
 "card_settings_continue_reset_alert_message" = "Хотите сбросить следующее устройство от этого кошелька?";
@@ -57,7 +57,7 @@
 "card_settings_interrupted_reset_alert_title" = "Вы сбросили не все Tangem устройства";
 "card_settings_reset_card_to_factory" = "Заводские настройки";
 "card_settings_security_mode" = "Тип безопасности";
-"card_settings_title" = "Настройки карты";
+"card_settings_title" = "Настройки устройства";
 "cardano_coin_will_be_send_with_token_description" = "Помимо сетевой комиссий, сеть Cardano взимает %1$@ ADA при транзакции с токеном %2$@";
 "cardano_coin_will_be_send_with_token_title" = "Требования к транзакции Cardano";
 "cardano_insufficient_balance_to_send_token_description" = "Чтобы совершить транзакцию %1$@, внесите некоторую сумму ADA для покрытия сетевой комиссии и минимального значения ADA (рекомендуется 5 ADA)";
@@ -214,7 +214,7 @@
 "details_referral_title" = "Реферальная программа";
 "details_row_description_flip_to_hide" = "Переверните экран вашего устройства вниз, чтобы быстро скрыть и отобразить балансы";
 "details_row_subtitle_signed_hashes_format" = "%@ хэшей";
-"details_row_title_cid" = "Номер карты";
+"details_row_title_cid" = "Номер устройства";
 "details_row_title_contact_to_support" = "Обратиться в поддержку";
 "details_row_title_create_backup" = "Добавить еще карты";
 "details_row_title_create_backup_footer" = "Вы можете объединить до трех устройств в одном кошельке. Это можно сделать только один раз.";

@@ -48,7 +48,7 @@
 "card_settings_action_sheet_reset" = "Reset";
 "card_settings_action_sheet_title" = "Are you sure you want to do this?";
 "card_settings_change_access_code" = "Change Access Code";
-"card_settings_change_access_code_footer" = "Access code will be changed on this card only";
+"card_settings_change_access_code_footer" = "Access code will be changed on this card or ring only";
 "card_settings_completed_reset_alert_message" = "All Tangem devices in the selected wallet have been reset to factory settings. You can now create a new wallet.";
 "card_settings_completed_reset_alert_title" = "Reset complete";
 "card_settings_continue_reset_alert_message" = "Do you want to reset the next device in this wallet?";
@@ -57,7 +57,7 @@
 "card_settings_interrupted_reset_alert_title" = "You haven't reset all your Tangem devices";
 "card_settings_reset_card_to_factory" = "Reset to Factory Settings";
 "card_settings_security_mode" = "Security Mode";
-"card_settings_title" = "Card settings";
+"card_settings_title" = "Device settings";
 "cardano_coin_will_be_send_with_token_description" = "In addition to network fee, the Cardano network charges %1$@ ADA when transacting with the %2$@ token";
 "cardano_coin_will_be_send_with_token_title" = "Cardano transaction requirements";
 "cardano_insufficient_balance_to_send_token_description" = "To make a %1$@ transaction, you must deposit some ADA to cover the network fee and minimum ADA value (5 ADA recommended)";

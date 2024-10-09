@@ -35,6 +35,7 @@ struct NotificationView: View {
         .padding(.vertical, 12)
         .padding(.horizontal, 14)
         .background(settings.event.colorScheme.background)
+        .overlay(settings.event.colorScheme.overlay)
         .cornerRadiusContinuous(14)
     }
 
