@@ -323,7 +323,7 @@ private extension MarketsTokensNetworkSelectorViewModel {
         ))
     }
 
-    func displayWarningNotification(for event: WarningEvent) {
+    func displayWarningNotification(for event: GeneralNotificationEvent) {
         let notificationsFactory = NotificationsFactory()
 
         notificationInput = notificationsFactory.buildNotificationInput(

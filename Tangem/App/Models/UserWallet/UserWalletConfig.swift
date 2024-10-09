@@ -29,7 +29,7 @@ protocol UserWalletConfig: OnboardingStepsBuilderFactory, BackupServiceFactory, 
 
     var tangemSigner: TangemSigner { get }
 
-    var warningEvents: [WarningEvent] { get }
+    var generalNotificationEvents: [GeneralNotificationEvent] { get }
 
     var canSkipBackup: Bool { get }
 

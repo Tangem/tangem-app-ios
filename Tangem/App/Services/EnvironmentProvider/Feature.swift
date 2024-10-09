@@ -11,14 +11,12 @@ import Foundation
 enum Feature: String, Hashable, CaseIterable {
     case disableFirmwareVersionLimit
     case learnToEarn
-    case markets
     case dynamicFonts
 
     var name: String {
         switch self {
         case .disableFirmwareVersionLimit: return "Disable firmware version limit"
         case .learnToEarn: return "Learn to Earn"
-        case .markets: return "Markets"
         case .dynamicFonts: return "Dynamic fonts"
         }
     }
@@ -27,7 +25,6 @@ enum Feature: String, Hashable, CaseIterable {
         switch self {
         case .disableFirmwareVersionLimit: return .unspecified
         case .learnToEarn: return .unspecified
-        case .markets: return .version("5.15")
         case .dynamicFonts: return .unspecified
         }
     }
