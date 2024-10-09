@@ -23,4 +23,5 @@ public enum ExpressTransactionStatus: String, Codable {
     case txFailed = "tx-failed"
     case refunded
     case verifying
+    case paused
 }

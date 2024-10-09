@@ -18,27 +18,39 @@ struct UnstakingFlowBaseBuilder {
     let sendFinishStepBuilder: SendFinishStepBuilder
     let builder: SendDependenciesBuilder
 
-    func makeSendViewModel(manager: any StakingManager, action: UnstakingModel.Action, router: SendRoutable) -> SendViewModel {
+    func makeSendViewModel(manager: some StakingManager, action: UnstakingModel.Action, router: SendRoutable) -> SendViewModel {
         let unstakingModel = builder.makeUnstakingModel(stakingManager: manager, action: action)
         let notificationManager = builder.makeStakingNotificationManager()
         notificationManager.setup(provider: unstakingModel, input: unstakingModel)
         notificationManager.setupManager(with: unstakingModel)
 
+        let actionType = builder.sendFlowActionType(actionType: action.type)
+
+        let io = (input: unstakingModel, output: unstakingModel)
+
+        let amount = sendAmountStepBuilder.makeSendAmountStep(
+            io: io,
+            actionType: actionType,
+            sendFeeLoader: unstakingModel,
+            sendQRCodeService: .none,
+            sendAmountValidator: builder.makeStakingSendAmountValidator(stakingManager: manager),
+            amountModifier: builder.makeStakingAmountModifier(),
+            source: .staking
+        )
+
+        amount.interactor.externalUpdate(amount: io.input.amount?.crypto)
+
         let sendFeeCompactViewModel = sendFeeStepBuilder.makeSendFeeCompactViewModel(input: unstakingModel)
         sendFeeCompactViewModel.bind(input: unstakingModel)
 
-        let sendAmountCompactViewModel = sendAmountStepBuilder.makeSendAmountCompactViewModel(input: unstakingModel)
-
-        let actionType = builder.sendFlowActionType(actionType: action.type)
-
         let summary = sendSummaryStepBuilder.makeSendSummaryStep(
-            io: (input: unstakingModel, output: unstakingModel),
+            io: io,
             actionType: actionType,
             descriptionBuilder: builder.makeStakingTransactionSummaryDescriptionBuilder(),
             notificationManager: notificationManager,
-            editableType: .noEditable,
+            editableType: .editable,
             sendDestinationCompactViewModel: .none,
-            sendAmountCompactViewModel: sendAmountCompactViewModel,
+            sendAmountCompactViewModel: amount.compact,
             stakingValidatorsCompactViewModel: .none,
             sendFeeCompactViewModel: sendFeeCompactViewModel
         )
@@ -47,16 +59,19 @@ struct UnstakingFlowBaseBuilder {
             input: unstakingModel,
             actionType: actionType,
             sendDestinationCompactViewModel: .none,
-            sendAmountCompactViewModel: sendAmountCompactViewModel,
+            sendAmountCompactViewModel: amount.compact,
             stakingValidatorsCompactViewModel: .none,
             sendFeeCompactViewModel: sendFeeCompactViewModel
         )
 
         let stepsManager = CommonUnstakingStepsManager(
+            amountStep: amount.step,
             summaryStep: summary.step,
             finishStep: finish,
             action: action
         )
+
+        summary.step.set(router: stepsManager)
 
         let interactor = CommonSendBaseInteractor(input: unstakingModel, output: unstakingModel)
 

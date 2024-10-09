@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum WarningEvent: Equatable, Hashable {
+enum GeneralNotificationEvent: Equatable, Hashable {
     case numberOfSignedHashesIncorrect
     case rateApp
     case failedToVerifyCard
@@ -29,7 +29,7 @@ enum WarningEvent: Equatable, Hashable {
 }
 
 // For Notifications
-extension WarningEvent: NotificationEvent {
+extension GeneralNotificationEvent: NotificationEvent {
     var defaultTitle: String {
         Localization.commonWarning
     }
@@ -253,7 +253,7 @@ extension WarningEvent: NotificationEvent {
 
 // MARK: Analytics info
 
-extension WarningEvent {
+extension GeneralNotificationEvent {
     var analyticsEvent: Analytics.Event? {
         switch self {
         case .numberOfSignedHashesIncorrect: return .mainNoticeCardSignedTransactions

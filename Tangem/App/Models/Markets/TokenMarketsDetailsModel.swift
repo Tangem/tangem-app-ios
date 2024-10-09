@@ -16,6 +16,7 @@ struct TokenMarketsDetailsModel: Identifiable {
     let currentPrice: Decimal
     let shortDescription: String?
     let fullDescription: String?
+    let numberOfExchangesListedOn: Int?
     let priceChangePercentage: [String: Decimal]
     let insights: TokenMarketsDetailsInsights?
     let metrics: MarketsTokenDetailsMetrics?

@@ -94,21 +94,21 @@ private extension MultipleRewardsViewModel {
             imageURL: validator.iconURL,
             subtitleType: subtitleType,
             detailsType: .balance(.init(crypto: balanceCryptoFormatted, fiat: balanceFiatFormatted)) { [weak self] in
-                self?.openUnstakingFlow(balance: balance)
+                self?.openStakingSingleActionFlow(balance: balance)
             }
         )
     }
 
-    func openUnstakingFlow(balance: StakingBalance) {
+    func openStakingSingleActionFlow(balance: StakingBalance) {
         do {
             let action = try PendingActionMapper(balance: balance).getAction()
             switch action {
             case .single(let action):
-                coordinator?.openUnstakingFlow(action: action)
+                coordinator?.openStakingSingleActionFlow(action: action)
             case .multiple(let actions):
                 var buttons: [Alert.Button] = actions.map { action in
                     .default(Text(action.type.title)) { [weak self] in
-                        self?.coordinator?.openUnstakingFlow(action: action)
+                        self?.coordinator?.openStakingSingleActionFlow(action: action)
                     }
                 }
 
