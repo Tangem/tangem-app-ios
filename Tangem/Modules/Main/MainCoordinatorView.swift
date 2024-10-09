@@ -82,7 +82,11 @@ struct MainCoordinatorView: CoordinatorView {
                     })
             }
             .sheet(item: $coordinator.organizeTokensViewModel) { viewModel in
-                OrganizeTokensContainerView(viewModel: viewModel)
+                NavigationBarHiddingView(shouldWrapInNavigationView: true) {
+                    OrganizeTokensView(viewModel: viewModel)
+                        .navigationTitle(Localization.organizeTokensTitle)
+                        .navigationBarTitleDisplayMode(.inline)
+                }
             }
             .sheet(item: $coordinator.visaTransactionDetailsViewModel) {
                 VisaTransactionDetailsView(viewModel: $0)

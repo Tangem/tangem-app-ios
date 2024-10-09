@@ -15,6 +15,7 @@ struct TokenMarketsDetailsCoordinatorView: CoordinatorView {
         ZStack {
             if let viewModel = coordinator.rootViewModel {
                 TokenMarketsDetailsView(viewModel: viewModel)
+                    .navigationLinks(links)
             }
 
             sheets
@@ -56,5 +57,23 @@ struct TokenMarketsDetailsCoordinatorView: CoordinatorView {
             ) {
                 ReceiveBottomSheetView(viewModel: $0)
             }
+    }
+
+    @ViewBuilder
+    private var links: some View {
+        NavHolder()
+            .navigation(item: $coordinator.exchangesListViewModel) { viewModel in
+                let container = NavigationBarHiddingView(shouldWrapInNavigationView: false) {
+                    MarketsTokenDetailsExchangesListView(viewModel: viewModel)
+                }
+
+                if #available(iOS 16, *) {
+                    container
+                } else {
+                    container
+                        .ignoresSafeArea(.container, edges: .vertical) // Without this on iOS 15 content won't ignore safe area and don't go below navbar
+                }
+            }
+            .emptyNavigationLink()
     }
 }

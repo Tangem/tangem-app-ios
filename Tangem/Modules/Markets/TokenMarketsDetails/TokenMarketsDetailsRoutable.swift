@@ -13,4 +13,5 @@ protocol TokenMarketsDetailsRoutable: AnyObject, MarketsPortfolioContainerRoutab
     func openTokenSelector(with model: TokenMarketsDetailsModel, walletDataProvider: MarketsWalletDataProvider)
     func openMail(with dataCollector: EmailDataCollector, emailType: EmailType)
     func closeModule()
+    func openExchangesList(tokenId: String, numberOfExchangesListedOn: Int, presentationStyle: MarketsTokenDetailsPresentationStyle)
 }

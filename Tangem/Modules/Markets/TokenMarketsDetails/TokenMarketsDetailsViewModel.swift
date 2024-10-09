@@ -35,6 +35,7 @@ class TokenMarketsDetailsViewModel: MarketsBaseViewModel {
     @Published private(set) var linksSections: [TokenMarketsDetailsLinkSection] = []
     @Published private(set) var portfolioViewModel: MarketsPortfolioContainerViewModel?
     @Published private(set) var historyChartViewModel: MarketsHistoryChartViewModel?
+    @Published private(set) var numberOfExchangesListedOn: Int?
 
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
 
@@ -53,7 +54,7 @@ class TokenMarketsDetailsViewModel: MarketsBaseViewModel {
 
     var priceChangeState: TokenPriceChangeView.State? { priceInfo?.priceChangeState }
 
-    var isMarketsSheetStyle: Bool { style == .marketsSheet }
+    var isMarketsSheetStyle: Bool { presentationStyle == .marketsSheet }
 
     private var priceInfo: TokenMarketsDetailsPriceInfoHelper.PriceInfo? {
         guard let currentPrice = priceFromQuoteRepository else {
@@ -114,7 +115,7 @@ class TokenMarketsDetailsViewModel: MarketsBaseViewModel {
     private let initialDate = Date()
 
     private let tokenInfo: MarketsTokenModel
-    private let style: Style
+    private let presentationStyle: MarketsTokenDetailsPresentationStyle
     private let dataProvider: MarketsTokenDetailsDataProvider
     private let marketsQuotesUpdateHelper: MarketsQuotesUpdateHelper
     private let walletDataProvider = MarketsWalletDataProvider()
@@ -127,13 +128,13 @@ class TokenMarketsDetailsViewModel: MarketsBaseViewModel {
 
     init(
         tokenInfo: MarketsTokenModel,
-        style: Style,
+        presentationStyle: MarketsTokenDetailsPresentationStyle,
         dataProvider: MarketsTokenDetailsDataProvider,
         marketsQuotesUpdateHelper: MarketsQuotesUpdateHelper,
         coordinator: TokenMarketsDetailsRoutable?
     ) {
         self.tokenInfo = tokenInfo
-        self.style = style
+        self.presentationStyle = presentationStyle
         self.dataProvider = dataProvider
         self.marketsQuotesUpdateHelper = marketsQuotesUpdateHelper
         self.coordinator = coordinator
@@ -220,6 +221,14 @@ class TokenMarketsDetailsViewModel: MarketsBaseViewModel {
         overlayContentHidingInitialProgress = state.isCollapsed ? 0.0 : 1.0
     }
 
+    func openExchangesList() {
+        guard let numberOfExchangesListedOn = numberOfExchangesListedOn else {
+            return
+        }
+
+        coordinator?.openExchangesList(tokenId: tokenInfo.id, numberOfExchangesListedOn: numberOfExchangesListedOn, presentationStyle: presentationStyle)
+    }
+
     func onGenerateAITapAction() {
         descriptionBottomSheetInfo = nil
 
@@ -264,6 +273,7 @@ private extension TokenMarketsDetailsViewModel {
         loadedInfo = model
 
         state = .loaded(model: model)
+        numberOfExchangesListedOn = model.numberOfExchangesListedOn
 
         makeBlocksViewModels(using: model)
     }
@@ -423,7 +433,7 @@ private extension TokenMarketsDetailsViewModel {
     }
 
     func makePortfolioViewModel() {
-        guard style == .marketsSheet else {
+        guard isMarketsSheetStyle else {
             return
         }
 
@@ -508,9 +518,7 @@ extension TokenMarketsDetailsViewModel {
     }
 }
 
-extension TokenMarketsDetailsViewModel {
-    enum Style {
-        case marketsSheet
-        case defaultNavigationStack
-    }
+enum MarketsTokenDetailsPresentationStyle {
+    case marketsSheet
+    case defaultNavigationStack
 }
