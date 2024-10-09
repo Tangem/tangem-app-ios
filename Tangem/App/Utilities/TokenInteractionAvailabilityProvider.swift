@@ -103,7 +103,8 @@ struct TokenInteractionAvailabilityProvider {
              .sei,
              .sui,
              .energyWebEVM,
-             .energyWebX:
+             .energyWebX,
+             .core:
 
             // Checking that we have at least one valid (non-empty) address
             //

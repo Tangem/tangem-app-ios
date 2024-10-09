@@ -12,6 +12,7 @@ import Combine
 public protocol StakingManager {
     var state: StakingManagerState { get }
     var statePublisher: AnyPublisher<StakingManagerState, Never> { get }
+    var allowanceAddress: String? { get }
 
     func updateState() async
     func estimateFee(action: StakingAction) async throws -> Decimal

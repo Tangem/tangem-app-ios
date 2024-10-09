@@ -108,7 +108,8 @@ struct SendTransactionParametersBuilder {
              .filecoin,
              .sui,
              .energyWebEVM,
-             .energyWebX:
+             .energyWebX,
+             .core:
             return nil
         }
     }

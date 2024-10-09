@@ -10,7 +10,7 @@ import Foundation
 import Combine
 import CombineExt
 
-class TokenMarketsDetailsViewModel: BaseMarketsViewModel {
+class TokenMarketsDetailsViewModel: MarketsBaseViewModel {
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
 
     @Published private(set) var priceChangeAnimation: ForegroundBlinkAnimationModifier.Change = .neutral
@@ -206,7 +206,6 @@ class TokenMarketsDetailsViewModel: BaseMarketsViewModel {
         descriptionBottomSheetInfo = .init(
             title: Localization.marketsTokenDetailsAboutTokenTitle(tokenInfo.name),
             description: fullDescription,
-            isGeneratedWithAI: true,
             showCloseButton: true
         )
     }
@@ -219,6 +218,17 @@ class TokenMarketsDetailsViewModel: BaseMarketsViewModel {
         // Our view can be recreated when the bottom sheet is in a collapsed state
         // In this case, content should be hidden (i.e. the initial progress should be zero)
         overlayContentHidingInitialProgress = state.isCollapsed ? 0.0 : 1.0
+    }
+
+    func onGenerateAITapAction() {
+        descriptionBottomSheetInfo = nil
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+            guard let self else { return }
+
+            let dataCollector = TokenErrorDescriptionDataCollector(tokenId: tokenInfo.id, tokenName: tokenInfo.name)
+            coordinator?.openMail(with: dataCollector, emailType: .appFeedback(subject: Localization.feedbackTokenDescriptionError))
+        }
     }
 }
 

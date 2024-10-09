@@ -161,7 +161,8 @@ private extension CommonExpressTransactionBuilder {
              .filecoin,
              .sui,
              .energyWebEVM,
-             .energyWebX:
+             .energyWebX,
+             .core:
             throw ExpressTransactionBuilderError.blockchainDonNotSupportedExtraId
         }
     }

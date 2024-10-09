@@ -102,7 +102,7 @@ private extension StakingModel {
     }
 
     func state(amount: Decimal, validator: ValidatorInfo, approvePolicy: ApprovePolicy) async throws -> StakingModel.State {
-        if let allowanceState = try await allowanceState(amount: amount, validator: validator, approvePolicy: approvePolicy) {
+        if let allowanceState = try await allowanceState(amount: amount, approvePolicy: approvePolicy) {
             switch allowanceState {
             case .permissionRequired(let approveData):
                 stopTimer()
@@ -167,13 +167,13 @@ private extension StakingModel {
         )
     }
 
-    func allowanceState(amount: Decimal, validator: ValidatorInfo, approvePolicy: ApprovePolicy) async throws -> AllowanceState? {
-        guard allowanceProvider.isSupportAllowance else {
+    func allowanceState(amount: Decimal, approvePolicy: ApprovePolicy) async throws -> AllowanceState? {
+        guard allowanceProvider.isSupportAllowance, let spender = stakingManager.allowanceAddress else {
             return nil
         }
 
         return try await allowanceProvider
-            .allowanceState(amount: amount, spender: validator.address, approvePolicy: approvePolicy)
+            .allowanceState(amount: amount, spender: spender, approvePolicy: approvePolicy)
     }
 
     func mapToSendFee(_ state: State?) -> SendFee {
@@ -410,7 +410,11 @@ extension StakingModel: SendFinishInput {
 
 extension StakingModel: SendBaseInput, SendBaseOutput {
     var actionInProcessing: AnyPublisher<Bool, Never> {
-        _isLoading.eraseToAnyPublisher()
+        Publishers.Merge(
+            stakingManager.statePublisher.map { $0 == .loading },
+            _isLoading
+        )
+        .eraseToAnyPublisher()
     }
 
     func performAction() async throws -> SendTransactionDispatcherResult {

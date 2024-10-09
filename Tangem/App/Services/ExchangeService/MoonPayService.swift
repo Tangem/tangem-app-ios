@@ -389,6 +389,7 @@ private extension Blockchain {
         case .sui: return "sui"
         case .energyWebEVM: return nil
         case .energyWebX: return nil
+        case .core: return nil
             // Did you get a compilation error here? If so, check whether the network is supported at https://api.moonpay.com/v3/currencies
         }
     }
@@ -468,6 +469,7 @@ private extension Blockchain {
         case .sui: return "sui"
         case .energyWebEVM: return nil
         case .energyWebX: return nil
+        case .core: return nil
             // Did you get a compilation error here? If so, check whether the network is supported at https://api.moonpay.com/v3/currencies
         }
     }
