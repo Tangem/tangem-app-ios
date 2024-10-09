@@ -158,7 +158,7 @@ struct WalletOnboardingView: View {
                                         .foregroundColor(.white)
                                         .padding(.horizontal, 12)
                                         .padding(.vertical, 5)
-                                        .background(Color.white.opacity(0.25))
+                                        .background(Color(hex: "575757"))
                                         .cornerRadius(50)
                                         .zIndex(251)
                                         .padding(12)
