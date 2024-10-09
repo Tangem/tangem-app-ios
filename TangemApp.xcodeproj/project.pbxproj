@@ -22,6 +22,9 @@
 		0A81B38E2BB3018E0008F21C /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 0A81B38D2BB3018E0008F21C /* ZIPFoundation */; };
 		0AB5A4732C5267CB00491764 /* SegmentedPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB5A4722C5267CB00491764 /* SegmentedPicker.swift */; };
 		0ABC61152C410AFD00065EBA /* TweetNacl in Frameworks */ = {isa = PBXBuildFile; productRef = 0ABC61142C410AFD00065EBA /* TweetNacl */; };
+		0AC9EFF52CAE8515005F868F /* StakingSingleActionFlowBaseBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC9EFF42CAE8515005F868F /* StakingSingleActionFlowBaseBuilder.swift */; };
+		0AC9EFF72CAE857C005F868F /* StakingSingleActionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC9EFF62CAE857C005F868F /* StakingSingleActionModel.swift */; };
+		0AC9EFF92CAE9B2C005F868F /* CommonStakingSingleActionStepsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC9EFF82CAE9B2C005F868F /* CommonStakingSingleActionStepsManager.swift */; };
 		0AD13F952C8AD76800C2EE16 /* CommonStakingAnalyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD13F942C8AD76800C2EE16 /* CommonStakingAnalyticsLogger.swift */; };
 		290167CAE4AB04EF14809C71 /* Pods_Tangem_TangemUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A1A9153420AB02B11100282 /* Pods_Tangem_TangemUITests.framework */; };
 		2B46B1E3B841BE8E73049275 /* Pods_TangemFoundationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A168C4F090FBAC6A3BF2815 /* Pods_TangemFoundationTests.framework */; };
@@ -1932,6 +1935,9 @@
 		0A7FF63C2C888D380072C2E8 /* StakingAnalyticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingAnalyticsLogger.swift; sourceTree = "<group>"; };
 		0A81B3722BB2D24A0008F21C /* BlockchainURLSchemesParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockchainURLSchemesParser.swift; sourceTree = "<group>"; };
 		0AB5A4722C5267CB00491764 /* SegmentedPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPicker.swift; sourceTree = "<group>"; };
+		0AC9EFF42CAE8515005F868F /* StakingSingleActionFlowBaseBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingSingleActionFlowBaseBuilder.swift; sourceTree = "<group>"; };
+		0AC9EFF62CAE857C005F868F /* StakingSingleActionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingSingleActionModel.swift; sourceTree = "<group>"; };
+		0AC9EFF82CAE9B2C005F868F /* CommonStakingSingleActionStepsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonStakingSingleActionStepsManager.swift; sourceTree = "<group>"; };
 		0AD13F942C8AD76800C2EE16 /* CommonStakingAnalyticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonStakingAnalyticsLogger.swift; sourceTree = "<group>"; };
 		0BE949936543D22F51E09DBD /* Pods-Tangem-TangemUITests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.release(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.release(alpha).xcconfig"; sourceTree = "<group>"; };
 		136B5829321AB7962F0F8960 /* Pods-TangemTests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.release(beta).xcconfig"; sourceTree = "<group>"; };
@@ -7442,6 +7448,7 @@
 				EFA4E37E2C3EEE9E008815AD /* StakingModel.swift */,
 				EF0B63F52C5411C900365A50 /* UnstakingModel.swift */,
 				0A713CEB2CAA6DA30042FC27 /* RestakingModel.swift */,
+				0AC9EFF62CAE857C005F868F /* StakingSingleActionModel.swift */,
 				EFA5683B2C480D120064EBA1 /* SendTransactionType.swift */,
 				EF0FBB842C53CA2D0095A6BD /* SendCompactViewEditableType.swift */,
 			);
@@ -9574,6 +9581,7 @@
 				EFA4E3842C3EF914008815AD /* CommonStakingStepsManager.swift */,
 				EF0B63F72C54132B00365A50 /* CommonUnstakingStepsManager.swift */,
 				0A713CEF2CAA76530042FC27 /* CommonRestakingStepsManager.swift */,
+				0AC9EFF82CAE9B2C005F868F /* CommonStakingSingleActionStepsManager.swift */,
 			);
 			path = Flows;
 			sourceTree = "<group>";
@@ -9586,6 +9594,7 @@
 				EFA4E37C2C3EEDF0008815AD /* StakingFlowBaseBuilder.swift */,
 				EF0B63F32C54116000365A50 /* UnstakingFlowBaseBuilder.swift */,
 				0A713CED2CAA73BF0042FC27 /* RestakingFlowBaseBuilder.swift */,
+				0AC9EFF42CAE8515005F868F /* StakingSingleActionFlowBaseBuilder.swift */,
 			);
 			path = Flows;
 			sourceTree = "<group>";
@@ -11086,6 +11095,7 @@
 				B06C084E2A73FB4D00D982BC /* MainView.swift in Sources */,
 				DC5DBBC9289B951600C21E35 /* DemoUtil.swift in Sources */,
 				0A713CF02CAA76530042FC27 /* CommonRestakingStepsManager.swift in Sources */,
+				0AC9EFF92CAE9B2C005F868F /* CommonStakingSingleActionStepsManager.swift in Sources */,
 				DA559C4E2B02622600F59584 /* SendAmountInputMock.swift in Sources */,
 				EFD39C982A6A916C0055D215 /* EnvironmentSetupCoordinatorView.swift in Sources */,
 				5D6784E425EBC94B00149995 /* Blockchain+.swift in Sources */,
@@ -11511,6 +11521,7 @@
 				EF4B41BB2864491B003911F6 /* TangemSkeletonModifier.swift in Sources */,
 				DA559C522B0265E700F59584 /* SendDestinationTextView.swift in Sources */,
 				B0CB73B72A82324200D530BA /* TokenWithoutDerivationInfoProvider.swift in Sources */,
+				0AC9EFF72CAE857C005F868F /* StakingSingleActionModel.swift in Sources */,
 				B020FFBE25DE895E00EF422C /* FileLogger.swift in Sources */,
 				B058D2372A79668D008E79D2 /* TokenQuotesRepositoryMock.swift in Sources */,
 				EF914D502A604627001F00B2 /* QuotesMapper.swift in Sources */,
@@ -12319,6 +12330,7 @@
 				2DBE29C42B3C4A8100109D5E /* View+DetentBottomSheet.swift in Sources */,
 				B0A37B702C2D9A9F005397FA /* TokenMarketsDetailsModel.swift in Sources */,
 				EFC84ADC2C37081C00546882 /* EthereumNetworkProvider+.swift in Sources */,
+				0AC9EFF52CAE8515005F868F /* StakingSingleActionFlowBaseBuilder.swift in Sources */,
 				EF1E17682BF672AC000364AE /* DefaultTextFieldRowView.swift in Sources */,
 				EF41937A2C2DE0CB006A30A5 /* SendAmount.swift in Sources */,
 				B0F318F92A7393FA009F131E /* WalletStubs.swift in Sources */,

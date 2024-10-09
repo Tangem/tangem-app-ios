@@ -33,7 +33,7 @@ class CommonSendAmountInteractor {
 
     private var type: SendAmountCalculationType
 
-    private var _cachedAmount: CurrentValueSubject<SendAmount?, Never> = .init(nil)
+    private var _cachedAmount: CurrentValueSubject<SendAmount?, Never>
     private var _error: CurrentValueSubject<String?, Never> = .init(nil)
     private var _isValid: CurrentValueSubject<Bool, Never> = .init(false)
 
@@ -56,6 +56,8 @@ class CommonSendAmountInteractor {
         self.validator = validator
         self.amountModifier = amountModifier
         self.type = type
+
+        _cachedAmount = CurrentValueSubject(input.amount)
 
         bind()
     }
