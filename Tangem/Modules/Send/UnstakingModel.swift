@@ -29,7 +29,6 @@ class UnstakingModel {
     // MARK: - Dependencies
 
     weak var router: SendModelRoutable?
-    var sendAmountInteractor: SendAmountInteractor!
 
     // MARK: - Private injections
 
