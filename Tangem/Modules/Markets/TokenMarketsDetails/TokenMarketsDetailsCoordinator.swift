@@ -31,6 +31,7 @@ class TokenMarketsDetailsCoordinator: CoordinatorObject {
     @Published var sendCoordinator: SendCoordinator? = nil
     @Published var expressCoordinator: ExpressCoordinator? = nil
     @Published var stakingDetailsCoordinator: StakingDetailsCoordinator? = nil
+    @Published var mailViewModel: MailViewModel? = nil
 
     private var safariHandle: SafariHandle?
 
@@ -77,6 +78,12 @@ extension TokenMarketsDetailsCoordinator: TokenMarketsDetailsRoutable {
                 walletDataProvider: walletDataProvider
             )
         )
+    }
+
+    func openMail(with dataCollector: EmailDataCollector, emailType: EmailType) {
+        let logsComposer = LogsComposer(infoProvider: dataCollector)
+        let recipient = EmailConfig.default.recipient
+        mailViewModel = MailViewModel(logsComposer: logsComposer, recipient: recipient, emailType: emailType)
     }
 
     func openURL(_ url: URL) {
