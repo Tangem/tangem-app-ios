@@ -1,5 +1,5 @@
 //
-//  TokenMarketsDetailsLinkModels.swift
+//  MarketsTokenDetailsLinkModels.swift
 //  Tangem
 //
 //  Created by Andrew Son on 12/07/24.
@@ -8,14 +8,14 @@
 
 import Foundation
 
-struct TokenMarketsDetailsLinkSection: Identifiable {
+struct MarketsTokenDetailsLinkSection: Identifiable {
     let section: Section
     let chips: [MarketsTokenDetailsLinkChipsData]
 
     var id: String { section.rawValue }
 }
 
-extension TokenMarketsDetailsLinkSection {
+extension MarketsTokenDetailsLinkSection {
     enum Section: String {
         case officialLinks
         case social

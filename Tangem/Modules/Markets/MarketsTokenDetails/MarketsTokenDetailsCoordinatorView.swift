@@ -1,5 +1,5 @@
 //
-//  TokenMarketsDetailsCoordinatorView.swift
+//  MarketsTokenDetailsCoordinatorView.swift
 //  Tangem
 //
 //  Created by Andrew Son on 24/06/24.
@@ -8,13 +8,13 @@
 
 import SwiftUI
 
-struct TokenMarketsDetailsCoordinatorView: CoordinatorView {
-    @ObservedObject var coordinator: TokenMarketsDetailsCoordinator
+struct MarketsTokenDetailsCoordinatorView: CoordinatorView {
+    @ObservedObject var coordinator: MarketsTokenDetailsCoordinator
 
     var body: some View {
         ZStack {
             if let viewModel = coordinator.rootViewModel {
-                TokenMarketsDetailsView(viewModel: viewModel)
+                MarketsTokenDetailsView(viewModel: viewModel)
                     .navigationLinks(links)
             }
 

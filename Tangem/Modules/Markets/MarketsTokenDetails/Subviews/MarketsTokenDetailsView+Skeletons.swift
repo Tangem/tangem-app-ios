@@ -1,5 +1,5 @@
 //
-//  TokenMarketsDetailsView+Skeletons.swift
+//  MarketsTokenDetailsView+Skeletons.swift
 //  Tangem
 //
 //  Created by Andrew Son on 27/06/24.
@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-extension TokenMarketsDetailsView {
+extension MarketsTokenDetailsView {
     struct DescriptionBlockSkeletons: View {
         var body: some View {
             VStack(spacing: .zero) {
@@ -202,7 +202,7 @@ extension TokenMarketsDetailsView {
     }
 }
 
-extension TokenMarketsDetailsView.ContentBlockSkeletons {
+extension MarketsTokenDetailsView.ContentBlockSkeletons {
     enum Constants {
         static let bottomPaddingTitleConstant: CGFloat = 8
     }
@@ -210,7 +210,7 @@ extension TokenMarketsDetailsView.ContentBlockSkeletons {
 
 #Preview {
     ScrollView {
-        TokenMarketsDetailsView.ContentBlockSkeletons()
+        MarketsTokenDetailsView.ContentBlockSkeletons()
     }
     .background(Colors.Background.secondary.edgesIgnoringSafeArea(.all))
 }

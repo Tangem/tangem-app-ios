@@ -1,5 +1,5 @@
 //
-//  TokenMarketsHistoryChartMapper.swift
+//  MarketsTokenHistoryChartMapper.swift
 //  Tangem
 //
 //  Created by Andrey Fedorov on 29.07.2024.
@@ -9,7 +9,7 @@
 import Foundation
 import TangemFoundation
 
-struct TokenMarketsHistoryChartMapper {
+struct MarketsTokenHistoryChartMapper {
     /// - Note: Can be used for both 'preview' and 'history' charts.
     func mapAndSortValues(from model: MarketsChartModel) throws -> [LineChartViewData.Value] {
         return try model
@@ -104,7 +104,7 @@ struct TokenMarketsHistoryChartMapper {
 
 // MARK: - Convenience extensions
 
-extension TokenMarketsHistoryChartMapper {
+extension MarketsTokenHistoryChartMapper {
     /// Convenience method, aggregates results from both `mapYAxisData(from:yAxisLabelCount:)`
     /// and `mapXAxisDataAndTrend(from:selectedPriceInterval:)` method calls.
     func mapLineChartViewData(
@@ -126,7 +126,7 @@ extension TokenMarketsHistoryChartMapper {
 
 // MARK: - Auxiliary types
 
-extension TokenMarketsHistoryChartMapper {
+extension MarketsTokenHistoryChartMapper {
     enum ParsingError: Error {
         case notEnoughData
         case timeStampParsingFailed

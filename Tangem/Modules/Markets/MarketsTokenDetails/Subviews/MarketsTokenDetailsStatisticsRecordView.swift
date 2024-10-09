@@ -1,5 +1,5 @@
 //
-//  TokenMarketsDetailsStatisticsRecordView.swift
+//  MarketsTokenDetailsStatisticsRecordView.swift
 //  Tangem
 //
 //  Created by Andrew Son on 08/07/24.
@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct TokenMarketsDetailsStatisticsRecordView: View {
+struct MarketsTokenDetailsStatisticsRecordView: View {
     let title: String
     let message: String
     let trend: Trend?
@@ -56,7 +56,7 @@ struct TokenMarketsDetailsStatisticsRecordView: View {
     }
 }
 
-extension TokenMarketsDetailsStatisticsRecordView {
+extension MarketsTokenDetailsStatisticsRecordView {
     enum Trend {
         case positive
         case negative
@@ -65,21 +65,21 @@ extension TokenMarketsDetailsStatisticsRecordView {
 
 #Preview {
     VStack {
-        TokenMarketsDetailsStatisticsRecordView(
+        MarketsTokenDetailsStatisticsRecordView(
             title: "Experienced buyers",
             message: "+44",
             trend: .positive,
             infoButtonAction: {}
         )
 
-        TokenMarketsDetailsStatisticsRecordView(
+        MarketsTokenDetailsStatisticsRecordView(
             title: "Market capitalization",
             message: "-$26,444,579,982,572,657.00",
             trend: .negative,
             infoButtonAction: {}
         )
 
-        TokenMarketsDetailsStatisticsRecordView(
+        MarketsTokenDetailsStatisticsRecordView(
             title: "Experienced buyers",
             message: "44",
             trend: nil,

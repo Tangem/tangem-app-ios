@@ -27,7 +27,7 @@ struct MarketsTokenDetailsInsightsView: View {
 
             LazyVGrid(columns: gridItems, alignment: .center, spacing: 16, content: {
                 ForEach(viewModel.records.indexed(), id: \.0) { index, info in
-                    TokenMarketsDetailsStatisticsRecordView(
+                    MarketsTokenDetailsStatisticsRecordView(
                         title: info.title,
                         message: info.recordData,
                         trend: info.trend,
@@ -128,7 +128,7 @@ extension MarketsTokenDetailsInsightsView {
     struct RecordInfo: Identifiable {
         let type: RecordType
         let recordData: String
-        let trend: TokenMarketsDetailsStatisticsRecordView.Trend?
+        let trend: MarketsTokenDetailsStatisticsRecordView.Trend?
 
         var id: String {
             "\(type.id) - \(recordData)"
@@ -141,7 +141,7 @@ extension MarketsTokenDetailsInsightsView {
 }
 
 #Preview {
-    let insights = CurrentValueSubject<TokenMarketsDetailsInsights?, Never>(nil)
+    let insights = CurrentValueSubject<MarketsTokenDetailsInsights?, Never>(nil)
 
     return MarketsTokenDetailsInsightsView(
         viewModel: .init(
