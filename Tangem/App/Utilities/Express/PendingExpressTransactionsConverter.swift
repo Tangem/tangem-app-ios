@@ -21,7 +21,7 @@ struct PendingExpressTransactionsConverter {
             switch $0.transactionRecord.transactionStatus {
             case .awaitingDeposit, .confirming, .exchanging, .sendingToUser, .done, .refunded:
                 state = .inProgress
-            case .failed, .canceled, .unknown:
+            case .failed, .canceled, .unknown, .paused:
                 state = .error
             case .verificationRequired, .awaitingHash:
                 state = .warning
@@ -85,7 +85,7 @@ struct PendingExpressTransactionsConverter {
         var state: PendingExpressTransactionStatusRow.State = isCurrentStatus ? .loader : isPendingStatus ? .empty : .checkmark
 
         switch status {
-        case .failed, .unknown:
+        case .failed, .unknown, .paused:
             state = .cross(passed: false)
         case .verificationRequired, .awaitingHash:
             state = .exclamationMark

@@ -182,7 +182,7 @@ DEPENDENCIES:
   - AmplitudeSwift (= 1.6.2)
   - BinanceChain (from `https://github.com/tangem/swiftbinancechain.git`, tag `0.0.11`)
   - BitcoinCore.swift (from `https://github.com/tangem/bitcoincore.git`, tag `0.0.20`)
-  - BlockchainSdk (from `https://github.com/tangem/blockchain-sdk-swift.git`, tag `develop-699`)
+  - BlockchainSdk (from `https://github.com/tangem/blockchain-sdk-swift.git`, tag `develop-700`)
   - BlockiesSwift (~> 0.1.2)
   - CombineExt (~> 1.8.0)
   - Firebase/Analytics (= 10.29.0)
@@ -237,7 +237,7 @@ EXTERNAL SOURCES:
     :tag: 0.0.20
   BlockchainSdk:
     :git: https://github.com/tangem/blockchain-sdk-swift.git
-    :tag: develop-699
+    :tag: develop-700
   Solana.Swift:
     :git: https://github.com/tangem/Solana.Swift
     :tag: 1.2.0-tangem11
@@ -257,7 +257,7 @@ CHECKOUT OPTIONS:
     :tag: 0.0.20
   BlockchainSdk:
     :git: https://github.com/tangem/blockchain-sdk-swift.git
-    :tag: develop-699
+    :tag: develop-700
   Solana.Swift:
     :git: https://github.com/tangem/Solana.Swift
     :tag: 1.2.0-tangem11
@@ -306,6 +306,6 @@ SPEC CHECKSUMS:
   SwiftyJSON: c0bd75b5969785b3d9ae41d5709fe75bc5de4002
   TangemSdk: 943099314a07e448307f994dca6217bb27366b66
 
-PODFILE CHECKSUM: 913abef14e5e8bed4bafd82cb5db4da2bd87c9f8
+PODFILE CHECKSUM: e946f1aeaf4f332721506f6557c73cba396c6751
 
 COCOAPODS: 1.15.2

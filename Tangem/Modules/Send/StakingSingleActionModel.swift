@@ -1,5 +1,5 @@
 //
-//  UnstakingModel.swift
+//  StakingSingleActionModel.swift
 //  Tangem
 //
 //  Created by Sergey Balashov on 26.07.2024.
@@ -11,17 +11,16 @@ import TangemStaking
 import Combine
 import BlockchainSdk
 
-protocol UnstakingModelStateProvider {
-    var stakingAction: UnstakingModel.Action { get }
+protocol StakingSingleActionModelStateProvider {
+    var stakingAction: StakingSingleActionModel.Action { get }
 
-    var state: UnstakingModel.State { get }
-    var statePublisher: AnyPublisher<UnstakingModel.State, Never> { get }
+    var state: StakingSingleActionModel.State { get }
+    var statePublisher: AnyPublisher<StakingSingleActionModel.State, Never> { get }
 }
 
-class UnstakingModel {
+class StakingSingleActionModel {
     // MARK: - Data
 
-    private let _amount: CurrentValueSubject<SendAmount?, Never>
     private let _state = CurrentValueSubject<State, Never>(.loading)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
     private let _isLoading = CurrentValueSubject<Bool, Never>(false)
@@ -57,12 +56,6 @@ class UnstakingModel {
         self.tokenItem = tokenItem
         self.feeTokenItem = feeTokenItem
 
-        let fiat = tokenItem.currencyId.flatMap {
-            BalanceConverter().convertToFiat(action.amount, currencyId: $0)
-        }
-
-        _amount = CurrentValueSubject(SendAmount(type: .typical(crypto: action.amount, fiat: fiat)))
-
         updateState()
         logOpenScreen()
     }
@@ -70,7 +63,7 @@ class UnstakingModel {
 
 // MARK: - UnstakingModelStateProvider
 
-extension UnstakingModel: UnstakingModelStateProvider {
+extension StakingSingleActionModel: StakingSingleActionModelStateProvider {
     var stakingAction: Action {
         action
     }
@@ -86,16 +79,14 @@ extension UnstakingModel: UnstakingModelStateProvider {
 
 // MARK: - Private
 
-private extension UnstakingModel {
+private extension StakingSingleActionModel {
     func updateState() {
-        guard let amount = _amount.value?.crypto else { return }
-
         estimatedFeeTask?.cancel()
 
         estimatedFeeTask = runTask(in: self) { model in
             do {
                 model.update(state: .loading)
-                let state = try await model.state(amount: amount)
+                let state = try await model.state()
                 model.update(state: state)
             } catch {
                 AppLog.shared.error(error)
@@ -104,17 +95,17 @@ private extension UnstakingModel {
         }
     }
 
-    func state(amount: Decimal) async throws -> UnstakingModel.State {
+    func state() async throws -> StakingSingleActionModel.State {
         let estimateFee = try await stakingManager.estimateFee(action: action)
 
-        if let error = validate(amount: amount, fee: estimateFee) {
+        if let error = validate(amount: action.amount, fee: estimateFee) {
             return error
         }
 
         return .ready(fee: estimateFee)
     }
 
-    func validate(amount: Decimal, fee: Decimal) -> UnstakingModel.State? {
+    func validate(amount: Decimal, fee: Decimal) -> StakingSingleActionModel.State? {
         do {
             try transactionValidator.validate(fee: makeFee(value: fee).amount)
             return nil
@@ -125,7 +116,7 @@ private extension UnstakingModel {
         }
     }
 
-    func update(state: UnstakingModel.State) {
+    func update(state: StakingSingleActionModel.State) {
         _state.send(state)
     }
 
@@ -151,17 +142,11 @@ private extension UnstakingModel {
 
 // MARK: - Send
 
-private extension UnstakingModel {
+private extension StakingSingleActionModel {
     private func send() async throws -> SendTransactionDispatcherResult {
         if let analyticsEvent = action.type.analyticsEvent {
             Analytics.log(event: analyticsEvent, params: [.validator: action.validatorInfo?.name ?? ""])
         }
-
-        guard let amountCrypto = amount?.crypto else {
-            throw SendTransactionDispatcherResult.Error.transactionNotFound
-        }
-
-        let action = amountCrypto == action.amount ? action : StakingAction(amount: amountCrypto, validatorType: action.validatorType, type: action.type)
 
         do {
             let transaction = try await stakingManager.transaction(action: action)
@@ -205,33 +190,37 @@ private extension UnstakingModel {
 
 // MARK: - SendFeeLoader
 
-extension UnstakingModel: SendFeeLoader {
+extension StakingSingleActionModel: SendFeeLoader {
     func updateFees() {}
 }
 
 // MARK: - SendAmountInput
 
-extension UnstakingModel: SendAmountInput {
+extension StakingSingleActionModel: SendAmountInput {
     var amount: SendAmount? {
-        _amount.value
+        let fiat = tokenItem.currencyId.flatMap {
+            BalanceConverter().convertToFiat(action.amount, currencyId: $0)
+        }
+
+        return .init(type: .typical(crypto: action.amount, fiat: fiat))
     }
 
     var amountPublisher: AnyPublisher<SendAmount?, Never> {
-        _amount.eraseToAnyPublisher()
+        Just(amount).eraseToAnyPublisher()
     }
 }
 
 // MARK: - SendAmountOutput
 
-extension UnstakingModel: SendAmountOutput {
+extension StakingSingleActionModel: SendAmountOutput {
     func amountDidChanged(amount: SendAmount?) {
-        _amount.send(amount)
+        assertionFailure("We can not change amount in rewards")
     }
 }
 
 // MARK: - SendFeeInput
 
-extension UnstakingModel: SendFeeInput {
+extension StakingSingleActionModel: SendFeeInput {
     var selectedFee: SendFee {
         mapToSendFee(_state.value)
     }
@@ -261,7 +250,7 @@ extension UnstakingModel: SendFeeInput {
 
 // MARK: - SendFeeOutput
 
-extension UnstakingModel: SendFeeOutput {
+extension StakingSingleActionModel: SendFeeOutput {
     func feeDidChanged(fee: SendFee) {
         assertionFailure("We can not change fee in staking")
     }
@@ -269,7 +258,7 @@ extension UnstakingModel: SendFeeOutput {
 
 // MARK: - SendSummaryInput, SendSummaryOutput
 
-extension UnstakingModel: SendSummaryInput, SendSummaryOutput {
+extension StakingSingleActionModel: SendSummaryInput, SendSummaryOutput {
     var isReadyToSendPublisher: AnyPublisher<Bool, Never> {
         _state.map { state in
             switch state {
@@ -289,7 +278,7 @@ extension UnstakingModel: SendSummaryInput, SendSummaryOutput {
 
 // MARK: - SendFinishInput
 
-extension UnstakingModel: SendFinishInput {
+extension StakingSingleActionModel: SendFinishInput {
     var transactionSentDate: AnyPublisher<Date, Never> {
         _transactionTime.compactMap { $0 }.first().eraseToAnyPublisher()
     }
@@ -297,7 +286,7 @@ extension UnstakingModel: SendFinishInput {
 
 // MARK: - SendBaseInput, SendBaseOutput
 
-extension UnstakingModel: SendBaseInput, SendBaseOutput {
+extension StakingSingleActionModel: SendBaseInput, SendBaseOutput {
     var actionInProcessing: AnyPublisher<Bool, Never> {
         _isLoading.eraseToAnyPublisher()
     }
@@ -312,7 +301,7 @@ extension UnstakingModel: SendBaseInput, SendBaseOutput {
 
 // MARK: - StakingNotificationManagerInput
 
-extension UnstakingModel: StakingNotificationManagerInput {
+extension StakingSingleActionModel: StakingNotificationManagerInput {
     var stakingManagerStatePublisher: AnyPublisher<StakingManagerState, Never> {
         stakingManager.statePublisher
     }
@@ -320,7 +309,7 @@ extension UnstakingModel: StakingNotificationManagerInput {
 
 // MARK: - NotificationTapDelegate
 
-extension UnstakingModel: NotificationTapDelegate {
+extension StakingSingleActionModel: NotificationTapDelegate {
     func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
         switch action {
         case .refreshFee:
@@ -335,8 +324,8 @@ extension UnstakingModel: NotificationTapDelegate {
 
 // MARK: - SendBaseDataBuilderInput
 
-extension UnstakingModel: SendBaseDataBuilderInput {
-    var bsdkAmount: BSDKAmount? { _amount.value?.crypto.flatMap { makeAmount(value: $0) } }
+extension StakingSingleActionModel: SendBaseDataBuilderInput {
+    var bsdkAmount: BSDKAmount? { makeAmount(value: action.amount) }
 
     var bsdkFee: BlockchainSdk.Fee? { selectedFee.value.value }
 
@@ -345,20 +334,14 @@ extension UnstakingModel: SendBaseDataBuilderInput {
     var validator: ValidatorInfo? { action.validatorInfo }
 }
 
-extension UnstakingModel {
+extension StakingSingleActionModel {
     typealias Action = StakingAction
-
-    enum State {
-        case loading
-        case ready(fee: Decimal)
-        case validationError(ValidationError, fee: Decimal)
-        case networkError(Error)
-    }
+    typealias State = UnstakingModel.State
 }
 
 // MARK: Analytics
 
-private extension UnstakingModel {
+private extension StakingSingleActionModel {
     func logOpenScreen() {
         switch action.type {
         case .pending(.claimRewards), .pending(.restakeRewards):
@@ -379,16 +362,6 @@ private extension StakingAction.PendingActionType {
         case .claimRewards: .stakingButtonClaim
         case .restakeRewards: .stakingButtonRestake
         default: nil
-        }
-    }
-}
-
-extension UnstakingModel.Action.ActionType {
-    var analyticsEvent: Analytics.Event? {
-        switch self {
-        case .stake: .stakingButtonStake
-        case .unstake: .stakingButtonUnstake
-        case .pending(let pending): pending.analyticsEvent
         }
     }
 }
