@@ -11,8 +11,8 @@ import Foundation
 struct IconURLBuilder {
     private let baseURL: URL
 
-    init(baseURL: URL? = nil) {
-        self.baseURL = baseURL ?? AppEnvironment.current.iconBaseUrl
+    init(baseURL: URL = AppEnvironment.current.iconBaseUrl) {
+        self.baseURL = baseURL
     }
 
     func tokenIconURL(id: String, size: TokenURLIconSize = .large) -> URL {
