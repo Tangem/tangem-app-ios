@@ -47,6 +47,8 @@ extension TokenMarketsDetailsView {
 
                 pricePerformance
 
+                listedOnExchanges
+
                 links
             }
         }
@@ -131,6 +133,20 @@ extension TokenMarketsDetailsView {
 
                     skeletonView(width: 60, height: 21)
                 }
+            }
+            .defaultRoundedBackground(with: Colors.Background.action)
+        }
+
+        private var listedOnExchanges: some View {
+            HStack {
+                VStack(spacing: 8) {
+                    Text(Localization.marketsTokenDetailsListedOn)
+                        .style(Fonts.Bold.footnote.weight(.semibold), color: Colors.Text.tertiary)
+
+                    skeletonView(width: 82, height: 20)
+                }
+
+                Spacer()
             }
             .defaultRoundedBackground(with: Colors.Background.action)
         }

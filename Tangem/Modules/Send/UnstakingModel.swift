@@ -21,6 +21,7 @@ protocol UnstakingModelStateProvider {
 class UnstakingModel {
     // MARK: - Data
 
+    private let _amount: CurrentValueSubject<SendAmount?, Never>
     private let _state = CurrentValueSubject<State, Never>(.loading)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
     private let _isLoading = CurrentValueSubject<Bool, Never>(false)
@@ -56,6 +57,12 @@ class UnstakingModel {
         self.tokenItem = tokenItem
         self.feeTokenItem = feeTokenItem
 
+        let fiat = tokenItem.currencyId.flatMap {
+            BalanceConverter().convertToFiat(action.amount, currencyId: $0)
+        }
+
+        _amount = CurrentValueSubject(SendAmount(type: .typical(crypto: action.amount, fiat: fiat)))
+
         updateState()
         logOpenScreen()
     }
@@ -81,12 +88,14 @@ extension UnstakingModel: UnstakingModelStateProvider {
 
 private extension UnstakingModel {
     func updateState() {
+        guard let amount = _amount.value?.crypto else { return }
+
         estimatedFeeTask?.cancel()
 
         estimatedFeeTask = runTask(in: self) { model in
             do {
                 model.update(state: .loading)
-                let state = try await model.state()
+                let state = try await model.state(amount: amount)
                 model.update(state: state)
             } catch {
                 AppLog.shared.error(error)
@@ -95,10 +104,10 @@ private extension UnstakingModel {
         }
     }
 
-    func state() async throws -> UnstakingModel.State {
+    func state(amount: Decimal) async throws -> UnstakingModel.State {
         let estimateFee = try await stakingManager.estimateFee(action: action)
 
-        if let error = validate(amount: action.amount, fee: estimateFee) {
+        if let error = validate(amount: amount, fee: estimateFee) {
             return error
         }
 
@@ -147,6 +156,12 @@ private extension UnstakingModel {
         if let analyticsEvent = action.type.analyticsEvent {
             Analytics.log(event: analyticsEvent, params: [.validator: action.validatorInfo?.name ?? ""])
         }
+
+        guard let amountCrypto = amount?.crypto else {
+            throw SendTransactionDispatcherResult.Error.transactionNotFound
+        }
+
+        let action = amountCrypto == action.amount ? action : StakingAction(amount: amountCrypto, validatorType: action.validatorType, type: action.type)
 
         do {
             let transaction = try await stakingManager.transaction(action: action)
@@ -198,15 +213,11 @@ extension UnstakingModel: SendFeeLoader {
 
 extension UnstakingModel: SendAmountInput {
     var amount: SendAmount? {
-        let fiat = tokenItem.currencyId.flatMap {
-            BalanceConverter().convertToFiat(action.amount, currencyId: $0)
-        }
-
-        return .init(type: .typical(crypto: action.amount, fiat: fiat))
+        _amount.value
     }
 
     var amountPublisher: AnyPublisher<SendAmount?, Never> {
-        Just(amount).eraseToAnyPublisher()
+        _amount.eraseToAnyPublisher()
     }
 }
 
@@ -214,7 +225,7 @@ extension UnstakingModel: SendAmountInput {
 
 extension UnstakingModel: SendAmountOutput {
     func amountDidChanged(amount: SendAmount?) {
-        assertionFailure("We can not change amount in unstaking")
+        _amount.send(amount)
     }
 }
 
@@ -325,7 +336,7 @@ extension UnstakingModel: NotificationTapDelegate {
 // MARK: - SendBaseDataBuilderInput
 
 extension UnstakingModel: SendBaseDataBuilderInput {
-    var bsdkAmount: BSDKAmount? { makeAmount(value: action.amount) }
+    var bsdkAmount: BSDKAmount? { _amount.value?.crypto.flatMap { makeAmount(value: $0) } }
 
     var bsdkFee: BlockchainSdk.Fee? { selectedFee.value.value }
 

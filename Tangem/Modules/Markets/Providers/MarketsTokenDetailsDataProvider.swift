@@ -8,6 +8,10 @@
 
 import Foundation
 
+protocol MarketsTokenExchangesListLoader {
+    func loadExchangesList(for tokenId: TokenItemId) async throws -> [MarketsTokenDetailsExchangeItemInfo]
+}
+
 struct MarketsTokenDetailsDataProvider {
     @Injected(\.tangemApiService) private var tangemAPIService: TangemApiService
 
@@ -35,5 +39,13 @@ struct MarketsTokenDetailsDataProvider {
         let result = try await tangemAPIService.loadTokenMarketsDetails(requestModel: request)
         let model = try mapper.map(response: result)
         return model
+    }
+}
+
+extension MarketsTokenDetailsDataProvider: MarketsTokenExchangesListLoader {
+    func loadExchangesList(for tokenId: TokenItemId) async throws -> [MarketsTokenDetailsExchangeItemInfo] {
+        let result = try await tangemAPIService.loadTokenExchangesListDetails(requestModel: .init(tokenId: tokenId))
+        let mapper = MarketsExchangesListMapper()
+        return mapper.mapListToItemInfo(result.exchanges)
     }
 }

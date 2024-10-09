@@ -164,7 +164,7 @@ struct NotificationView_Previews: PreviewProvider {
                     }, actionType: .backupCard, isWithLoader: false),
                 ]),
                 severity: .info,
-                settings: NotificationView.Settings(event: WarningEvent.missingBackup, dismissAction: { [weak self] id in
+                settings: NotificationView.Settings(event: GeneralNotificationEvent.missingBackup, dismissAction: { [weak self] id in
                     self?.removeNotification(with: id)
                 })
             ),
@@ -175,7 +175,7 @@ struct NotificationView_Previews: PreviewProvider {
                     }, actionType: .generateAddresses, isWithLoader: false),
                 ]),
                 severity: .warning,
-                settings: NotificationView.Settings(event: WarningEvent.missingDerivation(numberOfNetworks: 1), dismissAction: { [weak self] id in
+                settings: NotificationView.Settings(event: GeneralNotificationEvent.missingDerivation(numberOfNetworks: 1), dismissAction: { [weak self] id in
                     self?.removeNotification(with: id)
                 })
             ),
@@ -183,7 +183,7 @@ struct NotificationView_Previews: PreviewProvider {
                 style: .plain,
                 severity: .critical,
                 settings: NotificationView.Settings(
-                    event: WarningEvent.devCard,
+                    event: GeneralNotificationEvent.devCard,
                     dismissAction: nil
                 )
             ),

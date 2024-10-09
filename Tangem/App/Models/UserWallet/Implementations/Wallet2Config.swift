@@ -122,14 +122,14 @@ extension Wallet2Config: UserWalletConfig {
         return nil
     }
 
-    var warningEvents: [WarningEvent] {
-        var warnings = WarningEventsFactory().makeWarningEvents(for: card)
+    var generalNotificationEvents: [GeneralNotificationEvent] {
+        var notifications = GeneralNotificationEventsFactory().makeNotifications(for: card)
 
         if isDemo, !AppEnvironment.current.isTestnet {
-            warnings.append(.demoCard)
+            notifications.append(.demoCard)
         }
 
-        return warnings
+        return notifications
     }
 
     var emailData: [EmailCollectedData] {

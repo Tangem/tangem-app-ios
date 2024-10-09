@@ -253,7 +253,7 @@ struct MarketsView: View {
 
     private var errorStateView: some View {
         MarketsUnableToLoadDataView(
-            isButtonBusy: viewModel.isDataProviderBusy,
+            isButtonBusy: false,
             retryButtonAction: viewModel.onTryLoadList
         )
         .frame(maxWidth: .infinity, maxHeight: .infinity)
