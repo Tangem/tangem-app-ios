@@ -1,5 +1,5 @@
 //
-//  TokenMarketsDetailsCoordinator.swift
+//  MarketsTokenDetailsCoordinator.swift
 //  Tangem
 //
 //  Created by Andrew Son on 24/06/24.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-class TokenMarketsDetailsCoordinator: CoordinatorObject {
+class MarketsTokenDetailsCoordinator: CoordinatorObject {
     let dismissAction: Action<Void>
     let popToRootAction: Action<PopToRootOptions>
 
@@ -16,7 +16,7 @@ class TokenMarketsDetailsCoordinator: CoordinatorObject {
 
     // MARK: - Root ViewModels
 
-    @Published var rootViewModel: TokenMarketsDetailsViewModel? = nil
+    @Published var rootViewModel: MarketsTokenDetailsViewModel? = nil
     @Published var error: AlertBinder? = nil
 
     // MARK: - Child ViewModels
@@ -59,15 +59,15 @@ class TokenMarketsDetailsCoordinator: CoordinatorObject {
     }
 }
 
-extension TokenMarketsDetailsCoordinator {
+extension MarketsTokenDetailsCoordinator {
     struct Options {
         let info: MarketsTokenModel
         let style: MarketsTokenDetailsPresentationStyle
     }
 }
 
-extension TokenMarketsDetailsCoordinator: TokenMarketsDetailsRoutable {
-    func openTokenSelector(with model: TokenMarketsDetailsModel, walletDataProvider: MarketsWalletDataProvider) {
+extension MarketsTokenDetailsCoordinator: MarketsTokenDetailsRoutable {
+    func openTokenSelector(with model: MarketsTokenDetailsModel, walletDataProvider: MarketsWalletDataProvider) {
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.tokenNetworkSelectorCoordinator = nil
         }
@@ -109,7 +109,7 @@ extension TokenMarketsDetailsCoordinator: TokenMarketsDetailsRoutable {
 
 // MARK: - MarketsPortfolioContainerRoutable
 
-extension TokenMarketsDetailsCoordinator {
+extension MarketsTokenDetailsCoordinator {
     func openReceive(walletModel: WalletModel) {
         let infos = walletModel.wallet.addresses.map { address in
             ReceiveAddressInfo(
@@ -160,7 +160,7 @@ extension TokenMarketsDetailsCoordinator {
 
 // MARK: - Utilities functions
 
-extension TokenMarketsDetailsCoordinator {
+extension MarketsTokenDetailsCoordinator {
     func openBankWarning(confirmCallback: @escaping () -> Void, declineCallback: @escaping () -> Void) {
         let delay = 0.6
         warningBankCardViewModel = .init(confirmCallback: { [weak self] in

@@ -1,5 +1,5 @@
 //
-//  TokenMarketsDetailsLinksView.swift
+//  MarketsTokenDetailsLinksView.swift
 //  Tangem
 //
 //  Created by Andrew Son on 04/07/24.
@@ -8,9 +8,9 @@
 
 import SwiftUI
 
-struct TokenMarketsDetailsLinksView: View {
+struct MarketsTokenDetailsLinksView: View {
     let viewWidth: CGFloat
-    let sections: [TokenMarketsDetailsLinkSection]
+    let sections: [MarketsTokenDetailsLinkSection]
 
     private let chipsSettings = MarketsTokenDetailsLinkChipsView.StyleSettings(
         iconColor: Colors.Icon.secondary,
@@ -59,7 +59,7 @@ struct TokenMarketsDetailsLinksView: View {
     }
 }
 
-extension TokenMarketsDetailsLinksView {
+extension MarketsTokenDetailsLinksView {
     enum Constants {
         static let horizontalPadding: CGFloat = 14
         static let verticalSpacing: CGFloat = 12
@@ -67,7 +67,7 @@ extension TokenMarketsDetailsLinksView {
 }
 
 #Preview {
-    return TokenMarketsDetailsLinksView(
+    return MarketsTokenDetailsLinksView(
         viewWidth: 400,
         sections: [
             .init(

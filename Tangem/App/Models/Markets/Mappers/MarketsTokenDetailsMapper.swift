@@ -1,5 +1,5 @@
 //
-//  TokenMarketsDetailsMapper.swift
+//  MarketsTokenDetailsMapper.swift
 //  Tangem
 //
 //  Created by skibinalexander on 03.07.2024.
@@ -9,7 +9,7 @@
 import Foundation
 import BlockchainSdk
 
-struct TokenMarketsDetailsMapper {
+struct MarketsTokenDetailsMapper {
     let supportedBlockchains: Set<Blockchain>
 
     private let tokenItemMapper: TokenItemMapper
@@ -20,7 +20,7 @@ struct TokenMarketsDetailsMapper {
         tokenItemMapper = TokenItemMapper(supportedBlockchains: supportedBlockchains)
     }
 
-    func map(response: MarketsDTO.Coins.Response) throws -> TokenMarketsDetailsModel {
+    func map(response: MarketsDTO.Coins.Response) throws -> MarketsTokenDetailsModel {
         var networks = response.networks ?? []
 
         // add l2 networks
@@ -32,7 +32,7 @@ struct TokenMarketsDetailsMapper {
             networks.append(contentsOf: l2Items)
         }
 
-        return TokenMarketsDetailsModel(
+        return MarketsTokenDetailsModel(
             id: response.id,
             name: response.name,
             symbol: response.symbol,
@@ -76,7 +76,7 @@ struct TokenMarketsDetailsMapper {
     }
 }
 
-extension TokenMarketsDetailsMapper {
+extension MarketsTokenDetailsMapper {
     enum MapperError: Error {
         case missingAllTimePriceChangeValue
     }

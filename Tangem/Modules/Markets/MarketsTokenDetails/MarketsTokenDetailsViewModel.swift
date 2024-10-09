@@ -1,5 +1,5 @@
 //
-//  TokenMarketsDetailsViewModel.swift
+//  MarketsTokenDetailsViewModel.swift
 //  Tangem
 //
 //  Created by Andrew Son on 24/06/24.
@@ -10,7 +10,7 @@ import Foundation
 import Combine
 import CombineExt
 
-class TokenMarketsDetailsViewModel: MarketsBaseViewModel {
+class MarketsTokenDetailsViewModel: MarketsBaseViewModel {
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
 
     @Published private(set) var priceChangeAnimation: ForegroundBlinkAnimationModifier.Change = .neutral
@@ -32,7 +32,7 @@ class TokenMarketsDetailsViewModel: MarketsBaseViewModel {
     @Published private(set) var insightsViewModel: MarketsTokenDetailsInsightsViewModel?
     @Published private(set) var metricsViewModel: MarketsTokenDetailsMetricsViewModel?
     @Published private(set) var pricePerformanceViewModel: MarketsTokenDetailsPricePerformanceViewModel?
-    @Published private(set) var linksSections: [TokenMarketsDetailsLinkSection] = []
+    @Published private(set) var linksSections: [MarketsTokenDetailsLinkSection] = []
     @Published private(set) var portfolioViewModel: MarketsPortfolioContainerViewModel?
     @Published private(set) var historyChartViewModel: MarketsHistoryChartViewModel?
     @Published private(set) var numberOfExchangesListedOn: Int?
@@ -48,7 +48,7 @@ class TokenMarketsDetailsViewModel: MarketsBaseViewModel {
     @Published private var priceChangeInfo: [String: Decimal] = [:]
     @Published private var loadedTokenDetailsPriceChangeInfo: [String: Decimal] = [:]
 
-    @Published private var tokenInsights: TokenMarketsDetailsInsights?
+    @Published private var tokenInsights: MarketsTokenDetailsInsights?
 
     var price: String? { priceInfo?.price }
 
@@ -56,7 +56,7 @@ class TokenMarketsDetailsViewModel: MarketsBaseViewModel {
 
     var isMarketsSheetStyle: Bool { presentationStyle == .marketsSheet }
 
-    private var priceInfo: TokenMarketsDetailsPriceInfoHelper.PriceInfo? {
+    private var priceInfo: MarketsTokenDetailsPriceInfoHelper.PriceInfo? {
         guard let currentPrice = priceFromQuoteRepository else {
             return nil
         }
@@ -90,7 +90,7 @@ class TokenMarketsDetailsViewModel: MarketsBaseViewModel {
 
     var allDataLoadFailed: Bool { state == .failedToLoadAllData }
 
-    private weak var coordinator: TokenMarketsDetailsRoutable?
+    private weak var coordinator: MarketsTokenDetailsRoutable?
 
     private lazy var currentPricePublisher: some Publisher<Decimal?, Never> = quotesPublisher
         .map { $0?.price }
@@ -106,8 +106,8 @@ class TokenMarketsDetailsViewModel: MarketsBaseViewModel {
             .share(replay: 1)
     }()
 
-    private lazy var priceHelper = TokenMarketsDetailsPriceInfoHelper()
-    private lazy var dateHelper = TokenMarketsDetailsDateHelper(initialDate: initialDate)
+    private lazy var priceHelper = MarketsTokenDetailsPriceInfoHelper()
+    private lazy var dateHelper = MarketsTokenDetailsDateHelper(initialDate: initialDate)
 
     private let defaultAmountNotationFormatter = DefaultAmountNotationFormatter()
 
@@ -120,7 +120,7 @@ class TokenMarketsDetailsViewModel: MarketsBaseViewModel {
     private let marketsQuotesUpdateHelper: MarketsQuotesUpdateHelper
     private let walletDataProvider = MarketsWalletDataProvider()
 
-    private var loadedInfo: TokenMarketsDetailsModel?
+    private var loadedInfo: MarketsTokenDetailsModel?
     private var loadingTask: AnyCancellable?
     private var bag = Set<AnyCancellable>()
 
@@ -131,7 +131,7 @@ class TokenMarketsDetailsViewModel: MarketsBaseViewModel {
         presentationStyle: MarketsTokenDetailsPresentationStyle,
         dataProvider: MarketsTokenDetailsDataProvider,
         marketsQuotesUpdateHelper: MarketsQuotesUpdateHelper,
-        coordinator: TokenMarketsDetailsRoutable?
+        coordinator: MarketsTokenDetailsRoutable?
     ) {
         self.tokenInfo = tokenInfo
         self.presentationStyle = presentationStyle
@@ -170,7 +170,7 @@ class TokenMarketsDetailsViewModel: MarketsBaseViewModel {
                 let baseCurrencyCode = await AppSettings.shared.selectedCurrencyCode
                 let currencyId = viewModel.tokenInfo.id
                 viewModel.log("Attempt to load token markets data for token with id: \(currencyId)")
-                let result = try await viewModel.dataProvider.loadTokenMarketsDetails(for: currencyId, baseCurrencyCode: baseCurrencyCode)
+                let result = try await viewModel.dataProvider.loadTokenDetails(for: currencyId, baseCurrencyCode: baseCurrencyCode)
                 viewModel.marketsQuotesUpdateHelper.updateQuote(marketToken: result, for: baseCurrencyCode)
                 await viewModel.handleLoadDetailedInfo(.success(result))
             } catch {
@@ -243,8 +243,8 @@ class TokenMarketsDetailsViewModel: MarketsBaseViewModel {
 
 // MARK: - Details response processing
 
-private extension TokenMarketsDetailsViewModel {
-    func handleLoadDetailedInfo(_ result: Result<TokenMarketsDetailsModel, Error>) async {
+private extension MarketsTokenDetailsViewModel {
+    func handleLoadDetailedInfo(_ result: Result<MarketsTokenDetailsModel, Error>) async {
         defer {
             DispatchQueue.main.async {
                 self.isLoading = false
@@ -268,7 +268,7 @@ private extension TokenMarketsDetailsViewModel {
     }
 
     @MainActor
-    func setupUI(using model: TokenMarketsDetailsModel) {
+    func setupUI(using model: MarketsTokenDetailsModel) {
         loadedTokenDetailsPriceChangeInfo = model.priceChangePercentage
         loadedInfo = model
 
@@ -290,7 +290,7 @@ private extension TokenMarketsDetailsViewModel {
 
 // MARK: - Private functions
 
-private extension TokenMarketsDetailsViewModel {
+private extension MarketsTokenDetailsViewModel {
     func bind() {
         currentPricePublisher
             .assign(to: \.priceFromQuoteRepository, on: self, ownership: .weak)
@@ -401,7 +401,7 @@ private extension TokenMarketsDetailsViewModel {
         )
     }
 
-    func makeBlocksViewModels(using model: TokenMarketsDetailsModel) {
+    func makeBlocksViewModels(using model: MarketsTokenDetailsModel) {
         portfolioViewModel?.update(networks: model.availableNetworks)
 
         setupInsights(model.insights)
@@ -428,7 +428,7 @@ private extension TokenMarketsDetailsViewModel {
         }
 
         linksSections = MarketsTokenDetailsLinksMapper(
-            openLinkAction: weakify(self, forFunction: TokenMarketsDetailsViewModel.openLinkAction(_:))
+            openLinkAction: weakify(self, forFunction: MarketsTokenDetailsViewModel.openLinkAction(_:))
         ).mapToSections(model.links)
     }
 
@@ -460,7 +460,7 @@ private extension TokenMarketsDetailsViewModel {
         ])
     }
 
-    func setupInsights(_ insights: TokenMarketsDetailsInsights?) {
+    func setupInsights(_ insights: MarketsTokenDetailsInsights?) {
         defer {
             tokenInsights = insights
         }
@@ -484,15 +484,15 @@ private extension TokenMarketsDetailsViewModel {
 
 // MARK: - Logging
 
-private extension TokenMarketsDetailsViewModel {
+private extension MarketsTokenDetailsViewModel {
     func log(_ message: @autoclosure () -> String) {
-        AppLog.shared.debug("[TokenMarketsDetailsViewModel] - \(message())")
+        AppLog.shared.debug("[MarketsTokenDetailsViewModel] - \(message())")
     }
 }
 
 // MARK: - Navigation
 
-extension TokenMarketsDetailsViewModel: MarketsTokenDetailsBottomSheetRouter {
+extension MarketsTokenDetailsViewModel: MarketsTokenDetailsBottomSheetRouter {
     func openInfoBottomSheet(title: String, message: String) {
         descriptionBottomSheetInfo = .init(
             title: title,
@@ -503,18 +503,18 @@ extension TokenMarketsDetailsViewModel: MarketsTokenDetailsBottomSheetRouter {
 
 // MARK: - Constants
 
-private extension TokenMarketsDetailsViewModel {
+private extension MarketsTokenDetailsViewModel {
     private enum Constants {
         static let historyChartYAxisLabelCount = 3
     }
 }
 
-extension TokenMarketsDetailsViewModel {
+extension MarketsTokenDetailsViewModel {
     enum ViewState: Equatable {
         case loading
         case failedToLoadDetails
         case failedToLoadAllData
-        case loaded(model: TokenMarketsDetailsModel)
+        case loaded(model: MarketsTokenDetailsModel)
     }
 }
 

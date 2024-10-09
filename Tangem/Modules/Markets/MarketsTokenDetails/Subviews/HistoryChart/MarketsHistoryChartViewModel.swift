@@ -179,7 +179,7 @@ final class MarketsHistoryChartViewModel: ObservableObject {
         } catch where error.isCancellationError {
             // No-op, cancelling the ongoing request shouldn't affect the current state
             return
-        } catch TokenMarketsHistoryChartMapper.ParsingError.notEnoughData {
+        } catch MarketsTokenHistoryChartMapper.ParsingError.notEnoughData {
             Analytics.log(event: .marketsChartDataError, params: [
                 .token: tokenSymbol.uppercased(),
                 .source: Analytics.ParameterValue.chart.rawValue,

@@ -1,5 +1,5 @@
 //
-//  TokenMarketsDetailsView.swift
+//  MarketsTokenDetailsView.swift
 //  Tangem
 //
 //  Created by Andrew Son on 24/06/24.
@@ -8,8 +8,8 @@
 
 import SwiftUI
 
-struct TokenMarketsDetailsView: View {
-    @ObservedObject var viewModel: TokenMarketsDetailsViewModel
+struct MarketsTokenDetailsView: View {
+    @ObservedObject var viewModel: MarketsTokenDetailsViewModel
 
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.mainWindowSize) private var mainWindowSize
@@ -238,7 +238,7 @@ struct TokenMarketsDetailsView: View {
             }
 
             if !viewModel.linksSections.isEmpty {
-                TokenMarketsDetailsLinksView(viewWidth: blocksWidth, sections: viewModel.linksSections)
+                MarketsTokenDetailsLinksView(viewWidth: blocksWidth, sections: viewModel.linksSections)
             }
         }
         .padding(.bottom, 46.0)
@@ -298,7 +298,7 @@ struct TokenMarketsDetailsView: View {
 
 // MARK: - Constants
 
-private extension TokenMarketsDetailsView {
+private extension MarketsTokenDetailsView {
     enum Constants {
         static let chartHeight: CGFloat = 200.0
         static let scrollViewContentTopInset = 14.0
@@ -321,7 +321,7 @@ private extension TokenMarketsDetailsView {
         isUnderMarketCapLimit: false
     )
 
-    return TokenMarketsDetailsView(viewModel: .init(
+    return MarketsTokenDetailsView(viewModel: .init(
         tokenInfo: tokenInfo,
         presentationStyle: .marketsSheet,
         dataProvider: .init(),

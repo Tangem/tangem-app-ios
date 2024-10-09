@@ -1,5 +1,5 @@
 //
-//  TokenMarketsDetailsModel.swift
+//  MarketsTokenDetailsModel.swift
 //  Tangem
 //
 //  Created by Andrew Son on 27/06/24.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct TokenMarketsDetailsModel: Identifiable {
+struct MarketsTokenDetailsModel: Identifiable {
     let id: String
     let name: String
     let symbol: String
@@ -18,23 +18,23 @@ struct TokenMarketsDetailsModel: Identifiable {
     let fullDescription: String?
     let numberOfExchangesListedOn: Int?
     let priceChangePercentage: [String: Decimal]
-    let insights: TokenMarketsDetailsInsights?
+    let insights: MarketsTokenDetailsInsights?
     let metrics: MarketsTokenDetailsMetrics?
     let pricePerformance: [MarketsPriceIntervalType: MarketsPricePerformanceData]?
     let links: MarketsTokenDetailsLinks?
     let availableNetworks: [NetworkModel]
 }
 
-extension TokenMarketsDetailsModel: Equatable {
+extension MarketsTokenDetailsModel: Equatable {
     // This model won't be reloaded for now (no PTR or some kind of refresh mechanism),
     // so it is safe to compare this fields.
-    static func == (lhs: TokenMarketsDetailsModel, rhs: TokenMarketsDetailsModel) -> Bool {
+    static func == (lhs: MarketsTokenDetailsModel, rhs: MarketsTokenDetailsModel) -> Bool {
         return lhs.id == rhs.id && lhs.insights == rhs.insights && lhs.metrics == rhs.metrics
             && lhs.pricePerformance == rhs.pricePerformance && lhs.links == rhs.links
     }
 }
 
-struct TokenMarketsDetailsInsights: Equatable {
+struct MarketsTokenDetailsInsights: Equatable {
     let holders: [MarketsPriceIntervalType: Decimal]
     let liquidity: [MarketsPriceIntervalType: Decimal]
     let buyPressure: [MarketsPriceIntervalType: Decimal]
