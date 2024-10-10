@@ -9,7 +9,7 @@
 import Foundation
 import TangemStaking
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 protocol StakingSingleActionModelStateProvider {
     var stakingAction: StakingSingleActionModel.Action { get }
@@ -327,7 +327,7 @@ extension StakingSingleActionModel: NotificationTapDelegate {
 extension StakingSingleActionModel: SendBaseDataBuilderInput {
     var bsdkAmount: BSDKAmount? { makeAmount(value: action.amount) }
 
-    var bsdkFee: BlockchainSdk.Fee? { selectedFee.value.value }
+    var bsdkFee: BlockchainSdkLocal.Fee? { selectedFee.value.value }
 
     var isFeeIncluded: Bool { false }
 
