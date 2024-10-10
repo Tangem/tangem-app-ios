@@ -2,6 +2,8 @@
 --exclude Pods
 --exclude Tangem/Resources/Generated
 --exclude Utilites/XCTemplate
+# // TODO: Andrey Fedorov - Apply formatting (IOS-8239)
+--exclude BlockchainSdkLocal
 
 # Format options
 # Disable all default options
