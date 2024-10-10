@@ -7,7 +7,7 @@
 //
 
 import TangemSdk
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class PreparePrimaryCardTask: CardSessionRunnable {
     var shouldAskForAccessCode: Bool { false }

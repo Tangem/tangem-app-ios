@@ -8,7 +8,7 @@
 
 import Foundation
 import TangemExpress
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class CommonExpressModulesFactory {
     @Injected(\.expressPendingTransactionsRepository) private var pendingTransactionRepository: ExpressPendingTransactionRepository

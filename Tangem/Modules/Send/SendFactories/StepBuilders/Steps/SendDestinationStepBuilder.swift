@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct SendDestinationStepBuilder {
     typealias IO = (input: SendDestinationInput, output: SendDestinationOutput)

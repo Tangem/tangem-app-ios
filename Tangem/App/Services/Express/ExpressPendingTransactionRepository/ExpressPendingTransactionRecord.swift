@@ -8,7 +8,7 @@
 
 import Foundation
 import TangemExpress
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct ExpressPendingTransactionRecord: Codable, Equatable {
     let userWalletId: String

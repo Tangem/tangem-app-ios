@@ -6,7 +6,7 @@
 //  Copyright © 2022 Tangem AG. All rights reserved.
 //
 
-import BlockchainSdk
+import BlockchainSdkLocal
 import WalletConnectSwiftV2
 
 protocol WalletConnectV2MessageComposable {

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 public protocol ExpressRepository {
     func updatePairs(for wallet: ExpressWallet) async throws

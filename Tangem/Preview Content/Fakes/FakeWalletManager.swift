@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 import TangemVisa
 
 class FakeWalletManager: WalletManager {
@@ -16,7 +16,7 @@ class FakeWalletManager: WalletManager {
     @Published var state: WalletManagerState = .loading
     @Published var walletModels: [WalletModel] = []
 
-    var cardTokens: [BlockchainSdk.Token] = []
+    var cardTokens: [BlockchainSdkLocal.Token] = []
     var currentHost: String = "tangem.com"
     var outputsCount: Int?
     var allowsFeeSelection: Bool = true
@@ -26,7 +26,7 @@ class FakeWalletManager: WalletManager {
 
     private var loadingStateObserver: AnyCancellable?
 
-    init(wallet: BlockchainSdk.Wallet) {
+    init(wallet: BlockchainSdkLocal.Wallet) {
         self.wallet = wallet
         cardTokens = wallet.amounts.compactMap { $0.key.token }
         walletModels = CommonWalletModelsFactory(
@@ -60,33 +60,33 @@ class FakeWalletManager: WalletManager {
             .eraseToAnyPublisher()
     }
 
-    func removeToken(_ token: BlockchainSdk.Token) {
+    func removeToken(_ token: BlockchainSdkLocal.Token) {
         cardTokens.removeAll(where: { $0 == token })
     }
 
-    func addToken(_ token: BlockchainSdk.Token) {
+    func addToken(_ token: BlockchainSdkLocal.Token) {
         cardTokens.append(token)
         wallet.add(tokenValue: 0, for: token)
     }
 
-    func addTokens(_ tokens: [BlockchainSdk.Token]) {
+    func addTokens(_ tokens: [BlockchainSdkLocal.Token]) {
         cardTokens.append(contentsOf: tokens)
         tokens.forEach { wallet.add(tokenValue: 0, for: $0) }
     }
 
     func send(
-        _ transaction: BlockchainSdk.Transaction,
-        signer: BlockchainSdk.TransactionSigner
-    ) -> AnyPublisher<BlockchainSdk.TransactionSendResult, SendTxError> {
+        _ transaction: BlockchainSdkLocal.Transaction,
+        signer: BlockchainSdkLocal.TransactionSigner
+    ) -> AnyPublisher<BlockchainSdkLocal.TransactionSendResult, SendTxError> {
         Fail(error: SendTxError(error: WalletError.empty, tx: Data.randomData(count: 32).hexString))
             .eraseToAnyPublisher()
     }
 
-    func validate(fee: BlockchainSdk.Fee) throws {}
+    func validate(fee: BlockchainSdkLocal.Fee) throws {}
 
-    func validate(amount: BlockchainSdk.Amount) throws {}
+    func validate(amount: BlockchainSdkLocal.Amount) throws {}
 
-    func getFee(amount: BlockchainSdk.Amount, destination: String) -> AnyPublisher<[BlockchainSdk.Fee], Error> {
+    func getFee(amount: BlockchainSdkLocal.Amount, destination: String) -> AnyPublisher<[BlockchainSdkLocal.Fee], Error> {
         .justWithError(output: [
             .init(amount),
             .init(amount),

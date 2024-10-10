@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class ReferralCoordinator: CoordinatorObject {
     var dismissAction: Action<Void>

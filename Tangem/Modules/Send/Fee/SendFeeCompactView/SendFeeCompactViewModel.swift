@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class SendFeeCompactViewModel: ObservableObject, Identifiable {
     // Use the estimated size as initial value

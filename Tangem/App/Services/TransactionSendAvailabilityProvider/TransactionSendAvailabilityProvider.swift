@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct TransactionSendAvailabilityProvider {
     func sendingRestrictions(walletModel: WalletModel) -> SendingRestrictions? {

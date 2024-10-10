@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 public struct VisaBridgeInteractorBuilder {
     private let isTestnet: Bool

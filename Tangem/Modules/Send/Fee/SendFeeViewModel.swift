@@ -9,7 +9,7 @@
 import Foundation
 import SwiftUI
 import Combine
-import struct BlockchainSdk.Fee
+import struct BlockchainSdkLocal.Fee
 
 class SendFeeViewModel: ObservableObject, Identifiable {
     @Published private(set) var selectedFeeOption: FeeOption?

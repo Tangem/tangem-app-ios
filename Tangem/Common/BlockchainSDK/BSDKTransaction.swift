@@ -7,9 +7,9 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
-typealias BSDKTransaction = BlockchainSdk.Transaction
-typealias StakeKitTransaction = BlockchainSdk.StakeKitTransaction
+typealias BSDKTransaction = BlockchainSdkLocal.Transaction
+typealias StakeKitTransaction = BlockchainSdkLocal.StakeKitTransaction
 
-typealias BSDKAmount = BlockchainSdk.Amount
+typealias BSDKAmount = BlockchainSdkLocal.Amount

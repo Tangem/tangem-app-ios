@@ -8,7 +8,7 @@
 
 import Foundation
 import SwiftUI
-import BlockchainSdk
+import BlockchainSdkLocal
 
 enum WalletConnectEvent {
     case establishSession

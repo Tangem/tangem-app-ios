@@ -11,7 +11,7 @@ import SwiftUI
 import Combine
 import CombineExt
 import TangemSdk
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class ManageTokensAdapter {
     private let longHashesSupported: Bool

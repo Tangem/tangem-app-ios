@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 protocol NotificationTapDelegate: AnyObject {
     func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType)

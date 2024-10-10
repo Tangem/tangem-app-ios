@@ -8,7 +8,7 @@
 
 import SwiftUI
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class SendSummaryInputOutputMock: SendSummaryInput, SendSummaryOutput {
     var isReadyToSendPublisher: AnyPublisher<Bool, Never> { .just(output: true) }

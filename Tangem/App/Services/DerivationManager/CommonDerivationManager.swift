@@ -8,7 +8,7 @@
 
 import TangemSdk
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class CommonDerivationManager {
     weak var delegate: DerivationManagerDelegate?

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct DemoUtil {
     func isDemoCard(cardId: String) -> Bool {

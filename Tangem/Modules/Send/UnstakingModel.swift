@@ -9,7 +9,7 @@
 import Foundation
 import TangemStaking
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 protocol UnstakingModelStateProvider {
     var stakingAction: UnstakingModel.Action { get }
@@ -327,7 +327,7 @@ extension UnstakingModel: NotificationTapDelegate {
 extension UnstakingModel: SendBaseDataBuilderInput {
     var bsdkAmount: BSDKAmount? { makeAmount(value: action.amount) }
 
-    var bsdkFee: BlockchainSdk.Fee? { selectedFee.value.value }
+    var bsdkFee: BlockchainSdkLocal.Fee? { selectedFee.value.value }
 
     var isFeeIncluded: Bool { false }
 

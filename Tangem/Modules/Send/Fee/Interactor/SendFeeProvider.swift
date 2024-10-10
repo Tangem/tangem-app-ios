@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 protocol SendFeeProvider {
     func getFee(amount: Decimal, destination: String) -> AnyPublisher<[Fee], Error>

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct VisaTokenInfoLoader {
     private let isTestnet: Bool

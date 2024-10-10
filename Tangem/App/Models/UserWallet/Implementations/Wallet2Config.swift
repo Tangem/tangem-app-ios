@@ -8,7 +8,7 @@
 
 import Foundation
 import TangemSdk
-import BlockchainSdk
+import BlockchainSdkLocal
 
 // TODO: Refactor default/persistent blockchains https://tangem.atlassian.net/browse/IOS-4051
 struct Wallet2Config {

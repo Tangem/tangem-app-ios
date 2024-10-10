@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 private typealias GetBlockCredentials = BlockchainSdkConfig.GetBlockCredentials
 

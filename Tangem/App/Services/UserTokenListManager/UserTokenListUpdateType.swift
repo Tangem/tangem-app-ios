@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import struct BlockchainSdk.Token
+import struct BlockchainSdkLocal.Token
 
 enum UserTokenListUpdateType {
     case append(_ entries: [StorageEntry])

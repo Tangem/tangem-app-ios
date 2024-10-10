@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import enum BlockchainSdk.Blockchain
+import enum BlockchainSdkLocal.Blockchain
 
 struct UserTokenListConverter {
     private let supportedBlockchains: Set<Blockchain>
@@ -93,7 +93,7 @@ struct UserTokenListConverter {
 
                 if let contractAddress = token.contractAddress {
                     // Additional uniqueness check for remote tokens (replicates old behavior)
-                    // Comparison logic here must match the implementation of `Equatable` for `BlockchainSdk.Token`
+                    // Comparison logic here must match the implementation of `Equatable` for `BlockchainSdkLocal.Token`
                     if addedTokens[network, default: []].insert(contractAddress.lowercased()).inserted {
                         return token
                     }

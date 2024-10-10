@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import struct BlockchainSdk.Token
+import struct BlockchainSdkLocal.Token
 
 struct StorageEntry: Hashable {
     let blockchainNetwork: BlockchainNetwork

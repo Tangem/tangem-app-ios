@@ -9,7 +9,7 @@
 import UIKit
 import SwiftUI
 import TangemSdk
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     @Injected(\.incomingActionHandler) private var incomingActionHandler: IncomingActionHandler

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 typealias APIListDTO = [String: [APIInfoDTO]]
 

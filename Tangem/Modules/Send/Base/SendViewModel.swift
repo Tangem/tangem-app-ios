@@ -8,7 +8,7 @@
 
 import Combine
 import SwiftUI
-import BlockchainSdk
+import BlockchainSdkLocal
 
 protocol SendViewAlertPresenter: AnyObject {
     func showAlert(_ alert: AlertBinder)

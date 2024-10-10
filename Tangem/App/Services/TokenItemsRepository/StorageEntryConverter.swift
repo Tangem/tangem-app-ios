@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import struct BlockchainSdk.Token
+import struct BlockchainSdkLocal.Token
 
 struct StorageEntryConverter {
     // MARK: - StoredUserTokenList.Entry to StorageEntry

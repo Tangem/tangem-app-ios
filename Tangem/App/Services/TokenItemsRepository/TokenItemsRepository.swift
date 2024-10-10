@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import struct BlockchainSdk.Token
+import struct BlockchainSdkLocal.Token
 
 // TODO: Andrey Fedorov - The interface and responsibilities of this entity are one big mess, refactoring needed (IOS-4403)
 protocol TokenItemsRepository {

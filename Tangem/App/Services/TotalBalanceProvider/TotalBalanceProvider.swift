@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 import CombineExt
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class TotalBalanceProvider {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService

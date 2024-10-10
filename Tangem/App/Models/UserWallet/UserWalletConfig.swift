@@ -8,7 +8,7 @@
 
 import Foundation
 import TangemSdk
-import BlockchainSdk
+import BlockchainSdkLocal
 
 protocol UserWalletConfig: OnboardingStepsBuilderFactory, BackupServiceFactory, TangemSdkFactory {
     var emailConfig: EmailConfig? { get }

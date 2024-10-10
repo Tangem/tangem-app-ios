@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 /// Determines which UI (user) interactions are available for a given token.
 struct TokenInteractionAvailabilityProvider {

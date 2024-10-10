@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 /// Supports https://github.com/bitcoin/bips/blob/master/bip-0020.mediawiki and https://eips.ethereum.org/EIPS/eip-681 (partially).
 struct QRCodeParser {

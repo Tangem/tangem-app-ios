@@ -7,7 +7,7 @@
 //
 
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 protocol TransactionHistoryService: AnyObject, TransactionHistoryFetcher {
     var state: TransactionHistoryServiceState { get }

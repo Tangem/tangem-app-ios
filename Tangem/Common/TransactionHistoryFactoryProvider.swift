@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class TransactionHistoryFactoryProvider {
     @Injected(\.keysManager) private var keysManager: KeysManager

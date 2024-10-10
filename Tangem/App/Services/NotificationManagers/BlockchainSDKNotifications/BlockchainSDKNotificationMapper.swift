@@ -8,9 +8,9 @@
 
 import Foundation
 import SwiftUI
-import enum BlockchainSdk.ValidationError
-import enum BlockchainSdk.WithdrawalNotification
-import enum BlockchainSdk.FeeResourceType
+import enum BlockchainSdkLocal.ValidationError
+import enum BlockchainSdkLocal.WithdrawalNotification
+import enum BlockchainSdkLocal.FeeResourceType
 
 struct BlockchainSDKNotificationMapper {
     private let tokenItem: TokenItem

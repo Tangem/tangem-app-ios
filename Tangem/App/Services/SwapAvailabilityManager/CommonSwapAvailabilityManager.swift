@@ -7,7 +7,7 @@
 //
 
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 import TangemExpress
 
 class CommonSwapAvailabilityManager: SwapAvailabilityManager {

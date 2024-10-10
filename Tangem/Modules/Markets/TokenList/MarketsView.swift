@@ -8,7 +8,7 @@
 
 import SwiftUI
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct MarketsView: View {
     @ObservedObject var viewModel: MarketsViewModel

@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 import UIKit
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 import TangemSdk
 
 final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObject {

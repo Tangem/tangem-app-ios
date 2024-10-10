@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 import TangemSdk
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class FakeUserTokensManager: UserTokensManager {
     var derivationManager: DerivationManager?
@@ -40,7 +40,7 @@ class FakeUserTokensManager: UserTokensManager {
         userTokenListManager.userTokens.contains(where: { $0.blockchainNetwork == tokenItem.blockchainNetwork })
     }
 
-    func getAllTokens(for blockchainNetwork: BlockchainNetwork) -> [BlockchainSdk.Token] {
+    func getAllTokens(for blockchainNetwork: BlockchainNetwork) -> [BlockchainSdkLocal.Token] {
         userTokenListManager.userTokens.first(where: { $0.blockchainNetwork == blockchainNetwork })?.tokens ?? []
     }
 

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 protocol ExchangeService: AnyObject, Initializable {
     var initializationPublisher: Published<Bool>.Publisher { get }

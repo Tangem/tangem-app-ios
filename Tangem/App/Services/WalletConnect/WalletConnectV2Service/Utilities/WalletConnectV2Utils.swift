@@ -8,12 +8,12 @@
 
 import Foundation
 import WalletConnectSwiftV2
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct WalletConnectV2Utils {
     private let evmNamespace = "eip155"
 
-    /// Validates that all blockchains are supported by BlockchainSdk. Currently (24 Jan 2023) we support only EVM blockchains
+    /// Validates that all blockchains are supported by BlockchainSdkLocal. Currently (24 Jan 2023) we support only EVM blockchains
     /// All other blockchains such as Solana, Tron, Polkadot using different methods, not `eth_sign`, `eth_sendTransaction` etc.
     /// - Returns:
     /// `Bool` that indicates that all blockchains in session proposal is supported

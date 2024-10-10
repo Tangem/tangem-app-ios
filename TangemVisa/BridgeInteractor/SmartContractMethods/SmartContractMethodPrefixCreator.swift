@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct SmartContractMethodPrefixCreator {
     func createPrefixForMethod(with name: String) -> String {

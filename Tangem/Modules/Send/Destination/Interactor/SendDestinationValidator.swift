@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 protocol SendDestinationValidator {
     func validate(destination: String) throws

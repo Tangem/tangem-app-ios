@@ -7,7 +7,7 @@
 //
 
 import XCTest
-import BlockchainSdk
+import BlockchainSdkLocal
 @testable import Tangem
 
 final class APIListTests: XCTestCase {

@@ -8,7 +8,7 @@
 
 import Foundation
 import SwiftUI
-import BlockchainSdk
+import BlockchainSdkLocal
 
 extension Token {
     var isCustom: Bool { id == nil }
@@ -23,7 +23,7 @@ extension Token {
             let hex = String(colorPrefix)
             return Color(hex: hex) ?? defaultValue
 
-            // I've used this code insted of ready TangemSdk hexString property because of two identical Token types in TangemSdk and BlockchainSdk.
+            // I've used this code insted of ready TangemSdk hexString property because of two identical Token types in TangemSdk and BlockchainSdkLocal.
             // This code will be simplified after refactoring token storage on card and on phone
         } else if let hexString = contractAddress.data(using: .utf8)?.map({ return String(format: "%02X", $0) }).joined(),
                   hexString.count >= 8 {

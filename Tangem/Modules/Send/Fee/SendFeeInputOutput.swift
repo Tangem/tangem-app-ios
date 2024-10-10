@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import struct BlockchainSdk.Amount
+import struct BlockchainSdkLocal.Amount
 
 protocol SendFeeInput: AnyObject {
     var selectedFee: SendFee { get }

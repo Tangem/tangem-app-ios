@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 import SwiftUI
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class MarketsPortfolioContainerViewModel: ObservableObject {
     // MARK: - Services

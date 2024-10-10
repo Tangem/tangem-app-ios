@@ -7,7 +7,7 @@
 //
 
 import TangemSdk
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct TwinsCreateWalletTaskResponse: JSONStringConvertible {
     let createWalletResponse: CreateWalletResponse

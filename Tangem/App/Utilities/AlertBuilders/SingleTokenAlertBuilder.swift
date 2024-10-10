@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import enum BlockchainSdk.AssetRequirementsCondition
+import enum BlockchainSdkLocal.AssetRequirementsCondition
 
 struct SingleTokenAlertBuilder {
     var cantSignLongTransactionAlert: AlertBinder {

@@ -8,7 +8,7 @@
 
 import Foundation
 import SwiftUI
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct TokenIconInfoBuilder {
     func build(for type: Amount.AmountType, in blockchain: Blockchain, isCustom: Bool) -> TokenIconInfo {

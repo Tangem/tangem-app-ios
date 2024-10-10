@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 import struct TangemSdk.DerivationPath
 import enum TangemSdk.TangemSdkError
 

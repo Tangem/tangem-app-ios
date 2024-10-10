@@ -9,7 +9,7 @@
 import Foundation
 import CryptoKit
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 // MARK: - Models
 

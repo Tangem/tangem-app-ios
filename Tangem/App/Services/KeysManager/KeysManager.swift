@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 protocol KeysManager {
     var appsFlyer: AppsFlyerConfig { get }

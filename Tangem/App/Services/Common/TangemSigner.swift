@@ -7,7 +7,7 @@
 //
 import Foundation
 import TangemSdk
-import BlockchainSdk
+import BlockchainSdkLocal
 import Combine
 
 struct TangemSigner: TransactionSigner {

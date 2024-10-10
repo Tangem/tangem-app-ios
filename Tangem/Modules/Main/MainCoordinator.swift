@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 import CombineExt
-import BlockchainSdk
+import BlockchainSdkLocal
 import TangemVisa
 import SwiftUI
 

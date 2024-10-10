@@ -10,7 +10,7 @@ import SwiftUI
 import Combine
 import CombineExt
 import TangemSdk
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, OnboardingCoordinator>, ObservableObject {
     private let seedPhraseManager = SeedPhraseManager()

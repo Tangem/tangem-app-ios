@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import struct BlockchainSdk.Token
+import struct BlockchainSdkLocal.Token
 
 class CommonTokenItemsRepository {
     @Injected(\.persistentStorage) var persistanceStorage: PersistentStorageProtocol
@@ -205,7 +205,7 @@ private extension CommonTokenItemsRepository {
 /// Same as `StorageEntry`.
 private struct LegacyStorageEntry: Decodable, Hashable {
     let blockchainNetwork: BlockchainNetwork
-    let tokens: [BlockchainSdk.Token]
+    let tokens: [BlockchainSdkLocal.Token]
 }
 
 private struct LegacyStorageEntriesConverter {
@@ -223,7 +223,7 @@ private struct LegacyStorageEntriesConverter {
     }
 
     func convertToStorageEntry(
-        _ token: BlockchainSdk.Token,
+        _ token: BlockchainSdkLocal.Token,
         in blockchainNetwork: BlockchainNetwork
     ) -> StoredUserTokenList.Entry {
         return StoredUserTokenList.Entry(

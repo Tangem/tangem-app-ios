@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct ReceiveAddressInfo: Identifiable, Hashable {
     var id: String { type.rawValue }

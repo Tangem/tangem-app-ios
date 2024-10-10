@@ -8,7 +8,7 @@
 
 import Foundation
 import TangemSdk
-import BlockchainSdk
+import BlockchainSdkLocal
 
 extension Wallet.PublicKey.HDKey {
     static let ethDerivationStub = Wallet.PublicKey.HDKey(

@@ -9,7 +9,7 @@
 import Foundation
 import TangemStaking
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 import TangemFoundation
 
 protocol StakingModelStateProvider {
@@ -455,7 +455,7 @@ extension StakingModel: ApproveViewModelInput {
         selectedFee.value
     }
 
-    var approveFeeValuePublisher: AnyPublisher<LoadingValue<BlockchainSdk.Fee>, Never> {
+    var approveFeeValuePublisher: AnyPublisher<LoadingValue<BlockchainSdkLocal.Fee>, Never> {
         _state
             .withWeakCaptureOf(self)
             .map { model, state in
@@ -495,7 +495,7 @@ extension StakingModel: ApproveViewModelInput {
 extension StakingModel: SendBaseDataBuilderInput {
     var bsdkAmount: BSDKAmount? { _amount.value?.crypto.map { makeAmount(value: $0) } }
 
-    var bsdkFee: BlockchainSdk.Fee? { selectedFee.value.value }
+    var bsdkFee: BlockchainSdkLocal.Fee? { selectedFee.value.value }
 
     var isFeeIncluded: Bool { _isFeeIncluded.value }
 

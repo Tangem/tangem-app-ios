@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 import SwiftUI
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class SendCoordinator: CoordinatorObject {
     let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?>

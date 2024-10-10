@@ -7,7 +7,7 @@
 //
 
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 protocol SendNotificationManagerInput {
     var feeValues: AnyPublisher<[SendFee], Never> { get }

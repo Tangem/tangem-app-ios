@@ -6,7 +6,7 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-import BlockchainSdk
+import BlockchainSdkLocal
 import Combine
 
 class CustomKaspaFeeService {

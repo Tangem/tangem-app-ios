@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 import TangemStaking
 
 protocol SendSummaryInput: AnyObject {

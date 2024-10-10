@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 import class TangemSdk.Log
 
 struct UserDefaultsBlockchainDataStorage {

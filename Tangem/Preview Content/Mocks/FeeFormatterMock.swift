@@ -7,7 +7,7 @@
 //
 
 import TangemExpress
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct FeeFormatterMock: FeeFormatter {
     func formattedFeeComponents(fee: Decimal, currencySymbol: String, currencyId: String?, isFeeApproximate: Bool) -> FormattedFeeComponents {

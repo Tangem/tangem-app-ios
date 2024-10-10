@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 protocol WalletConnectWalletModelProvider {
     // This info is based on information from WC and they didn't know anything about derivation

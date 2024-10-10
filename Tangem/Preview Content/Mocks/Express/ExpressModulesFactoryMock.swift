@@ -8,7 +8,7 @@
 
 import Foundation
 import TangemExpress
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class ExpressModulesFactoryMock: ExpressModulesFactory {
     private let initialWalletModel: WalletModel = .mockETH

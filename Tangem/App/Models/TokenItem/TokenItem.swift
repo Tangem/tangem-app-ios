@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 import struct TangemSdk.DerivationPath
 
 typealias TokenItemId = String

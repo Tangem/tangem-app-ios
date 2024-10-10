@@ -8,7 +8,7 @@
 
 import Foundation
 import TangemExpress
-import BlockchainSdk
+import BlockchainSdkLocal
 
 extension WalletModel: ExpressWallet {
     var expressCurrency: TangemExpress.ExpressCurrency {

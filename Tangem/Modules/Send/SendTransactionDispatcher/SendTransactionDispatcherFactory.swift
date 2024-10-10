@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct SendTransactionDispatcherFactory {
     let walletModel: WalletModel

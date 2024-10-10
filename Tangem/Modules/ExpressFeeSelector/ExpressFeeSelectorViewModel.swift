@@ -9,7 +9,7 @@
 import Combine
 import SwiftUI
 import TangemExpress
-import struct BlockchainSdk.Fee
+import struct BlockchainSdkLocal.Fee
 
 final class ExpressFeeSelectorViewModel: ObservableObject, Identifiable {
     // MARK: - ViewState

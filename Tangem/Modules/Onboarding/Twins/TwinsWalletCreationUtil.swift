@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 import TangemSdk
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class TwinsWalletCreationUtil {
     static let twinFileName = "TwinPublicKey"

@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 import Firebase
-import BlockchainSdk
+import BlockchainSdkLocal
 import TangemStaking
 
 class ServicesManager {

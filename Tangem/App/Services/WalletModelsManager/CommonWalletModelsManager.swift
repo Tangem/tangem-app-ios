@@ -8,7 +8,7 @@
 
 import Combine
 import CombineExt
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class CommonWalletModelsManager {
     private let walletManagersRepository: WalletManagersRepository

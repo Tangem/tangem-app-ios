@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import BlockchainSdk
+import BlockchainSdkLocal
 import Combine
 
 struct LegacyTokenListView: View {

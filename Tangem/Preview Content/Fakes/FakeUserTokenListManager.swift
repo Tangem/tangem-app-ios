@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import struct BlockchainSdk.Token
+import struct BlockchainSdkLocal.Token
 
 class FakeUserTokenListManager: UserTokenListManager {
     var initialized: Bool {

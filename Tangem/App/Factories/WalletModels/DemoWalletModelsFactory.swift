@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct DemoWalletModelsFactory {
     private let factory: CommonWalletModelsFactory

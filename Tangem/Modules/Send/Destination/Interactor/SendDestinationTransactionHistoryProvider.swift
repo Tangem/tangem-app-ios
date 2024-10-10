@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 protocol SendDestinationTransactionHistoryProvider {
     var transactionHistoryPublisher: AnyPublisher<[TransactionRecord], Never> { get }

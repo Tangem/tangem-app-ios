@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct TokenItemMapper {
     let supportedBlockchains: Set<Blockchain>

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import struct BlockchainSdk.Token
+import struct BlockchainSdkLocal.Token
 
 struct OrganizeTokensListFactory {
     private let tokenIconInfoBuilder: TokenIconInfoBuilder
@@ -136,10 +136,10 @@ struct OrganizeTokensListFactory {
 
     private func token(
         from userToken: TokenSectionsAdapter.UserToken
-    ) -> BlockchainSdk.Token? {
+    ) -> BlockchainSdkLocal.Token? {
         guard let contractAddress = userToken.contractAddress else { return nil }
 
-        return BlockchainSdk.Token(
+        return BlockchainSdkLocal.Token(
             name: userToken.name,
             symbol: userToken.symbol,
             contractAddress: contractAddress,

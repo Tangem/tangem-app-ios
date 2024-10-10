@@ -9,7 +9,7 @@
 import Foundation
 import FirebaseAnalytics
 import FirebaseCrashlytics
-import BlockchainSdk
+import BlockchainSdkLocal
 import AmplitudeSwift
 import TangemSdk
 

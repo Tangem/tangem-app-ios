@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 protocol CustomFeeService: AnyObject {
     func initialSetupCustomFee(_ fee: Fee)

@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class CommonSendTransactionDispatcher {
     private let walletModel: WalletModel

@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 import WalletConnectSwiftV2
-import BlockchainSdk
+import BlockchainSdkLocal
 
 protocol WalletConnectUserWalletInfoProvider: AnyObject {
     var userWalletId: UserWalletId { get }

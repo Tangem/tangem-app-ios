@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 extension Wallet {
     static let ethereumWalletStub = Wallet(

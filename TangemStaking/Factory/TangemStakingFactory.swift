@@ -8,7 +8,7 @@
 
 import Foundation
 import Moya
-import class BlockchainSdk.TangemNetworkLoggerPlugin
+import class BlockchainSdkLocal.TangemNetworkLoggerPlugin
 
 public struct TangemStakingFactory {
     public init() {}

@@ -6,7 +6,7 @@
 //  Copyright © 2022 Tangem AG. All rights reserved.
 //
 
-import BlockchainSdk
+import BlockchainSdkLocal
 import Combine
 import TangemSdk
 

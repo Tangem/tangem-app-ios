@@ -8,7 +8,7 @@
 
 import Foundation
 import SwiftUI
-import BlockchainSdk
+import BlockchainSdkLocal
 
 protocol SendAlertBuilder {
     func makeTransactionFailedAlert(sendTxError: SendTxError, openMailAction: @escaping () -> Void) -> AlertBinder

@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 import Combine
 import CombineExt
-import BlockchainSdk
+import BlockchainSdkLocal
 import TangemSdk
 
 class LegacyTokenListViewModel: ObservableObject {

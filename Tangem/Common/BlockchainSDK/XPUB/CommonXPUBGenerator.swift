@@ -8,7 +8,7 @@
 
 import Foundation
 import TangemSdk
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class CommonXPUBGenerator {
     private let isTestnet: Bool

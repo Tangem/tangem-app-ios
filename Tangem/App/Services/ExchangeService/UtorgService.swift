@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 private struct UtorgResponse<SuccessResult: Decodable>: Decodable {
     let success: Bool

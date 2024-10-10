@@ -8,7 +8,7 @@
 
 import SwiftUI
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class OnboardingTopupViewModel<Step: OnboardingStep, Coordinator: OnboardingTopupRoutable>: OnboardingViewModel<Step, Coordinator> {
     @Injected(\.exchangeService) var exchangeService: ExchangeService

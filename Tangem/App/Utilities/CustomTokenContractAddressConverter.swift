@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct CustomTokenContractAddressConverter {
     private let blockchain: Blockchain

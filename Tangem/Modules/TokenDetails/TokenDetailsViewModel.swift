@@ -9,7 +9,7 @@
 import SwiftUI
 import Combine
 import TangemSdk
-import BlockchainSdk
+import BlockchainSdkLocal
 import TangemExpress
 import TangemStaking
 

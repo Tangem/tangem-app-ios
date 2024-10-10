@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 extension Blockchain {
     /// Should be used to get a icon from the`Tokens.xcassets` file

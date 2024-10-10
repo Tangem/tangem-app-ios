@@ -9,7 +9,7 @@
 import Foundation
 import SwiftUI
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 import TangemSdk
 
 final class ManageTokensNetworkSelectorViewModel: Identifiable, ObservableObject {

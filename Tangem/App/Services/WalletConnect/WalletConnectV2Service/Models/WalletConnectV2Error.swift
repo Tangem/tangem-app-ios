@@ -6,7 +6,7 @@
 //  Copyright © 2023 Tangem AG. All rights reserved.
 //
 
-import BlockchainSdk
+import BlockchainSdkLocal
 
 enum WalletConnectV2Error: LocalizedError {
     case unsupportedBlockchains([String])

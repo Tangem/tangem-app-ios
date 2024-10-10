@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 extension TransactionCreator {
     func buildTransaction(tokenItem: TokenItem, feeTokenItem: TokenItem, amount: Decimal, fee: Fee, destination: TransactionCreatorDestination) async throws -> BSDKTransaction {

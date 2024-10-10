@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 protocol WalletModelsFactory {
     func makeWalletModels(from walletManager: WalletManager) -> [WalletModel]

@@ -8,7 +8,7 @@
 
 import Combine
 import SwiftUI
-import BlockchainSdk
+import BlockchainSdkLocal
 
 final class AddCustomTokenNetworksListViewModel: ObservableObject {
     // MARK: - ViewState

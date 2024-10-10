@@ -9,7 +9,7 @@
 import Foundation
 import SwiftUI
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 protocol SendModelRoutable: AnyObject {
     func openNetworkCurrency()
@@ -396,7 +396,7 @@ extension SendModel: SendBaseDataBuilderInput {
         _amount.value?.crypto.map { makeAmount(decimal: $0) }
     }
 
-    var bsdkFee: BlockchainSdk.Fee? {
+    var bsdkFee: BlockchainSdkLocal.Fee? {
         selectedFee.value.value
     }
 

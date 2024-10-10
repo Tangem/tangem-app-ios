@@ -8,7 +8,7 @@
 
 import SwiftUI
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class SendDestinationInputOutputMock: SendDestinationInput, SendDestinationOutput {
     var destinationPublisher: AnyPublisher<SendAddress, Never> { .just(output: .init(value: "", source: .myWallet)) }

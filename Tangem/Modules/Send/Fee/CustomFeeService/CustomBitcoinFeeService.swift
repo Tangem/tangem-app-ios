@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class CustomBitcoinFeeService {
     private weak var input: CustomFeeServiceInput?
@@ -125,7 +125,7 @@ extension CustomBitcoinFeeService: CustomFeeService {
         bind(input: input)
     }
 
-    func initialSetupCustomFee(_ fee: BlockchainSdk.Fee) {
+    func initialSetupCustomFee(_ fee: BlockchainSdkLocal.Fee) {
         assert(customFee.value == nil, "Duplicate initial setup")
 
         guard let bitcoinFeeParameters = fee.parameters as? BitcoinFeeParameters else {

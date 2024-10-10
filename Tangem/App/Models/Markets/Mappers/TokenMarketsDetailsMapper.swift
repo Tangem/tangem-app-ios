@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct TokenMarketsDetailsMapper {
     let supportedBlockchains: Set<Blockchain>

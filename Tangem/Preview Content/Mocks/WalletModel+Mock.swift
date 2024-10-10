@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 import Combine
 
 extension WalletModel {
@@ -22,23 +22,23 @@ extension WalletModel {
 }
 
 class EthereumWalletManagerMock: WalletManager {
-    var cardTokens: [BlockchainSdk.Token] { [] }
+    var cardTokens: [BlockchainSdkLocal.Token] { [] }
 
     func update() {}
 
-    func updatePublisher() -> AnyPublisher<BlockchainSdk.WalletManagerState, Never> {
+    func updatePublisher() -> AnyPublisher<BlockchainSdkLocal.WalletManagerState, Never> {
         Empty().eraseToAnyPublisher()
     }
 
     func setNeedsUpdate() {}
 
-    func removeToken(_ token: BlockchainSdk.Token) {}
+    func removeToken(_ token: BlockchainSdkLocal.Token) {}
 
-    func addToken(_ token: BlockchainSdk.Token) {}
+    func addToken(_ token: BlockchainSdkLocal.Token) {}
 
-    func addTokens(_ tokens: [BlockchainSdk.Token]) {}
+    func addTokens(_ tokens: [BlockchainSdkLocal.Token]) {}
 
-    var wallet: BlockchainSdk.Wallet = .init(
+    var wallet: BlockchainSdkLocal.Wallet = .init(
         blockchain: .ethereum(testnet: false),
         addresses: [.default: PlainAddress(
             value: "0xtestaddress",
@@ -46,20 +46,20 @@ class EthereumWalletManagerMock: WalletManager {
             type: .default
         )]
     )
-    var walletPublisher: AnyPublisher<BlockchainSdk.Wallet, Never> { .just(output: wallet) }
-    var statePublisher: AnyPublisher<BlockchainSdk.WalletManagerState, Never> { .just(output: .initial) }
+    var walletPublisher: AnyPublisher<BlockchainSdkLocal.Wallet, Never> { .just(output: wallet) }
+    var statePublisher: AnyPublisher<BlockchainSdkLocal.WalletManagerState, Never> { .just(output: .initial) }
     var currentHost: String { "" }
     var outputsCount: Int? { nil }
 
-    func send(_ transaction: BlockchainSdk.Transaction, signer: BlockchainSdk.TransactionSigner) -> AnyPublisher<BlockchainSdk.TransactionSendResult, SendTxError> {
+    func send(_ transaction: BlockchainSdkLocal.Transaction, signer: BlockchainSdkLocal.TransactionSigner) -> AnyPublisher<BlockchainSdkLocal.TransactionSendResult, SendTxError> {
         Empty().eraseToAnyPublisher()
     }
 
-    func validate(fee: BlockchainSdk.Fee) throws {}
-    func validate(amount: BlockchainSdk.Amount) throws {}
+    func validate(fee: BlockchainSdkLocal.Fee) throws {}
+    func validate(amount: BlockchainSdkLocal.Amount) throws {}
     var allowsFeeSelection: Bool { true }
 
-    func getFee(amount: BlockchainSdk.Amount, destination: String) -> AnyPublisher<[BlockchainSdk.Fee], Error> {
+    func getFee(amount: BlockchainSdkLocal.Amount, destination: String) -> AnyPublisher<[BlockchainSdkLocal.Fee], Error> {
         .just(output: [])
     }
 }

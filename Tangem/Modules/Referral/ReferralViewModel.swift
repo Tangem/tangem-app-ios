@@ -10,7 +10,7 @@ import Foundation
 import Combine
 import UIKit
 import SwiftUI
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class ReferralViewModel: ObservableObject {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService

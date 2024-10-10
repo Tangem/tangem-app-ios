@@ -10,7 +10,7 @@ import Combine
 import TangemExpress
 import UIKit
 import enum TangemSdk.TangemSdkError
-import struct BlockchainSdk.Fee
+import struct BlockchainSdkLocal.Fee
 
 final class ExpressViewModel: ObservableObject {
     // MARK: - ViewState

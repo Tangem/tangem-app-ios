@@ -5,7 +5,7 @@
 // file LICENSE at the root of the source code distribution tree.
 
 import XCTest
-import BlockchainSdk
+import BlockchainSdkLocal
 import TangemSdk
 @testable import Tangem
 

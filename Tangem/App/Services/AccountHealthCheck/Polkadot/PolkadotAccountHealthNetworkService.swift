@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 protocol PolkadotAccountHealthNetworkService {
     func getAccountHealthInfo(account: String) async throws -> PolkadotAccountHealthInfo

@@ -8,7 +8,7 @@
 
 import Foundation
 import TangemSdk
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct XPUBGeneratorFactory {
     private let cardInteractor: KeysDeriving

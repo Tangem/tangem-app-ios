@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct PendingTransactionRecordMapper {
     private let formatter: BalanceFormatter

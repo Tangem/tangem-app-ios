@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct LegacyAddCustomTokenView: View {
     @ObservedObject var viewModel: LegacyAddCustomTokenViewModel

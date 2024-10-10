@@ -9,7 +9,7 @@
 import Foundation
 import TangemStaking
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 protocol RestakingModelStateProvider {
     var stakingAction: RestakingModel.Action { get }
@@ -372,7 +372,7 @@ extension RestakingModel: NotificationTapDelegate {
 extension RestakingModel: SendBaseDataBuilderInput {
     var bsdkAmount: BSDKAmount? { makeAmount(value: action.amount) }
 
-    var bsdkFee: BlockchainSdk.Fee? { selectedFee.value.value }
+    var bsdkFee: BlockchainSdkLocal.Fee? { selectedFee.value.value }
 
     var isFeeIncluded: Bool { false }
 

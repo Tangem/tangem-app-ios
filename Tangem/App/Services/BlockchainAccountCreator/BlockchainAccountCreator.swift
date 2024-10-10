@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct BlockchainAccountCreator {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService

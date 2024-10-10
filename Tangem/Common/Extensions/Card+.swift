@@ -7,7 +7,7 @@
 //
 
 import TangemSdk
-import BlockchainSdk
+import BlockchainSdkLocal
 import CryptoKit
 
 extension CardDTO {

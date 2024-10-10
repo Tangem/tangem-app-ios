@@ -9,7 +9,7 @@
 import Foundation
 import TangemSdk
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 enum PreviewCard {
     case withoutWallet

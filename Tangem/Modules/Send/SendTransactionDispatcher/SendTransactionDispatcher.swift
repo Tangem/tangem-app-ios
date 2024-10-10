@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 import TangemFoundation
-import struct BlockchainSdk.SendTxError
+import struct BlockchainSdkLocal.SendTxError
 
 protocol SendTransactionDispatcher {
     func send(transaction: SendTransactionType) async throws -> SendTransactionDispatcherResult

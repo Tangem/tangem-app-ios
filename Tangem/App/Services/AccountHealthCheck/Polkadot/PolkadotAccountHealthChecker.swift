@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import BlockchainSdk
+import BlockchainSdkLocal
 
 /// - Warning: Read-write access to all `@AppStorageCompat` or stored properties
 /// must be synchronized (e.g. by using `runOnMain(_:)` helper).

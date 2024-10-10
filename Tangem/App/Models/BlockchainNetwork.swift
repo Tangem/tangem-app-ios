@@ -8,7 +8,7 @@
 
 import Foundation
 import TangemSdk
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct BlockchainNetwork: Codable, Hashable, Equatable {
     let blockchain: Blockchain

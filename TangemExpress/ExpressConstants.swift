@@ -7,9 +7,9 @@
 //
 
 import Foundation
-import struct BlockchainSdk.Fee
+import struct BlockchainSdkLocal.Fee
 
-public typealias Fee = BlockchainSdk.Fee
+public typealias Fee = BlockchainSdkLocal.Fee
 
 public enum ExpressConstants {
     public static let coinContractAddress = "0"

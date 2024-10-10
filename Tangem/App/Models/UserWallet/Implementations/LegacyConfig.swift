@@ -8,7 +8,7 @@
 
 import Foundation
 import TangemSdk
-import BlockchainSdk
+import BlockchainSdkLocal
 
 /// V3 Config
 struct LegacyConfig: CardContainer {
@@ -25,7 +25,7 @@ struct LegacyConfig: CardContainer {
         card.supportedCurves.contains(.secp256k1)
     }
 
-    private var defaultToken: BlockchainSdk.Token? {
+    private var defaultToken: BlockchainSdkLocal.Token? {
         guard let token = walletData?.token else { return nil }
 
         return .init(

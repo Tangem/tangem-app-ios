@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 protocol WalletManagersRepository {
     var walletManagersPublisher: AnyPublisher<[BlockchainNetwork: any WalletManager], Never> { get }

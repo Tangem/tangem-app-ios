@@ -9,8 +9,8 @@
 import Foundation
 import Combine
 import CombineExt
-import enum BlockchainSdk.Blockchain
-import struct BlockchainSdk.Token
+import enum BlockchainSdkLocal.Blockchain
+import struct BlockchainSdkLocal.Token
 import struct TangemSdk.DerivationPath
 
 class CommonUserTokenListManager {

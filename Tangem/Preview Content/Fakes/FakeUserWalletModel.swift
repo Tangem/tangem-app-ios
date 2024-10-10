@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 import TangemSdk
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class FakeUserWalletModel: UserWalletModel, ObservableObject {
     var keysDerivingInteractor: any KeysDeriving { KeysDerivingMock() }

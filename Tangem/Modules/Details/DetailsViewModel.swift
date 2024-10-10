@@ -9,7 +9,7 @@
 import Foundation
 import SwiftUI
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class DetailsViewModel: ObservableObject {
     // MARK: - Injected

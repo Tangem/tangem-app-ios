@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct ManageTokensItemNetworkSelectorView: View {
     @ObservedObject var viewModel: ManageTokensItemNetworkSelectorViewModel

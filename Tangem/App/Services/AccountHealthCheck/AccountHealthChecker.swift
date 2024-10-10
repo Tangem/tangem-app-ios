@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 protocol AccountHealthChecker: Initializable {
     func performAccountCheckIfNeeded(_ account: String)

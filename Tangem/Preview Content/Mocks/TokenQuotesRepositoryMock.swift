@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class TokenQuotesRepositoryMock: TokenQuotesRepository, TokenQuotesRepositoryUpdater {
     var quotes: Quotes { [:] }

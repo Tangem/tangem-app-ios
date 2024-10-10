@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct UserWalletFinder {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository

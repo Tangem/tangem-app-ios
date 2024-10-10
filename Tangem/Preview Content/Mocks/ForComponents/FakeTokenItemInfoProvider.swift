@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class FakeTokenItemInfoProvider: ObservableObject {
     let pendingTransactionNotifier = PassthroughSubject<(WalletModelId, Bool), Never>()

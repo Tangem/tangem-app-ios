@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 import TangemStaking
 
 struct StakingTransactionMapper {

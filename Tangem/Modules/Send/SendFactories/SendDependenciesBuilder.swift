@@ -8,7 +8,7 @@
 
 import Foundation
 import TangemStaking
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct SendDependenciesBuilder {
     private let walletModel: WalletModel

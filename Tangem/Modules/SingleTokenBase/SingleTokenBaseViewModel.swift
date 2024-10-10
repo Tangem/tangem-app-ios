@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 import SwiftUI
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class SingleTokenBaseViewModel: NotificationTapDelegate {
     @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
@@ -565,7 +565,7 @@ extension SingleTokenBaseViewModel {
         tokenRouter.openSendToSell(with: request, for: walletModel)
     }
 
-    func openAddressSelector(_ addresses: [BlockchainSdk.Address], callback: @escaping (Int) -> Void) {
+    func openAddressSelector(_ addresses: [BlockchainSdkLocal.Address], callback: @escaping (Int) -> Void) {
         if addresses.isEmpty {
             return
         }

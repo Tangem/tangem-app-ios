@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class FakeTangemApiService: TangemApiService {
     var geoIpRegionCode: String

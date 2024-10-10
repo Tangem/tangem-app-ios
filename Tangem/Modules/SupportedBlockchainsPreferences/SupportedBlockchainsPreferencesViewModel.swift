@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class SupportedBlockchainsPreferencesViewModel: ObservableObject {
     @Published var blockchainViewModels: [DefaultToggleRowViewModel] = []

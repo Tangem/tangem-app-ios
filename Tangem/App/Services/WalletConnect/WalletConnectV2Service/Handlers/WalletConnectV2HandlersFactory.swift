@@ -6,7 +6,7 @@
 //  Copyright © 2023 Tangem AG. All rights reserved.
 //
 
-import BlockchainSdk
+import BlockchainSdkLocal
 import struct WalletConnectSwiftV2.AnyCodable
 
 protocol WalletConnectHandlersCreator: AnyObject {

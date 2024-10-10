@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct TokenItemViewLeadingComponent: View {
     let name: String

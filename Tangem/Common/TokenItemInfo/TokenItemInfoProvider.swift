@@ -7,7 +7,7 @@
 //
 
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 protocol TokenItemInfoProvider: AnyObject {
     var id: Int { get }

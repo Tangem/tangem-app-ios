@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import enum BlockchainSdk.Blockchain
+import enum BlockchainSdkLocal.Blockchain
 import struct WalletConnectSwiftV2.Request
 import enum WalletConnectSwiftV2.RPCResult
 

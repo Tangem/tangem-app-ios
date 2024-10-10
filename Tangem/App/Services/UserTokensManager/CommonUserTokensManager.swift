@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 import TangemSdk
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class CommonUserTokensManager {
     @Injected(\.swapAvailabilityController) private var swapAvailabilityController: SwapAvailabilityController

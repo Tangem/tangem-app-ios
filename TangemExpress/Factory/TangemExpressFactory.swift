@@ -9,7 +9,7 @@
 import Foundation
 import Moya
 import TangemSdk
-import BlockchainSdk
+import BlockchainSdkLocal
 
 public struct TangemExpressFactory {
     public init() {}

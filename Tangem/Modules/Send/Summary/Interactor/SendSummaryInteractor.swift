@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import BlockchainSdk
+import BlockchainSdkLocal
 
 protocol SendSummaryInteractor: AnyObject {
     var transactionDescription: AnyPublisher<String?, Never> { get }

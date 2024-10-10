@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 struct MarketsPortfolioTokenItemFactory {
     private let contextActionsProvider: MarketsPortfolioContextActionsProvider

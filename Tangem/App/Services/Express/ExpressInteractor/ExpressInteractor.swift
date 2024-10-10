@@ -10,7 +10,7 @@ import Foundation
 import Combine
 import TangemFoundation
 import TangemExpress
-import BlockchainSdk
+import BlockchainSdkLocal
 
 class ExpressInteractor {
     // MARK: - Public
@@ -188,7 +188,7 @@ extension ExpressInteractor: ApproveViewModelInput {
         mapToApproveFeeLoadingValue(state: getState()) ?? .failedToLoad(error: CommonError.noData)
     }
 
-    var approveFeeValuePublisher: AnyPublisher<LoadingValue<BlockchainSdk.Fee>, Never> {
+    var approveFeeValuePublisher: AnyPublisher<LoadingValue<BlockchainSdkLocal.Fee>, Never> {
         state
             .withWeakCaptureOf(self)
             .compactMap { interactor, state in
@@ -197,7 +197,7 @@ extension ExpressInteractor: ApproveViewModelInput {
             .eraseToAnyPublisher()
     }
 
-    private func mapToApproveFeeLoadingValue(state: ExpressInteractor.State) -> LoadingValue<BlockchainSdk.Fee>? {
+    private func mapToApproveFeeLoadingValue(state: ExpressInteractor.State) -> LoadingValue<BlockchainSdkLocal.Fee>? {
         switch state {
         case .permissionRequired(let state, _):
             guard let fee = state.fees[getFeeOption()] else {

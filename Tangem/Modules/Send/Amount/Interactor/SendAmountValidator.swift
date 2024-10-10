@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 protocol SendAmountValidator {
     func validate(amount: Decimal) throws

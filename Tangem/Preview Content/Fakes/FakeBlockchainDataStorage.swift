@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import BlockchainSdkLocal
 
 final class FakeBlockchainDataStorage: BlockchainDataStorage {
     private var storage: [String: Any] = [:]
