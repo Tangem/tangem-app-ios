@@ -40,15 +40,16 @@ class CommonStakingStepsManager {
 
     private func bind() {
         provider.state
-            .sink { [output] state in
+            .withWeakCaptureOf(self)
+            .sink { stepsManager, state in
                 switch state {
                 case .loading, .networkError, .validationError:
                     break
                 case .readyToApprove:
-                    output?.update(flowActionType: .approve)
+                    stepsManager.output?.update(flowActionType: .approve)
 
                 case .approveTransactionInProgress, .readyToStake:
-                    output?.update(flowActionType: .stake)
+                    stepsManager.output?.update(flowActionType: .stake)
                 }
             }
             .store(in: &bag)
