@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "promo_ring_icon.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

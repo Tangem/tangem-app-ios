@@ -14,13 +14,18 @@ import BlockchainSdk
 struct SendTransactionMapper {
     func mapResult(
         _ result: TransactionSendResult,
-        blockchain: Blockchain
+        blockchain: Blockchain,
+        signer: Card?
     ) -> SendTransactionDispatcherResult {
         let factory = ExternalLinkProviderFactory()
         let provider = factory.makeProvider(for: blockchain)
         let explorerUrl = provider.url(transaction: result.hash)
 
-        return SendTransactionDispatcherResult(hash: result.hash, url: explorerUrl)
+        let signerType = signer.map {
+            RingUtil().isRing(batchId: $0.batchId) ? Analytics.ParameterValue.ring.rawValue : Analytics.ParameterValue.card.rawValue
+        } ?? "unknown"
+
+        return SendTransactionDispatcherResult(hash: result.hash, url: explorerUrl, signerType: signerType)
     }
 
     func mapError(_ error: Error, transaction: SendTransactionType) -> SendTransactionDispatcherResult.Error {

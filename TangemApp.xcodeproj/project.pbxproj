@@ -1159,6 +1159,7 @@
 		DC3DCAEF2A49C6E600F72554 /* CommonWalletManagersRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3DCAEE2A49C6E600F72554 /* CommonWalletManagersRepository.swift */; };
 		DC3ED8A52C1B489E00C89C62 /* DefaultPickerRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3ED8A42C1B489E00C89C62 /* DefaultPickerRowViewModel.swift */; };
 		DC3ED8A72C1B49F900C89C62 /* DefaultPickerRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3ED8A62C1B49F900C89C62 /* DefaultPickerRowView.swift */; };
+		DC4020F12CB039DC00002902 /* RingUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4020F02CB039DB00002902 /* RingUtil.swift */; };
 		DC44C58C2B4DC59400888BED /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = DC44C58A2B4DC41F00888BED /* PrivacyInfo.xcprivacy */; };
 		DC4512622BD0458000DE6F94 /* MockedCardScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4512612BD0458000DE6F94 /* MockedCardScanner.swift */; };
 		DC4512702BD1531B00DE6F94 /* CardScannerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC45126F2BD1531B00DE6F94 /* CardScannerFactory.swift */; };
@@ -3139,6 +3140,7 @@
 		DC3DCAEE2A49C6E600F72554 /* CommonWalletManagersRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonWalletManagersRepository.swift; sourceTree = "<group>"; };
 		DC3ED8A42C1B489E00C89C62 /* DefaultPickerRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultPickerRowViewModel.swift; sourceTree = "<group>"; };
 		DC3ED8A62C1B49F900C89C62 /* DefaultPickerRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultPickerRowView.swift; sourceTree = "<group>"; };
+		DC4020F02CB039DB00002902 /* RingUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingUtil.swift; sourceTree = "<group>"; };
 		DC44C58A2B4DC41F00888BED /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		DC4512612BD0458000DE6F94 /* MockedCardScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockedCardScanner.swift; sourceTree = "<group>"; };
 		DC45126F2BD1531B00DE6F94 /* CardScannerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardScannerFactory.swift; sourceTree = "<group>"; };
@@ -5305,6 +5307,7 @@
 				B003BDAB2A029C4300B282F7 /* BalanceConverter.swift */,
 				EFA580622893E6AA00110DB0 /* BiometricAuthorizationUtils.swift */,
 				DC5DBBC8289B951600C21E35 /* DemoUtil.swift */,
+				DC4020F02CB039DB00002902 /* RingUtil.swift */,
 				B0F62C5425DE4F6B005C8BA0 /* DeviceInfoProvider.swift */,
 				B0F79C692689AC56008C9B30 /* FileEncryptionUtility.swift */,
 				B020FFBD25DE895E00EF422C /* FileLogger.swift */,
@@ -11416,6 +11419,7 @@
 				B6AA13762A2A37A800B53937 /* CardInfoPagePreviewView.swift in Sources */,
 				B0F7D7622A404907007FEB2E /* ReceiveBottomSheetViewModel.swift in Sources */,
 				EF08A0F1283D2382008BD923 /* CoinsList.swift in Sources */,
+				DC4020F12CB039DC00002902 /* RingUtil.swift in Sources */,
 				B68E5E7F2A9526BD00216281 /* SectionModel.swift in Sources */,
 				DC3DCAE52A41FA6A00F72554 /* KeysRepository.swift in Sources */,
 				DAB19D4A2B2C72A100DD08C4 /* AddCustomTokenView.swift in Sources */,
