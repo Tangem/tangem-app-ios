@@ -21,7 +21,6 @@
 		0A81B3732BB2D24A0008F21C /* BlockchainURLSchemesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A81B3722BB2D24A0008F21C /* BlockchainURLSchemesParser.swift */; };
 		0A81B38E2BB3018E0008F21C /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 0A81B38D2BB3018E0008F21C /* ZIPFoundation */; };
 		0AB5A4732C5267CB00491764 /* SegmentedPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB5A4722C5267CB00491764 /* SegmentedPicker.swift */; };
-		0ABC61152C410AFD00065EBA /* TweetNacl in Frameworks */ = {isa = PBXBuildFile; productRef = 0ABC61142C410AFD00065EBA /* TweetNacl */; };
 		0AD13F952C8AD76800C2EE16 /* CommonStakingAnalyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD13F942C8AD76800C2EE16 /* CommonStakingAnalyticsLogger.swift */; };
 		2D0E4F532A8D114E00001D8E /* GenericWalletManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0E4F522A8D114E00001D8E /* GenericWalletManagerFactory.swift */; };
 		2D1146A62ADD0EDC00DEE827 /* ManageTokensNetworkSelectorItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1146A42ADD0EDC00DEE827 /* ManageTokensNetworkSelectorItemView.swift */; };
@@ -735,7 +734,6 @@
 		B63B63BA2A44012D00A7CECF /* OrganizeTokensListHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63B63B92A44012D00A7CECF /* OrganizeTokensListHeader.swift */; };
 		B63B63BD2A44013E00A7CECF /* OrganizeTokensListFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63B63BC2A44013E00A7CECF /* OrganizeTokensListFooter.swift */; };
 		B63B72892AF5F23B004B80BF /* TokenSectionsSourcePublisherFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63B72882AF5F23B004B80BF /* TokenSectionsSourcePublisherFactory.swift */; };
-		B63BAA6C2B7410AE00DA26C9 /* TangemWalletCoreBinariesWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = B63BAA6B2B7410AE00DA26C9 /* TangemWalletCoreBinariesWrapper */; };
 		B63D4CAD2B2B8C6200DB2420 /* MutableCollection+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63D4CAC2B2B8C6200DB2420 /* MutableCollection+.swift */; };
 		B63FDB182A5F09F10080240F /* CardsInfoPagerFlexibleFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63FDB172A5F09F10080240F /* CardsInfoPagerFlexibleFooterView.swift */; };
 		B6421A8D2C9272800053DD8B /* MainBottomSheetHeaderViewModelDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6421A8C2C9272800053DD8B /* MainBottomSheetHeaderViewModelDelegate.swift */; };
@@ -1693,11 +1691,22 @@
 		B6AF5EE62CB7602000ADEA9B /* ZkSyncExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF59152CB7602000ADEA9B /* ZkSyncExternalLinkProvider.swift */; };
 		B6AF5EE72CB7602000ADEA9B /* AlgorandNetworkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF57CC2CB7602000ADEA9B /* AlgorandNetworkProvider.swift */; };
 		B6AF5EE82CB7602000ADEA9B /* HederaAccountBalance.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF59362CB7602000ADEA9B /* HederaAccountBalance.swift */; };
+		B6AF5EEE2CB7610E00ADEA9B /* Hedera in Frameworks */ = {isa = PBXBuildFile; productRef = B6AF5EED2CB7610E00ADEA9B /* Hedera */; };
+		B6AF5EF12CB7613500ADEA9B /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B6AF5EF02CB7613500ADEA9B /* CryptoSwift */; };
+		B6AF5EF32CB7615700ADEA9B /* TangemWalletCoreBinariesWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = B6AF5EF22CB7615700ADEA9B /* TangemWalletCoreBinariesWrapper */; };
+		B6AF5EF62CB7618F00ADEA9B /* SwiftProtobuf in Frameworks */ = {isa = PBXBuildFile; productRef = B6AF5EF52CB7618F00ADEA9B /* SwiftProtobuf */; };
+		B6AF5EF92CB761B300ADEA9B /* TonSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B6AF5EF82CB761B300ADEA9B /* TonSwift */; };
+		B6AF5EFC2CB761D800ADEA9B /* ScaleCodec in Frameworks */ = {isa = PBXBuildFile; productRef = B6AF5EFB2CB761D800ADEA9B /* ScaleCodec */; };
+		B6AF5EFF2CB761FA00ADEA9B /* IcpKit in Frameworks */ = {isa = PBXBuildFile; productRef = B6AF5EFE2CB761FA00ADEA9B /* IcpKit */; };
+		B6AF5F002CB763AF00ADEA9B /* BlockchainSdkLocal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B61AD9FA2CB75BD200BB7D40 /* BlockchainSdkLocal.framework */; };
+		B6AF5F052CB763C100ADEA9B /* BlockchainSdkLocal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B61AD9FA2CB75BD200BB7D40 /* BlockchainSdkLocal.framework */; };
+		B6AF5F0A2CB763C900ADEA9B /* BlockchainSdkLocal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B61AD9FA2CB75BD200BB7D40 /* BlockchainSdkLocal.framework */; };
+		B6AF5F252CB76AF300ADEA9B /* secp256k1 in Frameworks */ = {isa = PBXBuildFile; productRef = B6AF5F242CB76AF300ADEA9B /* secp256k1 */; };
+		B6AF5F272CB76B0800ADEA9B /* TweetNacl in Frameworks */ = {isa = PBXBuildFile; productRef = B6AF5F262CB76B0800ADEA9B /* TweetNacl */; };
 		B6B1BC292C6CCE88003EDB47 /* IntrospectResponderChainViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B1BC282C6CCE88003EDB47 /* IntrospectResponderChainViewModifier.swift */; };
 		B6B1CCCA2C460BB9006C1B44 /* UIPanGestureRecognizer+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B1CCC92C460BB9006C1B44 /* UIPanGestureRecognizer+.swift */; };
 		B6BB2CE22BAC4A9B009C12F2 /* ExpressDeviceInfoPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6BB2CE12BAC4A9B009C12F2 /* ExpressDeviceInfoPlugin.swift */; };
 		B6C1B9FF2AE1627500A98D2F /* OrganizeTokensScrollState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C1B9FE2AE1627500A98D2F /* OrganizeTokensScrollState.swift */; };
-		B6C1BE6D2B6C2F4E008FE5A0 /* secp256k1 in Frameworks */ = {isa = PBXBuildFile; productRef = B6C1BE6C2B6C2F4E008FE5A0 /* secp256k1 */; };
 		B6C2D00B2C816F080009FDFC /* MarketsTokenDetailsDateFormatterRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C2D00A2C816F080009FDFC /* MarketsTokenDetailsDateFormatterRepository.swift */; };
 		B6C3B3072A3AD2120007525E /* TokenListItemLoadingPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C3B3062A3AD2120007525E /* TokenListItemLoadingPlaceholderView.swift */; };
 		B6C3B3092A3AD2230007525E /* TokenListSectionLoadingPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C3B3082A3AD2230007525E /* TokenListSectionLoadingPlaceholderView.swift */; };
@@ -2661,6 +2670,27 @@
 			remoteInfo = Tangem;
 		};
 		B61ADA0B2CB75BDB00BB7D40 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5D3F77BA24BF56D800E8695B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B61AD9F92CB75BD200BB7D40;
+			remoteInfo = BlockchainSdkLocal;
+		};
+		B6AF5F022CB763AF00ADEA9B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5D3F77BA24BF56D800E8695B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B61AD9F92CB75BD200BB7D40;
+			remoteInfo = BlockchainSdkLocal;
+		};
+		B6AF5F072CB763C100ADEA9B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5D3F77BA24BF56D800E8695B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B61AD9F92CB75BD200BB7D40;
+			remoteInfo = BlockchainSdkLocal;
+		};
+		B6AF5F0C2CB763C900ADEA9B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5D3F77BA24BF56D800E8695B /* Project object */;
 			proxyType = 1;
@@ -5486,16 +5516,13 @@
 				B0B11A082C787FE70018A2A6 /* MarkdownUI in Frameworks */,
 				B643EB1F2CB56BC10084B810 /* TangemDependenciesShim in Frameworks */,
 				B61ADA0D2CB75BDB00BB7D40 /* BlockchainSdkLocal.framework in Frameworks */,
-				B6C1BE6D2B6C2F4E008FE5A0 /* secp256k1 in Frameworks */,
 				EF9E29A82B4F0C9900418559 /* TangemExpress.framework in Frameworks */,
 				EFEE239D2BFF62D60099917E /* TangemStaking.framework in Frameworks */,
 				B620FCAE2C5D337900AD0FD1 /* DGCharts in Frameworks */,
 				B6F625302C85E1A600DEF098 /* DGCharts in Frameworks */,
 				5DAC0888251391D900B73E8B /* CoreNFC.framework in Frameworks */,
 				B099338A2B5517EC00240CDB /* TangemVisa.framework in Frameworks */,
-				B63BAA6C2B7410AE00DA26C9 /* TangemWalletCoreBinariesWrapper in Frameworks */,
 				0A81B38E2BB3018E0008F21C /* ZIPFoundation in Frameworks */,
-				0ABC61152C410AFD00065EBA /* TweetNacl in Frameworks */,
 				B620FCA02C5D326D00AD0FD1 /* DGCharts in Frameworks */,
 				4F00236C26F4689B6A741039 /* Pods_Tangem.framework in Frameworks */,
 			);
@@ -5523,6 +5550,7 @@
 			files = (
 				B643EB2D2CB56D060084B810 /* TangemDependenciesShim in Frameworks */,
 				C2DBF9FD1A18628296A2C808 /* Pods_TangemVisa.framework in Frameworks */,
+				B6AF5F052CB763C100ADEA9B /* BlockchainSdkLocal.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5539,8 +5567,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6AF5EFC2CB761D800ADEA9B /* ScaleCodec in Frameworks */,
+				B6AF5F252CB76AF300ADEA9B /* secp256k1 in Frameworks */,
+				B6AF5EF32CB7615700ADEA9B /* TangemWalletCoreBinariesWrapper in Frameworks */,
+				B6AF5EF92CB761B300ADEA9B /* TonSwift in Frameworks */,
 				B61ADA1E2CB75C0800BB7D40 /* TangemDependenciesShim in Frameworks */,
+				B6AF5EF12CB7613500ADEA9B /* CryptoSwift in Frameworks */,
 				4675C3B83B5F464FC88063DE /* Pods_BlockchainSdkLocal.framework in Frameworks */,
+				B6AF5EFF2CB761FA00ADEA9B /* IcpKit in Frameworks */,
+				B6AF5EEE2CB7610E00ADEA9B /* Hedera in Frameworks */,
+				B6AF5F272CB76B0800ADEA9B /* TweetNacl in Frameworks */,
+				B6AF5EF62CB7618F00ADEA9B /* SwiftProtobuf in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5559,6 +5596,7 @@
 			files = (
 				B643EB2B2CB56CF80084B810 /* TangemDependenciesShim in Frameworks */,
 				86D9B9D1A68FFFCAAEDE1210 /* Pods_TangemExpress.framework in Frameworks */,
+				B6AF5F002CB763AF00ADEA9B /* BlockchainSdkLocal.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5577,6 +5615,7 @@
 			files = (
 				B643EB2F2CB56D0D0084B810 /* TangemDependenciesShim in Frameworks */,
 				735DE6BB9FDAFE5A5BCFE5AF /* Pods_TangemStaking.framework in Frameworks */,
+				B6AF5F0A2CB763C900ADEA9B /* BlockchainSdkLocal.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -13774,10 +13813,7 @@
 			);
 			name = Tangem;
 			packageProductDependencies = (
-				B6C1BE6C2B6C2F4E008FE5A0 /* secp256k1 */,
-				B63BAA6B2B7410AE00DA26C9 /* TangemWalletCoreBinariesWrapper */,
 				0A81B38D2BB3018E0008F21C /* ZIPFoundation */,
-				0ABC61142C410AFD00065EBA /* TweetNacl */,
 				B620FC9F2C5D326D00AD0FD1 /* DGCharts */,
 				B620FCAD2C5D337900AD0FD1 /* DGCharts */,
 				B6EE3B612C789C6E00B464FC /* DGCharts */,
@@ -13840,6 +13876,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				B6AF5F082CB763C100ADEA9B /* PBXTargetDependency */,
 			);
 			name = TangemVisa;
 			productName = TangemVisa;
@@ -13882,6 +13919,15 @@
 			name = BlockchainSdkLocal;
 			packageProductDependencies = (
 				B61ADA1D2CB75C0800BB7D40 /* TangemDependenciesShim */,
+				B6AF5EED2CB7610E00ADEA9B /* Hedera */,
+				B6AF5EF02CB7613500ADEA9B /* CryptoSwift */,
+				B6AF5EF22CB7615700ADEA9B /* TangemWalletCoreBinariesWrapper */,
+				B6AF5EF52CB7618F00ADEA9B /* SwiftProtobuf */,
+				B6AF5EF82CB761B300ADEA9B /* TonSwift */,
+				B6AF5EFB2CB761D800ADEA9B /* ScaleCodec */,
+				B6AF5EFE2CB761FA00ADEA9B /* IcpKit */,
+				B6AF5F242CB76AF300ADEA9B /* secp256k1 */,
+				B6AF5F262CB76B0800ADEA9B /* TweetNacl */,
 			);
 			productName = BlockchainSdkLocal;
 			productReference = B61AD9FA2CB75BD200BB7D40 /* BlockchainSdkLocal.framework */;
@@ -13920,6 +13966,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				B6AF5F032CB763AF00ADEA9B /* PBXTargetDependency */,
 			);
 			name = TangemExpress;
 			productName = TangemExpress;
@@ -13959,6 +14006,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				B6AF5F0D2CB763C900ADEA9B /* PBXTargetDependency */,
 			);
 			name = TangemStaking;
 			productName = TangemStaking;
@@ -14064,6 +14112,12 @@
 				B0B11A062C787FE70018A2A6 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 				B6F6252E2C85E1A600DEF098 /* XCRemoteSwiftPackageReference "DGCharts" */,
 				B643EB1D2CB56BC10084B810 /* XCLocalSwiftPackageReference "Modules" */,
+				B6AF5EEC2CB7610E00ADEA9B /* XCRemoteSwiftPackageReference "hedera-sdk-swift" */,
+				B6AF5EEF2CB7613500ADEA9B /* XCRemoteSwiftPackageReference "CryptoSwift" */,
+				B6AF5EF42CB7618F00ADEA9B /* XCRemoteSwiftPackageReference "swift-protobuf-binaries" */,
+				B6AF5EF72CB761B300ADEA9B /* XCRemoteSwiftPackageReference "ton-swift" */,
+				B6AF5EFA2CB761D800ADEA9B /* XCRemoteSwiftPackageReference "ScaleCodec" */,
+				B6AF5EFD2CB761FA00ADEA9B /* XCRemoteSwiftPackageReference "IcpKit" */,
 			);
 			productRefGroup = 5D3F77C324BF56D800E8695B /* Products */;
 			projectDirPath = "";
@@ -17165,6 +17219,21 @@
 			isa = PBXTargetDependency;
 			target = B61AD9F92CB75BD200BB7D40 /* BlockchainSdkLocal */;
 			targetProxy = B61ADA0B2CB75BDB00BB7D40 /* PBXContainerItemProxy */;
+		};
+		B6AF5F032CB763AF00ADEA9B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B61AD9F92CB75BD200BB7D40 /* BlockchainSdkLocal */;
+			targetProxy = B6AF5F022CB763AF00ADEA9B /* PBXContainerItemProxy */;
+		};
+		B6AF5F082CB763C100ADEA9B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B61AD9F92CB75BD200BB7D40 /* BlockchainSdkLocal */;
+			targetProxy = B6AF5F072CB763C100ADEA9B /* PBXContainerItemProxy */;
+		};
+		B6AF5F0D2CB763C900ADEA9B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B61AD9F92CB75BD200BB7D40 /* BlockchainSdkLocal */;
+			targetProxy = B6AF5F0C2CB763C900ADEA9B /* PBXContainerItemProxy */;
 		};
 		EF9E297D2B4F0C4900418559 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -22925,6 +22994,54 @@
 				minimumVersion = 2.4.0;
 			};
 		};
+		B6AF5EEC2CB7610E00ADEA9B /* XCRemoteSwiftPackageReference "hedera-sdk-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tangem/hedera-sdk-swift.git";
+			requirement = {
+				kind = exactVersion;
+				version = "0.26.0-tangem3";
+			};
+		};
+		B6AF5EEF2CB7613500ADEA9B /* XCRemoteSwiftPackageReference "CryptoSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/krzyzanowskim/CryptoSwift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.8.0;
+			};
+		};
+		B6AF5EF42CB7618F00ADEA9B /* XCRemoteSwiftPackageReference "swift-protobuf-binaries" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tangem/swift-protobuf-binaries.git";
+			requirement = {
+				kind = exactVersion;
+				version = "1.25.2-tangem1";
+			};
+		};
+		B6AF5EF72CB761B300ADEA9B /* XCRemoteSwiftPackageReference "ton-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tangem/ton-swift.git";
+			requirement = {
+				kind = exactVersion;
+				version = "1.0.10-tangem3";
+			};
+		};
+		B6AF5EFA2CB761D800ADEA9B /* XCRemoteSwiftPackageReference "ScaleCodec" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tesseract-one/ScaleCodec.swift";
+			requirement = {
+				kind = exactVersion;
+				version = 0.2.1;
+			};
+		};
+		B6AF5EFD2CB761FA00ADEA9B /* XCRemoteSwiftPackageReference "IcpKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tangem/IcpKit.git";
+			requirement = {
+				kind = exactVersion;
+				version = "0.1.2-tangem4";
+			};
+		};
 		B6C1BE6B2B6C2F4E008FE5A0 /* XCRemoteSwiftPackageReference "secp256k1.swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GigaBitcoin/secp256k1.swift.git";
@@ -22957,11 +23074,6 @@
 			package = 0A81B38C2BB3018E0008F21C /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
 			productName = ZIPFoundation;
 		};
-		0ABC61142C410AFD00065EBA /* TweetNacl */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 0ABC61132C410AFD00065EBA /* XCRemoteSwiftPackageReference "tweetnacl-swiftwrap" */;
-			productName = TweetNacl;
-		};
 		B0B11A072C787FE70018A2A6 /* MarkdownUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B0B11A062C787FE70018A2A6 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
@@ -22980,11 +23092,6 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = DGCharts;
 		};
-		B63BAA6B2B7410AE00DA26C9 /* TangemWalletCoreBinariesWrapper */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B6F525902B6C05210079ADD1 /* XCRemoteSwiftPackageReference "wallet-core-binaries-ios" */;
-			productName = TangemWalletCoreBinariesWrapper;
-		};
 		B643EB1E2CB56BC10084B810 /* TangemDependenciesShim */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TangemDependenciesShim;
@@ -23001,10 +23108,50 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = TangemDependenciesShim;
 		};
-		B6C1BE6C2B6C2F4E008FE5A0 /* secp256k1 */ = {
+		B6AF5EED2CB7610E00ADEA9B /* Hedera */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6AF5EEC2CB7610E00ADEA9B /* XCRemoteSwiftPackageReference "hedera-sdk-swift" */;
+			productName = Hedera;
+		};
+		B6AF5EF02CB7613500ADEA9B /* CryptoSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6AF5EEF2CB7613500ADEA9B /* XCRemoteSwiftPackageReference "CryptoSwift" */;
+			productName = CryptoSwift;
+		};
+		B6AF5EF22CB7615700ADEA9B /* TangemWalletCoreBinariesWrapper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6F525902B6C05210079ADD1 /* XCRemoteSwiftPackageReference "wallet-core-binaries-ios" */;
+			productName = TangemWalletCoreBinariesWrapper;
+		};
+		B6AF5EF52CB7618F00ADEA9B /* SwiftProtobuf */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6AF5EF42CB7618F00ADEA9B /* XCRemoteSwiftPackageReference "swift-protobuf-binaries" */;
+			productName = SwiftProtobuf;
+		};
+		B6AF5EF82CB761B300ADEA9B /* TonSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6AF5EF72CB761B300ADEA9B /* XCRemoteSwiftPackageReference "ton-swift" */;
+			productName = TonSwift;
+		};
+		B6AF5EFB2CB761D800ADEA9B /* ScaleCodec */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6AF5EFA2CB761D800ADEA9B /* XCRemoteSwiftPackageReference "ScaleCodec" */;
+			productName = ScaleCodec;
+		};
+		B6AF5EFE2CB761FA00ADEA9B /* IcpKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6AF5EFD2CB761FA00ADEA9B /* XCRemoteSwiftPackageReference "IcpKit" */;
+			productName = IcpKit;
+		};
+		B6AF5F242CB76AF300ADEA9B /* secp256k1 */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B6C1BE6B2B6C2F4E008FE5A0 /* XCRemoteSwiftPackageReference "secp256k1.swift" */;
 			productName = secp256k1;
+		};
+		B6AF5F262CB76B0800ADEA9B /* TweetNacl */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0ABC61132C410AFD00065EBA /* XCRemoteSwiftPackageReference "tweetnacl-swiftwrap" */;
+			productName = TweetNacl;
 		};
 		B6EE3B612C789C6E00B464FC /* DGCharts */ = {
 			isa = XCSwiftPackageProductDependency;
