@@ -77,9 +77,9 @@ private extension WelcomeSearchTokensViewModel {
             .store(in: &bag)
     }
 
-    func setupListDataLoader() -> ListDataLoader {
+    func setupListDataLoader() -> TokensListDataLoader {
         let supportedBlockchains = SupportedBlockchains.all
-        let loader = ListDataLoader(supportedBlockchains: supportedBlockchains)
+        let loader = TokensListDataLoader(supportedBlockchains: supportedBlockchains)
 
         loader.$items
             .withWeakCaptureOf(self)

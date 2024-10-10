@@ -325,8 +325,10 @@ private extension StakingDetailsViewModel {
             coordinator?.openStakingFlow()
         case .pending(.voteLocked):
             coordinator?.openRestakingFlow(action: action)
-        case .unstake, .pending:
+        case .unstake:
             coordinator?.openUnstakingFlow(action: action)
+        case .pending:
+            coordinator?.openStakingSingleActionFlow(action: action)
         }
     }
 

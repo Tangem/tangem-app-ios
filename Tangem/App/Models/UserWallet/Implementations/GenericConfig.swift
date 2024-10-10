@@ -96,14 +96,14 @@ extension GenericConfig: UserWalletConfig {
         card.firmwareVersion < .keysImportAvailable
     }
 
-    var warningEvents: [WarningEvent] {
-        var warnings = WarningEventsFactory().makeWarningEvents(for: card)
+    var generalNotificationEvents: [GeneralNotificationEvent] {
+        var notifications = GeneralNotificationEventsFactory().makeNotifications(for: card)
 
         if hasFeature(.hdWallets), derivationStyle == .v1 {
-            warnings.append(.legacyDerivation)
+            notifications.append(.legacyDerivation)
         }
 
-        return warnings
+        return notifications
     }
 
     var emailData: [EmailCollectedData] {

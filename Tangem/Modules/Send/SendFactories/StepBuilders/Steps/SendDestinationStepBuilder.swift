@@ -128,9 +128,11 @@ private extension SendDestinationStepBuilder {
                 .filter { walletModel in
                     let ignoredAddresses = self.walletModel.wallet.addresses.map { $0.value }
 
-                    return walletModel.blockchainNetwork.blockchain.networkId == self.walletModel.tokenItem.blockchain.networkId &&
-                        walletModel.isMainToken &&
-                        !ignoredAddresses.contains(walletModel.defaultAddress)
+                    let shouldBeIncluded = walletModel.wallet.blockchain.supportsCompound || !ignoredAddresses.contains(walletModel.defaultAddress)
+
+                    return walletModel.blockchainNetwork.blockchain.networkId == self.walletModel.tokenItem.blockchain.networkId
+                        && walletModel.isMainToken
+                        && shouldBeIncluded
                 }
                 .map { walletModel in
                     (name: userWalletModel.name, address: walletModel.defaultAddress)

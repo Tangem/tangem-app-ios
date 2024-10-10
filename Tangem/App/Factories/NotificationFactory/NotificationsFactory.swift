@@ -10,7 +10,7 @@ import Foundation
 
 struct NotificationsFactory {
     func buildNotificationInputs(
-        for events: [WarningEvent],
+        for events: [GeneralNotificationEvent],
         action: @escaping NotificationView.NotificationAction,
         buttonAction: @escaping NotificationView.NotificationButtonTapAction,
         dismissAction: @escaping NotificationView.NotificationAction
@@ -26,7 +26,7 @@ struct NotificationsFactory {
     }
 
     func buildNotificationInput(
-        for event: WarningEvent,
+        for event: GeneralNotificationEvent,
         action: @escaping NotificationView.NotificationAction,
         buttonAction: @escaping NotificationView.NotificationButtonTapAction,
         dismissAction: @escaping NotificationView.NotificationAction

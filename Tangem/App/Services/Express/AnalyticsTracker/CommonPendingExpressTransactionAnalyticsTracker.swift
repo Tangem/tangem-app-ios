@@ -45,7 +45,7 @@ extension CommonPendingExpressTransactionAnalyticsTracker {
                 return .inProgress
             case .done:
                 return .done
-            case .failed, .awaitingHash, .unknown:
+            case .failed, .awaitingHash, .unknown, .paused:
                 return .fail
             case .refunded:
                 return .refunded

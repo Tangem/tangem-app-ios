@@ -212,7 +212,7 @@ private extension TangemApiTarget {
             return true
 
         // Markets requests
-        case .coinsList, .coinsHistoryChartPreview, .tokenMarketsDetails, .historyChart:
+        case .coinsList, .coinsHistoryChartPreview, .tokenMarketsDetails, .historyChart, .tokenExchangesList:
             return true
         }
     }

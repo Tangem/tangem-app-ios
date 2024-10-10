@@ -388,7 +388,7 @@ extension SingleTokenBaseViewModel {
 
     private func updateMiniChartState(using data: MarketsChartModel) {
         do {
-            let mapper = TokenMarketsHistoryChartMapper()
+            let mapper = MarketsTokenHistoryChartMapper()
 
             let chartPoints = try mapper
                 .mapAndSortValues(from: data)
