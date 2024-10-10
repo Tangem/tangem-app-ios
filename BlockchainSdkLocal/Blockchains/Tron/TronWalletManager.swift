@@ -189,11 +189,8 @@ class TronWalletManager: BaseManager, WalletManager {
                 signer.sign(hash: presignedInput.hash, walletPublicKey: publicKey)
                     .withWeakCaptureOf(self)
                     .tryMap { manager, signature in
-                        return Data()
-                        /*
                         let unmarshalledSignature = manager.unmarshal(signature, hash: presignedInput.hash, publicKey: publicKey)
                         return try manager.txBuilder.buildForSend(rawData: presignedInput.rawData, signature: unmarshalledSignature)
-                         */
                     }
             }
             .eraseToAnyPublisher()
@@ -293,12 +290,9 @@ extension TronWalletManager: StakeKitTransactionSender, StakeKitTransactionSende
     }
 
     func prepareDataForSend(transaction: StakeKitTransaction, signature: SignatureInfo) throws -> RawTransaction {
-        fatalError()
-        /*
         let rawData = try TronStakeKitTransactionHelper().prepareForSign(transaction.unsignedData).rawData
         let unmarshalled = unmarshal(signature.signature, hash: signature.hash, publicKey: wallet.publicKey)
         return try txBuilder.buildForSend(rawData: rawData, signature: unmarshalled)
-         */
     }
 
     func broadcast(transaction: StakeKitTransaction, rawTransaction: RawTransaction) async throws -> String {
