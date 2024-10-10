@@ -31,7 +31,7 @@ class MainCoordinator: CoordinatorObject {
 
     @Published var detailsCoordinator: DetailsCoordinator?
     @Published var tokenDetailsCoordinator: TokenDetailsCoordinator?
-    @Published var marketsTokenDetailsCoordinator: TokenMarketsDetailsCoordinator?
+    @Published var marketsTokenDetailsCoordinator: MarketsTokenDetailsCoordinator?
     @Published var stakingDetailsCoordinator: StakingDetailsCoordinator?
 
     // MARK: - Child coordinators (Other)
@@ -388,7 +388,7 @@ extension MainCoordinator: SingleTokenBaseRoutable {
     func openMarketsTokenDetails(tokenModel: MarketsTokenModel) {
         mainBottomSheetUIManager.hide()
 
-        let coordinator = TokenMarketsDetailsCoordinator()
+        let coordinator = MarketsTokenDetailsCoordinator()
         coordinator.start(with: .init(info: tokenModel, style: .defaultNavigationStack))
 
         marketsTokenDetailsCoordinator = coordinator

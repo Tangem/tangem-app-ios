@@ -197,6 +197,7 @@ private extension RestakingModel {
             .token: tokenItem.currencySymbol,
             .blockchain: tokenItem.blockchain.displayName,
             .feeType: selectedFee.option.rawValue,
+            .walletForm: result.signerType,
         ])
     }
 

@@ -13,12 +13,12 @@ struct MarketsTokenDetailsLinksMapper {
 
     let openLinkAction: (MarketsTokenDetailsLinks.LinkInfo) -> Void
 
-    func mapToSections(_ links: MarketsTokenDetailsLinks?) -> [TokenMarketsDetailsLinkSection] {
+    func mapToSections(_ links: MarketsTokenDetailsLinks?) -> [MarketsTokenDetailsLinkSection] {
         guard let links else {
             return []
         }
 
-        var sections = [TokenMarketsDetailsLinkSection]()
+        var sections = [MarketsTokenDetailsLinkSection]()
         if let officialLinks = links.officialLinks, !officialLinks.isEmpty {
             sections.append(.init(section: .officialLinks, chips: mapLinksToChips(officialLinks)))
         }

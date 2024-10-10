@@ -55,7 +55,7 @@ extension CommonStakingManager: StakingManager {
 
     var allowanceAddress: String? {
         switch (wallet.item.network, wallet.item.contractAddress) {
-        case (.ethereum, StakingConstants.polygonContactAddress):
+        case (.ethereum, StakingConstants.polygonContractAddress):
             return "0x5e3ef299fddf15eaa0432e6e66473ace8c13d908"
         default:
             return nil
