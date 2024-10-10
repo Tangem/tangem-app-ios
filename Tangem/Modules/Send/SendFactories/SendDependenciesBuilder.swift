@@ -41,7 +41,8 @@ struct SendDependenciesBuilder {
         case .claimRewards: action.title
         case .restakeRewards: action.title
         case .unlockLocked: action.title
-        case .restake: action.title // FIXME: restake
+        case .restake: action.title
+        default: action.title
         }
     }
 

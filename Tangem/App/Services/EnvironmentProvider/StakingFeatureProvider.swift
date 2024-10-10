@@ -63,6 +63,7 @@ extension StakingFeatureProvider {
             StakingItem(network: .solana, contractAddress: nil),
             StakingItem(network: .cosmos, contractAddress: nil),
             StakingItem(network: .tron, contractAddress: nil),
+            StakingItem(network: .near, contractAddress: nil),
         ]
     }
 
@@ -85,6 +86,10 @@ extension StakingFeatureProvider {
             return "tron-trx-native-staking"
         case (.binance, .none):
             return "bsc-bnb-native-staking"
+        case (.kava, .none):
+            return "kava-kava-native-staking"
+        case (.near, .none):
+            return "near-near-native-staking"
         default:
             return nil
         }

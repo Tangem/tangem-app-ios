@@ -266,7 +266,7 @@ private extension CommonStakingManager {
     func mapToActionGenericRequest(action: StakingAction) -> ActionGenericRequest {
         .init(
             amount: action.amount,
-            address: wallet.address,
+            address: stakingAddress(),
             additionalAddresses: getAdditionalAddresses(),
             token: wallet.item,
             validator: action.validatorInfo?.address,
@@ -365,7 +365,7 @@ private extension CommonStakingManager {
 private extension CommonStakingManager {
     func getAdditionalAddresses() -> AdditionalAddresses? {
         switch wallet.item.network {
-        case .cosmos:
+        case .cosmos, .kava, .near:
             guard let compressedPublicKey = try? Secp256k1Key(with: wallet.publicKey).compress() else {
                 return nil
             }
@@ -373,6 +373,15 @@ private extension CommonStakingManager {
             return AdditionalAddresses(cosmosPubKey: compressedPublicKey.base64EncodedString())
         default:
             return nil
+        }
+    }
+
+    func stakingAddress() -> String {
+        switch wallet.item.network {
+        case .kava:
+            return "kava1n7pxaur98dcyzk8v4qcm9fpwx2k2pg26kmv9x6"
+        default:
+            return wallet.address
         }
     }
 
