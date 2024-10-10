@@ -107,7 +107,7 @@ class WelcomeViewModel: ObservableObject {
                 self.error = error.alertBinder
             case .success(let model), .partial(let model, _): // partial unlock is impossible in this case
                 Analytics.log(event: .signedIn, params: [
-                    .signInType: Analytics.ParameterValue.signInTypeCard.rawValue,
+                    .signInType: Analytics.ParameterValue.card.rawValue,
                     .walletsCount: "1", // we don't have any saved wallets, just log one,
                     .walletHasBackup: Analytics.ParameterValue.affirmativeOrNegative(for: model.hasBackupCards).rawValue,
                 ])

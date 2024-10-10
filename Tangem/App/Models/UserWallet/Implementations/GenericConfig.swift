@@ -12,11 +12,9 @@ import BlockchainSdk
 
 struct GenericConfig {
     let card: CardDTO
-    private let isRing: Bool
 
-    init(card: CardDTO, isRing: Bool) {
+    init(card: CardDTO) {
         self.card = card
-        self.isRing = isRing
     }
 }
 
@@ -96,14 +94,14 @@ extension GenericConfig: UserWalletConfig {
         card.firmwareVersion < .keysImportAvailable
     }
 
-    var warningEvents: [WarningEvent] {
-        var warnings = WarningEventsFactory().makeWarningEvents(for: card)
+    var generalNotificationEvents: [GeneralNotificationEvent] {
+        var notifications = GeneralNotificationEventsFactory().makeNotifications(for: card)
 
         if hasFeature(.hdWallets), derivationStyle == .v1 {
-            warnings.append(.legacyDerivation)
+            notifications.append(.legacyDerivation)
         }
 
-        return warnings
+        return notifications
     }
 
     var emailData: [EmailCollectedData] {
@@ -115,51 +113,7 @@ extension GenericConfig: UserWalletConfig {
     }
 
     var productType: Analytics.ProductType {
-        if isRing {
-            return .ring
-        }
-
         return card.firmwareVersion.doubleValue >= 4.39 ? .wallet : .other
-    }
-
-    var cardHeaderImage: ImageType? {
-        if isRing {
-            return nil
-        }
-
-        switch card.batchId {
-        // Shiba cards
-        case "AF02", "AF03":
-            // There can't be more than 3 cards in single UserWallet
-            switch cardsCount {
-            case 2: return Assets.Cards.shibaDouble
-            case 3: return Assets.Cards.shibaTriple
-            default: return Assets.Cards.shibaSingle
-            }
-        default:
-            // There can't be more than 3 cards in single UserWallet
-            switch cardsCount {
-            case 2: return Assets.Cards.walletDouble
-            case 3: return Assets.Cards.walletTriple
-            default: return Assets.Cards.walletSingle
-            }
-        }
-    }
-
-    var customOnboardingImage: ImageType? {
-        if isRing {
-            return Assets.ring
-        }
-
-        return nil
-    }
-
-    var customScanImage: ImageType? {
-        if isRing {
-            return Assets.ringShapeScan
-        }
-
-        return nil
     }
 
     func getFeatureAvailability(_ feature: UserWalletFeature) -> UserWalletFeature.Availability {

@@ -110,7 +110,7 @@
 "common_generate_addresses" = "Отримати адреси";
 "common_go_to_provider" = "Перейти до провайдера";
 "common_go_to_token" = "Перейти до токену";
-"common_hour" = "hour";
+"common_hour" = "година";
 "common_import" = "Імпортувати";
 "common_in_progress" = "В процесі";
 "common_later" = "Пізніше";
@@ -118,7 +118,7 @@
 "common_left" = "Залишилося %1$@";
 "common_locked" = "Заблокований";
 "common_main_network" = "Основна мережа";
-"common_month" = "month";
+"common_month" = "місяць";
 "common_network_fee_title" = "Комісія мережі";
 "common_network_fee_warning_content" = "Сума відправлення буде зменшена на %1$@ (%2$@) для покриття обраного рівня комісії";
 "common_next" = "Далі";
@@ -127,6 +127,7 @@
 "common_now" = "Зараз";
 "common_ok" = "ОК";
 "common_origin_card" = "Основна картка";
+"common_origin_ring" = "Primary ring";
 "common_passphrase" = "Парольна фраза";
 "common_paste" = "Вставити";
 "common_privacy_policy" = "Політикою конфіденційності";
@@ -142,7 +143,7 @@
 "common_save_changes" = "Зберегти зміни";
 "common_search" = "Пошук";
 "common_search_tokens" = "Пошук токенів";
-"common_second_no_param" = "sec";
+"common_second_no_param" = "сек";
 "common_seed_phrase" = "Seed-фраза";
 "common_select_action" = "Оберіть дію";
 "common_sell" = "Продати";
@@ -169,7 +170,7 @@
 "common_unreachable" = "Недоступно";
 "common_unstake" = "Скасувати стейкінг";
 "common_warning" = "Увага";
-"common_week" = "week";
+"common_week" = "тиждень";
 "common_yes" = "Так";
 "contract_address_copied_message" = "Адреса контракту скопійована!";
 "currency_subtitle_expanded" = "Доступні мережі";
@@ -252,7 +253,7 @@
 "express_exchange_status_exchanging" = "Обмін";
 "express_exchange_status_exchanging_active" = "Обмін...";
 "express_exchange_status_failed" = "Не вдалося";
-"express_exchange_status_paused" = "Paused";
+"express_exchange_status_paused" = "Призупинено";
 "express_exchange_status_received" = "Депозит отримано";
 "express_exchange_status_receiving" = "Очікуємо на депозит";
 "express_exchange_status_receiving_active" = "Очікуємо на депозит...";
@@ -290,7 +291,7 @@
 "feedback_subject_support_tangem" = "Звернення в підтримку Tangem";
 "feedback_subject_tx_failed" = "Не вдається відправити транзакцію";
 "feedback_subject_tx_push_failed" = "Не можу проштовхнути транзакцію";
-"feedback_token_description_error" = "Coin description error";
+"feedback_token_description_error" = "Помилка в описі монети";
 "give_permission_current_transaction" = "Транзакція";
 "give_permission_fee_footer" = "Мережа стягує комісію за схвалення токену за підтвердження, що саме ви дозволяєте використовувати ваш токен для обміну.";
 "give_permission_policy_type_footer" = "Вкажіть ліміт доступу для обраного токена";
@@ -306,6 +307,7 @@
 "initial_message_change_access_code_body" = "Щоб змінити код доступу, прикладіть картку, як показано вище, і не прибирайте її до закінчення операції";
 "initial_message_change_passcode_body" = "Щоб змінити пароль, прикладіть картку, як показано вище, і не прибирайте її до закінчення операції";
 "initial_message_create_wallet_body" = "Щоб створити гаманець, прикладіть картку, як показано вище, і не прибирайте її до завершення операції";
+"initial_message_create_wallet_body_ring" = "To create the wallet tap the ring as shown above and do not remove until the end of the operation";
 "initial_message_purge_wallet_body" = "Щоб скинути налаштування до заводських, прикладіть картку, як показано вище, і не прибирайте її до завершення операції";
 "initial_message_reset_backup_card_header" = "Прикладіть картку #%@ для скидання";
 "initial_message_sign_body" = "Щоб підписати транзакцію, прикладіть картку, як показано вище, і не прибирайте її до кінця операції";
@@ -343,8 +345,8 @@
 "manage_tokens_unavailable_vote" = "Проголосувати";
 "manage_tokens_wallet_selector_title" = "Оберіть гаманець";
 "manage_tokens_wallet_support_only_one_network_title" = "Гаманець не підтримує більше однієї мережі";
-"markets_add_to_my_portfolio_description" = "Щоб почати купувати, обмінювати або отримувати цей актив, додайте цей токен принаймні в 1 мережу";
-"markets_add_to_my_portfolio_unavailable_description" = "Цей актив недоступний";
+"markets_add_to_my_portfolio_description" = "Щоб купити, обміняти або отримати цей актив, додайте його до свого портфоліо";
+"markets_add_to_my_portfolio_unavailable_description" = "Цей актив наразі не підтримується в гаманці";
 "markets_add_to_my_portfolio_unavailable_for_wallet_description" = "Цей токен недоступний для цього гаманця";
 "markets_add_to_portfolio_button" = "Додати в портфоліо";
 "markets_add_token" = "Додати";
@@ -385,12 +387,12 @@
 "markets_token_details_circulating_supply" = "Циркуляційний запас";
 "markets_token_details_circulating_supply_description" = "Загальна кількість монет, які доступні для торгівлі та перебувають в обігу на ринку";
 "markets_token_details_circulating_supply_full" = "Циркуляційний запас";
-"markets_token_details_empty_exchanges" = "No exchanges found";
-"markets_token_details_exchange" = "Exchange";
-"markets_token_details_exchange_trust_score_caution" = "Caution";
-"markets_token_details_exchange_trust_score_risky" = "Risky";
-"markets_token_details_exchange_trust_score_trusted" = "Trusted";
-"markets_token_details_exchanges_title" = "Exchanges";
+"markets_token_details_empty_exchanges" = "Бірж не знайдено";
+"markets_token_details_exchange" = "Біржа";
+"markets_token_details_exchange_trust_score_caution" = "Обережно";
+"markets_token_details_exchange_trust_score_risky" = "Ризиковано";
+"markets_token_details_exchange_trust_score_trusted" = "Надійно";
+"markets_token_details_exchanges_title" = "Біржі";
 "markets_token_details_experienced_buyers" = "Досвідчені покупці";
 "markets_token_details_experienced_buyers_description" = "Мережеві покупці з додатковою вимогою мати не менше 100 вихідних транзакцій";
 "markets_token_details_experienced_buyers_full" = "Досвідчені покупці";
@@ -410,7 +412,7 @@
 "markets_token_details_liquidity_full" = "Ліквідність";
 "markets_token_details_liquidity_index" = "Індекс ліквідності";
 "markets_token_details_liquidity_index_description" = "";
-"markets_token_details_listed_on" = "Listed on";
+"markets_token_details_listed_on" = "Лістинг на";
 "markets_token_details_low" = "Низький";
 "markets_token_details_market_capitalization" = "Рин. кап.";
 "markets_token_details_market_capitalization_description" = "Загальна ринкова вартість криптовалюти, що розраховується шляхом множення поточної ціни монети на загальну кількість монет в обігу";
@@ -434,7 +436,7 @@
 "markets_token_details_trading_volume" = "Обсяг торгів (24г)";
 "markets_token_details_trading_volume_24h_description" = "Загальна сума криптовалюти, якою торгували протягом останніх 24 годин, що вказує на рівень активності та ліквідності на ринку";
 "markets_token_details_trading_volume_full" = "Обсяг торгів (24г)";
-"markets_token_details_volume" = "Volume";
+"markets_token_details_volume" = "Обсяг";
 "markets_tooltip_message" = "Потягніть вгору або торкніться панелі пошуку, щоб додати токени безпосередньо з маркету";
 "markets_tooltip_title" = "Додати токени";
 "onboarding_access_code_feature_1_description" = "Вам потрібно встановити єдиний код доступу для захисту всіх ваших карток";
@@ -457,9 +459,11 @@
 "onboarding_backup_exit_warning" = "Процес резервного копіювання частково завершено. Ви не можете вийти з нього зараз.";
 "onboarding_bottom_sheet_passphrase_description" = "Парольна фраза – це розширена функція безпеки, яку використовують криптогаманці. Вона додає додаткове слово або фразу на ваш вибір до вже існуючої seed - фрази, щоб розблокувати абсолютно новий набір адрес.";
 "onboarding_button_add_backup_card" = "Додати резервну картку";
+"onboarding_button_backup_card" = "Scan card";
 "onboarding_button_backup_card_format" = "Відсканувати картку #%li";
 "onboarding_button_backup_now" = "Створити резервну копію";
 "onboarding_button_backup_origin" = "Відсканувати основну картку";
+"onboarding_button_backup_ring" = "Scan ring";
 "onboarding_button_continue_wallet" = "Перейти до мого гаманця";
 "onboarding_button_finalize_backup" = "Завершення бекапу";
 "onboarding_button_receive_crypto" = "Отримати криптовалюту";
@@ -497,10 +501,13 @@
 "onboarding_subtitle_scan_backup_card_format" = "Підготуйте резервну картку з номером %@";
 "onboarding_subtitle_scan_primary" = "Відскануйте основну картку, щоб почати процес резервного копіювання.";
 "onboarding_subtitle_scan_primary_card_format" = "Підготуйте основну картку з номером %@";
+"onboarding_subtitle_scan_ring" = "Prepare the ring and press the scan button below";
 "onboarding_subtitle_success_tangem_wallet_onboarding" = "Ваша картка налаштована та готова до використання.";
 "onboarding_subtitle_two_backup_cards" = "Додано максимальну кількість карток. Завершіть процес резервного копіювання.";
 "onboarding_title" = "Активація картки";
+"onboarding_title_backup_card" = "Backup card";
 "onboarding_title_backup_card_format" = "Резервна картка #%li";
+"onboarding_title_backup_ring" = "Backup ring";
 "onboarding_title_no_backup_cards" = "Немає резервних карток";
 "onboarding_title_notifications" = "Сповіщення";
 "onboarding_title_one_backup_card" = "Додано одну резервну картку";
@@ -559,6 +566,8 @@
 "reset_card_to_factory_condition_2" = "Я розумію, що не можу використати цю картку для відновлення свого коду доступу на інших картках поточного гаманця";
 "reset_card_with_backup_to_factory_message" = "Скидання до заводських налаштувань призведе до повного видалення гаманця з обраної картки. Ви не зможете відновити поточний гаманець або використати картку для відновлення коду доступу.";
 "reset_card_without_backup_to_factory_message" = "Скидання до заводських налаштувань призведе до повного видалення гаманця з обраної картки. Ви не зможете відновити поточний гаманець.";
+"ring_promo_text" = "Власникам кілець - 3 обміни без комісії на Changelly до 15.11!";
+"ring_promo_title" = "Обмін з 0%% комісією!";
 "russian_bank_card_warning_subtitle" = "У вас є банківська картка іншої країни та посвідка на проживання або реєстрація за межами Російської Федерації?";
 "russian_bank_card_warning_title" = "Російські банківські картки наразі не приймаються";
 "save_user_wallet_agreement_access_description" = "Увійдіть у додаток та слідкуйте за своїм балансом без сканування картки";
@@ -683,6 +692,7 @@
 "staking_locked" = "Заблоковано";
 "staking_migrate" = "Перемістити";
 "staking_native" = "Нативний стейкінг";
+"staking_no_validators_error_message" = "На даний момент немає доступних активних валідаторів для стейкінгу. Будь ласка, спробуйте пізніше.";
 "staking_notification_claim_rewards_text" = "Зароблені винагороди будуть надіслані на ваш гаманець і доступні для використання відразу";
 "staking_notification_earn_rewards_text" = "Стейкайте безпечно та почніть отримувати ваші винагороди";
 "staking_notification_earn_rewards_text_daily" = "Стейкайте безпечно та почніть отримувати винагороди щоденно";
@@ -713,7 +723,7 @@
 "staking_reward_claiming_manual" = "Вручну";
 "staking_reward_schedule_block" = "Блок";
 "staking_reward_schedule_day" = "День";
-"staking_reward_schedule_each" = "Each %@";
+"staking_reward_schedule_each" = "Кожен %@";
 "staking_reward_schedule_each_day" = "Щодня";
 "staking_reward_schedule_each_sec" = "Кожні %1$@ сек";
 "staking_reward_schedule_epoch" = "Епоха";
@@ -726,7 +736,7 @@
 "staking_stake_more" = "Застейкати більше";
 "staking_summary_description_text" = "Ви стейкаєте %1$@ і будете отримувати %2$@ щороку";
 "staking_tap_to_unlock" = "Натисніть, щоб розблокувати";
-"staking_tap_to_unlock_or_vote" = "Tap to unlock or vote";
+"staking_tap_to_unlock_or_vote" = "Натисніть, щоб розблокувати або проголосувати";
 "staking_tap_to_withdraw" = "Натисніть, щоб вивести кошти";
 "staking_title_stake" = "Застейкати %@";
 "staking_title_unstake" = "Зняти зі стейкінгу %@";
@@ -743,7 +753,7 @@
 "staking_validators" = "Валідатори";
 "staking_validators_label" = "Стратегічний партнер";
 "staking_vote" = "Проголосувати";
-"staking_vote_locked" = "Голос заблоковано";
+"staking_vote_locked" = "Проголосувати";
 "staking_withdraw" = "Зняти";
 "staking_your_stakes" = "Ваші стейкінги";
 "story_awe_description" = "Тримайте свою криптовалюту в безпеці. Приватні ключі надійно зберігаються на картці.";
@@ -762,9 +772,9 @@
 "swap_promo_text" = "Обмінюйте більше токенів за вигіднішим курсом прямо у своєму гаманці.";
 "swap_promo_title" = "З'явився новий провайдер обмінів!";
 "swapping_alert_cex_description" = "Сума включає: \n• комісію постачальника послуг\n• комісію мережі за відправлення %@ з біржі назад на адресу користувача.";
-"swapping_alert_cex_description_with_slippage" = "The amount includes:\n• service provider's fee\n• network fee for sending %1$@ from the exchange back to the user's address. \n\nProvider slippage is up to %2$@ \n At maximum slippage, the amount to be received will be %3$@";
+"swapping_alert_cex_description_with_slippage" = "У суму входить:\n- комісія провайдера\n- мережева комісія за відправку %1$@ з біржі назад на адресу користувача. \n\nПроскакування провайдера становить до %2$@";
 "swapping_alert_dex_description" = "Сума включає комісію постачальника послуг.";
-"swapping_alert_dex_description_with_slippage" = "The amount includes the service provider's fee. \n\nProvider slippage is up to %1$@ \n At maximum slippage, the amount to be received will be %2$@";
+"swapping_alert_dex_description_with_slippage" = "Сума включає комісію провайдера послуг. \n\nПроскакування провайдера до %@";
 "swapping_alert_title" = "Комісії";
 "swapping_approve_information_text" = "Всі децентралізовані біржі вимагають схвалення, щоб запобігти доступу смарт-контрактів до вашого гаманця без вашого дозволу. За задумом смарт-контракти не можуть отримати доступ до ваших токенів без вашого схвалення. \"Розблоковуючи\" свої токени, ви дозволяєте смарт-контракту 1inch витрачати ваші активи. Майнери мережі отримують плату за газ (сплачену вами), щоб зафіксувати цю дію в блокчейні. Ви можете обміняти свій токен після того, як дасте дозвіл.";
 "swapping_approve_information_title" = "Підтвердити";

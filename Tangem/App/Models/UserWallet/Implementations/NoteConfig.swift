@@ -61,8 +61,8 @@ extension NoteConfig: UserWalletConfig {
         return defaultBlockchains.first
     }
 
-    var warningEvents: [WarningEvent] {
-        WarningEventsFactory().makeWarningEvents(for: card)
+    var generalNotificationEvents: [GeneralNotificationEvent] {
+        GeneralNotificationEventsFactory().makeNotifications(for: card)
     }
 
     var emailData: [EmailCollectedData] {
@@ -75,18 +75,6 @@ extension NoteConfig: UserWalletConfig {
 
     var productType: Analytics.ProductType {
         .note
-    }
-
-    var cardHeaderImage: ImageType? {
-        switch defaultBlockchain {
-        case .bitcoin: return Assets.Cards.noteBitcoin
-        case .ethereum: return Assets.Cards.noteEthereum
-        case .cardano: return Assets.Cards.noteCardano
-        case .bsc: return Assets.Cards.noteBinance
-        case .dogecoin: return Assets.Cards.noteDoge
-        case .xrp: return Assets.Cards.noteXrp
-        default: return nil
-        }
     }
 
     func getFeatureAvailability(_ feature: UserWalletFeature) -> UserWalletFeature.Availability {

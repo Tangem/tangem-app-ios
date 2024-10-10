@@ -69,7 +69,10 @@ extension WalletConnectV2SendTransactionHandler: WalletConnectMessageHandler {
 
         let result = try await transactionDispatcher.send(transaction: .transfer(transaction))
 
-        Analytics.log(.transactionSent, params: [.source: .transactionSourceWalletConnect])
+        Analytics.log(event: .transactionSent, params: [
+            .source: Analytics.ParameterValue.transactionSourceWalletConnect.rawValue,
+            .walletForm: result.signerType,
+        ])
 
         uiDelegate.showScreen(with: .init(
             event: .success,

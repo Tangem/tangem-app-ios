@@ -111,19 +111,19 @@ extension LegacyConfig: UserWalletConfig {
         return defaultBlockchains.first
     }
 
-    var warningEvents: [WarningEvent] {
-        var warnings = WarningEventsFactory().makeWarningEvents(for: card)
+    var generalNotificationEvents: [GeneralNotificationEvent] {
+        var notifications = GeneralNotificationEventsFactory().makeNotifications(for: card)
 
         if !hasFeature(.send) {
-            warnings.append(.oldCard)
+            notifications.append(.oldCard)
         }
 
         if card.firmwareVersion.doubleValue < 2.28,
            NFCUtils.isPoorNfcQualityDevice {
-            warnings.append(.oldDeviceOldCard)
+            notifications.append(.oldDeviceOldCard)
         }
 
-        return warnings
+        return notifications
     }
 
     var emailData: [EmailCollectedData] {
@@ -136,24 +136,6 @@ extension LegacyConfig: UserWalletConfig {
 
     var productType: Analytics.ProductType {
         .other
-    }
-
-    var cardHeaderImage: ImageType? {
-        if walletData == nil {
-            let multiWalletWhiteBatch = "CB79"
-            let devKitBatch = "CB83"
-
-            switch card.batchId {
-            case multiWalletWhiteBatch:
-                return Assets.Cards.multiWalletWhite
-            case devKitBatch:
-                return Assets.Cards.developer
-            default:
-                break
-            }
-        }
-
-        return nil
     }
 
     func getFeatureAvailability(_ feature: UserWalletFeature) -> UserWalletFeature.Availability {

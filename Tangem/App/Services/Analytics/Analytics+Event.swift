@@ -321,12 +321,7 @@ extension Analytics {
         case manageTokensTokenAdded = "[Manage Tokens] Token Added"
 
         case manageTokensSearched = "[Manage Tokens] Token Searched"
-        case manageTokensButtonSaveChanges = "[Manage Tokens] Button - Save Changes"
-        case manageTokensButtonAdd = "[Manage Tokens] Button - Add"
-        case manageTokensButtonEdit = "[Manage Tokens] Button - Edit"
-        case manageTokensButtonChooseWallet = "[Manage Tokens] Button - Choose Wallet"
         case manageTokensWalletSelected = "[Manage Tokens] Wallet Selected"
-        case manageTokensNoticeNonNativeNetworkClicked = "[Manage Tokens] Notice - Non Native Network Clicked"
 
         // MARK: - Manange Tokens / Custom
 

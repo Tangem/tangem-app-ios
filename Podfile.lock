@@ -193,7 +193,7 @@ DEPENDENCIES:
   - Moya
   - Solana.Swift (from `https://github.com/tangem/Solana.Swift`, tag `1.2.0-tangem11`)
   - SwiftyJSON (from `https://github.com/tangem/SwiftyJSON.git`, tag `5.0.1-tangem1`)
-  - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-312`)
+  - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-313`)
 
 SPEC REPOS:
   trunk:
@@ -246,7 +246,7 @@ EXTERNAL SOURCES:
     :tag: 5.0.1-tangem1
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
-    :tag: develop-312
+    :tag: develop-313
 
 CHECKOUT OPTIONS:
   BinanceChain:
@@ -266,7 +266,7 @@ CHECKOUT OPTIONS:
     :tag: 5.0.1-tangem1
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
-    :tag: develop-312
+    :tag: develop-313
 
 SPEC CHECKSUMS:
   Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
@@ -304,8 +304,8 @@ SPEC CHECKSUMS:
   SwiftCBOR: ac340b74d3b2cf1f8884bb748bd09875848e3873
   SwiftDate: bbc26e26fc8c0c33fbee8c140c5e8a68293a148a
   SwiftyJSON: c0bd75b5969785b3d9ae41d5709fe75bc5de4002
-  TangemSdk: 943099314a07e448307f994dca6217bb27366b66
+  TangemSdk: 145675e87bf4720d13968510b19e03b5402ed028
 
-PODFILE CHECKSUM: e946f1aeaf4f332721506f6557c73cba396c6751
+PODFILE CHECKSUM: 94ab90baeadad2d18f6b503935ff367d4702e0fc
 
 COCOAPODS: 1.15.2

@@ -58,8 +58,8 @@ extension VisaConfig: UserWalletConfig {
         return defaultBlockchains.first
     }
 
-    var warningEvents: [WarningEvent] {
-        WarningEventsFactory().makeWarningEvents(for: card)
+    var generalNotificationEvents: [GeneralNotificationEvent] {
+        GeneralNotificationEventsFactory().makeNotifications(for: card)
     }
 
     var emailData: [EmailCollectedData] {
@@ -72,11 +72,6 @@ extension VisaConfig: UserWalletConfig {
 
     var productType: Analytics.ProductType {
         .visa
-    }
-
-    var cardHeaderImage: ImageType? {
-        // TODO: Update card image when available
-        Assets.Cards.noteCardano
     }
 
     var hasDefaultToken: Bool {
