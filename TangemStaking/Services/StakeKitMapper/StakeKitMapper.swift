@@ -365,7 +365,7 @@ struct StakeKitMapper {
         case .cosmos: .seconds(min: 5, max: 12)
         case .tron: .daily
         case .binance: .daily
-        case .ethereum where item.contractAddress == StakingConstants.polygonContactAddress: .daily
+        case .ethereum where item.contractAddress == StakingConstants.polygonContractAddress: .daily
         default: .generic(type.rawValue)
         }
     }
