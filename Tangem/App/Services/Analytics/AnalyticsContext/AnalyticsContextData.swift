@@ -27,6 +27,10 @@ struct AnalyticsContextData {
         // You need to send it only if the parameter exists. The default value is not needed.
         if let userWalletId {
             params[.userWalletId] = userWalletId.stringValue
+
+            if AppSettings.shared.userWalletIdsWithRing.contains(userWalletId.stringValue) {
+                params[.productType] = Analytics.ProductType.ring.rawValue
+            }
         }
 
         return params

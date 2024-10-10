@@ -29,9 +29,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%li Karte</string>
+        <string>%li Karte oder Ring</string>
         <key>other</key>
-        <string>%li Karten</string>
+        <string>%li Karten oder Ringe</string>
       </dict>
     </dict>
     <key>common_days_no_param</key>
@@ -173,9 +173,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Verwende deine Karte, um eine Adresse für das %li-Netz zu erhalten</string>
+        <string>Verwende deine Karte oder Ring, um eine Adresse für das %li-Netz zu erhalten</string>
         <key>other</key>
-        <string>Verwende deine Karte, um mehrere Adressen für die %li-Netzwerke zu erhalten</string>
+        <string>Verwende deine Karte oder Ring, um mehrere Adressen für die %li-Netzwerke zu erhalten</string>
       </dict>
     </dict>
   </dict>
