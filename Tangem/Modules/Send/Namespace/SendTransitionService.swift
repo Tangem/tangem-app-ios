@@ -80,6 +80,11 @@ class SendTransitionService {
             .animation(SendTransitionService.Constants.auxiliaryViewAnimation)
     }
 
+    var customFeeTransition: AnyTransition {
+        .opacity
+            .animation(SendTransitionService.Constants.auxiliaryViewAnimation)
+    }
+
     func transitionToFeeStep() -> AnyTransition {
         .offset(y: -feeContentOffset.y)
     }
