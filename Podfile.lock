@@ -21,6 +21,7 @@ PODS:
     - AnyCodable-FlightSchool (= 0.6.7)
     - BinanceChain
     - BitcoinCore.swift
+    - Moya (= 15.0.0)
     - Sodium (= 0.9.1)
     - Solana.Swift
     - stellar-ios-mac-sdk (= 2.5.4)
@@ -317,7 +318,7 @@ SPEC CHECKSUMS:
   AnyCodable-FlightSchool: 261cbe76757802b17d471b9059b21e6fa5edf57b
   BinanceChain: f727abc7a20ba71f4497e46b7400124027b25692
   BitcoinCore.swift: 64ac4e69d9a6ef917bcbb0c23f1324cf57a822fb
-  BlockchainSdk: a8cc5a5474ed14a1b9cb75fd9cb99c2fac094a55
+  BlockchainSdk: b744a57e39d5b5e76c8ecfaa8feb41753f9fa7df
   BlockiesSwift: 22d8d56dd187e6bfd16cb8c8fbd4fd4896c3e65d
   CombineExt: c4daa97ef75754d8ef319bd79edeef82652f3eea
   Firebase: cec914dab6fd7b1bd8ab56ea07ce4e03dd251c2d
