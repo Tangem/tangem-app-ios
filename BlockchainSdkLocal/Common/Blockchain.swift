@@ -85,10 +85,6 @@ public indirect enum Blockchain: Equatable, Hashable {
     case sui(curve: EllipticCurve, testnet: Bool)
     case filecoin
     case sei(testnet: Bool)
-    /// EVM
-    case energyWebEVM(testnet: Bool)
-    /// Polkadot parachain
-    case energyWebX(curve: EllipticCurve)
     case core(testnet: Bool)
     
     public var isTestnet: Bool {
@@ -132,7 +128,6 @@ public indirect enum Blockchain: Equatable, Hashable {
                 .blast(let testnet),
                 .sei(let testnet),
                 .kaspa(let testnet),
-                .energyWebEVM(let testnet),
                 .core(let testnet):
             return testnet
         case .litecoin,
@@ -154,8 +149,7 @@ public indirect enum Blockchain: Equatable, Hashable {
                 .joystream,
                 .internetComputer,
                 .bittensor,
-                .filecoin,
-                .energyWebX:
+                .filecoin:
             return false
         case .stellar(_, let testnet),
                 .hedera(_, let testnet),
@@ -190,8 +184,7 @@ public indirect enum Blockchain: Equatable, Hashable {
                 .aptos(let curve, _),
                 .hedera(let curve, _),
                 .bittensor(let curve),
-                .sui(let curve, _),
-                .energyWebX(let curve):
+                .sui(let curve, _):
             return curve
         case .chia:
             return .bls12381_G2_AUG
@@ -249,8 +242,7 @@ public indirect enum Blockchain: Equatable, Hashable {
                 .hedera,
                 .radiant,
                 .internetComputer,
-                .koinos,
-                .aptos:
+                .koinos:
             return 8
         case .ethereum,
                 .ethereumClassic,
@@ -288,8 +280,6 @@ public indirect enum Blockchain: Equatable, Hashable {
                 .cyber,
                 .blast,
                 .filecoin,
-                .energyWebEVM,
-                .energyWebX,
                 .core:
             return 18
         case .cardano,
@@ -303,7 +293,7 @@ public indirect enum Blockchain: Equatable, Hashable {
             return 6
         case .stellar:
             return 7
-        case .solana, .ton, .bittensor, .sui:
+        case .solana, .ton:
             return 9
         case .polkadot(_, let testnet):
             return testnet ? 12 : 10
@@ -317,6 +307,12 @@ public indirect enum Blockchain: Equatable, Hashable {
             return 24
         case .algorand:
             return 6
+        case .aptos:
+            return 8
+        case .bittensor:
+            return 9
+        case .sui:
+            return 9
         }
     }
 
@@ -453,10 +449,6 @@ public indirect enum Blockchain: Equatable, Hashable {
             return "FIL"
         case .sei:
             return "SEI"
-        case .energyWebEVM:
-            return isTestnet ? "VT" : "EWT"
-        case .energyWebX:
-            return "EWT"
         case .core:
             return isTestnet ? "tCORE" : "CORE"
         }
@@ -533,10 +525,6 @@ public indirect enum Blockchain: Equatable, Hashable {
             return "Sui"
         case .sei:
             return "Sei" + testnetSuffix
-        case .energyWebEVM:
-            return "Energy Web Chain" + (isTestnet ? " Volta Testnet" : "")
-        case .energyWebX:
-            return "Energy Web X" + (isTestnet ? " Paseo Testnet" : "")
         default:
             var name = "\(self)".capitalizingFirstLetter()
             if let index = name.firstIndex(of: "(") {
@@ -745,7 +733,6 @@ extension Blockchain {
         case .base: return isTestnet ? 84532 : 8453
         case .cyber: return isTestnet ? 111557560 : 7560
         case .blast: return isTestnet ? 168587773 : 81457
-        case .energyWebEVM: return isTestnet ? 73799 : 246
         case .core: return isTestnet ? 1115 : 1116
         default:
             return nil
@@ -810,11 +797,6 @@ extension Blockchain {
         case .base: return true
         case .cyber: return false
         case .blast: return false
-        /// By default, eth_feeHistory returns the error:
-        /// "Invalid params: invalid type: integer 5, expected a 0x-prefixed hex string with length between (0; 64]."
-        /// To fix this, the integer 5 in the EthereumTarget's params for .feeHistory should be replaced with "0x5".
-        /// This change hasn't been made to avoid impacting other functionality, especially since the .energyWebEVM request isn't currently used.
-        case .energyWebEVM: return false // eth_feeHistory all zeroes
         case .core: return false
         default:
             assertionFailure("Don't forget about evm here")
@@ -947,8 +929,6 @@ extension Blockchain: Codable {
         case .sui: return "sui"
         case .filecoin: return "filecoin"
         case .sei: return "sei"
-        case .energyWebEVM: return "energyWebEVM"
-        case .energyWebX: return "energyWebX"
         case .core: return "core"
         }
     }
@@ -1043,8 +1023,6 @@ extension Blockchain: Codable {
         case "sui": self = .sui(curve: curve, testnet: isTestnet)
         case "filecoin": self = .filecoin
         case "sei": self = .sei(testnet: isTestnet)
-        case "energyWebEVM": self = .energyWebEVM(testnet: isTestnet)
-        case "energyWebX": self = .energyWebX(curve: curve)
         case "core": self = .core(testnet: isTestnet)
         default:
             throw BlockchainSdkError.decodingFailed
@@ -1269,16 +1247,6 @@ private extension Blockchain {
             return "filecoin"
         case .sei:
             return "sei-network"
-        case .energyWebEVM:
-            switch type {
-            case .network: return "energy-web-chain"
-            case .coin: return "energy-web-token"
-            }
-        case .energyWebX:
-            switch type {
-            case .network: return "energy-web-x"
-            case .coin: return "energy-web-token"
-            }
         case .core:
             switch type {
             case .network: return "core"
@@ -1337,7 +1305,6 @@ extension Blockchain {
                 .decimal,
                 .xdc,
                 .telos,
-                .energyWebEVM,
                 .core:
             return EthereumWalletAssembly()
         case .optimism,
@@ -1358,7 +1325,7 @@ extension Blockchain {
             return TezosWalletAssembly()
         case .solana:
             return SolanaWalletAssembly()
-        case .polkadot, .kusama, .azero, .joystream, .energyWebX:
+        case .polkadot, .kusama, .azero, .joystream:
             return SubstrateWalletAssembly()
         case .tron:
             return TronWalletAssembly()

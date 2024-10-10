@@ -22,8 +22,6 @@ enum PolkadotNetwork {
     case joystream(curve: EllipticCurve)
     /// Bittensor blockchain
     case bittensor(curve: EllipticCurve)
-    /// Energy Web X blockchain
-    case energyWebX(curve: EllipticCurve)
     
     init?(blockchain: Blockchain) {
         switch blockchain {
@@ -37,8 +35,6 @@ enum PolkadotNetwork {
             self = .joystream(curve: curve)
         case .bittensor(let curve):
             self = .bittensor(curve: curve)
-        case .energyWebX(let curve):
-            self = .energyWebX(curve: curve)
         default:
             return nil
         }
@@ -51,7 +47,7 @@ enum PolkadotNetwork {
             return 0
         case .kusama:
             return 2
-        case .westend, .azero, .bittensor, .energyWebX:
+        case .westend, .azero, .bittensor:
             return 42
         case .joystream:
             return 126
@@ -82,9 +78,6 @@ extension PolkadotNetwork {
             return Amount(with: .joystream(curve: curve), value: Decimal(stringValue: "0.026666656")!)
         case .bittensor(let curve):
             return Amount(with: .bittensor(curve: curve), value: Decimal(stringValue: "0.0000005")!)
-        case .energyWebX(let curve):
-            let blockchain = Blockchain.energyWebX(curve: curve)
-            return Amount(with: blockchain, value: blockchain.minimumValue)
         }
     }
 }

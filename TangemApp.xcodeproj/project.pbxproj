@@ -1394,7 +1394,6 @@
 		B6AF5DBD2CB7602000ADEA9B /* NowNodesAPIResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF5ACF2CB7602000ADEA9B /* NowNodesAPIResolver.swift */; };
 		B6AF5DBE2CB7602000ADEA9B /* BinanceAddressService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF57E82CB7602000ADEA9B /* BinanceAddressService.swift */; };
 		B6AF5DBF2CB7602000ADEA9B /* TONAPIResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF5A462CB7602000ADEA9B /* TONAPIResolver.swift */; };
-		B6AF5DC02CB7602000ADEA9B /* EnergyWebXExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF58D62CB7602000ADEA9B /* EnergyWebXExternalLinkProvider.swift */; };
 		B6AF5DC12CB7602000ADEA9B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF5B4C2CB7602000ADEA9B /* Constants.swift */; };
 		B6AF5DC22CB7602000ADEA9B /* RadiantNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF59EE2CB7602000ADEA9B /* RadiantNetworkService.swift */; };
 		B6AF5DC32CB7602000ADEA9B /* KaspaFeeMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF596C2CB7602000ADEA9B /* KaspaFeeMapper.swift */; };
@@ -1532,7 +1531,6 @@
 		B6AF5E472CB7602000ADEA9B /* SubstrateWalletAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF59E82CB7602000ADEA9B /* SubstrateWalletAssembly.swift */; };
 		B6AF5E482CB7602000ADEA9B /* CBOR+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF5B902CB7602000ADEA9B /* CBOR+.swift */; };
 		B6AF5E492CB7602000ADEA9B /* OP_TUCK.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF585A2CB7602000ADEA9B /* OP_TUCK.swift */; };
-		B6AF5E4A2CB7602000ADEA9B /* EnergyWebChainExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF59002CB7602000ADEA9B /* EnergyWebChainExternalLinkProvider.swift */; };
 		B6AF5E4B2CB7602000ADEA9B /* KoinosNetworkParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF598D2CB7602000ADEA9B /* KoinosNetworkParams.swift */; };
 		B6AF5E4C2CB7602000ADEA9B /* PolygonZkEvmExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF59102CB7602000ADEA9B /* PolygonZkEvmExternalLinkProvider.swift */; };
 		B6AF5E4D2CB7602000ADEA9B /* KaspaAddressComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF59622CB7602000ADEA9B /* KaspaAddressComponents.swift */; };
@@ -3924,7 +3922,6 @@
 		B6AF58D22CB7602000ADEA9B /* DucatusNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DucatusNetworkService.swift; sourceTree = "<group>"; };
 		B6AF58D32CB7602000ADEA9B /* DucatusWalletAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DucatusWalletAssembly.swift; sourceTree = "<group>"; };
 		B6AF58D42CB7602000ADEA9B /* DucatusWalletManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DucatusWalletManager.swift; sourceTree = "<group>"; };
-		B6AF58D62CB7602000ADEA9B /* EnergyWebXExternalLinkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnergyWebXExternalLinkProvider.swift; sourceTree = "<group>"; };
 		B6AF58D82CB7602000ADEA9B /* ABIEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABIEncoder.swift; sourceTree = "<group>"; };
 		B6AF58D92CB7602000ADEA9B /* WalletCoreABIEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletCoreABIEncoder.swift; sourceTree = "<group>"; };
 		B6AF58DB2CB7602000ADEA9B /* AllowanceERC20TokenMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllowanceERC20TokenMethod.swift; sourceTree = "<group>"; };
@@ -3959,7 +3956,6 @@
 		B6AF58FD2CB7602000ADEA9B /* CronosExternalLinkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CronosExternalLinkProvider.swift; sourceTree = "<group>"; };
 		B6AF58FE2CB7602000ADEA9B /* CyberExternalLinkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CyberExternalLinkProvider.swift; sourceTree = "<group>"; };
 		B6AF58FF2CB7602000ADEA9B /* DisChainExternalLinkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisChainExternalLinkProvider.swift; sourceTree = "<group>"; };
-		B6AF59002CB7602000ADEA9B /* EnergyWebChainExternalLinkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnergyWebChainExternalLinkProvider.swift; sourceTree = "<group>"; };
 		B6AF59012CB7602000ADEA9B /* EthereumClassicExternalLinkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EthereumClassicExternalLinkProvider.swift; sourceTree = "<group>"; };
 		B6AF59022CB7602000ADEA9B /* EthereumPoWExternalLinkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EthereumPoWExternalLinkProvider.swift; sourceTree = "<group>"; };
 		B6AF59032CB7602000ADEA9B /* FantomExternalLinkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FantomExternalLinkProvider.swift; sourceTree = "<group>"; };
@@ -9111,14 +9107,6 @@
 			path = Ducatus;
 			sourceTree = "<group>";
 		};
-		B6AF58D72CB7602000ADEA9B /* EnergyWebX */ = {
-			isa = PBXGroup;
-			children = (
-				B6AF58D62CB7602000ADEA9B /* EnergyWebXExternalLinkProvider.swift */,
-			);
-			path = EnergyWebX;
-			sourceTree = "<group>";
-		};
 		B6AF58DA2CB7602000ADEA9B /* ABI */ = {
 			isa = PBXGroup;
 			children = (
@@ -9198,7 +9186,6 @@
 				B6AF58FD2CB7602000ADEA9B /* CronosExternalLinkProvider.swift */,
 				B6AF58FE2CB7602000ADEA9B /* CyberExternalLinkProvider.swift */,
 				B6AF58FF2CB7602000ADEA9B /* DisChainExternalLinkProvider.swift */,
-				B6AF59002CB7602000ADEA9B /* EnergyWebChainExternalLinkProvider.swift */,
 				B6AF59012CB7602000ADEA9B /* EthereumClassicExternalLinkProvider.swift */,
 				B6AF59022CB7602000ADEA9B /* EthereumPoWExternalLinkProvider.swift */,
 				B6AF59032CB7602000ADEA9B /* FantomExternalLinkProvider.swift */,
@@ -10147,7 +10134,6 @@
 				B6AF58C62CB7602000ADEA9B /* Decimal */,
 				B6AF58CB2CB7602000ADEA9B /* Dogecoin */,
 				B6AF58D52CB7602000ADEA9B /* Ducatus */,
-				B6AF58D72CB7602000ADEA9B /* EnergyWebX */,
 				B6AF59222CB7602000ADEA9B /* Ethereum */,
 				B6AF59262CB7602000ADEA9B /* EthereumOptimisticRollup */,
 				B6AF59352CB7602000ADEA9B /* Filecoin */,
@@ -16651,7 +16637,6 @@
 				B6AF5DBD2CB7602000ADEA9B /* NowNodesAPIResolver.swift in Sources */,
 				B6AF5DBE2CB7602000ADEA9B /* BinanceAddressService.swift in Sources */,
 				B6AF5DBF2CB7602000ADEA9B /* TONAPIResolver.swift in Sources */,
-				B6AF5DC02CB7602000ADEA9B /* EnergyWebXExternalLinkProvider.swift in Sources */,
 				B6AF5DC12CB7602000ADEA9B /* Constants.swift in Sources */,
 				B6AF5DC22CB7602000ADEA9B /* RadiantNetworkService.swift in Sources */,
 				B6AF5DC32CB7602000ADEA9B /* KaspaFeeMapper.swift in Sources */,
@@ -16789,7 +16774,6 @@
 				B6AF5E472CB7602000ADEA9B /* SubstrateWalletAssembly.swift in Sources */,
 				B6AF5E482CB7602000ADEA9B /* CBOR+.swift in Sources */,
 				B6AF5E492CB7602000ADEA9B /* OP_TUCK.swift in Sources */,
-				B6AF5E4A2CB7602000ADEA9B /* EnergyWebChainExternalLinkProvider.swift in Sources */,
 				B6AF5E4B2CB7602000ADEA9B /* KoinosNetworkParams.swift in Sources */,
 				B6AF5E4C2CB7602000ADEA9B /* PolygonZkEvmExternalLinkProvider.swift in Sources */,
 				B6AF5E4D2CB7602000ADEA9B /* KaspaAddressComponents.swift in Sources */,

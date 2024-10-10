@@ -65,7 +65,6 @@ public struct DerivationConfigV2: DerivationConfig {
                 .base,
                 .cyber,
                 .blast,
-                .energyWebEVM,
                 .core:
             return "m/44'/60'/0'/0/0"
         case .binance:
@@ -126,8 +125,6 @@ public struct DerivationConfigV2: DerivationConfig {
             return "m/44'/784'/0'/0'/0'"
         case .filecoin:
             return "m/44'/461'/0'/0/0"
-        case .energyWebX:
-            return "m/44'/246'/0'/0'/0'"
         }
     }
 }

@@ -121,8 +121,6 @@ extension CoinType {
              .cyber,
              .koinos,
              .blast,
-             .energyWebEVM,
-             .energyWebX,
              .core:
             // Blockchains that are not in WalletCore yet
             return nil
