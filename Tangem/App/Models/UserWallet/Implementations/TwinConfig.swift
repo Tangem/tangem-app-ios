@@ -70,8 +70,8 @@ extension TwinConfig: UserWalletConfig {
         return defaultBlockchains.first
     }
 
-    var warningEvents: [WarningEvent] {
-        WarningEventsFactory().makeWarningEvents(for: card)
+    var generalNotificationEvents: [GeneralNotificationEvent] {
+        GeneralNotificationEventsFactory().makeNotifications(for: card)
     }
 
     var tangemSigner: TangemSigner {
@@ -97,10 +97,6 @@ extension TwinConfig: UserWalletConfig {
 
     var productType: Analytics.ProductType {
         .twin
-    }
-
-    var cardHeaderImage: ImageType? {
-        Assets.Cards.twins
     }
 
     var cardSessionFilter: SessionFilter {

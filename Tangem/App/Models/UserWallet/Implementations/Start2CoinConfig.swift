@@ -66,8 +66,8 @@ extension Start2CoinConfig: UserWalletConfig {
         return defaultBlockchains.first
     }
 
-    var warningEvents: [WarningEvent] {
-        WarningEventsFactory().makeWarningEvents(for: card)
+    var generalNotificationEvents: [GeneralNotificationEvent] {
+        GeneralNotificationEventsFactory().makeNotifications(for: card)
     }
 
     var emailData: [EmailCollectedData] {
@@ -80,10 +80,6 @@ extension Start2CoinConfig: UserWalletConfig {
 
     var productType: Analytics.ProductType {
         .start2coin
-    }
-
-    var cardHeaderImage: ImageType? {
-        Assets.Cards.s2c
     }
 
     func getFeatureAvailability(_ feature: UserWalletFeature) -> UserWalletFeature.Availability {

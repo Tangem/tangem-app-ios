@@ -107,14 +107,14 @@ extension GenericDemoConfig: UserWalletConfig {
         return nil
     }
 
-    var warningEvents: [WarningEvent] {
-        var warnings = WarningEventsFactory().makeWarningEvents(for: card)
+    var generalNotificationEvents: [GeneralNotificationEvent] {
+        var notifications = GeneralNotificationEventsFactory().makeNotifications(for: card)
 
         if !AppEnvironment.current.isTestnet {
-            warnings.append(.demoCard)
+            notifications.append(.demoCard)
         }
 
-        return warnings
+        return notifications
     }
 
     var emailData: [EmailCollectedData] {
@@ -127,10 +127,6 @@ extension GenericDemoConfig: UserWalletConfig {
 
     var productType: Analytics.ProductType {
         card.firmwareVersion.doubleValue >= 4.39 ? .demoWallet : .other
-    }
-
-    var cardHeaderImage: ImageType? {
-        Assets.Cards.wallet
     }
 
     func getFeatureAvailability(_ feature: UserWalletFeature) -> UserWalletFeature.Availability {

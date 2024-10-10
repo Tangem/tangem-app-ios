@@ -35,7 +35,7 @@ class ExpressInteractor {
     private let expressDestinationService: ExpressDestinationService
     private let expressTransactionBuilder: ExpressTransactionBuilder
     private let expressAPIProvider: ExpressAPIProvider
-    private let signer: TransactionSigner
+    private let signer: TangemSigner
     private let logger: Logger
 
     // MARK: - Options
@@ -57,7 +57,7 @@ class ExpressInteractor {
         expressDestinationService: ExpressDestinationService,
         expressTransactionBuilder: ExpressTransactionBuilder,
         expressAPIProvider: ExpressAPIProvider,
-        signer: TransactionSigner,
+        signer: TangemSigner,
         logger: Logger
     ) {
         self.userWalletId = userWalletId
@@ -262,7 +262,7 @@ extension ExpressInteractor {
             expressTransactionData: result.data
         )
 
-        logTransactionSentAnalyticsEvent(data: sentTransactionData)
+        logTransactionSentAnalyticsEvent(data: sentTransactionData, signerType: result.signerType)
         expressPendingTransactionRepository.swapTransactionDidSend(sentTransactionData, userWalletId: userWalletId)
 
         return sentTransactionData
@@ -289,7 +289,7 @@ extension ExpressInteractor {
         let result = try await transactionDispatcher.send(transaction: .transfer(transaction))
         logger.debug("Sent the approve transaction with result: \(result)")
         allowanceProvider.didSendApproveTransaction(for: state.data.spender)
-        logApproveTransactionSentAnalyticsEvent(policy: state.policy)
+        logApproveTransactionSentAnalyticsEvent(policy: state.policy, signerType: result.signerType)
         updateState(.restriction(.hasPendingApproveTransaction, quote: getState().quote))
     }
 }
@@ -504,7 +504,7 @@ private extension ExpressInteractor {
         let transactionDispatcher = factory.makeSendDispatcher()
         let result = try await transactionDispatcher.send(transaction: .transfer(transaction))
 
-        return TransactionSendResultState(hash: result.hash, data: state.data, fee: fee, provider: provider)
+        return TransactionSendResultState(hash: result.hash, signerType: result.signerType, data: state.data, fee: fee, provider: provider)
     }
 
     func sendCEXTransaction(state: PreviewCEXState, provider: ExpressProvider) async throws -> TransactionSendResultState {
@@ -517,7 +517,7 @@ private extension ExpressInteractor {
         let transaction = try await expressTransactionBuilder.makeTransaction(wallet: sender, data: data, fee: fee)
         let result = try await transactionDispatcher.send(transaction: .transfer(transaction))
 
-        return TransactionSendResultState(hash: result.hash, data: data, fee: fee, provider: provider)
+        return TransactionSendResultState(hash: result.hash, signerType: result.signerType, data: data, fee: fee, provider: provider)
     }
 }
 
@@ -724,7 +724,7 @@ private extension ExpressInteractor {
         Analytics.log(event: .swapButtonPermissionApprove, params: parameters)
     }
 
-    func logTransactionSentAnalyticsEvent(data: SentExpressTransactionData) {
+    func logTransactionSentAnalyticsEvent(data: SentExpressTransactionData, signerType: String) {
         let analyticsFeeType: Analytics.ParameterValue = {
             if getState().fees.count == 1 {
                 return .transactionFeeFixed
@@ -738,10 +738,11 @@ private extension ExpressInteractor {
             .token: data.source.tokenItem.currencySymbol,
             .blockchain: data.source.tokenItem.blockchain.displayName,
             .feeType: analyticsFeeType.rawValue,
+            .walletForm: signerType,
         ])
     }
 
-    func logApproveTransactionSentAnalyticsEvent(policy: ExpressApprovePolicy) {
+    func logApproveTransactionSentAnalyticsEvent(policy: ExpressApprovePolicy, signerType: String) {
         let permissionType: Analytics.ParameterValue = {
             switch policy {
             case .specified:
@@ -757,6 +758,7 @@ private extension ExpressInteractor {
             .token: getSender().tokenItem.currencySymbol,
             .blockchain: getSender().tokenItem.blockchain.displayName,
             .permissionType: permissionType.rawValue,
+            .walletForm: signerType,
         ])
     }
 
@@ -893,6 +895,7 @@ extension ExpressInteractor {
 
     struct TransactionSendResultState {
         let hash: String
+        let signerType: String
         let data: ExpressTransactionData
         let fee: Fee
         let provider: ExpressProvider

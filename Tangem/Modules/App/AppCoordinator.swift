@@ -119,10 +119,7 @@ class AppCoordinator: CoordinatorObject {
 
     /// - Note: The coordinator is set up only once and only when the feature toggle is enabled.
     private func setupMainBottomSheetCoordinatorIfNeeded() {
-        guard
-            FeatureProvider.isAvailable(.markets),
-            marketsCoordinator == nil
-        else {
+        guard marketsCoordinator == nil else {
             return
         }
 
@@ -176,10 +173,8 @@ class AppCoordinator: CoordinatorObject {
             newScan = false
         }
 
-        if FeatureProvider.isAvailable(.markets) {
-            marketsCoordinator = nil
-            mainBottomSheetUIManager.hide(shouldUpdateFooterSnapshot: false)
-        }
+        marketsCoordinator = nil
+        mainBottomSheetUIManager.hide(shouldUpdateFooterSnapshot: false)
 
         let options = AppCoordinator.Options(newScan: newScan)
 

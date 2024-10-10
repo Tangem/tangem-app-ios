@@ -83,11 +83,11 @@ struct SendView: View {
         VStack(spacing: 2) {
             Text(title)
                 .multilineTextAlignment(.center)
-                .style(Fonts.Bold.body, color: Colors.Text.primary1)
+                .style(Fonts.BoldStatic.body, color: Colors.Text.primary1)
 
             if let subtitle = viewModel.subtitle {
                 Text(subtitle)
-                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                    .style(Fonts.RegularStatic.caption1, color: Colors.Text.tertiary)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }

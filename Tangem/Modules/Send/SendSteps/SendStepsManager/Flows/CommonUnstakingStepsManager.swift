@@ -11,6 +11,7 @@ import Combine
 import TangemStaking
 
 class CommonUnstakingStepsManager {
+    private let amountStep: SendAmountStep
     private let summaryStep: SendSummaryStep
     private let finishStep: SendFinishStep
     private let action: UnstakingModel.Action
@@ -20,25 +21,62 @@ class CommonUnstakingStepsManager {
     private weak var output: SendStepsManagerOutput?
 
     init(
+        amountStep: SendAmountStep,
         summaryStep: SendSummaryStep,
         finishStep: SendFinishStep,
         action: UnstakingModel.Action
     ) {
+        self.amountStep = amountStep
         self.summaryStep = summaryStep
         self.finishStep = finishStep
         self.action = action
 
-        stack = [summaryStep]
+        stack = [amountStep]
+    }
+
+    private func currentStep() -> SendStep {
+        let last = stack.last
+
+        assert(last != nil, "Stack is empty")
+
+        return last ?? initialState.step
+    }
+
+    private func getNextStep() -> (SendStep)? {
+        switch currentStep().type {
+        case .amount:
+            return summaryStep
+        case .destination, .fee, .validators, .summary, .finish:
+            assertionFailure("There is no next step")
+            return nil
+        }
     }
 
     private func next(step: SendStep) {
+        let isEditAction = stack.contains(where: { $0.type.isSummary })
         stack.append(step)
 
         switch step.type {
+        case .amount where isEditAction:
+            output?.update(state: .init(step: step, action: .continue))
         case .finish:
             output?.update(state: .init(step: step, action: .close))
-        case .amount, .destination, .fee, .summary, .validators:
+        case .summary:
+            output?.update(state: .init(step: step, action: .action))
+        case .amount, .destination, .fee, .validators:
             assertionFailure("There is no next step")
+        }
+    }
+
+    private func back() {
+        stack.removeLast()
+        let step = currentStep()
+
+        switch step.type {
+        case .summary:
+            output?.update(state: .init(step: step, action: .action))
+        default:
+            assertionFailure("There is no back step")
         }
     }
 }
@@ -46,7 +84,7 @@ class CommonUnstakingStepsManager {
 // MARK: - SendStepsManager
 
 extension CommonUnstakingStepsManager: SendStepsManager {
-    var initialKeyboardState: Bool { false }
+    var initialKeyboardState: Bool { true }
 
     var initialFlowActionType: SendFlowActionType {
         switch action.type {
@@ -69,11 +107,11 @@ extension CommonUnstakingStepsManager: SendStepsManager {
     }
 
     var initialState: SendStepsManagerViewState {
-        .init(step: summaryStep, action: .action, backButtonVisible: false)
+        .init(step: amountStep, action: .next, backButtonVisible: false)
     }
 
     var shouldShowDismissAlert: Bool {
-        return false
+        stack.contains(where: { $0.type.isSummary })
     }
 
     func set(output: SendStepsManagerOutput) {
@@ -81,11 +119,23 @@ extension CommonUnstakingStepsManager: SendStepsManager {
     }
 
     func performBack() {
-        assertionFailure("There's not back action in this flow")
+        back()
     }
 
     func performNext() {
-        assertionFailure("There's not next action in this flow")
+        guard let step = getNextStep() else {
+            return
+        }
+
+        func openNext() {
+            next(step: step)
+        }
+
+        guard currentStep().canBeClosed(continueAction: openNext) else {
+            return
+        }
+
+        openNext()
     }
 
     func performFinish() {
@@ -93,6 +143,33 @@ extension CommonUnstakingStepsManager: SendStepsManager {
     }
 
     func performContinue() {
-        assertionFailure("There's not continue action in this flow")
+        assert(stack.contains(where: { $0.type.isSummary }), "Continue is possible only after summary")
+
+        back()
+    }
+}
+
+// MARK: - SendSummaryStepsRoutable
+
+extension CommonUnstakingStepsManager: SendSummaryStepsRoutable {
+    func summaryStepRequestEditValidators() {
+        assertionFailure("We can't edit validators in unstaking flow")
+    }
+
+    func summaryStepRequestEditAmount() {
+        guard case .summary = currentStep().type else {
+            assertionFailure("This code should only be called from summary")
+            return
+        }
+
+        next(step: amountStep)
+    }
+
+    func summaryStepRequestEditDestination() {
+        assertionFailure("This steps is not tappable in this flow")
+    }
+
+    func summaryStepRequestEditFee() {
+        assertionFailure("This steps is not tappable in this flow")
     }
 }

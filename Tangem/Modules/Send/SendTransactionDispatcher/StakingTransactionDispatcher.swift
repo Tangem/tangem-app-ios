@@ -13,7 +13,7 @@ import TangemStaking
 
 class StakingTransactionDispatcher {
     private let walletModel: WalletModel
-    private let transactionSigner: TransactionSigner
+    private let transactionSigner: TangemSigner
     private let pendingHashesSender: StakingPendingHashesSender
     private let stakingTransactionMapper: StakingTransactionMapper
 
@@ -21,7 +21,7 @@ class StakingTransactionDispatcher {
 
     init(
         walletModel: WalletModel,
-        transactionSigner: TransactionSigner,
+        transactionSigner: TangemSigner,
         pendingHashesSender: StakingPendingHashesSender,
         stakingTransactionMapper: StakingTransactionMapper
     ) {
@@ -104,7 +104,8 @@ private extension StakingTransactionDispatcher {
         let hash = StakingPendingHash(transactionId: result.transaction.id, hash: result.result.hash)
         try? await pendingHashesSender.sendHash(hash)
 
-        return SendTransactionMapper().mapResult(result.result, blockchain: walletModel.blockchainNetwork.blockchain)
+        let signer = transactionSigner.latestSigner.value
+        return SendTransactionMapper().mapResult(result.result, blockchain: walletModel.blockchainNetwork.blockchain, signer: signer)
     }
 }
 

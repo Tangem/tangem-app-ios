@@ -43,7 +43,7 @@ extension CommonMarketsHistoryChartProvider: MarketsHistoryChartProvider {
         )
 
         let model = try await tangemApiService.loadHistoryChart(requestModel: requestModel)
-        let mapper = TokenMarketsHistoryChartMapper()
+        let mapper = MarketsTokenHistoryChartMapper()
         let historyChart = try mapper.mapLineChartViewData(
             from: model,
             selectedPriceInterval: interval,

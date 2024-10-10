@@ -22,7 +22,7 @@ class MarketsCoordinator: CoordinatorObject {
 
     // MARK: - Coordinators
 
-    @Published var tokenMarketsDetailsCoordinator: TokenMarketsDetailsCoordinator?
+    @Published var tokenDetailsCoordinator: MarketsTokenDetailsCoordinator?
 
     // MARK: - Child ViewModels
 
@@ -57,13 +57,13 @@ extension MarketsCoordinator: MarketsRoutable {
     }
 
     func openTokenMarketsDetails(for tokenInfo: MarketsTokenModel) {
-        let tokenMarketsDetailsCoordinator = TokenMarketsDetailsCoordinator(
+        let tokenDetailsCoordinator = MarketsTokenDetailsCoordinator(
             dismissAction: { [weak self] in
-                self?.tokenMarketsDetailsCoordinator = nil
+                self?.tokenDetailsCoordinator = nil
             }
         )
-        tokenMarketsDetailsCoordinator.start(with: .init(info: tokenInfo, style: .marketsSheet))
+        tokenDetailsCoordinator.start(with: .init(info: tokenInfo, style: .marketsSheet))
 
-        self.tokenMarketsDetailsCoordinator = tokenMarketsDetailsCoordinator
+        self.tokenDetailsCoordinator = tokenDetailsCoordinator
     }
 }
