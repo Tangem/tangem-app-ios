@@ -34,7 +34,8 @@ struct NotificationView: View {
         }
         .padding(.vertical, 12)
         .padding(.horizontal, 14)
-        .background(settings.event.colorScheme.color)
+        .background(settings.event.colorScheme.background)
+        .overlay(settings.event.colorScheme.overlay)
         .cornerRadiusContinuous(14)
     }
 
@@ -138,6 +139,8 @@ struct NotificationView: View {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle())
                     .foregroundColor(Colors.Icon.informative)
+            case .placeholder:
+                Color.clear
             }
         }
         .frame(size: settings.event.icon.size)

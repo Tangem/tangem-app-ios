@@ -54,12 +54,6 @@ protocol UserWalletConfig: OnboardingStepsBuilderFactory, BackupServiceFactory, 
 
     var productType: Analytics.ProductType { get }
 
-    var cardHeaderImage: ImageType? { get }
-
-    var customOnboardingImage: ImageType? { get }
-
-    var customScanImage: ImageType? { get }
-
     var cardSessionFilter: SessionFilter { get }
 
     var hasDefaultToken: Bool { get }
@@ -101,10 +95,6 @@ extension UserWalletConfig {
     var derivationStyle: DerivationStyle? {
         return nil
     }
-
-    var customOnboardingImage: ImageType? { nil }
-
-    var customScanImage: ImageType? { nil }
 
     var hasDefaultToken: Bool {
         (defaultBlockchains.first?.tokens.count ?? 0) > 0
