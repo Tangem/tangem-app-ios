@@ -71,7 +71,7 @@ class SendAmountViewModel: ObservableObject {
 
         self.interactor = interactor
         self.sendQRCodeService = sendQRCodeService
-        
+
         bind()
     }
 

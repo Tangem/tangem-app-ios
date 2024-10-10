@@ -32,8 +32,7 @@ class FakeWalletManager: WalletManager {
         walletModels = CommonWalletModelsFactory(
             config: Wallet2Config(
                 card: CardDTO(card: CardMock.wallet.card),
-                isDemo: false,
-                isRing: false
+                isDemo: false
             )
         ).makeWalletModels(from: self)
 

@@ -18,6 +18,7 @@ protocol SendTransactionDispatcher {
 struct SendTransactionDispatcherResult: Hashable {
     let hash: String
     let url: URL?
+    let signerType: String
 }
 
 extension SendTransactionDispatcherResult {

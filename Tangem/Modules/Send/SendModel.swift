@@ -176,7 +176,7 @@ private extension SendModel {
 
     private func proceed(transaction: BSDKTransaction, result: SendTransactionDispatcherResult) {
         _transactionTime.send(Date())
-        logTransactionAnalytics()
+        logTransactionAnalytics(signerType: result.signerType)
 
         transaction.amount.type.token.map { token in
             UserWalletFinder().addToken(
@@ -408,7 +408,7 @@ extension SendModel: SendBaseDataBuilderInput {
 // MARK: - Analytics
 
 private extension SendModel {
-    func logTransactionAnalytics() {
+    func logTransactionAnalytics(signerType: String) {
         let feeType = feeAnalyticsParameterBuilder.analyticsParameter(selectedFee: selectedFee.option)
 
         Analytics.log(event: .transactionSent, params: [
@@ -417,6 +417,7 @@ private extension SendModel {
             .blockchain: walletModel.tokenItem.blockchain.displayName,
             .feeType: feeType.rawValue,
             .memo: additionalFieldAnalyticsParameter().rawValue,
+            .walletForm: signerType,
         ])
 
         switch amount?.type {

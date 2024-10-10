@@ -122,6 +122,11 @@ final class MainViewModel: ObservableObject {
 
     /// Handles `UIKit.UIViewController.viewDidAppear(_:)`.
     func onDidAppear() {
+        // The application is already in a locked state, so no attempts to show bottom sheet should be made
+        guard !isLoggingOut else {
+            return
+        }
+
         let uiManager = mainBottomSheetUIManager
         /// On a `cold start` (e.g., after launching the app or after coming back from the background in a `locked` state:
         /// in both cases a new VM is created), the bottom sheet should become visible with some delay to prevent it from

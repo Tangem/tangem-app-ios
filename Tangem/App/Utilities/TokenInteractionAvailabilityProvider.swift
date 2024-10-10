@@ -102,6 +102,8 @@ struct TokenInteractionAvailabilityProvider {
              .filecoin,
              .sei,
              .sui,
+             .energyWebEVM,
+             .energyWebX,
              .core:
 
             // Checking that we have at least one valid (non-empty) address

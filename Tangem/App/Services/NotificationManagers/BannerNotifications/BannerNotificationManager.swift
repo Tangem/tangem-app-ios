@@ -12,6 +12,7 @@ import Combine
 class BannerNotificationManager {
     @Injected(\.bannerPromotionService) private var bannerPromotionService: BannerPromotionService
     @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
+    @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
 
     private let analyticsService = NotificationsAnalyticsService()
 
@@ -25,14 +26,17 @@ class BannerNotificationManager {
         analyticsService.setup(with: self, contextDataProvider: contextDataProvider)
     }
 
-    private func setupOKX() {
+    private func setupRing() {
+        guard let selectedUserWalletId = userWalletRepository.selectedUserWalletId,
+              AppSettings.shared.userWalletIdsWithRing.contains(selectedUserWalletId.stringValue) else {
+            return
+        }
+
         switch placement {
         case .main:
-            setupPromotionNotification(programName: .okx)
-        case .tokenDetails(let tokenItem):
-            if swapAvailabilityProvider.canSwap(tokenItem: tokenItem) {
-                setupPromotionNotification(programName: .okx)
-            }
+            setupPromotionNotification(programName: .ring)
+        case .tokenDetails:
+            break
         }
     }
 
@@ -121,7 +125,7 @@ extension BannerNotificationManager: NotificationManager {
 
     func setupManager(with delegate: NotificationTapDelegate?) {
         self.delegate = delegate
-        setupOKX()
+        setupRing()
     }
 
     func dismissNotification(with id: NotificationViewId) {
