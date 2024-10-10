@@ -31,6 +31,8 @@ class PolkadotTransactionBuilder {
      https://github.com/paritytech/polkadot/blob/3b68869e14f84b043aa65bd83f9fe44359e4d626/runtime/kusama/src/lib.rs#L1375
      Westend:
      https://github.com/paritytech/polkadot/blob/3b68869e14f84b043aa65bd83f9fe44359e4d626/runtime/westend/src/lib.rs#L982
+     
+     For other chains use experimentally obtained values, or try running the script in the PolkaParachainMetadataParser folder
      */
     private var balanceTransferCallIndex: Data {
         switch network {
@@ -40,6 +42,8 @@ class PolkadotTransactionBuilder {
             return Data(hexString: "0x0400")
         case .westend:
             return Data(hexString: "0x0400")
+        case .energyWebX:
+            return Data(hexString: "0x0a07")
         }
     }
     
@@ -120,13 +124,14 @@ class PolkadotTransactionBuilder {
         return call
     }
     
+    // Use experimentally obtained values
     private func encodingRawAddress(specVersion: UInt32) -> Bool {
         switch network {
         case .polkadot:
             return specVersion < 28
         case .kusama:
             return specVersion < 2028
-        case .westend, .azero, .bittensor:
+        case .westend, .azero, .bittensor, .energyWebX:
             return false
         case .joystream:
             // specVersion at the moment of initial implementation is '2003'

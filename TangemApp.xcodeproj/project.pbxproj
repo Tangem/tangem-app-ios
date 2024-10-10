@@ -699,6 +699,8 @@
 		B60B9FDB2A95D96B00A7E905 /* OrganizeTokensListSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60B9FDA2A95D96B00A7E905 /* OrganizeTokensListSectionViewModel.swift */; };
 		B60C13B32A530C500003F68F /* ScrollDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60C13B22A530C500003F68F /* ScrollDetector.swift */; };
 		B612AFD42B2884B80058A13A /* RateAppRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B612AFD32B2884B80058A13A /* RateAppRequest.swift */; };
+		B612B04B2CB7E41500A57580 /* EnergyWebXExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B612B0492CB7E41500A57580 /* EnergyWebXExternalLinkProvider.swift */; };
+		B612B04D2CB7E42800A57580 /* EnergyWebChainExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B612B04C2CB7E42800A57580 /* EnergyWebChainExternalLinkProvider.swift */; };
 		B6157AAD2C322733000640B4 /* OnboardingFeatureDescriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6157AAC2C322733000640B4 /* OnboardingFeatureDescriptionView.swift */; };
 		B6176A7A2A5B743A0062C399 /* CGRect+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6176A792A5B743A0062C399 /* CGRect+.swift */; };
 		B6180C862A80F76300144452 /* OrganizeTokensPreviewViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6180C852A80F76300144452 /* OrganizeTokensPreviewViewModelFactory.swift */; };
@@ -3527,6 +3529,8 @@
 		B60B9FDA2A95D96B00A7E905 /* OrganizeTokensListSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensListSectionViewModel.swift; sourceTree = "<group>"; };
 		B60C13B22A530C500003F68F /* ScrollDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollDetector.swift; sourceTree = "<group>"; };
 		B612AFD32B2884B80058A13A /* RateAppRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateAppRequest.swift; sourceTree = "<group>"; };
+		B612B0492CB7E41500A57580 /* EnergyWebXExternalLinkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnergyWebXExternalLinkProvider.swift; sourceTree = "<group>"; };
+		B612B04C2CB7E42800A57580 /* EnergyWebChainExternalLinkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnergyWebChainExternalLinkProvider.swift; sourceTree = "<group>"; };
 		B6157AAC2C322733000640B4 /* OnboardingFeatureDescriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFeatureDescriptionView.swift; sourceTree = "<group>"; };
 		B6176A792A5B743A0062C399 /* CGRect+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGRect+.swift"; sourceTree = "<group>"; };
 		B6180C852A80F76300144452 /* OrganizeTokensPreviewViewModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensPreviewViewModelFactory.swift; sourceTree = "<group>"; };
@@ -8185,6 +8189,14 @@
 			path = TokenSectionsAdapter;
 			sourceTree = "<group>";
 		};
+		B612B04A2CB7E41500A57580 /* EnergyWebX */ = {
+			isa = PBXGroup;
+			children = (
+				B612B0492CB7E41500A57580 /* EnergyWebXExternalLinkProvider.swift */,
+			);
+			path = EnergyWebX;
+			sourceTree = "<group>";
+		};
 		B6157AAB2C3226FD000640B4 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
@@ -9186,6 +9198,7 @@
 				B6AF58FD2CB7602000ADEA9B /* CronosExternalLinkProvider.swift */,
 				B6AF58FE2CB7602000ADEA9B /* CyberExternalLinkProvider.swift */,
 				B6AF58FF2CB7602000ADEA9B /* DisChainExternalLinkProvider.swift */,
+				B612B04C2CB7E42800A57580 /* EnergyWebChainExternalLinkProvider.swift */,
 				B6AF59012CB7602000ADEA9B /* EthereumClassicExternalLinkProvider.swift */,
 				B6AF59022CB7602000ADEA9B /* EthereumPoWExternalLinkProvider.swift */,
 				B6AF59032CB7602000ADEA9B /* FantomExternalLinkProvider.swift */,
@@ -10134,6 +10147,7 @@
 				B6AF58C62CB7602000ADEA9B /* Decimal */,
 				B6AF58CB2CB7602000ADEA9B /* Dogecoin */,
 				B6AF58D52CB7602000ADEA9B /* Ducatus */,
+				B612B04A2CB7E41500A57580 /* EnergyWebX */,
 				B6AF59222CB7602000ADEA9B /* Ethereum */,
 				B6AF59262CB7602000ADEA9B /* EthereumOptimisticRollup */,
 				B6AF59352CB7602000ADEA9B /* Filecoin */,
@@ -16544,6 +16558,7 @@
 				B6AF5D602CB7602000ADEA9B /* OP_MOD.swift in Sources */,
 				B6AF5D612CB7602000ADEA9B /* OP_OVER.swift in Sources */,
 				B6AF5D622CB7602000ADEA9B /* BlockchainSdkDependencies.swift in Sources */,
+				B612B04B2CB7E41500A57580 /* EnergyWebXExternalLinkProvider.swift in Sources */,
 				B6AF5D632CB7602000ADEA9B /* OP_PUSHDATA.swift in Sources */,
 				B6AF5D642CB7602000ADEA9B /* TONWalletInfo.swift in Sources */,
 				B6AF5D652CB7602000ADEA9B /* RskAddressService.swift in Sources */,
@@ -16751,6 +16766,7 @@
 				B6AF5E302CB7602000ADEA9B /* ICPNetworkService.swift in Sources */,
 				B6AF5E312CB7602000ADEA9B /* CosmosTransactionParams.swift in Sources */,
 				B6AF5E322CB7602000ADEA9B /* TerraV2ExternalLinkProvider.swift in Sources */,
+				B612B04D2CB7E42800A57580 /* EnergyWebChainExternalLinkProvider.swift in Sources */,
 				B6AF5E332CB7602000ADEA9B /* KoinosWalletAssembly.swift in Sources */,
 				B6AF5E342CB7602000ADEA9B /* witness_contract.pb.swift in Sources */,
 				B6AF5E352CB7602000ADEA9B /* KoinosWalletManager.swift in Sources */,
