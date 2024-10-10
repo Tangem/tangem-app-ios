@@ -75,7 +75,7 @@ final class ExpressProvidersSelectorViewModel: ObservableObject, Identifiable {
 
     func setupProviderRowViewModels() async {
         typealias SortableProvider = (priority: ExpressAvailableProvider.Priority, amount: Decimal)
-        
+
         let viewModels: [ProviderRowViewModel] = await allProviders
             .asyncSorted(
                 sort: { (firstProvider: SortableProvider, secondProvider: SortableProvider) in

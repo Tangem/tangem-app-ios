@@ -20,20 +20,19 @@ struct BannerNotificationFactory {
         let settings: NotificationView.Settings
 
         switch promotion.bannerPromotion {
-        case .okx:
+        case .ring:
             severity = .info
 
             let event = BannerNotificationEvent(
-                title: .string(Localization.swapPromoTitle),
-                description: Localization.swapPromoText,
+                title: .string(Localization.ringPromoTitle),
+                description: Localization.ringPromoText,
                 programName: promotion.bannerPromotion,
                 placement: placement,
                 icon: .init(
-                    iconType: .image(Assets.okxDexLogoWhite.image.renderingMode(.template)),
-                    color: .white,
-                    size: .init(width: 49, height: 24)
+                    iconType: .placeholder,
+                    size: .init(bothDimensions: 60)
                 ),
-                colorScheme: .okx,
+                colorScheme: .ring,
                 severity: .info
             )
 

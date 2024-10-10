@@ -11,7 +11,7 @@ import BlockchainSdk
 
 struct SendTransactionDispatcherFactory {
     let walletModel: WalletModel
-    let signer: TransactionSigner
+    let signer: TangemSigner
 
     func makeSendDispatcher() -> SendTransactionDispatcher {
         if walletModel.isDemo {
