@@ -63,11 +63,7 @@ struct SupportedBlockchains {
 
     /// Blockchains for test. They don't include in supported blockchains by default
     private func testableBlockchains() -> Set<Blockchain> {
-        [
-            .energyWebEVM(testnet: false),
-            .energyWebX(curve: ed25519Curve(for: version)),
-            .core(testnet: false),
-        ]
+        []
     }
 
     private func mainnetBlockchains() -> Set<Blockchain> {
@@ -142,6 +138,9 @@ struct SupportedBlockchains {
             .internetComputer,
             .sei(testnet: false),
             .sui(curve: ed25519Curve(for: version), testnet: false),
+            .energyWebEVM(testnet: false),
+            .energyWebX(curve: ed25519Curve(for: version)),
+            .core(testnet: false),
         ]
     }
 
@@ -196,6 +195,8 @@ struct SupportedBlockchains {
             .sei(testnet: true),
             .kaspa(testnet: true),
             .sui(curve: ed25519Curve(for: version), testnet: true),
+            .energyWebEVM(testnet: true),
+            .core(testnet: true),
         ]
     }
 
