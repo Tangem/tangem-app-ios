@@ -14,6 +14,8 @@ class TronTransactionBuilder {
     private let utils = TronUtils()
 
     func buildForSign(transaction: Transaction, block: TronBlock) throws -> TronPresignedInput {
+        fatalError()
+        /*
         let contract = try self.contract(transaction: transaction)
         let feeLimit = (transaction.amount.type == .coin) ? 0 : Constants.smartContractFeeLimit
 
@@ -50,8 +52,10 @@ class TronTransactionBuilder {
 
         let hash = try rawData.serializedData().sha256()
         return TronPresignedInput(rawData: rawData, hash: hash)
+        */
     }
 
+    /*
     func buildForSend(rawData: Protocol_Transaction.raw, signature: Data) throws -> Data {
         let transaction = Protocol_Transaction.with {
             $0.rawData = rawData
@@ -60,6 +64,7 @@ class TronTransactionBuilder {
 
         return try transaction.serializedData()
     }
+     */
 
     func buildContractEnergyUsageData(amount: Amount, destinationAddress: String) throws -> String {
         let addressData = try utils.convertAddressToBytesPadded(destinationAddress)
@@ -86,6 +91,7 @@ class TronTransactionBuilder {
 
     // MARK: - Private
 
+    /*
     private func contract(transaction: Transaction) throws -> Protocol_Transaction.Contract {
         let amount = transaction.amount
         let sourceAddress = transaction.sourceAddress
@@ -121,6 +127,7 @@ class TronTransactionBuilder {
             throw BlockchainSdkError.notImplemented
         }
     }
+     */
 
     private func buildContractData(transaction: Transaction) throws -> Data {
         let params = try getParams(from: transaction)
@@ -181,6 +188,8 @@ fileprivate extension Amount {
 // MARK: - TronPresignedInput
 
 struct TronPresignedInput {
+    /*
     let rawData: Protocol_Transaction.raw
+     */
     let hash: Data
 }
