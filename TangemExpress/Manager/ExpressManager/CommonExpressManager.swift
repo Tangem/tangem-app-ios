@@ -76,13 +76,13 @@ extension CommonExpressManager: ExpressManager {
         // Clear for reselected the best quote
         clearCache()
 
-        return try await update()
+        return try await update(by: .pairChange)
     }
 
-    func updateAmount(amount: Decimal?) async throws -> ExpressManagerState {
+    func updateAmount(amount: Decimal?, by source: ExpressProviderUpdateSource) async throws -> ExpressManagerState {
         _amount = amount
 
-        return try await update()
+        return try await update(by: source)
     }
 
     func updateSelectedProvider(provider: ExpressAvailableProvider) async throws -> ExpressManagerState {
@@ -104,8 +104,8 @@ extension CommonExpressManager: ExpressManager {
         return try await selectedProviderState()
     }
 
-    func update() async throws -> ExpressManagerState {
-        try await updateState()
+    func update(by source: ExpressProviderUpdateSource) async throws -> ExpressManagerState {
+        try await updateState(by: source)
     }
 
     func requestData() async throws -> ExpressTransactionData {
@@ -122,7 +122,7 @@ extension CommonExpressManager: ExpressManager {
 
 private extension CommonExpressManager {
     /// Return the state which checking the all properties
-    func updateState() async throws -> ExpressManagerState {
+    func updateState(by source: ExpressProviderUpdateSource) async throws -> ExpressManagerState {
         guard let pair = _pair else {
             log("ExpressManagerSwappingPair not found")
             throw ExpressManagerError.pairNotFound
@@ -143,7 +143,7 @@ private extension CommonExpressManager {
 
         try Task.checkCancellation()
 
-        await updateSelectedProvider()
+        await updateSelectedProvider(by: source)
 
         return try await selectedProviderState()
     }
@@ -195,11 +195,13 @@ private extension CommonExpressManager {
         }
     }
 
-    func updateSelectedProvider() async {
-        selectedProvider = await bestProvider()
+    func updateSelectedProvider(by source: ExpressProviderUpdateSource) async {
+        if source.isRequiredUpdateSelectedProvider || selectedProvider == nil {
+            selectedProvider = await bestProvider()
 
-        if let selectedProvider {
-            analyticsLogger.bestProviderSelected(selectedProvider)
+            if let selectedProvider {
+                analyticsLogger.bestProviderSelected(selectedProvider)
+            }
         }
     }
 
