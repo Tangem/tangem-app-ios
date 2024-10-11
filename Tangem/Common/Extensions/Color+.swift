@@ -119,8 +119,8 @@ public extension Color {
 
 extension UIColor {
     @available(iOS, deprecated: 18.0, message: "Replace with native 'Color.mix(with:by:in:)' if you are using this helper in SwiftUI only")
-    func mix(with otherColor: UIColor, by _fraction: CGFloat) -> UIColor {
-        let clampedFraction = clamp(_fraction, min: 0.0, max: 1.0)
+    func mix(with otherColor: UIColor, by fraction: CGFloat) -> UIColor {
+        let clampedFraction = clamp(fraction, min: 0.0, max: 1.0)
         let invertedFraction = 1.0 - clampedFraction
 
         var components = (red: CGFloat(0.0), green: CGFloat(0.0), blue: CGFloat(0.0), alpha: CGFloat(0.0))
