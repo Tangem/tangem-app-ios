@@ -100,7 +100,6 @@ struct SendSuggestedDestinationTransactionRecord {
     let additionalField: String?
     let isOutgoing: Bool
     let date: Date
-    let amount: Decimal
     let amountFormatted: String
     let dateFormatted: String
 }
