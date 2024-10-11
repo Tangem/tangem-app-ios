@@ -12,6 +12,7 @@ import Combine
 final class MainHeaderViewModel: ObservableObject {
     let isUserWalletLocked: Bool
 
+    @Published private(set) var cardImage: ImageType?
     @Published private(set) var userWalletName: String = ""
     @Published private(set) var subtitleInfo: MainHeaderSubtitleInfo = .empty
     @Published private(set) var balance: AttributedString = .init(BalanceFormatter.defaultEmptyBalanceString)
@@ -47,6 +48,11 @@ final class MainHeaderViewModel: ObservableObject {
         supplementInfoProvider?.userWalletNamePublisher
             .receive(on: DispatchQueue.main)
             .assign(to: \.userWalletName, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        supplementInfoProvider?.cardHeaderImagePublisher
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.cardImage, on: self, ownership: .weak)
             .store(in: &bag)
 
         subtitleProvider.isLoadingPublisher

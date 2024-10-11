@@ -10,6 +10,6 @@ import Foundation
 
 struct RingUtil {
     func isRing(batchId: String) -> Bool {
-        batchId.starts(with: "BA") || batchId == "AC17"
+        batchId.starts(with: "BA")
     }
 }
