@@ -68,7 +68,6 @@ class StakingModel {
         self.allowanceProvider = allowanceProvider
         self.tokenItem = tokenItem
         self.feeTokenItem = feeTokenItem
-        bind()
     }
 }
 
@@ -83,16 +82,6 @@ extension StakingModel: StakingModelStateProvider {
 // MARK: - Bind
 
 private extension StakingModel {
-    func bind() {
-        _approvePolicy
-            .dropFirst()
-            .removeDuplicates()
-            .sink { [weak self] _ in
-                self?.updateState()
-            }
-            .store(in: &bag)
-    }
-
     func updateState() {
         guard let amount = _amount.value?.crypto,
               let validator = _selectedValidator.value.value else {
@@ -477,6 +466,7 @@ extension StakingModel: ApproveViewModelInput {
 
     func updateApprovePolicy(policy: ApprovePolicy) {
         _approvePolicy.send(policy)
+        updateState()
     }
 
     func sendApproveTransaction() async throws {

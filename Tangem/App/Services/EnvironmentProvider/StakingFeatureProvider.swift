@@ -68,7 +68,8 @@ extension StakingFeatureProvider {
 
     static var testableBlockchainItems: Set<StakingItem> {
         [
-            StakingItem(network: .ethereum, contractAddress: StakingConstants.polygonContractAddress),
+            StakingItem(network: .ethereum, contractAddress: StakingConstants.polygonMaticContractAddress),
+            StakingItem(network: .ethereum, contractAddress: StakingConstants.polygonPolContractAddress),
         ]
     }
 
@@ -78,7 +79,8 @@ extension StakingFeatureProvider {
             return "solana-sol-native-multivalidator-staking"
         case (.cosmos, .none):
             return "cosmos-atom-native-staking"
-        case (.ethereum, StakingConstants.polygonContractAddress):
+        case (.ethereum, StakingConstants.polygonMaticContractAddress),
+             (.ethereum, StakingConstants.polygonPolContractAddress):
             return "ethereum-matic-native-staking"
         case (.tron, .none):
             return "tron-trx-native-staking"
