@@ -31,14 +31,9 @@ end
 def blockchain_sdk_pods
   pod 'Solana.Swift', :git => 'https://github.com/tangem/Solana.Swift', :tag => '1.2.0-tangem11'
   #pod 'Solana.Swift', :path => '../Solana.Swift'
-
-  pod 'BinanceChain', :git => 'https://github.com/tangem/swiftbinancechain.git', :tag => '0.0.11'
-  #pod 'BinanceChain', :path => '../SwiftBinanceChain'
   
   pod 'BitcoinCore.swift', :git => 'https://github.com/tangem/bitcoincore.git', :tag => '0.0.20'
   #pod 'BitcoinCore.swift', :path => '../bitcoincore'
-
-  pod 'SwiftyJSON', :git => 'https://github.com/tangem/SwiftyJSON.git', :tag => '5.0.1-tangem1'
 end
 
 def blockchain_sdk_utilites_pods
@@ -53,7 +48,6 @@ target 'Tangem' do
   tangem_sdk_pod
   
   # Pods for Tangem
-  pod 'Moya'
   pod 'WalletConnectSwiftV2', :git => 'https://github.com/WalletConnect/WalletConnectSwiftV2', :tag => '1.18.7'
   pod 'Kingfisher', '~> 7.11.0'
 
@@ -94,7 +88,6 @@ target 'TangemExpress' do
   tangem_sdk_pod  # Express uses TSDK?
   blockchain_sdk_pods # Really needed for this target?
   blockchain_sdk_utilites_pods # Really needed for this target?
-  pod 'Moya'
 
   target 'TangemExpressTests' do
     inherit! :search_paths
@@ -105,7 +98,6 @@ target 'TangemVisa' do
   tangem_sdk_pod  # Visa uses TSDK?
   blockchain_sdk_pods # Really needed for this target?
   blockchain_sdk_utilites_pods # Really needed for this target?
-  pod 'Moya'
 
   target 'TangemVisaTests' do
     inherit! :search_paths
@@ -116,7 +108,6 @@ target 'TangemStaking' do
   tangem_sdk_pod  # Staking uses TSDK?
   blockchain_sdk_pods # Really needed for this target?
   blockchain_sdk_utilites_pods # Really needed for this target?
-  pod 'Moya'
 
   target 'TangemStakingTests' do
     inherit! :search_paths
@@ -127,7 +118,6 @@ target 'BlockchainSdkLocal' do
   tangem_sdk_pod
   blockchain_sdk_pods
   blockchain_sdk_utilites_pods
-  pod 'Moya'
 
   target 'BlockchainSdkLocalTests' do
     inherit! :search_paths
@@ -166,15 +156,6 @@ post_install do |installer|
   end
 
   # ============ SPM <-> CocoaPods interop ============
-
-  # `SwiftProtobuf` SPM package for `BinanceChain` pod
-  add_spm_package_to_target(
-   installer.pods_project,
-   "BinanceChain",
-   "https://github.com/tangem/swift-protobuf-binaries.git",
-   "SwiftProtobuf",
-   { :kind => "exactVersion", :version => "1.25.2-tangem1" }
-  )
 
   # `secp256k1.swift` SPM package for `Solana.Swift` pod
   add_spm_package_to_target(

@@ -692,6 +692,7 @@
 		B602752B2A7A651000865EA7 /* ShadowAnimatableModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B602752A2A7A651000865EA7 /* ShadowAnimatableModifier.swift */; };
 		B60395A02C3793E900591E18 /* WelcomeOnboardingPushNotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B603959F2C3793E900591E18 /* WelcomeOnboardingPushNotificationsView.swift */; };
 		B605224B2A5C20E000966DFA /* OrganizeTokensDragAndDropController+AuxiliaryTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B605224A2A5C20E000966DFA /* OrganizeTokensDragAndDropController+AuxiliaryTypes.swift */; };
+		B608A5302CB9EE26001DDC8D /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = B608A52F2CB9EE26001DDC8D /* SwiftyJSON */; };
 		B60976A92C7384C100778E71 /* MarketsViewNavigationControllerConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60976A82C7384C100778E71 /* MarketsViewNavigationControllerConfigurator.swift */; };
 		B60976AB2C73881F00778E71 /* CALayer+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60976AA2C73881F00778E71 /* CALayer+.swift */; };
 		B60976AD2C738AE100778E71 /* UIRectCorner+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60976AC2C738AE100778E71 /* UIRectCorner+.swift */; };
@@ -757,6 +758,15 @@
 		B65108B32CAC2A8100690C22 /* ShapeStyle+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65108B22CAC2A8100690C22 /* ShapeStyle+.swift */; };
 		B654B6422A8513D4002553F4 /* CardsInfoPagerAnimationFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B654B6412A8513D4002553F4 /* CardsInfoPagerAnimationFactory.swift */; };
 		B65591ED2A2FF1B20066A13B /* OrganizeTokensHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65591EC2A2FF1B20066A13B /* OrganizeTokensHeaderView.swift */; };
+		B655DFF32CB9E5470039271C /* BinanceChain in Frameworks */ = {isa = PBXBuildFile; productRef = B655DFF22CB9E5470039271C /* BinanceChain */; };
+		B655DFF52CB9E5800039271C /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = B655DFF42CB9E5800039271C /* Moya */; };
+		B655DFF72CB9E5C30039271C /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = B655DFF62CB9E5C30039271C /* Moya */; };
+		B655DFF92CB9E5EC0039271C /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = B655DFF82CB9E5EC0039271C /* Moya */; };
+		B655DFFD2CB9E6710039271C /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = B655DFFC2CB9E6710039271C /* Moya */; };
+		B655E0042CB9E9860039271C /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B655E0032CB9E9860039271C /* Alamofire */; };
+		B655E0062CB9E9950039271C /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B655E0052CB9E9950039271C /* Alamofire */; };
+		B655E0082CB9E9BE0039271C /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B655E0072CB9E9BE0039271C /* Alamofire */; };
+		B655E00A2CB9E9D50039271C /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B655E0092CB9E9D50039271C /* Alamofire */; };
 		B656FCE62C46F3E8002B5BF2 /* OverlayContentStateObserverViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B656FCE52C46F3E8002B5BF2 /* OverlayContentStateObserverViewModifier.swift */; };
 		B656FCEE2C47546C002B5BF2 /* OverlayContentStateObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B656FCED2C47546C002B5BF2 /* OverlayContentStateObserver.swift */; };
 		B657402D2CB4B86A00732997 /* Temp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657402C2CB4B86A00732997 /* Temp.swift */; };
@@ -1716,6 +1726,7 @@
 		B6C3B56E2AA1823A0017241C /* CardsInfoPagerScrollState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C3B56D2AA1823A0017241C /* CardsInfoPagerScrollState.swift */; };
 		B6CA91352BB55F4400752999 /* PolkadotAccountHealthBackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CA91342BB55F4300752999 /* PolkadotAccountHealthBackgroundTaskManager.swift */; };
 		B6CA91372BB5616C00752999 /* AccountHealthCheckBackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CA91362BB5616C00752999 /* AccountHealthCheckBackgroundTask.swift */; };
+		B6CD0DED2CB8179E0064C1FC /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = B6CD0DEC2CB8179E0064C1FC /* Moya */; };
 		B6CF16822B22548A004925CC /* PropertyListObjectRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CF16812B22548A004925CC /* PropertyListObjectRepresentable.swift */; };
 		B6D274E82C38318900FEFCDC /* OnboardingLayoutConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D274E72C38318900FEFCDC /* OnboardingLayoutConstants.swift */; };
 		B6D274EB2C38384400FEFCDC /* PushNotificationsBottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D274EA2C38384400FEFCDC /* PushNotificationsBottomSheetView.swift */; };
@@ -5491,6 +5502,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6CD0DED2CB8179E0064C1FC /* Moya in Frameworks */,
 				B6229DE22CB7FAC400257A91 /* TweetNacl in Frameworks */,
 				B6EE3B622C789C6E00B464FC /* DGCharts in Frameworks */,
 				B6229DE02CB7FA5A00257A91 /* secp256k1 in Frameworks */,
@@ -5499,6 +5511,7 @@
 				B61ADA0D2CB75BDB00BB7D40 /* BlockchainSdkLocal.framework in Frameworks */,
 				EF9E29A82B4F0C9900418559 /* TangemExpress.framework in Frameworks */,
 				B6229DDE2CB7F9DE00257A91 /* TangemWalletCoreBinariesWrapper in Frameworks */,
+				B655E0042CB9E9860039271C /* Alamofire in Frameworks */,
 				EFEE239D2BFF62D60099917E /* TangemStaking.framework in Frameworks */,
 				B620FCAE2C5D337900AD0FD1 /* DGCharts in Frameworks */,
 				B6F625302C85E1A600DEF098 /* DGCharts in Frameworks */,
@@ -5506,6 +5519,7 @@
 				B099338A2B5517EC00240CDB /* TangemVisa.framework in Frameworks */,
 				0A81B38E2BB3018E0008F21C /* ZIPFoundation in Frameworks */,
 				B620FCA02C5D326D00AD0FD1 /* DGCharts in Frameworks */,
+				B608A5302CB9EE26001DDC8D /* SwiftyJSON in Frameworks */,
 				4F00236C26F4689B6A741039 /* Pods_Tangem.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5530,8 +5544,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B655E0082CB9E9BE0039271C /* Alamofire in Frameworks */,
 				B643EB2D2CB56D060084B810 /* TangemDependenciesShim in Frameworks */,
 				C2DBF9FD1A18628296A2C808 /* Pods_TangemVisa.framework in Frameworks */,
+				B655DFF72CB9E5C30039271C /* Moya in Frameworks */,
 				B6AF5F052CB763C100ADEA9B /* BlockchainSdkLocal.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5555,7 +5571,9 @@
 				B6AF5EF92CB761B300ADEA9B /* TonSwift in Frameworks */,
 				B61ADA1E2CB75C0800BB7D40 /* TangemDependenciesShim in Frameworks */,
 				B6AF5EF12CB7613500ADEA9B /* CryptoSwift in Frameworks */,
+				B655DFF52CB9E5800039271C /* Moya in Frameworks */,
 				4675C3B83B5F464FC88063DE /* Pods_BlockchainSdkLocal.framework in Frameworks */,
+				B655DFF32CB9E5470039271C /* BinanceChain in Frameworks */,
 				B6AF5EFF2CB761FA00ADEA9B /* IcpKit in Frameworks */,
 				B6AF5EEE2CB7610E00ADEA9B /* Hedera in Frameworks */,
 				B6AF5F272CB76B0800ADEA9B /* TweetNacl in Frameworks */,
@@ -5576,8 +5594,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B655E00A2CB9E9D50039271C /* Alamofire in Frameworks */,
 				B643EB2B2CB56CF80084B810 /* TangemDependenciesShim in Frameworks */,
 				86D9B9D1A68FFFCAAEDE1210 /* Pods_TangemExpress.framework in Frameworks */,
+				B655DFFD2CB9E6710039271C /* Moya in Frameworks */,
 				B6AF5F002CB763AF00ADEA9B /* BlockchainSdkLocal.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5595,8 +5615,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B655E0062CB9E9950039271C /* Alamofire in Frameworks */,
 				B643EB2F2CB56D0D0084B810 /* TangemDependenciesShim in Frameworks */,
 				735DE6BB9FDAFE5A5BCFE5AF /* Pods_TangemStaking.framework in Frameworks */,
+				B655DFF92CB9E5EC0039271C /* Moya in Frameworks */,
 				B6AF5F0A2CB763C900ADEA9B /* BlockchainSdkLocal.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -13760,6 +13782,9 @@
 				B6229DDD2CB7F9DE00257A91 /* TangemWalletCoreBinariesWrapper */,
 				B6229DDF2CB7FA5A00257A91 /* secp256k1 */,
 				B6229DE12CB7FAC400257A91 /* TweetNacl */,
+				B6CD0DEC2CB8179E0064C1FC /* Moya */,
+				B655E0032CB9E9860039271C /* Alamofire */,
+				B608A52F2CB9EE26001DDC8D /* SwiftyJSON */,
 			);
 			productName = "Tangem Tap";
 			productReference = 5D3F77C224BF56D800E8695B /* Tangem.app */;
@@ -13819,6 +13844,10 @@
 				B6AF5F082CB763C100ADEA9B /* PBXTargetDependency */,
 			);
 			name = TangemVisa;
+			packageProductDependencies = (
+				B655DFF62CB9E5C30039271C /* Moya */,
+				B655E0072CB9E9BE0039271C /* Alamofire */,
+			);
 			productName = TangemVisa;
 			productReference = B09933772B5517E300240CDB /* TangemVisa.framework */;
 			productType = "com.apple.product-type.framework";
@@ -13868,6 +13897,8 @@
 				B6AF5EFE2CB761FA00ADEA9B /* IcpKit */,
 				B6AF5F242CB76AF300ADEA9B /* secp256k1 */,
 				B6AF5F262CB76B0800ADEA9B /* TweetNacl */,
+				B655DFF22CB9E5470039271C /* BinanceChain */,
+				B655DFF42CB9E5800039271C /* Moya */,
 			);
 			productName = BlockchainSdkLocal;
 			productReference = B61AD9FA2CB75BD200BB7D40 /* BlockchainSdkLocal.framework */;
@@ -13909,6 +13940,10 @@
 				B6AF5F032CB763AF00ADEA9B /* PBXTargetDependency */,
 			);
 			name = TangemExpress;
+			packageProductDependencies = (
+				B655DFFC2CB9E6710039271C /* Moya */,
+				B655E0092CB9E9D50039271C /* Alamofire */,
+			);
 			productName = TangemExpress;
 			productReference = EF9E29932B4F0C8800418559 /* TangemExpress.framework */;
 			productType = "com.apple.product-type.framework";
@@ -13949,6 +13984,10 @@
 				B6AF5F0D2CB763C900ADEA9B /* PBXTargetDependency */,
 			);
 			name = TangemStaking;
+			packageProductDependencies = (
+				B655DFF82CB9E5EC0039271C /* Moya */,
+				B655E0052CB9E9950039271C /* Alamofire */,
+			);
 			productName = TangemStaking;
 			productReference = EFEE23882BFF62D50099917E /* TangemStaking.framework */;
 			productType = "com.apple.product-type.framework";
@@ -14058,6 +14097,10 @@
 				B6AF5EF72CB761B300ADEA9B /* XCRemoteSwiftPackageReference "ton-swift" */,
 				B6AF5EFA2CB761D800ADEA9B /* XCRemoteSwiftPackageReference "ScaleCodec" */,
 				B6AF5EFD2CB761FA00ADEA9B /* XCRemoteSwiftPackageReference "IcpKit" */,
+				B6CD0DEB2CB8179E0064C1FC /* XCRemoteSwiftPackageReference "Moya" */,
+				B6CD0DEF2CB81AA70064C1FC /* XCRemoteSwiftPackageReference "SwiftBinanceChain" */,
+				B655E0022CB9E9860039271C /* XCRemoteSwiftPackageReference "Alamofire" */,
+				B608A52E2CB9EE26001DDC8D /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
 			);
 			productRefGroup = 5D3F77C324BF56D800E8695B /* Products */;
 			projectDirPath = "";
@@ -17449,15 +17492,11 @@
 					"-framework",
 					"\"Accelerate\"",
 					"-framework",
-					"\"Alamofire\"",
-					"-framework",
 					"\"AmplitudeSwift\"",
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
 					"\"AnyCodable\"",
-					"-framework",
-					"\"BinanceChain\"",
 					"-framework",
 					"\"BitcoinCore\"",
 					"-framework",
@@ -17495,8 +17534,6 @@
 					"-framework",
 					"\"Kingfisher\"",
 					"-framework",
-					"\"Moya\"",
-					"-framework",
 					"\"Promises\"",
 					"-framework",
 					"\"Security\"",
@@ -17511,10 +17548,6 @@
 					"-framework",
 					"\"SwiftCBOR\"",
 					"-framework",
-					"\"SwiftDate\"",
-					"-framework",
-					"\"SwiftyJSON\"",
-					"-framework",
 					"\"SystemConfiguration\"",
 					"-framework",
 					"\"TangemSdk\"",
@@ -17522,8 +17555,6 @@
 					"\"UIKit\"",
 					"-framework",
 					"\"WalletConnectSwiftV2\"",
-					"-framework",
-					"\"WalletCore\"",
 					"-framework",
 					"\"nanopb\"",
 					"-framework",
@@ -17585,15 +17616,11 @@
 					"-framework",
 					"\"Accelerate\"",
 					"-framework",
-					"\"Alamofire\"",
-					"-framework",
 					"\"AmplitudeSwift\"",
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
 					"\"AnyCodable\"",
-					"-framework",
-					"\"BinanceChain\"",
 					"-framework",
 					"\"BitcoinCore\"",
 					"-framework",
@@ -17631,8 +17658,6 @@
 					"-framework",
 					"\"Kingfisher\"",
 					"-framework",
-					"\"Moya\"",
-					"-framework",
 					"\"Promises\"",
 					"-framework",
 					"\"Security\"",
@@ -17647,10 +17672,6 @@
 					"-framework",
 					"\"SwiftCBOR\"",
 					"-framework",
-					"\"SwiftDate\"",
-					"-framework",
-					"\"SwiftyJSON\"",
-					"-framework",
 					"\"SystemConfiguration\"",
 					"-framework",
 					"\"TangemSdk\"",
@@ -17658,8 +17679,6 @@
 					"\"UIKit\"",
 					"-framework",
 					"\"WalletConnectSwiftV2\"",
-					"-framework",
-					"\"WalletCore\"",
 					"-framework",
 					"\"nanopb\"",
 					"-framework",
@@ -19879,15 +19898,11 @@
 					"-framework",
 					"\"Accelerate\"",
 					"-framework",
-					"\"Alamofire\"",
-					"-framework",
 					"\"AmplitudeSwift\"",
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
 					"\"AnyCodable\"",
-					"-framework",
-					"\"BinanceChain\"",
 					"-framework",
 					"\"BitcoinCore\"",
 					"-framework",
@@ -19925,8 +19940,6 @@
 					"-framework",
 					"\"Kingfisher\"",
 					"-framework",
-					"\"Moya\"",
-					"-framework",
 					"\"Promises\"",
 					"-framework",
 					"\"Security\"",
@@ -19941,10 +19954,6 @@
 					"-framework",
 					"\"SwiftCBOR\"",
 					"-framework",
-					"\"SwiftDate\"",
-					"-framework",
-					"\"SwiftyJSON\"",
-					"-framework",
 					"\"SystemConfiguration\"",
 					"-framework",
 					"\"TangemSdk\"",
@@ -19952,8 +19961,6 @@
 					"\"UIKit\"",
 					"-framework",
 					"\"WalletConnectSwiftV2\"",
-					"-framework",
-					"\"WalletCore\"",
 					"-framework",
 					"\"nanopb\"",
 					"-framework",
@@ -20121,15 +20128,11 @@
 					"-framework",
 					"\"Accelerate\"",
 					"-framework",
-					"\"Alamofire\"",
-					"-framework",
 					"\"AmplitudeSwift\"",
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
 					"\"AnyCodable\"",
-					"-framework",
-					"\"BinanceChain\"",
 					"-framework",
 					"\"BitcoinCore\"",
 					"-framework",
@@ -20167,8 +20170,6 @@
 					"-framework",
 					"\"Kingfisher\"",
 					"-framework",
-					"\"Moya\"",
-					"-framework",
 					"\"Promises\"",
 					"-framework",
 					"\"Security\"",
@@ -20183,10 +20184,6 @@
 					"-framework",
 					"\"SwiftCBOR\"",
 					"-framework",
-					"\"SwiftDate\"",
-					"-framework",
-					"\"SwiftyJSON\"",
-					"-framework",
 					"\"SystemConfiguration\"",
 					"-framework",
 					"\"TangemSdk\"",
@@ -20194,8 +20191,6 @@
 					"\"UIKit\"",
 					"-framework",
 					"\"WalletConnectSwiftV2\"",
-					"-framework",
-					"\"WalletCore\"",
 					"-framework",
 					"\"nanopb\"",
 					"-framework",
@@ -22319,15 +22314,11 @@
 					"-framework",
 					"\"Accelerate\"",
 					"-framework",
-					"\"Alamofire\"",
-					"-framework",
 					"\"AmplitudeSwift\"",
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
 					"\"AnyCodable\"",
-					"-framework",
-					"\"BinanceChain\"",
 					"-framework",
 					"\"BitcoinCore\"",
 					"-framework",
@@ -22365,8 +22356,6 @@
 					"-framework",
 					"\"Kingfisher\"",
 					"-framework",
-					"\"Moya\"",
-					"-framework",
 					"\"Promises\"",
 					"-framework",
 					"\"Security\"",
@@ -22381,10 +22370,6 @@
 					"-framework",
 					"\"SwiftCBOR\"",
 					"-framework",
-					"\"SwiftDate\"",
-					"-framework",
-					"\"SwiftyJSON\"",
-					"-framework",
 					"\"SystemConfiguration\"",
 					"-framework",
 					"\"TangemSdk\"",
@@ -22392,8 +22377,6 @@
 					"\"UIKit\"",
 					"-framework",
 					"\"WalletConnectSwiftV2\"",
-					"-framework",
-					"\"WalletCore\"",
 					"-framework",
 					"\"nanopb\"",
 					"-framework",
@@ -22561,15 +22544,11 @@
 					"-framework",
 					"\"Accelerate\"",
 					"-framework",
-					"\"Alamofire\"",
-					"-framework",
 					"\"AmplitudeSwift\"",
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
 					"\"AnyCodable\"",
-					"-framework",
-					"\"BinanceChain\"",
 					"-framework",
 					"\"BitcoinCore\"",
 					"-framework",
@@ -22607,8 +22586,6 @@
 					"-framework",
 					"\"Kingfisher\"",
 					"-framework",
-					"\"Moya\"",
-					"-framework",
 					"\"Promises\"",
 					"-framework",
 					"\"Security\"",
@@ -22623,10 +22600,6 @@
 					"-framework",
 					"\"SwiftCBOR\"",
 					"-framework",
-					"\"SwiftDate\"",
-					"-framework",
-					"\"SwiftyJSON\"",
-					"-framework",
 					"\"SystemConfiguration\"",
 					"-framework",
 					"\"TangemSdk\"",
@@ -22634,8 +22607,6 @@
 					"\"UIKit\"",
 					"-framework",
 					"\"WalletConnectSwiftV2\"",
-					"-framework",
-					"\"WalletCore\"",
 					"-framework",
 					"\"nanopb\"",
 					"-framework",
@@ -22904,6 +22875,22 @@
 				minimumVersion = 2.4.0;
 			};
 		};
+		B608A52E2CB9EE26001DDC8D /* XCRemoteSwiftPackageReference "SwiftyJSON" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tangem/SwiftyJSON.git";
+			requirement = {
+				kind = exactVersion;
+				version = "5.0.1-tangem1";
+			};
+		};
+		B655E0022CB9E9860039271C /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
 		B6AF5EEC2CB7610E00ADEA9B /* XCRemoteSwiftPackageReference "hedera-sdk-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tangem/hedera-sdk-swift.git";
@@ -22960,6 +22947,22 @@
 				minimumVersion = 0.12.0;
 			};
 		};
+		B6CD0DEB2CB8179E0064C1FC /* XCRemoteSwiftPackageReference "Moya" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Moya/Moya.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 15.0.0;
+			};
+		};
+		B6CD0DEF2CB81AA70064C1FC /* XCRemoteSwiftPackageReference "SwiftBinanceChain" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tangem/SwiftBinanceChain.git";
+			requirement = {
+				branch = "feature/IOS-7988_move_bsdk_to_monorepo";
+				kind = branch;
+			};
+		};
 		B6F525902B6C05210079ADD1 /* XCRemoteSwiftPackageReference "wallet-core-binaries-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tangem/wallet-core-binaries-ios.git";
@@ -22988,6 +22991,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B0B11A062C787FE70018A2A6 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
 			productName = MarkdownUI;
+		};
+		B608A52F2CB9EE26001DDC8D /* SwiftyJSON */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B608A52E2CB9EE26001DDC8D /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
+			productName = SwiftyJSON;
 		};
 		B61ADA1D2CB75C0800BB7D40 /* TangemDependenciesShim */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -23033,6 +23041,51 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = TangemDependenciesShim;
 		};
+		B655DFF22CB9E5470039271C /* BinanceChain */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6CD0DEF2CB81AA70064C1FC /* XCRemoteSwiftPackageReference "SwiftBinanceChain" */;
+			productName = BinanceChain;
+		};
+		B655DFF42CB9E5800039271C /* Moya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6CD0DEB2CB8179E0064C1FC /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = Moya;
+		};
+		B655DFF62CB9E5C30039271C /* Moya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6CD0DEB2CB8179E0064C1FC /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = Moya;
+		};
+		B655DFF82CB9E5EC0039271C /* Moya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6CD0DEB2CB8179E0064C1FC /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = Moya;
+		};
+		B655DFFC2CB9E6710039271C /* Moya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6CD0DEB2CB8179E0064C1FC /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = Moya;
+		};
+		B655E0032CB9E9860039271C /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B655E0022CB9E9860039271C /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		B655E0052CB9E9950039271C /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B655E0022CB9E9860039271C /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		B655E0072CB9E9BE0039271C /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B655E0022CB9E9860039271C /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		B655E0092CB9E9D50039271C /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B655E0022CB9E9860039271C /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
 		B6AF5EED2CB7610E00ADEA9B /* Hedera */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B6AF5EEC2CB7610E00ADEA9B /* XCRemoteSwiftPackageReference "hedera-sdk-swift" */;
@@ -23077,6 +23130,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 0ABC61132C410AFD00065EBA /* XCRemoteSwiftPackageReference "tweetnacl-swiftwrap" */;
 			productName = TweetNacl;
+		};
+		B6CD0DEC2CB8179E0064C1FC /* Moya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6CD0DEB2CB8179E0064C1FC /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = Moya;
 		};
 		B6EE3B612C789C6E00B464FC /* DGCharts */ = {
 			isa = XCSwiftPackageProductDependency;
