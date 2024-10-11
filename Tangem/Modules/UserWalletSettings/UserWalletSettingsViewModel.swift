@@ -16,7 +16,7 @@ final class UserWalletSettingsViewModel: ObservableObject {
 
     // MARK: - ViewState
 
-    @Published var name: String
+    @Published private(set) var name: String
     @Published var accountsSection: [AccountsSectionType] = []
     @Published var backupViewModel: DefaultRowViewModel?
 
@@ -34,6 +34,8 @@ final class UserWalletSettingsViewModel: ObservableObject {
     @Published private var manageTokensViewModel: DefaultRowViewModel?
     @Published private var cardSettingsViewModel: DefaultRowViewModel?
     @Published private var refferalViewModel: DefaultRowViewModel?
+
+    private var walletNameFieldValidator: AlertFieldValidator?
 
     // MARK: - Dependencies
 
@@ -55,6 +57,39 @@ final class UserWalletSettingsViewModel: ObservableObject {
 
     func onAppear() {
         setupView()
+    }
+
+    func onTapNameField() {
+        guard AppSettings.shared.saveUserWallets,
+              let userWalletModel = userWalletRepository.selectedModel
+        else {
+            return
+        }
+
+        let otherWalletNames = userWalletRepository.models.compactMap { model -> String? in
+            guard model.userWalletId != userWalletModel.userWalletId else { return nil }
+
+            return model.name
+        }
+
+        walletNameFieldValidator = AlertFieldValidator { input in
+            let input = input.trimmed()
+            return !(otherWalletNames.contains(input) || input.isEmpty)
+        }
+
+        let alert = AlertBuilder.makeAlertControllerWithTextField(
+            title: Localization.userWalletListRenamePopupTitle,
+            fieldPlaceholder: Localization.userWalletListRenamePopupPlaceholder,
+            fieldText: userWalletModel.name,
+            fieldValidator: walletNameFieldValidator
+        ) { newName in
+            guard userWalletModel.name != newName else { return }
+
+            self.name = newName
+            userWalletModel.updateWalletName(newName)
+        }
+
+        AppPresenter.shared.show(alert)
     }
 }
 
