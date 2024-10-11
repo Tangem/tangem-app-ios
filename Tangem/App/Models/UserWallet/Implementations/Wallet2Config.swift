@@ -230,7 +230,7 @@ extension Wallet2Config: UserWalletConfig {
                 isUserWalletWithRing = AppSettings.shared.userWalletIdsWithRing.contains(userWalletId)
             }
 
-            if RingUtil().isRing(batchId: card.batchId) || isUserWalletWithRing {
+            if isUserWalletWithRing || RingUtil().isRing(batchId: card.batchId) {
                 return cardsCount == 2 ? Assets.Cards.ring1card : Assets.Cards.ring2cards
             }
 
