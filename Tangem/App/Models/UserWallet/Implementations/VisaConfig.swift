@@ -74,6 +74,11 @@ extension VisaConfig: UserWalletConfig {
         .visa
     }
 
+    var cardHeaderImage: ImageType? {
+        // TODO: Update card image when available
+        Assets.Cards.noteCardano
+    }
+
     var hasDefaultToken: Bool {
         // Visa wallet must be recognized as single wallet cards, therefore they shouldn't have a default token
         false
