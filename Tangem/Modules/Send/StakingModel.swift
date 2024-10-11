@@ -481,7 +481,7 @@ extension StakingModel: ApproveViewModelInput {
             destination: .contractCall(contract: approveData.toContractAddress, data: approveData.txData)
         )
 
-        _ = try await sendTransactionDispatcher.send(transaction: .transfer(transaction))
+        _ = try await sendTransactionDispatcher.send(transaction: .transfer(transaction), updateWalletAfterSending: false)
         allowanceProvider.didSendApproveTransaction(for: approveData.spender)
         updateState()
 

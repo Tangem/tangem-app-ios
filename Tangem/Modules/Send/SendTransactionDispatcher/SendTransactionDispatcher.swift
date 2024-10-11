@@ -12,7 +12,13 @@ import TangemFoundation
 import struct BlockchainSdk.SendTxError
 
 protocol SendTransactionDispatcher {
-    func send(transaction: SendTransactionType) async throws -> SendTransactionDispatcherResult
+    func send(transaction: SendTransactionType, updateWalletAfterSending: Bool) async throws -> SendTransactionDispatcherResult
+}
+
+extension SendTransactionDispatcher {
+    func send(transaction: SendTransactionType, updateWalletAfterSending: Bool = true) async throws -> SendTransactionDispatcherResult {
+        try await send(transaction: transaction, updateWalletAfterSending: updateWalletAfterSending)
+    }
 }
 
 struct SendTransactionDispatcherResult: Hashable {
