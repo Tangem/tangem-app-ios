@@ -19,6 +19,10 @@ class StakingFeatureProvider {
         isFeatureAvailable = config.isFeatureVisible(.staking)
     }
 
+    static var isPartialUnstakeAvailable: Bool {
+        FeatureProvider.isAvailable(.partialUnstake)
+    }
+
     func yieldId(for tokenItem: TokenItem) -> String? {
         guard isFeatureAvailable else {
             return nil
