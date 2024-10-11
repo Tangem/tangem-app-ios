@@ -222,6 +222,18 @@ extension Wallet2Config: UserWalletConfig {
             return Assets.Cards.peachAirGlass
         // Tangem Wallet 2.0
         default:
+
+            var isUserWalletWithRing = false
+
+            if let userWalletIdSeed {
+                let userWalletId = UserWalletId(with: userWalletIdSeed).stringValue
+                isUserWalletWithRing = AppSettings.shared.userWalletIdsWithRing.contains(userWalletId)
+            }
+
+            if RingUtil().isRing(batchId: card.batchId) || isUserWalletWithRing {
+                return cardsCount == 2 ? Assets.Cards.ring1card : Assets.Cards.ring2cards
+            }
+
             return cardsCount == 2 ? Assets.Cards.wallet2Double : Assets.Cards.wallet2Triple
         }
     }
