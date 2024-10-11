@@ -67,12 +67,12 @@ extension StakingFeatureProvider {
             StakingItem(network: .solana, contractAddress: nil),
             StakingItem(network: .cosmos, contractAddress: nil),
             StakingItem(network: .tron, contractAddress: nil),
+            StakingItem(network: .ethereum, contractAddress: StakingConstants.polygonContractAddress),
         ]
     }
 
     static var testableBlockchainItems: Set<StakingItem> {
         [
-            StakingItem(network: .ethereum, contractAddress: StakingConstants.polygonContractAddress),
         ]
     }
 
