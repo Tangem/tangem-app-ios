@@ -18,6 +18,14 @@ extension UIColor {
         return UIColor(named: "BackgroundPrimary")!
     }
 
+    @nonobjc static var backgroundSecondary: UIColor {
+        return UIColor(named: "BackgroundSecondary")!
+    }
+
+    @nonobjc static var backgroundPlain: UIColor {
+        return UIColor(named: "BackgroundPlain")!
+    }
+
     @nonobjc static var inputAccessoryViewTintColor: UIColor {
         return UIColor(named: "ButtonPrimary")!
     }
