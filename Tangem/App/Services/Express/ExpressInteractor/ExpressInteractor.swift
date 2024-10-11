@@ -145,12 +145,12 @@ extension ExpressInteractor {
         swappingPairDidChange()
     }
 
-    func update(amount: Decimal?) {
+    func update(amount: Decimal?, by source: ExpressProviderUpdateSource) {
         log("Will update amount to \(amount as Any)")
 
         updateState(.loading(type: .full))
         updateTask { interactor in
-            let state = try await interactor.expressManager.updateAmount(amount: amount)
+            let state = try await interactor.expressManager.updateAmount(amount: amount, by: source)
             return try await interactor.mapState(state: state)
         }
     }
@@ -314,7 +314,7 @@ extension ExpressInteractor {
                 }
             }
 
-            let state = try await interactor.expressManager.update()
+            let state = try await interactor.expressManager.update(by: .autoUpdate)
             return try await interactor.mapState(state: state)
         }
     }

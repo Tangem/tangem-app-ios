@@ -238,7 +238,7 @@ private extension ExpressViewModel {
             })
             .debounce(for: 1, scheduler: DispatchQueue.main)
             .sink { [weak self] amount in
-                self?.interactor.update(amount: amount)
+                self?.interactor.update(amount: amount, by: .amountChange)
 
                 if let amount, amount > 0 {
                     self?.startTimer()
@@ -316,7 +316,7 @@ private extension ExpressViewModel {
     func updateSendDecimalValue(to value: Decimal) {
         sendCurrencyViewModel?.decimalNumberTextFieldViewModel.update(value: value)
         updateSendFiatValue(amount: value)
-        interactor.update(amount: value)
+        interactor.update(amount: value, by: .amountChange)
     }
 
     // MARK: - Send view bubble
