@@ -1260,6 +1260,7 @@
 		DCA21D942BA1C77A000A3C1A /* ValidationMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA21D932BA1C77A000A3C1A /* ValidationMode.swift */; };
 		DCA54D8F2C05E0BA00FBF99F /* PriceChangeFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA54D8E2C05E0BA00FBF99F /* PriceChangeFormatterTests.swift */; };
 		DCAB5800295EE820005D0F4A /* AppLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAB57FF295EE820005D0F4A /* AppLog.swift */; };
+		DCB617762CB938AF00BE4481 /* ExpressProviderUpdateSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB617752CB938AF00BE4481 /* ExpressProviderUpdateSource.swift */; };
 		DCBAF6992A4AEEDD0029480A /* AnyWalletManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBAF6982A4AEEDD0029480A /* AnyWalletManagerFactory.swift */; };
 		DCBAF69B2A4AEF3C0029480A /* HDWalletManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBAF69A2A4AEF3C0029480A /* HDWalletManagerFactory.swift */; };
 		DCBAF69D2A4AF0500029480A /* SimpleWalletManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBAF69C2A4AF0500029480A /* SimpleWalletManagerFactory.swift */; };
@@ -3244,6 +3245,7 @@
 		DCA21D932BA1C77A000A3C1A /* ValidationMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationMode.swift; sourceTree = "<group>"; };
 		DCA54D8E2C05E0BA00FBF99F /* PriceChangeFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceChangeFormatterTests.swift; sourceTree = "<group>"; };
 		DCAB57FF295EE820005D0F4A /* AppLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLog.swift; sourceTree = "<group>"; };
+		DCB617752CB938AF00BE4481 /* ExpressProviderUpdateSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressProviderUpdateSource.swift; sourceTree = "<group>"; };
 		DCBAF6982A4AEEDD0029480A /* AnyWalletManagerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyWalletManagerFactory.swift; sourceTree = "<group>"; };
 		DCBAF69A2A4AEF3C0029480A /* HDWalletManagerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDWalletManagerFactory.swift; sourceTree = "<group>"; };
 		DCBAF69C2A4AF0500029480A /* SimpleWalletManagerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleWalletManagerFactory.swift; sourceTree = "<group>"; };
@@ -9236,6 +9238,7 @@
 				EF9E29EB2B4F0CCE00418559 /* ExpressTransactionStatus.swift */,
 				EF9E29EC2B4F0CCE00418559 /* ExpressSwappableItem.swift */,
 				EFA727822C0887A0003D9D81 /* ExpressTransactionSentResult.swift */,
+				DCB617752CB938AF00BE4481 /* ExpressProviderUpdateSource.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -12412,6 +12415,7 @@
 				EF9E2A172B4F0CD100418559 /* ExpressAuthorizationPlugin.swift in Sources */,
 				EF9E2A222B4F0CD100418559 /* ExpressTransactionData.swift in Sources */,
 				EF9E2A132B4F0CD100418559 /* CommonLogger.swift in Sources */,
+				DCB617762CB938AF00BE4481 /* ExpressProviderUpdateSource.swift in Sources */,
 				EF9E2A2F2B4F0CD100418559 /* AllowanceProvider.swift in Sources */,
 				EF9E2A112B4F0CD100418559 /* ExpressAPIProvider.swift in Sources */,
 				EF9E2A1E2B4F0CD100418559 /* ExpressQuote.swift in Sources */,
