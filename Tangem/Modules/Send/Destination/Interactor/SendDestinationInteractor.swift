@@ -161,12 +161,12 @@ extension CommonSendDestinationInteractor: SendDestinationInteractor {
     }
 
     func update(destination address: String, source: Analytics.DestinationAddressSource) {
+        _canEmbedAdditionalField.send(validator.canEmbedAdditionalField(into: address))
+
         guard !address.isEmpty else {
             update(destination: .success(.none), source: source)
             return
         }
-
-        _canEmbedAdditionalField.send(validator.canEmbedAdditionalField(into: address))
 
         do {
             try validator.validate(destination: address)

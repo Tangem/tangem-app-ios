@@ -80,7 +80,7 @@ class FakeUserWalletModel: UserWalletModel, ObservableObject {
             userTokenListManager: fakeUserTokenListManager
         )
         totalBalanceProvider = TotalBalanceProviderMock()
-        cardImagePublisher = Just(.cached(Assets.Onboarding.darkCard.uiImage)).eraseToAnyPublisher()
+        cardImagePublisher = Just(.cached(Assets.Cards.walletSingle.uiImage)).eraseToAnyPublisher()
     }
 
     func updateWalletName(_ name: String) {
@@ -102,6 +102,10 @@ class FakeUserWalletModel: UserWalletModel, ObservableObject {
 
 extension FakeUserWalletModel: MainHeaderSupplementInfoProvider {
     var userWalletNamePublisher: AnyPublisher<String, Never> { _userWalletNamePublisher.eraseToAnyPublisher() }
+
+    var cardHeaderImagePublisher: AnyPublisher<ImageType?, Never> {
+        .just(output: config.cardHeaderImage)
+    }
 
     var isTokensListEmpty: Bool { walletModelsManager.walletModels.isEmpty }
 }

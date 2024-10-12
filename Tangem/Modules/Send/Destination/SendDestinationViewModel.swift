@@ -151,6 +151,16 @@ class SendDestinationViewModel: ObservableObject, Identifiable {
                 viewModel._destinationAdditionalFieldText.send(field)
             }
             .store(in: &bag)
+
+        interactor
+            .canEmbedAdditionalField
+            .filter { $0 == false }
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, address in
+                viewModel._destinationAdditionalFieldText.send("")
+            }
+            .store(in: &bag)
     }
 
     private func setup(recentTransactions: [SendSuggestedDestinationTransactionRecord]) {

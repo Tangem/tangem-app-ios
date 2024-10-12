@@ -54,6 +54,8 @@ protocol UserWalletConfig: OnboardingStepsBuilderFactory, BackupServiceFactory, 
 
     var productType: Analytics.ProductType { get }
 
+    var cardHeaderImage: ImageType? { get }
+
     var cardSessionFilter: SessionFilter { get }
 
     var hasDefaultToken: Bool { get }

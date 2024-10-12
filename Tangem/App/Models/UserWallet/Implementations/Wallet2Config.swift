@@ -142,6 +142,102 @@ extension Wallet2Config: UserWalletConfig {
         return .wallet2
     }
 
+    var cardHeaderImage: ImageType? {
+        // Case with broken backup (e.g. CardLinked)
+        if cardsCount == 1 {
+            return nil
+        }
+
+        // Wallet 2.0 cards can't be used without backup, so min number of cards = 2
+        // and there can't be more than 3 cards.
+        switch card.batchId {
+        // Tron 37X cards
+        case "AF07":
+            return cardsCount == 2 ? Assets.Cards.tronDouble : Assets.Cards.tronTriple
+        // Kaspa cards
+        case "AF08":
+            return cardsCount == 2 ? Assets.Cards.kaspaDouble : Assets.Cards.kaspaTriple
+        // BAD Idea cards
+        case "AF09":
+            return cardsCount == 2 ? Assets.Cards.badIdeaDouble : Assets.Cards.badIdeaTriple
+        // Wallet white
+        case "AF15":
+            return cardsCount == 2 ? Assets.Cards.wallet2WhiteDouble : Assets.Cards.wallet2WhiteTriple
+        // Wallet traillant
+        case "AF16":
+            return cardsCount == 2 ? Assets.Cards.walletTraillantDouble : Assets.Cards.walletTraillantTriple
+        // Wallet avrora
+        case "AF18":
+            return cardsCount == 2 ? Assets.Cards.walletAvroraDouble : Assets.Cards.walletAvroraTriple
+        // Wallet JR
+        case "AF14":
+            return cardsCount == 2 ? Assets.Cards.jrDouble : Assets.Cards.jrTriple
+        // Wallet grim
+        case "AF13":
+            return cardsCount == 2 ? Assets.Cards.grimDouble : Assets.Cards.grimTriple
+        // Wallet satoshi friends
+        case "AF19":
+            return cardsCount == 2 ? Assets.Cards.satoshiFriendsDouble : Assets.Cards.satoshiFriendsTriple
+        // New World Elite (NWE)
+        case "AF26":
+            return cardsCount == 2 ? Assets.Cards.newWorldEliteDouble : Assets.Cards.newWorldEliteTriple
+        // Vechain
+        case "AF29":
+            return cardsCount == 2 ? Assets.Cards.vechainWalletDouble : Assets.Cards.vechainWalletTriple
+        // Pizza Day Wallet
+        case "AF33":
+            return cardsCount == 2 ? Assets.Cards.pizzaDayWalletDouble : Assets.Cards.pizzaDayWalletTriple
+        // Red panda
+        case "AF34":
+            return cardsCount == 2 ? Assets.Cards.redPandaDouble : Assets.Cards.redPandaTriple
+        // Cryptoseth
+        case "AF32":
+            return cardsCount == 2 ? Assets.Cards.cryptosethDouble : Assets.Cards.cryptosethTriple
+        // Kishu
+        case "AF52":
+            return cardsCount == 2 ? Assets.Cards.kishuDouble : Assets.Cards.kishuTriple
+        // Baby Doge
+        case "AF51":
+            return cardsCount == 2 ? Assets.Cards.babyDogeDouble : Assets.Cards.babyDogeTriple
+        // TG-COQ
+        case "AF28":
+            return cardsCount == 2 ? Assets.Cards.tgDouble : Assets.Cards.tgTriple
+        // Coin Metrica
+        case "AF27":
+            return cardsCount == 2 ? Assets.Cards.coinMetricaDouble : Assets.Cards.coinMetricaTriple
+        // Volt Inu
+        case "AF35":
+            return cardsCount == 2 ? Assets.Cards.voltInuDouble : Assets.Cards.voltInuTriple
+        // Kaspa 2
+        case "AF25":
+            return cardsCount == 2 ? Assets.Cards.kaspa2Double : Assets.Cards.kaspa2Triple
+        // Kaspa reseller
+        case "AF31":
+            return cardsCount == 2 ? Assets.Cards.kaspaResellerDouble : Assets.Cards.kaspaResellerTriple
+        // Lemon, Aqua, Grapefruit
+        case "AF40", "AF41", "AF42":
+            return Assets.Cards.lemonAquaGrapefruit
+        // Peach, Air, Glass
+        case "AF43", "AF44", "AF45":
+            return Assets.Cards.peachAirGlass
+        // Tangem Wallet 2.0
+        default:
+
+            var isUserWalletWithRing = false
+
+            if let userWalletIdSeed {
+                let userWalletId = UserWalletId(with: userWalletIdSeed).stringValue
+                isUserWalletWithRing = AppSettings.shared.userWalletIdsWithRing.contains(userWalletId)
+            }
+
+            if isUserWalletWithRing || RingUtil().isRing(batchId: card.batchId) {
+                return cardsCount == 2 ? Assets.Cards.ring1card : Assets.Cards.ring2cards
+            }
+
+            return cardsCount == 2 ? Assets.Cards.wallet2Double : Assets.Cards.wallet2Triple
+        }
+    }
+
     func getFeatureAvailability(_ feature: UserWalletFeature) -> UserWalletFeature.Availability {
         switch feature {
         case .accessCode:

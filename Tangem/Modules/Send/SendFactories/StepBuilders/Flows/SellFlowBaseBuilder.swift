@@ -75,6 +75,9 @@ struct SellFlowBaseBuilder {
         // notificationManager.setup(input: sendModel)
         // notificationManager.setupManager(with: sendModel)
 
+        // We have to do it after sendModel fully setup
+        fee.compact.bind(input: sendModel)
+
         let stepsManager = CommonSellStepsManager(
             feeStep: fee.step,
             summaryStep: summary.step,
