@@ -863,7 +863,6 @@
 		B6AD952C2A30072000FE845A /* TokenItemViewLeadingComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AD952B2A30072000FE845A /* TokenItemViewLeadingComponent.swift */; };
 		B6AE4DA52C530C7500070D96 /* MarketsHistoryChartProviderStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AE4DA42C530C7500070D96 /* MarketsHistoryChartProviderStub.swift */; };
 		B6AEF9742A796713004663C3 /* TokenSectionsAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AEF9732A796713004663C3 /* TokenSectionsAdapter.swift */; };
-		B6AF57B82CB75CD200ADEA9B /* BlockchainSdkLocal_.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF57B72CB75CD200ADEA9B /* BlockchainSdkLocal_.swift */; };
 		B6AF5BA72CB7602000ADEA9B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B6AF5B172CB7602000ADEA9B /* Localizable.strings */; };
 		B6AF5BA82CB7602000ADEA9B /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = B6AF5AB32CB7602000ADEA9B /* LICENSE */; };
 		B6AF5BA92CB7602000ADEA9B /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B6AF5AB42CB7602000ADEA9B /* README.md */; };
@@ -3690,7 +3689,6 @@
 		B6AD952B2A30072000FE845A /* TokenItemViewLeadingComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenItemViewLeadingComponent.swift; sourceTree = "<group>"; };
 		B6AE4DA42C530C7500070D96 /* MarketsHistoryChartProviderStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsHistoryChartProviderStub.swift; sourceTree = "<group>"; };
 		B6AEF9732A796713004663C3 /* TokenSectionsAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenSectionsAdapter.swift; sourceTree = "<group>"; };
-		B6AF57B72CB75CD200ADEA9B /* BlockchainSdkLocal_.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockchainSdkLocal_.swift; sourceTree = "<group>"; };
 		B6AF57BC2CB7602000ADEA9B /* AlgorandAccountModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlgorandAccountModel.swift; sourceTree = "<group>"; };
 		B6AF57BD2CB7602000ADEA9B /* AlgorandTransactionBuildParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlgorandTransactionBuildParams.swift; sourceTree = "<group>"; };
 		B6AF57BE2CB7602000ADEA9B /* AlgorandTransactionInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlgorandTransactionInfo.swift; sourceTree = "<group>"; };
@@ -8236,7 +8234,6 @@
 				B6AF5B862CB7602000ADEA9B /* CommonNetworkServices */,
 				B6AF5BA62CB7602000ADEA9B /* Extensions */,
 				B61AD9FC2CB75BD700BB7D40 /* BlockchainSdkLocal.h */,
-				B6AF57B72CB75CD200ADEA9B /* BlockchainSdkLocal_.swift */,
 			);
 			path = BlockchainSdkLocal;
 			sourceTree = "<group>";
@@ -16161,7 +16158,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B6AF57B82CB75CD200ADEA9B /* BlockchainSdkLocal_.swift in Sources */,
 				B6AF5BAA2CB7602000ADEA9B /* SolanaSdk+.swift in Sources */,
 				B6AF5BAB2CB7602000ADEA9B /* OP_WITHIN.swift in Sources */,
 				B6AF5BAC2CB7602000ADEA9B /* PolkadotTarget.swift in Sources */,

@@ -27,17 +27,9 @@ let package = Package(
         .tangemTarget(
             name: shimPackageName,
             dependencies: [
-                "TangemModule1",
-                "TangemModule2",
                 "TangemFoundation",
                 "TangemNetworkLayerAdditions",
             ]
-        ),
-        .tangemTarget(
-            name: "TangemModule1"
-        ),
-        .tangemTarget(
-            name: "TangemModule2"
         ),
         .tangemTarget(
             name: "TangemFoundation"
