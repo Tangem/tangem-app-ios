@@ -9,6 +9,7 @@
 import Foundation
 import Moya
 import TangemSdk
+import TangemNetworkLayerAdditions
 
 struct TangemApiTarget: TargetType {
     let type: TargetType

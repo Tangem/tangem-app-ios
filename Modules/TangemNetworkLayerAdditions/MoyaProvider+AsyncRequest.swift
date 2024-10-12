@@ -1,34 +1,15 @@
 //
-//  Temp.swift
-//  Tangem
+//  MoyaProvider+AsyncRequest.swift
+//  TangemNetworkLayerAdditions
 //
-//  Created by Andrey Fedorov on 08.10.2024.
+//  Created by Andrew Son on 24/01/24.
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
 import Foundation
 import Moya
 
-@available(*, deprecated, message: "Test only, remove")
-extension Moya.Task {
-    static func requestParameters(
-        _ encodable: Encodable,
-        encoder: JSONEncoder = JSONEncoder(),
-        encoding: ParameterEncoding = Moya.URLEncoding()
-    ) -> Task {
-        do {
-            let data = try encoder.encode(encodable)
-            let parameters = try JSONSerialization.jsonObject(with: data) as? [String: Any]
-            return .requestParameters(parameters: parameters ?? [:], encoding: encoding)
-        } catch {
-            assertionFailure("Moya.Task request parameters catch error \(error)")
-            return .requestPlain
-        }
-    }
-}
-
-@available(*, deprecated, message: "Test only, remove")
-extension MoyaProvider {
+public extension MoyaProvider {
     func asyncRequest(_ target: Target) async throws -> Response {
         let asyncRequestWrapper = AsyncMoyaRequestWrapper<Response> { [weak self] continuation in
             return self?.request(target) { result in
@@ -50,6 +31,8 @@ extension MoyaProvider {
         }
     }
 }
+
+// MARK: - Private implementation
 
 private class AsyncMoyaRequestWrapper<T> {
     typealias MoyaContinuation = CheckedContinuation<T, Error>

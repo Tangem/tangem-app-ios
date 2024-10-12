@@ -11,6 +11,7 @@ import Combine
 import CombineExt
 import Moya
 import BlockchainSdkLocal
+import TangemNetworkLayerAdditions
 
 class CommonTangemApiService {
     private let provider = TangemProvider<TangemApiTarget>(plugins: [

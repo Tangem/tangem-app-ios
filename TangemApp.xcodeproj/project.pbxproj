@@ -763,16 +763,8 @@
 		B655DFF72CB9E5C30039271C /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = B655DFF62CB9E5C30039271C /* Moya */; };
 		B655DFF92CB9E5EC0039271C /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = B655DFF82CB9E5EC0039271C /* Moya */; };
 		B655DFFD2CB9E6710039271C /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = B655DFFC2CB9E6710039271C /* Moya */; };
-		B655E0042CB9E9860039271C /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B655E0032CB9E9860039271C /* Alamofire */; };
-		B655E0062CB9E9950039271C /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B655E0052CB9E9950039271C /* Alamofire */; };
-		B655E0082CB9E9BE0039271C /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B655E0072CB9E9BE0039271C /* Alamofire */; };
-		B655E00A2CB9E9D50039271C /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B655E0092CB9E9D50039271C /* Alamofire */; };
 		B656FCE62C46F3E8002B5BF2 /* OverlayContentStateObserverViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B656FCE52C46F3E8002B5BF2 /* OverlayContentStateObserverViewModifier.swift */; };
 		B656FCEE2C47546C002B5BF2 /* OverlayContentStateObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B656FCED2C47546C002B5BF2 /* OverlayContentStateObserver.swift */; };
-		B657402D2CB4B86A00732997 /* Temp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657402C2CB4B86A00732997 /* Temp.swift */; };
-		B657402F2CB4B8D300732997 /* Temp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657402E2CB4B8D300732997 /* Temp.swift */; };
-		B65740312CB4B8E000732997 /* Temp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65740302CB4B8E000732997 /* Temp.swift */; };
-		B65740332CB4B8EC00732997 /* Temp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65740322CB4B8EC00732997 /* Temp.swift */; };
 		B657CE972C66FC3200A7AC8B /* OverlayContentContainerAppLifecycleHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657CE962C66FC3200A7AC8B /* OverlayContentContainerAppLifecycleHelper.swift */; };
 		B65C07A92AE2973E00127CCE /* OrganizeTokensPreviewConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65C07A82AE2973E00127CCE /* OrganizeTokensPreviewConfiguration.swift */; };
 		B65C518C2B7FB1FA006E3C34 /* TangemBaseAPIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65C518B2B7FB1FA006E3C34 /* TangemBaseAPIError.swift */; };
@@ -1737,6 +1729,10 @@
 		B6DF90652CA317A70099FED5 /* MainBottomSheetFooterShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF90642CA317A70099FED5 /* MainBottomSheetFooterShadowView.swift */; };
 		B6E31B5F2C89F72400604C8F /* ViewHierarchySnapshottingContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E31B5E2C89F72400604C8F /* ViewHierarchySnapshottingContainerViewController.swift */; };
 		B6E31B642C8A240400604C8F /* MainBottomSheetFooterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E31B632C8A240400604C8F /* MainBottomSheetFooterViewModel.swift */; };
+		B6E8B1DD2CBA08C100D4D0D4 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B6E8B1DC2CBA08C100D4D0D4 /* Alamofire */; };
+		B6E8B1DF2CBA090300D4D0D4 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B6E8B1DE2CBA090300D4D0D4 /* Alamofire */; };
+		B6E8B1E12CBA096B00D4D0D4 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B6E8B1E02CBA096B00D4D0D4 /* Alamofire */; };
+		B6E8B1E32CBA09D200D4D0D4 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B6E8B1E22CBA09D200D4D0D4 /* Alamofire */; };
 		B6E8BBFB2A2F209B0012E7D3 /* InfinityFrameModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E8BBFA2A2F209B0012E7D3 /* InfinityFrameModifier.swift */; };
 		B6E932B12A2F26BB0068D466 /* OrganizeTokensHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E932B02A2F26BB0068D466 /* OrganizeTokensHeaderViewModel.swift */; };
 		B6E932C22A2F2D860068D466 /* OrganizeTokensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E932BD2A2F2D860068D466 /* OrganizeTokensView.swift */; };
@@ -3595,10 +3591,6 @@
 		B65591EC2A2FF1B20066A13B /* OrganizeTokensHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensHeaderView.swift; sourceTree = "<group>"; };
 		B656FCE52C46F3E8002B5BF2 /* OverlayContentStateObserverViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayContentStateObserverViewModifier.swift; sourceTree = "<group>"; };
 		B656FCED2C47546C002B5BF2 /* OverlayContentStateObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayContentStateObserver.swift; sourceTree = "<group>"; };
-		B657402C2CB4B86A00732997 /* Temp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Temp.swift; sourceTree = "<group>"; };
-		B657402E2CB4B8D300732997 /* Temp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Temp.swift; sourceTree = "<group>"; };
-		B65740302CB4B8E000732997 /* Temp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Temp.swift; sourceTree = "<group>"; };
-		B65740322CB4B8EC00732997 /* Temp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Temp.swift; sourceTree = "<group>"; };
 		B657CE962C66FC3200A7AC8B /* OverlayContentContainerAppLifecycleHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayContentContainerAppLifecycleHelper.swift; sourceTree = "<group>"; };
 		B65C07A82AE2973E00127CCE /* OrganizeTokensPreviewConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensPreviewConfiguration.swift; sourceTree = "<group>"; };
 		B65C518B2B7FB1FA006E3C34 /* TangemBaseAPIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemBaseAPIError.swift; sourceTree = "<group>"; };
@@ -5507,13 +5499,13 @@
 				B6CD0DED2CB8179E0064C1FC /* Moya in Frameworks */,
 				B6229DE22CB7FAC400257A91 /* TweetNacl in Frameworks */,
 				B6EE3B622C789C6E00B464FC /* DGCharts in Frameworks */,
+				B6E8B1E32CBA09D200D4D0D4 /* Alamofire in Frameworks */,
 				B6229DE02CB7FA5A00257A91 /* secp256k1 in Frameworks */,
 				B0B11A082C787FE70018A2A6 /* MarkdownUI in Frameworks */,
 				B643EB1F2CB56BC10084B810 /* TangemDependenciesShim in Frameworks */,
 				B61ADA0D2CB75BDB00BB7D40 /* BlockchainSdkLocal.framework in Frameworks */,
 				EF9E29A82B4F0C9900418559 /* TangemExpress.framework in Frameworks */,
 				B6229DDE2CB7F9DE00257A91 /* TangemWalletCoreBinariesWrapper in Frameworks */,
-				B655E0042CB9E9860039271C /* Alamofire in Frameworks */,
 				EFEE239D2BFF62D60099917E /* TangemStaking.framework in Frameworks */,
 				B620FCAE2C5D337900AD0FD1 /* DGCharts in Frameworks */,
 				B6F625302C85E1A600DEF098 /* DGCharts in Frameworks */,
@@ -5546,7 +5538,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B655E0082CB9E9BE0039271C /* Alamofire in Frameworks */,
+				B6E8B1DD2CBA08C100D4D0D4 /* Alamofire in Frameworks */,
 				B643EB2D2CB56D060084B810 /* TangemDependenciesShim in Frameworks */,
 				C2DBF9FD1A18628296A2C808 /* Pods_TangemVisa.framework in Frameworks */,
 				B655DFF72CB9E5C30039271C /* Moya in Frameworks */,
@@ -5596,7 +5588,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B655E00A2CB9E9D50039271C /* Alamofire in Frameworks */,
+				B6E8B1E12CBA096B00D4D0D4 /* Alamofire in Frameworks */,
 				B643EB2B2CB56CF80084B810 /* TangemDependenciesShim in Frameworks */,
 				86D9B9D1A68FFFCAAEDE1210 /* Pods_TangemExpress.framework in Frameworks */,
 				B655DFFD2CB9E6710039271C /* Moya in Frameworks */,
@@ -5617,7 +5609,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B655E0062CB9E9950039271C /* Alamofire in Frameworks */,
+				B6E8B1DF2CBA090300D4D0D4 /* Alamofire in Frameworks */,
 				B643EB2F2CB56D0D0084B810 /* TangemDependenciesShim in Frameworks */,
 				735DE6BB9FDAFE5A5BCFE5AF /* Pods_TangemStaking.framework in Frameworks */,
 				B655DFF92CB9E5EC0039271C /* Moya in Frameworks */,
@@ -6140,7 +6132,6 @@
 				DC751ADB2ABB750A0039A4D2 /* Tangem-Bridging-Header.h */,
 				5D3F77D024BF56DC00E8695B /* LaunchScreen.storyboard */,
 				DA64C36F27CCAD7E005B5E9A /* InfoPlist.strings */,
-				B657402C2CB4B86A00732997 /* Temp.swift */,
 			);
 			path = Tangem;
 			sourceTree = "<group>";
@@ -7411,7 +7402,6 @@
 		B09933782B5517E500240CDB /* TangemVisa */ = {
 			isa = PBXGroup;
 			children = (
-				B65740302CB4B8E000732997 /* Temp.swift */,
 				B08D3C122BF6267E00C83299 /* Config */,
 				B050F4F22B5FB02B00B2E53C /* APIService */,
 				B099339B2B55194900240CDB /* BridgeInteractor */,
@@ -12921,7 +12911,6 @@
 		EF9E29942B4F0C8C00418559 /* TangemExpress */ = {
 			isa = PBXGroup;
 			children = (
-				B657402E2CB4B8D300732997 /* Temp.swift */,
 				EF9E29C22B4F0CCE00418559 /* ExpressConstants.swift */,
 				EF9E29ED2B4F0CCF00418559 /* Factory */,
 				EF9E29EF2B4F0CCF00418559 /* Interfaces */,
@@ -13638,7 +13627,6 @@
 		EFEE23892BFF62D50099917E /* TangemStaking */ = {
 			isa = PBXGroup;
 			children = (
-				B65740322CB4B8EC00732997 /* Temp.swift */,
 				EF536B812CAFD2C500FDC3E7 /* StakingConstants.swift */,
 				EF407E332C04AF5C00366733 /* Factory */,
 				EF407E362C04B08F00366733 /* Interfaces */,
@@ -13786,8 +13774,8 @@
 				B6229DDF2CB7FA5A00257A91 /* secp256k1 */,
 				B6229DE12CB7FAC400257A91 /* TweetNacl */,
 				B6CD0DEC2CB8179E0064C1FC /* Moya */,
-				B655E0032CB9E9860039271C /* Alamofire */,
 				B608A52F2CB9EE26001DDC8D /* SwiftyJSON */,
+				B6E8B1E22CBA09D200D4D0D4 /* Alamofire */,
 			);
 			productName = "Tangem Tap";
 			productReference = 5D3F77C224BF56D800E8695B /* Tangem.app */;
@@ -13849,7 +13837,7 @@
 			name = TangemVisa;
 			packageProductDependencies = (
 				B655DFF62CB9E5C30039271C /* Moya */,
-				B655E0072CB9E9BE0039271C /* Alamofire */,
+				B6E8B1DC2CBA08C100D4D0D4 /* Alamofire */,
 			);
 			productName = TangemVisa;
 			productReference = B09933772B5517E300240CDB /* TangemVisa.framework */;
@@ -13945,7 +13933,7 @@
 			name = TangemExpress;
 			packageProductDependencies = (
 				B655DFFC2CB9E6710039271C /* Moya */,
-				B655E0092CB9E9D50039271C /* Alamofire */,
+				B6E8B1E02CBA096B00D4D0D4 /* Alamofire */,
 			);
 			productName = TangemExpress;
 			productReference = EF9E29932B4F0C8800418559 /* TangemExpress.framework */;
@@ -13989,7 +13977,7 @@
 			name = TangemStaking;
 			packageProductDependencies = (
 				B655DFF82CB9E5EC0039271C /* Moya */,
-				B655E0052CB9E9950039271C /* Alamofire */,
+				B6E8B1DE2CBA090300D4D0D4 /* Alamofire */,
 			);
 			productName = TangemStaking;
 			productReference = EFEE23882BFF62D50099917E /* TangemStaking.framework */;
@@ -14102,8 +14090,8 @@
 				B6AF5EFD2CB761FA00ADEA9B /* XCRemoteSwiftPackageReference "IcpKit" */,
 				B6CD0DEB2CB8179E0064C1FC /* XCRemoteSwiftPackageReference "Moya" */,
 				B6CD0DEF2CB81AA70064C1FC /* XCRemoteSwiftPackageReference "SwiftBinanceChain" */,
-				B655E0022CB9E9860039271C /* XCRemoteSwiftPackageReference "Alamofire" */,
 				B608A52E2CB9EE26001DDC8D /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
+				B6E8B1DB2CBA08C100D4D0D4 /* XCRemoteSwiftPackageReference "Alamofire" */,
 			);
 			productRefGroup = 5D3F77C324BF56D800E8695B /* Products */;
 			projectDirPath = "";
@@ -15874,7 +15862,6 @@
 				B0AC1A312BA47D5D00FE6879 /* OnboardingSeedPassphraseInfoBottomSheetView.swift in Sources */,
 				DADC9CA02B91C8AC00DA2C27 /* SendAlertBuilder.swift in Sources */,
 				B6AEF9742A796713004663C3 /* TokenSectionsAdapter.swift in Sources */,
-				B657402D2CB4B86A00732997 /* Temp.swift in Sources */,
 				DC0A582628252D140031BECC /* FailedScanTrackable.swift in Sources */,
 				DA1D3B732B56C82C00247393 /* QRScanViewCoordinatorView.swift in Sources */,
 				B6ED08362A7DA9780090E51F /* OrganizeTokensOptionsManager.swift in Sources */,
@@ -16157,7 +16144,6 @@
 				B099339D2B55196700240CDB /* VisaBridgeInteractor.swift in Sources */,
 				B05145062B5933E000EDAD1E /* VisaUtilities.swift in Sources */,
 				B05145122B59349100EDAD1E /* SmartContractMethodPrefixCreator.swift in Sources */,
-				B65740312CB4B8E000732997 /* Temp.swift in Sources */,
 				B03FF8A22B5E5C4500202EC0 /* VisaLogger.swift in Sources */,
 				B05145102B59348000EDAD1E /* GetAmountMethod.swift in Sources */,
 			);
@@ -17024,7 +17010,6 @@
 			files = (
 				EF9E2A1A2B4F0CD100418559 /* ExpressAPIService.swift in Sources */,
 				EF9E2A372B4F0CD100418559 /* ExpressManagerSwappingPairRequest.swift in Sources */,
-				B657402F2CB4B8D300732997 /* Temp.swift in Sources */,
 				EF9E2A382B4F0CD100418559 /* ExpressManager.swift in Sources */,
 				EF9E2A2A2B4F0CD100418559 /* ExpressTransactionStatus.swift in Sources */,
 				EF9E2A0C2B4F0CD100418559 /* ExpressConstants.swift in Sources */,
@@ -17123,7 +17108,6 @@
 				EF031A282C08E65A001535C9 /* StakingCalculator.swift in Sources */,
 				EF8DBCDD2C060A03009072CF /* StakingManager.swift in Sources */,
 				EFBC5C792C00A79E00B662E0 /* StakeKitStakingAPIService.swift in Sources */,
-				B65740332CB4B8EC00732997 /* Temp.swift in Sources */,
 				0A3BF96B2C6CE96B00163492 /* StakingAction.swift in Sources */,
 				EF7C4B3B2C93413D005F9360 /* StakingBalanceType.swift in Sources */,
 				EFB019492C4174D1009EE857 /* EnterAction.swift in Sources */,
@@ -22887,14 +22871,6 @@
 				version = "5.0.1-tangem1";
 			};
 		};
-		B655E0022CB9E9860039271C /* XCRemoteSwiftPackageReference "Alamofire" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.0.0;
-			};
-		};
 		B6AF5EEC2CB7610E00ADEA9B /* XCRemoteSwiftPackageReference "hedera-sdk-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tangem/hedera-sdk-swift.git";
@@ -22965,6 +22941,14 @@
 			requirement = {
 				branch = "feature/IOS-7988_move_bsdk_to_monorepo";
 				kind = branch;
+			};
+		};
+		B6E8B1DB2CBA08C100D4D0D4 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
 			};
 		};
 		B6F525902B6C05210079ADD1 /* XCRemoteSwiftPackageReference "wallet-core-binaries-ios" */ = {
@@ -23070,26 +23054,6 @@
 			package = B6CD0DEB2CB8179E0064C1FC /* XCRemoteSwiftPackageReference "Moya" */;
 			productName = Moya;
 		};
-		B655E0032CB9E9860039271C /* Alamofire */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B655E0022CB9E9860039271C /* XCRemoteSwiftPackageReference "Alamofire" */;
-			productName = Alamofire;
-		};
-		B655E0052CB9E9950039271C /* Alamofire */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B655E0022CB9E9860039271C /* XCRemoteSwiftPackageReference "Alamofire" */;
-			productName = Alamofire;
-		};
-		B655E0072CB9E9BE0039271C /* Alamofire */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B655E0022CB9E9860039271C /* XCRemoteSwiftPackageReference "Alamofire" */;
-			productName = Alamofire;
-		};
-		B655E0092CB9E9D50039271C /* Alamofire */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B655E0022CB9E9860039271C /* XCRemoteSwiftPackageReference "Alamofire" */;
-			productName = Alamofire;
-		};
 		B6AF5EED2CB7610E00ADEA9B /* Hedera */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B6AF5EEC2CB7610E00ADEA9B /* XCRemoteSwiftPackageReference "hedera-sdk-swift" */;
@@ -23139,6 +23103,26 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B6CD0DEB2CB8179E0064C1FC /* XCRemoteSwiftPackageReference "Moya" */;
 			productName = Moya;
+		};
+		B6E8B1DC2CBA08C100D4D0D4 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6E8B1DB2CBA08C100D4D0D4 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		B6E8B1DE2CBA090300D4D0D4 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6E8B1DB2CBA08C100D4D0D4 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		B6E8B1E02CBA096B00D4D0D4 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6E8B1DB2CBA08C100D4D0D4 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		B6E8B1E22CBA09D200D4D0D4 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6E8B1DB2CBA08C100D4D0D4 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
 		};
 		B6EE3B612C789C6E00B464FC /* DGCharts */ = {
 			isa = XCSwiftPackageProductDependency;

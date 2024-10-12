@@ -19,6 +19,10 @@ let package = Package(
             ]
         ),
     ],
+    dependencies: [
+        .package(url: "https://github.com/Moya/Moya.git", .upToNextMajor(from: "15.0.0")),
+        .package(url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.0.0")),
+    ],
     targets: [
         .tangemTarget(
             name: shimPackageName,
@@ -26,6 +30,7 @@ let package = Package(
                 "TangemModule1",
                 "TangemModule2",
                 "TangemFoundation",
+                "TangemNetworkLayerAdditions",
             ]
         ),
         .tangemTarget(
@@ -41,6 +46,13 @@ let package = Package(
             name: "TangemFoundationTests",
             dependencies: [
                 "TangemFoundation",
+            ]
+        ),
+        .tangemTarget(
+            name: "TangemNetworkLayerAdditions",
+            dependencies: [
+                "Moya",
+                "Alamofire",
             ]
         ),
     ]
