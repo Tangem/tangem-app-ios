@@ -42,7 +42,6 @@ def blockchain_sdk_pods
 end
 
 target 'Tangem' do
-  blockchain_sdk_pods
   tangem_sdk_pod
   
   # Pods for Tangem
@@ -85,8 +84,8 @@ target 'Tangem' do
   end
 end
 
-target 'TangemExpress' do 
-  blockchain_sdk_pods
+target 'TangemExpress' do
+  tangem_sdk_pod
   pod 'Moya'
 
   target 'TangemExpressTests' do
@@ -96,7 +95,7 @@ target 'TangemExpress' do
 end
 
 target 'TangemVisa' do
-  blockchain_sdk_pods
+  tangem_sdk_pod
   pod 'Moya'
 
   target 'TangemVisaTests' do
@@ -106,7 +105,7 @@ target 'TangemVisa' do
 end
 
 target 'TangemStaking' do
-  blockchain_sdk_pods
+  tangem_sdk_pod
   pod 'Moya'
 
   target 'TangemStakingTests' do
@@ -119,6 +118,17 @@ target 'TangemFoundation' do
   pod 'Moya'
 
   target 'TangemFoundationTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+end
+
+target 'BlockchainSdk' do
+  blockchain_sdk_pods
+  tangem_sdk_pod
+  pod 'Moya'
+
+  target 'BlockchainSdkTests' do
     inherit! :search_paths
     # Pods for testing
   end

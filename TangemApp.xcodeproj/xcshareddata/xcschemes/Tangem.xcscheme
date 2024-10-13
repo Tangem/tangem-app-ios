@@ -92,6 +92,17 @@
                ReferencedContainer = "container:TangemApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B68E1F6B2CBC44060043E598"
+               BuildableName = "BlockchainSdkTests.xctest"
+               BlueprintName = "BlockchainSdkTests"
+               ReferencedContainer = "container:TangemApp.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
