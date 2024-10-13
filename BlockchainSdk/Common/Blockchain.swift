@@ -754,15 +754,15 @@ extension Blockchain {
 
     public var isL2EthereumNetwork: Bool {
         switch self {
-        case .arbitrum(let testnet),
-             .optimism(let testnet),
-             .aurora(let testnet),
-             .manta(let testnet),
-             .zkSync(let testnet),
-             .polygonZkEVM(let testnet),
-             .base(let testnet),
-             .cyber(let testnet),
-             .blast(let testnet):
+        case .arbitrum,
+             .optimism,
+             .aurora,
+             .manta,
+             .zkSync,
+             .polygonZkEVM,
+             .base,
+             .cyber,
+             .blast:
             return true
         default:
             return false

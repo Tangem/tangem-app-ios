@@ -92,7 +92,7 @@ class EthereumTransactionBuilder {
             throw EthereumTransactionBuilderError.feeParametersNotFound
         }
 
-        let input = try EthereumSigningInput.with { input in
+        let input = EthereumSigningInput.with { input in
             input.chainID = BigUInt(chainId).serialize()
             input.nonce = BigUInt(nonce).serialize()
             input.toAddress = destination
