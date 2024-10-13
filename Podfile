@@ -172,7 +172,7 @@ post_install do |installer|
    "Solana.Swift",
    "https://github.com/GigaBitcoin/secp256k1.swift.git",
    "secp256k1",
-   { :kind => "upToNextMinorVersion", :minimumVersion => "0.12.0" }
+   { :kind => "upToNextMajorVersion", :minimumVersion => "0.12.0" }
   )
   
   # `TweetNacl` SPM package for `Solana.Swift` pod
@@ -181,7 +181,7 @@ post_install do |installer|
    "Solana.Swift",
    "https://github.com/bitmark-inc/tweetnacl-swiftwrap.git",
    "TweetNacl",
-   { :kind => "exactVersion", :version => "1.1.0" }
+   { :kind => "upToNextMajorVersion", :version => "1.1.0" }
   )
 
 end

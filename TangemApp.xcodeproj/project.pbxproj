@@ -720,6 +720,12 @@
 		B62C65D22C38D06B00189AD4 /* PushNotificationsPermissionRequestFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62C65CB2C38D06B00189AD4 /* PushNotificationsPermissionRequestFlow.swift */; };
 		B62C65D32C38D06B00189AD4 /* PushNotificationsInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62C65CC2C38D06B00189AD4 /* PushNotificationsInteractor.swift */; };
 		B62C65D42C38D06B00189AD4 /* CommonPushNotificationsInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62C65CD2C38D06B00189AD4 /* CommonPushNotificationsInteractor.swift */; };
+		B62D343D2CBC4FD000C2460E /* Clibsodium in Frameworks */ = {isa = PBXBuildFile; productRef = B62D343C2CBC4FD000C2460E /* Clibsodium */; };
+		B62D343F2CBC4FD000C2460E /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = B62D343E2CBC4FD000C2460E /* Sodium */; };
+		B62D34402CBC506E00C2460E /* BlockchainSdk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B68E1F652CBC44050043E598 /* BlockchainSdk.framework */; };
+		B62D34472CBC51D400C2460E /* SwiftCBOR in Frameworks */ = {isa = PBXBuildFile; productRef = B62D34462CBC51D400C2460E /* SwiftCBOR */; };
+		B62D344D2CBC675600C2460E /* stellarsdk in Frameworks */ = {isa = PBXBuildFile; productRef = B62D344C2CBC675600C2460E /* stellarsdk */; };
+		B62D34502CBC67D500C2460E /* AnyCodable in Frameworks */ = {isa = PBXBuildFile; productRef = B62D344F2CBC67D500C2460E /* AnyCodable */; };
 		B62EE31C2B28977B006BA412 /* RateAppResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62EE31B2B28977B006BA412 /* RateAppResponse.swift */; };
 		B62EE31E2B28A0FE006BA412 /* AppStoreReviewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62EE31D2B28A0FE006BA412 /* AppStoreReviewModifier.swift */; };
 		B63127D42A2F52E2007C124C /* OrganizeTokensListSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63127D32A2F52E2007C124C /* OrganizeTokensListSection.swift */; };
@@ -3869,10 +3875,15 @@
 			files = (
 				B68E1F992CBC453E0043E598 /* IcpKit in Frameworks */,
 				B68E1F8A2CBC44910043E598 /* Hedera in Frameworks */,
+				B62D34472CBC51D400C2460E /* SwiftCBOR in Frameworks */,
 				B68E1F962CBC451D0043E598 /* ScaleCodec in Frameworks */,
+				B62D34502CBC67D500C2460E /* AnyCodable in Frameworks */,
 				B68E1F8D2CBC44AA0043E598 /* CryptoSwift in Frameworks */,
 				B68E1F932CBC44FF0043E598 /* TonSwift in Frameworks */,
+				B62D343D2CBC4FD000C2460E /* Clibsodium in Frameworks */,
 				B68E1F902CBC44E30043E598 /* SwiftProtobuf in Frameworks */,
+				B62D344D2CBC675600C2460E /* stellarsdk in Frameworks */,
+				B62D343F2CBC4FD000C2460E /* Sodium in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -10303,8 +10314,12 @@
 				B68E1F8B2CBC44AA0043E598 /* XCRemoteSwiftPackageReference "CryptoSwift" */,
 				B68E1F8E2CBC44E30043E598 /* XCRemoteSwiftPackageReference "swift-protobuf-binaries" */,
 				B68E1F912CBC44FF0043E598 /* XCRemoteSwiftPackageReference "ton-swift" */,
-				B68E1F942CBC451D0043E598 /* XCRemoteSwiftPackageReference "ScaleCodec.swift" */,
+				B68E1F942CBC451D0043E598 /* XCRemoteSwiftPackageReference "ScaleCodec" */,
 				B68E1F972CBC453E0043E598 /* XCRemoteSwiftPackageReference "IcpKit" */,
+				B62D343B2CBC4FD000C2460E /* XCRemoteSwiftPackageReference "swift-sodium" */,
+				B62D34452CBC51D400C2460E /* XCRemoteSwiftPackageReference "SwiftCBOR" */,
+				B62D344B2CBC675600C2460E /* XCRemoteSwiftPackageReference "stellar-ios-mac-sdk" */,
+				B62D344E2CBC67D500C2460E /* XCRemoteSwiftPackageReference "AnyCodable" */,
 			);
 			productRefGroup = 5D3F77C324BF56D800E8695B /* Products */;
 			projectDirPath = "";
@@ -12854,8 +12869,6 @@
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
-					"\"AnyCodable\"",
-					"-framework",
 					"\"BinanceChain\"",
 					"-framework",
 					"\"BitcoinCore\"",
@@ -12902,15 +12915,11 @@
 					"-framework",
 					"\"Security\"",
 					"-framework",
-					"\"Sodium\"",
-					"-framework",
 					"\"Solana_Swift\"",
 					"-framework",
 					"\"Starscream\"",
 					"-framework",
 					"\"StoreKit\"",
-					"-framework",
-					"\"SwiftCBOR\"",
 					"-framework",
 					"\"SwiftDate\"",
 					"-framework",
@@ -12924,11 +12933,7 @@
 					"-framework",
 					"\"WalletConnectSwiftV2\"",
 					"-framework",
-					"\"WalletCore\"",
-					"-framework",
 					"\"nanopb\"",
-					"-framework",
-					"\"stellarsdk\"",
 					"-weak_framework",
 					"\"Combine\"",
 					"-weak_framework",
@@ -12992,8 +12997,6 @@
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
-					"\"AnyCodable\"",
-					"-framework",
 					"\"BinanceChain\"",
 					"-framework",
 					"\"BitcoinCore\"",
@@ -13040,15 +13043,11 @@
 					"-framework",
 					"\"Security\"",
 					"-framework",
-					"\"Sodium\"",
-					"-framework",
 					"\"Solana_Swift\"",
 					"-framework",
 					"\"Starscream\"",
 					"-framework",
 					"\"StoreKit\"",
-					"-framework",
-					"\"SwiftCBOR\"",
 					"-framework",
 					"\"SwiftDate\"",
 					"-framework",
@@ -13062,11 +13061,7 @@
 					"-framework",
 					"\"WalletConnectSwiftV2\"",
 					"-framework",
-					"\"WalletCore\"",
-					"-framework",
 					"\"nanopb\"",
-					"-framework",
-					"\"stellarsdk\"",
 					"-weak_framework",
 					"\"Combine\"",
 					"-weak_framework",
@@ -15230,8 +15225,6 @@
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
-					"\"AnyCodable\"",
-					"-framework",
 					"\"BinanceChain\"",
 					"-framework",
 					"\"BitcoinCore\"",
@@ -15278,15 +15271,11 @@
 					"-framework",
 					"\"Security\"",
 					"-framework",
-					"\"Sodium\"",
-					"-framework",
 					"\"Solana_Swift\"",
 					"-framework",
 					"\"Starscream\"",
 					"-framework",
 					"\"StoreKit\"",
-					"-framework",
-					"\"SwiftCBOR\"",
 					"-framework",
 					"\"SwiftDate\"",
 					"-framework",
@@ -15300,11 +15289,7 @@
 					"-framework",
 					"\"WalletConnectSwiftV2\"",
 					"-framework",
-					"\"WalletCore\"",
-					"-framework",
 					"\"nanopb\"",
-					"-framework",
-					"\"stellarsdk\"",
 					"-weak_framework",
 					"\"Combine\"",
 					"-weak_framework",
@@ -15474,8 +15459,6 @@
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
-					"\"AnyCodable\"",
-					"-framework",
 					"\"BinanceChain\"",
 					"-framework",
 					"\"BitcoinCore\"",
@@ -15522,15 +15505,11 @@
 					"-framework",
 					"\"Security\"",
 					"-framework",
-					"\"Sodium\"",
-					"-framework",
 					"\"Solana_Swift\"",
 					"-framework",
 					"\"Starscream\"",
 					"-framework",
 					"\"StoreKit\"",
-					"-framework",
-					"\"SwiftCBOR\"",
 					"-framework",
 					"\"SwiftDate\"",
 					"-framework",
@@ -15544,11 +15523,7 @@
 					"-framework",
 					"\"WalletConnectSwiftV2\"",
 					"-framework",
-					"\"WalletCore\"",
-					"-framework",
 					"\"nanopb\"",
-					"-framework",
-					"\"stellarsdk\"",
 					"-weak_framework",
 					"\"Combine\"",
 					"-weak_framework",
@@ -17656,8 +17631,6 @@
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
-					"\"AnyCodable\"",
-					"-framework",
 					"\"BinanceChain\"",
 					"-framework",
 					"\"BitcoinCore\"",
@@ -17704,15 +17677,11 @@
 					"-framework",
 					"\"Security\"",
 					"-framework",
-					"\"Sodium\"",
-					"-framework",
 					"\"Solana_Swift\"",
 					"-framework",
 					"\"Starscream\"",
 					"-framework",
 					"\"StoreKit\"",
-					"-framework",
-					"\"SwiftCBOR\"",
 					"-framework",
 					"\"SwiftDate\"",
 					"-framework",
@@ -17726,11 +17695,7 @@
 					"-framework",
 					"\"WalletConnectSwiftV2\"",
 					"-framework",
-					"\"WalletCore\"",
-					"-framework",
 					"\"nanopb\"",
-					"-framework",
-					"\"stellarsdk\"",
 					"-weak_framework",
 					"\"Combine\"",
 					"-weak_framework",
@@ -17900,8 +17865,6 @@
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
-					"\"AnyCodable\"",
-					"-framework",
 					"\"BinanceChain\"",
 					"-framework",
 					"\"BitcoinCore\"",
@@ -17948,15 +17911,11 @@
 					"-framework",
 					"\"Security\"",
 					"-framework",
-					"\"Sodium\"",
-					"-framework",
 					"\"Solana_Swift\"",
 					"-framework",
 					"\"Starscream\"",
 					"-framework",
 					"\"StoreKit\"",
-					"-framework",
-					"\"SwiftCBOR\"",
 					"-framework",
 					"\"SwiftDate\"",
 					"-framework",
@@ -17970,11 +17929,7 @@
 					"-framework",
 					"\"WalletConnectSwiftV2\"",
 					"-framework",
-					"\"WalletCore\"",
-					"-framework",
 					"\"nanopb\"",
-					"-framework",
-					"\"stellarsdk\"",
 					"-weak_framework",
 					"\"Combine\"",
 					"-weak_framework",
@@ -18220,7 +18175,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/bitmark-inc/tweetnacl-swiftwrap.git";
 			requirement = {
-				kind = upToNextMinorVersion;
+				kind = upToNextMajorVersion;
 				minimumVersion = 1.1.0;
 			};
 		};
@@ -18230,6 +18185,38 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.4.0;
+			};
+		};
+		B62D343B2CBC4FD000C2460E /* XCRemoteSwiftPackageReference "swift-sodium" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jedisct1/swift-sodium.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.1;
+			};
+		};
+		B62D34452CBC51D400C2460E /* XCRemoteSwiftPackageReference "SwiftCBOR" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/valpackett/SwiftCBOR.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.4.5;
+			};
+		};
+		B62D344B2CBC675600C2460E /* XCRemoteSwiftPackageReference "stellar-ios-mac-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Soneso/stellar-ios-mac-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.4;
+			};
+		};
+		B62D344E2CBC67D500C2460E /* XCRemoteSwiftPackageReference "AnyCodable" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Flight-School/AnyCodable.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.6.7;
 			};
 		};
 		B68E1F882CBC44910043E598 /* XCRemoteSwiftPackageReference "hedera-sdk-swift" */ = {
@@ -18264,12 +18251,12 @@
 				version = "1.0.10-tangem3";
 			};
 		};
-		B68E1F942CBC451D0043E598 /* XCRemoteSwiftPackageReference "ScaleCodec.swift" */ = {
+		B68E1F942CBC451D0043E598 /* XCRemoteSwiftPackageReference "ScaleCodec" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tesseract-one/ScaleCodec.swift";
 			requirement = {
-				kind = exactVersion;
-				version = 0.2.1;
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.1;
 			};
 		};
 		B68E1F972CBC453E0043E598 /* XCRemoteSwiftPackageReference "IcpKit" */ = {
@@ -18284,7 +18271,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GigaBitcoin/secp256k1.swift.git";
 			requirement = {
-				kind = upToNextMinorVersion;
+				kind = upToNextMajorVersion;
 				minimumVersion = 0.12.0;
 			};
 		};
@@ -18330,6 +18317,31 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = DGCharts;
 		};
+		B62D343C2CBC4FD000C2460E /* Clibsodium */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B62D343B2CBC4FD000C2460E /* XCRemoteSwiftPackageReference "swift-sodium" */;
+			productName = Clibsodium;
+		};
+		B62D343E2CBC4FD000C2460E /* Sodium */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B62D343B2CBC4FD000C2460E /* XCRemoteSwiftPackageReference "swift-sodium" */;
+			productName = Sodium;
+		};
+		B62D34462CBC51D400C2460E /* SwiftCBOR */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B62D34452CBC51D400C2460E /* XCRemoteSwiftPackageReference "SwiftCBOR" */;
+			productName = SwiftCBOR;
+		};
+		B62D344C2CBC675600C2460E /* stellarsdk */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B62D344B2CBC675600C2460E /* XCRemoteSwiftPackageReference "stellar-ios-mac-sdk" */;
+			productName = stellarsdk;
+		};
+		B62D344F2CBC67D500C2460E /* AnyCodable */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B62D344E2CBC67D500C2460E /* XCRemoteSwiftPackageReference "AnyCodable" */;
+			productName = AnyCodable;
+		};
 		B63BAA6B2B7410AE00DA26C9 /* TangemWalletCoreBinariesWrapper */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B6F525902B6C05210079ADD1 /* XCRemoteSwiftPackageReference "wallet-core-binaries-ios" */;
@@ -18357,7 +18369,7 @@
 		};
 		B68E1F952CBC451D0043E598 /* ScaleCodec */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = B68E1F942CBC451D0043E598 /* XCRemoteSwiftPackageReference "ScaleCodec.swift" */;
+			package = B68E1F942CBC451D0043E598 /* XCRemoteSwiftPackageReference "ScaleCodec" */;
 			productName = ScaleCodec;
 		};
 		B68E1F982CBC453E0043E598 /* IcpKit */ = {
