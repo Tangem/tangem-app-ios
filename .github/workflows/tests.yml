@@ -25,7 +25,7 @@ jobs:
   test:
     name: Test
     runs-on: macos-14
-    if: github.event.pull_request.draft == false
+    # if: github.event.pull_request.draft == false # FIXME: Test only, remove
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -44,7 +44,7 @@ jobs:
   check_bsdk_example_buildable:
     name: Check BSDK example project
     runs-on: macos-14
-    if: github.event.pull_request.draft == false
+    # if: github.event.pull_request.draft == false # FIXME: Test only, remove
     steps:
     - name: Checkout
       uses: actions/checkout@v3

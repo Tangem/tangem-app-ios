@@ -9,6 +9,7 @@ WORKSPACE_NAME = "TangemApp.xcworkspace"
 FIREBASE_TESTERS_GROUP = "testers"
 
 before_all do |lane, options|
+  UI.important "Is CI: #{ENV['CI']&.downcase}"  # FIXME: Test only, remove
   # Xcode version overrides available only on CI
   if ENV['CI']&.downcase == 'true'
     if options[:xcode_version_override].nil?
