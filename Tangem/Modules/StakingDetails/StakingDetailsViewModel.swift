@@ -327,8 +327,12 @@ private extension StakingDetailsViewModel {
             coordinator?.openRestakingFlow(action: action)
         case .unstake:
             coordinator?.openUnstakingFlow(action: action)
-        case .pending:
-            coordinator?.openStakingSingleActionFlow(action: action)
+        case .pending(let pendingAction):
+            switch pendingAction {
+            case .restake(let passthrough):
+                coordinator?.openRestakingFlow(action: action)
+            default: coordinator?.openStakingSingleActionFlow(action: action)
+            }
         }
     }
 
