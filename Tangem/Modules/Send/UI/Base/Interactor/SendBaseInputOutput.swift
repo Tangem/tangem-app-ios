@@ -15,5 +15,5 @@ protocol SendBaseInput: AnyObject {
 }
 
 protocol SendBaseOutput: AnyObject {
-    func performAction() async throws -> SendTransactionDispatcherResult
+    func performAction() async throws -> TransactionDispatcherResult
 }

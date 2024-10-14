@@ -37,8 +37,8 @@ class StakingModel {
     private let transactionCreator: TransactionCreator
     private let transactionValidator: TransactionValidator
     private let feeIncludedCalculator: FeeIncludedCalculator
-    private let stakingTransactionDispatcher: SendTransactionDispatcher
-    private let sendTransactionDispatcher: SendTransactionDispatcher
+    private let stakingTransactionDispatcher: TransactionDispatcher
+    private let transactionDispatcher: TransactionDispatcher
     private let allowanceProvider: AllowanceProvider
     private let tokenItem: TokenItem
     private let feeTokenItem: TokenItem
@@ -53,8 +53,8 @@ class StakingModel {
         transactionCreator: TransactionCreator,
         transactionValidator: TransactionValidator,
         feeIncludedCalculator: FeeIncludedCalculator,
-        stakingTransactionDispatcher: SendTransactionDispatcher,
-        sendTransactionDispatcher: SendTransactionDispatcher,
+        stakingTransactionDispatcher: TransactionDispatcher,
+        transactionDispatcher: TransactionDispatcher,
         allowanceProvider: AllowanceProvider,
         tokenItem: TokenItem,
         feeTokenItem: TokenItem
@@ -64,7 +64,7 @@ class StakingModel {
         self.transactionValidator = transactionValidator
         self.feeIncludedCalculator = feeIncludedCalculator
         self.stakingTransactionDispatcher = stakingTransactionDispatcher
-        self.sendTransactionDispatcher = sendTransactionDispatcher
+        self.transactionDispatcher = transactionDispatcher
         self.allowanceProvider = allowanceProvider
         self.tokenItem = tokenItem
         self.feeTokenItem = feeTokenItem
@@ -240,7 +240,7 @@ private extension StakingModel {
 // MARK: - Send
 
 private extension StakingModel {
-    private func send() async throws -> SendTransactionDispatcherResult {
+    private func send() async throws -> TransactionDispatcherResult {
         guard case .readyToStake(let readyToStake) = _state.value else {
             throw StakingModelError.readyToStakeNotFound
         }
@@ -263,20 +263,20 @@ private extension StakingModel {
 
             proceed(result: result)
             return result
-        } catch let error as SendTransactionDispatcherResult.Error {
+        } catch let error as TransactionDispatcherResult.Error {
             proceed(error: error)
             throw error
         } catch {
-            throw SendTransactionDispatcherResult.Error.loadTransactionInfo(error: error)
+            throw TransactionDispatcherResult.Error.loadTransactionInfo(error: error)
         }
     }
 
-    private func proceed(result: SendTransactionDispatcherResult) {
+    private func proceed(result: TransactionDispatcherResult) {
         _transactionTime.send(Date())
         logTransactionAnalytics(signerType: result.signerType)
     }
 
-    private func proceed(error: SendTransactionDispatcherResult.Error) {
+    private func proceed(error: TransactionDispatcherResult.Error) {
         switch error {
         case .demoAlert,
              .userCancelled,
@@ -417,7 +417,7 @@ extension StakingModel: SendBaseInput, SendBaseOutput {
         .eraseToAnyPublisher()
     }
 
-    func performAction() async throws -> SendTransactionDispatcherResult {
+    func performAction() async throws -> TransactionDispatcherResult {
         _isLoading.send(true)
         defer { _isLoading.send(false) }
 
@@ -482,7 +482,7 @@ extension StakingModel: ApproveViewModelInput {
             destination: .contractCall(contract: approveData.toContractAddress, data: approveData.txData)
         )
 
-        _ = try await sendTransactionDispatcher.send(transaction: .transfer(transaction))
+        _ = try await transactionDispatcher.send(transaction: .transfer(transaction))
         allowanceProvider.didSendApproveTransaction(for: approveData.spender)
         updateState()
 

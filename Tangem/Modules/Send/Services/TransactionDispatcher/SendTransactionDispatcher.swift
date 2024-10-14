@@ -1,5 +1,5 @@
 //
-//  CommonSendTransactionDispatcher.swift
+//  SendTransactionDispatcher.swift
 //  Tangem
 //
 //  Created by Alexander Osokin on 06.08.2024.
@@ -10,7 +10,7 @@ import Foundation
 import Combine
 import BlockchainSdk
 
-class CommonSendTransactionDispatcher {
+class SendTransactionDispatcher {
     private let walletModel: WalletModel
     private let transactionSigner: TangemSigner
 
@@ -23,15 +23,15 @@ class CommonSendTransactionDispatcher {
     }
 }
 
-// MARK: - SendTransactionDispatcher
+// MARK: - TransactionDispatcher
 
-extension CommonSendTransactionDispatcher: SendTransactionDispatcher {
-    func send(transaction: SendTransactionType) async throws -> SendTransactionDispatcherResult {
+extension SendTransactionDispatcher: TransactionDispatcher {
+    func send(transaction: SendTransactionType) async throws -> TransactionDispatcherResult {
         guard case .transfer(let transferTransaction) = transaction else {
-            throw SendTransactionDispatcherResult.Error.transactionNotFound
+            throw TransactionDispatcherResult.Error.transactionNotFound
         }
 
-        let mapper = SendTransactionMapper()
+        let mapper = TransactionDispatcherResultMapper()
 
         do {
             let hash = try await walletModel.transactionSender.send(transferTransaction, signer: transactionSigner).async()

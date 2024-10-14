@@ -33,7 +33,7 @@ class UnstakingModel {
     // MARK: - Private injections
 
     private let stakingManager: StakingManager
-    private let sendTransactionDispatcher: SendTransactionDispatcher
+    private let transactionDispatcher: TransactionDispatcher
     private let transactionValidator: TransactionValidator
     private let action: Action
     private let tokenItem: TokenItem
@@ -44,14 +44,14 @@ class UnstakingModel {
 
     init(
         stakingManager: StakingManager,
-        sendTransactionDispatcher: SendTransactionDispatcher,
+        transactionDispatcher: TransactionDispatcher,
         transactionValidator: TransactionValidator,
         action: Action,
         tokenItem: TokenItem,
         feeTokenItem: TokenItem
     ) {
         self.stakingManager = stakingManager
-        self.sendTransactionDispatcher = sendTransactionDispatcher
+        self.transactionDispatcher = transactionDispatcher
         self.transactionValidator = transactionValidator
         self.action = action
         self.tokenItem = tokenItem
@@ -152,33 +152,33 @@ private extension UnstakingModel {
 // MARK: - Send
 
 private extension UnstakingModel {
-    private func send() async throws -> SendTransactionDispatcherResult {
+    private func send() async throws -> TransactionDispatcherResult {
         if let analyticsEvent = action.type.analyticsEvent {
             Analytics.log(event: analyticsEvent, params: [.validator: action.validatorInfo?.name ?? ""])
         }
 
         guard let amountCrypto = amount?.crypto else {
-            throw SendTransactionDispatcherResult.Error.transactionNotFound
+            throw TransactionDispatcherResult.Error.transactionNotFound
         }
 
         let action = amountCrypto == action.amount ? action : StakingAction(amount: amountCrypto, validatorType: action.validatorType, type: action.type)
 
         do {
             let transaction = try await stakingManager.transaction(action: action)
-            let result = try await sendTransactionDispatcher.send(transaction: .staking(transaction))
+            let result = try await transactionDispatcher.send(transaction: .staking(transaction))
             proceed(result: result)
             stakingManager.transactionDidSent(action: action)
 
             return result
-        } catch let error as SendTransactionDispatcherResult.Error {
+        } catch let error as TransactionDispatcherResult.Error {
             proceed(error: error)
             throw error
         } catch {
-            throw SendTransactionDispatcherResult.Error.loadTransactionInfo(error: error)
+            throw TransactionDispatcherResult.Error.loadTransactionInfo(error: error)
         }
     }
 
-    private func proceed(result: SendTransactionDispatcherResult) {
+    private func proceed(result: TransactionDispatcherResult) {
         _transactionTime.send(Date())
         Analytics.log(event: .transactionSent, params: [
             .source: Analytics.ParameterValue.transactionSourceStaking.rawValue,
@@ -189,7 +189,7 @@ private extension UnstakingModel {
         ])
     }
 
-    private func proceed(error: SendTransactionDispatcherResult.Error) {
+    private func proceed(error: TransactionDispatcherResult.Error) {
         switch error {
         case .demoAlert,
              .userCancelled,
@@ -303,7 +303,7 @@ extension UnstakingModel: SendBaseInput, SendBaseOutput {
         _isLoading.eraseToAnyPublisher()
     }
 
-    func performAction() async throws -> SendTransactionDispatcherResult {
+    func performAction() async throws -> TransactionDispatcherResult {
         _isLoading.send(true)
         defer { _isLoading.send(false) }
 

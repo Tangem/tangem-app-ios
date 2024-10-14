@@ -1,5 +1,5 @@
 //
-//  SendTransactionDispatcherFactory.swift
+//  TransactionDispatcherFactory.swift
 //  Tangem
 //
 //  Created by Alexander Osokin on 06.08.2024.
@@ -9,15 +9,15 @@
 import Foundation
 import BlockchainSdk
 
-struct SendTransactionDispatcherFactory {
+struct TransactionDispatcherFactory {
     let walletModel: WalletModel
     let signer: TangemSigner
 
-    func makeSendDispatcher() -> SendTransactionDispatcher {
+    func makeSendDispatcher() -> TransactionDispatcher {
         if walletModel.isDemo {
             return DemoSendTransactionDispatcher(walletModel: walletModel, transactionSigner: signer)
         }
 
-        return CommonSendTransactionDispatcher(walletModel: walletModel, transactionSigner: signer)
+        return SendTransactionDispatcher(walletModel: walletModel, transactionSigner: signer)
     }
 }

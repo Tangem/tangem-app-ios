@@ -40,7 +40,7 @@ class SendModel {
     // MARK: - Private injections
 
     private let walletModel: WalletModel
-    private let sendTransactionDispatcher: SendTransactionDispatcher
+    private let transactionDispatcher: TransactionDispatcher
     private let transactionSigner: TransactionSigner
     private let transactionCreator: TransactionCreator
     private let feeIncludedCalculator: FeeIncludedCalculator
@@ -53,7 +53,7 @@ class SendModel {
 
     init(
         walletModel: WalletModel,
-        sendTransactionDispatcher: SendTransactionDispatcher,
+        transactionDispatcher: TransactionDispatcher,
         transactionCreator: TransactionCreator,
         transactionSigner: TransactionSigner,
         feeIncludedCalculator: FeeIncludedCalculator,
@@ -61,7 +61,7 @@ class SendModel {
         predefinedValues: PredefinedValues
     ) {
         self.walletModel = walletModel
-        self.sendTransactionDispatcher = sendTransactionDispatcher
+        self.transactionDispatcher = transactionDispatcher
         self.transactionSigner = transactionSigner
         self.transactionCreator = transactionCreator
         self.feeIncludedCalculator = feeIncludedCalculator
@@ -139,7 +139,7 @@ private extension SendModel {
 // MARK: - Send
 
 private extension SendModel {
-    private func sendIfInformationIsActual() async throws -> SendTransactionDispatcherResult {
+    private func sendIfInformationIsActual() async throws -> TransactionDispatcherResult {
         if informationRelevanceService.isActual {
             return try await send()
         }
@@ -147,24 +147,24 @@ private extension SendModel {
         let result = try await informationRelevanceService.updateInformation().mapToResult().async()
         switch result {
         case .failure:
-            throw SendTransactionDispatcherResult.Error.informationRelevanceServiceError
+            throw TransactionDispatcherResult.Error.informationRelevanceServiceError
         case .success(.feeWasIncreased):
-            throw SendTransactionDispatcherResult.Error.informationRelevanceServiceFeeWasIncreased
+            throw TransactionDispatcherResult.Error.informationRelevanceServiceFeeWasIncreased
         case .success(.ok):
             return try await send()
         }
     }
 
-    private func send() async throws -> SendTransactionDispatcherResult {
+    private func send() async throws -> TransactionDispatcherResult {
         guard let transaction = _transaction.value?.value else {
-            throw SendTransactionDispatcherResult.Error.transactionNotFound
+            throw TransactionDispatcherResult.Error.transactionNotFound
         }
 
         do {
-            let result = try await sendTransactionDispatcher.send(transaction: .transfer(transaction))
+            let result = try await transactionDispatcher.send(transaction: .transfer(transaction))
             proceed(transaction: transaction, result: result)
             return result
-        } catch let error as SendTransactionDispatcherResult.Error {
+        } catch let error as TransactionDispatcherResult.Error {
             proceed(error: error)
             // rethrows the error forward to display alert
             throw error
@@ -174,7 +174,7 @@ private extension SendModel {
         }
     }
 
-    private func proceed(transaction: BSDKTransaction, result: SendTransactionDispatcherResult) {
+    private func proceed(transaction: BSDKTransaction, result: TransactionDispatcherResult) {
         _transactionTime.send(Date())
         logTransactionAnalytics(signerType: result.signerType)
 
@@ -187,7 +187,7 @@ private extension SendModel {
         }
     }
 
-    private func proceed(error: SendTransactionDispatcherResult.Error) {
+    private func proceed(error: TransactionDispatcherResult.Error) {
         switch error {
         case .informationRelevanceServiceError,
              .informationRelevanceServiceFeeWasIncreased,
@@ -312,7 +312,7 @@ extension SendModel: SendBaseInput, SendBaseOutput {
         _isSending.eraseToAnyPublisher()
     }
 
-    func performAction() async throws -> SendTransactionDispatcherResult {
+    func performAction() async throws -> TransactionDispatcherResult {
         _isSending.send(true)
         defer { _isSending.send(false) }
 

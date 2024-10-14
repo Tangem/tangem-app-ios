@@ -194,7 +194,7 @@ private extension SendViewModel {
             do {
                 let result = try await viewModel.interactor.action()
                 await viewModel.proceed(result: result)
-            } catch let error as SendTransactionDispatcherResult.Error {
+            } catch let error as TransactionDispatcherResult.Error {
                 // The demo alert doesn't show without delay
                 try? await Task.sleep(seconds: 1)
                 await viewModel.proceed(error: error)
@@ -208,13 +208,13 @@ private extension SendViewModel {
     }
 
     @MainActor
-    func proceed(result: SendTransactionDispatcherResult) {
+    func proceed(result: TransactionDispatcherResult) {
         transactionURL = result.url
         stepsManager.performFinish()
     }
 
     @MainActor
-    func proceed(error: SendTransactionDispatcherResult.Error) {
+    func proceed(error: TransactionDispatcherResult.Error) {
         switch error {
         case .userCancelled, .transactionNotFound:
             break

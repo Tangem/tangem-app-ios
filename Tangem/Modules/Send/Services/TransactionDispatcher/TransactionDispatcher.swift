@@ -1,5 +1,5 @@
 //
-//  SendTransactionDispatcher.swift
+//  TransactionDispatcher.swift
 //  Tangem
 //
 //  Created by Sergey Balashov on 28.06.2024.
@@ -11,17 +11,17 @@ import Combine
 import TangemFoundation
 import struct BlockchainSdk.SendTxError
 
-protocol SendTransactionDispatcher {
-    func send(transaction: SendTransactionType) async throws -> SendTransactionDispatcherResult
+protocol TransactionDispatcher {
+    func send(transaction: SendTransactionType) async throws -> TransactionDispatcherResult
 }
 
-struct SendTransactionDispatcherResult: Hashable {
+struct TransactionDispatcherResult: Hashable {
     let hash: String
     let url: URL?
     let signerType: String
 }
 
-extension SendTransactionDispatcherResult {
+extension TransactionDispatcherResult {
     enum Error: Swift.Error, LocalizedError {
         case informationRelevanceServiceError
         case informationRelevanceServiceFeeWasIncreased

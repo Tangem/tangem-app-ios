@@ -23,12 +23,12 @@ class DemoSendTransactionDispatcher {
     }
 }
 
-// MARK: - SendTransactionDispatcher
+// MARK: - TransactionDispatcher
 
-extension DemoSendTransactionDispatcher: SendTransactionDispatcher {
-    func send(transaction: SendTransactionType) async throws -> SendTransactionDispatcherResult {
+extension DemoSendTransactionDispatcher: TransactionDispatcher {
+    func send(transaction: SendTransactionType) async throws -> TransactionDispatcherResult {
         guard case .transfer = transaction else {
-            throw SendTransactionDispatcherResult.Error.transactionNotFound
+            throw TransactionDispatcherResult.Error.transactionNotFound
         }
 
         let hash = Data.randomData(count: 32)
@@ -39,9 +39,9 @@ extension DemoSendTransactionDispatcher: SendTransactionDispatcher {
                 .mapSendError(tx: hash.hexString)
                 .async()
         } catch {
-            throw SendTransactionMapper().mapError(error, transaction: transaction)
+            throw TransactionDispatcherResultMapper().mapError(error, transaction: transaction)
         }
 
-        throw SendTransactionDispatcherResult.Error.demoAlert
+        throw TransactionDispatcherResult.Error.demoAlert
     }
 }
