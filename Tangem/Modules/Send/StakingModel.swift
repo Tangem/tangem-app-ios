@@ -273,7 +273,7 @@ private extension StakingModel {
 
     private func proceed(result: SendTransactionDispatcherResult) {
         _transactionTime.send(Date())
-        logTransactionAnalytics()
+        logTransactionAnalytics(signerType: result.signerType)
     }
 
     private func proceed(error: SendTransactionDispatcherResult.Error) {
@@ -466,6 +466,7 @@ extension StakingModel: ApproveViewModelInput {
 
     func updateApprovePolicy(policy: ApprovePolicy) {
         _approvePolicy.send(policy)
+        updateState()
     }
 
     func sendApproveTransaction() async throws {
@@ -546,12 +547,13 @@ enum StakingModelError: String, Hashable, LocalizedError {
 // MARK: Analytics
 
 private extension StakingModel {
-    func logTransactionAnalytics() {
+    func logTransactionAnalytics(signerType: String) {
         Analytics.log(event: .transactionSent, params: [
             .source: Analytics.ParameterValue.transactionSourceStaking.rawValue,
             .token: tokenItem.currencySymbol,
             .blockchain: tokenItem.blockchain.displayName,
             .feeType: selectedFee.option.rawValue,
+            .walletForm: signerType,
         ])
 
         switch amount?.type {

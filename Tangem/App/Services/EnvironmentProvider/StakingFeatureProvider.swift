@@ -19,6 +19,10 @@ class StakingFeatureProvider {
         isFeatureAvailable = config.isFeatureVisible(.staking)
     }
 
+    static var isPartialUnstakeAvailable: Bool {
+        FeatureProvider.isAvailable(.partialUnstake)
+    }
+
     func yieldId(for tokenItem: TokenItem) -> String? {
         guard isFeatureAvailable else {
             return nil
@@ -63,12 +67,12 @@ extension StakingFeatureProvider {
             StakingItem(network: .solana, contractAddress: nil),
             StakingItem(network: .cosmos, contractAddress: nil),
             StakingItem(network: .tron, contractAddress: nil),
+            StakingItem(network: .ethereum, contractAddress: StakingConstants.polygonContractAddress),
         ]
     }
 
     static var testableBlockchainItems: Set<StakingItem> {
         [
-            StakingItem(network: .ethereum, contractAddress: StakingConstants.polygonContactAddress),
         ]
     }
 
@@ -78,7 +82,7 @@ extension StakingFeatureProvider {
             return "solana-sol-native-multivalidator-staking"
         case (.cosmos, .none):
             return "cosmos-atom-native-staking"
-        case (.ethereum, StakingConstants.polygonContactAddress):
+        case (.ethereum, StakingConstants.polygonContractAddress):
             return "ethereum-matic-native-staking"
         case (.tron, .none):
             return "tron-trx-native-staking"

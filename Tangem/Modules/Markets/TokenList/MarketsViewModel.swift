@@ -22,7 +22,6 @@ final class MarketsViewModel: MarketsBaseViewModel {
     @Published private(set) var headerViewModel: MainBottomSheetHeaderViewModel
     @Published private(set) var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
     @Published private(set) var tokenListLoadingState: MarketsView.ListLoadingState = .idle
-    @Published private(set) var isDataProviderBusy: Bool = false
 
     @Injected(\.mainBottomSheetUIManager) private var mainBottomSheetUIManager: MainBottomSheetUIManager
 
@@ -150,6 +149,7 @@ final class MarketsViewModel: MarketsBaseViewModel {
     }
 
     func onTryLoadList() {
+        tokenListLoadingState = .loading
         resetShowItemsBelowCapFlag()
         fetch(with: currentSearchValue, by: filterProvider.currentFilterValue)
     }
@@ -289,11 +289,9 @@ private extension MarketsViewModel {
                     if oldEvent != .failedToFetchData {
                         viewModel.tokenListLoadingState = .loading
                     }
-                    viewModel.isDataProviderBusy = true
                 case .idle:
-                    viewModel.isDataProviderBusy = false
+                    break
                 case .failedToFetchData:
-                    viewModel.isDataProviderBusy = false
                     if viewModel.dataProvider.items.isEmpty {
                         Analytics.log(.marketsDataError)
                         viewModel.tokenListLoadingState = .error
@@ -305,7 +303,6 @@ private extension MarketsViewModel {
                     viewModel.tokenListLoadingState = .loading
                     viewModel.tokenViewModels.removeAll()
                     viewModel.resetScrollPositionPublisher.send(())
-                    viewModel.isDataProviderBusy = true
                     viewModel.quotesUpdatesScheduler.saveQuotesUpdateDate(Date())
 
                     guard viewModel.isBottomSheetExpanded else {

@@ -222,7 +222,7 @@ DEPENDENCIES:
   - AmplitudeSwift (= 1.6.2)
   - BinanceChain (from `https://github.com/tangem/swiftbinancechain.git`, tag `0.0.11`)
   - BitcoinCore.swift (from `https://github.com/tangem/bitcoincore.git`, tag `0.0.20`)
-  - BlockchainSdk (from `https://github.com/tangem/blockchain-sdk-swift.git`, tag `develop-699`)
+  - BlockchainSdk (from `https://github.com/tangem/blockchain-sdk-swift.git`, tag `develop-703`)
   - BlockiesSwift (~> 0.1.2)
   - CombineExt (~> 1.8.0)
   - Firebase/Analytics (= 10.29.0)
@@ -233,7 +233,7 @@ DEPENDENCIES:
   - Moya
   - Solana.Swift (from `https://github.com/tangem/Solana.Swift`, tag `1.2.0-tangem11`)
   - SwiftyJSON (from `https://github.com/tangem/SwiftyJSON.git`, tag `5.0.1-tangem1`)
-  - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-312`)
+  - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-313`)
   - WalletConnectSwiftV2 (from `https://github.com/WalletConnect/WalletConnectSwiftV2`, tag `1.18.7`)
 
 SPEC REPOS:
@@ -278,7 +278,7 @@ EXTERNAL SOURCES:
     :tag: 0.0.20
   BlockchainSdk:
     :git: https://github.com/tangem/blockchain-sdk-swift.git
-    :tag: develop-699
+    :tag: develop-703
   Solana.Swift:
     :git: https://github.com/tangem/Solana.Swift
     :tag: 1.2.0-tangem11
@@ -287,7 +287,7 @@ EXTERNAL SOURCES:
     :tag: 5.0.1-tangem1
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
-    :tag: develop-312
+    :tag: develop-313
   WalletConnectSwiftV2:
     :git: https://github.com/WalletConnect/WalletConnectSwiftV2
     :tag: 1.18.7
@@ -301,7 +301,7 @@ CHECKOUT OPTIONS:
     :tag: 0.0.20
   BlockchainSdk:
     :git: https://github.com/tangem/blockchain-sdk-swift.git
-    :tag: develop-699
+    :tag: develop-703
   Solana.Swift:
     :git: https://github.com/tangem/Solana.Swift
     :tag: 1.2.0-tangem11
@@ -310,7 +310,7 @@ CHECKOUT OPTIONS:
     :tag: 5.0.1-tangem1
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
-    :tag: develop-312
+    :tag: develop-313
   WalletConnectSwiftV2:
     :git: https://github.com/WalletConnect/WalletConnectSwiftV2
     :tag: 1.18.7
@@ -351,9 +351,9 @@ SPEC CHECKSUMS:
   SwiftCBOR: ac340b74d3b2cf1f8884bb748bd09875848e3873
   SwiftDate: bbc26e26fc8c0c33fbee8c140c5e8a68293a148a
   SwiftyJSON: c0bd75b5969785b3d9ae41d5709fe75bc5de4002
-  TangemSdk: 943099314a07e448307f994dca6217bb27366b66
+  TangemSdk: 145675e87bf4720d13968510b19e03b5402ed028
   WalletConnectSwiftV2: 5ea47db4d86e39fc749b66a05a661af9e87b277d
 
-PODFILE CHECKSUM: 1b15594a4f87b1305349a1b11da14a8304060238
+PODFILE CHECKSUM: 132799f98da8bc986f49e63c0731d125fa64189d
 
 COCOAPODS: 1.15.2
