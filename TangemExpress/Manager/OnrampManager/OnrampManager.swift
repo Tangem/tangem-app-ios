@@ -7,16 +7,22 @@
 //
 
 public protocol OnrampManager {
-    func getCountry() async throws -> OnrampCountry
-    func getCountries() async throws -> [OnrampCountry]
-    func getPaymentMethods() async throws -> [OnrampCountry]
+    // Load country by IP or get from repository
+    func updateCountry() async throws -> OnrampCountry
 
-    func loadProviders(pair: OnrampPair) async throws -> [OnrampProvider]
-    func loadQuotes(pair: OnrampPair, amount: Decimal) async throws -> [OnrampQuote]
+    // Load methods
+    func updatePaymentMethod() async throws -> OnrampPaymentMethod
+
+    // User did choose country. We prepare providers
+    func update(pair: OnrampPair) async throws -> [OnrampProvider]
+
+    // User did change amount. We load quotes providers
+    func update(amount: Decimal) async throws -> [OnrampProvider]
+
+    // load data to make onramp
+    func loadOnrampData(request: OnrampQuotesRequest) async throws -> OnrampRedirectData
 }
 
-public struct OnrampQuote: Hashable {}
-
-public struct OnrampPaymentMethod {}
-
-public struct OnrampProvider {}
+public enum OnrampManagerError: LocalizedError {
+    case notImplement
+}

@@ -6,9 +6,10 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-protocol OnrampRepository {
-    func updatePairs(wallet: OnrampPair) async throws
-    func updatePaymentMethods() async throws
+public protocol OnrampRepository {
+    var savedCountry: OnrampCountry? { get }
+    var savedPaymentMethod: OnrampPaymentMethod? { get }
 
-    func getPaymentMethods() -> [OnrampPaymentMethod]
+    func save(country: OnrampCountry) throws
+    func save(paymentMethod: OnrampPaymentMethod) throws
 }
