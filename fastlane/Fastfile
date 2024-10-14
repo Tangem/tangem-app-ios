@@ -76,7 +76,10 @@ A lane that builds a \"BlockchainSdkExample\" scheme without running or publishi
 lane :check_bsdk_example_buildable do |options|
   xcodebuild(
     workspace: WORKSPACE_NAME,
-    scheme: BSDK_EXAMPLE_SCHEME
+    scheme: BSDK_EXAMPLE_SCHEME,
+    xcargs: "-allowProvisioningUpdates",
+    analyze: true,
+    raw_buildlog: true
   )
 end
 
