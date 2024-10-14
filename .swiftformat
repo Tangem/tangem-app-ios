@@ -5,6 +5,7 @@
 # // TODO: Andrey Fedorov - Apply formatting (IOS-8239)
 --exclude BlockchainSdk
 --exclude BlockchainSdkTests
+--exclude BlockchainSdkExample
 
 # Format options
 # Disable all default options
