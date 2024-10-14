@@ -11,13 +11,20 @@ import Combine
 import TangemFoundation
 import struct BlockchainSdk.SendTxError
 
+enum SendTransactionDispatcherOptions {
+    case updateWallet
+}
+
 protocol SendTransactionDispatcher {
-    func send(transaction: SendTransactionType, updateWalletAfterSending: Bool) async throws -> SendTransactionDispatcherResult
+    func send(transaction: SendTransactionType, options: SendTransactionDispatcherOptions?) async throws -> SendTransactionDispatcherResult
 }
 
 extension SendTransactionDispatcher {
-    func send(transaction: SendTransactionType, updateWalletAfterSending: Bool = true) async throws -> SendTransactionDispatcherResult {
-        try await send(transaction: transaction, updateWalletAfterSending: updateWalletAfterSending)
+    func send(
+        transaction: SendTransactionType,
+        options: SendTransactionDispatcherOptions? = .updateWallet
+    ) async throws -> SendTransactionDispatcherResult {
+        try await send(transaction: transaction, options: options)
     }
 }
 

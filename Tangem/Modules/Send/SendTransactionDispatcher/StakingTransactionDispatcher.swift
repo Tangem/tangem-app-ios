@@ -35,7 +35,7 @@ class StakingTransactionDispatcher {
 // MARK: - SendTransactionDispatcher
 
 extension StakingTransactionDispatcher: SendTransactionDispatcher {
-    func send(transaction: SendTransactionType, updateWalletAfterSending: Bool) async throws -> SendTransactionDispatcherResult {
+    func send(transaction: SendTransactionType, options: SendTransactionDispatcherOptions?) async throws -> SendTransactionDispatcherResult {
         guard case .staking(let action) = transaction else {
             throw SendTransactionDispatcherResult.Error.transactionNotFound
         }
