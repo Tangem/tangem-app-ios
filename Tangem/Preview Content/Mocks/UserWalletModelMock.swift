@@ -40,6 +40,8 @@ class UserWalletModelMock: UserWalletModel {
 
     var cardImagePublisher: AnyPublisher<CardImageResult, Never> { Empty().eraseToAnyPublisher() }
 
+    var cardHeaderImagePublisher: AnyPublisher<ImageType?, Never> { Empty().eraseToAnyPublisher() }
+
     var userWalletNamePublisher: AnyPublisher<String, Never> { Empty().eraseToAnyPublisher() }
 
     var totalBalancePublisher: AnyPublisher<LoadingValue<TotalBalance>, Never> { Empty().eraseToAnyPublisher() }
