@@ -12,12 +12,14 @@ enum Feature: String, Hashable, CaseIterable {
     case disableFirmwareVersionLimit
     case learnToEarn
     case dynamicFonts
+    case partialUnstake
 
     var name: String {
         switch self {
         case .disableFirmwareVersionLimit: return "Disable firmware version limit"
         case .learnToEarn: return "Learn to Earn"
         case .dynamicFonts: return "Dynamic fonts"
+        case .partialUnstake: return "Partial unstake"
         }
     }
 
@@ -26,6 +28,7 @@ enum Feature: String, Hashable, CaseIterable {
         case .disableFirmwareVersionLimit: return .unspecified
         case .learnToEarn: return .unspecified
         case .dynamicFonts: return .unspecified
+        case .partialUnstake: return .unspecified
         }
     }
 }
