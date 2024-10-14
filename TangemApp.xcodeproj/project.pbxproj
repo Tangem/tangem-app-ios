@@ -10541,7 +10541,6 @@
 				B62D3EF42CBC79D900C2460E /* DTO */,
 				B62D3EFF2CBC79D900C2460E /* Factories */,
 				B62D3F122CBC79D900C2460E /* Interfaces */,
-				B62D3F252CBC79D900C2460E /* Localizations */,
 				B62D3F422CBC79D900C2460E /* TransactionHistory */,
 				B62D3F472CBC79D900C2460E /* Utils */,
 				B62D3F4F2CBC79D900C2460E /* WebSocket */,
@@ -10974,6 +10973,14 @@
 			path = CardsInfo;
 			sourceTree = "<group>";
 		};
+		B64A681F2CBD4B660048ABD0 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B62D3F252CBC79D900C2460E /* Localizations */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		B65591E92A2FF1900066A13B /* ListHeader */ = {
 			isa = PBXGroup;
 			children = (
@@ -11126,6 +11133,7 @@
 		B68E1F662CBC44060043E598 /* BlockchainSdk */ = {
 			isa = PBXGroup;
 			children = (
+				B64A681F2CBD4B660048ABD0 /* Resources */,
 				B62D3EA92CBC79D900C2460E /* Blockchains */,
 				B62D3F742CBC79D900C2460E /* Common */,
 				B62D3EC72CBC79D900C2460E /* CommonNetworkServices */,
