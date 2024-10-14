@@ -286,7 +286,7 @@ private extension ExpressViewModel {
                     self?.updateSendView(wallet: pair.sender)
                 }
 
-                if pair.destination.value != prev.destination.value {
+                if pair.destination != prev.destination {
                     self?.updateReceiveView(wallet: pair.destination)
                 }
 
