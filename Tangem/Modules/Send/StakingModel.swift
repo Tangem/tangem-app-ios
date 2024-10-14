@@ -466,6 +466,7 @@ extension StakingModel: ApproveViewModelInput {
 
     func updateApprovePolicy(policy: ApprovePolicy) {
         _approvePolicy.send(policy)
+        updateState()
     }
 
     func sendApproveTransaction() async throws {

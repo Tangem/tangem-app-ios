@@ -99,6 +99,10 @@ extension TwinConfig: UserWalletConfig {
         .twin
     }
 
+    var cardHeaderImage: ImageType? {
+        Assets.Cards.twins
+    }
+
     var cardSessionFilter: SessionFilter {
         if let twinKey {
             let filter = TwinPreflightReadFilter(twinKey: twinKey)
