@@ -67,7 +67,7 @@ extension CommonStakingManager: StakingManager {
         do {
             async let balances = provider.balances(wallet: wallet)
             async let yield = provider.yield(integrationId: integrationId)
-            async let actions = provider.actions(wallet: wallet)
+            async let actions = provider.actions(wallet: wallet).filter { $0.status == .processing }
 
             let result = try await (balances, yield, actions)
 
@@ -125,6 +125,10 @@ extension CommonStakingManager: StakingManager {
     func transactionDidSent(action: StakingAction) {
         repository.transactionDidSent(action: action, integrationId: integrationId)
 
+        Task {
+            let actions = try await provider.actions(wallet: wallet).filter { $0.status == .processing }
+            print(actions)
+        }
         // We will update the state without requesting the API
         switch state {
         case .loading, .notEnabled, .temporaryUnavailable, .loadingError:

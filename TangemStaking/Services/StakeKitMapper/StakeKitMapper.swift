@@ -124,6 +124,26 @@ struct StakeKitMapper {
         )
     }
 
+    func mapToPendingActions(from response: StakeKitDTO.Actions.List.Response) throws -> [PendingAction] {
+        try response.data.map { action in
+            guard let amountString = action.amount, let amount = Decimal(string: amountString) else {
+                throw StakeKitMapperError.noData("PendingAction.amount not found")
+            }
+
+            let actionTransaction: [ActionTransaction] = action.transactions.map { transaction in
+                ActionTransaction(id: transaction.id, stepIndex: transaction.stepIndex)
+            }
+
+            return try PendingAction(
+                id: action.id,
+                status: mapToActionStatus(from: action.status),
+                amount: amount,
+                currentStepIndex: action.currentStepIndex,
+                transactions: actionTransaction
+            )
+        }
+    }
+
     func mapToPendingAction(from response: StakeKitDTO.Actions.Pending.Response) throws -> PendingAction {
         guard let transactions = response.transactions?.filter({ $0.status != .skipped }),
               !transactions.isEmpty else {

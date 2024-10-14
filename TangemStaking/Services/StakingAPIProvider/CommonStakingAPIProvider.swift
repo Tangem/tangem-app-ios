@@ -36,10 +36,10 @@ class CommonStakingAPIProvider: StakingAPIProvider {
         return balancesInfo
     }
 
-    func actions(wallet: StakingWallet) async throws -> [EnterAction] {
+    func actions(wallet: StakingWallet) async throws -> [PendingAction] {
         let request = StakeKitDTO.Actions.List.Request(walletAddress: wallet.address, network: wallet.item.network)
         let response = try await service.actions(request: request)
-        return []
+        return try mapper.mapToPendingActions(from: response)
     }
 
     func estimateStakeFee(request: ActionGenericRequest) async throws -> Decimal {
