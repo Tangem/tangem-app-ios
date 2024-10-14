@@ -34,7 +34,7 @@ class CommonSendDestinationInteractor {
     private let transactionHistoryMapper: TransactionHistoryMapper
     private let addressResolver: AddressResolver?
     private let additionalFieldType: SendDestinationAdditionalFieldType?
-    private let parametersBuilder: SendTransactionParametersBuilder
+    private let parametersBuilder: TransactionParamsBuilder
 
     private let _isValidatingDestination: CurrentValueSubject<Bool, Never> = .init(false)
     private let _canEmbedAdditionalField: CurrentValueSubject<Bool, Never> = .init(true)
@@ -53,7 +53,7 @@ class CommonSendDestinationInteractor {
         transactionHistoryMapper: TransactionHistoryMapper,
         addressResolver: AddressResolver?,
         additionalFieldType: SendDestinationAdditionalFieldType?,
-        parametersBuilder: SendTransactionParametersBuilder
+        parametersBuilder: TransactionParamsBuilder
     ) {
         self.input = input
         self.output = output
@@ -98,18 +98,22 @@ class CommonSendDestinationInteractor {
 
     private func proceed(additionalField: String) throws -> SendDestinationAdditionalField {
         guard let type = additionalFieldType else {
-            assertionFailure("Additional field for the blockchain whick doesn't support it")
+            assertionFailure("Additional field for the blockchain which doesn't support it")
             return .notSupported
         }
 
-        guard let parameters = try parametersBuilder.transactionParameters(from: additionalField) else {
-            // We don't have to call this code if transactionParameters doesn't exist fot this blockchain
+        do {
+            let parameters = try parametersBuilder.transactionParameters(value: additionalField)
+            return .filled(type: type, value: additionalField, params: parameters)
+        } catch TransactionParamsBuilderError.extraIdNotSupported {
+            // We don't have to call this code if transactionParameters doesn't exist for this blockchain
             // Check your input parameters
-            assertionFailure("Additional field for the blockchain whick doesn't support it")
+            assertionFailure("Additional field for the blockchain which doesn't support it")
             return .notSupported
+        } catch {
+            // the AdditionalField value is wrong
+            throw error
         }
-
-        return .filled(type: type, value: additionalField, params: parameters)
     }
 }
 

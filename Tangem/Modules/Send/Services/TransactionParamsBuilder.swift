@@ -1,5 +1,5 @@
 //
-//  SendTransactionParametersBuilder.swift
+//  TransactionParamsBuilder.swift
 //  Tangem
 //
 //  Created by Andrey Chukavin on 21.11.2023.
@@ -9,14 +9,14 @@
 import Foundation
 import BlockchainSdk
 
-struct SendTransactionParametersBuilder {
+struct TransactionParamsBuilder {
     private let blockchain: Blockchain
 
     init(blockchain: Blockchain) {
         self.blockchain = blockchain
     }
 
-    func transactionParameters(from value: String) throws -> TransactionParams? {
+    func transactionParameters(value: String) throws -> TransactionParams {
         assert(!value.isEmpty, "Have to be checked before validation")
 
         switch blockchain {
@@ -26,7 +26,7 @@ struct SendTransactionParametersBuilder {
             if let destinationTag = UInt32(value) {
                 return XRPTransactionParams(destinationTag: destinationTag)
             } else {
-                throw SendTransactionParametersBuilderError.invalidMemoDestinationTag
+                throw TransactionParamsBuilderError.invalidMemoDestinationTag
             }
         case .stellar:
             if let memoID = UInt64(value) {
@@ -46,7 +46,7 @@ struct SendTransactionParametersBuilder {
             if let memo = UInt64(value) {
                 return ICPTransactionParams(memo: memo)
             } else {
-                throw SendTransactionParametersBuilderError.invalidMemoDestinationTag
+                throw TransactionParamsBuilderError.invalidMemoDestinationTag
             }
         case .bitcoin,
              .litecoin,
@@ -110,20 +110,21 @@ struct SendTransactionParametersBuilder {
              .energyWebEVM,
              .energyWebX,
              .core:
-            return nil
+            throw TransactionParamsBuilderError.extraIdNotSupported
         }
     }
 }
 
-private enum SendTransactionParametersBuilderError {
+enum TransactionParamsBuilderError: LocalizedError {
     case invalidMemoDestinationTag
-}
+    case extraIdNotSupported
 
-extension SendTransactionParametersBuilderError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .invalidMemoDestinationTag:
             return Localization.sendMemoDestinationTagError
+        case .extraIdNotSupported:
+            return "Blockchain don't support the extra id"
         }
     }
 }

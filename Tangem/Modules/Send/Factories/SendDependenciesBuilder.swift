@@ -91,8 +91,8 @@ struct SendDependenciesBuilder {
         return [.market]
     }
 
-    func makeSendTransactionParametersBuilder() -> SendTransactionParametersBuilder {
-        SendTransactionParametersBuilder(blockchain: walletModel.tokenItem.blockchain)
+    func makeSendTransactionParametersBuilder() -> TransactionParamsBuilder {
+        TransactionParamsBuilder(blockchain: walletModel.tokenItem.blockchain)
     }
 
     func makeFeeAnalyticsParameterBuilder() -> FeeAnalyticsParameterBuilder {
@@ -183,7 +183,7 @@ struct SendDependenciesBuilder {
             }
 
             guard let tag = sellParameters?.tag?.nilIfEmpty,
-                  let params = try? makeSendTransactionParametersBuilder().transactionParameters(from: tag) else {
+                  let params = try? makeSendTransactionParametersBuilder().transactionParameters(value: tag) else {
                 return .empty(type: type)
             }
 
