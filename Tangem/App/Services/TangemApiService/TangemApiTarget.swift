@@ -171,7 +171,7 @@ struct TangemApiTarget: TargetType {
                 ],
                 encoding: URLEncoding.default
             )
-        case .tokenExchangesList(let requestModel):
+        case .tokenExchangesList:
             return .requestPlain
         }
     }

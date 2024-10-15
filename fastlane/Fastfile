@@ -4,13 +4,18 @@ BUILD_PATH = "./fastlane/builds/"
 PRODUCTION_SCHEME = "Tangem"
 BETA_SCHEME = "Tangem Beta"
 ALPHA_SCHEME = "Tangem Alpha"
+BSDK_EXAMPLE_SCHEME = "BlockchainSdkExample"
+WORKSPACE_NAME = "TangemApp.xcworkspace"
 FIREBASE_TESTERS_GROUP = "testers"
 
 before_all do |lane, options|
-  if options[:xcode_version_override].nil?
-    xcodes() # Will use the Xcode version from the .xcode-version file
-  else
-    xcodes(version: options[:xcode_version_override])
+  # Xcode version overrides available only on CI
+  if ENV["CI"]&.downcase == "true"
+    if options[:xcode_version_override].nil?
+      xcodes() # Will use the Xcode version from the .xcode-version file
+    else
+      xcodes(version: options[:xcode_version_override])
+    end
   end
 
   Dir.chdir("..") do
@@ -29,7 +34,7 @@ desc """
 """
 lane :test do |options|
   run_tests(
-    workspace: "TangemApp.xcworkspace",
+    workspace: WORKSPACE_NAME,
     scheme: PRODUCTION_SCHEME,
     clean: true,
     code_coverage: true
@@ -62,6 +67,19 @@ lane :release do |options|
   slack_message(
     message: "Tangem Release successfully uploaded to TestFlight",
     changelog: options[:changelog]
+  )
+end
+
+desc """
+A lane that builds a \"BlockchainSdkExample\" scheme without running or publishing it, just to check that the scheme is buildable.
+"""
+lane :check_bsdk_example_buildable do |options|
+  xcodebuild(
+    workspace: WORKSPACE_NAME,
+    scheme: BSDK_EXAMPLE_SCHEME,
+    xcargs: "-allowProvisioningUpdates",
+    analyze: true,
+    raw_buildlog: true
   )
 end
 
