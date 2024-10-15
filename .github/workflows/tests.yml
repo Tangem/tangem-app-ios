@@ -47,12 +47,12 @@ jobs:
       with:
         submodules: true
         token: ${{ secrets.GH_MOBILE_PAT }}
-        
+
     - name: Bundle install
       run: |
         bundle config path vendor/bundle
         bundle install --jobs 4 --retry 3
-        
+
     - name: Tests
       run: bundle exec fastlane test
 
