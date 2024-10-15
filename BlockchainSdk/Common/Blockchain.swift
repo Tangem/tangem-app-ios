@@ -616,7 +616,8 @@ public indirect enum Blockchain: Equatable, Hashable {
 
     public var canHandleTokens: Bool {
         switch self {
-        case .taraxa:
+        case .taraxa,
+             .energyWebEVM:
             return false
         case .binance,
              .solana,

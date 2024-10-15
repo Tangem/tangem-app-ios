@@ -259,8 +259,13 @@ private extension StakingDetailsViewModel {
                 BalanceConverter().convertToFiat(rewardsValue, currencyId: $0)
             }
             let rewardsFiatFormatted = balanceFormatter.formatFiatBalance(rewardsFiat)
+            let rewardsClaimable = !balances.flatMap(\.actions).isEmpty
             rewardViewData = RewardViewData(
-                state: .rewards(fiatFormatted: rewardsFiatFormatted, cryptoFormatted: rewardsCryptoFormatted) { [weak self] in
+                state: .rewards(
+                    claimable: rewardsClaimable,
+                    fiatFormatted: rewardsFiatFormatted,
+                    cryptoFormatted: rewardsCryptoFormatted
+                ) { [weak self] in
                     if rewards.count == 1, let balance = rewards.first {
                         self?.openFlow(balance: balance)
 
