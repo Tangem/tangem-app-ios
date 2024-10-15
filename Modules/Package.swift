@@ -1,21 +1,61 @@
 // swift-tools-version: 5.10
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
-import PackageDescription
+import PackageDescription // TODO: Andrey Fedorov - Update swift-tools-version to 6.0 after upgrade to Xcode 16.0 (IOS-8085)
 
-let shimPackageName = "TangemModules"
+// MARK: - Common Modules
 
-// TODO: Andrey Fedorov - Update swift-tools-version to 6.0 after upgrade to Xcode 16.0
+let commonModules: [PackageDescription.Target] = [
+    .tangemTarget(
+        name: "TangemFoundation"
+    ),
+    .tangemTarget(
+        name: "TangemNetworkLayerAdditions",
+        dependencies: [
+            "Moya",
+            "Alamofire",
+        ]
+    ),
+]
+
+// MARK: - Feature Modules
+
+let featureModules: [PackageDescription.Target] = [
+    // Currently there are no feature modules
+]
+
+// MARK: - Unit Test Modules
+
+let unitTestsModules: [PackageDescription.Target] = [
+    .tangemTestTarget(
+        name: "TangemFoundationTests",
+        dependencies: [
+            "TangemFoundation",
+        ]
+    ),
+]
+
+// MARK: - Shim Library
+
+let modulesShimLibraryName = "TangemModules"
+
+let modulesShimLibrary: PackageDescription.Target = .tangemTarget(
+    name: modulesShimLibraryName,
+    dependencies: commonModules.asDependencies() + featureModules.asDependencies()
+)
+
+// MARK: - Package
+
 let package = Package(
-    name: shimPackageName,
+    name: modulesShimLibraryName,
     platforms: [
         .iOS(.v15),
     ],
     products: [
         .library(
-            name: shimPackageName,
+            name: modulesShimLibraryName,
             targets: [
-                shimPackageName,
+                modulesShimLibraryName,
             ]
         ),
     ],
@@ -23,36 +63,12 @@ let package = Package(
         .package(url: "https://github.com/Moya/Moya.git", .upToNextMajor(from: "15.0.0")),
         .package(url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.0.0")),
     ],
-    targets: [
-        .tangemTarget(
-            name: shimPackageName,
-            dependencies: [
-                "TangemFoundation",
-                "TangemNetworkLayerAdditions",
-            ]
-        ),
-        .tangemTarget(
-            name: "TangemFoundation"
-        ),
-        .tangemTestTarget(
-            name: "TangemFoundationTests",
-            dependencies: [
-                "TangemFoundation",
-            ]
-        ),
-        .tangemTarget(
-            name: "TangemNetworkLayerAdditions",
-            dependencies: [
-                "Moya",
-                "Alamofire",
-            ]
-        ),
-    ]
+    targets: [modulesShimLibrary] + commonModules + featureModules + unitTestsModules
 )
 
 // MARK: - Private implementation
 
-private extension Target {
+private extension PackageDescription.Target {
     static func tangemTarget(
         name: String,
         dependencies: [PackageDescription.Target.Dependency] = [],
@@ -115,5 +131,11 @@ private extension Target {
             linkerSettings: linkerSettings,
             plugins: plugins
         )
+    }
+}
+
+private extension Array where Element == PackageDescription.Target {
+    func asDependencies() -> [PackageDescription.Target.Dependency] {
+        return map { .target(name: $0.name) }
     }
 }
