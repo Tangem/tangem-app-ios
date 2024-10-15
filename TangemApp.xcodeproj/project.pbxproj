@@ -13059,7 +13059,7 @@
 			path = Swap;
 			sourceTree = "<group>";
 		};
-		EF49C05F2CAD85770062AF06 /* Onramp  */ = {
+		EF49C05F2CAD85770062AF06 /* Onramp */ = {
 			isa = PBXGroup;
 			children = (
 				EF1399732CBD0A3C00AC9E2B /* OnrampRedirectData.swift */,
@@ -13072,7 +13072,7 @@
 				EF49C0622CAD859D0062AF06 /* OnrampCountry.swift */,
 				EF49C0602CAD858D0062AF06 /* OnrampIdentity.swift */,
 			);
-			path = "Onramp ";
+			path = Onramp;
 			sourceTree = "<group>";
 		};
 		EF49C06A2CAD8A730062AF06 /* OnrampRepository */ = {
@@ -13926,7 +13926,7 @@
 			isa = PBXGroup;
 			children = (
 				EF49C05E2CAD85690062AF06 /* Swap */,
-				EF49C05F2CAD85770062AF06 /* Onramp  */,
+				EF49C05F2CAD85770062AF06 /* Onramp */,
 			);
 			path = Models;
 			sourceTree = "<group>";

@@ -268,7 +268,7 @@ private extension StakingDetailsViewModel {
                 ) { [weak self] in
                     if rewards.count == 1, let balance = rewards.first {
                         self?.openFlow(balance: balance)
-                        
+
                         let name = balance.validatorType.validator?.name
                         Analytics.log(event: .stakingButtonRewards, params: [.validator: name ?? ""])
                     } else {
