@@ -21,8 +21,6 @@ struct TangemApiTarget: TargetType {
 
     var path: String {
         switch type {
-        case .rates:
-            return "/rates"
         case .currencies:
             return "/currencies"
         case .coins:
@@ -55,6 +53,9 @@ struct TangemApiTarget: TargetType {
             return "/user-network-account"
         case .apiList:
             return "/networks/providers"
+
+            // MARK: - Markets paths
+
         case .coinsList:
             return "/coins/list"
         case .coinsHistoryChartPreview:
@@ -63,13 +64,14 @@ struct TangemApiTarget: TargetType {
             return "/coins/\(requestModel.tokenId)"
         case .historyChart(let requestModel):
             return "/coins/\(requestModel.tokenId)/history"
+        case .tokenExchangesList(let requestModel):
+            return "/coins/\(requestModel.tokenId)/exchanges"
         }
     }
 
     var method: Moya.Method {
         switch type {
-        case .rates,
-             .currencies,
+        case .currencies,
              .coins,
              .quotes,
              .geo,
@@ -81,7 +83,8 @@ struct TangemApiTarget: TargetType {
              .coinsList,
              .coinsHistoryChartPreview,
              .tokenMarketsDetails,
-             .historyChart:
+             .historyChart,
+             .tokenExchangesList:
             return .get
         case .saveUserWalletTokens:
             return .put
@@ -99,14 +102,6 @@ struct TangemApiTarget: TargetType {
 
     var task: Task {
         switch type {
-        case .rates(let coinIds, let currencyId):
-            return .requestParameters(
-                parameters: [
-                    "coinIds": coinIds.joined(separator: ","),
-                    "currencyId": currencyId.lowercased(),
-                ],
-                encoding: URLEncoding.default
-            )
         case .coins(let pageModel):
             return .requestParameters(pageModel)
         case .quotes(let pageModel):
@@ -156,6 +151,9 @@ struct TangemApiTarget: TargetType {
             return .requestJSONEncodable(parameters)
         case .apiList:
             return .requestPlain
+
+            // MARK: - Markets tasks
+
         case .coinsList(let requestData):
             return .requestParameters(parameters: requestData.parameters, encoding: URLEncoding.default)
         case .coinsHistoryChartPreview(let requestData):
@@ -173,6 +171,8 @@ struct TangemApiTarget: TargetType {
                 ],
                 encoding: URLEncoding.default
             )
+        case .tokenExchangesList:
+            return .requestPlain
         }
     }
 
@@ -196,7 +196,6 @@ struct TangemApiTarget: TargetType {
 
 extension TangemApiTarget {
     enum TargetType {
-        case rates(coinIds: [String], currencyId: String)
         case currencies
         case coins(_ requestModel: CoinsList.Request)
         case quotes(_ requestModel: QuotesDTO.Request)
@@ -216,11 +215,13 @@ extension TangemApiTarget {
         case awardOldUser(walletId: String, address: String, programName: String)
         case resetAward(cardId: String)
 
-        // Markets
+        // MARK: - Markets Targets
+
         case coinsList(_ requestModel: MarketsDTO.General.Request)
         case coinsHistoryChartPreview(_ requestModel: MarketsDTO.ChartsHistory.PreviewRequest)
         case tokenMarketsDetails(_ requestModel: MarketsDTO.Coins.Request)
         case historyChart(_ requestModel: MarketsDTO.ChartsHistory.HistoryRequest)
+        case tokenExchangesList(_ requestModel: MarketsDTO.ExchangesList.Request)
 
         // Configs
         case apiList

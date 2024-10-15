@@ -16,7 +16,22 @@ extension View {
     ) -> some View {
         sheet(item: info) { info in
             DescriptionBottomSheetView(info: info)
+                .padding(.bottom, 10)
                 .adaptivePresentationDetents()
+                .background(backgroundColor.ignoresSafeArea(.all, edges: .bottom))
+        }
+    }
+
+    @ViewBuilder
+    func tokenDescriptionBottomSheet(
+        info: Binding<DescriptionBottomSheetInfo?>,
+        backgroundColor: Color?,
+        onGeneratedAITapAction: (() -> Void)?
+    ) -> some View {
+        sheet(item: info) { info in
+            TokenDescriptionBottomSheetView(info: info, generatedWithAIAction: onGeneratedAITapAction)
+                .adaptivePresentationDetents()
+                .padding(.bottom, 10)
                 .background(backgroundColor.ignoresSafeArea(.all, edges: .bottom))
         }
     }

@@ -113,15 +113,16 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     // MARK: - Private Implementation
 
     private func bind() {
-        walletDataProvider.selectedUserWalletModelPublisher
+        let selectedUserWalletModelPublisher = walletDataProvider
+            .selectedUserWalletModelPublisher
             .removeDuplicates()
+
+        selectedUserWalletModelPublisher
             .withWeakCaptureOf(self)
             .sink { viewModel, userWalletId in
                 guard let userWalletModel = viewModel.walletDataProvider.userWalletModels.first(where: { $0.userWalletId == userWalletId }) else {
                     return
                 }
-
-                Analytics.log(.marketsChartWalletSelected)
 
                 viewModel.setNeedSelectWallet(userWalletModel)
                 viewModel.readonlyTokens = viewModel.tokenItems.filter { viewModel.isAdded($0) }
@@ -129,10 +130,18 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
                 viewModel.makeWalletSelectorViewModel(by: userWalletModel)
             }
             .store(in: &bag)
+
+        // This subscription is only used to send analytics
+        selectedUserWalletModelPublisher
+            .dropFirst()
+            .sink { _ in
+                Analytics.log(.marketsChartWalletSelected)
+            }
+            .store(in: &bag)
     }
 
     private func makeWalletSelectorViewModel(by userWalletModel: UserWalletModel) {
-        guard walletDataProvider.isAvaialableWalletSelector else {
+        guard walletDataProvider.isWalletSelectorAvailable else {
             walletSelectorViewModel = nil
             return
         }
@@ -177,11 +186,12 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
                     return
                 }
 
+                self.sendAnalytics()
+
                 // Copy tokens to readonly state, which have been success added
                 self.readonlyTokens.append(contentsOf: self.pendingAdd)
                 self.pendingAdd = []
                 self.updateSelectionByTokenItems()
-                self.sendAnalytics()
 
                 // It is used to synchronize the execution of the target action and hide bottom sheet
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
@@ -252,11 +262,6 @@ final class MarketsTokensNetworkSelectorViewModel: Identifiable, ObservableObjec
     }
 
     private func setNeedSelectWallet(_ userWalletModel: UserWalletModel?) {
-        Analytics.log(
-            event: .manageTokensWalletSelected,
-            params: [.source: Analytics.ParameterValue.mainToken.rawValue]
-        )
-
         pendingAdd = []
         reloadSelectorItemsFromTokenItems()
     }
@@ -318,7 +323,7 @@ private extension MarketsTokensNetworkSelectorViewModel {
         ))
     }
 
-    func displayWarningNotification(for event: WarningEvent) {
+    func displayWarningNotification(for event: GeneralNotificationEvent) {
         let notificationsFactory = NotificationsFactory()
 
         notificationInput = notificationsFactory.buildNotificationInput(

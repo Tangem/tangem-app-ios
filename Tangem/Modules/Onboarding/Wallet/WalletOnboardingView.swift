@@ -98,7 +98,10 @@ struct WalletOnboardingView: View {
                         // and cards jumps instead of smooth transition
                         NavigationBar(
                             title: viewModel.navbarTitle,
-                            settings: .init(titleFont: .system(size: 17, weight: .semibold), backgroundColor: .clear),
+                            settings: .init(
+                                title: .init(font: .system(size: 17, weight: .semibold)),
+                                backgroundColor: .clear
+                            ),
                             leftItems: {
                                 BackButton(
                                     height: viewModel.navbarSize.height,
@@ -147,15 +150,15 @@ struct WalletOnboardingView: View {
                                 ZStack(alignment: .topTrailing) {
                                     OnboardingCardView(
                                         placeholderCardType: .dark,
-                                        cardImage: viewModel.customOnboardingImage ?? viewModel.mainImage,
+                                        cardImage: viewModel.mainImage,
                                         cardScanned: viewModel.isInitialAnimPlayed
                                     )
-                                    Text(Localization.commonOriginCard)
+                                    Text(viewModel.primaryLabel)
                                         .font(.system(size: 13, weight: .semibold))
                                         .foregroundColor(.white)
                                         .padding(.horizontal, 12)
                                         .padding(.vertical, 5)
-                                        .background(Color.white.opacity(0.25))
+                                        .background(Color(hex: "575757"))
                                         .cornerRadius(50)
                                         .zIndex(251)
                                         .padding(12)

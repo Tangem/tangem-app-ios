@@ -40,6 +40,8 @@ final class MainViewModel: ObservableObject {
     private var pendingUserWalletIdsToUpdate: Set<UserWalletId> = []
     private var pendingUserWalletModelsToAdd: [UserWalletModel] = []
     private var shouldRecreatePagesAfterAddingPendingWalletModels = false
+    private var walletNameFieldValidator: AlertFieldValidator?
+
     private var shouldDelayBottomSheetVisibility = true
     private var isLoggingOut = false
 
@@ -120,6 +122,11 @@ final class MainViewModel: ObservableObject {
 
     /// Handles `UIKit.UIViewController.viewDidAppear(_:)`.
     func onDidAppear() {
+        // The application is already in a locked state, so no attempts to show bottom sheet should be made
+        guard !isLoggingOut else {
+            return
+        }
+
         let uiManager = mainBottomSheetUIManager
         /// On a `cold start` (e.g., after launching the app or after coming back from the background in a `locked` state:
         /// in both cases a new VM is created), the bottom sheet should become visible with some delay to prevent it from
@@ -132,18 +139,6 @@ final class MainViewModel: ObservableObject {
             }
         } else {
             uiManager.show()
-        }
-    }
-
-    /// Handles `UIKit.UIViewController.viewWillDisappear(_:)`.
-    func onWillDisappear() {
-        let uiManager = mainBottomSheetUIManager
-        // `DispatchQueue.main.async` here prevents runtime warnings 'Publishing changes from within view updates
-        // is not allowed, this will cause undefined behavior.' in `AppCoordinator.swift:19`
-        DispatchQueue.main.async {
-            if uiManager.isShown {
-                uiManager.hide()
-            }
         }
     }
 
@@ -188,10 +183,21 @@ final class MainViewModel: ObservableObject {
 
         guard let userWalletModel = userWalletRepository.selectedModel else { return }
 
+        let otherWalletNames = userWalletRepository.models.compactMap { model -> String? in
+            guard model.userWalletId != userWalletModel.userWalletId else { return nil }
+
+            return model.name
+        }
+
+        walletNameFieldValidator = AlertFieldValidator { input in
+            !(otherWalletNames.contains(input) || input.isEmpty)
+        }
+
         let alert = AlertBuilder.makeAlertControllerWithTextField(
             title: Localization.userWalletListRenamePopupTitle,
             fieldPlaceholder: Localization.userWalletListRenamePopupPlaceholder,
-            fieldText: userWalletModel.name
+            fieldText: userWalletModel.name,
+            fieldValidator: walletNameFieldValidator
         ) { newName in
             guard userWalletModel.name != newName else { return }
 

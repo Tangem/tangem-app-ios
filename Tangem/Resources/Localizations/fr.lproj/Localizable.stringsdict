@@ -2,6 +2,22 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
   <dict>
+    <key>markets_token_details_amount_exchanges</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>%li exchange</string>
+        <key>other</key>
+        <string>%li exchanges</string>
+      </dict>
+    </dict>
     <key>card_label_card_count</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
@@ -18,6 +34,22 @@
         <string>%li cartes</string>
       </dict>
     </dict>
+    <key>common_days_no_param</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>day</string>
+        <key>other</key>
+        <string>days</string>
+      </dict>
+    </dict>
     <key>manage_tokens_number_of_wallets_ios</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
@@ -32,6 +64,22 @@
         <string>%li portefeuille</string>
         <key>other</key>
         <string>%li portefeuilles</string>
+      </dict>
+    </dict>
+    <key>markets_token_details_amount_exchanges</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>%li exchange</string>
+        <key>other</key>
+        <string>%li exchanges</string>
       </dict>
     </dict>
     <key>markets_token_details_based_on_ratings</key>
@@ -61,7 +109,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string></string>
+        <string>Vide</string>
         <key>other</key>
         <string>Écrivez ces %li mots dans l'ordre indiqué ci-dessous et conservez-les dans un endroit sûr et secret.</string>
       </dict>
@@ -77,7 +125,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string></string>
+        <string>Vide</string>
         <key>other</key>
         <string>%li mots</string>
       </dict>

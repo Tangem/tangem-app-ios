@@ -123,6 +123,22 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
     func openUnstakingFlow(action: UnstakingModel.Action) {
         guard let options else { return }
 
+        openFlow(for: action, options: options, sendType: .unstaking(manager: options.manager, action: action))
+    }
+
+    func openRestakingFlow(action: RestakingModel.Action) {
+        guard let options else { return }
+
+        openFlow(for: action, options: options, sendType: .restaking(manager: options.manager, action: action))
+    }
+
+    func openStakingSingleActionFlow(action: StakingSingleActionModel.Action) {
+        guard let options else { return }
+
+        openFlow(for: action, options: options, sendType: .stakingSingleAction(manager: options.manager, action: action))
+    }
+
+    func openFlow(for action: StakingAction, options: Options, sendType: SendType) {
         let coordinator = SendCoordinator(dismissAction: { [weak self] _ in
             self?.sendCoordinator = nil
         })
@@ -130,7 +146,7 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
         coordinator.start(with: .init(
             walletModel: options.walletModel,
             userWalletModel: options.userWalletModel,
-            type: .unstaking(manager: options.manager, action: action)
+            type: sendType
         ))
         sendCoordinator = coordinator
     }

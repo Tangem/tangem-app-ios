@@ -13,12 +13,7 @@ import SwiftUI
 class StakingDetailsStakeViewDataBuilder {
     private lazy var balanceFormatter = BalanceFormatter()
     private lazy var percentFormatter = PercentFormatter()
-    private lazy var daysFormatter: DateComponentsFormatter = {
-        let formatter = DateComponentsFormatter()
-        formatter.unitsStyle = .short
-        formatter.allowedUnits = [.day]
-        return formatter
-    }()
+    private lazy var dateFormatter = DateComponentsFormatter.staking()
 
     private let tokenItem: TokenItem
 
@@ -34,7 +29,7 @@ class StakingDetailsStakeViewDataBuilder {
             switch balance.balanceType {
             case .rewards: Localization.stakingRewards
             case .locked: inProgress ? Localization.stakingUnlocking : Localization.stakingLocked
-            case .warmup, .active: validator?.name ?? Localization.stakingValidator
+            case .warmup, .active, .pending: validator?.name ?? Localization.stakingValidator
             case .unbonding: Localization.stakingUnstaking
             case .unstaked: Localization.stakingUnstaked
             }
@@ -43,19 +38,20 @@ class StakingDetailsStakeViewDataBuilder {
         let subtitle: StakingDetailsStakeViewData.SubtitleType? = {
             switch balance.balanceType {
             case .rewards: .none
-            case .locked: .locked
+            case .locked:
+                .locked(hasVoteLocked: balance.actions.contains(where: { $0.type == .voteLocked }))
             case .unstaked: .withdraw
-            case .warmup: .warmup(period: yield.warmupPeriod.formatted(formatter: daysFormatter))
-            case .active:
+            case .warmup: .warmup(period: yield.warmupPeriod.formatted(formatter: dateFormatter))
+            case .active, .pending:
                 validator?.apr.map { .active(apr: percentFormatter.format($0, option: .staking)) }
             case .unbonding(let date):
-                date.map { .unbonding(until: $0) } ?? .unbondingPeriod(period: yield.unbondingPeriod.formatted(formatter: daysFormatter))
+                date.map { .unbonding(until: $0) } ?? .unbondingPeriod(period: yield.unbondingPeriod.formatted(formatter: dateFormatter))
             }
         }()
 
         let icon: StakingDetailsStakeViewData.IconType = {
             switch balance.balanceType {
-            case .rewards, .warmup, .active:
+            case .rewards, .warmup, .active, .pending:
                 balance.validatorType == .disabled
                     ? .icon(
                         Assets.stakingIconFilled,
@@ -83,7 +79,7 @@ class StakingDetailsStakeViewDataBuilder {
 
         let action: (() -> Void)? = {
             switch balance.balanceType {
-            case .rewards, .warmup, .unbonding:
+            case .rewards, .warmup, .unbonding, .pending:
                 return nil
             case .active, .unstaked, .locked:
                 return inProgress ? nil : action

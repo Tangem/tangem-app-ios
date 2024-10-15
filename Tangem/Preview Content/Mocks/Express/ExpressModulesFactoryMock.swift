@@ -28,7 +28,6 @@ class ExpressModulesFactoryMock: ExpressModulesFactory {
             initialWallet: initialWalletModel,
             userWalletModel: userWalletModel,
             feeFormatter: feeFormatter,
-            balanceConverter: balanceConverter,
             balanceFormatter: balanceFormatter,
             expressProviderFormatter: expressProviderFormatter,
             notificationManager: notificationManager,
@@ -137,7 +136,7 @@ private extension ExpressModulesFactoryMock {
     var providerFormatter: ExpressProviderFormatter { .init(balanceFormatter: balanceFormatter) }
     var walletModelsManager: WalletModelsManager { userWalletModel.walletModelsManager }
     var userWalletId: String { userWalletModel.userWalletId.stringValue }
-    var signer: TransactionSigner { TransactionSignerMock() }
+    var signer: TangemSigner { TangemSigner(filter: .cardId(""), sdk: TangemSdkDefaultFactory().makeTangemSdk(), twinKey: nil) }
     var logger: Logger { AppLog.shared }
     var userTokensManager: UserTokensManager { userWalletModel.userTokensManager }
 

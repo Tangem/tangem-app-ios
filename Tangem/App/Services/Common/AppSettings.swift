@@ -75,6 +75,12 @@ class AppSettings {
     @AppStorageCompat(StorageType.forcedDemoCardId)
     var forcedDemoCardId: String? = nil
 
+    @AppStorageCompat(StorageType.didMigrateUserWalletNames)
+    var didMigrateUserWalletNames: Bool = false
+
+    @AppStorageCompat(StorageType.userWalletIdsWithRing)
+    var userWalletIdsWithRing: [String] = []
+
     static let shared: AppSettings = .init()
 
     private init() {}

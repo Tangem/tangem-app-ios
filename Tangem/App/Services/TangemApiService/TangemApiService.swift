@@ -17,7 +17,6 @@ protocol TangemApiService: AnyObject, Initializable {
 
     func loadCoins(requestModel: CoinsList.Request) -> AnyPublisher<[CoinModel], Error>
     func loadQuotes(requestModel: QuotesDTO.Request) -> AnyPublisher<[Quote], Error>
-    func loadRates(for coinIds: [String]) -> AnyPublisher<[String: Decimal], Error>
     func loadCurrencies() -> AnyPublisher<[CurrenciesResponse.Currency], Error>
 
     // Copy loadCoins request via async await
@@ -39,6 +38,8 @@ protocol TangemApiService: AnyObject, Initializable {
     func loadHistoryChart(
         requestModel: MarketsDTO.ChartsHistory.HistoryRequest
     ) async throws -> MarketsDTO.ChartsHistory.HistoryResponse
+
+    func loadTokenExchangesListDetails(requestModel: MarketsDTO.ExchangesRequest) async throws -> MarketsDTO.ExchangesResponse
 
     // MARK: - User token list management
 

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TangemSdk
 import BlockchainSdk
 
 struct GetPaymentAccountByCardMethod: SmartContractMethod {

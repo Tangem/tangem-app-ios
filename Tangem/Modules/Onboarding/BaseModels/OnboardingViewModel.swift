@@ -29,7 +29,6 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
     @Published var isNavBarVisible: Bool = false
     @Published var alert: AlertBinder?
     @Published var mainImage: Image?
-    @Published var customOnboardingImage: Image?
     @Published var secondImage: Image?
     @Published var thirdImage: Image?
 
@@ -146,12 +145,20 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
             return nil
         }
 
-        let manageTokensAdapter = ManageTokensAdapter(settings: .init(
-            longHashesSupported: userWalletModel.config.hasFeature(.longHashes),
-            existingCurves: userWalletModel.config.existingCurves,
-            supportedBlockchains: userWalletModel.config.supportedBlockchains,
-            userTokensManager: userWalletModel.userTokensManager
-        ))
+        let analyticsSourceRawValue = Analytics.ParameterValue.onboarding.rawValue
+        let analyticsParams: [Analytics.ParameterKey: String] = [.source: analyticsSourceRawValue]
+
+        Analytics.log(event: .manageTokensScreenOpened, params: analyticsParams)
+
+        let manageTokensAdapter = ManageTokensAdapter(
+            settings: .init(
+                longHashesSupported: userWalletModel.config.hasFeature(.longHashes),
+                existingCurves: userWalletModel.config.existingCurves,
+                supportedBlockchains: userWalletModel.config.supportedBlockchains,
+                userTokensManager: userWalletModel.userTokensManager,
+                analyticsSourceRawValue: analyticsSourceRawValue
+            )
+        )
 
         return OnboardingAddTokensViewModel(
             adapter: manageTokensAdapter,
@@ -165,6 +172,10 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
         }
         return PushNotificationsPermissionRequestViewModel(permissionManager: permissionManager, delegate: self)
     }()
+
+    private var analyticsSourceParameterValue: Analytics.ParameterValue {
+        .onboarding
+    }
 
     let input: OnboardingInput
 
@@ -191,7 +202,7 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
     }
 
     func initializeUserWallet(from cardInfo: CardInfo) {
-        guard let userWallet = CommonUserWalletModel(cardInfo: cardInfo) else { return }
+        guard let userWallet = CommonUserWalletModelFactory().makeModel(cardInfo: cardInfo) else { return }
 
         userWalletRepository.initializeServices(for: userWallet)
 

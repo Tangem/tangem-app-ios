@@ -96,12 +96,10 @@ private extension StakeKitStakingAPIService {
         do {
             response = try response.filterSuccessfulStatusAndRedirectCodes()
         } catch {
-            analyticsLogger.logAPIError()
-            if let stakeKitError = tryMapError(target: request, response: response) {
-                throw stakeKitError
-            }
+            let stakeKitError = tryMapError(target: request, response: response)
 
-            throw error
+            analyticsLogger.logAPIError(errorDescription: stakeKitError?.localizedDescription ?? "Unknown")
+            throw stakeKitError ?? error
         }
 
         return response

@@ -16,7 +16,7 @@ class CommonTangemApiService {
     private let provider = TangemProvider<TangemApiTarget>(plugins: [
         CachePolicyPlugin(),
         TimeoutIntervalPlugin(),
-        TangemNetworkLoggerPlugin(configuration: .init(
+        TangemApiServiceLoggerPlugin(configuration: .init(
             output: TangemNetworkLoggerPlugin.tangemSdkLoggerOutput,
             logOptions: .verbose
         )),
@@ -163,22 +163,6 @@ extension CommonTangemApiService: TangemApiService {
             .eraseToAnyPublisher()
     }
 
-    func loadRates(for coinIds: [String]) -> AnyPublisher<[String: Decimal], Error> {
-        provider
-            .requestPublisher(TangemApiTarget(
-                type: .rates(
-                    coinIds: coinIds,
-                    currencyId: AppSettings.shared.selectedCurrencyCode
-                ),
-                authData: authData
-            ))
-            .filterSuccessfulStatusAndRedirectCodes()
-            .map(RatesResponse.self)
-            .eraseError()
-            .map { $0.rates }
-            .eraseToAnyPublisher()
-    }
-
     func loadReferralProgramInfo(for userWalletId: String, expectedAwardsLimit: Int) async throws -> ReferralProgramInfo {
         let target = TangemApiTarget(
             type: .loadReferralProgramInfo(userWalletId: userWalletId, expectedAwardsLimit: expectedAwardsLimit),
@@ -275,6 +259,12 @@ extension CommonTangemApiService: TangemApiService {
         requestModel: MarketsDTO.ChartsHistory.HistoryRequest
     ) async throws -> MarketsDTO.ChartsHistory.HistoryResponse {
         return try await request(for: .historyChart(requestModel), decoder: snakeCaseJSONDecoder)
+    }
+
+    func loadTokenExchangesListDetails(
+        requestModel: MarketsDTO.ExchangesRequest
+    ) async throws -> MarketsDTO.ExchangesResponse {
+        return try await request(for: .tokenExchangesList(requestModel), decoder: snakeCaseJSONDecoder)
     }
 
     // MARK: - Init

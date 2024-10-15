@@ -14,12 +14,10 @@ import BlockchainSdk
 struct Wallet2Config {
     let card: CardDTO
     private let isDemo: Bool
-    private let isRing: Bool
 
-    init(card: CardDTO, isDemo: Bool, isRing: Bool) {
+    init(card: CardDTO, isDemo: Bool) {
         self.card = card
         self.isDemo = isDemo
-        self.isRing = isRing
     }
 }
 
@@ -122,14 +120,14 @@ extension Wallet2Config: UserWalletConfig {
         return nil
     }
 
-    var warningEvents: [WarningEvent] {
-        var warnings = WarningEventsFactory().makeWarningEvents(for: card)
+    var generalNotificationEvents: [GeneralNotificationEvent] {
+        var notifications = GeneralNotificationEventsFactory().makeNotifications(for: card)
 
         if isDemo, !AppEnvironment.current.isTestnet {
-            warnings.append(.demoCard)
+            notifications.append(.demoCard)
         }
 
-        return warnings
+        return notifications
     }
 
     var emailData: [EmailCollectedData] {
@@ -141,18 +139,10 @@ extension Wallet2Config: UserWalletConfig {
     }
 
     var productType: Analytics.ProductType {
-        if isRing {
-            return .ring
-        }
-
         return .wallet2
     }
 
     var cardHeaderImage: ImageType? {
-        if isRing {
-            return nil
-        }
-
         // Case with broken backup (e.g. CardLinked)
         if cardsCount == 1 {
             return nil
@@ -232,24 +222,20 @@ extension Wallet2Config: UserWalletConfig {
             return Assets.Cards.peachAirGlass
         // Tangem Wallet 2.0
         default:
+
+            var isUserWalletWithRing = false
+
+            if let userWalletIdSeed {
+                let userWalletId = UserWalletId(with: userWalletIdSeed).stringValue
+                isUserWalletWithRing = AppSettings.shared.userWalletIdsWithRing.contains(userWalletId)
+            }
+
+            if isUserWalletWithRing || RingUtil().isRing(batchId: card.batchId) {
+                return cardsCount == 2 ? Assets.Cards.ring1card : Assets.Cards.ring2cards
+            }
+
             return cardsCount == 2 ? Assets.Cards.wallet2Double : Assets.Cards.wallet2Triple
         }
-    }
-
-    var customOnboardingImage: ImageType? {
-        if isRing {
-            return Assets.ring
-        }
-
-        return nil
-    }
-
-    var customScanImage: ImageType? {
-        if isRing {
-            return Assets.ringShapeScan
-        }
-
-        return nil
     }
 
     func getFeatureAvailability(_ feature: UserWalletFeature) -> UserWalletFeature.Availability {

@@ -11,10 +11,9 @@ import MarkdownUI
 
 struct DescriptionBottomSheetInfo: Identifiable, Equatable {
     let id: UUID = .init()
-
     let title: String?
     let description: String
-    var isGeneratedWithAI: Bool = false
+    var showCloseButton: Bool = false
 
     static func == (lhs: DescriptionBottomSheetInfo, rhs: DescriptionBottomSheetInfo) -> Bool {
         lhs.id == rhs.id
@@ -24,6 +23,7 @@ struct DescriptionBottomSheetInfo: Identifiable, Equatable {
 struct DescriptionBottomSheetView: View {
     let info: DescriptionBottomSheetInfo
 
+    @Environment(\.dismiss) private var dismissSheetAction
     @State private var containerHeight: CGFloat = 0
 
     var body: some View {
@@ -32,13 +32,8 @@ struct DescriptionBottomSheetView: View {
     }
 
     private var content: some View {
-        VStack(spacing: 14) {
-            if let title = info.title {
-                Text(title)
-                    .multilineTextAlignment(.center)
-                    .style(Fonts.Bold.body, color: Colors.Text.primary1)
-                    .padding(.vertical, 12)
-            }
+        VStack(spacing: 12) {
+            headerView
 
             Markdown { info.description }
                 .markdownSoftBreakMode(.lineBreak)
@@ -55,24 +50,47 @@ struct DescriptionBottomSheetView: View {
                 .frame(maxWidth: .infinity, alignment: .topLeading)
                 .fixedSize(horizontal: false, vertical: true)
                 .multilineTextAlignment(.leading)
-
-            if info.isGeneratedWithAI {
-                generatedWithAILabel
-            }
         }
-        .padding(.bottom, 10)
+    }
+}
+
+// View components
+private extension DescriptionBottomSheetView {
+    @ViewBuilder
+    var headerView: some View {
+        if info.showCloseButton {
+            HStack(spacing: 0) {
+                closeButton
+                    .opacity(0.0)
+
+                titleView
+                    .frame(maxWidth: .infinity)
+
+                closeButton
+            }
+        } else {
+            titleView
+        }
     }
 
-    private var generatedWithAILabel: some View {
-        HStack(spacing: 12) {
-            Assets.stars.image
-                .foregroundStyle(Colors.Icon.accent)
-
-            Text(Localization.informationGeneratedWithAi)
-                .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
-                .frame(maxWidth: .infinity, alignment: .leading)
+    @ViewBuilder
+    var titleView: some View {
+        if let title = info.title {
+            Text(title)
+                .multilineTextAlignment(.center)
+                .style(Fonts.Bold.body, color: Colors.Text.primary1)
+                .padding(.vertical, 12)
         }
-        .defaultRoundedBackground(with: Colors.Background.tertiary)
+    }
+
+    var closeButton: some View {
+        Button(action: {
+            dismissSheetAction()
+        }, label: {
+            Text(Localization.commonClose)
+                .style(Fonts.Regular.body, color: Colors.Text.primary1)
+                .padding(.vertical, 8)
+        })
     }
 }
 

@@ -18,7 +18,7 @@ struct PendingActionMapper {
 
     func getAction() throws -> PendingActionMapper.Action {
         switch balance.balanceType {
-        case .warmup, .unbonding:
+        case .warmup, .unbonding, .pending:
             throw PendingActionMapperError.notSupported
         case .active:
             let action = stakingAction(type: .unstake)
@@ -37,8 +37,19 @@ struct PendingActionMapper {
                 throw PendingActionMapperError.notFound("Pending unlockLocked action")
             }
 
-            let type: StakingAction.PendingActionType = .unlockLocked(passthrough: unlockLockedAction.passthrough)
-            return .single(stakingAction(type: .pending(type)))
+            let unlockLocked: StakingAction = stakingAction(
+                type: .pending(.unlockLocked(passthrough: unlockLockedAction.passthrough))
+            )
+
+            if let voteLockedAction = balance.actions.first(where: { $0.type == .voteLocked }) {
+                let voteLocked = stakingAction(
+                    type: .pending(.voteLocked(passthrough: voteLockedAction.passthrough))
+                )
+
+                return .multiple([unlockLocked, voteLocked])
+            }
+
+            return .single(unlockLocked)
         case .rewards:
             guard let claimRewardsAction = balance.actions.first(where: { $0.type == .claimRewards }) else {
                 throw PendingActionMapperError.notFound("Pending claimRewards action")

@@ -100,7 +100,11 @@ struct TokenInteractionAvailabilityProvider {
              .cyber,
              .blast,
              .filecoin,
-             .sei:
+             .sei,
+             .sui,
+             .energyWebEVM,
+             .energyWebX,
+             .core:
 
             // Checking that we have at least one valid (non-empty) address
             //

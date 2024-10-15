@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 class WelcomeSearchTokensViewModel: Identifiable, ObservableObject {
     // I can't use @Published here, because of swiftui redraw perfomance drop
@@ -19,6 +20,8 @@ class WelcomeSearchTokensViewModel: Identifiable, ObservableObject {
 
     private lazy var loader = setupListDataLoader()
     private var bag = Set<AnyCancellable>()
+
+    private var expandedCoinIds: Set<String> = []
 
     init() {
         manageTokensListViewModel = .init(
@@ -50,6 +53,7 @@ extension WelcomeSearchTokensViewModel: ManageTokensListLoader {
     }
 
     func reset() {
+        expandedCoinIds.removeAll()
         loader.reset(enteredSearchText.value)
     }
 }
@@ -67,25 +71,38 @@ private extension WelcomeSearchTokensViewModel {
                     Analytics.log(.manageTokensSearched)
                 }
 
+                self?.expandedCoinIds.removeAll()
                 self?.loader.fetch(string)
             }
             .store(in: &bag)
     }
 
-    func setupListDataLoader() -> ListDataLoader {
+    func setupListDataLoader() -> TokensListDataLoader {
         let supportedBlockchains = SupportedBlockchains.all
-        let loader = ListDataLoader(supportedBlockchains: supportedBlockchains)
+        let loader = TokensListDataLoader(supportedBlockchains: supportedBlockchains)
 
         loader.$items
             .withWeakCaptureOf(self)
             .map { viewModel, items -> [ManageTokensListItemViewModel] in
-                items.compactMap(viewModel.mapToCoinViewModel(coinModel:))
+                let viewModels = items.compactMap(viewModel.mapToCoinViewModel(coinModel:))
+                viewModels.forEach { $0.update(expanded: viewModel.bindExpanded($0.coinId)) }
+                return viewModels
             }
             .receive(on: DispatchQueue.main)
             .assign(to: \.listItemsViewModels, on: self, ownership: .weak)
             .store(in: &bag)
 
         return loader
+    }
+
+    func bindExpanded(_ coinId: String) -> Binding<Bool> {
+        let binding = Binding<Bool> { [weak self] in
+            self?.expandedCoinIds.contains(coinId) ?? false
+        } set: { [weak self] isExpanded in
+            self?.updateExpanded(state: isExpanded, for: coinId)
+        }
+
+        return binding
     }
 
     func mapToCoinViewModel(coinModel: CoinModel) -> ManageTokensListItemViewModel {
@@ -100,5 +117,13 @@ private extension WelcomeSearchTokensViewModel {
         }
 
         return ManageTokensListItemViewModel(with: coinModel, items: networkItems)
+    }
+
+    private func updateExpanded(state isExapanded: Bool, for coinId: String) {
+        if isExapanded {
+            expandedCoinIds.insert(coinId)
+        } else {
+            expandedCoinIds.remove(coinId)
+        }
     }
 }

@@ -22,7 +22,7 @@ class CommonStakingManager {
     private let _state = CurrentValueSubject<StakingManagerState, Never>(.loading)
     private var canStakeMore: Bool {
         switch wallet.item.network {
-        case .solana, .cosmos, .tron: true
+        case .solana, .cosmos, .tron, .ethereum: true
         default: false
         }
     }
@@ -51,6 +51,15 @@ extension CommonStakingManager: StakingManager {
 
     var statePublisher: AnyPublisher<StakingManagerState, Never> {
         _state.eraseToAnyPublisher()
+    }
+
+    var allowanceAddress: String? {
+        switch (wallet.item.network, wallet.item.contractAddress) {
+        case (.ethereum, StakingConstants.polygonContractAddress):
+            return "0x5e3ef299fddf15eaa0432e6e66473ace8c13d908"
+        default:
+            return nil
+        }
     }
 
     func updateState() async {
@@ -90,6 +99,8 @@ extension CommonStakingManager: StakingManager {
 
     func transaction(action: StakingAction) async throws -> StakingTransactionAction {
         switch (state, action.type) {
+        case (.loading, _):
+            throw StakingManagerError.stakingManagerIsLoading
         case (.availableToStake, .stake), (.staked, .stake):
             try await getStakeTransactionInfo(
                 request: mapToActionGenericRequest(action: action)
@@ -158,8 +169,8 @@ private extension CommonStakingManager {
             try await provider.patchTransaction(id: transaction.id)
         }
 
-        return StakingTransactionAction(
-            id: action.id,
+        return mapToStakingTransactionAction(
+            actionID: action.id,
             amount: action.amount,
             validator: request.validator,
             transactions: transactions
@@ -177,8 +188,8 @@ private extension CommonStakingManager {
             try await provider.patchTransaction(id: transaction.id)
         }
 
-        return StakingTransactionAction(
-            id: action.id,
+        return mapToStakingTransactionAction(
+            actionID: action.id,
             amount: action.amount,
             validator: request.validator,
             transactions: transactions
@@ -201,11 +212,10 @@ private extension CommonStakingManager {
                 return action
             }
 
-            return StakingTransactionAction(
+            return mapToStakingTransactionAction(
                 amount: request.amount,
                 validator: request.validator,
-                transactions: actions.flatMap { $0.transactions
-                }
+                transactions: actions.flatMap { $0.transactions }
             )
         }
     }
@@ -221,8 +231,8 @@ private extension CommonStakingManager {
             try await provider.patchTransaction(id: transaction.id)
         }
 
-        return StakingTransactionAction(
-            id: action.id,
+        return mapToStakingTransactionAction(
+            actionID: action.id,
             amount: action.amount,
             validator: request.request.validator,
             transactions: transactions
@@ -292,17 +302,40 @@ private extension CommonStakingManager {
             }
 
             return .validator(
-                .init(address: address, name: name, iconURL: record.validator.iconURL, apr: record.validator.apr)
+                .init(
+                    address: address,
+                    name: name,
+                    preferred: true,
+                    partner: false,
+                    iconURL: record.validator.iconURL,
+                    apr: record.validator.apr
+                )
             )
         }()
 
         return StakingBalance(
             item: yield.item,
             amount: record.amount,
-            balanceType: .active,
+            balanceType: .pending,
             validatorType: validatorType,
             inProgress: true,
             actions: []
+        )
+    }
+
+    // MARK: - Staking transaction action
+
+    func mapToStakingTransactionAction(
+        actionID: String? = nil,
+        amount: Decimal,
+        validator: String?,
+        transactions: [StakingTransactionInfo]
+    ) -> StakingTransactionAction {
+        StakingTransactionAction(
+            id: actionID,
+            amount: amount,
+            validator: validator,
+            transactions: transactions
         )
     }
 
@@ -372,11 +405,12 @@ public enum StakingManagerError: LocalizedError {
     case transactionNotFound
     case notImplemented
     case notFound
+    case stakingManagerIsLoading
 
     public var errorDescription: String? {
         switch self {
         case .stakingManagerStateNotSupportTransactionAction(let action):
-            "stakingManagerStateNotSupportTransactionAction \(action)"
+            "StakingManagerNotSupportTransactionAction \(action)"
         case .stakedBalanceNotFound(let validator):
             "stakedBalanceNotFound \(validator)"
         case .pendingActionNotFound(let validator):
@@ -387,6 +421,8 @@ public enum StakingManagerError: LocalizedError {
             "notImplemented"
         case .notFound:
             "notFound"
+        case .stakingManagerIsLoading:
+            "StakingManagerIsLoading"
         }
     }
 }

@@ -11,6 +11,10 @@ import SwiftUI
 struct MainCoordinatorView: CoordinatorView {
     @ObservedObject var coordinator: MainCoordinator
 
+    @State private var responderChainIntrospectionTrigger = UUID()
+
+    @StateObject private var navigationAssertion = MainCoordinatorNavigationAssertion()
+
     var body: some View {
         ZStack {
             if let mainViewModel = coordinator.mainViewModel {
@@ -23,9 +27,18 @@ struct MainCoordinatorView: CoordinatorView {
             sheets
         }
         .onOverlayContentStateChange { [weak coordinator] state in
-            if !state.isBottom {
+            if !state.isCollapsed {
                 coordinator?.hideMarketsTooltip()
             }
+        }
+        .onAppear {
+            responderChainIntrospectionTrigger = UUID()
+        }
+        .introspectResponderChain(
+            introspectedType: UINavigationController.self,
+            updateOnChangeOf: responderChainIntrospectionTrigger
+        ) { [weak navigationAssertion] navigationController in
+            navigationController.setDelegateSafe(navigationAssertion)
         }
     }
 
@@ -42,7 +55,7 @@ struct MainCoordinatorView: CoordinatorView {
                 StakingDetailsCoordinatorView(coordinator: $0)
             }
             .navigation(item: $coordinator.marketsTokenDetailsCoordinator) {
-                TokenMarketsDetailsCoordinatorView(coordinator: $0)
+                MarketsTokenDetailsCoordinatorView(coordinator: $0)
             }
     }
 
@@ -69,10 +82,11 @@ struct MainCoordinatorView: CoordinatorView {
                     })
             }
             .sheet(item: $coordinator.organizeTokensViewModel) { viewModel in
-                OrganizeTokensContainerView(viewModel: viewModel)
-            }
-            .sheet(item: $coordinator.legacyTokenListCoordinator) {
-                LegacyTokenListCoordinatorView(coordinator: $0)
+                NavigationBarHiddingView(shouldWrapInNavigationView: true) {
+                    OrganizeTokensView(viewModel: viewModel)
+                        .navigationTitle(Localization.organizeTokensTitle)
+                        .navigationBarTitleDisplayMode(.inline)
+                }
             }
             .sheet(item: $coordinator.visaTransactionDetailsViewModel) {
                 VisaTransactionDetailsView(viewModel: $0)
