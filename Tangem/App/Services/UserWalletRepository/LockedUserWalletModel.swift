@@ -116,6 +116,10 @@ extension LockedUserWalletModel: MainHeaderSupplementInfoProvider {
         .just(output: userWallet.name)
     }
 
+    var cardHeaderImagePublisher: AnyPublisher<ImageType?, Never> {
+        .just(output: config.cardHeaderImage)
+    }
+
     var isTokensListEmpty: Bool { false }
 }
 

@@ -157,7 +157,7 @@ private extension TokenDetailsView {
     )
     let coordinator = TokenDetailsCoordinator()
 
-    let bannerNotificationManager = BannerNotificationManager(placement: .tokenDetails(walletModel.tokenItem), contextDataProvider: nil)
+    let bannerNotificationManager = BannerNotificationManager(userWalletId: UserWalletId(value: Data()), placement: .tokenDetails(walletModel.tokenItem), contextDataProvider: nil)
 
     return TokenDetailsView(viewModel: .init(
         userWalletModel: userWalletModel,

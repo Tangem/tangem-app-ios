@@ -1,0 +1,203 @@
+/*
+This file uses JSON5 format, enable JSON5 support in the decoder in order to decode this file
+https://developer.apple.com/documentation/foundation/jsondecoder/3766916-allowsjson5
+*/
+
+{
+    "mnemonic": {
+        "words": "tiny escape drive pupil flavor endless love walk gadget match filter luxury",
+        "passphrase": ""
+    },
+    "testable": [
+        {
+            "blockchain": "bitcoin",
+            "derivation": "m/84'/0'/0'/0/0",
+            "addressType": "default",
+            "walletPublicKey": "02616104143281b4679afeb669392b073d63564606f431d13df3ebede75d269509",
+        },
+        {
+            "blockchain": "litecoin",
+            "derivation": "m/84'/2'/0'/0/0",
+            "walletPublicKey": "03ecd3d2bb5e37ac533689f005606735ba2e3c2305ee7fc632a6f8b2186d75c011",
+        },
+        {
+            "blockchain": "stellar",
+            "derivation": "m/44'/148'/0'",
+            "walletPublicKey": "8b6fe3c36a1fb5930c009f6b2321dafb44209a8ef32553672e339a2e6efd32ac",
+        },
+        {
+            "blockchain": "ethereum",
+            "derivation": "m/44'/60'/0'/0/0",
+            "walletPublicKey": "023A291DBF3427922A22D166C8D3333253A0E383115CF5DB36BE47EC5EA81D7D56"
+        },
+        {
+            "blockchain": "ethereumClassic",
+            "derivation": "m/44'/61'/0'/0/0",
+            "walletPublicKey": "03f100470226d199d0b8493b4fb95e2b331ab120c156d9a4990e457c57bee583db",
+        },
+        {
+            "blockchain": "bitcoinCash",
+            "derivation": "m/44'/145'/0'/0/0",
+            "walletPublicKey": "03D6FDE463A4D0F4DECC6AB11BE24E83C55A15F68FD5DB561EEBCA021976215FF5"
+        },
+        {
+            "blockchain": "binance",
+            "derivation": "m/44'/714'/0'/0/0",
+            "walletPublicKey": "03A17B33F13B894BF46FE4BB0E060F8F6A7A79B9556B910629FE7CDF4CF91DBC04"
+        },
+        {
+            "blockchain": "xrp",
+            "derivation": "m/44'/144'/0'/0/0",
+            "walletPublicKey": "0393F5CD6F5FFB5DB412218815FE3210D97C6E1994517D127382488FF3ACF2758A"
+        },
+        {
+            "blockchain": "tezos",
+            "derivation": "m/44'/1729'/0'/0'",
+            "walletPublicKey": "E3C5E3BAB198AFFC2DA1035E6621DFBE11BBF3D733958B43D63E9F3A4D49C06F",
+        },
+        {
+            "blockchain": "dogecoin",
+            "derivation": "m/44'/3'/0'/0/0",
+            "walletPublicKey": "03149EA0300DBB38AA8DF2C00E8EAA7C586B6FA697BD9CA1AA06344266AC96A528"
+        },
+        {
+            "blockchain": "bsc",
+            "derivation": "m/44'/60'/0'/0/0",
+            "walletPublicKey": "023A291DBF3427922A22D166C8D3333253A0E383115CF5DB36BE47EC5EA81D7D56"
+        },
+        {
+            "blockchain": "polygon",
+            "derivation": "m/44'/60'/0'/0/0",
+            "walletPublicKey": "023A291DBF3427922A22D166C8D3333253A0E383115CF5DB36BE47EC5EA81D7D56"
+        },
+        {
+            "blockchain": "avalanche",
+            "derivation": "m/44'/60'/0'/0/0",
+            "walletPublicKey": "023A291DBF3427922A22D166C8D3333253A0E383115CF5DB36BE47EC5EA81D7D56"
+        },
+        {
+            "blockchain": "solana",
+            "derivation": "m/44'/501'/0'",
+            "walletPublicKey": "7b10ba13fd5bd7e5341af59594b53180f0481e67f018ed96b2c6f355d69f2884",
+        },
+        {
+            "blockchain": "fantom",
+            "derivation": "m/44'/60'/0'/0/0",
+            "walletPublicKey": "023A291DBF3427922A22D166C8D3333253A0E383115CF5DB36BE47EC5EA81D7D56"
+        },
+        {
+            "blockchain": "polkadot",
+            "derivation": "m/44'/354'/0'/0'/0'",
+            "walletPublicKey": "1a32f68faabffeaa618cd6b03d7cf0985e60688399a047166de2f8686f074ebe",
+        },
+        {
+            "blockchain": "kusama",
+            "derivation": "m/44'/434'/0'/0'/0'",
+            "walletPublicKey": "fa62b0563fe34a1c2efe0544542a3e197612143d4b5d1f515ff2c9335af1ba6b",
+        },
+        {
+            "blockchain": "tron",
+            "derivation": "m/44'/195'/0'/0/0",
+            "walletPublicKey": "0246A5F0CA01A7018E7B4C11734F610483FE694947559BD6CB6A157FE23C752A64"
+        },
+        {
+            "blockchain": "arbitrum",
+            "derivation": "m/44'/60'/0'/0/0",
+            "walletPublicKey": "023A291DBF3427922A22D166C8D3333253A0E383115CF5DB36BE47EC5EA81D7D56"
+        },
+        {
+            "blockchain": "dash",
+            "derivation": "m/44'/5'/0'/0/0",
+            "walletPublicKey": "02AF38CA8890E8C46FA63C5B1DAA36371AC59DB5DB5BEC6968A1B5759927196E8E"
+        },
+        {
+            "blockchain": "xdai",
+            "derivation": "m/44'/60'/0'/0/0",
+            "walletPublicKey": "023A291DBF3427922A22D166C8D3333253A0E383115CF5DB36BE47EC5EA81D7D56"
+        },
+        {
+            "blockchain": "optimism",
+            "derivation": "m/44'/60'/0'/0/0",
+            "walletPublicKey": "023A291DBF3427922A22D166C8D3333253A0E383115CF5DB36BE47EC5EA81D7D56"
+        },
+        {
+            "blockchain": "ton",
+            "derivation": "m/44'/607'/0'",
+            "walletPublicKey": "f97af5962195e73685d3eaf8439a2113c9c1d91f5cba4c60d3d7184f23001d62",
+        },
+        {
+            "blockchain": "kava",
+            "derivation": "m/44'/60'/0'/0/0",
+            "walletPublicKey": "023A291DBF3427922A22D166C8D3333253A0E383115CF5DB36BE47EC5EA81D7D56"
+        },
+        {
+            "blockchain": "kaspa",
+            "derivation": "m/44'/111111'/0'/0/0",
+            "walletPublicKey": "035F25F3544EF2D031DB235B341112C31F1B26C03F13DC52B5D0E2D508A4F3F176"
+        },
+        {
+            "blockchain": "ravencoin",
+            "derivation": "m/44'/175'/0'/0/0",
+            "walletPublicKey": "0260BF54E0D66880E36FC5400C5CBF799AE129807B03B0FC88DB2506217EB24D85"
+        },
+        {
+            "blockchain": "cosmos-hub",
+            "derivation": "m/44'/118'/0'/0/0",
+            "walletPublicKey": "026AB533F98EEDAF3C271023A379E2CE2EEC479D1E31832294B627A5AD3D0AA4D2"
+        },
+        {
+            "blockchain": "terra",
+            "derivation": "m/44'/330'/0'/0/0",
+            "walletPublicKey": "0243ac5946c42ff532bf6375cd62ce766da829d3942d0f33811c1d72694b1d3b5d"
+        },
+        {
+            "blockchain": "terra-2",
+            "derivation": "m/44'/330'/0'/0/0",
+            "walletPublicKey": "0243ac5946c42ff532bf6375cd62ce766da829d3942d0f33811c1d72694b1d3b5d"
+        },
+        {
+            "blockchain": "near",
+            "derivation": "m/44'/397'/0'",
+            "walletPublicKey": "b5cf12d432ee87dbc664e2700eeef72b3e814879b978bb9491e5796a63e85ee4"
+        },
+        {
+            "blockchain": "vechain",
+            "derivation": "m/44'/818'/0'/0/0",
+            "walletPublicKey": "0208ba6ca86d2a090080c57f0e75dff45d0a95fcde3d4c219cdcd06c4a53dd91a0"
+        },
+        {
+            "blockchain": "algorand",
+            "derivation": "m/44'/283'/0'/0'/0'",
+            "walletPublicKey": "21FA8DA84314C3C0398BD9396E8506831E0F9A7D86DF462B6045DA5C40ECBF54"
+        },
+        {
+            "blockchain": "aptos",
+            "derivation": "m/44'/637'/0'/0'/0'",
+            "walletPublicKey": "0f2ba03f0c60f123869a471b9bec3ae152aedb7344bfc36473b0c9e4fe8965f6"
+        },
+        /*
+        Hedera blockchain exists in the file https://github.com/trustwallet/wallet-core/blob/master/registry.json,
+        but it is added to this file with the non-hardened derivation path "m/44'/3030'/0'/0'/0".
+        This derivation path is incompatible with the ed25519_slip0010 curve we use for Hedera.
+        Since Trust Wallet doesn't support this blockchain at the moment - there is no point in this unit test for Hedera
+        and we're skipping it entirely
+        */
+        /*
+        {
+            "blockchain": "hedera",
+            "derivation": "m/44'/3030'/0'/0'/0",
+            // For Hedera we can't obtain a true address (`Account ID`) offline, and therefore `HederaAddressService`
+            // always returns an empty string as an address.
+            // Meanwhile, the WalletCore-based address service always returns `Account alias` instead of `Account ID`.
+            // By omitting the `walletPublicKey` field below, we effectively skip comparison between
+            // `HederaAddressService` and WalletCore-based address service because it makes no sense
+            //"walletPublicKey": "236b71bed98b98eacdea958b312750e91dccbe1290ce005f2a245243e3d6182c"
+        },
+        */
+        {
+            "blockchain": "internet-computer",
+            "derivation": "m/44'/223'/0'/0/0",
+            "walletPublicKey": "04a6817863f84f32775f63dcbc177e82edecde2e89371c9fc8450b7c63ff026e82cdf8e91b5c2f42480bb844df5e92ab1b0305ccf7156581727b208b156788b167"
+        },
+    ]
+}
