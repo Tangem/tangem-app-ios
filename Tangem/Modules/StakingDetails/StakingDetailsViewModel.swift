@@ -267,8 +267,8 @@ private extension StakingDetailsViewModel {
                     cryptoFormatted: rewardsCryptoFormatted
                 ) { [weak self] in
                     if rewards.count == 1, let balance = rewards.first {
-                        self?.openFlow(balance: balance)
-                        
+                        self?.openFlow(balance: balance, validators: yield.validators)
+
                         let name = balance.validatorType.validator?.name
                         Analytics.log(event: .stakingButtonRewards, params: [.validator: name ?? ""])
                     } else {
@@ -286,7 +286,7 @@ private extension StakingDetailsViewModel {
                     event: .stakingButtonValidator,
                     params: [.source: Analytics.ParameterValue.stakeSourceStakeInfo.rawValue]
                 )
-                self?.openFlow(balance: balance)
+                self?.openFlow(balance: balance, validators: yield.validators)
             }
         }
 
@@ -303,9 +303,9 @@ private extension StakingDetailsViewModel {
         descriptionBottomSheetInfo = DescriptionBottomSheetInfo(title: title, description: description)
     }
 
-    func openFlow(balance: StakingBalance) {
+    func openFlow(balance: StakingBalance, validators: [ValidatorInfo]) {
         do {
-            let action = try PendingActionMapper(balance: balance).getAction()
+            let action = try PendingActionMapper(balance: balance, validators: validators).getAction()
             switch action {
             case .single(let action):
                 openFlow(for: action)

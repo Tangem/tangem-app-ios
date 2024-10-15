@@ -22,17 +22,20 @@ class CommonStakingValidatorsInteractor {
     private weak var output: StakingValidatorsOutput?
 
     private let manager: StakingManager
+    private let validatorToIgnore: ValidatorInfo?
 
     private let _validators = CurrentValueSubject<[ValidatorInfo], Never>([])
 
     init(
         input: StakingValidatorsInput,
         output: StakingValidatorsOutput,
-        manager: StakingManager
+        manager: StakingManager,
+        validatorToIgnore: ValidatorInfo? = nil
     ) {
         self.input = input
         self.output = output
         self.manager = manager
+        self.validatorToIgnore = validatorToIgnore
 
         setupValidators()
     }
@@ -47,7 +50,7 @@ private extension CommonStakingValidatorsInteractor {
             return
         }
 
-        let validators = yield.validators.filter { $0.preferred }
+        let validators = yield.validators.filter { $0.preferred && $0 != validatorToIgnore }
 
         guard !validators.isEmpty else {
             AppLog.shared.debug("Yield.Validators is empty")

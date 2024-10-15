@@ -49,7 +49,7 @@ struct SendDependenciesBuilder {
     func summarySubtitle(action: SendFlowActionType) -> String? {
         switch action {
         case .send: walletName()
-        case .approve, .stake, .restake: walletName() // FIXME: restake
+        case .approve, .stake, .restake: walletName()
         case .unstake: nil
         case .withdraw: nil
         case .claimRewards: nil

@@ -13,8 +13,13 @@ struct StakingValidatorsStepBuilder {
     typealias IO = (input: StakingValidatorsInput, output: StakingValidatorsOutput)
     typealias ReturnValue = (step: StakingValidatorsStep, interactor: StakingValidatorsInteractor, compact: StakingValidatorsCompactViewModel)
 
-    func makeStakingValidatorsStep(io: IO, manager: some StakingManager, sendFeeLoader: SendFeeLoader) -> ReturnValue {
-        let interactor = makeStakingValidatorsInteractor(io: io, manager: manager)
+    func makeStakingValidatorsStep(
+        io: IO,
+        manager: some StakingManager,
+        validatorToIgnore: ValidatorInfo? = nil,
+        sendFeeLoader: SendFeeLoader
+    ) -> ReturnValue {
+        let interactor = makeStakingValidatorsInteractor(io: io, manager: manager, validatorToIgnore: validatorToIgnore)
         let viewModel = makeStakingValidatorsViewModel(interactor: interactor)
         let step = StakingValidatorsStep(viewModel: viewModel, interactor: interactor, sendFeeLoader: sendFeeLoader)
         let compact = makeStakingValidatorsCompactViewModel(input: io.input)
@@ -34,7 +39,16 @@ private extension StakingValidatorsStepBuilder {
         StakingValidatorsViewModel(interactor: interactor)
     }
 
-    func makeStakingValidatorsInteractor(io: IO, manager: some StakingManager) -> StakingValidatorsInteractor {
-        CommonStakingValidatorsInteractor(input: io.input, output: io.output, manager: manager)
+    func makeStakingValidatorsInteractor(
+        io: IO,
+        manager: some StakingManager,
+        validatorToIgnore: ValidatorInfo? = nil
+    ) -> StakingValidatorsInteractor {
+        CommonStakingValidatorsInteractor(
+            input: io.input,
+            output: io.output,
+            manager: manager,
+            validatorToIgnore: validatorToIgnore
+        )
     }
 }

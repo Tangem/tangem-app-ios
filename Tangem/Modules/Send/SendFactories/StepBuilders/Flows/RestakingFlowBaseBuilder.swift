@@ -28,9 +28,12 @@ struct RestakingFlowBaseBuilder {
         let sendFeeCompactViewModel = sendFeeStepBuilder.makeSendFeeCompactViewModel(input: restakingModel)
         sendFeeCompactViewModel.bind(input: restakingModel)
 
+        let actionType = builder.sendFlowActionType(actionType: action.type)
+
         let validators = stakingValidatorsStepBuilder.makeStakingValidatorsStep(
             io: (input: restakingModel, output: restakingModel),
             manager: manager,
+            validatorToIgnore: actionType == .restake ? action.validatorInfo : nil,
             sendFeeLoader: restakingModel
         )
 
@@ -38,7 +41,7 @@ struct RestakingFlowBaseBuilder {
 
         let summary = sendSummaryStepBuilder.makeSendSummaryStep(
             io: (input: restakingModel, output: restakingModel),
-            actionType: .voteLocked,
+            actionType: actionType,
             descriptionBuilder: builder.makeStakingTransactionSummaryDescriptionBuilder(),
             notificationManager: notificationManager,
             editableType: .noEditable,
@@ -50,7 +53,7 @@ struct RestakingFlowBaseBuilder {
 
         let finish = sendFinishStepBuilder.makeSendFinishStep(
             input: restakingModel,
-            actionType: .voteLocked,
+            actionType: actionType,
             sendDestinationCompactViewModel: .none,
             sendAmountCompactViewModel: sendAmountCompactViewModel,
             stakingValidatorsCompactViewModel: validators.compact,
@@ -61,7 +64,7 @@ struct RestakingFlowBaseBuilder {
             validatorsStep: validators.step,
             summaryStep: summary.step,
             finishStep: finish,
-            action: action
+            actionType: actionType
         )
 
         summary.step.set(router: stepsManager)

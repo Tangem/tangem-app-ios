@@ -12,7 +12,7 @@ class CommonRestakingStepsManager {
     private let validatorsStep: StakingValidatorsStep
     private let summaryStep: SendSummaryStep
     private let finishStep: SendFinishStep
-    private let action: RestakingModel.Action
+    private let actionType: SendFlowActionType
 
     private var stack: [SendStep]
     private var bag: Set<AnyCancellable> = []
@@ -22,12 +22,12 @@ class CommonRestakingStepsManager {
         validatorsStep: StakingValidatorsStep,
         summaryStep: SendSummaryStep,
         finishStep: SendFinishStep,
-        action: UnstakingModel.Action
+        actionType: SendFlowActionType
     ) {
         self.validatorsStep = validatorsStep
         self.summaryStep = summaryStep
         self.finishStep = finishStep
-        self.action = action
+        self.actionType = actionType
 
         stack = [summaryStep]
     }
@@ -74,7 +74,7 @@ extension CommonRestakingStepsManager: SendStepsManager {
     var initialKeyboardState: Bool { false }
 
     var initialFlowActionType: SendFlowActionType {
-        .voteLocked
+        actionType
     }
 
     var initialState: SendStepsManagerViewState {
