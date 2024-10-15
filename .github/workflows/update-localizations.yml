@@ -1,6 +1,9 @@
 name: Fetch translations (Lokalise)
 
 on:
+  push:
+    branches:
+      - 'feature/IOS-7989_localise_workflow'  # FIXME: Andrey Fedorov - Test only, remove
   workflow_dispatch:
 
 jobs:
