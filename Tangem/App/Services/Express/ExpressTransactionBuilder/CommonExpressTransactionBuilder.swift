@@ -34,7 +34,8 @@ struct CommonExpressTransactionBuilder: ExpressTransactionBuilder {
 
         if let extraDestinationId = data.extraDestinationId, !extraDestinationId.isEmpty {
             // If we received a extraId then try to map it to specific TransactionParams
-            transaction.params = try mapToTransactionParams(blockchain: wallet.tokenItem.blockchain, extraDestinationId: extraDestinationId)
+            let builder = TransactionParamsBuilder(blockchain: wallet.tokenItem.blockchain)
+            transaction.params = try builder.transactionParameters(value: extraDestinationId)
         }
 
         return transaction
@@ -71,105 +72,9 @@ private extension CommonExpressTransactionBuilder {
             destination: destination
         )
     }
-
-    func mapToTransactionParams(blockchain: Blockchain, extraDestinationId: String) throws -> TransactionParams? {
-        switch blockchain {
-        case .binance:
-            return BinanceTransactionParams(memo: extraDestinationId)
-
-        case .xrp:
-            let destinationTag = UInt32(extraDestinationId)
-            return XRPTransactionParams(destinationTag: destinationTag)
-
-        case .stellar:
-            if let memoId = UInt64(extraDestinationId) {
-                return StellarTransactionParams(memo: .id(memoId))
-            }
-
-            return StellarTransactionParams(memo: .text(extraDestinationId))
-
-        case .ton:
-            return TONTransactionParams(memo: extraDestinationId)
-
-        case .cosmos, .terraV1, .terraV2, .sei:
-            return CosmosTransactionParams(memo: extraDestinationId)
-
-        case .algorand:
-            return AlgorandTransactionParams(nonce: extraDestinationId)
-
-        case .hedera:
-            return HederaTransactionParams(memo: extraDestinationId)
-
-        case .bitcoin,
-             .litecoin,
-             .ethereum,
-             .ethereumPoW,
-             .disChain,
-             .ethereumClassic,
-             .rsk,
-             .bitcoinCash,
-             .cardano,
-             .ducatus,
-             .tezos,
-             .dogecoin,
-             .bsc,
-             .polygon,
-             .avalanche,
-             .solana,
-             .fantom,
-             .polkadot,
-             .kusama,
-             .azero,
-             .tron,
-             .arbitrum,
-             .dash,
-             .gnosis,
-             .optimism,
-             .kava,
-             .kaspa,
-             .ravencoin,
-             .cronos,
-             .telos,
-             .octa,
-             .chia,
-             .near,
-             .decimal,
-             .veChain,
-             .xdc,
-             .shibarium,
-             .aptos,
-             .areon,
-             .playa3ullGames,
-             .pulsechain,
-             .aurora,
-             .manta,
-             .zkSync,
-             .moonbeam,
-             .polygonZkEVM,
-             .moonriver,
-             .mantle,
-             .flare,
-             .taraxa,
-             .radiant,
-             .base,
-             .bittensor,
-             .joystream,
-             .koinos,
-             .internetComputer,
-             .cyber,
-             .blast,
-             .filecoin,
-             .sui,
-             .energyWebEVM,
-             .energyWebX,
-             .core:
-            throw ExpressTransactionBuilderError.blockchainDonNotSupportedExtraId
-        }
-    }
 }
 
 enum ExpressTransactionBuilderError: LocalizedError {
     case approveImpossibleInNotEvmBlockchain
     case transactionDataForSwapOperationNotFound
-    case blockchainDonNotSupportedExtraId
 }
