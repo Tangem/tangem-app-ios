@@ -26,7 +26,7 @@ class CommonSendTransactionDispatcher {
 // MARK: - SendTransactionDispatcher
 
 extension CommonSendTransactionDispatcher: SendTransactionDispatcher {
-    func send(transaction: SendTransactionType, options: SendTransactionDispatcherOptions?) async throws -> SendTransactionDispatcherResult {
+    func send(transaction: SendTransactionType) async throws -> SendTransactionDispatcherResult {
         guard case .transfer(let transferTransaction) = transaction else {
             throw SendTransactionDispatcherResult.Error.transactionNotFound
         }
@@ -35,9 +35,7 @@ extension CommonSendTransactionDispatcher: SendTransactionDispatcher {
 
         do {
             let hash = try await walletModel.transactionSender.send(transferTransaction, signer: transactionSigner).async()
-            if let options, case .updateWallet = options {
-                walletModel.updateAfterSendingTransaction()
-            }
+            walletModel.updateAfterSendingTransaction()
             let signer = transactionSigner.latestSigner.value
             return mapper.mapResult(hash, blockchain: walletModel.blockchainNetwork.blockchain, signer: signer)
         } catch {

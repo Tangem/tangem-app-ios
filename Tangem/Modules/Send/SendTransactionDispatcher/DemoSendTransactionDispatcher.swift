@@ -26,7 +26,7 @@ class DemoSendTransactionDispatcher {
 // MARK: - SendTransactionDispatcher
 
 extension DemoSendTransactionDispatcher: SendTransactionDispatcher {
-    func send(transaction: SendTransactionType, options: SendTransactionDispatcherOptions?) async throws -> SendTransactionDispatcherResult {
+    func send(transaction: SendTransactionType) async throws -> SendTransactionDispatcherResult {
         guard case .transfer = transaction else {
             throw SendTransactionDispatcherResult.Error.transactionNotFound
         }
