@@ -19,4 +19,7 @@ public protocol ExpressAPIProvider {
     func exchangeData(item: ExpressSwappableItem) async throws -> ExpressTransactionData
     func exchangeStatus(transactionId: String) async throws -> ExpressTransaction
     func exchangeSent(result: ExpressTransactionSentResult) async throws
+
+    // TODO: Add onramp endpoints
+    // https://tangem.atlassian.net/browse/IOS-8156
 }
