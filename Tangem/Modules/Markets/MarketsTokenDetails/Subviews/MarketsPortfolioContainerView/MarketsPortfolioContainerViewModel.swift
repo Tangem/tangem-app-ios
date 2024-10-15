@@ -112,7 +112,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             let supportedBlockchains = model.config.supportedBlockchains
 
             for network in networks {
-                if let supportedBlockchain = supportedBlockchains.first(where: { $0.networkId == network.networkId }) {
+                if let supportedBlockchain = supportedBlockchains[network.networkId] {
                     if network.contractAddress == nil {
                         return .available
                     }
