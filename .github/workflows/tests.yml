@@ -40,7 +40,7 @@ jobs:
     name: Run unit tests
     runs-on: macos-14
     needs: check_if_pr_has_always_run_tests_label
-    if: github.event.pull_request.draft == false || needs.check_if_pr_has_always_run_tests_label.outputs.has_always_run_tests_label == true
+    if: github.event.pull_request.draft == false || needs.check_if_pr_has_always_run_tests_label.outputs.has_always_run_tests_label == 'true'
     steps:
     - name: Checkout
       uses: actions/checkout@v3
