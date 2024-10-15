@@ -53,6 +53,23 @@ struct SendAmountStepBuilder {
             tokenItem: walletModel.tokenItem
         )
     }
+
+    func makeOnrampAmountViewModel(
+        io: IO,
+        sendAmountValidator: SendAmountValidator,
+        amountModifier: SendAmountModifier?
+    ) -> OnrampAmountViewModel {
+        let interactor = makeSendAmountInteractor(
+            io: io,
+            sendAmountValidator: sendAmountValidator,
+            amountModifier: amountModifier
+        )
+
+        return OnrampAmountViewModel(
+            settings: .init(tokenIconInfo: builder.makeTokenIconInfo(), tokenItem: walletModel.tokenItem),
+            interactor: interactor
+        )
+    }
 }
 
 // MARK: - Private
