@@ -22,25 +22,25 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  check_if_pr_has_always_build_pull_label:
-    name: Check if the PR has always_build label
+  check_if_pr_has_always_run_tests_label:
+    name: Check if the PR has always_run_tests label
     runs-on: ubuntu-latest
     outputs:
-      has_always_build_label: ${{ steps.always_build_label_check.outputs.label_check == 'success' }}
+      has_always_run_tests_label: ${{ steps.always_run_tests_label_check.outputs.label_check == 'success' }}
     steps:
-    - id: always_build_label_check
+    - id: always_run_tests_label_check
       # https://hub.docker.com/r/agilepathway/pull-request-label-checker/tags
       uses: docker://agilepathway/pull-request-label-checker@sha256:da7c8677e87239522e0c6869ecc4c86d6b7db8b6859ad332b8b1c2129b76177b # v1.6.56 linux/amd64
       with:
-        one_of: always_build
+        one_of: always_run_tests
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         allow_failure: true
 
   test:
-    name: Test
+    name: Run unit tests
     runs-on: macos-14
-    needs: check_if_pr_has_always_build_pull_label
-    if: github.event.pull_request.draft == false || needs.check_if_pr_has_always_build_pull_label.outputs.has_always_build_label == true
+    needs: check_if_pr_has_always_run_tests_label
+    if: github.event.pull_request.draft == false || needs.check_if_pr_has_always_run_tests_label.outputs.has_always_run_tests_label == true
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -59,7 +59,7 @@ jobs:
   check_bsdk_example_buildable:
     name: Check BSDK example project
     runs-on: macos-14
-    needs: check_if_pr_has_always_build_pull_label
+    needs: check_if_pr_has_always_run_tests_label
     if: false # TODO: Andrey Fedorov - Requires code signing, enable after migration to self-hosted runners (IOS-8112)
     steps:
     - name: Checkout
