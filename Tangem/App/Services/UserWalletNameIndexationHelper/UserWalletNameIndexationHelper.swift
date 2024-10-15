@@ -43,7 +43,6 @@ final class UserWalletNameIndexationHelper {
     }
 
     static func suggestedName(_ rawName: String, names: [String]) -> String {
-        let rawName = rawName.trimmed()
         if NameComponents(from: rawName) != nil {
             return rawName
         }
@@ -57,7 +56,7 @@ final class UserWalletNameIndexationHelper {
             dict[nameComponents.template, default: []].insert(nameComponents.index)
         }
 
-        let nameTemplate = rawName
+        let nameTemplate = rawName.trimmed()
         let nameIndex = indicesByNameTemplate.nextIndex(for: nameTemplate)
 
         if nameIndex == 1 {
