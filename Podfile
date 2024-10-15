@@ -38,7 +38,7 @@ end
 
 target 'Tangem' do
   tangem_sdk_pod
-  
+
   # Pods for Tangem
   pod 'WalletConnectSwiftV2', :git => 'https://github.com/WalletConnect/WalletConnectSwiftV2', :tag => '1.18.7'
   pod 'Kingfisher', '~> 7.11.0'
@@ -104,13 +104,6 @@ target 'TangemStaking' do
   end
 end
 
-target 'TangemFoundation' do
-  target 'TangemFoundationTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-end
-
 target 'BlockchainSdk' do
   blockchain_sdk_pods
   tangem_sdk_pod
@@ -166,7 +159,7 @@ post_install do |installer|
    "secp256k1",
    { :kind => "upToNextMajorVersion", :minimumVersion => "0.12.0" }
   )
-  
+
   # `TweetNacl` SPM package for `Solana.Swift` pod
   add_spm_package_to_target(
    installer.pods_project,
