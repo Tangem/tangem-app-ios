@@ -8,6 +8,7 @@
 
 import Foundation
 import Moya
+import TangemNetworkLayerAdditions
 
 struct StakeKitTarget: Moya.TargetType {
     let apiKey: String

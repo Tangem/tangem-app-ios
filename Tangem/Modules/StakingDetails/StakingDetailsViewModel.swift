@@ -8,10 +8,8 @@
 
 import Foundation
 import Combine
-import BlockchainSdk
-import TangemFoundation
-import TangemStaking
 import SwiftUI
+import TangemStaking
 
 final class StakingDetailsViewModel: ObservableObject {
     // MARK: - ViewState

@@ -9,6 +9,7 @@
 import Foundation
 import TangemSdk
 import BlockchainSdk
+import TangemFoundation
 
 struct VisaTokenInfoLoader {
     private let isTestnet: Bool
