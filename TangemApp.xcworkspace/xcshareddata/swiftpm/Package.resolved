@@ -1,6 +1,15 @@
 {
-  "originHash" : "cb0e022f8749486d40f4c4f519b2f8400ea087e61b479cdbb42f934c2a905b02",
+  "originHash" : "15e431c66e6413b69ffc98542d947f47ae55daf1c74fd4d4781b009bfbe06499",
   "pins" : [
+    {
+      "identity" : "alamofire",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Alamofire/Alamofire.git",
+      "state" : {
+        "revision" : "f455c2975872ccd2d9c81594c658af65716e9b9a",
+        "version" : "5.9.1"
+      }
+    },
     {
       "identity" : "anyasyncsequence",
       "kind" : "remoteSourceControl",
@@ -92,6 +101,15 @@
       }
     },
     {
+      "identity" : "moya",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Moya/Moya.git",
+      "state" : {
+        "revision" : "c263811c1f3dbf002be9bd83107f7cdc38992b26",
+        "version" : "15.0.3"
+      }
+    },
+    {
       "identity" : "networkimage",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/gonzalezreal/NetworkImage",
@@ -110,12 +128,30 @@
       }
     },
     {
+      "identity" : "reactiveswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ReactiveCocoa/ReactiveSwift.git",
+      "state" : {
+        "revision" : "c43bae3dac73fdd3cb906bd5a1914686ca71ed3c",
+        "version" : "6.7.0"
+      }
+    },
+    {
       "identity" : "regex",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/sharplet/Regex.git",
       "state" : {
         "revision" : "76c2b73d4281d77fc3118391877efd1bf972f515",
         "version" : "2.1.1"
+      }
+    },
+    {
+      "identity" : "rxswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ReactiveX/RxSwift.git",
+      "state" : {
+        "revision" : "c7c7d2cf50a3211fe2843f76869c698e4e417930",
+        "version" : "6.8.0"
       }
     },
     {
@@ -290,12 +326,39 @@
       }
     },
     {
+      "identity" : "swiftbinancechain",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tangem/SwiftBinanceChain.git",
+      "state" : {
+        "branch" : "feature/IOS-8271_project_modularization_foundation",
+        "revision" : "703f62c910d610bdb68803d8701a28be5ffb61c4"
+      }
+    },
+    {
       "identity" : "swiftcbor",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/valpackett/SwiftCBOR.git",
       "state" : {
         "revision" : "98a59c305cca5c5367c3422d5e127661d4e76e24",
         "version" : "0.4.5"
+      }
+    },
+    {
+      "identity" : "swiftdate",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/malcommac/SwiftDate",
+      "state" : {
+        "revision" : "5d943224c3bb173e6ecf27295611615eba90c80e",
+        "version" : "7.0.0"
+      }
+    },
+    {
+      "identity" : "swiftyjson",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tangem/SwiftyJSON.git",
+      "state" : {
+        "revision" : "acff55ab1a8b138a49477ff523287b18833fc1a0",
+        "version" : "5.0.1-tangem1"
       }
     },
     {

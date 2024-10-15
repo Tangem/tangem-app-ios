@@ -1,6 +1,6 @@
 //
-//  AnyPublisher+.swift
-//  TangemExpress
+//  Publisher+AsyncMap.swift
+//  TangemFoundation
 //
 //  Created by Sergey Balashov on 13.11.2023.
 //  Copyright © 2023 Tangem AG. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  Sequence+Async.swift
-//  TangemExpress
+//  TangemFoundation
 //
 //  Created by Sergey Balashov on 15.12.2023.
 //  Copyright © 2022 Tangem AG. All rights reserved.
