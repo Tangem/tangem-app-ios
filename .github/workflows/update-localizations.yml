@@ -1,0 +1,11 @@
+name: Fetch translations (Lokalise)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update-localizations:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update localizations
+        uses: ./.github/actions/update-localizations-composite-action # TODO: Andrey Fedorov - Replace with remove composite action
