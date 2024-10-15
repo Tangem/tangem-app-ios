@@ -727,6 +727,7 @@
 "staking_reward_schedule_each" = "Alle %@";
 "staking_reward_schedule_each_day" = "Täglich";
 "staking_reward_schedule_each_days" = "Alle %@";
+"staking_reward_schedule_each_plural" = "Each";
 "staking_reward_schedule_each_sec" = "Alle %1$@ Sek.";
 "staking_reward_schedule_epoch" = "Pro Epoche";
 "staking_reward_schedule_era" = "Pro Ära";
@@ -736,7 +737,7 @@
 "staking_rewards" = "Belohnungen";
 "staking_stake_locked" = "Stake gesperrt";
 "staking_stake_more" = "Mehr staken";
-"staking_summary_description_text" = "You stake %1$@ and will be receiving your reward each %2$@";
+"staking_summary_description_text" = "You stake %1$@ and will be receiving your reward %2$@";
 "staking_tap_to_unlock" = "Zum Entsperren antippen";
 "staking_tap_to_unlock_or_vote" = "Tippe zum Entsperren oder Abstimmen";
 "staking_tap_to_withdraw" = "Zum abheben antippen";

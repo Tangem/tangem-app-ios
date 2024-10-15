@@ -727,6 +727,7 @@
 "staking_reward_schedule_each" = "%@ごと";
 "staking_reward_schedule_each_day" = "毎日";
 "staking_reward_schedule_each_days" = "%@ごと";
+"staking_reward_schedule_each_plural" = "Each";
 "staking_reward_schedule_each_sec" = "%1$@秒毎";
 "staking_reward_schedule_epoch" = "エポック毎";
 "staking_reward_schedule_era" = "時代毎";
@@ -736,7 +737,7 @@
 "staking_rewards" = "報酬";
 "staking_stake_locked" = "ステーキングはロックされています";
 "staking_stake_more" = "もっとステーキングする";
-"staking_summary_description_text" = "%1$@をステーキングし、毎%2$@報酬を受け取ります";
+"staking_summary_description_text" = "You stake %1$@ and will be receiving your reward %2$@";
 "staking_tap_to_unlock" = "タップしてロック解除";
 "staking_tap_to_unlock_or_vote" = "タップしてロック解除もしくは投票";
 "staking_tap_to_withdraw" = "タップして引き出す";
