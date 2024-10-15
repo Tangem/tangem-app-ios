@@ -284,7 +284,7 @@ extension ExpressInteractor {
             fee: fee
         )
 
-        let factory = SendTransactionDispatcherFactory(walletModel: sender, signer: signer)
+        let factory = TransactionDispatcherFactory(walletModel: sender, signer: signer)
         let transactionDispatcher = factory.makeSendDispatcher()
         let result = try await transactionDispatcher.send(transaction: .transfer(transaction))
         logger.debug("Sent the approve transaction with result: \(result)")
@@ -500,7 +500,7 @@ private extension ExpressInteractor {
         let sender = getSender()
         let transaction = try await expressTransactionBuilder.makeTransaction(wallet: sender, data: state.data, fee: fee)
 
-        let factory = SendTransactionDispatcherFactory(walletModel: sender, signer: signer)
+        let factory = TransactionDispatcherFactory(walletModel: sender, signer: signer)
         let transactionDispatcher = factory.makeSendDispatcher()
         let result = try await transactionDispatcher.send(transaction: .transfer(transaction))
 
@@ -512,7 +512,7 @@ private extension ExpressInteractor {
         let sender = getSender()
         let data = try await expressManager.requestData()
 
-        let factory = SendTransactionDispatcherFactory(walletModel: sender, signer: signer)
+        let factory = TransactionDispatcherFactory(walletModel: sender, signer: signer)
         let transactionDispatcher = factory.makeSendDispatcher()
         let transaction = try await expressTransactionBuilder.makeTransaction(wallet: sender, data: data, fee: fee)
         let result = try await transactionDispatcher.send(transaction: .transfer(transaction))
