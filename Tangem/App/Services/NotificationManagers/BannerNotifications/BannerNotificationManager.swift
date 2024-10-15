@@ -12,7 +12,6 @@ import Combine
 class BannerNotificationManager {
     @Injected(\.bannerPromotionService) private var bannerPromotionService: BannerPromotionService
     @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
-    @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
 
     private let analyticsService = NotificationsAnalyticsService()
 
@@ -20,15 +19,16 @@ class BannerNotificationManager {
     private weak var delegate: NotificationTapDelegate?
     private var promotionUpdateTask: Task<Void, Never>?
     private let placement: BannerPromotionPlacement
+    private let userWalletId: UserWalletId
 
-    init(placement: BannerPromotionPlacement, contextDataProvider: AnalyticsContextDataProvider?) {
+    init(userWalletId: UserWalletId, placement: BannerPromotionPlacement, contextDataProvider: AnalyticsContextDataProvider?) {
+        self.userWalletId = userWalletId
         self.placement = placement
         analyticsService.setup(with: self, contextDataProvider: contextDataProvider)
     }
 
     private func setupRing() {
-        guard let selectedUserWalletId = userWalletRepository.selectedUserWalletId,
-              AppSettings.shared.userWalletIdsWithRing.contains(selectedUserWalletId.stringValue) else {
+        guard AppSettings.shared.userWalletIdsWithRing.contains(userWalletId.stringValue) else {
             return
         }
 
