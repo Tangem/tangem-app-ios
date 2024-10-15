@@ -1,0 +1,340 @@
+/*
+This file uses JSON5 format, enable JSON5 support in the decoder in order to decode this file
+https://developer.apple.com/documentation/foundation/jsondecoder/3766916-allowsjson5
+*/
+
+[
+    {
+        "blockchain": "ethereum",
+        "positive": [
+            "0xeDe8F58dADa22c3A49dB60D4f82BAD428ab65F89",
+            "0xfb6916095ca1df60bb79ce92ce3ea74c37c5d359",
+            "0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359",
+            "0x52908400098527886E0F7030069857D2E4169EE7",
+            "0x8617E340B3D01FA5F11F306F4090FD50E238070D",
+            "0xde709f2102306220921060314715629080e2fb77",
+            "0x27b1fdb04752bbc536007a920d24acb045561c26",
+            "0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed",
+            "0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359",
+            "0xdbF03B407c01E7cD3CBea99509d93f8DDDC8C6FB",
+            "0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb",
+            "0x6ECa00c52AFC728CDbF42E817d712e175bb23C7d",
+        ],
+        "negative": [
+            "ede8f58dada22a49db60d4f82bad428ab65f89"
+        ]
+    },
+    {
+        "blockchain": "bitcoin",
+        "positive": [
+            "bc1q2ddhp55sq2l4xnqhpdv0xazg02v9dr7uu8c2p2",
+            "1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2",
+            "1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2",
+            "1AC4gh14wwZPULVPCdxUkgqbtPvC92PQPN",
+            "1PMycacnJaSqwwJqjawXBErnLsZ7RkXUAs",
+            "bc1qcj2vfjec3c3luf9fx9vddnglhh9gawmncmgxhz"
+        ],
+        "negative": [
+            "bc1q2ddhp55sq2l4xnqhpdv9xazg02v9dr7uu8c2p2",
+            "MPmoY6RX3Y3HFjGEnFxyuLPCQdjvHwMEny",
+            "abc",
+            "0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed",
+            "175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W"
+        ]
+    },
+    {
+        "blockchain": "litecoin",
+        "positive": [
+            "LMbRCidgQLz1kNA77gnUpLuiv2UL6Bc4Q2",
+            "ltc1q5wmm9vrz55war9c0rgw26tv9un5fxnn7slyjpy",
+            "MPmoY6RX3Y3HFjGEnFxyuLPCQdjvHwMEny",
+            "LMbRCidgQLz1kNA77gnUpLuiv2UL6Bc4Q2",
+            "LWjJD6H1QrMmCQ5QhBKMqvPqMzwYpJPv2M"
+        ],
+        "negative": [
+            "1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2"
+        ]
+    },
+    {
+        "blockchain": "bitcoinCash",
+        "positive": [
+            "bitcoincash:qruxj7zq6yzpdx8dld0e9hfvt7u47zrw9gfr5hy0vh",
+            "qruxj7zq6yzpdx8dld0e9hfvt7u47zrw9gfr5hy0vh",
+            "bitcoincash:prm3srpqu4kmx00370m4wt5qr3cp7sekmcksezufmd",
+            "1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2"
+        ],
+        "negative": []
+    },
+    {
+        "blockchain": "binance",
+        "positive": [
+            "bnb1c2zwqqucrqvvtyxfn78ajm8w2sgyjf5eex5gcc"
+        ],
+        "negative": []
+    },
+    {
+        "blockchain": "tezos",
+        "positive": [
+            "tz1d1qQL3mYVuiH4JPFvuikEpFwaDm85oabM"
+        ],
+        "negative": [
+            "tz1eZwq8b5cvE2bPKokatLkVMzkxz24z3AAAA",
+            "1tzeZwq8b5cvE2bPKokatLkVMzkxz24zAAAAA"
+        ]
+    },
+    {
+        "blockchain": "tron",
+        "positive": [
+            "TJRyWwFs9wTFGZg3JbrVriFbNfCug5tDeC"
+        ],
+        "negative": [
+            "abc",
+            "0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed",
+            "175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W",
+            "RJRyWwFs9wTFGZg3JbrVriFbNfCug5tDeC"
+        ]
+    },
+    {
+        "blockchain": "stellar",
+        "positive": [
+            "GAB6EDWGWSRZUYUYCWXAFQFBHE5ZEJPDXCIMVZC3LH2C7IU35FTI2NOQ",
+            "GAE2SZV4VLGBAPRYRFV2VY7YYLYGYIP5I7OU7BSP6DJT7GAZ35OKFDYI",
+            "GDWFHB6YWOF5T34AXW6HRUGX4HCT6CHCNFBWZGOVWPBN6SZM44YBFUDZ"
+        ],
+        "negative": []
+    },
+    {
+        "blockchain": "xrp",
+        "positive": [
+            "rDpysuumkweqeC7XdNgYNtzL5GxbdsmrtF",
+            "XVfvixWZQKkcenFRYApCjpTUyJ4BePTe3jJv7beatUZvQYh",
+            "XVfvixWZQKkcenFRYApCjpTUyJ4BePTe3jJv7beatUZvQYh",
+            "rJjXGYnKNcbTsnuwoaP9wfDebB8hDX8jdQ",
+            "r36yxStAh7qgTQNHTzjZvXybCTzUFhrfav",
+            "XVfvixWZQKkcenFRYApCjpTUyJ4BePMjMaPqnob9QVPiVJV",
+            "rfxdLwsZnoespnTDDb1Xhvbc8EFNdztaoq",
+            "rU893viamSnsfP3zjzM2KPxjqZjXSXK6VF"
+        ],
+        "negative": []
+    },
+    {
+        "blockchain": "solana",
+        "positive": [
+            "7v91N7iZ9mNicL8WfG6cgSCKyRXydQjLh6UYBWwm6y1Q",
+            "EN2sCsJ1WDV8UFqsiTXHcUPUxQ4juE71eCknHYYMifkd"
+        ],
+        "negative": []
+    },
+    {
+        "blockchain": "polkadot",
+        "positive": [
+            "12twBQPiG5yVSf3jQSBkTAKBKqCShQ5fm33KQhH3Hf6VDoKW",
+            "14PhJGbzPxhQbiq7k9uFjDQx3MNiYxnjFRSiVBvBBBfnkAoM"
+        ],
+        "negative": [
+            "cosmos1l4f4max9w06gqrvsxf74hhyzuqhu2l3zyf0480",
+            "3317oFJC9FvxU2fwrKVsvgnMGCDzTZ5nyf",
+            "ELmaX1aPkyEF7TSmYbbyCjmSgrBpGHv9EtpwR2tk1kmpwvG"
+        ]
+    },
+    {
+        "blockchain": "bsc",
+        "positive": [
+            "0xf3d468DBb386aaD46E92FF222adDdf872C8CC064"
+        ],
+        "negative": []
+    },
+    {
+        "blockchain": "ravencoin",
+        "positive": [
+            "RT1iM3xbqSQ276GNGGNGFdYrMTEeq4hXRH",
+            "RRjP4a6i7e1oX1mZq1rdQpNMHEyDdSQVNi"
+        ],
+        "negative": [
+            "QT1iM3xbqSQ276GNGGNGFdYrMTEeq4hXRH"
+        ]
+    },
+    {
+        "blockchain": "ton",
+        "positive": [
+            "EQAoDMgtvyuYaUj-iHjrb_yZiXaAQWSm4pG2K7rWTBj9eOC2",
+            "EQAGDzFFIxJswaBU5Rqaz5H5dKUBGYEMhL44fpLtIdWbjkBo",
+            "EQA0i8-CdGnF_DhUHHf92R1ONH6sIA9vLZ_WLcCIhfBBXwtG",
+            "0:8a8627861a5dd96c9db3ce0807b122da5ed473934ce7568a5b4b1c361cbb28ae",
+            "0:66fbe3c5c03bf5c82792f904c9f8bf28894a6aa3d213d41c20569b654aadedb3"
+        ],
+        "negative": [
+            "8a8627861a5dd96c9db3ce0807b122da5ed473934ce7568a5b4b1c361cbb28ae"
+        ]
+    },
+    {
+        "blockchain": "cosmos-hub",
+        "positive": [
+            "cosmos1hsk6jryyqjfhp5dhc55tc9jtckygx0eph6dd02",
+            "cosmospub1addwnpepqftjsmkr7d7nx4tmhw4qqze8w39vjq364xt8etn45xqarlu3l2wu2n7pgrq",
+            "cosmosvaloper1sxx9mszve0gaedz5ld7qdkjkfv8z992ax69k08",
+            "cosmosvalconspub1zcjduepqjnnwe2jsywv0kfc97pz04zkm7tc9k2437cde2my3y5js9t7cw9mstfg3sa"
+        ],
+        "negative": [
+            "cosmoz1hsk6jryyqjfhp5dhc55tc9jtckygx0eph6dd02",
+            "osmo1mky69cn8ektwy0845vec9upsdphktxt0en97f5",
+            "cosmosvaloper1sxx9mszve0gaedz5ld7qdkjkfv8z992ax69k03",
+            "cosmosvalconspub1zcjduepqjnnwe2jsywv0kfc97pz04zkm7tc9k2437cde2my3y5js9t7cw9mstfg3sb"
+        ]
+    },
+    {
+        "blockchain": "polygon",
+        "positive": [
+            "0x6ECa00c52AFC728CDbF42E817d712e175bb23C7d"
+        ],
+        "negative": []
+    },
+    {
+        "blockchain": "near",
+        "positive": [
+            "f69cd39f654845e2059899a888681187f2cda95f29256329aea1700f50f8ae86",
+            "75149e81ac9ea0bcb6f00faee922f71a11271f6cbc55bac97753603504d7bf27",
+            "64acf5e86c840024032d7e75ec569a4d304443e250b197d5a0246d2d49afc8e1",
+            "84a3fe2fc0e585d802cfa160807d1bf8ca5f949cf8d04d128bf984c50aabab7b",
+            "d85d322043d87cc475d3523d6fb0c3df903d3830e5d4d5027ffe565e7b8652bb",
+            /*
+            The addresses below are perfectly valid 'valid' NEAR addresses (from https://nomicon.io/DataStructures/Account#examples),
+            but Wallet Core triggers a false negative on them
+            */
+            /*
+            "f69cd39f654845e2059899a88868.1187f2cda95f29256329aea1700f50f8ae8",
+            "something.near",
+            "6f8a1e9b0c2d3f4a5b7e8d9a1c32ed5f67b8cd0e1f23b4c5d6e7f88023a",
+            "ctiud11caxsb2tw7dmfcrhfw9ah15ltkydrjfblst32986pekmb3dsvyrmyym6qn",
+            "ok",
+            "bowen",
+            "ek-2",
+            "ek.near",
+            "com",
+            "google.com",
+            "bowen.google.com",
+            "near",
+            "illia.cheap-accounts.near",
+            "max_99.near",
+            "100",
+            "near2019",
+            "over.9000",
+            "a.bro",
+            "bro.a"
+            */
+        ],
+        "negative": [
+            "",
+            "9a4b6c1e2d8f3a5b7e8d9a1c3b2e4d5f6a7b8c9d0e1f2a3b4c5d6e7f8a4b6c1e2d8f3",
+            "not ok",
+            "a",
+            "100-",
+            "bo__wen",
+            "_illia",
+            ".near",
+            "near.",
+            "a..near",
+            "$$$",
+            "WAT",
+            "me@google.com",
+            "system",
+            "abcdefghijklmnopqrstuvwxyz.abcdefghijklmnopqrstuvwxyz.abcdefghijklmnopqrstuvwxyz",
+            "",
+            "9a4b6c1e2d8f3a5b7e8d9a1c3b2e4d5f6a7b8c9d0e1f2a3b4c5d6e7f8a4b6c1e2d8f3"
+        ]
+    },
+    {
+        "blockchain": "vechain",
+        "positive": [
+            "0x44bc93A8d3cEfA5a6721723a2f8d2e4F7d480BA0",
+            "0xFF5ba88a17b2E16D23FF6647E9052E937AcB1406",
+            "0xBF6ba25D7D3E28153549196CD6361fCA5e40d635",
+            "0x2d753ec6c93893273e8Ba07C8A577aDf80bdfCe8",
+            "0xBD0109Df5f9683Ec9458d579020345C713928C45"
+        ],
+        "negative": [
+            "44bc93A8d3cEfA5a6721723a2f8d2e4F7d480BA0",
+            "0xf3d468DBb386aaD46E92FF222adDdf872C8CC06",
+            "0x6ECa00c52AFC728CDbF42E817d712e175bb23C7d1",
+            "me@google.com",
+            ""
+        ]
+    },
+    {
+        "blockchain": "algorand",
+        "positive": [
+            "ZW3ISEHZUHPO7OZGMKLKIIMKVICOUDRCERI454I3DB2BH52HGLSO67W754",
+            "Q7AUUQCAO3O6CLPHMPTWN3VTCWLLWZJSI6QDO5XEC4ZZR5JZWXWZL5YWOM",
+            "ZMORINNT75RZ67ZWV2EGZYW6MKZ2LOSSB5VTKJON6NSPO5MW6TVCMXMVTU",
+            "ZW3ISEHZUHPO7OZGMKLKIIMKVICOUDRCERI454I3DB2BH52HGLSO67W754",
+        ],
+        "negative": [
+            "ZW3ISEHZUHPO7OZGMKLKIIMKVICOUDRCERI454I3DB2BH52HGL",
+            "EEQKMHD64P5FN25Y6W63ZHEPVCQZKM4PCMF6ZIIJW4IPFX4WJALA",
+            "44bc93A8d3cEfA5a6721723a2f8d2e4F7d480BA0",
+            "0xf3d468DBb386aaD46E92FF222adDdf872C8CC06",
+            "0x6ECa00c52AFC728CDbF42E817d712e175bb23C7d1",
+            "me@google.com",
+            "",
+            "9a4b6c1e2d8f3a5b7e8d9a1c3b2e4d5f6a7b8c9d0e1f2a3b4c5d6e7f8a4b6c1e2d8f3"
+        ]
+    },
+    {
+        "blockchain": "aptos",
+        "positive": [
+            "0x77b6ecc77530f2b7cad89abcdd8dfece24a9cba20acc608cee424f30d3721ea1",
+            "0x7d7e436f0b2aafde60774efb26ccc432cf881b677aca7faaf2a01879bd19fb8",
+            "0x68c709c6614e29f401b6bfdd0b89578381ef0fb719515c03b73cf13e45550e06",
+            "0x8d2d7bcde13b2513617df3f98cdd5d0e4b9f714c6308b9204fe18ad900d92609",
+            "0x50bc83f01d48ab3b9c00048542332201ab9cbbea61bda5f48bf81dc506caa78f"
+        ],
+        "negative": [
+            "0x7d7e436f0askdjaksldb2aafde60774efb26cccll432cf881b677aca7faaf2a01879bd19fb8",
+            "me@0x1.com",
+            "me@google.com",
+            "x7d7e436f0askdjaksldb2aafde60774efb26cccll432cf881b677aca7faaf2a01879bd19fb8",
+            ""
+        ]
+    },
+    {
+        "blockchain": "hedera",
+        "positive": [
+            "0.0.123",
+            "0.0.123-vfmkw",
+            "0.0.1234567890-zbhlt",
+            "0.0.18446744073709551615",
+            /*
+            The addresses below are perfectly valid 'valid' Hedera addresses (from https://hips.hedera.com/hip/hip-15),
+            but Wallet Core triggers a false negative on them
+            */
+            /*
+            "0xf3DbcEeedDC4BBd1B66492B66EC0B8eC317b511B",
+            "0.0.302d300706052b8104000a03220002d588ec1000770949ab77516c77ee729774de1c8fe058cab6d64f1b12ffc8ff07",
+            */
+        ],
+        "negative": [
+            "0.0.123-VFMKW",
+            "0.0.123-vFmKw",
+            "0.0.123#vfmkw",
+            "0.0.123vfmkw",
+            "0.0.123 - vfmkw",
+            "0.123",
+            "0.0.123.",
+            "0.0.123-vf",
+            "0.0.123-vfm-kw",
+            "0.0.123-vfmkwxxxx",
+            "0xf64a1db2f124aaa4cd7b58d3d7f66774f9770c6",
+            "0xf64a1db2f124aaa4cd7b58d3d7f66774f9770c6ee",
+            "0.0.402d300706052b8104000a03220002d588ec1000770949ab77516c77ee729774de1c8fe058cab6d64f1b12ffc8ff07",
+            "",
+            /*
+            The addresses below are perfectly valid 'invalid' Hedera addresses (from https://hips.hedera.com/hip/hip-15),
+            but Wallet Core triggers a false negative on them
+            */
+            /*
+            "0.0.123-abcde",
+            "0.0.18446744073709551616",
+            */
+        ]
+    },
+]

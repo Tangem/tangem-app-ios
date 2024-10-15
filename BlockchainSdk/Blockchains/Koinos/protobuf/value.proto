@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package koinos.chain;
+option go_package = "github.com/koinos/koinos-proto-golang/v2/koinos/chain";
+
+import "google/protobuf/any.proto";
+
+message value_type {
+   oneof kind {
+      google.protobuf.Any message_value = 1;
+      int32 int32_value = 2;
+      int64 int64_value = 3 [jstype = JS_STRING];
+      uint32 uint32_value = 4;
+      uint64 uint64_value = 5 [jstype = JS_STRING];
+      sint32 sint32_value = 6;
+      sint64 sint64_value = 7 [jstype = JS_STRING];
+      fixed32 fixed32_value = 8;
+      fixed64 fixed64_value = 9 [jstype = JS_STRING];
+      sfixed32 sfixed32_value = 10;
+      sfixed64 sfixed64_value = 11 [jstype = JS_STRING];
+      bool bool_value = 12;
+      string string_value = 13;
+      bytes bytes_value = 14;
+   }
+}
+
+message enum_type {
+   string name = 1;
+   int32 number = 2;
+}
+
+message list_type {
+   repeated value_type values = 1;
+}
