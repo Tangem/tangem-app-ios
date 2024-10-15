@@ -108,11 +108,20 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             return .unsupported
         }
 
-        let networkIds = networks.reduce(into: Set<String>()) { $0.insert($1.networkId) }
-
         for model in multiCurrencyUserWalletModels {
-            if !networkIds.intersection(model.config.supportedBlockchains.map { $0.networkId }).isEmpty {
-                return .available
+            let supportedBlockchains = model.config.supportedBlockchains
+
+            for network in networks {
+                if let supportedBlockchain = supportedBlockchains[network.networkId] {
+                    if network.contractAddress == nil {
+                        return .available
+                    }
+
+                    // searchable network is token
+                    if supportedBlockchain.canHandleTokens {
+                        return .available
+                    }
+                }
             }
         }
 
