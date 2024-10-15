@@ -22,31 +22,16 @@ class KaspaTransactionBuilder {
     }
     
     func availableAmount() -> Amount {
-        let inputs = unspentOutputs
+        let inputs = Array(unspentOutputs.prefix(maxInputCount))
         let availableAmountInSatoshi = inputs.reduce(0) { $0 + $1.amount }
         return Amount(with: blockchain, value: Decimal(availableAmountInSatoshi) / blockchain.decimalValue)
     }
     
-    func unspentOutputsCount(for amount: Amount) -> Int {
-        return unspentOutputs.count
-    }
-    
-    func setUnspentOutputs(_ unspentOutputs: [BitcoinUnspentOutput]) {
-        let sortedOutputs = unspentOutputs.sorted {
-            $0.amount > $1.amount
-        }
-        
-        self.unspentOutputs = Array(sortedOutputs.prefix(maxInputCount))
+    func setUnspentOutputs(_ unspentOutputs: [BitcoinUnspentOutput]) {        
+        self.unspentOutputs = unspentOutputs.sorted { $0.amount > $1.amount }
     }
     
     func buildForSign(_ transaction: Transaction) throws -> (KaspaTransaction, [Data]) {
-        let availableInputValue = self.availableAmount()
-
-        guard transaction.amount.type == availableInputValue.type,
-              transaction.amount <= availableInputValue else {
-            throw WalletError.failedToBuildTx
-        }
-
         let destinationAddressScript = try scriptPublicKey(address: transaction.destinationAddress).hexString.lowercased()
 
         var outputs: [KaspaOutput] = [
