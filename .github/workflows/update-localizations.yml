@@ -8,7 +8,7 @@ on:
 
 jobs:
   update-localizations:
+    uses: ./.github/actions/update-localizations-composite-action # TODO: Andrey Fedorov - Replace with remove composite action
     runs-on: ubuntu-latest
-    steps:
-      - name: Update localizations
-        uses: ./.github/actions/update-localizations-composite-action # TODO: Andrey Fedorov - Replace with remove composite action
+    secrets: inherit
+        
