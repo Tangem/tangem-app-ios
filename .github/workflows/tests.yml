@@ -53,8 +53,11 @@ jobs:
         bundle config path vendor/bundle
         bundle install --jobs 4 --retry 3
 
-    - name: Tests
+    - name: Tests host app
       run: bundle exec fastlane test
+
+    - name: Tests SPM modules
+      run: bundle exec fastlane test_modules
 
   check_bsdk_example_buildable:
     name: Check BSDK example project
