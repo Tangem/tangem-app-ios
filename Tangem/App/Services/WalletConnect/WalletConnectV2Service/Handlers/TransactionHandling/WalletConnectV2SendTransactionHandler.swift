@@ -17,7 +17,7 @@ class WalletConnectV2SendTransactionHandler {
     private let transactionBuilder: WalletConnectEthTransactionBuilder
     private let messageComposer: WalletConnectV2MessageComposable
     private let uiDelegate: WalletConnectUIDelegate
-    private let transactionDispatcher: SendTransactionDispatcher
+    private let transactionDispatcher: TransactionDispatcher
 
     private var transactionToSend: Transaction?
 
@@ -47,7 +47,7 @@ class WalletConnectV2SendTransactionHandler {
         self.messageComposer = messageComposer
         self.transactionBuilder = transactionBuilder
         self.uiDelegate = uiDelegate
-        transactionDispatcher = CommonSendTransactionDispatcher(walletModel: walletModel, transactionSigner: signer)
+        transactionDispatcher = SendTransactionDispatcher(walletModel: walletModel, transactionSigner: signer)
     }
 }
 
