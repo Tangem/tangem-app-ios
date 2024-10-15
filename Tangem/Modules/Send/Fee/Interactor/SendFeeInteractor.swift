@@ -75,13 +75,24 @@ class CommonSendFeeInteractor {
         let suggestedFeeToUse = _fees
             .withWeakCaptureOf(self)
             .compactMap { interactor, fees in
-                fees.value.flatMap { interactor.feeForAutoupdate(fees: $0) }
+                switch fees {
+                case .loaded(let fees):
+                    return interactor.feeForAutoupdate(fees: fees)
+                case .failedToLoad(let error):
+                    return SendFee(option: .market, value: .failedToLoad(error: error))
+                case .loading where interactor.input?.selectedFee.value.value == nil:
+                    // Show skeleton if currently fee don't have value
+                    return SendFee(option: .market, value: .loading)
+                case .loading:
+                    // Do nothing to exclude jumping skeleton/value
+                    return nil
+                }
             }
             .share()
 
         suggestedFeeToUse
-            // Only once
-            .first()
+            // Only once when the fee has value
+            .first(where: { $0.value.value != nil })
             .withWeakCaptureOf(self)
             .sink { interactor, fee in
                 fee.value.value.map {

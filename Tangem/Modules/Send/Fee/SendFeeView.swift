@@ -65,8 +65,8 @@ struct SendFeeView: View {
                 ForEach(viewModel.customFeeModels) { customFeeModel in
                     SendCustomFeeInputField(viewModel: customFeeModel)
                         .onFocusChanged(customFeeModel.onFocusChanged)
-                        .transition(transitionService.feeAuxiliaryViewTransition)
                 }
+                .transition(transitionService.customFeeTransition)
             }
         }
         .coordinateSpace(name: coordinateSpaceName)
