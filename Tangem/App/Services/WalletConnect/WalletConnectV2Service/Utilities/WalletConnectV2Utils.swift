@@ -7,8 +7,9 @@
 //
 
 import Foundation
-import WalletConnectSwiftV2
+import WalletConnectUtils
 import BlockchainSdk
+import WalletConnectSign
 
 struct WalletConnectV2Utils {
     private let evmNamespace = "eip155"
@@ -93,7 +94,7 @@ struct WalletConnectV2Utils {
                 continue
             }
 
-            var supportedChains = Set<WalletConnectSwiftV2.Blockchain>()
+            var supportedChains = Set<WalletConnectUtils.Blockchain>()
             let accounts: [[Account]] = chains.compactMap { wcBlockchain in
                 guard let blockchain = createBlockchain(for: wcBlockchain) else {
                     unsupportedEVMBlockchains.append(wcBlockchain.reference)
@@ -127,7 +128,7 @@ struct WalletConnectV2Utils {
                 continue
             }
 
-            var supportedChains = Set<WalletConnectSwiftV2.Blockchain>()
+            var supportedChains = Set<WalletConnectUtils.Blockchain>()
             let accounts: [[Account]] = chains.compactMap { wcBlockchain in
                 guard let blockchain = createBlockchain(for: wcBlockchain) else {
                     return nil
@@ -204,7 +205,7 @@ struct WalletConnectV2Utils {
         )
     }
 
-    func createBlockchain(for wcBlockchain: WalletConnectSwiftV2.Blockchain) -> BlockchainMeta? {
+    func createBlockchain(for wcBlockchain: WalletConnectUtils.Blockchain) -> BlockchainMeta? {
         switch wcBlockchain.namespace {
         case evmNamespace:
             let blockchains = SupportedBlockchains.all
@@ -239,7 +240,7 @@ struct WalletConnectV2Utils {
     }
 
     private func createBlockchainNetwork(
-        from wcBlockchain: WalletConnectSwiftV2.Blockchain,
+        from wcBlockchain: WalletConnectUtils.Blockchain,
         with address: String,
         walletModelProvider: WalletConnectWalletModelProvider
     ) -> BlockchainNetwork? {

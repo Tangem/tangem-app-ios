@@ -9,7 +9,6 @@
 import Foundation
 
 protocol ExpressDestinationService {
-    func canBeSwapped(wallet: WalletModel) async -> Bool
     func getDestination(source: WalletModel) async throws -> WalletModel
 }
 

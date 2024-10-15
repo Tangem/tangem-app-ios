@@ -40,7 +40,6 @@ target 'Tangem' do
   tangem_sdk_pod
 
   # Pods for Tangem
-  pod 'WalletConnectSwiftV2', :git => 'https://github.com/WalletConnect/WalletConnectSwiftV2', :tag => '1.18.7'
   pod 'Kingfisher', '~> 7.11.0'
 
   # Helpers
