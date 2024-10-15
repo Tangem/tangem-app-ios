@@ -137,7 +137,7 @@ enum AlertBuilder {
 
     static func makeWalletRenamingAlert(
         userWalletRepository: UserWalletRepository,
-        updateName: ((String) -> Void)?
+        updateName: ((String) -> Void)? = nil
     ) -> UIAlertController? {
         guard let userWalletModel = userWalletRepository.selectedModel else {
             return nil
