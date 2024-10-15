@@ -58,6 +58,7 @@ lane :test_modules do |options|
     # Still required in 2024 https://github.com/fastlane/fastlane/issues/20012#issuecomment-1263765513
     output_directory: Dir.pwd + "/test_output",
     result_bundle: true,
+    xcodebuild_formatter: "xcpretty",
     clean: true
   )
 end
