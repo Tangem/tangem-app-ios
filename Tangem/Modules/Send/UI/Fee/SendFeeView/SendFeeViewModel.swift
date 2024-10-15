@@ -147,7 +147,11 @@ class SendFeeViewModel: ObservableObject, Identifiable {
         case .loading:
             return .loading
         case .loaded(let value):
-            let feeComponents = feeFormatter.formattedFeeComponents(fee: value.amount.value, tokenItem: feeTokenItem)
+            let feeComponents = feeFormatter.formattedFeeComponents(
+                fee: value.amount.value,
+                tokenItem: feeTokenItem,
+                formattingOptions: .sendCryptoFeeFormattingOptions
+            )
             return .loaded(feeComponents)
         case .failedToLoad(let error):
             return .failedToLoad(error: error)

@@ -61,7 +61,8 @@ class SendFeeCompactViewModel: ObservableObject, Identifiable {
                 fee: $0.amount.value,
                 currencySymbol: feeTokenItem.currencySymbol,
                 currencyId: feeTokenItem.currencyId,
-                isFeeApproximate: isFeeApproximate
+                isFeeApproximate: isFeeApproximate,
+                formattingOptions: .sendCryptoFeeFormattingOptions
             )
         }
 
