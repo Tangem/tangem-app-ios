@@ -42,6 +42,26 @@ lane :test do |options|
 end
 
 desc """
+  A lane that builds and tests SPM modules located in the \"Modules\" folder.
+  Options:
+  - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+"""
+lane :test_modules do |options|
+  run_tests(
+    package_path: "Modules",
+    scheme: "TangemModules",
+    # Without it fastlane won't pass the "-destination" argument to the "xcodebuild" and the build will fail.
+    # A real & valid device name is not required, fastlane will use the first available device.
+    device: "iPhone",
+    # Still required in 2024 https://github.com/fastlane/fastlane/issues/20012#issuecomment-1263765513
+    output_directory: Dir.pwd + "/test_output",
+    result_bundle: true,
+    clean: true,
+    code_coverage: true
+  )
+end
+
+desc """
   A lane that builds a \"Tangem\" scheme and uploads the archive to TestFlight for release.
   Using enviroment: Production
   Options:

@@ -26,6 +26,18 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
   - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 
 
+### test_modules
+
+```sh
+[bundle exec] fastlane test_modules
+```
+
+
+  A lane that builds and tests SPM modules located in the "Modules" folder.
+  Options:
+  - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+
+
 ### release
 
 ```sh
