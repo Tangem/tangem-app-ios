@@ -9,10 +9,21 @@ on:
         description: 'Languages'  # TODO: Add Example
         default: 'en,fr,de,ja,ru,es,uk_UA,zh-Hant'  # TODO: Pass empty string by default
         type: string
+      update_app_localizations:
+        type: boolean
+        default: true
+        description: Update localizations in the main app target
+      update_bsdk_localizations:
+        type: boolean
+        default: false
+        description: Update localizations in the BlockchainSDK target
 
 jobs:
   update-localizations:
     runs-on: macos-14
+    env:
+      APP_LOCALIZATIONS_DESTINATION: "Tangem/Resources/Localizations"
+      BSDK_LOCALIZATIONS_DESTINATION: "BlockchainSdk/Resources/Localizations"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -29,12 +40,21 @@ jobs:
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
 
-      - name: Run localization fastlane lane
+      - name: Fetch and update main app localizations
+        if: github.event.inputs.update_app_localizations
         env:
           LOKALISE_PROJECT_ID: ${{ secrets.LOKALISE_APP_PROJECT_ID }}
           LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_ACCESS_TOKEN }}
         run: |
-          bundle exec fastlane update_translations languages:${{ github.event.inputs.langs }}
+          bundle exec fastlane update_translations languages:${{ github.event.inputs.langs }} destination:${{ env.APP_LOCALIZATIONS_DESTINATION }}
+
+      - name: Fetch and update BSDK localizations
+        if: github.event.inputs.update_bsdk_localizations
+        env:
+          LOKALISE_PROJECT_ID: ${{ secrets.LOKALISE_BSDK_PROJECT_ID }}
+          LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_ACCESS_TOKEN }}
+        run: |
+          bundle exec fastlane update_translations languages:${{ github.event.inputs.langs }} destination:${{ env.BSDK_LOCALIZATIONS_DESTINATION }}
 
       # TODO: Update texts and add id
       - name: Push changes and open a pull-request
@@ -46,7 +66,8 @@ jobs:
           git config --global user.name 'Tangem Service'
           git config --global user.email 'gitservice@tangem.com'
           git checkout -b $SOURCE_BRANCH $TARGET_BRANCH
-          git add 'Tangem/Resources/Localizations'
+          git add "${APP_LOCALIZATIONS_DESTINATION}"
+          git add "${BSDK_LOCALIZATIONS_DESTINATION}"
           git commit -S -m "Fetch all translations"
           git push --set-upstream origin $SOURCE_BRANCH --force
           gh pr create --base $TARGET_BRANCH --head $SOURCE_BRANCH --title "Update translations" --body "" --draft # TODO: TEMP
