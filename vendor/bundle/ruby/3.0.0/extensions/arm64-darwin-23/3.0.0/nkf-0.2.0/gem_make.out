@@ -1,0 +1,19 @@
+current directory: /Users/runner/work/tangem-app-ios/tangem-app-ios/vendor/bundle/ruby/3.0.0/gems/nkf-0.2.0/ext/nkf
+/opt/homebrew/opt/ruby@3.0/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /Users/runner/work/tangem-app-ios/tangem-app-ios/vendor/bundle/ruby/3.0.0/gems/nkf-0.2.0/ext/nkf
+make DESTDIR\= sitearchdir\=./.gem.20241016-2307-uhjvf8 sitelibdir\=./.gem.20241016-2307-uhjvf8 clean
+
+current directory: /Users/runner/work/tangem-app-ios/tangem-app-ios/vendor/bundle/ruby/3.0.0/gems/nkf-0.2.0/ext/nkf
+make DESTDIR\= sitearchdir\=./.gem.20241016-2307-uhjvf8 sitelibdir\=./.gem.20241016-2307-uhjvf8
+compiling nkf.c
+linking shared-object nkf.bundle
+ld: warning: ignoring duplicate libraries: '-lruby.3.0'
+
+current directory: /Users/runner/work/tangem-app-ios/tangem-app-ios/vendor/bundle/ruby/3.0.0/gems/nkf-0.2.0/ext/nkf
+make DESTDIR\= sitearchdir\=./.gem.20241016-2307-uhjvf8 sitelibdir\=./.gem.20241016-2307-uhjvf8 install
+/usr/bin/install -c -m 0755 nkf.bundle ./.gem.20241016-2307-uhjvf8
+
+current directory: /Users/runner/work/tangem-app-ios/tangem-app-ios/vendor/bundle/ruby/3.0.0/gems/nkf-0.2.0/ext/nkf
+make DESTDIR\= sitearchdir\=./.gem.20241016-2307-uhjvf8 sitelibdir\=./.gem.20241016-2307-uhjvf8 clean

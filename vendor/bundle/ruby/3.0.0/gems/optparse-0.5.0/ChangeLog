@@ -1,0 +1,275 @@
+-*- coding: utf-8 -*-
+
+commit 979bd76281d28044b3def3eadba233a87e62415a
+  Author:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  AuthorDate: 2024-04-15 18:42:47 +0900
+  Commit:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  CommitDate: 2024-04-15 18:42:47 +0900
+
+    [DOC] Split fetching commits and building package
+
+commit ca883bd3a1ac13957774fcb93e8bccd80b74c9d1
+  Author:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  AuthorDate: 2024-04-15 18:21:31 +0900
+  Commit:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  CommitDate: 2024-04-15 18:21:31 +0900
+
+    [DOC] git on Github Actions is old
+
+    It does not support `--unshallow-exclude` option.
+
+commit 7f79bc820ff0e04a05204ec63c5fc3e9c85e14ad
+  Author:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  AuthorDate: 2024-04-15 18:08:57 +0900
+  Commit:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  CommitDate: 2024-04-15 18:08:57 +0900
+
+    [DOC] Fix error when no tag found
+
+commit add085df63d79d878a8901c42f2cfc3eec56307f
+  Author:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  AuthorDate: 2024-04-15 15:57:09 +0900
+  Commit:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  CommitDate: 2024-04-15 15:58:54 +0900
+
+    Fetch upto the previous tag for changelogs
+
+commit 436a5c516b67f8aec900f2361567c6fc163ade05
+  Author:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  AuthorDate: 2024-04-15 15:08:19 +0900
+  Commit:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  CommitDate: 2024-04-15 15:08:19 +0900
+
+    [DOC] Make timestamps in a ISO 8601-like format
+
+commit 3a2dcd72d1fdabf63218cd13c8c7953cb3c28f6b
+  Author:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  AuthorDate: 2024-04-15 14:55:14 +0900
+  Commit:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  CommitDate: 2024-04-15 14:55:14 +0900
+
+    [DOC] Make ChangeLog non-empty
+
+    When the latest version is tagged at the head, there is no commit
+    between the tag and the head.  Make from the previous tag.
+
+commit b7382c02f1092f2c0ef0f4096d3b8428e2adf3fa
+  Author:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  AuthorDate: 2024-04-15 14:49:59 +0900
+  Commit:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  CommitDate: 2024-04-15 14:49:59 +0900
+
+    [DOC] Exclude CI-skipped commits from changelogs
+
+commit b49cb996afdd68e4eb373ba602c95b52c963d160
+  Author:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  AuthorDate: 2024-04-15 14:24:19 +0900
+  Commit:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  CommitDate: 2024-04-15 14:24:19 +0900
+
+    [DOC] Package files for RDoc
+
+commit f5018a8b1ce82f7ac7458d00d099a454c3c03ea1
+  Author:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  AuthorDate: 2024-04-15 14:05:43 +0900
+  Commit:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  CommitDate: 2024-04-15 14:05:43 +0900
+
+    bump up to 0.5.0
+
+commit ece4bb2673c7fa9f53133ba91bbffd423ebadc90
+  Author:     Koichi Sasada <ko1@atdot.net>
+  AuthorDate: 2024-03-27 07:29:38 +0900
+  Commit:     Koichi Sasada <ko1@atdot.net>
+  CommitDate: 2024-04-15 12:08:07 +0900
+
+    show warning for unused block
+
+    With verbopse mode (-w), the interpreter shows a warning if
+    a block is passed to a method which does not use the given block.
+
+    Warning on:
+
+    * the invoked method is not written in C
+    * the invoked method is not `initialize`
+    * not invoked with `super`
+    * the first time on the call-site with the invoked method
+      (`obj.foo{}` will be warned once if `foo` is same method)
+
+    [Feature #15554]
+
+    `Primitive.attr! :use_block` is introduced to declare that primitive
+    functions (written in C) will use passed block.
+
+    For minitest, test needs some tweak, so use
+    https://github.com/minitest/minitest/commit/ea9caafc0754b1d6236a490d59e624b53209734a
+    for `test-bundled-gems`.
+
+    ruby/ruby@9180e33ca3a5886fec3f9e0a2f48072b55914e65
+
+commit 77dccce37cb9fd1b8fbc52160d4103d1c4579669
+  Author:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  AuthorDate: 2024-03-01 01:24:05 +0900
+  Commit:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  CommitDate: 2024-03-01 01:24:05 +0900
+
+    Invoke pager for `--help`
+
+commit 59b9fd7ddca3e795c235aa397655b51de2e4c949
+  Author:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  AuthorDate: 2024-02-23 21:49:57 +0900
+  Commit:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  CommitDate: 2024-02-23 21:49:57 +0900
+
+    [DOC] About return value of OptionParser#new
+
+commit 07e83673a8e99b5b7985608a69f713abde3344f6
+  Author:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  AuthorDate: 2024-02-21 13:42:11 +0900
+  Commit:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  CommitDate: 2024-02-23 21:13:51 +0900
+
+    Add `exact:` keyword argument
+
+commit bbec64d0c7f198429b62468b64b27692efa18dc2
+  Author:     Yusuke Endoh <mame@ruby-lang.org>
+  AuthorDate: 2024-01-19 16:03:38 +0900
+  Commit:     Hiroshi SHIBATA <hsbt@ruby-lang.org>
+  CommitDate: 2024-02-16 10:47:36 +0900
+
+    Do not include a backtick in error messages and backtraces
+
+    [Feature #16495]
+
+commit 451dea51a0e5d062fb4cb75b1073a2c2b8609bef
+  Author:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  AuthorDate: 2024-02-12 01:30:58 +0900
+  Commit:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  CommitDate: 2024-02-12 01:30:58 +0900
+
+    [DOC] Add description of OptionParser#define_by_keywords
+
+commit 33956ce93f56320978cedfcebb8b6cf18bf96c53
+  Author:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  AuthorDate: 2024-02-12 01:07:05 +0900
+  Commit:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  CommitDate: 2024-02-12 01:07:05 +0900
+
+    [DOC] Add missing documents
+
+commit 78afdab30751e1b7cf80bb57d6696b10879f90fe
+  Author:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  AuthorDate: 2024-02-10 22:56:32 +0900
+  Commit:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  CommitDate: 2024-02-10 22:56:32 +0900
+
+    Search exactly when `require_exact`
+
+    To work with options defined as `--[no]-something`.
+
+    Fix https://bugs.ruby-lang.org/issues/20252
+    Fix #60
+
+commit 213cb03b5978ddacfbcc8f71ec837d9a6fd4c56d
+  Author:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  AuthorDate: 2024-02-09 19:03:20 +0900
+  Commit:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  CommitDate: 2024-02-09 19:03:20 +0900
+
+    Adjust arguments for lambda-callbacks
+
+    Rake uses [lambda] as callbacks.
+    Calling it without omitted argument raises an `ArgumentError`.
+
+    lambda: https://github.com/ruby/rake/blob/master/lib/rake/application.rb#L543
+
+commit 9d53e74aa4421e0c4e2a805a0074ece5aae3773f
+  Author:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  AuthorDate: 2024-02-09 12:59:43 +0900
+  Commit:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  CommitDate: 2024-02-09 12:59:43 +0900
+
+    Respect default values in block parameters
+
+    Fix #55
+
+commit 4e346ad337f400dbff855798e859f17455698c2a
+  Author:     fatkodima <fatkodima123@gmail.com>
+  AuthorDate: 2023-10-14 21:52:01 +0300
+  Commit:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  CommitDate: 2024-02-09 12:31:08 +0900
+
+    Fix `require_exact` to work with options defined as `--[no]-something`
+
+commit b14c2c644d18cce226e49ccde8a23b5b991ea8cf
+  Author:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  AuthorDate: 2024-02-09 12:17:31 +0900
+  Commit:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  CommitDate: 2024-02-09 12:17:31 +0900
+
+    Escape backslashes
+
+commit 434e92fc62ff9571124335a2eedff56df83dae48
+  Author:     dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+  AuthorDate: 2023-12-18 03:43:27 +0000
+  Commit:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  CommitDate: 2024-02-09 12:14:30 +0900
+
+    Bump actions/upload-artifact from 3 to 4
+
+    Bumps [actions/upload-artifact](https://github.com/actions/upload-artifact) from 3 to 4.
+    - [Release notes](https://github.com/actions/upload-artifact/releases)
+    - [Commits](https://github.com/actions/upload-artifact/compare/v3...v4)
+
+    ---
+    updated-dependencies:
+    - dependency-name: actions/upload-artifact
+      dependency-type: direct:production
+      update-type: version-update:semver-major
+    ...
+
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+commit 48385d3eaf37cd10140274453eeadc4496581fc2
+  Author:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  AuthorDate: 2024-02-09 12:01:44 +0900
+  Commit:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  CommitDate: 2024-02-09 12:06:40 +0900
+
+    Create codeql.yml
+
+commit 294c6e1ed4b170a8a34ab95c84453829c170223c
+  Author:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  AuthorDate: 2023-12-25 15:08:05 +0900
+  Commit:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  CommitDate: 2023-12-25 15:08:05 +0900
+
+    Build packages only on the latest release
+
+commit 324ff21f042769444cde41949fc0321f6c6ccf63
+  Author:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  AuthorDate: 2023-12-18 12:45:44 +0900
+  Commit:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  CommitDate: 2023-12-18 12:45:44 +0900
+
+    [DOC] Add missing documents
+
+commit 667ab35f593f81b7850009385453d20ca8023bba
+  Author:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  AuthorDate: 2023-12-18 12:24:46 +0900
+  Commit:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  CommitDate: 2023-12-18 12:24:46 +0900
+
+    [DOC] Add missing secition
+
+    Fixes #51
+
+commit 1c895efc39ed2290c185dcb80523fee381dfe74e
+  Author:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  AuthorDate: 2023-12-18 12:15:31 +0900
+  Commit:     Nobuyoshi Nakada <nobu@ruby-lang.org>
+  CommitDate: 2023-12-18 12:15:31 +0900
+
+    [DOC] Fix tutorial link
+
+    Fixes #51

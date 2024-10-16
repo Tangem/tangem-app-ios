@@ -1,0 +1,16 @@
+current directory: /Users/runner/work/tangem-app-ios/tangem-app-ios/vendor/bundle/ruby/3.0.0/gems/json-2.7.2/ext/json
+/opt/homebrew/opt/ruby@3.0/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /Users/runner/work/tangem-app-ios/tangem-app-ios/vendor/bundle/ruby/3.0.0/gems/json-2.7.2/ext/json
+make DESTDIR\= sitearchdir\=./.gem.20241016-2307-34antb sitelibdir\=./.gem.20241016-2307-34antb clean
+
+current directory: /Users/runner/work/tangem-app-ios/tangem-app-ios/vendor/bundle/ruby/3.0.0/gems/json-2.7.2/ext/json
+make DESTDIR\= sitearchdir\=./.gem.20241016-2307-34antb sitelibdir\=./.gem.20241016-2307-34antb
+make: Nothing to be done for `all'.
+
+current directory: /Users/runner/work/tangem-app-ios/tangem-app-ios/vendor/bundle/ruby/3.0.0/gems/json-2.7.2/ext/json
+make DESTDIR\= sitearchdir\=./.gem.20241016-2307-34antb sitelibdir\=./.gem.20241016-2307-34antb install
+
+current directory: /Users/runner/work/tangem-app-ios/tangem-app-ios/vendor/bundle/ruby/3.0.0/gems/json-2.7.2/ext/json
+make DESTDIR\= sitearchdir\=./.gem.20241016-2307-34antb sitelibdir\=./.gem.20241016-2307-34antb clean
