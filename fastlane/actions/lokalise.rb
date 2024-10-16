@@ -12,16 +12,19 @@ module Fastlane
         clean_destination = params[:clean_destination]
         include_comments = params[:include_comments]
         original_filenames = params[:use_original]
+        export_empty_as = params[:export_empty_as] ? params[:export_empty_as] : "base"
+        export_sort = params[:export_sort] ? params[:export_sort] : "first_added"
+        replace_breaks = params[:replace_breaks] ? true : false
 
         body = {
           format: "ios_sdk",
           original_filenames: original_filenames,
           bundle_filename: "Localization.zip",
           bundle_structure: "%LANG_ISO%.lproj/Localizable.%FORMAT%",
-          export_empty_as: "base",
-          export_sort: "first_added",
+          export_empty_as: export_empty_as,
+          export_sort: export_sort,
           include_comments: include_comments,
-          replace_breaks: false
+          replace_breaks: replace_breaks
         }
 
         filter_langs = params[:languages]
@@ -160,6 +163,29 @@ module Fastlane
                                         is_string: false,
                                         verify_block: proc do |value|
                                           UI.user_error! "Tags should be passed as array" unless value.kind_of? Array
+                                        end),
+            FastlaneCore::ConfigItem.new(key: :export_empty_as,
+                                        description: "How to export empty strings",
+                                        optional: true,
+                                        is_string: true,
+                                        default_value: "base",
+                                        verify_block: proc do |value|
+                                          UI.user_error! "Use one of options: empty, base, skip, null." unless ['empty', 'base', 'skip', 'null'].include?(value)
+                                        end),
+            FastlaneCore::ConfigItem.new(key: :export_sort,
+                                        description: "Export key sort mode. Allowed values are first_added, last_added, last_updated, a_z, z_a",
+                                        optional: true,
+                                        is_string: true,
+                                        verify_block: proc do |value|
+                                          UI.user_error! "Should be a String" unless value.kind_of? String
+                                        end),
+            FastlaneCore::ConfigItem.new(key: :replace_breaks,
+                                        description: "Replace breaks",
+                                        optional: true,
+                                        is_string: false,
+                                        default_value: false,
+                                        verify_block: proc do |value|
+                                          UI.user_error! "Replace break should be true or false" unless [true, false].include? value
                                         end),
 
         ]
