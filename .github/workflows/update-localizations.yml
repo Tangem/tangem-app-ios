@@ -1,4 +1,4 @@
-name: Fetch translations (Lokalise)
+name: Fetch and update translations (Lokalise)
 
 on:
   workflow_dispatch:

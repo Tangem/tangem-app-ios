@@ -164,18 +164,18 @@ lane :refresh_dsyms do |options|
 end
 
 desc """
-TBD
+Fetches and updates localization bundles using Localise fastlane action (https://github.com/lokalise/lokalise-fastlane-actions).
 Uses `LOKALISE_API_TOKEN` and `LOKALISE_PROJECT_ID` env vars.
 Options:
-- languages: TBD
-- destination: TBD
+- languages: A comma-delimited string of languages to update, like `en,fr,de,ja,ru,es,uk_UA`. Pass an empty string to update all available languages.
+- destination: A file path to save localization files to.
 """
 lane :update_translations do |options|
   # Can't pass an array as a param for a lane, see https://github.com/fastlane-community/fastlane-plugin-appicon/issues/41 for details
   languages = options[:languages]&.split(",")
 
   destination = options[:destination]
-  UI.user_error!("Invalid destination path  '#{destination}' for localization files") unless (destination and not destination.empty?)
+  UI.user_error!("Invalid destination path '#{destination}' for localization files") unless (destination and not destination.empty?)
 
   lokalise(
     destination: destination,

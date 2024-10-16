@@ -104,11 +104,11 @@ Options:
 ```
 
 
-TBD
+Fetches and updates localization bundles using Localise fastlane action (https://github.com/lokalise/lokalise-fastlane-actions).
 Uses `LOKALISE_API_TOKEN` and `LOKALISE_PROJECT_ID` env vars.
 Options:
-- languages: TBD
-- destination: TBD
+- languages: A comma-delimited string of languages to update, like `en,fr,de,ja,ru,es,uk_UA`. Pass an empty string to update all available languages.
+- destination: A file path to save localization files to.
 
 
 ----
