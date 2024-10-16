@@ -97,6 +97,19 @@ Options:
 - build: build number
 
 
+### update_translations
+
+```sh
+[bundle exec] fastlane update_translations
+```
+
+
+TBD
+Uses `LOKALISE_API_TOKEN` and `LOKALISE_PROJECT_ID` env vars.
+Options:
+- languages: TBD
+
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.

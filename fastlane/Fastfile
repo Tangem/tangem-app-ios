@@ -155,6 +155,26 @@ lane :refresh_dsyms do |options|
   clean_build_artifacts
 end
 
+desc """
+TBD
+Uses `LOKALISE_API_TOKEN` and `LOKALISE_PROJECT_ID` env vars.
+Options:
+- languages: TBD
+"""
+lane :update_translations do |options|
+  # Can't pass an array as a param for a lane, see https://github.com/fastlane-community/fastlane-plugin-appicon/issues/41 for details
+  languages = options[:languages]&.split(",")
+
+  lokalise(
+    destination: "Tangem/Resources/Localizations",
+    replace_breaks: true,
+    use_original: true,
+    languages: languages,
+    export_sort: "a_z",
+    export_empty_as: "base"
+  )
+end
+
 private_lane :build do |options|
   app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
   build_app(
