@@ -168,13 +168,17 @@ TBD
 Uses `LOKALISE_API_TOKEN` and `LOKALISE_PROJECT_ID` env vars.
 Options:
 - languages: TBD
+- destination: TBD
 """
 lane :update_translations do |options|
   # Can't pass an array as a param for a lane, see https://github.com/fastlane-community/fastlane-plugin-appicon/issues/41 for details
   languages = options[:languages]&.split(",")
 
+  destination = options[:destination]
+  UI.user_error!("Invalid destination path for localization files") unless (destination and not destination.empty?)
+
   lokalise(
-    destination: "Tangem/Resources/Localizations",  # TODO: pass as a param
+    destination: destination,
     replace_breaks: true,
     use_original: true,
     languages: languages,

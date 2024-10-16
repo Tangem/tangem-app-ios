@@ -108,6 +108,7 @@ TBD
 Uses `LOKALISE_API_TOKEN` and `LOKALISE_PROJECT_ID` env vars.
 Options:
 - languages: TBD
+- destination: TBD
 
 
 ----
