@@ -70,4 +70,4 @@ jobs:
           git add "${BSDK_LOCALIZATIONS_DESTINATION}"
           git commit -S -m "Fetch all translations"
           git push --set-upstream origin $SOURCE_BRANCH --force
-          gh pr create --base $TARGET_BRANCH --head $SOURCE_BRANCH --title "Update translations" --body "" --draft # TODO: TEMP
+          #gh pr create --base $TARGET_BRANCH --head $SOURCE_BRANCH --title "Update translations" --body "" --draft # TODO: TEMP
