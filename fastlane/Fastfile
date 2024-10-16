@@ -174,7 +174,7 @@ lane :update_translations do |options|
   languages = options[:languages]&.split(",")
 
   lokalise(
-    destination: "Tangem/Resources/Localizations",
+    destination: "Tangem/Resources/Localizations",  # TODO: pass as a param
     replace_breaks: true,
     use_original: true,
     languages: languages,
