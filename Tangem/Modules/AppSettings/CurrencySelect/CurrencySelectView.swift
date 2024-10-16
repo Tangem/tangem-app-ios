@@ -19,6 +19,7 @@ struct CurrencySelectView: View {
             Colors.Background.secondary.ignoresSafeArea()
 
             content
+                .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
         }
         .navigationBarTitle(Localization.detailsRowTitleCurrency, displayMode: .inline)
         .onAppear {
@@ -41,7 +42,6 @@ struct CurrencySelectView: View {
                 .interItemSpacing(12)
             }
             .interContentPadding(8)
-            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
 
         case .failedToLoad(let error):
             Text(error.localizedDescription)
