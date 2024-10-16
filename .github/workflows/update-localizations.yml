@@ -4,8 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       langs:
-        description: "Languages"
-        default: "en,fr,de,ja,ru,es,uk_UA"  # No 'zh-Hant' and `it` for now since these translations are not completed
+        description: >
+          Optional filter of languages to fetch and update. Pass a comma-delimited string of language codes, 
+          like `en,fr,de` to fetch and update translations for the selected languages only.
+          Leave empty (the default value) to fetch and update translations for all available languages.
         type: string
       update_app_localizations:
         type: boolean
