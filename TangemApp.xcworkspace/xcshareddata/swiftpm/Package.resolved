@@ -1,5 +1,5 @@
 {
-  "originHash" : "cb0e022f8749486d40f4c4f519b2f8400ea087e61b479cdbb42f934c2a905b02",
+  "originHash" : "4e1b69c9c30f370afdaa78e05da89f70ae6c42d2fd2679b81d83f0e75a92937a",
   "pins" : [
     {
       "identity" : "anyasyncsequence",
@@ -110,12 +110,30 @@
       }
     },
     {
+      "identity" : "qrcode",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/WalletConnect/QRCode",
+      "state" : {
+        "revision" : "263f280d2c8144adfb0b6676109846cfc8dd552b",
+        "version" : "14.3.1"
+      }
+    },
+    {
       "identity" : "regex",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/sharplet/Regex.git",
       "state" : {
         "revision" : "76c2b73d4281d77fc3118391877efd1bf972f515",
         "version" : "2.1.1"
+      }
+    },
+    {
+      "identity" : "reown-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/reown-com/reown-swift.git",
+      "state" : {
+        "revision" : "8c1a43e28358a30dc03367dca2f38476f1573ece",
+        "version" : "1.0.4"
       }
     },
     {
@@ -272,6 +290,15 @@
       }
     },
     {
+      "identity" : "swift-qrcode-generator",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/dagronf/swift-qrcode-generator",
+      "state" : {
+        "revision" : "5ca09b6a2ad190f94aa3d6ddef45b187f8c0343b",
+        "version" : "1.0.3"
+      }
+    },
+    {
       "identity" : "swift-sodium",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/jedisct1/swift-sodium.git",
@@ -299,6 +326,15 @@
       }
     },
     {
+      "identity" : "swiftimagereadwrite",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/dagronf/SwiftImageReadWrite",
+      "state" : {
+        "revision" : "5596407d1cf61b953b8e658fa8636a471df3c509",
+        "version" : "1.1.6"
+      }
+    },
+    {
       "identity" : "ton-swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/ton-swift.git",
@@ -323,6 +359,15 @@
       "state" : {
         "revision" : "67be5876186284e85a5f5f8757de209ba53d5729",
         "version" : "4.0.46-tangem1"
+      }
+    },
+    {
+      "identity" : "wallet-mobile-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/MobileWalletProtocol/wallet-mobile-sdk",
+      "state" : {
+        "revision" : "84b3d3f25a2e3b140ec12bb0d22c35b58f817d44",
+        "version" : "1.0.0"
       }
     },
     {

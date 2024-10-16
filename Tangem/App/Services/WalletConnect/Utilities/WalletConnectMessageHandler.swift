@@ -6,7 +6,7 @@
 //  Copyright © 2023 Tangem AG. All rights reserved.
 //
 
-import WalletConnectSwiftV2
+import WalletConnectUtils
 
 protocol WalletConnectMessageHandler {
     var event: WalletConnectEvent { get }

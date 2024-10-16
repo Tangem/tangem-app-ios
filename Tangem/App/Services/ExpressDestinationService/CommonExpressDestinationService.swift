@@ -28,46 +28,6 @@ struct CommonExpressDestinationService {
 // MARK: - ExpressDestinationService
 
 extension CommonExpressDestinationService: ExpressDestinationService {
-    func canBeSwapped(wallet: WalletModel) async -> Bool {
-        let isAvailable = swapAvailabilityProvider.canSwap(tokenItem: wallet.tokenItem)
-
-        guard isAvailable, !wallet.isCustom else {
-            AppLog.shared.debug("[Express] \(self) has checked that wallet: \(wallet.name) can not be swapped")
-            return false
-        }
-
-        do {
-            try await expressRepository.updatePairs(for: wallet)
-        } catch {
-            return false
-        }
-
-        let hasBalance = (wallet.balanceValue ?? 0) > 0
-        let pairsFrom = await expressRepository.getPairs(from: wallet)
-
-        // If we can swap as source
-        if hasBalance, !pairsFrom.isEmpty {
-            AppLog.shared.debug("[Express] \(self) has checked that wallet: \(wallet.name) can be swapped as source")
-            return true
-        }
-
-        // Otherwise we try to find a source wallet with balance and swap on `wallet` as destination
-        let pairsTo = await expressRepository.getPairs(to: wallet)
-        let walletModelsWithPositiveBalance = walletModelsManager.walletModels.filter { !$0.isZeroAmount }
-
-        let hasSourceWithBalance = walletModelsWithPositiveBalance.contains { wallet in
-            pairsTo.contains(where: { $0.source == wallet.expressCurrency })
-        }
-
-        if hasSourceWithBalance {
-            AppLog.shared.debug("[Express] \(self) has checked that wallet: \(wallet.name) can be swapped as destination")
-            return true
-        }
-
-        AppLog.shared.debug("[Express] \(self) has checked that wallet: \(wallet.name) can not be swapped")
-        return false
-    }
-
     func getDestination(source: WalletModel) async throws -> WalletModel {
         let availablePairs = await expressRepository.getPairs(from: source)
         let searchableWalletModels = walletModelsManager.walletModels.filter { wallet in

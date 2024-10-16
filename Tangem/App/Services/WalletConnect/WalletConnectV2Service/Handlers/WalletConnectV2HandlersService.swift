@@ -8,8 +8,8 @@
 
 import Foundation
 import enum BlockchainSdk.Blockchain
-import struct WalletConnectSwiftV2.Request
-import enum WalletConnectSwiftV2.RPCResult
+import struct WalletConnectSign.Request
+import enum JSONRPC.RPCResult
 
 protocol WalletConnectV2HandlersServicing {
     func handle(

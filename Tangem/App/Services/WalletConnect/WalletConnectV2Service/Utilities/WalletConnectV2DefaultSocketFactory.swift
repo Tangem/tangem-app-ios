@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import WalletConnectSwiftV2
+import ReownWalletKit
 
 class WalletConnectV2DefaultSocketFactory: WebSocketFactory {
     /// `create(with url: URL)` is called from internal entities of WalletConnectSwiftV2 lib
