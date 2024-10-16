@@ -303,7 +303,7 @@
 "give_permission_unlimited" = "Unlimited";
 "home_button_order" = "Order Tangem";
 "home_button_scan" = "掃描卡片";
-"information_generated_with_ai" = "This information was generated with AI";
+"information_generated_with_ai" = "This information was generated with AI.\nTap here, if you find any errors.";
 "initial_message_change_access_code_body" = "要更改訪問密碼，請完全按照上圖所示連接手機和卡片";
 "initial_message_change_passcode_body" = "要更改密碼，請完全按照上圖所示連接手機和卡";
 "initial_message_create_wallet_body" = "要創建錢包，請完全按照上圖所示連接手機和卡";
@@ -332,7 +332,7 @@
 "manage_tokens_list_header_title" = "Coin market cap";
 "manage_tokens_network_selector_native_subtitle" = "Blockchain the cryptocurrency was initially created";
 "manage_tokens_network_selector_native_title" = "Native network";
-"manage_tokens_network_selector_non_native_info" = "Using non-native networks for tokens enables cross-blockchain interoperability, allowing assets to be utilized in diverse decentralized applications and smart contracts across platforms. However, this often involves a custodian or smart contract to hold the original asset securely, introducing centralization and counterparty risk.";
+"manage_tokens_network_selector_non_native_info" = "Using non-native networks for tokens enables cross-blockchain interoperability, allowing assets to be utilized in diverse decentralized applications and smart contracts across platforms. However, this often involves a custodian or smart contract to hold the original asset securely, introducing centralization and counterparty risk.";
 "manage_tokens_network_selector_non_native_subtitle" = "Not original or primary blockchain the token is hosted";
 "manage_tokens_network_selector_non_native_title" = "Non-native networks";
 "manage_tokens_network_selector_title" = "Choose networks";
@@ -443,7 +443,7 @@
 "onboarding_access_code_feature_1_title" = "保護";
 "onboarding_access_code_feature_2_description" = "您可以稍後在每張卡上設置單獨的訪問密碼";
 "onboarding_access_code_feature_2_title" = "個人化";
-"onboarding_access_code_feature_3_description" = "Restore the access code with a linked card or ring. Don`t keep all your devices in one place.";
+"onboarding_access_code_feature_3_description" = "Restore the access code with a linked card or ring. Don't keep all your devices in one place.";
 "onboarding_access_code_feature_3_title" = "恢復";
 "onboarding_access_code_hint" = "選擇您想要的任何單詞、短語或數字作為您的訪問代碼";
 "onboarding_access_code_intro_title" = "建立訪問密碼";
@@ -676,7 +676,7 @@
 "staking_details_market_rating" = "Market rating";
 "staking_details_metrics_block_header" = "Metrics";
 "staking_details_minimum_requirement" = "Minimum Requirement";
-"staking_details_no_rewards_to_claim" = "No rewards";
+"staking_details_no_rewards_to_claim" = "No rewards available";
 "staking_details_reward_claiming" = "Reward claiming";
 "staking_details_reward_claiming_info" = "Method of receiving staking rewards.\nIt can be either automatic, where the reward is credited to your address, or manual, where you need to withdraw the reward by creating a transaction to receive it.";
 "staking_details_reward_schedule" = "Reward schedule";
@@ -707,6 +707,7 @@
 "staking_notification_network_error_text" = "Staking is currently unavailable due to network conditions. Please try again later.";
 "staking_notification_new_validator_funds_transfer" = "Staking in the %1$@ network with a new validator will automatically transfer all previously staked funds to this validator";
 "staking_notification_restake_rewards_text" = "Reinvests your earned rewards in your staked amount, increasing potential earnings.";
+"staking_notification_restake_text" = "Restake lets you move your funds from one validator to another without the need to unstake";
 "staking_notification_unlock_text" = "Unlock your money to withdraw it from staking process. Unlocking takes %@.";
 "staking_notification_unstake_cosmos_text" = "Your funds will be available for use after the 21-day unbonding period. Reward will be withdrawn along with your unstaking funds.";
 "staking_notification_unstake_text" = "Your funds will be available for use after the %@ unbonding period.";
@@ -725,6 +726,7 @@
 "staking_reward_schedule_day" = "Daily";
 "staking_reward_schedule_each" = "Each %@";
 "staking_reward_schedule_each_day" = "Each day";
+"staking_reward_schedule_each_days" = "Each %@ days";
 "staking_reward_schedule_each_sec" = "Each %1$@ sec";
 "staking_reward_schedule_epoch" = "Per Epoch";
 "staking_reward_schedule_era" = "Per Era";
@@ -930,7 +932,7 @@
 "warning_low_signatures_message" = "Only %@ signatures are left on this card. You must withdraw all of your funds.";
 "warning_low_signatures_title" = "Low signature count";
 "warning_manage_tokens_legacy_derivation_message" = "Tokens on different networks can have different addresses. Double-check that your address matches the network when you transfer funds.";
-"warning_matic_migration_message" = "MATIC is being migrated to POL. However there is no deadline set and MATIC isn't being deprecated yet. You can safely continue using MATIC token or use exchanges to swap it for POL.";
+"warning_matic_migration_message" = "MATIC is being migrated to POL. However, there is no deadline set and MATIC isn't being deprecated yet. You can safely continue using MATIC token or swap it for POL.";
 "warning_matic_migration_title" = "MATIC to POL Migration";
 "warning_missing_derivation_title" = "Some addresses are missing";
 "warning_network_unreachable_message" = "The network is currently unreachable. Please try again later.";
