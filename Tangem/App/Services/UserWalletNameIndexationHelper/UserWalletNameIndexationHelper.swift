@@ -16,10 +16,19 @@ final class UserWalletNameIndexationHelper {
     }
 
     static func migratedWallets<T: NameableWallet>(_ wallets: [T]) -> [T]? {
-        var wallets = wallets
-        let helper = UserWalletNameIndexationHelper(existingNames: wallets.map(\.name))
-
         var didChangeNames = false
+
+        var wallets = wallets.map { wallet in
+            var wallet = wallet
+            let trimmedName = wallet.name.trimmed()
+            if trimmedName != wallet.name {
+                didChangeNames = true
+                wallet.name = trimmedName
+            }
+            return wallet
+        }
+
+        let helper = UserWalletNameIndexationHelper(existingNames: wallets.map(\.name))
         for (index, wallet) in wallets.enumerated() {
             let suggestedName = helper.suggestedName(for: wallet.name)
             if wallet.name != suggestedName {
@@ -47,7 +56,7 @@ final class UserWalletNameIndexationHelper {
             dict[nameComponents.template, default: []].insert(nameComponents.index)
         }
 
-        let nameTemplate = rawName.trimmingCharacters(in: .whitespaces)
+        let nameTemplate = rawName.trimmed()
         let nameIndex = indicesByNameTemplate.nextIndex(for: nameTemplate)
 
         if nameIndex == 1 {

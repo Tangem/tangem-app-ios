@@ -57,7 +57,7 @@
 "card_settings_interrupted_reset_alert_title" = "Du hast nicht alle deine Karten oder Ringe zurückgesetzt";
 "card_settings_reset_card_to_factory" = "Auf Werkseinstellungen zurücksetzen";
 "card_settings_security_mode" = "Sicherheitsmodus";
-"card_settings_title" = "Karteneinstellungen";
+"card_settings_title" = "Karten oder Ring-Einstellungen";
 "cardano_coin_will_be_send_with_token_description" = "Zusätzlich zu den Netzwerkgebühren erhebt das Cardano-Netzwerk %1$@ ADA bei Transaktionen mit dem Token %2$@ ";
 "cardano_coin_will_be_send_with_token_title" = "Cardano-Transaktionsanforderungen";
 "cardano_insufficient_balance_to_send_token_description" = "Um eine %1$@ Transaktion durchzuführen, musst du einen gewissen ADA-Betrag einzahlen, um die Netzwerkgebühr und den ADA-Mindestwert zu decken (5 ADA werden empfohlen).";
@@ -110,7 +110,7 @@
 "common_generate_addresses" = "Adressen abrufen";
 "common_go_to_provider" = "Zum Anbieter gehen";
 "common_go_to_token" = "Zum Token";
-"common_hour" = "Stunde";
+"common_hour" = "stunde";
 "common_import" = "Importieren";
 "common_in_progress" = "In Arbeit";
 "common_later" = "Später";
@@ -118,7 +118,7 @@
 "common_left" = "%1$@ übrig";
 "common_locked" = "Gesperrt";
 "common_main_network" = "Hauptnetz";
-"common_month" = "Monat";
+"common_month" = "monat";
 "common_network_fee_title" = "Netzgebühr";
 "common_network_fee_warning_content" = "Der überwiesene Betrag wird um %1$@ (%2$@) gekürzt, um die gewählte Gebührenhöhe zu decken.";
 "common_next" = "Weiter";
@@ -170,7 +170,7 @@
 "common_unreachable" = "Nicht erreichbar";
 "common_unstake" = "staking beenden";
 "common_warning" = "Warnung";
-"common_week" = "Woche";
+"common_week" = "woche";
 "common_yes" = "Ja";
 "contract_address_copied_message" = "Vertragsadresse kopiert!";
 "currency_subtitle_expanded" = "Verfügbare Netzwerke";
@@ -207,7 +207,7 @@
 "details_manage_security_access_code" = "Zugangscode";
 "details_manage_security_access_code_description" = "Du musst den richtigen Zugangscode eingeben, bevor du die Karte oder Ring scannst.";
 "details_manage_security_long_tap" = "Langes Tippen";
-"details_manage_security_long_tap_description" = "Dieser Mechanismus schützt vor Annäherungsangriffen auf eine Karte oder Ring. Es wird eine Verzögerung zwischen dem Empfang und der Ausführung eines Befehls erzwungen. Nach der ersten signierten Transaktion wird dieses Telefon mit der Karte oder Ring verknüpft und die Transaktionen werden sofort signiert";
+"details_manage_security_long_tap_description" = "Dieser Mechanismus schützt vor Annäherungsangriffen auf eine Karte oder einen Ring. Er erzwingt eine Verzögerung zwischen dem Empfang und der Ausführung eines Befehls.";
 "details_manage_security_long_tap_shorter" = "Lange Tippen";
 "details_manage_security_passcode" = "Passcode";
 "details_manage_security_passcode_description" = "Bevor du einen Befehl ausführst, der eine Änderung des Kartenstatus zur Folge hat, musst du den Passcode eingeben.";
@@ -303,7 +303,7 @@
 "give_permission_unlimited" = "Unbegrenzt";
 "home_button_order" = "Karte oder Ring bestellen";
 "home_button_scan" = "Karte oder Ring scannen";
-"information_generated_with_ai" = "Diese Information ist KI generiert";
+"information_generated_with_ai" = "Diese Informationen wurden mithilfe von KI generiert. \n Tippe hier, wenn Du Fehler finden.";
 "initial_message_change_access_code_body" = "Um den Zugangscode zu ändern, halte die Karte oder Ring wie oben gezeigt an das Gerät und entferne sie erst am Ende des Vorgangs.";
 "initial_message_change_passcode_body" = "Um den Passcode zu ändern, halte die Karte oder Ring wie oben gezeigt an das Gerät und entferne sie erst am Ende des Vorgangs.";
 "initial_message_create_wallet_body" = "Um die Wallet zu erstellen, halte die Karte oder Ring wie oben gezeigt an das Gerät und entferne sie erst am Ende des Vorgangs.";
@@ -411,7 +411,7 @@
 "markets_token_details_liquidity_description" = "Die Änderung der Liquidität, die dem Token während des angegebenen Zeitraums zur Verfügung steht";
 "markets_token_details_liquidity_full" = "Liquidität";
 "markets_token_details_liquidity_index" = "Liquiditätsindex";
-"markets_token_details_liquidity_index_description" = "Leer";
+"markets_token_details_liquidity_index_description" = "";
 "markets_token_details_listed_on" = "Gelistet auf";
 "markets_token_details_low" = "Niedrig";
 "markets_token_details_market_capitalization" = "MarketCap";
@@ -443,7 +443,7 @@
 "onboarding_access_code_feature_1_title" = "Schützen";
 "onboarding_access_code_feature_2_description" = "Du kannst später auf jeder Karte oder Ring einen individuellen Zugangscode einrichten";
 "onboarding_access_code_feature_2_title" = "Personalisieren";
-"onboarding_access_code_feature_3_description" = "Der Zugangscode kann mit einer verbundenen Karte oder Ring wiederhergestellt werden. Bewahre nicht alle Karten oder Ringe an einem Ort auf.";
+"onboarding_access_code_feature_3_description" = "Stelle den Zugangscode mit einer verknüpften Karte oder einem Ring wieder her. Bewahre nicht alle Deine Geräte an einem Ort auf.";
 "onboarding_access_code_feature_3_title" = "Wiederherstellen";
 "onboarding_access_code_hint" = "Wähle ein beliebiges Wort, eine Phrase oder eine Zahl als Zugangscode";
 "onboarding_access_code_intro_title" = "Zugangscode erstellen";
@@ -454,7 +454,7 @@
 "onboarding_activation_error_message" = "Bitte wiederhole den Vorgang. Die Karte oder Ring wird auf Werkseinstellungen zurückgesetzt.";
 "onboarding_activation_error_title" = "Aktivierungsfehler";
 "onboarding_add_tokens" = "Token hinzufügen";
-"onboarding_alert_message_not_max_backup_cards_added" = "Du hast eine Backup-Karte oder Ring hinzugefügt. Wenn der Backup-Prozess abgeschlossen ist, kannst du keine weiteren Backup-Karten oder Ringe hinzufügen. Wenn du noch eine Karte oder Ring hast, füge diese zum Backup hinzu. Möchtest du den Backup-Prozess fortsetzen?";
+"onboarding_alert_message_not_max_backup_cards_added" = "Du hast einee Backup-Karte oder einen Backup-Ring hinzugefügt. Wenn der Backup-Prozess abgeschlossen ist, kannst Du keine weiteren Backup-Geräte hinzufügen. Wenn Du noch eine Karte oder einen Ring hast, fügen diese(n) zum Backup hinzu. Möchtest Du den Backup-Prozess fortsetzen?";
 "onboarding_alert_message_old_device" = "Das iPhone 7/7+ kann aufgrund einiger Systemeinschränkungen kein Backup für Tangem Wallet erstellen. Bitte verwende ein anderes Telefon, um diesen Vorgang durchzuführen. Alle anderen Funktionen funktionieren stabil.";
 "onboarding_backup_exit_warning" = "Der Sicherungsvorgang ist teilweise abgeschlossen. Du kannst ihn jetzt nicht beenden.";
 "onboarding_bottom_sheet_passphrase_description" = "Die Passphrase ist eine fortschrittliche Sicherheitsfunktion, die von Krypto-Wallets verwendet wird. Sie fügt ein zusätzliches Wort oder eine Phrase deiner Wahl zu der bereits bestehenden Wiederherstellungsphrase hinzu, um einen brandneuen Satz von Adressen zu erzeugen.";
@@ -580,7 +580,7 @@
 "save_user_wallet_agreement_notice" = "Beachte, dass für Transaktionen mit deinem Guthaben weiterhin deine Karte oder Ring erforderlich ist";
 "scan_card_settings_button" = "Karte oder Ring scannen";
 "scan_card_settings_message" = "Scanne die Karte oder Ring, um ihre Einstellungen zu ändern. Die Änderungen wirken sich nur auf die von dir gescannte Karte oder Ring aus und haben keine Auswirkungen auf andere mit deiner Wallet verknüpften Karten oder Ringe.";
-"scan_card_settings_title" = "Halte deine Karte bereit!";
+"scan_card_settings_title" = "Halte deine Karte oder Ring bereit!";
 "send_additional_field_already_included" = "Bereits in der eingegebenen Adresse enthalten";
 "send_alert_fee_too_high_text" = "Der Provisionsbetrag ist %@ mal der empfohlene Betrag. Stelle sicher, dass die benutzerdefinierten Einstellungen korrekt sind.";
 "send_alert_fee_too_low_text" = "Du hast eine Kommission angegeben, die unter dem empfohlenen Betrag liegt, was zu einer Verzögerung Ihrer Transaktion führen könnte. Weiter?";
@@ -680,7 +680,7 @@
 "staking_details_reward_claiming" = "Belohnungen beanspruchen";
 "staking_details_reward_claiming_info" = "Eine Möglichkeit, Staking-Belohnungen zu erhalten. Es kann automatisch oder manuell beansprucht werden.";
 "staking_details_reward_schedule" = "Belohnungszeitplan";
-"staking_details_reward_schedule_info" = "Dabei handelt es sich um einen Zeitplan, der festlegt, wann die Teilnehmer am Staking ihre Belohnungen erhalten.";
+"staking_details_reward_schedule_info" = "Dies ist ein Zeitplan, der bestimmt, wann Teilnehmer am Staking ihre Belohnungen erhalten. Der Zeitpunkt der Belohnungsverteilung kann je nach Validator und Netzwerklast leicht variieren.";
 "staking_details_rewards_to_claim" = "Belohnungen %@";
 "staking_details_title" = "Staking %@";
 "staking_details_unbonding_period" = "Entbindungsdauer";
@@ -707,6 +707,7 @@
 "staking_notification_network_error_text" = "Aufgrund von Netzwerkproblemen ist Staking derzeit nicht verfügbar. Bitte versuche es später erneut.";
 "staking_notification_new_validator_funds_transfer" = "Beim Staking im %1$@ -Netzwerk mit einem neuen Validator werden alle zuvor eingesetzten Kryptos automatisch an diesen Validator übertragen";
 "staking_notification_restake_rewards_text" = "Reinvestiert Deine verdienten Prämien in Deinen Einsatzbetrag und erhöht so den potenziellen Gewinn.";
+"staking_notification_restake_text" = "Mit Restake kannst Du Dein Guthaben von einem Validator zu einem anderen verschieben, ohne dass Du den Stake aufheben musst.";
 "staking_notification_unlock_text" = "Entsperre dein Geld, um es aus dem Staking-Prozess abzuheben. Das Freischalten nimmt %@.";
 "staking_notification_unstake_cosmos_text" = "Nach Ablauf der 21-tägigen Bindungsfrist kannst Du über Dein Guthaben verfügen. Die Prämie wird zusammen mit dem ungestaketen Guthaben abgehoben.";
 "staking_notification_unstake_text" = "Deine Assets steht Dir nach Ablauf der Frist für die Aufhebung der Bindung %@ zur Verfügung.";
@@ -725,6 +726,7 @@
 "staking_reward_schedule_day" = "Täglich";
 "staking_reward_schedule_each" = "Alle %@";
 "staking_reward_schedule_each_day" = "Täglich";
+"staking_reward_schedule_each_days" = "Alle %@";
 "staking_reward_schedule_each_sec" = "Alle %1$@ Sek.";
 "staking_reward_schedule_epoch" = "Pro Epoche";
 "staking_reward_schedule_era" = "Pro Ära";
@@ -734,7 +736,7 @@
 "staking_rewards" = "Belohnungen";
 "staking_stake_locked" = "Stake gesperrt";
 "staking_stake_more" = "Mehr staken";
-"staking_summary_description_text" = "Du setzt %1$@ ein und erhältst jährlich %2$@";
+"staking_summary_description_text" = "You stake %1$@ and will be receiving your reward each %2$@";
 "staking_tap_to_unlock" = "Zum Entsperren antippen";
 "staking_tap_to_unlock_or_vote" = "Tippe zum Entsperren oder Abstimmen";
 "staking_tap_to_withdraw" = "Zum abheben antippen";
@@ -844,7 +846,7 @@
 "user_wallet_list_rename_popup_placeholder" = "Wallet-Name";
 "user_wallet_list_rename_popup_title" = "Wallet umbenennen";
 "user_wallet_list_unlock_all_with" = "Alle mit %@ freischalten";
-"voice_over_open_card_details" = "Kartendetails öffnen";
+"voice_over_open_card_details" = "Karten oder Ring-Details öffnen";
 "voice_over_open_new_wallet_connect_session" = "QR-Code scannen, um eine neue WalletConnect Sitzung zu öffnen";
 "wallet_balance_missing_derivation" = "Karte oder Ring scannen";
 "wallet_connect_alert_sign_message" = "Aufforderung zum Signieren einer Nachricht. \n\n %@";
@@ -887,7 +889,7 @@
 "warning_access_denied_message" = "Verwende %@ oder scanne eine Karte oder Ring, um den Zugriff auf deine Wallet freizuschalten.";
 "warning_approval_in_progress_message" = "Das Genehmigungsverfahren ist derzeit im Gange und wird in Kürze abgeschlossen sein";
 "warning_approval_in_progress_title" = "Genehmigung läuft";
-"warning_backup_errors_message" = "Es scheint, dass die Aktivierung der Karte oder des Rings nicht korrekt abgeschlossen wurde. Dies kann an einem Problem mit dem NFC-Modul deines Gerätes oder an einem falschen Tippen der Karte oder Ring auf dein Gerät liegen. Bitte wende dich  an unser Support-Team, um Unterstützung zu erhalten.";
+"warning_backup_errors_message" = "Es scheint, dass die Aktivierung der Karte oder des Rings nicht korrekt abgeschlossen wurde. Dies kann an einem Problem mit dem NFC-Modul deines Gerätes oder an einem falschen Tippen der Karte oder Ring auf dein Gerät liegen. Bitte wende dich an unser Support-Team, um Unterstützung zu erhalten.";
 "warning_beacon_chain_retirement_content" = "Laut den Entwicklern des BNB-Netzes wird die Unterstützung für den BEP-2-Standard im Juni 2024 enden. Um den Verlust von Vermögenswerten mit diesem Standard zu vermeiden, konvertiere bitte in den BEP-20 Standard. Nutze gerne unseren Swap-Service, um sie auf das BNB Smart Chain Netzwerk zu übertragen.";
 "warning_beacon_chain_retirement_title" = "BNB Beacon Chain wird abgeschaltet";
 "warning_blocked_funds_for_fee_message" = "Bitte zahle ein paar %1$@ ein, um die Netzwerkgebühr zu decken";
@@ -898,7 +900,7 @@
 "warning_button_refresh" = "Aktualisieren";
 "warning_demo_mode_message" = "Du befindest sich derzeit im Demo-Modus";
 "warning_demo_mode_title" = "Demo-Modus aktiv";
-"warning_developer_card_message" = "Die Karte oder Ring, die du gescannt hast, ist eine Entwicklerkarte. Verwenden  diese nicht zur Erstellung Ihrer Wallet.";
+"warning_developer_card_message" = "Die Karte, die du gescannt hast, ist eine Entwicklerkarte. Verwenden  diese nicht zur Erstellung Ihrer Wallet.";
 "warning_developer_card_title" = "Nicht für Benutzer!";
 "warning_existential_deposit_message" = "%1$@ Netzwerk erfordert eine Mindesteinlage. Wenn dein Konto unter %2$@ fällt, wird es deaktiviert und alle verbleibenden Guthaben werden vernichtet.";
 "warning_existential_deposit_title" = "Netzwerk erfordert eine Mindesteinzahlung";
@@ -927,10 +929,10 @@
 "warning_hedera_token_association_not_enough_hbar_message" = "Nicht genug %@. Lade dein Hedera-Konto auf, um dieses Token zuzuordnen";
 "warning_long_transaction_message" = "iPhone 7/7+ kann in diesem Netzwerk keine Transaktionen signieren. Um diesen Vorgang abzuschließen, verwende bitte ein anderes Telefon.";
 "warning_long_transaction_title" = "Transaktionssignierung nicht verfügbar";
-"warning_low_signatures_message" = "Auf dieser Karte oder Ring oder Ring sind nur noch %@ Unterschriften übrig. Du musst dein gesamtes Guthaben abheben.";
+"warning_low_signatures_message" = "Auf dieser Karte oder Ring sind nur noch %@ Unterschriften übrig. Du musst dein gesamtes Guthaben abheben.";
 "warning_low_signatures_title" = "Geringe Anzahl von Unterschriften";
 "warning_manage_tokens_legacy_derivation_message" = "Token in verschiedenen Netzwerken können unterschiedliche Adressen haben. Überprüfe bei der Überweisung noch einmal, ob deine Adresse mit der des Netzwerks übereinstimmt.";
-"warning_matic_migration_message" = "MATIC wird auf POL migriert. Es gibt jedoch keine Frist, und MATIC wird noch nicht abgeschafft. Du kannst MATIC-Token weiterhin verwenden oder sie über eien Exchange gegen POL tauschen.";
+"warning_matic_migration_message" = "MATIC wird zu POL migriert. Es gibt jedoch keine festgelegte Frist und MATIC wird noch nicht abgeschafft. Du kannst den MATIC-Token weiterhin bedenkenlos verwenden oder es gegen POL austauschen.";
 "warning_matic_migration_title" = "Migration von MATIC zu POL";
 "warning_missing_derivation_title" = "Einige Adressen fehlen";
 "warning_network_unreachable_message" = "Das Netzwerk ist derzeit nicht erreichbar. Bitte versuchen Sie es später erneut.";
@@ -957,7 +959,7 @@
 "warning_system_deprecation_with_date_message" = "Der Support für deine Betriebssystemversion endet am %@ . Um zukünftige App-Updates zu erhalten, musst du auf die neueste Version aktualisieren.";
 "warning_system_update_message" = "Tangem empfiehlt die Installation des neuesten iOS-Updates für einen stabilen und sicheren Betrieb";
 "warning_system_update_title" = "System-Update verfügbar";
-"warning_testnet_card_message" = "Dies ist eine Testnet-Karte oder Ring. Sie kann keine Transaktionen verarbeiten und sollte nur zu Test- und Entwicklungszwecken verwendet werden.";
+"warning_testnet_card_message" = "Dies ist eine Testnet-Karte. Sie kann keine Transaktionen verarbeiten und sollte nur zu Test- und Entwicklungszwecken verwendet werden.";
 "warning_testnet_card_title" = "Nur für Testzwecke";
 "welcome_interrupted_backup_alert_discard" = "Verwerfen";
 "welcome_interrupted_backup_alert_message" = "Du hast eine unterbrochene Sicherung. Möchtest du diese fortsetzen?";

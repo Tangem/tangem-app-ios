@@ -2,22 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
   <dict>
-    <key>markets_token_details_amount_exchanges</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%#@format@</string>
-      <key>format</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>one</key>
-        <string>%li exchange</string>
-        <key>other</key>
-        <string>%li exchanges</string>
-      </dict>
-    </dict>
     <key>card_label_card_count</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
@@ -109,7 +93,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Vide</string>
+        <string></string>
         <key>other</key>
         <string>Écrivez ces %li mots dans l'ordre indiqué ci-dessous et conservez-les dans un endroit sûr et secret.</string>
       </dict>
@@ -125,7 +109,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Vide</string>
+        <string></string>
         <key>other</key>
         <string>%li mots</string>
       </dict>
@@ -173,9 +157,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Utilisez votre carte pour obtenir une adresse pour le réseau %li</string>
+        <string>Utilisez votre carte ou bague pour obtenir une adresse pour le réseau %li</string>
         <key>other</key>
-        <string>Utilisez votre carte pour obtenir des adresses pour les réseaux %li</string>
+        <string>Utilisez votre carte ou bague pour obtenir des adresses pour les réseaux %li</string>
       </dict>
     </dict>
   </dict>
