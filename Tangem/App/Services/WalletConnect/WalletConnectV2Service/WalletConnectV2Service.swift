@@ -329,8 +329,7 @@ final class WalletConnectV2Service {
 
         do {
             let sessionNamespaces = try utils.createSessionNamespaces(
-                from: proposal.requiredNamespaces,
-                optionalNamespaces: proposal.optionalNamespaces,
+                proposal: proposal,
                 walletModelProvider: infoProvider.wcWalletModelProvider
             )
             displaySessionConnectionUI(for: proposal, namespaces: sessionNamespaces)
