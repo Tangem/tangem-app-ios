@@ -9,6 +9,14 @@ WORKSPACE_NAME = "TangemApp.xcworkspace"
 FIREBASE_TESTERS_GROUP = "testers"
 
 before_all do |lane, options|
+  lanes_to_skip_bootstrap = [
+    :update_translations,
+  ]
+
+  if lanes_to_skip_bootstrap.include?(lane)
+    next
+  end
+
   # Xcode version overrides available only on CI
   if ENV["CI"]&.downcase == "true"
     if options[:xcode_version_override].nil?
