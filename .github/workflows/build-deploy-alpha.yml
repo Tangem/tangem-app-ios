@@ -1,13 +1,11 @@
 name: Fetch translations (Lokalise)
 
 on:
-  #schedule:
-  #  - cron: '0 0 * * *'  # Runs at 00:00 UTC every day
   workflow_dispatch:
     inputs:
       langs:
-        description: 'Languages'  # TODO: Add Example
-        default: 'en,fr,de,ja,ru,es,uk_UA,zh-Hant'  # TODO: Pass empty string by default
+        description: "Languages"
+        default: "en,fr,de,ja,ru,es,uk_UA"  # No 'zh-Hant' for now since the translation is not completed
         type: string
       update_app_localizations:
         type: boolean
@@ -64,8 +62,9 @@ jobs:
           LANGUAGES: ${{ github.event.inputs.langs }}
           GH_RUN_ID: ${{ github.run_id }}
         run: |
-          git config --global user.name 'Tangem Service'
-          git config --global user.email 'gitservice@tangem.com'
+          git config --global user.name "Tangem Service"
+          git config --global user.email "gitservice@tangem.com"
+
           git checkout -b $SOURCE_BRANCH $TARGET_BRANCH
           git add "${APP_LOCALIZATIONS_DESTINATION}"
           git add "${BSDK_LOCALIZATIONS_DESTINATION}"
@@ -77,4 +76,4 @@ jobs:
 
           git commit -S -m "${commit_message}"
           git push --set-upstream origin $SOURCE_BRANCH --force
-          gh pr create --base $TARGET_BRANCH --head $SOURCE_BRANCH --title "${pr_message}" --body "" --draft # TODO: TEMP
+          gh pr create --base $TARGET_BRANCH --head $SOURCE_BRANCH --title "${pr_message}" --body ""
