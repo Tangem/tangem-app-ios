@@ -48,7 +48,7 @@
 "card_settings_action_sheet_reset" = "リセット";
 "card_settings_action_sheet_title" = "本当に実行しますか?";
 "card_settings_change_access_code" = "アクセスコードの変更";
-"card_settings_change_access_code_footer" = "アクセスコードは、このカードのみで変更されます";
+"card_settings_change_access_code_footer" = "アクセスコードは、このカードまたはリングによってのみ変更されます";
 "card_settings_completed_reset_alert_message" = "選択したウォレットのすべてのTangemデバイスが、工場出荷時の設定にリセットされました。これで、新しいウォレットを作成できます。";
 "card_settings_completed_reset_alert_title" = "リセット完了";
 "card_settings_continue_reset_alert_message" = "このウォレットの次のデバイスをリセットしますか?";
@@ -207,7 +207,7 @@
 "details_manage_security_access_code" = "アクセスコード";
 "details_manage_security_access_code_description" = "カードをスキャンする前に、正しいアクセスコードを送信する必要があります。";
 "details_manage_security_long_tap" = "長くタップ";
-"details_manage_security_long_tap_description" = "このメカニズムは、カードまたはリングに対する近接攻撃から保護します。コマンドの受信と実行の間に遅延を強制します。 ";
+"details_manage_security_long_tap_description" = "このメカニズムは、カードまたはリングに対する近接攻撃から保護します。コマンドの受信と実行の間に遅延を強制します。";
 "details_manage_security_long_tap_shorter" = "長くタップ";
 "details_manage_security_passcode" = "パスコード";
 "details_manage_security_passcode_description" = "カードの状態の変更を伴うコマンドを実行する前に、パスコードを入力する必要があります。";
@@ -567,7 +567,7 @@
 "reset_card_with_backup_to_factory_message" = "工場出荷時設定にリセットすると、選択したカードやリングからウォレットが完全に削除されます。現在のウォレットを復元したり、カードやリングを使用してアクセスコードを復元することはできません。";
 "reset_card_without_backup_to_factory_message" = "工場出荷時の状態にリセットすると、選択したカードやリングからウォレットが完全に削除され、アプリから削除されます。現在のウォレットを復元することはできません。";
 "ring_promo_text" = "Tangem Ringユーザーは、11/15日までChangelly経由でスワップを3回手数料ゼロで行えます！";
-"ring_promo_title" = "今すぐ手数料0%でスワップしましょう！";
+"ring_promo_title" = "今すぐ手数料0%%でスワップしましょう！";
 "russian_bank_card_warning_subtitle" = "他の国の銀行カードと、ロシア連邦外での居住許可証または登録をお持ちですか?";
 "russian_bank_card_warning_title" = "ロシアの銀行カードは現在ご利用いただけません";
 "save_user_wallet_agreement_access_description" = "アプリにログインして、カードまたはリングをスキャンせずに残高を確認できます";
@@ -707,6 +707,7 @@
 "staking_notification_network_error_text" = "ネットワークの状態により、現在ステーキングはご利用いただけません。しばらくしてからもう一度お試しください。";
 "staking_notification_new_validator_funds_transfer" = "新しいバリデーターで%1$@ネットワークにステーキングすると、以前にステーキングされた資金はすべてこのバリデーターに自動的に転送されます。";
 "staking_notification_restake_rewards_text" = "獲得した報酬をステーキングに再投資し、潜在的な収益を増やします。";
+"staking_notification_restake_text" = "再ステーキングを使うと、ステーキングを解除することなく、あるバリデータから別のバリデータに資金を移動できます。";
 "staking_notification_unlock_text" = "資金をステーキングから引き出すには、ロックを解除してください。ロック解除には%@かかります。";
 "staking_notification_unstake_cosmos_text" = "資金は、21日間のロック解除期間後に使用可能になります。報酬は、ロック解除後の資金とともに引き出されます。";
 "staking_notification_unstake_text" = "%@のステーキング解除期間後、資金はすぐ利用可能となります。";
@@ -725,6 +726,7 @@
 "staking_reward_schedule_day" = "毎日";
 "staking_reward_schedule_each" = "%@ごと";
 "staking_reward_schedule_each_day" = "毎日";
+"staking_reward_schedule_each_days" = "%@ごと";
 "staking_reward_schedule_each_sec" = "%1$@秒毎";
 "staking_reward_schedule_epoch" = "エポック毎";
 "staking_reward_schedule_era" = "時代毎";

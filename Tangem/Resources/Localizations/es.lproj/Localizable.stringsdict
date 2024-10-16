@@ -2,22 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
   <dict>
-    <key>markets_token_details_amount_exchanges</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%#@format@</string>
-      <key>format</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>one</key>
-        <string>%li exchange</string>
-        <key>other</key>
-        <string>%li exchanges</string>
-      </dict>
-    </dict>
     <key>card_label_card_count</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
@@ -31,7 +15,7 @@
         <key>one</key>
         <string>%li tarjeta</string>
         <key>other</key>
-        <string>%li tarjetas </string>
+        <string>%li tarjetas</string>
       </dict>
     </dict>
     <key>common_days_no_param</key>
@@ -109,7 +93,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Vacío</string>
+        <string></string>
         <key>other</key>
         <string>Escriba estas %li palabras en el orden que se indica a continuación y guárdelas en un lugar seguro y secreto.</string>
       </dict>
@@ -125,7 +109,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Vacío</string>
+        <string></string>
         <key>other</key>
         <string>%li palabras</string>
       </dict>
@@ -173,9 +157,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Use su tarjeta para obtener una dirección para la red</string>
+        <string>Use su tarjeta o anillo para obtener una dirección para la red</string>
         <key>other</key>
-        <string>Use su tarjeta para obtener direcciónes para la red</string>
+        <string>Use su tarjeta o anillo para obtener direcciónes para la red</string>
       </dict>
     </dict>
   </dict>
