@@ -2192,6 +2192,9 @@
 		DCA21D942BA1C77A000A3C1A /* ValidationMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA21D932BA1C77A000A3C1A /* ValidationMode.swift */; };
 		DCA54D8F2C05E0BA00FBF99F /* PriceChangeFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA54D8E2C05E0BA00FBF99F /* PriceChangeFormatterTests.swift */; };
 		DCAB5800295EE820005D0F4A /* AppLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAB57FF295EE820005D0F4A /* AppLog.swift */; };
+		DCB616E52CB39AE100BE4481 /* WalletConnect in Frameworks */ = {isa = PBXBuildFile; productRef = DCB616E42CB39AE100BE4481 /* WalletConnect */; };
+		DCB616E72CB3A63800BE4481 /* ReownWalletKit in Frameworks */ = {isa = PBXBuildFile; productRef = DCB616E62CB3A63800BE4481 /* ReownWalletKit */; };
+		DCB617762CB938AF00BE4481 /* ExpressProviderUpdateSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB617752CB938AF00BE4481 /* ExpressProviderUpdateSource.swift */; };
 		DCBAF6992A4AEEDD0029480A /* AnyWalletManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBAF6982A4AEEDD0029480A /* AnyWalletManagerFactory.swift */; };
 		DCBAF69B2A4AEF3C0029480A /* HDWalletManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBAF69A2A4AEF3C0029480A /* HDWalletManagerFactory.swift */; };
 		DCBAF69D2A4AF0500029480A /* SimpleWalletManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBAF69C2A4AF0500029480A /* SimpleWalletManagerFactory.swift */; };
@@ -5775,6 +5778,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DCB616E52CB39AE100BE4481 /* WalletConnect in Frameworks */,
 				B6EE3B622C789C6E00B464FC /* DGCharts in Frameworks */,
 				B0B11A082C787FE70018A2A6 /* MarkdownUI in Frameworks */,
 				B6C1BE6D2B6C2F4E008FE5A0 /* secp256k1 in Frameworks */,
@@ -5791,6 +5795,7 @@
 				0ABC61152C410AFD00065EBA /* TweetNacl in Frameworks */,
 				B620FCA02C5D326D00AD0FD1 /* DGCharts in Frameworks */,
 				4F00236C26F4689B6A741039 /* Pods_Tangem.framework in Frameworks */,
+				DCB616E72CB3A63800BE4481 /* ReownWalletKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14654,6 +14659,8 @@
 				B6EE3B612C789C6E00B464FC /* DGCharts */,
 				B0B11A072C787FE70018A2A6 /* MarkdownUI */,
 				B6F6252F2C85E1A600DEF098 /* DGCharts */,
+				DCB616E42CB39AE100BE4481 /* WalletConnect */,
+				DCB616E62CB3A63800BE4481 /* ReownWalletKit */,
 			);
 			productName = "Tangem Tap";
 			productReference = 5D3F77C224BF56D800E8695B /* Tangem.app */;
@@ -15023,6 +15030,7 @@
 				0ABC61132C410AFD00065EBA /* XCRemoteSwiftPackageReference "tweetnacl-swiftwrap" */,
 				B0B11A062C787FE70018A2A6 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 				B6F6252E2C85E1A600DEF098 /* XCRemoteSwiftPackageReference "DGCharts" */,
+				DCB616E32CB39A8100BE4481 /* XCRemoteSwiftPackageReference "reown-swift" */,
 				B68E1F882CBC44910043E598 /* XCRemoteSwiftPackageReference "hedera-sdk-swift" */,
 				B68E1F8B2CBC44AA0043E598 /* XCRemoteSwiftPackageReference "CryptoSwift" */,
 				B68E1F8E2CBC44E30043E598 /* XCRemoteSwiftPackageReference "swift-protobuf-binaries" */,
@@ -18820,8 +18828,6 @@
 					"-framework",
 					"\"UIKit\"",
 					"-framework",
-					"\"WalletConnectSwiftV2\"",
-					"-framework",
 					"\"nanopb\"",
 					"-weak_framework",
 					"\"Combine\"",
@@ -18948,8 +18954,6 @@
 					"\"TangemSdk\"",
 					"-framework",
 					"\"UIKit\"",
-					"-framework",
-					"\"WalletConnectSwiftV2\"",
 					"-framework",
 					"\"nanopb\"",
 					"-weak_framework",
@@ -22806,8 +22810,6 @@
 					"-framework",
 					"\"UIKit\"",
 					"-framework",
-					"\"WalletConnectSwiftV2\"",
-					"-framework",
 					"\"nanopb\"",
 					"-weak_framework",
 					"\"Combine\"",
@@ -23048,8 +23050,6 @@
 					"\"TangemSdk\"",
 					"-framework",
 					"\"UIKit\"",
-					"-framework",
-					"\"WalletConnectSwiftV2\"",
 					"-framework",
 					"\"nanopb\"",
 					"-weak_framework",
@@ -25291,8 +25291,6 @@
 					"-framework",
 					"\"UIKit\"",
 					"-framework",
-					"\"WalletConnectSwiftV2\"",
-					"-framework",
 					"\"nanopb\"",
 					"-weak_framework",
 					"\"Combine\"",
@@ -25533,8 +25531,6 @@
 					"\"TangemSdk\"",
 					"-framework",
 					"\"UIKit\"",
-					"-framework",
-					"\"WalletConnectSwiftV2\"",
 					"-framework",
 					"\"nanopb\"",
 					"-weak_framework",
@@ -25946,6 +25942,14 @@
 				version = "5.1.0-tangem3";
 			};
 		};
+		DCB616E32CB39A8100BE4481 /* XCRemoteSwiftPackageReference "reown-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/reown-com/reown-swift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 1.0.4;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -26060,6 +26064,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B6F6252E2C85E1A600DEF098 /* XCRemoteSwiftPackageReference "DGCharts" */;
 			productName = DGCharts;
+		};
+		DCB616E42CB39AE100BE4481 /* WalletConnect */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DCB616E32CB39A8100BE4481 /* XCRemoteSwiftPackageReference "reown-swift" */;
+			productName = WalletConnect;
+		};
+		DCB616E62CB3A63800BE4481 /* ReownWalletKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DCB616E32CB39A8100BE4481 /* XCRemoteSwiftPackageReference "reown-swift" */;
+			productName = ReownWalletKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -9,8 +9,8 @@
 import Foundation
 import CryptoSwift
 import enum BlockchainSdk.Blockchain
-import struct WalletConnectSwiftV2.AnyCodable
-import enum WalletConnectSwiftV2.RPCResult
+import struct Commons.AnyCodable
+import enum JSONRPC.RPCResult
 
 struct WalletConnectV2PersonalSignHandler {
     private let message: String
