@@ -15,6 +15,7 @@ module Fastlane
         export_empty_as = params[:export_empty_as] ? params[:export_empty_as] : "base"
         export_sort = params[:export_sort] ? params[:export_sort] : "first_added"
         replace_breaks = params[:replace_breaks] ? true : false
+        filter_data = params[:filter_data]
 
         body = {
           format: "ios_sdk",
@@ -26,6 +27,10 @@ module Fastlane
           include_comments: include_comments,
           replace_breaks: replace_breaks
         }
+
+        if !filter_data.to_s.empty?
+          body["filter_data"] = [filter_data]
+        end
 
         filter_langs = params[:languages]
         if filter_langs.kind_of? Array then
@@ -186,6 +191,13 @@ module Fastlane
                                         default_value: false,
                                         verify_block: proc do |value|
                                           UI.user_error! "Replace break should be true or false" unless [true, false].include? value
+                                        end),
+            FastlaneCore::ConfigItem.new(key: :filter_data,
+                                        description: "Narrow export data range. Allowed values are translated or untranslated, reviewed (or reviewed_only), last_reviewed_only, verified and nonhidden",
+                                        optional: true,
+                                        is_string: true,
+                                        verify_block: proc do |value|
+                                          UI.user_error! "Should be a String" unless value.kind_of? String
                                         end),
 
         ]
