@@ -1,18 +1,27 @@
 name: Fetch translations (Lokalise)
 
 on:
-  #schedule:
-  #  - cron: '0 0 * * *'  # Runs at 00:00 UTC every day
   workflow_dispatch:
     inputs:
       langs:
-        description: 'Languages'
-        default: 'en,fr,de,ja,ru,es,uk_UA'
+        description: "Languages"
+        default: "en,fr,de,ja,ru,es,uk_UA"  # No 'zh-Hant' for now since the translation is not completed
         type: string
+      update_app_localizations:
+        type: boolean
+        default: true
+        description: Update localizations in the main app target
+      update_bsdk_localizations:
+        type: boolean
+        default: false
+        description: Update localizations in the BlockchainSDK target
 
 jobs:
   update-localizations:
-    runs-on: ubuntu-latest
+    runs-on: macos-14
+    env:
+      APP_LOCALIZATIONS_DESTINATION: "Tangem/Resources/Localizations"
+      BSDK_LOCALIZATIONS_DESTINATION: "BlockchainSdk/Resources/Localizations"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -24,27 +33,47 @@ jobs:
           git_user_signingkey: true
           git_commit_gpgsign: true
 
-      - name: Install Python
-        uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3  # v5.2.0
-        with:
-          python-version: '3.x'
+      - name: Bundle install
+        run: |
+          bundle config path vendor/bundle
+          bundle install --jobs 4 --retry 3
 
-      - name: Run localization script
+      - name: Fetch and update main app localizations
+        if: ${{ github.event.inputs.update_app_localizations == 'true' }}
+        env:
+          LOKALISE_PROJECT_ID: ${{ secrets.LOKALISE_APP_PROJECT_ID }}
+          LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_ACCESS_TOKEN }}
+        run: |
+          bundle exec fastlane update_translations languages:${{ github.event.inputs.langs }} destination:${{ env.APP_LOCALIZATIONS_DESTINATION }}
+
+      - name: Fetch and update BSDK localizations
+        if: ${{ github.event.inputs.update_bsdk_localizations == 'true' }}
+        env:
+          LOKALISE_PROJECT_ID: ${{ secrets.LOKALISE_BSDK_PROJECT_ID }}
+          LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_ACCESS_TOKEN }}
+        run: |
+          bundle exec fastlane update_translations languages:${{ github.event.inputs.langs }} destination:${{ env.BSDK_LOCALIZATIONS_DESTINATION }}
+
+      - name: Push changes and open a pull-request
         env:
           GH_TOKEN: ${{ github.token }}
-          SOURCE_BRANCH: lokalise-translations
+          SOURCE_BRANCH: lokalise-translations-sync
           TARGET_BRANCH: ${{ github.ref_name }}
-          LOKALISE_PROJECT_ID: ${{ secrets.LOKALISE_APP_PROJECT_ID }}
-          LOKALISE_ACCESS_TOKEN: ${{ secrets.LOKALISE_ACCESS_TOKEN }}
+          LANGUAGES: ${{ github.event.inputs.langs }}
+          GH_RUN_ID: ${{ github.run_id }}
         run: |
-          git config --global user.name 'Tangem Service'
-          git config --global user.email 'gitservice@tangem.com'
+          git config --global user.name "Tangem Service"
+          git config --global user.email "gitservice@tangem.com"
+
           git checkout -b $SOURCE_BRANCH $TARGET_BRANCH
-          echo "lokalise.project.id=$LOKALISE_PROJECT_ID" >> local.properties
-          echo "lokalise.token=$LOKALISE_ACCESS_TOKEN" >> local.properties
-          pip3 install python-lokalise-api --break-system-packages
-          python3 lokalize.py --langs ${{ github.event.inputs.langs }}
-          git add .
-          git commit -S -m "Fetch all translations"
+          git add "${APP_LOCALIZATIONS_DESTINATION}"
+          git add "${BSDK_LOCALIZATIONS_DESTINATION}"
+
+          : "${LANGUAGES:="all"}"
+          default_message="Sync translations for \`${LANGUAGES}\` languages"
+          commit_message="${default_message} in branch \`${TARGET_BRANCH}\`"
+          pr_message="[Localise] ${default_message} (${GH_RUN_ID})"
+
+          git commit -S -m "${commit_message}"
           git push --set-upstream origin $SOURCE_BRANCH --force
-          gh pr create --base $TARGET_BRANCH --head $SOURCE_BRANCH --title "Update translations" --body ""
+          gh pr create --base $TARGET_BRANCH --head $SOURCE_BRANCH --title "${pr_message}" --body ""
