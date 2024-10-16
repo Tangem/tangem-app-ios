@@ -8,9 +8,20 @@
 
 import Foundation
 import TangemStaking
+import BlockchainSdk
 
 struct CommonStakingAnalyticsLogger: StakingAnalyticsLogger {
+    private let token: TokenItem?
+    
+    init(token: TokenItem? = nil) {
+        self.token = token
+    }
+    
     func logAPIError(errorDescription: String) {
-        Analytics.log(event: .stakingErrors, params: [.errorDescription: errorDescription])
+        var params: [Analytics.ParameterKey: String] = [.errorDescription: errorDescription]
+        if let token {
+            params[.token] = token.currencySymbol
+        }
+        Analytics.log(event: .stakingErrors, params: params)
     }
 }

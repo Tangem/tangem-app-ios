@@ -8,15 +8,16 @@
 
 import Foundation
 import TangemStaking
+import BlockchainSdk
 
 class StakingDependenciesFactory {
     @Injected(\.keysManager) private var keysManager: KeysManager
 
-    func makeStakingAPIProvider() -> StakingAPIProvider {
+    func makeStakingAPIProvider(token: TokenItem?) -> StakingAPIProvider {
         TangemStakingFactory().makeStakingAPIProvider(
             credential: StakingAPICredential(apiKey: keysManager.stakeKitKey),
             configuration: .defaultConfiguration,
-            analyticsLogger: CommonStakingAnalyticsLogger()
+            analyticsLogger: CommonStakingAnalyticsLogger(token: token)
         )
     }
 
@@ -27,8 +28,8 @@ class StakingDependenciesFactory {
         )
     }
 
-    func makeStakingManager(integrationId: String, wallet: StakingWallet) -> StakingManager {
-        let provider = makeStakingAPIProvider()
+    func makeStakingManager(integrationId: String, wallet: StakingWallet, token: TokenItem) -> StakingManager {
+        let provider = makeStakingAPIProvider(token: token)
         let repository = makeStakingPendingTransactionsRepository()
 
         return TangemStakingFactory().makeStakingManager(
@@ -40,9 +41,9 @@ class StakingDependenciesFactory {
         )
     }
 
-    func makePendingHashesSender() -> StakingPendingHashesSender {
+    func makePendingHashesSender(token: TokenItem? = nil) -> StakingPendingHashesSender {
         let repository = CommonStakingPendingHashesRepository()
-        let provider = makeStakingAPIProvider()
+        let provider = makeStakingAPIProvider(token: token)
 
         return TangemStakingFactory().makePendingHashesSender(
             repository: repository,
