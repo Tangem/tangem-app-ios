@@ -1,57 +1,50 @@
-name: Alpha - Build and Deploy 
+name: Fetch translations (Lokalise)
 
 on:
+  #schedule:
+  #  - cron: '0 0 * * *'  # Runs at 00:00 UTC every day
   workflow_dispatch:
-  
-env:
-  APP_PATH: /tmp/app.ipa
-  ARTIFACT_NAME: Application
-  
+    inputs:
+      langs:
+        description: 'Languages'
+        default: 'en,fr,de,ja,ru,es,uk_UA'
+        type: string
+
 jobs:
- build:
-   name: Build
-   runs-on: self-hosted
-   steps:
-   - name: Checkout
-     uses: actions/checkout@v3
-     with:
-       submodules: true
-       token: ${{ secrets.GH_MOBILE_PAT }}
-       
-   - name: Bundle install
-     run: bundle install --jobs 4 --retry 3
-      
-   - name: Pods install
-     run: bundle exec pod install
-     
-   - name: TEST
-     run: echo ${{ github.head_ref }}
-     
-   - name: Get Jira Issue Number from Branch Name
-     id: issue_number
-     uses: tangem/jira-action@master
-     with:
-       action: getBranchId
-       branch-name: ${{ github.head_ref }}
-       
-   - name: TEST
-     run: echo ${{ steps.issue_number.outputs.result }}
-   
-#   - name: Build
-#     run: bundle exec fastlane build scheme:"Tangem Alpha" version:${{ steps.issue_number.outputs.result }}
-     
-#   - name: Upload binary artifact
-#     uses: actions/upload-artifact@v3
-#     with:
-#       name: $ARTIFACT_NAME
-#       path: $APP_PATH
-     
-# deploy:
-#   name: Deploy
-#   needs: build
-#   runs-on: self-hosted
-#   steps:
-#   - name: Download a single artifact
-#     uses: actions/download-artifact@v3
-#     with:
-#       name: $ARTIFACT_NAME
+  update-localizations:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@01dd5d3ca463c7f10f7f4f7b4f177225ac661ee4  # v6.1.0
+        with:
+          gpg_private_key: ${{ secrets.PGP_PRIVATE_SERVICE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+
+      - name: Install Python
+        uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3  # v5.2.0
+        with:
+          python-version: '3.x'
+
+      - name: Run localization script
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_BRANCH: lokalise-translations
+          TARGET_BRANCH: ${{ github.ref_name }}
+          LOKALISE_PROJECT_ID: ${{ secrets.LOKALISE_APP_PROJECT_ID }}
+          LOKALISE_ACCESS_TOKEN: ${{ secrets.LOKALISE_ACCESS_TOKEN }}
+        run: |
+          git config --global user.name 'Tangem Service'
+          git config --global user.email 'gitservice@tangem.com'
+          git checkout -b $SOURCE_BRANCH $TARGET_BRANCH
+          echo "lokalise.project.id=$LOKALISE_PROJECT_ID" >> local.properties
+          echo "lokalise.token=$LOKALISE_ACCESS_TOKEN" >> local.properties
+          pip3 install python-lokalise-api --break-system-packages
+          python3 lokalize.py --langs ${{ github.event.inputs.langs }}
+          git add .
+          git commit -S -m "Fetch all translations"
+          git push --set-upstream origin $SOURCE_BRANCH --force
+          gh pr create --base $TARGET_BRANCH --head $SOURCE_BRANCH --title "Update translations" --body ""
