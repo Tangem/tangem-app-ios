@@ -70,9 +70,8 @@ jobs:
           git add "${BSDK_LOCALIZATIONS_DESTINATION}"
 
           : "${LANGUAGES:="all"}"
-          default_message="Sync translations for \`${LANGUAGES}\` languages"
-          commit_message="${default_message} in branch \`${TARGET_BRANCH}\`"
-          pr_message="[Localise] ${default_message} (${GH_RUN_ID})"
+          commit_message="Sync translations for \`${LANGUAGES}\` languages"
+          pr_message="[Localise] ${commit_message} (${GH_RUN_ID})"
 
           git commit -S -m "${commit_message}"
           git push --set-upstream origin $SOURCE_BRANCH --force
