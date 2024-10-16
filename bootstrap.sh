@@ -51,12 +51,22 @@ else
     brew install mint
 fi
 
+if [ "${CI}" = true ] ; then
+    MINTFILE="./Utilites/Mintfile@ci"
+else
+    MINTFILE="./Utilites/Mintfile@local"
+fi
+
 echo "🔄 Mint bootstrap dependencies"
-mint bootstrap --mintfile ./Utilites/Mintfile 
+mint bootstrap --mintfile ${MINTFILE}
 echo "✅ Dependencies succesfully installed"
 
-echo "🚀 Running SwiftFormat"
-mint run swiftformat@0.52.8 . --config .swiftformat
+if [ "${CI}" = true ] ; then
+    echo "ℹ️ Skipping SwiftFormat"
+else
+    echo "🚀 Running SwiftFormat"
+    mint run swiftformat@0.52.8 . --config .swiftformat
+fi
 
 echo "🚀 Running SwiftGen"
 mint run swiftgen@6.6.2 config run --config swiftgen.yml 
