@@ -175,7 +175,7 @@ lane :update_translations do |options|
   languages = options[:languages]&.split(",")
 
   destination = options[:destination]
-  UI.user_error!("Invalid destination path for localization files") unless (destination and not destination.empty?)
+  UI.user_error!("Invalid destination path  '#{destination}' for localization files") unless (destination and not destination.empty?)
 
   lokalise(
     destination: destination,
