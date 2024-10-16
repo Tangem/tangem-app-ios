@@ -10,7 +10,7 @@ import SwiftUI
 
 struct AuthView: View {
     @ObservedObject private var viewModel: AuthViewModel
-    @Namespace private var namespace
+    private var namespace: Namespace.ID?
 
     init(viewModel: AuthViewModel) {
         self.viewModel = viewModel
@@ -20,7 +20,6 @@ struct AuthView: View {
         unlockView
             .alert(item: $viewModel.error, content: { $0.alert })
             .onAppear(perform: viewModel.onAppear)
-            .onDidAppear(perform: viewModel.onDidAppear)
             .onDisappear(perform: viewModel.onDisappear)
             .background(
                 ScanTroubleshootingView(
@@ -38,7 +37,7 @@ struct AuthView: View {
             Spacer()
 
             TangemIconView()
-                .matchedGeometryEffect(id: TangemIconView.namespaceId, in: namespace)
+                .matchedGeometryEffectOptional(id: TangemIconView.namespaceId, in: namespace)
 
             Text(Localization.welcomeUnlockTitle)
                 .style(Fonts.Bold.title1, color: Colors.Text.primary1)
@@ -69,6 +68,12 @@ struct AuthView: View {
         }
         .padding([.top, .horizontal])
         .padding(.bottom, 6)
+    }
+}
+
+extension AuthView: Setupable {
+    func setNamespace(_ namespace: Namespace.ID?) -> Self {
+        map { $0.namespace = namespace }
     }
 }
 

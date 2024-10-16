@@ -14,33 +14,16 @@ struct WelcomeCoordinatorView: CoordinatorView {
 
     var body: some View {
         ZStack {
-            content
-            sheets
-            welcomeOnboarding
-        }
-        .navigationBarHidden(coordinator.isNavigationBarHidden)
-        .animation(.default, value: coordinator.viewState)
-    }
-
-    @ViewBuilder
-    private var content: some View {
-        switch coordinator.viewState {
-        case .welcome(let welcomeViewModel):
-            WelcomeView(viewModel: welcomeViewModel)
-                .navigationLinks(links)
-        case .main(let mainCoordinator):
-            MainCoordinatorView(coordinator: mainCoordinator)
-        case .none:
-            EmptyView()
-        }
-    }
-
-    @ViewBuilder
-    private var links: some View {
-        NavHolder()
-            .navigation(item: $coordinator.pushedOnboardingCoordinator) {
-                OnboardingCoordinatorView(coordinator: $0)
+            if let rootViewModel = coordinator.rootViewModel {
+                WelcomeView(viewModel: rootViewModel)
             }
+
+            sheets
+
+            if let onboardingCoordinator = coordinator.welcomeOnboardingCoordinator {
+                WelcomeOnboardingCoordinatorView(coordinator: onboardingCoordinator)
+            }
+        }
     }
 
     @ViewBuilder
@@ -55,12 +38,5 @@ struct WelcomeCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.mailViewModel) {
                 MailView(viewModel: $0)
             }
-    }
-
-    @ViewBuilder
-    private var welcomeOnboarding: some View {
-        if let welcomeOnboardingCoordinator = coordinator.welcomeOnboardingCoordinator {
-            WelcomeOnboardingCoordinatorView(coordinator: welcomeOnboardingCoordinator)
-        }
     }
 }

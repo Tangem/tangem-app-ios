@@ -10,15 +10,21 @@ import Foundation
 import SwiftUI
 
 struct LockView: View {
-    @Namespace private var namespace
+    private var namespace: Namespace.ID?
 
     var body: some View {
         VStack(spacing: 0) {
             TangemIconView()
-                .matchedGeometryEffect(id: TangemIconView.namespaceId, in: namespace)
+                .matchedGeometryEffectOptional(id: TangemIconView.namespaceId, in: namespace)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Colors.Background.primary)
         .edgesIgnoringSafeArea(.all)
+    }
+}
+
+extension LockView: Setupable {
+    func setNamespace(_ namespace: Namespace.ID) -> Self {
+        map { $0.namespace = namespace }
     }
 }

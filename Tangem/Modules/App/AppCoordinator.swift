@@ -113,8 +113,15 @@ class AppCoordinator: CoordinatorObject {
     }
 
     private func setupWelcome() {
-        let dismissAction: Action<Void> = { [weak self] _ in
-            self?.start()
+        let dismissAction: Action<ScanDismissOptions> = { [weak self] options in
+            guard let self else { return }
+
+            switch options {
+            case .main(let model):
+                openMain(with: model)
+            case .onboarding(let input):
+                openOnboarding(with: input)
+            }
         }
 
         let welcomeCoordinator = WelcomeCoordinator(dismissAction: dismissAction)
@@ -126,7 +133,7 @@ class AppCoordinator: CoordinatorObject {
     }
 
     private func setupAuth() {
-        let dismissAction: Action<AuthDismissOptions> = { [weak self] options in
+        let dismissAction: Action<ScanDismissOptions> = { [weak self] options in
             guard let self else { return }
 
             switch options {
@@ -297,4 +304,11 @@ private enum LockReason {
             true
         }
     }
+}
+
+// MARK: - ScanDismissOptions
+
+enum ScanDismissOptions {
+    case main(UserWalletModel)
+    case onboarding(OnboardingInput)
 }

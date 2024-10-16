@@ -15,6 +15,7 @@ struct AppCoordinatorView: CoordinatorView {
 
     @Environment(\.mainWindowSize) var mainWindowSize: CGSize
     @Environment(\.overlayContentContainer) private var overlayContentContainer
+    @Namespace private var namespace
 
     var body: some View {
         NavigationView {
@@ -51,6 +52,7 @@ struct AppCoordinatorView: CoordinatorView {
         .overlay {
             if coordinator.lockViewVisible {
                 LockView()
+                    .setNamespace(namespace)
             }
         }
     }
@@ -64,6 +66,7 @@ struct AppCoordinatorView: CoordinatorView {
             UncompletedBackupCoordinatorView(coordinator: uncompletedBackupCoordinator)
         case .auth(let authCoordinator):
             AuthCoordinatorView(coordinator: authCoordinator)
+                .setNamespace(namespace)
         case .main(let mainCoordinator):
             MainCoordinatorView(coordinator: mainCoordinator)
         case .none:

@@ -11,6 +11,8 @@ import SwiftUI
 struct AuthCoordinatorView: CoordinatorView {
     @ObservedObject var coordinator: AuthCoordinator
 
+    private var namespace: Namespace.ID?
+
     init(coordinator: AuthCoordinator) {
         self.coordinator = coordinator
     }
@@ -19,6 +21,7 @@ struct AuthCoordinatorView: CoordinatorView {
         ZStack {
             if let rootViewModel = coordinator.rootViewModel {
                 AuthView(viewModel: rootViewModel)
+                    .setNamespace(namespace)
             }
 
             sheets
@@ -31,5 +34,11 @@ struct AuthCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.mailViewModel) {
                 MailView(viewModel: $0)
             }
+    }
+}
+
+extension AuthCoordinatorView: Setupable {
+    func setNamespace(_ namespace: Namespace.ID) -> Self {
+        map { $0.namespace = namespace }
     }
 }

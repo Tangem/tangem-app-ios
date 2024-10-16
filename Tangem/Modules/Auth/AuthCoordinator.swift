@@ -10,11 +10,11 @@ import Foundation
 import Combine
 
 class AuthCoordinator: CoordinatorObject {
-    typealias OutputOptions = AuthDismissOptions
+    typealias OutputOptions = ScanDismissOptions
 
     // MARK: - Dependencies
 
-    let dismissAction: Action<AuthDismissOptions>
+    let dismissAction: Action<ScanDismissOptions>
     let popToRootAction: Action<PopToRootOptions>
 
     @Injected(\.safariManager) private var safariManager: SafariManager
@@ -32,7 +32,7 @@ class AuthCoordinator: CoordinatorObject {
     @Published var mailViewModel: MailViewModel?
 
     required init(
-        dismissAction: @escaping Action<AuthDismissOptions>,
+        dismissAction: @escaping Action<ScanDismissOptions>,
         popToRootAction: @escaping Action<PopToRootOptions>
     ) {
         self.dismissAction = dismissAction
@@ -71,9 +71,4 @@ extension AuthCoordinator: AuthRoutable {
     func openScanCardManual() {
         safariManager.openURL(TangemBlogUrlBuilder().url(post: .scanCard))
     }
-}
-
-enum AuthDismissOptions {
-    case main(UserWalletModel)
-    case onboarding(OnboardingInput)
 }
