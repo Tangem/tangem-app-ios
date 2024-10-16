@@ -3,9 +3,10 @@
 
 import PackageDescription // TODO: Andrey Fedorov - Update swift-tools-version to 6.0 after upgrade to Xcode 16.0 (IOS-8085)
 
-// MARK: - Common Modules
+// MARK: - Service Modules
 
-let commonModules: [PackageDescription.Target] = [
+/// Valid examples are `CommonUI`, `Utils`, `NetworkLayer`, `ModelData`, etc.
+let serviceModules: [PackageDescription.Target] = [
     .tangemTarget(
         name: "TangemFoundation"
     ),
@@ -20,6 +21,7 @@ let commonModules: [PackageDescription.Target] = [
 
 // MARK: - Feature Modules
 
+/// Valid examples are `Onboarding`, `Auth`, `Catalog`, etc.
 let featureModules: [PackageDescription.Target] = [
     // Currently there are no feature modules
 ]
@@ -41,7 +43,7 @@ let modulesShimLibraryName = "TangemModules"
 
 let modulesShimLibrary: PackageDescription.Target = .tangemTarget(
     name: modulesShimLibraryName,
-    dependencies: commonModules.asDependencies() + featureModules.asDependencies()
+    dependencies: serviceModules.asDependencies() + featureModules.asDependencies()
 )
 
 // MARK: - Package
@@ -63,12 +65,13 @@ let package = Package(
         .package(url: "https://github.com/Moya/Moya.git", .upToNextMajor(from: "15.0.0")),
         .package(url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.0.0")),
     ],
-    targets: [modulesShimLibrary] + commonModules + featureModules + unitTestsModules
+    targets: [modulesShimLibrary] + serviceModules + featureModules + unitTestsModules
 )
 
 // MARK: - Private implementation
 
 private extension PackageDescription.Target {
+    /// Just a dumb wrapper that sets the module `path` to the value of the module `name`.
     static func tangemTarget(
         name: String,
         dependencies: [PackageDescription.Target.Dependency] = [],
@@ -102,6 +105,7 @@ private extension PackageDescription.Target {
         )
     }
 
+    /// Just a dumb wrapper that sets the module `path` to the value of the module `name`.
     static func tangemTestTarget(
         name: String,
         dependencies: [PackageDescription.Target.Dependency] = [],
