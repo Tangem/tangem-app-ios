@@ -87,8 +87,12 @@ class SettingsUserWalletRowViewModel: ObservableObject, Identifiable {
                         return
                     }
 
-                    let formatted = viewModel.balanceFormatter.formatFiatBalance(totalBalance.balance)
-                    viewModel.balanceState = .loaded(text: formatted)
+                    if let balance = totalBalance.balance {
+                        let formatted = viewModel.balanceFormatter.formatFiatBalance(balance)
+                        viewModel.balanceState = .loaded(text: formatted)
+                    } else {
+                        viewModel.balanceState = .noData
+                    }
                 case .failedToLoad:
                     viewModel.balanceState = .loaded(text: Localization.commonUnreachable)
                 }
