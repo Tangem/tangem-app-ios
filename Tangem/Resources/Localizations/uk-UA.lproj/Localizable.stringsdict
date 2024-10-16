@@ -2,22 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
   <dict>
-    <key>markets_token_details_amount_exchanges</key>
-    <dict>
-      <key>NSStringLocalizedFormatKey</key>
-      <string>%#@format@</string>
-      <key>format</key>
-      <dict>
-        <key>NSStringFormatSpecTypeKey</key>
-        <string>NSStringPluralRuleType</string>
-        <key>NSStringFormatValueTypeKey</key>
-        <string>li</string>
-        <key>one</key>
-        <string>%li exchange</string>
-        <key>other</key>
-        <string>%li exchanges</string>
-      </dict>
-    </dict>
     <key>card_label_card_count</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
@@ -29,13 +13,13 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%li картка</string>
+        <string>%li пристрій</string>
         <key>few</key>
-        <string>%li картки</string>
+        <string>%li пристрої</string>
         <key>many</key>
-        <string>%li карток</string>
+        <string>%li пристроїв</string>
         <key>other</key>
-        <string>%li карток</string>
+        <string>%li пристроїв</string>
       </dict>
     </dict>
     <key>common_days_no_param</key>
@@ -89,13 +73,13 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>біржа</string>
+        <string>%li біржа</string>
         <key>few</key>
-        <string>біржі</string>
+        <string>%li біржі</string>
         <key>many</key>
-        <string>бірж</string>
+        <string>%li бірж</string>
         <key>other</key>
-        <string>бірж</string>
+        <string>%li бірж</string>
       </dict>
     </dict>
     <key>markets_token_details_based_on_ratings</key>
@@ -209,13 +193,13 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Використовуйте вашу картку, щоб отримати адресу для %li мережі</string>
+        <string>Використовуйте вашу картку або кільце, щоб отримати адресу для %li мережі</string>
         <key>few</key>
-        <string>Використовуйте вашу картку, щоб отримати адреси для %li мереж</string>
+        <string>Використовуйте вашу картку або кільце, щоб отримати адреси для %li мереж</string>
         <key>many</key>
-        <string>Використовуйте вашу картку, щоб отримати адреси для %li мереж</string>
+        <string>Використовуйте вашу картку або кільце, щоб отримати адреси для %li мереж</string>
         <key>other</key>
-        <string>Використовуйте вашу картку, щоб отримати адреси для %li мереж</string>
+        <string>Використовуйте вашу картку або кільце, щоб отримати адреси для %li мереж</string>
       </dict>
     </dict>
   </dict>

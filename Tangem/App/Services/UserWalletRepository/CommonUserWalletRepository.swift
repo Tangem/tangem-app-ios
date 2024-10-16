@@ -525,6 +525,7 @@ class CommonUserWalletRepository: UserWalletRepository {
 
         if let migratedWallets = UserWalletNameIndexationHelper.migratedWallets(wallets) {
             UserWalletRepositoryUtil().saveUserWallets(migratedWallets)
+            wallets = migratedWallets
         }
 
         AppSettings.shared.didMigrateUserWalletNames = true

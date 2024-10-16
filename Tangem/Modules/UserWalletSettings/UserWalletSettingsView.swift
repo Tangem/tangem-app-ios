@@ -38,10 +38,11 @@ struct UserWalletSettingsView: View {
     private var nameSection: some View {
         DefaultTextFieldRowView(
             title: Localization.settingsWalletNameTitle,
-            text: $viewModel.name,
-            isReadonly: !AppSettings.shared.saveUserWallets
+            text: .constant(viewModel.name),
+            isReadonly: true
         )
         .defaultRoundedBackground()
+        .onTapGesture(perform: viewModel.onTapNameField)
     }
 
     private var backupSection: some View {

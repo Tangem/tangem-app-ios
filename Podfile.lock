@@ -162,46 +162,6 @@ PODS:
   - SwiftDate (7.0.0)
   - SwiftyJSON (5.0.1)
   - TangemSdk (3.10.0)
-  - WalletConnectSwiftV2 (1.18.7):
-    - WalletConnectSwiftV2/WalletConnect (= 1.18.7)
-  - WalletConnectSwiftV2/Commons (1.18.7)
-  - WalletConnectSwiftV2/HTTPClient (1.18.7)
-  - WalletConnectSwiftV2/JSONRPC (1.18.7):
-    - WalletConnectSwiftV2/Commons
-  - WalletConnectSwiftV2/WalletConnect (1.18.7):
-    - WalletConnectSwiftV2/WalletConnectAuth
-    - WalletConnectSwiftV2/WalletConnectPush
-    - WalletConnectSwiftV2/WalletConnectSign
-    - WalletConnectSwiftV2/WalletConnectVerify
-  - WalletConnectSwiftV2/WalletConnectAuth (1.18.7):
-    - WalletConnectSwiftV2/WalletConnectPairing
-    - WalletConnectSwiftV2/WalletConnectSigner
-    - WalletConnectSwiftV2/WalletConnectVerify
-  - WalletConnectSwiftV2/WalletConnectJWT (1.18.7):
-    - WalletConnectSwiftV2/WalletConnectKMS
-  - WalletConnectSwiftV2/WalletConnectKMS (1.18.7):
-    - WalletConnectSwiftV2/WalletConnectUtils
-  - WalletConnectSwiftV2/WalletConnectNetworking (1.18.7):
-    - WalletConnectSwiftV2/HTTPClient
-    - WalletConnectSwiftV2/WalletConnectRelay
-  - WalletConnectSwiftV2/WalletConnectPairing (1.18.7):
-    - WalletConnectSwiftV2/WalletConnectNetworking
-  - WalletConnectSwiftV2/WalletConnectPush (1.18.7):
-    - WalletConnectSwiftV2/WalletConnectJWT
-    - WalletConnectSwiftV2/WalletConnectNetworking
-  - WalletConnectSwiftV2/WalletConnectRelay (1.18.7):
-    - WalletConnectSwiftV2/WalletConnectJWT
-  - WalletConnectSwiftV2/WalletConnectSign (1.18.7):
-    - WalletConnectSwiftV2/WalletConnectPairing
-    - WalletConnectSwiftV2/WalletConnectSigner
-    - WalletConnectSwiftV2/WalletConnectVerify
-  - WalletConnectSwiftV2/WalletConnectSigner (1.18.7):
-    - WalletConnectSwiftV2/WalletConnectNetworking
-  - WalletConnectSwiftV2/WalletConnectUtils (1.18.7):
-    - WalletConnectSwiftV2/JSONRPC
-  - WalletConnectSwiftV2/WalletConnectVerify (1.18.7):
-    - WalletConnectSwiftV2/WalletConnectNetworking
-    - WalletConnectSwiftV2/WalletConnectUtils
 
 DEPENDENCIES:
   - AmplitudeSwift (= 1.6.2)
@@ -218,7 +178,6 @@ DEPENDENCIES:
   - Solana.Swift (from `https://github.com/tangem/Solana.Swift`, tag `1.2.0-tangem11`)
   - SwiftyJSON (from `https://github.com/tangem/SwiftyJSON.git`, tag `5.0.1-tangem1`)
   - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-313`)
-  - WalletConnectSwiftV2 (from `https://github.com/WalletConnect/WalletConnectSwiftV2`, tag `1.18.7`)
 
 SPEC REPOS:
   trunk:
@@ -265,9 +224,6 @@ EXTERNAL SOURCES:
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
     :tag: develop-313
-  WalletConnectSwiftV2:
-    :git: https://github.com/WalletConnect/WalletConnectSwiftV2
-    :tag: 1.18.7
 
 CHECKOUT OPTIONS:
   BinanceChain:
@@ -285,9 +241,6 @@ CHECKOUT OPTIONS:
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
     :tag: develop-313
-  WalletConnectSwiftV2:
-    :git: https://github.com/WalletConnect/WalletConnectSwiftV2
-    :tag: 1.18.7
 
 SPEC CHECKSUMS:
   Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
@@ -321,8 +274,7 @@ SPEC CHECKSUMS:
   SwiftDate: bbc26e26fc8c0c33fbee8c140c5e8a68293a148a
   SwiftyJSON: c0bd75b5969785b3d9ae41d5709fe75bc5de4002
   TangemSdk: 145675e87bf4720d13968510b19e03b5402ed028
-  WalletConnectSwiftV2: 5ea47db4d86e39fc749b66a05a661af9e87b277d
 
-PODFILE CHECKSUM: 9eb8ddab260a5ed0182d1b2d3bb9486d9e7f171c
+PODFILE CHECKSUM: b73c95d2625485d99f65c2c7a213292dc108805b
 
 COCOAPODS: 1.15.2

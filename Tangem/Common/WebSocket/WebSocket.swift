@@ -12,7 +12,8 @@ import Combine
 
 class WebSocket {
     enum ConnectionState: String {
-        case notConnected
+        case readyToConnect
+        case disconnected
         case connecting
         case connected
     }
@@ -35,7 +36,7 @@ class WebSocket {
         stateSubject.value
     }
 
-    private var stateSubject: CurrentValueSubject<ConnectionState, Never> = .init(.notConnected)
+    private var stateSubject: CurrentValueSubject<ConnectionState, Never> = .init(.readyToConnect)
     private var isWaitingForMessage: Bool = false
     private var wasConnectedAtLeastOnce: Bool = false
 
@@ -109,7 +110,7 @@ class WebSocket {
     func disconnect() {
         Analytics.debugLog(eventInfo: Analytics.WalletConnectDebugEvent.webSocketDisconnected(closeCode: "Disconnect function", connectionState: "Before disconnect() execution: \(stateSubject.value.rawValue)"))
         invalidateTimer()
-        stateSubject.value = .notConnected
+        stateSubject.value = .disconnected
         isWaitingForMessage = false
         if task == nil {
             return
@@ -257,7 +258,7 @@ class WebSocket {
 
             if task?.state != .running {
                 log("URLSessionWebSocketTask is not running. Resetting WebSocket state and attempting to reconnect")
-                stateSubject.value = .notConnected
+                stateSubject.value = .disconnected
                 connect()
                 return
             }
@@ -323,7 +324,7 @@ class WebSocket {
         let connectionSetupDelay: TimeInterval = wasConnectedAtLeastOnce ? 1 : 0
         log("Scheduling connection setup. Delay: \(connectionSetupDelay)")
         let workItem = DispatchWorkItem { [weak self] in
-            guard let self, stateSubject.value == .notConnected else {
+            guard let self, stateSubject.value == .disconnected || stateSubject.value == .readyToConnect else {
                 self?.log("No need to setup web socket connection. State: \(self?.stateSubject.value.rawValue ?? "self is nil")")
                 Analytics.debugLog(eventInfo: Analytics.WalletConnectDebugEvent.connectionSetupMessage(message: "No need to setup web socket connection. State: \(self?.stateSubject.value.rawValue ?? "self is nil")"))
                 self?.connectionSetupDispatchWorkItem = nil
