@@ -56,18 +56,22 @@ jobs:
         run: |
           bundle exec fastlane update_translations languages:${{ github.event.inputs.langs }} destination:${{ env.BSDK_LOCALIZATIONS_DESTINATION }}
 
-      # TODO: Update texts and add id
       - name: Push changes and open a pull-request
         env:
           GH_TOKEN: ${{ github.token }}
-          SOURCE_BRANCH: lokalise-translations  # TODO: Add id
+          SOURCE_BRANCH: lokalise-translations-sync
           TARGET_BRANCH: ${{ github.ref_name }}
+          LANGUAGES: ${{ github.event.inputs.langs }}
         run: |
           git config --global user.name 'Tangem Service'
           git config --global user.email 'gitservice@tangem.com'
           git checkout -b $SOURCE_BRANCH $TARGET_BRANCH
           git add "${APP_LOCALIZATIONS_DESTINATION}"
           git add "${BSDK_LOCALIZATIONS_DESTINATION}"
-          git commit -S -m "Fetch all translations"
+
+          : "${LANGUAGES:="all"}"
+          message="Sync translations for \`${LANGUAGES}\` languages in branch \`${TARGET_BRANCH}\`"
+
+          git commit -S -m "${message}"
           git push --set-upstream origin $SOURCE_BRANCH --force
-          #gh pr create --base $TARGET_BRANCH --head $SOURCE_BRANCH --title "Update translations" --body "" --draft # TODO: TEMP
+          gh pr create --base $TARGET_BRANCH --head $SOURCE_BRANCH --title "[Localise] ${message}" --body "" --draft # TODO: TEMP
