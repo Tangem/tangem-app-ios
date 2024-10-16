@@ -69,7 +69,7 @@ struct EthereumStakeKitTransactionHelper {
 
         return try transactionBuilder.buildSigningInput(
             destination: compiledTransaction.to,
-            coinAmount: stakingTransaction.amount.coinValue ?? .zero,
+            coinAmount: .zero,
             fee: Fee(
                 stakingTransaction.fee.amount,
                 parameters: feeParameters
