@@ -132,7 +132,7 @@ private extension CommonStakingNotificationManager {
         }
     }
 
-    func update(state: RestakingModel.State) {
+    func update(state: RestakingModel.State, action: RestakingModel.Action) {
         switch state {
         case .loading, .ready:
             switch tokenItem.blockchain {
@@ -140,6 +140,10 @@ private extension CommonStakingNotificationManager {
                 show(notification: .revote)
             default:
                 break
+            }
+
+            if case .pending(.restake) = action.type {
+                show(notification: .restake)
             }
 
             hideErrorEvents()
@@ -223,7 +227,7 @@ extension CommonStakingNotificationManager: StakingNotificationManager {
         )
         .withWeakCaptureOf(self)
         .sink { manager, state in
-            manager.update(state: state.0)
+            manager.update(state: state.0, action: provider.stakingAction)
         }
     }
 

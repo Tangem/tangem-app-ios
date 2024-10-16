@@ -98,7 +98,6 @@ class EthereumTransactionBuilder {
             input.toAddress = destination
 
             input.transaction = .with { transaction in
-                input.toAddress = destination
                 transaction.contractGeneric = .with {
                     $0.amount = coinAmount.serialize()
                     if let data {

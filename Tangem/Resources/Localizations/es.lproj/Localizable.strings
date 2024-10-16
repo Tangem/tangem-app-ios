@@ -707,6 +707,7 @@
 "staking_notification_network_error_text" = "El staking no está disponible actualmente debido a las condiciones de la red. Inténtelo de nuevo más tarde.";
 "staking_notification_new_validator_funds_transfer" = "El staking en la red %1$@ con un nuevo validador transferirá automáticamente todos los fondos previamente en staking a este validador.";
 "staking_notification_restake_rewards_text" = "Reinvierta las recompensas obtenidas en el monto apostado, aumentando las ganancias potenciales.";
+"staking_notification_restake_text" = "Restake lets you move your funds from one validator to another without the need to unstake";
 "staking_notification_unlock_text" = "Desbloquee su dinero para retirarlo del proceso de staking. El desbloqueo demora %@ minuto.";
 "staking_notification_unstake_cosmos_text" = "Sus fondos estarán disponibles para su uso después del período de desvinculación de 21 días. La recompensa se retirará junto con los fondos de desvinculación.";
 "staking_notification_unstake_text" = "Sus fondos estarán disponibles para su uso después del período de desvinculación de %@.";

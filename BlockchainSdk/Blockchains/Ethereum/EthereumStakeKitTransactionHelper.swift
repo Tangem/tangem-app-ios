@@ -52,6 +52,7 @@ struct EthereumStakeKitTransactionHelper {
         let gasPrice = compiledTransaction.gasPrice.flatMap { BigUInt(Data(hex: $0)) } ?? .zero
         
         let feeParameters: FeeParameters
+        
         if baseFee > 0, priorityFee > 0 {
             feeParameters = EthereumEIP1559FeeParameters(gasLimit: gasLimit, baseFee: baseFee, priorityFee: priorityFee)
         } else if gasPrice > 0 {
