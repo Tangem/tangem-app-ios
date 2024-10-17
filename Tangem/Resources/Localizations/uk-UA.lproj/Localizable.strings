@@ -727,6 +727,7 @@
 "staking_reward_schedule_each" = "Кожен %@";
 "staking_reward_schedule_each_day" = "Щодня";
 "staking_reward_schedule_each_days" = "Кожні %@ дні";
+"staking_reward_schedule_each_plural" = "Кожні";
 "staking_reward_schedule_each_sec" = "Кожні %1$@ сек";
 "staking_reward_schedule_epoch" = "За епоху";
 "staking_reward_schedule_era" = "За еру";

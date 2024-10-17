@@ -727,6 +727,7 @@
 "staking_reward_schedule_each" = "Chaque %@";
 "staking_reward_schedule_each_day" = "Chaque jour";
 "staking_reward_schedule_each_days" = "Chaque %@";
+"staking_reward_schedule_each_plural" = "Each";
 "staking_reward_schedule_each_sec" = "Toute(s) les %1$@ seconde(s)";
 "staking_reward_schedule_epoch" = "Époque";
 "staking_reward_schedule_era" = "Ère";
@@ -736,7 +737,7 @@
 "staking_rewards" = "Récompenses";
 "staking_stake_locked" = "Stake verrouillé";
 "staking_stake_more" = "Staker plus";
-"staking_summary_description_text" = "You stake %1$@ and will be receiving your reward each %2$@";
+"staking_summary_description_text" = "You stake %1$@ and will be receiving your reward %2$@";
 "staking_tap_to_unlock" = "Appuyez pour déverrouiller";
 "staking_tap_to_unlock_or_vote" = "Tap to unlock or vote";
 "staking_tap_to_withdraw" = "Appuyez pour retirer";
