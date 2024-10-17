@@ -7,8 +7,8 @@ on:
         description: >
           Optional filter of languages to fetch and update. Pass a comma-delimited string of language codes, 
           like `en,fr,de` to fetch and update translations for the selected languages only.
-          Leave empty (the default value) to fetch and update translations for all available languages.
         type: string
+        default: "en,fr,de,ja,ru,es,uk_UA,zh-Hant,it"
       update_app_localizations:
         type: boolean
         default: true
