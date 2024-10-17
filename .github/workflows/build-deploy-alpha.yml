@@ -63,7 +63,6 @@ jobs:
       - prepare
       - build
     uses: tangem/actions/.github/workflows/deploy-firebase.yml@main
-    #if: false # TODO: Temp disabled, enable
     with:
       stage: '${{ needs.prepare.outputs.stage }}'
       version: '${{ needs.prepare.outputs.version }}'
@@ -80,7 +79,7 @@ jobs:
     needs:
       - prepare
       - deploy
-    #if: false # TODO: Temp disabled, enable
+    if: false # TODO: Temp disabled, enable
     uses: tangem/actions/.github/workflows/notification.yml@main
     with:
       channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
@@ -96,7 +95,7 @@ jobs:
   error_notification:
     name: Error Notification
     if: failure()
-    #if: false # TODO: Temp disabled, enable
+    if: false # TODO: Temp disabled, enable
     needs:
       - prepare
       - deploy
