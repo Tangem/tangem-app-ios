@@ -5,6 +5,12 @@ on:
     branches:
       - test/IOS-8112_ci_cd_alpha_builds_workflow # TODO: Test only, remove
   workflow_dispatch:
+    inputs:
+      xcode_version_override:
+        description: >
+          Optional Xcode version override. Leave blank (default value) to use the default Xcode version; 
+          pass a custom value (e.g. '16.0', '10.2.1', '11 Beta 7', '11.2 GM seed', etc) to use a different Xcode version for the build
+        type: string
 
 concurrency:
   group: '${{ github.workflow }} (${{ github.head_ref || github.ref_name }})'
