@@ -49,7 +49,7 @@ class BitcoinTransactionBuilder {
         changeScript = defaultScriptData?.sha256()
 	}
 	
-    public func buildForSign(transaction: Transaction, sequence: Int?, sortType: TransactionDataSortType = .bip69) -> [Data]? {
+    func buildForSign(transaction: Transaction, sequence: Int?, sortType: TransactionDataSortType = .bip69) -> [Data]? {
 		do {
             guard let parameters = transaction.fee.parameters as? BitcoinFeeParameters else { return nil }
             
@@ -66,7 +66,7 @@ class BitcoinTransactionBuilder {
 		}
 	}
 	
-    public func buildForSend(transaction: Transaction, signatures: [Data], sequence: Int?, sortType: TransactionDataSortType = .bip69) -> Data? {
+    func buildForSend(transaction: Transaction, signatures: [Data], sequence: Int?, sortType: TransactionDataSortType = .bip69) -> Data? {
         guard let signatures = convertToDER(signatures),
               let parameters = transaction.fee.parameters as? BitcoinFeeParameters else {
 			return nil

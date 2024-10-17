@@ -9,7 +9,7 @@
 import Foundation
 
 /// Union for use logic info TON wallet
-public struct TONWalletInfo {
+struct TONWalletInfo {
     
     /// Wallet balance
     let balance: Decimal

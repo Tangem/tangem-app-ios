@@ -52,9 +52,9 @@ class SolanaWalletManager: BaseManager, WalletManager {
 }
 
 extension SolanaWalletManager: TransactionSender {
-    public var allowsFeeSelection: Bool { false }
+    var allowsFeeSelection: Bool { false }
     
-    public func send(_ transaction: Transaction, signer: TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError> {
+    func send(_ transaction: Transaction, signer: TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError> {
         let sendPublisher: AnyPublisher<TransactionID, Error>
         switch transaction.amount.type {
         case .coin:
@@ -80,7 +80,7 @@ extension SolanaWalletManager: TransactionSender {
             .eraseToAnyPublisher()
     }
     
-    public func getFee(amount: Amount, destination: String) -> AnyPublisher<[Fee], Error> {
+    func getFee(amount: Amount, destination: String) -> AnyPublisher<[Fee], Error> {
         destinationAccountInfo(destination: destination, amount: amount)
             .withWeakCaptureOf(self)
             .flatMap { walletManager, destinationAccountInfo in

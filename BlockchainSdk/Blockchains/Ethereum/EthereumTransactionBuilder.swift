@@ -246,7 +246,7 @@ enum EthereumTransactionBuilderError: LocalizedError {
     case walletCoreError(message: String)
     case invalidStakingTransaction
 
-    public var errorDescription: String? {
+    var errorDescription: String? {
         switch self {
         case .feeParametersNotFound:
             return "feeParametersNotFound"

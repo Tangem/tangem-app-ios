@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct EthereumApiKeys {
+struct EthereumApiKeys {
     let infuraProjectId: String
     let nowNodesApiKey: String
     let getBlockApiKeys: [Blockchain: String]

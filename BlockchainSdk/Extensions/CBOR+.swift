@@ -10,14 +10,14 @@ import Foundation
 import SwiftCBOR
 
 extension CBOR {
-    public static func indefiniteLenghtArrayWith(_ elements: [CBOR]) -> [UInt8] {
+    static func indefiniteLengthArrayWith(_ elements: [CBOR]) -> [UInt8] {
         var result = CBOR.encodeArrayStreamStart()
         result += CBOR.encodeArrayChunk(elements)
         result += CBOR.encodeStreamEnd()
         return result
     }
     
-    public static func combineEncodedArrays(_ encodedArrays: [[UInt8]]) -> [UInt8] {
+    static func combineEncodedArrays(_ encodedArrays: [[UInt8]]) -> [UInt8] {
         var res = encodedArrays.count.encode()
         res[0] = res[0] | 0b100_00000
         res.append(contentsOf: encodedArrays.reduce(into: [], { (result, array) in
@@ -26,7 +26,7 @@ extension CBOR {
         return res
     }
     
-    public static func encodeUnspentOutput(_ output: String, index: UInt8) -> [UInt8] {
+    static func encodeUnspentOutput(_ output: String, index: UInt8) -> [UInt8] {
         var res = 2.encode()
         res[0] = res[0] | 0b100_00000
         

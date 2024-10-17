@@ -33,7 +33,7 @@ final class ICPTransactionBuilder {
     ///   - transaction: Transaction
     ///   - date: current timestamp
     /// - Returns: ICPSigningInput for sign transaction with external signer
-    public func buildForSign(
+    func buildForSign(
         transaction: Transaction,
         date: Date = Date()
     ) throws -> ICPSigningInput {
@@ -58,7 +58,7 @@ final class ICPTransactionBuilder {
     ///   - signedHashes: hashes from transaction signer
     ///   - input: result of buildForSign call
     /// - Returns: model containing signed envelopes ready for sending to API
-    public func buildForSend(signedHashes: [Data], input: ICPSigningInput) throws -> ICPSigningOutput {
+    func buildForSend(signedHashes: [Data], input: ICPSigningInput) throws -> ICPSigningOutput {
         guard signedHashes.count == 2,
               let callSignature = signedHashes.first,
               let readStateSignature = signedHashes.last else {
@@ -73,13 +73,13 @@ final class ICPTransactionBuilder {
     
     /// Model for generation hashes to sign
     /// from transaction parameters
-    public struct ICPSigningInput {
+    struct ICPSigningInput {
         /// Wallet public key
         let publicKey: Data
         /// Domain separator string for request, e.g. 'ic-request'
         let domainSeparator: ICPDomainSeparator
         /// Aggregates data required for requests
-        public let requestData: ICPRequestsData
+        let requestData: ICPRequestsData
         
         /// Creates instance
         /// - Parameters:
@@ -88,7 +88,7 @@ final class ICPTransactionBuilder {
         ///   - decimalValue:
         ///   - date: current timestamp
         ///   - transaction: input transaction
-        public init(
+        init(
             publicKey: Data,
             nonce: () throws -> Data,
             decimalValue: Decimal,
@@ -116,18 +116,18 @@ final class ICPTransactionBuilder {
         
         /// Generates hashes for signing
         /// - Returns: hashes for signing
-        public func hashes() -> [Data] {
+        func hashes() -> [Data] {
             requestData.hashes(for: domainSeparator)
         }
     }
 
     /// Aggregates signed envelopes data for sending
-    public struct ICPSigningOutput {
-        public let callEnvelope: Data
-        public let readStateEnvelope: Data
-        public let readStateTreePaths: [ICPStateTreePath]
+    struct ICPSigningOutput {
+        let callEnvelope: Data
+        let readStateEnvelope: Data
+        let readStateTreePaths: [ICPStateTreePath]
         
-        public init(data: ICPRequestsData, callSignature: Data, readStateSignature: Data) throws {
+        init(data: ICPRequestsData, callSignature: Data, readStateSignature: Data) throws {
             callEnvelope = try ICPRequestEnvelope(
                 content: data.callRequestContent,
                 senderPubkey: data.derEncodedPublicKey,

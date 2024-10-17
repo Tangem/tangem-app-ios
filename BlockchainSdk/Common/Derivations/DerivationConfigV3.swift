@@ -21,8 +21,8 @@ import Foundation
 /// - `EVM-like` without `Ethereum classic` with `Ethereum` coinType(60).
 /// - `All else`. According to `BIP44`
 /// https://github.com/satoshilabs/slips/blob/master/slip-0044.md
-public struct DerivationConfigV3: DerivationConfig {
-    public func derivationPath(for blockchain: Blockchain) -> String {
+struct DerivationConfigV3: DerivationConfig {
+    func derivationPath(for blockchain: Blockchain) -> String {
         switch blockchain {
         case .bitcoin:
             return "m/84'/0'/0'/0/0"

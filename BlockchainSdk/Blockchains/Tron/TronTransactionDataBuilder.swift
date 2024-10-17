@@ -8,6 +8,6 @@
 
 import Foundation
 
-public protocol TronTransactionDataBuilder {
+protocol TronTransactionDataBuilder {
     func buildForApprove(spender: String, amount: Amount) throws -> Data
 }

@@ -12,7 +12,7 @@ import Combine
 
 @available(iOS 13.0, *)
 class StellarTransactionBuilder {
-    public var sequence: Int64?
+    var sequence: Int64?
     var useTimebounds = true
     //for tests
     var specificTxTime: TimeInterval? = nil
@@ -25,7 +25,7 @@ class StellarTransactionBuilder {
         self.isTestnet = isTestnet
     }
     
-    public func buildForSign(targetAccountResponse: StellarTargetAccountResponse, transaction: Transaction) -> AnyPublisher<(hash: Data, transaction: stellarsdk.TransactionXDR), Error> {
+    func buildForSign(targetAccountResponse: StellarTargetAccountResponse, transaction: Transaction) -> AnyPublisher<(hash: Data, transaction: stellarsdk.TransactionXDR), Error> {
         guard let destinationKeyPair = try? KeyPair(accountId: transaction.destinationAddress),
               let sourceKeyPair = try? KeyPair(accountId: transaction.sourceAddress) else {
             return Fail(error: WalletError.failedToBuildTx)
@@ -94,7 +94,7 @@ class StellarTransactionBuilder {
         return Just(result).setFailureType(to: Error.self).eraseToAnyPublisher()
     }
     
-    public func buildForSend(signature: Data, transaction: TransactionXDR) -> String? {
+    func buildForSend(signature: Data, transaction: TransactionXDR) -> String? {
         var transaction = transaction
         let hint = walletPublicKey.suffix(4)
         let decoratedSignature = DecoratedSignatureXDR(hint: WrappedData4(hint), signature: signature)

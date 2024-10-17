@@ -11,7 +11,7 @@ import Foundation
 public struct TransactionSendResult: Hashable {
     public let hash: String
     
-    public init(hash: String) {
+    init(hash: String) {
         self.hash = hash
     }
 }

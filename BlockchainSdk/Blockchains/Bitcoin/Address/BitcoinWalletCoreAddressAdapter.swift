@@ -62,7 +62,7 @@ extension BitcoinWalletCoreAddressAdapter {
 // MARK: - AddressValidator
 
 extension BitcoinWalletCoreAddressAdapter: AddressValidator {
-    public func validate(_ address: String) -> Bool {
+    func validate(_ address: String) -> Bool {
         BitcoinAddress.isValidString(string: address)
     }
     

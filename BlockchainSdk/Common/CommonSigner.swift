@@ -11,13 +11,13 @@ import TangemSdk
 import Combine
 
 @available(iOS 13.0, *)
-public class CommonSigner {
-    public var cardId: String?
-    public var initialMessage: Message?
+class CommonSigner {
+    var cardId: String?
+    var initialMessage: Message?
     
     private let sdk: TangemSdk
     
-    public init(sdk: TangemSdk, cardId: String? = nil, initialMessage: Message? = nil) {
+    init(sdk: TangemSdk, cardId: String? = nil, initialMessage: Message? = nil) {
         self.sdk = sdk
         self.cardId = cardId
         self.initialMessage = initialMessage
@@ -25,7 +25,7 @@ public class CommonSigner {
 }
 
 extension CommonSigner: TransactionSigner {
-    public func sign(hashes: [Data], walletPublicKey: Wallet.PublicKey) -> AnyPublisher<[Data], Error> {
+    func sign(hashes: [Data], walletPublicKey: Wallet.PublicKey) -> AnyPublisher<[Data], Error> {
         Deferred {
             Future { [weak self] promise in
                 guard let self = self else {
@@ -52,7 +52,7 @@ extension CommonSigner: TransactionSigner {
         .eraseToAnyPublisher()
     }
     
-    public func sign(hash: Data, walletPublicKey: Wallet.PublicKey) -> AnyPublisher<Data, Error> {
+    func sign(hash: Data, walletPublicKey: Wallet.PublicKey) -> AnyPublisher<Data, Error> {
         sign(hashes: [hash], walletPublicKey: walletPublicKey)
             .map {
                 $0.first ?? Data()

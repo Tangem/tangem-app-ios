@@ -13,9 +13,9 @@ enum EthereumOptimisticRollupSmartContract: SmartContractTargetType {
     case getL1GasUsed(data: Data)
     case l1BaseFee
 
-    public var contactAddress: String { "0x420000000000000000000000000000000000000F" }
+    var contactAddress: String { "0x420000000000000000000000000000000000000F" }
 
-    public var methodName: String {
+    var methodName: String {
         switch self {
         case .getL1Fee:
             return "getL1Fee"
@@ -26,7 +26,7 @@ enum EthereumOptimisticRollupSmartContract: SmartContractTargetType {
         }
     }
 
-    public var parameters: [SmartContractMethodParameterType] {
+    var parameters: [SmartContractMethodParameterType] {
         switch self {
         case .getL1Fee(let data):
             return [.bytes(data)]

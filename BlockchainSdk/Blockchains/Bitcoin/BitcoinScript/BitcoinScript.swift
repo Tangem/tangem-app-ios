@@ -9,7 +9,7 @@
 import Foundation
 import TangemSdk
 
-public struct BitcoinScript {
+struct BitcoinScript {
     let chunks: [BitcoinScriptChunk]
     let data: Data
 }

@@ -94,7 +94,7 @@ public extension AnyPublisher where Output == Response, Failure == MoyaError {
 }
 
 @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-public extension AnyPublisher where Output == ProgressResponse, Failure == MoyaError {
+extension AnyPublisher where Output == ProgressResponse, Failure == MoyaError {
 
     /**
      Filter completed progress response and maps to actual response
@@ -139,7 +139,7 @@ extension AnyPublisher where Failure == MoyaError {
         .eraseToAnyPublisher()
     }
     
-    public func eraseError() -> AnyPublisher<Output, Error> {
+    func eraseError() -> AnyPublisher<Output, Error> {
         return self.mapError { moyaError -> Error in
             return moyaError as Error
         }
@@ -149,7 +149,7 @@ extension AnyPublisher where Failure == MoyaError {
 
 
 @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-public extension AnyPublisher where Output == String, Failure == MoyaError {
+extension AnyPublisher where Output == String, Failure == MoyaError {
     func cleanString() -> AnyPublisher<String, MoyaError> {
         return self
             .map { $0.remove("\"").remove("\n") }

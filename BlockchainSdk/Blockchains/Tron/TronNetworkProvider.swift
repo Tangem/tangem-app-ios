@@ -9,6 +9,6 @@
 import Foundation
 import Combine
 
-public protocol TronNetworkProvider {
+protocol TronNetworkProvider {
     func getAllowance(owner: String, spender: String, contractAddress: String) -> AnyPublisher<Decimal, Error>
 }
