@@ -120,7 +120,7 @@ extension WalletModel {
     }
 
     private var stakedWithPendingBalance: Balance {
-        let stakingBalance = stakingManagerState.balances?.stakes().sum()
+        let stakingBalance = stakingManagerState.balances?.sum()
         let fiatBalance: Decimal? = {
             guard let stakingBalance, let currencyId = tokenItem.currencyId else {
                 return nil
