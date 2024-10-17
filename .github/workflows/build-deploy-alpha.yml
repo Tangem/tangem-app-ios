@@ -100,7 +100,7 @@ jobs:
 
   error_notification:
     name: Error Notification
-    if: failure()
+    #if: failure()
     if: false # TODO: Temp disabled, enable
     needs:
       - prepare
