@@ -73,7 +73,7 @@ class AppCoordinator: CoordinatorObject {
 
     func sceneDidEnterBackground() {
         withTransaction(.withoutAnimations()) {
-            mainBottomSheetUIManager.hide()
+            mainBottomSheetUIManager.hide(shouldUpdateFooterSnapshot: false)
             lockViewVisible = true
         }
     }
