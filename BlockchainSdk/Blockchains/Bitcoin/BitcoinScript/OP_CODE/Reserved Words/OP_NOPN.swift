@@ -24,42 +24,42 @@
 
 import Foundation
 
-public struct OpNop1: OpCodeProtocol {
-    public var value: UInt8 { return 0xb0 }
-    public var name: String { return "OP_NOP1" }
+struct OpNop1: OpCodeProtocol {
+    var value: UInt8 { return 0xb0 }
+    var name: String { return "OP_NOP1" }
 }
 
-public struct OpNop4: OpCodeProtocol {
-    public var value: UInt8 { return 0xb3 }
-    public var name: String { return "OP_NOP4" }
+struct OpNop4: OpCodeProtocol {
+    var value: UInt8 { return 0xb3 }
+    var name: String { return "OP_NOP4" }
 }
 
-public struct OpNop5: OpCodeProtocol {
-    public var value: UInt8 { return 0xb4 }
-    public var name: String { return "OP_NOP5" }
+struct OpNop5: OpCodeProtocol {
+    var value: UInt8 { return 0xb4 }
+    var name: String { return "OP_NOP5" }
 }
 
-public struct OpNop6: OpCodeProtocol {
-    public var value: UInt8 { return 0xb5 }
-    public var name: String { return "OP_NOP6" }
+struct OpNop6: OpCodeProtocol {
+    var value: UInt8 { return 0xb5 }
+    var name: String { return "OP_NOP6" }
 }
 
-public struct OpNop7: OpCodeProtocol {
-    public var value: UInt8 { return 0xb6 }
-    public var name: String { return "OP_NOP8" }
+struct OpNop7: OpCodeProtocol {
+    var value: UInt8 { return 0xb6 }
+    var name: String { return "OP_NOP8" }
 }
 
-public struct OpNop8: OpCodeProtocol {
-    public var value: UInt8 { return 0xb7 }
-    public var name: String { return "OP_NOP8" }
+struct OpNop8: OpCodeProtocol {
+    var value: UInt8 { return 0xb7 }
+    var name: String { return "OP_NOP8" }
 }
 
-public struct OpNop9: OpCodeProtocol {
-    public var value: UInt8 { return 0xb8 }
-    public var name: String { return "OP_NOP9" }
+struct OpNop9: OpCodeProtocol {
+    var value: UInt8 { return 0xb8 }
+    var name: String { return "OP_NOP9" }
 }
 
-public struct OpNop10: OpCodeProtocol {
-    public var value: UInt8 { return 0xb9 }
-    public var name: String { return "OP_NOP10" }
+struct OpNop10: OpCodeProtocol {
+    var value: UInt8 { return 0xb9 }
+    var name: String { return "OP_NOP10" }
 }

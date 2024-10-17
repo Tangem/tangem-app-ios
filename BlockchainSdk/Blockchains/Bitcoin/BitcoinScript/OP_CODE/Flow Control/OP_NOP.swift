@@ -9,7 +9,7 @@
 import Foundation
 
 // do nothing
-public struct OpNop: OpCodeProtocol {
-    public var value: UInt8 { return 0x61 }
-    public var name: String { return "OP_NOP" }
+struct OpNop: OpCodeProtocol {
+    var value: UInt8 { return 0x61 }
+    var name: String { return "OP_NOP" }
 }

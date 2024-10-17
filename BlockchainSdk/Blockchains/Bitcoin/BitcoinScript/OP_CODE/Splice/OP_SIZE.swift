@@ -25,7 +25,7 @@
 import Foundation
 
 // Pushes the string length of the top element of the stack (without popping it).
-public struct OpSize: OpCodeProtocol {
-    public var value: UInt8 { return 0x82 }
-    public var name: String { return "OP_SIZE" }
+struct OpSize: OpCodeProtocol {
+    var value: UInt8 { return 0x82 }
+    var name: String { return "OP_SIZE" }
 }

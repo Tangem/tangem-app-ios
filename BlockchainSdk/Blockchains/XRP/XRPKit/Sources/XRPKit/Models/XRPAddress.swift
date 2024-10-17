@@ -7,12 +7,12 @@
 
 import Foundation
 
-public enum XRPAddressError: Error {
+enum XRPAddressError: Error {
     case invalidAddress
     case checksumFails
 }
 
-public struct XRPAddress {
+struct XRPAddress {
     var rAddress: String
     var tag: UInt32?
     var isTest: Bool
@@ -20,7 +20,7 @@ public struct XRPAddress {
         return XRPAddress.encodeXAddress(rAddress: self.rAddress, tag: self.tag, test: self.isTest)
     }
     
-    public init(rAddress: String, tag: UInt32? = nil, isTest: Bool = false) throws {
+    init(rAddress: String, tag: UInt32? = nil, isTest: Bool = false) throws {
         if !XRPSeedWallet.validate(address: rAddress) {
             throw XRPAddressError.invalidAddress
         }
@@ -29,7 +29,7 @@ public struct XRPAddress {
         self.isTest = false
     }
     
-    public init(xAddress: String) throws {
+    init(xAddress: String) throws {
         guard let data = XRPBase58.getData(from: xAddress) else {
             throw XRPAddressError.invalidAddress
         }
@@ -64,11 +64,11 @@ public struct XRPAddress {
         }
     }
     
-    public static func decodeXAddress(xAddress: String) throws -> XRPAddress {
+    static func decodeXAddress(xAddress: String) throws -> XRPAddress {
         return try self.init(xAddress: xAddress)
     }
     
-    public static func encodeXAddress(rAddress: String, tag: UInt32? = nil, test: Bool = false ) -> String {
+    static func encodeXAddress(rAddress: String, tag: UInt32? = nil, test: Bool = false ) -> String {
         let accountID = XRPSeedWallet.accountID(for: rAddress)
         let prefix: [UInt8] = test ? [0x04, 0x93] : [0x05, 0x44]
         let flags: [UInt8] = tag == nil ? [0x00] : [0x01]

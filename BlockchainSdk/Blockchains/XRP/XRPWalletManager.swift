@@ -10,7 +10,7 @@ import Foundation
 import Combine
 import TangemSdk
 
-public enum XRPError: Int, Error, LocalizedError {
+enum XRPError: Int, Error, LocalizedError {
     // WARNING: Make sure to preserve the error codes when removing or inserting errors
     
     case failedLoadUnconfirmed
@@ -21,7 +21,7 @@ public enum XRPError: Int, Error, LocalizedError {
     
     // WARNING: Make sure to preserve the error codes when removing or inserting errors
     
-    public var errorDescription: String? {
+    var errorDescription: String? {
         "generic_error_code".localized("xrp_error \(rawValue)")
     }
 }

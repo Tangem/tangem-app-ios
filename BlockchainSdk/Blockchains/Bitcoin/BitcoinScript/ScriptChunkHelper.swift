@@ -125,7 +125,7 @@ struct ScriptChunkHelper {
 
 // MARK: - Errors
 
-public enum ScriptChunkError: Error {
+enum ScriptChunkError: Error {
     case error(String)
 }
 

@@ -7,8 +7,8 @@
 
 import Foundation
 
-public struct XRPAccountInfo: Codable {
-    public var address: String
-    public var drops: Int
-    public var sequence: Int
+struct XRPAccountInfo: Codable {
+    var address: String
+    var drops: Int
+    var sequence: Int
 }

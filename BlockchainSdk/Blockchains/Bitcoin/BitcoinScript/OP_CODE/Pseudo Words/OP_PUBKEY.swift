@@ -22,9 +22,9 @@
 
 import Foundation
 
-// Represents a public key hashed with OP_HASH160.
+// Represents a key hashed with OP_HASH160.
 // This used internally for assisting with transaction matching. They are invalid if used in actual scripts.
-public struct OpPubkey: OpCodeProtocol {
-    public var value: UInt8 { return 0xfe }
-    public var name: String { return "OP_PUBKEY" }
+struct OpPubkey: OpCodeProtocol {
+    var value: UInt8 { return 0xfe }
+    var name: String { return "OP_PUBKEY" }
 }

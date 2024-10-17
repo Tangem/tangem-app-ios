@@ -11,12 +11,12 @@ enum LedgerError: Error {
     case runtimeError(String)
 }
 
-public struct XRPLedger {
+struct XRPLedger {
     
     // ws
     #if !os(Linux)
     @available(iOS 13.0, OSX 10.15, tvOS 13.0, watchOS 6.0, *)
-    public static var ws: XRPWebSocket = WebSocket()
+    static var ws: XRPWebSocket = WebSocket()
     #endif
     
     // JSON-RPC
@@ -26,11 +26,11 @@ public struct XRPLedger {
         
     }
     
-    public static func setURL(endpoint: URL) {
+    static func setURL(endpoint: URL) {
         self.url = endpoint
     }
     
-    public static func getTxs(account: String, completion: @escaping ((Result<[XRPHistoricalTransaction], Error>) -> ())) {
+    static func getTxs(account: String, completion: @escaping ((Result<[XRPHistoricalTransaction], Error>) -> ())) {
         let parameters: [String: Any] = [
             "method" : "account_tx",
             "params": [
@@ -83,7 +83,7 @@ public struct XRPLedger {
         }
     }
     
-    public static func getBalance(address: String, completion: @escaping ((Result<XRPAmount, Error>) -> ())) {
+    static func getBalance(address: String, completion: @escaping ((Result<XRPAmount, Error>) -> ())) {
         let parameters: [String: Any] = [
             "method" : "account_info",
             "params": [
@@ -114,7 +114,7 @@ public struct XRPLedger {
         }
     }
     
-    public static func getAccountInfo(account: String, completion: @escaping ((Result<XRPAccountInfo, Error>) -> ())) {
+    static func getAccountInfo(account: String, completion: @escaping ((Result<XRPAccountInfo, Error>) -> ())) {
         let parameters: [String: Any] = [
             "method" : "account_info",
             "params": [
@@ -150,7 +150,7 @@ public struct XRPLedger {
         }
     }
     
-    public static func currentLedgerInfo(completion: @escaping ((Result<XRPCurrentLedgerInfo, Error>) -> ())) {
+    static func currentLedgerInfo(completion: @escaping ((Result<XRPCurrentLedgerInfo, Error>) -> ())) {
         let parameters: [String: Any] = [
             "method" : "fee"
         ]
@@ -171,7 +171,7 @@ public struct XRPLedger {
         }
     }
     
-    public static func submit(txBlob: String, completion: @escaping ((Result<NSDictionary, Error>) -> ())) {
+    static func submit(txBlob: String, completion: @escaping ((Result<NSDictionary, Error>) -> ())) {
         let parameters: [String: Any] = [
             "method" : "submit",
             "params": [

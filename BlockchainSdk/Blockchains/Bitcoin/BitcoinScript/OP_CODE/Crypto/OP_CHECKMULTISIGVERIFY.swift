@@ -25,7 +25,7 @@
 import Foundation
 
 // Same as OP_CHECKMULTISIG, but OP_VERIFY is executed afterward.
-public struct OpCheckMultiSigVerify: OpCodeProtocol {
-    public var value: UInt8 { return 0xaf }
-    public var name: String { return "OP_CHECKMULTISIGVERIFY" }
+struct OpCheckMultiSigVerify: OpCodeProtocol {
+    var value: UInt8 { return 0xaf }
+    var name: String { return "OP_CHECKMULTISIGVERIFY" }
 }

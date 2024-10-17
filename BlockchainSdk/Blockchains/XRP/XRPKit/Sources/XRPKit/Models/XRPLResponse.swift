@@ -9,19 +9,19 @@ import Foundation
 import AnyCodable
 
 
-//public struct XRPWebSocketResponse<T:Codable>: Codable {
-//    public var id: String
-//    public var status: String
-//    public var type: String
-//    public var result: T
+//struct XRPWebSocketResponse<T:Codable>: Codable {
+//    var id: String
+//    var status: String
+//    var type: String
+//    var result: T
 //}
 
-public struct XRPWebSocketResponse: Codable{
-    public let id: String
-    public let status: String
-    public let type: String
+struct XRPWebSocketResponse: Codable{
+    let id: String
+    let status: String
+    let type: String
     private let _result: AnyCodable
-    public var result: [String:AnyObject] {
+    var result: [String:AnyObject] {
         return _result.value as! [String:AnyObject]
     }
     
@@ -32,7 +32,7 @@ public struct XRPWebSocketResponse: Codable{
         case _result = "result"
     }
     
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         id = try values.decode(String.self, forKey: .id)
         status = try values.decode(String.self, forKey: .status)
@@ -41,6 +41,6 @@ public struct XRPWebSocketResponse: Codable{
     }
 }
 
-public struct XRPJsonRpcResponse<T> {
-    public var result: T
+struct XRPJsonRpcResponse<T> {
+    var result: T
 }

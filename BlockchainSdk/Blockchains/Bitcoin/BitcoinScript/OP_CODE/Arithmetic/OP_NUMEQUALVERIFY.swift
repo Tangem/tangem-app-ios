@@ -24,7 +24,7 @@
 import Foundation
 
 // Same as OP_NUMEQUAL, but runs OP_VERIFY afterward.
-public struct OpNumEqualVerify: OpCodeProtocol {
-    public var value: UInt8 { return 0x9d }
-    public var name: String { return "OP_NUMEQUALVERIFY" }
+struct OpNumEqualVerify: OpCodeProtocol {
+    var value: UInt8 { return 0x9d }
+    var name: String { return "OP_NUMEQUALVERIFY" }
 }

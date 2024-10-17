@@ -24,7 +24,7 @@
 import Foundation
 
 // replaces number with True if it's not zero, False otherwise.
-public struct OP0NotEqual: OpCodeProtocol {
-    public var value: UInt8 { return 0x92 }
-    public var name: String { return "OP_0NOTEQUAL" }
+struct OP0NotEqual: OpCodeProtocol {
+    var value: UInt8 { return 0x92 }
+    var name: String { return "OP_0NOTEQUAL" }
 }

@@ -73,7 +73,7 @@ struct XRPTarget: TargetType {
         return .requestParameters(parameters: parameters, encoding: JSONEncoding.default)
     }
     
-    public var headers: [String: String]? {
+    var headers: [String: String]? {
         var headers = ["Content-Type": "application/json"]
 
         if let headersKeyInfo = node.headers {

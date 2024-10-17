@@ -25,9 +25,9 @@
 import Foundation
 
 // The number in the word name (1-16) is pushed onto the stack.
-public struct OpN: OpCodeProtocol {
-    public var value: UInt8 { return 0x50 + n }
-    public var name: String { return "OP_\(n)" }
+struct OpN: OpCodeProtocol {
+    var value: UInt8 { return 0x50 + n }
+    var name: String { return "OP_\(n)" }
     private let n: UInt8
     internal init(_ n: UInt8) {
         guard (1...16).contains(n) else {

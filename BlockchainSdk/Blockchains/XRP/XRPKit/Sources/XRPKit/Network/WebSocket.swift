@@ -10,7 +10,7 @@
 import Foundation
 
 @available(iOS 13.0, OSX 10.15, tvOS 13.0, watchOS 6.0, *)
-public protocol XRPWebSocket {
+protocol XRPWebSocket {
     func send(text: String)
     func send(data: Data)
     func connect(url: URL)
@@ -25,7 +25,7 @@ public protocol XRPWebSocket {
 }
 
 @available(iOS 13.0, OSX 10.15, tvOS 13.0, watchOS 6.0, *)
-public protocol XRPWebSocketDelegate {
+protocol XRPWebSocketDelegate {
     func onConnected(connection: XRPWebSocket)
     func onDisconnected(connection: XRPWebSocket, error: Error?)
     func onError(connection: XRPWebSocket, error: Error)

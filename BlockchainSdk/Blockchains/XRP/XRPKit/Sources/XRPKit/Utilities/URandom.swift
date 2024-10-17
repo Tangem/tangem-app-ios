@@ -1,16 +1,16 @@
 import Foundation
 
-public enum URandomError: Swift.Error {
+enum URandomError: Swift.Error {
     case open(Int32)
     case read(Int32)
 }
 
-public final class URandom {
+final class URandom {
 
     private let file: UnsafeMutablePointer<FILE>
     private let path = "/dev/urandom"
 
-    public init() throws {
+    init() throws {
         guard let file = fopen(path, "rb") else {
             // The Random protocol doesn't allow init to fail, so we have to
             // check whether /dev/urandom was successfully opened here
@@ -38,7 +38,7 @@ public final class URandom {
     }
 
     /// Get a random array of Bytes
-    public func bytes(count: Int) throws -> [UInt8] {
+    func bytes(count: Int) throws -> [UInt8] {
         return try read(numBytes: count)
     }
 }

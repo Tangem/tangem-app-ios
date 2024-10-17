@@ -6,22 +6,22 @@
 
 import Foundation
 
-public enum XRPAmountError: Error {
+enum XRPAmountError: Error {
     case invalidAmount
 }
 
-public struct XRPAmount {
+struct XRPAmount {
     
     private(set) var drops: Int!
     
-    public init(drops: Int) throws {
+    init(drops: Int) throws {
         if drops < 0 || drops > UInt64(100000000000000000) {
             throw XRPAmountError.invalidAmount
         }
         self.drops = drops
     }
     
-    public init(_ text: String) throws {
+    init(_ text: String) throws {
         // removed commas
         let stripped = text.replacingOccurrences(of: ",", with: "")
         if !stripped.replacingOccurrences(of: ".", with: "").isNumber {
@@ -46,7 +46,7 @@ public struct XRPAmount {
 
     }
     
-    public func prettyPrinted() -> String {
+    func prettyPrinted() -> String {
         let drops = self.drops%1000000
         let xrp = self.drops/1000000
         let numberFormatter = NumberFormatter()

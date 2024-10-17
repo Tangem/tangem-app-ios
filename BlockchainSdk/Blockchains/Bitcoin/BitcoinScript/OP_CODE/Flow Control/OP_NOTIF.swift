@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct OpNotIf: OpCodeProtocol {
-    public var value: UInt8 { return 0x64 }
-    public var name: String { return "OP_NOTIF" }
+struct OpNotIf: OpCodeProtocol {
+    var value: UInt8 { return 0x64 }
+    var name: String { return "OP_NOTIF" }
 }

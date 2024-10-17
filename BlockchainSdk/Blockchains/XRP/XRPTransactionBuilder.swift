@@ -30,7 +30,7 @@ class XRPTransactionBuilder {
         self.curve = curve
     }
     
-    public func buildForSign(transaction: Transaction) throws -> (XRPTransaction, Data)? {
+    func buildForSign(transaction: Transaction) throws -> (XRPTransaction, Data)? {
         guard let tx = try buildTransaction(from: transaction) else {
             return nil
         }
@@ -46,7 +46,7 @@ class XRPTransactionBuilder {
         }
     }
     
-    public func buildForSend(transaction: XRPTransaction,  signature: Data) throws -> String  {
+    func buildForSend(transaction: XRPTransaction,  signature: Data) throws -> String  {
         var sig: Data
         switch curve {
         case .ed25519, .ed25519_slip0010:

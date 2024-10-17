@@ -7,15 +7,15 @@
 
 import Foundation
 
-public struct XRPCurrentLedgerInfo {
+struct XRPCurrentLedgerInfo {
     
-    public init(index: Int, minFee: Int, maxFee: Int) {
+    init(index: Int, minFee: Int, maxFee: Int) {
         self.index = index
         self.minFee = minFee
         self.maxFee = maxFee
     }
     
-    public var index: Int
-    public var minFee: Int
-    public var maxFee: Int
+    var index: Int
+    var minFee: Int
+    var maxFee: Int
 }

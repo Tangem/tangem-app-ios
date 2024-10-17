@@ -25,7 +25,7 @@
 import Foundation
 
 // Swaps the top two pairs of items.
-public struct Op2Swap: OpCodeProtocol {
-    public var value: UInt8 { return 0x72 }
-    public var name: String { return "OP_2SWAP" }
+struct Op2Swap: OpCodeProtocol {
+    var value: UInt8 { return 0x72 }
+    var name: String { return "OP_2SWAP" }
 }

@@ -24,7 +24,7 @@
 import Foundation
 
 // Returns 1 if x1 is less than x2, 0 otherwise.
-public struct OpLessThan: OpCodeProtocol {
-    public var value: UInt8 { return 0x9f }
-    public var name: String { return "OP_LESSTHAN" }
+struct OpLessThan: OpCodeProtocol {
+    var value: UInt8 { return 0x9f }
+    var name: String { return "OP_LESSTHAN" }
 }

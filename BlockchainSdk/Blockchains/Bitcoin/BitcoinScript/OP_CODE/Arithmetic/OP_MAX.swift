@@ -25,7 +25,7 @@
 import Foundation
 
 // Returns the larger of a and b.
-public struct OpMax: OpCodeProtocol {
-    public var value: UInt8 { return 0xa4 }
-    public var name: String { return "OP_MAX" }
+struct OpMax: OpCodeProtocol {
+    var value: UInt8 { return 0xa4 }
+    var name: String { return "OP_MAX" }
 }

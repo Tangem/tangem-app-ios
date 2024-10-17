@@ -117,7 +117,7 @@ extension Numeric {
     }
 }
 
-public extension URL {
+extension URL {
     static let xrpl_rpc_MainNetS1 = URL(string: "https://s1.ripple.com:51234/")!
     static let xrpl_rpc_MainNetS2 = URL(string: "https://s2.ripple.com:51234/")!
     static let xrpl_rpc_Testnet = URL(string: "https://s.altnet.rippletest.net:51234/")!

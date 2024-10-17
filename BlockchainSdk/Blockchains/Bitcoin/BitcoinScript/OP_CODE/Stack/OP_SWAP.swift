@@ -25,7 +25,7 @@
 import Foundation
 
 // The top two items on the stack are swapped.
-public struct OpSwap: OpCodeProtocol {
-    public var value: UInt8 { return 0x7c }
-    public var name: String { return "OP_SWAP" }
+struct OpSwap: OpCodeProtocol {
+    var value: UInt8 { return 0x7c }
+    var name: String { return "OP_SWAP" }
 }

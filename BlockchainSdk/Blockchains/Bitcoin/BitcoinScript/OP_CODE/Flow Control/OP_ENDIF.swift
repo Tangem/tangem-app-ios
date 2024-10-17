@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct OpEndIf: OpCodeProtocol {
-    public var value: UInt8 { return 0x68 }
-    public var name: String { return "OP_ENDIF" }
+struct OpEndIf: OpCodeProtocol {
+    var value: UInt8 { return 0x68 }
+    var name: String { return "OP_ENDIF" }
 }

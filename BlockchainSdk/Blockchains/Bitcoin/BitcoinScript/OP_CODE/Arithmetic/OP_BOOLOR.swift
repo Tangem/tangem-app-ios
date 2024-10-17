@@ -24,7 +24,7 @@
 import Foundation
 
 // If a or b is not "" (null string), the output is 1. Otherwise 0.
-public struct OpBoolOr: OpCodeProtocol {
-    public var value: UInt8 { return 0x9b }
-    public var name: String { return "OP_BOOLOR" }
+struct OpBoolOr: OpCodeProtocol {
+    var value: UInt8 { return 0x9b }
+    var name: String { return "OP_BOOLOR" }
 }

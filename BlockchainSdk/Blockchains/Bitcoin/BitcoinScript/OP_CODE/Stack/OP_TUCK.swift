@@ -25,7 +25,7 @@
 import Foundation
 
 // The item at the top of the stack is copied and inserted before the second-to-top item.
-public struct OpTuck: OpCodeProtocol {
-    public var value: UInt8 { return 0x7d }
-    public var name: String { return "OP_TUCK" }
+struct OpTuck: OpCodeProtocol {
+    var value: UInt8 { return 0x7d }
+    var name: String { return "OP_TUCK" }
 }

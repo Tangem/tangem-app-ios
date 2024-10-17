@@ -24,7 +24,7 @@
 import Foundation
 
 // (x y -- x*y) disabled
-public struct OpMul: OpCodeProtocol {
-    public var value: UInt8 { return 0x95 }
-    public var name: String { return "OP_MUL" }
+struct OpMul: OpCodeProtocol {
+    var value: UInt8 { return 0x95 }
+    var name: String { return "OP_MUL" }
 }

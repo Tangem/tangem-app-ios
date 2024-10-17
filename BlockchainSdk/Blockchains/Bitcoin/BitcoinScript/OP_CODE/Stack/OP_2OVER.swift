@@ -25,7 +25,7 @@
 import Foundation
 
 // Copies the pair of items two spaces back in the stack to the front.
-public struct Op2Over: OpCodeProtocol {
-    public var value: UInt8 { return 0x70 }
-    public var name: String { return "OP_2OVER" }
+struct Op2Over: OpCodeProtocol {
+    var value: UInt8 { return 0x70 }
+    var name: String { return "OP_2OVER" }
 }

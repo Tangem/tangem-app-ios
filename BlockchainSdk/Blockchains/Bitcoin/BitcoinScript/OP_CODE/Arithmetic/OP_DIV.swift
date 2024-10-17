@@ -24,7 +24,7 @@
 import Foundation
 
 // (x y -- x/y)
-public struct OpDiv: OpCodeProtocol {
-    public var value: UInt8 { return 0x96 }
-    public var name: String { return "OP_DIV" }
+struct OpDiv: OpCodeProtocol {
+    var value: UInt8 { return 0x96 }
+    var name: String { return "OP_DIV" }
 }

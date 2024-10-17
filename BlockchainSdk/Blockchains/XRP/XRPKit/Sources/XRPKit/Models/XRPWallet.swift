@@ -37,9 +37,9 @@ extension XRPWallet {
         return [UInt8](accountID)
     }
     
-    /// Derive a standard XRP address from a public key.
+    /// Derive a standard XRP address from a key.
     ///
-    /// - Parameter publicKey: hexadecimal public key
+    /// - Parameter publicKey: hexadecimal key
     /// - Returns: standard XRP address encoded using XRP alphabet
     ///
     static func deriveAddress(publicKey: String) -> String {

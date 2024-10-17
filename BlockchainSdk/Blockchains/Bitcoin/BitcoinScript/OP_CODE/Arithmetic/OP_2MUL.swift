@@ -24,7 +24,7 @@
 import Foundation
 
 // The input is multiplied by 2. disabled.
-public struct Op2Mul: OpCodeProtocol {
-    public var value: UInt8 { return 0x8d }
-    public var name: String { return "OP_2MUL" }
+struct Op2Mul: OpCodeProtocol {
+    var value: UInt8 { return 0x8d }
+    var name: String { return "OP_2MUL" }
 }

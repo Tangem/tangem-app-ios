@@ -24,7 +24,7 @@
 import Foundation
 
 // Returns 1 if the numbers are equal, 0 otherwise.
-public struct OpNumEqual: OpCodeProtocol {
-    public var value: UInt8 { return 0x9c }
-    public var name: String { return "OP_NUMEQUAL" }
+struct OpNumEqual: OpCodeProtocol {
+    var value: UInt8 { return 0x9c }
+    var name: String { return "OP_NUMEQUAL" }
 }

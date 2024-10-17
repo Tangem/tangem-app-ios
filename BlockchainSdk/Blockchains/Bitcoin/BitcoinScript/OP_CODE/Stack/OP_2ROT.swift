@@ -25,7 +25,7 @@
 import Foundation
 
 // The fifth and sixth items back are moved to the top of the stack.
-public struct Op2Rot: OpCodeProtocol {
-    public var value: UInt8 { return 0x7b }
-    public var name: String { return "OP_2ROT" }
+struct Op2Rot: OpCodeProtocol {
+    var value: UInt8 { return 0x7b }
+    var name: String { return "OP_2ROT" }
 }
