@@ -9077,7 +9077,6 @@
 			children = (
 				B62D3CC32CBC79D900C2460E /* AllowanceERC20TokenMethod.swift */,
 				B62D3CC42CBC79D900C2460E /* ApproveERC20TokenMethod.swift */,
-				B62D3CC52CBC79D900C2460E /* EthereumExternalLinkProvider.swift */,
 				B62D3CC62CBC79D900C2460E /* TokenBalanceERC20TokenMethod.swift */,
 				B62D3CC72CBC79D900C2460E /* TransferERC20TokenMethod.swift */,
 			);
@@ -9196,6 +9195,7 @@
 				B62D3D072CBC79D900C2460E /* EthereumTransactionBuilder.swift */,
 				B62D3D082CBC79D900C2460E /* EthereumWalletAssembly.swift */,
 				B62D3D092CBC79D900C2460E /* EthereumWalletManager.swift */,
+				B62D3CC52CBC79D900C2460E /* EthereumExternalLinkProvider.swift */,
 			);
 			path = Ethereum;
 			sourceTree = "<group>";
