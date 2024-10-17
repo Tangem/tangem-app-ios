@@ -8,6 +8,6 @@
 
 import Foundation
 
-public protocol BitcoinScriptAddressesProvider {
+protocol BitcoinScriptAddressesProvider {
     func makeAddresses(publicKey: Wallet.PublicKey, pairPublicKey: Data) throws -> [BitcoinScriptAddress]
 }

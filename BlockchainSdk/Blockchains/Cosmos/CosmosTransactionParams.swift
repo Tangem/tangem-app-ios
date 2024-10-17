@@ -9,7 +9,7 @@
 import Foundation
 
 public struct CosmosTransactionParams: TransactionParams {
-    public let memo: String
+    let memo: String
     
     public init(memo: String) {
         self.memo = memo

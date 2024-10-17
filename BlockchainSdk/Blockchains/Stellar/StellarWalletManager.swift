@@ -12,7 +12,7 @@ import SwiftyJSON
 import Combine
 import TangemSdk
 
-public enum StellarError: Int, Error, LocalizedError {
+enum StellarError: Int, Error, LocalizedError {
     // WARNING: Make sure to preserve the error codes when removing or inserting errors
     
     case emptyResponse
@@ -25,7 +25,7 @@ public enum StellarError: Int, Error, LocalizedError {
     
     // WARNING: Make sure to preserve the error codes when removing or inserting errors
     
-    public var errorDescription: String? {
+    var errorDescription: String? {
         let networkName = Blockchain.stellar(curve: .ed25519, testnet: false).displayName
         switch self {
         case .requiresMemo:

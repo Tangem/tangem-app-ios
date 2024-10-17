@@ -10,7 +10,7 @@ import Foundation
 import TangemSdk
 import CryptoSwift
 
-public struct TronAddressService {
+struct TronAddressService {
     private let prefix: UInt8 = 0x41
     private let addressLength = 21
 }
@@ -19,7 +19,7 @@ public struct TronAddressService {
 
 @available(iOS 13.0, *)
 extension TronAddressService: AddressProvider {
-    public func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
+    func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
         let decompressedPublicKey = try Secp256k1Key(with: publicKey.blockchainKey).decompress()
 
         let data = decompressedPublicKey.dropFirst()
@@ -36,7 +36,7 @@ extension TronAddressService: AddressProvider {
 
 @available(iOS 13.0, *)
 extension TronAddressService: AddressValidator {
-    public func validate(_ address: String) -> Bool {
+    func validate(_ address: String) -> Bool {
         guard let decoded = address.base58CheckDecodedBytes else {
             return false
         }

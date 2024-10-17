@@ -8,11 +8,11 @@
 
 import Foundation
 
-public enum CardanoError: String, Error, LocalizedError {
+enum CardanoError: String, Error, LocalizedError {
     case noUnspents
     case lowAda
 
-    public var errorDescription: String? {
+    var errorDescription: String? {
         switch self {
         case .noUnspents:
             return "generic_error_code".localized(errorCodeDescription)

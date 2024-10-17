@@ -13,7 +13,7 @@
 import Foundation
 
 /// Bech32 checksum implementation
-public class Bech32 {
+class Bech32 {
   
     private let gen: [UInt32] = [0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3]
     /// Bech32 checksum delimiter
@@ -92,7 +92,7 @@ public class Bech32 {
     }
     
     /// Encode Bech32 string
-    public func encode(_ hrp: String, values: Data) -> String {
+    func encode(_ hrp: String, values: Data) -> String {
         guard let convertedValues = try? convertBits(data: values.bytes, fromBits: 8, toBits: 5, pad: true) else {
             assertionFailure()
             return ""
@@ -112,7 +112,7 @@ public class Bech32 {
     }
     
     /// Decode Bech32 string
-    public func decode(_ str: String) throws -> (hrp: String, checksum: Data) {
+    func decode(_ str: String) throws -> (hrp: String, checksum: Data) {
         guard let strBytes = str.data(using: .utf8) else {
             throw DecodingError.nonUTF8String
         }
@@ -166,7 +166,7 @@ public class Bech32 {
     }
     
     /// Decode long Bech32 string
-        public func decodeLong(_ str: String) throws -> (hrp: String, checksum: Data) {
+        func decodeLong(_ str: String) throws -> (hrp: String, checksum: Data) {
             guard let strBytes = str.data(using: .utf8) else {
                 throw DecodingError.nonUTF8String
             }
@@ -250,7 +250,7 @@ public class Bech32 {
 }
 
 extension Bech32 {
-    public enum DecodingError: LocalizedError {
+    enum DecodingError: LocalizedError {
         case nonUTF8String
         case nonPrintableCharacter
         case invalidCase
@@ -262,7 +262,7 @@ extension Bech32 {
         case invalidCharacter
         case checksumMismatch
         
-        public var errorDescription: String? {
+        var errorDescription: String? {
             switch self {
             case .checksumMismatch:
                 return "Checksum doesn't match"
@@ -293,7 +293,7 @@ extension Bech32 {
         case bech32
         case bech32m
         
-        public var rawValue: UInt32 {
+        var rawValue: UInt32 {
             switch self {
             case .bech32:
                 return UInt32(1)

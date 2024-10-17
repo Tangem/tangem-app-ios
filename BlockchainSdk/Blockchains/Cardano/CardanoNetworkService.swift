@@ -55,14 +55,14 @@ class CardanoNetworkService: MultiNetworkProvider, CardanoNetworkProvider {
     }
 }
 
-public struct CardanoAddressResponse: Hashable {
+struct CardanoAddressResponse: Hashable {
     let balance: UInt64
     let tokenBalances: [Token: UInt64]
     let recentTransactionsHashes: [String]
     let unspentOutputs: [CardanoUnspentOutput]
 }
 
-public struct CardanoUnspentOutput: Hashable {
+struct CardanoUnspentOutput: Hashable {
     let address: String
     let amount: UInt64
     let outputIndex: UInt64

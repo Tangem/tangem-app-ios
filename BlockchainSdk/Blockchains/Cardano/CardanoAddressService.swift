@@ -11,9 +11,9 @@ import Sodium
 import SwiftCBOR
 import CryptoSwift
 
-public struct CardanoAddressService {
+struct CardanoAddressService {
     private let addressHeaderByte = Data([UInt8(97)])
-    public init() {}
+    init() {}
 
     private func makeByronAddress(from walletPublicKey: Data) -> String {
         let hexPublicKeyExtended = walletPublicKey + Data(repeating: 0, count: 32) // extendedPublicKey
@@ -43,7 +43,7 @@ public struct CardanoAddressService {
 
 @available(iOS 13.0, *)
 extension CardanoAddressService: AddressValidator {
-    public func validate(_ address: String) -> Bool {
+    func validate(_ address: String) -> Bool {
         guard !address.isEmpty else {
             return false
         }
@@ -82,7 +82,7 @@ extension CardanoAddressService: AddressValidator {
 
 @available(iOS 13.0, *)
 extension CardanoAddressService: AddressProvider {
-    public func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
+    func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
         try publicKey.blockchainKey.validateAsEdKey()
 
         switch addressType {

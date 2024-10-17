@@ -9,7 +9,7 @@
 import Foundation
 import WalletCore
 
-public struct AptosCoreAddressService {
+struct AptosCoreAddressService {
     private let walletCoreAddressService = WalletCoreAddressService(coin: .aptos)
     
     private func isStandardLength(for address: String) -> Bool {
@@ -29,7 +29,7 @@ public struct AptosCoreAddressService {
 // MARK: - AddressProvider
 
 extension AptosCoreAddressService: AddressProvider {
-    public func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
+    func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
         let address = try walletCoreAddressService.makeAddress(for: publicKey, with: addressType)
         
         if isStandardLength(for: address.value) {
@@ -44,7 +44,7 @@ extension AptosCoreAddressService: AddressProvider {
 // MARK: - AddressValidator
 
 extension AptosCoreAddressService: AddressValidator {
-    public func validate(_ address: String) -> Bool {
+    func validate(_ address: String) -> Bool {
         return walletCoreAddressService.validate(address)
     }
 }

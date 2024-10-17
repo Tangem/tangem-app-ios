@@ -10,14 +10,14 @@ import Foundation
 import TangemSdk
 import BitcoinCore
 
-public class RadiantAddressService {
+class RadiantAddressService {
     let addressAdapter = BitcoinWalletCoreAddressAdapter(coin: .bitcoinCash)
 }
 
 // MARK: - AddressValidator
 
 extension RadiantAddressService: AddressValidator {
-    public func validate(_ address: String) -> Bool {
+    func validate(_ address: String) -> Bool {
         addressAdapter.validateSpecify(prefix: .p2pkh, for: address)
     }
 }
@@ -25,7 +25,7 @@ extension RadiantAddressService: AddressValidator {
 // MARK: - AddressProvider
 
 extension RadiantAddressService: AddressProvider {
-    public func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
+    func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
         let address = try addressAdapter.makeAddress(for: publicKey, by: .p2pkh)
         return PlainAddress(value: address.description, publicKey: publicKey, type: addressType)
     }

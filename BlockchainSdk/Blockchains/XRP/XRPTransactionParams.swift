@@ -8,10 +8,10 @@
 
 import Foundation
 
-struct XRPTransactionParams: TransactionParams {
+public struct XRPTransactionParams: TransactionParams {
     var destinationTag: UInt32?
     
-    init(destinationTag: UInt32? = nil) {
+    public init(destinationTag: UInt32? = nil) {
         self.destinationTag = destinationTag
     }
 }

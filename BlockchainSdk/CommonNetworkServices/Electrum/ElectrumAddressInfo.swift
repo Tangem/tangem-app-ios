@@ -8,19 +8,19 @@
 
 import Foundation
 
-public struct ElectrumAddressInfo {
+struct ElectrumAddressInfo {
     let balance: Decimal
     let outputs: [ElectrumUTXO]
 }
 
-public struct ElectrumUTXO {
+struct ElectrumUTXO {
     let position: Int
     let hash: String
     let value: Decimal
     let height: Decimal
 }
 
-public struct ElectrumScriptUTXO {
+struct ElectrumScriptUTXO {
     let transactionHash: String
     let outputs: [Vout]
     

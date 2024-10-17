@@ -9,7 +9,7 @@
 import Foundation
 
 public struct BinanceTransactionParams: TransactionParams {
-    public var memo: String?
+    var memo: String?
     
     public init(memo: String? = nil) {
         self.memo = memo

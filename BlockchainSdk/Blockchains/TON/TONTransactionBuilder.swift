@@ -46,7 +46,7 @@ final class TONTransactionBuilder {
     ///   - destination: Destination address transaction
     ///   - jettonWalletAddress: Address of jetton wallet, required for jetton transaction
     /// - Returns: TheOpenNetworkSigningInput for sign transaction with external signer
-    public func buildForSign(
+    func buildForSign(
         amount: Amount,
         destination: String,
         jettonWalletAddress: String? = nil,
@@ -64,7 +64,7 @@ final class TONTransactionBuilder {
     /// - Parameters:
     ///   - output: TW output of message
     /// - Returns: External message for TON blockchain
-    public func buildForSend(output: TheOpenNetworkSigningOutput) throws -> String {
+    func buildForSend(output: TheOpenNetworkSigningOutput) throws -> String {
         return output.encoded
     }
     
@@ -167,7 +167,7 @@ final class TONTransactionBuilder {
 
 extension TONTransactionBuilder {
     
-    public struct DummyInput {
+    struct DummyInput {
         let wallet: Wallet
         let inputPrivateKey: Curve25519.Signing.PrivateKey
         let sequenceNumber: Int

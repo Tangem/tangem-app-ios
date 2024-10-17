@@ -28,11 +28,11 @@ class StellarNetworkProvider: HostProvider {
         self.stellarSdk = stellarSdk
     }
     
-    public func checkTargetAccount(address: String, token: Token?) -> AnyPublisher<StellarTargetAccountResponse, Error> {
+    func checkTargetAccount(address: String, token: Token?) -> AnyPublisher<StellarTargetAccountResponse, Error> {
         stellarSdk.accounts.checkTargetAccount(address: address, token: token)
     }
     
-    public func send(transaction: String) -> AnyPublisher<String, Error> {
+    func send(transaction: String) -> AnyPublisher<String, Error> {
         return stellarSdk.transactions.postTransaction(transactionEnvelope: transaction)
             .tryMap{ submitTransactionResponse throws  -> String in
                 if submitTransactionResponse.transactionResult.code == .success {
@@ -45,7 +45,7 @@ class StellarNetworkProvider: HostProvider {
             .eraseToAnyPublisher()
     }
     
-    public func getInfo(accountId: String, isAsset: Bool) -> AnyPublisher<StellarResponse, Error> {
+    func getInfo(accountId: String, isAsset: Bool) -> AnyPublisher<StellarResponse, Error> {
         return stellarData(accountId: accountId)
             .tryMap{ [weak self] (accountResponse, ledgerResponse) throws -> StellarResponse in
                 guard let self = self else {
@@ -82,7 +82,7 @@ class StellarNetworkProvider: HostProvider {
             .eraseToAnyPublisher()
     }
     
-    public func getFee() -> AnyPublisher<[Amount], Error> {
+    func getFee() -> AnyPublisher<[Amount], Error> {
         stellarSdk.feeStats.getFeeStats()
             .tryMap { [blockchain] feeStats -> [Amount] in
                 guard let feeChargedModeInStroops = Decimal(feeStats.feeCharged.mode),
@@ -141,7 +141,7 @@ class StellarNetworkProvider: HostProvider {
 }
 
 extension StellarNetworkProvider {
-    public func getSignatureCount(accountId: String) -> AnyPublisher<Int, Error> {
+    func getSignatureCount(accountId: String) -> AnyPublisher<Int, Error> {
         stellarSdk.operations.getAllOperations(accountId: accountId, recordsLimit: 1)
             .map { items in
                 items.filter { $0.sourceAccount == accountId }.count

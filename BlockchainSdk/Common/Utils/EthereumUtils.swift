@@ -42,7 +42,7 @@ public enum EthereumUtils {
         return balanceEth as Decimal
     }
     
-    public static func mapToBigUInt(_ decimal: Decimal) -> BigUInt {
+    static func mapToBigUInt(_ decimal: Decimal) -> BigUInt {
         if decimal == .zero {
             return .zero
         } else if decimal == .greatestFiniteMagnitude {
@@ -55,7 +55,7 @@ public enum EthereumUtils {
     /// Parse a user-supplied string using the number of decimals.
     /// If input is non-numeric or precision is not sufficient - returns nil.
     /// Allowed decimal separators are ".", ",".
-    public static func parseToBigUInt(_ amount: String, decimals: Int = 18) -> BigUInt? {
+    static func parseToBigUInt(_ amount: String, decimals: Int = 18) -> BigUInt? {
         let separators = CharacterSet(charactersIn: ".,")
         let components = amount.trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: separators)
         guard components.count == 1 || components.count == 2 else {return nil}
@@ -77,7 +77,7 @@ public enum EthereumUtils {
     /// Fallbacks to scientific format if higher precision is required.
     ///
     /// Returns nil of formatting is not possible to satisfy.
-    public static func formatToPrecision(_ bigNumber: BigInt, numberDecimals: Int = 18, formattingDecimals: Int = 4, decimalSeparator: String = ".", fallbackToScientific: Bool = false) -> String? {
+    static func formatToPrecision(_ bigNumber: BigInt, numberDecimals: Int = 18, formattingDecimals: Int = 4, decimalSeparator: String = ".", fallbackToScientific: Bool = false) -> String? {
         let magnitude = bigNumber.magnitude
         guard let formatted = formatToPrecision(magnitude, numberDecimals: numberDecimals, formattingDecimals: formattingDecimals, decimalSeparator: decimalSeparator, fallbackToScientific: fallbackToScientific) else {return nil}
         switch bigNumber.sign {
@@ -93,7 +93,7 @@ public enum EthereumUtils {
     /// Fallbacks to scientific format if higher precision is required.
     ///
     /// Returns nil of formatting is not possible to satisfy.
-    public static func formatToPrecision(_ bigNumber: BigUInt, numberDecimals: Int = 18, formattingDecimals: Int = 4, decimalSeparator: String = ".", fallbackToScientific: Bool = false) -> String? {
+    static func formatToPrecision(_ bigNumber: BigUInt, numberDecimals: Int = 18, formattingDecimals: Int = 4, decimalSeparator: String = ".", fallbackToScientific: Bool = false) -> String? {
         if bigNumber == 0 {
             return "0"
         }

@@ -79,7 +79,7 @@ extension WalletManagerFactory {
     ///   - walletPublicKey: Wallet public key or dummy input
     ///   - addresses: Dummy input addresses
     /// - Returns: WalletManager model
-    public func makeStubWalletManager(
+    func makeStubWalletManager(
         blockchain: Blockchain,
         dummyPublicKey: Data,
         dummyAddress: String

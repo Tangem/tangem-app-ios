@@ -12,14 +12,14 @@ import Foundation
  PuzzleHash Chia documentation - https://docs.chia.net/guides/crash-course/signatures/
  */
 
-public struct ChiaAddressService: AddressService {
+struct ChiaAddressService: AddressService {
     // MARK: - Private Properties
     
     private(set) var isTestnet: Bool
     
     // MARK: - Implementation
     
-    public func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
+    func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
         let puzzle = ChiaPuzzleUtils().getPuzzleHash(from: publicKey.blockchainKey)
         let puzzleHash = try ClvmProgram.Decoder(programBytes: puzzle.bytes).deserialize().hash()
         let hrp = HRP.part(isTestnet: isTestnet)
@@ -28,7 +28,7 @@ public struct ChiaAddressService: AddressService {
         return PlainAddress(value: encodeValue, publicKey: publicKey, type: addressType)
     }
     
-    public func validate(_ address: String) -> Bool {
+    func validate(_ address: String) -> Bool {
         do {
             let result = try Bech32(variant: .bech32m).decode(address)
             return HRP.part(isTestnet: isTestnet) == result.hrp

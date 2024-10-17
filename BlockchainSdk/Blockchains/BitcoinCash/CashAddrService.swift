@@ -11,14 +11,14 @@ import BitcoinCore
 import TangemSdk
 
 @available(iOS 13.0, *)
-public class CashAddrService {
+class CashAddrService {
     private let addressPrefix: String
 
-    public init(networkParams: INetwork) {
+    init(networkParams: INetwork) {
         addressPrefix = networkParams.bech32PrefixPattern
     }
 
-    public func makeAddress(from walletPublicKey: Data) throws -> String {
+    func makeAddress(from walletPublicKey: Data) throws -> String {
         let compressedKey = try Secp256k1Key(with: walletPublicKey).compress()
         let prefix = Data([UInt8(0x00)]) //public key hash
         let payload = compressedKey.sha256Ripemd160
@@ -26,7 +26,7 @@ public class CashAddrService {
         return walletAddress
     }
 
-    public func validate(_ address: String) -> Bool {
+    func validate(_ address: String) -> Bool {
         let address = address.firstIndex(of: ":") == nil ? "\(addressPrefix):\(address)" : address
         
         guard let decoded = CashAddrBech32.decode(address) else {
@@ -52,10 +52,10 @@ public class CashAddrService {
 // MARK: - BitcoinCashVersionByte
 
 fileprivate class BitcoinCashVersionByte {
-    public var type: TypeBits { return .pubkeyHash }
-    public var size: SizeBits { return .size160 }
+    var type: TypeBits { return .pubkeyHash }
+    var size: SizeBits { return .size160 }
 
-    public static func getSize(from versionByte: UInt8) -> Int {
+    static func getSize(from versionByte: UInt8) -> Int {
         guard let sizeBits = SizeBits(rawValue: versionByte & 0x07) else {
             return 0
         }
@@ -81,13 +81,13 @@ fileprivate class BitcoinCashVersionByte {
 
     // First 1 bit is zero
     // Next 4bits
-    public enum TypeBits: UInt8 {
+    enum TypeBits: UInt8 {
         case pubkeyHash = 0
         case scriptHash = 8
     }
 
     // The least 3bits
-    public enum SizeBits: UInt8 {
+    enum SizeBits: UInt8 {
         case size160 = 0
         case size192 = 1
         case size224 = 2

@@ -9,7 +9,7 @@
 import Foundation
 
 public struct ICPTransactionParams: TransactionParams {
-    public var memo: UInt64
+    var memo: UInt64
 
     public init(memo: UInt64) {
         self.memo = memo

@@ -8,6 +8,6 @@
 
 import Foundation
 
-public protocol BitcoinScriptAddressProvider {
+protocol BitcoinScriptAddressProvider {
     func makeScriptAddress(from scriptHash: Data) throws -> String
 }

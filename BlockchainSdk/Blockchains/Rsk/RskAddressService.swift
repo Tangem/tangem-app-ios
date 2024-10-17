@@ -10,7 +10,7 @@ import Foundation
 import TangemSdk
 import CryptoSwift
 
-public struct RskAddressService {
+struct RskAddressService {
     private func toChecksumAddress(_ address: String) -> String? {
         let lowercasedAddress = address.lowercased()
         let addressToHash = "30\(lowercasedAddress)"
@@ -40,7 +40,7 @@ public struct RskAddressService {
 
 @available(iOS 13.0, *)
 extension RskAddressService: AddressProvider {
-    public func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
+    func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
         //skip secp256k1 prefix
         let walletPublicKey = try Secp256k1Key(with: publicKey.blockchainKey).decompress()
         let keccak = walletPublicKey[1...].sha3(.keccak256)
@@ -55,7 +55,7 @@ extension RskAddressService: AddressProvider {
 
 @available(iOS 13.0, *)
 extension RskAddressService: AddressValidator {
-    public func validate(_ address: String) -> Bool {
+    func validate(_ address: String) -> Bool {
         guard !address.isEmpty,
               address.hasHexPrefix(),
               address.count == 42

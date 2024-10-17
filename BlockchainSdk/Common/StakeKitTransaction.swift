@@ -10,10 +10,10 @@ import Foundation
 
 public struct StakeKitTransaction: Hashable {
     public let id: String
-    public let amount: Amount
-    public let fee: Fee
-    public let unsignedData: String
-    public let params: StakeKitTransactionParams?
+    let amount: Amount
+    let fee: Fee
+    let unsignedData: String
+    let params: StakeKitTransactionParams?
 
     public init(
         id: String,
@@ -41,9 +41,9 @@ public struct StakeKitTransactionSendError: Error {
 }
 
 public struct StakeKitTransactionParams: Hashable, TransactionParams {
+    let validator: String?
+
     public init(validator: String? = nil) {
         self.validator = validator
     }
-    
-    public let validator: String?
 }
