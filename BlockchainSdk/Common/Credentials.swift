@@ -13,7 +13,7 @@ extension NetworkProviderConfiguration {
         let user: String
         let password: String
 
-        init(login: String, password: String) {
+        public init(login: String, password: String) {
             self.user = login
             self.password = password
         }
