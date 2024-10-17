@@ -25,5 +25,6 @@ struct ScanCardSettingsCoordinatorView: CoordinatorView {
             .navigation(item: $coordinator.cardSettingsCoordinator) {
                 CardSettingsCoordinatorView(coordinator: $0)
             }
+            .emptyNavigationLink()
     }
 }
