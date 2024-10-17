@@ -36,6 +36,18 @@ public struct Transaction {
         self.contractAddress = contractAddress
         self.params = params
     }
+    
+    func withAmount(_ amount: Amount) -> Transaction {
+        Transaction(
+            amount: amount,
+            fee: fee,
+            sourceAddress: sourceAddress,
+            destinationAddress: destinationAddress,
+            changeAddress: changeAddress,
+            contractAddress: contractAddress,
+            params: params
+        )
+    }
 }
 
 extension Transaction: Equatable {

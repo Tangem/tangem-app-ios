@@ -97,6 +97,11 @@ class KaspaTransactionBuilder {
     }
     
     func buildForMassCalculation(transaction: Transaction) throws -> KaspaTransactionData {
+        let amountValue = min(transaction.amount.value, availableAmount().value)
+        let amount = Amount(with: blockchain, value: amountValue)
+        
+        let transaction = transaction.withAmount(amount)
+        
         let builtTransaction = try buildForSign(transaction).0
         let dummySignature = Data(repeating: 1, count: 65)
         return buildForSend(
