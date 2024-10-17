@@ -11,8 +11,8 @@ import BigInt
 
 /// https://eips.ethereum.org/EIPS/eip-20#approve
 public struct ApproveERC20TokenMethod {
-    public let spender: String
-    public let amount: BigUInt
+    let spender: String
+    let amount: BigUInt
     
     public init(spender: String, amount: BigUInt) {
         self.spender = spender

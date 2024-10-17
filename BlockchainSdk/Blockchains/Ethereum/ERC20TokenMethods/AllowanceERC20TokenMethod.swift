@@ -10,8 +10,8 @@ import Foundation
 
 /// https://eips.ethereum.org/EIPS/eip-20#allowance
 public struct AllowanceERC20TokenMethod {
-    public let spender: String
-    public let owner: String
+    let spender: String
+    let owner: String
     
     public init(owner: String, spender: String) {
         self.owner = owner
