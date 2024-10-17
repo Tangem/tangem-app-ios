@@ -92,12 +92,3 @@ fileprivate struct EthereumCompiledTransaction: Decodable {
     let gasPrice: String?
     let chainId: Int
 }
-
-fileprivate extension Amount {
-    var coinValue: BigUInt? {
-        switch type {
-        case .coin: bigUIntValue
-        default: nil
-        }
-    }
-}

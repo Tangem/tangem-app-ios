@@ -210,7 +210,7 @@ private extension CommonStakingManager {
              .restakeRewards(let passthrough),
              .voteLocked(let passthrough),
              .unlockLocked(let passthrough),
-             .restake(let passthrough): // FIXME:
+             .restake(let passthrough):
             let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
             let action = try await getPendingTransactionAction(request: request)
             return action
@@ -274,7 +274,7 @@ private extension CommonStakingManager {
     func mapToActionGenericRequest(action: StakingAction) -> ActionGenericRequest {
         .init(
             amount: action.amount,
-            address: stakingAddress(),
+            address: wallet.address,
             additionalAddresses: getAdditionalAddresses(),
             token: wallet.item,
             validator: action.validatorInfo?.address,
@@ -381,15 +381,6 @@ private extension CommonStakingManager {
             return AdditionalAddresses(cosmosPubKey: compressedPublicKey.base64EncodedString())
         default:
             return nil
-        }
-    }
-
-    func stakingAddress() -> String {
-        switch wallet.item.network {
-        case .kava:
-            return "kava1n7pxaur98dcyzk8v4qcm9fpwx2k2pg26kmv9x6"
-        default:
-            return wallet.address
         }
     }
 
