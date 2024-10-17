@@ -170,7 +170,7 @@
 "common_unreachable" = "Недоступно";
 "common_unstake" = "Завершить стейкинг";
 "common_warning" = "Предупреждение";
-"common_week" = "week";
+"common_week" = "неделю";
 "common_yes" = "Да";
 "contract_address_copied_message" = "Адрес контракта скопирован!";
 "currency_subtitle_expanded" = "Доступные сети";
@@ -727,6 +727,7 @@
 "staking_reward_schedule_each" = "Каждый %@";
 "staking_reward_schedule_each_day" = "Каждый день";
 "staking_reward_schedule_each_days" = "Каждые %@ дня";
+"staking_reward_schedule_each_plural" = "Каждые";
 "staking_reward_schedule_each_sec" = "Каждые %1$@ сек";
 "staking_reward_schedule_epoch" = "За эпоху";
 "staking_reward_schedule_era" = "За эру";
