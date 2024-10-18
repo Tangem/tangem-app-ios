@@ -8,14 +8,14 @@
 
 import SwiftUI
 
-public struct BottomSheetInfoView: View {
+struct BottomSheetInfoView: View {
     // MARK: - Properties
 
-    public let viewModel: BottomSheetInfoViewModel
+    let viewModel: BottomSheetInfoViewModel
 
     // MARK: - SetupUI
 
-    public var body: some View {
+    var body: some View {
         VStack(spacing: 0) {
             Spacer(minLength: 44)
 
