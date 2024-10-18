@@ -3,10 +3,7 @@
 --exclude Tangem/Resources/Generated
 --exclude BlockchainSdk/Resources/Generated
 --exclude Utilites/XCTemplate
-# // TODO: Andrey Fedorov - Apply formatting (IOS-8239)
---exclude BlockchainSdk
---exclude BlockchainSdkTests
---exclude BlockchainSdkExample
+--exclude **/*.pb.swift    # Protobufs
 
 # Format options
 # Disable all default options
