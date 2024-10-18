@@ -100,8 +100,7 @@ lane :check_bsdk_example_buildable do |options|
     workspace: WORKSPACE_NAME,
     scheme: BSDK_EXAMPLE_SCHEME,
     xcargs: "-allowProvisioningUpdates",
-    analyze: true,
-    raw_buildlog: true
+    analyze: true
   )
 end
 
