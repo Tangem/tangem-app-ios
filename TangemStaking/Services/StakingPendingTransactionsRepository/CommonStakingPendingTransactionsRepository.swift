@@ -52,7 +52,7 @@ extension CommonStakingPendingTransactionsRepository: StakingPendingTransactions
         let records = cachedRecords.value.filter { record in
             let shouldDelete: Bool = {
                 switch record.type {
-                case .stake, .voteLocked:
+                case .stake, .voteLocked, .restake:
                     balances.contains { balance in
                         compare(record, balance, by: [.validator(.some), .type([.active, .warmup])])
                     }
@@ -71,10 +71,6 @@ extension CommonStakingPendingTransactionsRepository: StakingPendingTransactions
                 case .unlockLocked:
                     !balances.contains { balance in
                         compare(record, balance, by: [.type([.locked]), .amount])
-                    }
-                case .restake:
-                    balances.contains { balance in
-                        compare(record, balance, by: [.validator(.some), .type([.active, .warmup])])
                     }
                 }
             }()
