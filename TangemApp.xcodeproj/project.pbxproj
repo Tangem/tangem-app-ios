@@ -2689,6 +2689,10 @@
 		EFD68F392CC3D7DE00693C97 /* ExpressDTO+Swap.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F382CC3D7DB00693C97 /* ExpressDTO+Swap.swift */; };
 		EFD68F3B2CC3D7E600693C97 /* ExpressDTO+Onramp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F3A2CC3D7E300693C97 /* ExpressDTO+Onramp.swift */; };
 		EFD68F3F2CC3E5C700693C97 /* OnrampRedirectSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F3E2CC3E5C600693C97 /* OnrampRedirectSettings.swift */; };
+		EFD68F302CC2D02500693C97 /* OnrampCountryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F2F2CC2D02300693C97 /* OnrampCountryView.swift */; };
+		EFD68F322CC2D04500693C97 /* OnrampCountryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F312CC2D04400693C97 /* OnrampCountryViewModel.swift */; };
+		EFD68F342CC2D29C00693C97 /* OnrampCountryRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F332CC2D29700693C97 /* OnrampCountryRoutable.swift */; };
+		EFD68F372CC2F58900693C97 /* OnrampIdentityMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F362CC2F58000693C97 /* OnrampIdentityMock.swift */; };
 		EFDD6EDD2CBCF3EA00804205 /* ExpressProviderUpdateSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFDD6EDC2CBCF3EA00804205 /* ExpressProviderUpdateSource.swift */; };
 		EFE1812B292E30C00072D80C /* SupportChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C9FCB92869CC3E00FDE63E /* SupportChatViewModel.swift */; };
 		EFE1812C292E30DF0072D80C /* OnboardingCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E1565126B97F8C005B33E4 /* OnboardingCardView.swift */; };
@@ -5713,6 +5717,10 @@
 		EFD68F382CC3D7DB00693C97 /* ExpressDTO+Swap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExpressDTO+Swap.swift"; sourceTree = "<group>"; };
 		EFD68F3A2CC3D7E300693C97 /* ExpressDTO+Onramp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExpressDTO+Onramp.swift"; sourceTree = "<group>"; };
 		EFD68F3E2CC3E5C600693C97 /* OnrampRedirectSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampRedirectSettings.swift; sourceTree = "<group>"; };
+		EFD68F2F2CC2D02300693C97 /* OnrampCountryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampCountryView.swift; sourceTree = "<group>"; };
+		EFD68F312CC2D04400693C97 /* OnrampCountryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampCountryViewModel.swift; sourceTree = "<group>"; };
+		EFD68F332CC2D29700693C97 /* OnrampCountryRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampCountryRoutable.swift; sourceTree = "<group>"; };
+		EFD68F362CC2F58000693C97 /* OnrampIdentityMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampIdentityMock.swift; sourceTree = "<group>"; };
 		EFDD6EDC2CBCF3EA00804205 /* ExpressProviderUpdateSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressProviderUpdateSource.swift; sourceTree = "<group>"; };
 		EFE255F52C3D79BB00B17DAC /* BSDKTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BSDKTransaction.swift; path = Tangem/Common/BlockchainSDK/BSDKTransaction.swift; sourceTree = SOURCE_ROOT; };
 		EFE255F92C3D8C7C00B17DAC /* SendQRCodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendQRCodeService.swift; sourceTree = "<group>"; };
@@ -12454,6 +12462,7 @@
 		DC7DA81A2844EED800AD6DBD /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				EFD68F2E2CC2D01B00693C97 /* OnrampCountry */,
 				EFE8C7062C7738520067CF2E /* MultipleRewards */,
 				EFEE23632BFE204A0099917E /* StakingDetails */,
 				EF5D83D12B0B79F900516B5F /* ExpressSuccessSent */,
@@ -13612,6 +13621,7 @@
 		EF80843B293F6967000D91EA /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
+				EFD68F352CC2F57900693C97 /* Onramp */,
 				EF8DBCE62C061A33009072CF /* Staking */,
 				2D1BB3A02C08AC29008392F7 /* Dummy */,
 				EF9E2A4C2B56A53100418559 /* Express */,
@@ -14429,6 +14439,24 @@
 				EFD68F232CC298D100693C97 /* OnrampInputOutput.swift */,
 			);
 			path = Interactor;
+			sourceTree = "<group>";
+		};
+		EFD68F2E2CC2D01B00693C97 /* OnrampCountry */ = {
+			isa = PBXGroup;
+			children = (
+				EFD68F2F2CC2D02300693C97 /* OnrampCountryView.swift */,
+				EFD68F312CC2D04400693C97 /* OnrampCountryViewModel.swift */,
+				EFD68F332CC2D29700693C97 /* OnrampCountryRoutable.swift */,
+			);
+			path = OnrampCountry;
+			sourceTree = "<group>";
+		};
+		EFD68F352CC2F57900693C97 /* Onramp */ = {
+			isa = PBXGroup;
+			children = (
+				EFD68F362CC2F58000693C97 /* OnrampIdentityMock.swift */,
+			);
+			path = Onramp;
 			sourceTree = "<group>";
 		};
 		EFE23AC9292CB84600A3C554 /* IconView */ = {
@@ -16501,6 +16529,7 @@
 				B62C65CE2C38D06B00189AD4 /* PushNotificationsService.swift in Sources */,
 				B05919042A0BCD1100EB8005 /* MainHeaderViewModel.swift in Sources */,
 				B0406BB62A402462006452C2 /* PagerWithDots.swift in Sources */,
+				EFD68F372CC2F58900693C97 /* OnrampIdentityMock.swift in Sources */,
 				DAF59CC82ACC4E37004FCA86 /* AlertFieldValidator.swift in Sources */,
 				B657CE972C66FC3200A7AC8B /* OverlayContentContainerAppLifecycleHelper.swift in Sources */,
 				B0A1B4802A42C78300376FCC /* TokenDetailsHeaderViewModel.swift in Sources */,
@@ -16658,6 +16687,7 @@
 				2DB648672C35439D00DA100D /* MarketsTokenDetailsMapper.swift in Sources */,
 				B0AA865226DC90E600287F80 /* WelcomeView.swift in Sources */,
 				B0CF5A572C2D420300B197D4 /* MarketsDTO+Coin.swift in Sources */,
+				EFD68F302CC2D02500693C97 /* OnrampCountryView.swift in Sources */,
 				EF0DC11B2A0CE29E007E3DA7 /* ExpressApproveView.swift in Sources */,
 				B6A89DB82BB1AE2B007A1619 /* BackgroundTaskWrapper.swift in Sources */,
 				5D225CB92524B721001564A3 /* Analytics.swift in Sources */,
@@ -16894,6 +16924,7 @@
 				2D1BB3772C07503B008392F7 /* MarketsListDataProvider.swift in Sources */,
 				B0B4556925E0E63000D7572F /* FailedCardScanTracker.swift in Sources */,
 				EFEBCE2B29265CF300B0C886 /* TokenIconInfo.swift in Sources */,
+				EFD68F342CC2D29C00693C97 /* OnrampCountryRoutable.swift in Sources */,
 				DC66BBF5285A14CB00CDF765 /* WelcomeViewLifecycleListener.swift in Sources */,
 				EFA6B04729533C860090A92F /* ResetToFactoryViewRoutable.swift in Sources */,
 				EF339E512C21FCCC00B5CDC9 /* SendFeeProvider.swift in Sources */,
@@ -16910,6 +16941,7 @@
 				B6D274E82C38318900FEFCDC /* OnboardingLayoutConstants.swift in Sources */,
 				B67688EF2B078EDB006C94F7 /* MainBottomSheetOverlayViewModel.swift in Sources */,
 				B0A7DB4E2C58E2AC00986D95 /* MarketsQuotesUpdatesScheduler.swift in Sources */,
+				EFD68F322CC2D04500693C97 /* OnrampCountryViewModel.swift in Sources */,
 				EF9E2A442B55329800418559 /* ExpressCurrencyView.swift in Sources */,
 				EF9448E22ADFD4F800F4AFAC /* InformationHiddenBalancesRoutable.swift in Sources */,
 				B04EADEC2A80D659009B5768 /* SingleTokenBaseViewModel.swift in Sources */,

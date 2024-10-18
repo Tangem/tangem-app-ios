@@ -40,6 +40,12 @@ struct SendCoordinatorView: CoordinatorView {
             ) {
                 ExpressApproveView(viewModel: $0)
             }
+            .bottomSheet(
+                item: $coordinator.onrampCountryViewModel,
+                backgroundColor: Colors.Background.tertiary
+            ) {
+                OnrampCountryView(viewModel: $0)
+            }
             .sheet(item: $coordinator.mailViewModel) {
                 MailView(viewModel: $0)
             }

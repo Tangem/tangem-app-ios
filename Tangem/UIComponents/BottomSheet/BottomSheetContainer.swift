@@ -109,7 +109,6 @@ struct BottomSheetContainer<ContentView: View>: View {
         ZStack {
             GrabberViewFactory()
                 .makeSwiftUIView()
-                .padding(.bottom, 10)
         }
         .frame(maxWidth: .infinity)
         .background(settings.backgroundColor)
