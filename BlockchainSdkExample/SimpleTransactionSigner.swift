@@ -1,28 +1,31 @@
 //
-//  CommonSigner.swift
-//  BlockchainSdk
+//  SimpleTransactionSigner.swift
+//  BlockchainSdkExample
 //
-//  Created by Alexander Osokin on 17.12.2019.
-//  Copyright © 2019 Tangem AG. All rights reserved.
+//  Created by Andrey Fedorov on 18.10.2024.
+//  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
 import Foundation
-import TangemSdk
 import Combine
+import TangemSdk
+import BlockchainSdk
 
 @available(iOS 13.0, *)
 class CommonSigner {
     var cardId: String?
     var initialMessage: Message?
-    
+
     private let sdk: TangemSdk
-    
+
     init(sdk: TangemSdk, cardId: String? = nil, initialMessage: Message? = nil) {
         self.sdk = sdk
         self.cardId = cardId
         self.initialMessage = initialMessage
     }
 }
+
+// MARK: - TransactionSigner protocol conformance
 
 extension CommonSigner: TransactionSigner {
     func sign(hashes: [Data], walletPublicKey: Wallet.PublicKey) -> AnyPublisher<[Data], Error> {
@@ -32,7 +35,7 @@ extension CommonSigner: TransactionSigner {
                     promise(.failure(WalletError.empty))
                     return
                 }
-                
+
                 return self.sdk.sign(
                     hashes: hashes,
                     walletPublicKey: walletPublicKey.seedKey,
@@ -51,12 +54,10 @@ extension CommonSigner: TransactionSigner {
         }
         .eraseToAnyPublisher()
     }
-    
+
     func sign(hash: Data, walletPublicKey: Wallet.PublicKey) -> AnyPublisher<Data, Error> {
         sign(hashes: [hash], walletPublicKey: walletPublicKey)
-            .map {
-                $0.first ?? Data()
-            }
+            .map { $0.first ?? Data() }
             .eraseToAnyPublisher()
     }
 }

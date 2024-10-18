@@ -1511,7 +1511,6 @@
 		B62D42A22CBC79DB00C2460E /* Blockchain.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F542CBC79D900C2460E /* Blockchain.swift */; };
 		B62D42A32CBC79DB00C2460E /* BlockchainSdkConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F552CBC79D900C2460E /* BlockchainSdkConfig.swift */; };
 		B62D42A42CBC79DB00C2460E /* BlockchainSdkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F562CBC79D900C2460E /* BlockchainSdkError.swift */; };
-		B62D42A52CBC79DB00C2460E /* CommonSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F572CBC79D900C2460E /* CommonSigner.swift */; };
 		B62D42A62CBC79DB00C2460E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F582CBC79D900C2460E /* Constants.swift */; };
 		B62D42A72CBC79DB00C2460E /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F592CBC79D900C2460E /* Credentials.swift */; };
 		B62D42A82CBC79DB00C2460E /* DetailedError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F5A2CBC79D900C2460E /* DetailedError.swift */; };
@@ -1833,6 +1832,7 @@
 		B6EE593D2C8B2E80003A0696 /* ViewHierarchySnapshotting+Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6EE593C2C8B2E80003A0696 /* ViewHierarchySnapshotting+Environment.swift */; };
 		B6EE593F2C8B2EB9003A0696 /* ViewHierarchySnapshotting.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6EE593E2C8B2EB9003A0696 /* ViewHierarchySnapshotting.swift */; };
 		B6EE59432C8B2FE2003A0696 /* CALayerSnapshotOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6EE59422C8B2FE2003A0696 /* CALayerSnapshotOptions.swift */; };
+		B6F271042CC2C10A00A2A5B1 /* SimpleTransactionSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F271032CC2C10A00A2A5B1 /* SimpleTransactionSigner.swift */; };
 		B6F625302C85E1A600DEF098 /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = B6F6252F2C85E1A600DEF098 /* DGCharts */; };
 		B6FB04E52B1FEEF6000BB59E /* RootHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FB04E42B1FEEF6000BB59E /* RootHostingController.swift */; };
 		B6FB04E72B1FEF13000BB59E /* StatusBarStyleConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FB04E62B1FEF13000BB59E /* StatusBarStyleConfigurator.swift */; };
@@ -4480,7 +4480,6 @@
 		B62D3F542CBC79D900C2460E /* Blockchain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blockchain.swift; sourceTree = "<group>"; };
 		B62D3F552CBC79D900C2460E /* BlockchainSdkConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockchainSdkConfig.swift; sourceTree = "<group>"; };
 		B62D3F562CBC79D900C2460E /* BlockchainSdkError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockchainSdkError.swift; sourceTree = "<group>"; };
-		B62D3F572CBC79D900C2460E /* CommonSigner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonSigner.swift; sourceTree = "<group>"; };
 		B62D3F582CBC79D900C2460E /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		B62D3F592CBC79D900C2460E /* Credentials.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
 		B62D3F5A2CBC79D900C2460E /* DetailedError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailedError.swift; sourceTree = "<group>"; };
@@ -4780,6 +4779,7 @@
 		B6EE593C2C8B2E80003A0696 /* ViewHierarchySnapshotting+Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewHierarchySnapshotting+Environment.swift"; sourceTree = "<group>"; };
 		B6EE593E2C8B2EB9003A0696 /* ViewHierarchySnapshotting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHierarchySnapshotting.swift; sourceTree = "<group>"; };
 		B6EE59422C8B2FE2003A0696 /* CALayerSnapshotOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CALayerSnapshotOptions.swift; sourceTree = "<group>"; };
+		B6F271032CC2C10A00A2A5B1 /* SimpleTransactionSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleTransactionSigner.swift; sourceTree = "<group>"; };
 		B6FB04E42B1FEEF6000BB59E /* RootHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootHostingController.swift; sourceTree = "<group>"; };
 		B6FB04E62B1FEF13000BB59E /* StatusBarStyleConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarStyleConfigurator.swift; sourceTree = "<group>"; };
 		B6FB04E82B1FEF4E000BB59E /* StatusBarStyleConfiguratorWeakifyAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarStyleConfiguratorWeakifyAdapter.swift; sourceTree = "<group>"; };
@@ -10538,7 +10538,6 @@
 				B62D3F542CBC79D900C2460E /* Blockchain.swift */,
 				B62D3F552CBC79D900C2460E /* BlockchainSdkConfig.swift */,
 				B62D3F562CBC79D900C2460E /* BlockchainSdkError.swift */,
-				B62D3F572CBC79D900C2460E /* CommonSigner.swift */,
 				B62D3F582CBC79D900C2460E /* Constants.swift */,
 				B62D3F592CBC79D900C2460E /* Credentials.swift */,
 				B62D3F5A2CBC79D900C2460E /* DetailedError.swift */,
@@ -10901,6 +10900,7 @@
 				B62D43932CBC7FCD00C2460E /* BlockchainSdkExampleViewModel.swift */,
 				B62D43942CBC7FCD00C2460E /* InMemoryBlockchainDataStorage.swift */,
 				B62D43A92CBC7FCE00C2460E /* SimpleAccountCreator.swift */,
+				B6F271032CC2C10A00A2A5B1 /* SimpleTransactionSigner.swift */,
 				B62D43962CBC7FCD00C2460E /* BlockchainSdkExample.entitlements */,
 				B62D437E2CBC7ECA00C2460E /* Assets.xcassets */,
 				B62D43802CBC7ECA00C2460E /* Preview Content */,
@@ -17022,6 +17022,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B62D43AA2CBC7FCE00C2460E /* BlockchainSdkExampleView.swift in Sources */,
+				B6F271042CC2C10A00A2A5B1 /* SimpleTransactionSigner.swift in Sources */,
 				B62D43AD2CBC7FCE00C2460E /* APIListUtils.swift in Sources */,
 				B62D43AC2CBC7FCE00C2460E /* InMemoryBlockchainDataStorage.swift in Sources */,
 				B62D43AB2CBC7FCE00C2460E /* BlockchainSdkExampleViewModel.swift in Sources */,
@@ -17663,7 +17664,6 @@
 				B62D41512CBC79DA00C2460E /* SubscanAPIParams.ExtrinsicsList.swift in Sources */,
 				B62D3FA92CBC79DA00C2460E /* AlgorandWalletManager.swift in Sources */,
 				B62D40D72CBC79DA00C2460E /* FilecoinTransactionBuilder.swift in Sources */,
-				B62D42A52CBC79DB00C2460E /* CommonSigner.swift in Sources */,
 				B62D42CE2CBC79DB00C2460E /* Future+.swift in Sources */,
 				B62D429C2CBC79DB00C2460E /* URLSessionWebSocketTaskWrapper.swift in Sources */,
 				B62D41A12CBC79DA00C2460E /* SuiTarget.swift in Sources */,
