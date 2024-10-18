@@ -26,7 +26,7 @@ public enum ValidationError: Hashable, LocalizedError {
     case cardanoInsufficientBalanceToSendToken
     
     case insufficientFeeResource(type: FeeResourceType, current: Decimal, max: Decimal)
-    case amountExeedsFeeResourceCapacity(type: FeeResourceType, availableAmount: Decimal)
+    case amountExceedsFeeResourceCapacity(type: FeeResourceType, availableAmount: Decimal)
     case feeExceedsMaxFeeResource
 
     public var errorDescription: String? {
@@ -43,7 +43,7 @@ public enum ValidationError: Hashable, LocalizedError {
             return Localization.sendErrorMinimumBalanceFormat(minimumBalance.string(roundingMode: .plain))
         case .feeExceedsBalance, .feeExceedsMaxFeeResource:
             return Localization.sendValidationInvalidFee
-        case .invalidAmount, .amountExeedsFeeResourceCapacity:
+        case .invalidAmount, .amountExceedsFeeResourceCapacity:
             return Localization.sendValidationInvalidAmount
         case .invalidFee:
             return Localization.sendErrorInvalidFeeValue
