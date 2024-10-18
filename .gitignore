@@ -70,5 +70,5 @@ fastlane/test_output/
 fastlane/report.xml
 
 # Generated
-Tangem/Resources/Generated/**
-BlockchainSdk/Resources/Generated/**
+Tangem/Resources/Generated/**.swift
+BlockchainSdk/Resources/Generated/**.swift
