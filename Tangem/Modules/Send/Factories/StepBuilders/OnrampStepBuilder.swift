@@ -33,6 +33,6 @@ private extension OnrampStepBuilder {
     }
 
     func makeOnrampInteractor(io: IO, onrampManager: some OnrampManager) -> OnrampInteractor {
-        CommonOnrampInteractor(input: io.input, output: io.output, onrampManager: onrampManager)
+        CommonOnrampInteractor(input: io.input, output: io.output)
     }
 }
