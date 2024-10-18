@@ -90,7 +90,7 @@ struct ScanCardSettingsView_Preview: PreviewProvider {
             cardImagePublisher: .just(output: .embedded(Assets.Onboarding.walletCard.uiImage)),
             cardScanner: CommonCardScanner()
         ),
-        coordinator: UserWalletSettingsCoordinator()
+        coordinator: ScanCardSettingsCoordinator()
     )
 
     static var previews: some View {
