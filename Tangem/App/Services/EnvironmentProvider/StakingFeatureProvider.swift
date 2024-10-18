@@ -67,7 +67,6 @@ extension StakingFeatureProvider {
             StakingItem(network: .solana, contractAddress: nil),
             StakingItem(network: .cosmos, contractAddress: nil),
             StakingItem(network: .tron, contractAddress: nil),
-            StakingItem(network: .near, contractAddress: nil),
             StakingItem(network: .ethereum, contractAddress: StakingConstants.polygonContractAddress),
         ]
     }
