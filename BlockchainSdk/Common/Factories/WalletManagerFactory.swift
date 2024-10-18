@@ -71,8 +71,7 @@ private extension WalletManagerFactory {
 
 // MARK: - Stub Implementation
 
-extension WalletManagerFactory {
-
+public extension WalletManagerFactory {
     /// Use this method only Test and Debug [Addresses, Fees, etc.]
     /// - Parameters:
     ///   - blockhain Card native blockchain will be used
@@ -103,5 +102,4 @@ extension WalletManagerFactory {
         )
         return try blockchain.assembly.make(with: input)
     }
-
 }
