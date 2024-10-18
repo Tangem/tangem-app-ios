@@ -948,7 +948,7 @@
 		B62D40692CBC79DA00C2460E /* CosmosFeeParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3C992CBC79D900C2460E /* CosmosFeeParameters.swift */; };
 		B62D406A2CBC79DA00C2460E /* CosmosModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3C9A2CBC79D900C2460E /* CosmosModels.swift */; };
 		B62D406B2CBC79DA00C2460E /* CosmosNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3C9B2CBC79D900C2460E /* CosmosNetworkService.swift */; };
-		B62D406C2CBC79DA00C2460E /* CosmosProtoMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3C9C2CBC79D900C2460E /* CosmosProtoMessage.swift */; };
+		B62D406C2CBC79DA00C2460E /* CosmosProtoMessage.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3C9C2CBC79D900C2460E /* CosmosProtoMessage.pb.swift */; };
 		B62D406D2CBC79DA00C2460E /* CosmosRestProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3C9D2CBC79D900C2460E /* CosmosRestProvider.swift */; };
 		B62D406E2CBC79DA00C2460E /* CosmosStakeKitTransactionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3C9E2CBC79D900C2460E /* CosmosStakeKitTransactionHelper.swift */; };
 		B62D406F2CBC79DA00C2460E /* CosmosTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3C9F2CBC79D900C2460E /* CosmosTarget.swift */; };
@@ -3911,7 +3911,7 @@
 		B62D3C992CBC79D900C2460E /* CosmosFeeParameters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CosmosFeeParameters.swift; sourceTree = "<group>"; };
 		B62D3C9A2CBC79D900C2460E /* CosmosModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CosmosModels.swift; sourceTree = "<group>"; };
 		B62D3C9B2CBC79D900C2460E /* CosmosNetworkService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CosmosNetworkService.swift; sourceTree = "<group>"; };
-		B62D3C9C2CBC79D900C2460E /* CosmosProtoMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CosmosProtoMessage.swift; sourceTree = "<group>"; };
+		B62D3C9C2CBC79D900C2460E /* CosmosProtoMessage.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CosmosProtoMessage.pb.swift; sourceTree = "<group>"; };
 		B62D3C9D2CBC79D900C2460E /* CosmosRestProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CosmosRestProvider.swift; sourceTree = "<group>"; };
 		B62D3C9E2CBC79D900C2460E /* CosmosStakeKitTransactionHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CosmosStakeKitTransactionHelper.swift; sourceTree = "<group>"; };
 		B62D3C9F2CBC79D900C2460E /* CosmosTarget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CosmosTarget.swift; sourceTree = "<group>"; };
@@ -8431,6 +8431,14 @@
 			path = PushNotifications;
 			sourceTree = "<group>";
 		};
+		B603C7102CC2D83B00FF5214 /* protobuf */ = {
+			isa = PBXGroup;
+			children = (
+				B62D3C9C2CBC79D900C2460E /* CosmosProtoMessage.pb.swift */,
+			);
+			path = protobuf;
+			sourceTree = "<group>";
+		};
 		B604D5FE2CC2902A00CECFE2 /* Generated */ = {
 			isa = PBXGroup;
 			children = (
@@ -8991,13 +8999,13 @@
 		B62D3CA42CBC79D900C2460E /* Cosmos */ = {
 			isa = PBXGroup;
 			children = (
+				B603C7102CC2D83B00FF5214 /* protobuf */,
 				B62D3C962CBC79D900C2460E /* OtherChains */,
 				B62D3C972CBC79D900C2460E /* CosmosChain.swift */,
 				B62D3C982CBC79D900C2460E /* CosmosExternalLinkProvider.swift */,
 				B62D3C992CBC79D900C2460E /* CosmosFeeParameters.swift */,
 				B62D3C9A2CBC79D900C2460E /* CosmosModels.swift */,
 				B62D3C9B2CBC79D900C2460E /* CosmosNetworkService.swift */,
-				B62D3C9C2CBC79D900C2460E /* CosmosProtoMessage.swift */,
 				B62D3C9D2CBC79D900C2460E /* CosmosRestProvider.swift */,
 				B62D3C9E2CBC79D900C2460E /* CosmosStakeKitTransactionHelper.swift */,
 				B62D3C9F2CBC79D900C2460E /* CosmosTarget.swift */,
@@ -17136,7 +17144,7 @@
 				B62D412C2CBC79DA00C2460E /* MantleWalletManager.swift in Sources */,
 				B62D42A32CBC79DB00C2460E /* BlockchainSdkConfig.swift in Sources */,
 				B62D41572CBC79DA00C2460E /* SubscanAPIResult.swift in Sources */,
-				B62D406C2CBC79DA00C2460E /* CosmosProtoMessage.swift in Sources */,
+				B62D406C2CBC79DA00C2460E /* CosmosProtoMessage.pb.swift in Sources */,
 				B62D41492CBC79DA00C2460E /* NEARTransactionParams.swift in Sources */,
 				B62D40AD2CBC79DA00C2460E /* EthereumPoWExternalLinkProvider.swift in Sources */,
 				B62D40C12CBC79DA00C2460E /* EVMSmartContractInteractor.swift in Sources */,
