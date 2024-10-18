@@ -747,6 +747,7 @@
 "staking_unbonding_in" = "解約完了まで";
 "staking_unlocked_locked" = "ロック解除";
 "staking_unlocking" = "ロック解除中";
+"staking_unstake_amount_validation_error" = "Amount exceeds staked balance";
 "staking_unstaked" = "ステーキングされていない";
 "staking_unstaked_footer" = "資産を請求するために、unstakedを確認してください";
 "staking_unstaking" = "ステーキング解除";

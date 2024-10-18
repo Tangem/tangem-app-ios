@@ -747,6 +747,7 @@
 "staking_unbonding_in" = "Dissociation en";
 "staking_unlocked_locked" = "Débloquer";
 "staking_unlocking" = "Déverrouillage";
+"staking_unstake_amount_validation_error" = "Amount exceeds staked balance";
 "staking_unstaked" = "Non-staké";
 "staking_unstaked_footer" = "Vérifiez non-stakés pour réclamer vos actifs";
 "staking_unstaking" = "Unstaking";

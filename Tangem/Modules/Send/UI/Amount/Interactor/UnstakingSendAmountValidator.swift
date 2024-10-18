@@ -70,7 +70,7 @@ enum UnstakingValidationError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .amountExceedsStakingBalance:
-            Localization.stakingAmountRequirementError(5)
+            Localization.stakingUnstakeAmountValidationError
         }
     }
 }
