@@ -8,6 +8,7 @@
 
 import Foundation
 import TangemStaking
+import TangemExpress
 
 enum SendType {
     case send
@@ -16,6 +17,7 @@ enum SendType {
     case unstaking(manager: StakingManager, action: UnstakingModel.Action)
     case restaking(manager: StakingManager, action: UnstakingModel.Action)
     case stakingSingleAction(manager: StakingManager, action: UnstakingModel.Action)
+    case onramp
 }
 
 struct PredefinedSellParameters {

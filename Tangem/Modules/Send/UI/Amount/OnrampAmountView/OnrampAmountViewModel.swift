@@ -38,8 +38,10 @@ class OnrampAmountViewModel: ObservableObject {
             fiatCurrencyCode: AppSettings.shared.selectedCurrencyCode
         )
 
-        currentFieldOptions = prefixSuffixOptionsFactory.makeCryptoOptions()
-        decimalNumberTextFieldViewModel = .init(maximumFractionDigits: settings.tokenItem.decimalCount)
+        currentFieldOptions = prefixSuffixOptionsFactory.makeFiatOptions()
+        decimalNumberTextFieldViewModel = .init(maximumFractionDigits: 2)
+
+        bind()
     }
 }
 

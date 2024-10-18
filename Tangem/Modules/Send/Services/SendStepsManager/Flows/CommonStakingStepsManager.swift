@@ -67,7 +67,7 @@ class CommonStakingStepsManager {
         switch currentStep().type {
         case .amount:
             return summaryStep
-        case .destination, .fee, .validators, .summary, .finish:
+        case .destination, .fee, .validators, .summary, .finish, .onramp:
             assertionFailure("There is no next step")
             return nil
         }
@@ -84,7 +84,7 @@ class CommonStakingStepsManager {
             output?.update(state: .init(step: step, action: .close))
         case .amount where isEditAction, .validators where isEditAction:
             output?.update(state: .init(step: step, action: .continue))
-        case .amount, .destination, .validators, .fee:
+        case .amount, .destination, .validators, .fee, .onramp:
             assertionFailure("There is no next step")
         }
     }

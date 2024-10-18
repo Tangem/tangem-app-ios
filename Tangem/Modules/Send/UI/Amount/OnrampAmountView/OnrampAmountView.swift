@@ -10,19 +10,10 @@ import SwiftUI
 
 struct OnrampAmountView: View {
     @ObservedObject var viewModel: OnrampAmountViewModel
-    let transitionService: SendTransitionService
+//    let transitionService: SendTransitionService
     let namespace: SendAmountView.Namespace
 
     var body: some View {
-        GroupedScrollView(spacing: 14) {
-            amountContainer
-        }
-//        .animation(SendTransitionService.Constants.defaultAnimation, value: viewModel.auxiliaryViewsVisible)
-        .transition(transitionService.transitionToAmountStep(isEditMode: false))
-//        .onAppear(perform: viewModel.onAppear)
-    }
-
-    private var amountContainer: some View {
         amountContent
             .defaultRoundedBackground(
                 with: Colors.Background.action,

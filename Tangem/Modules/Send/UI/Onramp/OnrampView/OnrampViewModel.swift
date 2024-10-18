@@ -12,13 +12,19 @@ import Combine
 class OnrampViewModel: ObservableObject, Identifiable {
     @Published var onrampAmountViewModel: OnrampAmountViewModel
 
-    init(onrampAmountViewModel: OnrampAmountViewModel) {
+    private let interactor: OnrampInteractor
+
+    init(
+        onrampAmountViewModel: OnrampAmountViewModel,
+        interactor: OnrampInteractor
+    ) {
         self.onrampAmountViewModel = onrampAmountViewModel
+        self.interactor = interactor
     }
 }
 
-// extension OnrampViewModel {
-//    struct Settings {
-//        let amount: OnrampAmountViewModel.Settings
-//    }
-// }
+// MARK: - SendStepViewAnimatable
+
+extension OnrampViewModel: SendStepViewAnimatable {
+    func viewDidChangeVisibilityState(_ state: SendStepVisibilityState) {}
+}

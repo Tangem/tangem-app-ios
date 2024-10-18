@@ -159,6 +159,11 @@ final class SingleTokenRouter: SingleTokenRoutable {
     }
 
     private func openBuy(for walletModel: WalletModel) {
+        if FeatureProvider.isAvailable(.onramp) {
+            coordinator?.openOnramp(walletModel: walletModel, userWalletModel: userWalletModel)
+            return
+        }
+
         let exchangeUtility = buildExchangeCryptoUtility(for: walletModel)
 
         guard let url = exchangeUtility.buyURL else { return }
