@@ -59,7 +59,7 @@ extension StakingNotificationEvent: NotificationEvent {
     var description: String? {
         switch self {
         case .approveTransactionInProgress:
-            Localization.warningExpressApprovalInProgressMessage
+            Localization.warningApprovalInProgressMessage
         case .feeWillBeSubtractFromSendingAmount(let cryptoAmountFormatted, let fiatAmountFormatted):
             Localization.commonNetworkFeeWarningContent(cryptoAmountFormatted, fiatAmountFormatted)
         case .unstake(let description):
