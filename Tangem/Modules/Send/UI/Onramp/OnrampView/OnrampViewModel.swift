@@ -23,6 +23,14 @@ class OnrampViewModel: ObservableObject, Identifiable {
     }
 }
 
+// MARK: - Private
+
+private extension OnrampViewModel {
+    func bind() {
+        // TODO: Lisen interactor to update view
+    }
+}
+
 // MARK: - SendStepViewAnimatable
 
 extension OnrampViewModel: SendStepViewAnimatable {

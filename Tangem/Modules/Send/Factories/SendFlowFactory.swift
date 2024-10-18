@@ -150,7 +150,6 @@ struct SendFlowFactory {
         let builder = SendDependenciesBuilder(userWalletModel: userWalletModel, walletModel: walletModel)
         let sendAmountStepBuilder = SendAmountStepBuilder(walletModel: walletModel, builder: builder)
         let onrampStepBuilder = OnrampStepBuilder()
-        let sendSummaryStepBuilder = SendSummaryStepBuilder(walletModel: walletModel, builder: builder)
         let sendFinishStepBuilder = SendFinishStepBuilder(walletModel: walletModel)
         let onrampManager = builder.makeOnrampManager(userWalletId: userWalletModel.userWalletId.stringValue)
 

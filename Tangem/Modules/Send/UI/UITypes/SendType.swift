@@ -8,7 +8,6 @@
 
 import Foundation
 import TangemStaking
-import TangemExpress
 
 enum SendType {
     case send

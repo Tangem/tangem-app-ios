@@ -17,17 +17,17 @@ class CommonOnrampInteractor {
     weak var input: OnrampInput?
     weak var output: OnrampOutput?
 
-    private let onrampManager: OnrampManager
-    private let isValid: CurrentValueSubject<Bool, Never> = .init(false)
+    private let isValid: CurrentValueSubject<Bool, Never> = .init(true)
 
-    init(
-        input: OnrampInput?,
-        output: OnrampOutput?,
-        onrampManager: OnrampManager
-    ) {
+    init(input: OnrampInput, output: OnrampOutput) {
         self.input = input
         self.output = output
-        self.onrampManager = onrampManager
+
+        bind()
+    }
+
+    private func bind() {
+        // TODO: Lisen input aka OnrampModel
     }
 }
 

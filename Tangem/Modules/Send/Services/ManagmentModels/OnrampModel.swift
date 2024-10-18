@@ -14,7 +14,6 @@ class OnrampModel {
     // MARK: - Data
 
     private let _amount = CurrentValueSubject<SendAmount?, Never>(nil)
-
     private let _transactionTime = PassthroughSubject<Date?, Never>()
     private let _isLoading = CurrentValueSubject<Bool, Never>(false)
 
@@ -60,7 +59,6 @@ private extension OnrampModel {
 
     func proceed(result: TransactionDispatcherResult) {
         _transactionTime.send(Date())
-//        logTransactionAnalytics(signerType: result.signerType)
     }
 
     func proceed(error: TransactionDispatcherResult.Error) {
@@ -74,7 +72,6 @@ private extension OnrampModel {
             break
         case .sendTxError:
             break
-//            Analytics.log(event: .stakingErrorTransactionRejected, params: [.token: tokenItem.currencySymbol])
         }
     }
 }

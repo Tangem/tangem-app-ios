@@ -14,13 +14,10 @@ struct OnrampFlowBaseBuilder {
     let walletModel: WalletModel
     let sendAmountStepBuilder: SendAmountStepBuilder
     let onrampStepBuilder: OnrampStepBuilder
-//    let sendFeeStepBuilder: SendFeeStepBuilder
-//    let sendSummaryStepBuilder: SendSummaryStepBuilder
     let sendFinishStepBuilder: SendFinishStepBuilder
     let builder: SendDependenciesBuilder
 
     func makeSendViewModel(onrampManager: some OnrampManager, router: SendRoutable) -> SendViewModel {
-//        let notificationManager = builder.makeSendNotificationManager()
         let onrampModel = builder.makeOnrampModel(onrampManager: onrampManager)
 
         let onrampAmountViewModel = sendAmountStepBuilder.makeOnrampAmountViewModel(
@@ -32,18 +29,6 @@ struct OnrampFlowBaseBuilder {
         let sendAmountCompactViewModel = sendAmountStepBuilder.makeSendAmountCompactViewModel(
             input: onrampModel
         )
-
-//        let summary = sendSummaryStepBuilder.makeSendSummaryStep(
-//            io: (input: sendModel, output: sendModel),
-//            actionType: .send,
-//            descriptionBuilder: builder.makeSendTransactionSummaryDescriptionBuilder(),
-//            notificationManager: notificationManager,
-//            editableType: .editable,
-//            sendDestinationCompactViewModel: destination.compact,
-//            sendAmountCompactViewModel: amount.compact,
-//            stakingValidatorsCompactViewModel: nil,
-//            sendFeeCompactViewModel: fee.compact
-//        )
 
         let onramp = onrampStepBuilder.makeOnrampStep(
             io: (input: onrampModel, output: onrampModel),
@@ -59,9 +44,6 @@ struct OnrampFlowBaseBuilder {
             stakingValidatorsCompactViewModel: .none,
             sendFeeCompactViewModel: .none
         )
-
-//        notificationManager.setup(input: sendModel)
-//        notificationManager.setupManager(with: sendModel)
 
         let stepsManager = CommonOnrampStepsManager(
             onrampStep: onramp.step,
@@ -82,7 +64,6 @@ struct OnrampFlowBaseBuilder {
         )
 
         stepsManager.set(output: viewModel)
-//        onrampModel.router = viewModel
 
         return viewModel
     }

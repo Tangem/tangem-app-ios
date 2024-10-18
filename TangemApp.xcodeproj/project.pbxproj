@@ -14232,8 +14232,8 @@
 			isa = PBXGroup;
 			children = (
 				EFD68F252CC2990800693C97 /* OnrampStep.swift */,
-				EFD68F222CC298C900693C97 /* Interactor */,
 				EFB23F2F2CBE7FB4005A6719 /* OnrampView */,
+				EFD68F222CC298C900693C97 /* Interactor */,
 			);
 			path = Onramp;
 			sourceTree = "<group>";

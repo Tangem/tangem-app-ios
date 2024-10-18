@@ -11,9 +11,9 @@ import Combine
 
 class OnrampAmountViewModel: ObservableObject {
     let tokenIconInfo: TokenIconInfo
+    let currentFieldOptions: SendDecimalNumberTextField.PrefixSuffixOptions
 
     @Published var decimalNumberTextFieldViewModel: DecimalNumberTextField.ViewModel
-    @Published var currentFieldOptions: SendDecimalNumberTextField.PrefixSuffixOptions
     @Published var alternativeAmount: String?
     @Published var bottomInfoText: SendAmountViewModel.BottomInfoTextType?
 

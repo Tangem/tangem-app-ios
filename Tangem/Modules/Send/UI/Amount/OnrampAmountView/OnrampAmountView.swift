@@ -10,7 +10,6 @@ import SwiftUI
 
 struct OnrampAmountView: View {
     @ObservedObject var viewModel: OnrampAmountViewModel
-//    let transitionService: SendTransitionService
     let namespace: SendAmountView.Namespace
 
     var body: some View {
