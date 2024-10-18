@@ -6,6 +6,9 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
+import Combine
+import TangemFoundation
+
 class CommonOnrampRepository {
     let provider: ExpressAPIProvider
 
@@ -21,6 +24,7 @@ class CommonOnrampRepository {
 extension CommonOnrampRepository: OnrampRepository {
     var savedCountry: OnrampCountry? { nil }
     var savedPaymentMethod: OnrampPaymentMethod? { nil }
+    var savedCountryPublisher: AnyPublisher<OnrampCountry?, Never> { Empty().eraseToAnyPublisher() }
 
     func save(country: OnrampCountry) throws {}
 

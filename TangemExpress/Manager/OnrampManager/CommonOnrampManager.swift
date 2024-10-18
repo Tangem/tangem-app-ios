@@ -27,10 +27,15 @@ public actor CommonOnrampManager {
 // MARK: - OnrampManager
 
 extension CommonOnrampManager: OnrampManager {
-    public func updateCountry() async throws -> OnrampCountry {
-        // Define country by ip or get from repository
-        // https://tangem.atlassian.net/browse/IOS-8267
-        throw OnrampManagerError.notImplement
+    public func getCountry() async throws -> OnrampCountry {
+        if let country = onrampRepository.savedCountry {
+            return country
+        }
+
+        try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
+
+        let country = OnrampCountry.rus
+        return country
     }
 
     public func updatePaymentMethod() async throws -> OnrampPaymentMethod {
@@ -54,4 +59,25 @@ extension CommonOnrampManager: OnrampManager {
         // Load data from API
         throw OnrampManagerError.notImplement
     }
+}
+
+// TEMP MOCK
+
+extension OnrampCountry {
+    static let usa = OnrampCountry(identity: .usa, currency: .init(identity: .usa), onrampAvailable: true)
+    static let rus = OnrampCountry(identity: .rus, currency: .init(identity: .rus), onrampAvailable: false)
+}
+
+extension OnrampIdentity {
+    static let usa = OnrampIdentity(
+        name: "USA",
+        code: "US",
+        image: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/currencies/medium/usd.png")!
+    )
+
+    static let rus = OnrampIdentity(
+        name: "Russia",
+        code: "RU",
+        image: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/currencies/medium/rub.png")!
+    )
 }

@@ -17,13 +17,23 @@ struct OnrampFlowBaseBuilder {
     let sendFinishStepBuilder: SendFinishStepBuilder
     let builder: SendDependenciesBuilder
 
-    func makeSendViewModel(onrampManager: some OnrampManager, router: SendRoutable) -> SendViewModel {
+    func makeSendViewModel(router: SendRoutable) -> SendViewModel {
+        let factory = TangemExpressFactory()
+        let expressAPIProvider = ExpressAPIProviderFactory().makeExpressAPIProvider(userId: userWalletModel.userWalletId.stringValue, logger: AppLog.shared)
+        let onrampRepository = factory.makeOnrampRepository(expressAPIProvider: expressAPIProvider)
+
+        let onrampManager = TangemExpressFactory().makeOnrampManager(
+            expressAPIProvider: expressAPIProvider,
+            onrampRepository: onrampRepository,
+            logger: AppLog.shared
+        )
+
         let onrampModel = builder.makeOnrampModel(onrampManager: onrampManager)
 
         let onrampAmountViewModel = sendAmountStepBuilder.makeOnrampAmountViewModel(
             io: (input: onrampModel, output: onrampModel),
-            sendAmountValidator: builder.makeOnrampAmountValidator(),
-            amountModifier: .none
+            repository: onrampRepository,
+            sendAmountValidator: builder.makeOnrampAmountValidator()
         )
 
         let sendAmountCompactViewModel = sendAmountStepBuilder.makeSendAmountCompactViewModel(
@@ -47,17 +57,21 @@ struct OnrampFlowBaseBuilder {
 
         let stepsManager = CommonOnrampStepsManager(
             onrampStep: onramp.step,
-            finishStep: finish
+            finishStep: finish,
+            // If user already has saved country in the repository then the bottom sheet will not show
+            // And we can show keyboard safely
+            shouldActivateKeyboard: onrampRepository.savedCountry != nil
         )
 
         let interactor = CommonSendBaseInteractor(input: onrampModel, output: onrampModel)
+        let dataBuilder = builder.makeOnrampBaseDataBuilder(input: onrampModel, onrampRepository: onrampRepository)
 
         let viewModel = SendViewModel(
             interactor: interactor,
             stepsManager: stepsManager,
             userWalletModel: userWalletModel,
             alertBuilder: builder.makeSendAlertBuilder(),
-            dataBuilder: builder.makeSendBaseDataBuilder(input: onrampModel),
+            dataBuilder: dataBuilder,
             tokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem,
             coordinator: router
@@ -65,6 +79,7 @@ struct OnrampFlowBaseBuilder {
 
         stepsManager.set(output: viewModel)
         onrampModel.router = viewModel
+        onrampModel.alertPresenter = viewModel
 
         return viewModel
     }

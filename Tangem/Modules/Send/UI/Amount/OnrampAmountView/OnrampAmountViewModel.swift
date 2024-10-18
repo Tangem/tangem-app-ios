@@ -8,30 +8,32 @@
 
 import Foundation
 import Combine
+import TangemExpress
 
 class OnrampAmountViewModel: ObservableObject {
-    let tokenIconInfo: TokenIconInfo
-    let currentFieldOptions: SendDecimalNumberTextField.PrefixSuffixOptions
-
+    @Published var fiatIconURL: URL?
     @Published var decimalNumberTextFieldViewModel: DecimalNumberTextField.ViewModel
     @Published var alternativeAmount: String?
     @Published var bottomInfoText: SendAmountViewModel.BottomInfoTextType?
 
+    let currentFieldOptions: SendDecimalNumberTextField.PrefixSuffixOptions
+
     // MARK: - Dependencies
 
     private let tokenItem: TokenItem
+    private let repository: OnrampRepository
     private let interactor: SendAmountInteractor
 
     private var bag: Set<AnyCancellable> = []
 
     init(
-        settings: Settings,
+        tokenItem: TokenItem,
+        repository: OnrampRepository,
         interactor: SendAmountInteractor
     ) {
         self.interactor = interactor
-
-        tokenIconInfo = settings.tokenIconInfo
-        tokenItem = settings.tokenItem
+        self.repository = repository
+        self.tokenItem = tokenItem
 
         let prefixSuffixOptionsFactory = SendDecimalNumberTextField.PrefixSuffixOptionsFactory(
             cryptoCurrencyCode: tokenItem.currencySymbol,
@@ -90,12 +92,5 @@ private extension OnrampAmountViewModel {
             currencySymbol: tokenItem.currencySymbol,
             decimalCount: tokenItem.decimalCount
         )
-    }
-}
-
-extension OnrampAmountViewModel {
-    struct Settings {
-        let tokenIconInfo: TokenIconInfo
-        let tokenItem: TokenItem
     }
 }
