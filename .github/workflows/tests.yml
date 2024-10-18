@@ -61,9 +61,9 @@ jobs:
 
   check_bsdk_example_buildable:
     name: Check BSDK example project
-    runs-on: macos-14
+    runs-on: self-hosted  # This target requires code signing, so we use self-hosted runners
     needs: check_if_pr_has_always_run_tests_label
-    if: false # TODO: Andrey Fedorov - Requires code signing, enable after migration to self-hosted runners (IOS-8112)
+    if: github.event.pull_request.draft == false || needs.check_if_pr_has_always_run_tests_label.outputs.has_always_run_tests_label == 'true'
     steps:
     - name: Checkout
       uses: actions/checkout@v3
