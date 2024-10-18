@@ -82,7 +82,7 @@ public struct EthereumEIP1559FeeParameters: FeeParameters {
 
     public init(gasLimit: BigUInt, baseFee: BigUInt, priorityFee: BigUInt) {
         self.gasLimit = gasLimit
-        self.maxFeePerGas = baseFee + priorityFee
+        maxFeePerGas = baseFee + priorityFee
         self.priorityFee = priorityFee
     }
 

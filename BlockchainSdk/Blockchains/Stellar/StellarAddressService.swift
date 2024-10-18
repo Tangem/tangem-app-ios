@@ -35,7 +35,7 @@ extension StellarAddressService: AddressValidator {
         guard let baseData = address.base32DecodedData, baseData.count >= 4 else {
             return false
         }
-        
+
         let keyPair = try? KeyPair(accountId: address)
         return keyPair != nil
     }

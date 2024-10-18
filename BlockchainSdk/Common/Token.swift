@@ -15,7 +15,7 @@ public struct Token: Hashable, Equatable, Codable {
     public let symbol: String
     public let contractAddress: String
     public let decimalCount: Int
-    
+
     public init(name: String, symbol: String, contractAddress: String, decimalCount: Int, id: String? = nil) {
         self.id = id
         self.name = name
@@ -23,27 +23,27 @@ public struct Token: Hashable, Equatable, Codable {
         self.contractAddress = contractAddress
         self.decimalCount = decimalCount
     }
-    
+
     public init(_ sdkToken: WalletData.Token, id: String? = nil) {
         self.id = id
-        self.name = sdkToken.name
-        self.symbol = sdkToken.symbol
-        self.contractAddress = sdkToken.contractAddress
-        self.decimalCount = sdkToken.decimals
+        name = sdkToken.name
+        symbol = sdkToken.symbol
+        contractAddress = sdkToken.contractAddress
+        decimalCount = sdkToken.decimals
     }
-    
+
     init(_ blockhairToken: BlockchairToken, blockchain: Blockchain) {
-        self.id = nil
-        self.name = blockhairToken.name
-        self.symbol = blockhairToken.symbol
-        self.contractAddress = blockhairToken.address
-        self.decimalCount = blockhairToken.decimals
+        id = nil
+        name = blockhairToken.name
+        symbol = blockhairToken.symbol
+        contractAddress = blockhairToken.address
+        decimalCount = blockhairToken.decimals
     }
-    
+
     public func hash(into hasher: inout Hasher) {
         hasher.combine(contractAddress.lowercased())
     }
-    
+
     public static func == (lhs: Token, rhs: Token) -> Bool {
         lhs.contractAddress.lowercased() == rhs.contractAddress.lowercased()
     }

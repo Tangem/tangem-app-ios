@@ -69,7 +69,7 @@ struct EthereumStakeKitTransactionHelper {
     }
 }
 
-fileprivate struct EthereumCompiledTransaction: Decodable {
+private struct EthereumCompiledTransaction: Decodable {
     let from: String
     let gasLimit: String
     let to: String

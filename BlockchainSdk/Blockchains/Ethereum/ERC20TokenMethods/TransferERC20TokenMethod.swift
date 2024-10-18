@@ -13,7 +13,7 @@ import BigInt
 public struct TransferERC20TokenMethod {
     let destination: String
     let amount: BigUInt
-    
+
     public init(destination: String, amount: BigUInt) {
         self.amount = amount
         self.destination = destination

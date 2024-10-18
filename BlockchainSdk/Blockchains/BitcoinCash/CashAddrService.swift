@@ -20,7 +20,7 @@ class CashAddrService {
 
     func makeAddress(from walletPublicKey: Data) throws -> String {
         let compressedKey = try Secp256k1Key(with: walletPublicKey).compress()
-        let prefix = Data([UInt8(0x00)]) //public key hash
+        let prefix = Data([UInt8(0x00)]) // public key hash
         let payload = compressedKey.sha256Ripemd160
         let walletAddress = CashAddrBech32.encode(prefix + payload, prefix: addressPrefix)
         return walletAddress
@@ -28,7 +28,7 @@ class CashAddrService {
 
     func validate(_ address: String) -> Bool {
         let address = address.firstIndex(of: ":") == nil ? "\(addressPrefix):\(address)" : address
-        
+
         guard let decoded = CashAddrBech32.decode(address) else {
             return false
         }
@@ -41,7 +41,7 @@ class CashAddrService {
             return false
         }
 
-        guard BitcoinCashVersionByte.TypeBits(rawValue: (versionByte & 0b01111000)) != nil else {
+        guard BitcoinCashVersionByte.TypeBits(rawValue: versionByte & 0b01111000) != nil else {
             return false
         }
 
@@ -51,7 +51,7 @@ class CashAddrService {
 
 // MARK: - BitcoinCashVersionByte
 
-fileprivate class BitcoinCashVersionByte {
+private class BitcoinCashVersionByte {
     var type: TypeBits { return .pubkeyHash }
     var size: SizeBits { return .size160 }
 

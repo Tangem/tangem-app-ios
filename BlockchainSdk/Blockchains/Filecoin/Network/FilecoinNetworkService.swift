@@ -11,11 +11,11 @@ import Combine
 class FilecoinNetworkService: MultiNetworkProvider {
     let providers: [FilecoinNetworkProvider]
     var currentProviderIndex = 0
-    
+
     init(providers: [FilecoinNetworkProvider]) {
         self.providers = providers
     }
-    
+
     func getAccountInfo(
         address: String
     ) -> AnyPublisher<FilecoinAccountInfo, Error> {
@@ -26,7 +26,7 @@ class FilecoinNetworkService: MultiNetworkProvider {
                     guard let balance = Decimal(stringValue: response.balance) else {
                         throw WalletError.failedToParseNetworkResponse()
                     }
-                    
+
                     return FilecoinAccountInfo(
                         balance: balance,
                         nonce: response.nonce
@@ -46,7 +46,7 @@ class FilecoinNetworkService: MultiNetworkProvider {
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func getEstimateMessageGas(
         message: FilecoinMessage
     ) -> AnyPublisher<FilecoinResponse.GetEstimateMessageGas, Error> {
@@ -54,7 +54,7 @@ class FilecoinNetworkService: MultiNetworkProvider {
             provider.getEstimateMessageGas(message: message)
         }
     }
-    
+
     func submitTransaction(
         signedMessage: FilecoinSignedMessage
     ) -> AnyPublisher<String, Error> {

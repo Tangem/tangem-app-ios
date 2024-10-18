@@ -11,7 +11,7 @@ import Sodium
 
 struct PolkadotAddressService {
     private let network: PolkadotNetwork
-    
+
     init(network: PolkadotNetwork) {
         self.network = network
     }

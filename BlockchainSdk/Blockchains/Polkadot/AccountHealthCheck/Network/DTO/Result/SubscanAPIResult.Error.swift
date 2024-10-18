@@ -34,6 +34,6 @@ extension SubscanAPIResult.Error: Decodable {
         }
 
         self.code = code
-        self.message = try? container.decodeIfPresent(String.self, forKey: CodingKeys.message)
+        message = try? container.decodeIfPresent(String.self, forKey: CodingKeys.message)
     }
 }

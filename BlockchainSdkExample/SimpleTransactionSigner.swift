@@ -36,12 +36,12 @@ extension CommonSigner: TransactionSigner {
                     return
                 }
 
-                return self.sdk.sign(
+                return sdk.sign(
                     hashes: hashes,
                     walletPublicKey: walletPublicKey.seedKey,
-                    cardId: self.cardId,
+                    cardId: cardId,
                     derivationPath: walletPublicKey.derivationPath,
-                    initialMessage: self.initialMessage
+                    initialMessage: initialMessage
                 ) { signResult in
                     switch signResult {
                     case .success(let response):

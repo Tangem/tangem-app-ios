@@ -28,7 +28,7 @@ struct CardanoResponseMapper {
                 }
             }
         }
-        
+
         return CardanoAddressResponse(
             balance: coinBalance,
             tokenBalances: tokenBalances,

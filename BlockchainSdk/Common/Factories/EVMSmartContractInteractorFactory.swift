@@ -26,7 +26,7 @@ public struct EVMSmartContractInteractorFactory {
             providers: networkAssembly.makeEthereumJsonRpcProviders(with: EVMNetworkProviderAssemblyInput(
                 blockchain: blockchain,
                 blockchainSdkConfig: config,
-                networkConfig: config.networkProviderConfiguration(for: blockchain), 
+                networkConfig: config.networkProviderConfiguration(for: blockchain),
                 apiInfo: apiInfo
             )),
             blockcypherProvider: nil,

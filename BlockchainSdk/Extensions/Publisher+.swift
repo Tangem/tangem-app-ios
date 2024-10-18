@@ -24,7 +24,7 @@ extension Publisher {
     func mapToVoid() -> Publishers.Map<Self, Void> {
         map { _ in () }
     }
-    
+
     func mapToResult() -> some Publisher<Result<Self.Output, Self.Failure>, Never> {
         return map(Result.success)
             .catch { Just(Result.failure($0)) }
@@ -76,7 +76,7 @@ extension Publisher {
         return Fail(error: error)
             .eraseToAnyPublisher()
     }
-    
+
     static func sendTxFail(error: Error) -> AnyPublisher<Output, SendTxError> {
         return Fail(error: SendTxError(error: error))
             .eraseToAnyPublisher()
@@ -109,7 +109,7 @@ extension Publisher where Failure == Error {
             SendTxErrorFactory().make(error: error, with: tx)
         }
     }
-    
+
     /*
      This method is used to override a network error when sending a transaction after all chains publishers.
      */

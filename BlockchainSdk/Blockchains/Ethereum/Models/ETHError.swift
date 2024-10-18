@@ -16,7 +16,7 @@ public enum ETHError: Error, LocalizedError, DetailedError {
     case failedToParseAllowance
     case gasRequiredExceedsAllowance
     case unsupportedFeature
-    
+
     public var errorDescription: String? {
         switch self {
         case .failedToParseTxCount, .failedToParseBalance, .failedToParseAllowance, .failedToParseFeeHistory:
@@ -29,7 +29,7 @@ public enum ETHError: Error, LocalizedError, DetailedError {
             return "unsupportedFeature"
         }
     }
-    
+
     public var detailedDescription: String? {
         switch self {
         case .failedToParseBalance(let value, let address, let decimals):
@@ -38,11 +38,11 @@ public enum ETHError: Error, LocalizedError, DetailedError {
             return nil
         }
     }
-    
+
     private var errorCodeDescription: String {
         "eth_error \(errorCode)"
     }
-    
+
     private var errorCode: Int {
         switch self {
         case .failedToParseTxCount:

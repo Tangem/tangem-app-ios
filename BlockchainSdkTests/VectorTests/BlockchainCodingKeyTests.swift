@@ -10,14 +10,13 @@ import XCTest
 import CryptoKit
 import TangemSdk
 import WalletCore
-
 @testable import BlockchainSdk
 
 class BlockchainCodingKeyTests: XCTestCase {
     let testVectorsUtility = TestVectorsUtility()
     let encoder = JSONEncoder()
     let decoder = JSONDecoder()
-    
+
     func testCodingKeys() throws {
         guard let blockchains: [BlockchainSdk.Blockchain] = try testVectorsUtility.getTestVectors(from: "blockchain_vectors") else {
             XCTFail("__INVALID_VECTOR__ BLOCKCHAIN DATA IS NIL")

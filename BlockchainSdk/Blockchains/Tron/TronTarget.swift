@@ -21,10 +21,10 @@ struct TronTarget: TargetType {
         case getTransactionInfoById(transactionID: String)
         case getAllowance(sourceAddress: String, contractAddress: String, parameter: String)
     }
-    
+
     let node: NodeInfo
     let type: TronTargetType
-    
+
     init(node: NodeInfo, _ type: TronTargetType) {
         self.node = node
         self.type = type
@@ -52,11 +52,11 @@ struct TronTarget: TargetType {
             return "/walletsolidity/gettransactioninfobyid"
         }
     }
-    
+
     var method: Moya.Method {
         .post
     }
-    
+
     var task: Task {
         switch type {
         case .getChainParameters:
@@ -99,20 +99,19 @@ struct TronTarget: TargetType {
                 visible: true
             )
             return .requestJSONEncodable(request)
-
         }
     }
-    
-    var headers: [String : String]? {
+
+    var headers: [String: String]? {
         var headers = [
             "Accept": "application/json",
             "Content-Type": "application/json",
         ]
-        
+
         if let headersKeyInfo = node.headers {
             headers[headersKeyInfo.headerName] = headersKeyInfo.headerValue
         }
-        
+
         return headers
     }
 }

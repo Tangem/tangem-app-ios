@@ -47,10 +47,12 @@ extension BitcoinLegacyAddressService: AddressProvider {
     func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
         try publicKey.blockchainKey.validateAsSecp256k1Key()
 
-        let bitcoinCorePublicKey = PublicKey(withAccount: 0,
-                                  index: 0,
-                                  external: true,
-                                  hdPublicKeyData: publicKey.blockchainKey)
+        let bitcoinCorePublicKey = PublicKey(
+            withAccount: 0,
+            index: 0,
+            external: true,
+            hdPublicKeyData: publicKey.blockchainKey
+        )
 
         let address = try converter.convert(publicKey: bitcoinCorePublicKey, type: .p2pkh).stringValue
         return PlainAddress(value: address, publicKey: publicKey, type: addressType)

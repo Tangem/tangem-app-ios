@@ -31,7 +31,7 @@ class DashTestNetworkParams: INetwork {
 
     let dnsSeeds = [
         "testnet-seed.dashdot.io",
-        "test.dnsseed.masternode.io"
+        "test.dnsseed.masternode.io",
     ]
 
     // https://github.com/dashpay/dash/blob/master/src/policy/policy.h#L36

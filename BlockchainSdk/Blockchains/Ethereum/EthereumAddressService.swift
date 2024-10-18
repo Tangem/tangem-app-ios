@@ -69,7 +69,7 @@ extension EthereumAddressService: AddressValidator {
             return true
         } else {
             let cleanHex = address.stripHexPrefix()
-            if cleanHex.lowercased() != cleanHex && cleanHex.uppercased() != cleanHex {
+            if cleanHex.lowercased() != cleanHex, cleanHex.uppercased() != cleanHex {
                 return false
             }
         }

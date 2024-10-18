@@ -10,11 +10,9 @@ import XCTest
 import Combine
 import CryptoKit
 import TangemSdk
-
 @testable import BlockchainSdk
 
 class PolkadotTests: XCTestCase {
-
     // Taken from trust wallet, `SignerTests.cpp`
     private let sizeTester = TransactionSizeTesterUtility()
 
@@ -23,7 +21,7 @@ class PolkadotTests: XCTestCase {
     func testTransaction9fd062Ed25519RuntimeV14() throws {
         try testTransaction9fd062RuntimeV14(curve: .ed25519)
     }
-    
+
     func testTransaction9fd062Ed25519Slip0010RuntimeV14() throws {
         try testTransaction9fd062RuntimeV14(curve: .ed25519_slip0010)
     }
@@ -59,7 +57,7 @@ class PolkadotTests: XCTestCase {
 
         let preImage = try XCTUnwrap(txBuilder.buildForSign(amount: amount, destination: destination, meta: meta))
         sizeTester.testTxSize(preImage)
-        
+
         let signature = try XCTUnwrap(signEd25519(message: preImage, privateKey: privateKey))
         let image = try XCTUnwrap(txBuilder.buildForSend(amount: amount, destination: destination, meta: meta, signature: signature))
 
@@ -86,15 +84,15 @@ class PolkadotTests: XCTestCase {
         )
         XCTAssertEqual(imageWithoutSignature, expectedImageWithoutSignature)
     }
-    
+
     func testTransactionEd25519RuntimeV14() throws {
         try testTransactionRuntimeV14(curve: .ed25519)
     }
-    
+
     func testTransactionEd25519Slip0010RuntimeV14() throws {
         try testTransactionRuntimeV14(curve: .ed25519_slip0010)
     }
-    
+
     private func testTransactionRuntimeV14(curve: EllipticCurve) throws {
         let toAddress = Data(hexString: "0x8eaf04151687736326c9fea17e25fc5287613693c912909cb226aa4794f26a48")
         let privateKey = Data(hexString: "0xabf8e5bdbe30c65656c0a3cbd181ff8a56294a69dfedd27982aace4a76909115")
@@ -126,7 +124,7 @@ class PolkadotTests: XCTestCase {
 
         let preImage = try XCTUnwrap(txBuilder.buildForSign(amount: amount, destination: destination, meta: meta))
         sizeTester.testTxSize(preImage)
-        
+
         let signature = try XCTUnwrap(signEd25519(message: preImage, privateKey: privateKey))
         let image = try XCTUnwrap(txBuilder.buildForSend(amount: amount, destination: destination, meta: meta, signature: signature))
 
@@ -145,7 +143,7 @@ class PolkadotTests: XCTestCase {
             """
         )
         XCTAssertEqual(preImage, expectedPreImage)
-        
+
         let (imageWithoutSignature, expectedImageWithoutSignature) = try removeSignature(
             image: image,
             expectedImage: expectedImage,
@@ -153,15 +151,15 @@ class PolkadotTests: XCTestCase {
         )
         XCTAssertEqual(imageWithoutSignature, expectedImageWithoutSignature)
     }
-    
+
     func testTransaction72dd5bEd25519RuntimeV14() throws {
         try testTransaction72dd5bRuntimeV14(curve: .ed25519)
     }
-    
+
     func testTransaction72dd5bEd25519Slip0010RuntimeV14() throws {
         try testTransaction72dd5bRuntimeV14(curve: .ed25519_slip0010)
     }
-    
+
     private func testTransaction72dd5bRuntimeV14(curve: EllipticCurve) throws {
         let privateKey = Data(hexString: "0x37932b086586a6675e66e562fe68bd3eeea4177d066619c602fe3efc290ada62")
         let publicKey = try XCTUnwrap(Curve25519.Signing.PrivateKey(rawRepresentation: privateKey).publicKey.rawRepresentation)
@@ -192,7 +190,7 @@ class PolkadotTests: XCTestCase {
 
         let preImage = try XCTUnwrap(txBuilder.buildForSign(amount: amount, destination: destination, meta: meta))
         sizeTester.testTxSize(preImage)
-        
+
         let signature = try XCTUnwrap(signEd25519(message: preImage, privateKey: privateKey))
         let image = try XCTUnwrap(txBuilder.buildForSend(amount: amount, destination: destination, meta: meta, signature: signature))
 
@@ -211,8 +209,7 @@ class PolkadotTests: XCTestCase {
             """
         )
         XCTAssertEqual(preImage, expectedPreImage)
-        
-        
+
         let (imageWithoutSignature, expectedImageWithoutSignature) = try removeSignature(
             image: image,
             expectedImage: expectedImage,
@@ -296,11 +293,11 @@ class PolkadotTests: XCTestCase {
     func testAzeroTransactionEd25519RuntimeV14() throws {
         try testAzeroTransactionRuntimeV14(curve: .ed25519)
     }
-    
+
     func testAzeroTransactionEd25519Slip0010RuntimeV14() throws {
         try testAzeroTransactionRuntimeV14(curve: .ed25519_slip0010)
     }
-    
+
     private func testAzeroTransactionRuntimeV14(curve: EllipticCurve) throws {
         let toAddress = Data(hexString: "0x8eaf04151687736326c9fea17e25fc5287613693c912909cb226aa4794f26a48")
         let privateKey = Data(hexString: "0xabf8e5bdbe30c65656c0a3cbd181ff8a56294a69dfedd27982aace4a76909115")
@@ -332,7 +329,7 @@ class PolkadotTests: XCTestCase {
 
         let preImage = try XCTUnwrap(txBuilder.buildForSign(amount: amount, destination: destination, meta: meta))
         sizeTester.testTxSize(preImage)
-        
+
         let signature = try XCTUnwrap(signEd25519(message: preImage, privateKey: privateKey))
         let image = try XCTUnwrap(txBuilder.buildForSend(amount: amount, destination: destination, meta: meta, signature: signature))
 
@@ -351,7 +348,7 @@ class PolkadotTests: XCTestCase {
             """
         )
         XCTAssertEqual(preImage, expectedPreImage)
-        
+
         let (imageWithoutSignature, expectedImageWithoutSignature) = try removeSignature(
             image: image,
             expectedImage: expectedImage,
@@ -369,10 +366,10 @@ class PolkadotTests: XCTestCase {
         imageWithoutSignature.removeSubrange(signatureRange)
         var expectedImageWithoutSignature = expectedImage
         expectedImageWithoutSignature.removeSubrange(signatureRange)
-        
+
         return (imageWithoutSignature, expectedImageWithoutSignature)
     }
-    
+
     private func signEd25519(message: Data, privateKey: Data) throws -> Data {
         return try Curve25519.Signing.PrivateKey(rawRepresentation: privateKey).signature(for: message)
     }

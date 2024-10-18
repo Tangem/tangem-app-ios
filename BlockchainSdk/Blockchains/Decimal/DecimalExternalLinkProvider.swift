@@ -12,7 +12,7 @@ struct DecimalExternalLinkProvider: ExternalLinkProvider {
     var testnetFaucetURL: URL? { nil }
 
     private let isTestnet: Bool
-    
+
     private var baseExplorerUrl: String {
         if isTestnet {
             return "https://testnet.explorer.decimalchain.com"
@@ -33,7 +33,7 @@ struct DecimalExternalLinkProvider: ExternalLinkProvider {
     func url(transaction hash: String) -> URL? {
         /*
          - Now it’s nil because decimal scanner explorer can’t read our hash of the transaction that the evm service makes
-         
+
          */
         return nil
     }

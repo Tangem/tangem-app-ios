@@ -6,7 +6,6 @@ enum URandomError: Swift.Error {
 }
 
 final class URandom {
-
     private let file: UnsafeMutablePointer<FILE>
     private let path = "/dev/urandom"
 
@@ -24,8 +23,6 @@ final class URandom {
     }
 
     private func read(numBytes: Int) throws -> [UInt8] {
-
-
         // Initialize an empty array with space for numBytes bytes
         var bytes = [UInt8](repeating: 0, count: numBytes)
         guard fread(&bytes, 1, numBytes, file) == numBytes else {

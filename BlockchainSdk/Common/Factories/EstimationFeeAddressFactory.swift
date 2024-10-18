@@ -50,11 +50,11 @@ struct EstimationFeeAddressFactory {
             return "RT5qKgXdmh9pqtz71cgfL834VfeXFVH1sG"
         // EVM-like
         case .ethereum, .ethereumPoW, .rsk, .polygon,
-                .avalanche, .bsc, .fantom, .arbitrum, .gnosis, .optimism,
-                .kava, .cronos, .telos, .octa, .shibarium, .disChain,
-                .areon, .playa3ullGames, .pulsechain, .aurora, .manta,
-                .zkSync, .moonbeam, .polygonZkEVM, .moonriver, .mantle,
-                .flare, .taraxa, .base, .blast, .cyber, .energyWebEVM, .core:
+             .avalanche, .bsc, .fantom, .arbitrum, .gnosis, .optimism,
+             .kava, .cronos, .telos, .octa, .shibarium, .disChain,
+             .areon, .playa3ullGames, .pulsechain, .aurora, .manta,
+             .zkSync, .moonbeam, .polygonZkEVM, .moonriver, .mantle,
+             .flare, .taraxa, .base, .blast, .cyber, .energyWebEVM, .core:
             return "0x52bb4012854f808CF9BAbd855e44E506dAf6C077"
         case .ethereumClassic:
             return "0xc49722a6f4Fe5A1347710dEAAa1fafF4c275689b"

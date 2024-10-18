@@ -11,7 +11,7 @@ import Foundation
 public enum AddressType: String, Equatable {
     case `default`
     case legacy
-    
+
     public var defaultLocalizedName: String {
         switch self {
         case .default:

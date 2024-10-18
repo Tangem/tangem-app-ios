@@ -14,10 +14,10 @@ import BitcoinCore
 class BitcoinCashAddressService {
     private let legacyService: BitcoinLegacyAddressService
     private let cashAddrService: CashAddrService
-    
+
     init(networkParams: INetwork) {
-        self.legacyService = .init(networkParams: networkParams)
-        self.cashAddrService = .init(networkParams: networkParams)
+        legacyService = .init(networkParams: networkParams)
+        cashAddrService = .init(networkParams: networkParams)
     }
 }
 

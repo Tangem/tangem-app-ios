@@ -22,17 +22,17 @@ extension CardanoNetworkProvider {
 
 class AnyCardanoNetworkProvider: CardanoNetworkProvider {
     var host: String { provider.host }
-    
+
     private let provider: CardanoNetworkProvider
-    
+
     init<P: CardanoNetworkProvider>(_ provider: P) {
         self.provider = provider
     }
-    
+
     func getInfo(addresses: [String], tokens: [Token]) -> AnyPublisher<CardanoAddressResponse, Error> {
         provider.getInfo(addresses: addresses, tokens: tokens)
     }
-    
+
     func send(transaction: Data) -> AnyPublisher<String, Error> {
         provider.send(transaction: transaction)
     }
@@ -41,15 +41,15 @@ class AnyCardanoNetworkProvider: CardanoNetworkProvider {
 class CardanoNetworkService: MultiNetworkProvider, CardanoNetworkProvider {
     let providers: [AnyCardanoNetworkProvider]
     var currentProviderIndex: Int = 0
-    
+
     init(providers: [AnyCardanoNetworkProvider]) {
         self.providers = providers
     }
-    
+
     func getInfo(addresses: [String], tokens: [Token]) -> AnyPublisher<CardanoAddressResponse, Error> {
         providerPublisher { $0.getInfo(addresses: addresses, tokens: tokens) }
     }
-    
+
     func send(transaction: Data) -> AnyPublisher<String, Error> {
         providerPublisher { $0.send(transaction: transaction) }
     }

@@ -29,11 +29,11 @@ public extension TransactionValidator {
         Log.debug("TransactionValidator \(self) doesn't checking destination. If you want it, make our own implementation")
         try validateAmounts(amount: amount, fee: fee.amount)
     }
-    
+
     func validate(amount: Amount, fee: Fee) throws {
         try validateAmounts(amount: amount, fee: fee.amount)
     }
-    
+
     /// Validation will be doing with `amount`, `fee` and `destinationAddress`  from the `Transaction`
     func validate(transaction: Transaction) async throws {
         try await validate(amount: transaction.amount, fee: transaction.fee, destination: .address(transaction.destinationAddress))
@@ -50,48 +50,48 @@ public extension TransactionValidator {
         try validate(fee: fee)
         try validateTotal(amount: amount, fee: fee)
     }
-    
+
     func validate(amount: Amount) throws {
         guard amount.value >= 0 else {
             throw ValidationError.invalidAmount
         }
-        
+
         guard let balance = wallet.amounts[amount.type] else {
             throw ValidationError.balanceNotFound
         }
-        
+
         guard balance >= amount else {
             throw ValidationError.amountExceedsBalance
         }
     }
-    
+
     func validate(fee: Amount) throws {
         guard fee.value >= 0 else {
             throw ValidationError.invalidFee
         }
-        
+
         guard let feeBalance = wallet.amounts[fee.type] else {
             throw ValidationError.balanceNotFound
         }
-        
+
         guard feeBalance >= fee else {
             throw ValidationError.feeExceedsBalance
         }
     }
-    
+
     func validateTotal(amount: Amount, fee: Amount) throws {
         // If we try to spend all amount from coin
         guard amount.type == fee.type else {
             // Safely return because all the checks were above
             return
         }
-        
+
         guard let balance = wallet.amounts[amount.type] else {
             throw ValidationError.balanceNotFound
         }
-        
+
         let total = amount + fee
-        
+
         guard balance >= total else {
             throw ValidationError.totalExceedsBalance
         }
@@ -105,7 +105,7 @@ extension TransactionValidator where Self: DustRestrictable {
         Log.debug("TransactionValidator \(self) doesn't checking destination. If you want it, make our own implementation")
         try validate(amount: amount, fee: fee)
     }
-    
+
     func validate(amount: Amount, fee: Fee) throws {
         try validateAmounts(amount: amount, fee: fee.amount)
         try validateDust(amount: amount, fee: fee.amount)
@@ -119,7 +119,7 @@ extension TransactionValidator where Self: MinimumBalanceRestrictable {
         Log.debug("TransactionValidator \(self) doesn't checking destination. If you want it, make our own implementation")
         try validate(amount: amount, fee: fee)
     }
-    
+
     func validate(amount: Amount, fee: Fee) throws {
         try validateAmounts(amount: amount, fee: fee.amount)
         try validateMinimumBalance(amount: amount, fee: fee.amount)
@@ -133,7 +133,7 @@ extension TransactionValidator where Self: MaximumAmountRestrictable {
         Log.debug("TransactionValidator \(self) doesn't checking destination. If you want it, make our own implementation")
         try validate(amount: amount, fee: fee)
     }
-    
+
     func validate(amount: Amount, fee: Fee) throws {
         try validateAmounts(amount: amount, fee: fee.amount)
         try validateMaximumAmount(amount: amount, fee: fee.amount)
@@ -192,7 +192,7 @@ extension TransactionValidator where Self: FeeResourceRestrictable {
         Log.debug("TransactionValidator \(self) doesn't checking destination. If you want it, make our own implementation")
         try validate(amount: amount, fee: fee)
     }
-    
+
     func validate(amount: Amount, fee: Fee) throws {
         try validate(amount: amount)
         try validateFeeResource(amount: amount, fee: fee.amount)

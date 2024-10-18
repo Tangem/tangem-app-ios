@@ -33,9 +33,11 @@ protocol OpCodeProtocol {
 func == (lhs: OpCodeProtocol, rhs: OpCodeProtocol) -> Bool {
     return lhs.value == rhs.value
 }
+
 func == <Other: BinaryInteger>(lhs: OpCodeProtocol, rhs: Other) -> Bool {
     return lhs.value == rhs
 }
+
 func == <Other: BinaryInteger>(lhs: Other, rhs: OpCodeProtocol) -> Bool {
     return lhs == rhs.value
 }
@@ -44,9 +46,11 @@ func == <Other: BinaryInteger>(lhs: Other, rhs: OpCodeProtocol) -> Bool {
 func != (lhs: OpCodeProtocol, rhs: OpCodeProtocol) -> Bool {
     return lhs.value != rhs.value
 }
+
 func != <Other: BinaryInteger>(lhs: OpCodeProtocol, rhs: Other) -> Bool {
     return lhs.value != rhs
 }
+
 func != <Other: BinaryInteger>(lhs: Other, rhs: OpCodeProtocol) -> Bool {
     return lhs != rhs.value
 }
@@ -55,9 +59,11 @@ func != <Other: BinaryInteger>(lhs: Other, rhs: OpCodeProtocol) -> Bool {
 func > (lhs: OpCodeProtocol, rhs: OpCodeProtocol) -> Bool {
     return lhs.value > rhs.value
 }
+
 func > <Other: BinaryInteger>(lhs: OpCodeProtocol, rhs: Other) -> Bool {
     return lhs.value > rhs
 }
+
 func > <Other: BinaryInteger>(lhs: Other, rhs: OpCodeProtocol) -> Bool {
     return lhs > rhs.value
 }
@@ -66,9 +72,11 @@ func > <Other: BinaryInteger>(lhs: Other, rhs: OpCodeProtocol) -> Bool {
 func < (lhs: OpCodeProtocol, rhs: OpCodeProtocol) -> Bool {
     return lhs.value < rhs.value
 }
+
 func < <Other: BinaryInteger>(lhs: OpCodeProtocol, rhs: Other) -> Bool {
     return lhs.value < rhs
 }
+
 func < <Other: BinaryInteger>(lhs: Other, rhs: OpCodeProtocol) -> Bool {
     return lhs < rhs.value
 }
@@ -85,13 +93,14 @@ func <= (lhs: OpCodeProtocol, rhs: OpCodeProtocol) -> Bool {
 
 // ...
 func ... (lhs: OpCodeProtocol, rhs: OpCodeProtocol) -> Range<UInt8> {
-    return Range(lhs.value...rhs.value)
+    return Range(lhs.value ... rhs.value)
 }
 
 // ~=
 func ~= (pattern: OpCodeProtocol, op: OpCodeProtocol) -> Bool {
     return pattern == op
 }
+
 func ~= (pattern: Range<UInt8>, op: OpCodeProtocol) -> Bool {
     return pattern ~= op.value
 }

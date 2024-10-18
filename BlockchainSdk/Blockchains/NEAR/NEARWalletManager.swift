@@ -133,11 +133,11 @@ final class NEARWalletManager: BaseManager {
     ) -> Decimal {
         if senderIsReceiver {
             return config.senderIsReceiver.cumulativeBasicSendCost * gasPriceForCurrentBlock
-            + config.senderIsReceiver.cumulativeBasicExecutionCost * gasPriceForNextBlock
+                + config.senderIsReceiver.cumulativeBasicExecutionCost * gasPriceForNextBlock
         }
 
         return config.senderIsNotReceiver.cumulativeBasicSendCost * gasPriceForCurrentBlock
-        + config.senderIsNotReceiver.cumulativeBasicExecutionCost * gasPriceForNextBlock
+            + config.senderIsNotReceiver.cumulativeBasicExecutionCost * gasPriceForNextBlock
     }
 
     /// Additional fees for transer action are used only if the receiver has an implicit accound ID,
@@ -155,11 +155,11 @@ final class NEARWalletManager: BaseManager {
 
         if senderIsReceiver {
             return config.senderIsReceiver.cumulativeAdditionalSendCost * gasPriceForCurrentBlock
-            + config.senderIsReceiver.cumulativeAdditionalExecutionCost * gasPriceForNextBlock
+                + config.senderIsReceiver.cumulativeAdditionalExecutionCost * gasPriceForNextBlock
         }
 
         return config.senderIsNotReceiver.cumulativeAdditionalSendCost * gasPriceForCurrentBlock
-        + config.senderIsNotReceiver.cumulativeAdditionalExecutionCost * gasPriceForNextBlock
+            + config.senderIsNotReceiver.cumulativeAdditionalExecutionCost * gasPriceForNextBlock
     }
 }
 

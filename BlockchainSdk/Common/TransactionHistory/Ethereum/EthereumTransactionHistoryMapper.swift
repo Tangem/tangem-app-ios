@@ -234,7 +234,7 @@ private extension EthereumTransactionHistoryMapper {
         if methodId.isEmpty {
             return .transfer
         }
-        
+
         return .contractMethodIdentifier(id: methodId)
     }
 

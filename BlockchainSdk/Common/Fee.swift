@@ -13,9 +13,9 @@ public protocol FeeParameters {}
 public struct Fee {
     public let amount: Amount
     public let parameters: FeeParameters?
-    
+
     public init(_ fee: Amount, parameters: FeeParameters? = nil) {
-        self.amount = fee
+        amount = fee
         self.parameters = parameters
     }
 }
@@ -26,7 +26,7 @@ extension Fee: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(amount)
     }
-    
+
     public static func == (lhs: Fee, rhs: Fee) -> Bool {
         lhs.hashValue == rhs.hashValue
     }

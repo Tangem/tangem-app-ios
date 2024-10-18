@@ -34,12 +34,12 @@ struct CosmosWalletAssembly: WalletManagerAssembly {
         }
         let networkService = CosmosNetworkService(cosmosChain: cosmosChain, providers: providers)
         let publicKey = try Secp256k1Key(with: input.wallet.publicKey.blockchainKey).compress()
-        
+
         let walletManager = try CosmosWalletManager(cosmosChain: cosmosChain, wallet: input.wallet).then {
             $0.txBuilder = try CosmosTransactionBuilder(publicKey: publicKey, cosmosChain: cosmosChain)
             $0.networkService = networkService
         }
-        
+
         return walletManager
     }
 }

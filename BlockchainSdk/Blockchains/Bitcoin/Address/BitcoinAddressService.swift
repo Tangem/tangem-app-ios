@@ -14,7 +14,7 @@ import BitcoinCore
 struct BitcoinAddressService {
     let legacy: BitcoinLegacyAddressService
     let bech32: BitcoinBech32AddressService
-    
+
     init(networkParams: INetwork) {
         legacy = BitcoinLegacyAddressService(networkParams: networkParams)
         bech32 = BitcoinBech32AddressService(networkParams: networkParams)
@@ -64,5 +64,5 @@ extension BitcoinAddressService: BitcoinScriptAddressesProvider {
         let bech32Address = BitcoinScriptAddress(script: script, value: bech32AddressString, publicKey: publicKey, type: .default)
 
         return [bech32Address, scriptAddress]
-	}
+    }
 }

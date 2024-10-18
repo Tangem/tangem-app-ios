@@ -15,27 +15,27 @@ class RavencoinMainNetworkParams: INetwork {
     /// base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,60);
     /// Decimal(60) = UInt8(0x3C)
     let pubKeyHash: UInt8 = 0x3C
-    
+
     /// https://github.com/RavenProject/Ravencoin/blob/master/src/chainparams.cpp#L196
     /// base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,122);
     /// Decimal(122) = UInt8(0x7A)
     let scriptHash: UInt8 = 0x7A
-    
+
     /// https://github.com/RavenProject/Ravencoin/blob/master/src/chainparams.cpp#L197
     /// base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,128);
     /// Decimal(128) = UInt8(0x80)
     let privateKey: UInt8 = 0x80
-    
+
     let bech32PrefixPattern: String = "bc"
-    
+
     /// https://github.com/RavenProject/Ravencoin/blob/master/src/chainparams.cpp#L198
     /// base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x88, 0xB2, 0x1E};
     let xPubKey: UInt32 = 0x0488b21e
-    
+
     /// https://github.com/RavenProject/Ravencoin/blob/master/src/chainparams.cpp#L199
     /// base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x88, 0xAD, 0xE4};
     let xPrivKey: UInt32 = 0x0488ade4
-    
+
     /// Protocol message header bytes
     /// https://github.com/RavenProject/Ravencoin/blob/master/src/chainparams.cpp#L177
     /// pchMessageStart[0] = 0x52; // R
@@ -43,16 +43,16 @@ class RavencoinMainNetworkParams: INetwork {
     /// pchMessageStart[2] = 0x56; // V
     /// pchMessageStart[3] = 0x4e; // N
     let magic: UInt32 = 0x5241564e
-    
+
     /// https://github.com/RavenProject/Ravencoin/blob/master/src/chainparams.cpp#L181
     /// nDefaultPort = 8767;
     let port: UInt32 = 8767
-    
+
     /// https://github.com/RavenProject/Ravencoin/blob/master/src/chainparams.cpp#L202
     /// Raven BIP44 cointype in mainnet is '175'
     /// nExtCoinType = 175;
     let coinType: UInt32 = 175
-    
+
     let sigHash: SigHashType = .bitcoinAll
 
     /// https://github.com/RavenProject/Ravencoin/blob/master/src/chainparams.cpp#L191

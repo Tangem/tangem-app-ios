@@ -9,8 +9,8 @@
 import Foundation
 import TangemSdk
 
-extension Wallet {
-    public struct PublicKey: Codable, Hashable {
+public extension Wallet {
+    struct PublicKey: Codable, Hashable {
         public let seedKey: Data
         public let derivationType: DerivationType?
 
@@ -37,13 +37,13 @@ extension Wallet {
     }
 }
 
-extension Wallet.PublicKey {
-    public enum DerivationType: Codable, Hashable {
+public extension Wallet.PublicKey {
+    enum DerivationType: Codable, Hashable {
         case plain(HDKey)
 
         /// Used only for Cardano
         case double(first: HDKey, second: HDKey)
-        
+
         public var hdKey: HDKey {
             switch self {
             case .plain(let derivationKey):
@@ -53,8 +53,8 @@ extension Wallet.PublicKey {
             }
         }
     }
-    
-    public struct HDKey: Codable, Hashable {
+
+    struct HDKey: Codable, Hashable {
         public let path: DerivationPath
         public let extendedPublicKey: ExtendedPublicKey
 

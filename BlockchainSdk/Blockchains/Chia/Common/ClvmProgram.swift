@@ -10,60 +10,60 @@ import Foundation
 import TangemSdk
 
 class ClvmProgram {
-    private let atom: Array<Byte>?
+    private let atom: [Byte]?
     private let left: ClvmProgram?
     private let right: ClvmProgram?
-    
+
     // MARK: - Init
 
-    init(atom: Array<Byte>? = nil, left: ClvmProgram? = nil, right: ClvmProgram? = nil) {
+    init(atom: [Byte]? = nil, left: ClvmProgram? = nil, right: ClvmProgram? = nil) {
         self.atom = atom
         self.left = left
         self.right = right
     }
-    
+
     // MARK: - Static
-    
+
     static func from(long: Int64) -> ClvmProgram {
         return .init(atom: long.chiaEncoded.bytes)
     }
-    
-    static func from(bytes: Array<Byte>) -> ClvmProgram {
+
+    static func from(bytes: [Byte]) -> ClvmProgram {
         return .init(atom: bytes, left: nil, right: nil)
     }
-    
+
     static func from(list: [ClvmProgram]) -> ClvmProgram {
-        var result: ClvmProgram = ClvmProgram(atom: [])
-        
+        var result = ClvmProgram(atom: [])
+
         for item in list.reversed() {
             result = ClvmProgram(atom: nil, left: item, right: result)
         }
-        
+
         return result
     }
-    
+
     // MARK: - Hashable
-    
+
     func hash() throws -> Data {
         if let value = atom {
             return Data([1] + value).getSha256()
         } else if let left = try left?.hash(), let right = try right?.hash() {
             return Data([2] + left + right).getSha256()
         }
-        
+
         throw NSError()
     }
-    
+
     func serialize() throws -> Data {
         if let atom = atom {
             if atom.isEmpty {
                 return Data(Byte(0x80))
-            } else if atom.count == 1 && atom[0] <= 0x7F {
+            } else if atom.count == 1, atom[0] <= 0x7F {
                 return Data(atom[0])
             } else {
                 let size = UInt64(atom.count)
                 var result = [Byte]()
-                
+
                 if size < 0x40 {
                     result.append(Byte(size | 0x80))
                 } else if size < 0x2000 {
@@ -87,7 +87,7 @@ class ClvmProgram {
                 } else {
                     throw EncoderError.tooManyBytesToEncode
                 }
-                
+
                 result.append(contentsOf: atom)
                 return Data(result)
             }
@@ -97,7 +97,7 @@ class ClvmProgram {
             throw EncoderError.undefinedEncodeException
         }
     }
-    
+
     enum EncoderError: Error {
         case tooManyBytesToEncode
         case undefinedEncodeException
@@ -107,25 +107,25 @@ class ClvmProgram {
 extension ClvmProgram {
     class Decoder {
         // MARK: - Properties
-        
+
         private var iterator: ClvmProgram.Iterator<Byte>
-        
+
         // MARK: - Init
-        
-        init(programBytes: Array<Byte>) {
-            self.iterator = ClvmProgram.Iterator(programBytes: programBytes)
+
+        init(programBytes: [Byte]) {
+            iterator = ClvmProgram.Iterator(programBytes: programBytes)
         }
-        
+
         // MARK: - Public Implementation
-        
+
         func deserialize() throws -> ClvmProgram {
             try deserialize(with: &iterator)
         }
-        
+
         // MARK: - Private Implementation
-        
+
         private func deserialize(with programByteIterator: inout ClvmProgram.Iterator<Byte>) throws -> ClvmProgram {
-            var sizeBytes = Array<Byte>()
+            var sizeBytes = [Byte]()
 
             guard let currentByte = programByteIterator.next() else {
                 throw DecoderError.errorEmptyCurrentByte
@@ -156,7 +156,7 @@ extension ClvmProgram {
             return ClvmProgram(atom: nextBytes)
         }
     }
-    
+
     enum DecoderError: Error {
         case errorEmptyCurrentByte
         case errorCompareCurrentByte
@@ -165,8 +165,8 @@ extension ClvmProgram {
 
 extension ClvmProgram {
     private struct Iterator<T>: IteratorProtocol {
-        private(set) var programBytes: Array<T>
-        
+        private(set) var programBytes: [T]
+
         mutating func next() -> T? {
             defer {
                 if !programBytes.isEmpty { programBytes.removeFirst() }
@@ -174,30 +174,30 @@ extension ClvmProgram {
 
             return programBytes.first
         }
-        
+
         mutating func next() throws -> Element {
             defer {
                 if !programBytes.isEmpty { programBytes.removeFirst() }
             }
-            
+
             guard let element = programBytes.first else {
                 throw IteratorError.undefinedElement
             }
 
             return element
         }
-        
-        mutating func next(byteCount: Int) throws -> Array<Element> {
+
+        mutating func next(byteCount: Int) throws -> [Element] {
             try (0 ..< byteCount).map { _ in
                 guard let next = next() else {
                     throw IteratorError.undefinedElement
                 }
-                
+
                 return next
             }
         }
     }
-    
+
     enum IteratorError: Error {
         case undefinedElement
     }

@@ -11,21 +11,21 @@ import Foundation
 extension Decimal {
     /// return 8 bytes of integer. LittleEndian  format
     var bytes8LE: [UInt8] {
-        let int64value = (self.rounded(scale: 0) as NSDecimalNumber).intValue
-        let bytes8 =  int64value.bytes8LE
+        let int64value = (rounded(scale: 0) as NSDecimalNumber).intValue
+        let bytes8 = int64value.bytes8LE
         return Array(bytes8)
     }
-    
+
     // TODO: Andrey Fedorov - Remove (IOS-6237)
     @available(*, deprecated, message: "May produce unexpected results due to non-fixed locale, use `init?(stringValue:)` instead")
     init?(_ string: String?) {
         guard let string = string else {
             return nil
         }
-        
+
         self.init(string: string)
     }
-    
+
     /// Parses given string using a fixed `en_US_POSIX` locale.
     /// - Note: Prefer this initializer to the `init?(string:locale:)` or `init?(_:)`.
     public init?(stringValue: String?) {
@@ -40,25 +40,25 @@ extension Decimal {
         guard let int = int else {
             return nil
         }
-        
+
         self.init(int)
     }
-    
+
     init?(data: Data) {
         guard let uint64 = UInt64(data: data) else {
             return nil
         }
-        
+
         self.init(uint64)
     }
-    
+
     public func rounded(scale: Int = 0, roundingMode: NSDecimalNumber.RoundingMode = .down) -> Decimal {
         var result = Decimal()
         var localCopy = self
         NSDecimalRound(&result, &localCopy, scale, roundingMode)
         return result
     }
-    
+
     func rounded(blockchain: Blockchain, roundingMode: RoundingMode = .down) -> Decimal {
         return rounded(scale: Int(blockchain.decimalCount), roundingMode: roundingMode)
     }
@@ -83,7 +83,7 @@ extension Decimal {
     var roundedDecimalNumber: NSDecimalNumber {
         rounded(roundingMode: .up) as NSDecimalNumber
     }
-    
+
     func isEqual(to value: Decimal, delta: Decimal) -> Bool {
         abs(self - value) <= delta
     }
@@ -95,12 +95,11 @@ extension Decimal {
     func moveRight(decimals: Int) -> Decimal {
         self * pow(10, decimals)
     }
-    
+
     func moveLeft(decimals: Int) -> Decimal {
         self / pow(10, decimals)
     }
 }
-
 
 // MARK: - Private implementation
 

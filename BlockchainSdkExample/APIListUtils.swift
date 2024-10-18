@@ -126,7 +126,6 @@ struct ConfigUtils {
     }
 }
 
-
 typealias APIListDTO = [String: [APIInfoDTO]]
 
 struct APIInfoDTO: Decodable {
@@ -202,7 +201,6 @@ struct Keys: Decodable {
     let bittensorDwellirKey: String
     let bittensorOnfinalityKey: String
 }
-
 
 struct TonCenterApiKeys: Decodable {
     let mainnet: String

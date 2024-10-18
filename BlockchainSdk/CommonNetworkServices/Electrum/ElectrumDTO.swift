@@ -14,12 +14,12 @@ enum ElectrumDTO {
             let confirmed: Int
             let unconfirmed: Int
         }
-        
+
         struct History: Decodable {
             let height: Decimal
             let txHash: String
         }
-        
+
         struct ListUnspent: Decodable {
             let hasToken: Bool?
             let height: Decimal
@@ -28,11 +28,11 @@ enum ElectrumDTO {
             let txPos: Int
             let value: Decimal
         }
-        
+
         struct Broadcast: Decodable {
             let txHash: String
         }
-        
+
         struct Transaction: Decodable {
             let blockhash: String
             let blocktime: UInt64
@@ -47,25 +47,25 @@ enum ElectrumDTO {
             let vin: [Vin]
             let vout: [Vout]
         }
-        
+
         struct Vin: Decodable {
             let scriptSig: ScriptSig
             let sequence: UInt64
             let txid: String
             let vout: Int
         }
-        
+
         struct Vout: Decodable {
             let n: Int
             let scriptPubKey: ScriptPubKey
             let value: Decimal
         }
-        
+
         struct ScriptSig: Decodable {
             let asm: String
             let hex: String
         }
-        
+
         struct ScriptPubKey: Decodable {
             let addresses: [String]
             let asm: String

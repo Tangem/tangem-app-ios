@@ -9,7 +9,6 @@
 import Foundation
 import XCTest
 import WalletCore
-
 @testable import BlockchainSdk
 
 final class NEARTests: XCTestCase {
@@ -111,7 +110,7 @@ final class NEARTests: XCTestCase {
     func testSigningTransaction() throws {
         // Private key for the "tiny escape drive pupil flavor endless love walk gadget match filter luxury" mnemonic
         let privateKeyRawRepresentation = "4z9uzXnZHE6huxMbnV7egjpvQk6ov7eji3FM12buV8DDtkARhiDqiCoDxSa3VpBMKYzzjmJcVXXyw8qhYgTs6MfH"
-            .base58DecodedData[0..<32]
+            .base58DecodedData[0 ..< 32]
         let privateKey = try XCTUnwrap(PrivateKey(data: privateKeyRawRepresentation))
 
         let publicKeyRawRepresentation = privateKey.getPublicKey(coinType: try XCTUnwrap(CoinType(blockchain))).data
@@ -125,7 +124,7 @@ final class NEARTests: XCTestCase {
         let destinationAddress = "jhj909.testnet"
         let value = try XCTUnwrap(Decimal(string: "3.891"))
         let amount = Amount(with: blockchain, value: value)
-        let fee = Fee(.zeroCoin(for: blockchain))  // Not used in the transaction, therefore a dummy value is used
+        let fee = Fee(.zeroCoin(for: blockchain)) // Not used in the transaction, therefore a dummy value is used
 
         let transactionParams = NEARTransactionParams(
             publicKey: publicKey,
@@ -152,11 +151,11 @@ final class NEARTests: XCTestCase {
         let base64EncodedTransaction = signedTransaction.base64EncodedString()
 
         let expectedBase64EncodedTransaction = """
-QAAAAGI1Y2YxMmQ0MzJlZTg3ZGJjNjY0ZTI3MDBlZWVmNzJiM2U4MTQ4NzliOTc4YmI5NDkxZTU3OTZhNjNlODVlZTQAtc8S1DL\
-uh9vGZOJwDu73Kz6BSHm5eLuUkeV5amPoXuQE33K/6IIAAA4AAABqaGo5MDkudGVzdG5ldECSnmDjrfGWWZfgb+lcQvfOE8jy8/\
-OdCy4+7VFwsBwYAQAAAAMAAOC5djZciPM3AwAAAAAAAEvPwwDL+M+IGs7G69be8CXlnKwbPp6NTpoWoAHukon9gCjyKhBpfWQwU\
-mvfgIZi953LT5fMzOlUEX6l9MlpzwM=
-"""
+        QAAAAGI1Y2YxMmQ0MzJlZTg3ZGJjNjY0ZTI3MDBlZWVmNzJiM2U4MTQ4NzliOTc4YmI5NDkxZTU3OTZhNjNlODVlZTQAtc8S1DL\
+        uh9vGZOJwDu73Kz6BSHm5eLuUkeV5amPoXuQE33K/6IIAAA4AAABqaGo5MDkudGVzdG5ldECSnmDjrfGWWZfgb+lcQvfOE8jy8/\
+        OdCy4+7VFwsBwYAQAAAAMAAOC5djZciPM3AwAAAAAAAEvPwwDL+M+IGs7G69be8CXlnKwbPp6NTpoWoAHukon9gCjyKhBpfWQwU\
+        mvfgIZi953LT5fMzOlUEX6l9MlpzwM=
+        """
 
         XCTAssertEqual(base64EncodedTransaction, expectedBase64EncodedTransaction)
     }

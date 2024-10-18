@@ -20,23 +20,23 @@ class DashMainNetworkParams: INetwork {
     let privateKey: UInt8 = 0x80
     let scriptHash: UInt8 = 0x10
     let bech32PrefixPattern: String = "bc"
-    
+
     //  https://github.com/dashpay/dash/blob/master/src/chainparams.cpp#L457
     let xPubKey: UInt32 = 0x0488b21e
-    
+
     //  https://github.com/dashpay/dash/blob/master/src/chainparams.cpp#L459
     let xPrivKey: UInt32 = 0x0488ade4
-    
+
     /// Protocol message header bytes
     /// https://github.com/dashpay/dash/blob/master/src/chainparams.cpp#L430
     let magic: UInt32 = 0xbf0c6bbd
-    
+
     /// https://github.com/dashpay/dash/blob/master/src/chainparams.cpp#L434
     let port: UInt32 = 9999
-    
+
     /// https://github.com/dashpay/dash/blob/master/src/chainparams.cpp#L462
     let coinType: UInt32 = 5
-    
+
     let sigHash: SigHashType = .bitcoinAll
     var syncableFromApi: Bool = true
 

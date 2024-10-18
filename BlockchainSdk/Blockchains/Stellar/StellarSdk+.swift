@@ -18,8 +18,8 @@ extension AccountService {
                 promise(.failure(WalletError.empty))
                 return
             }
-            
-            self.getAccountDetails(accountId: accountId) { response -> Void in
+
+            getAccountDetails(accountId: accountId) { response in
                 switch response {
                 case .success(let accountResponse):
                     promise(.success(accountResponse))
@@ -30,16 +30,16 @@ extension AccountService {
         }
         return AnyPublisher(future)
     }
-    
+
     func checkTargetAccount(address: String, token: Token?) -> AnyPublisher<StellarTargetAccountResponse, Error> {
         getAccountDetails(accountId: address)
             .map { resp -> StellarTargetAccountResponse in
                 guard let token = token else {
                     return StellarTargetAccountResponse(accountCreated: true, trustlineCreated: false)
                 }
-                
+
                 let balance = resp.balances.filter { $0.assetCode == token.symbol && $0.assetIssuer == token.contractAddress }
-                return StellarTargetAccountResponse(accountCreated: true, trustlineCreated: !balance.isEmpty )
+                return StellarTargetAccountResponse(accountCreated: true, trustlineCreated: !balance.isEmpty)
             }
             .tryCatch { error -> AnyPublisher<StellarTargetAccountResponse, Error> in
                 guard
@@ -62,8 +62,8 @@ extension FeeStatsService {
                 promise(.failure(WalletError.empty))
                 return
             }
-            
-            self.getFeeStats { response in
+
+            getFeeStats { response in
                 switch response {
                 case .success(let details):
                     promise(.success(details))
@@ -83,8 +83,8 @@ extension LedgersService {
                 promise(.failure(WalletError.empty))
                 return
             }
-            
-            self.getLedgers(cursor: nil, order: Order.descending, limit: 1) { response -> Void in
+
+            getLedgers(cursor: nil, order: Order.descending, limit: 1) { response in
                 switch response {
                 case .success(let ledgerResponse):
                     if let lastLedger = ledgerResponse.records.first {
@@ -102,14 +102,14 @@ extension LedgersService {
 }
 
 extension TransactionsService {
-    func postTransaction(transactionEnvelope:String) -> AnyPublisher<SubmitTransactionResponse, Error> {
+    func postTransaction(transactionEnvelope: String) -> AnyPublisher<SubmitTransactionResponse, Error> {
         let future = Future<SubmitTransactionResponse, Error> { [weak self] promise in
             guard let self = self else {
                 promise(.failure(WalletError.empty))
                 return
             }
-            
-            self.postTransaction(transactionEnvelope: transactionEnvelope, response: { response -> (Void) in
+
+            postTransaction(transactionEnvelope: transactionEnvelope, response: { response in
                 switch response {
                 case .success(let submitResponse):
                     promise(.success(submitResponse))
@@ -120,65 +120,64 @@ extension TransactionsService {
                 }
             })
         }
-        
+
         return AnyPublisher(future)
     }
 }
 
 extension OperationsService {
-	func getAllOperations(accountId: String, recordsLimit: Int = 200) -> AnyPublisher<[OperationResponse], Error> {
-		
-		func processResponse(_ response: PageResponse<OperationResponse>.ResponseEnum, in promise: (Result<PageResponse<OperationResponse>, Error>) -> Void) {
-			switch response {
-			case .success(let details):
-				promise(.success(details))
-			case .failure(let error):
-				promise(.failure(error))
-			}
-		}
-		
-		func pageRequest(prevPage: PageResponse<OperationResponse>) -> AnyPublisher<PageResponse<OperationResponse>, Error> {
-			Future<PageResponse<OperationResponse>, Error> { promise in
-				prevPage.getNextPage { response in
-					processResponse(response, in: promise)
-				}
-			}
-			.eraseToAnyPublisher()
-		}
-		
-		func pageRequest(accountId: String, recordsLimit: Int = 200) -> AnyPublisher<PageResponse<OperationResponse>, Error> {
-			Future<PageResponse<OperationResponse>, Error> { [weak self] promise in
+    func getAllOperations(accountId: String, recordsLimit: Int = 200) -> AnyPublisher<[OperationResponse], Error> {
+        func processResponse(_ response: PageResponse<OperationResponse>.ResponseEnum, in promise: (Result<PageResponse<OperationResponse>, Error>) -> Void) {
+            switch response {
+            case .success(let details):
+                promise(.success(details))
+            case .failure(let error):
+                promise(.failure(error))
+            }
+        }
+
+        func pageRequest(prevPage: PageResponse<OperationResponse>) -> AnyPublisher<PageResponse<OperationResponse>, Error> {
+            Future<PageResponse<OperationResponse>, Error> { promise in
+                prevPage.getNextPage { response in
+                    processResponse(response, in: promise)
+                }
+            }
+            .eraseToAnyPublisher()
+        }
+
+        func pageRequest(accountId: String, recordsLimit: Int = 200) -> AnyPublisher<PageResponse<OperationResponse>, Error> {
+            Future<PageResponse<OperationResponse>, Error> { [weak self] promise in
                 guard let self = self else {
                     promise(.failure(WalletError.empty))
                     return
                 }
-                
-				self.getOperations(forAccount: accountId, limit: recordsLimit) { (response) in
-					processResponse(response, in: promise)
-				}
-			}
-			.eraseToAnyPublisher()
-		}
-		
-		let pageResponseSubject = CurrentValueSubject<PageResponse<OperationResponse>?, Error>(nil)
-		
-		return pageResponseSubject
-			.flatMap { (page: PageResponse<OperationResponse>?) -> AnyPublisher<PageResponse<OperationResponse>, Error> in
-				guard let page = page else {
-					return pageRequest(accountId: accountId, recordsLimit: recordsLimit)
-				}
-				
-				return pageRequest(prevPage: page)
-			}
-			.handleEvents(receiveOutput: { (resp: PageResponse<OperationResponse>) in
-				resp.records.count == recordsLimit ?
-					pageResponseSubject.send(resp) :
-					pageResponseSubject.send(completion: .finished)
-			})
-			.map { $0.records }
-			.reduce([OperationResponse]()) { $0 + $1 }
-			.eraseToAnyPublisher()
-	}
+
+                getOperations(forAccount: accountId, limit: recordsLimit) { response in
+                    processResponse(response, in: promise)
+                }
+            }
+            .eraseToAnyPublisher()
+        }
+
+        let pageResponseSubject = CurrentValueSubject<PageResponse<OperationResponse>?, Error>(nil)
+
+        return pageResponseSubject
+            .flatMap { (page: PageResponse<OperationResponse>?) -> AnyPublisher<PageResponse<OperationResponse>, Error> in
+                guard let page = page else {
+                    return pageRequest(accountId: accountId, recordsLimit: recordsLimit)
+                }
+
+                return pageRequest(prevPage: page)
+            }
+            .handleEvents(receiveOutput: { (resp: PageResponse<OperationResponse>) in
+                resp.records.count == recordsLimit ?
+                    pageResponseSubject.send(resp) :
+                    pageResponseSubject.send(completion: .finished)
+            })
+            .map { $0.records }
+            .reduce([OperationResponse]()) { $0 + $1 }
+            .eraseToAnyPublisher()
+    }
 }
 
 extension HorizonRequestError {
@@ -214,7 +213,7 @@ extension HorizonRequestError {
             return message
         }
     }
-    
+
     func parseError() -> Error {
         let hotizonMessage = message
         let json = JSON(parseJSON: hotizonMessage)

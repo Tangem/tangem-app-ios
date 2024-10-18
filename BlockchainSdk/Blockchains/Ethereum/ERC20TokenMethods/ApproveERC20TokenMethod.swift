@@ -13,7 +13,7 @@ import BigInt
 public struct ApproveERC20TokenMethod {
     let spender: String
     let amount: BigUInt
-    
+
     public init(spender: String, amount: BigUInt) {
         self.spender = spender
         self.amount = amount

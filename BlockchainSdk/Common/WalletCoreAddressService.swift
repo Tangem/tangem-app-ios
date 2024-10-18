@@ -54,7 +54,7 @@ extension WalletCoreAddressService: AddressProvider {
                 let address = try makeByronAddress(publicKey: publicKey)
                 return PlainAddress(value: address, publicKey: publicKey, type: addressType)
             }
-            
+
             fatalError("WalletCoreAddressService don't support legacy address for \(coin)")
         }
     }
@@ -73,7 +73,7 @@ private extension WalletCoreAddressService {
         guard let publicKey = PublicKey(data: publicKey.blockchainKey, type: .ed25519Cardano) else {
             throw TWError.makeAddressFailed
         }
-        
+
         let byronAddress = Cardano.getByronAddress(publicKey: publicKey)
         return byronAddress
     }

@@ -15,11 +15,11 @@ extension NEARNetworkResult {
         enum Permission: Decodable {
             case fullAccess
             case other
-            
+
             init(from decoder: Decoder) throws {
                 let container = try decoder.singleValueContainer()
                 let rawValue = try container.decode(String.self)
-                
+
                 switch rawValue {
                 case "FullAccess":
                     self = .fullAccess
@@ -28,7 +28,7 @@ extension NEARNetworkResult {
                 }
             }
         }
-        
+
         let blockHash: String
         let blockHeight: UInt
         let nonce: UInt

@@ -28,7 +28,7 @@ struct CardanoAddressService {
         let walletAddress = hexAddress.base58EncodedString
         return walletAddress
     }
-    
+
     private func makeShelleyAddress(from walletPublicKey: Data) -> String {
         // TODO: Use extension from Data+ and refactor to handle optional Data
         let publicKeyHash = Sodium().genericHash.hash(message: walletPublicKey.toBytes, outputLength: 28)!
@@ -54,21 +54,21 @@ extension CardanoAddressService: AddressValidator {
         } else {
             let decoded58 = address.base58DecodedBytes
             guard !decoded58.isEmpty else {
-                    return false
+                return false
             }
 
             guard let cborArray = try? CBORDecoder(input: decoded58).decodeItem(),
-                let addressArray = cborArray[0],
-                let checkSumArray = cborArray[1] else {
-                    return false
+                  let addressArray = cborArray[0],
+                  let checkSumArray = cborArray[1] else {
+                return false
             }
 
-            guard case let CBOR.tagged(_, cborByteString) = addressArray,
-                case let CBOR.byteString(addressBytes) = cborByteString else {
-                    return false
+            guard case CBOR.tagged(_, let cborByteString) = addressArray,
+                  case CBOR.byteString(let addressBytes) = cborByteString else {
+                return false
             }
 
-            guard case let CBOR.unsignedInt(checksum) = checkSumArray else {
+            guard case CBOR.unsignedInt(let checksum) = checkSumArray else {
                 return false
             }
 
@@ -86,11 +86,11 @@ extension CardanoAddressService: AddressProvider {
         try publicKey.blockchainKey.validateAsEdKey()
 
         switch addressType {
-        case .default:            
+        case .default:
             let shelley = makeShelleyAddress(from: publicKey.blockchainKey)
             return PlainAddress(value: shelley, publicKey: publicKey, type: addressType)
         case .legacy:
-            let byron =  makeByronAddress(from: publicKey.blockchainKey)
+            let byron = makeByronAddress(from: publicKey.blockchainKey)
             return PlainAddress(value: byron, publicKey: publicKey, type: addressType)
         }
     }

@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Mitch Lang on 1/31/20.
 //
@@ -19,7 +19,7 @@ protocol XRPWebSocket {
         get
         set
     }
-    
+
     // convenience methods
     func subscribe(account: String)
 }
@@ -39,28 +39,28 @@ class WebSocket: NSObject, XRPWebSocket, URLSessionWebSocketDelegate {
     var webSocketTask: URLSessionWebSocketTask!
     var urlSession: URLSession!
     let delegateQueue = OperationQueue()
-    
+
     func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
-        self.delegate?.onConnected(connection: self)
+        delegate?.onConnected(connection: self)
     }
-    
+
     func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
-        self.delegate?.onDisconnected(connection: self, error: nil)
+        delegate?.onDisconnected(connection: self, error: nil)
     }
-    
+
     func connect(url: URL) {
         urlSession = URLSession(configuration: .default, delegate: self, delegateQueue: delegateQueue)
         webSocketTask = urlSession.webSocketTask(with: url)
         webSocketTask.resume()
-        
+
         listen()
     }
-    
+
     func disconnect() {
         webSocketTask.cancel(with: .goingAway, reason: nil)
     }
-    
-    func listen()  {
+
+    func listen() {
         webSocketTask.receive { result in
             switch result {
             case .failure(let error):
@@ -75,21 +75,20 @@ class WebSocket: NSObject, XRPWebSocket, URLSessionWebSocketDelegate {
                 @unknown default:
                     fatalError()
                 }
-                
+
                 self.listen()
             }
         }
     }
-    
+
     func handleResponse(data: Data) {
         if let response = try? JSONDecoder().decode(XRPWebSocketResponse.self, from: data) {
-            self.delegate?.onResponse(connection: self, response: response)
+            delegate?.onResponse(connection: self, response: response)
         } else if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? NSDictionary {
-            self.delegate?.onStream(connection: self, object: json)
+            delegate?.onStream(connection: self, object: json)
         }
-        
     }
-    
+
     func send(text: String) {
         webSocketTask.send(URLSessionWebSocketTask.Message.string(text)) { error in
             if let error = error {
@@ -97,7 +96,7 @@ class WebSocket: NSObject, XRPWebSocket, URLSessionWebSocketDelegate {
             }
         }
     }
-    
+
     func send(data: Data) {
         webSocketTask.send(URLSessionWebSocketTask.Message.data(data)) { error in
             if let error = error {
@@ -107,4 +106,3 @@ class WebSocket: NSObject, XRPWebSocket, URLSessionWebSocketDelegate {
     }
 }
 #endif
-

@@ -11,27 +11,26 @@ import Foundation
 import TangemSdk
 
 private struct Definitions {
-    
     var TYPES: [String: Int]
-    var LEDGER_ENTRY_TYPES: [String : Int]
-    var FIELDS: [String:FieldInfo]
-    var TRANSACTION_RESULTS: [String : Int]
-    var TRANSACTION_TYPES: [String : Int]
-    
-    init(dict: [String:AnyObject]) {
-        self.TYPES = dict["TYPES"] as! [String:Int]
-        self.LEDGER_ENTRY_TYPES = dict["LEDGER_ENTRY_TYPES"] as! [String:Int]
-        self.TRANSACTION_RESULTS = dict["TRANSACTION_RESULTS"] as! [String:Int]
-        self.TRANSACTION_TYPES = dict["TRANSACTION_TYPES"] as! [String:Int]
-    
+    var LEDGER_ENTRY_TYPES: [String: Int]
+    var FIELDS: [String: FieldInfo]
+    var TRANSACTION_RESULTS: [String: Int]
+    var TRANSACTION_TYPES: [String: Int]
+
+    init(dict: [String: AnyObject]) {
+        TYPES = dict["TYPES"] as! [String: Int]
+        LEDGER_ENTRY_TYPES = dict["LEDGER_ENTRY_TYPES"] as! [String: Int]
+        TRANSACTION_RESULTS = dict["TRANSACTION_RESULTS"] as! [String: Int]
+        TRANSACTION_TYPES = dict["TRANSACTION_TYPES"] as! [String: Int]
+
         let fields = dict["FIELDS"] as! [[AnyObject]]
-        var fieldsDict: [String:FieldInfo] = [:]
-        _ = fields.map { (array) in
+        var fieldsDict: [String: FieldInfo] = [:]
+        _ = fields.map { array in
             let field = array[0] as! String
             let fieldInfo = FieldInfo(dict: array[1] as! NSDictionary)
             fieldsDict[field] = fieldInfo
         }
-        self.FIELDS = fieldsDict
+        FIELDS = fieldsDict
     }
 }
 
@@ -47,7 +46,7 @@ private struct OrderTuple {
 
 private struct TypeWrapper {
     var type: String
-    var object: [String:Any]
+    var object: [String: Any]
 }
 
 private struct FieldInfo {
@@ -56,28 +55,26 @@ private struct FieldInfo {
     var isSerialized: Bool
     var isSigningField: Bool
     var type: String
-    
+
     init(dict: NSDictionary) {
-        self.nth = dict["nth"] as! Int
-        self.isVLEncoded = dict["isVLEncoded"] as! Bool
-        self.isSerialized = dict["isSerialized"] as! Bool
-        self.isSigningField = dict["isSigningField"] as! Bool
-        self.type = dict["type"] as! String
-        
+        nth = dict["nth"] as! Int
+        isVLEncoded = dict["isVLEncoded"] as! Bool
+        isSerialized = dict["isSerialized"] as! Bool
+        isSigningField = dict["isSigningField"] as! Bool
+        type = dict["type"] as! String
     }
 }
 
 class Serializer {
-    
     // instance variables
     private var definitions: Definitions!
-    
+
     init() {
         do {
             let data: Data = serializerDefinitions.data(using: .utf8)!
             let jsonResult = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves)
-            if let jsonResult = jsonResult as? [String:AnyObject] {
-                self.definitions = Definitions(dict: jsonResult)
+            if let jsonResult = jsonResult as? [String: AnyObject] {
+                definitions = Definitions(dict: jsonResult)
             }
         } catch {
             Log.error(error)
@@ -90,14 +87,13 @@ class Serializer {
         let tuple = OrderTuple(typeCode: definitions.TYPES[fieldTypeName]!, order: definitions.FIELDS[fieldName]!.nth)
         return tuple
     }
-    
+
     private func fieldID(fieldName: String) -> Data {
-        
         /*
-        Returns the unique field ID for a given field name.
-        This field ID consists of the type code and field code, in 1 to 3 bytes
-        depending on whether those values are "common" (<16) or "uncommon" (>=16)
-        */
+         Returns the unique field ID for a given field name.
+         This field ID consists of the type code and field code, in 1 to 3 bytes
+         depending on whether those values are "common" (<16) or "uncommon" (>=16)
+         */
         let fieldTypeName = definitions.FIELDS[fieldName]!.type
         let typeCode = definitions.TYPES[fieldTypeName]!
         let fieldCode = definitions.FIELDS[fieldName]!.nth
@@ -106,19 +102,19 @@ class Serializer {
         assert(0 < fieldCode && fieldCode <= 255)
         assert(0 < typeCode && typeCode <= 255)
 
-        if typeCode < 16 && fieldCode < 16 {
+        if typeCode < 16, fieldCode < 16 {
             // high 4 bits is the type_code
             // low 4 bits is the field code
             let combinedCode = (typeCode << 4) | fieldCode
             return UInt8Byte(combinedCode)
-        } else if typeCode >= 16 && fieldCode < 16 {
+        } else if typeCode >= 16, fieldCode < 16 {
             // first 4 bits are zeroes
             // next 4 bits is field code
             // next byte is type code
             let byte1 = UInt8Byte(fieldCode)
             let byte2 = UInt8Byte(typeCode)
             return byte1 + byte2
-        } else if typeCode < 16 && fieldCode >= 16 {
+        } else if typeCode < 16, fieldCode >= 16 {
             // first 4 bits is type code
             // next 4 bits are zeroes
             // next byte is field code
@@ -135,7 +131,7 @@ class Serializer {
             return Data([0x00]) + byte2 + byte3
         }
     }
-    
+
     private func vlEncode(contents: Data) -> Data {
         /*
          Helper function for length-prefixed fields including Blob types
@@ -165,24 +161,24 @@ class Serializer {
         }
         fatalError("VariableLength field must be <= 918744 bytes long")
     }
-    
+
     private func decodeAddress(address: String) -> Data {
         let decodedData = XRPBase58.getData(from: address)!
         let decodedDataWithoutCheksum = Data(decodedData.dropLast(4))
         let accountId = decodedDataWithoutCheksum.leadingZeroPadding(toLength: 20)
         return accountId
     }
-    
+
     private func accountIDToBytes(address: String) -> Data {
         /*
-        Serialize an AccountID field type. These are length-prefixed.
-        Some fields contain nested non-length-prefixed AccountIDs directly; those
-        call decode_address() instead of this function.
-        */
+         Serialize an AccountID field type. These are length-prefixed.
+         Some fields contain nested non-length-prefixed AccountIDs directly; those
+         call decode_address() instead of this function.
+         */
         let addressData = decodeAddress(address: address)
         return vlEncode(contents: addressData)
     }
-    
+
     private func amountToBytes(amount: String) -> Data {
         /*
          Serializes an "Amount" type, which can be either XRP or an issued currency:
@@ -191,46 +187,45 @@ class Serializer {
          160 bit issuer AccountID.
          */
         var xrpAmount = Int64(amount)!
-        let _edge: Int64 = 100000000000000000 //10^17
-        if (xrpAmount >= 0) {
+        let _edge: Int64 = 100000000000000000 // 10^17
+        if xrpAmount >= 0 {
             assert(xrpAmount <= _edge)
             // set the "is positive" bit -- this is backwards from usual two's complement!
             let mask: Int64 = 0x4000000000000000
             xrpAmount = xrpAmount | mask
         } else {
-            assert(xrpAmount >= -1*_edge)
+            assert(xrpAmount >= -1 * _edge)
             // convert to absolute value, leaving the "is positive" bit unset
             xrpAmount = -xrpAmount
         }
         return xrpAmount.bigEndian.data
     }
-    
-    private func amountDictToBytes(dict: [String:Any]) -> Data {
+
+    private func amountDictToBytes(dict: [String: Any]) -> Data {
         if dict.keys.sorted() != ["currency", "issuer", "value"] {
             fatalError("amount must have currency, value, issuer")
         }
-        
+
         let issuedAmount = IssuedAmount(value: dict["value"] as! String).canonicalize()
         let currencyCode = currencyCodeToBytes(codeString: dict["currency"] as! String)
         return issuedAmount + currencyCode + decodeAddress(address: dict["issuer"] as! String)
     }
 
-    private func currencyCodeToBytes(codeString: String, xrpOkay:Bool = false) -> Data {
-        //FIXME: regex is wacky
+    private func currencyCodeToBytes(codeString: String, xrpOkay: Bool = false) -> Data {
+        // FIXME: regex is wacky
         let regex = try! NSRegularExpression(pattern: "^[A-Za-z0-9?!@#$%^&*<>(){}|]{3}$", options: [])
-        let matches = regex.matches(in: codeString, options: [], range: NSMakeRange(0,codeString.count))
+        let matches = regex.matches(in: codeString, options: [], range: NSMakeRange(0, codeString.count))
         let regex2 = try! NSRegularExpression(pattern: "^[0-9a-fA-F]{40}$", options: [])
-        let matches2 = regex2.matches(in: codeString, options: [], range: NSMakeRange(0,codeString.count))
-        if matches.count != 0 {
+        let matches2 = regex2.matches(in: codeString, options: [], range: NSMakeRange(0, codeString.count))
+        if !matches.isEmpty {
             if codeString == "XRP" {
                 if xrpOkay {
                     // Rare, but when the currency code "XRP" is serialized, it's
                     // a special-case all zeroes.
                     return Data(repeating: 0, count: 20)
-                    
                 }
             }
-            
+
             let ascii = codeString.data(using: .nonLossyASCII)!
             // standard currency codes: https://developers.ripple.com/currency-formats.html#standard-currency-codes
             // 8 bits type code (0x00)
@@ -239,14 +234,14 @@ class Serializer {
             // 16 bits version (0x00)
             // 24 bits reserved (0's)
             return Data(repeating: 0, count: 12) + ascii + Data(repeating: 0, count: 5)
-        } else if matches2.count != 0 {
+        } else if !matches2.isEmpty {
             return Data(xrpHex: codeString)
         }
-        
+
         fatalError("invalid currency")
     }
-    
-    private func pathsetToBytes(pathset: [[[String:Any]]]) -> Data {
+
+    private func pathsetToBytes(pathset: [[[String: Any]]]) -> Data {
         /*
          Serialize a PathSet, which is an array of arrays,
          where each inner array represents one possible payment path.
@@ -256,12 +251,12 @@ class Serializer {
          (We re-create the type field for serialization based on which of the core
          3 fields are present.)
          */
-        
+
         if pathset.isEmpty {
             fatalError("PathSet type must not be empty")
         }
-        
-        var pathSetBytes: Data = Data()
+
+        var pathSetBytes = Data()
         for (index, path) in pathset.enumerated() {
             let _pathAsBytes = pathAsBytes(path: path)
             pathSetBytes.append(_pathAsBytes)
@@ -273,13 +268,13 @@ class Serializer {
         }
         return pathSetBytes
     }
-    
-    private func pathAsBytes(path: [[String:Any]]) -> Data {
+
+    private func pathAsBytes(path: [[String: Any]]) -> Data {
         //    Helper function for representing one member of a pathset as a bytes object
         if path.isEmpty {
             fatalError("Path type must not be empty")
         }
-        
+
         var pathBytes = Data()
         for step in path {
             var stepData = Data()
@@ -299,26 +294,26 @@ class Serializer {
             stepData = [typeByte] + stepData
             pathBytes.append(stepData)
         }
-        
+
         return pathBytes
     }
-    
+
     private func arrayToBytes(array: [TypeWrapper]) -> Data {
         /*
-        Serialize an array of objects from decoded JSON.
-        Each member object must have a type wrapper and an inner object.
-        For example:
-        [
-            {
-                // wrapper object
-                "Memo": {
-                    // inner object
-                    "MemoType": "687474703a2f2f6578616d706c652e636f6d2f6d656d6f2f67656e65726963",
-                    "MemoData": "72656e74"
-                }
-            }
-        ]
-        */
+         Serialize an array of objects from decoded JSON.
+         Each member object must have a type wrapper and an inner object.
+         For example:
+         [
+             {
+                 // wrapper object
+                 "Memo": {
+                     // inner object
+                     "MemoType": "687474703a2f2f6578616d706c652e636f6d2f6d656d6f2f67656e65726963",
+                     "MemoData": "72656e74"
+                 }
+             }
+         ]
+         */
         var membersAsBytes: [Data] = []
         for el in array {
             let wrapperKey = el.type
@@ -326,22 +321,22 @@ class Serializer {
             membersAsBytes.append(fieldToBytes(fieldName: wrapperKey, fieldVal: innerObject))
         }
         membersAsBytes.append(fieldID(fieldName: "ArrayEndMarker"))
-        return membersAsBytes.reduce(Data(), { (result, newData) -> Data in
+        return membersAsBytes.reduce(Data()) { result, newData -> Data in
             return result + newData
-        })
+        }
     }
-    
+
     private func blobToBytes(hexBlob: String) -> Data {
         /*
-        Serializes a string of hex as binary data with a length prefix.
-        */
+         Serializes a string of hex as binary data with a length prefix.
+         */
         return vlEncode(contents: hexBlob.hexadecimal!)
     }
-    
+
     private func currencyCodeToBytes(code: String) -> Data {
         fatalError("currencyCodeToBytes not implemented")
     }
-    
+
     private func hash128ToBytes(hexString: String) -> Data {
         // Serializes a hexadecimal string as binary and confirms that it's 128 bits
         let data = hashToBytes(hexString: hexString)
@@ -350,7 +345,7 @@ class Serializer {
         }
         return data
     }
-    
+
     private func hash160ToBytes(hexString: String) -> Data {
         let data = hashToBytes(hexString: hexString)
         if data.count != 20 {
@@ -358,7 +353,7 @@ class Serializer {
         }
         return data
     }
-    
+
     private func hash256ToBytes(hexString: String) -> Data {
         let data = hashToBytes(hexString: hexString)
         if data.count != 32 {
@@ -366,18 +361,18 @@ class Serializer {
         }
         return data
     }
-    
+
     private func hashToBytes(hexString: String) -> Data {
         return hexString.hexadecimal!
     }
-    
+
     private func objectToBytes(wrapper: TypeWrapper) -> Data {
         let innerObject = wrapper.object
-        let tuples = innerObject.keys.map { (key) -> FieldOrder in
+        let tuples = innerObject.keys.map { key -> FieldOrder in
             let tuple = self.fieldSortKey(fieldName: key)
             return FieldOrder(name: key, orderTuple: tuple)
         }
-        let sortedTuples = tuples.sorted { (lh, rh) -> Bool in
+        let sortedTuples = tuples.sorted { lh, rh -> Bool in
             if lh.orderTuple.typeCode == rh.orderTuple.typeCode {
                 return lh.orderTuple.order < rh.orderTuple.order
             } else {
@@ -393,46 +388,45 @@ class Serializer {
             }
         }
         fieldAsBytes.append(fieldID(fieldName: "ObjectEndMarker"))
-        return fieldAsBytes.reduce(Data(), { (result, newData) -> Data in
+        return fieldAsBytes.reduce(Data()) { result, newData -> Data in
             return result + newData
-        })
+        }
     }
-    
+
     private func txTypeToBytes(type: String) -> Data {
         let type = UInt16(definitions.TRANSACTION_TYPES[type]!)
         return UInt16Bytes(type)
     }
-    
+
     private func UInt8Byte(_ int: Int) -> Data {
         return Data([UInt8(int)])
     }
-    
+
     private func UInt8Byte(_ int: UInt8) -> Data {
         return int.bigEndian.data
     }
-    
+
     private func UInt16Bytes(_ int: UInt16) -> Data {
         return int.bigEndian.data
     }
-    
+
     private func UInt32Bytes(_ int: UInt32) -> Data {
         return int.bigEndian.data
     }
-    
+
     // ========================
     // Core serialization logic
     // ========================
-    
+
     private func fieldToBytes(fieldName: String, fieldVal: Any) -> Data {
-        
         let fieldType = definitions.FIELDS[fieldName]!.type
         let idPrefix = fieldID(fieldName: fieldName)
-        
+
         // special case
         if fieldName == "TransactionType" {
             return idPrefix + txTypeToBytes(type: fieldVal as! String)
         }
-        
+
         let dispatch = { (fieldType: String, fieldVal: Any) -> Data in
             switch fieldType {
             case "AccountID":
@@ -441,7 +435,7 @@ class Serializer {
             case "Amount":
                 if let amount = fieldVal as? String {
                     return self.amountToBytes(amount: amount)
-                } else if let amount = fieldVal as? [String:Any] {
+                } else if let amount = fieldVal as? [String: Any] {
                     return self.amountDictToBytes(dict: amount)
                 }
                 fatalError()
@@ -458,20 +452,20 @@ class Serializer {
                 let hexString = fieldVal as! String
                 return self.hash256ToBytes(hexString: hexString)
             case "PathSet":
-                let pathSet = fieldVal as! [[[String:Any]]]
+                let pathSet = fieldVal as! [[[String: Any]]]
                 return self.pathsetToBytes(pathset: pathSet)
             case "STArray":
-                let array = fieldVal as! [[String:Any]]
-                let wrappers: [TypeWrapper] = array.map({ (dict) -> TypeWrapper in
+                let array = fieldVal as! [[String: Any]]
+                let wrappers: [TypeWrapper] = array.map { dict -> TypeWrapper in
                     let kv = dict.first!
                     let body = dict
                     return TypeWrapper(type: kv.key, object: body)
-                })
+                }
                 return self.arrayToBytes(array: wrappers)
             case "STObject":
-                let dict = fieldVal as! [String:Any]
+                let dict = fieldVal as! [String: Any]
                 let kv = dict.first!
-                let body = kv.value as! [String:Any]
+                let body = kv.value as! [String: Any]
                 let wrapper = TypeWrapper(type: kv.key, object: body)
                 return self.objectToBytes(wrapper: wrapper)
             case "UInt8":
@@ -487,44 +481,43 @@ class Serializer {
                 fatalError("Invalid field name")
             }
         }
-        
+
         let fieldBinary = dispatch(fieldType, fieldVal)
         return idPrefix + fieldBinary
-        
     }
-    
-    func serializeTx(tx: [String:Any], forSigning: Bool = false) -> Data {
+
+    func serializeTx(tx: [String: Any], forSigning: Bool = false) -> Data {
         /*
-        Takes a transaction as decoded JSON and returns a bytes object representing
-        the transaction in binary format.
-        The input format should omit transaction metadata and the transaction
-        should be formatted with the transaction instructions at the top level.
-        ("hash" can be included, but will be ignored)
-        If for_signing=True, then only signing fields are serialized, so you can use
-        the output to sign the transaction.
-        SigningPubKey and TxnSignature are optional, but the transaction can't
-        be submitted without them.
-        For example:
-        {
-          "TransactionType" : "Payment",
-          "Account" : "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
-          "Destination" : "ra5nK24KXen9AHvsdFTKHSANinZseWnPcX",
-          "Amount" : {
-             "currency" : "USD",
-             "value" : "1",
-             "issuer" : "rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn"
-          },
-          "Fee": "12",
-          "Flags": 2147483648,
-          "Sequence": 2
-        }
-        */
-        
-        let tuples = tx.keys.map { (key) -> FieldOrder in
+         Takes a transaction as decoded JSON and returns a bytes object representing
+         the transaction in binary format.
+         The input format should omit transaction metadata and the transaction
+         should be formatted with the transaction instructions at the top level.
+         ("hash" can be included, but will be ignored)
+         If for_signing=True, then only signing fields are serialized, so you can use
+         the output to sign the transaction.
+         SigningPubKey and TxnSignature are optional, but the transaction can't
+         be submitted without them.
+         For example:
+         {
+           "TransactionType" : "Payment",
+           "Account" : "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
+           "Destination" : "ra5nK24KXen9AHvsdFTKHSANinZseWnPcX",
+           "Amount" : {
+              "currency" : "USD",
+              "value" : "1",
+              "issuer" : "rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn"
+           },
+           "Fee": "12",
+           "Flags": 2147483648,
+           "Sequence": 2
+         }
+         */
+
+        let tuples = tx.keys.map { key -> FieldOrder in
             let tuple = self.fieldSortKey(fieldName: key)
             return FieldOrder(name: key, orderTuple: tuple)
         }
-        let sortedTuples = tuples.sorted { (lh, rh) -> Bool in
+        let sortedTuples = tuples.sorted { lh, rh -> Bool in
             if lh.orderTuple.typeCode == rh.orderTuple.typeCode {
                 return lh.orderTuple.order < rh.orderTuple.order
             } else {
@@ -534,7 +527,7 @@ class Serializer {
         var fieldAsBytes: [Data] = []
         for tuple in sortedTuples {
             if definitions.FIELDS[tuple.name]!.isSerialized {
-                if forSigning && !definitions.FIELDS[tuple.name]!.isSigningField {
+                if forSigning, !definitions.FIELDS[tuple.name]!.isSigningField {
                     continue
                 }
                 let fieldVal = tx[tuple.name]!
@@ -542,17 +535,16 @@ class Serializer {
                 fieldAsBytes.append(bytes)
             }
         }
-        return fieldAsBytes.reduce(Data(), { (result, newData) -> Data in
+        return fieldAsBytes.reduce(Data()) { result, newData -> Data in
             return result + newData
-        })
+        }
     }
-    
+
     private func printBytes(_ bytes: [Data]) {
-        let combined = bytes.reduce(Data(), { (result, newData) -> Data in
+        let combined = bytes.reduce(Data()) { result, newData -> Data in
             return result + newData
-        })
+        }
         print(combined.hexadecimal)
         print("\n")
     }
-
 }

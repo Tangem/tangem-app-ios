@@ -14,20 +14,20 @@ import Foundation
 
 struct ChiaAddressService: AddressService {
     // MARK: - Private Properties
-    
+
     private(set) var isTestnet: Bool
-    
+
     // MARK: - Implementation
-    
+
     func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
         let puzzle = ChiaPuzzleUtils().getPuzzleHash(from: publicKey.blockchainKey)
         let puzzleHash = try ClvmProgram.Decoder(programBytes: puzzle.bytes).deserialize().hash()
         let hrp = HRP.part(isTestnet: isTestnet)
         let encodeValue = Bech32(variant: .bech32m).encode(hrp, values: puzzleHash)
-        
+
         return PlainAddress(value: encodeValue, publicKey: publicKey, type: addressType)
     }
-    
+
     func validate(_ address: String) -> Bool {
         do {
             let result = try Bech32(variant: .bech32m).decode(address)
@@ -41,8 +41,9 @@ struct ChiaAddressService: AddressService {
 extension ChiaAddressService {
     /// Human Readable Part Prefix address Chia blockchain
     enum HRP: String {
-        case txch, xch
-        
+        case txch
+        case xch
+
         static func part(isTestnet: Bool) -> String {
             return isTestnet ? HRP.txch.rawValue : HRP.xch.rawValue
         }

@@ -14,11 +14,11 @@ import BigInt
 class EthereumNetworkService: MultiNetworkProvider {
     let providers: [EthereumJsonRpcProvider]
     var currentProviderIndex: Int = 0
-    
+
     private let decimals: Int
     private let ethereumInfoNetworkProvider: EthereumAdditionalInfoProvider?
     private let abiEncoder: ABIEncoder
-    
+
     init(
         decimals: Int,
         providers: [EthereumJsonRpcProvider],
@@ -27,16 +27,16 @@ class EthereumNetworkService: MultiNetworkProvider {
     ) {
         self.providers = providers
         self.decimals = decimals
-        self.ethereumInfoNetworkProvider = blockcypherProvider
+        ethereumInfoNetworkProvider = blockcypherProvider
         self.abiEncoder = abiEncoder
     }
-    
+
     func send(transaction: String) -> AnyPublisher<String, Error> {
         providerPublisher {
             $0.send(transaction: transaction)
         }
     }
-    
+
     func getInfo(address: String, tokens: [Token]) -> AnyPublisher<EthereumInfoResponse, Error> {
         Publishers.Zip4(
             getBalance(address),
@@ -61,7 +61,7 @@ class EthereumNetworkService: MultiNetworkProvider {
         let feeHistoryPublisher = getFeeHistory()
 
         return Publishers.Zip(gasLimitPublisher, feeHistoryPublisher)
-            .map { (gasLimit, feeHistory) -> EthereumEIP1559FeeResponse in
+            .map { gasLimit, feeHistory -> EthereumEIP1559FeeResponse in
                 return EthereumMapper.mapToEthereumEIP1559FeeResponse(
                     gasLimit: gasLimit,
                     feeHistory: feeHistory
@@ -76,7 +76,7 @@ class EthereumNetworkService: MultiNetworkProvider {
         let gasLimitPublisher = getGasLimit(to: to, from: from, value: value, data: data)
 
         return Publishers.Zip(gasPricePublisher, gasLimitPublisher)
-            .tryMap { (gasPrice, gasLimit) -> EthereumLegacyFeeResponse in
+            .tryMap { gasPrice, gasLimit -> EthereumLegacyFeeResponse in
                 return EthereumMapper.mapToEthereumLegacyFeeResponse(
                     gasPrice: gasPrice,
                     gasLimit: gasLimit
@@ -87,12 +87,12 @@ class EthereumNetworkService: MultiNetworkProvider {
     }
 
     func getTxCount(_ address: String) -> AnyPublisher<Int, Error> {
-       providerPublisher { provider in
-           provider.getTxCount(for: address)
-               .tryMap { try EthereumMapper.mapInt($0) }
-               .eraseToAnyPublisher()
-       }
-   }
+        providerPublisher { provider in
+            provider.getTxCount(for: address)
+                .tryMap { try EthereumMapper.mapInt($0) }
+                .eraseToAnyPublisher()
+        }
+    }
 
     func getFeeHistory() -> AnyPublisher<EthereumFeeHistory, Error> {
         providerPublisher {
@@ -104,7 +104,7 @@ class EthereumNetworkService: MultiNetworkProvider {
                     }
 
                     if case ETHError.failedToParseFeeHistory = error {
-                        return self.getGasPrice()
+                        return getGasPrice()
                             .map { EthereumMapper.mapFeeHistoryFallback(gasPrice: $0) }
                             .eraseToAnyPublisher()
                     }
@@ -130,7 +130,7 @@ class EthereumNetworkService: MultiNetworkProvider {
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func getGasLimit(to: String, from: String, value: String?, data: String?) -> AnyPublisher<BigUInt, Error> {
         providerPublisher {
             $0.getGasLimit(to: to, from: from, value: value, data: data)
@@ -138,7 +138,7 @@ class EthereumNetworkService: MultiNetworkProvider {
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func getTokensBalance(_ address: String, tokens: [Token]) -> AnyPublisher<[Token: Result<Decimal, Error>], Error> {
         tokens
             .publisher
@@ -155,7 +155,7 @@ class EthereumNetworkService: MultiNetworkProvider {
                             guard let value = EthereumUtils.parseEthereumDecimal(result, decimalsCount: token.decimalCount) else {
                                 throw ETHError.failedToParseBalance(value: result, address: token.contractAddress, decimals: token.decimalCount)
                             }
-                            
+
                             return value
                         }
                         .eraseToAnyPublisher()
@@ -169,12 +169,12 @@ class EthereumNetworkService: MultiNetworkProvider {
             .map { $0.reduce(into: [Token: Result<Decimal, Error>]()) { $0[$1.0] = $1.1 }}
             .eraseToAnyPublisher()
     }
-    
+
     func getSignatureCount(address: String) -> AnyPublisher<Int, Error> {
         guard let networkProvider = ethereumInfoNetworkProvider else {
             return Fail(error: ETHError.unsupportedFeature).eraseToAnyPublisher()
         }
-        
+
         return networkProvider.getSignatureCount(address: address)
     }
 
@@ -184,7 +184,7 @@ class EthereumNetworkService: MultiNetworkProvider {
             $0.call(contractAddress: contractAddress, encodedData: method.encodedData)
         }
     }
-    
+
     func getBalance(_ address: String) -> AnyPublisher<Decimal, Error> {
         providerPublisher { provider in
             provider.getBalance(for: address)
@@ -193,13 +193,13 @@ class EthereumNetworkService: MultiNetworkProvider {
                     guard let value = EthereumUtils.parseEthereumDecimal(result, decimalsCount: networkService.decimals) else {
                         throw ETHError.failedToParseBalance(value: result, address: address, decimals: networkService.decimals)
                     }
-                    
+
                     return value
                 }
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func getPendingTxCount(_ address: String) -> AnyPublisher<Int, Error> {
         providerPublisher {
             $0.getPendingTxCount(for: address)
@@ -207,7 +207,7 @@ class EthereumNetworkService: MultiNetworkProvider {
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func read<Target: SmartContractTargetType>(target: Target) -> AnyPublisher<String, Error> {
         let encodedData = abiEncoder.encode(method: target.methodName, parameters: target.parameters)
 
@@ -218,7 +218,7 @@ class EthereumNetworkService: MultiNetworkProvider {
 }
 
 extension EthereumNetworkService: EVMSmartContractInteractor {
-    func ethCall<Request>(request: Request) -> AnyPublisher<String, Error> where Request : SmartContractRequest {
+    func ethCall<Request>(request: Request) -> AnyPublisher<String, Error> where Request: SmartContractRequest {
         return providerPublisher {
             $0.call(contractAddress: request.contractAddress, encodedData: request.encodedData)
         }
@@ -227,7 +227,7 @@ extension EthereumNetworkService: EVMSmartContractInteractor {
 
 // MARK: - EthereumErrorMapper
 
-struct EthereumMapper {
+enum EthereumMapper {
     static func mapError(_ error: Error) -> Error {
         if let moyaError = error as? MoyaError,
            let responseData = moyaError.response?.data,
@@ -256,7 +256,7 @@ struct EthereumMapper {
         return value
     }
 
-    //TODO: Move Estimate from mapper in NetworkService
+    // TODO: Move Estimate from mapper in NetworkService
     static func mapFeeHistory(_ response: EthereumFeeHistoryResponse) throws -> EthereumFeeHistory {
         guard !response.baseFeePerGas.isEmpty,
               !response.reward.isEmpty else {
@@ -273,9 +273,9 @@ struct EthereumMapper {
         let marketBaseFee = pendingBaseFee * BigUInt(12) / BigUInt(10)
         let fastBaseFee = pendingBaseFee * BigUInt(15) / BigUInt(10)
 
-        let lowRewards = response.reward.compactMap{ $0[safe: 0] }
-        let marketRewards = response.reward.compactMap{ $0[safe: 1] }
-        let fastRewards = response.reward.compactMap{ $0[safe: 2] }
+        let lowRewards = response.reward.compactMap { $0[safe: 0] }
+        let marketRewards = response.reward.compactMap { $0[safe: 1] }
+        let fastRewards = response.reward.compactMap { $0[safe: 2] }
 
         let lowAverage = try mapAverageReward(lowRewards)
         let marketAverage = try mapAverageReward(marketRewards)
@@ -295,7 +295,7 @@ struct EthereumMapper {
     }
 
     private static func mapAverageReward(_ rewards: [String]) throws -> BigUInt {
-        let rewards = rewards.filter { $0 != "0x0"}
+        let rewards = rewards.filter { $0 != "0x0" }
 
         guard !rewards.isEmpty else {
             throw ETHError.failedToParseFeeHistory
@@ -304,7 +304,7 @@ struct EthereumMapper {
         let sum = try rewards.map { try mapDecimal($0) }.reduce(0, +)
         let total = Decimal(rewards.count)
         let averageDecimal = (sum / total).rounded(roundingMode: .plain)
-        
+
         guard averageDecimal > 0 else {
             throw ETHError.failedToParseFeeHistory
         }
@@ -352,7 +352,6 @@ struct EthereumMapper {
 
         return feeHistory
     }
-
 
     private static func mapDecimal(_ response: String) throws -> Decimal {
         guard let value = UInt64(response.removeHexPrefix(), radix: 16) else {

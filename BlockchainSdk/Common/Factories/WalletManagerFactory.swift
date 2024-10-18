@@ -14,7 +14,6 @@ import Solana_Swift
 
 @available(iOS 13.0, *)
 public class WalletManagerFactory {
-
     private let config: BlockchainSdkConfig
     private let dependencies: BlockchainSdkDependencies
     private let apiList: APIList
@@ -82,7 +81,7 @@ public extension WalletManagerFactory {
         blockchain: Blockchain,
         dummyPublicKey: Data,
         dummyAddress: String
-    ) throws -> WalletManager {let publicKey = Wallet.PublicKey(seedKey: dummyPublicKey, derivationType: .none)
+    ) throws -> WalletManager { let publicKey = Wallet.PublicKey(seedKey: dummyPublicKey, derivationType: .none)
         let address: Address
 
         if dummyAddress.isEmpty {

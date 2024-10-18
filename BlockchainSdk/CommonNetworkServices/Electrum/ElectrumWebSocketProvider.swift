@@ -9,7 +9,7 @@ import Foundation
 
 class ElectrumWebSocketProvider: HostProvider {
     var host: String { webSocketProvider.host }
-    
+
     private let webSocketProvider: JSONRPCWebSocketProvider
     private let encoder: JSONEncoder = .init()
     private let decoder: JSONDecoder = {
@@ -17,7 +17,7 @@ class ElectrumWebSocketProvider: HostProvider {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return decoder
     }()
-    
+
     init(url: URL) {
         let ping: WebSocketConnection.Ping = {
             do {
@@ -28,10 +28,10 @@ class ElectrumWebSocketProvider: HostProvider {
                 return .plain(interval: Constants.pingInterval)
             }
         }()
-        
+
         webSocketProvider = JSONRPCWebSocketProvider(url: url, ping: ping, timeoutInterval: Constants.timeoutInterval)
     }
-    
+
     func getBalance(identifier: Identifier) async throws -> ElectrumDTO.Response.Balance {
         switch identifier {
         case .address(let address):
@@ -40,16 +40,16 @@ class ElectrumWebSocketProvider: HostProvider {
             return try await send(method: Method.Blockchain.ScriptHash.getBalance, parameter: [scriptHash])
         }
     }
-    
+
     func getTxHistory(identifier: Identifier) async throws -> [ElectrumDTO.Response.History] {
         switch identifier {
         case .address(let address):
-            return try await send(method:  Method.Blockchain.Address.getHistory, parameter: [address])
+            return try await send(method: Method.Blockchain.Address.getHistory, parameter: [address])
         case .scriptHash(let scriptHash):
             return try await send(method: Method.Blockchain.ScriptHash.getHistory, parameter: [scriptHash])
         }
     }
-    
+
     func getUnspents(identifier: Identifier) async throws -> [ElectrumDTO.Response.ListUnspent] {
         switch identifier {
         case .address(let address):
@@ -58,11 +58,11 @@ class ElectrumWebSocketProvider: HostProvider {
             return try await send(method: Method.Blockchain.ScriptHash.listunspent, parameter: [scriptHash])
         }
     }
-    
+
     func send(transactionHex: String) async throws -> ElectrumDTO.Response.Broadcast {
         try await send(method: Method.Blockchain.Transaction.broadcast, parameter: transactionHex)
     }
-    
+
     /*
      Use for specify Radiant blockchain answer for example
      {
@@ -74,7 +74,7 @@ class ElectrumWebSocketProvider: HostProvider {
     func send(transactionHex: String) async throws -> String {
         try await send(method: Method.Blockchain.Transaction.broadcast, parameter: [transactionHex])
     }
-    
+
     func estimateFee(block: Int) async throws -> Decimal {
         try await send(method: Method.Blockchain.estimatefee, parameter: [block])
     }
@@ -84,10 +84,10 @@ class ElectrumWebSocketProvider: HostProvider {
 
 private extension ElectrumWebSocketProvider {
     func send<Method, Parameter, Result>(method: Method, parameter: Parameter) async throws -> Result
-    where Parameter: Encodable,
-          Result: Decodable,
-          Method: RawRepresentable,
-          Method.RawValue == String {
+        where Parameter: Encodable,
+        Result: Decodable,
+        Method: RawRepresentable,
+        Method.RawValue == String {
         try await webSocketProvider.send(
             method: method.rawValue,
             parameter: parameter,
@@ -104,7 +104,7 @@ extension ElectrumWebSocketProvider {
         static let pingInterval: TimeInterval = 5
         static let timeoutInterval: TimeInterval = 30
     }
-    
+
     enum Identifier {
         case address(_ address: String)
         case scriptHash(_ hash: String)
@@ -118,7 +118,7 @@ private extension ElectrumWebSocketProvider {
         enum Server: String {
             case ping = "server.ping"
         }
-        
+
         enum Blockchain: String {
             case estimatefee = "blockchain.estimatefee"
         }
@@ -137,7 +137,7 @@ private extension ElectrumWebSocketProvider.Method.Blockchain {
         case getHistory = "blockchain.address.get_history"
         case listunspent = "blockchain.address.listunspent"
     }
-    
+
     enum ScriptHash: String {
         case getBalance = "blockchain.scripthash.get_balance"
         case getHistory = "blockchain.scripthash.get_history"

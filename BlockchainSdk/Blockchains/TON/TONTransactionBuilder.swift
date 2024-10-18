@@ -14,32 +14,31 @@ import BigInt
 
 /// Transaction builder for TON wallet
 final class TONTransactionBuilder {
-    
     // MARK: - Properties
-    
+
     /// Sequence number of transactions
     var sequenceNumber: Int = 0
-    
+
     // MARK: - Private Properties
-    
+
     private let wallet: Wallet
-    
+
     /// Only TrustWallet signer input transfer key (not for use public implementation)
     private var inputPrivateKey: Curve25519.Signing.PrivateKey
-    
+
     private var modeTransactionConstant: UInt32 {
         UInt32(TheOpenNetworkSendMode.payFeesSeparately.rawValue | TheOpenNetworkSendMode.ignoreActionPhaseErrors.rawValue)
     }
-    
+
     // MARK: - Init
-    
+
     init(wallet: Wallet) {
         self.wallet = wallet
-        self.inputPrivateKey = .init()
+        inputPrivateKey = .init()
     }
-    
+
     // MARK: - Implementation
-    
+
     /// Build input for sign transaction from Parameters
     /// - Parameters:
     ///   - amount: Amount transaction
@@ -52,14 +51,14 @@ final class TONTransactionBuilder {
         jettonWalletAddress: String? = nil,
         params: TONTransactionParams? = nil
     ) throws -> TheOpenNetworkSigningInput {
-        return try self.input(
+        return try input(
             amount: amount,
             destination: destination,
             jettonWalletAddress: jettonWalletAddress,
             params: params
         )
     }
-    
+
     /// Build for send transaction obtain external message output
     /// - Parameters:
     ///   - output: TW output of message
@@ -67,9 +66,9 @@ final class TONTransactionBuilder {
     func buildForSend(output: TheOpenNetworkSigningOutput) throws -> String {
         return output.encoded
     }
-    
+
     // MARK: - Private Implementation
-    
+
     /// Build WalletCore input for sign transaction
     /// - Parameters:
     ///   - amount: Amount transaction
@@ -85,7 +84,7 @@ final class TONTransactionBuilder {
         switch amount.type {
         case .coin, .reserve:
             let transfer = try transfer(amountValue: amount.value, destination: destination, params: params)
-            
+
             // Sign input with dummy key of Curve25519 private key
             return TheOpenNetworkSigningInput.with {
                 $0.transfer = transfer
@@ -112,7 +111,7 @@ final class TONTransactionBuilder {
             throw BlockchainSdkError.notImplemented
         }
     }
-    
+
     /// Create transfer message transaction to blockchain
     /// - Parameters:
     ///   - amount: Amount transaction
@@ -131,9 +130,9 @@ final class TONTransactionBuilder {
             $0.mode = modeTransactionConstant
             $0.bounceable = false
             $0.comment = params?.memo ?? ""
-         }
+        }
     }
-    
+
     /// Create jetton transfer message transaction to blockchain
     /// - Parameters:
     ///   - amount: Amount transaction
@@ -160,19 +159,17 @@ final class TONTransactionBuilder {
             $0.forwardAmount = 1 // needs some amount to send "jetton transfer notification", use minimum
         }
     }
-    
 }
 
 // MARK: - Dummy Cases
 
 extension TONTransactionBuilder {
-    
     struct DummyInput {
         let wallet: Wallet
         let inputPrivateKey: Curve25519.Signing.PrivateKey
         let sequenceNumber: Int
     }
-    
+
     /// Use only dummy tested or any dummy cases!
     static func makeDummyBuilder(with input: DummyInput) -> TONTransactionBuilder {
         let txBuilder = TONTransactionBuilder(wallet: input.wallet)
@@ -180,7 +177,6 @@ extension TONTransactionBuilder {
         txBuilder.sequenceNumber = input.sequenceNumber
         return txBuilder
     }
-    
 }
 
 extension TONTransactionBuilder {

@@ -10,7 +10,6 @@ import Foundation
 import XCTest
 import TangemSdk
 import BigInt
-
 @testable import BlockchainSdk
 
 class CommonTests: XCTestCase {

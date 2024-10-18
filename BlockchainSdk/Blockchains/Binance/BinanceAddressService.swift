@@ -12,7 +12,7 @@ import TangemSdk
 @available(iOS 13.0, *)
 struct BinanceAddressService {
     let testnet: Bool
-    
+
     init(testnet: Bool) {
         self.testnet = testnet
     }
@@ -31,11 +31,11 @@ extension BinanceAddressService: AddressValidator {
             return false
         }
 
-        if !testnet && !address.starts(with: "bnb1") {
+        if !testnet, !address.starts(with: "bnb1") {
             return false
         }
 
-        if testnet && !address.starts(with: "tbnb1") {
+        if testnet, !address.starts(with: "tbnb1") {
             return false
         }
 

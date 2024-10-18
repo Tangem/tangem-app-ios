@@ -19,9 +19,9 @@ class KaspaAddressService {
     init(isTestnet: Bool) {
         self.isTestnet = isTestnet
         // TODO: Does testnet support ecdsa type addresses? If not, then we are not ready to work with different curves (secp256k1/schnorr) for now
-        self.prefix = isTestnet ? "kaspatest" : "kaspa"
+        prefix = isTestnet ? "kaspatest" : "kaspa"
     }
-    
+
     func parse(_ address: String) -> KaspaAddressComponents? {
         guard
             let (prefix, data) = CashAddrBech32.decode(address),
@@ -39,7 +39,6 @@ class KaspaAddressService {
         )
     }
 }
-
 
 // MARK: - AddressProvider
 

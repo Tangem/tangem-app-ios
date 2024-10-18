@@ -17,15 +17,15 @@ struct RskAddressService {
         guard let hash = addressToHash.data(using: .utf8)?.sha3(.keccak256).hexString.lowercased().removeHexPrefix() else {
             return nil
         }
-        
+
         var ret = "0x"
         let hashChars = Array(hash)
         let addressChars = Array(lowercasedAddress.removeHexPrefix())
-        for i in 0..<addressChars.count {
+        for i in 0 ..< addressChars.count {
             guard let intValue = Int(String(hashChars[i]), radix: 16) else {
                 return nil
             }
-            
+
             if intValue >= 8 {
                 ret.append(addressChars[i].uppercased())
             } else {
@@ -41,7 +41,7 @@ struct RskAddressService {
 @available(iOS 13.0, *)
 extension RskAddressService: AddressProvider {
     func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
-        //skip secp256k1 prefix
+        // skip secp256k1 prefix
         let walletPublicKey = try Secp256k1Key(with: publicKey.blockchainKey).decompress()
         let keccak = walletPublicKey[1...].sha3(.keccak256)
         let addressBytes = keccak[12...]
@@ -68,7 +68,7 @@ extension RskAddressService: AddressValidator {
             return true
         } else {
             let cleanHex = address.stripHexPrefix()
-            if cleanHex.lowercased() != cleanHex && cleanHex.uppercased() != cleanHex {
+            if cleanHex.lowercased() != cleanHex, cleanHex.uppercased() != cleanHex {
                 return false
             }
         }

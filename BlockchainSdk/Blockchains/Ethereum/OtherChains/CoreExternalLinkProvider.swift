@@ -22,7 +22,7 @@ extension CoreExternalLinkProvider: ExternalLinkProvider {
     var testnetFaucetURL: URL? {
         URL(string: "https://scan.test.btcs.network/faucet")
     }
-    
+
     func url(address: String, contractAddress: String?) -> URL? {
         URL(string: "\(baseExplorerUrl)/address/\(address)")
     }

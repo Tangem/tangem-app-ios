@@ -13,21 +13,21 @@ import Combine
 
 final class ICPTransactionBuilder {
     // MARK: - Private Properties
-    
+
     private let decimalValue: Decimal
     private let publicKey: Data
     private let nonce: () throws -> Data
-    
+
     // MARK: - Init
-    
+
     init(decimalValue: Decimal, publicKey: Data, nonce: @autoclosure @escaping () throws -> Data) {
         self.decimalValue = decimalValue
         self.publicKey = publicKey
         self.nonce = nonce
     }
-    
+
     // MARK: - Implementation
-    
+
     /// Build input for sign transaction
     /// - Parameters:
     ///   - transaction: Transaction
@@ -43,7 +43,7 @@ final class ICPTransactionBuilder {
         ) else {
             throw WalletError.failedToBuildTx
         }
-        
+
         return try ICPSigningInput(
             publicKey: publicKey.data,
             nonce: nonce,
@@ -52,7 +52,7 @@ final class ICPTransactionBuilder {
             transaction: transaction
         )
     }
-    
+
     /// Build for send transaction obtain external message output
     /// - Parameters:
     ///   - signedHashes: hashes from transaction signer
@@ -70,7 +70,7 @@ final class ICPTransactionBuilder {
             readStateSignature: readStateSignature
         )
     }
-    
+
     /// Model for generation hashes to sign
     /// from transaction parameters
     struct ICPSigningInput {
@@ -80,7 +80,7 @@ final class ICPTransactionBuilder {
         let domainSeparator: ICPDomainSeparator
         /// Aggregates data required for requests
         let requestData: ICPRequestsData
-        
+
         /// Creates instance
         /// - Parameters:
         ///   - publicKey: public key data
@@ -96,7 +96,7 @@ final class ICPTransactionBuilder {
             transaction: Transaction
         ) throws {
             self.publicKey = publicKey
-            self.domainSeparator = ICPDomainSeparator(stringLiteral: "ic-request")
+            domainSeparator = ICPDomainSeparator(stringLiteral: "ic-request")
 
             let transactionParams = transaction.params as? ICPTransactionParams
 
@@ -107,13 +107,13 @@ final class ICPTransactionBuilder {
                 memo: transactionParams?.memo
             )
 
-            self.requestData = try ICPSign.makeRequestData(
+            requestData = try ICPSign.makeRequestData(
                 publicKey: publicKey,
                 nonce: nonce,
                 transactionParams: icpTransactionParams
             )
         }
-        
+
         /// Generates hashes for signing
         /// - Returns: hashes for signing
         func hashes() -> [Data] {
@@ -126,7 +126,7 @@ final class ICPTransactionBuilder {
         let callEnvelope: Data
         let readStateEnvelope: Data
         let readStateTreePaths: [ICPStateTreePath]
-        
+
         init(data: ICPRequestsData, callSignature: Data, readStateSignature: Data) throws {
             callEnvelope = try ICPRequestEnvelope(
                 content: data.callRequestContent,
@@ -141,5 +141,4 @@ final class ICPTransactionBuilder {
             readStateTreePaths = data.readStateTreePaths
         }
     }
-
 }

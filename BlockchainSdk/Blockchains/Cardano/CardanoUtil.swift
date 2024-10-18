@@ -11,7 +11,7 @@ import TangemSdk
 
 public struct CardanoUtil {
     static let extendedPublicKeyCount = 128
-    
+
     public init() {}
 
     /// Taken from here:

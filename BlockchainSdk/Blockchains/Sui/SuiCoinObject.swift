@@ -14,13 +14,13 @@ struct SuiCoinObject {
     let version: UInt64
     let digest: String
     let balance: Decimal
-    
+
     static func from(_ response: SuiGetCoins.Coin) -> Self? {
-        guard let `version` = Decimal(stringValue: response.version)?.uint64Value,
-              let `balance` = Decimal(stringValue: response.balance) else {
+        guard let version = Decimal(stringValue: response.version)?.uint64Value,
+              let balance = Decimal(stringValue: response.balance) else {
             return nil
         }
-        
+
         return SuiCoinObject(
             coinType: response.coinType,
             coinObjectId: response.coinObjectId,
