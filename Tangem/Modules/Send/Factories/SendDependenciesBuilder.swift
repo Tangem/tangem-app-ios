@@ -284,6 +284,17 @@ struct SendDependenciesBuilder {
         )
     }
 
+    func makeUnstakingSendAmountValidator(
+        stakingManager: some StakingManager,
+        stakedAmount: Decimal
+    ) -> SendAmountValidator {
+        UnstakingSendAmountValidator(
+            tokenItem: walletModel.tokenItem,
+            stakedAmount: stakedAmount,
+            stakingManagerStatePublisher: stakingManager.statePublisher
+        )
+    }
+
     func makeStakingTransactionSummaryDescriptionBuilder() -> SendTransactionSummaryDescriptionBuilder {
         StakingTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem)
     }
