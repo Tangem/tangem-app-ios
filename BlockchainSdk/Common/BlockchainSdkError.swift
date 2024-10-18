@@ -29,12 +29,12 @@ public enum BlockchainSdkError: Int, LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .failedToLoadFee:
-            return "common_fee_error".localized
+            return Localization.commonFeeError
         case .signatureCountNotMatched, .notImplemented:
             // TODO: Replace with proper error message. Android sending instead of message just code, and client app decide what message to show to user
-            return "generic_error".localized
+            return Localization.genericError
         default:
-            return "generic_error".localized
+            return Localization.genericError
         }
     }
     
@@ -42,12 +42,12 @@ public enum BlockchainSdkError: Int, LocalizedError {
     public var errorDescriptionWithCode: String {
         switch self {
         case .failedToLoadFee:
-            return "common_fee_error".localized
+            return Localization.commonFeeError
         case .signatureCountNotMatched, .notImplemented:
             // TODO: Replace with proper error message. Android sending instead of message just code, and client app decide what message to show to user
-            return "generic_error_code".localized(errorCodeDescription)
+            return Localization.genericErrorCode(errorCodeDescription)
 		default:
-			return "generic_error_code".localized(errorCodeDescription)
+			return Localization.genericErrorCode(errorCodeDescription)
 		}
 	}
     

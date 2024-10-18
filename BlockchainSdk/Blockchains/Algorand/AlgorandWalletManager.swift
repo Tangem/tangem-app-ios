@@ -175,7 +175,7 @@ extension AlgorandWalletManager {
         let reserveValue = accountModel.reserveValue
         let reserveValueString = reserveValue.decimalNumber.stringValue
         let currencySymbol = wallet.blockchain.currencySymbol
-        let errorMessage = "no_account_generic".localized([networkName, reserveValueString, currencySymbol])
+        let errorMessage = Localization.noAccountGeneric(networkName, reserveValueString, currencySymbol)
 
         return WalletError.noAccount(message: errorMessage, amountToCreate: reserveValue)
     }

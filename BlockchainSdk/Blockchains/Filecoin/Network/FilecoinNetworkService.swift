@@ -36,7 +36,7 @@ class FilecoinNetworkService: MultiNetworkProvider {
                     if let error = error as? JSONRPC.APIError, error.code == 1 {
                         return .anyFail(
                             error: WalletError.noAccount(
-                                message: "no_account_send_to_create".localized,
+                                message: Localization.noAccountSendToCreate,
                                 amountToCreate: 0
                             )
                         )

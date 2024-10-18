@@ -92,7 +92,7 @@ struct AptosNetworkProvider: HostProvider {
             .mapError { moyaError -> Swift.Error in
                 switch moyaError {
                 case .statusCode(let response) where response.statusCode == 404 && target.isAccountsResourcesRequest:
-                    return WalletError.noAccount(message: "no_account_send_to_create".localized, amountToCreate: 0)
+                    return WalletError.noAccount(message: Localization.noAccountSendToCreate, amountToCreate: 0)
                 default:
                     return moyaError
                 }

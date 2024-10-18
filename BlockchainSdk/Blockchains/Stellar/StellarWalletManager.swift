@@ -29,17 +29,17 @@ enum StellarError: Int, Error, LocalizedError {
         let networkName = Blockchain.stellar(curve: .ed25519, testnet: false).displayName
         switch self {
         case .requiresMemo:
-            return "xlm_requires_memo_error".localized
+            return Localization.xlmRequiresMemoError
         case .xlmCreateAccount:
-            return "no_account_generic".localized([networkName, "\(StellarWalletManager.Constants.minAmountToCreateCoinAccount)", "XLM"])
+            return Localization.noAccountGeneric(networkName, "\(StellarWalletManager.Constants.minAmountToCreateCoinAccount)", "XLM")
         case .assetCreateAccount:
-            return "no_account_generic".localized([networkName, "\(StellarWalletManager.Constants.minAmountToCreateAssetAccount)", "XLM"])
+            return Localization.noAccountGeneric(networkName, "\(StellarWalletManager.Constants.minAmountToCreateAssetAccount)", "XLM")
         case .assetNoAccountOnDestination:
-            return "send_error_no_target_account".localized(["\(StellarWalletManager.Constants.minAmountToCreateCoinAccount) XLM"])
+            return Localization.sendErrorNoTargetAccount("\(StellarWalletManager.Constants.minAmountToCreateCoinAccount) XLM")
         case .assetNoTrustline:
-            return "no_trustline_xlm_asset".localized
+            return Localization.noTrustlineXlmAsset
         default:
-            return "generic_error_code".localized(errorCodeDescription)
+            return Localization.genericErrorCode(errorCodeDescription)
         }
     }
     

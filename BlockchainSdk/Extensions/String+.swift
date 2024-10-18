@@ -85,18 +85,6 @@ extension String {
     mutating func capitalizeFirstLetter() {
         self = self.capitalizingFirstLetter()
     }
-    
-    var localized: String {
-        return NSLocalizedString(self, bundle: .blockchainBundle, comment: "")
-    }
-    
-    func localized(_ arguments: [CVarArg]) -> String {
-        return String(format: localized, arguments: arguments)
-    }
-
-    func localized(_ argument: CVarArg) -> String {
-        return String(format: localized, argument)
-    }
 
     subscript (bounds: CountableRange<Int>) -> String {
         let start = index(self.startIndex, offsetBy: bounds.lowerBound)

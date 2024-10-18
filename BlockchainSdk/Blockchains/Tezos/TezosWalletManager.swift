@@ -160,9 +160,9 @@ extension TezosWalletManager: WithdrawalNotificationProvider {
         let minimumAmount = withdrawalMinimumAmount
         
         if amount + fee == walletAmount {
-            return WithdrawalWarning(warningMessage: String(format: "xtz_withdrawal_message_warning".localized, minimumAmount.description),
-                                     reduceMessage: String(format: "xtz_withdrawal_message_reduce".localized, minimumAmount.description),
-                                     ignoreMessage: "xtz_withdrawal_message_ignore".localized,
+            return WithdrawalWarning(warningMessage: Localization.xtzWithdrawalMessageWarning(minimumAmount.description),
+                                     reduceMessage: Localization.xtzWithdrawalMessageReduce(minimumAmount.description),
+                                     ignoreMessage: Localization.xtzWithdrawalMessageIgnore,
                                      suggestedReduceAmount: Amount(with: walletAmount, value: minimumAmount))
         }
         return nil

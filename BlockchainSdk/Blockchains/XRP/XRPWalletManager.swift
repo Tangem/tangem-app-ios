@@ -22,7 +22,7 @@ enum XRPError: Int, Error, LocalizedError {
     // WARNING: Make sure to preserve the error codes when removing or inserting errors
     
     var errorDescription: String? {
-        "generic_error_code".localized("xrp_error \(rawValue)")
+        Localization.genericErrorCode("xrp_error \(rawValue)")
     }
 }
 
@@ -87,7 +87,7 @@ extension XRPWalletManager: TransactionSender {
                       }
                 
                 if !isAccountCreated && transaction.amount.value < walletReserve.value {
-                    throw WalletError.noAccount(message: "send_error_no_target_account".localized, amountToCreate: walletReserve.value)
+                    throw WalletError.noAccount(message: Localization.sendErrorNoTargetAccount(walletReserve.value), amountToCreate: walletReserve.value)
                 }
                 
                 return buldResponse

@@ -15,9 +15,9 @@ enum CardanoError: String, Error, LocalizedError {
     var errorDescription: String? {
         switch self {
         case .noUnspents:
-            return "generic_error_code".localized(errorCodeDescription)
+            return Localization.genericErrorCode(errorCodeDescription)
         case .lowAda:
-            return "cardano_low_ada".localized
+            return Localization.cardanoLowAda
         }
     }
 
