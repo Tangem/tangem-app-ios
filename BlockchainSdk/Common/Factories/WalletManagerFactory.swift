@@ -10,7 +10,7 @@ import Foundation
 import TangemSdk
 import stellarsdk
 import BitcoinCore
-import Solana_Swift
+import SolanaSwift
 
 @available(iOS 13.0, *)
 public class WalletManagerFactory {

@@ -1802,6 +1802,7 @@
 		B6C3B56E2AA1823A0017241C /* CardsInfoPagerScrollState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C3B56D2AA1823A0017241C /* CardsInfoPagerScrollState.swift */; };
 		B6CA91352BB55F4400752999 /* PolkadotAccountHealthBackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CA91342BB55F4300752999 /* PolkadotAccountHealthBackgroundTaskManager.swift */; };
 		B6CA91372BB5616C00752999 /* AccountHealthCheckBackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CA91362BB5616C00752999 /* AccountHealthCheckBackgroundTask.swift */; };
+		B6CAC1CC2CC336220001A427 /* SolanaSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B6CAC1CB2CC336220001A427 /* SolanaSwift */; };
 		B6CF16822B22548A004925CC /* PropertyListObjectRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CF16812B22548A004925CC /* PropertyListObjectRepresentable.swift */; };
 		B6D274E82C38318900FEFCDC /* OnboardingLayoutConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D274E72C38318900FEFCDC /* OnboardingLayoutConstants.swift */; };
 		B6D274EB2C38384400FEFCDC /* PushNotificationsBottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D274EA2C38384400FEFCDC /* PushNotificationsBottomSheetView.swift */; };
@@ -5804,6 +5805,7 @@
 				B6C0D3F92CBDC5A3001113ED /* SwiftyJSON in Frameworks */,
 				B6C0D3F62CBDC552001113ED /* BinanceChain in Frameworks */,
 				B68E1F962CBC451D0043E598 /* ScaleCodec in Frameworks */,
+				B6CAC1CC2CC336220001A427 /* SolanaSwift in Frameworks */,
 				B62D34502CBC67D500C2460E /* AnyCodable in Frameworks */,
 				B68E1F8D2CBC44AA0043E598 /* CryptoSwift in Frameworks */,
 				B6C0D3F42CBDC543001113ED /* Moya in Frameworks */,
@@ -14646,6 +14648,7 @@
 				B6C0D3F32CBDC543001113ED /* Moya */,
 				B6C0D3F52CBDC552001113ED /* BinanceChain */,
 				B6C0D3F82CBDC5A3001113ED /* SwiftyJSON */,
+				B6CAC1CB2CC336220001A427 /* SolanaSwift */,
 			);
 			productName = BlockchainSdk;
 			productReference = B68E1F652CBC44050043E598 /* BlockchainSdk.framework */;
@@ -14858,6 +14861,7 @@
 				B6C0D3F02CBDC52D001113ED /* XCRemoteSwiftPackageReference "Moya" */,
 				B6C0D3F72CBDC5A3001113ED /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
 				B62C16772CBE095A00522683 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				B6CAC1C82CC3352D0001A427 /* XCRemoteSwiftPackageReference "Solana.Swift" */,
 			);
 			productRefGroup = 5D3F77C324BF56D800E8695B /* Products */;
 			projectDirPath = "";
@@ -18513,10 +18517,6 @@
 					"-framework",
 					"\"Security\"",
 					"-framework",
-					"\"Solana_Swift\"",
-					"-framework",
-					"\"Starscream\"",
-					"-framework",
 					"\"StoreKit\"",
 					"-framework",
 					"\"SystemConfiguration\"",
@@ -18627,10 +18627,6 @@
 					"\"Promises\"",
 					"-framework",
 					"\"Security\"",
-					"-framework",
-					"\"Solana_Swift\"",
-					"-framework",
-					"\"Starscream\"",
 					"-framework",
 					"\"StoreKit\"",
 					"-framework",
@@ -21481,10 +21477,6 @@
 					"-framework",
 					"\"Security\"",
 					"-framework",
-					"\"Solana_Swift\"",
-					"-framework",
-					"\"Starscream\"",
-					"-framework",
 					"\"StoreKit\"",
 					"-framework",
 					"\"SystemConfiguration\"",
@@ -21709,10 +21701,6 @@
 					"\"Promises\"",
 					"-framework",
 					"\"Security\"",
-					"-framework",
-					"\"Solana_Swift\"",
-					"-framework",
-					"\"Starscream\"",
 					"-framework",
 					"\"StoreKit\"",
 					"-framework",
@@ -23938,10 +23926,6 @@
 					"-framework",
 					"\"Security\"",
 					"-framework",
-					"\"Solana_Swift\"",
-					"-framework",
-					"\"Starscream\"",
-					"-framework",
 					"\"StoreKit\"",
 					"-framework",
 					"\"SystemConfiguration\"",
@@ -24166,10 +24150,6 @@
 					"\"Promises\"",
 					"-framework",
 					"\"Security\"",
-					"-framework",
-					"\"Solana_Swift\"",
-					"-framework",
-					"\"Starscream\"",
 					"-framework",
 					"\"StoreKit\"",
 					"-framework",
@@ -24586,6 +24566,14 @@
 				minimumVersion = 0.12.0;
 			};
 		};
+		B6CAC1C82CC3352D0001A427 /* XCRemoteSwiftPackageReference "Solana.Swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tangem/Solana.Swift.git";
+			requirement = {
+				branch = "feature/IOS-8290_migrate_all_remaining_bsdk_deps_to_spm";
+				kind = branch;
+			};
+		};
 		B6F525902B6C05210079ADD1 /* XCRemoteSwiftPackageReference "wallet-core-binaries-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tangem/wallet-core-binaries-ios.git";
@@ -24789,6 +24777,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B6C1BE6B2B6C2F4E008FE5A0 /* XCRemoteSwiftPackageReference "secp256k1.swift" */;
 			productName = secp256k1;
+		};
+		B6CAC1CB2CC336220001A427 /* SolanaSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6CAC1C82CC3352D0001A427 /* XCRemoteSwiftPackageReference "Solana.Swift" */;
+			productName = SolanaSwift;
 		};
 		B6EE3B612C789C6E00B464FC /* DGCharts */ = {
 			isa = XCSwiftPackageProductDependency;

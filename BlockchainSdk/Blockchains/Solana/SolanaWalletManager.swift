@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 import TangemSdk
-import Solana_Swift
+import SolanaSwift
 
 class SolanaWalletManager: BaseManager, WalletManager {
     var solanaSdk: Solana!

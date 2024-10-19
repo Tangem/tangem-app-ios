@@ -10,7 +10,7 @@ import XCTest
 import Combine
 
 @testable import BlockchainSdk
-@testable import Solana_Swift
+@testable import SolanaSwift
 
 private let raisedError = SolanaError.nullValue
 
@@ -143,7 +143,7 @@ final class SolanaEd25519Tests: XCTestCase {
 }
 
 extension SolanaError: Equatable {
-    public static func == (lhs: Solana_Swift.SolanaError, rhs: Solana_Swift.SolanaError) -> Bool {
+    public static func == (lhs: SolanaSwift.SolanaError, rhs: SolanaSwift.SolanaError) -> Bool {
         switch (lhs, rhs) {
         case (.other(let message1), .other(let message2)):
             return message1 == message2

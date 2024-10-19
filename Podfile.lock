@@ -139,9 +139,6 @@ PODS:
   - PromisesObjC (2.4.0)
   - PromisesSwift (2.4.0):
     - PromisesObjC (= 2.4.0)
-  - Solana.Swift (1.1):
-    - Starscream (= 4.0.8)
-  - Starscream (4.0.8)
   - TangemSdk (3.10.0)
 
 DEPENDENCIES:
@@ -154,7 +151,6 @@ DEPENDENCIES:
   - Firebase/Messaging (= 10.29.0)
   - GDPerformanceView-Swift (~> 2.1)
   - Kingfisher (~> 7.11.0)
-  - Solana.Swift (from `https://github.com/tangem/Solana.Swift`, tag `1.2.0-tangem11`)
   - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-313`)
 
 SPEC REPOS:
@@ -181,15 +177,11 @@ SPEC REPOS:
     - nanopb
     - PromisesObjC
     - PromisesSwift
-    - Starscream
 
 EXTERNAL SOURCES:
   BitcoinCore.swift:
     :git: https://github.com/tangem/bitcoincore.git
     :tag: 0.0.20
-  Solana.Swift:
-    :git: https://github.com/tangem/Solana.Swift
-    :tag: 1.2.0-tangem11
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
     :tag: develop-313
@@ -198,9 +190,6 @@ CHECKOUT OPTIONS:
   BitcoinCore.swift:
     :git: https://github.com/tangem/bitcoincore.git
     :tag: 0.0.20
-  Solana.Swift:
-    :git: https://github.com/tangem/Solana.Swift
-    :tag: 1.2.0-tangem11
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
     :tag: develop-313
@@ -229,10 +218,8 @@ SPEC CHECKSUMS:
   nanopb: 438bc412db1928dac798aa6fd75726007be04262
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   PromisesSwift: 9d77319bbe72ebf6d872900551f7eeba9bce2851
-  Solana.Swift: b926815c93f483628ce51d9a51c96567ae14709e
-  Starscream: 19b5533ddb925208db698f0ac508a100b884a1b9
   TangemSdk: 145675e87bf4720d13968510b19e03b5402ed028
 
-PODFILE CHECKSUM: 2119e604f85fb96bbab8a152e8259a8c6b56f4ae
+PODFILE CHECKSUM: b46044ee6b23645a62ceae0590880228045f4ed4
 
 COCOAPODS: 1.15.2

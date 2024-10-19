@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import Solana_Swift
+import SolanaSwift
 
 @available(iOS 13.0, *)
 class SolanaNetworkService {

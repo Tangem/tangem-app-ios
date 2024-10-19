@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import Solana_Swift
+import SolanaSwift
 
 class SolanaTransactionSigner: Signer {
     var publicKey: PublicKey {

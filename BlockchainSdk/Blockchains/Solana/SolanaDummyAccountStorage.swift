@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Solana_Swift
+import SolanaSwift
 
 class SolanaDummyAccountStorage: SolanaAccountStorage {
     enum SolanaDummyAccountStorageError: Error {

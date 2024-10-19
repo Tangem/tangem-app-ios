@@ -8,12 +8,12 @@
 
 import Foundation
 import Combine
-import Solana_Swift
+import SolanaSwift
 
 extension Api {
     func getFees(
         commitment: Commitment? = nil
-    ) -> AnyPublisher<Solana_Swift.Fee, Error> {
+    ) -> AnyPublisher<SolanaSwift.Fee, Error> {
         Deferred {
             Future { [weak self] promise in
                 guard let self = self else {

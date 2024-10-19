@@ -29,9 +29,6 @@ def tangem_sdk_pod
 end
 
 def blockchain_sdk_pods
-  pod 'Solana.Swift', :git => 'https://github.com/tangem/Solana.Swift', :tag => '1.2.0-tangem11'
-  #pod 'Solana.Swift', :path => '../Solana.Swift'
-
   pod 'BitcoinCore.swift', :git => 'https://github.com/tangem/bitcoincore.git', :tag => '0.0.20'
   #pod 'BitcoinCore.swift', :path => '../bitcoincore'
 end

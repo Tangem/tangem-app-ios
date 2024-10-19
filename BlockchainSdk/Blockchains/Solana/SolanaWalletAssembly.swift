@@ -8,7 +8,7 @@
 
 import Foundation
 import TangemSdk
-import Solana_Swift
+import SolanaSwift
 
 struct SolanaWalletAssembly: WalletManagerAssembly {
     

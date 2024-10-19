@@ -10,7 +10,7 @@ import XCTest
 import Combine
 
 @testable import BlockchainSdk
-@testable import Solana_Swift
+@testable import SolanaSwift
 
 private let raisedError = SolanaError.other("Just tx size test")
 private let nullRaisedError = SolanaError.nullValue

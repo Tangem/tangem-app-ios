@@ -1,5 +1,5 @@
 {
-  "originHash" : "c86e2efe553b02dc466463e653e323aec3e75b45fe5012f9dab8410e10157cee",
+  "originHash" : "8b42953023df3dfe56001e5d9bb82cf6455d23acec86c3d0a76e3fa84f50a6ce",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -188,6 +188,24 @@
       "state" : {
         "revision" : "1a14e189def5eaa92f839afdd2faad8e43b61a6e",
         "version" : "0.12.2"
+      }
+    },
+    {
+      "identity" : "solana.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tangem/Solana.Swift.git",
+      "state" : {
+        "branch" : "feature/IOS-8290_migrate_all_remaining_bsdk_deps_to_spm",
+        "revision" : "970d0b5ad9ebbe2720dbe7a5c44305fee0470221"
+      }
+    },
+    {
+      "identity" : "starscream",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/daltoniam/Starscream.git",
+      "state" : {
+        "revision" : "c6bfd1af48efcc9a9ad203665db12375ba6b145a",
+        "version" : "4.0.8"
       }
     },
     {
