@@ -12,8 +12,6 @@ import BlockchainSdk
 import WalletConnectSign
 
 struct WalletConnectV2Utils {
-    private let evmNamespace = "eip155"
-
     /// Validates that all blockchains are supported by BlockchainSdk. Currently (24 Jan 2023) we support only EVM blockchains
     /// All other blockchains such as Solana, Tron, Polkadot using different methods, not `eth_sign`, `eth_sendTransaction` etc.
     /// - Returns:
@@ -55,23 +53,25 @@ struct WalletConnectV2Utils {
                 continue
             }
 
-            if namespace == evmNamespace {
-                let notSupportedEVMChainIds: [String] = chains.compactMap { chain in
-                    guard createBlockchain(for: chain) == nil else {
-                        return nil
-                    }
-
-                    return chain.absoluteString
-                }
-
-                blockchains.append(contentsOf: notSupportedEVMChainIds)
-            } else {
+            guard let _ = WalletConnectSupportedNamespaces(rawValue: namespace) else {
                 let notEVMChainNames = chains.map { chain in
                     return createBlockchain(for: chain)?.displayName ?? namespace.capitalizingFirstLetter()
                 }
 
                 blockchains.append(contentsOf: notEVMChainNames)
+
+                continue
             }
+
+            let notSupportedEVMChainIds: [String] = chains.compactMap { chain in
+                guard createBlockchain(for: chain) == nil else {
+                    return nil
+                }
+
+                return chain.absoluteString
+            }
+
+            blockchains.append(contentsOf: notSupportedEVMChainIds)
         }
 
         return blockchains
@@ -153,26 +153,19 @@ struct WalletConnectV2Utils {
     }
 
     func createBlockchain(for wcBlockchain: WalletConnectUtils.Blockchain) -> BlockchainMeta? {
-        switch wcBlockchain.namespace {
-        case evmNamespace:
-            let blockchains = SupportedBlockchains.all
-            let wcChainId = Int(wcBlockchain.reference)
-            return blockchains
-                .first(where: { $0.chainId == wcChainId })
-                .map {
-                    BlockchainMeta(
-                        id: $0.networkId,
-                        currencySymbol: $0.currencySymbol,
-                        displayName: $0.displayName
-                    )
-                }
-        default:
+        guard let _ = WalletConnectSupportedNamespaces(rawValue: wcBlockchain.namespace) else {
             return nil
         }
+
+        let blockchains = SupportedBlockchains.all
+        let wcChainId = wcBlockchain.reference
+        let blockchain = blockchains.first { $0.wcChainID?.contains(wcChainId) ?? false }
+
+        return .init(from: blockchain)
     }
 
     private func isNamespaceSupported(_ namespace: String) -> Bool {
-        return namespace == evmNamespace
+        WalletConnectSupportedNamespaces(rawValue: namespace) != nil
     }
 
     private func mapBlockchainNetworks(from namespaces: [String: SessionNamespace], walletModelProvider: WalletConnectWalletModelProvider) -> [BlockchainNetwork] {
@@ -191,27 +184,36 @@ struct WalletConnectV2Utils {
         with address: String,
         walletModelProvider: WalletConnectWalletModelProvider
     ) -> BlockchainNetwork? {
-        switch wcBlockchain.namespace {
-        case evmNamespace:
-            guard
-                let blockchain = createBlockchain(for: wcBlockchain),
-                let walletModel = try? walletModelProvider.getModel(with: address, blockchainId: blockchain.id)
-            else {
-                return nil
-            }
-
-            return walletModel.blockchainNetwork
-        default:
+        guard
+            let _ = WalletConnectSupportedNamespaces(rawValue: wcBlockchain.namespace),
+            let blockchain = createBlockchain(for: wcBlockchain),
+            let walletModel = try? walletModelProvider.getModel(with: address, blockchainId: blockchain.id)
+        else {
             return nil
+        }
+
+        return walletModel.blockchainNetwork
+    }
+}
+
+// MARK: - Supported Namespaces
+
+extension WalletConnectV2Utils {
+    enum WalletConnectSupportedNamespaces: String, CaseIterable {
+        case eip155
+        case solana
+
+        init?(rawValue: String) {
+            switch rawValue.lowercased() {
+            case "eip155": self = .eip155
+            case "solana": self = .solana
+            default: return nil
+            }
         }
     }
 }
 
-struct BlockchainMeta {
-    let id: String
-    let currencySymbol: String
-    let displayName: String
-}
+// MARK: - Session proposal helper properties for AutoNamespacesBuilder
 
 private extension Session.Proposal {
     var namespaceChains: [WalletConnectUtils.Blockchain] {
