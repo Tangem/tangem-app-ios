@@ -31,7 +31,10 @@ extension CommonOnrampManager: OnrampManager {
         // Define country by ip or get from repository
         // https://tangem.atlassian.net/browse/IOS-8267
 
-        throw OnrampManagerError.notImplement
+        try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
+
+        let country = OnrampCountry.rus
+        return country
     }
 
     public func updatePaymentMethod() async throws -> OnrampPaymentMethod {

@@ -41,7 +41,7 @@ struct OnrampCountryView: View {
                         .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
                 case .notSupport:
                     Text("Our services are not available in this country")
-                        .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                        .style(Fonts.Regular.footnote, color: Colors.Text.warning)
                 }
             }
         }

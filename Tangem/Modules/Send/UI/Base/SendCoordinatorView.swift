@@ -42,7 +42,10 @@ struct SendCoordinatorView: CoordinatorView {
             }
             .bottomSheet(
                 item: $coordinator.onrampCountryViewModel,
-                backgroundColor: Colors.Background.tertiary
+                settings: .init(
+                    backgroundColor: Colors.Background.tertiary,
+                    hidingOption: .nonHideable
+                )
             ) {
                 OnrampCountryView(viewModel: $0)
             }

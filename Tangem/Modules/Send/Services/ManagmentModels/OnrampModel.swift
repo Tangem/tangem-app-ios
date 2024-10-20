@@ -41,11 +41,21 @@ class OnrampModel {
 // MARK: - Bind
 
 private extension OnrampModel {
-    func bind() {
-        _amount
-            .print("OnrampModel ->>")
-            .sink()
-            .store(in: &bag)
+    func bind() {}
+
+    func updateCountry() {
+        task = runTask(in: self) { model in
+            do {
+                let country = try await model.onrampManager.getCountry()
+                await runOnMain {
+                    model.router?.openOnrampCountryBottomSheet(country: country)
+                }
+            } catch {
+                await runOnMain {
+                    model.alertPresenter?.showAlert(error.alertBinder)
+                }
+            }
+        }
     }
 }
 
