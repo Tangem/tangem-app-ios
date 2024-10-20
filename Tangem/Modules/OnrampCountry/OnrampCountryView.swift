@@ -17,7 +17,7 @@ struct OnrampCountryView: View {
 
     var body: some View {
         VStack(spacing: 24) {
-            BottomSheetHeaderView(title: "Your residence has been identified as")
+            BottomSheetHeaderView(title: Localization.onrampResidencyBottomsheetTitle)
 
             contentView
 
@@ -35,12 +35,12 @@ struct OnrampCountryView: View {
                 Text(viewModel.title)
                     .style(Fonts.Bold.callout, color: Colors.Text.primary1)
 
-                switch viewModel.subtitle {
+                switch viewModel.style {
                 case .info:
-                    Text("Change or confirm it")
+                    Text(Localization.onrampResidencyBottomsheetCountrySubtitle)
                         .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
                 case .notSupport:
-                    Text("Our services are not available in this country")
+                    Text(Localization.onrampResidencyBottomsheetCountryNotSupported)
                         .style(Fonts.Regular.footnote, color: Colors.Text.warning)
                 }
             }
@@ -50,7 +50,7 @@ struct OnrampCountryView: View {
     private var buttons: some View {
         VStack(spacing: 10) {
             MainButton(
-                title: "Change",
+                title: Localization.commonChange,
                 style: .secondary,
                 action: viewModel.didTapChangeButton
             )
@@ -60,60 +60,5 @@ struct OnrampCountryView: View {
                 action: viewModel.didTapMainButton
             )
         }
-    }
-}
-
-struct OnrampCountryView_Preview: PreviewProvider {
-    struct StatableContainer: View {
-        @ObservedObject private var coordinator = BottomSheetCoordinator()
-
-        var body: some View {
-            ZStack {
-                Colors.Background.primary
-                    .edgesIgnoringSafeArea(.all)
-
-                Button("Bottom sheet isShowing \((coordinator.item != nil).description)") {
-                    coordinator.toggleItem()
-                }
-                .font(Fonts.Bold.body)
-                .offset(y: -200)
-
-                NavHolder()
-                    .bottomSheet(item: $coordinator.item, backgroundColor: Colors.Background.tertiary) {
-                        OnrampCountryView(viewModel: $0)
-                    }
-            }
-        }
-    }
-
-    class BottomSheetCoordinator: ObservableObject, OnrampCountryRoutable {
-        @Published var item: OnrampCountryViewModel?
-
-        func toggleItem() {
-            if item == nil {
-                item = .init(
-                    settings: .init(countryIconURL: nil, countryName: "Portugal", isOnrampSupported: true),
-                    coordinator: self
-                )
-            } else {
-                item = nil
-            }
-        }
-
-        func userDidTapChangeCountry() {
-            item = nil
-        }
-
-        func userDidTapConfirmCountry() {
-            item = nil
-        }
-    }
-
-    static var previews: some View {
-        StatableContainer()
-            .preferredColorScheme(.light)
-
-        StatableContainer()
-            .preferredColorScheme(.dark)
     }
 }

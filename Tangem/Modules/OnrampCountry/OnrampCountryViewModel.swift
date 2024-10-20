@@ -14,33 +14,54 @@ final class OnrampCountryViewModel: ObservableObject, Identifiable {
 
     @Published var iconURL: URL?
     @Published var title: String
-    @Published var subtitle: Subtitle
+    @Published var style: Subtitle
+    @Published var alert: AlertBinder?
 
-    @Published var mainButtonTitle: String
+    var mainButtonTitle: String {
+        style == .info ? Localization.commonConfirm : Localization.commonClose
+    }
 
     // MARK: - Dependencies
 
+    private let country: OnrampCountry
+    private let repository: OnrampRepository
     private weak var coordinator: OnrampCountryRoutable?
 
     private var bag: Set<AnyCancellable> = []
 
     init(
-        settings: Settings,
+        country: OnrampCountry,
+        repository: OnrampRepository,
         coordinator: OnrampCountryRoutable
     ) {
-        iconURL = settings.countryIconURL
-        title = settings.countryName
-        subtitle = settings.isOnrampSupported ? .info : .notSupport
-        mainButtonTitle = settings.isOnrampSupported ? "Confirm" : "Close"
+        iconURL = country.identity.image
+        title = country.identity.name
+        style = country.onrampAvailable ? .info : .notSupport
 
+        self.country = country
+        self.repository = repository
         self.coordinator = coordinator
 
         bind()
     }
 
-    func didTapChangeButton() {}
+    func didTapChangeButton() {
+        coordinator?.userDidTapChangeCountry()
+    }
 
-    func didTapMainButton() {}
+    func didTapMainButton() {
+        switch style {
+        case .info:
+            do {
+                try repository.save(country: country)
+                coordinator?.userDidTapConfirmCountry()
+            } catch {
+                alert = error.alertBinder
+            }
+        case .notSupport:
+            coordinator?.userDidTapClose()
+        }
+    }
 }
 
 // MARK: - Private
@@ -53,13 +74,5 @@ extension OnrampCountryViewModel {
     enum Subtitle: Hashable {
         case info
         case notSupport
-    }
-}
-
-extension OnrampCountryViewModel {
-    struct Settings {
-        let countryIconURL: URL?
-        let countryName: String
-        let isOnrampSupported: Bool
     }
 }

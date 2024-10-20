@@ -302,13 +302,7 @@ extension SendViewModel: SendModelRoutable {
 
 extension SendViewModel: OnrampModelRoutable {
     func openOnrampCountryBottomSheet(country: OnrampCountry) {
-        coordinator?.openOnrampCountry(
-            settings: .init(
-                countryIconURL: country.identity.image,
-                countryName: country.identity.name,
-                isOnrampSupported: country.onrampAvailable
-            )
-        )
+        // TODO: https://tangem.atlassian.net/browse/IOS-8268
     }
 }
 
