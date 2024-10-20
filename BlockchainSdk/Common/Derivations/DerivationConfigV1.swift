@@ -137,7 +137,9 @@ public struct DerivationConfigV1: DerivationConfig {
             return "m/44'/784'/0'/0'/0'"
         case .filecoin:
             return "m/44'/461'/0'/0/0"
-        case .energyWebEVM, .energyWebX:
+        case .energyWebEVM:
+            return "m/44'/246'/0'/0/0"
+        case .energyWebX:
             return "m/44'/246'/0'/0'/0'"
         case .core:
             return "m/44'/1116'/0'/0/0"

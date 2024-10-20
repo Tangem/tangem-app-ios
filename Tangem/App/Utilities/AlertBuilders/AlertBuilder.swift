@@ -97,7 +97,16 @@ enum AlertBuilder {
         }
     }
 
-    static func makeAlertControllerWithTextField(title: String, fieldPlaceholder: String, fieldText: String, autoCapitalize: Bool = true, useSpellCheck: Bool = true, fieldValidator: AlertFieldValidator? = nil, action: @escaping (String) -> Void) -> UIAlertController {
+    static func makeAlertControllerWithTextField(
+        title: String,
+        fieldPlaceholder: String,
+        fieldText: String,
+        autoCapitalize: Bool = true,
+        useSpellCheck: Bool = true,
+        fieldValidator: AlertFieldValidator? = nil,
+        mapText: @escaping (String) -> String = { value in value },
+        action: @escaping (String) -> Void
+    ) -> UIAlertController {
         let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: Localization.commonCancel, style: .cancel)
         alert.addAction(cancelAction)
@@ -114,13 +123,46 @@ enum AlertBuilder {
         }
 
         let acceptButton = UIAlertAction(title: Localization.commonOk, style: .default) { [nameTextField] _ in
-            action(nameTextField?.text ?? "")
+            withExtendedLifetime(fieldValidator) {}
+            let text = nameTextField?.text ?? ""
+            let mappedText = mapText(text)
+            action(text)
         }
         alert.addAction(acceptButton)
 
         fieldValidator?.setAcceptButton(acceptButton)
 
         return alert
+    }
+
+    static func makeWalletRenamingAlert(
+        userWalletRepository: UserWalletRepository,
+        updateName: ((String) -> Void)? = nil
+    ) -> UIAlertController? {
+        guard let userWalletModel = userWalletRepository.selectedModel else {
+            return nil
+        }
+
+        let otherWalletNames = userWalletRepository.models.compactMap { model -> String? in
+            guard model.userWalletId != userWalletModel.userWalletId else { return nil }
+            return model.name
+        }
+
+        return AlertBuilder.makeAlertControllerWithTextField(
+            title: Localization.userWalletListRenamePopupTitle,
+            fieldPlaceholder: Localization.userWalletListRenamePopupPlaceholder,
+            fieldText: userWalletModel.name,
+            fieldValidator: AlertFieldValidator.makeUniqueWalletNameFieldValidator(otherWalletNames: otherWalletNames),
+            mapText: { name in
+                name.trimmed()
+            },
+            action: { newName in
+                if userWalletModel.name != newName {
+                    userWalletModel.updateWalletName(newName)
+                    updateName?(newName)
+                }
+            }
+        )
     }
 
     static func makeAlert(title: String, message: String, with buttons: Buttons) -> AlertBinder {

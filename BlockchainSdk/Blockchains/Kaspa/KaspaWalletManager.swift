@@ -148,7 +148,13 @@ extension KaspaWalletManager: WithdrawalNotificationProvider {
 
 extension KaspaWalletManager: MaximumAmountRestrictable {
     func validateMaximumAmount(amount: Amount, fee: Amount) throws {
-        let amountAvailableToSend = txBuilder.availableAmount() - fee
+        var amountAvailableToSend = txBuilder.availableAmount() - fee
+        
+        let change = amount - amountAvailableToSend
+        if change > .zeroCoin(for: wallet.blockchain), change < dustValue {
+            amountAvailableToSend = amountAvailableToSend - (dustValue - change)
+        }
+        
         if amount <= amountAvailableToSend {
             return
         }

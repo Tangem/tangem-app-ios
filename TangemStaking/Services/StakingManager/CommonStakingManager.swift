@@ -100,17 +100,25 @@ extension CommonStakingManager: StakingManager {
     func transaction(action: StakingAction) async throws -> StakingTransactionAction {
         switch (state, action.type) {
         case (.loading, _):
-            throw StakingManagerError.stakingManagerIsLoading
+            // Drop the current `loading` state
+            let newState = try await _state.dropFirst().first().async()
+            // Check if after the loading state we have same status
+            // To exclude endless recursion
+            if case .loading = state {
+                throw StakingManagerError.stakingManagerIsLoading
+            }
+
+            return try await transaction(action: action)
         case (.availableToStake, .stake), (.staked, .stake):
-            try await getStakeTransactionInfo(
+            return try await getStakeTransactionInfo(
                 request: mapToActionGenericRequest(action: action)
             )
         case (.staked, .unstake):
-            try await getUnstakeTransactionInfo(
+            return try await getUnstakeTransactionInfo(
                 request: mapToActionGenericRequest(action: action)
             )
         case (.staked, .pending(let type)):
-            try await getPendingTransactionInfo(
+            return try await getPendingTransactionInfo(
                 request: mapToActionGenericRequest(action: action),
                 type: type
             )
