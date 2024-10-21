@@ -28,11 +28,6 @@ def tangem_sdk_pod
   #pod 'TangemSdk', :path => '../tangem-sdk-ios'
 end
 
-def blockchain_sdk_pods
-  pod 'BitcoinCore.swift', :git => 'https://github.com/tangem/bitcoincore.git', :tag => '0.0.20'
-  #pod 'BitcoinCore.swift', :path => '../bitcoincore'
-end
-
 target 'Tangem' do
   tangem_sdk_pod
 
@@ -101,7 +96,6 @@ target 'TangemStaking' do
 end
 
 target 'BlockchainSdk' do
-  blockchain_sdk_pods
   tangem_sdk_pod
 
   target 'BlockchainSdkTests' do

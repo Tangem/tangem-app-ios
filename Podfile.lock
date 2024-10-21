@@ -2,7 +2,6 @@ PODS:
   - AmplitudeSwift (1.6.2):
     - AnalyticsConnector (~> 1.0.1)
   - AnalyticsConnector (1.0.3)
-  - BitcoinCore.swift (0.15.4)
   - BlockiesSwift (0.1.2)
   - CombineExt (1.8.0)
   - Firebase/Analytics (10.29.0):
@@ -143,7 +142,6 @@ PODS:
 
 DEPENDENCIES:
   - AmplitudeSwift (= 1.6.2)
-  - BitcoinCore.swift (from `https://github.com/tangem/bitcoincore.git`, tag `0.0.20`)
   - BlockiesSwift (~> 0.1.2)
   - CombineExt (~> 1.8.0)
   - Firebase/Analytics (= 10.29.0)
@@ -179,17 +177,11 @@ SPEC REPOS:
     - PromisesSwift
 
 EXTERNAL SOURCES:
-  BitcoinCore.swift:
-    :git: https://github.com/tangem/bitcoincore.git
-    :tag: 0.0.20
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
     :tag: develop-313
 
 CHECKOUT OPTIONS:
-  BitcoinCore.swift:
-    :git: https://github.com/tangem/bitcoincore.git
-    :tag: 0.0.20
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
     :tag: develop-313
@@ -197,7 +189,6 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   AmplitudeSwift: cc22038404dc5581e2dea5dc2501302959dd3c90
   AnalyticsConnector: a53214d38ae22734c6266106c0492b37832633a9
-  BitcoinCore.swift: 64ac4e69d9a6ef917bcbb0c23f1324cf57a822fb
   BlockiesSwift: 22d8d56dd187e6bfd16cb8c8fbd4fd4896c3e65d
   CombineExt: c4daa97ef75754d8ef319bd79edeef82652f3eea
   Firebase: cec914dab6fd7b1bd8ab56ea07ce4e03dd251c2d
@@ -220,6 +211,6 @@ SPEC CHECKSUMS:
   PromisesSwift: 9d77319bbe72ebf6d872900551f7eeba9bce2851
   TangemSdk: 145675e87bf4720d13968510b19e03b5402ed028
 
-PODFILE CHECKSUM: b46044ee6b23645a62ceae0590880228045f4ed4
+PODFILE CHECKSUM: 2e3479129c3a4db17346489b39ec8bd96453e730
 
 COCOAPODS: 1.15.2

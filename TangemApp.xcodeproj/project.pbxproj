@@ -1850,6 +1850,7 @@
 		B6FF1EFE2A57E59100B208E4 /* Subject+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FF1EFD2A57E59100B208E4 /* Subject+.swift */; };
 		B6FFADEA2C5D67E900B43A56 /* DGCharts.ChartViewBase+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FFADE92C5D67E900B43A56 /* DGCharts.ChartViewBase+.swift */; };
 		B6FFADEC2C5D6DAE00B43A56 /* LineChartViewUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FFADEB2C5D6DAE00B43A56 /* LineChartViewUtility.swift */; };
+		B6FFC31F2CC70E1D00F4400E /* BitcoinCore in Frameworks */ = {isa = PBXBuildFile; productRef = B6FFC31E2CC70E1D00F4400E /* BitcoinCore */; };
 		C2DBF9FD1A18628296A2C808 /* Pods_TangemVisa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5FA572E69DF6998CA213DF6 /* Pods_TangemVisa.framework */; };
 		DA070DE22ADD4F0F00F7C0E4 /* SprinklrSupportChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA070DE02ADD4F0F00F7C0E4 /* SprinklrSupportChatView.swift */; };
 		DA070DE32ADD4F0F00F7C0E4 /* SprinklrSupportChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA070DE12ADD4F0F00F7C0E4 /* SprinklrSupportChatViewModel.swift */; };
@@ -5804,6 +5805,7 @@
 				B62D34472CBC51D400C2460E /* SwiftCBOR in Frameworks */,
 				B6C0D3F92CBDC5A3001113ED /* SwiftyJSON in Frameworks */,
 				B6C0D3F62CBDC552001113ED /* BinanceChain in Frameworks */,
+				B6FFC31F2CC70E1D00F4400E /* BitcoinCore in Frameworks */,
 				B68E1F962CBC451D0043E598 /* ScaleCodec in Frameworks */,
 				B6CAC1CC2CC336220001A427 /* SolanaSwift in Frameworks */,
 				B62D34502CBC67D500C2460E /* AnyCodable in Frameworks */,
@@ -14649,6 +14651,7 @@
 				B6C0D3F52CBDC552001113ED /* BinanceChain */,
 				B6C0D3F82CBDC5A3001113ED /* SwiftyJSON */,
 				B6CAC1CB2CC336220001A427 /* SolanaSwift */,
+				B6FFC31E2CC70E1D00F4400E /* BitcoinCore */,
 			);
 			productName = BlockchainSdk;
 			productReference = B68E1F652CBC44050043E598 /* BlockchainSdk.framework */;
@@ -14862,6 +14865,7 @@
 				B6C0D3F72CBDC5A3001113ED /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
 				B62C16772CBE095A00522683 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				B6CAC1C82CC3352D0001A427 /* XCRemoteSwiftPackageReference "Solana.Swift" */,
+				B6FFC31D2CC70E1D00F4400E /* XCRemoteSwiftPackageReference "bitcoincore" */,
 			);
 			productRefGroup = 5D3F77C324BF56D800E8695B /* Products */;
 			projectDirPath = "";
@@ -18477,8 +18481,6 @@
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
-					"\"BitcoinCore\"",
-					"-framework",
 					"\"CFNetwork\"",
 					"-framework",
 					"\"CoreImage\"",
@@ -18587,8 +18589,6 @@
 					"\"AmplitudeSwift\"",
 					"-framework",
 					"\"AnalyticsConnector\"",
-					"-framework",
-					"\"BitcoinCore\"",
 					"-framework",
 					"\"CFNetwork\"",
 					"-framework",
@@ -21437,8 +21437,6 @@
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
-					"\"BitcoinCore\"",
-					"-framework",
 					"\"CFNetwork\"",
 					"-framework",
 					"\"CoreImage\"",
@@ -21661,8 +21659,6 @@
 					"\"AmplitudeSwift\"",
 					"-framework",
 					"\"AnalyticsConnector\"",
-					"-framework",
-					"\"BitcoinCore\"",
 					"-framework",
 					"\"CFNetwork\"",
 					"-framework",
@@ -23886,8 +23882,6 @@
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
-					"\"BitcoinCore\"",
-					"-framework",
 					"\"CFNetwork\"",
 					"-framework",
 					"\"CoreImage\"",
@@ -24110,8 +24104,6 @@
 					"\"AmplitudeSwift\"",
 					"-framework",
 					"\"AnalyticsConnector\"",
-					"-framework",
-					"\"BitcoinCore\"",
 					"-framework",
 					"\"CFNetwork\"",
 					"-framework",
@@ -24590,6 +24582,14 @@
 				version = "5.1.0-tangem3";
 			};
 		};
+		B6FFC31D2CC70E1D00F4400E /* XCRemoteSwiftPackageReference "bitcoincore" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tangem/bitcoincore.git";
+			requirement = {
+				branch = "feature/IOS-8290_migrate_all_remaining_bsdk_deps_to_spm";
+				kind = branch;
+			};
+		};
 		DCB616E32CB39A8100BE4481 /* XCRemoteSwiftPackageReference "reown-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/reown-com/reown-swift.git";
@@ -24791,6 +24791,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B6F6252E2C85E1A600DEF098 /* XCRemoteSwiftPackageReference "DGCharts" */;
 			productName = DGCharts;
+		};
+		B6FFC31E2CC70E1D00F4400E /* BitcoinCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6FFC31D2CC70E1D00F4400E /* XCRemoteSwiftPackageReference "bitcoincore" */;
+			productName = BitcoinCore;
 		};
 		DCB616E42CB39AE100BE4481 /* WalletConnect */ = {
 			isa = XCSwiftPackageProductDependency;
