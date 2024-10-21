@@ -26,8 +26,6 @@ inhibit_all_warnings!
 target 'Tangem' do
   # Pods for Tangem
   pod 'Kingfisher', '~> 7.11.0'
-
-  # Helpers
   pod 'BlockiesSwift', '~> 0.1.2'
   pod 'CombineExt', '~> 1.8.0'
 
@@ -91,32 +89,10 @@ post_install do |installer|
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
     end
   end
-
-  # ============ SPM <-> CocoaPods interop ============
-
-  # `secp256k1.swift` SPM package for `Solana.Swift` pod
-  add_spm_package_to_target(
-   installer.pods_project,
-   "Solana.Swift",
-   "https://github.com/GigaBitcoin/secp256k1.swift.git",
-   "secp256k1",
-   { :kind => "upToNextMajorVersion", :minimumVersion => "0.12.0" }
-  )
-
-  # `TweetNacl` SPM package for `Solana.Swift` pod
-  add_spm_package_to_target(
-   installer.pods_project,
-   "Solana.Swift",
-   "https://github.com/bitmark-inc/tweetnacl-swiftwrap.git",
-   "TweetNacl",
-   { :kind => "upToNextMajorVersion", :version => "1.1.0" }
-  )
-
 end
 
+# Warning: Deprecated due to the migration to SPM
 # Adds given SPM package as a dependency to a specific target in the `Pods` project.
-# TODO: Extract this logic to a dedicated CocoaPods plugin (IOS-5855)
-#
 # Valid values for the `requirement` parameter are:
 # - `{ :kind => "upToNextMajorVersion", :minimumVersion => "1.0.0" }`
 # - `{ :kind => "upToNextMinorVersion", :minimumVersion => "1.0.0" }`
