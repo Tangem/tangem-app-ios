@@ -1,5 +1,5 @@
 {
-  "originHash" : "dd280b305b0856afed44da3a23d7aa227c3a100d5fab9ce792c1e01541801b56",
+  "originHash" : "4e1b69c9c30f370afdaa78e05da89f70ae6c42d2fd2679b81d83f0e75a92937a",
   "pins" : [
     {
       "identity" : "anyasyncsequence",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "9fee8443252bb25e191b0b3b03a006aabac44088",
         "version" : "1.0.2"
+      }
+    },
+    {
+      "identity" : "anycodable",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Flight-School/AnyCodable.git",
+      "state" : {
+        "revision" : "862808b2070cd908cb04f9aafe7de83d35f81b05",
+        "version" : "0.6.7"
       }
     },
     {
@@ -101,12 +110,30 @@
       }
     },
     {
+      "identity" : "qrcode",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/WalletConnect/QRCode",
+      "state" : {
+        "revision" : "263f280d2c8144adfb0b6676109846cfc8dd552b",
+        "version" : "14.3.1"
+      }
+    },
+    {
       "identity" : "regex",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/sharplet/Regex.git",
       "state" : {
         "revision" : "76c2b73d4281d77fc3118391877efd1bf972f515",
         "version" : "2.1.1"
+      }
+    },
+    {
+      "identity" : "reown-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/reown-com/reown-swift.git",
+      "state" : {
+        "revision" : "8c1a43e28358a30dc03367dca2f38476f1573ece",
+        "version" : "1.0.4"
       }
     },
     {
@@ -125,6 +152,15 @@
       "state" : {
         "revision" : "1a14e189def5eaa92f839afdd2faad8e43b61a6e",
         "version" : "0.12.2"
+      }
+    },
+    {
+      "identity" : "stellar-ios-mac-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Soneso/stellar-ios-mac-sdk.git",
+      "state" : {
+        "revision" : "952762a66ca49e0e28ba14a8dc5dbb72da361a95",
+        "version" : "2.5.4"
       }
     },
     {
@@ -254,12 +290,48 @@
       }
     },
     {
+      "identity" : "swift-qrcode-generator",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/dagronf/swift-qrcode-generator",
+      "state" : {
+        "revision" : "5ca09b6a2ad190f94aa3d6ddef45b187f8c0343b",
+        "version" : "1.0.3"
+      }
+    },
+    {
+      "identity" : "swift-sodium",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jedisct1/swift-sodium.git",
+      "state" : {
+        "revision" : "4f9164a0a2c9a6a7ff53a2833d54a5c79c957342",
+        "version" : "0.9.1"
+      }
+    },
+    {
       "identity" : "swift-system",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-system.git",
       "state" : {
         "revision" : "d2ba781702a1d8285419c15ee62fd734a9437ff5",
         "version" : "1.3.2"
+      }
+    },
+    {
+      "identity" : "swiftcbor",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/valpackett/SwiftCBOR.git",
+      "state" : {
+        "revision" : "98a59c305cca5c5367c3422d5e127661d4e76e24",
+        "version" : "0.4.5"
+      }
+    },
+    {
+      "identity" : "swiftimagereadwrite",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/dagronf/SwiftImageReadWrite",
+      "state" : {
+        "revision" : "5596407d1cf61b953b8e658fa8636a471df3c509",
+        "version" : "1.1.6"
       }
     },
     {
@@ -287,6 +359,15 @@
       "state" : {
         "revision" : "67be5876186284e85a5f5f8757de209ba53d5729",
         "version" : "4.0.46-tangem1"
+      }
+    },
+    {
+      "identity" : "wallet-mobile-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/MobileWalletProtocol/wallet-mobile-sdk",
+      "state" : {
+        "revision" : "84b3d3f25a2e3b140ec12bb0d22c35b58f817d44",
+        "version" : "1.0.0"
       }
     },
     {

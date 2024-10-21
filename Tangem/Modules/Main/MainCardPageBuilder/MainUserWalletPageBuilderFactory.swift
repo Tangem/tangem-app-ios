@@ -96,7 +96,9 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
                 contextDataProvider: model
             )
 
-            let bannerNotificationManager = model.config.hasFeature(.multiCurrency) ? BannerNotificationManager(placement: .main, contextDataProvider: model) : nil
+            let bannerNotificationManager = model.config.hasFeature(.multiCurrency)
+                ? BannerNotificationManager(userWalletId: model.userWalletId, placement: .main, contextDataProvider: model)
+                : nil
 
             let viewModel = MultiWalletMainContentViewModel(
                 userWalletModel: model,

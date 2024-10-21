@@ -286,7 +286,7 @@ private extension ExpressViewModel {
                     self?.updateSendView(wallet: pair.sender)
                 }
 
-                if pair.destination.value != prev.destination.value {
+                if pair.destination != prev.destination {
                     self?.updateReceiveView(wallet: pair.destination)
                 }
 
@@ -620,7 +620,7 @@ private extension ExpressViewModel {
                 try Task.checkCancellation()
 
                 await root.openSuccessView(sentTransactionData: sentTransactionData)
-            } catch SendTransactionDispatcherResult.Error.userCancelled {
+            } catch TransactionDispatcherResult.Error.userCancelled {
                 root.restartTimer()
             } catch let error as ExpressAPIError {
                 await runOnMain {

@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct MarketsTokenDetailsView: View {
     @ObservedObject var viewModel: MarketsTokenDetailsViewModel
@@ -18,8 +19,18 @@ struct MarketsTokenDetailsView: View {
     @State private var isListContentObscured = false
 
     private var isDarkColorScheme: Bool { colorScheme == .dark }
-    private var defaultBackgroundColor: Color { isDarkColorScheme ? Colors.Background.primary : Colors.Background.secondary }
-    private var overlayContentHidingBackgroundColor: Color { isDarkColorScheme ? defaultBackgroundColor : Colors.Background.plain }
+
+    /// `UIColor` is used since `Color(uiColor:)` constructor loses Xcode color asset dark/light appearance setting.
+    @available(iOS, deprecated: 18.0, message: "Replace 'UIColor' with 'Color' since 'Color.mix(with:by:in:)' is available")
+    private var defaultBackgroundColor: UIColor {
+        isDarkColorScheme ? UIColor.backgroundPrimary.forcedDark : UIColor.backgroundSecondary.forcedLight
+    }
+
+    /// `UIColor` is used since `Color(uiColor:)` constructor loses Xcode color asset dark/light appearance setting.
+    @available(iOS, deprecated: 18.0, message: "Replace 'UIColor' with 'Color' since 'Color.mix(with:by:in:)' is available")
+    private var overlayContentHidingBackgroundColor: UIColor {
+        isDarkColorScheme ? defaultBackgroundColor.forcedDark : UIColor.backgroundPlain.forcedLight
+    }
 
     private let scrollViewFrameCoordinateSpaceName = UUID()
 
@@ -35,7 +46,7 @@ struct MarketsTokenDetailsView: View {
                 viewModel?.onOverlayContentProgressChange(progress)
             }
             .background {
-                viewBackground
+                backgroundColor
             }
     }
 
@@ -57,7 +68,7 @@ struct MarketsTokenDetailsView: View {
         )
         .background(
             MarketsNavigationBarBackgroundView(
-                backdropViewColor: overlayContentHidingBackgroundColor,
+                backdropViewColor: backgroundColor,
                 overlayContentHidingProgress: viewModel.overlayContentHidingProgress,
                 isNavigationBarBackgroundBackdropViewHidden: viewModel.isNavigationBarBackgroundBackdropViewHidden,
                 isListContentObscured: isListContentObscured
@@ -272,22 +283,13 @@ struct MarketsTokenDetailsView: View {
     }
 
     @ViewBuilder
-    private var viewBackground: some View {
-        ZStack {
-            Group {
-                // When a light color scheme is active, `defaultBackgroundColor` and `overlayContentHidingBackgroundColor`
-                // colors simulate color blending with the help of dynamic opacity.
-                //
-                // When the dark color scheme is active, no color blending is needed, and only `defaultBackgroundColor`
-                // is visible (btw in dark mode both colors are the same),
-                defaultBackgroundColor
-                    .opacity(isDarkColorScheme ? 1.0 : viewModel.overlayContentHidingProgress)
+    private var backgroundColor: Color {
+        let uiColor = overlayContentHidingBackgroundColor.mix(
+            with: defaultBackgroundColor,
+            by: viewModel.overlayContentHidingProgress
+        )
 
-                overlayContentHidingBackgroundColor
-                    .opacity(isDarkColorScheme ? 0.0 : 1.0 - viewModel.overlayContentHidingProgress)
-            }
-            .ignoresSafeArea()
-        }
+        Color(uiColor: uiColor)
     }
 
     private var readMoreText: Text {

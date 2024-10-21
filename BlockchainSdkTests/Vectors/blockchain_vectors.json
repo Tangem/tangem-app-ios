@@ -1,0 +1,255 @@
+[
+    {
+        "key": "bitcoin",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "litecoin",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "stellar",
+        "testnet": false,
+        "curve": "ed25519_slip0010",
+        "shelley": false
+    },
+    {
+        "key": "ethereum",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "ethereum-pow-iou",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "ethereumfair",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "ethereumClassic",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "rsk",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "bitcoinCash",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "binance",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "cardano",
+        "testnet": false,
+        "curve": "ed25519",
+        "shelley": true
+    },
+    {
+        "key": "xrp",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "tezos",
+        "testnet": false,
+        "curve": "ed25519_slip0010",
+        "shelley": false
+    },
+    {
+        "key": "dogecoin",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "bsc",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "polygon",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "avalanche",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "solana",
+        "testnet": false,
+        "curve": "ed25519_slip0010",
+        "shelley": false
+    },
+    {
+        "key": "fantom",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "polkadot",
+        "testnet": false,
+        "curve": "ed25519_slip0010",
+        "shelley": false
+    },
+    {
+        "key": "kusama",
+        "testnet": false,
+        "curve": "ed25519_slip0010",
+        "shelley": false
+    },
+    {
+        "key": "tron",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "arbitrum",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "dash",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "xdai",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "optimism",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+       "key": "ton",
+       "testnet": false,
+       "curve": "ed25519_slip0010",
+       "shelley": false
+    },
+    {
+       "key": "kava",
+       "testnet": false,
+       "curve": "secp256k1",
+       "shelley": false
+    },
+    {
+       "key": "kaspa",
+       "testnet": false,
+       "curve": "secp256k1",
+       "shelley": false
+    },
+    {
+        "key": "ravencoin",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "cosmos-hub",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "ducatus",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "cosmos-hub",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "terra",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "terra-2",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "aleph-zero",
+        "testnet": false,
+        "curve": "ed25519_slip0010",
+        "shelley": false
+    },
+    {
+        "key": "near",
+        "testnet": false,
+        "curve": "ed25519_slip0010",
+        "shelley": false
+    },
+    {
+        "key": "vechain",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "algorand",
+        "testnet": false,
+        "curve": "ed25519_slip0010",
+        "shelley": false
+    },
+    {
+        "key": "aptos",
+        "testnet": false,
+        "curve": "ed25519_slip0010",
+        "shelley": false
+    },
+    {
+        "key": "hedera",
+        "testnet": false,
+        "curve": "ed25519_slip0010",
+        "shelley": false
+    },
+    {
+        "key": "internet-computer",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+]
+

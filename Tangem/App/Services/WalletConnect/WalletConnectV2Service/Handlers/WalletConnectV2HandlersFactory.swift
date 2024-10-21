@@ -7,7 +7,7 @@
 //
 
 import BlockchainSdk
-import struct WalletConnectSwiftV2.AnyCodable
+import struct Commons.AnyCodable
 
 protocol WalletConnectHandlersCreator: AnyObject {
     func createHandler(

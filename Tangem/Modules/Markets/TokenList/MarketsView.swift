@@ -28,6 +28,8 @@ struct MarketsView: View {
     @State private var isListContentObscured = false
     @State private var responderChainIntrospectionTrigger = UUID()
 
+    private var defaultBackgroundColor: Color { Colors.Background.primary }
+
     private let scrollTopAnchorId = UUID()
     private let scrollViewFrameCoordinateSpaceName = UUID()
 
@@ -73,7 +75,7 @@ struct MarketsView: View {
                 .infinityFrame(axis: .vertical, alignment: .top)
         }
         .alert(item: $viewModel.alert, content: { $0.alert })
-        .background(Colors.Background.primary.ignoresSafeArea())
+        .background(defaultBackgroundColor.ignoresSafeArea())
         // This dummy title won't be shown in the UI, but it's required since without it UIKit will allocate
         // another `UINavigationBar` instance for use on the `Markets Token Details` page, and the code inside
         // `navigationControllerConfigurator` won't hide the navigation bar on that page (`Markets Token Details`)
@@ -101,7 +103,7 @@ struct MarketsView: View {
     @ViewBuilder
     private var navigationBarBackground: some View {
         MarketsNavigationBarBackgroundView(
-            backdropViewColor: Colors.Background.primary,
+            backdropViewColor: defaultBackgroundColor,
             overlayContentHidingProgress: viewModel.overlayContentHidingProgress,
             isNavigationBarBackgroundBackdropViewHidden: viewModel.isNavigationBarBackgroundBackdropViewHidden,
             isListContentObscured: isListContentObscured

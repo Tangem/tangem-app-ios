@@ -18,6 +18,14 @@ extension UIColor {
         return UIColor(named: "BackgroundPrimary")!
     }
 
+    @nonobjc static var backgroundSecondary: UIColor {
+        return UIColor(named: "BackgroundSecondary")!
+    }
+
+    @nonobjc static var backgroundPlain: UIColor {
+        return UIColor(named: "BackgroundPlain")!
+    }
+
     @nonobjc static var inputAccessoryViewTintColor: UIColor {
         return UIColor(named: "ButtonPrimary")!
     }
@@ -107,4 +115,55 @@ public extension Color {
 
         return nil
     }
+}
+
+extension UIColor {
+    @available(iOS, deprecated: 18.0, message: "Replace with native 'Color.mix(with:by:in:)' if you are using this helper in SwiftUI only")
+    func mix(with otherColor: UIColor, by fraction: CGFloat) -> UIColor {
+        let clampedFraction = clamp(fraction, min: 0.0, max: 1.0)
+        let invertedFraction = 1.0 - clampedFraction
+
+        var components = (red: CGFloat(0.0), green: CGFloat(0.0), blue: CGFloat(0.0), alpha: CGFloat(0.0))
+        var otherColorComponents = components // No COW for tuples`, but we don't care anyway
+
+        getRed(
+            &components.red,
+            green: &components.green,
+            blue: &components.blue,
+            alpha: &components.alpha
+        )
+
+        otherColor.getRed(
+            &otherColorComponents.red,
+            green: &otherColorComponents.green,
+            blue: &otherColorComponents.blue,
+            alpha: &otherColorComponents.alpha
+        )
+
+        return UIColor(
+            red: components.red * invertedFraction + otherColorComponents.red * clampedFraction,
+            green: components.green * invertedFraction + otherColorComponents.green * clampedFraction,
+            blue: components.blue * invertedFraction + otherColorComponents.blue * clampedFraction,
+            alpha: components.alpha * invertedFraction + otherColorComponents.alpha * clampedFraction
+        )
+    }
+}
+
+extension UIColor {
+    var forcedLight: UIColor {
+        resolvedColor(with: .dummyLight)
+    }
+
+    var forcedDark: UIColor {
+        resolvedColor(with: .dummyDark)
+    }
+}
+
+// MARK: - Private implementation
+
+private extension UITraitCollection {
+    /// - Warning: Dummy, do not use as a full-fledged trait collection instance.
+    static let dummyLight = UITraitCollection(userInterfaceStyle: .light)
+    /// - Warning: Dummy, do not use as a full-fledged trait collection instance.
+    static let dummyDark = UITraitCollection(userInterfaceStyle: .dark)
 }
