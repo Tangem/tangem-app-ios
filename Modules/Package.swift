@@ -3,49 +3,6 @@
 
 import PackageDescription // TODO: Andrey Fedorov - Update swift-tools-version to 6.0 after upgrade to Xcode 16.0 (IOS-8085)
 
-// MARK: - Service Modules
-
-/// Valid examples are `CommonUI`, `Utils`, `NetworkLayer`, `ModelData`, etc.
-let serviceModules: [PackageDescription.Target] = [
-    .tangemTarget(
-        name: "TangemFoundation"
-    ),
-    .tangemTarget(
-        name: "TangemNetworkLayerAdditions",
-        dependencies: [
-            "Moya",
-            "Alamofire",
-        ]
-    ),
-]
-
-// MARK: - Feature Modules
-
-/// Valid examples are `Onboarding`, `Auth`, `Catalog`, etc.
-let featureModules: [PackageDescription.Target] = [
-    // Currently there are no feature modules
-]
-
-// MARK: - Unit Test Modules
-
-let unitTestsModules: [PackageDescription.Target] = [
-    .tangemTestTarget(
-        name: "TangemFoundationTests",
-        dependencies: [
-            "TangemFoundation",
-        ]
-    ),
-]
-
-// MARK: - Wrapper Library
-
-let modulesWrapperLibraryName = "TangemModules"
-
-let modulesWrapperLibrary: PackageDescription.Target = .tangemTarget(
-    name: modulesWrapperLibraryName,
-    dependencies: serviceModules.asDependencies() + featureModules.asDependencies()
-)
-
 // MARK: - Package
 
 let package = Package(
@@ -67,6 +24,57 @@ let package = Package(
     ],
     targets: [modulesWrapperLibrary] + serviceModules + featureModules + unitTestsModules
 )
+
+// MARK: - Service Modules
+
+/// Valid examples are `CommonUI`, `Utils`, `NetworkLayer`, `ModelData`, etc.
+var serviceModules: [PackageDescription.Target] {
+    [
+        .tangemTarget(
+            name: "TangemFoundation"
+        ),
+        .tangemTarget(
+            name: "TangemNetworkLayerAdditions",
+            dependencies: [
+                "Moya",
+                "Alamofire",
+            ]
+        ),
+    ]
+}
+
+// MARK: - Feature Modules
+
+/// Valid examples are `Onboarding`, `Auth`, `Catalog`, etc.
+var featureModules: [PackageDescription.Target] {
+    [
+        // Currently there are no feature modules
+    ]
+}
+
+// MARK: - Unit Test Modules
+
+var unitTestsModules: [PackageDescription.Target] {
+    [
+        .tangemTestTarget(
+            name: "TangemFoundationTests",
+            dependencies: [
+                "TangemFoundation",
+            ]
+        ),
+    ]
+}
+
+// MARK: - Wrapper Library (implementation details, do not edit)
+
+var modulesWrapperLibraryName: String { "TangemModules" }
+
+var modulesWrapperLibrary: PackageDescription.Target {
+    .tangemTarget(
+        name: modulesWrapperLibraryName,
+        dependencies: serviceModules.asDependencies() + featureModules.asDependencies()
+    )
+}
 
 // MARK: - Private implementation
 
