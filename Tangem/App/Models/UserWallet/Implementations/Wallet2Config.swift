@@ -209,7 +209,7 @@ extension Wallet2Config: UserWalletConfig {
         case "AF35":
             return cardsCount == 2 ? Assets.Cards.voltInuDouble : Assets.Cards.voltInuTriple
         // Kaspa 2
-        case "AF25":
+        case "AF25", "AF61", "AF72":
             return cardsCount == 2 ? Assets.Cards.kaspa2Double : Assets.Cards.kaspa2Triple
         // Kaspa reseller
         case "AF31":
