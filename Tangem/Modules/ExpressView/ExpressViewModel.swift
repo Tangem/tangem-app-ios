@@ -620,7 +620,7 @@ private extension ExpressViewModel {
                 try Task.checkCancellation()
 
                 await root.openSuccessView(sentTransactionData: sentTransactionData)
-            } catch SendTransactionDispatcherResult.Error.userCancelled {
+            } catch TransactionDispatcherResult.Error.userCancelled {
                 root.restartTimer()
             } catch let error as ExpressAPIError {
                 await runOnMain {

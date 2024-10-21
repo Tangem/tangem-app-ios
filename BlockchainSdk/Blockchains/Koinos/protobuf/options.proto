@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package koinos;
+option go_package = "github.com/koinos/koinos-proto-golang/v2/koinos";
+
+import "google/protobuf/descriptor.proto";
+
+enum bytes_type {
+   BASE64 = 0;
+   BASE58 = 1;
+   HEX = 2;
+   BLOCK_ID = 3;
+   TRANSACTION_ID = 4;
+   CONTRACT_ID = 5;
+   ADDRESS = 6;
+}
+
+extend google.protobuf.FieldOptions {
+   optional bytes_type btype = 50000;
+}

@@ -22,6 +22,8 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
   A lane that builds and tests the scheme "Tangem" using a clean and build application.
   Using enviroment: Production
+  Options:
+  - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 
 
 ### release
@@ -37,7 +39,18 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
   - version: app version
   - build: optional build number
   - changelog: string for description archive
+  - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
   
+
+### check_bsdk_example_buildable
+
+```sh
+[bundle exec] fastlane check_bsdk_example_buildable
+```
+
+
+A lane that builds a "BlockchainSdkExample" scheme without running or publishing it, just to check that the scheme is buildable.
+
 
 ### beta
 
@@ -52,6 +65,7 @@ Options:
 - version: app version
 - build: optional build number
 - changelog: string for description archive
+- xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 
 
 ### alpha
@@ -67,6 +81,7 @@ Options:
 - version: app version
 - build: optional build number
 - changelog: string for description archive
+- xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 
 
 ### refresh_dsyms
