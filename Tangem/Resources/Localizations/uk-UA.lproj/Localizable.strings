@@ -82,10 +82,12 @@
 "common_camera_denied_alert_message" = "Ви не надали доступ до камери, будь ласка, змініть налаштування конфіденційності";
 "common_camera_denied_alert_title" = "Доступ до камери заборонено";
 "common_cancel" = "Скасувати";
+"common_change" = "Change";
 "common_choose_action" = "Виберіть дію";
 "common_claim" = "Отримати";
 "common_claim_rewards" = "Отримати винагороди";
 "common_close" = "Закрити";
+"common_confirm" = "Confirm";
 "common_continue" = "Продовжити";
 "common_copy" = "Копіювати";
 "common_copy_address" = "Скопіювати адресу";
@@ -528,6 +530,9 @@
 "onboarding_wallet_info_title_fourth" = "Відновлення коду доступу";
 "onboarding_wallet_info_title_second" = "Ідентичні картки";
 "onboarding_wallet_info_title_third" = "Код доступу";
+"onramp_residency_bottomsheet_country_not_supported" = "Our services are not available in this country";
+"onramp_residency_bottomsheet_country_subtitle" = "Change or confirm it";
+"onramp_residency_bottomsheet_title" = "Your residence has been identified as";
 "organize_tokens_group" = "Групами";
 "organize_tokens_sort_by_balance" = "За балансом";
 "organize_tokens_title" = "Сортування токенів";
@@ -748,6 +753,7 @@
 "staking_unbonding_in" = "Розблокування через";
 "staking_unlocked_locked" = "Розблокувати";
 "staking_unlocking" = "Розблокування";
+"staking_unstake_amount_validation_error" = "Amount exceeds staked balance";
 "staking_unstaked" = "Вивід зі стейкінгу";
 "staking_unstaked_footer" = "Перевірити незастейкані, щоб отримати свої активи";
 "staking_unstaking" = "Зняти зі стейкінгу";
