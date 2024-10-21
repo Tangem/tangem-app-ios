@@ -23,14 +23,7 @@ project 'TangemApp.xcodeproj',
 use_frameworks!
 inhibit_all_warnings!
 
-def tangem_sdk_pod
-  pod 'TangemSdk', :git => 'https://github.com/Tangem/tangem-sdk-ios.git', :tag => 'develop-313'
-  #pod 'TangemSdk', :path => '../tangem-sdk-ios'
-end
-
 target 'Tangem' do
-  tangem_sdk_pod
-
   # Pods for Tangem
   pod 'Kingfisher', '~> 7.11.0'
 
@@ -66,46 +59,6 @@ target 'Tangem' do
   target 'TangemUITests' do
     # Pods for testing
   end
-end
-
-target 'TangemExpress' do
-  tangem_sdk_pod
-
-  target 'TangemExpressTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-end
-
-target 'TangemVisa' do
-  tangem_sdk_pod
-
-  target 'TangemVisaTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-end
-
-target 'TangemStaking' do
-  tangem_sdk_pod
-
-  target 'TangemStakingTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-end
-
-target 'BlockchainSdk' do
-  tangem_sdk_pod
-
-  target 'BlockchainSdkTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-end
-
-target 'BlockchainSdkExample' do
-  tangem_sdk_pod
 end
 
 pre_install do |installer|

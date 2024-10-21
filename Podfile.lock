@@ -138,7 +138,6 @@ PODS:
   - PromisesObjC (2.4.0)
   - PromisesSwift (2.4.0):
     - PromisesObjC (= 2.4.0)
-  - TangemSdk (3.10.0)
 
 DEPENDENCIES:
   - AmplitudeSwift (= 1.6.2)
@@ -149,7 +148,6 @@ DEPENDENCIES:
   - Firebase/Messaging (= 10.29.0)
   - GDPerformanceView-Swift (~> 2.1)
   - Kingfisher (~> 7.11.0)
-  - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-313`)
 
 SPEC REPOS:
   trunk:
@@ -176,16 +174,6 @@ SPEC REPOS:
     - PromisesObjC
     - PromisesSwift
 
-EXTERNAL SOURCES:
-  TangemSdk:
-    :git: https://github.com/Tangem/tangem-sdk-ios.git
-    :tag: develop-313
-
-CHECKOUT OPTIONS:
-  TangemSdk:
-    :git: https://github.com/Tangem/tangem-sdk-ios.git
-    :tag: develop-313
-
 SPEC CHECKSUMS:
   AmplitudeSwift: cc22038404dc5581e2dea5dc2501302959dd3c90
   AnalyticsConnector: a53214d38ae22734c6266106c0492b37832633a9
@@ -209,8 +197,7 @@ SPEC CHECKSUMS:
   nanopb: 438bc412db1928dac798aa6fd75726007be04262
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   PromisesSwift: 9d77319bbe72ebf6d872900551f7eeba9bce2851
-  TangemSdk: 145675e87bf4720d13968510b19e03b5402ed028
 
-PODFILE CHECKSUM: 2e3479129c3a4db17346489b39ec8bd96453e730
+PODFILE CHECKSUM: 4c42e390b796a2e011f731b10a8c1e037ff924c3
 
 COCOAPODS: 1.15.2
