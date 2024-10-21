@@ -299,7 +299,7 @@
 "give_permission_policy_type_footer" = "Specify the approve limit for the selected token";
 "give_permission_rows_amount" = "Amount %@";
 "give_permission_staking_footer" = "The Approve function is needed to grant permission to another address to use a specific amount of your tokens. By design, smart contracts can't access your tokens unless you approve. By \"unlocking\" your tokens, you authorize the StakeKit smart contract to use them. The network's miners receive a gas fee (paid by you) to record this action on the blockchain. You can stake your token after giving approval.";
-"give_permission_staking_subtitle" = "To continue you need to allow StakeKit smart contract to use your %@";
+"give_permission_staking_subtitle" = "To continue you need to allow Polygon smart contract to use your %@";
 "give_permission_swap_subtitle" = "To continue, grant %1@ smart contracts permission to use your %2@";
 "give_permission_title" = "Give Permission";
 "give_permission_unlimited" = "Unlimited";
@@ -693,6 +693,7 @@
 "staking_details_warmup_period" = "Warmup period";
 "staking_details_warmup_period_info" = "The allocated time for activating participation in staking.";
 "staking_dismiss_message" = "Are you sure you want to close the staking screen?";
+"staking_give_permission_fee_footer" = "The network will charge a token approval fee to verify that you are authorizing the use of your token for the staking.";
 "staking_legal" = "By using staking functionality, you agree with provider’s %1$@ and %2$@";
 "staking_locked" = "Locked";
 "staking_migrate" = "Migrate";

@@ -299,7 +299,7 @@
 "give_permission_policy_type_footer" = "Вкажіть ліміт доступу для обраного токена";
 "give_permission_rows_amount" = "Кількість %@";
 "give_permission_staking_footer" = "Функція підтвердження необхідна для надання дозволу іншій адресі на використання певної кількості ваших токенів. За задумом, смарт-контракти не можуть отримати доступ до ваших токенів без вашого схвалення. \"Розблоковуючи\" свої токени, ви дозволяєте смарт-контракту StakeKit використовувати їх. Майнери мережі отримують плату за газ (сплачену вами), щоб зафіксувати цю дію в блокчейні. Ви зможете застейкати свій токен після того, як дасте дозвіл.";
-"give_permission_staking_subtitle" = "Щоб продовжити, вам потрібно дозволити смарт-контракту StakeKit використовувати ваш %@";
+"give_permission_staking_subtitle" = "Щоб продовжити, вам потрібно дозволити смарт-контракту Polygon використовувати ваш %@";
 "give_permission_swap_subtitle" = "Щоб продовжити, вам потрібно дозволити смарт-контракту %1@ використовувати ваш %2@";
 "give_permission_title" = "Надати дозвіл";
 "give_permission_unlimited" = "Необмежено";
@@ -693,6 +693,7 @@
 "staking_details_warmup_period" = "Період блокування";
 "staking_details_warmup_period_info" = "Відведений час для активації участі в стейкінгу.";
 "staking_dismiss_message" = "Ви впевнені, що хочете закрити вікно стейкінгу?";
+"staking_give_permission_fee_footer" = "The network will charge a token approval fee to verify that you are authorizing the use of your token for the staking.";
 "staking_legal" = "Використовуючи функцію стейкінгу, ви погоджуєтесь з %1$@ та %2$@";
 "staking_locked" = "Заблоковано";
 "staking_migrate" = "Перемістити";

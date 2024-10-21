@@ -299,7 +299,7 @@
 "give_permission_policy_type_footer" = "Spécifiez la limite approuvée pour le jeton sélectionné";
 "give_permission_rows_amount" = "Montant %@";
 "give_permission_staking_footer" = "La fonction Approuver est nécessaire pour accorder la permission à une autre adresse d'utiliser une quantité spécifique de vos jetons. De par leur conception, les contrats intelligents ne peuvent pas accéder à vos jetons sans votre approbation. En « déverrouillant » vos jetons, vous autorisez le contrat intelligent StakeKit à les utiliser. Les mineurs du réseau reçoivent des frais de gaz (payés par vous) pour enregistrer cette action sur la blockchain. Vous pouvez staker votre jeton après avoir donné votre approbation.";
-"give_permission_staking_subtitle" = "Pour continuer, vous devez autoriser le contrat intelligent StakeKit à utiliser votre %@";
+"give_permission_staking_subtitle" = "Pour continuer, vous devez autoriser le contrat intelligent Polygon à utiliser votre %@";
 "give_permission_swap_subtitle" = "Pour continuer, accordez aux smart contracts de %1@ l'autorisation d'utiliser votre %2@";
 "give_permission_title" = "Donner l'autorisation";
 "give_permission_unlimited" = "Illimité";
@@ -693,6 +693,7 @@
 "staking_details_warmup_period" = "Période d'échauffement";
 "staking_details_warmup_period_info" = "Le temps imparti pour activer la participation au staking.";
 "staking_dismiss_message" = "Êtes-vous sûr(e) de vouloir fermer l'écran de staking ?";
+"staking_give_permission_fee_footer" = "The network will charge a token approval fee to verify that you are authorizing the use of your token for the staking.";
 "staking_legal" = "En utilisant la fonctionnalité de staking, vous acceptez les  %1$@ et %2$@ du fournisseur";
 "staking_locked" = "Bloqué";
 "staking_migrate" = "Migrer";

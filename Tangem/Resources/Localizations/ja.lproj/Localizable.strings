@@ -299,7 +299,7 @@
 "give_permission_policy_type_footer" = "選択したトークンの承認制限を指定します";
 "give_permission_rows_amount" = "金額%@";
 "give_permission_staking_footer" = "承認機能は、別のアドレスに特定の量のトークンを使用する許可を与えるために必要です。設計上スマートコントラクトは、承認しない限りトークンにアクセスできません。トークンを「ロック解除」すると、StakeKitスマート コントラクトがトークンを使用する権限が与えられます。ネットワークのマイナーは、このアクションをブロックチェーンに記録するためにガス料金（あなたが支払う）を受け取ります。承認後、トークンをステーキングできます。";
-"give_permission_staking_subtitle" = "続行するには、StakeKitスマートコントラクトが%@を使用することを許可する必要があります";
+"give_permission_staking_subtitle" = "続行するには、Polygonスマートコントラクトが%@を使用することを許可する必要があります";
 "give_permission_swap_subtitle" = "続行するには、%1@スマートコントラクトに%2@を使用する権限を付与してください";
 "give_permission_title" = "許可を与える";
 "give_permission_unlimited" = "無制限";
@@ -693,6 +693,7 @@
 "staking_details_warmup_period" = "ウォームアップ期間";
 "staking_details_warmup_period_info" = "ステーキングへの参加を有効にするために割り当てられた時間。";
 "staking_dismiss_message" = "ステーキング画面を閉じてもよろしいですか?";
+"staking_give_permission_fee_footer" = "The network will charge a token approval fee to verify that you are authorizing the use of your token for the staking.";
 "staking_legal" = "ステーキング機能を使用すると、プロバイダーの%1$@と%2$@に同意したことになります";
 "staking_locked" = "ロック中";
 "staking_migrate" = "移行";

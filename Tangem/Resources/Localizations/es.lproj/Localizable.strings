@@ -299,7 +299,7 @@
 "give_permission_policy_type_footer" = "Especifique el límite aprobado para el token seleccionado.";
 "give_permission_rows_amount" = "Montante %@";
 "give_permission_staking_footer" = "La función Aprobar es necesaria para otorgar permiso a otra dirección para usar una cantidad específica de sus tokens. Por diseño, los contratos inteligentes no pueden acceder a sus tokens sin su aprobación. Al \"desbloquear\" sus tokens, autoriza al contrato inteligente de StakeKit a usarlos. Los mineros de la red reciben una tarifa de gas (pagada por usted) por registrar esta acción en la cadena de bloques. Puede apostar su token después de dar su aprobación.";
-"give_permission_staking_subtitle" = "Para continuar, debe autorizar el contrato inteligente de StakeKit para utilizar su %@";
+"give_permission_staking_subtitle" = "Para continuar, debe autorizar el contrato inteligente de Polygon para utilizar su %@";
 "give_permission_swap_subtitle" = "Para continuar, de autorización a los smart contracts de %1@ para usar su %2@";
 "give_permission_title" = "Dar autorización";
 "give_permission_unlimited" = "Ilimitado";
@@ -693,6 +693,7 @@
 "staking_details_warmup_period" = "Periodo de calentamiento";
 "staking_details_warmup_period_info" = "El tiempo permitido para activar la participación en la apuesta.";
 "staking_dismiss_message" = "¿Está seguro(a) de que desea cerrar la pantalla de staking?";
+"staking_give_permission_fee_footer" = "The network will charge a token approval fee to verify that you are authorizing the use of your token for the staking.";
 "staking_legal" = "Al utilizar la función de staking, usted acepta %1$@ y  %2$@ del proveedor";
 "staking_locked" = "Bloqueado";
 "staking_migrate" = "Migrar";
