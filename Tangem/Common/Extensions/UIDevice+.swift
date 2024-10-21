@@ -69,7 +69,6 @@ public enum IPhoneModel {
     case iPhone16Pro
     case iPhone16ProMax
 
-
     init?(identifier: String) {
         switch identifier {
         case "iPhone8,1": self = .iPhone6S
