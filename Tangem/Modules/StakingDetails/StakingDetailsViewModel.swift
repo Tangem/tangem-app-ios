@@ -220,11 +220,7 @@ private extension StakingDetailsViewModel {
         viewModels.append(
             DefaultRowViewModel(
                 title: Localization.stakingDetailsRewardSchedule,
-                detailsType: .text(
-                    Localization.stakingRewardScheduleEach(
-                        yield.rewardScheduleType.formatted(formatter: dateFormatter)
-                    )
-                ),
+                detailsType: .text(yield.rewardScheduleType.formatted()),
                 secondaryAction: { [weak self] in
                     self?.openBottomSheet(
                         title: Localization.stakingDetailsRewardSchedule,
@@ -403,18 +399,20 @@ private extension RewardClaimingType {
 }
 
 extension RewardScheduleType {
-    func formatted(formatter: DateComponentsFormatter) -> String {
+    func formatted() -> String {
         switch self {
         case .generic(let string):
             return string
         case .seconds(let min, let max):
-            let suffix = formatter.string(from: DateComponents(second: max)) ?? max.formatted()
-            return "\(min) - \(suffix)"
+            let prefix = Localization.stakingRewardScheduleEachPlural
+            let suffix = Localization.commonSecondNoParam
+            return "\(prefix) \(min)-\(max) \(suffix)"
         case .daily:
-            return Localization.commonDaysNoParam(1)
+            return Localization.stakingRewardScheduleDay
         case .days(let min, let max):
-            let suffix = formatter.string(from: DateComponents(day: max)) ?? max.formatted()
-            return "\(min) - \(suffix)"
+            let prefix = Localization.stakingRewardScheduleEachPlural
+            let suffix = Localization.commonDaysNoParam(max)
+            return "\(prefix) \(min)-\(max) \(suffix)"
         }
     }
 }
@@ -448,7 +446,7 @@ extension DateComponentsFormatter {
     static func staking() -> DateComponentsFormatter {
         let formatter = DateComponentsFormatter()
         formatter.unitsStyle = .short
-        formatter.allowedUnits = [.second, .day]
+        formatter.allowedUnits = [.day]
         return formatter
     }
 }
