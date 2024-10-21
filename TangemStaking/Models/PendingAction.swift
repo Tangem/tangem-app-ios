@@ -14,4 +14,5 @@ public struct PendingAction: Hashable {
     public let amount: Decimal
     public let currentStepIndex: Int
     public let transactions: [ActionTransaction]
+    public let validatorAddress: String?
 }

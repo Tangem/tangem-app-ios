@@ -37,7 +37,8 @@ class CommonStakingAPIProvider: StakingAPIProvider {
     }
 
     func actions(wallet: StakingWallet) async throws -> [PendingAction] {
-        let request = StakeKitDTO.Actions.List.Request(walletAddress: wallet.address, network: wallet.item.network)
+        let responseLimit = 50 // maximum that supports stakekit API
+        let request = StakeKitDTO.Actions.List.Request(walletAddress: wallet.address, network: wallet.item.network, status: .processing, limit: responseLimit)
         let response = try await service.actions(request: request)
         return try mapper.mapToPendingActions(from: response)
     }

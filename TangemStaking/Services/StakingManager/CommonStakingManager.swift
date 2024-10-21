@@ -20,6 +20,7 @@ class CommonStakingManager {
     // MARK: Private
 
     private let _state = CurrentValueSubject<StakingManagerState, Never>(.loading)
+    private let _actions = CurrentValueSubject<[PendingAction]?, Never>(nil)
     private var canStakeMore: Bool {
         switch wallet.item.network {
         case .solana, .cosmos, .tron, .ethereum: true
@@ -62,20 +63,33 @@ extension CommonStakingManager: StakingManager {
         }
     }
 
+    var actionsPublisher: AnyPublisher<[PendingAction], Never> {
+        _actions.compactMap { $0 }
+            .eraseToAnyPublisher()
+    }
+
     func updateState() async {
         updateState(.loading)
         do {
             async let balances = provider.balances(wallet: wallet)
             async let yield = provider.yield(integrationId: integrationId)
-            async let actions = provider.actions(wallet: wallet).filter { $0.status == .processing }
 
-            let result = try await (balances, yield, actions)
+            let result = try await (balances, yield)
 
             repository.checkIfConfirmed(balances: result.0)
             updateState(state(balances: result.0, yield: result.1))
         } catch {
             logger.error(error)
             updateState(.loadingError(error.localizedDescription))
+        }
+    }
+
+    func actions() async {
+        do {
+            let actions = try await provider.actions(wallet: wallet)
+            _actions.send(actions)
+        } catch {
+            logger.error(error)
         }
     }
 

@@ -139,7 +139,8 @@ struct StakeKitMapper {
                 status: mapToActionStatus(from: action.status),
                 amount: amount,
                 currentStepIndex: action.currentStepIndex,
-                transactions: actionTransaction
+                transactions: actionTransaction,
+                validatorAddress: action.validatorAddress ?? action.validatorAddresses?.first
             )
         }
     }
@@ -163,7 +164,8 @@ struct StakeKitMapper {
             status: mapToActionStatus(from: response.status),
             amount: amount,
             currentStepIndex: response.currentStepIndex,
-            transactions: actionTransaction
+            transactions: actionTransaction,
+            validatorAddress: response.validatorAddress ?? response.validatorAddresses?.first
         )
     }
 

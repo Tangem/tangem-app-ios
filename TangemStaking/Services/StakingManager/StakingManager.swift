@@ -13,8 +13,10 @@ public protocol StakingManager {
     var state: StakingManagerState { get }
     var statePublisher: AnyPublisher<StakingManagerState, Never> { get }
     var allowanceAddress: String? { get }
+    var actionsPublisher: AnyPublisher<[PendingAction], Never> { get }
 
     func updateState() async
+    func actions() async
     func estimateFee(action: StakingAction) async throws -> Decimal
     func transaction(action: StakingAction) async throws -> StakingTransactionAction
 

@@ -166,6 +166,8 @@ extension StakeKitDTO {
             struct Request: Encodable {
                 let walletAddress: String
                 let network: StakeKitNetworkType
+                let status: ActionStatus
+                let limit: Int
             }
 
             struct Response: Decodable {
