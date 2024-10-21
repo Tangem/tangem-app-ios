@@ -95,10 +95,9 @@ private extension StakingModel {
                 model.update(state: .loading)
                 let newState = try await model.state(amount: amount, validator: validator, approvePolicy: model._approvePolicy.value)
                 model.update(state: newState)
+            } catch _ as CancellationError {
+                // Do nothing
             } catch {
-                guard error as? CancellationError == nil else {
-                    return
-                }
                 model.update(state: .networkError(error))
             }
         }
