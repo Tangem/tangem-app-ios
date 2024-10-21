@@ -1,5 +1,5 @@
 //
-//  WalletConnectSolanaMessageSignHandler.swift
+//  WalletConnectSolanaSignMessageHandler.swift
 //  Tangem
 //
 //  Created by GuitarKitty on 15.10.2024.
@@ -10,7 +10,7 @@ import JSONRPC
 import Foundation
 import Commons
 
-struct WalletConnectSolanaMessageSignHandler {
+struct WalletConnectSolanaSignMessageHandler {
     private let message: String
     private let signer: WalletConnectSigner
     private let walletModel: WalletModel
@@ -21,7 +21,7 @@ struct WalletConnectSolanaMessageSignHandler {
         blockchainId: String,
         walletModelProvider: some WalletConnectWalletModelProvider
     ) throws {
-        let parameters = try request.get(WalletConnectSolanaMessageSignDTO.Response.self)
+        let parameters = try request.get(WalletConnectSolanaSignMessageDTO.Response.self)
 
         do {
             guard let walletModel = walletModelProvider.getModel(with: blockchainId) else {
@@ -40,7 +40,7 @@ struct WalletConnectSolanaMessageSignHandler {
     }
 }
 
-extension WalletConnectSolanaMessageSignHandler: WalletConnectMessageHandler {
+extension WalletConnectSolanaSignMessageHandler: WalletConnectMessageHandler {
     var event: WalletConnectEvent {
         .sign
     }
@@ -54,7 +54,7 @@ extension WalletConnectSolanaMessageSignHandler: WalletConnectMessageHandler {
         do {
             let signature = try await signer.sign(data: message.base58DecodedData, using: walletModel)
             return .response(
-                AnyCodable(WalletConnectSolanaMessageSignDTO.Body(signature: signature))
+                AnyCodable(WalletConnectSolanaSignMessageDTO.Body(signature: signature))
             )
         } catch {
             AppLog.shared.debug("[WC 2.0] Failed to sign message. \(error)")

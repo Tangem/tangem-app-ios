@@ -48,12 +48,23 @@ struct WalletConnectV2Utils {
     /// Array of Strings with unsupported blockchain names
     func extractUnsupportedBlockchainNames(from namespaces: [String: ProposalNamespace]) -> [String] {
         var blockchains = [String]()
+
         for (namespace, proposal) in namespaces {
             guard let chains = proposal.chains else {
                 continue
             }
 
-            guard let _ = WalletConnectSupportedNamespaces(rawValue: namespace) else {
+            if WalletConnectSupportedNamespaces(rawValue: namespace) != nil {
+                let notSupportedEVMChainIds: [String] = chains.compactMap { chain in
+                    guard createBlockchain(for: chain) == nil else {
+                        return nil
+                    }
+
+                    return chain.absoluteString
+                }
+
+                blockchains.append(contentsOf: notSupportedEVMChainIds)
+            } else {
                 let notEVMChainNames = chains.map { chain in
                     return createBlockchain(for: chain)?.displayName ?? namespace.capitalizingFirstLetter()
                 }
@@ -62,16 +73,6 @@ struct WalletConnectV2Utils {
 
                 continue
             }
-
-            let notSupportedEVMChainIds: [String] = chains.compactMap { chain in
-                guard createBlockchain(for: chain) == nil else {
-                    return nil
-                }
-
-                return chain.absoluteString
-            }
-
-            blockchains.append(contentsOf: notSupportedEVMChainIds)
         }
 
         return blockchains
@@ -153,7 +154,7 @@ struct WalletConnectV2Utils {
     }
 
     func createBlockchain(for wcBlockchain: WalletConnectUtils.Blockchain) -> BlockchainMeta? {
-        guard let _ = WalletConnectSupportedNamespaces(rawValue: wcBlockchain.namespace) else {
+        guard WalletConnectSupportedNamespaces(rawValue: wcBlockchain.namespace) != nil else {
             return nil
         }
 
@@ -185,7 +186,7 @@ struct WalletConnectV2Utils {
         walletModelProvider: WalletConnectWalletModelProvider
     ) -> BlockchainNetwork? {
         guard
-            let _ = WalletConnectSupportedNamespaces(rawValue: wcBlockchain.namespace),
+            WalletConnectSupportedNamespaces(rawValue: wcBlockchain.namespace) != nil,
             let blockchain = createBlockchain(for: wcBlockchain),
             let walletModel = try? walletModelProvider.getModel(with: address, blockchainId: blockchain.id)
         else {

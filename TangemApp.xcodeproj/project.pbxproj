@@ -2214,12 +2214,12 @@
 		DCD9CBA529F7F4EF00440C93 /* LogFileProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD9CBA429F7F4EF00440C93 /* LogFileProvider.swift */; };
 		DCDBDA062A27C16C0000EBA2 /* LockedUserWalletModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCDBDA052A27C16C0000EBA2 /* LockedUserWalletModel.swift */; };
 		DCDE745C2C1374AC00C19A23 /* WelcomeOnboardingTOSDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCDE745B2C1374AC00C19A23 /* WelcomeOnboardingTOSDelegate.swift */; };
-		DCE0E2BD2CBE43C2009A4007 /* WalletConnectSolanaMessageSignHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE0E2BC2CBE43C2009A4007 /* WalletConnectSolanaMessageSignHandler.swift */; };
+		DCE0E2BD2CBE43C2009A4007 /* WalletConnectSolanaSignMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE0E2BC2CBE43C2009A4007 /* WalletConnectSolanaSignMessageHandler.swift */; };
 		DCE0E2C22CBE4804009A4007 /* WalletConnectSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE0E2C12CBE4804009A4007 /* WalletConnectSigner.swift */; };
 		DCE0E2C52CBE486A009A4007 /* CommonWalletConnectSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE0E2C42CBE486A009A4007 /* CommonWalletConnectSigner.swift */; };
 		DCE0E2C72CBE4891009A4007 /* SolanaWalletConnectSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE0E2C62CBE4891009A4007 /* SolanaWalletConnectSigner.swift */; };
 		DCE0E2C92CBE49BF009A4007 /* BlockchainSDK+WalletConnectChainId.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE0E2C82CBE49BF009A4007 /* BlockchainSDK+WalletConnectChainId.swift */; };
-		DCE317B62CC499DB0069C641 /* WalletConnectSolanaMessageSignDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE317B52CC499DB0069C641 /* WalletConnectSolanaMessageSignDTO.swift */; };
+		DCE317B62CC499DB0069C641 /* WalletConnectSolanaSignMessageDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE317B52CC499DB0069C641 /* WalletConnectSolanaSignMessageDTO.swift */; };
 		DCE317B82CC4F7FE0069C641 /* WalletConnectSolanaSignTransactionDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE317B72CC4F7FE0069C641 /* WalletConnectSolanaSignTransactionDTO.swift */; };
 		DCE317BB2CC4F8860069C641 /* WalletConnectSolanaSignTransactionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE317BA2CC4F8860069C641 /* WalletConnectSolanaSignTransactionHandler.swift */; };
 		DCE317BD2CC4F9440069C641 /* WalletConnectV2Utils+BlockchainMeta.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE317BC2CC4F9440069C641 /* WalletConnectV2Utils+BlockchainMeta.swift */; };
@@ -5238,7 +5238,7 @@
 		DCDECB942C88D78700E10564 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = es; path = es.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		DCDECB952C88D78700E10564 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		DCDECB962C88D78700E10564 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Intents.strings; sourceTree = "<group>"; };
-		DCE0E2BC2CBE43C2009A4007 /* WalletConnectSolanaMessageSignHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectSolanaMessageSignHandler.swift; sourceTree = "<group>"; };
+		DCE0E2BC2CBE43C2009A4007 /* WalletConnectSolanaSignMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectSolanaSignMessageHandler.swift; sourceTree = "<group>"; };
 		DCE0E2C12CBE4804009A4007 /* WalletConnectSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectSigner.swift; sourceTree = "<group>"; };
 		DCE0E2C42CBE486A009A4007 /* CommonWalletConnectSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonWalletConnectSigner.swift; sourceTree = "<group>"; };
 		DCE0E2C62CBE4891009A4007 /* SolanaWalletConnectSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolanaWalletConnectSigner.swift; sourceTree = "<group>"; };
@@ -5249,7 +5249,7 @@
 		DCE1E82D2C542B1100A6BDDE /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Intents.strings; sourceTree = "<group>"; };
 		DCE1E82E2C542B1200A6BDDE /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Intents.strings; sourceTree = "<group>"; };
 		DCE1E82F2C542B1300A6BDDE /* uk-UA */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "uk-UA"; path = "uk-UA.lproj/Intents.strings"; sourceTree = "<group>"; };
-		DCE317B52CC499DB0069C641 /* WalletConnectSolanaMessageSignDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectSolanaMessageSignDTO.swift; sourceTree = "<group>"; };
+		DCE317B52CC499DB0069C641 /* WalletConnectSolanaSignMessageDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectSolanaSignMessageDTO.swift; sourceTree = "<group>"; };
 		DCE317B72CC4F7FE0069C641 /* WalletConnectSolanaSignTransactionDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectSolanaSignTransactionDTO.swift; sourceTree = "<group>"; };
 		DCE317BA2CC4F8860069C641 /* WalletConnectSolanaSignTransactionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectSolanaSignTransactionHandler.swift; sourceTree = "<group>"; };
 		DCE317BC2CC4F9440069C641 /* WalletConnectV2Utils+BlockchainMeta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WalletConnectV2Utils+BlockchainMeta.swift"; sourceTree = "<group>"; };
@@ -12575,8 +12575,8 @@
 		DCE0E2BB2CBE43B7009A4007 /* Solana */ = {
 			isa = PBXGroup;
 			children = (
-				DCE0E2BC2CBE43C2009A4007 /* WalletConnectSolanaMessageSignHandler.swift */,
-				DCE317B52CC499DB0069C641 /* WalletConnectSolanaMessageSignDTO.swift */,
+				DCE0E2BC2CBE43C2009A4007 /* WalletConnectSolanaSignMessageHandler.swift */,
+				DCE317B52CC499DB0069C641 /* WalletConnectSolanaSignMessageDTO.swift */,
 			);
 			path = Solana;
 			sourceTree = "<group>";
@@ -15737,7 +15737,7 @@
 				2DB8E1162B29068C0044BF7D /* CustomSearchBar.swift in Sources */,
 				EFB932032C3EAF7900C999E9 /* SendStepType.swift in Sources */,
 				EF4BEFDF28AD3EE500C5D1BE /* ContentState.swift in Sources */,
-				DCE317B62CC499DB0069C641 /* WalletConnectSolanaMessageSignDTO.swift in Sources */,
+				DCE317B62CC499DB0069C641 /* WalletConnectSolanaSignMessageDTO.swift in Sources */,
 				B0BE30652A7BA74000B3AD13 /* MultiWalletTokenItemsSectionFactory.swift in Sources */,
 				2D5DCC362C330A33000EE379 /* WalletSelectorItemViewModel.swift in Sources */,
 				EF2FE49E2C6BB5390015940A /* TransactionCreator+.swift in Sources */,
@@ -15818,7 +15818,7 @@
 				EF977CBF2C788965006BB27C /* PendingActionMapper.swift in Sources */,
 				B645BF3F2C59239700D8A2A5 /* MarketsHistoryChartProvider.swift in Sources */,
 				EFD39C992A6A916C0055D215 /* EnvironmentSetupRoutable.swift in Sources */,
-				DCE0E2BD2CBE43C2009A4007 /* WalletConnectSolanaMessageSignHandler.swift in Sources */,
+				DCE0E2BD2CBE43C2009A4007 /* WalletConnectSolanaSignMessageHandler.swift in Sources */,
 				DA7444252A27889600F926A9 /* PromotionServiceProtocol.swift in Sources */,
 				DA559C352B0261F400F59584 /* SendFeeView.swift in Sources */,
 				EF7000812A94BE7300C56E8A /* CardanoWalletManagerFactory.swift in Sources */,

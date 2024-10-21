@@ -76,7 +76,7 @@ final class WalletConnectHandlersFactory: WalletConnectHandlersCreator {
                 uiDelegate: uiDelegate
             )
         case .solanaSignMessage:
-            return try WalletConnectSolanaMessageSignHandler(
+            return try WalletConnectSolanaSignMessageHandler(
                 request: params,
                 signer: SolanaWalletConnectSigner(signer: signer),
                 blockchainId: blockchainId,
