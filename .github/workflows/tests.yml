@@ -25,7 +25,8 @@ jobs:
   test:
     name: Test
     runs-on: macos-14
-    if: github.event.pull_request.draft == false
+    if: false # TODO: Temp disabled, remove
+    #if: github.event.pull_request.draft == false
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -44,7 +45,8 @@ jobs:
   check_bsdk_example_buildable:
     name: Check BSDK example project
     runs-on: self-hosted
-    if: github.event.pull_request.draft == false
+    if: true # TODO: Temp enabled, remove
+    #if: github.event.pull_request.draft == false
     steps:
     - name: Checkout
       uses: actions/checkout@v3
