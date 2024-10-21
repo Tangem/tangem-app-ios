@@ -91,7 +91,12 @@ private extension TotalBalanceProvider {
         // Subscription to handle balance loading completion
 
         updateSubscription = walletModels
-            .map(\.walletDidChangePublisher)
+            .map { walletModel in
+                Publishers.CombineLatest(
+                    walletModel.walletDidChangePublisher,
+                    walletModel.stakingManagerStatePublisher.filter { $0 != .loading }
+                )
+            }
             .merge()
             .mapToValue((walletModels, hasEntriesWithoutDerivation))
             .filter { walletModels, _ in
