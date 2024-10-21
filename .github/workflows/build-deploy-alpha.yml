@@ -85,7 +85,7 @@ jobs:
     needs:
       - prepare
       - deploy
-    if: false # TODO: Temp disabled, enable
+    #if: false # TODO: Temp disabled, enable
     uses: tangem/actions/.github/workflows/notification.yml@main
     with:
       channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
@@ -100,7 +100,7 @@ jobs:
 
   error_notification:
     name: Error Notification
-    if: failure()
+    #if: failure()
     if: false # TODO: Temp disabled, enable
     needs:
       - prepare
