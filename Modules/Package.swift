@@ -37,27 +37,27 @@ let unitTestsModules: [PackageDescription.Target] = [
     ),
 ]
 
-// MARK: - Shim Library
+// MARK: - Wrapper Library
 
-let modulesShimLibraryName = "TangemModules"
+let modulesWrapperLibraryName = "TangemModules"
 
-let modulesShimLibrary: PackageDescription.Target = .tangemTarget(
-    name: modulesShimLibraryName,
+let modulesWrapperLibrary: PackageDescription.Target = .tangemTarget(
+    name: modulesWrapperLibraryName,
     dependencies: serviceModules.asDependencies() + featureModules.asDependencies()
 )
 
 // MARK: - Package
 
 let package = Package(
-    name: modulesShimLibraryName,
+    name: modulesWrapperLibraryName,
     platforms: [
         .iOS(.v15),
     ],
     products: [
         .library(
-            name: modulesShimLibraryName,
+            name: modulesWrapperLibraryName,
             targets: [
-                modulesShimLibraryName,
+                modulesWrapperLibraryName,
             ]
         ),
     ],
@@ -65,7 +65,7 @@ let package = Package(
         .package(url: "https://github.com/Moya/Moya.git", .upToNextMajor(from: "15.0.0")),
         .package(url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.0.0")),
     ],
-    targets: [modulesShimLibrary] + serviceModules + featureModules + unitTestsModules
+    targets: [modulesWrapperLibrary] + serviceModules + featureModules + unitTestsModules
 )
 
 // MARK: - Private implementation
