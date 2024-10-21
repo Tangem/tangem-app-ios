@@ -155,7 +155,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         }
 
         do {
-            let mapper = TokenMarketsHistoryChartMapper()
+            let mapper = MarketsTokenHistoryChartMapper()
 
             return try mapper
                 .mapAndSortValues(from: model)

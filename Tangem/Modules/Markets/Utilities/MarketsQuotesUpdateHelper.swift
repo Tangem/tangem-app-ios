@@ -19,7 +19,7 @@ protocol MarketsQuotesUpdateHelper {
     /// - Parameters:
     ///   - marketToken: Details about single Token represented in `TokenMarketsDetailsModel`
     ///   - baseCurrencyCode: Currency selected in App. It can be fiat or crypto currency
-    func updateQuote(marketToken: TokenMarketsDetailsModel, for baseCurrencyCode: String)
+    func updateQuote(marketToken: MarketsTokenDetailsModel, for baseCurrencyCode: String)
 }
 
 struct CommonMarketsQuotesUpdateHelper: MarketsQuotesUpdateHelper {
@@ -44,7 +44,7 @@ struct CommonMarketsQuotesUpdateHelper: MarketsQuotesUpdateHelper {
         quotesRepositoryUpdater.saveQuotes(quotes)
     }
 
-    func updateQuote(marketToken: TokenMarketsDetailsModel, for baseCurrencyCode: String) {
+    func updateQuote(marketToken: MarketsTokenDetailsModel, for baseCurrencyCode: String) {
         let quote = TokenQuote(
             currencyId: marketToken.id,
             price: marketToken.currentPrice,

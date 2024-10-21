@@ -13,13 +13,33 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%li карта</string>
+        <string>%li устройство</string>
         <key>few</key>
-        <string>%li карты</string>
+        <string>%li устройства</string>
         <key>many</key>
-        <string>%li карт</string>
+        <string>%li устройств</string>
         <key>other</key>
-        <string>%li карт</string>
+        <string>%li устройств</string>
+      </dict>
+    </dict>
+    <key>common_days_no_param</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>день</string>
+        <key>few</key>
+        <string>дня</string>
+        <key>many</key>
+        <string>дней</string>
+        <key>other</key>
+        <string>дней</string>
       </dict>
     </dict>
     <key>manage_tokens_number_of_wallets_ios</key>
@@ -53,13 +73,13 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%1$s биржа</string>
+        <string>%li биржа</string>
         <key>few</key>
-        <string>%1$s биржи</string>
+        <string>%li биржи</string>
         <key>many</key>
-        <string>%1$s бирж</string>
+        <string>%li бирж</string>
         <key>other</key>
-        <string>%1$s бирж</string>
+        <string>%li бирж</string>
       </dict>
     </dict>
     <key>markets_token_details_based_on_ratings</key>
@@ -113,7 +133,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%li слово</string>
+        <string>%li </string>
         <key>few</key>
         <string>%li слова</string>
         <key>many</key>
@@ -173,13 +193,13 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Используйте вашу карту, чтобы получить адрес для %li сети</string>
+        <string>Используйте вашу карту или кольцо, чтобы получить адрес для %li сети</string>
         <key>few</key>
-        <string>Используйте вашу карту, чтобы получить адреса для %li сетей</string>
+        <string>Используйте вашу карту или кольцо, чтобы получить адреса для %li сетей</string>
         <key>many</key>
-        <string>Используйте вашу карту, чтобы получить адреса для %li сетей</string>
+        <string>Используйте вашу карту или кольцо, чтобы получить адреса для %li сетей</string>
         <key>other</key>
-        <string>Используйте вашу карту, чтобы получить адреса для %li сетей</string>
+        <string>Используйте вашу карту или кольцо, чтобы получить адреса для %li сетей</string>
       </dict>
     </dict>
   </dict>

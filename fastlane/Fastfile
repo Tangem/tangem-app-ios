@@ -6,6 +6,32 @@ PRODUCTION_SCHEME = "Tangem"
 BETA_SCHEME = "Tangem Beta"
 ALPHA_SCHEME = "Tangem Alpha"
 
+before_all do |lane, options|
+  lanes_to_skip_bootstrap = [
+    :update_translations,
+  ]
+
+  if lanes_to_skip_bootstrap.include?(lane)
+    next
+  end
+
+  # Xcode version overrides available only on CI
+  if ENV["CI"]&.downcase == "true"
+    if options[:xcode_version_override].nil?
+      xcodes() # Will use the Xcode version from the .xcode-version file
+    else
+      xcodes(version: options[:xcode_version_override])
+    end
+  end
+
+  Dir.chdir("..") do
+    sh("./bootstrap.sh") 
+  end
+
+  ENV["FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT"] = "120"
+  ENV["FASTLANE_XCODEBUILD_SETTINGS_RETRIES"] = "4"
+end
+
 desc """
   This lane builds and run unit-tests for the \"RC\" scheme.
 """
@@ -17,6 +43,19 @@ lane :test do
     clean: true,
     code_coverage: true
   )
+end
+
+desc """
+A lane that builds a \"BlockchainSdkExample\" scheme without running or publishing it, just to check that the scheme is buildable.
+"""
+lane :check_bsdk_example_buildable do |options|
+xcodebuild(
+workspace: WORKSPACE_NAME,
+scheme: BSDK_EXAMPLE_SCHEME,
+xcargs: "-allowProvisioningUpdates",
+analyze: true,
+raw_buildlog: true
+)
 end
 
 

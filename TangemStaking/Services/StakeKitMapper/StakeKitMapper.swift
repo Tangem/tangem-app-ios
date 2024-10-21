@@ -248,12 +248,20 @@ struct StakeKitMapper {
 
         let validators = response.validators
             .map(mapToValidatorInfo)
-            .sorted(by: { $0.apr ?? 0 > $1.apr ?? 0 })
+            .sorted(by: { lhs, rhs in
+                if lhs.apr == rhs.apr {
+                    return lhs.partner
+                }
+
+                return lhs.apr ?? 0 > rhs.apr ?? 0
+            })
 
         let rewardRateValues = RewardRateValues(
             aprs: validators.filter { $0.preferred }.compactMap(\.apr),
             rewardRate: response.rewardRate
         )
+
+        let item = try mapToStakingTokenItem(from: response.token)
 
         return try YieldInfo(
             id: response.id,
@@ -263,11 +271,11 @@ struct StakeKitMapper {
             enterMinimumRequirement: enterAction.args.amount.minimum,
             exitMinimumRequirement: exitAction.args.amount.minimum,
             validators: validators,
-            item: mapToStakingTokenItem(from: response.token),
+            item: item,
             unbondingPeriod: mapToPeriod(from: response.metadata.cooldownPeriod),
             warmupPeriod: mapToPeriod(from: response.metadata.warmupPeriod),
             rewardClaimingType: mapToRewardClaimingType(from: response.metadata.rewardClaiming),
-            rewardScheduleType: mapToRewardScheduleType(from: response.metadata.rewardSchedule)
+            rewardScheduleType: mapToRewardScheduleType(from: response.metadata.rewardSchedule, item: item)
         )
     }
 
@@ -278,7 +286,7 @@ struct StakeKitMapper {
             address: validator.address,
             name: validator.name ?? "No name",
             preferred: validator.preferred ?? false,
-            partner: validator.address == Constants.partnerValidator,
+            partner: validator.address == StakingConstants.partnerValidator,
             iconURL: validator.image.flatMap { URL(string: $0) },
             apr: validator.apr
         )
@@ -348,22 +356,18 @@ struct StakeKitMapper {
         }
     }
 
-    func mapToRewardScheduleType(from type: StakeKitDTO.Yield.Info.Response.Metadata.RewardScheduleType) throws -> RewardScheduleType {
-        switch type {
-        case .block: .block
-        case .hour: .hour
-        case .epoch: .epoch
-        case .era: .era
-        case .day: .day
-        case .week: .week
-        case .month: .month
+    func mapToRewardScheduleType(
+        from type: StakeKitDTO.Yield.Info.Response.Metadata.RewardScheduleType,
+        item: StakingTokenItem
+    ) throws -> RewardScheduleType {
+        switch item.network {
+        case .solana: .days(min: 2, max: 3)
+        case .cosmos: .seconds(min: 5, max: 12)
+        case .tron: .daily
+        case .binance: .daily
+        case .ethereum where item.contractAddress == StakingConstants.polygonContractAddress: .daily
+        default: .generic(type.rawValue)
         }
-    }
-}
-
-extension StakeKitMapper {
-    enum Constants {
-        static let partnerValidator = "cosmosvaloper1wrx0x9m9ykdhw9sg04v7uljme53wuj03aa5d4f"
     }
 }
 

@@ -40,7 +40,6 @@ final class MainViewModel: ObservableObject {
     private var pendingUserWalletIdsToUpdate: Set<UserWalletId> = []
     private var pendingUserWalletModelsToAdd: [UserWalletModel] = []
     private var shouldRecreatePagesAfterAddingPendingWalletModels = false
-    private var walletNameFieldValidator: AlertFieldValidator?
 
     private var shouldDelayBottomSheetVisibility = true
     private var isLoggingOut = false
@@ -122,6 +121,11 @@ final class MainViewModel: ObservableObject {
 
     /// Handles `UIKit.UIViewController.viewDidAppear(_:)`.
     func onDidAppear() {
+        // The application is already in a locked state, so no attempts to show bottom sheet should be made
+        guard !isLoggingOut else {
+            return
+        }
+
         let uiManager = mainBottomSheetUIManager
         /// On a `cold start` (e.g., after launching the app or after coming back from the background in a `locked` state:
         /// in both cases a new VM is created), the bottom sheet should become visible with some delay to prevent it from
@@ -176,30 +180,9 @@ final class MainViewModel: ObservableObject {
     func didTapEditWallet() {
         Analytics.log(.buttonEditWalletTapped)
 
-        guard let userWalletModel = userWalletRepository.selectedModel else { return }
-
-        let otherWalletNames = userWalletRepository.models.compactMap { model -> String? in
-            guard model.userWalletId != userWalletModel.userWalletId else { return nil }
-
-            return model.name
+        if let alert = AlertBuilder.makeWalletRenamingAlert(userWalletRepository: userWalletRepository) {
+            AppPresenter.shared.show(alert)
         }
-
-        walletNameFieldValidator = AlertFieldValidator { input in
-            !(otherWalletNames.contains(input) || input.isEmpty)
-        }
-
-        let alert = AlertBuilder.makeAlertControllerWithTextField(
-            title: Localization.userWalletListRenamePopupTitle,
-            fieldPlaceholder: Localization.userWalletListRenamePopupPlaceholder,
-            fieldText: userWalletModel.name,
-            fieldValidator: walletNameFieldValidator
-        ) { newName in
-            guard userWalletModel.name != newName else { return }
-
-            userWalletModel.updateWalletName(newName)
-        }
-
-        AppPresenter.shared.show(alert)
     }
 
     func didTapDeleteWallet() {

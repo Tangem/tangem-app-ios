@@ -39,6 +39,6 @@ extension YieldInfo {
         unbondingPeriod: .days(14),
         warmupPeriod: .days(0),
         rewardClaimingType: .manual,
-        rewardScheduleType: .day
+        rewardScheduleType: .daily
     )
 }

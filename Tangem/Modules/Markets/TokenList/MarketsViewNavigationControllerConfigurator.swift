@@ -17,12 +17,7 @@ final class MarketsViewNavigationControllerConfigurator: NSObject, ObservableObj
     }
 
     func configure(_ navigationController: UINavigationController) {
-        if !navigationController.navigationBar.isHidden {
-            // Unlike `UINavigationController.setNavigationBarHidden(_:animated:)` from UIKit and `navigationBarHidden(_:)`
-            // from SwiftUI, this approach will hide the navigation bar without breaking the swipe-to-pop gesture
-            navigationController.navigationBar.isHidden = true
-        }
-
+        navigationController.setNavigationBarAlwaysHidden()
         navigationController.setDelegateSafe(self)
     }
 }

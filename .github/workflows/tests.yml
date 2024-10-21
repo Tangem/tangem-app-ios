@@ -24,6 +24,7 @@ concurrency:
 jobs:
   test:
     name: Test
+    runs-on: macos-14
     if: github.event.pull_request.draft == false
     steps:
     - name: Checkout
@@ -39,4 +40,22 @@ jobs:
         
     - name: Tests
       run: bundle exec fastlane test
-      
+
+  check_bsdk_example_buildable:
+    name: Check BSDK example project
+    runs-on: macos-14
+    if: false # TODO: Andrey Fedorov - Requires code signing, enable after migration to self-hosted runners (IOS-8112)
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: true
+        token: ${{ secrets.GH_MOBILE_PAT }}
+
+    - name: Bundle install
+      run: |
+        bundle config path vendor/bundle
+        bundle install --jobs 4 --retry 3
+
+    - name: Build BSDK example
+      run: bundle exec fastlane check_bsdk_example_buildable

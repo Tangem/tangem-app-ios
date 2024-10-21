@@ -22,7 +22,7 @@ class CommonStakingManager {
     private let _state = CurrentValueSubject<StakingManagerState, Never>(.loading)
     private var canStakeMore: Bool {
         switch wallet.item.network {
-        case .solana, .cosmos, .tron: true
+        case .solana, .cosmos, .tron, .ethereum: true
         default: false
         }
     }
@@ -53,6 +53,15 @@ extension CommonStakingManager: StakingManager {
         _state.eraseToAnyPublisher()
     }
 
+    var allowanceAddress: String? {
+        switch (wallet.item.network, wallet.item.contractAddress) {
+        case (.ethereum, StakingConstants.polygonContractAddress):
+            return "0x5e3ef299fddf15eaa0432e6e66473ace8c13d908"
+        default:
+            return nil
+        }
+    }
+
     func updateState() async {
         updateState(.loading)
         do {
@@ -69,16 +78,19 @@ extension CommonStakingManager: StakingManager {
 
     func estimateFee(action: StakingAction) async throws -> Decimal {
         switch (state, action.type) {
+        case (.loading, _):
+            try await waitForLoadingCompletion()
+            return try await estimateFee(action: action)
         case (.availableToStake, .stake), (.staked, .stake):
-            try await provider.estimateStakeFee(
+            return try await provider.estimateStakeFee(
                 request: mapToActionGenericRequest(action: action)
             )
         case (.staked, .unstake):
-            try await provider.estimateUnstakeFee(
+            return try await provider.estimateUnstakeFee(
                 request: mapToActionGenericRequest(action: action)
             )
         case (.staked, .pending(let type)):
-            try await getPendingEstimateFee(
+            return try await getPendingEstimateFee(
                 request: mapToActionGenericRequest(action: action),
                 type: type
             )
@@ -90,16 +102,19 @@ extension CommonStakingManager: StakingManager {
 
     func transaction(action: StakingAction) async throws -> StakingTransactionAction {
         switch (state, action.type) {
+        case (.loading, _):
+            try await waitForLoadingCompletion()
+            return try await transaction(action: action)
         case (.availableToStake, .stake), (.staked, .stake):
-            try await getStakeTransactionInfo(
+            return try await getStakeTransactionInfo(
                 request: mapToActionGenericRequest(action: action)
             )
         case (.staked, .unstake):
-            try await getUnstakeTransactionInfo(
+            return try await getUnstakeTransactionInfo(
                 request: mapToActionGenericRequest(action: action)
             )
         case (.staked, .pending(let type)):
-            try await getPendingTransactionInfo(
+            return try await getPendingTransactionInfo(
                 request: mapToActionGenericRequest(action: action),
                 type: type
             )
@@ -243,6 +258,16 @@ private extension CommonStakingManager {
             }
 
             return fees.reduce(0, +)
+        }
+    }
+
+    private func waitForLoadingCompletion() async throws {
+        // Drop the current `loading` state
+        _ = try await _state.dropFirst().first().async()
+        // Check if after the loading state we have same status
+        // To exclude endless recursion
+        if case .loading = state {
+            throw StakingManagerError.stakingManagerIsLoading
         }
     }
 }
@@ -394,11 +419,12 @@ public enum StakingManagerError: LocalizedError {
     case transactionNotFound
     case notImplemented
     case notFound
+    case stakingManagerIsLoading
 
     public var errorDescription: String? {
         switch self {
         case .stakingManagerStateNotSupportTransactionAction(let action):
-            "stakingManagerStateNotSupportTransactionAction \(action)"
+            "StakingManagerNotSupportTransactionAction \(action)"
         case .stakedBalanceNotFound(let validator):
             "stakedBalanceNotFound \(validator)"
         case .pendingActionNotFound(let validator):
@@ -409,6 +435,8 @@ public enum StakingManagerError: LocalizedError {
             "notImplemented"
         case .notFound:
             "notFound"
+        case .stakingManagerIsLoading:
+            "StakingManagerIsLoading"
         }
     }
 }

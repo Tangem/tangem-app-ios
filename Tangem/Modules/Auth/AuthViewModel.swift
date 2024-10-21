@@ -90,7 +90,7 @@ final class AuthViewModel: ObservableObject {
             case .success(let model), .partial(let model, _):
                 let walletHasBackup = Analytics.ParameterValue.affirmativeOrNegative(for: model.hasBackupCards)
                 Analytics.log(event: .signedIn, params: [
-                    .signInType: Analytics.ParameterValue.signInTypeCard.rawValue,
+                    .signInType: Analytics.ParameterValue.card.rawValue,
                     .walletsCount: "\(userWalletRepository.models.count)",
                     .walletHasBackup: walletHasBackup.rawValue,
                 ])

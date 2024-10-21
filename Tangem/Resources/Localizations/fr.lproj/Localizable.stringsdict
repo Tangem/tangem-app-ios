@@ -18,6 +18,22 @@
         <string>%li cartes</string>
       </dict>
     </dict>
+    <key>common_days_no_param</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>jour</string>
+        <key>other</key>
+        <string>jours</string>
+      </dict>
+    </dict>
     <key>manage_tokens_number_of_wallets_ios</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
@@ -45,9 +61,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%1$s exchange</string>
+        <string>%li échange</string>
         <key>other</key>
-        <string>%1$s exchanges</string>
+        <string>%li échanges</string>
       </dict>
     </dict>
     <key>markets_token_details_based_on_ratings</key>
@@ -77,7 +93,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Vide</string>
+        <string></string>
         <key>other</key>
         <string>Écrivez ces %li mots dans l'ordre indiqué ci-dessous et conservez-les dans un endroit sûr et secret.</string>
       </dict>
@@ -93,7 +109,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Vide</string>
+        <string>%li word</string>
         <key>other</key>
         <string>%li mots</string>
       </dict>
@@ -141,9 +157,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Utilisez votre carte pour obtenir une adresse pour le réseau %li</string>
+        <string>Utilisez votre carte ou bague pour obtenir une adresse pour le réseau %li</string>
         <key>other</key>
-        <string>Utilisez votre carte pour obtenir des adresses pour les réseaux %li</string>
+        <string>Utilisez votre carte ou bague pour obtenir des adresses pour les réseaux %li</string>
       </dict>
     </dict>
   </dict>

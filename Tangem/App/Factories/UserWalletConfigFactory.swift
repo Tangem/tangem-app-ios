@@ -13,8 +13,6 @@ import BlockchainSdk
 struct UserWalletConfigFactory {
     private let cardInfo: CardInfo
 
-    #warning("TODO: Add ability to create config based on UserWallet")
-
     init(_ cardInfo: CardInfo) {
         self.cardInfo = cardInfo
     }
@@ -22,7 +20,6 @@ struct UserWalletConfigFactory {
     func makeConfig() -> UserWalletConfig {
         let isDemo = DemoUtil().isDemoCard(cardId: cardInfo.card.cardId)
         let isS2CCard = cardInfo.card.issuer.name.lowercased() == "start2coin"
-        let isRing = cardInfo.card.batchId == "AC17" || cardInfo.card.batchId == "BA01"
         let isVisa = cardInfo.card.batchId == "AE04"
 
         switch cardInfo.walletData {
@@ -40,11 +37,11 @@ struct UserWalletConfigFactory {
 
             switch (isWallet2, isDemo) {
             case (true, _):
-                return Wallet2Config(card: cardInfo.card, isDemo: isDemo, isRing: isRing)
+                return Wallet2Config(card: cardInfo.card, isDemo: isDemo)
             case (false, true): // TODO: Combine configs
                 return GenericDemoConfig(card: cardInfo.card)
             case (false, false):
-                return GenericConfig(card: cardInfo.card, isRing: isRing)
+                return GenericConfig(card: cardInfo.card)
             }
         case .file(let noteData):
             if isS2CCard { // TODO: refactor factory

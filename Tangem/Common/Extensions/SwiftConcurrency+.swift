@@ -164,7 +164,9 @@ extension Task where Failure == Error {
         operation: @escaping @Sendable () async throws -> Success
     ) -> Task {
         Task(priority: priority) {
-            try await Task<Never, Never>.sleep(seconds: delaySeconds)
+            if delaySeconds > 0 {
+                try await Task<Never, Never>.sleep(seconds: delaySeconds)
+            }
             try Task<Never, Never>.checkCancellation()
             return try await operation()
         }

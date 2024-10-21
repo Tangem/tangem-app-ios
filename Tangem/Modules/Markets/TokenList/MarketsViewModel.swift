@@ -12,7 +12,7 @@ import Combine
 import CombineExt
 import Kingfisher
 
-final class MarketsViewModel: BaseMarketsViewModel {
+final class MarketsViewModel: MarketsBaseViewModel {
     private typealias SearchInput = MainBottomSheetHeaderViewModel.SearchInput
 
     // MARK: - Injected & Published Properties
@@ -22,7 +22,6 @@ final class MarketsViewModel: BaseMarketsViewModel {
     @Published private(set) var headerViewModel: MainBottomSheetHeaderViewModel
     @Published private(set) var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
     @Published private(set) var tokenListLoadingState: MarketsView.ListLoadingState = .idle
-    @Published private(set) var isDataProviderBusy: Bool = false
 
     @Injected(\.mainBottomSheetUIManager) private var mainBottomSheetUIManager: MainBottomSheetUIManager
 
@@ -150,6 +149,7 @@ final class MarketsViewModel: BaseMarketsViewModel {
     }
 
     func onTryLoadList() {
+        tokenListLoadingState = .loading
         resetShowItemsBelowCapFlag()
         fetch(with: currentSearchValue, by: filterProvider.currentFilterValue)
     }
@@ -258,6 +258,11 @@ private extension MarketsViewModel {
     func requestMiniCharts(forRange range: ClosedRange<Int>) {
         let items = tokenViewModels
         let itemsToFetch: Array<MarketsItemViewModel>.SubSequence
+        if items.isEmpty || items.count <= range.lowerBound {
+            // If items array was cleared or previous visible range was sent we can skip mini-charts loading step
+            return
+        }
+
         if items.count <= range.upperBound {
             itemsToFetch = items[range.lowerBound...]
         } else {
@@ -284,11 +289,9 @@ private extension MarketsViewModel {
                     if oldEvent != .failedToFetchData {
                         viewModel.tokenListLoadingState = .loading
                     }
-                    viewModel.isDataProviderBusy = true
                 case .idle:
-                    viewModel.isDataProviderBusy = false
+                    break
                 case .failedToFetchData:
-                    viewModel.isDataProviderBusy = false
                     if viewModel.dataProvider.items.isEmpty {
                         Analytics.log(.marketsDataError)
                         viewModel.tokenListLoadingState = .error
@@ -300,7 +303,6 @@ private extension MarketsViewModel {
                     viewModel.tokenListLoadingState = .loading
                     viewModel.tokenViewModels.removeAll()
                     viewModel.resetScrollPositionPublisher.send(())
-                    viewModel.isDataProviderBusy = true
                     viewModel.quotesUpdatesScheduler.saveQuotesUpdateDate(Date())
 
                     guard viewModel.isBottomSheetExpanded else {

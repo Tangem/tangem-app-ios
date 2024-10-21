@@ -9,17 +9,29 @@
 import TangemExpress
 
 protocol FeeFormatter {
-    func formattedFeeComponents(fee: Decimal, currencySymbol: String, currencyId: String?, isFeeApproximate: Bool) -> FormattedFeeComponents
+    func formattedFeeComponents(
+        fee: Decimal,
+        currencySymbol: String,
+        currencyId: String?,
+        isFeeApproximate: Bool,
+        formattingOptions: BalanceFormattingOptions
+    ) -> FormattedFeeComponents
+
     func format(fee: Decimal, currencySymbol: String, currencyId: String?, isFeeApproximate: Bool) -> String
 }
 
 extension FeeFormatter {
-    func formattedFeeComponents(fee: Decimal, tokenItem: TokenItem) -> FormattedFeeComponents {
+    func formattedFeeComponents(
+        fee: Decimal,
+        tokenItem: TokenItem,
+        formattingOptions: BalanceFormattingOptions = .defaultCryptoFeeFormattingOptions
+    ) -> FormattedFeeComponents {
         formattedFeeComponents(
             fee: fee,
             currencySymbol: tokenItem.currencySymbol,
             currencyId: tokenItem.currencyId,
-            isFeeApproximate: tokenItem.blockchain.isFeeApproximate(for: tokenItem.amountType)
+            isFeeApproximate: tokenItem.blockchain.isFeeApproximate(for: tokenItem.amountType),
+            formattingOptions: formattingOptions
         )
     }
 
@@ -29,6 +41,21 @@ extension FeeFormatter {
             currencySymbol: tokenItem.currencySymbol,
             currencyId: tokenItem.currencyId,
             isFeeApproximate: tokenItem.blockchain.isFeeApproximate(for: tokenItem.amountType)
+        )
+    }
+
+    func formattedFeeComponents(
+        fee: Decimal,
+        currencySymbol: String,
+        currencyId: String?,
+        isFeeApproximate: Bool
+    ) -> FormattedFeeComponents {
+        formattedFeeComponents(
+            fee: fee,
+            currencySymbol: currencySymbol,
+            currencyId: currencyId,
+            isFeeApproximate: isFeeApproximate,
+            formattingOptions: .defaultCryptoFeeFormattingOptions
         )
     }
 }

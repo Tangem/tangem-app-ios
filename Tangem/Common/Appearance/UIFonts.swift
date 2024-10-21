@@ -9,21 +9,27 @@
 import UIKit
 
 enum UIFonts {
-    enum Regular {
-        static var body: UIFont {
-            FeatureProvider.isAvailable(.dynamicFonts) ? .preferredFont(forTextStyle: .body) : .systemFont(ofSize: 17, weight: .regular)
+    struct RegularFont {
+        let isDynamic: () -> Bool
+
+        var body: UIFont {
+            isDynamic() ? .preferredFont(forTextStyle: .body) : .systemFont(ofSize: 17, weight: .regular)
         }
 
-        static var subheadline: UIFont {
-            FeatureProvider.isAvailable(.dynamicFonts) ? .preferredFont(forTextStyle: .subheadline) : .systemFont(ofSize: 15, weight: .regular)
+        var subheadline: UIFont {
+            isDynamic() ? .preferredFont(forTextStyle: .subheadline) : .systemFont(ofSize: 15, weight: .regular)
         }
 
-        static var footnote: UIFont {
-            FeatureProvider.isAvailable(.dynamicFonts) ? .preferredFont(forTextStyle: .footnote) : .systemFont(ofSize: 13, weight: .regular)
+        var footnote: UIFont {
+            isDynamic() ? .preferredFont(forTextStyle: .footnote) : .systemFont(ofSize: 13, weight: .regular)
         }
 
-        static var caption2: UIFont {
-            FeatureProvider.isAvailable(.dynamicFonts) ? .preferredFont(forTextStyle: .caption2) : .systemFont(ofSize: 11, weight: .regular)
+        var caption2: UIFont {
+            isDynamic() ? .preferredFont(forTextStyle: .caption2) : .systemFont(ofSize: 11, weight: .regular)
         }
     }
+
+    static let Regular = RegularFont(isDynamic: { FeatureProvider.isAvailable(.dynamicFonts) })
+
+    static let RegularStatic = RegularFont(isDynamic: { false })
 }

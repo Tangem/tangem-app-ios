@@ -8,8 +8,8 @@
 
 import Foundation
 import BlockchainSdk
-import struct WalletConnectSwiftV2.AnyCodable
-import enum WalletConnectSwiftV2.RPCResult
+import struct Commons.AnyCodable
+import enum JSONRPC.RPCResult
 
 class WalletConnectV2SendTransactionHandler {
     private let wcTransaction: WalletConnectEthTransaction
@@ -17,7 +17,7 @@ class WalletConnectV2SendTransactionHandler {
     private let transactionBuilder: WalletConnectEthTransactionBuilder
     private let messageComposer: WalletConnectV2MessageComposable
     private let uiDelegate: WalletConnectUIDelegate
-    private let transactionDispatcher: SendTransactionDispatcher
+    private let transactionDispatcher: TransactionDispatcher
 
     private var transactionToSend: Transaction?
 
@@ -47,7 +47,7 @@ class WalletConnectV2SendTransactionHandler {
         self.messageComposer = messageComposer
         self.transactionBuilder = transactionBuilder
         self.uiDelegate = uiDelegate
-        transactionDispatcher = CommonSendTransactionDispatcher(walletModel: walletModel, transactionSigner: signer)
+        transactionDispatcher = SendTransactionDispatcher(walletModel: walletModel, transactionSigner: signer)
     }
 }
 
@@ -69,7 +69,10 @@ extension WalletConnectV2SendTransactionHandler: WalletConnectMessageHandler {
 
         let result = try await transactionDispatcher.send(transaction: .transfer(transaction))
 
-        Analytics.log(.transactionSent, params: [.source: .transactionSourceWalletConnect])
+        Analytics.log(event: .transactionSent, params: [
+            .source: Analytics.ParameterValue.transactionSourceWalletConnect.rawValue,
+            .walletForm: result.signerType,
+        ])
 
         uiDelegate.showScreen(with: .init(
             event: .success,

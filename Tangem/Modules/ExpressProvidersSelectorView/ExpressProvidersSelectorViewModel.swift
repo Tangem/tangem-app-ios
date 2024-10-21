@@ -74,8 +74,23 @@ final class ExpressProvidersSelectorViewModel: ObservableObject, Identifiable {
     }
 
     func setupProviderRowViewModels() async {
+        typealias SortableProvider = (priority: ExpressAvailableProvider.Priority, amount: Decimal)
+
         let viewModels: [ProviderRowViewModel] = await allProviders
-            .asyncSorted(sort: >, by: { await $0.getPriority() })
+            .asyncSorted(
+                sort: { (firstProvider: SortableProvider, secondProvider: SortableProvider) in
+                    if firstProvider.priority == secondProvider.priority {
+                        return firstProvider.amount > secondProvider.amount
+                    } else {
+                        return firstProvider.priority > secondProvider.priority
+                    }
+                },
+                by: { provider in
+                    let priority = await provider.getPriority()
+                    let expectedAmount = await provider.getState().quote?.expectAmount ?? 0
+                    return (priority, expectedAmount)
+                }
+            )
             .asyncCompactMap { provider in
                 guard provider.isAvailable else {
                     return nil

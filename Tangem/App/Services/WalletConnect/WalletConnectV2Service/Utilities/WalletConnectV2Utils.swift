@@ -7,8 +7,9 @@
 //
 
 import Foundation
-import WalletConnectSwiftV2
+import WalletConnectUtils
 import BlockchainSdk
+import WalletConnectSign
 
 struct WalletConnectV2Utils {
     private let evmNamespace = "eip155"
@@ -83,93 +84,40 @@ struct WalletConnectV2Utils {
     /// - Returns:
     /// Dictionary with `chains` (`WalletConnectSwiftV2` terminology) as keys and session settings as values.
     /// - Throws:Error with list of unsupported blockchain names or a list of not added to user token list blockchain names
-    func createSessionNamespaces(from namespaces: [String: ProposalNamespace], optionalNamespaces: [String: ProposalNamespace]?, walletModelProvider: WalletConnectWalletModelProvider) throws -> [String: SessionNamespace] {
-        var sessionNamespaces: [String: SessionNamespace] = [:]
+    func createSessionNamespaces(
+        proposal: Session.Proposal,
+        walletModelProvider: WalletConnectWalletModelProvider
+    ) throws -> [String: SessionNamespace] {
         var missingBlockchains: [String] = []
         var unsupportedEVMBlockchains: [String] = []
 
-        for (namespace, proposalNamespace) in namespaces {
-            guard let chains = proposalNamespace.chains else {
-                continue
+        let chains = Set(proposal.namespaceChains)
+
+        var supportedChains = Set<WalletConnectUtils.Blockchain>()
+
+        let accounts: [[Account]] = chains.compactMap { wcBlockchain in
+            guard let blockchain = createBlockchain(for: wcBlockchain) else {
+                unsupportedEVMBlockchains.append(wcBlockchain.reference)
+                return nil
             }
 
-            var supportedChains = Set<WalletConnectSwiftV2.Blockchain>()
-            let accounts: [[Account]] = chains.compactMap { wcBlockchain in
-                guard let blockchain = createBlockchain(for: wcBlockchain) else {
-                    unsupportedEVMBlockchains.append(wcBlockchain.reference)
-                    return nil
-                }
-
-                supportedChains.insert(wcBlockchain)
-                let filteredWallets = walletModelProvider.getModels(with: blockchain.id)
-                if filteredWallets.isEmpty {
-                    missingBlockchains.append(blockchain.displayName)
-                    return nil
-                }
-
-                return filteredWallets.compactMap { Account("\(wcBlockchain.absoluteString):\($0.wallet.address)") }
+            supportedChains.insert(wcBlockchain)
+            let filteredWallets = walletModelProvider.getModels(with: blockchain.id)
+            if filteredWallets.isEmpty {
+                missingBlockchains.append(blockchain.displayName)
+                return nil
             }
 
-            let sessionNamespace = SessionNamespace(
-                chains: Array(supportedChains),
-                accounts: accounts.reduce([], +),
-                methods: proposalNamespace.methods,
-                events: proposalNamespace.events
-            )
-            sessionNamespaces[namespace] = sessionNamespace
+            return filteredWallets.compactMap { Account("\(wcBlockchain.absoluteString):\($0.wallet.address)") }
         }
 
-        for (namespace, proposalNamespace) in optionalNamespaces ?? [:] {
-            guard
-                isNamespaceSupported(namespace),
-                let chains = proposalNamespace.chains
-            else {
-                continue
-            }
-
-            var supportedChains = Set<WalletConnectSwiftV2.Blockchain>()
-            let accounts: [[Account]] = chains.compactMap { wcBlockchain in
-                guard let blockchain = createBlockchain(for: wcBlockchain) else {
-                    return nil
-                }
-
-                supportedChains.insert(wcBlockchain)
-                let filteredWallets = walletModelProvider.getModels(with: blockchain.id)
-                if filteredWallets.isEmpty {
-                    return nil
-                }
-
-                return filteredWallets.compactMap { Account("\(wcBlockchain.absoluteString):\($0.wallet.address)") }
-            }
-            let flattenedAccounts = accounts.reduce([], +)
-            if flattenedAccounts.isEmpty {
-                continue
-            }
-
-            let sessionNamespace = SessionNamespace(
-                chains: Array(supportedChains),
-                accounts: flattenedAccounts,
-                methods: proposalNamespace.methods,
-                events: proposalNamespace.events
-            )
-
-            // TODO: TBF WTF? :)
-            if let existingNamespace = sessionNamespaces[namespace] {
-                let unionChains = Set(existingNamespace.chains ?? []).union(sessionNamespace.chains ?? [])
-                let unionAccounts = Set(existingNamespace.accounts).union(sessionNamespace.accounts)
-                let unionMethods = Set(existingNamespace.methods).union(sessionNamespace.methods)
-                let unionEvents = Set(existingNamespace.events).union(sessionNamespace.events)
-
-                sessionNamespaces[namespace] = SessionNamespace(
-                    chains: Array(unionChains),
-                    accounts: Array(unionAccounts),
-                    methods: unionMethods,
-                    events: unionEvents
-                )
-            } else {
-                sessionNamespaces[namespace] = sessionNamespace
-            }
-        }
+        let sessionNamespaces = try AutoNamespaces.build(
+            sessionProposal: proposal,
+            chains: Array(supportedChains),
+            methods: proposal.namespaceMethods,
+            events: proposal.namespaceEvents,
+            accounts: accounts.reduce([], +)
+        )
 
         guard unsupportedEVMBlockchains.isEmpty else {
             throw WalletConnectV2Error.unsupportedBlockchains(unsupportedEVMBlockchains)
@@ -204,7 +152,7 @@ struct WalletConnectV2Utils {
         )
     }
 
-    func createBlockchain(for wcBlockchain: WalletConnectSwiftV2.Blockchain) -> BlockchainMeta? {
+    func createBlockchain(for wcBlockchain: WalletConnectUtils.Blockchain) -> BlockchainMeta? {
         switch wcBlockchain.namespace {
         case evmNamespace:
             let blockchains = SupportedBlockchains.all
@@ -239,7 +187,7 @@ struct WalletConnectV2Utils {
     }
 
     private func createBlockchainNetwork(
-        from wcBlockchain: WalletConnectSwiftV2.Blockchain,
+        from wcBlockchain: WalletConnectUtils.Blockchain,
         with address: String,
         walletModelProvider: WalletConnectWalletModelProvider
     ) -> BlockchainNetwork? {
@@ -263,4 +211,27 @@ struct BlockchainMeta {
     let id: String
     let currencySymbol: String
     let displayName: String
+}
+
+private extension Session.Proposal {
+    var namespaceChains: [WalletConnectUtils.Blockchain] {
+        let requiredChains = requiredNamespaces.values.compactMap(\.chains).flatMap { $0.asArray }
+        let optionalChains = optionalNamespaces?.values.compactMap(\.chains).flatMap { $0.asArray } ?? []
+
+        return requiredChains + optionalChains
+    }
+
+    var namespaceMethods: [String] {
+        let requiredMethods = requiredNamespaces.values.flatMap { $0.methods.asArray }
+        let optionalMethods = optionalNamespaces?.values.flatMap { $0.methods.asArray } ?? []
+
+        return requiredMethods + optionalMethods
+    }
+
+    var namespaceEvents: [String] {
+        let requiredEvents = requiredNamespaces.values.flatMap { $0.events.asArray }
+        let optionalEvents = optionalNamespaces?.values.flatMap { $0.events.asArray } ?? []
+
+        return requiredEvents + optionalEvents
+    }
 }
