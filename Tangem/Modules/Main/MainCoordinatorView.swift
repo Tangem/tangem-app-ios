@@ -82,7 +82,7 @@ struct MainCoordinatorView: CoordinatorView {
                     })
             }
             .sheet(item: $coordinator.organizeTokensViewModel) { viewModel in
-                NavigationBarHiddingView(shouldWrapInNavigationView: true) {
+                NavigationBarHidingView(shouldWrapInNavigationView: true) {
                     OrganizeTokensView(viewModel: viewModel)
                         .navigationTitle(Localization.organizeTokensTitle)
                         .navigationBarTitleDisplayMode(.inline)
