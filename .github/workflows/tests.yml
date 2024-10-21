@@ -43,6 +43,7 @@ jobs:
 
   check_bsdk_example_buildable:
     name: Check BSDK example project
+    runs-on: self-hosted
     if: github.event.pull_request.draft == false
     steps:
     - name: Checkout
