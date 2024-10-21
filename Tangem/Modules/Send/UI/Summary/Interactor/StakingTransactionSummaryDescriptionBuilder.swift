@@ -12,7 +12,6 @@ import TangemFoundation
 struct StakingTransactionSummaryDescriptionBuilder {
     private let tokenItem: TokenItem
     private let balanceFormatter = BalanceFormatter()
-    private let dateFormatter = DateComponentsFormatter.staking()
 
     init(tokenItem: TokenItem) {
         self.tokenItem = tokenItem
@@ -37,7 +36,7 @@ extension StakingTransactionSummaryDescriptionBuilder: SendTransactionSummaryDes
 
         let amountInFiatFormatted = balanceFormatter.formatFiatBalance(amountFiat, formattingOptions: amountFormattingOptions)
 
-        let scheduleFormatted = schedule.formatted(formatter: dateFormatter)
+        let scheduleFormatted = schedule.formatted().lowercased()
         return Localization.stakingSummaryDescriptionText(amountInFiatFormatted, scheduleFormatted)
     }
 }
