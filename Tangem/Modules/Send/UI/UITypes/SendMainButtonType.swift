@@ -37,7 +37,7 @@ enum SendFlowActionType: Hashable {
     var title: String {
         switch self {
         case .send: Localization.commonSend
-        case .approve: Localization.commonApprove
+        case .approve: Localization.givePermissionTitle
         case .stake: Localization.commonStake
         case .unstake: Localization.commonUnstake
         case .claimRewards: Localization.commonClaimRewards

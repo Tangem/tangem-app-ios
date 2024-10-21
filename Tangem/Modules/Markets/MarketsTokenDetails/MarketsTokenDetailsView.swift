@@ -47,6 +47,7 @@ struct MarketsTokenDetailsView: View {
             }
             .background {
                 backgroundColor
+                    .ignoresSafeArea(edges: .vertical)
             }
     }
 
