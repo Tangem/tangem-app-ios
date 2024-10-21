@@ -18,8 +18,10 @@ extension View {
         sheet(item: info) { info in
             TokenDescriptionBottomSheetView(info: info, generatedWithAIAction: onGeneratedAITapAction)
                 .adaptivePresentationDetents()
-                .padding(.bottom, 10)
-                .background(backgroundColor.ignoresSafeArea(.all, edges: .bottom))
+                .background(
+                    backgroundColor
+                        .ignoresSafeArea(edges: .bottom)
+                )
         }
     }
 }
