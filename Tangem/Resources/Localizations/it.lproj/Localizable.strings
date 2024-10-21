@@ -82,10 +82,12 @@
 "common_camera_denied_alert_message" = "Non hai fornito l'accesso alla tua videocamera, modifica le tue impostazioni sulla privacy";
 "common_camera_denied_alert_title" = "Accesso alla videocamera negato";
 "common_cancel" = "Annulla";
+"common_change" = "Change";
 "common_choose_action" = "Choose action";
 "common_claim" = "Claim";
 "common_claim_rewards" = "Claim rewards";
 "common_close" = "Close";
+"common_confirm" = "Confirm";
 "common_continue" = "Continue";
 "common_copy" = "Copy";
 "common_copy_address" = "Copy address";
@@ -528,6 +530,9 @@
 "onboarding_wallet_info_title_fourth" = "Access code restore";
 "onboarding_wallet_info_title_second" = "Identical cards";
 "onboarding_wallet_info_title_third" = "Access code";
+"onramp_residency_bottomsheet_country_not_supported" = "Our services are not available in this country";
+"onramp_residency_bottomsheet_country_subtitle" = "Change or confirm it";
+"onramp_residency_bottomsheet_title" = "Your residence has been identified as";
 "organize_tokens_group" = "Group";
 "organize_tokens_sort_by_balance" = "By balance";
 "organize_tokens_title" = "Organize tokens";
@@ -727,6 +732,7 @@
 "staking_reward_schedule_each" = "Each %@";
 "staking_reward_schedule_each_day" = "Each day";
 "staking_reward_schedule_each_days" = "Each %@ days";
+"staking_reward_schedule_each_plural" = "Each";
 "staking_reward_schedule_each_sec" = "Each %1$@ sec";
 "staking_reward_schedule_epoch" = "Per Epoch";
 "staking_reward_schedule_era" = "Per Era";
@@ -736,7 +742,7 @@
 "staking_rewards" = "Rewards";
 "staking_stake_locked" = "Stake locked";
 "staking_stake_more" = "Stake more";
-"staking_summary_description_text" = "You stake %1$@ and will be receiving your reward each %2$@";
+"staking_summary_description_text" = "You stake %1$@ and will be receiving your reward %2$@";
 "staking_tap_to_unlock" = "Tap to unlock";
 "staking_tap_to_unlock_or_vote" = "Tap to unlock or vote";
 "staking_tap_to_withdraw" = "Tap to withdraw";
