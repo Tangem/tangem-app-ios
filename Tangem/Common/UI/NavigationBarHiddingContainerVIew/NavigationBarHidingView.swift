@@ -1,5 +1,5 @@
 //
-//  NavigationBarHiddingView.swift
+//  NavigationBarHidingView.swift
 //  Tangem
 //
 //  Created by Andrew Son on 08.10.24.
@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct NavigationBarHiddingView<Content: View>: View {
+struct NavigationBarHidingView<Content: View>: View {
     var shouldWrapInNavigationView: Bool
     var content: Content
 
@@ -16,7 +16,7 @@ struct NavigationBarHiddingView<Content: View>: View {
         if #available(iOS 16.0, *) {
             wrappedContent
         } else {
-            UIAppearanceBoundaryContainerView(boundaryMarker: NavigationBarHiddingViewUIAppearanceBoundaryMarker.self) {
+            UIAppearanceBoundaryContainerView(boundaryMarker: NavigationBarHidingViewUIAppearanceBoundaryMarker.self) {
                 wrappedContent
             }
         }
@@ -41,7 +41,7 @@ struct NavigationBarHiddingView<Content: View>: View {
         } else {
             content
                 .onAppear {
-                    NavigationBarHiddingViewUIAppearanceBoundaryMarker.setupUIAppearanceIfNeeded()
+                    NavigationBarHidingViewUIAppearanceBoundaryMarker.setupUIAppearanceIfNeeded()
                 }
         }
     }
@@ -52,7 +52,7 @@ struct NavigationBarHiddingView<Content: View>: View {
     }
 }
 
-private class NavigationBarHiddingViewUIAppearanceBoundaryMarker: UIViewController {
+private class NavigationBarHidingViewUIAppearanceBoundaryMarker: UIViewController {
     static var didSetupUIAppearance = false
 
     @available(iOS, obsoleted: 16.0, message: "Use native 'toolbarBackground(_:for:)' instead")
@@ -62,7 +62,7 @@ private class NavigationBarHiddingViewUIAppearanceBoundaryMarker: UIViewControll
             navBarAppearance.configureWithTransparentBackground()
 
             let uiAppearance = UINavigationBar.appearance(
-                whenContainedInInstancesOf: [NavigationBarHiddingViewUIAppearanceBoundaryMarker.self]
+                whenContainedInInstancesOf: [NavigationBarHidingViewUIAppearanceBoundaryMarker.self]
             )
             uiAppearance.compactAppearance = navBarAppearance
             uiAppearance.standardAppearance = navBarAppearance

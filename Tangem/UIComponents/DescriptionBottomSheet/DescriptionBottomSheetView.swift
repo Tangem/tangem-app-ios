@@ -24,7 +24,6 @@ struct DescriptionBottomSheetView: View {
     let info: DescriptionBottomSheetInfo
 
     @Environment(\.dismiss) private var dismissSheetAction
-    @State private var containerHeight: CGFloat = 0
 
     var body: some View {
         content
