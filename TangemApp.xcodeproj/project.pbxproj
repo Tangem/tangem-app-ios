@@ -612,7 +612,7 @@
 		B0D51C862C2400810043D792 /* visaTestnet.json in Resources */ = {isa = PBXBuildFile; fileRef = B0D51C842C2400810043D792 /* visaTestnet.json */; };
 		B0D51C872C2400810043D792 /* visa.json in Resources */ = {isa = PBXBuildFile; fileRef = B0D51C852C2400810043D792 /* visa.json */; };
 		B0D622FE2A9E33E5001FA044 /* SingleTokenNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D622FD2A9E33E5001FA044 /* SingleTokenNotificationManager.swift */; };
-		B0D6B2542CB52B090068D310 /* NavigationBarHiddingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D6B2532CB52B090068D310 /* NavigationBarHiddingView.swift */; };
+		B0D6B2542CB52B090068D310 /* NavigationBarHidingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D6B2532CB52B090068D310 /* NavigationBarHidingView.swift */; };
 		B0D7F896295EDCBE00497139 /* ReferralErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D7F895295EDCBE00497139 /* ReferralErrors.swift */; };
 		B0D9FDCA2A9336920047A1C0 /* IconViewSizeSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D9FDC92A9336920047A1C0 /* IconViewSizeSettings.swift */; };
 		B0DB73FC2A8CA28800F6376E /* UnlockUserWalletBottomSheetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DB73FB2A8CA28800F6376E /* UnlockUserWalletBottomSheetViewModel.swift */; };
@@ -3581,7 +3581,7 @@
 		B0D51C842C2400810043D792 /* visaTestnet.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = visaTestnet.json; path = "tangem-app-config/visaTestnet.json"; sourceTree = SOURCE_ROOT; };
 		B0D51C852C2400810043D792 /* visa.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = visa.json; path = "tangem-app-config/visa.json"; sourceTree = SOURCE_ROOT; };
 		B0D622FD2A9E33E5001FA044 /* SingleTokenNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleTokenNotificationManager.swift; sourceTree = "<group>"; };
-		B0D6B2532CB52B090068D310 /* NavigationBarHiddingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarHiddingView.swift; sourceTree = "<group>"; };
+		B0D6B2532CB52B090068D310 /* NavigationBarHidingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarHidingView.swift; sourceTree = "<group>"; };
 		B0D7F895295EDCBE00497139 /* ReferralErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReferralErrors.swift; sourceTree = "<group>"; };
 		B0D9FDC92A9336920047A1C0 /* IconViewSizeSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconViewSizeSettings.swift; sourceTree = "<group>"; };
 		B0DB73FB2A8CA28800F6376E /* UnlockUserWalletBottomSheetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnlockUserWalletBottomSheetViewModel.swift; sourceTree = "<group>"; };
@@ -8103,7 +8103,7 @@
 		B0D6B2522CB52AE20068D310 /* NavigationBarHiddingContainerVIew */ = {
 			isa = PBXGroup;
 			children = (
-				B0D6B2532CB52B090068D310 /* NavigationBarHiddingView.swift */,
+				B0D6B2532CB52B090068D310 /* NavigationBarHidingView.swift */,
 			);
 			path = NavigationBarHiddingContainerVIew;
 			sourceTree = "<group>";
@@ -16144,7 +16144,7 @@
 				B01B2D752BD2924F00D8A6A1 /* CommonAPIListProvider.swift in Sources */,
 				B0AF2DF12B1DAACD001A8696 /* PendingExpressTransactionStatus.swift in Sources */,
 				EF032C512955C59E006C1FF3 /* DefaultSelectableRowView.swift in Sources */,
-				B0D6B2542CB52B090068D310 /* NavigationBarHiddingView.swift in Sources */,
+				B0D6B2542CB52B090068D310 /* NavigationBarHidingView.swift in Sources */,
 				EFC84B0F2C37FAB500546882 /* SendFlowFactory.swift in Sources */,
 				EF4662222924DEEE00346B6C /* DefaultToggleRowView.swift in Sources */,
 				EF46621B2924DEEE00346B6C /* DefaultHeaderView.swift in Sources */,
