@@ -29,8 +29,6 @@ final class SeiAddressTests: XCTestCase {
     }
     
     func testMakeInvalidAddress() throws {
-        let validAddress = "sei12rtn7e5lh6y6zftgc69gh7a0cny44089x7j8hq"
-        
         let privateKey = PrivateKey(data: Data(hex: "2c179540bebbb6b862fb20fbb6713d3c9c5fc3464da61f0292735f74f35f8586"))!
         let publicKeyData = privateKey.getPublicKeyEd25519().data
         
