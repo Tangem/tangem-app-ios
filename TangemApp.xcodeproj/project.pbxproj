@@ -1715,6 +1715,8 @@
 		B67E38BF2CC717A300D660EB /* TangemSdk in Frameworks */ = {isa = PBXBuildFile; productRef = B67E38BE2CC717A300D660EB /* TangemSdk */; };
 		B67E38C12CC71A2C00D660EB /* TangemSdk in Frameworks */ = {isa = PBXBuildFile; productRef = B67E38C02CC71A2C00D660EB /* TangemSdk */; };
 		B67E38C32CC71B5F00D660EB /* TangemSdk in Frameworks */ = {isa = PBXBuildFile; productRef = B67E38C22CC71B5F00D660EB /* TangemSdk */; };
+		B67E38C52CC7252900D660EB /* TangemSdk in Frameworks */ = {isa = PBXBuildFile; productRef = B67E38C42CC7252900D660EB /* TangemSdk */; };
+		B67E38C72CC7259B00D660EB /* TangemSdk in Frameworks */ = {isa = PBXBuildFile; productRef = B67E38C62CC7259B00D660EB /* TangemSdk */; };
 		B6805B722A32F8C90015EC96 /* OrganizeTokensListItemPreviewProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6805B712A32F8C90015EC96 /* OrganizeTokensListItemPreviewProvider.swift */; };
 		B68284202C581B0A007B438F /* MarketsTokenHistoryChartMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B682841F2C581B0A007B438F /* MarketsTokenHistoryChartMapper.swift */; };
 		B687286F2B7D48E90090C24F /* BlockchainAccountCreateParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = B687286E2B7D48E90090C24F /* BlockchainAccountCreateParameters.swift */; };
@@ -5687,6 +5689,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AB5DE0569C12F3BDA9530564 /* Pods_TangemTests.framework in Frameworks */,
+				B67E38C72CC7259B00D660EB /* TangemSdk in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5759,6 +5762,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B68E1F6D2CBC44060043E598 /* BlockchainSdk.framework in Frameworks */,
+				B67E38C52CC7252900D660EB /* TangemSdk in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14394,6 +14398,9 @@
 				5D3F77DA24BF56DC00E8695B /* PBXTargetDependency */,
 			);
 			name = TangemTests;
+			packageProductDependencies = (
+				B67E38C62CC7259B00D660EB /* TangemSdk */,
+			);
 			productName = "Tangem TapTests";
 			productReference = 5D3F77D824BF56DC00E8695B /* TangemTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -14539,6 +14546,9 @@
 				B68E1F712CBC44060043E598 /* PBXTargetDependency */,
 			);
 			name = BlockchainSdkTests;
+			packageProductDependencies = (
+				B67E38C42CC7252900D660EB /* TangemSdk */,
+			);
 			productName = BlockchainSdkTests;
 			productReference = B68E1F6C2CBC44060043E598 /* BlockchainSdkTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -24312,6 +24322,16 @@
 			productName = TangemSdk;
 		};
 		B67E38C22CC71B5F00D660EB /* TangemSdk */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B67E38B72CC7147600D660EB /* XCRemoteSwiftPackageReference "tangem-sdk-ios" */;
+			productName = TangemSdk;
+		};
+		B67E38C42CC7252900D660EB /* TangemSdk */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B67E38B72CC7147600D660EB /* XCRemoteSwiftPackageReference "tangem-sdk-ios" */;
+			productName = TangemSdk;
+		};
+		B67E38C62CC7259B00D660EB /* TangemSdk */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B67E38B72CC7147600D660EB /* XCRemoteSwiftPackageReference "tangem-sdk-ios" */;
 			productName = TangemSdk;
