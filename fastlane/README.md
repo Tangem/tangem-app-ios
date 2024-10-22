@@ -97,6 +97,20 @@ Options:
 - build: build number
 
 
+### update_translations
+
+```sh
+[bundle exec] fastlane update_translations
+```
+
+
+Fetches and updates localization bundles using Localise fastlane action (https://github.com/lokalise/lokalise-fastlane-actions).
+Uses `LOKALISE_API_TOKEN` and `LOKALISE_PROJECT_ID` env vars.
+Options:
+- languages: A comma-delimited string of languages to update, like `en,fr,de,ja,ru,es,uk_UA`. Pass an empty string to update all available languages.
+- destination: A file path to save localization files to.
+
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.

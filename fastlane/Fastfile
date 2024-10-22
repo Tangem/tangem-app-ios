@@ -9,6 +9,14 @@ WORKSPACE_NAME = "TangemApp.xcworkspace"
 FIREBASE_TESTERS_GROUP = "testers"
 
 before_all do |lane, options|
+  lanes_to_skip_bootstrap = [
+    :update_translations,
+  ]
+
+  if lanes_to_skip_bootstrap.include?(lane)
+    next
+  end
+
   # Xcode version overrides available only on CI
   if ENV["CI"]&.downcase == "true"
     if options[:xcode_version_override].nil?
@@ -153,6 +161,30 @@ lane :refresh_dsyms do |options|
   )
   upload_symbols_to_crashlytics(app_id: ENV["PRODUCTION_SCHEME"])
   clean_build_artifacts
+end
+
+desc """
+Fetches and updates localization bundles using Localise fastlane action (https://github.com/lokalise/lokalise-fastlane-actions).
+Uses `LOKALISE_API_TOKEN` and `LOKALISE_PROJECT_ID` env vars.
+Options:
+- languages: A comma-delimited string of languages to update, like `en,fr,de,ja,ru,es,uk_UA`. Pass an empty string to update all available languages.
+- destination: A file path to save localization files to.
+"""
+lane :update_translations do |options|
+  # Can't pass an array as a param for a lane, see https://github.com/fastlane-community/fastlane-plugin-appicon/issues/41 for details
+  languages = options[:languages]&.split(",")
+
+  destination = options[:destination]
+  UI.user_error!("Invalid destination path '#{destination}' for localization files") unless (destination and not destination.empty?)
+
+  lokalise(
+    destination: destination,
+    replace_breaks: true,
+    use_original: true,
+    languages: languages,
+    export_sort: "a_z",
+    export_empty_as: "base"
+  )
 end
 
 private_lane :build do |options|
