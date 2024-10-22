@@ -95,16 +95,19 @@ extension CommonStakingManager: StakingManager {
 
     func estimateFee(action: StakingAction) async throws -> Decimal {
         switch (state, action.type) {
+        case (.loading, _):
+            try await waitForLoadingCompletion()
+            return try await estimateFee(action: action)
         case (.availableToStake, .stake), (.staked, .stake):
-            try await provider.estimateStakeFee(
+            return try await provider.estimateStakeFee(
                 request: mapToActionGenericRequest(action: action)
             )
         case (.staked, .unstake):
-            try await provider.estimateUnstakeFee(
+            return try await provider.estimateUnstakeFee(
                 request: mapToActionGenericRequest(action: action)
             )
         case (.staked, .pending(let type)):
-            try await getPendingEstimateFee(
+            return try await getPendingEstimateFee(
                 request: mapToActionGenericRequest(action: action),
                 type: type
             )
@@ -117,14 +120,7 @@ extension CommonStakingManager: StakingManager {
     func transaction(action: StakingAction) async throws -> StakingTransactionAction {
         switch (state, action.type) {
         case (.loading, _):
-            // Drop the current `loading` state
-            let newState = try await _state.dropFirst().first().async()
-            // Check if after the loading state we have same status
-            // To exclude endless recursion
-            if case .loading = state {
-                throw StakingManagerError.stakingManagerIsLoading
-            }
-
+            try await waitForLoadingCompletion()
             return try await transaction(action: action)
         case (.availableToStake, .stake), (.staked, .stake):
             return try await getStakeTransactionInfo(
@@ -284,6 +280,16 @@ private extension CommonStakingManager {
             }
 
             return fees.reduce(0, +)
+        }
+    }
+
+    private func waitForLoadingCompletion() async throws {
+        // Drop the current `loading` state
+        _ = try await _state.dropFirst().first().async()
+        // Check if after the loading state we have same status
+        // To exclude endless recursion
+        if case .loading = state {
+            throw StakingManagerError.stakingManagerIsLoading
         }
     }
 }

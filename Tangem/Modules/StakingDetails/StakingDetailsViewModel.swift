@@ -258,7 +258,7 @@ private extension StakingDetailsViewModel {
                 BalanceConverter().convertToFiat(rewardsValue, currencyId: $0)
             }
             let rewardsFiatFormatted = balanceFormatter.formatFiatBalance(rewardsFiat)
-            let rewardsClaimable = !balances.flatMap(\.actions).isEmpty
+            let rewardsClaimable = balances.flatMap(\.actions).contains(where: { $0.type == .claimRewards })
             rewardViewData = RewardViewData(
                 state: .rewards(
                     claimable: rewardsClaimable,
