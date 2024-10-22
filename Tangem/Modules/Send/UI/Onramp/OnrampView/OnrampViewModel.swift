@@ -10,7 +10,7 @@ import Foundation
 import Combine
 
 class OnrampViewModel: ObservableObject, Identifiable {
-    @Published var onrampAmountViewModel: OnrampAmountViewModel
+    @Published private(set) var onrampAmountViewModel: OnrampAmountViewModel
 
     private let interactor: OnrampInteractor
 

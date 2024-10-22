@@ -395,6 +395,8 @@ extension MainCoordinator: SingleTokenBaseRoutable {
     }
 
     func openOnramp(walletModel: WalletModel, userWalletModel: UserWalletModel) {
+        mainBottomSheetUIManager.hide()
+
         let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] navigationInfo in
             self?.sendCoordinator = nil
 

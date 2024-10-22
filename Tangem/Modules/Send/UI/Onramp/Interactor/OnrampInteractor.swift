@@ -14,8 +14,8 @@ protocol OnrampInteractor: AnyObject {
 }
 
 class CommonOnrampInteractor {
-    weak var input: OnrampInput?
-    weak var output: OnrampOutput?
+    private weak var input: OnrampInput?
+    private weak var output: OnrampOutput?
 
     private let isValid: CurrentValueSubject<Bool, Never> = .init(true)
 
