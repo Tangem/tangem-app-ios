@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/bitcoincore.git",
       "state" : {
-        "branch" : "feature/IOS-8290_migrate_all_remaining_bsdk_deps_to_spm",
-        "revision" : "6461eed911f6e20ffe6172e350386d9f7411560f"
+        "revision" : "c00b5c60ab9560acee8309f39620fabfde32b518",
+        "version" : "0.0.21"
       }
     },
     {
@@ -204,8 +204,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/Solana.Swift.git",
       "state" : {
-        "branch" : "feature/IOS-8290_migrate_all_remaining_bsdk_deps_to_spm",
-        "revision" : "970d0b5ad9ebbe2720dbe7a5c44305fee0470221"
+        "revision" : "54f15e1afd87e14b45c848a71030cab6798451ec",
+        "version" : "1.2.0-tangem12"
       }
     },
     {
