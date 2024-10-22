@@ -98,7 +98,9 @@ struct WalletConnectV2Utils {
 
         let accounts: [[Account]] = chains.compactMap { wcBlockchain in
             guard let blockchain = createBlockchain(for: wcBlockchain) else {
-                unsupportedEVMBlockchains.append(wcBlockchain.reference)
+                if proposal.namespaceRequiredChains.contains(wcBlockchain) {
+                    unsupportedEVMBlockchains.append(wcBlockchain.reference)
+                }
                 return nil
             }
 
@@ -217,6 +219,10 @@ extension WalletConnectV2Utils {
 // MARK: - Session proposal helper properties for AutoNamespacesBuilder
 
 private extension Session.Proposal {
+    var namespaceRequiredChains: Set<WalletConnectUtils.Blockchain> {
+        Set(requiredNamespaces.values.compactMap(\.chains).flatMap { $0 })
+    }
+
     var namespaceChains: [WalletConnectUtils.Blockchain] {
         let requiredChains = requiredNamespaces.values.compactMap(\.chains).flatMap { $0.asArray }
         let optionalChains = optionalNamespaces?.values.compactMap(\.chains).flatMap { $0.asArray } ?? []

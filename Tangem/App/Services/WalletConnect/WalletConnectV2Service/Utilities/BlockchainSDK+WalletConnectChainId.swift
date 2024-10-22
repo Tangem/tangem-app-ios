@@ -14,7 +14,12 @@ extension BlockchainSdk.Blockchain {
     var wcChainID: [String]? {
         switch self {
         case .ethereum:
-            return isTestnet ? ["5"] : ["1"]
+            let chainIds: [String] = SupportedBlockchains.all.compactMap {
+                guard let chainId = $0.chainId else { return nil }
+                return String(chainId)
+            }
+
+            return chainIds
         case .solana:
             let mainnetIds = ["5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp", "4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ"]
             let testnetIds = ["4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z"]
