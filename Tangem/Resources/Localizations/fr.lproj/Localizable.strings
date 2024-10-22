@@ -298,7 +298,7 @@
 "give_permission_policy_type_footer" = "Spécifiez la limite approuvée pour le jeton sélectionné";
 "give_permission_rows_amount" = "Montant %@";
 "give_permission_staking_footer" = "La fonction Approuver est nécessaire pour accorder la permission à une autre adresse d'utiliser une quantité spécifique de vos jetons. De par leur conception, les contrats intelligents ne peuvent pas accéder à vos jetons sans votre approbation. En « déverrouillant » vos jetons, vous autorisez le contrat intelligent StakeKit à les utiliser. Les mineurs du réseau reçoivent des frais de gaz (payés par vous) pour enregistrer cette action sur la blockchain. Vous pouvez staker votre jeton après avoir donné votre approbation.";
-"give_permission_staking_subtitle" = "Pour continuer, vous devez autoriser le contrat intelligent StakeKit à utiliser votre %@";
+"give_permission_staking_subtitle" = "Pour continuer, vous devez autoriser le contrat intelligent Polygon à utiliser votre %@";
 "give_permission_swap_subtitle" = "Pour continuer, accordez aux smart contracts de %1@ l'autorisation d'utiliser votre %2@";
 "give_permission_title" = "Donner l'autorisation";
 "give_permission_unlimited" = "Illimité";
@@ -684,7 +684,7 @@
 "staking_details_reward_claiming" = "Réclamation de récompense";
 "staking_details_reward_claiming_info" = "Méthode de réception des récompenses de staking.\nElle peut être automatique, où la récompense est créditée sur votre adresse, ou manuelle, où vous devez retirer la récompense en créant une transaction pour la recevoir.";
 "staking_details_reward_schedule" = "Calendrier de récompenses";
-"staking_details_reward_schedule_info" = "Il s'agit d'un calendrier qui détermine le moment où les participants au staking reçoivent leurs récompenses.";
+"staking_details_reward_schedule_info" = "Il s'agit d'un calendrier qui détermine le moment où les participants au staking reçoivent leurs récompenses. La durée de distribution des récompenses peut varier légèrement en fonction du validateur et de la charge du réseau.";
 "staking_details_rewards_to_claim" = "Récompenses à réclamer: %@";
 "staking_details_title" = "Staking %@";
 "staking_details_unbonding_period" = "Période de dissociation";
@@ -753,7 +753,7 @@
 "staking_unbonding_in" = "Dissociation en";
 "staking_unlocked_locked" = "Débloquer";
 "staking_unlocking" = "Déverrouillage";
-"staking_unstake_amount_validation_error" = "Amount exceeds staked balance";
+"staking_unstake_amount_validation_error" = "Le montant dépasse le solde misé";
 "staking_unstaked" = "Non-staké";
 "staking_unstaked_footer" = "Vérifiez non-stakés pour réclamer vos actifs";
 "staking_unstaking" = "Unstaking";

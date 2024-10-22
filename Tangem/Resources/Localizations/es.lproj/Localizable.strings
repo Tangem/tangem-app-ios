@@ -298,7 +298,7 @@
 "give_permission_policy_type_footer" = "Especifique el límite aprobado para el token seleccionado.";
 "give_permission_rows_amount" = "Montante %@";
 "give_permission_staking_footer" = "La función Aprobar es necesaria para otorgar permiso a otra dirección para usar una cantidad específica de sus tokens. Por diseño, los contratos inteligentes no pueden acceder a sus tokens sin su aprobación. Al \"desbloquear\" sus tokens, autoriza al contrato inteligente de StakeKit a usarlos. Los mineros de la red reciben una tarifa de gas (pagada por usted) por registrar esta acción en la cadena de bloques. Puede apostar su token después de dar su aprobación.";
-"give_permission_staking_subtitle" = "Para continuar, debe autorizar el contrato inteligente de StakeKit para utilizar su %@";
+"give_permission_staking_subtitle" = "Para continuar, debe autorizar el contrato inteligente de Polygon para utilizar su %@";
 "give_permission_swap_subtitle" = "Para continuar, de autorización a los smart contracts de %1@ para usar su %2@";
 "give_permission_title" = "Dar autorización";
 "give_permission_unlimited" = "Ilimitado";
@@ -684,7 +684,7 @@
 "staking_details_reward_claiming" = "Reclamo de recompensa";
 "staking_details_reward_claiming_info" = "Método para recibir recompensas por apuesta.\nPuede ser automático, donde la recompensa se acredita en tu dirección, o manual, donde debes retirar la recompensa creando una transacción para recibirla.";
 "staking_details_reward_schedule" = "Calendario de recompensas";
-"staking_details_reward_schedule_info" = "Este es un cronograma que determina cuándo los participantes reciben sus recompensas.";
+"staking_details_reward_schedule_info" = "Este es un cronograma que determina cuándo los participantes reciben sus recompensas. La duración de la distribución de recompensas puede variar ligeramente según el validador y la carga de la red.";
 "staking_details_rewards_to_claim" = "Recompensas para reclamar: %@";
 "staking_details_title" = "Staking %@";
 "staking_details_unbonding_period" = "Periodo de disociación";
@@ -753,7 +753,7 @@
 "staking_unbonding_in" = "Desunión en";
 "staking_unlocked_locked" = "Desbloquear";
 "staking_unlocking" = "Desbloqueando";
-"staking_unstake_amount_validation_error" = "Amount exceeds staked balance";
+"staking_unstake_amount_validation_error" = "El monto excede el saldo apostado";
 "staking_unstaked" = "Sin staking";
 "staking_unstaked_footer" = "Marque activos sin staking para reclamarlos";
 "staking_unstaking" = "Unstaking";
