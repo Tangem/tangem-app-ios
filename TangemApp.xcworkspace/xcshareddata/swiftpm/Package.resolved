@@ -1,5 +1,5 @@
 {
-  "originHash" : "c86e2efe553b02dc466463e653e323aec3e75b45fe5012f9dab8410e10157cee",
+  "originHash" : "02f9726bb29f3b4a5b80be95a438cf6549b3f8295494cffb8be5ea7f235aed48",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -357,8 +357,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/SwiftBinanceChain.git",
       "state" : {
-        "branch" : "feature/IOS-8271_project_modularization_foundation",
-        "revision" : "703f62c910d610bdb68803d8701a28be5ffb61c4"
+        "revision" : "951d24e217d069eabb5dc1671e0d9f3f70b26b5d",
+        "version" : "0.0.12"
       }
     },
     {
