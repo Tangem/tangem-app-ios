@@ -295,7 +295,6 @@
 "feedback_subject_tx_push_failed" = "Impossible d'effectuer une transaction";
 "feedback_token_description_error" = "Erreur de description de la pièce";
 "give_permission_current_transaction" = "Cette transaction";
-"give_permission_fee_footer" = "Le réseau facturera des frais d'approbation de jeton pour vérifier que vous autorisez l'utilisation de votre jeton pour l'échange.";
 "give_permission_policy_type_footer" = "Spécifiez la limite approuvée pour le jeton sélectionné";
 "give_permission_rows_amount" = "Montant %@";
 "give_permission_staking_footer" = "La fonction Approuver est nécessaire pour accorder la permission à une autre adresse d'utiliser une quantité spécifique de vos jetons. De par leur conception, les contrats intelligents ne peuvent pas accéder à vos jetons sans votre approbation. En « déverrouillant » vos jetons, vous autorisez le contrat intelligent StakeKit à les utiliser. Les mineurs du réseau reçoivent des frais de gaz (payés par vous) pour enregistrer cette action sur la blockchain. Vous pouvez staker votre jeton après avoir donné votre approbation.";
@@ -693,6 +692,7 @@
 "staking_details_warmup_period" = "Période d'échauffement";
 "staking_details_warmup_period_info" = "Le temps imparti pour activer la participation au staking.";
 "staking_dismiss_message" = "Êtes-vous sûr(e) de vouloir fermer l'écran de staking ?";
+"staking_give_permission_fee_footer" = "Le réseau facturera des frais d’approbation de jeton pour vérifier que vous autorisez l’utilisation de votre jeton pour le jalonnement.";
 "staking_legal" = "En utilisant la fonctionnalité de staking, vous acceptez les  %1$@ et %2$@ du fournisseur";
 "staking_locked" = "Bloqué";
 "staking_migrate" = "Migrer";
@@ -778,6 +778,7 @@
 "story_meet_title" = "Découvrez Tangem";
 "story_web3_description" = "Échangez, achetez des NFT, faites des prêts et des dépôts dans plus de 100 services décentralisés différents";
 "story_web3_title" = "Compatible avec Web 3.0";
+"swap_give_permission_fee_footer" = "Le réseau facturera des frais d'approbation de jeton pour vérifier que vous autorisez l'utilisation de votre jeton pour l'échange.";
 "swap_promo_text" = "Échangez plus de jetons à de meilleurs taux directement dans votre portefeuille.";
 "swap_promo_title" = "Nouveau fournisseur d'échange disponible !";
 "swapping_alert_cex_description" = "Le montant comprend :\n• les frais du fournisseur de services\n• les frais de réseau pour l'envoi de %@ depuis l'échange vers l'adresse de l'utilisateur.";
