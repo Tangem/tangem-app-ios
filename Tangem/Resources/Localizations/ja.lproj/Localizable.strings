@@ -295,7 +295,6 @@
 "feedback_subject_tx_push_failed" = "取引をプッシュできません";
 "feedback_token_description_error" = "コインの説明エラー";
 "give_permission_current_transaction" = "取引";
-"give_permission_fee_footer" = "ネットワークは、あなたがトークンのスワップを承認していることを確認するために、トークン承認手数料を請求します。";
 "give_permission_policy_type_footer" = "選択したトークンの承認制限を指定します";
 "give_permission_rows_amount" = "金額%@";
 "give_permission_staking_footer" = "承認機能は、別のアドレスに特定の量のトークンを使用する許可を与えるために必要です。設計上スマートコントラクトは、承認しない限りトークンにアクセスできません。トークンを「ロック解除」すると、StakeKitスマート コントラクトがトークンを使用する権限が与えられます。ネットワークのマイナーは、このアクションをブロックチェーンに記録するためにガス料金（あなたが支払う）を受け取ります。承認後、トークンをステーキングできます。";
@@ -693,6 +692,7 @@
 "staking_details_warmup_period" = "ウォームアップ期間";
 "staking_details_warmup_period_info" = "ステーキングへの参加を有効にするために割り当てられた時間。";
 "staking_dismiss_message" = "ステーキング画面を閉じてもよろしいですか?";
+"staking_give_permission_fee_footer" = "ネットワークは、ステーキングのためにトークンの使用を承認していることを確認するために、トークン承認手数料を請求します。";
 "staking_legal" = "ステーキング機能を使用すると、プロバイダーの%1$@と%2$@に同意したことになります";
 "staking_locked" = "ロック中";
 "staking_migrate" = "移行";
@@ -778,6 +778,7 @@
 "story_meet_title" = "Tangemのご紹介";
 "story_web3_description" = "100種類以上の分散型サービスで、NFTの交換・購入や、借入・預金を行うことができます。";
 "story_web3_title" = "Web3.0対応";
+"swap_give_permission_fee_footer" = "ネットワークは、あなたがトークンのスワップを承認していることを確認するために、トークン承認手数料を請求します。";
 "swap_promo_text" = "より多くのトークンをより良いレートで、ウォレット内にて直接交換します。";
 "swap_promo_title" = "新しいスワッププロバイダーが利用可能になりました！";
 "swapping_alert_cex_description" = "この金額には以下が含まれます：\n- サービスプロバイダーの手数料\n- 取引所からユーザーのアドレスに%@ を送り返すためのネットワーク手数料。";
