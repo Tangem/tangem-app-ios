@@ -33,7 +33,8 @@ struct RestakingFlowBaseBuilder {
         let validators = stakingValidatorsStepBuilder.makeStakingValidatorsStep(
             io: (input: restakingModel, output: restakingModel),
             manager: manager,
-            validatorToIgnore: actionType == .restake ? action.validatorInfo : nil,
+            currentValidator: action.validatorInfo,
+            actionType: actionType,
             sendFeeLoader: restakingModel
         )
 

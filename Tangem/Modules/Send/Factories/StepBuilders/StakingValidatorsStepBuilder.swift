@@ -16,10 +16,16 @@ struct StakingValidatorsStepBuilder {
     func makeStakingValidatorsStep(
         io: IO,
         manager: some StakingManager,
-        validatorToIgnore: ValidatorInfo? = nil,
+        currentValidator: ValidatorInfo? = nil,
+        actionType: SendFlowActionType,
         sendFeeLoader: SendFeeLoader
     ) -> ReturnValue {
-        let interactor = makeStakingValidatorsInteractor(io: io, manager: manager, validatorToIgnore: validatorToIgnore)
+        let interactor = makeStakingValidatorsInteractor(
+            io: io,
+            manager: manager,
+            currentValidator: currentValidator,
+            actionType: actionType
+        )
         let viewModel = makeStakingValidatorsViewModel(interactor: interactor)
         let step = StakingValidatorsStep(viewModel: viewModel, interactor: interactor, sendFeeLoader: sendFeeLoader)
         let compact = makeStakingValidatorsCompactViewModel(input: io.input)
@@ -42,13 +48,15 @@ private extension StakingValidatorsStepBuilder {
     func makeStakingValidatorsInteractor(
         io: IO,
         manager: some StakingManager,
-        validatorToIgnore: ValidatorInfo? = nil
+        currentValidator: ValidatorInfo?,
+        actionType: SendFlowActionType
     ) -> StakingValidatorsInteractor {
         CommonStakingValidatorsInteractor(
             input: io.input,
             output: io.output,
             manager: manager,
-            validatorToIgnore: validatorToIgnore
+            currentValidator: currentValidator,
+            actionType: actionType
         )
     }
 }
