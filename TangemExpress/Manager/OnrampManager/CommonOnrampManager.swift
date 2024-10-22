@@ -65,8 +65,8 @@ extension CommonOnrampManager: OnrampManager {
 // TEMP MOCK
 
 extension OnrampCountry {
-    static let usa = OnrampCountry(identity: .usa, currency: .init(identity: .usa), onrampAvailable: true)
-    static let rus = OnrampCountry(identity: .rus, currency: .init(identity: .rus), onrampAvailable: false)
+    static let usa = OnrampCountry(identity: .usa, currency: .init(identity: .usd), onrampAvailable: true)
+    static let rus = OnrampCountry(identity: .rus, currency: .init(identity: .rub), onrampAvailable: false)
 }
 
 extension OnrampIdentity {
@@ -76,9 +76,21 @@ extension OnrampIdentity {
         image: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/currencies/medium/usd.png")!
     )
 
+    static let usd = OnrampIdentity(
+        name: "US Dollar",
+        code: "USD",
+        image: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/currencies/medium/usd.png")!
+    )
+
     static let rus = OnrampIdentity(
         name: "Russia",
         code: "RU",
+        image: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/currencies/medium/rub.png")!
+    )
+
+    static let rub = OnrampIdentity(
+        name: "Ruble",
+        code: "RUB",
         image: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/currencies/medium/rub.png")!
     )
 }

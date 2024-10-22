@@ -15,14 +15,14 @@ class OnrampAmountViewModel: ObservableObject {
     @Published var decimalNumberTextFieldViewModel: DecimalNumberTextField.ViewModel
     @Published var alternativeAmount: String?
     @Published var bottomInfoText: SendAmountViewModel.BottomInfoTextType?
-
-    let currentFieldOptions: SendDecimalNumberTextField.PrefixSuffixOptions
+    @Published var currentFieldOptions: SendDecimalNumberTextField.PrefixSuffixOptions?
 
     // MARK: - Dependencies
 
     private let tokenItem: TokenItem
     private let repository: OnrampRepository
     private let interactor: SendAmountInteractor
+    private let prefixSuffixOptionsFactory: SendDecimalNumberTextField.PrefixSuffixOptionsFactory = .init()
 
     private var bag: Set<AnyCancellable> = []
 
@@ -35,12 +35,6 @@ class OnrampAmountViewModel: ObservableObject {
         self.repository = repository
         self.tokenItem = tokenItem
 
-        let prefixSuffixOptionsFactory = SendDecimalNumberTextField.PrefixSuffixOptionsFactory(
-            cryptoCurrencyCode: tokenItem.currencySymbol,
-            fiatCurrencyCode: AppSettings.shared.selectedCurrencyCode
-        )
-
-        currentFieldOptions = prefixSuffixOptionsFactory.makeFiatOptions()
         decimalNumberTextFieldViewModel = .init(maximumFractionDigits: 2)
 
         bind()
@@ -55,8 +49,13 @@ private extension OnrampAmountViewModel {
             .preferenceDidChangedPublisher
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
-            .sink { viewModel, country in
-                viewModel.fiatIconURL = viewModel.repository.savedCountry?.identity.image
+            .sink { viewModel, _ in
+                viewModel.repository.savedCountry.map { country in
+                    viewModel.fiatIconURL = country.currency.identity.image
+                    viewModel.currentFieldOptions = viewModel.prefixSuffixOptionsFactory.makeFiatOptions(
+                        fiatCurrencyCode: country.currency.identity.code
+                    )
+                }
             }
             .store(in: &bag)
 

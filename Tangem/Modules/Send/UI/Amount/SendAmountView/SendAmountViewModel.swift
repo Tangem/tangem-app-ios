@@ -54,20 +54,16 @@ class SendAmountViewModel: ObservableObject {
         interactor: SendAmountInteractor,
         sendQRCodeService: SendQRCodeService?
     ) {
+        tokenItem = initial.tokenItem
         userWalletName = initial.userWalletName
         balance = initial.balanceFormatted
         tokenIconInfo = initial.tokenIconInfo
         currencyPickerData = initial.currencyPickerData
         actionType = initial.actionType
 
-        prefixSuffixOptionsFactory = .init(
-            cryptoCurrencyCode: initial.tokenItem.currencySymbol,
-            fiatCurrencyCode: AppSettings.shared.selectedCurrencyCode
-        )
-        currentFieldOptions = prefixSuffixOptionsFactory.makeCryptoOptions()
+        prefixSuffixOptionsFactory = .init()
+        currentFieldOptions = prefixSuffixOptionsFactory.makeCryptoOptions(cryptoCurrencyCode: initial.tokenItem.currencySymbol)
         decimalNumberTextFieldViewModel = .init(maximumFractionDigits: initial.tokenItem.decimalCount)
-
-        tokenItem = initial.tokenItem
 
         self.interactor = interactor
         self.sendQRCodeService = sendQRCodeService
@@ -163,11 +159,11 @@ private extension SendAmountViewModel {
 
         switch amountType {
         case .crypto:
-            currentFieldOptions = prefixSuffixOptionsFactory.makeCryptoOptions()
+            currentFieldOptions = prefixSuffixOptionsFactory.makeCryptoOptions(cryptoCurrencyCode: tokenItem.currencySymbol)
             decimalNumberTextFieldViewModel.update(maximumFractionDigits: tokenItem.decimalCount)
             decimalNumberTextFieldViewModel.update(value: amount?.crypto)
         case .fiat:
-            currentFieldOptions = prefixSuffixOptionsFactory.makeFiatOptions()
+            currentFieldOptions = prefixSuffixOptionsFactory.makeFiatOptions(fiatCurrencyCode: AppSettings.shared.selectedCurrencyCode)
             decimalNumberTextFieldViewModel.update(maximumFractionDigits: SendAmountStep.Constants.fiatMaximumFractionDigits)
             decimalNumberTextFieldViewModel.update(value: amount?.fiat)
         }
