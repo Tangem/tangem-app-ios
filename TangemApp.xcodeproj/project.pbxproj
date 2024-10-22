@@ -24140,8 +24140,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tangem/SwiftBinanceChain.git";
 			requirement = {
-				branch = "feature/IOS-8271_project_modularization_foundation";
-				kind = branch;
+				kind = exactVersion;
+				version = 0.0.12;
 			};
 		};
 		B6C0D3F02CBDC52D001113ED /* XCRemoteSwiftPackageReference "Moya" */ = {
