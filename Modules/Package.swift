@@ -3,61 +3,18 @@
 
 import PackageDescription // TODO: Andrey Fedorov - Update swift-tools-version to 6.0 after upgrade to Xcode 16.0 (IOS-8085)
 
-// MARK: - Service Modules
-
-/// Valid examples are `CommonUI`, `Utils`, `NetworkLayer`, `ModelData`, etc.
-let serviceModules: [PackageDescription.Target] = [
-    .tangemTarget(
-        name: "TangemFoundation"
-    ),
-    .tangemTarget(
-        name: "TangemNetworkLayerAdditions",
-        dependencies: [
-            "Moya",
-            "Alamofire",
-        ]
-    ),
-]
-
-// MARK: - Feature Modules
-
-/// Valid examples are `Onboarding`, `Auth`, `Catalog`, etc.
-let featureModules: [PackageDescription.Target] = [
-    // Currently there are no feature modules
-]
-
-// MARK: - Unit Test Modules
-
-let unitTestsModules: [PackageDescription.Target] = [
-    .tangemTestTarget(
-        name: "TangemFoundationTests",
-        dependencies: [
-            "TangemFoundation",
-        ]
-    ),
-]
-
-// MARK: - Shim Library
-
-let modulesShimLibraryName = "TangemModules"
-
-let modulesShimLibrary: PackageDescription.Target = .tangemTarget(
-    name: modulesShimLibraryName,
-    dependencies: serviceModules.asDependencies() + featureModules.asDependencies()
-)
-
 // MARK: - Package
 
 let package = Package(
-    name: modulesShimLibraryName,
+    name: modulesWrapperLibraryName,
     platforms: [
         .iOS(.v15),
     ],
     products: [
         .library(
-            name: modulesShimLibraryName,
+            name: modulesWrapperLibraryName,
             targets: [
-                modulesShimLibraryName,
+                modulesWrapperLibraryName,
             ]
         ),
     ],
@@ -65,8 +22,59 @@ let package = Package(
         .package(url: "https://github.com/Moya/Moya.git", .upToNextMajor(from: "15.0.0")),
         .package(url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.0.0")),
     ],
-    targets: [modulesShimLibrary] + serviceModules + featureModules + unitTestsModules
+    targets: [modulesWrapperLibrary] + serviceModules + featureModules + unitTestsModules
 )
+
+// MARK: - Service Modules
+
+/// Valid examples are `CommonUI`, `Utils`, `NetworkLayer`, `ModelData`, etc.
+var serviceModules: [PackageDescription.Target] {
+    [
+        .tangemTarget(
+            name: "TangemFoundation"
+        ),
+        .tangemTarget(
+            name: "TangemNetworkLayerAdditions",
+            dependencies: [
+                "Moya",
+                "Alamofire",
+            ]
+        ),
+    ]
+}
+
+// MARK: - Feature Modules
+
+/// Valid examples are `Onboarding`, `Auth`, `Catalog`, etc.
+var featureModules: [PackageDescription.Target] {
+    [
+        // Currently there are no feature modules
+    ]
+}
+
+// MARK: - Unit Test Modules
+
+var unitTestsModules: [PackageDescription.Target] {
+    [
+        .tangemTestTarget(
+            name: "TangemFoundationTests",
+            dependencies: [
+                "TangemFoundation",
+            ]
+        ),
+    ]
+}
+
+// MARK: - Wrapper Library (implementation details, do not edit)
+
+var modulesWrapperLibraryName: String { "TangemModules" }
+
+var modulesWrapperLibrary: PackageDescription.Target {
+    .tangemTarget(
+        name: modulesWrapperLibraryName,
+        dependencies: serviceModules.asDependencies() + featureModules.asDependencies()
+    )
+}
 
 // MARK: - Private implementation
 
