@@ -429,7 +429,6 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Tangem/tangem-sdk-ios.git",
       "state" : {
-        "branch" : "feature/IOS-8290_migrate_all_remaining_bsdk_deps_to_spm",
         "revision" : "673b4979f8fd0bea7840364e93b51468053689f4"
       }
     },

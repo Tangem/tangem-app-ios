@@ -24084,8 +24084,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Tangem/tangem-sdk-ios.git";
 			requirement = {
-				branch = "feature/IOS-8290_migrate_all_remaining_bsdk_deps_to_spm";
-				kind = branch;
+				kind = revision;
+				revision = 673b4979f8fd0bea7840364e93b51468053689f4;
 			};
 		};
 		B68E1F882CBC44910043E598 /* XCRemoteSwiftPackageReference "hedera-sdk-swift" */ = {
