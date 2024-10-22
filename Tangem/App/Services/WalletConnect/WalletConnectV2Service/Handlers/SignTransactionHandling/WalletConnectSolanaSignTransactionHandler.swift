@@ -50,7 +50,7 @@ extension WalletConnectSolanaSignTransactionHandler: WalletConnectMessageHandler
     var event: WalletConnectEvent { .sign }
 
     func messageForUser(from dApp: WalletConnectSavedSession.DAppInfo) async throws -> String {
-        return "transaction: " + transaction
+        return transaction
     }
 
     func handle() async throws -> RPCResult {
