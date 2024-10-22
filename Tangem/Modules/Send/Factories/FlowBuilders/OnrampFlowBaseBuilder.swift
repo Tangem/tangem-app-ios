@@ -18,9 +18,8 @@ struct OnrampFlowBaseBuilder {
     let builder: SendDependenciesBuilder
 
     func makeSendViewModel(router: SendRoutable) -> SendViewModel {
-        let factory = TangemExpressFactory()
         let expressAPIProvider = ExpressAPIProviderFactory().makeExpressAPIProvider(userId: userWalletModel.userWalletId.stringValue, logger: AppLog.shared)
-        let onrampRepository = factory.makeOnrampRepository(expressAPIProvider: expressAPIProvider)
+        let onrampRepository = builder.makeOnrampRepository()
 
         let onrampManager = TangemExpressFactory().makeOnrampManager(
             expressAPIProvider: expressAPIProvider,

@@ -57,8 +57,8 @@ public struct TangemExpressFactory {
         )
     }
 
-    public func makeOnrampRepository(expressAPIProvider: ExpressAPIProvider) -> OnrampRepository {
-        let repository = CommonOnrampRepository(provider: expressAPIProvider)
+    public func makeOnrampRepository(storage: OnrampStorage) -> OnrampRepository {
+        let repository = CommonOnrampRepository(storage: storage)
         return repository
     }
 

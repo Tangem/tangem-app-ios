@@ -345,4 +345,8 @@ struct SendDependenciesBuilder {
     func makeOnrampBaseDataBuilder(input: OnrampBaseDataBuilderInput, onrampRepository: OnrampRepository) -> OnrampBaseDataBuilder {
         CommonOnrampBaseDataBuilder(input: input, walletModel: walletModel, onrampRepository: onrampRepository)
     }
+
+    func makeOnrampRepository() -> OnrampRepository {
+        TangemExpressFactory().makeOnrampRepository(storage: CommonOnrampStorage())
+    }
 }

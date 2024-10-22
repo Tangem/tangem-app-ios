@@ -51,6 +51,15 @@ class OnrampAmountViewModel: ObservableObject {
 
 private extension OnrampAmountViewModel {
     func bind() {
+        repository
+            .preferenceDidChangedPublisher
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, country in
+                viewModel.fiatIconURL = viewModel.repository.savedCountry?.identity.image
+            }
+            .store(in: &bag)
+
         decimalNumberTextFieldViewModel
             .valuePublisher
             .withWeakCaptureOf(self)
