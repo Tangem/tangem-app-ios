@@ -76,7 +76,6 @@ jobs:
 
   deploy:
     name: Google Distribution
-    if: false # temp disabled
     needs:
       - prepare
       - build
@@ -96,7 +95,7 @@ jobs:
     name: Deploy Notification
     needs:
       - prepare
-      # - deploy  # temp disabled
+      - deploy
     uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8112_ci_cd_alpha_builds_workflow
     with:
       channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
@@ -114,7 +113,7 @@ jobs:
     if: failure()
     needs:
       - prepare
-      # - deploy  # temp disabled
+      - deploy
     uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8112_ci_cd_alpha_builds_workflow
     with:
       channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
