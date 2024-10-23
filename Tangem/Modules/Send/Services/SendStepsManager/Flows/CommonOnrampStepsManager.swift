@@ -1,34 +1,29 @@
 //
-//  CommonStakingSingleActionStepsManager.swift
-//  Tangem
+//  CommonOnrampStepsManager.swift
+//  TangemApp
 //
-//  Created by Dmitry Fedorov on 26.07.2024.
+//  Created by Sergey Balashov on 18.10.2024.
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
 import Foundation
 import Combine
-import TangemStaking
 
-class CommonStakingSingleActionStepsManager {
-    private let summaryStep: SendSummaryStep
+class CommonOnrampStepsManager {
+    private let onrampStep: OnrampStep
     private let finishStep: SendFinishStep
-    private let action: UnstakingModel.Action
 
     private var stack: [SendStep]
-    private var bag: Set<AnyCancellable> = []
     private weak var output: SendStepsManagerOutput?
 
     init(
-        summaryStep: SendSummaryStep,
-        finishStep: SendFinishStep,
-        action: UnstakingModel.Action
+        onrampStep: OnrampStep,
+        finishStep: SendFinishStep
     ) {
-        self.summaryStep = summaryStep
+        self.onrampStep = onrampStep
         self.finishStep = finishStep
-        self.action = action
 
-        stack = [summaryStep]
+        stack = [onrampStep]
     }
 
     private func next(step: SendStep) {
@@ -45,31 +40,15 @@ class CommonStakingSingleActionStepsManager {
 
 // MARK: - SendStepsManager
 
-extension CommonStakingSingleActionStepsManager: SendStepsManager {
-    var initialKeyboardState: Bool { false }
+extension CommonOnrampStepsManager: SendStepsManager {
+    var initialKeyboardState: Bool { true }
 
     var initialFlowActionType: SendFlowActionType {
-        switch action.type {
-        case .unstake:
-            return .unstake
-        case .pending(.withdraw):
-            return .withdraw
-        case .pending(.claimRewards):
-            return .claimRewards
-        case .pending(.restakeRewards):
-            return .restakeRewards
-        case .pending(.voteLocked):
-            return .stake
-        case .pending(.unlockLocked):
-            return .unlockLocked
-        case .stake:
-            assertionFailure("Doesn't support in UnstakingFlow")
-            return .unstake
-        }
+        .onramp
     }
 
     var initialState: SendStepsManagerViewState {
-        .init(step: summaryStep, action: .action, backButtonVisible: false)
+        .init(step: onrampStep, action: .action, backButtonVisible: false)
     }
 
     var shouldShowDismissAlert: Bool {

@@ -44,9 +44,6 @@ public struct TangemExpressFactory {
 
     public func makeOnrampManager(
         expressAPIProvider: ExpressAPIProvider,
-        allowanceProvider: ExpressAllowanceProvider,
-        feeProvider: FeeProvider,
-        expressRepository: ExpressRepository,
         logger: Logger? = nil,
         analyticsLogger: ExpressAnalyticsLogger? = nil
     ) -> OnrampManager {
