@@ -52,6 +52,7 @@ private extension OnrampAmountViewModel {
             .sink { viewModel, _ in
                 viewModel.repository.savedCountry.map { country in
                     viewModel.fiatIconURL = country.currency.identity.image
+                    viewModel.decimalNumberTextFieldViewModel.update(maximumFractionDigits: country.currency.precision)
                     viewModel.currentFieldOptions = viewModel.prefixSuffixOptionsFactory.makeFiatOptions(
                         fiatCurrencyCode: country.currency.identity.code
                     )

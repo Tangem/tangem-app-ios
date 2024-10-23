@@ -75,7 +75,10 @@ private extension CommonOnrampRepository {
     }
 
     func mapToOnrampFiatCurrency(currency: OnrampUserPreference.Currency) -> OnrampFiatCurrency {
-        OnrampFiatCurrency(identity: .init(name: currency.name, code: currency.code, image: currency.image))
+        OnrampFiatCurrency(
+            identity: .init(name: currency.name, code: currency.code, image: currency.image),
+            precision: currency.precision
+        )
     }
 
     func mapToOnrampPaymentMethod(paymentMethod: OnrampUserPreference.PaymentMethod) -> OnrampPaymentMethod {
@@ -98,7 +101,8 @@ private extension CommonOnrampRepository {
         OnrampUserPreference.Currency(
             name: currency.identity.name,
             code: currency.identity.code,
-            image: currency.identity.image
+            image: currency.identity.image,
+            precision: currency.precision
         )
     }
 

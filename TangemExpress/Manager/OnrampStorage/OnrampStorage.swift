@@ -36,6 +36,7 @@ extension OnrampUserPreference {
         let name: String
         let code: String
         let image: URL?
+        let precision: Int
     }
 
     struct PaymentMethod: Codable {

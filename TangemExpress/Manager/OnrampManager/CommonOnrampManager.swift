@@ -65,8 +65,8 @@ extension CommonOnrampManager: OnrampManager {
 // TEMP MOCK
 
 extension OnrampCountry {
-    static let usa = OnrampCountry(identity: .usa, currency: .init(identity: .usd), onrampAvailable: true)
-    static let rus = OnrampCountry(identity: .rus, currency: .init(identity: .rub), onrampAvailable: false)
+    static let usa = OnrampCountry(identity: .usa, currency: .init(identity: .usd, precision: 2), onrampAvailable: true)
+    static let rus = OnrampCountry(identity: .rus, currency: .init(identity: .rub, precision: 2), onrampAvailable: false)
 }
 
 extension OnrampIdentity {
