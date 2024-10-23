@@ -47,15 +47,18 @@ jobs:
       - name: Create changelog
         id: changelog
         env:
-          JIRA_ISSUE: '${{ steps.jira.outputs.summary }}'
+          JIRA_ISSUE_SUMMARY: '${{ steps.jira.outputs.summary }}'
+          JIRA_ISSUE_KEY: '${{ steps.jira.outputs.key }}'
           ADDITIONAL_CHANGELOG: '${{ inputs.changelog }}'
         run: |
+          JIRA_DESCRIPTION="Jira issue: ${JIRA_ISSUE_KEY} ${JIRA_ISSUE_SUMMARY}"
           if [[ -n "${ADDITIONAL_CHANGELOG}" ]]; then
-            OUTPUT_VALUE="Description: ${ADDITIONAL_CHANGELOG}"$'\n'"Jira issue: ${JIRA_ISSUE}"
+            OUTPUT_VALUE="Description: ${ADDITIONAL_CHANGELOG}"$'\n'"${JIRA_DESCRIPTION}"
           else
-            OUTPUT_VALUE="Jira issue: ${JIRA_ISSUE}"
+            OUTPUT_VALUE="${JIRA_DESCRIPTION}"
           fi
 
+          # Workaround for a multi-line text in GH output
           echo 'result<<EOF' >> $GITHUB_OUTPUT
           echo "${OUTPUT_VALUE}" >> $GITHUB_OUTPUT
           echo 'EOF' >> $GITHUB_OUTPUT
