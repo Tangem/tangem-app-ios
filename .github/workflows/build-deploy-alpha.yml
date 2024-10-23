@@ -63,6 +63,9 @@ jobs:
           echo "${OUTPUT_VALUE}" >> $GITHUB_OUTPUT
           echo 'EOF' >> $GITHUB_OUTPUT
 
+      - name: Debug failure
+        run: exit -1
+
   build:
     name: Tangem Alpha
     needs: prepare
