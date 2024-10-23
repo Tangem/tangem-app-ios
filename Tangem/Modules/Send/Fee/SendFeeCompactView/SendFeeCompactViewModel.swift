@@ -33,10 +33,14 @@ class SendFeeCompactViewModel: ObservableObject, Identifiable {
     ) {
         self.feeTokenItem = feeTokenItem
         self.isFeeApproximate = isFeeApproximate
+
+        // Initial setup to exclude possible empty view
+        selectedFeeRowViewModel = mapToFeeRowViewModel(fee: SendFee(option: .market, value: .loading))
     }
 
     func bind(input: SendFeeInput) {
-        selectedFeeSubscription = input.selectedFeePublisher
+        selectedFeeSubscription = input
+            .selectedFeePublisher
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, selectedFee in
