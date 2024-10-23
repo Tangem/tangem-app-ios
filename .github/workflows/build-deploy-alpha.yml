@@ -40,15 +40,7 @@ jobs:
           action: getBranchSummary
           branch-name: '${{ github.ref_name }}'
 
-      - name: Find sec identities test
         run: |
-          echo "concurrency_group: ${{ github.workflow }} (${{ github.head_ref || github.ref_name }})"
-          echo "find-identity: $(security find-identity -p codesigning -v)"
-          echo "Provisioning Profiles: $(ls -ltra ~/Library/MobileDevice/Provisioning\ Profiles)"
-          # mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles\ Backup
-          # echo "Provisioning Profiles: $(ls -ltra ~/Library/MobileDevice/Provisioning\ Profiles)"
-          # echo "Provisioning Profiles Backup: $(ls -ltra ~/Library/MobileDevice/Provisioning\ Profiles\ Backup)"
-          # xcodebuild -allowProvisioningUpdates -workspace 'TangemApp.xcworkspace' -scheme 'Tangem Alpha'
 
   build:
     name: Tangem Alpha
