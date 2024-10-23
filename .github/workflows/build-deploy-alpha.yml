@@ -3,7 +3,7 @@ name: Alpha - Build and Deploy
 on:
   push:
     branches:
-      - test/IOS-8112_ci_cd_alpha_builds_workflow # TODO: Test only, remove
+      - test/IOS-8112_ci_cd_alpha_builds_workflow_ # TODO: Test only, remove
   workflow_dispatch:
     inputs:
       xcode_version_override:
@@ -55,7 +55,10 @@ jobs:
           else
             OUTPUT_VALUE="Jira issue: ${JIRA_ISSUE}"
           fi
-          echo "result=${OUTPUT_VALUE}" >> $GITHUB_OUTPUT
+
+          echo 'result<<EOF' >> $GITHUB_OUTPUT
+          echo "${OUTPUT_VALUE}" >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
 
   build:
     name: Tangem Alpha
