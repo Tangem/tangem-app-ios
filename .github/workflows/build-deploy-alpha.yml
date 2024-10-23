@@ -63,9 +63,6 @@ jobs:
           echo "${OUTPUT_VALUE}" >> $GITHUB_OUTPUT
           echo 'EOF' >> $GITHUB_OUTPUT
 
-      - name: Debug failure
-        run: exit -1
-
   build:
     name: Tangem Alpha
     needs: prepare
@@ -101,6 +98,7 @@ jobs:
     name: Deploy Notification
     needs:
       - prepare
+      - build
       - deploy
     uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8112_ci_cd_alpha_builds_workflow
     with:
@@ -119,6 +117,7 @@ jobs:
     if: failure()
     needs:
       - prepare
+      - build
       - deploy
     uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8112_ci_cd_alpha_builds_workflow
     with:
