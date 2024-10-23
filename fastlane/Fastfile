@@ -19,7 +19,7 @@ before_all do |lane, options|
 
   # Xcode version overrides available only on CI
   if ENV["CI"]&.downcase == "true"
-    if options[:xcode_version_override].nil?
+    if options[:xcode_version_override]&.empty?
       xcodes() # Will use the Xcode version from the .xcode-version file
     else
       xcodes(version: options[:xcode_version_override])
