@@ -11,6 +11,9 @@ FIREBASE_TESTERS_GROUP = "testers"
 before_all do |lane, options|
   lanes_to_skip_bootstrap = [
     :update_translations,
+    :deploy_testflight,
+    :deploy_firebase,
+    :refresh_dsyms,
   ]
 
   if lanes_to_skip_bootstrap.include?(lane)
