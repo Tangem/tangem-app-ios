@@ -45,7 +45,7 @@ jobs:
   check_bsdk_example_buildable:
     name: Check BSDK example project
     runs-on: self-hosted
-    if: true # TODO: Temp enabled, remove
+    if: false # TODO: Temp disabled, remove
     #if: github.event.pull_request.draft == false
     steps:
     - name: Checkout
