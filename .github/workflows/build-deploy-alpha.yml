@@ -3,7 +3,7 @@ name: Alpha - Build and Deploy
 on:
   push:
     branches:
-      - test/IOS-8112_ci_cd_alpha_builds_workflow_ # TODO: Test only, remove
+      - test/IOS-8112_ci_cd_alpha_builds_workflow # TODO: Test only, remove
   workflow_dispatch:
     inputs:
       xcode_version_override:
@@ -96,7 +96,7 @@ jobs:
     needs:
       - prepare
       - deploy
-    if: false # TODO: Temp disabled, enable
+    #if: false # TODO: Temp disabled, enable
     uses: tangem/actions/.github/workflows/notification.yml@main
     with:
       channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
@@ -111,8 +111,8 @@ jobs:
 
   error_notification:
     name: Error Notification
-    #if: failure()
-    if: false # TODO: Temp disabled, enable
+    if: failure()
+    #if: false # TODO: Temp disabled, enable
     needs:
       - prepare
       - deploy
