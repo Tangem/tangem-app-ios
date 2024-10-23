@@ -13,7 +13,6 @@ import TangemFoundation
 class StakeKitStakingAPIService: StakingAPIService {
     private let provider: MoyaProvider<StakeKitTarget>
     private let credential: StakingAPICredential
-    private let analyticsLogger: StakingAnalyticsLogger
 
     private let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
@@ -21,10 +20,9 @@ class StakeKitStakingAPIService: StakingAPIService {
         return decoder
     }()
 
-    init(provider: MoyaProvider<StakeKitTarget>, credential: StakingAPICredential, analyticsLogger: StakingAnalyticsLogger) {
+    init(provider: MoyaProvider<StakeKitTarget>, credential: StakingAPICredential) {
         self.provider = provider
         self.credential = credential
-        self.analyticsLogger = analyticsLogger
     }
 
     func enabledYields() async throws -> StakeKitDTO.Yield.Enabled.Response {
@@ -97,11 +95,13 @@ private extension StakeKitStakingAPIService {
             response = try response.filterSuccessfulStatusAndRedirectCodes()
         } catch {
             let stakeKitError = tryMapError(target: request, response: response)
-            
-            let error = stakeKitError ?? StakeKitHTTPError.badStatusCode(response.statusCode)
-            
-            analyticsLogger.logAPIError(errorDescription: error.localizedDescription)
-            throw stakeKitError ?? error
+
+            let error = stakeKitError ?? StakeKitHTTPError.badStatusCode(
+                response: String(data: response.data, encoding: .utf8),
+                code: response.statusCode
+            )
+
+            throw error
         }
 
         return response
@@ -117,15 +117,14 @@ private extension StakeKitStakingAPIService {
     }
 }
 
-fileprivate enum StakeKitHTTPError: Error {
-    case badStatusCode(_ code: Int)
+private enum StakeKitHTTPError: Error {
+    case badStatusCode(response: String?, code: Int)
 }
 
 extension StakeKitHTTPError: LocalizedError {
     var errorDescription: String? {
         switch self {
-        case .badStatusCode(let code):
-            "HTTP error \(code)"
+        case .badStatusCode(let response, let code): response ?? "HTTP error \(code)"
         }
     }
 }

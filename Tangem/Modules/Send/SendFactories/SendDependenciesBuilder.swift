@@ -123,7 +123,7 @@ struct SendDependenciesBuilder {
         StakingTransactionDispatcher(
             walletModel: walletModel,
             transactionSigner: userWalletModel.signer,
-            pendingHashesSender: StakingDependenciesFactory().makePendingHashesSender(token: walletModel.tokenItem),
+            pendingHashesSender: StakingDependenciesFactory().makePendingHashesSender(),
             stakingTransactionMapper: makeStakingTransactionMapper()
         )
     }

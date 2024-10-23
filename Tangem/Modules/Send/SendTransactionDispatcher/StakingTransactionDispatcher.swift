@@ -102,7 +102,18 @@ private extension StakingTransactionDispatcher {
 
     func sendHash(action: StakingTransactionAction, result: StakeKitTransactionSendResult) async throws -> SendTransactionDispatcherResult {
         let hash = StakingPendingHash(transactionId: result.transaction.id, hash: result.result.hash)
-        try? await pendingHashesSender.sendHash(hash)
+
+        do {
+            try await pendingHashesSender.sendHash(hash)
+        } catch {
+            Analytics.log(
+                event: .stakingErrors,
+                params: [
+                    .token: walletModel.tokenItem.currencySymbol,
+                    .errorDescription: error.localizedDescription,
+                ]
+            )
+        }
 
         let signer = transactionSigner.latestSigner.value
         return SendTransactionMapper().mapResult(result.result, blockchain: walletModel.blockchainNetwork.blockchain, signer: signer)

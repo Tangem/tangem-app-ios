@@ -13,11 +13,10 @@ import BlockchainSdk
 class StakingDependenciesFactory {
     @Injected(\.keysManager) private var keysManager: KeysManager
 
-    func makeStakingAPIProvider(token: TokenItem?) -> StakingAPIProvider {
+    func makeStakingAPIProvider() -> StakingAPIProvider {
         TangemStakingFactory().makeStakingAPIProvider(
             credential: StakingAPICredential(apiKey: keysManager.stakeKitKey),
-            configuration: .defaultConfiguration,
-            analyticsLogger: CommonStakingAnalyticsLogger(token: token)
+            configuration: .defaultConfiguration
         )
     }
 
@@ -28,8 +27,8 @@ class StakingDependenciesFactory {
         )
     }
 
-    func makeStakingManager(integrationId: String, wallet: StakingWallet, token: TokenItem) -> StakingManager {
-        let provider = makeStakingAPIProvider(token: token)
+    func makeStakingManager(integrationId: String, wallet: StakingWallet) -> StakingManager {
+        let provider = makeStakingAPIProvider()
         let repository = makeStakingPendingTransactionsRepository()
 
         return TangemStakingFactory().makeStakingManager(
@@ -37,13 +36,14 @@ class StakingDependenciesFactory {
             wallet: wallet,
             provider: provider,
             repository: repository,
-            logger: AppLog.shared
+            logger: AppLog.shared,
+            analyticsLogger: CommonStakingAnalyticsLogger()
         )
     }
 
-    func makePendingHashesSender(token: TokenItem? = nil) -> StakingPendingHashesSender {
+    func makePendingHashesSender() -> StakingPendingHashesSender {
         let repository = CommonStakingPendingHashesRepository()
-        let provider = makeStakingAPIProvider(token: token)
+        let provider = makeStakingAPIProvider()
 
         return TangemStakingFactory().makePendingHashesSender(
             repository: repository,

@@ -73,11 +73,7 @@ struct CommonWalletModelsFactory {
             address: address,
             publicKey: publicKey
         )
-        return StakingDependenciesFactory().makeStakingManager(
-            integrationId: integrationId,
-            wallet: wallet,
-            token: tokenItem
-        )
+        return StakingDependenciesFactory().makeStakingManager(integrationId: integrationId, wallet: wallet)
     }
 }
 
