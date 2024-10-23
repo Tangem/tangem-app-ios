@@ -151,11 +151,11 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
 
     func onrampQuote(item: OnrampSwappableItem) async throws -> OnrampQuote {
         let request = ExpressDTO.Onramp.Quote.Request(
-            fromCurrencyCode: item.source.currency.identity.code,
+            fromCurrencyCode: item.fiatCurrency.identity.code,
             toContractAddress: item.destination.expressCurrency.contractAddress,
             toNetwork: item.destination.expressCurrency.network,
             paymentMethod: item.paymentMethod.identity.code,
-            countryCode: item.source.identity.code,
+            countryCode: item.country.identity.code,
             fromAmount: item.destinationAmountWEI(),
             toDecimals: item.destination.decimalCount,
             providerId: item.providerInfo.id
@@ -169,11 +169,11 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
     func onrampData(item: OnrampSwappableItem) async throws -> OnrampRedirectData {
         let requestId: String = UUID().uuidString
         let request = ExpressDTO.Onramp.Data.Request(
-            fromCurrencyCode: item.source.currency.identity.code,
+            fromCurrencyCode: item.fiatCurrency.identity.code,
             toContractAddress: item.destination.expressCurrency.contractAddress,
             toNetwork: item.destination.expressCurrency.network,
             paymentMethod: item.paymentMethod.identity.code,
-            countryCode: item.source.identity.code,
+            countryCode: item.country.identity.code,
             fromAmount: item.sourceAmountWEI(),
             toDecimals: item.destination.decimalCount,
             providerId: item.providerInfo.id,

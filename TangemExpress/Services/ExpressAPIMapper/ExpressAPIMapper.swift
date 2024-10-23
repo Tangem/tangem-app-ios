@@ -154,7 +154,7 @@ struct ExpressAPIMapper {
 
     func mapToOnrampFiatCurrency(response: ExpressDTO.Onramp.FiatCurrency) -> OnrampFiatCurrency {
         let identity = OnrampIdentity(name: response.name, code: response.code, image: URL(string: response.image))
-        return OnrampFiatCurrency(identity: identity)
+        return OnrampFiatCurrency(identity: identity, precision: response.precision)
     }
 
     func mapToOnrampCountry(response: ExpressDTO.Onramp.Country) -> OnrampCountry {

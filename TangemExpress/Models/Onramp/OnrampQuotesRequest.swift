@@ -7,7 +7,8 @@
 //
 
 public struct OnrampSwappableItem {
-    public let source: OnrampCountry
+    public let fiatCurrency: OnrampFiatCurrency
+    public let country: OnrampCountry
     public let destination: ExpressWallet
     public let paymentMethod: OnrampPaymentMethod
     public let providerInfo: ProviderInfo
@@ -15,14 +16,16 @@ public struct OnrampSwappableItem {
     public let redirectSettings: OnrampRedirectSettings
 
     public init(
-        source: OnrampCountry,
+        fiatCurrency: OnrampFiatCurrency,
+        country: OnrampCountry,
         destination: ExpressWallet,
         paymentMethod: OnrampPaymentMethod,
         providerInfo: ProviderInfo,
         amount: Decimal,
         redirectSettings: OnrampRedirectSettings
     ) {
-        self.source = source
+        self.fiatCurrency = fiatCurrency
+        self.country = country
         self.destination = destination
         self.paymentMethod = paymentMethod
         self.providerInfo = providerInfo
@@ -31,7 +34,7 @@ public struct OnrampSwappableItem {
     }
 
     func sourceAmountWEI() -> String {
-        let wei = (amount * pow(10, 2)) as NSDecimalNumber
+        let wei = (amount * pow(10, fiatCurrency.precision)) as NSDecimalNumber
         return wei.stringValue
     }
 

@@ -7,20 +7,20 @@
 //
 
 public struct OnrampRedirectData: Hashable, Decodable {
-    let fromCurrencyCode: String
-    let toContractAddress: String
-    let toNetwork: String
-    let paymentMethod: String
-    let countryCode: String
-    let fromAmount: String
-    let toAmount: String?
-    let toDecimals: Int
-    let providerId: String
-    let toAddress: String
-    let redirectUrl: String
-    let language: String?
-    let theme: String?
-    let requestId: String
-    let externalTxId: String
-    let widgetUrl: String
+    public let fromCurrencyCode: String
+    public let toContractAddress: String
+    public let toNetwork: String
+    public let paymentMethod: String
+    public let countryCode: String
+    public let fromAmount: String
+    public let toAmount: String?
+    public let toDecimals: Int
+    public let providerId: String
+    public let toAddress: String
+    public let redirectUrl: String
+    public let language: String?
+    public let theme: String?
+    public let requestId: String
+    public let externalTxId: String
+    public let widgetUrl: String
 }
