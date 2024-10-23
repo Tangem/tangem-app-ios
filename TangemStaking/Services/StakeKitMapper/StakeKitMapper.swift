@@ -246,18 +246,17 @@ struct StakeKitMapper {
             throw StakeKitMapperError.noData("Enter or exit action is not found")
         }
 
-        let validators = response.validators
-            .map(mapToValidatorInfo)
-            .sorted(by: { lhs, rhs in
-                if lhs.apr == rhs.apr {
-                    return lhs.partner
-                }
+        let validators = response.validators.map(mapToValidatorInfo)
+        let preferredValidators = validators.filter { $0.preferred }.sorted { lhs, rhs in
+            if lhs.apr == rhs.apr {
+                return lhs.partner
+            }
 
-                return lhs.apr ?? 0 > rhs.apr ?? 0
-            })
+            return lhs.apr ?? 0 > rhs.apr ?? 0
+        }
 
         let rewardRateValues = RewardRateValues(
-            aprs: validators.filter { $0.preferred }.compactMap(\.apr),
+            aprs: preferredValidators.compactMap(\.apr),
             rewardRate: response.rewardRate
         )
 
@@ -271,6 +270,7 @@ struct StakeKitMapper {
             enterMinimumRequirement: enterAction.args.amount.minimum,
             exitMinimumRequirement: exitAction.args.amount.minimum,
             validators: validators,
+            preferredValidators: preferredValidators,
             item: item,
             unbondingPeriod: mapToPeriod(from: response.metadata.cooldownPeriod),
             warmupPeriod: mapToPeriod(from: response.metadata.warmupPeriod),

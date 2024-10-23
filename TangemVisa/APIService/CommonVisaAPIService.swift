@@ -8,7 +8,7 @@
 
 import Foundation
 import Moya
-import TangemNetworkLayerAdditions
+import TangemNetworkUtils
 
 struct CommonVisaAPIService {
     private let provider: MoyaProvider<VisaAPITarget>

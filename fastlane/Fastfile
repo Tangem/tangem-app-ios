@@ -104,6 +104,7 @@ desc """
 A lane that builds a \"BlockchainSdkExample\" scheme without running or publishing it, just to check that the scheme is buildable.
 """
 lane :check_bsdk_example_buildable do |options|
+  clear_derived_data  # Required otherwise raw xcodebuild doesn't work reliably
   xcodebuild(
     workspace: WORKSPACE_NAME,
     scheme: BSDK_EXAMPLE_SCHEME,

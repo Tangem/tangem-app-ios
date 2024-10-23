@@ -69,6 +69,11 @@ final class StakingDetailsViewModel: ObservableObject {
     }
 
     func userDidTapActionButton() {
+        guard stakingManager.state.yieldInfo?.preferredValidators.isEmpty == false else {
+            alert = .init(title: Localization.commonWarning, message: Localization.stakingNoValidatorsErrorMessage)
+            return
+        }
+
         coordinator?.openStakingFlow()
     }
 
