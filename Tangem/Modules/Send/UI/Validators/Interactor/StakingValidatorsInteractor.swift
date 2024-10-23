@@ -47,7 +47,7 @@ private extension CommonStakingValidatorsInteractor {
             return
         }
 
-        let validators = yield.validators.filter { $0.preferred }
+        let validators = yield.preferredValidators
 
         guard !validators.isEmpty else {
             AppLog.shared.debug("Yield.Validators is empty")
