@@ -11,6 +11,10 @@ on:
           Optional Xcode version override. Leave blank (default value) to use the default Xcode version; 
           pass a custom value (e.g. '16.0', '10.2.1', '11 Beta 7', '11.2 GM seed', etc) to use a different Xcode version for the build
         type: string
+      changelog:
+        description: >
+          Optional additional info about build
+        type: string
 
 concurrency:
   group: '${{ github.workflow }} (${{ github.head_ref || github.ref_name }})'
@@ -24,7 +28,7 @@ jobs:
       version: '${{ steps.jira.outputs.key }}'
       stage: Alpha
       build_number: '${{ github.run_number }}'
-      changelog: '${{ steps.jira.outputs.summary }}'
+      changelog: '${{ steps.changelog.outputs.result }}'
     steps:
       - name: Jira Login
         uses: atlassian/gajira-login@master
@@ -40,7 +44,18 @@ jobs:
           action: getBranchSummary
           branch-name: '${{ github.ref_name }}'
 
+      - name: Create changelog
+        id: changelog
+        env:
+          JIRA_ISSUE: '${{ steps.jira.outputs.summary }}'
+          ADDITIONAL_CHANGELOG: '${{ inputs.changelog }}'
         run: |
+          if [[ -n "${ADDITIONAL_CHANGELOG}" ]]; then
+            OUTPUT_VALUE="Description: ${ADDITIONAL_CHANGELOG}"$'\n'"Jira issue: ${JIRA_ISSUE}"
+          else
+            OUTPUT_VALUE="Jira issue: ${JIRA_ISSUE}"
+          fi
+          echo "result=${OUTPUT_VALUE}" >> $GITHUB_OUTPUT
 
   build:
     name: Tangem Alpha
