@@ -20,6 +20,12 @@ public protocol ExpressAPIProvider {
     func exchangeStatus(transactionId: String) async throws -> ExpressTransaction
     func exchangeSent(result: ExpressTransactionSentResult) async throws
 
-    // TODO: Add onramp endpoints
-    // https://tangem.atlassian.net/browse/IOS-8156
+    func onrampCurrencies() async throws -> [OnrampFiatCurrency]
+    func onrampCountries() async throws -> [OnrampCountry]
+    func onrampCountryByIP() async throws -> OnrampCountry
+    func onrampPaymentMethods() async throws -> [OnrampPaymentMethod]
+    func onrampPairs(from: OnrampFiatCurrency, to: [ExpressCurrency], country: OnrampCountry) async throws -> [OnrampPair]
+    func onrampQuote(item: OnrampSwappableItem) async throws -> OnrampQuote
+    func onrampData(item: OnrampSwappableItem) async throws -> OnrampRedirectData
+    func onrampStatus(transactionId: String) async throws
 }
