@@ -60,13 +60,14 @@ jobs:
   build:
     name: Tangem Alpha
     needs: prepare
-    uses: tangem/actions/.github/workflows/build.yml@main
+    uses: tangem/actions/.github/workflows/build.yml@feature/IOS-8112_ci_cd_alpha_builds_workflow
     with:
       stage: '${{ needs.prepare.outputs.stage }}'
       version: '${{ needs.prepare.outputs.version }}'
       build_number: '${{ needs.prepare.outputs.build_number }}'
       path: fastlane/builds/
       filename: Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa
+      xcode_version_override: '${{ inputs.xcode_version_override }}'
     secrets:
       GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT }}'
 
