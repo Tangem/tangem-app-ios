@@ -8,7 +8,6 @@
 
 import Foundation
 import TangemStaking
-import BlockchainSdk
 
 struct CommonStakingAnalyticsLogger: StakingAnalyticsLogger {
     func logAPIError(errorDescription: String, currencySymbol: String?) {

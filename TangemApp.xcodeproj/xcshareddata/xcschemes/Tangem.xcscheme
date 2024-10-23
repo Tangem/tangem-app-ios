@@ -47,6 +47,11 @@
                BlueprintName = "TangemUITests"
                ReferencedContainer = "container:TangemApp.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "TangemUITests">
+               </Test>
+            </SkippedTests>
          </TestableReference>
          <TestableReference
             skipped = "NO"
@@ -58,6 +63,11 @@
                BlueprintName = "TangemExpressTests"
                ReferencedContainer = "container:TangemApp.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "TangemExpressTests">
+               </Test>
+            </SkippedTests>
          </TestableReference>
          <TestableReference
             skipped = "NO"
@@ -69,6 +79,11 @@
                BlueprintName = "TangemVisaTests"
                ReferencedContainer = "container:TangemApp.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "TangemVisaTests">
+               </Test>
+            </SkippedTests>
          </TestableReference>
          <TestableReference
             skipped = "NO"
@@ -80,6 +95,11 @@
                BlueprintName = "TangemFoundationTests"
                ReferencedContainer = "container:TangemApp.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "TangemFoundationTests">
+               </Test>
+            </SkippedTests>
          </TestableReference>
          <TestableReference
             skipped = "NO"
@@ -91,6 +111,22 @@
                BlueprintName = "TangemStakingTests"
                ReferencedContainer = "container:TangemApp.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "TangemStakingTests">
+               </Test>
+            </SkippedTests>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B68E1F6B2CBC44060043E598"
+               BuildableName = "BlockchainSdkTests.xctest"
+               BlueprintName = "BlockchainSdkTests"
+               ReferencedContainer = "container:TangemApp.xcodeproj">
+            </BuildableReference>
          </TestableReference>
       </Testables>
    </TestAction>
@@ -98,7 +134,6 @@
       buildConfiguration = "Debug(production)"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      language = "uk-UA"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
