@@ -34,7 +34,7 @@ var serviceModules: [PackageDescription.Target] {
             name: "TangemFoundation"
         ),
         .tangemTarget(
-            name: "TangemNetworkLayerAdditions",
+            name: "TangemNetworkUtils",
             dependencies: [
                 "Moya",
                 "Alamofire",

@@ -1,6 +1,6 @@
 //
 //  MoyaProvider+AsyncRequest.swift
-//  TangemNetworkLayerAdditions
+//  TangemNetworkUtils
 //
 //  Created by Andrew Son on 24/01/24.
 //  Copyright © 2024 Tangem AG. All rights reserved.
