@@ -123,7 +123,8 @@ extension CoinType {
              .blast,
              .energyWebEVM,
              .energyWebX,
-             .core:
+             .core,
+             .casper:
             // Blockchains that are not in WalletCore yet
             return nil
         }

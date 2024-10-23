@@ -128,6 +128,8 @@ public struct DerivationConfigV2: DerivationConfig {
             return "m/44'/461'/0'/0/0"
         case .energyWebX:
             return "m/44'/246'/0'/0'/0'"
+        case .casper:
+            return "m/44'/506'/0'/0/0"
         }
     }
 }

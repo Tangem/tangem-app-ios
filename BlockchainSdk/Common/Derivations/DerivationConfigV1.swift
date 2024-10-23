@@ -143,6 +143,8 @@ public struct DerivationConfigV1: DerivationConfig {
             return "m/44'/246'/0'/0'/0'"
         case .core:
             return "m/44'/1116'/0'/0/0"
+        case .casper:
+            return "m/44'/506'/0'/0/0"
         }
     }
 }

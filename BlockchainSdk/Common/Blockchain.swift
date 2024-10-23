@@ -90,6 +90,7 @@ public indirect enum Blockchain: Equatable, Hashable {
     /// Polkadot parachain
     case energyWebX(curve: EllipticCurve)
     case core(testnet: Bool)
+    case casper(testnet: Bool)
     
     public var isTestnet: Bool {
         switch self {
@@ -133,7 +134,8 @@ public indirect enum Blockchain: Equatable, Hashable {
                 .sei(let testnet),
                 .kaspa(let testnet),
                 .energyWebEVM(let testnet),
-                .core(let testnet):
+                .core(let testnet),
+                .casper(let testnet):
             return testnet
         case .litecoin,
                 .ducatus,
@@ -303,7 +305,7 @@ public indirect enum Blockchain: Equatable, Hashable {
             return 6
         case .stellar:
             return 7
-        case .solana, .ton, .bittensor, .sui:
+        case .solana, .ton, .bittensor, .sui, .casper:
             return 9
         case .polkadot(_, let testnet):
             return testnet ? 12 : 10
@@ -459,6 +461,8 @@ public indirect enum Blockchain: Equatable, Hashable {
             return "EWT"
         case .core:
             return isTestnet ? "tCORE" : "CORE"
+        case .casper:
+            return "CSPR"
         }
     }
 
@@ -951,6 +955,7 @@ extension Blockchain: Codable {
         case .energyWebEVM: return "energyWebEVM"
         case .energyWebX: return "energyWebX"
         case .core: return "core"
+        case .casper: return "casper"
         }
     }
 
@@ -1285,6 +1290,8 @@ private extension Blockchain {
             case .network: return "core"
             case .coin: return "coredaoorg"
             }
+        case .casper:
+            return "casper"
         }
     }
 
@@ -1399,6 +1406,8 @@ extension Blockchain {
             return SuiWalletAssembly()
         case .filecoin:
             return FilecoinWalletAssembly()
+        case .casper:
+            return CasperWalletAssembly()
         }
     }
 }

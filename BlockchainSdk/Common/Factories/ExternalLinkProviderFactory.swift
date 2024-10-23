@@ -161,6 +161,8 @@ public struct ExternalLinkProviderFactory {
             return EnergyWebXExternalLinkProvider(isTestnet: isTestnet)
         case .core:
             return CoreExternalLinkProvider(isTestnet: isTestnet)
+        case .casper:
+            return CasperExternalLinkProvider(isTestnet: isTestnet)
         }
     }
 }

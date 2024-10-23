@@ -104,7 +104,8 @@ struct TokenInteractionAvailabilityProvider {
              .sui,
              .energyWebEVM,
              .energyWebX,
-             .core:
+             .core,
+             .casper:
 
             // Checking that we have at least one valid (non-empty) address
             //

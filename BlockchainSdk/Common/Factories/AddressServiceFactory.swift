@@ -139,6 +139,9 @@ public struct AddressServiceFactory {
             return WalletCoreAddressService(blockchain: .filecoin)
         case .energyWebX(let curve):
             return PolkadotAddressService(network: .energyWebX(curve: curve))
+        case .casper:
+            // We only support this type of curve
+            return CasperAddressService(curve: .secp256k1)
         }
     }
 }
