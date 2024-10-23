@@ -8,7 +8,6 @@
 
 import Foundation
 import TangemStaking
-import BlockchainSdk
 
 class StakingDependenciesFactory {
     @Injected(\.keysManager) private var keysManager: KeysManager
