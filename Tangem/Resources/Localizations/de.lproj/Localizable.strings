@@ -295,17 +295,16 @@
 "feedback_subject_tx_push_failed" = "Transaktion kann nicht gepusht werden";
 "feedback_token_description_error" = "Fehler in der Coinbeschreibung";
 "give_permission_current_transaction" = "Nur diese";
-"give_permission_fee_footer" = "Das Netzwerk erhebt eine Token-Genehmigungsgebühr, um zu überprüfen, ob Sie die Verwendung Ihres Tokens für den Swap genehmigen.";
 "give_permission_policy_type_footer" = "Gib das Genehmigungslimit für das ausgewählte Token an";
 "give_permission_rows_amount" = "Betrag %@";
 "give_permission_staking_footer" = "Die Genehmigungsfunktion ist erforderlich, um einer anderen Adresse die Berechtigung zur Verwendung einer bestimmten Menge Ihrer Token zu erteilen. Standardmäßig können Smart Contracts nicht auf deine Token zugreifen, es sei denn, du stimmen zu. Indem du deine Token \"freischaltest\", autorisierst du den StakeKit Smart Contract, sie zu verwenden. Die Miner des Netzwerks erhalten eine Gasgebühr (von dir bezahlt), um diese Aktion in der Blockchain aufzuzeichnen. Du kannst deine Token einsetzen, nachdem du die Genehmigung erteilt hast.";
-"give_permission_staking_subtitle" = "Um fortzufahren, musst du StakeKit Smart Contract erlauben, deine %@ zu verwenden";
+"give_permission_staking_subtitle" = "Um fortzufahren, musst du Polygon Smart Contract erlauben, deine %@ zu verwenden";
 "give_permission_swap_subtitle" = "Um fortzufahren, erteile %1@ Smart Contracts die Berechtigung, dein zu %2@ verwenden.";
 "give_permission_title" = "Erlaubnis erteilen";
 "give_permission_unlimited" = "Unbegrenzt";
 "home_button_order" = "Karte oder Ring bestellen";
 "home_button_scan" = "Karte oder Ring scannen";
-"information_generated_with_ai" = "Diese Informationen wurden mithilfe von KI generiert.\n Tippe hier, wenn Du Fehler finden.";
+"information_generated_with_ai" = "Diese Informationen wurden mithilfe von KI generiert.\nTippe hier, wenn Du Fehler finden.";
 "initial_message_change_access_code_body" = "Um den Zugangscode zu ändern, halte die Karte oder Ring wie oben gezeigt an das Gerät und entferne sie erst am Ende des Vorgangs.";
 "initial_message_change_passcode_body" = "Um den Passcode zu ändern, halte die Karte oder Ring wie oben gezeigt an das Gerät und entferne sie erst am Ende des Vorgangs.";
 "initial_message_create_wallet_body" = "Um die Wallet zu erstellen, halte die Karte oder Ring wie oben gezeigt an das Gerät und entferne sie erst am Ende des Vorgangs.";
@@ -693,6 +692,7 @@
 "staking_details_warmup_period" = "Aufwärmphase";
 "staking_details_warmup_period_info" = "Die zugewiesene Zeit für die Aktivierung der Teilnahme am Staking.";
 "staking_dismiss_message" = "Möchtest du den Staking-Bildschirm wirklich schließen?";
+"staking_give_permission_fee_footer" = "The network will charge a token approval fee to verify that you are authorizing the use of your token for the staking.";
 "staking_legal" = "Indem Du die Staking-Funktionalität nutzt, stimmst Du den %1$@ und %2$@ des Anbieters zu.";
 "staking_locked" = "Gesperrt";
 "staking_migrate" = "Migrieren";
@@ -778,6 +778,7 @@
 "story_meet_title" = "Lerne Tangem kennen";
 "story_web3_description" = "Tausche, kaufen Sie NFTs, vergebe Kredite und tätige Einlagen bei mehr als 100 verschiedenen dezentralen Diensten";
 "story_web3_title" = "Web 3.0-kompatibel";
+"swap_give_permission_fee_footer" = "Das Netzwerk erhebt eine Token-Genehmigungsgebühr, um zu überprüfen, ob Sie die Verwendung Ihres Tokens für den Swap genehmigen.";
 "swap_promo_text" = "Tausche mehr Token zu besseren Kursen direkt in deiner Brieftasche.";
 "swap_promo_title" = "Neuer Swap-Anbieter verfügbar!";
 "swapping_alert_cex_description" = "Der Betrag umfasst:\n- Gebühr des Dienstanbieters\n- Netzgebühr für die Rücksendung von %@ von der Vermittlungsstelle an die Adresse des Nutzers.";
