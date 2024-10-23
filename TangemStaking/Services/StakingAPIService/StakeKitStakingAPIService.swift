@@ -98,9 +98,9 @@ private extension StakeKitStakingAPIService {
         } catch {
             let stakeKitError = tryMapError(target: request, response: response)
             
-            let errorDescription = (stakeKitError ?? StakeKitHTTPError.badStatusCode(response.statusCode)).localizedDescription
+            let error = stakeKitError ?? StakeKitHTTPError.badStatusCode(response.statusCode)
             
-            analyticsLogger.logAPIError(errorDescription: errorDescription)
+            analyticsLogger.logAPIError(errorDescription: error.localizedDescription)
             throw stakeKitError ?? error
         }
 
@@ -117,7 +117,6 @@ private extension StakeKitStakingAPIService {
     }
 }
 
-// temporary solution, hopefully will be removed after stakekit error implementation
 fileprivate enum StakeKitHTTPError: Error {
     case badStatusCode(_ code: Int)
 }
