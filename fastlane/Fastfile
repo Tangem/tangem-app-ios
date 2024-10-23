@@ -23,9 +23,15 @@ before_all do |lane, options|
   # Xcode version overrides available only on CI
   if ENV["CI"]&.downcase == "true"
     if options[:xcode_version_override]&.empty?
-      xcodes() # Will use the Xcode version from the .xcode-version file
+      # Will use the Xcode version from the .xcode-version file
+      xcodes(
+        select_for_current_build_only: true
+      )
     else
-      xcodes(version: options[:xcode_version_override])
+      xcodes(
+        version: options[:xcode_version_override], 
+        select_for_current_build_only: true
+      )
     end
   end
 
