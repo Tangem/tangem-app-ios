@@ -97,8 +97,10 @@ private extension StakeKitStakingAPIService {
             response = try response.filterSuccessfulStatusAndRedirectCodes()
         } catch {
             let stakeKitError = tryMapError(target: request, response: response)
-
-            analyticsLogger.logAPIError(errorDescription: stakeKitError?.localizedDescription ?? "Unknown")
+            
+            let errorDescription = (stakeKitError ?? StakeKitHTTPError.badStatusCode(response.statusCode)).localizedDescription
+            
+            analyticsLogger.logAPIError(errorDescription: errorDescription)
             throw stakeKitError ?? error
         }
 
@@ -111,6 +113,20 @@ private extension StakeKitStakingAPIService {
             return error
         } catch {
             return nil
+        }
+    }
+}
+
+// temporary solution, hopefully will be removed after stakekit error implementation
+fileprivate enum StakeKitHTTPError: Error {
+    case badStatusCode(_ code: Int)
+}
+
+extension StakeKitHTTPError: LocalizedError {
+    var errorDescription: String? {
+        switch self {
+        case .badStatusCode(let code):
+            "HTTP error \(code)"
         }
     }
 }
