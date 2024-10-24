@@ -86,6 +86,15 @@ enum UserWalletRepositoryLockReason {
 enum UserWalletRepositoryUnlockMethod {
     case biometry
     case card(userWalletId: UserWalletId?, scanner: CardScanner)
+
+    var analyticsValue: Analytics.ParameterValue {
+        switch self {
+        case .biometry:
+            return Analytics.ParameterValue.signInTypeBiometrics
+        case .card:
+            return Analytics.ParameterValue.card
+        }
+    }
 }
 
 enum UserWalletRepositoryError: String, Error, LocalizedError, BindableError {

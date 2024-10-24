@@ -25,8 +25,7 @@ class WelcomeViewModel: ObservableObject {
 
     private weak var coordinator: WelcomeRoutable?
 
-    init(shouldScanOnAppear: Bool, coordinator: WelcomeRoutable) {
-        self.shouldScanOnAppear = shouldScanOnAppear
+    init(coordinator: WelcomeRoutable) {
         self.coordinator = coordinator
         storiesModelSubscription = storiesModel.objectWillChange
             .receive(on: DispatchQueue.main)
@@ -68,14 +67,6 @@ class WelcomeViewModel: ObservableObject {
         incomingActionManager.becomeFirstResponder(self)
     }
 
-    func onDidAppear() {
-        if shouldScanOnAppear {
-            DispatchQueue.main.async {
-                self.scanCard()
-            }
-        }
-    }
-
     func onDisappear() {
         incomingActionManager.resignFirstResponder(self)
     }
@@ -106,11 +97,6 @@ class WelcomeViewModel: ObservableObject {
             case .error(let error):
                 self.error = error.alertBinder
             case .success(let model), .partial(let model, _): // partial unlock is impossible in this case
-                Analytics.log(event: .signedIn, params: [
-                    .signInType: Analytics.ParameterValue.card.rawValue,
-                    .walletsCount: "1", // we don't have any saved wallets, just log one,
-                    .walletHasBackup: Analytics.ParameterValue.affirmativeOrNegative(for: model.hasBackupCards).rawValue,
-                ])
                 openMain(with: model)
             }
         }

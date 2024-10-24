@@ -60,12 +60,7 @@ class AppCoordinator: CoordinatorObject {
         case .welcome:
             setupWelcome()
         case .auth:
-            setupAuth()
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                self.tryUnlockWithBiometry()
-            }
-
+            setupAuth(unlockOnAppear: true)
         case .uncompletedBackup:
             setupUncompletedBackup()
         }
@@ -84,7 +79,7 @@ class AppCoordinator: CoordinatorObject {
         }
 
         if appLockController.isLocked {
-            handleLock(reason: .loggetOut) { [weak self] in
+            handleLock(reason: .loggedOut) { [weak self] in
                 self?.tryUnlockWithBiometry()
             }
         } else {
@@ -97,13 +92,11 @@ class AppCoordinator: CoordinatorObject {
         appLockController.unlockApp { [weak self] result in
             guard let self else { return }
 
-            withAnimation(.easeOut(duration: 0.3)) { [weak self] in
-                self?.lockViewVisible = false
-            }
+            lockViewVisible = false
 
             switch result {
             case .openAuth:
-                setupAuth()
+                setupAuth(unlockOnAppear: false)
             case .openMain(let model):
                 openMain(with: model)
             case .openWelcome:
@@ -125,27 +118,29 @@ class AppCoordinator: CoordinatorObject {
         }
 
         let welcomeCoordinator = WelcomeCoordinator(dismissAction: dismissAction)
-        welcomeCoordinator.start(with: .init(shouldScan: false))
+        welcomeCoordinator.start(with: .init())
         // withTransaction call fixes stories animation on scenario: welcome -> onboarding -> main -> welcome
-        withTransaction(.withoutAnimations()) {
-            viewState = .welcome(welcomeCoordinator)
-        }
+        // withTransaction(.withoutAnimations()) {
+        viewState = .welcome(welcomeCoordinator)
+        // }
     }
 
-    private func setupAuth() {
+    private func setupAuth(unlockOnAppear: Bool) {
         let dismissAction: Action<ScanDismissOptions> = { [weak self] options in
             guard let self else { return }
 
-            switch options {
-            case .main(let model):
-                openMain(with: model)
-            case .onboarding(let input):
-                openOnboarding(with: input)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                switch options {
+                case .main(let model):
+                    self.openMain(with: model)
+                case .onboarding(let input):
+                    self.openOnboarding(with: input)
+                }
             }
         }
 
         let authCoordinator = AuthCoordinator(dismissAction: dismissAction)
-        authCoordinator.start(with: .init())
+        authCoordinator.start(with: .init(unlockOnAppear: unlockOnAppear))
 
         viewState = .auth(authCoordinator)
     }
@@ -286,6 +281,7 @@ extension AppCoordinator {
         let coordinator = MainCoordinator(popToRootAction: popToRootAction)
         let options = MainCoordinator.Options(userWalletModel: userWalletModel)
         coordinator.start(with: options)
+
         viewState = .main(coordinator)
     }
 }
@@ -294,11 +290,11 @@ extension AppCoordinator {
 
 private enum LockReason {
     case nothingToDisplay
-    case loggetOut
+    case loggedOut
 
     var shouldAnimateLogout: Bool {
         switch self {
-        case .loggetOut:
+        case .loggedOut:
             false
         case .nothingToDisplay:
             true

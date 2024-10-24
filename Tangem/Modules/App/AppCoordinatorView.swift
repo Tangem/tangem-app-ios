@@ -22,7 +22,6 @@ struct AppCoordinatorView: CoordinatorView {
             content
                 .navigationLinks(links)
         }
-        .animation(.default, value: coordinator.viewState)
         .navigationViewStyle(.stack)
         .accentColor(Colors.Text.primary1)
         .overlayContentContainer(item: $coordinator.marketsCoordinator) { coordinator in
@@ -53,25 +52,30 @@ struct AppCoordinatorView: CoordinatorView {
             if coordinator.lockViewVisible {
                 LockView()
                     .setNamespace(namespace)
+                    .transition(.asymmetric(insertion: .identity, removal: .opacity.animation(.easeOut(duration: 0.3))))
             }
         }
     }
 
     @ViewBuilder
     private var content: some View {
-        switch coordinator.viewState {
-        case .welcome(let welcomeCoordinator):
-            WelcomeCoordinatorView(coordinator: welcomeCoordinator)
-        case .uncompleteBackup(let uncompletedBackupCoordinator):
-            UncompletedBackupCoordinatorView(coordinator: uncompletedBackupCoordinator)
-        case .auth(let authCoordinator):
-            AuthCoordinatorView(coordinator: authCoordinator)
-                .setNamespace(namespace)
-        case .main(let mainCoordinator):
-            MainCoordinatorView(coordinator: mainCoordinator)
-        case .none:
-            EmptyView()
+        ZStack {
+            switch coordinator.viewState {
+            case .welcome(let welcomeCoordinator):
+                WelcomeCoordinatorView(coordinator: welcomeCoordinator)
+            case .uncompleteBackup(let uncompletedBackupCoordinator):
+                UncompletedBackupCoordinatorView(coordinator: uncompletedBackupCoordinator)
+            case .auth(let authCoordinator):
+                AuthCoordinatorView(coordinator: authCoordinator)
+                    .setNamespace(namespace)
+            case .main(let mainCoordinator):
+                MainCoordinatorView(coordinator: mainCoordinator)
+            case .none:
+                EmptyView()
+            }
         }
+        .transition(.opacity)
+        .animation(.easeInOut, value: coordinator.viewState)
     }
 
     @ViewBuilder

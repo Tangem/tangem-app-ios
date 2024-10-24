@@ -138,6 +138,27 @@ class CommonUserWalletRepository: UserWalletRepository {
     }
 
     func unlock(with method: UserWalletRepositoryUnlockMethod, completion: @escaping (UserWalletRepositoryResult?) -> Void) {
+        unlockInternal(with: method) { [weak self] result in
+            guard let self else { return }
+
+            switch result {
+            case .success(let model), .partial(let model, _):
+                let walletHasBackup = Analytics.ParameterValue.affirmativeOrNegative(for: model.hasBackupCards)
+
+                Analytics.log(event: .signedIn, params: [
+                    .signInType: method.analyticsValue.rawValue,
+                    .walletsCount: "\(models.count)",
+                    .walletHasBackup: walletHasBackup.rawValue,
+                ])
+            default:
+                break
+            }
+
+            completion(result)
+        }
+    }
+
+    func unlockInternal(with method: UserWalletRepositoryUnlockMethod, completion: @escaping (UserWalletRepositoryResult?) -> Void) {
         switch method {
         case .biometry:
             unlockWithBiometry(completion: completion)

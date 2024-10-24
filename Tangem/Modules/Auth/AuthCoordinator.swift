@@ -39,8 +39,8 @@ class AuthCoordinator: CoordinatorObject {
         self.popToRootAction = popToRootAction
     }
 
-    func start(with options: Options = .default) {
-        rootViewModel = AuthViewModel(coordinator: self)
+    func start(with options: Options) {
+        rootViewModel = AuthViewModel(unlockOnAppear: options.unlockOnAppear, coordinator: self)
     }
 }
 
@@ -48,7 +48,7 @@ class AuthCoordinator: CoordinatorObject {
 
 extension AuthCoordinator {
     struct Options {
-        static let `default` = Options()
+        let unlockOnAppear: Bool
     }
 }
 

@@ -55,7 +55,7 @@ class WelcomeCoordinator: CoordinatorObject {
     }
 
     func start(with options: WelcomeCoordinator.Options) {
-        rootViewModel = WelcomeViewModel(shouldScanOnAppear: options.shouldScan, coordinator: self)
+        rootViewModel = WelcomeViewModel(coordinator: self)
         subscribeToWelcomeLifecycle()
         showWelcomeOnboardingIfNeeded()
     }
@@ -96,9 +96,7 @@ class WelcomeCoordinator: CoordinatorObject {
 // MARK: - Options
 
 extension WelcomeCoordinator {
-    struct Options {
-        let shouldScan: Bool
-    }
+    struct Options {}
 }
 
 // MARK: - WelcomeRoutable

@@ -16,7 +16,6 @@ struct WelcomeView: View {
             .alert(item: $viewModel.error, content: { $0.alert })
             .environment(\.colorScheme, .dark)
             .onAppear(perform: viewModel.onAppear)
-            .onDidAppear(perform: viewModel.onDidAppear)
             .onDisappear(perform: viewModel.onDisappear)
             .background(
                 ScanTroubleshootingView(
@@ -45,6 +44,6 @@ struct WelcomeView: View {
 
 struct WelcomeOnboardingView_Previews: PreviewProvider {
     static var previews: some View {
-        WelcomeView(viewModel: WelcomeViewModel(shouldScanOnAppear: false, coordinator: WelcomeCoordinator()))
+        WelcomeView(viewModel: WelcomeViewModel(coordinator: WelcomeCoordinator()))
     }
 }

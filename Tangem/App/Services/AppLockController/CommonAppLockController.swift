@@ -12,6 +12,7 @@ import SwiftUI
 
 class CommonAppLockController {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
+    @Injected(\.incomingActionManager) private var incomingActionManager: IncomingActionManaging
 
     private let minimizedAppTimer = MinimizedAppTimer(interval: 5)
     private let startupProcessor = StartupProcessor()
@@ -47,13 +48,6 @@ extension CommonAppLockController: AppLockController {
 
             switch result {
             case .success(let model), .partial(let model, _):
-                let walletHasBackup = Analytics.ParameterValue.affirmativeOrNegative(for: model.hasBackupCards)
-                Analytics.log(event: .signedIn, params: [
-                    .signInType: Analytics.ParameterValue.signInTypeBiometrics.rawValue,
-                    .walletsCount: "\(userWalletRepository.models.count)",
-                    .walletHasBackup: walletHasBackup.rawValue,
-                ])
-
                 completion(.openMain(model))
             default:
                 completion(.openAuth)
