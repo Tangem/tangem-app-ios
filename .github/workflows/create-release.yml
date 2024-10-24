@@ -16,10 +16,10 @@ on:
 jobs:
  prepare:
    name: Prepare Release
-   uses: tangem/actions/.github/workflows/prepare-release.yml@main
+   uses: tangem/actions/.github/workflows/build.yml@main
    with:
     versionName: ${{ github.event.inputs.versionName }}
-    releaseType: ${{ github.event.inputs.versionType }}s
+    versionType: ${{ github.event.inputs.versionType }}
    secrets:
     GH_MOBILE_PAT: ${{ secrets.GH_MOBILE_PAT}}
     JIRA_BASE_URL: ${{ secrets.JIRA_URL }}
@@ -32,7 +32,7 @@ jobs:
    uses: tangem/actions/.github/workflows/build.yml@main
    with:
     stage: ${{needs.prepare.outputs.stage}}
-    version: "RC"
+    version: "${{ github.event.inputs.name }}"
     build_number: ${{needs.prepare.outputs.build_number}}
     path: "fastlane/builds/"
     filename: "Tangem-${{needs.prepare.outputs.stage}}-${{needs.prepare.outputs.version}}(${{needs.prepare.outputs.build_number}}).ipa"
@@ -44,16 +44,14 @@ jobs:
    needs: [prepare,build]
    uses: tangem/actions/.github/workflows/deploy-testflight.yml@main
    with:
-    stage: "RC"
-    version: ${{ github.event.inputs.versionName }}
-    build_number: ${{ github.run_number }}
-    changelog: ""
-    filename: "Tangem-RC-${{ github.event.inputs.versionName }}(${{ github.run_number }}).ipa"
+    stage: ${{needs.prepare.outputs.stage}}
+    version: "${{needs.prepare.outputs.version}}"
+    build_number: ${{needs.prepare.outputs.build_number}}
+    changelog: "${{needs.prepare.outputs.changelog}}"
+    filename: "Tangem-${{needs.prepare.outputs.stage}}-${{needs.prepare.outputs.version}}(${{needs.prepare.outputs.build_number}}).ipa"
    secrets:
-    ASC_KEY_ID: ${{ secrets.ASC_KEY_ID}}
-    ASC_PRIVATE_KEY: ${{ secrets.ASC_PRIVATE_KEY}}
-    ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID}}
-    GH_MOBILE_PAT: ${{ secrets.GH_MOBILE_PAT}}
+    FIREBASE_APP_ID: ${{ secrets.FIREBASE_IOS_ALPHA_ID}}
+    FIREBASE_CLI_TOKEN: ${{ secrets.FIREBASE_CLI_TOKEN}}
    
  notification:
    name: Deploy Notification

@@ -25,8 +25,7 @@ jobs:
   test:
     name: Test
     runs-on: macos-14
-    if: false # TODO: Temp disabled, remove
-    #if: github.event.pull_request.draft == false
+    if: github.event.pull_request.draft == false
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -44,9 +43,8 @@ jobs:
 
   check_bsdk_example_buildable:
     name: Check BSDK example project
-    runs-on: self-hosted
-    if: false # TODO: Temp disabled, remove
-    #if: github.event.pull_request.draft == false
+    runs-on: macos-14
+    if: false # TODO: Andrey Fedorov - Requires code signing, enable after migration to self-hosted runners (IOS-8112)
     steps:
     - name: Checkout
       uses: actions/checkout@v3

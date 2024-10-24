@@ -4,11 +4,15 @@ for_lane :build_Alpha do
     app_identifier 'com.tangem.TangemAlpha'
 end
 
-for_lane :build_Beta do
+for_lane :alpha do
+    app_identifier 'com.tangem.TangemAlpha'
+end
+
+for_lane :beta do
     app_identifier 'com.tangem.TangemBeta'
 end
 
-for_lane :build_RC do
+for_lane :release do
     app_identifier 'com.tangem.Tangem'
 end
 
