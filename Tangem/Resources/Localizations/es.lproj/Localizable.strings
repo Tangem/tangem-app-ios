@@ -295,11 +295,10 @@
 "feedback_subject_tx_push_failed" = "No se puede enviar una transacción";
 "feedback_token_description_error" = "Error de descripción de moneda";
 "give_permission_current_transaction" = "Esta transacción";
-"give_permission_fee_footer" = "La red cobrará una tarifa de aprobación de token para verificar que está autorizando el uso de su token para el swap.";
 "give_permission_policy_type_footer" = "Especifique el límite aprobado para el token seleccionado.";
 "give_permission_rows_amount" = "Montante %@";
 "give_permission_staking_footer" = "La función Aprobar es necesaria para otorgar permiso a otra dirección para usar una cantidad específica de sus tokens. Por diseño, los contratos inteligentes no pueden acceder a sus tokens sin su aprobación. Al \"desbloquear\" sus tokens, autoriza al contrato inteligente de StakeKit a usarlos. Los mineros de la red reciben una tarifa de gas (pagada por usted) por registrar esta acción en la cadena de bloques. Puede apostar su token después de dar su aprobación.";
-"give_permission_staking_subtitle" = "Para continuar, debe autorizar el contrato inteligente de StakeKit para utilizar su %@";
+"give_permission_staking_subtitle" = "Para continuar, debe autorizar el contrato inteligente de Polygon para utilizar su %@";
 "give_permission_swap_subtitle" = "Para continuar, de autorización a los smart contracts de %1@ para usar su %2@";
 "give_permission_title" = "Dar autorización";
 "give_permission_unlimited" = "Ilimitado";
@@ -685,7 +684,7 @@
 "staking_details_reward_claiming" = "Reclamo de recompensa";
 "staking_details_reward_claiming_info" = "Método para recibir recompensas por apuesta.\nPuede ser automático, donde la recompensa se acredita en tu dirección, o manual, donde debes retirar la recompensa creando una transacción para recibirla.";
 "staking_details_reward_schedule" = "Calendario de recompensas";
-"staking_details_reward_schedule_info" = "Este es un cronograma que determina cuándo los participantes reciben sus recompensas.";
+"staking_details_reward_schedule_info" = "Este es un cronograma que determina cuándo los participantes reciben sus recompensas. La duración de la distribución de recompensas puede variar ligeramente según el validador y la carga de la red.";
 "staking_details_rewards_to_claim" = "Recompensas para reclamar: %@";
 "staking_details_title" = "Staking %@";
 "staking_details_unbonding_period" = "Periodo de disociación";
@@ -693,6 +692,7 @@
 "staking_details_warmup_period" = "Periodo de calentamiento";
 "staking_details_warmup_period_info" = "El tiempo permitido para activar la participación en la apuesta.";
 "staking_dismiss_message" = "¿Está seguro(a) de que desea cerrar la pantalla de staking?";
+"staking_give_permission_fee_footer" = "La red cobrará una tarifa de aprobación de token para verificar que usted está autorizando el uso de su token para el staking.";
 "staking_legal" = "Al utilizar la función de staking, usted acepta %1$@ y  %2$@ del proveedor";
 "staking_locked" = "Bloqueado";
 "staking_migrate" = "Migrar";
@@ -753,7 +753,7 @@
 "staking_unbonding_in" = "Desunión en";
 "staking_unlocked_locked" = "Desbloquear";
 "staking_unlocking" = "Desbloqueando";
-"staking_unstake_amount_validation_error" = "Amount exceeds staked balance";
+"staking_unstake_amount_validation_error" = "El monto excede el saldo apostado";
 "staking_unstaked" = "Sin staking";
 "staking_unstaked_footer" = "Marque activos sin staking para reclamarlos";
 "staking_unstaking" = "Unstaking";
@@ -778,6 +778,7 @@
 "story_meet_title" = "Descubra Tangem";
 "story_web3_description" = "Intercambie, compre NFT, haga préstamos y depósitos en más de 100 servicios descentralizados diferentes";
 "story_web3_title" = "Compatible con Web 3.0";
+"swap_give_permission_fee_footer" = "La red cobrará una tarifa de aprobación de token para verificar que está autorizando el uso de su token para el swap.";
 "swap_promo_text" = "Intercambie más tokens a mejores tasas directamente en su billetera.";
 "swap_promo_title" = "¡Nuevo proveedor de intercambio disponible!";
 "swapping_alert_cex_description" = "El monto incluye:\n• Tarifas del proveedor de servicios\n• Tarifas de red por enviar %@ desde el intercambio a la dirección del usuario.";
