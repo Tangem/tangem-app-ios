@@ -183,6 +183,10 @@ extension Analytics {
         case stakeActionRebond = "Rebond"
         case stakeActionMigrate = "Migrate"
 
+        // MARK: - Onramp
+
+        case onramp = "Onramp"
+
         // MARK: - Common
 
         static func toggleState(for boolean: Bool) -> ParameterValue {

@@ -43,10 +43,21 @@ struct EthereumStakeKitTransactionHelper {
             .decode(EthereumCompiledTransaction.self, from: compiledTransactionData)
 
         let gasLimit = BigUInt(Data(hex: compiledTransaction.gasLimit))
-        let baseFee = BigUInt(Data(hex: compiledTransaction.maxFeePerGas))
-        let priorityFee = BigUInt(Data(hex: compiledTransaction.maxPriorityFeePerGas))
-
-        guard gasLimit > 0, baseFee > 0, priorityFee > 0 else {
+        guard gasLimit > 0 else {
+            throw EthereumTransactionBuilderError.feeParametersNotFound
+        }
+        
+        let baseFee = compiledTransaction.maxFeePerGas.flatMap { BigUInt(Data(hex: $0)) } ?? .zero
+        let priorityFee = compiledTransaction.maxPriorityFeePerGas.flatMap { BigUInt(Data(hex: $0)) } ?? .zero
+        let gasPrice = compiledTransaction.gasPrice.flatMap { BigUInt(Data(hex: $0)) } ?? .zero
+        
+        let feeParameters: FeeParameters
+        
+        if baseFee > 0, priorityFee > 0 {
+            feeParameters = EthereumEIP1559FeeParameters(gasLimit: gasLimit, baseFee: baseFee, priorityFee: priorityFee)
+        } else if gasPrice > 0 {
+            feeParameters = EthereumLegacyFeeParameters(gasLimit: gasLimit, gasPrice: gasPrice)
+        } else {
             throw EthereumTransactionBuilderError.feeParametersNotFound
         }
 
@@ -61,7 +72,7 @@ struct EthereumStakeKitTransactionHelper {
             coinAmount: .zero,
             fee: Fee(
                 stakingTransaction.fee.amount,
-                parameters: EthereumEIP1559FeeParameters(gasLimit: gasLimit, baseFee: baseFee, priorityFee: priorityFee)
+                parameters: feeParameters
             ),
             nonce: compiledTransaction.nonce,
             data: data
@@ -76,7 +87,8 @@ private struct EthereumCompiledTransaction: Decodable {
     let data: String
     let nonce: Int
     let type: Int
-    let maxFeePerGas: String
-    let maxPriorityFeePerGas: String
+    let maxFeePerGas: String?
+    let maxPriorityFeePerGas: String?
+    let gasPrice: String?
     let chainId: Int
 }

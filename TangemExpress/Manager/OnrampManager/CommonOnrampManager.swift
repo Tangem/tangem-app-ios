@@ -48,14 +48,10 @@ extension CommonOnrampManager: OnrampManager {
     }
 
     public func update(amount: Decimal) async throws -> [OnrampProvider] {
-        for provider in _providers {
-            _ = await provider.manager.update(amount: amount)
-        }
-
         return _providers
     }
 
-    public func loadOnrampData(request: OnrampQuotesRequest) async throws -> OnrampRedirectData {
+    public func loadOnrampData(request: OnrampSwappableItem) async throws -> OnrampRedirectData {
         // Load data from API
         throw OnrampManagerError.notImplement
     }
