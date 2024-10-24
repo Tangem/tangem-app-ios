@@ -692,7 +692,7 @@
 "staking_details_warmup_period" = "Aufwärmphase";
 "staking_details_warmup_period_info" = "Die zugewiesene Zeit für die Aktivierung der Teilnahme am Staking.";
 "staking_dismiss_message" = "Möchtest du den Staking-Bildschirm wirklich schließen?";
-"staking_give_permission_fee_footer" = "The network will charge a token approval fee to verify that you are authorizing the use of your token for the staking.";
+"staking_give_permission_fee_footer" = "Das Netzwerk erhebt eine Token-Genehmigungsgebühr, um zu überprüfen, ob Du die Verwendung Deines Tokens für das Staking genehmigst.";
 "staking_legal" = "Indem Du die Staking-Funktionalität nutzt, stimmst Du den %1$@ und %2$@ des Anbieters zu.";
 "staking_locked" = "Gesperrt";
 "staking_migrate" = "Migrieren";
