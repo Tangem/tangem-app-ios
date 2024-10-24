@@ -250,7 +250,7 @@ private extension CommonStakingManager {
              .restakeRewards(let passthrough),
              .voteLocked(let passthrough),
              .unlockLocked(let passthrough),
-             .restake(let passthrough): // FIXME:
+             .restake(let passthrough):
             let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
             return try await provider.estimatePendingFee(request: request)
         case .withdraw(let passthroughs):
