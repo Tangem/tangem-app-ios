@@ -33,6 +33,7 @@ enum SendFlowActionType: Hashable {
     case revote
     case rebond
     case migrate
+    case onramp
 
     var title: String {
         switch self {
@@ -53,6 +54,7 @@ enum SendFlowActionType: Hashable {
         case .revote: Localization.stakingRevote
         case .rebond: Localization.stakingRebond
         case .migrate: Localization.stakingMigrate
+        case .onramp: Localization.commonBuy
         }
     }
 

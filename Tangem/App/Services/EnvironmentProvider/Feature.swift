@@ -13,6 +13,7 @@ enum Feature: String, Hashable, CaseIterable {
     case learnToEarn
     case dynamicFonts
     case partialUnstake
+    case onramp
 
     var name: String {
         switch self {
@@ -20,6 +21,7 @@ enum Feature: String, Hashable, CaseIterable {
         case .learnToEarn: return "Learn to Earn"
         case .dynamicFonts: return "Dynamic fonts"
         case .partialUnstake: return "Partial unstake"
+        case .onramp: return "Onramp"
         }
     }
 
@@ -29,6 +31,7 @@ enum Feature: String, Hashable, CaseIterable {
         case .learnToEarn: return .unspecified
         case .dynamicFonts: return .unspecified
         case .partialUnstake: return .unspecified
+        case .onramp: return .unspecified
         }
     }
 }

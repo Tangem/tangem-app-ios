@@ -20,7 +20,7 @@ public protocol OnrampManager {
     func update(amount: Decimal) async throws -> [OnrampProvider]
 
     // load data to make onramp
-    func loadOnrampData(request: OnrampQuotesRequest) async throws -> OnrampRedirectData
+    func loadOnrampData(request: OnrampSwappableItem) async throws -> OnrampRedirectData
 }
 
 public enum OnrampManagerError: LocalizedError {
