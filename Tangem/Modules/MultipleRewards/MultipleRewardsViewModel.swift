@@ -57,7 +57,7 @@ private extension MultipleRewardsViewModel {
                 switch state {
                 case .staked(let staked):
                     let data = staked.balances.rewards().compactMap { balance in
-                        viewModel.mapToValidatorViewData(balance: balance)
+                        viewModel.mapToValidatorViewData(balance: balance, yield: staked.yieldInfo)
                     }
                     return Just(data).eraseToAnyPublisher()
                 default:
@@ -70,7 +70,7 @@ private extension MultipleRewardsViewModel {
             .store(in: &bag)
     }
 
-    func mapToValidatorViewData(balance: StakingBalance) -> ValidatorViewData? {
+    func mapToValidatorViewData(balance: StakingBalance, yield: YieldInfo) -> ValidatorViewData? {
         guard let validator = balance.validatorType.validator else {
             return nil
         }
@@ -94,14 +94,14 @@ private extension MultipleRewardsViewModel {
             imageURL: validator.iconURL,
             subtitleType: subtitleType,
             detailsType: .balance(.init(crypto: balanceCryptoFormatted, fiat: balanceFiatFormatted)) { [weak self] in
-                self?.openStakingSingleActionFlow(balance: balance)
+                self?.openStakingSingleActionFlow(balance: balance, validators: yield.validators)
             }
         )
     }
 
-    func openStakingSingleActionFlow(balance: StakingBalance) {
+    func openStakingSingleActionFlow(balance: StakingBalance, validators: [ValidatorInfo]) {
         do {
-            let action = try PendingActionMapper(balance: balance).getAction()
+            let action = try PendingActionMapper(balance: balance, validators: validators).getAction()
             switch action {
             case .single(let action):
                 coordinator?.openStakingSingleActionFlow(action: action)

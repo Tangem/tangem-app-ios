@@ -7,10 +7,9 @@
 //
 
 import Foundation
-import TangemStaking
 import Combine
+import TangemStaking
 import BlockchainSdk
-import TangemFoundation
 
 protocol StakingModelStateProvider {
     var state: AnyPublisher<StakingModel.State, Never> { get }

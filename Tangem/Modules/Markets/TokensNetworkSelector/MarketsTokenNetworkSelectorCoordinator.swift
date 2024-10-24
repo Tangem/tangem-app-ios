@@ -1,5 +1,5 @@
 //
-//  TokenMarketsNetworkSelectorCoordinator.swift
+//  MarketsTokenNetworkSelectorCoordinator.swift
 //  Tangem
 //
 //  Created by skibinalexander on 21.08.2024.

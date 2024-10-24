@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -27,8 +27,8 @@
 		0AC9EFF72CAE857C005F868F /* StakingSingleActionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC9EFF62CAE857C005F868F /* StakingSingleActionModel.swift */; };
 		0AC9EFF92CAE9B2C005F868F /* CommonStakingSingleActionStepsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC9EFF82CAE9B2C005F868F /* CommonStakingSingleActionStepsManager.swift */; };
 		0AD13F952C8AD76800C2EE16 /* CommonStakingAnalyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD13F942C8AD76800C2EE16 /* CommonStakingAnalyticsLogger.swift */; };
+		0AD9EF0F2CC2A9B600466191 /* UnstakingSendAmountValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD9EF0E2CC2A9B600466191 /* UnstakingSendAmountValidator.swift */; };
 		16261826CE20A93A4DEE72F7 /* Pods_TangemVisaTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0AE5FADABA847DF74B716F0 /* Pods_TangemVisaTests.framework */; };
-		2B46B1E3B841BE8E73049275 /* Pods_TangemFoundationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A168C4F090FBAC6A3BF2815 /* Pods_TangemFoundationTests.framework */; };
 		2D0E4F532A8D114E00001D8E /* GenericWalletManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0E4F522A8D114E00001D8E /* GenericWalletManagerFactory.swift */; };
 		2D1400CA2C43F79F00B75A42 /* MarketsPortfolioContextActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1400C82C43F4FD00B75A42 /* MarketsPortfolioContextActions.swift */; };
 		2D1400CE2C44090400B75A42 /* MarketsPortfolioContainerRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1400CD2C44090400B75A42 /* MarketsPortfolioContainerRoutable.swift */; };
@@ -123,7 +123,6 @@
 		2DFC27932C78E833009B247E /* TokenItemInfoProviderMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DFC278F2C78E833009B247E /* TokenItemInfoProviderMapper.swift */; };
 		2DFC27942C78E833009B247E /* TokenItemType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DFC27902C78E833009B247E /* TokenItemType.swift */; };
 		2DFC27962C78E881009B247E /* MarketsPortfolioTokenItemFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DFC27952C78E881009B247E /* MarketsPortfolioTokenItemFactory.swift */; };
-		4A293696EACF80B666320C1E /* Pods_TangemFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A1E0F0323988A048B922E78 /* Pods_TangemFoundation.framework */; };
 		4E195C54D9C30FB89A03F1C7 /* Pods_TangemExpressTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57CE0533CAA26ABA1B671649 /* Pods_TangemExpressTests.framework */; };
 		4F00236C26F4689B6A741039 /* Pods_Tangem.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B1F5CE065E6BA27537C0E73 /* Pods_Tangem.framework */; };
 		5D00FCD1261738C5004626DE /* WalletConnectEthTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D00FCD0261738C5004626DE /* WalletConnectEthTransaction.swift */; };
@@ -288,7 +287,6 @@
 		B02B74AA29879CC5006473F2 /* WalletConnectV2Factory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02B74A929879CC5006473F2 /* WalletConnectV2Factory.swift */; };
 		B02B74AE29879DA5006473F2 /* WalletConnectV2PersonalSignHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02B74AD29879DA5006473F2 /* WalletConnectV2PersonalSignHandler.swift */; };
 		B02B74B029879DE3006473F2 /* WalletConnectV2HandlersFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02B74AF29879DE3006473F2 /* WalletConnectV2HandlersFactory.swift */; };
-		B02B74B229879E3C006473F2 /* WalletConnectSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02B74B129879E3C006473F2 /* WalletConnectSigner.swift */; };
 		B02B74B429879F2A006473F2 /* WalletConnectV2HandlersService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02B74B329879F2A006473F2 /* WalletConnectV2HandlersService.swift */; };
 		B02B74B629879F4A006473F2 /* WalletConnectMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02B74B529879F4A006473F2 /* WalletConnectMessageHandler.swift */; };
 		B02B74B82987A628006473F2 /* WalletConnectV2SignTypedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02B74B72987A628006473F2 /* WalletConnectV2SignTypedData.swift */; };
@@ -714,7 +712,11 @@
 		B620FCA02C5D326D00AD0FD1 /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = B620FC9F2C5D326D00AD0FD1 /* DGCharts */; };
 		B620FCAE2C5D337900AD0FD1 /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = B620FCAD2C5D337900AD0FD1 /* DGCharts */; };
 		B6210DEF2A94708700F885D5 /* OrganizeTokensListFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6210DEE2A94708700F885D5 /* OrganizeTokensListFactory.swift */; };
-		B62688292C8FD478003FAAFF /* Dispatch+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62688282C8FD478003FAAFF /* Dispatch+.swift */; };
+		B62C16792CBE095A00522683 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B62C16782CBE095A00522683 /* Alamofire */; };
+		B62C167B2CBE0A1E00522683 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B62C167A2CBE0A1E00522683 /* Alamofire */; };
+		B62C167D2CBE0A3D00522683 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B62C167C2CBE0A3D00522683 /* Alamofire */; };
+		B62C167F2CBE0B7900522683 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = B62C167E2CBE0B7900522683 /* Moya */; };
+		B62C16812CBE0BA000522683 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B62C16802CBE0BA000522683 /* Alamofire */; };
 		B62C65CE2C38D06B00189AD4 /* PushNotificationsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62C65C72C38D06A00189AD4 /* PushNotificationsService.swift */; };
 		B62C65CF2C38D06B00189AD4 /* PushNotificationsHelpersFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62C65C82C38D06A00189AD4 /* PushNotificationsHelpersFactory.swift */; };
 		B62C65D02C38D06B00189AD4 /* PushNotificationsPermissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62C65C92C38D06B00189AD4 /* PushNotificationsPermissionManager.swift */; };
@@ -1782,6 +1784,16 @@
 		B6B1BC292C6CCE88003EDB47 /* IntrospectResponderChainViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B1BC282C6CCE88003EDB47 /* IntrospectResponderChainViewModifier.swift */; };
 		B6B1CCCA2C460BB9006C1B44 /* UIPanGestureRecognizer+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B1CCC92C460BB9006C1B44 /* UIPanGestureRecognizer+.swift */; };
 		B6BB2CE22BAC4A9B009C12F2 /* ExpressDeviceInfoPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6BB2CE12BAC4A9B009C12F2 /* ExpressDeviceInfoPlugin.swift */; };
+		B6C0D3E12CBDC2E3001113ED /* TangemModules in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0D3E02CBDC2E3001113ED /* TangemModules */; };
+		B6C0D3F42CBDC543001113ED /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0D3F32CBDC543001113ED /* Moya */; };
+		B6C0D3F62CBDC552001113ED /* BinanceChain in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0D3F52CBDC552001113ED /* BinanceChain */; };
+		B6C0D3F92CBDC5A3001113ED /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0D3F82CBDC5A3001113ED /* SwiftyJSON */; };
+		B6C0D3FB2CBDC6DD001113ED /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0D3FA2CBDC6DD001113ED /* Moya */; };
+		B6C0D3FD2CBDC6FE001113ED /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0D3FC2CBDC6FE001113ED /* Moya */; };
+		B6C0D3FF2CBDC73E001113ED /* TangemModules in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0D3FE2CBDC73E001113ED /* TangemModules */; };
+		B6C0D4012CBDC759001113ED /* TangemModules in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0D4002CBDC759001113ED /* TangemModules */; };
+		B6C0D4092CBDCD34001113ED /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0D4082CBDCD34001113ED /* Moya */; };
+		B6C0D40B2CBDCD47001113ED /* TangemModules in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0D40A2CBDCD47001113ED /* TangemModules */; };
 		B6C1B9FF2AE1627500A98D2F /* OrganizeTokensScrollState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C1B9FE2AE1627500A98D2F /* OrganizeTokensScrollState.swift */; };
 		B6C1BE6D2B6C2F4E008FE5A0 /* secp256k1 in Frameworks */ = {isa = PBXBuildFile; productRef = B6C1BE6C2B6C2F4E008FE5A0 /* secp256k1 */; };
 		B6C2D00B2C816F080009FDFC /* MarketsTokenDetailsDateFormatterRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C2D00A2C816F080009FDFC /* MarketsTokenDetailsDateFormatterRepository.swift */; };
@@ -2194,7 +2206,6 @@
 		DCAB5800295EE820005D0F4A /* AppLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAB57FF295EE820005D0F4A /* AppLog.swift */; };
 		DCB616E52CB39AE100BE4481 /* WalletConnect in Frameworks */ = {isa = PBXBuildFile; productRef = DCB616E42CB39AE100BE4481 /* WalletConnect */; };
 		DCB616E72CB3A63800BE4481 /* ReownWalletKit in Frameworks */ = {isa = PBXBuildFile; productRef = DCB616E62CB3A63800BE4481 /* ReownWalletKit */; };
-		DCB617762CB938AF00BE4481 /* ExpressProviderUpdateSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB617752CB938AF00BE4481 /* ExpressProviderUpdateSource.swift */; };
 		DCBAF6992A4AEEDD0029480A /* AnyWalletManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBAF6982A4AEEDD0029480A /* AnyWalletManagerFactory.swift */; };
 		DCBAF69B2A4AEF3C0029480A /* HDWalletManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBAF69A2A4AEF3C0029480A /* HDWalletManagerFactory.swift */; };
 		DCBAF69D2A4AF0500029480A /* SimpleWalletManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBAF69C2A4AF0500029480A /* SimpleWalletManagerFactory.swift */; };
@@ -2216,6 +2227,15 @@
 		DCD9CBA529F7F4EF00440C93 /* LogFileProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD9CBA429F7F4EF00440C93 /* LogFileProvider.swift */; };
 		DCDBDA062A27C16C0000EBA2 /* LockedUserWalletModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCDBDA052A27C16C0000EBA2 /* LockedUserWalletModel.swift */; };
 		DCDE745C2C1374AC00C19A23 /* WelcomeOnboardingTOSDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCDE745B2C1374AC00C19A23 /* WelcomeOnboardingTOSDelegate.swift */; };
+		DCE0E2BD2CBE43C2009A4007 /* WalletConnectSolanaSignMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE0E2BC2CBE43C2009A4007 /* WalletConnectSolanaSignMessageHandler.swift */; };
+		DCE0E2C22CBE4804009A4007 /* WalletConnectSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE0E2C12CBE4804009A4007 /* WalletConnectSigner.swift */; };
+		DCE0E2C52CBE486A009A4007 /* CommonWalletConnectSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE0E2C42CBE486A009A4007 /* CommonWalletConnectSigner.swift */; };
+		DCE0E2C72CBE4891009A4007 /* SolanaWalletConnectSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE0E2C62CBE4891009A4007 /* SolanaWalletConnectSigner.swift */; };
+		DCE0E2C92CBE49BF009A4007 /* BlockchainSDK+WalletConnectChainId.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE0E2C82CBE49BF009A4007 /* BlockchainSDK+WalletConnectChainId.swift */; };
+		DCE317B62CC499DB0069C641 /* WalletConnectSolanaSignMessageDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE317B52CC499DB0069C641 /* WalletConnectSolanaSignMessageDTO.swift */; };
+		DCE317B82CC4F7FE0069C641 /* WalletConnectSolanaSignTransactionDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE317B72CC4F7FE0069C641 /* WalletConnectSolanaSignTransactionDTO.swift */; };
+		DCE317BB2CC4F8860069C641 /* WalletConnectSolanaSignTransactionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE317BA2CC4F8860069C641 /* WalletConnectSolanaSignTransactionHandler.swift */; };
+		DCE317BD2CC4F9440069C641 /* WalletConnectV2Utils+BlockchainMeta.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE317BC2CC4F9440069C641 /* WalletConnectV2Utils+BlockchainMeta.swift */; };
 		DCE402B82A31E69100D40C77 /* Analytics+DestinationAddressSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE402B72A31E69100D40C77 /* Analytics+DestinationAddressSource.swift */; };
 		DCE5C66C28898B7F000C7F67 /* TangemApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE5C66B28898B7F000C7F67 /* TangemApiService.swift */; };
 		DCE5C66E28898BB6000C7F67 /* CommonTangemApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE5C66D28898BB6000C7F67 /* CommonTangemApiService.swift */; };
@@ -2296,24 +2316,6 @@
 		EF1E97FD2B03F93300D4B511 /* CommonExpressDestinationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF1E97FC2B03F93300D4B511 /* CommonExpressDestinationService.swift */; };
 		EF22B9912C66235900839110 /* StakingTransactionSummaryDescriptionBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF22B9902C66235900839110 /* StakingTransactionSummaryDescriptionBuilder.swift */; };
 		EF2A54192C452B8500341060 /* ValidatorInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2A54182C452B8500341060 /* ValidatorInfo.swift */; };
-		EF2D9C8A2BBDA87A0055C485 /* TangemFoundation.docc in Sources */ = {isa = PBXBuildFile; fileRef = EF2D9C892BBDA87A0055C485 /* TangemFoundation.docc */; };
-		EF2D9C902BBDA87B0055C485 /* TangemFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF2D9C862BBDA8790055C485 /* TangemFoundation.framework */; };
-		EF2D9C972BBDA87D0055C485 /* TangemFoundationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2D9C962BBDA87D0055C485 /* TangemFoundationTests.swift */; };
-		EF2D9C982BBDA87D0055C485 /* TangemFoundation.h in Headers */ = {isa = PBXBuildFile; fileRef = EF2D9C882BBDA87A0055C485 /* TangemFoundation.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		EF2D9C9B2BBDA87D0055C485 /* TangemFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF2D9C862BBDA8790055C485 /* TangemFoundation.framework */; };
-		EF2D9C9C2BBDA87D0055C485 /* TangemFoundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EF2D9C862BBDA8790055C485 /* TangemFoundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		EF2D9CB82BBDA9090055C485 /* Lock.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2D9CB72BBDA9090055C485 /* Lock.swift */; };
-		EF2D9CBE2BBDAB290055C485 /* Publisher+AsyncMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9E29BA2B4F0CCE00418559 /* Publisher+AsyncMap.swift */; };
-		EF2D9CBF2BBDAB290055C485 /* Publisher+Async.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF82D232B9A0905004DF1A0 /* Publisher+Async.swift */; };
-		EF2D9CC02BBDAB290055C485 /* Publisher+ThrowingAsyncMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF74D6A62BA8A8A0000550F3 /* Publisher+ThrowingAsyncMap.swift */; };
-		EF2D9CC12BBDAB2E0055C485 /* Sequence+Async.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9E29BD2B4F0CCE00418559 /* Sequence+Async.swift */; };
-		EF2D9CC22BBDAB350055C485 /* Moya.Task+.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9E29BB2B4F0CCE00418559 /* Moya.Task+.swift */; };
-		EF2D9CC32BBDAB350055C485 /* MoyaProvider+AsyncRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B050F4F72B60F52700B2E53C /* MoyaProvider+AsyncRequest.swift */; };
-		EF2D9CC42BBDAB3E0055C485 /* ThreadSafeContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9E29BF2B4F0CCE00418559 /* ThreadSafeContainer.swift */; };
-		EF2D9CC52BBDAB3E0055C485 /* ThreadSafeContainer+ExpressibleByDictionaryLiteral.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9E29C02B4F0CCE00418559 /* ThreadSafeContainer+ExpressibleByDictionaryLiteral.swift */; };
-		EF2D9CC62BBDAB3E0055C485 /* ThreadSafeContainer+ExpressibleByArrayLiteral.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9E29C12B4F0CCE00418559 /* ThreadSafeContainer+ExpressibleByArrayLiteral.swift */; };
-		EF2D9CF92BBDAFBB0055C485 /* DebouncedCollector.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF729B3F2AEFC1DA00D80205 /* DebouncedCollector.swift */; };
-		EF2D9CFA2BBEBD310055C485 /* ThreadSafeContainerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B635EE442A607422008B5F87 /* ThreadSafeContainerTests.swift */; };
 		EF2FE4652C6671190015940A /* StakeKitDTO+EstimateGas.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2FE4642C6671190015940A /* StakeKitDTO+EstimateGas.swift */; };
 		EF2FE4992C6B80560015940A /* AllowanceChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2FE4982C6B80560015940A /* AllowanceChecker.swift */; };
 		EF2FE49C2C6BABDB0015940A /* AllowanceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2FE49B2C6BABDB0015940A /* AllowanceProvider.swift */; };
@@ -2586,7 +2588,6 @@
 		EFA4E37F2C3EEE9E008815AD /* StakingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA4E37E2C3EEE9E008815AD /* StakingModel.swift */; };
 		EFA4E3852C3EF914008815AD /* CommonStakingStepsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA4E3842C3EF914008815AD /* CommonStakingStepsManager.swift */; };
 		EFA4E3872C3F046C008815AD /* ValidatorViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA4E3862C3F046C008815AD /* ValidatorViewData.swift */; };
-		EFA568092C471C1E0064EBA1 /* Future+.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA568082C471C1E0064EBA1 /* Future+.swift */; };
 		EFA5683C2C480D120064EBA1 /* SendTransactionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA5683B2C480D120064EBA1 /* SendTransactionType.swift */; };
 		EFA5683E2C480F6C0064EBA1 /* StakingTransactionInfo+Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA5683D2C480F6C0064EBA1 /* StakingTransactionInfo+Mock.swift */; };
 		EFA580612893E4E200110DB0 /* LanguageCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA580602893E4E200110DB0 /* LanguageCode.swift */; };
@@ -2618,6 +2619,12 @@
 		EFB019492C4174D1009EE857 /* EnterAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB019482C4174D1009EE857 /* EnterAction.swift */; };
 		EFB0194D2C417F01009EE857 /* YieldInfo+Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB0194C2C417F01009EE857 /* YieldInfo+Mock.swift */; };
 		EFB0194F2C4187BB009EE857 /* TokenItem+StakingTokenItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB0194E2C4187BB009EE857 /* TokenItem+StakingTokenItem.swift */; };
+		EFB23F2D2CBE7F24005A6719 /* OnrampModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB23F2C2CBE7F1F005A6719 /* OnrampModel.swift */; };
+		EFB23F312CBE7FBD005A6719 /* OnrampView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB23F302CBE7FBB005A6719 /* OnrampView.swift */; };
+		EFB23F362CBE84F5005A6719 /* OnrampAmountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB23F352CBE84F2005A6719 /* OnrampAmountViewModel.swift */; };
+		EFB23F382CBE86A6005A6719 /* OnrampViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB23F372CBE86A5005A6719 /* OnrampViewModel.swift */; };
+		EFB23F3A2CBE8703005A6719 /* OnrampAmountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB23F392CBE8703005A6719 /* OnrampAmountView.swift */; };
+		EFB23F3C2CBE914D005A6719 /* OnrampFlowBaseBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB23F3B2CBE914D005A6719 /* OnrampFlowBaseBuilder.swift */; };
 		EFB6800E2B29BD4B00842BE3 /* SheetModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB6800D2B29BD4B00842BE3 /* SheetModifier.swift */; };
 		EFB7521B2C985F1100CB614C /* CommonFeeIncludedCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB7521A2C985F1100CB614C /* CommonFeeIncludedCalculator.swift */; };
 		EFB7521D2C985F2600CB614C /* StakingFeeIncludedCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB7521C2C985F2400CB614C /* StakingFeeIncludedCalculator.swift */; };
@@ -2671,6 +2678,15 @@
 		EFD39C992A6A916C0055D215 /* EnvironmentSetupRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD39C962A6A916C0055D215 /* EnvironmentSetupRoutable.swift */; };
 		EFD39C9D2A6ADA730055D215 /* EnvironmentSetupRoutableMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD39C9C2A6ADA730055D215 /* EnvironmentSetupRoutableMock.swift */; };
 		EFD5FE432C1369AE0047242E /* GeometryEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD5FE422C1369AE0047242E /* GeometryEffect.swift */; };
+		EFD68F212CC2986D00693C97 /* OnrampStepBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F202CC2985E00693C97 /* OnrampStepBuilder.swift */; };
+		EFD68F242CC298DA00693C97 /* OnrampInputOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F232CC298D100693C97 /* OnrampInputOutput.swift */; };
+		EFD68F262CC2990900693C97 /* OnrampStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F252CC2990800693C97 /* OnrampStep.swift */; };
+		EFD68F282CC2993000693C97 /* OnrampInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F272CC2992F00693C97 /* OnrampInteractor.swift */; };
+		EFD68F2A2CC2B06B00693C97 /* CommonOnrampStepsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F292CC2B06B00693C97 /* CommonOnrampStepsManager.swift */; };
+		EFD68F2C2CC2C63500693C97 /* OnrampAmountValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F2B2CC2C63500693C97 /* OnrampAmountValidator.swift */; };
+		EFD68F392CC3D7DE00693C97 /* ExpressDTO+Swap.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F382CC3D7DB00693C97 /* ExpressDTO+Swap.swift */; };
+		EFD68F3B2CC3D7E600693C97 /* ExpressDTO+Onramp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F3A2CC3D7E300693C97 /* ExpressDTO+Onramp.swift */; };
+		EFD68F3F2CC3E5C700693C97 /* OnrampRedirectSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F3E2CC3E5C600693C97 /* OnrampRedirectSettings.swift */; };
 		EFDD6EDD2CBCF3EA00804205 /* ExpressProviderUpdateSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFDD6EDC2CBCF3EA00804205 /* ExpressProviderUpdateSource.swift */; };
 		EFE1812B292E30C00072D80C /* SupportChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C9FCB92869CC3E00FDE63E /* SupportChatViewModel.swift */; };
 		EFE1812C292E30DF0072D80C /* OnboardingCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E1565126B97F8C005B33E4 /* OnboardingCardView.swift */; };
@@ -2696,7 +2712,6 @@
 		EFEE236C2BFE20860099917E /* StakingDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFEE23672BFE20860099917E /* StakingDetailsView.swift */; };
 		EFEE236D2BFE20860099917E /* StakingDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFEE23682BFE20860099917E /* StakingDetailsViewModel.swift */; };
 		EFEE236E2BFE20860099917E /* StakingDetailsRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFEE23692BFE20860099917E /* StakingDetailsRoutable.swift */; };
-		EFEE23702BFE3A8A0099917E /* DateFormatter+.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFEE236F2BFE3A8A0099917E /* DateFormatter+.swift */; };
 		EFEE238C2BFF62D50099917E /* TangemStaking.docc in Sources */ = {isa = PBXBuildFile; fileRef = EFEE238B2BFF62D50099917E /* TangemStaking.docc */; };
 		EFEE23922BFF62D60099917E /* TangemStaking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFEE23882BFF62D50099917E /* TangemStaking.framework */; };
 		EFEE23992BFF62D60099917E /* TangemStakingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFEE23982BFF62D60099917E /* TangemStakingTests.swift */; };
@@ -2716,7 +2731,6 @@
 		EFF466EA2ACD928800ACC3EA /* PendingTransactionRecordMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF466E92ACD928800ACC3EA /* PendingTransactionRecordMapper.swift */; };
 		EFF763E12C4E38B600E846F4 /* SendStepViewAnimatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF763E02C4E38B500E846F4 /* SendStepViewAnimatable.swift */; };
 		EFF763E32C4E38D200E846F4 /* SendStepNavigationTrailingViewType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF763E22C4E38D200E846F4 /* SendStepNavigationTrailingViewType.swift */; };
-		EFF763F12C4E60BA00E846F4 /* Result+.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF763F02C4E60BA00E846F4 /* Result+.swift */; };
 		EFF7641E2C4F8B6D00E846F4 /* SendTransitionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF7641D2C4F8B6D00E846F4 /* SendTransitionService.swift */; };
 		EFF9A2FA2BD6B45E007C63D2 /* UserWalletSettingsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF9A2F52BD6B45E007C63D2 /* UserWalletSettingsCoordinator.swift */; };
 		EFF9A2FB2BD6B45E007C63D2 /* UserWalletSettingsCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFF9A2F62BD6B45E007C63D2 /* UserWalletSettingsCoordinatorView.swift */; };
@@ -2726,7 +2740,6 @@
 		EFFA9A962C932B4E00320298 /* StakingPendingTransactionsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA90E262C88901E00F34BE0 /* StakingPendingTransactionsRepository.swift */; };
 		EFFA9A972C932B5200320298 /* CommonStakingPendingTransactionsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA90E282C8898A200F34BE0 /* CommonStakingPendingTransactionsRepository.swift */; };
 		EFFA9A982C932B5200320298 /* StakingPendingTransactionRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA90E2A2C8898B400F34BE0 /* StakingPendingTransactionRecord.swift */; };
-		EFFA9A9D2C93379100320298 /* Collection+.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFA9A9C2C93379100320298 /* Collection+.swift */; };
 		EFFC861328BCF6C500F863CE /* StorageEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFC861228BCF6C500F863CE /* StorageEntry.swift */; };
 		EFFE2CE928B8E0B300B9F279 /* UserWalletModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFE2CE828B8E0B300B9F279 /* UserWalletModel.swift */; };
 		EFFE2CEC28B8E1B000B9F279 /* CommonDerivationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFE2CEB28B8E1B000B9F279 /* CommonDerivationManager.swift */; };
@@ -2817,27 +2830,6 @@
 			remoteGlobalIDString = 5D3F77C124BF56D800E8695B;
 			remoteInfo = Tangem;
 		};
-		EF2D9C912BBDA87B0055C485 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5D3F77BA24BF56D800E8695B /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = EF2D9C852BBDA8790055C485;
-			remoteInfo = TangemFoundation;
-		};
-		EF2D9C932BBDA87C0055C485 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5D3F77BA24BF56D800E8695B /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 5D3F77C124BF56D800E8695B;
-			remoteInfo = Tangem;
-		};
-		EF2D9C992BBDA87D0055C485 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5D3F77BA24BF56D800E8695B /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = EF2D9C852BBDA8790055C485;
-			remoteInfo = TangemFoundation;
-		};
 		EF9E297C2B4F0C4900418559 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5D3F77BA24BF56D800E8695B /* Project object */;
@@ -2913,7 +2905,6 @@
 				B68E1F792CBC44060043E598 /* BlockchainSdk.framework in Embed Frameworks */,
 				EFEE239E2BFF62D60099917E /* TangemStaking.framework in Embed Frameworks */,
 				EF9E29A92B4F0C9900418559 /* TangemExpress.framework in Embed Frameworks */,
-				EF2D9C9C2BBDA87D0055C485 /* TangemFoundation.framework in Embed Frameworks */,
 				B099338B2B5517EC00240CDB /* TangemVisa.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -2944,6 +2935,7 @@
 		0AC9EFF62CAE857C005F868F /* StakingSingleActionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingSingleActionModel.swift; sourceTree = "<group>"; };
 		0AC9EFF82CAE9B2C005F868F /* CommonStakingSingleActionStepsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonStakingSingleActionStepsManager.swift; sourceTree = "<group>"; };
 		0AD13F942C8AD76800C2EE16 /* CommonStakingAnalyticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonStakingAnalyticsLogger.swift; sourceTree = "<group>"; };
+		0AD9EF0E2CC2A9B600466191 /* UnstakingSendAmountValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnstakingSendAmountValidator.swift; sourceTree = "<group>"; };
 		0BE949936543D22F51E09DBD /* Pods-Tangem-TangemUITests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.release(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.release(alpha).xcconfig"; sourceTree = "<group>"; };
 		0F0F54769EDEAC846B6BF43B /* Pods_Tangem_TangemUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tangem_TangemUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		136B5829321AB7962F0F8960 /* Pods-TangemTests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.release(beta).xcconfig"; sourceTree = "<group>"; };
@@ -3287,7 +3279,6 @@
 		B02B74A929879CC5006473F2 /* WalletConnectV2Factory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectV2Factory.swift; sourceTree = "<group>"; };
 		B02B74AD29879DA5006473F2 /* WalletConnectV2PersonalSignHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectV2PersonalSignHandler.swift; sourceTree = "<group>"; };
 		B02B74AF29879DE3006473F2 /* WalletConnectV2HandlersFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectV2HandlersFactory.swift; sourceTree = "<group>"; };
-		B02B74B129879E3C006473F2 /* WalletConnectSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectSigner.swift; sourceTree = "<group>"; };
 		B02B74B329879F2A006473F2 /* WalletConnectV2HandlersService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectV2HandlersService.swift; sourceTree = "<group>"; };
 		B02B74B529879F4A006473F2 /* WalletConnectMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectMessageHandler.swift; sourceTree = "<group>"; };
 		B02B74B72987A628006473F2 /* WalletConnectV2SignTypedData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectV2SignTypedData.swift; sourceTree = "<group>"; };
@@ -3360,7 +3351,6 @@
 		B04EADEB2A80D659009B5768 /* SingleTokenBaseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleTokenBaseViewModel.swift; sourceTree = "<group>"; };
 		B050F4F32B5FB03F00B2E53C /* VisaAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisaAPIService.swift; sourceTree = "<group>"; };
 		B050F4F52B60E7F400B2E53C /* VisaTransactionRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisaTransactionRecord.swift; sourceTree = "<group>"; };
-		B050F4F72B60F52700B2E53C /* MoyaProvider+AsyncRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MoyaProvider+AsyncRequest.swift"; sourceTree = "<group>"; };
 		B050F4F92B60F60600B2E53C /* VisaAPIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisaAPIError.swift; sourceTree = "<group>"; };
 		B050F4FB2B60F9F300B2E53C /* VisaAPITarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisaAPITarget.swift; sourceTree = "<group>"; };
 		B050F4FD2B60FA1800B2E53C /* CommonVisaAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonVisaAPIService.swift; sourceTree = "<group>"; };
@@ -3721,7 +3711,6 @@
 		B61980112AB98ACE00153886 /* HighlightableViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlightableViewModifier.swift; sourceTree = "<group>"; };
 		B61D2A1F2B1947E6004F2C2D /* TokenDetailsScrollState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenDetailsScrollState.swift; sourceTree = "<group>"; };
 		B6210DEE2A94708700F885D5 /* OrganizeTokensListFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensListFactory.swift; sourceTree = "<group>"; };
-		B62688282C8FD478003FAAFF /* Dispatch+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dispatch+.swift"; sourceTree = "<group>"; };
 		B62C65C72C38D06A00189AD4 /* PushNotificationsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotificationsService.swift; sourceTree = "<group>"; };
 		B62C65C82C38D06A00189AD4 /* PushNotificationsHelpersFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotificationsHelpersFactory.swift; sourceTree = "<group>"; };
 		B62C65C92C38D06B00189AD4 /* PushNotificationsPermissionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotificationsPermissionManager.swift; sourceTree = "<group>"; };
@@ -4649,7 +4638,6 @@
 		B6323E392C61D8FD00C1CE60 /* MarketsTokenDetailsPriceInfoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenDetailsPriceInfoHelper.swift; sourceTree = "<group>"; };
 		B63442602AFE90A700C87481 /* CardsInfoPagerSwipeDiscoveryAnimationTrigger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardsInfoPagerSwipeDiscoveryAnimationTrigger.swift; sourceTree = "<group>"; };
 		B63457762A3A097C00E164C5 /* View+ReadGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+ReadGeometry.swift"; sourceTree = "<group>"; };
-		B635EE442A607422008B5F87 /* ThreadSafeContainerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadSafeContainerTests.swift; sourceTree = "<group>"; };
 		B6364F872ACEE9AC00D615B5 /* EmptyMainFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyMainFooterView.swift; sourceTree = "<group>"; };
 		B63B63B92A44012D00A7CECF /* OrganizeTokensListHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensListHeader.swift; sourceTree = "<group>"; };
 		B63B63BC2A44013E00A7CECF /* OrganizeTokensListFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensListFooter.swift; sourceTree = "<group>"; };
@@ -5209,7 +5197,6 @@
 		DCA21D932BA1C77A000A3C1A /* ValidationMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationMode.swift; sourceTree = "<group>"; };
 		DCA54D8E2C05E0BA00FBF99F /* PriceChangeFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceChangeFormatterTests.swift; sourceTree = "<group>"; };
 		DCAB57FF295EE820005D0F4A /* AppLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLog.swift; sourceTree = "<group>"; };
-		DCB617752CB938AF00BE4481 /* ExpressProviderUpdateSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressProviderUpdateSource.swift; sourceTree = "<group>"; };
 		DCBAF6982A4AEEDD0029480A /* AnyWalletManagerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyWalletManagerFactory.swift; sourceTree = "<group>"; };
 		DCBAF69A2A4AEF3C0029480A /* HDWalletManagerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDWalletManagerFactory.swift; sourceTree = "<group>"; };
 		DCBAF69C2A4AF0500029480A /* SimpleWalletManagerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleWalletManagerFactory.swift; sourceTree = "<group>"; };
@@ -5234,12 +5221,21 @@
 		DCDECB942C88D78700E10564 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = es; path = es.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		DCDECB952C88D78700E10564 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		DCDECB962C88D78700E10564 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Intents.strings; sourceTree = "<group>"; };
+		DCE0E2BC2CBE43C2009A4007 /* WalletConnectSolanaSignMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectSolanaSignMessageHandler.swift; sourceTree = "<group>"; };
+		DCE0E2C12CBE4804009A4007 /* WalletConnectSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectSigner.swift; sourceTree = "<group>"; };
+		DCE0E2C42CBE486A009A4007 /* CommonWalletConnectSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonWalletConnectSigner.swift; sourceTree = "<group>"; };
+		DCE0E2C62CBE4891009A4007 /* SolanaWalletConnectSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolanaWalletConnectSigner.swift; sourceTree = "<group>"; };
+		DCE0E2C82CBE49BF009A4007 /* BlockchainSDK+WalletConnectChainId.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlockchainSDK+WalletConnectChainId.swift"; sourceTree = "<group>"; };
 		DCE1E82A2C542AFA00A6BDDE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Intents.strings; sourceTree = "<group>"; };
 		DCE1E82B2C542B0F00A6BDDE /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Intents.strings; sourceTree = "<group>"; };
 		DCE1E82C2C542B1000A6BDDE /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Intents.strings; sourceTree = "<group>"; };
 		DCE1E82D2C542B1100A6BDDE /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Intents.strings; sourceTree = "<group>"; };
 		DCE1E82E2C542B1200A6BDDE /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Intents.strings; sourceTree = "<group>"; };
 		DCE1E82F2C542B1300A6BDDE /* uk-UA */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "uk-UA"; path = "uk-UA.lproj/Intents.strings"; sourceTree = "<group>"; };
+		DCE317B52CC499DB0069C641 /* WalletConnectSolanaSignMessageDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectSolanaSignMessageDTO.swift; sourceTree = "<group>"; };
+		DCE317B72CC4F7FE0069C641 /* WalletConnectSolanaSignTransactionDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectSolanaSignTransactionDTO.swift; sourceTree = "<group>"; };
+		DCE317BA2CC4F8860069C641 /* WalletConnectSolanaSignTransactionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectSolanaSignTransactionHandler.swift; sourceTree = "<group>"; };
+		DCE317BC2CC4F9440069C641 /* WalletConnectV2Utils+BlockchainMeta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WalletConnectV2Utils+BlockchainMeta.swift"; sourceTree = "<group>"; };
 		DCE402B72A31E69100D40C77 /* Analytics+DestinationAddressSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Analytics+DestinationAddressSource.swift"; sourceTree = "<group>"; };
 		DCE5C66B28898B7F000C7F67 /* TangemApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemApiService.swift; sourceTree = "<group>"; };
 		DCE5C66D28898BB6000C7F67 /* CommonTangemApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonTangemApiService.swift; sourceTree = "<group>"; };
@@ -5326,12 +5322,6 @@
 		EF1E97FC2B03F93300D4B511 /* CommonExpressDestinationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonExpressDestinationService.swift; sourceTree = "<group>"; };
 		EF22B9902C66235900839110 /* StakingTransactionSummaryDescriptionBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingTransactionSummaryDescriptionBuilder.swift; sourceTree = "<group>"; };
 		EF2A54182C452B8500341060 /* ValidatorInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidatorInfo.swift; sourceTree = "<group>"; };
-		EF2D9C862BBDA8790055C485 /* TangemFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TangemFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		EF2D9C882BBDA87A0055C485 /* TangemFoundation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TangemFoundation.h; sourceTree = "<group>"; };
-		EF2D9C892BBDA87A0055C485 /* TangemFoundation.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = TangemFoundation.docc; sourceTree = "<group>"; };
-		EF2D9C8F2BBDA87A0055C485 /* TangemFoundationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TangemFoundationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		EF2D9C962BBDA87D0055C485 /* TangemFoundationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemFoundationTests.swift; sourceTree = "<group>"; };
-		EF2D9CB72BBDA9090055C485 /* Lock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lock.swift; sourceTree = "<group>"; };
 		EF2EFDE12865C05D00798051 /* Production.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Production.xcconfig; sourceTree = "<group>"; };
 		EF2EFDE22865C07100798051 /* Beta.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Beta.xcconfig; sourceTree = "<group>"; };
 		EF2FE4642C6671190015940A /* StakeKitDTO+EstimateGas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StakeKitDTO+EstimateGas.swift"; sourceTree = "<group>"; };
@@ -5469,7 +5459,6 @@
 		EF7000802A94BE7300C56E8A /* CardanoWalletManagerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardanoWalletManagerFactory.swift; sourceTree = "<group>"; };
 		EF70A4072C1714A100805D9F /* SendDestinationValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendDestinationValidator.swift; sourceTree = "<group>"; };
 		EF70A4092C1753BC00805D9F /* SendDestinationInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendDestinationInteractor.swift; sourceTree = "<group>"; };
-		EF729B3F2AEFC1DA00D80205 /* DebouncedCollector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebouncedCollector.swift; sourceTree = "<group>"; };
 		EF729B442AF1091900D80205 /* ExpressFeeSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressFeeSelectorView.swift; sourceTree = "<group>"; };
 		EF729B452AF1091900D80205 /* ExpressFeeSelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressFeeSelectorViewModel.swift; sourceTree = "<group>"; };
 		EF729B462AF1091900D80205 /* ExpressFeeSelectorRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressFeeSelectorRoutable.swift; sourceTree = "<group>"; };
@@ -5482,7 +5471,6 @@
 		EF729B6E2AF3E86300D80205 /* ExpressProvidersSelectorRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressProvidersSelectorRoutable.swift; sourceTree = "<group>"; };
 		EF729B762AF3E95F00D80205 /* ProviderRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderRowView.swift; sourceTree = "<group>"; };
 		EF72DC042C467001003DD97F /* StakingTokenItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StakingTokenItem.swift; sourceTree = "<group>"; };
-		EF74D6A62BA8A8A0000550F3 /* Publisher+ThrowingAsyncMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+ThrowingAsyncMap.swift"; sourceTree = "<group>"; };
 		EF74F50B289BF5AE001034D2 /* Fonts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
 		EF74F50C289BF5AE001034D2 /* Text+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Text+.swift"; sourceTree = "<group>"; };
 		EF75A3CE2B06416F0023A60A /* TokenItem+ExpressCurrency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TokenItem+ExpressCurrency.swift"; sourceTree = "<group>"; };
@@ -5543,12 +5531,6 @@
 		EF9E29962B4F0C8C00418559 /* TangemExpress.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = TangemExpress.docc; sourceTree = "<group>"; };
 		EF9E299C2B4F0C8D00418559 /* TangemExpressTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TangemExpressTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF9E29A32B4F0C9800418559 /* TangemExpressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemExpressTests.swift; sourceTree = "<group>"; };
-		EF9E29BA2B4F0CCE00418559 /* Publisher+AsyncMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Publisher+AsyncMap.swift"; sourceTree = "<group>"; };
-		EF9E29BB2B4F0CCE00418559 /* Moya.Task+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Moya.Task+.swift"; sourceTree = "<group>"; };
-		EF9E29BD2B4F0CCE00418559 /* Sequence+Async.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Sequence+Async.swift"; sourceTree = "<group>"; };
-		EF9E29BF2B4F0CCE00418559 /* ThreadSafeContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadSafeContainer.swift; sourceTree = "<group>"; };
-		EF9E29C02B4F0CCE00418559 /* ThreadSafeContainer+ExpressibleByDictionaryLiteral.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ThreadSafeContainer+ExpressibleByDictionaryLiteral.swift"; sourceTree = "<group>"; };
-		EF9E29C12B4F0CCE00418559 /* ThreadSafeContainer+ExpressibleByArrayLiteral.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ThreadSafeContainer+ExpressibleByArrayLiteral.swift"; sourceTree = "<group>"; };
 		EF9E29C22B4F0CCE00418559 /* ExpressConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpressConstants.swift; sourceTree = "<group>"; };
 		EF9E29C52B4F0CCE00418559 /* ExpressManagerMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpressManagerMapper.swift; sourceTree = "<group>"; };
 		EF9E29C72B4F0CCE00418559 /* ExpressProviderManagerFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpressProviderManagerFactory.swift; sourceTree = "<group>"; };
@@ -5625,7 +5607,6 @@
 		EFA4E37E2C3EEE9E008815AD /* StakingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingModel.swift; sourceTree = "<group>"; };
 		EFA4E3842C3EF914008815AD /* CommonStakingStepsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonStakingStepsManager.swift; sourceTree = "<group>"; };
 		EFA4E3862C3F046C008815AD /* ValidatorViewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidatorViewData.swift; sourceTree = "<group>"; };
-		EFA568082C471C1E0064EBA1 /* Future+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Future+.swift"; sourceTree = "<group>"; };
 		EFA5683B2C480D120064EBA1 /* SendTransactionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendTransactionType.swift; sourceTree = "<group>"; };
 		EFA5683D2C480F6C0064EBA1 /* StakingTransactionInfo+Mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StakingTransactionInfo+Mock.swift"; sourceTree = "<group>"; };
 		EFA580602893E4E200110DB0 /* LanguageCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageCode.swift; sourceTree = "<group>"; };
@@ -5659,6 +5640,12 @@
 		EFB019482C4174D1009EE857 /* EnterAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterAction.swift; sourceTree = "<group>"; };
 		EFB0194C2C417F01009EE857 /* YieldInfo+Mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "YieldInfo+Mock.swift"; sourceTree = "<group>"; };
 		EFB0194E2C4187BB009EE857 /* TokenItem+StakingTokenItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TokenItem+StakingTokenItem.swift"; sourceTree = "<group>"; };
+		EFB23F2C2CBE7F1F005A6719 /* OnrampModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampModel.swift; sourceTree = "<group>"; };
+		EFB23F302CBE7FBB005A6719 /* OnrampView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampView.swift; sourceTree = "<group>"; };
+		EFB23F352CBE84F2005A6719 /* OnrampAmountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampAmountViewModel.swift; sourceTree = "<group>"; };
+		EFB23F372CBE86A5005A6719 /* OnrampViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampViewModel.swift; sourceTree = "<group>"; };
+		EFB23F392CBE8703005A6719 /* OnrampAmountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampAmountView.swift; sourceTree = "<group>"; };
+		EFB23F3B2CBE914D005A6719 /* OnrampFlowBaseBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampFlowBaseBuilder.swift; sourceTree = "<group>"; };
 		EFB6800D2B29BD4B00842BE3 /* SheetModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetModifier.swift; sourceTree = "<group>"; };
 		EFB7521A2C985F1100CB614C /* CommonFeeIncludedCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonFeeIncludedCalculator.swift; sourceTree = "<group>"; };
 		EFB7521C2C985F2400CB614C /* StakingFeeIncludedCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingFeeIncludedCalculator.swift; sourceTree = "<group>"; };
@@ -5714,6 +5701,15 @@
 		EFD39C962A6A916C0055D215 /* EnvironmentSetupRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentSetupRoutable.swift; sourceTree = "<group>"; };
 		EFD39C9C2A6ADA730055D215 /* EnvironmentSetupRoutableMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentSetupRoutableMock.swift; sourceTree = "<group>"; };
 		EFD5FE422C1369AE0047242E /* GeometryEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryEffect.swift; sourceTree = "<group>"; };
+		EFD68F202CC2985E00693C97 /* OnrampStepBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampStepBuilder.swift; sourceTree = "<group>"; };
+		EFD68F232CC298D100693C97 /* OnrampInputOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampInputOutput.swift; sourceTree = "<group>"; };
+		EFD68F252CC2990800693C97 /* OnrampStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampStep.swift; sourceTree = "<group>"; };
+		EFD68F272CC2992F00693C97 /* OnrampInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampInteractor.swift; sourceTree = "<group>"; };
+		EFD68F292CC2B06B00693C97 /* CommonOnrampStepsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonOnrampStepsManager.swift; sourceTree = "<group>"; };
+		EFD68F2B2CC2C63500693C97 /* OnrampAmountValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampAmountValidator.swift; sourceTree = "<group>"; };
+		EFD68F382CC3D7DB00693C97 /* ExpressDTO+Swap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExpressDTO+Swap.swift"; sourceTree = "<group>"; };
+		EFD68F3A2CC3D7E300693C97 /* ExpressDTO+Onramp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExpressDTO+Onramp.swift"; sourceTree = "<group>"; };
+		EFD68F3E2CC3E5C600693C97 /* OnrampRedirectSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampRedirectSettings.swift; sourceTree = "<group>"; };
 		EFDD6EDC2CBCF3EA00804205 /* ExpressProviderUpdateSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressProviderUpdateSource.swift; sourceTree = "<group>"; };
 		EFE255F52C3D79BB00B17DAC /* BSDKTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BSDKTransaction.swift; path = Tangem/Common/BlockchainSDK/BSDKTransaction.swift; sourceTree = SOURCE_ROOT; };
 		EFE255F92C3D8C7C00B17DAC /* SendQRCodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendQRCodeService.swift; sourceTree = "<group>"; };
@@ -5737,7 +5733,6 @@
 		EFEE23672BFE20860099917E /* StakingDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingDetailsView.swift; sourceTree = "<group>"; };
 		EFEE23682BFE20860099917E /* StakingDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingDetailsViewModel.swift; sourceTree = "<group>"; };
 		EFEE23692BFE20860099917E /* StakingDetailsRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingDetailsRoutable.swift; sourceTree = "<group>"; };
-		EFEE236F2BFE3A8A0099917E /* DateFormatter+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+.swift"; sourceTree = "<group>"; };
 		EFEE23882BFF62D50099917E /* TangemStaking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TangemStaking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EFEE238A2BFF62D50099917E /* TangemStaking.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TangemStaking.h; sourceTree = "<group>"; };
 		EFEE238B2BFF62D50099917E /* TangemStaking.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = TangemStaking.docc; sourceTree = "<group>"; };
@@ -5756,15 +5751,12 @@
 		EFF5CF1928C796B1000EE8DB /* Alpha.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Alpha.xcconfig; sourceTree = "<group>"; };
 		EFF763E02C4E38B500E846F4 /* SendStepViewAnimatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendStepViewAnimatable.swift; sourceTree = "<group>"; };
 		EFF763E22C4E38D200E846F4 /* SendStepNavigationTrailingViewType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendStepNavigationTrailingViewType.swift; sourceTree = "<group>"; };
-		EFF763F02C4E60BA00E846F4 /* Result+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+.swift"; sourceTree = "<group>"; };
 		EFF7641D2C4F8B6D00E846F4 /* SendTransitionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendTransitionService.swift; sourceTree = "<group>"; };
-		EFF82D232B9A0905004DF1A0 /* Publisher+Async.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Publisher+Async.swift"; sourceTree = "<group>"; };
 		EFF9A2F52BD6B45E007C63D2 /* UserWalletSettingsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserWalletSettingsCoordinator.swift; sourceTree = "<group>"; };
 		EFF9A2F62BD6B45E007C63D2 /* UserWalletSettingsCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserWalletSettingsCoordinatorView.swift; sourceTree = "<group>"; };
 		EFF9A2F72BD6B45E007C63D2 /* UserWalletSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserWalletSettingsView.swift; sourceTree = "<group>"; };
 		EFF9A2F82BD6B45E007C63D2 /* UserWalletSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserWalletSettingsViewModel.swift; sourceTree = "<group>"; };
 		EFF9A2F92BD6B45E007C63D2 /* UserWalletSettingsRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserWalletSettingsRoutable.swift; sourceTree = "<group>"; };
-		EFFA9A9C2C93379100320298 /* Collection+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+.swift"; sourceTree = "<group>"; };
 		EFFC861228BCF6C500F863CE /* StorageEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEntry.swift; sourceTree = "<group>"; };
 		EFFE2CE828B8E0B300B9F279 /* UserWalletModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserWalletModel.swift; sourceTree = "<group>"; };
 		EFFE2CEB28B8E1B000B9F279 /* CommonDerivationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonDerivationManager.swift; sourceTree = "<group>"; };
@@ -5783,14 +5775,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				DCB616E52CB39AE100BE4481 /* WalletConnect in Frameworks */,
+				B62C167F2CBE0B7900522683 /* Moya in Frameworks */,
 				B6EE3B622C789C6E00B464FC /* DGCharts in Frameworks */,
 				B0B11A082C787FE70018A2A6 /* MarkdownUI in Frameworks */,
+				B6C0D3E12CBDC2E3001113ED /* TangemModules in Frameworks */,
 				B6C1BE6D2B6C2F4E008FE5A0 /* secp256k1 in Frameworks */,
 				B68E1F782CBC44060043E598 /* BlockchainSdk.framework in Frameworks */,
-				EF2D9C9B2BBDA87D0055C485 /* TangemFoundation.framework in Frameworks */,
 				EF9E29A82B4F0C9900418559 /* TangemExpress.framework in Frameworks */,
 				EFEE239D2BFF62D60099917E /* TangemStaking.framework in Frameworks */,
 				B620FCAE2C5D337900AD0FD1 /* DGCharts in Frameworks */,
+				B62C16812CBE0BA000522683 /* Alamofire in Frameworks */,
 				B6F625302C85E1A600DEF098 /* DGCharts in Frameworks */,
 				5DAC0888251391D900B73E8B /* CoreNFC.framework in Frameworks */,
 				B099338A2B5517EC00240CDB /* TangemVisa.framework in Frameworks */,
@@ -5823,8 +5817,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B62C16792CBE095A00522683 /* Alamofire in Frameworks */,
 				C2DBF9FD1A18628296A2C808 /* Pods_TangemVisa.framework in Frameworks */,
 				B62D34102CBC4C5800C2460E /* BlockchainSdk.framework in Frameworks */,
+				B6C0D3FF2CBDC73E001113ED /* TangemModules in Frameworks */,
+				B6C0D3FB2CBDC6DD001113ED /* Moya in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5856,9 +5853,12 @@
 				B68E1F992CBC453E0043E598 /* IcpKit in Frameworks */,
 				B68E1F8A2CBC44910043E598 /* Hedera in Frameworks */,
 				B62D34472CBC51D400C2460E /* SwiftCBOR in Frameworks */,
+				B6C0D3F92CBDC5A3001113ED /* SwiftyJSON in Frameworks */,
+				B6C0D3F62CBDC552001113ED /* BinanceChain in Frameworks */,
 				B68E1F962CBC451D0043E598 /* ScaleCodec in Frameworks */,
 				B62D34502CBC67D500C2460E /* AnyCodable in Frameworks */,
 				B68E1F8D2CBC44AA0043E598 /* CryptoSwift in Frameworks */,
+				B6C0D3F42CBDC543001113ED /* Moya in Frameworks */,
 				B68E1F932CBC44FF0043E598 /* TonSwift in Frameworks */,
 				B62D343D2CBC4FD000C2460E /* Clibsodium in Frameworks */,
 				B68E1F902CBC44E30043E598 /* SwiftProtobuf in Frameworks */,
@@ -5877,29 +5877,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		EF2D9C832BBDA8790055C485 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				4A293696EACF80B666320C1E /* Pods_TangemFoundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EF2D9C8C2BBDA87A0055C485 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				EF2D9C902BBDA87B0055C485 /* TangemFoundation.framework in Frameworks */,
-				2B46B1E3B841BE8E73049275 /* Pods_TangemFoundationTests.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		EF9E29902B4F0C8800418559 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B62C167D2CBE0A3D00522683 /* Alamofire in Frameworks */,
 				86D9B9D1A68FFFCAAEDE1210 /* Pods_TangemExpress.framework in Frameworks */,
 				B62D34152CBC4C6F00C2460E /* BlockchainSdk.framework in Frameworks */,
+				B6C0D40B2CBDCD47001113ED /* TangemModules in Frameworks */,
+				B6C0D4092CBDCD34001113ED /* Moya in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5916,8 +5902,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B62C167B2CBE0A1E00522683 /* Alamofire in Frameworks */,
 				735DE6BB9FDAFE5A5BCFE5AF /* Pods_TangemStaking.framework in Frameworks */,
 				B62D34402CBC506E00C2460E /* BlockchainSdk.framework in Frameworks */,
+				B6C0D4012CBDC759001113ED /* TangemModules in Frameworks */,
+				B6C0D3FD2CBDC6FE001113ED /* Moya in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6398,15 +6387,12 @@
 				B09933842B5517EC00240CDB /* TangemVisaTests */,
 				EFEE23892BFF62D50099917E /* TangemStaking */,
 				EFEE23972BFF62D60099917E /* TangemStakingTests */,
-				EF2D9C872BBDA87A0055C485 /* TangemFoundation */,
-				EF2D9C952BBDA87D0055C485 /* TangemFoundationTests */,
 				B68E1F662CBC44060043E598 /* BlockchainSdk */,
 				B68E1F722CBC44060043E598 /* BlockchainSdkTests */,
 				B62D43792CBC7EC700C2460E /* BlockchainSdkExample */,
 				5D3F77C324BF56D800E8695B /* Products */,
 				BBA154748909F0AB4121528D /* Pods */,
 				2E5061A84512B23CCB5F2E17 /* Frameworks */,
-				EFDD6ED12CBCF39800804205 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -6420,8 +6406,6 @@
 				EF9E299C2B4F0C8D00418559 /* TangemExpressTests.xctest */,
 				B09933772B5517E300240CDB /* TangemVisa.framework */,
 				B099337E2B5517E600240CDB /* TangemVisaTests.xctest */,
-				EF2D9C862BBDA8790055C485 /* TangemFoundation.framework */,
-				EF2D9C8F2BBDA87A0055C485 /* TangemFoundationTests.xctest */,
 				EFEE23882BFF62D50099917E /* TangemStaking.framework */,
 				EFEE23912BFF62D60099917E /* TangemStakingTests.xctest */,
 				B68E1F652CBC44050043E598 /* BlockchainSdk.framework */,
@@ -6924,6 +6908,7 @@
 		B02B74AB29879D8B006473F2 /* Handlers */ = {
 			isa = PBXGroup;
 			children = (
+				DCE317B92CC4F8020069C641 /* SignTransactionHandling */,
 				B0ADFD3C298A70BD00EF2869 /* TransactionHandling */,
 				B02B74AC29879D91006473F2 /* SignHandling */,
 				B02B74AF29879DE3006473F2 /* WalletConnectV2HandlersFactory.swift */,
@@ -6935,6 +6920,7 @@
 		B02B74AC29879D91006473F2 /* SignHandling */ = {
 			isa = PBXGroup;
 			children = (
+				DCE0E2BB2CBE43B7009A4007 /* Solana */,
 				B02B74AD29879DA5006473F2 /* WalletConnectV2PersonalSignHandler.swift */,
 				B02B74B72987A628006473F2 /* WalletConnectV2SignTypedData.swift */,
 			);
@@ -7863,8 +7849,8 @@
 		B0A8849F2A6A5D1700210321 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				DCE0E2C02CBE47EA009A4007 /* Signer */,
 				B0ADFD3D298A70CD00EF2869 /* WalletConnectEthTransactionBuilder.swift */,
-				B02B74B129879E3C006473F2 /* WalletConnectSigner.swift */,
 				B05209C2261F2B4E000DD204 /* WalletConnectUIBuilder.swift */,
 				DC4665A829895BA100EF97A5 /* WalletConnectURLParser.swift */,
 				B06015E429730C3D00D0F809 /* WalletConnectUIDelegate.swift */,
@@ -8137,6 +8123,8 @@
 				B0468CE62954A0D300F2E728 /* WalletConnectV2DefaultSocketFactory.swift */,
 				B03AEEB129596EBD00212267 /* WalletConnectV2MessageComposer.swift */,
 				B0FE0B3429712C170046EE2C /* WalletConnectV2Utils.swift */,
+				DCE317BC2CC4F9440069C641 /* WalletConnectV2Utils+BlockchainMeta.swift */,
+				DCE0E2C82CBE49BF009A4007 /* BlockchainSDK+WalletConnectChainId.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -11660,6 +11648,7 @@
 				EFC84B202C37FBB200546882 /* SendAmountStep.swift */,
 				EF665E402CBD23B600F79B87 /* SendAmountView */,
 				EF0FBB6D2C53BE300095A6BD /* SendAmountCompactView */,
+				EFB23F322CBE80BC005A6719 /* OnrampAmountView */,
 				EF031A7D2C0DD234001535C9 /* Interactor */,
 				EFAECCEF2C1B6F760051710F /* SendCurrencyPicker */,
 			);
@@ -12558,6 +12547,34 @@
 			path = WalletManagers;
 			sourceTree = "<group>";
 		};
+		DCE0E2BB2CBE43B7009A4007 /* Solana */ = {
+			isa = PBXGroup;
+			children = (
+				DCE0E2BC2CBE43C2009A4007 /* WalletConnectSolanaSignMessageHandler.swift */,
+				DCE317B52CC499DB0069C641 /* WalletConnectSolanaSignMessageDTO.swift */,
+			);
+			path = Solana;
+			sourceTree = "<group>";
+		};
+		DCE0E2C02CBE47EA009A4007 /* Signer */ = {
+			isa = PBXGroup;
+			children = (
+				DCE0E2C12CBE4804009A4007 /* WalletConnectSigner.swift */,
+				DCE0E2C42CBE486A009A4007 /* CommonWalletConnectSigner.swift */,
+				DCE0E2C62CBE4891009A4007 /* SolanaWalletConnectSigner.swift */,
+			);
+			path = Signer;
+			sourceTree = "<group>";
+		};
+		DCE317B92CC4F8020069C641 /* SignTransactionHandling */ = {
+			isa = PBXGroup;
+			children = (
+				DCE317B72CC4F7FE0069C641 /* WalletConnectSolanaSignTransactionDTO.swift */,
+				DCE317BA2CC4F8860069C641 /* WalletConnectSolanaSignTransactionHandler.swift */,
+			);
+			path = SignTransactionHandling;
+			sourceTree = "<group>";
+		};
 		DCE5C66A28898B4D000C7F67 /* TangemApiService */ = {
 			isa = PBXGroup;
 			children = (
@@ -12620,11 +12637,13 @@
 		EF031A7D2C0DD234001535C9 /* Interactor */ = {
 			isa = PBXGroup;
 			children = (
+				EFD68F2B2CC2C63500693C97 /* OnrampAmountValidator.swift */,
 				EFD0A14A2C9985CD0010E642 /* SendAmountModifier.swift */,
 				EF339E742C24820B00B5CDC9 /* SendAmountInteractor.swift */,
 				EF031A7E2C0DD243001535C9 /* SendAmountConverter.swift */,
 				EFAECCF02C1B702D0051710F /* SendAmountValidator.swift */,
 				0A0E01762C64AA79009E01F2 /* StakingSendAmountValidator.swift */,
+				0AD9EF0E2CC2A9B600466191 /* UnstakingSendAmountValidator.swift */,
 				EF4193792C2DE0CB006A30A5 /* SendAmount.swift */,
 				DC1FB52D2C5BB5E2008533A2 /* SendCryptoValueFormatter.swift */,
 			);
@@ -12763,68 +12782,6 @@
 				EF1E17672BF672AC000364AE /* DefaultTextFieldRowView.swift */,
 			);
 			path = DefaultTextFieldRowView;
-			sourceTree = "<group>";
-		};
-		EF2D9C872BBDA87A0055C485 /* TangemFoundation */ = {
-			isa = PBXGroup;
-			children = (
-				EF2D9CB92BBDA91A0055C485 /* Helpers */,
-				EF9E29B92B4F0CCE00418559 /* Extensions */,
-				EF2D9C882BBDA87A0055C485 /* TangemFoundation.h */,
-				EF2D9C892BBDA87A0055C485 /* TangemFoundation.docc */,
-			);
-			path = TangemFoundation;
-			sourceTree = "<group>";
-		};
-		EF2D9C952BBDA87D0055C485 /* TangemFoundationTests */ = {
-			isa = PBXGroup;
-			children = (
-				B635EE442A607422008B5F87 /* ThreadSafeContainerTests.swift */,
-				EF2D9C962BBDA87D0055C485 /* TangemFoundationTests.swift */,
-			);
-			path = TangemFoundationTests;
-			sourceTree = "<group>";
-		};
-		EF2D9CB92BBDA91A0055C485 /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				EF2D9CB72BBDA9090055C485 /* Lock.swift */,
-				EF9E29BE2B4F0CCE00418559 /* ThreadSafeContainer */,
-			);
-			path = Helpers;
-			sourceTree = "<group>";
-		};
-		EF2D9CBB2BBDAA670055C485 /* Combine */ = {
-			isa = PBXGroup;
-			children = (
-				EF729B3F2AEFC1DA00D80205 /* DebouncedCollector.swift */,
-				EFF82D232B9A0905004DF1A0 /* Publisher+Async.swift */,
-				EF9E29BA2B4F0CCE00418559 /* Publisher+AsyncMap.swift */,
-				EF74D6A62BA8A8A0000550F3 /* Publisher+ThrowingAsyncMap.swift */,
-				EFA568082C471C1E0064EBA1 /* Future+.swift */,
-			);
-			path = Combine;
-			sourceTree = "<group>";
-		};
-		EF2D9CBC2BBDAA710055C485 /* Moya */ = {
-			isa = PBXGroup;
-			children = (
-				EF9E29BB2B4F0CCE00418559 /* Moya.Task+.swift */,
-				B050F4F72B60F52700B2E53C /* MoyaProvider+AsyncRequest.swift */,
-			);
-			path = Moya;
-			sourceTree = "<group>";
-		};
-		EF2D9CBD2BBDAAA30055C485 /* Foundation */ = {
-			isa = PBXGroup;
-			children = (
-				EFFA9A9C2C93379100320298 /* Collection+.swift */,
-				EF9E29BD2B4F0CCE00418559 /* Sequence+Async.swift */,
-				EFEE236F2BFE3A8A0099917E /* DateFormatter+.swift */,
-				EFF763F02C4E60BA00E846F4 /* Result+.swift */,
-				B62688282C8FD478003FAAFF /* Dispatch+.swift */,
-			);
-			path = Foundation;
 			sourceTree = "<group>";
 		};
 		EF2EFDE02865BFE800798051 /* Configurations */ = {
@@ -13072,6 +13029,7 @@
 		EF49C05F2CAD85770062AF06 /* Onramp */ = {
 			isa = PBXGroup;
 			children = (
+				EFD68F3E2CC3E5C600693C97 /* OnrampRedirectSettings.swift */,
 				EF1399732CBD0A3C00AC9E2B /* OnrampRedirectData.swift */,
 				EF1399712CBCFD3F00AC9E2B /* OnrampQuotesRequest.swift */,
 				EF13996F2CBCFD3100AC9E2B /* OnrampProvider.swift */,
@@ -13259,6 +13217,7 @@
 		EF665E392CBD22BE00F79B87 /* FlowBuilders */ = {
 			isa = PBXGroup;
 			children = (
+				EFB23F3B2CBE914D005A6719 /* OnrampFlowBaseBuilder.swift */,
 				EFC84B002C37FAB500546882 /* SendFlowBaseBuilder.swift */,
 				EFB999B32C3D9EC000F6A987 /* SellFlowBaseBuilder.swift */,
 				EFA4E37C2C3EEDF0008815AD /* StakingFlowBaseBuilder.swift */,
@@ -13291,6 +13250,7 @@
 		EF665E3C2CBD233600F79B87 /* ManagmentModels */ = {
 			isa = PBXGroup;
 			children = (
+				EFB23F2C2CBE7F1F005A6719 /* OnrampModel.swift */,
 				DA559C1D2B0261F300F59584 /* SendModel.swift */,
 				EFA4E37E2C3EEE9E008815AD /* StakingModel.swift */,
 				EF0B63F52C5411C900365A50 /* UnstakingModel.swift */,
@@ -13311,6 +13271,7 @@
 				EFB9320E2C3EC17800C999E9 /* Validators */,
 				DA559C202B0261F300F59584 /* Fee */,
 				DA559C272B0261F400F59584 /* Summary */,
+				EFB23F2E2CBE7FA4005A6719 /* Onramp */,
 				DAF72F3E2B0F480A0006B44F /* Finish */,
 				EF665E462CBD24F800F79B87 /* UITypes */,
 			);
@@ -13832,26 +13793,6 @@
 			path = TangemExpressTests;
 			sourceTree = "<group>";
 		};
-		EF9E29B92B4F0CCE00418559 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				EF2D9CBD2BBDAAA30055C485 /* Foundation */,
-				EF2D9CBB2BBDAA670055C485 /* Combine */,
-				EF2D9CBC2BBDAA710055C485 /* Moya */,
-			);
-			path = Extensions;
-			sourceTree = "<group>";
-		};
-		EF9E29BE2B4F0CCE00418559 /* ThreadSafeContainer */ = {
-			isa = PBXGroup;
-			children = (
-				EF9E29BF2B4F0CCE00418559 /* ThreadSafeContainer.swift */,
-				EF9E29C02B4F0CCE00418559 /* ThreadSafeContainer+ExpressibleByDictionaryLiteral.swift */,
-				EF9E29C12B4F0CCE00418559 /* ThreadSafeContainer+ExpressibleByArrayLiteral.swift */,
-			);
-			path = ThreadSafeContainer;
-			sourceTree = "<group>";
-		};
 		EF9E29C32B4F0CCE00418559 /* Services */ = {
 			isa = PBXGroup;
 			children = (
@@ -13923,6 +13864,8 @@
 			isa = PBXGroup;
 			children = (
 				EF9E29D62B4F0CCE00418559 /* ExpressDTO.swift */,
+				EFD68F382CC3D7DB00693C97 /* ExpressDTO+Swap.swift */,
+				EFD68F3A2CC3D7E300693C97 /* ExpressDTO+Onramp.swift */,
 				EF9E29D72B4F0CCE00418559 /* ExpressAuthorizationPlugin.swift */,
 				B6BB2CE12BAC4A9B009C12F2 /* ExpressDeviceInfoPlugin.swift */,
 				EF9E29D82B4F0CCE00418559 /* ExpressAPITarget.swift */,
@@ -14143,6 +14086,34 @@
 			path = UserWalletSettings;
 			sourceTree = "<group>";
 		};
+		EFB23F2E2CBE7FA4005A6719 /* Onramp */ = {
+			isa = PBXGroup;
+			children = (
+				EFD68F252CC2990800693C97 /* OnrampStep.swift */,
+				EFB23F2F2CBE7FB4005A6719 /* OnrampView */,
+				EFD68F222CC298C900693C97 /* Interactor */,
+			);
+			path = Onramp;
+			sourceTree = "<group>";
+		};
+		EFB23F2F2CBE7FB4005A6719 /* OnrampView */ = {
+			isa = PBXGroup;
+			children = (
+				EFB23F302CBE7FBB005A6719 /* OnrampView.swift */,
+				EFB23F372CBE86A5005A6719 /* OnrampViewModel.swift */,
+			);
+			path = OnrampView;
+			sourceTree = "<group>";
+		};
+		EFB23F322CBE80BC005A6719 /* OnrampAmountView */ = {
+			isa = PBXGroup;
+			children = (
+				EFB23F392CBE8703005A6719 /* OnrampAmountView.swift */,
+				EFB23F352CBE84F2005A6719 /* OnrampAmountViewModel.swift */,
+			);
+			path = OnrampAmountView;
+			sourceTree = "<group>";
+		};
 		EFB4C1302837C50C00E991C1 /* Types */ = {
 			isa = PBXGroup;
 			children = (
@@ -14204,6 +14175,7 @@
 				EF0B63F72C54132B00365A50 /* CommonUnstakingStepsManager.swift */,
 				0A713CEF2CAA76530042FC27 /* CommonRestakingStepsManager.swift */,
 				0AC9EFF82CAE9B2C005F868F /* CommonStakingSingleActionStepsManager.swift */,
+				EFD68F292CC2B06B00693C97 /* CommonOnrampStepsManager.swift */,
 			);
 			path = Flows;
 			sourceTree = "<group>";
@@ -14362,6 +14334,7 @@
 				EFC84B042C37FAB500546882 /* SendSummaryStepBuilder.swift */,
 				EFC84B032C37FAB500546882 /* SendFinishStepBuilder.swift */,
 				EFA4E37A2C3EEC6D008815AD /* StakingValidatorsStepBuilder.swift */,
+				EFD68F202CC2985E00693C97 /* OnrampStepBuilder.swift */,
 			);
 			path = StepBuilders;
 			sourceTree = "<group>";
@@ -14428,12 +14401,13 @@
 			path = SupportedBlockchainsPreferences;
 			sourceTree = "<group>";
 		};
-		EFDD6ED12CBCF39800804205 /* Recovered References */ = {
+		EFD68F222CC298C900693C97 /* Interactor */ = {
 			isa = PBXGroup;
 			children = (
-				DCB617752CB938AF00BE4481 /* ExpressProviderUpdateSource.swift */,
+				EFD68F272CC2992F00693C97 /* OnrampInteractor.swift */,
+				EFD68F232CC298D100693C97 /* OnrampInputOutput.swift */,
 			);
-			name = "Recovered References";
+			path = Interactor;
 			sourceTree = "<group>";
 		};
 		EFE23AC9292CB84600A3C554 /* IconView */ = {
@@ -14602,14 +14576,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		EF2D9C812BBDA8790055C485 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				EF2D9C982BBDA87D0055C485 /* TangemFoundation.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		EF9E298E2B4F0C8800418559 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -14650,7 +14616,6 @@
 			dependencies = (
 				EF9E297D2B4F0C4900418559 /* PBXTargetDependency */,
 				B09933892B5517EC00240CDB /* PBXTargetDependency */,
-				EF2D9C9A2BBDA87D0055C485 /* PBXTargetDependency */,
 				EFEE239C2BFF62D60099917E /* PBXTargetDependency */,
 				B68E1F772CBC44060043E598 /* PBXTargetDependency */,
 			);
@@ -14667,6 +14632,9 @@
 				B6F6252F2C85E1A600DEF098 /* DGCharts */,
 				DCB616E42CB39AE100BE4481 /* WalletConnect */,
 				DCB616E62CB3A63800BE4481 /* ReownWalletKit */,
+				B6C0D3E02CBDC2E3001113ED /* TangemModules */,
+				B62C167E2CBE0B7900522683 /* Moya */,
+				B62C16802CBE0BA000522683 /* Alamofire */,
 			);
 			productName = "Tangem Tap";
 			productReference = 5D3F77C224BF56D800E8695B /* Tangem.app */;
@@ -14727,6 +14695,11 @@
 				B62D34132CBC4C5800C2460E /* PBXTargetDependency */,
 			);
 			name = TangemVisa;
+			packageProductDependencies = (
+				B6C0D3FA2CBDC6DD001113ED /* Moya */,
+				B6C0D3FE2CBDC73E001113ED /* TangemModules */,
+				B62C16782CBE095A00522683 /* Alamofire */,
+			);
 			productName = TangemVisa;
 			productReference = B09933772B5517E300240CDB /* TangemVisa.framework */;
 			productType = "com.apple.product-type.framework";
@@ -14804,6 +14777,9 @@
 				B62D34462CBC51D400C2460E /* SwiftCBOR */,
 				B62D344C2CBC675600C2460E /* stellarsdk */,
 				B62D344F2CBC67D500C2460E /* AnyCodable */,
+				B6C0D3F32CBDC543001113ED /* Moya */,
+				B6C0D3F52CBDC552001113ED /* BinanceChain */,
+				B6C0D3F82CBDC5A3001113ED /* SwiftyJSON */,
 			);
 			productName = BlockchainSdk;
 			productReference = B68E1F652CBC44050043E598 /* BlockchainSdk.framework */;
@@ -14829,45 +14805,6 @@
 			productReference = B68E1F6C2CBC44060043E598 /* BlockchainSdkTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		EF2D9C852BBDA8790055C485 /* TangemFoundation */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = EF2D9CA92BBDA87D0055C485 /* Build configuration list for PBXNativeTarget "TangemFoundation" */;
-			buildPhases = (
-				4D0F2A2CAFB3CC9D0C91C25C /* [CP] Check Pods Manifest.lock */,
-				EF2D9C812BBDA8790055C485 /* Headers */,
-				EF2D9C822BBDA8790055C485 /* Sources */,
-				EF2D9C832BBDA8790055C485 /* Frameworks */,
-				EF2D9C842BBDA8790055C485 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = TangemFoundation;
-			productName = TangemFoundation;
-			productReference = EF2D9C862BBDA8790055C485 /* TangemFoundation.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		EF2D9C8E2BBDA87A0055C485 /* TangemFoundationTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = EF2D9CAA2BBDA87D0055C485 /* Build configuration list for PBXNativeTarget "TangemFoundationTests" */;
-			buildPhases = (
-				62851A6FDC36724FDA10E2FF /* [CP] Check Pods Manifest.lock */,
-				EF2D9C8B2BBDA87A0055C485 /* Sources */,
-				EF2D9C8C2BBDA87A0055C485 /* Frameworks */,
-				EF2D9C8D2BBDA87A0055C485 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				EF2D9C922BBDA87B0055C485 /* PBXTargetDependency */,
-				EF2D9C942BBDA87C0055C485 /* PBXTargetDependency */,
-			);
-			name = TangemFoundationTests;
-			productName = TangemFoundationTests;
-			productReference = EF2D9C8F2BBDA87A0055C485 /* TangemFoundationTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		EF9E29922B4F0C8800418559 /* TangemExpress */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = EF9E29AA2B4F0C9D00418559 /* Build configuration list for PBXNativeTarget "TangemExpress" */;
@@ -14884,6 +14821,11 @@
 				B62D34182CBC4C6F00C2460E /* PBXTargetDependency */,
 			);
 			name = TangemExpress;
+			packageProductDependencies = (
+				B6C0D4082CBDCD34001113ED /* Moya */,
+				B6C0D40A2CBDCD47001113ED /* TangemModules */,
+				B62C167C2CBE0A3D00522683 /* Alamofire */,
+			);
 			productName = TangemExpress;
 			productReference = EF9E29932B4F0C8800418559 /* TangemExpress.framework */;
 			productType = "com.apple.product-type.framework";
@@ -14924,6 +14866,11 @@
 				B62D34432CBC506E00C2460E /* PBXTargetDependency */,
 			);
 			name = TangemStaking;
+			packageProductDependencies = (
+				B6C0D3FC2CBDC6FE001113ED /* Moya */,
+				B6C0D4002CBDC759001113ED /* TangemModules */,
+				B62C167A2CBE0A1E00522683 /* Alamofire */,
+			);
 			productName = TangemStaking;
 			productReference = EFEE23882BFF62D50099917E /* TangemStaking.framework */;
 			productType = "com.apple.product-type.framework";
@@ -14989,13 +14936,6 @@
 						CreatedOnToolsVersion = 15.4;
 						TestTargetID = 5D3F77C124BF56D800E8695B;
 					};
-					EF2D9C852BBDA8790055C485 = {
-						CreatedOnToolsVersion = 15.2;
-					};
-					EF2D9C8E2BBDA87A0055C485 = {
-						CreatedOnToolsVersion = 15.2;
-						TestTargetID = 5D3F77C124BF56D800E8695B;
-					};
 					EF9E29922B4F0C8800418559 = {
 						CreatedOnToolsVersion = 15.1;
 					};
@@ -15047,6 +14987,11 @@
 				B62D34452CBC51D400C2460E /* XCRemoteSwiftPackageReference "SwiftCBOR" */,
 				B62D344B2CBC675600C2460E /* XCRemoteSwiftPackageReference "stellar-ios-mac-sdk" */,
 				B62D344E2CBC67D500C2460E /* XCRemoteSwiftPackageReference "AnyCodable" */,
+				B6C0D3DF2CBDC2E3001113ED /* XCLocalSwiftPackageReference "Modules" */,
+				B6C0D3EA2CBDC3E0001113ED /* XCRemoteSwiftPackageReference "SwiftBinanceChain" */,
+				B6C0D3F02CBDC52D001113ED /* XCRemoteSwiftPackageReference "Moya" */,
+				B6C0D3F72CBDC5A3001113ED /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
+				B62C16772CBE095A00522683 /* XCRemoteSwiftPackageReference "Alamofire" */,
 			);
 			productRefGroup = 5D3F77C324BF56D800E8695B /* Products */;
 			projectDirPath = "";
@@ -15061,8 +15006,6 @@
 				B099337D2B5517E600240CDB /* TangemVisaTests */,
 				EFEE23872BFF62D50099917E /* TangemStaking */,
 				EFEE23902BFF62D60099917E /* TangemStakingTests */,
-				EF2D9C852BBDA8790055C485 /* TangemFoundation */,
-				EF2D9C8E2BBDA87A0055C485 /* TangemFoundationTests */,
 				B68E1F642CBC44050043E598 /* BlockchainSdk */,
 				B68E1F6B2CBC44060043E598 /* BlockchainSdkTests */,
 				B62D43772CBC7EC700C2460E /* BlockchainSdkExample */,
@@ -15195,20 +15138,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		EF2D9C842BBDA8790055C485 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EF2D9C8D2BBDA87A0055C485 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		EF9E29912B4F0C8800418559 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -15306,28 +15235,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		4D0F2A2CAFB3CC9D0C91C25C /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-TangemFoundation-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		4FD33571C955E1EFF8E83834 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -15361,28 +15268,6 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-Tangem-TangemUITests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		62851A6FDC36724FDA10E2FF /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-TangemFoundationTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -15558,7 +15443,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "find . -name 'Localizable.strings' -not -path './Pods/*' -exec sort {} -o {} \\;\n";
+			shellScript = "if [[ \"${CI}\" == \"true\" || \"${ENABLE_PREVIEWS}\" == \"YES\" ]]; then\n    exit 0\nfi\n\nfind . -name 'Localizable.strings' -not -path './Pods/*' -exec sort {} -o {} \\;\n";
 		};
 		DD09F95CE951DF2D49A2A5C7 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -15655,7 +15540,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "PATH=$PATH:/opt/homebrew/bin\n\n# check if directory exists then add it to path\nif [ -d ~/.mint/bin ]; then\n    echo \"Adding ~/.mint/bin to PATH\"\n    export PATH=~/.mint/bin:$PATH\nelse\n  echo \"~/.mint/bin folder is missing\"\nfi\n\n# check if swiftgen tool can be found.\nif [ ${ENABLE_PREVIEWS} == \"NO\" ]; then \n    echo \"🚀 Running SwiftFormat\"\n    mint run swiftformat@0.52.8 . --config .swiftformat\nfi\n";
+			shellScript = "PATH=$PATH:/opt/homebrew/bin\n\nif [[ \"${CI}\" == \"true\" || \"${ENABLE_PREVIEWS}\" == \"YES\" ]]; then\n    exit 0\nfi\n\n# check if directory exists then add it to path\nif [ -d ~/.mint/bin ]; then\n    echo \"Adding ~/.mint/bin to PATH\"\n    export PATH=~/.mint/bin:$PATH\nelse\n    echo \"~/.mint/bin folder is missing\"\nfi\n\necho \"🚀 Running SwiftFormat\"\nmint run swiftformat@0.52.8 . --config .swiftformat\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -15669,6 +15554,7 @@
 				B0E479C22C3EB39D0043B239 /* MarketsTokenDetailsMetrics.swift in Sources */,
 				B60976A92C7384C100778E71 /* MarketsViewNavigationControllerConfigurator.swift in Sources */,
 				B6FE5B282B93C0FF00B7A76B /* UserCodeRecoveringMock.swift in Sources */,
+				0AD9EF0F2CC2A9B600466191 /* UnstakingSendAmountValidator.swift in Sources */,
 				DA070DE52ADD4F6600F7C0E4 /* SprinklrConfig.swift in Sources */,
 				DC37A0782A584BD000C2A3F2 /* UserTokensManagerMock.swift in Sources */,
 				EF70A4082C1714A100805D9F /* SendDestinationValidator.swift in Sources */,
@@ -15677,6 +15563,7 @@
 				DA9493E72B9978A900F2BE0F /* EmailDataProviderMock.swift in Sources */,
 				EFE7D57E2AA20E2B0047D93A /* TokenPriceChangeView.swift in Sources */,
 				B6ED083A2A7DB99D0090E51F /* UserTokensReorderingOptionsConverter.swift in Sources */,
+				DCE0E2C92CBE49BF009A4007 /* BlockchainSDK+WalletConnectChainId.swift in Sources */,
 				EF6A8B002B2786F900CA3535 /* CommonExpressFeeProvider.swift in Sources */,
 				DCE5C66C28898B7F000C7F67 /* TangemApiService.swift in Sources */,
 				5DDFC2042812B72C005976FE /* Currency.swift in Sources */,
@@ -15695,6 +15582,7 @@
 				2DB8E1162B29068C0044BF7D /* CustomSearchBar.swift in Sources */,
 				EFB932032C3EAF7900C999E9 /* SendStepType.swift in Sources */,
 				EF4BEFDF28AD3EE500C5D1BE /* ContentState.swift in Sources */,
+				DCE317B62CC499DB0069C641 /* WalletConnectSolanaSignMessageDTO.swift in Sources */,
 				B0BE30652A7BA74000B3AD13 /* MultiWalletTokenItemsSectionFactory.swift in Sources */,
 				2D5DCC362C330A33000EE379 /* WalletSelectorItemViewModel.swift in Sources */,
 				EF2FE49E2C6BB5390015940A /* TransactionCreator+.swift in Sources */,
@@ -15775,6 +15663,7 @@
 				EF977CBF2C788965006BB27C /* PendingActionMapper.swift in Sources */,
 				B645BF3F2C59239700D8A2A5 /* MarketsHistoryChartProvider.swift in Sources */,
 				EFD39C992A6A916C0055D215 /* EnvironmentSetupRoutable.swift in Sources */,
+				DCE0E2BD2CBE43C2009A4007 /* WalletConnectSolanaSignMessageHandler.swift in Sources */,
 				DA7444252A27889600F926A9 /* PromotionServiceProtocol.swift in Sources */,
 				DA559C352B0261F400F59584 /* SendFeeView.swift in Sources */,
 				EF7000812A94BE7300C56E8A /* CardanoWalletManagerFactory.swift in Sources */,
@@ -15806,6 +15695,7 @@
 				B06C9B862A3AE65A00875852 /* ExchangeCryptoUtility.swift in Sources */,
 				DC3DCAED2A49C6D900F72554 /* WalletManagersRepository.swift in Sources */,
 				B09BD0022ACEE4F800CAB754 /* NotificationTransitionModifier.swift in Sources */,
+				DCE317B82CC4F7FE0069C641 /* WalletConnectSolanaSignTransactionDTO.swift in Sources */,
 				DA559C532B0265E700F59584 /* SendDestinationTextViewModel.swift in Sources */,
 				B67DC1E62B7C45DD008ACB0E /* UserDefaultsBlockchainDataStorage.swift in Sources */,
 				B0C171CE264C173400E4BA5C /* CameraAccessDeniedModifier.swift in Sources */,
@@ -15885,6 +15775,7 @@
 				EFA9854F2947787F00D1FCB3 /* FeeFormatterMock.swift in Sources */,
 				EF4662362924DFAF00346B6C /* GroupedSection.swift in Sources */,
 				B0290CDF2CAED9AF008ABBD2 /* MarketsTokenDetailsExchangesListView+Skeletons.swift in Sources */,
+				EFB23F3C2CBE914D005A6719 /* OnrampFlowBaseBuilder.swift in Sources */,
 				DA8C67332B0B451F00E1C9B8 /* AmountSummaryView.swift in Sources */,
 				2DB648862C35877000DA100D /* MarketsPickerView.swift in Sources */,
 				5D0A2CDF27E9D47900396399 /* StatefulPreviewWrapper.swift in Sources */,
@@ -15940,6 +15831,7 @@
 				B06C083D2A73E0E900D982BC /* MainHeaderSubtitleInfo.swift in Sources */,
 				5D6784D925EBA1D800149995 /* TokenItems+Array.swift in Sources */,
 				EFA6B04129532D990090A92F /* NavigationBusyButton.swift in Sources */,
+				EFD68F2C2CC2C63500693C97 /* OnrampAmountValidator.swift in Sources */,
 				B0F319042A7394C2009F131E /* FakeUserWalletModel.swift in Sources */,
 				B0541DBC26FB2FF50043893E /* WalletOnboardingView.swift in Sources */,
 				EF5820482B33349300940387 /* CommonExpressExchangeDataDecoder.swift in Sources */,
@@ -16014,6 +15906,7 @@
 				DC0CC5B42B0D3F0E00E32CAC /* TwinPreflightReadFilter.swift in Sources */,
 				B68284202C581B0A007B438F /* MarketsTokenHistoryChartMapper.swift in Sources */,
 				B0EBE8C02C80A8E800ABCEE8 /* TokenContextActionsSection.swift in Sources */,
+				DCE0E2C22CBE4804009A4007 /* WalletConnectSigner.swift in Sources */,
 				B0B469512C11B3CD000D9387 /* AddCustomTokenNetworksListView.swift in Sources */,
 				B09BB863259A075600B92000 /* NavigationConfigurator.swift in Sources */,
 				EF50A5B1288976140081C5BB /* View+ConditionalModifiers.swift in Sources */,
@@ -16086,6 +15979,7 @@
 				DC0A5801282500460031BECC /* SellCryptoRequest.swift in Sources */,
 				EF6EDD7E296C0D40001B21A3 /* CommonIncomingActionManager.swift in Sources */,
 				B08E26AF29D5580E00346C43 /* SeedPhraseSuggestionsView.swift in Sources */,
+				EFD68F212CC2986D00693C97 /* OnrampStepBuilder.swift in Sources */,
 				B06C085E2A73FCB700D982BC /* MainUserWalletPageBuilder.swift in Sources */,
 				B04EADEA2A80D62E009B5768 /* SingleTokenBaseRoutable.swift in Sources */,
 				DAAEC38D2BF31A8800184D7C /* SendFeatureProvider.swift in Sources */,
@@ -16223,6 +16117,7 @@
 				DA7B2C522B6B893500FB9622 /* SendNotificationEvent.swift in Sources */,
 				B0DE006C2A431BA6005A77D4 /* LocalizationIconParser.swift in Sources */,
 				B04CD33E29122C64001EA84A /* ReferralViewModel.swift in Sources */,
+				EFD68F242CC298DA00693C97 /* OnrampInputOutput.swift in Sources */,
 				DCBC944B2993F3420050BC35 /* AnalyticsStorageKey.swift in Sources */,
 				B0E9775C2B97511F0006896B /* OnboardingSeedPhraseGenerateViewModel.swift in Sources */,
 				EF6EDD81296C0D61001B21A3 /* OrderedWeakObjectsCollection.swift in Sources */,
@@ -16289,6 +16184,7 @@
 				B0A596542991FC1200C7C512 /* UtorgService.swift in Sources */,
 				B020FFB425DE7F9300EF422C /* DataCollectors.swift in Sources */,
 				B6ACD00E2AD698F6005A6CA3 /* DragAndDropGestureContextProviding.swift in Sources */,
+				EFD68F282CC2993000693C97 /* OnrampInteractor.swift in Sources */,
 				DC7D39FD29E024A2007BCD23 /* TangemSdkFactory.swift in Sources */,
 				DA559C3E2B0261F400F59584 /* SendAmountView.swift in Sources */,
 				DC70C01D2B95F189002205BA /* FactorySettingsResettingMock.swift in Sources */,
@@ -16439,6 +16335,7 @@
 				B6796E7B2C65C16E005D7292 /* TouchPassthroughView.swift in Sources */,
 				DA559C3A2B0261F400F59584 /* SendView.swift in Sources */,
 				DAB19D4E2B2C72C400DD08C4 /* AddCustomTokenNotificationEvent.swift in Sources */,
+				DCE0E2C72CBE4891009A4007 /* SolanaWalletConnectSigner.swift in Sources */,
 				EF1E172E2BF50E07000364AE /* SettingsUserWalletRowView.swift in Sources */,
 				B041C9602C3FAD3900CE027A /* MarketsTokenDetailsPricePerformanceView.swift in Sources */,
 				DA406C1C2BD0D84200D1FC5E /* AddressTextView.swift in Sources */,
@@ -16480,6 +16377,7 @@
 				B09E518C2981825C0042998A /* DeprecationService.swift in Sources */,
 				B0C3707F2C6C92D000439263 /* MarketsTokenQuoteHelper.swift in Sources */,
 				2DB3614B2C14FBAB00BB1D38 /* SegmentedPickerView.swift in Sources */,
+				EFB23F2D2CBE7F24005A6719 /* OnrampModel.swift in Sources */,
 				EF9448E12ADFD4F800F4AFAC /* InformationHiddenBalancesViewModel.swift in Sources */,
 				EF9E2A532B56A5DF00418559 /* WalletModel+Mock.swift in Sources */,
 				5DD4CB5424FAEE8B008F23CC /* AppCardIdFormatter.swift in Sources */,
@@ -16518,6 +16416,7 @@
 				EFC6846D2A0FA3C600660690 /* BindingValue.swift in Sources */,
 				EFA6B045295334AF0090A92F /* ResetToFactoryViewModel.swift in Sources */,
 				B07FDD402C23139200CBEFDE /* CustomTokenItemView.swift in Sources */,
+				DCE317BD2CC4F9440069C641 /* WalletConnectV2Utils+BlockchainMeta.swift in Sources */,
 				DA5044E32ABACA6600D1E5CF /* MarketPriceView.swift in Sources */,
 				EF5A5AD028D86089002544AC /* TotalBalanceProviding.swift in Sources */,
 				B6DF90652CA317A70099FED5 /* MainBottomSheetFooterShadowView.swift in Sources */,
@@ -16597,6 +16496,7 @@
 				5D49035227BE9D550072C642 /* Data+.swift in Sources */,
 				B09310582A0B76C100F6043A /* ButtonWithLeadingIcon.swift in Sources */,
 				DAC53CFE27BE63830027147D /* MeetTangemStoryPage.swift in Sources */,
+				EFB23F3A2CBE8703005A6719 /* OnrampAmountView.swift in Sources */,
 				B0BA7BC726C4F9A300D7066F /* OnboardingCircleButton.swift in Sources */,
 				B0FF51C82C3C0FA800746705 /* MarketsTokenDetailsStatisticsRecordView.swift in Sources */,
 				B09FA3442C259FF500A608C9 /* ManageTokensListItemViewModel.swift in Sources */,
@@ -16674,6 +16574,7 @@
 				EF977CB92C774B8E006BB27C /* MultipleRewardsCoordinator.swift in Sources */,
 				EF5F54692C875D9500B7D1E7 /* StakingDetailsStakeViewData.swift in Sources */,
 				EF977CBA2C774B8E006BB27C /* MultipleRewardsCoordinatorView.swift in Sources */,
+				DCE0E2C52CBE486A009A4007 /* CommonWalletConnectSigner.swift in Sources */,
 				EFC84AC02C35CB2000546882 /* SendFinishView.swift in Sources */,
 				B6FCEE732C40E16100CA9252 /* CGAffineTransform+.swift in Sources */,
 				EFF2A52B2C60B70A007DB0C1 /* StakingNotificationManager.swift in Sources */,
@@ -16730,6 +16631,7 @@
 				B6FF1EFE2A57E59100B208E4 /* Subject+.swift in Sources */,
 				DA1D3B792B56DC7800247393 /* QRScanViewRoutable.swift in Sources */,
 				EF0F99E128917003008B01DF /* SocialNetwork.swift in Sources */,
+				EFB23F382CBE86A6005A6719 /* OnrampViewModel.swift in Sources */,
 				B0468CE72954A0D300F2E728 /* WalletConnectV2DefaultSocketFactory.swift in Sources */,
 				2DB648672C35439D00DA100D /* MarketsTokenDetailsMapper.swift in Sources */,
 				B0AA865226DC90E600287F80 /* WelcomeView.swift in Sources */,
@@ -16747,6 +16649,7 @@
 				DA81B0F12AB0A74000FA86D3 /* ChangeSignType.swift in Sources */,
 				EF0F99E3289177C6008B01DF /* InfoDictionaryUtils.swift in Sources */,
 				EF842DEC2AFA58C5006E472E /* ExpressTokensListRoutable.swift in Sources */,
+				EFD68F2A2CC2B06B00693C97 /* CommonOnrampStepsManager.swift in Sources */,
 				EFA4E3852C3EF914008815AD /* CommonStakingStepsManager.swift in Sources */,
 				B03F19032C3D291100C93CFD /* AmountNotationSuffixFormatter.swift in Sources */,
 				B0FE0B3A297140D10046EE2C /* WalletConnectV2Error.swift in Sources */,
@@ -16829,7 +16732,6 @@
 				B04090C42AF3969700DF8DD5 /* NotificationsAnalyticsService.swift in Sources */,
 				EF1E97FD2B03F93300D4B511 /* CommonExpressDestinationService.swift in Sources */,
 				5DA3A2F1251CB6CA009A8E08 /* SecurityModeView.swift in Sources */,
-				B02B74B229879E3C006473F2 /* WalletConnectSigner.swift in Sources */,
 				B6AA13782A2A37B100B53937 /* CardInfoPageTransactionDefaultCellPreviewView.swift in Sources */,
 				DC0A57EA2822AD6D0031BECC /* PersistentStorageKey.swift in Sources */,
 				B04CD34429122C8D001EA84A /* ReferralCoordinatorView.swift in Sources */,
@@ -16859,6 +16761,7 @@
 				DCDBDA062A27C16C0000EBA2 /* LockedUserWalletModel.swift in Sources */,
 				DC13D04329DF31A60003895C /* WalletOnboardingStepsBuilder.swift in Sources */,
 				B04CD34229122C7D001EA84A /* ReferralRoutable.swift in Sources */,
+				EFD68F262CC2990900693C97 /* OnrampStep.swift in Sources */,
 				B6323E382C61D38F00C1CE60 /* MarketsTokenDetailsDateHelper.swift in Sources */,
 				B00371C02A8A5ECE00D77A4B /* FakeTangemApiService.swift in Sources */,
 				EFD39C932A6A8AD60055D215 /* SupportedBlockchainsPreferencesViewModel.swift in Sources */,
@@ -17007,6 +16910,7 @@
 				EF0B63F62C5411C900365A50 /* UnstakingModel.swift in Sources */,
 				EF9EA9652B10D3AE00AC1DA1 /* CommonExpressTokensListAdapter.swift in Sources */,
 				B06243082AA9B77C00F7B9B2 /* SingleTokenRouter.swift in Sources */,
+				DCE317BB2CC4F8860069C641 /* WalletConnectSolanaSignTransactionHandler.swift in Sources */,
 				B69A140B2B7EC3FB00EF0825 /* TokenInteractionAvailabilityProvider.swift in Sources */,
 				B0431B3F291951C200F84DEF /* IconWithMessageView.swift in Sources */,
 				B04BA23626F083C30036784C /* OnboardingTopupBalanceView.swift in Sources */,
@@ -17050,6 +16954,7 @@
 				2D5DCC2D2C3309F1000EE379 /* MarketsTokensNetworkSelectorAlertBuilder.swift in Sources */,
 				B6E932C32A2F2D860068D466 /* OrganizeTokensViewModel.swift in Sources */,
 				EF0DD7A12B02B3230099527D /* ExpressFeeRow.swift in Sources */,
+				EFB23F312CBE7FBD005A6719 /* OnrampView.swift in Sources */,
 				DA1DC0CD2B7F4D5100395A1F /* FakeSendNotificationManager.swift in Sources */,
 				EF5769402A8BAF7900901571 /* TransactionHistoryServiceState.swift in Sources */,
 				B0541DBE26FB30060043893E /* WalletOnboardingViewModel.swift in Sources */,
@@ -17109,6 +17014,7 @@
 				EF48E6C42B02273800FE0072 /* ExpressTokenItemViewModel.swift in Sources */,
 				DC3DCADB2A40AACF00F72554 /* DemoWalletModelsFactory.swift in Sources */,
 				B69E7FC82B220C3400B78D9A /* Dictionary+.swift in Sources */,
+				EFB23F362CBE84F5005A6719 /* OnrampAmountViewModel.swift in Sources */,
 				DC51187C2860B728004FB954 /* AppCoordinatorView.swift in Sources */,
 				B0F62C5025DE4EC9005C8BA0 /* MailView.swift in Sources */,
 				B0E479BA2C3E7CEC0043B239 /* MarketsTokenDetailsMetricsView.swift in Sources */,
@@ -18163,39 +18069,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		EF2D9C822BBDA8790055C485 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				EF2D9CC52BBDAB3E0055C485 /* ThreadSafeContainer+ExpressibleByDictionaryLiteral.swift in Sources */,
-				EF2D9CB82BBDA9090055C485 /* Lock.swift in Sources */,
-				EFEE23702BFE3A8A0099917E /* DateFormatter+.swift in Sources */,
-				EFFA9A9D2C93379100320298 /* Collection+.swift in Sources */,
-				EF2D9CC42BBDAB3E0055C485 /* ThreadSafeContainer.swift in Sources */,
-				EFA568092C471C1E0064EBA1 /* Future+.swift in Sources */,
-				B62688292C8FD478003FAAFF /* Dispatch+.swift in Sources */,
-				EF2D9CC22BBDAB350055C485 /* Moya.Task+.swift in Sources */,
-				EF2D9CC12BBDAB2E0055C485 /* Sequence+Async.swift in Sources */,
-				EF2D9CC02BBDAB290055C485 /* Publisher+ThrowingAsyncMap.swift in Sources */,
-				EF2D9CBE2BBDAB290055C485 /* Publisher+AsyncMap.swift in Sources */,
-				EFF763F12C4E60BA00E846F4 /* Result+.swift in Sources */,
-				EF2D9CC62BBDAB3E0055C485 /* ThreadSafeContainer+ExpressibleByArrayLiteral.swift in Sources */,
-				EF2D9CC32BBDAB350055C485 /* MoyaProvider+AsyncRequest.swift in Sources */,
-				EF2D9C8A2BBDA87A0055C485 /* TangemFoundation.docc in Sources */,
-				EF2D9CBF2BBDAB290055C485 /* Publisher+Async.swift in Sources */,
-				EF2D9CF92BBDAFBB0055C485 /* DebouncedCollector.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EF2D9C8B2BBDA87A0055C485 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				EF2D9CFA2BBEBD310055C485 /* ThreadSafeContainerTests.swift in Sources */,
-				EF2D9C972BBDA87D0055C485 /* TangemFoundationTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		EF9E298F2B4F0C8800418559 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -18207,10 +18080,12 @@
 				EF9E2A2A2B4F0CD100418559 /* ExpressTransactionStatus.swift in Sources */,
 				EF9E2A0C2B4F0CD100418559 /* ExpressConstants.swift in Sources */,
 				EF9E2A1C2B4F0CD100418559 /* ExpressTransactionType.swift in Sources */,
+				EFD68F3F2CC3E5C700693C97 /* OnrampRedirectSettings.swift in Sources */,
 				EF9E2A2B2B4F0CD100418559 /* ExpressSwappableItem.swift in Sources */,
 				EF9E2A0E2B4F0CD100418559 /* ExpressProviderManagerFactory.swift in Sources */,
 				DC1D4C412C385F2C00B2A422 /* AnalyticsLogger.swift in Sources */,
 				EF1399772CBD0AAB00AC9E2B /* OnrampProviderManager.swift in Sources */,
+				EFD68F392CC3D7DE00693C97 /* ExpressDTO+Swap.swift in Sources */,
 				EF9E2A252B4F0CD100418559 /* ExpressProvider.swift in Sources */,
 				EFA727832C0887A0003D9D81 /* ExpressTransactionSentResult.swift in Sources */,
 				EF9E2A232B4F0CD100418559 /* ExpressCurrency.swift in Sources */,
@@ -18252,6 +18127,7 @@
 				EF9E2A2C2B4F0CD100418559 /* TangemExpressFactory.swift in Sources */,
 				EF49C0612CAD85910062AF06 /* OnrampIdentity.swift in Sources */,
 				DC1D4C432C38605800B2A422 /* CommonAnalyticsLogger.swift in Sources */,
+				EFD68F3B2CC3D7E600693C97 /* ExpressDTO+Onramp.swift in Sources */,
 				EF9E2A392B4F0CD100418559 /* ExpressManagerSwappingPair.swift in Sources */,
 				EF9E2A262B4F0CD100418559 /* ExpressTransaction.swift in Sources */,
 				EF9E2A352B4F0CD100418559 /* CEXExpressProviderManager.swift in Sources */,
@@ -18409,21 +18285,6 @@
 			isa = PBXTargetDependency;
 			target = 5D3F77C124BF56D800E8695B /* Tangem */;
 			targetProxy = B6C0D39F2CBD80E3001113ED /* PBXContainerItemProxy */;
-		};
-		EF2D9C922BBDA87B0055C485 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = EF2D9C852BBDA8790055C485 /* TangemFoundation */;
-			targetProxy = EF2D9C912BBDA87B0055C485 /* PBXContainerItemProxy */;
-		};
-		EF2D9C942BBDA87C0055C485 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 5D3F77C124BF56D800E8695B /* Tangem */;
-			targetProxy = EF2D9C932BBDA87C0055C485 /* PBXContainerItemProxy */;
-		};
-		EF2D9C9A2BBDA87D0055C485 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = EF2D9C852BBDA8790055C485 /* TangemFoundation */;
-			targetProxy = EF2D9C992BBDA87D0055C485 /* PBXContainerItemProxy */;
 		};
 		EF9E297D2B4F0C4900418559 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -18768,17 +18629,11 @@
 					"-framework",
 					"\"Accelerate\"",
 					"-framework",
-					"\"Alamofire\"",
-					"-framework",
 					"\"AmplitudeSwift\"",
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
-					"\"BinanceChain\"",
-					"-framework",
 					"\"BitcoinCore\"",
-					"-framework",
-					"\"BlockchainSdk\"",
 					"-framework",
 					"\"CFNetwork\"",
 					"-framework",
@@ -18814,8 +18669,6 @@
 					"-framework",
 					"\"Kingfisher\"",
 					"-framework",
-					"\"Moya\"",
-					"-framework",
 					"\"Promises\"",
 					"-framework",
 					"\"Security\"",
@@ -18825,10 +18678,6 @@
 					"\"Starscream\"",
 					"-framework",
 					"\"StoreKit\"",
-					"-framework",
-					"\"SwiftDate\"",
-					"-framework",
-					"\"SwiftyJSON\"",
 					"-framework",
 					"\"SystemConfiguration\"",
 					"-framework",
@@ -18895,17 +18744,11 @@
 					"-framework",
 					"\"Accelerate\"",
 					"-framework",
-					"\"Alamofire\"",
-					"-framework",
 					"\"AmplitudeSwift\"",
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
-					"\"BinanceChain\"",
-					"-framework",
 					"\"BitcoinCore\"",
-					"-framework",
-					"\"BlockchainSdk\"",
 					"-framework",
 					"\"CFNetwork\"",
 					"-framework",
@@ -18941,8 +18784,6 @@
 					"-framework",
 					"\"Kingfisher\"",
 					"-framework",
-					"\"Moya\"",
-					"-framework",
 					"\"Promises\"",
 					"-framework",
 					"\"Security\"",
@@ -18952,10 +18793,6 @@
 					"\"Starscream\"",
 					"-framework",
 					"\"StoreKit\"",
-					"-framework",
-					"\"SwiftDate\"",
-					"-framework",
-					"\"SwiftyJSON\"",
 					"-framework",
 					"\"SystemConfiguration\"",
 					"-framework",
@@ -21661,996 +21498,6 @@
 			};
 			name = "Release(alpha)";
 		};
-		EF2D9C9D2BBDA87D0055C485 /* Debug(production) */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = F331D905EEAD64DFAAB0B61A /* Pods-TangemFoundation.debug(production).xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 4897UJ6D8C;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = "$(inherited)";
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Tangem AG. All rights reserved.";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.TangemFoundation;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = "Debug(production)";
-		};
-		EF2D9C9E2BBDA87D0055C485 /* Debug(beta) */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = BA2AC80DA5268ACDCD5323B8 /* Pods-TangemFoundation.debug(beta).xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 4897UJ6D8C;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = "$(inherited)";
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Tangem AG. All rights reserved.";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.TangemFoundation;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = "Debug(beta)";
-		};
-		EF2D9C9F2BBDA87D0055C485 /* Debug(alpha) */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5EE9FDE9BFE1191207165858 /* Pods-TangemFoundation.debug(alpha).xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 4897UJ6D8C;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = "$(inherited)";
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Tangem AG. All rights reserved.";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.TangemFoundation;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = "Debug(alpha)";
-		};
-		EF2D9CA02BBDA87D0055C485 /* Release(production) */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 34299E1AA8B77C9FD9FE515A /* Pods-TangemFoundation.release(production).xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 4897UJ6D8C;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = "$(inherited)";
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Tangem AG. All rights reserved.";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.TangemFoundation;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = "Release(production)";
-		};
-		EF2D9CA12BBDA87D0055C485 /* Release(beta) */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3C577F33B73BA1A57F60F06C /* Pods-TangemFoundation.release(beta).xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 4897UJ6D8C;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = "$(inherited)";
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Tangem AG. All rights reserved.";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.TangemFoundation;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = "Release(beta)";
-		};
-		EF2D9CA22BBDA87D0055C485 /* Release(alpha) */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 67BA511FDEE077DD36EAEF88 /* Pods-TangemFoundation.release(alpha).xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 4897UJ6D8C;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = "$(inherited)";
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Tangem AG. All rights reserved.";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.TangemFoundation;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = "Release(alpha)";
-		};
-		EF2D9CA32BBDA87D0055C485 /* Debug(production) */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 860B4C6F3B19808809CC2D88 /* Pods-TangemFoundationTests.debug(production).xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = 4897UJ6D8C;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = NO;
-				MARKETING_VERSION = 1.0;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.TangemFoundationTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tangem.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Tangem";
-			};
-			name = "Debug(production)";
-		};
-		EF2D9CA42BBDA87D0055C485 /* Debug(beta) */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4E2EB2E5363272E4DA5F5CA6 /* Pods-TangemFoundationTests.debug(beta).xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = 4897UJ6D8C;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = NO;
-				MARKETING_VERSION = 1.0;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.TangemFoundationTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tangem.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Tangem";
-			};
-			name = "Debug(beta)";
-		};
-		EF2D9CA52BBDA87D0055C485 /* Debug(alpha) */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 945D0ECB3DAB73C19D8FD06E /* Pods-TangemFoundationTests.debug(alpha).xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = 4897UJ6D8C;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = NO;
-				MARKETING_VERSION = 1.0;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.TangemFoundationTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tangem.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Tangem";
-			};
-			name = "Debug(alpha)";
-		};
-		EF2D9CA62BBDA87D0055C485 /* Release(production) */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8B72D4FE4C9A7B898A91AD56 /* Pods-TangemFoundationTests.release(production).xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 4897UJ6D8C;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = NO;
-				MARKETING_VERSION = 1.0;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.TangemFoundationTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tangem.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Tangem";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = "Release(production)";
-		};
-		EF2D9CA72BBDA87D0055C485 /* Release(beta) */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = E41571C8A3492645DEC301E5 /* Pods-TangemFoundationTests.release(beta).xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 4897UJ6D8C;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = NO;
-				MARKETING_VERSION = 1.0;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.TangemFoundationTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tangem.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Tangem";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = "Release(beta)";
-		};
-		EF2D9CA82BBDA87D0055C485 /* Release(alpha) */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = D09565E11379EAEF60B2C96F /* Pods-TangemFoundationTests.release(alpha).xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 4897UJ6D8C;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = NO;
-				MARKETING_VERSION = 1.0;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.TangemFoundationTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tangem.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Tangem";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = "Release(alpha)";
-		};
 		EF2EFDD12865BC2900798051 /* Debug(beta) */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = EF2EFDE22865C07100798051 /* Beta.xcconfig */;
@@ -22750,17 +21597,11 @@
 					"-framework",
 					"\"Accelerate\"",
 					"-framework",
-					"\"Alamofire\"",
-					"-framework",
 					"\"AmplitudeSwift\"",
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
-					"\"BinanceChain\"",
-					"-framework",
 					"\"BitcoinCore\"",
-					"-framework",
-					"\"BlockchainSdk\"",
 					"-framework",
 					"\"CFNetwork\"",
 					"-framework",
@@ -22796,8 +21637,6 @@
 					"-framework",
 					"\"Kingfisher\"",
 					"-framework",
-					"\"Moya\"",
-					"-framework",
 					"\"Promises\"",
 					"-framework",
 					"\"Security\"",
@@ -22807,10 +21646,6 @@
 					"\"Starscream\"",
 					"-framework",
 					"\"StoreKit\"",
-					"-framework",
-					"\"SwiftDate\"",
-					"-framework",
-					"\"SwiftyJSON\"",
 					"-framework",
 					"\"SystemConfiguration\"",
 					"-framework",
@@ -22991,17 +21826,11 @@
 					"-framework",
 					"\"Accelerate\"",
 					"-framework",
-					"\"Alamofire\"",
-					"-framework",
 					"\"AmplitudeSwift\"",
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
-					"\"BinanceChain\"",
-					"-framework",
 					"\"BitcoinCore\"",
-					"-framework",
-					"\"BlockchainSdk\"",
 					"-framework",
 					"\"CFNetwork\"",
 					"-framework",
@@ -23037,8 +21866,6 @@
 					"-framework",
 					"\"Kingfisher\"",
 					"-framework",
-					"\"Moya\"",
-					"-framework",
 					"\"Promises\"",
 					"-framework",
 					"\"Security\"",
@@ -23048,10 +21875,6 @@
 					"\"Starscream\"",
 					"-framework",
 					"\"StoreKit\"",
-					"-framework",
-					"\"SwiftDate\"",
-					"-framework",
-					"\"SwiftyJSON\"",
 					"-framework",
 					"\"SystemConfiguration\"",
 					"-framework",
@@ -25231,17 +24054,11 @@
 					"-framework",
 					"\"Accelerate\"",
 					"-framework",
-					"\"Alamofire\"",
-					"-framework",
 					"\"AmplitudeSwift\"",
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
-					"\"BinanceChain\"",
-					"-framework",
 					"\"BitcoinCore\"",
-					"-framework",
-					"\"BlockchainSdk\"",
 					"-framework",
 					"\"CFNetwork\"",
 					"-framework",
@@ -25277,8 +24094,6 @@
 					"-framework",
 					"\"Kingfisher\"",
 					"-framework",
-					"\"Moya\"",
-					"-framework",
 					"\"Promises\"",
 					"-framework",
 					"\"Security\"",
@@ -25288,10 +24103,6 @@
 					"\"Starscream\"",
 					"-framework",
 					"\"StoreKit\"",
-					"-framework",
-					"\"SwiftDate\"",
-					"-framework",
-					"\"SwiftyJSON\"",
 					"-framework",
 					"\"SystemConfiguration\"",
 					"-framework",
@@ -25472,17 +24283,11 @@
 					"-framework",
 					"\"Accelerate\"",
 					"-framework",
-					"\"Alamofire\"",
-					"-framework",
 					"\"AmplitudeSwift\"",
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
-					"\"BinanceChain\"",
-					"-framework",
 					"\"BitcoinCore\"",
-					"-framework",
-					"\"BlockchainSdk\"",
 					"-framework",
 					"\"CFNetwork\"",
 					"-framework",
@@ -25518,8 +24323,6 @@
 					"-framework",
 					"\"Kingfisher\"",
 					"-framework",
-					"\"Moya\"",
-					"-framework",
 					"\"Promises\"",
 					"-framework",
 					"\"Security\"",
@@ -25529,10 +24332,6 @@
 					"\"Starscream\"",
 					"-framework",
 					"\"StoreKit\"",
-					"-framework",
-					"\"SwiftDate\"",
-					"-framework",
-					"\"SwiftyJSON\"",
 					"-framework",
 					"\"SystemConfiguration\"",
 					"-framework",
@@ -25741,32 +24540,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = "Release(production)";
 		};
-		EF2D9CA92BBDA87D0055C485 /* Build configuration list for PBXNativeTarget "TangemFoundation" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				EF2D9C9D2BBDA87D0055C485 /* Debug(production) */,
-				EF2D9C9E2BBDA87D0055C485 /* Debug(beta) */,
-				EF2D9C9F2BBDA87D0055C485 /* Debug(alpha) */,
-				EF2D9CA02BBDA87D0055C485 /* Release(production) */,
-				EF2D9CA12BBDA87D0055C485 /* Release(beta) */,
-				EF2D9CA22BBDA87D0055C485 /* Release(alpha) */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Release(production)";
-		};
-		EF2D9CAA2BBDA87D0055C485 /* Build configuration list for PBXNativeTarget "TangemFoundationTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				EF2D9CA32BBDA87D0055C485 /* Debug(production) */,
-				EF2D9CA42BBDA87D0055C485 /* Debug(beta) */,
-				EF2D9CA52BBDA87D0055C485 /* Debug(alpha) */,
-				EF2D9CA62BBDA87D0055C485 /* Release(production) */,
-				EF2D9CA72BBDA87D0055C485 /* Release(beta) */,
-				EF2D9CA82BBDA87D0055C485 /* Release(alpha) */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Release(production)";
-		};
 		EF9E29AA2B4F0C9D00418559 /* Build configuration list for PBXNativeTarget "TangemExpress" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -25821,6 +24594,13 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		B6C0D3DF2CBDC2E3001113ED /* XCLocalSwiftPackageReference "Modules" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Modules;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		0A81B38C2BB3018E0008F21C /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -25844,6 +24624,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.4.0;
+			};
+		};
+		B62C16772CBE095A00522683 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
 			};
 		};
 		B62D343B2CBC4FD000C2460E /* XCRemoteSwiftPackageReference "swift-sodium" */ = {
@@ -25926,6 +24714,30 @@
 				version = "0.1.2-tangem4";
 			};
 		};
+		B6C0D3EA2CBDC3E0001113ED /* XCRemoteSwiftPackageReference "SwiftBinanceChain" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tangem/SwiftBinanceChain.git";
+			requirement = {
+				kind = exactVersion;
+				version = 0.0.12;
+			};
+		};
+		B6C0D3F02CBDC52D001113ED /* XCRemoteSwiftPackageReference "Moya" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Moya/Moya.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 15.0.0;
+			};
+		};
+		B6C0D3F72CBDC5A3001113ED /* XCRemoteSwiftPackageReference "SwiftyJSON" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tangem/SwiftyJSON.git";
+			requirement = {
+				kind = exactVersion;
+				version = "5.0.1-tangem1";
+			};
+		};
 		B6C1BE6B2B6C2F4E008FE5A0 /* XCRemoteSwiftPackageReference "secp256k1.swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GigaBitcoin/secp256k1.swift.git";
@@ -25983,6 +24795,31 @@
 		B620FCAD2C5D337900AD0FD1 /* DGCharts */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DGCharts;
+		};
+		B62C16782CBE095A00522683 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B62C16772CBE095A00522683 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		B62C167A2CBE0A1E00522683 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B62C16772CBE095A00522683 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		B62C167C2CBE0A3D00522683 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B62C16772CBE095A00522683 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		B62C167E2CBE0B7900522683 /* Moya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6C0D3F02CBDC52D001113ED /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = Moya;
+		};
+		B62C16802CBE0BA000522683 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B62C16772CBE095A00522683 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
 		};
 		B62D343C2CBC4FD000C2460E /* Clibsodium */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -26058,6 +24895,55 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B68E1F972CBC453E0043E598 /* XCRemoteSwiftPackageReference "IcpKit" */;
 			productName = IcpKit;
+		};
+		B6C0D3E02CBDC2E3001113ED /* TangemModules */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TangemModules;
+		};
+		B6C0D3F32CBDC543001113ED /* Moya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6C0D3F02CBDC52D001113ED /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = Moya;
+		};
+		B6C0D3F52CBDC552001113ED /* BinanceChain */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6C0D3EA2CBDC3E0001113ED /* XCRemoteSwiftPackageReference "SwiftBinanceChain" */;
+			productName = BinanceChain;
+		};
+		B6C0D3F82CBDC5A3001113ED /* SwiftyJSON */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6C0D3F72CBDC5A3001113ED /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
+			productName = SwiftyJSON;
+		};
+		B6C0D3FA2CBDC6DD001113ED /* Moya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6C0D3F02CBDC52D001113ED /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = Moya;
+		};
+		B6C0D3FC2CBDC6FE001113ED /* Moya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6C0D3F02CBDC52D001113ED /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = Moya;
+		};
+		B6C0D3FE2CBDC73E001113ED /* TangemModules */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6C0D3DF2CBDC2E3001113ED /* XCLocalSwiftPackageReference "Modules" */;
+			productName = TangemModules;
+		};
+		B6C0D4002CBDC759001113ED /* TangemModules */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6C0D3DF2CBDC2E3001113ED /* XCLocalSwiftPackageReference "Modules" */;
+			productName = TangemModules;
+		};
+		B6C0D4082CBDCD34001113ED /* Moya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6C0D3F02CBDC52D001113ED /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = Moya;
+		};
+		B6C0D40A2CBDCD47001113ED /* TangemModules */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6C0D3DF2CBDC2E3001113ED /* XCLocalSwiftPackageReference "Modules" */;
+			productName = TangemModules;
 		};
 		B6C1BE6C2B6C2F4E008FE5A0 /* secp256k1 */ = {
 			isa = XCSwiftPackageProductDependency;
