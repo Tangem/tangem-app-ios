@@ -32,6 +32,8 @@ struct MainView: View {
                     }
             },
             contentFactory: { info in
+                info.makeActionButtons(viewModel: viewModel.actionButtonsViewModel)
+                    .padding(.bottom, 12)
                 info.body
             },
             bottomOverlayFactory: { info, overlayParams in
@@ -104,8 +106,15 @@ struct MainView_Preview: PreviewProvider {
             coordinator: coordinator,
             swipeDiscoveryHelper: swipeDiscoveryHelper,
             mainUserWalletPageBuilderFactory: CommonMainUserWalletPageBuilderFactory(coordinator: coordinator),
-            pushNotificationsAvailabilityProvider: PushNotificationsAvailabilityProviderStub()
+            pushNotificationsAvailabilityProvider: PushNotificationsAvailabilityProviderStub(),
+            actionButtonsViewModel: ActionButtonsViewModel(
+                actionButtonFactory: ActionButtonsFactory(
+                    actionButtons: [.buy, .swap, .sell],
+                    coordinator: coordinator
+                )
+            )
         )
+
         swipeDiscoveryHelper.delegate = viewModel
 
         return viewModel
