@@ -119,10 +119,7 @@ class AppCoordinator: CoordinatorObject {
 
         let welcomeCoordinator = WelcomeCoordinator(dismissAction: dismissAction)
         welcomeCoordinator.start(with: .init())
-        // withTransaction call fixes stories animation on scenario: welcome -> onboarding -> main -> welcome
-        // withTransaction(.withoutAnimations()) {
         viewState = .welcome(welcomeCoordinator)
-        // }
     }
 
     private func setupAuth(unlockOnAppear: Bool) {

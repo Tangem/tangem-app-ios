@@ -63,13 +63,17 @@ struct AppCoordinatorView: CoordinatorView {
             switch coordinator.viewState {
             case .welcome(let welcomeCoordinator):
                 WelcomeCoordinatorView(coordinator: welcomeCoordinator)
+                    .navigationBarHidden(true)
             case .uncompleteBackup(let uncompletedBackupCoordinator):
                 UncompletedBackupCoordinatorView(coordinator: uncompletedBackupCoordinator)
+                    .navigationBarHidden(true)
             case .auth(let authCoordinator):
                 AuthCoordinatorView(coordinator: authCoordinator)
                     .setNamespace(namespace)
+                    .navigationBarHidden(true)
             case .main(let mainCoordinator):
                 MainCoordinatorView(coordinator: mainCoordinator)
+                    .navigationBarHidden(false)
             case .none:
                 EmptyView()
             }
