@@ -132,7 +132,7 @@ Options:
 lane :beta do |options|
   increment_version_number(version_number: options[:version])
   increment_firebase_build_number(app_id: ENV["APP_ID_BETA"], build: options[:build])
-  build(scheme: BETA_SCHEME, export_method: "ad-hoc", filename: BETA_SCHEME, path: BUILD_PATH))
+  build(scheme: BETA_SCHEME, export_method: "ad-hoc", filename: BETA_SCHEME, path: BUILD_PATH)
 
   upload_dsyms(app_id: ENV["APP_ID_BETA"], name: BETA_SCHEME)
   upload_firebase(
