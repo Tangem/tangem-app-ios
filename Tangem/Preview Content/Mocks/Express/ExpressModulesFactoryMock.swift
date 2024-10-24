@@ -68,6 +68,7 @@ class ExpressModulesFactoryMock: ExpressModulesFactory {
         ExpressApproveViewModel(
             settings: .init(
                 subtitle: Localization.givePermissionSwapSubtitle(providerName, "USDT"),
+                feeFooterText: Localization.swapGivePermissionFeeFooter,
                 tokenItem: .token(.tetherMock, .init(.ethereum(testnet: false), derivationPath: .none)),
                 feeTokenItem: .blockchain(.init(.ethereum(testnet: false), derivationPath: .none)),
                 selectedPolicy: selectedPolicy

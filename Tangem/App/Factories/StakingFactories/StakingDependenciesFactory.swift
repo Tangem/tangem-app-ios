@@ -15,8 +15,7 @@ class StakingDependenciesFactory {
     func makeStakingAPIProvider() -> StakingAPIProvider {
         TangemStakingFactory().makeStakingAPIProvider(
             credential: StakingAPICredential(apiKey: keysManager.stakeKitKey),
-            configuration: .defaultConfiguration,
-            analyticsLogger: CommonStakingAnalyticsLogger()
+            configuration: .defaultConfiguration
         )
     }
 
@@ -36,7 +35,8 @@ class StakingDependenciesFactory {
             wallet: wallet,
             provider: provider,
             repository: repository,
-            logger: AppLog.shared
+            logger: AppLog.shared,
+            analyticsLogger: CommonStakingAnalyticsLogger()
         )
     }
 
