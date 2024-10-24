@@ -135,13 +135,13 @@ struct BottomSheetContainer<ContentView: View>: View {
                 switch settings.hidingOption {
                 case .distance where locationChange > 0:
                     // If user drags on up then reduce the dragging value
-                    stateObject.offset = 0 - locationChange / 3
+                    stateObject.offset = -locationChange.withRubberbanding()
 
                 case .distance:
-                    stateObject.offset = 0 - locationChange
+                    stateObject.offset = -locationChange
 
                 case .nonHideable:
-                    stateObject.offset = 0 - locationChange / 3
+                    stateObject.offset = -locationChange.withRubberbanding()
                 }
             }
             .onEnded { value in

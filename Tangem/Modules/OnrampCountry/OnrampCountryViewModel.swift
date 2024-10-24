@@ -12,10 +12,9 @@ import TangemExpress
 final class OnrampCountryViewModel: ObservableObject, Identifiable {
     // MARK: - ViewState
 
-    @Published var iconURL: URL?
-    @Published var title: String
-    @Published var style: Subtitle
-    @Published var alert: AlertBinder?
+    let iconURL: URL?
+    let title: String
+    let style: Subtitle
 
     var mainButtonTitle: String {
         style == .info ? Localization.commonConfirm : Localization.commonClose
@@ -52,12 +51,7 @@ final class OnrampCountryViewModel: ObservableObject, Identifiable {
     func didTapMainButton() {
         switch style {
         case .info:
-            do {
-                try repository.save(country: country)
-                coordinator?.userDidTapConfirmCountry()
-            } catch {
-                alert = error.alertBinder
-            }
+            coordinator?.userDidTapConfirmCountry()
         case .notSupport:
             coordinator?.userDidTapClose()
         }
