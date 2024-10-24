@@ -11,6 +11,8 @@ FIREBASE_TESTERS_GROUP = "testers"
 before_all do |lane, options|
   lanes_to_skip_bootstrap = [
     :update_translations,
+    :deploy_firebase,
+    :refresh_dsyms,
   ]
 
   if lanes_to_skip_bootstrap.include?(lane)
@@ -19,15 +21,19 @@ before_all do |lane, options|
 
   # Xcode version overrides available only on CI
   if ENV["CI"]&.downcase == "true"
-    if options[:xcode_version_override].nil?
-      xcodes() # Will use the Xcode version from the .xcode-version file
+      # Will use the Xcode version from the .xcode-version file
+      xcodes(
+        select_for_current_build_only: true
+      )
     else
-      xcodes(version: options[:xcode_version_override])
-    end
+      xcodes(
+        version: options[:xcode_version_override],
+        select_for_current_build_only: true
+      )
   end
 
   Dir.chdir("..") do
-    sh("./bootstrap.sh") 
+    sh("./bootstrap.sh")
   end
 
   ENV["FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT"] = "120"
@@ -35,12 +41,12 @@ before_all do |lane, options|
 end
 
 desc """
-  A lane that builds and tests the scheme \"Tangem\" using a clean and build application.
-  Using enviroment: Production
-  Options:
-  - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+A lane that builds and tests the scheme \"Tangem\" using a clean and build application.
+Using enviroment: Production
+Options:
+- xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 """
-lane :test do |options|
+lane :test do
   run_tests(
     workspace: WORKSPACE_NAME,
     scheme: PRODUCTION_SCHEME,
@@ -50,22 +56,22 @@ lane :test do |options|
 end
 
 desc """
-  A lane that builds a \"Tangem\" scheme and uploads the archive to TestFlight for release.
-  Using enviroment: Production
-  Options:
-  - version: app version
-  - build: optional build number
-  - changelog: string for description archive
-  - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+A lane that builds a \"Tangem\" scheme and uploads the archive to TestFlight for release.
+Using enviroment: Production
+Options:
+- version: app version
+- build: optional build number
+- changelog: string for description archive
+- xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
   """
 lane :release do |options|
   app_store_connect_api_key(duration: 1200, is_key_content_base64: true)
   increment_version_number(version_number: options[:version])
   increment_testflight_build_number(version: options[:version], build: options[:build])
 
-  build(scheme: PRODUCTION_SCHEME, version: options[:version])
+  build(scheme: PRODUCTION_SCHEME, version: options[:version], filename: PRODUCTION_SCHEME, path: BUILD_PATH)
   upload_dsyms(app_id: ENV["APP_ID_PRODUCTION"], name: PRODUCTION_SCHEME)
-  
+
   upload_testflight(
     name: PRODUCTION_SCHEME,
     version: options[:version],
@@ -92,6 +98,29 @@ lane :check_bsdk_example_buildable do |options|
 end
 
 desc """
+This lane builds a \"Tangem Alpha\" scheme binary. Result binary can be used only for ad-hoc distribution.
+Options:
+- version: App version
+- build: Build number
+- filename: Name of the resulting artefact (IPA file)
+- path: Path to binary
+- xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+"""
+lane :build_Alpha do |options|
+  increment_version_number(version_number: options[:version])
+  increment_firebase_build_number(app_id: ENV["APP_ID_ALPHA"], build: options[:build])
+
+  build(
+    export_method: "ad-hoc",
+    scheme: ALPHA_SCHEME,
+    version: options[:version],
+    build: options[:build],
+    filename: options[:filename],
+    path: options[:path]
+  )
+end
+
+desc """
 A lane that builds a \"Tangem Beta\" scheme and uploads the archive to Firebase for testing.
 Using enviroment: Production
 Options:
@@ -103,7 +132,7 @@ Options:
 lane :beta do |options|
   increment_version_number(version_number: options[:version])
   increment_firebase_build_number(app_id: ENV["APP_ID_BETA"], build: options[:build])
-  build(scheme: BETA_SCHEME, export_method: "ad-hoc")
+  build(scheme: BETA_SCHEME, export_method: "ad-hoc", filename: BETA_SCHEME, path: BUILD_PATH))
 
   upload_dsyms(app_id: ENV["APP_ID_BETA"], name: BETA_SCHEME)
   upload_firebase(
@@ -128,21 +157,7 @@ Options:
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 """
 lane :alpha do |options|
-  increment_version_number(version_number: options[:version])
-  increment_firebase_build_number(app_id: ENV["APP_ID_ALPHA"], build: options[:build])
-  build(scheme: ALPHA_SCHEME, export_method: "ad-hoc")
-
-  upload_dsyms(app_id: ENV["APP_ID_ALPHA"], name: ALPHA_SCHEME)
-  upload_firebase(
-    name: ALPHA_SCHEME,
-    app_id: ENV["APP_ID_ALPHA"],
-    changelog: options[:changelog]
-  )
-  clean_artifacts
-  slack_message(
-    message: "Tangem Aplha successfully uploaded to Firebase",
-    changelog: options[:changelog]
-  )
+  UI.error("Use `Alpha - Build and Deploy` Github action instead")
 end
 
 desc """
@@ -187,16 +202,38 @@ lane :update_translations do |options|
   )
 end
 
+desc """
+This lane deploy binary to Google Distribution
+Options:
+- app_id: Firebase App ID
+- path: Path to binary
+- firebase_token: Firebase CLI Token
+- changelog: [optional] Changelog will be added to Google Distribution release notes along with the last commit hash.
+"""
+lane :deploy_firebase do |options|
+  path = options[:path]
+  release_notes = "#{options[:changelog]}\nGitHash: #{last_git_commit[:commit_hash]}"
+  firebase_app_distribution(
+    app: options[:app_id],
+    ipa_path: path,
+    groups: FIREBASE_TESTERS_GROUP,
+    firebase_cli_token: options[:firebase_token],
+    release_notes: release_notes
+  )
+end
+
 private_lane :build do |options|
+  clean_artifacts
   app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
   build_app(
     xcargs: "-allowProvisioningUpdates",
-    output_directory: BUILD_PATH,
-    output_name: options[:scheme],
+    output_directory: options[:path],
+    output_name: options[:filename],
     scheme: options[:scheme],
     clean: true,
     silent: false,
     export_method: options[:export_method],
+    destination: "generic/platform=iOS",
     export_options: {
       distributionBundleIdentifier: app_identifier,
       iCloudContainerEnvironment: "Production"
@@ -213,11 +250,11 @@ private_lane :increment_firebase_build_number do |options|
 
     if latest_release.nil?
       latest_build_number = 0
-    else 
+    else
       latest_build_number = latest_release[:buildVersion].to_i
     end
     increment_build_number({ build_number: latest_build_number + 1 })
-  else 
+  else
     increment_build_number(build_number: options[:build])
   end
 end
@@ -277,7 +314,7 @@ private_lane :slack_message do |options|
         {
           title: "Git Hash",
           value: last_git_commit[:commit_hash],
-        },        
+        },
         {
           title: "Version",
           value: get_version_number(xcodeproj: "TangemApp.xcodeproj", target: "Tangem"),
