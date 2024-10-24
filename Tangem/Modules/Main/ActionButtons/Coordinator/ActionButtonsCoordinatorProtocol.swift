@@ -1,5 +1,5 @@
 //
-//  ActionButtonsCoordinatorProtocol.swift
+//  ActionButtonsRoutable.swift
 //  Tangem
 //
 //  Created by GuitarKitty on 24.10.2024.
@@ -8,6 +8,8 @@
 
 import Foundation
 
-protocol ActionButtonsCoordinatorProtocol {
-    func navigationAction(for dataModel: ActionButton)
+protocol ActionButtonsRoutable {
+    func openBuy()
+    func openSwap()
+    func openSell()
 }

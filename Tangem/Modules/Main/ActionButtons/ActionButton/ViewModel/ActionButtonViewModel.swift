@@ -11,11 +11,11 @@ import Foundation
 final class ActionButtonViewModel: ObservableObject, Identifiable {
     @Published private(set) var presentationState: ActionButtonPresentationState = .unexplicitLoading
 
-    let model: ActionButton
+    let model: ActionButtonModel
 
     private let didTapAction: () -> Void
 
-    init(model: ActionButton, didTapAction: @escaping () -> Void) {
+    init(model: ActionButtonModel, didTapAction: @escaping () -> Void) {
         self.model = model
         self.didTapAction = didTapAction
     }

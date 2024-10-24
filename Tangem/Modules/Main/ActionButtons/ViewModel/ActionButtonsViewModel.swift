@@ -11,7 +11,7 @@ import Foundation
 final class ActionButtonsViewModel: ObservableObject {
     @Published private(set) var actionButtonViewModels: [ActionButtonViewModel]
 
-    init(actionButtonFactory: some ActionButtonsFactoryProtocol) {
+    init(actionButtonFactory: some ActionButtonsFactory) {
         actionButtonViewModels = actionButtonFactory.makeActionButtonViewModels()
     }
 

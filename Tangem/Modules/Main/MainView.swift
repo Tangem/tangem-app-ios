@@ -108,9 +108,9 @@ struct MainView_Preview: PreviewProvider {
             mainUserWalletPageBuilderFactory: CommonMainUserWalletPageBuilderFactory(coordinator: coordinator),
             pushNotificationsAvailabilityProvider: PushNotificationsAvailabilityProviderStub(),
             actionButtonsViewModel: ActionButtonsViewModel(
-                actionButtonFactory: ActionButtonsFactory(
-                    actionButtons: [.buy, .swap, .sell],
-                    coordinator: coordinator
+                actionButtonFactory: CommonActionButtonsFactory(
+                    coordinator: coordinator,
+                    actionButtons: [.buy, .swap, .sell]
                 )
             )
         )

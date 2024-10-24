@@ -19,7 +19,7 @@ struct ActionButtonView: View {
                     leadingItem
                         .frame(width: 20, height: 20)
                     Text(viewModel.model.title)
-                        .font(.system(size: 15, weight: .semibold))
+                        .font(Fonts.Bold.subheadline)
                         .foregroundStyle(Colors.Text.primary1)
                 }
             }
@@ -27,7 +27,7 @@ struct ActionButtonView: View {
         .frame(height: 34)
         .frame(maxWidth: .infinity)
         .background(Colors.Background.action)
-        .clipShape(.rect(cornerRadius: 10))
+        .cornerRadiusContinuous(10)
         .disabled(viewModel.presentationState == .loading)
     }
 

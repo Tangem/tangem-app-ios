@@ -457,28 +457,27 @@ extension MainCoordinator: PushNotificationsPermissionRequestDelegate {
 
 // MARK: - Action buttons
 
-extension MainCoordinator: ActionButtonsCoordinatorProtocol {
-    func navigationAction(for dataModel: ActionButton) {
-        mainBottomSheetUIManager.hide()
-
-        switch dataModel {
-        case .buy:
-            break
+extension MainCoordinator: ActionButtonsRoutable {
+    func openBuy() {
         // IOS-8237
-        case .swap:
-            break
+    }
+
+    func openSwap() {
         // IOS-8238
-        case .sell:
-            break
-            // IOS-8237
-        }
+    }
+
+    func openSell() {
+        // IOS-8237
     }
 }
 
 extension MainCoordinator {
     private func makeActionButtonsViewModel() -> ActionButtonsViewModel {
         ActionButtonsViewModel(
-            actionButtonFactory: ActionButtonsFactory(actionButtons: [.buy, .swap, .sell], coordinator: self)
+            actionButtonFactory: CommonActionButtonsFactory(
+                coordinator: self,
+                actionButtons: [.buy, .swap, .sell]
+            )
         )
     }
 }

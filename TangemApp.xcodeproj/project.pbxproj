@@ -2212,7 +2212,7 @@
 		DCBC945F2994F9BF0050BC35 /* AnalyticsContextScope.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBC945E2994F9BF0050BC35 /* AnalyticsContextScope.swift */; };
 		DCBE4CEE2CC8C8E800855904 /* ActionButtonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBE4CED2CC8C8E800855904 /* ActionButtonsView.swift */; };
 		DCBE4CF02CC8C8F400855904 /* ActionButtonsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBE4CEF2CC8C8F400855904 /* ActionButtonsViewModel.swift */; };
-		DCBE4CF62CC8D2C400855904 /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBE4CF52CC8D2C400855904 /* ActionButton.swift */; };
+		DCBE4CF62CC8D2C400855904 /* ActionButtonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBE4CF52CC8D2C400855904 /* ActionButtonModel.swift */; };
 		DCBE4CF82CCA0E2B00855904 /* ActionButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBE4CF72CCA0E2B00855904 /* ActionButtonView.swift */; };
 		DCC5C9942C1248C5001B970A /* PushNotificationsPermissionRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC5C9932C1248C5001B970A /* PushNotificationsPermissionRequestView.swift */; };
 		DCC5C99A2C136C52001B970A /* PushNotificationsPermissionRequestViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC5C9992C136C52001B970A /* PushNotificationsPermissionRequestViewModel.swift */; };
@@ -5258,7 +5258,7 @@
 		DCBC945E2994F9BF0050BC35 /* AnalyticsContextScope.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsContextScope.swift; sourceTree = "<group>"; };
 		DCBE4CED2CC8C8E800855904 /* ActionButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsView.swift; sourceTree = "<group>"; };
 		DCBE4CEF2CC8C8F400855904 /* ActionButtonsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsViewModel.swift; sourceTree = "<group>"; };
-		DCBE4CF52CC8D2C400855904 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
+		DCBE4CF52CC8D2C400855904 /* ActionButtonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonModel.swift; sourceTree = "<group>"; };
 		DCBE4CF72CCA0E2B00855904 /* ActionButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonView.swift; sourceTree = "<group>"; };
 		DCC5C9932C1248C5001B970A /* PushNotificationsPermissionRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationsPermissionRequestView.swift; sourceTree = "<group>"; };
 		DCC5C9992C136C52001B970A /* PushNotificationsPermissionRequestViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationsPermissionRequestViewModel.swift; sourceTree = "<group>"; };
@@ -12318,7 +12318,7 @@
 		DC283AB92CCA60F60043F7D2 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				DCBE4CF52CC8D2C400855904 /* ActionButton.swift */,
+				DCBE4CF52CC8D2C400855904 /* ActionButtonModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -16189,7 +16189,7 @@
 				DC0BA52A2CA2E112009D9233 /* CommonUserWalletModelFactory.swift in Sources */,
 				B04719012B4E7C4800444734 /* VisaBalancesLimitsBottomSheetViewModel.swift in Sources */,
 				DC70C0172B95EEC3002205BA /* FactorySettingsResetting.swift in Sources */,
-				DCBE4CF62CC8D2C400855904 /* ActionButton.swift in Sources */,
+				DCBE4CF62CC8D2C400855904 /* ActionButtonModel.swift in Sources */,
 				EF729B712AF3E86300D80205 /* ExpressProvidersSelectorView.swift in Sources */,
 				B05F1E66299CB81D00E27E32 /* TransactionViewPlaceholder.swift in Sources */,
 				B6FFADEA2C5D67E900B43A56 /* DGCharts.ChartViewBase+.swift in Sources */,

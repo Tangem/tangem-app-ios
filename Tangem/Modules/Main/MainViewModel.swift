@@ -156,7 +156,9 @@ final class MainViewModel: ObservableObject {
         }
         let page = pages[selectedCardIndex]
 
-        refreshActionButtonsData(page: page)
+        if FeatureProvider.isAvailable(.actionButtons) {
+            refreshActionButtonsData(page: page)
+        }
 
         switch page {
         case .singleWallet(_, _, let viewModel):

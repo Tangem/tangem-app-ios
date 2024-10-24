@@ -6,27 +6,36 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-protocol ActionButtonsFactoryProtocol {
+protocol ActionButtonsFactory {
     func makeActionButtonViewModels() -> [ActionButtonViewModel]
 }
 
-final class ActionButtonsFactory: ActionButtonsFactoryProtocol {
-    private let coordinator: ActionButtonsCoordinatorProtocol
-    private let actionButtons: [ActionButton]
+final class CommonActionButtonsFactory: ActionButtonsFactory {
+    private let coordinator: ActionButtonsRoutable
+    private let actionButtons: [ActionButtonModel]
 
-    init(actionButtons: [ActionButton], coordinator: some ActionButtonsCoordinatorProtocol) {
+    init(coordinator: some ActionButtonsRoutable, actionButtons: [ActionButtonModel]) {
         self.coordinator = coordinator
         self.actionButtons = actionButtons
     }
 
     func makeActionButtonViewModels() -> [ActionButtonViewModel] {
         actionButtons.map { dataModel in
-            .init(
-                model: dataModel,
-                didTapAction: {
-                    self.coordinator.navigationAction(for: dataModel)
-                }
-            )
+            .init(from: dataModel, coordinator: coordinator)
         }
+    }
+}
+
+private extension ActionButtonViewModel {
+    convenience init(from dataModel: ActionButtonModel, coordinator: ActionButtonsRoutable) {
+        let didTapAction: () -> Void = {
+            switch dataModel {
+            case .buy: coordinator.openBuy
+            case .swap: coordinator.openSwap
+            case .sell: coordinator.openSell
+            }
+        }()
+
+        self.init(model: dataModel, didTapAction: didTapAction)
     }
 }

@@ -1,5 +1,5 @@
 //
-//  ActionButton.swift
+//  ActionButtonModel.swift
 //  Tangem
 //
 //  Created by GuitarKitty on 23.10.2024.
@@ -8,13 +8,7 @@
 
 import Foundation
 
-enum ActionButtonPresentationState: Equatable {
-    case unexplicitLoading
-    case loading
-    case idle
-}
-
-enum ActionButton: Hashable {
+enum ActionButtonModel: Hashable {
     case buy
     case swap
     case sell
@@ -22,11 +16,11 @@ enum ActionButton: Hashable {
     var title: String {
         switch self {
         case .buy:
-            "Buy"
+            Localization.commonBuy
         case .swap:
-            "Swap"
+            Localization.commonSwap
         case .sell:
-            "Sell"
+            Localization.commonSell
         }
     }
 
@@ -40,4 +34,10 @@ enum ActionButton: Hashable {
             Assets.dollarMini
         }
     }
+}
+
+enum ActionButtonPresentationState: Equatable {
+    case unexplicitLoading
+    case loading
+    case idle
 }
