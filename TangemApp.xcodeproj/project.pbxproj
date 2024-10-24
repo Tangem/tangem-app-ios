@@ -1812,6 +1812,7 @@
 		B6DF90652CA317A70099FED5 /* MainBottomSheetFooterShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF90642CA317A70099FED5 /* MainBottomSheetFooterShadowView.swift */; };
 		B6E31B5F2C89F72400604C8F /* ViewHierarchySnapshottingContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E31B5E2C89F72400604C8F /* ViewHierarchySnapshottingContainerViewController.swift */; };
 		B6E31B642C8A240400604C8F /* MainBottomSheetFooterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E31B632C8A240400604C8F /* MainBottomSheetFooterViewModel.swift */; };
+		B6E725E42CCACFE100318447 /* UnstakingSendAmountValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD9EF0E2CC2A9B600466191 /* UnstakingSendAmountValidator.swift */; };
 		B6E8BBFB2A2F209B0012E7D3 /* InfinityFrameModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E8BBFA2A2F209B0012E7D3 /* InfinityFrameModifier.swift */; };
 		B6E932B12A2F26BB0068D466 /* OrganizeTokensHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E932B02A2F26BB0068D466 /* OrganizeTokensHeaderViewModel.swift */; };
 		B6E932C22A2F2D860068D466 /* OrganizeTokensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E932BD2A2F2D860068D466 /* OrganizeTokensView.swift */; };
@@ -16004,6 +16005,7 @@
 				DCE0E2C72CBE4891009A4007 /* SolanaWalletConnectSigner.swift in Sources */,
 				EF1E172E2BF50E07000364AE /* SettingsUserWalletRowView.swift in Sources */,
 				B041C9602C3FAD3900CE027A /* MarketsTokenDetailsPricePerformanceView.swift in Sources */,
+				B6E725E42CCACFE100318447 /* UnstakingSendAmountValidator.swift in Sources */,
 				DA406C1C2BD0D84200D1FC5E /* AddressTextView.swift in Sources */,
 				5D9DCB06255193C30059799C /* AppSettings.swift in Sources */,
 				DA559C4D2B02622600F59584 /* SendDestinationInputOutputMock.swift in Sources */,
