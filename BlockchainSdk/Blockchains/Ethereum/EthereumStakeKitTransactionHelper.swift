@@ -46,13 +46,13 @@ struct EthereumStakeKitTransactionHelper {
         guard gasLimit > 0 else {
             throw EthereumTransactionBuilderError.feeParametersNotFound
         }
-        
+
         let baseFee = compiledTransaction.maxFeePerGas.flatMap { BigUInt(Data(hex: $0)) } ?? .zero
         let priorityFee = compiledTransaction.maxPriorityFeePerGas.flatMap { BigUInt(Data(hex: $0)) } ?? .zero
         let gasPrice = compiledTransaction.gasPrice.flatMap { BigUInt(Data(hex: $0)) } ?? .zero
-        
+
         let feeParameters: FeeParameters
-        
+
         if baseFee > 0, priorityFee > 0 {
             feeParameters = EthereumEIP1559FeeParameters(gasLimit: gasLimit, baseFee: baseFee, priorityFee: priorityFee)
         } else if gasPrice > 0 {
