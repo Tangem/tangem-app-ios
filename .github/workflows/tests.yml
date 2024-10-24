@@ -29,6 +29,7 @@ jobs:
       has_always_run_tests_label: ${{ steps.always_run_tests_label_check.outputs.label_check == 'success' }}
     steps:
     - id: always_run_tests_label_check
+      if: ${{ github.event_name != 'workflow_dispatch' }}
       # https://hub.docker.com/r/agilepathway/pull-request-label-checker/tags
       uses: docker://agilepathway/pull-request-label-checker@sha256:da7c8677e87239522e0c6869ecc4c86d6b7db8b6859ad332b8b1c2129b76177b # v1.6.56 linux/amd64
       with:
