@@ -82,7 +82,7 @@
 "common_camera_denied_alert_message" = "Вы не предоставили доступ к камере, пожалуйста, измените настройки конфиденциальности.";
 "common_camera_denied_alert_title" = "Доступ к камере запрещен";
 "common_cancel" = "Отмена";
-"common_change" = "Change";
+"common_change" = "Изменить";
 "common_choose_action" = "Выберите действие";
 "common_claim" = "Получить";
 "common_claim_rewards" = "Вывести награду";

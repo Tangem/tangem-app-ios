@@ -82,12 +82,12 @@
 "common_camera_denied_alert_message" = "D hast keinen Zugang zur Kamera erteilt, bitte passe deine Datenschutzeinstellungen an";
 "common_camera_denied_alert_title" = "Der Kamerazugriff wurde verweigert";
 "common_cancel" = "Abbrechen";
-"common_change" = "Change";
+"common_change" = "Ändern";
 "common_choose_action" = "Aktion wählen";
 "common_claim" = "Beanspruchen";
 "common_claim_rewards" = "Stakingbelohnungen beanstpruchen";
 "common_close" = "Schließen";
-"common_confirm" = "Confirm";
+"common_confirm" = "Bestätigen";
 "common_continue" = "Weiter";
 "common_copy" = "Kopieren";
 "common_copy_address" = "Adresse kopieren";
@@ -333,7 +333,7 @@
 "manage_tokens_list_header_title" = "\nCoinMarketCap";
 "manage_tokens_network_selector_native_subtitle" = "Blockchain, auf der die Kryptowährung ursprünglich erstellt wurde";
 "manage_tokens_network_selector_native_title" = "Natives Netzwerk";
-"manage_tokens_network_selector_non_native_info" = "Die Verwendung von nicht nativen Netzwerken für Token ermöglicht eine blockchainübergreifende Interoperabilität, sodass Vermögenswerte in verschiedenen dezentralen Anwendungen und Smart Contracts plattformübergreifend genutzt werden können. Dies erfordert jedoch häufig eine Verwahrstelle oder einen intelligenten Vertrag, um den ursprünglichen Vermögenswert sicher zu verwahren, was zu einer Zentralisierung und einem Kontrahentenrisiko führt.";
+"manage_tokens_network_selector_non_native_info" = "Die Verwendung nicht-nativer Netzwerke für Token ermöglicht Interoperabilität zwischen Blockchains, sodass Vermögenswerte plattformübergreifend in verschiedenen dezentralen Anwendungen und Smart Contracts genutzt werden können. Dies erfordert jedoch häufig einen Verwahrer oder Smart Contract, um den ursprünglichen Vermögenswert sicher aufzubewahren, was zu Zentralisierung und Kontrahentenrisiken führt.";
 "manage_tokens_network_selector_non_native_subtitle" = "Nicht die ursprüngliche oder primäre Blockchain, in der der Token gehostet wird";
 "manage_tokens_network_selector_non_native_title" = "Nicht-native Netzwerke";
 "manage_tokens_network_selector_title" = "Netzwerke auswählen";
@@ -529,9 +529,9 @@
 "onboarding_wallet_info_title_fourth" = "Zugangscode wiederherstellen";
 "onboarding_wallet_info_title_second" = "Identische Karten oder Ring";
 "onboarding_wallet_info_title_third" = "Zugangscode";
-"onramp_residency_bottomsheet_country_not_supported" = "Our services are not available in this country";
-"onramp_residency_bottomsheet_country_subtitle" = "Change or confirm it";
-"onramp_residency_bottomsheet_title" = "Your residence has been identified as";
+"onramp_residency_bottomsheet_country_not_supported" = "Unsere Dienstleistungen sind in diesem Land nicht verfügbar";
+"onramp_residency_bottomsheet_country_subtitle" = "Änder oder bestätige bitte";
+"onramp_residency_bottomsheet_title" = "Dein Wohnsitz wurde identifiziert als";
 "organize_tokens_group" = "Gruppe erstellen";
 "organize_tokens_sort_by_balance" = "Nach Guthaben";
 "organize_tokens_title" = "Token organisieren";
@@ -680,7 +680,7 @@
 "staking_details_market_rating" = "Marktbewertung";
 "staking_details_metrics_block_header" = "Metriken";
 "staking_details_minimum_requirement" = "Mindestanforderungen";
-"staking_details_no_rewards_to_claim" = "Keine Belohnungen";
+"staking_details_no_rewards_to_claim" = "Keine Belohnungen verfügbar";
 "staking_details_reward_claiming" = "Belohnungen beanspruchen";
 "staking_details_reward_claiming_info" = "Eine Möglichkeit, Staking-Belohnungen zu erhalten. Es kann automatisch oder manuell beansprucht werden.";
 "staking_details_reward_schedule" = "Belohnungszeitplan";
@@ -692,7 +692,7 @@
 "staking_details_warmup_period" = "Aufwärmphase";
 "staking_details_warmup_period_info" = "Die zugewiesene Zeit für die Aktivierung der Teilnahme am Staking.";
 "staking_dismiss_message" = "Möchtest du den Staking-Bildschirm wirklich schließen?";
-"staking_give_permission_fee_footer" = "The network will charge a token approval fee to verify that you are authorizing the use of your token for the staking.";
+"staking_give_permission_fee_footer" = "Das Netzwerk erhebt eine Token-Genehmigungsgebühr, um zu überprüfen, ob Du die Verwendung Deines Tokens für das Staking genehmigst.";
 "staking_legal" = "Indem Du die Staking-Funktionalität nutzt, stimmst Du den %1$@ und %2$@ des Anbieters zu.";
 "staking_locked" = "Gesperrt";
 "staking_migrate" = "Migrieren";
@@ -731,8 +731,8 @@
 "staking_reward_schedule_day" = "Täglich";
 "staking_reward_schedule_each" = "Alle %@";
 "staking_reward_schedule_each_day" = "Täglich";
-"staking_reward_schedule_each_days" = "Alle %@";
-"staking_reward_schedule_each_plural" = "Each";
+"staking_reward_schedule_each_days" = "Alle %@ Tage";
+"staking_reward_schedule_each_plural" = "Jeder";
 "staking_reward_schedule_each_sec" = "Alle %1$@ Sek.";
 "staking_reward_schedule_epoch" = "Pro Epoche";
 "staking_reward_schedule_era" = "Pro Ära";
@@ -742,7 +742,7 @@
 "staking_rewards" = "Belohnungen";
 "staking_stake_locked" = "Stake gesperrt";
 "staking_stake_more" = "Mehr staken";
-"staking_summary_description_text" = "You stake %1$@ and will be receiving your reward %2$@";
+"staking_summary_description_text" = "Du setzt %1$@ ein und ethältst Deine Belohnung %2$@";
 "staking_tap_to_unlock" = "Zum Entsperren antippen";
 "staking_tap_to_unlock_or_vote" = "Tippe zum Entsperren oder Abstimmen";
 "staking_tap_to_withdraw" = "Zum abheben antippen";
@@ -753,7 +753,7 @@
 "staking_unbonding_in" = "Entbindung in";
 "staking_unlocked_locked" = "Gelocktes unlocken";
 "staking_unlocking" = "Entsperren";
-"staking_unstake_amount_validation_error" = "Amount exceeds staked balance";
+"staking_unstake_amount_validation_error" = "Der Betrag übersteigt das eingesetzte Guthaben";
 "staking_unstaked" = "Unstaken";
 "staking_unstaked_footer" = "Prüfe, was nicht eingesetzt wurde, um dein Vermögen zu beanspruchen";
 "staking_unstaking" = "Staking beenden";
