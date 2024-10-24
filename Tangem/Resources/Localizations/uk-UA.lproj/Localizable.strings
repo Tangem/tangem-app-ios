@@ -82,12 +82,12 @@
 "common_camera_denied_alert_message" = "Ви не надали доступ до камери, будь ласка, змініть налаштування конфіденційності";
 "common_camera_denied_alert_title" = "Доступ до камери заборонено";
 "common_cancel" = "Скасувати";
-"common_change" = "Change";
+"common_change" = "Змінити";
 "common_choose_action" = "Виберіть дію";
 "common_claim" = "Отримати";
 "common_claim_rewards" = "Отримати винагороди";
 "common_close" = "Закрити";
-"common_confirm" = "Confirm";
+"common_confirm" = "Підтвердити";
 "common_continue" = "Продовжити";
 "common_copy" = "Копіювати";
 "common_copy_address" = "Скопіювати адресу";
@@ -295,11 +295,10 @@
 "feedback_subject_tx_push_failed" = "Не можу проштовхнути транзакцію";
 "feedback_token_description_error" = "Помилка в описі монети";
 "give_permission_current_transaction" = "Транзакція";
-"give_permission_fee_footer" = "Мережа стягує комісію за схвалення токену за підтвердження, що саме ви дозволяєте використовувати ваш токен для обміну.";
 "give_permission_policy_type_footer" = "Вкажіть ліміт доступу для обраного токена";
 "give_permission_rows_amount" = "Кількість %@";
 "give_permission_staking_footer" = "Функція підтвердження необхідна для надання дозволу іншій адресі на використання певної кількості ваших токенів. За задумом, смарт-контракти не можуть отримати доступ до ваших токенів без вашого схвалення. \"Розблоковуючи\" свої токени, ви дозволяєте смарт-контракту StakeKit використовувати їх. Майнери мережі отримують плату за газ (сплачену вами), щоб зафіксувати цю дію в блокчейні. Ви зможете застейкати свій токен після того, як дасте дозвіл.";
-"give_permission_staking_subtitle" = "Щоб продовжити, вам потрібно дозволити смарт-контракту StakeKit використовувати ваш %@";
+"give_permission_staking_subtitle" = "Щоб продовжити, вам потрібно дозволити смарт-контракту Polygon використовувати ваш %@";
 "give_permission_swap_subtitle" = "Щоб продовжити, вам потрібно дозволити смарт-контракту %1@ використовувати ваш %2@";
 "give_permission_title" = "Надати дозвіл";
 "give_permission_unlimited" = "Необмежено";
@@ -334,7 +333,7 @@
 "manage_tokens_list_header_title" = "Ринкова капіталізація";
 "manage_tokens_network_selector_native_subtitle" = "Спочатку був створений блокчейн криптовалюти";
 "manage_tokens_network_selector_native_title" = "Основна мережа";
-"manage_tokens_network_selector_non_native_info" = "Використання неосновних мереж для токенів дозволяє забезпечити крос-блокчейн інтероперабельність, що дає змогу використовувати активи в різноманітних децентралізованих додатках та смарт-контрактах на різних платформах. Однак це часто вимагає наявності кастодіана або смарт-контракту для безпечного зберігання оригінального активу, що вводить централізацію та ризик контрагента.";
+"manage_tokens_network_selector_non_native_info" = "Використання нерідних мереж для токенів забезпечує сумісність між блокчейнами, дозволяючи використовувати активи в різноманітних децентралізованих програмах і смарт-контрактах на різних платформах. Однак для цього часто використовується зберігач або смарт-контракт для надійного зберігання оригінального активу, вводячи централізацію та ризик контрагента.";
 "manage_tokens_network_selector_non_native_subtitle" = "Не оригінальний або первинний блокчейн, на якому розміщено токен";
 "manage_tokens_network_selector_non_native_title" = "Неосновні мережі";
 "manage_tokens_network_selector_title" = "Оберіть мережі";
@@ -530,9 +529,9 @@
 "onboarding_wallet_info_title_fourth" = "Відновлення коду доступу";
 "onboarding_wallet_info_title_second" = "Ідентичні картки";
 "onboarding_wallet_info_title_third" = "Код доступу";
-"onramp_residency_bottomsheet_country_not_supported" = "Our services are not available in this country";
-"onramp_residency_bottomsheet_country_subtitle" = "Change or confirm it";
-"onramp_residency_bottomsheet_title" = "Your residence has been identified as";
+"onramp_residency_bottomsheet_country_not_supported" = "Наші сервіси недоступні в цій країні";
+"onramp_residency_bottomsheet_country_subtitle" = "Змінити або підтвердити";
+"onramp_residency_bottomsheet_title" = "Ваше місце проживання визначено як";
 "organize_tokens_group" = "Групами";
 "organize_tokens_sort_by_balance" = "За балансом";
 "organize_tokens_title" = "Сортування токенів";
@@ -685,7 +684,7 @@
 "staking_details_reward_claiming" = "Отримати винагороду";
 "staking_details_reward_claiming_info" = "Метод отримання винагород за стейкінг.\nВін може зараховуватися автоматично на вашу адресу або вручну, коли винагороду треба вивести, створивши транзакцію на її отримання.";
 "staking_details_reward_schedule" = "Розклад винагород";
-"staking_details_reward_schedule_info" = "Це період, який визначає, коли учасники стейкінгу отримують свої винагороди.";
+"staking_details_reward_schedule_info" = "Це графік, який визначає, коли учасники стейкінгу отримують свої винагороди. Час розподілу винагород може дещо відрізнятися залежно від валідатора та навантаження на мережу.";
 "staking_details_rewards_to_claim" = "Нагороди для отримання: %@";
 "staking_details_title" = "Стейкінг %@";
 "staking_details_unbonding_period" = "Період розблокування";
@@ -693,6 +692,7 @@
 "staking_details_warmup_period" = "Період блокування";
 "staking_details_warmup_period_info" = "Відведений час для активації участі в стейкінгу.";
 "staking_dismiss_message" = "Ви впевнені, що хочете закрити вікно стейкінгу?";
+"staking_give_permission_fee_footer" = "Комісія за схвалення токену, щоб верифікувати, що саме ви дозволяєте використання токена для стейкінгу.";
 "staking_legal" = "Використовуючи функцію стейкінгу, ви погоджуєтесь з %1$@ та %2$@";
 "staking_locked" = "Заблоковано";
 "staking_migrate" = "Перемістити";
@@ -753,7 +753,7 @@
 "staking_unbonding_in" = "Розблокування через";
 "staking_unlocked_locked" = "Розблокувати";
 "staking_unlocking" = "Розблокування";
-"staking_unstake_amount_validation_error" = "Amount exceeds staked balance";
+"staking_unstake_amount_validation_error" = "Сума перевищує баланс стейкінгу";
 "staking_unstaked" = "Вивід зі стейкінгу";
 "staking_unstaked_footer" = "Перевірити незастейкані, щоб отримати свої активи";
 "staking_unstaking" = "Зняти зі стейкінгу";
@@ -778,6 +778,7 @@
 "story_meet_title" = "Зустрічайте Tangem";
 "story_web3_description" = "Обмінюйте, купуйте NFT, отримуйте позики та робіть депозити у понад 100 різних децентралізованих сервісах";
 "story_web3_title" = "Web 3.0 сумісність";
+"swap_give_permission_fee_footer" = "Мережа стягує комісію за схвалення токену за підтвердження, що саме ви дозволяєте використовувати ваш токен для обміну.";
 "swap_promo_text" = "Обмінюйте більше токенів за вигіднішим курсом прямо у своєму гаманці.";
 "swap_promo_title" = "З'явився новий провайдер обмінів!";
 "swapping_alert_cex_description" = "Сума включає: \n• комісію постачальника послуг\n• комісію мережі за відправлення %@ з біржі назад на адресу користувача.";
@@ -864,7 +865,7 @@
 "wallet_connect_create_tx_message" = "Запит на створення транзакції для %1$@\n%2$@\n\nСума: %3$@\nКомісія: %4$@\nВсього: %5$@\nБаланс: %6$@";
 "wallet_connect_create_tx_not_enough_funds" = "Неможливо відправити транзакцію. Недостатньо коштів.";
 "wallet_connect_error_failed_to_connect" = "Не вдалося встановити сеанс WalletConnect. Будь ласка, спробуйте пізніше.";
-"wallet_connect_error_missing_blockchains" = "Not all tokens were added to your list. Please add them first and try again. Missing tokens:\n";
+"wallet_connect_error_missing_blockchains" = "Не всі токени додано до вашого списку. Будь ласка, додайте їх спочатку і спробуйте ще раз. Відсутні токени:\n";
 "wallet_connect_error_sing_failed" = "Не вдалося підписати повідомлення.\nБудь ласка, спробуйте ще раз";
 "wallet_connect_error_timeout" = "Не вдалося створити сеанс WalletConnect за відведений час. Будь ласка, спробуйте пізніше.";
 "wallet_connect_error_unsupported_blockchains" = "Запит на підключення сеансу WalletConnect містить непідтримувані блокчейни. Непідтримувані блокчейни:\n";
