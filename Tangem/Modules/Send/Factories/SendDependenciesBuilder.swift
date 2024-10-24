@@ -333,9 +333,15 @@ struct SendDependenciesBuilder {
         OnrampModel(onrampManager: onrampManager)
     }
 
-    func makeOnrampManager(userWalletId: String) -> OnrampManager {
-        let expressAPIProvider = ExpressAPIProviderFactory().makeExpressAPIProvider(userId: userWalletId, logger: AppLog.shared)
-        return TangemExpressFactory().makeOnrampManager(expressAPIProvider: expressAPIProvider, logger: AppLog.shared)
+    func makeOnrampManager(userWalletId: String, onrampRepository: OnrampRepository) -> OnrampManager {
+        let expressAPIProvider = ExpressAPIProviderFactory()
+            .makeExpressAPIProvider(userId: userWalletId, logger: AppLog.shared)
+
+        return TangemExpressFactory().makeOnrampManager(
+            expressAPIProvider: expressAPIProvider,
+            onrampRepository: onrampRepository,
+            logger: AppLog.shared
+        )
     }
 
     func makeOnrampAmountValidator() -> SendAmountValidator {
