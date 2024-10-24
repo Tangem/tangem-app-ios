@@ -14,10 +14,12 @@ final class CasperNetworkProvider: HostProvider {
         node.url.absoluteString
     }
     
-    private let node: NodeInfo
+    // MARK: - Private Properties
     
-    // TODO: - 
+    private let node: NodeInfo
     private let provider: NetworkProvider<CasperTarget>
+    
+    // MARK: - Init
     
     init(
         node: NodeInfo,
@@ -27,9 +29,15 @@ final class CasperNetworkProvider: HostProvider {
         provider = NetworkProvider<CasperTarget>(configuration: configuration)
     }
     
+    // MARK: - Implementation
+    
+    func getBalance(address: String) -> AnyPublisher<CasperNetworkResult.Balance, Error> {
+        requestPublisher(for: .getBalance(address: address))
+    }
+    
     // MARK: - Private Implementation
     
-    private func requestPublisher<T: Decodable>(for target: FilecoinTarget.FilecoinTargetType) -> AnyPublisher<T, Error> {
+    private func requestPublisher<T: Decodable>(for target: CasperTarget.TargetType) -> AnyPublisher<T, Error> {
         provider.requestPublisher(CasperTarget(node: node))
             .filterSuccessfulStatusAndRedirectCodes()
             .map(JSONRPC.Response<T, JSONRPC.APIError>.self)

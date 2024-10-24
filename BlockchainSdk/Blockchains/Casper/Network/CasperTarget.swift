@@ -42,3 +42,9 @@ struct CasperTarget: TargetType {
     
     var headers: [String : String]?
 }
+
+extension CasperTarget {
+    enum TargetType {
+        case getBalance(address: String)
+    }
+}

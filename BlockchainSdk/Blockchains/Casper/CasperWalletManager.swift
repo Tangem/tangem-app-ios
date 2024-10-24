@@ -32,4 +32,21 @@ class CasperWalletManager: BaseManager, WalletManager {
         // TODO: - https://tangem.atlassian.net/browse/IOS-8316
         return .anyFail(error: SendTxError(error: WalletError.empty))
     }
+    
+    // MARK: - Private Implementation
+    
+    private func updateWallet(balance: CasperBalance) {
+        if balance.value != wallet.amounts[.coin]?.value {
+            wallet.clearPendingTransaction()
+        }
+        
+        wallet.add(amount: Amount(with: wallet.blockchain, type: .coin, value: balance.value))
+    }
+    
+}
+
+extension CasperWalletManager {
+    enum Constants {
+        static let constantFeeValue = Decimal(stringValue: "0.1")
+    }
 }

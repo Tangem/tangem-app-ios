@@ -62,6 +62,10 @@
 		2D554FB72CC82C23005C9C20 /* Blake2 in Frameworks */ = {isa = PBXBuildFile; productRef = 2D554FB62CC82C23005C9C20 /* Blake2 */; };
 		2D554FBD2CC8CD22005C9C20 /* CasperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D554FB92CC8CD1D005C9C20 /* CasperTests.swift */; };
 		2D554FC02CC9124C005C9C20 /* Byte+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D554FBE2CC8F4A6005C9C20 /* Byte+.swift */; };
+		2D554FC32CCA1443005C9C20 /* CasperBalance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D554FC22CCA1443005C9C20 /* CasperBalance.swift */; };
+		2D554FC62CCA15AC005C9C20 /* CasperNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D554FC52CCA15AC005C9C20 /* CasperNetworkService.swift */; };
+		2D554FC92CCA178E005C9C20 /* CasperNetworkResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D554FC82CCA178E005C9C20 /* CasperNetworkResult.swift */; };
+		2D554FCB2CCA179F005C9C20 /* CasperNetworkResult.Balance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D554FCA2CCA179F005C9C20 /* CasperNetworkResult.Balance.swift */; };
 		2D57CA862C3D0B0D0070D477 /* MarketsWalletDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D57CA852C3D0B0D0070D477 /* MarketsWalletDataSource.swift */; };
 		2D57CA882C3D0BA30070D477 /* MarketsGeneratedAddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D57CA872C3D0BA30070D477 /* MarketsGeneratedAddressView.swift */; };
 		2D5DCA392BEA8584002D26AC /* WalletConnectCryptoProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5DCA382BEA8584002D26AC /* WalletConnectCryptoProvider.swift */; };
@@ -2996,6 +3000,10 @@
 		2D554FB32CC82A6C005C9C20 /* CasperAddressUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasperAddressUtils.swift; sourceTree = "<group>"; };
 		2D554FB92CC8CD1D005C9C20 /* CasperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasperTests.swift; sourceTree = "<group>"; };
 		2D554FBE2CC8F4A6005C9C20 /* Byte+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Byte+.swift"; sourceTree = "<group>"; };
+		2D554FC22CCA1443005C9C20 /* CasperBalance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasperBalance.swift; sourceTree = "<group>"; };
+		2D554FC52CCA15AC005C9C20 /* CasperNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasperNetworkService.swift; sourceTree = "<group>"; };
+		2D554FC82CCA178E005C9C20 /* CasperNetworkResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasperNetworkResult.swift; sourceTree = "<group>"; };
+		2D554FCA2CCA179F005C9C20 /* CasperNetworkResult.Balance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasperNetworkResult.Balance.swift; sourceTree = "<group>"; };
 		2D57CA852C3D0B0D0070D477 /* MarketsWalletDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsWalletDataSource.swift; sourceTree = "<group>"; };
 		2D57CA872C3D0BA30070D477 /* MarketsGeneratedAddressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsGeneratedAddressView.swift; sourceTree = "<group>"; };
 		2D5DCA382BEA8584002D26AC /* WalletConnectCryptoProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectCryptoProvider.swift; sourceTree = "<group>"; };
@@ -6051,9 +6059,10 @@
 				2D554FAF2CC7797D005C9C20 /* CasperAddressService.swift */,
 				2D554FB32CC82A6C005C9C20 /* CasperAddressUtils.swift */,
 				2D554FB12CC79F0D005C9C20 /* CasperExternalLinkProvider.swift */,
-				2D554FAA2CC761D7005C9C20 /* CasperNetworkProvider.swift */,
 				2D554FA62CC761BF005C9C20 /* CasperWalletAssembly.swift */,
 				2D554FA42CC761B5005C9C20 /* CasperWalletManager.swift */,
+				2D554FC12CCA1431005C9C20 /* Domain */,
+				2D554FC72CCA172C005C9C20 /* DTO */,
 				2D554FAC2CC7734D005C9C20 /* Network */,
 			);
 			path = Casper;
@@ -6062,6 +6071,8 @@
 		2D554FAC2CC7734D005C9C20 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				2D554FAA2CC761D7005C9C20 /* CasperNetworkProvider.swift */,
+				2D554FC52CCA15AC005C9C20 /* CasperNetworkService.swift */,
 				2D554FAD2CC7735F005C9C20 /* CasperTarget.swift */,
 			);
 			path = Network;
@@ -6073,6 +6084,23 @@
 				2D554FB92CC8CD1D005C9C20 /* CasperTests.swift */,
 			);
 			path = Casper;
+			sourceTree = "<group>";
+		};
+		2D554FC12CCA1431005C9C20 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				2D554FC22CCA1443005C9C20 /* CasperBalance.swift */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		2D554FC72CCA172C005C9C20 /* DTO */ = {
+			isa = PBXGroup;
+			children = (
+				2D554FC82CCA178E005C9C20 /* CasperNetworkResult.swift */,
+				2D554FCA2CCA179F005C9C20 /* CasperNetworkResult.Balance.swift */,
+			);
+			path = DTO;
 			sourceTree = "<group>";
 		};
 		2D5DCC2B2C3309F1000EE379 /* TokensNetworkSelector */ = {
@@ -17694,6 +17722,7 @@
 				B62D40E62CBC79DA00C2460E /* HederaNetworkResult.TransactionInfo.swift in Sources */,
 				B62D428A2CBC79DB00C2460E /* TronTransactionHistoryProvider.swift in Sources */,
 				B62D41922CBC79DA00C2460E /* SolanaWalletAssembly.swift in Sources */,
+				2D554FC92CCA178E005C9C20 /* CasperNetworkResult.swift in Sources */,
 				B62D40692CBC79DA00C2460E /* CosmosFeeParameters.swift in Sources */,
 				B62D3F9F2CBC79DA00C2460E /* AlgorandResponse+PendingTransaction.swift in Sources */,
 				B62D400A2CBC79DA00C2460E /* OP_CAT.swift in Sources */,
@@ -17914,6 +17943,7 @@
 				B62D40BA2CBC79DA00C2460E /* PolygonExternalLinkProvider.swift in Sources */,
 				B62D40622CBC79DA00C2460E /* ChiaWalletAssembly.swift in Sources */,
 				B62D41462CBC79DA00C2460E /* NEARExternalLinkProvider.swift in Sources */,
+				2D554FCB2CCA179F005C9C20 /* CasperNetworkResult.Balance.swift in Sources */,
 				B62D42B62CBC79DB00C2460E /* StakeKitTransaction.swift in Sources */,
 				B62D42612CBC79DB00C2460E /* ExternalLinkProviderFactory.swift in Sources */,
 				B62D41822CBC79DA00C2460E /* RavencoinTestNetworkParams.swift in Sources */,
@@ -17987,6 +18017,7 @@
 				B62D40D02CBC79DA00C2460E /* FilecoinResponse.swift in Sources */,
 				B62D3FEF2CBC79DA00C2460E /* OP_HASH160.swift in Sources */,
 				B62D3FD12CBC79DA00C2460E /* OP_GREATERTHAN.swift in Sources */,
+				2D554FC62CCA15AC005C9C20 /* CasperNetworkService.swift in Sources */,
 				B62D42722CBC79DB00C2460E /* StakeKitTransactionSender.swift in Sources */,
 				B62D40D12CBC79DA00C2460E /* FilecoinSignedMessage.swift in Sources */,
 				B62D41D82CBC79DB00C2460E /* TronFeeParameters.swift in Sources */,
@@ -18063,6 +18094,7 @@
 				B62D41F02CBC79DB00C2460E /* VeChainNetworkResult.BlockInfo.swift in Sources */,
 				B62D42D72CBC79DB00C2460E /* RIPEMD160+.swift in Sources */,
 				B62D42322CBC79DB00C2460E /* BlockchairTarget.swift in Sources */,
+				2D554FC32CCA1443005C9C20 /* CasperBalance.swift in Sources */,
 				B62D411A2CBC79DA00C2460E /* protocol.pb.swift in Sources */,
 				B62D41C52CBC79DB00C2460E /* TONWalletManager.swift in Sources */,
 				B62D41FD2CBC79DB00C2460E /* VeChainWalletAssembly.swift in Sources */,
