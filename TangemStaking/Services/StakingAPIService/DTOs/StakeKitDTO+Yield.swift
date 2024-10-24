@@ -66,7 +66,7 @@ extension StakeKitDTO {
 
                             struct Amount: Decodable {
                                 let required: Bool
-                                let minimum: Decimal
+                                let minimum: Decimal?
                                 let maximum: Decimal?
                             }
                         }
