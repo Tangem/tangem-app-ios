@@ -6,8 +6,9 @@
 //  Copyright © 2023 Tangem AG. All rights reserved.
 //
 
+import Foundation
 import Moya
-import TangemFoundation
+import TangemNetworkUtils
 
 struct ExpressAPITarget: Moya.TargetType {
     let expressAPIType: ExpressAPIType
