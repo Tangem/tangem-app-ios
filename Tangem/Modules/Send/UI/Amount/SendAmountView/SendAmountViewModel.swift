@@ -118,11 +118,8 @@ private extension SendAmountViewModel {
 
         interactor
             .infoTextPublisher
-            .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
-            .sink { viewModel, bottomInfoText in
-                viewModel.bottomInfoText = bottomInfoText
-            }
+            .assign(to: \.bottomInfoText, on: self, ownership: .weak)
             .store(in: &bag)
 
         interactor

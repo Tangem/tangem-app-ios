@@ -10,6 +10,7 @@ import Foundation
 import Combine
 import SwiftUI
 import BlockchainSdk
+import TangemExpress
 
 class SendCoordinator: CoordinatorObject {
     let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?>
@@ -57,6 +58,8 @@ class SendCoordinator: CoordinatorObject {
             rootViewModel = factory.makeRestakingViewModel(manager: manager, action: action, router: self)
         case .stakingSingleAction(let manager, let action):
             rootViewModel = factory.makeStakingSingleActionViewModel(manager: manager, action: action, router: self)
+        case .onramp:
+            rootViewModel = factory.makeOnrampViewModel(router: self)
         }
     }
 }
