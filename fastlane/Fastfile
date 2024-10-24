@@ -11,9 +11,6 @@ FIREBASE_TESTERS_GROUP = "testers"
 before_all do |lane, options|
   lanes_to_skip_bootstrap = [
     :update_translations,
-    :deploy_testflight,
-    :deploy_firebase,
-    :refresh_dsyms,
   ]
 
   if lanes_to_skip_bootstrap.include?(lane)
@@ -22,16 +19,10 @@ before_all do |lane, options|
 
   # Xcode version overrides available only on CI
   if ENV["CI"]&.downcase == "true"
-    if options[:xcode_version_override]&.empty?
-      # Will use the Xcode version from the .xcode-version file
-      xcodes(
-        select_for_current_build_only: true
-      )
+    if options[:xcode_version_override].nil?
+      xcodes() # Will use the Xcode version from the .xcode-version file
     else
-      xcodes(
-        version: options[:xcode_version_override], 
-        select_for_current_build_only: true
-      )
+      xcodes(version: options[:xcode_version_override])
     end
   end
 
@@ -49,7 +40,7 @@ desc """
   Options:
   - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 """
-lane :test do
+lane :test do |options|
   run_tests(
     workspace: WORKSPACE_NAME,
     scheme: PRODUCTION_SCHEME,
@@ -59,9 +50,36 @@ lane :test do
 end
 
 desc """
-  A lane that builds a \"BlockchainSdkExample\" scheme without running or publishing it, just to check that the scheme is buildable.
+  A lane that builds a \"Tangem\" scheme and uploads the archive to TestFlight for release.
+  Using enviroment: Production
   Options:
+  - version: app version
+  - build: optional build number
+  - changelog: string for description archive
   - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+  """
+lane :release do |options|
+  app_store_connect_api_key(duration: 1200, is_key_content_base64: true)
+  increment_version_number(version_number: options[:version])
+  increment_testflight_build_number(version: options[:version], build: options[:build])
+
+  build(scheme: PRODUCTION_SCHEME, version: options[:version])
+  upload_dsyms(app_id: ENV["APP_ID_PRODUCTION"], name: PRODUCTION_SCHEME)
+  
+  upload_testflight(
+    name: PRODUCTION_SCHEME,
+    version: options[:version],
+    changelog: options[:changelog]
+  )
+  clean_artifacts
+  slack_message(
+    message: "Tangem Release successfully uploaded to TestFlight",
+    changelog: options[:changelog]
+  )
+end
+
+desc """
+A lane that builds a \"BlockchainSdkExample\" scheme without running or publishing it, just to check that the scheme is buildable.
 """
 lane :check_bsdk_example_buildable do |options|
   xcodebuild(
@@ -74,144 +92,115 @@ lane :check_bsdk_example_buildable do |options|
 end
 
 desc """
-  This lane builds a \"Tangem Alpha\" scheme binary. Result binary can be used only for ad-hoc distribution.
-  Options:
-  - version: App version
-  - build: Build number
-  - filename: Name of the resulting artefact (IPA file)
-  - path: Path to binary
-  - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+A lane that builds a \"Tangem Beta\" scheme and uploads the archive to Firebase for testing.
+Using enviroment: Production
+Options:
+- version: app version
+- build: optional build number
+- changelog: string for description archive
+- xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 """
-lane :build_Alpha do |options|
+lane :beta do |options|
   increment_version_number(version_number: options[:version])
   increment_firebase_build_number(app_id: ENV["APP_ID_BETA"], build: options[:build])
+  build(scheme: BETA_SCHEME, export_method: "ad-hoc")
 
-  build(
-    export_method: "ad-hoc", 
-    scheme: ALPHA_SCHEME, 
-    version: options[:version], 
-    build: options[:build], 
-    filename: options[:filename], 
-    path: options[:path]
+  upload_dsyms(app_id: ENV["APP_ID_BETA"], name: BETA_SCHEME)
+  upload_firebase(
+    name: BETA_SCHEME,
+    app_id: ENV["APP_ID_BETA"],
+    changelog: options[:changelog]
+  )
+  clean_artifacts
+  slack_message(
+    message: "Tangem Beta successfully uploaded to Firebase",
+    changelog: options[:changelog]
   )
 end
 
 desc """
-  A lane that builds a \"Tangem Beta\" scheme binary. Result binary can be used only for ad-hoc distribution.
-  Options:
-  - version: App version
-  - build: Build number
-  - filename: Name of the resulting artefact (IPA file)
-  - path: Path to binary
-  - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+A lane that builds a \"Tangem Alpha\" scheme and uploads the archive to Firebase for testing.
+Using enviroment: Test
+Options:
+- version: app version
+- build: optional build number
+- changelog: string for description archive
+- xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 """
-lane :build_Beta do |options|
+lane :alpha do |options|
   increment_version_number(version_number: options[:version])
-  increment_firebase_build_number(app_id: ENV["APP_ID_BETA"], build: options[:build])
+  increment_firebase_build_number(app_id: ENV["APP_ID_ALPHA"], build: options[:build])
+  build(scheme: ALPHA_SCHEME, export_method: "ad-hoc")
 
-   build(
-    export_method: "ad-hoc", 
-    scheme: BETA_SCHEME, 
-    version: options[:version], 
-    build: options[:build], 
-    filename: options[:filename], 
-    path: options[:path]
+  upload_dsyms(app_id: ENV["APP_ID_ALPHA"], name: ALPHA_SCHEME)
+  upload_firebase(
+    name: ALPHA_SCHEME,
+    app_id: ENV["APP_ID_ALPHA"],
+    changelog: options[:changelog]
+  )
+  clean_artifacts
+  slack_message(
+    message: "Tangem Aplha successfully uploaded to Firebase",
+    changelog: options[:changelog]
   )
 end
 
-# TODO: changelog isn't used at all?
 desc """
-  A lane that builds a \"Tangem\" scheme and uploads the archive to TestFlight for release.
-  Using enviroment: Production
-  Options:
-  - version: app version
-  - build: optional build number
-  - changelog: string for description archive
-  - filename: Name of the resulting artefact (IPA file)
-  - path: Path to binary
-  - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
-  """
-lane :build_RC do |options|
-  increment_version_number(version_number: options[:version])
-  increment_testflight_build_number(version: options[:version], build: options[:build])
+Load from testFlight dSyms and upload it to Firebase
+Options:
+- version: app version
+- build: build number
+"""
+lane :refresh_dsyms do |options|
+  app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+  app_store_connect_api_key(duration: 1200, is_key_content_base64: true)
+  download_dsyms(
+    app_identifier: app_identifier,
+    version: options[:version],
+    build_number: options[:build]
+  )
+  upload_symbols_to_crashlytics(app_id: ENV["PRODUCTION_SCHEME"])
+  clean_build_artifacts
+end
 
-  build(
-    scheme: PRODUCTION_SCHEME, 
-    version: options[:version], 
-    filename: options[:filename], 
-    path: options[:path]
+desc """
+Fetches and updates localization bundles using Localise fastlane action (https://github.com/lokalise/lokalise-fastlane-actions).
+Uses `LOKALISE_API_TOKEN` and `LOKALISE_PROJECT_ID` env vars.
+Options:
+- languages: A comma-delimited string of languages to update, like `en,fr,de,ja,ru,es,uk_UA`. Pass an empty string to update all available languages.
+- destination: A file path to save localization files to.
+"""
+lane :update_translations do |options|
+  # Can't pass an array as a param for a lane, see https://github.com/fastlane-community/fastlane-plugin-appicon/issues/41 for details
+  languages = options[:languages]&.split(",")
+
+  destination = options[:destination]
+  UI.user_error!("Invalid destination path '#{destination}' for localization files") unless (destination and not destination.empty?)
+
+  lokalise(
+    destination: destination,
+    replace_breaks: true,
+    use_original: true,
+    languages: languages,
+    export_sort: "a_z",
+    export_empty_as: "base"
   )
 end
 
 private_lane :build do |options|
-  clean_artifacts
-
   app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
-
   build_app(
     xcargs: "-allowProvisioningUpdates",
-    output_directory: options[:path],
-    output_name: options[:filename],
+    output_directory: BUILD_PATH,
+    output_name: options[:scheme],
     scheme: options[:scheme],
     clean: true,
     silent: false,
     export_method: options[:export_method],
-    destination: "generic/platform=iOS",
     export_options: {
       distributionBundleIdentifier: app_identifier,
       iCloudContainerEnvironment: "Production"
     }
-  )
-end
-
-desc """
-  This lane deploy binary to Google Distribution
-  Options:
-  - app_id: Firebase App ID
-  - path: Path to binary
-  - firebase_token: Firebase CLI Token
-  - changelog: [optional] Changelog will be added to Google Distribution release notes along with the last commit hash.
-"""
-lane :deploy_firebase do |options|
-  path = options[:path]
-  release_notes = "#{options[:changelog]}\nGitHash: #{last_git_commit[:commit_hash]}"
-  firebase_app_distribution(
-    app: options[:app_id],
-    ipa_path: path,
-    groups: FIREBASE_TESTERS_GROUP,
-    firebase_cli_token: options[:firebase_token],
-    release_notes: release_notes
-  )
-end
-
-desc """
-  This lane deploy binary to TestFLight
-  Options:
-  - version: app version
-  - build: optional build number
-  - binary_path: Path to binary
-  - asc_key_id: TBD
-  - asc_issuer_id: TBD
-  - asc_key: TBD
-  - changelog: [optional] Changelog will be added to TestFlight release notes along with the last commit hash.
-"""
-lane :deploy_testflight do |options|
-  # Get AppStore API Key
-  api_key = app_store_connect_api_key(
-     key_id: options[:asc_key_id],
-     issuer_id: options[:asc_issuer_id],
-     key_content: options[:asc_key],
-     is_key_content_base64: true,
-     in_house: false # detecting this via ASC private key not currently supported
-  )
-
-  # Upload binary to TestFlight
-  upload_to_testflight(
-    api_key:api_key,
-    skip_waiting_for_build_processing: true,
-    ipa: options[:binary_path],
-    app_version: options[:version],
-    changelog: options[:changelog]
   )
 end
 
@@ -242,54 +231,68 @@ private_lane :increment_testflight_build_number do |options|
   end
 end
 
-desc """
-  Fetches and updates localization bundles using Localise fastlane action (https://github.com/lokalise/lokalise-fastlane-actions).
-  Uses `LOKALISE_API_TOKEN` and `LOKALISE_PROJECT_ID` env vars.
-  Options:
-  - languages: A comma-delimited string of languages to update, like `en,fr,de,ja,ru,es,uk_UA`. Pass an empty string to update all available languages.
-  - destination: A file path to save localization files to.
-"""
-lane :update_translations do |options|
-  # Can't pass an array as a param for a lane, see https://github.com/fastlane-community/fastlane-plugin-appicon/issues/41 for details
-  languages = options[:languages]&.split(",")
-
-  destination = options[:destination]
-  UI.user_error!("Invalid destination path '#{destination}' for localization files") unless (destination and not destination.empty?)
-
-  lokalise(
-    destination: destination,
-    replace_breaks: true,
-    use_original: true,
-    languages: languages,
-    export_sort: "a_z",
-    export_empty_as: "base"
-  )
-end
-
-desc """
-  Load from testFlight dSyms and upload it to Firebase
-  Options:
-  - version: app version
-  - build: build number
-"""
-lane :refresh_dsyms do |options|
-  app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
-  app_store_connect_api_key(duration: 1200, is_key_content_base64: true)
-  download_dsyms(
-    app_identifier: app_identifier,
-    version: options[:version],
-    build_number: options[:build]
-  )
-  upload_symbols_to_crashlytics(app_id: ENV["PRODUCTION_SCHEME"])
-  clean_build_artifacts
-end
-
 private_lane :upload_dsyms do |options|
   filename = options[:name] + ".app.dSYM.zip"
   path = BUILD_PATH + filename
   upload_symbols_to_crashlytics(
     app_id: options[:app_id],
     dsym_path: path
+  )
+end
+
+private_lane :upload_firebase do |options|
+  filename = options[:name] + ".ipa"
+  path = BUILD_PATH + filename
+  release_notes = "#{options[:changelog]}\nGitHash: #{last_git_commit[:commit_hash]}"
+
+  firebase_app_distribution(
+    app: options[:app_id],
+    ipa_path: path,
+    groups: FIREBASE_TESTERS_GROUP,
+    firebase_cli_token: ENV["FIREBASE_CREDITIONAL_KEY"],
+    release_notes: release_notes
+  )
+end
+
+private_lane :upload_testflight do |options|
+  filename = options[:name] + ".ipa"
+  path = BUILD_PATH + filename
+  release_notes = "#{options[:changelog]}\nGitHash: #{last_git_commit[:commit_hash]}"
+
+  upload_to_testflight(
+    skip_waiting_for_build_processing: true,
+    ipa: path,
+    app_version: options[:version],
+    changelog: release_notes
+  )
+end
+
+private_lane :slack_message do |options|
+  slack(
+    message: options[:message] + " @qa",
+    default_payloads: [:git_branch, :last_git_commit],
+    slack_url: ENV["SLACK_WEBHOOK_URL"],
+    attachment_properties: {
+      fields: [
+        {
+          title: "Git Hash",
+          value: last_git_commit[:commit_hash],
+        },        
+        {
+          title: "Version",
+          value: get_version_number(xcodeproj: "TangemApp.xcodeproj", target: "Tangem"),
+        },
+        {
+          title: "Build number",
+          value: get_build_number(xcodeproj: "TangemApp.xcodeproj"),
+        },
+        {
+          title: "Changelog",
+          value: options[:changelog],
+        }
+      ]
+    },
+    link_names: true
   )
 end
 
