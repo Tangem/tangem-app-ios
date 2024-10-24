@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import TangemFoundation
 
 public struct StakingAction: Hashable {
     public let amount: Decimal
@@ -38,5 +37,6 @@ public extension StakingAction {
         case restakeRewards(passthrough: String)
         case voteLocked(passthrough: String)
         case unlockLocked(passthrough: String)
+        case restake(passthrough: String)
     }
 }

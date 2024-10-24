@@ -82,10 +82,12 @@
 "common_camera_denied_alert_message" = "Non hai fornito l'accesso alla tua videocamera, modifica le tue impostazioni sulla privacy";
 "common_camera_denied_alert_title" = "Accesso alla videocamera negato";
 "common_cancel" = "Annulla";
+"common_change" = "Change";
 "common_choose_action" = "Choose action";
 "common_claim" = "Claim";
 "common_claim_rewards" = "Claim rewards";
 "common_close" = "Close";
+"common_confirm" = "Confirm";
 "common_continue" = "Continue";
 "common_copy" = "Copy";
 "common_copy_address" = "Copy address";
@@ -293,11 +295,10 @@
 "feedback_subject_tx_push_failed" = "Can't push a transaction";
 "feedback_token_description_error" = "Coin description error";
 "give_permission_current_transaction" = "Transaction";
-"give_permission_fee_footer" = "The network will charge a token approval fee to verify that you are authorizing the use of your token for the swap.";
 "give_permission_policy_type_footer" = "Specify the approve limit for the selected token";
 "give_permission_rows_amount" = "Amount %@";
 "give_permission_staking_footer" = "The Approve function is needed to grant permission to another address to use a specific amount of your tokens. By design, smart contracts can't access your tokens unless you approve. By \"unlocking\" your tokens, you authorize the StakeKit smart contract to use them. The network's miners receive a gas fee (paid by you) to record this action on the blockchain. You can stake your token after giving approval.";
-"give_permission_staking_subtitle" = "To continue you need to allow StakeKit smart contract to use your %@";
+"give_permission_staking_subtitle" = "To continue you need to allow Polygon smart contract to use your %@";
 "give_permission_swap_subtitle" = "To continue, grant %1@ smart contracts permission to use your %2@";
 "give_permission_title" = "Give Permission";
 "give_permission_unlimited" = "Unlimited";
@@ -528,6 +529,9 @@
 "onboarding_wallet_info_title_fourth" = "Access code restore";
 "onboarding_wallet_info_title_second" = "Identical cards";
 "onboarding_wallet_info_title_third" = "Access code";
+"onramp_residency_bottomsheet_country_not_supported" = "Our services are not available in this country";
+"onramp_residency_bottomsheet_country_subtitle" = "Change or confirm it";
+"onramp_residency_bottomsheet_title" = "Your residence has been identified as";
 "organize_tokens_group" = "Group";
 "organize_tokens_sort_by_balance" = "By balance";
 "organize_tokens_title" = "Organize tokens";
@@ -688,6 +692,7 @@
 "staking_details_warmup_period" = "Warmup period";
 "staking_details_warmup_period_info" = "The allocated time for activating participation in staking.";
 "staking_dismiss_message" = "Are you sure you want to close the staking screen?";
+"staking_give_permission_fee_footer" = "The network will charge a token approval fee to verify that you are authorizing the use of your token for the staking.";
 "staking_legal" = "By using staking functionality, you agree with provider’s %1$@ and %2$@";
 "staking_locked" = "Locked";
 "staking_migrate" = "Migrate";
@@ -727,6 +732,7 @@
 "staking_reward_schedule_each" = "Each %@";
 "staking_reward_schedule_each_day" = "Each day";
 "staking_reward_schedule_each_days" = "Each %@ days";
+"staking_reward_schedule_each_plural" = "Each";
 "staking_reward_schedule_each_sec" = "Each %1$@ sec";
 "staking_reward_schedule_epoch" = "Per Epoch";
 "staking_reward_schedule_era" = "Per Era";
@@ -736,7 +742,7 @@
 "staking_rewards" = "Rewards";
 "staking_stake_locked" = "Stake locked";
 "staking_stake_more" = "Stake more";
-"staking_summary_description_text" = "You stake %1$@ and will be receiving your reward each %2$@";
+"staking_summary_description_text" = "You stake %1$@ and will be receiving your reward %2$@";
 "staking_tap_to_unlock" = "Tap to unlock";
 "staking_tap_to_unlock_or_vote" = "Tap to unlock or vote";
 "staking_tap_to_withdraw" = "Tap to withdraw";
@@ -747,6 +753,7 @@
 "staking_unbonding_in" = "Unbonding in";
 "staking_unlocked_locked" = "Unlock";
 "staking_unlocking" = "Unlocking";
+"staking_unstake_amount_validation_error" = "Amount exceeds staked balance";
 "staking_unstaked" = "Unstaked";
 "staking_unstaked_footer" = "Check unstaked to claim your assets";
 "staking_unstaking" = "Unstaking";
@@ -771,6 +778,7 @@
 "story_meet_title" = "Meet Tangem";
 "story_web3_description" = "Exchange, buy NFT's, make loans and deposits in more than 100 different decentralized services";
 "story_web3_title" = "Web 3.0 Compatible";
+"swap_give_permission_fee_footer" = "The network will charge a token approval fee to verify that you are authorizing the use of your token for the swap.";
 "swap_promo_text" = "Exchange more tokens at better rates directly in your wallet.";
 "swap_promo_title" = "New Swap Provider Available!";
 "swapping_alert_cex_description" = "The amount includes:\n• service provider's fee\n• network fee for sending %@ from the exchange back to the user's address.";

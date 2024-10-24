@@ -8,7 +8,6 @@
 
 import Foundation
 import Combine
-import TangemFoundation
 import struct BlockchainSdk.SendTxError
 
 protocol TransactionDispatcher {

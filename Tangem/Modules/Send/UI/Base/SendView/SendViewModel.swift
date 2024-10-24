@@ -128,6 +128,8 @@ final class SendViewModel: ObservableObject {
         //    isKeyboardActive = true
         case (_, .amount):
             isKeyboardActive = true
+        case (_, .onramp):
+            isKeyboardActive = true
         default:
             break
         }

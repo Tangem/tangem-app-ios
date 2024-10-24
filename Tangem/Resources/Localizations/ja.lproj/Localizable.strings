@@ -57,7 +57,7 @@
 "card_settings_interrupted_reset_alert_title" = "すべてのTangemデバイスのリセットが完了していません";
 "card_settings_reset_card_to_factory" = "工場出荷時の設定にリセット";
 "card_settings_security_mode" = "セキュリティ・モード";
-"card_settings_title" = "カード設定";
+"card_settings_title" = "デバイス設定";
 "cardano_coin_will_be_send_with_token_description" = "ネットワーク手数料に加えて、Cardanoネットワークは%2$@トークンで取引する際に%1$@ ADAを請求します。";
 "cardano_coin_will_be_send_with_token_title" = "Cardanoの取引要件";
 "cardano_insufficient_balance_to_send_token_description" = "%1$@ 取引を行うには、いくらかのADAを入金し、ネットワーク手数料と最小ADA (5ADAを推奨) をカバーする必要があります。";
@@ -82,10 +82,12 @@
 "common_camera_denied_alert_message" = "カメラへのアクセスを許可していません。プライバシー設定を調整してください。";
 "common_camera_denied_alert_title" = "カメラへのアクセスが拒否されました";
 "common_cancel" = "キャンセル";
+"common_change" = "変更";
 "common_choose_action" = "アクションを選択";
 "common_claim" = "請求";
 "common_claim_rewards" = "報酬を受け取る";
 "common_close" = "閉じる";
+"common_confirm" = "確認";
 "common_continue" = "続ける";
 "common_copy" = "コピー";
 "common_copy_address" = "アドレスをコピー";
@@ -214,7 +216,7 @@
 "details_referral_title" = "紹介プログラム";
 "details_row_description_flip_to_hide" = "デバイスの画面を下に向けると、残高をすばやく非表示にしたり表示したりできます。";
 "details_row_subtitle_signed_hashes_format" = "%@ハッシュ";
-"details_row_title_cid" = "カードID";
+"details_row_title_cid" = "デバイスID";
 "details_row_title_contact_to_support" = "サポートへのお問い合わせ";
 "details_row_title_create_backup" = "他のカードをリンクする";
 "details_row_title_create_backup_footer" = "1つのウォレットに最大3つのカードまたはリングを同期できます。同期できるのは1回のみです。";
@@ -293,17 +295,16 @@
 "feedback_subject_tx_push_failed" = "取引をプッシュできません";
 "feedback_token_description_error" = "コインの説明エラー";
 "give_permission_current_transaction" = "取引";
-"give_permission_fee_footer" = "ネットワークは、あなたがトークンのスワップを承認していることを確認するために、トークン承認手数料を請求します。";
 "give_permission_policy_type_footer" = "選択したトークンの承認制限を指定します";
 "give_permission_rows_amount" = "金額%@";
 "give_permission_staking_footer" = "承認機能は、別のアドレスに特定の量のトークンを使用する許可を与えるために必要です。設計上スマートコントラクトは、承認しない限りトークンにアクセスできません。トークンを「ロック解除」すると、StakeKitスマート コントラクトがトークンを使用する権限が与えられます。ネットワークのマイナーは、このアクションをブロックチェーンに記録するためにガス料金（あなたが支払う）を受け取ります。承認後、トークンをステーキングできます。";
-"give_permission_staking_subtitle" = "続行するには、StakeKitスマートコントラクトが%@を使用することを許可する必要があります";
+"give_permission_staking_subtitle" = "続行するには、Polygonスマートコントラクトが%@を使用することを許可する必要があります";
 "give_permission_swap_subtitle" = "続行するには、%1@スマートコントラクトに%2@を使用する権限を付与してください";
 "give_permission_title" = "許可を与える";
 "give_permission_unlimited" = "無制限";
 "home_button_order" = "Tangemを注文";
 "home_button_scan" = "Tangemをスキャン";
-"information_generated_with_ai" = "この情報はAIによって生成されました";
+"information_generated_with_ai" = "この情報はAIで生成されました。 \nエラーが見つかった場合は、ここをタップしてください。";
 "initial_message_change_access_code_body" = "アクセスコードを変更するには、上図のようにカードまたはリングをタップし、操作が終了するまで取り外さないでください。";
 "initial_message_change_passcode_body" = "パスコードを変更するには、上記のようにカードをタップし、操作が終了するまで取り外さないでください。";
 "initial_message_create_wallet_body" = "ウォレットを作成するには、上記のようにカードをタップし、操作が終了するまで取り外さないでください。";
@@ -443,7 +444,7 @@
 "onboarding_access_code_feature_1_title" = "保護する";
 "onboarding_access_code_feature_2_description" = "後で各カードおよびリングに個別のアクセスコードを設定できます。";
 "onboarding_access_code_feature_2_title" = "パーソナライズする";
-"onboarding_access_code_feature_3_description" = "アクセスコードはリンクされたカードおよびリング1つで復元できます。すべてのデバイスを1か所に保管しないでください。";
+"onboarding_access_code_feature_3_description" = "アクセスコードは、リンクされたカードおよびリング1つで復元できます。すべてのデバイスを1か所に保管しないでください。";
 "onboarding_access_code_feature_3_title" = "復元する";
 "onboarding_access_code_hint" = "アクセスコードとして任意の単語、フレーズ、または数字を選択してください";
 "onboarding_access_code_intro_title" = "アクセスコードの作成";
@@ -473,7 +474,7 @@
 "onboarding_create_wallet_body" = "すべての秘密鍵をカードまたはリング内で生成し、安全なウォレットを作成しましょう";
 "onboarding_create_wallet_button_create_wallet" = "ウォレットを作成する";
 "onboarding_create_wallet_options_button_options" = "その他のオプション";
-"onboarding_create_wallet_options_message" = "秘密鍵はカードまたはリング内で安全に生成されます。シードフレーズは存在しないので、誰もエクスポートしたり盗んだりすることはできません。";
+"onboarding_create_wallet_options_message" = "秘密鍵はチップ内で安全に生成されます。シードフレーズは存在しないので、誰もエクスポートしたり盗んだりすることはできません。";
 "onboarding_create_wallet_options_title" = "秘密鍵を非公開で生成する";
 "onboarding_done_body" = "カードは有効化され、使用可能になりました";
 "onboarding_done_header" = "成功！";
@@ -508,7 +509,7 @@
 "onboarding_title_backup_card" = "バックアップカード";
 "onboarding_title_backup_card_format" = "バックアップカード # %li";
 "onboarding_title_backup_ring" = "バックアップリング";
-"onboarding_title_no_backup_cards" = "バックアップカードまたはリングなし";
+"onboarding_title_no_backup_cards" = "バックアップデバイスなし";
 "onboarding_title_notifications" = "通知";
 "onboarding_title_one_backup_card" = "バックアップデバイスが1つ追加されました";
 "onboarding_title_scan_origin_card" = "カードを準備してください";
@@ -528,6 +529,9 @@
 "onboarding_wallet_info_title_fourth" = "アクセスコードの復元";
 "onboarding_wallet_info_title_second" = "同一のカード";
 "onboarding_wallet_info_title_third" = "アクセスコード";
+"onramp_residency_bottomsheet_country_not_supported" = "この国では当社のサービスはご利用いただけません";
+"onramp_residency_bottomsheet_country_subtitle" = "変更または確認";
+"onramp_residency_bottomsheet_title" = "あなたの住居は次のように識別されています";
 "organize_tokens_group" = "グループ";
 "organize_tokens_sort_by_balance" = "残高順";
 "organize_tokens_title" = "トークンを整理する";
@@ -676,7 +680,7 @@
 "staking_details_market_rating" = "市場評価";
 "staking_details_metrics_block_header" = "指標";
 "staking_details_minimum_requirement" = "最低要件";
-"staking_details_no_rewards_to_claim" = "報酬なし";
+"staking_details_no_rewards_to_claim" = "報酬はありません";
 "staking_details_reward_claiming" = "請求中の報酬";
 "staking_details_reward_claiming_info" = "ステーキング報酬の受け取り方法。\n自動であなたのアドレスに報酬が入金される方法と、手動で取引を生成して報酬を引き出す方法があります。";
 "staking_details_reward_schedule" = "報酬スケジュール";
@@ -688,6 +692,7 @@
 "staking_details_warmup_period" = "ウォームアップ期間";
 "staking_details_warmup_period_info" = "ステーキングへの参加を有効にするために割り当てられた時間。";
 "staking_dismiss_message" = "ステーキング画面を閉じてもよろしいですか?";
+"staking_give_permission_fee_footer" = "ネットワークは、ステーキングのためにトークンの使用を承認していることを確認するために、トークン承認手数料を請求します。";
 "staking_legal" = "ステーキング機能を使用すると、プロバイダーの%1$@と%2$@に同意したことになります";
 "staking_locked" = "ロック中";
 "staking_migrate" = "移行";
@@ -726,7 +731,8 @@
 "staking_reward_schedule_day" = "毎日";
 "staking_reward_schedule_each" = "%@ごと";
 "staking_reward_schedule_each_day" = "毎日";
-"staking_reward_schedule_each_days" = "%@ごと";
+"staking_reward_schedule_each_days" = "%@日ごと";
+"staking_reward_schedule_each_plural" = "毎";
 "staking_reward_schedule_each_sec" = "%1$@秒毎";
 "staking_reward_schedule_epoch" = "エポック毎";
 "staking_reward_schedule_era" = "時代毎";
@@ -736,7 +742,7 @@
 "staking_rewards" = "報酬";
 "staking_stake_locked" = "ステーキングはロックされています";
 "staking_stake_more" = "もっとステーキングする";
-"staking_summary_description_text" = "%1$@をステーキングし、毎%2$@報酬を受け取ります";
+"staking_summary_description_text" = "%1$@をステーキングし、報酬%2$@を受け取ります";
 "staking_tap_to_unlock" = "タップしてロック解除";
 "staking_tap_to_unlock_or_vote" = "タップしてロック解除もしくは投票";
 "staking_tap_to_withdraw" = "タップして引き出す";
@@ -747,6 +753,7 @@
 "staking_unbonding_in" = "解約完了まで";
 "staking_unlocked_locked" = "ロック解除";
 "staking_unlocking" = "ロック解除中";
+"staking_unstake_amount_validation_error" = "金額がステーキング残高を超えています";
 "staking_unstaked" = "ステーキングされていない";
 "staking_unstaked_footer" = "資産を請求するために、unstakedを確認してください";
 "staking_unstaking" = "ステーキング解除";
@@ -771,6 +778,7 @@
 "story_meet_title" = "Tangemのご紹介";
 "story_web3_description" = "100種類以上の分散型サービスで、NFTの交換・購入や、借入・預金を行うことができます。";
 "story_web3_title" = "Web3.0対応";
+"swap_give_permission_fee_footer" = "ネットワークは、あなたがトークンのスワップを承認していることを確認するために、トークン承認手数料を請求します。";
 "swap_promo_text" = "より多くのトークンをより良いレートで、ウォレット内にて直接交換します。";
 "swap_promo_title" = "新しいスワッププロバイダーが利用可能になりました！";
 "swapping_alert_cex_description" = "この金額には以下が含まれます：\n- サービスプロバイダーの手数料\n- 取引所からユーザーのアドレスに%@ を送り返すためのネットワーク手数料。";
@@ -857,7 +865,7 @@
 "wallet_connect_create_tx_message" = "%1$@の取引を作成するリクエスト\n%2$@\n\n金額: %3$@\n手数料: %4$@\n合計: %5$@\n残高: %6$@";
 "wallet_connect_create_tx_not_enough_funds" = "取引を送信できません。資金が足りません。";
 "wallet_connect_error_failed_to_connect" = "WalletConnect セッションを確立できませんでした。しばらくしてからもう一度お試しください。";
-"wallet_connect_error_missing_blockchains" = "Not all tokens were added to your list. Please add them first and try again. Missing tokens:\n";
+"wallet_connect_error_missing_blockchains" = "すべてのトークンがリストには追加されませんでした。まず追加してから、もう一度お試しください。不足しているトークン: \n";
 "wallet_connect_error_sing_failed" = "メッセージの署名に失敗しました。\nもう一度お試しください。";
 "wallet_connect_error_timeout" = "WalletConnectセッションの確立に失敗しました：タイムアウトエラー。しばらくしてもう一度お試しください。";
 "wallet_connect_error_unsupported_blockchains" = "セッションリクエストには、WalletConnect接続でサポートされていないブロックチェーンが含まれています。サポートされていないブロックチェーン: \n";
@@ -932,7 +940,7 @@
 "warning_low_signatures_message" = "このカードには%@の署名のみが残っています。資金をすべて引き出す必要があります。";
 "warning_low_signatures_title" = "署名数が少ないです";
 "warning_manage_tokens_legacy_derivation_message" = "異なるネットワーク上のトークンは、異なるアドレスを持つ場合があります。資金を送金する際には、アドレスがネットワークと一致していることを再確認してください。";
-"warning_matic_migration_message" = "MATICはPOLに移行中です。ただし、期限は設定されておらず、MATICはまだ廃止されていません。MATICトークンを引き続き安全に使用することも、取引所でPOLに交換することもできます。";
+"warning_matic_migration_message" = "MATICはPOLに移行中です。ただし、期限は設定されておらず、MATICはまだ廃止されていません。MATICトークンを引き続き安全に使用することも、POLに交換することもできます。";
 "warning_matic_migration_title" = "MATICからPOLへの移行";
 "warning_missing_derivation_title" = "一部のアドレスが見つかりません";
 "warning_network_unreachable_message" = "現在、ネットワークにアクセスできません。しばらくしてからもう一度お試しください。";

@@ -16,6 +16,7 @@ class CommonStakingManager {
     private let provider: StakingAPIProvider
     private let repository: StakingPendingTransactionsRepository
     private let logger: Logger
+    private let analyticsLogger: StakingAnalyticsLogger
 
     // MARK: Private
 
@@ -32,13 +33,15 @@ class CommonStakingManager {
         wallet: StakingWallet,
         provider: StakingAPIProvider,
         repository: StakingPendingTransactionsRepository,
-        logger: Logger
+        logger: Logger,
+        analyticsLogger: StakingAnalyticsLogger
     ) {
         self.integrationId = integrationId
         self.wallet = wallet
         self.provider = provider
         self.repository = repository
         self.logger = logger
+        self.analyticsLogger = analyticsLogger
     }
 }
 
@@ -71,6 +74,10 @@ extension CommonStakingManager: StakingManager {
             try await repository.checkIfConfirmed(balances: balances)
             try await updateState(state(balances: balances, yield: yield))
         } catch {
+            analyticsLogger.logAPIError(
+                errorDescription: error.localizedDescription,
+                currencySymbol: wallet.item.symbol
+            )
             logger.error(error)
             updateState(.loadingError(error.localizedDescription))
         }
@@ -78,16 +85,23 @@ extension CommonStakingManager: StakingManager {
 
     func estimateFee(action: StakingAction) async throws -> Decimal {
         switch (state, action.type) {
+        case (.loading, _):
+            try await waitForLoadingCompletion()
+            return try await estimateFee(action: action)
         case (.availableToStake, .stake), (.staked, .stake):
-            try await provider.estimateStakeFee(
-                request: mapToActionGenericRequest(action: action)
+            return try await execute(
+                try await provider.estimateStakeFee(
+                    request: mapToActionGenericRequest(action: action)
+                )
             )
         case (.staked, .unstake):
-            try await provider.estimateUnstakeFee(
-                request: mapToActionGenericRequest(action: action)
+            return try await execute(
+                try await provider.estimateUnstakeFee(
+                    request: mapToActionGenericRequest(action: action)
+                )
             )
         case (.staked, .pending(let type)):
-            try await getPendingEstimateFee(
+            return try await getPendingEstimateFee(
                 request: mapToActionGenericRequest(action: action),
                 type: type
             )
@@ -100,14 +114,7 @@ extension CommonStakingManager: StakingManager {
     func transaction(action: StakingAction) async throws -> StakingTransactionAction {
         switch (state, action.type) {
         case (.loading, _):
-            // Drop the current `loading` state
-            let newState = try await _state.dropFirst().first().async()
-            // Check if after the loading state we have same status
-            // To exclude endless recursion
-            if case .loading = state {
-                throw StakingManagerError.stakingManagerIsLoading
-            }
-
+            try await waitForLoadingCompletion()
             return try await transaction(action: action)
         case (.availableToStake, .stake), (.staked, .stake):
             return try await getStakeTransactionInfo(
@@ -167,14 +174,14 @@ private extension CommonStakingManager {
     }
 
     func getStakeTransactionInfo(request: ActionGenericRequest) async throws -> StakingTransactionAction {
-        let action = try await provider.enterAction(request: request)
+        let action = try await execute(try await provider.enterAction(request: request))
 
         // We have to wait that stakek.it prepared the transaction
         // Otherwise we may get the 404 error
         try await Task.sleep(nanoseconds: Constants.delay)
 
         let transactions = try await action.transactions.asyncMap { transaction in
-            try await provider.patchTransaction(id: transaction.id)
+            try await execute(try await provider.patchTransaction(id: transaction.id))
         }
 
         return mapToStakingTransactionAction(
@@ -186,14 +193,14 @@ private extension CommonStakingManager {
     }
 
     func getUnstakeTransactionInfo(request: ActionGenericRequest) async throws -> StakingTransactionAction {
-        let action = try await provider.exitAction(request: request)
+        let action = try await execute(try await provider.exitAction(request: request))
 
         // We have to wait that stakek.it prepared the transaction
         // Otherwise we may get the 404 error
         try await Task.sleep(nanoseconds: Constants.delay)
 
         let transactions = try await action.transactions.asyncMap { transaction in
-            try await provider.patchTransaction(id: transaction.id)
+            try await execute(try await provider.patchTransaction(id: transaction.id))
         }
 
         return mapToStakingTransactionAction(
@@ -209,7 +216,8 @@ private extension CommonStakingManager {
         case .claimRewards(let passthrough),
              .restakeRewards(let passthrough),
              .voteLocked(let passthrough),
-             .unlockLocked(let passthrough):
+             .unlockLocked(let passthrough),
+             .restake(let passthrough):
             let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
             let action = try await getPendingTransactionAction(request: request)
             return action
@@ -229,14 +237,14 @@ private extension CommonStakingManager {
     }
 
     func getPendingTransactionAction(request: PendingActionRequest) async throws -> StakingTransactionAction {
-        let action = try await provider.pendingAction(request: request)
+        let action = try await execute(try await provider.pendingAction(request: request))
 
         // We have to wait that stakek.it prepared the transaction
         // Otherwise we may get the 404 error
         try await Task.sleep(nanoseconds: Constants.delay)
 
         let transactions = try await action.transactions.asyncMap { transaction in
-            try await provider.patchTransaction(id: transaction.id)
+            try await execute(try await provider.patchTransaction(id: transaction.id))
         }
 
         return mapToStakingTransactionAction(
@@ -252,16 +260,39 @@ private extension CommonStakingManager {
         case .claimRewards(let passthrough),
              .restakeRewards(let passthrough),
              .voteLocked(let passthrough),
-             .unlockLocked(let passthrough):
+             .unlockLocked(let passthrough),
+             .restake(let passthrough):
             let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
-            return try await provider.estimatePendingFee(request: request)
+            return try await execute(try await provider.estimatePendingFee(request: request))
         case .withdraw(let passthroughs):
             let fees = try await passthroughs.asyncMap { passthrough in
                 let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
-                return try await provider.estimatePendingFee(request: request)
+                return try await execute(try await provider.estimatePendingFee(request: request))
             }
 
             return fees.reduce(0, +)
+        }
+    }
+
+    private func execute<T>(_ request: @autoclosure () async throws -> T) async throws -> T {
+        do {
+            return try await request()
+        } catch {
+            analyticsLogger.logAPIError(
+                errorDescription: error.localizedDescription,
+                currencySymbol: wallet.item.symbol
+            )
+            throw error
+        }
+    }
+
+    private func waitForLoadingCompletion() async throws {
+        // Drop the current `loading` state
+        _ = try await _state.dropFirst().first().async()
+        // Check if after the loading state we have same status
+        // To exclude endless recursion
+        if case .loading = state {
+            throw StakingManagerError.stakingManagerIsLoading
         }
     }
 }
@@ -371,7 +402,7 @@ private extension CommonStakingManager {
 private extension CommonStakingManager {
     func getAdditionalAddresses() -> AdditionalAddresses? {
         switch wallet.item.network {
-        case .cosmos:
+        case .cosmos, .kava, .near:
             guard let compressedPublicKey = try? Secp256k1Key(with: wallet.publicKey).compress() else {
                 return nil
             }

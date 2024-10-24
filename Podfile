@@ -32,20 +32,14 @@ def blockchain_sdk_pods
   pod 'Solana.Swift', :git => 'https://github.com/tangem/Solana.Swift', :tag => '1.2.0-tangem11'
   #pod 'Solana.Swift', :path => '../Solana.Swift'
 
-  pod 'BinanceChain', :git => 'https://github.com/tangem/swiftbinancechain.git', :tag => '0.0.11'
-  #pod 'BinanceChain', :path => '../SwiftBinanceChain'
-  
   pod 'BitcoinCore.swift', :git => 'https://github.com/tangem/bitcoincore.git', :tag => '0.0.20'
   #pod 'BitcoinCore.swift', :path => '../bitcoincore'
-
-  pod 'SwiftyJSON', :git => 'https://github.com/tangem/SwiftyJSON.git', :tag => '5.0.1-tangem1'
 end
 
 target 'Tangem' do
   tangem_sdk_pod
-  
+
   # Pods for Tangem
-  pod 'Moya'
   pod 'Kingfisher', '~> 7.11.0'
 
   # Helpers
@@ -84,7 +78,6 @@ end
 
 target 'TangemExpress' do
   tangem_sdk_pod
-  pod 'Moya'
 
   target 'TangemExpressTests' do
     inherit! :search_paths
@@ -94,7 +87,6 @@ end
 
 target 'TangemVisa' do
   tangem_sdk_pod
-  pod 'Moya'
 
   target 'TangemVisaTests' do
     inherit! :search_paths
@@ -104,18 +96,8 @@ end
 
 target 'TangemStaking' do
   tangem_sdk_pod
-  pod 'Moya'
 
   target 'TangemStakingTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-end
-
-target 'TangemFoundation' do
-  pod 'Moya'
-
-  target 'TangemFoundationTests' do
     inherit! :search_paths
     # Pods for testing
   end
@@ -124,7 +106,6 @@ end
 target 'BlockchainSdk' do
   blockchain_sdk_pods
   tangem_sdk_pod
-  pod 'Moya'
 
   target 'BlockchainSdkTests' do
     inherit! :search_paths
@@ -169,15 +150,6 @@ post_install do |installer|
 
   # ============ SPM <-> CocoaPods interop ============
 
-  # `SwiftProtobuf` SPM package for `BinanceChain` pod
-  add_spm_package_to_target(
-   installer.pods_project,
-   "BinanceChain",
-   "https://github.com/tangem/swift-protobuf-binaries.git",
-   "SwiftProtobuf",
-   { :kind => "exactVersion", :version => "1.25.2-tangem1" }
-  )
-
   # `secp256k1.swift` SPM package for `Solana.Swift` pod
   add_spm_package_to_target(
    installer.pods_project,
@@ -186,7 +158,7 @@ post_install do |installer|
    "secp256k1",
    { :kind => "upToNextMajorVersion", :minimumVersion => "0.12.0" }
   )
-  
+
   # `TweetNacl` SPM package for `Solana.Swift` pod
   add_spm_package_to_target(
    installer.pods_project,
