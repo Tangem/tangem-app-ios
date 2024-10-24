@@ -1,9 +1,6 @@
 name: Alpha - Build and Deploy
 
 on:
-  push:
-    branches:
-      - test/IOS-8112_ci_cd_alpha_builds_workflow # TODO: Test only, remove
   workflow_dispatch:
     inputs:
       xcode_version_override:
