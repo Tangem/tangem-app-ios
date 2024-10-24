@@ -18,14 +18,16 @@ public struct TangemStakingFactory {
         wallet: StakingWallet,
         provider: StakingAPIProvider,
         repository: any StakingPendingTransactionsRepository,
-        logger: Logger
+        logger: Logger,
+        analyticsLogger: StakingAnalyticsLogger
     ) -> StakingManager {
         CommonStakingManager(
             integrationId: integrationId,
             wallet: wallet,
             provider: provider,
             repository: repository,
-            logger: logger
+            logger: logger,
+            analyticsLogger: analyticsLogger
         )
     }
 
@@ -38,8 +40,7 @@ public struct TangemStakingFactory {
 
     public func makeStakingAPIProvider(
         credential: StakingAPICredential,
-        configuration: URLSessionConfiguration,
-        analyticsLogger: StakingAnalyticsLogger
+        configuration: URLSessionConfiguration
     ) -> StakingAPIProvider {
         let plugins: [PluginType] = [
             TangemNetworkLoggerPlugin(configuration: .init(
@@ -50,8 +51,7 @@ public struct TangemStakingFactory {
         let provider = MoyaProvider<StakeKitTarget>(session: Session(configuration: configuration), plugins: plugins)
         let service = StakeKitStakingAPIService(
             provider: provider,
-            credential: credential,
-            analyticsLogger: analyticsLogger
+            credential: credential
         )
         let mapper = StakeKitMapper()
         return CommonStakingAPIProvider(service: service, mapper: mapper)
