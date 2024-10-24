@@ -1,6 +1,15 @@
 {
-  "originHash" : "f9d3700ee836f1f7a8ded2f7e98a15a7155ef6acb3b115c4f3291b9b8f046f19",
+  "originHash" : "02f9726bb29f3b4a5b80be95a438cf6549b3f8295494cffb8be5ea7f235aed48",
   "pins" : [
+    {
+      "identity" : "alamofire",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Alamofire/Alamofire.git",
+      "state" : {
+        "revision" : "f455c2975872ccd2d9c81594c658af65716e9b9a",
+        "version" : "5.9.1"
+      }
+    },
     {
       "identity" : "anyasyncsequence",
       "kind" : "remoteSourceControl",
@@ -35,15 +44,6 @@
       "state" : {
         "revision" : "0ed110f7555c34ff468e72e1686e59721f2b0da6",
         "version" : "5.3.0"
-      }
-    },
-    {
-      "identity" : "blake2.swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/tesseract-one/Blake2.swift.git",
-      "state" : {
-        "revision" : "29c55c8fe42d6661e5a32cc5bbbad1fff64fd01e",
-        "version" : "0.2.0"
       }
     },
     {
@@ -101,6 +101,15 @@
       }
     },
     {
+      "identity" : "moya",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Moya/Moya.git",
+      "state" : {
+        "revision" : "c263811c1f3dbf002be9bd83107f7cdc38992b26",
+        "version" : "15.0.3"
+      }
+    },
+    {
       "identity" : "networkimage",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/gonzalezreal/NetworkImage",
@@ -128,6 +137,15 @@
       }
     },
     {
+      "identity" : "reactiveswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ReactiveCocoa/ReactiveSwift.git",
+      "state" : {
+        "revision" : "c43bae3dac73fdd3cb906bd5a1914686ca71ed3c",
+        "version" : "6.7.0"
+      }
+    },
+    {
       "identity" : "regex",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/sharplet/Regex.git",
@@ -143,6 +161,15 @@
       "state" : {
         "revision" : "8c1a43e28358a30dc03367dca2f38476f1573ece",
         "version" : "1.0.4"
+      }
+    },
+    {
+      "identity" : "rxswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ReactiveX/RxSwift.git",
+      "state" : {
+        "revision" : "c7c7d2cf50a3211fe2843f76869c698e4e417930",
+        "version" : "6.8.0"
       }
     },
     {
@@ -326,6 +353,15 @@
       }
     },
     {
+      "identity" : "swiftbinancechain",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tangem/SwiftBinanceChain.git",
+      "state" : {
+        "revision" : "951d24e217d069eabb5dc1671e0d9f3f70b26b5d",
+        "version" : "0.0.12"
+      }
+    },
+    {
       "identity" : "swiftcbor",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/valpackett/SwiftCBOR.git",
@@ -335,12 +371,30 @@
       }
     },
     {
+      "identity" : "swiftdate",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/malcommac/SwiftDate",
+      "state" : {
+        "revision" : "5d943224c3bb173e6ecf27295611615eba90c80e",
+        "version" : "7.0.0"
+      }
+    },
+    {
       "identity" : "swiftimagereadwrite",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/dagronf/SwiftImageReadWrite",
       "state" : {
         "revision" : "5596407d1cf61b953b8e658fa8636a471df3c509",
         "version" : "1.1.6"
+      }
+    },
+    {
+      "identity" : "swiftyjson",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tangem/SwiftyJSON.git",
+      "state" : {
+        "revision" : "acff55ab1a8b138a49477ff523287b18833fc1a0",
+        "version" : "5.0.1-tangem1"
       }
     },
     {

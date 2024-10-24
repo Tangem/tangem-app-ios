@@ -16,6 +16,8 @@ protocol WalletConnectWalletModelProvider {
     func getModel(with address: String, blockchainId: String) throws -> WalletModel
 
     func getModels(with blockchainId: String) -> [WalletModel]
+
+    func getModel(with blockchainId: String) -> WalletModel?
 }
 
 struct CommonWalletConnectWalletModelProvider: WalletConnectWalletModelProvider {
@@ -46,5 +48,9 @@ struct CommonWalletConnectWalletModelProvider: WalletConnectWalletModelProvider 
 
     func getModels(with blockchainId: String) -> [WalletModel] {
         return mainWalletModels.filter { $0.blockchainNetwork.blockchain.networkId == blockchainId }
+    }
+
+    func getModel(with blockchainId: String) -> WalletModel? {
+        mainWalletModels.first { $0.blockchainNetwork.blockchain.networkId == blockchainId }
     }
 }

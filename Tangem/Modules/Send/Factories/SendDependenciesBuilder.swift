@@ -9,6 +9,7 @@
 import Foundation
 import TangemStaking
 import BlockchainSdk
+import TangemExpress
 
 struct SendDependenciesBuilder {
     private let walletModel: WalletModel
@@ -28,6 +29,7 @@ struct SendDependenciesBuilder {
         case .pending(.restakeRewards): .restakeRewards
         case .pending(.voteLocked): .voteLocked
         case .pending(.unlockLocked): .unlockLocked
+        case .pending(.restake): .restake
         }
     }
 
@@ -40,6 +42,7 @@ struct SendDependenciesBuilder {
         case .claimRewards: action.title
         case .restakeRewards: action.title
         case .unlockLocked: action.title
+        case .restake: action.title
         default: action.title
         }
     }
@@ -47,7 +50,7 @@ struct SendDependenciesBuilder {
     func summarySubtitle(action: SendFlowActionType) -> String? {
         switch action {
         case .send: walletName()
-        case .approve, .stake: walletName()
+        case .approve, .stake, .restake: walletName()
         case .unstake: nil
         case .withdraw: nil
         case .claimRewards: nil
@@ -282,6 +285,17 @@ struct SendDependenciesBuilder {
         )
     }
 
+    func makeUnstakingSendAmountValidator(
+        stakingManager: some StakingManager,
+        stakedAmount: Decimal
+    ) -> SendAmountValidator {
+        UnstakingSendAmountValidator(
+            tokenItem: walletModel.tokenItem,
+            stakedAmount: stakedAmount,
+            stakingManagerStatePublisher: stakingManager.statePublisher
+        )
+    }
+
     func makeStakingTransactionSummaryDescriptionBuilder() -> SendTransactionSummaryDescriptionBuilder {
         StakingTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem)
     }
@@ -307,5 +321,20 @@ struct SendDependenciesBuilder {
 
     func makeStakingAmountModifier() -> SendAmountModifier {
         StakingAmountModifier(tokenItem: walletModel.tokenItem)
+    }
+
+    // MARK: - Onramp
+
+    func makeOnrampModel(onrampManager: some OnrampManager) -> OnrampModel {
+        OnrampModel(onrampManager: onrampManager)
+    }
+
+    func makeOnrampManager(userWalletId: String) -> OnrampManager {
+        let expressAPIProvider = ExpressAPIProviderFactory().makeExpressAPIProvider(userId: userWalletId, logger: AppLog.shared)
+        return TangemExpressFactory().makeOnrampManager(expressAPIProvider: expressAPIProvider, logger: AppLog.shared)
+    }
+
+    func makeOnrampAmountValidator() -> SendAmountValidator {
+        OnrampAmountValidator()
     }
 }
