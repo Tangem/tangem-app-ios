@@ -1,57 +1,132 @@
-name: Alpha - Build and Deploy 
+name: Alpha - Build and Deploy
 
 on:
+  push:
+    branches:
+      - test/IOS-8112_ci_cd_alpha_builds_workflow # TODO: Test only, remove
   workflow_dispatch:
-  
-env:
-  APP_PATH: /tmp/app.ipa
-  ARTIFACT_NAME: Application
-  
+    inputs:
+      xcode_version_override:
+        description: >
+          Optional Xcode version override. Leave blank (default value) to use the default Xcode version; 
+          pass a custom value (e.g. '16.0', '10.2.1', '11 Beta 7', '11.2 GM seed', etc) to use a different Xcode version for the build
+        type: string
+      changelog:
+        description: >
+          Optional additional info about build
+        type: string
+
+concurrency:
+  group: '${{ github.workflow }} (${{ github.head_ref || github.ref_name }})'
+  cancel-in-progress: true
+
 jobs:
- build:
-   name: Build
-   runs-on: self-hosted
-   steps:
-   - name: Checkout
-     uses: actions/checkout@v3
-     with:
-       submodules: true
-       token: ${{ secrets.GH_MOBILE_PAT }}
-       
-   - name: Bundle install
-     run: bundle install --jobs 4 --retry 3
-      
-   - name: Pods install
-     run: bundle exec pod install
-     
-   - name: TEST
-     run: echo ${{ github.head_ref }}
-     
-   - name: Get Jira Issue Number from Branch Name
-     id: issue_number
-     uses: tangem/jira-action@master
-     with:
-       action: getBranchId
-       branch-name: ${{ github.head_ref }}
-       
-   - name: TEST
-     run: echo ${{ steps.issue_number.outputs.result }}
-   
-#   - name: Build
-#     run: bundle exec fastlane build scheme:"Tangem Alpha" version:${{ steps.issue_number.outputs.result }}
-     
-#   - name: Upload binary artifact
-#     uses: actions/upload-artifact@v3
-#     with:
-#       name: $ARTIFACT_NAME
-#       path: $APP_PATH
-     
-# deploy:
-#   name: Deploy
-#   needs: build
-#   runs-on: self-hosted
-#   steps:
-#   - name: Download a single artifact
-#     uses: actions/download-artifact@v3
-#     with:
-#       name: $ARTIFACT_NAME
+  prepare:
+    name: Prepare information
+    runs-on: self-hosted
+    outputs:
+      version: '${{ steps.jira.outputs.key }}'
+      stage: Alpha
+      build_number: '${{ github.run_number }}'
+      changelog: '${{ steps.changelog.outputs.result }}'
+    steps:
+      - name: Jira Login
+        uses: atlassian/gajira-login@master
+        env:
+          JIRA_BASE_URL: '${{ secrets.JIRA_URL }}'
+          JIRA_USER_EMAIL: '${{ secrets.JIRA_USER }}'
+          JIRA_API_TOKEN: '${{ secrets.JIRA_TOKEN }}'
+
+      - name: Get Jira Issue Number from Branch Name
+        id: jira
+        uses: tangem/jira-action@master
+        with:
+          action: getBranchSummary
+          branch-name: '${{ github.ref_name }}'
+
+      - name: Create changelog
+        id: changelog
+        env:
+          JIRA_ISSUE_SUMMARY: '${{ steps.jira.outputs.summary }}'
+          JIRA_ISSUE_KEY: '${{ steps.jira.outputs.key }}'
+          ADDITIONAL_CHANGELOG: '${{ inputs.changelog }}'
+        run: |
+          JIRA_DESCRIPTION="Jira issue: ${JIRA_ISSUE_KEY} ${JIRA_ISSUE_SUMMARY}"
+          if [[ -n "${ADDITIONAL_CHANGELOG}" ]]; then
+            OUTPUT_VALUE="Description: ${ADDITIONAL_CHANGELOG}"$'\n'"${JIRA_DESCRIPTION}"
+          else
+            OUTPUT_VALUE="${JIRA_DESCRIPTION}"
+          fi
+
+          # Workaround for a multi-line text in GH output
+          echo 'result<<EOF' >> $GITHUB_OUTPUT
+          echo "${OUTPUT_VALUE}" >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
+
+  build:
+    name: Tangem Alpha
+    needs: prepare
+    uses: tangem/actions/.github/workflows/build.yml@feature/IOS-8112_ci_cd_alpha_builds_workflow
+    with:
+      stage: '${{ needs.prepare.outputs.stage }}'
+      version: '${{ needs.prepare.outputs.version }}'
+      build_number: '${{ needs.prepare.outputs.build_number }}'
+      path: fastlane/builds/
+      filename: Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa
+      xcode_version_override: '${{ inputs.xcode_version_override }}'
+    secrets:
+      GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT }}'
+
+  deploy:
+    name: Google Distribution
+    needs:
+      - prepare
+      - build
+    uses: tangem/actions/.github/workflows/deploy-firebase.yml@feature/IOS-8112_ci_cd_alpha_builds_workflow
+    with:
+      stage: '${{ needs.prepare.outputs.stage }}'
+      version: '${{ needs.prepare.outputs.version }}'
+      build_number: '${{ needs.prepare.outputs.build_number }}'
+      changelog: '${{ needs.prepare.outputs.changelog }}'
+      filename: Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa
+    secrets:
+      FIREBASE_APP_ID: '${{ secrets.FIREBASE_APP_ID }}'
+      FIREBASE_CLI_TOKEN: '${{ secrets.FIREBASE_CLI_TOKEN }}'
+      GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT }}'
+
+  notification:
+    name: Deploy Notification
+    needs:
+      - prepare
+      - build
+      - deploy
+    uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8112_ci_cd_alpha_builds_workflow
+    with:
+      channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
+      status: success
+      app_name: '${{ vars.APP_ALPHA }}'
+      deploy_to: '${{ vars.DEPLOYMENT_GOOGLE_DISTRIBUTION }}'
+      version: '${{ needs.prepare.outputs.version }}'
+      build_number: '${{ needs.prepare.outputs.build_number }}'
+      changelog: '${{ needs.prepare.outputs.changelog }}'
+    secrets:
+      SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN }}'
+
+  error_notification:
+    name: Error Notification
+    if: failure()
+    needs:
+      - prepare
+      - build
+      - deploy
+    uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8112_ci_cd_alpha_builds_workflow
+    with:
+      channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
+      status: error
+      app_name: '${{ vars.APP_ALPHA }}'
+      deploy_to: '${{ vars.DEPLOYMENT_GOOGLE_DISTRIBUTION }}'
+      version: '${{ needs.prepare.outputs.version }}'
+      build_number: '${{ needs.prepare.outputs.build_number }}'
+      changelog: '${{ needs.prepare.outputs.changelog }}'
+    secrets:
+      SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN }}'

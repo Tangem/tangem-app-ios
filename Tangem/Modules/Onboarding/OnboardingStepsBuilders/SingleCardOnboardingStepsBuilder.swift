@@ -32,7 +32,7 @@ struct SingleCardOnboardingStepsBuilder {
     }
 
     private var addTokensSteps: [SingleCardOnboardingStep] {
-        isMultiCurrency && FeatureProvider.isAvailable(.markets) ? [.addTokens] : []
+        isMultiCurrency ? [.addTokens] : []
     }
 
     init(

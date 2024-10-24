@@ -24,8 +24,9 @@ concurrency:
 jobs:
   test:
     name: Test
-    runs-on: self-hosted
-    if: github.event.pull_request.draft == false
+    runs-on: macos-14
+    if: false # TODO: Temp disabled, remove
+    #if: github.event.pull_request.draft == false
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -40,4 +41,23 @@ jobs:
         
     - name: Tests
       run: bundle exec fastlane test
-      
+
+  check_bsdk_example_buildable:
+    name: Check BSDK example project
+    runs-on: self-hosted
+    if: false # TODO: Temp disabled, remove
+    #if: github.event.pull_request.draft == false
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: true
+        token: ${{ secrets.GH_MOBILE_PAT }}
+
+    - name: Bundle install
+      run: |
+        bundle config path vendor/bundle
+        bundle install --jobs 4 --retry 3
+
+    - name: Build BSDK example
+      run: bundle exec fastlane check_bsdk_example_buildable

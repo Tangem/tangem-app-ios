@@ -38,4 +38,11 @@ struct BalanceFormattingOptions: Hashable {
 
         return options
     }
+
+    static var sendCryptoFeeFormattingOptions: BalanceFormattingOptions {
+        var options = Self.defaultCryptoFeeFormattingOptions
+        options.roundingType = .default(roundingMode: .up, scale: 6)
+
+        return options
+    }
 }

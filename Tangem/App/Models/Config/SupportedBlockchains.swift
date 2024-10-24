@@ -28,7 +28,7 @@ extension SupportedBlockchains {
     /// Blockchains which don't include in supported blockchains by default
     static var testableIDs: Set<String> {
         // Here version isn't important because we take only coinId
-        return Set(SupportedBlockchains(version: .v1).testableBlockchains().map { $0.coinId })
+        return Set(SupportedBlockchains(version: .v1).testableBlockchains().map { $0.networkId })
     }
 }
 
@@ -55,7 +55,7 @@ struct SupportedBlockchains {
         }
 
         let betaTestingBlockchains = FeatureStorage().supportedBlockchainsIds.compactMap { id in
-            testableBlockchains().first { $0.coinId == id }
+            testableBlockchains().first { $0.networkId == id }
         }
 
         return mainnetBlockchains.union(Set(betaTestingBlockchains))
@@ -138,6 +138,9 @@ struct SupportedBlockchains {
             .internetComputer,
             .sei(testnet: false),
             .sui(curve: ed25519Curve(for: version), testnet: false),
+            .energyWebEVM(testnet: false),
+            .energyWebX(curve: ed25519Curve(for: version)),
+            .core(testnet: false),
         ]
     }
 
@@ -192,6 +195,8 @@ struct SupportedBlockchains {
             .sei(testnet: true),
             .kaspa(testnet: true),
             .sui(curve: ed25519Curve(for: version), testnet: true),
+            .energyWebEVM(testnet: true),
+            .core(testnet: true),
         ]
     }
 

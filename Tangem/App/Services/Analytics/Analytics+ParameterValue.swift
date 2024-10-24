@@ -33,6 +33,9 @@ extension Analytics {
         case chart = "Chart"
         case blocks = "Blocks"
 
+        case card = "Card"
+        case ring = "Ring"
+
         case main = "Main"
         case token = "Token"
         case manageTokens = "Manage Tokens"
@@ -56,7 +59,6 @@ extension Analytics {
         case transactionFeeMax = "Max"
         case transactionFeeCustom = "Custom"
 
-        case signInTypeCard = "Card"
         case signInTypeBiometrics = "Biometric"
 
         case walletCreationTypePrivateKey = "Private Key"
@@ -140,9 +142,7 @@ extension Analytics {
         case addbackup = "add_backup"
         case proceedBackup = "proceed_backup"
 
-        // MARK: - Promotion banners
-
-        case okx = "OKX"
+        // MARK: - Promotion banners        case ring = "Ring"
 
         case clicked = "Clicked"
         case closed = "Closed"

@@ -55,7 +55,7 @@ struct MainCoordinatorView: CoordinatorView {
                 StakingDetailsCoordinatorView(coordinator: $0)
             }
             .navigation(item: $coordinator.marketsTokenDetailsCoordinator) {
-                TokenMarketsDetailsCoordinatorView(coordinator: $0)
+                MarketsTokenDetailsCoordinatorView(coordinator: $0)
             }
     }
 
@@ -82,10 +82,11 @@ struct MainCoordinatorView: CoordinatorView {
                     })
             }
             .sheet(item: $coordinator.organizeTokensViewModel) { viewModel in
-                OrganizeTokensContainerView(viewModel: viewModel)
-            }
-            .sheet(item: $coordinator.legacyTokenListCoordinator) {
-                LegacyTokenListCoordinatorView(coordinator: $0)
+                NavigationBarHidingView(shouldWrapInNavigationView: true) {
+                    OrganizeTokensView(viewModel: viewModel)
+                        .navigationTitle(Localization.organizeTokensTitle)
+                        .navigationBarTitleDisplayMode(.inline)
+                }
             }
             .sheet(item: $coordinator.visaTransactionDetailsViewModel) {
                 VisaTransactionDetailsView(viewModel: $0)

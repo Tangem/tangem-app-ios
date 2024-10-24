@@ -16,9 +16,7 @@ struct MainBottomSheetHeaderView: View {
             searchText: $viewModel.enteredSearchText,
             isTextFieldFocused: $viewModel.inputShouldBecomeFocused,
             allowsHitTestingForTextField: true,
-            clearButtonAction: {
-                viewModel.clearSearchBarAction()
-            }
+            clearButtonAction: viewModel.clearSearchBarAction
         )
     }
 }

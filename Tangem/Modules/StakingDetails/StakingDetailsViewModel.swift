@@ -35,17 +35,14 @@ final class StakingDetailsViewModel: ObservableObject {
 
     private let walletModel: WalletModel
     private let stakingManager: StakingManager
-    private lazy var stakingDetailsStakesProvider = StakingDetailsStakeViewDataBuilder(tokenItem: walletModel.tokenItem)
     private weak var coordinator: StakingDetailsRoutable?
 
-    private let balanceFormatter = BalanceFormatter()
-    private let percentFormatter = PercentFormatter()
-    private let daysFormatter: DateComponentsFormatter = {
-        let formatter = DateComponentsFormatter()
-        formatter.unitsStyle = .short
-        formatter.allowedUnits = [.day]
-        return formatter
-    }()
+    private lazy var balanceFormatter = BalanceFormatter()
+    private lazy var percentFormatter = PercentFormatter()
+    private lazy var dateFormatter = DateComponentsFormatter.staking()
+    private lazy var stakesBuilder = StakingDetailsStakeViewDataBuilder(
+        tokenItem: walletModel.tokenItem
+    )
 
     private var bag: Set<AnyCancellable> = []
 
@@ -187,7 +184,7 @@ private extension StakingDetailsViewModel {
             contentsOf: [
                 DefaultRowViewModel(
                     title: Localization.stakingDetailsUnbondingPeriod,
-                    detailsType: .text(yield.unbondingPeriod.formatted(formatter: daysFormatter)),
+                    detailsType: .text(yield.unbondingPeriod.formatted(formatter: dateFormatter)),
                     secondaryAction: { [weak self] in
                         self?.openBottomSheet(
                             title: Localization.stakingDetailsUnbondingPeriod,
@@ -211,7 +208,7 @@ private extension StakingDetailsViewModel {
         if !yield.warmupPeriod.isZero {
             viewModels.append(DefaultRowViewModel(
                 title: Localization.stakingDetailsWarmupPeriod,
-                detailsType: .text(yield.warmupPeriod.formatted(formatter: daysFormatter)),
+                detailsType: .text(yield.warmupPeriod.formatted(formatter: dateFormatter)),
                 secondaryAction: { [weak self] in
                     self?.openBottomSheet(
                         title: Localization.stakingDetailsWarmupPeriod,
@@ -221,16 +218,18 @@ private extension StakingDetailsViewModel {
             ))
         }
 
-        viewModels.append(DefaultRowViewModel(
-            title: Localization.stakingDetailsRewardSchedule,
-            detailsType: .text(yield.rewardScheduleType.title),
-            secondaryAction: { [weak self] in
-                self?.openBottomSheet(
-                    title: Localization.stakingDetailsRewardSchedule,
-                    description: Localization.stakingDetailsRewardScheduleInfo
-                )
-            }
-        ))
+        viewModels.append(
+            DefaultRowViewModel(
+                title: Localization.stakingDetailsRewardSchedule,
+                detailsType: .text(yield.rewardScheduleType.formatted()),
+                secondaryAction: { [weak self] in
+                    self?.openBottomSheet(
+                        title: Localization.stakingDetailsRewardSchedule,
+                        description: Localization.stakingDetailsRewardScheduleInfo
+                    )
+                }
+            )
+        )
 
         detailsViewModels = viewModels
     }
@@ -256,8 +255,13 @@ private extension StakingDetailsViewModel {
                 BalanceConverter().convertToFiat(rewardsValue, currencyId: $0)
             }
             let rewardsFiatFormatted = balanceFormatter.formatFiatBalance(rewardsFiat)
+            let rewardsClaimable = balances.flatMap(\.actions).contains(where: { $0.type == .claimRewards })
             rewardViewData = RewardViewData(
-                state: .rewards(fiatFormatted: rewardsFiatFormatted, cryptoFormatted: rewardsCryptoFormatted) { [weak self] in
+                state: .rewards(
+                    claimable: rewardsClaimable,
+                    fiatFormatted: rewardsFiatFormatted,
+                    cryptoFormatted: rewardsCryptoFormatted
+                ) { [weak self] in
                     if rewards.count == 1, let balance = rewards.first {
                         self?.openFlow(balance: balance)
 
@@ -273,7 +277,7 @@ private extension StakingDetailsViewModel {
 
     func setupStakes(yield: YieldInfo, staking: [StakingBalance]) {
         let staking = staking.map { balance in
-            stakingDetailsStakesProvider.mapToStakingDetailsStakeViewData(yield: yield, balance: balance) { [weak self] in
+            stakesBuilder.mapToStakingDetailsStakeViewData(yield: yield, balance: balance) { [weak self] in
                 Analytics.log(
                     event: .stakingButtonValidator,
                     params: [.source: Analytics.ParameterValue.stakeSourceStakeInfo.rawValue]
@@ -322,8 +326,10 @@ private extension StakingDetailsViewModel {
             coordinator?.openStakingFlow()
         case .pending(.voteLocked):
             coordinator?.openRestakingFlow(action: action)
-        case .unstake, .pending:
+        case .unstake:
             coordinator?.openUnstakingFlow(action: action)
+        case .pending:
+            coordinator?.openStakingSingleActionFlow(action: action)
         }
     }
 
@@ -393,16 +399,21 @@ private extension RewardClaimingType {
     }
 }
 
-private extension RewardScheduleType {
-    var title: String {
+extension RewardScheduleType {
+    func formatted() -> String {
         switch self {
-        case .block: Localization.stakingRewardScheduleBlock
-        case .era: Localization.stakingRewardScheduleEra
-        case .epoch: Localization.stakingRewardScheduleEpoch
-        case .hour: Localization.stakingRewardScheduleHour
-        case .day: Localization.stakingRewardScheduleEachDay
-        case .week: Localization.stakingRewardScheduleWeek
-        case .month: Localization.stakingRewardScheduleMonth
+        case .generic(let string):
+            return string
+        case .seconds(let min, let max):
+            let prefix = Localization.stakingRewardScheduleEachPlural
+            let suffix = Localization.commonSecondNoParam
+            return "\(prefix) \(min)-\(max) \(suffix)"
+        case .daily:
+            return Localization.stakingRewardScheduleDay
+        case .days(let min, let max):
+            let prefix = Localization.stakingRewardScheduleEachPlural
+            let suffix = Localization.commonDaysNoParam(max)
+            return "\(prefix) \(min)-\(max) \(suffix)"
         }
     }
 }
@@ -429,6 +440,15 @@ extension StakingAction.ActionType {
         case .pending(.voteLocked): Localization.stakingVote
         case .pending(.unlockLocked): Localization.stakingUnlockedLocked
         }
+    }
+}
+
+extension DateComponentsFormatter {
+    static func staking() -> DateComponentsFormatter {
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .short
+        formatter.allowedUnits = [.day]
+        return formatter
     }
 }
 

@@ -1,14 +1,14 @@
 itc_team_id "118990352"
 
-for_lane :alpha do
+for_lane :build_Alpha do
     app_identifier 'com.tangem.TangemAlpha'
 end
 
-for_lane :beta do
+for_lane :build_Beta do
     app_identifier 'com.tangem.TangemBeta'
 end
 
-for_lane :release do
+for_lane :build_RC do
     app_identifier 'com.tangem.Tangem'
 end
 

@@ -58,8 +58,8 @@ extension VisaConfig: UserWalletConfig {
         return defaultBlockchains.first
     }
 
-    var warningEvents: [WarningEvent] {
-        WarningEventsFactory().makeWarningEvents(for: card)
+    var generalNotificationEvents: [GeneralNotificationEvent] {
+        GeneralNotificationEventsFactory().makeNotifications(for: card)
     }
 
     var emailData: [EmailCollectedData] {

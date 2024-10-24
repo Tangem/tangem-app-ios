@@ -26,5 +26,6 @@ struct MarketsTokenNetworkSelectorCoordinatorView: CoordinatorView {
             .navigation(item: $coordinator.walletSelectorViewModel) {
                 WalletSelectorView(viewModel: $0)
             }
+            .emptyNavigationLink()
     }
 }

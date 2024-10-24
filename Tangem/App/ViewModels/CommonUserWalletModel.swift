@@ -291,6 +291,9 @@ extension CommonUserWalletModel: UserWalletModel {
             // we have to read an actual status from backup validator
             _updatePublisher.send()
         }
+
+        // update for ring image
+        _cardHeaderImagePublisher.send(config.cardHeaderImage)
     }
 
     func addAssociatedCard(_ cardId: String) {

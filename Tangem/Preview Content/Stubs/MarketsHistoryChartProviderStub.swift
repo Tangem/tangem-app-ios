@@ -21,7 +21,7 @@ struct MarketsHistoryChartProviderStub: MarketsHistoryChartProvider {
             ].compactMapValues { $0 }
         )
 
-        let mapper = TokenMarketsHistoryChartMapper()
+        let mapper = MarketsTokenHistoryChartMapper()
 
         return try mapper.mapLineChartViewData(
             from: model,

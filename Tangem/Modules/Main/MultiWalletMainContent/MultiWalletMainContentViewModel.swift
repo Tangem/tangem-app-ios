@@ -28,19 +28,9 @@ final class MultiWalletMainContentViewModel: ObservableObject {
 
     weak var delegate: MultiWalletMainContentDelegate?
 
-    var footerViewModel: MainFooterViewModel? {
-        guard canManageTokens else { return nil }
+    var footerViewModel: MainFooterViewModel?
 
-        return MainFooterViewModel(
-            isButtonDisabled: false,
-            buttonTitle: Localization.mainManageTokens,
-            buttonAction: weakify(self, forFunction: MultiWalletMainContentViewModel.openManageTokens)
-        )
-    }
-
-    private(set) lazy var bottomSheetFooterViewModel: MainBottomSheetFooterViewModel? = FeatureProvider.isAvailable(.markets)
-        ? MainBottomSheetFooterViewModel()
-        : nil
+    private(set) lazy var bottomSheetFooterViewModel = MainBottomSheetFooterViewModel()
 
     var isOrganizeTokensVisible: Bool {
         guard canManageTokens else { return false }
@@ -329,22 +319,6 @@ private extension MultiWalletMainContentViewModel {
 // MARK: Navigation
 
 extension MultiWalletMainContentViewModel {
-    func openManageTokens() {
-        Analytics.log(.buttonManageTokens)
-
-        let shouldShowLegacyDerivationAlert = userWalletModel.config.warningEvents.contains(where: { $0 == .legacyDerivation })
-        let settings = LegacyManageTokensSettings(
-            supportedBlockchains: userWalletModel.config.supportedBlockchains,
-            hdWalletsSupported: userWalletModel.config.hasFeature(.hdWallets),
-            longHashesSupported: userWalletModel.config.hasFeature(.longHashes),
-            derivationStyle: userWalletModel.config.derivationStyle,
-            shouldShowLegacyDerivationAlert: shouldShowLegacyDerivationAlert,
-            existingCurves: userWalletModel.config.existingCurves
-        )
-
-        coordinator?.openManageTokens(with: settings, userTokensManager: userWalletModel.userTokensManager)
-    }
-
     private func openURL(_ url: URL) {
         coordinator?.openInSafari(url: url)
     }
@@ -403,7 +377,7 @@ extension MultiWalletMainContentViewModel: NotificationTapDelegate {
             }
 
             switch notification.settings.event {
-            case let userWalletEvent as WarningEvent:
+            case let userWalletEvent as GeneralNotificationEvent:
                 handleUserWalletNotificationTap(event: userWalletEvent, id: id)
             default:
                 break
@@ -426,7 +400,7 @@ extension MultiWalletMainContentViewModel: NotificationTapDelegate {
         }
     }
 
-    private func handleUserWalletNotificationTap(event: WarningEvent, id: NotificationViewId) {
+    private func handleUserWalletNotificationTap(event: GeneralNotificationEvent, id: NotificationViewId) {
         switch event {
         default:
             assertionFailure("This event shouldn't have tap action on main screen. Event: \(event)")

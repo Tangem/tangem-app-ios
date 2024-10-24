@@ -13,13 +13,13 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%li картка</string>
+        <string>%li пристрій</string>
         <key>few</key>
-        <string>%li картки</string>
+        <string>%li пристрої</string>
         <key>many</key>
-        <string>%li карток</string>
+        <string>%li пристроїв</string>
         <key>other</key>
-        <string>%li карток</string>
+        <string>%li пристроїв</string>
       </dict>
     </dict>
     <key>common_days_no_param</key>
@@ -33,9 +33,13 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>day</string>
+        <string>день</string>
+        <key>few</key>
+        <string>дні</string>
+        <key>many</key>
+        <string>днів</string>
         <key>other</key>
-        <string>days</string>
+        <string>днів</string>
       </dict>
     </dict>
     <key>manage_tokens_number_of_wallets_ios</key>
@@ -69,9 +73,13 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%li exchange</string>
+        <string>%li біржа</string>
+        <key>few</key>
+        <string>%li біржі</string>
+        <key>many</key>
+        <string>%li бірж</string>
         <key>other</key>
-        <string>%li exchanges</string>
+        <string>%li бірж</string>
       </dict>
     </dict>
     <key>markets_token_details_based_on_ratings</key>
@@ -125,7 +133,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%li слово</string>
+        <string>%li word</string>
         <key>few</key>
         <string>%li слова</string>
         <key>many</key>
@@ -185,13 +193,13 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Використовуйте вашу картку, щоб отримати адресу для %li мережі</string>
+        <string>Використовуйте вашу картку або кільце, щоб отримати адресу для %li мережі</string>
         <key>few</key>
-        <string>Використовуйте вашу картку, щоб отримати адреси для %li мереж</string>
+        <string>Використовуйте вашу картку або кільце, щоб отримати адреси для %li мереж</string>
         <key>many</key>
-        <string>Використовуйте вашу картку, щоб отримати адреси для %li мереж</string>
+        <string>Використовуйте вашу картку або кільце, щоб отримати адреси для %li мереж</string>
         <key>other</key>
-        <string>Використовуйте вашу картку, щоб отримати адреси для %li мереж</string>
+        <string>Використовуйте вашу картку або кільце, щоб отримати адреси для %li мереж</string>
       </dict>
     </dict>
   </dict>

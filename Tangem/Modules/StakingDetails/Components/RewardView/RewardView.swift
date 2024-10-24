@@ -29,7 +29,7 @@ struct RewardView: View {
             Text(Localization.stakingDetailsAutoClaimingRewardsDailyText)
                 .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
 
-        case .rewards(let fiatFormatted, let cryptoFormatted, let action):
+        case .rewards(let claimable, let fiatFormatted, let cryptoFormatted, let action):
             Button(action: action) {
                 HStack(spacing: 4) {
                     SensitiveText(fiatFormatted)
@@ -43,11 +43,14 @@ struct RewardView: View {
 
                     Spacer(minLength: 12)
 
-                    Assets.chevron.image
-                        .renderingMode(.template)
-                        .foregroundColor(Colors.Icon.informative)
+                    if claimable {
+                        Assets.chevron.image
+                            .renderingMode(.template)
+                            .foregroundColor(Colors.Icon.informative)
+                    }
                 }
             }
+            .disabled(!claimable)
         }
     }
 }
@@ -60,7 +63,7 @@ struct RewardView: View {
             [
                 RewardViewData(state: .noRewards),
                 RewardViewData(
-                    state: .rewards(fiatFormatted: "24.12$", cryptoFormatted: "23.421 SOL", action: {})
+                    state: .rewards(claimable: true, fiatFormatted: "24.12$", cryptoFormatted: "23.421 SOL", action: {})
                 ),
             ]
         ) {

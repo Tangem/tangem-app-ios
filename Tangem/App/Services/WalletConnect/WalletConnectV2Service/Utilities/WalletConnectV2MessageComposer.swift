@@ -7,7 +7,7 @@
 //
 
 import BlockchainSdk
-import WalletConnectSwiftV2
+import ReownWalletKit
 
 protocol WalletConnectV2MessageComposable {
     func makeMessage(for proposal: Session.Proposal, targetBlockchains: [String]) -> String

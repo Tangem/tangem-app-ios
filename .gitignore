@@ -72,3 +72,6 @@ fastlane/report.xml
 # Generated
 Tangem/Resources/Generated/Localizable+Generated.swift
 Tangem/Resources/Generated/XCAssets+Generated.swift
+
+# Rubygems
+vendor/bundle

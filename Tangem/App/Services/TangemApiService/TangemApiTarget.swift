@@ -53,6 +53,9 @@ struct TangemApiTarget: TargetType {
             return "/user-network-account"
         case .apiList:
             return "/networks/providers"
+
+            // MARK: - Markets paths
+
         case .coinsList:
             return "/coins/list"
         case .coinsHistoryChartPreview:
@@ -61,6 +64,8 @@ struct TangemApiTarget: TargetType {
             return "/coins/\(requestModel.tokenId)"
         case .historyChart(let requestModel):
             return "/coins/\(requestModel.tokenId)/history"
+        case .tokenExchangesList(let requestModel):
+            return "/coins/\(requestModel.tokenId)/exchanges"
         }
     }
 
@@ -78,7 +83,8 @@ struct TangemApiTarget: TargetType {
              .coinsList,
              .coinsHistoryChartPreview,
              .tokenMarketsDetails,
-             .historyChart:
+             .historyChart,
+             .tokenExchangesList:
             return .get
         case .saveUserWalletTokens:
             return .put
@@ -145,6 +151,9 @@ struct TangemApiTarget: TargetType {
             return .requestJSONEncodable(parameters)
         case .apiList:
             return .requestPlain
+
+            // MARK: - Markets tasks
+
         case .coinsList(let requestData):
             return .requestParameters(parameters: requestData.parameters, encoding: URLEncoding.default)
         case .coinsHistoryChartPreview(let requestData):
@@ -162,6 +171,8 @@ struct TangemApiTarget: TargetType {
                 ],
                 encoding: URLEncoding.default
             )
+        case .tokenExchangesList:
+            return .requestPlain
         }
     }
 
@@ -204,11 +215,13 @@ extension TangemApiTarget {
         case awardOldUser(walletId: String, address: String, programName: String)
         case resetAward(cardId: String)
 
-        // Markets
+        // MARK: - Markets Targets
+
         case coinsList(_ requestModel: MarketsDTO.General.Request)
         case coinsHistoryChartPreview(_ requestModel: MarketsDTO.ChartsHistory.PreviewRequest)
         case tokenMarketsDetails(_ requestModel: MarketsDTO.Coins.Request)
         case historyChart(_ requestModel: MarketsDTO.ChartsHistory.HistoryRequest)
+        case tokenExchangesList(_ requestModel: MarketsDTO.ExchangesList.Request)
 
         // Configs
         case apiList

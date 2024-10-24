@@ -29,13 +29,13 @@ struct MainBottomSheetHeaderInputView: View {
             searchText: $searchText,
             placeholder: Localization.marketsSearchHeaderTitle,
             keyboardType: .alphabet,
+            style: .translucent,
             clearButtonAction: clearButtonAction
         )
         .padding(.horizontal, 16)
         .allowsHitTesting(allowsHitTestingForTextField)
         .padding(.top, Constants.topInset)
         .padding(.bottom, Constants.bottomInset)
-        .background(Colors.Background.primary)
     }
 }
 

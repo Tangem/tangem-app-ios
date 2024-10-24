@@ -34,6 +34,8 @@ private extension EmailDataCollector {
     }
 }
 
+// MARK: - NegativeFeedbackDataCollector
+
 struct NegativeFeedbackDataCollector: EmailDataCollector {
     var logData: Data? {
         formatData(userWalletEmailData)
@@ -45,6 +47,8 @@ struct NegativeFeedbackDataCollector: EmailDataCollector {
         self.userWalletEmailData = userWalletEmailData
     }
 }
+
+// MARK: - SendScreenDataCollector
 
 struct SendScreenDataCollector: EmailDataCollector {
     var logData: Data? {
@@ -142,6 +146,8 @@ struct SendScreenDataCollector: EmailDataCollector {
     }
 }
 
+// MARK: - PushScreenDataCollector
+
 struct PushScreenDataCollector: EmailDataCollector {
     var logData: Data? {
         var data = userWalletEmailData
@@ -192,6 +198,8 @@ struct PushScreenDataCollector: EmailDataCollector {
         self.lastError = lastError
     }
 }
+
+// MARK: - DetailsFeedbackDataCollector
 
 struct DetailsFeedbackDataCollector: EmailDataCollector {
     var logData: Data? {
@@ -253,7 +261,32 @@ struct DetailsFeedbackDataCollector: EmailDataCollector {
     }
 }
 
+// MARK: - DetailsFeedbackData
+
 struct DetailsFeedbackData {
     let userWalletEmailData: [EmailCollectedData]
     let walletModels: [WalletModel]
+}
+
+// MARK: - TokenErrorDescriptionDataCollector
+
+struct TokenErrorDescriptionDataCollector: EmailDataCollector {
+    var logData: Data? {
+        var dataToFormat: [EmailCollectedData] = []
+        dataToFormat.append(.separator(.dashes))
+
+        dataToFormat.append(EmailCollectedData(type: .token(.id), data: tokenId))
+        dataToFormat.append(EmailCollectedData(type: .token(.name), data: tokenName))
+
+        dataToFormat.append(.separator(.dashes))
+        return formatData(dataToFormat)
+    }
+
+    private let tokenId: String
+    private let tokenName: String
+
+    init(tokenId: String, tokenName: String) {
+        self.tokenId = tokenId
+        self.tokenName = tokenName
+    }
 }
