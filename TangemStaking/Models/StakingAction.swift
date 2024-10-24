@@ -38,5 +38,6 @@ public extension StakingAction {
         case restakeRewards(passthrough: String)
         case voteLocked(passthrough: String)
         case unlockLocked(passthrough: String)
+        case restake(passthrough: String)
     }
 }
