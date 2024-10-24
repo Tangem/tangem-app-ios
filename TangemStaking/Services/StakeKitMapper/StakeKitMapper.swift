@@ -63,6 +63,7 @@ struct StakeKitMapper {
         case .restakeRewards: .restakeRewards
         case .voteLocked: .voteLocked
         case .unlockLocked: .unlockLocked
+        case .restake: .restake
         }
     }
 
@@ -201,18 +202,13 @@ struct StakeKitMapper {
     func mapToStakingBalanceInfoPendingAction(from balance: StakeKitDTO.Balances.Response.Balance) throws -> [StakingPendingActionInfo] {
         try balance.pendingActions.compactMap { action in
             switch action.type {
-            case .withdraw:
-                return .init(type: .withdraw, passthrough: action.passthrough)
-            case .claimRewards:
-                return .init(type: .claimRewards, passthrough: action.passthrough)
-            case .restakeRewards:
-                return .init(type: .restakeRewards, passthrough: action.passthrough)
-            case .voteLocked, .revote:
-                return .init(type: .voteLocked, passthrough: action.passthrough)
-            case .unlockLocked:
-                return .init(type: .unlockLocked, passthrough: action.passthrough)
-            default:
-                throw StakeKitMapperError.noData("PendingAction.type \(action.type) doesn't supported")
+            case .withdraw: .init(type: .withdraw, passthrough: action.passthrough)
+            case .claimRewards: .init(type: .claimRewards, passthrough: action.passthrough)
+            case .restakeRewards: .init(type: .restakeRewards, passthrough: action.passthrough)
+            case .voteLocked, .revote: .init(type: .voteLocked, passthrough: action.passthrough)
+            case .unlockLocked: .init(type: .unlockLocked, passthrough: action.passthrough)
+            case .restake: .init(type: .restake, passthrough: action.passthrough)
+            default: throw StakeKitMapperError.noData("PendingAction.type \(action.type) doesn't supported")
             }
         }
     }
@@ -267,8 +263,8 @@ struct StakeKitMapper {
             isAvailable: response.isAvailable,
             rewardType: mapToRewardType(from: response.rewardType),
             rewardRateValues: rewardRateValues,
-            enterMinimumRequirement: enterAction.args.amount.minimum,
-            exitMinimumRequirement: exitAction.args.amount.minimum,
+            enterMinimumRequirement: enterAction.args.amount.minimum ?? .zero,
+            exitMinimumRequirement: exitAction.args.amount.minimum ?? .zero,
             validators: validators,
             preferredValidators: preferredValidators,
             item: item,

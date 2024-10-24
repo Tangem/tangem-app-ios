@@ -27,7 +27,8 @@ struct SendAmountStepBuilder {
         let interactor = makeSendAmountInteractor(
             io: io,
             sendAmountValidator: sendAmountValidator,
-            amountModifier: amountModifier
+            amountModifier: amountModifier,
+            type: .crypto
         )
         let viewModel = makeSendAmountViewModel(
             interactor: interactor,
@@ -51,6 +52,24 @@ struct SendAmountStepBuilder {
             input: input,
             tokenIconInfo: builder.makeTokenIconInfo(),
             tokenItem: walletModel.tokenItem
+        )
+    }
+
+    func makeOnrampAmountViewModel(
+        io: IO,
+        sendAmountValidator: SendAmountValidator,
+        amountModifier: SendAmountModifier?
+    ) -> OnrampAmountViewModel {
+        let interactor = makeSendAmountInteractor(
+            io: io,
+            sendAmountValidator: sendAmountValidator,
+            amountModifier: amountModifier,
+            type: .fiat
+        )
+
+        return OnrampAmountViewModel(
+            settings: .init(tokenIconInfo: builder.makeTokenIconInfo(), tokenItem: walletModel.tokenItem),
+            interactor: interactor
         )
     }
 }
@@ -80,7 +99,12 @@ private extension SendAmountStepBuilder {
         )
     }
 
-    private func makeSendAmountInteractor(io: IO, sendAmountValidator: SendAmountValidator, amountModifier: SendAmountModifier?) -> SendAmountInteractor {
+    private func makeSendAmountInteractor(
+        io: IO,
+        sendAmountValidator: SendAmountValidator,
+        amountModifier: SendAmountModifier?,
+        type: SendAmountCalculationType
+    ) -> SendAmountInteractor {
         CommonSendAmountInteractor(
             input: io.input,
             output: io.output,
@@ -88,7 +112,7 @@ private extension SendAmountStepBuilder {
             balanceValue: walletModel.balanceValue ?? 0,
             validator: sendAmountValidator,
             amountModifier: amountModifier,
-            type: .crypto
+            type: type
         )
     }
 }

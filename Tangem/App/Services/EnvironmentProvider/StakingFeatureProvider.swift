@@ -73,6 +73,7 @@ extension StakingFeatureProvider {
 
     static var testableBlockchainItems: Set<StakingItem> {
         [
+            StakingItem(network: .binance, contractAddress: nil),
         ]
     }
 
@@ -86,6 +87,8 @@ extension StakingFeatureProvider {
             return "ethereum-matic-native-staking"
         case (.tron, .none):
             return "tron-trx-native-staking"
+        case (.binance, .none):
+            return "bsc-bnb-native-staking"
         default:
             return nil
         }
