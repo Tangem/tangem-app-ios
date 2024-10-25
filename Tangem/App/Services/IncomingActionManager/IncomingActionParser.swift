@@ -26,7 +26,7 @@ public class IncomingActionParser {
         guard validateURL(url) else { return nil }
 
         for parser in incomingActionURLParsers {
-            if let action = parser.parse(url) {
+            if let action = try? parser.parse(url) {
                 return action
             }
         }
