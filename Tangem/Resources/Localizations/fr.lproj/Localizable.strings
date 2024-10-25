@@ -845,6 +845,7 @@
 "twins_recreate_warning" = "Cette action est irréversible. Vous n'aurez plus accès à l'ancien portefeuille.";
 "twins_scan_twin_with_number" = "Appuyez sur la carte jumelle avec le numéro %@ et ne la retirez pas jusqu'à la fin de l'opération";
 "unlock_wallet_description_full" = "Utilisez %@ ou scannez une carte/bague pour avoir accès à votre portefeuille";
+"unsupported_wc_version" = "Connection failed: This dApp uses Wallet Connect version 1.0, which is not supported. Please ensure the dApp supports Wallet Connect version 2.0 to connect successfully.";
 "user_push_notification_agreement_argument_one" = "Restez à jour avec les dernières fonctionnalités et actualités";
 "user_push_notification_agreement_argument_two" = "Soyez le premier informé des nouvelles promotions";
 "user_push_notification_agreement_header" = "Souhaitez-vous utiliser les\nnotifications push?";
