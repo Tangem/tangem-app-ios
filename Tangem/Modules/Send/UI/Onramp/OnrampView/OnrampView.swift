@@ -20,7 +20,23 @@ struct OnrampView: View {
                 viewModel: viewModel.onrampAmountViewModel,
                 namespace: .init(id: namespace.id, names: namespace.names)
             )
+
+
         }
+    }
+
+    @ViewBuilder
+    private var paymentSection: some View {
+        GroupedSection(viewModel.providerState) { state in
+            switch state {
+            case .loading:
+                LoadingProvidersRow()
+            case .loaded(let data):
+                ProviderRowView(viewModel: data)
+            }
+        }
+        .innerContentPadding(12)
+        .backgroundColor(Colors.Background.action)
     }
 }
 

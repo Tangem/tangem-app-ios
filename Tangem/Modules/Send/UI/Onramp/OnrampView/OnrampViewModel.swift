@@ -11,6 +11,7 @@ import Combine
 
 class OnrampViewModel: ObservableObject, Identifiable {
     @Published private(set) var onrampAmountViewModel: OnrampAmountViewModel
+    @Published private(set) var paymentState: PaymentState?
 
     private let interactor: OnrampInteractor
 
@@ -28,6 +29,10 @@ class OnrampViewModel: ObservableObject, Identifiable {
 private extension OnrampViewModel {
     func bind() {
         // TODO: Lisen interactor to update view
+        // Temp mock
+        paymentState = .loaded(
+            data: .init(iconURL: nil, paymentMethodName: "Card", providerName: "1Inch", badge: .bestRate)
+        )
     }
 }
 
@@ -35,4 +40,21 @@ private extension OnrampViewModel {
 
 extension OnrampViewModel: SendStepViewAnimatable {
     func viewDidChangeVisibilityState(_ state: SendStepVisibilityState) {}
+}
+
+
+extension OnrampViewModel {
+    enum PaymentState: Identifiable {
+        var id: Int {
+            switch self {
+            case .loading:
+                return "loading".hashValue
+            case .loaded(let data):
+                return data.id
+            }
+        }
+
+        case loading
+        case loaded(data: OnrampProvidersCompactViewData)
+    }
 }
