@@ -76,6 +76,18 @@ enum MainUserWalletPageBuilder: Identifiable {
     }
 
     @ViewBuilder
+    func makeActionButtons(viewModel: ActionButtonsViewModel) -> some View {
+        if FeatureProvider.isAvailable(.actionButtons) {
+            switch self {
+            case .singleWallet:
+                EmptyView()
+            case .multiWallet, .lockedWallet, .visaWallet:
+                ActionButtonsView(viewModel: viewModel)
+            }
+        }
+    }
+
+    @ViewBuilder
     var body: some View {
         switch self {
         case .singleWallet(let id, _, let bodyModel):
