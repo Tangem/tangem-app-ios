@@ -2655,6 +2655,13 @@
 		EFBC5C792C00A79E00B662E0 /* StakeKitStakingAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBC5C782C00A79E00B662E0 /* StakeKitStakingAPIService.swift */; };
 		EFBC5C8E2C00B8A000B662E0 /* StakeKitDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBC5C8D2C00B8A000B662E0 /* StakeKitDTO.swift */; };
 		EFBC5C902C00B8B800B662E0 /* StakeKitDTO+Yield.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBC5C8F2C00B8B800B662E0 /* StakeKitDTO+Yield.swift */; };
+		EFC449F52CCBB8B500492A13 /* OnrampProvidersRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC449F22CCBB8B500492A13 /* OnrampProvidersRoutable.swift */; };
+		EFC449F62CCBB8B500492A13 /* OnrampProvidersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC449F42CCBB8B500492A13 /* OnrampProvidersViewModel.swift */; };
+		EFC449F72CCBB8B500492A13 /* OnrampProvidersCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC449F02CCBB8B500492A13 /* OnrampProvidersCoordinator.swift */; };
+		EFC449F82CCBB8B500492A13 /* OnrampProvidersCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC449F12CCBB8B500492A13 /* OnrampProvidersCoordinatorView.swift */; };
+		EFC449F92CCBB8B500492A13 /* OnrampProvidersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC449F32CCBB8B500492A13 /* OnrampProvidersView.swift */; };
+		EFC449FC2CCBB8D700492A13 /* OnrampProvidersCompactView.swift in Resources */ = {isa = PBXBuildFile; fileRef = EFC449FB2CCBB8D700492A13 /* OnrampProvidersCompactView.swift */; };
+		EFC449FE2CCBB8E100492A13 /* OnrampProvidersCompactViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC449FD2CCBB8DE00492A13 /* OnrampProvidersCompactViewModel.swift */; };
 		EFC46F01292669A0003928E3 /* ReceiveCurrencyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC46F00292669A0003928E3 /* ReceiveCurrencyViewModel.swift */; };
 		EFC597BD2AA0B1B7001F6945 /* CommonTokenQuotesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC597BC2AA0B1B7001F6945 /* CommonTokenQuotesRepository.swift */; };
 		EFC6846D2A0FA3C600660690 /* BindingValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC6846C2A0FA3C600660690 /* BindingValue.swift */; };
@@ -5631,6 +5638,13 @@
 		EFBC5C782C00A79E00B662E0 /* StakeKitStakingAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakeKitStakingAPIService.swift; sourceTree = "<group>"; };
 		EFBC5C8D2C00B8A000B662E0 /* StakeKitDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakeKitDTO.swift; sourceTree = "<group>"; };
 		EFBC5C8F2C00B8B800B662E0 /* StakeKitDTO+Yield.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StakeKitDTO+Yield.swift"; sourceTree = "<group>"; };
+		EFC449F02CCBB8B500492A13 /* OnrampProvidersCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersCoordinator.swift; sourceTree = "<group>"; };
+		EFC449F12CCBB8B500492A13 /* OnrampProvidersCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersCoordinatorView.swift; sourceTree = "<group>"; };
+		EFC449F22CCBB8B500492A13 /* OnrampProvidersRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersRoutable.swift; sourceTree = "<group>"; };
+		EFC449F32CCBB8B500492A13 /* OnrampProvidersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersView.swift; sourceTree = "<group>"; };
+		EFC449F42CCBB8B500492A13 /* OnrampProvidersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersViewModel.swift; sourceTree = "<group>"; };
+		EFC449FB2CCBB8D700492A13 /* OnrampProvidersCompactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersCompactView.swift; sourceTree = "<group>"; };
+		EFC449FD2CCBB8DE00492A13 /* OnrampProvidersCompactViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersCompactViewModel.swift; sourceTree = "<group>"; };
 		EFC46EFD29266982003928E3 /* SendCurrencyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendCurrencyViewModel.swift; sourceTree = "<group>"; };
 		EFC46F00292669A0003928E3 /* ReceiveCurrencyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiveCurrencyViewModel.swift; sourceTree = "<group>"; };
 		EFC597BC2AA0B1B7001F6945 /* CommonTokenQuotesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonTokenQuotesRepository.swift; sourceTree = "<group>"; };
@@ -12422,6 +12436,7 @@
 			isa = PBXGroup;
 			children = (
 				EFD68F2E2CC2D01B00693C97 /* OnrampCountry */,
+				EFC449EF2CCBB89600492A13 /* OnrampProviders */,
 				EFE8C7062C7738520067CF2E /* MultipleRewards */,
 				EFEE23632BFE204A0099917E /* StakingDetails */,
 				EF5D83D12B0B79F900516B5F /* ExpressSuccessSent */,
@@ -14278,6 +14293,28 @@
 			path = TransactionHistoryRepository;
 			sourceTree = "<group>";
 		};
+		EFC449EF2CCBB89600492A13 /* OnrampProviders */ = {
+			isa = PBXGroup;
+			children = (
+				EFC449FA2CCBB8CC00492A13 /* OnrampProvidersCompactView */,
+				EFC449F02CCBB8B500492A13 /* OnrampProvidersCoordinator.swift */,
+				EFC449F12CCBB8B500492A13 /* OnrampProvidersCoordinatorView.swift */,
+				EFC449F22CCBB8B500492A13 /* OnrampProvidersRoutable.swift */,
+				EFC449F32CCBB8B500492A13 /* OnrampProvidersView.swift */,
+				EFC449F42CCBB8B500492A13 /* OnrampProvidersViewModel.swift */,
+			);
+			path = OnrampProviders;
+			sourceTree = "<group>";
+		};
+		EFC449FA2CCBB8CC00492A13 /* OnrampProvidersCompactView */ = {
+			isa = PBXGroup;
+			children = (
+				EFC449FD2CCBB8DE00492A13 /* OnrampProvidersCompactViewModel.swift */,
+				EFC449FB2CCBB8D700492A13 /* OnrampProvidersCompactView.swift */,
+			);
+			path = OnrampProvidersCompactView;
+			sourceTree = "<group>";
+		};
 		EFC46EFC29266978003928E3 /* SendCurrencyView */ = {
 			isa = PBXGroup;
 			children = (
@@ -15054,6 +15091,7 @@
 				B0FB4EFA2A8512210057F4C2 /* walletUserWalletList.json in Resources */,
 				DC261CA0292CD3B800875E64 /* GoogleService-Info-Alpha.plist in Resources */,
 				DA64C36D27CCAD7E005B5E9A /* InfoPlist.strings in Resources */,
+				EFC449FC2CCBB8D700492A13 /* OnrampProvidersCompactView.swift in Resources */,
 				B00B58DA2BCFAA60007475F7 /* providers_order.json in Resources */,
 				B07C6A0C2A77E5AA00ACCBB0 /* twinCard.json in Resources */,
 				B098F3A42C04B65600F79989 /* coinsResponse.json in Resources */,
@@ -15868,6 +15906,7 @@
 				2D5F47922C21F1FC00AB6C4B /* MarketsListChartsPreviewProvider.swift in Sources */,
 				DC295B522861D9BC006CB7B6 /* SecurityModeCoordinator.swift in Sources */,
 				B6934E8B2B5E9E36004AA300 /* RateAppRoutable.swift in Sources */,
+				EFC449FE2CCBB8E100492A13 /* OnrampProvidersCompactViewModel.swift in Sources */,
 				DC6DACFF2A98DF1F00AEBB8C /* ReferralInputModel.swift in Sources */,
 				DC1FB52E2C5BB5E2008533A2 /* SendCryptoValueFormatter.swift in Sources */,
 				B03478602B0F6C08004FECA0 /* HighPriceImpactCalculator.swift in Sources */,
@@ -16021,6 +16060,11 @@
 				DADD18F82AA7516B0044AA66 /* UITraitCollection+.swift in Sources */,
 				2D22765E2C0F0A4F006BB6A1 /* MarketsListOrderBottonSheetView.swift in Sources */,
 				EF339E492C21FBEC00B5CDC9 /* SendFeeInteractor.swift in Sources */,
+				EFC449F52CCBB8B500492A13 /* OnrampProvidersRoutable.swift in Sources */,
+				EFC449F62CCBB8B500492A13 /* OnrampProvidersViewModel.swift in Sources */,
+				EFC449F72CCBB8B500492A13 /* OnrampProvidersCoordinator.swift in Sources */,
+				EFC449F82CCBB8B500492A13 /* OnrampProvidersCoordinatorView.swift in Sources */,
+				EFC449F92CCBB8B500492A13 /* OnrampProvidersView.swift in Sources */,
 				0AB5A4732C5267CB00491764 /* SegmentedPicker.swift in Sources */,
 				DC0A584A282C07A20031BECC /* WalletConnectService.swift in Sources */,
 				DA559C3B2B0261F400F59584 /* SendSummaryViewModel.swift in Sources */,
