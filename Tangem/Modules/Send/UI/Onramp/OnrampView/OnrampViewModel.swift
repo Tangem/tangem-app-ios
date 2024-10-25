@@ -21,6 +21,8 @@ class OnrampViewModel: ObservableObject, Identifiable {
     ) {
         self.onrampAmountViewModel = onrampAmountViewModel
         self.interactor = interactor
+
+        bind()
     }
 }
 
@@ -31,7 +33,7 @@ private extension OnrampViewModel {
         // TODO: Lisen interactor to update view
         // Temp mock
         paymentState = .loaded(
-            data: .init(iconURL: nil, paymentMethodName: "Card", providerName: "1Inch", badge: .bestRate)
+            data: .init(iconURL: nil, paymentMethodName: "Card", providerName: "1Inch", badge: .bestRate) {}
         )
     }
 }
@@ -42,19 +44,11 @@ extension OnrampViewModel: SendStepViewAnimatable {
     func viewDidChangeVisibilityState(_ state: SendStepVisibilityState) {}
 }
 
-
 extension OnrampViewModel {
-    enum PaymentState: Identifiable {
-        var id: Int {
-            switch self {
-            case .loading:
-                return "loading".hashValue
-            case .loaded(let data):
-                return data.id
-            }
-        }
-
+    enum PaymentState: Hashable, Identifiable {
         case loading
         case loaded(data: OnrampProvidersCompactViewData)
+
+        var id: Int { hashValue }
     }
 }
