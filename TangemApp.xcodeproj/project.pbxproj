@@ -2064,6 +2064,9 @@
 		DC261CB6292CF6B700875E64 /* UncompletedBackupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC261CB1292CF6B700875E64 /* UncompletedBackupViewModel.swift */; };
 		DC261CB7292CF6B700875E64 /* UncompletedBackupRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC261CB2292CF6B700875E64 /* UncompletedBackupRoutable.swift */; };
 		DC261CBB292CFBB500875E64 /* StartupProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC261CBA292CFBB500875E64 /* StartupProcessor.swift */; };
+		DC283AB82CCA60BB0043F7D2 /* ActionButtonViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC283AB72CCA60BB0043F7D2 /* ActionButtonViewModel.swift */; };
+		DC283ABC2CCA61C70043F7D2 /* ActionButtonsCoordinatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC283ABB2CCA61C70043F7D2 /* ActionButtonsCoordinatorProtocol.swift */; };
+		DC283ABF2CCA70A40043F7D2 /* ActionButtonsFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC283ABE2CCA70A40043F7D2 /* ActionButtonsFactory.swift */; };
 		DC288C002C06553300FF94A0 /* ResetToFactoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC288BFF2C06553300FF94A0 /* ResetToFactoryService.swift */; };
 		DC2911B22C623D1E00DF53CC /* SendTransactionDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2911B12C623D1E00DF53CC /* SendTransactionDispatcher.swift */; };
 		DC2911B42C623D2C00DF53CC /* StakingTransactionDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2911B32C623D2C00DF53CC /* StakingTransactionDispatcher.swift */; };
@@ -2222,6 +2225,10 @@
 		DCBC94572993FF330050BC35 /* Analytics+ProductType.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBC94562993FF330050BC35 /* Analytics+ProductType.swift */; };
 		DCBC945D299404510050BC35 /* CommonAnalyticsContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBC945C299404510050BC35 /* CommonAnalyticsContext.swift */; };
 		DCBC945F2994F9BF0050BC35 /* AnalyticsContextScope.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBC945E2994F9BF0050BC35 /* AnalyticsContextScope.swift */; };
+		DCBE4CEE2CC8C8E800855904 /* ActionButtonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBE4CED2CC8C8E800855904 /* ActionButtonsView.swift */; };
+		DCBE4CF02CC8C8F400855904 /* ActionButtonsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBE4CEF2CC8C8F400855904 /* ActionButtonsViewModel.swift */; };
+		DCBE4CF62CC8D2C400855904 /* ActionButtonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBE4CF52CC8D2C400855904 /* ActionButtonModel.swift */; };
+		DCBE4CF82CCA0E2B00855904 /* ActionButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBE4CF72CCA0E2B00855904 /* ActionButtonView.swift */; };
 		DCC5C9942C1248C5001B970A /* PushNotificationsPermissionRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC5C9932C1248C5001B970A /* PushNotificationsPermissionRequestView.swift */; };
 		DCC5C99A2C136C52001B970A /* PushNotificationsPermissionRequestViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC5C9992C136C52001B970A /* PushNotificationsPermissionRequestViewModel.swift */; };
 		DCC5C99C2C136D8F001B970A /* PushNotificationsPermissionRequestDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC5C99B2C136D8F001B970A /* PushNotificationsPermissionRequestDelegate.swift */; };
@@ -2476,6 +2483,7 @@
 		EF842DEB2AFA58C5006E472E /* ExpressTokensListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF842DE62AFA58C5006E472E /* ExpressTokensListViewModel.swift */; };
 		EF842DEC2AFA58C5006E472E /* ExpressTokensListRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF842DE72AFA58C5006E472E /* ExpressTokensListRoutable.swift */; };
 		EF842DEE2AFA6D07006E472E /* ProviderRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF842DED2AFA6D07006E472E /* ProviderRowViewModel.swift */; };
+		EF8BE6C42CCB95D7001FBA2B /* OnrampRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8BE6C32CCB95D7001FBA2B /* OnrampRoutable.swift */; };
 		EF8D780F2981458500B67418 /* UserTokenListManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8D780E2981458500B67418 /* UserTokenListManagerMock.swift */; };
 		EF8DBCDD2C060A03009072CF /* StakingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8DBCDC2C060A03009072CF /* StakingManager.swift */; };
 		EF8DBCE02C060CCE009072CF /* StakingDependenciesFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8DBCDF2C060CCE009072CF /* StakingDependenciesFactory.swift */; };
@@ -2687,6 +2695,10 @@
 		EFD68F282CC2993000693C97 /* OnrampInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F272CC2992F00693C97 /* OnrampInteractor.swift */; };
 		EFD68F2A2CC2B06B00693C97 /* CommonOnrampStepsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F292CC2B06B00693C97 /* CommonOnrampStepsManager.swift */; };
 		EFD68F2C2CC2C63500693C97 /* OnrampAmountValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F2B2CC2C63500693C97 /* OnrampAmountValidator.swift */; };
+		EFD68F302CC2D02500693C97 /* OnrampCountryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F2F2CC2D02300693C97 /* OnrampCountryView.swift */; };
+		EFD68F322CC2D04500693C97 /* OnrampCountryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F312CC2D04400693C97 /* OnrampCountryViewModel.swift */; };
+		EFD68F342CC2D29C00693C97 /* OnrampCountryRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F332CC2D29700693C97 /* OnrampCountryRoutable.swift */; };
+		EFD68F372CC2F58900693C97 /* OnrampIdentityMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F362CC2F58000693C97 /* OnrampIdentityMock.swift */; };
 		EFD68F392CC3D7DE00693C97 /* ExpressDTO+Swap.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F382CC3D7DB00693C97 /* ExpressDTO+Swap.swift */; };
 		EFD68F3B2CC3D7E600693C97 /* ExpressDTO+Onramp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F3A2CC3D7E300693C97 /* ExpressDTO+Onramp.swift */; };
 		EFD68F3F2CC3E5C700693C97 /* OnrampRedirectSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F3E2CC3E5C600693C97 /* OnrampRedirectSettings.swift */; };
@@ -5000,6 +5012,9 @@
 		DC261CB1292CF6B700875E64 /* UncompletedBackupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UncompletedBackupViewModel.swift; sourceTree = "<group>"; };
 		DC261CB2292CF6B700875E64 /* UncompletedBackupRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UncompletedBackupRoutable.swift; sourceTree = "<group>"; };
 		DC261CBA292CFBB500875E64 /* StartupProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupProcessor.swift; sourceTree = "<group>"; };
+		DC283AB72CCA60BB0043F7D2 /* ActionButtonViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonViewModel.swift; sourceTree = "<group>"; };
+		DC283ABB2CCA61C70043F7D2 /* ActionButtonsCoordinatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsCoordinatorProtocol.swift; sourceTree = "<group>"; };
+		DC283ABE2CCA70A40043F7D2 /* ActionButtonsFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsFactory.swift; sourceTree = "<group>"; };
 		DC288BFF2C06553300FF94A0 /* ResetToFactoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetToFactoryService.swift; sourceTree = "<group>"; };
 		DC2911B12C623D1E00DF53CC /* SendTransactionDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendTransactionDispatcher.swift; sourceTree = "<group>"; };
 		DC2911B32C623D2C00DF53CC /* StakingTransactionDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingTransactionDispatcher.swift; sourceTree = "<group>"; };
@@ -5159,6 +5174,10 @@
 		DCBC94562993FF330050BC35 /* Analytics+ProductType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Analytics+ProductType.swift"; sourceTree = "<group>"; };
 		DCBC945C299404510050BC35 /* CommonAnalyticsContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonAnalyticsContext.swift; sourceTree = "<group>"; };
 		DCBC945E2994F9BF0050BC35 /* AnalyticsContextScope.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsContextScope.swift; sourceTree = "<group>"; };
+		DCBE4CED2CC8C8E800855904 /* ActionButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsView.swift; sourceTree = "<group>"; };
+		DCBE4CEF2CC8C8F400855904 /* ActionButtonsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsViewModel.swift; sourceTree = "<group>"; };
+		DCBE4CF52CC8D2C400855904 /* ActionButtonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonModel.swift; sourceTree = "<group>"; };
+		DCBE4CF72CCA0E2B00855904 /* ActionButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonView.swift; sourceTree = "<group>"; };
 		DCC5C9932C1248C5001B970A /* PushNotificationsPermissionRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationsPermissionRequestView.swift; sourceTree = "<group>"; };
 		DCC5C9992C136C52001B970A /* PushNotificationsPermissionRequestViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationsPermissionRequestViewModel.swift; sourceTree = "<group>"; };
 		DCC5C99B2C136D8F001B970A /* PushNotificationsPermissionRequestDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationsPermissionRequestDelegate.swift; sourceTree = "<group>"; };
@@ -5440,6 +5459,7 @@
 		EF842DE62AFA58C5006E472E /* ExpressTokensListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressTokensListViewModel.swift; sourceTree = "<group>"; };
 		EF842DE72AFA58C5006E472E /* ExpressTokensListRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressTokensListRoutable.swift; sourceTree = "<group>"; };
 		EF842DED2AFA6D07006E472E /* ProviderRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderRowViewModel.swift; sourceTree = "<group>"; };
+		EF8BE6C32CCB95D7001FBA2B /* OnrampRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampRoutable.swift; sourceTree = "<group>"; };
 		EF8D780E2981458500B67418 /* UserTokenListManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTokenListManagerMock.swift; sourceTree = "<group>"; };
 		EF8DBCDC2C060A03009072CF /* StakingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingManager.swift; sourceTree = "<group>"; };
 		EF8DBCDF2C060CCE009072CF /* StakingDependenciesFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingDependenciesFactory.swift; sourceTree = "<group>"; };
@@ -5653,6 +5673,10 @@
 		EFD68F272CC2992F00693C97 /* OnrampInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampInteractor.swift; sourceTree = "<group>"; };
 		EFD68F292CC2B06B00693C97 /* CommonOnrampStepsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonOnrampStepsManager.swift; sourceTree = "<group>"; };
 		EFD68F2B2CC2C63500693C97 /* OnrampAmountValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampAmountValidator.swift; sourceTree = "<group>"; };
+		EFD68F2F2CC2D02300693C97 /* OnrampCountryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampCountryView.swift; sourceTree = "<group>"; };
+		EFD68F312CC2D04400693C97 /* OnrampCountryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampCountryViewModel.swift; sourceTree = "<group>"; };
+		EFD68F332CC2D29700693C97 /* OnrampCountryRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampCountryRoutable.swift; sourceTree = "<group>"; };
+		EFD68F362CC2F58000693C97 /* OnrampIdentityMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampIdentityMock.swift; sourceTree = "<group>"; };
 		EFD68F382CC3D7DB00693C97 /* ExpressDTO+Swap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExpressDTO+Swap.swift"; sourceTree = "<group>"; };
 		EFD68F3A2CC3D7E300693C97 /* ExpressDTO+Onramp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExpressDTO+Onramp.swift"; sourceTree = "<group>"; };
 		EFD68F3E2CC3E5C600693C97 /* OnrampRedirectSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampRedirectSettings.swift; sourceTree = "<group>"; };
@@ -7333,6 +7357,7 @@
 		B06C08442A73FB2C00D982BC /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				DCBE4CEC2CC8C8D800855904 /* ActionButtons */,
 				2D3E1DC12C99CCE1006AF975 /* UIComponents */,
 				B6D274E92C38382D00FEFCDC /* PushNotificationsBottomSheet */,
 				B0BDFD202A8BAB1800479F53 /* UnlockCardBottomSheet */,
@@ -12092,6 +12117,72 @@
 			path = App;
 			sourceTree = "<group>";
 		};
+		DC283AB22CCA60760043F7D2 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				DCBE4CED2CC8C8E800855904 /* ActionButtonsView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		DC283AB32CCA607D0043F7D2 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				DCBE4CEF2CC8C8F400855904 /* ActionButtonsViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		DC283AB42CCA60940043F7D2 /* ActionButton */ = {
+			isa = PBXGroup;
+			children = (
+				DC283AB92CCA60F60043F7D2 /* Model */,
+				DC283AB62CCA60A00043F7D2 /* View */,
+				DC283AB52CCA609B0043F7D2 /* ViewModel */,
+			);
+			path = ActionButton;
+			sourceTree = "<group>";
+		};
+		DC283AB52CCA609B0043F7D2 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				DC283AB72CCA60BB0043F7D2 /* ActionButtonViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		DC283AB62CCA60A00043F7D2 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				DCBE4CF72CCA0E2B00855904 /* ActionButtonView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		DC283AB92CCA60F60043F7D2 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				DCBE4CF52CC8D2C400855904 /* ActionButtonModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		DC283ABA2CCA61AB0043F7D2 /* Coordinator */ = {
+			isa = PBXGroup;
+			children = (
+				DC283ABB2CCA61C70043F7D2 /* ActionButtonsCoordinatorProtocol.swift */,
+			);
+			path = Coordinator;
+			sourceTree = "<group>";
+		};
+		DC283ABD2CCA70970043F7D2 /* Factory */ = {
+			isa = PBXGroup;
+			children = (
+				DC283ABE2CCA70A40043F7D2 /* ActionButtonsFactory.swift */,
+			);
+			path = Factory;
+			sourceTree = "<group>";
+		};
 		DC2911B02C623CFE00DF53CC /* TransactionDispatcher */ = {
 			isa = PBXGroup;
 			children = (
@@ -12330,6 +12421,7 @@
 		DC7DA81A2844EED800AD6DBD /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				EFD68F2E2CC2D01B00693C97 /* OnrampCountry */,
 				EFE8C7062C7738520067CF2E /* MultipleRewards */,
 				EFEE23632BFE204A0099917E /* StakingDetails */,
 				EF5D83D12B0B79F900516B5F /* ExpressSuccessSent */,
@@ -12442,6 +12534,18 @@
 				B045708C2B2AF75600B0794F /* VisaWalletManagerFactory.swift */,
 			);
 			path = WalletManagers;
+			sourceTree = "<group>";
+		};
+		DCBE4CEC2CC8C8D800855904 /* ActionButtons */ = {
+			isa = PBXGroup;
+			children = (
+				DC283AB42CCA60940043F7D2 /* ActionButton */,
+				DC283ABD2CCA70970043F7D2 /* Factory */,
+				DC283ABA2CCA61AB0043F7D2 /* Coordinator */,
+				DC283AB32CCA607D0043F7D2 /* ViewModel */,
+				DC283AB22CCA60760043F7D2 /* View */,
+			);
+			path = ActionButtons;
 			sourceTree = "<group>";
 		};
 		DCE0E2BB2CBE43B7009A4007 /* Solana */ = {
@@ -13488,6 +13592,7 @@
 		EF80843B293F6967000D91EA /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
+				EFD68F352CC2F57900693C97 /* Onramp */,
 				EF8DBCE62C061A33009072CF /* Staking */,
 				2D1BB3A02C08AC29008392F7 /* Dummy */,
 				EF9E2A4C2B56A53100418559 /* Express */,
@@ -13998,6 +14103,7 @@
 			children = (
 				EFB23F302CBE7FBB005A6719 /* OnrampView.swift */,
 				EFB23F372CBE86A5005A6719 /* OnrampViewModel.swift */,
+				EF8BE6C32CCB95D7001FBA2B /* OnrampRoutable.swift */,
 			);
 			path = OnrampView;
 			sourceTree = "<group>";
@@ -14305,6 +14411,24 @@
 				EFD68F232CC298D100693C97 /* OnrampInputOutput.swift */,
 			);
 			path = Interactor;
+			sourceTree = "<group>";
+		};
+		EFD68F2E2CC2D01B00693C97 /* OnrampCountry */ = {
+			isa = PBXGroup;
+			children = (
+				EFD68F2F2CC2D02300693C97 /* OnrampCountryView.swift */,
+				EFD68F312CC2D04400693C97 /* OnrampCountryViewModel.swift */,
+				EFD68F332CC2D29700693C97 /* OnrampCountryRoutable.swift */,
+			);
+			path = OnrampCountry;
+			sourceTree = "<group>";
+		};
+		EFD68F352CC2F57900693C97 /* Onramp */ = {
+			isa = PBXGroup;
+			children = (
+				EFD68F362CC2F58000693C97 /* OnrampIdentityMock.swift */,
+			);
+			path = Onramp;
 			sourceTree = "<group>";
 		};
 		EFE23AC9292CB84600A3C554 /* IconView */ = {
@@ -15543,6 +15667,7 @@
 				DC0BA52A2CA2E112009D9233 /* CommonUserWalletModelFactory.swift in Sources */,
 				B04719012B4E7C4800444734 /* VisaBalancesLimitsBottomSheetViewModel.swift in Sources */,
 				DC70C0172B95EEC3002205BA /* FactorySettingsResetting.swift in Sources */,
+				DCBE4CF62CC8D2C400855904 /* ActionButtonModel.swift in Sources */,
 				EF729B712AF3E86300D80205 /* ExpressProvidersSelectorView.swift in Sources */,
 				B05F1E66299CB81D00E27E32 /* TransactionViewPlaceholder.swift in Sources */,
 				B6FFADEA2C5D67E900B43A56 /* DGCharts.ChartViewBase+.swift in Sources */,
@@ -15711,6 +15836,7 @@
 				B00FA51C2C05C496007041B0 /* OnboardingAddTokensDelegate.swift in Sources */,
 				5D6784CE25EB92F300149995 /* TestnetTokensRepository.swift in Sources */,
 				2DB3614D2C14FBF500BB1D38 /* SegmentedPickerView+EnviromentValues.swift in Sources */,
+				DCBE4CF02CC8C8F400855904 /* ActionButtonsViewModel.swift in Sources */,
 				DA5CD09A2A25F4F2008FD876 /* PromotionCoordinator.swift in Sources */,
 				B0290CDB2CAED78A008ABBD2 /* MarketsExchangeTrustScore.swift in Sources */,
 				B05FADF02C4810BB00ED96E5 /* AsyncTaskScheduler.swift in Sources */,
@@ -15858,6 +15984,7 @@
 				EFA580632893E6AA00110DB0 /* BiometricAuthorizationUtils.swift in Sources */,
 				DAA5E30228D21369003C0E80 /* UserWalletStorageAgreementView.swift in Sources */,
 				EF7B9CF5286C7023004C33A9 /* CardSettingsCoordinator.swift in Sources */,
+				DC283ABF2CCA70A40043F7D2 /* ActionButtonsFactory.swift in Sources */,
 				B0E20E122C2B01F600213580 /* PriceChangeUtility.swift in Sources */,
 				B0AEC7D72C5B857100E60A93 /* MarketsUnableToLoadDataView.swift in Sources */,
 				B0A4C4A02A270F5B0060E039 /* BalanceWithButtonsView.swift in Sources */,
@@ -15936,6 +16063,7 @@
 				DAB19D492B2C72A100DD08C4 /* AddCustomTokenViewModel.swift in Sources */,
 				DC3B49F42893E50700C207EA /* StoredUserWallet.swift in Sources */,
 				EF2FE4992C6B80560015940A /* AllowanceChecker.swift in Sources */,
+				EF8BE6C42CCB95D7001FBA2B /* OnrampRoutable.swift in Sources */,
 				B01B2D7A2BD2935000D8A6A1 /* APIType.swift in Sources */,
 				EFE1812B292E30C00072D80C /* SupportChatViewModel.swift in Sources */,
 				EF46622F2924DF0300346B6C /* DefaultRowViewModel.swift in Sources */,
@@ -16169,6 +16297,7 @@
 				B62C65CE2C38D06B00189AD4 /* PushNotificationsService.swift in Sources */,
 				B05919042A0BCD1100EB8005 /* MainHeaderViewModel.swift in Sources */,
 				B0406BB62A402462006452C2 /* PagerWithDots.swift in Sources */,
+				EFD68F372CC2F58900693C97 /* OnrampIdentityMock.swift in Sources */,
 				DAF59CC82ACC4E37004FCA86 /* AlertFieldValidator.swift in Sources */,
 				B657CE972C66FC3200A7AC8B /* OverlayContentContainerAppLifecycleHelper.swift in Sources */,
 				B0A1B4802A42C78300376FCC /* TokenDetailsHeaderViewModel.swift in Sources */,
@@ -16326,6 +16455,7 @@
 				2DB648672C35439D00DA100D /* MarketsTokenDetailsMapper.swift in Sources */,
 				B0AA865226DC90E600287F80 /* WelcomeView.swift in Sources */,
 				B0CF5A572C2D420300B197D4 /* MarketsDTO+Coin.swift in Sources */,
+				EFD68F302CC2D02500693C97 /* OnrampCountryView.swift in Sources */,
 				EF0DC11B2A0CE29E007E3DA7 /* ExpressApproveView.swift in Sources */,
 				B6A89DB82BB1AE2B007A1619 /* BackgroundTaskWrapper.swift in Sources */,
 				5D225CB92524B721001564A3 /* Analytics.swift in Sources */,
@@ -16378,6 +16508,7 @@
 				B0120A932A0E0F4400F485F1 /* FakeCardHeaderPreviewProvider.swift in Sources */,
 				EF59039A29091CFB00C527C9 /* EnvironmentSetupView.swift in Sources */,
 				B63B63BA2A44012D00A7CECF /* OrganizeTokensListHeader.swift in Sources */,
+				DC283ABC2CCA61C70043F7D2 /* ActionButtonsCoordinatorProtocol.swift in Sources */,
 				B05209BE261F1FF3000DD204 /* RoundedCorner.swift in Sources */,
 				B0DC10D42927564000BBE854 /* CardMock.swift in Sources */,
 				EF339E752C24820B00B5CDC9 /* SendAmountInteractor.swift in Sources */,
@@ -16470,6 +16601,7 @@
 				DAC53CFA27BE63830027147D /* StoriesView.swift in Sources */,
 				EF031A652C0A32C3001535C9 /* SendGeometryEffectNames.swift in Sources */,
 				B669136C2C417C9A0016B0EE /* OverlayContentContainerViewModifier.swift in Sources */,
+				DCBE4CEE2CC8C8E800855904 /* ActionButtonsView.swift in Sources */,
 				B6805B722A32F8C90015EC96 /* OrganizeTokensListItemPreviewProvider.swift in Sources */,
 				5DE2038E24EE8A510044EF46 /* ActivityIndicatorView.swift in Sources */,
 				B05A13AE29FBED3000FB511A /* ScrollableButtonsView.swift in Sources */,
@@ -16525,6 +16657,7 @@
 				B064284629BF451F00A8AA20 /* OnboardingSeedPhraseImportView.swift in Sources */,
 				2DBE29C32B3C4A8100109D5E /* DetentBottomSheetModifier.swift in Sources */,
 				B0F3391D2BEB4C9500441688 /* LoadingSingleWalletMainContentViewModel.swift in Sources */,
+				DC283AB82CCA60BB0043F7D2 /* ActionButtonViewModel.swift in Sources */,
 				B0F318FB2A739418009F131E /* WalletPublicKeyDerivationStubs.swift in Sources */,
 				EFB932182C3EC18300C999E9 /* StakingValidatorsView.swift in Sources */,
 				B0B335D229FA89EE00E2082E /* BalanceFormatter.swift in Sources */,
@@ -16562,6 +16695,7 @@
 				2D1BB3772C07503B008392F7 /* MarketsListDataProvider.swift in Sources */,
 				B0B4556925E0E63000D7572F /* FailedCardScanTracker.swift in Sources */,
 				EFEBCE2B29265CF300B0C886 /* TokenIconInfo.swift in Sources */,
+				EFD68F342CC2D29C00693C97 /* OnrampCountryRoutable.swift in Sources */,
 				DC66BBF5285A14CB00CDF765 /* WelcomeViewLifecycleListener.swift in Sources */,
 				EFA6B04729533C860090A92F /* ResetToFactoryViewRoutable.swift in Sources */,
 				EF339E512C21FCCC00B5CDC9 /* SendFeeProvider.swift in Sources */,
@@ -16578,6 +16712,7 @@
 				B6D274E82C38318900FEFCDC /* OnboardingLayoutConstants.swift in Sources */,
 				B67688EF2B078EDB006C94F7 /* MainBottomSheetOverlayViewModel.swift in Sources */,
 				B0A7DB4E2C58E2AC00986D95 /* MarketsQuotesUpdatesScheduler.swift in Sources */,
+				EFD68F322CC2D04500693C97 /* OnrampCountryViewModel.swift in Sources */,
 				EF9E2A442B55329800418559 /* ExpressCurrencyView.swift in Sources */,
 				EF9448E22ADFD4F800F4AFAC /* InformationHiddenBalancesRoutable.swift in Sources */,
 				B04EADEC2A80D659009B5768 /* SingleTokenBaseViewModel.swift in Sources */,
@@ -16664,6 +16799,7 @@
 				EF7B9CEF286C6BD7004C33A9 /* CardSettingsView.swift in Sources */,
 				B6FB04E92B1FEF4E000BB59E /* StatusBarStyleConfiguratorWeakifyAdapter.swift in Sources */,
 				B0ED3F042C3D6F0300311DE2 /* DecimalRoundingUtility.swift in Sources */,
+				DCBE4CF82CCA0E2B00855904 /* ActionButtonView.swift in Sources */,
 				B67263402C7FC49C00F120E6 /* TokenItemPriceFormatter.swift in Sources */,
 				DC7127B12897ECDF00F60F71 /* LegacyConfig.swift in Sources */,
 				DAA5E31628D213A4003C0E80 /* CardDTOv4.swift in Sources */,

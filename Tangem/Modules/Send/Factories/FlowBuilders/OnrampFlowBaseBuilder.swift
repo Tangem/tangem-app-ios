@@ -64,6 +64,7 @@ struct OnrampFlowBaseBuilder {
         )
 
         stepsManager.set(output: viewModel)
+        onrampModel.router = viewModel
 
         return viewModel
     }
