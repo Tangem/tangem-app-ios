@@ -6,6 +6,7 @@
 //  Copyright © 2023 Tangem AG. All rights reserved.
 //
 
+import Foundation
 import TangemSdk
 import WalletCore
 
@@ -24,7 +25,7 @@ extension PublicKey {
 
         self.init(data: publicKey, type: publicKeyType)
     }
-    
+
     private static func secp256k1Key(from publicKey: Data, compressed: Bool) -> Data {
         do {
             let secp256k1Key = try Secp256k1Key(with: publicKey)

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import class UIKit.UITraitCollection
 import Combine
 import BlockchainSdk
 import TangemSdk

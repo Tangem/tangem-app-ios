@@ -14,9 +14,6 @@ class ReceiveCurrencyViewModel: ObservableObject, Identifiable {
     @Published private(set) var expressCurrencyViewModel: ExpressCurrencyViewModel
     @Published private(set) var cryptoAmountState: LoadableTextView.State
 
-    private(set) var expectAmount: Decimal = 0
-    private(set) var expectAmountDecimals: Int = 0
-
     init(
         expressCurrencyViewModel: ExpressCurrencyViewModel,
         cryptoAmountState: LoadableTextView.State = .initialized
@@ -34,15 +31,10 @@ class ReceiveCurrencyViewModel: ObservableObject, Identifiable {
 
         guard let expectAmount else {
             update(cryptoAmountState: .loaded(text: "0"))
-            self.expectAmount = 0
-            expectAmountDecimals = 0
             return
         }
 
-        self.expectAmount = expectAmount
-
         let decimals = tokenItem?.decimalCount ?? AppConstants.maximumFractionDigitsForBalance
-        expectAmountDecimals = decimals
 
         let formatter = DecimalNumberFormatter(maximumFractionDigits: decimals)
         let formatted: String = formatter.format(value: expectAmount)

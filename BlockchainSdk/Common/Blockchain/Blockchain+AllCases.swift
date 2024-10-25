@@ -90,7 +90,7 @@ public extension Blockchain {
             //
             // Did you get a compilation error here? If so, add your new blockchain to the array below
         }
-        
+
         return [
             .ethereum(testnet: false),
             .ethereumClassic(testnet: false),
@@ -164,7 +164,7 @@ public extension Blockchain {
             .sei(testnet: false),
             .energyWebEVM(testnet: false),
             .energyWebX(curve: .ed25519_slip0010),
-            .core(testnet: false)
+            .core(testnet: false),
         ]
     }
 }

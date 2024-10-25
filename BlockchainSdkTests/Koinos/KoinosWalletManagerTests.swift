@@ -12,7 +12,7 @@ import XCTest
 
 final class KoinosWalletManagerTests: XCTestCase {
     private var walletManager: KoinosWalletManager!
-    
+
     override func setUp() {
         walletManager = KoinosWalletManager(
             wallet: Wallet(
@@ -22,14 +22,14 @@ final class KoinosWalletManagerTests: XCTestCase {
                         value: "1AYz8RCnoafLnifMjJbgNb2aeW5CbZj8Tp",
                         publicKey: .init(seedKey: .init(), derivationType: nil),
                         type: .default
-                    )
+                    ),
                 ]
             ),
             networkService: KoinosNetworkService(providers: []),
             transactionBuilder: KoinosTransactionBuilder(koinosNetworkParams: KoinosNetworkParams(isTestnet: false))
         )
     }
-    
+
     override func tearDown() {
         walletManager = nil
     }
@@ -37,7 +37,7 @@ final class KoinosWalletManagerTests: XCTestCase {
     func testTxValidationSmoke() {
         walletManager.wallet.addBalance(balance: 100)
         walletManager.wallet.addMana(mana: 100)
-        
+
         XCTAssertNoThrow(
             try walletManager.validate(
                 amount: .coinAmount(value: 10),
@@ -45,11 +45,11 @@ final class KoinosWalletManagerTests: XCTestCase {
             )
         )
     }
-    
+
     func testTxValidationNotEnoughMana() {
         walletManager.wallet.addBalance(balance: 100)
         walletManager.wallet.addMana(mana: 0.2)
-        
+
         do {
             try walletManager.validate(
                 amount: .coinAmount(value: 10),
@@ -69,7 +69,7 @@ final class KoinosWalletManagerTests: XCTestCase {
             XCTFail("Unexpected error thrown: \(error)")
         }
     }
-    
+
     func testTxValidationAmountExceedsManaBalance() {
         walletManager.wallet.addBalance(balance: 100)
         walletManager.wallet.addMana(mana: 50)
@@ -93,7 +93,7 @@ final class KoinosWalletManagerTests: XCTestCase {
             XCTFail("Unexpected error thrown: \(error)")
         }
     }
-    
+
     func testTxValidationCoinBalanceDoesNotCoverFee() {
         walletManager.wallet.addBalance(balance: 0.2)
         walletManager.wallet.addMana(mana: 0.2)
@@ -114,7 +114,7 @@ final class KoinosWalletManagerTests: XCTestCase {
 
 private extension Amount {
     static let blockchain = Blockchain.koinos(testnet: false)
-    
+
     static func coinAmount(value: Decimal) -> Amount {
         Amount(
             with: blockchain,
@@ -122,7 +122,7 @@ private extension Amount {
             value: value * pow(10, blockchain.decimalCount)
         )
     }
-    
+
     static func manaAmount(value: Decimal) -> Amount {
         Amount(
             type: .feeResource(.mana),
@@ -143,7 +143,7 @@ private extension Wallet {
     mutating func addBalance(balance: Decimal) {
         add(amount: .coinAmount(value: balance))
     }
-    
+
     mutating func addMana(mana: Decimal) {
         add(
             amount: Amount(

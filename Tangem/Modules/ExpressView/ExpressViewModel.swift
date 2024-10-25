@@ -117,24 +117,16 @@ final class ExpressViewModel: ObservableObject {
 
                 guard let self else { return "" }
 
-                let slippage = Provider(rawValue: selectedProvider.name).maxSlippage
-                let formattedAmountAfterSlippage = formattedAmountAfterSlippage(for: selectedProvider.name)
+                let slippage = formatDoubleToIntString(selectedProvider.slippage)
 
                 switch selectedProvider.type {
                 case .cex:
-                    return formSlippageMessage(
-                        tokenItemSymbol: tokenItemSymbol,
-                        slippage: slippage,
-                        providerName: selectedProvider.name,
-                        formattedAmountAfterSlippage
-                    )
+                    return formSlippageMessage(tokenItemSymbol: tokenItemSymbol, slippage: slippage)
                 case .dex, .dexBridge:
                     return formSlippageMessage(
                         tokenItemSymbol: tokenItemSymbol,
                         slippage: slippage,
-                        isBigLoss: isBigLoss,
-                        providerName: selectedProvider.name,
-                        formattedAmountAfterSlippage
+                        isBigLoss: isBigLoss
                     )
                 }
             }()
@@ -180,87 +172,21 @@ final class ExpressViewModel: ObservableObject {
 
 // MARK: - Provider slippage message
 
-extension ExpressViewModel {
-    // TODO: Should be removed into IOS-8137
-    enum Provider {
-        case changenow
-        case changelly
-        case simpleswap
-        case changehero
-        case oneInch
-        case okxOnchain
-        case okxCrossChain
-        case unknown
-
-        init(rawValue: String) {
-            switch rawValue.lowercased() {
-            case "changenow": self = .changenow
-            case "changelly": self = .changelly
-            case "simpleswap": self = .simpleswap
-            case "changehero": self = .changehero
-            case "1inch": self = .oneInch
-            case "okx onchain": self = .okxOnchain
-            case "okx crosschain": self = .okxCrossChain
-            default: self = .unknown
-            }
-        }
-
-        var maxSlippage: Decimal {
-            switch self {
-            case .changenow: 3
-            case .changelly, .simpleswap, .changehero: 5
-            case .oneInch, .okxOnchain: 2
-            case .okxCrossChain: 3.5
-            default: 0
-            }
-        }
-    }
-}
-
 private extension ExpressViewModel {
-    func fetchAmountAfterSlippage(for providerName: String, expectAmount: Decimal) -> Decimal {
-        let providerSlippage = Provider(rawValue: providerName).maxSlippage
-        let slippagePercent = (100 - providerSlippage) / 100
-
-        return expectAmount * slippagePercent
-    }
-
-    func formattedAmountAfterSlippage(for providerName: String) -> String {
-        let formatter = DecimalNumberFormatter(
-            maximumFractionDigits: receiveCurrencyViewModel?.expectAmountDecimals ?? 8
-        )
-        let expectAmount = receiveCurrencyViewModel?.expectAmount ?? 0
-
-        return formatter.format(
-            value: fetchAmountAfterSlippage(for: providerName, expectAmount: expectAmount)
-        )
-    }
-
-    func formSlippageMessage(
-        tokenItemSymbol: String,
-        slippage: Decimal,
-        providerName: String,
-        _ formattedAmountAfterSlippage: String
-    ) -> String {
-        if case .unknown = Provider(rawValue: providerName) {
-            return Localization.swappingAlertCexDescription(tokenItemSymbol)
-        } else {
+    func formSlippageMessage(tokenItemSymbol: String, slippage: String?) -> String {
+        if let slippage {
             return Localization.swappingAlertCexDescriptionWithSlippage(tokenItemSymbol, "\(slippage)%")
+        } else {
+            return Localization.swappingAlertCexDescription(tokenItemSymbol)
         }
     }
 
-    func formSlippageMessage(
-        tokenItemSymbol: String,
-        slippage: Decimal,
-        isBigLoss: Bool,
-        providerName: String,
-        _ formattedAmountAfterSlippage: String
-    ) -> String {
+    func formSlippageMessage(tokenItemSymbol: String, slippage: String?, isBigLoss: Bool) -> String {
         let swappingAlertDexDescription: String = {
-            if case .unknown = Provider(rawValue: providerName) {
-                Localization.swappingAlertDexDescription
+            if let slippage {
+                Localization.swappingAlertDexDescriptionWithSlippage("\(slippage)%")
             } else {
-                Localization.swappingAlertDexDescriptionWithSlippage("\(slippage)%", formattedAmountAfterSlippage)
+                Localization.swappingAlertDexDescription
             }
         }()
 
@@ -269,6 +195,16 @@ private extension ExpressViewModel {
         }
 
         return swappingAlertDexDescription
+    }
+
+    func formatDoubleToIntString(_ value: Double?) -> String? {
+        guard let value else { return nil }
+
+        if value.truncatingRemainder(dividingBy: 1) == 0 {
+            return String(Int(value))
+        } else {
+            return String(value)
+        }
     }
 }
 

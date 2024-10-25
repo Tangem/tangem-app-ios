@@ -6,7 +6,8 @@
 //  Copyright © 2022 Tangem AG. All rights reserved.
 //
 
-import Solana_Swift
+import Foundation
+import SolanaSwift
 
 extension SolanaError: LocalizedError {
     public var errorDescription: String? {

@@ -12,9 +12,9 @@ import stellarsdk
 import TangemSdk
 
 @available(iOS 13.0, *)
-public struct TezosAddressService {
+struct TezosAddressService {
     private let curve: EllipticCurve
-    
+
     init(curve: EllipticCurve) {
         self.curve = curve
     }
@@ -24,7 +24,7 @@ public struct TezosAddressService {
 
 @available(iOS 13.0, *)
 extension TezosAddressService: AddressProvider {
-    public func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
+    func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
         var key: Data
         switch curve {
         case .ed25519, .ed25519_slip0010:
@@ -53,7 +53,7 @@ extension TezosAddressService: AddressProvider {
 
 @available(iOS 13.0, *)
 extension TezosAddressService: AddressValidator {
-    public func validate(_ address: String) -> Bool {
+    func validate(_ address: String) -> Bool {
         let prefixedHashWithChecksum = address.base58DecodedData
         guard prefixedHashWithChecksum.count == 27 else {
             return false

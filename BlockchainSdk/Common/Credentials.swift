@@ -8,13 +8,13 @@
 
 import Foundation
 
-extension NetworkProviderConfiguration {
-    public struct Credentials: Decodable {
+public extension NetworkProviderConfiguration {
+    struct Credentials: Decodable {
         let user: String
         let password: String
 
         public init(login: String, password: String) {
-            self.user = login
+            user = login
             self.password = password
         }
     }

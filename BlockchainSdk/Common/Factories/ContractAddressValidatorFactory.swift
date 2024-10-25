@@ -10,7 +10,7 @@ import Foundation
 
 public struct ContractAddressValidatorFactory {
     private let blockchain: Blockchain
-    
+
     public init(blockchain: Blockchain) {
         self.blockchain = blockchain
     }
@@ -30,7 +30,7 @@ public struct ContractAddressValidatorFactory {
 
 // MARK: - DummyContractAddressValidator
 
-fileprivate struct DummyContractAddressValidator: AddressValidator {
+private struct DummyContractAddressValidator: AddressValidator {
     func validate(_ address: String) -> Bool {
         if address.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             return false

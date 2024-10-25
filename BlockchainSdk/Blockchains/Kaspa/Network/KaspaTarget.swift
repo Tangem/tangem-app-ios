@@ -12,7 +12,7 @@ import Moya
 struct KaspaTarget: TargetType {
     let request: Request
     let baseURL: URL
-    
+
     var path: String {
         switch request {
         case .blueScore:
@@ -31,7 +31,7 @@ struct KaspaTarget: TargetType {
             return "info/fee-estimate"
         }
     }
-    
+
     var method: Moya.Method {
         switch request {
         case .blueScore, .balance, .utxos, .transaction, .feeEstimate:
@@ -40,7 +40,7 @@ struct KaspaTarget: TargetType {
             return .post
         }
     }
-    
+
     var task: Moya.Task {
         switch request {
         case .blueScore, .balance, .utxos, .transaction, .feeEstimate:
@@ -51,8 +51,8 @@ struct KaspaTarget: TargetType {
             return .requestJSONEncodable(data)
         }
     }
-    
-    var headers: [String : String]? {
+
+    var headers: [String: String]? {
         nil
     }
 }

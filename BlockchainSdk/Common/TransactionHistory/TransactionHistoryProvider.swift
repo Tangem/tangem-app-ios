@@ -27,7 +27,7 @@ public extension TransactionHistoryProvider {
         case .token:
             break
         }
-        
+
         switch record.destination {
         case .single(let destination):
             return destination.amount != 0

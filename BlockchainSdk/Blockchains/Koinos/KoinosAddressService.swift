@@ -12,7 +12,7 @@ import TangemSdk
 
 struct KoinosAddressService {
     private let bitcoinLegacyAddressService: BitcoinLegacyAddressService
-    
+
     init(networkParams: INetwork) {
         bitcoinLegacyAddressService = BitcoinLegacyAddressService(networkParams: networkParams)
     }

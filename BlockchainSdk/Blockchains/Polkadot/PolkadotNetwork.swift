@@ -24,7 +24,7 @@ enum PolkadotNetwork {
     case bittensor(curve: EllipticCurve)
     /// Energy Web X blockchain
     case energyWebX(curve: EllipticCurve)
-    
+
     init?(blockchain: Blockchain) {
         switch blockchain {
         case .polkadot(let curve, let isTestnet):
@@ -43,7 +43,7 @@ enum PolkadotNetwork {
             return nil
         }
     }
-    
+
     // https://wiki.polkadot.network/docs/build-protocol-info#addresses
     var addressPrefix: UInt {
         switch self {

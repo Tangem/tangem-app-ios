@@ -18,7 +18,7 @@ extension MinimumBalanceRestrictable where Self: WalletProvider {
         guard let balance = wallet.amounts[amount.type] else {
             throw ValidationError.balanceNotFound
         }
-        
+
         let total = amount + fee
         let remainderBalance = balance - total
         if remainderBalance < minimumBalance {

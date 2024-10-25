@@ -12,7 +12,7 @@ class URLSessionWebSocketDelegateWrapper: NSObject, URLSessionWebSocketDelegate 
     private let webSocketTaskDidOpen: (URLSessionWebSocketTask) -> Void?
     private let webSocketTaskDidClose: (URLSessionWebSocketTask, URLSessionWebSocketTask.CloseCode) -> Void
     private let webSocketTaskDidCompleteWithError: (URLSessionTask, Error?) -> Void
-    
+
     init(
         webSocketTaskDidOpen: @escaping (URLSessionWebSocketTask) -> Void?,
         webSocketTaskDidClose: @escaping (URLSessionWebSocketTask, URLSessionWebSocketTask.CloseCode) -> Void,
@@ -22,7 +22,7 @@ class URLSessionWebSocketDelegateWrapper: NSObject, URLSessionWebSocketDelegate 
         self.webSocketTaskDidClose = webSocketTaskDidClose
         self.webSocketTaskDidCompleteWithError = webSocketTaskDidCompleteWithError
     }
-    
+
     func urlSession(
         _ session: URLSession,
         webSocketTask: URLSessionWebSocketTask,
@@ -30,7 +30,7 @@ class URLSessionWebSocketDelegateWrapper: NSObject, URLSessionWebSocketDelegate 
     ) {
         webSocketTaskDidOpen(webSocketTask)
     }
-    
+
     func urlSession(
         _ session: URLSession,
         webSocketTask: URLSessionWebSocketTask,
@@ -39,7 +39,7 @@ class URLSessionWebSocketDelegateWrapper: NSObject, URLSessionWebSocketDelegate 
     ) {
         webSocketTaskDidClose(webSocketTask, closeCode)
     }
-    
+
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         webSocketTaskDidCompleteWithError(task, error)
     }

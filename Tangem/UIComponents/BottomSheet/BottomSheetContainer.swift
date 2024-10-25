@@ -57,11 +57,7 @@ struct BottomSheetContainer<ContentView: View>: View {
         ZStack(alignment: .bottom) {
             Color.black.opacity(opacity)
                 .edgesIgnoringSafeArea(.all)
-                .onTapGesture {
-                    hideView {
-                        stateObject.viewDidHidden()
-                    }
-                }
+                .onTapGesture(perform: backgroundDidTapped)
                 .animation(.default.delay(settings.backgroundAnimationDelay), value: opacity)
 
             sheetView
@@ -109,7 +105,6 @@ struct BottomSheetContainer<ContentView: View>: View {
         ZStack {
             GrabberViewFactory()
                 .makeSwiftUIView()
-                .padding(.bottom, 10)
         }
         .frame(maxWidth: .infinity)
         .background(settings.backgroundColor)
@@ -137,11 +132,16 @@ struct BottomSheetContainer<ContentView: View>: View {
 
                 let locationChange = value.startLocation.y - value.location.y
 
-                if locationChange > 0 {
+                switch settings.hidingOption {
+                case .distance where locationChange > 0:
                     // If user drags on up then reduce the dragging value
-                    stateObject.offset = 0 - locationChange / 3
-                } else {
-                    stateObject.offset = 0 - locationChange
+                    stateObject.offset = -locationChange.withRubberbanding()
+
+                case .distance:
+                    stateObject.offset = -locationChange
+
+                case .nonHideable:
+                    stateObject.offset = -locationChange.withRubberbanding()
                 }
             }
             .onEnded { value in
@@ -149,13 +149,14 @@ struct BottomSheetContainer<ContentView: View>: View {
 
                 resetGestureState()
 
-                // If swipe was been enough to hide view
-                if value.translation.height > settings.distanceToHide {
+                switch settings.hidingOption {
+                case .distance(let distanceToHide) where value.translation.height > distanceToHide:
+                    // If swipe was been enough to hide view
                     hideView {
                         stateObject.viewDidHidden()
                     }
+                case .distance, .nonHideable:
                     // Otherwise set the view to default state
-                } else {
                     withAnimation(.default) {
                         stateObject.offset = 0
                     }
@@ -164,6 +165,16 @@ struct BottomSheetContainer<ContentView: View>: View {
     }
 
     // MARK: - Methods
+
+    func backgroundDidTapped() {
+        guard case .distance = settings.hidingOption else {
+            return
+        }
+
+        hideView {
+            stateObject.viewDidHidden()
+        }
+    }
 
     func hideView(completion: @escaping () -> Void) {
         let animationBody = {
@@ -201,18 +212,23 @@ extension BottomSheetContainer {
         let cornerRadius: CGFloat
         let backgroundColor: Color
         let backgroundOpacity: CGFloat
-        let distanceToHide: CGFloat
+        let hidingOption: HidingOption
         let animationDuration: Double
         let backgroundAnimationDelay: TimeInterval
         /// Enable to prevent vertical/horizontal gesture conflicts when the bottom sheet content view
         /// contains a horizontal scroll. Disabled by default.
         let contentScrollsHorizontally: Bool
 
+        enum HidingOption {
+            case distance(CGFloat = UIScreen.main.bounds.height * 0.1)
+            case nonHideable
+        }
+
         init(
             cornerRadius: CGFloat = 24,
             backgroundColor: Color,
             backgroundOpacity: CGFloat = 0.4,
-            distanceToHide: CGFloat = UIScreen.main.bounds.height * 0.1,
+            hidingOption: HidingOption = .distance(),
             animationDuration: Double = 0.25,
             backgroundAnimationDelay: TimeInterval = 0.0,
             contentScrollsHorizontally: Bool = false
@@ -220,7 +236,7 @@ extension BottomSheetContainer {
             self.cornerRadius = cornerRadius
             self.backgroundColor = backgroundColor
             self.backgroundOpacity = backgroundOpacity
-            self.distanceToHide = distanceToHide
+            self.hidingOption = hidingOption
             self.animationDuration = animationDuration
             self.backgroundAnimationDelay = backgroundAnimationDelay
             self.contentScrollsHorizontally = contentScrollsHorizontally

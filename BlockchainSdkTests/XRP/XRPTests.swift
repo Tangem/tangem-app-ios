@@ -7,11 +7,9 @@
 //
 
 import Foundation
-
 import XCTest
 import Combine
 import CryptoKit
-
 @testable import BlockchainSdk
 
 class XRPTests: XCTestCase {
@@ -30,15 +28,15 @@ class XRPTests: XCTestCase {
     func testAcccountIntoTxEncoding() {
         let account = "rrpCDJ3yxMGC1XPfg1iMRVwsg8a8rar4fa"
 
-        let fieldsWithAccount: [String:Any] = [
-            "Account" : account,
+        let fieldsWithAccount: [String: Any] = [
+            "Account": account,
         ]
 
         let blobAccount = XRPTransaction(fields: fieldsWithAccount).getBlob()
         XCTAssertEqual(blobAccount, "81140050505050505050505050505050505050505050")
 
-        let fieldsWithDestination: [String:Any] = [
-            "Destination" : account,
+        let fieldsWithDestination: [String: Any] = [
+            "Destination": account,
         ]
 
         let blobDestination = XRPTransaction(fields: fieldsWithDestination).getBlob()

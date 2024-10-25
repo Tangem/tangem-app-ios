@@ -16,16 +16,16 @@ extension NEARNetworkResult {
             let transactionCosts: TransactionCosts
             let storageAmountPerByte: String
         }
-        
+
         struct TransactionCosts: Decodable {
             let actionReceiptCreationConfig: CostConfig
             let actionCreationConfig: ActionCreationConfig
         }
-        
+
         struct AddKeyCost: Decodable {
             let fullAccessCost: CostConfig
         }
-        
+
         struct CostConfig: Decodable {
             /// The "sir" here stands for "sender is receiver".
             let sendNotSir: UInt
@@ -34,13 +34,13 @@ extension NEARNetworkResult {
             /// Execution cost is the same for both "sender is receiver" and  "sender is not receiver" cases.
             let execution: UInt
         }
-        
+
         struct ActionCreationConfig: Decodable {
             let addKeyCost: AddKeyCost
             let transferCost: CostConfig
             let createAccountCost: CostConfig
         }
-        
+
         let runtimeConfig: RuntimeConfig
     }
 }

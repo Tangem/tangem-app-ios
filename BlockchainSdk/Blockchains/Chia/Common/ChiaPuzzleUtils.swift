@@ -17,7 +17,7 @@ struct ChiaPuzzleUtils {
     func getPuzzleHash(from walletPublicKey: Data) -> Data {
         return Data(hexString: Constants.puzzleReveal) + walletPublicKey + Data(hexString: Constants.fingerprint)
     }
-    
+
     func getPuzzleHash(from address: String) throws -> Data {
         let bech32 = Bech32(variant: .bech32m)
         let dataBytes = try bech32.decode(address).checksum

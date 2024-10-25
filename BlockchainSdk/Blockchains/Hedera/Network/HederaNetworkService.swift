@@ -77,12 +77,12 @@ final class HederaNetworkService {
                 .getExchangeRates()
                 .map { exchangeRate in
                     let currentRate = Constants.centsPerDollar
-                    * Decimal(exchangeRate.currentRate.hbarEquivalent)
-                    / Decimal(exchangeRate.currentRate.centEquivalent)
+                        * Decimal(exchangeRate.currentRate.hbarEquivalent)
+                        / Decimal(exchangeRate.currentRate.centEquivalent)
 
                     let nextRate = Constants.centsPerDollar
-                    * Decimal(exchangeRate.nextRate.hbarEquivalent)
-                    / Decimal(exchangeRate.nextRate.centEquivalent)
+                        * Decimal(exchangeRate.nextRate.hbarEquivalent)
+                        / Decimal(exchangeRate.nextRate.centEquivalent)
 
                     return HederaExchangeRate(currentHBARPerUSD: currentRate, nextHBARPerUSD: nextRate)
                 }

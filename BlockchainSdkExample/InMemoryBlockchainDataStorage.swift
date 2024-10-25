@@ -28,7 +28,7 @@ final class InMemoryBlockchainDataStorage: BlockchainDataStorage {
 
         return storage[key] as? BlockchainData
     }
-    
+
     func store<BlockchainData>(key: String, value: BlockchainData?) async where BlockchainData: Encodable {
         storage[key] = value
     }

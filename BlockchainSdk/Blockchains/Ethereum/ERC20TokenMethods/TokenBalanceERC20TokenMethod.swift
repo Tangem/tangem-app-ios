@@ -10,7 +10,7 @@ import Foundation
 
 /// https://eips.ethereum.org/EIPS/eip-20#balanceof
 public struct TokenBalanceERC20TokenMethod {
-    public let owner: String
+    let owner: String
 
     public init(owner: String) {
         self.owner = owner

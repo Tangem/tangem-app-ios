@@ -25,7 +25,7 @@
 import Foundation
 
 // Duplicates the top two stack items.
-public struct Op2Duplicate: OpCodeProtocol {
-    public var value: UInt8 { return 0x6e }
-    public var name: String { return "OP_2DUP" }
+struct Op2Duplicate: OpCodeProtocol {
+    var value: UInt8 { return 0x6e }
+    var name: String { return "OP_2DUP" }
 }

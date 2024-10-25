@@ -17,7 +17,7 @@ extension AlgorandResponse {
         let fee: UInt64
         let lastRound: UInt64
         let minFee: UInt64
-        
+
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             genesisId = try container.decode(String.self, forKey: .genesisId)

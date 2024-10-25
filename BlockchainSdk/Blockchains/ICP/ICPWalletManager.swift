@@ -12,27 +12,27 @@ import Combine
 
 final class ICPWalletManager: BaseManager, WalletManager {
     var currentHost: String { networkService.host }
-    
+
     var allowsFeeSelection: Bool = false
-    
+
     // MARK: - Private Properties
-    
+
     private let transactionBuilder: ICPTransactionBuilder
     private let networkService: ICPNetworkService
-        
+
     // MARK: - Init
-    
+
     init(wallet: Wallet, transactionBuilder: ICPTransactionBuilder, networkService: ICPNetworkService) {
         self.transactionBuilder = transactionBuilder
         self.networkService = networkService
         super.init(wallet: wallet)
     }
-    
+
     override func update(completion: @escaping (Result<Void, any Error>) -> Void) {
         cancellable = networkService.getBalance(address: wallet.address)
             .sink(
                 receiveCompletion: { [weak self] completionSubscription in
-                    if case let .failure(error) = completionSubscription {
+                    if case .failure(let error) = completionSubscription {
                         self?.wallet.clearAmounts()
                         self?.wallet.clearPendingTransaction()
                         completion(.failure(error))
@@ -44,11 +44,11 @@ final class ICPWalletManager: BaseManager, WalletManager {
                 }
             )
     }
-    
+
     func getFee(amount: Amount, destination: String) -> AnyPublisher<[Fee], any Error> {
         .justWithError(output: [Fee(Amount(with: wallet.blockchain, value: Constants.fee))])
     }
-    
+
     func send(
         _ transaction: Transaction,
         signer: TransactionSigner
@@ -77,20 +77,20 @@ final class ICPWalletManager: BaseManager, WalletManager {
             .eraseSendError()
             .eraseToAnyPublisher()
     }
-    
+
     // MARK: - Private implementation
-    
+
     private func updateWallet(with balance: Decimal) {
         // Reset pending transaction
         if balance != wallet.amounts[.coin]?.value {
             wallet.clearPendingTransaction()
         }
-        
+
         wallet.add(coinValue: balance)
     }
-    
+
     // MARK: - Private implementation
-    
+
     private func send(
         signingOutput: ICPTransactionBuilder.ICPSigningOutput,
         transaction: Transaction

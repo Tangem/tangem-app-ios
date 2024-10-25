@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import class UIKit.UIAlertController
+import class UIKit.UIAlertAction
 import Combine
 import TangemSdk
 

@@ -21,59 +21,59 @@ struct XRPTarget: TargetType {
         self.node = node
         self.target = target
     }
-    
-    var path: String {""}
-    
+
+    var path: String { "" }
+
     var method: Moya.Method { .post }
-    
+
     var sampleData: Data { return Data() }
-    
+
     var task: Task {
         let parameters: [String: Any]
         switch target {
         case .accountInfo(let account):
             parameters = [
-                "method" : "account_info",
+                "method": "account_info",
                 "params": [
                     [
-                        "account" : account,
-                        "ledger_index" : "validated"
-                    ]
-                ]
+                        "account": account,
+                        "ledger_index": "validated",
+                    ],
+                ],
             ]
         case .unconfirmed(let account):
             parameters = [
-                "method" : "account_info",
+                "method": "account_info",
                 "params": [
                     [
-                        "account" : account,
-                        "ledger_index" : "current"
-                    ]
-                ]
+                        "account": account,
+                        "ledger_index": "current",
+                    ],
+                ],
             ]
         case .submit(let tx):
             parameters = [
-                "method" : "submit",
+                "method": "submit",
                 "params": [
                     [
-                        "tx_blob": tx
-                    ]
-                ]
+                        "tx_blob": tx,
+                    ],
+                ],
             ]
         case .fee:
             parameters = [
-                "method" : "fee"
+                "method": "fee",
             ]
         case .reserve:
             parameters = [
-                "method" : "server_state"
+                "method": "server_state",
             ]
         }
 
         return .requestParameters(parameters: parameters, encoding: JSONEncoding.default)
     }
-    
-    public var headers: [String: String]? {
+
+    var headers: [String: String]? {
         var headers = ["Content-Type": "application/json"]
 
         if let headersKeyInfo = node.headers {
@@ -86,9 +86,9 @@ struct XRPTarget: TargetType {
 
 extension XRPTarget {
     enum XRPTargetType {
-        case accountInfo(account:String)
-        case unconfirmed(account:String)
-        case submit(tx:String)
+        case accountInfo(account: String)
+        case unconfirmed(account: String)
+        case submit(tx: String)
         case fee
         case reserve
     }

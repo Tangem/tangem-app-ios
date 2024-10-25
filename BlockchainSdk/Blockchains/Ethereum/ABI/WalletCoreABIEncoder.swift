@@ -18,7 +18,7 @@ struct WalletCoreABIEncoder: ABIEncoder {
                 function.addParamBytes(val: data, isOutput: false)
             }
         }
-        
+
         let encodedData = EthereumAbi.encode(fn: function)
 
         return encodedData.hexString.addHexPrefix()

@@ -10,9 +10,9 @@ import Foundation
 import TangemSdk
 
 @available(iOS 13.0, *)
-public struct XRPAddressService {
+struct XRPAddressService {
     let curve: EllipticCurve
-    
+
     init(curve: EllipticCurve) {
         self.curve = curve
     }
@@ -22,7 +22,7 @@ public struct XRPAddressService {
 
 @available(iOS 13.0, *)
 extension XRPAddressService: AddressProvider {
-    public func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
+    func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
         var key: Data
         switch curve {
         case .secp256k1:
@@ -35,7 +35,7 @@ extension XRPAddressService: AddressProvider {
         }
         let input = key.sha256Ripemd160
         let buffer = [0x00] + input
-        let checkSum = Data(buffer.getDoubleSha256()[0..<4])
+        let checkSum = Data(buffer.getDoubleSha256()[0 ..< 4])
         let address = XRPBase58.getString(from: buffer + checkSum)
 
         return PlainAddress(value: address, publicKey: publicKey, type: addressType)
@@ -46,7 +46,7 @@ extension XRPAddressService: AddressProvider {
 
 @available(iOS 13.0, *)
 extension XRPAddressService: AddressValidator {
-    public func validate(_ address: String) -> Bool {
+    func validate(_ address: String) -> Bool {
         if XRPSeedWallet.validate(address: address) {
             return true
         }
@@ -61,7 +61,7 @@ extension XRPAddressService: AddressValidator {
 
 @available(iOS 13.0, *)
 extension XRPAddressService: AddressAdditionalFieldService {
-    public func canEmbedAdditionalField(into address: String) -> Bool {
+    func canEmbedAdditionalField(into address: String) -> Bool {
         let xAddress = try? XRPAddress(xAddress: address)
         return xAddress == nil
     }

@@ -29,7 +29,7 @@ final class TronTransactionHistoryMapper {
         case .coin, .reserve, .feeResource:
             return transactions
         case .token(let value):
-            // Another fix for a horrible Tron Blockbook API: sometimes API returns transaction history 
+            // Another fix for a horrible Tron Blockbook API: sometimes API returns transaction history
             // from another token for a particular token if this token doesn't have transaction history yet
             //
             // Here we're filtering out unrelated transaction history completely if needed
@@ -197,7 +197,7 @@ final class TronTransactionHistoryMapper {
         case .coin:
             switch transaction.contractType {
             case TronContractType.transferContractType.rawValue,
-                TronContractType.transferAssetContractType.rawValue:
+                 TronContractType.transferAssetContractType.rawValue:
                 return .transfer
             case TronContractType.voteWitnessContractType.rawValue:
                 // voteList is a dictionary with validator addresses as keys,
@@ -318,7 +318,7 @@ extension TronTransactionHistoryMapper: BlockBookTransactionHistoryTotalPageCoun
         // using `$.tokens[*].transfers` and `$.itemsOnPage` DTO fields because `$.totalPages` DTO field always
         // contains the number of pages for the TRX (Tron coin) transaction history for a given address
         //
-        // If there is no transaction history for a particular TRC20 token - the `response.tokens` field 
+        // If there is no transaction history for a particular TRC20 token - the `response.tokens` field
         // does not exist or is empty; in such cases we consider the transaction history empty (`totalPageCount` equals 0)
         if let contractAddress {
             guard
@@ -330,7 +330,7 @@ extension TronTransactionHistoryMapper: BlockBookTransactionHistoryTotalPageCoun
                 return 0
             }
 
-            return Int(ceil((Double(transfersCount) / Double(itemsOnPage))))
+            return Int(ceil(Double(transfersCount) / Double(itemsOnPage)))
         }
 
         return response.totalPages ?? 0
@@ -386,6 +386,6 @@ private extension BlockBookAddressResponse.Token {
 private extension BlockBookAddressResponse.Transaction {
     var isContractInteraction: Bool {
         contractType != nil
-        && contractType != TronTransactionHistoryMapper.TronContractType.transferContractType.rawValue
+            && contractType != TronTransactionHistoryMapper.TronContractType.transferContractType.rawValue
     }
 }

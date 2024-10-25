@@ -11,8 +11,7 @@ import Combine
 
 final class PolygonTransactionHistoryProvider<Mapper> where
     Mapper: TransactionHistoryMapper,
-    Mapper.Response == PolygonTransactionHistoryResult
-{
+    Mapper.Response == PolygonTransactionHistoryResult {
     private let mapper: Mapper
     private let networkProvider: NetworkProvider<PolygonTransactionHistoryTarget>
     private let targetConfiguration: PolygonTransactionHistoryTarget.Configuration
@@ -26,7 +25,7 @@ final class PolygonTransactionHistoryProvider<Mapper> where
         targetConfiguration: PolygonTransactionHistoryTarget.Configuration
     ) {
         self.mapper = mapper
-        self.networkProvider = .init(configuration: networkConfiguration)
+        networkProvider = .init(configuration: networkConfiguration)
         self.targetConfiguration = targetConfiguration
     }
 
@@ -55,7 +54,7 @@ final class PolygonTransactionHistoryProvider<Mapper> where
 
     /// Provides exponential backoff with random jitter using standard formula `base * pow(2, retryAttempt) ± jitter`.
     private func makeRetryInterval(retryAttempt: Int) -> DispatchQueue.SchedulerTimeType.Stride {
-        let retryJitter: TimeInterval = .random(in: Constants.retryJitterMinValue...Constants.retryJitterMaxValue)
+        let retryJitter: TimeInterval = .random(in: Constants.retryJitterMinValue ... Constants.retryJitterMaxValue)
         let retryIntervalSeconds = Constants.retryBaseValue * pow(2.0, TimeInterval(retryAttempt)) + retryJitter
         let retryIntervalNanoseconds = Int(retryIntervalSeconds * TimeInterval(NSEC_PER_SEC))
 

@@ -12,7 +12,7 @@ struct NEARWalletAssembly: WalletManagerAssembly {
     func make(with input: WalletManagerAssemblyInput) throws -> WalletManager {
         let blockchain = input.blockchain
         let networkConfig = input.networkConfig
-        
+
         let providers: [NEARNetworkProvider] = APIResolver(blockchain: blockchain, config: input.blockchainSdkConfig)
             .resolveProviders(apiInfos: input.apiInfo) { nodeInfo, _ in
                 return NEARNetworkProvider(baseURL: nodeInfo.url, configuration: networkConfig)

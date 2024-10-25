@@ -14,15 +14,15 @@ struct XDCAddressConverter: EthereumAddressConverter {
             let cleaned = String(address.dropFirst(Constants.xdcAddressPrefix.count))
             return cleaned.addHexPrefix()
         }
-        
+
         return address
     }
-    
+
     func convertToXDCAddress(_ address: String) -> String {
         if address.hasHexPrefix() {
             return "\(Constants.xdcAddressPrefix)\(address.removeHexPrefix())"
         }
-        
+
         return address
     }
 }

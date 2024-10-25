@@ -30,7 +30,6 @@ extension CommonOnrampManager: OnrampManager {
     public func updateCountry() async throws -> OnrampCountry {
         // Define country by ip or get from repository
         // https://tangem.atlassian.net/browse/IOS-8267
-
         throw OnrampManagerError.notImplement
     }
 

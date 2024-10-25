@@ -13,12 +13,12 @@ public struct TransactionHistoryProviderFactory {
     private let apiList: APIList
 
     // MARK: - Init
-    
+
     public init(config: BlockchainSdkConfig, apiList: APIList) {
         self.config = config
         self.apiList = apiList
     }
-    
+
     public func makeProvider(for blockchain: Blockchain) -> TransactionHistoryProvider? {
         // Transaction history is only supported on the mainnet
         guard !blockchain.isTestnet else {
@@ -34,29 +34,29 @@ public struct TransactionHistoryProviderFactory {
 
         switch blockchain {
         case .bitcoin,
-                .litecoin,
-                .dogecoin,
-                .dash:
+             .litecoin,
+             .dogecoin,
+             .dash:
             return UTXOTransactionHistoryProvider(
                 blockBookProviders: [
                     networkAssembly.makeBlockBookUtxoProvider(with: input, for: .getBlock),
-                    networkAssembly.makeBlockBookUtxoProvider(with: input, for: .nowNodes)
+                    networkAssembly.makeBlockBookUtxoProvider(with: input, for: .nowNodes),
                 ],
                 mapper: UTXOTransactionHistoryMapper(blockchain: blockchain)
             )
         case .bitcoinCash:
             return UTXOTransactionHistoryProvider(
                 blockBookProviders: [
-                    networkAssembly.makeBlockBookUtxoProvider(with: input, for: .nowNodes)
+                    networkAssembly.makeBlockBookUtxoProvider(with: input, for: .nowNodes),
                 ],
                 mapper: UTXOTransactionHistoryMapper(blockchain: blockchain)
             )
         case .ethereum,
-                .ethereumPoW,
-                .ethereumClassic,
-                .bsc,
-                .avalanche,
-                .arbitrum:
+             .ethereumPoW,
+             .ethereumClassic,
+             .bsc,
+             .avalanche,
+             .arbitrum:
             return EthereumTransactionHistoryProvider(
                 blockBookProvider: networkAssembly.makeBlockBookUtxoProvider(with: input, for: .nowNodes),
                 mapper: EthereumTransactionHistoryMapper(blockchain: blockchain)

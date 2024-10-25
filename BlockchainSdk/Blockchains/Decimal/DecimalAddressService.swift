@@ -10,7 +10,6 @@ import Foundation
 import TangemSdk
 
 struct DecimalAddressService {
-    
     // MARK: - Private Properties
 
     private let ethereumAddressService = AddressServiceFactory(blockchain: .ethereum(testnet: false)).makeAddressService()
@@ -38,10 +37,10 @@ extension DecimalAddressService: AddressProvider {
 
 extension DecimalAddressService: AddressValidator {
     func validate(_ address: String) -> Bool {
-        guard let dscAddress = try? converter.convertToETHAddress( address) else {
+        guard let dscAddress = try? converter.convertToETHAddress(address) else {
             return false
         }
-        
+
         return ethereumAddressService.validate(dscAddress)
     }
 }

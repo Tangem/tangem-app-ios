@@ -1,5 +1,5 @@
 {
-  "originHash" : "02f9726bb29f3b4a5b80be95a438cf6549b3f8295494cffb8be5ea7f235aed48",
+  "originHash" : "6060eb7e2f084e6f2c93c886379bea9d78bd9966793ea6598d0bae59e4ea201c",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -44,6 +44,15 @@
       "state" : {
         "revision" : "0ed110f7555c34ff468e72e1686e59721f2b0da6",
         "version" : "5.3.0"
+      }
+    },
+    {
+      "identity" : "bitcoincore",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tangem/bitcoincore.git",
+      "state" : {
+        "revision" : "c00b5c60ab9560acee8309f39620fabfde32b518",
+        "version" : "0.0.21"
       }
     },
     {
@@ -188,6 +197,24 @@
       "state" : {
         "revision" : "1a14e189def5eaa92f839afdd2faad8e43b61a6e",
         "version" : "0.12.2"
+      }
+    },
+    {
+      "identity" : "solana.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tangem/Solana.Swift.git",
+      "state" : {
+        "revision" : "54f15e1afd87e14b45c848a71030cab6798451ec",
+        "version" : "1.2.0-tangem12"
+      }
+    },
+    {
+      "identity" : "starscream",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/daltoniam/Starscream.git",
+      "state" : {
+        "revision" : "c6bfd1af48efcc9a9ad203665db12375ba6b145a",
+        "version" : "4.0.8"
       }
     },
     {
@@ -395,6 +422,14 @@
       "state" : {
         "revision" : "acff55ab1a8b138a49477ff523287b18833fc1a0",
         "version" : "5.0.1-tangem1"
+      }
+    },
+    {
+      "identity" : "tangem-sdk-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Tangem/tangem-sdk-ios.git",
+      "state" : {
+        "revision" : "673b4979f8fd0bea7840364e93b51468053689f4"
       }
     },
     {

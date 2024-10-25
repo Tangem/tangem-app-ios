@@ -14,7 +14,7 @@ struct PolkadotJsonRpcResponse<T: Codable>: Codable {
     let id: Int?
     let result: T?
     let error: PolkadotJsonRpcError?
-    
+
     private enum CodingKeys: String, CodingKey {
         case jsonRpc = "jsonrpc"
         case id, result, error
@@ -24,7 +24,7 @@ struct PolkadotJsonRpcResponse<T: Codable>: Codable {
 struct PolkadotJsonRpcError: Codable {
     let code: Int?
     let message: String?
-    
+
     var error: Error {
         NSError(domain: message ?? .unknown, code: code ?? -1, userInfo: nil)
     }
@@ -46,13 +46,13 @@ struct PolkadotQueriedInfo: Codable {
 
 struct PolkadotAccountInfo: ScaleDecodable {
     init(from decoder: ScaleDecoder) throws {
-        self.nonce = try decoder.decode()
-        self.consumers = try decoder.decode()
-        self.providers = try decoder.decode()
-        self.sufficients = try decoder.decode()
-        self.data = try decoder.decode()
+        nonce = try decoder.decode()
+        consumers = try decoder.decode()
+        providers = try decoder.decode()
+        sufficients = try decoder.decode()
+        data = try decoder.decode()
     }
-    
+
     var nonce: UInt32
     var consumers: UInt32
     var providers: UInt32
@@ -62,8 +62,8 @@ struct PolkadotAccountInfo: ScaleDecodable {
 
 struct PolkadotAccountData: ScaleDecodable {
     init(from decoder: ScaleDecoder) throws {
-        self.free = try decoder.decode(BigUInt.self, .b256)
+        free = try decoder.decode(BigUInt.self, .b256)
     }
-    
+
     var free: BigUInt
 }

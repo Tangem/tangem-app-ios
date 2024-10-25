@@ -14,7 +14,7 @@ class CosmosTransactionBuilder {
     private let cosmosChain: CosmosChain
     private var sequenceNumber: UInt64?
     private var accountNumber: UInt64?
-    
+
     init(publicKey: Data, cosmosChain: CosmosChain) throws {
         assert(
             PublicKey.isValid(data: publicKey, type: .secp256k1),
@@ -24,15 +24,15 @@ class CosmosTransactionBuilder {
         self.publicKey = publicKey
         self.cosmosChain = cosmosChain
     }
-    
+
     func setSequenceNumber(_ sequenceNumber: UInt64) {
         self.sequenceNumber = sequenceNumber
     }
-    
+
     func setAccountNumber(_ accountNumber: UInt64) {
         self.accountNumber = accountNumber
     }
-    
+
     // MARK: Regular transaction
 
     func buildForSign(transaction: Transaction) throws -> Data {
@@ -101,7 +101,7 @@ class CosmosTransactionBuilder {
                 CosmosAmount.with { amount in
                     amount.amount = feeAmount
                     amount.denom = feeDenomiation
-                }
+                },
             ]
         }
 
@@ -143,7 +143,7 @@ class CosmosTransactionBuilder {
         case .reserve, .feeResource:
             throw WalletError.failedToBuildTx
         }
-        
+
         let message: CosmosMessage
         if let token = transaction.amount.type.token, cosmosChain.allowCW20Tokens {
             guard let amountBytes = transaction.amount.encoded else {
@@ -156,7 +156,7 @@ class CosmosTransactionBuilder {
                 $0.contractAddress = token.contractAddress
                 $0.amount = amountBytes
             }
-            
+
             message = CosmosMessage.with {
                 $0.wasmExecuteContractTransferMessage = tokenMessage
             }
@@ -205,13 +205,13 @@ class CosmosTransactionBuilder {
             else {
                 throw WalletError.failedToBuildTx
             }
-            
+
             return tokenDenomination
         case .reserve, .feeResource:
             throw WalletError.failedToBuildTx
         }
     }
-    
+
     private func feeDenomination(for amount: Amount) throws -> String {
         switch amount.type {
         case .coin:
@@ -221,7 +221,7 @@ class CosmosTransactionBuilder {
             else {
                 throw WalletError.failedToBuildTx
             }
-            
+
             return tokenDenomination
         case .reserve, .feeResource:
             throw WalletError.failedToBuildTx
@@ -238,9 +238,9 @@ extension CosmosMessage {
             return nil
         }
         let delegateData = message.delegateData
-        
+
         switch type {
-        case (let string) where string.contains(Constants.delegateMessage.rawValue):
+        case let string where string.contains(Constants.delegateMessage.rawValue):
             let delegateAmount = delegateData.delegateAmount
             let stakeMessage = CosmosMessage.Delegate.with { delegate in
                 delegate.amount = CosmosAmount.with { amount in
@@ -253,7 +253,7 @@ extension CosmosMessage {
             return CosmosMessage.with {
                 $0.stakeMessage = stakeMessage
             }
-        case (let string) where string.contains(Constants.withdrawMessage.rawValue):
+        case let string where string.contains(Constants.withdrawMessage.rawValue):
             let withdrawMessage = CosmosMessage.WithdrawDelegationReward.with { reward in
                 reward.delegatorAddress = delegateData.delegatorAddress
                 reward.validatorAddress = delegateData.validatorAddress
@@ -261,7 +261,7 @@ extension CosmosMessage {
             return CosmosMessage.with {
                 $0.withdrawStakeRewardMessage = withdrawMessage
             }
-        case (let string) where string.contains(Constants.undelegateMessage.rawValue):
+        case let string where string.contains(Constants.undelegateMessage.rawValue):
             let delegateAmount = delegateData.delegateAmount
             let unstakeMessage = CosmosMessage.Undelegate.with { delegate in
                 delegate.amount = CosmosAmount.with { amount in

@@ -16,11 +16,11 @@ protocol ChiaCondition {
 
 struct CreateCoinCondition: ChiaCondition {
     var conditionCode: Int64 = 51
-    
+
     private let destinationPuzzleHash: Data
     private let amount: Int64
     private let memos: Data
-    
+
     init(destinationPuzzleHash: Data, amount: Int64, memos: Data = Data()) {
         self.destinationPuzzleHash = destinationPuzzleHash
         self.amount = amount
@@ -33,7 +33,7 @@ extension CreateCoinCondition {
         var programList = [
             ClvmProgram.from(long: conditionCode),
             ClvmProgram.from(bytes: destinationPuzzleHash.bytes),
-            ClvmProgram.from(long: amount)
+            ClvmProgram.from(long: amount),
         ]
 
         if !memos.isEmpty {
@@ -49,7 +49,7 @@ extension CreateCoinCondition {
 // always valid condition
 struct RemarkCondition: ChiaCondition {
     var conditionCode: Int64 = 1
-    
+
     func toProgram() -> ClvmProgram {
         ClvmProgram.from(list: [ClvmProgram.from(long: conditionCode)])
     }
