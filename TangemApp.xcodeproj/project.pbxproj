@@ -27,8 +27,6 @@
 		0AC9EFF72CAE857C005F868F /* StakingSingleActionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC9EFF62CAE857C005F868F /* StakingSingleActionModel.swift */; };
 		0AC9EFF92CAE9B2C005F868F /* CommonStakingSingleActionStepsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC9EFF82CAE9B2C005F868F /* CommonStakingSingleActionStepsManager.swift */; };
 		0AD13F952C8AD76800C2EE16 /* CommonStakingAnalyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD13F942C8AD76800C2EE16 /* CommonStakingAnalyticsLogger.swift */; };
-		0AD9EF0F2CC2A9B600466191 /* UnstakingSendAmountValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD9EF0E2CC2A9B600466191 /* UnstakingSendAmountValidator.swift */; };
-		16261826CE20A93A4DEE72F7 /* Pods_TangemVisaTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0AE5FADABA847DF74B716F0 /* Pods_TangemVisaTests.framework */; };
 		2D0E4F532A8D114E00001D8E /* GenericWalletManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0E4F522A8D114E00001D8E /* GenericWalletManagerFactory.swift */; };
 		2D1400CA2C43F79F00B75A42 /* MarketsPortfolioContextActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1400C82C43F4FD00B75A42 /* MarketsPortfolioContextActions.swift */; };
 		2D1400CE2C44090400B75A42 /* MarketsPortfolioContainerRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1400CD2C44090400B75A42 /* MarketsPortfolioContainerRoutable.swift */; };
@@ -123,7 +121,6 @@
 		2DFC27932C78E833009B247E /* TokenItemInfoProviderMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DFC278F2C78E833009B247E /* TokenItemInfoProviderMapper.swift */; };
 		2DFC27942C78E833009B247E /* TokenItemType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DFC27902C78E833009B247E /* TokenItemType.swift */; };
 		2DFC27962C78E881009B247E /* MarketsPortfolioTokenItemFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DFC27952C78E881009B247E /* MarketsPortfolioTokenItemFactory.swift */; };
-		4E195C54D9C30FB89A03F1C7 /* Pods_TangemExpressTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57CE0533CAA26ABA1B671649 /* Pods_TangemExpressTests.framework */; };
 		4F00236C26F4689B6A741039 /* Pods_Tangem.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B1F5CE065E6BA27537C0E73 /* Pods_Tangem.framework */; };
 		5D00FCD1261738C5004626DE /* WalletConnectEthTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D00FCD0261738C5004626DE /* WalletConnectEthTransaction.swift */; };
 		5D06E040250A5D54004218D0 /* NSRegualrExpression+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D06E03F250A5D54004218D0 /* NSRegualrExpression+.swift */; };
@@ -225,13 +222,7 @@
 		6596AD4928730F4900508D0A /* WarningBankCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6596AD4828730F4900508D0A /* WarningBankCardView.swift */; };
 		6596AD4B28738F0100508D0A /* WarningBankCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6596AD4A28738F0100508D0A /* WarningBankCardViewModel.swift */; };
 		65C9FCAE28644F9D00FDE63E /* DetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C9FCAD28644F9D00FDE63E /* DetailsView.swift */; };
-		735DE6BB9FDAFE5A5BCFE5AF /* Pods_TangemStaking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75994535B8EF936733CA7211 /* Pods_TangemStaking.framework */; };
-		86D9B9D1A68FFFCAAEDE1210 /* Pods_TangemExpress.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50B5EC6CCC413553F02DA532 /* Pods_TangemExpress.framework */; };
-		955E5B86B3924B42256E5BFA /* Pods_BlockchainSdkTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74F479063EEEB1BBF5CD6E96 /* Pods_BlockchainSdkTests.framework */; };
-		9F533B06AEF9BD8F90F4FFB4 /* Pods_BlockchainSdkExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AACB6D9AE19DD06B06E2CD /* Pods_BlockchainSdkExample.framework */; };
-		A8655C179DB2CC46C5B1BB15 /* Pods_TangemStakingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA3C72207CF7A55037336813 /* Pods_TangemStakingTests.framework */; };
 		AB5DE0569C12F3BDA9530564 /* Pods_TangemTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 740F3E19014FB5F75D949862 /* Pods_TangemTests.framework */; };
-		AC759C99D2062D6586C1D768 /* Pods_BlockchainSdk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B709ABB57C2AAC2953BE7438 /* Pods_BlockchainSdk.framework */; };
 		B002416F2C2441EF00416397 /* HideTokenAlertBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B002416E2C2441EF00416397 /* HideTokenAlertBuilder.swift */; };
 		B00307042AF0E1BA00C13BCA /* Analytics+WalletConnectDebugEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00307032AF0E1BA00C13BCA /* Analytics+WalletConnectDebugEvent.swift */; };
 		B00371BE2A8A5E5900D77A4B /* FakeUserTokensManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00371BD2A8A5E5900D77A4B /* FakeUserTokensManager.swift */; };
@@ -1717,6 +1708,14 @@
 		B67DC1E82B7C4716008ACB0E /* BlockchainAccountCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67DC1E72B7C4716008ACB0E /* BlockchainAccountCreator.swift */; };
 		B67DC1EA2B7C4C48008ACB0E /* BlockchainAccountCreatorStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67DC1E92B7C4C48008ACB0E /* BlockchainAccountCreatorStub.swift */; };
 		B67DC1EC2B7C4CB9008ACB0E /* FakeBlockchainDataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67DC1EB2B7C4CB9008ACB0E /* FakeBlockchainDataStorage.swift */; };
+		B67E38B92CC7147600D660EB /* TangemSdk in Frameworks */ = {isa = PBXBuildFile; productRef = B67E38B82CC7147600D660EB /* TangemSdk */; };
+		B67E38BB2CC7179000D660EB /* TangemSdk in Frameworks */ = {isa = PBXBuildFile; productRef = B67E38BA2CC7179000D660EB /* TangemSdk */; };
+		B67E38BD2CC7179600D660EB /* TangemSdk in Frameworks */ = {isa = PBXBuildFile; productRef = B67E38BC2CC7179600D660EB /* TangemSdk */; };
+		B67E38BF2CC717A300D660EB /* TangemSdk in Frameworks */ = {isa = PBXBuildFile; productRef = B67E38BE2CC717A300D660EB /* TangemSdk */; };
+		B67E38C12CC71A2C00D660EB /* TangemSdk in Frameworks */ = {isa = PBXBuildFile; productRef = B67E38C02CC71A2C00D660EB /* TangemSdk */; };
+		B67E38C32CC71B5F00D660EB /* TangemSdk in Frameworks */ = {isa = PBXBuildFile; productRef = B67E38C22CC71B5F00D660EB /* TangemSdk */; };
+		B67E38C52CC7252900D660EB /* TangemSdk in Frameworks */ = {isa = PBXBuildFile; productRef = B67E38C42CC7252900D660EB /* TangemSdk */; };
+		B67E38C72CC7259B00D660EB /* TangemSdk in Frameworks */ = {isa = PBXBuildFile; productRef = B67E38C62CC7259B00D660EB /* TangemSdk */; };
 		B6805B722A32F8C90015EC96 /* OrganizeTokensListItemPreviewProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6805B712A32F8C90015EC96 /* OrganizeTokensListItemPreviewProvider.swift */; };
 		B68284202C581B0A007B438F /* MarketsTokenHistoryChartMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B682841F2C581B0A007B438F /* MarketsTokenHistoryChartMapper.swift */; };
 		B687286F2B7D48E90090C24F /* BlockchainAccountCreateParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = B687286E2B7D48E90090C24F /* BlockchainAccountCreateParameters.swift */; };
@@ -1802,6 +1801,7 @@
 		B6C3B56E2AA1823A0017241C /* CardsInfoPagerScrollState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C3B56D2AA1823A0017241C /* CardsInfoPagerScrollState.swift */; };
 		B6CA91352BB55F4400752999 /* PolkadotAccountHealthBackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CA91342BB55F4300752999 /* PolkadotAccountHealthBackgroundTaskManager.swift */; };
 		B6CA91372BB5616C00752999 /* AccountHealthCheckBackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CA91362BB5616C00752999 /* AccountHealthCheckBackgroundTask.swift */; };
+		B6CAC1CC2CC336220001A427 /* SolanaSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B6CAC1CB2CC336220001A427 /* SolanaSwift */; };
 		B6CF16822B22548A004925CC /* PropertyListObjectRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CF16812B22548A004925CC /* PropertyListObjectRepresentable.swift */; };
 		B6D274E82C38318900FEFCDC /* OnboardingLayoutConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D274E72C38318900FEFCDC /* OnboardingLayoutConstants.swift */; };
 		B6D274EB2C38384400FEFCDC /* PushNotificationsBottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D274EA2C38384400FEFCDC /* PushNotificationsBottomSheetView.swift */; };
@@ -1813,6 +1813,7 @@
 		B6E31B5F2C89F72400604C8F /* ViewHierarchySnapshottingContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E31B5E2C89F72400604C8F /* ViewHierarchySnapshottingContainerViewController.swift */; };
 		B6E31B642C8A240400604C8F /* MainBottomSheetFooterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E31B632C8A240400604C8F /* MainBottomSheetFooterViewModel.swift */; };
 		B6E352732CC0B06B002636BC /* TangemWalletCoreBinariesWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = B6E352722CC0B06B002636BC /* TangemWalletCoreBinariesWrapper */; };
+		B6E725E42CCACFE100318447 /* UnstakingSendAmountValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD9EF0E2CC2A9B600466191 /* UnstakingSendAmountValidator.swift */; };
 		B6E8BBFB2A2F209B0012E7D3 /* InfinityFrameModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E8BBFA2A2F209B0012E7D3 /* InfinityFrameModifier.swift */; };
 		B6E932B12A2F26BB0068D466 /* OrganizeTokensHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E932B02A2F26BB0068D466 /* OrganizeTokensHeaderViewModel.swift */; };
 		B6E932C22A2F2D860068D466 /* OrganizeTokensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E932BD2A2F2D860068D466 /* OrganizeTokensView.swift */; };
@@ -1851,7 +1852,7 @@
 		B6FF1EFE2A57E59100B208E4 /* Subject+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FF1EFD2A57E59100B208E4 /* Subject+.swift */; };
 		B6FFADEA2C5D67E900B43A56 /* DGCharts.ChartViewBase+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FFADE92C5D67E900B43A56 /* DGCharts.ChartViewBase+.swift */; };
 		B6FFADEC2C5D6DAE00B43A56 /* LineChartViewUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FFADEB2C5D6DAE00B43A56 /* LineChartViewUtility.swift */; };
-		C2DBF9FD1A18628296A2C808 /* Pods_TangemVisa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5FA572E69DF6998CA213DF6 /* Pods_TangemVisa.framework */; };
+		B6FFC31F2CC70E1D00F4400E /* BitcoinCore in Frameworks */ = {isa = PBXBuildFile; productRef = B6FFC31E2CC70E1D00F4400E /* BitcoinCore */; };
 		DA070DE22ADD4F0F00F7C0E4 /* SprinklrSupportChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA070DE02ADD4F0F00F7C0E4 /* SprinklrSupportChatView.swift */; };
 		DA070DE32ADD4F0F00F7C0E4 /* SprinklrSupportChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA070DE12ADD4F0F00F7C0E4 /* SprinklrSupportChatViewModel.swift */; };
 		DA070DE52ADD4F6600F7C0E4 /* SprinklrConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA070DE42ADD4F6500F7C0E4 /* SprinklrConfig.swift */; };
@@ -2915,16 +2916,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		044BB04C4683A6282DB6C5BC /* Pods-TangemExpressTests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpressTests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemExpressTests/Pods-TangemExpressTests.release(alpha).xcconfig"; sourceTree = "<group>"; };
 		04AA141D96DF6EEC6163D9B4 /* Pods-Tangem.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.release(production).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.release(production).xcconfig"; sourceTree = "<group>"; };
-		0653667C2116186AA274F7F3 /* Pods-BlockchainSdk.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlockchainSdk.release(production).xcconfig"; path = "Target Support Files/Pods-BlockchainSdk/Pods-BlockchainSdk.release(production).xcconfig"; sourceTree = "<group>"; };
 		071053424D6ADD2932A4E994 /* Pods-Tangem.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.debug(production).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.debug(production).xcconfig"; sourceTree = "<group>"; };
 		0A0DB6E72C479A6900003450 /* ActiveStakingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveStakingView.swift; sourceTree = "<group>"; };
 		0A0DB7572C48FAFF00003450 /* RewardRateValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardRateValues.swift; sourceTree = "<group>"; };
 		0A0E01762C64AA79009E01F2 /* StakingSendAmountValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingSendAmountValidator.swift; sourceTree = "<group>"; };
 		0A1992A52B5FBDF800344312 /* CurrencyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrencyTests.swift; sourceTree = "<group>"; };
 		0A2A04DA2C91B167007EAE64 /* TronSendTransactionSummaryDescriptionBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TronSendTransactionSummaryDescriptionBuilder.swift; sourceTree = "<group>"; };
-		0A35044D2E5DF9354751E2DE /* Pods-TangemStakingTests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStakingTests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemStakingTests/Pods-TangemStakingTests.release(alpha).xcconfig"; sourceTree = "<group>"; };
 		0A3BF9682C6CDAD900163492 /* AdditionalAddresses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdditionalAddresses.swift; sourceTree = "<group>"; };
 		0A3BF96A2C6CE96B00163492 /* StakingAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingAction.swift; sourceTree = "<group>"; };
 		0A713CEB2CAA6DA30042FC27 /* RestakingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestakingModel.swift; sourceTree = "<group>"; };
@@ -2944,11 +2942,7 @@
 		1614E516683321A25CDDF336 /* Pods-Tangem-TangemUITests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.release(production).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.release(production).xcconfig"; sourceTree = "<group>"; };
 		17315AEAFACFF76F975BB539 /* Pods-Tangem.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.debug(beta).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.debug(beta).xcconfig"; sourceTree = "<group>"; };
 		1A1E0F0323988A048B922E78 /* Pods_TangemFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangemFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		1E9D97FE10850852FAB31950 /* Pods-BlockchainSdkExample.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlockchainSdkExample.debug(beta).xcconfig"; path = "Target Support Files/Pods-BlockchainSdkExample/Pods-BlockchainSdkExample.debug(beta).xcconfig"; sourceTree = "<group>"; };
 		23A325EA25D2DC67038CF8D7 /* Pods-TangemUITests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemUITests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemUITests/Pods-TangemUITests.release(alpha).xcconfig"; sourceTree = "<group>"; };
-		2436D00F85D3DB2F72BDCCD3 /* Pods-TangemStaking.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStaking.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemStaking/Pods-TangemStaking.release(beta).xcconfig"; sourceTree = "<group>"; };
-		25BF1D8D39E12813480021D4 /* Pods-TangemVisa.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa.release(production).xcconfig"; path = "Target Support Files/Pods-TangemVisa/Pods-TangemVisa.release(production).xcconfig"; sourceTree = "<group>"; };
-		29888E486B6BAA6F8BA40042 /* Pods-TangemStakingTests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStakingTests.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemStakingTests/Pods-TangemStakingTests.debug(beta).xcconfig"; sourceTree = "<group>"; };
 		2D0E4F522A8D114E00001D8E /* GenericWalletManagerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericWalletManagerFactory.swift; sourceTree = "<group>"; };
 		2D1400C82C43F4FD00B75A42 /* MarketsPortfolioContextActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsPortfolioContextActions.swift; sourceTree = "<group>"; };
 		2D1400CD2C44090400B75A42 /* MarketsPortfolioContainerRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsPortfolioContainerRoutable.swift; sourceTree = "<group>"; };
@@ -3045,28 +3039,15 @@
 		2DFC27952C78E881009B247E /* MarketsPortfolioTokenItemFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsPortfolioTokenItemFactory.swift; sourceTree = "<group>"; };
 		33ECB0D6351934688726187B /* Pods-TangemUITests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemUITests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemUITests/Pods-TangemUITests.release(beta).xcconfig"; sourceTree = "<group>"; };
 		34299E1AA8B77C9FD9FE515A /* Pods-TangemFoundation.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundation.release(production).xcconfig"; path = "Target Support Files/Pods-TangemFoundation/Pods-TangemFoundation.release(production).xcconfig"; sourceTree = "<group>"; };
-		347F5596549B7EA732F0107B /* Pods-TangemVisaTests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisaTests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemVisaTests/Pods-TangemVisaTests.release(beta).xcconfig"; sourceTree = "<group>"; };
 		34AA4F246DE3AC2C1D5332A5 /* Pods-TangemVisa-TangemVisaTests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa-TangemVisaTests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemVisa-TangemVisaTests/Pods-TangemVisa-TangemVisaTests.release(beta).xcconfig"; sourceTree = "<group>"; };
 		3657682202A687707B9EA3DB /* Pods-Tangem-TangemUITests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.debug(production).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.debug(production).xcconfig"; sourceTree = "<group>"; };
-		38E1176CFD83BDC039B9C54F /* Pods-TangemStakingTests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStakingTests.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemStakingTests/Pods-TangemStakingTests.debug(production).xcconfig"; sourceTree = "<group>"; };
-		390C5DEB132D752D96BEFC4E /* Pods-TangemExpress.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpress.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemExpress/Pods-TangemExpress.release(beta).xcconfig"; sourceTree = "<group>"; };
 		3C577F33B73BA1A57F60F06C /* Pods-TangemFoundation.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundation.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemFoundation/Pods-TangemFoundation.release(beta).xcconfig"; sourceTree = "<group>"; };
-		3D08F11EA813932E031CC19B /* Pods-BlockchainSdkExample.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlockchainSdkExample.release(beta).xcconfig"; path = "Target Support Files/Pods-BlockchainSdkExample/Pods-BlockchainSdkExample.release(beta).xcconfig"; sourceTree = "<group>"; };
-		3D77DAD4403B73C4F822951A /* Pods-TangemVisa.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemVisa/Pods-TangemVisa.release(beta).xcconfig"; sourceTree = "<group>"; };
-		3D96378A4AFFFB3C275A25B6 /* Pods-BlockchainSdk.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlockchainSdk.debug(production).xcconfig"; path = "Target Support Files/Pods-BlockchainSdk/Pods-BlockchainSdk.debug(production).xcconfig"; sourceTree = "<group>"; };
-		3F3B24BC8D934414F8CF0C36 /* Pods-TangemExpress.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpress.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemExpress/Pods-TangemExpress.debug(alpha).xcconfig"; sourceTree = "<group>"; };
 		405CC8C9EB940A4FB19445BD /* Pods-Tangem.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.release(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.release(alpha).xcconfig"; sourceTree = "<group>"; };
 		4712A17B93D5DC8AAEE0372F /* Pods-TangemStaking-TangemStakingTests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStaking-TangemStakingTests.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemStaking-TangemStakingTests/Pods-TangemStaking-TangemStakingTests.debug(production).xcconfig"; sourceTree = "<group>"; };
 		4861575ACA94A7FE3EFB58A6 /* Pods-TangemTests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.release(alpha).xcconfig"; sourceTree = "<group>"; };
 		49109FE423D14714F57248CF /* Pods-TangemUITests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemUITests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemUITests/Pods-TangemUITests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
 		4B39BBF3E125E22AF0099486 /* Pods-TangemTests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
-		4E0A019646267BE6944A418B /* Pods-BlockchainSdkExample.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlockchainSdkExample.debug(alpha).xcconfig"; path = "Target Support Files/Pods-BlockchainSdkExample/Pods-BlockchainSdkExample.debug(alpha).xcconfig"; sourceTree = "<group>"; };
 		4E2EB2E5363272E4DA5F5CA6 /* Pods-TangemFoundationTests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundationTests.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemFoundationTests/Pods-TangemFoundationTests.debug(beta).xcconfig"; sourceTree = "<group>"; };
-		50B5EC6CCC413553F02DA532 /* Pods_TangemExpress.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangemExpress.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		525ED95281D0370430CE15B9 /* Pods-TangemVisaTests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisaTests.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemVisaTests/Pods-TangemVisaTests.debug(production).xcconfig"; sourceTree = "<group>"; };
-		56523655CAB2BD83A01946F5 /* Pods-TangemStaking.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStaking.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemStaking/Pods-TangemStaking.debug(beta).xcconfig"; sourceTree = "<group>"; };
-		57CE0533CAA26ABA1B671649 /* Pods_TangemExpressTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangemExpressTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		57E91D7D061D01E6F31E3D7E /* Pods-TangemStaking.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStaking.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemStaking/Pods-TangemStaking.debug(production).xcconfig"; sourceTree = "<group>"; };
 		5A168C4F090FBAC6A3BF2815 /* Pods_TangemFoundationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangemFoundationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D00FCD0261738C5004626DE /* WalletConnectEthTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectEthTransaction.swift; sourceTree = "<group>"; };
 		5D011A262530E76000758010 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -3092,7 +3073,6 @@
 		5D20812927D2439700D8A970 /* WCExample.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = WCExample.json; sourceTree = "<group>"; };
 		5D225CB82524B721001564A3 /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
 		5D24A12B24FF9E3A002A3BCA /* Decimal+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Decimal+.swift"; sourceTree = "<group>"; };
-		5D2B276B568642703FC3AC66 /* Pods-TangemVisa.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemVisa/Pods-TangemVisa.debug(production).xcconfig"; sourceTree = "<group>"; };
 		5D383E4024D95BA600C9BFF6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5D384B9024FD4E1800C2C92C /* String+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+.swift"; sourceTree = "<group>"; };
 		5D384B9324FD51C000C2C92C /* DetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewModel.swift; sourceTree = "<group>"; };
@@ -3181,9 +3161,7 @@
 		5DFE855624EF051400194106 /* Error+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+.swift"; sourceTree = "<group>"; };
 		5EBD3533F9B0948C4AE510B3 /* Pods-TangemUITests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemUITests.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemUITests/Pods-TangemUITests.debug(beta).xcconfig"; sourceTree = "<group>"; };
 		5EE9FDE9BFE1191207165858 /* Pods-TangemFoundation.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundation.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemFoundation/Pods-TangemFoundation.debug(alpha).xcconfig"; sourceTree = "<group>"; };
-		5FB2E23E5A5C1D0EFA2D4C6C /* Pods-TangemVisaTests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisaTests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemVisaTests/Pods-TangemVisaTests.release(alpha).xcconfig"; sourceTree = "<group>"; };
 		63C82F27C2016AD4C49A5415 /* Pods-Tangem-TangemUITests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.debug(beta).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.debug(beta).xcconfig"; sourceTree = "<group>"; };
-		642A6048E3FEBA5FA2C02BA6 /* Pods-TangemExpressTests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpressTests.release(production).xcconfig"; path = "Target Support Files/Pods-TangemExpressTests/Pods-TangemExpressTests.release(production).xcconfig"; sourceTree = "<group>"; };
 		6563B8B82858B92A009A8A7D /* SupportChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportChatView.swift; sourceTree = "<group>"; };
 		6596AD4828730F4900508D0A /* WarningBankCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WarningBankCardView.swift; sourceTree = "<group>"; };
 		6596AD4A28738F0100508D0A /* WarningBankCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WarningBankCardViewModel.swift; sourceTree = "<group>"; };
@@ -3192,38 +3170,18 @@
 		67BA511FDEE077DD36EAEF88 /* Pods-TangemFoundation.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundation.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemFoundation/Pods-TangemFoundation.release(alpha).xcconfig"; sourceTree = "<group>"; };
 		68DB71D736FA9CE6C9D6EB95 /* Pods-TangemVisa-TangemVisaTests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa-TangemVisaTests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemVisa-TangemVisaTests/Pods-TangemVisa-TangemVisaTests.release(alpha).xcconfig"; sourceTree = "<group>"; };
 		6B1F5CE065E6BA27537C0E73 /* Pods_Tangem.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tangem.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		71D4775672C541A975B21FBF /* Pods-BlockchainSdkTests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlockchainSdkTests.release(beta).xcconfig"; path = "Target Support Files/Pods-BlockchainSdkTests/Pods-BlockchainSdkTests.release(beta).xcconfig"; sourceTree = "<group>"; };
 		71E97B5CDCD7274E02A001A0 /* Pods-TangemVisa-TangemVisaTests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa-TangemVisaTests.release(production).xcconfig"; path = "Target Support Files/Pods-TangemVisa-TangemVisaTests/Pods-TangemVisa-TangemVisaTests.release(production).xcconfig"; sourceTree = "<group>"; };
 		740F3E19014FB5F75D949862 /* Pods_TangemTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangemTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		74F479063EEEB1BBF5CD6E96 /* Pods_BlockchainSdkTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BlockchainSdkTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		754059A24EB00582C9879E51 /* Pods-TangemVisa.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemVisa/Pods-TangemVisa.debug(beta).xcconfig"; sourceTree = "<group>"; };
-		75994535B8EF936733CA7211 /* Pods_TangemStaking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangemStaking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		7C7EEA8F11817AD494DF9C80 /* Pods-TangemExpress.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpress.release(production).xcconfig"; path = "Target Support Files/Pods-TangemExpress/Pods-TangemExpress.release(production).xcconfig"; sourceTree = "<group>"; };
-		81F365FD836105EB681A31A4 /* Pods-BlockchainSdk.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlockchainSdk.debug(alpha).xcconfig"; path = "Target Support Files/Pods-BlockchainSdk/Pods-BlockchainSdk.debug(alpha).xcconfig"; sourceTree = "<group>"; };
 		860B4C6F3B19808809CC2D88 /* Pods-TangemFoundationTests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundationTests.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemFoundationTests/Pods-TangemFoundationTests.debug(production).xcconfig"; sourceTree = "<group>"; };
 		86E527EC6830840E0C0B688A /* Pods-TangemVisa-TangemVisaTests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa-TangemVisaTests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemVisa-TangemVisaTests/Pods-TangemVisa-TangemVisaTests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
 		8B0AC10235E97AD52C1E224F /* Pods-Tangem-TangemUITests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
 		8B700B584D4A835B6EA22786 /* Pods-TangemVisa-TangemVisaTests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa-TangemVisaTests.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemVisa-TangemVisaTests/Pods-TangemVisa-TangemVisaTests.debug(beta).xcconfig"; sourceTree = "<group>"; };
 		8B72D4FE4C9A7B898A91AD56 /* Pods-TangemFoundationTests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundationTests.release(production).xcconfig"; path = "Target Support Files/Pods-TangemFoundationTests/Pods-TangemFoundationTests.release(production).xcconfig"; sourceTree = "<group>"; };
-		8CDF3A073BF11E52B122E52F /* Pods-TangemExpressTests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpressTests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemExpressTests/Pods-TangemExpressTests.release(beta).xcconfig"; sourceTree = "<group>"; };
-		8D17D981F2680C2D3BBBDB9D /* Pods-BlockchainSdkTests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlockchainSdkTests.release(alpha).xcconfig"; path = "Target Support Files/Pods-BlockchainSdkTests/Pods-BlockchainSdkTests.release(alpha).xcconfig"; sourceTree = "<group>"; };
-		8EB471B08365F66EEAC8CF70 /* Pods-TangemVisaTests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisaTests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemVisaTests/Pods-TangemVisaTests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
 		945D0ECB3DAB73C19D8FD06E /* Pods-TangemFoundationTests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundationTests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemFoundationTests/Pods-TangemFoundationTests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
-		94CA6E353244CCA9C0EDBA21 /* Pods-BlockchainSdkExample.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlockchainSdkExample.release(alpha).xcconfig"; path = "Target Support Files/Pods-BlockchainSdkExample/Pods-BlockchainSdkExample.release(alpha).xcconfig"; sourceTree = "<group>"; };
-		95536EF80319C1F4D9ED5420 /* Pods-TangemExpressTests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpressTests.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemExpressTests/Pods-TangemExpressTests.debug(beta).xcconfig"; sourceTree = "<group>"; };
-		96AB87BFDFD1734D8C4B8FAD /* Pods-BlockchainSdkTests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlockchainSdkTests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-BlockchainSdkTests/Pods-BlockchainSdkTests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
-		97B02E3CBDB817408B0060B0 /* Pods-TangemVisa.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemVisa/Pods-TangemVisa.release(alpha).xcconfig"; sourceTree = "<group>"; };
 		982CF9771BEAC83BA1762553 /* Pods-TangemTests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.debug(production).xcconfig"; sourceTree = "<group>"; };
-		99F1B946CBB9DA59974FF2C7 /* Pods-TangemStaking.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStaking.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemStaking/Pods-TangemStaking.debug(alpha).xcconfig"; sourceTree = "<group>"; };
 		9C59789A437B835E2E2246B6 /* Pods-Tangem.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.debug(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.debug(alpha).xcconfig"; sourceTree = "<group>"; };
 		A288F1BFECB803354ED21B38 /* Pods-TangemStaking-TangemStakingTests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStaking-TangemStakingTests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemStaking-TangemStakingTests/Pods-TangemStaking-TangemStakingTests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
-		A52B07630ECB737F9530CCDC /* Pods-BlockchainSdk.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlockchainSdk.release(beta).xcconfig"; path = "Target Support Files/Pods-BlockchainSdk/Pods-BlockchainSdk.release(beta).xcconfig"; sourceTree = "<group>"; };
-		A5FA572E69DF6998CA213DF6 /* Pods_TangemVisa.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangemVisa.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A80EC434BA35306F14C913ED /* Pods-BlockchainSdkTests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlockchainSdkTests.release(production).xcconfig"; path = "Target Support Files/Pods-BlockchainSdkTests/Pods-BlockchainSdkTests.release(production).xcconfig"; sourceTree = "<group>"; };
 		AA73C4885132BD64B6BF8EDF /* Pods-Tangem-TangemUITests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.release(beta).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.release(beta).xcconfig"; sourceTree = "<group>"; };
-		ADF4666533574F2E62BE9B8A /* Pods-TangemStakingTests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStakingTests.release(production).xcconfig"; path = "Target Support Files/Pods-TangemStakingTests/Pods-TangemStakingTests.release(production).xcconfig"; sourceTree = "<group>"; };
-		AE50F7AC921A99B57AB3D215 /* Pods-TangemStakingTests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStakingTests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemStakingTests/Pods-TangemStakingTests.release(beta).xcconfig"; sourceTree = "<group>"; };
-		AF2D7AC7C61A79B33AF6B61E /* Pods-TangemExpressTests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpressTests.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemExpressTests/Pods-TangemExpressTests.debug(production).xcconfig"; sourceTree = "<group>"; };
 		B002416E2C2441EF00416397 /* HideTokenAlertBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideTokenAlertBuilder.swift; sourceTree = "<group>"; };
 		B00307032AF0E1BA00C13BCA /* Analytics+WalletConnectDebugEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Analytics+WalletConnectDebugEvent.swift"; sourceTree = "<group>"; };
 		B00371BD2A8A5E5900D77A4B /* FakeUserTokensManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeUserTokensManager.swift; sourceTree = "<group>"; };
@@ -3684,8 +3642,6 @@
 		B0FE88802CB51FDB006F01F9 /* MarketsNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsNavigationBar.swift; sourceTree = "<group>"; };
 		B0FF12672C4A815600C81ED8 /* MainWindowSizeKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowSizeKey.swift; sourceTree = "<group>"; };
 		B0FF51C72C3C0FA800746705 /* MarketsTokenDetailsStatisticsRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenDetailsStatisticsRecordView.swift; sourceTree = "<group>"; };
-		B13C3EB09AD6AB287DB25F0A /* Pods-BlockchainSdkExample.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlockchainSdkExample.debug(production).xcconfig"; path = "Target Support Files/Pods-BlockchainSdkExample/Pods-BlockchainSdkExample.debug(production).xcconfig"; sourceTree = "<group>"; };
-		B1645742B30AF3A0C015827A /* Pods-TangemExpressTests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpressTests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemExpressTests/Pods-TangemExpressTests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
 		B4168BD54C4E22ED50BC39F9 /* Pods-TangemStaking-TangemStakingTests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStaking-TangemStakingTests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemStaking-TangemStakingTests/Pods-TangemStaking-TangemStakingTests.release(beta).xcconfig"; sourceTree = "<group>"; };
 		B600F4CD2C50F6D2008E53FE /* NSCacheWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSCacheWrapper.swift; sourceTree = "<group>"; };
 		B600F4D02C50F714008E53FE /* MarketsHistoryChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsHistoryChartView.swift; sourceTree = "<group>"; };
@@ -4822,25 +4778,15 @@
 		B6FF1EFD2A57E59100B208E4 /* Subject+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Subject+.swift"; sourceTree = "<group>"; };
 		B6FFADE92C5D67E900B43A56 /* DGCharts.ChartViewBase+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DGCharts.ChartViewBase+.swift"; sourceTree = "<group>"; };
 		B6FFADEB2C5D6DAE00B43A56 /* LineChartViewUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineChartViewUtility.swift; sourceTree = "<group>"; };
-		B709ABB57C2AAC2953BE7438 /* Pods_BlockchainSdk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BlockchainSdk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA1429E6AA03A993E9096405 /* Pods-Tangem.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.release(beta).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.release(beta).xcconfig"; sourceTree = "<group>"; };
 		BA2AC80DA5268ACDCD5323B8 /* Pods-TangemFoundation.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundation.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemFoundation/Pods-TangemFoundation.debug(beta).xcconfig"; sourceTree = "<group>"; };
-		BA3C72207CF7A55037336813 /* Pods_TangemStakingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangemStakingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BA597B5F5CD6A9E0AEFB7C61 /* Pods-BlockchainSdk.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlockchainSdk.debug(beta).xcconfig"; path = "Target Support Files/Pods-BlockchainSdk/Pods-BlockchainSdk.debug(beta).xcconfig"; sourceTree = "<group>"; };
-		BAABAFC27DBD6457D16C7901 /* Pods-TangemVisa.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemVisa/Pods-TangemVisa.debug(alpha).xcconfig"; sourceTree = "<group>"; };
-		BF37A898B7BBEFF5F1B70773 /* Pods-BlockchainSdk.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlockchainSdk.release(alpha).xcconfig"; path = "Target Support Files/Pods-BlockchainSdk/Pods-BlockchainSdk.release(alpha).xcconfig"; sourceTree = "<group>"; };
 		C0F0B2863FC391152BAA6B4D /* Pods-TangemStaking-TangemStakingTests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStaking-TangemStakingTests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemStaking-TangemStakingTests/Pods-TangemStaking-TangemStakingTests.release(alpha).xcconfig"; sourceTree = "<group>"; };
-		C308F4CFAD8646B3390E7EB7 /* Pods-BlockchainSdkTests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlockchainSdkTests.debug(beta).xcconfig"; path = "Target Support Files/Pods-BlockchainSdkTests/Pods-BlockchainSdkTests.debug(beta).xcconfig"; sourceTree = "<group>"; };
 		C907515EDBF8849C1725C692 /* Pods-TangemStaking-TangemStakingTests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStaking-TangemStakingTests.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemStaking-TangemStakingTests/Pods-TangemStaking-TangemStakingTests.debug(beta).xcconfig"; sourceTree = "<group>"; };
-		CAAA98E74C8F6E0078272339 /* Pods-TangemExpress.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpress.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemExpress/Pods-TangemExpress.debug(production).xcconfig"; sourceTree = "<group>"; };
 		D036D895D505229822A53504 /* Pods-TangemTests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.release(production).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.release(production).xcconfig"; sourceTree = "<group>"; };
 		D09565E11379EAEF60B2C96F /* Pods-TangemFoundationTests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundationTests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemFoundationTests/Pods-TangemFoundationTests.release(alpha).xcconfig"; sourceTree = "<group>"; };
 		D17DFA6564FBD41BCEBC9986 /* Pods-TangemVisa-TangemVisaTests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa-TangemVisaTests.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemVisa-TangemVisaTests/Pods-TangemVisa-TangemVisaTests.debug(production).xcconfig"; sourceTree = "<group>"; };
-		D223B0C3501A1B50EDE03409 /* Pods-TangemStakingTests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStakingTests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemStakingTests/Pods-TangemStakingTests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
 		D30AB026316B780E65C29747 /* Pods-TangemStaking-TangemStakingTests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStaking-TangemStakingTests.release(production).xcconfig"; path = "Target Support Files/Pods-TangemStaking-TangemStakingTests/Pods-TangemStaking-TangemStakingTests.release(production).xcconfig"; sourceTree = "<group>"; };
 		D3D76D8599608571681C7327 /* Pods-TangemUITests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemUITests.release(production).xcconfig"; path = "Target Support Files/Pods-TangemUITests/Pods-TangemUITests.release(production).xcconfig"; sourceTree = "<group>"; };
-		D600E3C682E8AB897305ABEE /* Pods-TangemExpress.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpress.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemExpress/Pods-TangemExpress.debug(beta).xcconfig"; sourceTree = "<group>"; };
-		D67C35B966539AB4F5CE8C1C /* Pods-TangemStaking.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStaking.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemStaking/Pods-TangemStaking.release(alpha).xcconfig"; sourceTree = "<group>"; };
 		DA070DE02ADD4F0F00F7C0E4 /* SprinklrSupportChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SprinklrSupportChatView.swift; sourceTree = "<group>"; };
 		DA070DE12ADD4F0F00F7C0E4 /* SprinklrSupportChatViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SprinklrSupportChatViewModel.swift; sourceTree = "<group>"; };
 		DA070DE42ADD4F6500F7C0E4 /* SprinklrConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SprinklrConfig.swift; sourceTree = "<group>"; };
@@ -5247,17 +5193,14 @@
 		DCEC71F42B8683FB00B3847E /* BackupValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupValidator.swift; sourceTree = "<group>"; };
 		DCEFF6832CC1509A00A49878 /* ScanCardSettingsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanCardSettingsCoordinator.swift; sourceTree = "<group>"; };
 		DCEFF6852CC150AA00A49878 /* ScanCardSettingsCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanCardSettingsCoordinatorView.swift; sourceTree = "<group>"; };
-		DCF1025DCBFCEC8723EF9F3B /* Pods-BlockchainSdkTests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlockchainSdkTests.debug(production).xcconfig"; path = "Target Support Files/Pods-BlockchainSdkTests/Pods-BlockchainSdkTests.debug(production).xcconfig"; sourceTree = "<group>"; };
 		DCF2369029924C0900FE1855 /* AnalyticsContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsContext.swift; sourceTree = "<group>"; };
 		DCF23692299257EB00FE1855 /* AnalyticsContextData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsContextData.swift; sourceTree = "<group>"; };
 		DCF8972C28ACF8CA002A85F6 /* TangemSdkConfigFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemSdkConfigFactory.swift; sourceTree = "<group>"; };
 		DCFCA17428F4232F0037586C /* Array+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+.swift"; sourceTree = "<group>"; };
 		DCFE143D294B31C00053106B /* AppPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPresenter.swift; sourceTree = "<group>"; };
-		E0AE5FADABA847DF74B716F0 /* Pods_TangemVisaTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangemVisaTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3B314B4E9F76052898EE269 /* Pods-TangemTests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.debug(beta).xcconfig"; sourceTree = "<group>"; };
 		E41571C8A3492645DEC301E5 /* Pods-TangemFoundationTests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundationTests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemFoundationTests/Pods-TangemFoundationTests.release(beta).xcconfig"; sourceTree = "<group>"; };
 		E9C17C5E291951BF00FDE4BC /* AnyPublisher+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnyPublisher+.swift"; sourceTree = "<group>"; };
-		EDD4CB50BE6D2AD4A126B4AC /* Pods-BlockchainSdkExample.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlockchainSdkExample.release(production).xcconfig"; path = "Target Support Files/Pods-BlockchainSdkExample/Pods-BlockchainSdkExample.release(production).xcconfig"; sourceTree = "<group>"; };
 		EF0295582A9DCDEE000B2142 /* SensitiveText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensitiveText.swift; sourceTree = "<group>"; };
 		EF031A272C08E65A001535C9 /* StakingCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingCalculator.swift; sourceTree = "<group>"; };
 		EF031A642C0A32C3001535C9 /* SendGeometryEffectNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendGeometryEffectNames.swift; sourceTree = "<group>"; };
@@ -5763,13 +5706,8 @@
 		EFFC861228BCF6C500F863CE /* StorageEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEntry.swift; sourceTree = "<group>"; };
 		EFFE2CE828B8E0B300B9F279 /* UserWalletModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserWalletModel.swift; sourceTree = "<group>"; };
 		EFFE2CEB28B8E1B000B9F279 /* CommonDerivationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonDerivationManager.swift; sourceTree = "<group>"; };
-		F0655891F11B5FFD9E6CA574 /* Pods-TangemVisaTests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisaTests.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemVisaTests/Pods-TangemVisaTests.debug(beta).xcconfig"; sourceTree = "<group>"; };
-		F1A93ACFEE75B4CA0FB802FC /* Pods-TangemVisaTests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisaTests.release(production).xcconfig"; path = "Target Support Files/Pods-TangemVisaTests/Pods-TangemVisaTests.release(production).xcconfig"; sourceTree = "<group>"; };
 		F331D905EEAD64DFAAB0B61A /* Pods-TangemFoundation.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundation.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemFoundation/Pods-TangemFoundation.debug(production).xcconfig"; sourceTree = "<group>"; };
 		F4916AA53286A77C171FB941 /* Pods-TangemUITests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemUITests.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemUITests/Pods-TangemUITests.debug(production).xcconfig"; sourceTree = "<group>"; };
-		F5AACB6D9AE19DD06B06E2CD /* Pods_BlockchainSdkExample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BlockchainSdkExample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		FD5541B8BF11B6E19AFCE2CB /* Pods-TangemStaking.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStaking.release(production).xcconfig"; path = "Target Support Files/Pods-TangemStaking/Pods-TangemStaking.release(production).xcconfig"; sourceTree = "<group>"; };
-		FF542AF889E11958883EF4CE /* Pods-TangemExpress.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpress.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemExpress/Pods-TangemExpress.release(alpha).xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -5783,6 +5721,7 @@
 				B0B11A082C787FE70018A2A6 /* MarkdownUI in Frameworks */,
 				B6C0D3E12CBDC2E3001113ED /* TangemModules in Frameworks */,
 				B6C1BE6D2B6C2F4E008FE5A0 /* secp256k1 in Frameworks */,
+				B67E38C12CC71A2C00D660EB /* TangemSdk in Frameworks */,
 				B68E1F782CBC44060043E598 /* BlockchainSdk.framework in Frameworks */,
 				EF9E29A82B4F0C9900418559 /* TangemExpress.framework in Frameworks */,
 				EFEE239D2BFF62D60099917E /* TangemStaking.framework in Frameworks */,
@@ -5805,6 +5744,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AB5DE0569C12F3BDA9530564 /* Pods_TangemTests.framework in Frameworks */,
+				B67E38C72CC7259B00D660EB /* TangemSdk in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5821,8 +5761,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				B62C16792CBE095A00522683 /* Alamofire in Frameworks */,
-				C2DBF9FD1A18628296A2C808 /* Pods_TangemVisa.framework in Frameworks */,
 				B62D34102CBC4C5800C2460E /* BlockchainSdk.framework in Frameworks */,
+				B67E38BB2CC7179000D660EB /* TangemSdk in Frameworks */,
 				B6C0D3FF2CBDC73E001113ED /* TangemModules in Frameworks */,
 				B6C0D3FB2CBDC6DD001113ED /* Moya in Frameworks */,
 			);
@@ -5833,7 +5773,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B099337F2B5517E800240CDB /* TangemVisa.framework in Frameworks */,
-				16261826CE20A93A4DEE72F7 /* Pods_TangemVisaTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5843,9 +5782,9 @@
 			files = (
 				B62D438A2CBC7F1500C2460E /* BlockchainSdk.framework in Frameworks */,
 				B655F57A2CBC871F002391AF /* secp256k1 in Frameworks */,
+				B67E38C32CC71B5F00D660EB /* TangemSdk in Frameworks */,
 				B62D43C22CBC823A00C2460E /* TangemWalletCoreBinariesWrapper in Frameworks */,
 				B655F57C2CBC872E002391AF /* TweetNacl in Frameworks */,
-				9F533B06AEF9BD8F90F4FFB4 /* Pods_BlockchainSdkExample.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5858,7 +5797,10 @@
 				B62D34472CBC51D400C2460E /* SwiftCBOR in Frameworks */,
 				B6C0D3F92CBDC5A3001113ED /* SwiftyJSON in Frameworks */,
 				B6C0D3F62CBDC552001113ED /* BinanceChain in Frameworks */,
+				B6FFC31F2CC70E1D00F4400E /* BitcoinCore in Frameworks */,
 				B68E1F962CBC451D0043E598 /* ScaleCodec in Frameworks */,
+				B67E38B92CC7147600D660EB /* TangemSdk in Frameworks */,
+				B6CAC1CC2CC336220001A427 /* SolanaSwift in Frameworks */,
 				B62D34502CBC67D500C2460E /* AnyCodable in Frameworks */,
 				B68E1F8D2CBC44AA0043E598 /* CryptoSwift in Frameworks */,
 				B6C0D3F42CBDC543001113ED /* Moya in Frameworks */,
@@ -5866,7 +5808,6 @@
 				B62D343D2CBC4FD000C2460E /* Clibsodium in Frameworks */,
 				B6E352732CC0B06B002636BC /* TangemWalletCoreBinariesWrapper in Frameworks */,
 				B68E1F902CBC44E30043E598 /* SwiftProtobuf in Frameworks */,
-				AC759C99D2062D6586C1D768 /* Pods_BlockchainSdk.framework in Frameworks */,
 				B62D344D2CBC675600C2460E /* stellarsdk in Frameworks */,
 				B62D343F2CBC4FD000C2460E /* Sodium in Frameworks */,
 			);
@@ -5877,7 +5818,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B68E1F6D2CBC44060043E598 /* BlockchainSdk.framework in Frameworks */,
-				955E5B86B3924B42256E5BFA /* Pods_BlockchainSdkTests.framework in Frameworks */,
+				B67E38C52CC7252900D660EB /* TangemSdk in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5886,8 +5827,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				B62C167D2CBE0A3D00522683 /* Alamofire in Frameworks */,
-				86D9B9D1A68FFFCAAEDE1210 /* Pods_TangemExpress.framework in Frameworks */,
 				B62D34152CBC4C6F00C2460E /* BlockchainSdk.framework in Frameworks */,
+				B67E38BD2CC7179600D660EB /* TangemSdk in Frameworks */,
 				B6C0D40B2CBDCD47001113ED /* TangemModules in Frameworks */,
 				B6C0D4092CBDCD34001113ED /* Moya in Frameworks */,
 			);
@@ -5898,7 +5839,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				EF9E299D2B4F0C9100418559 /* TangemExpress.framework in Frameworks */,
-				4E195C54D9C30FB89A03F1C7 /* Pods_TangemExpressTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5907,8 +5847,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				B62C167B2CBE0A1E00522683 /* Alamofire in Frameworks */,
-				735DE6BB9FDAFE5A5BCFE5AF /* Pods_TangemStaking.framework in Frameworks */,
 				B62D34402CBC506E00C2460E /* BlockchainSdk.framework in Frameworks */,
+				B67E38BF2CC717A300D660EB /* TangemSdk in Frameworks */,
 				B6C0D4012CBDC759001113ED /* TangemModules in Frameworks */,
 				B6C0D3FD2CBDC6FE001113ED /* Moya in Frameworks */,
 			);
@@ -5919,7 +5859,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				EFEE23922BFF62D60099917E /* TangemStaking.framework in Frameworks */,
-				A8655C179DB2CC46C5B1BB15 /* Pods_TangemStakingTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6257,19 +6196,10 @@
 				B066822426564ADB00CB86CF /* Intents.framework */,
 				B066822F26564ADB00CB86CF /* IntentsUI.framework */,
 				6B1F5CE065E6BA27537C0E73 /* Pods_Tangem.framework */,
-				50B5EC6CCC413553F02DA532 /* Pods_TangemExpress.framework */,
-				57CE0533CAA26ABA1B671649 /* Pods_TangemExpressTests.framework */,
 				1A1E0F0323988A048B922E78 /* Pods_TangemFoundation.framework */,
 				5A168C4F090FBAC6A3BF2815 /* Pods_TangemFoundationTests.framework */,
 				740F3E19014FB5F75D949862 /* Pods_TangemTests.framework */,
-				A5FA572E69DF6998CA213DF6 /* Pods_TangemVisa.framework */,
-				75994535B8EF936733CA7211 /* Pods_TangemStaking.framework */,
-				BA3C72207CF7A55037336813 /* Pods_TangemStakingTests.framework */,
-				B709ABB57C2AAC2953BE7438 /* Pods_BlockchainSdk.framework */,
-				74F479063EEEB1BBF5CD6E96 /* Pods_BlockchainSdkTests.framework */,
-				F5AACB6D9AE19DD06B06E2CD /* Pods_BlockchainSdkExample.framework */,
 				0F0F54769EDEAC846B6BF43B /* Pods_Tangem_TangemUITests.framework */,
-				E0AE5FADABA847DF74B716F0 /* Pods_TangemVisaTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -11479,18 +11409,6 @@
 				1614E516683321A25CDDF336 /* Pods-Tangem-TangemUITests.release(production).xcconfig */,
 				AA73C4885132BD64B6BF8EDF /* Pods-Tangem-TangemUITests.release(beta).xcconfig */,
 				0BE949936543D22F51E09DBD /* Pods-Tangem-TangemUITests.release(alpha).xcconfig */,
-				CAAA98E74C8F6E0078272339 /* Pods-TangemExpress.debug(production).xcconfig */,
-				D600E3C682E8AB897305ABEE /* Pods-TangemExpress.debug(beta).xcconfig */,
-				3F3B24BC8D934414F8CF0C36 /* Pods-TangemExpress.debug(alpha).xcconfig */,
-				7C7EEA8F11817AD494DF9C80 /* Pods-TangemExpress.release(production).xcconfig */,
-				390C5DEB132D752D96BEFC4E /* Pods-TangemExpress.release(beta).xcconfig */,
-				FF542AF889E11958883EF4CE /* Pods-TangemExpress.release(alpha).xcconfig */,
-				AF2D7AC7C61A79B33AF6B61E /* Pods-TangemExpressTests.debug(production).xcconfig */,
-				95536EF80319C1F4D9ED5420 /* Pods-TangemExpressTests.debug(beta).xcconfig */,
-				B1645742B30AF3A0C015827A /* Pods-TangemExpressTests.debug(alpha).xcconfig */,
-				642A6048E3FEBA5FA2C02BA6 /* Pods-TangemExpressTests.release(production).xcconfig */,
-				8CDF3A073BF11E52B122E52F /* Pods-TangemExpressTests.release(beta).xcconfig */,
-				044BB04C4683A6282DB6C5BC /* Pods-TangemExpressTests.release(alpha).xcconfig */,
 				F331D905EEAD64DFAAB0B61A /* Pods-TangemFoundation.debug(production).xcconfig */,
 				BA2AC80DA5268ACDCD5323B8 /* Pods-TangemFoundation.debug(beta).xcconfig */,
 				5EE9FDE9BFE1191207165858 /* Pods-TangemFoundation.debug(alpha).xcconfig */,
@@ -11509,66 +11427,24 @@
 				D036D895D505229822A53504 /* Pods-TangemTests.release(production).xcconfig */,
 				136B5829321AB7962F0F8960 /* Pods-TangemTests.release(beta).xcconfig */,
 				4861575ACA94A7FE3EFB58A6 /* Pods-TangemTests.release(alpha).xcconfig */,
-				5D2B276B568642703FC3AC66 /* Pods-TangemVisa.debug(production).xcconfig */,
-				754059A24EB00582C9879E51 /* Pods-TangemVisa.debug(beta).xcconfig */,
-				BAABAFC27DBD6457D16C7901 /* Pods-TangemVisa.debug(alpha).xcconfig */,
-				25BF1D8D39E12813480021D4 /* Pods-TangemVisa.release(production).xcconfig */,
-				3D77DAD4403B73C4F822951A /* Pods-TangemVisa.release(beta).xcconfig */,
-				97B02E3CBDB817408B0060B0 /* Pods-TangemVisa.release(alpha).xcconfig */,
 				D17DFA6564FBD41BCEBC9986 /* Pods-TangemVisa-TangemVisaTests.debug(production).xcconfig */,
 				8B700B584D4A835B6EA22786 /* Pods-TangemVisa-TangemVisaTests.debug(beta).xcconfig */,
 				86E527EC6830840E0C0B688A /* Pods-TangemVisa-TangemVisaTests.debug(alpha).xcconfig */,
 				71E97B5CDCD7274E02A001A0 /* Pods-TangemVisa-TangemVisaTests.release(production).xcconfig */,
 				34AA4F246DE3AC2C1D5332A5 /* Pods-TangemVisa-TangemVisaTests.release(beta).xcconfig */,
 				68DB71D736FA9CE6C9D6EB95 /* Pods-TangemVisa-TangemVisaTests.release(alpha).xcconfig */,
-				57E91D7D061D01E6F31E3D7E /* Pods-TangemStaking.debug(production).xcconfig */,
-				56523655CAB2BD83A01946F5 /* Pods-TangemStaking.debug(beta).xcconfig */,
-				99F1B946CBB9DA59974FF2C7 /* Pods-TangemStaking.debug(alpha).xcconfig */,
-				FD5541B8BF11B6E19AFCE2CB /* Pods-TangemStaking.release(production).xcconfig */,
-				2436D00F85D3DB2F72BDCCD3 /* Pods-TangemStaking.release(beta).xcconfig */,
-				D67C35B966539AB4F5CE8C1C /* Pods-TangemStaking.release(alpha).xcconfig */,
 				4712A17B93D5DC8AAEE0372F /* Pods-TangemStaking-TangemStakingTests.debug(production).xcconfig */,
 				C907515EDBF8849C1725C692 /* Pods-TangemStaking-TangemStakingTests.debug(beta).xcconfig */,
 				A288F1BFECB803354ED21B38 /* Pods-TangemStaking-TangemStakingTests.debug(alpha).xcconfig */,
 				D30AB026316B780E65C29747 /* Pods-TangemStaking-TangemStakingTests.release(production).xcconfig */,
 				B4168BD54C4E22ED50BC39F9 /* Pods-TangemStaking-TangemStakingTests.release(beta).xcconfig */,
 				C0F0B2863FC391152BAA6B4D /* Pods-TangemStaking-TangemStakingTests.release(alpha).xcconfig */,
-				38E1176CFD83BDC039B9C54F /* Pods-TangemStakingTests.debug(production).xcconfig */,
-				29888E486B6BAA6F8BA40042 /* Pods-TangemStakingTests.debug(beta).xcconfig */,
-				D223B0C3501A1B50EDE03409 /* Pods-TangemStakingTests.debug(alpha).xcconfig */,
-				ADF4666533574F2E62BE9B8A /* Pods-TangemStakingTests.release(production).xcconfig */,
-				AE50F7AC921A99B57AB3D215 /* Pods-TangemStakingTests.release(beta).xcconfig */,
-				0A35044D2E5DF9354751E2DE /* Pods-TangemStakingTests.release(alpha).xcconfig */,
 				F4916AA53286A77C171FB941 /* Pods-TangemUITests.debug(production).xcconfig */,
 				5EBD3533F9B0948C4AE510B3 /* Pods-TangemUITests.debug(beta).xcconfig */,
 				49109FE423D14714F57248CF /* Pods-TangemUITests.debug(alpha).xcconfig */,
 				D3D76D8599608571681C7327 /* Pods-TangemUITests.release(production).xcconfig */,
 				33ECB0D6351934688726187B /* Pods-TangemUITests.release(beta).xcconfig */,
 				23A325EA25D2DC67038CF8D7 /* Pods-TangemUITests.release(alpha).xcconfig */,
-				525ED95281D0370430CE15B9 /* Pods-TangemVisaTests.debug(production).xcconfig */,
-				F0655891F11B5FFD9E6CA574 /* Pods-TangemVisaTests.debug(beta).xcconfig */,
-				8EB471B08365F66EEAC8CF70 /* Pods-TangemVisaTests.debug(alpha).xcconfig */,
-				F1A93ACFEE75B4CA0FB802FC /* Pods-TangemVisaTests.release(production).xcconfig */,
-				347F5596549B7EA732F0107B /* Pods-TangemVisaTests.release(beta).xcconfig */,
-				5FB2E23E5A5C1D0EFA2D4C6C /* Pods-TangemVisaTests.release(alpha).xcconfig */,
-				3D96378A4AFFFB3C275A25B6 /* Pods-BlockchainSdk.debug(production).xcconfig */,
-				BA597B5F5CD6A9E0AEFB7C61 /* Pods-BlockchainSdk.debug(beta).xcconfig */,
-				81F365FD836105EB681A31A4 /* Pods-BlockchainSdk.debug(alpha).xcconfig */,
-				0653667C2116186AA274F7F3 /* Pods-BlockchainSdk.release(production).xcconfig */,
-				A52B07630ECB737F9530CCDC /* Pods-BlockchainSdk.release(beta).xcconfig */,
-				BF37A898B7BBEFF5F1B70773 /* Pods-BlockchainSdk.release(alpha).xcconfig */,
-				DCF1025DCBFCEC8723EF9F3B /* Pods-BlockchainSdkTests.debug(production).xcconfig */,
-				C308F4CFAD8646B3390E7EB7 /* Pods-BlockchainSdkTests.debug(beta).xcconfig */,
-				96AB87BFDFD1734D8C4B8FAD /* Pods-BlockchainSdkTests.debug(alpha).xcconfig */,
-				A80EC434BA35306F14C913ED /* Pods-BlockchainSdkTests.release(production).xcconfig */,
-				71D4775672C541A975B21FBF /* Pods-BlockchainSdkTests.release(beta).xcconfig */,
-				8D17D981F2680C2D3BBBDB9D /* Pods-BlockchainSdkTests.release(alpha).xcconfig */,
-				B13C3EB09AD6AB287DB25F0A /* Pods-BlockchainSdkExample.debug(production).xcconfig */,
-				1E9D97FE10850852FAB31950 /* Pods-BlockchainSdkExample.debug(beta).xcconfig */,
-				4E0A019646267BE6944A418B /* Pods-BlockchainSdkExample.debug(alpha).xcconfig */,
-				EDD4CB50BE6D2AD4A126B4AC /* Pods-BlockchainSdkExample.release(production).xcconfig */,
-				3D08F11EA813932E031CC19B /* Pods-BlockchainSdkExample.release(beta).xcconfig */,
-				94CA6E353244CCA9C0EDBA21 /* Pods-BlockchainSdkExample.release(alpha).xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -14656,6 +14532,7 @@
 				B6C0D3E02CBDC2E3001113ED /* TangemModules */,
 				B62C167E2CBE0B7900522683 /* Moya */,
 				B62C16802CBE0BA000522683 /* Alamofire */,
+				B67E38C02CC71A2C00D660EB /* TangemSdk */,
 			);
 			productName = "Tangem Tap";
 			productReference = 5D3F77C224BF56D800E8695B /* Tangem.app */;
@@ -14676,6 +14553,9 @@
 				5D3F77DA24BF56DC00E8695B /* PBXTargetDependency */,
 			);
 			name = TangemTests;
+			packageProductDependencies = (
+				B67E38C62CC7259B00D660EB /* TangemSdk */,
+			);
 			productName = "Tangem TapTests";
 			productReference = 5D3F77D824BF56DC00E8695B /* TangemTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -14704,7 +14584,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B09933982B5517EE00240CDB /* Build configuration list for PBXNativeTarget "TangemVisa" */;
 			buildPhases = (
-				10E54D371720447D0C7B006D /* [CP] Check Pods Manifest.lock */,
 				B09933722B5517E300240CDB /* Headers */,
 				B09933732B5517E300240CDB /* Sources */,
 				B09933742B5517E300240CDB /* Frameworks */,
@@ -14720,6 +14599,7 @@
 				B6C0D3FA2CBDC6DD001113ED /* Moya */,
 				B6C0D3FE2CBDC73E001113ED /* TangemModules */,
 				B62C16782CBE095A00522683 /* Alamofire */,
+				B67E38BA2CC7179000D660EB /* TangemSdk */,
 			);
 			productName = TangemVisa;
 			productReference = B09933772B5517E300240CDB /* TangemVisa.framework */;
@@ -14729,7 +14609,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B09933992B5517EE00240CDB /* Build configuration list for PBXNativeTarget "TangemVisaTests" */;
 			buildPhases = (
-				C9A49BC4EA334DABB99D5A77 /* [CP] Check Pods Manifest.lock */,
 				B099337A2B5517E600240CDB /* Sources */,
 				B099337B2B5517E600240CDB /* Frameworks */,
 				B099337C2B5517E600240CDB /* Resources */,
@@ -14749,12 +14628,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B62D43832CBC7ECA00C2460E /* Build configuration list for PBXNativeTarget "BlockchainSdkExample" */;
 			buildPhases = (
-				0D551947C9DB569E9CE32F87 /* [CP] Check Pods Manifest.lock */,
 				B62D43742CBC7EC700C2460E /* Sources */,
 				B62D43752CBC7EC700C2460E /* Frameworks */,
 				B62D43762CBC7EC700C2460E /* Resources */,
 				B62D438E2CBC7F1500C2460E /* Embed Frameworks */,
-				DD09F95CE951DF2D49A2A5C7 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -14766,6 +14643,7 @@
 				B62D43C12CBC823A00C2460E /* TangemWalletCoreBinariesWrapper */,
 				B655F5792CBC871F002391AF /* secp256k1 */,
 				B655F57B2CBC872E002391AF /* TweetNacl */,
+				B67E38C22CC71B5F00D660EB /* TangemSdk */,
 			);
 			productName = BlockchainSdkExample;
 			productReference = B62D43782CBC7EC700C2460E /* BlockchainSdkExample.app */;
@@ -14775,7 +14653,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B68E1F7A2CBC44060043E598 /* Build configuration list for PBXNativeTarget "BlockchainSdk" */;
 			buildPhases = (
-				A7F527217855CB90E0D02B77 /* [CP] Check Pods Manifest.lock */,
 				B68E1F602CBC44050043E598 /* Headers */,
 				B68E1F612CBC44050043E598 /* Sources */,
 				B68E1F622CBC44050043E598 /* Frameworks */,
@@ -14802,6 +14679,9 @@
 				B6C0D3F52CBDC552001113ED /* BinanceChain */,
 				B6C0D3F82CBDC5A3001113ED /* SwiftyJSON */,
 				B6E352722CC0B06B002636BC /* TangemWalletCoreBinariesWrapper */,
+				B6CAC1CB2CC336220001A427 /* SolanaSwift */,
+				B6FFC31E2CC70E1D00F4400E /* BitcoinCore */,
+				B67E38B82CC7147600D660EB /* TangemSdk */,
 			);
 			productName = BlockchainSdk;
 			productReference = B68E1F652CBC44050043E598 /* BlockchainSdk.framework */;
@@ -14811,7 +14691,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B68E1F812CBC44060043E598 /* Build configuration list for PBXNativeTarget "BlockchainSdkTests" */;
 			buildPhases = (
-				0E9CF5D1DD15D2CE031C395B /* [CP] Check Pods Manifest.lock */,
 				B68E1F682CBC44060043E598 /* Sources */,
 				B68E1F692CBC44060043E598 /* Frameworks */,
 				B68E1F6A2CBC44060043E598 /* Resources */,
@@ -14823,6 +14702,9 @@
 				B68E1F712CBC44060043E598 /* PBXTargetDependency */,
 			);
 			name = BlockchainSdkTests;
+			packageProductDependencies = (
+				B67E38C42CC7252900D660EB /* TangemSdk */,
+			);
 			productName = BlockchainSdkTests;
 			productReference = B68E1F6C2CBC44060043E598 /* BlockchainSdkTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -14831,7 +14713,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EF9E29AA2B4F0C9D00418559 /* Build configuration list for PBXNativeTarget "TangemExpress" */;
 			buildPhases = (
-				B60997D756ADC324240DC6D1 /* [CP] Check Pods Manifest.lock */,
 				EF9E298E2B4F0C8800418559 /* Headers */,
 				EF9E298F2B4F0C8800418559 /* Sources */,
 				EF9E29902B4F0C8800418559 /* Frameworks */,
@@ -14847,6 +14728,7 @@
 				B6C0D4082CBDCD34001113ED /* Moya */,
 				B6C0D40A2CBDCD47001113ED /* TangemModules */,
 				B62C167C2CBE0A3D00522683 /* Alamofire */,
+				B67E38BC2CC7179600D660EB /* TangemSdk */,
 			);
 			productName = TangemExpress;
 			productReference = EF9E29932B4F0C8800418559 /* TangemExpress.framework */;
@@ -14856,7 +14738,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EF9E29B12B4F0C9D00418559 /* Build configuration list for PBXNativeTarget "TangemExpressTests" */;
 			buildPhases = (
-				73804A7D6A1AE2F68D85D55D /* [CP] Check Pods Manifest.lock */,
 				EF9E29982B4F0C8C00418559 /* Sources */,
 				EF9E29992B4F0C8C00418559 /* Frameworks */,
 				EF9E299A2B4F0C8C00418559 /* Resources */,
@@ -14876,7 +14757,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EFEE23AB2BFF62D60099917E /* Build configuration list for PBXNativeTarget "TangemStaking" */;
 			buildPhases = (
-				EF560217446F5022D24A9B77 /* [CP] Check Pods Manifest.lock */,
 				EFEE23832BFF62D50099917E /* Headers */,
 				EFEE23842BFF62D50099917E /* Sources */,
 				EFEE23852BFF62D50099917E /* Frameworks */,
@@ -14892,6 +14772,7 @@
 				B6C0D3FC2CBDC6FE001113ED /* Moya */,
 				B6C0D4002CBDC759001113ED /* TangemModules */,
 				B62C167A2CBE0A1E00522683 /* Alamofire */,
+				B67E38BE2CC717A300D660EB /* TangemSdk */,
 			);
 			productName = TangemStaking;
 			productReference = EFEE23882BFF62D50099917E /* TangemStaking.framework */;
@@ -14901,7 +14782,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EFEE23AC2BFF62D60099917E /* Build configuration list for PBXNativeTarget "TangemStakingTests" */;
 			buildPhases = (
-				92C74F5F8E3A617EF3861913 /* [CP] Check Pods Manifest.lock */,
 				EFEE238D2BFF62D60099917E /* Sources */,
 				EFEE238E2BFF62D60099917E /* Frameworks */,
 				EFEE238F2BFF62D60099917E /* Resources */,
@@ -15014,6 +14894,9 @@
 				B6C0D3F02CBDC52D001113ED /* XCRemoteSwiftPackageReference "Moya" */,
 				B6C0D3F72CBDC5A3001113ED /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
 				B62C16772CBE095A00522683 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				B6CAC1C82CC3352D0001A427 /* XCRemoteSwiftPackageReference "Solana.Swift" */,
+				B6FFC31D2CC70E1D00F4400E /* XCRemoteSwiftPackageReference "bitcoincore" */,
+				B67E38B72CC7147600D660EB /* XCRemoteSwiftPackageReference "tangem-sdk-ios" */,
 			);
 			productRefGroup = 5D3F77C324BF56D800E8695B /* Products */;
 			projectDirPath = "";
@@ -15191,72 +15074,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0D551947C9DB569E9CE32F87 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-BlockchainSdkExample-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		0E9CF5D1DD15D2CE031C395B /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-BlockchainSdkTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		10E54D371720447D0C7B006D /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-TangemVisa-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		4FD33571C955E1EFF8E83834 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -15296,72 +15113,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		73804A7D6A1AE2F68D85D55D /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-TangemExpressTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		92C74F5F8E3A617EF3861913 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-TangemStakingTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		A7F527217855CB90E0D02B77 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-BlockchainSdk-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		B564608DF790C10DA1C07A51 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -15378,28 +15129,6 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-TangemTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		B60997D756ADC324240DC6D1 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-TangemExpress-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -15426,28 +15155,6 @@
 			shellScript = "#!/bin/bash\nset -e\n\n# Xcode 15 produces duplicate signatures for binary xcframeworks if they are referenced in other targets except the main app target\n# See https://developer.apple.com/forums/thread/733461 and https://github.com/CocoaPods/CocoaPods/issues/12022 for more info\n# Removing these duplicate signatures\nfind \"${BUILT_PRODUCTS_DIR}\" -type f -name \"*.signature\" -mindepth 2 -exec rm {} \\;\n";
 			showEnvVarsInLog = 0;
 		};
-		C9A49BC4EA334DABB99D5A77 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-TangemVisaTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		DAD2B95229B60131000282F7 /* Sort strings */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -15466,23 +15173,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if [[ \"${CI}\" == \"true\" || \"${ENABLE_PREVIEWS}\" == \"YES\" ]]; then\n    exit 0\nfi\n\nfind . -name 'Localizable.strings' -not -path './Pods/*' -exec sort {} -o {} \\;\n";
-		};
-		DD09F95CE951DF2D49A2A5C7 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BlockchainSdkExample/Pods-BlockchainSdkExample-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BlockchainSdkExample/Pods-BlockchainSdkExample-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BlockchainSdkExample/Pods-BlockchainSdkExample-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
 		};
 		E551D05F64007527CC513710 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -15523,28 +15213,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		EF560217446F5022D24A9B77 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-TangemStaking-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		EFA18E73290FBA1B00CF1AE4 /* Run SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -15576,7 +15244,6 @@
 				B0E479C22C3EB39D0043B239 /* MarketsTokenDetailsMetrics.swift in Sources */,
 				B60976A92C7384C100778E71 /* MarketsViewNavigationControllerConfigurator.swift in Sources */,
 				B6FE5B282B93C0FF00B7A76B /* UserCodeRecoveringMock.swift in Sources */,
-				0AD9EF0F2CC2A9B600466191 /* UnstakingSendAmountValidator.swift in Sources */,
 				DA070DE52ADD4F6600F7C0E4 /* SprinklrConfig.swift in Sources */,
 				DC37A0782A584BD000C2A3F2 /* UserTokensManagerMock.swift in Sources */,
 				EF70A4082C1714A100805D9F /* SendDestinationValidator.swift in Sources */,
@@ -16360,6 +16027,7 @@
 				DCE0E2C72CBE4891009A4007 /* SolanaWalletConnectSigner.swift in Sources */,
 				EF1E172E2BF50E07000364AE /* SettingsUserWalletRowView.swift in Sources */,
 				B041C9602C3FAD3900CE027A /* MarketsTokenDetailsPricePerformanceView.swift in Sources */,
+				B6E725E42CCACFE100318447 /* UnstakingSendAmountValidator.swift in Sources */,
 				DA406C1C2BD0D84200D1FC5E /* AddressTextView.swift in Sources */,
 				5D9DCB06255193C30059799C /* AppSettings.swift in Sources */,
 				DA559C4D2B02622600F59584 /* SendDestinationInputOutputMock.swift in Sources */,
@@ -18656,8 +18324,6 @@
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
-					"\"BitcoinCore\"",
-					"-framework",
 					"\"CFNetwork\"",
 					"-framework",
 					"\"CoreImage\"",
@@ -18696,15 +18362,9 @@
 					"-framework",
 					"\"Security\"",
 					"-framework",
-					"\"Solana_Swift\"",
-					"-framework",
-					"\"Starscream\"",
-					"-framework",
 					"\"StoreKit\"",
 					"-framework",
 					"\"SystemConfiguration\"",
-					"-framework",
-					"\"TangemSdk\"",
 					"-framework",
 					"\"UIKit\"",
 					"-framework",
@@ -18771,8 +18431,6 @@
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
-					"\"BitcoinCore\"",
-					"-framework",
 					"\"CFNetwork\"",
 					"-framework",
 					"\"CoreImage\"",
@@ -18811,15 +18469,9 @@
 					"-framework",
 					"\"Security\"",
 					"-framework",
-					"\"Solana_Swift\"",
-					"-framework",
-					"\"Starscream\"",
-					"-framework",
 					"\"StoreKit\"",
 					"-framework",
 					"\"SystemConfiguration\"",
-					"-framework",
-					"\"TangemSdk\"",
 					"-framework",
 					"\"UIKit\"",
 					"-framework",
@@ -18960,7 +18612,6 @@
 		};
 		B099338C2B5517EE00240CDB /* Debug(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5D2B276B568642703FC3AC66 /* Pods-TangemVisa.debug(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -19056,7 +18707,6 @@
 		};
 		B099338D2B5517EE00240CDB /* Debug(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 754059A24EB00582C9879E51 /* Pods-TangemVisa.debug(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -19152,7 +18802,6 @@
 		};
 		B099338E2B5517EE00240CDB /* Debug(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BAABAFC27DBD6457D16C7901 /* Pods-TangemVisa.debug(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -19248,7 +18897,6 @@
 		};
 		B099338F2B5517EE00240CDB /* Release(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 25BF1D8D39E12813480021D4 /* Pods-TangemVisa.release(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -19337,7 +18985,6 @@
 		};
 		B09933902B5517EE00240CDB /* Release(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3D77DAD4403B73C4F822951A /* Pods-TangemVisa.release(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -19426,7 +19073,6 @@
 		};
 		B09933912B5517EE00240CDB /* Release(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 97B02E3CBDB817408B0060B0 /* Pods-TangemVisa.release(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -19515,7 +19161,6 @@
 		};
 		B09933922B5517EE00240CDB /* Debug(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 525ED95281D0370430CE15B9 /* Pods-TangemVisaTests.debug(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -19595,7 +19240,6 @@
 		};
 		B09933932B5517EE00240CDB /* Debug(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F0655891F11B5FFD9E6CA574 /* Pods-TangemVisaTests.debug(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -19675,7 +19319,6 @@
 		};
 		B09933942B5517EE00240CDB /* Debug(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8EB471B08365F66EEAC8CF70 /* Pods-TangemVisaTests.debug(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -19755,7 +19398,6 @@
 		};
 		B09933952B5517EE00240CDB /* Release(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F1A93ACFEE75B4CA0FB802FC /* Pods-TangemVisaTests.release(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -19828,7 +19470,6 @@
 		};
 		B09933962B5517EE00240CDB /* Release(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 347F5596549B7EA732F0107B /* Pods-TangemVisaTests.release(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -19901,7 +19542,6 @@
 		};
 		B09933972B5517EE00240CDB /* Release(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5FB2E23E5A5C1D0EFA2D4C6C /* Pods-TangemVisaTests.release(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -19974,7 +19614,6 @@
 		};
 		B62D43842CBC7ECA00C2460E /* Debug(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B13C3EB09AD6AB287DB25F0A /* Pods-BlockchainSdkExample.debug(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -20067,7 +19706,6 @@
 		};
 		B62D43852CBC7ECA00C2460E /* Debug(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1E9D97FE10850852FAB31950 /* Pods-BlockchainSdkExample.debug(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -20160,7 +19798,6 @@
 		};
 		B62D43862CBC7ECA00C2460E /* Debug(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4E0A019646267BE6944A418B /* Pods-BlockchainSdkExample.debug(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -20253,7 +19890,6 @@
 		};
 		B62D43872CBC7ECA00C2460E /* Release(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EDD4CB50BE6D2AD4A126B4AC /* Pods-BlockchainSdkExample.release(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -20339,7 +19975,6 @@
 		};
 		B62D43882CBC7ECA00C2460E /* Release(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3D08F11EA813932E031CC19B /* Pods-BlockchainSdkExample.release(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -20425,7 +20060,6 @@
 		};
 		B62D43892CBC7ECA00C2460E /* Release(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 94CA6E353244CCA9C0EDBA21 /* Pods-BlockchainSdkExample.release(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -20511,7 +20145,6 @@
 		};
 		B68E1F7B2CBC44060043E598 /* Debug(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3D96378A4AFFFB3C275A25B6 /* Pods-BlockchainSdk.debug(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -20607,7 +20240,6 @@
 		};
 		B68E1F7C2CBC44060043E598 /* Debug(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BA597B5F5CD6A9E0AEFB7C61 /* Pods-BlockchainSdk.debug(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -20702,7 +20334,6 @@
 		};
 		B68E1F7D2CBC44060043E598 /* Debug(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 81F365FD836105EB681A31A4 /* Pods-BlockchainSdk.debug(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -20797,7 +20428,6 @@
 		};
 		B68E1F7E2CBC44060043E598 /* Release(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0653667C2116186AA274F7F3 /* Pods-BlockchainSdk.release(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -20886,7 +20516,6 @@
 		};
 		B68E1F7F2CBC44060043E598 /* Release(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A52B07630ECB737F9530CCDC /* Pods-BlockchainSdk.release(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -20975,7 +20604,6 @@
 		};
 		B68E1F802CBC44060043E598 /* Release(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BF37A898B7BBEFF5F1B70773 /* Pods-BlockchainSdk.release(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -21064,7 +20692,6 @@
 		};
 		B68E1F822CBC44060043E598 /* Debug(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DCF1025DCBFCEC8723EF9F3B /* Pods-BlockchainSdkTests.debug(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -21144,7 +20771,6 @@
 		};
 		B68E1F832CBC44060043E598 /* Debug(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C308F4CFAD8646B3390E7EB7 /* Pods-BlockchainSdkTests.debug(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -21224,7 +20850,6 @@
 		};
 		B68E1F842CBC44060043E598 /* Debug(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 96AB87BFDFD1734D8C4B8FAD /* Pods-BlockchainSdkTests.debug(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -21304,7 +20929,6 @@
 		};
 		B68E1F852CBC44060043E598 /* Release(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A80EC434BA35306F14C913ED /* Pods-BlockchainSdkTests.release(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -21377,7 +21001,6 @@
 		};
 		B68E1F862CBC44060043E598 /* Release(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 71D4775672C541A975B21FBF /* Pods-BlockchainSdkTests.release(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -21450,7 +21073,6 @@
 		};
 		B68E1F872CBC44060043E598 /* Release(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8D17D981F2680C2D3BBBDB9D /* Pods-BlockchainSdkTests.release(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -21624,8 +21246,6 @@
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
-					"\"BitcoinCore\"",
-					"-framework",
 					"\"CFNetwork\"",
 					"-framework",
 					"\"CoreImage\"",
@@ -21664,15 +21284,9 @@
 					"-framework",
 					"\"Security\"",
 					"-framework",
-					"\"Solana_Swift\"",
-					"-framework",
-					"\"Starscream\"",
-					"-framework",
 					"\"StoreKit\"",
 					"-framework",
 					"\"SystemConfiguration\"",
-					"-framework",
-					"\"TangemSdk\"",
 					"-framework",
 					"\"UIKit\"",
 					"-framework",
@@ -21853,8 +21467,6 @@
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
-					"\"BitcoinCore\"",
-					"-framework",
 					"\"CFNetwork\"",
 					"-framework",
 					"\"CoreImage\"",
@@ -21893,15 +21505,9 @@
 					"-framework",
 					"\"Security\"",
 					"-framework",
-					"\"Solana_Swift\"",
-					"-framework",
-					"\"Starscream\"",
-					"-framework",
 					"\"StoreKit\"",
 					"-framework",
 					"\"SystemConfiguration\"",
-					"-framework",
-					"\"TangemSdk\"",
 					"-framework",
 					"\"UIKit\"",
 					"-framework",
@@ -21988,7 +21594,6 @@
 		};
 		EF9E29AB2B4F0C9D00418559 /* Debug(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CAAA98E74C8F6E0078272339 /* Pods-TangemExpress.debug(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -22082,7 +21687,6 @@
 		};
 		EF9E29AC2B4F0C9D00418559 /* Debug(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D600E3C682E8AB897305ABEE /* Pods-TangemExpress.debug(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -22176,7 +21780,6 @@
 		};
 		EF9E29AD2B4F0C9D00418559 /* Debug(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3F3B24BC8D934414F8CF0C36 /* Pods-TangemExpress.debug(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -22270,7 +21873,6 @@
 		};
 		EF9E29AE2B4F0C9D00418559 /* Release(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7C7EEA8F11817AD494DF9C80 /* Pods-TangemExpress.release(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -22357,7 +21959,6 @@
 		};
 		EF9E29AF2B4F0C9D00418559 /* Release(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 390C5DEB132D752D96BEFC4E /* Pods-TangemExpress.release(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -22444,7 +22045,6 @@
 		};
 		EF9E29B02B4F0C9D00418559 /* Release(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FF542AF889E11958883EF4CE /* Pods-TangemExpress.release(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -22531,7 +22131,6 @@
 		};
 		EF9E29B22B4F0C9D00418559 /* Debug(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AF2D7AC7C61A79B33AF6B61E /* Pods-TangemExpressTests.debug(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -22610,7 +22209,6 @@
 		};
 		EF9E29B32B4F0C9D00418559 /* Debug(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 95536EF80319C1F4D9ED5420 /* Pods-TangemExpressTests.debug(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -22689,7 +22287,6 @@
 		};
 		EF9E29B42B4F0C9D00418559 /* Debug(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B1645742B30AF3A0C015827A /* Pods-TangemExpressTests.debug(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -22768,7 +22365,6 @@
 		};
 		EF9E29B52B4F0C9D00418559 /* Release(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 642A6048E3FEBA5FA2C02BA6 /* Pods-TangemExpressTests.release(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -22840,7 +22436,6 @@
 		};
 		EF9E29B62B4F0C9D00418559 /* Release(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8CDF3A073BF11E52B122E52F /* Pods-TangemExpressTests.release(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -22912,7 +22507,6 @@
 		};
 		EF9E29B72B4F0C9D00418559 /* Release(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 044BB04C4683A6282DB6C5BC /* Pods-TangemExpressTests.release(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -22984,7 +22578,6 @@
 		};
 		EFEE239F2BFF62D60099917E /* Debug(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 57E91D7D061D01E6F31E3D7E /* Pods-TangemStaking.debug(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -23079,7 +22672,6 @@
 		};
 		EFEE23A02BFF62D60099917E /* Debug(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 56523655CAB2BD83A01946F5 /* Pods-TangemStaking.debug(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -23174,7 +22766,6 @@
 		};
 		EFEE23A12BFF62D60099917E /* Debug(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 99F1B946CBB9DA59974FF2C7 /* Pods-TangemStaking.debug(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -23269,7 +22860,6 @@
 		};
 		EFEE23A22BFF62D60099917E /* Release(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FD5541B8BF11B6E19AFCE2CB /* Pods-TangemStaking.release(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -23357,7 +22947,6 @@
 		};
 		EFEE23A32BFF62D60099917E /* Release(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2436D00F85D3DB2F72BDCCD3 /* Pods-TangemStaking.release(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -23445,7 +23034,6 @@
 		};
 		EFEE23A42BFF62D60099917E /* Release(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D67C35B966539AB4F5CE8C1C /* Pods-TangemStaking.release(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -23533,7 +23121,6 @@
 		};
 		EFEE23A52BFF62D60099917E /* Debug(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 38E1176CFD83BDC039B9C54F /* Pods-TangemStakingTests.debug(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -23611,7 +23198,6 @@
 		};
 		EFEE23A62BFF62D60099917E /* Debug(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 29888E486B6BAA6F8BA40042 /* Pods-TangemStakingTests.debug(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -23689,7 +23275,6 @@
 		};
 		EFEE23A72BFF62D60099917E /* Debug(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D223B0C3501A1B50EDE03409 /* Pods-TangemStakingTests.debug(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -23767,7 +23352,6 @@
 		};
 		EFEE23A82BFF62D60099917E /* Release(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = ADF4666533574F2E62BE9B8A /* Pods-TangemStakingTests.release(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -23838,7 +23422,6 @@
 		};
 		EFEE23A92BFF62D60099917E /* Release(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AE50F7AC921A99B57AB3D215 /* Pods-TangemStakingTests.release(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -23909,7 +23492,6 @@
 		};
 		EFEE23AA2BFF62D60099917E /* Release(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0A35044D2E5DF9354751E2DE /* Pods-TangemStakingTests.release(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -24081,8 +23663,6 @@
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
-					"\"BitcoinCore\"",
-					"-framework",
 					"\"CFNetwork\"",
 					"-framework",
 					"\"CoreImage\"",
@@ -24121,15 +23701,9 @@
 					"-framework",
 					"\"Security\"",
 					"-framework",
-					"\"Solana_Swift\"",
-					"-framework",
-					"\"Starscream\"",
-					"-framework",
 					"\"StoreKit\"",
 					"-framework",
 					"\"SystemConfiguration\"",
-					"-framework",
-					"\"TangemSdk\"",
 					"-framework",
 					"\"UIKit\"",
 					"-framework",
@@ -24310,8 +23884,6 @@
 					"-framework",
 					"\"AnalyticsConnector\"",
 					"-framework",
-					"\"BitcoinCore\"",
-					"-framework",
 					"\"CFNetwork\"",
 					"-framework",
 					"\"CoreImage\"",
@@ -24350,15 +23922,9 @@
 					"-framework",
 					"\"Security\"",
 					"-framework",
-					"\"Solana_Swift\"",
-					"-framework",
-					"\"Starscream\"",
-					"-framework",
 					"\"StoreKit\"",
 					"-framework",
 					"\"SystemConfiguration\"",
-					"-framework",
-					"\"TangemSdk\"",
 					"-framework",
 					"\"UIKit\"",
 					"-framework",
@@ -24689,6 +24255,14 @@
 				minimumVersion = 0.6.7;
 			};
 		};
+		B67E38B72CC7147600D660EB /* XCRemoteSwiftPackageReference "tangem-sdk-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Tangem/tangem-sdk-ios.git";
+			requirement = {
+				kind = revision;
+				revision = 673b4979f8fd0bea7840364e93b51468053689f4;
+			};
+		};
 		B68E1F882CBC44910043E598 /* XCRemoteSwiftPackageReference "hedera-sdk-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tangem/hedera-sdk-swift.git";
@@ -24769,6 +24343,14 @@
 				minimumVersion = 0.12.0;
 			};
 		};
+		B6CAC1C82CC3352D0001A427 /* XCRemoteSwiftPackageReference "Solana.Swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tangem/Solana.Swift.git";
+			requirement = {
+				kind = exactVersion;
+				version = "1.2.0-tangem12";
+			};
+		};
 		B6F525902B6C05210079ADD1 /* XCRemoteSwiftPackageReference "wallet-core-binaries-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tangem/wallet-core-binaries-ios.git";
@@ -24783,6 +24365,14 @@
 			requirement = {
 				kind = exactVersion;
 				version = "5.1.0-tangem3";
+			};
+		};
+		B6FFC31D2CC70E1D00F4400E /* XCRemoteSwiftPackageReference "bitcoincore" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tangem/bitcoincore.git";
+			requirement = {
+				kind = exactVersion;
+				version = 0.0.21;
 			};
 		};
 		DCB616E32CB39A8100BE4481 /* XCRemoteSwiftPackageReference "reown-swift" */ = {
@@ -24889,6 +24479,46 @@
 			package = 0ABC61132C410AFD00065EBA /* XCRemoteSwiftPackageReference "tweetnacl-swiftwrap" */;
 			productName = TweetNacl;
 		};
+		B67E38B82CC7147600D660EB /* TangemSdk */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B67E38B72CC7147600D660EB /* XCRemoteSwiftPackageReference "tangem-sdk-ios" */;
+			productName = TangemSdk;
+		};
+		B67E38BA2CC7179000D660EB /* TangemSdk */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B67E38B72CC7147600D660EB /* XCRemoteSwiftPackageReference "tangem-sdk-ios" */;
+			productName = TangemSdk;
+		};
+		B67E38BC2CC7179600D660EB /* TangemSdk */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B67E38B72CC7147600D660EB /* XCRemoteSwiftPackageReference "tangem-sdk-ios" */;
+			productName = TangemSdk;
+		};
+		B67E38BE2CC717A300D660EB /* TangemSdk */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B67E38B72CC7147600D660EB /* XCRemoteSwiftPackageReference "tangem-sdk-ios" */;
+			productName = TangemSdk;
+		};
+		B67E38C02CC71A2C00D660EB /* TangemSdk */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B67E38B72CC7147600D660EB /* XCRemoteSwiftPackageReference "tangem-sdk-ios" */;
+			productName = TangemSdk;
+		};
+		B67E38C22CC71B5F00D660EB /* TangemSdk */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B67E38B72CC7147600D660EB /* XCRemoteSwiftPackageReference "tangem-sdk-ios" */;
+			productName = TangemSdk;
+		};
+		B67E38C42CC7252900D660EB /* TangemSdk */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B67E38B72CC7147600D660EB /* XCRemoteSwiftPackageReference "tangem-sdk-ios" */;
+			productName = TangemSdk;
+		};
+		B67E38C62CC7259B00D660EB /* TangemSdk */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B67E38B72CC7147600D660EB /* XCRemoteSwiftPackageReference "tangem-sdk-ios" */;
+			productName = TangemSdk;
+		};
 		B68E1F892CBC44910043E598 /* Hedera */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B68E1F882CBC44910043E598 /* XCRemoteSwiftPackageReference "hedera-sdk-swift" */;
@@ -24973,6 +24603,11 @@
 			package = B6C1BE6B2B6C2F4E008FE5A0 /* XCRemoteSwiftPackageReference "secp256k1.swift" */;
 			productName = secp256k1;
 		};
+		B6CAC1CB2CC336220001A427 /* SolanaSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6CAC1C82CC3352D0001A427 /* XCRemoteSwiftPackageReference "Solana.Swift" */;
+			productName = SolanaSwift;
+		};
 		B6E352722CC0B06B002636BC /* TangemWalletCoreBinariesWrapper */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B6F525902B6C05210079ADD1 /* XCRemoteSwiftPackageReference "wallet-core-binaries-ios" */;
@@ -24986,6 +24621,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B6F6252E2C85E1A600DEF098 /* XCRemoteSwiftPackageReference "DGCharts" */;
 			productName = DGCharts;
+		};
+		B6FFC31E2CC70E1D00F4400E /* BitcoinCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6FFC31D2CC70E1D00F4400E /* XCRemoteSwiftPackageReference "bitcoincore" */;
+			productName = BitcoinCore;
 		};
 		DCB616E42CB39AE100BE4481 /* WalletConnect */ = {
 			isa = XCSwiftPackageProductDependency;

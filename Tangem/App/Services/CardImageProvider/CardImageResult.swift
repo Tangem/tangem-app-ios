@@ -6,7 +6,9 @@
 //  Copyright © 2022 Tangem AG. All rights reserved.
 //
 
-import SwiftUI
+import Foundation
+import class UIKit.UIImage
+import struct SwiftUI.Image
 
 enum CardImageResult {
     case cached(UIImage)
