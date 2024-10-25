@@ -32,9 +32,13 @@ private extension OnrampViewModel {
     func bind() {
         // TODO: Lisen interactor to update view
         // Temp mock
-        paymentState = .loaded(
-            data: .init(iconURL: nil, paymentMethodName: "Card", providerName: "1Inch", badge: .bestRate) {}
-        )
+        paymentState = .loading
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            self.paymentState = .loaded(
+                data: .init(iconURL: nil, paymentMethodName: "Card", providerName: "1Inch", badge: .bestRate) {}
+            )
+        }
     }
 }
 
