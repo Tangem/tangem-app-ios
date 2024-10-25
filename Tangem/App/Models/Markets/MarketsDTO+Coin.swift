@@ -30,6 +30,7 @@ extension MarketsDTO.Coins {
         let networks: [NetworkModel]?
         let shortDescription: String?
         let fullDescription: String?
+        let exchangesAmount: Int?
         let insights: Insights?
         let links: MarketsTokenDetailsLinks?
         let metrics: MarketsTokenDetailsMetrics?

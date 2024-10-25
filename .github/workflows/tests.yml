@@ -22,22 +22,60 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  check_if_pr_has_always_run_tests_label:
+    name: Check if the PR has always_run_tests label
+    runs-on: ubuntu-latest
+    outputs:
+      has_always_run_tests_label: ${{ steps.always_run_tests_label_check.outputs.label_check == 'success' }}
+    steps:
+    - id: always_run_tests_label_check
+      if: ${{ github.event_name != 'workflow_dispatch' }}
+      # https://hub.docker.com/r/agilepathway/pull-request-label-checker/tags
+      uses: docker://agilepathway/pull-request-label-checker@sha256:da7c8677e87239522e0c6869ecc4c86d6b7db8b6859ad332b8b1c2129b76177b # v1.6.56 linux/amd64
+      with:
+        one_of: always_run_tests
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        allow_failure: true
+
   test:
-    name: Test
-    runs-on: self-hosted
-    if: github.event.pull_request.draft == false
+    name: Run unit tests
+    runs-on: macos-14
+    needs: check_if_pr_has_always_run_tests_label
+    if: github.event.pull_request.draft == false || needs.check_if_pr_has_always_run_tests_label.outputs.has_always_run_tests_label == 'true'
     steps:
     - name: Checkout
       uses: actions/checkout@v3
       with:
         submodules: true
         token: ${{ secrets.GH_MOBILE_PAT }}
-        
+
     - name: Bundle install
       run: |
         bundle config path vendor/bundle
         bundle install --jobs 4 --retry 3
-        
-    - name: Tests
+
+    - name: Test SPM modules
+      run: bundle exec fastlane test_modules
+
+    - name: Test host app
       run: bundle exec fastlane test
-      
+
+  check_bsdk_example_buildable:
+    name: Check BSDK example project
+    runs-on: self-hosted  # This target requires code signing, so we use self-hosted runners
+    needs: check_if_pr_has_always_run_tests_label
+    if: github.event.pull_request.draft == false || needs.check_if_pr_has_always_run_tests_label.outputs.has_always_run_tests_label == 'true'
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: true
+        token: ${{ secrets.GH_MOBILE_PAT }}
+
+    - name: Bundle install
+      run: |
+        bundle config path vendor/bundle
+        bundle install --jobs 4 --retry 3
+
+    - name: Build BSDK example
+      run: bundle exec fastlane check_bsdk_example_buildable

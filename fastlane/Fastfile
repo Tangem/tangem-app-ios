@@ -4,26 +4,76 @@ BUILD_PATH = "./fastlane/builds/"
 PRODUCTION_SCHEME = "Tangem"
 BETA_SCHEME = "Tangem Beta"
 ALPHA_SCHEME = "Tangem Alpha"
+BSDK_EXAMPLE_SCHEME = "BlockchainSdkExample"
+WORKSPACE_NAME = "TangemApp.xcworkspace"
 FIREBASE_TESTERS_GROUP = "testers"
 
 before_all do |lane, options|
-  xcode_select("/Applications/Xcode.app")
+  lanes_to_skip_bootstrap = [
+    :update_translations,
+  ]
+
+  if lanes_to_skip_bootstrap.include?(lane)
+    next
+  end
+
+  # Xcode version overrides available only on CI
+  if ENV["CI"]&.downcase == "true"
+    if options[:xcode_version_override]&.empty?
+      # Will use the Xcode version from the .xcode-version file
+      xcodes(
+        select_for_current_build_only: true
+      )
+    else
+      xcodes(
+        version: options[:xcode_version_override], 
+        select_for_current_build_only: true
+      )
+    end
+  end
 
   Dir.chdir("..") do
     sh("./bootstrap.sh") 
   end
+
+  ENV["FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT"] = "120"
+  ENV["FASTLANE_XCODEBUILD_SETTINGS_RETRIES"] = "4"
 end
 
 desc """
   A lane that builds and tests the scheme \"Tangem\" using a clean and build application.
   Using enviroment: Production
+  Options:
+  - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 """
-lane :test do
+lane :test do |options|
   run_tests(
-    workspace: "TangemApp.xcworkspace",
+    workspace: WORKSPACE_NAME,
     scheme: PRODUCTION_SCHEME,
     clean: true,
     code_coverage: true
+  )
+end
+
+desc """
+  A lane that builds and tests SPM modules located in the \"Modules\" folder.
+  A separate lane is needed since it's still not possible to run unit tests from remove/local SPM dependencies inside the host app,
+  see https://forums.swift.org/t/running-swiftpm-tests-inside-project/62760 for details.
+  Options:
+  - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+"""
+lane :test_modules do |options|
+  run_tests(
+    package_path: "Modules",
+    scheme: "TangemModules",
+    # Without it fastlane won't pass the "-destination" argument to the "xcodebuild" and the build will fail.
+    # A real & valid device name is not required, fastlane will use the first available device.
+    device: "iPhone",
+    # Still required in 2024 https://github.com/fastlane/fastlane/issues/20012#issuecomment-1263765513
+    output_directory: Dir.pwd + "/test_output",
+    result_bundle: true,
+    xcodebuild_formatter: "xcpretty",
+    clean: true
   )
 end
 
@@ -34,6 +84,7 @@ desc """
   - version: app version
   - build: optional build number
   - changelog: string for description archive
+  - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
   """
 lane :release do |options|
   app_store_connect_api_key(duration: 1200, is_key_content_base64: true)
@@ -56,12 +107,26 @@ lane :release do |options|
 end
 
 desc """
+A lane that builds a \"BlockchainSdkExample\" scheme without running or publishing it, just to check that the scheme is buildable.
+"""
+lane :check_bsdk_example_buildable do |options|
+  clear_derived_data  # Required otherwise raw xcodebuild doesn't work reliably
+  xcodebuild(
+    workspace: WORKSPACE_NAME,
+    scheme: BSDK_EXAMPLE_SCHEME,
+    xcargs: "-allowProvisioningUpdates",
+    analyze: true
+  )
+end
+
+desc """
 A lane that builds a \"Tangem Beta\" scheme and uploads the archive to Firebase for testing.
 Using enviroment: Production
 Options:
 - version: app version
 - build: optional build number
 - changelog: string for description archive
+- xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 """
 lane :beta do |options|
   increment_version_number(version_number: options[:version])
@@ -88,6 +153,7 @@ Options:
 - version: app version
 - build: optional build number
 - changelog: string for description archive
+- xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 """
 lane :alpha do |options|
   increment_version_number(version_number: options[:version])
@@ -123,6 +189,30 @@ lane :refresh_dsyms do |options|
   )
   upload_symbols_to_crashlytics(app_id: ENV["PRODUCTION_SCHEME"])
   clean_build_artifacts
+end
+
+desc """
+Fetches and updates localization bundles using Localise fastlane action (https://github.com/lokalise/lokalise-fastlane-actions).
+Uses `LOKALISE_API_TOKEN` and `LOKALISE_PROJECT_ID` env vars.
+Options:
+- languages: A comma-delimited string of languages to update, like `en,fr,de,ja,ru,es,uk_UA`. Pass an empty string to update all available languages.
+- destination: A file path to save localization files to.
+"""
+lane :update_translations do |options|
+  # Can't pass an array as a param for a lane, see https://github.com/fastlane-community/fastlane-plugin-appicon/issues/41 for details
+  languages = options[:languages]&.split(",")
+
+  destination = options[:destination]
+  UI.user_error!("Invalid destination path '#{destination}' for localization files") unless (destination and not destination.empty?)
+
+  lokalise(
+    destination: destination,
+    replace_breaks: true,
+    use_original: true,
+    languages: languages,
+    export_sort: "a_z",
+    export_empty_as: "base"
+  )
 end
 
 private_lane :build do |options|

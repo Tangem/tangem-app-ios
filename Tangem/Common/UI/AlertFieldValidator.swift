@@ -41,3 +41,12 @@ extension AlertFieldValidator: UITextFieldDelegate {
         return isValid(textField.text ?? "")
     }
 }
+
+extension AlertFieldValidator {
+    static func makeUniqueWalletNameFieldValidator(otherWalletNames: [String]) -> AlertFieldValidator {
+        AlertFieldValidator { input in
+            let input = input.trimmed()
+            return !(otherWalletNames.contains(input) || input.isEmpty)
+        }
+    }
+}

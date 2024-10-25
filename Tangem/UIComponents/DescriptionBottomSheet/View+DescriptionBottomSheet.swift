@@ -10,14 +10,18 @@ import SwiftUI
 
 extension View {
     @ViewBuilder
-    func descriptionBottomSheet(
+    func tokenDescriptionBottomSheet(
         info: Binding<DescriptionBottomSheetInfo?>,
-        backgroundColor: Color?
+        backgroundColor: Color?,
+        onGeneratedAITapAction: (() -> Void)?
     ) -> some View {
         sheet(item: info) { info in
-            DescriptionBottomSheetView(info: info)
+            TokenDescriptionBottomSheetView(info: info, generatedWithAIAction: onGeneratedAITapAction)
                 .adaptivePresentationDetents()
-                .background(backgroundColor.ignoresSafeArea(.all, edges: .bottom))
+                .background(
+                    backgroundColor
+                        .ignoresSafeArea(edges: .bottom)
+                )
         }
     }
 }

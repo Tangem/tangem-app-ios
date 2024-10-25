@@ -17,7 +17,7 @@ class ManageTokensAdapter {
     private let longHashesSupported: Bool
     private let existingCurves: [EllipticCurve]
     private let userTokensManager: UserTokensManager
-    private let loader: ListDataLoader
+    private let loader: TokensListDataLoader
 
     // This parameter is required due to the fact that the adapter is used in various places
     private let analyticsSourceRawValue: String
@@ -53,7 +53,7 @@ class ManageTokensAdapter {
         longHashesSupported = settings.longHashesSupported
         existingCurves = settings.existingCurves
         userTokensManager = settings.userTokensManager
-        loader = ListDataLoader(supportedBlockchains: settings.supportedBlockchains)
+        loader = TokensListDataLoader(supportedBlockchains: settings.supportedBlockchains)
         analyticsSourceRawValue = settings.analyticsSourceRawValue
 
         bind()

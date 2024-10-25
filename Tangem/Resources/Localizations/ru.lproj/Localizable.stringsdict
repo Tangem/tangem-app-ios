@@ -13,13 +13,13 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%li карта</string>
+        <string>%li устройство</string>
         <key>few</key>
-        <string>%li карты</string>
+        <string>%li устройства</string>
         <key>many</key>
-        <string>%li карт</string>
+        <string>%li устройств</string>
         <key>other</key>
-        <string>%li карт</string>
+        <string>%li устройств</string>
       </dict>
     </dict>
     <key>common_days_no_param</key>
@@ -133,7 +133,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%li слово</string>
+        <string></string>
         <key>few</key>
         <string>%li слова</string>
         <key>many</key>
@@ -193,13 +193,13 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Используйте вашу карту, чтобы получить адрес для %li сети</string>
+        <string>Используйте вашу карту или кольцо, чтобы получить адрес для %li сети</string>
         <key>few</key>
-        <string>Используйте вашу карту, чтобы получить адреса для %li сетей</string>
+        <string>Используйте вашу карту или кольцо, чтобы получить адреса для %li сетей</string>
         <key>many</key>
-        <string>Используйте вашу карту, чтобы получить адреса для %li сетей</string>
+        <string>Используйте вашу карту или кольцо, чтобы получить адреса для %li сетей</string>
         <key>other</key>
-        <string>Используйте вашу карту, чтобы получить адреса для %li сетей</string>
+        <string>Используйте вашу карту или кольцо, чтобы получить адреса для %li сетей</string>
       </dict>
     </dict>
   </dict>

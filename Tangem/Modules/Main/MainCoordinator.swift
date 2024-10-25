@@ -31,7 +31,7 @@ class MainCoordinator: CoordinatorObject {
 
     @Published var detailsCoordinator: DetailsCoordinator?
     @Published var tokenDetailsCoordinator: TokenDetailsCoordinator?
-    @Published var marketsTokenDetailsCoordinator: TokenMarketsDetailsCoordinator?
+    @Published var marketsTokenDetailsCoordinator: MarketsTokenDetailsCoordinator?
     @Published var stakingDetailsCoordinator: StakingDetailsCoordinator?
 
     // MARK: - Child coordinators (Other)
@@ -39,7 +39,6 @@ class MainCoordinator: CoordinatorObject {
     @Published var modalOnboardingCoordinator: OnboardingCoordinator?
     @Published var sendCoordinator: SendCoordinator? = nil
     @Published var expressCoordinator: ExpressCoordinator? = nil
-    @Published var legacyTokenListCoordinator: LegacyTokenListCoordinator? = nil
 
     // MARK: - Child view models
 
@@ -127,7 +126,7 @@ class MainCoordinator: CoordinatorObject {
             }
 
             withAnimation(.easeInOut(duration: Constants.tooltipAnimationDuration)) {
-                self.isMarketsTooltipVisible = FeatureProvider.isAvailable(.markets) && !self.tooltipStorageProvider.marketsTooltipWasShown
+                self.isMarketsTooltipVisible = !self.tooltipStorageProvider.marketsTooltipWasShown
             }
         }
     }
@@ -226,19 +225,6 @@ extension MainCoordinator: MultiWalletMainContentRoutable {
             optionsProviding: optionsManager,
             optionsEditing: optionsManager
         )
-    }
-
-    func openManageTokens(with settings: LegacyManageTokensSettings, userTokensManager: UserTokensManager) {
-        let dismissAction: Action<Void> = { [weak self] _ in
-            self?.legacyTokenListCoordinator = nil
-        }
-
-        let coordinator = LegacyTokenListCoordinator(dismissAction: dismissAction)
-        coordinator.start(with: .init(
-            settings: settings,
-            userTokensManager: userTokensManager
-        ))
-        legacyTokenListCoordinator = coordinator
     }
 }
 
@@ -402,10 +388,33 @@ extension MainCoordinator: SingleTokenBaseRoutable {
     func openMarketsTokenDetails(tokenModel: MarketsTokenModel) {
         mainBottomSheetUIManager.hide()
 
-        let coordinator = TokenMarketsDetailsCoordinator()
+        let coordinator = MarketsTokenDetailsCoordinator()
         coordinator.start(with: .init(info: tokenModel, style: .defaultNavigationStack))
 
         marketsTokenDetailsCoordinator = coordinator
+    }
+
+    func openOnramp(walletModel: WalletModel, userWalletModel: UserWalletModel) {
+        mainBottomSheetUIManager.hide()
+
+        let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] navigationInfo in
+            self?.sendCoordinator = nil
+
+            if let navigationInfo {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                    self?.openFeeCurrency(for: navigationInfo.walletModel, userWalletModel: navigationInfo.userWalletModel)
+                }
+            }
+        }
+
+        let coordinator = SendCoordinator(dismissAction: dismissAction)
+        let options = SendCoordinator.Options(
+            walletModel: walletModel,
+            userWalletModel: userWalletModel,
+            type: .onramp
+        )
+        coordinator.start(with: options)
+        sendCoordinator = coordinator
     }
 }
 

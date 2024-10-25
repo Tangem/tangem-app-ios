@@ -94,8 +94,6 @@ private struct DummyOverlayContentContainerViewControllerAdapter:
     }
 
     private func assertIfNeeded<T>(for type: T) {
-        if FeatureProvider.isAvailable(.markets) {
-            assertionFailure("Inject proper `\(type)` implementation into the view hierarchy")
-        }
+        assertionFailure("Inject proper `\(type)` implementation into the view hierarchy")
     }
 }

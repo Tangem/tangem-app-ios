@@ -25,10 +25,14 @@ struct ExpressAPIProviderFactory {
         let publicKey = signVerifierPublicKey(expressAPIType: expressAPIType)
         let exchangeDataDecoder = CommonExpressExchangeDataDecoder(publicKey: publicKey)
 
+        let containsRing = AppSettings.shared.userWalletIdsWithRing.contains(userId)
+        let refcode = containsRing ? Refcodes.ring.rawValue : nil
+
         let credentials = ExpressAPICredential(
             apiKey: apiKey,
             userId: userId,
-            sessionId: AppConstants.sessionId
+            sessionId: AppConstants.sessionId,
+            refcode: refcode
         )
 
         let deviceInfo = ExpressDeviceInfo(
@@ -83,5 +87,11 @@ private extension ExpressAPIProviderFactory {
 
         assertionFailure("Can't get the app version from the app bundle")
         return .unknown.lowercased()
+    }
+}
+
+private extension ExpressAPIProviderFactory {
+    enum Refcodes: String {
+        case ring
     }
 }

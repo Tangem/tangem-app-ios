@@ -32,14 +32,11 @@ struct UserWalletSettingsCoordinatorView: CoordinatorView {
             .navigation(item: $coordinator.manageTokensCoordinator) {
                 ManageTokensCoordinatorView(coordinator: $0)
             }
-            .navigation(item: $coordinator.cardSettingsCoordinator) {
-                CardSettingsCoordinatorView(coordinator: $0)
-            }
             .navigation(item: $coordinator.referralCoordinator) {
                 ReferralCoordinatorView(coordinator: $0)
             }
-            .navigation(item: $coordinator.scanCardSettingsViewModel) {
-                ScanCardSettingsView(viewModel: $0)
+            .navigation(item: $coordinator.scanCardSettingsCoordinator) {
+                ScanCardSettingsCoordinatorView(coordinator: $0)
             }
     }
 

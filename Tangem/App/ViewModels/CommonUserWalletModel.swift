@@ -10,7 +10,6 @@ import Foundation
 import TangemSdk
 import BlockchainSdk
 import Combine
-import Alamofire
 import SwiftUI
 
 class CommonUserWalletModel {
@@ -291,6 +290,9 @@ extension CommonUserWalletModel: UserWalletModel {
             // we have to read an actual status from backup validator
             _updatePublisher.send()
         }
+
+        // update for ring image
+        _cardHeaderImagePublisher.send(config.cardHeaderImage)
     }
 
     func addAssociatedCard(_ cardId: String) {

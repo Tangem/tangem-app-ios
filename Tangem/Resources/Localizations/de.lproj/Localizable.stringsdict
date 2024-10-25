@@ -13,9 +13,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%li Karte</string>
+        <string>%li Gerät</string>
         <key>other</key>
-        <string>%li Karten</string>
+        <string>%li Geräte</string>
       </dict>
     </dict>
     <key>common_days_no_param</key>
@@ -61,9 +61,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%li Börse</string>
+        <string>%li börse</string>
         <key>other</key>
-        <string>%li Börsen</string>
+        <string>%li börsen</string>
       </dict>
     </dict>
     <key>markets_token_details_based_on_ratings</key>
@@ -109,7 +109,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string></string>
+        <string>%li word</string>
         <key>other</key>
         <string>%li Wörter</string>
       </dict>
@@ -157,9 +157,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Verwende deine Karte, um eine Adresse für das %li-Netz zu erhalten</string>
+        <string>Verwende deine Karte oder Ring, um eine Adresse für das %li-Netz zu erhalten</string>
         <key>other</key>
-        <string>Verwende deine Karte, um mehrere Adressen für die %li-Netzwerke zu erhalten</string>
+        <string>Verwende deine Karte oder Ring, um mehrere Adressen für die %li-Netzwerke zu erhalten</string>
       </dict>
     </dict>
   </dict>

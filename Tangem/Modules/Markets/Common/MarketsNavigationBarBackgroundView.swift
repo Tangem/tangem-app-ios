@@ -18,7 +18,7 @@ struct MarketsNavigationBarBackgroundView<Overlay>: View where Overlay: View {
 
     var body: some View {
         ZStack {
-            // A backdrop view with a solid background color, paced underneath the translucent navigation bar background
+            // A backdrop view with a solid background color, placed underneath the translucent navigation bar background
             // and visible when this translucent navigation bar background becomes transparent on bottom sheet minimizing.
             // Prevents the content of the list from being visible through the transparent translucent navigation bar background
             // (it just looks ugly).

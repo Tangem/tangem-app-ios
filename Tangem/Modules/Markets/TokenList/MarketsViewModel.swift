@@ -22,7 +22,6 @@ final class MarketsViewModel: MarketsBaseViewModel {
     @Published private(set) var headerViewModel: MainBottomSheetHeaderViewModel
     @Published private(set) var marketsRatingHeaderViewModel: MarketsRatingHeaderViewModel
     @Published private(set) var tokenListLoadingState: MarketsView.ListLoadingState = .idle
-    @Published private(set) var isDataProviderBusy: Bool = false
 
     @Injected(\.mainBottomSheetUIManager) private var mainBottomSheetUIManager: MainBottomSheetUIManager
 
@@ -150,6 +149,7 @@ final class MarketsViewModel: MarketsBaseViewModel {
     }
 
     func onTryLoadList() {
+        tokenListLoadingState = .loading
         resetShowItemsBelowCapFlag()
         fetch(with: currentSearchValue, by: filterProvider.currentFilterValue)
     }
@@ -223,7 +223,7 @@ private extension MarketsViewModel {
                     viewModel.fetch(with: viewModel.dataProvider.lastSearchTextValue ?? "", by: viewModel.filterProvider.currentFilterValue)
                 } else {
                     let hotAreaRange = viewModel.listDataController.hotArea
-                    viewModel.requestMiniCharts(forRange: hotAreaRange.range)
+                    viewModel.requestMiniCharts(forRange: hotAreaRange.range, interval: value.interval)
                 }
             }
             .store(in: &bag)
@@ -248,14 +248,16 @@ private extension MarketsViewModel {
             .removeDuplicates()
             .receive(on: DispatchQueue.global(qos: .userInitiated))
             .map { $0.range }
+            .combineLatest(filterProvider.filterPublisher.map(\.interval))
             .withWeakCaptureOf(self)
-            .sink { viewModel, hotAreaRange in
-                viewModel.requestMiniCharts(forRange: hotAreaRange)
+            .sink { items in
+                let (viewModel, (hotAreaRange, interval)) = items
+                viewModel.requestMiniCharts(forRange: hotAreaRange, interval: interval)
             }
             .store(in: &bag)
     }
 
-    func requestMiniCharts(forRange range: ClosedRange<Int>) {
+    func requestMiniCharts(forRange range: ClosedRange<Int>, interval: MarketsPriceIntervalType) {
         let items = tokenViewModels
         let itemsToFetch: Array<MarketsItemViewModel>.SubSequence
         if items.isEmpty || items.count <= range.lowerBound {
@@ -269,7 +271,7 @@ private extension MarketsViewModel {
             itemsToFetch = items[range]
         }
         let idsToFetch = Array(itemsToFetch).map { $0.tokenId }
-        chartsHistoryProvider.fetch(for: idsToFetch, with: filterProvider.currentFilterValue.interval)
+        chartsHistoryProvider.fetch(for: idsToFetch, with: interval)
     }
 
     func dataProviderBind() {
@@ -289,11 +291,9 @@ private extension MarketsViewModel {
                     if oldEvent != .failedToFetchData {
                         viewModel.tokenListLoadingState = .loading
                     }
-                    viewModel.isDataProviderBusy = true
                 case .idle:
-                    viewModel.isDataProviderBusy = false
+                    break
                 case .failedToFetchData:
-                    viewModel.isDataProviderBusy = false
                     if viewModel.dataProvider.items.isEmpty {
                         Analytics.log(.marketsDataError)
                         viewModel.tokenListLoadingState = .error
@@ -305,7 +305,6 @@ private extension MarketsViewModel {
                     viewModel.tokenListLoadingState = .loading
                     viewModel.tokenViewModels.removeAll()
                     viewModel.resetScrollPositionPublisher.send(())
-                    viewModel.isDataProviderBusy = true
                     viewModel.quotesUpdatesScheduler.saveQuotesUpdateDate(Date())
 
                     guard viewModel.isBottomSheetExpanded else {
@@ -404,7 +403,7 @@ private extension MarketsViewModel {
 
                 Analytics.log(event: .marketsChartScreenOpened, params: analyticsParams)
 
-                self?.coordinator?.openTokenMarketsDetails(for: tokenItemModel)
+                self?.coordinator?.openMarketsTokenDetails(for: tokenItemModel)
             }
         )
     }

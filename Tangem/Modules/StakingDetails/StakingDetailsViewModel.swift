@@ -6,11 +6,10 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
+import Foundation
 import Combine
-import BlockchainSdk
-import TangemFoundation
-import TangemStaking
 import SwiftUI
+import TangemStaking
 
 final class StakingDetailsViewModel: ObservableObject {
     // MARK: - ViewState
@@ -70,6 +69,11 @@ final class StakingDetailsViewModel: ObservableObject {
     }
 
     func userDidTapActionButton() {
+        guard stakingManager.state.yieldInfo?.preferredValidators.isEmpty == false else {
+            alert = .init(title: Localization.commonWarning, message: Localization.stakingNoValidatorsErrorMessage)
+            return
+        }
+
         coordinator?.openStakingFlow()
     }
 
@@ -221,11 +225,7 @@ private extension StakingDetailsViewModel {
         viewModels.append(
             DefaultRowViewModel(
                 title: Localization.stakingDetailsRewardSchedule,
-                detailsType: .text(
-                    Localization.stakingRewardScheduleEach(
-                        yield.rewardScheduleType.formatted(formatter: dateFormatter)
-                    )
-                ),
+                detailsType: .text(yield.rewardScheduleType.formatted()),
                 secondaryAction: { [weak self] in
                     self?.openBottomSheet(
                         title: Localization.stakingDetailsRewardSchedule,
@@ -259,10 +259,15 @@ private extension StakingDetailsViewModel {
                 BalanceConverter().convertToFiat(rewardsValue, currencyId: $0)
             }
             let rewardsFiatFormatted = balanceFormatter.formatFiatBalance(rewardsFiat)
+            let rewardsClaimable = balances.flatMap(\.actions).contains(where: { $0.type == .claimRewards })
             rewardViewData = RewardViewData(
-                state: .rewards(fiatFormatted: rewardsFiatFormatted, cryptoFormatted: rewardsCryptoFormatted) { [weak self] in
+                state: .rewards(
+                    claimable: rewardsClaimable,
+                    fiatFormatted: rewardsFiatFormatted,
+                    cryptoFormatted: rewardsCryptoFormatted
+                ) { [weak self] in
                     if rewards.count == 1, let balance = rewards.first {
-                        self?.openFlow(balance: balance)
+                        self?.openFlow(balance: balance, validators: yield.validators)
 
                         let name = balance.validatorType.validator?.name
                         Analytics.log(event: .stakingButtonRewards, params: [.validator: name ?? ""])
@@ -281,7 +286,7 @@ private extension StakingDetailsViewModel {
                     event: .stakingButtonValidator,
                     params: [.source: Analytics.ParameterValue.stakeSourceStakeInfo.rawValue]
                 )
-                self?.openFlow(balance: balance)
+                self?.openFlow(balance: balance, validators: yield.validators)
             }
         }
 
@@ -298,9 +303,9 @@ private extension StakingDetailsViewModel {
         descriptionBottomSheetInfo = DescriptionBottomSheetInfo(title: title, description: description)
     }
 
-    func openFlow(balance: StakingBalance) {
+    func openFlow(balance: StakingBalance, validators: [ValidatorInfo]) {
         do {
-            let action = try PendingActionMapper(balance: balance).getAction()
+            let action = try PendingActionMapper(balance: balance, validators: validators).getAction()
             switch action {
             case .single(let action):
                 openFlow(for: action)
@@ -325,8 +330,12 @@ private extension StakingDetailsViewModel {
             coordinator?.openStakingFlow()
         case .pending(.voteLocked):
             coordinator?.openRestakingFlow(action: action)
-        case .unstake, .pending:
+        case .unstake:
             coordinator?.openUnstakingFlow(action: action)
+        case .pending(.restake):
+            coordinator?.openRestakingFlow(action: action)
+        case .pending:
+            coordinator?.openStakingSingleActionFlow(action: action)
         }
     }
 
@@ -397,18 +406,20 @@ private extension RewardClaimingType {
 }
 
 extension RewardScheduleType {
-    func formatted(formatter: DateComponentsFormatter) -> String {
+    func formatted() -> String {
         switch self {
         case .generic(let string):
             return string
         case .seconds(let min, let max):
-            let suffix = formatter.string(from: DateComponents(second: max)) ?? max.formatted()
-            return "\(min) - \(suffix)"
+            let prefix = Localization.stakingRewardScheduleEachPlural
+            let suffix = Localization.commonSecondNoParam
+            return "\(prefix) \(min)-\(max) \(suffix)"
         case .daily:
-            return Localization.commonDaysNoParam(1)
+            return Localization.stakingRewardScheduleDay
         case .days(let min, let max):
-            let suffix = formatter.string(from: DateComponents(day: max)) ?? max.formatted()
-            return "\(min) - \(suffix)"
+            let prefix = Localization.stakingRewardScheduleEachPlural
+            let suffix = Localization.commonDaysNoParam(max)
+            return "\(prefix) \(min)-\(max) \(suffix)"
         }
     }
 }
@@ -434,6 +445,7 @@ extension StakingAction.ActionType {
         case .pending(.restakeRewards): Localization.stakingRestakeRewards
         case .pending(.voteLocked): Localization.stakingVote
         case .pending(.unlockLocked): Localization.stakingUnlockedLocked
+        case .pending(.restake): Localization.stakingRestake
         }
     }
 }
@@ -442,7 +454,7 @@ extension DateComponentsFormatter {
     static func staking() -> DateComponentsFormatter {
         let formatter = DateComponentsFormatter()
         formatter.unitsStyle = .short
-        formatter.allowedUnits = [.second, .day]
+        formatter.allowedUnits = [.day]
         return formatter
     }
 }

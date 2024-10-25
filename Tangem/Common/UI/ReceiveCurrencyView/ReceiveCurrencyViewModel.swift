@@ -41,8 +41,9 @@ class ReceiveCurrencyViewModel: ObservableObject, Identifiable {
 
         self.expectAmount = expectAmount
 
-        let decimals = tokenItem?.decimalCount ?? 8
+        let decimals = tokenItem?.decimalCount ?? AppConstants.maximumFractionDigitsForBalance
         expectAmountDecimals = decimals
+
         let formatter = DecimalNumberFormatter(maximumFractionDigits: decimals)
         let formatted: String = formatter.format(value: expectAmount)
         update(cryptoAmountState: .loaded(text: formatted))

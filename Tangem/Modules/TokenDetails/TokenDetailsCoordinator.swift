@@ -28,7 +28,7 @@ class TokenDetailsCoordinator: CoordinatorObject {
     @Published var expressCoordinator: ExpressCoordinator? = nil
     @Published var tokenDetailsCoordinator: TokenDetailsCoordinator? = nil
     @Published var stakingDetailsCoordinator: StakingDetailsCoordinator? = nil
-    @Published var marketsTokenDetailsCoordinator: TokenMarketsDetailsCoordinator? = nil
+    @Published var marketsTokenDetailsCoordinator: MarketsTokenDetailsCoordinator? = nil
 
     // MARK: - Child view models
 
@@ -78,7 +78,7 @@ class TokenDetailsCoordinator: CoordinatorObject {
         let pendingExpressTransactionsManager = expressFactory.makePendingExpressTransactionsManager()
 
         let bannerNotificationManager = options.userWalletModel.config.hasFeature(.multiCurrency)
-            ? BannerNotificationManager(placement: .tokenDetails(options.walletModel.tokenItem), contextDataProvider: options.userWalletModel)
+            ? BannerNotificationManager(userWalletId: options.userWalletModel.userWalletId, placement: .tokenDetails(options.walletModel.tokenItem), contextDataProvider: options.userWalletModel)
             : nil
 
         let factory = XPUBGeneratorFactory(cardInteractor: options.userWalletModel.keysDerivingInteractor)
@@ -300,9 +300,30 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
     }
 
     func openMarketsTokenDetails(tokenModel: MarketsTokenModel) {
-        let coordinator = TokenMarketsDetailsCoordinator()
+        let coordinator = MarketsTokenDetailsCoordinator()
         coordinator.start(with: .init(info: tokenModel, style: .defaultNavigationStack))
         marketsTokenDetailsCoordinator = coordinator
+    }
+
+    func openOnramp(walletModel: WalletModel, userWalletModel: UserWalletModel) {
+        let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] navigationInfo in
+            self?.sendCoordinator = nil
+
+            if let navigationInfo {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                    self?.openFeeCurrency(for: navigationInfo.walletModel, userWalletModel: navigationInfo.userWalletModel)
+                }
+            }
+        }
+
+        let coordinator = SendCoordinator(dismissAction: dismissAction)
+        let options = SendCoordinator.Options(
+            walletModel: walletModel,
+            userWalletModel: userWalletModel,
+            type: .onramp
+        )
+        coordinator.start(with: options)
+        sendCoordinator = coordinator
     }
 }
 

@@ -105,7 +105,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string></string>
+        <string>%li word</string>
         <key>other</key>
         <string>%li words</string>
       </dict>
@@ -151,9 +151,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Use your card to get an address for %li network</string>
+        <string>Use your card or ring to get an address for %li network</string>
         <key>other</key>
-        <string>Use your card to get an addresses for %li networks</string>
+        <string>Use your card or ring to get an addresses for %li networks</string>
       </dict>
     </dict>
   </dict>

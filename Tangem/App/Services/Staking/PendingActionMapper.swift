@@ -11,9 +11,11 @@ import TangemStaking
 
 struct PendingActionMapper {
     private let balance: StakingBalance
+    private let validators: [ValidatorInfo]
 
-    init(balance: StakingBalance) {
+    init(balance: StakingBalance, validators: [ValidatorInfo]) {
         self.balance = balance
+        self.validators = validators
     }
 
     func getAction() throws -> PendingActionMapper.Action {
@@ -21,8 +23,17 @@ struct PendingActionMapper {
         case .warmup, .unbonding, .pending:
             throw PendingActionMapperError.notSupported
         case .active:
-            let action = stakingAction(type: .unstake)
-            return .single(action)
+            let unstake = stakingAction(type: .unstake)
+
+            if let restakeAction = balance.actions.first(where: { $0.type == .restake }),
+               validators.filter(\.preferred).count > 1 {
+                let restake = stakingAction(
+                    type: .pending(.restake(passthrough: restakeAction.passthrough))
+                )
+
+                return .multiple([unstake, restake])
+            }
+            return .single(unstake)
         case .unstaked:
             let withdraws = balance.actions.filter { $0.type == .withdraw }.map { $0.passthrough }
 

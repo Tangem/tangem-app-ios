@@ -11,10 +11,8 @@ import MarkdownUI
 
 struct DescriptionBottomSheetInfo: Identifiable, Equatable {
     let id: UUID = .init()
-
     let title: String?
     let description: String
-    var isGeneratedWithAI: Bool = false
     var showCloseButton: Bool = false
 
     static func == (lhs: DescriptionBottomSheetInfo, rhs: DescriptionBottomSheetInfo) -> Bool {
@@ -26,7 +24,6 @@ struct DescriptionBottomSheetView: View {
     let info: DescriptionBottomSheetInfo
 
     @Environment(\.dismiss) private var dismissSheetAction
-    @State private var containerHeight: CGFloat = 0
 
     var body: some View {
         content
@@ -34,7 +31,7 @@ struct DescriptionBottomSheetView: View {
     }
 
     private var content: some View {
-        VStack(spacing: 14) {
+        VStack(spacing: 12) {
             headerView
 
             Markdown { info.description }
@@ -52,12 +49,7 @@ struct DescriptionBottomSheetView: View {
                 .frame(maxWidth: .infinity, alignment: .topLeading)
                 .fixedSize(horizontal: false, vertical: true)
                 .multilineTextAlignment(.leading)
-
-            if info.isGeneratedWithAI {
-                generatedWithAILabel
-            }
         }
-        .padding(.bottom, 10)
     }
 }
 
@@ -98,18 +90,6 @@ private extension DescriptionBottomSheetView {
                 .style(Fonts.Regular.body, color: Colors.Text.primary1)
                 .padding(.vertical, 8)
         })
-    }
-
-    var generatedWithAILabel: some View {
-        HStack(spacing: 12) {
-            Assets.stars.image
-                .foregroundStyle(Colors.Icon.accent)
-
-            Text(Localization.informationGeneratedWithAi)
-                .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
-                .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .defaultRoundedBackground(with: Colors.Background.tertiary)
     }
 }
 

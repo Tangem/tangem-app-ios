@@ -6,6 +6,7 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
+import Foundation
 import Moya
 
 public final class TangemApiServiceLoggerPlugin {
@@ -211,7 +212,7 @@ private extension TangemApiTarget {
             return true
 
         // Markets requests
-        case .coinsList, .coinsHistoryChartPreview, .tokenMarketsDetails, .historyChart:
+        case .coinsList, .coinsHistoryChartPreview, .tokenMarketsDetails, .historyChart, .tokenExchangesList:
             return true
         }
     }

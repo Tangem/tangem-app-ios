@@ -1,5 +1,5 @@
 //
-//  TokenMarketsNetworkSelectorCoordinatorView.swift
+//  MarketsTokenNetworkSelectorCoordinatorView.swift
 //  Tangem
 //
 //  Created by skibinalexander on 21.08.2024.
@@ -26,5 +26,6 @@ struct MarketsTokenNetworkSelectorCoordinatorView: CoordinatorView {
             .navigation(item: $coordinator.walletSelectorViewModel) {
                 WalletSelectorView(viewModel: $0)
             }
+            .emptyNavigationLink()
     }
 }

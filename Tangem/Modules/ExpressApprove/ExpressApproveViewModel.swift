@@ -25,6 +25,8 @@ final class ExpressApproveViewModel: ObservableObject, Identifiable {
     @Published var mainButtonIsDisabled = false
     @Published var errorAlert: AlertBinder?
 
+    let feeFooterText: String
+
     // MARK: - Dependencies
 
     private let tokenItem: TokenItem
@@ -55,6 +57,8 @@ final class ExpressApproveViewModel: ObservableObject, Identifiable {
 
         selectedAction = settings.selectedPolicy
         subtitle = settings.subtitle
+        feeFooterText = settings.feeFooterText
+
         menuRowViewModel = .init(
             title: Localization.givePermissionRowsAmount(settings.tokenItem.currencySymbol),
             actions: [.unlimited, .specified]
@@ -148,7 +152,7 @@ private extension ExpressApproveViewModel {
             do {
                 try await viewModel.approveViewModelInput.sendApproveTransaction()
                 await viewModel.didSendApproveTransaction()
-            } catch SendTransactionDispatcherResult.Error.userCancelled {
+            } catch TransactionDispatcherResult.Error.userCancelled {
                 // Do nothing
             } catch {
                 viewModel.logger.error(error)
@@ -163,6 +167,8 @@ private extension ExpressApproveViewModel {
 extension ExpressApproveViewModel {
     struct Settings {
         let subtitle: String
+        let feeFooterText: String
+
         let tokenItem: TokenItem
         let feeTokenItem: TokenItem
 

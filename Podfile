@@ -24,35 +24,22 @@ use_frameworks!
 inhibit_all_warnings!
 
 def tangem_sdk_pod
-  pod 'TangemSdk', :git => 'https://github.com/Tangem/tangem-sdk-ios.git', :tag => 'develop-312'
+  pod 'TangemSdk', :git => 'https://github.com/Tangem/tangem-sdk-ios.git', :tag => 'develop-313'
   #pod 'TangemSdk', :path => '../tangem-sdk-ios'
 end
 
 def blockchain_sdk_pods
-  # 'TangemWalletCore' dependency must be added via SPM
-
-  pod 'BlockchainSdk', :git => 'https://github.com/tangem/blockchain-sdk-swift.git', :tag => 'develop-699'
-  #pod 'BlockchainSdk', :path => '../blockchain-sdk-swift'
-
   pod 'Solana.Swift', :git => 'https://github.com/tangem/Solana.Swift', :tag => '1.2.0-tangem11'
   #pod 'Solana.Swift', :path => '../Solana.Swift'
 
-  pod 'BinanceChain', :git => 'https://github.com/tangem/swiftbinancechain.git', :tag => '0.0.11'
-  #pod 'BinanceChain', :path => '../SwiftBinanceChain'
-  
   pod 'BitcoinCore.swift', :git => 'https://github.com/tangem/bitcoincore.git', :tag => '0.0.20'
   #pod 'BitcoinCore.swift', :path => '../bitcoincore'
-
-  pod 'SwiftyJSON', :git => 'https://github.com/tangem/SwiftyJSON.git', :tag => '5.0.1-tangem1'
 end
 
 target 'Tangem' do
-  blockchain_sdk_pods
   tangem_sdk_pod
-  
+
   # Pods for Tangem
-  pod 'Moya'
-  pod 'WalletConnectSwiftV2', :git => 'https://github.com/WalletConnect/WalletConnectSwiftV2', :tag => '1.18.7'
   pod 'Kingfisher', '~> 7.11.0'
 
   # Helpers
@@ -89,9 +76,8 @@ target 'Tangem' do
   end
 end
 
-target 'TangemExpress' do 
-  blockchain_sdk_pods
-  pod 'Moya'
+target 'TangemExpress' do
+  tangem_sdk_pod
 
   target 'TangemExpressTests' do
     inherit! :search_paths
@@ -100,29 +86,35 @@ target 'TangemExpress' do
 end
 
 target 'TangemVisa' do
-  blockchain_sdk_pods
-  pod 'Moya'
+  tangem_sdk_pod
 
   target 'TangemVisaTests' do
-    blockchain_sdk_pods
+    inherit! :search_paths
+    # Pods for testing
   end
 end
 
 target 'TangemStaking' do
-  blockchain_sdk_pods
-  pod 'Moya'
+  tangem_sdk_pod
 
   target 'TangemStakingTests' do
     inherit! :search_paths
+    # Pods for testing
   end
 end
 
-target 'TangemFoundation' do
-  pod 'Moya'
+target 'BlockchainSdk' do
+  blockchain_sdk_pods
+  tangem_sdk_pod
 
-  target 'TangemFoundationTests' do
+  target 'BlockchainSdkTests' do
     inherit! :search_paths
+    # Pods for testing
   end
+end
+
+target 'BlockchainSdkExample' do
+  tangem_sdk_pod
 end
 
 pre_install do |installer|
@@ -158,94 +150,22 @@ post_install do |installer|
 
   # ============ SPM <-> CocoaPods interop ============
 
-  # `Hedera` SPM package for `BlockchainSdk` pod
-  add_spm_package_to_target(
-    installer.pods_project,
-    "BlockchainSdk",
-    "https://github.com/tangem/hedera-sdk-swift.git",
-    "Hedera",
-    { :kind => "exactVersion", :version => "0.26.0-tangem3" }
-  )
-
-  # `CryptoSwift` SPM package for `BlockchainSdk` pod
-  add_spm_package_to_target(
-    installer.pods_project,
-    "BlockchainSdk",
-    "https://github.com/krzyzanowskim/CryptoSwift.git",
-    "CryptoSwift",
-    { :kind => "upToNextMajorVersion", :minimumVersion => "1.8.0" }
-  )
-
-  # `Wallet Core binaries` SPM package for `BlockchainSdk` pod
-  add_spm_package_to_target(
-    installer.pods_project,
-    "BlockchainSdk",
-    "https://github.com/tangem/wallet-core-binaries-ios.git",
-    "TangemWalletCoreBinariesWrapper",
-    { :kind => "exactVersion", :version => "4.0.46-tangem1" }
-  )
-
-  # `SwiftProtobuf` SPM package for `BlockchainSdk` pod
-  add_spm_package_to_target(
-   installer.pods_project,
-   "BlockchainSdk",
-   "https://github.com/tangem/swift-protobuf-binaries.git",
-   "SwiftProtobuf",
-   { :kind => "exactVersion", :version => "1.25.2-tangem1" }
-  )
-  
-  # `TonSwift` SPM package for `BlockchainSdk` pod
-  add_spm_package_to_target(
-   installer.pods_project,
-   "BlockchainSdk",
-   "https://github.com/tangem/ton-swift.git",
-   "TonSwift",
-   { :kind => "exactVersion", :version => "1.0.10-tangem3" }
-  )
-  
-  # `ScaleCodec` SPM package for `BlockchainSdk` pod
-  add_spm_package_to_target(
-   installer.pods_project,
-   "BlockchainSdk",
-   "https://github.com/tesseract-one/ScaleCodec.swift",
-   "ScaleCodec",
-   { :kind => "exactVersion", :version => "0.2.1" }
-  )
-
-  # `IcpKit` SPM package for `BlockchainSdk` pod
-  add_spm_package_to_target(
-   installer.pods_project,
-   "BlockchainSdk",
-   "https://github.com/tangem/IcpKit.git",
-   "IcpKit",
-   { :kind => "exactVersion", :version => "0.1.2-tangem4" }
-  )
-
-  # `SwiftProtobuf` SPM package for `BinanceChain` pod
-  add_spm_package_to_target(
-   installer.pods_project,
-   "BinanceChain",
-   "https://github.com/tangem/swift-protobuf-binaries.git",
-   "SwiftProtobuf",
-   { :kind => "exactVersion", :version => "1.25.2-tangem1" }
-  )
-
   # `secp256k1.swift` SPM package for `Solana.Swift` pod
   add_spm_package_to_target(
    installer.pods_project,
    "Solana.Swift",
    "https://github.com/GigaBitcoin/secp256k1.swift.git",
    "secp256k1",
-   { :kind => "upToNextMinorVersion", :minimumVersion => "0.12.0" }
+   { :kind => "upToNextMajorVersion", :minimumVersion => "0.12.0" }
   )
-  
+
   # `TweetNacl` SPM package for `Solana.Swift` pod
   add_spm_package_to_target(
    installer.pods_project,
    "Solana.Swift",
    "https://github.com/bitmark-inc/tweetnacl-swiftwrap.git",
    "TweetNacl",
-   { :kind => "exactVersion", :version => "1.1.0" }
+   { :kind => "upToNextMajorVersion", :version => "1.1.0" }
   )
 
 end

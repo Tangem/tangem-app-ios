@@ -6,21 +6,31 @@
 //  Copyright © 2023 Tangem AG. All rights reserved.
 //
 
+import Foundation
 import Moya
-import TangemFoundation
+import TangemNetworkUtils
 
 struct ExpressAPITarget: Moya.TargetType {
     let expressAPIType: ExpressAPIType
     let target: Target
 
     enum Target {
-        case assets(request: ExpressDTO.Assets.Request)
-        case pairs(request: ExpressDTO.Pairs.Request)
+        case assets(request: ExpressDTO.Swap.Assets.Request)
+        case pairs(request: ExpressDTO.Swap.Pairs.Request)
         case providers
-        case exchangeQuote(request: ExpressDTO.ExchangeQuote.Request)
-        case exchangeData(request: ExpressDTO.ExchangeData.Request)
-        case exchangeStatus(request: ExpressDTO.ExchangeStatus.Request)
-        case exchangeSent(request: ExpressDTO.ExchangeSent.Request)
+        case exchangeQuote(request: ExpressDTO.Swap.ExchangeQuote.Request)
+        case exchangeData(request: ExpressDTO.Swap.ExchangeData.Request)
+        case exchangeStatus(request: ExpressDTO.Swap.ExchangeStatus.Request)
+        case exchangeSent(request: ExpressDTO.Swap.ExchangeSent.Request)
+
+        case onrampCurrencies
+        case onrampCountries
+        case onrampCountryByIP
+        case onrampPaymentMethods
+        case onrampPairs(request: ExpressDTO.Onramp.Pairs.Request)
+        case onrampQuote(request: ExpressDTO.Onramp.Quote.Request)
+        case onrampData(request: ExpressDTO.Onramp.Data.Request)
+        case onrampStatus(request: ExpressDTO.Onramp.Status.Request)
     }
 
     var baseURL: URL {
@@ -36,39 +46,63 @@ struct ExpressAPITarget: Moya.TargetType {
 
     var path: String {
         switch target {
-        case .assets: return "assets"
-        case .pairs: return "pairs"
-        case .providers: return "providers"
-        case .exchangeQuote: return "exchange-quote"
-        case .exchangeData: return "exchange-data"
-        case .exchangeStatus: return "exchange-status"
-        case .exchangeSent: return "exchange-sent"
+        case .assets: "assets"
+        case .pairs: "pairs"
+        case .providers: "providers"
+        case .exchangeQuote: "exchange-quote"
+        case .exchangeData: "exchange-data"
+        case .exchangeStatus: "exchange-status"
+        case .exchangeSent: "exchange-sent"
+        case .onrampCurrencies: "currencies"
+        case .onrampCountries: "countries"
+        case .onrampCountryByIP: "country-by-ip"
+        case .onrampPaymentMethods: "payment-methods"
+        case .onrampPairs: "onramp-pairs"
+        case .onrampQuote: "onramp-quote"
+        case .onrampData: "onramp-data"
+        case .onrampStatus: "onramp-status"
         }
     }
 
     var method: Moya.Method {
         switch target {
-        case .assets, .pairs, .exchangeSent: return .post
-        case .providers, .exchangeQuote, .exchangeData, .exchangeStatus: return .get
+        case .assets,
+             .pairs,
+             .exchangeSent,
+             .onrampPairs,
+             .onrampStatus:
+            return .post
+        case .providers,
+             .exchangeQuote,
+             .exchangeData,
+             .exchangeStatus,
+             .onrampCurrencies,
+             .onrampCountries,
+             .onrampCountryByIP,
+             .onrampPaymentMethods,
+             .onrampQuote,
+             .onrampData:
+            return .get
         }
     }
 
     var task: Moya.Task {
         switch target {
-        case .assets(let request):
-            return .requestJSONEncodable(request)
-        case .pairs(let request):
-            return .requestJSONEncodable(request)
-        case .exchangeSent(let request):
-            return .requestJSONEncodable(request)
-        case .providers:
-            return .requestPlain
-        case .exchangeQuote(let request):
-            return .requestParameters(request)
-        case .exchangeData(let request):
-            return .requestParameters(request)
-        case .exchangeStatus(let request):
-            return .requestParameters(request)
+        case .assets(let request): .requestJSONEncodable(request)
+        case .pairs(let request):.requestJSONEncodable(request)
+        case .exchangeSent(let request):.requestJSONEncodable(request)
+        case .providers:.requestPlain
+        case .exchangeQuote(let request):.requestParameters(request)
+        case .exchangeData(let request):.requestParameters(request)
+        case .exchangeStatus(let request): .requestParameters(request)
+        case .onrampCurrencies: .requestPlain
+        case .onrampCountries: .requestPlain
+        case .onrampCountryByIP: .requestPlain
+        case .onrampPaymentMethods: .requestPlain
+        case .onrampPairs(let request): .requestJSONEncodable(request)
+        case .onrampQuote(let request): .requestParameters(request)
+        case .onrampData(let request):.requestParameters(request)
+        case .onrampStatus(let request):.requestParameters(request)
         }
     }
 

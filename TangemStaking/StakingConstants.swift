@@ -7,6 +7,6 @@
 //
 
 public enum StakingConstants {
-    public static let polygonContactAddress = "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0"
+    public static let polygonContractAddress = "0x455e53cbb86018ac2b8092fdcd39d8444affc3f6"
     public static let partnerValidator = "cosmosvaloper1wrx0x9m9ykdhw9sg04v7uljme53wuj03aa5d4f"
 }

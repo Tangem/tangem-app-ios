@@ -16,6 +16,7 @@ struct PendingExpressTransactionFactory {
     private let canceledStatusesList: [PendingExpressTransactionStatus] = [.canceled]
     private let awaitingHashStatusesList: [PendingExpressTransactionStatus] = [.awaitingHash]
     private let unknownHashStatusesList: [PendingExpressTransactionStatus] = [.unknown]
+    private let pausedStatusesList: [PendingExpressTransactionStatus] = [.awaitingDeposit, .confirming, .paused]
 
     func buildPendingExpressTransaction(
         currentExpressStatus: ExpressTransactionStatus,
@@ -55,6 +56,9 @@ struct PendingExpressTransactionFactory {
         case .expired:
             currentStatus = .canceled
             statusesList = canceledStatusesList
+        case .paused:
+            currentStatus = .paused
+            statusesList = pausedStatusesList
         }
 
         transactionRecord.transactionStatus = currentStatus
@@ -75,6 +79,8 @@ struct PendingExpressTransactionFactory {
                 return canceledStatusesList
             case .failed, .refunded:
                 return failedStatusesList
+            case .paused:
+                return pausedStatusesList
             case .awaitingHash:
                 return awaitingHashStatusesList
             case .unknown:

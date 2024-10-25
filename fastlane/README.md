@@ -22,6 +22,22 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
   A lane that builds and tests the scheme "Tangem" using a clean and build application.
   Using enviroment: Production
+  Options:
+  - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+
+
+### test_modules
+
+```sh
+[bundle exec] fastlane test_modules
+```
+
+
+  A lane that builds and tests SPM modules located in the "Modules" folder.
+  A separate lane is needed since it's still not possible to run unit tests from remove/local SPM dependencies inside the host app,
+  see https://forums.swift.org/t/running-swiftpm-tests-inside-project/62760 for details.
+  Options:
+  - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 
 
 ### release
@@ -37,7 +53,18 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
   - version: app version
   - build: optional build number
   - changelog: string for description archive
+  - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
   
+
+### check_bsdk_example_buildable
+
+```sh
+[bundle exec] fastlane check_bsdk_example_buildable
+```
+
+
+A lane that builds a "BlockchainSdkExample" scheme without running or publishing it, just to check that the scheme is buildable.
+
 
 ### beta
 
@@ -52,6 +79,7 @@ Options:
 - version: app version
 - build: optional build number
 - changelog: string for description archive
+- xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 
 
 ### alpha
@@ -67,6 +95,7 @@ Options:
 - version: app version
 - build: optional build number
 - changelog: string for description archive
+- xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 
 
 ### refresh_dsyms
@@ -80,6 +109,20 @@ Load from testFlight dSyms and upload it to Firebase
 Options:
 - version: app version
 - build: build number
+
+
+### update_translations
+
+```sh
+[bundle exec] fastlane update_translations
+```
+
+
+Fetches and updates localization bundles using Localise fastlane action (https://github.com/lokalise/lokalise-fastlane-actions).
+Uses `LOKALISE_API_TOKEN` and `LOKALISE_PROJECT_ID` env vars.
+Options:
+- languages: A comma-delimited string of languages to update, like `en,fr,de,ja,ru,es,uk_UA`. Pass an empty string to update all available languages.
+- destination: A file path to save localization files to.
 
 
 ----
