@@ -11,7 +11,7 @@ import Foundation
 actor JSONRPCWebSocketProvider {
     private let url: URL
     private let connection: WebSocketConnection
-    
+
     // Internal
     private var requests: [Int: Continuation] = [:]
     private var receiveTask: Task<Void, Never>?
@@ -21,7 +21,7 @@ actor JSONRPCWebSocketProvider {
         self.url = url
         connection = WebSocketConnection(url: url, ping: ping, timeout: timeoutInterval)
     }
-     
+
     func send<Parameter: Encodable, Result: Decodable>(
         method: String,
         parameter: Parameter,
@@ -32,16 +32,16 @@ actor JSONRPCWebSocketProvider {
         let request = JSONRPC.Request(id: counter, method: method, params: parameter)
         let message = try request.string(encoder: encoder)
         try await connection.send(.string(message))
-        
+
         // setup handler for message
         setupReceiveTask()
-         
+
         let data: Data = try await withCheckedThrowingContinuation { continuation in
             requests.updateValue(.init(continuation: continuation), forKey: request.id)
         }
 
         try Task.checkCancellation()
-        
+
         // Remove the fulfilled `continuation` from cache
         requests.removeValue(forKey: request.id)
         let response = try decoder.decode(JSONRPC.Response<Result, JSONRPC.APIError>.self, from: data)
@@ -51,7 +51,7 @@ actor JSONRPCWebSocketProvider {
 
         return try response.result.get()
     }
-    
+
     func cancel() async {
         receiveTask?.cancel()
 
@@ -68,7 +68,7 @@ private extension JSONRPCWebSocketProvider {
     func setupReceiveTask() {
         receiveTask = Task { [weak self] in
             guard let self else { return }
-            
+
             do {
                 let data = try await connection.receive()
                 await proceedReceive(data: data)
@@ -81,7 +81,7 @@ private extension JSONRPCWebSocketProvider {
             }
         }
     }
-    
+
     func proceedReceive(data: Data) async {
         do {
             let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
@@ -96,10 +96,10 @@ private extension JSONRPCWebSocketProvider {
             log("Receive catch parse error: \(error)")
         }
     }
-    
+
     nonisolated func log(_ args: Any) {
         print("\(self) [\(args)]")
-   }
+    }
 }
 
 // MARK: - HostProvider

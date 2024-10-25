@@ -10,7 +10,6 @@ import XCTest
 import CryptoKit
 import TangemSdk
 import WalletCore
-
 @testable import BlockchainSdk
 
 /*

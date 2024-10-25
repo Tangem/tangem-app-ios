@@ -13,16 +13,16 @@ class FilecoinWalletManager: BaseManager, WalletManager {
     var currentHost: String {
         networkService.host
     }
-    
+
     var allowsFeeSelection: Bool {
         false
     }
-    
+
     private let networkService: FilecoinNetworkService
     private let transactionBuilder: FilecoinTransactionBuilder
-    
+
     private var nonce: UInt64 = 0
-    
+
     init(
         wallet: Wallet,
         networkService: FilecoinNetworkService,
@@ -32,7 +32,7 @@ class FilecoinWalletManager: BaseManager, WalletManager {
         self.transactionBuilder = transactionBuilder
         super.init(wallet: wallet)
     }
-    
+
     override func update(completion: @escaping (Result<Void, any Error>) -> Void) {
         cancellable = networkService
             .getAccountInfo(address: wallet.address)
@@ -51,7 +51,7 @@ class FilecoinWalletManager: BaseManager, WalletManager {
                     if accountInfo.nonce != walletManager.nonce {
                         walletManager.wallet.clearPendingTransaction()
                     }
-                    
+
                     walletManager.wallet.add(
                         amount: Amount(
                             with: .filecoin,
@@ -59,17 +59,17 @@ class FilecoinWalletManager: BaseManager, WalletManager {
                             value: accountInfo.balance / walletManager.wallet.blockchain.decimalValue
                         )
                     )
-                    
+
                     walletManager.nonce = accountInfo.nonce
                 }
             )
     }
-    
+
     func getFee(amount: Amount, destination: String) -> AnyPublisher<[Fee], any Error> {
         guard let bigUIntValue = amount.bigUIntValue else {
             return .anyFail(error: WalletError.failedToGetFee)
         }
-        
+
         return networkService
             .getAccountInfo(address: wallet.address)
             .map { [address = wallet.address] accountInfo in
@@ -92,9 +92,9 @@ class FilecoinWalletManager: BaseManager, WalletManager {
                 guard let gasFeeCapDecimal = Decimal(stringValue: gasInfo.gasFeeCap) else {
                     throw WalletError.failedToGetFee
                 }
-                
+
                 let gasLimitDecimal = Decimal(gasInfo.gasLimit)
-                
+
                 return [
                     Fee(
                         Amount(
@@ -107,12 +107,12 @@ class FilecoinWalletManager: BaseManager, WalletManager {
                             gasFeeCap: BigUInt(stringLiteral: gasInfo.gasFeeCap),
                             gasPremium: BigUInt(stringLiteral: gasInfo.gasPremium)
                         )
-                    )
+                    ),
                 ]
             }
             .eraseToAnyPublisher()
     }
-    
+
     func send(_ transaction: Transaction, signer: any TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError> {
         networkService
             .getAccountInfo(address: wallet.address)

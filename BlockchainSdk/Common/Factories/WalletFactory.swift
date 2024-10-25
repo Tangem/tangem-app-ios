@@ -8,14 +8,14 @@
 
 import Foundation
 
-public struct WalletFactory {
+struct WalletFactory {
     private let blockchain: Blockchain
 
     private var addressProvider: AddressProvider {
         AddressServiceFactory(blockchain: blockchain).makeAddressService()
     }
 
-    public init(blockchain: Blockchain) {
+    init(blockchain: Blockchain) {
         self.blockchain = blockchain
     }
 

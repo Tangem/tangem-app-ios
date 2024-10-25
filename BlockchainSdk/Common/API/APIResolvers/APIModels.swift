@@ -41,7 +41,7 @@ struct NodeInfo: HostProvider {
 
     init(url: URL, keyInfo: APIHeaderKeyInfo? = nil) {
         self.url = url
-        self.headers = keyInfo
+        headers = keyInfo
     }
 }
 

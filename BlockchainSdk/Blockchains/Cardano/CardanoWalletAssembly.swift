@@ -10,7 +10,6 @@ import Foundation
 import TangemSdk
 
 struct CardanoWalletAssembly: WalletManagerAssembly {
-    
     func make(with input: WalletManagerAssemblyInput) throws -> WalletManager {
         return CardanoWalletManager(wallet: input.wallet).then {
             $0.transactionBuilder = CardanoTransactionBuilder()
@@ -19,7 +18,7 @@ struct CardanoWalletAssembly: WalletManagerAssembly {
 
             let linkResolver = APINodeInfoResolver(blockchain: input.blockchain, config: input.blockchainSdkConfig)
             let providers: [AnyCardanoNetworkProvider] = input.apiInfo.compactMap {
-                guard  let nodeInfo = linkResolver.resolve(for: $0) else {
+                guard let nodeInfo = linkResolver.resolve(for: $0) else {
                     return nil
                 }
 
@@ -34,7 +33,7 @@ struct CardanoWalletAssembly: WalletManagerAssembly {
                 case .adalite:
                     return AdaliteNetworkProvider(
                         url: nodeInfo.url,
-                        configuration: networkConfig, 
+                        configuration: networkConfig,
                         cardanoResponseMapper: cardanoResponseMapper
                     ).eraseToAnyCardanoNetworkProvider()
                 default:
@@ -44,5 +43,5 @@ struct CardanoWalletAssembly: WalletManagerAssembly {
 
             $0.networkService = CardanoNetworkService(providers: providers)
         }
-    }    
+    }
 }

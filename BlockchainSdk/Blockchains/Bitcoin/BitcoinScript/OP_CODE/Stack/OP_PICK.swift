@@ -25,7 +25,7 @@
 import Foundation
 
 // The item n back in the stack is copied to the top.
-public struct OpPick: OpCodeProtocol {
-    public var value: UInt8 { return 0x79 }
-    public var name: String { return "OP_PICK" }
+struct OpPick: OpCodeProtocol {
+    var value: UInt8 { return 0x79 }
+    var name: String { return "OP_PICK" }
 }

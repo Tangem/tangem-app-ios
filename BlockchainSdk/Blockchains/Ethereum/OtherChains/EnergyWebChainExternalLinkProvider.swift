@@ -12,7 +12,7 @@ struct EnergyWebChainExternalLinkProvider {
     private let baseExplorerUrl: String
 
     init(isTestnet: Bool) {
-        baseExplorerUrl = isTestnet 
+        baseExplorerUrl = isTestnet
             ? "https://volta-explorer.energyweb.org"
             : "https://explorer.energyweb.org"
     }

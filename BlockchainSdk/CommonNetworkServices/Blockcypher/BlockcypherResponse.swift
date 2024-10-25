@@ -10,16 +10,19 @@ import Foundation
 import BitcoinCore
 
 /// Response for standart address request
-struct BlockcypherAddressResponse : Codable {
+struct BlockcypherAddressResponse: Codable {
     let address: String?
     let balance: Decimal?
     let unconfirmedBalance: Decimal?
     let txrefs: [BlockcypherTxref]?
     let unconfirmedTxrefs: [BlockcypherTxref]?
-    
+
     private enum CodingKeys: String, CodingKey {
-        case address, balance, txrefs
-        case unconfirmedBalance = "unconfirmed_balance", unconfirmedTxrefs = "unconfirmed_txrefs"
+        case address
+        case balance
+        case txrefs
+        case unconfirmedBalance = "unconfirmed_balance"
+        case unconfirmedTxrefs = "unconfirmed_txrefs"
     }
 }
 
@@ -31,10 +34,14 @@ struct BlockcypherFullAddressResponse<EndpointTx: Codable & BlockcypherPendingTx
     let nTx: Int?
     let unconfirmedNTx: Int?
     let txs: [EndpointTx]?
-    
+
     private enum CodingKeys: String, CodingKey {
-        case address, balance, txs
-        case unconfirmedBalance = "unconfirmed_balance", nTx = "n_tx", unconfirmedNTx = "unconfirmed_n_tx"
+        case address
+        case balance
+        case txs
+        case unconfirmedBalance = "unconfirmed_balance"
+        case nTx = "n_tx"
+        case unconfirmedNTx = "unconfirmed_n_tx"
     }
 }
 
@@ -47,9 +54,11 @@ struct BlockcypherTxref: Codable {
     let outputScript: String?
     let spent: Bool?
     let received: String?
-    
+
     private enum CodingKeys: String, CodingKey {
-        case hash = "tx_hash", outputIndex = "tx_output_n", outputScript = "script"
+        case hash = "tx_hash"
+        case outputIndex = "tx_output_n"
+        case outputScript = "script"
         case value, confirmations, spent, received
     }
 }
@@ -63,7 +72,7 @@ extension BlockcypherTxref {
             let script = outputScript,
             spent == false
         else { return nil }
-        
+
         return BitcoinUnspentOutput(transactionHash: hash, outputIndex: outputIndex, amount: UInt64(value), outputScript: script)
     }
 }
@@ -90,27 +99,29 @@ extension BlockcypherPendingTxConvertible {
         var source: String = .unknown
         var destination: String = .unknown
         var value: Decimal?
-        var isIncoming: Bool = false
+        var isIncoming = false
 
-        if let _ = inputs.first(where: { $0.addresses?.contains(userAddress) ?? false } ), let txDestination = outputs.first(where: { !($0.addresses?.contains(userAddress) ?? false) } ) {
+        if let _ = inputs.first(where: { $0.addresses?.contains(userAddress) ?? false }), let txDestination = outputs.first(where: { !($0.addresses?.contains(userAddress) ?? false) }) {
             destination = txDestination.addresses?.first ?? .unknown
             source = userAddress
             value = txDestination.value
-        } else if let txDestination = outputs.first(where: { $0.addresses?.contains(userAddress) ?? false } ), let txSource = inputs.first(where: { !($0.addresses?.contains(userAddress) ?? false) } ) {
+        } else if let txDestination = outputs.first(where: { $0.addresses?.contains(userAddress) ?? false }), let txSource = inputs.first(where: { !($0.addresses?.contains(userAddress) ?? false) }) {
             isIncoming = true
             destination = userAddress
             source = txSource.addresses?.first ?? .unknown
             value = txDestination.value
         }
 
-        return PendingTransaction(hash: hash,
-                                  destination: destination,
-                                  value: (value ?? 0) / decimalValue,
-                                  source: source,
-                                  fee: fees / decimalValue,
-                                  date: received,
-                                  isIncoming: isIncoming,
-                                  transactionParams: BitcoinTransactionParams(inputs: inputs.compactMap { $0.toBitcoinInput() } ))
+        return PendingTransaction(
+            hash: hash,
+            destination: destination,
+            value: (value ?? 0) / decimalValue,
+            source: source,
+            fee: fees / decimalValue,
+            date: received,
+            isIncoming: isIncoming,
+            transactionParams: BitcoinTransactionParams(inputs: inputs.compactMap { $0.toBitcoinInput() })
+        )
     }
 }
 
@@ -130,12 +141,14 @@ struct BlockcypherInput: Codable {
     let addresses: [String]?
     let sequence: Int?
     let script: String?
-    
+
     private enum CodingKeys: String, CodingKey {
-        case transactionHash = "prev_hash", value = "output_value", index = "output_index"
+        case transactionHash = "prev_hash"
+        case value = "output_value"
+        case index = "output_index"
         case addresses, sequence, script
     }
-    
+
     func toBitcoinInput() -> BitcoinInput? {
         guard
             let hash = transactionHash,
@@ -144,10 +157,10 @@ struct BlockcypherInput: Codable {
             let index = index,
             let value = value
         else { return nil }
-        
+
         return .init(sequence: sequence, address: address, outputIndex: index, outputValue: value, prevHash: hash)
     }
-    
+
     func toBtcInput() -> BitcoinTransactionInput? {
         guard
             let hash = transactionHash,
@@ -157,11 +170,13 @@ struct BlockcypherInput: Codable {
             let sender = addresses?.first,
             let sequence = sequence
         else { return nil }
-        
+
         let output = BitcoinUnspentOutput(transactionHash: hash, outputIndex: index, amount: amount, outputScript: script)
-        return BitcoinTransactionInput(unspentOutput: output,
-                                       sender: sender,
-                                       sequence: sequence)
+        return BitcoinTransactionInput(
+            unspentOutput: output,
+            sender: sender,
+            sequence: sequence
+        )
     }
 }
 
@@ -171,20 +186,25 @@ struct BlockcypherOutput: Codable {
     let addresses: [String]?
     let scriptType: String?
     let spentBy: String?
-    
+
     private enum CodingKeys: String, CodingKey {
-        case value, script, addresses
-        case scriptType = "script_type", spentBy = "spent_by"
+        case value
+        case script
+        case addresses
+        case scriptType = "script_type"
+        case spentBy = "spent_by"
     }
-    
+
     func toBtcOutput(decimals: Decimal) -> BitcoinTransactionOutput? {
         guard
             let amount = value,
             let recipient = addresses?.first
         else { return nil }
-        
-        return BitcoinTransactionOutput(amount: amount / decimals,
-                                        recipient: recipient)
+
+        return BitcoinTransactionOutput(
+            amount: amount / decimals,
+            recipient: recipient
+        )
     }
 }
 
@@ -202,12 +222,22 @@ struct BlockcypherBitcoinTx: Codable, BlockcypherPendingTxConvertible {
     let optInRbf: Bool?
     let inputs: [BlockcypherInput]
     let outputs: [BlockcypherOutput]
-    
+
     private enum CodingKeys: String, CodingKey {
-        case hash, addresses, total, fees, size, confirmations, received, inputs, outputs
-        case blockIndex = "block_index", doubleSpendTx = "double_spend_tx", optInRbf = "opt_in_rbf"
+        case hash
+        case addresses
+        case total
+        case fees
+        case size
+        case confirmations
+        case received
+        case inputs
+        case outputs
+        case blockIndex = "block_index"
+        case doubleSpendTx = "double_spend_tx"
+        case optInRbf = "opt_in_rbf"
     }
-    
+
     func findUnspentOutput(for sourceAddress: String) -> BitcoinUnspentOutput? {
         var txOutputIndex: Int = -1
         guard
@@ -216,7 +246,7 @@ struct BlockcypherBitcoinTx: Codable, BlockcypherPendingTxConvertible {
                     $0.element.addresses?.contains(sourceAddress) ?? false,
                     $0.element.spentBy == nil
                 else { return false }
-                
+
                 txOutputIndex = $0.offset
                 return true
             }),
@@ -226,7 +256,7 @@ struct BlockcypherBitcoinTx: Codable, BlockcypherPendingTxConvertible {
         else {
             return nil
         }
-        
+
         let btc = BitcoinUnspentOutput(transactionHash: hash, outputIndex: txOutputIndex, amount: (value.rounded() as NSDecimalNumber).uint64Value, outputScript: script)
         return btc
     }
@@ -246,13 +276,15 @@ struct BlockcypherEthereumTransaction: Codable, BlockcypherPendingTxConvertible 
     let confirmations: Int
     let inputs: [BlockcypherInput]
     let outputs: [BlockcypherOutput]
-    
+
     private enum CodingKeys: String, CodingKey {
-        case blockHeight = "block_height", gasLimit = "gas_limit", gasUsed = "gas_used", gasPrice = "gas_price"
+        case blockHeight = "block_height"
+        case gasLimit = "gas_limit"
+        case gasUsed = "gas_used"
+        case gasPrice = "gas_price"
         case hash, total, fees, size, received, confirmations, inputs, outputs
     }
 }
-
 
 struct BlockcypherSendResponse: Decodable {
     let tx: BlockcypherBitcoinSendTx

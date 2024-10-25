@@ -24,15 +24,15 @@
 
 import Foundation
 
-// Compares the first signature against each public key until it finds an ECDSA match. Starting
-// with the subsequent public key, it compares the second signature against each remaining public key
+// Compares the first signature against each key until it finds an ECDSA match. Starting
+// with the subsequent key, it compares the second signature against each remaining key
 // until it finds an ECDSA match. The process is repeated until all signatures have been checked or not
-// enough public keys remain to produce a successful result. All signatures need to match a public key.
-// Because public keys are not checked again if they fail any signature comparison, signatures must be
-// placed in the scriptSig using the same order as their corresponding public keys were placed in the
+// enough keys remain to produce a successful result. All signatures need to match a key.
+// Because keys are not checked again if they fail any signature comparison, signatures must be
+// placed in the scriptSig using the same order as their corresponding keys were placed in the
 // scriptPubKey or redeemScript. If all signatures are valid, 1 is returned, 0 otherwise. Due to a bug,
 // one extra unused value is removed from the stack.
-public struct OpCheckMultiSig: OpCodeProtocol {
-    public var value: UInt8 { return 0xae }
-    public var name: String { return "OP_CHECKMULTISIG" }
+struct OpCheckMultiSig: OpCodeProtocol {
+    var value: UInt8 { return 0xae }
+    var name: String { return "OP_CHECKMULTISIG" }
 }

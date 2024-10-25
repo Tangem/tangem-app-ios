@@ -12,8 +12,7 @@ import Combine
 final class TronTransactionHistoryProvider<Mapper> where
     Mapper: TransactionHistoryMapper,
     Mapper: BlockBookTransactionHistoryTotalPageCountExtractor,
-    Mapper.Response == BlockBookAddressResponse
-{
+    Mapper.Response == BlockBookAddressResponse {
     private let blockBookProvider: BlockBookUtxoProvider
     private let mapper: Mapper
 

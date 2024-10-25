@@ -10,7 +10,7 @@ import Foundation
 import TangemSdk
 import CryptoSwift
 
-public struct EthereumAddressService {
+struct EthereumAddressService {
     func toChecksumAddress(_ address: String) -> String? {
         let address = address.lowercased().removeHexPrefix()
         guard let hashData = address.data(using: .utf8) else {
@@ -41,7 +41,7 @@ public struct EthereumAddressService {
 
 @available(iOS 13.0, *)
 extension EthereumAddressService: AddressProvider {
-    public func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
+    func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
         let walletPublicKey = try Secp256k1Key(with: publicKey.blockchainKey).decompress()
         // Skip secp256k1 prefix
         let keccak = walletPublicKey[1...].sha3(.keccak256)
@@ -60,7 +60,7 @@ extension EthereumAddressService: AddressProvider {
 
 @available(iOS 13.0, *)
 extension EthereumAddressService: AddressValidator {
-    public func validate(_ address: String) -> Bool {
+    func validate(_ address: String) -> Bool {
         guard !address.isEmpty, address.hasHexPrefix(), address.count == 42 else {
             return false
         }
@@ -69,7 +69,7 @@ extension EthereumAddressService: AddressValidator {
             return true
         } else {
             let cleanHex = address.stripHexPrefix()
-            if cleanHex.lowercased() != cleanHex && cleanHex.uppercased() != cleanHex {
+            if cleanHex.lowercased() != cleanHex, cleanHex.uppercased() != cleanHex {
                 return false
             }
         }

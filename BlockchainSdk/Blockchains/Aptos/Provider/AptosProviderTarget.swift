@@ -15,21 +15,21 @@ import Moya
 
 struct AptosProviderTarget: TargetType {
     // MARK: - Properties
-    
+
     private let node: NodeInfo
     private let targetType: TargetType
-    
+
     // MARK: - Init
-    
+
     init(node: NodeInfo, targetType: TargetType) {
         self.node = node
         self.targetType = targetType
     }
-    
+
     var baseURL: URL {
         node.url
     }
-    
+
     var isAccountsResourcesRequest: Bool {
         if case .accountsResources = targetType {
             return true
@@ -52,7 +52,7 @@ struct AptosProviderTarget: TargetType {
             return "v1/transactions"
         }
     }
-    
+
     var method: Moya.Method {
         switch targetType {
         case .accounts, .accountsResources, .estimateGasPrice:
@@ -61,7 +61,7 @@ struct AptosProviderTarget: TargetType {
             return .post
         }
     }
-    
+
     var task: Moya.Task {
         switch targetType {
         case .accounts, .accountsResources, .estimateGasPrice:
@@ -72,24 +72,24 @@ struct AptosProviderTarget: TargetType {
                 urlParameters: [
                     "estimate_gas_unit_price": "false",
                     "estimate_max_gas_amount": "true",
-                    "estimate_prioritized_gas_unit_price": "false"
+                    "estimate_prioritized_gas_unit_price": "false",
                 ]
             )
         case .submitTransaction(let data):
             return .requestData(data)
         }
     }
-    
-    var headers: [String : String]? {
-        var headers: [String : String] = [
+
+    var headers: [String: String]? {
+        var headers: [String: String] = [
             "Accept": "application/json",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         ]
-        
+
         if let headersKeyInfo = node.headers {
             headers[headersKeyInfo.headerName] = headersKeyInfo.headerValue
         }
-        
+
         return headers
     }
 }
@@ -100,21 +100,21 @@ extension AptosProviderTarget {
          Return the authentication key and the sequence number for an account address. Optionally, a ledger version can be specified. If the ledger version is not specified in the request, the latest ledger version is used.
          */
         case accounts(address: String)
-        
+
         /*
          Retrieves all account resources for a given account and a specific ledger version. If the ledger version is not specified in the request, the latest ledger version is used.
 
          The Aptos nodes prune account state history, via a configurable time window. If the requested ledger version has been pruned, the server responds with a 410.
          */
         case accountsResources(address: String)
-        
+
         /*
          Gives an estimate of the gas unit price required to get a transaction on chain in a reasonable amount of time. The gas unit price is the amount that each transaction commits to pay for each unit of gas consumed in executing the transaction. The estimate is based on recent history: it gives the minimum gas that would have been required to get into recent blocks, for blocks that were full. (When blocks are not full, the estimate will match the minimum gas unit price.)
 
          The estimation is given in three values: de-prioritized (low), regular, and prioritized (aggressive). Using a more aggressive value increases the likelihood that the transaction will make it into the next block; more aggressive values are computed with a larger history and higher percentile statistics. More details are in AIP-34.
          */
         case estimateGasPrice
-        
+
         /*
          The output of the transaction will have the exact transaction outputs and events that running an actual signed transaction would have. However, it will not have the associated state hashes, as they are not updated in storage. This can be used to estimate the maximum gas units for a submitted transaction.
 
@@ -122,11 +122,11 @@ extension AptosProviderTarget {
 
          - Create a SignedTransaction with a zero-padded signature.
          - Submit a SubmitTransactionRequest containing a UserTransactionRequest containing that signature.
-         
+
          To use this endpoint with BCS, you must submit a SignedTransaction encoded as BCS. See SignedTransaction in types/src/transaction/mod.rs.
          */
         case simulateTransaction(data: Data)
-        
+
         /*
          This endpoint accepts transaction submissions in two formats.
 

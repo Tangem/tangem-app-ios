@@ -18,11 +18,11 @@ struct KaspaFeeMapper {
     func mapFee(mass: KaspaMassResponse, feeEstimate: KaspaFeeEstimateResponse) -> [Fee] {
         let buckets = (
             feeEstimate.lowBuckets
-            + feeEstimate.normalBuckets
-            + [feeEstimate.priorityBucket]
+                + feeEstimate.normalBuckets
+                + [feeEstimate.priorityBucket]
         )
-            .sorted() // just in case, because it's not described in the documentation.
-            .suffix(3) // select the 3 largest baskets
+        .sorted() // just in case, because it's not described in the documentation.
+        .suffix(3) // select the 3 largest baskets
 
         let mass = Decimal(mass.mass)
 

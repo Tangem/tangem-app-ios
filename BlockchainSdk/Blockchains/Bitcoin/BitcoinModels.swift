@@ -20,14 +20,13 @@ struct BitcoinResponse {
     let hasUnconfirmed: Bool
     let pendingTxRefs: [PendingTransaction]
     let unspentOutputs: [BitcoinUnspentOutput]
-    
+
     init(balance: Decimal, hasUnconfirmed: Bool, pendingTxRefs: [PendingTransaction], unspentOutputs: [BitcoinUnspentOutput]) {
         self.balance = balance
         self.hasUnconfirmed = hasUnconfirmed
         self.pendingTxRefs = pendingTxRefs
         self.unspentOutputs = unspentOutputs
     }
-
 }
 
 /// Full bitcoin transaction. Currently using only in loading single transaction. In future can be used for displaying transaction detalization

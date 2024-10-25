@@ -23,9 +23,9 @@ enum NEARAddressUtil {
     /// consider it a named account and check its validity.
     static func isValidNamedAccount(accountId: String) -> Bool {
         return accountId.count >= Constants.namedAccountIdMinLength
-        && accountId.count <= Constants.namedAccountIdMaxLength
-        && accountId.matches(Constants.namedAccountIdRegex)
-        && accountId != Constants.systemAccountId
+            && accountId.count <= Constants.namedAccountIdMaxLength
+            && accountId.matches(Constants.namedAccountIdRegex)
+            && accountId != Constants.systemAccountId
     }
 }
 
@@ -49,10 +49,10 @@ private extension NEARAddressUtil {
 
 private extension String {
     /// 0 through 9.
-    private static let asciiDecimalDigits: ClosedRange<UInt8> = UInt8(48)...UInt8(57)
+    private static let asciiDecimalDigits: ClosedRange<UInt8> = UInt8(48) ... UInt8(57)
 
     /// a through f.
-    private static let asciiLowercaseHexDigits: ClosedRange<UInt8> = UInt8(97)...UInt8(102)
+    private static let asciiLowercaseHexDigits: ClosedRange<UInt8> = UInt8(97) ... UInt8(102)
 
     var isLowercasedHexStringWithoutPrefix: Bool {
         return allSatisfy { character in
@@ -61,7 +61,7 @@ private extension String {
             }
 
             return Self.asciiDecimalDigits.contains(character.asciiValue!)
-            || Self.asciiLowercaseHexDigits.contains(character.asciiValue!)
+                || Self.asciiLowercaseHexDigits.contains(character.asciiValue!)
         }
     }
 

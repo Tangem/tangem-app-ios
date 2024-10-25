@@ -30,6 +30,7 @@ struct EthereumOptimisticRollupWalletAssembly: WalletManagerAssembly {
             addressConverter: addressConverter,
             txBuilder: txBuilder,
             networkService: networkService,
-            allowsFeeSelection: input.blockchain.allowsFeeSelection)
+            allowsFeeSelection: input.blockchain.allowsFeeSelection
+        )
     }
 }

@@ -24,7 +24,7 @@
 
 import Foundation
 
-public struct OpReserved: OpCodeProtocol {
-    public var value: UInt8 { return 0x50 }
-    public var name: String { return "OP_RESERVED" }
+struct OpReserved: OpCodeProtocol {
+    var value: UInt8 { return 0x50 }
+    var name: String { return "OP_RESERVED" }
 }

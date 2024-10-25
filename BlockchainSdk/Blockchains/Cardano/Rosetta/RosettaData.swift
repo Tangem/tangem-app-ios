@@ -11,7 +11,7 @@ import Foundation
 struct RosettaNetworkIdentifier: Codable {
     let blockchain: String
     let network: String
-    
+
     static let mainNet = RosettaNetworkIdentifier(blockchain: "cardano", network: "mainnet")
 }
 

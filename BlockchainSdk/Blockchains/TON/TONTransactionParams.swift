@@ -11,8 +11,8 @@ import CryptoKit
 import WalletCore
 
 public struct TONTransactionParams: TransactionParams {
-    public var memo: String
-    
+    var memo: String
+
     public init(memo: String) {
         self.memo = memo
     }

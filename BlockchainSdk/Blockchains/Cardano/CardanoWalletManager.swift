@@ -14,12 +14,12 @@ class CardanoWalletManager: BaseManager, WalletManager {
     var transactionBuilder: CardanoTransactionBuilder!
     var networkService: CardanoNetworkProvider!
     var currentHost: String { networkService.host }
-    
-    override func update(completion: @escaping (Result<Void, Error>)-> Void) {
+
+    override func update(completion: @escaping (Result<Void, Error>) -> Void) {
         cancellable = networkService
             .getInfo(addresses: wallet.addresses.map { $0.value }, tokens: cardTokens)
             .sink(receiveCompletion: { [weak self] completionSubscription in
-                if case let .failure(error) = completionSubscription {
+                if case .failure(let error) = completionSubscription {
                     self?.wallet.clearAmounts()
                     completion(.failure(error))
                 }
@@ -28,17 +28,17 @@ class CardanoWalletManager: BaseManager, WalletManager {
                 completion(.success(()))
             })
     }
-    
+
     private func updateWallet(with response: CardanoAddressResponse) {
         let balance = Decimal(response.balance) / wallet.blockchain.decimalValue
         wallet.add(coinValue: balance)
         transactionBuilder.update(outputs: response.unspentOutputs)
-        
+
         for (token, value) in response.tokenBalances {
             let balance = Decimal(value) / token.decimalValue
             wallet.add(tokenValue: balance, for: token)
         }
-       
+
         wallet.removePendingTransaction { hash in
             let recentContains = response.recentTransactionsHashes.contains {
                 $0.caseInsensitiveEquals(to: hash)
@@ -55,57 +55,57 @@ class CardanoWalletManager: BaseManager, WalletManager {
 
 extension CardanoWalletManager: TransactionSender {
     var allowsFeeSelection: Bool { false }
-    
+
     func send(_ transaction: Transaction, signer: TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError> {
         // Use Just to switch on global queue because we have async signing
         return Just(())
             .receive(on: DispatchQueue.global())
-                .tryMap { [weak self] _ -> Data in
-                    guard let self else {
-                        throw WalletError.empty
-                    }
+            .tryMap { [weak self] _ -> Data in
+                guard let self else {
+                    throw WalletError.empty
+                }
 
-                    return try self.transactionBuilder.buildForSign(transaction: transaction)
+                return try transactionBuilder.buildForSign(transaction: transaction)
+            }
+            .flatMap { [weak self] dataForSign -> AnyPublisher<SignatureInfo, Error> in
+                guard let self else {
+                    return .anyFail(error: WalletError.empty)
                 }
-                .flatMap { [weak self] dataForSign -> AnyPublisher<SignatureInfo, Error> in
-                    guard let self else {
-                        return .anyFail(error: WalletError.empty)
-                    }
 
-                    return signer
-                        .sign(hash: dataForSign, walletPublicKey: self.wallet.publicKey)
+                return signer
+                    .sign(hash: dataForSign, walletPublicKey: wallet.publicKey)
+            }
+            .tryMap { [weak self] signatureInfo -> Data in
+                guard let self else {
+                    throw WalletError.empty
                 }
-                .tryMap { [weak self] signatureInfo -> Data in
-                    guard let self else {
-                        throw WalletError.empty
-                    }
 
-                    return try self.transactionBuilder.buildForSend(transaction: transaction, signature: signatureInfo)
+                return try transactionBuilder.buildForSend(transaction: transaction, signature: signatureInfo)
+            }
+            .flatMap { [weak self] builtTransaction -> AnyPublisher<String, Error> in
+                guard let self else {
+                    return .anyFail(error: WalletError.empty)
                 }
-                .flatMap { [weak self] builtTransaction -> AnyPublisher<String, Error> in
-                    guard let self else {
-                        return .anyFail(error: WalletError.empty)
-                    }
 
-                    return self.networkService
-                        .send(transaction: builtTransaction)
-                        .mapSendError(tx: builtTransaction.hexString.lowercased())
-                        .eraseToAnyPublisher()
+                return networkService
+                    .send(transaction: builtTransaction)
+                    .mapSendError(tx: builtTransaction.hexString.lowercased())
+                    .eraseToAnyPublisher()
+            }
+            .tryMap { [weak self] hash in
+                guard let self else {
+                    throw WalletError.empty
                 }
-                .tryMap { [weak self] hash in
-                    guard let self else {
-                        throw WalletError.empty
-                    }
-                    
-                    let mapper = PendingTransactionRecordMapper()
-                    let record = mapper.mapToPendingTransactionRecord(transaction: transaction, hash: hash)
-                    self.wallet.addPendingTransaction(record)
-                    return TransactionSendResult(hash: hash)
-                }
-                .eraseSendError()
-                .eraseToAnyPublisher()
+
+                let mapper = PendingTransactionRecordMapper()
+                let record = mapper.mapToPendingTransactionRecord(transaction: transaction, hash: hash)
+                wallet.addPendingTransaction(record)
+                return TransactionSendResult(hash: hash)
+            }
+            .eraseSendError()
+            .eraseToAnyPublisher()
     }
-    
+
     func getFee(amount: Amount, destination: String) -> AnyPublisher<[Fee], Error> {
         do {
             let (uInt64Fee, parameters) = try transactionBuilder.getFee(amount: amount, destination: destination, source: defaultSourceAddress)
@@ -166,7 +166,7 @@ extension CardanoWalletManager: CardanoTransferRestrictable {
                 // Skip this checking. Dust checking will be after
                 return
             }
-            
+
             try validateCardanoCoinWithdrawal(amount: amount, fee: fee)
         case .token:
             try validateCardanoTokenWithdrawal(amount: amount, fee: fee)

@@ -12,11 +12,11 @@ import Combine
 class KoinosNetworkService: MultiNetworkProvider {
     let providers: [KoinosNetworkProvider]
     var currentProviderIndex = 0
-    
+
     init(providers: [KoinosNetworkProvider]) {
         self.providers = providers
     }
-    
+
     func getInfo(address: String) -> AnyPublisher<KoinosAccountInfo, Error> {
         providerPublisher { provider in
             Publishers.Zip(
@@ -32,7 +32,7 @@ class KoinosNetworkService: MultiNetworkProvider {
             .eraseToAnyPublisher()
         }
     }
-    
+
     func getRCLimit() -> AnyPublisher<BigUInt, Error> {
         providerPublisher { provider in
             provider.getResourceLimits()
@@ -45,7 +45,7 @@ class KoinosNetworkService: MultiNetworkProvider {
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func getCurrentNonce(address: String) -> AnyPublisher<KoinosAccountNonce, Error> {
         providerPublisher { provider in
             provider
@@ -54,7 +54,7 @@ class KoinosNetworkService: MultiNetworkProvider {
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func submitTransaction(transaction: KoinosProtocol.Transaction) -> AnyPublisher<KoinosTransactionEntry, Error> {
         providerPublisher { provider in
             provider
@@ -64,7 +64,7 @@ class KoinosNetworkService: MultiNetworkProvider {
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func getExistingTransactionIDs(transactionIDs: [String]) -> AnyPublisher<Set<String>, Error> {
         providerPublisher { provider in
             provider

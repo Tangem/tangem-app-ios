@@ -24,7 +24,7 @@
 import Foundation
 
 // (x y -- x>>y) disabled.
-public struct OpRShift: OpCodeProtocol {
-    public var value: UInt8 { return 0x99 }
-    public var name: String { return "OP_RSHIFT" }
+struct OpRShift: OpCodeProtocol {
+    var value: UInt8 { return 0x99 }
+    var name: String { return "OP_RSHIFT" }
 }

@@ -11,8 +11,11 @@ import Moya
 
 enum BlockcypherEndpoint {
     case bitcoin(testnet: Bool)
-    case ethereum, litecoin, dogecoin, dash
-    
+    case ethereum
+    case litecoin
+    case dogecoin
+    case dash
+
     var path: String {
         var suffix = "main"
         let blockchain: String
@@ -29,7 +32,7 @@ enum BlockcypherEndpoint {
         }
         return "\(blockchain)/\(suffix)"
     }
-    
+
     var blockchain: Blockchain {
         switch self {
         case .bitcoin(let testnet):
@@ -49,16 +52,16 @@ struct BlockcypherTarget: TargetType {
         case send(txHex: String)
         case txs(txHash: String)
     }
-    
+
     let endpoint: BlockcypherEndpoint
     let token: String?
     let targetType: BlockcypherTargetType
-    
+
     var baseURL: URL { URL(string: "https://api.blockcypher.com/v1/\(endpoint.path)")! }
-    
+
     var path: String {
         switch targetType {
-        case let .address(address, _, _, isFull):
+        case .address(let address, _, _, let isFull):
             return "/addrs/\(address)\(isFull ? "/full" : "")"
         case .fee:
             return ""
@@ -68,7 +71,7 @@ struct BlockcypherTarget: TargetType {
             return "/txs/\(txHash)"
         }
     }
-    
+
     var method: Moya.Method {
         switch targetType {
         case .address, .fee, .txs:
@@ -77,35 +80,37 @@ struct BlockcypherTarget: TargetType {
             return .post
         }
     }
-    
+
     var sampleData: Data {
         return Data()
     }
-    
+
     var task: Task {
-        var parameters = token == nil ? [:] : ["token":token!]
-		
+        var parameters = token == nil ? [:] : ["token": token!]
+
         switch targetType {
         case .address(_, let unspentsOnly, let limit, _):
-			if unspentsOnly {
-				parameters["unspentOnly"] = "true"
-			}
+            if unspentsOnly {
+                parameters["unspentOnly"] = "true"
+            }
             parameters["includeScript"] = "true"
-			if let limit = limit {
-				parameters["limit"] = "\(limit)"
-			}
+            if let limit = limit {
+                parameters["limit"] = "\(limit)"
+            }
         case .send(let txHex):
-            return .requestCompositeParameters(bodyParameters: ["tx": txHex],
-                                               bodyEncoding: JSONEncoding.default,
-                                               urlParameters: parameters)
+            return .requestCompositeParameters(
+                bodyParameters: ["tx": txHex],
+                bodyEncoding: JSONEncoding.default,
+                urlParameters: parameters
+            )
         default:
             break
         }
-        
+
         return .requestParameters(parameters: parameters, encoding: URLEncoding.default)
     }
-    
-    var headers: [String : String]? {
+
+    var headers: [String: String]? {
         return nil
     }
 }

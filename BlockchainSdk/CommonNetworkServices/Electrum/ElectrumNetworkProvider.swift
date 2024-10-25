@@ -21,7 +21,7 @@ class ElectrumNetworkProvider: MultiNetworkProvider {
             Future.async {
                 async let balance = provider.getBalance(identifier: identifier)
                 async let unspents = provider.getUnspents(identifier: identifier)
-                
+
                 return try await ElectrumAddressInfo(
                     balance: Decimal(balance.confirmed),
                     outputs: unspents.map { unspent in
@@ -37,7 +37,7 @@ class ElectrumNetworkProvider: MultiNetworkProvider {
             .eraseToAnyPublisher()
         }
     }
-    
+
     func estimateFee() -> AnyPublisher<Decimal, Error> {
         providerPublisher { provider in
             Future.async {
@@ -46,7 +46,7 @@ class ElectrumNetworkProvider: MultiNetworkProvider {
             .eraseToAnyPublisher()
         }
     }
-    
+
     func send(transactionHex: String) -> AnyPublisher<String, Error> {
         providerPublisher { provider in
             Future.async {

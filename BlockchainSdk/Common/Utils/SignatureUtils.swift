@@ -52,5 +52,4 @@ private extension SignatureUtils {
         static let recoveryIdLowerBound: UInt8 = 0
         static let recoveryIdUpperBound: UInt8 = 3
     }
-
 }

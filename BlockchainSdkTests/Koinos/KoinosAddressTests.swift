@@ -19,7 +19,7 @@ final class KoinosAddressTests: XCTestCase {
 
         XCTAssertEqual(try addressService.makeAddress(from: publicKey).value, expectedAddress)
     }
-    
+
     func testMakeAddress2() throws {
         let publicKey = Data(hex: "03607ffd808bdeab4dca2605854b2ab58ed18caf9034b6f0ad38a7fab065b6a997")
         let expectedAddress = "18KSv997KjmdraZvdjfvdy6dr3nFejLrV4"
@@ -47,13 +47,13 @@ final class KoinosAddressTests: XCTestCase {
 
         XCTAssertEqual(try addressService.makeAddress(from: publicKey).value, expectedAddress)
     }
-    
+
     func testValidateCorrectAddress1() {
         let address = "1AYz8RCnoafLnifMjJbgNb2aeW5CbZj8Tp"
 
         XCTAssertTrue(addressService.validate(address))
     }
-    
+
     func testValidateCorrectAddress2() {
         let address = "18KSv997KjmdraZvdjfvdy6dr3nFejLrV4"
 
@@ -83,7 +83,7 @@ final class KoinosAddressTests: XCTestCase {
 
         XCTAssertFalse(addressService.validate(address))
     }
-    
+
     func testValidateIncorrectAddress2() {
         let address = "18KSv997KjmdraZvdjfvdy6dr3nFejLrV"
 
@@ -107,34 +107,34 @@ final class KoinosAddressTests: XCTestCase {
 
         XCTAssertFalse(addressService.validate(address))
     }
-    
+
     func testEdError1() {
         let edKey = Data(hex: "9FE5BB2CC7D83C1DA10845AFD8A34B141FD8FD72500B95B1547E12B9BB8AAC3D")
-        
+
         XCTAssertThrowsError(try addressService.makeAddress(from: edKey))
     }
-    
+
     func testEdError2() {
         let edKey = Data(hex: "EC55E8D3F6B9C28F37B4CFA1A87896FB10ADAD42F0FC42FA8827D58032EF0E2E")
-        
+
         XCTAssertThrowsError(try addressService.makeAddress(from: edKey))
     }
 
     func testEdError3() {
         let edKey = Data(hex: "7C40243D15B7343A42DB8B9D12A9B676FB28B5F5DA9B8B5CC153ED2A16222C66")
-        
+
         XCTAssertThrowsError(try addressService.makeAddress(from: edKey))
     }
 
     func testEdError4() {
         let edKey = Data(hex: "05A297C37A0F287E937F4B9E1F451027DD118792B75E5B930B9B20A3AD7AFA94")
-        
+
         XCTAssertThrowsError(try addressService.makeAddress(from: edKey))
     }
 
     func testEdError5() {
         let edKey = Data(hex: "A9FA6D0866C3B3D8F5F2B9F8D8D45C6E81B8729A93E9E2423BBAB732FA1ED9AC")
-        
+
         XCTAssertThrowsError(try addressService.makeAddress(from: edKey))
     }
 }

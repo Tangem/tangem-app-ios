@@ -12,9 +12,9 @@ import SwiftyJSON
 import Combine
 import TangemSdk
 
-public enum StellarError: Int, Error, LocalizedError {
+enum StellarError: Int, Error, LocalizedError {
     // WARNING: Make sure to preserve the error codes when removing or inserting errors
-    
+
     case emptyResponse
     case requiresMemo
     case failedToFindLatestLedger
@@ -22,27 +22,27 @@ public enum StellarError: Int, Error, LocalizedError {
     case assetCreateAccount
     case assetNoAccountOnDestination
     case assetNoTrustline
-    
+
     // WARNING: Make sure to preserve the error codes when removing or inserting errors
-    
-    public var errorDescription: String? {
+
+    var errorDescription: String? {
         let networkName = Blockchain.stellar(curve: .ed25519, testnet: false).displayName
         switch self {
         case .requiresMemo:
-            return "xlm_requires_memo_error".localized
+            return Localization.xlmRequiresMemoError
         case .xlmCreateAccount:
-            return "no_account_generic".localized([networkName, "\(StellarWalletManager.Constants.minAmountToCreateCoinAccount)", "XLM"])
+            return Localization.noAccountGeneric(networkName, "\(StellarWalletManager.Constants.minAmountToCreateCoinAccount)", "XLM")
         case .assetCreateAccount:
-            return "no_account_generic".localized([networkName, "\(StellarWalletManager.Constants.minAmountToCreateAssetAccount)", "XLM"])
+            return Localization.noAccountGeneric(networkName, "\(StellarWalletManager.Constants.minAmountToCreateAssetAccount)", "XLM")
         case .assetNoAccountOnDestination:
-            return "send_error_no_target_account".localized(["\(StellarWalletManager.Constants.minAmountToCreateCoinAccount) XLM"])
+            return Localization.sendErrorNoTargetAccount("\(StellarWalletManager.Constants.minAmountToCreateCoinAccount) XLM")
         case .assetNoTrustline:
-            return "no_trustline_xlm_asset".localized
+            return Localization.noTrustlineXlmAsset
         default:
-            return "generic_error_code".localized(errorCodeDescription)
+            return Localization.genericErrorCode(errorCodeDescription)
         }
     }
-    
+
     private var errorCodeDescription: String {
         "stellar_error \(rawValue)"
     }
@@ -53,20 +53,20 @@ extension StellarWalletManager {
         /// 1 XLM
         static let minAmountToCreateCoinAccount: Decimal = 1
         /// 1.5 XLM
-        static let minAmountToCreateAssetAccount: Decimal = Decimal(stringValue: "1.5")!
+        static let minAmountToCreateAssetAccount: Decimal = .init(stringValue: "1.5")!
     }
 }
 
 class StellarWalletManager: BaseManager, WalletManager {
     var txBuilder: StellarTransactionBuilder!
     var networkService: StellarNetworkService!
-    var currentHost: String { networkService.host  }
-    
-    override func update(completion: @escaping (Result<(), Error>)-> Void)  {
+    var currentHost: String { networkService.host }
+
+    override func update(completion: @escaping (Result<Void, Error>) -> Void) {
         cancellable = networkService
             .getInfo(accountId: wallet.address, isAsset: !cardTokens.isEmpty)
             .sink(receiveCompletion: { [weak self] completionSubscription in
-                if case let .failure(error) = completionSubscription {
+                if case .failure(let error) = completionSubscription {
                     self?.wallet.clearAmounts()
                     completion(.failure(error))
                 }
@@ -75,26 +75,27 @@ class StellarWalletManager: BaseManager, WalletManager {
                 completion(.success(()))
             })
     }
-    
+
     private func updateWallet(with response: StellarResponse) {
         txBuilder.sequence = response.sequence
         let fullReserve = response.assetBalances.isEmpty ? response.baseReserve * 2 : response.baseReserve * 3
         wallet.add(reserveValue: fullReserve)
         wallet.add(coinValue: response.balance - fullReserve)
-        
+
         if cardTokens.isEmpty {
             response.assetBalances.forEach {
-                let token = Token(name: $0.code,
-                                  symbol: $0.code,
-                                  contractAddress: $0.issuer,
-                                  decimalCount: wallet.blockchain.decimalCount)
+                let token = Token(
+                    name: $0.code,
+                    symbol: $0.code,
+                    contractAddress: $0.issuer,
+                    decimalCount: wallet.blockchain.decimalCount
+                )
                 wallet.add(tokenValue: $0.balance, for: token)
             }
         } else {
             for token in cardTokens {
                 let assetBalance = response.assetBalances.first(where: { $0.code == token.symbol })?.balance ?? 0.0
                 wallet.add(tokenValue: assetBalance, for: token)
-                
             }
         }
 
@@ -106,37 +107,39 @@ class StellarWalletManager: BaseManager, WalletManager {
 
 extension StellarWalletManager: TransactionSender {
     var allowsFeeSelection: Bool { true }
-    
+
     func send(_ transaction: Transaction, signer: TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError> {
         return networkService.checkTargetAccount(address: transaction.destinationAddress, token: transaction.amount.type.token)
             .flatMap { [weak self] response -> AnyPublisher<(hash: Data, transaction: stellarsdk.TransactionXDR), Error> in
                 guard let self else { return .emptyFail }
-                
-                return self.txBuilder.buildForSign(targetAccountResponse: response, transaction: transaction)
+
+                return txBuilder.buildForSign(targetAccountResponse: response, transaction: transaction)
             }
-            .flatMap {[weak self] buildForSignResponse -> AnyPublisher<(Data, (hash: Data, transaction: stellarsdk.TransactionXDR)), Error> in
+            .flatMap { [weak self] buildForSignResponse -> AnyPublisher<(Data, (hash: Data, transaction: stellarsdk.TransactionXDR)), Error> in
                 guard let self = self else { return .emptyFail }
-                
-                return signer.sign(hash: buildForSignResponse.hash,
-                                   walletPublicKey: self.wallet.publicKey)
-                    .map { return ($0, buildForSignResponse) }.eraseToAnyPublisher()
+
+                return signer.sign(
+                    hash: buildForSignResponse.hash,
+                    walletPublicKey: wallet.publicKey
+                )
+                .map { return ($0, buildForSignResponse) }.eraseToAnyPublisher()
             }
-            .tryMap {[weak self] result throws -> String in
+            .tryMap { [weak self] result throws -> String in
                 guard let self = self else { throw WalletError.empty }
-                
+
                 guard let tx = self.txBuilder.buildForSend(signature: result.0, transaction: result.1.transaction) else {
                     throw WalletError.failedToBuildTx
                 }
-                
+
                 return tx
             }
-            .flatMap {[weak self] rawTransactionHash -> AnyPublisher<TransactionSendResult, Error> in
-                self?.networkService.send(transaction: rawTransactionHash).tryMap {[weak self] hash in
+            .flatMap { [weak self] rawTransactionHash -> AnyPublisher<TransactionSendResult, Error> in
+                self?.networkService.send(transaction: rawTransactionHash).tryMap { [weak self] hash in
                     guard let self = self else { throw WalletError.empty }
-                    
+
                     let mapper = PendingTransactionRecordMapper()
                     let record = mapper.mapToPendingTransactionRecord(transaction: transaction, hash: hash)
-                    self.wallet.addPendingTransaction(record)
+                    wallet.addPendingTransaction(record)
                     return TransactionSendResult(hash: hash)
                 }
                 .mapSendError(tx: rawTransactionHash)
@@ -145,7 +148,7 @@ extension StellarWalletManager: TransactionSender {
             .eraseSendError()
             .eraseToAnyPublisher()
     }
-    
+
     func getFee(amount: Amount, destination: String) -> AnyPublisher<[Fee], Error> {
         networkService.getFee()
             .map { $0.map { Fee($0) } }
@@ -163,7 +166,7 @@ extension StellarWalletManager: SignatureCountValidator {
     }
 }
 
-extension StellarWalletManager: ThenProcessable { }
+extension StellarWalletManager: ThenProcessable {}
 
 extension StellarWalletManager: ReserveAmountRestrictable {
     func validateReserveAmount(amount: Amount, addressType: ReserveAmountRestrictableAddressType) async throws {
@@ -176,11 +179,11 @@ extension StellarWalletManager: ReserveAmountRestrictable {
                 return account.accountCreated
             }
         }()
-        
+
         guard !isAccountCreated else {
             return
         }
-        
+
         let reserveAmount = Amount(with: wallet.blockchain, value: Constants.minAmountToCreateCoinAccount)
         switch amount.type {
         case .coin:

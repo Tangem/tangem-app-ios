@@ -20,7 +20,7 @@ extension BlockchairAddressBlockMapper {
         if dictionary.keys.contains(address) {
             return data["\(address)"]
         }
-        
+
         let lowercasedAddress = address.lowercased()
         if dictionary.keys.contains(lowercasedAddress) {
             return data["\(lowercasedAddress)"]
