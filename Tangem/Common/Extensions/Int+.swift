@@ -8,6 +8,6 @@
 
 import Foundation
 
-extension Int: Identifiable {
+extension Int: @retroactive Identifiable {
     public var id: Int { self }
 }

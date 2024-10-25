@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension URLSessionTask.State: CustomStringConvertible {
+extension URLSessionTask.State: @retroactive CustomStringConvertible {
     public var description: String {
         switch self {
         case .running:
