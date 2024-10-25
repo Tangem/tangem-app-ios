@@ -7,7 +7,7 @@
 //
 
 protocol OnrampCountryRoutable: AnyObject {
-    func userDidTapChangeCountry()
-    func userDidTapConfirmCountry()
-    func userDidTapClose()
+    func openChangeCountry()
+    func dismissConfirmCountryView()
+    func dismiss()
 }

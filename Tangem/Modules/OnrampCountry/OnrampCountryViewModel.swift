@@ -45,15 +45,15 @@ final class OnrampCountryViewModel: ObservableObject, Identifiable {
     }
 
     func didTapChangeButton() {
-        coordinator?.userDidTapChangeCountry()
+        coordinator?.openChangeCountry()
     }
 
     func didTapMainButton() {
         switch style {
         case .info:
-            coordinator?.userDidTapConfirmCountry()
+            coordinator?.dismissConfirmCountryView()
         case .notSupport:
-            coordinator?.userDidTapClose()
+            coordinator?.dismiss()
         }
     }
 }
