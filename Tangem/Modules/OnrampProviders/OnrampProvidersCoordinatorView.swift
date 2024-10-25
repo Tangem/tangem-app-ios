@@ -16,23 +16,18 @@ struct OnrampProvidersCoordinatorView: CoordinatorView {
     }
 
     var body: some View {
-        ZStack {
-            if let rootViewModel = coordinator.rootViewModel {
-                OnrampProvidersView(viewModel: rootViewModel)
-                    .navigationLinks(links)
+        NavigationView {
+            ZStack {
+                if let rootViewModel = coordinator.rootViewModel {
+                    OnrampProvidersView(viewModel: rootViewModel)
+                        .navigationLinks(links)
+                }
             }
-
-            sheets
         }
     }
 
     @ViewBuilder
     private var links: some View {
-        EmptyView()
-    }
-
-    @ViewBuilder
-    private var sheets: some View {
         EmptyView()
     }
 }

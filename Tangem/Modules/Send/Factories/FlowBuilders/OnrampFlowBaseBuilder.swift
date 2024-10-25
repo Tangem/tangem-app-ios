@@ -62,9 +62,10 @@ struct OnrampFlowBaseBuilder {
             shouldActivateKeyboard: onrampRepository.savedCountry != nil
         )
 
-        let interactor = CommonSendBaseInteractor(input: onrampModel, output: onrampModel)
-        let dataBuilder = builder.makeOnrampBaseDataBuilder(input: onrampModel, onrampRepository: onrampRepository)
+        onramp.step.setup(router: stepsManager)
 
+        let dataBuilder = builder.makeOnrampBaseDataBuilder(input: onrampModel, onrampRepository: onrampRepository)
+        let interactor = CommonSendBaseInteractor(input: onrampModel, output: onrampModel)
         let viewModel = SendViewModel(
             interactor: interactor,
             stepsManager: stepsManager,

@@ -16,8 +16,30 @@ struct OnrampProvidersView: View {
     }
 
     var body: some View {
-        VStack {
-            Text("Hello, World!")
+        VStack(spacing: .zero) {
+            headerView
+
+            GroupedScrollView(spacing: 0) {
+                providersSection
+            }
+        }
+        .background(Colors.Background.tertiary)
+    }
+
+    private var headerView: some View {
+        BottomSheetHeaderView(
+            title: Localization.expressChooseProvidersTitle,
+            subtitle: Localization.expressChooseProvidersSubtitle
+        )
+        .padding(.top, 20)
+        .padding(.horizontal, 16)
+    }
+
+    private var providersSection: some View {
+        ForEach(viewModel.providers) {
+            OnrampProviderRowView(data: $0)
+
+            Separator(height: .minimal, color: Colors.Stroke.primary)
         }
     }
 }
