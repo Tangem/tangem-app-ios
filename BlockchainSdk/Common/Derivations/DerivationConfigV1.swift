@@ -16,8 +16,8 @@ import Foundation
 /// https://cips.cardano.org/cips/cip1852/
 /// - `All else`. According to `BIP44`
 /// https://github.com/satoshilabs/slips/blob/master/slip-0044.md
-public struct DerivationConfigV1: DerivationConfig {
-    public func derivationPath(for blockchain: Blockchain) -> String {
+struct DerivationConfigV1: DerivationConfig {
+    func derivationPath(for blockchain: Blockchain) -> String {
         switch blockchain {
         case .bitcoin:
             return "m/44'/0'/0'/0/0"

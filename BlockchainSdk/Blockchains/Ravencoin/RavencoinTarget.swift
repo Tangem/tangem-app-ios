@@ -23,11 +23,11 @@ extension RavencoinTarget: TargetType {
         case transaction(id: String)
         case send(transaction: RavencoinRawTransaction.Request)
     }
-    
+
     var baseURL: URL {
         URL(string: host)!
     }
-    
+
     var path: String {
         switch target {
         case .wallet(let address):
@@ -44,7 +44,7 @@ extension RavencoinTarget: TargetType {
             return "txs"
         }
     }
-    
+
     var method: Moya.Method {
         switch target {
         case .send:
@@ -53,7 +53,7 @@ extension RavencoinTarget: TargetType {
             return .get
         }
     }
-    
+
     var task: Moya.Task {
         switch target {
         case .fees(let request):
@@ -68,9 +68,9 @@ extension RavencoinTarget: TargetType {
             return .requestPlain
         }
     }
-    
+
     // Workaround for API
-    var headers: [String : String]? {
+    var headers: [String: String]? {
         ["User-Agent": "Mozilla/5.0 Version/16.1 Safari/605.1.15"]
     }
 }

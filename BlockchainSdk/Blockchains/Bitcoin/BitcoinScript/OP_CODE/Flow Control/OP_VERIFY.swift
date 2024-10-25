@@ -25,7 +25,7 @@
 import Foundation
 
 // Marks transaction as invalid if top stack value is not true. The top stack value is removed.
-public struct OpVerify: OpCodeProtocol {
-    public var value: UInt8 { return 0x69 }
-    public var name: String { return "OP_VERIFY" }
+struct OpVerify: OpCodeProtocol {
+    var value: UInt8 { return 0x69 }
+    var name: String { return "OP_VERIFY" }
 }

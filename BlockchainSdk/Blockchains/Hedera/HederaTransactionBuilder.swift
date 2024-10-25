@@ -16,9 +16,7 @@ final class HederaTransactionBuilder {
     private let curve: EllipticCurve
     private let isTestnet: Bool
 
-    private lazy var client: Client = {
-        return isTestnet ? Client.forTestnet() : Client.forMainnet()
-    }()
+    private lazy var client: Client = isTestnet ? Client.forTestnet() : Client.forMainnet()
 
     init(publicKey: Data, curve: EllipticCurve, isTestnet: Bool) {
         self.publicKey = publicKey
@@ -49,7 +47,7 @@ final class HederaTransactionBuilder {
     }
 
     /// Build transaction for signing.
-    /// - parameter nodeAccountIds: A list of consensus network nodes for sending this transaction; 
+    /// - parameter nodeAccountIds: A list of consensus network nodes for sending this transaction;
     /// Pass `nil` to let the Hedera SDK network layer select valid and alive consensus network nodes on its own.
     func buildTransferTransactionForSign(
         transaction: Transaction,

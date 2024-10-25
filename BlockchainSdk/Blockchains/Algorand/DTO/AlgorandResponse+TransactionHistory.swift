@@ -15,12 +15,12 @@ enum AlgorandTransactionHistory {
         let limit: Int?
         let next: String?
     }
-    
+
     struct Response: Decodable {
         let nextToken: String?
         let currentRound: Int
         let transactions: [Item]
-        
+
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             nextToken = try container.decodeIfPresent(String.self, forKey: .nextToken)
@@ -33,9 +33,9 @@ enum AlgorandTransactionHistory {
             case currentRound = "current-round"
             case transactions
         }
-        
+
         // MARK: - Item Decodable
-        
+
         struct Item: Decodable {
             let confirmedRound: UInt64?
             let fee: UInt64
@@ -45,7 +45,7 @@ enum AlgorandTransactionHistory {
             let roundTime: Date?
             let sender: String
             let txType: String
-            
+
             init(from decoder: Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
                 confirmedRound = try container.decodeIfPresent(UInt64.self, forKey: .confirmedRound)
@@ -70,12 +70,12 @@ enum AlgorandTransactionHistory {
                 case txType = "tx-type"
             }
         }
-        
+
         struct PaymentTransaction: Decodable {
             let amount: UInt64
             let closeAmount: UInt64
             let receiver: String
-            
+
             init(from decoder: Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
                 amount = try container.decode(UInt64.self, forKey: .amount)

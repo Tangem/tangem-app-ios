@@ -14,7 +14,7 @@ struct AlgorandExternalLinkProvider: ExternalLinkProvider {
     }
 
     private let isTestnet: Bool
-    
+
     private var baseExplorerHost: String {
         if isTestnet {
             return "explorer.bitquery.io/algorand_testnet"

@@ -4,7 +4,6 @@ import stellarsdk
 import BitcoinCore
 
 struct BitcoinWalletAssembly: WalletManagerAssembly {
-    
     func make(with input: WalletManagerAssemblyInput) throws -> WalletManager {
         return try BitcoinWalletManager(wallet: input.wallet).then {
             let network: BitcoinNetwork = input.blockchain.isTestnet ? .testnet : .mainnet
@@ -14,7 +13,7 @@ struct BitcoinWalletAssembly: WalletManagerAssembly {
                 compressedWalletPublicKey: try Secp256k1Key(with: input.wallet.publicKey.blockchainKey).compress(),
                 bip: input.pairPublicKey == nil ? .bip84 : .bip141
             )
-            
+
             $0.txBuilder = BitcoinTransactionBuilder(bitcoinManager: bitcoinManager, addresses: input.wallet.addresses)
 
             let providers: [AnyBitcoinNetworkProvider] = input.apiInfo.reduce(into: []) { partialResult, providerType in
@@ -49,5 +48,4 @@ struct BitcoinWalletAssembly: WalletManagerAssembly {
             $0.networkService = BitcoinNetworkService(providers: providers)
         }
     }
-    
 }

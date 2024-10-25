@@ -21,36 +21,36 @@ struct TestnetAPINodeInfoProvider {
         switch blockchain {
         case .cosmos:
             return [
-                .init(url: URL(string: "https://rest.seed-01.theta-testnet.polypore.xyz")!)
+                .init(url: URL(string: "https://rest.seed-01.theta-testnet.polypore.xyz")!),
             ]
         case .near:
             return [
-                .init(url: URL(string: "https://rpc.testnet.near.org")!)
+                .init(url: URL(string: "https://rpc.testnet.near.org")!),
             ]
         case .azero:
             return [
                 .init(url: URL(string: "https://rpc.test.azero.dev")!),
-                .init(url: URL(string: "aleph-zero-testnet-rpc.dwellir.com")!)
+                .init(url: URL(string: "aleph-zero-testnet-rpc.dwellir.com")!),
             ]
         case .ravencoin:
             return [
-                .init(url: URL(string: "https://testnet.ravencoin.network/api")!)
+                .init(url: URL(string: "https://testnet.ravencoin.network/api")!),
             ]
         case .stellar:
             return [
-                .init(url: URL(string: "https://horizon-testnet.stellar.org")!)
+                .init(url: URL(string: "https://horizon-testnet.stellar.org")!),
             ]
         case .tron:
             return [
-                .init(url: URL(string: "https://nile.trongrid.io")!)
+                .init(url: URL(string: "https://nile.trongrid.io")!),
             ]
         case .algorand:
             return [
-                .init(url: URL(string: "https://testnet-api.algonode.cloud")!)
+                .init(url: URL(string: "https://testnet-api.algonode.cloud")!),
             ]
         case .aptos:
             return [
-                .init(url: URL(string: "https://fullnode.testnet.aptoslabs.com")!)
+                .init(url: URL(string: "https://fullnode.testnet.aptoslabs.com")!),
             ]
         case .hedera:
             return [
@@ -58,77 +58,78 @@ struct TestnetAPINodeInfoProvider {
                 .init(
                     url: URL(string: "https://pool.arkhia.io/hedera/testnet/api/v1")!,
                     keyInfo: keysInfoProvider.apiKeys(for: .arkhiaHedera)
-                )
+                ),
             ]
         case .ton:
             return [
                 .init(
                     url: URL(string: "https://testnet.toncenter.com/api/v2")!,
                     keyInfo: keysInfoProvider.apiKeys(for: .ton)
-                )
+                ),
             ]
         case .chia:
             return [
                 .init(
                     url: URL(string: "https://kraken.fireacademy.io/leaflet-testnet10/")!,
-                    keyInfo: keysInfoProvider.apiKeys(for: .fireAcademy))
+                    keyInfo: keysInfoProvider.apiKeys(for: .fireAcademy)
+                ),
             ]
         case .ethereum:
             return [
                 .init(url: URL(string: "https://eth-goerli.nownodes.io/\(config.nowNodesApiKey)")!),
-                .init(url: URL(string: "https://goerli.infura.io/v3/\(config.infuraProjectId)")!)
+                .init(url: URL(string: "https://goerli.infura.io/v3/\(config.infuraProjectId)")!),
             ]
         case .ethereumClassic:
             return [
-                .init(url: URL(string: "https://rpc.mordor.etccooperative.org")!)
+                .init(url: URL(string: "https://rpc.mordor.etccooperative.org")!),
             ]
         case .ethereumPoW:
             return [
-                .init(url: URL(string: "https://iceberg.ethereumpow.org")!)
+                .init(url: URL(string: "https://iceberg.ethereumpow.org")!),
             ]
         case .bsc:
             return [
-                .init(url: URL(string: "https://data-seed-prebsc-1-s1.binance.org:8545")!)
+                .init(url: URL(string: "https://data-seed-prebsc-1-s1.binance.org:8545")!),
             ]
         case .polygon:
             return [
-                .init(url: URL(string: "https://rpc-amoy.polygon.technology")!)
+                .init(url: URL(string: "https://rpc-amoy.polygon.technology")!),
             ]
         case .avalanche:
             return [
-                .init(url: URL(string: "https://api.avax-test.network/ext/bc/C/rpc")!)
+                .init(url: URL(string: "https://api.avax-test.network/ext/bc/C/rpc")!),
             ]
         case .fantom:
             return [
-                .init(url: URL(string: "https://rpc.testnet.fantom.network")!)
+                .init(url: URL(string: "https://rpc.testnet.fantom.network")!),
             ]
         case .arbitrum:
             return [
-                .init(url: URL(string: "https://goerli-rollup.arbitrum.io/rpc")!)
+                .init(url: URL(string: "https://goerli-rollup.arbitrum.io/rpc")!),
             ]
         case .optimism:
             return [
-                .init(url: URL(string: "https://goerli.optimism.io")!)
+                .init(url: URL(string: "https://goerli.optimism.io")!),
             ]
         case .kava:
             return [
-                .init(url: URL(string: "https://evm.testnet.kava.io")!)
+                .init(url: URL(string: "https://evm.testnet.kava.io")!),
             ]
         case .telos:
             return [
-                .init(url: URL(string: "https://telos-evm-testnet.rpc.thirdweb.com")!)
+                .init(url: URL(string: "https://telos-evm-testnet.rpc.thirdweb.com")!),
             ]
         case .decimal:
             return [
-                .init(url: URL(string: "https://testnet-val.decimalchain.com/web3")!)
+                .init(url: URL(string: "https://testnet-val.decimalchain.com/web3")!),
             ]
         case .xdc:
             return [
-                .init(url: URL(string: "https://rpc.apothem.network")!)
+                .init(url: URL(string: "https://rpc.apothem.network")!),
             ]
         case .shibarium:
             return [
-                .init(url: URL(string: "https://puppynet.shibrpc.com")!)
+                .init(url: URL(string: "https://puppynet.shibrpc.com")!),
             ]
         case .areon:
             return [
@@ -136,25 +137,25 @@ struct TestnetAPINodeInfoProvider {
                 .init(url: URL(string: "https://testnet-rpc2.areon.network")!),
                 .init(url: URL(string: "https://testnet-rpc3.areon.network")!),
                 .init(url: URL(string: "https://testnet-rpc4.areon.network")!),
-                .init(url: URL(string: "https://testnet-rpc5.areon.network")!)
+                .init(url: URL(string: "https://testnet-rpc5.areon.network")!),
             ]
         case .pulsechain:
             return [
                 .init(url: URL(string: "https://rpc.v4.testnet.pulsechain.com")!),
                 .init(url: URL(string: "https://pulsechain-testnet.publicnode.com")!),
-                .init(url: URL(string: "https://rpc-testnet-pulsechain.g4mm4.io")!)
+                .init(url: URL(string: "https://rpc-testnet-pulsechain.g4mm4.io")!),
             ]
         case .aurora:
             return [
-                .init(url: URL(string: "https://testnet.aurora.dev")!)
+                .init(url: URL(string: "https://testnet.aurora.dev")!),
             ]
         case .manta:
             return [
-                .init(url: URL(string: "https://pacific-rpc.testnet.manta.network/http/")!)
+                .init(url: URL(string: "https://pacific-rpc.testnet.manta.network/http/")!),
             ]
         case .zkSync:
             return [
-                .init(url: URL(string: "https://sepolia.era.zksync.dev/")!)
+                .init(url: URL(string: "https://sepolia.era.zksync.dev/")!),
             ]
         case .moonbeam:
             return [
@@ -162,11 +163,11 @@ struct TestnetAPINodeInfoProvider {
                 .init(url: URL(string: "https://moonbase-rpc.dwellir.com/")!),
                 .init(url: URL(string: "https://rpc.api.moonbase.moonbeam.network/")!),
                 .init(url: URL(string: "https://moonbase.unitedbloc.com/")!),
-                .init(url: URL(string: "https://moonbeam-alpha.api.onfinality.io/public/")!)
+                .init(url: URL(string: "https://moonbeam-alpha.api.onfinality.io/public/")!),
             ]
         case .polygonZkEVM:
             return [
-                .init(url: URL(string: "https://rpc.cardona.zkevm-rpc.com/")!)
+                .init(url: URL(string: "https://rpc.cardona.zkevm-rpc.com/")!),
             ]
         case .moonriver:
             return [
@@ -199,47 +200,47 @@ struct TestnetAPINodeInfoProvider {
             ]
         case .polkadot:
             return [
-                .init(url: URL(string: "https://westend-rpc.polkadot.io")!)
+                .init(url: URL(string: "https://westend-rpc.polkadot.io")!),
             ]
         case .koinos:
             return [
-                .init(url: URL(string: "https://harbinger-api.koinos.io")!)
+                .init(url: URL(string: "https://harbinger-api.koinos.io")!),
             ]
         case .cyber:
             return [
-                .init(url: URL(string: "https://cyber-testnet.alt.technology")!)
+                .init(url: URL(string: "https://cyber-testnet.alt.technology")!),
             ]
         case .blast:
             return [
                 .init(url: URL(string: "https://sepolia.blast.io")!),
                 .init(url: URL(string: "https://blast-sepolia.drpc.org")!),
-                .init(url: URL(string: "https://blast-sepolia.blockpi.network/v1/rpc/public")!)
+                .init(url: URL(string: "https://blast-sepolia.blockpi.network/v1/rpc/public")!),
             ]
         case .sui:
             return [
-                .init(url: URL(string: "https://fullnode.testnet.sui.io")!)
+                .init(url: URL(string: "https://fullnode.testnet.sui.io")!),
             ]
         case .sei:
             return [
-                .init(url: URL(string: "https://rest.wallet.atlantic-2.sei.io")!)
+                .init(url: URL(string: "https://rest.wallet.atlantic-2.sei.io")!),
             ]
         case .kaspa:
             return [
-                .init(url: URL(string: "https://api-tn10.kaspa.org")!)
+                .init(url: URL(string: "https://api-tn10.kaspa.org")!),
             ]
         case .energyWebEVM:
             return [
-                .init(url: URL(string: "https://73799.rpc.thirdweb.com")!)
+                .init(url: URL(string: "https://73799.rpc.thirdweb.com")!),
             ]
         case .core:
             return [
-                .init(url: URL(string: "https://rpc.test.btcs.network")!)
+                .init(url: URL(string: "https://rpc.test.btcs.network")!),
             ]
         // TODO: Refactor in IOS-6639
-        case .bitcoin, .litecoin, .disChain, .rsk, .bitcoinCash, .binance, .cardano, 
-                .xrp, .ducatus, .tezos, .dogecoin, .solana, .kusama, .dash, .gnosis,
-                .terraV1, .terraV2, .cronos, .octa, .playa3ullGames, .radiant, .joystream, 
-                .bittensor, .internetComputer, .filecoin, .energyWebX:
+        case .bitcoin, .litecoin, .disChain, .rsk, .bitcoinCash, .binance, .cardano,
+             .xrp, .ducatus, .tezos, .dogecoin, .solana, .kusama, .dash, .gnosis,
+             .terraV1, .terraV2, .cronos, .octa, .playa3ullGames, .radiant, .joystream,
+             .bittensor, .internetComputer, .filecoin, .energyWebX:
             return nil
         }
     }

@@ -14,9 +14,9 @@ import XCTest
 final class KoinosTransactionBuilderTests: XCTestCase {
     private let transactionBuilder = KoinosTransactionBuilder(koinosNetworkParams: KoinosNetworkParams(isTestnet: false))
     private let transactionBuilderTestnet = KoinosTransactionBuilder(koinosNetworkParams: KoinosNetworkParams(isTestnet: true))
-    
+
     // MARK: Mainnet
-    
+
     private var expectedTransaction: KoinosProtocol.Transaction {
         KoinosProtocol.Transaction(
             header: KoinosProtocol.TransactionHeader(
@@ -35,23 +35,22 @@ final class KoinosTransactionBuilderTests: XCTestCase {
                         entryPoint: 670398154,
                         args: "ChkAaMW2_tO2QuoaSAiMXztphDRhY2m4f6efEhkAaEFbbHucCFnoEOh3RgGrOZ38TNTI9xMWGICYmrwE"
                     )
-                )
+                ),
             ],
             signatures: []
         )
     }
-    
+
     private var expectedHash: Data {
         "1042AEEE64FCC89921D0B5F9BDD6C9BFF3E9C089D3579C74882FE0F018ACD608".data(using: .hexadecimal)!
     }
-    
+
     private var expectedSignature: String {
         "Hxeh6xzso62xaxeutW30BRJyC3mu_OGEwWJt1n5e8Ugjc0Cfj2cxVzY7JjxgspGu2Nq9MLbr8c0-lY64FKwj_pQ="
     }
-    
-    
+
     // MARK: Testnet
-    
+
     private var expectedTransactionTestnet: KoinosProtocol.Transaction {
         KoinosProtocol.Transaction(
             header: KoinosProtocol.TransactionHeader(
@@ -70,19 +69,18 @@ final class KoinosTransactionBuilderTests: XCTestCase {
                         entryPoint: 670398154,
                         args: "ChkAaMW2_tO2QuoaSAiMXztphDRhY2m4f6efEhkAaEFbbHucCFnoEOh3RgGrOZ38TNTI9xMWGICYmrwE"
                     )
-                )
+                ),
             ],
             signatures: []
         )
     }
-    
+
     private var expectedHashTestnet: Data {
         "F90AB33FCD0FA5896BB56352875EB49AC984CFD347467A50FE7A28686B11BB45".data(using: .hexadecimal)!
     }
-    
-    
+
     // MARK: Factory
-    
+
     private func makeTransaction(isTestnet: Bool) -> Transaction {
         Transaction(
             amount: Amount(with: .koinos(testnet: isTestnet), type: .coin, value: 12),
@@ -96,32 +94,33 @@ final class KoinosTransactionBuilderTests: XCTestCase {
 }
 
 // MARK: Tests
+
 extension KoinosTransactionBuilderTests {
     func testBuildForSign() throws {
         let (transaction, hash) = try transactionBuilder.buildForSign(
             transaction: makeTransaction(isTestnet: false),
             currentNonce: KoinosAccountNonce(nonce: 10)
         )
-        
+
         XCTAssertEqual(hash, expectedHash)
         XCTAssertEqual(transaction, expectedTransaction)
     }
-    
+
     func testBuildForSignTestnet() throws {
         let (transaction, hash) = try transactionBuilderTestnet.buildForSign(
             transaction: makeTransaction(isTestnet: true),
             currentNonce: KoinosAccountNonce(nonce: 10)
         )
-        
+
         XCTAssertEqual(hash, expectedHashTestnet)
         XCTAssertEqual(transaction, expectedTransactionTestnet)
     }
-    
+
     func testBuildForSend() throws {
         let signature = "17A1EB1CECA3ADB16B17AEB56DF40512720B79AEFCE184C1626DD67E5EF1482373409F8F673157363B263C60B291AED8DABD30B6EBF1CD3E958EB814AC23FE94"
         let publicKey = "0350413909F40AAE7DD6A084A32017E5A45089FB29E91BBE47D41E29C32355BFCD"
         let hash = "E5E8126605ECCD2B1AAC084E8D7A6D7C708C9CE9E63AF4D1371EE7E2C2BFB339"
-        
+
         let signedTransaction = try transactionBuilder.buildForSend(
             transaction: expectedTransaction,
             signature: SignatureInfo(
@@ -130,7 +129,7 @@ extension KoinosTransactionBuilderTests {
                 hash: XCTUnwrap(hash.data(using: .hexadecimal))
             )
         )
-        
+
         XCTAssertEqual(signedTransaction.signatures.count, 1)
         XCTAssertEqual(signedTransaction.signatures[0], expectedSignature)
     }

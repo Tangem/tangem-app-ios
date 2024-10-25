@@ -10,36 +10,35 @@ import Foundation
 import Moya
 
 struct TONProviderTarget: TargetType {
-    
     // MARK: - Properties
-    
+
     private let node: NodeInfo
     private let targetType: TargetType
-    
+
     // MARK: - Init
-    
+
     init(node: NodeInfo, targetType: TargetType) {
         self.node = node
         self.targetType = targetType
     }
-    
+
     // MARK: - TargetType
-    
+
     var baseURL: URL {
         return node.url
     }
-    
+
     var path: String {
         return "jsonRPC"
     }
-    
+
     var method: Moya.Method {
         return .post
     }
-    
+
     var task: Moya.Task {
         let jrpcRequest: any Encodable
-        
+
         switch targetType {
         case .getInfo(let address):
             jrpcRequest = TONProviderRequest(
@@ -78,27 +77,25 @@ struct TONProviderTarget: TargetType {
                 params: parameters
             )
         }
-        
+
         return .requestParameters(parameters: (try? jrpcRequest.asDictionary()) ?? [:], encoding: JSONEncoding.default)
     }
-    
-    var headers: [String : String]? {
-        var headers: [String : String] = [
+
+    var headers: [String: String]? {
+        var headers: [String: String] = [
             "Accept": "application/json",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         ]
-        
+
         if let headersKeyInfo = node.headers {
             headers[headersKeyInfo.headerName] = headersKeyInfo.headerValue
         }
-        
+
         return headers
     }
-    
 }
 
 extension TONProviderTarget {
-    
     enum TargetType {
         case getInfo(address: String)
         case estimateFee(address: String, body: String?)
@@ -107,5 +104,4 @@ extension TONProviderTarget {
         case sendBocReturnHash(message: String)
         case runGetMethod(parameters: TONModels.RunGetMethodParameters)
     }
-    
 }

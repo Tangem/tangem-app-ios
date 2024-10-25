@@ -17,7 +17,7 @@ class ChiaCoinSpend: Codable {
     let coin: ChiaCoin
     let puzzleReveal: String
     var solution: String
-    
+
     init(coin: ChiaCoin, puzzleReveal: String, solution: String) {
         self.coin = coin
         self.puzzleReveal = puzzleReveal

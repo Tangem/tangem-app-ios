@@ -15,34 +15,34 @@ struct TONProvider: HostProvider {
     var host: String {
         node.url.hostOrUnknown
     }
-    
+
     /// Configuration connection node for provider
     private let node: NodeInfo
 
     // MARK: - Properties
-    
+
     /// Network provider of blockchain
     private let network: NetworkProvider<TONProviderTarget>
-    
+
     // MARK: - Init
-    
+
     init(
         node: NodeInfo,
         networkConfig: NetworkProviderConfiguration
     ) {
         self.node = node
-        self.network = .init(configuration: networkConfig)
+        network = .init(configuration: networkConfig)
     }
-    
+
     // MARK: - Implementation
-    
+
     /// Fetch full information about wallet address
     /// - Parameter address: UserFriendly TON address wallet
     /// - Returns: Model full information
     func getInfo(address: String) -> AnyPublisher<TONModels.Info, Error> {
         requestPublisher(for: .init(node: node, targetType: .getInfo(address: address)))
     }
-    
+
     /// Fetch jetton wallet address
     /// - Parameters:
     ///   - ownerAddress: UserFriendly TON address
@@ -57,7 +57,7 @@ struct TONProvider: HostProvider {
             return .emptyFail
         }
         let stack = [[TONModels.RunGetMethodParameters.StackKey.slice.rawValue, serializedAddress]]
-        
+
         return requestPublisher(
             for: TONProviderTarget(
                 node: node,
@@ -71,7 +71,7 @@ struct TONProvider: HostProvider {
             )
         )
     }
-    
+
     /// Fetch jetton walled data
     /// - Parameter jettonWalletAddress: UserFriendly TON address of jetton wallet
     /// - Returns: Model containing array of serialized objects
@@ -89,15 +89,14 @@ struct TONProvider: HostProvider {
             )
         )
     }
-    
+
     /// Fetch balance wallet by address
     /// - Parameter address: UserFriendly TON address wallet
     /// - Returns: String balance wallet adress or Error
     func getBalanceWallet(address: String) -> AnyPublisher<String, Error> {
         requestPublisher(for: .init(node: node, targetType: .getBalance(address: address)))
-        
     }
-    
+
     /// Get estimate sending transaction Fee
     /// - Parameter address: Wallet address
     /// - Parameter body: Body of message cell TON blockchain
@@ -105,7 +104,7 @@ struct TONProvider: HostProvider {
     func getFee(address: String, body: String?) -> AnyPublisher<TONModels.Fee, Error> {
         requestPublisher(for: .init(node: node, targetType: .estimateFee(address: address, body: body)))
     }
-    
+
     /// Send transaction data message for raw cell TON
     /// - Parameter message: String data if cell message
     /// - Returns: Result of hash transaction
@@ -114,13 +113,13 @@ struct TONProvider: HostProvider {
             for: .init(node: node, targetType: .sendBocReturnHash(message: message))
         )
     }
-    
+
     // MARK: - Private Implementation
-    
+
     private func requestPublisher<T: Decodable>(for target: TONProviderTarget) -> AnyPublisher<T, Error> {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        
+
         return network.requestPublisher(target)
             .filterSuccessfulStatusAndRedirectCodes()
             .map(TONProviderResponse<T>.self, using: decoder)
@@ -130,10 +129,10 @@ struct TONProvider: HostProvider {
     }
 }
 
-fileprivate extension TonSwift.Address {
+private extension TonSwift.Address {
     func serialize() throws -> String {
         let builder = Builder()
-        try self.storeTo(builder: builder)
+        try storeTo(builder: builder)
         return try builder.endCell().toBoc().base64EncodedString()
     }
 }

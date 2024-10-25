@@ -82,7 +82,7 @@ class EthereumTransactionBuilder {
         let method = TransferERC20TokenMethod(destination: destination, amount: bigUInt)
         return method.data
     }
-    
+
     func buildSigningInput(destination: String, coinAmount: BigUInt, fee: Fee, nonce: Int, data: Data?) throws -> EthereumSigningInput {
         guard nonce >= 0 else {
             throw EthereumTransactionBuilderError.invalidNonce
@@ -122,7 +122,7 @@ class EthereumTransactionBuilder {
 
         return input
     }
-    
+
     func buildTxCompilerPreSigningOutput(input: EthereumSigningInput) throws -> TxCompilerPreSigningOutput {
         let txInputData = try input.serializedData()
         let preImageHashes = TransactionCompiler.preImageHashes(coinType: coinType, txInputData: txInputData)
@@ -135,7 +135,7 @@ class EthereumTransactionBuilder {
 
         return preSigningOutput
     }
-    
+
     func buildSigningOutput(input: EthereumSigningInput, signatureInfo: SignatureInfo) throws -> EthereumSigningOutput {
         guard signatureInfo.signature.count == Constants.signatureSize else {
             throw EthereumTransactionBuilderError.invalidSignatureCount
@@ -245,7 +245,7 @@ enum EthereumTransactionBuilderError: LocalizedError {
     case walletCoreError(message: String)
     case invalidStakingTransaction
 
-    public var errorDescription: String? {
+    var errorDescription: String? {
         switch self {
         case .feeParametersNotFound:
             return "feeParametersNotFound"

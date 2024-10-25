@@ -11,7 +11,7 @@ import Foundation
 /// A wrapper to work with `URLSessionWebSocketTask` through async/await method
 class URLSessionWebSocketTaskWrapper {
     private let url: URL
-    
+
     private let webSocketTaskDidOpen = CheckedContinuationWrapper<Void, Error>(
         fallback: .failure(CancellationError())
     )
@@ -28,20 +28,20 @@ class URLSessionWebSocketTaskWrapper {
             guard let _sessionWebSocketTask else {
                 throw WebSocketTaskError.webSocketNotFound
             }
-            
+
             return _sessionWebSocketTask
         }
     }
-    
+
     init(url: URL) {
         self.url = url
     }
-    
+
     deinit {
         // We have to disconnect here that release all objects
         cancel()
     }
-    
+
     func sendPing() async throws {
         let socketTask = try sessionWebSocketTask
 
@@ -56,15 +56,15 @@ class URLSessionWebSocketTaskWrapper {
             }
         }
     }
-    
+
     func send(message: URLSessionWebSocketTask.Message) async throws {
         try await sessionWebSocketTask.send(message)
     }
-    
+
     func receive() async throws -> URLSessionWebSocketTask.Message {
         return try await sessionWebSocketTask.receive()
     }
-    
+
     func connect() async throws {
         // The delegate will be kept by URLSession
         let delegate = URLSessionWebSocketDelegateWrapper(
@@ -76,13 +76,13 @@ class URLSessionWebSocketTaskWrapper {
             },
             webSocketTaskDidCompleteWithError: { [weak self] _, error in
                 self?.cancel()
-                
+
                 if let error {
                     self?.webSocketTaskDidOpen.resume(with: .failure(error))
                 }
             }
         )
-        
+
         session = URLSession(configuration: .default, delegate: delegate, delegateQueue: nil)
         _sessionWebSocketTask = session?.webSocketTask(with: url)
         _sessionWebSocketTask?.resume()
@@ -91,16 +91,16 @@ class URLSessionWebSocketTaskWrapper {
             self?.webSocketTaskDidOpen.set(continuation)
         }
     }
-    
+
     func cancel() {
         _sessionWebSocketTask?.cancel(with: .goingAway, reason: nil)
         // Important for release of the session's delegate
         session?.invalidateAndCancel()
     }
-    
+
     func cancel() async -> URLSessionWebSocketTask.CloseCode {
         _sessionWebSocketTask?.cancel(with: .goingAway, reason: nil)
-        
+
         return await withCheckedContinuation { [weak self] continuation in
             self?.webSocketTaskDidClose.set(continuation)
         }

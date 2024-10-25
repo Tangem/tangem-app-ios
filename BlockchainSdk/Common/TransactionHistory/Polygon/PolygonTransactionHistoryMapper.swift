@@ -82,7 +82,7 @@ final class PolygonTransactionHistoryMapper {
             }
             // If the method name is absent in API - we fallback to the plain transfer
             return .transfer
-        case .coin, 
+        case .coin,
              .token,
              .reserve,
              .feeResource:
@@ -195,7 +195,7 @@ extension PolygonTransactionHistoryMapper: TransactionHistoryMapper {
 private extension PolygonTransactionHistoryMapper {
     enum Constants {
         static let maxRateLimitReachedResultPrefix = "max rate limit reached"
-        /// Method names in the API look like `swap(address executor,tuple desc,bytes permit,bytes data)`, 
+        /// Method names in the API look like `swap(address executor,tuple desc,bytes permit,bytes data)`,
         /// so we have to remove all method signatures (parameters, types, etc).
         static let methodNameSeparator = "("
     }

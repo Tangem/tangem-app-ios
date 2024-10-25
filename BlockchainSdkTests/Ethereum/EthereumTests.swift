@@ -9,7 +9,6 @@
 import XCTest
 import BigInt
 import TangemSdk
-
 @testable import BlockchainSdk
 
 class EthereumTests: XCTestCase {
@@ -25,7 +24,7 @@ class EthereumTests: XCTestCase {
 
         XCTAssertEqual(address, expectedAddress)
     }
-    
+
     func testValidationAddress() {
         let addressService = AddressServiceFactory(blockchain: blockchain).makeAddressService()
         XCTAssertTrue(addressService.validate("0xc63763572d45171e4c25ca0818b44e5dd7f5c15b"))
@@ -65,12 +64,12 @@ class EthereumTests: XCTestCase {
         // then
         let expectedHashToSign = Data(hex: "BDBECF64B443F82D1F9FDA3F2D6BA69AF6D82029B8271339B7E775613AE57761")
         let expectedSignedTransaction = Data(hex: "F86C0F856EDF2A079E825208947655B9B19FFAB8B897F836857DAE22A1E7F8D73588016345785D8A00008025A0B945398FB90158761F6D61789B594D042F0F490F9656FBFFAE8F18B49D5F3005A04F43EE43CCAB2703F0E2E4E61D99CF3D4A875CD759569787CF0AED02415434C6")
-        
+
         sizeTester.testTxSize(hashToSign)
         XCTAssertEqual(hashToSign, expectedHashToSign)
         XCTAssertEqual(signedTransaction, expectedSignedTransaction)
     }
-    
+
     func testLegacyTokenTransfer() throws {
         // given
         let walletPublicKey = Data(hex: "04EB30400CE9D1DEED12B84D4161A1FA922EF4185A155EF3EC208078B3807B126FA22C335081AAEBF161095C11C7D8BD550EF8882A3125B0EE9AE96DDDE1AE743F")
@@ -214,8 +213,8 @@ class EthereumTests: XCTestCase {
         )
         let fee = Fee(.zeroCoin(for: blockchain), parameters: feeParameters)
 
-        let amountToSpend = BigUInt("115792089237316195423570985008687907853269984665640564039457584007913129639935")   // 10^256 - 1
-        let tokenMethod = ApproveERC20TokenMethod(spender: spenderAddress, amount: amountToSpend)   // approve(address spender,uint256 amount)
+        let amountToSpend = BigUInt("115792089237316195423570985008687907853269984665640564039457584007913129639935") // 10^256 - 1
+        let tokenMethod = ApproveERC20TokenMethod(spender: spenderAddress, amount: amountToSpend) // approve(address spender,uint256 amount)
 
         let nonce = 10
 
@@ -324,13 +323,13 @@ class EthereumTests: XCTestCase {
         let hex2 = "0x00000000000000000000000000000000000000000000000000373c91e25f1040"
         XCTAssertEqual(EthereumUtils.parseEthereumDecimal(hex, decimalsCount: 18)!.description, "0.015547720984891456")
         XCTAssertEqual(EthereumUtils.parseEthereumDecimal(hex2, decimalsCount: 18)!.description, "0.015547720984891456")
-        
+
         // vBUSD contract sends extra zeros
         let vBUSDHexWithExtraZeros = "0x0000000000000000000000000000000000000000000000000000005a8c504ec900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
         let vBUSDHexWithoutExtraZeros = "0x0000000000000000000000000000000000000000000000000000005a8c504ec9"
-        XCTAssertEqual(EthereumUtils.parseEthereumDecimal(vBUSDHexWithExtraZeros,    decimalsCount: 18)!.description, "0.000000388901129929")
+        XCTAssertEqual(EthereumUtils.parseEthereumDecimal(vBUSDHexWithExtraZeros, decimalsCount: 18)!.description, "0.000000388901129929")
         XCTAssertEqual(EthereumUtils.parseEthereumDecimal(vBUSDHexWithoutExtraZeros, decimalsCount: 18)!.description, "0.000000388901129929")
-        
+
         // This is rubbish and we don't expect to receive this but at least it should not throw exceptions
         let tooBig = "0x01234567890abcdef01234567890abcdef01234501234567890abcdef01234567890abcdef01234501234567890abcdef012345def01234501234567890abcdef012345def01234501234567890abcdef012345def01234501234567890abcdef01234567890abcdef012345"
         XCTAssertNil(EthereumUtils.parseEthereumDecimal(tooBig, decimalsCount: 18))
@@ -381,57 +380,57 @@ class EthereumTests: XCTestCase {
 
     func testFeeHistoryParse() throws {
         let json =
-        """
-        {
-            "oldestBlock": "0x3906bc3",
-            "reward": [
-                [
-                    "0x861c47fc9",
-                    "0xa7a35bb7a",
-                    "0xba43b17ec"
+            """
+            {
+                "oldestBlock": "0x3906bc3",
+                "reward": [
+                    [
+                        "0x861c47fc9",
+                        "0xa7a35bb7a",
+                        "0xba43b17ec"
+                    ],
+                    [
+                        "0x6fc23ac00",
+                        "0x6fc23ac00",
+                        "0x7aef43037"
+                    ],
+                    [
+                        "0x6fc23ac00",
+                        "0x7aef43262",
+                        "0x9c765ad41"
+                    ],
+                    [
+                        "0x737be1dc3",
+                        "0x7558be371",
+                        "0x7aef43358"
+                    ],
+                    [
+                        "0x6fc23aeec",
+                        "0x7aef41ea5",
+                        "0x9502f38ce"
+                    ]
                 ],
-                [
-                    "0x6fc23ac00",
-                    "0x6fc23ac00",
-                    "0x7aef43037"
+                "baseFeePerGas": [
+                    "0x5c14",
+                    "0x5a1e",
+                    "0x5abc",
+                    "0x583d",
+                    "0x5732",
+                    "0x54f9"
                 ],
-                [
-                    "0x6fc23ac00",
-                    "0x7aef43262",
-                    "0x9c765ad41"
-                ],
-                [
-                    "0x737be1dc3",
-                    "0x7558be371",
-                    "0x7aef43358"
-                ],
-                [
-                    "0x6fc23aeec",
-                    "0x7aef41ea5",
-                    "0x9502f38ce"
+                "gasUsedRatio": [
+                    0.3294011263207626,
+                    0.55512407750046,
+                    0.2798693487006748,
+                    0.4054004895571093,
+                    0.29574768320265493
                 ]
-            ],
-            "baseFeePerGas": [
-                "0x5c14",
-                "0x5a1e",
-                "0x5abc",
-                "0x583d",
-                "0x5732",
-                "0x54f9"
-            ],
-            "gasUsedRatio": [
-                0.3294011263207626,
-                0.55512407750046,
-                0.2798693487006748,
-                0.4054004895571093,
-                0.29574768320265493
-            ]
-        }
-        """
+            }
+            """
 
         let decoded = try JSONDecoder().decode(EthereumFeeHistoryResponse.self, from: json.data(using: .utf8)!)
         let feeHistory = try EthereumMapper.mapFeeHistory(decoded)
-        let response = EthereumMapper.mapToEthereumEIP1559FeeResponse(gasLimit: 21000, feeHistory: feeHistory) 
+        let response = EthereumMapper.mapToEthereumEIP1559FeeResponse(gasLimit: 21000, feeHistory: feeHistory)
 
         let feeParameters = [
             EthereumEIP1559FeeParameters(
