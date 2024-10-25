@@ -20,7 +20,6 @@ struct AppCoordinatorView: CoordinatorView {
     var body: some View {
         NavigationView {
             content
-                .navigationLinks(links)
         }
         .navigationViewStyle(.stack)
         .accentColor(Colors.Text.primary1)
@@ -74,19 +73,14 @@ struct AppCoordinatorView: CoordinatorView {
             case .main(let mainCoordinator):
                 MainCoordinatorView(coordinator: mainCoordinator)
                     .navigationBarHidden(false)
+            case .onboarding(let onboardingCoordinator):
+                OnboardingCoordinatorView(coordinator: onboardingCoordinator)
+                    .navigationBarHidden(true)
             case .none:
                 EmptyView()
             }
         }
         .transition(.opacity)
         .animation(.easeInOut, value: coordinator.viewState)
-    }
-
-    @ViewBuilder
-    private var links: some View {
-        NavHolder()
-            .navigation(item: $coordinator.pushedOnboardingCoordinator) {
-                OnboardingCoordinatorView(coordinator: $0)
-            }
     }
 }

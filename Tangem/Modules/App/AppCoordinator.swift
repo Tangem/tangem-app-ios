@@ -31,8 +31,6 @@ class AppCoordinator: CoordinatorObject {
     /// but in fact this is a read-only binding since the UI never mutates it.
     @Published var marketsCoordinator: MarketsCoordinator?
 
-    @Published var pushedOnboardingCoordinator: OnboardingCoordinator? = nil
-
     /// An ugly workaround due to navigation issues in SwiftUI on iOS 18 and above, see IOS-7990 for details.
     @Published private(set) var isOverlayContentContainerShown = false
 
@@ -248,6 +246,7 @@ extension AppCoordinator {
         case uncompleteBackup(UncompletedBackupCoordinator)
         case auth(AuthCoordinator)
         case main(MainCoordinator)
+        case onboarding(OnboardingCoordinator)
 
         static func == (lhs: AppCoordinator.ViewState, rhs: AppCoordinator.ViewState) -> Bool {
             switch (lhs, rhs) {
@@ -264,14 +263,19 @@ extension AppCoordinator {
 
 extension AppCoordinator {
     func openOnboarding(with input: OnboardingInput) {
-        let dismissAction: Action<OnboardingCoordinator.OutputOptions> = { [weak self] _ in
-            self?.pushedOnboardingCoordinator = nil
+        let dismissAction: Action<OnboardingCoordinator.OutputOptions> = { [weak self] options in
+            switch options {
+            case .main(let userWalletModel):
+                self?.openMain(with: userWalletModel)
+            case .dismiss:
+                self?.start()
+            }
         }
 
-        let coordinator = OnboardingCoordinator(dismissAction: dismissAction, popToRootAction: popToRootAction)
-        let options = OnboardingCoordinator.Options(input: input, destination: .main)
+        let coordinator = OnboardingCoordinator(dismissAction: dismissAction)
+        let options = OnboardingCoordinator.Options(input: input)
         coordinator.start(with: options)
-        pushedOnboardingCoordinator = coordinator
+        viewState = .onboarding(coordinator)
     }
 
     func openMain(with userWalletModel: UserWalletModel) {
