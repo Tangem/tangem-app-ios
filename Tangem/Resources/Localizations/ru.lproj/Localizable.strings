@@ -845,6 +845,7 @@
 "twins_recreate_warning" = "Это действие необратимо. У вас не будет доступа к старому кошельку.";
 "twins_scan_twin_with_number" = "Приложите twin-карту с номером %@ и не убирайте до окончания операции";
 "unlock_wallet_description_full" = "Используйте %@ или отсканируйте карту/кольцо, чтобы получить доступ к своему кошельку";
+"unsupported_wc_version" = "Соединение не удалось: это dApp использует Wallet Connect версии 1.0, которая не поддерживается. Убедитесь, что dApp поддерживает Wallet Connect версии 2.0 для успешного подключения.";
 "user_push_notification_agreement_argument_one" = "Будьте в курсе новых функций и новостей";
 "user_push_notification_agreement_argument_two" = "Узнавайте первым о новых акциях";
 "user_push_notification_agreement_header" = "Хотите использовать Push-уведомления?";
