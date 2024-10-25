@@ -10,11 +10,22 @@ import Foundation
 import TangemStaking
 
 struct CommonStakingAnalyticsLogger: StakingAnalyticsLogger {
-    func logAPIError(errorDescription: String, currencySymbol: String?) {
-        var params: [Analytics.ParameterKey: String] = [.errorDescription: errorDescription]
-        if let currencySymbol {
-            params[.token] = currencySymbol
+    func logError(_ error: any Error, currencySymbol: String) {
+        var parameters: [Analytics.ParameterKey: String] = [.token: currencySymbol]
+        switch error as? StakeKitAPIError {
+        case .some(let error):
+            if let code = error.code {
+                parameters[.errorCode] = code
+            }
+            if let message = error.message {
+                parameters[.errorMessage] = message
+            }
+        case .none:
+            parameters[.errorDescription] = error.localizedDescription
         }
-        Analytics.log(event: .stakingErrors, params: params)
+        Analytics.log(
+            event: .stakingErrors,
+            params: parameters
+        )
     }
 }

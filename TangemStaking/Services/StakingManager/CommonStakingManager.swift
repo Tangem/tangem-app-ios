@@ -74,8 +74,8 @@ extension CommonStakingManager: StakingManager {
             try await repository.checkIfConfirmed(balances: balances)
             try await updateState(state(balances: balances, yield: yield))
         } catch {
-            analyticsLogger.logAPIError(
-                errorDescription: error.localizedDescription,
+            analyticsLogger.logError(
+                error,
                 currencySymbol: wallet.item.symbol
             )
             logger.error(error)
@@ -276,8 +276,8 @@ private extension CommonStakingManager {
         do {
             return try await request()
         } catch {
-            analyticsLogger.logAPIError(
-                errorDescription: error.localizedDescription,
+            analyticsLogger.logError(
+                error,
                 currencySymbol: wallet.item.symbol
             )
             throw error

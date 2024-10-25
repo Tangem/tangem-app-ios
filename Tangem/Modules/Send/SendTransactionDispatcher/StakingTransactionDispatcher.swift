@@ -106,12 +106,9 @@ private extension StakingTransactionDispatcher {
         do {
             try await pendingHashesSender.sendHash(hash)
         } catch {
-            Analytics.log(
-                event: .stakingErrors,
-                params: [
-                    .token: walletModel.tokenItem.currencySymbol,
-                    .errorDescription: error.localizedDescription,
-                ]
+            CommonStakingAnalyticsLogger().logError(
+                error,
+                currencySymbol: walletModel.tokenItem.currencySymbol
             )
         }
 
