@@ -41,7 +41,7 @@ class CommonOnrampStepsManager {
 // MARK: - SendStepsManager
 
 extension CommonOnrampStepsManager: SendStepsManager {
-    var initialKeyboardState: Bool { true }
+    var initialKeyboardState: Bool { false }
 
     var initialFlowActionType: SendFlowActionType {
         .onramp

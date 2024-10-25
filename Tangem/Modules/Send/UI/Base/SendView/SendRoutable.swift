@@ -9,7 +9,7 @@
 import Foundation
 import SwiftUI
 
-protocol SendRoutable: SendFeeRoutable, SendDestinationRoutable, AnyObject {
+protocol SendRoutable: SendFeeRoutable, SendDestinationRoutable, OnrampRoutable, AnyObject {
     func dismiss()
     func openMail(with dataCollector: EmailDataCollector, recipient: String)
     func openQRScanner(with codeBinding: Binding<String>, networkName: String)
