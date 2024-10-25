@@ -2314,6 +2314,7 @@
 		EF1399742CBD0A5500AC9E2B /* OnrampRedirectData.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF1399732CBD0A3C00AC9E2B /* OnrampRedirectData.swift */; };
 		EF1399772CBD0AAB00AC9E2B /* OnrampProviderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF1399762CBD0AA800AC9E2B /* OnrampProviderManager.swift */; };
 		EF1399792CBD0B3700AC9E2B /* CommonOnrampRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF1399782CBD0B3600AC9E2B /* CommonOnrampRepository.swift */; };
+		EF17B9262CCBC61C0038077F /* OnrampProvidersCompactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF17B9252CCBC61C0038077F /* OnrampProvidersCompactView.swift */; };
 		EF19FAF62C6D43BB002155F1 /* PendingAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF19FAF52C6D43BB002155F1 /* PendingAction.swift */; };
 		EF19FAF82C6D575B002155F1 /* ActionGenericRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF19FAF72C6D575B002155F1 /* ActionGenericRequest.swift */; };
 		EF1D1ADE2C270DDE000CB941 /* SendFeeInputOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF1D1ADD2C270DDE000CB941 /* SendFeeInputOutput.swift */; };
@@ -2660,7 +2661,6 @@
 		EFC449F72CCBB8B500492A13 /* OnrampProvidersCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC449F02CCBB8B500492A13 /* OnrampProvidersCoordinator.swift */; };
 		EFC449F82CCBB8B500492A13 /* OnrampProvidersCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC449F12CCBB8B500492A13 /* OnrampProvidersCoordinatorView.swift */; };
 		EFC449F92CCBB8B500492A13 /* OnrampProvidersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC449F32CCBB8B500492A13 /* OnrampProvidersView.swift */; };
-		EFC449FC2CCBB8D700492A13 /* OnrampProvidersCompactView.swift in Resources */ = {isa = PBXBuildFile; fileRef = EFC449FB2CCBB8D700492A13 /* OnrampProvidersCompactView.swift */; };
 		EFC449FE2CCBB8E100492A13 /* OnrampProvidersCompactViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC449FD2CCBB8DE00492A13 /* OnrampProvidersCompactViewModel.swift */; };
 		EFC46F01292669A0003928E3 /* ReceiveCurrencyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC46F00292669A0003928E3 /* ReceiveCurrencyViewModel.swift */; };
 		EFC597BD2AA0B1B7001F6945 /* CommonTokenQuotesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC597BC2AA0B1B7001F6945 /* CommonTokenQuotesRepository.swift */; };
@@ -5282,6 +5282,7 @@
 		EF1399732CBD0A3C00AC9E2B /* OnrampRedirectData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampRedirectData.swift; sourceTree = "<group>"; };
 		EF1399762CBD0AA800AC9E2B /* OnrampProviderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProviderManager.swift; sourceTree = "<group>"; };
 		EF1399782CBD0B3600AC9E2B /* CommonOnrampRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonOnrampRepository.swift; sourceTree = "<group>"; };
+		EF17B9252CCBC61C0038077F /* OnrampProvidersCompactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersCompactView.swift; sourceTree = "<group>"; };
 		EF19FAF52C6D43BB002155F1 /* PendingAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingAction.swift; sourceTree = "<group>"; };
 		EF19FAF72C6D575B002155F1 /* ActionGenericRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionGenericRequest.swift; sourceTree = "<group>"; };
 		EF1D1ADD2C270DDE000CB941 /* SendFeeInputOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendFeeInputOutput.swift; sourceTree = "<group>"; };
@@ -5643,7 +5644,6 @@
 		EFC449F22CCBB8B500492A13 /* OnrampProvidersRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersRoutable.swift; sourceTree = "<group>"; };
 		EFC449F32CCBB8B500492A13 /* OnrampProvidersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersView.swift; sourceTree = "<group>"; };
 		EFC449F42CCBB8B500492A13 /* OnrampProvidersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersViewModel.swift; sourceTree = "<group>"; };
-		EFC449FB2CCBB8D700492A13 /* OnrampProvidersCompactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersCompactView.swift; sourceTree = "<group>"; };
 		EFC449FD2CCBB8DE00492A13 /* OnrampProvidersCompactViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersCompactViewModel.swift; sourceTree = "<group>"; };
 		EFC46EFD29266982003928E3 /* SendCurrencyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendCurrencyViewModel.swift; sourceTree = "<group>"; };
 		EFC46F00292669A0003928E3 /* ReceiveCurrencyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiveCurrencyViewModel.swift; sourceTree = "<group>"; };
@@ -14309,8 +14309,8 @@
 		EFC449FA2CCBB8CC00492A13 /* OnrampProvidersCompactView */ = {
 			isa = PBXGroup;
 			children = (
+				EF17B9252CCBC61C0038077F /* OnrampProvidersCompactView.swift */,
 				EFC449FD2CCBB8DE00492A13 /* OnrampProvidersCompactViewModel.swift */,
-				EFC449FB2CCBB8D700492A13 /* OnrampProvidersCompactView.swift */,
 			);
 			path = OnrampProvidersCompactView;
 			sourceTree = "<group>";
@@ -15091,7 +15091,6 @@
 				B0FB4EFA2A8512210057F4C2 /* walletUserWalletList.json in Resources */,
 				DC261CA0292CD3B800875E64 /* GoogleService-Info-Alpha.plist in Resources */,
 				DA64C36D27CCAD7E005B5E9A /* InfoPlist.strings in Resources */,
-				EFC449FC2CCBB8D700492A13 /* OnrampProvidersCompactView.swift in Resources */,
 				B00B58DA2BCFAA60007475F7 /* providers_order.json in Resources */,
 				B07C6A0C2A77E5AA00ACCBB0 /* twinCard.json in Resources */,
 				B098F3A42C04B65600F79989 /* coinsResponse.json in Resources */,
@@ -15996,6 +15995,7 @@
 				B06015E529730C3D00D0F809 /* WalletConnectUIDelegate.swift in Sources */,
 				EF666C262A2DF9EF0044986F /* BottomSheetModifier.swift in Sources */,
 				EF842DEB2AFA58C5006E472E /* ExpressTokensListViewModel.swift in Sources */,
+				EF17B9262CCBC61C0038077F /* OnrampProvidersCompactView.swift in Sources */,
 				DA1D3B712B56C7E900247393 /* QRScanViewCoordinator.swift in Sources */,
 				2D2ACE1A2B30FAA90004CBB6 /* PresentationConfigurationViewModifier.swift in Sources */,
 				B0C4F77326F08CB50086D815 /* OnboardingCardFrameCalculator.swift in Sources */,

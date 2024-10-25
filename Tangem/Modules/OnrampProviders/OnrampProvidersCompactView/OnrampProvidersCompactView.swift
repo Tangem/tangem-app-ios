@@ -12,6 +12,13 @@ struct OnrampProvidersCompactView: View {
     let data: OnrampProvidersCompactViewData
 
     var body: some View {
+        Button(action: data.action) {
+            content
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var content: some View {
         HStack {
             IconView(
                 url: data.iconURL,
@@ -26,10 +33,11 @@ struct OnrampProvidersCompactView: View {
 
             badgeView
         }
+        .contentShape(Rectangle())
     }
 
     private var titleView: some View {
-        VStack(spacing: 2) {
+        VStack(alignment: .leading, spacing: 2) {
             HStack(spacing: 4) {
                 Text("Pay with")
                     .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
