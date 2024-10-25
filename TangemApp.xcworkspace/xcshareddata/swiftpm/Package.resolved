@@ -1,5 +1,5 @@
 {
-  "originHash" : "02f9726bb29f3b4a5b80be95a438cf6549b3f8295494cffb8be5ea7f235aed48",
+  "originHash" : "2128558e1d1243c6cc9ff15d560f477124f9ab89eb2561c6fb3404169a8ee99e",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -44,6 +44,15 @@
       "state" : {
         "revision" : "0ed110f7555c34ff468e72e1686e59721f2b0da6",
         "version" : "5.3.0"
+      }
+    },
+    {
+      "identity" : "blake2.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tesseract-one/Blake2.swift.git",
+      "state" : {
+        "revision" : "29c55c8fe42d6661e5a32cc5bbbad1fff64fd01e",
+        "version" : "0.2.0"
       }
     },
     {

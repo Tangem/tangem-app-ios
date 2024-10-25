@@ -67,6 +67,16 @@
 		2D61671E2C7632F9006FCEA6 /* MarketsTokensNetworkRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D61671D2C7632F9006FCEA6 /* MarketsTokensNetworkRoutable.swift */; };
 		2D6167202C763500006FCEA6 /* MarketsTokenNetworkSelectorCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D61671F2C763500006FCEA6 /* MarketsTokenNetworkSelectorCoordinator.swift */; };
 		2D6167222C763505006FCEA6 /* MarketsTokenNetworkSelectorCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6167212C763505006FCEA6 /* MarketsTokenNetworkSelectorCoordinatorView.swift */; };
+		2D66B6FE2CCAB074009EDD04 /* CasperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D66B6FC2CCAB074009EDD04 /* CasperTests.swift */; };
+		2D66B7012CCAB27A009EDD04 /* Blake2 in Frameworks */ = {isa = PBXBuildFile; productRef = 2D66B7002CCAB27A009EDD04 /* Blake2 */; };
+		2D66B7032CCAB2CD009EDD04 /* Byte+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D66B7022CCAB2CD009EDD04 /* Byte+.swift */; };
+		2D6BFF152CCAAE7D001BBAC4 /* CasperTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6BFF0C2CCAAE7D001BBAC4 /* CasperTarget.swift */; };
+		2D6BFF162CCAAE7D001BBAC4 /* CasperAddressService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6BFF0E2CCAAE7D001BBAC4 /* CasperAddressService.swift */; };
+		2D6BFF172CCAAE7D001BBAC4 /* CasperAddressUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6BFF0F2CCAAE7D001BBAC4 /* CasperAddressUtils.swift */; };
+		2D6BFF182CCAAE7D001BBAC4 /* CasperExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6BFF102CCAAE7D001BBAC4 /* CasperExternalLinkProvider.swift */; };
+		2D6BFF192CCAAE7D001BBAC4 /* CasperNetworkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6BFF112CCAAE7D001BBAC4 /* CasperNetworkProvider.swift */; };
+		2D6BFF1A2CCAAE7D001BBAC4 /* CasperWalletAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6BFF122CCAAE7D001BBAC4 /* CasperWalletAssembly.swift */; };
+		2D6BFF1B2CCAAE7D001BBAC4 /* CasperWalletManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6BFF132CCAAE7D001BBAC4 /* CasperWalletManager.swift */; };
 		2D70C61D2B21E90A00BD1DAB /* MarketsAddCustomItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D70C61B2B21E90A00BD1DAB /* MarketsAddCustomItemView.swift */; };
 		2DA8AB122A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA8AB112A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift */; };
 		2DB3614B2C14FBAB00BB1D38 /* SegmentedPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB3614A2C14FBAB00BB1D38 /* SegmentedPickerView.swift */; };
@@ -2985,6 +2995,15 @@
 		2D61671D2C7632F9006FCEA6 /* MarketsTokensNetworkRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokensNetworkRoutable.swift; sourceTree = "<group>"; };
 		2D61671F2C763500006FCEA6 /* MarketsTokenNetworkSelectorCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenNetworkSelectorCoordinator.swift; sourceTree = "<group>"; };
 		2D6167212C763505006FCEA6 /* MarketsTokenNetworkSelectorCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenNetworkSelectorCoordinatorView.swift; sourceTree = "<group>"; };
+		2D66B6FC2CCAB074009EDD04 /* CasperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CasperTests.swift; sourceTree = "<group>"; };
+		2D66B7022CCAB2CD009EDD04 /* Byte+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Byte+.swift"; sourceTree = "<group>"; };
+		2D6BFF0C2CCAAE7D001BBAC4 /* CasperTarget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CasperTarget.swift; sourceTree = "<group>"; };
+		2D6BFF0E2CCAAE7D001BBAC4 /* CasperAddressService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CasperAddressService.swift; sourceTree = "<group>"; };
+		2D6BFF0F2CCAAE7D001BBAC4 /* CasperAddressUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CasperAddressUtils.swift; sourceTree = "<group>"; };
+		2D6BFF102CCAAE7D001BBAC4 /* CasperExternalLinkProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CasperExternalLinkProvider.swift; sourceTree = "<group>"; };
+		2D6BFF112CCAAE7D001BBAC4 /* CasperNetworkProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CasperNetworkProvider.swift; sourceTree = "<group>"; };
+		2D6BFF122CCAAE7D001BBAC4 /* CasperWalletAssembly.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CasperWalletAssembly.swift; sourceTree = "<group>"; };
+		2D6BFF132CCAAE7D001BBAC4 /* CasperWalletManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CasperWalletManager.swift; sourceTree = "<group>"; };
 		2D70C61B2B21E90A00BD1DAB /* MarketsAddCustomItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsAddCustomItemView.swift; sourceTree = "<group>"; };
 		2D788E7F2ADD657000E0884B /* WalletSelectorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletSelectorViewModel.swift; sourceTree = "<group>"; };
 		2D788E822ADD657000E0884B /* WalletSelectorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletSelectorView.swift; sourceTree = "<group>"; };
@@ -5857,6 +5876,7 @@
 				B6C0D3F62CBDC552001113ED /* BinanceChain in Frameworks */,
 				B68E1F962CBC451D0043E598 /* ScaleCodec in Frameworks */,
 				B62D34502CBC67D500C2460E /* AnyCodable in Frameworks */,
+				2D66B7012CCAB27A009EDD04 /* Blake2 in Frameworks */,
 				B68E1F8D2CBC44AA0043E598 /* CryptoSwift in Frameworks */,
 				B6C0D3F42CBDC543001113ED /* Moya in Frameworks */,
 				B68E1F932CBC44FF0043E598 /* TonSwift in Frameworks */,
@@ -6037,6 +6057,36 @@
 				2D5DCC332C330A33000EE379 /* WalletSelectorItemViewModel.swift */,
 			);
 			path = WalletSelectorItemView;
+			sourceTree = "<group>";
+		};
+		2D66B6FD2CCAB074009EDD04 /* Casper */ = {
+			isa = PBXGroup;
+			children = (
+				2D66B6FC2CCAB074009EDD04 /* CasperTests.swift */,
+			);
+			path = Casper;
+			sourceTree = "<group>";
+		};
+		2D6BFF0D2CCAAE7D001BBAC4 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				2D6BFF112CCAAE7D001BBAC4 /* CasperNetworkProvider.swift */,
+				2D6BFF0C2CCAAE7D001BBAC4 /* CasperTarget.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		2D6BFF142CCAAE7D001BBAC4 /* Casper */ = {
+			isa = PBXGroup;
+			children = (
+				2D6BFF0D2CCAAE7D001BBAC4 /* Network */,
+				2D6BFF0E2CCAAE7D001BBAC4 /* CasperAddressService.swift */,
+				2D6BFF0F2CCAAE7D001BBAC4 /* CasperAddressUtils.swift */,
+				2D6BFF102CCAAE7D001BBAC4 /* CasperExternalLinkProvider.swift */,
+				2D6BFF122CCAAE7D001BBAC4 /* CasperWalletAssembly.swift */,
+				2D6BFF132CCAAE7D001BBAC4 /* CasperWalletManager.swift */,
+			);
+			path = Casper;
 			sourceTree = "<group>";
 		};
 		2D788E7E2ADD657000E0884B /* WalletSelector */ = {
@@ -10131,6 +10181,7 @@
 				B62D3C592CBC79D900C2460E /* Bitcoin */,
 				B62D3C612CBC79D900C2460E /* BitcoinCash */,
 				B62D3C7F2CBC79D900C2460E /* Cardano */,
+				2D6BFF142CCAAE7D001BBAC4 /* Casper */,
 				B62D3C922CBC79D900C2460E /* Chia */,
 				B62D3CA42CBC79D900C2460E /* Cosmos */,
 				B62D3CA92CBC79D900C2460E /* Dash */,
@@ -10636,11 +10687,10 @@
 		B62D3F942CBC79DA00C2460E /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				B62D3F762CBC79DA00C2460E /* Bech32 */,
-				B62D3F7A2CBC79DA00C2460E /* Moya+Combine */,
 				B62D3F7B2CBC79DA00C2460E /* AnyPublisher+Async.swift */,
 				B62D3F7C2CBC79DA00C2460E /* BigUInt+.swift */,
 				B62D3F7D2CBC79DA00C2460E /* Bundle+.swift */,
+				2D66B7022CCAB2CD009EDD04 /* Byte+.swift */,
 				B62D3F7E2CBC79DA00C2460E /* CBOR+.swift */,
 				B62D3F7F2CBC79DA00C2460E /* Collection+.swift */,
 				B62D3F802CBC79DA00C2460E /* Data+.swift */,
@@ -10663,6 +10713,8 @@
 				B62D3F912CBC79DA00C2460E /* TWPublicKey+.swift */,
 				B62D3F922CBC79DA00C2460E /* Uint64+.swift */,
 				B62D3F932CBC79DA00C2460E /* URL+.swift */,
+				B62D3F762CBC79DA00C2460E /* Bech32 */,
+				B62D3F7A2CBC79DA00C2460E /* Moya+Combine */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -11181,6 +11233,7 @@
 				B62D430D2CBC79E200C2460E /* Aptos */,
 				B62D43172CBC79E300C2460E /* Bitcoin */,
 				B62D432B2CBC79E300C2460E /* Cardano */,
+				2D66B6FD2CCAB074009EDD04 /* Casper */,
 				B62D432F2CBC79E400C2460E /* Chia */,
 				B62D42F92CBC79E100C2460E /* Common */,
 				B62D43132CBC79E300C2460E /* Cosmos */,
@@ -14780,6 +14833,7 @@
 				B6C0D3F32CBDC543001113ED /* Moya */,
 				B6C0D3F52CBDC552001113ED /* BinanceChain */,
 				B6C0D3F82CBDC5A3001113ED /* SwiftyJSON */,
+				2D66B7002CCAB27A009EDD04 /* Blake2 */,
 			);
 			productName = BlockchainSdk;
 			productReference = B68E1F652CBC44050043E598 /* BlockchainSdk.framework */;
@@ -14992,6 +15046,7 @@
 				B6C0D3F02CBDC52D001113ED /* XCRemoteSwiftPackageReference "Moya" */,
 				B6C0D3F72CBDC5A3001113ED /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
 				B62C16772CBE095A00522683 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				2D66B6FF2CCAB27A009EDD04 /* XCRemoteSwiftPackageReference "Blake2.swift" */,
 			);
 			productRefGroup = 5D3F77C324BF56D800E8695B /* Products */;
 			projectDirPath = "";
@@ -17259,6 +17314,7 @@
 				B62D402C2CBC79DA00C2460E /* BitcoinExternalLinkProvider.swift in Sources */,
 				B62D40282CBC79DA00C2460E /* ScriptChunkHelper.swift in Sources */,
 				B62D41B42CBC79DB00C2460E /* TezosTransactionBuilder.swift in Sources */,
+				2D6BFF1B2CCAAE7D001BBAC4 /* CasperWalletManager.swift in Sources */,
 				B62D41212CBC79DA00C2460E /* KoinosAPIResolver.swift in Sources */,
 				B62D40112CBC79DA00C2460E /* OP_2ROT.swift in Sources */,
 				B62D40212CBC79DA00C2460E /* OP_EXAMPLE.swift in Sources */,
@@ -17292,6 +17348,7 @@
 				B62D422B2CBC79DB00C2460E /* BlockBookResponses.swift in Sources */,
 				B62D3F982CBC79DA00C2460E /* AlgorandTransactionParams.swift in Sources */,
 				B62D3FB32CBC79DA00C2460E /* AptosAddressService.swift in Sources */,
+				2D6BFF162CCAAE7D001BBAC4 /* CasperAddressService.swift in Sources */,
 				B62D40612CBC79DA00C2460E /* ChiaTransactionBuilder.swift in Sources */,
 				B62D40B32CBC79DA00C2460E /* MantaExternalLinkProvider.swift in Sources */,
 				B62D42232CBC79DB00C2460E /* XRPWalletAssembly.swift in Sources */,
@@ -17407,6 +17464,7 @@
 				B62D40DB2CBC79DA00C2460E /* HederaAccountInfo.swift in Sources */,
 				B62D42AF2CBC79DB00C2460E /* FeeResourceType.swift in Sources */,
 				B62D41402CBC79DA00C2460E /* NEARNetworkResult.TransactionStatus.swift in Sources */,
+				2D6BFF1A2CCAAE7D001BBAC4 /* CasperWalletAssembly.swift in Sources */,
 				B62D41272CBC79DA00C2460E /* LitecoinNetworkParams.swift in Sources */,
 				B62D40422CBC79DA00C2460E /* RosettaData.swift in Sources */,
 				B62D3FBE2CBC79DA00C2460E /* BinanceWalletAssembly.swift in Sources */,
@@ -17427,6 +17485,7 @@
 				B62D42372CBC79DB00C2460E /* ElectrumDTO.swift in Sources */,
 				B62D402E2CBC79DA00C2460E /* BitcoinModels.swift in Sources */,
 				B62D40F92CBC79DA00C2460E /* ICPProviderTarget.swift in Sources */,
+				2D6BFF152CCAAE7D001BBAC4 /* CasperTarget.swift in Sources */,
 				B62D42742CBC79DB00C2460E /* TransactionFeeProvider.swift in Sources */,
 				B62D42CB2CBC79DB00C2460E /* Data+.swift in Sources */,
 				B62D42112CBC79DB00C2460E /* SigningAlgorithm.swift in Sources */,
@@ -17516,6 +17575,7 @@
 				B62D42352CBC79DB00C2460E /* BlockcypherTarget.swift in Sources */,
 				B62D418C2CBC79DA00C2460E /* SolanaFeeParameters.swift in Sources */,
 				B62D41422CBC79DA00C2460E /* NEARNetworkService.swift in Sources */,
+				2D66B7032CCAB2CD009EDD04 /* Byte+.swift in Sources */,
 				B62D40102CBC79DA00C2460E /* OP_2OVER.swift in Sources */,
 				B62D40A62CBC79DA00C2460E /* BSCExternalLinkProvider.swift in Sources */,
 				B62D42A02CBC79DB00C2460E /* BaseManager.swift in Sources */,
@@ -17662,6 +17722,7 @@
 				B62D3FAD2CBC79DA00C2460E /* AptosFeeParams.swift in Sources */,
 				B62D41162CBC79DA00C2460E /* KoinosNetworkService.swift in Sources */,
 				B62D42272CBC79DB00C2460E /* BlockBookConfig.swift in Sources */,
+				2D6BFF182CCAAE7D001BBAC4 /* CasperExternalLinkProvider.swift in Sources */,
 				B62D423C2CBC79DB00C2460E /* Address.swift in Sources */,
 				B62D42BA2CBC79DB00C2460E /* TransactionSendResult.swift in Sources */,
 				B62D41EE2CBC79DB00C2460E /* VeChainNetworkParams.TransactionStatus.swift in Sources */,
@@ -17823,6 +17884,7 @@
 				B62D42562CBC79DB00C2460E /* DerivationConfigV2.swift in Sources */,
 				B62D42662CBC79DB00C2460E /* ExistentialDepositProvider.swift in Sources */,
 				B62D41C92CBC79DB00C2460E /* common.pb.swift in Sources */,
+				2D6BFF192CCAAE7D001BBAC4 /* CasperNetworkProvider.swift in Sources */,
 				B62D3FF62CBC79DA00C2460E /* OP_IF.swift in Sources */,
 				B62D428D2CBC79DB00C2460E /* BlockBookTransactionHistoryTotalPageCountExtractor.swift in Sources */,
 				B62D41872CBC79DA00C2460E /* SolanaAddressService.swift in Sources */,
@@ -17855,6 +17917,7 @@
 				B62D410E2CBC79DA00C2460E /* KoinosDTOMapper.swift in Sources */,
 				B62D40452CBC79DA00C2460E /* RosettaTarget.swift in Sources */,
 				B62D3FAE2CBC79DA00C2460E /* AptosTransactionInfo.swift in Sources */,
+				2D6BFF172CCAAE7D001BBAC4 /* CasperAddressUtils.swift in Sources */,
 				B62D40952CBC79DA00C2460E /* EthereumNetworkProvider.swift in Sources */,
 				B62D42822CBC79DB00C2460E /* EthereumTransactionHistoryMapper.swift in Sources */,
 				B62D41CA2CBC79DB00C2460E /* exchange_contract.pb.swift in Sources */,
@@ -18056,6 +18119,7 @@
 				B62D435E2CBC79E400C2460E /* KoinosTransactionBuilderTests.swift in Sources */,
 				B62D43672CBC79E400C2460E /* XCTAssert+.swift in Sources */,
 				B62D43402CBC79E400C2460E /* AddressTests.swift in Sources */,
+				2D66B6FE2CCAB074009EDD04 /* CasperTests.swift in Sources */,
 				B62D43482CBC79E400C2460E /* TransactionSizeTesterUtility.swift in Sources */,
 				B62D435F2CBC79E400C2460E /* KoinosWalletManagerTests.swift in Sources */,
 				B62D434B2CBC79E400C2460E /* BlockchainCodingKeyTests.swift in Sources */,
@@ -24618,6 +24682,14 @@
 				minimumVersion = 1.1.0;
 			};
 		};
+		2D66B6FF2CCAB27A009EDD04 /* XCRemoteSwiftPackageReference "Blake2.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tesseract-one/Blake2.swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.0;
+			};
+		};
 		B0B11A062C787FE70018A2A6 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/gonzalezreal/swift-markdown-ui";
@@ -24782,6 +24854,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 0ABC61132C410AFD00065EBA /* XCRemoteSwiftPackageReference "tweetnacl-swiftwrap" */;
 			productName = TweetNacl;
+		};
+		2D66B7002CCAB27A009EDD04 /* Blake2 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2D66B6FF2CCAB27A009EDD04 /* XCRemoteSwiftPackageReference "Blake2.swift" */;
+			productName = Blake2;
 		};
 		B0B11A072C787FE70018A2A6 /* MarkdownUI */ = {
 			isa = XCSwiftPackageProductDependency;

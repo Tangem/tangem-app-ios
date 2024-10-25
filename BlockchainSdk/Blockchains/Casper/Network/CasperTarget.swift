@@ -42,3 +42,9 @@ struct CasperTarget: TargetType {
     
     var headers: [String : String]?
 }
+
+// MARK: - TargetType
+
+extension CasperTarget {
+    enum TargetType {}
+}

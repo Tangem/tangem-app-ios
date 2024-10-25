@@ -29,7 +29,7 @@ final class CasperNetworkProvider: HostProvider {
     
     // MARK: - Private Implementation
     
-    private func requestPublisher<T: Decodable>(for target: FilecoinTarget.FilecoinTargetType) -> AnyPublisher<T, Error> {
+    private func requestPublisher<T: Decodable>(for target: CasperTarget.TargetType) -> AnyPublisher<T, Error> {
         provider.requestPublisher(CasperTarget(node: node))
             .filterSuccessfulStatusAndRedirectCodes()
             .map(JSONRPC.Response<T, JSONRPC.APIError>.self)
