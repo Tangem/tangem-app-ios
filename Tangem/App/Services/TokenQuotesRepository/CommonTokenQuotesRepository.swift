@@ -48,9 +48,7 @@ extension CommonTokenQuotesRepository: TokenQuotesRepository {
 
         return quote
     }
-}
 
-extension CommonTokenQuotesRepository: TokenQuotesRepositoryUpdater {
     func loadQuotes(currencyIds: [String]) -> AnyPublisher<[String: Decimal], Never> {
         log("Request loading quotes for ids: \(currencyIds)")
 
@@ -62,6 +60,21 @@ extension CommonTokenQuotesRepository: TokenQuotesRepositoryUpdater {
         return outputPublisher.eraseToAnyPublisher()
     }
 
+    func loadPrice(currencyCode: String, currencyId: String) -> AnyPublisher<Decimal, any Error> {
+        let request = QuotesDTO.Request(coinIds: [currencyId], currencyId: currencyCode, fields: [.price])
+
+        return tangemApiService
+            .loadQuotes(requestModel: request)
+            .compactMap { quotes in
+                quotes.first(where: { $0.id == currencyId })?.price
+            }
+            .eraseToAnyPublisher()
+    }
+}
+
+// MARK: - TokenQuotesRepositoryUpdater
+
+extension CommonTokenQuotesRepository: TokenQuotesRepositoryUpdater {
     func saveQuotes(_ quotes: [TokenQuote]) {
         var current = _quotes.value
 

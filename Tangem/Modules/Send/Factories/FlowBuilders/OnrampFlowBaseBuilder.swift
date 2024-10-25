@@ -13,6 +13,7 @@ struct OnrampFlowBaseBuilder {
     let userWalletModel: UserWalletModel
     let walletModel: WalletModel
     let sendAmountStepBuilder: SendAmountStepBuilder
+    let onrampAmountBuilder: OnrampAmountBuilder
     let onrampStepBuilder: OnrampStepBuilder
     let sendFinishStepBuilder: SendFinishStepBuilder
     let builder: SendDependenciesBuilder
@@ -23,9 +24,8 @@ struct OnrampFlowBaseBuilder {
 
         let onrampModel = builder.makeOnrampModel(onrampManager: onrampManager, onrampRepository: onrampRepository)
 
-        let onrampAmountViewModel = sendAmountStepBuilder.makeOnrampAmountViewModel(
-            io: (input: onrampModel, output: onrampModel),
-            sendAmountValidator: builder.makeOnrampAmountValidator()
+        let (onrampAmountViewModel, _) = onrampAmountBuilder.makeOnrampAmountViewModel(
+            io: (input: onrampModel, output: onrampModel)
         )
 
         let sendAmountCompactViewModel = sendAmountStepBuilder.makeSendAmountCompactViewModel(

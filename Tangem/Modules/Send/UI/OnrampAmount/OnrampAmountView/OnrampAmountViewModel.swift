@@ -9,27 +9,28 @@
 import Foundation
 import Combine
 import TangemExpress
+import TangemFoundation
 
-// Use our own OnrampAmountInput / OnrampAmountOutput
-// TODO: https://tangem.atlassian.net/browse/IOS-8398
 class OnrampAmountViewModel: ObservableObject {
     @Published var fiatIconURL: URL?
     @Published var decimalNumberTextFieldViewModel: DecimalNumberTextField.ViewModel
     @Published var alternativeAmount: String?
     @Published var bottomInfoText: SendAmountViewModel.BottomInfoTextType?
     @Published var currentFieldOptions: SendDecimalNumberTextField.PrefixSuffixOptions?
+    @Published var isLoading: Bool = false
 
     // MARK: - Dependencies
 
     private let tokenItem: TokenItem
-    private let interactor: SendAmountInteractor
+    private let interactor: OnrampAmountInteractor
     private let prefixSuffixOptionsFactory: SendDecimalNumberTextField.PrefixSuffixOptionsFactory = .init()
 
+    private var updatingAmountTask: Task<Void, Never>?
     private var bag: Set<AnyCancellable> = []
 
     init(
         tokenItem: TokenItem,
-        interactor: SendAmountInteractor
+        interactor: OnrampAmountInteractor
     ) {
         self.interactor = interactor
         self.tokenItem = tokenItem
@@ -44,21 +45,14 @@ class OnrampAmountViewModel: ObservableObject {
 
 private extension OnrampAmountViewModel {
     func bind() {
-        /*
-          // TODO: https://tangem.atlassian.net/browse/IOS-8398
-         onrampInput
-             .currencyPublisher
-             .withWeakCaptureOf(self)
-             .receive(on: DispatchQueue.main)
-             .sink { viewModel, currency in
-                 viewModel.fiatIconURL = currency.identity.image
-                 viewModel.decimalNumberTextFieldViewModel.update(maximumFractionDigits: currency.precision)
-                 viewModel.currentFieldOptions = viewModel.prefixSuffixOptionsFactory.makeFiatOptions(
-                     fiatCurrencyCode: currency.identity.code
-                 )
-             }
-             .store(in: &bag)
-          */
+        interactor
+            .currencyPublisher
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, currency in
+                viewModel.update(currency: currency)
+            }
+            .store(in: &bag)
 
         decimalNumberTextFieldViewModel
             .valuePublisher
@@ -70,36 +64,43 @@ private extension OnrampAmountViewModel {
             .store(in: &bag)
 
         interactor
-            .infoTextPublisher
+            .errorPublisher
+            .map { $0.map { .error($0) } }
             .receive(on: DispatchQueue.main)
             .assign(to: \.bottomInfoText, on: self, ownership: .weak)
             .store(in: &bag)
+    }
 
-        interactor
-            .externalAmountPublisher
-            .removeDuplicates()
-            .withWeakCaptureOf(self)
-            .receive(on: DispatchQueue.main)
-            .sink { viewModel, amount in
-                viewModel.setExternalAmount(amount?.main)
+    func update(currency: LoadingValue<OnrampFiatCurrency>) {
+        switch currency {
+        case .loading:
+            // Equal to loading state
+            fiatIconURL = nil
+            isLoading = true
+
+        case .loaded(let currency):
+            fiatIconURL = currency.identity.image
+            decimalNumberTextFieldViewModel.update(maximumFractionDigits: currency.precision)
+            currentFieldOptions = prefixSuffixOptionsFactory.makeFiatOptions(
+                fiatCurrencyCode: currency.identity.code
+            )
+            isLoading = false
+        case .failedToLoad(let error):
+            break
+        }
+    }
+
+    func textFieldValueDidChanged(amount: Decimal?) {
+        updatingAmountTask?.cancel()
+        updatingAmountTask = TangemFoundation.runTask(in: self) { viewModel in
+            let amount = await viewModel.interactor.update(amount: amount)
+
+            await runOnMain {
                 viewModel.alternativeAmount = amount?.formatAlternative(
                     currencySymbol: viewModel.tokenItem.currencySymbol,
                     decimalCount: viewModel.tokenItem.decimalCount
                 )
             }
-            .store(in: &bag)
-    }
-
-    func setExternalAmount(_ amount: Decimal?) {
-        decimalNumberTextFieldViewModel.update(value: amount)
-        textFieldValueDidChanged(amount: amount)
-    }
-
-    func textFieldValueDidChanged(amount: Decimal?) {
-        let amount = interactor.update(amount: amount)
-        alternativeAmount = amount?.formatAlternative(
-            currencySymbol: tokenItem.currencySymbol,
-            decimalCount: tokenItem.decimalCount
-        )
+        }
     }
 }

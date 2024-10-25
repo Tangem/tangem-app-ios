@@ -34,12 +34,7 @@ struct OnrampAmountView: View {
             .matchedGeometryEffect(id: namespace.names.tokenIcon, in: namespace.id)
 
             VStack(spacing: 6) {
-                SendDecimalNumberTextField(viewModel: viewModel.decimalNumberTextFieldViewModel)
-                    .initialFocusBehavior(.noFocus)
-                    .alignment(.center)
-                    .prefixSuffixOptions(viewModel.currentFieldOptions)
-                    .minTextScale(SendAmountStep.Constants.amountMinTextScale)
-                    .matchedGeometryEffect(id: namespace.names.amountCryptoText, in: namespace.id)
+                textField
 
                 // Keep empty text so that the view maintains its place in the layout
                 Text(viewModel.alternativeAmount ?? " ")
@@ -50,6 +45,16 @@ struct OnrampAmountView: View {
                 bottomInfoText
             }
         }
+    }
+
+    private var textField: some View {
+        SendDecimalNumberTextField(viewModel: viewModel.decimalNumberTextFieldViewModel)
+            .initialFocusBehavior(.noFocus)
+            .alignment(.center)
+            .prefixSuffixOptions(viewModel.currentFieldOptions)
+            .minTextScale(SendAmountStep.Constants.amountMinTextScale)
+            .matchedGeometryEffect(id: namespace.names.amountCryptoText, in: namespace.id)
+            .skeletonable(isShown: viewModel.isLoading)
     }
 
     private var bottomInfoText: some View {
