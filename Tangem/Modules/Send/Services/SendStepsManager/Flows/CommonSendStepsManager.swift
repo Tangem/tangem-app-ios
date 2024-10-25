@@ -52,7 +52,7 @@ class CommonSendStepsManager {
             return amountStep
         case .amount:
             return summaryStep
-        case .fee, .validators, .summary, .finish:
+        case .fee, .validators, .summary, .finish, .onramp:
             assertionFailure("There is no next step")
             return nil
         }
@@ -72,7 +72,7 @@ class CommonSendStepsManager {
             output?.update(state: .init(step: step, action: .continue))
         case .amount, .destination:
             output?.update(state: .init(step: step, action: .next, backButtonVisible: true))
-        case .fee, .validators:
+        case .fee, .validators, .onramp:
             assertionFailure("There is no next step")
         }
     }

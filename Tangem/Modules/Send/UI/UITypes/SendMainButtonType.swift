@@ -33,11 +33,12 @@ enum SendFlowActionType: Hashable {
     case revote
     case rebond
     case migrate
+    case onramp
 
     var title: String {
         switch self {
         case .send: Localization.commonSend
-        case .approve: Localization.commonApprove
+        case .approve: Localization.givePermissionTitle
         case .stake: Localization.commonStake
         case .unstake: Localization.commonUnstake
         case .claimRewards: Localization.commonClaimRewards
@@ -53,6 +54,7 @@ enum SendFlowActionType: Hashable {
         case .revote: Localization.stakingRevote
         case .rebond: Localization.stakingRebond
         case .migrate: Localization.stakingMigrate
+        case .onramp: Localization.commonBuy
         }
     }
 

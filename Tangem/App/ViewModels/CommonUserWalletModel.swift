@@ -10,7 +10,6 @@ import Foundation
 import TangemSdk
 import BlockchainSdk
 import Combine
-import Alamofire
 import SwiftUI
 
 class CommonUserWalletModel {

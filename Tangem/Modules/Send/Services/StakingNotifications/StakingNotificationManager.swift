@@ -49,12 +49,13 @@ private extension CommonStakingNotificationManager {
     func update(state: StakingModel.State, yield: YieldInfo) {
         switch state {
         case .loading:
-            hideErrorEvents()
+            hideErrorNotifications()
         case .approveTransactionInProgress:
             show(notification: .approveTransactionInProgress)
-            hideErrorEvents()
+            hideErrorNotifications()
         case .readyToApprove:
-            hideErrorEvents()
+            hideApproveInProgressNotification()
+            hideErrorNotifications()
         case .readyToStake(let readyToStake):
             var events: [StakingNotificationEvent] = []
 
@@ -80,14 +81,16 @@ private extension CommonStakingNotificationManager {
             }
 
             show(events: events)
-            hideErrorEvents()
+            hideErrorNotifications()
 
         case .validationError(let validationError, _):
+            hideApproveInProgressNotification()
             let factory = BlockchainSDKNotificationMapper(tokenItem: tokenItem, feeTokenItem: feeTokenItem)
             let validationErrorEvent = factory.mapToValidationErrorEvent(validationError)
 
             show(error: .validationErrorEvent(validationErrorEvent))
         case .networkError:
+            hideApproveInProgressNotification()
             show(error: .networkUnreachable)
         }
     }
@@ -96,18 +99,18 @@ private extension CommonStakingNotificationManager {
         switch (state, action.type) {
         case (.loading, .pending(.withdraw)), (.ready, .pending(.withdraw)):
             show(notification: .withdraw)
-            hideErrorEvents()
+            hideErrorNotifications()
         case (.loading, .pending(.claimRewards)), (.ready, .pending(.claimRewards)):
             show(notification: .claimRewards)
-            hideErrorEvents()
+            hideErrorNotifications()
         case (.loading, .pending(.restakeRewards)), (.ready, .pending(.restakeRewards)):
             show(notification: .restakeRewards)
-            hideErrorEvents()
+            hideErrorNotifications()
         case (.loading, .pending(.unlockLocked)), (.ready, .pending(.unlockLocked)):
             show(notification: .unlock(
                 periodFormatted: yield.unbondingPeriod.formatted(formatter: daysFormatter)
             ))
-            hideErrorEvents()
+            hideErrorNotifications()
         case (.loading, _), (.ready, _):
             let description: String = {
                 switch tokenItem.blockchain {
@@ -121,7 +124,7 @@ private extension CommonStakingNotificationManager {
             }()
 
             show(notification: .unstake(description: description))
-            hideErrorEvents()
+            hideErrorNotifications()
         case (.validationError(let validationError, _), _):
             let factory = BlockchainSDKNotificationMapper(tokenItem: tokenItem, feeTokenItem: feeTokenItem)
             let validationErrorEvent = factory.mapToValidationErrorEvent(validationError)
@@ -132,7 +135,7 @@ private extension CommonStakingNotificationManager {
         }
     }
 
-    func update(state: RestakingModel.State) {
+    func update(state: RestakingModel.State, action: RestakingModel.Action) {
         switch state {
         case .loading, .ready:
             switch tokenItem.blockchain {
@@ -142,7 +145,11 @@ private extension CommonStakingNotificationManager {
                 break
             }
 
-            hideErrorEvents()
+            if case .pending(.restake) = action.type {
+                show(notification: .restake)
+            }
+
+            hideErrorNotifications()
         case .networkError:
             show(error: .networkUnreachable)
         case .validationError(let validationError, _):
@@ -179,13 +186,22 @@ private extension CommonStakingNotificationManager {
         notificationInputsSubject.value.append(input)
     }
 
-    func hideErrorEvents() {
+    func hideErrorNotifications() {
         notificationInputsSubject.value.removeAll { input in
             switch input.settings.event {
             case StakingNotificationEvent.validationErrorEvent, StakingNotificationEvent.networkUnreachable:
                 return true
             default:
                 return false
+            }
+        }
+    }
+
+    func hideApproveInProgressNotification() {
+        notificationInputsSubject.value.removeAll { input in
+            switch input.settings.event {
+            case StakingNotificationEvent.approveTransactionInProgress: true
+            default: false
             }
         }
     }
@@ -223,7 +239,7 @@ extension CommonStakingNotificationManager: StakingNotificationManager {
         )
         .withWeakCaptureOf(self)
         .sink { manager, state in
-            manager.update(state: state.0)
+            manager.update(state: state.0, action: provider.stakingAction)
         }
     }
 

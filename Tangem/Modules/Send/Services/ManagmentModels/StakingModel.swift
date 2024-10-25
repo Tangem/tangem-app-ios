@@ -7,10 +7,9 @@
 //
 
 import Foundation
-import TangemStaking
 import Combine
+import TangemStaking
 import BlockchainSdk
-import TangemFoundation
 
 protocol StakingModelStateProvider {
     var state: AnyPublisher<StakingModel.State, Never> { get }
@@ -95,6 +94,8 @@ private extension StakingModel {
                 model.update(state: .loading)
                 let newState = try await model.state(amount: amount, validator: validator, approvePolicy: model._approvePolicy.value)
                 model.update(state: newState)
+            } catch _ as CancellationError {
+                // Do nothing
             } catch {
                 model.update(state: .networkError(error))
             }

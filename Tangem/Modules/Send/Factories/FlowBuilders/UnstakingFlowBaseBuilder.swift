@@ -33,12 +33,15 @@ struct UnstakingFlowBaseBuilder {
             actionType: actionType,
             sendFeeLoader: unstakingModel,
             sendQRCodeService: .none,
-            sendAmountValidator: builder.makeStakingSendAmountValidator(stakingManager: manager),
+            sendAmountValidator: builder.makeUnstakingSendAmountValidator(
+                stakingManager: manager,
+                stakedAmount: action.amount
+            ),
             amountModifier: builder.makeStakingAmountModifier(),
             source: .staking
         )
 
-        amount.interactor.externalUpdate(amount: io.input.amount?.crypto)
+        amount.interactor.externalUpdate(amount: action.amount)
 
         let sendFeeCompactViewModel = sendFeeStepBuilder.makeSendFeeCompactViewModel(input: unstakingModel)
         sendFeeCompactViewModel.bind(input: unstakingModel)

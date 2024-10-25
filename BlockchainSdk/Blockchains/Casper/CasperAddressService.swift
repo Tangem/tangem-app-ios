@@ -39,7 +39,14 @@ extension CasperAddressService: AddressProvider {
 
 extension CasperAddressService: AddressValidator {
     public func validate(_ address: String) -> Bool {
-        return false
+        let isCorrectEd25519Address = address.count == Constants.lengthED25519 && address.hasPrefix(Constants.prefixED25519)
+        let isCorrectSecp256k1Address = address.count == Constants.lengthSECP256K1 && address.hasPrefix(Constants.prefixSECP256K1)
+        
+        guard isCorrectEd25519Address || isCorrectSecp256k1Address else {
+            return false
+        }
+        
+        return true
     }
 }
 
