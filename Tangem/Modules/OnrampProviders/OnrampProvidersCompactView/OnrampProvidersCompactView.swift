@@ -27,7 +27,6 @@ struct OnrampProvidersCompactView: View {
                 // Kingfisher shows a gray background even if it has a cached image
                 forceKingfisher: false
             )
-            .padding(.vertical, 1)
 
             titleView
 
