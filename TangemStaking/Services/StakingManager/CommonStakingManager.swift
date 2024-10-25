@@ -437,27 +437,12 @@ private extension CommonStakingManager {
 
 public enum StakingManagerError: LocalizedError {
     case stakingManagerStateNotSupportTransactionAction(action: StakingAction)
-    case stakedBalanceNotFound(validator: String)
-    case pendingActionNotFound(validator: String)
-    case transactionNotFound
-    case notImplemented
-    case notFound
     case stakingManagerIsLoading
 
     public var errorDescription: String? {
         switch self {
         case .stakingManagerStateNotSupportTransactionAction(let action):
             "StakingManagerNotSupportTransactionAction \(action)"
-        case .stakedBalanceNotFound(let validator):
-            "stakedBalanceNotFound \(validator)"
-        case .pendingActionNotFound(let validator):
-            "pendingActionNotFound \(validator)"
-        case .transactionNotFound:
-            "transactionNotFound"
-        case .notImplemented:
-            "notImplemented"
-        case .notFound:
-            "notFound"
         case .stakingManagerIsLoading:
             "StakingManagerIsLoading"
         }
