@@ -286,7 +286,7 @@ struct StakeKitMapper {
             address: validator.address,
             name: validator.name ?? "No name",
             preferred: validator.preferred ?? false,
-            partner: validator.address == StakingConstants.partnerValidator,
+            partner: validator.name?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() == StakingConstants.partnerName,
             iconURL: validator.image.flatMap { URL(string: $0) },
             apr: validator.apr
         )
