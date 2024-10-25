@@ -12,7 +12,7 @@ public actor CommonOnrampManager {
     private let dataRepository: OnrampDataRepository
     private let logger: Logger
 
-    private var _providers: [Provider] = []
+    private var _providers: [OnrampAvailableProvider] = []
 
     public init(
         apiProvider: ExpressAPIProvider,
@@ -35,7 +35,7 @@ extension CommonOnrampManager: OnrampManager {
         return country
     }
 
-    public func setupProviders(request: OnrampPairRequestItem) async throws {
+    public func setupProviders(request: OnrampPairRequestItem) async throws -> [OnrampAvailableProvider] {
         let pairs = try await apiProvider.onrampPairs(
             from: request.fiatCurrency,
             to: [request.destination.expressCurrency],
@@ -45,6 +45,8 @@ extension CommonOnrampManager: OnrampManager {
         _providers = pairs.flatMap { $0.providers }.map { provider in
             makeProvider(item: request, provider: provider)
         }
+
+        return _providers
     }
 
     public func setupQuotes(amount: Decimal) async throws {

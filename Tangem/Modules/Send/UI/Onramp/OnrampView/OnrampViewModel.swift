@@ -12,18 +12,20 @@ import TangemExpress
 
 class OnrampViewModel: ObservableObject, Identifiable {
     @Published private(set) var onrampAmountViewModel: OnrampAmountViewModel
-    @Published private(set) var paymentState: PaymentState?
+    @Published private(set) var onrampProvidersCompactViewModel: OnrampProvidersCompactViewModel
 
     private let interactor: OnrampInteractor
 
-    weak var router: OnrampSummaryRoutable?
     private var bag: Set<AnyCancellable> = []
 
     init(
         onrampAmountViewModel: OnrampAmountViewModel,
+        onrampProvidersCompactViewModel: OnrampProvidersCompactViewModel,
         interactor: OnrampInteractor
     ) {
         self.onrampAmountViewModel = onrampAmountViewModel
+        self.onrampProvidersCompactViewModel = onrampProvidersCompactViewModel
+
         self.interactor = interactor
 
         bind()
@@ -68,13 +70,4 @@ private extension OnrampViewModel {
 
 extension OnrampViewModel: SendStepViewAnimatable {
     func viewDidChangeVisibilityState(_ state: SendStepVisibilityState) {}
-}
-
-extension OnrampViewModel {
-    enum PaymentState: Hashable, Identifiable {
-        case loading
-        case loaded(data: OnrampProvidersCompactViewData)
-
-        var id: Int { hashValue }
-    }
 }

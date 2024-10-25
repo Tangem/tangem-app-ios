@@ -14,12 +14,19 @@ struct CommonOnrampBaseDataBuilder {
     private let onrampRepository: OnrampRepository
     private let onrampDataRepository: OnrampDataRepository
 
+    private let paymentMethodsBuilderIO: OnrampPaymentMethodsBuilder.IO
+    private let providersBuilderIO: OnrampProvidersBuilder.IO
+
     init(
         onrampRepository: OnrampRepository,
-        onrampDataRepository: OnrampDataRepository
+        onrampDataRepository: OnrampDataRepository,
+        paymentMethodsBuilderIO: OnrampPaymentMethodsBuilder.IO,
+        providersBuilderIO: OnrampProvidersBuilder.IO
     ) {
         self.onrampRepository = onrampRepository
         self.onrampDataRepository = onrampDataRepository
+        self.paymentMethodsBuilderIO = paymentMethodsBuilderIO
+        self.providersBuilderIO = providersBuilderIO
     }
 }
 
@@ -32,5 +39,12 @@ extension CommonOnrampBaseDataBuilder: OnrampBaseDataBuilder {
 
     func makeDataForOnrampCountrySelectorView() -> (preferenceRepository: OnrampRepository, dataRepository: OnrampDataRepository) {
         return (preferenceRepository: onrampRepository, dataRepository: onrampDataRepository)
+    }
+
+    func makeDataForOnrampProvidersPaymentMethodsView() -> (paymentMethodsBuilder: OnrampPaymentMethodsBuilder, providersBuilder: OnrampProvidersBuilder) {
+        (
+            paymentMethodsBuilder: OnrampPaymentMethodsBuilder(io: paymentMethodsBuilderIO, dataRepository: onrampDataRepository),
+            providersBuilder: OnrampProvidersBuilder(io: providersBuilderIO, paymentMethodsInput: paymentMethodsBuilderIO.input)
+        )
     }
 }

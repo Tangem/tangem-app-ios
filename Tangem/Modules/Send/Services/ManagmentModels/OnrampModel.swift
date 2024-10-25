@@ -98,7 +98,8 @@ private extension OnrampModel {
 
     func updateProviders(country: OnrampCountry, currency: OnrampFiatCurrency) async throws {
         let request = makeOnrampPairRequestItem(country: country, currency: currency)
-        try await onrampManager.setupProviders(request: request)
+        // TODO: Check the providers is empty
+        _ = try await onrampManager.setupProviders(request: request)
     }
 }
 
