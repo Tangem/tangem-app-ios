@@ -845,6 +845,7 @@
 "twins_recreate_warning" = "Diese Aktion ist unumkehrbar. Du hast keinen Zugriff mehr auf die alte Wallet.";
 "twins_scan_twin_with_number" = "Tippe auf die Doppelkarte oder Ring mit der Nummer %@ und entferne sie erst am Ende des Vorgangs.";
 "unlock_wallet_description_full" = "Verwende %@ oder scanne eine Karte oder Ring, um Zugriff auf deine Wallet zu erhalten.";
+"unsupported_wc_version" = "Connection failed: This dApp uses Wallet Connect version 1.0, which is not supported. Please ensure the dApp supports Wallet Connect version 2.0 to connect successfully.";
 "user_push_notification_agreement_argument_one" = "Bleib auf dem Laufenden mit den neuesten Funktionen und Neuigkeiten";
 "user_push_notification_agreement_argument_two" = "Sei der Erste, der von neuen Aktionen erfährt";
 "user_push_notification_agreement_header" = "Möchtest du Push-Benachrichtigungen verwenden?";

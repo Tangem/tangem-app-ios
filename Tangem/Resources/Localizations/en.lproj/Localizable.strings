@@ -845,6 +845,7 @@
 "twins_recreate_warning" = "This action is irreversible. You will not have access to the old wallet.";
 "twins_scan_twin_with_number" = "Tap the twin card with number %@ and do not remove until the end of the operation";
 "unlock_wallet_description_full" = "Use %@ or scan a card/ring to have access to your wallet";
+"unsupported_wc_version" = "Connection failed: This dApp uses Wallet Connect version 1.0, which is not supported. Please ensure the dApp supports Wallet Connect version 2.0 to connect successfully.";
 "user_push_notification_agreement_argument_one" = "Stay up to date with the latest features and news";
 "user_push_notification_agreement_argument_two" = "Be the first to know about new promotions";
 "user_push_notification_agreement_header" = "Would you like to use\nPush-notifications?";

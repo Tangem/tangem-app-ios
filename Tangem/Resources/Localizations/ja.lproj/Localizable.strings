@@ -845,6 +845,7 @@
 "twins_recreate_warning" = "この操作は元に戻せません。古いウォレットにはアクセスできなくなります。";
 "twins_scan_twin_with_number" = "番号%@のツインカードをタップし、操作が終了するまで取り外さないでください。";
 "unlock_wallet_description_full" = "%@を使用するか、カード / リングをスキャンしてウォレットにアクセスしてください";
+"unsupported_wc_version" = "Connection failed: This dApp uses Wallet Connect version 1.0, which is not supported. Please ensure the dApp supports Wallet Connect version 2.0 to connect successfully.";
 "user_push_notification_agreement_argument_one" = "最新の機能とニュースをお届けします";
 "user_push_notification_agreement_argument_two" = "新しいプロモーション情報をいち早く入手しましょう";
 "user_push_notification_agreement_header" = "プッシュ通知を使用しますか?";
