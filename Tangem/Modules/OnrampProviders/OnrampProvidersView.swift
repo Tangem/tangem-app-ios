@@ -23,7 +23,7 @@ struct OnrampProvidersView: View {
                 providersSection
             }
         }
-        .background(Colors.Background.tertiary)
+        .background(Colors.Background.primary)
     }
 
     private var headerView: some View {

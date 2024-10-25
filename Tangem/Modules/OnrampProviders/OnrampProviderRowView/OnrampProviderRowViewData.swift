@@ -14,6 +14,7 @@ struct OnrampProviderRowViewData {
     let iconURL: URL?
     let formattedAmount: String
     let badge: Badge
+    let isSelected: Bool
 
     let action: () -> Void
 }
@@ -35,5 +36,6 @@ extension OnrampProviderRowViewData: Identifiable, Hashable {
         hasher.combine(iconURL)
         hasher.combine(formattedAmount)
         hasher.combine(badge)
+        hasher.combine(isSelected)
     }
 }

@@ -29,14 +29,23 @@ struct OnrampProviderRowView: View {
             }
         }
         .padding(.vertical, 16)
-        .padding(.horizontal, 12)
+        .padding(.horizontal, 14)
+        .background(Colors.Background.primary)
         .cornerRadiusContinuous(14)
-        .overlay {
-            RoundedRectangle(cornerRadius: 14)
-                .stroke(Colors.Icon.accent, lineWidth: 1)
+        .background {
+            if data.isSelected {
+                RoundedRectangle(cornerRadius: 14)
+                    .stroke(Colors.Icon.accent, lineWidth: 1)
+            }
         }
-        // Colors.Icon.accent.opacity(0.15)
-        .shadow(color: .red, radius: 10.5, x: 0, y: 0)
+        .padding(.all, 1)
+        .background {
+            if data.isSelected {
+                RoundedRectangle(cornerRadius: 14)
+                    .stroke(Colors.Icon.accent.opacity(0.15), lineWidth: 2.5)
+            }
+        }
+        .padding(.all, 2.5)
         .contentShape(Rectangle())
     }
 
@@ -90,6 +99,7 @@ struct OnrampProviderRowView: View {
             iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/1INCH512.png"),
             formattedAmount: "0,00453 BTC",
             badge: .bestRate,
+            isSelected: true,
             action: {}
         )
     )
