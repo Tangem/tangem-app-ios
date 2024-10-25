@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import TangemFoundation
 
 actor CommonExpressManager {
     // MARK: - Dependencies
@@ -301,6 +302,8 @@ private extension CommonExpressManager {
 
 extension CommonExpressManager {
     nonisolated func log(_ args: Any) {
-        logger.debug("\(self) \(args)")
+        runTask(in: self, isDetached: true) { manager in
+            await manager.logger.debug("\(self) \(args)")
+        }
     }
 }
