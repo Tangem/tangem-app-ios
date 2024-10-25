@@ -26,7 +26,7 @@ public struct EVMSmartContractInteractorFactory {
             providers: networkAssembly.makeEthereumJsonRpcProviders(with: EVMNetworkProviderAssemblyInput(
                 blockchain: blockchain,
                 blockchainSdkConfig: config,
-                networkConfig: config.networkProviderConfiguration(for: blockchain), 
+                networkConfig: config.networkProviderConfiguration(for: blockchain),
                 apiInfo: apiInfo
             )),
             blockcypherProvider: nil,
@@ -37,11 +37,11 @@ public struct EVMSmartContractInteractorFactory {
     }
 }
 
-public extension EVMSmartContractInteractorFactory {
+extension EVMSmartContractInteractorFactory {
     enum FactoryError: String, LocalizedError {
         case invalidBlockchain
 
-        public var errorDescription: String? {
+        var errorDescription: String? {
             rawValue
         }
     }

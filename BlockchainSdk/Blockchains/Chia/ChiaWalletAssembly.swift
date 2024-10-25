@@ -16,7 +16,7 @@ struct ChiaWalletAssembly: WalletManagerAssembly {
         let providers: [ChiaNetworkProvider] = resolver.resolveProviders(apiInfos: input.apiInfo, factory: { nodeInfo, _ in
             ChiaNetworkProvider(node: nodeInfo, networkConfig: networkConfig)
         })
-        
+
         return try ChiaWalletManager(
             wallet: input.wallet,
             networkService: .init(

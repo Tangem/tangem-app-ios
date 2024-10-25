@@ -13,9 +13,7 @@ import TangemSdk
 final class HederaAddressService: AddressService {
     private let isTestnet: Bool
 
-    private lazy var client: Client = {
-        return isTestnet ? Client.forTestnet() : Client.forMainnet()
-    }()
+    private lazy var client: Client = isTestnet ? Client.forTestnet() : Client.forMainnet()
 
     init(isTestnet: Bool) {
         self.isTestnet = isTestnet
@@ -30,7 +28,7 @@ final class HederaAddressService: AddressService {
         )
         return PlainAddress(value: "", publicKey: publicKey, type: addressType)
     }
-    
+
     func validate(_ address: String) -> Bool {
         do {
             try AccountId

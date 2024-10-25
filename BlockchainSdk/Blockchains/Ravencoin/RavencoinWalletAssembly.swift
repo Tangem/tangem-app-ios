@@ -32,12 +32,12 @@ struct RavencoinWalletAssembly: WalletManagerAssembly {
                 .resolveProviders(apiInfos: input.apiInfo) { nodeInfo, _ in
                     RavencoinNetworkProvider(
                         host: nodeInfo.link,
-                        provider: .init(configuration: input.networkConfig))
+                        provider: .init(configuration: input.networkConfig)
+                    )
                     .eraseToAnyBitcoinNetworkProvider()
                 }
 
             $0.networkService = BitcoinNetworkService(providers: providers)
         }
     }
-    
 }

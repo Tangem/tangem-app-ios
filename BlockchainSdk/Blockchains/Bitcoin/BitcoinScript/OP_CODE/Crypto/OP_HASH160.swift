@@ -25,7 +25,7 @@
 import Foundation
 
 // The input is hashed twice: first with SHA-256 and then with RIPEMD-160.
-public struct OpHash160: OpCodeProtocol {
-    public var value: UInt8 { return 0xa9 }
-    public var name: String { return "OP_HASH160" }
+struct OpHash160: OpCodeProtocol {
+    var value: UInt8 { return 0xa9 }
+    var name: String { return "OP_HASH160" }
 }

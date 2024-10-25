@@ -11,7 +11,6 @@ import TangemSdk
 import BitcoinCore
 
 struct TezosWalletAssembly: WalletManagerAssembly {
-    
     func make(with input: WalletManagerAssemblyInput) throws -> WalletManager {
         return try TezosWalletManager(wallet: input.wallet).then {
             $0.txBuilder = try TezosTransactionBuilder(walletPublicKey: input.wallet.publicKey.blockchainKey, curve: input.blockchain.curve)
@@ -24,11 +23,10 @@ struct TezosWalletAssembly: WalletManagerAssembly {
 
                 return TezosJsonRpcProvider(host: nodeInfo.link, configuration: input.networkConfig)
             }
-            
+
             $0.networkService = TezosNetworkService(
                 providers: providers
             )
         }
     }
-    
 }

@@ -30,14 +30,14 @@ struct BlockchairTransactionDetailed: Codable {
     let transaction: BlockchairTransaction
     let inputs: [BlockchairTxInput]
     let outputs: [BlockchairTxOutput]
-    
+
     func toPendingTx(userAddress: String, decimalValue: Decimal) -> PendingTransaction {
         var destination: String = .unknown
         var source: String = .unknown
         var value: UInt64 = 0
-        var isIncoming: Bool = false
-        
-        if let _ = inputs.first(where:  { $0.recipient == userAddress }), let output = outputs.first(where: { $0.recipient != userAddress }) {
+        var isIncoming = false
+
+        if let _ = inputs.first(where: { $0.recipient == userAddress }), let output = outputs.first(where: { $0.recipient != userAddress }) {
             source = userAddress
             destination = output.recipient
             value = output.value
@@ -47,20 +47,22 @@ struct BlockchairTransactionDetailed: Codable {
             source = input.recipient
             value = output.value
         }
-        
-        return PendingTransaction(hash: transaction.hash,
-                                  destination: destination,
-                                  value: Decimal(value) / decimalValue,
-                                  source: source,
-                                  fee: transaction.fee / decimalValue,
-                                  date: transaction.time,
-                                  isIncoming: isIncoming,
-                                  transactionParams: BitcoinTransactionParams(inputs: inputs.map { $0.toBitcoinInput() }))
+
+        return PendingTransaction(
+            hash: transaction.hash,
+            destination: destination,
+            value: Decimal(value) / decimalValue,
+            source: source,
+            fee: transaction.fee / decimalValue,
+            date: transaction.time,
+            isIncoming: isIncoming,
+            transactionParams: BitcoinTransactionParams(inputs: inputs.map { $0.toBitcoinInput() })
+        )
     }
-    
+
     func findUnspentOuputs(for userAddress: String) -> [BitcoinUnspentOutput] {
         let filteredInputs = inputs.filter { $0.recipient == userAddress }
-        
+
         return filteredInputs.map {
             BitcoinUnspentOutput(transactionHash: $0.transactionHash, outputIndex: $0.index, amount: $0.value, outputScript: $0.scriptHex)
         }
@@ -90,7 +92,7 @@ struct BlockchairTxInput: Codable {
     let scriptHex: String
     let spendingSequence: Int
     let recipient: String
-    
+
     func toBitcoinInput() -> BitcoinInput {
         .init(sequence: spendingSequence, address: recipient, outputIndex: index, outputValue: value, prevHash: transactionHash)
     }
@@ -114,7 +116,7 @@ struct BlockchairToken: Codable {
     let decimals: Int
     let balanceApprox: Decimal
     let balance: String
-    
+
     enum CodingKeys: String, CodingKey {
         case address = "token_address"
         case name = "token_name"

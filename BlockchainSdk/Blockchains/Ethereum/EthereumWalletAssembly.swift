@@ -12,7 +12,6 @@ import stellarsdk
 import BitcoinCore
 
 struct EthereumWalletAssembly: WalletManagerAssembly {
-    
     func make(with input: WalletManagerAssemblyInput) throws -> WalletManager {
         guard let chainId = input.blockchain.chainId else {
             throw EthereumWalletAssemblyError.chainIdNotFound

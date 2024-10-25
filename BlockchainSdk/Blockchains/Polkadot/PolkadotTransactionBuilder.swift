@@ -16,7 +16,7 @@ class PolkadotTransactionBuilder {
     private let network: PolkadotNetwork
     private let runtimeVersionProvider: SubstrateRuntimeVersionProvider
     private let codec = SCALE.default
-    
+
     /*
      Polkadot and Kusama indexes are taken from TrustWallet:
      https://github.com/trustwallet/wallet-core/blob/a771f38d3af112db7098730a5b0b9a1a9b65ca86/src/Polkadot/Extrinsic.cpp#L30
@@ -31,7 +31,7 @@ class PolkadotTransactionBuilder {
      https://github.com/paritytech/polkadot/blob/3b68869e14f84b043aa65bd83f9fe44359e4d626/runtime/kusama/src/lib.rs#L1375
      Westend:
      https://github.com/paritytech/polkadot/blob/3b68869e14f84b043aa65bd83f9fe44359e4d626/runtime/westend/src/lib.rs#L982
-     
+
      For other chains use experimentally obtained values, or try running the script in the PolkaParachainMetadataParser folder
      */
     private var balanceTransferCallIndex: Data {
@@ -46,11 +46,11 @@ class PolkadotTransactionBuilder {
             return Data(hexString: "0x0a07")
         }
     }
-    
+
     private let extrinsicFormat: UInt8 = 0x04
     private let signedBit: UInt8 = 0x80
     private let sigTypeEd25519: UInt8 = 0x00
-    
+
     init(
         blockchain: Blockchain,
         walletPublicKey: Data,
@@ -62,7 +62,7 @@ class PolkadotTransactionBuilder {
         self.network = network
         self.runtimeVersionProvider = runtimeVersionProvider
     }
-    
+
     func buildForSign(amount: Amount, destination: String, meta: PolkadotBlockchainMeta) throws -> Data {
         let rawAddress = encodingRawAddress(specVersion: meta.specVersion)
         let runtimeVersion = runtimeVersionProvider.runtimeVersion(for: meta)
@@ -79,7 +79,7 @@ class PolkadotTransactionBuilder {
 
         return message
     }
-    
+
     func buildForSend(amount: Amount, destination: String, meta: PolkadotBlockchainMeta, signature: Data) throws -> Data {
         let rawAddress = encodingRawAddress(specVersion: meta.specVersion)
         let runtimeVersion = runtimeVersionProvider.runtimeVersion(for: meta)
@@ -88,7 +88,7 @@ class PolkadotTransactionBuilder {
         guard let addressBytes = address.bytes(raw: rawAddress) else {
             throw BlockchainSdkError.failedToConvertPublicKey
         }
-        
+
         var transactionData = Data()
         transactionData.append(Data(extrinsicFormat | signedBit))
         transactionData.append(addressBytes)
@@ -100,15 +100,15 @@ class PolkadotTransactionBuilder {
 
         let messageLength = try messageLength(transactionData)
         transactionData = messageLength + transactionData
-        
+
         return transactionData
     }
-    
+
     private func encodeCall(amount: Amount, destination: String, rawAddress: Bool) throws -> Data {
         var call = Data()
-        
+
         call.append(balanceTransferCallIndex)
-        
+
         guard
             let address = PolkadotAddress(string: destination, network: network),
             let addressBytes = address.bytes(raw: rawAddress)
@@ -116,14 +116,14 @@ class PolkadotTransactionBuilder {
             throw BlockchainSdkError.failedToConvertPublicKey
         }
         call.append(addressBytes)
-                        
+
         let decimalValue = amount.value * blockchain.decimalValue
         let intValue = BigUInt((decimalValue.rounded() as NSDecimalNumber).uint64Value)
         call.append(try codec.encode(intValue, .compact))
-        
+
         return call
     }
-    
+
     // Use experimentally obtained values
     private func encodingRawAddress(specVersion: UInt32) -> Bool {
         switch network {
@@ -143,7 +143,7 @@ class PolkadotTransactionBuilder {
 
     private func encodeEraNonceTip(era: PolkadotBlockchainMeta.Era?, nonce: UInt64, tip: UInt64) throws -> Data {
         var data = Data()
-        
+
         if let era = era {
             let encodedEra = encodeEra(era)
             data.append(encodedEra)
@@ -152,30 +152,30 @@ class PolkadotTransactionBuilder {
             // TODO: RPC error is returned: "Transaction has a bad signature".
             data.append(try codec.encode(UInt64(0), .compact))
         }
-        
+
         let nonce = try codec.encode(nonce, .compact)
         data.append(nonce)
 
         let tipData = try codec.encode(BigUInt(tip), .compact)
         data.append(tipData)
-        
+
         return data
     }
-           
+
     private func encodeEra(_ era: PolkadotBlockchainMeta.Era) -> Data {
-        var calPeriod: UInt64 = UInt64(pow(2, ceil(log2(Double(era.period)))))
-        calPeriod = min(max(calPeriod, UInt64(4)), UInt64(1) << 16);
+        var calPeriod = UInt64(pow(2, ceil(log2(Double(era.period)))))
+        calPeriod = min(max(calPeriod, UInt64(4)), UInt64(1) << 16)
 
         let phase = era.blockNumber % calPeriod
         let quantizeFactor = max(calPeriod >> UInt64(12), UInt64(1))
         let quantizedPhase = phase / quantizeFactor * quantizeFactor
-        
+
         let trailingZeros = UInt64(calPeriod.trailingZeroBitCount)
 
-        let encoded = min(15, max(1, trailingZeros - 1)) + (((quantizedPhase / quantizeFactor) << 4))
+        let encoded = min(15, max(1, trailingZeros - 1)) + ((quantizedPhase / quantizeFactor) << 4)
         return Data(UInt8(encoded & 0xff)) + Data(UInt8(encoded >> 8))
     }
-    
+
     private func messageLength(_ message: Data) throws -> Data {
         let length = UInt64(message.count)
         let encoded = try codec.encode(length, .compact)

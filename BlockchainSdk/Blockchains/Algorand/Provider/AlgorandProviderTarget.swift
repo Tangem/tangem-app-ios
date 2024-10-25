@@ -11,17 +11,17 @@ import Moya
 
 struct AlgorandProviderTarget: TargetType {
     // MARK: - Properties
-    
+
     private let node: NodeInfo
     private let targetType: TargetType
-    
+
     // MARK: - Init
-    
+
     init(node: NodeInfo, targetType: TargetType) {
         self.node = node
         self.targetType = targetType
     }
-    
+
     var baseURL: URL {
         node.url
     }
@@ -40,7 +40,7 @@ struct AlgorandProviderTarget: TargetType {
             return "v2/transactions"
         }
     }
-    
+
     var method: Moya.Method {
         switch targetType {
         case .getAccounts, .getTransactionParams, .getPendingTransaction:
@@ -51,7 +51,7 @@ struct AlgorandProviderTarget: TargetType {
             return .get
         }
     }
-    
+
     var task: Moya.Task {
         switch targetType {
         case .getAccounts, .getTransactionParams, .getPendingTransaction:
@@ -62,23 +62,23 @@ struct AlgorandProviderTarget: TargetType {
             return .requestParameters(parameters: (try? params.asDictionary()) ?? [:], encoding: URLEncoding.default)
         }
     }
-    
-    var headers: [String : String]? {
-        var headers: [String : String] = [
-            "Accept": "application/json"
+
+    var headers: [String: String]? {
+        var headers = [
+            "Accept": "application/json",
         ]
-        
-        switch self.targetType {
+
+        switch targetType {
         case .transaction:
             headers["Content-Type"] = "application/x-binary"
         default:
             headers["Content-Type"] = "application/json"
         }
-        
+
         if let headersKeyInfo = node.headers {
             headers[headersKeyInfo.headerName] = headersKeyInfo.headerValue
         }
-        
+
         return headers
     }
 }

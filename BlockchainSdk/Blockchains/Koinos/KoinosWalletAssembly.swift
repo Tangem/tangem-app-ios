@@ -14,7 +14,7 @@ struct KoinosWalletAssembly: WalletManagerAssembly {
         let blockchain = input.blockchain
         let isTestnet = blockchain.isTestnet
         let koinosNetworkParams = KoinosNetworkParams(isTestnet: isTestnet)
-        
+
         return KoinosWalletManager(
             wallet: input.wallet,
             networkService: KoinosNetworkService(

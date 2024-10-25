@@ -67,10 +67,10 @@ extension BitcoinScriptChunk {
             return OpcodeChunk(scriptData: data, range: updatedRange)
         }
     }
-
 }
 
 // MARK: - OpcodeChunk
+
 struct OpcodeChunk: BitcoinScriptChunk {
     var scriptData: Data
     var range: Range<Int>
@@ -86,6 +86,7 @@ struct OpcodeChunk: BitcoinScriptChunk {
 }
 
 // MARK: - DataChunk
+
 struct DataChunk: BitcoinScriptChunk {
     var scriptData: Data
     var range: Range<Int>
@@ -100,7 +101,7 @@ struct DataChunk: BitcoinScriptChunk {
     }
 
     private var data: Data {
-        var loc: Int = 1
+        var loc = 1
         if opCode == OpCode.OP_PUSHDATA1 {
             loc += 1
         } else if opCode == OpCode.OP_PUSHDATA2 {
@@ -109,7 +110,7 @@ struct DataChunk: BitcoinScriptChunk {
             loc += 4
         }
 
-        return scriptData.subdata(in: (range.lowerBound + loc)..<(range.upperBound))
+        return scriptData.subdata(in: (range.lowerBound + loc) ..< (range.upperBound))
     }
 
     var string: String {
@@ -157,9 +158,9 @@ struct DataChunk: BitcoinScriptChunk {
         case OpCode.OP_PUSHDATA1.value:
             return data.count >= OpCode.OP_PUSHDATA1.value // length should not be less than OP_PUSHDATA1
         case OpCode.OP_PUSHDATA2.value:
-            return data.count > (0xff) // length should not fit in one byte
+            return data.count > 0xff // length should not fit in one byte
         case OpCode.OP_PUSHDATA4.value:
-            return data.count > (0xffff) // length should not fit in two bytes
+            return data.count > 0xffff // length should not fit in two bytes
         default:
             return false
         }

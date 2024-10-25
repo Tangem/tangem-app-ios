@@ -11,21 +11,21 @@ import Combine
 
 class ChiaNetworkService: MultiNetworkProvider {
     // MARK: - Protperties
-    
+
     let providers: [ChiaNetworkProvider]
     var currentProviderIndex: Int = 0
-    
+
     private var blockchain: Blockchain
-    
+
     // MARK: - Init
-    
+
     init(providers: [ChiaNetworkProvider], blockchain: Blockchain) {
         self.providers = providers
         self.blockchain = blockchain
     }
-    
+
     // MARK: - Implementation
-    
+
     func getUnspents(puzzleHash: String) -> AnyPublisher<[ChiaCoin], Error> {
         providerPublisher { provider in
             provider
@@ -36,25 +36,25 @@ class ChiaNetworkService: MultiNetworkProvider {
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func send(spendBundle: ChiaSpendBundle) -> AnyPublisher<String, Error> {
         providerPublisher { provider in
             provider
                 .sendTransaction(body: ChiaTransactionBody(spendBundle: spendBundle))
                 .tryMap { response in
-                    guard 
+                    guard
                         response.success,
                         response.status == ChiaSendTransactionResponse.Constants.successStatus
                     else {
                         throw WalletError.failedToSendTx
                     }
-                    
+
                     return ""
                 }
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func getFee(with cost: Int64) -> AnyPublisher<[Fee], Error> {
         providerPublisher { [weak self] provider in
             guard let self else { return .emptyFail }
@@ -63,20 +63,20 @@ class ChiaNetworkService: MultiNetworkProvider {
                 .map { response in
                     let rateLastBlockFee = Decimal(cost) * Decimal(response.feeRateLastBlock) / self.blockchain.decimalValue
                     let currentRateFee = Decimal(cost) * Decimal(response.currentFeeRate) / self.blockchain.decimalValue
-                    
+
                     let baseEstimatedFee = max(rateLastBlockFee, currentRateFee)
-                    
+
                     let feeValues = [
                         baseEstimatedFee * MultiplicatorConstants.lowMultiplicatorFeeRate,
                         baseEstimatedFee * MultiplicatorConstants.mediumMultiplicatorFeeRate,
-                        baseEstimatedFee * MultiplicatorConstants.highMultiplicatorFeeRate
+                        baseEstimatedFee * MultiplicatorConstants.highMultiplicatorFeeRate,
                     ]
-                    
+
                     let estimatedFeeValues = feeValues.map {
                         let amountValue = Amount(with: self.blockchain, value: $0)
                         return Fee(amountValue)
                     }
-                    
+
                     return estimatedFeeValues
                 }
                 .eraseToAnyPublisher()

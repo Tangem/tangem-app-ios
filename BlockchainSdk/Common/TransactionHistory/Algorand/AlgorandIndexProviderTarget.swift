@@ -11,15 +11,16 @@ import Moya
 
 struct AlgorandIndexProviderTarget {
     // MARK: - Properties
+
     private let node: NodeInfo
     private let targetType: TargetType
 
     // MARK: - Init
+
     init(node: NodeInfo, targetType: TargetType) {
         self.node = node
         self.targetType = targetType
     }
-
 }
 
 extension AlgorandIndexProviderTarget {
@@ -53,39 +54,39 @@ extension AlgorandIndexProviderTarget: TargetType {
             return "v2/transactions"
         }
     }
-    
+
     var method: Moya.Method {
         switch targetType {
         case .getTransactions:
             return .get
         }
     }
-    
+
     var task: Moya.Task {
         switch targetType {
         case .getTransactions(let address, let limit, let next):
             let parameters: [String: Any?] = [
                 "address": address,
                 "limit": limit,
-                "next": next
+                "next": next,
             ]
-            
+
             return .requestParameters(
-                parameters: parameters.compactMapValues({$0}),
+                parameters: parameters.compactMapValues { $0 },
                 encoding: URLEncoding.default
             )
         }
     }
-    
-    var headers: [String : String]? {
-        var headers: [String : String] = [
-            "Accept": "application/json"
+
+    var headers: [String: String]? {
+        var headers = [
+            "Accept": "application/json",
         ]
-        
+
         if let headersKeyInfo = node.headers {
             headers[headersKeyInfo.headerName] = headersKeyInfo.headerValue
         }
-        
+
         return headers
     }
 }

@@ -11,7 +11,7 @@ import XCTest
 
 final class MantleTests: XCTestCase {
     private let blockchain = Blockchain.mantle(testnet: false)
-    
+
     func testDecodeEncodedForSend() throws {
         let testCases: [Decimal] = [
             try XCTUnwrap(Decimal(stringValue: "29.618123086712134")),
@@ -22,15 +22,15 @@ final class MantleTests: XCTestCase {
             try XCTUnwrap(Decimal(stringValue: "1.847392874932748")),
             try XCTUnwrap(Decimal(stringValue: "47.832984723984723")),
             try XCTUnwrap(Decimal(stringValue: "0.0000000001234567")),
-            try XCTUnwrap(Decimal(stringValue: "56.392847293847298"))
+            try XCTUnwrap(Decimal(stringValue: "56.392847293847298")),
         ]
-        
+
         try testCases.forEach { decimal in
             let amount = Amount(with: blockchain, type: .coin, value: decimal)
-            
+
             let encodedForSend = try XCTUnwrap(amount.encodedForSend)
             let decodedValue = EthereumUtils.parseEthereumDecimal(encodedForSend, decimalsCount: blockchain.decimalCount)
-            
+
             XCTAssertEqual(decodedValue, decimal)
         }
     }

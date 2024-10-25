@@ -12,14 +12,14 @@ import Combine
 class CosmosNetworkService: MultiNetworkProvider {
     let providers: [CosmosRestProvider]
     var currentProviderIndex: Int = 0
-    
+
     private let cosmosChain: CosmosChain
-    
+
     init(cosmosChain: CosmosChain, providers: [CosmosRestProvider]) {
         self.providers = providers
         self.cosmosChain = cosmosChain
     }
-    
+
     func accountInfo(for address: String, tokens: [Token], transactionHashes: [String]) -> AnyPublisher<CosmosAccountInfo, Error> {
         let cw20Tokens: [Token]
         if cosmosChain.allowCW20Tokens {
@@ -27,32 +27,32 @@ class CosmosNetworkService: MultiNetworkProvider {
         } else {
             cw20Tokens = []
         }
-        
+
         return providerPublisher {
             $0.accounts(address: address)
                 .zip($0.balances(address: address), self.cw20TokenBalances(walletAddress: address, tokens: cw20Tokens), self.confirmedTransactionHashes(transactionHashes, with: $0))
-                .tryMap { [weak self] (accountInfo, balanceInfo, cw20TokenBalances, confirmedTransactionHashes) in
+                .tryMap { [weak self] accountInfo, balanceInfo, cw20TokenBalances, confirmedTransactionHashes in
                     guard
                         let self,
                         let sequenceNumber = UInt64(accountInfo?.account.sequence ?? "0")
                     else {
                         throw WalletError.failedToParseNetworkResponse()
                     }
-                    
+
                     let accountNumber: UInt64?
                     if let account = accountInfo?.account {
                         accountNumber = UInt64(account.accountNumber)
                     } else {
                         accountNumber = nil
                     }
-                    
-                    let rawAmount = try self.parseBalance(
+
+                    let rawAmount = try parseBalance(
                         balanceInfo,
-                        denomination: self.cosmosChain.smallestDenomination,
-                        decimalValue: self.cosmosChain.blockchain.decimalValue
+                        denomination: cosmosChain.smallestDenomination,
+                        decimalValue: cosmosChain.blockchain.decimalValue
                     )
-                    let amount = Amount(with: self.cosmosChain.blockchain, value: rawAmount)
-                    
+                    let amount = Amount(with: cosmosChain.blockchain, value: rawAmount)
+
                     let tokenAmounts: [Token: Decimal]
                     if cosmosChain.allowCW20Tokens {
                         tokenAmounts = cw20TokenBalances
@@ -61,7 +61,7 @@ class CosmosNetworkService: MultiNetworkProvider {
                             guard let denomination = self.cosmosChain.tokenDenomination(contractAddress: $0.contractAddress, tokenCurrencySymbol: $0.symbol) else {
                                 return nil
                             }
-                            
+
                             let balance = try self.parseBalance(balanceInfo, denomination: denomination, decimalValue: $0.decimalValue)
                             return ($0, balance)
                         }, uniquingKeysWith: {
@@ -69,7 +69,7 @@ class CosmosNetworkService: MultiNetworkProvider {
                             pair1
                         })
                     }
-                    
+
                     return CosmosAccountInfo(
                         accountNumber: accountNumber,
                         sequenceNumber: sequenceNumber,
@@ -81,7 +81,7 @@ class CosmosNetworkService: MultiNetworkProvider {
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func estimateGas(for transaction: Data) -> AnyPublisher<UInt64, Error> {
         providerPublisher {
             $0.simulate(data: transaction)
@@ -90,13 +90,13 @@ class CosmosNetworkService: MultiNetworkProvider {
                     guard let gasUsed = UInt64($0) else {
                         throw WalletError.failedToGetFee
                     }
-                    
+
                     return gasUsed
                 }
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func send(transaction: Data) -> AnyPublisher<String, Error> {
         providerPublisher {
             $0.txs(data: transaction)
@@ -105,13 +105,13 @@ class CosmosNetworkService: MultiNetworkProvider {
                     guard txResponse.code == 0 else {
                         throw WalletError.failedToSendTx
                     }
-                    
+
                     return txResponse.txhash
                 }
                 .eraseToAnyPublisher()
         }
     }
-    
+
     private func cw20TokenBalances(walletAddress: String, tokens: [Token]) -> AnyPublisher<[Token: Decimal], Error> {
         tokens
             .publisher
@@ -120,8 +120,8 @@ class CosmosNetworkService: MultiNetworkProvider {
                 guard let self = self else {
                     return .anyFail(error: WalletError.empty)
                 }
-              
-                return self.cw20TokenBalance(walletAddress: walletAddress, token: token)
+
+                return cw20TokenBalance(walletAddress: walletAddress, token: token)
             }
             .collect()
             .map {
@@ -129,29 +129,29 @@ class CosmosNetworkService: MultiNetworkProvider {
             }
             .eraseToAnyPublisher()
     }
-    
+
     private func cw20TokenBalance(walletAddress: String, token: Token) -> AnyPublisher<(Token, Decimal), Error> {
         let request = CosmosCW20BalanceRequest(address: walletAddress)
         guard let query = try? JSONEncoder().encode(request) else {
             return .anyFail(error: WalletError.failedToParseNetworkResponse())
         }
-        
+
         return providerPublisher {
             $0.querySmartContract(contractAddress: token.contractAddress, query: query)
-                .tryMap { 
+                .tryMap {
                     (result: CosmosCW20QueryResult<CosmosCW20QueryBalanceData>) -> (Token, Decimal) in
-                    
+
                     guard let balanceInSmallestDenomination = Decimal(string: result.data.balance) else {
                         throw WalletError.failedToParseNetworkResponse()
                     }
-                    
+
                     let balance = balanceInSmallestDenomination / token.decimalValue
                     return (token, balance)
                 }
                 .eraseToAnyPublisher()
         }
     }
-    
+
     private func confirmedTransactionHashes(_ hashes: [String], with provider: CosmosRestProvider) -> AnyPublisher<[String], Error> {
         hashes
             .publisher
@@ -160,7 +160,7 @@ class CosmosNetworkService: MultiNetworkProvider {
                 guard let self = self else {
                     return .anyFail(error: WalletError.empty)
                 }
-                return self.transactionConfirmed(hash, with: provider)
+                return transactionConfirmed(hash, with: provider)
             }
             .collect()
             .map {
@@ -168,7 +168,7 @@ class CosmosNetworkService: MultiNetworkProvider {
             }
             .eraseToAnyPublisher()
     }
-    
+
     private func transactionConfirmed(_ hash: String, with provider: CosmosRestProvider) -> AnyPublisher<String?, Error> {
         provider.transactionStatus(hash: hash)
             .map(\.txResponse)
@@ -188,16 +188,16 @@ class CosmosNetworkService: MultiNetworkProvider {
             }
             .eraseToAnyPublisher()
     }
-    
+
     private func parseBalance(_ balanceInfo: CosmosBalanceResponse, denomination: String, decimalValue: Decimal) throws -> Decimal {
-        guard let balanceAmountString = balanceInfo.balances.first(where: { $0.denom == denomination } )?.amount else {
+        guard let balanceAmountString = balanceInfo.balances.first(where: { $0.denom == denomination })?.amount else {
             return .zero
         }
-        
+
         guard let balanceInSmallestDenomination = Int(balanceAmountString) else {
             throw WalletError.failedToParseNetworkResponse()
         }
-        
+
         return Decimal(balanceInSmallestDenomination) / decimalValue
     }
 }

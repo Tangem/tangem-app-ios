@@ -13,7 +13,7 @@ import struct TangemSdk.Secp256k1Key
 class BinanceTransactionBuilder {
     var binanceWallet: BinanceWallet
     private var message: Message?
-    
+
     init(walletPublicKey: Data, isTestnet: Bool) throws {
         let compressedKey = try Secp256k1Key(with: walletPublicKey).compress()
         binanceWallet = BinanceWallet(publicKey: compressedKey)
@@ -25,24 +25,24 @@ class BinanceTransactionBuilder {
             binanceWallet.endpoint = BinanceChain.Endpoint.mainnet.rawValue
         }
     }
-    
+
     func buildForSign(transaction: Transaction) -> Message? {
         let amount = transaction.amount.value
         let targetAddress = transaction.destinationAddress
-        guard let symbol = transaction.amount.type == .coin ?  transaction.amount.currencySymbol : transaction.contractAddress else {
+        guard let symbol = transaction.amount.type == .coin ? transaction.amount.currencySymbol : transaction.contractAddress else {
             return nil
         }
-        
+
         let memo = (transaction.params as? BinanceTransactionParams)?.memo ?? ""
         message = Message.transfer(symbol: symbol, amount: Double("\(amount)")!, to: targetAddress, memo: memo, wallet: binanceWallet)
         return message!
     }
-    
+
     func buildForSend(signature: Data, hash: Data) -> Message? {
         guard let message = message else {
             return nil
         }
-        
+
         message.add(signature: signature)
         return message
     }

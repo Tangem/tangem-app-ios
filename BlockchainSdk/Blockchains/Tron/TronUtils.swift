@@ -14,7 +14,7 @@ struct TronUtils {
         guard let hexValue = constantResult.first else {
             throw WalletError.failedToParseNetworkResponse()
         }
-        
+
         // Need use 32 byte for obtain right value
         let substringHexSizeValue = String(hexValue.prefix(64))
         let bigIntValue = BigUInt(Data(hex: substringHexSizeValue))

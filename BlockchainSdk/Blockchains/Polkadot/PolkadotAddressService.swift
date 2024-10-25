@@ -11,7 +11,7 @@ import Sodium
 
 struct PolkadotAddressService {
     private let network: PolkadotNetwork
-    
+
     init(network: PolkadotNetwork) {
         self.network = network
     }
@@ -21,7 +21,7 @@ struct PolkadotAddressService {
 
 @available(iOS 13.0, *)
 extension PolkadotAddressService: AddressProvider {
-    public func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
+    func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
         try publicKey.blockchainKey.validateAsEdKey()
         let address = PolkadotAddress(publicKey: publicKey.blockchainKey, network: network).string
 

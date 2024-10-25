@@ -13,23 +13,22 @@ import BigInt
 
 /// Abstract layer for multi provide TON blockchain
 class TONNetworkService: MultiNetworkProvider {
-    
     // MARK: - Protperties
-    
+
     let providers: [TONProvider]
     var currentProviderIndex: Int = 0
-    
+
     private var blockchain: Blockchain
-    
+
     // MARK: - Init
-    
+
     init(providers: [TONProvider], blockchain: Blockchain) {
         self.providers = providers
         self.blockchain = blockchain
     }
-    
+
     // MARK: - Implementation
-    
+
     func getInfo(address: String, tokens: [Token]) -> AnyPublisher<TONWalletInfo, Error> {
         Publishers.Zip(
             getWalletInfo(address: address),
@@ -39,7 +38,7 @@ class TONNetworkService: MultiNetworkProvider {
             guard let decimalBalance = Decimal(string: walletInfo.balance) else {
                 throw WalletError.failedToParseNetworkResponse()
             }
-            
+
             return TONWalletInfo(
                 balance: decimalBalance / self.blockchain.decimalValue,
                 sequenceNumber: walletInfo.seqno ?? 0,
@@ -49,7 +48,7 @@ class TONNetworkService: MultiNetworkProvider {
         }
         .eraseToAnyPublisher()
     }
-    
+
     func getFee(address: String, message: String) -> AnyPublisher<[Fee], Error> {
         providerPublisher { provider in
             provider
@@ -58,17 +57,17 @@ class TONNetworkService: MultiNetworkProvider {
                     guard let self = self else {
                         throw WalletError.empty
                     }
-                    
+
                     /// Make rounded digits by correct for max amount Fee
-                    let fee = fee.sourceFees.totalFee / self.blockchain.decimalValue
+                    let fee = fee.sourceFees.totalFee / blockchain.decimalValue
                     let roundedValue = fee.rounded(scale: 2, roundingMode: .up)
-                    let feeAmount = Amount(with: self.blockchain, value: roundedValue)
+                    let feeAmount = Amount(with: blockchain, value: roundedValue)
                     return [Fee(feeAmount)]
                 }
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func getJettonWalletAddress(for ownerAddress: String, token: Token) -> AnyPublisher<String, Error> {
         providerPublisher { provider in
             provider.getJettonWalletAddress(
@@ -78,13 +77,13 @@ class TONNetworkService: MultiNetworkProvider {
             .tryMap { response in
                 let reader = TupleReader(items: response.stack)
                 let address = try reader.readAddress()
-                
+
                 return address.toString(bounceable: false)
             }
             .eraseToAnyPublisher()
         }
     }
-    
+
     // MARK: - Private Implementation
 
     func send(message: String) -> AnyPublisher<String, Error> {
@@ -95,14 +94,14 @@ class TONNetworkService: MultiNetworkProvider {
                 .eraseToAnyPublisher()
         }
     }
-    
+
     private func getWalletInfo(address: String) -> AnyPublisher<TONModels.Info, Error> {
         providerPublisher { provider in
             provider
                 .getInfo(address: address)
         }
     }
-    
+
     private func getTokensInfo(
         address: String,
         tokens: [Token]
@@ -118,7 +117,7 @@ class TONNetworkService: MultiNetworkProvider {
             .map { $0.reduce(into: [Token: TONWalletInfo.TokenInfo]()) { $0[$1.0] = $1.1 }}
             .eraseToAnyPublisher()
     }
-    
+
     private func getTokenInfo(address: String, token: Token) -> AnyPublisher<TONWalletInfo.TokenInfo, Error> {
         providerPublisher { provider in
             provider.getJettonWalletAddress(
@@ -130,7 +129,7 @@ class TONNetworkService: MultiNetworkProvider {
                     items: response.stack
                 )
                 let address = try reader.readAddress()
-                
+
                 return address.toString(bounceable: false)
             }
             .flatMap { jettonWalletAddress in
@@ -139,7 +138,7 @@ class TONNetworkService: MultiNetworkProvider {
                         let reader = TupleReader(
                             items: response.stack
                         )
-                        
+
                         let bigAmount = (try? reader.readBigNumber()) ?? 0
 
                         guard let decimalAmount = bigAmount.decimal else {

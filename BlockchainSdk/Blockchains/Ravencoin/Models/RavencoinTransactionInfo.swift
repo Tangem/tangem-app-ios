@@ -22,26 +22,26 @@ struct RavencoinTransactionInfo: Decodable {
 }
 
 extension RavencoinTransactionInfo {
-    struct Vin : Decodable {
+    struct Vin: Decodable {
         let txid: String
         let vout: Int
         let scriptSig: ScriptPubKey?
         let addr: String
         let valueSat: UInt
         let value: Decimal
-        
+
         struct ScriptPubKey: Decodable {
             let hex: String?
             let asm: String?
         }
     }
-    
-    struct Vout : Decodable {
+
+    struct Vout: Decodable {
         let value: String
         let n: Int?
         let scriptPubKey: ScriptPubKey
         let spentTxId: String?
-        
+
         struct ScriptPubKey: Decodable {
             let hex: String?
             let asm: String?

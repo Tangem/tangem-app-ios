@@ -14,7 +14,6 @@ import SolanaSwift
 
 @available(iOS 13.0, *)
 public class WalletManagerFactory {
-
     private let config: BlockchainSdkConfig
     private let dependencies: BlockchainSdkDependencies
     private let apiList: APIList
@@ -71,19 +70,18 @@ private extension WalletManagerFactory {
 
 // MARK: - Stub Implementation
 
-extension WalletManagerFactory {
-
+public extension WalletManagerFactory {
     /// Use this method only Test and Debug [Addresses, Fees, etc.]
     /// - Parameters:
     ///   - blockhain Card native blockchain will be used
     ///   - walletPublicKey: Wallet public key or dummy input
     ///   - addresses: Dummy input addresses
     /// - Returns: WalletManager model
-    public func makeStubWalletManager(
+    func makeStubWalletManager(
         blockchain: Blockchain,
         dummyPublicKey: Data,
         dummyAddress: String
-    ) throws -> WalletManager {let publicKey = Wallet.PublicKey(seedKey: dummyPublicKey, derivationType: .none)
+    ) throws -> WalletManager { let publicKey = Wallet.PublicKey(seedKey: dummyPublicKey, derivationType: .none)
         let address: Address
 
         if dummyAddress.isEmpty {
@@ -103,5 +101,4 @@ extension WalletManagerFactory {
         )
         return try blockchain.assembly.make(with: input)
     }
-
 }

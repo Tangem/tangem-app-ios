@@ -9,13 +9,13 @@
 import Foundation
 import SolanaSwift
 
-public struct SolanaAddressService {}
+struct SolanaAddressService {}
 
 // MARK: - AddressProvider
 
 @available(iOS 13.0, *)
 extension SolanaAddressService: AddressProvider {
-    public func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
+    func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
         try publicKey.blockchainKey.validateAsEdKey()
         let address = Base58.encode(publicKey.blockchainKey.bytes)
 
@@ -27,7 +27,7 @@ extension SolanaAddressService: AddressProvider {
 
 @available(iOS 13.0, *)
 extension SolanaAddressService: AddressValidator {
-    public func validate(_ address: String) -> Bool {
+    func validate(_ address: String) -> Bool {
         guard let publicKey = PublicKey(string: address) else {
             return false
         }

@@ -16,7 +16,7 @@ class WalletManagerFactoryProvider {
 
     lazy var factory: WalletManagerFactory = .init(
         config: keysManager.blockchainConfig,
-        dependencies: .init(
+        dependencies: BlockchainSdkDependencies(
             accountCreator: BlockchainAccountCreator(),
             dataStorage: UserDefaultsBlockchainDataStorage(suiteName: AppEnvironment.current.blockchainDataStorageSuiteName)
         ),

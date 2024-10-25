@@ -13,7 +13,7 @@ enum KoinosProtocol {
         let transaction: Transaction
         let containingBlocks: [String]
     }
-    
+
     struct Transaction: Equatable, Codable {
         let header: TransactionHeader
         let id: String
@@ -81,7 +81,7 @@ enum KoinosProtocol {
         let data: String
         let impacted: [String]
     }
-    
+
     struct ResourceLimitData: Decodable {
         let diskStorageLimit: String
         let diskStorageCost: String

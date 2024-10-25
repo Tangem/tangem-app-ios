@@ -15,9 +15,7 @@ final class HederaConsensusNetworkProvider {
     private let isTestnet: Bool
     private let callbackQueue: DispatchQueue
 
-    private lazy var client: Client = {
-        return isTestnet ? Client.forTestnet() : Client.forMainnet()
-    }()
+    private lazy var client: Client = isTestnet ? Client.forTestnet() : Client.forMainnet()
 
     init(isTestnet: Bool, callbackQueue: DispatchQueue = .main) {
         self.isTestnet = isTestnet

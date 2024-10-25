@@ -3,8 +3,8 @@
 ## In case your config entries all use a common input/output parent directory, you can specify those here.
 ##   Every input/output paths in the rest of the config will then be expressed relative to these.
 ##   Those two top-level keys are optional and default to "." (the directory of the config file).
-input_dir: Tangem/Resources
-output_dir: Tangem/Resources/Generated
+#input_dir: Tangem/Resources
+#output_dir: Tangem/Resources/Generated
 
 ## Generate constants for your Assets Catalogs, including constants for images, colors, ARKit resources, etc.
 ##   This example also shows how to provide additional parameters to your template to customize the output.
@@ -12,25 +12,33 @@ output_dir: Tangem/Resources/Generated
 ##   - To know which params are supported for a template, use `swiftgen template doc xcassets swift5` to open the template documentation on GitHub.
 xcassets:
   inputs:
-    - Assets/Tokens.xcassets
-    - Assets/Assets.xcassets
-    - Assets/Colors.xcassets
+    - Tangem/Resources/Assets/Tokens.xcassets
+    - Tangem/Resources/Assets/Assets.xcassets
+    - Tangem/Resources/Assets/Colors.xcassets
   outputs:
     - templatePath: Utilites/swiftui-xcassets.stencil
       params:
         removeFolderName: true
         forceProvidesNamespaces: true
-        publicAccess: true
-      output: XCAssets+Generated.swift
+        publicAccess: false
+      output: Tangem/Resources/Generated/XCAssets+Generated.swift
 
 ## Generate constants for your localized strings.
 ##   Be sure that SwiftGen only parses ONE locale (typically Base.lproj, or en.lproj, or whichever your development region is); otherwise it will generate the same keys multiple times.
 ##   SwiftGen will parse all `.strings` files found in that folder. 
+## https://github.com/SwiftGen/SwiftGen/issues/649#issuecomment-510254800
 strings:
-  inputs:
-    - Localizations/en.lproj
-  outputs:
-    - templatePath: Utilites/swiftui-strings-template.stencil
-      output: Localizable+Generated.swift
+  # The main app
+  - inputs: Tangem/Resources/Localizations/en.lproj
+    outputs:
+      templatePath: Utilites/swiftui-strings-template.stencil
+      output: Tangem/Resources/Generated/Localizable+Generated.swift
       params:
-        publicAccess: true
+        publicAccess: false
+  # BSDK
+  - inputs: BlockchainSdk/Resources/Localizations/en.lproj
+    outputs:
+      templatePath: Utilites/swiftui-strings-template.stencil
+      output: BlockchainSdk/Resources/Generated/Localizable+Generated.swift
+      params:
+        publicAccess: false

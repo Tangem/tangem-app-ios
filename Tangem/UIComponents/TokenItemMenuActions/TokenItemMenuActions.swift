@@ -42,7 +42,7 @@ public extension TokenItemMenuActions {
         case send
         case exchange
 
-        public var title: String {
+        var title: String {
             switch self {
             case .copyAddress:
                 return Localization.commonCopyAddress
@@ -59,7 +59,7 @@ public extension TokenItemMenuActions {
             }
         }
 
-        public var icon: ImageType {
+        var icon: ImageType {
             switch self {
             case .copyAddress:
                 return Assets.TokenItemContextMenu.menuCopy

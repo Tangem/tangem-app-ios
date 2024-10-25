@@ -16,6 +16,6 @@ public enum FeePaidCurrency {
     case token(value: Token)
     /// Fees are paid in the same currency in which the transaction was made.
     case sameCurrency
-    
+
     case feeResource(type: FeeResourceType)
 }

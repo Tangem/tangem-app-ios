@@ -30,7 +30,7 @@ import Foundation
 // 3. the top stack item is greater than or equal to 500000000 while the transaction's nLockTime field is less than 500000000, or vice versa; or
 // 4. the input's nSequence field is equal to 0xffffffff.
 // The precise semantics are described in BIP 0065.
-public struct OpCheckLockTimeVerify: OpCodeProtocol {
-    public var value: UInt8 { return 0xb1 }
-    public var name: String { return "OP_CHECKLOCKTIMEVERIFY " }
+struct OpCheckLockTimeVerify: OpCodeProtocol {
+    var value: UInt8 { return 0xb1 }
+    var name: String { return "OP_CHECKLOCKTIMEVERIFY " }
 }

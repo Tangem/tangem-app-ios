@@ -11,7 +11,7 @@ import TangemSdk
 
 public struct CardanoUtil {
     static let extendedPublicKeyCount = 128
-    
+
     public init() {}
 
     /// Taken from here:
@@ -34,12 +34,12 @@ public struct CardanoUtil {
     ///   - publicKey: First `ExtendedPublicKey` with some derivation. For default `m/1852'/1815'/0'/0/0`
     ///   - extendedPublicKey: Second `ExtendedPublicKey` with the changed fourth and fifth node in the first derivation path. For default `m/1852'/1815'/0'/2/0`
     /// - Returns: The computed `PublicKey` is 128 bytes in size.
-    public func extendPublicKey(_ publicKey: ExtendedPublicKey, with extendedPublicKey: ExtendedPublicKey) -> Data {
+    func extendPublicKey(_ publicKey: ExtendedPublicKey, with extendedPublicKey: ExtendedPublicKey) -> Data {
         publicKey.publicKey + publicKey.chainCode + extendedPublicKey.publicKey + extendedPublicKey.chainCode
     }
 }
 
-public extension CardanoUtil {
+extension CardanoUtil {
     enum Errors: Error {
         case derivationPathIsShort
     }

@@ -17,7 +17,7 @@ struct KoinosTarget: TargetType {
         case getResourceLimits
         case submitTransaction(transaction: KoinosProtocol.Transaction)
         case getTransactions(transactionIDs: [String])
-        
+
         var method: String {
             switch self {
             case .getKoinBalance:
@@ -35,11 +35,11 @@ struct KoinosTarget: TargetType {
             }
         }
     }
-    
+
     let node: NodeInfo
     let type: KoinosTargetType
     let koinosNetworkParams: KoinosNetworkParams
-    
+
     init(node: NodeInfo, koinosNetworkParams: KoinosNetworkParams, _ type: KoinosTargetType) {
         self.node = node
         self.koinosNetworkParams = koinosNetworkParams
@@ -53,14 +53,14 @@ struct KoinosTarget: TargetType {
     var path: String {
         ""
     }
-    
+
     var method: Moya.Method {
         .post
     }
-    
+
     var task: Task {
         switch type {
-        case let .getKoinBalance(args):
+        case .getKoinBalance(let args):
             return .requestJSONRPC(
                 id: Constants.jsonRPCMethodId,
                 method: type.method,
@@ -71,36 +71,36 @@ struct KoinosTarget: TargetType {
                 ),
                 encoder: JSONEncoder.withSnakeCaseStrategy
             )
-            
-        case let .getRc(address):
+
+        case .getRc(let address):
             return .requestJSONRPC(
                 id: Constants.jsonRPCMethodId,
                 method: type.method,
                 params: KoinosMethod.GetAccountRC.RequestParams(account: address)
             )
-            
-        case let .getNonce(address):
+
+        case .getNonce(let address):
             return .requestJSONRPC(
                 id: Constants.jsonRPCMethodId,
                 method: type.method,
                 params: KoinosMethod.GetAccountNonce.RequestParams(account: address)
             )
-            
+
         case .getResourceLimits:
             return .requestJSONRPC(
                 id: Constants.jsonRPCMethodId,
                 method: type.method,
                 params: nil
             )
-            
-        case let .submitTransaction(transaction):
+
+        case .submitTransaction(let transaction):
             return .requestJSONRPC(
                 id: Constants.jsonRPCMethodId,
                 method: type.method,
                 params: KoinosMethod.SubmitTransaction.RequestParams(transaction: transaction, broadcast: true)
             )
-            
-        case let .getTransactions(transactionIDs):
+
+        case .getTransactions(let transactionIDs):
             return .requestJSONRPC(
                 id: Constants.jsonRPCMethodId,
                 method: type.method,
@@ -108,8 +108,8 @@ struct KoinosTarget: TargetType {
             )
         }
     }
-    
-    var headers: [String : String]?
+
+    var headers: [String: String]?
 }
 
 private extension KoinosTarget {

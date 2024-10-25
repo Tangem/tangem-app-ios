@@ -17,12 +17,12 @@ class TronJsonRpcProvider: HostProvider {
 
     private let node: NodeInfo
     private let provider: NetworkProvider<TronTarget>
-    
+
     init(node: NodeInfo, configuration: NetworkProviderConfiguration) {
         self.node = node
         provider = NetworkProvider<TronTarget>(configuration: configuration)
     }
-    
+
     func getChainParameters() -> AnyPublisher<TronGetChainParametersResponse, Error> {
         requestPublisher(for: .getChainParameters)
     }
@@ -30,27 +30,27 @@ class TronJsonRpcProvider: HostProvider {
     func getAccount(for address: String) -> AnyPublisher<TronGetAccountResponse, Error> {
         requestPublisher(for: .getAccount(address: address))
     }
-    
+
     func getAccountResource(for address: String) -> AnyPublisher<TronGetAccountResourceResponse, Error> {
         requestPublisher(for: .getAccountResource(address: address))
     }
-    
+
     func getNowBlock() -> AnyPublisher<TronBlock, Error> {
         requestPublisher(for: .getNowBlock)
     }
-    
+
     func broadcastHex(_ data: Data) -> AnyPublisher<TronBroadcastResponse, Error> {
         requestPublisher(for: .broadcastHex(data: data))
     }
-    
+
     func tokenBalance(address: String, contractAddress: String, parameter: String) -> AnyPublisher<TronTriggerSmartContractResponse, Error> {
         requestPublisher(for: .tokenBalance(address: address, contractAddress: contractAddress, parameter: parameter))
     }
-    
+
     func contractEnergyUsage(sourceAddress: String, contractAddress: String, parameter: String) -> AnyPublisher<TronContractEnergyUsageResponse, Error> {
         requestPublisher(for: .contractEnergyUsage(sourceAddress: sourceAddress, contractAddress: contractAddress, parameter: parameter))
     }
-    
+
     func transactionInfo(id: String) -> AnyPublisher<TronTransactionInfoResponse, Error> {
         requestPublisher(for: .getTransactionInfoById(transactionID: id))
     }
@@ -64,7 +64,7 @@ class TronJsonRpcProvider: HostProvider {
             .filterSuccessfulStatusAndRedirectCodes()
             .map(T.self)
             .mapError { moyaError in
-                if case let .objectMapping(_, response) = moyaError {
+                if case .objectMapping(_, let response) = moyaError {
                     return WalletError.failedToParseNetworkResponse(response)
                 }
                 return moyaError

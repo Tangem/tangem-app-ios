@@ -10,7 +10,7 @@ import Foundation
 
 struct RavencoinExternalLinkProvider {
     private let isTestnet: Bool
-    
+
     init(isTestnet: Bool) {
         self.isTestnet = isTestnet
     }
@@ -22,9 +22,9 @@ extension RavencoinExternalLinkProvider: ExternalLinkProvider {
     }
 
     private var explorerBaseURL: String {
-        return isTestnet 
-        ? "https://rvnt.cryptoscope.io/"
-        : "https://blockbook.ravencoin.org/"
+        return isTestnet
+            ? "https://rvnt.cryptoscope.io/"
+            : "https://blockbook.ravencoin.org/"
     }
 
     func url(transaction hash: String) -> URL? {

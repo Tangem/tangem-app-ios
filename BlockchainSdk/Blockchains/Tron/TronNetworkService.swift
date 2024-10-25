@@ -13,18 +13,18 @@ import BigInt
 class TronNetworkService: MultiNetworkProvider {
     let providers: [TronJsonRpcProvider]
     var currentProviderIndex: Int = 0
-    
+
     let isTestnet: Bool
-    
+
     private var blockchain: Blockchain {
         Blockchain.tron(testnet: isTestnet)
     }
-    
+
     init(isTestnet: Bool, providers: [TronJsonRpcProvider]) {
         self.isTestnet = isTestnet
         self.providers = providers
     }
-    
+
     func chainParameters() -> AnyPublisher<TronChainParameters, Error> {
         providerPublisher {
             $0.getChainParameters()
@@ -39,7 +39,7 @@ class TronNetworkService: MultiNetworkProvider {
                     else {
                         throw WalletError.failedToParseNetworkResponse()
                     }
-                    
+
                     return TronChainParameters(
                         sunPerEnergyUnit: energyFee,
                         dynamicEnergyMaxFactor: dynamicEnergyMaxFactor,
@@ -49,14 +49,14 @@ class TronNetworkService: MultiNetworkProvider {
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func accountInfo(for address: String, tokens: [Token], transactionIDs: [String]) -> AnyPublisher<TronAccountInfo, Error> {
         Publishers.Zip3(
             getAccount(for: address),
             tokenBalances(address: address, tokens: tokens),
             confirmedTransactionIDs(ids: transactionIDs)
         )
-        .map { [blockchain] (accountInfo, tokenBalances, confirmedTransactionIDs) in
+        .map { [blockchain] accountInfo, tokenBalances, confirmedTransactionIDs in
             let balance = Decimal(accountInfo.balance ?? 0) / blockchain.decimalValue
             return TronAccountInfo(
                 balance: balance,
@@ -66,28 +66,27 @@ class TronNetworkService: MultiNetworkProvider {
         }
         .eraseToAnyPublisher()
     }
-    
+
     func getNowBlock() -> AnyPublisher<TronBlock, Error> {
         providerPublisher {
             $0.getNowBlock()
         }
     }
-    
+
     func broadcastHex(_ data: Data) -> AnyPublisher<TronBroadcastResponse, Error> {
         providerPublisher {
             $0.broadcastHex(data)
         }
     }
-    
+
     func getAccountResource(for address: String) -> AnyPublisher<TronGetAccountResourceResponse, Error> {
         providerPublisher {
             $0.getAccountResource(for: address)
                 .mapError { error in
-                    if case let WalletError.failedToParseNetworkResponse(response) = error,
+                    if case WalletError.failedToParseNetworkResponse(let response) = error,
                        let data = response?.data,
                        let string = String(data: data, encoding: .utf8),
-                       string.trimmingCharacters(in: .whitespacesAndNewlines) == "{}"
-                    {
+                       string.trimmingCharacters(in: .whitespacesAndNewlines) == "{}" {
                         return WalletError.accountNotActivated
                     }
                     return error
@@ -95,7 +94,7 @@ class TronNetworkService: MultiNetworkProvider {
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func accountExists(address: String) -> AnyPublisher<Bool, Error> {
         providerPublisher {
             $0.getAccount(for: address)
@@ -111,7 +110,7 @@ class TronNetworkService: MultiNetworkProvider {
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func contractEnergyUsage(sourceAddress: String, contractAddress: String, contractEnergyUsageData: String) -> AnyPublisher<Int, Error> {
         providerPublisher {
             $0.contractEnergyUsage(sourceAddress: sourceAddress, contractAddress: contractAddress, parameter: contractEnergyUsageData)
@@ -135,7 +134,7 @@ class TronNetworkService: MultiNetworkProvider {
     }
 
     // MARK: - Private Implementation
-    
+
     private func getAccount(for address: String) -> AnyPublisher<TronGetAccountResponse, Error> {
         providerPublisher {
             $0.getAccount(for: address)
@@ -179,7 +178,7 @@ class TronNetworkService: MultiNetworkProvider {
         }
         .eraseToAnyPublisher()
     }
-    
+
     private func tokenBalance(address: String, token: Token, encodedAddressData: String) -> AnyPublisher<(Token, Decimal), Never> {
         providerPublisher {
             $0.tokenBalance(address: address, contractAddress: token.contractAddress, parameter: encodedAddressData)
@@ -195,7 +194,7 @@ class TronNetworkService: MultiNetworkProvider {
         .replaceError(with: (token, .zero))
         .eraseToAnyPublisher()
     }
-    
+
     private func confirmedTransactionIDs(ids transactionIDs: [String]) -> AnyPublisher<[String], Error> {
         transactionIDs
             .publisher
@@ -204,7 +203,7 @@ class TronNetworkService: MultiNetworkProvider {
                 guard let self = self else {
                     return .anyFail(error: WalletError.empty)
                 }
-                return self.transactionConfirmed(id: transactionID)
+                return transactionConfirmed(id: transactionID)
             }
             .collect()
             .map {
@@ -216,7 +215,7 @@ class TronNetworkService: MultiNetworkProvider {
             }
             .eraseToAnyPublisher()
     }
-    
+
     private func transactionConfirmed(id: String) -> AnyPublisher<String?, Error> {
         providerPublisher {
             $0.transactionInfo(id: id)

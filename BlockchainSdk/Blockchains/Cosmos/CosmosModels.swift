@@ -38,9 +38,9 @@ extension CosmosBalanceResponse {
 
 struct CosmosCW20BalanceRequest: Encodable {
     private let balance: CosmosCW20BalanceAddress
-    
+
     init(address: String) {
-        self.balance = CosmosCW20BalanceAddress(address: address)
+        balance = CosmosCW20BalanceAddress(address: address)
     }
 }
 

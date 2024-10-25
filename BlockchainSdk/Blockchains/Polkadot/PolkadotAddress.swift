@@ -22,7 +22,7 @@ struct PolkadotAddress {
 
     init(publicKey: Data, network: PolkadotNetwork) {
         let accountData = ss58.accountData(from: publicKey)
-        self.string = ss58.address(from: accountData, type: network.addressPrefix)
+        string = ss58.address(from: accountData, type: network.addressPrefix)
     }
 
     // Raw representation (without the prefix) was used in the older protocol versions

@@ -14,14 +14,14 @@ import stellarsdk
 class TezosWalletManager: BaseManager, WalletManager {
     var txBuilder: TezosTransactionBuilder!
     var networkService: TezosNetworkService!
-    
-    var currentHost: String { networkService.host  }
-    
-    override func update(completion: @escaping (Result<Void, Error>)-> Void) {
+
+    var currentHost: String { networkService.host }
+
+    override func update(completion: @escaping (Result<Void, Error>) -> Void) {
         cancellable = networkService
             .getInfo(address: wallet.address)
-            .sink(receiveCompletion: { [weak self]  completionSubscription in
-                if case let .failure(error) = completionSubscription {
+            .sink(receiveCompletion: { [weak self] completionSubscription in
+                if case .failure(let error) = completionSubscription {
                     self?.wallet.clearAmounts()
                     completion(.failure(error))
                 }
@@ -30,15 +30,15 @@ class TezosWalletManager: BaseManager, WalletManager {
                 completion(.success(()))
             })
     }
-    
+
     private func updateWallet(with response: TezosAddress) {
         txBuilder.counter = response.counter
         txBuilder.isPublicKeyRevealed = response.isPublicKeyRevealed
-        
+
         if response.balance != wallet.amounts[.coin]?.value {
             wallet.clearPendingTransaction()
         }
-        
+
         wallet.add(coinValue: response.balance)
     }
 }
@@ -47,57 +47,59 @@ extension TezosWalletManager: TransactionSender {
     var allowsFeeSelection: Bool {
         false
     }
-    
+
     func send(_ transaction: Transaction, signer: TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError> {
         guard let contents = txBuilder.buildContents(transaction: transaction) else {
             return .sendTxFail(error: WalletError.failedToBuildTx)
         }
-        
+
         return networkService
             .getHeader()
-            .tryMap {[weak self] header -> (TezosHeader, String) in
+            .tryMap { [weak self] header -> (TezosHeader, String) in
                 guard let self = self else { throw WalletError.empty }
-                
-                let forged = try self.txBuilder
+
+                let forged = try txBuilder
                     .forgeContents(headerHash: header.hash, contents: contents)
-                
+
                 return (header, forged)
             }
-            .flatMap {[weak self] (header, forgedContents) -> AnyPublisher<(header: TezosHeader, forgedContents: String, signature: Data), Error> in
+            .flatMap { [weak self] header, forgedContents -> AnyPublisher<(header: TezosHeader, forgedContents: String, signature: Data), Error> in
                 guard let self = self else { return .emptyFail }
-                
-                guard let txToSign: Data = self.txBuilder.buildToSign(forgedContents: forgedContents) else {
+
+                guard let txToSign: Data = txBuilder.buildToSign(forgedContents: forgedContents) else {
                     return Fail(error: WalletError.failedToBuildTx).eraseToAnyPublisher()
                 }
-                
-                return signer.sign(hash: txToSign,
-                                   walletPublicKey: self.wallet.publicKey)
-                    .map {signature -> (TezosHeader, String, Data) in
-                        return (header, forgedContents, signature)
-                    }
-                    .eraseToAnyPublisher()
+
+                return signer.sign(
+                    hash: txToSign,
+                    walletPublicKey: wallet.publicKey
+                )
+                .map { signature -> (TezosHeader, String, Data) in
+                    return (header, forgedContents, signature)
+                }
+                .eraseToAnyPublisher()
             }
-            .flatMap {[weak self] (header, forgedContents, signature) -> AnyPublisher<(String, Data), Error> in
+            .flatMap { [weak self] header, forgedContents, signature -> AnyPublisher<(String, Data), Error> in
                 guard let self = self else { return .emptyFail }
-                
-                return self.networkService
-                    .checkTransaction(protocol: header.protocol, hash: header.hash, contents: contents, signature: self.encodeSignature(signature))
+
+                return networkService
+                    .checkTransaction(protocol: header.protocol, hash: header.hash, contents: contents, signature: encodeSignature(signature))
                     .map { _ in (forgedContents, signature) }
                     .eraseToAnyPublisher()
             }
-            .flatMap { [weak self] (forgedContents, signature) -> AnyPublisher<TransactionSendResult, Error> in
+            .flatMap { [weak self] forgedContents, signature -> AnyPublisher<TransactionSendResult, Error> in
                 guard let self else { return .emptyFail }
-                
-                let rawTransaction = self.txBuilder.buildToSend(signature: signature, forgedContents: forgedContents)
-                
-                return self.networkService
+
+                let rawTransaction = txBuilder.buildToSend(signature: signature, forgedContents: forgedContents)
+
+                return networkService
                     .sendTransaction(rawTransaction)
-                    .tryMap{[weak self] response in
+                    .tryMap { [weak self] response in
                         guard let self = self else { throw WalletError.empty }
-                        
+
                         let mapper = PendingTransactionRecordMapper()
                         let record = mapper.mapToPendingTransactionRecord(transaction: transaction, hash: rawTransaction)
-                        self.wallet.addPendingTransaction(record)
+                        wallet.addPendingTransaction(record)
                         return TransactionSendResult(hash: rawTransaction)
                     }
                     .mapSendError(tx: rawTransaction)
@@ -106,35 +108,35 @@ extension TezosWalletManager: TransactionSender {
             .eraseSendError()
             .eraseToAnyPublisher()
     }
-    
+
     func estimatedFee(amount: Amount) -> AnyPublisher<[Fee], Error> {
         // We assume that account is not created therefore we're adding allocation fee
         let fixedFee = TezosFee.transaction.rawValue + TezosFee.allocation.rawValue
         let amountFee = Amount(with: wallet.blockchain, value: fixedFee)
-        
+
         return .justWithError(output: [Fee(amountFee)])
     }
-    
+
     func getFee(amount: Amount, destination: String) -> AnyPublisher<[Fee], Error> {
         networkService.getInfo(address: destination)
-            .tryMap {[weak self] destinationInfo -> [Fee] in
+            .tryMap { [weak self] destinationInfo -> [Fee] in
                 guard let self = self else { throw WalletError.empty }
 
                 var fee = TezosFee.transaction.rawValue
-                if self.txBuilder.isPublicKeyRevealed == false {
+                if txBuilder.isPublicKeyRevealed == false {
                     fee += TezosFee.reveal.rawValue
                 }
-                
+
                 if destinationInfo.balance == 0 {
                     fee += TezosFee.allocation.rawValue
                 }
-                
-                let amountFee = Amount(with: self.wallet.blockchain, value: fee)
+
+                let amountFee = Amount(with: wallet.blockchain, value: fee)
                 return [Fee(amountFee)]
             }
             .eraseToAnyPublisher()
     }
-    
+
     private func encodeSignature(_ signature: Data) -> String {
         let edsigPrefix = TezosPrefix.signaturePrefix(for: wallet.blockchain.curve)
         let prefixedSignature = edsigPrefix + signature
@@ -144,30 +146,32 @@ extension TezosWalletManager: TransactionSender {
     }
 }
 
-extension TezosWalletManager: ThenProcessable { }
+extension TezosWalletManager: ThenProcessable {}
 
 extension TezosWalletManager: WithdrawalNotificationProvider {
     private var withdrawalMinimumAmount: Decimal {
         Decimal(string: "0.000001")!
     }
-    
+
     @available(*, deprecated, message: "Use WithdrawalNotificationProvider.withdrawalSuggestion")
     func validateWithdrawalWarning(amount: Amount, fee: Amount) -> WithdrawalWarning? {
         guard let walletAmount = wallet.amounts[.coin] else {
             return nil
         }
-        
+
         let minimumAmount = withdrawalMinimumAmount
-        
+
         if amount + fee == walletAmount {
-            return WithdrawalWarning(warningMessage: String(format: "xtz_withdrawal_message_warning".localized, minimumAmount.description),
-                                     reduceMessage: String(format: "xtz_withdrawal_message_reduce".localized, minimumAmount.description),
-                                     ignoreMessage: "xtz_withdrawal_message_ignore".localized,
-                                     suggestedReduceAmount: Amount(with: walletAmount, value: minimumAmount))
+            return WithdrawalWarning(
+                warningMessage: Localization.xtzWithdrawalMessageWarning(minimumAmount.description),
+                reduceMessage: Localization.xtzWithdrawalMessageReduce(minimumAmount.description),
+                ignoreMessage: Localization.xtzWithdrawalMessageIgnore,
+                suggestedReduceAmount: Amount(with: walletAmount, value: minimumAmount)
+            )
         }
         return nil
     }
-    
+
     func withdrawalNotification(amount: Amount, fee: Fee) -> WithdrawalNotification? {
         guard
             let walletAmount = wallet.amounts[.coin],
@@ -175,7 +179,7 @@ extension TezosWalletManager: WithdrawalNotificationProvider {
         else {
             return nil
         }
-    
+
         return .feeIsTooHigh(reduceAmountBy: Amount(with: walletAmount, value: withdrawalMinimumAmount))
     }
 }

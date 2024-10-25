@@ -14,7 +14,7 @@ class AdaliteNetworkProvider: CardanoNetworkProvider {
     private let url: URL
     private let provider: NetworkProvider<AdaliteTarget>
     private let cardanoResponseMapper: CardanoResponseMapper
-    
+
     var host: String {
         url.hostOrUnknown
     }
@@ -28,7 +28,7 @@ class AdaliteNetworkProvider: CardanoNetworkProvider {
         provider = NetworkProvider<AdaliteTarget>(configuration: configuration)
         self.cardanoResponseMapper = cardanoResponseMapper
     }
-    
+
     func send(transaction: Data) -> AnyPublisher<String, Error> {
         provider
             .requestPublisher(request(for: .send(base64EncodedTx: transaction.base64EncodedString())))
@@ -42,7 +42,7 @@ class AdaliteNetworkProvider: CardanoNetworkProvider {
             }
             .eraseToAnyPublisher()
     }
-    
+
     func getInfo(addresses: [String], tokens: [Token]) -> AnyPublisher<CardanoAddressResponse, Error> {
         Publishers
             .Zip(getUnspents(addresses: addresses), getBalance(addresses: addresses))
@@ -50,9 +50,9 @@ class AdaliteNetworkProvider: CardanoNetworkProvider {
                 guard let self = self else {
                     throw WalletError.empty
                 }
-                
+
                 let txHashes = responses.flatMap { $0.transactions }
-                return self.cardanoResponseMapper.mapToCardanoAddressResponse(
+                return cardanoResponseMapper.mapToCardanoAddressResponse(
                     tokens: tokens,
                     unspentOutputs: unspents,
                     recentTransactionsHashes: txHashes
@@ -61,7 +61,7 @@ class AdaliteNetworkProvider: CardanoNetworkProvider {
             .retry(2)
             .eraseToAnyPublisher()
     }
-    
+
     private func getUnspents(addresses: [String]) -> AnyPublisher<[CardanoUnspentOutput], Error> {
         provider
             .requestPublisher(request(for: .unspents(addresses: addresses)))
@@ -76,12 +76,12 @@ class AdaliteNetworkProvider: CardanoNetworkProvider {
             }
             .eraseToAnyPublisher()
     }
-    
+
     private func getBalance(addresses: [String]) -> AnyPublisher<[AdaliteBalanceResponse], Error> {
         .multiAddressPublisher(addresses: addresses) { [weak self] in
             guard let self = self else { return .emptyFail }
-            
-            return self.provider
+
+            return provider
                 .requestPublisher(request(for: .address(address: $0)))
                 .filterSuccessfulStatusAndRedirectCodes()
                 .map(AdaliteBaseResponseDTO<String, AdaliteBalanceResponseDTO>.self)
@@ -108,24 +108,26 @@ private extension AdaliteNetworkProvider {
         let transactions = balanceResponse.caTxList.map { $0.ctbId }
         return AdaliteBalanceResponse(transactions: transactions)
     }
-    
+
     func mapToCardanoUnspentOutput(_ output: AdaliteUnspentOutputResponseDTO) -> CardanoUnspentOutput? {
         guard let amount = UInt64(output.cuCoins.getCoin) else {
             return nil
         }
-        
+
         let assets: [CardanoUnspentOutput.Asset] = output.cuCoins.getTokens.compactMap { token in
             guard let amount = UInt64(token.quantity) else {
                 return nil
             }
-            
+
             return CardanoUnspentOutput.Asset(policyID: token.policyId, assetNameHex: token.assetName, amount: amount)
         }
-        
-        return CardanoUnspentOutput(address: output.cuAddress,
-                                    amount: amount,
-                                    outputIndex: output.cuOutIndex,
-                                    transactionHash: output.cuId,
-                                    assets: assets)
+
+        return CardanoUnspentOutput(
+            address: output.cuAddress,
+            amount: amount,
+            outputIndex: output.cuOutIndex,
+            transactionHash: output.cuId,
+            assets: assets
+        )
     }
 }
