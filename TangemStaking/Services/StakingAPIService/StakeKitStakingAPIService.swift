@@ -117,12 +117,12 @@ private extension StakeKitStakingAPIService {
     }
 }
 
-private enum StakeKitHTTPError: Error {
+public enum StakeKitHTTPError: Error {
     case badStatusCode(response: String?, code: Int)
 }
 
 extension StakeKitHTTPError: LocalizedError {
-    var errorDescription: String? {
+    public var errorDescription: String? {
         switch self {
         case .badStatusCode(let response, let code): response ?? "HTTP error \(code)"
         }
