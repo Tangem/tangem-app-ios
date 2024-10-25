@@ -20,7 +20,7 @@ class OnrampAmountViewModel: ObservableObject {
     // MARK: - Dependencies
 
     private let tokenItem: TokenItem
-    private let repository: OnrampRepository
+    private let onrampInput: OnrampInput
     private let interactor: SendAmountInteractor
     private let prefixSuffixOptionsFactory: SendDecimalNumberTextField.PrefixSuffixOptionsFactory = .init()
 
@@ -28,11 +28,11 @@ class OnrampAmountViewModel: ObservableObject {
 
     init(
         tokenItem: TokenItem,
-        repository: OnrampRepository,
+        onrampInput: OnrampInput,
         interactor: SendAmountInteractor
     ) {
         self.interactor = interactor
-        self.repository = repository
+        self.onrampInput = onrampInput
         self.tokenItem = tokenItem
 
         decimalNumberTextFieldViewModel = .init(maximumFractionDigits: 2)
@@ -45,18 +45,16 @@ class OnrampAmountViewModel: ObservableObject {
 
 private extension OnrampAmountViewModel {
     func bind() {
-        repository
-            .preferenceDidChangedPublisher
+        onrampInput
+            .currencyPublisher
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
-            .sink { viewModel, _ in
-                viewModel.repository.savedCountry.map { country in
-                    viewModel.fiatIconURL = country.currency.identity.image
-                    viewModel.decimalNumberTextFieldViewModel.update(maximumFractionDigits: country.currency.precision)
-                    viewModel.currentFieldOptions = viewModel.prefixSuffixOptionsFactory.makeFiatOptions(
-                        fiatCurrencyCode: country.currency.identity.code
-                    )
-                }
+            .sink { viewModel, currency in
+                viewModel.fiatIconURL = currency.identity.image
+                viewModel.decimalNumberTextFieldViewModel.update(maximumFractionDigits: currency.precision)
+                viewModel.currentFieldOptions = viewModel.prefixSuffixOptionsFactory.makeFiatOptions(
+                    fiatCurrencyCode: currency.identity.code
+                )
             }
             .store(in: &bag)
 

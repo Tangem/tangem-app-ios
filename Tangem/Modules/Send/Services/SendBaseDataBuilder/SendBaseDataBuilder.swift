@@ -21,7 +21,7 @@ protocol StakingBaseDataBuilder: SendGenericBaseDataBuilder {
 }
 
 protocol OnrampBaseDataBuilder: SendGenericBaseDataBuilder {
-    func makeDataForOnrampCountryBottomSheet() -> OnrampRepository
+    func makeDataForOnrampCountryBottomSheet() -> (preferenceRepository: OnrampRepository, dataRepository: OnrampDataRepository)
 }
 
 protocol SendGenericBaseDataBuilder {

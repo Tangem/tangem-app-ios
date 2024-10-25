@@ -58,7 +58,7 @@ struct SendAmountStepBuilder {
 
     func makeOnrampAmountViewModel(
         io: IO,
-        repository: OnrampRepository,
+        onrampInput: OnrampInput,
         sendAmountValidator: SendAmountValidator
     ) -> OnrampAmountViewModel {
         let interactor = makeSendAmountInteractor(
@@ -68,7 +68,7 @@ struct SendAmountStepBuilder {
             type: .fiat
         )
 
-        return OnrampAmountViewModel(tokenItem: walletModel.tokenItem, repository: repository, interactor: interactor)
+        return OnrampAmountViewModel(tokenItem: walletModel.tokenItem, onrampInput: onrampInput, interactor: interactor)
     }
 }
 

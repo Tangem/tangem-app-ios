@@ -49,10 +49,12 @@ public struct TangemExpressFactory {
         analyticsLogger: ExpressAnalyticsLogger? = nil
     ) -> OnrampManager {
         let logger: Logger = logger ?? CommonLogger()
+        let dataRepository = CommonOnrampDataRepository(provider: expressAPIProvider)
 
         return CommonOnrampManager(
-            provider: expressAPIProvider,
+            apiProvider: expressAPIProvider,
             onrampRepository: onrampRepository,
+            dataRepository: dataRepository,
             logger: logger
         )
     }

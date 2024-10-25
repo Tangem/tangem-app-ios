@@ -331,8 +331,12 @@ struct SendDependenciesBuilder {
 
     // MARK: - Onramp
 
-    func makeOnrampModel(onrampManager: some OnrampManager) -> OnrampModel {
-        OnrampModel(onrampManager: onrampManager)
+    func makeOnrampModel(onrampManager: some OnrampManager, onrampRepository: OnrampRepository) -> OnrampModel {
+        OnrampModel(
+            walletModel: walletModel,
+            onrampManager: onrampManager,
+            onrampRepository: onrampRepository
+        )
     }
 
     func makeOnrampManager(userWalletId: String, onrampRepository: OnrampRepository) -> OnrampManager {
@@ -350,8 +354,14 @@ struct SendDependenciesBuilder {
         OnrampAmountValidator()
     }
 
-    func makeOnrampBaseDataBuilder(input: OnrampBaseDataBuilderInput, onrampRepository: OnrampRepository) -> OnrampBaseDataBuilder {
-        CommonOnrampBaseDataBuilder(input: input, walletModel: walletModel, onrampRepository: onrampRepository)
+    func makeOnrampBaseDataBuilder(
+        onrampRepository: OnrampRepository,
+        onrampDataRepository: OnrampDataRepository
+    ) -> OnrampBaseDataBuilder {
+        CommonOnrampBaseDataBuilder(
+            onrampRepository: onrampRepository,
+            onrampDataRepository: onrampDataRepository
+        )
     }
 
     func makeOnrampRepository() -> OnrampRepository {

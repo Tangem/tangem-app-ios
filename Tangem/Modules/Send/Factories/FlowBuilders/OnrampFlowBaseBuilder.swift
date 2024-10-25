@@ -27,11 +27,11 @@ struct OnrampFlowBaseBuilder {
             logger: AppLog.shared
         )
 
-        let onrampModel = builder.makeOnrampModel(onrampManager: onrampManager)
+        let onrampModel = builder.makeOnrampModel(onrampManager: onrampManager, onrampRepository: onrampRepository)
 
         let onrampAmountViewModel = sendAmountStepBuilder.makeOnrampAmountViewModel(
             io: (input: onrampModel, output: onrampModel),
-            repository: onrampRepository,
+            onrampInput: onrampModel,
             sendAmountValidator: builder.makeOnrampAmountValidator()
         )
 
@@ -60,7 +60,7 @@ struct OnrampFlowBaseBuilder {
             coordinator: router,
             // If user already has saved country in the repository then the bottom sheet will not show
             // And we can show keyboard safely
-            shouldActivateKeyboard: onrampRepository.savedCountry != nil
+            shouldActivateKeyboard: onrampRepository.preferenceCountry != nil
         )
 
         onramp.step.setup(router: stepsManager)
