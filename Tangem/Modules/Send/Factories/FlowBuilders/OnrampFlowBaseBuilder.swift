@@ -47,11 +47,13 @@ struct OnrampFlowBaseBuilder {
 
         let stepsManager = CommonOnrampStepsManager(
             onrampStep: onramp.step,
-            finishStep: finish
+            finishStep: finish,
+            coordinator: router
         )
 
-        let interactor = CommonSendBaseInteractor(input: onrampModel, output: onrampModel)
+        onramp.step.setup(router: stepsManager)
 
+        let interactor = CommonSendBaseInteractor(input: onrampModel, output: onrampModel)
         let viewModel = SendViewModel(
             interactor: interactor,
             stepsManager: stepsManager,

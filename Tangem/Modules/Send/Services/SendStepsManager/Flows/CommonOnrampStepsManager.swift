@@ -12,16 +12,19 @@ import Combine
 class CommonOnrampStepsManager {
     private let onrampStep: OnrampStep
     private let finishStep: SendFinishStep
+    private let coordinator: OnrampRoutable
 
     private var stack: [SendStep]
     private weak var output: SendStepsManagerOutput?
 
     init(
         onrampStep: OnrampStep,
-        finishStep: SendFinishStep
+        finishStep: SendFinishStep,
+        coordinator: OnrampRoutable
     ) {
         self.onrampStep = onrampStep
         self.finishStep = finishStep
+        self.coordinator = coordinator
 
         stack = [onrampStep]
     }
@@ -73,5 +76,13 @@ extension CommonOnrampStepsManager: SendStepsManager {
 
     func performContinue() {
         assertionFailure("There's not continue action in this flow")
+    }
+}
+
+// MARK: - OnrampSummaryRoutable
+
+extension CommonOnrampStepsManager: OnrampSummaryRoutable {
+    func summaryStepRequestEditProvider() {
+        coordinator.openOnrampProviders()
     }
 }

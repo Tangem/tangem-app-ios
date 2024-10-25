@@ -15,6 +15,8 @@ class OnrampViewModel: ObservableObject, Identifiable {
 
     private let interactor: OnrampInteractor
 
+    weak var router: OnrampSummaryRoutable?
+
     init(
         onrampAmountViewModel: OnrampAmountViewModel,
         interactor: OnrampInteractor
@@ -30,13 +32,15 @@ class OnrampViewModel: ObservableObject, Identifiable {
 
 private extension OnrampViewModel {
     func bind() {
-        // TODO: Lisen interactor to update view
+        // TODO: Listen interactor to update view
         // Temp mock
         paymentState = .loading
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            self.paymentState = .loaded(
-                data: .init(iconURL: nil, paymentMethodName: "Card", providerName: "1Inch", badge: .bestRate) {}
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+            self?.paymentState = .loaded(
+                data: .init(iconURL: nil, paymentMethodName: "Card", providerName: "1Inch", badge: .bestRate) {
+                    self?.router?.summaryStepRequestEditProvider()
+                }
             )
         }
     }

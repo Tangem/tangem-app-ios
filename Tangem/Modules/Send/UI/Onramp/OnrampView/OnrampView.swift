@@ -35,7 +35,7 @@ struct OnrampView: View {
                 OnrampProvidersCompactView(data: data)
             }
         }
-        .innerContentPadding(16)
+        .innerContentPadding(14)
         .backgroundColor(Colors.Background.action)
         .animation(.default, value: viewModel.paymentState)
     }
