@@ -9,20 +9,23 @@
 import Foundation
 
 public struct WalletConnectURLParser {
-    func parse(uriString: String) -> WalletConnectRequestURI? {
-        if let wcURI = WalletConnectV2URI(string: uriString) {
-            return .v2(wcURI)
+    func parse(uriString: String) throws -> WalletConnectRequestURI {
+        let separatedURI = uriString.components(separatedBy: "@")
+
+        // Parse wc version, u can see wc uri signature "wc:\(topic)@\(version)?\(queryString)"
+        if separatedURI.last?.first == "1" {
+            throw WalletConnectV2Error.unsupportedWCVersion
         }
 
-        return nil
+        return .v2(try WalletConnectV2URI(uriString: uriString))
     }
 
-    func parse(url: URL) -> WalletConnectRequestURI? {
+    func parse(url: URL) throws -> WalletConnectRequestURI? {
         guard let uri = extractURI(from: url) else {
             return nil
         }
 
-        return parse(uriString: uri)
+        return try parse(uriString: uri)
     }
 
     private func extractURI(from url: URL) -> String? {
@@ -37,8 +40,8 @@ public struct WalletConnectURLParser {
 }
 
 extension WalletConnectURLParser: IncomingActionURLParser {
-    public func parse(_ url: URL) -> IncomingAction? {
-        if let uri = parse(url: url) {
+    public func parse(_ url: URL) throws -> IncomingAction? {
+        if let uri = try parse(url: url) {
             return .walletConnect(uri)
         }
 
