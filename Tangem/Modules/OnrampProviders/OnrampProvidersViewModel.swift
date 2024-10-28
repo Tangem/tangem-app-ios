@@ -34,8 +34,8 @@ private extension OnrampProvidersViewModel {
     // TEMP MOCK
     func setupView() {
         payment = .init(
-            iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/OKX_512.png")!,
             name: "Card",
+            iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/OKX_512.png")!,
             action: {}
         )
 
