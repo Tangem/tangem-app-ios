@@ -41,13 +41,13 @@ struct OnrampProvidersCompactView: View {
     private var titleView: some View {
         VStack(alignment: .leading, spacing: 2) {
             HStack(spacing: 4) {
-                Text("Pay with")
+                Text(Localization.onrampPayWith)
                     .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
                 Text(data.paymentMethodName)
                     .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
             }
 
-            Text("Via \(data.providerName)")
+            Text("\(Localization.onrampVia) \(data.providerName)")
                 .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
         }
     }

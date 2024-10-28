@@ -46,7 +46,7 @@ struct OnrampProvidersPaymentView: View {
 
     private var titleView: some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text("Pay with")
+            Text(Localization.onrampPayWith)
                 .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
 
             Text(data.name)
