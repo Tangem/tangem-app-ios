@@ -16,10 +16,14 @@ struct OnrampProvidersView: View {
     }
 
     var body: some View {
-        VStack(spacing: .zero) {
+        VStack(spacing: 22) {
             headerView
 
             GroupedScrollView(spacing: 0) {
+                paymentSection
+
+                FixedSpacer(height: 22)
+
                 providersSection
             }
         }
@@ -35,6 +39,14 @@ struct OnrampProvidersView: View {
         .padding(.horizontal, 16)
     }
 
+    @ViewBuilder
+    private var paymentSection: some View {
+        if let data = viewModel.payment {
+            OnrampProvidersPaymentView(data: data)
+        }
+    }
+
+    @ViewBuilder
     private var providersSection: some View {
         ForEach(viewModel.providers) {
             OnrampProviderRowView(data: $0)

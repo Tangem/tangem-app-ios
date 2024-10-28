@@ -2654,6 +2654,7 @@
 		EFBB77B02CCBE720002D4A10 /* OnrampProviderRowViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBB77AF2CCBE720002D4A10 /* OnrampProviderRowViewData.swift */; };
 		EFBB77B22CCBE925002D4A10 /* OnrampSummaryRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBB77B12CCBE924002D4A10 /* OnrampSummaryRoutable.swift */; };
 		EFBB77B72CCC02C8002D4A10 /* OnrampProvidersPaymentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBB77B62CCC02C8002D4A10 /* OnrampProvidersPaymentView.swift */; };
+		EFBB77B92CCF99B6002D4A10 /* OnrampProvidersPaymentViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBB77B82CCF99B6002D4A10 /* OnrampProvidersPaymentViewData.swift */; };
 		EFBC5C732C00A74100B662E0 /* YieldInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBC5C6D2C00A74100B662E0 /* YieldInfo.swift */; };
 		EFBC5C742C00A74100B662E0 /* StakingWallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBC5C6E2C00A74100B662E0 /* StakingWallet.swift */; };
 		EFBC5C752C00A74100B662E0 /* StakingAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBC5C702C00A74100B662E0 /* StakingAPIService.swift */; };
@@ -5641,6 +5642,7 @@
 		EFBB77AF2CCBE720002D4A10 /* OnrampProviderRowViewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProviderRowViewData.swift; sourceTree = "<group>"; };
 		EFBB77B12CCBE924002D4A10 /* OnrampSummaryRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampSummaryRoutable.swift; sourceTree = "<group>"; };
 		EFBB77B62CCC02C8002D4A10 /* OnrampProvidersPaymentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersPaymentView.swift; sourceTree = "<group>"; };
+		EFBB77B82CCF99B6002D4A10 /* OnrampProvidersPaymentViewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersPaymentViewData.swift; sourceTree = "<group>"; };
 		EFBC5C6D2C00A74100B662E0 /* YieldInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YieldInfo.swift; sourceTree = "<group>"; };
 		EFBC5C6E2C00A74100B662E0 /* StakingWallet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StakingWallet.swift; sourceTree = "<group>"; };
 		EFBC5C702C00A74100B662E0 /* StakingAPIService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StakingAPIService.swift; sourceTree = "<group>"; };
@@ -14220,6 +14222,7 @@
 			isa = PBXGroup;
 			children = (
 				EFBB77B62CCC02C8002D4A10 /* OnrampProvidersPaymentView.swift */,
+				EFBB77B82CCF99B6002D4A10 /* OnrampProvidersPaymentViewData.swift */,
 			);
 			path = OnrampProvidersPaymentView;
 			sourceTree = "<group>";
@@ -15689,6 +15692,7 @@
 				0A713CF02CAA76530042FC27 /* CommonRestakingStepsManager.swift in Sources */,
 				0AC9EFF92CAE9B2C005F868F /* CommonStakingSingleActionStepsManager.swift in Sources */,
 				DA559C4E2B02622600F59584 /* SendAmountInputMock.swift in Sources */,
+				EFBB77B92CCF99B6002D4A10 /* OnrampProvidersPaymentViewData.swift in Sources */,
 				EFD39C982A6A916C0055D215 /* EnvironmentSetupCoordinatorView.swift in Sources */,
 				5D6784E425EBC94B00149995 /* Blockchain+.swift in Sources */,
 				5DD95B8C24FA959C00E6B9D0 /* VerticalAlignment+.swift in Sources */,

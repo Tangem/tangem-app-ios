@@ -27,26 +27,28 @@ struct OnrampProviderRowView: View {
 
                 bottomLineView
             }
+            .lineLimit(1)
         }
         .padding(.vertical, 16)
         .padding(.horizontal, 14)
-        .background(Colors.Background.primary)
-        .cornerRadiusContinuous(14)
-        .background {
-            if data.isSelected {
+        .overlay { overlay }
+        .contentShape(Rectangle())
+    }
+
+    @ViewBuilder
+    private var overlay: some View {
+        if data.isSelected {
+            Color.clear.overlay {
                 RoundedRectangle(cornerRadius: 14)
                     .stroke(Colors.Icon.accent, lineWidth: 1)
             }
-        }
-        .padding(.all, 1)
-        .background {
-            if data.isSelected {
+            .padding(1)
+            .overlay {
                 RoundedRectangle(cornerRadius: 14)
                     .stroke(Colors.Icon.accent.opacity(0.15), lineWidth: 2.5)
             }
+            .padding(2.5)
         }
-        .padding(.all, 2.5)
-        .contentShape(Rectangle())
     }
 
     private var iconView: some View {
@@ -92,16 +94,47 @@ struct OnrampProviderRowView: View {
 }
 
 #Preview {
-    OnrampProviderRowView(
-        data: OnrampProviderRowViewData(
-            id: "1inch",
-            name: "1Inch",
-            iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/1INCH512.png"),
-            formattedAmount: "0,00453 BTC",
-            badge: .bestRate,
-            isSelected: true,
-            action: {}
-        )
-    )
+    LazyVStack {
+        ForEach([
+            OnrampProviderRowViewData(
+                id: "1inch",
+                name: "1Inch",
+                iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/1INCH512.png"),
+                formattedAmount: "0,00453 BTC",
+                badge: .bestRate,
+                isSelected: true,
+                action: {}
+            ),
+            OnrampProviderRowViewData(
+                id: "changenow",
+                name: "Changenow",
+                iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/NOW512.png"),
+                formattedAmount: "0,00450 BTC",
+                badge: .percent("-0.03%", signType: .negative),
+                isSelected: false,
+                action: {}
+            ),
+        ]) {
+            OnrampProviderRowView(data: $0)
+        }
+
+        ZStack {
+            Color.clear
+                .cornerRadius(14)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 14)
+                        .stroke(Colors.Icon.accent, lineWidth: 1)
+                }
+                .padding(1)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 14)
+                        .stroke(Colors.Icon.accent.opacity(0.15), lineWidth: 2.5)
+                }
+                .padding(2.5)
+        }
+        .frame(height: 69)
+        .frame(maxWidth: .infinity)
+        .border(.red)
+    }
     .padding()
 }

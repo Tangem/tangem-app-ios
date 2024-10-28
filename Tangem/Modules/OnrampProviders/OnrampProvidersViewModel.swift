@@ -13,6 +13,7 @@ import TangemExpress
 final class OnrampProvidersViewModel: ObservableObject {
     // MARK: - ViewState
 
+    @Published var payment: OnrampProvidersPaymentViewData?
     @Published var selectedProviderId: String? = "1inch"
     @Published var providers: [OnrampProviderRowViewData] = []
 
@@ -31,6 +32,12 @@ final class OnrampProvidersViewModel: ObservableObject {
 
 private extension OnrampProvidersViewModel {
     func setupView() {
+        payment = .init(
+            iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/OKX_512.png")!,
+            name: "Card",
+            action: {}
+        )
+
         providers = [
             OnrampProviderRowViewData(
                 id: "1inch",
