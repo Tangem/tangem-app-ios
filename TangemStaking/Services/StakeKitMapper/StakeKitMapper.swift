@@ -64,6 +64,7 @@ struct StakeKitMapper {
         case .voteLocked: .voteLocked
         case .unlockLocked: .unlockLocked
         case .restake: .restake
+        case .claimUnstaked: .claimUnstaked
         }
     }
 
@@ -208,6 +209,7 @@ struct StakeKitMapper {
             case .voteLocked, .revote: .init(type: .voteLocked, passthrough: action.passthrough)
             case .unlockLocked: .init(type: .unlockLocked, passthrough: action.passthrough)
             case .restake: .init(type: .restake, passthrough: action.passthrough)
+            case .claimUnstaked: .init(type: .claimUnstaked, passthrough: action.passthrough)
             default: throw StakeKitMapperError.noData("PendingAction.type \(action.type) doesn't supported")
             }
         }

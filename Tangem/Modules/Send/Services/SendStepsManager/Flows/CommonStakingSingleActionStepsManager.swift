@@ -65,8 +65,10 @@ extension CommonStakingSingleActionStepsManager: SendStepsManager {
         case .stake:
             assertionFailure("Doesn't support in UnstakingFlow")
             return .unstake
-        case .pending(.restake(let passthrough)):
+        case .pending(.restake):
             return .restake
+        case .pending(.claimUnstaked):
+            return .claimUnstaked
         }
     }
 
