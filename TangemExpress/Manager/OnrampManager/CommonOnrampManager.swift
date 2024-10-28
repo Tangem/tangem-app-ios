@@ -32,9 +32,7 @@ extension CommonOnrampManager: OnrampManager {
             return country
         }
 
-        try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
-        let country: OnrampCountry = .random() ? .rus : .usa
-
+        let country: OnrampCountry = try await provider.onrampCountryByIP()
         onrampRepository.updatePreference(country: country)
         return country
     }
@@ -60,37 +58,4 @@ extension CommonOnrampManager: OnrampManager {
         // Load data from API
         throw OnrampManagerError.notImplement
     }
-}
-
-// TEMP MOCK
-
-extension OnrampCountry {
-    static let usa = OnrampCountry(identity: .usa, currency: .init(identity: .usd, precision: 2), onrampAvailable: true)
-    static let rus = OnrampCountry(identity: .rus, currency: .init(identity: .rub, precision: 2), onrampAvailable: false)
-}
-
-extension OnrampIdentity {
-    static let usa = OnrampIdentity(
-        name: "USA",
-        code: "US",
-        image: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/currencies/medium/usd.png")!
-    )
-
-    static let usd = OnrampIdentity(
-        name: "US Dollar",
-        code: "USD",
-        image: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/currencies/medium/usd.png")!
-    )
-
-    static let rus = OnrampIdentity(
-        name: "Russia",
-        code: "RU",
-        image: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/currencies/medium/rub.png")!
-    )
-
-    static let rub = OnrampIdentity(
-        name: "Ruble",
-        code: "RUB",
-        image: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/currencies/medium/rub.png")!
-    )
 }

@@ -258,9 +258,9 @@ private extension SendViewModel {
 
         do {
             switch transaction {
-            case .transfer(let bSDKTransaction):
+            case .transfer(let transaction):
                 let builder = try dataBuilder.sendBuilder()
-                let (emailDataCollector, recipient) = builder.makeMailData(transaction: bSDKTransaction, error: error)
+                let (emailDataCollector, recipient) = builder.makeMailData(transaction: transaction, error: error)
                 coordinator?.openMail(with: emailDataCollector, recipient: recipient)
             case .staking(let stakingTransactionAction):
                 let builder = try dataBuilder.stakingBuilder()

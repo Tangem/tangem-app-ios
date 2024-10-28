@@ -16,7 +16,6 @@ class CommonOnrampRepository {
     init(storage: OnrampStorage) {
         self.storage = storage
 
-        storage.save(preference: .init())
         preference = .init(storage.preference() ?? .init())
     }
 }
