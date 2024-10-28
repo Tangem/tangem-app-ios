@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct OnrampProviderRowViewData {
+struct OnrampProviderRowViewData: Identifiable {
     let id: String
     let name: String
     let iconURL: URL?
@@ -26,7 +26,9 @@ extension OnrampProviderRowViewData {
     }
 }
 
-extension OnrampProviderRowViewData: Identifiable, Hashable {
+// MARK: - Hashable
+
+extension OnrampProviderRowViewData: Hashable {
     static func == (lhs: OnrampProviderRowViewData, rhs: OnrampProviderRowViewData) -> Bool {
         lhs.hashValue == rhs.hashValue
     }

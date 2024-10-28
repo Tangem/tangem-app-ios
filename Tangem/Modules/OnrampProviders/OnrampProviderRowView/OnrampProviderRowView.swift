@@ -117,24 +117,6 @@ struct OnrampProviderRowView: View {
         ]) {
             OnrampProviderRowView(data: $0)
         }
-
-        ZStack {
-            Color.clear
-                .cornerRadius(14)
-                .overlay {
-                    RoundedRectangle(cornerRadius: 14)
-                        .stroke(Colors.Icon.accent, lineWidth: 1)
-                }
-                .padding(1)
-                .overlay {
-                    RoundedRectangle(cornerRadius: 14)
-                        .stroke(Colors.Icon.accent.opacity(0.15), lineWidth: 2.5)
-                }
-                .padding(2.5)
-        }
-        .frame(height: 69)
-        .frame(maxWidth: .infinity)
-        .border(.red)
     }
     .padding()
 }
