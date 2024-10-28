@@ -54,7 +54,7 @@ struct SupportedBlockchains {
             return mainnetBlockchains
         }
 
-        let betaTestingBlockchains = FeatureStorage().supportedBlockchainsIds.compactMap { id in
+        let betaTestingBlockchains = FeatureStorage.instance.supportedBlockchainsIds.compactMap { id in
             testableBlockchains().first { $0.networkId == id }
         }
 
