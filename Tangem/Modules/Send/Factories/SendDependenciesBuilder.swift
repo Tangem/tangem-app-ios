@@ -44,7 +44,7 @@ struct SendDependenciesBuilder {
         case .restakeRewards: action.title
         case .unlockLocked: action.title
         case .restake: action.title
-        case .claimUnstaked: action.title
+        case .claimUnstaked: SendFlowActionType.withdraw.title
         default: action.title
         }
     }
