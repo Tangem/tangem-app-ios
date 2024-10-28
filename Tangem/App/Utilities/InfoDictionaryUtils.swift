@@ -8,6 +8,8 @@
 
 import Foundation
 
+private let infoDictionary = Bundle.main.infoDictionary ?? [:]
+
 enum InfoDictionaryUtils {
     case appName
     case version
@@ -15,9 +17,11 @@ enum InfoDictionaryUtils {
     case bundleURLTypes
     case bundleURLSchemes
     case bundleIdentifier
+    case environmentName
+    case suiteName
+    case bsdkSuiteName
 
     func value<T>() -> T? {
-        let infoDictionary = Bundle.main.infoDictionary ?? [:]
         switch self {
         case .appName:
             return infoDictionary["CFBundleDisplayName"] as? T
@@ -35,6 +39,12 @@ enum InfoDictionaryUtils {
             }
 
             return dictionary.map { $0["CFBundleURLSchemes"] } as? T
+        case .environmentName:
+            return infoDictionary["ENVIRONMENT_NAME"] as? T
+        case .suiteName:
+            return infoDictionary["SUITE_NAME"] as? T
+        case .bsdkSuiteName:
+            return infoDictionary["BSDK_SUITE_NAME"] as? T
         }
     }
 }

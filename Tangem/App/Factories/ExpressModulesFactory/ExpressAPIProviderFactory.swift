@@ -18,7 +18,7 @@ struct ExpressAPIProviderFactory {
                 return .production
             }
 
-            return ExpressAPIType(rawValue: FeatureStorage().apiExpress) ?? .production
+            return ExpressAPIType(rawValue: FeatureStorage.instance.apiExpress) ?? .production
         }()
 
         let apiKey = apiKey(expressAPIType: expressAPIType)

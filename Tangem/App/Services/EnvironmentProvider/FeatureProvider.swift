@@ -15,7 +15,7 @@ enum FeatureProvider {
             return isAvailableForReleaseVersion(feature)
         }
 
-        let state = FeatureStorage().availableFeatures[feature]
+        let state = FeatureStorage.instance.availableFeatures[feature]
         switch state {
         case .none:
             return isAvailableForReleaseVersion(feature)
