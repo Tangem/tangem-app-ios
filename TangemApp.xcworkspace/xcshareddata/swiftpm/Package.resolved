@@ -1,5 +1,5 @@
 {
-  "originHash" : "6060eb7e2f084e6f2c93c886379bea9d78bd9966793ea6598d0bae59e4ea201c",
+  "originHash" : "1f666c3412fd6871db0315f2aa4b674d447cc2f17ac07d97a719ffe3c77566e7",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -51,8 +51,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/bitcoincore.git",
       "state" : {
-        "revision" : "c00b5c60ab9560acee8309f39620fabfde32b518",
-        "version" : "0.0.21"
+        "revision" : "1685427ec6a7db06fbef760e0a14b0158071dca3"
       }
     },
     {

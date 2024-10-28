@@ -12,11 +12,19 @@ import TangemSdk
 
 @available(iOS 13.0, *)
 class BitcoinBech32AddressService {
-    private let converter: SegWitBech32AddressConverter
+    private let segWitConverter: SegWitBech32AddressConverter
+    private let tapRootConverter: TaprootAddressConverter
 
     init(networkParams: INetwork) {
         let scriptConverter = ScriptConverter()
-        converter = SegWitBech32AddressConverter(prefix: networkParams.bech32PrefixPattern, scriptConverter: scriptConverter)
+        segWitConverter = SegWitBech32AddressConverter(
+            prefix: networkParams.bech32PrefixPattern,
+            scriptConverter: scriptConverter
+        )
+        tapRootConverter = TaprootAddressConverter(
+            prefix: networkParams.bech32PrefixPattern,
+            scriptConverter: scriptConverter
+        )
     }
 }
 
@@ -25,7 +33,7 @@ class BitcoinBech32AddressService {
 @available(iOS 13.0, *)
 extension BitcoinBech32AddressService: BitcoinScriptAddressProvider {
     func makeScriptAddress(from scriptHash: Data) throws -> String {
-        return try converter.convert(scriptHash: scriptHash).stringValue
+        return try segWitConverter.convert(scriptHash: scriptHash).stringValue
     }
 }
 
@@ -34,12 +42,9 @@ extension BitcoinBech32AddressService: BitcoinScriptAddressProvider {
 @available(iOS 13.0, *)
 extension BitcoinBech32AddressService: AddressValidator {
     func validate(_ address: String) -> Bool {
-        do {
-            _ = try converter.convert(address: address)
-            return true
-        } catch {
-            return false
-        }
+        let segwitAddress = try? segWitConverter.convert(address: address)
+        let taprootAddress = try? tapRootConverter.convert(address: address)
+        return segwitAddress != nil || taprootAddress != nil
     }
 }
 
@@ -56,7 +61,7 @@ extension BitcoinBech32AddressService: AddressProvider {
             hdPublicKeyData: compressedKey
         )
 
-        let address = try converter.convert(publicKey: bitcoinCorePublicKey, type: .p2wpkh).stringValue
+        let address = try segWitConverter.convert(publicKey: bitcoinCorePublicKey, type: .p2wpkh).stringValue
         return PlainAddress(value: address, publicKey: publicKey, type: addressType)
     }
 }
