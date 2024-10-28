@@ -25,8 +25,8 @@ struct CommonStakingAnalyticsLogger: StakingAnalyticsLogger {
         case let httpError as StakeKitHTTPError:
             parameters[.errorDescription] = httpError.errorDescription
             event = .stakingErrors
-        case let stakingManagerError as StakingManagerError:
-            parameters[.errorDescription] = stakingManagerError.errorDescription
+        case let error as LocalizedError where error is StakingManagerError || error is StakeKitMapperError:
+            parameters[.errorDescription] = error.errorDescription
             event = .stakingAppErrors
         default: return
         }
