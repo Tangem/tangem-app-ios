@@ -20,10 +20,10 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 ```
 
 
-  A lane that builds and tests the scheme "Tangem" using a clean and build application.
-  Using enviroment: Production
-  Options:
-  - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+A lane that builds and tests the scheme "Tangem" using a clean and build application.
+Using enviroment: Production
+Options:
+- xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 
 
 ### test_modules
@@ -47,13 +47,13 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 ```
 
 
-  A lane that builds a "Tangem" scheme and uploads the archive to TestFlight for release.
-  Using enviroment: Production
-  Options:
-  - version: app version
-  - build: optional build number
-  - changelog: string for description archive
-  - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+A lane that builds a "Tangem" scheme and uploads the archive to TestFlight for release.
+Using enviroment: Production
+Options:
+- version: app version
+- build: optional build number
+- changelog: string for description archive
+- xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
   
 
 ### check_bsdk_example_buildable
@@ -64,6 +64,22 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 
 A lane that builds a "BlockchainSdkExample" scheme without running or publishing it, just to check that the scheme is buildable.
+
+
+### build_Alpha
+
+```sh
+[bundle exec] fastlane build_Alpha
+```
+
+
+This lane builds a "Tangem Alpha" scheme binary. Result binary can be used only for ad-hoc distribution.
+Options:
+- version: App version
+- build: Build number
+- filename: Name of the resulting artefact (IPA file)
+- path: Path to binary
+- xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 
 
 ### beta
@@ -123,6 +139,21 @@ Uses `LOKALISE_API_TOKEN` and `LOKALISE_PROJECT_ID` env vars.
 Options:
 - languages: A comma-delimited string of languages to update, like `en,fr,de,ja,ru,es,uk_UA`. Pass an empty string to update all available languages.
 - destination: A file path to save localization files to.
+
+
+### deploy_firebase
+
+```sh
+[bundle exec] fastlane deploy_firebase
+```
+
+
+This lane deploy binary to Google Distribution
+Options:
+- app_id: Firebase App ID
+- path: Path to binary
+- firebase_token: Firebase CLI Token
+- changelog: [optional] Changelog will be added to Google Distribution release notes along with the last commit hash.
 
 
 ----

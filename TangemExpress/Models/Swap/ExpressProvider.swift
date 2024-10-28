@@ -18,6 +18,7 @@ public struct ExpressProvider: Hashable {
     public let termsOfUse: URL?
     public let privacyPolicy: URL?
     public let recommended: Bool?
+    public let slippage: Double?
 
     public init(
         id: Id,
@@ -26,7 +27,8 @@ public struct ExpressProvider: Hashable {
         imageURL: URL?,
         termsOfUse: URL?,
         privacyPolicy: URL?,
-        recommended: Bool?
+        recommended: Bool?,
+        slippage: Double?
     ) {
         self.id = id
         self.name = name
@@ -35,5 +37,6 @@ public struct ExpressProvider: Hashable {
         self.termsOfUse = termsOfUse
         self.privacyPolicy = privacyPolicy
         self.recommended = recommended
+        self.slippage = slippage
     }
 }
