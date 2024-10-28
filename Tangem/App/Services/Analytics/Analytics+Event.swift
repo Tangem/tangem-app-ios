@@ -288,6 +288,7 @@ extension Analytics {
         case stakingConfirmationScreenOpened = "[Staking] Confirmation Screen Opened"
         case stakingErrors = "[Staking] Errors"
         case stakingErrorTransactionRejected = "[Staking] Error - Transaction Rejected"
+        case stakingAppErrors = "[Staking] App Errors"
         case stakingSelectedCurrency = "[Staking] Selected Currency"
         case stakingButtonShare = "[Staking] Button - Share"
         case stakingButtonExplore = "[Staking] Button - Explore"

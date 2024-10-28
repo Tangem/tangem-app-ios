@@ -11,6 +11,7 @@ import TangemStaking
 
 struct CommonStakingAnalyticsLogger: StakingAnalyticsLogger {
     func logError(_ error: any Error, currencySymbol: String) {
+        let event: Analytics.Event
         var parameters: [Analytics.ParameterKey: String] = [.token: currencySymbol]
         switch error {
         case let apiError as StakeKitAPIError:
@@ -20,14 +21,17 @@ struct CommonStakingAnalyticsLogger: StakingAnalyticsLogger {
             if let message = apiError.message {
                 parameters[.errorMessage] = message
             }
+            event = .stakingErrors
         case let httpError as StakeKitHTTPError:
             parameters[.errorDescription] = httpError.errorDescription
-        // TODO: handle other errors separately
-        default:
-            break
+            event = .stakingErrors
+        case let stakingManagerError as StakingManagerError:
+            parameters[.errorDescription] = stakingManagerError.errorDescription
+            event = .stakingAppErrors
+        default: return
         }
         Analytics.log(
-            event: .stakingErrors,
+            event: event,
             params: parameters
         )
     }
