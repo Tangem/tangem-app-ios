@@ -52,6 +52,7 @@ struct OnrampProvidersPaymentView: View {
             Text(data.name)
                 .style(Fonts.Bold.caption1, color: Colors.Text.primary1)
         }
+        .lineLimit(1)
     }
 
     private var chevronView: some View {
