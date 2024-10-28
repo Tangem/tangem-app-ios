@@ -20,7 +20,7 @@ concurrency:
 jobs:
   prepare:
     name: Prepare information
-    runs-on: builder1
+    runs-on: self-hosted
     outputs:
       version: '${{ steps.jira.outputs.key }}'
       stage: Alpha
