@@ -33,11 +33,11 @@ Options:
 ```
 
 
-  A lane that builds and tests SPM modules located in the "Modules" folder.
-  A separate lane is needed since it's still not possible to run unit tests from remove/local SPM dependencies inside the host app,
-  see https://forums.swift.org/t/running-swiftpm-tests-inside-project/62760 for details.
-  Options:
-  - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+A lane that builds and tests SPM modules located in the "Modules" folder.
+A separate lane is needed since it's still not possible to run unit tests from remove/local SPM dependencies inside the host app,
+see https://forums.swift.org/t/running-swiftpm-tests-inside-project/62760 for details.
+Options:
+- xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 
 
 ### release
@@ -54,7 +54,7 @@ Options:
 - build: optional build number
 - changelog: string for description archive
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
-  
+
 
 ### check_bsdk_example_buildable
 
