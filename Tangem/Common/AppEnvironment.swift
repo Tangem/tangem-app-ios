@@ -8,8 +8,6 @@
 
 import Foundation
 
-private let infoDictionary = Bundle.main.infoDictionary ?? [:]
-
 enum AppEnvironment: String {
     case beta = "Beta"
     case production = "Production"
@@ -18,7 +16,7 @@ enum AppEnvironment: String {
 
 extension AppEnvironment {
     static var current: AppEnvironment {
-        guard let environmentName = infoDictionary["ENVIRONMENT_NAME"] as? String else {
+        guard let environmentName: String = InfoDictionaryUtils.environmentName.value() else {
             assertionFailure("ENVIRONMENT_NAME not found")
             return .production
         }
@@ -32,7 +30,7 @@ extension AppEnvironment {
     }
 
     var suiteName: String {
-        guard let identifier = infoDictionary["SUITE_NAME"] as? String else {
+        guard let identifier: String = InfoDictionaryUtils.suiteName.value() else {
             assertionFailure("SUITE_NAME not found")
             return ""
         }
@@ -41,7 +39,7 @@ extension AppEnvironment {
     }
 
     var blockchainDataStorageSuiteName: String {
-        guard let identifier = infoDictionary["BSDK_SUITE_NAME"] as? String else {
+        guard let identifier: String = InfoDictionaryUtils.bsdkSuiteName.value() else {
             assertionFailure("BSDK_SUITE_NAME not found")
             return ""
         }
@@ -50,19 +48,19 @@ extension AppEnvironment {
     }
 
     var apiBaseUrl: URL {
-        FeatureStorage().useDevApi ?
+        FeatureStorage.instance.useDevApi ?
             URL(string: "https://devapi.tangem-tech.com/v1")! :
             URL(string: "https://api.tangem-tech.com/v1")!
     }
 
     var iconBaseUrl: URL {
-        FeatureStorage().useDevApi ?
+        FeatureStorage.instance.useDevApi ?
             URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api.dev/")! :
             URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/")!
     }
 
     var tangemComBaseUrl: URL {
-        if FeatureStorage().useDevApi {
+        if FeatureStorage.instance.useDevApi {
             return URL(string: "https://devweb.tangem.com")!
         } else {
             return URL(string: "https://tangem.com")!
@@ -70,7 +68,7 @@ extension AppEnvironment {
     }
 
     var isTestnet: Bool {
-        FeatureStorage().isTestnet
+        FeatureStorage.instance.isTestnet
     }
 
     var isDebug: Bool {

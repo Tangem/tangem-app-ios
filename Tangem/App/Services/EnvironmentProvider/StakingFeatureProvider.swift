@@ -43,7 +43,7 @@ class StakingFeatureProvider {
         let item = StakingItem(network: stakingTokenItem.network, contractAddress: stakingTokenItem.contractAddress)
         let itemID = item.id
         let isSupported = StakingFeatureProvider.supportedBlockchainItems.contains(item)
-        let isTesting = FeatureStorage().stakingBlockchainsIds.contains(itemID)
+        let isTesting = FeatureStorage.instance.stakingBlockchainsIds.contains(itemID)
 
         guard isSupported || isTesting else {
             return nil
