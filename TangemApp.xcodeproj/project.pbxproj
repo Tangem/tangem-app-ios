@@ -24338,7 +24338,7 @@
 			repositoryURL = "https://github.com/tangem/hedera-sdk-swift.git";
 			requirement = {
 				kind = exactVersion;
-				version = "0.26.0-tangem3";
+				version = "0.26.0-tangem4";
 			};
 		};
 		B68E1F8B2CBC44AA0043E598 /* XCRemoteSwiftPackageReference "CryptoSwift" */ = {
@@ -24353,8 +24353,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tangem/swift-protobuf-binaries.git";
 			requirement = {
-				kind = exactVersion;
-				version = "1.25.2-tangem1";
+				kind = upToNextMajorVersion;
+				minimumVersion = "1.25.2-tangem1";
 			};
 		};
 		B68E1F912CBC44FF0043E598 /* XCRemoteSwiftPackageReference "ton-swift" */ = {
@@ -24386,7 +24386,7 @@
 			repositoryURL = "https://github.com/tangem/SwiftBinanceChain.git";
 			requirement = {
 				kind = exactVersion;
-				version = 0.0.12;
+				version = 0.0.13;
 			};
 		};
 		B6C0D3F02CBDC52D001113ED /* XCRemoteSwiftPackageReference "Moya" */ = {
@@ -24425,8 +24425,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tangem/wallet-core-binaries-ios.git";
 			requirement = {
-				kind = exactVersion;
-				version = "4.0.46-tangem1";
+				kind = revision;
+				revision = bc922af747fa8fe1e5ed5a122fd17643646a3e37;
 			};
 		};
 		B6F6252E2C85E1A600DEF098 /* XCRemoteSwiftPackageReference "DGCharts" */ = {
