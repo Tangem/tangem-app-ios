@@ -101,6 +101,7 @@ private extension CommonStakingNotificationManager {
             show(notification: .withdraw)
             hideErrorNotifications()
         case (.loading, .pending(.claimUnstaked)), (.ready, .pending(.claimUnstaked)):
+            show(notification: .withdraw)
             hideErrorNotifications()
         case (.loading, .pending(.claimRewards)), (.ready, .pending(.claimRewards)):
             show(notification: .claimRewards)
