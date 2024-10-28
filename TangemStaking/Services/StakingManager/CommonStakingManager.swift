@@ -107,7 +107,7 @@ extension CommonStakingManager: StakingManager {
             )
         default:
             log("Invalid staking manager state: \(state), for action: \(action)")
-            throw StakingManagerError.stakingManagerStateNotSupportTransactionAction(action: action)
+            throw StakingManagerError.stakingManagerStateNotSupportEstimateFeeAction(action: action)
         }
     }
 
@@ -436,13 +436,16 @@ private extension CommonStakingManager {
 }
 
 public enum StakingManagerError: LocalizedError {
-    case stakingManagerStateNotSupportTransactionAction(action: StakingAction)
+    case stakingManagerStateNotSupportTransactionAction(action: StakingAction, state: StakingManagerState)
+    case stakingManagerStateNotSupportEstimateFeeAction(action: StakingAction, state: StakingManagerState)
     case stakingManagerIsLoading
 
     public var errorDescription: String? {
         switch self {
-        case .stakingManagerStateNotSupportTransactionAction(let action):
-            "StakingManagerNotSupportTransactionAction \(action)"
+        case .stakingManagerStateNotSupportTransactionAction(let action, let state):
+            "StakingManagerNotSupportTransactionAction \(action) state \(state)"
+        case .stakingManagerStateNotSupportEstimateFeeAction(let action, let state):
+            "StakingManagerNotSupportTransactionAction \(action) state \(state)"
         case .stakingManagerIsLoading:
             "StakingManagerIsLoading"
         }
