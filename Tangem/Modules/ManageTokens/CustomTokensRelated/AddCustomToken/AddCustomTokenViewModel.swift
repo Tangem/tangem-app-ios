@@ -7,9 +7,9 @@
 //
 
 import Foundation
+import class UIKit.UIApplication
 import Combine
 import BlockchainSdk
-import TangemSdk
 import struct TangemSdk.DerivationPath
 
 final class AddCustomTokenViewModel: ObservableObject, Identifiable {

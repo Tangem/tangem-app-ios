@@ -11,13 +11,13 @@ import TangemSdk
 import BitcoinCore
 
 @available(iOS 13.0, *)
-public class BitcoinCashAddressService {
+class BitcoinCashAddressService {
     private let legacyService: BitcoinLegacyAddressService
     private let cashAddrService: CashAddrService
-    
-    public init(networkParams: INetwork) {
-        self.legacyService = .init(networkParams: networkParams)
-        self.cashAddrService = .init(networkParams: networkParams)
+
+    init(networkParams: INetwork) {
+        legacyService = .init(networkParams: networkParams)
+        cashAddrService = .init(networkParams: networkParams)
     }
 }
 
@@ -25,7 +25,7 @@ public class BitcoinCashAddressService {
 
 @available(iOS 13.0, *)
 extension BitcoinCashAddressService: AddressValidator {
-    public func validate(_ address: String) -> Bool {
+    func validate(_ address: String) -> Bool {
         cashAddrService.validate(address) || legacyService.validate(address)
     }
 }
@@ -34,7 +34,7 @@ extension BitcoinCashAddressService: AddressValidator {
 
 @available(iOS 13.0, *)
 extension BitcoinCashAddressService: AddressProvider {
-    public func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
+    func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
         switch addressType {
         case .default:
             let address = try cashAddrService.makeAddress(from: publicKey.blockchainKey)
@@ -48,7 +48,7 @@ extension BitcoinCashAddressService: AddressProvider {
 }
 
 extension BitcoinCashAddressService {
-    public func isLegacy(_ address: String) -> Bool {
+    func isLegacy(_ address: String) -> Bool {
         legacyService.validate(address)
     }
 }

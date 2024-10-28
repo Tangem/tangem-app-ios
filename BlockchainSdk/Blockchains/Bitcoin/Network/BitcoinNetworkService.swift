@@ -14,13 +14,13 @@ import TangemSdk
 class BitcoinNetworkService: MultiNetworkProvider, BitcoinNetworkProvider {
     let providers: [AnyBitcoinNetworkProvider]
     var currentProviderIndex: Int = 0
-    
+
     init(providers: [AnyBitcoinNetworkProvider]) {
         self.providers = providers
     }
-    
+
     var supportsTransactionPush: Bool { !providers.filter { $0.supportsTransactionPush }.isEmpty }
-    
+
     func getInfo(addresses: [String]) -> AnyPublisher<[BitcoinResponse], Error> {
         providerPublisher {
             $0.getInfo(addresses: addresses)
@@ -28,15 +28,15 @@ class BitcoinNetworkService: MultiNetworkProvider, BitcoinNetworkProvider {
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func getInfo(address: String) -> AnyPublisher<BitcoinResponse, Error> {
-        providerPublisher{
+        providerPublisher {
             $0.getInfo(address: address)
                 .retry(2)
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func getFee() -> AnyPublisher<BitcoinFee, Error> {
         Publishers.MergeMany(providers.map {
             $0.getFee()
@@ -52,7 +52,7 @@ class BitcoinNetworkService: MultiNetworkProvider, BitcoinNetworkProvider {
             let min: Decimal
             let norm: Decimal
             let priority: Decimal
-            
+
             switch feeList.count {
             case 0:
                 throw BlockchainSdkError.failedToLoadFee
@@ -68,7 +68,7 @@ class BitcoinNetworkService: MultiNetworkProvider, BitcoinNetworkProvider {
                 norm = feeList.map { $0.normalSatoshiPerByte }.sorted().dropFirst().reduce(0, +) / divider
                 priority = feeList.map { $0.prioritySatoshiPerByte }.sorted().dropFirst().reduce(0, +) / divider
             }
-            
+
             guard min >= 0, norm >= 0, priority >= 0 else {
                 throw BlockchainSdkError.failedToLoadFee
             }
@@ -76,22 +76,21 @@ class BitcoinNetworkService: MultiNetworkProvider, BitcoinNetworkProvider {
         }
         .eraseToAnyPublisher()
     }
-    
+
     func send(transaction: String) -> AnyPublisher<String, Error> {
         providerPublisher {
             $0.send(transaction: transaction)
         }
     }
-    
+
     func push(transaction: String) -> AnyPublisher<String, Error> {
         providers.first(where: { $0.supportsTransactionPush })?
             .push(transaction: transaction) ?? .anyFail(error: BlockchainSdkError.networkProvidersNotSupportsRbf)
     }
-    
+
     func getSignatureCount(address: String) -> AnyPublisher<Int, Error> {
         providerPublisher {
             $0.getSignatureCount(address: address)
         }
     }
-    
 }

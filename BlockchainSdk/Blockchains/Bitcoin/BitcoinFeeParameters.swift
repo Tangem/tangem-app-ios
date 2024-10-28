@@ -12,7 +12,7 @@ public struct BitcoinFeeParameters: FeeParameters {
     /// Fee rate per byte in satoshi
     public let rate: Int
 
-    public init(rate: Int) {
+    init(rate: Int) {
         self.rate = rate
     }
 }

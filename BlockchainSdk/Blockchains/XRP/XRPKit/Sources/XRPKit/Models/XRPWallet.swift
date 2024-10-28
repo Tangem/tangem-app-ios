@@ -21,25 +21,25 @@ enum SeedType {
 }
 
 protocol XRPWallet {
-    var privateKey: String {get}
-    var publicKey: String {get}
-    var address: String {get}
-    var accountID: [UInt8] {get}
+    var privateKey: String { get }
+    var publicKey: String { get }
+    var address: String { get }
+    var accountID: [UInt8] { get }
 
     static func deriveAddress(publicKey: String) -> String
-    static func accountID(for address: String) ->  [UInt8]
+    static func accountID(for address: String) -> [UInt8]
     static func validate(address: String) -> Bool
 }
 
 extension XRPWallet {
     var accountID: [UInt8] {
-        let accountID = Data(hex: self.publicKey).sha256Ripemd160
+        let accountID = Data(hex: publicKey).sha256Ripemd160
         return [UInt8](accountID)
     }
-    
-    /// Derive a standard XRP address from a public key.
+
+    /// Derive a standard XRP address from a key.
     ///
-    /// - Parameter publicKey: hexadecimal public key
+    /// - Parameter publicKey: hexadecimal key
     /// - Returns: standard XRP address encoded using XRP alphabet
     ///
     static func deriveAddress(publicKey: String) -> String {
@@ -50,14 +50,14 @@ extension XRPWallet {
         let address = XRPBase58.getString(from: addrrssData)
         return address
     }
-    
-    static func accountID(for address: String) ->  [UInt8] {
+
+    static func accountID(for address: String) -> [UInt8] {
         let decodedData = XRPBase58.getData(from: address)!
         let decodedDataWithoutCheksum = Data(decodedData.dropLast(4))
         let accountId = decodedDataWithoutCheksum.leadingZeroPadding(toLength: 20)
         return accountId.bytes
     }
-    
+
     /// Validates a String is a valid XRP address.
     ///
     /// - Parameter address: address encoded using XRP alphabet

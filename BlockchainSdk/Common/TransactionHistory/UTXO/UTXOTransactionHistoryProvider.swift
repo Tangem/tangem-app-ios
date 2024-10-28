@@ -11,8 +11,7 @@ import Combine
 
 final class UTXOTransactionHistoryProvider<Mapper>: MultiNetworkProvider where
     Mapper: TransactionHistoryMapper,
-    Mapper.Response == BlockBookAddressResponse
-{
+    Mapper.Response == BlockBookAddressResponse {
     var currentProviderIndex: Int = 0
     var providers: [BlockBookUtxoProvider] {
         blockBookProviders
@@ -38,7 +37,7 @@ extension UTXOTransactionHistoryProvider: TransactionHistoryProvider {
     var canFetchHistory: Bool {
         page == nil || (page?.number ?? 0) < totalPages
     }
-    
+
     var description: String {
         return objectDescription(
             self,
@@ -49,41 +48,41 @@ extension UTXOTransactionHistoryProvider: TransactionHistoryProvider {
             ]
         )
     }
-    
+
     func reset() {
         page = nil
         totalPages = 0
         totalRecordsCount = 0
     }
-    
+
     func loadTransactionHistory(request: TransactionHistory.Request) -> AnyPublisher<TransactionHistory.Response, Error> {
         providerPublisher { [weak self] provider in
             guard let self else {
                 return .anyFail(error: WalletError.empty)
             }
-            
+
             let requestPage: Int
-            
+
             // if indexing is created, load the next page
             if let page {
                 requestPage = page.number + 1
             } else {
                 requestPage = 0
             }
-            
+
             let parameters = BlockBookTarget.AddressRequestParameters(
                 page: requestPage,
                 pageSize: request.limit,
                 details: [.txslight]
             )
-            
+
             return provider.addressData(address: request.address, parameters: parameters)
                 .tryMap { [weak self] response -> TransactionHistory.Response in
                     guard let self else {
                         throw WalletError.empty
                     }
-                    
-                    let records = try self.mapper.mapToTransactionRecords(
+
+                    let records = try mapper.mapToTransactionRecords(
                         response,
                         walletAddress: request.address,
                         amountType: .coin
@@ -95,10 +94,10 @@ extension UTXOTransactionHistoryProvider: TransactionHistoryProvider {
                         )
                     }
 
-                    self.page = TransactionHistoryIndexPage(number: response.page ?? 0)
-                    self.totalPages = response.totalPages ?? 0
-                    self.totalRecordsCount = response.txs
-                    
+                    page = TransactionHistoryIndexPage(number: response.page ?? 0)
+                    totalPages = response.totalPages ?? 0
+                    totalRecordsCount = response.txs
+
                     return TransactionHistory.Response(records: records)
                 }
                 .eraseToAnyPublisher()

@@ -10,9 +10,9 @@ import Foundation
 import TangemSdk
 
 @available(iOS 13.0, *)
-public struct BinanceAddressService {
+struct BinanceAddressService {
     let testnet: Bool
-    
+
     init(testnet: Bool) {
         self.testnet = testnet
     }
@@ -22,7 +22,7 @@ public struct BinanceAddressService {
 
 @available(iOS 13.0, *)
 extension BinanceAddressService: AddressValidator {
-    public func validate(_ address: String) -> Bool {
+    func validate(_ address: String) -> Bool {
         if address.isEmpty {
             return false
         }
@@ -31,11 +31,11 @@ extension BinanceAddressService: AddressValidator {
             return false
         }
 
-        if !testnet && !address.starts(with: "bnb1") {
+        if !testnet, !address.starts(with: "bnb1") {
             return false
         }
 
-        if testnet && !address.starts(with: "tbnb1") {
+        if testnet, !address.starts(with: "tbnb1") {
             return false
         }
 
@@ -47,7 +47,7 @@ extension BinanceAddressService: AddressValidator {
 
 @available(iOS 13.0, *)
 extension BinanceAddressService: AddressProvider {
-    public func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
+    func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
         let compressedKey = try Secp256k1Key(with: publicKey.blockchainKey).compress()
         let keyHash = compressedKey.sha256Ripemd160
 

@@ -8,23 +8,23 @@
 
 import Foundation
 import Combine
-import Solana_Swift
+import SolanaSwift
 
 class SolanaTransactionSigner: Signer {
     var publicKey: PublicKey {
         PublicKey(data: walletPublicKey.blockchainKey)!
     }
-    
+
     let transactionSigner: TransactionSigner
     let walletPublicKey: Wallet.PublicKey
-    
+
     var subscriptions: Set<AnyCancellable> = []
-    
+
     init(transactionSigner: TransactionSigner, walletPublicKey: Wallet.PublicKey) {
         self.transactionSigner = transactionSigner
         self.walletPublicKey = walletPublicKey
     }
-    
+
     func sign(message: Data, completion: @escaping (Result<Data, Error>) -> Void) {
         transactionSigner.sign(hash: message, walletPublicKey: walletPublicKey)
             .sink { result in
@@ -40,4 +40,3 @@ class SolanaTransactionSigner: Signer {
             .store(in: &subscriptions)
     }
 }
-

@@ -9,7 +9,6 @@
 import Foundation
 
 struct XDCAddressService {
-
     // MARK: - Private Properties
 
     private let ethereumAddressService = AddressServiceFactory(blockchain: .ethereum(testnet: false)).makeAddressService()

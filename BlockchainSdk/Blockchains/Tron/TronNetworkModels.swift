@@ -51,9 +51,12 @@ struct TronGetAccountResourceResponse: Decodable {
     let freeNetLimit: Int
     let energyLimit: Decimal?
     let energyUsed: Decimal?
-    
+
     enum CodingKeys: String, CodingKey {
-        case freeNetUsed, freeNetLimit, energyLimit = "EnergyLimit", energyUsed = "EnergyUsed"
+        case freeNetUsed
+        case freeNetLimit
+        case energyLimit = "EnergyLimit"
+        case energyUsed = "EnergyUsed"
     }
 }
 
@@ -75,10 +78,10 @@ struct TronBlock: Decodable {
             let version: Int32
             let timestamp: Int64
         }
-        
+
         let raw_data: RawData
     }
-    
+
     let block_header: BlockHeader
 }
 

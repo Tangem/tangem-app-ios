@@ -13,17 +13,17 @@ import TangemSdk
 class TronWalletManager: BaseManager, WalletManager {
     var networkService: TronNetworkService!
     var txBuilder: TronTransactionBuilder!
-    
+
     var currentHost: String {
         networkService.host
     }
-    
+
     var allowsFeeSelection: Bool {
         false
     }
-    
+
     private let feeSigner = DummySigner()
-    
+
     override func update(completion: @escaping (Result<Void, Error>) -> Void) {
         cancellable = networkService.accountInfo(
             for: wallet.address,
@@ -42,7 +42,7 @@ class TronWalletManager: BaseManager, WalletManager {
             self?.updateWallet(accountInfo)
         }
     }
-    
+
     func send(_ transaction: Transaction, signer: TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError> {
         return signedTransactionData(
             transaction: transaction,
@@ -50,7 +50,7 @@ class TronWalletManager: BaseManager, WalletManager {
             publicKey: wallet.publicKey
         )
         .withWeakCaptureOf(self)
-        .flatMap { manager, data  in
+        .flatMap { manager, data in
             manager.networkService
                 .broadcastHex(data)
                 .mapSendError(tx: data.hexString)
@@ -81,7 +81,8 @@ class TronWalletManager: BaseManager, WalletManager {
             fee: Fee(.zeroCoin(for: blockchain)),
             sourceAddress: wallet.address,
             destinationAddress: destination,
-            changeAddress: wallet.address)
+            changeAddress: wallet.address
+        )
 
         let transactionDataPublisher = signedTransactionData(
             transaction: dummyTransaction,
@@ -97,16 +98,16 @@ class TronWalletManager: BaseManager, WalletManager {
         )
         .map {
             energyFeeParameters,
-            destinationExists,
-            transactionData,
-            resources -> [Fee] in
-            if !destinationExists && amount.type == .coin {
+                destinationExists,
+                transactionData,
+                resources -> [Fee] in
+            if !destinationExists, amount.type == .coin {
                 let amount = Amount(with: blockchain, value: 1.1)
                 return [Fee(amount)]
             }
-            
+
             let sunPerBandwidthPoint = 1000
-            
+
             let remainingBandwidth = resources.freeNetLimit - (resources.freeNetUsed ?? 0)
             let additionalDataSize = 64
             let transactionSizeFee = transactionData.count + additionalDataSize
@@ -116,18 +117,18 @@ class TronWalletManager: BaseManager, WalletManager {
             } else {
                 consumedBandwidthFee = transactionSizeFee * sunPerBandwidthPoint
             }
-            
+
             let remainingEnergy = (resources.energyLimit ?? .zero) - (resources.energyUsed ?? .zero)
             let consumedEnergyFee = max(
                 .zero,
                 Decimal(energyFeeParameters.energyFee) - remainingEnergy
             ) * Decimal(energyFeeParameters.sunPerEnergyUnit)
-            
+
             let totalFee = Decimal(consumedBandwidthFee) + consumedEnergyFee
-            
+
             let value = totalFee / blockchain.decimalValue
             let amount = Amount(with: blockchain, value: value)
-            
+
             let feeParameters = TronFeeParameters(
                 energySpent: min(
                     energyFeeParameters.energyFee,
@@ -135,7 +136,7 @@ class TronWalletManager: BaseManager, WalletManager {
                 ),
                 energyFullyCoversFee: consumedEnergyFee == .zero
             )
-            
+
             return [Fee(amount, parameters: feeParameters)]
         }
         .eraseToAnyPublisher()
@@ -149,15 +150,15 @@ class TronWalletManager: BaseManager, WalletManager {
         let energyUsagePublisher = Result {
             try txBuilder.buildContractEnergyUsageData(amount: amount, destinationAddress: destination)
         }
-            .publisher
-            .withWeakCaptureOf(self)
-            .flatMap { manager, energyUsageData in
-                manager.networkService.contractEnergyUsage(
-                    sourceAddress: manager.wallet.address,
-                    contractAddress: contractAddress,
-                    contractEnergyUsageData: energyUsageData
-                )
-            }
+        .publisher
+        .withWeakCaptureOf(self)
+        .flatMap { manager, energyUsageData in
+            manager.networkService.contractEnergyUsage(
+                sourceAddress: manager.wallet.address,
+                contractAddress: contractAddress,
+                contractEnergyUsageData: energyUsageData
+            )
+        }
 
         return energyUsagePublisher.zip(networkService.chainParameters())
             .map { energyUse, chainParameters in
@@ -168,9 +169,9 @@ class TronWalletManager: BaseManager, WalletManager {
                 let dynamicEnergyIncreaseFactor: Double = amount.type.token?.contractAddress == Constants.usdtContractAddress
                     ? .zero
                     : Double(chainParameters.dynamicEnergyIncreaseFactor) / Double(dynamicEnergyIncreaseFactorPresicion)
-                
+
                 let conservativeEnergyFee = Int(Double(energyUse) * (1 + dynamicEnergyIncreaseFactor))
-                
+
                 return TronEnergyFeeData(
                     energyFee: conservativeEnergyFee,
                     sunPerEnergyUnit: chainParameters.sunPerEnergyUnit
@@ -178,7 +179,7 @@ class TronWalletManager: BaseManager, WalletManager {
             }
             .eraseToAnyPublisher()
     }
-    
+
     private func signedTransactionData(transaction: Transaction, signer: TransactionSigner, publicKey: Wallet.PublicKey) -> AnyPublisher<Data, Error> {
         networkService.getNowBlock()
             .withWeakCaptureOf(self)
@@ -207,16 +208,16 @@ class TronWalletManager: BaseManager, WalletManager {
             accountInfo.confirmedTransactionIDs.contains(hash)
         }
     }
-    
+
     private func unmarshal(_ signatureData: Data, hash: Data, publicKey: Wallet.PublicKey) -> Data {
         guard publicKey != feeSigner.publicKey else {
             return signatureData + Data(0)
         }
-        
+
         do {
             let signature = try Secp256k1Signature(with: signatureData)
             let unmarshalledSignature = try signature.unmarshal(with: publicKey.blockchainKey, hash: hash).data
-            
+
             return unmarshalledSignature
         } catch {
             Log.error(error)
@@ -227,18 +228,17 @@ class TronWalletManager: BaseManager, WalletManager {
 
 extension TronWalletManager: ThenProcessable {}
 
-
-fileprivate class DummySigner: TransactionSigner {
+private class DummySigner: TransactionSigner {
     let privateKey: Data
     let publicKey: Wallet.PublicKey
-    
+
     init() {
         let keyPair = try! Secp256k1Utils().generateKeyPair()
         let compressedPublicKey = try! Secp256k1Key(with: keyPair.publicKey).compress()
         publicKey = Wallet.PublicKey(seedKey: compressedPublicKey, derivationType: .none)
         privateKey = keyPair.privateKey
     }
-        
+
     func sign(hash: Data, walletPublicKey: Wallet.PublicKey) -> AnyPublisher<Data, Error> {
         do {
             let signature = try Secp256k1Utils().sign(hash, with: privateKey)
@@ -249,7 +249,7 @@ fileprivate class DummySigner: TransactionSigner {
             return .anyFail(error: error)
         }
     }
-    
+
     func sign(hashes: [Data], walletPublicKey: Wallet.PublicKey) -> AnyPublisher<[Data], Error> {
         fatalError()
     }

@@ -14,23 +14,23 @@ public protocol ExceptionHandlerOutput {
 
 public final class ExceptionHandler {
     // MARK: - Static
-    
+
     public static let shared: ExceptionHandler = .init()
-    
+
     // MARK: - Properties
-    
+
     private var outputs: [ExceptionHandlerOutput] = []
-    
+
     // MARK: - Configuration
-    
+
     public func append(output: ExceptionHandlerOutput) {
-        self.outputs.append(output)
+        outputs.append(output)
     }
 
     // MARK: - Handle
-    
+
     func handleAPISwitch(currentHost: String, nextHost: String, message: String) {
-        self.outputs.forEach { output in
+        outputs.forEach { output in
             output.handleAPISwitch(
                 currentHost: currentHost,
                 nextHost: nextHost,

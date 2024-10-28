@@ -48,7 +48,7 @@ struct KaspaOutpoint: Codable {
     let index: Int
 }
 
-struct  KaspaUtxoEntry: Codable {
+struct KaspaUtxoEntry: Codable {
     let amount: String
     let scriptPublicKey: KaspaScriptPublicKeyResponse
 }

@@ -15,7 +15,7 @@ class BaseManager: WalletProvider {
         get { _wallet.value }
         set { _wallet.value = newValue }
     }
-    
+
     var cardTokens: [Token] = []
     var cancellable: Cancellable? = nil
 
@@ -39,7 +39,7 @@ class BaseManager: WalletProvider {
     private var loadingPublisher: PassthroughSubject<WalletManagerState, Never> = .init()
 
     init(wallet: Wallet) {
-        self._wallet = .init(wallet)
+        _wallet = .init(wallet)
     }
 
     func update() {
@@ -59,10 +59,10 @@ class BaseManager: WalletProvider {
 
             switch result {
             case .success:
-                self.didFinishUpdating(error: nil)
-                self.latestUpdateTime = Date()
+                didFinishUpdating(error: nil)
+                latestUpdateTime = Date()
             case .failure(let error):
-                self.didFinishUpdating(error: error)
+                didFinishUpdating(error: error)
             }
         }
     }
@@ -77,13 +77,13 @@ class BaseManager: WalletProvider {
         cardTokens.removeAll(where: { $0 == token })
         wallet.clearAmount(for: token)
     }
-    
+
     func addToken(_ token: Token) {
         if !cardTokens.contains(token) {
             cardTokens.append(token)
         }
     }
-    
+
     func addTokens(_ tokens: [Token]) {
         tokens.forEach { addToken($0) }
     }

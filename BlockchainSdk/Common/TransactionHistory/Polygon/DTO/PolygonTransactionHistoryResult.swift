@@ -49,14 +49,14 @@ extension PolygonTransactionHistoryResult: Decodable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        self.status = try container.decode(String.self, forKey: .status)
-        self.message = try container.decodeIfPresent(String.self, forKey: .message)
+        status = try container.decode(String.self, forKey: .status)
+        message = try container.decodeIfPresent(String.self, forKey: .message)
 
         if let description = try? container.decodeIfPresent(String.self, forKey: .result) {
-            self.result = .description(description)
+            result = .description(description)
         } else {
             let transactions = try container.decode([Transaction].self, forKey: .result)
-            self.result = .transactions(transactions)
+            result = .transactions(transactions)
         }
     }
 }
@@ -80,17 +80,17 @@ extension PolygonTransactionHistoryResult.Transaction: Decodable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        self.confirmations = try container.decode(String.self, forKey: CodingKeys.confirmations)
-        self.contractAddress = try container.decodeIfPresent(String.self, forKey: CodingKeys.contractAddress)
-        self.from = try container.decode(String.self, forKey: CodingKeys.from)
-        self.functionName = try container.decodeIfPresent(String.self, forKey: CodingKeys.functionName)
-        self.gasPrice = try container.decode(String.self, forKey: CodingKeys.gasPrice)
-        self.gasUsed = try container.decode(String.self, forKey: CodingKeys.gasUsed)
-        self.hash = try container.decode(String.self, forKey: CodingKeys.hash)
-        self.isError = try container.decodeIfPresent(String.self, forKey: CodingKeys.isError)
-        self.timeStamp = try container.decode(String.self, forKey: CodingKeys.timeStamp)
-        self.to = try container.decode(String.self, forKey: CodingKeys.to)
-        self.txReceiptStatus = try container.decodeIfPresent(String.self, forKey: CodingKeys.txReceiptStatus)
-        self.value = try container.decode(String.self, forKey: CodingKeys.value)
+        confirmations = try container.decode(String.self, forKey: CodingKeys.confirmations)
+        contractAddress = try container.decodeIfPresent(String.self, forKey: CodingKeys.contractAddress)
+        from = try container.decode(String.self, forKey: CodingKeys.from)
+        functionName = try container.decodeIfPresent(String.self, forKey: CodingKeys.functionName)
+        gasPrice = try container.decode(String.self, forKey: CodingKeys.gasPrice)
+        gasUsed = try container.decode(String.self, forKey: CodingKeys.gasUsed)
+        hash = try container.decode(String.self, forKey: CodingKeys.hash)
+        isError = try container.decodeIfPresent(String.self, forKey: CodingKeys.isError)
+        timeStamp = try container.decode(String.self, forKey: CodingKeys.timeStamp)
+        to = try container.decode(String.self, forKey: CodingKeys.to)
+        txReceiptStatus = try container.decodeIfPresent(String.self, forKey: CodingKeys.txReceiptStatus)
+        value = try container.decode(String.self, forKey: CodingKeys.value)
     }
 }

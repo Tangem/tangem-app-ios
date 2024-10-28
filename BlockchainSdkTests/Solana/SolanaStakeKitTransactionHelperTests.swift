@@ -8,7 +8,6 @@
 
 import Foundation
 import XCTest
-
 @testable import BlockchainSdk
 
 final class SolanaStakeKitTransactionHelperTests: XCTestCase {
@@ -40,6 +39,3 @@ final class SolanaStakeKitTransactionHelperTests: XCTestCase {
         XCTAssertEqual(dataToSend, Data(hexString: estimateDataToSend).base64EncodedString())
     }
 }
-
-
-

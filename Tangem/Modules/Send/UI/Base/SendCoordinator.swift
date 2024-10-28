@@ -28,9 +28,10 @@ class SendCoordinator: CoordinatorObject {
 
     // MARK: - Child view models
 
-    @Published var mailViewModel: MailViewModel? = nil
-    @Published var qrScanViewCoordinator: QRScanViewCoordinator? = nil
+    @Published var mailViewModel: MailViewModel?
+    @Published var qrScanViewCoordinator: QRScanViewCoordinator?
     @Published var expressApproveViewModel: ExpressApproveViewModel?
+    @Published var onrampCountryViewModel: OnrampCountryViewModel?
 
     required init(
         dismissAction: @escaping Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?>,
@@ -128,6 +129,14 @@ extension SendCoordinator: SendRoutable {
             coordinator: self
         )
     }
+
+    func openOnrampCountry(country: OnrampCountry, repository: OnrampRepository) {
+        onrampCountryViewModel = .init(
+            country: country,
+            repository: repository,
+            coordinator: self
+        )
+    }
 }
 
 // MARK: - ExpressApproveRoutable
@@ -139,5 +148,19 @@ extension SendCoordinator: ExpressApproveRoutable {
 
     func userDidCancel() {
         expressApproveViewModel = nil
+    }
+}
+
+// MARK: - OnrampCountryRoutable
+
+extension SendCoordinator: OnrampCountryRoutable {
+    func openChangeCountry() {
+        // Uncomment when add `OnrampCountriesSelector`
+        // onrampCountryViewModel = nil
+        // rootViewModel?.openOnrampCountriesSelector()
+    }
+
+    func dismissConfirmCountryView() {
+        onrampCountryViewModel = nil
     }
 }

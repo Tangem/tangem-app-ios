@@ -27,7 +27,7 @@ final class MantleWalletManager: EthereumWalletManager {
         }
         .eraseToAnyPublisher()
     }
-    
+
     override func sign(_ transaction: Transaction, signer: any TransactionSigner) -> AnyPublisher<String, any Error> {
         var transaction = transaction
         do {
@@ -37,7 +37,7 @@ final class MantleWalletManager: EthereumWalletManager {
         }
         return super.sign(transaction, signer: signer)
     }
-    
+
     override func getGasLimit(to: String, from: String, value: String?, data: String?) -> AnyPublisher<BigUInt, any Error> {
         super.getGasLimit(to: to, from: from, value: value, data: data)
             .map { gasLimit in
@@ -66,34 +66,34 @@ private extension MantleWalletManager {
         default:
             throw WalletError.failedToGetFee
         }
-        
+
         let blockchain = wallet.blockchain
         let feeValue = parameters.calculateFee(decimalValue: blockchain.decimalValue)
         let amount = Amount(with: blockchain, value: feeValue)
 
         return Fee(amount, parameters: parameters)
     }
-    
+
     func prepareAdjustedValue(value: String?) -> String? {
         guard let value, let currentBalance = wallet.amounts[.coin]?.value else {
             return nil
         }
-        
+
         let parsedValue = EthereumUtils.parseEthereumDecimal(
             value,
             decimalsCount: wallet.blockchain.decimalCount
         )
-        
+
         guard let parsedValue else {
             return nil
         }
-        
+
         let blockchain = wallet.blockchain
         let delta = blockchain.minimumValue
-        
+
         let shouldSubtractPenny = currentBalance.isEqual(to: parsedValue, delta: delta)
         let valueToSubtract = shouldSubtractPenny ? delta : 0
-        
+
         return Amount(
             with: blockchain,
             type: .coin,

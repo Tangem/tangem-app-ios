@@ -18,7 +18,7 @@ extension NodeRequest {
     static func sendRequest(signedTransaction: T) -> Self {
         NodeRequest(id: "send transaction", method: "sendrawtransaction", params: [signedTransaction])
     }
-    
+
     static func estimateFeeRequest(method: String = "estimatesmartfee", confirmationBlocks: T? = nil) -> Self {
         NodeRequest(id: "estimate fee", method: method, params: confirmationBlocks.flatMap { [$0] } ?? [])
     }

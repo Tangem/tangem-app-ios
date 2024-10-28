@@ -8,26 +8,26 @@ enum TezosPrefix {
     enum Watermark {
         static let genericOperation: Data = .init(hexString: "03") // 03
     }
-    
+
     enum Signature: String {
         case ed25519 = "09F5CD8612" // edsig
         case secp256k1 = "0D7365133F" // spsig
         case p256 = "36F02C34" // p2sig
-        
+
         var bytesValue: Data {
             Data(hexString: rawValue)
         }
     }
-    
+
     enum PublicKey: String {
-        case ed25519 = "0D0F25D9" //edpk
-        case secp256k1 = "03FEE256" //sppk
-        case p256 = "03B28B7F" //p2pk
-        
+        case ed25519 = "0D0F25D9" // edpk
+        case secp256k1 = "03FEE256" // sppk
+        case p256 = "03B28B7F" // p2pk
+
         var bytesValue: Data {
             Data(hexString: rawValue)
         }
-        
+
         var encodedPrefix: String {
             switch self {
             case .ed25519: return "00"
@@ -36,7 +36,7 @@ enum TezosPrefix {
             }
         }
     }
-    
+
     enum Address: String {
         case tz1 = "06A19F"
         case tz2 = "06A1A1"
@@ -46,7 +46,7 @@ enum TezosPrefix {
         var bytesValue: Data {
             Data(hexString: rawValue)
         }
-        
+
         var encodedPrefix: String {
             switch self {
             case .tz1: return "00"
@@ -56,11 +56,11 @@ enum TezosPrefix {
             }
         }
     }
-    
+
     enum TransactionKind: String {
         case reveal
         case transaction
-        
+
         var encodedPrefix: String {
             switch self {
             case .reveal:
@@ -70,10 +70,9 @@ enum TezosPrefix {
             }
         }
     }
-    
+
     static let branch = "0134"
 }
-
 
 extension TezosPrefix {
     static func publicPrefix(for curve: EllipticCurve) -> Data {
@@ -88,7 +87,7 @@ extension TezosPrefix {
             fatalError("unsupported curve")
         }
     }
-    
+
     static func signaturePrefix(for curve: EllipticCurve) -> Data {
         switch curve {
         case .ed25519, .ed25519_slip0010:
@@ -101,7 +100,7 @@ extension TezosPrefix {
             fatalError("unsupported curve")
         }
     }
-    
+
     static func addressPrefix(for curve: EllipticCurve) -> Data {
         switch curve {
         case .ed25519, .ed25519_slip0010:

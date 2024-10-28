@@ -22,7 +22,7 @@ struct PendingTransactionRecordMapper {
             transactionParams: nil
         )
     }
-    
+
     func mapToPendingTransactionRecord(
         transaction: Transaction,
         hash: String,

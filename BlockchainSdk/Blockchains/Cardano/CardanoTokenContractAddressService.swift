@@ -10,9 +10,8 @@ import Foundation
 import TangemSdk
 
 public struct CardanoTokenContractAddressService {
-
     public init() {}
-    
+
     /// Convert to single format of cardano token address
     /// https://cips.cardano.org/cip/CIP-14
     /// - Parameters:
@@ -86,8 +85,7 @@ extension CardanoTokenContractAddressService: AddressValidator {
         do {
             try parseAddressType(address)
             return true
-        }
-        catch {
+        } catch {
             return false
         }
     }

@@ -12,8 +12,8 @@ import stellarsdk
 public typealias StellarMemo = Memo
 
 public struct StellarTransactionParams: TransactionParams {
-    public var memo: StellarMemo?
-    
+    var memo: StellarMemo?
+
     public init(memo: StellarMemo? = nil) {
         self.memo = memo
     }

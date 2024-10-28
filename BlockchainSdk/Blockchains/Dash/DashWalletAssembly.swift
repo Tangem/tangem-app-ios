@@ -11,20 +11,19 @@ import TangemSdk
 import BitcoinCore
 
 struct DashWalletAssembly: WalletManagerAssembly {
-    
     func make(with input: WalletManagerAssemblyInput) throws -> WalletManager {
         try BitcoinWalletManager(wallet: input.wallet).then {
             let compressed = try Secp256k1Key(with: input.wallet.publicKey.blockchainKey).compress()
-            
+
             let bitcoinManager = BitcoinManager(
                 networkParams: input.blockchain.isTestnet ? DashTestNetworkParams() : DashMainNetworkParams(),
                 walletPublicKey: input.wallet.publicKey.blockchainKey,
                 compressedWalletPublicKey: compressed,
                 bip: .bip44
             )
-            
+
             $0.txBuilder = BitcoinTransactionBuilder(bitcoinManager: bitcoinManager, addresses: input.wallet.addresses)
-            
+
             let providers: [AnyBitcoinNetworkProvider] = input.apiInfo.reduce(into: []) { partialResult, providerType in
                 switch providerType {
                 case .nowNodes:
@@ -37,9 +36,8 @@ struct DashWalletAssembly: WalletManagerAssembly {
                     return
                 }
             }
-            
+
             $0.networkService = BitcoinNetworkService(providers: providers)
         }
     }
-    
 }

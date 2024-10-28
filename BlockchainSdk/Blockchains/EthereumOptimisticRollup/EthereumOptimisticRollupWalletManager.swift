@@ -47,8 +47,7 @@ final class EthereumOptimisticRollupWalletManager: EthereumWalletManager {
                     }
                 }
                 .eraseToAnyPublisher()
-        }
-        catch {
+        } catch {
             return .anyFail(error: error)
         }
     }

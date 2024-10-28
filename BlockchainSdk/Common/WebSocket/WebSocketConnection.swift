@@ -12,7 +12,7 @@ actor WebSocketConnection {
     private let url: URL
     private let ping: Ping
     private let timeout: TimeInterval
-    
+
     private var _sessionWebSocketTask: Task<URLSessionWebSocketTaskWrapper, any Error>?
     private var pingTask: Task<Void, Error>?
     private var timeoutTask: Task<Void, Error>?
@@ -26,7 +26,7 @@ actor WebSocketConnection {
         self.ping = ping
         self.timeout = timeout
     }
-    
+
     func send(_ message: URLSessionWebSocketTask.Message) async throws {
         let webSocketTask = try await setupWebSocketTask()
         log("Send: \(message)")
@@ -43,11 +43,11 @@ actor WebSocketConnection {
         guard let webSocket = try await _sessionWebSocketTask?.value else {
             throw WebSocketConnectionError.webSocketNotFound
         }
-        
+
         // Get a message from the last response
         let response = try await webSocket.receive()
         log("Receive: \(response)")
-        
+
         let data = try mapToData(from: response)
         return data
     }
@@ -66,7 +66,7 @@ private extension WebSocketConnection {
             try await ping()
         }
     }
-    
+
     func startTimeoutTask() {
         timeoutTask?.cancel()
         timeoutTask = Task { [weak self] in
@@ -77,12 +77,12 @@ private extension WebSocketConnection {
             await disconnect()
         }
     }
-    
+
     func ping() async throws {
         guard let webSocket = try await _sessionWebSocketTask?.value else {
             throw WebSocketConnectionError.webSocketNotFound
         }
-        
+
         switch ping {
         case .message(_, let message):
             log("Send ping: \(message)")
@@ -92,10 +92,10 @@ private extension WebSocketConnection {
             log("Send plain ping")
             try await webSocket.sendPing()
         }
-        
+
         startPingTask()
     }
-    
+
     func setupWebSocketTask() async throws -> URLSessionWebSocketTaskWrapper {
         if let _sessionWebSocketTask {
             let socket = try await _sessionWebSocketTask.value
@@ -105,45 +105,45 @@ private extension WebSocketConnection {
 
         let connectingTask = Task {
             let socket = URLSessionWebSocketTaskWrapper(url: url)
-            
+
             log("\(socket) start connect")
             try await socket.connect()
             log("\(socket) did open")
 
             return socket
         }
-        
+
         _sessionWebSocketTask = connectingTask
         return try await connectingTask.value
     }
-    
+
     func mapToData(from message: URLSessionWebSocketTask.Message) throws -> Data {
         switch message {
         case .data(let data):
             return data
-            
+
         case .string(let string):
             guard let data = string.data(using: .utf8) else {
                 throw WebSocketConnectionError.invalidResponse
             }
 
             return data
-            
+
         @unknown default:
             fatalError()
         }
     }
-    
+
     func disconnect() {
         pingTask?.cancel()
         timeoutTask?.cancel()
         _sessionWebSocketTask?.cancel()
         _sessionWebSocketTask = nil
     }
-    
+
     nonisolated func log(_ args: Any) {
         print("\(self) [\(args)]")
-   }
+    }
 }
 
 // MARK: - CustomStringConvertible
@@ -160,7 +160,7 @@ extension WebSocketConnection {
     enum Ping {
         case plain(interval: TimeInterval)
         case message(interval: TimeInterval, message: URLSessionWebSocketTask.Message)
-        
+
         var interval: TimeInterval {
             switch self {
             case .plain(let interval):
