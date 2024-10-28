@@ -12,9 +12,9 @@ module Fastlane
         clean_destination = params[:clean_destination]
         include_comments = params[:include_comments]
         original_filenames = params[:use_original]
-        export_empty_as = params[:export_empty_as] ? params[:export_empty_as] : "base"
-        export_sort = params[:export_sort] ? params[:export_sort] : "first_added"
-        replace_breaks = params[:replace_breaks] ? true : false
+        export_empty_as = params[:export_empty_as] || "base"
+        export_sort = params[:export_sort] || "first_added"
+        replace_breaks = params[:replace_breaks] || false
         add_newline_eof = params[:add_newline_eof] || false
         filter_data = params[:filter_data]
 
