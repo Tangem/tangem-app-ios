@@ -39,7 +39,7 @@ class OnrampProvidersCoordinator: CoordinatorObject {
 
 extension OnrampProvidersCoordinator {
     enum Options {
-        case deafult
+        case `default`
     }
 }
 

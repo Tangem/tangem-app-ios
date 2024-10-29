@@ -149,7 +149,7 @@ extension SendCoordinator: OnrampRoutable {
             self?.onrampProvidersCoordinator = nil
         }
 
-        coordinator.start(with: .deafult)
+        coordinator.start(with: .default)
         onrampProvidersCoordinator = coordinator
     }
 }
