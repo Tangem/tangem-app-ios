@@ -37,12 +37,18 @@ struct MarketsUnableToLoadDataView: View {
 }
 
 #Preview {
-    @State var isLoading = false
+    struct PreviewHolder: View {
+        @State var isLoading = false
 
-    return MarketsUnableToLoadDataView(isButtonBusy: isLoading) {
-        isLoading = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            isLoading = false
+        var body: some View {
+            MarketsUnableToLoadDataView(isButtonBusy: isLoading) {
+                isLoading = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    isLoading = false
+                }
+            }
         }
     }
+
+    return PreviewHolder()
 }

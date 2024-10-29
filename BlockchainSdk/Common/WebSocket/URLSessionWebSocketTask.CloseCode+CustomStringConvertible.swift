@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension URLSessionWebSocketTask.CloseCode: CustomStringConvertible {
+extension URLSessionWebSocketTask.CloseCode: @retroactive CustomStringConvertible {
     public var description: String {
         switch self {
         case .invalid:
