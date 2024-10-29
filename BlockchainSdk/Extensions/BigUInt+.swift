@@ -34,7 +34,7 @@ public extension BigUInt {
     var decimal: Decimal? {
         let bigUIntFormatted = String(self)
 
-        // Check that the decimal has been correctly formatted from the string without any loss 
+        // Check that the decimal has been correctly formatted from the string without any loss
         guard
             let result = Decimal(string: bigUIntFormatted, locale: Locale.enUS),
             let decimalFormatted = Self.decimalFormatter.string(from: NSDecimalNumber(decimal: result)),
@@ -42,10 +42,10 @@ public extension BigUInt {
         else {
             return nil
         }
-        
+
         return result
     }
-    
+
     private static var decimalFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
@@ -54,7 +54,6 @@ public extension BigUInt {
         return formatter
     }()
 }
-
 
 public extension BigInt {
     /// - Note: Based on https://github.com/attaswift/BigInt/issues/52
@@ -86,7 +85,5 @@ public extension BigInt {
 // MARK: - Convenience extensions
 
 private extension Locale {
-    static let enUS: Locale = Locale(identifier: "en_US")
+    static let enUS: Locale = .init(identifier: "en_US")
 }
-
-

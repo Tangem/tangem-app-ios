@@ -12,32 +12,31 @@ import Moya
 struct TezosTarget: TargetType {
     let host: String
     let endpoint: TargetEndpoint
-    
+
     var baseURL: URL {
         return URL(string: host)!
     }
-    
+
     var path: String {
         return endpoint.path
     }
-    
+
     var method: Moya.Method {
         return endpoint.method
     }
-    
+
     var sampleData: Data {
         return Data()
     }
-    
+
     var task: Task {
         return endpoint.task
     }
-    
-    var headers: [String : String]? {
+
+    var headers: [String: String]? {
         return ["Content-Type": "application/json"]
     }
-    
-    
+
     enum TargetEndpoint {
         case addressData(address: String)
         case getHeader
@@ -45,7 +44,7 @@ struct TezosTarget: TargetType {
         case forgeOperations(body: TezosForgeBody)
         case preapplyOperations(body: [TezosPreapplyBody])
         case sendTransaction(tx: String)
-        
+
         var path: String {
             switch self {
             case .addressData(let address):
@@ -62,7 +61,7 @@ struct TezosTarget: TargetType {
                 return "injection/operation"
             }
         }
-        
+
         var method: Moya.Method {
             switch self {
             case .addressData, .getHeader, .managerKey:
@@ -71,18 +70,18 @@ struct TezosTarget: TargetType {
                 return .post
             }
         }
-        
+
         var task: Task {
             let encoder = JSONEncoder()
             encoder.keyEncodingStrategy = .convertToSnakeCase
-            
+
             switch self {
             case .addressData, .getHeader, .managerKey:
                 return .requestPlain
             case .forgeOperations(let body):
                 return .requestCustomJSONEncodable(body, encoder: encoder)
             case .preapplyOperations(let body):
-                 return .requestCustomJSONEncodable(body, encoder: encoder)
+                return .requestCustomJSONEncodable(body, encoder: encoder)
             case .sendTransaction(let tx):
                 return .requestData("\"\(tx)\"".data(using: .utf8)!)
             }

@@ -14,13 +14,13 @@ final class BigUInt_: XCTestCase {
         let decimalToBigUIntFormatted: (String) -> String = { string in
             let decimal = Decimal(string: string)
             XCTAssertNotNil(decimal)
-            
+
             let bigUInt = BigUInt(decimal: decimal!)
             XCTAssertNotNil(bigUInt)
-            
+
             return String(bigUInt!)
         }
-        
+
         // Good numbers
         let validStrings = [
             "0",
@@ -31,7 +31,7 @@ final class BigUInt_: XCTestCase {
         for string in validStrings {
             XCTAssertEqual(string, decimalToBigUIntFormatted(string))
         }
-        
+
         // Overflows
         let invalidStrings = [
             "123456789012345678901234567890123456789012345678901234567890",
@@ -39,12 +39,12 @@ final class BigUInt_: XCTestCase {
         for string in invalidStrings {
             XCTAssertNotEqual(string, decimalToBigUIntFormatted(string))
         }
-        
+
         // Corner cases
         XCTAssertNil(BigUInt(decimal: -1))
         XCTAssertNil(BigUInt(decimal: 1.5))
     }
-    
+
     func testBigUIntToDecimal() throws {
         // Good numbers
         let validStrings: [String] = [
@@ -57,7 +57,7 @@ final class BigUInt_: XCTestCase {
         for string in validStrings {
             XCTAssertEqual(BigUInt(stringLiteral: string).decimal, Decimal(string: string))
         }
-        
+
         // Overflows
         let invalidStrings = [
             "12345678901234567890123456789012345678901234567890123456789012345678901234567890",

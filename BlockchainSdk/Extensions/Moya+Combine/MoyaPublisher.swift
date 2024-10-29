@@ -1,5 +1,6 @@
 #if canImport(Combine)
 
+import Foundation
 import Combine
 import Moya
 
@@ -8,7 +9,6 @@ import Moya
 
 @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 internal class MoyaPublisher<Output>: Publisher {
-
     internal typealias Failure = MoyaError
 
     private class Subscription: Combine.Subscription {

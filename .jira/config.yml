@@ -1,0 +1,13 @@
+deployments:
+  environmentMapping:
+    development:
+      - "Branch"
+      - "Development"
+      - "Alpha"
+      - "Beta"
+    testing:
+      - "testing"
+    staging:
+      - "staging"
+    production:
+      - "production"

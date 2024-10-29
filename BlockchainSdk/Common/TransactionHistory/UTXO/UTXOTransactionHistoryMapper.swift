@@ -12,7 +12,7 @@ struct UTXOTransactionHistoryMapper {
     private var decimalValue: Decimal {
         blockchain.decimalValue
     }
-    
+
     init(blockchain: Blockchain) {
         self.blockchain = blockchain
     }
@@ -31,16 +31,16 @@ extension UTXOTransactionHistoryMapper: TransactionHistoryMapper {
         guard let transactions = response.transactions else {
             return []
         }
-        
+
         return transactions.compactMap { transaction -> TransactionRecord? in
             guard let feeSatoshi = Decimal(transaction.fees) else {
                 return nil
             }
-            
+
             let isOutgoing = transaction.compat.vin.contains(where: { $0.addresses.contains(response.address) })
             let status: TransactionRecord.TransactionStatus = transaction.confirmations > 0 ? .confirmed : .unconfirmed
             let fee = feeSatoshi / decimalValue
-            
+
             return TransactionRecord(
                 hash: transaction.txid,
                 index: 0,
@@ -53,7 +53,7 @@ extension UTXOTransactionHistoryMapper: TransactionHistoryMapper {
                 date: Date(timeIntervalSince1970: TimeInterval(transaction.blockTime))
             )
         }
-        
+
         func sourceType(vin: [BlockBookAddressResponse.Vin]) -> TransactionRecord.SourceType {
             let spenders: [TransactionRecord.Source] = vin.reduce([]) { result, input in
                 guard let value = input.value,
@@ -61,33 +61,33 @@ extension UTXOTransactionHistoryMapper: TransactionHistoryMapper {
                       let address = input.addresses.first else {
                     return result
                 }
-                
+
                 let amount = amountSatoshi / decimalValue
                 return result + [TransactionRecord.Source(address: address, amount: amount)]
             }
-            
+
             if spenders.count == 1, let spender = spenders.first {
                 return .single(spender)
             }
-            
+
             return .multiple(spenders)
         }
-        
+
         func destinationType(vout: [BlockBookAddressResponse.Vout]) -> TransactionRecord.DestinationType {
             let destinations: [TransactionRecord.Destination] = vout.reduce([]) { result, output in
                 guard let amountSatoshi = Decimal(output.value),
                       let address = output.addresses.first else {
                     return result
                 }
-                
+
                 let amount = amountSatoshi / decimalValue
                 return result + [TransactionRecord.Destination(address: .user(address), amount: amount)]
             }
-            
+
             if destinations.count == 1, let destination = destinations.first {
                 return .single(destination)
             }
-            
+
             return .multiple(destinations)
         }
     }

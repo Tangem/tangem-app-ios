@@ -58,7 +58,7 @@ class BitcoinScriptBuilder {
         data += Data(opcode.value)
     }
 
-    private func appendData(_ newData: Data) throws  {
+    private func appendData(_ newData: Data) throws {
         guard !newData.isEmpty else {
             throw BlockchainSdkError.failedToCreateMultisigScript
         }
@@ -77,7 +77,7 @@ class BitcoinScriptBuilder {
 
         var chunks = [BitcoinScriptChunk]()
 
-        var i: Int = 0
+        var i = 0
         let count: Int = data.count
 
         while i < count {
@@ -95,6 +95,6 @@ private extension BitcoinScriptBuilder {
         .OP_PUSHDATA1,
         .OP_PUSHDATA2,
         .OP_PUSHDATA4,
-        .OP_INVALIDOPCODE
+        .OP_INVALIDOPCODE,
     ]
 }

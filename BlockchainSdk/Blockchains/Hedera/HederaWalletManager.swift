@@ -40,7 +40,7 @@ final class HederaWalletManager: BaseManager {
             .dropLast(length)
             .map { _ in "•" }
             .joined()
-        + publicKey.suffix(length)
+            + publicKey.suffix(length)
     }()
 
     // MARK: - Initialization/Deinitialization
@@ -161,8 +161,8 @@ final class HederaWalletManager: BaseManager {
 
         return networkService
             .getExchangeRate()
-            .map { $0 as HederaExchangeRate? }  // Combine can't implicitly bridge `Publisher<T, Error>` to `Publisher<T?, Error`
-            .replaceError(with: nil)    // Token association fee request is auxiliary and shouldn't cause the entire reactive chain to fail
+            .map { $0 as HederaExchangeRate? } // Combine can't implicitly bridge `Publisher<T, Error>` to `Publisher<T?, Error`
+            .replaceError(with: nil) // Token association fee request is auxiliary and shouldn't cause the entire reactive chain to fail
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher()
     }
@@ -208,7 +208,7 @@ final class HederaWalletManager: BaseManager {
             // Any error returned from the API is treated as a non-existent account, just in case
             return walletManager
                 .networkService
-                .getAccountInfo(publicKey: alias.toBytesRaw())  // ECDSA key must be in a compressed form
+                .getAccountInfo(publicKey: alias.toBytesRaw()) // ECDSA key must be in a compressed form
                 .map { _ in true }
                 .replaceError(with: false)
                 .eraseToAnyPublisher()
@@ -436,7 +436,7 @@ final class HederaWalletManager: BaseManager {
     private static func makeTransactionValidStartDate() -> UnixTimestamp? {
         // Subtracting `validStartDateDiff` from the `Date.now` to make sure that the tx valid start date has already passed
         // The logic is the same as in the `Hedera.TransactionId.generateFrom(_:)` factory method
-        let validStartDateDiff = Int.random(in: 5_000_000_000..<8_000_000_000)
+        let validStartDateDiff = Int.random(in: 5_000_000_000 ..< 8_000_000_000)
         let validStartDate = Calendar.current.date(byAdding: .nanosecond, value: -validStartDateDiff, to: Date())
 
         return validStartDate.flatMap(UnixTimestamp.init(date:))
@@ -477,7 +477,7 @@ final class HederaWalletManager: BaseManager {
         .withWeakCaptureOf(self)
         .flatMap { walletManager, compiledTransaction in
             let transactionRawData = try? compiledTransaction.toBytes()
-            
+
             return walletManager
                 .networkService
                 .send(transaction: compiledTransaction)
@@ -513,7 +513,7 @@ extension HederaWalletManager: WalletManager {
                 throw WalletError.empty
             }
 
-            return try self.transactionBuilder
+            return try transactionBuilder
                 .buildTransferTransactionForSign(
                     transaction: transaction,
                     validStartDate: validStartDate,
@@ -579,8 +579,8 @@ extension HederaWalletManager: AssetRequirementsManager {
                     throw WalletError.empty
                 }
 
-                return try self.transactionBuilder.buildTokenAssociationForSign(
-                    tokenAssociation: .init(accountId: self.wallet.address, contractAddress: token.contractAddress),
+                return try transactionBuilder.buildTokenAssociationForSign(
+                    tokenAssociation: .init(accountId: wallet.address, contractAddress: token.contractAddress),
                     validStartDate: validStartDate,
                     nodeAccountIds: nil
                 )

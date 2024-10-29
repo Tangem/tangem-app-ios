@@ -9,19 +9,19 @@
 import Foundation
 import WalletCore
 
-public struct AptosCoreAddressService {
+struct AptosCoreAddressService {
     private let walletCoreAddressService = WalletCoreAddressService(coin: .aptos)
-    
+
     private func isStandardLength(for address: String) -> Bool {
         return address.removeHexPrefix().count == Constants.aptosHexAddressLength
     }
-    
+
     private func insertNonsignificantZero(for address: String) -> String {
         let addressWithoutPrefix = address.removeHexPrefix()
-        
+
         let addressWithZeroBuffer = addressWithoutPrefix.leftPadding(toLength: Constants.aptosHexAddressLength, withPad: Constants.nonSignificationZero)
         let nonsignificantAddress = addressWithZeroBuffer.addHexPrefix()
-        
+
         return nonsignificantAddress
     }
 }
@@ -29,9 +29,9 @@ public struct AptosCoreAddressService {
 // MARK: - AddressProvider
 
 extension AptosCoreAddressService: AddressProvider {
-    public func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
+    func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
         let address = try walletCoreAddressService.makeAddress(for: publicKey, with: addressType)
-        
+
         if isStandardLength(for: address.value) {
             return address
         } else {
@@ -44,7 +44,7 @@ extension AptosCoreAddressService: AddressProvider {
 // MARK: - AddressValidator
 
 extension AptosCoreAddressService: AddressValidator {
-    public func validate(_ address: String) -> Bool {
+    func validate(_ address: String) -> Bool {
         return walletCoreAddressService.validate(address)
     }
 }

@@ -30,17 +30,15 @@ extension WalletManagerAssemblyInput: NetworkProviderAssemblyInput {
 
 /// Main assembly wallet manager interface
 protocol WalletManagerAssembly {
-    
     /// Assembly to access any providers
     var networkProviderAssembly: NetworkProviderAssembly { get }
-    
+
     // MARK: - Wallet Assembly
-    
+
     /// Function that creates WalletManager according to input data
     /// - Parameter input: Input that contains information about blockchain, SdkConfig, network settings
     /// - Returns: WalletManager for specified blockchain
     func make(with input: WalletManagerAssemblyInput) throws -> WalletManager
-    
 }
 
 extension WalletManagerAssembly {

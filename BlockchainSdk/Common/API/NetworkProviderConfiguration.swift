@@ -6,6 +6,7 @@
 //  Copyright © 2022 Tangem AG. All rights reserved.
 //
 
+import Foundation
 import Moya
 import TangemSdk
 
@@ -23,7 +24,7 @@ public struct NetworkProviderConfiguration {
         self.urlSessionConfiguration = urlSessionConfiguration
         self.credentials = credentials
     }
-    
+
     var plugins: [PluginType] {
         var plugins: [PluginType] = []
 
@@ -37,12 +38,14 @@ public struct NetworkProviderConfiguration {
 
         if let credentials {
             plugins.append(CredentialsPlugin { _ -> URLCredential? in
-                    .init(user: credentials.user,
-                          password: credentials.password,
-                          persistence: .none)
+                .init(
+                    user: credentials.user,
+                    password: credentials.password,
+                    persistence: .none
+                )
             })
         }
-        
+
         return plugins
     }
 }
@@ -52,7 +55,7 @@ public extension NetworkProviderConfiguration {
         case none
         case `default`
         case verbose
-        
+
         var logOptions: TangemNetworkLoggerPlugin.Configuration.LogOptions? {
             switch self {
             case .none: return nil

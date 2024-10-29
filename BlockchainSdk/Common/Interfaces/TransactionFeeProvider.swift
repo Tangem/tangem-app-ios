@@ -11,7 +11,7 @@ import Combine
 
 public protocol TransactionFeeProvider {
     var allowsFeeSelection: Bool { get }
-    
+
     /// Use this method only for get a estimation fee
     /// Better use `getFee(amount:destination:)` for calculate the right fee for transaction
     func estimatedFee(amount: Amount) -> AnyPublisher<[Fee], Error>

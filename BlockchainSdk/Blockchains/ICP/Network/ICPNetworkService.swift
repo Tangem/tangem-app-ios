@@ -12,21 +12,20 @@ import IcpKit
 import TangemSdk
 
 final class ICPNetworkService: MultiNetworkProvider {
-    
     // MARK: - Protperties
-    
+
     let providers: [ICPNetworkProvider]
     var currentProviderIndex: Int = 0
-    
+
     private var blockchain: Blockchain
-    
+
     // MARK: - Init
-    
+
     init(providers: [ICPNetworkProvider], blockchain: Blockchain) {
         self.providers = providers
         self.blockchain = blockchain
     }
-    
+
     func getBalance(address: String) -> AnyPublisher<Decimal, Error> {
         guard let balanceRequestData = try? makeBalanceRequestData(address: address) else {
             return .anyFail(error: WalletError.empty).eraseToAnyPublisher()
@@ -40,14 +39,14 @@ final class ICPNetworkService: MultiNetworkProvider {
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func send(data: Data) -> AnyPublisher<Void, Error> {
         providerPublisher { provider in
             provider
                 .send(data: data)
         }
     }
-    
+
     func readState(data: Data, paths: [ICPStateTreePath]) -> AnyPublisher<UInt64, Error> {
         providerPublisher { provider in
             provider
@@ -79,9 +78,9 @@ final class ICPNetworkService: MultiNetworkProvider {
         }
         .eraseToAnyPublisher()
     }
-    
+
     // MARK: - Private implementation
-    
+
     private func makeBalanceRequestData(address: String) throws -> Data {
         let envelope = ICPRequestEnvelope(
             content: ICPRequestBuilder.makeCallRequestContent(

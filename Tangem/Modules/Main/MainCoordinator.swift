@@ -78,7 +78,8 @@ class MainCoordinator: CoordinatorObject {
             coordinator: self,
             swipeDiscoveryHelper: swipeDiscoveryHelper,
             mainUserWalletPageBuilderFactory: CommonMainUserWalletPageBuilderFactory(coordinator: self),
-            pushNotificationsAvailabilityProvider: pushNotificationsAvailabilityProvider
+            pushNotificationsAvailabilityProvider: pushNotificationsAvailabilityProvider,
+            actionButtonsViewModel: makeActionButtonsViewModel()
         )
 
         swipeDiscoveryHelper.delegate = viewModel
@@ -393,6 +394,29 @@ extension MainCoordinator: SingleTokenBaseRoutable {
 
         marketsTokenDetailsCoordinator = coordinator
     }
+
+    func openOnramp(walletModel: WalletModel, userWalletModel: UserWalletModel) {
+        mainBottomSheetUIManager.hide()
+
+        let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] navigationInfo in
+            self?.sendCoordinator = nil
+
+            if let navigationInfo {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                    self?.openFeeCurrency(for: navigationInfo.walletModel, userWalletModel: navigationInfo.userWalletModel)
+                }
+            }
+        }
+
+        let coordinator = SendCoordinator(dismissAction: dismissAction)
+        let options = SendCoordinator.Options(
+            walletModel: walletModel,
+            userWalletModel: userWalletModel,
+            type: .onramp
+        )
+        coordinator.start(with: options)
+        sendCoordinator = coordinator
+    }
 }
 
 // MARK: - OrganizeTokensRoutable protocol conformance
@@ -428,6 +452,33 @@ extension MainCoordinator: RateAppRoutable {
 extension MainCoordinator: PushNotificationsPermissionRequestDelegate {
     func didFinishPushNotificationOnboarding() {
         pushNotificationsViewModel = nil
+    }
+}
+
+// MARK: - Action buttons
+
+extension MainCoordinator: ActionButtonsRoutable {
+    func openBuy() {
+        // IOS-8237
+    }
+
+    func openSwap() {
+        // IOS-8238
+    }
+
+    func openSell() {
+        // IOS-8237
+    }
+}
+
+extension MainCoordinator {
+    private func makeActionButtonsViewModel() -> ActionButtonsViewModel {
+        ActionButtonsViewModel(
+            actionButtonFactory: CommonActionButtonsFactory(
+                coordinator: self,
+                actionButtons: [.buy, .swap, .sell]
+            )
+        )
     }
 }
 

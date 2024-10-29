@@ -11,9 +11,9 @@ import BigInt
 
 /// https://eips.ethereum.org/EIPS/eip-20#transfer
 public struct TransferERC20TokenMethod {
-    public let destination: String
-    public let amount: BigUInt
-    
+    let destination: String
+    let amount: BigUInt
+
     public init(destination: String, amount: BigUInt) {
         self.amount = amount
         self.destination = destination

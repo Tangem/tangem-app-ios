@@ -15,7 +15,7 @@ class CardScannerFactory {
             return false
         }
 
-        return FeatureStorage().isMockedCardScannerEnabled
+        return FeatureStorage.instance.isMockedCardScannerEnabled
     }
 
     func makeDefaultScanner() -> CardScanner {

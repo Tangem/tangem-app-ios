@@ -50,7 +50,7 @@ extension BlockBookAddressResponse {
         let fromAddress: String?
         let toAddress: String?
         let voteList: [String: Int]?
-        
+
         /// - Note: Generated using `Explicit `Codable` implementation` refactor menu option.
         private enum CodingKeys: String, CodingKey {
             case txid
@@ -74,34 +74,34 @@ extension BlockBookAddressResponse {
             case toAddress
             case voteList
         }
-        
+
         /// - Note: Generated using `Explicit `Codable` implementation` refactor menu option.
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            
-            self.txid = try container.decode(String.self, forKey: CodingKeys.txid)
-            self.contractType = try container.decodeIfPresent(Int.self, forKey: CodingKeys.contractType)
-            self.contractName = try container.decodeIfPresent(String.self, forKey: CodingKeys.contractName)
-            self.version = try container.decodeIfPresent(Int.self, forKey: CodingKeys.version)
-            self.vin = try container.decodeIfPresent([Vin].self, forKey: CodingKeys.vin)
-            self.vout = try container.decodeIfPresent([Vout].self, forKey: CodingKeys.vout)
-            self.blockHash = try container.decodeIfPresent(String.self, forKey: CodingKeys.blockHash)
-            self.blockHeight = try container.decode(Int.self, forKey: CodingKeys.blockHeight)
-            self.confirmations = try container.decode(Int.self, forKey: CodingKeys.confirmations)
-            self.blockTime = try container.decode(Int.self, forKey: CodingKeys.blockTime)
-            self.value = try container.decode(String.self, forKey: CodingKeys.value)
-            self.valueIn = try container.decodeIfPresent(String.self, forKey: CodingKeys.valueIn)
-            self.fees = try container.decode(String.self, forKey: CodingKeys.fees)
-            self.hex = try container.decodeIfPresent(String.self, forKey: CodingKeys.hex)
-            self.tokenTransfers = try container.decodeIfPresent([TokenTransfer].self, forKey: CodingKeys.tokenTransfers)
-            self.ethereumSpecific = try container.decodeIfPresent(EthereumSpecific.self, forKey: CodingKeys.ethereumSpecific)
-            self.tronTXReceipt = try container.decodeIfPresent(TronTXReceipt.self, forKey: CodingKeys.tronTXReceipt)
-            self.fromAddress = try container.decodeIfPresent(String.self, forKey: CodingKeys.fromAddress)
-            self.toAddress = try container.decodeIfPresent(String.self, forKey: CodingKeys.toAddress)
-            self.voteList = try container.decodeIfPresent([String: Int].self, forKey: CodingKeys.voteList)
+
+            txid = try container.decode(String.self, forKey: CodingKeys.txid)
+            contractType = try container.decodeIfPresent(Int.self, forKey: CodingKeys.contractType)
+            contractName = try container.decodeIfPresent(String.self, forKey: CodingKeys.contractName)
+            version = try container.decodeIfPresent(Int.self, forKey: CodingKeys.version)
+            vin = try container.decodeIfPresent([Vin].self, forKey: CodingKeys.vin)
+            vout = try container.decodeIfPresent([Vout].self, forKey: CodingKeys.vout)
+            blockHash = try container.decodeIfPresent(String.self, forKey: CodingKeys.blockHash)
+            blockHeight = try container.decode(Int.self, forKey: CodingKeys.blockHeight)
+            confirmations = try container.decode(Int.self, forKey: CodingKeys.confirmations)
+            blockTime = try container.decode(Int.self, forKey: CodingKeys.blockTime)
+            value = try container.decode(String.self, forKey: CodingKeys.value)
+            valueIn = try container.decodeIfPresent(String.self, forKey: CodingKeys.valueIn)
+            fees = try container.decode(String.self, forKey: CodingKeys.fees)
+            hex = try container.decodeIfPresent(String.self, forKey: CodingKeys.hex)
+            tokenTransfers = try container.decodeIfPresent([TokenTransfer].self, forKey: CodingKeys.tokenTransfers)
+            ethereumSpecific = try container.decodeIfPresent(EthereumSpecific.self, forKey: CodingKeys.ethereumSpecific)
+            tronTXReceipt = try container.decodeIfPresent(TronTXReceipt.self, forKey: CodingKeys.tronTXReceipt)
+            fromAddress = try container.decodeIfPresent(String.self, forKey: CodingKeys.fromAddress)
+            toAddress = try container.decodeIfPresent(String.self, forKey: CodingKeys.toAddress)
+            voteList = try container.decodeIfPresent([String: Int].self, forKey: CodingKeys.voteList)
         }
     }
-    
+
     struct Vin: Decodable {
         let txid: String?
         let sequence: Int?
@@ -113,7 +113,7 @@ extension BlockBookAddressResponse {
         let vout: Int?
         let isOwn: Bool?
     }
-    
+
     struct Vout: Codable {
         let value: String
         let n: Int
@@ -123,7 +123,7 @@ extension BlockBookAddressResponse {
         let spent: Bool?
         let isOwn: Bool?
     }
-    
+
     /// For EVM-like blockchains
     struct TokenTransfer: Decodable {
         let type: String?
@@ -153,7 +153,7 @@ extension BlockBookAddressResponse {
         let gasUsed: Decimal?
         let gasPrice: String?
         let data: String?
-        let parsedData : ParsedData?
+        let parsedData: ParsedData?
 
         struct ParsedData: Decodable {
             /// First 4byte from data. E.g. `0x617ba037`
@@ -167,7 +167,7 @@ extension BlockBookAddressResponse {
     struct TronTXReceipt: Decodable {
         let status: StatusType?
     }
-    
+
     struct Token: Decodable {
         let type: String?
         let id: String?
@@ -195,10 +195,9 @@ struct BlockBookFeeResponse: Decodable {
     struct Result: Decodable {
         let feerate: Double
     }
-    
+
     let result: Result
 }
-
 
 struct SendResponse: Decodable {
     let result: String

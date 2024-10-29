@@ -11,7 +11,7 @@ import BlockchainSdk
 
 class SupportedBlockchainsPreferencesViewModel: ObservableObject {
     @Published var blockchainViewModels: [DefaultToggleRowViewModel] = []
-    private let featureStorage = FeatureStorage()
+    private let featureStorage = FeatureStorage.instance
 
     init(
         blockchainIds: Set<Item>,

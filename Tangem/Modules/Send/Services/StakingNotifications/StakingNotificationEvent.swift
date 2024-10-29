@@ -15,6 +15,7 @@ enum StakingNotificationEvent {
     case withdraw
     case claimRewards
     case restakeRewards
+    case restake
     case revote
     case unlock(periodFormatted: String)
     case validationErrorEvent(ValidationErrorEvent)
@@ -32,6 +33,7 @@ extension StakingNotificationEvent: NotificationEvent {
         case .withdraw: "withdraw".hashValue
         case .claimRewards: "claimRewards".hashValue
         case .restakeRewards: "restakeRewards".hashValue
+        case .restake: "restake".hashValue
         case .revote: "revote".hashValue
         case .unlock: "unlock".hashValue
         case .validationErrorEvent(let validationErrorEvent): validationErrorEvent.id
@@ -47,7 +49,8 @@ extension StakingNotificationEvent: NotificationEvent {
         case .unstake: .string(Localization.commonUnstake)
         case .withdraw: .string(Localization.stakingWithdraw)
         case .claimRewards: .string(Localization.commonClaim)
-        case .restakeRewards: .string(Localization.stakingRestake)
+        case .restakeRewards: .string(Localization.stakingRestakeRewards)
+        case .restake: .string(Localization.stakingRestake)
         case .revote: .string(Localization.stakingRevote)
         case .unlock: .string(Localization.stakingUnlockedLocked)
         case .validationErrorEvent(let event): event.title
@@ -70,6 +73,8 @@ extension StakingNotificationEvent: NotificationEvent {
             Localization.stakingNotificationClaimRewardsText
         case .restakeRewards:
             Localization.stakingNotificationRestakeRewardsText
+        case .restake:
+            Localization.stakingNotificationRestakeText
         case .revote:
             // revote is implemented only for Tron
             Localization.stakingNotificationsRevoteTronText
@@ -87,7 +92,7 @@ extension StakingNotificationEvent: NotificationEvent {
     var colorScheme: NotificationView.ColorScheme {
         switch self {
         case .approveTransactionInProgress, .feeWillBeSubtractFromSendingAmount, .stakesWillMoveToNewValidator: .secondary
-        case .unstake, .networkUnreachable, .withdraw, .claimRewards, .restakeRewards, .unlock, .revote: .action
+        case .unstake, .networkUnreachable, .withdraw, .claimRewards, .restakeRewards, .restake, .unlock, .revote: .action
         case .validationErrorEvent(let event): event.colorScheme
         }
     }
@@ -98,7 +103,7 @@ extension StakingNotificationEvent: NotificationEvent {
             return .init(iconType: .image(Assets.attention.image))
         case .approveTransactionInProgress:
             return .init(iconType: .progressView)
-        case .unstake, .withdraw, .claimRewards, .restakeRewards, .unlock, .stakesWillMoveToNewValidator, .revote:
+        case .unstake, .withdraw, .claimRewards, .restakeRewards, .restake, .unlock, .stakesWillMoveToNewValidator, .revote:
             return .init(iconType: .image(Assets.blueCircleWarning.image))
         case .validationErrorEvent(let event):
             return event.icon
@@ -115,6 +120,7 @@ extension StakingNotificationEvent: NotificationEvent {
              .withdraw,
              .claimRewards,
              .restakeRewards,
+             .restake,
              .unlock,
              .revote,
              .stakesWillMoveToNewValidator:
@@ -136,6 +142,7 @@ extension StakingNotificationEvent: NotificationEvent {
              .withdraw,
              .claimRewards,
              .restakeRewards,
+             .restake,
              .unlock,
              .revote,
              .stakesWillMoveToNewValidator:

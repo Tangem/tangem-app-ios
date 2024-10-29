@@ -13,7 +13,7 @@ enum AptosChainId {
     case mainnet
     case testnet
     case custom(UInt32)
-    
+
     var rawValue: UInt32 {
         switch self {
         case .mainnet:

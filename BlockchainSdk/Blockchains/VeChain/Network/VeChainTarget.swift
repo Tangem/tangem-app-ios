@@ -54,7 +54,7 @@ extension VeChainTarget: TargetType {
             return "/transactions/\(request.hash)"
         }
     }
-    
+
     var method: Moya.Method {
         switch target {
         case .viewAccount,
@@ -66,7 +66,7 @@ extension VeChainTarget: TargetType {
             return .post
         }
     }
-    
+
     var task: Moya.Task {
         switch target {
         case .viewAccount,
@@ -84,7 +84,7 @@ extension VeChainTarget: TargetType {
             return .requestJSONEncodable(VeChainNetworkParams.Transaction(raw: rawTransaction))
         }
     }
-    
+
     var headers: [String: String]? {
         return [
             "Content-Type": "application/json",

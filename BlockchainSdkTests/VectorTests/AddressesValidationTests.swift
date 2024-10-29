@@ -10,7 +10,6 @@ import XCTest
 import CryptoKit
 import TangemSdk
 import WalletCore
-
 @testable import BlockchainSdk
 
 /// Basic testplan for testing validation Addresses blockchain with compare addresses from TrustWallet address service and Local address service
@@ -36,7 +35,7 @@ class AddressesValidationTests: XCTestCase {
 
             let coin = try XCTUnwrap(CoinType(blockchain), "__INVALID_VECTOR__ CANNOT CREATE WALLET CORE COIN FOR BLOCKCHAIN '\(blockchain.displayName)'")
             let walletCoreAddressValidator: AddressValidator
-            
+
             if coin == .ton {
                 walletCoreAddressValidator = TonAddressService()
             } else {

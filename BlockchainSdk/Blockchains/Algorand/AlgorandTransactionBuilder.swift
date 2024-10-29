@@ -16,19 +16,19 @@ final class AlgorandTransactionBuilder {
     private let curve: EllipticCurve
     private let isTestnet: Bool
     private var coinType: CoinType { .algorand }
-    
+
     private var decimalValue: Decimal {
         Blockchain.algorand(curve: curve, testnet: isTestnet).decimalValue
     }
-    
+
     // MARK: - Init
-    
+
     init(publicKey: Data, curve: EllipticCurve, isTestnet: Bool) {
         self.publicKey = publicKey
         self.curve = curve
         self.isTestnet = isTestnet
     }
-    
+
     // MARK: - Implementation
 
     func buildForSign(transaction: Transaction, with params: AlgorandTransactionBuildParams) throws -> Data {
@@ -64,7 +64,7 @@ final class AlgorandTransactionBuilder {
             signatures: signature.asDataVector(),
             publicKeys: publicKey.asDataVector()
         )
-        
+
         let signingOutput = try AlgorandSigningOutput(serializedData: compiledTransaction)
 
         guard signingOutput.error == .ok, !signingOutput.encoded.isEmpty else {
@@ -87,7 +87,7 @@ final class AlgorandTransactionBuilder {
         } catch {
             throw WalletError.failedToBuildTx
         }
-        
+
         let transfer = AlgorandTransfer.with {
             $0.toAddress = transaction.destinationAddress
             $0.amount = (transaction.amount.value * decimalValue).roundedDecimalNumber.uint64Value
@@ -103,7 +103,7 @@ final class AlgorandTransactionBuilder {
             input.fee = (transaction.fee.amount.value * decimalValue).roundedDecimalNumber.uint64Value
             input.transfer = transfer
         }
-        
+
         return input
     }
 }

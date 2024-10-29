@@ -10,7 +10,7 @@ import Foundation
 
 struct DogecoinExternalLinkProvider: ExternalLinkProvider {
     var testnetFaucetURL: URL? { nil }
-    
+
     func url(transaction hash: String) -> URL? {
         return URL(string: "https://blockchair.com/dogecoin/transaction/\(hash)")
     }

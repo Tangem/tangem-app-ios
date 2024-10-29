@@ -11,6 +11,8 @@ import Foundation
 // MARK: - Provider
 
 class FeatureStorage {
+    static let instance: FeatureStorage = .init()
+
     @AppStorageCompat(FeatureStorageKeys.testnet)
     var isTestnet: Bool = false
 
@@ -37,6 +39,8 @@ class FeatureStorage {
 
     @AppStorageCompat(FeatureStorageKeys.useVisaTestnet)
     var isVisaTestnet = false
+
+    private init() {}
 }
 
 // MARK: - Keys

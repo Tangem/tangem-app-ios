@@ -9,7 +9,6 @@
 import Foundation
 import XCTest
 import WalletCore
-
 @testable import BlockchainSdk
 
 final class VeChainTests: XCTestCase {
@@ -64,7 +63,7 @@ final class VeChainTests: XCTestCase {
         let value = try XCTUnwrap(Decimal(string: "1.2"))
         let amount = Amount(with: blockchain, type: .coin, value: value)
 
-        let feeValue: Amount = .zeroCoin(for: blockchain)   // Doesn't affect fee calculation
+        let feeValue: Amount = .zeroCoin(for: blockchain) // Doesn't affect fee calculation
         let feeParams = VeChainFeeParams(priority: .medium, vmGas: 0)
         let fee = Fee(feeValue, parameters: feeParams)
 
@@ -105,10 +104,10 @@ final class VeChainTests: XCTestCase {
         let encodedTransaction = signedTransaction.hexString
 
         let expectedEncodedTransaction = """
-F87B27880109263B18B36F3C81B4E0DF94207F32EB8D9E6F5178336F86C2EBC3E1A4F872118810A741A462780000807F825\
-2088084329DD26AC0B841D4A16F16647224B53C396F9A1C41C95696B6CCDFD211BA409FE107AB3653E8B179772CBA8D0F12\
-787D1F39AA0C608F2E0DBA157F2BB1071BF03E62BAB6DDF11801
-"""
+        F87B27880109263B18B36F3C81B4E0DF94207F32EB8D9E6F5178336F86C2EBC3E1A4F872118810A741A462780000807F825\
+        2088084329DD26AC0B841D4A16F16647224B53C396F9A1C41C95696B6CCDFD211BA409FE107AB3653E8B179772CBA8D0F12\
+        787D1F39AA0C608F2E0DBA157F2BB1071BF03E62BAB6DDF11801
+        """
 
         XCTAssertEqual(encodedTransaction, expectedEncodedTransaction)
     }
@@ -134,7 +133,7 @@ F87B27880109263B18B36F3C81B4E0DF94207F32EB8D9E6F5178336F86C2EBC3E1A4F872118810A7
         let value = try XCTUnwrap(Decimal(string: "2.45"))
         let amount = Amount(with: blockchain, type: .token(value: token), value: value)
 
-        let feeValue: Amount = .zeroCoin(for: blockchain)   // Doesn't affect fee calculation
+        let feeValue: Amount = .zeroCoin(for: blockchain) // Doesn't affect fee calculation
         let feeParams = VeChainFeeParams(priority: .high, vmGas: 15000)
         let fee = Fee(feeValue, parameters: feeParams)
 
@@ -175,11 +174,11 @@ F87B27880109263B18B36F3C81B4E0DF94207F32EB8D9E6F5178336F86C2EBC3E1A4F872118810A7
         let encodedTransaction = signedTransaction.hexString
 
         let expectedEncodedTransaction = """
-F8BB278801092BDF0FAF64B081B4F85EF85C940000000000000000000000000000456E6572677980B844A9059CBB0000000\
-00000000000000000ECDA0279640AD26749061EB467155943D1BED821000000000000000000000000000000000000000000\
-00000022002604F3B5000081FF82CF8880840683A55FC0B841C2F4CF465B5BA4E0966CB0D31B40F08445ED8AFD6A5D869F0\
-0E420AB4B4472D40D25F33A0BB3CDE09A8405EE7B0741BC7FB3C1C93C905EEAC78D3AD7E7C566F601
-"""
+        F8BB278801092BDF0FAF64B081B4F85EF85C940000000000000000000000000000456E6572677980B844A9059CBB0000000\
+        00000000000000000ECDA0279640AD26749061EB467155943D1BED821000000000000000000000000000000000000000000\
+        00000022002604F3B5000081FF82CF8880840683A55FC0B841C2F4CF465B5BA4E0966CB0D31B40F08445ED8AFD6A5D869F0\
+        0E420AB4B4472D40D25F33A0BB3CDE09A8405EE7B0741BC7FB3C1C93C905EEAC78D3AD7E7C566F601
+        """
 
         XCTAssertEqual(encodedTransaction, expectedEncodedTransaction)
     }
@@ -237,7 +236,7 @@ F8BB278801092BDF0FAF64B081B4F85EF85C940000000000000000000000000000456E6572677980
         let payload2 = Data(hexString: "3fd6c5020004339119000bf2465bea81ca9fe20a3c5943be46fde6e00ccd9659f2a4a003df003e9fd60ab3a446c6c0002a2a")
         let clauses = [
             payload1,
-            payload2
+            payload2,
         ].map(VeChainFeeCalculator.Clause.init(payload:))
         let gas = feeCalculator.gas(for: clauses)
 

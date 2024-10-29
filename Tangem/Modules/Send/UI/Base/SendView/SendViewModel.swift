@@ -9,6 +9,7 @@
 import Combine
 import SwiftUI
 import BlockchainSdk
+import TangemExpress
 
 protocol SendViewAlertPresenter: AnyObject {
     func showAlert(_ alert: AlertBinder)
@@ -127,6 +128,8 @@ final class SendViewModel: ObservableObject {
         // case (_, .destination):
         //    isKeyboardActive = true
         case (_, .amount):
+            isKeyboardActive = true
+        case (_, .onramp):
             isKeyboardActive = true
         default:
             break
@@ -292,6 +295,14 @@ extension SendViewModel: SendModelRoutable {
         }
 
         coordinator?.openFeeCurrency(for: feeCurrencyWalletModel, userWalletModel: userWalletModel)
+    }
+}
+
+// MARK: - SendModelRoutable
+
+extension SendViewModel: OnrampModelRoutable {
+    func openOnrampCountryBottomSheet(country: OnrampCountry) {
+        // TODO: https://tangem.atlassian.net/browse/IOS-8268
     }
 }
 
