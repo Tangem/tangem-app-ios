@@ -131,15 +131,17 @@ Options:
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 """
 lane :build_Alpha do |options|
-  # increment_version_number(version_number: options[:version])
-  # increment_firebase_build_number(app_id: ENV["APP_ID_ALPHA"], build: options[:build])
+  increment_version_number(version_number: options[:version])
+  increment_firebase_build_number(app_id: ENV["APP_ID_ALPHA"], build: options[:build])
 
-  release = {
-    testingUri: "test_key_1",
-  }
-
-  # Passing back values to the GITHUB_ENV file for GitHub Actions
-  sh("TESTING_URL=#{release[:testingUri]} && echo ::add-mask::$TESTING_URL && echo TESTING_URL=$TESTING_URL >> $GITHUB_ENV")
+  build(
+    export_method: "ad-hoc",
+    scheme: ALPHA_SCHEME,
+    version: options[:version],
+    build: options[:build],
+    filename: options[:filename],
+    path: options[:path]
+  )
 end
 
 desc """
@@ -236,13 +238,17 @@ Options:
 lane :deploy_firebase do |options|
   path = options[:path]
   release_notes = "#{options[:changelog]}\nGitHash: #{last_git_commit[:commit_hash]}"
-  firebase_app_distribution(
+
+  release = firebase_app_distribution(
     app: options[:app_id],
     ipa_path: path,
     groups: FIREBASE_TESTERS_GROUP,
     firebase_cli_token: options[:firebase_token],
     release_notes: release_notes
   )
+
+  # Passing back values to the environments of GitHub Actions
+  sh("echo TESTING_URL=#{release[:testingUri]} >> $GITHUB_ENV")
 end
 
 private_lane :build do |options|
