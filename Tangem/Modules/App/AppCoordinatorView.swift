@@ -81,6 +81,6 @@ struct AppCoordinatorView: CoordinatorView {
             }
         }
         .transition(.opacity) // We need stack to force this animation work
-        .animation(.easeInOut, value: coordinator.viewState)
+        .animation(.easeIn, value: coordinator.viewState)
     }
 }

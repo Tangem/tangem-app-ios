@@ -43,9 +43,7 @@ extension CommonAppLockController: AppLockController {
             return
         }
 
-        userWalletRepository.unlock(with: .biometry) { [weak self] result in
-            guard let self else { return }
-
+        userWalletRepository.unlock(with: .biometry) { result in
             switch result {
             case .success(let model), .partial(let model, _):
                 completion(.openMain(model))
