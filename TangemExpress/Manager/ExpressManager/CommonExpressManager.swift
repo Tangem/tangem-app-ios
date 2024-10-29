@@ -300,7 +300,7 @@ private extension CommonExpressManager {
 }
 
 extension CommonExpressManager {
-    nonisolated func log(_ args: Any) {
+    func log(_ args: Any) {
         logger.debug("\(self) \(args)")
     }
 }

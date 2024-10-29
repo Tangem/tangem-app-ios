@@ -9,7 +9,7 @@
 import Foundation
 import SolanaSwift
 
-extension SolanaError: LocalizedError {
+extension SolanaError: @retroactive LocalizedError {
     public var errorDescription: String? {
         // TODO: add localization
         switch self {

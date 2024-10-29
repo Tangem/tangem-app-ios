@@ -10,8 +10,9 @@ import Foundation
 
 /// Provides `multiple readers - single writer` semantics for underlying `value`.
 /// It's most useful with Swift native collections like `Array`, `Dictionary`, etc.
+/// This type is fully `Sendable` due to internal synchronization using Dispatch queues.
 @dynamicMemberLookup
-public final class ThreadSafeContainer<Value> {
+public final class ThreadSafeContainer<Value>: @unchecked Sendable {
     public subscript<T>(dynamicMember keyPath: KeyPath<Value, T>) -> T {
         accessQueue.sync { value[keyPath: keyPath] }
     }
