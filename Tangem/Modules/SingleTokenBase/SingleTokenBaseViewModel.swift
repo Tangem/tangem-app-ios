@@ -127,8 +127,6 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
             return
         }
 
-        Analytics.log(.refreshed)
-
         if let id = walletModel.tokenItem.currencyId, miniChartsProvider.items.isEmpty {
             miniChartsProvider.fetch(for: [id], with: miniChartPriceIntervalType)
         }
