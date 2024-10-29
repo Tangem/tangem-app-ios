@@ -47,13 +47,6 @@ struct AppCoordinatorView: CoordinatorView {
         .onChange(of: coordinator.isOverlayContentContainerShown) { isShown in
             overlayContentContainer.setOverlayHidden(!isShown)
         }
-        .overlay {
-            if coordinator.lockViewVisible {
-                LockView()
-                    .setNamespace(namespace)
-                    .transition(.asymmetric(insertion: .identity, removal: .opacity.animation(.easeOut(duration: 0.3))))
-            }
-        }
     }
 
     @ViewBuilder
@@ -62,25 +55,34 @@ struct AppCoordinatorView: CoordinatorView {
             switch coordinator.viewState {
             case .welcome(let welcomeCoordinator):
                 WelcomeCoordinatorView(coordinator: welcomeCoordinator)
+                    .transition(.opacity)
                     .navigationBarHidden(true)
             case .uncompleteBackup(let uncompletedBackupCoordinator):
                 UncompletedBackupCoordinatorView(coordinator: uncompletedBackupCoordinator)
+                    .transition(.opacity)
                     .navigationBarHidden(true)
             case .auth(let authCoordinator):
                 AuthCoordinatorView(coordinator: authCoordinator)
                     .setNamespace(namespace)
+                    .transition(.opacity)
                     .navigationBarHidden(true)
             case .main(let mainCoordinator):
                 MainCoordinatorView(coordinator: mainCoordinator)
+                    .transition(.opacity)
                     .navigationBarHidden(false)
             case .onboarding(let onboardingCoordinator):
                 OnboardingCoordinatorView(coordinator: onboardingCoordinator)
+                    .transition(.opacity)
                     .navigationBarHidden(true)
+            case .lock:
+                LockView()
+                    .setNamespace(namespace)
+                    .transition(.asymmetric(insertion: .identity, removal: .opacity.animation(.easeOut(duration: 0.3))))
             case .none:
                 EmptyView()
             }
         }
-        .transition(.opacity) // We need stack to force this animation work
+        // We need stack to force transition animation work
         .animation(.easeIn, value: coordinator.viewState)
     }
 }

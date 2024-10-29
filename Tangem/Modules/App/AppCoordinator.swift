@@ -37,7 +37,6 @@ class AppCoordinator: CoordinatorObject {
     // MARK: - View State
 
     @Published private(set) var viewState: ViewState?
-    @Published private(set) var lockViewVisible: Bool = false
 
     // MARK: - Private
 
@@ -65,33 +64,29 @@ class AppCoordinator: CoordinatorObject {
     }
 
     func sceneDidEnterBackground() {
-        addLockViewIfNeeded()
-    }
-
-    func sceneWillEnterForeground() {
-        removeLockViewIfNeeded()
-    }
-
-    private func addLockViewIfNeeded() {
-        guard viewState?.shouldAddLockView ?? false else {
-            return
-        }
-
+        appLockController.sceneDidEnterBackground()
         mainBottomSheetUIManager.hide(shouldUpdateFooterSnapshot: false)
-        lockViewVisible = true
     }
 
-    private func removeLockViewIfNeeded() {
-        guard lockViewVisible else {
+    func sceneWillEnterForeground(hideLockView: @escaping () -> Void) {
+        appLockController.sceneWillEnterForeground()
+
+        guard viewState?.shouldAddLockView ?? false else {
+            hideLockView()
             return
         }
 
         if appLockController.isLocked {
             handleLock(reason: .loggedOut) { [weak self] in
+                self?.setupLock()
+                // more time needed for ios 15 and 16 to update ui under the lock view
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    hideLockView()
+                }
                 self?.tryUnlockWithBiometry()
             }
         } else {
-            lockViewVisible = false
+            hideLockView()
             mainBottomSheetUIManager.show()
         }
     }
@@ -99,8 +94,6 @@ class AppCoordinator: CoordinatorObject {
     private func tryUnlockWithBiometry() {
         appLockController.unlockApp { [weak self] result in
             guard let self else { return }
-
-            lockViewVisible = false
 
             switch result {
             case .openAuth:
@@ -111,6 +104,10 @@ class AppCoordinator: CoordinatorObject {
                 setupWelcome()
             }
         }
+    }
+
+    private func setupLock() {
+        viewState = .lock
     }
 
     private func setupWelcome() {
@@ -255,6 +252,7 @@ extension AppCoordinator {
         case auth(AuthCoordinator)
         case main(MainCoordinator)
         case onboarding(OnboardingCoordinator)
+        case lock
 
         var shouldAddLockView: Bool {
             switch self {

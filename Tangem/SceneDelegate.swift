@@ -13,7 +13,6 @@ import BlockchainSdk
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     @Injected(\.incomingActionHandler) private var incomingActionHandler: IncomingActionHandler
-    @Injected(\.appLockController) private var appLockController: AppLockController
 
     var window: UIWindow?
     var lockWindow: UIWindow?
@@ -43,7 +42,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
-        appLockController.sceneDidEnterBackground()
         appCoordinator.sceneDidEnterBackground()
 
         // Additional view to fix no-refresh in bg issue for iOS prior to 17.
@@ -58,11 +56,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
-        lockWindow?.isHidden = true
-        lockWindow = nil
-
-        appLockController.sceneWillEnterForeground()
-        appCoordinator.sceneWillEnterForeground()
+        appCoordinator.sceneWillEnterForeground { [weak self] in
+            self?.lockWindow?.isHidden = true
+            self?.lockWindow = nil
+        }
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
