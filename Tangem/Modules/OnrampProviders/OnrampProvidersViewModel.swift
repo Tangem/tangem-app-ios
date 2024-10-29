@@ -36,7 +36,9 @@ private extension OnrampProvidersViewModel {
         payment = .init(
             name: "Card",
             iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/OKX_512.png")!,
-            action: {}
+            action: { [weak self] in
+                self?.coordinator?.openOnrampPaymentMethods()
+            }
         )
 
         providers = [

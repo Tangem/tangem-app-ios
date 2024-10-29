@@ -35,7 +35,7 @@ struct OnrampProvidersView: View {
             title: Localization.expressChooseProvidersTitle,
             subtitle: Localization.expressChooseProvidersSubtitle
         )
-        .padding(.top, 20)
+        .padding(.top, 8)
         .padding(.horizontal, 16)
     }
 
@@ -52,14 +52,7 @@ struct OnrampProvidersView: View {
             OnrampProviderRowView(data: $0)
 
             Separator(height: .minimal, color: Colors.Stroke.primary)
+                .padding(.leading, 62)
         }
-    }
-}
-
-struct OnrampProvidersView_Preview: PreviewProvider {
-    static let viewModel = OnrampProvidersViewModel(coordinator: OnrampProvidersCoordinator())
-
-    static var previews: some View {
-        OnrampProvidersView(viewModel: viewModel)
     }
 }
