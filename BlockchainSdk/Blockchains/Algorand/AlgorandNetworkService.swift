@@ -11,20 +11,20 @@ import Combine
 
 class AlgorandNetworkService: MultiNetworkProvider {
     // MARK: - Protperties
-    
+
     let blockchain: Blockchain
     let providers: [AlgorandNetworkProvider]
     var currentProviderIndex: Int = 0
-    
+
     // MARK: - Init
-    
+
     init(blockchain: Blockchain, providers: [AlgorandNetworkProvider]) {
         self.blockchain = blockchain
         self.providers = providers
     }
-    
+
     // MARK: - Implementation
-    
+
     func getAccount(address: String) -> AnyPublisher<AlgorandAccountModel, Error> {
         providerPublisher { provider in
             provider
@@ -37,7 +37,7 @@ class AlgorandNetworkService: MultiNetworkProvider {
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func getEstimatedFee() -> AnyPublisher<AlgorandEstimatedFeeParams, Error> {
         providerPublisher { provider in
             provider
@@ -46,7 +46,7 @@ class AlgorandNetworkService: MultiNetworkProvider {
                 .tryMap { service, response in
                     let sourceFee = Decimal(response.fee) / service.blockchain.decimalValue
                     let minFee = Decimal(response.minFee) / service.blockchain.decimalValue
-                    
+
                     return AlgorandEstimatedFeeParams(
                         minFee: Amount(with: service.blockchain, value: minFee),
                         fee: Amount(with: service.blockchain, value: sourceFee)
@@ -55,7 +55,7 @@ class AlgorandNetworkService: MultiNetworkProvider {
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func getTransactionParams() -> AnyPublisher<AlgorandTransactionBuildParams, Error> {
         providerPublisher { provider in
             provider
@@ -65,20 +65,20 @@ class AlgorandNetworkService: MultiNetworkProvider {
                     guard let genesisHash = Data(base64Encoded: response.genesisHash) else {
                         throw WalletError.failedToParseNetworkResponse()
                     }
-                    
+
                     let transactionParams = AlgorandTransactionBuildParams(
                         genesisId: response.genesisId,
                         genesisHash: genesisHash,
                         firstRound: response.lastRound,
                         lastRound: response.lastRound + Constants.bounceRoundValue
                     )
-                    
+
                     return transactionParams
                 }
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func sendTransaction(data: Data) -> AnyPublisher<String, Error> {
         providerPublisher { provider in
             provider
@@ -89,7 +89,7 @@ class AlgorandNetworkService: MultiNetworkProvider {
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func getPendingTransaction(transactionHash: String) -> AnyPublisher<AlgorandTransactionInfo?, Error> {
         return providerPublisher { provider in
             return provider
@@ -102,7 +102,7 @@ class AlgorandNetworkService: MultiNetworkProvider {
                     guard let response = response, let confirmedRound = response.confirmedRound else {
                         return nil
                     }
-                    
+
                     if confirmedRound > 0 {
                         return AlgorandTransactionInfo(transactionHash: transactionHash, status: .committed)
                     } else if confirmedRound == 0, response.poolError.isEmpty {
@@ -123,11 +123,11 @@ class AlgorandNetworkService: MultiNetworkProvider {
 private extension AlgorandNetworkService {
     func calculateCoinValueWithReserveDeposit(from accountModel: AlgorandResponse.Account) -> AlgorandAccountModel {
         let changeBalanceValue = max(Decimal(accountModel.amount) - Decimal(accountModel.minBalance), 0)
-        
+
         let decimalCoinValue = Decimal(accountModel.amount) / blockchain.decimalValue
         let decimalReserveValue = Decimal(accountModel.minBalance) / blockchain.decimalValue
         let decimalCoinWithReserveValue = changeBalanceValue / blockchain.decimalValue
-        
+
         return AlgorandAccountModel(
             reserveValue: decimalReserveValue,
             coinValue: decimalCoinValue,

@@ -15,10 +15,10 @@ struct RosettaTarget: TargetType {
         case submitTransaction(submitBody: RosettaSubmitBody)
         case coins(addressBody: RosettaAddressBody)
     }
-    
+
     let baseURL: URL
     let target: RosettaTargetType
-    
+
     var path: String {
         switch target {
         case .address:
@@ -29,18 +29,18 @@ struct RosettaTarget: TargetType {
             return "/account/coins"
         }
     }
-    
+
     var method: Moya.Method {
         switch target {
         case .address, .submitTransaction, .coins:
             return .post
         }
     }
-    
+
     var sampleData: Data {
         Data()
     }
-    
+
     var task: Task {
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
@@ -51,8 +51,8 @@ struct RosettaTarget: TargetType {
             return .requestCustomJSONEncodable(body, encoder: encoder)
         }
     }
-    
-    var headers: [String : String]? {
+
+    var headers: [String: String]? {
         nil
     }
 }

@@ -11,7 +11,6 @@ import TangemSdk
 import stellarsdk
 
 struct StellarWalletAssembly: WalletManagerAssembly {
-    
     func make(with input: WalletManagerAssemblyInput) throws -> WalletManager {
         return StellarWalletManager(wallet: input.wallet).then {
             let blockchain = input.blockchain
@@ -26,5 +25,4 @@ struct StellarWalletAssembly: WalletManagerAssembly {
             $0.networkService = StellarNetworkService(providers: providers)
         }
     }
-    
 }

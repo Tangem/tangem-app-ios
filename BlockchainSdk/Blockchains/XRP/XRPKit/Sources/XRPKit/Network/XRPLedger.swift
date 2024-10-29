@@ -11,37 +11,34 @@ enum LedgerError: Error {
     case runtimeError(String)
 }
 
-public struct XRPLedger {
-    
+struct XRPLedger {
     // ws
     #if !os(Linux)
     @available(iOS 13.0, OSX 10.15, tvOS 13.0, watchOS 6.0, *)
-    public static var ws: XRPWebSocket = WebSocket()
+    static var ws: XRPWebSocket = WebSocket()
     #endif
-    
+
     // JSON-RPC
     private static var url: URL = .xrpl_rpc_Testnet
-    
-    private init() {
-        
+
+    private init() {}
+
+    static func setURL(endpoint: URL) {
+        url = endpoint
     }
-    
-    public static func setURL(endpoint: URL) {
-        self.url = endpoint
-    }
-    
-    public static func getTxs(account: String, completion: @escaping ((Result<[XRPHistoricalTransaction], Error>) -> ())) {
+
+    static func getTxs(account: String, completion: @escaping ((Result<[XRPHistoricalTransaction], Error>) -> Void)) {
         let parameters: [String: Any] = [
-            "method" : "account_tx",
+            "method": "account_tx",
             "params": [
                 [
-                    "account" : account,
-                    "ledger_index_min" : -1,
-                    "ledger_index_max" : -1,
-                ]
-            ]
+                    "account": account,
+                    "ledger_index_min": -1,
+                    "ledger_index_max": -1,
+                ],
+            ],
         ]
-        HTTP.post(url: url, parameters: parameters) { (result) in
+        HTTP.post(url: url, parameters: parameters) { result in
             switch result {
             case .success(let result):
                 let JSON = result as! NSDictionary
@@ -49,27 +46,27 @@ public struct XRPLedger {
                 let status = info["status"] as! String
                 if status != "error" {
                     let _array = info["transactions"] as! [NSDictionary]
-                    let filtered = _array.filter({ (dict) -> Bool in
+                    let filtered = _array.filter { dict -> Bool in
                         let validated = dict["validated"] as! Bool
                         let tx = dict["tx"] as! NSDictionary
                         let meta = dict["meta"] as! NSDictionary
                         let res = meta["TransactionResult"] as! String
                         let type = tx["TransactionType"] as! String
                         return validated && type == "Payment" && res == "tesSUCCESS"
-                    })
+                    }
 
-                    let transactions = filtered.map({ (dict) -> XRPHistoricalTransaction in
+                    let transactions = filtered.map { dict -> XRPHistoricalTransaction in
                         let tx = dict["tx"] as! NSDictionary
                         let destination = tx["Destination"] as! String
                         let source = tx["Account"] as! String
                         let amount = tx["Amount"] as! String
                         let timestamp = tx["date"] as! Int
-                        let date = Date(timeIntervalSince1970: 946684800+Double(timestamp))
+                        let date = Date(timeIntervalSince1970: 946684800 + Double(timestamp))
                         let type = account == source ? "Sent" : "Received"
                         let address = account == source ? destination : source
                         return XRPHistoricalTransaction(type: type, address: address, amount: try! XRPAmount(drops: Int(amount)!), date: date)
-                    })
-                    completion(.success(transactions.sorted(by: { (lh, rh) -> Bool in
+                    }
+                    completion(.success(transactions.sorted(by: { lh, rh -> Bool in
                         lh.date > rh.date
                     })))
                 } else {
@@ -82,17 +79,17 @@ public struct XRPLedger {
             }
         }
     }
-    
-    public static func getBalance(address: String, completion: @escaping ((Result<XRPAmount, Error>) -> ())) {
+
+    static func getBalance(address: String, completion: @escaping ((Result<XRPAmount, Error>) -> Void)) {
         let parameters: [String: Any] = [
-            "method" : "account_info",
+            "method": "account_info",
             "params": [
                 [
-                    "account" : address
-                ]
-            ]
+                    "account": address,
+                ],
+            ],
         ]
-        HTTP.post(url: url, parameters: parameters) { (result) in
+        HTTP.post(url: url, parameters: parameters) { result in
             switch result {
             case .success(let result):
                 let JSON = result as! NSDictionary
@@ -113,20 +110,20 @@ public struct XRPLedger {
             }
         }
     }
-    
-    public static func getAccountInfo(account: String, completion: @escaping ((Result<XRPAccountInfo, Error>) -> ())) {
+
+    static func getAccountInfo(account: String, completion: @escaping ((Result<XRPAccountInfo, Error>) -> Void)) {
         let parameters: [String: Any] = [
-            "method" : "account_info",
+            "method": "account_info",
             "params": [
                 [
-                    "account" : account,
+                    "account": account,
                     "strict": true,
                     "ledger_index": "current",
-                    "queue": true
-                ]
-            ]
+                    "queue": true,
+                ],
+            ],
         ]
-        HTTP.post(url: url, parameters: parameters) { (result) in
+        HTTP.post(url: url, parameters: parameters) { result in
             switch result {
             case .success(let result):
                 let JSON = result as! NSDictionary
@@ -149,12 +146,12 @@ public struct XRPLedger {
             }
         }
     }
-    
-    public static func currentLedgerInfo(completion: @escaping ((Result<XRPCurrentLedgerInfo, Error>) -> ())) {
+
+    static func currentLedgerInfo(completion: @escaping ((Result<XRPCurrentLedgerInfo, Error>) -> Void)) {
         let parameters: [String: Any] = [
-            "method" : "fee"
+            "method": "fee",
         ]
-        HTTP.post(url: url, parameters: parameters) { (result) in
+        HTTP.post(url: url, parameters: parameters) { result in
             switch result {
             case .success(let result):
                 let JSON = result as! NSDictionary
@@ -170,17 +167,17 @@ public struct XRPLedger {
             }
         }
     }
-    
-    public static func submit(txBlob: String, completion: @escaping ((Result<NSDictionary, Error>) -> ())) {
+
+    static func submit(txBlob: String, completion: @escaping ((Result<NSDictionary, Error>) -> Void)) {
         let parameters: [String: Any] = [
-            "method" : "submit",
+            "method": "submit",
             "params": [
                 [
-                    "tx_blob": txBlob
-                ]
-            ]
+                    "tx_blob": txBlob,
+                ],
+            ],
         ]
-        HTTP.post(url: url, parameters: parameters) { (result) in
+        HTTP.post(url: url, parameters: parameters) { result in
             switch result {
             case .success(let result):
                 let JSON = result as! NSDictionary
@@ -191,5 +188,4 @@ public struct XRPLedger {
             }
         }
     }
-    
 }

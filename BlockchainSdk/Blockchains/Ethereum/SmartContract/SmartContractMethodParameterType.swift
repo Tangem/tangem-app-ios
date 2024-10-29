@@ -8,6 +8,6 @@
 
 import Foundation
 
-public enum SmartContractMethodParameterType {
+enum SmartContractMethodParameterType {
     case bytes(Data)
 }

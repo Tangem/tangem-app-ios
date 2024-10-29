@@ -10,7 +10,6 @@ import Foundation
 import TangemSdk
 
 struct XRPWalletAssembly: WalletManagerAssembly {
-    
     func make(with input: WalletManagerAssemblyInput) throws -> WalletManager {
         return try XRPWalletManager(wallet: input.wallet).then {
             $0.txBuilder = try XRPTransactionBuilder(walletPublicKey: input.wallet.publicKey.blockchainKey, curve: input.blockchain.curve)
@@ -25,5 +24,4 @@ struct XRPWalletAssembly: WalletManagerAssembly {
             $0.networkService = XRPNetworkService(providers: providers)
         }
     }
-    
 }

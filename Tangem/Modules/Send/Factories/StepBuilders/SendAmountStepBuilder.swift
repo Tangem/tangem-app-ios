@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TangemExpress
 
 struct SendAmountStepBuilder {
     typealias IO = (input: SendAmountInput, output: SendAmountOutput)
@@ -57,20 +58,17 @@ struct SendAmountStepBuilder {
 
     func makeOnrampAmountViewModel(
         io: IO,
-        sendAmountValidator: SendAmountValidator,
-        amountModifier: SendAmountModifier?
+        repository: OnrampRepository,
+        sendAmountValidator: SendAmountValidator
     ) -> OnrampAmountViewModel {
         let interactor = makeSendAmountInteractor(
             io: io,
             sendAmountValidator: sendAmountValidator,
-            amountModifier: amountModifier,
+            amountModifier: nil,
             type: .fiat
         )
 
-        return OnrampAmountViewModel(
-            settings: .init(tokenIconInfo: builder.makeTokenIconInfo(), tokenItem: walletModel.tokenItem),
-            interactor: interactor
-        )
+        return OnrampAmountViewModel(tokenItem: walletModel.tokenItem, repository: repository, interactor: interactor)
     }
 }
 

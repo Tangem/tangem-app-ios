@@ -19,7 +19,7 @@ func XCTAssertJSONEqual(_ lhs: String, _ rhs: String) {
         let rstring = try JSONSerialization.data(withJSONObject: rjson, options: [.sortedKeys, .prettyPrinted])
 
         XCTAssertEqual(lstring, rstring, "\(lhs) is not equal to \(rhs)")
-    } catch let error {
+    } catch {
         XCTFail(error.localizedDescription)
     }
 }

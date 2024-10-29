@@ -8,20 +8,20 @@
 
 import Foundation
 import Combine
-import Solana_Swift
+import SolanaSwift
 
 extension Api {
     func getFees(
         commitment: Commitment? = nil
-    ) -> AnyPublisher<Solana_Swift.Fee, Error> {
+    ) -> AnyPublisher<SolanaSwift.Fee, Error> {
         Deferred {
             Future { [weak self] promise in
                 guard let self = self else {
                     promise(.failure(WalletError.empty))
                     return
                 }
-                
-                self.getFees(commitment: commitment) {
+
+                getFees(commitment: commitment) {
                     switch $0 {
                     case .failure(let error):
                         promise(.failure(error))
@@ -33,7 +33,7 @@ extension Api {
         }
         .eraseToAnyPublisher()
     }
-    
+
     func getFeeForMessage(_ message: String) -> AnyPublisher<FeeForMessageResult, Error> {
         Deferred {
             Future { [weak self] promise in
@@ -41,8 +41,8 @@ extension Api {
                     promise(.failure(WalletError.empty))
                     return
                 }
-                
-                self.getFeeForMessage(message: message) {
+
+                getFeeForMessage(message: message) {
                     switch $0 {
                     case .failure(let error):
                         promise(.failure(error))
@@ -55,7 +55,6 @@ extension Api {
         .eraseToAnyPublisher()
     }
 
-    
     func getMinimumBalanceForRentExemption(
         dataLength: UInt64,
         commitment: Commitment? = nil
@@ -67,10 +66,10 @@ extension Api {
                     return
                 }
 
-                self.getMinimumBalanceForRentExemption(
+                getMinimumBalanceForRentExemption(
                     dataLength: dataLength,
                     commitment: commitment
-                ) { 
+                ) {
                     switch $0 {
                     case .failure(let error):
                         promise(.failure(error))
@@ -82,7 +81,7 @@ extension Api {
         }
         .eraseToAnyPublisher()
     }
-    
+
     func getAccountInfo<T: BufferLayout>(account: String, decodedTo: T.Type) -> AnyPublisher<BufferInfo<T>, Error> {
         Deferred {
             Future { [weak self] promise in
@@ -90,8 +89,8 @@ extension Api {
                     promise(.failure(WalletError.empty))
                     return
                 }
-                
-                self.getAccountInfo(account: account, decodedTo: T.self) {
+
+                getAccountInfo(account: account, decodedTo: T.self) {
                     switch $0 {
                     case .failure(let error):
                         promise(.failure(error))
@@ -103,7 +102,7 @@ extension Api {
         }
         .eraseToAnyPublisher()
     }
-    
+
     func getTokenAccountsByOwner<T: Decodable>(
         pubkey: String,
         mint: String? = nil,
@@ -116,10 +115,10 @@ extension Api {
                     promise(.failure(WalletError.empty))
                     return
                 }
-                
-                self.getTokenAccountsByOwner(pubkey: pubkey, mint: mint, programId: programId, configs: configs) {
+
+                getTokenAccountsByOwner(pubkey: pubkey, mint: mint, programId: programId, configs: configs) {
                     (result: Result<[T], Error>) in
-                    
+
                     switch result {
                     case .failure(let error):
                         promise(.failure(error))
@@ -131,7 +130,7 @@ extension Api {
         }
         .eraseToAnyPublisher()
     }
-    
+
     func getSignatureStatuses(pubkeys: [String], configs: RequestConfiguration? = nil) -> AnyPublisher<[SignatureStatus?], Error> {
         Deferred {
             Future { [weak self] promise in
@@ -139,8 +138,8 @@ extension Api {
                     promise(.failure(WalletError.empty))
                     return
                 }
-                
-                self.getSignatureStatuses(pubkeys: pubkeys, configs: configs) {
+
+                getSignatureStatuses(pubkeys: pubkeys, configs: configs) {
                     switch $0 {
                     case .failure(let error):
                         promise(.failure(error))
@@ -164,7 +163,7 @@ extension Api {
                     return
                 }
 
-                self.sendTransaction(serializedTransaction: serializedTransaction, configs: configs, startSendingTimestamp: Date()) {
+                sendTransaction(serializedTransaction: serializedTransaction, configs: configs, startSendingTimestamp: Date()) {
                     switch $0 {
                     case .failure(let error):
                         promise(.failure(error))
@@ -193,8 +192,8 @@ extension Action {
                     promise(.failure(WalletError.empty))
                     return
                 }
-                
-                self.serializeMessage(
+
+                serializeMessage(
                     to: destination,
                     amount: amount,
                     computeUnitLimit: computeUnitLimit,
@@ -213,7 +212,7 @@ extension Action {
         }
         .eraseToAnyPublisher()
     }
-    
+
     func sendSOL(
         to destination: String,
         amount: UInt64,
@@ -228,8 +227,8 @@ extension Action {
                     promise(.failure(WalletError.empty))
                     return
                 }
-                
-                self.sendSOL(
+
+                sendSOL(
                     to: destination,
                     amount: amount,
                     computeUnitLimit: computeUnitLimit,
@@ -248,7 +247,7 @@ extension Action {
         }
         .eraseToAnyPublisher()
     }
-    
+
     func sendSPLTokens(
         mintAddress: String,
         tokenProgramId: PublicKey,
@@ -267,8 +266,8 @@ extension Action {
                     promise(.failure(WalletError.empty))
                     return
                 }
-                
-                self.sendSPLTokens(
+
+                sendSPLTokens(
                     mintAddress: mintAddress,
                     tokenProgramId: tokenProgramId,
                     decimals: decimals,

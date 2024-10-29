@@ -12,7 +12,7 @@ import Foundation
 struct NowNodesBlockBookConfig: BlockBookConfig {
     let apiKeyHeaderName: String?
     let apiKeyHeaderValue: String?
-    
+
     init(apiKeyHeaderName: String?, apiKeyHeaderValue: String?) {
         self.apiKeyHeaderName = apiKeyHeaderName
         self.apiKeyHeaderValue = apiKeyHeaderValue
@@ -23,26 +23,26 @@ extension NowNodesBlockBookConfig {
     var host: String {
         return "nownodes.io"
     }
-    
+
     func node(for blockchain: Blockchain) -> BlockBookNode {
         let prefix = blockchain.currencySymbol.lowercased()
-        
+
         switch blockchain {
         case .bitcoin,
-                .dash,
-                .dogecoin,
-                .litecoin,
-                .bitcoinCash:
+             .dash,
+             .dogecoin,
+             .litecoin,
+             .bitcoinCash:
             let testnetSuffix = blockchain.isTestnet ? "-testnet" : ""
             return BlockBookNode(
                 rpcNode: "https://\(prefix).\(host)",
                 restNode: "https://\(prefix)book\(testnetSuffix).\(host)"
             )
         case .ethereum,
-                .ethereumPoW,
-                .ethereumClassic,
-                .avalanche,
-                .tron:
+             .ethereumPoW,
+             .ethereumClassic,
+             .avalanche,
+             .tron:
             return BlockBookNode(
                 rpcNode: "https://\(prefix).\(host)",
                 restNode: "https://\(prefix)-blockbook.\(host)"
@@ -63,7 +63,7 @@ extension NowNodesBlockBookConfig {
             fatalError("NowNodesBlockBookConfig don't support blockchain: \(blockchain.displayName)")
         }
     }
-    
+
     func path(for request: BlockBookTarget.Request) -> String {
         switch request {
         case .fees, .sendNode:

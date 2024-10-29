@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct OpElse: OpCodeProtocol {
-    public var value: UInt8 { return 0x67 }
-    public var name: String { return "OP_ELSE" }
+struct OpElse: OpCodeProtocol {
+    var value: UInt8 { return 0x67 }
+    var name: String { return "OP_ELSE" }
 }

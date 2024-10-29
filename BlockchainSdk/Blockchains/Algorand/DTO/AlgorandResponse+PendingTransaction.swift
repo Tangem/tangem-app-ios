@@ -22,7 +22,7 @@ extension AlgorandResponse {
     struct PendingTransaction: Decodable {
         let confirmedRound: UInt64?
         let poolError: String
-        
+
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             confirmedRound = try container.decode(UInt64.self, forKey: .confirmedRound)

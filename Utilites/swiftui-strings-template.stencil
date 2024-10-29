@@ -1,6 +1,7 @@
 // swiftlint:disable all
 // Generated using SwiftGen — https://github.com/SwiftGen/SwiftGen
 
+{% set accessModifier %}{% if param.publicAccess %}public{% else %}internal{% endif %}{% endset %}
 {% if tables.count > 0 %}
 import SwiftUI
 
@@ -34,25 +35,25 @@ import SwiftUI
   /// {{string.translation}}
   {% endif %}
   {% if string.types %}
-  public static func {{string.name|swiftIdentifier:"pretty"|lowerFirstWord|escapeReservedKeywords}}({% call parametersBlock string.types %}) -> String {
+  {{accessModifier}} static func {{string.name|swiftIdentifier:"pretty"|lowerFirstWord|escapeReservedKeywords}}({% call parametersBlock string.types %}) -> String {
     return Localization.tr("{{table}}", "{{string.key}}", {% call argumentsBlock string.types %})
   }
   {% else %}
-  public static let {{string.name|swiftIdentifier:"pretty"|lowerFirstWord|escapeReservedKeywords}} = Localization.tr("Localizable", "{{string.key}}")
+  {{accessModifier}} static let {{string.name|swiftIdentifier:"pretty"|lowerFirstWord|escapeReservedKeywords}} = Localization.tr("Localizable", "{{string.key}}")
   {% endif %}
   {% endfor %}
   {% for child in item.children %}
-  public enum {{child.name|swiftIdentifier:"pretty"|escapeReservedKeywords}} {
+  {{accessModifier}} enum {{child.name|swiftIdentifier:"pretty"|escapeReservedKeywords}} {
     {% filter indent:2 %}{% call recursiveBlock table child %}{% endfilter %}
   }
   {% endfor %}
 {% endmacro %}
 /// Why `Localization`?
 /// https://en.wikipedia.org/wiki/Internationalization_and_localization
-public enum Localization {
+{{accessModifier}} enum Localization {
   {% if tables.count > 1 or param.forceFileNameEnum %}
   {% for table in tables %}
-  public enum {{table.name|swiftIdentifier:"pretty"|escapeReservedKeywords}} {
+  {{accessModifier}} enum {{table.name|swiftIdentifier:"pretty"|escapeReservedKeywords}} {
     {% filter indent:2 %}{% call recursiveBlock table.name table.levels %}{% endfilter %}
   }
   {% endfor %}

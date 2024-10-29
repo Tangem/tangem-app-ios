@@ -21,7 +21,7 @@ public struct TransactionRecord: Hashable {
     public let type: TransactionType
     public let date: Date?
     public let tokenTransfers: [TokenTransfer]?
-    
+
     public init(
         hash: String,
         index: Int,
@@ -57,7 +57,7 @@ public extension TransactionRecord {
         /// Contains human-readable contract method name (like `swap`).
         case contractMethodName(name: String)
         case staking(type: StakingTransactionType, validator: String?)
-        
+
         public enum StakingTransactionType {
             case stake
             case unstake
@@ -85,11 +85,11 @@ public extension TransactionRecord {
         case single(Source)
         case multiple([Source])
     }
-    
+
     struct Source: Hashable {
         public let address: String
         public let amount: Decimal
-        
+
         public init(address: String, amount: Decimal) {
             self.address = address
             self.amount = amount
@@ -104,21 +104,21 @@ public extension TransactionRecord {
         case single(Destination)
         case multiple([Destination])
     }
-    
+
     struct Destination: Hashable {
         public let address: Address
         public let amount: Decimal
-        
+
         public init(address: TransactionRecord.Destination.Address, amount: Decimal) {
             self.address = address
             self.amount = amount
         }
-        
+
         public enum Address: Hashable {
             case user(String)
             /// Contact address for token-supported blockchains
             case contract(String)
-            
+
             public var string: String {
                 switch self {
                 case .user(let address):

@@ -10,7 +10,7 @@ import Foundation
 
 struct EthereumClassicExternalLinkProvider {
     private let isTestnet: Bool
-    
+
     init(isTestnet: Bool) {
         self.isTestnet = isTestnet
     }
@@ -20,12 +20,12 @@ extension EthereumClassicExternalLinkProvider: ExternalLinkProvider {
     var testnetFaucetURL: URL? {
         return URL(string: "https://mordor.canhaz.net")
     }
-    
+
     func url(transaction hash: String) -> URL? {
         if isTestnet {
             return URL(string: "https://etc-mordor.blockscout.com/tx/\(hash)")
         }
-        
+
         return URL(string: "https://etc.blockscout.com/tx/\(hash)")
     }
 
@@ -33,7 +33,7 @@ extension EthereumClassicExternalLinkProvider: ExternalLinkProvider {
         if isTestnet {
             return URL(string: "https://etc-mordor.blockscout.com/address/\(address)")
         }
-        
+
         return URL(string: "https://etc.blockscout.com/address/\(address)")
     }
 }

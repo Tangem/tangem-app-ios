@@ -21,12 +21,12 @@ public enum ValidationError: Hashable, LocalizedError {
     case minimumBalance(minimumBalance: Amount)
     case maximumUTXO(blockchainName: String, newAmount: Amount, maxUtxo: Int)
     case reserve(amount: Amount)
-    
+
     case cardanoHasTokens(minimumAmount: Amount)
     case cardanoInsufficientBalanceToSendToken
-    
+
     case insufficientFeeResource(type: FeeResourceType, current: Decimal, max: Decimal)
-    case amountExeedsFeeResourceCapacity(type: FeeResourceType, availableAmount: Decimal)
+    case amountExceedsFeeResourceCapacity(type: FeeResourceType, availableAmount: Decimal)
     case feeExceedsMaxFeeResource
 
     public var errorDescription: String? {
@@ -34,29 +34,29 @@ public enum ValidationError: Hashable, LocalizedError {
         case .balanceNotFound, .cardanoInsufficientBalanceToSendToken, .cardanoHasTokens:
             return WalletError.empty.localizedDescription
         case .amountExceedsBalance:
-            return "send_validation_amount_exceeds_balance".localized
+            return Localization.sendValidationAmountExceedsBalance
         case .dustAmount(let minimumAmount):
-            return String(format: "send_error_dust_amount_format".localized, minimumAmount.description)
+            return Localization.sendErrorDustAmountFormat(minimumAmount.description)
         case .dustChange(let minimumAmount):
-           return String(format: "send_error_dust_change_format".localized, minimumAmount.description)
+            return Localization.sendErrorDustChangeFormat(minimumAmount.description)
         case .minimumBalance(let minimumBalance):
-            return String(format: "send_error_minimum_balance_format".localized, minimumBalance.string(roundingMode: .plain))
+            return Localization.sendErrorMinimumBalanceFormat(minimumBalance.string(roundingMode: .plain))
         case .feeExceedsBalance, .feeExceedsMaxFeeResource:
-            return "send_validation_invalid_fee".localized
-        case .invalidAmount, .amountExeedsFeeResourceCapacity:
-            return "send_validation_invalid_amount".localized
+            return Localization.sendValidationInvalidFee
+        case .invalidAmount, .amountExceedsFeeResourceCapacity:
+            return Localization.sendValidationInvalidAmount
         case .invalidFee:
-            return "send_error_invalid_fee_value".localized
+            return Localization.sendErrorInvalidFeeValue
         case .totalExceedsBalance:
-            return "send_validation_invalid_total".localized
+            return Localization.sendValidationInvalidTotal
         case .maximumUTXO(let blockchainName, let newAmount, let maxUtxo):
-            return "common_utxo_validate_withdrawal_message_warning".localized(
-                [blockchainName, maxUtxo, newAmount.description]
+            return Localization.commonUtxoValidateWithdrawalMessageWarning(
+                blockchainName, maxUtxo, newAmount.description
             )
         case .reserve(let amount):
-            return String(format: "send_error_no_target_account".localized, amount.description)
-        case let .insufficientFeeResource(.mana, current, max):
-            return String(format: "koinos_insufficient_mana_to_send_koin_description", "\(current)", "\(max)")
+            return Localization.sendErrorNoTargetAccount(amount.description)
+        case .insufficientFeeResource(.mana, let current, let max):
+            return Localization.koinosInsufficientManaToSendKoinDescription(current, max)
         }
     }
 }

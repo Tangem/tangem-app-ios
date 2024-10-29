@@ -19,7 +19,7 @@ struct RavencoinTransactionHistory {
             self.pageNum = pageNum
         }
     }
-    
+
     struct Response: Decodable {
         let pagesTotal: Int
         let txs: [RavencoinTransactionInfo]

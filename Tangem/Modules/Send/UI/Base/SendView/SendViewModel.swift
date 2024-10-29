@@ -9,6 +9,7 @@
 import Combine
 import SwiftUI
 import BlockchainSdk
+import TangemExpress
 
 protocol SendViewAlertPresenter: AnyObject {
     func showAlert(_ alert: AlertBinder)
@@ -47,7 +48,7 @@ final class SendViewModel: ObservableObject {
     private let stepsManager: SendStepsManager
     private let userWalletModel: UserWalletModel
     private let alertBuilder: SendAlertBuilder
-    private let dataBuilder: SendBaseDataBuilder
+    private let dataBuilder: SendGenericBaseDataBuilder
     private let tokenItem: TokenItem
     private let feeTokenItem: TokenItem
 
@@ -63,7 +64,7 @@ final class SendViewModel: ObservableObject {
         stepsManager: SendStepsManager,
         userWalletModel: UserWalletModel,
         alertBuilder: SendAlertBuilder,
-        dataBuilder: SendBaseDataBuilder,
+        dataBuilder: SendGenericBaseDataBuilder,
         tokenItem: TokenItem,
         feeTokenItem: TokenItem,
         coordinator: SendRoutable
@@ -183,7 +184,7 @@ final class SendViewModel: ObservableObject {
 private extension SendViewModel {
     func performApprove() {
         do {
-            let (settings, approveViewModelInput) = try dataBuilder.makeDataForExpressApproveViewModel()
+            let (settings, approveViewModelInput) = try dataBuilder.stakingBuilder().makeDataForExpressApproveViewModel()
             coordinator?.openApproveView(settings: settings, approveViewModelInput: approveViewModelInput)
         } catch {
             alert = error.alertBinder
@@ -245,7 +246,7 @@ private extension SendViewModel {
         Analytics.log(.requestSupport, params: [.source: .transactionSourceSend])
 
         do {
-            let (emailDataCollector, recipient) = try dataBuilder.makeMailData(stakingRequestError: error)
+            let (emailDataCollector, recipient) = try dataBuilder.stakingBuilder().makeMailData(stakingRequestError: error)
             coordinator?.openMail(with: emailDataCollector, recipient: recipient)
         } catch {
             alert = error.alertBinder
@@ -255,8 +256,20 @@ private extension SendViewModel {
     func openMail(transaction: SendTransactionType, error: SendTxError) {
         Analytics.log(.requestSupport, params: [.source: .transactionSourceSend])
 
-        let (emailDataCollector, recipient) = dataBuilder.makeMailData(transaction: transaction, error: error)
-        coordinator?.openMail(with: emailDataCollector, recipient: recipient)
+        do {
+            switch transaction {
+            case .transfer(let transaction):
+                let builder = try dataBuilder.sendBuilder()
+                let (emailDataCollector, recipient) = builder.makeMailData(transaction: transaction, error: error)
+                coordinator?.openMail(with: emailDataCollector, recipient: recipient)
+            case .staking(let stakingTransactionAction):
+                let builder = try dataBuilder.stakingBuilder()
+                let (emailDataCollector, recipient) = builder.makeMailData(action: stakingTransactionAction, error: error)
+                coordinator?.openMail(with: emailDataCollector, recipient: recipient)
+            }
+        } catch {
+            alert = error.alertBinder
+        }
     }
 
     func bind(step: SendStep) {
@@ -294,6 +307,33 @@ extension SendViewModel: SendModelRoutable {
         }
 
         coordinator?.openFeeCurrency(for: feeCurrencyWalletModel, userWalletModel: userWalletModel)
+    }
+}
+
+// MARK: - OnrampModelRoutable
+
+extension SendViewModel: OnrampModelRoutable {
+    func openOnrampCountryBottomSheet(country: OnrampCountry) {
+        do {
+            let builder = try dataBuilder.onrampBuilder()
+            let repository = builder.makeDataForOnrampCountryBottomSheet()
+            coordinator?.openOnrampCountry(country: country, repository: repository)
+        } catch {
+            alert = error.alertBinder
+        }
+    }
+
+    func openOnrampCountriesSelector() {
+        /*
+          TODO: https://tangem.atlassian.net/browse/IOS-8158
+         do {
+             let builder = try dataBuilder.onrampBuilder()
+             let repository = builder.makeDataForOnrampCountryBottomSheet()
+             coordinator?.openOnrampCountry(country: country, repository: repository)
+         } catch {
+             alert = error.alertBinder
+         }
+         */
     }
 }
 

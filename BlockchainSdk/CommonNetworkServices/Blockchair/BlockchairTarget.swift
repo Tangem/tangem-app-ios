@@ -10,13 +10,13 @@ import Foundation
 import Moya
 
 enum BlockchairEndpoint {
-    case bitcoin(testnet: Bool),
-         bitcoinCash,
-         litecoin,
-         dogecoin,
-         ethereum(testnet: Bool),
-         dash
-    
+    case bitcoin(testnet: Bool)
+    case bitcoinCash
+    case litecoin
+    case dogecoin
+    case ethereum(testnet: Bool)
+    case dash
+
     var path: String {
         switch self {
         case .bitcoin(let testnet): return "bitcoin" + (testnet ? "/testnet" : "")
@@ -27,15 +27,15 @@ enum BlockchairEndpoint {
         case .dash: return "dash"
         }
     }
-    
+
     var blockchain: Blockchain {
         switch self {
         case .bitcoin(let testnet):
             return .bitcoin(testnet: testnet)
         case .bitcoinCash:
             return .bitcoinCash
-		case .litecoin:
-			return .litecoin
+        case .litecoin:
+            return .litecoin
         case .ethereum(let testnet):
             return .ethereum(testnet: testnet)
         case .dogecoin:
@@ -55,13 +55,13 @@ struct BlockchairTarget: TargetType {
         case txDetails(txHash: String, endpoint: BlockchairEndpoint)
         case txsDetails(hashes: [String], endpoint: BlockchairEndpoint)
     }
-    
+
     let type: BlockchairTargetType
     let apiKey: String?
-    
+
     var baseURL: URL {
         var endpointString = ""
-        
+
         switch type {
         case .address(_, _, let endpoint, _):
             endpointString = endpoint.path
@@ -74,10 +74,10 @@ struct BlockchairTarget: TargetType {
         case .txsDetails(_, let endpoint):
             endpointString = endpoint.path
         }
-        
+
         return URL(string: "https://api.blockchair.com/\(endpointString)")!
     }
-    
+
     var path: String {
         switch type {
         case .address(let address, _, _, _):
@@ -100,7 +100,7 @@ struct BlockchairTarget: TargetType {
             return path
         }
     }
-    
+
     var method: Moya.Method {
         switch type {
         case .address, .fee, .txDetails, .txsDetails:
@@ -109,13 +109,13 @@ struct BlockchairTarget: TargetType {
             return .post
         }
     }
-    
+
     var sampleData: Data {
         return Data()
     }
-    
+
     var task: Task {
-        var parameters = [String:String]()
+        var parameters = [String: String]()
 
         if let apiKey = apiKey {
             parameters["key"] = apiKey
@@ -131,13 +131,13 @@ struct BlockchairTarget: TargetType {
             break
         case .send(let txHex, _):
             parameters["data"] = txHex
-        case .txDetails(_, _), .txsDetails(_, _):
+        case .txDetails(_, _), .txsDetails:
             break
         }
-        
+
         return .requestParameters(parameters: parameters, encoding: URLEncoding.default)
     }
-    
+
     var headers: [String: String]? {
         switch type {
         case .address, .fee, .txDetails, .txsDetails:

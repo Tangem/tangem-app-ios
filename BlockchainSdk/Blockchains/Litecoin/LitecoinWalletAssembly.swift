@@ -11,16 +11,17 @@ import TangemSdk
 import BitcoinCore
 
 struct LitecoinWalletAssembly: WalletManagerAssembly {
-    
     func make(with input: WalletManagerAssemblyInput) throws -> WalletManager {
         return try BitcoinWalletManager(wallet: input.wallet).then {
-            let bitcoinManager = BitcoinManager(networkParams: LitecoinNetworkParams(),
-                                                walletPublicKey: input.wallet.publicKey.blockchainKey,
-                                                compressedWalletPublicKey: try Secp256k1Key(with: input.wallet.publicKey.blockchainKey).compress(),
-                                                bip: .bip84)
-            
+            let bitcoinManager = BitcoinManager(
+                networkParams: LitecoinNetworkParams(),
+                walletPublicKey: input.wallet.publicKey.blockchainKey,
+                compressedWalletPublicKey: try Secp256k1Key(with: input.wallet.publicKey.blockchainKey).compress(),
+                bip: .bip84
+            )
+
             $0.txBuilder = BitcoinTransactionBuilder(bitcoinManager: bitcoinManager, addresses: input.wallet.addresses)
-            
+
             let providers: [AnyBitcoinNetworkProvider] = input.apiInfo.reduce(into: []) { partialResult, providerType in
                 switch providerType {
                 case .nowNodes:
@@ -43,9 +44,8 @@ struct LitecoinWalletAssembly: WalletManagerAssembly {
                     return
                 }
             }
-            
+
             $0.networkService = LitecoinNetworkService(providers: providers)
         }
     }
-    
 }

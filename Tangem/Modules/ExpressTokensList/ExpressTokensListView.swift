@@ -85,6 +85,7 @@ struct ExpressTokensListView: View {
             DefaultHeaderView(title)
                 .padding(.vertical, 12)
         }
+        .settings(\.backgroundColor, Colors.Background.action)
     }
 }
 

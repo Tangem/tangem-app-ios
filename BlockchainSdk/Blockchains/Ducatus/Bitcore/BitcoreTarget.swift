@@ -10,14 +10,14 @@ import Foundation
 import Moya
 
 enum BitcoreTarget: TargetType {
-    case balance(address:String)
-    case unspents(address:String)
+    case balance(address: String)
+    case unspents(address: String)
     case send(txHex: String)
-    
+
     var baseURL: URL {
         return URL(string: "https://ducapi.rocknblock.io/api/DUC/mainnet")!
     }
-    
+
     var path: String {
         switch self {
         case .balance(let address):
@@ -28,7 +28,7 @@ enum BitcoreTarget: TargetType {
             return "tx/send"
         }
     }
-    
+
     var method: Moya.Method {
         switch self {
         case .balance, .unspents:
@@ -37,11 +37,11 @@ enum BitcoreTarget: TargetType {
             return .post
         }
     }
-    
+
     var sampleData: Data {
         return Data()
     }
-    
+
     var task: Task {
         switch self {
         case .balance:
@@ -52,8 +52,8 @@ enum BitcoreTarget: TargetType {
             return .requestParameters(parameters: ["rawTx": [txHex]], encoding: JSONEncoding.default)
         }
     }
-    
-    public var headers: [String: String]? {
+
+    var headers: [String: String]? {
         return ["Content-Type": "application/json"]
     }
 }

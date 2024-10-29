@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import Solana_Swift
+import SolanaSwift
 
 @available(iOS 13.0, *)
 class SolanaNetworkService {
@@ -39,7 +39,7 @@ class SolanaNetworkService {
             }
 
             let tokenAccounts = splTokenAccounts + token2022Accounts
-            return self.mapInfo(
+            return mapInfo(
                 mainAccountInfo: mainAccount,
                 tokenAccountsInfo: tokenAccounts,
                 tokens: tokens,
@@ -103,7 +103,7 @@ class SolanaNetworkService {
             allowUnfundedRecipient: true,
             fromPublicKey: fromPublicKey
         )
-        .flatMap { [solanaSdk] (message, _) -> AnyPublisher<FeeForMessageResult, Error> in
+        .flatMap { [solanaSdk] message, _ -> AnyPublisher<FeeForMessageResult, Error> in
             solanaSdk.api.getFeeForMessage(message)
         }
         .map { [blockchain] in
@@ -123,7 +123,7 @@ class SolanaNetworkService {
                     throw BlockchainSdkError.failedToLoadFee
                 }
 
-                return Decimal(lamportsPerSignature) * Decimal(numberOfSignatures) / self.blockchain.decimalValue
+                return Decimal(lamportsPerSignature) * Decimal(numberOfSignatures) / blockchain.decimalValue
             }
             .eraseToAnyPublisher()
     }
@@ -165,7 +165,7 @@ class SolanaNetworkService {
                     throw WalletError.empty
                 }
 
-                return Decimal(balanceInLamports) / self.blockchain.decimalValue
+                return Decimal(balanceInLamports) / blockchain.decimalValue
             }
             .eraseToAnyPublisher()
     }
@@ -175,7 +175,7 @@ class SolanaNetworkService {
             .tryMap { accountInfo in
                 let tokenProgramIds: [PublicKey] = [
                     .tokenProgramId,
-                    .token2022ProgramId
+                    .token2022ProgramId,
                 ]
 
                 for tokenProgramId in tokenProgramIds {

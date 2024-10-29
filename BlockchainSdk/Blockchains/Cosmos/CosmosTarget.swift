@@ -42,7 +42,7 @@ extension CosmosTarget: TargetType {
             return "cosmos/tx/v1beta1/txs/\(hash)"
         }
     }
-    
+
     var method: Moya.Method {
         switch type {
         case .accounts, .balances, .transactionStatus, .querySmartContract:
@@ -51,7 +51,7 @@ extension CosmosTarget: TargetType {
             return .post
         }
     }
-    
+
     var task: Moya.Task {
         switch type {
         case .accounts, .balances, .transactionStatus, .querySmartContract:
@@ -60,8 +60,8 @@ extension CosmosTarget: TargetType {
             return .requestData(data)
         }
     }
-    
-    var headers: [String : String]? {
+
+    var headers: [String: String]? {
         [
             "Content-Type": "application/json",
         ]

@@ -25,7 +25,7 @@
 import Foundation
 
 // Concatenates two strings.
-public struct OpConcatenate: OpCodeProtocol {
-    public var value: UInt8 { return 0x7e }
-    public var name: String { return "OP_CAT" }
+struct OpConcatenate: OpCodeProtocol {
+    var value: UInt8 { return 0x7e }
+    var name: String { return "OP_CAT" }
 }

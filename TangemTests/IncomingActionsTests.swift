@@ -33,9 +33,14 @@ class IncomingActionsTests: XCTestCase {
         XCTAssertNotNil(parser.parseDeeplink(URL(string: "https://tangem.com/wc?uri=wc:8ad9144fec726c592b3bae26e2fa797e61b08d523fe9036ac7fe4f3c54b7b9f4@2?relay-protocol=irn&symKey=cc2f1426571a59111059b7661c6aecadc08784d299a2dce36c576844e40d6c81")!))
     }
 
-    func testWC2Link() {
+    func testWC1Link() throws {
         let parser = WalletConnectURLParser()
-        let uri = parser.parse(url: URL(string: "tangem://wc?uri=wc:8ad9144fec726c592b3bae26e2fa797e61b08d523fe9036ac7fe4f3c54b7b9f4@2?relay-protocol=irn&symKey=cc2f1426571a59111059b7661c6aecadc08784d299a2dce36c576844e40d6c81")!)
+        let uri = XCTAssertThrowsError(try parser.parse(uriString: "wc:e42fe03f-1e27-4ca5-b24b-1fae23f16e79@1?bridge=https%3A%2F%2Fwalletconnect-relay.minerva.digital&key=605df78472a128f297eefe94a2c2880638394b3dd6ecf9888426a9e8cd81e748"))
+    }
+
+    func testWC2Link() throws {
+        let parser = WalletConnectURLParser()
+        let uri = try! parser.parse(url: URL(string: "tangem://wc?uri=wc:8ad9144fec726c592b3bae26e2fa797e61b08d523fe9036ac7fe4f3c54b7b9f4@2?relay-protocol=irn&symKey=cc2f1426571a59111059b7661c6aecadc08784d299a2dce36c576844e40d6c81")!)
 
         switch uri {
         case .v2:
@@ -47,7 +52,7 @@ class IncomingActionsTests: XCTestCase {
 
     func testWC2LinkFromString() {
         let parser = WalletConnectURLParser()
-        let uri = parser.parse(uriString: "wc:8ad9144fec726c592b3bae26e2fa797e61b08d523fe9036ac7fe4f3c54b7b9f4@2?relay-protocol=irn&symKey=cc2f1426571a59111059b7661c6aecadc08784d299a2dce36c576844e40d6c81")
+        let uri = try! parser.parse(uriString: "wc:8ad9144fec726c592b3bae26e2fa797e61b08d523fe9036ac7fe4f3c54b7b9f4@2?relay-protocol=irn&symKey=cc2f1426571a59111059b7661c6aecadc08784d299a2dce36c576844e40d6c81")
 
         switch uri {
         case .v2:

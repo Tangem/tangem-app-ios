@@ -11,13 +11,13 @@ import Foundation
 public enum AddressType: String, Equatable {
     case `default`
     case legacy
-    
+
     public var defaultLocalizedName: String {
         switch self {
         case .default:
-            return "address_type_default".localized
+            return Localization.addressTypeDefault
         case .legacy:
-            return "address_type_legacy".localized
+            return Localization.addressTypeLegacy
         }
     }
 }

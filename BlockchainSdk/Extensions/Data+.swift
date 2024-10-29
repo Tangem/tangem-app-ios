@@ -13,7 +13,7 @@ import class WalletCore.DataVector
 import Sodium
 
 extension Data {
-    var bytes: Array<UInt8> {
+    var bytes: [UInt8] {
         return Array(self)
     }
 
@@ -47,7 +47,8 @@ extension Data {
         guard let hash = Sodium().genericHash.hash(
             message: bytes,
             key: key.bytes,
-            outputLength: outputLength) else {
+            outputLength: outputLength
+        ) else {
             return nil
         }
 
@@ -58,13 +59,14 @@ extension Data {
         guard let hash = Sodium().genericHash.hash(
             message: bytes,
             key: nil,
-            outputLength: outputLength) else {
+            outputLength: outputLength
+        ) else {
             return nil
         }
 
         return Data(hash)
     }
-    
+
     func base64URLEncodedString() -> String {
         base64EncodedString()
             .replacingOccurrences(of: "+", with: "-")

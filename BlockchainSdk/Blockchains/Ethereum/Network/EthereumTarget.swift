@@ -12,22 +12,22 @@ import Moya
 struct EthereumTarget: TargetType {
     let targetType: EthereumTargetType
     let baseURL: URL
-    
+
     var path: String {
         return ""
     }
-    
+
     var method: Moya.Method {
         return .post
     }
-    
+
     var task: Task {
         EthereumTarget.id += 1
         let request = JSONRPC.Request(id: EthereumTarget.id, method: rpcMethod, params: params)
         return .requestJSONEncodable(request)
     }
-    
-    var headers: [String : String]? {
+
+    var headers: [String: String]? {
         [
             "Content-Type": "application/json",
         ]
@@ -74,12 +74,12 @@ private extension EthereumTarget {
         case .gasLimit(let params):
             return AnyEncodable([params])
         case .gasPrice, .priorityFee:
-            return AnyEncodable([Int]())  // Empty params
+            return AnyEncodable([Int]()) // Empty params
         case .call(let params):
             return AnyEncodable([AnyEncodable(params), AnyEncodable("latest")])
         case .feeHistory:
             // Get fee history for 5 blocks (around a minute) with 25,50,75 percentiles (selected empirically)
-            return AnyEncodable([AnyEncodable(5), AnyEncodable("latest"), AnyEncodable([25,50,75])])
+            return AnyEncodable([AnyEncodable(5), AnyEncodable("latest"), AnyEncodable([25, 50, 75])])
         }
     }
 }

@@ -7,14 +7,15 @@
 //
 
 import Foundation
-import SwiftProtobuf
+
+@preconcurrency import SwiftProtobuf // TODO: Andrey Fedorov - Remove after migration to Swift 6 structured concurrency (IOS-8369)
 import CryptoSwift
 
 class TronTransactionBuilder {
     private let utils = TronUtils()
 
     func buildForSign(transaction: Transaction, block: TronBlock) throws -> TronPresignedInput {
-        let contract = try self.contract(transaction: transaction)
+        let contract = try contract(transaction: transaction)
         let feeLimit = (transaction.amount.type == .coin) ? 0 : Constants.smartContractFeeLimit
 
         let blockHeaderRawData = block.block_header.raw_data
@@ -29,11 +30,11 @@ class TronTransactionBuilder {
 
         let blockData = try blockHeader.serializedData()
         let blockHash = blockData.getSha256()
-        let refBlockHash = blockHash[8..<16]
+        let refBlockHash = blockHash[8 ..< 16]
 
         let number = blockHeader.number
         let numberData = Data(Data(from: number).reversed())
-        let refBlockBytes = numberData[6..<8]
+        let refBlockBytes = numberData[6 ..< 8]
 
         let tenHours: Int64 = 10 * 60 * 60 * 1000 // same as WalletCore
 
@@ -43,7 +44,7 @@ class TronTransactionBuilder {
             $0.refBlockHash = refBlockHash
             $0.refBlockBytes = refBlockBytes
             $0.contract = [
-                contract
+                contract,
             ]
             $0.feeLimit = feeLimit
         }
@@ -140,7 +141,6 @@ class TronTransactionBuilder {
 
         let contractData = TronFunction.transfer.prefix + destinationData + amountData
         return contractData
-
     }
 
     private func buildApprovalContractData(data: Data) -> Data {
@@ -171,7 +171,7 @@ private extension TronTransactionBuilder {
 
 // MARK: - Amount+
 
-fileprivate extension Amount {
+private extension Amount {
     var int64Value: Int64 {
         let decimalAmount = value * pow(Decimal(10), decimals)
         return (decimalAmount.rounded() as NSDecimalNumber).int64Value
