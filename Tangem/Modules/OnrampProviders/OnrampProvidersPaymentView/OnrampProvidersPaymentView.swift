@@ -61,7 +61,6 @@ struct OnrampProvidersPaymentView: View {
             .foregroundStyle(Colors.Icon.informative)
     }
 
-    @ViewBuilder
     private var overlay: some View {
         Color.clear.overlay {
             RoundedRectangle(cornerRadius: 14)

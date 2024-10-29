@@ -25,7 +25,6 @@ struct OnrampView: View {
         }
     }
 
-    @ViewBuilder
     private var paymentSection: some View {
         GroupedSection(viewModel.paymentState) { state in
             switch state {
