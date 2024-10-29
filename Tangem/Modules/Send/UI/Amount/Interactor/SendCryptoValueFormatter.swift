@@ -21,12 +21,8 @@ struct SendCryptoValueFormatter {
 
         decimalNumberFormatter = DecimalNumberFormatter(numberFormatter: numberFormatter, maximumFractionDigits: decimals)
 
-        let optionsFactory = SendDecimalNumberTextField.PrefixSuffixOptionsFactory(
-            cryptoCurrencyCode: currencySymbol,
-            fiatCurrencyCode: "",
-            locale: locale
-        )
-        prefixSuffixOptions = optionsFactory.makeCryptoOptions()
+        let optionsFactory = SendDecimalNumberTextField.PrefixSuffixOptionsFactory(locale: locale)
+        prefixSuffixOptions = optionsFactory.makeCryptoOptions(cryptoCurrencyCode: currencySymbol)
 
         self.trimFractions = trimFractions
         self.locale = locale

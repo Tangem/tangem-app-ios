@@ -12,16 +12,19 @@ import Combine
 class CommonOnrampStepsManager {
     private let onrampStep: OnrampStep
     private let finishStep: SendFinishStep
+    private let shouldActivateKeyboard: Bool
 
     private var stack: [SendStep]
     private weak var output: SendStepsManagerOutput?
 
     init(
         onrampStep: OnrampStep,
-        finishStep: SendFinishStep
+        finishStep: SendFinishStep,
+        shouldActivateKeyboard: Bool
     ) {
         self.onrampStep = onrampStep
         self.finishStep = finishStep
+        self.shouldActivateKeyboard = shouldActivateKeyboard
 
         stack = [onrampStep]
     }
@@ -41,7 +44,7 @@ class CommonOnrampStepsManager {
 // MARK: - SendStepsManager
 
 extension CommonOnrampStepsManager: SendStepsManager {
-    var initialKeyboardState: Bool { false }
+    var initialKeyboardState: Bool { shouldActivateKeyboard }
 
     var initialFlowActionType: SendFlowActionType {
         .onramp
