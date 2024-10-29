@@ -31,14 +31,15 @@ final class CasperNetworkProvider: HostProvider {
     
     // MARK: - Implementation
     
-    func getBalance(address: String) -> AnyPublisher<CasperNetworkResult.Balance, Error> {
-        requestPublisher(for: .getBalance(address: address))
+    func getBalance(address: String) -> AnyPublisher<CasperNetworkResponse.Balance, Error> {
+        let query = CasperNetworkRequest.QueryBalance(purseIdentifier: .init(mainPurseUnderPublicKey: address))
+        return requestPublisher(for: .getBalance(data: query))
     }
     
     // MARK: - Private Implementation
 
-    private func requestPublisher<T: Decodable>(for target: CasperTarget.TargetType) -> AnyPublisher<T, Error> {
-        provider.requestPublisher(CasperTarget(node: node))
+    private func requestPublisher<T: Decodable>(for type: CasperTarget.TargetType) -> AnyPublisher<T, Error> {
+        provider.requestPublisher(CasperTarget(node: node, type: type))
             .filterSuccessfulStatusAndRedirectCodes()
             .map(JSONRPC.Response<T, JSONRPC.APIError>.self)
             .tryMap { try $0.result.get() }

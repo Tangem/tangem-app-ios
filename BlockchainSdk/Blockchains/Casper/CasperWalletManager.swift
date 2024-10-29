@@ -11,16 +11,43 @@ import Combine
 
 class CasperWalletManager: BaseManager, WalletManager {
     var currentHost: String {
-        // TODO: - https://tangem.atlassian.net/browse/IOS-8316
-        ""
+        networkService.host
     }
 
     var allowsFeeSelection: Bool {
         false
     }
+    
+    // MARK: - Private Implementation
+    
+    private let networkService: CasperNetworkService
+    
+    // MARK: - Init
+    
+    init(wallet: Wallet, networkService: CasperNetworkService) {
+        self.networkService = networkService
+        super.init(wallet: wallet)
+    }
+    
+    // MARK: - Manager Implementation
 
     override func update(completion: @escaping (Result<Void, any Error>) -> Void) {
-        // TODO: - https://tangem.atlassian.net/browse/IOS-8316
+        let balanceInfoPublisher = networkService
+            .getBalance(address: wallet.address)
+        
+        cancellable = balanceInfoPublisher
+            .withWeakCaptureOf(self)
+            .sink(receiveCompletion: { [weak self] result in
+                switch result {
+                case .failure(let error):
+                    self?.wallet.clearAmounts()
+                    completion(.failure(error))
+                case .finished:
+                    completion(.success(()))
+                }
+            }, receiveValue: { walletManager, balanceInfo in
+                walletManager.updateWallet(balanceInfo: balanceInfo)
+            })
     }
 
     func getFee(amount: Amount, destination: String) -> AnyPublisher<[Fee], any Error> {
@@ -35,12 +62,12 @@ class CasperWalletManager: BaseManager, WalletManager {
     
     // MARK: - Private Implementation
     
-    private func updateWallet(balance: CasperBalance) {
-        if balance.value != wallet.amounts[.coin]?.value {
+    private func updateWallet(balanceInfo: CasperBalance) {
+        if balanceInfo.value != wallet.amounts[.coin]?.value {
             wallet.clearPendingTransaction()
         }
         
-        wallet.add(amount: Amount(with: wallet.blockchain, type: .coin, value: balance.value))
+        wallet.add(amount: Amount(with: wallet.blockchain, type: .coin, value: balanceInfo.value))
     }
     
 }

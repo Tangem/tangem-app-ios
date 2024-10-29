@@ -14,11 +14,13 @@ struct CasperTarget: TargetType {
     // MARK: - Properties
 
     let node: NodeInfo
+    let type: TargetType
 
     // MARK: - Init
 
-    init(node: NodeInfo) {
+    init(node: NodeInfo, type: TargetType) {
         self.node = node
+        self.type = type
     }
 
     // MARK: - TargetType
@@ -36,7 +38,14 @@ struct CasperTarget: TargetType {
     }
 
     var task: Task {
-        .requestPlain
+        switch type {
+        case .getBalance(let data):
+            return .requestJSONRPC(
+                id: Constants.jsonRPCMethodId,
+                method: Method.queryBalance.rawValue,
+                params: data
+            )
+        }
     }
 
     var headers: [String: String]?
@@ -44,6 +53,16 @@ struct CasperTarget: TargetType {
 
 extension CasperTarget {
     enum TargetType {
-        case getBalance(address: String)
+        case getBalance(data: CasperNetworkRequest.QueryBalance)
+    }
+    
+    enum Method: String, Encodable {
+        case queryBalance = "query_balance"
+    }
+}
+
+private extension CasperTarget {
+    enum Constants {
+        static let jsonRPCMethodId: Int = 1
     }
 }

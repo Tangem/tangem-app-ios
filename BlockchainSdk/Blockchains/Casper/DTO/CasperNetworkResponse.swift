@@ -1,5 +1,5 @@
 //
-//  CasperNetworkResult.swift
+//  CasperNetworkResponse.swift
 //  BlockchainSdk
 //
 //  Created by skibinalexander on 24.10.2024.
@@ -9,4 +9,4 @@
 import Foundation
 
 /// A top-level namespace.
-enum CasperNetworkResult {}
+enum CasperNetworkResponse {}

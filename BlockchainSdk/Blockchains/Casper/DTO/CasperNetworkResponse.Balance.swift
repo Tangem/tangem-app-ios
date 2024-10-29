@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension CasperNetworkResult {
+extension CasperNetworkResponse {
     /// The balance represented in motes.
     struct Balance: Decodable {
         let apiVersion: String
