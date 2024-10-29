@@ -89,7 +89,7 @@ final class StakingDetailsViewModel: ObservableObject {
 
 private extension StakingDetailsViewModel {
     func bind() {
-        Publishers.Zip(
+        Publishers.CombineLatest(
             stakingManager.statePublisher,
             stakingManager.actionsPublisher
         )
@@ -283,6 +283,7 @@ private extension StakingDetailsViewModel {
     }
 
     func setupStakes(yield: YieldInfo, staking: [StakingBalance], actions: [PendingAction]) {
+        print("test")
         let staking = staking.map { balance in
             stakesBuilder.mapToStakingDetailsStakeViewData(yield: yield, balance: balance) { [weak self] in
                 Analytics.log(

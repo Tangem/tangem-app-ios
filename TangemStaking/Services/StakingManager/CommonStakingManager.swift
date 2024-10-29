@@ -76,11 +76,11 @@ extension CommonStakingManager: StakingManager {
         do {
             async let balances = provider.balances(wallet: wallet)
             async let yield = provider.yield(integrationId: integrationId)
+            async let actions = provider.actions(wallet: wallet)
 
-            let result = try await (balances, yield)
+            let result = try await (balances, yield, actions)
 
-            repository.checkIfConfirmed(balances: result.0)
-            updateState(state(balances: result.0, yield: result.1))
+            updateState(state(balances: result.0, yield: result.1, actions: result.2))
         } catch {
             analyticsLogger.logAPIError(
                 errorDescription: error.localizedDescription,
@@ -152,23 +152,7 @@ extension CommonStakingManager: StakingManager {
     }
 
     func transactionDidSent(action: StakingAction) {
-        repository.transactionDidSent(action: action, integrationId: integrationId)
-
-        Task {
-            let actions = try await provider.actions(wallet: wallet).filter { $0.status == .processing }
-            print(actions)
-        }
-        // We will update the state without requesting the API
-        switch state {
-        case .loading, .notEnabled, .temporaryUnavailable, .loadingError:
-            break
-        case .availableToStake(let yieldInfo):
-            let balances = cachedStakingBalances(yield: yieldInfo)
-            updateState(.staked(.init(balances: balances, yieldInfo: yieldInfo, canStakeMore: canStakeMore)))
-        case .staked(let staked):
-            let balances = cachedStakingBalances(yield: staked.yieldInfo) + staked.balances
-            updateState(.staked(.init(balances: balances, yieldInfo: staked.yieldInfo, canStakeMore: canStakeMore)))
-        }
+        Task(operation: actions)
     }
 }
 
@@ -180,18 +164,20 @@ private extension CommonStakingManager {
         _state.send(state)
     }
 
-    func state(balances: [StakingBalanceInfo], yield: YieldInfo) -> StakingManagerState {
+    func state(balances: [StakingBalanceInfo], yield: YieldInfo, actions: [PendingAction]) -> StakingManagerState {
         guard yield.isAvailable else {
             return .temporaryUnavailable(yield)
         }
 
-        let balances = prepareStakingBalances(balances: balances, yield: yield)
+        let stakingBalances = balances.map { balance in
+            mapToStakingBalance(balance: balance, yield: yield)
+        }
 
-        guard !balances.isEmpty else {
+        guard !stakingBalances.isEmpty else {
             return .availableToStake(yield)
         }
 
-        return .staked(.init(balances: balances, yieldInfo: yield, canStakeMore: canStakeMore))
+        return .staked(.init(balances: stakingBalances, yieldInfo: yield, canStakeMore: canStakeMore))
     }
 
     func getStakeTransactionInfo(request: ActionGenericRequest) async throws -> StakingTransactionAction {
@@ -398,24 +384,6 @@ private extension CommonStakingManager {
             validator: validator,
             transactions: transactions
         )
-    }
-
-    func prepareStakingBalances(balances: [StakingBalanceInfo], yield: YieldInfo) -> [StakingBalance] {
-        let cached = cachedStakingBalances(yield: yield)
-
-        let active = balances.map { balance in
-            mapToStakingBalance(balance: balance, yield: yield)
-        }
-
-        return cached + active
-    }
-
-    func cachedStakingBalances(yield: YieldInfo) -> [StakingBalance] {
-        repository.records
-            .filter { $0.integrationId == yield.id && $0.type == .stake }
-            .map { record in
-                mapToStakingBalance(record: record, yield: yield)
-            }
     }
 }
 

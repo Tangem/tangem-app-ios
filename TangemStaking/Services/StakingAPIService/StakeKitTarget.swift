@@ -112,6 +112,8 @@ struct StakeKitTarget: Moya.TargetType {
                 parameters: [
                     "walletAddress": request.walletAddress,
                     "network": request.network.rawValue,
+                    "status": request.status.rawValue,
+                    "limit": request.limit,
                 ],
                 encoding: URLEncoding.queryString
             )
