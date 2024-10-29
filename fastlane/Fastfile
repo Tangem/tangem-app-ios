@@ -139,9 +139,7 @@ lane :build_Alpha do |options|
   }
 
   # Passing back values to the GITHUB_ENV file for GitHub Actions
-  File.open(ENV['GITHUB_ENV'], "a") do |file|
-    file.puts "testingUri=#{release[:testingUri]}"
-  end
+  sh("TESTING_URL=#{release[:testingUri]} && echo ::add-mask::$TESTING_URL && echo TESTING_URL=$TESTING_URL >> $GITHUB_ENV")
 end
 
 desc """
