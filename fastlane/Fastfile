@@ -131,17 +131,17 @@ Options:
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 """
 lane :build_Alpha do |options|
-  increment_version_number(version_number: options[:version])
-  increment_firebase_build_number(app_id: ENV["APP_ID_ALPHA"], build: options[:build])
+  # increment_version_number(version_number: options[:version])
+  # increment_firebase_build_number(app_id: ENV["APP_ID_ALPHA"], build: options[:build])
 
-  build(
-    export_method: "ad-hoc",
-    scheme: ALPHA_SCHEME,
-    version: options[:version],
-    build: options[:build],
-    filename: options[:filename],
-    path: options[:path]
-  )
+  release = {
+    testingUri: "test_key_1",
+  }
+
+  # Passing back values to the GITHUB_ENV file for GitHub Actions
+  File.open(ENV['GITHUB_ENV'], "a") do |file|
+    file.puts "testingUri=#{release[:testingUri]}"
+  end
 end
 
 desc """

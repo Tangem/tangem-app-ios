@@ -131,12 +131,13 @@ jobs:
       version: '${{ needs.prepare.outputs.version }}'
       build_number: '${{ needs.prepare.outputs.build_number }}'
       changelog: '${{ needs.prepare.outputs.changelog }}'
+      testing_url: '${{ needs.deploy.outputs.testing_url }}'
     secrets:
       SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN }}'
 
   error_notification:
     name: Error Notification
-    if: failure()
+    if: false # TODO: Test only, remove
     needs:
       - prepare
       - build
