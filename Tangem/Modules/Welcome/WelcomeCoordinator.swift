@@ -130,35 +130,3 @@ extension WelcomeCoordinator: WelcomeRoutable {
         safariManager.openURL(TangemBlogUrlBuilder().url(post: .scanCard))
     }
 }
-
-// MARK: ViewState
-
-extension WelcomeCoordinator {
-    enum ViewState: Equatable {
-        case welcome(WelcomeViewModel)
-        case main(MainCoordinator)
-
-        var isMain: Bool {
-            if case .main = self {
-                return true
-            }
-            return false
-        }
-
-        var welcomeViewModel: WelcomeViewModel? {
-            if case .welcome(let viewModel) = self {
-                return viewModel
-            }
-            return nil
-        }
-
-        static func == (lhs: WelcomeCoordinator.ViewState, rhs: WelcomeCoordinator.ViewState) -> Bool {
-            switch (lhs, rhs) {
-            case (.welcome, .welcome), (.main, .main):
-                return true
-            default:
-                return false
-            }
-        }
-    }
-}
