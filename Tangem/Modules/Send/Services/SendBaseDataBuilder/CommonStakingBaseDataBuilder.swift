@@ -1,41 +1,30 @@
 //
-//  SendBaseDataBuilder.swift
+//  CommonStakingBaseDataBuilder.swift
 //  TangemApp
 //
-//  Created by Sergey Balashov on 16.09.2024.
+//  Created by Sergey Balashov on 20.10.2024.
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
+import Foundation
 import BlockchainSdk
 import TangemStaking
 
-protocol SendBaseDataBuilderInput {
-    var bsdkAmount: BSDKAmount? { get }
-    var bsdkFee: Fee? { get }
-    var isFeeIncluded: Bool { get }
-
+protocol StakingBaseDataBuilderInput: SendBaseDataBuilderInput {
     var selectedPolicy: ApprovePolicy? { get }
     var approveViewModelInput: ApproveViewModelInput? { get }
 
-    var stakingAction: StakingAction.ActionType? { get }
+    var stakingActionType: StakingAction.ActionType? { get }
     var validator: ValidatorInfo? { get }
 }
 
-extension SendBaseDataBuilderInput {
-    var selectedPolicy: ApprovePolicy? { nil }
-    var approveViewModelInput: ApproveViewModelInput? { nil }
-
-    var stakingAction: StakingAction.ActionType? { nil }
-    var validator: ValidatorInfo? { nil }
-}
-
-struct SendBaseDataBuilder {
-    private let input: SendBaseDataBuilderInput
+struct CommonStakingBaseDataBuilder: StakingBaseDataBuilder {
+    private let input: StakingBaseDataBuilderInput
     private let walletModel: WalletModel
     private let emailDataProvider: EmailDataProvider
 
     init(
-        input: SendBaseDataBuilderInput,
+        input: StakingBaseDataBuilderInput,
         walletModel: WalletModel,
         emailDataProvider: EmailDataProvider
     ) {
@@ -61,35 +50,8 @@ struct SendBaseDataBuilder {
             amount: amount,
             isFeeIncluded: input.isFeeIncluded,
             lastError: .init(error: error),
-            stakingAction: input.stakingAction,
+            stakingAction: input.stakingActionType,
             validator: input.validator
-        )
-
-        let recipient = emailDataProvider.emailConfig?.recipient ?? EmailConfig.default.recipient
-
-        return (dataCollector: emailDataCollector, recipient: recipient)
-    }
-
-    func makeMailData(transaction: SendTransactionType, error: SendTxError) -> (dataCollector: EmailDataCollector, recipient: String) {
-        switch transaction {
-        case .transfer(let bSDKTransaction):
-            return makeMailData(transaction: bSDKTransaction, error: error)
-        case .staking(let stakingTransactionAction):
-            return makeMailData(action: stakingTransactionAction, error: error)
-        }
-    }
-
-    func makeMailData(transaction: BSDKTransaction, error: SendTxError) -> (dataCollector: EmailDataCollector, recipient: String) {
-        let emailDataCollector = SendScreenDataCollector(
-            userWalletEmailData: emailDataProvider.emailData,
-            walletModel: walletModel,
-            fee: transaction.fee.amount,
-            destination: transaction.destinationAddress,
-            amount: transaction.amount,
-            isFeeIncluded: input.isFeeIncluded,
-            lastError: .init(error: error),
-            stakingAction: nil,
-            validator: nil
         )
 
         let recipient = emailDataProvider.emailConfig?.recipient ?? EmailConfig.default.recipient
@@ -110,7 +72,7 @@ struct SendBaseDataBuilder {
             amount: amount,
             isFeeIncluded: input.isFeeIncluded,
             lastError: .init(error: error),
-            stakingAction: input.stakingAction,
+            stakingAction: input.stakingActionType,
             validator: input.validator
         )
 
@@ -130,22 +92,12 @@ struct SendBaseDataBuilder {
 
         let settings = ExpressApproveViewModel.Settings(
             subtitle: Localization.givePermissionStakingSubtitle(walletModel.tokenItem.currencySymbol),
+            feeFooterText: Localization.stakingGivePermissionFeeFooter,
             tokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem,
             selectedPolicy: selectedPolicy
         )
 
         return (settings, input)
-    }
-}
-
-enum SendBaseDataBuilderError: LocalizedError {
-    case notFound(String)
-
-    var errorDescription: String? {
-        switch self {
-        case .notFound(let string):
-            "\(string) not found"
-        }
     }
 }

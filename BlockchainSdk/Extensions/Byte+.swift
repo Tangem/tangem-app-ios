@@ -19,7 +19,7 @@ extension UInt8 {
     func toBits() -> [Bit] {
         var byte = self
         var bits = [Bit](repeating: .zero, count: 8)
-        for i in 0..<8 {
+        for i in 0 ..< 8 {
             let currentBit = byte & 0x01
             if currentBit != 0 {
                 bits[i] = .one
@@ -34,7 +34,7 @@ extension UInt8 {
 
 extension Array where Element == UInt8 {
     func toBitArray() -> [Bit] {
-        let arrayBits = self.map { $0.toBits() }
+        let arrayBits = map { $0.toBits() }
         return arrayBits.reduce(into: []) { partialResult, bits in partialResult.append(contentsOf: bits) }
     }
 }

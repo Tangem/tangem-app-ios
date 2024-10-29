@@ -21,7 +21,7 @@ struct DecimalPlainAddress: Address {
             return Constants.dscLocalizedName
         }
     }
-    
+
     init(value: String, publicKey: Wallet.PublicKey, type: AddressType) {
         self.value = value
         self.publicKey = publicKey

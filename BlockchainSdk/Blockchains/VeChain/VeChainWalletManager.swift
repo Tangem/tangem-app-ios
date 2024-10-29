@@ -12,7 +12,7 @@ import Combine
 final class VeChainWalletManager: BaseManager {
     private let networkService: VeChainNetworkService
     private let transactionBuilder: VeChainTransactionBuilder
-    
+
     private var energyToken: Token {
         return cardTokens.first(where: \.isEnergyToken) ?? Constants.energyToken
     }

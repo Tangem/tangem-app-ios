@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import class UIKit.UIImage
 import Combine
 import TangemSdk
 

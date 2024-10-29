@@ -15,7 +15,7 @@ extension AlgorandResponse {
         let amount: UInt64
         let minBalance: UInt64
         let round: UInt64
-        
+
         /*
          [onl] delegation status of the account's MicroAlgos
          * Offline - indicates that the associated account is delegated.
@@ -34,8 +34,8 @@ extension AlgorandResponse {
         }
 
         private enum CodingKeys: String, CodingKey {
-            case address = "address"
-            case amount = "amount"
+            case address
+            case amount
             case minBalance = "min-balance"
             case round
             case status

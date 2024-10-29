@@ -17,7 +17,6 @@ struct CasperExternalLinkProvider: ExternalLinkProvider {
 
     private var baseExplorerUrl: String {
         return isTestnet ? "https://testnet.cspr.live" : "https://cspr.live"
-
     }
 
     init(isTestnet: Bool) {

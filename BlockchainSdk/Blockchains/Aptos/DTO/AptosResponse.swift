@@ -15,7 +15,7 @@ extension AptosResponse {
         let type: String
         let data: Resource
     }
-    
+
     struct Resource: Decodable {
         let sequenceNumber: String?
         let coin: Coin?
@@ -39,7 +39,7 @@ extension AptosResponse {
     struct SimulateTransactionBody: Decodable {
         let gasUsed: String
     }
-    
+
     struct SubmitTransactionBody: Decodable {
         let hash: String?
     }

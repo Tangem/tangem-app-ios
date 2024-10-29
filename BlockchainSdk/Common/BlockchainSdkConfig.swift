@@ -80,52 +80,52 @@ public extension BlockchainSdkConfig {
     struct QuickNodeCredentials {
         let apiKey: String
         let subdomain: String
-        
+
         public init(apiKey: String, subdomain: String) {
             self.apiKey = apiKey
             self.subdomain = subdomain
         }
     }
-    
+
     struct TonCenterApiKeys {
         let mainnetApiKey: String
         let testnetApiKey: String
-        
+
         public init(mainnetApiKey: String, testnetApiKey: String) {
             self.mainnetApiKey = mainnetApiKey
             self.testnetApiKey = testnetApiKey
         }
-        
+
         func getApiKey(for testnet: Bool) -> String {
             return testnet ? testnetApiKey : mainnetApiKey
         }
     }
-    
+
     struct FireAcademyApiKeys {
         let mainnetApiKey: String
         let testnetApiKey: String
-        
+
         public init(mainnetApiKey: String, testnetApiKey: String) {
             self.mainnetApiKey = mainnetApiKey
             self.testnetApiKey = testnetApiKey
         }
-        
+
         func getApiKey(for testnet: Bool) -> String {
             return testnet ? testnetApiKey : mainnetApiKey
         }
     }
-    
+
     struct ChiaTangemApiKeys {
         let mainnetApiKey: String
-        
+
         public init(mainnetApiKey: String) {
             self.mainnetApiKey = mainnetApiKey
         }
     }
-    
+
     struct GetBlockCredentials {
         let credentials: [Credential]
-        
+
         public init(credentials: [Credential]) {
             self.credentials = credentials
         }
@@ -137,14 +137,14 @@ public extension BlockchainSdkConfig.GetBlockCredentials {
         let blockchain: Blockchain
         let type: TypeValue
         let value: String
-        
+
         public init(blockchain: Blockchain, type: TypeValue, key: String) {
             self.blockchain = blockchain
             self.type = type
-            self.value = key
+            value = key
         }
     }
-    
+
     enum TypeValue: String, CaseIterable {
         case blockBookRest
         case rest
@@ -158,7 +158,7 @@ extension BlockchainSdkConfig.GetBlockCredentials {
         let credential = credentials.first { $0.blockchain.codingKey == blockchain.codingKey && $0.type == type }
         return credential?.value ?? ""
     }
-    
+
     func credentials(type: TypeValue) -> [Blockchain: String] {
         credentials
             .filter { $0.type == type }

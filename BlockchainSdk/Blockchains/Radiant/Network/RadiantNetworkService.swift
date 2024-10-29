@@ -11,7 +11,7 @@ import Combine
 
 class RadiantNetworkService {
     let electrumProvider: ElectrumNetworkProvider
-    
+
     init(electrumProvider: ElectrumNetworkProvider) {
         self.electrumProvider = electrumProvider
     }
@@ -31,7 +31,7 @@ extension RadiantNetworkService {
                 promise(result)
             }
         }
-        
+
         return defferedScriptHash
             .withWeakCaptureOf(self)
             .flatMap { service, value in
@@ -43,17 +43,17 @@ extension RadiantNetworkService {
             }
             .eraseToAnyPublisher()
     }
-    
+
     func estimatedFee() -> AnyPublisher<BitcoinFee, Error> {
         electrumProvider
             .estimateFee()
             .map { sourceFee in
                 let targetFee = max(sourceFee, Constants.recommendedFeePer1000Bytes)
-                
+
                 let minimal = targetFee
                 let normal = targetFee * Constants.normalFeeMultiplier
                 let priority = targetFee * Constants.priorityFeeMultiplier
-                
+
                 return BitcoinFee(
                     minimalSatoshiPerByte: minimal,
                     normalSatoshiPerByte: normal,
@@ -62,7 +62,7 @@ extension RadiantNetworkService {
             }
             .eraseToAnyPublisher()
     }
-    
+
     func sendTransaction(data: Data) -> AnyPublisher<String, Error> {
         electrumProvider
             .send(transactionHex: data.hexString)
@@ -72,13 +72,13 @@ extension RadiantNetworkService {
 extension RadiantNetworkService {
     enum Constants {
         /*
-         This minimal rate fee for successful transaction from constant
-         -  Relying on answers from blockchain developers and costs from the official application (Electron-Radiant).
-         - 10000 satoshi per byte or 0.1 RXD per KB.
-        */
-        
-        static let recommendedFeePer1000Bytes: Decimal = Decimal(stringValue: "0.1")!
-        static let normalFeeMultiplier: Decimal = Decimal(stringValue: "1.5")!
-        static let priorityFeeMultiplier: Decimal = Decimal(stringValue: "2")!
+          This minimal rate fee for successful transaction from constant
+          -  Relying on answers from blockchain developers and costs from the official application (Electron-Radiant).
+          - 10000 satoshi per byte or 0.1 RXD per KB.
+         */
+
+        static let recommendedFeePer1000Bytes: Decimal = .init(stringValue: "0.1")!
+        static let normalFeeMultiplier: Decimal = .init(stringValue: "1.5")!
+        static let priorityFeeMultiplier: Decimal = .init(stringValue: "2")!
     }
 }

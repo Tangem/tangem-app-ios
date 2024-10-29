@@ -11,17 +11,16 @@ import Moya
 
 // TODO: - https://tangem.atlassian.net/browse/IOS-8316
 struct CasperTarget: TargetType {
-    
     // MARK: - Properties
-    
+
     let node: NodeInfo
-    
+
     // MARK: - Init
-    
+
     init(node: NodeInfo) {
         self.node = node
     }
-    
+
     // MARK: - TargetType
 
     var baseURL: URL {
@@ -31,16 +30,16 @@ struct CasperTarget: TargetType {
     var path: String {
         ""
     }
-    
+
     var method: Moya.Method {
         .post
     }
-    
+
     var task: Task {
         .requestPlain
     }
-    
-    var headers: [String : String]?
+
+    var headers: [String: String]?
 }
 
 extension CasperTarget {

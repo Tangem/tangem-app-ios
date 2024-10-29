@@ -11,7 +11,7 @@ import WalletCore
 
 final class TonAddressService: AddressService {
     private let coin: CoinType = .ton
-    
+
     func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> any Address {
         let tonAddress = try makeTheOpenNetworkAddress(for: publicKey)
         let addressString = tonAddress.stringRepresentation(userFriendly: true, bounceable: false, testOnly: false)

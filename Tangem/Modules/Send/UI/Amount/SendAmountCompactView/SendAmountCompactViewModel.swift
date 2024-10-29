@@ -32,13 +32,9 @@ class SendAmountCompactViewModel: ObservableObject, Identifiable {
         self.input = input
         self.tokenIconInfo = tokenIconInfo
         self.tokenItem = tokenItem
+        prefixSuffixOptionsFactory = .init()
 
-        let prefixSuffixOptionsFactory = SendDecimalNumberTextField.PrefixSuffixOptionsFactory(
-            cryptoCurrencyCode: tokenItem.currencySymbol,
-            fiatCurrencyCode: AppSettings.shared.selectedCurrencyCode
-        )
-        self.prefixSuffixOptionsFactory = prefixSuffixOptionsFactory
-        _amountFieldOptions = .init(initialValue: prefixSuffixOptionsFactory.makeCryptoOptions())
+        _amountFieldOptions = .init(initialValue: prefixSuffixOptionsFactory.makeCryptoOptions(cryptoCurrencyCode: tokenItem.currencySymbol))
         amountDecimalNumberTextFieldViewModel = .init(maximumFractionDigits: tokenItem.decimalCount)
 
         bind(input: input)
@@ -58,11 +54,11 @@ class SendAmountCompactViewModel: ObservableObject, Identifiable {
     private func updateAmount(from amount: SendAmount?) {
         switch amount?.type {
         case .typical(let crypto, _):
-            amountFieldOptions = prefixSuffixOptionsFactory.makeCryptoOptions()
+            amountFieldOptions = prefixSuffixOptionsFactory.makeCryptoOptions(cryptoCurrencyCode: tokenItem.currencySymbol)
             amountDecimalNumberTextFieldViewModel.update(maximumFractionDigits: tokenItem.decimalCount)
             amountDecimalNumberTextFieldViewModel.update(value: crypto)
         case .alternative(let fiat, _):
-            amountFieldOptions = prefixSuffixOptionsFactory.makeFiatOptions()
+            amountFieldOptions = prefixSuffixOptionsFactory.makeFiatOptions(fiatCurrencyCode: AppSettings.shared.selectedCurrencyCode)
             amountDecimalNumberTextFieldViewModel.update(maximumFractionDigits: SendAmountStep.Constants.fiatMaximumFractionDigits)
             amountDecimalNumberTextFieldViewModel.update(value: fiat)
         case nil:

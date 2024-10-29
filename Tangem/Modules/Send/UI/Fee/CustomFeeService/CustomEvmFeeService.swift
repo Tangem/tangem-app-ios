@@ -49,21 +49,14 @@ class CustomEvmFeeService {
             .removeDuplicates()
             .withWeakCaptureOf(self)
             .sink { service, customFee in
-                service.customFeeDidChanged(fee: customFee)
+                service.customFeeInFiat.send(service.fortmatToFiat(value: customFee.amount.value))
+                service.output?.customFeeDidChanged(customFee)
             }
             .store(in: &bag)
     }
 
-    private func customFeeDidChanged(fee: Fee) {
-        let fortmatted = fortmatToFiat(value: fee.amount.value)
-        customFeeInFiat.send(fortmatted)
-
-        output?.customFeeDidChanged(fee)
-    }
-
     private func fortmatToFiat(value: Decimal?) -> String? {
-        guard let value,
-              let currencyId = feeTokenItem.currencyId else {
+        guard let value, let currencyId = feeTokenItem.currencyId else {
             return nil
         }
 
@@ -80,22 +73,23 @@ class CustomEvmFeeService {
 
     private func didChangeCustomFeeMaxFee(_ value: BigUInt?) {
         maxFeePerGas.send(value)
-        output?.customFeeDidChanged(recalculateFee())
+
+        customFee.send(recalculateFee())
     }
 
     private func didChangeCustomFeePriorityFee(_ value: BigUInt?) {
         priorityFee.send(value)
-        output?.customFeeDidChanged(recalculateFee())
+        customFee.send(recalculateFee())
     }
 
     private func didChangeCustomFeeGasLimit(_ value: BigUInt?) {
         gasLimit.send(value)
-        output?.customFeeDidChanged(recalculateFee())
+        customFee.send(recalculateFee())
     }
 
     private func didChangeCustomFeeGasPrice(_ value: BigUInt?) {
         gasPrice.send(value)
-        output?.customFeeDidChanged(recalculateFee())
+        customFee.send(recalculateFee())
     }
 
     private func recalculateFee() -> Fee {

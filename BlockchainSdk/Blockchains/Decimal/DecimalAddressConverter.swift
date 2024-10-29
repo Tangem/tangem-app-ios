@@ -15,13 +15,12 @@ import Foundation
  */
 
 struct DecimalAddressConverter: EthereumAddressConverter {
-
     // MARK: - Private Properties
-    
+
     private let bech32 = Bech32()
-    
+
     // MARK: - Implementation
-    
+
     func convertToDecimalAddress(_ address: String) throws -> String {
         if address.lowercased().hasPrefix(Constants.addressPrefix) || address.lowercased().hasPrefix(Constants.legacyAddressPrefix) {
             return address
@@ -36,7 +35,7 @@ struct DecimalAddressConverter: EthereumAddressConverter {
         if address.hasHexPrefix() {
             return address
         }
-        
+
         let decodeValue = try bech32.decode(address)
 
         let convertedAddressBytes = try bech32.convertBits(

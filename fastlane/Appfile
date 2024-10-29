@@ -1,5 +1,9 @@
 itc_team_id "118990352"
 
+for_lane :build_Alpha do
+    app_identifier 'com.tangem.TangemAlpha'
+end
+
 for_lane :alpha do
     app_identifier 'com.tangem.TangemAlpha'
 end

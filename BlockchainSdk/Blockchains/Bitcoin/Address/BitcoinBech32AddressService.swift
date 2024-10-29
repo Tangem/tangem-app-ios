@@ -10,9 +10,8 @@ import Foundation
 import BitcoinCore
 import TangemSdk
 
-
 @available(iOS 13.0, *)
-public class BitcoinBech32AddressService {
+class BitcoinBech32AddressService {
     private let converter: SegWitBech32AddressConverter
 
     init(networkParams: INetwork) {
@@ -25,7 +24,7 @@ public class BitcoinBech32AddressService {
 
 @available(iOS 13.0, *)
 extension BitcoinBech32AddressService: BitcoinScriptAddressProvider {
-    public func makeScriptAddress(from scriptHash: Data) throws -> String {
+    func makeScriptAddress(from scriptHash: Data) throws -> String {
         return try converter.convert(scriptHash: scriptHash).stringValue
     }
 }
@@ -34,7 +33,7 @@ extension BitcoinBech32AddressService: BitcoinScriptAddressProvider {
 
 @available(iOS 13.0, *)
 extension BitcoinBech32AddressService: AddressValidator {
-    public func validate(_ address: String) -> Bool {
+    func validate(_ address: String) -> Bool {
         do {
             _ = try converter.convert(address: address)
             return true
@@ -48,12 +47,14 @@ extension BitcoinBech32AddressService: AddressValidator {
 
 @available(iOS 13.0, *)
 extension BitcoinBech32AddressService: AddressProvider {
-    public func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
+    func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
         let compressedKey = try Secp256k1Key(with: publicKey.blockchainKey).compress()
-        let bitcoinCorePublicKey = PublicKey(withAccount: 0,
-                                  index: 0,
-                                  external: true,
-                                  hdPublicKeyData: compressedKey)
+        let bitcoinCorePublicKey = PublicKey(
+            withAccount: 0,
+            index: 0,
+            external: true,
+            hdPublicKeyData: compressedKey
+        )
 
         let address = try converter.convert(publicKey: bitcoinCorePublicKey, type: .p2wpkh).stringValue
         return PlainAddress(value: address, publicKey: publicKey, type: addressType)

@@ -54,7 +54,7 @@ public protocol WalletProvider: AnyObject {
     var statePublisher: AnyPublisher<WalletManagerState, Never> { get }
 }
 
-public extension WalletProvider {
+extension WalletProvider {
     var defaultSourceAddress: String { wallet.address }
     var defaultChangeAddress: String { wallet.address }
 }
@@ -99,7 +99,7 @@ extension TransactionSigner {
 }
 
 @available(iOS 13.0, *)
-public protocol TransactionPusher {
+protocol TransactionPusher {
     func isPushAvailable(for transactionHash: String) -> Bool
     func getPushFee(for transactionHash: String) -> AnyPublisher<[Fee], Error>
     func pushTransaction(with transactionHash: String, newTransaction: Transaction, signer: TransactionSigner) -> AnyPublisher<Void, SendTxError>

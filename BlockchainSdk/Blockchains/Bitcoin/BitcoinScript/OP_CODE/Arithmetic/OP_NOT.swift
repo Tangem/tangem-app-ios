@@ -24,7 +24,7 @@
 import Foundation
 
 // replaces number with True if it's zero, False otherwise.
-public struct OpNot: OpCodeProtocol {
-    public var value: UInt8 { return 0x91 }
-    public var name: String { return "OP_NOT" }
+struct OpNot: OpCodeProtocol {
+    var value: UInt8 { return 0x91 }
+    var name: String { return "OP_NOT" }
 }

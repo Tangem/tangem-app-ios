@@ -9,7 +9,7 @@
 import Foundation
 
 struct HederaExternalLinkProvider: ExternalLinkProvider {
-    var testnetFaucetURL: URL? { 
+    var testnetFaucetURL: URL? {
         return URL(string: "https://portal.hedera.com/")
     }
 

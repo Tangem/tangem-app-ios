@@ -8,10 +8,9 @@
 
 import Foundation
 import TangemSdk
-import Solana_Swift
+import SolanaSwift
 
 struct SolanaWalletAssembly: WalletManagerAssembly {
-    
     func make(with input: WalletManagerAssemblyInput) throws -> WalletManager {
         return SolanaWalletManager(wallet: input.wallet).then {
             let endpoints: [RPCEndpoint]
@@ -59,11 +58,11 @@ struct SolanaWalletAssembly: WalletManagerAssembly {
                     }
                 }
             }
-            
+
             let apiLogger = SolanaApiLoggerUtil()
             let networkRouter = NetworkingRouter(endpoints: endpoints, apiLogger: apiLogger)
             let accountStorage = SolanaDummyAccountStorage()
-            
+
             $0.solanaSdk = Solana(router: networkRouter, accountStorage: accountStorage)
             $0.networkService = SolanaNetworkService(solanaSdk: $0.solanaSdk, blockchain: input.blockchain, hostProvider: networkRouter)
         }

@@ -36,7 +36,7 @@ final class CasperNetworkProvider: HostProvider {
     }
     
     // MARK: - Private Implementation
-    
+
     private func requestPublisher<T: Decodable>(for target: CasperTarget.TargetType) -> AnyPublisher<T, Error> {
         provider.requestPublisher(CasperTarget(node: node))
             .filterSuccessfulStatusAndRedirectCodes()

@@ -91,7 +91,7 @@ public extension Blockchain {
             //
             // Did you get a compilation error here? If so, add your new blockchain to the array below
         }
-        
+
         return [
             .ethereum(testnet: false),
             .ethereumClassic(testnet: false),

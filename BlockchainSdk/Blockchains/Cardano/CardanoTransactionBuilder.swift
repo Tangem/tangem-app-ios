@@ -105,7 +105,7 @@ extension CardanoTransactionBuilder {
             assert(hasTokens, "Use this only if wallet has tokens")
 
             return try minChange(exclude: nil)
-            
+
         case .token(let token):
             return try minChange(token: token, uint64Amount: amount.uint64Amount)
 
@@ -142,7 +142,7 @@ private extension CardanoTransactionBuilder {
     func getFeeToken(_ tokenAmount: TokenAmount, destination: String, source: String) throws -> FeeResult {
         let uint64AdaAmount = try buildCardanoMinAdaAmount(asset: asset(for: tokenAmount.token), amount: tokenAmount.amount)
 
-        let balance = outputs.reduce(0, { $0 + $1.amount })
+        let balance = outputs.reduce(0) { $0 + $1.amount }
         // If we'll try to build the transaction with adaValue more then balance
         // We'll receive the error from the WalletCore
         let adaValue = min(balance, uint64AdaAmount)
@@ -186,7 +186,7 @@ private extension CardanoTransactionBuilder {
 
 private extension CardanoTransactionBuilder {
     func minChange(token: Token, uint64Amount: UInt64) throws -> UInt64 {
-        let asset = try self.asset(for: token)
+        let asset = try asset(for: token)
 
         let tokenBalance: UInt64 = outputs.reduce(0) { partialResult, output in
             let amountInOutput = output.assets
@@ -214,7 +214,7 @@ private extension CardanoTransactionBuilder {
         return minChange
     }
 
-    func assetsBalances(exclude: Token?) throws -> [CardanoUnspentOutput.Asset : UInt64] {
+    func assetsBalances(exclude: Token?) throws -> [CardanoUnspentOutput.Asset: UInt64] {
         let excludeAsset = try exclude.map { try asset(for: $0) }
         return outputs
             .flatMap {
@@ -255,7 +255,7 @@ private extension CardanoTransactionBuilder {
         }
     }
 
-    func buildCardanoMinAdaAmount(asset: CardanoUnspentOutput.Asset, amount: UInt64) throws-> UInt64 {
+    func buildCardanoMinAdaAmount(asset: CardanoUnspentOutput.Asset, amount: UInt64) throws -> UInt64 {
         let tokenBundle = CardanoTokenBundle.with {
             $0.token = [buildCardanoTokenAmount(asset: asset, amount: BigUInt(amount))]
         }
@@ -310,7 +310,7 @@ private extension CardanoTransactionBuilder {
             switch option {
             case .useMaxAmount:
                 $0.transferMessage.useMaxAmount = true
-                // We don't set the `transferMessage.amount` here because we `useMaxAmount`
+            // We don't set the `transferMessage.amount` here because we `useMaxAmount`
             case .adaValue(let adaValue):
                 $0.transferMessage.useMaxAmount = false
                 $0.transferMessage.amount = adaValue

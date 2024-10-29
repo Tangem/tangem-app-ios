@@ -82,6 +82,7 @@ extension CommonExpressModulesFactory: ExpressModulesFactory {
         return ExpressApproveViewModel(
             settings: .init(
                 subtitle: Localization.givePermissionSwapSubtitle(providerName, tokenItem.currencySymbol),
+                feeFooterText: Localization.swapGivePermissionFeeFooter,
                 tokenItem: tokenItem,
                 feeTokenItem: expressInteractor.getSender().feeTokenItem,
                 selectedPolicy: selectedPolicy

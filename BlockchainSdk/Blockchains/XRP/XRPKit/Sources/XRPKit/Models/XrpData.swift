@@ -12,13 +12,13 @@ import Foundation
 
 struct XrpResponse: Codable {
     let result: XrpResult?
-    
+
     func assertAccountCreated() throws {
         if let code = result?.error_code, code == 19 {
             let networkName = Blockchain.xrp(curve: .secp256k1).displayName
             let amountToCreate: Decimal = 10
             throw WalletError.noAccount(
-                message: "no_account_generic".localized([networkName, "\(amountToCreate)", "XRP"]),
+                message: Localization.noAccountGeneric(networkName, "\(amountToCreate)", "XRP"),
                 amountToCreate: amountToCreate
             )
         }
@@ -42,7 +42,7 @@ struct XrpAccountData: Codable {
     let account: String?
     let balance: String?
     let sequence: Int?
-    
+
     enum CodingKeys: String, CodingKey {
         case account = "Account"
         case balance = "Balance"

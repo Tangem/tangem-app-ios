@@ -8,15 +8,15 @@
 
 import Foundation
 
-public struct TronTransactionParams: TransactionParams {
-    public let transactionType: TransactionType
+struct TronTransactionParams: TransactionParams {
+    let transactionType: TransactionType
 
-    public init(transactionType: TransactionType) {
+    init(transactionType: TransactionType) {
         self.transactionType = transactionType
     }
 }
 
-public extension TronTransactionParams {
+extension TronTransactionParams {
     enum TransactionType {
         case transfer
         case approval(data: Data)

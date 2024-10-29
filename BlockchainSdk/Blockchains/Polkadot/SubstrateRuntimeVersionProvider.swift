@@ -19,16 +19,16 @@ struct SubstrateRuntimeVersionProvider {
     func runtimeVersion(for meta: PolkadotBlockchainMeta) -> SubstrateRuntimeVersion {
         switch network {
         case .polkadot,
-                .westend,
-                .kusama:
+             .westend,
+             .kusama:
             // https://github.com/polkadot-fellows/runtimes/releases/tag/v1.2.5
             return meta.specVersion >= 1002005 ? .v15 : .v14
         case .bittensor:
             // 198 is from the first user report
             return meta.specVersion >= 198 ? .v15 : .v14
         case .azero,
-                .joystream,
-                .energyWebX:
+             .joystream,
+             .energyWebX:
             return .v14
         }
     }

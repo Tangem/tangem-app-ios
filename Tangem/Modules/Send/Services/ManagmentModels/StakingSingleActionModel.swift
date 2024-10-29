@@ -322,9 +322,9 @@ extension StakingSingleActionModel: NotificationTapDelegate {
     }
 }
 
-// MARK: - SendBaseDataBuilderInput
+// MARK: - StakingBaseDataBuilderInput
 
-extension StakingSingleActionModel: SendBaseDataBuilderInput {
+extension StakingSingleActionModel: StakingBaseDataBuilderInput {
     var bsdkAmount: BSDKAmount? { makeAmount(value: action.amount) }
 
     var bsdkFee: BlockchainSdk.Fee? { selectedFee.value.value }
@@ -332,6 +332,12 @@ extension StakingSingleActionModel: SendBaseDataBuilderInput {
     var isFeeIncluded: Bool { false }
 
     var validator: ValidatorInfo? { action.validatorInfo }
+
+    var selectedPolicy: ApprovePolicy? { nil }
+
+    var approveViewModelInput: (any ApproveViewModelInput)? { nil }
+
+    var stakingActionType: TangemStaking.StakingAction.ActionType? { action.type }
 }
 
 extension StakingSingleActionModel {
