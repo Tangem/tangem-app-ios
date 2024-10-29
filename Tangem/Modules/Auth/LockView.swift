@@ -23,6 +23,18 @@ struct LockView: View {
     }
 }
 
+// Copy of the view without matchedGeometryEffect
+struct LockViewCompat: View {
+    var body: some View {
+        VStack(spacing: 0) {
+            TangemIconView()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Colors.Background.primary)
+        .edgesIgnoringSafeArea(.all)
+    }
+}
+
 extension LockView: Setupable {
     func setNamespace(_ namespace: Namespace.ID) -> Self {
         map { $0.namespace = namespace }

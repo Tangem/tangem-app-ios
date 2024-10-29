@@ -80,7 +80,7 @@ struct AppCoordinatorView: CoordinatorView {
                 EmptyView()
             }
         }
-        .transition(.opacity)
+        .transition(.opacity) // We need stack to force this animation work
         .animation(.easeInOut, value: coordinator.viewState)
     }
 }

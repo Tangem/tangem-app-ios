@@ -65,13 +65,23 @@ class AppCoordinator: CoordinatorObject {
     }
 
     func sceneDidEnterBackground() {
-        withTransaction(.withoutAnimations()) {
-            mainBottomSheetUIManager.hide(shouldUpdateFooterSnapshot: false)
-            lockViewVisible = true
-        }
+        addLockViewIfNeeded()
     }
 
     func sceneWillEnterForeground() {
+        removeLockViewIfNeeded()
+    }
+
+    private func addLockViewIfNeeded() {
+        guard viewState?.shouldAddLockView ?? false else {
+            return
+        }
+
+        mainBottomSheetUIManager.hide(shouldUpdateFooterSnapshot: false)
+        lockViewVisible = true
+    }
+
+    private func removeLockViewIfNeeded() {
         guard lockViewVisible else {
             return
         }
@@ -124,13 +134,11 @@ class AppCoordinator: CoordinatorObject {
         let dismissAction: Action<ScanDismissOptions> = { [weak self] options in
             guard let self else { return }
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                switch options {
-                case .main(let model):
-                    self.openMain(with: model)
-                case .onboarding(let input):
-                    self.openOnboarding(with: input)
-                }
+            switch options {
+            case .main(let model):
+                openMain(with: model)
+            case .onboarding(let input):
+                openOnboarding(with: input)
             }
         }
 
@@ -247,6 +255,15 @@ extension AppCoordinator {
         case auth(AuthCoordinator)
         case main(MainCoordinator)
         case onboarding(OnboardingCoordinator)
+
+        var shouldAddLockView: Bool {
+            switch self {
+            case .auth, .welcome:
+                return false
+            default:
+                return true
+            }
+        }
 
         static func == (lhs: AppCoordinator.ViewState, rhs: AppCoordinator.ViewState) -> Bool {
             switch (lhs, rhs) {

@@ -35,8 +35,6 @@ class WelcomeCoordinator: CoordinatorObject {
 
     // MARK: - Private
 
-    private var welcomeLifecycleSubscription: AnyCancellable?
-
     private var lifecyclePublisher: AnyPublisher<Bool, Never> {
         // Only modals, because the modal presentation will not trigger onAppear/onDisappear events
         var publishers: [AnyPublisher<Bool, Never>] = []
@@ -54,23 +52,17 @@ class WelcomeCoordinator: CoordinatorObject {
         self.popToRootAction = popToRootAction
     }
 
-    func start(with options: WelcomeCoordinator.Options) {
-        rootViewModel = WelcomeViewModel(coordinator: self)
-        subscribeToWelcomeLifecycle()
-        showWelcomeOnboardingIfNeeded()
+    deinit {
+        AppLog.shared.debug("WelcomeCoordinator deinit")
     }
 
-    private func subscribeToWelcomeLifecycle() {
-        welcomeLifecycleSubscription = lifecyclePublisher
-            .sink { [weak self] viewDismissed in
-                guard let self else { return }
-
-                if viewDismissed {
-                    rootViewModel?.becomeActive()
-                } else {
-                    rootViewModel?.resignActive()
-                }
-            }
+    func start(with options: WelcomeCoordinator.Options) {
+        let storiesModel = StoriesViewModel()
+        let welcomeViewModel = WelcomeViewModel(coordinator: self, storiesModel: storiesModel)
+        storiesModel.setDelegate(delegate: welcomeViewModel)
+        storiesModel.setLifecyclePublisher(publisher: lifecyclePublisher)
+        rootViewModel = welcomeViewModel
+        showWelcomeOnboardingIfNeeded()
     }
 
     private func showWelcomeOnboardingIfNeeded() {

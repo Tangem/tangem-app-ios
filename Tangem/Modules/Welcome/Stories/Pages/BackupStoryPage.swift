@@ -9,8 +9,8 @@
 import SwiftUI
 
 struct BackupStoryPage: View {
-    @Binding var progress: Double
-    @Binding var isScanning: Bool
+    var progress: Double
+    var isScanning: Bool
     let scanCard: () -> Void
     let orderCard: () -> Void
 
@@ -88,9 +88,15 @@ struct BackupStoryPage: View {
 
             Spacer()
 
-            StoriesBottomButtons(scanColorStyle: .primary, orderColorStyle: .secondary, isScanning: $isScanning, scanCard: scanCard, orderCard: orderCard)
-                .padding(.horizontal)
-                .padding(.bottom, 6)
+            StoriesBottomButtons(
+                scanColorStyle: .primary,
+                orderColorStyle: .secondary,
+                isScanning: isScanning,
+                scanCard: scanCard,
+                orderCard: orderCard
+            )
+            .padding(.horizontal)
+            .padding(.bottom, 6)
         }
         .background(Colors.Old.tangemStoryBackground.edgesIgnoringSafeArea(.all))
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -99,7 +105,7 @@ struct BackupStoryPage: View {
 
 struct BackupStoryPage_Previews: PreviewProvider {
     static var previews: some View {
-        BackupStoryPage(progress: .constant(1), isScanning: .constant(false)) {} orderCard: {}
+        BackupStoryPage(progress: 1, isScanning: false) {} orderCard: {}
             .previewGroup(devices: [.iPhone7, .iPhone12ProMax], withZoomed: false)
     }
 }

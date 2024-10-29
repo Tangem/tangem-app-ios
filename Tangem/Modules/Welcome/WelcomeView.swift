@@ -12,7 +12,7 @@ struct WelcomeView: View {
     @ObservedObject var viewModel: WelcomeViewModel
 
     var body: some View {
-        storiesView
+        StoriesView(viewModel: viewModel.storiesModel)
             .alert(item: $viewModel.error, content: { $0.alert })
             .environment(\.colorScheme, .dark)
             .onAppear(perform: viewModel.onAppear)
@@ -26,24 +26,10 @@ struct WelcomeView: View {
                 )
             )
     }
-
-    var storiesView: some View {
-        StoriesView(viewModel: viewModel.storiesModel) { [weak viewModel] in
-            if let viewModel = viewModel {
-                viewModel.storiesModel.currentStoryPage(
-                    isScanning: $viewModel.isScanningCard,
-                    scanCard: viewModel.scanCardTapped,
-                    orderCard: viewModel.orderCard,
-                    openPromotion: viewModel.openPromotion,
-                    searchTokens: viewModel.openTokensList
-                )
-            }
-        }
-    }
 }
 
 struct WelcomeOnboardingView_Previews: PreviewProvider {
     static var previews: some View {
-        WelcomeView(viewModel: WelcomeViewModel(coordinator: WelcomeCoordinator()))
+        WelcomeView(viewModel: WelcomeViewModel(coordinator: WelcomeCoordinator(), storiesModel: .init()))
     }
 }

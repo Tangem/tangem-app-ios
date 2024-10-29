@@ -14,7 +14,7 @@ class CommonAppLockController {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
     @Injected(\.incomingActionManager) private var incomingActionManager: IncomingActionManaging
 
-    private let minimizedAppTimer = MinimizedAppTimer(interval: 5)
+    private let minimizedAppTimer = MinimizedAppTimer(interval: 5 * 60)
     private let startupProcessor = StartupProcessor()
 
     init() {}
