@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Blake2
 
 /*
  https://github.com/casper-ecosystem/casper-js-sdk/blob/dev/src/lib/ChecksummedHex.ts
@@ -41,7 +40,7 @@ struct CasperAddressUtils {
     }
 
     private func byteHash(bytes: [UInt8]) throws -> [UInt8] {
-        guard let hashData = try? Blake2b.hash(size: 32, data: bytes) else {
+        guard let hashData = Data(bytes).hashBlake2b(outputLength: 32) else {
             throw Error.failedHashBlake2b
         }
         return hashData.bytes

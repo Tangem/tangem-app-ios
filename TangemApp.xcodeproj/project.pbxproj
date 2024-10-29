@@ -65,6 +65,15 @@
 		2D61671E2C7632F9006FCEA6 /* MarketsTokensNetworkRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D61671D2C7632F9006FCEA6 /* MarketsTokensNetworkRoutable.swift */; };
 		2D6167202C763500006FCEA6 /* MarketsTokenNetworkSelectorCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D61671F2C763500006FCEA6 /* MarketsTokenNetworkSelectorCoordinator.swift */; };
 		2D6167222C763505006FCEA6 /* MarketsTokenNetworkSelectorCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6167212C763505006FCEA6 /* MarketsTokenNetworkSelectorCoordinatorView.swift */; };
+		2D616FEC2CD1414000581EA6 /* CasperNetworkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D616FE32CD1414000581EA6 /* CasperNetworkProvider.swift */; };
+		2D616FED2CD1414000581EA6 /* CasperWalletManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D616FEA2CD1414000581EA6 /* CasperWalletManager.swift */; };
+		2D616FEE2CD1414000581EA6 /* CasperAddressUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D616FE72CD1414000581EA6 /* CasperAddressUtils.swift */; };
+		2D616FEF2CD1414000581EA6 /* CasperAddressService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D616FE62CD1414000581EA6 /* CasperAddressService.swift */; };
+		2D616FF02CD1414000581EA6 /* CasperExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D616FE82CD1414000581EA6 /* CasperExternalLinkProvider.swift */; };
+		2D616FF12CD1414000581EA6 /* CasperWalletAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D616FE92CD1414000581EA6 /* CasperWalletAssembly.swift */; };
+		2D616FF22CD1414000581EA6 /* CasperTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D616FE42CD1414000581EA6 /* CasperTarget.swift */; };
+		2D616FF42CD1421000581EA6 /* Byte+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D616FF32CD1421000581EA6 /* Byte+.swift */; };
+		2D616FF72CD142BE00581EA6 /* CasperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D616FF52CD142BE00581EA6 /* CasperTests.swift */; };
 		2D70C61D2B21E90A00BD1DAB /* MarketsAddCustomItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D70C61B2B21E90A00BD1DAB /* MarketsAddCustomItemView.swift */; };
 		2DA8AB122A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA8AB112A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift */; };
 		2DB3614B2C14FBAB00BB1D38 /* SegmentedPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB3614A2C14FBAB00BB1D38 /* SegmentedPickerView.swift */; };
@@ -2707,10 +2716,6 @@
 		EFD68F392CC3D7DE00693C97 /* ExpressDTO+Swap.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F382CC3D7DB00693C97 /* ExpressDTO+Swap.swift */; };
 		EFD68F3B2CC3D7E600693C97 /* ExpressDTO+Onramp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F3A2CC3D7E300693C97 /* ExpressDTO+Onramp.swift */; };
 		EFD68F3F2CC3E5C700693C97 /* OnrampRedirectSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F3E2CC3E5C600693C97 /* OnrampRedirectSettings.swift */; };
-		EFD68F302CC2D02500693C97 /* OnrampCountryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F2F2CC2D02300693C97 /* OnrampCountryView.swift */; };
-		EFD68F322CC2D04500693C97 /* OnrampCountryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F312CC2D04400693C97 /* OnrampCountryViewModel.swift */; };
-		EFD68F342CC2D29C00693C97 /* OnrampCountryRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F332CC2D29700693C97 /* OnrampCountryRoutable.swift */; };
-		EFD68F372CC2F58900693C97 /* OnrampIdentityMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F362CC2F58000693C97 /* OnrampIdentityMock.swift */; };
 		EFDD6EDD2CBCF3EA00804205 /* ExpressProviderUpdateSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFDD6EDC2CBCF3EA00804205 /* ExpressProviderUpdateSource.swift */; };
 		EFE1812B292E30C00072D80C /* SupportChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C9FCB92869CC3E00FDE63E /* SupportChatViewModel.swift */; };
 		EFE1812C292E30DF0072D80C /* OnboardingCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E1565126B97F8C005B33E4 /* OnboardingCardView.swift */; };
@@ -3002,6 +3007,15 @@
 		2D61671D2C7632F9006FCEA6 /* MarketsTokensNetworkRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokensNetworkRoutable.swift; sourceTree = "<group>"; };
 		2D61671F2C763500006FCEA6 /* MarketsTokenNetworkSelectorCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenNetworkSelectorCoordinator.swift; sourceTree = "<group>"; };
 		2D6167212C763505006FCEA6 /* MarketsTokenNetworkSelectorCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenNetworkSelectorCoordinatorView.swift; sourceTree = "<group>"; };
+		2D616FE32CD1414000581EA6 /* CasperNetworkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasperNetworkProvider.swift; sourceTree = "<group>"; };
+		2D616FE42CD1414000581EA6 /* CasperTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasperTarget.swift; sourceTree = "<group>"; };
+		2D616FE62CD1414000581EA6 /* CasperAddressService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasperAddressService.swift; sourceTree = "<group>"; };
+		2D616FE72CD1414000581EA6 /* CasperAddressUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasperAddressUtils.swift; sourceTree = "<group>"; };
+		2D616FE82CD1414000581EA6 /* CasperExternalLinkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasperExternalLinkProvider.swift; sourceTree = "<group>"; };
+		2D616FE92CD1414000581EA6 /* CasperWalletAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasperWalletAssembly.swift; sourceTree = "<group>"; };
+		2D616FEA2CD1414000581EA6 /* CasperWalletManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasperWalletManager.swift; sourceTree = "<group>"; };
+		2D616FF32CD1421000581EA6 /* Byte+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Byte+.swift"; sourceTree = "<group>"; };
+		2D616FF52CD142BE00581EA6 /* CasperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasperTests.swift; sourceTree = "<group>"; };
 		2D70C61B2B21E90A00BD1DAB /* MarketsAddCustomItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsAddCustomItemView.swift; sourceTree = "<group>"; };
 		2D788E7F2ADD657000E0884B /* WalletSelectorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletSelectorViewModel.swift; sourceTree = "<group>"; };
 		2D788E822ADD657000E0884B /* WalletSelectorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletSelectorView.swift; sourceTree = "<group>"; };
@@ -5694,10 +5708,6 @@
 		EFD68F382CC3D7DB00693C97 /* ExpressDTO+Swap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExpressDTO+Swap.swift"; sourceTree = "<group>"; };
 		EFD68F3A2CC3D7E300693C97 /* ExpressDTO+Onramp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExpressDTO+Onramp.swift"; sourceTree = "<group>"; };
 		EFD68F3E2CC3E5C600693C97 /* OnrampRedirectSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampRedirectSettings.swift; sourceTree = "<group>"; };
-		EFD68F2F2CC2D02300693C97 /* OnrampCountryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampCountryView.swift; sourceTree = "<group>"; };
-		EFD68F312CC2D04400693C97 /* OnrampCountryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampCountryViewModel.swift; sourceTree = "<group>"; };
-		EFD68F332CC2D29700693C97 /* OnrampCountryRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampCountryRoutable.swift; sourceTree = "<group>"; };
-		EFD68F362CC2F58000693C97 /* OnrampIdentityMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampIdentityMock.swift; sourceTree = "<group>"; };
 		EFDD6EDC2CBCF3EA00804205 /* ExpressProviderUpdateSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressProviderUpdateSource.swift; sourceTree = "<group>"; };
 		EFE255F52C3D79BB00B17DAC /* BSDKTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BSDKTransaction.swift; path = Tangem/Common/BlockchainSDK/BSDKTransaction.swift; sourceTree = SOURCE_ROOT; };
 		EFE255F92C3D8C7C00B17DAC /* SendQRCodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendQRCodeService.swift; sourceTree = "<group>"; };
@@ -6022,6 +6032,36 @@
 				2D5DCC332C330A33000EE379 /* WalletSelectorItemViewModel.swift */,
 			);
 			path = WalletSelectorItemView;
+			sourceTree = "<group>";
+		};
+		2D616FE52CD1414000581EA6 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				2D616FE32CD1414000581EA6 /* CasperNetworkProvider.swift */,
+				2D616FE42CD1414000581EA6 /* CasperTarget.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		2D616FEB2CD1414000581EA6 /* Casper */ = {
+			isa = PBXGroup;
+			children = (
+				2D616FE52CD1414000581EA6 /* Network */,
+				2D616FE62CD1414000581EA6 /* CasperAddressService.swift */,
+				2D616FE72CD1414000581EA6 /* CasperAddressUtils.swift */,
+				2D616FE82CD1414000581EA6 /* CasperExternalLinkProvider.swift */,
+				2D616FE92CD1414000581EA6 /* CasperWalletAssembly.swift */,
+				2D616FEA2CD1414000581EA6 /* CasperWalletManager.swift */,
+			);
+			path = Casper;
+			sourceTree = "<group>";
+		};
+		2D616FF62CD142BE00581EA6 /* Casper */ = {
+			isa = PBXGroup;
+			children = (
+				2D616FF52CD142BE00581EA6 /* CasperTests.swift */,
+			);
+			path = Casper;
 			sourceTree = "<group>";
 		};
 		2D788E7E2ADD657000E0884B /* WalletSelector */ = {
@@ -10124,6 +10164,7 @@
 				B62D3C592CBC79D900C2460E /* Bitcoin */,
 				B62D3C612CBC79D900C2460E /* BitcoinCash */,
 				B62D3C7F2CBC79D900C2460E /* Cardano */,
+				2D616FEB2CD1414000581EA6 /* Casper */,
 				B62D3C922CBC79D900C2460E /* Chia */,
 				B62D3CA42CBC79D900C2460E /* Cosmos */,
 				B62D3CA92CBC79D900C2460E /* Dash */,
@@ -10631,6 +10672,7 @@
 				B62D3F762CBC79DA00C2460E /* Bech32 */,
 				B62D3F7A2CBC79DA00C2460E /* Moya+Combine */,
 				B62D3F7B2CBC79DA00C2460E /* AnyPublisher+Async.swift */,
+				2D616FF32CD1421000581EA6 /* Byte+.swift */,
 				B62D3F7C2CBC79DA00C2460E /* BigUInt+.swift */,
 				B62D3F7D2CBC79DA00C2460E /* Bundle+.swift */,
 				B62D3F7E2CBC79DA00C2460E /* CBOR+.swift */,
@@ -11175,6 +11217,7 @@
 				B62D430D2CBC79E200C2460E /* Aptos */,
 				B62D43172CBC79E300C2460E /* Bitcoin */,
 				B62D432B2CBC79E300C2460E /* Cardano */,
+				2D616FF62CD142BE00581EA6 /* Casper */,
 				B62D432F2CBC79E400C2460E /* Chia */,
 				B62D42F92CBC79E100C2460E /* Common */,
 				B62D43132CBC79E300C2460E /* Cosmos */,
@@ -13943,9 +13986,6 @@
 		EF9E29F52B4F0CCF00418559 /* Manager */ = {
 			isa = PBXGroup;
 			children = (
-				EF1399752CBD0A9F00AC9E2B /* OnrampProviderManager */,
-				EF49C06A2CAD8A730062AF06 /* OnrampRepository */,
-				EF49C05A2CAD70230062AF06 /* OnrampManager */,
 				EF25610F2CC6A2CD00D3C16A /* OnrampStorage */,
 				EF1399752CBD0A9F00AC9E2B /* OnrampProviderManager */,
 				EF49C06A2CAD8A730062AF06 /* OnrampRepository */,
@@ -14471,14 +14511,6 @@
 				EFD68F332CC2D29700693C97 /* OnrampCountryRoutable.swift */,
 			);
 			path = OnrampCountry;
-			sourceTree = "<group>";
-		};
-		EFD68F352CC2F57900693C97 /* Onramp */ = {
-			isa = PBXGroup;
-			children = (
-				EFD68F362CC2F58000693C97 /* OnrampIdentityMock.swift */,
-			);
-			path = Onramp;
 			sourceTree = "<group>";
 		};
 		EFD68F352CC2F57900693C97 /* Onramp */ = {
@@ -17087,6 +17119,13 @@
 				B62D42802CBC79DB00C2460E /* AlgorandTransactionHistoryMapper.swift in Sources */,
 				B62D403A2CBC79DA00C2460E /* AdaliteBalanceResponseDTO.swift in Sources */,
 				B62D40382CBC79DA00C2460E /* BitcoinCashWalletAssembly.swift in Sources */,
+				2D616FEC2CD1414000581EA6 /* CasperNetworkProvider.swift in Sources */,
+				2D616FED2CD1414000581EA6 /* CasperWalletManager.swift in Sources */,
+				2D616FEE2CD1414000581EA6 /* CasperAddressUtils.swift in Sources */,
+				2D616FEF2CD1414000581EA6 /* CasperAddressService.swift in Sources */,
+				2D616FF02CD1414000581EA6 /* CasperExternalLinkProvider.swift in Sources */,
+				2D616FF12CD1414000581EA6 /* CasperWalletAssembly.swift in Sources */,
+				2D616FF22CD1414000581EA6 /* CasperTarget.swift in Sources */,
 				B62D42C82CBC79DB00C2460E /* Bundle+.swift in Sources */,
 				B62D420B2CBC79DB00C2460E /* XRPTransaction.swift in Sources */,
 				B62D41CC2CBC79DB00C2460E /* proposal_contract.pb.swift in Sources */,
@@ -17402,6 +17441,7 @@
 				B62D408E2CBC79DA00C2460E /* TokenBalanceERC20TokenMethod.swift in Sources */,
 				B62D40A32CBC79DA00C2460E /* AvalancheExternalLinkProvider.swift in Sources */,
 				B62D3FFA2CBC79DA00C2460E /* OP_VER.swift in Sources */,
+				2D616FF42CD1421000581EA6 /* Byte+.swift in Sources */,
 				B62D425A2CBC79DB00C2460E /* JSONRPC.swift in Sources */,
 				B62D42352CBC79DB00C2460E /* BlockcypherTarget.swift in Sources */,
 				B62D418C2CBC79DA00C2460E /* SolanaFeeParameters.swift in Sources */,
@@ -17945,6 +17985,7 @@
 				B62D435E2CBC79E400C2460E /* KoinosTransactionBuilderTests.swift in Sources */,
 				B62D43672CBC79E400C2460E /* XCTAssert+.swift in Sources */,
 				B62D43402CBC79E400C2460E /* AddressTests.swift in Sources */,
+				2D616FF72CD142BE00581EA6 /* CasperTests.swift in Sources */,
 				B62D43482CBC79E400C2460E /* TransactionSizeTesterUtility.swift in Sources */,
 				B62D435F2CBC79E400C2460E /* KoinosWalletManagerTests.swift in Sources */,
 				B62D434B2CBC79E400C2460E /* BlockchainCodingKeyTests.swift in Sources */,

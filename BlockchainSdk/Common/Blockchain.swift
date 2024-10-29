@@ -91,6 +91,7 @@ public indirect enum Blockchain: Equatable, Hashable {
     /// Polkadot parachain
     case energyWebX(curve: EllipticCurve)
     case core(testnet: Bool)
+    case casper(testnet: Bool)
 
     public var isTestnet: Bool {
         switch self {
@@ -134,7 +135,8 @@ public indirect enum Blockchain: Equatable, Hashable {
              .sei(let testnet),
              .kaspa(let testnet),
              .energyWebEVM(let testnet),
-             .core(let testnet):
+             .core(let testnet),
+             .casper(let testnet):
             return testnet
         case .litecoin,
              .ducatus,
