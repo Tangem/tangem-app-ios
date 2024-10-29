@@ -15296,7 +15296,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [[ \"${CI}\" == \"true\" || \"${ENABLE_PREVIEWS}\" == \"YES\" ]]; then\n    exit 0\nfi\n\nfind . -name 'Localizable.strings' -not -path './Pods/*' -exec sort {} -o {} \\;\n";
+			shellScript = "\"./Utilites/sort-strings.sh\"\n";
 		};
 		E551D05F64007527CC513710 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
