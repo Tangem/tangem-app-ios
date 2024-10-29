@@ -3,14 +3,18 @@ name: Alpha - Build and Deploy
 on:
   workflow_dispatch:
     inputs:
-      xcode_version_override:
+      build_version_override:
         description: >
-          Optional Xcode version override. Leave blank (default value) to use the default Xcode version; 
-          pass a custom value (e.g. '16.0', '10.2.1', '11 Beta 7', '11.2 GM seed', etc) to use a different Xcode version for the build
+          Optional build version override. Leave blank (default value) to use the default value derived from the branch name
         type: string
       changelog:
         description: >
           Optional additional info about build
+        type: string
+      xcode_version_override:
+        description: >
+          Optional Xcode version override. Leave blank (default value) to use the default Xcode version; 
+          pass a custom value (e.g. '16.0', '10.2.1', '11 Beta 7', '11.2 GM seed', etc) to use a different Xcode version for the build
         type: string
 
 concurrency:
@@ -22,7 +26,7 @@ jobs:
     name: Prepare information
     runs-on: [self-hosted, active]
     outputs:
-      version: '${{ steps.jira.outputs.key }}'
+      version: '${{ steps.version.outputs.build_version }}'
       stage: Alpha
       build_number: '${{ github.run_number }}'
       changelog: '${{ steps.changelog.outputs.result }}'
@@ -40,6 +44,27 @@ jobs:
         with:
           action: getBranchSummary
           branch-name: '${{ github.ref_name }}'
+
+      - name: Create version
+        id: version
+        env:
+          JIRA_ISSUE_KEY: '${{ steps.jira.outputs.key }}'
+          BUILD_VERSION_OVERRIDE: '${{ inputs.build_version_override }}'
+        run: |
+          BUILD_VERSION=""
+
+          if [[ -n "${BUILD_VERSION_OVERRIDE}" ]]; then
+            # Use the build version value from user input (if any)
+            BUILD_VERSION="${BUILD_VERSION_OVERRIDE}"
+          elif [[ -n "${JIRA_ISSUE_KEY}" ]]; then
+            # Use the build version value from Jira (if available)
+            BUILD_VERSION="${JIRA_ISSUE_KEY}"
+          else
+            # Fallback to default value
+            BUILD_VERSION="develop"
+          fi
+
+          echo "build_version=${BUILD_VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Create changelog
         id: changelog

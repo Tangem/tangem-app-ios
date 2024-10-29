@@ -8,7 +8,7 @@
 
 public protocol OnrampManager {
     // Load country by IP or get from repository
-    func updateCountry() async throws -> OnrampCountry
+    func getCountry() async throws -> OnrampCountry
 
     // Load methods
     func updatePaymentMethod() async throws -> OnrampPaymentMethod

@@ -368,14 +368,20 @@ extension RestakingModel: NotificationTapDelegate {
     }
 }
 
-// MARK: - SendBaseDataBuilderInput
+// MARK: - StakingBaseDataBuilderInput
 
-extension RestakingModel: SendBaseDataBuilderInput {
+extension RestakingModel: StakingBaseDataBuilderInput {
     var bsdkAmount: BSDKAmount? { makeAmount(value: action.amount) }
 
     var bsdkFee: BlockchainSdk.Fee? { selectedFee.value.value }
 
     var isFeeIncluded: Bool { false }
+
+    var stakingActionType: TangemStaking.StakingAction.ActionType? { stakingAction.type }
+
+    var selectedPolicy: ApprovePolicy? { nil }
+
+    var approveViewModelInput: (any ApproveViewModelInput)? { nil }
 
     var validator: ValidatorInfo? { action.validatorInfo }
 }
