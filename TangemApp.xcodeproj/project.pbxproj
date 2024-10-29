@@ -2708,10 +2708,6 @@
 		EFD68F392CC3D7DE00693C97 /* ExpressDTO+Swap.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F382CC3D7DB00693C97 /* ExpressDTO+Swap.swift */; };
 		EFD68F3B2CC3D7E600693C97 /* ExpressDTO+Onramp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F3A2CC3D7E300693C97 /* ExpressDTO+Onramp.swift */; };
 		EFD68F3F2CC3E5C700693C97 /* OnrampRedirectSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F3E2CC3E5C600693C97 /* OnrampRedirectSettings.swift */; };
-		EFD68F302CC2D02500693C97 /* OnrampCountryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F2F2CC2D02300693C97 /* OnrampCountryView.swift */; };
-		EFD68F322CC2D04500693C97 /* OnrampCountryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F312CC2D04400693C97 /* OnrampCountryViewModel.swift */; };
-		EFD68F342CC2D29C00693C97 /* OnrampCountryRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F332CC2D29700693C97 /* OnrampCountryRoutable.swift */; };
-		EFD68F372CC2F58900693C97 /* OnrampIdentityMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F362CC2F58000693C97 /* OnrampIdentityMock.swift */; };
 		EFDD6EDD2CBCF3EA00804205 /* ExpressProviderUpdateSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFDD6EDC2CBCF3EA00804205 /* ExpressProviderUpdateSource.swift */; };
 		EFE1812B292E30C00072D80C /* SupportChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C9FCB92869CC3E00FDE63E /* SupportChatViewModel.swift */; };
 		EFE1812C292E30DF0072D80C /* OnboardingCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E1565126B97F8C005B33E4 /* OnboardingCardView.swift */; };
@@ -5696,10 +5692,6 @@
 		EFD68F382CC3D7DB00693C97 /* ExpressDTO+Swap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExpressDTO+Swap.swift"; sourceTree = "<group>"; };
 		EFD68F3A2CC3D7E300693C97 /* ExpressDTO+Onramp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExpressDTO+Onramp.swift"; sourceTree = "<group>"; };
 		EFD68F3E2CC3E5C600693C97 /* OnrampRedirectSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampRedirectSettings.swift; sourceTree = "<group>"; };
-		EFD68F2F2CC2D02300693C97 /* OnrampCountryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampCountryView.swift; sourceTree = "<group>"; };
-		EFD68F312CC2D04400693C97 /* OnrampCountryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampCountryViewModel.swift; sourceTree = "<group>"; };
-		EFD68F332CC2D29700693C97 /* OnrampCountryRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampCountryRoutable.swift; sourceTree = "<group>"; };
-		EFD68F362CC2F58000693C97 /* OnrampIdentityMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampIdentityMock.swift; sourceTree = "<group>"; };
 		EFDD6EDC2CBCF3EA00804205 /* ExpressProviderUpdateSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressProviderUpdateSource.swift; sourceTree = "<group>"; };
 		EFE255F52C3D79BB00B17DAC /* BSDKTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BSDKTransaction.swift; path = Tangem/Common/BlockchainSDK/BSDKTransaction.swift; sourceTree = SOURCE_ROOT; };
 		EFE255F92C3D8C7C00B17DAC /* SendQRCodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendQRCodeService.swift; sourceTree = "<group>"; };
@@ -13946,9 +13938,6 @@
 		EF9E29F52B4F0CCF00418559 /* Manager */ = {
 			isa = PBXGroup;
 			children = (
-				EF1399752CBD0A9F00AC9E2B /* OnrampProviderManager */,
-				EF49C06A2CAD8A730062AF06 /* OnrampRepository */,
-				EF49C05A2CAD70230062AF06 /* OnrampManager */,
 				EF25610F2CC6A2CD00D3C16A /* OnrampStorage */,
 				EF1399752CBD0A9F00AC9E2B /* OnrampProviderManager */,
 				EF49C06A2CAD8A730062AF06 /* OnrampRepository */,
@@ -14474,14 +14463,6 @@
 				EFD68F332CC2D29700693C97 /* OnrampCountryRoutable.swift */,
 			);
 			path = OnrampCountry;
-			sourceTree = "<group>";
-		};
-		EFD68F352CC2F57900693C97 /* Onramp */ = {
-			isa = PBXGroup;
-			children = (
-				EFD68F362CC2F58000693C97 /* OnrampIdentityMock.swift */,
-			);
-			path = Onramp;
 			sourceTree = "<group>";
 		};
 		EFD68F352CC2F57900693C97 /* Onramp */ = {
