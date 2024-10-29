@@ -1,7 +1,7 @@
-// swift-tools-version: 5.10
+// swift-tools-version: 6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
-import PackageDescription // TODO: Andrey Fedorov - Update swift-tools-version to 6.0 after upgrade to Xcode 16.0 (IOS-8085)
+import PackageDescription
 
 // MARK: - Package
 
@@ -31,13 +31,21 @@ let package = Package(
 var serviceModules: [PackageDescription.Target] {
     [
         .tangemTarget(
-            name: "TangemFoundation"
+            name: "TangemFoundation",
+            swiftSettings: [
+                // TODO: Andrey Fedorov - Remove after migration to Swift 6 structured concurrency (IOS-8369)
+                .swiftLanguageMode(.v5),
+            ]
         ),
         .tangemTarget(
             name: "TangemNetworkUtils",
             dependencies: [
                 "Moya",
                 "Alamofire",
+            ],
+            swiftSettings: [
+                // TODO: Andrey Fedorov - Remove after migration to Swift 6 structured concurrency (IOS-8369)
+                .swiftLanguageMode(.v5),
             ]
         ),
     ]

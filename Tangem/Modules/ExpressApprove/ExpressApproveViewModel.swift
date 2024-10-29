@@ -176,9 +176,11 @@ extension ExpressApproveViewModel {
     }
 }
 
-extension ExpressApprovePolicy: DefaultMenuRowViewModelAction {
+extension ExpressApprovePolicy: @retroactive Identifiable {
     public var id: Int { hashValue }
+}
 
+extension ExpressApprovePolicy: DefaultMenuRowViewModelAction {
     public var title: String {
         switch self {
         case .specified:
