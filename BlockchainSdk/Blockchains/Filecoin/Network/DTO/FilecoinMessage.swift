@@ -16,7 +16,7 @@ struct FilecoinMessage: Codable, Equatable {
     let gasLimit: UInt64?
     let gasFeeCap: String?
     let gasPremium: String?
-    
+
     enum CodingKeys: String, CodingKey {
         case from = "From"
         case to = "To"

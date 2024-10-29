@@ -11,10 +11,10 @@ import TangemSdk
 import BitcoinCore
 
 @available(iOS 13.0, *)
-public struct BitcoinAddressService {
+struct BitcoinAddressService {
     let legacy: BitcoinLegacyAddressService
     let bech32: BitcoinBech32AddressService
-    
+
     init(networkParams: INetwork) {
         legacy = BitcoinLegacyAddressService(networkParams: networkParams)
         bech32 = BitcoinBech32AddressService(networkParams: networkParams)
@@ -25,7 +25,7 @@ public struct BitcoinAddressService {
 
 @available(iOS 13.0, *)
 extension BitcoinAddressService: AddressValidator {
-    public func validate(_ address: String) -> Bool {
+    func validate(_ address: String) -> Bool {
         legacy.validate(address) || bech32.validate(address)
     }
 }
@@ -34,7 +34,7 @@ extension BitcoinAddressService: AddressValidator {
 
 @available(iOS 13.0, *)
 extension BitcoinAddressService: AddressProvider {
-    public func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
+    func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
         switch addressType {
         case .default:
             let bech32AddressString = try bech32.makeAddress(from: publicKey.blockchainKey).value
@@ -50,7 +50,7 @@ extension BitcoinAddressService: AddressProvider {
 
 @available(iOS 13.0, *)
 extension BitcoinAddressService: BitcoinScriptAddressesProvider {
-    public func makeAddresses(publicKey: Wallet.PublicKey, pairPublicKey: Data) throws -> [BitcoinScriptAddress] {
+    func makeAddresses(publicKey: Wallet.PublicKey, pairPublicKey: Data) throws -> [BitcoinScriptAddress] {
         let compressedKeys = try [publicKey.blockchainKey, pairPublicKey].map {
             let key = try Secp256k1Key(with: $0)
             return try key.compress()
@@ -64,5 +64,5 @@ extension BitcoinAddressService: BitcoinScriptAddressesProvider {
         let bech32Address = BitcoinScriptAddress(script: script, value: bech32AddressString, publicKey: publicKey, type: .default)
 
         return [bech32Address, scriptAddress]
-	}
+    }
 }

@@ -24,7 +24,7 @@
 import Foundation
 
 // negates the number, pops it from stack and pushes result.
-public struct OpNegate: OpCodeProtocol {
-    public var value: UInt8 { return 0x8f }
-    public var name: String { return "OP_NEGATE" }
+struct OpNegate: OpCodeProtocol {
+    var value: UInt8 { return 0x8f }
+    var name: String { return "OP_NEGATE" }
 }

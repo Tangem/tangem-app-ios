@@ -11,7 +11,7 @@ import TangemSdk
 import BitcoinCore
 
 @available(iOS 13.0, *)
-public class KaspaAddressService {
+class KaspaAddressService {
     private let isTestnet: Bool
     private let prefix: String
     private let version: KaspaAddressComponents.KaspaAddressType = .P2PK_ECDSA
@@ -19,9 +19,9 @@ public class KaspaAddressService {
     init(isTestnet: Bool) {
         self.isTestnet = isTestnet
         // TODO: Does testnet support ecdsa type addresses? If not, then we are not ready to work with different curves (secp256k1/schnorr) for now
-        self.prefix = isTestnet ? "kaspatest" : "kaspa"
+        prefix = isTestnet ? "kaspatest" : "kaspa"
     }
-    
+
     func parse(_ address: String) -> KaspaAddressComponents? {
         guard
             let (prefix, data) = CashAddrBech32.decode(address),
@@ -40,12 +40,11 @@ public class KaspaAddressService {
     }
 }
 
-
 // MARK: - AddressProvider
 
 @available(iOS 13.0, *)
 extension KaspaAddressService: AddressProvider {
-    public func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
+    func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
         let compressedKey = try Secp256k1Key(with: publicKey.blockchainKey).compress()
         let address = CashAddrBech32.encode(version.rawValue.data + compressedKey, prefix: prefix)
         return PlainAddress(value: address, publicKey: publicKey, type: addressType)
@@ -56,7 +55,7 @@ extension KaspaAddressService: AddressProvider {
 
 @available(iOS 13.0, *)
 extension KaspaAddressService: AddressValidator {
-    public func validate(_ address: String) -> Bool {
+    func validate(_ address: String) -> Bool {
         guard
             let components = parse(address),
             components.prefix == self.prefix

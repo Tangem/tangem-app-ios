@@ -30,38 +30,38 @@ public struct AddressServiceFactory {
         case .stellar:
             return StellarAddressService()
         case .ethereum,
-                .ethereumClassic,
-                .ethereumPoW,
-                .disChain,
-                .bsc,
-                .polygon,
-                .avalanche,
-                .fantom,
-                .arbitrum,
-                .gnosis,
-                .optimism,
-                .kava,
-                .cronos,
-                .telos,
-                .octa,
-                .shibarium,
-                .areon,
-                .playa3ullGames,
-                .pulsechain,
-                .aurora,
-                .manta,
-                .zkSync,
-                .moonbeam,
-                .polygonZkEVM,
-                .moonriver,
-                .mantle,
-                .flare,
-                .taraxa,
-                .base,
-                .cyber,
-                .blast,
-                .energyWebEVM,
-                .core:
+             .ethereumClassic,
+             .ethereumPoW,
+             .disChain,
+             .bsc,
+             .polygon,
+             .avalanche,
+             .fantom,
+             .arbitrum,
+             .gnosis,
+             .optimism,
+             .kava,
+             .cronos,
+             .telos,
+             .octa,
+             .shibarium,
+             .areon,
+             .playa3ullGames,
+             .pulsechain,
+             .aurora,
+             .manta,
+             .zkSync,
+             .moonbeam,
+             .polygonZkEVM,
+             .moonriver,
+             .mantle,
+             .flare,
+             .taraxa,
+             .base,
+             .cyber,
+             .blast,
+             .energyWebEVM,
+             .core:
             return EthereumAddressService()
         case .rsk:
             return RskAddressService()
@@ -93,7 +93,7 @@ public struct AddressServiceFactory {
             return TronAddressService()
         case .dash:
             return BitcoinLegacyAddressService(
-                networkParams: isTestnet ?  DashTestNetworkParams() : DashMainNetworkParams()
+                networkParams: isTestnet ? DashTestNetworkParams() : DashMainNetworkParams()
             )
         case .kaspa:
             return KaspaAddressService(isTestnet: isTestnet)
@@ -101,12 +101,12 @@ public struct AddressServiceFactory {
             let networkParams: INetwork = isTestnet ? RavencoinTestNetworkParams() : RavencoinMainNetworkParams()
             return BitcoinLegacyAddressService(networkParams: networkParams)
         case .cosmos,
-                .terraV1,
-                .terraV2,
-                .veChain,
-                .internetComputer,
-                .algorand,
-                .sei:
+             .terraV1,
+             .terraV2,
+             .veChain,
+             .internetComputer,
+             .algorand,
+             .sei:
             return WalletCoreAddressService(blockchain: blockchain)
         case .ton:
             return TonAddressService()

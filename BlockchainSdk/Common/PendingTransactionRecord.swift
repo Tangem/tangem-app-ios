@@ -28,7 +28,7 @@ public struct PendingTransactionRecord {
     public var isDummy: Bool {
         hash == .unknown || source == .unknown || destination == .unknown
     }
-    
+
     public init(
         hash: String,
         source: String,

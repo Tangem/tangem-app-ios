@@ -18,29 +18,29 @@ public enum WalletError: Error, LocalizedError {
     case failedToCalculateTxSize
     case empty
     case blockchainUnavailable(underlyingError: Error)
-    
+
     case accountNotActivated
-    
+
     public var errorDescription: String? {
         switch self {
         case .noAccount(let message, _):
             return message
         case .failedToGetFee:
-            return "common_fee_error".localized
+            return Localization.commonFeeError
         case .failedToBuildTx:
-            return "common_build_tx_error".localized
+            return Localization.commonBuildTxError
         case .failedToSendTx:
-            return "common_send_tx_error".localized
+            return Localization.commonSendTxError
         case .empty:
             return "Empty"
         case .failedToCalculateTxSize,
              .failedToParseNetworkResponse,
              .blockchainUnavailable,
              .accountNotActivated:
-            return "generic_error_code".localized(errorCodeDescription)
+            return Localization.genericErrorCode(errorCodeDescription)
         }
     }
-    
+
     public var errorCode: Int {
         switch self {
         case .noAccount:
@@ -63,10 +63,10 @@ public enum WalletError: Error, LocalizedError {
             return 9
         }
     }
-    
+
     private var errorCodeDescription: String {
         return "wallet_error \(errorCode)"
     }
 }
 
-extension WalletError: ErrorCodeProviding { }
+extension WalletError: ErrorCodeProviding {}

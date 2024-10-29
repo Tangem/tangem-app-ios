@@ -12,15 +12,23 @@ struct QuickNodeAPIResolver {
     let config: BlockchainSdkConfig
 
     func resolve(for blockchain: Blockchain) -> NodeInfo? {
+        guard let credentials = resolveCredentials(for: blockchain) else {
+            return nil
+        }
+
+        guard let url = URL(string: "https://\(credentials.subdomain)/\(credentials.apiKey)") else {
+            return nil
+        }
+
+        return NodeInfo(url: url)
+    }
+
+    private func resolveCredentials(for blockchain: Blockchain) -> BlockchainSdkConfig.QuickNodeCredentials? {
         switch blockchain {
         case .bsc:
-            let subdomain = config.quickNodeBscCredentials.subdomain
-            let key = config.quickNodeBscCredentials.apiKey
-            return .init(url: URL(string: "https://\(subdomain).bsc.discover.quiknode.pro/\(key)")!)
+            return config.quickNodeBscCredentials
         case .solana:
-            let subdomain = config.quickNodeSolanaCredentials.subdomain
-            let key = config.quickNodeSolanaCredentials.apiKey
-            return .init(url: URL(string: "https://\(subdomain).solana-mainnet.discover.quiknode.pro/\(key)")!)
+            return config.quickNodeSolanaCredentials
         default:
             return nil
         }

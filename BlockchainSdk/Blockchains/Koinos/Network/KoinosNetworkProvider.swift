@@ -13,11 +13,11 @@ class KoinosNetworkProvider: HostProvider {
     var host: String {
         node.url.absoluteString
     }
-    
+
     private let node: NodeInfo
     private let provider: NetworkProvider<KoinosTarget>
     private let koinosNetworkParams: KoinosNetworkParams
-    
+
     init(
         node: NodeInfo,
         koinosNetworkParams: KoinosNetworkParams,
@@ -27,7 +27,7 @@ class KoinosNetworkProvider: HostProvider {
         provider = NetworkProvider<KoinosTarget>(configuration: configuration)
         self.koinosNetworkParams = koinosNetworkParams
     }
-    
+
     func getKoinBalance(address: String) -> AnyPublisher<KoinosMethod.ReadContract.Response, Error> {
         Result {
             try Koinos_Contracts_Token_balance_of_arguments.with {
@@ -46,7 +46,7 @@ class KoinosNetworkProvider: HostProvider {
         }
         .eraseToAnyPublisher()
     }
-    
+
     func getRC(address: String) -> AnyPublisher<KoinosMethod.GetAccountRC.Response, Error> {
         requestPublisher(
             for: .getRc(address: address),
@@ -54,7 +54,7 @@ class KoinosNetworkProvider: HostProvider {
         )
         .eraseToAnyPublisher()
     }
-    
+
     func getResourceLimits() -> AnyPublisher<KoinosMethod.GetResourceLimits.Response, Error> {
         requestPublisher(
             for: .getResourceLimits,
@@ -62,7 +62,7 @@ class KoinosNetworkProvider: HostProvider {
         )
         .eraseToAnyPublisher()
     }
-    
+
     func getNonce(address: String) -> AnyPublisher<KoinosMethod.GetAccountNonce.Response, Error> {
         requestPublisher(
             for: .getNonce(address: address),
@@ -70,7 +70,7 @@ class KoinosNetworkProvider: HostProvider {
         )
         .eraseToAnyPublisher()
     }
-    
+
     func submitTransaction(transaction: KoinosProtocol.Transaction) -> AnyPublisher<KoinosMethod.SubmitTransaction.Response, Error> {
         requestPublisher(
             for: .submitTransaction(transaction: transaction),
@@ -78,7 +78,7 @@ class KoinosNetworkProvider: HostProvider {
         )
         .eraseToAnyPublisher()
     }
-    
+
     func getTransactions(transactionIDs: [String]) -> AnyPublisher<KoinosMethod.GetTransactions.Response, Error> {
         requestPublisher(
             for: .getTransactions(transactionIDs: transactionIDs),

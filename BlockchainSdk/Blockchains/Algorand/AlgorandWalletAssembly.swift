@@ -30,7 +30,7 @@ struct AlgorandWalletAssembly: WalletManagerAssembly {
             curve: input.wallet.blockchain.curve,
             isTestnet: input.blockchain.isTestnet
         )
-        
+
         return try AlgorandWalletManager(
             wallet: input.wallet,
             transactionBuilder: transactionBuilder,

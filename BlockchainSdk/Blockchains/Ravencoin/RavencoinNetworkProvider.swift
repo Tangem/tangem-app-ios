@@ -18,7 +18,7 @@ class RavencoinNetworkProvider: HostProvider {
     let provider: NetworkProvider<RavencoinTarget>
 
     private var decimalValue: Decimal { Blockchain.ravencoin(testnet: false).decimalValue }
-    
+
     init(host: String, provider: NetworkProvider<RavencoinTarget>) {
         self.host = host
         self.provider = provider
@@ -29,45 +29,47 @@ class RavencoinNetworkProvider: HostProvider {
 
 extension RavencoinNetworkProvider: BitcoinNetworkProvider {
     var supportsTransactionPush: Bool { false }
-    
+
     func getInfo(address: String) -> AnyPublisher<BitcoinResponse, Error> {
         Publishers.Zip(getWalletInfo(address: address), getUTXO(address: address))
-            .flatMap { [weak self] wallet, outputs -> AnyPublisher<BitcoinResponse, Error>  in
+            .flatMap { [weak self] wallet, outputs -> AnyPublisher<BitcoinResponse, Error> in
                 guard let self else {
                     return .anyFail(error: WalletError.empty)
                 }
 
                 let hasUnconfirmed = wallet.unconfirmedTxApperances != 0
                 if hasUnconfirmed {
-                    return self.getTransactions(request: .init(address: address))
-                        .map { transactions -> BitcoinResponse  in
-                            self.mapToBitcoinResponse(wallet: wallet,
-                                                      outputs: outputs,
-                                                      transactions: transactions)
+                    return getTransactions(request: .init(address: address))
+                        .map { transactions -> BitcoinResponse in
+                            self.mapToBitcoinResponse(
+                                wallet: wallet,
+                                outputs: outputs,
+                                transactions: transactions
+                            )
                         }
                         .eraseToAnyPublisher()
                 }
-                
-                let response = self.mapToBitcoinResponse(wallet: wallet, outputs: outputs, transactions: [])
+
+                let response = mapToBitcoinResponse(wallet: wallet, outputs: outputs, transactions: [])
                 return .justWithError(output: response)
             }
             .eraseToAnyPublisher()
     }
-    
+
     func getFee() -> AnyPublisher<BitcoinFee, Error> {
         getFeeRatePerByte(blocks: 10)
             .tryMap { [weak self] perByte in
                 guard let self else {
                     throw BlockchainSdkError.failedToLoadFee
                 }
-                
+
                 // Increase rate just in case
                 let perByte = perByte * 1.1
-                let satoshi = perByte * self.decimalValue
+                let satoshi = perByte * decimalValue
                 let minRate = satoshi
                 let normalRate = satoshi * 12 / 10
                 let priorityRate = satoshi * 15 / 10
-                
+
                 return BitcoinFee(
                     minimalSatoshiPerByte: minRate,
                     normalSatoshiPerByte: normalRate,
@@ -76,17 +78,17 @@ extension RavencoinNetworkProvider: BitcoinNetworkProvider {
             }
             .eraseToAnyPublisher()
     }
-    
+
     func send(transaction: String) -> AnyPublisher<String, Error> {
         send(transaction: RavencoinRawTransaction.Request(rawtx: transaction))
             .map { $0.txid }
             .eraseToAnyPublisher()
     }
-    
+
     func push(transaction: String) -> AnyPublisher<String, Error> {
         .anyFail(error: BlockchainSdkError.networkProvidersNotSupportsRbf)
     }
-    
+
     func getSignatureCount(address: String) -> AnyPublisher<Int, Error> {
         .anyFail(error: BlockchainSdkError.notImplemented)
     }
@@ -98,23 +100,26 @@ extension RavencoinNetworkProvider: BitcoinNetworkProvider {
 /// Outgoing 0.77
 
 private extension RavencoinNetworkProvider {
-    func mapToBitcoinResponse(wallet: RavencoinWalletInfo,
-                              outputs: [RavencoinWalletUTXO],
-                              transactions: [RavencoinTransactionInfo]) -> BitcoinResponse {
-        
+    func mapToBitcoinResponse(
+        wallet: RavencoinWalletInfo,
+        outputs: [RavencoinWalletUTXO],
+        transactions: [RavencoinTransactionInfo]
+    ) -> BitcoinResponse {
         let unspentOutputs = outputs.map { utxo in
-            BitcoinUnspentOutput(transactionHash: utxo.txid,
-                                 outputIndex: utxo.vout,
-                                 amount: utxo.satoshis,
-                                 outputScript: utxo.scriptPubKey)
+            BitcoinUnspentOutput(
+                transactionHash: utxo.txid,
+                outputIndex: utxo.vout,
+                amount: utxo.satoshis,
+                outputScript: utxo.scriptPubKey
+            )
         }
-        
+
         let pendingTxRefs = transactions
             .filter { $0.confirmations == 0 || $0.blockheight == -1 }
             .compactMap { transaction -> PendingTransaction? in
                 mapToPendingTransaction(transaction: transaction, walletAddress: wallet.address)
             }
-        
+
         return BitcoinResponse(
             balance: wallet.balance ?? 0,
             hasUnconfirmed: wallet.unconfirmedTxApperances != 0,
@@ -122,7 +127,7 @@ private extension RavencoinNetworkProvider {
             unspentOutputs: unspentOutputs
         )
     }
-    
+
     func mapToPendingTransaction(
         transaction: RavencoinTransactionInfo,
         walletAddress: String
@@ -132,32 +137,32 @@ private extension RavencoinNetworkProvider {
         let timestamp = transaction.time * 1000
         let fee = transaction.fees
         let value: Decimal
-        
+
         if isIncoming {
             // Find all outputs to the our address
             let outputs = transaction.vout.filter {
                 $0.scriptPubKey.addresses.contains { $0 == walletAddress }
             }
-            
+
             value = outputs.compactMap { Decimal($0.value) }.reduce(0, +)
-            
+
         } else {
             // Find all outputs from the our address
             let outputs = transaction.vout.filter {
                 $0.scriptPubKey.addresses.contains { $0 != walletAddress }
             }
-            
+
             value = outputs.compactMap { Decimal($0.value) }.reduce(0, +)
         }
-        
+
         let otherAddresses = transaction.vout.filter {
             $0.scriptPubKey.addresses.contains { $0 != walletAddress }
         }
-        
+
         guard let otherAddress = otherAddresses.first?.scriptPubKey.addresses.first else {
             return nil
         }
-        
+
         return PendingTransaction(
             hash: hash,
             destination: isIncoming ? walletAddress : otherAddress,
@@ -174,7 +179,6 @@ private extension RavencoinNetworkProvider {
 // MARK: - Private
 
 private extension RavencoinNetworkProvider {
-    
     func getWalletInfo(address: String) -> AnyPublisher<RavencoinWalletInfo, Error> {
         provider
             .requestPublisher(.init(host: host, target: .wallet(address: address)))
@@ -182,7 +186,7 @@ private extension RavencoinNetworkProvider {
             .map(RavencoinWalletInfo.self)
             .eraseError()
     }
-    
+
     func getTransactions(request: RavencoinTransactionHistory.Request) -> AnyPublisher<[RavencoinTransactionInfo], Error> {
         provider
             .requestPublisher(.init(host: host, target: .transactions(request: request)))
@@ -192,7 +196,7 @@ private extension RavencoinNetworkProvider {
             .eraseToAnyPublisher()
             .eraseError()
     }
-    
+
     func getUTXO(address: String) -> AnyPublisher<[RavencoinWalletUTXO], Error> {
         provider
             .requestPublisher(.init(host: host, target: .utxo(address: address)))
@@ -200,7 +204,7 @@ private extension RavencoinNetworkProvider {
             .map([RavencoinWalletUTXO].self)
             .eraseError()
     }
-    
+
     func getFeeRatePerByte(blocks: Int) -> AnyPublisher<Decimal, Error> {
         provider
             .requestPublisher(.init(host: host, target: .fees(request: .init(nbBlocks: blocks))))
@@ -211,13 +215,13 @@ private extension RavencoinNetworkProvider {
                       let rate = json["\(blocks)"] as? Double else {
                     throw BlockchainSdkError.failedToLoadFee
                 }
-                
+
                 let ratePerKilobyte = Decimal(floatLiteral: rate)
                 return ratePerKilobyte / 1024
             }
             .eraseToAnyPublisher()
     }
-    
+
     func getTxInfo(transactionId: String) -> AnyPublisher<RavencoinTransactionInfo, Error> {
         provider
             .requestPublisher(.init(host: host, target: .transaction(id: transactionId)))
@@ -225,7 +229,7 @@ private extension RavencoinNetworkProvider {
             .map(RavencoinTransactionInfo.self)
             .eraseError()
     }
-    
+
     func send(transaction: RavencoinRawTransaction.Request) -> AnyPublisher<RavencoinRawTransaction.Response, Error> {
         provider
             .requestPublisher(.init(host: host, target: .send(transaction: transaction)))

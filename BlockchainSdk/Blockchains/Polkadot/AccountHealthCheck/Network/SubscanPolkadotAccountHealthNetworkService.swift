@@ -65,7 +65,7 @@ public final class SubscanPolkadotAccountHealthNetworkService {
             throw error
         }
     }
-    
+
     public func getTransactionsList(account: String, afterId: Int) async throws -> [PolkadotTransaction] {
         let result = try await perform(
             request: .init(
@@ -87,7 +87,7 @@ public final class SubscanPolkadotAccountHealthNetworkService {
 
         return result?.map { PolkadotTransaction(id: $0.id, hash: $0.extrinsicHash) } ?? []
     }
-    
+
     public func getTransactionDetails(hash: String) async throws -> PolkadotTransactionDetails {
         let result = try await perform(
             request: .init(
@@ -170,7 +170,7 @@ public final class SubscanPolkadotAccountHealthNetworkService {
     /// Provides exponential backoff with random jitter using standard formula `base * pow(2, retryAttempt) ± jitter`.
     /// - Returns: Retry interval in nanoseconds.
     private func makeRetryInterval(retryAttempt: Int) -> UInt64 {
-        let retryJitter: TimeInterval = .random(in: Constants.retryJitterMinValue...Constants.retryJitterMaxValue)
+        let retryJitter: TimeInterval = .random(in: Constants.retryJitterMinValue ... Constants.retryJitterMaxValue)
         let retryIntervalSeconds = Constants.retryBaseValue * pow(2.0, TimeInterval(retryAttempt)) + retryJitter
 
         return UInt64(retryIntervalSeconds * TimeInterval(NSEC_PER_SEC))
@@ -203,7 +203,7 @@ private extension MoyaError {
              .requestMapping,
              .statusCode:
             return nil
-        case .objectMapping(let error, _): 
+        case .objectMapping(let error, _):
             return error
         case .encodableMapping(let error):
             return error

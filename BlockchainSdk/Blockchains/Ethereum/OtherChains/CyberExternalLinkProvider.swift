@@ -8,7 +8,6 @@
 
 import Foundation
 
-
 struct CyberExternalLinkProvider: ExternalLinkProvider {
     let testnetFaucetURL = URL(string: "https://faucet.quicknode.com/cyber/sepolia")
     private let baseExplorerUrl: String

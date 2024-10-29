@@ -11,11 +11,11 @@ import TangemSdk
 
 public struct CasperAddressService {
     // MARK: - Private Properties
-    
+
     private let curve: EllipticCurve
-    
+
     // MARK: - Init
-    
+
     init(curve: EllipticCurve) {
         self.curve = curve
     }
@@ -28,7 +28,7 @@ extension CasperAddressService: AddressProvider {
         guard let prefixAddresss = Constants.getAddressPrefix(curve: curve) else {
             throw Error.unsupportedAddressPrefix
         }
-        
+
         let addressBytes = Data(hexString: prefixAddresss) + publicKey.blockchainKey
         let address = try CasperAddressUtils().checksum(input: addressBytes)
         return PlainAddress(value: address, publicKey: publicKey, type: addressType)
@@ -41,11 +41,11 @@ extension CasperAddressService: AddressValidator {
     public func validate(_ address: String) -> Bool {
         let isCorrectEd25519Address = address.count == Constants.lengthED25519 && address.hasPrefix(Constants.prefixED25519)
         let isCorrectSecp256k1Address = address.count == Constants.lengthSECP256K1 && address.hasPrefix(Constants.prefixSECP256K1)
-        
+
         guard isCorrectEd25519Address || isCorrectSecp256k1Address else {
             return false
         }
-        
+
         return true
     }
 }
@@ -57,11 +57,11 @@ extension CasperAddressService {
         // ED25519
         static let prefixED25519 = "01"
         static let lengthED25519 = 66
-        
+
         // SECP256K1
         static let prefixSECP256K1 = "02"
         static let lengthSECP256K1 = 68
-        
+
         static func getAddressPrefix(curve: EllipticCurve) -> String? {
             switch curve {
             case .ed25519, .ed25519_slip0010:
@@ -74,7 +74,7 @@ extension CasperAddressService {
             }
         }
     }
-    
+
     enum Error: LocalizedError {
         case unsupportedAddressPrefix
     }

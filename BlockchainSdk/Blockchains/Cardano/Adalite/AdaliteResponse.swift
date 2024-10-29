@@ -8,11 +8,11 @@
 
 import Foundation
 
-public struct AdaliteUnspentOutput {
+struct AdaliteUnspentOutput {
     let id: String
     let index: Int
 }
 
-public struct AdaliteBalanceResponse {
+struct AdaliteBalanceResponse {
     let transactions: [String]
 }

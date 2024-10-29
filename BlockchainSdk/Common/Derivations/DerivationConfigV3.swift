@@ -21,8 +21,8 @@ import Foundation
 /// - `EVM-like` without `Ethereum classic` with `Ethereum` coinType(60).
 /// - `All else`. According to `BIP44`
 /// https://github.com/satoshilabs/slips/blob/master/slip-0044.md
-public struct DerivationConfigV3: DerivationConfig {
-    public func derivationPath(for blockchain: Blockchain) -> String {
+struct DerivationConfigV3: DerivationConfig {
+    func derivationPath(for blockchain: Blockchain) -> String {
         switch blockchain {
         case .bitcoin:
             return "m/84'/0'/0'/0/0"
@@ -37,39 +37,39 @@ public struct DerivationConfigV3: DerivationConfig {
         case .bitcoinCash:
             return "m/44'/145'/0'/0/0"
         case .ethereum,
-                .ethereumPoW,
-                .disChain,
-                .rsk,
-                .bsc,
-                .polygon,
-                .avalanche,
-                .fantom,
-                .arbitrum,
-                .gnosis,
-                .optimism,
-                .kava,
-                .cronos,
-                .telos,
-                .octa,
-                .decimal,
-                .shibarium,
-                .areon,
-                .playa3ullGames,
-                .pulsechain,
-                .aurora,
-                .manta,
-                .zkSync,
-                .moonbeam,
-                .polygonZkEVM,
-                .moonriver,
-                .mantle,
-                .flare,
-                .taraxa,
-                .base,
-                .cyber,
-                .blast,
-                .energyWebEVM,
-                .core:
+             .ethereumPoW,
+             .disChain,
+             .rsk,
+             .bsc,
+             .polygon,
+             .avalanche,
+             .fantom,
+             .arbitrum,
+             .gnosis,
+             .optimism,
+             .kava,
+             .cronos,
+             .telos,
+             .octa,
+             .decimal,
+             .shibarium,
+             .areon,
+             .playa3ullGames,
+             .pulsechain,
+             .aurora,
+             .manta,
+             .zkSync,
+             .moonbeam,
+             .polygonZkEVM,
+             .moonriver,
+             .mantle,
+             .flare,
+             .taraxa,
+             .base,
+             .cyber,
+             .blast,
+             .energyWebEVM,
+             .core:
             return "m/44'/60'/0'/0/0"
         case .ethereumClassic:
             return "m/44'/61'/0'/0/0"

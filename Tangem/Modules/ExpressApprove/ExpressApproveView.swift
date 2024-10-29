@@ -30,7 +30,7 @@ struct ExpressApproveView: View {
                 GroupedSection(viewModel.feeRowViewModel) {
                     DefaultRowView(viewModel: $0)
                 } footer: {
-                    DefaultFooterView(Localization.givePermissionFeeFooter)
+                    DefaultFooterView(viewModel.feeFooterText)
                 }
                 .backgroundColor(Colors.Background.action)
 

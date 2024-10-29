@@ -11,7 +11,7 @@ import TangemSdk
 
 struct AlgorandTransactionHistoryMapper {
     private let blockchain: Blockchain
-    
+
     init(blockchain: Blockchain) {
         self.blockchain = blockchain
     }
@@ -30,10 +30,10 @@ extension AlgorandTransactionHistoryMapper: TransactionHistoryMapper {
                 let id = $0.id,
                 let paymentTransaction = $0.paymentTransaction
             else { return nil }
-            
+
             let decimalFeeValue = Decimal($0.fee) / blockchain.decimalValue
             let decimalAmountValue = Decimal(paymentTransaction.amount) / blockchain.decimalValue
-            
+
             return TransactionRecord(
                 hash: id,
                 index: 0,
@@ -45,7 +45,7 @@ extension AlgorandTransactionHistoryMapper: TransactionHistoryMapper {
                 ),
                 fee: .init(.init(with: blockchain, value: decimalFeeValue)),
                 status: .confirmed,
-                isOutgoing: $0.sender.lowercased() == walletAddress.lowercased() ,
+                isOutgoing: $0.sender.lowercased() == walletAddress.lowercased(),
                 type: .transfer,
                 date: $0.roundTime
             )

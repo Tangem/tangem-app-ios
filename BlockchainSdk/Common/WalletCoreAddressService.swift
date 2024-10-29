@@ -9,13 +9,13 @@
 import Foundation
 import WalletCore
 
-public struct WalletCoreAddressService {
+struct WalletCoreAddressService {
     private let coin: CoinType
     private let publicKeyType: PublicKeyType
 
     // MARK: - Init
 
-    public init(coin: CoinType, publicKeyType: PublicKeyType) {
+    init(coin: CoinType, publicKeyType: PublicKeyType) {
         guard coin != .ton else {
             fatalError("Use TonAddress service instead")
         }
@@ -27,11 +27,11 @@ public struct WalletCoreAddressService {
 // MARK: - Convenience init
 
 extension WalletCoreAddressService {
-    public init(coin: CoinType) {
+    init(coin: CoinType) {
         self.init(coin: coin, publicKeyType: coin.publicKeyType)
     }
 
-    public init(blockchain: Blockchain) {
+    init(blockchain: Blockchain) {
         let coin = CoinType(blockchain)!
         self.init(coin: coin)
     }
@@ -40,7 +40,7 @@ extension WalletCoreAddressService {
 // MARK: - AddressProvider
 
 extension WalletCoreAddressService: AddressProvider {
-    public func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
+    func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
         switch addressType {
         case .default:
             guard let walletCorePublicKey = PublicKey(tangemPublicKey: publicKey.blockchainKey, publicKeyType: publicKeyType) else {
@@ -54,7 +54,7 @@ extension WalletCoreAddressService: AddressProvider {
                 let address = try makeByronAddress(publicKey: publicKey)
                 return PlainAddress(value: address, publicKey: publicKey, type: addressType)
             }
-            
+
             fatalError("WalletCoreAddressService don't support legacy address for \(coin)")
         }
     }
@@ -63,7 +63,7 @@ extension WalletCoreAddressService: AddressProvider {
 // MARK: - AddressValidator
 
 extension WalletCoreAddressService: AddressValidator {
-    public func validate(_ address: String) -> Bool {
+    func validate(_ address: String) -> Bool {
         return AnyAddress(string: address, coin: coin) != nil
     }
 }
@@ -73,7 +73,7 @@ private extension WalletCoreAddressService {
         guard let publicKey = PublicKey(data: publicKey.blockchainKey, type: .ed25519Cardano) else {
             throw TWError.makeAddressFailed
         }
-        
+
         let byronAddress = Cardano.getByronAddress(publicKey: publicKey)
         return byronAddress
     }

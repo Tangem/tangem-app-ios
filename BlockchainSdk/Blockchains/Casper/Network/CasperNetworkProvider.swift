@@ -13,12 +13,12 @@ final class CasperNetworkProvider: HostProvider {
     var host: String {
         node.url.absoluteString
     }
-    
+
     private let node: NodeInfo
-    
-    // TODO: - 
+
+    // TODO: -
     private let provider: NetworkProvider<CasperTarget>
-    
+
     init(
         node: NodeInfo,
         configuration: NetworkProviderConfiguration
@@ -26,9 +26,9 @@ final class CasperNetworkProvider: HostProvider {
         self.node = node
         provider = NetworkProvider<CasperTarget>(configuration: configuration)
     }
-    
+
     // MARK: - Private Implementation
-    
+
     private func requestPublisher<T: Decodable>(for target: CasperTarget.TargetType) -> AnyPublisher<T, Error> {
         provider.requestPublisher(CasperTarget(node: node))
             .filterSuccessfulStatusAndRedirectCodes()

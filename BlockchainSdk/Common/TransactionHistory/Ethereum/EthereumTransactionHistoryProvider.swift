@@ -11,8 +11,7 @@ import Combine
 
 final class EthereumTransactionHistoryProvider<Mapper> where
     Mapper: TransactionHistoryMapper,
-    Mapper.Response == BlockBookAddressResponse
-{
+    Mapper.Response == BlockBookAddressResponse {
     private let blockBookProvider: BlockBookUtxoProvider
     private let mapper: Mapper
 
@@ -35,7 +34,7 @@ extension EthereumTransactionHistoryProvider: TransactionHistoryProvider {
     var canFetchHistory: Bool {
         page == nil || (page?.number ?? 0) < totalPages
     }
-    
+
     var description: String {
         return objectDescription(
             self,
@@ -46,38 +45,38 @@ extension EthereumTransactionHistoryProvider: TransactionHistoryProvider {
             ]
         )
     }
-    
+
     func reset() {
         page = nil
         totalPages = 0
         totalRecordsCount = 0
         mapper.reset()
     }
-    
+
     func loadTransactionHistory(request: TransactionHistory.Request) -> AnyPublisher<TransactionHistory.Response, Error> {
         let requestPage: Int
-        
+
         // if indexing is created, load the next page
         if let page {
             requestPage = page.number + 1
         } else {
             requestPage = 0
         }
-        
+
         let parameters = BlockBookTarget.AddressRequestParameters(
             page: requestPage,
             pageSize: request.limit,
             details: [.txslight],
             filterType: .init(amountType: request.amountType)
         )
-        
+
         return blockBookProvider.addressData(address: request.address, parameters: parameters)
             .tryMap { [weak self] response -> TransactionHistory.Response in
                 guard let self else {
                     throw WalletError.empty
                 }
-                
-                let records = try self.mapper.mapToTransactionRecords(
+
+                let records = try mapper.mapToTransactionRecords(
                     response,
                     walletAddress: request.address,
                     amountType: request.amountType
@@ -89,10 +88,10 @@ extension EthereumTransactionHistoryProvider: TransactionHistoryProvider {
                     )
                 }
 
-                self.page = TransactionHistoryIndexPage(number: response.page ?? 0)
-                self.totalPages = response.totalPages ?? 0
-                self.totalRecordsCount = response.txs
-                
+                page = TransactionHistoryIndexPage(number: response.page ?? 0)
+                totalPages = response.totalPages ?? 0
+                totalRecordsCount = response.txs
+
                 return TransactionHistory.Response(records: records)
             }
             .eraseToAnyPublisher()

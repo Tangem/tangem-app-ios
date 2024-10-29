@@ -13,7 +13,7 @@ public protocol IncomingActionURLBuilder {
 }
 
 public protocol IncomingActionURLParser {
-    func parse(_ url: URL) -> IncomingAction?
+    func parse(_ url: URL) throws -> IncomingAction?
 }
 
 public protocol IncomingActionURLHelper: IncomingActionURLBuilder & IncomingActionURLParser {}

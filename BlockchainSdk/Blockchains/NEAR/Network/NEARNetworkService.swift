@@ -50,25 +50,25 @@ final class NEARNetworkService: MultiNetworkProvider {
                     let actionReceiptCreationConfig = transactionCosts.actionReceiptCreationConfig
 
                     let cumulativeBasicExecutionCost = Decimal(actionCreationConfig.execution)
-                    + Decimal(actionReceiptCreationConfig.execution)
+                        + Decimal(actionReceiptCreationConfig.execution)
 
                     let cumulativeAdditionalExecutionCost = Decimal(createAccountCostConfig.execution)
-                    + Decimal(addKeyCostConfig.execution)
+                        + Decimal(addKeyCostConfig.execution)
 
                     let senderIsReceiverCumulativeBasicSendCost = Decimal(actionCreationConfig.sendSir)
-                    + Decimal(actionReceiptCreationConfig.sendSir)
+                        + Decimal(actionReceiptCreationConfig.sendSir)
 
                     let senderIsReceiverCumulativeAdditionalSendCost = Decimal(createAccountCostConfig.sendSir)
-                    + Decimal(addKeyCostConfig.sendSir)
+                        + Decimal(addKeyCostConfig.sendSir)
 
                     let senderIsNotReceiverCumulativeBasicSendCost = Decimal(actionCreationConfig.sendNotSir)
-                    + Decimal(actionReceiptCreationConfig.sendNotSir)
+                        + Decimal(actionReceiptCreationConfig.sendNotSir)
 
                     let senderIsNotReceiverCumulativeAdditionalSendCost = Decimal(createAccountCostConfig.sendNotSir)
-                    + Decimal(addKeyCostConfig.sendNotSir)
+                        + Decimal(addKeyCostConfig.sendNotSir)
 
                     let storageAmountPerByte = Decimal(result.runtimeConfig.storageAmountPerByte)
-                    ?? NEARProtocolConfig.fallbackProtocolConfig.storageAmountPerByte
+                        ?? NEARProtocolConfig.fallbackProtocolConfig.storageAmountPerByte
 
                     return NEARProtocolConfig(
                         senderIsReceiver: .init(
@@ -91,7 +91,7 @@ final class NEARNetworkService: MultiNetworkProvider {
     }
 
     func getInfo(accountId: String) -> AnyPublisher<NEARAccountInfo, Error> {
-        let blockchain = self.blockchain
+        let blockchain = blockchain
 
         return providerPublisher { provider in
             return provider

@@ -28,7 +28,6 @@ import Foundation
  This struct represents a factory that creates OpCodes from integers or strings.
  */
 struct OpCodeFactory {
-
     /**
      Returns the OpCode which a given UInt8 value.
      Returns OP_INVALIDOPCODE for outranged value.
@@ -74,7 +73,7 @@ struct OpCodeFactory {
             return .OP_1NEGATE
         case 0:
             return .OP_0
-        case 1...16:
+        case 1 ... 16:
             return get(with: OpCode.OP_1.value + UInt8(smallInteger - 1))
         default:
             return .OP_INVALIDOPCODE
@@ -86,7 +85,7 @@ struct OpCodeFactory {
      If incorrect opcode is given, Int.max is returned.
 
      - parameter opcode: OpCode which can be OP_<N> or OP_1NEGATE
-     
+
      - returns: Int value correspondint to OpCode
      */
     static func smallInteger(from opcode: OpCode) -> SmallInteger {
@@ -95,7 +94,7 @@ struct OpCodeFactory {
             return -1
         case .OP_0:
             return 0
-        case (OpCode.OP_1)...(OpCode.OP_16):
+        case (OpCode.OP_1) ... (OpCode.OP_16):
             return Int(opcode.value - OpCode.OP_1.value + 1)
         default:
             return Int.max

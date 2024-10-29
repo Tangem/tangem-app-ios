@@ -17,8 +17,8 @@ import Foundation
 /// - `EVM-like` with `Ethereum` coinType(60).
 /// - `All else`. According to `BIP44`
 /// https://github.com/satoshilabs/slips/blob/master/slip-0044.md
-public struct DerivationConfigV2: DerivationConfig {
-    public func derivationPath(for blockchain: Blockchain) -> String {
+struct DerivationConfigV2: DerivationConfig {
+    func derivationPath(for blockchain: Blockchain) -> String {
         switch blockchain {
         case .bitcoin:
             return "m/44'/0'/0'/0/0"
@@ -33,40 +33,40 @@ public struct DerivationConfigV2: DerivationConfig {
         case .bitcoinCash:
             return "m/44'/145'/0'/0/0"
         case .ethereum,
-                .ethereumPoW,
-                .disChain,
-                .ethereumClassic,
-                .rsk,
-                .bsc,
-                .polygon,
-                .avalanche,
-                .fantom,
-                .arbitrum,
-                .gnosis,
-                .optimism,
-                .kava,
-                .cronos,
-                .telos,
-                .octa,
-                .decimal,
-                .shibarium,
-                .areon,
-                .playa3ullGames,
-                .pulsechain,
-                .aurora,
-                .manta,
-                .zkSync,
-                .moonbeam,
-                .polygonZkEVM,
-                .moonriver,
-                .mantle,
-                .flare,
-                .taraxa,
-                .base,
-                .cyber,
-                .blast,
-                .energyWebEVM,
-                .core:
+             .ethereumPoW,
+             .disChain,
+             .ethereumClassic,
+             .rsk,
+             .bsc,
+             .polygon,
+             .avalanche,
+             .fantom,
+             .arbitrum,
+             .gnosis,
+             .optimism,
+             .kava,
+             .cronos,
+             .telos,
+             .octa,
+             .decimal,
+             .shibarium,
+             .areon,
+             .playa3ullGames,
+             .pulsechain,
+             .aurora,
+             .manta,
+             .zkSync,
+             .moonbeam,
+             .polygonZkEVM,
+             .moonriver,
+             .mantle,
+             .flare,
+             .taraxa,
+             .base,
+             .cyber,
+             .blast,
+             .energyWebEVM,
+             .core:
             return "m/44'/60'/0'/0/0"
         case .binance:
             return "m/44'/714'/0'/0/0"

@@ -6,7 +6,6 @@ import Moya
 
 @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 public extension MoyaProvider {
-
     /// Designated request-making method.
     ///
     /// - Parameters:
@@ -15,17 +14,17 @@ public extension MoyaProvider {
     /// - Returns: `AnyPublisher<Response, MoyaError`
     func requestPublisher(_ target: Target, callbackQueue: DispatchQueue? = nil) -> AnyPublisher<Response, MoyaError> {
         return MoyaPublisher { [weak self] subscriber in
-                return self?.request(target, callbackQueue: callbackQueue, progress: nil) { result in
-                    switch result {
-                    case let .success(response):
-                        _ = subscriber.receive(response)
-                        subscriber.receive(completion: .finished)
-                    case let .failure(error):
-                        subscriber.receive(completion: .failure(error))
-                    }
+            return self?.request(target, callbackQueue: callbackQueue, progress: nil) { result in
+                switch result {
+                case .success(let response):
+                    _ = subscriber.receive(response)
+                    subscriber.receive(completion: .finished)
+                case .failure(let error):
+                    subscriber.receive(completion: .failure(error))
                 }
             }
-            .eraseToAnyPublisher()
+        }
+        .eraseToAnyPublisher()
     }
 
     /// Designated request-making method with progress.
@@ -41,7 +40,7 @@ public extension MoyaProvider {
                 switch result {
                 case .success:
                     subscriber.receive(completion: .finished)
-                case let .failure(error):
+                case .failure(let error):
                     subscriber.receive(completion: .failure(error))
                 }
             }

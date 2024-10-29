@@ -103,7 +103,7 @@ final class NEARWalletManager: BaseManager {
         let reserveValue = Constants.accountDefaultStorageUsageInBytes * protocolConfig.storageAmountPerByte / decimalValue
         let reserveValueString = reserveValue.decimalNumber.stringValue
         let currencySymbol = wallet.blockchain.currencySymbol
-        let errorMessage = "no_account_generic".localized([networkName, reserveValueString, currencySymbol])
+        let errorMessage = Localization.noAccountGeneric(networkName, reserveValueString, currencySymbol)
 
         return WalletError.noAccount(message: errorMessage, amountToCreate: reserveValue)
     }
@@ -133,11 +133,11 @@ final class NEARWalletManager: BaseManager {
     ) -> Decimal {
         if senderIsReceiver {
             return config.senderIsReceiver.cumulativeBasicSendCost * gasPriceForCurrentBlock
-            + config.senderIsReceiver.cumulativeBasicExecutionCost * gasPriceForNextBlock
+                + config.senderIsReceiver.cumulativeBasicExecutionCost * gasPriceForNextBlock
         }
 
         return config.senderIsNotReceiver.cumulativeBasicSendCost * gasPriceForCurrentBlock
-        + config.senderIsNotReceiver.cumulativeBasicExecutionCost * gasPriceForNextBlock
+            + config.senderIsNotReceiver.cumulativeBasicExecutionCost * gasPriceForNextBlock
     }
 
     /// Additional fees for transer action are used only if the receiver has an implicit accound ID,
@@ -155,11 +155,11 @@ final class NEARWalletManager: BaseManager {
 
         if senderIsReceiver {
             return config.senderIsReceiver.cumulativeAdditionalSendCost * gasPriceForCurrentBlock
-            + config.senderIsReceiver.cumulativeAdditionalExecutionCost * gasPriceForNextBlock
+                + config.senderIsReceiver.cumulativeAdditionalExecutionCost * gasPriceForNextBlock
         }
 
         return config.senderIsNotReceiver.cumulativeAdditionalSendCost * gasPriceForCurrentBlock
-        + config.senderIsNotReceiver.cumulativeAdditionalExecutionCost * gasPriceForNextBlock
+            + config.senderIsNotReceiver.cumulativeAdditionalExecutionCost * gasPriceForNextBlock
     }
 }
 

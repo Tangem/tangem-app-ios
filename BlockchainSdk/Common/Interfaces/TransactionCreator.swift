@@ -17,7 +17,7 @@ public protocol TransactionCreator: TransactionValidator {
         changeAddress: String?,
         contractAddress: String?
     ) throws -> Transaction
-    
+
     func createTransaction(
         amount: Amount,
         fee: Fee,
@@ -40,7 +40,7 @@ public extension TransactionCreator {
         contractAddress: String? = nil
     ) throws -> Transaction {
         try validate(amount: amount, fee: fee)
-        
+
         return Transaction(
             amount: amount,
             fee: fee,
@@ -50,7 +50,7 @@ public extension TransactionCreator {
             contractAddress: contractAddress ?? amount.type.token?.contractAddress
         )
     }
-    
+
     func createTransaction(
         amount: Amount,
         fee: Fee,
@@ -67,9 +67,9 @@ public extension TransactionCreator {
             changeAddress: changeAddress ?? defaultChangeAddress,
             contractAddress: contractAddress ?? amount.type.token?.contractAddress
         )
-        
+
         try await validate(transaction: transaction)
-        
+
         return transaction
     }
 }
