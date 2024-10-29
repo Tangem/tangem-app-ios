@@ -48,13 +48,16 @@ extension CommonOnrampManager: OnrampManager {
     }
 
     public func setupQuotes(amount: Decimal) async throws {
-        await withTaskGroup(of: Void.self) { [weak self] group in
-            await self?._providers.forEach { provider in
-                _ = group.addTaskUnlessCancelled {
-                    await provider.manager.update(amount: amount)
-                }
-            }
-        }
+        /*
+         TODO: https://tangem.atlassian.net/browse/IOS-8310
+         await withTaskGroup(of: Void.self) { [weak self] group in
+             await self?._providers.forEach { provider in
+                 _ = group.addTaskUnlessCancelled {
+                     await provider.manager.update(amount: amount)
+                 }
+             }
+         }
+         */
     }
 
     public func loadOnrampData(request: OnrampQuotesRequestItem) async throws -> OnrampRedirectData {
@@ -67,19 +70,14 @@ extension CommonOnrampManager: OnrampManager {
 
 private extension CommonOnrampManager {
     func makeProvider(item: OnrampPairRequestItem, provider: OnrampProvider) -> Provider {
-        Provider(
-            manager: CommonOnrampProviderManager(
-                item: item,
-                provider: provider,
-                dataRepository: dataRepository,
-                apiProvider: apiProvider
-            )
-        )
+        // Construct a Provider wrapper with autoupdating itself
+        // TODO: https://tangem.atlassian.net/browse/IOS-8310
+        Provider(provider: provider)
     }
 }
 
 private extension CommonOnrampManager {
     struct Provider {
-        let manager: OnrampProviderManager
+        let provider: OnrampProvider
     }
 }
