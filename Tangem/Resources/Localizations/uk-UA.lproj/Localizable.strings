@@ -715,6 +715,7 @@
 "staking_notification_new_validator_funds_transfer" = "Стейкінг в мережі %1$@ з новим валідатором автоматично переведе всі раніше застейкані кошти до цього валідатора";
 "staking_notification_restake_rewards_text" = "Реінвестуйте зароблені винагороди у суму стейкінгу, щоб збільшити потенційний прибуток.";
 "staking_notification_restake_text" = "Рестейк дозволяє вам перемістити ваші кошти від одного валідатора до іншого без необхідності виводити кошти зі стейкінгу";
+"staking_notification_stake_entire_balance_text" = "You’re about to stake your entire balance. We recommend leaving a small amount to cover network fees for unstaking or claiming rewards.";
 "staking_notification_unlock_text" = "Розблокуйте свої кошти, щоб вивести їх зі стейкінгу. Розблокування займе %@.";
 "staking_notification_unstake_cosmos_text" = "Ваші кошти будуть доступні для використання після закінчення 21-денного періоду розблокування. Винагорода буде отримана разом з вашими незастейканими коштами.";
 "staking_notification_unstake_text" = "Ваші кошти будуть доступні після %@ періоду розблокування.";
