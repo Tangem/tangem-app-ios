@@ -227,10 +227,6 @@ private extension TotalBalanceProvider {
             return .customToken
         }
 
-        if balance?.isZero == true {
-            print("aaaaaaaaa")
-        }
-
         if let balance {
             return balance > .zero ? .full : .empty
         }
