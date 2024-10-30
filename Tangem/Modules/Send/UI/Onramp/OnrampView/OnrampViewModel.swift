@@ -54,7 +54,7 @@ private extension OnrampViewModel {
             // TODO: Fill from quote
             paymentState = .loaded(
                 data: .init(iconURL: nil, paymentMethodName: "Card", providerName: "1Inch", badge: .bestRate) { [weak self] in
-                    self?.router?.summaryStepRequestEditProvider()
+                    self?.router?.onrampStepRequestEditProvider()
                 }
             )
         }

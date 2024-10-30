@@ -14,6 +14,8 @@ import BlockchainSdk
 public struct TangemExpressFactory {
     public init() {}
 
+    // MARK: - Swap
+
     public func makeExpressManager(
         expressAPIProvider: ExpressAPIProvider,
         allowanceProvider: ExpressAllowanceProvider,
@@ -42,16 +44,15 @@ public struct TangemExpressFactory {
         )
     }
 
+    // MARK: - Onramp
+
     public func makeOnrampManager(
         expressAPIProvider: ExpressAPIProvider,
         onrampRepository: OnrampRepository,
-        logger: Logger? = nil,
-        analyticsLogger: ExpressAnalyticsLogger? = nil
+        dataRepository: OnrampDataRepository,
+        logger: Logger
     ) -> OnrampManager {
-        let logger: Logger = logger ?? CommonLogger()
-        let dataRepository = CommonOnrampDataRepository(provider: expressAPIProvider)
-
-        return CommonOnrampManager(
+        CommonOnrampManager(
             apiProvider: expressAPIProvider,
             onrampRepository: onrampRepository,
             dataRepository: dataRepository,
@@ -63,6 +64,13 @@ public struct TangemExpressFactory {
         let repository = CommonOnrampRepository(storage: storage)
         return repository
     }
+
+    public func makeOnrampDataRepository(expressAPIProvider: ExpressAPIProvider) -> OnrampDataRepository {
+        let repository = CommonOnrampDataRepository(provider: expressAPIProvider)
+        return repository
+    }
+
+    // MARK: - API
 
     public func makeExpressAPIProvider(
         credential: ExpressAPICredential,

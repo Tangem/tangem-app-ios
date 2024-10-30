@@ -339,14 +339,27 @@ struct SendDependenciesBuilder {
         )
     }
 
-    func makeOnrampManager(userWalletId: String, onrampRepository: OnrampRepository) -> OnrampManager {
-        let expressAPIProvider = ExpressAPIProviderFactory()
-            .makeExpressAPIProvider(userId: userWalletId, logger: AppLog.shared)
+    func makeOnrampDependencies(userWalletId: String) -> (
+        manager: OnrampManager,
+        repository: OnrampRepository,
+        dataRepository: OnrampDataRepository
+    ) {
+        let apiProvider = ExpressAPIProviderFactory().makeExpressAPIProvider(userId: userWalletId, logger: AppLog.shared)
 
-        return TangemExpressFactory().makeOnrampManager(
-            expressAPIProvider: expressAPIProvider,
-            onrampRepository: onrampRepository,
+        let factory = TangemExpressFactory()
+        let repository = factory.makeOnrampRepository(storage: CommonOnrampStorage())
+        let dataRepository = factory.makeOnrampDataRepository(expressAPIProvider: apiProvider)
+        let manager = factory.makeOnrampManager(
+            expressAPIProvider: apiProvider,
+            onrampRepository: repository,
+            dataRepository: dataRepository,
             logger: AppLog.shared
+        )
+
+        return (
+            manager: manager,
+            repository: repository,
+            dataRepository: dataRepository
         )
     }
 
@@ -362,9 +375,5 @@ struct SendDependenciesBuilder {
             onrampRepository: onrampRepository,
             onrampDataRepository: onrampDataRepository
         )
-    }
-
-    func makeOnrampRepository() -> OnrampRepository {
-        TangemExpressFactory().makeOnrampRepository(storage: CommonOnrampStorage())
     }
 }

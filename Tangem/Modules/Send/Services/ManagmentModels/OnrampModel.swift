@@ -11,7 +11,6 @@ import TangemExpress
 import Combine
 
 protocol OnrampModelRoutable: AnyObject {
-    func openOnrampCountriesSelector()
     func openOnrampCountryBottomSheet(country: OnrampCountry)
 }
 
