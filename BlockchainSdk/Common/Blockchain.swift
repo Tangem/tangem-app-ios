@@ -1057,6 +1057,7 @@ extension Blockchain: Codable {
         case "energyWebEVM": self = .energyWebEVM(testnet: isTestnet)
         case "energyWebX": self = .energyWebX(curve: curve)
         case "core": self = .core(testnet: isTestnet)
+        case "casper": self = .casper(testnet: isTestnet)
         default:
             throw BlockchainSdkError.decodingFailed
         }

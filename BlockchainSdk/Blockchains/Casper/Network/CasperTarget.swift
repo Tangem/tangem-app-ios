@@ -40,10 +40,14 @@ struct CasperTarget: TargetType {
     var task: Task {
         switch type {
         case .getBalance(let data):
+            let encoder = JSONEncoder()
+            encoder.keyEncodingStrategy = .convertToSnakeCase
+            
             return .requestJSONRPC(
                 id: Constants.jsonRPCMethodId,
                 method: Method.queryBalance.rawValue,
-                params: data
+                params: data,
+                encoder: encoder
             )
         }
     }

@@ -19,7 +19,8 @@ struct CasperWalletAssembly: WalletManagerAssembly {
                             node: nodeInfo,
                             configuration: input.networkConfig
                         )
-                    }
+                    },
+                blockchainDecimalValue: input.blockchain.decimalValue
             )
         )
     }

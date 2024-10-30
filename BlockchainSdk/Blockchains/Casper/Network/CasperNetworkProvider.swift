@@ -39,10 +39,15 @@ final class CasperNetworkProvider: HostProvider {
     // MARK: - Private Implementation
 
     private func requestPublisher<T: Decodable>(for type: CasperTarget.TargetType) -> AnyPublisher<T, Error> {
-        provider.requestPublisher(CasperTarget(node: node, type: type))
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        
+        return provider.requestPublisher(CasperTarget(node: node, type: type))
             .filterSuccessfulStatusAndRedirectCodes()
-            .map(JSONRPC.Response<T, JSONRPC.APIError>.self)
-            .tryMap { try $0.result.get() }
+            .map(JSONRPC.Response<T, JSONRPC.APIError>.self, using: decoder)
+            .tryMap {
+                try $0.result.get()
+            }
             .eraseToAnyPublisher()
     }
 }
