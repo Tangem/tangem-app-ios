@@ -59,7 +59,7 @@ extension CommonStakingPendingTransactionsRepository: StakingPendingTransactions
                     !balances.contains { balance in
                         compare(record, balance, by: [.validator(.some), .type([.active]), .amount])
                     }
-                case .withdraw:
+                case .withdraw, .claimUnstaked:
                     !balances.contains { balance in
                         compare(record, balance, by: [.validator(.some), .type([.unstaked]), .amount])
                     }
@@ -173,6 +173,7 @@ private extension CommonStakingPendingTransactionsRepository {
             case .pending(.voteLocked): .voteLocked
             case .pending(.unlockLocked): .unlockLocked
             case .pending(.restake): .restake
+            case .pending(.claimUnstaked): .claimUnstaked
             }
         }()
 

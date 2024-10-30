@@ -43,9 +43,8 @@ enum SendFlowActionType: Hashable {
         case .unstake: Localization.commonUnstake
         case .claimRewards: Localization.commonClaimRewards
         case .restakeRewards: Localization.stakingRestakeRewards
-        case .withdraw: Localization.stakingWithdraw
+        case .withdraw, .claimUnstaked: Localization.stakingWithdraw
         case .restake: Localization.stakingRestake
-        case .claimUnstaked: Localization.stakingClaimUnstaked
         case .unlockLocked: Localization.stakingUnlockedLocked
         case .stakeLocked: Localization.stakingStakeLocked
         case .vote: Localization.stakingVote
@@ -64,9 +63,8 @@ enum SendFlowActionType: Hashable {
         case .unstake: .stakeActionUnstake
         case .claimRewards: .stakeActionClaimRewards
         case .restakeRewards: .stakeActionRestakeRewards
-        case .withdraw: .stakeActionWithdraw
+        case .withdraw, .claimUnstaked: .stakeActionWithdraw
         case .restake: .stakeActionRestake
-        case .claimUnstaked: .stakeActionClaimUnstaked
         case .unlockLocked: .stakeActionUnlockLocked
         case .stakeLocked: .stakeActionStakeLocked
         case .vote: .stakeActionVote

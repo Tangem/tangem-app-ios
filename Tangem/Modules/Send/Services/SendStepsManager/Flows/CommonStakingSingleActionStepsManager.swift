@@ -67,6 +67,8 @@ extension CommonStakingSingleActionStepsManager: SendStepsManager {
             return .unstake
         case .pending(.restake):
             return .restake
+        case .pending(.claimUnstaked):
+            return .claimUnstaked
         }
     }
 
