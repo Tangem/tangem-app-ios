@@ -15,6 +15,7 @@ class CommonTokenQuotesRepository {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
 
     private var _quotes: CurrentValueSubject<Quotes, Never> = .init([:])
+    private var _prices: CurrentValueSubject<[PriceItem: Decimal], Never> = .init([:])
     private var loadingQueue = PassthroughSubject<QueueItem, Never>()
     private var bag: Set<AnyCancellable> = []
 
@@ -61,12 +62,19 @@ extension CommonTokenQuotesRepository: TokenQuotesRepository {
     }
 
     func loadPrice(currencyCode: String, currencyId: String) -> AnyPublisher<Decimal, any Error> {
+        let item = PriceItem(currencyId: currencyId, currencyCode: currencyCode)
+        if let price = _prices.value[item] {
+            return .just(output: price)
+        }
+
         let request = QuotesDTO.Request(coinIds: [currencyId], currencyId: currencyCode, fields: [.price])
 
         return tangemApiService
             .loadQuotes(requestModel: request)
-            .compactMap { quotes in
-                quotes.first(where: { $0.id == currencyId })?.price
+            .compactMap { [weak self] quotes in
+                let price = quotes.first(where: { $0.id == currencyId })?.price
+                self?._prices.value[item] = price
+                return price
             }
             .eraseToAnyPublisher()
     }
@@ -221,5 +229,10 @@ extension CommonTokenQuotesRepository {
     struct QueueItem {
         let ids: [String]
         let didLoadPublisher: PassthroughSubject<[String: Decimal], Never>
+    }
+
+    struct PriceItem: Hashable {
+        let currencyId: String
+        let currencyCode: String
     }
 }
