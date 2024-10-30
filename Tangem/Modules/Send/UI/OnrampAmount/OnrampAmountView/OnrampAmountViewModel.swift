@@ -84,6 +84,7 @@ private extension OnrampAmountViewModel {
             currentFieldOptions = prefixSuffixOptionsFactory.makeFiatOptions(
                 fiatCurrencyCode: currency.identity.code
             )
+            updateAlternativeAmount(amount: .none)
             isLoading = false
         }
     }
@@ -94,11 +95,17 @@ private extension OnrampAmountViewModel {
             let amount = await viewModel.interactor.update(amount: amount)
 
             await runOnMain {
-                viewModel.alternativeAmount = amount?.formatAlternative(
-                    currencySymbol: viewModel.tokenItem.currencySymbol,
-                    decimalCount: viewModel.tokenItem.decimalCount
-                )
+                viewModel.updateAlternativeAmount(amount: amount)
             }
         }
+    }
+
+    func updateAlternativeAmount(amount: SendAmount?) {
+        let amount = amount ?? SendAmount(type: .alternative(fiat: nil, crypto: 0))
+        alternativeAmount = amount.formatAlternative(
+            currencySymbol: tokenItem.currencySymbol,
+            trimFractions: false,
+            decimalCount: tokenItem.decimalCount
+        )
     }
 }
