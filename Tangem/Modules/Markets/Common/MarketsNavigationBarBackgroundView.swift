@@ -38,6 +38,11 @@ struct MarketsNavigationBarBackgroundView<Overlay>: View where Overlay: View {
                 }
                 .opacity(overlayContentHidingProgress) // Hides translucent navigation bar background on bottom sheet minimizing
         }
+        .background {
+            // This invisible background view prevents touches from passing through the `MarketsNavigationBarBackgroundView`
+            // when it is hidden or has zero opacity/clear color
+            SwiftUITouchPassthroughView { _, _ in false }
+        }
     }
 
     @ViewBuilder

@@ -38,5 +38,6 @@ public extension StakingAction {
         case voteLocked(passthrough: String)
         case unlockLocked(passthrough: String)
         case restake(passthrough: String)
+        case claimUnstaked(passthroughs: Set<String>) // this case is handled exactly as withdraw on UI
     }
 }

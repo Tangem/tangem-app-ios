@@ -30,6 +30,7 @@ struct SendDependenciesBuilder {
         case .pending(.voteLocked): .voteLocked
         case .pending(.unlockLocked): .unlockLocked
         case .pending(.restake): .restake
+        case .pending(.claimUnstaked): .claimUnstaked
         }
     }
 
@@ -43,6 +44,7 @@ struct SendDependenciesBuilder {
         case .restakeRewards: action.title
         case .unlockLocked: action.title
         case .restake: action.title
+        case .claimUnstaked: SendFlowActionType.withdraw.title
         default: action.title
         }
     }

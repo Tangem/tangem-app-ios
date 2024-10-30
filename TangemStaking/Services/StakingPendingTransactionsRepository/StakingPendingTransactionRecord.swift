@@ -31,5 +31,6 @@ public struct StakingPendingTransactionRecord: Hashable, Codable {
         case voteLocked
         case unlockLocked
         case restake
+        case claimUnstaked
     }
 }
