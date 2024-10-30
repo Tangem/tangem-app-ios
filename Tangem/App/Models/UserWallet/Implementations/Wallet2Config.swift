@@ -227,7 +227,7 @@ extension Wallet2Config: UserWalletConfig {
         case "AF71":
             return cardsCount == 2 ? Assets.Cards.btcNew2 : Assets.Cards.btcNew3
         // Stealth wallet
-        case "AF60", "AF74", "AF88" :
+        case "AF60", "AF74", "AF88":
             return cardsCount == 2 ? Assets.Cards.stealthWalletSET2 : Assets.Cards.stealthWalletSET3
         // Crypto Org
         case "AF57":
