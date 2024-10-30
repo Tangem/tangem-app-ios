@@ -56,6 +56,7 @@ private extension OnrampAmountViewModel {
 
         decimalNumberTextFieldViewModel
             .valuePublisher
+            .debounce(for: 1, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, value in
