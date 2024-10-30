@@ -11,7 +11,6 @@ import TangemExpress
 
 protocol OnrampInteractor: AnyObject {
     var isValidPublisher: AnyPublisher<Bool, Never> { get }
-    var selectedQuotePublisher: AnyPublisher<LoadingValue<OnrampQuote>?, Never> { get }
 }
 
 class CommonOnrampInteractor {
@@ -23,11 +22,7 @@ class CommonOnrampInteractor {
     init(input: OnrampInput, output: OnrampOutput) {
         self.input = input
         self.output = output
-
-        bind()
     }
-
-    private func bind() {}
 }
 
 // MARK: - OnrampInteractor
@@ -35,28 +30,5 @@ class CommonOnrampInteractor {
 extension CommonOnrampInteractor: OnrampInteractor {
     var isValidPublisher: AnyPublisher<Bool, Never> {
         _isValid.eraseToAnyPublisher()
-    }
-
-    var selectedQuotePublisher: AnyPublisher<LoadingValue<OnrampQuote>?, Never> {
-        guard let input else {
-            return Empty().eraseToAnyPublisher()
-        }
-
-        return Publishers.CombineLatest(
-            input.isLoadingRatesPublisher,
-            input.selectedQuotePublisher
-        )
-        .map { isLoadingRates, selectedQuote in
-            if isLoadingRates {
-                return .loading
-            }
-
-            if let selectedQuote {
-                return .loaded(selectedQuote)
-            }
-
-            return nil
-        }
-        .eraseToAnyPublisher()
     }
 }

@@ -34,14 +34,17 @@ class OnrampViewModel: ObservableObject, Identifiable {
 
 private extension OnrampViewModel {
     func bind() {
-        interactor
-            .selectedQuotePublisher
-            .withWeakCaptureOf(self)
-            .receive(on: DispatchQueue.main)
-            .sink { viewModel, quote in
-                viewModel.updateQuoteView(quote: quote)
-            }
-            .store(in: &bag)
+        /*
+          // TODO: https://tangem.atlassian.net/browse/IOS-8310
+         interactor
+             .selectedQuotePublisher
+             .withWeakCaptureOf(self)
+             .receive(on: DispatchQueue.main)
+             .sink { viewModel, quote in
+                 viewModel.updateQuoteView(quote: quote)
+             }
+             .store(in: &bag)
+          */
     }
 
     func updateQuoteView(quote: LoadingValue<OnrampQuote>?) {

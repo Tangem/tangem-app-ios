@@ -25,7 +25,6 @@ struct OnrampFlowBaseBuilder {
 
         let onrampAmountViewModel = sendAmountStepBuilder.makeOnrampAmountViewModel(
             io: (input: onrampModel, output: onrampModel),
-            onrampInput: onrampModel,
             sendAmountValidator: builder.makeOnrampAmountValidator()
         )
 

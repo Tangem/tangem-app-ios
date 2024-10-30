@@ -6,7 +6,7 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-public class CommonOnrampDataRepository {
+public actor CommonOnrampDataRepository {
     private let provider: ExpressAPIProvider
 
     private var _paymentMethods: [OnrampPaymentMethod]?
