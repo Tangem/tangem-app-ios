@@ -71,22 +71,20 @@ private extension OnrampAmountViewModel {
             .store(in: &bag)
     }
 
-    func update(currency: LoadingValue<OnrampFiatCurrency>) {
+    func update(currency: OnrampFiatCurrency?) {
         switch currency {
-        case .loading:
+        case .none:
             // Equal to loading state
             fiatIconURL = nil
             isLoading = true
 
-        case .loaded(let currency):
+        case .some(let currency):
             fiatIconURL = currency.identity.image
             decimalNumberTextFieldViewModel.update(maximumFractionDigits: currency.precision)
             currentFieldOptions = prefixSuffixOptionsFactory.makeFiatOptions(
                 fiatCurrencyCode: currency.identity.code
             )
             isLoading = false
-        case .failedToLoad(let error):
-            break
         }
     }
 

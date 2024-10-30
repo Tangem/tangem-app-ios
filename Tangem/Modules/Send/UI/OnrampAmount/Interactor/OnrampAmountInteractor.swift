@@ -10,7 +10,7 @@ import Combine
 import TangemExpress
 
 protocol OnrampAmountInteractor {
-    var currencyPublisher: AnyPublisher<LoadingValue<OnrampFiatCurrency>, Never> { get }
+    var currencyPublisher: AnyPublisher<OnrampFiatCurrency?, Never> { get }
     var errorPublisher: AnyPublisher<String?, Never> { get }
 
     func update(amount: Decimal?) async -> SendAmount?
@@ -80,13 +80,13 @@ private extension CommonOnrampAmountInteractor {
 // MARK: - OnrampAmountInteractor
 
 extension CommonOnrampAmountInteractor: OnrampAmountInteractor {
-    var currencyPublisher: AnyPublisher<LoadingValue<OnrampFiatCurrency>, Never> {
+    var currencyPublisher: AnyPublisher<OnrampFiatCurrency?, Never> {
         guard let input else {
             assertionFailure("OnrampAmountInput not found")
             return Empty().eraseToAnyPublisher()
         }
 
-        return input.currencyPublisher.eraseToAnyPublisher()
+        return input.fiatCurrencyPublisher.map { $0.value }.eraseToAnyPublisher()
     }
 
     var errorPublisher: AnyPublisher<String?, Never> {

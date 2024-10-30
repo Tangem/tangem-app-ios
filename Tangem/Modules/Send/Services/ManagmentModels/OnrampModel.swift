@@ -22,7 +22,6 @@ class OnrampModel {
     private let _amount: CurrentValueSubject<SendAmount?, Never> = .init(.none)
     private let _selectedQuote: CurrentValueSubject<LoadingValue<OnrampQuote>?, Never> = .init(.none)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
-    private let _state = CurrentValueSubject<State?, Never>(nil)
     private let _isLoading = CurrentValueSubject<Bool, Never>(false)
 
     // MARK: - Dependencies
@@ -167,7 +166,7 @@ extension OnrampModel: OnrampAmountInput {
         _currency.value
     }
 
-    var currencyPublisher: AnyPublisher<LoadingValue<TangemExpress.OnrampFiatCurrency>, Never> {
+    var fiatCurrencyPublisher: AnyPublisher<LoadingValue<OnrampFiatCurrency>, Never> {
         _currency.eraseToAnyPublisher()
     }
 }
@@ -210,12 +209,7 @@ extension OnrampModel: SendFinishInput {
 
 extension OnrampModel: SendBaseInput {
     var actionInProcessing: AnyPublisher<Bool, Never> {
-        _state.map { state in
-            switch state {
-            case .loading: true
-            default: false
-            }
-        }.eraseToAnyPublisher()
+        _isLoading.eraseToAnyPublisher()
     }
 }
 
@@ -233,14 +227,6 @@ extension OnrampModel: SendBaseOutput {
 // MARK: - OnrampBaseDataBuilderInput
 
 extension OnrampModel: OnrampBaseDataBuilderInput {}
-
-extension OnrampModel {
-    enum State {
-        case loading
-        case error(String)
-        case loaded
-    }
-}
 
 enum OnrampModelError: String, LocalizedError {
     case countryNotFound
