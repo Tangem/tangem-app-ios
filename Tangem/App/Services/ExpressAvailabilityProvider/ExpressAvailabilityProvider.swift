@@ -8,7 +8,7 @@
 
 import Combine
 
-protocol SwapAvailabilityProvider {
+protocol ExpressAvailabilityProvider {
     var availabilityDidChangePublisher: AnyPublisher<Void, Never> { get }
 
     func swapState(for tokenItem: TokenItem) -> TokenItemExpressState
@@ -20,13 +20,13 @@ protocol SwapAvailabilityProvider {
     func updateExpressAvailability(for items: [TokenItem], forceReload: Bool, userWalletId: String)
 }
 
-private struct SwapAvailabilityProviderKey: InjectionKey {
-    static var currentValue: SwapAvailabilityProvider = CommonSwapAvailabilityProvider()
+private struct ExpressAvailabilityProviderKey: InjectionKey {
+    static var currentValue: ExpressAvailabilityProvider = CommonExpressAvailabilityProvider()
 }
 
 extension InjectedValues {
-    var swapAvailabilityProvider: SwapAvailabilityProvider {
-        get { Self[SwapAvailabilityProviderKey.self] }
-        set { Self[SwapAvailabilityProviderKey.self] = newValue }
+    var swapAvailabilityProvider: ExpressAvailabilityProvider {
+        get { Self[ExpressAvailabilityProviderKey.self] }
+        set { Self[ExpressAvailabilityProviderKey.self] = newValue }
     }
 }

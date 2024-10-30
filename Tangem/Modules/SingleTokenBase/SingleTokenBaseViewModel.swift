@@ -12,7 +12,7 @@ import SwiftUI
 import BlockchainSdk
 
 class SingleTokenBaseViewModel: NotificationTapDelegate {
-    @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
+    @Injected(\.expressAvailabilityProvider) private var expressAvailabilityProvider: ExpressAvailabilityProvider
 
     @Published var alert: AlertBinder? = nil
     @Published var transactionHistoryState: TransactionsListView.State = .loading
@@ -462,7 +462,7 @@ extension SingleTokenBaseViewModel {
             break
         }
 
-        return !swapAvailabilityProvider.canSwap(tokenItem: walletModel.tokenItem)
+        return !expressAvailabilityProvider.canSwap(tokenItem: walletModel.tokenItem)
     }
 
     private func isReceiveDisabled() -> Bool {
@@ -528,7 +528,7 @@ extension SingleTokenBaseViewModel {
 
         if let alertToDisplay = alertBuilder.swapAlert(
             for: walletModel.tokenItem,
-            tokenItemSwapState: swapAvailabilityProvider.swapState(for: walletModel.tokenItem),
+            tokenItemSwapState: expressAvailabilityProvider.swapState(for: walletModel.tokenItem),
             isCustom: walletModel.isCustom
         ) {
             alert = alertToDisplay
