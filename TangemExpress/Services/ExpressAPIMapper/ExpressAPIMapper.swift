@@ -34,7 +34,8 @@ struct ExpressAPIMapper {
     func mapToExpressAsset(response: ExpressDTO.Swap.Assets.Response) -> ExpressAsset {
         ExpressAsset(
             currency: ExpressCurrency(contractAddress: response.contractAddress, network: response.network),
-            isExchangeable: response.exchangeAvailable
+            isExchangeable: response.exchangeAvailable,
+            isOnrampable: response.onrampAvailable ?? false
         )
     }
 

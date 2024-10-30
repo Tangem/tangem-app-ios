@@ -182,7 +182,7 @@ class WalletModel {
 
     var actionsUpdatePublisher: AnyPublisher<Void, Never> {
         Publishers.Merge(
-            swapAvailabilityProvider.tokenItemsAvailableToSwapPublisher.mapToVoid(),
+            swapAvailabilityProvider.availabilityDidChangePublisher,
             stakingManagerStatePublisher.mapToVoid()
         )
         .eraseToAnyPublisher()

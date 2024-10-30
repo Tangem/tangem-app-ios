@@ -8,33 +8,25 @@
 
 import Combine
 
-typealias SwapAvailabilityManager = SwapAvailabilityProvider & SwapAvailabilityController
-
-protocol SwapAvailabilityController {
-    func loadSwapAvailability(for items: [TokenItem], forceReload: Bool, userWalletId: String)
-}
-
 protocol SwapAvailabilityProvider {
-    var tokenItemsAvailableToSwapPublisher: AnyPublisher<[TokenItem: TokenItemSwapState], Never> { get }
-    func swapState(for tokenItem: TokenItem) -> TokenItemSwapState
+    var availabilityDidChangePublisher: AnyPublisher<Void, Never> { get }
+
+    func swapState(for tokenItem: TokenItem) -> TokenItemExpressState
+    func onrampState(for tokenItem: TokenItem) -> TokenItemExpressState
+
     func canSwap(tokenItem: TokenItem) -> Bool
+    func onrampSwap(tokenItem: TokenItem) -> Bool
+
+    func updateExpressAvailability(for items: [TokenItem], forceReload: Bool, userWalletId: String)
 }
 
-private struct SwapAvailabilityManagerKey: InjectionKey {
-    static var currentValue: SwapAvailabilityManager = CommonSwapAvailabilityManager()
+private struct SwapAvailabilityProviderKey: InjectionKey {
+    static var currentValue: SwapAvailabilityProvider = CommonSwapAvailabilityProvider()
 }
 
 extension InjectedValues {
-    var swapAvailabilityController: SwapAvailabilityController {
-        manager
-    }
-
     var swapAvailabilityProvider: SwapAvailabilityProvider {
-        manager
-    }
-
-    private var manager: SwapAvailabilityManager {
-        get { Self[SwapAvailabilityManagerKey.self] }
-        set { Self[SwapAvailabilityManagerKey.self] = newValue }
+        get { Self[SwapAvailabilityProviderKey.self] }
+        set { Self[SwapAvailabilityProviderKey.self] = newValue }
     }
 }

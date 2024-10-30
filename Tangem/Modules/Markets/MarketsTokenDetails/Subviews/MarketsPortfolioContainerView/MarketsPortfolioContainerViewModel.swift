@@ -12,10 +12,6 @@ import SwiftUI
 import BlockchainSdk
 
 class MarketsPortfolioContainerViewModel: ObservableObject {
-    // MARK: - Services
-
-    @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
-
     // MARK: - Published Properties
 
     @Published var isAddTokenButtonDisabled: Bool = true
