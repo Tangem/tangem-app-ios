@@ -9,11 +9,7 @@
 import SwiftUI
 
 struct OnrampPaymentMethodsView: View {
-    @ObservedObject private var viewModel: OnrampPaymentMethodsViewModel
-
-    init(viewModel: OnrampPaymentMethodsViewModel) {
-        self.viewModel = viewModel
-    }
+    @ObservedObject var viewModel: OnrampPaymentMethodsViewModel
 
     var body: some View {
         GroupedScrollView(spacing: 0) {
