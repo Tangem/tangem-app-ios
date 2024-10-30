@@ -56,5 +56,8 @@ struct SendCoordinatorView: CoordinatorView {
                 QRScanViewCoordinatorView(coordinator: $0)
                     .edgesIgnoringSafeArea(.all)
             }
+            .sheet(item: $coordinator.onrampProvidersCoordinator) {
+                OnrampProvidersCoordinatorView(coordinator: $0)
+            }
     }
 }
