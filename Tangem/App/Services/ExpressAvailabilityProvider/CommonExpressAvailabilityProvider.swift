@@ -41,7 +41,7 @@ extension CommonExpressAvailabilityProvider: ExpressAvailabilityProvider {
         _cache.value[tokenItem.expressCurrency]?.onramp ?? .notLoaded
     }
 
-    func onrampSwap(tokenItem: TokenItem) -> Bool {
+    func canOnramp(tokenItem: TokenItem) -> Bool {
         onrampState(for: tokenItem) == .available
     }
 

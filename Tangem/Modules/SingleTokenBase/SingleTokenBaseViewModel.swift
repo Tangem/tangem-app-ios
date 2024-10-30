@@ -493,12 +493,27 @@ extension SingleTokenBaseViewModel {
             return
         }
 
-        if !exchangeUtility.buyAvailable {
-            alert = SingleTokenAlertBuilder().buyUnavailableAlert(for: walletModel.tokenItem)
-            return
-        }
+        if FeatureProvider.isAvailable(.onramp) {
+            let alertBuilder = SingleTokenAlertBuilder()
+            if let alertToDisplay = alertBuilder.buyAlert(
+                for: walletModel.tokenItem,
+                tokenItemSwapState: expressAvailabilityProvider.onrampState(for: walletModel.tokenItem),
+                isCustom: walletModel.isCustom
+            ) {
+                alert = alertToDisplay
+                return
+            }
 
-        tokenRouter.openBuyCryptoIfPossible(walletModel: walletModel)
+            tokenRouter.openBuyCryptoIfPossible(walletModel: walletModel)
+        } else {
+            // Old code
+            if !exchangeUtility.buyAvailable {
+                alert = SingleTokenAlertBuilder().buyUnavailableAlert(for: walletModel.tokenItem)
+                return
+            }
+
+            tokenRouter.openBuyCryptoIfPossible(walletModel: walletModel)
+        }
     }
 
     func openSend() {

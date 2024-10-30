@@ -70,6 +70,10 @@ struct TokenContextActionsBuilder {
             expressAvailabilityProvider.canSwap(tokenItem: walletModel.tokenItem) &&
             !walletModel.isCustom
 
+        let canOnramp = userWalletModel.config.isFeatureVisible(.exchange) &&
+            expressAvailabilityProvider.canOnramp(tokenItem: walletModel.tokenItem) &&
+            !walletModel.isCustom
+
         let canStake = StakingFeatureProvider(config: userWalletModel.config).isAvailable(for: walletModel.tokenItem)
 
         let isBlockchainReachable = !walletModel.state.isBlockchainUnreachable
@@ -80,6 +84,7 @@ struct TokenContextActionsBuilder {
             canSignTransactions: canSignTransactions,
             canSend: canSend,
             canSwap: canSwap,
+            canOnramp: canOnramp,
             canStake: canStake,
             isBlockchainReachable: isBlockchainReachable,
             exchangeUtility: utility

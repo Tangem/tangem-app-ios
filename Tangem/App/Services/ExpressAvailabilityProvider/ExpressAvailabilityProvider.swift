@@ -15,7 +15,7 @@ protocol ExpressAvailabilityProvider {
     func onrampState(for tokenItem: TokenItem) -> TokenItemExpressState
 
     func canSwap(tokenItem: TokenItem) -> Bool
-    func onrampSwap(tokenItem: TokenItem) -> Bool
+    func canOnramp(tokenItem: TokenItem) -> Bool
 
     func updateExpressAvailability(for items: [TokenItem], forceReload: Bool, userWalletId: String)
 }
@@ -25,7 +25,7 @@ private struct ExpressAvailabilityProviderKey: InjectionKey {
 }
 
 extension InjectedValues {
-    var swapAvailabilityProvider: ExpressAvailabilityProvider {
+    var expressAvailabilityProvider: ExpressAvailabilityProvider {
         get { Self[ExpressAvailabilityProviderKey.self] }
         set { Self[ExpressAvailabilityProviderKey.self] = newValue }
     }
