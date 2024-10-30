@@ -10,4 +10,5 @@ import TangemExpress
 
 protocol OnrampRoutable {
     func openOnrampCountry(country: OnrampCountry, repository: OnrampRepository)
+    func openOnrampProviders()
 }

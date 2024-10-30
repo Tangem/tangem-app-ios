@@ -57,14 +57,16 @@ struct OnrampFlowBaseBuilder {
         let stepsManager = CommonOnrampStepsManager(
             onrampStep: onramp.step,
             finishStep: finish,
+            coordinator: router,
             // If user already has saved country in the repository then the bottom sheet will not show
             // And we can show keyboard safely
             shouldActivateKeyboard: onrampRepository.savedCountry != nil
         )
 
-        let interactor = CommonSendBaseInteractor(input: onrampModel, output: onrampModel)
-        let dataBuilder = builder.makeOnrampBaseDataBuilder(input: onrampModel, onrampRepository: onrampRepository)
+        onramp.step.setup(router: stepsManager)
 
+        let dataBuilder = builder.makeOnrampBaseDataBuilder(input: onrampModel, onrampRepository: onrampRepository)
+        let interactor = CommonSendBaseInteractor(input: onrampModel, output: onrampModel)
         let viewModel = SendViewModel(
             interactor: interactor,
             stepsManager: stepsManager,
