@@ -88,7 +88,7 @@ jobs:
   build:
     name: Tangem Alpha
     needs: prepare
-    uses: tangem/actions/.github/workflows/build.yml@feature/IOS-8112_ci_cd_alpha_builds_workflow
+    uses: tangem/actions/.github/workflows/build.yml@feature/IOS-8113_ci_cd_beta_builds_workflow
     with:
       stage: '${{ needs.prepare.outputs.stage }}'
       version: '${{ needs.prepare.outputs.version }}'
@@ -104,7 +104,7 @@ jobs:
     needs:
       - prepare
       - build
-    uses: tangem/actions/.github/workflows/deploy-firebase.yml@feature/IOS-8112_ci_cd_alpha_builds_workflow
+    uses: tangem/actions/.github/workflows/deploy-firebase.yml@feature/IOS-8113_ci_cd_beta_builds_workflow
     with:
       stage: '${{ needs.prepare.outputs.stage }}'
       version: '${{ needs.prepare.outputs.version }}'
@@ -122,7 +122,7 @@ jobs:
       - prepare
       - build
       - deploy
-    uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8112_ci_cd_alpha_builds_workflow
+    uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8113_ci_cd_beta_builds_workflow
     with:
       channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
       status: success
@@ -141,7 +141,7 @@ jobs:
       - prepare
       - build
       - deploy
-    uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8112_ci_cd_alpha_builds_workflow
+    uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8113_ci_cd_beta_builds_workflow
     with:
       channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
       status: error
