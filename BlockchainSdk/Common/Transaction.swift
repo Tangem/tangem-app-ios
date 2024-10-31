@@ -17,9 +17,9 @@ public struct Transaction {
     public internal(set) var destinationAddress: String
     public internal(set) var changeAddress: String
     public internal(set) var contractAddress: String?
-    public var params: TransactionParams? = nil
-    
-    public init(
+    public var params: TransactionParams?
+
+    init(
         amount: Amount,
         fee: Fee,
         sourceAddress: String,
@@ -36,15 +36,27 @@ public struct Transaction {
         self.contractAddress = contractAddress
         self.params = params
     }
+
+    func withAmount(_ amount: Amount) -> Transaction {
+        Transaction(
+            amount: amount,
+            fee: fee,
+            sourceAddress: sourceAddress,
+            destinationAddress: destinationAddress,
+            changeAddress: changeAddress,
+            contractAddress: contractAddress,
+            params: params
+        )
+    }
 }
 
 extension Transaction: Equatable {
     public static func == (lhs: Transaction, rhs: Transaction) -> Bool {
         lhs.amount == rhs.amount &&
-        lhs.fee == rhs.fee &&
-        lhs.sourceAddress == rhs.sourceAddress &&
-        lhs.destinationAddress == rhs.destinationAddress &&
-        lhs.changeAddress == rhs.changeAddress
+            lhs.fee == rhs.fee &&
+            lhs.sourceAddress == rhs.sourceAddress &&
+            lhs.destinationAddress == rhs.destinationAddress &&
+            lhs.changeAddress == rhs.changeAddress
     }
 }
 

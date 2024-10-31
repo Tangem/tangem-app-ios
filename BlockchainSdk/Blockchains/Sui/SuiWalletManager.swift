@@ -12,7 +12,7 @@ import Combine
 class SuiWalletManager: BaseManager, WalletManager {
     let networkService: SuiNetworkService
     let transactionBuilder: SuiTransactionBuilder
-    
+
     init(wallet: Wallet, networkService: SuiNetworkService, transactionBuilder: SuiTransactionBuilder) {
         self.networkService = networkService
         self.transactionBuilder = transactionBuilder
@@ -22,7 +22,7 @@ class SuiWalletManager: BaseManager, WalletManager {
     override func update(completion: @escaping (Result<Void, any Error>) -> Void) {
         cancellable = networkService.getBalance(address: wallet.address, coinType: .sui, cursor: nil)
             .sink(receiveCompletion: { [weak self] completionSubscriptions in
-                if case let .failure(error) = completionSubscriptions {
+                if case .failure(let error) = completionSubscriptions {
                     self?.wallet.clearAmounts()
                     completion(.failure(error))
                 }
@@ -37,24 +37,24 @@ class SuiWalletManager: BaseManager, WalletManager {
                 }
             })
     }
-    
+
     func updateWallet(coins: [SuiGetCoins.Coin]) {
-        let objects = coins.compactMap({
+        let objects = coins.compactMap {
             SuiCoinObject.from($0)
-        })
-        
+        }
+
         let totalBalance = objects.reduce(into: Decimal(0)) { partialResult, coin in
             partialResult += coin.balance
         }
-        
+
         let coinValue = totalBalance / wallet.blockchain.decimalValue
-        
-        if coinValue != wallet.amounts[.coin]?.value  {
+
+        if coinValue != wallet.amounts[.coin]?.value {
             wallet.clearPendingTransaction()
         }
-        
+
         wallet.add(coinValue: coinValue)
-        self.transactionBuilder.update(coins: objects)
+        transactionBuilder.update(coins: objects)
     }
 }
 
@@ -66,39 +66,38 @@ extension SuiWalletManager: BlockchainDataProvider {
 
 extension SuiWalletManager: TransactionFeeProvider {
     var allowsFeeSelection: Bool { false }
-    
+
     func getFee(amount: Amount, destination: String) -> AnyPublisher<[Fee], any Error> {
         return networkService.getReferenceGasPrice()
             .withWeakCaptureOf(self)
-            .flatMap({ manager, referencedGasPrice -> AnyPublisher<SuiInspectTransaction, any Error> in
+            .flatMap { manager, referencedGasPrice -> AnyPublisher<SuiInspectTransaction, any Error> in
                 guard let decimalGasPrice = Decimal(stringValue: referencedGasPrice) else {
                     return .anyFail(error: WalletError.failedToParseNetworkResponse())
                 }
-                
+
                 return manager.estimateFee(amount: amount, destination: destination, referenceGasPrice: decimalGasPrice)
-            })
+            }
             .withWeakCaptureOf(self)
-            .tryMap({ manager, inspectTransaction in
+            .tryMap { manager, inspectTransaction in
                 guard inspectTransaction.effects.isSuccess() else {
                     throw WalletError.failedToGetFee
                 }
-                
+
                 guard let usedGasPrice = Decimal(stringValue: inspectTransaction.input.gasData.price),
                       let computationCost = Decimal(stringValue: inspectTransaction.effects.gasUsed.computationCost),
                       let storageCost = Decimal(stringValue: inspectTransaction.effects.gasUsed.storageCost) else {
                     throw WalletError.failedToParseNetworkResponse()
                 }
-                
+
                 let budget = computationCost + storageCost
                 let feeAmount = Amount(with: manager.wallet.blockchain, value: budget / manager.wallet.blockchain.decimalValue)
-                
+
                 let params = SuiFeeParameters(gasPrice: usedGasPrice, gasBudget: budget)
                 return [Fee(feeAmount, parameters: params)]
-                
-            })
+            }
             .eraseToAnyPublisher()
     }
-    
+
     private func estimateFee(amount: Amount, destination: String, referenceGasPrice: Decimal) -> AnyPublisher<SuiInspectTransaction, any Error> {
         return Result {
             try transactionBuilder.buildForInspect(amount: amount, destination: destination, referenceGasPrice: referenceGasPrice)
@@ -138,9 +137,9 @@ extension SuiWalletManager: TransactionSender {
         .tryMap { manager, tx in
             let mapper = PendingTransactionRecordMapper()
             let record = mapper.mapToPendingTransactionRecord(transaction: transaction, hash: tx.digest)
-            
+
             manager.wallet.addPendingTransaction(record)
-            
+
             return TransactionSendResult(hash: tx.digest)
         }
         .eraseSendError()

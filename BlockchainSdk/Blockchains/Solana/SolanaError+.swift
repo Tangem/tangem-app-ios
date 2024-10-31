@@ -6,9 +6,10 @@
 //  Copyright © 2022 Tangem AG. All rights reserved.
 //
 
-import Solana_Swift
+import Foundation
+import SolanaSwift
 
-extension SolanaError: LocalizedError {
+extension SolanaError: @retroactive LocalizedError {
     public var errorDescription: String? {
         // TODO: add localization
         switch self {

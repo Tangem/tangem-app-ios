@@ -14,21 +14,21 @@ import TangemSdk
 class CosmosWalletManager: BaseManager, WalletManager {
     var currentHost: String { networkService.host }
     var allowsFeeSelection: Bool { cosmosChain.allowsFeeSelection }
-    
+
     var networkService: CosmosNetworkService!
     var txBuilder: CosmosTransactionBuilder!
-    
+
     private let cosmosChain: CosmosChain
-    
+
     init(cosmosChain: CosmosChain, wallet: Wallet) {
         self.cosmosChain = cosmosChain
-        
+
         super.init(wallet: wallet)
     }
-    
+
     override func update(completion: @escaping (Result<Void, Error>) -> Void) {
         let transactionHashes = wallet.pendingTransactions.map { $0.hash }
-        
+
         cancellable = networkService
             .accountInfo(for: wallet.address, tokens: cardTokens, transactionHashes: transactionHashes)
             .sink { [weak self] result in
@@ -77,28 +77,28 @@ class CosmosWalletManager: BaseManager, WalletManager {
         .eraseSendError()
         .eraseToAnyPublisher()
     }
-    
+
     func getFee(amount: Amount, destination: String) -> AnyPublisher<[Fee], Error> {
         return estimateGas(amount: amount, destination: destination)
             .tryMap { [weak self] gas in
                 guard let self = self else { throw WalletError.empty }
-                
-                let blockchain = self.cosmosChain.blockchain
-                let gasPrices = self.cosmosChain.gasPrices(for: amount.type)
-                
+
+                let blockchain = cosmosChain.blockchain
+                let gasPrices = cosmosChain.gasPrices(for: amount.type)
+
                 return try Array(repeating: gas, count: gasPrices.count)
                     .enumerated()
                     .map { index, estimatedGas in
                         let gasMultiplier = self.cosmosChain.gasMultiplier
                         let feeMultiplier = self.cosmosChain.feeMultiplier
-                        
+
                         let gas = estimatedGas * gasMultiplier
-                        
+
                         var feeValueInSmallestDenomination = UInt64(Double(gas) * gasPrices[index] * feeMultiplier)
                         if let tax = self.tax(for: amount) {
                             feeValueInSmallestDenomination += tax
                         }
-                        
+
                         let feeDecimalValue: Decimal
                         let feeAmountType: Amount.AmountType
                         switch blockchain.feePaidCurrency {
@@ -114,27 +114,27 @@ class CosmosWalletManager: BaseManager, WalletManager {
                         case .feeResource:
                             throw BlockchainSdkError.notImplemented
                         }
-                        
+
                         var feeValue = (Decimal(feeValueInSmallestDenomination) / feeDecimalValue)
                         if let extraFee = self.cosmosChain.extraFee(for: amount.value) {
                             feeValue += extraFee
                         }
-                        
+
                         feeValue = feeValue.rounded(blockchain: blockchain)
-                        
+
                         let parameters = CosmosFeeParameters(gas: gas)
                         return Fee(Amount(with: blockchain, type: feeAmountType, value: feeValue), parameters: parameters)
                     }
             }
             .eraseToAnyPublisher()
     }
-    
+
     private func estimateGas(amount: Amount, destination: String) -> AnyPublisher<UInt64, Error> {
         return Just(())
             .setFailureType(to: Error.self)
-            .tryMap { [weak self] Void -> Data in
+            .tryMap { [weak self] () -> Data in
                 guard let self else { throw WalletError.empty }
-                
+
                 let dummyFee = Fee(
                     Amount(with: amount, value: 0),
                     parameters: CosmosFeeParameters(gas: 0)
@@ -143,12 +143,12 @@ class CosmosWalletManager: BaseManager, WalletManager {
                 let transaction = Transaction(
                     amount: amount,
                     fee: dummyFee,
-                    sourceAddress: self.wallet.address,
+                    sourceAddress: wallet.address,
                     destinationAddress: destination,
-                    changeAddress: self.wallet.address
+                    changeAddress: wallet.address
                 )
 
-                return try self.txBuilder.buildForSend(
+                return try txBuilder.buildForSend(
                     transaction: transaction,
                     signature: Data(repeating: 1, count: 65) // Dummy signature
                 )
@@ -160,43 +160,43 @@ class CosmosWalletManager: BaseManager, WalletManager {
                 guard let self else {
                     return .anyFail(error: WalletError.empty)
                 }
-                
-                return self.networkService.estimateGas(for: transaction)
+
+                return networkService.estimateGas(for: transaction)
             }
             .eraseToAnyPublisher()
     }
-    
+
     private func updateWallet(accountInfo: CosmosAccountInfo) {
         wallet.add(amount: accountInfo.amount)
         if let accountNumber = accountInfo.accountNumber {
             txBuilder.setAccountNumber(accountNumber)
         }
         txBuilder.setSequenceNumber(accountInfo.sequenceNumber)
-        
+
         for (token, balance) in accountInfo.tokenBalances {
             wallet.add(tokenValue: balance, for: token)
         }
-        
+
         wallet.removePendingTransaction { hash in
             accountInfo.confirmedTransactionHashes.contains(hash)
         }
     }
-    
+
     private func tax(for amount: Amount) -> UInt64? {
         guard case .token(let token) = amount.type,
               let taxPercent = cosmosChain.taxPercentByContractAddress[token.contractAddress]
         else {
             return nil
         }
-        
+
         let amountInSmallestDenomination = amount.value * token.decimalValue
         let taxAmount = amountInSmallestDenomination * taxPercent / 100
-        
+
         return (taxAmount as NSDecimalNumber).uint64Value
     }
 }
 
-extension CosmosWalletManager: ThenProcessable { }
+extension CosmosWalletManager: ThenProcessable {}
 
 // MARK: - StakeKitTransactionSender, StakeKitTransactionSenderProvider
 

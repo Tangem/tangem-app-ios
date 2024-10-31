@@ -17,11 +17,12 @@ class BitcoinCashNetworkService: BitcoinNetworkService {
             .map { [$0] }
             .eraseToAnyPublisher()
     }
+
     override func getInfo(address: String) -> AnyPublisher<BitcoinResponse, Error> {
         super.getInfo(address: address.removeBchPrefix())
     }
-	
+
     override func getSignatureCount(address: String) -> AnyPublisher<Int, Error> {
-		super.getSignatureCount(address: address.removeBchPrefix()) //TODO: check it!
-	}
+        super.getSignatureCount(address: address.removeBchPrefix()) // TODO: check it!
+    }
 }

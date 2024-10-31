@@ -14,18 +14,18 @@ class KoinosWalletManager: BaseManager, WalletManager, FeeResourceRestrictable {
     var currentHost: String {
         networkService.host
     }
-    
+
     var allowsFeeSelection: Bool {
         false
     }
-    
+
     var feeResourceType: FeeResourceType {
         .mana
     }
-    
+
     private let networkService: KoinosNetworkService
     private let transactionBuilder: KoinosTransactionBuilder
-    
+
     init(
         wallet: Wallet,
         networkService: KoinosNetworkService,
@@ -35,7 +35,7 @@ class KoinosWalletManager: BaseManager, WalletManager, FeeResourceRestrictable {
         self.transactionBuilder = transactionBuilder
         super.init(wallet: wallet)
     }
-    
+
     override func update(completion: @escaping (Result<Void, any Error>) -> Void) {
         let existingTransactionIDs = Just(wallet.pendingTransactions)
             .flatMap { [networkService] transactions -> AnyPublisher<Set<String>, Error> in
@@ -44,12 +44,12 @@ class KoinosWalletManager: BaseManager, WalletManager, FeeResourceRestrictable {
                         .setFailureType(to: Error.self)
                         .eraseToAnyPublisher()
                 }
-                
+
                 return networkService
                     .getExistingTransactionIDs(transactionIDs: transactions.map(\.hash))
                     .eraseToAnyPublisher()
             }
-        
+
         cancellable = Publishers.CombineLatest(
             networkService.getInfo(address: wallet.address),
             existingTransactionIDs
@@ -64,11 +64,11 @@ class KoinosWalletManager: BaseManager, WalletManager, FeeResourceRestrictable {
             }
         } receiveValue: { [weak self] accountInfo, existingTransactionIDs in
             guard let self else { return }
-            
+
             let atomicUnitMultiplier = wallet.blockchain.decimalValue
             let koinBalance = Decimal(accountInfo.koinBalance) / atomicUnitMultiplier
             let mana = Decimal(accountInfo.mana) / atomicUnitMultiplier
-            
+
             wallet.add(
                 amount: Amount(
                     with: wallet.blockchain,
@@ -78,22 +78,22 @@ class KoinosWalletManager: BaseManager, WalletManager, FeeResourceRestrictable {
             )
             wallet.add(
                 amount: Amount(
-                    with: self.wallet.blockchain,
+                    with: wallet.blockchain,
                     type: .feeResource(.mana),
                     value: mana
                 )
             )
-            
+
             wallet.removePendingTransaction(where: existingTransactionIDs.contains)
         }
     }
-    
+
     func send(_ transaction: Transaction, signer: any TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError> {
         let manaLimit = transaction.fee.amount.value
         let transactionDataWithMana = transaction.then {
             $0.params = KoinosTransactionParams(manaLimit: manaLimit)
         }
-        
+
         return networkService.getCurrentNonce(address: wallet.address)
             .tryMap { [transactionBuilder] nonce in
                 try transactionBuilder.buildForSign(
@@ -125,8 +125,7 @@ class KoinosWalletManager: BaseManager, WalletManager, FeeResourceRestrictable {
             .mapError { SendTxError(error: $0) }
             .eraseToAnyPublisher()
     }
-    
-    
+
     func getFee(amount: Amount, destination: String) -> AnyPublisher<[Fee], any Error> {
         networkService.getRCLimit()
             .tryMap { [blockchain = wallet.blockchain] rcLimit in

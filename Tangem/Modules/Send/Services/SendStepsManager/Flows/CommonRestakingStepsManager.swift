@@ -12,7 +12,7 @@ class CommonRestakingStepsManager {
     private let validatorsStep: StakingValidatorsStep
     private let summaryStep: SendSummaryStep
     private let finishStep: SendFinishStep
-    private let action: RestakingModel.Action
+    private let actionType: SendFlowActionType
 
     private var stack: [SendStep]
     private var bag: Set<AnyCancellable> = []
@@ -22,14 +22,14 @@ class CommonRestakingStepsManager {
         validatorsStep: StakingValidatorsStep,
         summaryStep: SendSummaryStep,
         finishStep: SendFinishStep,
-        action: UnstakingModel.Action
+        actionType: SendFlowActionType
     ) {
         self.validatorsStep = validatorsStep
         self.summaryStep = summaryStep
         self.finishStep = finishStep
-        self.action = action
+        self.actionType = actionType
 
-        stack = [summaryStep]
+        stack = [actionType == .restake ? validatorsStep : summaryStep]
     }
 
     private func currentStep() -> SendStep {
@@ -50,7 +50,7 @@ class CommonRestakingStepsManager {
             output?.update(state: .init(step: step, action: .close))
         case .validators:
             output?.update(state: .init(step: step, action: .continue))
-        case .amount, .destination, .fee:
+        case .amount, .destination, .fee, .onramp:
             assertionFailure("There is no next step")
         }
     }
@@ -74,11 +74,15 @@ extension CommonRestakingStepsManager: SendStepsManager {
     var initialKeyboardState: Bool { false }
 
     var initialFlowActionType: SendFlowActionType {
-        .voteLocked
+        actionType
     }
 
     var initialState: SendStepsManagerViewState {
-        .init(step: summaryStep, action: .action, backButtonVisible: false)
+        if actionType == .restake {
+            .init(step: validatorsStep, action: .next, backButtonVisible: false)
+        } else {
+            .init(step: summaryStep, action: .action, backButtonVisible: false)
+        }
     }
 
     var shouldShowDismissAlert: Bool {
@@ -94,7 +98,7 @@ extension CommonRestakingStepsManager: SendStepsManager {
     }
 
     func performNext() {
-        assertionFailure("There's not next action in this flow")
+        next(step: summaryStep)
     }
 
     func performFinish() {

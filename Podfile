@@ -23,32 +23,9 @@ project 'TangemApp.xcodeproj',
 use_frameworks!
 inhibit_all_warnings!
 
-def tangem_sdk_pod
-  pod 'TangemSdk', :git => 'https://github.com/Tangem/tangem-sdk-ios.git', :tag => 'develop-313'
-  #pod 'TangemSdk', :path => '../tangem-sdk-ios'
-end
-
-def blockchain_sdk_pods
-  pod 'Solana.Swift', :git => 'https://github.com/tangem/Solana.Swift', :tag => '1.2.0-tangem11'
-  #pod 'Solana.Swift', :path => '../Solana.Swift'
-
-  pod 'BinanceChain', :git => 'https://github.com/tangem/swiftbinancechain.git', :tag => '0.0.11'
-  #pod 'BinanceChain', :path => '../SwiftBinanceChain'
-  
-  pod 'BitcoinCore.swift', :git => 'https://github.com/tangem/bitcoincore.git', :tag => '0.0.20'
-  #pod 'BitcoinCore.swift', :path => '../bitcoincore'
-
-  pod 'SwiftyJSON', :git => 'https://github.com/tangem/SwiftyJSON.git', :tag => '5.0.1-tangem1'
-end
-
 target 'Tangem' do
-  tangem_sdk_pod
-  
   # Pods for Tangem
-  pod 'Moya'
   pod 'Kingfisher', '~> 7.11.0'
-
-  # Helpers
   pod 'BlockiesSwift', '~> 0.1.2'
   pod 'CombineExt', '~> 1.8.0'
 
@@ -82,60 +59,6 @@ target 'Tangem' do
   end
 end
 
-target 'TangemExpress' do
-  tangem_sdk_pod
-  pod 'Moya'
-
-  target 'TangemExpressTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-end
-
-target 'TangemVisa' do
-  tangem_sdk_pod
-  pod 'Moya'
-
-  target 'TangemVisaTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-end
-
-target 'TangemStaking' do
-  tangem_sdk_pod
-  pod 'Moya'
-
-  target 'TangemStakingTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-end
-
-target 'TangemFoundation' do
-  pod 'Moya'
-
-  target 'TangemFoundationTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-end
-
-target 'BlockchainSdk' do
-  blockchain_sdk_pods
-  tangem_sdk_pod
-  pod 'Moya'
-
-  target 'BlockchainSdkTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-end
-
-target 'BlockchainSdkExample' do
-  tangem_sdk_pod
-end
-
 pre_install do |installer|
   # workaround for https://github.com/CocoaPods/CocoaPods/issues/3289
   Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
@@ -166,41 +89,10 @@ post_install do |installer|
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
     end
   end
-
-  # ============ SPM <-> CocoaPods interop ============
-
-  # `SwiftProtobuf` SPM package for `BinanceChain` pod
-  add_spm_package_to_target(
-   installer.pods_project,
-   "BinanceChain",
-   "https://github.com/tangem/swift-protobuf-binaries.git",
-   "SwiftProtobuf",
-   { :kind => "exactVersion", :version => "1.25.2-tangem1" }
-  )
-
-  # `secp256k1.swift` SPM package for `Solana.Swift` pod
-  add_spm_package_to_target(
-   installer.pods_project,
-   "Solana.Swift",
-   "https://github.com/GigaBitcoin/secp256k1.swift.git",
-   "secp256k1",
-   { :kind => "upToNextMajorVersion", :minimumVersion => "0.12.0" }
-  )
-  
-  # `TweetNacl` SPM package for `Solana.Swift` pod
-  add_spm_package_to_target(
-   installer.pods_project,
-   "Solana.Swift",
-   "https://github.com/bitmark-inc/tweetnacl-swiftwrap.git",
-   "TweetNacl",
-   { :kind => "upToNextMajorVersion", :version => "1.1.0" }
-  )
-
 end
 
+# Warning: Deprecated due to the migration to SPM
 # Adds given SPM package as a dependency to a specific target in the `Pods` project.
-# TODO: Extract this logic to a dedicated CocoaPods plugin (IOS-5855)
-#
 # Valid values for the `requirement` parameter are:
 # - `{ :kind => "upToNextMajorVersion", :minimumVersion => "1.0.0" }`
 # - `{ :kind => "upToNextMinorVersion", :minimumVersion => "1.0.0" }`

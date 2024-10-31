@@ -22,11 +22,15 @@ struct MarketsTokenDetailsView: View {
 
     /// `UIColor` is used since `Color(uiColor:)` constructor loses Xcode color asset dark/light appearance setting.
     @available(iOS, deprecated: 18.0, message: "Replace 'UIColor' with 'Color' since 'Color.mix(with:by:in:)' is available")
-    private var defaultBackgroundColor: UIColor { isDarkColorScheme ? UIColor.backgroundPrimary : UIColor.backgroundSecondary }
+    private var defaultBackgroundColor: UIColor {
+        isDarkColorScheme ? UIColor.backgroundPrimary.forcedDark : UIColor.backgroundSecondary.forcedLight
+    }
 
     /// `UIColor` is used since `Color(uiColor:)` constructor loses Xcode color asset dark/light appearance setting.
     @available(iOS, deprecated: 18.0, message: "Replace 'UIColor' with 'Color' since 'Color.mix(with:by:in:)' is available")
-    private var overlayContentHidingBackgroundColor: UIColor { isDarkColorScheme ? defaultBackgroundColor : UIColor.backgroundPlain }
+    private var overlayContentHidingBackgroundColor: UIColor {
+        isDarkColorScheme ? defaultBackgroundColor.forcedDark : UIColor.backgroundPlain.forcedLight
+    }
 
     private let scrollViewFrameCoordinateSpaceName = UUID()
 
@@ -43,6 +47,7 @@ struct MarketsTokenDetailsView: View {
             }
             .background {
                 backgroundColor
+                    .ignoresSafeArea(edges: .vertical)
             }
     }
 

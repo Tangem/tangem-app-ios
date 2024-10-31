@@ -8,7 +8,6 @@
 
 import Foundation
 import XCTest
-
 @testable import BlockchainSdk
 
 class CardanoTokenContractAddressServiceTests: XCTestCase {

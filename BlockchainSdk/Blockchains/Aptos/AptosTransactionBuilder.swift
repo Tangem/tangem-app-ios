@@ -15,16 +15,16 @@ final class AptosTransactionBuilder {
     private let walletAddress: String
     private let decimalValue: Decimal
     private let chainId: AptosChainId
-    
+
     private var coinType: CoinType { .aptos }
     private var sequenceNumber: Int64 = 0
-    
+
     var currentSequenceNumber: Int64 {
         sequenceNumber
     }
-    
+
     // MARK: - Init
-    
+
     init(
         publicKey: Data,
         decimalValue: Decimal,
@@ -36,9 +36,9 @@ final class AptosTransactionBuilder {
         self.walletAddress = walletAddress
         self.chainId = chainId
     }
-    
+
     // MARK: - Implementation
-    
+
     func update(sequenceNumber: Int64) {
         self.sequenceNumber = sequenceNumber
     }
@@ -76,21 +76,21 @@ final class AptosTransactionBuilder {
             signatures: signature.asDataVector(),
             publicKeys: publicKey.asDataVector()
         )
-        
+
         let signingOutput = try AptosSigningOutput(serializedData: compiledTransaction)
 
         guard signingOutput.error == .ok, signingOutput.hasAuthenticator else {
             Log.debug("AptosSigningOutput has a error")
             throw WalletError.failedToBuildTx
         }
-        
+
         guard let convertJsonData = signingOutput.json.data(using: .utf8) else {
             throw WalletError.failedToBuildTx
         }
-        
+
         return convertJsonData
     }
-    
+
     func buildToCalculateFee(
         amount: Amount,
         destination: String,
@@ -110,7 +110,7 @@ final class AptosTransactionBuilder {
             hash: Constants.pseudoTransactionHash
         )
     }
-    
+
     // MARK: - Private Implementation
 
     /*
@@ -119,20 +119,20 @@ final class AptosTransactionBuilder {
      */
     private func buildInput(transaction: Transaction, expirationTimestamp: UInt64) throws -> AptosSigningInput {
         try publicKey.validateAsEdKey()
-        
+
         let sequenceNumber = sequenceNumber
         let chainID = chainId.rawValue
         let amount = (transaction.amount.value * decimalValue).roundedDecimalNumber.uint64Value
         let gasUnitPrice = (transaction.fee.parameters as? AptosFeeParams)?.gasUnitPrice ?? 0
         let maxGasAmount = (transaction.fee.parameters as? AptosFeeParams)?.maxGasAmount ?? 0
-        
+
         let transfer = AptosTransferMessage.with {
             $0.to = transaction.destinationAddress
             $0.amount = amount
         }
 
         let input = AptosSigningInput.with { input in
-            input.chainID =  chainID
+            input.chainID = chainID
             input.sender = transaction.sourceAddress
             input.sequenceNumber = sequenceNumber
             input.expirationTimestampSecs = expirationTimestamp
@@ -142,7 +142,7 @@ final class AptosTransactionBuilder {
             input.maxGasAmount = maxGasAmount
             input.expirationTimestampSecs = expirationTimestamp
         }
-        
+
         return input
     }
 }
@@ -154,6 +154,6 @@ extension AptosTransactionBuilder {
     enum Constants {
         static let pseudoTransactionMaxGasAmount: UInt64 = 100_000
         static let pseudoTransactionHash = "0x000000000000000000000000000000000000000000000000000000000000000000000" +
-                    "00000000000000000000000000000000000000000000000000000000000"
+            "00000000000000000000000000000000000000000000000000000000000"
     }
 }

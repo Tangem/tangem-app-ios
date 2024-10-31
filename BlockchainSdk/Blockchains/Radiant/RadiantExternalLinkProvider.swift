@@ -12,18 +12,18 @@ struct RadiantExternalLinkProvider {}
 
 extension RadiantExternalLinkProvider: ExternalLinkProvider {
     var testnetFaucetURL: URL? { nil }
-    
+
     private var baseExplorerHost: String {
         return "https://radiantexplorer.com"
     }
-    
+
     /*
      example: https://radiantexplorer.com/tx/43b45084fe21a2c53484ee9cdd860d1514daec28fd191652886f2006e0b110f2
      */
     func url(transaction hash: String) -> URL? {
         return URL(string: "\(baseExplorerHost)/tx/\(hash)")
     }
-    
+
     /*
      example: https://radiantexplorer.com/address/1vr9gJkNzTHv8DEQb4QBxAnQCxgzkFkbf
      */

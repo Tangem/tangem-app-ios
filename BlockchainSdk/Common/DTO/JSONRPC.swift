@@ -91,5 +91,3 @@ extension JSONRPC.Response: Decodable {
         case error
     }
 }
-
-

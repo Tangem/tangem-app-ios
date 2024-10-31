@@ -23,7 +23,7 @@ struct BitcoinWalletCoreAddressAdapter {
         guard Constants.supportedBitcoinCoinType.contains(coin) else {
             fatalError("This coin \(coin) does not supported bitcoin type for adapter address")
         }
-        
+
         self.coin = coin
         self.publicKeyType = publicKeyType
     }
@@ -47,14 +47,14 @@ extension BitcoinWalletCoreAddressAdapter {
 extension BitcoinWalletCoreAddressAdapter {
     func makeAddress(for publicKey: Wallet.PublicKey, by prefix: BitcoinPrefix) throws -> BitcoinAddress {
         let coinPrefix = prefix.value(for: coin)
-        
+
         guard
             let walletCorePublicKey = PublicKey(tangemPublicKey: publicKey.blockchainKey, publicKeyType: publicKeyType),
             let address = BitcoinAddress(publicKey: walletCorePublicKey, prefix: coinPrefix)
         else {
             throw Error.makeAddressFailed
         }
-        
+
         return address
     }
 }
@@ -62,10 +62,10 @@ extension BitcoinWalletCoreAddressAdapter {
 // MARK: - AddressValidator
 
 extension BitcoinWalletCoreAddressAdapter: AddressValidator {
-    public func validate(_ address: String) -> Bool {
+    func validate(_ address: String) -> Bool {
         BitcoinAddress.isValidString(string: address)
     }
-    
+
     /// Use specify method use a method specifically for the prefix
     /// - Parameters:
     ///   - prefix: Bitcon TW prefix
@@ -73,7 +73,7 @@ extension BitcoinWalletCoreAddressAdapter: AddressValidator {
         guard let address = BitcoinAddress(string: address), address.prefix == prefix.value(for: coin) else {
             return false
         }
-        
+
         return true
     }
 }
@@ -82,7 +82,7 @@ extension BitcoinWalletCoreAddressAdapter {
     enum BitcoinPrefix {
         case p2pkh
         case p2sh
-        
+
         func value(for bitcoinCoin: CoinType) -> UInt8 {
             switch self {
             case .p2pkh:
@@ -92,11 +92,11 @@ extension BitcoinWalletCoreAddressAdapter {
             }
         }
     }
-    
+
     enum Error: Swift.Error {
         case makeAddressFailed
     }
-    
+
     enum Constants {
         static var supportedBitcoinCoinType: [CoinType] {
             [.bitcoin, .bitcoinCash, .dash, .litecoin, .dogecoin]

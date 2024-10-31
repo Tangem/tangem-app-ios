@@ -209,7 +209,7 @@ extension Wallet2Config: UserWalletConfig {
         case "AF35":
             return cardsCount == 2 ? Assets.Cards.voltInuDouble : Assets.Cards.voltInuTriple
         // Kaspa 2
-        case "AF25":
+        case "AF25", "AF61", "AF72":
             return cardsCount == 2 ? Assets.Cards.kaspa2Double : Assets.Cards.kaspa2Triple
         // Kaspa reseller
         case "AF31":
@@ -220,6 +220,21 @@ extension Wallet2Config: UserWalletConfig {
         // Peach, Air, Glass
         case "AF43", "AF44", "AF45":
             return Assets.Cards.peachAirGlass
+        // Kaspa Mint
+        case "AF73":
+            return cardsCount == 2 ? Assets.Cards.kaspaMint2 : Assets.Cards.kaspaMint3
+        // BTC Gold
+        case "AF71":
+            return cardsCount == 2 ? Assets.Cards.btcNew2 : Assets.Cards.btcNew3
+        // Stealth wallet
+        case "AF60", "AF74", "AF88":
+            return cardsCount == 2 ? Assets.Cards.stealthWalletSET2 : Assets.Cards.stealthWalletSET3
+        // Crypto Org
+        case "AF57":
+            return cardsCount == 2 ? Assets.Cards.cryptorgSet2 : Assets.Cards.cryptorgSet3
+        // CryptoCasey
+        case "AF21", "AF22", "AF23":
+            return cardsCount == 2 ? Assets.Cards.cryptoCaseySet2 : Assets.Cards.cryptoCaseySet3
         // Tangem Wallet 2.0
         default:
 

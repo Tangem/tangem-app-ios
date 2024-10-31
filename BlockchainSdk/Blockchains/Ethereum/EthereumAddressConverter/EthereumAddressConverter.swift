@@ -29,7 +29,7 @@ extension EthereumAddressConverter {
         return tx
     }
 
-    func convertToETHAddressesPublisher(in transaction: Transaction) -> AnyPublisher<Transaction,Error> {
+    func convertToETHAddressesPublisher(in transaction: Transaction) -> AnyPublisher<Transaction, Error> {
         return Result { try convertToETHAddresses(in: transaction) }
             .publisher
             .eraseToAnyPublisher()

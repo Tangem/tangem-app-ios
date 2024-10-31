@@ -7,10 +7,9 @@
 //
 
 import Foundation
-import TangemStaking
 import Combine
+import TangemStaking
 import BlockchainSdk
-import TangemFoundation
 
 protocol StakingModelStateProvider {
     var state: AnyPublisher<StakingModel.State, Never> { get }
@@ -95,6 +94,8 @@ private extension StakingModel {
                 model.update(state: .loading)
                 let newState = try await model.state(amount: amount, validator: validator, approvePolicy: model._approvePolicy.value)
                 model.update(state: newState)
+            } catch _ as CancellationError {
+                // Do nothing
             } catch {
                 model.update(state: .networkError(error))
             }
@@ -491,9 +492,9 @@ extension StakingModel: ApproveViewModelInput {
     }
 }
 
-// MARK: - SendBaseDataBuilderInput
+// MARK: - StakingBaseDataBuilderInput
 
-extension StakingModel: SendBaseDataBuilderInput {
+extension StakingModel: StakingBaseDataBuilderInput {
     var bsdkAmount: BSDKAmount? { _amount.value?.crypto.map { makeAmount(value: $0) } }
 
     var bsdkFee: BlockchainSdk.Fee? { selectedFee.value.value }
@@ -504,7 +505,7 @@ extension StakingModel: SendBaseDataBuilderInput {
 
     var approveViewModelInput: (any ApproveViewModelInput)? { self }
 
-    var stakingAction: StakingAction.ActionType? { .stake }
+    var stakingActionType: StakingAction.ActionType? { .stake }
 
     var validator: ValidatorInfo? { _selectedValidator.value.value }
 }

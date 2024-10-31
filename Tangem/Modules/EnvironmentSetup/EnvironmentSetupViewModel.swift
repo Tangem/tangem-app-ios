@@ -31,7 +31,7 @@ final class EnvironmentSetupViewModel: ObservableObject {
 
     // MARK: - Dependencies
 
-    private let featureStorage = FeatureStorage()
+    private let featureStorage = FeatureStorage.instance
     private weak var coordinator: EnvironmentSetupRoutable?
     private var bag: Set<AnyCancellable> = []
 

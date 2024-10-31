@@ -11,19 +11,19 @@ import Combine
 
 class AptosNetworkService: MultiNetworkProvider {
     // MARK: - Protperties
-    
+
     let providers: [AptosNetworkProvider]
-    
+
     var currentProviderIndex: Int = 0
-    
+
     // MARK: - Init
-    
+
     init(providers: [AptosNetworkProvider]) {
         self.providers = providers
     }
-    
+
     // MARK: - Implementation
-    
+
     func getAccount(address: String) -> AnyPublisher<AptosAccountInfo, Error> {
         providerPublisher { provider in
             provider
@@ -36,20 +36,20 @@ class AptosNetworkService: MultiNetworkProvider {
                     else {
                         throw WalletError.failedToParseNetworkResponse()
                     }
-                    
+
                     guard
                         let balanceValue = Decimal(coinJson.data.coin?.value),
                         let sequenceNumber = Decimal(accountJson.data.sequenceNumber)
                     else {
                         throw WalletError.failedToParseNetworkResponse()
                     }
-                    
+
                     return AptosAccountInfo(sequenceNumber: sequenceNumber.int64Value, balance: balanceValue)
                 }
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func getGasUnitPrice() -> AnyPublisher<UInt64, Error> {
         providerPublisher { provider in
             provider
@@ -66,9 +66,9 @@ class AptosNetworkService: MultiNetworkProvider {
             guard let self = self else {
                 return .anyFail(error: WalletError.failedToGetFee)
             }
-            
+
             let transactionBody = convertTransaction(info: info)
-            
+
             return provider
                 .calculateUsedGasPriceUnit(transactionBody: transactionBody)
                 .withWeakCaptureOf(self)
@@ -76,10 +76,10 @@ class AptosNetworkService: MultiNetworkProvider {
                     guard let gasUsed = Decimal(response.first?.gasUsed) else {
                         throw WalletError.failedToGetFee
                     }
-                    
+
                     let maxGasAmount = gasUsed * Constants.successTransactionSafeFactor
                     let estimatedFeeDecimal = (Decimal(info.gasUnitPrice) * gasUsed * Constants.successTransactionSafeFactor)
-                    
+
                     return AptosFeeInfo(
                         value: estimatedFeeDecimal,
                         params: AptosFeeParams(
@@ -91,7 +91,7 @@ class AptosNetworkService: MultiNetworkProvider {
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func submitTransaction(data: Data) -> AnyPublisher<String, Error> {
         providerPublisher { provider in
             return provider
@@ -100,15 +100,15 @@ class AptosNetworkService: MultiNetworkProvider {
                     guard let transactionHash = response.hash else {
                         throw WalletError.failedToParseNetworkResponse()
                     }
-                    
+
                     return transactionHash
                 }
                 .eraseToAnyPublisher()
         }
     }
-    
+
     // MARK: - Private Implementation
-    
+
     private func convertTransaction(info: AptosTransactionInfo) -> AptosRequest.TransactionBody {
         let transferPayload = AptosRequest.TransferPayload(
             type: Constants.transferPayloadType,
@@ -116,9 +116,9 @@ class AptosNetworkService: MultiNetworkProvider {
             typeArguments: [],
             arguments: [info.destinationAddress, String(info.amount)]
         )
-        
+
         var signature: AptosRequest.Signature?
-        
+
         if let hash = info.hash {
             signature = AptosRequest.Signature(
                 type: Constants.signatureType,
@@ -126,7 +126,7 @@ class AptosNetworkService: MultiNetworkProvider {
                 signature: hash
             )
         }
-        
+
         return .init(
             sequenceNumber: String(info.sequenceNumber),
             sender: info.sourceAddress,

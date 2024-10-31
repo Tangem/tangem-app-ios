@@ -13,7 +13,6 @@ struct MarketsTokenDetailsExchangesListView: View {
 
     @Environment(\.colorScheme) private var colorScheme
 
-    @State private var safeArea: EdgeInsets = .init()
     @State private var isListContentObscured = false
     @State private var headerHeight: CGFloat = .zero
 
@@ -38,7 +37,6 @@ struct MarketsTokenDetailsExchangesListView: View {
             .background(defaultBackgroundColor.ignoresSafeArea())
             .animation(.default, value: viewModel.exchangesList)
             .ignoresSafeArea(.container, edges: .top) // Without it, the content won't go into the safe area top zone on over-scroll
-            .readGeometry(\.safeAreaInsets, bindTo: $safeArea)
     }
 
     @ViewBuilder
@@ -56,7 +54,6 @@ struct MarketsTokenDetailsExchangesListView: View {
 
                 header
                     .opacity(viewModel.overlayContentHidingProgress)
-                    .padding(.top, safeArea.top)
             }
             .background {
                 MarketsNavigationBarBackgroundView(

@@ -13,9 +13,9 @@ struct KaspaUtils {
         case TransactionSigningHashECDSA
         case TransactionID
         case TransactionHash
-        
+
         var data: Data {
-            self.rawValue.data(using: .utf8)!
+            rawValue.data(using: .utf8)!
         }
     }
 }

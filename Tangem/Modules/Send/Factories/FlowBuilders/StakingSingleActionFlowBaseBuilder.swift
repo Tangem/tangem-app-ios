@@ -65,7 +65,7 @@ struct StakingSingleActionFlowBaseBuilder {
             stepsManager: stepsManager,
             userWalletModel: userWalletModel,
             alertBuilder: builder.makeStakingAlertBuilder(),
-            dataBuilder: builder.makeSendBaseDataBuilder(input: actionModel),
+            dataBuilder: builder.makeStakingBaseDataBuilder(input: actionModel),
             tokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem,
             coordinator: router

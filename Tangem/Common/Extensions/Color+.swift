@@ -148,3 +148,22 @@ extension UIColor {
         )
     }
 }
+
+extension UIColor {
+    var forcedLight: UIColor {
+        resolvedColor(with: .dummyLight)
+    }
+
+    var forcedDark: UIColor {
+        resolvedColor(with: .dummyDark)
+    }
+}
+
+// MARK: - Private implementation
+
+private extension UITraitCollection {
+    /// - Warning: Dummy, do not use as a full-fledged trait collection instance.
+    static let dummyLight = UITraitCollection(userInterfaceStyle: .light)
+    /// - Warning: Dummy, do not use as a full-fledged trait collection instance.
+    static let dummyDark = UITraitCollection(userInterfaceStyle: .dark)
+}

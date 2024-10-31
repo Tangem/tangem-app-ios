@@ -13,9 +13,8 @@ struct KaspaWalletAssembly: WalletManagerAssembly {
     func make(with input: WalletManagerAssemblyInput) throws -> WalletManager {
         KaspaWalletManager(wallet: input.wallet).then { walletManager in
             let blockchain = input.blockchain
-            
             walletManager.txBuilder = KaspaTransactionBuilder(walletPublicKey: input.wallet.publicKey, blockchain: blockchain)
-            
+
             let providers = APIResolver(blockchain: blockchain, config: input.blockchainSdkConfig)
                 .resolveProviders(apiInfos: input.apiInfo) { nodeInfo, _ in
                     KaspaNetworkProvider(
@@ -23,7 +22,7 @@ struct KaspaWalletAssembly: WalletManagerAssembly {
                         networkConfiguration: input.networkConfig
                     )
                 }
-            
+
             let providersKRC20 = APIResolver(blockchain: .kaspaKRC20(testnet: blockchain.isTestnet), config: input.blockchainSdkConfig)
                 .resolveProviders(apiInfos: input.apiInfo) { nodeInfo, _ in
                     KaspaNetworkProviderKRC20(
@@ -31,7 +30,7 @@ struct KaspaWalletAssembly: WalletManagerAssembly {
                         networkConfiguration: input.networkConfig
                     )
                 }
-            
+
             walletManager.networkService = KaspaNetworkService(providers: providers, blockchain: blockchain)
             walletManager.networkServiceKRC20 = KaspaNetworkServiceKRC20(providers: providersKRC20, blockchain: blockchain)
             walletManager.dataStorage = input.blockchainSdkDependencies.dataStorage

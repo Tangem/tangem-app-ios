@@ -12,6 +12,7 @@ import BitcoinCore
 import enum WalletCore.CoinType
 
 // MARK: - Base
+
 @available(iOS 13.0, *)
 // This enum should be indirect because of memory issues on iOS15
 public indirect enum Blockchain: Equatable, Hashable {
@@ -91,85 +92,84 @@ public indirect enum Blockchain: Equatable, Hashable {
     /// Polkadot parachain
     case energyWebX(curve: EllipticCurve)
     case core(testnet: Bool)
-    
+
     public var isTestnet: Bool {
         switch self {
         case .bitcoin(let testnet),
-                .ethereum(let testnet),
-                .bsc(let testnet),
-                .ethereumClassic(let testnet),
-                .binance(let testnet),
-                .polygon(let testnet),
-                .avalanche(let testnet),
-                .fantom(let testnet),
-                .tron(let testnet),
-                .arbitrum(let testnet),
-                .dash(let testnet),
-                .optimism(let testnet),
-                .ethereumPoW(let testnet),
-                .kava(let testnet),
-                .ravencoin(let testnet),
-                .cosmos(let testnet),
-                .telos(let testnet),
-                .chia(let testnet),
-                .decimal(let testnet),
-                .veChain(let testnet),
-                .xdc(let testnet),
-                .areon(let testnet),
-                .pulsechain(let testnet),
-                .aurora(let testnet),
-                .manta(let testnet),
-                .zkSync(let testnet),
-                .moonbeam(let testnet),
-                .polygonZkEVM(let testnet),
-                .moonriver(let testnet),
-                .mantle(let testnet),
-                .flare(let testnet),
-                .taraxa(let testnet),
-                .radiant(let testnet),
-                .base(let testnet),
-                .koinos(let testnet),
-                .cyber(let testnet),
-                .blast(let testnet),
-                .sei(let testnet),
-                .kaspa(let testnet),
-                .kaspaKRC20(let testnet),
-                .energyWebEVM(let testnet),
-                .core(let testnet):
+             .ethereum(let testnet),
+             .bsc(let testnet),
+             .ethereumClassic(let testnet),
+             .binance(let testnet),
+             .polygon(let testnet),
+             .avalanche(let testnet),
+             .fantom(let testnet),
+             .tron(let testnet),
+             .arbitrum(let testnet),
+             .dash(let testnet),
+             .optimism(let testnet),
+             .ethereumPoW(let testnet),
+             .kava(let testnet),
+             .ravencoin(let testnet),
+             .cosmos(let testnet),
+             .telos(let testnet),
+             .chia(let testnet),
+             .decimal(let testnet),
+             .veChain(let testnet),
+             .xdc(let testnet),
+             .areon(let testnet),
+             .pulsechain(let testnet),
+             .aurora(let testnet),
+             .manta(let testnet),
+             .zkSync(let testnet),
+             .moonbeam(let testnet),
+             .polygonZkEVM(let testnet),
+             .moonriver(let testnet),
+             .mantle(let testnet),
+             .flare(let testnet),
+             .taraxa(let testnet),
+             .radiant(let testnet),
+             .base(let testnet),
+             .koinos(let testnet),
+             .cyber(let testnet),
+             .blast(let testnet),
+             .sei(let testnet),
+             .kaspa(let testnet),
+             .energyWebEVM(let testnet),
+             .core(let testnet):
             return testnet
         case .litecoin,
-                .ducatus,
-                .cardano,
-                .xrp,
-                .rsk,
-                .tezos,
-                .dogecoin,
-                .kusama,
-                .terraV1,
-                .terraV2,
-                .cronos,
-                .octa,
-                .bitcoinCash,
-                .gnosis,
-                .disChain,
-                .playa3ullGames,
-                .joystream,
-                .internetComputer,
-                .bittensor,
-                .filecoin,
-                .energyWebX:
+             .ducatus,
+             .cardano,
+             .xrp,
+             .rsk,
+             .tezos,
+             .dogecoin,
+             .kusama,
+             .terraV1,
+             .terraV2,
+             .cronos,
+             .octa,
+             .bitcoinCash,
+             .gnosis,
+             .disChain,
+             .playa3ullGames,
+             .joystream,
+             .internetComputer,
+             .bittensor,
+             .filecoin,
+             .energyWebX:
             return false
         case .stellar(_, let testnet),
-                .hedera(_, let testnet),
-                .solana(_, let testnet),
-                .polkadot(_, let testnet),
-                .azero(_, let testnet),
-                .ton(_, let testnet),
-                .near(_, let testnet),
-                .algorand(_, let testnet),
-                .aptos(_, let testnet),
-                .shibarium(let testnet),
-                .sui(_, let testnet):
+             .hedera(_, let testnet),
+             .solana(_, let testnet),
+             .polkadot(_, let testnet),
+             .azero(_, let testnet),
+             .ton(_, let testnet),
+             .near(_, let testnet),
+             .algorand(_, let testnet),
+             .aptos(_, let testnet),
+             .shibarium(let testnet),
+             .sui(_, let testnet):
             return testnet
         }
     }
@@ -179,21 +179,21 @@ public indirect enum Blockchain: Equatable, Hashable {
         case .cardano:
             return .ed25519
         case .stellar(let curve, _),
-                .solana(let curve, _),
-                .polkadot(let curve, _),
-                .kusama(let curve),
-                .azero(let curve, _),
-                .joystream(let curve),
-                .ton(let curve, _),
-                .xrp(let curve),
-                .tezos(let curve),
-                .near(let curve, _),
-                .algorand(let curve, _),
-                .aptos(let curve, _),
-                .hedera(let curve, _),
-                .bittensor(let curve),
-                .sui(let curve, _),
-                .energyWebX(let curve):
+             .solana(let curve, _),
+             .polkadot(let curve, _),
+             .kusama(let curve),
+             .azero(let curve, _),
+             .joystream(let curve),
+             .ton(let curve, _),
+             .xrp(let curve),
+             .tezos(let curve),
+             .near(let curve, _),
+             .algorand(let curve, _),
+             .aptos(let curve, _),
+             .hedera(let curve, _),
+             .bittensor(let curve),
+             .sui(let curve, _),
+             .energyWebX(let curve):
             return curve
         case .chia:
             return .bls12381_G2_AUG
@@ -240,68 +240,68 @@ public indirect enum Blockchain: Equatable, Hashable {
     public var decimalCount: Int {
         switch self {
         case .bitcoin,
-                .litecoin,
-                .bitcoinCash,
-                .ducatus,
-                .binance,
-                .dogecoin,
-                .dash,
-                .kaspa, .kaspaKRC20,
-                .ravencoin,
-                .hedera,
-                .radiant,
-                .internetComputer,
-                .koinos,
-                .aptos:
+             .litecoin,
+             .bitcoinCash,
+             .ducatus,
+             .binance,
+             .dogecoin,
+             .dash,
+             .kaspa, .kaspaKRC20,
+             .ravencoin,
+             .hedera,
+             .radiant,
+             .internetComputer,
+             .koinos,
+             .aptos:
             return 8
         case .ethereum,
-                .ethereumClassic,
-                .ethereumPoW,
-                .disChain,
-                .rsk,
-                .bsc,
-                .polygon,
-                .avalanche,
-                .fantom,
-                .arbitrum,
-                .gnosis,
-                .optimism,
-                .kava,
-                .cronos,
-                .telos,
-                .octa,
-                .decimal,
-                .veChain,
-                .xdc,
-                .shibarium,
-                .areon,
-                .playa3ullGames,
-                .pulsechain,
-                .aurora,
-                .manta,
-                .zkSync,
-                .moonbeam,
-                .polygonZkEVM,
-                .moonriver,
-                .mantle,
-                .flare,
-                .taraxa,
-                .base,
-                .cyber,
-                .blast,
-                .filecoin,
-                .energyWebEVM,
-                .energyWebX,
-                .core:
+             .ethereumClassic,
+             .ethereumPoW,
+             .disChain,
+             .rsk,
+             .bsc,
+             .polygon,
+             .avalanche,
+             .fantom,
+             .arbitrum,
+             .gnosis,
+             .optimism,
+             .kava,
+             .cronos,
+             .telos,
+             .octa,
+             .decimal,
+             .veChain,
+             .xdc,
+             .shibarium,
+             .areon,
+             .playa3ullGames,
+             .pulsechain,
+             .aurora,
+             .manta,
+             .zkSync,
+             .moonbeam,
+             .polygonZkEVM,
+             .moonriver,
+             .mantle,
+             .flare,
+             .taraxa,
+             .base,
+             .cyber,
+             .blast,
+             .filecoin,
+             .energyWebEVM,
+             .energyWebX,
+             .core:
             return 18
         case .cardano,
-                .xrp,
-                .tezos,
-                .tron,
-                .cosmos,
-                .terraV1,
-                .terraV2,
-                .sei:
+             .xrp,
+             .tezos,
+             .tron,
+             .cosmos,
+             .terraV1,
+             .terraV2,
+             .sei:
             return 6
         case .stellar:
             return 7
@@ -310,8 +310,8 @@ public indirect enum Blockchain: Equatable, Hashable {
         case .polkadot(_, let testnet):
             return testnet ? 12 : 10
         case .kusama,
-                .azero,
-                .chia:
+             .azero,
+             .chia:
             return 12
         case .joystream:
             return 10
@@ -547,7 +547,7 @@ public indirect enum Blockchain: Equatable, Hashable {
             return name + testnetSuffix
         }
     }
-    
+
     public var coinDisplayName: String {
         switch self {
         case _ where isL2EthereumNetwork:
@@ -663,14 +663,14 @@ public indirect enum Blockchain: Equatable, Hashable {
     public func isFeeApproximate(for amountType: Amount.AmountType) -> Bool {
         switch self {
         case .stellar,
-                .ton,
-                .near,
-                .aptos,
-                .hedera,
-                .koinos:
+             .ton,
+             .near,
+             .aptos,
+             .hedera,
+             .koinos:
             return true
         case .tron,
-                .veChain:
+             .veChain:
             if case .token = amountType {
                 return true
             }
@@ -682,7 +682,7 @@ public indirect enum Blockchain: Equatable, Hashable {
             return false
         }
     }
-    
+
     public var isParallelTransactionAllowed: Bool {
         switch self {
         case _ where isEvm:
@@ -706,13 +706,14 @@ public indirect enum Blockchain: Equatable, Hashable {
 }
 
 // MARK: - Ethereum based blockchain definition
+
 @available(iOS 13.0, *)
-extension Blockchain {
-    public var isEvm: Bool { chainId != nil }
+public extension Blockchain {
+    var isEvm: Bool { chainId != nil }
 
     // Only for Ethereum compatible blockchains
     // https://chainlist.org
-    public var chainId: Int? {
+    var chainId: Int? {
         switch self {
         case .ethereum: return isTestnet ? 5 : 1
         case .ethereumClassic: return isTestnet ? 6 : 61 // https://besu.hyperledger.org/en/stable/Concepts/NetworkID-And-ChainID/
@@ -738,7 +739,7 @@ extension Blockchain {
         case .pulsechain: return isTestnet ? 943 : 369
         case .aurora: return isTestnet ? 1313161555 : 1313161554
         case .manta: return isTestnet ? 3441005 : 169
-        case .zkSync: return isTestnet ? 300 : 324 
+        case .zkSync: return isTestnet ? 300 : 324
         case .moonbeam: return isTestnet ? 1287 : 1284
         case .polygonZkEVM: return isTestnet ? 2442 : 1101
         case .moonriver: return isTestnet ? 1287 : 1285
@@ -755,7 +756,7 @@ extension Blockchain {
         }
     }
 
-    public var isL2EthereumNetwork: Bool {
+    var isL2EthereumNetwork: Bool {
         switch self {
         case .arbitrum,
              .optimism,
@@ -773,7 +774,7 @@ extension Blockchain {
     }
 
     // Only for Ethereum compatible blockchains
-    public var supportsEIP1559: Bool {
+    var supportsEIP1559: Bool {
         guard isEvm else {
             return false
         }
@@ -827,9 +828,10 @@ extension Blockchain {
 }
 
 // MARK: - Address creation
+
 @available(iOS 13.0, *)
-extension Blockchain {
-    public func derivationPath(for style: DerivationStyle) -> DerivationPath? {
+public extension Blockchain {
+    func derivationPath(for style: DerivationStyle) -> DerivationPath? {
         guard curve.supportsDerivation else {
             Log.debug("Wrong attempt to get a `DerivationPath` for a unsupported derivation curve")
             return nil
@@ -844,14 +846,15 @@ extension Blockchain {
 }
 
 // MARK: - Sharing options
+
 @available(iOS 13.0, *)
-extension Blockchain {
-    public var qrPrefixes: [String] {
+public extension Blockchain {
+    var qrPrefixes: [String] {
         switch self {
         case .bitcoin:
             return ["bitcoin:"]
         case .ethereum:
-            return isTestnet ? [] : ["ethereum:", "ethereum:pay-"]  // "pay-" defined in ERC-681
+            return isTestnet ? [] : ["ethereum:", "ethereum:pay-"] // "pay-" defined in ERC-681
         case .litecoin:
             return ["litecoin:"]
         case .xrp:
@@ -865,7 +868,7 @@ extension Blockchain {
         }
     }
 
-    public func getShareString(from address: String) -> String {
+    func getShareString(from address: String) -> String {
         switch self {
         case .bitcoin, .ethereum, .litecoin, .binance:
             return "\(qrPrefixes.first ?? "")\(address)"
@@ -876,6 +879,7 @@ extension Blockchain {
 }
 
 // MARK: - Codable
+
 @available(iOS 13.0, *)
 extension Blockchain: Codable {
     public var codingKey: String {
@@ -1068,21 +1072,23 @@ extension Blockchain: Codable {
 }
 
 // MARK: - Helpers
+
 @available(iOS 13.0, *)
-extension Blockchain {
-    public var decimalValue: Decimal {
+public extension Blockchain {
+    var decimalValue: Decimal {
         return pow(Decimal(10), decimalCount)
     }
-    
-    public var minimumValue: Decimal {
+
+    var minimumValue: Decimal {
         1 / decimalValue
     }
 }
 
 // MARK: - Card's factory
+
 @available(iOS 13.0, *)
-extension Blockchain {
-    public static func from(blockchainName: String, curve: EllipticCurve) -> Blockchain? {
+public extension Blockchain {
+    static func from(blockchainName: String, curve: EllipticCurve) -> Blockchain? {
         let testnetAttribute = "/test"
         let isTestnet = blockchainName.contains(testnetAttribute)
         let cleanName = blockchainName.remove(testnetAttribute).lowercased()
@@ -1094,7 +1100,7 @@ extension Blockchain {
         case "rsk", "rsktoken": return .rsk
         case "bch": return .bitcoinCash
         case "binance", "binanceasset": return .binance(testnet: isTestnet)
-            // For old cards cardano will work like ed25519_slip0010
+        // For old cards cardano will work like ed25519_slip0010
         case "cardano", "cardano-s": return .cardano(extended: false)
         case "xrp": return .xrp(curve: curve)
         case "duc": return .ducatus
@@ -1314,35 +1320,35 @@ extension Blockchain {
         case .stellar:
             return StellarWalletAssembly()
         case .ethereum,
-                .ethereumClassic,
-                .rsk,
-                .bsc,
-                .polygon,
-                .avalanche,
-                .fantom,
-                .arbitrum,
-                .gnosis,
-                .ethereumPoW,
-                .disChain,
-                .kava,
-                .cronos,
-                .octa,
-                .shibarium,
-                .areon,
-                .playa3ullGames,
-                .pulsechain,
-                .aurora,
-                .zkSync,
-                .moonbeam,
-                .polygonZkEVM,
-                .moonriver,
-                .flare,
-                .taraxa,
-                .decimal,
-                .xdc,
-                .telos,
-                .energyWebEVM,
-                .core:
+             .ethereumClassic,
+             .rsk,
+             .bsc,
+             .polygon,
+             .avalanche,
+             .fantom,
+             .arbitrum,
+             .gnosis,
+             .ethereumPoW,
+             .disChain,
+             .kava,
+             .cronos,
+             .octa,
+             .shibarium,
+             .areon,
+             .playa3ullGames,
+             .pulsechain,
+             .aurora,
+             .zkSync,
+             .moonbeam,
+             .polygonZkEVM,
+             .moonriver,
+             .flare,
+             .taraxa,
+             .decimal,
+             .xdc,
+             .telos,
+             .energyWebEVM,
+             .core:
             return EthereumWalletAssembly()
         case .optimism,
              .manta,

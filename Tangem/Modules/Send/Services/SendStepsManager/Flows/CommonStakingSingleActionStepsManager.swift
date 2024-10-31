@@ -37,7 +37,7 @@ class CommonStakingSingleActionStepsManager {
         switch step.type {
         case .finish:
             output?.update(state: .init(step: step, action: .close))
-        case .amount, .destination, .fee, .summary, .validators:
+        case .amount, .destination, .fee, .summary, .validators, .onramp:
             assertionFailure("There is no next step")
         }
     }
@@ -65,6 +65,10 @@ extension CommonStakingSingleActionStepsManager: SendStepsManager {
         case .stake:
             assertionFailure("Doesn't support in UnstakingFlow")
             return .unstake
+        case .pending(.restake):
+            return .restake
+        case .pending(.claimUnstaked):
+            return .claimUnstaked
         }
     }
 

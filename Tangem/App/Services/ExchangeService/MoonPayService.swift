@@ -8,9 +8,9 @@
 
 import Foundation
 import CryptoKit
-import Alamofire
 import Combine
 import BlockchainSdk
+import class UIKit.UITraitCollection
 
 // MARK: - Models
 

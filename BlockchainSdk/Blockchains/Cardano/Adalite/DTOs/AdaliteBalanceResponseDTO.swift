@@ -17,11 +17,11 @@ struct AdaliteBalanceResponseDTO: Decodable {
 }
 
 extension AdaliteBalanceResponseDTO {
-    struct CaBalance : Decodable {
+    struct CaBalance: Decodable {
         let getTokens: [AdaliteTokenDTO]
         let getCoin: String
     }
-    
+
     struct CaTx: Decodable {
         let ctbId: String
     }

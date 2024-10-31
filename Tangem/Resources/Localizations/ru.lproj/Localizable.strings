@@ -82,10 +82,12 @@
 "common_camera_denied_alert_message" = "Вы не предоставили доступ к камере, пожалуйста, измените настройки конфиденциальности.";
 "common_camera_denied_alert_title" = "Доступ к камере запрещен";
 "common_cancel" = "Отмена";
+"common_change" = "Изменить";
 "common_choose_action" = "Выберите действие";
 "common_claim" = "Получить";
 "common_claim_rewards" = "Вывести награду";
 "common_close" = "Закрыть";
+"common_confirm" = "Подтвердить";
 "common_continue" = "Продолжить";
 "common_copy" = "Копировать";
 "common_copy_address" = "Скопировать адрес";
@@ -110,7 +112,7 @@
 "common_generate_addresses" = "Получить ваши адреса";
 "common_go_to_provider" = "К провайдеру";
 "common_go_to_token" = "Перейти в токен";
-"common_hour" = "hour";
+"common_hour" = "час";
 "common_import" = "Импортировать";
 "common_in_progress" = "В процессе";
 "common_later" = "Позже";
@@ -170,7 +172,7 @@
 "common_unreachable" = "Недоступно";
 "common_unstake" = "Завершить стейкинг";
 "common_warning" = "Предупреждение";
-"common_week" = "week";
+"common_week" = "неделю";
 "common_yes" = "Да";
 "contract_address_copied_message" = "Адрес контракта скопирован!";
 "currency_subtitle_expanded" = "Доступные сети";
@@ -293,17 +295,16 @@
 "feedback_subject_tx_push_failed" = "Не могу протолкнуть транзакцию";
 "feedback_token_description_error" = "Ошибка в описании монеты";
 "give_permission_current_transaction" = "Транзакция";
-"give_permission_fee_footer" = "Комиссия сети за одобрение токена будет взиматься за подтверждение того, что именно вы разрешаете использовать ваш токен для обмена.";
 "give_permission_policy_type_footer" = "Укажите лимит доступа к выбранному токену";
 "give_permission_rows_amount" = "Количество %@";
 "give_permission_staking_footer" = "Функция подтверждения необходима для предоставления другому адресу разрешения на использование определенного количества ваших токенов.По замыслу смарт-контракты не могут получить доступ к вашим токенам, если вы не одобрите доступ со своей стороны. «Разблокируя» свои токены, вы даете смарт-контракту StakeKit разрешение использовать ваши активы. Майнеры сети получают компенсацию за газ (оплачиваемый вами) за запись этого действия в блокчейне. Как только разрешение будет предоставлено, вы сможете осуществить стейкинг токена.";
-"give_permission_staking_subtitle" = "Чтобы продолжить, вам необходимо разрешить смарт контракту StakeKit использовать ваш %@";
+"give_permission_staking_subtitle" = "Чтобы продолжить, вам необходимо разрешить смарт контракту Polygon использовать ваш %@";
 "give_permission_swap_subtitle" = "Чтобы продолжить, вам нужно разрешить смарт-контракту %1@ использовать ваш %2@";
 "give_permission_title" = "Дать разрешение";
 "give_permission_unlimited" = "Безлимитно";
 "home_button_order" = "Купить";
 "home_button_scan" = "Сканировать";
-"information_generated_with_ai" = "Информация сгенерирована ИИ";
+"information_generated_with_ai" = "Эта информация была сгенерирована ИИ.\nНажмите здесь, если обнаружили ошибку.";
 "initial_message_change_access_code_body" = "Чтобы изменить код доступа, приложите карту или кольцо как показано выше и не убирайте до окончания операции";
 "initial_message_change_passcode_body" = "Чтобы изменить пароль, приложите карту как показано выше и не убирайте до окончания операции";
 "initial_message_create_wallet_body" = "Чтобы создать кошелек, приложите карту как показано выше и не убирайте до окончания операции";
@@ -332,7 +333,7 @@
 "manage_tokens_list_header_title" = "Рыночная капитализация";
 "manage_tokens_network_selector_native_subtitle" = "Блокчейн, в котором криптовалюта изначально была создана";
 "manage_tokens_network_selector_native_title" = "Основная сеть";
-"manage_tokens_network_selector_non_native_info" = "Using non-native networks for tokens enables cross-blockchain interoperability, allowing assets to be utilized in diverse decentralized applications and smart contracts across platforms. However, this often involves a custodian or smart contract to hold the original asset securely, introducing centralization and counterparty risk.";
+"manage_tokens_network_selector_non_native_info" = "Using non-native networks for tokens enables cross-blockchain interoperability, allowing assets to be utilized in diverse decentralized applications and smart contracts across platforms. However, this often involves a custodian or smart contract to hold the original asset securely, introducing centralization and counterparty risk.";
 "manage_tokens_network_selector_non_native_subtitle" = "Не основной или основной блокчейн, на котором размещен токен";
 "manage_tokens_network_selector_non_native_title" = "Не основные сети";
 "manage_tokens_network_selector_title" = "Выберите сети";
@@ -528,6 +529,11 @@
 "onboarding_wallet_info_title_fourth" = "Восстановление кода доступа";
 "onboarding_wallet_info_title_second" = "Идентичные карты";
 "onboarding_wallet_info_title_third" = "Код доступа";
+"onramp_pay_with" = "Оплата с";
+"onramp_residency_bottomsheet_country_not_supported" = "Our services are not available in this country";
+"onramp_residency_bottomsheet_country_subtitle" = "Change or confirm it";
+"onramp_residency_bottomsheet_title" = "Your residence has been identified as";
+"onramp_via" = "Через";
 "organize_tokens_group" = "Группы";
 "organize_tokens_sort_by_balance" = "По балансу";
 "organize_tokens_title" = "Упорядочить токены";
@@ -563,7 +569,7 @@
 "referral_tos_suffix" = "в реферальной программе";
 "reset_card_to_factory_button_title" = "Сбросить карту";
 "reset_card_to_factory_condition_1" = "Я понимаю, что после выполнения этого действия у меня больше не будет доступа к текущему кошельку";
-"reset_card_to_factory_condition_2" = "Я понимаю, что не смогу этой картой восстановить пароль на остальных картах этого кошелька, если я его забуду";
+"reset_card_to_factory_condition_2" = "Я понимаю, что не смогу использовать эту карту для восстановления кода доступа на других картах текущего кошелька";
 "reset_card_with_backup_to_factory_message" = "Сброс к заводским настройкам приведет к полному удалению кошелька с выбранной карты или кольца. Вы не сможете восстановить текущий кошелек или использовать данную карту или кольцо для восстановления кода доступа.";
 "reset_card_without_backup_to_factory_message" = "Сброс к заводским настройкам приведет к полному удалению кошелька с выбранной карты или кольца. Вы не сможете восстановить текущий кошелек.";
 "ring_promo_text" = "Владельцам колец — 3 обмена без комиссии на Changelly до 15.11!";
@@ -580,7 +586,7 @@
 "save_user_wallet_agreement_notice" = "Обратите внимание, что для совершения транзакции с вашими средствами по-прежнему потребуется ваша карта или кольцо";
 "scan_card_settings_button" = "Сканировать";
 "scan_card_settings_message" = "Отсканируйте карту или кольцо, чтобы изменить ее настройки. Изменения затронут только ту карту или кольцо, которые вы отсканировали, и не повлияют на другие устройства, привязанные к вашему кошельку.";
-"scan_card_settings_title" = "Приготовьте свой Tangem";
+"scan_card_settings_title" = "Приготовьте свой Tangem!";
 "send_additional_field_already_included" = "Уже содержится во введенном адресе";
 "send_alert_fee_too_high_text" = "Сумма комиссии в %@ раз превышает рекомендованную. Убедитесь, что указанная комиссия верна.";
 "send_alert_fee_too_low_text" = "Вы указали комиссию ниже рекомендуемой, это может привести к задержке исполнения вашей транзакции. Продолжить?";
@@ -654,7 +660,7 @@
 "send_transaction_success" = "Транзакция успешно подписана и отправлена в блокчейн. Баланс будет обновлен через некоторое время";
 "send_tron_account_activation_error" = "%1$@ — это монета в сети Tron. Чтобы рассчитать комиссию и совершить транзакцию, вам необходимо внести немного Tron (TRX) на свой адрес.";
 "sent_transaction_sent_title" = "Транзакция отправлена";
-"settings_card_settings_footer" = "Подготовьтесь к сканированию кольцо или карту, которую вы хотите настроить.";
+"settings_card_settings_footer" = "Подготовьтесь к сканированию кольца или карты, которую вы хотите настроить.";
 "settings_forget_wallet" = "Забыть кошелек";
 "settings_forget_wallet_footer" = "Это приведет к удалению кошелька из приложения. Сам кошелек можно добавить снова.";
 "settings_wallet_name_title" = "Имя";
@@ -680,7 +686,7 @@
 "staking_details_reward_claiming" = "Способ вознаграждения";
 "staking_details_reward_claiming_info" = "Способ получения вознаграждений за стейкинг. Оно может зачисляться автоматически на ваш адрес или вручную, когда вознаграждение нужно вывести, создав транзакцию на её получение.";
 "staking_details_reward_schedule" = "Период вознагражения";
-"staking_details_reward_schedule_info" = "Это период, определяющий, когда участники стейкинга получат свои вознаграждения.";
+"staking_details_reward_schedule_info" = "Это график, который определяет, когда участники стейкинга получают свои награды. Время распределения наград может немного варьироваться в зависимости от валидатора и нагрузки сети.";
 "staking_details_rewards_to_claim" = "Вознаграждение для получения: %@";
 "staking_details_title" = "Стейкинг %@";
 "staking_details_unbonding_period" = "Период отзыва";
@@ -688,6 +694,7 @@
 "staking_details_warmup_period" = "Период прогрева";
 "staking_details_warmup_period_info" = "Время, необходимое для начала процесса стейкинга и активации процесса начисления наград";
 "staking_dismiss_message" = "Вы действительно хотите закрыть окно стейкинга?";
+"staking_give_permission_fee_footer" = "Комиссия сети за одобрение токена будет взиматься за подтверждение того, что именно вы разрешаете использовать ваш токен для стейкинга.";
 "staking_legal" = "Пользуясь стейкинг сервисом, вы соглашаетесь с %1$@ и %2$@";
 "staking_locked" = "Заблокировано";
 "staking_migrate" = "Переместить";
@@ -707,6 +714,7 @@
 "staking_notification_network_error_text" = "Стейкинг временно недоступен из-за проблем в сети. Пожалуйста, попробуйте позже.";
 "staking_notification_new_validator_funds_transfer" = "Стейкинг в сети %1$@ с новым валидатором автоматически переведет ваши текущие застейканные средства на него.";
 "staking_notification_restake_rewards_text" = "Реинвестируйте свои заработанные награды в вашу застейканную сумму, увеличивая потенциальный доход";
+"staking_notification_restake_text" = "Рестейк позволяет вам переместить средства из одного валидатора в другого без необходимости выхода из стейкинга.";
 "staking_notification_unlock_text" = "Разблокируйте свои средства, чтобы вывести их из стейкинга. Разблокировка займёт %@.";
 "staking_notification_unstake_cosmos_text" = "Ваши средства будут доступны для использования после 21-дневного периода отзыва. Награда будет выведена вместе с вашими выводими средствами.";
 "staking_notification_unstake_text" = "Ваши средства будут доступны после %@ периода отзыва.";
@@ -723,8 +731,10 @@
 "staking_reward_claiming_manual" = "Вручную";
 "staking_reward_schedule_block" = "За блок";
 "staking_reward_schedule_day" = "Ежедневно";
-"staking_reward_schedule_each" = "Each %@";
+"staking_reward_schedule_each" = "Каждый %@";
 "staking_reward_schedule_each_day" = "Каждый день";
+"staking_reward_schedule_each_days" = "Каждые %@ дня";
+"staking_reward_schedule_each_plural" = "Каждые";
 "staking_reward_schedule_each_sec" = "Каждые %1$@ сек";
 "staking_reward_schedule_epoch" = "За эпоху";
 "staking_reward_schedule_era" = "За эру";
@@ -734,7 +744,7 @@
 "staking_rewards" = "Вознаграждения";
 "staking_stake_locked" = "Стейкинг закрыт";
 "staking_stake_more" = "Застейкать еще";
-"staking_summary_description_text" = "Вы стейкаете %1$@ и будете получать %2$@ ежегодно";
+"staking_summary_description_text" = "Вы стейкаете %1$@ и будете получать награду %2$@";
 "staking_tap_to_unlock" = "Нажмите для разблокировки";
 "staking_tap_to_unlock_or_vote" = "Нажмите для разблокировки";
 "staking_tap_to_withdraw" = "Нажмите для вывода";
@@ -745,6 +755,7 @@
 "staking_unbonding_in" = "Отзыв через";
 "staking_unlocked_locked" = "Разблокировать";
 "staking_unlocking" = "Разблокировка";
+"staking_unstake_amount_validation_error" = "Сумма превышает застейканный баланс";
 "staking_unstaked" = "Вывод из стейкинга";
 "staking_unstaked_footer" = "Проверьте процесс завершения стейкинга, чтобы вывести свои средства.";
 "staking_unstaking" = "Завершение стейкинга";
@@ -769,6 +780,7 @@
 "story_meet_title" = "Встречайте Tangem";
 "story_web3_description" = "Обменивайте, покупайте NFT, получайте займы и делайте вклады в более чем 100 различных децентрализованных сервисах";
 "story_web3_title" = "Поддержка Web 3.0";
+"swap_give_permission_fee_footer" = "Комиссия сети за одобрение токена будет взиматься за подтверждение того, что именно вы разрешаете использовать ваш токен для обмена.";
 "swap_promo_text" = "Обменивайте больше токенов по лучшим курсам прямо в вашем кошельке.";
 "swap_promo_title" = "Новый провайдер обмена!";
 "swapping_alert_cex_description" = "В сумму включено: \n• комиссия провайдера сервиса\n• комиссия сети за отправку %@ от биржи обратно на адрес пользователя.";
@@ -835,6 +847,7 @@
 "twins_recreate_warning" = "Это действие необратимо. У вас не будет доступа к старому кошельку.";
 "twins_scan_twin_with_number" = "Приложите twin-карту с номером %@ и не убирайте до окончания операции";
 "unlock_wallet_description_full" = "Используйте %@ или отсканируйте карту/кольцо, чтобы получить доступ к своему кошельку";
+"unsupported_wc_version" = "Соединение не удалось: это dApp использует Wallet Connect версии 1.0, которая не поддерживается. Убедитесь, что dApp поддерживает Wallet Connect версии 2.0 для успешного подключения.";
 "user_push_notification_agreement_argument_one" = "Будьте в курсе новых функций и новостей";
 "user_push_notification_agreement_argument_two" = "Узнавайте первым о новых акциях";
 "user_push_notification_agreement_header" = "Хотите использовать Push-уведомления?";
@@ -918,7 +931,7 @@
 "warning_express_too_maximum_amount_title" = "Сумма для обмена должна быть не более %@";
 "warning_express_too_minimal_amount_title" = "Сумма для обмена должна быть не менее %@";
 "warning_express_wrong_amount_description" = "Пожалуйста, измените сумму для обмена";
-"warning_failed_to_verify_card_message" = "Возможно, данная карта - образец или подделка";
+"warning_failed_to_verify_card_message" = "Возможно, данная карта является образцом или подделкой";
 "warning_failed_to_verify_card_title" = "Ошибка проверки подлинности";
 "warning_hedera_missing_token_association_button_title" = "Ассоциировать";
 "warning_hedera_missing_token_association_message" = "Этот токен должен быть ассоциирован с вашей учетной записью Hedera, прежде чем вы сможете его принять. Стоимость ассоциации ~%1$@ %2$@ ";
@@ -930,7 +943,7 @@
 "warning_low_signatures_message" = "На этой карте осталось всего %@ подписей. Вам следует вывести все ваши средства.";
 "warning_low_signatures_title" = "Малое количество подписей";
 "warning_manage_tokens_legacy_derivation_message" = "Токены на разных сетях могут иметь разные адреса. Пожалуйста, убедитесь при переводе средств, что ваш адрес соответствует сети.";
-"warning_matic_migration_message" = "Токен MATIC мигрирует на POL. Однако крайний срок не установлен, и MATIC пока не устарел. Вы можете спокойно продолжать использовать токен MATIC или воспользоваться биржами, чтобы обменять его на POL.";
+"warning_matic_migration_message" = "Токен MATIC мигрирует на POL. Однако крайний срок не установлен, и MATIC пока не устарел. Вы можете спокойно продолжать использовать токен MATIC или обменять его на POL.";
 "warning_matic_migration_title" = "Миграция MATIC в POL";
 "warning_missing_derivation_title" = "Некоторые адреса отсутствуют";
 "warning_network_unreachable_message" = "В данный момент сеть недоступна. Пожалуйста, попробуйте позже.";

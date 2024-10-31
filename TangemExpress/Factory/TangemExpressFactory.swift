@@ -44,20 +44,22 @@ public struct TangemExpressFactory {
 
     public func makeOnrampManager(
         expressAPIProvider: ExpressAPIProvider,
-        allowanceProvider: ExpressAllowanceProvider,
-        feeProvider: FeeProvider,
-        expressRepository: ExpressRepository,
+        onrampRepository: OnrampRepository,
         logger: Logger? = nil,
         analyticsLogger: ExpressAnalyticsLogger? = nil
     ) -> OnrampManager {
         let logger: Logger = logger ?? CommonLogger()
-        let repository = CommonOnrampRepository(provider: expressAPIProvider)
 
         return CommonOnrampManager(
             provider: expressAPIProvider,
-            onrampRepository: repository,
+            onrampRepository: onrampRepository,
             logger: logger
         )
+    }
+
+    public func makeOnrampRepository(storage: OnrampStorage) -> OnrampRepository {
+        let repository = CommonOnrampRepository(storage: storage)
+        return repository
     }
 
     public func makeExpressAPIProvider(

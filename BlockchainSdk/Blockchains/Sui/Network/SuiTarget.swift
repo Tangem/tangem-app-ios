@@ -12,22 +12,21 @@ import Moya
 struct SuiTarget: TargetType {
     let baseURL: URL
     let request: SuiTarget.Request
-    
+
     var path: String {
         ""
     }
-    
+
     var method: Moya.Method {
         .post
     }
-    
+
     var task: Moya.Task {
         .requestJSONRPC(id: request.id, method: request.method, params: request.params)
     }
-    
-    var headers: [String : String]?
-}
 
+    var headers: [String: String]?
+}
 
 extension SuiTarget {
     enum Request {
@@ -35,9 +34,9 @@ extension SuiTarget {
         case getReferenceGasPrice
         case dryRunTransaction(transaction: String)
         case sendTransaction(transaction: String, signature: String)
-        
+
         var id: Int { 1 }
-        
+
         var method: String {
             switch self {
             case .getBalance:
@@ -50,7 +49,7 @@ extension SuiTarget {
                 return "sui_executeTransactionBlock"
             }
         }
-        
+
         var params: (any Encodable)? {
             switch self {
             case .getBalance(let address, let coin, let cursor):

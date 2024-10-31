@@ -12,7 +12,7 @@ struct ICPExternalLinkProvider: ExternalLinkProvider {
     var testnetFaucetURL: URL? {
         return nil
     }
-    
+
     private let baseExplorerURL = URL(string: "https://dashboard.internetcomputer.org")
 
     func url(address: String, contractAddress: String?) -> URL? {

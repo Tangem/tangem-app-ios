@@ -8,7 +8,6 @@
 
 import Foundation
 
-
 protocol ThenProcessable {}
 
 extension ThenProcessable where Self: Any {

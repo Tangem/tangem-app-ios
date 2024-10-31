@@ -9,6 +9,7 @@
 import Foundation
 import TangemStaking
 import BlockchainSdk
+import TangemExpress
 
 struct SendDependenciesBuilder {
     private let walletModel: WalletModel
@@ -28,6 +29,8 @@ struct SendDependenciesBuilder {
         case .pending(.restakeRewards): .restakeRewards
         case .pending(.voteLocked): .voteLocked
         case .pending(.unlockLocked): .unlockLocked
+        case .pending(.restake): .restake
+        case .pending(.claimUnstaked): .claimUnstaked
         }
     }
 
@@ -40,6 +43,8 @@ struct SendDependenciesBuilder {
         case .claimRewards: action.title
         case .restakeRewards: action.title
         case .unlockLocked: action.title
+        case .restake: action.title
+        case .claimUnstaked: SendFlowActionType.withdraw.title
         default: action.title
         }
     }
@@ -47,7 +52,7 @@ struct SendDependenciesBuilder {
     func summarySubtitle(action: SendFlowActionType) -> String? {
         switch action {
         case .send: walletName()
-        case .approve, .stake: walletName()
+        case .approve, .stake, .restake: walletName()
         case .unstake: nil
         case .withdraw: nil
         case .claimRewards: nil
@@ -142,10 +147,6 @@ struct SendDependenciesBuilder {
         CommonFeeIncludedCalculator(validator: walletModel.transactionValidator)
     }
 
-    func makeSendBaseDataBuilder(input: SendBaseDataBuilderInput) -> SendBaseDataBuilder {
-        SendBaseDataBuilder(input: input, walletModel: walletModel, emailDataProvider: userWalletModel)
-    }
-
     // MARK: - Send, Sell
 
     func makeSendModel(
@@ -221,6 +222,10 @@ struct SendDependenciesBuilder {
         CommonSendAlertBuilder()
     }
 
+    func makeSendBaseDataBuilder(input: SendBaseDataBuilderInput) -> SendBaseDataBuilder {
+        CommonSendBaseDataBuilder(input: input, walletModel: walletModel, emailDataProvider: userWalletModel)
+    }
+
     // MARK: - Staking
 
     func makeStakingModel(stakingManager: some StakingManager) -> StakingModel {
@@ -282,6 +287,17 @@ struct SendDependenciesBuilder {
         )
     }
 
+    func makeUnstakingSendAmountValidator(
+        stakingManager: some StakingManager,
+        stakedAmount: Decimal
+    ) -> SendAmountValidator {
+        UnstakingSendAmountValidator(
+            tokenItem: walletModel.tokenItem,
+            stakedAmount: stakedAmount,
+            stakingManagerStatePublisher: stakingManager.statePublisher
+        )
+    }
+
     func makeStakingTransactionSummaryDescriptionBuilder() -> SendTransactionSummaryDescriptionBuilder {
         StakingTransactionSummaryDescriptionBuilder(tokenItem: walletModel.tokenItem)
     }
@@ -307,5 +323,38 @@ struct SendDependenciesBuilder {
 
     func makeStakingAmountModifier() -> SendAmountModifier {
         StakingAmountModifier(tokenItem: walletModel.tokenItem)
+    }
+
+    func makeStakingBaseDataBuilder(input: StakingBaseDataBuilderInput) -> StakingBaseDataBuilder {
+        CommonStakingBaseDataBuilder(input: input, walletModel: walletModel, emailDataProvider: userWalletModel)
+    }
+
+    // MARK: - Onramp
+
+    func makeOnrampModel(onrampManager: some OnrampManager) -> OnrampModel {
+        OnrampModel(onrampManager: onrampManager)
+    }
+
+    func makeOnrampManager(userWalletId: String, onrampRepository: OnrampRepository) -> OnrampManager {
+        let expressAPIProvider = ExpressAPIProviderFactory()
+            .makeExpressAPIProvider(userId: userWalletId, logger: AppLog.shared)
+
+        return TangemExpressFactory().makeOnrampManager(
+            expressAPIProvider: expressAPIProvider,
+            onrampRepository: onrampRepository,
+            logger: AppLog.shared
+        )
+    }
+
+    func makeOnrampAmountValidator() -> SendAmountValidator {
+        OnrampAmountValidator()
+    }
+
+    func makeOnrampBaseDataBuilder(input: OnrampBaseDataBuilderInput, onrampRepository: OnrampRepository) -> OnrampBaseDataBuilder {
+        CommonOnrampBaseDataBuilder(input: input, walletModel: walletModel, onrampRepository: onrampRepository)
+    }
+
+    func makeOnrampRepository() -> OnrampRepository {
+        TangemExpressFactory().makeOnrampRepository(storage: CommonOnrampStorage())
     }
 }

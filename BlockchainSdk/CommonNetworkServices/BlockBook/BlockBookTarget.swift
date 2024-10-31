@@ -13,7 +13,7 @@ struct BlockBookTarget: TargetType {
     let request: Request
     let config: BlockBookConfig
     let blockchain: Blockchain
-    
+
     var baseURL: URL {
         switch request {
         case .fees, .sendNode:
@@ -22,10 +22,10 @@ struct BlockBookTarget: TargetType {
             return URL(string: config.node(for: blockchain).restNode)!
         }
     }
-    
+
     var path: String {
         let basePath = config.path(for: request)
-        
+
         switch request {
         case .address(let address, _):
             return basePath + "/address/\(address)"
@@ -39,7 +39,7 @@ struct BlockBookTarget: TargetType {
             return basePath
         }
     }
-    
+
     var method: Moya.Method {
         switch request {
         case .address, .utxo:
@@ -48,7 +48,7 @@ struct BlockBookTarget: TargetType {
             return .post
         }
     }
-    
+
     var task: Moya.Task {
         switch request {
         case .txDetails, .utxo:
@@ -59,23 +59,23 @@ struct BlockBookTarget: TargetType {
             return .requestJSONEncodable(request)
         case .fees(let request):
             return .requestJSONEncodable(request)
-        case .address(_ , let parameters):
+        case .address(_, let parameters):
             let parameters = try? parameters.asDictionary()
             return .requestParameters(parameters: parameters ?? [:], encoding: URLEncoding.default)
         }
     }
-    
-    var headers: [String : String]? {
+
+    var headers: [String: String]? {
         var headers = ["Content-Type": contentType]
-        
+
         // TODO: - if / let
         if let name = config.apiKeyHeaderName, let value = config.apiKeyHeaderValue {
             headers[name] = value
         }
-        
+
         return headers
     }
-    
+
     private var contentType: String {
         switch request {
         case .sendBlockBook:
@@ -95,16 +95,16 @@ extension BlockBookTarget {
         case utxo(address: String)
         case fees(_ request: NodeRequest<Int>)
     }
-    
+
     struct AddressRequestParameters: Encodable {
-        /// Specifies page of returned transactions, starting from 1. 
+        /// Specifies page of returned transactions, starting from 1.
         /// If out of range, Blockbook returns the closest possible page.
         let page: Int?
         /// The number of transactions returned by call (default and maximum 1000)
         let pageSize: Int?
         let details: [Details]
         let filterType: FilterType?
-        
+
         init(
             page: Int? = nil,
             pageSize: Int? = nil,
@@ -116,7 +116,7 @@ extension BlockBookTarget {
             self.details = details
             self.filterType = filterType
         }
-        
+
         enum Details: String, Encodable {
             /// Return only address balances, without any transactions
             case basic
@@ -131,14 +131,14 @@ extension BlockBookTarget {
             /// TokenBalances + list of transaction with details, subject to from, to filter and paging
             case txs
         }
-        
+
         enum FilterType {
             /// Return only related with coin transactions
             case coin
             /// Return only transactions which affect specified contract (applicable only to coins which support contracts)
             case contract(String)
         }
-        
+
         enum CodingKeys: CodingKey {
             case page
             case pageSize
@@ -146,7 +146,7 @@ extension BlockBookTarget {
             case contract
             case filter
         }
-        
+
         func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
             try container.encode(page, forKey: .page)

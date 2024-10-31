@@ -22,7 +22,6 @@ enum CosmosChain {
 // Keplr registry contains lots of goodies, for example:
 // https://github.com/chainapsis/keplr-chain-registry/blob/main/cosmos/cosmoshub.json
 extension CosmosChain {
-    
     // Either feeCurrencies/coinMinimalDenom from Keplr registry
     // or
     // params/bond_denom field from /cosmos/staking/v1beta1/params request
@@ -38,7 +37,7 @@ extension CosmosChain {
             return "usei"
         }
     }
-    
+
     var blockchain: Blockchain {
         switch self {
         case .cosmos(let testnet):
@@ -53,7 +52,7 @@ extension CosmosChain {
             return .sei(testnet: isTestnet)
         }
     }
-    
+
     // Either chainId from Keplr registry
     // or
     // node_info/network field from /node_info request
@@ -71,7 +70,7 @@ extension CosmosChain {
             return isTestnet ? "atlantic-2" : "pacific-1"
         }
     }
-    
+
     // For some chains gas prices are hardcoded with the same value for all fee levels
     var allowsFeeSelection: Bool {
         switch self {
@@ -81,7 +80,7 @@ extension CosmosChain {
             return false
         }
     }
-    
+
     // feeCurrencies/gasPriceStep field from Keplr registry
     func gasPrices(for amountType: Amount.AmountType) -> [Double] {
         switch self {
@@ -113,7 +112,7 @@ extension CosmosChain {
             fatalError()
         }
     }
-    
+
     // Often times the value specified in Keplr is not enough:
     // >>> out of gas in location: WriteFlat; gasWanted: 76012, gasUsed: 76391: out of gas
     // >>> out of gas in location: ReadFlat; gasWanted: 124626, gasUsed: 125279: out of gas
@@ -133,7 +132,7 @@ extension CosmosChain {
             return 2
         }
     }
-    
+
     // We use a formula to calculate the fee, by multiplying estimated gas by gas price.
     // But sometimes this is not enough:
     // >>> insufficient fees; got: 1005uluna required: 1006uluna: insufficient fee
@@ -146,7 +145,7 @@ extension CosmosChain {
             return 1.5
         }
     }
-    
+
     var coin: CoinType {
         switch self {
         case .cosmos, .gaia:
@@ -159,7 +158,7 @@ extension CosmosChain {
             return .sei
         }
     }
-    
+
     var allowCW20Tokens: Bool {
         switch self {
         case .terraV2, .sei:
@@ -168,7 +167,7 @@ extension CosmosChain {
             return false
         }
     }
-    
+
     func tokenDenomination(contractAddress: String, tokenCurrencySymbol: String) -> String? {
         switch self {
         case .terraV1:
@@ -184,8 +183,7 @@ extension CosmosChain {
             return nil
         }
     }
-    
-    
+
     func tokenFeeDenomination(contractAddress: String, tokenCurrencySymbol: String) -> String? {
         switch self {
         case .terraV1:
@@ -201,7 +199,7 @@ extension CosmosChain {
             return nil
         }
     }
-    
+
     var taxPercentByContractAddress: [String: Decimal] {
         switch self {
         case .terraV1:
@@ -212,7 +210,7 @@ extension CosmosChain {
             return [:]
         }
     }
-    
+
     func extraFee(for amount: Decimal) -> Decimal? {
         switch self {
         case .terraV1:

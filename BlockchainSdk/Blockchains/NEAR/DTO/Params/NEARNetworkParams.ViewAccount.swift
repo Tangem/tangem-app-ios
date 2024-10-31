@@ -13,7 +13,7 @@ extension NEARNetworkParams {
         enum RequestType: String, Encodable {
             case viewAccount = "view_account"
         }
-        
+
         let requestType: RequestType
         let finality: Finality
         let accountId: String

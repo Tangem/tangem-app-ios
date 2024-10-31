@@ -35,6 +35,7 @@ class ReceiveCurrencyViewModel: ObservableObject, Identifiable {
         }
 
         let decimals = tokenItem?.decimalCount ?? AppConstants.maximumFractionDigitsForBalance
+
         let formatter = DecimalNumberFormatter(maximumFractionDigits: decimals)
         let formatted: String = formatter.format(value: expectAmount)
         update(cryptoAmountState: .loaded(text: formatted))

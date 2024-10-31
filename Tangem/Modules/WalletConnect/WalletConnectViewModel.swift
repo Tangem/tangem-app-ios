@@ -57,15 +57,12 @@ class WalletConnectViewModel: ObservableObject {
         }
     }
 
-    func tryReadFromClipboard() -> WalletConnectRequestURI? {
-        guard
-            let pasteboardValue = UIPasteboard.general.string,
-            let uri = WalletConnectURLParser().parse(uriString: pasteboardValue)
-        else {
+    func readFromClipboard() throws -> WalletConnectRequestURI? {
+        guard let pasteboardValue = UIPasteboard.general.string else {
             return nil
         }
 
-        return uri
+        return try WalletConnectURLParser().parse(uriString: pasteboardValue)
     }
 
     func pasteFromClipboard() {
@@ -83,7 +80,12 @@ class WalletConnectViewModel: ObservableObject {
             return
         }
 
-        pendingURI = tryReadFromClipboard()
+        do {
+            pendingURI = try readFromClipboard()
+        } catch {
+            makeAlert(with: error.localizedDescription)
+            return
+        }
 
         if pendingURI != nil {
             isActionSheetVisible = true
@@ -111,11 +113,29 @@ class WalletConnectViewModel: ObservableObject {
 
         scannedQRCode
             .compactMap { $0 }
-            .compactMap { WalletConnectURLParser().parse(uriString: $0) }
+            .compactMap { [weak self] in
+                self?.parseURI($0)
+            }
             .sink { [weak self] uri in
                 self?.openSession(with: uri)
             }
             .store(in: &bag)
+    }
+
+    func parseURI(_ uri: String) -> WalletConnectRequestURI? {
+        do {
+            let uri = try WalletConnectURLParser().parse(uriString: uri)
+            return uri
+        } catch {
+            makeAlert(with: error.localizedDescription)
+            return nil
+        }
+    }
+
+    func makeAlert(with message: String) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            self.alert = AlertBuilder.makeOkErrorAlert(message: message)
+        }
     }
 
     private func subscribeToNewSessions() {

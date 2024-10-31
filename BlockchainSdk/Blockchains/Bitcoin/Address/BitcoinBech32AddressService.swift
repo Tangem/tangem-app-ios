@@ -10,14 +10,21 @@ import Foundation
 import BitcoinCore
 import TangemSdk
 
-
 @available(iOS 13.0, *)
-public class BitcoinBech32AddressService {
-    private let converter: SegWitBech32AddressConverter
+class BitcoinBech32AddressService {
+    private let segWitConverter: SegWitBech32AddressConverter
+    private let tapRootConverter: TaprootAddressConverter
 
     init(networkParams: INetwork) {
         let scriptConverter = ScriptConverter()
-        converter = SegWitBech32AddressConverter(prefix: networkParams.bech32PrefixPattern, scriptConverter: scriptConverter)
+        segWitConverter = SegWitBech32AddressConverter(
+            prefix: networkParams.bech32PrefixPattern,
+            scriptConverter: scriptConverter
+        )
+        tapRootConverter = TaprootAddressConverter(
+            prefix: networkParams.bech32PrefixPattern,
+            scriptConverter: scriptConverter
+        )
     }
 }
 
@@ -25,8 +32,8 @@ public class BitcoinBech32AddressService {
 
 @available(iOS 13.0, *)
 extension BitcoinBech32AddressService: BitcoinScriptAddressProvider {
-    public func makeScriptAddress(from scriptHash: Data) throws -> String {
-        return try converter.convert(scriptHash: scriptHash).stringValue
+    func makeScriptAddress(from scriptHash: Data) throws -> String {
+        return try segWitConverter.convert(scriptHash: scriptHash).stringValue
     }
 }
 
@@ -34,13 +41,10 @@ extension BitcoinBech32AddressService: BitcoinScriptAddressProvider {
 
 @available(iOS 13.0, *)
 extension BitcoinBech32AddressService: AddressValidator {
-    public func validate(_ address: String) -> Bool {
-        do {
-            _ = try converter.convert(address: address)
-            return true
-        } catch {
-            return false
-        }
+    func validate(_ address: String) -> Bool {
+        let segwitAddress = try? segWitConverter.convert(address: address)
+        let taprootAddress = try? tapRootConverter.convert(address: address)
+        return segwitAddress != nil || taprootAddress != nil
     }
 }
 
@@ -48,14 +52,16 @@ extension BitcoinBech32AddressService: AddressValidator {
 
 @available(iOS 13.0, *)
 extension BitcoinBech32AddressService: AddressProvider {
-    public func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
+    func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
         let compressedKey = try Secp256k1Key(with: publicKey.blockchainKey).compress()
-        let bitcoinCorePublicKey = PublicKey(withAccount: 0,
-                                  index: 0,
-                                  external: true,
-                                  hdPublicKeyData: compressedKey)
+        let bitcoinCorePublicKey = PublicKey(
+            withAccount: 0,
+            index: 0,
+            external: true,
+            hdPublicKeyData: compressedKey
+        )
 
-        let address = try converter.convert(publicKey: bitcoinCorePublicKey, type: .p2wpkh).stringValue
+        let address = try segWitConverter.convert(publicKey: bitcoinCorePublicKey, type: .p2wpkh).stringValue
         return PlainAddress(value: address, publicKey: publicKey, type: addressType)
     }
 }

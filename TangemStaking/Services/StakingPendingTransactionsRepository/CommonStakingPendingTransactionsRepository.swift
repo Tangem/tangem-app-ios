@@ -6,7 +6,6 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-import TangemFoundation
 import Foundation
 import Combine
 
@@ -52,7 +51,7 @@ extension CommonStakingPendingTransactionsRepository: StakingPendingTransactions
         let records = cachedRecords.value.filter { record in
             let shouldDelete: Bool = {
                 switch record.type {
-                case .stake, .voteLocked:
+                case .stake, .voteLocked, .restake:
                     balances.contains { balance in
                         compare(record, balance, by: [.validator(.some), .type([.active, .warmup])])
                     }
@@ -60,7 +59,7 @@ extension CommonStakingPendingTransactionsRepository: StakingPendingTransactions
                     !balances.contains { balance in
                         compare(record, balance, by: [.validator(.some), .type([.active]), .amount])
                     }
-                case .withdraw:
+                case .withdraw, .claimUnstaked:
                     !balances.contains { balance in
                         compare(record, balance, by: [.validator(.some), .type([.unstaked]), .amount])
                     }
@@ -173,6 +172,8 @@ private extension CommonStakingPendingTransactionsRepository {
             case .pending(.restakeRewards): .restakeRewards
             case .pending(.voteLocked): .voteLocked
             case .pending(.unlockLocked): .unlockLocked
+            case .pending(.restake): .restake
+            case .pending(.claimUnstaked): .claimUnstaked
             }
         }()
 

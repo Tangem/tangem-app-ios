@@ -25,6 +25,7 @@ final class MainViewModel: ObservableObject {
     @Published var actionSheet: ActionSheetBinder?
 
     @Published var unlockWalletBottomSheetViewModel: UnlockUserWalletBottomSheetViewModel?
+    @Published private(set) var actionButtonsViewModel: ActionButtonsViewModel
 
     let swipeDiscoveryAnimationTrigger = CardsInfoPagerSwipeDiscoveryAnimationTrigger()
 
@@ -40,7 +41,6 @@ final class MainViewModel: ObservableObject {
     private var pendingUserWalletIdsToUpdate: Set<UserWalletId> = []
     private var pendingUserWalletModelsToAdd: [UserWalletModel] = []
     private var shouldRecreatePagesAfterAddingPendingWalletModels = false
-    private var walletNameFieldValidator: AlertFieldValidator?
 
     private var shouldDelayBottomSheetVisibility = true
     private var isLoggingOut = false
@@ -53,12 +53,14 @@ final class MainViewModel: ObservableObject {
         coordinator: MainRoutable,
         swipeDiscoveryHelper: WalletSwipeDiscoveryHelper,
         mainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory,
-        pushNotificationsAvailabilityProvider: PushNotificationsAvailabilityProvider
+        pushNotificationsAvailabilityProvider: PushNotificationsAvailabilityProvider,
+        actionButtonsViewModel: ActionButtonsViewModel
     ) {
         self.coordinator = coordinator
         self.swipeDiscoveryHelper = swipeDiscoveryHelper
         self.mainUserWalletPageBuilderFactory = mainUserWalletPageBuilderFactory
         self.pushNotificationsAvailabilityProvider = pushNotificationsAvailabilityProvider
+        self.actionButtonsViewModel = actionButtonsViewModel
 
         pages = mainUserWalletPageBuilderFactory.createPages(
             from: userWalletRepository.models,
@@ -77,13 +79,15 @@ final class MainViewModel: ObservableObject {
         coordinator: MainRoutable,
         swipeDiscoveryHelper: WalletSwipeDiscoveryHelper,
         mainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory,
-        pushNotificationsAvailabilityProvider: PushNotificationsAvailabilityProvider
+        pushNotificationsAvailabilityProvider: PushNotificationsAvailabilityProvider,
+        actionButtonsViewModel: ActionButtonsViewModel
     ) {
         self.init(
             coordinator: coordinator,
             swipeDiscoveryHelper: swipeDiscoveryHelper,
             mainUserWalletPageBuilderFactory: mainUserWalletPageBuilderFactory,
-            pushNotificationsAvailabilityProvider: pushNotificationsAvailabilityProvider
+            pushNotificationsAvailabilityProvider: pushNotificationsAvailabilityProvider,
+            actionButtonsViewModel: actionButtonsViewModel
         )
 
         if let selectedIndex = pages.firstIndex(where: { $0.id == selectedUserWalletId }) {
@@ -152,6 +156,10 @@ final class MainViewModel: ObservableObject {
         }
         let page = pages[selectedCardIndex]
 
+        if FeatureProvider.isAvailable(.actionButtons) {
+            refreshActionButtonsData(page: page)
+        }
+
         switch page {
         case .singleWallet(_, _, let viewModel):
             viewModel?.onPullToRefresh(completionHandler: completion)
@@ -161,6 +169,17 @@ final class MainViewModel: ObservableObject {
             completion()
         case .visaWallet(_, _, let viewModel):
             viewModel.onPullToRefresh(completionHandler: completion)
+        }
+    }
+
+    func refreshActionButtonsData(page: MainUserWalletPageBuilder) {
+        switch page {
+        case .singleWallet:
+            break
+        case .multiWallet, .lockedWallet, .visaWallet:
+            Task {
+                await actionButtonsViewModel.fetchData()
+            }
         }
     }
 
@@ -181,30 +200,9 @@ final class MainViewModel: ObservableObject {
     func didTapEditWallet() {
         Analytics.log(.buttonEditWalletTapped)
 
-        guard let userWalletModel = userWalletRepository.selectedModel else { return }
-
-        let otherWalletNames = userWalletRepository.models.compactMap { model -> String? in
-            guard model.userWalletId != userWalletModel.userWalletId else { return nil }
-
-            return model.name
+        if let alert = AlertBuilder.makeWalletRenamingAlert(userWalletRepository: userWalletRepository) {
+            AppPresenter.shared.show(alert)
         }
-
-        walletNameFieldValidator = AlertFieldValidator { input in
-            !(otherWalletNames.contains(input) || input.isEmpty)
-        }
-
-        let alert = AlertBuilder.makeAlertControllerWithTextField(
-            title: Localization.userWalletListRenamePopupTitle,
-            fieldPlaceholder: Localization.userWalletListRenamePopupPlaceholder,
-            fieldText: userWalletModel.name,
-            fieldValidator: walletNameFieldValidator
-        ) { newName in
-            guard userWalletModel.name != newName else { return }
-
-            userWalletModel.updateWalletName(newName)
-        }
-
-        AppPresenter.shared.show(alert)
     }
 
     func didTapDeleteWallet() {

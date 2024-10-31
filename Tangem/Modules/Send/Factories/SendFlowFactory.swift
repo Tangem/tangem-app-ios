@@ -145,4 +145,22 @@ struct SendFlowFactory {
 
         return baseBuilder.makeSendViewModel(manager: manager, action: action, router: router)
     }
+
+    func makeOnrampViewModel(router: SendRoutable) -> SendViewModel {
+        let builder = SendDependenciesBuilder(userWalletModel: userWalletModel, walletModel: walletModel)
+        let sendAmountStepBuilder = SendAmountStepBuilder(walletModel: walletModel, builder: builder)
+        let onrampStepBuilder = OnrampStepBuilder()
+        let sendFinishStepBuilder = SendFinishStepBuilder(walletModel: walletModel)
+
+        let baseBuilder = OnrampFlowBaseBuilder(
+            userWalletModel: userWalletModel,
+            walletModel: walletModel,
+            sendAmountStepBuilder: sendAmountStepBuilder,
+            onrampStepBuilder: onrampStepBuilder,
+            sendFinishStepBuilder: sendFinishStepBuilder,
+            builder: builder
+        )
+
+        return baseBuilder.makeSendViewModel(router: router)
+    }
 }

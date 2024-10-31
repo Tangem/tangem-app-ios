@@ -19,7 +19,7 @@ extension KoinosMethod {
             let entryPoint: Int
             let args: String
         }
-        
+
         struct Response: Decodable {
             let result: String?
         }
@@ -31,7 +31,7 @@ extension KoinosMethod {
         struct RequestParams: Encodable {
             let account: String
         }
-        
+
         struct Response: Decodable {
             let rc: String?
         }
@@ -43,7 +43,7 @@ extension KoinosMethod {
         struct RequestParams: Encodable {
             let account: String
         }
-        
+
         struct Response: Decodable {
             let nonce: String
         }
@@ -64,7 +64,7 @@ extension KoinosMethod {
             let transaction: KoinosProtocol.Transaction
             let broadcast: Bool
         }
-        
+
         struct Response: Decodable {
             let receipt: KoinosProtocol.TransactionReceipt
         }
@@ -76,7 +76,7 @@ extension KoinosMethod {
         struct RequestParams: Encodable {
             let transactionIds: [String]
         }
-        
+
         struct Response: Decodable {
             let transactions: [KoinosProtocol.TransactionBlock]?
         }

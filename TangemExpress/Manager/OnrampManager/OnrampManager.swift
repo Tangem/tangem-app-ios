@@ -8,7 +8,7 @@
 
 public protocol OnrampManager {
     // Load country by IP or get from repository
-    func updateCountry() async throws -> OnrampCountry
+    func getCountry() async throws -> OnrampCountry
 
     // Load methods
     func updatePaymentMethod() async throws -> OnrampPaymentMethod
@@ -20,7 +20,7 @@ public protocol OnrampManager {
     func update(amount: Decimal) async throws -> [OnrampProvider]
 
     // load data to make onramp
-    func loadOnrampData(request: OnrampQuotesRequest) async throws -> OnrampRedirectData
+    func loadOnrampData(request: OnrampSwappableItem) async throws -> OnrampRedirectData
 }
 
 public enum OnrampManagerError: LocalizedError {

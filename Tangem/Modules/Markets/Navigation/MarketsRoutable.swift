@@ -10,5 +10,5 @@ import Foundation
 
 protocol MarketsRoutable: AnyObject {
     func openFilterOrderBottonSheet(with provider: MarketsListDataFilterProvider)
-    func openTokenMarketsDetails(for tokenInfo: MarketsTokenModel)
+    func openMarketsTokenDetails(for tokenInfo: MarketsTokenModel)
 }

@@ -35,7 +35,7 @@ class EthereumWalletManager: BaseManager, WalletManager, EthereumTransactionSign
         super.init(wallet: wallet)
     }
 
-    override func update(completion: @escaping (Result<Void, Error>)-> Void) {
+    override func update(completion: @escaping (Result<Void, Error>) -> Void) {
         cancellable = addressConverter.convertToETHAddressPublisher(wallet.address)
             .withWeakCaptureOf(self)
             .flatMap { walletManager, convertedAddress in
@@ -43,7 +43,7 @@ class EthereumWalletManager: BaseManager, WalletManager, EthereumTransactionSign
                     .getInfo(address: convertedAddress, tokens: walletManager.cardTokens)
             }
             .sink(receiveCompletion: { [weak self] completionSubscription in
-                if case let .failure(error) = completionSubscription {
+                if case .failure(let error) = completionSubscription {
                     self?.wallet.clearAmounts()
                     completion(.failure(error))
                 }
@@ -61,7 +61,7 @@ class EthereumWalletManager: BaseManager, WalletManager, EthereumTransactionSign
         return fromPublisher
             .zip(destinationPublisher)
             .withWeakCaptureOf(self)
-            .flatMap { (walletManager, convertedAddresses) -> AnyPublisher<[Fee], Error> in
+            .flatMap { walletManager, convertedAddresses -> AnyPublisher<[Fee], Error> in
                 let (from, destination) = convertedAddresses
                 if walletManager.wallet.blockchain.supportsEIP1559 {
                     return walletManager.getEIP1559Fee(from: from, destination: destination, value: value, data: data)
@@ -71,7 +71,7 @@ class EthereumWalletManager: BaseManager, WalletManager, EthereumTransactionSign
             }
             .eraseToAnyPublisher()
     }
-    
+
     // It can't be into extension because it will be overridden in the `MantleWalletManager`
     /// Build and sign transaction
     /// - Parameters:
@@ -111,7 +111,7 @@ class EthereumWalletManager: BaseManager, WalletManager, EthereumTransactionSign
         }
         .eraseToAnyPublisher()
     }
-    
+
     // It can't be into extension because it will be overridden in the `MantleWalletManager`
     func getGasLimit(to: String, from: String, value: String?, data: String?) -> AnyPublisher<BigUInt, Error> {
         let toPublisher = addressConverter.convertToETHAddressPublisher(to)
@@ -293,7 +293,7 @@ private extension EthereumWalletManager {
 
     func updateWallet(with response: EthereumInfoResponse) {
         wallet.add(coinValue: response.balance)
-        
+
         for tokenBalance in response.tokenBalances {
             switch tokenBalance.value {
             case .success(let value):
@@ -323,10 +323,10 @@ private extension EthereumWalletManager {
 // MARK: - TransactionFeeProvider
 
 extension EthereumWalletManager: TransactionFeeProvider {
-    func getFee(amount: Amount, destination: String) -> AnyPublisher<[Fee],Error> {
+    func getFee(amount: Amount, destination: String) -> AnyPublisher<[Fee], Error> {
         addressConverter.convertToETHAddressPublisher(destination)
             .withWeakCaptureOf(self)
-            .flatMap { walletManager, convertedDestination -> AnyPublisher<[Fee],Error> in
+            .flatMap { walletManager, convertedDestination -> AnyPublisher<[Fee], Error> in
                 switch amount.type {
                 case .coin:
                     guard let hexAmount = amount.encodedForSend else {

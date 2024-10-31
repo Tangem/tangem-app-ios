@@ -10,6 +10,7 @@ import Foundation
 import Combine
 import SwiftUI
 import BlockchainSdk
+import TangemExpress
 
 class SendCoordinator: CoordinatorObject {
     let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?>
@@ -25,11 +26,14 @@ class SendCoordinator: CoordinatorObject {
 
     // MARK: - Child coordinators
 
+    @Published var qrScanViewCoordinator: QRScanViewCoordinator?
+    @Published var onrampProvidersCoordinator: OnrampProvidersCoordinator?
+
     // MARK: - Child view models
 
-    @Published var mailViewModel: MailViewModel? = nil
-    @Published var qrScanViewCoordinator: QRScanViewCoordinator? = nil
+    @Published var mailViewModel: MailViewModel?
     @Published var expressApproveViewModel: ExpressApproveViewModel?
+    @Published var onrampCountryViewModel: OnrampCountryViewModel?
 
     required init(
         dismissAction: @escaping Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?>,
@@ -57,6 +61,8 @@ class SendCoordinator: CoordinatorObject {
             rootViewModel = factory.makeRestakingViewModel(manager: manager, action: action, router: self)
         case .stakingSingleAction(let manager, let action):
             rootViewModel = factory.makeStakingSingleActionViewModel(manager: manager, action: action, router: self)
+        case .onramp:
+            rootViewModel = factory.makeOnrampViewModel(router: self)
         }
     }
 }
@@ -129,6 +135,27 @@ extension SendCoordinator: SendRoutable {
 
 // MARK: - ExpressApproveRoutable
 
+extension SendCoordinator: OnrampRoutable {
+    func openOnrampCountry(country: OnrampCountry, repository: OnrampRepository) {
+        onrampCountryViewModel = .init(
+            country: country,
+            repository: repository,
+            coordinator: self
+        )
+    }
+
+    func openOnrampProviders() {
+        let coordinator = OnrampProvidersCoordinator { [weak self] in
+            self?.onrampProvidersCoordinator = nil
+        }
+
+        coordinator.start(with: .default)
+        onrampProvidersCoordinator = coordinator
+    }
+}
+
+// MARK: - ExpressApproveRoutable
+
 extension SendCoordinator: ExpressApproveRoutable {
     func didSendApproveTransaction() {
         expressApproveViewModel = nil
@@ -136,5 +163,19 @@ extension SendCoordinator: ExpressApproveRoutable {
 
     func userDidCancel() {
         expressApproveViewModel = nil
+    }
+}
+
+// MARK: - OnrampCountryRoutable
+
+extension SendCoordinator: OnrampCountryRoutable {
+    func openChangeCountry() {
+        // Uncomment when add `OnrampCountriesSelector`
+        // onrampCountryViewModel = nil
+        // rootViewModel?.openOnrampCountriesSelector()
+    }
+
+    func dismissConfirmCountryView() {
+        onrampCountryViewModel = nil
     }
 }

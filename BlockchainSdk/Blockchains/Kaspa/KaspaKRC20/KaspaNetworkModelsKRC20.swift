@@ -16,7 +16,7 @@ struct KaspaBalanceResponseKRC20: Codable {
         let dec: String
         let opScoreMod: String
     }
+
     let message: String
     let result: [Result]
 }
-

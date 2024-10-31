@@ -15,6 +15,8 @@ struct AlgorandTransactionInfo {
 
 extension AlgorandTransactionInfo {
     enum Status: String {
-        case committed, still, removed
+        case committed
+        case still
+        case removed
     }
 }

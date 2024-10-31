@@ -6,6 +6,7 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
+import Foundation
 import TangemSdk
 
 struct KoinosWalletAssembly: WalletManagerAssembly {
@@ -13,7 +14,7 @@ struct KoinosWalletAssembly: WalletManagerAssembly {
         let blockchain = input.blockchain
         let isTestnet = blockchain.isTestnet
         let koinosNetworkParams = KoinosNetworkParams(isTestnet: isTestnet)
-        
+
         return KoinosWalletManager(
             wallet: input.wallet,
             networkService: KoinosNetworkService(

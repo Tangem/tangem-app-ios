@@ -27,26 +27,26 @@ struct PolkadotTarget: TargetType {
 
     let node: NodeInfo
     let target: Target
-    
+
     var baseURL: URL {
         node.url
     }
-    
+
     var path: String {
         return ""
     }
-    
+
     var method: Moya.Method {
         return .post
     }
-    
+
     var task: Task {
         var parameters: [String: Any] = [
             "id": 1,
             "jsonrpc": "2.0",
             "method": rpcMethod,
         ]
-        
+
         var params: [Any] = []
         switch target {
         case .storage(let key):
@@ -69,20 +69,20 @@ struct PolkadotTarget: TargetType {
         case .submitExtrinsic(let extrinsic):
             params.append(extrinsic)
         }
-        
+
         parameters["params"] = params
-        
+
         return .requestParameters(parameters: parameters, encoding: JSONEncoding.default)
     }
-    
-    var headers: [String : String]? {
+
+    var headers: [String: String]? {
         var headers = ["Content-Type": "application/json"]
         if let headersKeyInfo = node.headers {
             headers[headersKeyInfo.headerName] = headersKeyInfo.headerValue
         }
         return headers
     }
-    
+
     var rpcMethod: String {
         switch target {
         case .storage:

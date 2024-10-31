@@ -23,7 +23,7 @@ enum XRPBase58 {
     }
 }
 
-fileprivate extension String {
+private extension String {
     init(base58 bytes: Data, alphabet: [UInt8]) {
         var bigInt = BigUInt(bytes)
         let radix = BigUInt(alphabet.count)
@@ -37,7 +37,7 @@ fileprivate extension String {
             bigInt = quotient
         }
 
-        let zerosCount = bytes.prefix(while: {$0 == 0}).count
+        let zerosCount = bytes.prefix(while: { $0 == 0 }).count
         let prefix = Array(repeating: alphabet[0], count: zerosCount)
         let result = prefix + answer.reversed()
 
@@ -45,7 +45,7 @@ fileprivate extension String {
     }
 }
 
-fileprivate extension Data {
+private extension Data {
     init?(base58 string: String, alphabet: [UInt8]) {
         var answer = BigUInt(0)
         var j = BigUInt(1)

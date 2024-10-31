@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TangemExpress
 
 struct SendAmountStepBuilder {
     typealias IO = (input: SendAmountInput, output: SendAmountOutput)
@@ -27,7 +28,8 @@ struct SendAmountStepBuilder {
         let interactor = makeSendAmountInteractor(
             io: io,
             sendAmountValidator: sendAmountValidator,
-            amountModifier: amountModifier
+            amountModifier: amountModifier,
+            type: .crypto
         )
         let viewModel = makeSendAmountViewModel(
             interactor: interactor,
@@ -52,6 +54,21 @@ struct SendAmountStepBuilder {
             tokenIconInfo: builder.makeTokenIconInfo(),
             tokenItem: walletModel.tokenItem
         )
+    }
+
+    func makeOnrampAmountViewModel(
+        io: IO,
+        repository: OnrampRepository,
+        sendAmountValidator: SendAmountValidator
+    ) -> OnrampAmountViewModel {
+        let interactor = makeSendAmountInteractor(
+            io: io,
+            sendAmountValidator: sendAmountValidator,
+            amountModifier: nil,
+            type: .fiat
+        )
+
+        return OnrampAmountViewModel(tokenItem: walletModel.tokenItem, repository: repository, interactor: interactor)
     }
 }
 
@@ -80,7 +97,12 @@ private extension SendAmountStepBuilder {
         )
     }
 
-    private func makeSendAmountInteractor(io: IO, sendAmountValidator: SendAmountValidator, amountModifier: SendAmountModifier?) -> SendAmountInteractor {
+    private func makeSendAmountInteractor(
+        io: IO,
+        sendAmountValidator: SendAmountValidator,
+        amountModifier: SendAmountModifier?,
+        type: SendAmountCalculationType
+    ) -> SendAmountInteractor {
         CommonSendAmountInteractor(
             input: io.input,
             output: io.output,
@@ -88,7 +110,7 @@ private extension SendAmountStepBuilder {
             balanceValue: walletModel.balanceValue ?? 0,
             validator: sendAmountValidator,
             amountModifier: amountModifier,
-            type: .crypto
+            type: type
         )
     }
 }
