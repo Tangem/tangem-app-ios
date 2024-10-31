@@ -15,6 +15,8 @@ final class SingleWalletMainContentViewModel: SingleTokenBaseViewModel, Observab
 
     @Published var notificationInputs: [NotificationViewInput] = []
 
+    private(set) lazy var bottomSheetFooterViewModel = MainBottomSheetFooterViewModel()
+
     // MARK: - Dependencies
 
     private let userWalletNotificationManager: NotificationManager
@@ -74,6 +76,20 @@ final class SingleWalletMainContentViewModel: SingleTokenBaseViewModel, Observab
         default:
             super.didTapNotification(with: id, action: action)
         }
+    }
+
+    override func openMarketsTokenDetails() {
+        guard isMarketsDetailsAvailable else {
+            return
+        }
+
+        let analyticsParams: [Analytics.ParameterKey: String] = [
+            .source: Analytics.ParameterValue.main.rawValue,
+            .token: walletModel.tokenItem.currencySymbol.uppercased(),
+            .blockchain: walletModel.tokenItem.blockchain.displayName,
+        ]
+        Analytics.log(event: .marketsChartScreenOpened, params: analyticsParams)
+        super.openMarketsTokenDetails()
     }
 
     private func bind() {

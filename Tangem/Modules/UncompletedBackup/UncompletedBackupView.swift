@@ -16,7 +16,7 @@ struct UncompletedBackupView: View {
     }
 
     var body: some View {
-        Color("tangem_story_background")
+        Colors.Old.tangemStoryBackground
             .edgesIgnoringSafeArea(.all)
             .actionSheet(item: $viewModel.discardAlert, content: { $0.sheet })
             .alert(item: $viewModel.error, content: { $0.alert })

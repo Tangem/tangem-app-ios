@@ -12,29 +12,33 @@ import TangemStaking
 extension YieldInfo {
     static let mock: YieldInfo = .init(
         id: "tron-trx-native-staking",
-        apy: 0.03712381,
+        isAvailable: true,
         rewardType: .apr,
-        rewardRate: 0.03712381,
-        minimumRequirement: 1,
+        rewardRateValues: .single(0.03712381),
+        enterMinimumRequirement: 1,
+        exitMinimumRequirement: 1,
         validators: [
             .init(
                 address: UUID().uuidString,
                 name: "InfStones",
+                preferred: true,
+                partner: false,
                 iconURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
                 apr: 0.08
             ),
             .init(
                 address: UUID().uuidString,
                 name: "Aconcagua",
+                preferred: true,
+                partner: false,
                 iconURL: URL(string: "https://assets.stakek.it/validators/aconcagua.png"),
                 apr: 0.032
             ),
         ],
-        defaultValidator: nil,
-        item: .init(coinId: "tron", contractAdress: nil),
+        item: .init(network: .tron, contractAddress: nil, name: "", decimals: 0, symbol: ""),
         unbondingPeriod: .days(14),
         warmupPeriod: .days(0),
         rewardClaimingType: .manual,
-        rewardScheduleType: .block
+        rewardScheduleType: .daily
     )
 }

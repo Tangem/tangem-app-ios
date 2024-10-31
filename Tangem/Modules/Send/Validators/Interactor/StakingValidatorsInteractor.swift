@@ -34,31 +34,31 @@ class CommonStakingValidatorsInteractor {
         self.output = output
         self.manager = manager
 
-        setupView()
+        setupValidators()
     }
 }
 
 // MARK: - Private
 
 private extension CommonStakingValidatorsInteractor {
-    func setupView() {
+    func setupValidators() {
         guard let yield = manager.state.yieldInfo else {
             AppLog.shared.debug("StakingManager.Yields not found")
             return
         }
 
-        guard !yield.validators.isEmpty else {
+        let validators = yield.validators.filter { $0.preferred }
+
+        guard !validators.isEmpty else {
             AppLog.shared.debug("Yield.Validators is empty")
             return
         }
 
-        if let defaultValidator = yield.validators.first(where: { $0.address == yield.defaultValidator }) {
-            output?.userDidSelected(validator: defaultValidator)
-        } else if let first = yield.validators.first {
+        if let first = validators.first {
             output?.userDidSelected(validator: first)
         }
 
-        _validators.send(yield.validators)
+        _validators.send(validators)
     }
 }
 

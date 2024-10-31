@@ -11,6 +11,10 @@ import SwiftUI
 struct MainCoordinatorView: CoordinatorView {
     @ObservedObject var coordinator: MainCoordinator
 
+    @State private var responderChainIntrospectionTrigger = UUID()
+
+    @StateObject private var navigationAssertion = MainCoordinatorNavigationAssertion()
+
     var body: some View {
         ZStack {
             if let mainViewModel = coordinator.mainViewModel {
@@ -18,7 +22,23 @@ struct MainCoordinatorView: CoordinatorView {
                     .navigationLinks(links)
             }
 
+            marketsTooltipView
+
             sheets
+        }
+        .onOverlayContentStateChange { [weak coordinator] state in
+            if !state.isCollapsed {
+                coordinator?.hideMarketsTooltip()
+            }
+        }
+        .onAppear {
+            responderChainIntrospectionTrigger = UUID()
+        }
+        .introspectResponderChain(
+            introspectedType: UINavigationController.self,
+            updateOnChangeOf: responderChainIntrospectionTrigger
+        ) { [weak navigationAssertion] navigationController in
+            navigationController.setDelegateSafe(navigationAssertion)
         }
     }
 
@@ -34,6 +54,9 @@ struct MainCoordinatorView: CoordinatorView {
             .navigation(item: $coordinator.stakingDetailsCoordinator) {
                 StakingDetailsCoordinatorView(coordinator: $0)
             }
+            .navigation(item: $coordinator.marketsTokenDetailsCoordinator) {
+                MarketsTokenDetailsCoordinatorView(coordinator: $0)
+            }
     }
 
     @ViewBuilder
@@ -41,9 +64,6 @@ struct MainCoordinatorView: CoordinatorView {
         NavHolder()
             .sheet(item: $coordinator.mailViewModel) {
                 MailView(viewModel: $0)
-            }
-            .sheet(item: $coordinator.legacySendCoordinator) {
-                LegacySendCoordinatorView(coordinator: $0)
             }
             .sheet(item: $coordinator.sendCoordinator) {
                 SendCoordinatorView(coordinator: $0)
@@ -62,10 +82,11 @@ struct MainCoordinatorView: CoordinatorView {
                     })
             }
             .sheet(item: $coordinator.organizeTokensViewModel) { viewModel in
-                OrganizeTokensContainerView(viewModel: viewModel)
-            }
-            .sheet(item: $coordinator.legacyTokenListCoordinator) {
-                LegacyTokenListCoordinatorView(coordinator: $0)
+                NavigationBarHidingView(shouldWrapInNavigationView: true) {
+                    OrganizeTokensView(viewModel: viewModel)
+                        .navigationTitle(Localization.organizeTokensTitle)
+                        .navigationBarTitleDisplayMode(.inline)
+                }
             }
             .sheet(item: $coordinator.visaTransactionDetailsViewModel) {
                 VisaTransactionDetailsView(viewModel: $0)
@@ -94,5 +115,15 @@ struct MainCoordinatorView: CoordinatorView {
 
         NavHolder()
             .requestAppStoreReviewCompat($coordinator.isAppStoreReviewRequested)
+    }
+
+    // Tooltip is placed on top of the other views
+    private var marketsTooltipView: some View {
+        BasicTooltipView(
+            isShowBindingValue: $coordinator.isMarketsTooltipVisible,
+            onHideAction: coordinator.hideMarketsTooltip,
+            title: Localization.marketsTooltipTitle,
+            message: Localization.marketsTooltipMessage
+        )
     }
 }

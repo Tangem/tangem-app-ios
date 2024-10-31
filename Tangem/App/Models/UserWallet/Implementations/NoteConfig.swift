@@ -61,8 +61,8 @@ extension NoteConfig: UserWalletConfig {
         return defaultBlockchains.first
     }
 
-    var warningEvents: [WarningEvent] {
-        WarningEventsFactory().makeWarningEvents(for: card)
+    var generalNotificationEvents: [GeneralNotificationEvent] {
+        GeneralNotificationEventsFactory().makeNotifications(for: card)
     }
 
     var emailData: [EmailCollectedData] {
@@ -149,7 +149,7 @@ extension NoteConfig: UserWalletConfig {
     }
 
     func makeWalletModelsFactory() -> WalletModelsFactory {
-        return CommonWalletModelsFactory(derivationStyle: nil)
+        return CommonWalletModelsFactory(config: self)
     }
 
     func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {

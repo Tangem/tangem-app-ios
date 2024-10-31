@@ -12,14 +12,14 @@ import BlockchainSdk
 import TangemStaking
 
 struct CommonWalletModelsFactory {
-    private let derivationStyle: DerivationStyle?
+    private let config: UserWalletConfig
 
-    init(derivationStyle: DerivationStyle?) {
-        self.derivationStyle = derivationStyle
+    init(config: UserWalletConfig) {
+        self.config = config
     }
 
     private func isDerivationDefault(blockchain: Blockchain, derivationPath: DerivationPath?) -> Bool {
-        guard let derivationStyle else {
+        guard let derivationStyle = config.derivationStyle else {
             return true
         }
 
@@ -28,10 +28,6 @@ struct CommonWalletModelsFactory {
     }
 
     private func makeTransactionHistoryService(tokenItem: TokenItem, addresses: [String]) -> TransactionHistoryService? {
-        if FeatureStorage().useFakeTxHistory, let address = addresses.first {
-            return FakeTransactionHistoryService(blockchain: tokenItem.blockchain, address: address)
-        }
-
         if addresses.count == 1, let address = addresses.first {
             let factory = TransactionHistoryFactoryProvider().factory
 
@@ -64,12 +60,19 @@ struct CommonWalletModelsFactory {
         )
     }
 
-    func makeStakingManager(tokenItem: TokenItem, address: String) -> StakingManager? {
-        guard let integrationId = StakingFeatureProvider().yieldId(for: tokenItem) else {
+    func makeStakingManager(publicKey: Data, tokenItem: TokenItem, address: String) -> StakingManager? {
+        let featureProvider = StakingFeatureProvider(config: config)
+
+        guard let integrationId = featureProvider.yieldId(for: tokenItem),
+              let item = tokenItem.stakingTokenItem else {
             return nil
         }
 
-        let wallet = StakingWallet(item: tokenItem.stakingTokenItem, address: address)
+        let wallet = StakingWallet(
+            item: item,
+            address: address,
+            publicKey: publicKey
+        )
         return StakingDependenciesFactory().makeStakingManager(integrationId: integrationId, wallet: wallet)
     }
 }
@@ -97,7 +100,11 @@ extension CommonWalletModelsFactory: WalletModelsFactory {
             let shouldPerformHealthCheck = shouldPerformHealthCheck(blockchain: currentBlockchain, amountType: .coin)
             let mainCoinModel = WalletModel(
                 walletManager: walletManager,
-                stakingManager: makeStakingManager(tokenItem: tokenItem, address: walletManager.wallet.address),
+                stakingManager: makeStakingManager(
+                    publicKey: walletManager.wallet.publicKey.blockchainKey,
+                    tokenItem: tokenItem,
+                    address: walletManager.wallet.address
+                ),
                 transactionHistoryService: transactionHistoryService,
                 amountType: .coin,
                 shouldPerformHealthCheck: shouldPerformHealthCheck,
@@ -118,7 +125,11 @@ extension CommonWalletModelsFactory: WalletModelsFactory {
                 let shouldPerformHealthCheck = shouldPerformHealthCheck(blockchain: currentBlockchain, amountType: amountType)
                 let tokenModel = WalletModel(
                     walletManager: walletManager,
-                    stakingManager: makeStakingManager(tokenItem: tokenItem, address: walletManager.wallet.address),
+                    stakingManager: makeStakingManager(
+                        publicKey: walletManager.wallet.publicKey.blockchainKey,
+                        tokenItem: tokenItem,
+                        address: walletManager.wallet.address
+                    ),
                     transactionHistoryService: transactionHistoryService,
                     amountType: amountType,
                     shouldPerformHealthCheck: shouldPerformHealthCheck,

@@ -13,7 +13,7 @@ import BlockchainSdk
 typealias WalletModelId = Int
 
 protocol TokenItemContextActionsProvider: AnyObject {
-    func buildContextActions(for tokenItemViewModel: TokenItemViewModel) -> [TokenActionType]
+    func buildContextActions(for tokenItemViewModel: TokenItemViewModel) -> [TokenContextActionsSection]
 }
 
 protocol TokenItemContextActionDelegate: AnyObject {
@@ -28,7 +28,8 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     @Published var priceChangeState: TokenPriceChangeView.State = .loading
     @Published var tokenPrice: LoadableTextView.State = .loading
     @Published var hasPendingTransactions: Bool = false
-    @Published var contextActions: [TokenActionType] = []
+    @Published var contextActionSections: [TokenContextActionsSection] = []
+    @Published var isStaked: Bool = false
 
     @Published private var missingDerivation: Bool = false
     @Published private var networkUnreachable: Bool = false
@@ -60,7 +61,7 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     private let tokenTapped: (WalletModelId) -> Void
     private let infoProvider: TokenItemInfoProvider
     private let priceChangeUtility = PriceChangeUtility()
-    private let priceFormatter = CommonTokenPriceFormatter()
+    private let priceFormatter = TokenItemPriceFormatter()
 
     private var bag = Set<AnyCancellable>()
     private weak var contextActionsProvider: TokenItemContextActionsProvider?
@@ -109,6 +110,16 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
                 self?.buildContextActions()
             }
             .store(in: &bag)
+
+        infoProvider.isStakedPublisher
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] isStaked in
+                guard let self else { return }
+                self.isStaked = isStaked
+                // balances may be updated on changing staking state
+                setupState(infoProvider.tokenItemState)
+            })
+            .store(in: &bag)
     }
 
     private func setupState(_ state: TokenItemViewState) {
@@ -153,13 +164,13 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
             return
         }
 
-        priceChangeState = priceChangeUtility.convertToPriceChangeState(change: quote.priceChange24h)
+        priceChangeState = priceChangeUtility.convertToPriceChangeState(changePercent: quote.priceChange24h)
 
-        let priceText = priceFormatter.formatFiatBalance(quote.price)
+        let priceText = priceFormatter.formatPrice(quote.price)
         tokenPrice = .loaded(text: priceText)
     }
 
     private func buildContextActions() {
-        contextActions = contextActionsProvider?.buildContextActions(for: self) ?? []
+        contextActionSections = contextActionsProvider?.buildContextActions(for: self) ?? []
     }
 }

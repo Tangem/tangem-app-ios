@@ -7,28 +7,52 @@
 //
 
 import Foundation
+import Combine
 
 class CommonStakingStepsManager {
+    private let provider: StakingModelStateProvider
     private let amountStep: SendAmountStep
     private let validatorsStep: StakingValidatorsStep
     private let summaryStep: SendSummaryStep
     private let finishStep: SendFinishStep
 
     private var stack: [SendStep]
+    private var bag: Set<AnyCancellable> = []
+
     private weak var output: SendStepsManagerOutput?
 
     init(
+        provider: StakingModelStateProvider,
         amountStep: SendAmountStep,
         validatorsStep: StakingValidatorsStep,
         summaryStep: SendSummaryStep,
         finishStep: SendFinishStep
     ) {
+        self.provider = provider
         self.amountStep = amountStep
         self.validatorsStep = validatorsStep
         self.summaryStep = summaryStep
         self.finishStep = finishStep
 
         stack = [amountStep]
+        bind()
+    }
+
+    private func bind() {
+        provider.state
+            .withWeakCaptureOf(self)
+            .sink { stepsManager, state in
+                switch state {
+                case .loading, .networkError, .validationError:
+                    break
+                case .readyToApprove:
+                    stepsManager.output?.update(flowActionType: .approve)
+
+                case .approveTransactionInProgress, .readyToStake:
+                    stepsManager.output?.update(flowActionType: .stake)
+                }
+            }
+            .store(in: &bag)
     }
 
     private func currentStep() -> SendStep {
@@ -55,14 +79,12 @@ class CommonStakingStepsManager {
 
         switch step.type {
         case .summary:
-            output?.update(state: .moveAndFade(step: step, action: .send))
+            output?.update(state: .init(step: step, action: .action))
         case .finish:
-            output?.update(state: .moveAndFade(step: step, action: .close))
+            output?.update(state: .init(step: step, action: .close))
         case .amount where isEditAction, .validators where isEditAction:
-            output?.update(state: .moveAndFade(step: step, action: .continue))
-        case .amount:
-            output?.update(state: .next(step: step))
-        case .destination, .validators, .fee:
+            output?.update(state: .init(step: step, action: .continue))
+        case .amount, .destination, .validators, .fee:
             assertionFailure("There is no next step")
         }
     }
@@ -73,9 +95,9 @@ class CommonStakingStepsManager {
 
         switch step.type {
         case .summary:
-            output?.update(state: .moveAndFade(step: step, action: .send))
+            output?.update(state: .init(step: step, action: .action))
         default:
-            output?.update(state: .back(step: step))
+            assertionFailure("There is no back step")
         }
     }
 }
@@ -83,8 +105,16 @@ class CommonStakingStepsManager {
 // MARK: - SendStepsManager
 
 extension CommonStakingStepsManager: SendStepsManager {
+    var initialKeyboardState: Bool { true }
+
+    var initialFlowActionType: SendFlowActionType { .stake }
+
     var initialState: SendStepsManagerViewState {
-        .init(step: amountStep, animation: .slideForward, mainButtonType: .next, backButtonVisible: false)
+        .init(step: amountStep, action: .next, backButtonVisible: false)
+    }
+
+    var shouldShowDismissAlert: Bool {
+        stack.contains(where: { $0.type.isSummary })
     }
 
     func set(output: SendStepsManagerOutput) {

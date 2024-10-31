@@ -8,13 +8,12 @@
 
 import Foundation
 import Combine
+import BlockchainSdk
 
 protocol SendBaseInput: AnyObject {
-    var isFeeIncluded: Bool { get }
-
-    var isLoading: AnyPublisher<Bool, Never> { get }
+    var actionInProcessing: AnyPublisher<Bool, Never> { get }
 }
 
 protocol SendBaseOutput: AnyObject {
-    func sendTransaction() -> AnyPublisher<SendTransactionDispatcherResult, Never>
+    func performAction() async throws -> SendTransactionDispatcherResult
 }

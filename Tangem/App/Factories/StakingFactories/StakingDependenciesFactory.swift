@@ -19,14 +19,24 @@ class StakingDependenciesFactory {
         )
     }
 
+    func makeStakingPendingTransactionsRepository() -> StakingPendingTransactionsRepository {
+        TangemStakingFactory().makeStakingPendingTransactionsRepository(
+            storage: CommonStakingPendingTransactionsStorage(),
+            logger: AppLog.shared
+        )
+    }
+
     func makeStakingManager(integrationId: String, wallet: StakingWallet) -> StakingManager {
         let provider = makeStakingAPIProvider()
+        let repository = makeStakingPendingTransactionsRepository()
 
         return TangemStakingFactory().makeStakingManager(
             integrationId: integrationId,
             wallet: wallet,
             provider: provider,
-            logger: AppLog.shared
+            repository: repository,
+            logger: AppLog.shared,
+            analyticsLogger: CommonStakingAnalyticsLogger()
         )
     }
 

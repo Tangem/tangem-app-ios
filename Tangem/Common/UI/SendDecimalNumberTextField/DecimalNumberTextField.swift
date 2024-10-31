@@ -16,21 +16,14 @@ struct DecimalNumberTextField: View {
     private var placeholder: String = "0"
     private var appearance: Appearance = .init()
 
-    // Internal state
-    @Binding private var textFieldText: String
-
-    init(
-        viewModel: ViewModel,
-        textFieldText: Binding<String>
-    ) {
+    init(viewModel: ViewModel) {
         self.viewModel = viewModel
-        _textFieldText = textFieldText
     }
 
     var body: some View {
         ZStack(alignment: .leading) {
             // A dummy invisible view that controls the layout (i.e. limits the max width) of `DecimalNumberTextField`
-            Text(textFieldText.isEmpty ? placeholder : textFieldText)
+            Text(viewModel.textFieldText.isEmpty ? placeholder : viewModel.textFieldText)
                 .font(appearance.font)
                 .hidden(true)
                 .layoutPriority(1)
@@ -41,28 +34,32 @@ struct DecimalNumberTextField: View {
     }
 
     private var textField: some View {
-        TextField(text: $textFieldText, prompt: prompt, label: {})
+        TextField(text: $viewModel.textFieldText, prompt: prompt, label: {})
             .style(appearance.font, color: appearance.textColor)
             .tint(appearance.textColor)
             .labelsHidden()
             .keyboardType(.decimalPad)
-            .onChange(of: viewModel.decimalValue) { newDecimalValue in
-                switch newDecimalValue {
-                case .none, .internal:
-                    // Do nothing. Because all internal values already updated
-                    break
-                case .external(let value):
-                    // If the decimalValue did updated from external place
-                    // We have to update the private values
-                    let formattedNewValue = viewModel.format(value: value)
-                    updateValues(with: formattedNewValue)
-                }
-            }
-            .onChange(of: textFieldText) { newValue in
+            .onChange(of: viewModel.textFieldText) { newValue in
                 updateValues(with: newValue)
             }
-            .onAppear {
-                textFieldText = viewModel.value.map { viewModel.format(value: $0) } ?? ""
+            .modifyView { view in
+                // We have to check `initial` decimalValue when textField is appearing
+                // On iOS 17 we have `initial: true` flag to support this behaviour
+                // On previous iOS we use `onAppear` to handle this behaviour
+                if #available(iOS 17.0, *) {
+                    view
+                        .onChange(of: viewModel.decimalValue, initial: true) { _, newDecimalValue in
+                            updateValues(decimalValue: newDecimalValue)
+                        }
+                } else {
+                    view
+                        .onChange(of: viewModel.decimalValue) { newDecimalValue in
+                            updateValues(decimalValue: newDecimalValue)
+                        }
+                        .onAppear {
+                            updateValues(decimalValue: viewModel.decimalValue)
+                        }
+                }
             }
     }
 
@@ -72,6 +69,19 @@ struct DecimalNumberTextField: View {
             // We should have the `Text` type
             .font(appearance.font)
             .foregroundColor(appearance.placeholderColor)
+    }
+
+    private func updateValues(decimalValue: ViewModel.DecimalValue?) {
+        switch decimalValue {
+        case .none, .internal:
+            // Do nothing. Because all internal values already updated
+            break
+        case .external(let value):
+            // If the decimalValue did updated from external place
+            // We have to update the private values
+            let formattedNewValue = viewModel.format(value: value)
+            updateValues(with: formattedNewValue)
+        }
     }
 
     private func updateValues(with newValue: String) {
@@ -101,7 +111,7 @@ struct DecimalNumberTextField: View {
         numberString = viewModel.format(value: numberString)
 
         // Update private `@State` for display not correct number, like 0,000
-        textFieldText = numberString
+        viewModel.textFieldText = numberString
 
         if let value = viewModel.mapToDecimal(string: numberString) {
             viewModel.update(decimalValue: .internal(value))
@@ -125,10 +135,7 @@ extension DecimalNumberTextField: Setupable {
 
 struct DecimalNumberTextField_Previews: PreviewProvider {
     static var previews: some View {
-        DecimalNumberTextField(
-            viewModel: .init(maximumFractionDigits: 8),
-            textFieldText: .constant("")
-        )
+        DecimalNumberTextField(viewModel: .init(maximumFractionDigits: 8))
     }
 }
 
@@ -136,6 +143,9 @@ struct DecimalNumberTextField_Previews: PreviewProvider {
 
 extension DecimalNumberTextField {
     class ViewModel: ObservableObject {
+        @Published var textFieldText: String = ""
+        @Published var measuredTextSize: CGSize = .zero
+
         // Public properties
         var value: Decimal? {
             decimalValue?.value

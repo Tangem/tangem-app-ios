@@ -9,13 +9,19 @@
 import SwiftUI
 
 extension View {
-    func descriptionBottomSheet(info: Binding<DescriptionBottomSheetInfo?>, sheetHeight: Binding<CGFloat>, backgroundColor: Color?) -> some View {
-        SelfSizingDetentBottomSheet(
-            item: info,
-            detents: [.custom(sheetHeight.wrappedValue)],
-            settings: .init(backgroundColor: backgroundColor, contentHeightBinding: sheetHeight)
-        ) { info in
-            DescriptionBottomSheetView(info: info, sheetHeight: sheetHeight)
+    @ViewBuilder
+    func tokenDescriptionBottomSheet(
+        info: Binding<DescriptionBottomSheetInfo?>,
+        backgroundColor: Color?,
+        onGeneratedAITapAction: (() -> Void)?
+    ) -> some View {
+        sheet(item: info) { info in
+            TokenDescriptionBottomSheetView(info: info, generatedWithAIAction: onGeneratedAITapAction)
+                .adaptivePresentationDetents()
+                .background(
+                    backgroundColor
+                        .ignoresSafeArea(edges: .bottom)
+                )
         }
     }
 }

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import class Combine.AnyCancellable
 
 @discardableResult
 func runTask(_ code: @escaping () async -> Void) -> Task<Void, Never> {
@@ -67,7 +68,7 @@ func runOnMain<T>(_ code: () throws -> T) rethrows -> T {
 
 extension Task where Success == Never, Failure == Never {
     static func sleep(seconds: Double) async throws {
-        let duration = UInt64(seconds * nanoMultiplier)
+        let duration = UInt64(abs(seconds)) * NSEC_PER_SEC
         try await Task.sleep(nanoseconds: duration)
     }
 }
@@ -125,7 +126,6 @@ enum TaskError: Error {
 
 extension Task where Success == Never, Failure == Never {
     static var defaultCancellationCheckInterval: TimeInterval { 0.1 }
-    static var nanoMultiplier: Double { 1_000_000_000 }
 
     /// Like `Task.sleep` but with cancellation support.
     ///
@@ -140,13 +140,35 @@ extension Task where Success == Never, Failure == Never {
     /// - Parameter deadline: Sleep at least until this time. The actual time the sleep ends can be later.
     /// - Parameter cancellationCheckInterval: The interval in seconds between cancellation checks.
     static func sleepCancellable(until deadline: Date, cancellationCheckInterval: TimeInterval = defaultCancellationCheckInterval) async throws {
-        let cancellationCheckIntervalUint64 = UInt64(cancellationCheckInterval * nanoMultiplier)
+        let cancellationCheckIntervalUint64 = UInt64(cancellationCheckInterval) * NSEC_PER_SEC
         while Date() < deadline {
             if Task.isCancelled {
                 break
             }
             // Sleep for a while between cancellation checks.
             try await Task.sleep(nanoseconds: cancellationCheckIntervalUint64)
+        }
+    }
+}
+
+extension Task {
+    func eraseToAnyCancellable() -> AnyCancellable {
+        return AnyCancellable(cancel)
+    }
+}
+
+extension Task where Failure == Error {
+    static func delayed(
+        withDelay delaySeconds: TimeInterval,
+        priority: TaskPriority? = nil,
+        operation: @escaping @Sendable () async throws -> Success
+    ) -> Task {
+        Task(priority: priority) {
+            if delaySeconds > 0 {
+                try await Task<Never, Never>.sleep(seconds: delaySeconds)
+            }
+            try Task<Never, Never>.checkCancellation()
+            return try await operation()
         }
     }
 }

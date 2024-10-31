@@ -8,14 +8,27 @@
 
 import Foundation
 import BlockchainSdk
+import TangemStaking
 
 class StakingFeatureProvider {
-    var isStakingAvailable: Bool {
-        FeatureProvider.isAvailable(.staking)
+    private let longHashesSupported: Bool
+    private let isFeatureAvailable: Bool
+
+    init(config: UserWalletConfig) {
+        longHashesSupported = config.hasFeature(.longHashes)
+        isFeatureAvailable = config.isFeatureVisible(.staking)
+    }
+
+    static var isPartialUnstakeAvailable: Bool {
+        FeatureProvider.isAvailable(.partialUnstake)
     }
 
     func yieldId(for tokenItem: TokenItem) -> String? {
-        guard isStakingAvailable else {
+        guard isFeatureAvailable else {
+            return nil
+        }
+
+        if tokenItem.hasLongHashesForStaking, !longHashesSupported {
             return nil
         }
 
@@ -23,15 +36,20 @@ class StakingFeatureProvider {
             return nil
         }
 
-        let networkId = tokenItem.blockchain.networkId
-        let isSupported = supportedBlockchainIds.contains(networkId)
-        let isTesting = FeatureStorage().stakingBlockchainsIds.contains(networkId)
+        guard let stakingTokenItem = tokenItem.stakingTokenItem else {
+            return nil
+        }
+
+        let item = StakingItem(network: stakingTokenItem.network, contractAddress: stakingTokenItem.contractAddress)
+        let itemID = item.id
+        let isSupported = StakingFeatureProvider.supportedBlockchainItems.contains(item)
+        let isTesting = FeatureStorage().stakingBlockchainsIds.contains(itemID)
 
         guard isSupported || isTesting else {
             return nil
         }
 
-        guard let yieldId = yieldIds[tokenItem.blockchain.networkId] else {
+        guard let yieldId = yieldIds(item: item) else {
             return nil
         }
 
@@ -41,34 +59,54 @@ class StakingFeatureProvider {
     func isAvailable(for tokenItem: TokenItem) -> Bool {
         yieldId(for: tokenItem) != nil
     }
+}
 
-    func canStake(with userWalletModel: UserWalletModel, by walletModel: WalletModel) -> Bool {
+extension StakingFeatureProvider {
+    static var supportedBlockchainItems: Set<StakingItem> {
         [
-            isAvailable(for: walletModel.tokenItem),
-            userWalletModel.config.isFeatureVisible(.staking),
-            yieldId(for: walletModel.tokenItem) != nil,
-            !walletModel.isCustom,
-        ].allConforms { $0 }
+            StakingItem(network: .solana, contractAddress: nil),
+            StakingItem(network: .cosmos, contractAddress: nil),
+            StakingItem(network: .tron, contractAddress: nil),
+            StakingItem(network: .ethereum, contractAddress: StakingConstants.polygonContractAddress),
+        ]
+    }
+
+    static var testableBlockchainItems: Set<StakingItem> {
+        [
+        ]
+    }
+
+    func yieldIds(item: StakingItem) -> String? {
+        switch (item.network, item.contractAddress) {
+        case (.solana, .none):
+            return "solana-sol-native-multivalidator-staking"
+        case (.cosmos, .none):
+            return "cosmos-atom-native-staking"
+        case (.ethereum, StakingConstants.polygonContractAddress):
+            return "ethereum-matic-native-staking"
+        case (.tron, .none):
+            return "tron-trx-native-staking"
+        default:
+            return nil
+        }
     }
 }
 
 extension StakingFeatureProvider {
-    var supportedBlockchainIds: Set<String> {
-        [
-        ]
-    }
+    struct StakingItem: Hashable {
+        let network: StakeKitNetworkType
+        let contractAddress: String?
 
-    var testableBlockchainIds: Set<String> {
-        [
-            "solana",
-            "cosmos",
-        ]
-    }
+        var id: String {
+            var id = network.rawValue
+            if let contractAddress {
+                id += "_\(contractAddress)"
+            }
+            return id
+        }
 
-    var yieldIds: [String: String] {
-        [
-            "solana": "solana-sol-native-multivalidator-staking",
-            "cosmos": "cosmos-atom-native-staking",
-        ]
+        var name: String {
+            "\(network.rawValue.capitalizingFirstLetter())\(contractAddress.map { "\nToken: (\($0))" } ?? "")"
+        }
     }
 }

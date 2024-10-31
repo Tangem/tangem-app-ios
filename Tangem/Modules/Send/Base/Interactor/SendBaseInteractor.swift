@@ -8,57 +8,29 @@
 
 import Foundation
 import Combine
-import BlockchainSdk
 
 protocol SendBaseInteractor {
-    var isLoading: AnyPublisher<Bool, Never> { get }
+    var actionInProcessing: AnyPublisher<Bool, Never> { get }
 
-    func send() -> AnyPublisher<SendTransactionDispatcherResult, Never>
-    func makeMailData(transaction: BSDKTransaction, error: SendTxError) -> (dataCollector: EmailDataCollector, recipient: String)
+    func action() async throws -> SendTransactionDispatcherResult
 }
 
 class CommonSendBaseInteractor {
     private let input: SendBaseInput
     private let output: SendBaseOutput
 
-    private let walletModel: WalletModel
-    private let emailDataProvider: EmailDataProvider
-
-    init(
-        input: SendBaseInput,
-        output: SendBaseOutput,
-        walletModel: WalletModel,
-        emailDataProvider: EmailDataProvider
-    ) {
+    init(input: SendBaseInput, output: SendBaseOutput) {
         self.input = input
         self.output = output
-        self.walletModel = walletModel
-        self.emailDataProvider = emailDataProvider
     }
 }
 
 extension CommonSendBaseInteractor: SendBaseInteractor {
-    var isLoading: AnyPublisher<Bool, Never> {
-        input.isLoading
+    var actionInProcessing: AnyPublisher<Bool, Never> {
+        input.actionInProcessing
     }
 
-    func send() -> AnyPublisher<SendTransactionDispatcherResult, Never> {
-        output.sendTransaction()
-    }
-
-    func makeMailData(transaction: BSDKTransaction, error: SendTxError) -> (dataCollector: EmailDataCollector, recipient: String) {
-        let emailDataCollector = SendScreenDataCollector(
-            userWalletEmailData: emailDataProvider.emailData,
-            walletModel: walletModel,
-            fee: transaction.fee.amount,
-            destination: transaction.destinationAddress,
-            amount: transaction.amount,
-            isFeeIncluded: input.isFeeIncluded,
-            lastError: error
-        )
-
-        let recipient = emailDataProvider.emailConfig?.recipient ?? EmailConfig.default.recipient
-
-        return (dataCollector: emailDataCollector, recipient: recipient)
+    func action() async throws -> SendTransactionDispatcherResult {
+        try await output.performAction()
     }
 }

@@ -66,8 +66,8 @@ extension Start2CoinConfig: UserWalletConfig {
         return defaultBlockchains.first
     }
 
-    var warningEvents: [WarningEvent] {
-        WarningEventsFactory().makeWarningEvents(for: card)
+    var generalNotificationEvents: [GeneralNotificationEvent] {
+        GeneralNotificationEventsFactory().makeNotifications(for: card)
     }
 
     var emailData: [EmailCollectedData] {
@@ -156,7 +156,7 @@ extension Start2CoinConfig: UserWalletConfig {
     }
 
     func makeWalletModelsFactory() -> WalletModelsFactory {
-        return CommonWalletModelsFactory(derivationStyle: nil)
+        return CommonWalletModelsFactory(config: self)
     }
 
     func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {

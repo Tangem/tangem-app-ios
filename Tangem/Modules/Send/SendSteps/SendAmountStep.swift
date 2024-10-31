@@ -14,15 +14,18 @@ class SendAmountStep {
     private let viewModel: SendAmountViewModel
     private let interactor: SendAmountInteractor
     private let sendFeeLoader: SendFeeLoader
+    private let source: SendModel.PredefinedValues.Source
 
     init(
         viewModel: SendAmountViewModel,
         interactor: SendAmountInteractor,
-        sendFeeLoader: SendFeeLoader
+        sendFeeLoader: SendFeeLoader,
+        source: SendModel.PredefinedValues.Source
     ) {
         self.viewModel = viewModel
         self.interactor = interactor
         self.sendFeeLoader = sendFeeLoader
+        self.source = source
     }
 }
 
@@ -33,25 +36,40 @@ extension SendAmountStep: SendStep {
 
     var type: SendStepType { .amount(viewModel) }
 
+    var sendStepViewAnimatable: any SendStepViewAnimatable { viewModel }
+
     var isValidPublisher: AnyPublisher<Bool, Never> {
         interactor.isValidPublisher.eraseToAnyPublisher()
     }
 
     func willAppear(previous step: any SendStep) {
-        guard step.type.isSummary else {
-            return
+        switch (source, step.type.isSummary) {
+        case (.staking, false):
+            Analytics.log(.stakingScreenReopened, params: [.source: .amount])
+        case (.staking, true):
+            Analytics.log(.stakingAmountScreenOpened)
+        case (_, true):
+            Analytics.log(.sendScreenReopened, params: [.source: .amount])
+        case (_, false):
+            Analytics.log(.sendAmountScreenOpened)
         }
-
-        viewModel.setAnimatingAuxiliaryViewsOnAppear()
     }
 
     func willDisappear(next step: SendStep) {
-        UIApplication.shared.endEditing()
-
         guard step.type.isSummary else {
             return
         }
 
         sendFeeLoader.updateFees()
+    }
+}
+
+// MARK: - Constants
+
+extension SendAmountStep {
+    enum Constants {
+        static let amountMinTextScale = 0.5
+        /// Fiat always has 2 fraction digits.
+        static let fiatMaximumFractionDigits = 2
     }
 }

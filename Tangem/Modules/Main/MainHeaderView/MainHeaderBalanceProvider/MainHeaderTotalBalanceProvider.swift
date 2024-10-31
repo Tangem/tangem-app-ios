@@ -48,6 +48,12 @@ class CommonMainHeaderBalanceProvider {
                 case .loading:
                     headerBalanceSubject.send(.loading)
                 case .loaded(let balance):
+                    guard balance.allTokensBalancesIncluded else {
+                        // We didn't show any error in header, so no need to specify error
+                        headerBalanceSubject.send(.failedToLoad(error: ""))
+                        return
+                    }
+
                     var balanceToFormat = balance.balance
                     if balanceToFormat == nil, userWalletStateInfoProvider.isTokensListEmpty {
                         balanceToFormat = 0

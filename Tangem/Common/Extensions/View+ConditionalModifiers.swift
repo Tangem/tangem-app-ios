@@ -9,6 +9,16 @@
 import SwiftUI
 
 public extension View {
+    /// Applies a modifier to a view
+    ///
+    /// - Parameters:
+    ///   - content: The modifier to apply to the view.
+    /// - Returns: The modified view.
+    @ViewBuilder
+    func modifyView<T: View>(@ViewBuilder content: (Self) -> T) -> some View {
+        content(self)
+    }
+
     /// Applies a modifier to a view conditionally.
     ///
     /// - Parameters:
@@ -18,7 +28,7 @@ public extension View {
     @ViewBuilder
     func modifier<T: View>(
         if condition: @autoclosure () -> Bool,
-        then content: (Self) -> T
+        @ViewBuilder then content: (Self) -> T
     ) -> some View {
         if condition() {
             content(self)
@@ -37,8 +47,8 @@ public extension View {
     @ViewBuilder
     func modifier<TrueContent: View, FalseContent: View>(
         if condition: @autoclosure () -> Bool,
-        then trueContent: (Self) -> TrueContent,
-        else falseContent: (Self) -> FalseContent
+        @ViewBuilder then trueContent: (Self) -> TrueContent,
+        @ViewBuilder else falseContent: (Self) -> FalseContent
     ) -> some View {
         if condition() {
             trueContent(self)

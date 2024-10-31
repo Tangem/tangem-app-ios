@@ -10,33 +10,114 @@ import SwiftUI
 
 struct SendSummaryView: View {
     @ObservedObject var viewModel: SendSummaryViewModel
+    let transitionService: SendTransitionService
     let namespace: Namespace
 
-    private var amountMinTextScale: CGFloat?
+    private let coordinateSpaceName = UUID()
 
-    init(viewModel: SendSummaryViewModel, namespace: Namespace) {
-        self.viewModel = viewModel
-        self.namespace = namespace
-    }
-
+    // We use ZStack for each step to hold the place where
+    // the compact version of the step will be appeared.
     var body: some View {
         VStack(alignment: .center, spacing: 14) {
             GroupedScrollView(spacing: 14) {
-                if !viewModel.animatingDestinationOnAppear,
-                   let addressTextViewHeightModel = viewModel.addressTextViewHeightModel {
-                    destinationSection(addressTextViewHeightModel: addressTextViewHeightModel)
+                if let sendDestinationViewModel = viewModel.sendDestinationCompactViewModel {
+                    ZStack {
+                        if viewModel.destinationVisible {
+                            SendDestinationCompactView(
+                                viewModel: sendDestinationViewModel,
+                                type: viewModel.destinationCompactViewType,
+                                namespace: .init(id: namespace.id, names: namespace.names)
+                            )
+                            .readContentOffset(
+                                inCoordinateSpace: .named(coordinateSpaceName),
+                                onChange: { transitionService.destinationContentOffset = $0 }
+                            )
+                            .transition(
+                                transitionService.transitionToDestinationCompactView(
+                                    isEditMode: viewModel.destinationEditMode
+                                )
+                            )
+                            .id(viewModel.sendDestinationCompactViewModelId)
+                        }
+                    }
+                    .frame(height: sendDestinationViewModel.viewSize.height)
+                    .infinityFrame(axis: .horizontal)
+                    .zIndex(viewModel.destinationExpanding ? 1 : 0)
                 }
 
-                if !viewModel.animatingAmountOnAppear {
-                    amountSection
+                if let sendAmountViewModel = viewModel.sendAmountCompactViewModel {
+                    ZStack {
+                        if viewModel.amountVisible {
+                            SendAmountCompactView(
+                                viewModel: sendAmountViewModel,
+                                type: viewModel.amountCompactViewType,
+                                namespace: .init(id: namespace.id, names: namespace.names)
+                            )
+                            .readContentOffset(
+                                inCoordinateSpace: .named(coordinateSpaceName),
+                                onChange: { transitionService.amountContentOffset = $0 }
+                            )
+                            .transition(
+                                transitionService.transitionToAmountCompactView(
+                                    isEditMode: viewModel.amountEditMode
+                                )
+                            )
+                            .id(viewModel.sendAmountCompactViewModelId)
+                        }
+                    }
+                    .frame(height: sendAmountViewModel.viewSize.height)
+                    .infinityFrame(axis: .horizontal)
+                    .zIndex(viewModel.amountExpanding ? 1 : 0)
                 }
 
-                if !viewModel.animatingValidatorOnAppear {
-                    validatorSection
+                if let stakingValidatorsCompactViewModel = viewModel.stakingValidatorsCompactViewModel {
+                    ZStack {
+                        if viewModel.validatorVisible {
+                            StakingValidatorsCompactView(
+                                viewModel: stakingValidatorsCompactViewModel,
+                                type: .enabled(action: viewModel.userDidTapValidator),
+                                namespace: .init(id: namespace.id, names: namespace.names)
+                            )
+                            .readContentOffset(
+                                inCoordinateSpace: .named(coordinateSpaceName),
+                                onChange: { transitionService.validatorsContentOffset = $0 }
+                            )
+                            .transition(
+                                transitionService.transitionToValidatorsCompactView(
+                                    isEditMode: viewModel.validatorEditMode
+                                )
+                            )
+                            .id(viewModel.stakingValidatorsCompactViewModelId)
+                        }
+                    }
+                    .frame(height: stakingValidatorsCompactViewModel.viewSize.height)
+                    .infinityFrame(axis: .horizontal)
+                    .zIndex(viewModel.validatorExpanding ? 1 : 0)
                 }
 
-                if !viewModel.animatingFeeOnAppear {
-                    feeSection
+                if let sendFeeCompactViewModel = viewModel.sendFeeCompactViewModel {
+                    ZStack {
+                        if viewModel.feeVisible {
+                            SendFeeCompactView(
+                                viewModel: sendFeeCompactViewModel,
+                                type: .enabled(action: viewModel.userDidTapFee),
+                                namespace: .init(id: namespace.id, names: namespace.names)
+                            )
+                            .readContentOffset(
+                                inCoordinateSpace: .named(coordinateSpaceName),
+                                onChange: { transitionService.feeContentOffset = $0 }
+                            )
+                            .transition(
+                                transitionService.transitionToFeeCompactView(
+                                    isEditMode: viewModel.feeEditMode
+                                )
+                            )
+                            .id(viewModel.sendFeeCompactViewModelId)
+                        }
+                    }
+                    .frame(height: sendFeeCompactViewModel.viewSize.height)
+                    .infinityFrame(axis: .horizontal)
+                    .zIndex(viewModel.feeExpanding ? 1 : 0)
                 }
 
                 if viewModel.showHint {
@@ -56,144 +137,18 @@ struct SendSummaryView: View {
                     NotificationView(input: input)
                 }
             }
+            .coordinateSpace(name: coordinateSpaceName)
 
             descriptionView
         }
-        .animation(SendView.Constants.defaultAnimation, value: viewModel.transactionDescriptionIsVisible)
-        .background(Colors.Background.tertiary.edgesIgnoringSafeArea(.all))
-        .alert(item: $viewModel.alert) { $0.alert }
+        .transition(transitionService.summaryViewTransition)
+        .animation(SendTransitionService.Constants.defaultAnimation, value: viewModel.destinationVisible)
+        .animation(SendTransitionService.Constants.defaultAnimation, value: viewModel.amountVisible)
+        .animation(SendTransitionService.Constants.defaultAnimation, value: viewModel.validatorVisible)
+        .animation(SendTransitionService.Constants.defaultAnimation, value: viewModel.feeVisible)
+        .animation(SendTransitionService.Constants.defaultAnimation, value: viewModel.transactionDescriptionIsVisible)
         .onAppear(perform: viewModel.onAppear)
         .onDisappear(perform: viewModel.onDisappear)
-    }
-
-    // MARK: - Destination
-
-    private func destinationSection(addressTextViewHeightModel: AddressTextViewHeightModel) -> some View {
-        GroupedSection(viewModel.destinationViewTypes) { type in
-            switch type {
-            case .address(let address, let corners):
-                SendDestinationAddressSummaryView(addressTextViewHeightModel: addressTextViewHeightModel, address: address)
-                    .namespace(.init(id: namespace.id, names: namespace.names))
-                    .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
-                    .background(
-                        sectionBackground(type: viewModel.editableType)
-                            .cornerRadius(GroupedSectionConstants.defaultCornerRadius, corners: corners)
-                            .matchedGeometryEffect(id: namespace.names.addressBackground, in: namespace.id)
-                    )
-            case .additionalField(let type, let value):
-                DefaultTextWithTitleRowView(data: .init(title: type.name, text: value))
-                    .setNamespace(namespace.id)
-                    .setTitleNamespaceId(namespace.names.addressAdditionalFieldTitle)
-                    .setTextNamespaceId(namespace.names.addressAdditionalFieldText)
-                    .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
-                    .background(
-                        sectionBackground(type: viewModel.editableType)
-                            .cornerRadius(GroupedSectionConstants.defaultCornerRadius, corners: [.bottomLeft, .bottomRight])
-                            .matchedGeometryEffect(id: namespace.names.addressAdditionalFieldBackground, in: namespace.id)
-                    )
-            }
-        }
-        .backgroundColor(.clear)
-        .geometryEffect(.init(id: namespace.names.destinationContainer, namespace: namespace.id))
-        .horizontalPadding(0)
-        .separatorStyle(.single)
-        .contentShape(Rectangle())
-        .allowsHitTesting(viewModel.canEditDestination)
-        .onTapGesture {
-            viewModel.userDidTapDestination()
-        }
-    }
-
-    // MARK: - Amount
-
-    private var amountSection: some View {
-        GroupedSection(viewModel.amountSummaryViewData) { data in
-            SendAmountSummaryView(data: data)
-                .amountMinTextScale(amountMinTextScale)
-                .setNamespace(namespace.id)
-                .setIconNamespaceId(namespace.names.tokenIcon)
-                .setAmountCryptoNamespaceId(namespace.names.amountCryptoText)
-                .setAmountFiatNamespaceId(namespace.names.amountFiatText)
-        }
-        .innerContentPadding(0)
-        .backgroundColor(sectionBackground(type: viewModel.editableType))
-        .geometryEffect(.init(id: namespace.names.amountContainer, namespace: namespace.id))
-        .contentShape(Rectangle())
-        .allowsHitTesting(viewModel.canEditAmount)
-        .onTapGesture {
-            viewModel.userDidTapAmount()
-        }
-    }
-
-    // MARK: - Validator
-
-    private var validatorSection: some View {
-        GroupedSection(viewModel.selectedValidatorData) { data in
-            ValidatorView(data: data, selection: .constant(""))
-                .geometryEffect(.init(id: namespace.id, names: namespace.names))
-        } header: {
-            DefaultHeaderView(Localization.stakingValidator)
-                .matchedGeometryEffect(id: namespace.names.validatorSectionHeaderTitle, in: namespace.id)
-                .padding(.top, 12)
-        }
-        .settings(\.backgroundColor, sectionBackground(type: viewModel.editableType))
-        .settings(\.backgroundGeometryEffect, .init(id: namespace.names.validatorContainer, namespace: namespace.id))
-        .contentShape(Rectangle())
-        .onTapGesture {
-            viewModel.userDidTapValidator()
-        }
-    }
-
-    // MARK: - Fee
-
-    private var feeSection: some View {
-        GroupedSection(viewModel.selectedFeeSummaryViewModel) { data in
-            SendFeeSummaryView(data: data)
-                .setNamespace(namespace.id)
-                .setTitleNamespaceId(namespace.names.feeTitle)
-                .setOptionNamespaceId(namespace.names.feeOption(feeOption: data.feeOption))
-                .setAmountNamespaceId(namespace.names.feeAmount(feeOption: data.feeOption))
-                .overlay(alignment: .bottom) {
-                    feeRowViewSeparator(for: data.feeOption)
-                }
-                .overlay {
-                    ForEach(viewModel.deselectedFeeRowViewModels) { model in
-                        FeeRowView(viewModel: model)
-                            .setNamespace(namespace.id)
-                            .setOptionNamespaceId(namespace.names.feeOption(feeOption: model.option))
-                            .setAmountNamespaceId(namespace.names.feeAmount(feeOption: model.option))
-                            .allowsHitTesting(false)
-                            .hidden()
-                            .overlay(alignment: .bottom) {
-                                feeRowViewSeparator(for: model.option)
-                            }
-                    }
-                }
-        }
-        // Fee uses a regular background regardless of whether it's enabled or not
-        .backgroundColor(Colors.Background.action)
-        .geometryEffect(.init(id: namespace.names.feeContainer, namespace: namespace.id))
-        .contentShape(Rectangle())
-        .allowsHitTesting(viewModel.canEditFee)
-        .onTapGesture {
-            viewModel.userDidTapFee()
-        }
-    }
-
-    private func feeRowViewSeparator(for option: FeeOption) -> some View {
-        Separator(height: .minimal, color: Colors.Stroke.primary)
-            .padding(.leading, GroupedSectionConstants.defaultHorizontalPadding)
-            .opacity(0)
-            .matchedGeometryEffect(id: namespace.names.feeSeparator(feeOption: option), in: namespace.id)
-    }
-
-    private func sectionBackground(type: SendSummaryViewModel.EditableType) -> Color {
-        switch type {
-        case .editable:
-            Colors.Background.action
-        case .disable:
-            Colors.Button.disabled
-        }
     }
 
     // MARK: - Description
@@ -207,14 +162,6 @@ struct SendSummaryView: View {
                 .padding(.horizontal, 16)
                 .visible(viewModel.transactionDescriptionIsVisible)
         }
-    }
-}
-
-// MARK: - Setupable protocol conformance
-
-extension SendSummaryView: Setupable {
-    func amountMinTextScale(_ amountMinTextScale: CGFloat?) -> Self {
-        map { $0.amountMinTextScale = amountMinTextScale }
     }
 }
 

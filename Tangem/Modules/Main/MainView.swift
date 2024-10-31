@@ -20,7 +20,12 @@ struct MainView: View {
                 info.header
                     .contextMenu {
                         if !info.isLockedWallet {
-                            Button(action: weakify(viewModel, forFunction: MainViewModel.didTapEditWallet), label: editButtonLabel)
+                            if AppSettings.shared.saveUserWallets {
+                                Button(
+                                    action: weakify(viewModel, forFunction: MainViewModel.didTapEditWallet),
+                                    label: editButtonLabel
+                                )
+                            }
 
                             Button(role: .destructive, action: weakify(viewModel, forFunction: MainViewModel.didTapDeleteWallet), label: deleteButtonLabel)
                         }
@@ -29,11 +34,8 @@ struct MainView: View {
             contentFactory: { info in
                 info.body
             },
-            bottomOverlayFactory: { info, didScrollToBottom in
-                info.makeBottomOverlay(
-                    isMainBottomSheetEnabled: viewModel.isMainBottomSheetEnabled,
-                    didScrollToBottom: didScrollToBottom
-                )
+            bottomOverlayFactory: { info, overlayParams in
+                info.makeBottomOverlay(overlayParams)
             },
             onPullToRefresh: viewModel.onPullToRefresh(completionHandler:)
         )
@@ -43,8 +45,7 @@ struct MainView: View {
         .onPageChange(viewModel.onPageChange(dueTo:))
         .onAppear(perform: viewModel.onViewAppear)
         .onDisappear(perform: viewModel.onViewDisappear)
-        .onDidAppear(viewModel.onDidAppear)
-        .onWillDisappear(viewModel.onWillDisappear)
+        .onDidAppear(perform: viewModel.onDidAppear)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .background(Colors.Background.secondary.edgesIgnoringSafeArea(.all))

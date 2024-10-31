@@ -373,7 +373,7 @@ final class WalletConnectV2Service {
 
             do {
                 log("Namespaces to approve for session connection: \(namespaces)")
-                try await signApi.approve(proposalId: id, namespaces: namespaces)
+                _ = try await signApi.approve(proposalId: id, namespaces: namespaces)
             } catch let error as WalletConnectV2Error {
                 self.displayErrorUI(error)
             } catch {

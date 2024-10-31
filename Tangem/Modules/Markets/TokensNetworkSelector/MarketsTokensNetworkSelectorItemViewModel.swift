@@ -20,7 +20,6 @@ class MarketsTokensNetworkSelectorItemViewModel: Identifiable, ObservableObject 
     let isMain: Bool
     let networkName: String
     let contractName: String?
-    let contractNameForegroundColor: Color
 
     var isReadonly: Bool
 
@@ -30,6 +29,14 @@ class MarketsTokensNetworkSelectorItemViewModel: Identifiable, ObservableObject 
         }
 
         return isSelected ? Colors.Text.primary1 : Colors.Text.secondary
+    }
+
+    var contractNameForegroundColor: Color {
+        guard !isReadonly else {
+            return Colors.Text.disabled
+        }
+
+        return tokenItem.isBlockchain ? Colors.Text.accent : Colors.Text.tertiary
     }
 
     var checkedImage: Image {
@@ -66,7 +73,6 @@ class MarketsTokensNetworkSelectorItemViewModel: Identifiable, ObservableObject 
         imageNameSelected = tokenItem.blockchain.iconNameFilled
         networkName = tokenItem.blockchain.displayName
         contractName = tokenItem.contractName
-        contractNameForegroundColor = tokenItem.isBlockchain ? Colors.Text.accent : Colors.Text.tertiary
 
         self.isSelected = isSelected.wrappedValue
 
@@ -83,9 +89,5 @@ class MarketsTokensNetworkSelectorItemViewModel: Identifiable, ObservableObject 
         isSelectedBinding = isSelected
         self.isReadonly = isReadonly
         self.isSelected = isSelected.wrappedValue
-    }
-
-    func onSelectedTapAction() {
-        isSelected.toggle()
     }
 }

@@ -55,6 +55,12 @@ extension AppEnvironment {
             URL(string: "https://api.tangem-tech.com/v1")!
     }
 
+    var iconBaseUrl: URL {
+        FeatureStorage().useDevApi ?
+            URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api.dev/")! :
+            URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/")!
+    }
+
     var tangemComBaseUrl: URL {
         if FeatureStorage().useDevApi {
             return URL(string: "https://devweb.tangem.com")!

@@ -55,3 +55,23 @@ extension BindableErrorWrapper: LocalizedError {
 
     var helpAnchor: String? { (error as? LocalizedError)?.helpAnchor }
 }
+
+extension Error {
+    var isCancellationError: Bool {
+        switch self {
+        case let moyaError as MoyaError:
+            switch moyaError {
+            case .underlying(let error, _):
+                return error.asAFError?.isExplicitlyCancelledError ?? false
+            default:
+                return false
+            }
+        case is CancellationError:
+            return true
+        case let urlError as URLError:
+            return urlError.code == URLError.Code.cancelled
+        default:
+            return false
+        }
+    }
+}

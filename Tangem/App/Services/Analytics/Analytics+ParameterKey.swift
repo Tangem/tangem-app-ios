@@ -12,7 +12,7 @@ extension Analytics {
     enum ParameterKey: String {
         case blockchain
         case firmware = "Firmware"
-        case action
+        case action = "Action"
         case errorDescription = "Error Description"
         case errorCode = "Error Code"
         case newSecOption = "new_security_option"
@@ -21,6 +21,7 @@ extension Analytics {
         case walletConnectRequest = "wallet_connect_request"
         case walletConnectDappUrl = "wallet_connect_dapp_url"
         case source = "Source"
+        case period = "Period"
         case type
         case currency = "Currency Type" // fiat
         case success
@@ -74,6 +75,8 @@ extension Analytics {
         case result = "Result"
         case input = "Input"
         case passphrase = "Passphrase"
+        case button = "Button"
+        case link = "Link"
 
         case fromSummary = "From Summary"
         case valid = "Valid"
@@ -82,5 +85,10 @@ extension Analytics {
 
         case sendBlockchain = "Send Blockchain"
         case receiveBlockchain = "Receive Blockchain"
+
+        case validatorsCount = "Validators Count"
+        case validator = "Validator"
+
+        case walletForm = "WalletForm"
     }
 }

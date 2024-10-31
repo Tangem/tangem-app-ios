@@ -26,10 +26,16 @@ class FakeWalletManager: WalletManager {
 
     private var loadingStateObserver: AnyCancellable?
 
-    init(wallet: BlockchainSdk.Wallet, derivationStyle: DerivationStyle? = .v2) {
+    init(wallet: BlockchainSdk.Wallet) {
         self.wallet = wallet
         cardTokens = wallet.amounts.compactMap { $0.key.token }
-        walletModels = CommonWalletModelsFactory(derivationStyle: derivationStyle).makeWalletModels(from: self)
+        walletModels = CommonWalletModelsFactory(
+            config: Wallet2Config(
+                card: CardDTO(card: CardMock.wallet.card),
+                isDemo: false
+            )
+        ).makeWalletModels(from: self)
+
         bind()
         updateWalletModels()
     }

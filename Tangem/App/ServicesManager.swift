@@ -25,9 +25,7 @@ class ServicesManager {
     private var bag = Set<AnyCancellable>()
 
     init() {
-        if StakingFeatureProvider().isStakingAvailable {
-            stakingPendingHashesSender = StakingDependenciesFactory().makePendingHashesSender()
-        }
+        stakingPendingHashesSender = StakingDependenciesFactory().makePendingHashesSender()
     }
 
     func initialize() {
@@ -57,9 +55,7 @@ class ServicesManager {
         apiListProvider.initialize()
         pushNotificationsInteractor.initialize()
         SendFeatureProvider.shared.loadFeaturesAvailability()
-        if StakingFeatureProvider().isStakingAvailable {
-            stakingPendingHashesSender?.sendHashesIfNeeded()
-        }
+        stakingPendingHashesSender?.sendHashesIfNeeded()
     }
 
     private func configureFirebase() {

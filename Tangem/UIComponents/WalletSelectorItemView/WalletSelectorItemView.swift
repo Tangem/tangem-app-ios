@@ -24,39 +24,82 @@ struct WalletSelectorItemView: View {
     // MARK: - Private Implementation
 
     private var contentButton: some View {
-        HStack(spacing: 12) {
-            if let image = viewModel.image {
-                Image(uiImage: image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(maxWidth: maxImageWidth, minHeight: viewModel.imageHeight, maxHeight: viewModel.imageHeight)
-            } else {
-                SkeletonView()
-                    .cornerRadius(3)
-                    .frame(width: maxImageWidth, height: viewModel.imageHeight)
-            }
+        VStack(spacing: .zero) {
+            HStack(spacing: 12) {
+                icon
 
+                textViews
+
+                Spacer(minLength: 0)
+
+                selectedCheckmark
+            }
+        }
+        .contentShape(Rectangle())
+        .padding(.vertical, 12)
+    }
+
+    @ViewBuilder
+    private var textViews: some View {
+        VStack(alignment: .leading, spacing: 2) {
             Text(viewModel.name)
                 .lineLimit(1)
-                .style(Fonts.Regular.callout, color: Colors.Text.primary1)
+                .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
 
-            Spacer(minLength: 0)
+            HStack(spacing: 4) {
+                Text(viewModel.cardsCount)
+                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
 
-            selectedCheckmark
+                Text(AppConstants.dotSign)
+                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+
+                LoadableTextView(
+                    state: viewModel.balanceState,
+                    font: Fonts.Regular.caption1,
+                    textColor: Colors.Text.tertiary,
+                    loaderSize: CGSize(width: 40, height: 12),
+                    isSensitiveText: true
+                )
+            }
+            .lineLimit(1)
         }
-        .padding(.vertical, 14)
-        .contentShape(Rectangle())
     }
 
     private var selectedCheckmark: some View {
         VStack {
             if viewModel.isSelected {
-                Assets.Checked.on.image
-                    .frame(size: Constants.checkedSelectedIconSize)
-            } else {
-                Assets.Checked.off.image
-                    .frame(size: Constants.checkedSelectedIconSize)
+                Assets.check.image
+                    .frame(width: 24, height: 24)
+                    .foregroundColor(Colors.Icon.accent)
             }
+        }
+    }
+
+    @ViewBuilder
+    private var icon: some View {
+        image
+            .frame(width: 36, height: 36)
+            .skeletonable(
+                isShown: viewModel.icon.isLoading,
+                size: CGSize(width: 36, height: 22),
+                paddings: EdgeInsets(top: 7, leading: 0, bottom: 7, trailing: 0)
+            )
+    }
+
+    @ViewBuilder
+    private var image: some View {
+        switch viewModel.icon {
+        case .loading:
+            Color.clear
+        case .loaded(let image):
+            image.image
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+
+        case .failedToLoad:
+            Assets.Onboarding.darkCard.image
+                .resizable()
+                .aspectRatio(contentMode: .fit)
         }
     }
 }
@@ -64,6 +107,7 @@ struct WalletSelectorItemView: View {
 extension WalletSelectorItemView {
     enum Constants {
         static let checkedSelectedIconSize = CGSize(bothDimensions: 24)
+        static let balanceSkeletonLoaderText = "--------"
     }
 }
 
@@ -71,7 +115,10 @@ extension WalletSelectorItemView {
     VStack {
         WalletSelectorItemView(viewModel: .init(
             userWalletId: FakeUserWalletModel.wallet3Cards.userWalletId,
-            name: FakeUserWalletModel.wallet3Cards.config.cardName,
+            cardsCount: 3,
+            isUserWalletLocked: false,
+            userWalletNamePublisher: FakeUserWalletModel.wallet3Cards.userWalletNamePublisher,
+            totalBalancePublisher: FakeUserWalletModel.wallet3Cards.totalBalancePublisher,
             cardImagePublisher: FakeUserWalletModel.wallet3Cards.cardImagePublisher,
             isSelected: true,
             didTapWallet: { _ in }
@@ -80,7 +127,10 @@ extension WalletSelectorItemView {
 
         WalletSelectorItemView(viewModel: .init(
             userWalletId: FakeUserWalletModel.wallet3Cards.userWalletId,
-            name: FakeUserWalletModel.wallet3Cards.config.cardName,
+            cardsCount: 3,
+            isUserWalletLocked: false,
+            userWalletNamePublisher: FakeUserWalletModel.wallet3Cards.userWalletNamePublisher,
+            totalBalancePublisher: FakeUserWalletModel.wallet3Cards.totalBalancePublisher,
             cardImagePublisher: FakeUserWalletModel.wallet3Cards.cardImagePublisher,
             isSelected: false,
             didTapWallet: { _ in }

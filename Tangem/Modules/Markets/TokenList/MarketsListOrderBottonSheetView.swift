@@ -8,8 +8,8 @@
 
 import SwiftUI
 
-struct MarketsListOrderBottonSheetView: View {
-    @ObservedObject var viewModel: MarketsListOrderBottonSheetViewModel
+struct MarketsListOrderBottomSheetView: View {
+    @ObservedObject var viewModel: MarketsListOrderBottomSheetViewModel
 
     var body: some View {
         VStack(spacing: .zero) {
@@ -21,5 +21,6 @@ struct MarketsListOrderBottonSheetView: View {
             .settings(\.backgroundColor, Colors.Background.action)
         }
         .padding(.horizontal, 16)
+        .padding(.bottom, 10)
     }
 }

@@ -22,17 +22,16 @@ class AppCoordinator: CoordinatorObject {
 
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
     @Injected(\.walletConnectSessionsStorageInitializable) private var walletConnectSessionStorageInitializer: Initializable
-    @Injected(\.mainBottomSheetVisibility) private var bottomSheetVisibility: MainBottomSheetVisibility
+    @Injected(\.mainBottomSheetUIManager) private var mainBottomSheetUIManager: MainBottomSheetUIManager
 
     // MARK: - Child coordinators
 
-    // Published property, used by UI. `SwiftUI.Binding` API requires it to be writable,
-    // but in fact this is a read-only binding since the UI never mutates it.
+    /// Published property, used by UI. `SwiftUI.Binding` API requires it to be writable,
+    /// but in fact this is a read-only binding since the UI never mutates it.
     @Published var marketsCoordinator: MarketsCoordinator?
 
-    // Non-published property, used to preserve the state of the `MainBottomSheetCoordinator`
-    // instance between show-hide cycles
-    private var __marketsCoordinator: MarketsCoordinator?
+    /// An ugly workaround due to navigation issues in SwiftUI on iOS 18 and above, see IOS-7990 for details.
+    @Published private(set) var isOverlayContentContainerShown = false
 
     // MARK: - View State
 
@@ -61,8 +60,6 @@ class AppCoordinator: CoordinatorObject {
         case .uncompletedBackup:
             setupUncompletedBackup()
         }
-
-        setupMainBottomSheetCoordinatorIfNeeded()
     }
 
     private func restart(with options: AppCoordinator.Options = .default) {
@@ -122,16 +119,12 @@ class AppCoordinator: CoordinatorObject {
 
     /// - Note: The coordinator is set up only once and only when the feature toggle is enabled.
     private func setupMainBottomSheetCoordinatorIfNeeded() {
-        guard
-            FeatureProvider.isAvailable(.markets),
-            __marketsCoordinator == nil
-        else {
+        guard marketsCoordinator == nil else {
             return
         }
 
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.marketsCoordinator = nil
-            self?.__marketsCoordinator = nil
         }
 
         let coordinator = MarketsCoordinator(
@@ -139,13 +132,7 @@ class AppCoordinator: CoordinatorObject {
             popToRootAction: popToRootAction
         )
         coordinator.start(with: .init())
-        __marketsCoordinator = coordinator
-
-        // If this condition evaluates to `false` here, the `mainBottomSheetCoordinator` property will be updated later
-        // based on the `bottomSheetVisibility.isShownPublisher` reactive stream
-        if bottomSheetVisibility.isShown {
-            marketsCoordinator = coordinator
-        }
+        marketsCoordinator = coordinator
     }
 
     private func bind() {
@@ -158,13 +145,18 @@ class AppCoordinator: CoordinatorObject {
             }
             .store(in: &bag)
 
-        bottomSheetVisibility
+        mainBottomSheetUIManager
             .isShownPublisher
+            .filter { $0 }
             .withWeakCaptureOf(self)
-            .map { coordinator, isShown in
-                return isShown ? coordinator.__marketsCoordinator : nil
+            .sink { coordinator, _ in
+                coordinator.setupMainBottomSheetCoordinatorIfNeeded()
             }
-            .assign(to: \.marketsCoordinator, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        mainBottomSheetUIManager
+            .isShownPublisher
+            .assign(to: \.isOverlayContentContainerShown, on: self, ownership: .weak)
             .store(in: &bag)
     }
 
@@ -181,6 +173,9 @@ class AppCoordinator: CoordinatorObject {
             newScan = false
         }
 
+        marketsCoordinator = nil
+        mainBottomSheetUIManager.hide(shouldUpdateFooterSnapshot: false)
+
         let options = AppCoordinator.Options(newScan: newScan)
 
         closeAllSheetsIfNeeded(animated: animated) {
@@ -195,9 +190,6 @@ class AppCoordinator: CoordinatorObject {
     }
 
     private func closeAllSheetsIfNeeded(animated: Bool, completion: @escaping () -> Void = {}) {
-        marketsCoordinator = nil
-        __marketsCoordinator = nil
-
         guard
             let topViewController = UIApplication.topViewController,
             topViewController.presentingViewController != nil

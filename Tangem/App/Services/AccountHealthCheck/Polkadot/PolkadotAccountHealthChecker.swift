@@ -58,9 +58,15 @@ final class PolkadotAccountHealthChecker {
 
     private func subscribeToNotifications() {
         willEnterForegroundNotificationObserver = Task.detached { [weak self] in
+            #if compiler(>=6.0.0) // Xcode 16.0+
+            for await _ in NotificationCenter.default.notifications(named: UIApplication.willEnterForegroundNotification) {
+                await self?.handleWillEnterForegroundNotification()
+            }
+            #else
             for await _ in await NotificationCenter.default.notifications(named: UIApplication.willEnterForegroundNotification) {
                 await self?.handleWillEnterForegroundNotification()
             }
+            #endif // compiler(>=6.0.0)
         }
     }
 

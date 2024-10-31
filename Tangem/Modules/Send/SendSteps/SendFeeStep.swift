@@ -14,7 +14,7 @@ class SendFeeStep {
     private let viewModel: SendFeeViewModel
     private let interactor: SendFeeInteractor
     private let notificationManager: NotificationManager
-    private let tokenItem: TokenItem
+    private let feeTokenItem: TokenItem
     private let feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder
 
     // We have to use this `SendViewAlertPresenter`
@@ -25,13 +25,13 @@ class SendFeeStep {
         viewModel: SendFeeViewModel,
         interactor: SendFeeInteractor,
         notificationManager: NotificationManager,
-        tokenItem: TokenItem,
+        feeTokenItem: TokenItem,
         feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder
     ) {
         self.viewModel = viewModel
         self.interactor = interactor
         self.notificationManager = notificationManager
-        self.tokenItem = tokenItem
+        self.feeTokenItem = feeTokenItem
         self.feeAnalyticsParameterBuilder = feeAnalyticsParameterBuilder
     }
 
@@ -47,6 +47,8 @@ extension SendFeeStep: SendStep {
 
     var type: SendStepType { .fee(viewModel) }
 
+    var sendStepViewAnimatable: any SendStepViewAnimatable { viewModel }
+
     var isValidPublisher: AnyPublisher<Bool, Never> {
         .just(output: true)
     }
@@ -57,17 +59,17 @@ extension SendFeeStep: SendStep {
             switch event {
             case .customFeeTooLow:
                 Analytics.log(event: .sendNoticeTransactionDelaysArePossible, params: [
-                    .token: tokenItem.currencySymbol,
+                    .token: feeTokenItem.currencySymbol,
                 ])
 
                 alertPresenter?.showAlert(
-                    SendAlertBuilder.makeCustomFeeTooLowAlert(continueAction: continueAction)
+                    makeCustomFeeTooLowAlert(continueAction: continueAction)
                 )
 
                 return false
             case .customFeeTooHigh(let orderOfMagnitude):
                 alertPresenter?.showAlert(
-                    SendAlertBuilder.makeCustomFeeTooHighAlert(orderOfMagnitude, continueAction: continueAction)
+                    makeCustomFeeTooHighAlert(orderOfMagnitude, continueAction: continueAction)
                 )
 
                 return false
@@ -80,19 +82,42 @@ extension SendFeeStep: SendStep {
     }
 
     func willAppear(previous step: any SendStep) {
-        guard step.type.isSummary else {
-            return
+        if step.type.isSummary {
+            Analytics.log(.sendScreenReopened, params: [.source: .fee])
+        } else {
+            Analytics.log(.sendFeeScreenOpened)
         }
 
         interactor.updateFees()
-        viewModel.setAnimatingAuxiliaryViewsOnAppear()
     }
 
     func willDisappear(next step: SendStep) {
-        UIApplication.shared.endEditing()
-
         // We have to send this event when user move on the next step
         let feeType = feeAnalyticsParameterBuilder.analyticsParameter(selectedFee: interactor.selectedFee?.option)
         Analytics.log(event: .sendFeeSelected, params: [.feeType: feeType.rawValue])
+    }
+}
+
+// MARK: - Alert
+
+extension SendFeeStep {
+    func makeCustomFeeTooLowAlert(continueAction: @escaping () -> Void) -> AlertBinder {
+        let continueButton = Alert.Button.default(Text(Localization.commonContinue), action: continueAction)
+        return AlertBuilder.makeAlert(
+            title: "",
+            message: Localization.sendAlertFeeTooLowText,
+            primaryButton: continueButton,
+            secondaryButton: .cancel()
+        )
+    }
+
+    func makeCustomFeeTooHighAlert(_ orderOfMagnitude: Int, continueAction: @escaping () -> Void) -> AlertBinder {
+        let continueButton = Alert.Button.default(Text(Localization.commonContinue), action: continueAction)
+        return AlertBuilder.makeAlert(
+            title: "",
+            message: Localization.sendAlertFeeTooHighText(orderOfMagnitude),
+            primaryButton: continueButton,
+            secondaryButton: .cancel()
+        )
     }
 }

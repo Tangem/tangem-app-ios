@@ -76,13 +76,13 @@ extension CommonExpressManager: ExpressManager {
         // Clear for reselected the best quote
         clearCache()
 
-        return try await update()
+        return try await update(by: .pairChange)
     }
 
-    func updateAmount(amount: Decimal?) async throws -> ExpressManagerState {
+    func updateAmount(amount: Decimal?, by source: ExpressProviderUpdateSource) async throws -> ExpressManagerState {
         _amount = amount
 
-        return try await update()
+        return try await update(by: source)
     }
 
     func updateSelectedProvider(provider: ExpressAvailableProvider) async throws -> ExpressManagerState {
@@ -104,8 +104,8 @@ extension CommonExpressManager: ExpressManager {
         return try await selectedProviderState()
     }
 
-    func update() async throws -> ExpressManagerState {
-        try await updateState()
+    func update(by source: ExpressProviderUpdateSource) async throws -> ExpressManagerState {
+        try await updateState(by: source)
     }
 
     func requestData() async throws -> ExpressTransactionData {
@@ -122,7 +122,7 @@ extension CommonExpressManager: ExpressManager {
 
 private extension CommonExpressManager {
     /// Return the state which checking the all properties
-    func updateState() async throws -> ExpressManagerState {
+    func updateState(by source: ExpressProviderUpdateSource) async throws -> ExpressManagerState {
         guard let pair = _pair else {
             log("ExpressManagerSwappingPair not found")
             throw ExpressManagerError.pairNotFound
@@ -143,7 +143,7 @@ private extension CommonExpressManager {
 
         try Task.checkCancellation()
 
-        try await updateSelectedProviderIfNeeded()
+        await updateSelectedProvider(by: source)
 
         return try await selectedProviderState()
     }
@@ -195,14 +195,10 @@ private extension CommonExpressManager {
         }
     }
 
-    func updateSelectedProviderIfNeeded() async throws {
-        let selectedIsError = await selectedProvider?.getState().isError
-
-        // If we don't have selectedProvider
-        // Or if selectedProvider has an error
-        // just update it
-        if selectedProvider == nil || selectedIsError == true {
+    func updateSelectedProvider(by source: ExpressProviderUpdateSource) async {
+        if source.isRequiredUpdateSelectedProvider || selectedProvider == nil {
             selectedProvider = await bestProvider()
+
             if let selectedProvider {
                 analyticsLogger.bestProviderSelected(selectedProvider)
             }
@@ -220,7 +216,7 @@ private extension CommonExpressManager {
     func bestProvider() async -> ExpressAvailableProvider? {
         // If we have more then one provider then selected the best
         if availableProviders.count > 1 {
-            if let recommendedProvider = recommendedProvder() {
+            if let recommendedProvider = await recommendedProvder() {
                 return recommendedProvider
             }
             // Try to find the best with expectAmount
@@ -255,8 +251,18 @@ private extension CommonExpressManager {
         return nil
     }
 
-    func recommendedProvder() -> ExpressAvailableProvider? {
-        availableProviders.first(where: { $0.provider.recommended == true })
+    func recommendedProvder() async -> ExpressAvailableProvider? {
+        for provider in availableProviders {
+            if await provider.getState().isError {
+                continue
+            }
+
+            if provider.provider.recommended == true {
+                return provider
+            }
+        }
+
+        return nil
     }
 
     func updateStatesInProviders(request: ExpressManagerSwappingPairRequest, approvePolicy: ExpressApprovePolicy) async {

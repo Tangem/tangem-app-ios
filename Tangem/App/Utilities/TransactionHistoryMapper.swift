@@ -78,9 +78,16 @@ struct TransactionHistoryMapper {
     func mapSuggestedRecord(_ record: TransactionRecord) -> SendSuggestedDestinationTransactionRecord? {
         guard
             record.isOutgoing,
-            transactionType(from: record) == .transfer,
-            case .user(let address) = interactionAddress(from: record)
+            transactionType(from: record) == .transfer
         else {
+            return nil
+        }
+
+        let address: String
+        switch interactionAddress(from: record) {
+        case .user(let value), .contract(let value):
+            address = value
+        default:
             return nil
         }
 
@@ -147,6 +154,8 @@ private extension TransactionHistoryMapper {
             } else {
                 return mapToInteractionAddressType(source: record.source)
             }
+        case .staking(_, let validator):
+            return .staking(validator: validator)
         default:
             return mapToInteractionAddressType(destination: record.destination)
         }
@@ -204,6 +213,14 @@ private extension TransactionHistoryMapper {
             return transactionType(fromContractMethodName: name)
         case .contractMethodName(let name):
             return transactionType(fromContractMethodName: name)
+        case .staking(let type, _):
+            switch type {
+            case .stake: return .stake
+            case .unstake: return .unstake
+            case .vote: return .vote
+            case .withdraw: return .withdraw
+            case .claimRewards: return .claimRewards
+            }
         }
     }
 

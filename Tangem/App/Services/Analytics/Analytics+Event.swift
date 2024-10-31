@@ -81,6 +81,7 @@ extension Analytics {
         case buttonCopyAddress = "[Token / Receive] Button - Copy Address"
         case buttonShareAddress = "[Token / Receive] Button - Share Address"
         case buttonAddTokenTrustline = "[Token] Button - Token Trustline"
+        case stakingClicked = "[Token] Staking Clicked"
 
         // MARK: - Send
 
@@ -114,31 +115,12 @@ extension Analytics {
         case topupScreenOpened = "[Token / Topup] Top Up Screen Opened"
         case p2PScreenOpened = "[Token / Topup] P2P Screen Opened"
         case withdrawScreenOpened = "[Token / Withdraw] Withdraw Screen Opened"
-        case manageTokensScreenOpened = "[Manage Tokens] Manage Tokens Screen Opened"
-        case manageTokensTokenIsNotFound = "[Manage Tokens] Token Is Not Found"
-        case manageTokensSwitcherChanged = "[Manage Tokens] Token Switcher Changed"
-        case manageTokensSearched = "[Manage Tokens] Token Searched"
-        case manageTokensButtonSaveChanges = "[Manage Tokens] Button - Save Changes"
-        case manageTokensButtonCustomToken = "[Manage Tokens] Button - Custom Token"
-        case manageTokensButtonAdd = "[Manage Tokens] Button - Add"
-        case manageTokensButtonEdit = "[Manage Tokens] Button - Edit"
-        case manageTokensButtonChooseWallet = "[Manage Tokens] Button - Choose Wallet"
-        case manageTokensWalletSelected = "[Manage Tokens] Wallet Selected"
-        case manageTokensNoticeNonNativeNetworkClicked = "[Manage Tokens] Notice - Non Native Network Clicked"
-        case manageTokensButtonGetAddresses = "[Manage Tokens] Button - Get Addresses"
-        case manageTokensCustomTokenWasAdded = "[Manage Tokens] Custom Token Was Added"
-        case manageTokensCustomTokenNetworkSelected = "[Manage Tokens] Custom Token Network Selected"
-        case manageTokensCustomTokenDerivationSelected = "[Manage Tokens] Custom Token Derivation Selected"
-        case manageTokensCustomTokenAddress = "[Manage Tokens] Custom Token Address"
-        case manageTokensCustomTokenName = "[Manage Tokens] Custom Token Name"
-        case manageTokensCustomTokenSymbol = "[Manage Tokens] Custom Token Symbol"
-        case manageTokensCustomTokenDecimals = "[Manage Tokens] Custom Token Decimals"
-        case customTokenScreenOpened = "[Manage Tokens] Custom Token Screen Opened"
         case buttonUnlockAllWithBiometrics = "[Main Screen] Button - Unlock All With Biometrics"
         case buttonUnlockWithCardScan = "[Main Screen] Button - Unlock With Card Scan"
         case buttonEditWalletTapped = "[Main Screen] Button - Edit Wallet Tapped"
         case buttonDeleteWalletTapped = "[Main Screen] Button - Delete Wallet Tapped"
         case settingsButtonChat = "[Settings] Button - Chat"
+        case settingsButtonManageTokens = "[Settings] Button - Manage Tokens"
         case buttonWalletConnect = "[Settings] Button - Wallet Connect"
         case buttonStartWalletConnectSession = "[Settings] Button - Start Wallet Connect Session"
         case buttonStopWalletConnectSession = "[Settings] Button - Stop Wallet Connect Session"
@@ -283,5 +265,74 @@ extension Analytics {
         case pushButtonAllow = "[Push] Button - Allow"
         case pushButtonPostpone = "[Push] Button - Later"
         case pushPermissionStatus = "[Push] Permission Status"
+
+        // MARK: - Staking
+
+        case stakingInfoScreenOpened = "[Staking] Staking Info Screen Opened"
+        case stakingLinkWhatIsStaking = "[Staking] Link - What Is Staking"
+        case stakingButtonStake = "[Staking] Button - Stake"
+        case stakingAmountScreenOpened = "[Staking] Amount Screen Opened"
+        case stakingScreenReopened = "[Staking] Screen Reopened"
+        case stakingButtonMax = "[Staking] Button - Max"
+        case stakingButtonNext = "[Staking] Button - Next"
+        case stakingButtonCancel = "[Staking] Button - Cancel"
+        case stakingButtonValidator = "[Staking] Button - Validator"
+        case stakingValidatorChosen = "[Staking] Validator Chosen"
+        case stakingStakeInProgressScreenOpened = "[Staking] Stake In Progress Screen Opened"
+        case stakingButtonRewards = "[Staking] Button - Rewards"
+        case stakingRewardScreenOpened = "[Staking] Reward Screen Opened"
+        case stakingButtonClaim = "[Staking] Button - Claim"
+        case stakingButtonRestake = "[Staking] Button - Restake"
+        case stakingButtonUnstake = "[Staking] Button - Unstake"
+        case stakingButtonWithdraw = "[Staking] Button - Withdraw"
+        case stakingConfirmationScreenOpened = "[Staking] Confirmation Screen Opened"
+        case stakingErrors = "[Staking] Errors"
+        case stakingErrorTransactionRejected = "[Staking] Error - Transaction Rejected"
+        case stakingSelectedCurrency = "[Staking] Selected Currency"
+        case stakingButtonShare = "[Staking] Button - Share"
+        case stakingButtonExplore = "[Staking] Button - Explore"
+
+        // MARK: - Markets
+
+        case marketsScreenOpened = "[Markets] Markets Screen Opened"
+        case marketsTokensSort = "[Markets] Sort By"
+        case marketsDataError = "[Markets] Data Error"
+
+        // MARK: - Markets / Chart
+
+        case marketsChartScreenOpened = "[Markets / Chart] Token Chart Screen Opened"
+        case marketsChartButtonPeriod = "[Markets / Chart] Button - Period"
+        case marketsChartButtonReadMore = "[Markets / Chart] Button - Read More"
+        case marketsChartButtonLinks = "[Markets / Chart] Button - Links"
+        case marketsChartButtonAddToPortfolio = "[Markets / Chart] Button - Add To Portfolio"
+        case marketsChartWalletSelected = "[Markets / Chart] Wallet Selected"
+        case marketsChartTokenNetworkSelected = "[Markets / Chart] Token Network Selected"
+        case marketsChartButtonBuy = "[Markets / Chart] Button - Buy"
+        case marketsChartButtonReceive = "[Markets / Chart] Button - Receive"
+        case marketsChartButtonSwap = "[Markets / Chart] Button - Swap"
+        case marketsChartDataError = "[Markets / Chart] Data Error"
+
+        // MARK: - Manage Tokens
+
+        case manageTokensScreenOpened = "[Manage Tokens] Manage Tokens Screen Opened"
+        case manageTokensTokenIsNotFound = "[Manage Tokens] Token Is Not Found"
+        case manageTokensSwitcherChanged = "[Manage Tokens] Token Switcher Changed"
+        case manageTokensButtonLater = "[Manage Tokens] Button - Later"
+        case manageTokensTokenAdded = "[Manage Tokens] Token Added"
+
+        case manageTokensSearched = "[Manage Tokens] Token Searched"
+        case manageTokensWalletSelected = "[Manage Tokens] Wallet Selected"
+
+        // MARK: - Manange Tokens / Custom
+
+        case manageTokensButtonCustomToken = "[Manage Tokens / Custom] Button - Custom Token"
+        case manageTokensCustomTokenScreenOpened = "[Manage Tokens / Custom] Custom Token Screen Opened"
+        case manageTokensCustomTokenWasAdded = "[Manage Tokens / Custom] Custom Token Was Added"
+        case manageTokensCustomTokenNetworkSelected = "[Manage Tokens / Custom] Custom Token Network Selected"
+        case manageTokensCustomTokenDerivationSelected = "[Manage Tokens / Custom] Custom Token Derivation Selected"
+        case manageTokensCustomTokenAddress = "[Manage Tokens / Custom] Custom Token Address"
+        case manageTokensCustomTokenName = "[Manage Tokens / Custom] Custom Token Name"
+        case manageTokensCustomTokenSymbol = "[Manage Tokens / Custom] Custom Token Symbol"
+        case manageTokensCustomTokenDecimals = "[Manage Tokens / Custom] Custom Token Decimals"
     }
 }

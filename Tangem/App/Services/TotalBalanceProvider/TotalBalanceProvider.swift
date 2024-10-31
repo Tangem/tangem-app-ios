@@ -115,7 +115,7 @@ private extension TotalBalanceProvider {
         hasEntriesWithoutDerivation: Bool
     ) {
         if hasEntriesWithoutDerivation {
-            totalBalanceSubject.send(.loaded(.init(balance: nil, currencyCode: currencyCode, hasError: false)))
+            totalBalanceSubject.send(.loaded(.init(balance: nil, currencyCode: currencyCode, hasError: false, allTokensBalancesIncluded: false)))
             return
         }
 
@@ -135,6 +135,7 @@ private extension TotalBalanceProvider {
         var hasError = false
         var balance: Decimal?
         var hasCryptoError = false
+        var allTokensBalancesIncluded = true
 
         for token in walletModels {
             if case .failed = token.state {
@@ -147,7 +148,11 @@ private extension TotalBalanceProvider {
             }
 
             let currentValue = balance ?? 0
-            balance = currentValue + (token.fiatValue ?? 0)
+            let allBalance = token.totalBalance
+            balance = currentValue + (allBalance.fiat ?? 0)
+            if allBalance.fiat == nil, !token.isCustom {
+                allTokensBalancesIncluded = false
+            }
 
             if token.rateFormatted.isEmpty {
                 // Just show warning for custom tokens
@@ -201,7 +206,12 @@ private extension TotalBalanceProvider {
             )
         }
 
-        return TotalBalance(balance: balance, currencyCode: currencyCode, hasError: hasError)
+        return TotalBalance(
+            balance: balance,
+            currencyCode: currencyCode,
+            hasError: hasError,
+            allTokensBalancesIncluded: allTokensBalancesIncluded
+        )
     }
 
     private func mapToBalanceParameterValue(

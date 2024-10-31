@@ -12,10 +12,12 @@ import Combine
 
 struct TangemSigner: TransactionSigner {
     var signPublisher: AnyPublisher<Card, Never> {
-        _signPublisher.eraseToAnyPublisher()
+        latestSigner
+            .compactMap { $0 }
+            .eraseToAnyPublisher()
     }
 
-    private var _signPublisher: PassthroughSubject<Card, Never> = .init()
+    private(set) var latestSigner: CurrentValueSubject<Card?, Never> = .init(nil)
     private var initialMessage: Message { .init(header: nil, body: Localization.initialMessageSignBody) }
     private let filter: SessionFilter
     private let twinKey: TwinKey?
@@ -39,7 +41,7 @@ struct TangemSigner: TransactionSigner {
             sdk.startSession(with: signCommand, filter: filter, initialMessage: initialMessage) { signResult in
                 switch signResult {
                 case .success(let response):
-                    _signPublisher.send(response.card)
+                    latestSigner.send(response.card)
                     promise(.success(response.signatures))
                 case .failure(let error):
                     promise(.failure(error))

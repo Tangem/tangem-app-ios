@@ -44,7 +44,6 @@ final class ExpressViewModel: ObservableObject {
     private let initialWallet: WalletModel
     private let userWalletModel: UserWalletModel
     private let feeFormatter: FeeFormatter
-    private let balanceConverter: BalanceConverter
     private let balanceFormatter: BalanceFormatter
     private let expressProviderFormatter: ExpressProviderFormatter
     private let notificationManager: NotificationManager
@@ -62,7 +61,6 @@ final class ExpressViewModel: ObservableObject {
         initialWallet: WalletModel,
         userWalletModel: UserWalletModel,
         feeFormatter: FeeFormatter,
-        balanceConverter: BalanceConverter,
         balanceFormatter: BalanceFormatter,
         expressProviderFormatter: ExpressProviderFormatter,
         notificationManager: NotificationManager,
@@ -73,7 +71,6 @@ final class ExpressViewModel: ObservableObject {
         self.initialWallet = initialWallet
         self.userWalletModel = userWalletModel
         self.feeFormatter = feeFormatter
-        self.balanceConverter = balanceConverter
         self.balanceFormatter = balanceFormatter
         self.expressProviderFormatter = expressProviderFormatter
         self.notificationManager = notificationManager
@@ -241,7 +238,7 @@ private extension ExpressViewModel {
             })
             .debounce(for: 1, scheduler: DispatchQueue.main)
             .sink { [weak self] amount in
-                self?.interactor.update(amount: amount)
+                self?.interactor.update(amount: amount, by: .amountChange)
 
                 if let amount, amount > 0 {
                     self?.startTimer()
@@ -289,7 +286,7 @@ private extension ExpressViewModel {
                     self?.updateSendView(wallet: pair.sender)
                 }
 
-                if pair.destination.value != prev.destination.value {
+                if pair.destination != prev.destination {
                     self?.updateReceiveView(wallet: pair.destination)
                 }
 
@@ -319,7 +316,7 @@ private extension ExpressViewModel {
     func updateSendDecimalValue(to value: Decimal) {
         sendCurrencyViewModel?.decimalNumberTextFieldViewModel.update(value: value)
         updateSendFiatValue(amount: value)
-        interactor.update(amount: value)
+        interactor.update(amount: value, by: .amountChange)
     }
 
     // MARK: - Send view bubble
@@ -336,7 +333,11 @@ private extension ExpressViewModel {
         let roundedAmount = amount.rounded(scale: wallet.decimalCount, roundingMode: .down)
 
         // Exclude unnecessary update
-        guard roundedAmount != amount else { return }
+        guard roundedAmount != amount else {
+            // update only fiat in case of another walletModel selection with another quote
+            updateSendFiatValue(amount: amount)
+            return
+        }
 
         updateSendDecimalValue(to: roundedAmount)
     }
@@ -619,7 +620,7 @@ private extension ExpressViewModel {
                 try Task.checkCancellation()
 
                 await root.openSuccessView(sentTransactionData: sentTransactionData)
-            } catch TangemSdkError.userCancelled {
+            } catch SendTransactionDispatcherResult.Error.userCancelled {
                 root.restartTimer()
             } catch let error as ExpressAPIError {
                 await runOnMain {

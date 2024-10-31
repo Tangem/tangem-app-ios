@@ -24,11 +24,11 @@ class TokenDetailsCoordinator: CoordinatorObject {
 
     // MARK: - Child coordinators
 
-    @Published var legacySendCoordinator: LegacySendCoordinator? = nil
     @Published var sendCoordinator: SendCoordinator? = nil
     @Published var expressCoordinator: ExpressCoordinator? = nil
     @Published var tokenDetailsCoordinator: TokenDetailsCoordinator? = nil
     @Published var stakingDetailsCoordinator: StakingDetailsCoordinator? = nil
+    @Published var marketsTokenDetailsCoordinator: MarketsTokenDetailsCoordinator? = nil
 
     // MARK: - Child view models
 
@@ -78,7 +78,7 @@ class TokenDetailsCoordinator: CoordinatorObject {
         let pendingExpressTransactionsManager = expressFactory.makePendingExpressTransactionsManager()
 
         let bannerNotificationManager = options.userWalletModel.config.hasFeature(.multiCurrency)
-            ? BannerNotificationManager(placement: .tokenDetails(options.walletModel.tokenItem), contextDataProvider: options.userWalletModel)
+            ? BannerNotificationManager(userWalletId: options.userWalletModel.userWalletId, placement: .tokenDetails(options.walletModel.tokenItem), contextDataProvider: options.userWalletModel)
             : nil
 
         let factory = XPUBGeneratorFactory(cardInteractor: options.userWalletModel.keysDerivingInteractor)
@@ -183,20 +183,8 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
         }
     }
 
-    func openSend(amountToSend: Amount, blockchainNetwork: BlockchainNetwork, userWalletModel: UserWalletModel, walletModel: WalletModel) {
+    func openSend(userWalletModel: UserWalletModel, walletModel: WalletModel) {
         guard SendFeatureProvider.shared.isAvailable else {
-            let coordinator = LegacySendCoordinator { [weak self] in
-                self?.legacySendCoordinator = nil
-            }
-            let options = LegacySendCoordinator.Options(
-                amountToSend: amountToSend,
-                destination: nil,
-                tag: nil,
-                blockchainNetwork: blockchainNetwork,
-                userWalletModel: userWalletModel
-            )
-            coordinator.start(with: options)
-            legacySendCoordinator = coordinator
             return
         }
 
@@ -220,20 +208,8 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
         sendCoordinator = coordinator
     }
 
-    func openSendToSell(amountToSend: Amount, destination: String, tag: String?, blockchainNetwork: BlockchainNetwork, userWalletModel: UserWalletModel, walletModel: WalletModel) {
+    func openSendToSell(amountToSend: Amount, destination: String, tag: String?, userWalletModel: UserWalletModel, walletModel: WalletModel) {
         guard SendFeatureProvider.shared.isAvailable else {
-            let coordinator = LegacySendCoordinator { [weak self] in
-                self?.legacySendCoordinator = nil
-            }
-            let options = LegacySendCoordinator.Options(
-                amountToSend: amountToSend,
-                destination: destination,
-                tag: tag,
-                blockchainNetwork: blockchainNetwork,
-                userWalletModel: userWalletModel
-            )
-            coordinator.start(with: options)
-            legacySendCoordinator = coordinator
             return
         }
 
@@ -321,6 +297,12 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
 
     func openInSafari(url: URL) {
         safariManager.openURL(url)
+    }
+
+    func openMarketsTokenDetails(tokenModel: MarketsTokenModel) {
+        let coordinator = MarketsTokenDetailsCoordinator()
+        coordinator.start(with: .init(info: tokenModel, style: .defaultNavigationStack))
+        marketsTokenDetailsCoordinator = coordinator
     }
 }
 

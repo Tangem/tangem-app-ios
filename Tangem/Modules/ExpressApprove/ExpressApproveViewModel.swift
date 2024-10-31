@@ -15,7 +15,7 @@ import struct BlockchainSdk.Fee
 final class ExpressApproveViewModel: ObservableObject, Identifiable {
     // MARK: - ViewState
 
-    @Published var subheader: String
+    @Published var subtitle: String
 
     @Published var menuRowViewModel: DefaultMenuRowViewModel<ExpressApprovePolicy>?
     @Published var selectedAction: ExpressApprovePolicy
@@ -25,43 +25,47 @@ final class ExpressApproveViewModel: ObservableObject, Identifiable {
     @Published var mainButtonIsDisabled = false
     @Published var errorAlert: AlertBinder?
 
+    let feeFooterText: String
+
     // MARK: - Dependencies
 
+    private let tokenItem: TokenItem
+    private let feeTokenItem: TokenItem
+
     private let feeFormatter: FeeFormatter
-    private let pendingTransactionRepository: ExpressPendingTransactionRepository
     private let logger: Logger
-    private let expressInteractor: ExpressInteractor
+    private let approveViewModelInput: ApproveViewModelInput
     private weak var coordinator: ExpressApproveRoutable?
 
     private var didBecomeActiveNotificationCancellable: AnyCancellable?
     private var bag: Set<AnyCancellable> = []
 
     init(
+        settings: Settings,
         feeFormatter: FeeFormatter,
-        pendingTransactionRepository: ExpressPendingTransactionRepository,
         logger: Logger,
-        expressInteractor: ExpressInteractor,
-        providerName: String,
-        selectedPolicy: ExpressApprovePolicy,
+        approveViewModelInput: ApproveViewModelInput,
         coordinator: ExpressApproveRoutable
     ) {
         self.feeFormatter = feeFormatter
-        self.pendingTransactionRepository = pendingTransactionRepository
         self.logger = logger
-        self.expressInteractor = expressInteractor
+        self.approveViewModelInput = approveViewModelInput
         self.coordinator = coordinator
 
-        let currencySymbol = expressInteractor.getSender().tokenItem.currencySymbol
+        tokenItem = settings.tokenItem
+        feeTokenItem = settings.feeTokenItem
 
-        selectedAction = selectedPolicy
-        subheader = Localization.givePermissionSwapSubtitle(providerName, currencySymbol)
+        selectedAction = settings.selectedPolicy
+        subtitle = settings.subtitle
+        feeFooterText = settings.feeFooterText
+
         menuRowViewModel = .init(
-            title: Localization.givePermissionRowsAmount(currencySymbol),
+            title: Localization.givePermissionRowsAmount(settings.tokenItem.currencySymbol),
             actions: [.unlimited, .specified]
         )
 
         feeRowViewModel = DefaultRowViewModel(title: Localization.commonNetworkFeeTitle, detailsType: .none)
-        updateView(for: expressInteractor.getState())
+        updateView(state: approveViewModelInput.approveFeeValue)
         bind()
     }
 
@@ -103,11 +107,11 @@ extension ExpressApproveViewModel {
 
 private extension ExpressApproveViewModel {
     func bind() {
-        expressInteractor.state
-            .receive(on: DispatchQueue.main)
+        approveViewModelInput.approveFeeValuePublisher
             .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
             .sink { viewModel, state in
-                viewModel.updateView(for: state)
+                viewModel.updateView(state: state)
             }
             .store(in: &bag)
 
@@ -116,76 +120,39 @@ private extension ExpressApproveViewModel {
             .removeDuplicates()
             .withWeakCaptureOf(self)
             .sink { viewModel, policy in
-                viewModel.expressInteractor.updateApprovePolicy(policy: policy)
+                viewModel.approveViewModelInput.updateApprovePolicy(policy: policy)
             }
             .store(in: &bag)
     }
 
-    func updateView(for state: ExpressInteractor.State) {
+    func updateView(state: LoadingValue<Fee>) {
         switch state {
-        case .permissionRequired(let state, _):
-            updateFeeAmount(fees: state.fees)
+        case .loaded(let fee):
+            updateFeeAmount(fee: fee)
             isLoading = false
             mainButtonIsDisabled = false
         case .loading:
             feeRowViewModel?.update(detailsType: .loader)
             isLoading = true
             mainButtonIsDisabled = false
-        case .restriction(.requiredRefresh(let error), _):
+        case .failedToLoad(let error):
             errorAlert = AlertBinder(title: Localization.commonError, message: error.localizedDescription)
             isLoading = false
             mainButtonIsDisabled = true
-        default:
-            AppLog.shared.debug("Wrong state for this view \(state)")
-            isLoading = false
-            mainButtonIsDisabled = true
         }
     }
 
-    func updateFeeAmount(fees: [FeeOption: Fee]) {
-        guard let fee = fees[expressInteractor.getFeeOption()] else {
-            errorAlert = AlertBinder(
-                title: Localization.commonError,
-                message: ExpressInteractorError.feeNotFound.localizedDescription
-            )
-
-            return
-        }
-
-        let formatted = feeFormatter.format(
-            fee: fee.amount.value,
-            tokenItem: expressInteractor.getSender().feeTokenItem
-        )
-
+    func updateFeeAmount(fee: Fee) {
+        let formatted = feeFormatter.format(fee: fee.amount.value, tokenItem: feeTokenItem)
         feeRowViewModel?.update(detailsType: .text(formatted))
-    }
-
-    func setupExpressView() {
-        runTask(in: self) { viewModel in
-            let approvePolicy = await viewModel.expressInteractor.getApprovePolicy()
-            await runOnMain {
-                viewModel.selectedAction = approvePolicy
-            }
-
-            guard let provider = await viewModel.expressInteractor.getSelectedProvider()?.provider else {
-                return
-            }
-
-            let currencySymbol = viewModel.expressInteractor.getSender().tokenItem.currencySymbol
-            await runOnMain {
-                viewModel.subheader = Localization.givePermissionSwapSubtitle(provider.name, currencySymbol)
-            }
-        }
-
-        let currencySymbol = expressInteractor.getSender().tokenItem.currencySymbol
     }
 
     func sendApproveTransaction() {
         runTask(in: self) { viewModel in
             do {
-                try await viewModel.expressInteractor.sendApproveTransaction()
+                try await viewModel.approveViewModelInput.sendApproveTransaction()
                 await viewModel.didSendApproveTransaction()
-            } catch TangemSdkError.userCancelled {
+            } catch SendTransactionDispatcherResult.Error.userCancelled {
                 // Do nothing
             } catch {
                 viewModel.logger.error(error)
@@ -194,6 +161,18 @@ private extension ExpressApproveViewModel {
                 }
             }
         }
+    }
+}
+
+extension ExpressApproveViewModel {
+    struct Settings {
+        let subtitle: String
+        let feeFooterText: String
+
+        let tokenItem: TokenItem
+        let feeTokenItem: TokenItem
+
+        let selectedPolicy: ExpressApprovePolicy
     }
 }
 

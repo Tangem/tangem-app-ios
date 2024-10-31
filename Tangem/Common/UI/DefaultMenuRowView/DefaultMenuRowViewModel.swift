@@ -13,27 +13,9 @@ protocol DefaultMenuRowViewModelAction: Identifiable, Hashable {
     var title: String { get }
 }
 
-struct DefaultMenuRowViewModel<Action: DefaultMenuRowViewModelAction> {
+struct DefaultMenuRowViewModel<Action: DefaultMenuRowViewModelAction>: Hashable, Identifiable {
+    var id: Int { hashValue }
+
     let title: String
     let actions: [Action]
-
-    init(title: String, actions: [Action]) {
-        self.title = title
-        self.actions = actions
-    }
-}
-
-extension DefaultMenuRowViewModel: Hashable {
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(title)
-        hasher.combine(actions)
-    }
-
-    static func == (lhs: DefaultMenuRowViewModel, rhs: DefaultMenuRowViewModel) -> Bool {
-        lhs.hashValue == rhs.hashValue
-    }
-}
-
-extension DefaultMenuRowViewModel: Identifiable {
-    var id: Int { hashValue }
 }

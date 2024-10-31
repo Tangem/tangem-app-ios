@@ -11,61 +11,94 @@ import Combine
 import UIKit
 
 class WalletSelectorItemViewModel: ObservableObject, Identifiable {
-    @Published var image: UIImage? = nil
+    @Published var name: String = ""
+    @Published var icon: LoadingValue<CardImageResult> = .loading
+    @Published var cardsCount: String
+    @Published var balanceState: LoadableTextView.State = .initialized
     @Published var isSelected: Bool = false
 
-    let name: String
-    let imageHeight = 30.0
     let userWalletId: UserWalletId
+    let isUserWalletLocked: Bool
 
+    private let userWalletNamePublisher: AnyPublisher<String, Never>
+    private let totalBalancePublisher: AnyPublisher<LoadingValue<TotalBalance>, Never>
     private let cardImagePublisher: AnyPublisher<CardImageResult, Never>
 
+    private var onTapWallet: ((UserWalletId) -> Void)?
+
     private var bag: Set<AnyCancellable> = []
-    private var didTapWallet: ((UserWalletId) -> Void)?
+
+    private let balanceFormatter = BalanceFormatter()
 
     // MARK: - Init
 
     init(
         userWalletId: UserWalletId,
-        name: String,
+        cardsCount: Int,
+        isUserWalletLocked: Bool,
+        userWalletNamePublisher: AnyPublisher<String, Never>,
+        totalBalancePublisher: AnyPublisher<LoadingValue<TotalBalance>, Never>,
         cardImagePublisher: AnyPublisher<CardImageResult, Never>,
         isSelected: Bool,
         didTapWallet: ((UserWalletId) -> Void)?
     ) {
         self.userWalletId = userWalletId
-        self.name = name
-        self.isSelected = isSelected
+        self.isUserWalletLocked = isUserWalletLocked
+        self.cardsCount = Localization.cardLabelCardCount(cardsCount)
+        self.userWalletNamePublisher = userWalletNamePublisher
+        self.totalBalancePublisher = totalBalancePublisher
         self.cardImagePublisher = cardImagePublisher
-        self.didTapWallet = didTapWallet
+        self.isSelected = isSelected
+        onTapWallet = didTapWallet
 
-        loadImage()
+        bind()
     }
 
-    func onTapAction() {
-        didTapWallet?(userWalletId)
-    }
+    func bind() {
+        userWalletNamePublisher
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, name in
+                viewModel.name = name
+            }
+            .store(in: &bag)
 
-    // MARK: - Private Implementation
-
-    private func loadImage() {
         cardImagePublisher
-            .sink { [weak self] loadResult in
-                guard let self else { return }
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, image in
+                viewModel.icon = .loaded(image)
+            }
+            .store(in: &bag)
 
-                image = scaleImage(loadResult.uiImage, newHeight: imageHeight * UIScreen.main.scale)
+        totalBalancePublisher
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, result in
+                guard !viewModel.isUserWalletLocked else {
+                    viewModel.balanceState = .loaded(text: Localization.commonLocked)
+                    return
+                }
+
+                switch result {
+                case .loading:
+                    viewModel.balanceState = .loading
+                case .loaded(let totalBalance):
+                    guard totalBalance.allTokensBalancesIncluded else {
+                        viewModel.balanceState = .loaded(text: BalanceFormatter.defaultEmptyBalanceString)
+                        return
+                    }
+
+                    let formatted = viewModel.balanceFormatter.formatFiatBalance(totalBalance.balance)
+                    viewModel.balanceState = .loaded(text: formatted)
+                case .failedToLoad:
+                    viewModel.balanceState = .loaded(text: Localization.commonUnreachable)
+                }
             }
             .store(in: &bag)
     }
 
-    private func scaleImage(_ image: UIImage, newHeight: CGFloat) -> UIImage {
-        let scale = newHeight / image.size.height
-        let newWidth = image.size.width * scale
-
-        UIGraphicsBeginImageContext(CGSizeMake(newWidth, newHeight))
-        image.draw(in: CGRectMake(0, 0, newWidth, newHeight))
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-
-        return newImage ?? image
+    func onTapAction() {
+        onTapWallet?(userWalletId)
     }
 }

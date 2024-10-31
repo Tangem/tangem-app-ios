@@ -12,68 +12,69 @@ struct MarketsTokensNetworkSelectorView: View {
     @ObservedObject var viewModel: MarketsTokensNetworkSelectorViewModel
 
     var body: some View {
-        NavigationView {
-            ZStack(alignment: .bottom) {
-                ScrollView {
-                    VStack(spacing: 14) {
-                        MarketsWalletSelectorView(viewModel: viewModel.walletSelectorViewModel)
+        ZStack(alignment: .bottom) {
+            ScrollView {
+                VStack(spacing: 14) {
+                    if let walletSelectorViewModel = viewModel.walletSelectorViewModel {
+                        MarketsWalletSelectorView(viewModel: walletSelectorViewModel)
+                            .onTapGesture {
+                                viewModel.selectWalletActionDidTap()
+                            }
+                    }
 
-                        contentView
+                    contentView
 
+                    if !viewModel.pendingAdd.isEmpty {
                         MarketsGeneratedAddressView()
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 72)
                 }
-
-                overlayButtonView
+                .padding(.horizontal, 16)
+                .padding(.bottom, 72)
             }
-            .alert(item: $viewModel.alert, content: { $0.alert })
-            .navigationBarTitle(Text(Localization.manageTokensNetworkSelectorTitle), displayMode: .inline)
-            .background(Colors.Background.tertiary.edgesIgnoringSafeArea(.all))
+
+            overlayButtonView
         }
+        .alert(item: $viewModel.alert, content: { $0.alert })
+        .navigationBarTitle(Text(Localization.manageTokensNetworkSelectorTitle), displayMode: .inline)
+        .background(Colors.Background.tertiary.edgesIgnoringSafeArea(.all))
     }
 
     private var contentView: some View {
         VStack(alignment: .leading, spacing: .zero) {
             VStack(alignment: .leading, spacing: .zero) {
-                Text(Localization.marketsSelectNetwork)
-                    .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+                BlockHeaderTitleView(title: Localization.marketsSelectNetwork)
 
                 tokenInfoView
             }
 
-            VStack(spacing: .zero) {
-                ForEach(viewModel.tokenItemViewModels) {
-                    MarketsTokensNetworkSelectorItemView(viewModel: $0)
-                }
-            }
-            .padding(.leading, 8)
+            networkListView
         }
-        .roundedBackground(with: Colors.Background.action, padding: 14, radius: Constants.cornerRadius)
+        .roundedBackground(
+            with: Colors.Background.action,
+            verticalPadding: .zero,
+            horizontalPadding: 14,
+            radius: Constants.cornerRadius
+        )
     }
 
     private var tokenInfoView: some View {
         VStack(alignment: .leading, spacing: .zero) {
-            HStack(spacing: 12) {
+            HStack(alignment: .center, spacing: 12) {
                 IconView(url: viewModel.coinIconURL, size: .init(bothDimensions: 36), forceKingfisher: true)
 
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 2) {
                     HStack(alignment: .firstTextBaseline, spacing: 4) {
                         Text(viewModel.coinName)
-                            .lineLimit(1)
-                            .layoutPriority(-1)
                             .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
 
                         Text(viewModel.coinSymbol)
-                            .lineLimit(1)
                             .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
 
                         Spacer()
                     }
 
                     Text(Localization.marketsAvailableNetworks)
-                        .style(.footnote, color: Colors.Text.secondary)
+                        .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
                 }
             }
         }
@@ -99,6 +100,14 @@ struct MarketsTokensNetworkSelectorView: View {
                 endPoint: .top
             )
             .edgesIgnoringSafeArea(.bottom))
+        }
+    }
+
+    private var networkListView: some View {
+        VStack(spacing: .zero) {
+            ForEach(viewModel.tokenItemViewModels) {
+                MarketsTokensNetworkSelectorItemView(viewModel: $0, arrowWidth: 36)
+            }
         }
     }
 }

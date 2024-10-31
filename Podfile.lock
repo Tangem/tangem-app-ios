@@ -4,7 +4,6 @@ PODS:
     - AnalyticsConnector (~> 1.0.1)
   - AnalyticsConnector (1.0.3)
   - AnyCodable-FlightSchool (0.6.7)
-  - BigInt (5.2.0)
   - BinanceChain (1.0.1-beta):
     - BinanceChain/Core (= 1.0.1-beta)
   - BinanceChain/Core (1.0.1-beta):
@@ -178,10 +177,6 @@ PODS:
   - SwiftDate (7.0.0)
   - SwiftyJSON (5.0.1)
   - TangemSdk (3.10.0)
-  - TonSwift (1.0.10):
-    - BigInt
-    - TweetNacl
-  - TweetNacl (1.0.2)
   - WalletConnectSwiftV2 (1.18.7):
     - WalletConnectSwiftV2/WalletConnect (= 1.18.7)
   - WalletConnectSwiftV2/Commons (1.18.7)
@@ -227,7 +222,7 @@ DEPENDENCIES:
   - AmplitudeSwift (= 1.6.2)
   - BinanceChain (from `https://github.com/tangem/swiftbinancechain.git`, tag `0.0.11`)
   - BitcoinCore.swift (from `https://github.com/tangem/bitcoincore.git`, tag `0.0.20`)
-  - BlockchainSdk (from `https://github.com/tangem/blockchain-sdk-swift.git`, tag `develop-644.4`)
+  - BlockchainSdk (from `https://github.com/tangem/blockchain-sdk-swift.git`, tag `develop-707`)
   - BlockiesSwift (~> 0.1.2)
   - CombineExt (~> 1.8.0)
   - Firebase/Analytics (= 10.29.0)
@@ -236,10 +231,9 @@ DEPENDENCIES:
   - GDPerformanceView-Swift (~> 2.1)
   - Kingfisher (~> 7.11.0)
   - Moya
-  - Solana.Swift (from `https://github.com/tangem/Solana.Swift`, tag `1.2.0-tangem10`)
+  - Solana.Swift (from `https://github.com/tangem/Solana.Swift`, tag `1.2.0-tangem11`)
   - SwiftyJSON (from `https://github.com/tangem/SwiftyJSON.git`, tag `5.0.1-tangem1`)
-  - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-302`)
-  - TonSwift (from `https://github.com/tangem/ton-swift.git`, tag `1.0.10-tangem1`)
+  - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-313`)
   - WalletConnectSwiftV2 (from `https://github.com/WalletConnect/WalletConnectSwiftV2`, tag `1.18.7`)
 
 SPEC REPOS:
@@ -248,7 +242,6 @@ SPEC REPOS:
     - AmplitudeSwift
     - AnalyticsConnector
     - AnyCodable-FlightSchool
-    - BigInt
     - BlockiesSwift
     - CombineExt
     - Firebase
@@ -275,7 +268,6 @@ SPEC REPOS:
     - stellar-ios-mac-sdk
     - SwiftCBOR
     - SwiftDate
-    - TweetNacl
 
 EXTERNAL SOURCES:
   BinanceChain:
@@ -286,19 +278,16 @@ EXTERNAL SOURCES:
     :tag: 0.0.20
   BlockchainSdk:
     :git: https://github.com/tangem/blockchain-sdk-swift.git
-    :tag: develop-644.4
+    :tag: develop-707
   Solana.Swift:
     :git: https://github.com/tangem/Solana.Swift
-    :tag: 1.2.0-tangem10
+    :tag: 1.2.0-tangem11
   SwiftyJSON:
     :git: https://github.com/tangem/SwiftyJSON.git
     :tag: 5.0.1-tangem1
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
-    :tag: develop-302
-  TonSwift:
-    :git: https://github.com/tangem/ton-swift.git
-    :tag: 1.0.10-tangem1
+    :tag: develop-313
   WalletConnectSwiftV2:
     :git: https://github.com/WalletConnect/WalletConnectSwiftV2
     :tag: 1.18.7
@@ -312,19 +301,16 @@ CHECKOUT OPTIONS:
     :tag: 0.0.20
   BlockchainSdk:
     :git: https://github.com/tangem/blockchain-sdk-swift.git
-    :tag: develop-644.4
+    :tag: develop-707
   Solana.Swift:
     :git: https://github.com/tangem/Solana.Swift
-    :tag: 1.2.0-tangem10
+    :tag: 1.2.0-tangem11
   SwiftyJSON:
     :git: https://github.com/tangem/SwiftyJSON.git
     :tag: 5.0.1-tangem1
   TangemSdk:
     :git: https://github.com/Tangem/tangem-sdk-ios.git
-    :tag: develop-302
-  TonSwift:
-    :git: https://github.com/tangem/ton-swift.git
-    :tag: 1.0.10-tangem1
+    :tag: develop-313
   WalletConnectSwiftV2:
     :git: https://github.com/WalletConnect/WalletConnectSwiftV2
     :tag: 1.18.7
@@ -334,10 +320,9 @@ SPEC CHECKSUMS:
   AmplitudeSwift: cc22038404dc5581e2dea5dc2501302959dd3c90
   AnalyticsConnector: a53214d38ae22734c6266106c0492b37832633a9
   AnyCodable-FlightSchool: 261cbe76757802b17d471b9059b21e6fa5edf57b
-  BigInt: f668a80089607f521586bbe29513d708491ef2f7
   BinanceChain: f727abc7a20ba71f4497e46b7400124027b25692
   BitcoinCore.swift: 64ac4e69d9a6ef917bcbb0c23f1324cf57a822fb
-  BlockchainSdk: f82a751d6216f50a7f085cf5906e919ed3e923e5
+  BlockchainSdk: b744a57e39d5b5e76c8ecfaa8feb41753f9fa7df
   BlockiesSwift: 22d8d56dd187e6bfd16cb8c8fbd4fd4896c3e65d
   CombineExt: c4daa97ef75754d8ef319bd79edeef82652f3eea
   Firebase: cec914dab6fd7b1bd8ab56ea07ce4e03dd251c2d
@@ -366,11 +351,9 @@ SPEC CHECKSUMS:
   SwiftCBOR: ac340b74d3b2cf1f8884bb748bd09875848e3873
   SwiftDate: bbc26e26fc8c0c33fbee8c140c5e8a68293a148a
   SwiftyJSON: c0bd75b5969785b3d9ae41d5709fe75bc5de4002
-  TangemSdk: 4a188873f9dbed6340cca9ad6a010240af6df432
-  TonSwift: 4bec2e932ae922f1e0419bdfd6d59dace5c63a31
-  TweetNacl: 3abf4d1d2082b0114e7a67410e300892448951e6
+  TangemSdk: 145675e87bf4720d13968510b19e03b5402ed028
   WalletConnectSwiftV2: 5ea47db4d86e39fc749b66a05a661af9e87b277d
 
-PODFILE CHECKSUM: 7b87dc07c5c206fcf591c2d75d8b9e64086086e7
+PODFILE CHECKSUM: bd9a184070351de50c5df0b9804d0ef763895408
 
 COCOAPODS: 1.15.2

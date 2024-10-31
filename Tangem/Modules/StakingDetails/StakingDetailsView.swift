@@ -9,36 +9,60 @@
 import SwiftUI
 
 struct StakingDetailsView: View {
-    @ObservedObject private var viewModel: StakingDetailsViewModel
-    @State private var bottomViewHeight: CGFloat = .zero
+    @ObservedObject var viewModel: StakingDetailsViewModel
 
-    init(viewModel: StakingDetailsViewModel) {
-        self.viewModel = viewModel
+    @State private var viewGeometryInfo: GeometryInfo = .zero
+    @State private var contentSize: CGSize = .zero
+    @State private var bottomViewSize: CGSize = .zero
+
+    private var spacer: CGFloat {
+        var height = viewGeometryInfo.frame.height
+        height -= contentSize.height
+        height -= bottomViewSize.height
+        return max(0, height)
     }
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            GroupedScrollView(alignment: .leading, spacing: 14) {
-                banner
+        RefreshableScrollView(onRefresh: viewModel.refresh(completion:)) {
+            LazyVStack(spacing: 0) {
+                VStack(spacing: 14) {
+                    if !viewModel.hideStakingInfoBanner {
+                        banner
+                    }
 
-                averageRewardingView
+                    GroupedSection(viewModel.detailsViewModels) { data in
+                        DefaultRowView(viewModel: data)
+                            .if(viewModel.detailsViewModels.first?.id == data.id) {
+                                $0.appearance(.init(detailsColor: Colors.Text.accent))
+                            }
+                    }
 
-                GroupedSection(viewModel.detailsViewModels) {
-                    DefaultRowView(viewModel: $0)
+                    rewardView
+
+                    GroupedSection(viewModel.stakes) { data in
+                        StakingDetailsStakeView(data: data)
+                    } header: {
+                        DefaultHeaderView(Localization.stakingYourStakes)
+                            .padding(.top, 12)
+                            .padding(.bottom, 8)
+                    }
+                    .separatorStyle(.none)
+                    .interItemSpacing(0)
+                    .innerContentPadding(0)
                 }
+                .readGeometry(\.frame.size, bindTo: $contentSize)
 
-                rewardView
-
-                FixedSpacer(height: bottomViewHeight)
+                bottomView
             }
-            .interContentPadding(14)
-
-            actionButton
+            .padding(.horizontal, 16)
         }
+        .readGeometry(bindTo: $viewGeometryInfo)
         .background(Colors.Background.secondary)
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear(perform: viewModel.onAppear)
+        .alert(item: $viewModel.alert) { $0.alert }
+        .actionSheet(item: $viewModel.actionSheet) { $0.sheet }
         .bottomSheet(
             item: $viewModel.descriptionBottomSheetInfo,
             backgroundColor: Colors.Background.tertiary
@@ -49,41 +73,78 @@ struct StakingDetailsView: View {
         }
     }
 
+    @ViewBuilder
     private var banner: some View {
-        Button(action: { viewModel.userDidTapBanner() }) {
-            Assets.whatIsStakingBanner.image
-                .resizable()
-                .cornerRadiusContinuous(18)
+        Button(action: viewModel.userDidTapBanner) {
+            ZStack(alignment: .leading) {
+                Assets.whatIsStakingBanner.image
+                    .resizable()
+                    .cornerRadiusContinuous(18)
+                whatIsStakingText
+                    .padding(.leading, 14)
+            }
         }
     }
 
-    private var averageRewardingView: some View {
-        GroupedSection(viewModel.averageRewardingViewData) {
-            AverageRewardingView(data: $0)
-        } header: {
-            DefaultHeaderView(Localization.stakingDetailsAverageRewardRate)
-        }
-        .interItemSpacing(12)
-        .innerContentPadding(12)
+    private var whatIsStakingText: some View {
+        Text(Localization.stakingDetailsBannerText)
+            .font(Fonts.Bold.title1)
+            .foregroundStyle(
+                LinearGradient(
+                    colors: [Colors.Text.constantWhite, Colors.Text.stakingGradient],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+            )
     }
 
+    @ViewBuilder
     private var rewardView: some View {
-        GroupedSection(viewModel.rewardViewData) {
-            RewardView(data: $0)
+        GroupedSection(viewModel.rewardViewData) { data in
+            RewardView(data: data)
         } header: {
             DefaultHeaderView(Localization.stakingRewards)
+                .padding(.top, 8)
         }
-        .interItemSpacing(12)
-        .innerContentPadding(12)
+        .innerContentPadding(4)
     }
 
-    private var actionButton: some View {
-        MainButton(title: Localization.commonStake) {
-            viewModel.userDidTapActionButton()
+    @ViewBuilder
+    private var bottomView: some View {
+        VStack(spacing: 12) {
+            FixedSpacer(height: spacer)
+
+            VStack(spacing: 12) {
+                legalView
+
+                actionButton
+            }
+            .readGeometry(\.frame.size, bindTo: $bottomViewSize)
         }
-        .padding(.horizontal, 16)
-        .padding(.bottom, 8)
-        .readGeometry(\.size.height, bindTo: $bottomViewHeight)
+        // To force `.animation(nil)` behaviour
+        .transaction { transaction in
+            transaction.animation = nil
+        }
+    }
+
+    @ViewBuilder
+    private var legalView: some View {
+        Text(viewModel.legalText)
+            .multilineTextAlignment(.center)
+    }
+
+    @ViewBuilder
+    private var actionButton: some View {
+        if let actionButtonType = viewModel.actionButtonType {
+            MainButton(
+                title: actionButtonType.title,
+                isLoading: viewModel.actionButtonLoading,
+                isDisabled: viewModel.actionButtonDisabled
+            ) {
+                viewModel.userDidTapActionButton()
+            }
+            .padding(.bottom, 8)
+        }
     }
 }
 

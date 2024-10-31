@@ -2,7 +2,7 @@
 //  OverlayContentContainer+Environment.swift
 //  Tangem
 //
-//  Created by m3g0byt3 on 12.07.2024.
+//  Created by Andrey Fedorov on 12.07.2024.
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
@@ -20,6 +20,11 @@ extension EnvironmentValues {
         get { self[OverlayContentStateObserverEnvironmentKey.self] }
         set { self[OverlayContentStateObserverEnvironmentKey.self] = newValue }
     }
+
+    var overlayContentStateController: OverlayContentStateController {
+        get { self[OverlayContentStateControllerEnvironmentKey.self] }
+        set { self[OverlayContentStateControllerEnvironmentKey.self] = newValue }
+    }
 }
 
 // MARK: - Private implementation
@@ -36,7 +41,26 @@ private enum OverlayContentStateObserverEnvironmentKey: EnvironmentKey {
     }
 }
 
-private struct DummyOverlayContentContainerViewControllerAdapter: OverlayContentContainer, OverlayContentStateObserver {
+private enum OverlayContentStateControllerEnvironmentKey: EnvironmentKey {
+    static var defaultValue: OverlayContentStateController {
+        return DummyOverlayContentContainerViewControllerAdapter()
+    }
+}
+
+private struct DummyOverlayContentContainerViewControllerAdapter:
+    OverlayContentContainer,
+    OverlayContentStateObserver,
+    OverlayContentStateController {
+    var cornerRadius: CGFloat {
+        assertIfNeeded(for: OverlayContentContainer.self)
+        return .zero
+    }
+
+    var isScrollViewLocked: Bool {
+        assertIfNeeded(for: OverlayContentContainer.self)
+        return false
+    }
+
     func installOverlay(_ overlayView: some View) {
         assertIfNeeded(for: OverlayContentContainer.self)
     }
@@ -45,7 +69,15 @@ private struct DummyOverlayContentContainerViewControllerAdapter: OverlayContent
         assertIfNeeded(for: OverlayContentContainer.self)
     }
 
-    func addObserver(_ observer: @escaping Observer, forToken token: any Hashable) {
+    func setOverlayHidden(_ isHidden: Bool) {
+        assertIfNeeded(for: OverlayContentContainer.self)
+    }
+
+    func addObserver(_ observer: @escaping OverlayContentStateObserver.StateObserver, forToken token: any Hashable) {
+        assertIfNeeded(for: OverlayContentStateObserver.self)
+    }
+
+    func addObserver(_ observer: @escaping OverlayContentStateObserver.ProgressObserver, forToken token: any Hashable) {
         assertIfNeeded(for: OverlayContentStateObserver.self)
     }
 
@@ -53,9 +85,15 @@ private struct DummyOverlayContentContainerViewControllerAdapter: OverlayContent
         assertIfNeeded(for: OverlayContentStateObserver.self)
     }
 
+    func collapse() {
+        assertIfNeeded(for: OverlayContentStateController.self)
+    }
+
+    func expand() {
+        assertIfNeeded(for: OverlayContentStateController.self)
+    }
+
     private func assertIfNeeded<T>(for type: T) {
-        if FeatureProvider.isAvailable(.markets) {
-            assertionFailure("Inject proper `\(type)` implementation into the view hierarchy")
-        }
+        assertionFailure("Inject proper `\(type)` implementation into the view hierarchy")
     }
 }

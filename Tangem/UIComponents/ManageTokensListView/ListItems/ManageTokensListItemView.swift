@@ -16,21 +16,14 @@ struct ManageTokensListItemView: View {
     private let subtitle: String = Localization.currencySubtitleExpanded
     private let iconWidth: Double = 36
 
-    @State private var isExpanded = false
-
     private var symbolFormatted: String { "  \(viewModel.symbol)" }
-    private var isSaturated: Bool {
-        isReadOnly ||
-            isExpanded ||
-            viewModel.items.contains(where: { $0.isSelected })
-    }
 
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
                 IconView(url: viewModel.imageURL, size: CGSize(width: iconWidth, height: iconWidth), forceKingfisher: true)
                     .padding(.trailing, 12)
-                    .saturation(isSaturated ? 1.0 : 0.0)
+                    .saturation((isReadOnly || viewModel.atLeastOneTokenSelected) ? 1.0 : 0.0)
 
                 VStack(alignment: .leading, spacing: 2) {
                     Group {
@@ -46,7 +39,7 @@ struct ManageTokensListItemView: View {
                     .lineLimit(1)
 
                     HStack {
-                        if isExpanded {
+                        if viewModel.isExpanded {
                             Text(subtitle)
                                 .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
 
@@ -64,11 +57,11 @@ struct ManageTokensListItemView: View {
             .contentShape(Rectangle())
             .onTapGesture {
                 withAnimation {
-                    isExpanded.toggle()
+                    viewModel.isExpanded.toggle()
                 }
             }
 
-            if isExpanded {
+            if viewModel.isExpanded {
                 VStack(spacing: 0) {
                     ForEach(viewModel.items) {
                         ManageTokensItemNetworkSelectorView(viewModel: $0, arrowWidth: iconWidth)
@@ -84,7 +77,7 @@ struct ManageTokensListItemView: View {
     private var chevronView: some View {
         Assets.chevronDown24.image
             .foregroundStyle(Colors.Icon.informative)
-            .rotationEffect(isExpanded ? Angle(degrees: 180) : .zero)
+            .rotationEffect(viewModel.isExpanded ? Angle(degrees: 180) : .zero)
     }
 }
 
@@ -95,6 +88,7 @@ struct ManageTokensListItemView_Previews: PreviewProvider {
             VStack(spacing: 0) {
                 StatefulPreviewWrapper(false) {
                     ManageTokensListItemView(viewModel: ManageTokensListItemViewModel(
+                        coinId: "tether",
                         imageURL: iconBuilder.tokenIconURL(id: "tether"),
                         name: "Tether",
                         symbol: "USDT",
@@ -104,6 +98,7 @@ struct ManageTokensListItemView_Previews: PreviewProvider {
 
                 StatefulPreviewWrapper(false) {
                     ManageTokensListItemView(viewModel: ManageTokensListItemViewModel(
+                        coinId: "binancecoin",
                         imageURL: iconBuilder.tokenIconURL(id: "binancecoin"),
                         name: "Babananas United",
                         symbol: "BABASDT",
@@ -113,6 +108,7 @@ struct ManageTokensListItemView_Previews: PreviewProvider {
 
                 StatefulPreviewWrapper(false) {
                     ManageTokensListItemView(viewModel: ManageTokensListItemViewModel(
+                        coinId: "binancecoin",
                         imageURL: iconBuilder.tokenIconURL(id: "binancecoin"),
                         name: "Binance USD",
                         symbol: "BUS",
@@ -122,6 +118,7 @@ struct ManageTokensListItemView_Previews: PreviewProvider {
 
                 StatefulPreviewWrapper(false) {
                     ManageTokensListItemView(viewModel: ManageTokensListItemViewModel(
+                        coinId: "avalanche-2",
                         imageURL: iconBuilder.tokenIconURL(id: "avalanche-2"),
                         name: "USDVVVSALN very-very-very-stupid-and-long-name",
                         symbol: "BUS",
@@ -131,6 +128,7 @@ struct ManageTokensListItemView_Previews: PreviewProvider {
 
                 StatefulPreviewWrapper(false) {
                     ManageTokensListItemView(viewModel: ManageTokensListItemViewModel(
+                        coinId: "ethereum",
                         imageURL: iconBuilder.tokenIconURL(id: "ethereum"),
                         name: "Ethereum",
                         symbol: "ETH",

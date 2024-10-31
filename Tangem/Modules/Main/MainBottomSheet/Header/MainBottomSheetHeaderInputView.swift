@@ -17,6 +17,8 @@ struct MainBottomSheetHeaderInputView: View {
 
     let allowsHitTestingForTextField: Bool
 
+    let clearButtonAction: (() -> Void)?
+
     var body: some View {
         FocusableWrapperView(content: searchBar, isFocused: isTextFieldFocused)
     }
@@ -25,13 +27,15 @@ struct MainBottomSheetHeaderInputView: View {
     private var searchBar: some View {
         CustomSearchBar(
             searchText: $searchText,
-            placeholder: Localization.manageTokensSearchPlaceholder
+            placeholder: Localization.marketsSearchHeaderTitle,
+            keyboardType: .alphabet,
+            style: .translucent,
+            clearButtonAction: clearButtonAction
         )
         .padding(.horizontal, 16)
         .allowsHitTesting(allowsHitTestingForTextField)
-        .padding(.top, Constants.verticalInset)
-        .padding(.bottom, max(UIApplication.safeAreaInsets.bottom, Constants.verticalInset))
-        .background(Colors.Background.primary)
+        .padding(.top, Constants.topInset)
+        .padding(.bottom, Constants.bottomInset)
     }
 }
 
@@ -74,8 +78,9 @@ private extension MainBottomSheetHeaderInputView {
 
 // MARK: - Constants
 
-private extension MainBottomSheetHeaderInputView {
+extension MainBottomSheetHeaderInputView {
     enum Constants {
-        static let verticalInset = 20.0
+        static let topInset = 20.0
+        static let bottomInset = 12.0
     }
 }

@@ -24,29 +24,6 @@ struct SendAmount: Hashable {
         }
     }
 
-    func format(
-        currencySymbol: String,
-        balanceFormatter: BalanceFormatter = .init(),
-        decimalCount: Int
-    ) -> String? {
-        switch type {
-        case .typical(let crypto, _):
-            guard let crypto else {
-                return BalanceFormatter.defaultEmptyBalanceString
-            }
-
-            let formatter = SendCryptoValueFormatter(
-                decimals: decimalCount,
-                currencySymbol: currencySymbol,
-                trimFractions: true
-            )
-
-            return formatter.string(from: crypto)
-        case .alternative(let fiat, _):
-            return fiat.map { balanceFormatter.formatFiatBalance($0) }
-        }
-    }
-
     func formatAlternative(
         currencySymbol: String,
         balanceFormatter: BalanceFormatter = .init(),

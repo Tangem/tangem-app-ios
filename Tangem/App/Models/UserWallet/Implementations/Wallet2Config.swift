@@ -14,12 +14,10 @@ import BlockchainSdk
 struct Wallet2Config {
     let card: CardDTO
     private let isDemo: Bool
-    private let isRing: Bool
 
-    init(card: CardDTO, isDemo: Bool, isRing: Bool) {
+    init(card: CardDTO, isDemo: Bool) {
         self.card = card
         self.isDemo = isDemo
-        self.isRing = isRing
     }
 }
 
@@ -122,14 +120,14 @@ extension Wallet2Config: UserWalletConfig {
         return nil
     }
 
-    var warningEvents: [WarningEvent] {
-        var warnings = WarningEventsFactory().makeWarningEvents(for: card)
+    var generalNotificationEvents: [GeneralNotificationEvent] {
+        var notifications = GeneralNotificationEventsFactory().makeNotifications(for: card)
 
         if isDemo, !AppEnvironment.current.isTestnet {
-            warnings.append(.demoCard)
+            notifications.append(.demoCard)
         }
 
-        return warnings
+        return notifications
     }
 
     var emailData: [EmailCollectedData] {
@@ -141,18 +139,10 @@ extension Wallet2Config: UserWalletConfig {
     }
 
     var productType: Analytics.ProductType {
-        if isRing {
-            return .ring
-        }
-
         return .wallet2
     }
 
     var cardHeaderImage: ImageType? {
-        if isRing {
-            return nil
-        }
-
         // Case with broken backup (e.g. CardLinked)
         if cardsCount == 1 {
             return nil
@@ -219,7 +209,7 @@ extension Wallet2Config: UserWalletConfig {
         case "AF35":
             return cardsCount == 2 ? Assets.Cards.voltInuDouble : Assets.Cards.voltInuTriple
         // Kaspa 2
-        case "AF25":
+        case "AF25", "AF61", "AF72":
             return cardsCount == 2 ? Assets.Cards.kaspa2Double : Assets.Cards.kaspa2Triple
         // Kaspa reseller
         case "AF31":
@@ -230,26 +220,28 @@ extension Wallet2Config: UserWalletConfig {
         // Peach, Air, Glass
         case "AF43", "AF44", "AF45":
             return Assets.Cards.peachAirGlass
+        // Kaspa Mint
+        case "AF73":
+            return cardsCount == 2 ? Assets.Cards.kaspaMint2 : Assets.Cards.kaspaMint3
+        // BTC Gold
+        case "AF71":
+            return cardsCount == 2 ? Assets.Cards.btcNew2 : Assets.Cards.btcNew3
         // Tangem Wallet 2.0
         default:
+
+            var isUserWalletWithRing = false
+
+            if let userWalletIdSeed {
+                let userWalletId = UserWalletId(with: userWalletIdSeed).stringValue
+                isUserWalletWithRing = AppSettings.shared.userWalletIdsWithRing.contains(userWalletId)
+            }
+
+            if isUserWalletWithRing || RingUtil().isRing(batchId: card.batchId) {
+                return cardsCount == 2 ? Assets.Cards.ring1card : Assets.Cards.ring2cards
+            }
+
             return cardsCount == 2 ? Assets.Cards.wallet2Double : Assets.Cards.wallet2Triple
         }
-    }
-
-    var customOnboardingImage: ImageType? {
-        if isRing {
-            return Assets.ring
-        }
-
-        return nil
-    }
-
-    var customScanImage: ImageType? {
-        if isRing {
-            return Assets.ringShapeScan
-        }
-
-        return nil
     }
 
     func getFeatureAvailability(_ feature: UserWalletFeature) -> UserWalletFeature.Availability {
@@ -311,11 +303,7 @@ extension Wallet2Config: UserWalletConfig {
         case .onlineImage:
             return card.firmwareVersion.type == .release ? .available : .hidden
         case .staking:
-            if card.firmwareVersion.doubleValue >= 4.52 {
-                return .available
-            }
-
-            return .hidden
+            return .available
         case .topup:
             return .available
         case .tokenSynchronization:
@@ -345,10 +333,10 @@ extension Wallet2Config: UserWalletConfig {
 
     func makeWalletModelsFactory() -> WalletModelsFactory {
         if isDemo {
-            return DemoWalletModelsFactory(derivationStyle: derivationStyle)
+            return DemoWalletModelsFactory(config: self)
         }
 
-        return CommonWalletModelsFactory(derivationStyle: derivationStyle)
+        return CommonWalletModelsFactory(config: self)
     }
 
     func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {

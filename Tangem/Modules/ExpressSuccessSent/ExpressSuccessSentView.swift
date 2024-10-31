@@ -61,7 +61,7 @@ struct ExpressSuccessSentView: View {
                 .foregroundColor(Colors.Icon.inactive)
 
             VStack(spacing: 4) {
-                Text(Localization.swappingSuccessViewTitle)
+                Text(Localization.commonInProgress)
                     .style(Fonts.Bold.title3, color: Colors.Text.primary1)
 
                 Text(viewModel.dateFormatted)

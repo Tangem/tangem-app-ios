@@ -63,15 +63,15 @@ class CommonSendStepsManager {
 
         switch step.type {
         case .summary:
-            output?.update(state: .moveAndFade(step: step, action: .send))
+            output?.update(state: .init(step: step, action: .action))
         case .finish:
-            output?.update(state: .moveAndFade(step: step, action: .close))
+            output?.update(state: .init(step: step, action: .close))
         case .amount where isEditAction,
              .destination where isEditAction,
              .fee where isEditAction:
-            output?.update(state: .moveAndFade(step: step, action: .continue))
+            output?.update(state: .init(step: step, action: .continue))
         case .amount, .destination:
-            output?.update(state: .next(step: step))
+            output?.update(state: .init(step: step, action: .next, backButtonVisible: true))
         case .fee, .validators:
             assertionFailure("There is no next step")
         }
@@ -83,9 +83,9 @@ class CommonSendStepsManager {
 
         switch step.type {
         case .summary:
-            output?.update(state: .moveAndFade(step: step, action: .send))
+            output?.update(state: .init(step: step, action: .action))
         default:
-            output?.update(state: .back(step: step))
+            output?.update(state: .init(step: step, action: .next))
         }
     }
 }
@@ -93,8 +93,16 @@ class CommonSendStepsManager {
 // MARK: - SendStepsManager
 
 extension CommonSendStepsManager: SendStepsManager {
+    var initialKeyboardState: Bool { false }
+
+    var initialFlowActionType: SendFlowActionType { .send }
+
     var initialState: SendStepsManagerViewState {
-        .init(step: destinationStep, animation: .slideForward, mainButtonType: .next, backButtonVisible: false)
+        .init(step: destinationStep, action: .next, backButtonVisible: false)
+    }
+
+    var shouldShowDismissAlert: Bool {
+        stack.contains(where: { $0.type.isSummary })
     }
 
     func set(output: SendStepsManagerOutput) {

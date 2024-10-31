@@ -19,7 +19,7 @@ struct AuthView: View {
         unlockView
             .alert(item: $viewModel.error, content: { $0.alert })
             .onAppear(perform: viewModel.onAppear)
-            .onDidAppear(viewModel.onDidAppear)
+            .onDidAppear(perform: viewModel.onDidAppear)
             .onDisappear(perform: viewModel.onDisappear)
             .background(
                 ScanTroubleshootingView(
@@ -71,7 +71,8 @@ struct AuthView: View {
                 action: viewModel.unlockWithCard
             )
         }
-        .padding()
+        .padding([.top, .horizontal])
+        .padding(.bottom, 6)
     }
 }
 

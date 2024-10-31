@@ -39,24 +39,27 @@ final class SingleTokenNotificationManager {
     private func bind() {
         bag = []
 
-        walletModel
-            .walletDidChangePublisher
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] state in
-                self?.notificationsUpdateTask?.cancel()
+        Publishers.CombineLatest(
+            walletModel.walletDidChangePublisher,
+            walletModel.stakingManagerStatePublisher
+        )
+        .receive(on: DispatchQueue.main)
+        .sink { [weak self] walletState, stakingState in
+            self?.notificationsUpdateTask?.cancel()
 
-                switch state {
-                case .failed:
-                    self?.setupNetworkUnreachable()
-                case .noAccount(let message, _):
-                    self?.setupNoAccountNotification(with: message)
-                case .loading, .created:
-                    break
-                case .idle, .noDerivation:
-                    self?.setupLoadedStateNotifications()
-                }
+            switch walletState {
+            case .failed:
+                self?.setupNetworkUnreachable()
+            case .noAccount(let message, _):
+                self?.setupNoAccountNotification(with: message)
+            case .loading, .created:
+                break
+            case .idle, .noDerivation:
+                guard stakingState != .loading else { return } // fixes issue with staking notification animated re-appear
+                self?.setupLoadedStateNotifications()
             }
-            .store(in: &bag)
+        }
+        .store(in: &bag)
     }
 
     private func setupLoadedStateNotifications() {
@@ -70,10 +73,6 @@ final class SingleTokenNotificationManager {
 
         if let existentialWarning = walletModel.existentialDepositWarning {
             events.append(.existentialDepositWarning(message: existentialWarning))
-        }
-
-        if case .solana = walletModel.tokenItem.blockchain, !walletModel.isZeroAmount {
-            events.append(.solanaHighImpact)
         }
 
         if case .binance = walletModel.tokenItem.blockchain {
@@ -91,6 +90,15 @@ final class SingleTokenNotificationManager {
                     maxMana: formatter.formatDecimal(maxMana, formattingOptions: .defaultFiatFormattingOptions)
                 )
             )
+        }
+
+        /// We can't use `Blockchain.polygon(testnet: false).currencySymbol` here
+        /// because it will be changed after some time to `"POL"`
+        // TODO: https://tangem.atlassian.net/browse/IOS-7695
+        if walletModel.tokenItem.currencySymbol == CurrencySymbol.matic,
+           walletModel.tokenItem.isToken,
+           walletModel.tokenItem.networkId != Blockchain.polygon(testnet: false).networkId {
+            events.append(.maticMigration)
         }
 
         if let sendingRestrictions = walletModel.sendingRestrictions {
@@ -154,7 +162,7 @@ final class SingleTokenNotificationManager {
         notificationInputsSubject
             .send([
                 factory.buildNotificationInput(
-                    for: .networkUnreachable(currencySymbol: walletModel.blockchainNetwork.blockchain.currencySymbol),
+                    for: TokenNotificationEvent.networkUnreachable(currencySymbol: walletModel.blockchainNetwork.blockchain.currencySymbol),
                     dismissAction: weakify(self, forFunction: SingleTokenNotificationManager.dismissNotification(with:))
                 ),
             ])
@@ -197,7 +205,7 @@ final class SingleTokenNotificationManager {
 
         let factory = NotificationsFactory()
         let input = factory.buildNotificationInput(
-            for: .rentFee(rentMessage: rentMessage),
+            for: TokenNotificationEvent.rentFee(rentMessage: rentMessage),
             dismissAction: weakify(self, forFunction: SingleTokenNotificationManager.dismissNotification(with:))
         )
         return input
@@ -234,16 +242,10 @@ final class SingleTokenNotificationManager {
             return nil
         }
 
-        let days = 2
-        let apyFormatted = PercentFormatter().format(yield.apy, option: .staking)
-        let rewardPeriodDaysFormatted = days.formatted()
+        let tokenIconInfo = TokenIconInfoBuilder().build(from: walletModel.tokenItem, isCustom: walletModel.isCustom)
+        let apyFormatted = PercentFormatter().format(yield.rewardRateValues.max, option: .staking)
 
-        return .staking(
-            tokenSymbol: walletModel.tokenItem.currencySymbol,
-            tokenIconInfo: TokenIconInfoBuilder().build(from: walletModel.tokenItem, isCustom: walletModel.isCustom),
-            earnUpToFormatted: apyFormatted,
-            rewardPeriodDaysFormatted: rewardPeriodDaysFormatted
-        )
+        return .staking(tokenIconInfo: tokenIconInfo, earnUpToFormatted: apyFormatted)
     }
 }
 
@@ -265,5 +267,13 @@ extension SingleTokenNotificationManager: NotificationManager {
 
     func dismissNotification(with id: NotificationViewId) {
         notificationInputsSubject.value.removeAll(where: { $0.id == id })
+    }
+}
+
+// MARK: - Constants
+
+private extension SingleTokenNotificationManager {
+    enum CurrencySymbol {
+        static let matic = "MATIC"
     }
 }
