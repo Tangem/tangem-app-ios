@@ -24,7 +24,7 @@ concurrency:
 jobs:
   prepare:
     name: Prepare information
-    runs-on: [self-hosted, active]
+    runs-on: [builder1]
     outputs:
       version: '${{ steps.version.outputs.build_version }}'
       stage: Alpha
