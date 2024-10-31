@@ -133,7 +133,7 @@ public indirect enum Blockchain: Equatable, Hashable {
              .cyber(let testnet),
              .blast(let testnet),
              .sei(let testnet),
-             .kaspa(let testnet),
+             .kaspa(let testnet), .kaspaKRC20(testnet: let testnet),
              .energyWebEVM(let testnet),
              .core(let testnet):
             return testnet
