@@ -44,7 +44,7 @@ private extension OnrampProvidersViewModel {
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, provider in
-                viewModel.selectedProviderId = provider.provider.id
+                viewModel.selectedProviderId = provider.value?.provider.id
             }
             .store(in: &bag)
 

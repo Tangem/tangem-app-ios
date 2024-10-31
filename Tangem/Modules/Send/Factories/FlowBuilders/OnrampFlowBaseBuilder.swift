@@ -19,10 +19,21 @@ struct OnrampFlowBaseBuilder {
     let builder: SendDependenciesBuilder
 
     func makeSendViewModel(router: SendRoutable) -> SendViewModel {
-        let userId = userWalletModel.userWalletId.stringValue
-        let (onrampManager, onrampRepository, onrampDataRepository) = builder.makeOnrampDependencies(userWalletId: userId)
+        let (onrampManager, onrampRepository, onrampDataRepository) = builder.makeOnrampDependencies(
+            userWalletId: userWalletModel.userWalletId.stringValue
+        )
 
         let onrampModel = builder.makeOnrampModel(onrampManager: onrampManager, onrampRepository: onrampRepository)
+
+        let providersBuilder = OnrampProvidersBuilder(
+            io: (input: onrampModel, output: onrampModel),
+            paymentMethodsInput: onrampModel
+        )
+
+        let paymentMethodsBuilder = OnrampPaymentMethodsBuilder(
+            io: (input: onrampModel, output: onrampModel),
+            dataRepository: onrampDataRepository
+        )
 
         let (onrampAmountViewModel, _) = onrampAmountBuilder.makeOnrampAmountViewModel(
             io: (input: onrampModel, output: onrampModel)
@@ -32,10 +43,13 @@ struct OnrampFlowBaseBuilder {
             input: onrampModel
         )
 
+        let onrampProvidersCompactViewModel = providersBuilder.makeOnrampProvidersCompactViewModel()
+
         let onramp = onrampStepBuilder.makeOnrampStep(
             io: (input: onrampModel, output: onrampModel),
             onrampManager: onrampManager,
-            onrampAmountViewModel: onrampAmountViewModel
+            onrampAmountViewModel: onrampAmountViewModel,
+            onrampProvidersCompactViewModel: onrampProvidersCompactViewModel
         )
 
         let finish = sendFinishStepBuilder.makeSendFinishStep(
@@ -58,7 +72,9 @@ struct OnrampFlowBaseBuilder {
 
         let dataBuilder = builder.makeOnrampBaseDataBuilder(
             onrampRepository: onrampRepository,
-            onrampDataRepository: onrampDataRepository
+            onrampDataRepository: onrampDataRepository,
+            providersBuilder: providersBuilder,
+            paymentMethodsBuilder: paymentMethodsBuilder
         )
 
         let interactor = CommonSendBaseInteractor(input: onrampModel, output: onrampModel)
@@ -74,8 +90,8 @@ struct OnrampFlowBaseBuilder {
         )
 
         stepsManager.set(output: viewModel)
-        onramp.step.setup(router: viewModel)
 
+        onrampProvidersCompactViewModel.router = viewModel
         onrampModel.router = viewModel
         onrampModel.alertPresenter = viewModel
 

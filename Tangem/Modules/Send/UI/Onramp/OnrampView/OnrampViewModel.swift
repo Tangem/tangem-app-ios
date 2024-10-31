@@ -27,8 +27,6 @@ class OnrampViewModel: ObservableObject, Identifiable {
         self.onrampProvidersCompactViewModel = onrampProvidersCompactViewModel
 
         self.interactor = interactor
-
-        bind()
     }
 }
 

@@ -23,7 +23,7 @@ protocol StakingBaseDataBuilder: SendGenericBaseDataBuilder {
 protocol OnrampBaseDataBuilder: SendGenericBaseDataBuilder {
     func makeDataForOnrampCountryBottomSheet() -> OnrampRepository
     func makeDataForOnrampCountrySelectorView() -> (preferenceRepository: OnrampRepository, dataRepository: OnrampDataRepository)
-    func makeDataForOnrampProvidersPaymentMethodsView() -> (paymentMethodsBuilder: OnrampPaymentMethodsBuilder, providersBuilder: OnrampProvidersBuilder)
+    func makeDataForOnrampProvidersPaymentMethodsView() -> (providersBuilder: OnrampProvidersBuilder, paymentMethodsBuilder: OnrampPaymentMethodsBuilder)
 }
 
 protocol SendGenericBaseDataBuilder {

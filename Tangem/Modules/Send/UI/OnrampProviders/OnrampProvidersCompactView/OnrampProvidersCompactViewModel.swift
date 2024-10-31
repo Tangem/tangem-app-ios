@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import TangemExpress
 
 class OnrampProvidersCompactViewModel: ObservableObject {
     @Published private(set) var paymentState: PaymentState?
@@ -30,26 +31,32 @@ class OnrampProvidersCompactViewModel: ObservableObject {
         Publishers.CombineLatest(
             providersInput.selectedOnrampProviderPublisher,
             paymentMethodInput.selectedOnrampPaymentMethodPublisher
-        ).map { [weak self] provider, paymentMethod -> PaymentState? in
-            guard let provider, let paymentMethod else {
-                return nil
-            }
+        )
+        .receive(on: DispatchQueue.main)
+        .sink { [weak self] provider, paymentMethod in
+            self?.updateView(provider: provider, paymentMethod: paymentMethod)
+        }
+        .store(in: &bag)
+    }
 
-            return .loaded(
+    func updateView(provider: LoadingValue<OnrampAvailableProvider>?, paymentMethod: OnrampPaymentMethod?) {
+        switch (provider, paymentMethod) {
+        case (.none, _), (.failedToLoad, _), (_, .none):
+            paymentState = .none
+        case (.loading, _):
+            paymentState = .loading
+        case (.loaded(let provider), .some(let paymentMethod)):
+            paymentState = .loaded(
                 data: .init(
                     iconURL: paymentMethod.identity.image,
                     paymentMethodName: paymentMethod.identity.name,
                     providerName: provider.provider.id,
-                    badge: .bestRate,
-                    action: {
-                        self?.router?.onrampStepRequestEditProvider()
-                    }
-                )
+                    badge: .bestRate
+                ) { [weak self] in
+                    self?.router?.onrampStepRequestEditProvider()
+                }
             )
         }
-        .receive(on: DispatchQueue.main)
-        .assign(to: \.paymentState, on: self, ownership: .weak)
-        .store(in: &bag)
     }
 }
 

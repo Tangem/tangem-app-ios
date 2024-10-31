@@ -13,20 +13,19 @@ protocol OnrampBaseDataBuilderInput {}
 struct CommonOnrampBaseDataBuilder {
     private let onrampRepository: OnrampRepository
     private let onrampDataRepository: OnrampDataRepository
-
-    private let paymentMethodsBuilderIO: OnrampPaymentMethodsBuilder.IO
-    private let providersBuilderIO: OnrampProvidersBuilder.IO
+    private let providersBuilder: OnrampProvidersBuilder
+    private let paymentMethodsBuilder: OnrampPaymentMethodsBuilder
 
     init(
         onrampRepository: OnrampRepository,
         onrampDataRepository: OnrampDataRepository,
-        paymentMethodsBuilderIO: OnrampPaymentMethodsBuilder.IO,
-        providersBuilderIO: OnrampProvidersBuilder.IO
+        providersBuilder: OnrampProvidersBuilder,
+        paymentMethodsBuilder: OnrampPaymentMethodsBuilder
     ) {
         self.onrampRepository = onrampRepository
         self.onrampDataRepository = onrampDataRepository
-        self.paymentMethodsBuilderIO = paymentMethodsBuilderIO
-        self.providersBuilderIO = providersBuilderIO
+        self.providersBuilder = providersBuilder
+        self.paymentMethodsBuilder = paymentMethodsBuilder
     }
 }
 
@@ -41,10 +40,7 @@ extension CommonOnrampBaseDataBuilder: OnrampBaseDataBuilder {
         return (preferenceRepository: onrampRepository, dataRepository: onrampDataRepository)
     }
 
-    func makeDataForOnrampProvidersPaymentMethodsView() -> (paymentMethodsBuilder: OnrampPaymentMethodsBuilder, providersBuilder: OnrampProvidersBuilder) {
-        (
-            paymentMethodsBuilder: OnrampPaymentMethodsBuilder(io: paymentMethodsBuilderIO, dataRepository: onrampDataRepository),
-            providersBuilder: OnrampProvidersBuilder(io: providersBuilderIO, paymentMethodsInput: paymentMethodsBuilderIO.input)
-        )
+    func makeDataForOnrampProvidersPaymentMethodsView() -> (providersBuilder: OnrampProvidersBuilder, paymentMethodsBuilder: OnrampPaymentMethodsBuilder) {
+        return (providersBuilder: providersBuilder, paymentMethodsBuilder: paymentMethodsBuilder)
     }
 }

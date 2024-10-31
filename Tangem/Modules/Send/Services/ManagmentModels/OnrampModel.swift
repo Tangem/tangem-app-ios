@@ -20,7 +20,10 @@ class OnrampModel {
 
     private let _currency: CurrentValueSubject<LoadingValue<OnrampFiatCurrency>, Never>
     private let _amount: CurrentValueSubject<SendAmount?, Never> = .init(.none)
-    private let _selectedQuote: CurrentValueSubject<LoadingValue<OnrampQuote>?, Never> = .init(.none)
+    private let _selectedOnrampProvider: CurrentValueSubject<LoadingValue<OnrampAvailableProvider>?, Never> = .init(.none)
+    private let _selectedOnrampPaymentMethod: CurrentValueSubject<OnrampPaymentMethod?, Never> = .init(.none)
+    private let _onrampProviders: CurrentValueSubject<[OnrampAvailableProvider], Never> = .init([])
+    private let _isLoading: CurrentValueSubject<Bool, Never> = .init(false)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
     private let _isLoading = CurrentValueSubject<Bool, Never>(false)
 
@@ -177,6 +180,50 @@ extension OnrampModel: OnrampAmountInput {
 extension OnrampModel: OnrampAmountOutput {
     func amountDidChanged(amount: SendAmount?) {
         _amount.send(amount)
+    }
+}
+
+// MARK: - OnrampProvidersInput
+
+extension OnrampModel: OnrampProvidersInput {
+    var selectedOnrampProvider: OnrampAvailableProvider? {
+        _selectedOnrampProvider.value?.value
+    }
+
+    var selectedOnrampProviderPublisher: AnyPublisher<LoadingValue<OnrampAvailableProvider>?, Never> {
+        _selectedOnrampProvider.eraseToAnyPublisher()
+    }
+
+    var onrampProvidersPublisher: AnyPublisher<[OnrampAvailableProvider], Never> {
+        _onrampProviders.eraseToAnyPublisher()
+    }
+}
+
+// MARK: - OnrampProvidersOutput
+
+extension OnrampModel: OnrampProvidersOutput {
+    func userDidSelect(provider: OnrampAvailableProvider) {
+        _selectedOnrampProvider.send(.loaded(provider))
+    }
+}
+
+// MARK: - OnrampPaymentMethodsInput
+
+extension OnrampModel: OnrampPaymentMethodsInput {
+    var selectedOnrampPaymentMethod: OnrampPaymentMethod? {
+        _selectedOnrampPaymentMethod.value
+    }
+
+    var selectedOnrampPaymentMethodPublisher: AnyPublisher<OnrampPaymentMethod?, Never> {
+        _selectedOnrampPaymentMethod.eraseToAnyPublisher()
+    }
+}
+
+// MARK: - OnrampPaymentMethodsOutput
+
+extension OnrampModel: OnrampPaymentMethodsOutput {
+    func userDidSelect(paymentMethod: OnrampPaymentMethod) {
+        _selectedOnrampPaymentMethod.send(paymentMethod)
     }
 }
 
