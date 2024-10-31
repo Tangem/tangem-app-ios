@@ -76,9 +76,7 @@ private extension OnrampProvidersViewModel {
         )
     }
 
-    func updateProvidersView(providers: [OnrampProvider]) {
-        // TODO: https://tangem.atlassian.net/browse/IOS-8310
-
+    func updateProvidersView(providers: [OnrampProviderManager]) {
         providersViewData = providers.map { provider in
             OnrampProviderRowViewData(
                 id: provider.provider.id,
