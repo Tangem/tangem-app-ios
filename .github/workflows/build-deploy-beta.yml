@@ -7,6 +7,10 @@ on:
     - 'feature/IOS-8113_ci_cd_beta_builds_workflow' # TODO: Test only, remove
   workflow_dispatch:
     inputs:
+      changelog:
+        description: >
+          Optional additional info about build
+        type: string
       xcode_version_override:
         description: >
           Optional Xcode version override. Leave blank (default value) to use the default Xcode version; 
@@ -48,7 +52,7 @@ jobs:
 
       - name: Jira Get Issues Summary
         uses: tangem/jira-action@master
-        id: changelog
+        id: jira-get-issues-summary
         with:
           action: 'getIssuesSummary'
           issues: '${{ steps.git-diff.outputs.issues }}'
@@ -86,6 +90,23 @@ jobs:
           project: 'IOS'
           version: '${{ env.nextVersionName }}'
           issues: '${{ steps.git-diff.outputs.issues }}'
+
+      - name: Create changelog
+        id: changelog
+        env:
+          JIRA_ISSUES_SUMMARY: '${{ steps.jira-get-issues-summary.outputs.result }}'
+          ADDITIONAL_CHANGELOG: '${{ inputs.changelog }}'
+        run: |
+          if [[ -n "${ADDITIONAL_CHANGELOG}" ]]; then
+            OUTPUT_VALUE="Description: ${ADDITIONAL_CHANGELOG}"$'\n'"Jira issues summary:"$'\n'"${JIRA_ISSUES_SUMMARY}"
+          else
+            OUTPUT_VALUE="Jira issues summary:"$'\n'"${JIRA_ISSUES_SUMMARY}"
+          fi
+
+          # Workaround for a multi-line text in GH output
+          echo 'result<<EOF' >> $GITHUB_OUTPUT
+          echo "${OUTPUT_VALUE}" >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
 
   build:
     name: Tangem Beta
