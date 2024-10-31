@@ -30,6 +30,7 @@ struct SendDependenciesBuilder {
         case .pending(.voteLocked): .voteLocked
         case .pending(.unlockLocked): .unlockLocked
         case .pending(.restake): .restake
+        case .pending(.claimUnstaked): .claimUnstaked
         }
     }
 
@@ -43,6 +44,7 @@ struct SendDependenciesBuilder {
         case .restakeRewards: action.title
         case .unlockLocked: action.title
         case .restake: action.title
+        case .claimUnstaked: SendFlowActionType.withdraw.title
         default: action.title
         }
     }
@@ -145,10 +147,6 @@ struct SendDependenciesBuilder {
         CommonFeeIncludedCalculator(validator: walletModel.transactionValidator)
     }
 
-    func makeSendBaseDataBuilder(input: SendBaseDataBuilderInput) -> SendBaseDataBuilder {
-        SendBaseDataBuilder(input: input, walletModel: walletModel, emailDataProvider: userWalletModel)
-    }
-
     // MARK: - Send, Sell
 
     func makeSendModel(
@@ -222,6 +220,10 @@ struct SendDependenciesBuilder {
 
     func makeSendAlertBuilder() -> SendAlertBuilder {
         CommonSendAlertBuilder()
+    }
+
+    func makeSendBaseDataBuilder(input: SendBaseDataBuilderInput) -> SendBaseDataBuilder {
+        CommonSendBaseDataBuilder(input: input, walletModel: walletModel, emailDataProvider: userWalletModel)
     }
 
     // MARK: - Staking
@@ -323,18 +325,36 @@ struct SendDependenciesBuilder {
         StakingAmountModifier(tokenItem: walletModel.tokenItem)
     }
 
+    func makeStakingBaseDataBuilder(input: StakingBaseDataBuilderInput) -> StakingBaseDataBuilder {
+        CommonStakingBaseDataBuilder(input: input, walletModel: walletModel, emailDataProvider: userWalletModel)
+    }
+
     // MARK: - Onramp
 
     func makeOnrampModel(onrampManager: some OnrampManager) -> OnrampModel {
         OnrampModel(onrampManager: onrampManager)
     }
 
-    func makeOnrampManager(userWalletId: String) -> OnrampManager {
-        let expressAPIProvider = ExpressAPIProviderFactory().makeExpressAPIProvider(userId: userWalletId, logger: AppLog.shared)
-        return TangemExpressFactory().makeOnrampManager(expressAPIProvider: expressAPIProvider, logger: AppLog.shared)
+    func makeOnrampManager(userWalletId: String, onrampRepository: OnrampRepository) -> OnrampManager {
+        let expressAPIProvider = ExpressAPIProviderFactory()
+            .makeExpressAPIProvider(userId: userWalletId, logger: AppLog.shared)
+
+        return TangemExpressFactory().makeOnrampManager(
+            expressAPIProvider: expressAPIProvider,
+            onrampRepository: onrampRepository,
+            logger: AppLog.shared
+        )
     }
 
     func makeOnrampAmountValidator() -> SendAmountValidator {
         OnrampAmountValidator()
+    }
+
+    func makeOnrampBaseDataBuilder(input: OnrampBaseDataBuilderInput, onrampRepository: OnrampRepository) -> OnrampBaseDataBuilder {
+        CommonOnrampBaseDataBuilder(input: input, walletModel: walletModel, onrampRepository: onrampRepository)
+    }
+
+    func makeOnrampRepository() -> OnrampRepository {
+        TangemExpressFactory().makeOnrampRepository(storage: CommonOnrampStorage())
     }
 }

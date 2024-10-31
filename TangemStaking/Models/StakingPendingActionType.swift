@@ -19,5 +19,6 @@ public struct StakingPendingActionInfo: Hashable {
         case voteLocked
         case unlockLocked
         case restake
+        case claimUnstaked
     }
 }

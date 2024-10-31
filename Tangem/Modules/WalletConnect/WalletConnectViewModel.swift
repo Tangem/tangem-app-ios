@@ -81,7 +81,7 @@ class WalletConnectViewModel: ObservableObject {
         }
 
         do {
-            let pending = try readFromClipboard()
+            pendingURI = try readFromClipboard()
         } catch {
             makeAlert(with: error.localizedDescription)
             return

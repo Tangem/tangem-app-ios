@@ -228,7 +228,7 @@ private extension CommonStakingManager {
             let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
             let action = try await getPendingTransactionAction(request: request)
             return action
-        case .withdraw(let passthroughs):
+        case .withdraw(let passthroughs), .claimUnstaked(let passthroughs):
             let actions = try await passthroughs.asyncMap { passthrough in
                 let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
                 let action = try await getPendingTransactionAction(request: request)
@@ -272,7 +272,7 @@ private extension CommonStakingManager {
              .restake(let passthrough):
             let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
             return try await execute(try await provider.estimatePendingFee(request: request))
-        case .withdraw(let passthroughs):
+        case .withdraw(let passthroughs), .claimUnstaked(let passthroughs):
             let fees = try await passthroughs.asyncMap { passthrough in
                 let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
                 return try await execute(try await provider.estimatePendingFee(request: request))

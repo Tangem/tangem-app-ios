@@ -20,4 +20,5 @@ class SendRoutableMock: SendRoutable {
     func openFeeCurrency(for walletModel: WalletModel, userWalletModel: UserWalletModel) {}
     func openApproveView(settings: ExpressApproveViewModel.Settings, approveViewModelInput: any ApproveViewModelInput) {}
     func openOnrampCountry(country: OnrampCountry, repository: any OnrampRepository) {}
+    func openOnrampProviders() {}
 }

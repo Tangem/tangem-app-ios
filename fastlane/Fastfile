@@ -219,6 +219,7 @@ lane :update_translations do |options|
   lokalise(
     destination: destination,
     replace_breaks: true,
+    add_newline_eof: true,
     use_original: true,
     languages: languages,
     export_sort: "a_z",

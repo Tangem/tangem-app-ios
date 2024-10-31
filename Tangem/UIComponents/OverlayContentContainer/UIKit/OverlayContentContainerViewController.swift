@@ -59,6 +59,14 @@ final class OverlayContentContainerViewController: UIViewController {
         return isExpandedState || isCollapsedState
     }
 
+    private var minBackgroundShadowViewAlpha: CGFloat { .zero }
+
+    private var maxBackgroundShadowViewAlpha: CGFloat {
+        traitCollection.isDarkMode
+            ? Constants.maxBackgroundShadowViewAlphaForDarkUserInterfaceStyle
+            : Constants.maxBackgroundShadowViewAlphaForLightUserInterfaceStyle
+    }
+
     // MARK: - IBOutlets/UI
 
     private var overlayViewTopAnchorConstraint: NSLayoutConstraint?
@@ -114,6 +122,17 @@ final class OverlayContentContainerViewController: UIViewController {
 
         if let grabberView {
             grabberView.superview?.bringSubviewToFront(grabberView)
+        }
+
+        backgroundShadowView.superview?.bringSubviewToFront(backgroundShadowView)
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if traitCollection.userInterfaceStyle != previousTraitCollection?.userInterfaceStyle {
+            updateBackgroundShadowViewBackgroundColor()
+            updateBackgroundShadowViewAlpha()
         }
     }
 
@@ -222,14 +241,12 @@ final class OverlayContentContainerViewController: UIViewController {
         view.backgroundColor = .black
     }
 
-    /// - Note: The order in which this method is called matters. Must be called between `setupContent` and `setupOverlay`.
     private func setupBackgroundShadowView() {
-        // TODO: Andrey Fedorov - Add better support for dark mode (adjust content view contrast or background colors instead of using background shadow) (IOS-8192)
-        backgroundShadowView.backgroundColor = .black
-        backgroundShadowView.alpha = Constants.minBackgroundShadowViewAlpha
+        backgroundShadowView.alpha = minBackgroundShadowViewAlpha
         backgroundShadowView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         backgroundShadowView.isUserInteractionEnabled = false
-        view.addSubview(backgroundShadowView)
+        contentViewController.view.addSubview(backgroundShadowView)
+        updateBackgroundShadowViewBackgroundColor()
     }
 
     private func setupContent() {
@@ -399,9 +416,12 @@ final class OverlayContentContainerViewController: UIViewController {
         }
     }
 
+    private func updateBackgroundShadowViewBackgroundColor() {
+        backgroundShadowView.backgroundColor = traitCollection.isDarkMode ? .white : .black
+    }
+
     private func updateBackgroundShadowViewAlpha() {
-        let alpha = Constants.minBackgroundShadowViewAlpha
-            + (Constants.maxBackgroundShadowViewAlpha - Constants.minBackgroundShadowViewAlpha) * progress.value
+        let alpha = minBackgroundShadowViewAlpha + (maxBackgroundShadowViewAlpha - minBackgroundShadowViewAlpha) * progress.value
 
         if isFinalState, let animationContext = progress.context {
             UIView.animate(with: animationContext) {
@@ -785,8 +805,8 @@ private extension OverlayContentContainerViewController {
         /// Value of 10.0pt is the same value that the native iOS sheet uses.
         static let notchlessDevicesAdditionalVerticalPadding = 10.0
         static let maxContentViewScale = 1.0
-        static let minBackgroundShadowViewAlpha = 0.0
-        static let maxBackgroundShadowViewAlpha = 0.4
+        static let maxBackgroundShadowViewAlphaForLightUserInterfaceStyle = 0.4
+        static let maxBackgroundShadowViewAlphaForDarkUserInterfaceStyle = 0.08
         static let minAdjustedContentOffsetToLockScrollView = 10.0
         static let panGestureVerticalVelocityMultiplier = 2.0 / 3.0
         static let auxiliaryAnimationsDurationMultiplier = 3.0 / 4.0
