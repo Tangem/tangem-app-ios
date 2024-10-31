@@ -23,7 +23,7 @@ jobs:
       id: git-diff
       uses: tangem/github-action@main
       with:
-        github-token: '${{ secrets.GH_MOBILE_PAT}}'
+        github-token: '${{ secrets.GH_MOBILE_PAT }}'
         base: 'master'
         head: 'develop'
 
@@ -70,11 +70,11 @@ jobs:
     needs: prepare
     uses: tangem/actions/.github/workflows/build.yml@main
     with:
-      stage: '${{needs.prepare.outputs.stage}}'
-      version: '${{needs.prepare.outputs.version}}'
-      build_number: '${{needs.prepare.outputs.build_number}}'
+      stage: '${{ needs.prepare.outputs.stage }}'
+      version: '${{ needs.prepare.outputs.version }}'
+      build_number: '${{ needs.prepare.outputs.build_number }}'
       path: 'fastlane/builds/'
-      filename: 'Tangem-${{needs.prepare.outputs.stage}}-${{needs.prepare.outputs.version}}(${{needs.prepare.outputs.build_number}}).ipa'
+      filename: 'Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa'
     secrets:
       GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT}}'
 
@@ -85,11 +85,11 @@ jobs:
       - prepare
       - build
     with:
-      stage: '${{needs.prepare.outputs.stage}}'
-      version: '${{needs.prepare.outputs.version}}'
-      changelog: '${{needs.prepare.outputs.changelog}}'
-      filename: 'Tangem-${{needs.prepare.outputs.stage}}-${{needs.prepare.outputs.version}}(${{needs.prepare.outputs.build_number}}).ipa'
-      build_number: '${{needs.prepare.outputs.build_number}}'
+      stage: '${{ needs.prepare.outputs.stage }}'
+      version: '${{ needs.prepare.outputs.version }}'
+      build_number: '${{ needs.prepare.outputs.build_number }}'
+      changelog: '${{ needs.prepare.outputs.changelog }}'
+      filename: 'Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa'
     secrets:
       FIREBASE_APP_ID: '${{ secrets.FIREBASE_APP_ID}}'
       FIREBASE_CLI_TOKEN: '${{ secrets.FIREBASE_CLI_TOKEN}}'
@@ -102,15 +102,15 @@ jobs:
       - prepare
       - build
     with:
-      channel: '${{vars.SLACK_CHANNEL_DEPLOYMENTS_IOS}}'
+      channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
       status: 'success'
-      app_name: '${{vars.APP_BETA}}'
-      deploy_to: '${{vars.DEPLOYMENT_GOOGLE_DISTRIBUTION}}'
-      version: '${{needs.prepare.outputs.version}}'
-      build_number: '${{needs.prepare.outputs.build_number}}'
-      changelog: '${{needs.prepare.outputs.changelog}}'
+      app_name: '${{ vars.APP_BETA }}'
+      deploy_to: '${{ vars.DEPLOYMENT_GOOGLE_DISTRIBUTION }}'
+      version: '${{ needs.prepare.outputs.version }}'
+      build_number: '${{ needs.prepare.outputs.build_number }}'
+      changelog: '${{ needs.prepare.outputs.changelog }}'
     secrets:
-      SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN}}'
+      SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN }}'
 
   error_notification:
     name: Error Notification
@@ -120,12 +120,12 @@ jobs:
       - prepare
       - build
     with:
-      channel: '${{vars.SLACK_CHANNEL_DEPLOYMENTS_IOS}}'
+      channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
       status: 'error'
-      app_name: '${{vars.APP_BETA}}'
-      deploy_to: '${{vars.DEPLOYMENT_GOOGLE_DISTRIBUTION}}'
-      version: '${{needs.prepare.outputs.version}}'
-      build_number: '${{needs.prepare.outputs.build_number}}'
-      changelog: '${{needs.prepare.outputs.changelog}}'
+      app_name: '${{ vars.APP_BETA }}'
+      deploy_to: '${{ vars.DEPLOYMENT_GOOGLE_DISTRIBUTION }}'
+      version: '${{ needs.prepare.outputs.version }}'
+      build_number: '${{ needs.prepare.outputs.build_number }}'
+      changelog: '${{ needs.prepare.outputs.changelog }}'
     secrets:
       SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN}}'
