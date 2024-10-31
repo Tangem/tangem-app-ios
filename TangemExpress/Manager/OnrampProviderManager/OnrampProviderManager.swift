@@ -7,11 +7,11 @@
 //
 
 public protocol OnrampProviderManager: Actor {
+    /// Get actual state
+    var state: OnrampProviderManagerState { get }
+
     /// Update quotes for amount
     func update(amount: Decimal) async
-
-    /// Get actual state
-    func state() -> OnrampProviderManagerState
 }
 
 public enum OnrampProviderManagerState: Hashable {

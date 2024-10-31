@@ -35,7 +35,7 @@ extension CommonOnrampManager: OnrampManager {
         return country
     }
 
-    public func setupProviders(request: OnrampPairRequestItem) async throws -> [OnrampProvider] {
+    public func setupProviders(request item: OnrampPairRequestItem) async throws -> [OnrampProvider] {
         let pairs = try await apiProvider.onrampPairs(
             from: item.fiatCurrency,
             to: [item.destination.expressCurrency],
@@ -54,7 +54,7 @@ extension CommonOnrampManager: OnrampManager {
         return _providers
     }
 
-    public func setupQuotes(amount: Decimal) async throws -> [OnrampProviderManager] {
+    public func setupQuotes(amount: Decimal) async throws -> [OnrampProvider] {
         try await updateQuotesInEachManager(amount: amount)
 
         return _providers
@@ -73,7 +73,7 @@ private extension CommonOnrampManager {
         await withTaskGroup(of: Void.self) { [weak self] group in
             await self?._providers.forEach { provider in
                 _ = group.addTaskUnlessCancelled {
-                    await provider.update(amount: amount)
+                    await provider.manager.update(amount: amount)
                 }
             }
         }
@@ -81,22 +81,24 @@ private extension CommonOnrampManager {
 
     func prepareProviders(
         item: OnrampPairRequestItem,
-        supportedProviders: [OnrampProvider]
-    ) async throws -> [CommonOnrampProviderManager] {
+        supportedProviders: [OnrampPair.Provider]
+    ) async throws -> [OnrampProvider] {
         let providers = try await dataRepository.providers()
         let paymentMethods = try await dataRepository.paymentMethods()
 
-        var availableProviders: [CommonOnrampProviderManager] = []
+        var availableProviders: [OnrampProvider] = []
 
         for provider in providers {
             for paymentMethod in paymentMethods {
-                availableProviders.append(CommonOnrampProviderManager(
+                let manager = CommonOnrampProviderManager(
                     pairItem: item,
-                    provider: provider,
+                    expressProvider: provider,
                     paymentMethod: paymentMethod,
                     apiProvider: apiProvider,
                     state: state(provider: provider, paymentMethod: paymentMethod)
-                ))
+                )
+
+                availableProviders.append(OnrampProvider(provider: provider, manager: manager))
             }
         }
 

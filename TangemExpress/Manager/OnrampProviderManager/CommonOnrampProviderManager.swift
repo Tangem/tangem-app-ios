@@ -10,8 +10,8 @@ actor CommonOnrampProviderManager {
     // Dependencies
 
     private let pairItem: OnrampPairRequestItem
-    private let provider: ExpressProvider
-    private let paymentMethod: OnrampPaymentMethod
+    private let expressProviderId: String
+    private let paymentMethodId: String
     private let apiProvider: ExpressAPIProvider
 
     // Private state
@@ -21,14 +21,14 @@ actor CommonOnrampProviderManager {
 
     init(
         pairItem: OnrampPairRequestItem,
-        provider: ExpressProvider,
+        expressProvider: ExpressProvider,
         paymentMethod: OnrampPaymentMethod,
         apiProvider: ExpressAPIProvider,
         state: OnrampProviderManagerState
     ) {
         self.pairItem = pairItem
-        self.provider = provider
-        self.paymentMethod = paymentMethod
+        expressProviderId = expressProvider.id
+        paymentMethodId = paymentMethod.identity.code
         self.apiProvider = apiProvider
 
         _state = state
@@ -49,20 +49,20 @@ private extension CommonOnrampProviderManager {
     }
 
     func loadQuotes() async throws -> OnrampQuote {
-        let item = try makeOnrampSwappableItem(paymentMethod: paymentMethod)
+        let item = try makeOnrampSwappableItem()
         let quote = try await apiProvider.onrampQuote(item: item)
         return quote
     }
 
-    func makeOnrampSwappableItem(paymentMethod: OnrampPaymentMethod) throws -> OnrampQuotesRequestItem {
+    func makeOnrampSwappableItem() throws -> OnrampQuotesRequestItem {
         guard let amount = _amount, amount > 0 else {
             throw OnrampProviderManagerError.amountNotFound
         }
 
         return OnrampQuotesRequestItem(
             pairItem: pairItem,
-            paymentMethod: paymentMethod,
-            providerInfo: .init(id: provider.id),
+            paymentMethod: .init(id: paymentMethodId),
+            providerInfo: .init(id: expressProviderId),
             amount: amount
         )
     }
@@ -71,12 +71,10 @@ private extension CommonOnrampProviderManager {
 // MARK: - OnrampProviderManager
 
 extension CommonOnrampProviderManager: OnrampProviderManager {
+    var state: OnrampProviderManagerState { _state }
+
     func update(amount: Decimal) async {
         _amount = amount
         await updateState()
-    }
-
-    func state() -> OnrampProviderManagerState {
-        _state
     }
 }
