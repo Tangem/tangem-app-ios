@@ -34,6 +34,7 @@ extension OnrampProviderRowViewData: Hashable {
     }
 
     public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
         hasher.combine(name)
         hasher.combine(iconURL)
         hasher.combine(formattedAmount)
