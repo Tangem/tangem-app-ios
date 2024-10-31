@@ -46,6 +46,7 @@ public indirect enum Blockchain: Equatable, Hashable {
     case ton(curve: EllipticCurve, testnet: Bool)
     case kava(testnet: Bool)
     case kaspa(testnet: Bool)
+    case kaspaKRC20(testnet: Bool)
     case ravencoin(testnet: Bool)
     case cosmos(testnet: Bool)
     case terraV1
@@ -132,6 +133,7 @@ public indirect enum Blockchain: Equatable, Hashable {
                 .blast(let testnet),
                 .sei(let testnet),
                 .kaspa(let testnet),
+                .kaspaKRC20(let testnet),
                 .energyWebEVM(let testnet),
                 .core(let testnet):
             return testnet
@@ -244,7 +246,7 @@ public indirect enum Blockchain: Equatable, Hashable {
                 .binance,
                 .dogecoin,
                 .dash,
-                .kaspa,
+                .kaspa, .kaspaKRC20,
                 .ravencoin,
                 .hedera,
                 .radiant,
@@ -387,7 +389,7 @@ public indirect enum Blockchain: Equatable, Hashable {
             return "TON"
         case .kava:
             return "KAVA"
-        case .kaspa:
+        case .kaspa, .kaspaKRC20:
             return "KAS"
         case .ravencoin:
             return "RVN"
@@ -909,6 +911,7 @@ extension Blockchain: Codable {
         case .ton: return "ton"
         case .kava: return "kava"
         case .kaspa: return "kaspa"
+        case .kaspaKRC20: return "kaspaKRC20"
         case .ravencoin: return "ravencoin"
         case .cosmos: return "cosmos-hub"
         case .terraV1: return "terra"
@@ -1155,7 +1158,7 @@ private extension Blockchain {
         case .optimism: return "optimistic-ethereum"
         case .ton: return "the-open-network"
         case .kava: return "kava"
-        case .kaspa: return "kaspa"
+        case .kaspa, .kaspaKRC20: return "kaspa"
         case .ravencoin: return "ravencoin"
         case .cosmos: return "cosmos"
         case .terraV1:
@@ -1367,7 +1370,7 @@ extension Blockchain {
             return DashWalletAssembly()
         case .ton:
             return TONWalletAssembly()
-        case .kaspa:
+        case .kaspa, .kaspaKRC20:
             return KaspaWalletAssembly()
         case .ravencoin:
             return RavencoinWalletAssembly()

@@ -2194,7 +2194,6 @@
 		DCAB5800295EE820005D0F4A /* AppLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAB57FF295EE820005D0F4A /* AppLog.swift */; };
 		DCB616E52CB39AE100BE4481 /* WalletConnect in Frameworks */ = {isa = PBXBuildFile; productRef = DCB616E42CB39AE100BE4481 /* WalletConnect */; };
 		DCB616E72CB3A63800BE4481 /* ReownWalletKit in Frameworks */ = {isa = PBXBuildFile; productRef = DCB616E62CB3A63800BE4481 /* ReownWalletKit */; };
-		DCB617762CB938AF00BE4481 /* ExpressProviderUpdateSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB617752CB938AF00BE4481 /* ExpressProviderUpdateSource.swift */; };
 		DCBAF6992A4AEEDD0029480A /* AnyWalletManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBAF6982A4AEEDD0029480A /* AnyWalletManagerFactory.swift */; };
 		DCBAF69B2A4AEF3C0029480A /* HDWalletManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBAF69A2A4AEF3C0029480A /* HDWalletManagerFactory.swift */; };
 		DCBAF69D2A4AF0500029480A /* SimpleWalletManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBAF69C2A4AF0500029480A /* SimpleWalletManagerFactory.swift */; };
@@ -2728,6 +2727,12 @@
 		EFFC861328BCF6C500F863CE /* StorageEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFC861228BCF6C500F863CE /* StorageEntry.swift */; };
 		EFFE2CE928B8E0B300B9F279 /* UserWalletModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFE2CE828B8E0B300B9F279 /* UserWalletModel.swift */; };
 		EFFE2CEC28B8E1B000B9F279 /* CommonDerivationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFE2CEB28B8E1B000B9F279 /* CommonDerivationManager.swift */; };
+		F91094E32CC7E11600042E9E /* KaspaUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91094E22CC7E11600042E9E /* KaspaUtils.swift */; };
+		F9F62C842CBFE21E008A3EE6 /* KaspaKRC20.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9F62C832CBFE21E008A3EE6 /* KaspaKRC20.swift */; };
+		F9F62C862CC15EF4008A3EE6 /* KaspaNetworkProviderKRC20.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9F62C852CC15EF4008A3EE6 /* KaspaNetworkProviderKRC20.swift */; };
+		F9F62C882CC15F17008A3EE6 /* KaspaNetworkServiceKRC20.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9F62C872CC15F17008A3EE6 /* KaspaNetworkServiceKRC20.swift */; };
+		F9F62C8A2CC15FA8008A3EE6 /* KaspaTargetKRC20.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9F62C892CC15FA8008A3EE6 /* KaspaTargetKRC20.swift */; };
+		F9F62C8C2CC169E4008A3EE6 /* KaspaNetworkModelsKRC20.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9F62C8B2CC169E4008A3EE6 /* KaspaNetworkModelsKRC20.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -5769,6 +5774,12 @@
 		F331D905EEAD64DFAAB0B61A /* Pods-TangemFoundation.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundation.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemFoundation/Pods-TangemFoundation.debug(production).xcconfig"; sourceTree = "<group>"; };
 		F4916AA53286A77C171FB941 /* Pods-TangemUITests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemUITests.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemUITests/Pods-TangemUITests.debug(production).xcconfig"; sourceTree = "<group>"; };
 		F5AACB6D9AE19DD06B06E2CD /* Pods_BlockchainSdkExample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BlockchainSdkExample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F91094E22CC7E11600042E9E /* KaspaUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KaspaUtils.swift; sourceTree = "<group>"; };
+		F9F62C832CBFE21E008A3EE6 /* KaspaKRC20.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KaspaKRC20.swift; sourceTree = "<group>"; };
+		F9F62C852CC15EF4008A3EE6 /* KaspaNetworkProviderKRC20.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KaspaNetworkProviderKRC20.swift; sourceTree = "<group>"; };
+		F9F62C872CC15F17008A3EE6 /* KaspaNetworkServiceKRC20.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KaspaNetworkServiceKRC20.swift; sourceTree = "<group>"; };
+		F9F62C892CC15FA8008A3EE6 /* KaspaTargetKRC20.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KaspaTargetKRC20.swift; sourceTree = "<group>"; };
+		F9F62C8B2CC169E4008A3EE6 /* KaspaNetworkModelsKRC20.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KaspaNetworkModelsKRC20.swift; sourceTree = "<group>"; };
 		FD5541B8BF11B6E19AFCE2CB /* Pods-TangemStaking.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStaking.release(production).xcconfig"; path = "Target Support Files/Pods-TangemStaking/Pods-TangemStaking.release(production).xcconfig"; sourceTree = "<group>"; };
 		FF542AF889E11958883EF4CE /* Pods-TangemExpress.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemExpress.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemExpress/Pods-TangemExpress.release(alpha).xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -9421,6 +9432,7 @@
 		B62D3D592CBC79D900C2460E /* Kaspa */ = {
 			isa = PBXGroup;
 			children = (
+				F9F62C822CBFE1DF008A3EE6 /* KaspaKRC20 */,
 				B62D3D4C2CBC79D900C2460E /* Address */,
 				B62D3D512CBC79D900C2460E /* Network */,
 				B62D3D522CBC79D900C2460E /* KaspaAPIResolver.swift */,
@@ -9430,6 +9442,7 @@
 				B62D3D562CBC79D900C2460E /* KaspaTransactionBuilder.swift */,
 				B62D3D572CBC79D900C2460E /* KaspaWalletAssembly.swift */,
 				B62D3D582CBC79D900C2460E /* KaspaWalletManager.swift */,
+				F91094E22CC7E11600042E9E /* KaspaUtils.swift */,
 			);
 			path = Kaspa;
 			sourceTree = "<group>";
@@ -14570,6 +14583,18 @@
 			path = DerivationManager;
 			sourceTree = "<group>";
 		};
+		F9F62C822CBFE1DF008A3EE6 /* KaspaKRC20 */ = {
+			isa = PBXGroup;
+			children = (
+				F9F62C832CBFE21E008A3EE6 /* KaspaKRC20.swift */,
+				F9F62C892CC15FA8008A3EE6 /* KaspaTargetKRC20.swift */,
+				F9F62C8B2CC169E4008A3EE6 /* KaspaNetworkModelsKRC20.swift */,
+				F9F62C872CC15F17008A3EE6 /* KaspaNetworkServiceKRC20.swift */,
+				F9F62C852CC15EF4008A3EE6 /* KaspaNetworkProviderKRC20.swift */,
+			);
+			path = KaspaKRC20;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -17436,6 +17461,7 @@
 				B62D40602CBC79DA00C2460E /* ChiaNetworkService.swift in Sources */,
 				B62D422D2CBC79DB00C2460E /* BlockBookTarget.swift in Sources */,
 				B62D42832CBC79DB00C2460E /* EthereumTransactionHistoryProvider.swift in Sources */,
+				F9F62C8A2CC15FA8008A3EE6 /* KaspaTargetKRC20.swift in Sources */,
 				B62D3FA12CBC79DA00C2460E /* AlgorandResponse+TransactionHistory.swift in Sources */,
 				B62D42BC2CBC79DB00C2460E /* Wallet.swift in Sources */,
 				B62D40892CBC79DA00C2460E /* ABIEncoder.swift in Sources */,
@@ -17622,6 +17648,7 @@
 				B62D3FFB2CBC79DA00C2460E /* OP_VERIF.swift in Sources */,
 				B62D41962CBC79DA00C2460E /* StellarNetworkProvider.swift in Sources */,
 				B62D41502CBC79DA00C2460E /* SubscanAPIParams.ExtrinsicInfo.swift in Sources */,
+				F9F62C862CC15EF4008A3EE6 /* KaspaNetworkProviderKRC20.swift in Sources */,
 				B62D40542CBC79DA00C2460E /* Chia+Int64.swift in Sources */,
 				B62D406D2CBC79DA00C2460E /* CosmosRestProvider.swift in Sources */,
 				B62D3FCD2CBC79DA00C2460E /* OP_ADD.swift in Sources */,
@@ -17734,6 +17761,7 @@
 				B62D41B22CBC79DB00C2460E /* TezosPrefix.swift in Sources */,
 				B62D41892CBC79DA00C2460E /* SolanaDummyAccountStorage.swift in Sources */,
 				B62D40762CBC79DA00C2460E /* DashTestNetworkParams.swift in Sources */,
+				F9F62C842CBFE21E008A3EE6 /* KaspaKRC20.swift in Sources */,
 				B62D3FB62CBC79DA00C2460E /* AptosTransactionBuilder.swift in Sources */,
 				B62D3FA02CBC79DA00C2460E /* AlgorandResponse+Transaction.swift in Sources */,
 				B62D3FA72CBC79DA00C2460E /* AlgorandTransactionBuilder.swift in Sources */,
@@ -17764,6 +17792,7 @@
 				B62D42202CBC79DB00C2460E /* XRPTarget.swift in Sources */,
 				B62D41E42CBC79DB00C2460E /* TronWalletAssembly.swift in Sources */,
 				B62D42522CBC79DB00C2460E /* Blockchain+AllCases.swift in Sources */,
+				F9F62C8C2CC169E4008A3EE6 /* KaspaNetworkModelsKRC20.swift in Sources */,
 				B62D40E42CBC79DA00C2460E /* HederaNetworkResult.ExchangeRate.swift in Sources */,
 				B62D41072CBC79DA00C2460E /* KaspaFeeMapper.swift in Sources */,
 				B62D419B2CBC79DA00C2460E /* StellarWalletAssembly.swift in Sources */,
@@ -17962,6 +17991,7 @@
 				B62D40B02CBC79DA00C2460E /* GnosisExternalLinkProvider.swift in Sources */,
 				B62D40A82CBC79DA00C2460E /* CronosExternalLinkProvider.swift in Sources */,
 				B62D42DC2CBC79DB00C2460E /* TWPublicKey+.swift in Sources */,
+				F91094E32CC7E11600042E9E /* KaspaUtils.swift in Sources */,
 				B62D41012CBC79DA00C2460E /* KaspaNetworkModels.swift in Sources */,
 				B62D3FD02CBC79DA00C2460E /* OP_DIV.swift in Sources */,
 				B62D42DA2CBC79DB00C2460E /* ThenProcessable.swift in Sources */,
@@ -18031,6 +18061,7 @@
 				B62D40BE2CBC79DA00C2460E /* TaraxaExternalLinkProvider.swift in Sources */,
 				B62D40BD2CBC79DA00C2460E /* ShibariumExternalLinkProvider.swift in Sources */,
 				B62D3FEE2CBC79DA00C2460E /* OP_CODESEPARATOR.swift in Sources */,
+				F9F62C882CC15F17008A3EE6 /* KaspaNetworkServiceKRC20.swift in Sources */,
 				B62D40592CBC79DA00C2460E /* ChiaNetworkProvider.swift in Sources */,
 				B62D416E2CBC79DA00C2460E /* RadiantAmountUnspentTransaction.swift in Sources */,
 				B62D40772CBC79DA00C2460E /* DashWalletAssembly.swift in Sources */,

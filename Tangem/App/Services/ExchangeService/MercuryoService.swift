@@ -244,7 +244,7 @@ private extension Blockchain {
              .azero,
              .gnosis,
              .kava,
-             .kaspa,
+             .kaspa, .kaspaKRC20,
              .ravencoin,
              .terraV1,
              .terraV2,

@@ -75,7 +75,7 @@ public struct ExternalLinkProviderFactory {
             return TONExternalLinkProvider(isTestnet: isTestnet)
         case .kava:
             return KavaExternalLinkProvider(isTestnet: isTestnet)
-        case .kaspa:
+        case .kaspa, .kaspaKRC20:
             return KaspaExternalLinkProvider(isTestnet: isTestnet)
         case .ravencoin:
             return RavencoinExternalLinkProvider(isTestnet: isTestnet)

@@ -62,7 +62,7 @@ struct TokenInteractionAvailabilityProvider {
              .optimism,
              .ton,
              .kava,
-             .kaspa,
+             .kaspa, .kaspaKRC20,
              .ravencoin,
              .cosmos,
              .terraV1,

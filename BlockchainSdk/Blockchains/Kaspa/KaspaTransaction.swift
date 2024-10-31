@@ -15,6 +15,14 @@ struct KaspaTransaction {
     
     private let blake2bDigestKey = "TransactionSigningHash".data(using: .utf8)?.bytes ?? []
     
+    var transactionHash: Data? {
+        return hashTransaction(.TransactionHash)
+    }
+    
+    var transactionId: Data? {
+        return hashTransaction(.TransactionID)
+    }
+    
     func hashForSignatureWitness(inputIndex: Int, connectedScript: Data, prevValue: UInt64)  -> Data {
         var data = Data()
         data.append(UInt16(0).data) // version
@@ -36,7 +44,7 @@ struct KaspaTransaction {
         data.append(Data(repeating: 0, count: 32)) // payload hash
         data.append(UInt8(1).data) // sig op count
         
-        let transactionSigningHashECDSA = "TransactionSigningHashECDSA".data(using: .utf8)!.sha256()
+        let transactionSigningHashECDSA = /*"TransactionSigningHashECDSA"*/KaspaUtils.KaspaHashType.TransactionSigningHashECDSA.data.sha256()
         
         var finalData = Data()
         finalData.append(transactionSigningHashECDSA)
@@ -85,5 +93,55 @@ struct KaspaTransaction {
         let length = 32
         // TODO: Use extension from Data+ and refactor to handle optional Data
         return Data(Sodium().genericHash.hash(message: data.bytes, key: blake2bDigestKey, outputLength: length) ?? [])
+    }
+    
+    private func hashTransaction(_ hashType: KaspaUtils.KaspaHashType) -> Data? {
+        func encodedInputsSigScript(for input: BitcoinUnspentOutput, type: KaspaUtils.KaspaHashType) -> Data {
+            switch type {
+            case .TransactionID:
+                return UInt64(0).data
+                
+            case .TransactionHash:
+                let script = Data(hex: input.outputScript)
+                return UInt64(script.count).data + script + UInt8(0x01).data
+                
+            default:
+                return Data()
+            }
+        }
+        
+        let encodedInputs: [Data] = inputs.map {
+            [
+                Data(hex: $0.transactionHash),
+                UInt32($0.outputIndex).data,
+                encodedInputsSigScript(for: $0, type: hashType),
+                UInt64(0).data //Sequence
+            ].reduce(Data(), +)
+        }
+        
+        let encodedOutputs: [Data] = outputs.map {
+            let scriptPublicKeyData = Data(hex: $0.scriptPublicKey.scriptPublicKey)
+            
+            return [
+                $0.amount.data,
+                UInt16($0.scriptPublicKey.version & 0xffff).data,
+                UInt64(scriptPublicKeyData.count).data,
+                scriptPublicKeyData
+            ].reduce(Data(), +)
+        }
+        
+        let data = [
+            UInt16(0).data,                     //Version
+            UInt64(encodedInputs.count).data,   //Inputs count
+            encodedInputs.reduce(Data(), +),    //Inputs
+            UInt64(encodedOutputs.count).data,  //Outputs count
+            encodedOutputs.reduce(Data(), +),   //Outputs
+            UInt64(0).data,                     //Locktime
+            Data(repeating: 0, count: 20),      //SubnetworkID
+            UInt64(0).data,                     //Gas
+            UInt64(0).data                      //Payload size
+        ]
+        
+        return data.reduce(Data(), +).hashBlake2b(key: hashType.data, outputLength: 32)
     }
 }

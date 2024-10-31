@@ -341,7 +341,7 @@ private extension Blockchain {
         case .fantom: return nil
         case .gnosis: return nil
         case .hedera: return "hedera"
-        case .kaspa: return nil
+        case .kaspa, .kaspaKRC20: return nil
         case .kava: return nil
         case .kusama: return nil
         case .litecoin: return "litecoin"
@@ -421,7 +421,7 @@ private extension Blockchain {
         case .fantom: return nil
         case .gnosis: return nil
         case .hedera: return "hbar"
-        case .kaspa: return nil
+        case .kaspa, .kaspaKRC20: return nil
         case .kava: return nil
         case .kusama: return nil
         case .litecoin: return "ltc"
