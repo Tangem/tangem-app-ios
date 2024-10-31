@@ -24,7 +24,7 @@ concurrency:
 jobs:
   prepare:
     name: Prepare information
-    runs-on: [builder1]
+    runs-on: ubuntu-latest
     outputs:
       version: '${{ steps.version.outputs.build_version }}'
       stage: Alpha
