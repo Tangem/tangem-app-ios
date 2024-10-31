@@ -21,6 +21,10 @@ class OnrampStep {
         self.viewModel = viewModel
         self.interactor = interactor
     }
+
+    func setup(router: OnrampSummaryRoutable) {
+        viewModel.router = router
+    }
 }
 
 // MARK: - SendStep

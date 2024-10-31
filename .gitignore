@@ -72,3 +72,6 @@ fastlane/report.xml
 # Generated
 Tangem/Resources/Generated/**.swift
 BlockchainSdk/Resources/Generated/**.swift
+
+# Rubygems
+vendor/bundle

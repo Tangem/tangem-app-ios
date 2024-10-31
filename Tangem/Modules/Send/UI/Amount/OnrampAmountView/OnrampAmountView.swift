@@ -25,8 +25,8 @@ struct OnrampAmountView: View {
 
     private var amountContent: some View {
         VStack(spacing: 18) {
-            TokenIcon(
-                tokenIconInfo: viewModel.tokenIconInfo,
+            IconView(
+                url: viewModel.fiatIconURL,
                 size: CGSize(width: 36, height: 36),
                 // Kingfisher shows a gray background even if it has a cached image
                 forceKingfisher: false

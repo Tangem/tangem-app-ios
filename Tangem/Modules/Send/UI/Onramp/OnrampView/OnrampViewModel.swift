@@ -11,8 +11,11 @@ import Combine
 
 class OnrampViewModel: ObservableObject, Identifiable {
     @Published private(set) var onrampAmountViewModel: OnrampAmountViewModel
+    @Published private(set) var paymentState: PaymentState?
 
     private let interactor: OnrampInteractor
+
+    weak var router: OnrampSummaryRoutable?
 
     init(
         onrampAmountViewModel: OnrampAmountViewModel,
@@ -20,6 +23,8 @@ class OnrampViewModel: ObservableObject, Identifiable {
     ) {
         self.onrampAmountViewModel = onrampAmountViewModel
         self.interactor = interactor
+
+        bind()
     }
 }
 
@@ -27,7 +32,17 @@ class OnrampViewModel: ObservableObject, Identifiable {
 
 private extension OnrampViewModel {
     func bind() {
-        // TODO: Lisen interactor to update view
+        // TODO: Listen interactor to update view
+        // Temp mock
+        paymentState = .loading
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+            self?.paymentState = .loaded(
+                data: .init(iconURL: nil, paymentMethodName: "Card", providerName: "1Inch", badge: .bestRate) {
+                    self?.router?.summaryStepRequestEditProvider()
+                }
+            )
+        }
     }
 }
 
@@ -35,4 +50,13 @@ private extension OnrampViewModel {
 
 extension OnrampViewModel: SendStepViewAnimatable {
     func viewDidChangeVisibilityState(_ state: SendStepVisibilityState) {}
+}
+
+extension OnrampViewModel {
+    enum PaymentState: Hashable, Identifiable {
+        case loading
+        case loaded(data: OnrampProvidersCompactViewData)
+
+        var id: Int { hashValue }
+    }
 }

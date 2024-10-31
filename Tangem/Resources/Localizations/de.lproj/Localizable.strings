@@ -529,9 +529,11 @@
 "onboarding_wallet_info_title_fourth" = "Zugangscode wiederherstellen";
 "onboarding_wallet_info_title_second" = "Identische Karten oder Ring";
 "onboarding_wallet_info_title_third" = "Zugangscode";
+"onramp_pay_with" = "Pay with";
 "onramp_residency_bottomsheet_country_not_supported" = "Unsere Dienstleistungen sind in diesem Land nicht verfügbar";
 "onramp_residency_bottomsheet_country_subtitle" = "Änder oder bestätige bitte";
 "onramp_residency_bottomsheet_title" = "Dein Wohnsitz wurde identifiziert als";
+"onramp_via" = "Via";
 "organize_tokens_group" = "Gruppe erstellen";
 "organize_tokens_sort_by_balance" = "Nach Guthaben";
 "organize_tokens_title" = "Token organisieren";
@@ -845,7 +847,7 @@
 "twins_recreate_warning" = "Diese Aktion ist unumkehrbar. Du hast keinen Zugriff mehr auf die alte Wallet.";
 "twins_scan_twin_with_number" = "Tippe auf die Doppelkarte oder Ring mit der Nummer %@ und entferne sie erst am Ende des Vorgangs.";
 "unlock_wallet_description_full" = "Verwende %@ oder scanne eine Karte oder Ring, um Zugriff auf deine Wallet zu erhalten.";
-"unsupported_wc_version" = "Connection failed: This dApp uses Wallet Connect version 1.0, which is not supported. Please ensure the dApp supports Wallet Connect version 2.0 to connect successfully.";
+"unsupported_wc_version" = "Verbindung fehlgeschlagen: Diese dApp verwendet Wallet Connect Version 1.0, die nicht unterstützt wird. Bitte stelle sicher, dass die dApp Wallet Connect Version 2.0 unterstützt, um eine erfolgreiche Verbindung herzustellen.";
 "user_push_notification_agreement_argument_one" = "Bleib auf dem Laufenden mit den neuesten Funktionen und Neuigkeiten";
 "user_push_notification_agreement_argument_two" = "Sei der Erste, der von neuen Aktionen erfährt";
 "user_push_notification_agreement_header" = "Möchtest du Push-Benachrichtigungen verwenden?";

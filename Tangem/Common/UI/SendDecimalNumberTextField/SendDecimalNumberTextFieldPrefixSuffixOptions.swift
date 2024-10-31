@@ -17,17 +17,13 @@ extension SendDecimalNumberTextField {
 
 extension SendDecimalNumberTextField {
     struct PrefixSuffixOptionsFactory {
-        private let cryptoCurrencyCode: String
-        private let fiatCurrencyCode: String
         private let locale: Locale
 
-        init(cryptoCurrencyCode: String, fiatCurrencyCode: String, locale: Locale = .current) {
-            self.cryptoCurrencyCode = cryptoCurrencyCode
-            self.fiatCurrencyCode = fiatCurrencyCode
+        init(locale: Locale = .current) {
             self.locale = locale
         }
 
-        func makeCryptoOptions() -> PrefixSuffixOptions {
+        func makeCryptoOptions(cryptoCurrencyCode: String) -> PrefixSuffixOptions {
             let numberFormatter = NumberFormatter()
             numberFormatter.numberStyle = .currency
             numberFormatter.currencySymbol = cryptoCurrencyCode
@@ -36,7 +32,7 @@ extension SendDecimalNumberTextField {
             return options(from: numberFormatter, currency: cryptoCurrencyCode, forceSpace: true)
         }
 
-        func makeFiatOptions() -> PrefixSuffixOptions {
+        func makeFiatOptions(fiatCurrencyCode: String) -> PrefixSuffixOptions {
             let numberFormatter = NumberFormatter()
             numberFormatter.numberStyle = .currency
             numberFormatter.currencyCode = fiatCurrencyCode

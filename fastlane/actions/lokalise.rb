@@ -12,9 +12,10 @@ module Fastlane
         clean_destination = params[:clean_destination]
         include_comments = params[:include_comments]
         original_filenames = params[:use_original]
-        export_empty_as = params[:export_empty_as] ? params[:export_empty_as] : "base"
-        export_sort = params[:export_sort] ? params[:export_sort] : "first_added"
-        replace_breaks = params[:replace_breaks] ? true : false
+        export_empty_as = params[:export_empty_as] || "base"
+        export_sort = params[:export_sort] || "first_added"
+        replace_breaks = params[:replace_breaks] || false
+        add_newline_eof = params[:add_newline_eof] || false
         filter_data = params[:filter_data]
 
         body = {
@@ -25,7 +26,8 @@ module Fastlane
           export_empty_as: export_empty_as,
           export_sort: export_sort,
           include_comments: include_comments,
-          replace_breaks: replace_breaks
+          replace_breaks: replace_breaks,
+          add_newline_eof: add_newline_eof
         }
 
         if !filter_data.to_s.empty?
@@ -69,6 +71,11 @@ module Fastlane
             }
             unzip_file("lokalisetmp/a.zip", destination, clean_destination)
             FileUtils.remove_dir("lokalisetmp")
+
+            # Always sort all string files (which in turn adds EOF to the end of those files), 
+            # since Lokalise only supports the `add_newline_eof` option for PHP and JSON file formats
+            exec("CI=false ./Utilites/sort-strings.sh")
+
             UI.success "Localizations extracted to #{destination} 📗 📕 📘"
           else
             UI.error "Response did not include ZIP"
@@ -191,6 +198,14 @@ module Fastlane
                                         default_value: false,
                                         verify_block: proc do |value|
                                           UI.user_error! "Replace break should be true or false" unless [true, false].include? value
+                                        end),
+            FastlaneCore::ConfigItem.new(key: :add_newline_eof,
+                                        description: "Enable to add new line at end of file (if supported by format)",
+                                        optional: true,
+                                        is_string: false,
+                                        default_value: false,
+                                        verify_block: proc do |value|
+                                          UI.user_error! "Add newline EOF should be true or false" unless [true, false].include? value
                                         end),
             FastlaneCore::ConfigItem.new(key: :filter_data,
                                         description: "Narrow export data range. Allowed values are translated or untranslated, reviewed (or reviewed_only), last_reviewed_only, verified and nonhidden",
