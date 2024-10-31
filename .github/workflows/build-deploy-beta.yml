@@ -5,6 +5,12 @@ on:
    branches: 
     - 'develop'
   workflow_dispatch:
+    inputs:
+      xcode_version_override:
+        description: >
+          Optional Xcode version override. Leave blank (default value) to use the default Xcode version; 
+          pass a custom value (e.g. '16.0', '10.2.1', '11 Beta 7', '11.2 GM seed', etc) to use a different Xcode version for the build
+        type: string
 
 env:
   nextVersionName: 'Next Release'
@@ -75,6 +81,7 @@ jobs:
       build_number: '${{ needs.prepare.outputs.build_number }}'
       path: 'fastlane/builds/'
       filename: 'Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa'
+      xcode_version_override: '${{ inputs.xcode_version_override }}'
     secrets:
       GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT}}'
 
