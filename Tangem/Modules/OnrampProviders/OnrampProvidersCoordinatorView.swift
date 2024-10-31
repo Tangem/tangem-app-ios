@@ -33,5 +33,6 @@ struct OnrampProvidersCoordinatorView: CoordinatorView {
             .navigation(item: $coordinator.onrampPaymentMethodsViewModel) {
                 OnrampPaymentMethodsView(viewModel: $0)
             }
+            .emptyNavigationLink()
     }
 }
