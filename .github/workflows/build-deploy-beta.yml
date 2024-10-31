@@ -4,6 +4,7 @@ on:
   push:
    branches: 
     - 'develop'
+    - 'feature/IOS-8113_ci_cd_beta_builds_workflow' # TODO: Test only, remove
   workflow_dispatch:
     inputs:
       xcode_version_override:
@@ -34,7 +35,8 @@ jobs:
         uses: tangem/github-action@main
         with:
           github-token: '${{ secrets.GH_MOBILE_PAT }}'
-          base: 'master'
+          #base: 'master'
+          base: 'test/master_for_beta_builds' # TODO: Test only, remove
           head: 'develop'
 
       - name: Jira Login
@@ -60,14 +62,24 @@ jobs:
           version: '${{ env.nextVersionName }}'
 
       - name: Jira Create Version
-        if: ${{ steps.jira-check-version.outputs.result == 'false' }}
+        if: false # TODO: Test only, remove
+        # if: ${{ steps.jira-check-version.outputs.result == 'false' }}
         uses: tangem/jira-action@master
         with:
           action: 'createVersion'
           project: 'IOS'
           version: '${{ env.nextVersionName }}'
 
+      - name: Debug
+        env:
+          ISSUES: '${{ steps.git-diff.outputs.issues }}'
+          HAS_NEW_VERSION: '${{ steps.jira-check-version.outputs.result }}'
+        run: |
+          echo "HAS_NEW_VERSION: ${HAS_NEW_VERSION}"
+          echo "ISSUES: ${ISSUES}"
+
       - name: Jira Set Version To Issues
+        if: false # TODO: Test only, remove
         uses: tangem/jira-action@master
         with:
           action: 'setVersionToIssues'
