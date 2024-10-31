@@ -140,6 +140,7 @@ struct StakeKitMapper {
                 id: action.id,
                 status: mapToActionStatus(from: action.status),
                 amount: amount,
+                type: mapToActionType(from: action.type),
                 currentStepIndex: action.currentStepIndex,
                 transactions: actionTransaction,
                 validatorAddress: action.validatorAddress ?? action.validatorAddresses?.first
@@ -165,6 +166,7 @@ struct StakeKitMapper {
             id: response.id,
             status: mapToActionStatus(from: response.status),
             amount: amount,
+            type: mapToActionType(from: response.type),
             currentStepIndex: response.currentStepIndex,
             transactions: actionTransaction,
             validatorAddress: response.validatorAddress ?? response.validatorAddresses?.first
@@ -224,16 +226,28 @@ struct StakeKitMapper {
 
     func mapToStakingBalanceInfoPendingAction(from balance: StakeKitDTO.Balances.Response.Balance) throws -> [StakingPendingActionInfo] {
         try balance.pendingActions.compactMap { action in
-            switch action.type {
-            case .withdraw: .init(type: .withdraw, passthrough: action.passthrough)
-            case .claimRewards: .init(type: .claimRewards, passthrough: action.passthrough)
-            case .restakeRewards: .init(type: .restakeRewards, passthrough: action.passthrough)
-            case .voteLocked, .revote: .init(type: .voteLocked, passthrough: action.passthrough)
-            case .unlockLocked: .init(type: .unlockLocked, passthrough: action.passthrough)
-            case .restake: .init(type: .restake, passthrough: action.passthrough)
-            case .claimUnstaked: .init(type: .claimUnstaked, passthrough: action.passthrough)
-            default: throw StakeKitMapperError.noData("PendingAction.type \(action.type) doesn't supported")
-            }
+            StakingPendingActionInfo(
+                type: try mapToActionType(from: action.type),
+                passthrough: action.passthrough
+            )
+        }
+    }
+    
+    func mapToActionType(
+        from actionType: StakeKitDTO.Actions.ActionType
+    ) throws -> StakingPendingActionInfo.ActionType {
+        switch actionType {
+        case .stake: .stake
+        case .vote: .vote
+        case .unstake: .unstake
+        case .withdraw: .withdraw
+        case .claimRewards: .claimRewards
+        case .restakeRewards: .restakeRewards
+        case .voteLocked, .revote: .voteLocked
+        case .unlockLocked: .unlockLocked
+        case .restake: .restake
+        case .claimUnstaked: .claimUnstaked
+        default: throw StakeKitMapperError.noData("PendingAction.type \(actionType) doesn't supported")
         }
     }
 

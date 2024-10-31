@@ -14,7 +14,6 @@ class CommonStakingManager {
     private let integrationId: String
     private let wallet: StakingWallet
     private let provider: StakingAPIProvider
-    private let repository: StakingPendingTransactionsRepository
     private let logger: Logger
     private let analyticsLogger: StakingAnalyticsLogger
 
@@ -33,14 +32,12 @@ class CommonStakingManager {
         integrationId: String,
         wallet: StakingWallet,
         provider: StakingAPIProvider,
-        repository: StakingPendingTransactionsRepository,
         logger: Logger,
         analyticsLogger: StakingAnalyticsLogger
     ) {
         self.integrationId = integrationId
         self.wallet = wallet
         self.provider = provider
-        self.repository = repository
         self.logger = logger
         self.analyticsLogger = analyticsLogger
     }
@@ -172,12 +169,61 @@ private extension CommonStakingManager {
         let stakingBalances = balances.map { balance in
             mapToStakingBalance(balance: balance, yield: yield)
         }
+        
+        let mergedBalances = mergeBalancesAndProcessingActions(
+            realBalances: stakingBalances,
+            processingActions: actions,
+            yield: yield
+        )
 
-        guard !stakingBalances.isEmpty else {
+        guard !mergedBalances.isEmpty else {
             return .availableToStake(yield)
         }
 
-        return .staked(.init(balances: stakingBalances, yieldInfo: yield, canStakeMore: canStakeMore))
+        return .staked(.init(balances: mergedBalances, yieldInfo: yield, canStakeMore: canStakeMore))
+    }
+    
+    private func mergeBalancesAndProcessingActions(
+        realBalances: [StakingBalance],
+        processingActions: [PendingAction],
+        yield: YieldInfo
+    ) -> [StakingBalance] {
+        var balances = realBalances
+        
+        processingActions.forEach { action in
+            switch action.type {
+            case .stake, .vote, .voteLocked:
+                balances.append(mapToStakingBalance(action: action, yield: yield, balanceType: .active))
+            case .withdraw:
+                modifyBalancesByStatus(balances: &balances, action: action, type: .unstaked)
+            case .unlockLocked:
+                modifyBalancesByStatus(balances: &balances, action: action, type: .locked)
+            case .unstake:
+                modifyBalancesByStatus(balances: &balances, action: action, type: .active)
+            default: break // intentionally do nothing
+            }
+        }
+        
+        return balances
+    }
+
+    private func modifyBalancesByStatus(balances: inout [StakingBalance], action: PendingAction, type: StakingBalanceType) {
+        guard let index = balances.firstIndex(
+            where: { !$0.inProgress && $0.amount == action.amount && $0.balanceType == type }
+        ) else { return }
+
+        let balance = balances[index]
+        
+        let updatedBalance = StakingBalance(
+            item: balance.item,
+            amount: balance.amount,
+            balanceType: balance.balanceType,
+            validatorType: balance.validatorType,
+            inProgress: true,
+            actions: balance.actions
+        )
+        
+        balances[index] = updatedBalance
     }
 
     func getStakeTransactionInfo(request: ActionGenericRequest) async throws -> StakingTransactionAction {
@@ -330,40 +376,34 @@ private extension CommonStakingManager {
             return validator.map { .validator($0) } ?? .disabled
         }()
 
-        let inProgress = repository.hasPending(balance: balance)
-
         return StakingBalance(
             item: balance.item,
             amount: balance.amount,
             balanceType: balance.balanceType,
             validatorType: validatorType,
-            inProgress: inProgress,
+            inProgress: false,
             actions: balance.actions
         )
     }
 
-    func mapToStakingBalance(record: StakingPendingTransactionRecord, yield: YieldInfo) -> StakingBalance {
+    func mapToStakingBalance(
+        action: PendingAction,
+        yield: YieldInfo,
+        balanceType: StakingBalanceType
+    ) -> StakingBalance {
         let validatorType: StakingValidatorType = {
-            guard let address = record.validator.address, let name = record.validator.name else {
+            guard let address = action.validatorAddress,
+                  let validator = yield.validators.first(where: { $0.address == address }) else {
                 return .empty
             }
 
-            return .validator(
-                .init(
-                    address: address,
-                    name: name,
-                    preferred: true,
-                    partner: false,
-                    iconURL: record.validator.iconURL,
-                    apr: record.validator.apr
-                )
-            )
+            return .validator(validator)
         }()
 
         return StakingBalance(
             item: yield.item,
-            amount: record.amount,
-            balanceType: .pending,
+            amount: action.amount,
+            balanceType: balanceType,
             validatorType: validatorType,
             inProgress: true,
             actions: []
