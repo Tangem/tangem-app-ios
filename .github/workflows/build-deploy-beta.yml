@@ -12,6 +12,10 @@ on:
           pass a custom value (e.g. '16.0', '10.2.1', '11 Beta 7', '11.2 GM seed', etc) to use a different Xcode version for the build
         type: string
 
+concurrency:
+  group: '${{ github.workflow }} ${{ github.sha }}'
+  cancel-in-progress: true
+
 env:
   nextVersionName: 'Next Release'
 
