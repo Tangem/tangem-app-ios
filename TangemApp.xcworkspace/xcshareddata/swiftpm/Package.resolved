@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/bitcoincore.git",
       "state" : {
-        "revision" : "5751be68ab68089f2e9ef8968d31aa824c65201a",
-        "version" : "0.0.22"
+        "revision" : "4ec53e5e223885a4c0884d80985cf43677434eb0",
+        "version" : "0.0.23"
       }
     },
     {
