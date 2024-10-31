@@ -24606,7 +24606,7 @@
 			repositoryURL = "https://github.com/tangem/bitcoincore.git";
 			requirement = {
 				kind = exactVersion;
-				version = 0.0.21;
+				version = 0.0.23;
 			};
 		};
 		DCB616E32CB39A8100BE4481 /* XCRemoteSwiftPackageReference "reown-swift" */ = {
