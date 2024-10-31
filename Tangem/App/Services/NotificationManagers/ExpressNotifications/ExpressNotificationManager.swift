@@ -22,6 +22,7 @@ class ExpressNotificationManager {
 
     init(expressInteractor: ExpressInteractor) {
         self.expressInteractor = expressInteractor
+        analyticsService.setup(with: self, contextDataProvider: nil)
 
         bind()
     }
@@ -47,7 +48,9 @@ class ExpressNotificationManager {
                 return !event.removingOnFullLoadingState
             }
         case .restriction(let restrictions, _):
-            setupNotification(for: restrictions)
+            runTask(in: self) { manager in
+                await manager.setupNotification(for: restrictions)
+            }
 
         case .permissionRequired:
             setupPermissionRequiredNotification()
@@ -63,7 +66,7 @@ class ExpressNotificationManager {
         }
     }
 
-    private func setupNotification(for restrictions: ExpressInteractor.RestrictionType) {
+    private func setupNotification(for restrictions: ExpressInteractor.RestrictionType) async {
         guard let interactor = expressInteractor else { return }
 
         let sourceTokenItem = interactor.getSender().tokenItem
@@ -97,7 +100,26 @@ class ExpressNotificationManager {
             event = .notEnoughReceivedAmountForReserve(amountFormatted: "\(minAmount.formatted()) \(tokenSymbol)")
         case .requiredRefresh(let occurredError as ExpressAPIError):
             // For only a express error we use "Service temporary unavailable"
-            event = .refreshRequired(title: Localization.warningExpressRefreshRequiredTitle, message: occurredError.localizedMessage)
+            // or "Selected pair temporarily unavailable" depending on the error code.
+            var analyticsParams: [Analytics.ParameterKey: String] = [
+                .sendToken: sourceTokenItemSymbol,
+                .errorCode: "\(occurredError.errorCode.rawValue)",
+            ]
+
+            if let provider = await interactor.getSelectedProvider()?.provider.name {
+                analyticsParams[.provider] = provider
+            }
+
+            if let receiveToken = interactor.getDestination()?.tokenItem.currencySymbol {
+                analyticsParams[.receiveToken] = receiveToken
+            }
+
+            event = .refreshRequired(
+                title: occurredError.localizedTitle,
+                message: occurredError.localizedMessage,
+                expressErrorCode: occurredError.errorCode,
+                analyticsParams: analyticsParams
+            )
         case .requiredRefresh:
             event = .refreshRequired(title: Localization.commonError, message: Localization.commonUnknownError)
         case .noDestinationTokens:
@@ -224,6 +246,15 @@ class ExpressNotificationManager {
 }
 
 extension ExpressAPIError {
+    var localizedTitle: String {
+        switch errorCode {
+        case .exchangeNotPossibleError:
+            Localization.warningExpressPairUnavailableTitle
+        default:
+            Localization.warningExpressRefreshRequiredTitle
+        }
+    }
+
     var localizedMessage: String {
         switch errorCode {
         case .exchangeInternalError:
@@ -231,7 +262,7 @@ extension ExpressAPIError {
         case .exchangeProviderNotActiveError, .exchangeProviderNotAvailableError, .exchangeProviderProviderInternalError:
             return Localization.expressErrorSwapPairUnavailable(errorCode.rawValue)
         case .exchangeNotPossibleError:
-            return Localization.expressErrorProviderUnavailable(errorCode.rawValue)
+            return Localization.warningExpressPairUnavailableMessage(errorCode.rawValue)
         default:
             return Localization.expressErrorCode(errorCode.localizedDescription)
         }

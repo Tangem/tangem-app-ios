@@ -96,7 +96,16 @@ struct CustomTokenContractAddressConverter {
              .base,
              .bittensor,
              .joystream,
-             .koinos:
+             .koinos,
+             .internetComputer,
+             .cyber,
+             .blast,
+             .filecoin,
+             .sei,
+             .sui,
+             .energyWebEVM,
+             .energyWebX,
+             .core:
             // Did you get a compilation error here? If so, check if the network supports multiple token contract address
             // formats (as Hedera does, for example) and add the appropriate conversion logic here if needed
             return originalAddress

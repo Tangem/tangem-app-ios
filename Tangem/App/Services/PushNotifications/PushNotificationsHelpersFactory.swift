@@ -2,7 +2,7 @@
 //  PushNotificationsHelpersFactory.swift
 //  Tangem
 //
-//  Created by m3g0byt3 on 27.06.2024.
+//  Created by Andrey Fedorov on 27.06.2024.
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 

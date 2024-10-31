@@ -17,11 +17,11 @@ public struct SkeletonView: View {
 
     private let backgroundOpacity: Double = 1
     private let colors: [Color] = [
-        .tangemSkeletonGray,
-        .tangemSkeletonGray2,
-        .tangemSkeletonGray3,
-        .tangemSkeletonGray2,
-        .tangemSkeletonGray,
+        Colors.Old.tangemSkeletonGray,
+        Colors.Old.tangemSkeletonGray2,
+        Colors.Old.tangemSkeletonGray3,
+        Colors.Old.tangemSkeletonGray2,
+        Colors.Old.tangemSkeletonGray,
     ]
 
     private let activeAnimation = Animation.linear(duration: 1).repeatForever(autoreverses: false)
@@ -39,7 +39,7 @@ public struct SkeletonView: View {
 
     var backgroundView: some View {
         Rectangle()
-            .foregroundColor(.tangemSkeletonGray)
+            .foregroundColor(Colors.Old.tangemSkeletonGray)
             .opacity(backgroundOpacity)
     }
 

@@ -64,9 +64,7 @@ struct WalletOnboardingStepsBuilder {
         return steps
     }
 
-    private var addTokensSteps: [WalletOnboardingStep] {
-        FeatureProvider.isAvailable(.markets) ? [.addTokens] : []
-    }
+    private var addTokensSteps: [WalletOnboardingStep] { [.addTokens] }
 
     init(
         cardId: String,

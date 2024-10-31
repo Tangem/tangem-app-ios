@@ -8,13 +8,21 @@
 
 import Foundation
 
-final class MarketsTokenDetailsDataProvider {
+protocol MarketsTokenExchangesListLoader {
+    func loadExchangesList(for tokenId: TokenItemId) async throws -> [MarketsTokenDetailsExchangeItemInfo]
+}
+
+struct MarketsTokenDetailsDataProvider {
     @Injected(\.tangemApiService) private var tangemAPIService: TangemApiService
 
-    private let mapper = TokenMarketsDetailsMapper(supportedBlockchains: SupportedBlockchains.all)
+    private let mapper = MarketsTokenDetailsMapper(supportedBlockchains: SupportedBlockchains.all)
     private let defaultLanguageCode = "en"
 
-    func loadTokenMarketsDetails(for tokenId: TokenItemId) async throws -> TokenMarketsDetailsModel {
+    /// Load details for selected token
+    /// - Parameters:
+    ///   - tokenId: Id of selected token received from backend
+    ///   - baseCurrencyCode: Currency selected in App. It can be fiat or crypto currency
+    func loadTokenDetails(for tokenId: TokenItemId, baseCurrencyCode: String) async throws -> MarketsTokenDetailsModel {
         let languageCode: String?
 
         if #available(iOS 16, *) {
@@ -23,13 +31,21 @@ final class MarketsTokenDetailsDataProvider {
             languageCode = Locale.current.languageCode
         }
 
-        let request = await MarketsDTO.Coins.Request(
+        let request = MarketsDTO.Coins.Request(
             tokenId: tokenId,
-            currency: AppSettings.shared.selectedCurrencyCode,
+            currency: baseCurrencyCode,
             language: languageCode ?? defaultLanguageCode
         )
         let result = try await tangemAPIService.loadTokenMarketsDetails(requestModel: request)
-        let model = mapper.map(response: result)
+        let model = try mapper.map(response: result)
         return model
+    }
+}
+
+extension MarketsTokenDetailsDataProvider: MarketsTokenExchangesListLoader {
+    func loadExchangesList(for tokenId: TokenItemId) async throws -> [MarketsTokenDetailsExchangeItemInfo] {
+        let result = try await tangemAPIService.loadTokenExchangesListDetails(requestModel: .init(tokenId: tokenId))
+        let mapper = MarketsExchangesListMapper()
+        return mapper.mapListToItemInfo(result.exchanges)
     }
 }

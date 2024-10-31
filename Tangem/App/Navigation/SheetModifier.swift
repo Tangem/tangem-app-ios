@@ -13,7 +13,8 @@ struct UIKitSheetModifier<Item: Identifiable, ContentView: View>: ViewModifier {
     private var onDismiss: (() -> Void)?
     private var contentView: (Item) -> ContentView
 
-    @StateObject private var stateObject: State = .init()
+    @StateObject private var viewModel: UIKitSheetModifierViewModel = .init()
+    @State private var isPresented = false
 
     init(item: Binding<Item?>, onDismiss: (() -> Void)? = nil, contentView: @escaping (Item) -> ContentView) {
         _item = item
@@ -27,20 +28,21 @@ struct UIKitSheetModifier<Item: Identifiable, ContentView: View>: ViewModifier {
     }
 
     func update(item: Item?) {
-        if let item = item {
+        if let item = item, !isPresented {
             showController(item: item)
-        } else {
+        } else if item == nil, isPresented {
             hideController()
         }
     }
 
     private func showController(item: Item) {
+        isPresented = true
         let controller = controller(item: item)
         UIApplication.modalFromTop(controller, animated: true)
     }
 
     private func hideController() {
-        stateObject.controller?.dismiss(animated: true) {
+        viewModel.controller?.dismiss(animated: true) {
             didDismiss()
         }
     }
@@ -51,23 +53,24 @@ struct UIKitSheetModifier<Item: Identifiable, ContentView: View>: ViewModifier {
 
         controller.modalPresentationStyle = .automatic
         controller.overrideUserInterfaceStyle = UIApplication.topViewController?.overrideUserInterfaceStyle ?? .unspecified
-        controller.transitioningDelegate = stateObject
+        controller.sheetPresentationController?.delegate = viewModel
 
-        stateObject.controllerDidDismisss = {
+        viewModel.controllerDidDismiss = {
             didDismiss()
         }
 
         // Save the controller for dismiss it when it will be needed
-        stateObject.controller = controller
+        viewModel.controller = controller
 
         return controller
     }
 
     private func didDismiss() {
         onDismiss?()
+        isPresented = false
 
         // Just clear memory
-        stateObject.clear()
+        viewModel.clear()
 
         if item != nil {
             // Set the item to nil if the controller was closed by the user gesture
@@ -79,18 +82,17 @@ struct UIKitSheetModifier<Item: Identifiable, ContentView: View>: ViewModifier {
 // MARK: - DelegateKeeper
 
 extension UIKitSheetModifier {
-    class State: NSObject, ObservableObject, UIViewControllerTransitioningDelegate {
+    class UIKitSheetModifierViewModel: NSObject, ObservableObject, UISheetPresentationControllerDelegate {
         var controller: UIHostingController<ContentView>?
-        var controllerDidDismisss: (() -> Void)?
+        var controllerDidDismiss: (() -> Void)?
 
         func clear() {
             controller = nil
-            controllerDidDismisss = nil
+            controllerDidDismiss = nil
         }
 
-        func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-            controllerDidDismisss?()
-            return nil
+        func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+            controllerDidDismiss?()
         }
     }
 }

@@ -44,8 +44,8 @@ extension AmountNotationSuffixFormatter {
         let decimal: Decimal
         let suffix: String
 
-        var fullDescription: String {
-            "\(signPrefix)\(abs(decimal)) \(suffix)"
+        var amountWithoutSign: String {
+            "\(abs(decimal))\(suffix)"
         }
     }
 

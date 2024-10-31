@@ -9,53 +9,91 @@
 import SwiftUI
 
 struct ActiveStakingViewData {
-    let usdAmount: String
-    let coinAmount: String
-    let rewardsToClaim: String?
+    let balance: BalanceState
+    let rewards: RewardsState?
 
-    var rewardsToClaimText: String {
-        rewardsToClaim.flatMap { Localization.stakingDetailsRewardsToClaim($0) }
-            ?? Localization.stakingDetailsNoRewardsToClaim
+    enum BalanceState {
+        case loadingError
+        case balance(WalletModel.BalanceFormatted, action: () -> Void)
+    }
+
+    enum RewardsState {
+        case noRewards
+        case rewardsToClaim(String)
     }
 }
 
 struct ActiveStakingView: View {
     let data: ActiveStakingViewData
-    let tapAction: () -> Void
 
     var body: some View {
-        Button(action: tapAction, label: { content })
+        switch data.balance {
+        case .loadingError:
+            content
+        case .balance(_, let action):
+            Button(action: action, label: { content })
+        }
     }
 
     private var content: some View {
         HStack {
             VStack(alignment: .leading, spacing: 8) {
                 Text(Localization.stakingNative)
-                    .lineLimit(1)
                     .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
 
-                HStack(spacing: 4) {
-                    Text(data.usdAmount)
-                        .lineLimit(1)
-                        .truncationMode(.middle)
-                        .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
+                balanceView
 
-                    Text(AppConstants.dotSign)
-                        .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
-
-                    Text(data.coinAmount)
-                        .lineLimit(1)
-                        .truncationMode(.middle)
-                        .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
-                }
-
-                Text(data.rewardsToClaimText)
-                    .lineLimit(1)
-                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                rewardsView
             }
 
             Spacer()
 
+            chevronView
+        }
+    }
+
+    @ViewBuilder
+    private var balanceView: some View {
+        switch data.balance {
+        case .loadingError:
+            Text(Localization.stakingNotificationNetworkErrorText)
+                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+        case .balance(let balance, _):
+            HStack(spacing: 4) {
+                SensitiveText(balance.fiat)
+                    .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+
+                Text(AppConstants.dotSign)
+                    .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
+
+                SensitiveText(balance.crypto)
+                    .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
+            }
+            .truncationMode(.middle)
+            .lineLimit(1)
+        }
+    }
+
+    @ViewBuilder
+    private var rewardsView: some View {
+        switch data.rewards {
+        case .none:
+            EmptyView()
+        case .noRewards:
+            Text(Localization.stakingDetailsNoRewardsToClaim)
+                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+        case .rewardsToClaim(let string):
+            SensitiveText(builder: Localization.stakingDetailsRewardsToClaim, sensitive: string)
+                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+        }
+    }
+
+    @ViewBuilder
+    private var chevronView: some View {
+        switch data.balance {
+        case .loadingError:
+            EmptyView()
+        case .balance:
             Assets.chevron.image
                 .renderingMode(.template)
                 .foregroundColor(Colors.Icon.informative)
@@ -67,12 +105,22 @@ struct ActiveStakingView: View {
 #Preview {
     VStack {
         ActiveStakingView(
-            data: ActiveStakingViewData(usdAmount: "456.34$", coinAmount: "5 SOL", rewardsToClaim: "0,43$"),
-            tapAction: {}
+            data: ActiveStakingViewData(
+                balance: .balance(.init(crypto: "5 SOL", fiat: "456.34$"), action: {}),
+                rewards: .rewardsToClaim("0,43$")
+            )
         )
         ActiveStakingView(
-            data: ActiveStakingViewData(usdAmount: "456.34$", coinAmount: "5 SOL", rewardsToClaim: nil),
-            tapAction: {}
+            data: ActiveStakingViewData(
+                balance: .balance(.init(crypto: "5 SOL", fiat: "456.34$"), action: {}),
+                rewards: .noRewards
+            )
+        )
+        ActiveStakingView(
+            data: ActiveStakingViewData(
+                balance: .loadingError,
+                rewards: .rewardsToClaim("0,43$")
+            )
         )
     }
 }

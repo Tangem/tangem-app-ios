@@ -102,40 +102,6 @@ class WalletModel {
         }
     }
 
-    var balanceValue: Decimal? {
-        if state.isNoAccount {
-            return 0
-        }
-
-        return wallet.amounts[amountType]?.value
-    }
-
-    var balance: String {
-        guard let balanceValue else { return BalanceFormatter.defaultEmptyBalanceString }
-
-        return formatter.formatCryptoBalance(balanceValue, currencyCode: tokenItem.currencySymbol)
-    }
-
-    var isZeroAmount: Bool {
-        wallet.amounts[amountType]?.isZero ?? true
-    }
-
-    var fiatBalance: String {
-        formatter.formatFiatBalance(fiatValue)
-    }
-
-    var fiatValue: Decimal? {
-        guard
-            let balanceValue,
-            canUseQuotes,
-            let currencyId = tokenItem.currencyId
-        else {
-            return nil
-        }
-
-        return converter.convertToFiat(balanceValue, currencyId: currencyId)
-    }
-
     var rateFormatted: String {
         guard let rate = quote?.price else {
             return BalanceFormatter.defaultEmptyBalanceString
@@ -239,11 +205,11 @@ class WalletModel {
     private var updateQueue = DispatchQueue(label: "walletModel_update_queue")
     private var _walletDidChangePublisher: CurrentValueSubject<State, Never> = .init(.created)
     private var _state: CurrentValueSubject<State, Never> = .init(.created)
-    private var _rate: CurrentValueSubject<Decimal?, Never> = .init(nil)
+    private var _rate: CurrentValueSubject<LoadingValue<Decimal?>, Never> = .init(.loading)
     private var _localPendingTransactionSubject: PassthroughSubject<Void, Never> = .init()
 
-    private let converter = BalanceConverter()
-    private let formatter = BalanceFormatter()
+    let converter = BalanceConverter()
+    let formatter = BalanceFormatter()
 
     deinit {
         AppLog.shared.debug("🗑 \(self) deinit")
@@ -278,7 +244,8 @@ class WalletModel {
 
         quotesRepository
             .quotesPublisher
-            .compactMap { [canUseQuotes, tokenItem] quotes -> Decimal? in
+            .dropFirst() // we need to drop first value because it's an empty dictionary
+            .map { [canUseQuotes, tokenItem] quotes -> Decimal? in
                 guard
                     canUseQuotes,
                     let currencyId = tokenItem.currencyId
@@ -293,13 +260,14 @@ class WalletModel {
                 guard let self else { return }
 
                 AppLog.shared.debug("🔄 Quotes updated for \(self)")
-                _rate.send(rate)
+                _rate.send(.loaded(rate))
             }
             .store(in: &bag)
 
+        let filteredRate = _rate.filter { $0 != .loading }.removeDuplicates()
         _state
             .removeDuplicates()
-            .combineLatest(_rate.removeDuplicates(), walletManager.walletPublisher)
+            .combineLatest(filteredRate, walletManager.walletPublisher)
             .map { $0.0 }
             .assign(to: \._walletDidChangePublisher.value, on: self, ownership: .weak)
             .store(in: &bag)
@@ -361,6 +329,12 @@ class WalletModel {
         return newUpdatePublisher.eraseToAnyPublisher()
     }
 
+    func updateAfterSendingTransaction() {
+        // Force update transactions history to take a new pending transaction from the local storage
+        _localPendingTransactionSubject.send(())
+        startUpdatingTimer()
+    }
+
     private func walletManagerDidUpdate(_ walletManagerState: WalletManagerState) {
         switch walletManagerState {
         case .loaded:
@@ -400,12 +374,6 @@ class WalletModel {
         }
     }
 
-    private func updateAfterSendingTransaction() {
-        // Force update transactions history to take a new pending transaction from the local storage
-        _localPendingTransactionSubject.send(())
-        startUpdatingTimer()
-    }
-
     // MARK: - Load Quotes
 
     private func loadQuotes() -> AnyPublisher<Void, Never> {
@@ -413,6 +381,7 @@ class WalletModel {
             canUseQuotes,
             let currencyId = tokenItem.currencyId
         else {
+            _rate.send(.loaded(nil))
             return .just(output: ())
         }
 
@@ -420,8 +389,15 @@ class WalletModel {
 
         return quotesRepository
             .loadQuotes(currencyIds: [currencyId])
-            .handleEvents(receiveOutput: { [weak self] _ in
-                AppLog.shared.debug("🔄 Finished loading quotes for \(String(describing: self))")
+            .withWeakCaptureOf(self)
+            .handleEvents(receiveOutput: { walletModel, dict in
+                AppLog.shared.debug("🔄 Finished loading quotes for \(walletModel)")
+                guard dict[currencyId] == nil else {
+                    return
+                }
+
+                AppLog.shared.debug("🔄 Quotes wasn't loaded for \(walletModel)")
+                walletModel._rate.send(.loaded(nil))
             })
             .mapToVoid()
             .eraseToAnyPublisher()
@@ -445,28 +421,6 @@ class WalletModel {
         .sink { [weak self] in
             self?.updateTimer?.cancel()
         }
-    }
-
-    func send(_ tx: Transaction, signer: TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError> {
-        if isDemo {
-            let hash = Data.randomData(count: 32)
-            return signer.sign(hash: hash, walletPublicKey: wallet.publicKey)
-                .mapSendError(tx: hash.hexString)
-                .map { _ in TransactionSendResult(hash: hash.hexString) }
-                .receive(on: DispatchQueue.main)
-                .eraseSendError()
-                .eraseToAnyPublisher()
-        }
-
-        return walletManager
-            .send(tx, signer: signer)
-            .receive(on: DispatchQueue.main)
-            .withWeakCaptureOf(self)
-            .handleEvents(receiveOutput: { walletModel, _ in
-                walletModel.updateAfterSendingTransaction()
-            })
-            .map(\.1)
-            .eraseToAnyPublisher()
     }
 
     func estimatedFee(amount: Amount) -> AnyPublisher<[Fee], Error> {
@@ -642,7 +596,7 @@ extension WalletModel {
 extension WalletModel {
     func updateStakingManagerState() -> AnyPublisher<Void, Never> {
         Future.async { [weak self] in
-            try await self?._stakingManager?.updateState()
+            await self?._stakingManager?.updateState()
         }
         // Here we have to skip the error to let the PTR to complete
         .replaceError(with: ())
@@ -667,10 +621,6 @@ extension WalletModel {
 
     var transactionSender: TransactionSender {
         walletManager
-    }
-
-    var transactionPusher: TransactionPusher? {
-        walletManager as? TransactionPusher
     }
 
     var bitcoinTransactionFeeCalculator: BitcoinTransactionFeeCalculator? {
@@ -715,6 +665,10 @@ extension WalletModel {
 
     var stakingManager: StakingManager? {
         _stakingManager
+    }
+
+    var stakeKitTransactionSender: StakeKitTransactionSender? {
+        walletManager as? StakeKitTransactionSender
     }
 }
 

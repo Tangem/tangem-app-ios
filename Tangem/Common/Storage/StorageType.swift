@@ -9,19 +9,12 @@
 import Foundation
 
 enum StorageType: String {
-    case oldDeviceOldCardAlert = "tangem_tap_oldDeviceOldCard_shown"
     case selectedCurrencyCode = "tangem_tap_selected_currency_code"
     case termsOfServiceAccepted = "tangem_tap_terms_of_service_accepted"
-    case firstTimeScan = "tangem_tap_first_time_scan"
     case validatedSignedHashesCards = "tangem_tap_validated_signed_hashes_cards"
     case twinCardOnboardingDisplayed = "tangem_tap_twin_card_onboarding_displayed"
     case numberOfAppLaunches = "tangem_tap_number_of_launches"
-    case readWarningHashes = "tangem_tap_read_warnings"
-    case searchedCards = "tangem_tap_searched_cards" // for tokens search
-    case isMigratedToNewUserDefaults = "tangem_tap_migrate_to_new_defaults"
     case cardsStartedActivation = "tangem_cards_started_activation"
-    case cardsFinishedActivation = "tangem_cards_finished_activation"
-    case termsOfServicesAccepted = "tangem_tap_terms_of_services_accepted"
     case askedToSaveUserWallets = "tangem_asked_to_save_user_wallets"
     case saveUserWallets = "tangem_save_user_wallets"
     case selectedUserWalletId = "tangem_selected_user_wallet_id"
@@ -40,4 +33,6 @@ enum StorageType: String {
     case pendingBackups = "pending_backups"
     case pendingBackupsCurrentID = "pending_backups_current_id"
     case forcedDemoCardId = "forced_demo_card_id"
+    case didMigrateUserWalletNames = "did_migrate_user_wallet_names_again"
+    case userWalletIdsWithRing = "tangem_userwalletIds_with_ring"
 }

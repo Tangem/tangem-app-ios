@@ -8,11 +8,17 @@
 
 import Foundation
 import SwiftUI
+import TangemExpress
 
 enum ExpressNotificationEvent: Hashable {
     // Express specific notifications
     case permissionNeeded(providerName: String, currencyCode: String)
-    case refreshRequired(title: String, message: String)
+    case refreshRequired(
+        title: String,
+        message: String,
+        expressErrorCode: ExpressAPIError.Code? = nil,
+        analyticsParams: [Analytics.ParameterKey: String]? = nil
+    )
     case hasPendingTransaction(symbol: String)
     case hasPendingApproveTransaction
     case notEnoughFeeForTokenTx(mainTokenName: String, mainTokenSymbol: String, blockchainIconName: String)
@@ -38,7 +44,7 @@ extension ExpressNotificationEvent: NotificationEvent {
         switch self {
         case .permissionNeeded:
             return .string(Localization.expressProviderPermissionNeeded)
-        case .refreshRequired(let title, _):
+        case .refreshRequired(let title, _, _, _):
             return .string(title)
         case .hasPendingTransaction:
             return .string(Localization.warningExpressActiveTransactionTitle)
@@ -73,7 +79,7 @@ extension ExpressNotificationEvent: NotificationEvent {
         switch self {
         case .permissionNeeded(let providerName, let currencyCode):
             return Localization.givePermissionSwapSubtitle(providerName, currencyCode)
-        case .refreshRequired(_, let message):
+        case .refreshRequired(_, let message, _, _):
             return message
         case .hasPendingTransaction(let symbol):
             return Localization.warningExpressActiveTransactionMessage(symbol)
@@ -185,20 +191,20 @@ extension ExpressNotificationEvent: NotificationEvent {
         }
     }
 
-    var buttonActionType: NotificationButtonActionType? {
+    var buttonAction: NotificationButtonAction? {
         switch self {
         case .notEnoughFeeForTokenTx(_, let mainTokenSymbol, _):
-            return .openFeeCurrency(currencySymbol: mainTokenSymbol)
+            return .init(.openFeeCurrency(currencySymbol: mainTokenSymbol))
         case .refreshRequired:
-            return .refresh
+            return .init(.refresh, withLoader: true)
         case .verificationRequired, .cexOperationFailed:
-            return .goToProvider
+            return .init(.goToProvider)
         case .validationErrorEvent(let event, _):
-            return event.buttonActionType
+            return event.buttonAction
         case .withdrawalNotificationEvent(let event):
-            return event.buttonActionType
+            return event.buttonAction
         case .refunded:
-            return .openCurrency
+            return .init(.openCurrency)
         default:
             return nil
         }
@@ -241,11 +247,21 @@ extension ExpressNotificationEvent: NotificationEvent {
 // TODO: Add analytics
 extension ExpressNotificationEvent {
     var analyticsEvent: Analytics.Event? {
-        return nil
+        switch self {
+        case .refreshRequired(_, _, .exchangeNotPossibleError, _):
+            .swapNoticeExpressError
+        default:
+            nil
+        }
     }
 
     var analyticsParams: [Analytics.ParameterKey: String] {
-        return [:]
+        switch self {
+        case .refreshRequired(_, _, _, .some(let params)):
+            params
+        default:
+            [:]
+        }
     }
 
     var isOneShotAnalyticsEvent: Bool {

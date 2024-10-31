@@ -28,7 +28,6 @@ class ExpressModulesFactoryMock: ExpressModulesFactory {
             initialWallet: initialWalletModel,
             userWalletModel: userWalletModel,
             feeFormatter: feeFormatter,
-            balanceConverter: balanceConverter,
             balanceFormatter: balanceFormatter,
             expressProviderFormatter: expressProviderFormatter,
             notificationManager: notificationManager,
@@ -67,12 +66,16 @@ class ExpressModulesFactoryMock: ExpressModulesFactory {
         coordinator: ExpressApproveRoutable
     ) -> ExpressApproveViewModel {
         ExpressApproveViewModel(
+            settings: .init(
+                subtitle: Localization.givePermissionSwapSubtitle(providerName, "USDT"),
+                feeFooterText: Localization.swapGivePermissionFeeFooter,
+                tokenItem: .token(.tetherMock, .init(.ethereum(testnet: false), derivationPath: .none)),
+                feeTokenItem: .blockchain(.init(.ethereum(testnet: false), derivationPath: .none)),
+                selectedPolicy: selectedPolicy
+            ),
             feeFormatter: feeFormatter,
-            pendingTransactionRepository: pendingTransactionRepository,
             logger: logger,
-            expressInteractor: expressInteractor,
-            providerName: providerName,
-            selectedPolicy: selectedPolicy,
+            approveViewModelInput: expressInteractor,
             coordinator: coordinator
         )
     }
@@ -134,7 +137,7 @@ private extension ExpressModulesFactoryMock {
     var providerFormatter: ExpressProviderFormatter { .init(balanceFormatter: balanceFormatter) }
     var walletModelsManager: WalletModelsManager { userWalletModel.walletModelsManager }
     var userWalletId: String { userWalletModel.userWalletId.stringValue }
-    var signer: TransactionSigner { TransactionSignerMock() }
+    var signer: TangemSigner { TangemSigner(filter: .cardId(""), sdk: TangemSdkDefaultFactory().makeTangemSdk(), twinKey: nil) }
     var logger: Logger { AppLog.shared }
     var userTokensManager: UserTokensManager { userWalletModel.userTokensManager }
 
@@ -186,10 +189,8 @@ private extension ExpressModulesFactoryMock {
         return interactor
     }
 
-    func makeAllowanceProvider() -> ExpressAllowanceProvider {
-        let provider = CommonExpressAllowanceProvider(logger: logger)
-        provider.setup(wallet: initialWalletModel)
-        return provider
+    func makeAllowanceProvider() -> UpdatableAllowanceProvider {
+        CommonAllowanceProvider(walletModel: initialWalletModel)
     }
 
     func makeExpressFeeProvider() -> ExpressFeeProvider {

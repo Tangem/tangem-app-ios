@@ -11,7 +11,7 @@ import Foundation
 struct IconURLBuilder {
     private let baseURL: URL
 
-    init(baseURL: URL = URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/")!) {
+    init(baseURL: URL = AppEnvironment.current.iconBaseUrl) {
         self.baseURL = baseURL
     }
 
@@ -35,5 +35,12 @@ struct IconURLBuilder {
             .appendingPathComponent("currencies")
             .appendingPathComponent("medium")
             .appendingPathComponent("\(currencyCode.lowercased()).png")
+    }
+
+    func exchangesIconURL(exchangeId: String, size: TokenURLIconSize = .large) -> URL {
+        baseURL
+            .appendingPathComponent("exchanges")
+            .appendingPathComponent(size.rawValue)
+            .appendingPathComponent("\(exchangeId.lowercased()).png")
     }
 }

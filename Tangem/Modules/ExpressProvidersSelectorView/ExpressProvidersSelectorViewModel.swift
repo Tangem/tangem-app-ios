@@ -74,11 +74,26 @@ final class ExpressProvidersSelectorViewModel: ObservableObject, Identifiable {
     }
 
     func setupProviderRowViewModels() async {
+        typealias SortableProvider = (priority: ExpressAvailableProvider.Priority, amount: Decimal)
+
         let viewModels: [ProviderRowViewModel] = await allProviders
-            .asyncSorted(sort: >, by: { await $0.getPriority() })
+            .asyncSorted(
+                sort: { (firstProvider: SortableProvider, secondProvider: SortableProvider) in
+                    if firstProvider.priority == secondProvider.priority {
+                        return firstProvider.amount > secondProvider.amount
+                    } else {
+                        return firstProvider.priority > secondProvider.priority
+                    }
+                },
+                by: { provider in
+                    let priority = await provider.getPriority()
+                    let expectedAmount = await provider.getState().quote?.expectAmount ?? 0
+                    return (priority, expectedAmount)
+                }
+            )
             .asyncCompactMap { provider in
-                if !provider.isAvailable {
-                    return unavailableProviderRowViewModel(provider: provider.provider)
+                guard provider.isAvailable else {
+                    return nil
                 }
 
                 // If the provider `isSelected` we are forced to show it anyway
@@ -175,7 +190,7 @@ final class ExpressProvidersSelectorViewModel: ObservableObject, Identifiable {
         }
 
         let changePercent = quote.rate / selectedRate - 1
-        let result = priceChangeFormatter.format(changePercent, option: .express)
+        let result = priceChangeFormatter.formatFractionalValue(changePercent, option: .express)
         return .percent(result.formattedText, signType: result.signType)
     }
 }

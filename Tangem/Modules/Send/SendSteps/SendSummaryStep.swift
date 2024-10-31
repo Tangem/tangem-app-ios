@@ -12,23 +12,20 @@ import SwiftUI
 
 class SendSummaryStep {
     private let viewModel: SendSummaryViewModel
-    private let interactor: SendSummaryInteractor
     private let input: SendSummaryInput
-    private let tokenItem: TokenItem
-    private let walletName: String
+    private let _title: String?
+    private let _subtitle: String?
 
     init(
         viewModel: SendSummaryViewModel,
-        interactor: SendSummaryInteractor,
         input: SendSummaryInput,
-        tokenItem: TokenItem,
-        walletName: String
+        title: String?,
+        subtitle: String?
     ) {
         self.viewModel = viewModel
-        self.interactor = interactor
-        self.tokenItem = tokenItem
         self.input = input
-        self.walletName = walletName
+        _title = title
+        _subtitle = subtitle
     }
 
     func set(router: SendSummaryStepsRoutable) {
@@ -39,37 +36,15 @@ class SendSummaryStep {
 // MARK: - SendStep
 
 extension SendSummaryStep: SendStep {
-    var title: String? { Localization.sendSummaryTitle(tokenItem.currencySymbol) }
+    var title: String? { _title }
 
-    var subtitle: String? { walletName }
+    var subtitle: String? { _subtitle }
 
     var type: SendStepType { .summary(viewModel) }
 
+    var sendStepViewAnimatable: any SendStepViewAnimatable { viewModel }
+
     var isValidPublisher: AnyPublisher<Bool, Never> {
-        input.transactionPublisher.map { $0 != nil }.eraseToAnyPublisher()
-    }
-
-    func willAppear(previous step: any SendStep) {
-        viewModel.setupAnimations(previousStep: step.type)
-    }
-}
-
-// MARK: - SendSummaryViewModelSetupable
-
-extension SendSummaryStep: SendSummaryViewModelSetupable {
-    func setup(sendDestinationInput: any SendDestinationInput) {
-        viewModel.setup(sendDestinationInput: sendDestinationInput)
-    }
-
-    func setup(sendAmountInput: any SendAmountInput) {
-        viewModel.setup(sendAmountInput: sendAmountInput)
-    }
-
-    func setup(sendFeeInput: any SendFeeInput) {
-        viewModel.setup(sendFeeInput: sendFeeInput)
-    }
-
-    func setup(stakingValidatorsInput: any StakingValidatorsInput) {
-        viewModel.setup(stakingValidatorsInput: stakingValidatorsInput)
+        input.isReadyToSendPublisher.eraseToAnyPublisher()
     }
 }

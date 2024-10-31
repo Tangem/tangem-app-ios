@@ -21,10 +21,19 @@ struct CommonSendTransactionSummaryDescriptionBuilder {
 // MARK: - SendTransactionSummaryDescriptionBuilder
 
 extension CommonSendTransactionSummaryDescriptionBuilder: SendTransactionSummaryDescriptionBuilder {
-    func makeDescription(amount: Decimal, fee: Decimal) -> String? {
+    func makeDescription(transactionType: SendSummaryTransactionData) -> String? {
+        guard case .send(let amount, let fee) = transactionType else {
+            return nil
+        }
+
         let amountInFiat = tokenItem.id.flatMap { BalanceConverter().convertToFiat(amount, currencyId: $0) }
-        let feeInFiat = feeTokenItem.id.flatMap { BalanceConverter().convertToFiat(fee, currencyId: $0) }
-        let totalInFiat = [amountInFiat, feeInFiat].compactMap { $0 }.reduce(0, +)
+        let feeInFiat = feeTokenItem.id.flatMap { BalanceConverter().convertToFiat(fee.amount.value, currencyId: $0) }
+
+        var totalInFiat: Decimal? = nil
+
+        if let amountInFiat, let feeInFiat {
+            totalInFiat = amountInFiat + feeInFiat
+        }
 
         let formattingOptions = BalanceFormattingOptions(
             minFractionDigits: BalanceFormattingOptions.defaultFiatFormattingOptions.minFractionDigits,

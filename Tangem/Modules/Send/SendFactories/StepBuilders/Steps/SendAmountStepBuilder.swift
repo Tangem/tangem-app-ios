@@ -10,26 +10,48 @@ import Foundation
 
 struct SendAmountStepBuilder {
     typealias IO = (input: SendAmountInput, output: SendAmountOutput)
-    typealias ReturnValue = (step: SendAmountStep, interactor: SendAmountInteractor)
+    typealias ReturnValue = (step: SendAmountStep, interactor: SendAmountInteractor, compact: SendAmountCompactViewModel)
 
     let walletModel: WalletModel
     let builder: SendDependenciesBuilder
 
     func makeSendAmountStep(
         io: IO,
+        actionType: SendFlowActionType,
         sendFeeLoader: any SendFeeLoader,
-        sendQRCodeService: SendQRCodeService?
+        sendQRCodeService: SendQRCodeService?,
+        sendAmountValidator: SendAmountValidator,
+        amountModifier: SendAmountModifier?,
+        source: SendModel.PredefinedValues.Source
     ) -> ReturnValue {
-        let interactor = makeSendAmountInteractor(io: io)
-        let viewModel = makeSendAmountViewModel(interactor: interactor, sendQRCodeService: sendQRCodeService)
+        let interactor = makeSendAmountInteractor(
+            io: io,
+            sendAmountValidator: sendAmountValidator,
+            amountModifier: amountModifier
+        )
+        let viewModel = makeSendAmountViewModel(
+            interactor: interactor,
+            actionType: actionType,
+            sendQRCodeService: sendQRCodeService
+        )
 
         let step = SendAmountStep(
             viewModel: viewModel,
             interactor: interactor,
-            sendFeeLoader: sendFeeLoader
+            sendFeeLoader: sendFeeLoader,
+            source: source
         )
 
-        return (step: step, interactor: interactor)
+        let compact = makeSendAmountCompactViewModel(input: io.input)
+        return (step: step, interactor: interactor, compact: compact)
+    }
+
+    func makeSendAmountCompactViewModel(input: SendAmountInput) -> SendAmountCompactViewModel {
+        .init(
+            input: input,
+            tokenIconInfo: builder.makeTokenIconInfo(),
+            tokenItem: walletModel.tokenItem
+        )
     }
 }
 
@@ -38,6 +60,7 @@ struct SendAmountStepBuilder {
 private extension SendAmountStepBuilder {
     func makeSendAmountViewModel(
         interactor: SendAmountInteractor,
+        actionType: SendFlowActionType,
         sendQRCodeService: SendQRCodeService?
     ) -> SendAmountViewModel {
         let initital = SendAmountViewModel.Settings(
@@ -45,8 +68,9 @@ private extension SendAmountStepBuilder {
             tokenItem: walletModel.tokenItem,
             tokenIconInfo: builder.makeTokenIconInfo(),
             balanceValue: walletModel.balanceValue ?? 0,
-            balanceFormatted: Localization.sendWalletBalanceFormat(walletModel.balance, walletModel.fiatBalance),
-            currencyPickerData: builder.makeCurrencyPickerData()
+            balanceFormatted: Localization.commonCryptoFiatFormat(walletModel.balance, walletModel.fiatBalance),
+            currencyPickerData: builder.makeCurrencyPickerData(),
+            actionType: actionType
         )
 
         return SendAmountViewModel(
@@ -56,18 +80,15 @@ private extension SendAmountStepBuilder {
         )
     }
 
-    private func makeSendAmountInteractor(io: IO) -> SendAmountInteractor {
+    private func makeSendAmountInteractor(io: IO, sendAmountValidator: SendAmountValidator, amountModifier: SendAmountModifier?) -> SendAmountInteractor {
         CommonSendAmountInteractor(
             input: io.input,
             output: io.output,
             tokenItem: walletModel.tokenItem,
             balanceValue: walletModel.balanceValue ?? 0,
-            validator: makeSendAmountValidator(),
+            validator: sendAmountValidator,
+            amountModifier: amountModifier,
             type: .crypto
         )
-    }
-
-    private func makeSendAmountValidator() -> SendAmountValidator {
-        CommonSendAmountValidator(tokenItem: walletModel.tokenItem, validator: walletModel.transactionValidator)
     }
 }

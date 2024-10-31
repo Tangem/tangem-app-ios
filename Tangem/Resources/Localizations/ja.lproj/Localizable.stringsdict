@@ -13,13 +13,27 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>other</key>
-        <string>%li カード</string>
+        <string>%li デバイス</string>
+      </dict>
+    </dict>
+    <key>common_days_no_param</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>other</key>
+        <string>日</string>
       </dict>
     </dict>
     <key>manage_tokens_number_of_wallets_ios</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
-      <string>%li / %#@すべての_ウォレット@</string>
+      <string>%li / %#@total_wallets@</string>
       <key>total_wallets</key>
       <dict>
         <key>NSStringFormatSpecTypeKey</key>
@@ -28,6 +42,20 @@
         <string>li</string>
         <key>other</key>
         <string>%li ウォレット\n%li ウォレット</string>
+      </dict>
+    </dict>
+    <key>markets_token_details_amount_exchanges</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>other</key>
+        <string>%li取引所</string>
       </dict>
     </dict>
     <key>markets_token_details_based_on_ratings</key>
@@ -69,7 +97,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>other</key>
-        <string> %li 単語</string>
+        <string>%li 単語</string>
       </dict>
     </dict>
     <key>referral_number_of_wallets</key>
@@ -111,7 +139,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>other</key>
-        <string>%li ネットワークのアドレスを取得するために、カードを利用してください</string>
+        <string>%li ネットワークのアドレスを取得するために、カードまたはリングを利用してください</string>
       </dict>
     </dict>
   </dict>

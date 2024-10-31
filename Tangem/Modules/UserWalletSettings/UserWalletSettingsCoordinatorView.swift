@@ -32,20 +32,17 @@ struct UserWalletSettingsCoordinatorView: CoordinatorView {
             .navigation(item: $coordinator.manageTokensCoordinator) {
                 ManageTokensCoordinatorView(coordinator: $0)
             }
-            .navigation(item: $coordinator.cardSettingsCoordinator) {
-                CardSettingsCoordinatorView(coordinator: $0)
-            }
             .navigation(item: $coordinator.referralCoordinator) {
                 ReferralCoordinatorView(coordinator: $0)
+            }
+            .navigation(item: $coordinator.scanCardSettingsCoordinator) {
+                ScanCardSettingsCoordinatorView(coordinator: $0)
             }
     }
 
     @ViewBuilder
     private var sheets: some View {
         NavHolder()
-            .sheet(item: $coordinator.scanCardSettingsViewModel) {
-                ScanCardSettingsView(viewModel: $0)
-            }
             .sheet(item: $coordinator.modalOnboardingCoordinator) {
                 OnboardingCoordinatorView(coordinator: $0)
                     .presentation(modal: true, onDismissalAttempt: $0.onDismissalAttempt, onDismissed: nil)

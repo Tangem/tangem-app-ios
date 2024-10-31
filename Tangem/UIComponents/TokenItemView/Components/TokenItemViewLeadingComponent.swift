@@ -16,6 +16,25 @@ struct TokenItemViewLeadingComponent: View {
     let blockchainIconName: String?
     let hasMonochromeIcon: Bool
     let isCustom: Bool
+    let networkBorderColor: Color
+
+    init(
+        name: String,
+        imageURL: URL?,
+        customTokenColor: Color?,
+        blockchainIconName: String?,
+        hasMonochromeIcon: Bool,
+        isCustom: Bool,
+        networkBorderColor: Color = Colors.Background.primary
+    ) {
+        self.name = name
+        self.imageURL = imageURL
+        self.customTokenColor = customTokenColor
+        self.blockchainIconName = blockchainIconName
+        self.hasMonochromeIcon = hasMonochromeIcon
+        self.isCustom = isCustom
+        self.networkBorderColor = networkBorderColor
+    }
 
     var body: some View {
         TokenIcon(
@@ -24,7 +43,8 @@ struct TokenItemViewLeadingComponent: View {
                 blockchainIconName: blockchainIconName,
                 imageURL: imageURL,
                 isCustom: isCustom,
-                customTokenColor: customTokenColor
+                customTokenColor: customTokenColor,
+                networkBorderColor: networkBorderColor
             ),
             size: .init(bothDimensions: 36.0)
         )

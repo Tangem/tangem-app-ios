@@ -10,72 +10,69 @@ import SwiftUI
 
 struct SendFeeView: View {
     @ObservedObject var viewModel: SendFeeViewModel
+    let transitionService: SendTransitionService
     let namespace: Namespace
 
-    private var auxiliaryViewTransition: AnyTransition {
-        .offset(y: 250).combined(with: .opacity)
-    }
+    private let coordinateSpaceName = UUID()
 
     var body: some View {
         GroupedScrollView(spacing: 20) {
             GroupedSection(viewModel.feeRowViewModels) { feeRowViewModel in
-                Group {
-                    let isLast = viewModel.feeRowViewModels.last?.option == feeRowViewModel.option
-                    if feeRowViewModel.isSelected.value {
-                        feeRowView(feeRowViewModel, isLast: isLast)
-                            .overlay(alignment: .topLeading) {
-                                Text(Localization.commonNetworkFeeTitle)
-                                    .font(Fonts.Regular.footnote)
-                                    .hidden()
-                                    .matchedGeometryEffect(id: namespace.names.feeTitle, in: namespace.id)
-                            }
-                    } else {
-                        feeRowView(feeRowViewModel, isLast: isLast)
-                            .visible(viewModel.deselectedFeeViewsVisible)
+                let isSelected = viewModel.selectedFeeOption == feeRowViewModel.option
+                FeeRowView(viewModel: feeRowViewModel)
+                    .optionGeometryEffect(
+                        .init(
+                            id: namespace.names.feeOption(feeOption: feeRowViewModel.option),
+                            namespace: namespace.id
+                        )
+                    )
+                    .amountGeometryEffect(
+                        .init(
+                            id: namespace.names.feeAmount(feeOption: feeRowViewModel.option),
+                            namespace: namespace.id
+                        )
+                    )
+                    .readContentOffset(inCoordinateSpace: .named(coordinateSpaceName)) { value in
+                        if isSelected {
+                            transitionService.selectedFeeContentOffset = value
+                        }
                     }
-                }
+                    .modifier(if: isSelected) {
+                        $0.overlay(alignment: .topLeading) {
+                            DefaultHeaderView(Localization.commonNetworkFeeTitle)
+                                .matchedGeometryEffect(id: namespace.names.feeTitle, in: namespace.id)
+                                .hidden()
+                        }
+                    }
+                    .visible(viewModel.auxiliaryViewsVisible)
             } footer: {
-                if !viewModel.animatingAuxiliaryViewsOnAppear {
+                if viewModel.auxiliaryViewsVisible {
                     feeSelectorFooter
-                        .transition(auxiliaryViewTransition)
+                        .transition(transitionService.feeAuxiliaryViewTransition)
                 }
             }
-            .backgroundColor(Colors.Background.action)
-            .geometryEffect(.init(id: namespace.names.feeContainer, namespace: namespace.id))
-            .separatorStyle(.none)
+            .settings(\.backgroundColor, Colors.Background.action)
+            .settings(\.backgroundGeometryEffect, .init(id: namespace.names.feeContainer, namespace: namespace.id))
+            .separatorStyle(viewModel.auxiliaryViewsVisible ? .minimum : .none)
 
-            if !viewModel.animatingAuxiliaryViewsOnAppear,
+            if viewModel.auxiliaryViewsVisible,
                let input = viewModel.networkFeeUnreachableNotificationViewInput {
                 NotificationView(input: input)
-                    .transition(auxiliaryViewTransition)
+                    .transition(transitionService.feeAuxiliaryViewTransition)
             }
 
-            if !viewModel.animatingAuxiliaryViewsOnAppear, !viewModel.customFeeModels.isEmpty {
+            if viewModel.auxiliaryViewsVisible, !viewModel.customFeeModels.isEmpty {
                 ForEach(viewModel.customFeeModels) { customFeeModel in
                     SendCustomFeeInputField(viewModel: customFeeModel)
                         .onFocusChanged(customFeeModel.onFocusChanged)
-                        .transition(auxiliaryViewTransition)
                 }
+                .transition(transitionService.customFeeTransition)
             }
         }
+        .coordinateSpace(name: coordinateSpaceName)
+        .animation(SendTransitionService.Constants.auxiliaryViewAnimation, value: viewModel.auxiliaryViewsVisible)
+        .transition(transitionService.transitionToFeeStep())
         .onAppear(perform: viewModel.onAppear)
-        .onDisappear(perform: viewModel.onDisappear)
-        .onAppear(perform: viewModel.onAuxiliaryViewAppear)
-        .onDisappear(perform: viewModel.onAuxiliaryViewDisappear)
-    }
-
-    private func feeRowView(_ feeRowViewModel: FeeRowViewModel, isLast: Bool) -> some View {
-        FeeRowView(viewModel: feeRowViewModel)
-            .setNamespace(namespace.id)
-            .setOptionNamespaceId(namespace.names.feeOption(feeOption: feeRowViewModel.option))
-            .setAmountNamespaceId(namespace.names.feeAmount(feeOption: feeRowViewModel.option))
-            .overlay(alignment: .bottom) {
-                if !isLast {
-                    Separator(height: .minimal, color: Colors.Stroke.primary)
-                        .padding(.trailing, -GroupedSectionConstants.defaultHorizontalPadding)
-                        .matchedGeometryEffect(id: namespace.names.feeSeparator(feeOption: feeRowViewModel.option), in: namespace.id)
-                }
-            }
     }
 
     private var feeSelectorFooter: some View {

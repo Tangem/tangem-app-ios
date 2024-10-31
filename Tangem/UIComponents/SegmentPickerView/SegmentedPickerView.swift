@@ -24,6 +24,7 @@ public struct SegmentedPickerView<Option: Hashable & Identifiable, SelectionView
     private let selectionView: () -> SelectionView
     private let segmentContent: (Option, Bool) -> SegmentContent
     private let shouldStretchToFill: Bool
+    private let isDisabled: Bool
 
     @State private var optionIsPressed: [Option.ID: Bool] = [:]
     @State private var selectedIndex: Int
@@ -48,6 +49,7 @@ public struct SegmentedPickerView<Option: Hashable & Identifiable, SelectionView
         selection: Binding<Option>,
         options: [Option],
         shouldStretchToFill: Bool,
+        isDisabled: Bool,
         selectionView: @escaping () -> SelectionView,
         @ViewBuilder segmentContent: @escaping (Option, Bool) -> SegmentContent
     ) {
@@ -56,6 +58,7 @@ public struct SegmentedPickerView<Option: Hashable & Identifiable, SelectionView
         self.selectionView = selectionView
         self.segmentContent = segmentContent
         self.shouldStretchToFill = shouldStretchToFill
+        self.isDisabled = isDisabled
         optionIsPressed = Dictionary(uniqueKeysWithValues: options.lazy.map { ($0.id, false) })
         selectedIndex = options.firstIndex(of: selection.wrappedValue) ?? 0
     }
@@ -63,6 +66,15 @@ public struct SegmentedPickerView<Option: Hashable & Identifiable, SelectionView
     // MARK: - UI
 
     public var body: some View {
+        if #available(iOS 17, *) {
+            content
+                .sensoryFeedback(.selection, trigger: selection)
+        } else {
+            content
+        }
+    }
+
+    private var content: some View {
         HStack(spacing: interSegmentSpacing) {
             ForEach(Array(zip(options.indices, options)), id: \.1.id) { index, option in
                 Segment(
@@ -79,8 +91,19 @@ public struct SegmentedPickerView<Option: Hashable & Identifiable, SelectionView
                     namespaceID: namespaceID,
                     targetWidth: targetWidth,
                     action: {
-                        selection = option
-                        selectedIndex = index
+                        if selection == option || isDisabled {
+                            return
+                        }
+
+                        withAnimation {
+                            selection = option
+                            selectedIndex = index
+                        }
+
+                        if #unavailable(iOS 17) {
+                            let generator = UISelectionFeedbackGenerator()
+                            generator.selectionChanged()
+                        }
                     }
                 )
                 .zIndex(selection == option ? 0 : 1)
@@ -92,7 +115,6 @@ public struct SegmentedPickerView<Option: Hashable & Identifiable, SelectionView
                         }
                         .padding(.vertical, 4)
                         .opacity((selectedIndex == index || selectedIndex - 1 == index) ? 0.0 : 1.0)
-                        .animation(.easeInOut, value: selectedIndex)
                     }
                 }
                 .overlay(content: {
@@ -106,13 +128,16 @@ public struct SegmentedPickerView<Option: Hashable & Identifiable, SelectionView
                             }
 
                             if value > (targetWidth ?? 0) {
-                                targetWidth = value
+                                withAnimation(nil) {
+                                    targetWidth = value
+                                }
                             }
                         }
                 })
             }
         }
         .padding(segmentedControlInsets)
+        .drawingGroup()
     }
 }
 
@@ -172,6 +197,7 @@ public extension SegmentedPickerView {
         selection: Binding<Option>,
         options: [Option],
         shouldStretchToFill: Bool,
+        isDisabled: Bool,
         selectionView: SelectionView,
         @ViewBuilder segmentContent: @escaping (Option, Bool) -> SegmentContent
     ) {
@@ -179,6 +205,7 @@ public extension SegmentedPickerView {
             selection: selection,
             options: options,
             shouldStretchToFill: shouldStretchToFill,
+            isDisabled: isDisabled,
             selectionView: { selectionView },
             segmentContent: segmentContent
         )

@@ -27,7 +27,7 @@ struct SendAmountConverter {
             return nil
         }
 
-        let formatter = DecimalNumberFormatter(maximumFractionDigits: 2) // Fiat has 2 FractionDigits
+        let formatter = DecimalNumberFormatter(maximumFractionDigits: SendAmountStep.Constants.fiatMaximumFractionDigits)
         return formatter.format(value: fiatValue)
     }
 }

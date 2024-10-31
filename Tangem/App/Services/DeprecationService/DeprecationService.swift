@@ -26,7 +26,7 @@ class DeprecationService {
         systemVersion < firstSupportedSystemVersion
     }
 
-    private var systemDeprecationWarning: WarningEvent? {
+    private var systemDeprecationWarning: GeneralNotificationEvent? {
         guard systemDeprecated else {
             return nil
         }
@@ -47,7 +47,7 @@ class DeprecationService {
         return .systemDeprecationTemporary
     }
 
-    private var appDeprecationWarning: WarningEvent? {
+    private var appDeprecationWarning: GeneralNotificationEvent? {
         // TODO: Add app update logic
         nil
     }
@@ -61,7 +61,7 @@ class DeprecationService {
 }
 
 extension DeprecationService: DeprecationServicing {
-    var deprecationWarnings: [WarningEvent] {
+    var deprecationWarnings: [GeneralNotificationEvent] {
         [systemDeprecationWarning, appDeprecationWarning].compactMap { $0 }
     }
 

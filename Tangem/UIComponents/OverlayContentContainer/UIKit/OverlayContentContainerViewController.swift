@@ -2,7 +2,7 @@
 //  OverlayContentContainerViewController.swift
 //  Tangem
 //
-//  Created by m3g0byt3 on 11.07.2024.
+//  Created by Andrey Fedorov on 11.07.2024.
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
@@ -12,26 +12,31 @@ import UIKit
 final class OverlayContentContainerViewController: UIViewController {
     // MARK: - Dependencies
 
+    let overlayCornerRadius: CGFloat
+
     private let contentViewController: UIViewController
+    private let contentExpandedVerticalOffset: CGFloat
     private let overlayCollapsedHeight: CGFloat
-    private let overlayExpandedVerticalOffset: CGFloat
     private var overlayCollapsedVerticalOffset: CGFloat { screenBounds.height - overlayCollapsedHeight }
 
     // MARK: - Mutable state
 
     private var overlayViewController: UIViewController?
-    private var panGestureStartLocation: CGPoint = .zero
+    private var panGestureStartLocationInScreenCoordinateSpace: CGPoint = .zero
+    private var panGestureStartLocationInOverlayViewCoordinateSpace: CGPoint = .zero
     private var shouldIgnorePanGestureRecognizer = false
-    private var scrollViewContentOffsetLocker: ScrollViewContentOffsetLocker?
+    private var didTap = false
 
-    private var progress: CGFloat = .zero {
+    private var progress: OverlayContentContainerProgress = .zero {
         didSet { onProgressChange(oldValue: oldValue, newValue: progress) }
     }
 
-    // TODO: Andrey Fedorov - Check for leaks (IOS-7364)
-    private var stateObservers: [AnyHashable: OverlayContentStateObserver.Observer] = [:]
+    private var stateObservers: [AnyHashable: OverlayContentStateObserver.StateObserver] = [:]
+    private var progressObservers: [AnyHashable: OverlayContentStateObserver.ProgressObserver] = [:]
 
     // MARK: - Read-only state
+
+    var isScrollViewLocked: Bool { scrollViewContentOffsetLocker?.isLocked ?? false }
 
     private var screenBounds: CGRect {
         return UIScreen.main.bounds
@@ -42,11 +47,11 @@ final class OverlayContentContainerViewController: UIViewController {
     }
 
     private var isExpandedState: Bool {
-        return abs(1.0 - progress) <= .ulpOfOne
+        return abs(1.0 - progress.value) <= .ulpOfOne
     }
 
     private var isCollapsedState: Bool {
-        return abs(progress) <= .ulpOfOne
+        return abs(progress.value) <= .ulpOfOne
     }
 
     /// I.e. either collapsed or expanded.
@@ -57,20 +62,30 @@ final class OverlayContentContainerViewController: UIViewController {
     // MARK: - IBOutlets/UI
 
     private var overlayViewTopAnchorConstraint: NSLayoutConstraint?
-    private var backgroundShadowView: UIView?
+    private var grabberView: UIView?
+    private lazy var backgroundShadowView = UIView(frame: screenBounds)
+    private lazy var tapGestureRecognizerHostingView = TouchPassthroughView()
+
+    // MARK: - Helpers
+
+    private var scrollViewContentOffsetLocker: ScrollViewContentOffsetLocker?
+    private lazy var appLifecycleHelper = OverlayContentContainerAppLifecycleHelper()
+    private lazy var gestureConflictResolver = SwiftUIGestureConflictResolver()
 
     // MARK: - Initialization/Deinitialization
 
-    /// - Note: All height/offset parameters (`overlayCollapsedHeight`, `overlayExpandedVerticalOffset`, etc)
+    /// - Note: All height/offset parameters (`overlayCollapsedHeight`, `contentExpandedVerticalOffset`, etc)
     /// are relative to the main screen bounds (w/o safe area).
     init(
         contentViewController: UIViewController,
+        contentExpandedVerticalOffset: CGFloat,
         overlayCollapsedHeight: CGFloat,
-        overlayExpandedVerticalOffset: CGFloat
+        overlayCornerRadius: CGFloat
     ) {
         self.contentViewController = contentViewController
+        self.contentExpandedVerticalOffset = Self.calculateContentExpandedVerticalOffset(fromInput: contentExpandedVerticalOffset)
         self.overlayCollapsedHeight = overlayCollapsedHeight
-        self.overlayExpandedVerticalOffset = overlayExpandedVerticalOffset
+        self.overlayCornerRadius = overlayCornerRadius
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -83,11 +98,23 @@ final class OverlayContentContainerViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        // The order in which all these methods are called matters, change it with caution
         setupView()
+        setupTapGestureRecognizer()
         setupPanGestureRecognizer()
         setupContent()
         setupBackgroundShadowView()
+        setupTapGestureRecognizerHostingView()
         setupOverlayIfAvailable()
+        setupAppLifecycleHelper()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        if let grabberView {
+            grabberView.superview?.bringSubviewToFront(grabberView)
+        }
     }
 
     // MARK: - Public API
@@ -119,19 +146,74 @@ final class OverlayContentContainerViewController: UIViewController {
         overlayViewTopAnchorConstraint?.isActive = false
         overlayViewTopAnchorConstraint = nil
 
+        grabberView = nil
+
         let overlayView = overlayViewController.view!
         overlayView.removeFromSuperview()
 
         overlayViewController.removeFromParent()
         self.overlayViewController = nil
+
+        updateProgress(verticalOffset: overlayCollapsedVerticalOffset, animationContext: nil)
     }
 
-    func addObserver(_ observer: @escaping OverlayContentStateObserver.Observer, forToken token: any Hashable) {
+    /// An ugly workaround due to navigation issues in SwiftUI on iOS 18 and above, see IOS-7990 for details.
+    /// Normally, the overlay is intended to be hidden/shown using the `installOverlay`/`removeOverlay` API.
+    func setOverlayHidden(_ isHidden: Bool) {
+        overlayViewController?.viewIfLoaded?.isHidden = isHidden
+    }
+
+    /// - Warning: This method maintains a strong reference to the given `observer` closure.
+    /// Remove this reference by using `removeObserver(forToken:)` method.
+    func addObserver(_ observer: @escaping OverlayContentStateObserver.StateObserver, forToken token: any Hashable) {
         stateObservers[AnyHashable(token)] = observer
+    }
+
+    /// - Warning: This method maintains a strong reference to the given `observer` closure.
+    /// Remove this reference by using `removeObserver(forToken:)` method.
+    func addObserver(_ observer: @escaping OverlayContentStateObserver.ProgressObserver, forToken token: any Hashable) {
+        progressObservers[AnyHashable(token)] = observer
     }
 
     func removeObserver(forToken token: any Hashable) {
         stateObservers.removeValue(forKey: AnyHashable(token))
+        progressObservers.removeValue(forKey: AnyHashable(token))
+    }
+
+    func expand() {
+        let newVerticalOffset = contentExpandedVerticalOffset
+        overlayViewTopAnchorConstraint?.constant = newVerticalOffset
+
+        var animationContext = Constants.defaultAnimationContext
+        UIView.animate(with: animationContext) {
+            self.view.layoutIfNeeded()
+        }
+
+        // `auxiliary` animations (content scale, corner radius, etc) are baked by Core Animation and don't use
+        // spring animations. Since these are plain, non-spring animations, they don't oscillate and therefore
+        // have a slightly shorter duration than `animationContext.duration`.
+        // That difference in duration is provided by multiplying by `auxiliaryAnimationsDurationMultiplier`
+        animationContext.duration *= Constants.auxiliaryAnimationsDurationMultiplier
+
+        updateProgress(verticalOffset: newVerticalOffset, animationContext: animationContext)
+    }
+
+    func collapse() {
+        let newVerticalOffset = overlayCollapsedVerticalOffset
+        overlayViewTopAnchorConstraint?.constant = newVerticalOffset
+
+        var animationContext = Constants.defaultAnimationContext
+        UIView.animate(with: animationContext) {
+            self.view.layoutIfNeeded()
+        }
+
+        // `auxiliary` animations (content scale, corner radius, etc) are baked by Core Animation and don't use
+        // spring animations. Since these are plain, non-spring animations, they don't oscillate and therefore
+        // have a slightly shorter duration than `animationContext.duration`.
+        // That difference in duration is provided by multiplying by `auxiliaryAnimationsDurationMultiplier`
+        animationContext.duration *= Constants.auxiliaryAnimationsDurationMultiplier
+
+        updateProgress(verticalOffset: newVerticalOffset, animationContext: animationContext)
     }
 
     // MARK: - Setup
@@ -142,14 +224,12 @@ final class OverlayContentContainerViewController: UIViewController {
 
     /// - Note: The order in which this method is called matters. Must be called between `setupContent` and `setupOverlay`.
     private func setupBackgroundShadowView() {
-        // TODO: Andrey Fedorov - Add support for dark mode (adjust content view contrast instead of using background shadow) (IOS-7364)
-        let backgroundShadowView = UIView(frame: screenBounds)
+        // TODO: Andrey Fedorov - Add better support for dark mode (adjust content view contrast or background colors instead of using background shadow) (IOS-8192)
         backgroundShadowView.backgroundColor = .black
         backgroundShadowView.alpha = Constants.minBackgroundShadowViewAlpha
         backgroundShadowView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         backgroundShadowView.isUserInteractionEnabled = false
         view.addSubview(backgroundShadowView)
-        self.backgroundShadowView = backgroundShadowView
     }
 
     private func setupContent() {
@@ -166,9 +246,8 @@ final class OverlayContentContainerViewController: UIViewController {
             contentView.widthAnchor.constraint(equalToConstant: screenBounds.width),
         ])
 
-        contentView.layer.cornerRadius = Constants.cornerRadius // TODO: Andrey Fedorov - Add animation for content view's corners (IOS-7364)
-        contentView.layer.masksToBounds = true
-
+        // Actual value for the `cornerRadius` CALayer property will be assigned later in `updateCornerRadius`
+        contentView.layer.cornerRadius(.zero, corners: .topEdge)
         contentViewController.didMove(toParent: self)
     }
 
@@ -185,7 +264,8 @@ final class OverlayContentContainerViewController: UIViewController {
         let overlayView = overlayViewController.view!
         containerView.translatesAutoresizingMaskIntoConstraints = false
         overlayView.translatesAutoresizingMaskIntoConstraints = false
-        containerView.addSubview(overlayView)
+        // `overlayView` always must be placed under `tapGestureRecognizerHostingView`
+        containerView.insertSubview(overlayView, belowSubview: tapGestureRecognizerHostingView)
 
         let overlayViewTopAnchorConstraint = overlayView
             .topAnchor
@@ -194,14 +274,37 @@ final class OverlayContentContainerViewController: UIViewController {
 
         NSLayoutConstraint.activate([
             overlayViewTopAnchorConstraint,
-            overlayView.heightAnchor.constraint(equalToConstant: screenBounds.height - overlayExpandedVerticalOffset),
+            overlayView.heightAnchor.constraint(equalToConstant: screenBounds.height),
             overlayView.widthAnchor.constraint(equalToConstant: screenBounds.width),
         ])
 
-        overlayView.layer.cornerRadius = Constants.cornerRadius
-        overlayView.layer.masksToBounds = true
+        let grabberViewFactory = GrabberViewFactory()
+        let grabberView = grabberViewFactory.makeUIKitView()
+        self.grabberView = grabberView
 
+        overlayView.addSubview(grabberView)
+        grabberView.centerXAnchor.constraint(equalTo: overlayView.centerXAnchor).isActive = true
+
+        overlayView.layer.cornerRadius(overlayCornerRadius, corners: .topEdge)
+        overlayViewController.additionalSafeAreaInsets.bottom = contentExpandedVerticalOffset // Over-scroll compensation
         overlayViewController.didMove(toParent: self)
+    }
+
+    private func setupTapGestureRecognizerHostingView() {
+        tapGestureRecognizerHostingView.delegate = self
+        tapGestureRecognizerHostingView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(tapGestureRecognizerHostingView)
+        NSLayoutConstraint.activate([
+            tapGestureRecognizerHostingView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tapGestureRecognizerHostingView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tapGestureRecognizerHostingView.topAnchor.constraint(equalTo: view.topAnchor),
+            tapGestureRecognizerHostingView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+    }
+
+    private func setupTapGestureRecognizer() {
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(onTapGesture(_:)))
+        tapGestureRecognizerHostingView.addGestureRecognizer(gestureRecognizer)
     }
 
     private func setupPanGestureRecognizer() {
@@ -210,95 +313,169 @@ final class OverlayContentContainerViewController: UIViewController {
         view.addGestureRecognizer(gestureRecognizer)
     }
 
+    private func setupAppLifecycleHelper() {
+        appLifecycleHelper.delegate = self
+        appLifecycleHelper.observeLifecycleIfNeeded()
+    }
+
     // MARK: - State update
 
-    private func updateProgress() {
-        let verticalOffset = overlayViewTopAnchorConstraint?.constant ?? .zero
-
-        progress = clamp(
-            (overlayCollapsedVerticalOffset - verticalOffset) / (overlayCollapsedVerticalOffset - overlayExpandedVerticalOffset),
+    private func updateProgress(verticalOffset: CGFloat, animationContext: OverlayContentContainerProgress.AnimationContext?) {
+        let value = clamp(
+            (overlayCollapsedVerticalOffset - verticalOffset) / (overlayCollapsedVerticalOffset - contentExpandedVerticalOffset),
             min: 0.0,
             max: 1.0
         )
+
+        progress = OverlayContentContainerProgress(value: value, context: animationContext)
     }
 
     private func updateContentScale() {
         let contentLayer = contentViewController.view.layer
-        let invertedProgress = 1.0 - progress
-        let scale = Constants.minContentViewScale
-            + (Constants.maxContentViewScale - Constants.minContentViewScale) * invertedProgress
+        let invertedProgress = 1.0 - progress.value
+        let minContentViewScale = (screenBounds.height - contentExpandedVerticalOffset + Constants.overlayVerticalPadding) / screenBounds.height
+        let scale = minContentViewScale + (Constants.maxContentViewScale - minContentViewScale) * invertedProgress
 
-        if isFinalState {
-            let keyPath = String(_sel: #selector(getter: CALayer.transform)) // TODO: Andrey Fedorov - Animations should take gesture speed into account (IOS-7364)
+        if isFinalState, let animationContext = progress.context {
+            let keyPath = String(_sel: #selector(getter: CALayer.transform))
             let animation = CABasicAnimation(keyPath: keyPath)
-            animation.duration = Constants.animationDuration
+            animation.duration = animationContext.duration
+            animation.timingFunction = animationContext.curve.toMediaTimingFunction()
             contentLayer.add(animation, forKey: #function)
         }
 
         let transform: CGAffineTransform = .scaleTransform(
             for: contentLayer.bounds.size,
             scaledBy: .init(x: scale, y: scale),
-            aroundAnchorPoint: .init(x: 0.0, y: 1.0), // Bottom left corner
-            translationCoefficient: Constants.contentViewTranslationCoefficient
+            aroundAnchorPoint: .init(x: 0.5, y: 1.0) // Bottom center
         )
 
         contentLayer.setAffineTransform(transform)
+
+        // Workaround: prevents the navigation bar in the `contentViewController` from being laid out incorrectly
+        // Without this workaround, the `frame.origin.y` property of the navigation bar may be set to zero in some cases,
+        // resulting in an incorrect layout of the status bar
+        if UIDevice.current.hasHomeScreenIndicator {
+            contentViewController.additionalSafeAreaInsets.top = contentLayer.frame.minY
+        } else {
+            // On notchless devices, some additional math is needed due to the existence of
+            // `Constants.notchlessDevicesAdditionalVerticalPadding` constant
+            let additionalVerticalPadding = Constants.notchlessDevicesAdditionalVerticalPadding
+            let minSafeAreaTopInset = UIApplication.safeAreaInsets.top
+            let maxSafeAreaTopInset = minSafeAreaTopInset + additionalVerticalPadding
+            let lowerBound = minSafeAreaTopInset / maxSafeAreaTopInset // Essentially 2/3
+            let upperBound = maxSafeAreaTopInset / maxSafeAreaTopInset // Essentially 1.0
+            let progress = progress.value.interpolatedProgress(inRange: lowerBound ... upperBound)
+            contentViewController.additionalSafeAreaInsets.top = contentLayer.frame.minY - progress * additionalVerticalPadding
+        }
+    }
+
+    private func updateCornerRadius() {
+        let contentLayer = contentViewController.view.layer
+
+        // On devices with a notch, the corner radius property isn't animated and always has a constant value
+        // (`overlayCornerRadius`) UNLESS it's completely invisible and hidden behind screen borders.
+        // In the latter case, the corner radius property is set to zero,
+        // which prevents screenshots from being spoiled and other similar issues
+        if UIDevice.current.hasHomeScreenIndicator {
+            if isCollapsedState {
+                // Wait for the collapsing animation to finish
+                CATransaction.setCompletionBlock {
+                    contentLayer.cornerRadius = .zero
+                }
+            } else {
+                contentLayer.cornerRadius = overlayCornerRadius
+            }
+        } else {
+            if isFinalState, let animationContext = progress.context {
+                let keyPath = String(_sel: #selector(getter: CALayer.cornerRadius))
+                let animation = CABasicAnimation(keyPath: keyPath)
+                animation.duration = animationContext.duration
+                animation.timingFunction = animationContext.curve.toMediaTimingFunction()
+                contentLayer.add(animation, forKey: #function)
+            }
+
+            contentLayer.cornerRadius = overlayCornerRadius * progress.value
+        }
     }
 
     private func updateBackgroundShadowViewAlpha() {
         let alpha = Constants.minBackgroundShadowViewAlpha
-            + (Constants.maxBackgroundShadowViewAlpha - Constants.minBackgroundShadowViewAlpha) * progress
+            + (Constants.maxBackgroundShadowViewAlpha - Constants.minBackgroundShadowViewAlpha) * progress.value
 
-        if isFinalState {
-            UIView.animate(withDuration: Constants.animationDuration) { // TODO: Andrey Fedorov - Animations should take gesture speed into account (IOS-7364)
-                self.backgroundShadowView?.alpha = alpha
+        if isFinalState, let animationContext = progress.context {
+            UIView.animate(with: animationContext) {
+                self.backgroundShadowView.alpha = alpha
             }
         } else {
-            backgroundShadowView?.alpha = alpha
+            backgroundShadowView.alpha = alpha
         }
     }
 
-    private func notifyStateObserversIfNeeded() {
+    private func notifyStateObserversIfNeeded(isCollapsedState: Bool, isExpandedState: Bool) {
         for stateObserver in stateObservers.values {
             if isCollapsedState {
-                stateObserver(.bottom)
+                stateObserver(.collapsed)
             } else if isExpandedState {
-                // TODO: Andrey Fedorov - Add support for `Trigger.tapGesture` (IOS-7364)
-                stateObserver(.top(trigger: .dragGesture))
+                let trigger: OverlayContentState.Trigger = didTap ? .tapGesture : .dragGesture
+                stateObserver(.expanded(trigger: trigger))
             } else {
                 // No-op
             }
         }
     }
 
+    private func notifyProgressObservers(progressValue: CGFloat) {
+        for progressObserver in progressObservers.values {
+            progressObserver(progressValue)
+        }
+    }
+
     private func reset() {
-        panGestureStartLocation = .zero
+        panGestureStartLocationInScreenCoordinateSpace = .zero
+        panGestureStartLocationInOverlayViewCoordinateSpace = .zero
         shouldIgnorePanGestureRecognizer = false
         scrollViewContentOffsetLocker = nil
     }
 
     // MARK: - Handlers
 
-    private func onProgressChange(oldValue: CGFloat, newValue: CGFloat) {
+    private func onProgressChange(oldValue: OverlayContentContainerProgress, newValue: OverlayContentContainerProgress) {
         guard oldValue != newValue else {
             return
         }
 
         updateContentScale()
+        updateCornerRadius()
         updateBackgroundShadowViewAlpha()
-        notifyStateObserversIfNeeded()
+        notifyStateObserversIfNeeded(isCollapsedState: isCollapsedState, isExpandedState: isExpandedState)
+        notifyProgressObservers(progressValue: newValue.value)
+
+        if didTap {
+            didTap = false
+        }
+    }
+
+    @objc
+    private func onTapGesture(_ gestureRecognizer: UITapGestureRecognizer) {
+        didTap = true
+        expand()
     }
 
     @objc
     private func onPanGesture(_ gestureRecognizer: UIPanGestureRecognizer) {
         switch gestureRecognizer.state {
+        case .began:
+            if didTap {
+                didTap = false
+            }
         case .changed:
             onPanGestureChanged(gestureRecognizer)
         case .ended:
             onPanGestureEnded(gestureRecognizer)
         case .cancelled, .failed:
             reset()
-        case .possible, .began, .recognized:
+        case .possible, .recognized:
             break
         @unknown default:
             assertionFailure("Unknown state received \(gestureRecognizer.state)")
@@ -316,7 +493,7 @@ final class OverlayContentContainerViewController: UIViewController {
         case _ where scrollViewContentOffsetLocker == nil:
             // There is no scroll view in the overlay view, use default logic
             break
-        case .up where isExpandedState:
+        case .up where isExpandedState && scrollViewContentOffsetLocker?.isLocked == false:
             // Normal scrolling to the bottom of the scroll view content, pan gesture recognizer should be ignored
             // for the entire duration of the gesture (until end)
             shouldIgnorePanGestureRecognizer = true
@@ -326,7 +503,7 @@ final class OverlayContentContainerViewController: UIViewController {
             // so we lock it and then use default logic
             scrollViewContentOffsetLocker?.lock()
         case .down where adjustedContentOffset.y <= Constants.minAdjustedContentOffsetToLockScrollView:
-            // Dismissing overlay using pan gesture, the scroll view content offset should remain intact,
+            // Collapsing overlay using pan gesture, the scroll view content offset should remain intact,
             // so we lock it and then use default logic
             scrollViewContentOffsetLocker?.lock()
         case .down where adjustedContentOffset != .zero && scrollViewContentOffsetLocker?.isLocked == false:
@@ -339,14 +516,25 @@ final class OverlayContentContainerViewController: UIViewController {
         }
 
         let translation = gestureRecognizer.translation(in: nil)
-        overlayViewTopAnchorConstraint?.constant += translation.y
+        let currentVerticalOffset = overlayViewTopAnchorConstraint?.constant ?? .zero
+        let clampedNewVerticalOffset = clamp(
+            currentVerticalOffset + translation.y,
+            min: contentExpandedVerticalOffset,
+            max: overlayCollapsedVerticalOffset
+        )
+        let verticalOffsetRubberbandingComponent = calculateVerticalOffsetRubberbandingComponent(gestureRecognizer)
+        let newVerticalOffset = max(clampedNewVerticalOffset + verticalOffsetRubberbandingComponent, .zero)
+
+        overlayViewTopAnchorConstraint?.constant = newVerticalOffset
         gestureRecognizer.setTranslation(.zero, in: nil)
 
-        updateProgress()
+        updateProgress(verticalOffset: newVerticalOffset, animationContext: nil)
+        gestureConflictResolver.onUIKitGestureStart()
     }
 
     func onPanGestureEnded(_ gestureRecognizer: UIPanGestureRecognizer) {
         defer {
+            gestureConflictResolver.onUIKitGestureEnd()
             reset()
         }
 
@@ -354,37 +542,149 @@ final class OverlayContentContainerViewController: UIViewController {
             return
         }
 
-        // TODO: Andrey Fedorov - Tweak predicted location calculation if needed (IOS-7364))
-        let translation = gestureRecognizer.predictedTranslation(in: nil, atDecelerationRate: .fast)
-        let overlayOrigin = overlayViewController?.view.frame.origin ?? .zero
-        let predictedOverlayOriginY = abs(overlayOrigin.y + translation.y)
-        let finalOffset = predictedOverlayOriginY > screenBounds.height / 2.0
-            ? overlayCollapsedVerticalOffset
-            : overlayExpandedVerticalOffset
+        // The 'raw' and 'true' velocity of a pan gesture appeared to be too fast for the smooth gesture-driven animation.
+        // Therefore, we reduce the velocity a bit by multiplying it by `panGestureVerticalVelocityMultiplier`,
+        // while keeping the gesture-driven look & feel for the animation
+        let velocity = gestureRecognizer.velocity(in: nil) * Constants.panGestureVerticalVelocityMultiplier
+        let verticalDirection = verticalDirection(for: gestureRecognizer)
+        let decelerationRate = calculateDecelerationRate(gestureVerticalDirection: verticalDirection)
+        let predictedEndLocation = gestureRecognizer.predictedEndLocation(in: nil, atDecelerationRate: decelerationRate)
+        let predictedOverlayViewFrameOrigin = predictedEndLocation - panGestureStartLocationInOverlayViewCoordinateSpace
+        let isCollapsing = predictedOverlayViewFrameOrigin.y > screenBounds.height / 2.0
 
-        overlayViewTopAnchorConstraint?.constant = finalOffset
-        UIView.animate(withDuration: Constants.animationDuration) { // TODO: Andrey Fedorov - Animations should take gesture speed into account (IOS-7364)
+        let (animationDuration, remainingDistance) = calculateAnimationDurationAndRemainingDistance(
+            isCollapsing: isCollapsing,
+            gestureVelocity: velocity,
+            gestureVerticalDirection: verticalDirection
+        )
+
+        var animationContext = makeGestureDrivenAnimationContext(
+            isCollapsing: isCollapsing,
+            gestureVelocity: velocity,
+            animationDuration: animationDuration,
+            remainingDistance: remainingDistance
+        )
+
+        let newVerticalOffset = isCollapsing ? overlayCollapsedVerticalOffset : contentExpandedVerticalOffset
+        overlayViewTopAnchorConstraint?.constant = newVerticalOffset
+
+        UIView.animate(
+            with: animationContext,
+            options: [.allowUserInteraction, .beginFromCurrentState]
+        ) {
             self.view.layoutIfNeeded()
         }
 
-        updateProgress()
+        // `auxiliary` animations (content scale, corner radius, etc) are baked by Core Animation and don't use
+        // spring animations. Since these are plain, non-spring animations, they don't oscillate and therefore
+        // have a slightly shorter duration than `animationContext.duration`.
+        // That difference in duration is provided by multiplying by `auxiliaryAnimationsDurationMultiplier`
+        animationContext.duration *= Constants.auxiliaryAnimationsDurationMultiplier
+
+        updateProgress(verticalOffset: newVerticalOffset, animationContext: animationContext)
     }
 
     // MARK: - Helpers
 
-    private func verticalDirection(for gestureRecognizer: UIPanGestureRecognizer) -> VerticalDirection? {
-        let location = gestureRecognizer.location(in: nil)
+    private func verticalDirection(for gestureRecognizer: UIPanGestureRecognizer) -> UIPanGestureRecognizer.VerticalDirection? {
+        let startLocation = panGestureStartLocationInScreenCoordinateSpace
+        return gestureRecognizer.verticalDirection(in: nil, relativeToGestureStartLocation: startLocation)
+    }
 
-        if panGestureStartLocation.y > location.y {
-            return .up
+    private func makeGestureDrivenAnimationContext(
+        isCollapsing: Bool,
+        gestureVelocity: CGPoint,
+        animationDuration: TimeInterval,
+        remainingDistance: CGFloat
+    ) -> OverlayContentContainerProgress.AnimationContext {
+        var animationContext = Constants.defaultAnimationContext
+        animationContext.duration = animationDuration
+
+        if remainingDistance > 0 {
+            // `UIView.animate(withDuration:delay:usingSpringWithDamping:initialSpringVelocity:options:animations:completion:)`
+            // uses quite weird velocity units - 'distances' per second, not points per second
+            animationContext.initialSpringVelocity = abs(gestureVelocity.y / remainingDistance)
         }
 
-        if panGestureStartLocation.y < location.y {
-            return .down
+        // Spring animation is only applied when the overlay view is in the expanded state;
+        // to prevent a fake footer view, placed on the main view, from becoming visible
+        if isCollapsing {
+            animationContext.disableSpringAnimation()
         }
 
-        // Edge case (is it even possible?), unable to determine
-        return nil
+        return animationContext
+    }
+
+    private func calculateDecelerationRate(
+        gestureVerticalDirection: UIPanGestureRecognizer.VerticalDirection?
+    ) -> UIScrollView.DecelerationRate {
+        // Makes the overlay view easier to expand and a bit harder to collapse
+        switch gestureVerticalDirection {
+        case .down:
+            return .fast
+        case .up,
+             .none:
+            return .normal
+        }
+    }
+
+    private func calculateAnimationDurationAndRemainingDistance(
+        isCollapsing: Bool,
+        gestureVelocity: CGPoint,
+        gestureVerticalDirection: UIPanGestureRecognizer.VerticalDirection?
+    ) -> (animationDuration: TimeInterval, remainingDistance: CGFloat) {
+        let gestureVelocityVerticalDirection: UIPanGestureRecognizer.VerticalDirection = gestureVelocity.y < .zero
+            ? .up
+            : .down
+
+        // Equals `true` when a user tries to collapse or expand the overlay view with a pan gesture
+        // but ultimately fails to do so (e.g., the velocity of the pan gesture is too low)
+        let isGestureFailed = (isCollapsing && gestureVerticalDirection == .up && gestureVelocityVerticalDirection == .up)
+            || (!isCollapsing && gestureVerticalDirection == .down && gestureVelocityVerticalDirection == .down)
+
+        let verticalOffset = overlayViewTopAnchorConstraint?.constant ?? .greatestFiniteMagnitude
+        let isOverScroll = verticalOffset < contentExpandedVerticalOffset
+        let overlayViewFrame = overlayViewController?.view.frame ?? .zero
+
+        let remainingDistance = isCollapsing
+            ? max(overlayCollapsedVerticalOffset - overlayViewFrame.minY, .zero)
+            : max(overlayViewFrame.minY - contentExpandedVerticalOffset, .zero)
+
+        if isGestureFailed || isOverScroll {
+            // We don't take gesture velocity into account if the gesture fails or if there is an over-scroll
+            return (Constants.failedGestureAnimationsDuration, remainingDistance)
+        }
+
+        let animationDuration = clamp(
+            remainingDistance / abs(gestureVelocity.y),
+            min: Constants.minAnimationsDuration,
+            max: Constants.maxAnimationsDuration
+        )
+
+        return (animationDuration, remainingDistance)
+    }
+
+    private func calculateVerticalOffsetRubberbandingComponent(_ gestureRecognizer: UIPanGestureRecognizer) -> CGFloat {
+        let gestureLocation = gestureRecognizer.location(in: nil)
+        let draggedOverlayViewFrameOrigin = gestureLocation - panGestureStartLocationInOverlayViewCoordinateSpace
+
+        // Rubberbanding is only applied when the overlay view is in the expanded state;
+        // to prevent a fake footer view, placed on the main view, from becoming visible
+        guard draggedOverlayViewFrameOrigin.y < contentExpandedVerticalOffset else {
+            return .zero
+        }
+
+        return (draggedOverlayViewFrameOrigin.y - contentExpandedVerticalOffset).withRubberbanding()
+    }
+
+    private static func calculateContentExpandedVerticalOffset(fromInput contentExpandedVerticalOffset: CGFloat) -> CGFloat {
+        var offset = contentExpandedVerticalOffset + Constants.overlayVerticalPadding
+
+        if !UIDevice.current.hasHomeScreenIndicator {
+            offset += Constants.notchlessDevicesAdditionalVerticalPadding
+        }
+
+        return offset
     }
 }
 
@@ -392,31 +692,83 @@ final class OverlayContentContainerViewController: UIViewController {
 
 extension OverlayContentContainerViewController: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        let location = touch.location(in: nil)
-        panGestureStartLocation = location
+        guard let overlayView = overlayViewController?.viewIfLoaded else {
+            return false
+        }
 
-        // The gesture is completely disabled if no overlay view controller is set
-        return overlayViewController?.view.frame.contains(location) ?? false
+        let locationInScreenCoordinateSpace = touch.location(in: nil)
+        panGestureStartLocationInScreenCoordinateSpace = locationInScreenCoordinateSpace
+        panGestureStartLocationInOverlayViewCoordinateSpace = touch.location(in: overlayView)
+
+        // The gesture is completely disabled if no overlay view controller is set or the overlay view isn't visible (hidden)
+        return overlayView.frame.contains(locationInScreenCoordinateSpace) && !overlayView.isHidden
+    }
+
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard let panGestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer else {
+            return true
+        }
+
+        let velocity = panGestureRecognizer.velocity(in: nil)
+
+        // Trigger pan-to-collapse logic only on a vertical pan gesture
+        return abs(velocity.y) > abs(velocity.x)
     }
 
     func gestureRecognizer(
         _ gestureRecognizer: UIGestureRecognizer,
         shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
     ) -> Bool {
-        if otherGestureRecognizer is UIPanGestureRecognizer, let scrollView = otherGestureRecognizer.view as? UIScrollView {
-            scrollViewContentOffsetLocker = .make(for: scrollView)
+        if let scrollView = otherGestureRecognizer.view as? UIScrollView {
+            if scrollViewContentOffsetLocker?.scrollView !== scrollView {
+                scrollViewContentOffsetLocker = .make(for: scrollView)
+            }
+        } else {
+            gestureConflictResolver.handleSwiftUIGestureIfNeeded(otherGestureRecognizer)
         }
 
         return true
     }
 }
 
-// MARK: - Auxiliary types
+// MARK: - TouchPassthroughViewDelegate protocol conformance
 
-private extension OverlayContentContainerViewController {
-    private enum VerticalDirection {
-        case up
-        case down
+extension OverlayContentContainerViewController: TouchPassthroughViewDelegate {
+    func touchPassthroughView(
+        _ passthroughView: TouchPassthroughView,
+        shouldPassthroughTouchAt point: CGPoint,
+        with event: UIEvent?
+    ) -> Bool {
+        guard
+            let overlayView = overlayViewController?.viewIfLoaded
+        else {
+            return true
+        }
+
+        let overlayViewFrame = overlayView.frame
+        let touchPoint = view.convert(point, from: passthroughView)
+
+        // Tap gesture recognizer should only be triggered if the touch location is within the collapsed overlay view
+        // and this view is visible (not hidden)
+        let shouldRecognizeTouch = overlayViewFrame.contains(touchPoint) && isCollapsedState && !overlayView.isHidden
+
+        return !shouldRecognizeTouch
+    }
+}
+
+// MARK: - OverlayContentContainerAppLifecycleHelperDelegate protocol conformance
+
+extension OverlayContentContainerViewController: OverlayContentContainerAppLifecycleHelperDelegate {
+    func currentProgress(for appLifecycleHelper: OverlayContentContainerAppLifecycleHelper) -> CGFloat {
+        return progress.value
+    }
+
+    func appLifecycleHelperDidTriggerExpand(_ appLifecycleHelper: OverlayContentContainerAppLifecycleHelper) {
+        expand()
+    }
+
+    func appLifecycleHelperDidTriggerCollapse(_ appLifecycleHelper: OverlayContentContainerAppLifecycleHelper) {
+        collapse()
     }
 }
 
@@ -424,13 +776,29 @@ private extension OverlayContentContainerViewController {
 
 private extension OverlayContentContainerViewController {
     enum Constants {
-        static let minContentViewScale = 0.95
+        /// Vertical padding between the top edge of the `content` (a view in the background)
+        /// and the top edge of the `overlay` (a view in front) in expanded state.
+        /// Value of 10.0pt is the same value that the native iOS sheet uses.
+        static let overlayVerticalPadding = 10.0
+        /// On notchless devices, the native iOS sheet adds additional vertical padding to the `safeAreaInsets.top`
+        /// to ensure that there is enough free space between the status bar and the top edge of the sheet.
+        /// Value of 10.0pt is the same value that the native iOS sheet uses.
+        static let notchlessDevicesAdditionalVerticalPadding = 10.0
         static let maxContentViewScale = 1.0
         static let minBackgroundShadowViewAlpha = 0.0
-        static let maxBackgroundShadowViewAlpha = 0.5
-        static let cornerRadius = 24.0
-        static let animationDuration = 0.3
-        static let contentViewTranslationCoefficient = 0.5
+        static let maxBackgroundShadowViewAlpha = 0.4
         static let minAdjustedContentOffsetToLockScrollView = 10.0
+        static let panGestureVerticalVelocityMultiplier = 2.0 / 3.0
+        static let auxiliaryAnimationsDurationMultiplier = 3.0 / 4.0
+        static let minAnimationsDuration = 0.25
+        static let maxAnimationsDuration = 0.5
+        static let failedGestureAnimationsDuration = 0.4
+
+        static let defaultAnimationContext = OverlayContentContainerProgress.AnimationContext(
+            duration: 0.5,
+            curve: .easeOut,
+            springDampingRatio: 0.85, // Natural damping for smooth bounce
+            initialSpringVelocity: 0.3 // Smooth entry velocity, not too fast
+        )
     }
 }

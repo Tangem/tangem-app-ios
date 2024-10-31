@@ -11,11 +11,12 @@ import SwiftUI
 struct MarketsTokensNetworkSelectorItemView: View {
     @ObservedObject var viewModel: MarketsTokensNetworkSelectorItemViewModel
 
+    let arrowWidth: Double
+
     @State private var size: CGSize = .zero
 
     /// How much arrow should extrude from the edge of the icon
     private let arrowExtrudeLength: CGFloat = 4
-    private let arrowWidth: Double = Constants.iconWidth
 
     var body: some View {
         HStack(spacing: 8) {
@@ -45,12 +46,12 @@ struct MarketsTokensNetworkSelectorItemView: View {
 
                 Spacer(minLength: 0)
 
-                Button {
-                    viewModel.onSelectedTapAction()
-                } label: {
-                    selectedCheckmark
-                }
-                .disabled(viewModel.isReadonly)
+                Toggle("", isOn: $viewModel.isSelected)
+                    .labelsHidden()
+                    .tint(Colors.Control.checked)
+                    .offset(x: 2)
+                    .scaleEffect(0.8)
+                    .disabled(viewModel.isReadonly)
             }
             .padding(.vertical, 16)
         }
@@ -80,7 +81,7 @@ struct MarketsTokensNetworkSelectorItemView: View {
 extension MarketsTokensNetworkSelectorItemView {
     enum Constants {
         static let iconWidth: Double = 22
-        static let checkedSelectedIconSize = CGSize(bothDimensions: 24)
+        static let checkedSelectedIconSize = CGSize(bothDimensions: 22)
     }
 }
 
@@ -90,7 +91,7 @@ struct MarketsTokensNetworkSelectorItemView_Previews: PreviewProvider {
             VStack(spacing: 0) {
                 ForEach(itemsList(count: 1, isSelected: .constant(Bool.random())), id: \.id) { viewModel in
                     StatefulPreviewWrapper(false) { _ in
-                        MarketsTokensNetworkSelectorItemView(viewModel: viewModel)
+                        MarketsTokensNetworkSelectorItemView(viewModel: viewModel, arrowWidth: 40)
                     }
                 }
 

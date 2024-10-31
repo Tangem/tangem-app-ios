@@ -72,7 +72,7 @@ struct PushNotificationsPermissionRequestView: View {
                 VStack(spacing: 8.0) { buttons }
             }
         }
-        .padding(.bottom, 14.0)
+        .padding(.bottom, 6.0)
         .padding(.horizontal, 16.0)
     }
 

@@ -40,7 +40,6 @@ extension CommonExpressModulesFactory: ExpressModulesFactory {
             initialWallet: initialWalletModel,
             userWalletModel: userWalletModel,
             feeFormatter: feeFormatter,
-            balanceConverter: balanceConverter,
             balanceFormatter: balanceFormatter,
             expressProviderFormatter: expressProviderFormatter,
             notificationManager: notificationManager,
@@ -78,13 +77,19 @@ extension CommonExpressModulesFactory: ExpressModulesFactory {
         selectedPolicy: ExpressApprovePolicy,
         coordinator: ExpressApproveRoutable
     ) -> ExpressApproveViewModel {
-        ExpressApproveViewModel(
+        let tokenItem = expressInteractor.getSender().tokenItem
+
+        return ExpressApproveViewModel(
+            settings: .init(
+                subtitle: Localization.givePermissionSwapSubtitle(providerName, tokenItem.currencySymbol),
+                feeFooterText: Localization.swapGivePermissionFeeFooter,
+                tokenItem: tokenItem,
+                feeTokenItem: expressInteractor.getSender().feeTokenItem,
+                selectedPolicy: selectedPolicy
+            ),
             feeFormatter: feeFormatter,
-            pendingTransactionRepository: pendingTransactionRepository,
             logger: logger,
-            expressInteractor: expressInteractor,
-            providerName: providerName,
-            selectedPolicy: selectedPolicy,
+            approveViewModelInput: expressInteractor,
             coordinator: coordinator
         )
     }
@@ -155,7 +160,7 @@ private extension CommonExpressModulesFactory {
     var providerFormatter: ExpressProviderFormatter { .init(balanceFormatter: balanceFormatter) }
     var walletModelsManager: WalletModelsManager { userWalletModel.walletModelsManager }
     var userWalletId: String { userWalletModel.userWalletId.stringValue }
-    var signer: TransactionSigner { userWalletModel.signer }
+    var signer: TangemSigner { userWalletModel.signer }
     var logger: Logger { AppLog.shared }
     var analyticsLogger: ExpressAnalyticsLogger { CommonExpressAnalyticsLogger() }
 
@@ -208,10 +213,8 @@ private extension CommonExpressModulesFactory {
         return interactor
     }
 
-    func makeAllowanceProvider() -> ExpressAllowanceProvider {
-        let provider = CommonExpressAllowanceProvider(logger: logger)
-        provider.setup(wallet: initialWalletModel)
-        return provider
+    func makeAllowanceProvider() -> UpdatableAllowanceProvider {
+        CommonAllowanceProvider(walletModel: initialWalletModel)
     }
 
     func makeExpressFeeProvider() -> ExpressFeeProvider {

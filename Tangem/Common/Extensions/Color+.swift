@@ -9,98 +9,6 @@
 import Foundation
 import SwiftUI
 
-extension Color {
-    // MARK: Primary
-
-    @nonobjc static var tangemGreen: Color {
-        return Color("tangem_green")
-    }
-
-    // MARK: Complimentary
-
-    @nonobjc static var tangemWarning: Color {
-        return Color("tangem_warning")
-    }
-
-    @nonobjc static var tangemBlue: Color {
-        return Color("tangem_blue")
-    }
-
-    @nonobjc static var tangemCritical: Color {
-        return Color(.tangemCritical)
-    }
-
-    // MARK: Gray Dark
-
-    @nonobjc static var tangemGrayDark1: Color {
-        return Color("tangem_gray_dark_1")
-    }
-
-    @nonobjc static var tangemGrayDark: Color {
-        return Color("tangem_gray_dark")
-    }
-
-    @nonobjc static var tangemGrayDark2: Color {
-        return Color("tangem_gray_dark2")
-    }
-
-    @nonobjc static var tangemGrayDark3: Color {
-        return Color("tangem_gray_dark3")
-    }
-
-    @nonobjc static var tangemGrayDark5: Color {
-        return Color("tangem_gray_dark5")
-    }
-
-    @nonobjc static var tangemGrayDark6: Color {
-        return Color("tangem_gray_dark6")
-    }
-
-    // MARK: Gray Light
-
-    @nonobjc static var tangemGrayLight4: Color {
-        return Color("tangem_gray_light4")
-    }
-
-    @nonobjc static var tangemGrayLight5: Color {
-        return Color("tangem_gray_light5")
-    }
-
-    @nonobjc static var tangemGrayLight7: Color {
-        return Color("tangem_gray_light7")
-    }
-
-    @nonobjc static var tangemSkeletonGray: Color {
-        return Color("tangem_skeleton_gray")
-    }
-
-    @nonobjc static var tangemSkeletonGray2: Color {
-        return Color("tangem_skeleton_gray2")
-    }
-
-    @nonobjc static var tangemSkeletonGray3: Color {
-        return Color("tangem_skeleton_gray3")
-    }
-
-    @nonobjc static var tangemHoverButton: Color {
-        return Color("tangem_btn_hover_bg")
-    }
-
-    // MARK: Background
-
-    @nonobjc static var tangemBgGray: Color {
-        return Color(.tangemBgGray)
-    }
-
-    @nonobjc static var tangemBgGray2: Color {
-        return Color(.tangemBgGray2)
-    }
-
-    @nonobjc static var tangemBg: Color {
-        return Color("tangem_bg")
-    }
-}
-
 extension UIColor {
     // DO NOT remove this
     // This is a UIColor from the new palette, used in UITextField's accessory view
@@ -108,6 +16,14 @@ extension UIColor {
     // 👇👇👇 ------------------------------------ 👇👇👇
     @nonobjc static var backgroundPrimary: UIColor {
         return UIColor(named: "BackgroundPrimary")!
+    }
+
+    @nonobjc static var backgroundSecondary: UIColor {
+        return UIColor(named: "BackgroundSecondary")!
+    }
+
+    @nonobjc static var backgroundPlain: UIColor {
+        return UIColor(named: "BackgroundPlain")!
     }
 
     @nonobjc static var inputAccessoryViewTintColor: UIColor {
@@ -134,17 +50,25 @@ extension UIColor {
         return UIColor(named: "IconInformative")!
     }
 
+    @nonobjc static var iconAccent: UIColor {
+        UIColor(named: "IconAccent")!
+    }
+
+    @nonobjc static var iconInactive: UIColor {
+        UIColor(named: "IconInactive")!
+    }
+
+    @nonobjc static var iconWarning: UIColor {
+        UIColor(named: "IconWarning")!
+    }
+
+    @nonobjc static var textTertiary: UIColor {
+        UIColor(named: "TextTertiary")!
+    }
+
     // ☝️☝️☝️ End of UIColors from the new palette ☝️☝️☝️
 
     // MARK: Background
-
-    @nonobjc static var tangemBgGray: UIColor {
-        return UIColor(named: "tangem_bg_gray")!
-    }
-
-    @nonobjc static var tangemBgGray2: UIColor {
-        return UIColor(named: "tangem_bg_gray2")!
-    }
 
     @nonobjc static var tangemBg: UIColor {
         return UIColor(named: "tangem_bg")!
@@ -164,14 +88,6 @@ extension UIColor {
 
     @nonobjc static var tangemGrayDark: UIColor {
         return UIColor(named: "tangem_gray_dark")!
-    }
-
-    @nonobjc static var tangemCritical: UIColor {
-        UIColor(named: "tangem_critical")!
-    }
-
-    @nonobjc static var iconAccent: UIColor {
-        UIColor(named: "IconAccent")!
     }
 }
 
@@ -199,4 +115,55 @@ public extension Color {
 
         return nil
     }
+}
+
+extension UIColor {
+    @available(iOS, deprecated: 18.0, message: "Replace with native 'Color.mix(with:by:in:)' if you are using this helper in SwiftUI only")
+    func mix(with otherColor: UIColor, by fraction: CGFloat) -> UIColor {
+        let clampedFraction = clamp(fraction, min: 0.0, max: 1.0)
+        let invertedFraction = 1.0 - clampedFraction
+
+        var components = (red: CGFloat(0.0), green: CGFloat(0.0), blue: CGFloat(0.0), alpha: CGFloat(0.0))
+        var otherColorComponents = components // No COW for tuples`, but we don't care anyway
+
+        getRed(
+            &components.red,
+            green: &components.green,
+            blue: &components.blue,
+            alpha: &components.alpha
+        )
+
+        otherColor.getRed(
+            &otherColorComponents.red,
+            green: &otherColorComponents.green,
+            blue: &otherColorComponents.blue,
+            alpha: &otherColorComponents.alpha
+        )
+
+        return UIColor(
+            red: components.red * invertedFraction + otherColorComponents.red * clampedFraction,
+            green: components.green * invertedFraction + otherColorComponents.green * clampedFraction,
+            blue: components.blue * invertedFraction + otherColorComponents.blue * clampedFraction,
+            alpha: components.alpha * invertedFraction + otherColorComponents.alpha * clampedFraction
+        )
+    }
+}
+
+extension UIColor {
+    var forcedLight: UIColor {
+        resolvedColor(with: .dummyLight)
+    }
+
+    var forcedDark: UIColor {
+        resolvedColor(with: .dummyDark)
+    }
+}
+
+// MARK: - Private implementation
+
+private extension UITraitCollection {
+    /// - Warning: Dummy, do not use as a full-fledged trait collection instance.
+    static let dummyLight = UITraitCollection(userInterfaceStyle: .light)
+    /// - Warning: Dummy, do not use as a full-fledged trait collection instance.
+    static let dummyDark = UITraitCollection(userInterfaceStyle: .dark)
 }

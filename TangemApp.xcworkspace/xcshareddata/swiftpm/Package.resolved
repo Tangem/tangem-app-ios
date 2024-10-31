@@ -1,5 +1,5 @@
 {
-  "originHash" : "46a03614bc1a09660a3964584730a491935d4ab1dc2c18fd76ce6a1367a0e73d",
+  "originHash" : "dd280b305b0856afed44da3a23d7aa227c3a100d5fab9ce792c1e01541801b56",
   "pins" : [
     {
       "identity" : "anyasyncsequence",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "9fee8443252bb25e191b0b3b03a006aabac44088",
         "version" : "1.0.2"
+      }
+    },
+    {
+      "identity" : "base32",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Jarema/Base32.git",
+      "state" : {
+        "revision" : "7f723a2e55f1c76e7c79263aebf89dbfcd58e77d",
+        "version" : "0.10.2"
       }
     },
     {
@@ -29,6 +38,24 @@
       }
     },
     {
+      "identity" : "dgcharts",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tangem/DGCharts",
+      "state" : {
+        "revision" : "a2c1aa43650995d5139ad9e3ad4fd9c93d41776d",
+        "version" : "5.1.0-tangem3"
+      }
+    },
+    {
+      "identity" : "float16",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SusanDoggie/Float16.git",
+      "state" : {
+        "revision" : "936ae66adccf1c91bcaeeb9c0cddde78a13695c3",
+        "version" : "1.1.1"
+      }
+    },
+    {
       "identity" : "grpc-swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/grpc-swift.git",
@@ -44,6 +71,42 @@
       "state" : {
         "revision" : "4363eee442377ba3bb4254330bb567bb75780ec1",
         "version" : "0.26.0-tangem3"
+      }
+    },
+    {
+      "identity" : "icpkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tangem/IcpKit.git",
+      "state" : {
+        "revision" : "48d906f7a3eca66dd4cbc239f21fd829dfc9decf",
+        "version" : "0.1.2-tangem4"
+      }
+    },
+    {
+      "identity" : "networkimage",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/gonzalezreal/NetworkImage",
+      "state" : {
+        "revision" : "7aff8d1b31148d32c5933d75557d42f6323ee3d1",
+        "version" : "6.0.0"
+      }
+    },
+    {
+      "identity" : "potentcodables",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/outfoxx/PotentCodables.git",
+      "state" : {
+        "revision" : "660e33e84e00b9bf07bd41dd99ff800600e435e7",
+        "version" : "3.5.0"
+      }
+    },
+    {
+      "identity" : "regex",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sharplet/Regex.git",
+      "state" : {
+        "revision" : "76c2b73d4281d77fc3118391877efd1bf972f515",
+        "version" : "2.1.1"
       }
     },
     {
@@ -110,6 +173,15 @@
       }
     },
     {
+      "identity" : "swift-markdown-ui",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/gonzalezreal/swift-markdown-ui",
+      "state" : {
+        "revision" : "55441810c0f678c78ed7e2ebd46dde89228e02fc",
+        "version" : "2.4.0"
+      }
+    },
+    {
       "identity" : "swift-nio",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
@@ -164,6 +236,15 @@
       }
     },
     {
+      "identity" : "swift-numerics",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-numerics",
+      "state" : {
+        "revision" : "0a5bc04095a675662cf24757cc0640aa2204253b",
+        "version" : "1.0.2"
+      }
+    },
+    {
       "identity" : "swift-protobuf-binaries",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/swift-protobuf-binaries.git",
@@ -177,8 +258,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-system.git",
       "state" : {
-        "revision" : "025bcb1165deab2e20d4eaba79967ce73013f496",
-        "version" : "1.2.1"
+        "revision" : "d2ba781702a1d8285419c15ee62fd734a9437ff5",
+        "version" : "1.3.2"
       }
     },
     {
@@ -186,8 +267,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/ton-swift.git",
       "state" : {
-        "revision" : "7030234ff239796c5f71f0e65eb4e9ffec5a83cb",
-        "version" : "1.0.10-tangem1"
+        "revision" : "723cfeb8da0ea024158b4274fced8a1891bff88e",
+        "version" : "1.0.10-tangem3"
       }
     },
     {
@@ -204,8 +285,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/wallet-core-binaries-ios.git",
       "state" : {
-        "revision" : "b9906e7e5c56706f0fe1ad3545dbf02dcf195b34",
-        "version" : "4.0.21-tangem6"
+        "revision" : "67be5876186284e85a5f5f8757de209ba53d5729",
+        "version" : "4.0.46-tangem1"
       }
     },
     {

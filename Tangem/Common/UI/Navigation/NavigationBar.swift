@@ -11,7 +11,7 @@ import SwiftUI
 struct ArrowBack: View {
     let action: () -> Void
     let height: CGFloat
-    var color: Color = .tangemGrayDark6
+    var color: Color = Colors.Old.tangemGrayDark6
 
     var body: some View {
         Button(action: action, label: {
@@ -25,7 +25,7 @@ struct ArrowBack: View {
 }
 
 private enum DefaultNavigationBarSettings {
-    static let color = Color.tangemGrayDark6
+    static let color = Colors.Old.tangemGrayDark6
     static let padding = 16.0
 }
 
@@ -58,7 +58,7 @@ struct SupportButton: View {
     let height: CGFloat
     let isVisible: Bool
     let isEnabled: Bool
-    var color: Color = .tangemGrayDark6
+    var color: Color = Colors.Old.tangemGrayDark6
     var hPadding: CGFloat = 16
     let action: () -> Void
 
@@ -77,33 +77,40 @@ struct SupportButton: View {
 
 struct NavigationBar<LeftButtons: View, RightButtons: View>: View {
     struct Settings {
-        let titleFont: Font
-        let titleColor: Color
+        struct Title {
+            var font: Font = .system(size: 17, weight: .medium)
+            var color: Color = Colors.Old.tangemGrayDark6
+            var lineLimit: Int? = nil // Default system value
+            var minimumScaleFactor: CGFloat = 1 // Default system value
+        }
+
+        let title: Title
         let backgroundColor: Color
         let horizontalPadding: CGFloat
         let height: CGFloat
+        let alignment: Alignment
 
         init(
-            titleFont: Font = .system(size: 17, weight: .medium),
-            titleColor: Color = .tangemGrayDark6,
-            backgroundColor: Color = .tangemBgGray,
+            title: Title = .init(),
+            backgroundColor: Color = Colors.Old.tangemBgGray,
             horizontalPadding: CGFloat = 0,
-            height: CGFloat = 44
+            height: CGFloat = 44,
+            alignment: Alignment = .center
         ) {
-            self.titleFont = titleFont
-            self.titleColor = titleColor
+            self.title = title
             self.backgroundColor = backgroundColor
             self.horizontalPadding = horizontalPadding
             self.height = height
+            self.alignment = alignment
         }
-
-        //		static var `default`: Settings { .init() }
     }
 
     private let title: String
     private let settings: Settings
     private let leftButtons: LeftButtons
     private let rightButtons: RightButtons
+
+    @State private var titleHorizontalPadding: CGFloat = 0.0
 
     init(
         title: String,
@@ -119,17 +126,40 @@ struct NavigationBar<LeftButtons: View, RightButtons: View>: View {
 
     var body: some View {
         ZStack {
-            HStack {
+            HStack(spacing: 0.0) {
                 leftButtons
+                    .readGeometry(\.size.width) { newValue in
+                        if newValue > titleHorizontalPadding {
+                            titleHorizontalPadding = newValue
+                        }
+                    }
+
                 Spacer()
+
                 rightButtons
+                    .readGeometry(\.size.width) { newValue in
+                        if newValue > titleHorizontalPadding {
+                            titleHorizontalPadding = newValue
+                        }
+                    }
             }
-            Text(title)
-                .font(settings.titleFont)
-                .foregroundColor(settings.titleColor)
+
+            HStack(spacing: 0.0) {
+                FixedSpacer.horizontal(titleHorizontalPadding)
+                    .layoutPriority(1)
+
+                Text(title)
+                    .style(settings.title.font, color: settings.title.color)
+                    .lineLimit(settings.title.lineLimit)
+                    .multilineTextAlignment(.center)
+                    .minimumScaleFactor(settings.title.minimumScaleFactor)
+
+                FixedSpacer.horizontal(titleHorizontalPadding)
+                    .layoutPriority(1)
+            }
         }
         .padding(.horizontal, settings.horizontalPadding)
-        .frame(height: settings.height)
+        .frame(height: settings.height, alignment: settings.alignment)
         .background(settings.backgroundColor.edgesIgnoringSafeArea(.all))
     }
 }

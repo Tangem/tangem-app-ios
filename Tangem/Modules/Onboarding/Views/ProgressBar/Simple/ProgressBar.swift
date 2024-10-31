@@ -34,7 +34,7 @@ struct ProgressBarPreviewView: View {
 
     var body: some View {
         VStack {
-            ProgressBar(height: 5, currentProgress: progress, backgroundColor: .tangemGrayDark.opacity(0.12), progressColor: .blue)
+            ProgressBar(height: 5, currentProgress: progress, backgroundColor: Colors.Old.tangemGrayDark.opacity(0.12), progressColor: .blue)
                 .padding()
             Spacer()
                 .frame(height: 50)

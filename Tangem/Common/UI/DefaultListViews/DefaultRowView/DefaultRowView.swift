@@ -19,10 +19,8 @@ struct DefaultRowView: View {
     private var isTappable: Bool { viewModel.action != nil }
 
     var body: some View {
-        if isTappable {
-            Button {
-                viewModel.action?()
-            } label: {
+        if let action = viewModel.action {
+            Button(action: action) {
                 content
             }
             .buttonStyle(PlainButtonStyle())
@@ -52,10 +50,11 @@ struct DefaultRowView: View {
         HStack(spacing: 0) {
             Text(viewModel.title)
                 .style(appearance.font, color: appearance.textColor)
+
             if let secondaryAction = viewModel.secondaryAction {
                 Button(action: secondaryAction) {
                     Assets.infoCircle16.image
-                        .padding(4)
+                        .padding(.horizontal, 4)
                         .foregroundColor(Colors.Icon.informative)
                 }
             }
@@ -69,9 +68,14 @@ struct DefaultRowView: View {
             EmptyView()
         case .loader:
             ActivityIndicatorView(style: .medium, color: .gray)
-        case .text(let string):
-            Text(string)
-                .style(appearance.font, color: appearance.detailsColor)
+        case .text(let string, let sensitive):
+            if sensitive {
+                SensitiveText(string)
+                    .style(appearance.font, color: appearance.detailsColor)
+            } else {
+                Text(string)
+                    .style(appearance.font, color: appearance.detailsColor)
+            }
         case .loadable(let state):
             LoadableTextView(
                 state: state,
@@ -103,7 +107,7 @@ extension DefaultRowView {
 
         init(
             isChevronVisible: Bool = true,
-            font: Font = Fonts.Regular.body,
+            font: Font = Fonts.Regular.callout,
             textColor: Color = Colors.Text.primary1,
             detailsColor: Color = Colors.Text.tertiary
         ) {

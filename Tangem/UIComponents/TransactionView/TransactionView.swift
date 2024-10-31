@@ -20,30 +20,32 @@ struct TransactionView: View {
                 .background(viewModel.iconBackgroundColor)
                 .cornerRadiusContinuous(20)
 
-            VStack(alignment: .leading, spacing: 4) {
-                HStack(spacing: 8) {
-                    Text(viewModel.name)
-                        .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+            HStack(spacing: 8) {
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(spacing: 8) {
+                        Text(viewModel.name)
+                            .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
 
-                    if viewModel.inProgress {
-                        Assets.pendingTxIndicator.image
+                        if viewModel.inProgress {
+                            Assets.pendingTxIndicator.image
+                        }
                     }
 
-                    Spacer()
+                    if let localizeDestination = viewModel.localizeDestination {
+                        Text(localizeDestination)
+                            .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                    }
+                }
 
+                Spacer()
+
+                VStack(alignment: .trailing, spacing: 4) {
                     if let amount = viewModel.formattedAmount {
                         SensitiveText(amount)
                             .style(Fonts.Regular.subheadline, color: viewModel.amountColor)
                     }
-                }
-
-                HStack(spacing: 6) {
-                    Text(viewModel.localizeDestination)
-                        .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-                        .lineLimit(1)
-                        .truncationMode(.middle)
-
-                    Spacer()
 
                     Text(viewModel.subtitleText)
                         .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)

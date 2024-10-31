@@ -19,12 +19,12 @@ struct WalletSelectorView: View {
                     WalletSelectorItemView(viewModel: itemViewModel)
                 }
             }
-            .background(Colors.Background.action)
-            .cornerRadiusContinuous(14)
-            .padding(16)
+            .defaultRoundedBackground(with: Colors.Background.action, verticalPadding: .zero)
 
             Spacer()
         }
+        .padding(.vertical, 12)
+        .padding(.horizontal, 14)
         .background(Colors.Background.tertiary.ignoresSafeArea())
         .navigationBarTitle(Text(Localization.manageTokensWalletSelectorTitle), displayMode: .inline)
     }
@@ -35,7 +35,7 @@ struct WalletSelectorView_Previews: PreviewProvider {
         private var _selectedUserWalletModel: CurrentValueSubject<UserWalletModel?, Never> = .init(nil)
 
         var itemViewModels: [WalletSelectorItemViewModel] = []
-        var selectedUserWalletModelPublisher: AnyPublisher<UserWalletId?, Never> {
+        var selectedUserWalletIdPublisher: AnyPublisher<UserWalletId?, Never> {
             _selectedUserWalletModel.map { $0?.userWalletId }.eraseToAnyPublisher()
         }
     }

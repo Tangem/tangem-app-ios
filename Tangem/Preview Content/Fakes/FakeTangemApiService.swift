@@ -20,10 +20,15 @@ class FakeTangemApiService: TangemApiService {
     func loadCoins(requestModel: CoinsList.Request) -> AnyPublisher<[CoinModel], Error> {
         let provider = FakeCoinListProvider()
         do {
-            return .justWithError(output: try provider.parseCoinResponse())
+            return .justWithError(output: try provider.parseCoinModels())
         } catch {
             return .anyFail(error: error)
         }
+    }
+
+    func loadCoins(requestModel: CoinsList.Request) async throws -> CoinsList.Response {
+        let provider = FakeCoinListProvider()
+        return try provider.parseCoinResponse()
     }
 
     func loadQuotes(requestModel: QuotesDTO.Request) -> AnyPublisher<[Quote], Error> {
@@ -99,37 +104,39 @@ class FakeTangemApiService: TangemApiService {
     func initialize() {}
 
     func loadCoinsList(requestModel: MarketsDTO.General.Request) async throws -> MarketsDTO.General.Response {
-        let provider = FakeMarketListProvider()
-        return try provider.parseCoinResponse()
+        throw "Not implemented"
     }
 
-    func loadCoinsHistoryPreview(requestModel: MarketsDTO.ChartsHistory.Request) async throws -> [String: MarketsChartsHistoryItemModel] {
-        let provider = FakeMarketListProvider()
-        return try provider.parseHistoryPreviewResponse()
+    func loadCoinsHistoryChartPreview(
+        requestModel: MarketsDTO.ChartsHistory.PreviewRequest
+    ) async throws -> MarketsDTO.ChartsHistory.PreviewResponse {
+        throw "Not implemented"
     }
 
     func loadTokenMarketsDetails(requestModel: MarketsDTO.Coins.Request) async throws -> MarketsDTO.Coins.Response {
         throw "Not implemented"
     }
+
+    func loadHistoryChart(
+        requestModel: MarketsDTO.ChartsHistory.HistoryRequest
+    ) async throws -> MarketsDTO.ChartsHistory.HistoryResponse {
+        throw "Not implemented"
+    }
+
+    func loadTokenExchangesListDetails(requestModel: MarketsDTO.ExchangesList.Request) async throws -> MarketsDTO.ExchangesList.Response {
+        throw "Not implemented"
+    }
 }
 
 private struct FakeCoinListProvider {
-    func parseCoinResponse() throws -> [CoinModel] {
+    func parseCoinModels() throws -> [CoinModel] {
         let response = try JsonUtils.readBundleFile(with: "coinsResponse", type: CoinsList.Response.self)
         let mapper = CoinsResponseMapper(supportedBlockchains: Set(Blockchain.allMainnetCases))
         let coinModels = mapper.mapToCoinModels(response)
         return coinModels
     }
-}
 
-// MARK: - Markets Implementation
-
-private struct FakeMarketListProvider {
-    func parseCoinResponse() throws -> MarketsDTO.General.Response {
-        throw "Not implemented"
-    }
-
-    func parseHistoryPreviewResponse() throws -> [String: MarketsChartsHistoryItemModel] {
-        throw "Not implemented"
+    func parseCoinResponse() throws -> CoinsList.Response {
+        try JsonUtils.readBundleFile(with: "coinsResponse", type: CoinsList.Response.self)
     }
 }

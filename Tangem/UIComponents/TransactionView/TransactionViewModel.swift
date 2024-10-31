@@ -24,14 +24,14 @@ struct TransactionViewModel: Hashable, Identifiable {
 
     var formattedAmount: String? {
         switch transactionType {
-        case .approve:
+        case .approve, .vote, .withdraw:
             return nil
-        case .transfer, .swap, .operation, .unknownOperation, .stake:
+        case .transfer, .swap, .operation, .unknownOperation, .stake, .unstake, .claimRewards:
             return amount
         }
     }
 
-    var localizeDestination: String {
+    var localizeDestination: String? {
         if status == .failed {
             return Localization.commonTransactionFailed
         }
@@ -58,17 +58,23 @@ struct TransactionViewModel: Hashable, Identifiable {
         // Temp solution for Visa
         case .custom(let message):
             return message
+        case .staking(let validator):
+            return validator.flatMap { Localization.stakingValidator + ": " + $0 }
         }
     }
 
     var name: String {
         switch transactionType {
-        case .transfer: return Localization.commonTransfer
-        case .swap: return Localization.commonSwap
-        case .approve: return Localization.commonApproval
-        case .unknownOperation: return Localization.transactionHistoryOperation
-        case .operation(name: let name): return name
-        case .stake: return Localization.commonStake
+        case .transfer: Localization.commonTransfer
+        case .swap: Localization.commonSwap
+        case .approve: Localization.commonApproval
+        case .unknownOperation: Localization.transactionHistoryOperation
+        case .operation(name: let name): name
+        case .stake: Localization.commonStake
+        case .unstake: Localization.commonUnstake
+        case .vote: Localization.stakingVote
+        case .withdraw: Localization.stakingWithdraw
+        case .claimRewards: Localization.commonClaimRewards
         }
     }
 
@@ -80,8 +86,14 @@ struct TransactionViewModel: Hashable, Identifiable {
         switch transactionType {
         case .approve:
             return Assets.approve.image
-        case .transfer, .swap, .operation, .unknownOperation, .stake:
+        case .transfer, .swap, .operation, .unknownOperation:
             return isOutgoing ? Assets.arrowUpMini.image : Assets.arrowDownMini.image
+        case .stake, .vote:
+            return Assets.TokenItemContextMenu.menuStaking.image
+        case .unstake, .withdraw:
+            return Assets.unstakedIcon.image
+        case .claimRewards:
+            return Assets.dollarMini.image
         }
     }
 
@@ -155,6 +167,7 @@ extension TransactionViewModel {
         case multiple(_ addresses: [String])
         // Temp solution for Visa
         case custom(message: String)
+        case staking(validator: String?)
     }
 
     enum TransactionType: Hashable {
@@ -162,6 +175,10 @@ extension TransactionViewModel {
         case swap
         case stake
         case approve
+        case unstake
+        case vote
+        case withdraw
+        case claimRewards
         case unknownOperation
         case operation(name: String)
     }

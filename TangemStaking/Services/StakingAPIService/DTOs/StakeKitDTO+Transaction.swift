@@ -37,7 +37,7 @@ extension StakeKitDTO {
 
         struct Response: Decodable {
             let id: String
-            let network: NetworkType
+            let network: StakeKitNetworkType
             let status: Status
             let type: TransactionType
             let hash: String?
@@ -62,19 +62,48 @@ extension StakeKitDTO {
                 case confirmed = "CONFIRMED"
                 case failed = "FAILED"
                 case skipped = "SKIPPED"
-                case unknown = "UNKNOWN"
             }
 
             enum TransactionType: String, Decodable {
+                case swap = "SWAP"
+                case deposit = "DEPOSIT"
+                case approval = "APPROVAL"
                 case stake = "STAKE"
-                case enter = "ENTER"
-                case reinvest = "REINVEST"
-                case exit = "EXIT"
-                case claim = "CLAIM"
+                case claimUnstaked = "CLAIM_UNSTAKED"
                 case claimRewards = "CLAIM_REWARDS"
-                case send = "SEND"
-                case approve = "APPROVE"
-                case unknown = "UNKNOWN"
+                case restakeRewards = "RESTAKE_REWARDS"
+                case unstake = "UNSTAKE"
+                case split = "SPLIT"
+                case merge = "MERGE"
+                case lock = "LOCK"
+                case unlock = "UNLOCK"
+                case supply = "SUPPLY"
+                case bridge = "BRIDGE"
+                case vote = "VOTE"
+                case revoke = "REVOKE"
+                case restake = "RESTAKE"
+                case rebond = "REBOND"
+                case withdraw = "WITHDRAW"
+                case createAccount = "CREATE_ACCOUNT"
+                case reveal = "REVEAL"
+                case migrate = "MIGRATE"
+                case utxoPToCImport = "UTXO_P_TO_C_IMPORT"
+                case utxoCToPImport = "UTXO_C_TO_P_IMPORT"
+                case unfreezeLegacy = "UNFREEZE_LEGACY"
+                case unfreezeLegacyBandwidth = "UNFREEZE_LEGACY_BANDWIDTH"
+                case unfreezeLegacyEnergy = "UNFREEZE_LEGACY_ENERGY"
+                case unfreezeBandwidth = "UNFREEZE_BANDWIDTH"
+                case unfreezeEnergy = "UNFREEZE_ENERGY"
+                case freezeBandwidth = "FREEZE_BANDWIDTH"
+                case freezeEnergy = "FREEZE_ENERGY"
+                case undelegateBandwidth = "UNDELEGATE_BANDWIDTH"
+                case undelegateEnergy = "UNDELEGATE_ENERGY"
+                case p2pNodeRequest = "P2P_NODE_REQUEST"
+                case luganodesProvision = "LUGANODES_PROVISION"
+                case luganodesExitRequest = "LUGANODES_EXIT_REQUEST"
+                case infstonesProvision = "INFSTONES_PROVISION"
+                case infstonesExitRequest = "INFSTONES_EXIT_REQUEST"
+                case infstonesClaimRequest = "INFSTONES_CLAIM_REQUEST"
             }
 
             struct GasEstimate: Decodable {
@@ -83,5 +112,11 @@ extension StakeKitDTO {
                 let token: Token?
             }
         }
+    }
+}
+
+extension StakeKitDTO.Transaction {
+    struct TronTransaction: Decodable {
+        let rawDataHex: String
     }
 }

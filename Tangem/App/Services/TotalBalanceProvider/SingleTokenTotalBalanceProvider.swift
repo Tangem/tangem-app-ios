@@ -40,7 +40,8 @@ class SingleTokenTotalBalanceProvider {
                         .loaded(.init(
                             balance: nil,
                             currencyCode: currencySymbol,
-                            hasError: false
+                            hasError: false,
+                            allTokensBalancesIncluded: true
                         ))
                     )
                 case .idle, .noAccount:
@@ -48,7 +49,8 @@ class SingleTokenTotalBalanceProvider {
                         .loaded(.init(
                             balance: balanceProvider.isFiat ? walletModel.fiatValue : walletModel.balanceValue,
                             currencyCode: currencySymbol,
-                            hasError: false
+                            hasError: false,
+                            allTokensBalancesIncluded: true
                         ))
                     )
                 }

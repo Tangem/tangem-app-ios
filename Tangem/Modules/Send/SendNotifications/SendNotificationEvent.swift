@@ -15,6 +15,7 @@ enum SendNotificationEvent {
     case feeWillBeSubtractFromSendingAmount(cryptoAmountFormatted: String, fiatAmountFormatted: String)
     case customFeeTooHigh(orderOfMagnitude: Int)
     case customFeeTooLow
+    case accountNotActivated(assetName: String)
 
     // Generic notifications is received from BSDK
     case withdrawalNotificationEvent(WithdrawalNotificationEvent)
@@ -30,6 +31,7 @@ extension SendNotificationEvent: NotificationEvent {
         case .customFeeTooLow: "customFeeTooLow".hashValue
         case .withdrawalNotificationEvent(let withdrawalNotificationEvent): withdrawalNotificationEvent.id
         case .validationErrorEvent(let validationErrorEvent): validationErrorEvent.id
+        case .accountNotActivated: "accountNotActivated".hashValue
         }
     }
 
@@ -47,6 +49,8 @@ extension SendNotificationEvent: NotificationEvent {
             return event.title
         case .validationErrorEvent(let event):
             return event.title
+        case .accountNotActivated:
+            return .string(Localization.sendFeeUnreachableErrorTitle)
         }
     }
 
@@ -64,6 +68,8 @@ extension SendNotificationEvent: NotificationEvent {
             return event.description
         case .validationErrorEvent(let event):
             return event.description
+        case .accountNotActivated(let assetName):
+            return Localization.sendTronAccountActivationError(assetName)
         }
     }
 
@@ -80,6 +86,8 @@ extension SendNotificationEvent: NotificationEvent {
             return event.colorScheme
         case .validationErrorEvent(let event):
             return event.colorScheme
+        case .accountNotActivated:
+            return .action
         }
     }
 
@@ -94,6 +102,8 @@ extension SendNotificationEvent: NotificationEvent {
             return event.icon
         case .validationErrorEvent(let event):
             return event.icon
+        case .accountNotActivated:
+            return .init(iconType: .image(Assets.redCircleWarning.image))
         }
     }
 
@@ -108,6 +118,8 @@ extension SendNotificationEvent: NotificationEvent {
             return event.severity
         case .validationErrorEvent(let event):
             return event.severity
+        case .accountNotActivated:
+            return .critical
         }
     }
 
@@ -134,18 +146,19 @@ extension SendNotificationEvent: NotificationEvent {
 }
 
 extension SendNotificationEvent {
-    var buttonActionType: NotificationButtonActionType? {
+    var buttonAction: NotificationButtonAction? {
         switch self {
         case .networkFeeUnreachable:
-            return .refreshFee
+            return .init(.refreshFee)
         case .feeWillBeSubtractFromSendingAmount,
              .customFeeTooHigh,
-             .customFeeTooLow:
+             .customFeeTooLow,
+             .accountNotActivated:
             return nil
         case .withdrawalNotificationEvent(let event):
-            return event.buttonActionType
+            return event.buttonAction
         case .validationErrorEvent(let event):
-            return event.buttonActionType
+            return event.buttonAction
         }
     }
 }

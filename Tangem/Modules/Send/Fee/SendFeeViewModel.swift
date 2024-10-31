@@ -16,18 +16,17 @@ class SendFeeViewModel: ObservableObject, Identifiable {
     @Published private(set) var feeRowViewModels: [FeeRowViewModel] = []
     @Published private(set) var customFeeModels: [SendCustomFeeInputFieldModel] = []
 
-    @Published private(set) var deselectedFeeViewsVisible: Bool = false
-    @Published var animatingAuxiliaryViewsOnAppear: Bool = false
+    @Published private(set) var auxiliaryViewsVisible: Bool = true
 
     @Published private(set) var networkFeeUnreachableNotificationViewInput: NotificationViewInput?
 
     var feeSelectorFooterText: String {
-        Localization.commonFeeSelectorFooter("[\(Localization.commonReadMore)](\(feeExplanationUrl.absoluteString))")
+        Localization.commonFeeSelectorFooter(
+            "[\(Localization.commonReadMore)](\(feeExplanationUrl.absoluteString))"
+        )
     }
 
-    var didProperlyDisappear = true
-
-    private let tokenItem: TokenItem
+    private let feeTokenItem: TokenItem
     private let interactor: SendFeeInteractor
     private let notificationManager: NotificationManager
 
@@ -50,7 +49,7 @@ class SendFeeViewModel: ObservableObject, Identifiable {
         notificationManager: NotificationManager,
         router: SendFeeRoutable
     ) {
-        tokenItem = settings.tokenItem
+        feeTokenItem = settings.feeTokenItem
 
         self.interactor = interactor
         self.notificationManager = notificationManager
@@ -60,22 +59,7 @@ class SendFeeViewModel: ObservableObject, Identifiable {
     }
 
     func onAppear() {
-        let deselectedFeeViewAppearanceDelay = SendView.Constants.animationDuration / 3
-        DispatchQueue.main.asyncAfter(deadline: .now() + deselectedFeeViewAppearanceDelay) {
-            withAnimation(SendView.Constants.defaultAnimation) {
-                self.deselectedFeeViewsVisible = true
-            }
-        }
-
-        if animatingAuxiliaryViewsOnAppear {
-            Analytics.log(.sendScreenReopened, params: [.source: .fee])
-        } else {
-            Analytics.log(.sendFeeScreenOpened)
-        }
-    }
-
-    func onDisappear() {
-        deselectedFeeViewsVisible = false
+        auxiliaryViewsVisible = true
     }
 
     func openFeeExplanation() {
@@ -145,14 +129,16 @@ class SendFeeViewModel: ObservableObject, Identifiable {
 
         return FeeRowViewModel(
             option: fee.option,
-            formattedFeeComponents: feeComponents,
-            isSelected: .init(root: self, default: false, get: { root in
-                root.selectedFeeOption == fee.option
-            }, set: { root, newValue in
-                if newValue {
-                    root.userDidSelected(fee: fee)
-                }
-            })
+            components: feeComponents,
+            style: .selectable(
+                isSelected: .init(root: self, default: false, get: { root in
+                    root.selectedFeeOption == fee.option
+                }, set: { root, newValue in
+                    if newValue {
+                        root.userDidSelected(fee: fee)
+                    }
+                })
+            )
         )
     }
 
@@ -161,7 +147,7 @@ class SendFeeViewModel: ObservableObject, Identifiable {
         case .loading:
             return .loading
         case .loaded(let value):
-            let feeComponents = feeFormatter.formattedFeeComponents(fee: value.amount.value, tokenItem: tokenItem)
+            let feeComponents = feeFormatter.formattedFeeComponents(fee: value.amount.value, tokenItem: feeTokenItem)
             return .loaded(feeComponents)
         case .failedToLoad(let error):
             return .failedToLoad(error: error)
@@ -178,10 +164,24 @@ class SendFeeViewModel: ObservableObject, Identifiable {
     }
 }
 
-extension SendFeeViewModel: AuxiliaryViewAnimatable {}
+// MARK: - SendStepViewAnimatable
+
+extension SendFeeViewModel: SendStepViewAnimatable {
+    func viewDidChangeVisibilityState(_ state: SendStepVisibilityState) {
+        switch state {
+        case .appearing(.summary(_)):
+            // Will be shown with animation
+            auxiliaryViewsVisible = false
+        case .disappearing(.summary(_)):
+            auxiliaryViewsVisible = false
+        default:
+            break
+        }
+    }
+}
 
 extension SendFeeViewModel {
     struct Settings {
-        let tokenItem: TokenItem
+        let feeTokenItem: TokenItem
     }
 }

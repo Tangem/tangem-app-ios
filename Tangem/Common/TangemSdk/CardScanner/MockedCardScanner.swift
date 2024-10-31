@@ -26,6 +26,13 @@ class MockedCardScanner {
             preferredStyle: .actionSheet
         )
 
+        let action = UIAlertAction(
+            title: "Scan",
+            style: .default,
+            handler: { [weak self] _ in self?.scan(handler) }
+        )
+        vc.addAction(action)
+
         for mock in CardMock.allCases {
             let action = UIAlertAction(
                 title: mock.rawValue,
@@ -41,13 +48,6 @@ class MockedCardScanner {
             handler: { [weak self] _ in self?.promptJSON(handler) }
         )
         vc.addAction(jsonOption)
-
-        let action = UIAlertAction(
-            title: "Scan",
-            style: .default,
-            handler: { [weak self] _ in self?.scan(handler) }
-        )
-        vc.addAction(action)
 
         vc.addAction(
             UIAlertAction(

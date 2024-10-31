@@ -21,10 +21,8 @@ struct MarketsSkeletonItemView: View {
 
             Spacer()
 
-            VStack {
-                HStack(spacing: 10) {
-                    tokenPriceView
-
+            VStack(alignment: .trailing) {
+                HStack(alignment: .center, spacing: .zero) {
                     priceHistoryView
                 }
             }
@@ -43,14 +41,6 @@ struct MarketsSkeletonItemView: View {
             HStack(spacing: 6) {
                 makeSkeletonView(by: Constants.skeletonSmallWidthValue)
             }
-        }
-    }
-
-    private var tokenPriceView: some View {
-        VStack(alignment: .trailing, spacing: 3) {
-            makeSkeletonView(by: Constants.skeletonMediumWidthValue)
-
-            makeSkeletonView(by: Constants.skeletonSmallWidthValue)
         }
     }
 
@@ -76,8 +66,6 @@ extension MarketsSkeletonItemView {
 }
 
 #Preview {
-    let tokens = DummyMarketTokenModelFactory().list()
-
     return ScrollView(.vertical) {
         ForEach(0 ..< 10) { _ in
             MarketsSkeletonItemView()

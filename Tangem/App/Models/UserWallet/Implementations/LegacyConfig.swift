@@ -111,19 +111,19 @@ extension LegacyConfig: UserWalletConfig {
         return defaultBlockchains.first
     }
 
-    var warningEvents: [WarningEvent] {
-        var warnings = WarningEventsFactory().makeWarningEvents(for: card)
+    var generalNotificationEvents: [GeneralNotificationEvent] {
+        var notifications = GeneralNotificationEventsFactory().makeNotifications(for: card)
 
         if !hasFeature(.send) {
-            warnings.append(.oldCard)
+            notifications.append(.oldCard)
         }
 
         if card.firmwareVersion.doubleValue < 2.28,
            NFCUtils.isPoorNfcQualityDevice {
-            warnings.append(.oldDeviceOldCard)
+            notifications.append(.oldDeviceOldCard)
         }
 
-        return warnings
+        return notifications
     }
 
     var emailData: [EmailCollectedData] {
@@ -206,7 +206,7 @@ extension LegacyConfig: UserWalletConfig {
         case .onlineImage:
             return card.firmwareVersion.type == .release ? .available : .hidden
         case .staking:
-            return .hidden
+            return .available
         case .topup:
             return .available
         case .tokenSynchronization, .swapping:
@@ -225,7 +225,7 @@ extension LegacyConfig: UserWalletConfig {
     }
 
     func makeWalletModelsFactory() -> WalletModelsFactory {
-        return CommonWalletModelsFactory(derivationStyle: nil)
+        return CommonWalletModelsFactory(config: self)
     }
 
     func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {

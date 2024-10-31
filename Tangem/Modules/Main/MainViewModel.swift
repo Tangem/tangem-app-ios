@@ -14,7 +14,7 @@ import CombineExt
 
 final class MainViewModel: ObservableObject {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
-    @InjectedWritable(\.mainBottomSheetVisibility) private var bottomSheetVisibility: MainBottomSheetVisibility
+    @Injected(\.mainBottomSheetUIManager) private var mainBottomSheetUIManager: MainBottomSheetUIManager
     @Injected(\.apiListProvider) private var apiListProvider: APIListProvider
 
     // MARK: - ViewState
@@ -27,8 +27,6 @@ final class MainViewModel: ObservableObject {
     @Published var unlockWalletBottomSheetViewModel: UnlockUserWalletBottomSheetViewModel?
 
     let swipeDiscoveryAnimationTrigger = CardsInfoPagerSwipeDiscoveryAnimationTrigger()
-
-    var isMainBottomSheetEnabled: Bool { FeatureProvider.isAvailable(.markets) }
 
     // MARK: - Dependencies
 
@@ -43,6 +41,7 @@ final class MainViewModel: ObservableObject {
     private var pendingUserWalletModelsToAdd: [UserWalletModel] = []
     private var shouldRecreatePagesAfterAddingPendingWalletModels = false
 
+    private var shouldDelayBottomSheetVisibility = true
     private var isLoggingOut = false
 
     private var bag: Set<AnyCancellable> = []
@@ -122,12 +121,24 @@ final class MainViewModel: ObservableObject {
 
     /// Handles `UIKit.UIViewController.viewDidAppear(_:)`.
     func onDidAppear() {
-        bottomSheetVisibility.show()
-    }
+        // The application is already in a locked state, so no attempts to show bottom sheet should be made
+        guard !isLoggingOut else {
+            return
+        }
 
-    /// Handles `UIKit.UIViewController.viewWillDisappear(_:)`.
-    func onWillDisappear() {
-        bottomSheetVisibility.hide()
+        let uiManager = mainBottomSheetUIManager
+        /// On a `cold start` (e.g., after launching the app or after coming back from the background in a `locked` state:
+        /// in both cases a new VM is created), the bottom sheet should become visible with some delay to prevent it from
+        /// being placed over the authorization screen.
+        /// This is a workaround until IOS-7856 is implemented.
+        if shouldDelayBottomSheetVisibility {
+            shouldDelayBottomSheetVisibility = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.bottomSheetVisibilityColdStartDelay) {
+                uiManager.show()
+            }
+        } else {
+            uiManager.show()
+        }
     }
 
     func onPullToRefresh(completionHandler: @escaping RefreshCompletionHandler) {
@@ -169,19 +180,9 @@ final class MainViewModel: ObservableObject {
     func didTapEditWallet() {
         Analytics.log(.buttonEditWalletTapped)
 
-        guard let userWalletModel = userWalletRepository.selectedModel else { return }
-
-        let alert = AlertBuilder.makeAlertControllerWithTextField(
-            title: Localization.userWalletListRenamePopupTitle,
-            fieldPlaceholder: Localization.userWalletListRenamePopupPlaceholder,
-            fieldText: userWalletModel.name
-        ) { newName in
-            guard userWalletModel.name != newName else { return }
-
-            userWalletModel.updateWalletName(newName)
+        if let alert = AlertBuilder.makeWalletRenamingAlert(userWalletRepository: userWalletRepository) {
+            AppPresenter.shared.show(alert)
         }
-
-        AppPresenter.shared.show(alert)
     }
 
     func didTapDeleteWallet() {
@@ -487,7 +488,7 @@ extension MainViewModel: MultiWalletMainContentDelegate {
     func displayAddressCopiedToast() {
         Toast(view: SuccessToast(text: Localization.walletNotificationAddressCopied))
             .present(
-                layout: .bottom(padding: 80),
+                layout: .top(padding: 12),
                 type: .temporary()
             )
     }
@@ -523,5 +524,7 @@ private extension MainViewModel {
         static let pendingWalletsInsertionDelay = 1.0
         static let feedbackRequestDelay = 0.7
         static let pushNotificationAuthorizationRequestDelay = 0.5
+        // TODO: Andrey Fedorov - Get rid of this workaround (IOS-7856)
+        static let bottomSheetVisibilityColdStartDelay = 0.5
     }
 }

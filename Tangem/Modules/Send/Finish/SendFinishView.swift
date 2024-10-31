@@ -18,15 +18,37 @@ struct SendFinishView: View {
                 header(transactionTime: transactionTime)
             }
 
-            if let addressTextViewHeightModel = viewModel.addressTextViewHeightModel {
-                destinationSection(addressTextViewHeightModel: addressTextViewHeightModel)
+            if let sendDestinationCompactViewModel = viewModel.sendDestinationCompactViewModel {
+                SendDestinationCompactView(
+                    viewModel: sendDestinationCompactViewModel,
+                    type: .enabled(),
+                    namespace: .init(id: namespace.id, names: namespace.names)
+                )
             }
 
-            amountSection
+            if let sendAmountCompactViewModel = viewModel.sendAmountCompactViewModel {
+                SendAmountCompactView(
+                    viewModel: sendAmountCompactViewModel,
+                    type: .enabled(),
+                    namespace: .init(id: namespace.id, names: namespace.names)
+                )
+            }
 
-            validatorSection
+            if let stakingValidatorsCompactViewModel = viewModel.stakingValidatorsCompactViewModel {
+                StakingValidatorsCompactView(
+                    viewModel: stakingValidatorsCompactViewModel,
+                    type: .enabled(),
+                    namespace: .init(id: namespace.id, names: namespace.names)
+                )
+            }
 
-            feeSection
+            if let sendFeeCompactViewModel = viewModel.sendFeeCompactViewModel {
+                SendFeeCompactView(
+                    viewModel: sendFeeCompactViewModel,
+                    type: .enabled(),
+                    namespace: .init(id: namespace.id, names: namespace.names)
+                )
+            }
         }
         .onAppear(perform: viewModel.onAppear)
     }
@@ -36,8 +58,7 @@ struct SendFinishView: View {
     @ViewBuilder
     private func header(transactionTime: String) -> some View {
         VStack(spacing: 0) {
-            Assets.inProgress
-                .image
+            Assets.inProgress.image
 
             Text(Localization.sentTransactionSentTitle)
                 .style(Fonts.Bold.title3, color: Colors.Text.primary1)
@@ -51,82 +72,6 @@ struct SendFinishView: View {
         .transition(.move(edge: .top).combined(with: .opacity))
         .padding(.top, 24)
         .padding(.bottom, 12)
-    }
-
-    // MARK: - Destination
-
-    private func destinationSection(addressTextViewHeightModel: AddressTextViewHeightModel) -> some View {
-        GroupedSection(viewModel.destinationViewTypes) { type in
-            switch type {
-            case .address(let address, let corners):
-                SendDestinationAddressSummaryView(addressTextViewHeightModel: addressTextViewHeightModel, address: address)
-                    .namespace(.init(id: namespace.id, names: namespace.names))
-                    .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
-                    .background(
-                        Colors.Background.action
-                            .cornerRadius(GroupedSectionConstants.defaultCornerRadius, corners: corners)
-                            .matchedGeometryEffect(id: namespace.names.addressBackground, in: namespace.id)
-                    )
-            case .additionalField(let type, let value):
-                DefaultTextWithTitleRowView(data: .init(title: type.name, text: value))
-                    .setNamespace(namespace.id)
-                    .setTitleNamespaceId(namespace.names.addressAdditionalFieldTitle)
-                    .setTextNamespaceId(namespace.names.addressAdditionalFieldText)
-                    .padding(.horizontal, GroupedSectionConstants.defaultHorizontalPadding)
-                    .background(
-                        Colors.Background.action
-                            .cornerRadius(GroupedSectionConstants.defaultCornerRadius, corners: [.bottomLeft, .bottomRight])
-                            .matchedGeometryEffect(id: namespace.names.addressAdditionalFieldBackground, in: namespace.id)
-                    )
-            }
-        }
-        .backgroundColor(.clear)
-        .geometryEffect(.init(id: namespace.names.destinationContainer, namespace: namespace.id))
-        .horizontalPadding(0)
-        .separatorStyle(.single)
-    }
-
-    // MARK: - Amount
-
-    private var amountSection: some View {
-        GroupedSection(viewModel.amountSummaryViewData) {
-            SendAmountSummaryView(data: $0)
-                .setNamespace(namespace.id)
-                .setIconNamespaceId(namespace.names.tokenIcon)
-                .setAmountCryptoNamespaceId(namespace.names.amountCryptoText)
-                .setAmountFiatNamespaceId(namespace.names.amountFiatText)
-        }
-        .innerContentPadding(0)
-        .backgroundColor(Colors.Background.action)
-        .geometryEffect(.init(id: namespace.names.amountContainer, namespace: namespace.id))
-    }
-
-    // MARK: - Validator
-
-    private var validatorSection: some View {
-        GroupedSection(viewModel.selectedValidatorData) { data in
-            ValidatorView(data: data, selection: .constant(""))
-                .geometryEffect(.init(id: namespace.id, names: namespace.names))
-        } header: {
-            DefaultHeaderView(Localization.stakingValidator)
-                .matchedGeometryEffect(id: namespace.names.validatorSectionHeaderTitle, in: namespace.id)
-        }
-        .settings(\.backgroundColor, Colors.Background.action)
-        .settings(\.backgroundGeometryEffect, .init(id: namespace.names.validatorContainer, namespace: namespace.id))
-    }
-
-    // MARK: - Fee
-
-    private var feeSection: some View {
-        GroupedSection(viewModel.selectedFeeSummaryViewModel) { data in
-            SendFeeSummaryView(data: data)
-                .setNamespace(namespace.id)
-                .setTitleNamespaceId(namespace.names.feeTitle)
-                .setOptionNamespaceId(namespace.names.feeOption(feeOption: .market))
-                .setAmountNamespaceId(namespace.names.feeAmount(feeOption: .market))
-        }
-        .backgroundColor(Colors.Background.action)
-        .geometryEffect(.init(id: namespace.names.feeContainer, namespace: namespace.id))
     }
 }
 

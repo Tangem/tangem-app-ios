@@ -17,7 +17,7 @@ class CommonCardInitializer {
     private var cardInfo: CardInfo
     private var cancellable: AnyCancellable?
 
-    internal init(tangemSdk: TangemSdk, cardInfo: CardInfo) {
+    init(tangemSdk: TangemSdk, cardInfo: CardInfo) {
         self.tangemSdk = tangemSdk
         self.cardInfo = cardInfo
     }
@@ -27,12 +27,16 @@ extension CommonCardInitializer: CardInitializer {
     func initializeCard(mnemonic: Mnemonic?, passphrase: String?, completion: @escaping (Result<CardInfo, TangemSdkError>) -> Void) {
         let config = UserWalletConfigFactory(cardInfo).makeConfig()
         let task = PreparePrimaryCardTask(curves: config.createWalletCurves, mnemonic: mnemonic, passphrase: passphrase, shouldReset: shouldReset)
-        let initialMessage = Message(header: nil, body: Localization.initialMessageCreateWalletBody)
+
+        let isRing = RingUtil().isRing(batchId: cardInfo.card.batchId)
+
+        let initialMessage = Message(
+            header: nil,
+            body: isRing ? Localization.initialMessageCreateWalletBodyRing : Localization.initialMessageCreateWalletBody
+        )
 
         // Ring onboarding. Set custom image
-        if let customOnboardingImage = config.customScanImage {
-            tangemSdk.config.style.scanTagImage = .image(uiImage: customOnboardingImage.uiImage, verticalOffset: 0)
-        }
+        tangemSdk.config.setupForProduct(isRing ? .ring : .card)
 
         let didBecomeActivePublisher = NotificationCenter.didBecomeActivePublisher
             .mapError { $0.toTangemSdkError() }
@@ -54,7 +58,7 @@ extension CommonCardInitializer: CardInitializer {
         }
         .sink(receiveCompletion: { [weak self] completionResult in
             // Ring onboarding. Reset the image
-            self?.tangemSdk.config.style.scanTagImage = .genericCard
+            self?.tangemSdk.config.setupForProduct(.any)
 
             switch completionResult {
             case .finished:

@@ -13,9 +13,25 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%li Karte</string>
+        <string>%li Gerät</string>
         <key>other</key>
-        <string>%li Karten</string>
+        <string>%li Geräte</string>
+      </dict>
+    </dict>
+    <key>common_days_no_param</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>Tag</string>
+        <key>other</key>
+        <string>Tage</string>
       </dict>
     </dict>
     <key>manage_tokens_number_of_wallets_ios</key>
@@ -32,6 +48,22 @@
         <string>%li Wallet</string>
         <key>other</key>
         <string>%li Wallets</string>
+      </dict>
+    </dict>
+    <key>markets_token_details_amount_exchanges</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>%li börse</string>
+        <key>other</key>
+        <string>%li börsen</string>
       </dict>
     </dict>
     <key>markets_token_details_based_on_ratings</key>
@@ -61,7 +93,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>leer</string>
+        <string></string>
         <key>other</key>
         <string>Schreibe diese %li-Wörter in der unten angegebenen Reihenfolge auf und bewahre sie an einem sicheren und geheimen Ort auf.</string>
       </dict>
@@ -77,7 +109,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>leer</string>
+        <string></string>
         <key>other</key>
         <string>%li Wörter</string>
       </dict>
@@ -125,9 +157,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Verwende deine Karte, um eine Adresse für das %li-Netz zu erhalten</string>
+        <string>Verwende deine Karte oder Ring, um eine Adresse für das %li-Netz zu erhalten</string>
         <key>other</key>
-        <string>Verwende deine Karte, um mehrere Adressen für die %li-Netzwerke zu erhalten</string>
+        <string>Verwende deine Karte oder Ring, um mehrere Adressen für die %li-Netzwerke zu erhalten</string>
       </dict>
     </dict>
   </dict>

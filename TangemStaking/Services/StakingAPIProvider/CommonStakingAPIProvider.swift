@@ -24,29 +24,69 @@ class CommonStakingAPIProvider: StakingAPIProvider {
     }
 
     func yield(integrationId: String) async throws -> YieldInfo {
-        let response = try await service.getYield(request: .init(integrationId: integrationId))
+        let response = try await service.getYield(id: integrationId, request: .init())
         let yieldInfo = try mapper.mapToYieldInfo(from: response)
         return yieldInfo
     }
 
-    func balance(wallet: StakingWallet) async throws -> StakingBalanceInfo? {
-        assert(StakeKitDTO.NetworkType(rawValue: wallet.item.coinId) != nil, "NetworkType not found")
-
-        let request = StakeKitDTO.Balances.Request(addresses: .init(address: wallet.address), network: wallet.item.coinId)
+    func balances(wallet: StakingWallet) async throws -> [StakingBalanceInfo] {
+        let request = StakeKitDTO.Balances.Request(addresses: .init(address: wallet.address), network: wallet.item.network)
         let response = try await service.getBalances(request: request)
-        let balanceInfo = try mapper.mapToBalanceInfo(from: response)
-        return balanceInfo
+        let balancesInfo = try mapper.mapToBalanceInfo(from: response)
+        return balancesInfo
     }
 
-    func enterAction(amount: Decimal, address: String, validator: String, integrationId: String) async throws -> EnterAction {
-        let request = StakeKitDTO.Actions.Enter.Request(
-            integrationId: integrationId,
-            addresses: .init(address: address),
-            args: .init(amount: amount.description, validatorAddress: validator, validatorAddresses: [.init(address: validator)])
-        )
+    func estimateStakeFee(request: ActionGenericRequest) async throws -> Decimal {
+        let request = mapper.mapToEnterRequest(request: request)
+        let response = try await service.estimateGasEnterAction(request: request)
 
+        guard let result = Decimal(stringValue: response.amount) else {
+            throw StakeKitMapperError.noData("EnterAction fee not found")
+        }
+
+        return result
+    }
+
+    func estimateUnstakeFee(request: ActionGenericRequest) async throws -> Decimal {
+        let request = mapper.mapToExitRequest(request: request)
+        let response = try await service.estimateGasExitAction(request: request)
+
+        guard let result = Decimal(stringValue: response.amount) else {
+            throw StakeKitMapperError.noData("ExitAction fee not found")
+        }
+
+        return result
+    }
+
+    func estimatePendingFee(request: PendingActionRequest) async throws -> Decimal {
+        let request = mapper.mapToPendingRequest(request: request)
+        let response = try await service.estimateGasPendingAction(request: request)
+
+        guard let result = Decimal(stringValue: response.amount) else {
+            throw StakeKitMapperError.noData("PendingAction fee not found")
+        }
+
+        return result
+    }
+
+    func enterAction(request: ActionGenericRequest) async throws -> EnterAction {
+        let request = mapper.mapToEnterRequest(request: request)
         let response = try await service.enterAction(request: request)
         let enterAction = try mapper.mapToEnterAction(from: response)
+        return enterAction
+    }
+
+    func exitAction(request: ActionGenericRequest) async throws -> ExitAction {
+        let request = mapper.mapToExitRequest(request: request)
+        let response = try await service.exitAction(request: request)
+        let enterAction = try mapper.mapToExitAction(from: response)
+        return enterAction
+    }
+
+    func pendingAction(request: PendingActionRequest) async throws -> PendingAction {
+        let request = mapper.mapToPendingRequest(request: request)
+        let response = try await service.pendingAction(request: request)
+        let enterAction = try mapper.mapToPendingAction(from: response)
         return enterAction
     }
 
@@ -67,6 +107,6 @@ class CommonStakingAPIProvider: StakingAPIProvider {
     }
 
     func submitHash(hash: String, transactionId: String) async throws {
-        _ = try await service.submitHash(id: transactionId, request: .init(hash: hash))
+        try await service.submitHash(id: transactionId, request: .init(hash: hash))
     }
 }

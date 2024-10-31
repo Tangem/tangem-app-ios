@@ -61,7 +61,7 @@ struct CurrenciesStoryPage: View {
                         GeometryReader { geometry in
                             VStack {
                                 Spacer()
-                                LinearGradient(colors: [.clear, Color("tangem_story_background")], startPoint: .top, endPoint: .bottom)
+                                LinearGradient(colors: [.clear, Colors.Old.tangemStoryBackground], startPoint: .top, endPoint: .bottom)
                                     .frame(height: geometry.size.height / 3)
                             }
                         }
@@ -79,9 +79,9 @@ struct CurrenciesStoryPage: View {
 
             StoriesBottomButtons(scanColorStyle: .primary, orderColorStyle: .secondary, isScanning: $isScanning, scanCard: scanCard, orderCard: orderCard)
                 .padding(.horizontal)
-                .padding(.bottom)
+                .padding(.bottom, 6)
         }
-        .background(Color("tangem_story_background").edgesIgnoringSafeArea(.all))
+        .background(Colors.Old.tangemStoryBackground.edgesIgnoringSafeArea(.all))
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }

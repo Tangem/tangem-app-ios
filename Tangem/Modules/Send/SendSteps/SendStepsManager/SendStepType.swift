@@ -56,7 +56,7 @@ extension SendStepType {
         case .amount: .amount
         case .destination: .address
         case .fee: .fee
-        case .validators: .null // TODO:
+        case .validators: .stakeSourceValidators
         case .summary: .summary
         case .finish: .finish
         }

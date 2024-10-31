@@ -16,7 +16,7 @@ class CommonTangemApiService {
     private let provider = TangemProvider<TangemApiTarget>(plugins: [
         CachePolicyPlugin(),
         TimeoutIntervalPlugin(),
-        TangemNetworkLoggerPlugin(configuration: .init(
+        TangemApiServiceLoggerPlugin(configuration: .init(
             output: TangemNetworkLoggerPlugin.tangemSdkLoggerOutput,
             logOptions: .verbose
         )),
@@ -134,6 +134,10 @@ extension CommonTangemApiService: TangemApiService {
             .eraseToAnyPublisher()
     }
 
+    func loadCoins(requestModel: CoinsList.Request) async throws -> CoinsList.Response {
+        return try await request(for: .coins(requestModel), decoder: snakeCaseJSONDecoder)
+    }
+
     func loadQuotes(requestModel: QuotesDTO.Request) -> AnyPublisher<[Quote], Error> {
         let target = TangemApiTarget(type: .quotes(requestModel), authData: authData)
 
@@ -156,22 +160,6 @@ extension CommonTangemApiService: TangemApiService {
             .map { $0.currencies.sorted(by: { $0.name < $1.name }) }
             .mapError { _ in AppError.serverUnavailable }
             .subscribe(on: currenciesQueue)
-            .eraseToAnyPublisher()
-    }
-
-    func loadRates(for coinIds: [String]) -> AnyPublisher<[String: Decimal], Error> {
-        provider
-            .requestPublisher(TangemApiTarget(
-                type: .rates(
-                    coinIds: coinIds,
-                    currencyId: AppSettings.shared.selectedCurrencyCode
-                ),
-                authData: authData
-            ))
-            .filterSuccessfulStatusAndRedirectCodes()
-            .map(RatesResponse.self)
-            .eraseError()
-            .map { $0.rates }
             .eraseToAnyPublisher()
     }
 
@@ -254,19 +242,29 @@ extension CommonTangemApiService: TangemApiService {
     // MARK: - Markets Implementation
 
     func loadCoinsList(requestModel: MarketsDTO.General.Request) async throws -> MarketsDTO.General.Response {
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        return try await request(for: .coinsList(requestModel), decoder: decoder)
+        return try await request(for: .coinsList(requestModel), decoder: snakeCaseJSONDecoder)
     }
 
-    func loadCoinsHistoryPreview(requestModel: MarketsDTO.ChartsHistory.Request) async throws -> [String: MarketsChartsHistoryItemModel] {
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        return try await request(for: .coinsHistoryPreview(requestModel), decoder: decoder)
+    func loadCoinsHistoryChartPreview(
+        requestModel: MarketsDTO.ChartsHistory.PreviewRequest
+    ) async throws -> MarketsDTO.ChartsHistory.PreviewResponse {
+        return try await request(for: .coinsHistoryChartPreview(requestModel), decoder: snakeCaseJSONDecoder)
     }
 
     func loadTokenMarketsDetails(requestModel: MarketsDTO.Coins.Request) async throws -> MarketsDTO.Coins.Response {
-        return try await request(for: .tokenMarketsDetails(request: requestModel), decoder: snakeCaseJSONDecoder)
+        return try await request(for: .tokenMarketsDetails(requestModel), decoder: snakeCaseJSONDecoder)
+    }
+
+    func loadHistoryChart(
+        requestModel: MarketsDTO.ChartsHistory.HistoryRequest
+    ) async throws -> MarketsDTO.ChartsHistory.HistoryResponse {
+        return try await request(for: .historyChart(requestModel), decoder: snakeCaseJSONDecoder)
+    }
+
+    func loadTokenExchangesListDetails(
+        requestModel: MarketsDTO.ExchangesRequest
+    ) async throws -> MarketsDTO.ExchangesResponse {
+        return try await request(for: .tokenExchangesList(requestModel), decoder: snakeCaseJSONDecoder)
     }
 
     // MARK: - Init
@@ -277,7 +275,7 @@ extension CommonTangemApiService: TangemApiService {
             .filterSuccessfulStatusAndRedirectCodes()
             .map(GeoResponse.self)
             .map(\.code)
-            .map(Optional.some)
+            .eraseToOptional()
             .replaceError(with: fallbackRegionCode)
             .subscribe(on: DispatchQueue.global())
             .assign(to: \._geoIpRegionCode, on: self, ownership: .weak)

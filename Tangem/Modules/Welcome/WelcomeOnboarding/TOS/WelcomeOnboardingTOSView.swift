@@ -21,7 +21,16 @@ struct WelcomeOnboardingTOSView: View {
             )
             .padding(.top, 14)
             .padding(.horizontal, 16)
-            .padding(.bottom, 8)
+            .padding(.bottom, 6)
+        }
+        .safeAreaInset(edge: .top) {
+            NavigationBar(
+                title: Localization.disclaimerTitle,
+                settings: .init(
+                    backgroundColor: Color.clear,
+                    height: 30
+                )
+            )
         }
     }
 }

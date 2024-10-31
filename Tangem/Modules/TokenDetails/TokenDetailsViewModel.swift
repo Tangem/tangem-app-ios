@@ -11,22 +11,26 @@ import Combine
 import TangemSdk
 import BlockchainSdk
 import TangemExpress
+import TangemStaking
 
 final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
     @Injected(\.expressPendingTransactionsRepository) private var expressPendingTxRepository: ExpressPendingTransactionRepository
 
-    @Published private var balance: LoadingValue<BalanceInfo> = .loading
     @Published var actionSheet: ActionSheetBinder?
     @Published var pendingExpressTransactions: [PendingExpressTransactionView.Info] = []
     @Published var bannerNotificationInputs: [NotificationViewInput] = []
 
     private(set) var balanceWithButtonsModel: BalanceWithButtonsViewModel!
     private(set) lazy var tokenDetailsHeaderModel: TokenDetailsHeaderViewModel = .init(tokenItem: walletModel.tokenItem)
+    @Published private(set) var activeStakingViewData: ActiveStakingViewData?
 
     private weak var coordinator: TokenDetailsRoutable?
     private let pendingExpressTransactionsManager: PendingExpressTransactionsManager
     private let bannerNotificationManager: NotificationManager?
     private let xpubGenerator: XPUBGenerator?
+
+    private let balances = CurrentValueSubject<LoadingValue<BalanceWithButtonsViewModel.Balances>, Never>(.loading)
+
     private var bag = Set<AnyCancellable>()
 
     var iconUrl: URL? {
@@ -71,7 +75,11 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
         )
         notificationManager.setupManager(with: self)
         bannerNotificationManager?.setupManager(with: self)
-        balanceWithButtonsModel = .init(balanceProvider: self, buttonsProvider: self)
+
+        balanceWithButtonsModel = .init(
+            balancesPublisher: balances.eraseToAnyPublisher(),
+            buttonsPublisher: $actionButtons.eraseToAnyPublisher()
+        )
 
         prepareSelf()
     }
@@ -127,6 +135,20 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
                 layout: .bottom(padding: 80),
                 type: .temporary()
             )
+    }
+
+    override func openMarketsTokenDetails() {
+        guard isMarketsDetailsAvailable else {
+            return
+        }
+
+        let analyticsParams: [Analytics.ParameterKey: String] = [
+            .source: Analytics.ParameterValue.token.rawValue,
+            .token: walletModel.tokenItem.currencySymbol.uppercased(),
+            .blockchain: walletModel.tokenItem.blockchain.displayName,
+        ]
+        Analytics.log(event: .marketsChartScreenOpened, params: analyticsParams)
+        super.openMarketsTokenDetails()
     }
 }
 
@@ -208,13 +230,17 @@ private extension TokenDetailsViewModel {
     }
 
     private func bind() {
-        walletModel.walletDidChangePublisher
-            .receive(on: DispatchQueue.main)
-            .sink { _ in } receiveValue: { [weak self] newState in
-                AppLog.shared.debug("Token details receive new wallet model state: \(newState)")
-                self?.updateBalance(walletModelState: newState)
-            }
-            .store(in: &bag)
+        Publishers.CombineLatest(
+            walletModel.walletDidChangePublisher,
+            walletModel.stakingManagerStatePublisher
+        )
+        .filter { $1 != .loading }
+        .receive(on: DispatchQueue.main)
+        .receiveValue { [weak self] newState, _ in
+            AppLog.shared.debug("Token details receive new wallet model state: \(newState)")
+            self?.updateBalance(walletModelState: newState)
+        }
+        .store(in: &bag)
 
         pendingExpressTransactionsManager.pendingTransactionsPublisher
             .withWeakCaptureOf(self)
@@ -235,22 +261,57 @@ private extension TokenDetailsViewModel {
             .removeDuplicates()
             .assign(to: \.bannerNotificationInputs, on: self, ownership: .weak)
             .store(in: &bag)
+
+        walletModel.stakingManagerStatePublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
+                AppLog.shared.debug("Token details receive new StakingManager state: \(state)")
+                self?.updateStaking(state: state)
+            }
+            .store(in: &bag)
     }
 
     private func updateBalance(walletModelState: WalletModel.State) {
         switch walletModelState {
         case .created, .loading:
-            balance = .loading
+            balances.send(.loading)
         case .idle, .noAccount:
-            balance = .loaded(.init(
-                balance: walletModel.balance,
-                fiatBalance: walletModel.fiatBalance
-            ))
+            balances.send(.loaded(.init(all: walletModel.allBalanceFormatted, available: walletModel.availableBalanceFormatted)))
         case .failed(let message):
-            balance = .failedToLoad(error: message)
+            balances.send(.failedToLoad(error: message))
         case .noDerivation:
             // User can't reach this screen without derived keys
-            balance = .failedToLoad(error: "")
+            balances.send(.failedToLoad(error: CommonError.notImplemented))
+        }
+    }
+
+    private func updateStaking(state: StakingManagerState) {
+        switch state {
+        case .loading:
+            // Do nothing
+            break
+        case .availableToStake, .notEnabled:
+            activeStakingViewData = nil
+        case .loadingError, .temporaryUnavailable:
+            activeStakingViewData = .init(balance: .loadingError, rewards: .none)
+        case .staked(let staked):
+            let rewards: ActiveStakingViewData.RewardsState? = {
+                switch (staked.yieldInfo.rewardClaimingType, walletModel.stakedRewards.fiat) {
+                case (.auto, _):
+                    return nil
+                case (.manual, .none):
+                    return .noRewards
+                case (.manual, .some):
+                    return .rewardsToClaim(walletModel.stakedRewardsFormatted.fiat)
+                }
+            }()
+
+            activeStakingViewData = ActiveStakingViewData(
+                balance: .balance(walletModel.stakedWithPendingBalanceFormatted, action: { [weak self] in
+                    self?.openStaking()
+                }),
+                rewards: rewards
+            )
         }
     }
 
@@ -286,8 +347,4 @@ private extension TokenDetailsViewModel {
 
         coordinator?.openFeeCurrency(for: feeCurrencyWalletModel, userWalletModel: userWalletModel)
     }
-}
-
-extension TokenDetailsViewModel: BalanceProvider {
-    var balancePublisher: AnyPublisher<LoadingValue<BalanceInfo>, Never> { $balance.eraseToAnyPublisher() }
 }

@@ -43,7 +43,7 @@ struct OnboardingAccessCodeView: View {
 
             MainButton(title: viewModel.state.buttonTitle, action: viewModel.mainButtonAction)
                 .padding(.horizontal, 16)
-                .padding(.bottom, 8)
+                .padding(.bottom, 6)
         }
         .onDisappear(perform: viewModel.onDissappearAction)
         .animation(.default, value: viewModel.error)

@@ -19,6 +19,7 @@ struct CurrencySelectView: View {
             Colors.Background.secondary.ignoresSafeArea()
 
             content
+                .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
         }
         .navigationBarTitle(Localization.detailsRowTitleCurrency, displayMode: .inline)
         .onAppear {
@@ -41,7 +42,6 @@ struct CurrencySelectView: View {
                 .interItemSpacing(12)
             }
             .interContentPadding(8)
-            .searchable(text: $searchText)
 
         case .failedToLoad(let error):
             Text(error.localizedDescription)
@@ -72,20 +72,35 @@ struct CurrencySelectView: View {
 
     private func filter(currencies: [CurrenciesResponse.Currency]) -> [CurrenciesResponse.Currency] {
         let text = searchText.trimmed()
-        if text.isEmpty {
-            return currencies
+
+        let sortindPredicate: (CurrenciesResponse.Currency, CurrenciesResponse.Currency) -> Bool = { first, _ in
+            viewModel.isSelected(first)
         }
 
-        return currencies.filter {
-            $0.description.localizedStandardContains(text)
+        if text.isEmpty {
+            return currencies.sorted(by: sortindPredicate)
         }
+
+        return currencies
+            .filter {
+                $0.description.localizedStandardContains(text)
+            }
+            .sorted(by: sortindPredicate)
     }
 }
 
 struct CurrencySelectView_Preview: PreviewProvider {
+    class CurrencySelectRoutableMock: CurrencySelectRoutable {
+        func dismissCurrencySelect() {}
+    }
+
     static var previews: some View {
         NavigationView {
-            CurrencySelectView(viewModel: .init())
+            CurrencySelectView(
+                viewModel: CurrencySelectViewModel(
+                    coordinator: CurrencySelectRoutableMock()
+                )
+            )
         }
     }
 }

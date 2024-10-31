@@ -20,11 +20,13 @@ protocol SingleTokenRoutable {
     func openSell(for walletModel: WalletModel)
     func openSendToSell(with request: SellCryptoRequest, for walletModel: WalletModel)
     func openExplorer(at url: URL, for walletModel: WalletModel)
+    func openMarketsTokenDetails(for tokenItem: TokenItem)
 }
 
 final class SingleTokenRouter: SingleTokenRoutable {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
     @Injected(\.keysManager) private var keysManager: KeysManager
+    @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
 
     private let userWalletModel: UserWalletModel
     private weak var coordinator: SingleTokenBaseRoutable?
@@ -65,12 +67,8 @@ final class SingleTokenRouter: SingleTokenRoutable {
     }
 
     func openSend(walletModel: WalletModel) {
-        guard let amountToSend = walletModel.wallet.amounts[walletModel.amountType] else { return }
-
         sendAnalyticsEvent(.buttonSend, for: walletModel)
         coordinator?.openSend(
-            amountToSend: amountToSend,
-            blockchainNetwork: walletModel.blockchainNetwork,
             userWalletModel: userWalletModel,
             walletModel: walletModel
         )
@@ -82,6 +80,7 @@ final class SingleTokenRouter: SingleTokenRoutable {
     }
 
     func openStaking(walletModel: WalletModel) {
+        sendAnalyticsEvent(.stakingClicked, for: walletModel)
         guard let stakingManager = walletModel.stakingManager else {
             return
         }
@@ -121,7 +120,6 @@ final class SingleTokenRouter: SingleTokenRoutable {
             amountToSend: amountToSend,
             destination: request.targetAddress,
             tag: request.tag,
-            blockchainNetwork: walletModel.blockchainNetwork,
             userWalletModel: userWalletModel,
             walletModel: walletModel
         )
@@ -132,17 +130,36 @@ final class SingleTokenRouter: SingleTokenRoutable {
         coordinator?.openInSafari(url: url)
     }
 
-    private func openBuy(for walletModel: WalletModel) {
-        let blockchain = walletModel.blockchainNetwork.blockchain
-        let exchangeUtility = buildExchangeCryptoUtility(for: walletModel)
-        if let token = walletModel.amountType.token, blockchain == .ethereum(testnet: true) {
-            TestnetBuyCryptoService().buyCrypto(.erc20Token(
-                token,
-                walletModel: walletModel,
-                signer: userWalletModel.signer
-            ))
+    func openMarketsTokenDetails(for tokenItem: TokenItem) {
+        guard let tokenId = getTokenItemId(for: tokenItem) else {
             return
         }
+
+        let quoteData = quotesRepository.quote(for: tokenId)
+        let model = MarketsTokenModel(
+            id: tokenId,
+            name: tokenItem.name,
+            symbol: tokenItem.currencySymbol,
+            currentPrice: quoteData?.price,
+            priceChangePercentage: MarketsTokenQuoteHelper().makePriceChangeIntervalsDictionary(from: quoteData) ?? [:],
+            marketRating: nil,
+            marketCap: nil,
+            isUnderMarketCapLimit: nil
+        )
+
+        coordinator?.openMarketsTokenDetails(tokenModel: model)
+    }
+
+    private func getTokenItemId(for tokenItem: TokenItem) -> TokenItemId? {
+        guard tokenItem.isBlockchain, tokenItem.blockchain.isL2EthereumNetwork else {
+            return tokenItem.id
+        }
+
+        return Blockchain.ethereum(testnet: false).coinId
+    }
+
+    private func openBuy(for walletModel: WalletModel) {
+        let exchangeUtility = buildExchangeCryptoUtility(for: walletModel)
 
         guard let url = exchangeUtility.buyURL else { return }
 

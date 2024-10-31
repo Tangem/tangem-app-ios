@@ -19,44 +19,54 @@ struct StakingFlowBaseBuilder {
     let sendFinishStepBuilder: SendFinishStepBuilder
     let builder: SendDependenciesBuilder
 
-    func makeSendViewModel(manager: any StakingManager, router: SendRoutable) -> SendViewModel {
-        let notificationManager = builder.makeSendNotificationManager()
-        let sendTransactionDispatcher = builder.makeSendTransactionDispatcher()
-        let stakingModel = builder.makeStakingModel(
-            stakingManager: manager,
-            sendTransactionDispatcher: sendTransactionDispatcher
-        )
+    func makeSendViewModel(manager: some StakingManager, router: SendRoutable) -> SendViewModel {
+        let stakingModel = builder.makeStakingModel(stakingManager: manager)
+        let notificationManager = builder.makeStakingNotificationManager()
+        notificationManager.setup(provider: stakingModel, input: stakingModel)
+        notificationManager.setupManager(with: stakingModel)
+
+        let sendFeeCompactViewModel = sendFeeStepBuilder.makeSendFeeCompactViewModel(input: stakingModel)
+        sendFeeCompactViewModel.bind(input: stakingModel)
 
         let amount = sendAmountStepBuilder.makeSendAmountStep(
             io: (input: stakingModel, output: stakingModel),
+            actionType: .stake,
             sendFeeLoader: stakingModel,
-            sendQRCodeService: .none
+            sendQRCodeService: .none,
+            sendAmountValidator: builder.makeStakingSendAmountValidator(stakingManager: manager),
+            amountModifier: builder.makeStakingAmountModifier(),
+            source: .staking
         )
 
         let validators = stakingValidatorsStepBuilder.makeStakingValidatorsStep(
             io: (input: stakingModel, output: stakingModel),
-            manager: manager
+            manager: manager,
+            sendFeeLoader: stakingModel
         )
 
         let summary = sendSummaryStepBuilder.makeSendSummaryStep(
             io: (input: stakingModel, output: stakingModel),
-            sendTransactionDispatcher: sendTransactionDispatcher,
+            actionType: .stake,
+            descriptionBuilder: builder.makeStakingTransactionSummaryDescriptionBuilder(),
             notificationManager: notificationManager,
-            addressTextViewHeightModel: .none,
-            editableType: .editable
+            editableType: .editable,
+            sendDestinationCompactViewModel: .none,
+            sendAmountCompactViewModel: amount.compact,
+            stakingValidatorsCompactViewModel: validators.compact,
+            sendFeeCompactViewModel: sendFeeCompactViewModel
         )
 
-        let finish = sendFinishStepBuilder.makeSendFinishStep(addressTextViewHeightModel: .none)
-
-        summary.step.setup(sendAmountInput: stakingModel)
-        summary.step.setup(sendFeeInput: stakingModel)
-        summary.step.setup(stakingValidatorsInput: stakingModel)
-
-        finish.setup(sendAmountInput: stakingModel)
-        finish.setup(sendFeeInput: stakingModel)
-        finish.setup(sendFinishInput: stakingModel)
+        let finish = sendFinishStepBuilder.makeSendFinishStep(
+            input: stakingModel,
+            actionType: .stake,
+            sendDestinationCompactViewModel: .none,
+            sendAmountCompactViewModel: amount.compact,
+            stakingValidatorsCompactViewModel: validators.compact,
+            sendFeeCompactViewModel: sendFeeCompactViewModel
+        )
 
         let stepsManager = CommonStakingStepsManager(
+            provider: stakingModel,
             amountStep: amount.step,
             validatorsStep: validators.step,
             summaryStep: summary.step,
@@ -65,15 +75,20 @@ struct StakingFlowBaseBuilder {
 
         summary.step.set(router: stepsManager)
 
-        let interactor = CommonSendBaseInteractor(input: stakingModel, output: stakingModel, walletModel: walletModel, emailDataProvider: userWalletModel)
+        let interactor = CommonSendBaseInteractor(input: stakingModel, output: stakingModel)
+
         let viewModel = SendViewModel(
             interactor: interactor,
             stepsManager: stepsManager,
             userWalletModel: userWalletModel,
+            alertBuilder: builder.makeStakingAlertBuilder(),
+            dataBuilder: builder.makeSendBaseDataBuilder(input: stakingModel),
+            tokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem,
             coordinator: router
         )
         stepsManager.set(output: viewModel)
+        stakingModel.router = viewModel
 
         return viewModel
     }

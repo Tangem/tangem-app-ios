@@ -68,16 +68,18 @@ final class ExpressFeeSelectorViewModel: ObservableObject, Identifiable {
 
         return FeeRowViewModel(
             option: option,
-            formattedFeeComponents: .loaded(formattedFeeComponents),
-            isSelected: .init(root: self, default: false, get: { root in
-                root.selectedFeeOption == option
-            }, set: { root, newValue in
-                if newValue {
-                    root.expressInteractor.updateFeeOption(option: option)
-                    root.selectedFeeOption = option
-                    root.coordinator?.closeExpressFeeSelector()
-                }
-            })
+            components: .loaded(formattedFeeComponents),
+            style: .selectable(
+                isSelected: .init(root: self, default: false, get: { root in
+                    root.selectedFeeOption == option
+                }, set: { root, newValue in
+                    if newValue {
+                        root.expressInteractor.updateFeeOption(option: option)
+                        root.selectedFeeOption = option
+                        root.coordinator?.closeExpressFeeSelector()
+                    }
+                })
+            )
         )
     }
 }

@@ -9,6 +9,7 @@
 import Foundation
 import TangemSdk
 import BlockchainSdk
+import TangemStaking
 
 protocol EmailDataCollector: LogFileProvider {}
 
@@ -33,6 +34,8 @@ private extension EmailDataCollector {
     }
 }
 
+// MARK: - NegativeFeedbackDataCollector
+
 struct NegativeFeedbackDataCollector: EmailDataCollector {
     var logData: Data? {
         formatData(userWalletEmailData)
@@ -44,6 +47,8 @@ struct NegativeFeedbackDataCollector: EmailDataCollector {
         self.userWalletEmailData = userWalletEmailData
     }
 }
+
+// MARK: - SendScreenDataCollector
 
 struct SendScreenDataCollector: EmailDataCollector {
     var logData: Data? {
@@ -88,6 +93,17 @@ struct SendScreenDataCollector: EmailDataCollector {
             EmailCollectedData(type: .send(.isFeeIncluded), data: "\(isFeeIncluded)"),
         ])
 
+        if let stakingAction {
+            data.append(EmailCollectedData(type: .staking(.stakingAction), data: stakingAction.title))
+        }
+
+        if let validator {
+            data.append(contentsOf: [
+                EmailCollectedData(type: .staking(.validatorName), data: validator.name),
+                EmailCollectedData(type: .staking(.validatorAddress), data: validator.address),
+            ])
+        }
+
         // The last retry attempt by the host caused an error with txHex string
         if let exceptionHost = lastError?.lastRetryHost, let txHex = lastError?.tx {
             data.append(EmailCollectedData(type: .wallet(.exceptionWalletManagerHost), data: exceptionHost))
@@ -104,8 +120,20 @@ struct SendScreenDataCollector: EmailDataCollector {
     private let amount: Amount
     private let isFeeIncluded: Bool
     private let lastError: SendTxError?
+    private let stakingAction: StakingAction.ActionType?
+    private let validator: ValidatorInfo?
 
-    init(userWalletEmailData: [EmailCollectedData], walletModel: WalletModel, fee: Amount, destination: String, amount: Amount, isFeeIncluded: Bool, lastError: SendTxError?) {
+    init(
+        userWalletEmailData: [EmailCollectedData],
+        walletModel: WalletModel,
+        fee: Amount,
+        destination: String,
+        amount: Amount,
+        isFeeIncluded: Bool,
+        lastError: SendTxError?,
+        stakingAction: StakingAction.ActionType?,
+        validator: ValidatorInfo?
+    ) {
         self.userWalletEmailData = userWalletEmailData
         self.walletModel = walletModel
         self.fee = fee
@@ -113,8 +141,12 @@ struct SendScreenDataCollector: EmailDataCollector {
         self.amount = amount
         self.isFeeIncluded = isFeeIncluded
         self.lastError = lastError
+        self.stakingAction = stakingAction
+        self.validator = validator
     }
 }
+
+// MARK: - PushScreenDataCollector
 
 struct PushScreenDataCollector: EmailDataCollector {
     var logData: Data? {
@@ -166,6 +198,8 @@ struct PushScreenDataCollector: EmailDataCollector {
         self.lastError = lastError
     }
 }
+
+// MARK: - DetailsFeedbackDataCollector
 
 struct DetailsFeedbackDataCollector: EmailDataCollector {
     var logData: Data? {
@@ -227,7 +261,32 @@ struct DetailsFeedbackDataCollector: EmailDataCollector {
     }
 }
 
+// MARK: - DetailsFeedbackData
+
 struct DetailsFeedbackData {
     let userWalletEmailData: [EmailCollectedData]
     let walletModels: [WalletModel]
+}
+
+// MARK: - TokenErrorDescriptionDataCollector
+
+struct TokenErrorDescriptionDataCollector: EmailDataCollector {
+    var logData: Data? {
+        var dataToFormat: [EmailCollectedData] = []
+        dataToFormat.append(.separator(.dashes))
+
+        dataToFormat.append(EmailCollectedData(type: .token(.id), data: tokenId))
+        dataToFormat.append(EmailCollectedData(type: .token(.name), data: tokenName))
+
+        dataToFormat.append(.separator(.dashes))
+        return formatData(dataToFormat)
+    }
+
+    private let tokenId: String
+    private let tokenName: String
+
+    init(tokenId: String, tokenName: String) {
+        self.tokenId = tokenId
+        self.tokenName = tokenName
+    }
 }

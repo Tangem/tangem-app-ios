@@ -13,7 +13,7 @@ struct CardsInfoPagerView<
 >: View where Data: RandomAccessCollection, ID: Hashable, Header: View, Body: View, BottomOverlay: View, Data.Index == Int {
     typealias HeaderFactory = (_ element: Data.Element) -> Header
     typealias ContentFactory = (_ element: Data.Element) -> Body
-    typealias BottomOverlayFactory = (_ element: Data.Element, _ didScrollToBottom: Bool) -> BottomOverlay
+    typealias BottomOverlayFactory = (_ element: Data.Element, _ overlayParams: CardsInfoPagerBottomOverlayFactoryParams) -> BottomOverlay
     typealias OnPullToRefresh = OnRefresh
     typealias OnPageChange = (_ pageChangeReason: CardsInfoPageChangeReason) -> Void
 
@@ -152,7 +152,7 @@ struct CardsInfoPagerView<
                         scrollState.onViewAppear()
                     }
                     .onDisappear(perform: scrollDetector.stopDetectingScroll)
-                    .onChange(of: scrollState.contentOffset) { _ in
+                    .onChange(of: scrollState.contentOffset) { offset in
                         // Vertical scrolling may delay or even cancel horizontal scroll animations,
                         // which in turn may lead to desynchronization between `selectedIndex` and
                         // `contentSelectedIndex` properties.
@@ -332,13 +332,23 @@ struct CardsInfoPagerView<
     @ViewBuilder
     private func makeBottomOverlay() -> some View {
         if let element = data[safe: clampedContentSelectedIndex] {
-            bottomOverlayFactory(element, scrollState.didScrollToBottom)
-                .animation(.linear(duration: 0.1), value: scrollState.didScrollToBottom)
-                .modifier(contentAnimationModifier)
-                .readGeometry(\.size.height) { newValue in
-                    scrollViewBottomContentInset = newValue
-                    scrollState.bottomContentInsetSubject.send(newValue - Constants.scrollStateBottomContentInsetDiff)
-                }
+            bottomOverlayFactory(
+                element,
+                CardsInfoPagerBottomOverlayFactoryParams(
+                    isDraggingHorizontally: isDraggingHorizontally,
+                    didScrollToBottom: scrollState.didScrollToBottom,
+                    scrollOffset: scrollState.contentOffsetExceedingContentSize,
+                    viewportSize: scrollState.viewportSize,
+                    contentSize: scrollState.contentSize,
+                    scrollViewBottomContentInset: scrollViewBottomContentInset
+                )
+            )
+            .animation(.linear(duration: 0.1), value: scrollState.didScrollToBottom)
+            .modifier(contentAnimationModifier)
+            .readGeometry(\.size.height) { newValue in
+                scrollViewBottomContentInset = newValue
+                scrollState.bottomContentInsetSubject.send(newValue - Constants.scrollStateBottomContentInsetDiff)
+            }
         }
     }
 
@@ -486,7 +496,7 @@ struct CardsInfoPagerView<
     private func gestureProperties(from method: PageSwitchMethod) -> (translation: CGSize, velocity: CGSize) {
         switch method {
         case .byGesture(let gestureValue):
-            return (gestureValue.translation, gestureValue.velocityCompat)
+            return (gestureValue.translation, gestureValue.velocity)
         case .programmatically:
             return (.zero, .zero)
         }

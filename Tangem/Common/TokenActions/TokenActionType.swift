@@ -16,6 +16,7 @@ enum TokenActionType: String {
     case stake
     case sell
     case copyAddress
+    case marketsDetails
     case hide
 
     var title: String {
@@ -27,6 +28,7 @@ enum TokenActionType: String {
         case .stake: return Localization.commonStake
         case .sell: return Localization.commonSell
         case .copyAddress: return Localization.commonCopyAddress
+        case .marketsDetails: return Localization.commonAnalytics
         case .hide: return Localization.tokenDetailsHideToken
         }
     }
@@ -37,9 +39,10 @@ enum TokenActionType: String {
         case .send: return Assets.arrowUpMini
         case .receive: return Assets.arrowDownMini
         case .exchange: return Assets.exchangeMini
-        case .stake: return Assets.dollarMini
+        case .stake: return Assets.stakingIcon
         case .sell: return Assets.dollarMini
         case .copyAddress: return Assets.copy
+        case .marketsDetails: return Assets.chartMini20
         case .hide: return Assets.minusCircle
         }
     }
@@ -60,8 +63,13 @@ enum TokenActionType: String {
         case .stake: return nil
         case .sell: return nil
         case .copyAddress: return nil
+        case .marketsDetails: return nil
         case .hide: return nil
         }
+    }
+
+    var analyticsParameterValue: String {
+        rawValue.capitalizingFirstLetter()
     }
 }
 

@@ -2,7 +2,7 @@
 //  CommonPushNotificationsInteractor.swift
 //  Tangem
 //
-//  Created by m3g0byt3 on 26.06.2024.
+//  Created by Andrey Fedorov on 26.06.2024.
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
@@ -28,8 +28,6 @@ final class CommonPushNotificationsInteractor {
     private var didPostponeAuthorizationRequestOnWelcomeOnboardingInCurrentSession = false
 
     private var currentLaunchCount: Int { AppSettings.shared.numberOfLaunches }
-
-    private var isFeatureFlagEnabled: Bool { FeatureProvider.isAvailable(.pushNotifications) }
 
     private let pushNotificationsService: PushNotificationsService
 
@@ -86,7 +84,6 @@ final class CommonPushNotificationsInteractor {
 extension CommonPushNotificationsInteractor: PushNotificationsInteractor {
     func isAvailable(in flow: PushNotificationsPermissionRequestFlow) -> Bool {
         guard
-            isFeatureFlagEnabled,
             canRequestAuthorization
         else {
             return false

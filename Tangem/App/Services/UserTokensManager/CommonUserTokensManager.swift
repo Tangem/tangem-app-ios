@@ -23,7 +23,9 @@ class CommonUserTokensManager {
     private let derivationStyle: DerivationStyle?
     private let existingCurves: [EllipticCurve]
     private let longHashesSupported: Bool
-    private weak var keysDerivingProvider: KeysDerivingProvider?
+
+    weak var keysDerivingProvider: KeysDerivingProvider?
+
     private var pendingUserTokensSyncCompletions: [() -> Void] = []
     private var bag: Set<AnyCancellable> = []
 
@@ -34,7 +36,6 @@ class CommonUserTokensManager {
         walletModelsManager: WalletModelsManager,
         derivationStyle: DerivationStyle?,
         derivationManager: DerivationManager?,
-        keysDerivingProvider: KeysDerivingProvider,
         existingCurves: [EllipticCurve],
         longHashesSupported: Bool
     ) {
@@ -44,7 +45,6 @@ class CommonUserTokensManager {
         self.walletModelsManager = walletModelsManager
         self.derivationStyle = derivationStyle
         self.derivationManager = derivationManager
-        self.keysDerivingProvider = keysDerivingProvider
         self.existingCurves = existingCurves
         self.longHashesSupported = longHashesSupported
     }
@@ -304,8 +304,10 @@ extension CommonUserTokensManager: UserTokensReordering {
                         let userTokensKeyedByIds = entries.keyedFirst(by: \.walletModelId)
                         let reorderedEntries = reorderedWalletModelIds.compactMap { userTokensKeyedByIds[$0] }
 
-                        assert(reorderedEntries.count == entries.count, "Model inconsistency detected")
-                        entries = reorderedEntries
+                        // TODO: Refactor user tokens. Fix data layers mixing.
+                        if reorderedEntries.count == entries.count {
+                            entries = reorderedEntries
+                        }
                     }
                 }
 

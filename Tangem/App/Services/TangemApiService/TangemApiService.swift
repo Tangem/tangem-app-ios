@@ -13,25 +13,44 @@ protocol TangemApiService: AnyObject, Initializable {
     // TODO: Refactor https://tangem.atlassian.net/browse/IOS-6869
     var geoIpRegionCode: String { get }
 
+    // MARK: - Coins and quotes
+
     func loadCoins(requestModel: CoinsList.Request) -> AnyPublisher<[CoinModel], Error>
     func loadQuotes(requestModel: QuotesDTO.Request) -> AnyPublisher<[Quote], Error>
-    func loadRates(for coinIds: [String]) -> AnyPublisher<[String: Decimal], Error>
     func loadCurrencies() -> AnyPublisher<[CurrenciesResponse.Currency], Error>
+
+    // Copy loadCoins request via async await
+    func loadCoins(requestModel: CoinsList.Request) async throws -> CoinsList.Response
 
     // MARK: - Markets
 
     /// Get general market data for a list of tokens
     func loadCoinsList(requestModel: MarketsDTO.General.Request) async throws -> MarketsDTO.General.Response
 
-    /// Get history preview chart data for a list of tokens
-    func loadCoinsHistoryPreview(requestModel: MarketsDTO.ChartsHistory.Request) async throws -> [String: MarketsChartsHistoryItemModel]
-
     func loadTokenMarketsDetails(requestModel: MarketsDTO.Coins.Request) async throws -> MarketsDTO.Coins.Response
+
+    /// Get preview history chart data for a list of tokens
+    func loadCoinsHistoryChartPreview(
+        requestModel: MarketsDTO.ChartsHistory.PreviewRequest
+    ) async throws -> MarketsDTO.ChartsHistory.PreviewResponse
+
+    /// Get detail history chart data for a given token
+    func loadHistoryChart(
+        requestModel: MarketsDTO.ChartsHistory.HistoryRequest
+    ) async throws -> MarketsDTO.ChartsHistory.HistoryResponse
+
+    func loadTokenExchangesListDetails(requestModel: MarketsDTO.ExchangesRequest) async throws -> MarketsDTO.ExchangesResponse
+
+    // MARK: - User token list management
 
     func loadTokens(for key: String) -> AnyPublisher<UserTokenList?, TangemAPIError>
     func saveTokens(list: UserTokenList, for key: String) -> AnyPublisher<Void, TangemAPIError>
 
+    // MARK: - BSDK
+
     func createAccount(networkId: String, publicKey: String) -> AnyPublisher<BlockchainAccountCreateResult, TangemAPIError>
+
+    // MARK: - Promotions and awards
 
     func loadReferralProgramInfo(for userWalletId: String, expectedAwardsLimit: Int) async throws -> ReferralProgramInfo
     func participateInReferralProgram(
@@ -54,9 +73,9 @@ protocol TangemApiService: AnyObject, Initializable {
     @discardableResult
     func resetAwardForCurrentWallet(cardId: String) async throws -> PromotionAwardResetResult
 
-    func loadFeatures() async throws -> [String: Bool]
-
     // MARK: - Configs
+
+    func loadFeatures() async throws -> [String: Bool]
 
     func loadAPIList() async throws -> APIListDTO
 

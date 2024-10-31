@@ -62,7 +62,10 @@ struct SingleCardOnboardingView: View {
                     ZStack(alignment: .center) {
                         NavigationBar(
                             title: viewModel.navbarTitle,
-                            settings: .init(titleFont: .system(size: 17, weight: .semibold), backgroundColor: .clear),
+                            settings: .init(
+                                title: .init(font: .system(size: 17, weight: .semibold)),
+                                backgroundColor: .clear
+                            ),
                             leftItems: {
                                 BackButton(
                                     height: viewModel.navbarSize.height,
@@ -106,7 +109,7 @@ struct SingleCardOnboardingView: View {
                             AnimatedView(settings: viewModel.$mainCardSettings) {
                                 OnboardingCardView(
                                     placeholderCardType: .dark,
-                                    cardImage: viewModel.cardImage,
+                                    cardImage: viewModel.mainImage,
                                     cardScanned: viewModel.isInitialAnimPlayed && viewModel.isCardScanned
                                 )
                             }
@@ -193,12 +196,12 @@ struct CardOnboardingBackgroundCircle: View {
             .padding(10)
             .overlay(
                 Circle()
-                    .foregroundColor(.tangemBgGray)
+                    .foregroundColor(Colors.Old.tangemBgGray)
                     .padding(38)
             )
             .background(
                 Circle()
-                    .foregroundColor(.tangemBgGray)
+                    .foregroundColor(Colors.Old.tangemBgGray)
             )
             .edgesIgnoringSafeArea(.all)
             .scaleEffect(scale)

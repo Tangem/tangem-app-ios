@@ -23,9 +23,17 @@ struct TOSView: View {
     private var bottomOverlay: some View {
         VStack {
             Spacer()
-            LinearGradient(colors: [Colors.Background.primary.opacity(0), Colors.Background.primary], startPoint: .top, endPoint: .bottom)
-                .frame(maxHeight: viewModel.bottomOverlayHeight)
-                .allowsHitTesting(false)
+            LinearGradient(
+                colors: [
+                    Colors.Background.primary.opacity(0),
+                    Colors.Background.primary,
+                    Colors.Background.primary,
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .frame(maxHeight: viewModel.bottomOverlayHeight)
+            .allowsHitTesting(false)
         }
     }
 }

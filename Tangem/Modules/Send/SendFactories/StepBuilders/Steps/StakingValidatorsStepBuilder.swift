@@ -11,29 +11,30 @@ import TangemStaking
 
 struct StakingValidatorsStepBuilder {
     typealias IO = (input: StakingValidatorsInput, output: StakingValidatorsOutput)
-    typealias ReturnValue = (step: StakingValidatorsStep, interactor: StakingValidatorsInteractor)
+    typealias ReturnValue = (step: StakingValidatorsStep, interactor: StakingValidatorsInteractor, compact: StakingValidatorsCompactViewModel)
 
-    let walletModel: WalletModel
-    let builder: SendDependenciesBuilder
-
-    func makeStakingValidatorsStep(io: IO, manager: any StakingManager) -> ReturnValue {
+    func makeStakingValidatorsStep(io: IO, manager: some StakingManager, sendFeeLoader: SendFeeLoader) -> ReturnValue {
         let interactor = makeStakingValidatorsInteractor(io: io, manager: manager)
         let viewModel = makeStakingValidatorsViewModel(interactor: interactor)
+        let step = StakingValidatorsStep(viewModel: viewModel, interactor: interactor, sendFeeLoader: sendFeeLoader)
+        let compact = makeStakingValidatorsCompactViewModel(input: io.input)
 
-        let step = StakingValidatorsStep(viewModel: viewModel, interactor: interactor)
-
-        return (step: step, interactor: interactor)
+        return (step: step, interactor: interactor, compact: compact)
     }
 }
 
 // MARK: - Private
 
 private extension StakingValidatorsStepBuilder {
+    func makeStakingValidatorsCompactViewModel(input: any StakingValidatorsInput) -> StakingValidatorsCompactViewModel {
+        .init(input: input)
+    }
+
     func makeStakingValidatorsViewModel(interactor: StakingValidatorsInteractor) -> StakingValidatorsViewModel {
         StakingValidatorsViewModel(interactor: interactor)
     }
 
-    func makeStakingValidatorsInteractor(io: IO, manager: any StakingManager) -> StakingValidatorsInteractor {
+    func makeStakingValidatorsInteractor(io: IO, manager: some StakingManager) -> StakingValidatorsInteractor {
         CommonStakingValidatorsInteractor(input: io.input, output: io.output, manager: manager)
     }
 }
