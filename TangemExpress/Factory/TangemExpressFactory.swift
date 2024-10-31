@@ -16,7 +16,7 @@ public struct TangemExpressFactory {
 
     public func makeExpressManager(
         expressAPIProvider: ExpressAPIProvider,
-        allowanceProvider: AllowanceProvider,
+        allowanceProvider: ExpressAllowanceProvider,
         feeProvider: FeeProvider,
         expressRepository: ExpressRepository,
         logger: Logger? = nil,
@@ -54,7 +54,8 @@ public struct TangemExpressFactory {
             ExpressAuthorizationPlugin(
                 apiKey: credential.apiKey,
                 userId: credential.userId,
-                sessionId: credential.sessionId
+                sessionId: credential.sessionId,
+                refcode: credential.refcode
             ),
             ExpressDeviceInfoPlugin(deviceInfo: deviceInfo),
             TangemNetworkLoggerPlugin(configuration: .init(
@@ -75,11 +76,13 @@ public struct ExpressAPICredential {
     public let apiKey: String
     public let userId: String
     public let sessionId: String
+    public let refcode: String?
 
-    public init(apiKey: String, userId: String, sessionId: String) {
+    public init(apiKey: String, userId: String, sessionId: String, refcode: String?) {
         self.apiKey = apiKey
         self.userId = userId
         self.sessionId = sessionId
+        self.refcode = refcode
     }
 }
 

@@ -19,10 +19,16 @@ extension SupportedBlockchains {
         SupportedBlockchains(version: .v1).blockchains()
     }
 
+    static var l2Blockchains: [Blockchain] {
+        all
+            .filter { $0.isL2EthereumNetwork }
+            .sorted(by: \.displayName)
+    }
+
     /// Blockchains which don't include in supported blockchains by default
     static var testableIDs: Set<String> {
         // Here version isn't important because we take only coinId
-        return Set(SupportedBlockchains(version: .v1).testableBlockchains().map { $0.coinId })
+        return Set(SupportedBlockchains(version: .v1).testableBlockchains().map { $0.networkId })
     }
 }
 
@@ -49,7 +55,7 @@ struct SupportedBlockchains {
         }
 
         let betaTestingBlockchains = FeatureStorage().supportedBlockchainsIds.compactMap { id in
-            testableBlockchains().first { $0.coinId == id }
+            testableBlockchains().first { $0.networkId == id }
         }
 
         return mainnetBlockchains.union(Set(betaTestingBlockchains))
@@ -57,9 +63,7 @@ struct SupportedBlockchains {
 
     /// Blockchains for test. They don't include in supported blockchains by default
     private func testableBlockchains() -> Set<Blockchain> {
-        [
-            .mantle(testnet: false),
-        ]
+        []
     }
 
     private func mainnetBlockchains() -> Set<Blockchain> {
@@ -93,7 +97,7 @@ struct SupportedBlockchains {
             .optimism(testnet: false),
             .ton(curve: ed25519Curve(for: version), testnet: false),
             .kava(testnet: false),
-            .kaspa,
+            .kaspa(testnet: false),
             .ravencoin(testnet: false),
             .cosmos(testnet: false),
             .terraV1,
@@ -127,6 +131,16 @@ struct SupportedBlockchains {
             .radiant(testnet: false),
             .bittensor(curve: ed25519Curve(for: version)),
             .koinos(testnet: false),
+            .mantle(testnet: false),
+            .cyber(testnet: false),
+            .blast(testnet: false),
+            .filecoin,
+            .internetComputer,
+            .sei(testnet: false),
+            .sui(curve: ed25519Curve(for: version), testnet: false),
+            .energyWebEVM(testnet: false),
+            .energyWebX(curve: ed25519Curve(for: version)),
+            .core(testnet: false),
         ]
     }
 
@@ -176,6 +190,13 @@ struct SupportedBlockchains {
             .taraxa(testnet: true),
             .base(testnet: true),
             .koinos(testnet: true),
+            .cyber(testnet: true),
+            .blast(testnet: true),
+            .sei(testnet: true),
+            .kaspa(testnet: true),
+            .sui(curve: ed25519Curve(for: version), testnet: true),
+            .energyWebEVM(testnet: true),
+            .core(testnet: true),
         ]
     }
 

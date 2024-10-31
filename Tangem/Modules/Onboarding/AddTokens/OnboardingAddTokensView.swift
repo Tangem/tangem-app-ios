@@ -32,7 +32,7 @@ struct OnboardingAddTokensView: View {
                 Spacer()
 
                 MainButton(settings: viewModel.buttonSettings)
-                    .padding(.bottom, 10)
+                    .padding(.bottom, 6)
                     .padding(.horizontal, 16)
                     .background(
                         ListFooterOverlayShadowView()
@@ -49,12 +49,15 @@ struct OnboardingAddTokensView: View {
     let fakeModel = FakeUserWalletModel.wallet3Cards
     let fakeAPIService = FakeTangemApiService()
     InjectedValues[\.tangemApiService] = fakeAPIService
-    let adapter = ManageTokensAdapter(settings: .init(
-        longHashesSupported: fakeModel.config.hasFeature(.longHashes),
-        existingCurves: fakeModel.config.existingCurves,
-        supportedBlockchains: fakeModel.config.supportedBlockchains,
-        userTokensManager: fakeModel.userTokensManager
-    ))
+    let adapter = ManageTokensAdapter(
+        settings: .init(
+            longHashesSupported: fakeModel.config.hasFeature(.longHashes),
+            existingCurves: fakeModel.config.existingCurves,
+            supportedBlockchains: fakeModel.config.supportedBlockchains,
+            userTokensManager: fakeModel.userTokensManager,
+            analyticsSourceRawValue: "preview"
+        )
+    )
 
     return OnboardingAddTokensView(viewModel: OnboardingAddTokensViewModel(adapter: adapter, delegate: nil))
 }

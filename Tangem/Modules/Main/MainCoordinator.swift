@@ -8,8 +8,10 @@
 
 import Foundation
 import Combine
+import CombineExt
 import BlockchainSdk
 import TangemVisa
+import SwiftUI
 
 class MainCoordinator: CoordinatorObject {
     let dismissAction: Action<Void>
@@ -19,21 +21,24 @@ class MainCoordinator: CoordinatorObject {
 
     @Injected(\.safariManager) private var safariManager: SafariManager
     @Injected(\.pushNotificationsInteractor) private var pushNotificationsInteractor: PushNotificationsInteractor
+    @Injected(\.mainBottomSheetUIManager) private var mainBottomSheetUIManager: MainBottomSheetUIManager
 
     // MARK: - Root view model
 
     @Published private(set) var mainViewModel: MainViewModel?
 
-    // MARK: - Child coordinators
+    // MARK: - Child coordinators (Push presentation)
 
     @Published var detailsCoordinator: DetailsCoordinator?
     @Published var tokenDetailsCoordinator: TokenDetailsCoordinator?
+    @Published var marketsTokenDetailsCoordinator: MarketsTokenDetailsCoordinator?
+    @Published var stakingDetailsCoordinator: StakingDetailsCoordinator?
+
+    // MARK: - Child coordinators (Other)
+
     @Published var modalOnboardingCoordinator: OnboardingCoordinator?
-    @Published var legacySendCoordinator: LegacySendCoordinator?
     @Published var sendCoordinator: SendCoordinator? = nil
     @Published var expressCoordinator: ExpressCoordinator? = nil
-    @Published var legacyTokenListCoordinator: LegacyTokenListCoordinator? = nil
-    @Published var stakingDetailsCoordinator: StakingDetailsCoordinator? = nil
 
     // MARK: - Child view models
 
@@ -49,7 +54,12 @@ class MainCoordinator: CoordinatorObject {
 
     @Published var modalOnboardingCoordinatorKeeper: Bool = false
     @Published var isAppStoreReviewRequested = false
+    @Published var isMarketsTooltipVisible = false
+
     private var safariHandle: SafariHandle?
+    private var pushNotificationsViewModelSubscription: AnyCancellable?
+
+    private let tooltipStorageProvider = TooltipStorageProvider()
 
     required init(
         dismissAction: @escaping Action<Void>,
@@ -73,6 +83,52 @@ class MainCoordinator: CoordinatorObject {
 
         swipeDiscoveryHelper.delegate = viewModel
         mainViewModel = viewModel
+
+        setupUI()
+        bind()
+    }
+
+    func hideMarketsTooltip() {
+        tooltipStorageProvider.marketsTooltipWasShown = true
+
+        withAnimation(.easeInOut(duration: Constants.tooltipAnimationDuration)) {
+            isMarketsTooltipVisible = false
+        }
+    }
+
+    // MARK: - Private Implementation
+
+    private func bind() {
+        guard pushNotificationsViewModelSubscription == nil else {
+            return
+        }
+
+        pushNotificationsViewModelSubscription = $pushNotificationsViewModel
+            .pairwise()
+            .filter { previous, current in
+                // Transition from a non-nil value to a nil value, i.e. dismissing the sheet
+                previous != nil && current == nil
+            }
+            .sink { previous, _ in
+                previous?.didDismissSheet()
+            }
+    }
+
+    private func setupUI() {
+        showMarketsTooltip()
+    }
+
+    private func showMarketsTooltip() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.tooltipAnimationDelay) { [weak self] in
+            guard let self else {
+                self?.isMarketsTooltipVisible = false
+                return
+            }
+
+            withAnimation(.easeInOut(duration: Constants.tooltipAnimationDuration)) {
+                self.isMarketsTooltipVisible = !self.tooltipStorageProvider.marketsTooltipWasShown
+            }
+        }
     }
 }
 
@@ -88,6 +144,8 @@ extension MainCoordinator {
 
 extension MainCoordinator: MainRoutable {
     func openDetails(for userWalletModel: UserWalletModel) {
+        mainBottomSheetUIManager.hide()
+
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.detailsCoordinator = nil
         }
@@ -132,7 +190,10 @@ extension MainCoordinator: MainRoutable {
 
 extension MainCoordinator: MultiWalletMainContentRoutable {
     func openTokenDetails(for model: WalletModel, userWalletModel: UserWalletModel) {
+        mainBottomSheetUIManager.hide()
+
         Analytics.log(.tokenIsTapped)
+
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.tokenDetailsCoordinator = nil
         }
@@ -165,19 +226,6 @@ extension MainCoordinator: MultiWalletMainContentRoutable {
             optionsEditing: optionsManager
         )
     }
-
-    func openManageTokens(with settings: LegacyManageTokensSettings, userTokensManager: UserTokensManager) {
-        let dismissAction: Action<Void> = { [weak self] _ in
-            self?.legacyTokenListCoordinator = nil
-        }
-
-        let coordinator = LegacyTokenListCoordinator(dismissAction: dismissAction)
-        coordinator.start(with: .init(
-            settings: settings,
-            userTokensManager: userTokensManager
-        ))
-        legacyTokenListCoordinator = coordinator
-    }
 }
 
 // MARK: - SingleTokenBaseRoutable
@@ -205,20 +253,8 @@ extension MainCoordinator: SingleTokenBaseRoutable {
         }
     }
 
-    func openSend(amountToSend: Amount, blockchainNetwork: BlockchainNetwork, userWalletModel: UserWalletModel, walletModel: WalletModel) {
+    func openSend(userWalletModel: UserWalletModel, walletModel: WalletModel) {
         guard SendFeatureProvider.shared.isAvailable else {
-            let coordinator = LegacySendCoordinator { [weak self] in
-                self?.legacySendCoordinator = nil
-            }
-            let options = LegacySendCoordinator.Options(
-                amountToSend: amountToSend,
-                destination: nil,
-                tag: nil,
-                blockchainNetwork: blockchainNetwork,
-                userWalletModel: userWalletModel
-            )
-            coordinator.start(with: options)
-            legacySendCoordinator = coordinator
             return
         }
 
@@ -242,20 +278,8 @@ extension MainCoordinator: SingleTokenBaseRoutable {
         sendCoordinator = coordinator
     }
 
-    func openSendToSell(amountToSend: Amount, destination: String, tag: String?, blockchainNetwork: BlockchainNetwork, userWalletModel: UserWalletModel, walletModel: WalletModel) {
+    func openSendToSell(amountToSend: Amount, destination: String, tag: String?, userWalletModel: UserWalletModel, walletModel: WalletModel) {
         guard SendFeatureProvider.shared.isAvailable else {
-            let coordinator = LegacySendCoordinator { [weak self] in
-                self?.legacySendCoordinator = nil
-            }
-            let options = LegacySendCoordinator.Options(
-                amountToSend: amountToSend,
-                destination: destination,
-                tag: tag,
-                blockchainNetwork: blockchainNetwork,
-                userWalletModel: userWalletModel
-            )
-            coordinator.start(with: options)
-            legacySendCoordinator = coordinator
             return
         }
 
@@ -328,6 +352,8 @@ extension MainCoordinator: SingleTokenBaseRoutable {
     }
 
     func openStaking(options: StakingDetailsCoordinator.Options) {
+        mainBottomSheetUIManager.hide()
+
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.stakingDetailsCoordinator = nil
         }
@@ -357,6 +383,15 @@ extension MainCoordinator: SingleTokenBaseRoutable {
         )
 
         tokenDetailsCoordinator = coordinator
+    }
+
+    func openMarketsTokenDetails(tokenModel: MarketsTokenModel) {
+        mainBottomSheetUIManager.hide()
+
+        let coordinator = MarketsTokenDetailsCoordinator()
+        coordinator.start(with: .init(info: tokenModel, style: .defaultNavigationStack))
+
+        marketsTokenDetailsCoordinator = coordinator
     }
 }
 
@@ -393,5 +428,12 @@ extension MainCoordinator: RateAppRoutable {
 extension MainCoordinator: PushNotificationsPermissionRequestDelegate {
     func didFinishPushNotificationOnboarding() {
         pushNotificationsViewModel = nil
+    }
+}
+
+extension MainCoordinator {
+    enum Constants {
+        static let tooltipAnimationDuration: Double = 0.3
+        static let tooltipAnimationDelay: Double = 1.5
     }
 }

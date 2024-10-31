@@ -10,7 +10,7 @@ import Foundation
 
 extension StakeKitDTO {
     enum Actions {
-        enum ActionType: String, Hashable, Decodable {
+        enum ActionType: String, Hashable, Codable {
             case stake = "STAKE"
             case unstake = "UNSTAKE"
             case claimRewards = "CLAIM_REWARDS"
@@ -26,17 +26,15 @@ extension StakeKitDTO {
             case revote = "REVOTE"
             case rebond = "REBOND"
             case migrate = "MIGRATE"
-            case unknown = "UNKNOWN"
         }
 
-        enum ActionStatus: String, Hashable, Decodable {
+        enum ActionStatus: String, Hashable, Codable {
             case canceled = "CANCELED"
             case created = "CREATED"
             case waitingForNext = "WAITING_FOR_NEXT"
             case processing = "PROCESSING"
             case failed = "FAILED"
             case success = "SUCCESS"
-            case unknown = "UNKNOWN"
         }
 
         struct ActionArgs: Decodable {
@@ -66,9 +64,9 @@ extension StakeKitDTO {
                 let bakcId: Required?
             }
 
-            struct TronResource: Codable {
-                let required: Bool
-                let options: [String]
+            enum TronResource: String, Codable {
+                case energy = "ENERGY"
+                case bandwidth = "BANDWIDTH"
             }
         }
 
@@ -85,12 +83,6 @@ extension StakeKitDTO {
                 let integrationId: String
                 let addresses: Address
                 let args: Args
-
-                struct Args: Encodable {
-                    let amount: String
-                    let validatorAddress: String?
-                    let validatorAddresses: [Address]
-                }
             }
 
             struct Response: Decodable {
@@ -101,8 +93,72 @@ extension StakeKitDTO {
                 let currentStepIndex: Int
                 let amount: String
                 let validatorAddress: String?
-                let validatorAddresses: [Address]?
+                let validatorAddresses: [String]?
                 let transactions: [Transaction.Response]?
+            }
+        }
+
+        enum Exit {
+            struct Request: Encodable {
+                let integrationId: String
+                let addresses: Address
+                let args: Args
+            }
+
+            struct Response: Decodable {
+                let id: String
+                let integrationId: String
+                let status: ActionStatus
+                let type: ActionType
+                let currentStepIndex: Int
+                let amount: String
+                let validatorAddress: String?
+                let validatorAddresses: [String]?
+                let transactions: [Transaction.Response]?
+            }
+        }
+
+        enum Pending {
+            struct Request: Encodable {
+                let type: Actions.ActionType
+                let integrationId: String
+                let passthrough: String
+                let addresses: Address
+                let args: Args
+            }
+
+            struct Response: Decodable {
+                let id: String
+                let integrationId: String
+                let status: ActionStatus
+                let type: ActionType
+                let currentStepIndex: Int
+                let amount: String
+                let validatorAddress: String?
+                let validatorAddresses: [String]?
+                let transactions: [Transaction.Response]?
+            }
+        }
+
+        struct Args: Encodable {
+            let amount: String
+            let validatorAddress: String?
+            let validatorAddresses: [String]?
+            let inputToken: Token?
+            let tronResource: String?
+
+            init(
+                amount: String,
+                validatorAddress: String?,
+                validatorAddresses: [String]?,
+                inputToken: StakeKitDTO.Token? = nil,
+                tronResource: String? = nil
+            ) {
+                self.amount = amount
+                self.validatorAddress = validatorAddress
+                self.validatorAddresses = validatorAddresses
+                self.inputToken = inputToken
+                self.tronResource = tronResource
             }
         }
     }

@@ -98,8 +98,8 @@ struct ExpressProviderFormatter {
     }
 
     func mapToLegalText(provider: ExpressProvider) -> AttributedString? {
-        let tos = Localization.expressTermsOfUse
-        let policy = Localization.expressPrivacyPolicy
+        let tos = Localization.commonTermsOfUse
+        let policy = Localization.commonPrivacyPolicy
 
         func makeBaseAttributedString(for text: String) -> AttributedString {
             var attributedString = AttributedString(text)

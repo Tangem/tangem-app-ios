@@ -16,28 +16,15 @@ struct MarketsCoordinatorView: CoordinatorView {
         if let model = coordinator.rootViewModel {
             NavigationView {
                 ZStack {
-                    VStack(spacing: 0.0) {
-                        header
-
-                        MarketsView(viewModel: model)
-                            .navigationLinks(links)
-                    }
+                    MarketsView(viewModel: model)
+                        .navigationLinks(links)
 
                     sheets
                 }
-                .onOverlayContentStateChange { state in
-                    coordinator.onOverlayContentStateChange(state)
-                }
+                .ignoresSafeArea(.container, edges: .top) // Without it, the content won't go into the safe area top zone on over-scroll
             }
-        }
-    }
-
-    @ViewBuilder
-    private var header: some View {
-        if let headerViewModel = coordinator.headerViewModel {
-            MainBottomSheetHeaderView(viewModel: headerViewModel)
-        } else {
-            EmptyView()
+            .navigationViewStyle(.stack)
+            .tint(Colors.Text.primary1)
         }
     }
 
@@ -45,18 +32,20 @@ struct MarketsCoordinatorView: CoordinatorView {
     private var sheets: some View {
         NavHolder()
             .bottomSheet(
-                item: $coordinator.marketsListOrderBottonSheetViewModel,
+                item: $coordinator.marketsListOrderBottomSheetViewModel,
                 backgroundColor: Colors.Background.tertiary
             ) {
-                MarketsListOrderBottonSheetView(viewModel: $0)
+                MarketsListOrderBottomSheetView(viewModel: $0)
             }
     }
 
     @ViewBuilder
     private var links: some View {
         NavHolder()
-            .navigation(item: $coordinator.tokenMarketsDetailsCoordinator) {
-                TokenMarketsDetailsCoordinatorView(coordinator: $0)
+            .navigation(item: $coordinator.tokenDetailsCoordinator) {
+                MarketsTokenDetailsCoordinatorView(coordinator: $0)
+                    .ignoresSafeArea(.container, edges: .top) // Without it, the content won't go into the safe area top zone on over-scroll
             }
+            .emptyNavigationLink()
     }
 }

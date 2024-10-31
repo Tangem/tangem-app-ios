@@ -19,20 +19,24 @@ class BannerNotificationManager {
     private weak var delegate: NotificationTapDelegate?
     private var promotionUpdateTask: Task<Void, Never>?
     private let placement: BannerPromotionPlacement
+    private let userWalletId: UserWalletId
 
-    init(placement: BannerPromotionPlacement, contextDataProvider: AnalyticsContextDataProvider?) {
+    init(userWalletId: UserWalletId, placement: BannerPromotionPlacement, contextDataProvider: AnalyticsContextDataProvider?) {
+        self.userWalletId = userWalletId
         self.placement = placement
         analyticsService.setup(with: self, contextDataProvider: contextDataProvider)
     }
 
-    private func setupOKX() {
+    private func setupRing() {
+        guard AppSettings.shared.userWalletIdsWithRing.contains(userWalletId.stringValue) else {
+            return
+        }
+
         switch placement {
         case .main:
-            setupPromotionNotification(programName: .okx)
-        case .tokenDetails(let tokenItem):
-            if swapAvailabilityProvider.canSwap(tokenItem: tokenItem) {
-                setupPromotionNotification(programName: .okx)
-            }
+            setupPromotionNotification(programName: .ring)
+        case .tokenDetails:
+            break
         }
     }
 
@@ -121,7 +125,7 @@ extension BannerNotificationManager: NotificationManager {
 
     func setupManager(with delegate: NotificationTapDelegate?) {
         self.delegate = delegate
-        setupOKX()
+        setupRing()
     }
 
     func dismissNotification(with id: NotificationViewId) {

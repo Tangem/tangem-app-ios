@@ -9,11 +9,7 @@
 import SwiftUI
 
 struct ExpressTokensListView: View {
-    @ObservedObject private var viewModel: ExpressTokensListViewModel
-
-    init(viewModel: ExpressTokensListViewModel) {
-        self.viewModel = viewModel
-    }
+    @ObservedObject var viewModel: ExpressTokensListViewModel
 
     var body: some View {
         ZStack(alignment: .top) {

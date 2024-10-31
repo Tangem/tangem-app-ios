@@ -14,7 +14,7 @@ enum AppConstants {
     static var webShopUrl: URL {
         var urlComponents = URLComponents(string: "https://buy.tangem.com")!
 
-        var queryItemsDict = [
+        let queryItemsDict = [
             "utm_source": "tangem",
             "utm_medium": "app",
             "app_instance_id": FirebaseAnalytics.Analytics.appInstanceID(),
@@ -44,9 +44,12 @@ enum AppConstants {
     static let minusSign = "−" // shorter stick
     static let dashSign = "—" // longer stick (em-dash)
     static let unbreakableSpace = "\u{00a0}"
+    static let infinitySign = "\u{221E}"
     static let dotSign = "•"
     static let rubCurrencyCode = "RUB"
     static let rubSign = "₽"
+    static let usdCurrencyCode = "USD"
+    static let usdSign = "$"
 
     static let sessionId = UUID().uuidString
 

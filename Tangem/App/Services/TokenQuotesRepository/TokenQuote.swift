@@ -14,6 +14,5 @@ struct TokenQuote: Hashable {
     let priceChange24h: Decimal?
     let priceChange7d: Decimal?
     let priceChange30d: Decimal?
-    let prices24h: [Double]?
     let currencyCode: String
 }

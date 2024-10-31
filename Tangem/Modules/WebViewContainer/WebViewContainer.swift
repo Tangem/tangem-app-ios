@@ -54,7 +54,7 @@ struct WebViewContainer: View {
             if viewModel.withNavigationBar {
                 webViewContent
                     .navigationBarTitle(Text(viewModel.title), displayMode: .inline)
-                    .background(Color.tangemBg.edgesIgnoringSafeArea(.all))
+                    .background(Colors.Old.tangemBg.edgesIgnoringSafeArea(.all))
             } else {
                 webViewContent
             }

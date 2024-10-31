@@ -12,8 +12,8 @@ import BlockchainSdk
 struct DemoWalletModelsFactory {
     private let factory: CommonWalletModelsFactory
 
-    init(derivationStyle: DerivationStyle?) {
-        factory = CommonWalletModelsFactory(derivationStyle: derivationStyle)
+    init(config: UserWalletConfig) {
+        factory = CommonWalletModelsFactory(config: config)
     }
 }
 

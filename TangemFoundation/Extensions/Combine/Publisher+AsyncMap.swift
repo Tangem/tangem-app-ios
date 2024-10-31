@@ -25,18 +25,24 @@ public extension Publishers {
 
         public func receive<S>(subscriber: S) where S: Subscriber, Upstream.Failure == S.Failure, Output == S.Input {
             upstream
-                .flatMap { output in
-                    let subject = PassthroughSubject<Output, Never>()
+                .flatMap { value in
+                    var task: Task<Void, Never>? = nil
 
-                    let task = Task(priority: priority) {
-                        let mapped = await transform(output)
-                        subject.send(mapped)
-                        subject.send(completion: .finished)
+                    let future = Deferred {
+                        Future<Output, Never> { promise in
+                            task = Task(priority: priority) {
+                                guard !Task.isCancelled else { return }
+
+                                let output = await transform(value)
+
+                                guard !Task.isCancelled else { return }
+
+                                promise(.success(output))
+                            }
+                        }
                     }
 
-                    return subject
-                        .handleEvents(receiveCancel: { task.cancel() })
-                        .eraseToAnyPublisher()
+                    return future.handleEvents(receiveCancel: task?.cancel)
                 }
                 .receive(subscriber: subscriber)
         }

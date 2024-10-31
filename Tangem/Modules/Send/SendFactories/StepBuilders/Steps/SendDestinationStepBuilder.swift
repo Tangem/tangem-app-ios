@@ -11,7 +11,7 @@ import BlockchainSdk
 
 struct SendDestinationStepBuilder {
     typealias IO = (input: SendDestinationInput, output: SendDestinationOutput)
-    typealias ReturnValue = (step: SendDestinationStep, interactor: SendDestinationInteractor)
+    typealias ReturnValue = (step: SendDestinationStep, interactor: SendDestinationInteractor, compact: SendDestinationCompactViewModel)
 
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
 
@@ -22,9 +22,9 @@ struct SendDestinationStepBuilder {
         io: IO,
         sendFeeInteractor: any SendFeeInteractor,
         sendQRCodeService: SendQRCodeService,
-        addressTextViewHeightModel: AddressTextViewHeightModel,
         router: SendDestinationRoutable
     ) -> ReturnValue {
+        let addressTextViewHeightModel = AddressTextViewHeightModel()
         let interactor = makeSendDestinationInteractor(io: io)
 
         let viewModel = makeSendDestinationViewModel(
@@ -41,7 +41,19 @@ struct SendDestinationStepBuilder {
             tokenItem: walletModel.tokenItem
         )
 
-        return (step: step, interactor: interactor)
+        let compact = makeSendDestinationCompactViewModel(
+            input: io.input,
+            addressTextViewHeightModel: addressTextViewHeightModel
+        )
+
+        return (step: step, interactor: interactor, compact: compact)
+    }
+
+    func makeSendDestinationCompactViewModel(
+        input: SendDestinationInput,
+        addressTextViewHeightModel: AddressTextViewHeightModel = .init()
+    ) -> SendDestinationCompactViewModel {
+        .init(input: input, addressTextViewHeightModel: addressTextViewHeightModel)
     }
 }
 
@@ -116,9 +128,11 @@ private extension SendDestinationStepBuilder {
                 .filter { walletModel in
                     let ignoredAddresses = self.walletModel.wallet.addresses.map { $0.value }
 
-                    return walletModel.blockchainNetwork.blockchain.networkId == self.walletModel.tokenItem.blockchain.networkId &&
-                        walletModel.isMainToken &&
-                        !ignoredAddresses.contains(walletModel.defaultAddress)
+                    let shouldBeIncluded = walletModel.wallet.blockchain.supportsCompound || !ignoredAddresses.contains(walletModel.defaultAddress)
+
+                    return walletModel.blockchainNetwork.blockchain.networkId == self.walletModel.tokenItem.blockchain.networkId
+                        && walletModel.isMainToken
+                        && shouldBeIncluded
                 }
                 .map { walletModel in
                     (name: userWalletModel.name, address: walletModel.defaultAddress)

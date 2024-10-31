@@ -15,18 +15,14 @@ struct DetentBottomSheetContainer<ContentView: View>: View {
 
     // MARK: - Internal
 
-    private let indicatorSize = CGSize(width: 32, height: 4)
-
     init(content: @escaping () -> ContentView) {
         self.content = content
     }
 
     var body: some View {
         VStack(spacing: 0) {
-            Capsule(style: .continuous)
-                .fill(Colors.Icon.inactive)
-                .frame(size: indicatorSize)
-                .padding(.vertical, 8)
+            GrabberViewFactory()
+                .makeSwiftUIView()
 
             content()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -38,9 +34,11 @@ struct DetentBottomSheetContainer<ContentView: View>: View {
 
 extension DetentBottomSheetContainer {
     struct Settings {
+        let background: Color
         let cornerRadius: CGFloat
 
-        init(cornerRadius: CGFloat = 24) {
+        init(background: Color = .primary, cornerRadius: CGFloat = 24) {
+            self.background = background
             self.cornerRadius = cornerRadius
         }
     }

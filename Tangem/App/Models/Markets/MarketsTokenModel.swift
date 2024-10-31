@@ -8,12 +8,13 @@
 
 import Foundation
 
-struct MarketsTokenModel: Identifiable, Decodable {
+struct MarketsTokenModel: Identifiable, Decodable, Equatable {
     let id: String
     let name: String
     let symbol: String
     let currentPrice: Decimal?
     let priceChangePercentage: [String: Decimal]
     let marketRating: Int?
-    let marketCap: UInt64?
+    let marketCap: Decimal?
+    let isUnderMarketCapLimit: Bool?
 }

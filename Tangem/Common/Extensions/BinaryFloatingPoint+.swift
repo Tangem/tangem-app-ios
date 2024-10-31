@@ -18,4 +18,27 @@ extension BinaryFloatingPoint {
         let sign = self < 0.0 ? -1.0 : 1.0
         return Self(sign * pow(sign * Double(self), 0.75))
     }
+
+    /// Interpolates the value of the receiver to a fractional progress within the given range:
+    ///    - `range.lowerBound` corresponds to a progress of 0.0
+    ///    - `range.upperBound` corresponds to a progress of 1.0
+    ///    - Values between `range.lowerBound` and `range.upperBound` are interpolated linearly
+    func interpolatedProgress(inRange range: ClosedRange<Self>) -> Self {
+        assert(self >= 0.0)
+        assert(self <= 1.0)
+        assert(range.lowerBound >= 0.0)
+        assert(range.upperBound <= 1.0)
+
+        if self <= range.lowerBound {
+            return 0.0
+        }
+
+        if self < range.upperBound {
+            let rangeLength = range.upperBound - range.lowerBound
+
+            return (self - range.lowerBound) / rangeLength
+        }
+
+        return 1.0
+    }
 }

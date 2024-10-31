@@ -20,8 +20,6 @@ struct BottomSheetContainer<ContentView: View>: View {
     @State private var isBottomSheetContainerGestureActive = false
     @State private var shouldCheckBottomSheetContainerGesture = true
 
-    private let indicatorSize = CGSize(width: 32, height: 4)
-
     private var opacity: CGFloat {
         max(0, settings.backgroundOpacity * stateObject.dragPercentage)
     }
@@ -109,10 +107,8 @@ struct BottomSheetContainer<ContentView: View>: View {
 
     private var indicator: some View {
         ZStack {
-            Capsule(style: .continuous)
-                .fill(Colors.Icon.inactive)
-                .frame(size: indicatorSize)
-                .padding(.top, 8)
+            GrabberViewFactory()
+                .makeSwiftUIView()
                 .padding(.bottom, 10)
         }
         .frame(maxWidth: .infinity)

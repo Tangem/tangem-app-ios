@@ -18,10 +18,26 @@
         <string>%li cartes</string>
       </dict>
     </dict>
+    <key>common_days_no_param</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>jour</string>
+        <key>other</key>
+        <string>jours</string>
+      </dict>
+    </dict>
     <key>manage_tokens_number_of_wallets_ios</key>
     <dict>
       <key>NSStringLocalizedFormatKey</key>
-      <string>%li %#@portefeuilles_en tout@</string>
+      <string>%li %#@total_wallets@</string>
       <key>total_wallets</key>
       <dict>
         <key>NSStringFormatSpecTypeKey</key>
@@ -32,6 +48,22 @@
         <string>%li portefeuille</string>
         <key>other</key>
         <string>%li portefeuilles</string>
+      </dict>
+    </dict>
+    <key>markets_token_details_amount_exchanges</key>
+    <dict>
+      <key>NSStringLocalizedFormatKey</key>
+      <string>%#@format@</string>
+      <key>format</key>
+      <dict>
+        <key>NSStringFormatSpecTypeKey</key>
+        <string>NSStringPluralRuleType</string>
+        <key>NSStringFormatValueTypeKey</key>
+        <string>li</string>
+        <key>one</key>
+        <string>%li échange</string>
+        <key>other</key>
+        <string>%li échanges</string>
       </dict>
     </dict>
     <key>markets_token_details_based_on_ratings</key>
@@ -45,9 +77,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Based on %li rating</string>
+        <string>Basé sur %li évaluation</string>
         <key>other</key>
-        <string>Based on %li ratings</string>
+        <string>Basé sur %li évaluations</string>
       </dict>
     </dict>
     <key>onboarding_seed_generate_message_words_count</key>
@@ -61,7 +93,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Empty</string>
+        <string></string>
         <key>other</key>
         <string>Écrivez ces %li mots dans l'ordre indiqué ci-dessous et conservez-les dans un endroit sûr et secret.</string>
       </dict>
@@ -77,7 +109,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Empty</string>
+        <string></string>
         <key>other</key>
         <string>%li mots</string>
       </dict>
@@ -125,9 +157,9 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Utilisez votre carte pour obtenir une adresse pour le réseau %li</string>
+        <string>Utilisez votre carte ou bague pour obtenir une adresse pour le réseau %li</string>
         <key>other</key>
-        <string>Utilisez votre carte pour obtenir des adresses pour les réseaux %li</string>
+        <string>Utilisez votre carte ou bague pour obtenir des adresses pour les réseaux %li</string>
       </dict>
     </dict>
   </dict>

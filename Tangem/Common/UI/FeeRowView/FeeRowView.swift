@@ -11,86 +11,113 @@ import SwiftUI
 struct FeeRowView: View {
     let viewModel: FeeRowViewModel
 
-    private var namespace: Namespace.ID?
-    private var optionNamespaceId: String?
-    private var amountNamespaceId: String?
-
-    private let regularFont = Fonts.Regular.subheadline
-    private let boldFont = Fonts.Bold.subheadline
+    private var optionGeometryEffect: GeometryEffect?
+    private var amountGeometryEffect: GeometryEffect?
 
     init(viewModel: FeeRowViewModel) {
         self.viewModel = viewModel
     }
 
     var body: some View {
-        Button(action: viewModel.isSelected.toggle) {
-            HStack(spacing: 8) {
-                HStack(spacing: 8) {
-                    viewModel.option.icon.image
-                        .resizable()
-                        .renderingMode(.template)
-                        .frame(width: 24, height: 24)
-                        .foregroundColor(iconColor)
-
-                    Text(viewModel.option.title)
-                        .style(font, color: Colors.Text.primary1)
-                }
-                .matchedGeometryEffectOptional(id: optionNamespaceId, in: namespace)
-
-                Spacer()
-
-                if let cryptoAmount = viewModel.cryptoAmount {
-                    feeAmount(cryptoAmount: cryptoAmount, fiatAmount: viewModel.fiatAmount)
-                        .frame(minWidth: viewModel.isLoading ? 70 : 0)
-                        .skeletonable(isShown: viewModel.isLoading)
-                        .matchedGeometryEffectOptional(id: amountNamespaceId, in: namespace)
-                }
+        switch viewModel.style {
+        case .plain:
+            content
+        case .selectable(let isSelected):
+            Button(action: isSelected.toggle) {
+                content
             }
-            .padding(.vertical, 12)
+        }
+    }
+
+    private var content: some View {
+        HStack(spacing: 8) {
+            leadingView
+                .matchedGeometryEffect(optionGeometryEffect)
+
+            Spacer()
+
+            trailingView
+                .lineLimit(1)
+                .matchedGeometryEffect(amountGeometryEffect)
+        }
+        .padding(.vertical, 12)
+    }
+
+    @ViewBuilder
+    private var leadingView: some View {
+        HStack(spacing: 8) {
+            viewModel.option.icon.image
+                .resizable()
+                .renderingMode(.template)
+                .frame(width: 24, height: 24)
+                .foregroundColor(iconColor)
+
+            Text(viewModel.option.title)
+                .style(leadingFont, color: Colors.Text.primary1)
         }
     }
 
     @ViewBuilder
-    private func feeAmount(cryptoAmount: String, fiatAmount: String?) -> some View {
+    private var trailingView: some View {
+        switch viewModel.components {
+        case .loading:
+            SkeletonView()
+                .frame(width: 70, height: 15)
+        case .loaded(let components):
+            trailingView(for: components)
+        case .failedToLoad:
+            Text(AppConstants.dashSign)
+                .style(leadingFont, color: Colors.Text.primary1)
+                .layoutPriority(1)
+        }
+    }
+
+    func trailingView(for components: FormattedFeeComponents) -> some View {
         HStack(spacing: 4) {
-            Text(cryptoAmount)
-                .style(font, color: Colors.Text.primary1)
-                .lineLimit(1)
+            Text(components.cryptoFee)
+                .style(leadingFont, color: Colors.Text.primary1)
                 .layoutPriority(1)
 
-            if let fiatAmount {
+            if let fiatFee = components.fiatFee {
                 Text(AppConstants.dotSign)
-                    .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
+                    .style(Fonts.RegularStatic.footnote, color: Colors.Text.primary1)
                     .layoutPriority(3)
 
-                Text(fiatAmount)
-                    .style(regularFont, color: Colors.Text.tertiary)
-                    .lineLimit(1)
+                Text(fiatFee)
+                    .style(Fonts.RegularStatic.subheadline, color: Colors.Text.tertiary)
                     .layoutPriority(2)
             }
         }
     }
 
-    private var iconColor: Color {
-        viewModel.isSelected.value ? Colors.Icon.accent : Colors.Icon.informative
+    private var leadingFont: Font {
+        switch viewModel.style {
+        case .plain:
+            Fonts.RegularStatic.subheadline
+        case .selectable(let isSelected):
+            isSelected.value ? Fonts.BoldStatic.subheadline : Fonts.RegularStatic.subheadline
+        }
     }
 
-    private var font: Font {
-        viewModel.isSelected.value ? boldFont : regularFont
+    private var iconColor: Color {
+        switch viewModel.style {
+        case .plain:
+            Colors.Icon.accent
+        case .selectable(let isSelected):
+            isSelected.value ? Colors.Icon.accent : Colors.Icon.informative
+        }
     }
 }
 
+// MARK: - Setupable
+
 extension FeeRowView: Setupable {
-    func setNamespace(_ namespace: Namespace.ID) -> Self {
-        map { $0.namespace = namespace }
+    func optionGeometryEffect(_ effect: GeometryEffect?) -> Self {
+        map { $0.optionGeometryEffect = effect }
     }
 
-    func setOptionNamespaceId(_ optionNamespaceId: String?) -> Self {
-        map { $0.optionNamespaceId = optionNamespaceId }
-    }
-
-    func setAmountNamespaceId(_ amountNamespaceId: String?) -> Self {
-        map { $0.amountNamespaceId = amountNamespaceId }
+    func amountGeometryEffect(_ effect: GeometryEffect?) -> Self {
+        map { $0.amountGeometryEffect = effect }
     }
 }
 
@@ -102,58 +129,18 @@ struct ExpressFeeRowView_Preview: PreviewProvider {
             [
                 FeeRowViewModel(
                     option: .slow,
-                    formattedFeeComponents: .loaded(.init(cryptoFee: "0.359817123123123123123 MATIC", fiatFee: "123123123123120.22 $")),
-                    isSelected: .init(get: { option == .slow }, set: { _ in option = .slow })
+                    components: .loaded(.init(cryptoFee: "0.359817123123123123123 MATIC", fiatFee: "123123123123120.22 $")),
+                    style: .selectable(isSelected: .init(get: { option == .slow }, set: { _ in option = .slow }))
                 ),
                 FeeRowViewModel(
                     option: .market,
-                    formattedFeeComponents: .loaded(.init(cryptoFee: "0.159817 MATIC", fiatFee: "0.22 $")),
-                    isSelected: .init(get: { option == .market }, set: { _ in option = .market })
+                    components: .loaded(.init(cryptoFee: "0.159817 MATIC", fiatFee: "0.22 $")),
+                    style: .selectable(isSelected: .init(get: { option == .market }, set: { _ in option = .market }))
                 ),
                 FeeRowViewModel(
                     option: .fast,
-                    formattedFeeComponents: .loaded(.init(cryptoFee: "0.159817 MATIC", fiatFee: "0.22 $")),
-                    isSelected: .init(get: { option == .fast }, set: { _ in option = .fast })
-                ),
-            ]
-        }
-
-        private var viewModels2: [FeeRowViewModel] {
-            [
-                FeeRowViewModel(
-                    option: .slow,
-                    formattedFeeComponents: .loaded(.init(cryptoFee: "0.359817123123123123123 MATIC", fiatFee: "123123123123120.22 $")),
-                    isSelected: .init(get: { option == .slow }, set: { _ in option = .slow })
-                ),
-                FeeRowViewModel(
-                    option: .market,
-                    formattedFeeComponents: .loaded(.init(cryptoFee: "0.159812312312312317 MATIC", fiatFee: "0.22 $")),
-                    isSelected: .init(get: { option == .market }, set: { _ in option = .market })
-                ),
-                FeeRowViewModel(
-                    option: .fast,
-                    formattedFeeComponents: .loaded(.init(cryptoFee: "0.159817 MATIC", fiatFee: "123123123123120.22 $")),
-                    isSelected: .init(get: { option == .fast }, set: { _ in option = .fast })
-                ),
-            ]
-        }
-
-        private var viewModels3: [FeeRowViewModel] {
-            [
-                FeeRowViewModel(
-                    option: .slow,
-                    formattedFeeComponents: .loaded(.init(cryptoFee: "0.35981712312312312313 MATIC", fiatFee: "123123123123120.22 $")),
-                    isSelected: .init(get: { option == .slow }, set: { _ in option = .slow })
-                ),
-                FeeRowViewModel(
-                    option: .market,
-                    formattedFeeComponents: .loading,
-                    isSelected: .init(get: { option == .market }, set: { _ in option = .market })
-                ),
-                FeeRowViewModel(
-                    option: .fast,
-                    formattedFeeComponents: .failedToLoad(error: ExpressFeeProviderError.feeNotFound),
-                    isSelected: .init(get: { option == .fast }, set: { _ in option = .fast })
+                    components: .loaded(.init(cryptoFee: "0.159817 MATIC", fiatFee: "0.22 $")),
+                    style: .selectable(isSelected: .init(get: { option == .fast }, set: { _ in option = .fast }))
                 ),
             ]
         }
@@ -161,14 +148,6 @@ struct ExpressFeeRowView_Preview: PreviewProvider {
         var body: some View {
             GroupedScrollView(spacing: 14) {
                 GroupedSection(viewModels) {
-                    FeeRowView(viewModel: $0)
-                }
-
-                GroupedSection(viewModels2) {
-                    FeeRowView(viewModel: $0)
-                }
-
-                GroupedSection(viewModels3) {
                     FeeRowView(viewModel: $0)
                 }
             }

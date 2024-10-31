@@ -35,14 +35,14 @@ struct TokenDetailsCoordinatorView: CoordinatorView {
             .navigation(item: $coordinator.stakingDetailsCoordinator) {
                 StakingDetailsCoordinatorView(coordinator: $0)
             }
+            .navigation(item: $coordinator.marketsTokenDetailsCoordinator) {
+                MarketsTokenDetailsCoordinatorView(coordinator: $0)
+            }
     }
 
     @ViewBuilder
     private var sheets: some View {
         NavHolder()
-            .sheet(item: $coordinator.legacySendCoordinator) {
-                LegacySendCoordinatorView(coordinator: $0)
-            }
             .sheet(item: $coordinator.sendCoordinator) {
                 SendCoordinatorView(coordinator: $0)
             }

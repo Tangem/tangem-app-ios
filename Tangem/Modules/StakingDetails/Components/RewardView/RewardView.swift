@@ -13,10 +13,9 @@ struct RewardView: View {
     let data: RewardViewData
 
     var body: some View {
-        HStack(spacing: 4) {
-            content
-        }
-        .infinityFrame(axis: .horizontal, alignment: .leading)
+        content
+            .padding(.vertical, 8)
+            .infinityFrame(axis: .horizontal, alignment: .leading)
     }
 
     @ViewBuilder
@@ -24,16 +23,34 @@ struct RewardView: View {
         switch data.state {
         case .noRewards:
             Text(Localization.stakingDetailsNoRewardsToClaim)
-                .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
-        case .rewards(let fiatFormatted, let cryptoFormatted):
-            Text(fiatFormatted)
-                .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
 
-            Text(AppConstants.dotSign)
-                .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+        case .automaticRewards:
+            Text(Localization.stakingDetailsAutoClaimingRewardsDailyText)
+                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
 
-            Text(cryptoFormatted)
-                .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
+        case .rewards(let claimable, let fiatFormatted, let cryptoFormatted, let action):
+            Button(action: action) {
+                HStack(spacing: 4) {
+                    SensitiveText(fiatFormatted)
+                        .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+
+                    Text(AppConstants.dotSign)
+                        .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+
+                    SensitiveText(cryptoFormatted)
+                        .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
+
+                    Spacer(minLength: 12)
+
+                    if claimable {
+                        Assets.chevron.image
+                            .renderingMode(.template)
+                            .foregroundColor(Colors.Icon.informative)
+                    }
+                }
+            }
+            .disabled(!claimable)
         }
     }
 }
@@ -46,10 +63,7 @@ struct RewardView: View {
             [
                 RewardViewData(state: .noRewards),
                 RewardViewData(
-                    state: .rewards(
-                        fiatFormatted: "24.12$",
-                        cryptoFormatted: "23.421 SOL"
-                    )
+                    state: .rewards(claimable: true, fiatFormatted: "24.12$", cryptoFormatted: "23.421 SOL", action: {})
                 ),
             ]
         ) {

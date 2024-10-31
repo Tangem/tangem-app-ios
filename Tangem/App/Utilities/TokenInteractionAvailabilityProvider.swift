@@ -95,7 +95,16 @@ struct TokenInteractionAvailabilityProvider {
              .base,
              .bittensor,
              .joystream,
-             .koinos:
+             .koinos,
+             .internetComputer,
+             .cyber,
+             .blast,
+             .filecoin,
+             .sei,
+             .sui,
+             .energyWebEVM,
+             .energyWebX,
+             .core:
 
             // Checking that we have at least one valid (non-empty) address
             //

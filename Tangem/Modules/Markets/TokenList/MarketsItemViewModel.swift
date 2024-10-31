@@ -15,121 +15,176 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
     // MARK: - Published
 
     @Published var priceValue: String = ""
+    @Published var priceChangeAnimation: ForegroundBlinkAnimationModifier.Change = .neutral
     @Published var priceChangeState: TokenPriceChangeView.State = .empty
-    // Charts will be implement in https://tangem.atlassian.net/browse/IOS-6775
     @Published var charts: [Double]? = nil
 
     var marketRating: String?
-    var marketCap: String?
 
     // MARK: - Properties
 
-    let id: String
+    let index: Int
+    let tokenId: String
     let imageURL: URL?
     let name: String
     let symbol: String
-    let didTapAction: () -> Void
+    let marketCap: String
+    let didTapAction: (() -> Void)?
 
     // MARK: - Private Properties
-
-    private weak var filterProvider: MarketsListDataFilterProvider?
 
     private var bag = Set<AnyCancellable>()
 
     private let priceChangeUtility = PriceChangeUtility()
-    private let priceFormatter = CommonTokenPriceFormatter()
-    private let marketCapFormatter = MarketCapFormatter()
+    private let priceFormatter = MarketsTokenPriceFormatter()
+
+    private weak var prefetchDataSource: MarketsListPrefetchDataSource?
+    private weak var filterProvider: MarketsListDataFilterProvider?
 
     // MARK: - Init
 
-    init(_ data: InputData, chartsProvider: MarketsListChartsHistoryProvider, filterProvider: MarketsListDataFilterProvider) {
-        id = data.id
-        imageURL = IconURLBuilder().tokenIconURL(id: id, size: .large)
-        name = data.name
-        symbol = data.symbol.uppercased()
-        didTapAction = data.didTapAction
+    init(
+        index: Int,
+        tokenModel: MarketsTokenModel,
+        marketCapFormatter: MarketCapFormatter,
+        prefetchDataSource: MarketsListPrefetchDataSource?,
+        chartsProvider: MarketsListChartsHistoryProvider,
+        filterProvider: MarketsListDataFilterProvider,
+        onTapAction: (() -> Void)?
+    ) {
+        self.filterProvider = filterProvider
+        self.prefetchDataSource = prefetchDataSource
 
-        if let marketRating = data.marketRating {
+        self.index = index
+        tokenId = tokenModel.id
+        imageURL = IconURLBuilder().tokenIconURL(id: tokenModel.id, size: .large)
+        name = tokenModel.name
+        symbol = tokenModel.symbol.uppercased()
+
+        didTapAction = onTapAction
+        marketCap = marketCapFormatter.formatMarketCap(tokenModel.marketCap)
+
+        if let marketRating = tokenModel.marketRating {
             self.marketRating = "\(marketRating)"
         }
 
-        if let marketCap = data.marketCap {
-            self.marketCap = marketCapFormatter.formatDecimal(Decimal(marketCap))
-        }
+        setupPriceInfo(
+            price: tokenModel.currentPrice,
+            priceChangePercent: tokenModel.priceChangePercentage[filterProvider.currentFilterValue.interval.rawValue]
+        )
+        findAndAssignChartsValue(from: chartsProvider.items, with: filterProvider.currentFilterValue.interval)
 
-        setupPriceInfo(price: data.priceValue, priceChangeValue: data.priceChangeStateValue)
+        bindToIntervalUpdates()
         bindToQuotesUpdates()
-
-        self.filterProvider = filterProvider
         bindWithProviders(charts: chartsProvider, filter: filterProvider)
+    }
+
+    func onAppear() {
+        prefetchDataSource?.prefetchRows(at: index)
+    }
+
+    func onDisappear() {
+        prefetchDataSource?.cancelPrefetchingForRows(at: index)
     }
 
     // MARK: - Private Implementation
 
-    private func setupPriceInfo(price: Decimal?, priceChangeValue: Decimal?) {
-        priceValue = priceFormatter.formatFiatBalance(price)
-        priceChangeState = priceChangeUtility.convertToPriceChangeState(changePercent: priceChangeValue)
+    private func setupPriceInfo(price: Decimal?, priceChangePercent: Decimal?) {
+        priceValue = priceFormatter.formatPrice(price)
+        priceChangeState = priceChangeUtility.convertToPriceChangeState(changePercent: priceChangePercent)
+    }
+
+    private func bindToIntervalUpdates() {
+        filterProvider?.filterPublisher
+            .dropFirst()
+            .removeDuplicates()
+            .withWeakCaptureOf(self)
+            .sink { viewModel, filter in
+                viewModel.updatePrice(by: viewModel.quotesRepository.quotes[viewModel.tokenId], with: filter.interval)
+            }
+            .store(in: &bag)
     }
 
     private func bindToQuotesUpdates() {
         quotesRepository.quotesPublisher
             .withWeakCaptureOf(self)
             .compactMap { viewModel, quotes in
-                quotes[viewModel.id]
+                quotes[viewModel.tokenId]
             }
+            .receive(on: DispatchQueue.main)
+            .withPrevious()
             .withWeakCaptureOf(self)
-            .sink { viewModel, quoteInfo in
-                let priceChangeValue: Decimal?
-                switch viewModel.filterProvider?.currentFilterValue.interval {
-                case .day:
-                    priceChangeValue = quoteInfo.priceChange24h
-                case .week:
-                    priceChangeValue = quoteInfo.priceChange7d
-                case .month:
-                    priceChangeValue = quoteInfo.priceChange30d
-                default:
-                    priceChangeValue = nil
-                }
-                viewModel.setupPriceInfo(price: quoteInfo.price, priceChangeValue: priceChangeValue)
+            .sink { elements in
+                let (viewModel, (previousValue, newQuote)) = elements
+
+                viewModel.updatePrice(by: newQuote, with: viewModel.filterProvider?.currentFilterValue.interval)
+                viewModel.priceChangeAnimation = .calculateChange(from: previousValue?.price, to: newQuote.price)
             }
             .store(in: &bag)
     }
 
     private func bindWithProviders(charts: MarketsListChartsHistoryProvider, filter: MarketsListDataFilterProvider) {
-        charts
-            .$items
+        charts.$items
+            .combineLatest(filter.filterPublisher)
             .receive(on: DispatchQueue.main)
-            .delay(for: 0.3, scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
-            .sink(receiveValue: { viewModel, charts in
-                guard let chart = charts.first(where: { $0.key == viewModel.id }) else {
-                    return
-                }
+            .sink(receiveValue: { elements in
+                let (viewModel, (charts, filter)) = elements
 
-                let chartsDoubleConvertedValues = viewModel.mapHistoryPreviewItemModelToChartsList(chart.value[filter.currentFilterValue.interval])
-                viewModel.charts = chartsDoubleConvertedValues
+                viewModel.findAndAssignChartsValue(from: charts, with: filter.interval)
             })
             .store(in: &bag)
     }
 
-    private func mapHistoryPreviewItemModelToChartsList(_ chartPreviewItem: MarketsChartsHistoryItemModel?) -> [Double]? {
-        guard let chartPreviewItem else { return nil }
+    private func findAndAssignChartsValue(
+        from chartsDictionary: [String: [MarketsPriceIntervalType: MarketsChartModel]],
+        with interval: MarketsPriceIntervalType
+    ) {
+        guard let chart = chartsDictionary.first(where: { $0.key == tokenId }) else {
+            charts = nil
+            return
+        }
 
-        let chartsDecimalValues: [Decimal] = chartPreviewItem.prices.values.map { $0 }
-        let chartsDoubleConvertedValues: [Double] = chartsDecimalValues.map { NSDecimalNumber(decimal: $0).doubleValue }
-        return chartsDoubleConvertedValues
+        let model = chart.value[interval]
+        charts = makeChartsValues(from: model)
     }
-}
 
-extension MarketsItemViewModel {
-    struct InputData {
-        let id: String
-        let name: String
-        let symbol: String
-        let marketCap: UInt64?
-        let marketRating: Int?
-        let priceValue: Decimal?
-        let priceChangeStateValue: Decimal?
-        let didTapAction: () -> Void
+    private func makeChartsValues(from model: MarketsChartModel?) -> [Double]? {
+        guard let model else {
+            return nil
+        }
+
+        do {
+            let mapper = MarketsTokenHistoryChartMapper()
+
+            return try mapper
+                .mapAndSortValues(from: model)
+                .map(\.price.doubleValue)
+        } catch {
+            AppLog.shared.error(error)
+            return nil
+        }
+    }
+
+    private func updatePrice(by newQuote: TokenQuote?, with interval: MarketsPriceIntervalType?) {
+        guard let newQuote else {
+            setupPriceInfo(price: nil, priceChangePercent: nil)
+            return
+        }
+
+        let priceChangePercent: Decimal?
+
+        switch interval {
+        case .day:
+            priceChangePercent = newQuote.priceChange24h
+        case .week:
+            priceChangePercent = newQuote.priceChange7d
+        case .month:
+            priceChangePercent = newQuote.priceChange30d
+        default:
+            priceChangePercent = nil
+        }
+
+        setupPriceInfo(price: newQuote.price, priceChangePercent: priceChangePercent)
     }
 }

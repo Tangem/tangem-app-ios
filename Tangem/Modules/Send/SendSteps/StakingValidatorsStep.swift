@@ -13,24 +13,37 @@ import SwiftUI
 class StakingValidatorsStep {
     private let viewModel: StakingValidatorsViewModel
     private let interactor: StakingValidatorsInteractor
+    private let sendFeeLoader: SendFeeLoader
 
     init(
         viewModel: StakingValidatorsViewModel,
-        interactor: StakingValidatorsInteractor
+        interactor: StakingValidatorsInteractor,
+        sendFeeLoader: SendFeeLoader
     ) {
         self.viewModel = viewModel
         self.interactor = interactor
+        self.sendFeeLoader = sendFeeLoader
     }
 }
 
 // MARK: - SendStep
 
 extension StakingValidatorsStep: SendStep {
-    var title: String? { Localization.sendRecipientLabel }
+    var title: String? { Localization.stakingValidator }
 
     var type: SendStepType { .validators(viewModel) }
 
+    var sendStepViewAnimatable: any SendStepViewAnimatable { viewModel }
+
     var isValidPublisher: AnyPublisher<Bool, Never> {
         .just(output: true)
+    }
+
+    func willDisappear(next step: SendStep) {
+        guard step.type.isSummary else {
+            return
+        }
+
+        sendFeeLoader.updateFees()
     }
 }

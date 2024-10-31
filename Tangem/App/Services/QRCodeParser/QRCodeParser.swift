@@ -41,7 +41,6 @@ struct QRCodeParser {
                 // According to BIP-0021, the value is specified in decimals. No conversion needed
                 if let decimalValue = parseDecimal(parameterValue) {
                     result.amount = makeAmount(with: decimalValue)
-                    result.amountText = parameterValue
                 }
             case .message, .memo:
                 result.memo = parameterValue.removingPercentEncoding
@@ -64,7 +63,6 @@ struct QRCodeParser {
                 if let valueInSmallestDenomination = parseDecimal(parameterValue) {
                     let value = valueInSmallestDenomination / pow(Decimal(10), decimalCount)
                     result.amount = makeAmount(with: value)
-                    result.amountText = value.stringValue
                 }
             }
         }
@@ -143,8 +141,6 @@ extension QRCodeParser {
     struct Result {
         var destination: String
         var amount: Amount?
-        @available(*, deprecated, message: "For use in Legacy Send only, use `amount` instead. Remove with LegacySendView")
-        var amountText: String?
         var memo: String?
     }
 }

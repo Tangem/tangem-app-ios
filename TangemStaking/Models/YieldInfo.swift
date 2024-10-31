@@ -10,18 +10,18 @@ import Foundation
 
 public struct YieldInfo: Hashable {
     public let id: String
+    public let isAvailable: Bool
 
     // Rewards
-    public let apy: Decimal
     public let rewardType: RewardType
-    public let rewardRate: Decimal
+    public let rewardRateValues: RewardRateValues
 
     // Actions
-    public let minimumRequirement: Decimal
+    public let enterMinimumRequirement: Decimal
+    public let exitMinimumRequirement: Decimal
 
     // Validators
     public let validators: [ValidatorInfo]
-    public let defaultValidator: String?
 
     // Metadata
     public let item: StakingTokenItem
@@ -33,12 +33,12 @@ public struct YieldInfo: Hashable {
 
     public init(
         id: String,
-        apy: Decimal,
+        isAvailable: Bool,
         rewardType: RewardType,
-        rewardRate: Decimal,
-        minimumRequirement: Decimal,
+        rewardRateValues: RewardRateValues,
+        enterMinimumRequirement: Decimal,
+        exitMinimumRequirement: Decimal,
         validators: [ValidatorInfo],
-        defaultValidator: String?,
         item: StakingTokenItem,
         unbondingPeriod: Period,
         warmupPeriod: Period,
@@ -46,12 +46,12 @@ public struct YieldInfo: Hashable {
         rewardScheduleType: RewardScheduleType
     ) {
         self.id = id
-        self.apy = apy
+        self.isAvailable = isAvailable
         self.rewardType = rewardType
-        self.rewardRate = rewardRate
-        self.minimumRequirement = minimumRequirement
+        self.rewardRateValues = rewardRateValues
+        self.enterMinimumRequirement = enterMinimumRequirement
+        self.exitMinimumRequirement = exitMinimumRequirement
         self.validators = validators
-        self.defaultValidator = defaultValidator
         self.item = item
         self.unbondingPeriod = unbondingPeriod
         self.warmupPeriod = warmupPeriod

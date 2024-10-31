@@ -19,16 +19,16 @@ final class MarketsListDataProvider {
     // MARK: Published Properties
 
     @Published var items: [MarketsTokenModel] = []
-    @Published var isLoading: Bool = false
+    @Published var lastEvent: Event = .idle
 
     // MARK: - Public Properties
 
     var lastSearchTextValue: String? {
-        return lastSearchText
+        lastSearchText
     }
 
     var lastFilterValue: Filter? {
-        return lastFilter
+        lastFilter
     }
 
     // Tells if all items have been loaded
@@ -41,23 +41,28 @@ final class MarketsListDataProvider {
             return true
         }
 
-        let countPages = totalTokensCount / limitPerPage
-        return currentOffset < countPages
+        return currentOffset <= totalTokensCount
     }
 
     // MARK: Private Properties
 
-    // Tracks last page ofsset loaded. Used to load next page (current + 1)
+    private(set) var isLoading: Bool = false
+
+    // Tracks last page offset loaded. Used to load next page (current + 1)
     private var currentOffset: Int = 0
 
     // Limit of records per page
-    private let limitPerPage: Int = 20
+    private let limitPerPage: Int = 40
+
+    private let repeatRequestDelayInSeconds: TimeInterval = 10
 
     // Total tokens value by pages
     private var totalTokensCount: Int?
 
     private var lastSearchText: String?
     private var lastFilter: Filter?
+    private var taskCancellable: AnyCancellable?
+    private var scheduledFetchTask: AnyCancellable?
 
     private var selectedCurrencyCode: String {
         AppSettings.shared.selectedCurrencyCode
@@ -65,59 +70,138 @@ final class MarketsListDataProvider {
 
     // MARK: - Implementation
 
-    func reset(_ searchText: String?, with filter: Filter?) {
-        AppLog.shared.debug("\(String(describing: self)) reset market list tokens")
+    func reset() {
+        log("Reset market list tokens")
+
+        lastSearchText = nil
+        lastFilter = nil
+
+        clearSearchResults()
+
+        lastEvent = .cleared
+        isLoading = false
+    }
+
+    func fetch(_ searchText: String, with filter: Filter) {
+        lastEvent = .loading
+        isLoading = true
+
+        if lastSearchText != searchText || lastFilter != filter {
+            clearSearchResults()
+        }
+
+        guard scheduledFetchTask == nil else {
+            log("Ignoring fetch request. Waiting for scheduled task")
+            return
+        }
 
         lastSearchText = searchText
         lastFilter = filter
 
-        items = []
-        currentOffset = 0
-        totalTokensCount = nil
+        taskCancellable?.cancel()
 
-        isLoading = false
-    }
-
-    func fetch(_ searchText: String, with filter: Filter, generalCoins: Bool = false) {
-        if lastSearchText != searchText || filter != lastFilter {
-            reset(searchText, with: filter)
-        }
-
-        isLoading = true
-
-        runTask(in: self) { provider in
-            let response: MarketsDTO.General.Response
-
+        taskCancellable = runTask(in: self) { provider in
             do {
-                response = try await provider.loadItems(searchText, with: filter, generalCoins: generalCoins)
+                let searchText = searchText.trimmed()
+
+                let response = try await provider.loadItems(searchText, with: filter)
+                await provider.handleFetchResult(.success(response))
             } catch {
-                AppLog.shared.debug("\(String(describing: provider)) loaded market list tokens did receive error \(error.localizedDescription)")
-                provider.isLoading = false
-                return
+                await provider.handleFetchResult(.failure(error))
             }
-
-            provider.currentOffset = response.offset + response.limit
-            provider.totalTokensCount = response.total
-
-            provider.isLoading = false
-
-            self.items.append(contentsOf: response.tokens)
-        }
+        }.eraseToAnyCancellable()
     }
 
     func fetchMore() {
         if let lastSearchText, let lastFilter {
             fetch(lastSearchText, with: lastFilter)
         } else {
-            AppLog.shared.debug("\(String(describing: self)) error optional parameter lastSearchText or lastFilter")
+            log("Failed to fetch more items for Markets list. Reason: missing lastSearchText or lastFilter")
         }
+    }
+
+    private func log<T>(_ message: @autoclosure () -> T) {
+        AppLog.shared.debug("[MarketsListDataProvider] - \(message())")
+    }
+
+    private func clearSearchResults() {
+        items = []
+        currentOffset = 0
+        totalTokensCount = nil
+
+        if scheduledFetchTask != nil {
+            scheduledFetchTask?.cancel()
+            scheduledFetchTask = nil
+        }
+
+        lastEvent = .startInitialFetch
+    }
+}
+
+// MARK: - Events
+
+extension MarketsListDataProvider {
+    enum Event: Equatable {
+        case loading
+        case idle
+        case failedToFetchData
+        case appendedItems(items: [MarketsTokenModel], lastPage: Bool)
+        case startInitialFetch
+        case cleared
+    }
+}
+
+// MARK: - Handling fetch response
+
+private extension MarketsListDataProvider {
+    func handleFetchResult(_ result: Result<MarketsDTO.General.Response, Error>) async {
+        do {
+            let response = try result.get()
+            currentOffset = response.offset + response.limit
+            totalTokensCount = response.total
+
+            log("Load new items finished. Is loading set to false.")
+            isLoading = false
+            log("Loaded new items for market list. New total tokens count: \(items.count + response.tokens.count)")
+
+            items.append(contentsOf: response.tokens)
+            lastEvent = .appendedItems(items: response.tokens, lastPage: currentOffset >= response.total)
+        } catch {
+            if error.isCancellationError {
+                return
+            }
+
+            lastEvent = .failedToFetchData
+            log("Failed to load next page. Error: \(error)")
+            if items.isEmpty {
+                isLoading = false
+            } else {
+                scheduleRetryForFailedFetchRequest()
+            }
+        }
+    }
+
+    func scheduleRetryForFailedFetchRequest() {
+        log("Scheduling fetch more task")
+        guard scheduledFetchTask == nil else {
+            log("Task was previously scheduled. Ignoring request")
+            return
+        }
+
+        log("Retry fetch more task scheduled. Request delay: \(repeatRequestDelayInSeconds)")
+        scheduledFetchTask = Task.delayed(withDelay: repeatRequestDelayInSeconds, operation: { [weak self] in
+            guard let self else { return }
+
+            scheduledFetchTask = nil
+            fetchMore()
+        }).eraseToAnyCancellable()
     }
 }
 
 // MARK: Private
 
 private extension MarketsListDataProvider {
-    func loadItems(_ searchText: String, with filter: Filter, generalCoins: Bool) async throws -> MarketsDTO.General.Response {
+    func loadItems(_ searchText: String, with filter: Filter) async throws -> MarketsDTO.General.Response {
         let searchText = searchText.trimmed()
 
         let requestModel = MarketsDTO.General.Request(
@@ -126,11 +210,10 @@ private extension MarketsListDataProvider {
             limit: limitPerPage,
             interval: filter.interval,
             order: filter.order,
-            generalCoins: generalCoins,
             search: searchText
         )
 
-        AppLog.shared.debug("\(String(describing: self)) loading market list tokens with request \(requestModel.parameters.debugDescription)")
+        log("Loading market list tokens with request \(requestModel.parameters.debugDescription)")
 
         return try await tangemApiService.loadCoinsList(requestModel: requestModel)
     }
@@ -138,10 +221,10 @@ private extension MarketsListDataProvider {
 
 extension MarketsListDataProvider {
     final class Filter: Hashable, Equatable {
-        var interval: MarketsPriceIntervalType = .day
-        var order: MarketsListOrderType = .rating
+        let interval: MarketsPriceIntervalType
+        let order: MarketsListOrderType
 
-        init(interval: MarketsPriceIntervalType, order: MarketsListOrderType) {
+        init(interval: MarketsPriceIntervalType = .day, order: MarketsListOrderType = .rating) {
             self.interval = interval
             self.order = order
         }

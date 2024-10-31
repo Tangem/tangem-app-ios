@@ -102,7 +102,7 @@ struct OnboardingTextButtonView: View {
             }
 
             buttons
-                .padding(.bottom, 8)
+                .padding(.bottom, 6)
                 .padding(.horizontal, 16)
         }
         .frame(maxHeight: 304)

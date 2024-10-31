@@ -70,8 +70,8 @@ public struct SkeletonModifier: ViewModifier {
 
                 SkeletonView()
                     .frame(size: size)
-                    .padding(paddings)
                     .cornerRadius(radius)
+                    .padding(paddings)
                     .hidden(!isShown)
                     .layoutPriority(skeletonViewLayoutPriority)
             }

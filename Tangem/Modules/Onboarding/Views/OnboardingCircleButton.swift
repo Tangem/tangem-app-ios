@@ -79,7 +79,7 @@ struct OnboardingCircleButton: View {
                         Assets.Onboarding.refresh.image
                             .resizable()
                             .renderingMode(.template)
-                            .foregroundColor(state == .refreshButton ? .tangemGrayDark6 : backgroundColor)
+                            .foregroundColor(state == .refreshButton ? Colors.Old.tangemGrayDark6 : backgroundColor)
                             .frame(size: size.refreshImageSize)
                     )
             })
@@ -115,7 +115,7 @@ struct OnboardingCircleButton: View {
     var body: some View {
         Circle()
             .strokeBorder(style: StrokeStyle(lineWidth: 1))
-            .foregroundColor(state == .doneCheckmark ? Colors.Icon.accent : .tangemGrayLight4)
+            .foregroundColor(state == .doneCheckmark ? Colors.Icon.accent : Colors.Old.tangemGrayLight4)
             .background(backgroundView)
             .frame(size: buttonSize)
     }

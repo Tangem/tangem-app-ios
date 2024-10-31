@@ -25,27 +25,23 @@ extension MarketsDTO.Coins {
         let symbol: String
         let active: Bool
         let currentPrice: Decimal
-        let priceChangePercentage: [String: Decimal]
-        let networks: [Network]?
+        // We need to use here Decimal? otherwise iOS 17.6 and iOS 18 Beta can't parse response with null values
+        let priceChangePercentage: [String: Decimal?]
+        let networks: [NetworkModel]?
         let shortDescription: String?
         let fullDescription: String?
-        let insights: [Insight]?
-        let links: MarketsTokenDetailsLinks
+        let exchangesAmount: Int?
+        let insights: Insights?
+        let links: MarketsTokenDetailsLinks?
         let metrics: MarketsTokenDetailsMetrics?
-        let pricePerformance: [String: MarketsPricePerformanceData]
+        let pricePerformance: [String: MarketsPricePerformanceData]?
     }
 
-    struct Network: Codable {
-        let networkId: String
-        let exchangeable: Bool
-        let contractAddress: String?
-        let decimalCount: Int?
-    }
-
-    struct Insight: Codable {
-        let holdersChange: [String: Decimal]
-        let liquidityChange: [String: Decimal]
-        let buyPressureChange: [String: Decimal]
-        let experiencedBuyerChange: [String: Decimal]
+    struct Insights: Codable {
+        let holdersChange: [String: Decimal?]
+        let liquidityChange: [String: Decimal?]
+        let buyPressureChange: [String: Decimal?]
+        let experiencedBuyerChange: [String: Decimal?]
+        let networks: [MarketsInsightsNetworkInfo]?
     }
 }

@@ -19,7 +19,7 @@ class CommonDerivationManager {
     private var bag = Set<AnyCancellable>()
     private let pendingDerivations: CurrentValueSubject<[Data: [DerivationPath]], Never> = .init([:])
 
-    internal init(keysRepository: KeysRepository, userTokenListManager: UserTokenListManager) {
+    init(keysRepository: KeysRepository, userTokenListManager: UserTokenListManager) {
         self.keysRepository = keysRepository
         self.userTokenListManager = userTokenListManager
         bind()

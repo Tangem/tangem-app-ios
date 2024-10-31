@@ -12,13 +12,22 @@ struct SendFinishStepBuilder {
     typealias ReturnValue = SendFinishStep
 
     let walletModel: WalletModel
-    let builder: SendDependenciesBuilder
 
     func makeSendFinishStep(
-        addressTextViewHeightModel: AddressTextViewHeightModel?
+        input: SendFinishInput,
+        actionType: SendFlowActionType,
+        sendDestinationCompactViewModel: SendDestinationCompactViewModel?,
+        sendAmountCompactViewModel: SendAmountCompactViewModel?,
+        stakingValidatorsCompactViewModel: StakingValidatorsCompactViewModel?,
+        sendFeeCompactViewModel: SendFeeCompactViewModel?
     ) -> ReturnValue {
         let viewModel = makeSendFinishViewModel(
-            addressTextViewHeightModel: addressTextViewHeightModel
+            input: input,
+            actionType: actionType,
+            sendDestinationCompactViewModel: sendDestinationCompactViewModel,
+            sendAmountCompactViewModel: sendAmountCompactViewModel,
+            stakingValidatorsCompactViewModel: stakingValidatorsCompactViewModel,
+            sendFeeCompactViewModel: sendFeeCompactViewModel
         )
 
         let step = SendFinishStep(viewModel: viewModel)
@@ -30,22 +39,21 @@ struct SendFinishStepBuilder {
 // MARK: - Private
 
 private extension SendFinishStepBuilder {
-    func makeSendFinishViewModel(addressTextViewHeightModel: AddressTextViewHeightModel?) -> SendFinishViewModel {
+    func makeSendFinishViewModel(
+        input: SendFinishInput,
+        actionType: SendFlowActionType,
+        sendDestinationCompactViewModel: SendDestinationCompactViewModel?,
+        sendAmountCompactViewModel: SendAmountCompactViewModel?,
+        stakingValidatorsCompactViewModel: StakingValidatorsCompactViewModel?,
+        sendFeeCompactViewModel: SendFeeCompactViewModel?
+    ) -> SendFinishViewModel {
         SendFinishViewModel(
-            settings: .init(tokenItem: walletModel.tokenItem),
-            addressTextViewHeightModel: addressTextViewHeightModel,
-            sectionViewModelFactory: makeSendSummarySectionViewModelFactory(),
-            feeAnalyticsParameterBuilder: builder.makeFeeAnalyticsParameterBuilder()
-        )
-    }
-
-    func makeSendSummarySectionViewModelFactory() -> SendSummarySectionViewModelFactory {
-        SendSummarySectionViewModelFactory(
-            feeCurrencySymbol: walletModel.feeTokenItem.currencySymbol,
-            feeCurrencyId: walletModel.feeTokenItem.currencyId,
-            isFeeApproximate: builder.isFeeApproximate(),
-            currencyId: walletModel.tokenItem.currencyId,
-            tokenIconInfo: builder.makeTokenIconInfo()
+            settings: .init(tokenItem: walletModel.tokenItem, actionType: actionType),
+            input: input,
+            sendDestinationCompactViewModel: sendDestinationCompactViewModel,
+            sendAmountCompactViewModel: sendAmountCompactViewModel,
+            stakingValidatorsCompactViewModel: stakingValidatorsCompactViewModel,
+            sendFeeCompactViewModel: sendFeeCompactViewModel
         )
     }
 }

@@ -18,6 +18,14 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
     @Published var thirdCardSettings: AnimatedViewSettings = .zero
     @Published var canDisplayCardImage: Bool = false
 
+    var primaryLabel: String {
+        if backupService.isPrimaryRing {
+            Localization.commonOriginRing
+        } else {
+            Localization.commonOriginCard
+        }
+    }
+
     private var stackCalculator: StackCalculator = .init()
     private var fanStackCalculator: FanStackCalculator = .init()
     private var accessCode: String?
@@ -44,8 +52,10 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
             return ""
         case .backupCards:
             switch backupServiceState {
-            case .finalizingPrimaryCard: return Localization.commonOriginCard
-            case .finalizingBackupCard(let index): return Localization.onboardingTitleBackupCardFormat(index)
+            case .finalizingPrimaryCard: return backupService.isPrimaryRing ? Localization.commonOriginRing : Localization.commonOriginCard
+            case .finalizingBackupCard:
+                return backupService.isFinalizingRing ? Localization.onboardingTitleBackupRing :
+                    Localization.onboardingTitleBackupCard
             default: break
             }
         default: break
@@ -70,6 +80,10 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
         case .backupCards:
             switch backupServiceState {
             case .finalizingPrimaryCard:
+                if backupService.isFinalizingRing {
+                    return Localization.onboardingSubtitleScanRing
+                }
+
                 guard let primaryCardId = backupService.primaryCard?.cardId,
                       let cardIdFormatted = CardIdFormatter(style: cardIdDisplayFormat).string(from: primaryCardId) else {
                     return super.subtitle
@@ -77,7 +91,12 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
 
                 return Localization.onboardingSubtitleScanPrimaryCardFormat(cardIdFormatted)
             case .finalizingBackupCard(let index):
-                let cardId = backupService.backupCardIds[index - 1]
+                if backupService.isFinalizingRing {
+                    return Localization.onboardingSubtitleScanRing
+                }
+
+                let backupCardIds = backupService.backupCards.map { $0.cardId }
+                let cardId = backupCardIds[index - 1]
                 guard let cardIdFormatted = CardIdFormatter(style: cardIdDisplayFormat).string(from: cardId) else {
                     return super.subtitle
                 }
@@ -111,12 +130,6 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
         switch currentStep {
         case .selectBackupCards:
             return Localization.onboardingButtonAddBackupCard
-        case .backupCards:
-            switch backupServiceState {
-            case .finalizingPrimaryCard: return Localization.onboardingButtonBackupOrigin
-            case .finalizingBackupCard(let index): return Localization.onboardingButtonBackupCardFormat(index)
-            default: break
-            }
         case .success:
             return input.isStandalone ? Localization.commonContinue : super.mainButtonTitle
         default: break
@@ -144,8 +157,8 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
         switch currentStep {
         case .backupCards:
             switch backupServiceState {
-            case .finalizingPrimaryCard: return Localization.onboardingButtonBackupOrigin
-            case .finalizingBackupCard(let index): return Localization.onboardingButtonBackupCardFormat(index)
+            case .finalizingPrimaryCard, .finalizingBackupCard:
+                return backupService.isFinalizingRing ? Localization.onboardingButtonBackupRing : Localization.onboardingButtonBackupCard
             default: break
             }
         case .success:
@@ -290,10 +303,6 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
             canDisplayCardImage = true
         }
 
-        if let customOnboardingImage = input.cardInput.config?.customOnboardingImage {
-            self.customOnboardingImage = customOnboardingImage.image
-        }
-
         bind()
     }
 
@@ -327,19 +336,6 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
             .store(in: &bag)
 
         subscribeToScreenshots()
-    }
-
-    private func loadImageForRestoredbackup(cardId: String, cardPublicKey: Data) {
-        CardImageProvider()
-            .loadImage(cardId: cardId, cardPublicKey: cardPublicKey)
-            .map { $0.image }
-            .assign(to: \.cardImage, on: self, ownership: .weak)
-            .store(in: &bag)
-    }
-
-    override func loadImage(supportsOnlineImage: Bool, cardId: String?, cardPublicKey: Data?) {
-        super.loadImage(supportsOnlineImage: supportsOnlineImage, cardId: cardId, cardPublicKey: cardPublicKey)
-        secondImage = nil
     }
 
     override func setupContainer(with size: CGSize) {
@@ -535,18 +531,6 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
         backupService.discardIncompletedBackup()
     }
 
-    override func handleUserWalletOnFinish() throws {
-        if AppSettings.shared.saveAccessCodes,
-           let accessCode = accessCode,
-           let cardIds = cardIds {
-            let accessCodeData: Data = accessCode.sha256()
-            let accessCodeRepository = AccessCodeRepository()
-            try accessCodeRepository.save(accessCodeData, for: cardIds)
-        }
-
-        try super.handleUserWalletOnFinish()
-    }
-
     private func fireConfettiIfNeeded() {
         if currentStep.requiresConfetti {
             fireConfetti()
@@ -691,8 +675,8 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
                 Future { [weak self] promise in
                     self?.backupService.addBackupCard { result in
                         switch result {
-                        case .success:
-                            promise(.success(()))
+                        case .success(let card):
+                            promise(.success(card))
                         case .failure(let error):
                             promise(.failure(error))
                         }
@@ -708,7 +692,8 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
                     self?.isMainButtonBusy = false
                 }
                 self?.stepPublisher = nil
-            }, receiveValue: { [weak self] (_: Void, _: Notification) in
+            }, receiveValue: { [weak self] card, _ in
+                self?.loadImage(for: card)
                 self?.updateStep()
                 withAnimation {
                     self?.isMainButtonBusy = false
@@ -716,35 +701,75 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
             })
     }
 
+    private func loadImage(for card: Card) {
+        let input = OnboardingInput.ImageLoadInput(
+            supportsOnlineImage: true,
+            cardId: card.cardId,
+            cardPublicKey: card.cardPublicKey
+        )
+
+        switch backupService.addedBackupCardsCount {
+        case 1:
+            loadSecondImage(imageLoadInput: input)
+        case 2:
+            loadThirdImage(imageLoadInput: input)
+        default:
+            break
+        }
+    }
+
     private func backupCard() {
+        // Sometimes a step state does not update for an unknown reason.
+        if backupServiceState == .finished {
+            goToNextStep()
+            return
+        }
+
         isMainButtonBusy = true
 
-        // Ring onboarding. Set custom image for first step
-        if let customOnboardingImage = input.cardInput.config?.customScanImage,
-           backupService.currentState == .finalizingPrimaryCard {
-            backupService.config.style.scanTagImage = .image(uiImage: customOnboardingImage.uiImage, verticalOffset: 0)
-        }
+        let ringUtil = RingUtil()
+
+        // Ring onboarding. Set custom image for ring
+        backupService.config.setupForProduct(backupService.isFinalizingRing ? .ring : .card)
+
+        let containsRing = backupService.allBatchIds.contains(where: { ringUtil.isRing(batchId: $0) })
 
         stepPublisher =
             Deferred {
                 Future { [weak self] promise in
                     guard let self else { return }
 
-                    backupService.proceedBackup { result in
+                    backupService.proceedBackup { [weak self] result in
+                        guard let self else { return }
+
                         // Ring onboarding. Reset to defaults
-                        self.backupService.config.style.scanTagImage = .genericCard
+                        backupService.config.setupForProduct(.any)
 
                         switch result {
                         case .success(let updatedCard):
-                            self.userWalletModel?.addAssociatedCard(updatedCard.cardId)
-                            self.pendingBackupManager.onProceedBackup(updatedCard)
-                            if updatedCard.cardId == self.backupService.primaryCard?.cardId {
-                                self.userWalletModel?.onBackupUpdate(type: .primaryCardBackuped(card: updatedCard))
+                            userWalletModel?.addAssociatedCard(updatedCard.cardId)
+                            pendingBackupManager.onProceedBackup(updatedCard)
+                            if updatedCard.cardId == backupService.primaryCard?.cardId {
+                                userWalletModel?.onBackupUpdate(type: .primaryCardBackuped(card: updatedCard))
                             }
 
-                            if self.backupServiceState == .finished {
-                                self.pendingBackupManager.onBackupCompleted()
-                                self.userWalletModel?.onBackupUpdate(type: .backupCompleted)
+                            if backupServiceState == .finished {
+                                // Ring onboarding. Save userWalletId with ring, except interrupted backups
+                                if containsRing,
+                                   let userWalletId = userWalletModel?.userWalletId.stringValue {
+                                    AppSettings.shared.userWalletIdsWithRing.insert(userWalletId)
+                                }
+
+                                if AppSettings.shared.saveAccessCodes,
+                                   let accessCode = accessCode,
+                                   let cardIds = cardIds {
+                                    let accessCodeData: Data = accessCode.sha256()
+                                    let accessCodeRepository = AccessCodeRepository()
+                                    try? accessCodeRepository.save(accessCodeData, for: cardIds)
+                                }
+
+                                pendingBackupManager.onBackupCompleted()
+                                userWalletModel?.onBackupUpdate(type: .backupCompleted)
                                 Analytics.log(
                                     event: .backupFinished,
                                     params: [.cardsCount: String((updatedCard.backupStatus?.backupCardsCount ?? 0) + 1)]
@@ -759,6 +784,7 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
                 }
             }
             .combineLatest(NotificationCenter.didBecomeActivePublisher)
+            .delay(for: 0.1, scheduler: DispatchQueue.main)
             .first()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
@@ -834,6 +860,34 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
             self?.isMainButtonBusy = false
             withExtendedLifetime(interactor) {}
         }
+    }
+
+    private func loadSecondImage(imageLoadInput: OnboardingInput.ImageLoadInput) {
+        loadImage(
+            supportsOnlineImage: imageLoadInput.supportsOnlineImage,
+            cardId: imageLoadInput.cardId,
+            cardPublicKey: imageLoadInput.cardPublicKey
+        )
+        .sink { [weak self] image in
+            withAnimation {
+                self?.secondImage = image
+            }
+        }
+        .store(in: &bag)
+    }
+
+    private func loadThirdImage(imageLoadInput: OnboardingInput.ImageLoadInput) {
+        loadImage(
+            supportsOnlineImage: imageLoadInput.supportsOnlineImage,
+            cardId: imageLoadInput.cardId,
+            cardPublicKey: imageLoadInput.cardPublicKey
+        )
+        .sink { [weak self] image in
+            withAnimation {
+                self?.thirdImage = image
+            }
+        }
+        .store(in: &bag)
     }
 }
 
@@ -965,5 +1019,44 @@ extension NotificationCenter {
 }
 
 private extension BackupService {
-    var allCardIds: [String] { [primaryCard?.cardId].compactMap { $0 } + backupCardIds }
+    var allCardIds: [String] {
+        [primaryCard?.cardId].compactMap { $0 } + backupCards.map { $0.cardId }
+    }
+
+    // for ring onboarding
+    var allBatchIds: [String] {
+        [primaryCard?.batchId].compactMap { $0 } + backupCards.compactMap { $0.batchId }
+    }
+
+    var isFinalizingRing: Bool {
+        if let finalizingBatchId,
+           RingUtil().isRing(batchId: finalizingBatchId) {
+            return true
+        }
+
+        return false
+    }
+
+    var isPrimaryRing: Bool {
+        if let primaryCardBatchId = primaryCard?.batchId {
+            return RingUtil().isRing(batchId: primaryCardBatchId)
+        }
+
+        return false
+    }
+
+    // for ring onboarding
+    private var finalizingBatchId: String? {
+        if currentState == .finalizingPrimaryCard,
+           let batchId = primaryCard?.batchId {
+            return batchId
+        }
+
+        if case .finalizingBackupCard(let index) = currentState,
+           let batchId = backupCards[index - 1].batchId {
+            return batchId
+        }
+
+        return nil
+    }
 }

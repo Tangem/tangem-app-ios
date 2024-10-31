@@ -12,6 +12,8 @@ struct SellFlowBaseBuilder {
     let userWalletModel: UserWalletModel
     let walletModel: WalletModel
 
+    let sendDestinationStepBuilder: SendDestinationStepBuilder
+    let sendAmountStepBuilder: SendAmountStepBuilder
     let sendFeeStepBuilder: SendFeeStepBuilder
     let sendSummaryStepBuilder: SendSummaryStepBuilder
     let sendFinishStepBuilder: SendFinishStepBuilder
@@ -19,12 +21,14 @@ struct SellFlowBaseBuilder {
 
     func makeSendViewModel(sellParameters: PredefinedSellParameters, router: SendRoutable) -> SendViewModel {
         let notificationManager = builder.makeSendNotificationManager()
-        let addressTextViewHeightModel = AddressTextViewHeightModel()
-        let sendTransactionDispatcher = builder.makeSendTransactionDispatcher()
+        let sendModel = builder.makeSendModel(predefinedSellParameters: sellParameters)
 
-        let sendModel = builder.makeSendModel(
-            sendTransactionDispatcher: sendTransactionDispatcher,
-            predefinedSellParameters: sellParameters
+        let sendDestinationCompactViewModel = sendDestinationStepBuilder.makeSendDestinationCompactViewModel(
+            input: sendModel
+        )
+
+        let sendAmountCompactViewModel = sendAmountStepBuilder.makeSendAmountCompactViewModel(
+            input: sendModel
         )
 
         let fee = sendFeeStepBuilder.makeFeeSendStep(
@@ -35,14 +39,23 @@ struct SellFlowBaseBuilder {
 
         let summary = sendSummaryStepBuilder.makeSendSummaryStep(
             io: (input: sendModel, output: sendModel),
-            sendTransactionDispatcher: sendTransactionDispatcher,
+            actionType: .send,
+            descriptionBuilder: builder.makeSendTransactionSummaryDescriptionBuilder(),
             notificationManager: notificationManager,
-            addressTextViewHeightModel: addressTextViewHeightModel,
-            editableType: .disable
+            editableType: .disable,
+            sendDestinationCompactViewModel: sendDestinationCompactViewModel,
+            sendAmountCompactViewModel: sendAmountCompactViewModel,
+            stakingValidatorsCompactViewModel: nil,
+            sendFeeCompactViewModel: fee.compact
         )
 
         let finish = sendFinishStepBuilder.makeSendFinishStep(
-            addressTextViewHeightModel: addressTextViewHeightModel
+            input: sendModel,
+            actionType: .send,
+            sendDestinationCompactViewModel: sendDestinationCompactViewModel,
+            sendAmountCompactViewModel: sendAmountCompactViewModel,
+            stakingValidatorsCompactViewModel: nil,
+            sendFeeCompactViewModel: fee.compact
         )
 
         // We have to set dependicies here after all setups is completed
@@ -62,14 +75,8 @@ struct SellFlowBaseBuilder {
         // notificationManager.setup(input: sendModel)
         // notificationManager.setupManager(with: sendModel)
 
-        summary.step.setup(sendDestinationInput: sendModel)
-        summary.step.setup(sendAmountInput: sendModel)
-        summary.step.setup(sendFeeInput: sendModel)
-
-        finish.setup(sendDestinationInput: sendModel)
-        finish.setup(sendAmountInput: sendModel)
-        finish.setup(sendFeeInput: sendModel)
-        finish.setup(sendFinishInput: sendModel)
+        // We have to do it after sendModel fully setup
+        fee.compact.bind(input: sendModel)
 
         let stepsManager = CommonSellStepsManager(
             feeStep: fee.step,
@@ -79,17 +86,15 @@ struct SellFlowBaseBuilder {
 
         summary.step.set(router: stepsManager)
 
-        let interactor = CommonSendBaseInteractor(
-            input: sendModel,
-            output: sendModel,
-            walletModel: walletModel,
-            emailDataProvider: userWalletModel
-        )
+        let interactor = CommonSendBaseInteractor(input: sendModel, output: sendModel)
 
         let viewModel = SendViewModel(
             interactor: interactor,
             stepsManager: stepsManager,
             userWalletModel: userWalletModel,
+            alertBuilder: builder.makeSendAlertBuilder(),
+            dataBuilder: builder.makeSendBaseDataBuilder(input: sendModel),
+            tokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem,
             coordinator: router
         )

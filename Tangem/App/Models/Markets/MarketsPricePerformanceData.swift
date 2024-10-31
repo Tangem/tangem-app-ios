@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct MarketsPricePerformanceData: Codable {
-    let lowPrice: Decimal
-    let highPrice: Decimal
+struct MarketsPricePerformanceData: Codable, Equatable {
+    let lowPrice: Decimal?
+    let highPrice: Decimal?
 }

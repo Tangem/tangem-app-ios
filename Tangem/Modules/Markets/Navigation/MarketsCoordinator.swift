@@ -22,12 +22,11 @@ class MarketsCoordinator: CoordinatorObject {
 
     // MARK: - Coordinators
 
-    @Published var tokenMarketsDetailsCoordinator: TokenMarketsDetailsCoordinator?
+    @Published var tokenDetailsCoordinator: MarketsTokenDetailsCoordinator?
 
     // MARK: - Child ViewModels
 
-    @Published private(set) var headerViewModel: MainBottomSheetHeaderViewModel?
-    @Published var marketsListOrderBottonSheetViewModel: MarketsListOrderBottonSheetViewModel?
+    @Published var marketsListOrderBottomSheetViewModel: MarketsListOrderBottomSheetViewModel?
 
     // MARK: - Init
 
@@ -39,19 +38,10 @@ class MarketsCoordinator: CoordinatorObject {
     // MARK: - Implementation
 
     func start(with options: MarketsCoordinator.Options) {
-        let headerViewModel = MainBottomSheetHeaderViewModel()
-        self.headerViewModel = headerViewModel
-        rootViewModel = .init(searchTextPublisher: headerViewModel.enteredSearchTextPublisher, coordinator: self)
-    }
-
-    func onOverlayContentStateChange(_ state: OverlayContentStateObserver.State) {
-        if state.isBottom {
-            rootViewModel?.onBottomSheetDisappear()
-            headerViewModel?.onBottomSheetDisappear()
-        } else {
-            rootViewModel?.onBottomSheetAppear()
-            headerViewModel?.onBottomSheetAppear(isTapGesture: state.isTapGesture)
-        }
+        rootViewModel = .init(
+            quotesRepositoryUpdateHelper: CommonMarketsQuotesUpdateHelper(),
+            coordinator: self
+        )
     }
 }
 
@@ -61,13 +51,19 @@ extension MarketsCoordinator {
 
 extension MarketsCoordinator: MarketsRoutable {
     func openFilterOrderBottonSheet(with provider: MarketsListDataFilterProvider) {
-        marketsListOrderBottonSheetViewModel = .init(from: provider)
+        marketsListOrderBottomSheetViewModel = .init(from: provider, onDismiss: { [weak self] in
+            self?.marketsListOrderBottomSheetViewModel = nil
+        })
     }
 
     func openTokenMarketsDetails(for tokenInfo: MarketsTokenModel) {
-        let tokenMarketsDetailsCoordinator = TokenMarketsDetailsCoordinator()
-        tokenMarketsDetailsCoordinator.start(with: .init(info: tokenInfo))
+        let tokenDetailsCoordinator = MarketsTokenDetailsCoordinator(
+            dismissAction: { [weak self] in
+                self?.tokenDetailsCoordinator = nil
+            }
+        )
+        tokenDetailsCoordinator.start(with: .init(info: tokenInfo, style: .marketsSheet))
 
-        self.tokenMarketsDetailsCoordinator = tokenMarketsDetailsCoordinator
+        self.tokenDetailsCoordinator = tokenDetailsCoordinator
     }
 }

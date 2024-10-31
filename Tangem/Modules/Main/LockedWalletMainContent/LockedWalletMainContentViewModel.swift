@@ -15,7 +15,7 @@ protocol MainLockedUserWalletDelegate: AnyObject {
 class LockedWalletMainContentViewModel: ObservableObject {
     lazy var lockedNotificationInput: NotificationViewInput = {
         let factory = NotificationsFactory()
-        let event: WarningEvent = .walletLocked
+        let event: GeneralNotificationEvent = .walletLocked
         return .init(
             style: .tappable { [weak self] _ in
                 self?.onLockedWalletNotificationTap()
@@ -37,15 +37,9 @@ class LockedWalletMainContentViewModel: ObservableObject {
             )
         }
 
-    var footerViewModel: MainFooterViewModel? {
-        guard canManageTokens else { return nil }
+    var footerViewModel: MainFooterViewModel?
 
-        return MainFooterViewModel(
-            isButtonDisabled: true,
-            buttonTitle: Localization.mainManageTokens,
-            buttonAction: {}
-        )
-    }
+    private(set) lazy var bottomSheetFooterViewModel = MainBottomSheetFooterViewModel()
 
     let isMultiWallet: Bool
 

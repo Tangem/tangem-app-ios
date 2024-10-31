@@ -17,7 +17,10 @@ class ManageTokensAdapter {
     private let longHashesSupported: Bool
     private let existingCurves: [EllipticCurve]
     private let userTokensManager: UserTokensManager
-    private let loader: ListDataLoader
+    private let loader: TokensListDataLoader
+
+    // This parameter is required due to the fact that the adapter is used in various places
+    private let analyticsSourceRawValue: String
 
     private let listItemsViewModelsSubject = CurrentValueSubject<[ManageTokensListItemViewModel], Never>([])
     private let alertSubject = CurrentValueSubject<AlertBinder?, Never>(nil)
@@ -25,6 +28,8 @@ class ManageTokensAdapter {
 
     private var pendingAdd: [TokenItem] = []
     private var pendingRemove: [TokenItem] = []
+
+    private var expandedCoinIds: Set<String> = []
 
     private var bag = Set<AnyCancellable>()
 
@@ -48,22 +53,47 @@ class ManageTokensAdapter {
         longHashesSupported = settings.longHashesSupported
         existingCurves = settings.existingCurves
         userTokensManager = settings.userTokensManager
-        loader = ListDataLoader(supportedBlockchains: settings.supportedBlockchains)
+        loader = TokensListDataLoader(supportedBlockchains: settings.supportedBlockchains)
+        analyticsSourceRawValue = settings.analyticsSourceRawValue
 
         bind()
     }
 
     func saveChanges(completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
-        userTokensManager.update(itemsToRemove: pendingRemove, itemsToAdd: pendingAdd, completion: completion)
+        userTokensManager.update(
+            itemsToRemove: pendingRemove,
+            itemsToAdd: pendingAdd
+        ) { [weak self] result in
+            guard let self else {
+                return
+            }
+
+            // Send analytics event with parameters for success added tokens
+            if case .success = result {
+                let analyticsParams: [Analytics.ParameterKey: String] = [
+                    .count: "\(pendingAdd.count)",
+                    .source: analyticsSourceRawValue,
+                ]
+
+                Analytics.log(event: .manageTokensTokenAdded, params: analyticsParams)
+            }
+
+            completion(result)
+        }
     }
 
     func resetAdapter() {
         pendingAdd = []
         pendingRemove = []
         isPendingListsEmptySubject.send(true)
+        expandedCoinIds.removeAll()
     }
 
     func fetch(_ text: String) {
+        if text != loader.lastSearchTextValue {
+            expandedCoinIds.removeAll()
+        }
+
         loader.fetch(text)
     }
 }
@@ -73,7 +103,12 @@ private extension ManageTokensAdapter {
         loader.$items
             .withWeakCaptureOf(self)
             .map { adapter, items -> [ManageTokensListItemViewModel] in
-                items.compactMap(adapter.mapToListItemViewModel(coinModel:))
+                // Send analytics event for empty search tokens
+                adapter.sendIfNeededEmptySearchValueAnalyticsEvent()
+
+                let viewModels = items.compactMap(adapter.mapToListItemViewModel(coinModel:))
+                viewModels.forEach { $0.update(expanded: adapter.bindExpanded($0.coinId)) }
+                return viewModels
             }
             .receive(on: DispatchQueue.main)
             .assign(to: \.value, on: listItemsViewModelsSubject, ownership: .weak)
@@ -189,6 +224,16 @@ private extension ManageTokensAdapter {
         return binding
     }
 
+    func bindExpanded(_ coinId: String) -> Binding<Bool> {
+        let binding = Binding<Bool> { [weak self] in
+            self?.expandedCoinIds.contains(coinId) ?? false
+        } set: { [weak self] isExpanded in
+            self?.updateExpanded(state: isExpanded, for: coinId)
+        }
+
+        return binding
+    }
+
     func bindCopy() -> Binding<Bool> {
         let binding = Binding<Bool> {
             false
@@ -217,13 +262,6 @@ private extension ManageTokensAdapter {
         return ManageTokensListItemViewModel(with: coinModel, items: networkItems)
     }
 
-    func sendAnalyticsOnChangeTokenState(tokenIsSelected: Bool, tokenItem: TokenItem) {
-        Analytics.log(event: .manageTokensSwitcherChanged, params: [
-            .state: Analytics.ParameterValue.toggleState(for: tokenIsSelected).rawValue,
-            .token: tokenItem.currencySymbol,
-        ])
-    }
-
     func displayAlertAndUpdateSelection(for tokenItem: TokenItem, title: String, message: String) {
         let okButton = Alert.Button.default(Text(Localization.commonOk)) {
             self.updateSelection(tokenItem)
@@ -237,6 +275,38 @@ private extension ManageTokensAdapter {
             )
         ))
     }
+
+    private func updateExpanded(state isExapanded: Bool, for coinId: String) {
+        if isExapanded {
+            expandedCoinIds.insert(coinId)
+        } else {
+            expandedCoinIds.remove(coinId)
+        }
+    }
+}
+
+// MARK: - Analytics
+
+private extension ManageTokensAdapter {
+    func sendAnalyticsOnChangeTokenState(tokenIsSelected: Bool, tokenItem: TokenItem) {
+        let analyticsParams: [Analytics.ParameterKey: String] = [
+            .state: Analytics.ParameterValue.toggleState(for: tokenIsSelected).rawValue,
+            .token: tokenItem.currencySymbol,
+            .source: analyticsSourceRawValue,
+        ]
+
+        Analytics.log(event: .manageTokensSwitcherChanged, params: analyticsParams)
+    }
+
+    /// Send analytics event for empty search tokens
+    func sendIfNeededEmptySearchValueAnalyticsEvent() {
+        guard let searchValue = loader.lastSearchTextValue, !searchValue.isEmpty, loader.items.isEmpty else {
+            return
+        }
+
+        let analyticsParams: [Analytics.ParameterKey: String] = [.input: searchValue]
+        Analytics.log(event: .manageTokensTokenIsNotFound, params: analyticsParams)
+    }
 }
 
 extension ManageTokensAdapter {
@@ -245,5 +315,6 @@ extension ManageTokensAdapter {
         let existingCurves: [EllipticCurve]
         let supportedBlockchains: Set<Blockchain>
         let userTokensManager: UserTokensManager
+        let analyticsSourceRawValue: String
     }
 }

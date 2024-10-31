@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 protocol DeprecationServicing {
-    var deprecationWarnings: [WarningEvent] { get }
+    var deprecationWarnings: [GeneralNotificationEvent] { get }
     func didDismissSystemDeprecationWarning()
 }
 

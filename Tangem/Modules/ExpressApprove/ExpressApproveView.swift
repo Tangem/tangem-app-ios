@@ -30,7 +30,7 @@ struct ExpressApproveView: View {
                 GroupedSection(viewModel.feeRowViewModel) {
                     DefaultRowView(viewModel: $0)
                 } footer: {
-                    DefaultFooterView(Localization.givePermissionFeeFooter)
+                    DefaultFooterView(viewModel.feeFooterText)
                 }
                 .backgroundColor(Colors.Background.action)
 
@@ -46,7 +46,7 @@ struct ExpressApproveView: View {
 
     private var headerView: some View {
         ZStack(alignment: .topTrailing) {
-            BottomSheetHeaderView(title: Localization.swappingPermissionHeader, subtitle: viewModel.subheader)
+            BottomSheetHeaderView(title: Localization.swappingPermissionHeader, subtitle: viewModel.subtitle)
                 .padding(.horizontal, 16)
 
             Button(action: viewModel.didTapInfoButton) {

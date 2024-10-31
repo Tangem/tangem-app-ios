@@ -16,7 +16,7 @@ final class UserWalletSettingsViewModel: ObservableObject {
 
     // MARK: - ViewState
 
-    @Published var name: String
+    @Published private(set) var name: String
     @Published var accountsSection: [AccountsSectionType] = []
     @Published var backupViewModel: DefaultRowViewModel?
 
@@ -56,6 +56,17 @@ final class UserWalletSettingsViewModel: ObservableObject {
     func onAppear() {
         setupView()
     }
+
+    func onTapNameField() {
+        guard AppSettings.shared.saveUserWallets else { return }
+
+        if let alert = AlertBuilder.makeWalletRenamingAlert(
+            userWalletRepository: userWalletRepository,
+            updateName: { self.name = $0 }
+        ) {
+            AppPresenter.shared.show(alert)
+        }
+    }
 }
 
 // MARK: - Private
@@ -81,7 +92,7 @@ private extension UserWalletSettingsViewModel {
             backupViewModel = nil
         }
 
-        if FeatureProvider.isAvailable(.markets) {
+        if userWalletModel.config.hasFeature(.multiCurrency) {
             manageTokensViewModel = .init(
                 title: Localization.mainManageTokens,
                 action: weakify(self, forFunction: UserWalletSettingsViewModel.openManageTokens)
@@ -163,9 +174,7 @@ private extension UserWalletSettingsViewModel {
     }
 
     func openManageTokens() {
-        guard FeatureProvider.isAvailable(.markets) else {
-            return
-        }
+        Analytics.log(.settingsButtonManageTokens)
 
         coordinator?.openManageTokens(userWalletModel: userWalletModel)
     }

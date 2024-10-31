@@ -15,8 +15,13 @@ struct BalanceWithButtonsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 6) {
-                Text(Localization.commonBalanceTitle)
-                    .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+                HStack {
+                    Text(Localization.commonBalanceTitle)
+                        .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+                    Spacer()
+
+                    balancePicker
+                }
 
                 BalanceTitleView(balance: viewModel.fiatBalance, isLoading: viewModel.isLoadingFiatBalance)
 
@@ -31,6 +36,21 @@ struct BalanceWithButtonsView: View {
         .padding(.vertical, 14)
         .background(Colors.Background.primary)
         .cornerRadiusContinuous(14)
+    }
+
+    @ViewBuilder
+    private var balancePicker: some View {
+        if let balanceTypeValues = viewModel.balanceTypeValues {
+            SegmentedPicker(
+                selectedOption: $viewModel.selectedBalanceType,
+                options: balanceTypeValues,
+                shouldStretchToFill: false,
+                isDisabled: false,
+                style: .init(textVerticalPadding: 2)
+            ) { $0.title }
+        } else {
+            EmptyView()
+        }
     }
 }
 

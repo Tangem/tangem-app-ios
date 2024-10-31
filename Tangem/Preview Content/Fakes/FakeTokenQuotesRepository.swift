@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 
-class FakeTokenQuotesRepository: TokenQuotesRepository {
+class FakeTokenQuotesRepository: TokenQuotesRepository, TokenQuotesRepositoryUpdater {
     var quotes: Quotes {
         currentQuotes.value
     }
@@ -36,10 +36,6 @@ class FakeTokenQuotesRepository: TokenQuotesRepository {
                 priceChange24h: Decimal(floatLiteral: Double.random(in: -10 ... 10)),
                 priceChange7d: Decimal(floatLiteral: Double.random(in: -100 ... 100)),
                 priceChange30d: Decimal(floatLiteral: Double.random(in: -1000 ... 1000)),
-                prices24h: [
-                    Double.random(in: -10 ... 10),
-                    Double.random(in: -10 ... 10),
-                ],
                 currencyCode: AppSettings.shared.selectedCurrencyCode
             )
 
@@ -56,7 +52,6 @@ class FakeTokenQuotesRepository: TokenQuotesRepository {
             priceChange24h: 3.3,
             priceChange7d: 43.3,
             priceChange30d: 93.3,
-            prices24h: [1, 2, 3],
             currencyCode: AppSettings.shared.selectedCurrencyCode
         )
     }
@@ -68,12 +63,36 @@ class FakeTokenQuotesRepository: TokenQuotesRepository {
             priceChange24h: 3.3,
             priceChange7d: 43.3,
             priceChange30d: 93.3,
-            prices24h: [1, 2, 3],
             currencyCode: AppSettings.shared.selectedCurrencyCode
         )
     }
 
-    func loadQuotes(currencyIds: [String]) -> AnyPublisher<Void, Never> {
-        quotesPublisher.mapToVoid().eraseToAnyPublisher()
+    func loadQuotes(currencyIds: [String]) -> AnyPublisher<[String: Decimal], Never> {
+        Just([:]).eraseToAnyPublisher()
+    }
+
+    func saveQuotes(_ quotes: [TokenQuote]) {
+        var current = currentQuotes.value
+
+        quotes.forEach { quote in
+            current[quote.currencyId] = quote
+        }
+
+        currentQuotes.send(current)
+    }
+
+    func saveQuotes(_ quotes: [Quote], currencyCode: String) {
+        let quotes = quotes.map { quote in
+            TokenQuote(
+                currencyId: quote.id,
+                price: quote.price,
+                priceChange24h: quote.priceChange,
+                priceChange7d: quote.priceChange7d,
+                priceChange30d: quote.priceChange30d,
+                currencyCode: currencyCode
+            )
+        }
+
+        saveQuotes(quotes)
     }
 }

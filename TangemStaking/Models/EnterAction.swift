@@ -11,21 +11,7 @@ import Foundation
 public struct EnterAction: Hashable {
     public let id: String
     public let status: ActionStatus
+    public let amount: Decimal
     public let currentStepIndex: Int
     public let transactions: [ActionTransaction]
-}
-
-public struct ActionTransaction: Hashable {
-    public let id: String
-    public let stepIndex: Int
-    public let type: TransactionType
-    public let status: TransactionStatus
-}
-
-public enum ActionStatus: String, Hashable {
-    case created
-    case waitingForNext
-    case processing
-    case failed
-    case success
 }

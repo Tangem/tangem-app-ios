@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct ExpressAPIError: Decodable, LocalizedError, Error {
+public struct ExpressAPIError: Decodable, LocalizedError, Error, Hashable {
     let code: Int?
     let description: String?
     let value: Value?
@@ -27,7 +27,7 @@ public struct ExpressAPIError: Decodable, LocalizedError, Error {
 }
 
 public extension ExpressAPIError {
-    struct Value: Decodable {
+    struct Value: Decodable, Hashable {
         let currentAllowance: String?
         let minAmount: String?
         let maxAmount: String?

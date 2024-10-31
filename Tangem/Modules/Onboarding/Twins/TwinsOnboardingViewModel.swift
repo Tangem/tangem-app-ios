@@ -344,7 +344,10 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
                     fallthrough
                 case (.second, .third), (.third, .done):
                     if case .done(let cardInfo) = newStep {
-                        viewModel.initializeUserWallet(from: cardInfo)
+                        if !viewModel.retwinMode {
+                            // userwallet remains deleted after retwin
+                            viewModel.initializeUserWallet(from: cardInfo)
+                        }
                         if viewModel.input.isStandalone {
                             viewModel.fireConfetti()
                         } else {
@@ -377,7 +380,7 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
         CardImageProvider()
             .loadTwinImage(for: twinCardSeries.pair.number)
             .map { $0.image }
-            .zip($cardImage.compactMap { $0 })
+            .zip($mainImage.compactMap { $0 })
             .receive(on: DispatchQueue.main)
             .sink { [weak self] paired, main in
                 guard let self = self else { return }

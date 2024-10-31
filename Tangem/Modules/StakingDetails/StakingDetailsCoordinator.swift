@@ -14,6 +14,10 @@ class StakingDetailsCoordinator: CoordinatorObject {
     let dismissAction: Action<Void>
     let popToRootAction: Action<PopToRootOptions>
 
+    // MARK: - Dependencies
+
+    @Injected(\.safariManager) private var safariManager: SafariManager
+
     // MARK: - Root view model
 
     @Published private(set) var rootViewModel: StakingDetailsViewModel?
@@ -22,8 +26,9 @@ class StakingDetailsCoordinator: CoordinatorObject {
 
     @Published var sendCoordinator: SendCoordinator?
     @Published var tokenDetailsCoordinator: TokenDetailsCoordinator?
+    @Published var multipleRewardsCoordinator: MultipleRewardsCoordinator?
 
-    // MARK: - Child view models
+    // MARK: - Private
 
     private var options: Options?
 
@@ -100,13 +105,54 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
             type: .staking(manager: options.manager)
         ))
         sendCoordinator = coordinator
+        Analytics.log(.stakingButtonStake, params: [.source: .stakeSourceStakeInfo])
     }
 
-    func openUnstakingFlow() {
-        // TBD: https://tangem.atlassian.net/browse/IOS-6898
+    func openMultipleRewards() {
+        guard let options else { return }
+
+        let coordinator = MultipleRewardsCoordinator(dismissAction: { [weak self] _ in
+            self?.multipleRewardsCoordinator = nil
+        })
+
+        coordinator.start(with: options)
+
+        multipleRewardsCoordinator = coordinator
     }
 
-    func openClaimRewardsFlow() {
-        // TBD: https://tangem.atlassian.net/browse/IOS-6899
+    func openUnstakingFlow(action: UnstakingModel.Action) {
+        guard let options else { return }
+
+        openFlow(for: action, options: options, sendType: .unstaking(manager: options.manager, action: action))
+    }
+
+    func openRestakingFlow(action: RestakingModel.Action) {
+        guard let options else { return }
+
+        openFlow(for: action, options: options, sendType: .restaking(manager: options.manager, action: action))
+    }
+
+    func openStakingSingleActionFlow(action: StakingSingleActionModel.Action) {
+        guard let options else { return }
+
+        openFlow(for: action, options: options, sendType: .stakingSingleAction(manager: options.manager, action: action))
+    }
+
+    func openFlow(for action: StakingAction, options: Options, sendType: SendType) {
+        let coordinator = SendCoordinator(dismissAction: { [weak self] _ in
+            self?.sendCoordinator = nil
+        })
+
+        coordinator.start(with: .init(
+            walletModel: options.walletModel,
+            userWalletModel: options.userWalletModel,
+            type: sendType
+        ))
+        sendCoordinator = coordinator
+    }
+
+    func openWhatIsStaking() {
+        Analytics.log(.stakingLinkWhatIsStaking)
+        safariManager.openURL(TangemBlogUrlBuilder().url(post: .whatIsStaking))
     }
 }

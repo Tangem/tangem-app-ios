@@ -15,13 +15,15 @@ final class StakingValidatorsViewModel: ObservableObject, Identifiable {
 
     @Published var validators: [ValidatorViewData] = []
     @Published var selectedValidator: String = ""
-    @Published var deselectedValidatorsIsVisible: Bool = false
+    @Published var auxiliaryViewsVisible: Bool = true
+
+    private var initialSelectedValidator: String?
 
     // MARK: - Dependencies
 
     private let interactor: StakingValidatorsInteractor
 
-    private let stakingValidatorViewMapper = StakingValidatorViewMapper()
+    private let percentFormatter = PercentFormatter()
     private var bag: Set<AnyCancellable> = []
 
     init(interactor: StakingValidatorsInteractor) {
@@ -31,16 +33,15 @@ final class StakingValidatorsViewModel: ObservableObject, Identifiable {
     }
 
     func onAppear() {
-        let deselectedFeeViewAppearanceDelay = SendView.Constants.animationDuration / 3
-        DispatchQueue.main.asyncAfter(deadline: .now() + deselectedFeeViewAppearanceDelay) {
-            withAnimation(SendView.Constants.defaultAnimation) {
-                self.deselectedValidatorsIsVisible = true
-            }
-        }
+        auxiliaryViewsVisible = true
     }
 
     func onDisappear() {
-        deselectedValidatorsIsVisible = false
+        auxiliaryViewsVisible = false
+        if selectedValidator != initialSelectedValidator,
+           let validator = validators.first(where: { $0.address == selectedValidator }) {
+            Analytics.log(event: .stakingValidatorChosen, params: [.validator: validator.name])
+        }
     }
 }
 
@@ -51,15 +52,23 @@ private extension StakingValidatorsViewModel {
         interactor
             .validatorsPublisher
             .withWeakCaptureOf(self)
-            .receive(on: DispatchQueue.main)
             .map { viewModel, validators in
-                // TODO: https://tangem.atlassian.net/browse/IOS-7105
-                viewModel.selectedValidator = validators.first?.address ?? ""
+                validators.map { validatorInfo in
+                    let percentFormatted = validatorInfo.apr.map {
+                        viewModel.percentFormatter.format($0, option: .staking)
+                    }
 
-                return validators.map {
-                    viewModel.stakingValidatorViewMapper.mapToValidatorViewData(info: $0, detailsType: .checkmark)
+                    return ValidatorViewData(
+                        address: validatorInfo.address,
+                        name: validatorInfo.name,
+                        imageURL: validatorInfo.iconURL,
+                        isPartner: validatorInfo.partner,
+                        subtitleType: .selection(percentFormatted: percentFormatted ?? ""),
+                        detailsType: .checkmark
+                    )
                 }
             }
+            .receive(on: DispatchQueue.main)
             .assign(to: \.validators, on: self, ownership: .weak)
             .store(in: &bag)
 
@@ -67,9 +76,14 @@ private extension StakingValidatorsViewModel {
             .selectedValidatorPublisher
             .removeDuplicates()
             .withWeakCaptureOf(self)
+            // If viewModel already has selectedValidator
+            .filter { $0.selectedValidator != $1.address }
             .receive(on: DispatchQueue.main)
             .sink { viewModel, selectedValidator in
                 viewModel.selectedValidator = selectedValidator.address
+                if viewModel.initialSelectedValidator == nil {
+                    viewModel.initialSelectedValidator = selectedValidator.address
+                }
             }
             .store(in: &bag)
 
@@ -80,6 +94,22 @@ private extension StakingValidatorsViewModel {
                 viewModel.interactor.userDidSelect(validatorAddress: validatorAddress)
             }
             .store(in: &bag)
+    }
+}
+
+// MARK: - SendStepViewAnimatable
+
+extension StakingValidatorsViewModel: SendStepViewAnimatable {
+    func viewDidChangeVisibilityState(_ state: SendStepVisibilityState) {
+        switch state {
+        case .appearing(.summary(_)):
+            // Will be shown with animation
+            auxiliaryViewsVisible = false
+        case .disappearing(.summary(_)):
+            auxiliaryViewsVisible = false
+        default:
+            break
+        }
     }
 }
 

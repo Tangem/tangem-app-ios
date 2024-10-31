@@ -101,6 +101,10 @@ enum TokenItem: Hashable, Codable {
         case .token:
             return blockchain.tokenTypeName
         case .blockchain:
+            if SupportedBlockchains.l2Blockchains.contains(where: { $0.networkId == networkId }) {
+                return "MAIN L2"
+            }
+
             return "MAIN"
         }
     }
@@ -131,6 +135,16 @@ enum TokenItem: Hashable, Codable {
         switch blockchain {
         case .solana:
             return isToken ? true : false
+        default:
+            return false
+        }
+    }
+
+    // We can't sign hashes on firmware prior 4.52
+    var hasLongHashesForStaking: Bool {
+        switch blockchain {
+        case .solana:
+            return true
         default:
             return false
         }

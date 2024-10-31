@@ -62,15 +62,6 @@ final class EnvironmentSetupViewModel: ObservableObject {
                 )
             ),
             DefaultToggleRowViewModel(
-                title: "Use fake tx history",
-                isOn: BindingValue<Bool>(
-                    root: featureStorage,
-                    default: false,
-                    get: { $0.useFakeTxHistory },
-                    set: { $0.useFakeTxHistory = $1 }
-                )
-            ),
-            DefaultToggleRowViewModel(
                 title: "Enable Performance Monitor",
                 isOn: BindingValue<Bool>(
                     root: featureStorage,
@@ -133,12 +124,12 @@ final class EnvironmentSetupViewModel: ObservableObject {
         }
 
         additionalSettingsViewModels = [
-            DefaultRowViewModel(title: "Supported Blockchains") { [weak self] in
+            DefaultRowViewModel(title: "Supported Blockchains", action: { [weak self] in
                 self?.coordinator?.openSupportedBlockchainsPreferences()
-            },
-            DefaultRowViewModel(title: "Staking Blockchains") { [weak self] in
+            }),
+            DefaultRowViewModel(title: "Staking Blockchains", action: { [weak self] in
                 self?.coordinator?.openStakingBlockchainsPreferences()
-            },
+            }),
         ]
 
         updateCurrentPromoCode()

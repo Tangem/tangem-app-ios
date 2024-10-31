@@ -28,9 +28,9 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
     @Published var supplementCardSettings: AnimatedViewSettings = .zero
     @Published var isNavBarVisible: Bool = false
     @Published var alert: AlertBinder?
-    @Published var cardImage: Image?
-    @Published var customOnboardingImage: Image?
+    @Published var mainImage: Image?
     @Published var secondImage: Image?
+    @Published var thirdImage: Image?
 
     private var confettiFired: Bool = false
     var bag: Set<AnyCancellable> = []
@@ -145,12 +145,20 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
             return nil
         }
 
-        let manageTokensAdapter = ManageTokensAdapter(settings: .init(
-            longHashesSupported: userWalletModel.config.hasFeature(.longHashes),
-            existingCurves: userWalletModel.config.existingCurves,
-            supportedBlockchains: userWalletModel.config.supportedBlockchains,
-            userTokensManager: userWalletModel.userTokensManager
-        ))
+        let analyticsSourceRawValue = Analytics.ParameterValue.onboarding.rawValue
+        let analyticsParams: [Analytics.ParameterKey: String] = [.source: analyticsSourceRawValue]
+
+        Analytics.log(event: .manageTokensScreenOpened, params: analyticsParams)
+
+        let manageTokensAdapter = ManageTokensAdapter(
+            settings: .init(
+                longHashesSupported: userWalletModel.config.hasFeature(.longHashes),
+                existingCurves: userWalletModel.config.existingCurves,
+                supportedBlockchains: userWalletModel.config.supportedBlockchains,
+                userTokensManager: userWalletModel.userTokensManager,
+                analyticsSourceRawValue: analyticsSourceRawValue
+            )
+        )
 
         return OnboardingAddTokensViewModel(
             adapter: manageTokensAdapter,
@@ -164,6 +172,10 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
         }
         return PushNotificationsPermissionRequestViewModel(permissionManager: permissionManager, delegate: self)
     }()
+
+    private var analyticsSourceParameterValue: Analytics.ParameterValue {
+        .onboarding
+    }
 
     let input: OnboardingInput
 
@@ -184,18 +196,13 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
         isFromMain = input.isStandalone
         isNavBarVisible = input.isStandalone
 
-        let loadImageInput = input.cardInput.imageLoadInput
-        loadImage(
-            supportsOnlineImage: loadImageInput.supportsOnlineImage,
-            cardId: loadImageInput.cardId,
-            cardPublicKey: loadImageInput.cardPublicKey
-        )
+        loadMainImage(imageLoadInput: input.cardInput.imageLoadInput)
 
         bindAnalytics()
     }
 
     func initializeUserWallet(from cardInfo: CardInfo) {
-        guard let userWallet = CommonUserWalletModel(cardInfo: cardInfo) else { return }
+        guard let userWallet = CommonUserWalletModelFactory().makeModel(cardInfo: cardInfo) else { return }
 
         userWalletRepository.initializeServices(for: userWallet)
 
@@ -212,20 +219,11 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
         userWalletRepository.add(userWalletModel)
     }
 
-    func loadImage(supportsOnlineImage: Bool, cardId: String?, cardPublicKey: Data?) {
-        guard let cardId = cardId, let cardPublicKey = cardPublicKey else {
-            return
-        }
-
+    func loadImage(supportsOnlineImage: Bool, cardId: String, cardPublicKey: Data) -> AnyPublisher<Image, Never> {
         CardImageProvider(supportsOnlineImage: supportsOnlineImage)
             .loadImage(cardId: cardId, cardPublicKey: cardPublicKey)
             .map { $0.image }
-            .sink { [weak self] image in
-                withAnimation {
-                    self?.cardImage = image
-                }
-            }
-            .store(in: &bag)
+            .eraseToAnyPublisher()
     }
 
     func setupContainer(with size: CGSize) {
@@ -325,6 +323,20 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
         AppSettings.shared.saveAccessCodes = agreed
 
         Analytics.log(.onboardingEnableBiometric, params: [.state: Analytics.ParameterValue.toggleState(for: agreed)])
+    }
+
+    private func loadMainImage(imageLoadInput: OnboardingInput.ImageLoadInput) {
+        loadImage(
+            supportsOnlineImage: imageLoadInput.supportsOnlineImage,
+            cardId: imageLoadInput.cardId,
+            cardPublicKey: imageLoadInput.cardPublicKey
+        )
+        .sink { [weak self] image in
+            withAnimation {
+                self?.mainImage = image
+            }
+        }
+        .store(in: &bag)
     }
 
     private func bindAnalytics() {

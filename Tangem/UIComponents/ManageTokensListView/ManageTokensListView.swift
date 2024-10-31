@@ -63,21 +63,12 @@ struct ManageTokensListView<Header, Footer>: View where Header: View, Footer: Vi
 
     var body: some View {
         ScrollView {
-            LazyVStack(spacing: 0) {
+            VStack(spacing: .zero) {
                 if let header {
                     header
                 }
 
-                ForEach(viewModel.tokenListItemModels) {
-                    ManageTokensListItemView(viewModel: $0, isReadOnly: isReadOnly)
-                }
-
-                if viewModel.hasNextPage {
-                    HStack(alignment: .center) {
-                        ActivityIndicatorView(color: .gray)
-                            .onAppear(perform: viewModel.fetch)
-                    }
-                }
+                tokenList
 
                 if let footer {
                     footer
@@ -89,6 +80,19 @@ struct ManageTokensListView<Header, Footer>: View where Header: View, Footer: Vi
             }
         }
         .coordinateSpace(name: namespace)
+    }
+
+    private var tokenList: some View {
+        LazyVStack(spacing: 0) {
+            ForEach(viewModel.tokenListItemModels) {
+                ManageTokensListItemView(viewModel: $0, isReadOnly: isReadOnly)
+            }
+
+            if viewModel.hasNextPage {
+                ManageTokensListLoaderView()
+                    .onAppear(perform: viewModel.fetch)
+            }
+        }
     }
 }
 

@@ -78,7 +78,7 @@ final class UserWalletNotificationManager {
         ))
 
         // We need to remove legacyDerivation WarningEvent, because it must be shown in Manage tokens only
-        let eventsWithoutDerivationWarning = userWalletModel.config.warningEvents.filter { $0 != .legacyDerivation }
+        let eventsWithoutDerivationWarning = userWalletModel.config.generalNotificationEvents.filter { $0 != .legacyDerivation }
         inputs.append(contentsOf: factory.buildNotificationInputs(
             for: eventsWithoutDerivationWarning,
             action: action,
@@ -302,7 +302,7 @@ extension UserWalletNotificationManager: NotificationManager {
             return
         }
 
-        if let event = notification.settings.event as? WarningEvent {
+        if let event = notification.settings.event as? GeneralNotificationEvent {
             switch event {
             case .systemDeprecationTemporary, .systemDeprecationPermanent:
                 recordDeprecationNotificationDismissal()

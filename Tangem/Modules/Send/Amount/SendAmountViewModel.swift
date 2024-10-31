@@ -10,20 +10,23 @@ import Foundation
 import SwiftUI
 import Combine
 
-class SendAmountViewModel: ObservableObject, Identifiable {
+class SendAmountViewModel: ObservableObject {
     // MARK: - ViewState
-
-    @Published var animatingAuxiliaryViewsOnAppear: Bool = false
 
     let userWalletName: String
     let balance: String
     let tokenIconInfo: TokenIconInfo
     let currencyPickerData: SendCurrencyPickerData
 
+    @Published var id: UUID = .init()
+
+    @Published var auxiliaryViewsVisible: Bool = true
+    @Published var isEditMode: Bool = false
+
     @Published var decimalNumberTextFieldViewModel: DecimalNumberTextField.ViewModel
     @Published var alternativeAmount: String?
 
-    @Published var error: String?
+    @Published var bottomInfoText: BottomInfoTextType?
     @Published var currentFieldOptions: SendDecimalNumberTextField.PrefixSuffixOptions
     @Published var amountType: SendAmountCalculationType = .crypto
 
@@ -36,14 +39,13 @@ class SendAmountViewModel: ObservableObject, Identifiable {
         )
     }
 
-    var didProperlyDisappear = false
-
     // MARK: - Dependencies
 
     private let tokenItem: TokenItem
     private let interactor: SendAmountInteractor
     private let sendQRCodeService: SendQRCodeService?
     private let prefixSuffixOptionsFactory: SendDecimalNumberTextField.PrefixSuffixOptionsFactory
+    private let actionType: SendFlowActionType
 
     private var bag: Set<AnyCancellable> = []
 
@@ -56,6 +58,7 @@ class SendAmountViewModel: ObservableObject, Identifiable {
         balance = initial.balanceFormatted
         tokenIconInfo = initial.tokenIconInfo
         currencyPickerData = initial.currencyPickerData
+        actionType = initial.actionType
 
         prefixSuffixOptionsFactory = .init(
             cryptoCurrencyCode: initial.tokenItem.currencySymbol,
@@ -73,14 +76,17 @@ class SendAmountViewModel: ObservableObject, Identifiable {
     }
 
     func onAppear() {
-        if animatingAuxiliaryViewsOnAppear {
-            Analytics.log(.sendScreenReopened, params: [.source: .amount])
-        } else {
-            Analytics.log(.sendAmountScreenOpened)
-        }
+        auxiliaryViewsVisible = true
     }
 
     func userDidTapMaxAmount() {
+        switch actionType {
+        case .send:
+            Analytics.log(.sendMaxAmountTapped)
+        case .stake:
+            Analytics.log(.stakingButtonMax)
+        default: break
+        }
         let amount = interactor.updateToMaxAmount()
         decimalNumberTextFieldViewModel.update(value: amount?.main)
         alternativeAmount = amount?.formatAlternative(currencySymbol: tokenItem.currencySymbol, decimalCount: tokenItem.decimalCount)
@@ -92,6 +98,7 @@ class SendAmountViewModel: ObservableObject, Identifiable {
 private extension SendAmountViewModel {
     func bind() {
         $amountType
+            .dropFirst()
             .removeDuplicates()
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
@@ -110,11 +117,11 @@ private extension SendAmountViewModel {
             .store(in: &bag)
 
         interactor
-            .errorPublisher
+            .infoTextPublisher
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
-            .sink { viewModel, error in
-                viewModel.error = error?.localizedDescription
+            .sink { viewModel, bottomInfoText in
+                viewModel.bottomInfoText = bottomInfoText
             }
             .store(in: &bag)
 
@@ -164,15 +171,40 @@ private extension SendAmountViewModel {
             decimalNumberTextFieldViewModel.update(value: amount?.crypto)
         case .fiat:
             currentFieldOptions = prefixSuffixOptionsFactory.makeFiatOptions()
-            decimalNumberTextFieldViewModel.update(maximumFractionDigits: 2)
+            decimalNumberTextFieldViewModel.update(maximumFractionDigits: SendAmountStep.Constants.fiatMaximumFractionDigits)
             decimalNumberTextFieldViewModel.update(value: amount?.fiat)
         }
     }
 }
 
-// MARK: - AuxiliaryViewAnimatable
+// MARK: - SendStepViewAnimatable
 
-extension SendAmountViewModel: AuxiliaryViewAnimatable {}
+extension SendAmountViewModel: SendStepViewAnimatable {
+    func viewDidChangeVisibilityState(_ state: SendStepVisibilityState) {
+        switch state {
+        case .appearing(.destination(_)):
+            // Have to be always visible
+            auxiliaryViewsVisible = true
+            isEditMode = false
+        case .appearing(.summary(_)):
+            // Will be shown with animation
+            auxiliaryViewsVisible = false
+            isEditMode = true
+        case .disappearing(.summary(_)):
+            // Have to use this HACK to force re-render view with the new transition
+            // Will look at it "if" later
+            if !isEditMode {
+                isEditMode = true
+                id = UUID()
+            } else {
+                auxiliaryViewsVisible = false
+            }
+
+        default:
+            break
+        }
+    }
+}
 
 extension SendAmountViewModel {
     struct Settings {
@@ -182,5 +214,11 @@ extension SendAmountViewModel {
         let balanceValue: Decimal
         let balanceFormatted: String
         let currencyPickerData: SendCurrencyPickerData
+        let actionType: SendFlowActionType
+    }
+
+    enum BottomInfoTextType: Hashable {
+        case info(String)
+        case error(String)
     }
 }

@@ -10,38 +10,17 @@ import Foundation
 
 protocol SendStepsManagerOutput: AnyObject {
     func update(state: SendStepsManagerViewState)
+    func update(flowActionType: SendFlowActionType)
 }
 
 struct SendStepsManagerViewState {
     let step: SendStep
-    let animation: SendView.StepAnimation
-    let mainButtonType: SendMainButtonType
+    let action: SendMainButtonType
     let backButtonVisible: Bool
 
-    static func next(step: SendStep) -> SendStepsManagerViewState {
-        SendStepsManagerViewState(
-            step: step,
-            animation: .slideForward,
-            mainButtonType: .next,
-            backButtonVisible: true
-        )
-    }
-
-    static func back(step: SendStep) -> SendStepsManagerViewState {
-        SendStepsManagerViewState(
-            step: step,
-            animation: .slideBackward,
-            mainButtonType: .next,
-            backButtonVisible: false
-        )
-    }
-
-    static func moveAndFade(step: SendStep, action: SendMainButtonType) -> SendStepsManagerViewState {
-        SendStepsManagerViewState(
-            step: step,
-            animation: .moveAndFade,
-            mainButtonType: action,
-            backButtonVisible: false
-        )
+    init(step: SendStep, action: SendMainButtonType, backButtonVisible: Bool = false) {
+        self.step = step
+        self.action = action
+        self.backButtonVisible = backButtonVisible
     }
 }

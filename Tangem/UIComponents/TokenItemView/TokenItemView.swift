@@ -53,14 +53,24 @@ struct TokenItemView: View {
                         Text(errorMessage)
                             .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
                     } else {
-                        LoadableTextView(
-                            state: viewModel.balanceFiat,
-                            font: Fonts.Regular.subheadline,
-                            textColor: Colors.Text.primary1,
-                            loaderSize: .init(width: 40, height: 12),
-                            isSensitiveText: true
-                        )
-                        .layoutPriority(3)
+                        HStack(spacing: 6) {
+                            if viewModel.isStaked {
+                                Assets.stakingMiniIcon.image
+                                    .renderingMode(.template)
+                                    .resizable()
+                                    .foregroundColor(Colors.Icon.accent)
+                                    .frame(width: 12, height: 12)
+                            }
+
+                            LoadableTextView(
+                                state: viewModel.balanceFiat,
+                                font: Fonts.Regular.subheadline,
+                                textColor: Colors.Text.primary1,
+                                loaderSize: .init(width: 40, height: 12),
+                                isSensitiveText: true
+                            )
+                            .layoutPriority(3)
+                        }
                     }
                 }
 
@@ -105,10 +115,16 @@ struct TokenItemView: View {
         // `previewContentShape` must be called just before `contextMenu` call, otherwise visual glitches may occur
         .previewContentShape(cornerRadius: previewContentShapeCornerRadius)
         .contextMenu {
-            ForEach(viewModel.contextActions, id: \.self) { menuAction in
-                contextMenuButton(for: menuAction)
+            ForEach(viewModel.contextActionSections, id: \.self) { section in
+                Section {
+                    ForEach(section.items, id: \.self) { menuAction in
+                        contextMenuButton(for: menuAction)
+                    }
+                }
             }
         }
+        // TODO: Use .contextMenu(menuItems:preview:) for iOS 16 and higher with Chart Preview
+        // IOS-7796
     }
 
     @ViewBuilder
@@ -207,12 +223,30 @@ private extension TokenItemView {
     }
 }
 
+// MARK: - Auxiliary types
+
+extension TokenItemView {
+    @available(iOS 16.0, *)
+    enum RoundedCornersVerticalEdge {
+        case topEdge
+        case bottomEdge
+        case all
+    }
+
+    private struct RoundedCornersConfiguration {
+        var topLeadingRadius: CGFloat = 0.0
+        var bottomLeadingRadius: CGFloat = 0.0
+        var bottomTrailingRadius: CGFloat = 0.0
+        var topTrailingRadius: CGFloat = 0.0
+    }
+}
+
 // MARK: - Previews
 
 struct TokenItemView_Previews: PreviewProvider {
     static var infoProvider: FakeTokenItemInfoProvider = {
         let walletManagers: [FakeWalletManager] = [.ethWithTokensManager, .btcManager, .polygonWithTokensManager, .xrpManager]
-        InjectedValues[\.quotesRepository] = FakeTokenQuotesRepository(walletManagers: walletManagers)
+        InjectedValues.setTokenQuotesRepository(FakeTokenQuotesRepository(walletManagers: walletManagers))
         return FakeTokenItemInfoProvider(walletManagers: walletManagers)
     }()
 

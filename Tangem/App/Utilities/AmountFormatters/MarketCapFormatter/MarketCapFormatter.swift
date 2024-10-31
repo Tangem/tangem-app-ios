@@ -8,52 +8,36 @@
 
 import Foundation
 
-struct MarketCapFormatter {
-    static var defaultEmptyBalanceString: String { "–" }
+class MarketCapFormatter {
+    private let notationFormatter: DefaultAmountNotationFormatter
+    private let notationSuffixFormatter: AmountNotationSuffixFormatter
+    private let numberFormatter: NumberFormatter
 
-    /// Format any decimal number using `BalanceFormattingOptions`
-    /// - Note: Balance will be rounded using `roundingType` from `formattingOptions`
-    /// - Parameters:
-    ///   - value: Balance that should be rounded and formatted
-    ///   - formattingOptions: Options for number formatter and rounding
-    /// - Returns: Formatted balance string, if `value` is nil, returns `defaultEmptyBalanceString`
-    func formatDecimal(_ value: Decimal?, formattingOptions: Options = .default) -> String {
-        guard let value else {
-            return Self.defaultEmptyBalanceString
-        }
-
-        let formatter = NumberFormatter()
-        formatter.locale = Locale.current
-        formatter.numberStyle = .decimal
-        formatter.minimumFractionDigits = formattingOptions.minFractionDigits
-        formatter.maximumFractionDigits = formattingOptions.maxFractionDigits
-
-        let amountNotationFormatter = AmountNotationSuffixFormatter()
-        let formatPointsValue = amountNotationFormatter.formatWithNotation(value)
-
-        let decimalRoundingUtility = DecimalRoundingUtility()
-        let roundDecimalValue = decimalRoundingUtility.roundDecimal(formatPointsValue.decimal, with: formattingOptions.roundingType)
-
-        let stringFormatValue = formatter.string(from: roundDecimalValue as NSDecimalNumber) ?? "\(roundDecimalValue)"
-
-        return "\(stringFormatValue) \(formatPointsValue.suffix)"
+    init(
+        divisorsList: [AmountNotationSuffixFormatter.Divisor],
+        baseCurrencyCode: String,
+        formattingOptions: BalanceFormattingOptions = .defaultFiatFormattingOptions,
+        notationFormatter: DefaultAmountNotationFormatter
+    ) {
+        self.notationFormatter = notationFormatter
+        notationSuffixFormatter = .init(divisorsList: divisorsList)
+        numberFormatter = BalanceFormatter().makeDefaultFiatFormatter(
+            forCurrencyCode: baseCurrencyCode,
+            locale: .current,
+            formattingOptions: formattingOptions
+        )
     }
 
-    // MARK: - Private Implementation
-}
-
-extension MarketCapFormatter {
-    struct Options {
-        let minFractionDigits: Int
-        let maxFractionDigits: Int
-        let roundingType: AmountRoundingType?
-
-        static var `default`: Options {
-            .init(
-                minFractionDigits: 3,
-                maxFractionDigits: 3,
-                roundingType: .default(roundingMode: .plain, scale: 3)
-            )
+    func formatMarketCap(_ value: Decimal?) -> String {
+        guard let value else {
+            return BalanceFormatter.defaultEmptyBalanceString
         }
+
+        let record = notationFormatter.format(
+            value, notationFormatter: notationSuffixFormatter,
+            numberFormatter: numberFormatter,
+            addingSignPrefix: false
+        )
+        return record
     }
 }

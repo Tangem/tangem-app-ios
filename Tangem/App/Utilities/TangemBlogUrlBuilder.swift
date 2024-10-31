@@ -28,6 +28,7 @@ extension TangemBlogUrlBuilder {
         case fee
         case scanCard
         case refundedDex
+        case whatIsStaking
     }
 }
 
@@ -40,6 +41,8 @@ private extension TangemBlogUrlBuilder.Post {
             "scan-tangem-card"
         case .refundedDex:
             "an-overview-of-cross-chain-bridges"
+        case .whatIsStaking:
+            "how-to-stake-cryptocurrency"
         }
     }
 }

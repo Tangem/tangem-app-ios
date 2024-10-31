@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum AmountRoundingType {
+enum AmountRoundingType: Hashable {
     case shortestFraction(roundingMode: NSDecimalNumber.RoundingMode)
     case `default`(roundingMode: NSDecimalNumber.RoundingMode, scale: Int)
 }
@@ -21,9 +21,5 @@ extension AmountRoundingType {
         case .default(let roundingMode, _):
             return roundingMode
         }
-    }
-
-    static func defaultFiat(roundingMode: NSDecimalNumber.RoundingMode) -> AmountRoundingType {
-        .default(roundingMode: roundingMode, scale: 2)
     }
 }

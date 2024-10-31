@@ -14,9 +14,12 @@ class CurrencySelectViewModel: ObservableObject {
 
     @Published var state: LoadingValue<[CurrenciesResponse.Currency]> = .loading
 
+    private weak var coordinator: CurrencySelectRoutable?
     private var loadCurrenciesCancellable: AnyCancellable?
 
-    init() {}
+    init(coordinator: CurrencySelectRoutable) {
+        self.coordinator = coordinator
+    }
 
     func onAppear() {
         state = .loading
@@ -42,5 +45,6 @@ class CurrencySelectViewModel: ObservableObject {
         Analytics.log(event: .mainCurrencyChanged, params: [.currency: currency.description])
         objectWillChange.send()
         AppSettings.shared.selectedCurrencyCode = currency.code
+        coordinator?.dismissCurrencySelect()
     }
 }

@@ -20,14 +20,14 @@ struct WalletConnectRowView: View {
             HStack(spacing: 12) {
                 Assets.walletConnect.image
                     .resizable()
-                    .frame(width: 48, height: 48)
+                    .frame(width: 36, height: 36)
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 2) {
                     Text(viewModel.title)
-                        .style(Fonts.Regular.body, color: Colors.Text.primary1)
+                        .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
 
                     Text(viewModel.subtitle)
-                        .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
                 }
                 .lineLimit(1)
 

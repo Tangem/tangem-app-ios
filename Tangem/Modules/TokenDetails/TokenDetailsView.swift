@@ -35,13 +35,21 @@ struct TokenDetailsView: View {
                         .transition(.notificationTransition)
                 }
 
-                if viewModel.isMarketPriceAvailable {
+                if viewModel.isMarketsDetailsAvailable {
                     MarketPriceView(
                         currencySymbol: viewModel.currencySymbol,
                         price: viewModel.rateFormatted,
                         priceChangeState: viewModel.priceChangeState,
-                        tapAction: nil
+                        miniChartData: viewModel.miniChartData,
+                        tapAction: viewModel.openMarketsTokenDetails
                     )
+                }
+
+                if let activeStakingViewData = viewModel.activeStakingViewData {
+                    ActiveStakingView(data: activeStakingViewData)
+                        .padding(14)
+                        .background(Colors.Background.primary)
+                        .cornerRadiusContinuous(14)
                 }
 
                 ForEach(viewModel.pendingExpressTransactions) { transactionInfo in
@@ -70,6 +78,7 @@ struct TokenDetailsView: View {
                 bindTo: scrollState.contentOffsetSubject.asWriteOnlyBinding(.zero)
             )
         }
+        .animation(.default, value: viewModel.bannerNotificationInputs)
         .animation(.default, value: viewModel.tokenNotificationInputs)
         .animation(.default, value: viewModel.pendingExpressTransactions)
         .padding(.horizontal, 16)
@@ -148,7 +157,7 @@ private extension TokenDetailsView {
     )
     let coordinator = TokenDetailsCoordinator()
 
-    let bannerNotificationManager = BannerNotificationManager(placement: .tokenDetails(walletModel.tokenItem), contextDataProvider: nil)
+    let bannerNotificationManager = BannerNotificationManager(userWalletId: UserWalletId(value: Data()), placement: .tokenDetails(walletModel.tokenItem), contextDataProvider: nil)
 
     return TokenDetailsView(viewModel: .init(
         userWalletModel: userWalletModel,

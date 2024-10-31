@@ -8,9 +8,16 @@
 
 import Foundation
 
-public enum RewardRateValues {
-    case single(_: Decimal)
+public enum RewardRateValues: Hashable {
+    case single(Decimal)
     case interval(min: Decimal, max: Decimal)
+
+    public var max: Decimal {
+        switch self {
+        case .single(let decimal): decimal
+        case .interval(_, let max): max
+        }
+    }
 
     public init(aprs: [Decimal], rewardRate: Decimal) {
         guard let min = aprs.min(), let max = aprs.max() else {

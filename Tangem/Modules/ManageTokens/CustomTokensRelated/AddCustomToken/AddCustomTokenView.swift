@@ -11,6 +11,7 @@ import SwiftUI
 struct AddCustomTokenView: View {
     @ObservedObject var viewModel: AddCustomTokenViewModel
 
+    @FocusState private var isFocusedAddressField: Bool
     @FocusState private var isFocusedNameField: Bool
     @FocusState private var isFocusedSymbolField: Bool
     @FocusState private var isFocusedDecimalsField: Bool
@@ -93,6 +94,11 @@ struct AddCustomTokenView: View {
                 isLoading: false,
                 error: viewModel.contractAddressError
             )
+            .focused($isFocusedAddressField)
+            .onChange(of: isFocusedAddressField) { isFocused in
+                guard !isFocused else { return }
+                viewModel.onChangeFocusable(field: .address)
+            }
 
             separator
 
@@ -234,27 +240,9 @@ private struct TextInputWithTitle: View {
 // MARK: - Preview
 
 #Preview {
-    let userTokensManager: UserTokensManager = {
-        let fakeUserTokenListManager = FakeUserTokenListManager(walletManagers: [], isDelayed: false)
-        return FakeUserTokensManager(
-            derivationManager: FakeDerivationManager(pendingDerivationsCount: 5),
-            userTokenListManager: fakeUserTokenListManager
-        )
-    }()
     let userWalletModel = FakeUserWalletModel.wallet3Cards
-    let config = userWalletModel.config
-
-    let viewModel = AddCustomTokenViewModel(
-        settings: .init(
-            supportedBlockchains: config.supportedBlockchains.asArray,
-            hdWalletsSupported: config.hasFeature(.hdWallets),
-            derivationStyle: config.derivationStyle
-        ),
-        userWalletModel: userWalletModel,
-        coordinator: AddCustomTokenCoordinator()
-    )
     let coordinator = AddCustomTokenCoordinator()
-    coordinator.start(with: .init(userWalletModel: userWalletModel))
+    coordinator.start(with: .init(userWalletModel: userWalletModel, analyticsSourceRawValue: "preview"))
 
     return AddCustomTokenCoordinatorView(coordinator: coordinator)
 }

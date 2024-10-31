@@ -29,6 +29,7 @@ class SendCoordinator: CoordinatorObject {
 
     @Published var mailViewModel: MailViewModel? = nil
     @Published var qrScanViewCoordinator: QRScanViewCoordinator? = nil
+    @Published var expressApproveViewModel: ExpressApproveViewModel?
 
     required init(
         dismissAction: @escaping Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?>,
@@ -48,6 +49,14 @@ class SendCoordinator: CoordinatorObject {
             rootViewModel = factory.makeSellViewModel(sellParameters: parameters, router: self)
         case .staking(let manager):
             rootViewModel = factory.makeStakingViewModel(manager: manager, router: self)
+        case .unstaking(let manager, let action) where StakingFeatureProvider.isPartialUnstakeAvailable:
+            rootViewModel = factory.makeUnstakingViewModel(manager: manager, action: action, router: self)
+        case .unstaking(let manager, let action):
+            rootViewModel = factory.makeStakingSingleActionViewModel(manager: manager, action: action, router: self)
+        case .restaking(let manager, let action):
+            rootViewModel = factory.makeRestakingViewModel(manager: manager, action: action, router: self)
+        case .stakingSingleAction(let manager, let action):
+            rootViewModel = factory.makeStakingSingleActionViewModel(manager: manager, action: action, router: self)
         }
     }
 }
@@ -102,5 +111,30 @@ extension SendCoordinator: SendRoutable {
 
     func openFeeCurrency(for walletModel: WalletModel, userWalletModel: UserWalletModel) {
         dismiss(with: (walletModel, userWalletModel))
+    }
+
+    func openApproveView(settings: ExpressApproveViewModel.Settings, approveViewModelInput: any ApproveViewModelInput) {
+        expressApproveViewModel = .init(
+            settings: settings,
+            feeFormatter: CommonFeeFormatter(
+                balanceFormatter: .init(),
+                balanceConverter: .init()
+            ),
+            logger: AppLog.shared,
+            approveViewModelInput: approveViewModelInput,
+            coordinator: self
+        )
+    }
+}
+
+// MARK: - ExpressApproveRoutable
+
+extension SendCoordinator: ExpressApproveRoutable {
+    func didSendApproveTransaction() {
+        expressApproveViewModel = nil
+    }
+
+    func userDidCancel() {
+        expressApproveViewModel = nil
     }
 }

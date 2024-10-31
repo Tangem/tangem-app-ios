@@ -13,7 +13,7 @@ actor DEXExpressProviderManager {
 
     private let provider: ExpressProvider
     private let expressAPIProvider: ExpressAPIProvider
-    private let allowanceProvider: AllowanceProvider
+    private let allowanceProvider: ExpressAllowanceProvider
     private let feeProvider: FeeProvider
     private let logger: Logger
     private let mapper: ExpressManagerMapper
@@ -25,7 +25,7 @@ actor DEXExpressProviderManager {
     init(
         provider: ExpressProvider,
         expressAPIProvider: ExpressAPIProvider,
-        allowanceProvider: AllowanceProvider,
+        allowanceProvider: ExpressAllowanceProvider,
         feeProvider: FeeProvider,
         logger: Logger,
         mapper: ExpressManagerMapper
@@ -118,16 +118,18 @@ private extension DEXExpressProviderManager {
         // Check Permission
         if let spender = quote.allowanceContract {
             do {
-                let isPermissionRequired = try await allowanceProvider.isPermissionRequired(request: request, for: spender)
+                let allowanceState = try await allowanceProvider.allowanceState(request: request, spender: spender, policy: approvePolicy)
 
-                if isPermissionRequired {
-                    let permissionRequired = try await makePermissionRequired(request: request, spender: spender, quote: quote, approvePolicy: approvePolicy)
-                    try Task.checkCancellation()
-
-                    return .permissionRequired(permissionRequired)
+                switch allowanceState {
+                case .enoughAllowance:
+                    break
+                case .permissionRequired(let approveData):
+                    return .permissionRequired(
+                        .init(policy: approvePolicy, data: approveData, quote: quote)
+                    )
+                case .approveTransactionInProgress:
+                    return .restriction(.approveTransactionInProgress(spender: spender), quote: quote)
                 }
-            } catch AllowanceProviderError.approveTransactionInProgress {
-                return .restriction(.approveTransactionInProgress(spender: spender), quote: quote)
             } catch {
                 return .error(error, quote: quote)
             }
@@ -137,8 +139,7 @@ private extension DEXExpressProviderManager {
     }
 
     func proceed(request: ExpressManagerSwappingPairRequest, quote: ExpressQuote, data: ExpressTransactionData) async throws -> ExpressProviderManagerState {
-        let txValue = request.pair.source.feeCurrencyConvertFromWEI(value: data.value)
-        if txValue > request.pair.source.getFeeCurrencyBalance() {
+        if data.txValue > request.pair.source.getFeeCurrencyBalance() {
             let estimateFee = try await estimateFee(request: request, data: data)
             return .restriction(estimateFee, quote: quote)
         }
@@ -153,7 +154,7 @@ private extension DEXExpressProviderManager {
     }
 
     func estimateFee(request: ExpressManagerSwappingPairRequest, data: ExpressTransactionData) async throws -> ExpressRestriction {
-        let otherNativeFee = data.otherNativeFee.map(request.pair.source.feeCurrencyConvertFromWEI) ?? 0
+        let otherNativeFee = data.otherNativeFee ?? 0
 
         if let estimatedGasLimit = data.estimatedGasLimit {
             let estimateFee = try await feeProvider.estimatedFee(estimatedGasLimit: estimatedGasLimit)
@@ -167,17 +168,17 @@ private extension DEXExpressProviderManager {
     }
 
     func ready(request: ExpressManagerSwappingPairRequest, quote: ExpressQuote, data: ExpressTransactionData) async throws -> ExpressManagerState.Ready {
-        let txValue = request.pair.source.feeCurrencyConvertFromWEI(value: data.value)
+        guard let txData = data.txData.map(Data.init(hexString:)) else {
+            throw ExpressProviderError.transactionDataNotFound
+        }
 
         var fee = try await feeProvider.getFee(
-            amount: txValue,
-            destination: data.destinationAddress,
-            hexData: data.txData.map { Data(hexString: $0) },
-            isFeeTokenItem: true // decimals for txValue (other native fee) must be equal to main coin decimals
+            amount: .dex(txValue: data.txValue, txData: txData),
+            destination: data.destinationAddress
         )
 
         try Task.checkCancellation()
-        if let otherNativeFee = data.otherNativeFee.map(request.pair.source.feeCurrencyConvertFromWEI) {
+        if let otherNativeFee = data.otherNativeFee {
             fee = include(otherNativeFee: otherNativeFee, in: fee)
             log("The fee was increased by otherNativeFee \(otherNativeFee)")
         }
@@ -185,36 +186,6 @@ private extension DEXExpressProviderManager {
         // better to make the quote from the data
         let quoteData = ExpressQuote(fromAmount: data.fromAmount, expectAmount: data.toAmount, allowanceContract: quote.allowanceContract)
         return .init(fee: fee, data: data, quote: quoteData)
-    }
-
-    func makePermissionRequired(request: ExpressManagerSwappingPairRequest, spender: String, quote: ExpressQuote, approvePolicy: ExpressApprovePolicy) async throws -> ExpressManagerState.PermissionRequired {
-        let amount: Decimal = {
-            switch approvePolicy {
-            case .specified:
-                return request.pair.source.convertToWEI(value: request.amount)
-            case .unlimited:
-                return .greatestFiniteMagnitude
-            }
-        }()
-
-        let contractAddress = request.pair.source.expressCurrency.contractAddress
-        let data = try allowanceProvider.makeApproveData(spender: spender, amount: amount)
-        let fee = try await feeProvider.getFee(
-            amount: 0,
-            destination: request.pair.source.expressCurrency.contractAddress,
-            hexData: data,
-            isFeeTokenItem: false
-        )
-        try Task.checkCancellation()
-
-        // For approve use the fastest fee
-        let fastest = fee.fastest
-        return ExpressManagerState.PermissionRequired(
-            policy: approvePolicy,
-            data: .init(spender: spender, toContractAddress: contractAddress, data: data),
-            fee: .single(fastest),
-            quote: quote
-        )
     }
 
     func include(otherNativeFee: Decimal, in fee: ExpressFee) -> ExpressFee {

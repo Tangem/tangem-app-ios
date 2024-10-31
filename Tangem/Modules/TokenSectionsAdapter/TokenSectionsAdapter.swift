@@ -196,7 +196,7 @@ final class TokenSectionsAdapter {
             // Keeping existing sort order
             return sections
         case .byBalance:
-            return sections.sorted { $0.fiatValue > $1.fiatValue }
+            return sections.sorted { $0.totalFiatValue > $1.totalFiatValue }
         }
     }
 
@@ -248,8 +248,8 @@ final class TokenSectionsAdapter {
 
     private func compareWalletModels(_ lhs: WalletModel, _ rhs: WalletModel) -> Bool {
         // Fiat balances that aren't loaded (e.g. due to network failures) fallback to zero
-        let lFiatValue = lhs.fiatValue ?? .zero
-        let rFiatValue = rhs.fiatValue ?? .zero
+        let lFiatValue = lhs.totalBalance.fiat ?? .zero
+        let rFiatValue = rhs.totalBalance.fiat ?? .zero
 
         return lFiatValue > rFiatValue
     }
@@ -310,11 +310,11 @@ private extension TokenSectionsAdapter.SectionItem {
 }
 
 private extension TokenSectionsAdapter.Section {
-    var fiatValue: Decimal {
+    var totalFiatValue: Decimal {
         return items.reduce(into: .zero) { partialResult, item in
             switch item {
             case .default(let walletModel):
-                if let fiatValue = walletModel.fiatValue {
+                if let fiatValue = walletModel.totalBalance.fiat {
                     partialResult += fiatValue
                 }
             case .withoutDerivation:

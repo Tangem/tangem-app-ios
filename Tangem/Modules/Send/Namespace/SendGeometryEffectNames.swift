@@ -52,6 +52,7 @@ extension SendGeometryEffectNames: StakingValidatorsViewGeometryEffectNames {
     func validatorTitle(id: String) -> String { "validatorTitle_\(id)" }
     func validatorIcon(id: String) -> String { "validatorIcon_\(id)" }
     func validatorSubtitle(id: String) -> String { "validatorSubtitle_\(id)" }
+    func validatorDetailsView(id: String) -> String { "validatorDetailsView_\(id)" }
 }
 
 // MARK: - SendFeeViewGeometryEffectNames
@@ -62,7 +63,6 @@ extension SendGeometryEffectNames: SendFeeViewGeometryEffectNames {
 
     func feeOption(feeOption: FeeOption) -> String { "feeOption_\(feeOption.rawValue)" }
     func feeAmount(feeOption: FeeOption) -> String { "feeAmount_\(feeOption.rawValue)" }
-    func feeSeparator(feeOption: FeeOption) -> String { "feeSeparator_\(feeOption.rawValue)" }
 }
 
 // MARK: - Destination step
@@ -105,6 +105,7 @@ protocol StakingValidatorsViewGeometryEffectNames {
     func validatorTitle(id: String) -> String
     func validatorIcon(id: String) -> String
     func validatorSubtitle(id: String) -> String
+    func validatorDetailsView(id: String) -> String
 }
 
 // MARK: - Fee step
@@ -114,7 +115,6 @@ protocol SendFeeViewGeometryEffectNames {
     var feeTitle: String { get }
     func feeOption(feeOption: FeeOption) -> String
     func feeAmount(feeOption: FeeOption) -> String
-    func feeSeparator(feeOption: FeeOption) -> String
 }
 
 // MARK: - Summary step
