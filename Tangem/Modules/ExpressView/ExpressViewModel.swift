@@ -114,9 +114,8 @@ final class ExpressViewModel: ObservableObject {
                 return
             }
 
-            let message: String = { [weak self] in
-
-                guard let self else { return "" }
+            let message: String? = { [weak self] in
+                guard let self else { return nil }
 
                 let slippage = formatDoubleToIntString(selectedProvider.slippage)
 
@@ -129,8 +128,12 @@ final class ExpressViewModel: ObservableObject {
                         slippage: slippage,
                         isBigLoss: isBigLoss
                     )
+                case .onramp, .unknown:
+                    return nil
                 }
             }()
+
+            guard let message else { return }
 
             await runOnMain {
                 viewModel.alert = .init(title: "", message: message)

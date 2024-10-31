@@ -42,9 +42,12 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
         return pairs
     }
 
-    func providers() async throws -> [ExpressProvider] {
+    func providers(branch: ExpressBranch) async throws -> [ExpressProvider] {
         let response = try await expressAPIService.providers()
-        let providers = response.map(expressAPIMapper.mapToExpressProvider(provider:))
+        let providers = response
+            .map(expressAPIMapper.mapToExpressProvider(provider:))
+            .filter { branch.supportedProviderTypes.contains($0.type) }
+
         return providers
     }
 

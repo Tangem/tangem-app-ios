@@ -43,7 +43,7 @@ struct ExpressAPIMapper {
         ExpressProvider(
             id: .init(provider.id),
             name: provider.name,
-            type: provider.type,
+            type: provider.type ?? .unknown,
             imageURL: provider.imageSmall.flatMap(URL.init(string:)),
             termsOfUse: provider.termsOfUse.flatMap(URL.init(string:)),
             privacyPolicy: provider.privacyPolicy.flatMap(URL.init(string:)),
@@ -111,6 +111,8 @@ struct ExpressAPIMapper {
         case .dex, .dexBridge:
             // For DEX we have txValue amount as coin. Because it's EVM
             txValue /= pow(10, item.source.feeCurrencyDecimalCount)
+        case .onramp, .unknown:
+            throw ExpressAPIMapperError.wrongProviderType
         }
 
         let otherNativeFee = txDetails.otherNativeFee
@@ -208,4 +210,5 @@ enum ExpressAPIMapperError: Error {
     case mapToDecimalError(_ string: String)
     case requestIdNotEqual
     case payoutAddressNotEqual
+    case wrongProviderType
 }
