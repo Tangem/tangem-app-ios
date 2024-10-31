@@ -1,62 +1,125 @@
-name: Beta - Build and Deploy 
+name: Beta - Build and Deploy
 
 on:
-  pull_request:
-    branches: 
-      - develop
-    types:
-      - open
-      
+  push:
+   branches: 
+    - 'develop'
   workflow_dispatch:
-  
-jobs:
- prepare:
-   name: Prepare information
-   runs-on: ubuntu-latest
-   outputs:
-     version: "Develop"
-     build_number: ${{ github.run_number }}
-     changelog: ${{ steps.jira.outputs.summary }}
-   steps:
-   - name: Jira Login
-     uses: atlassian/gajira-login@master
-     env:
-       JIRA_BASE_URL: ${{ secrets.JIRA_URL }}
-       JIRA_USER_EMAIL: ${{ secrets.JIRA_USER }}
-       JIRA_API_TOKEN: ${{ secrets.JIRA_TOKEN }}
-        
-   - name: Get Issues keys from git commits
-     id: github-issues
-     uses: tangem/github-action@main
-     with:
-      github-token: ${{ secrets.GH_MOBILE_PAT}}
-      pull-number: ${{ github.event.number }}
 
-   # TEST
-   - name: Output issues
-     run: echo ${{ steps.github-issues.outputs.issues }}
-   ### 
-   
-   - name: Jira Check Version
-     id: jira-check-version
-     uses: tangem/jira-action@master
-     with:
-       action: checkVersion
-       project: IOS
-       version: NextRelease
-       
-   - name: Jira Create Version
-     if: ${{ steps.jira-check-version.outputs.result }} == false
-     uses: tangem/jira-action@master
-     with:
-       action: createVersion
-       project: IOS
-       version: NextRelease
-       
-   - name: Jira Set Version To Issues
-     uses: tangem/jira-action@master
-     with:
-       action: setVersionToIssues
-       project: IOS
-       version: NextRelease
-       issues: ${{ steps.github-issues.outputs.issues }}
+env:
+  nextVersionName: "Next Release"
+
+jobs:
+  prepare:
+    name: Prepare information
+    runs-on: ubuntu-latest
+    outputs:
+      version: 'Develop'
+      stage: 'Beta'
+      build_number: '${{ github.run_number }}'
+      changelog: '${{ steps.changelog.outputs.result }}'
+    steps:
+    - name: Get unreleased tasks
+      id: git-diff
+      uses: tangem/github-action@main
+      with:
+        github-token: '${{ secrets.GH_MOBILE_PAT}}'
+        base: 'master'
+        head: 'develop'
+
+    - name: Jira Login
+      uses: atlassian/gajira-login@master
+      env:
+        JIRA_BASE_URL: ${{ secrets.JIRA_URL }}
+        JIRA_USER_EMAIL: ${{ secrets.JIRA_USER }}
+        JIRA_API_TOKEN: ${{ secrets.JIRA_TOKEN }}
+
+    - name: Jira Get Issues Summary
+      uses: tangem/jira-action@master
+      id: changelog
+      with:
+        action: getIssuesSummary
+        issues: ${{ steps.git-diff.outputs.issues }}
+
+    - name: Jira Check Version
+      id: jira-check-version
+      uses: tangem/jira-action@master
+      with:
+        action: checkVersion
+        project: IOS
+        version: ${{ env.nextVersionName }}
+
+    - name: Jira Create Version
+      if: ${{ steps.jira-check-version.outputs.result == 'false' }}
+      uses: tangem/jira-action@master
+      with:
+        action: createVersion
+        project: IOS
+        version: ${{ env.nextVersionName }}
+
+    - name: Jira Set Version To Issues
+      uses: tangem/jira-action@master
+      with:
+        action: setVersionToIssues
+        project: IOS
+        version: ${{ env.nextVersionName }}
+        issues: ${{ steps.git-diff.outputs.issues }}
+
+  build:
+    name: Tangem Beta
+    needs: prepare
+    uses: tangem/actions/.github/workflows/build.yml@main
+    with:
+      stage: ${{needs.prepare.outputs.stage}}
+      version: "${{needs.prepare.outputs.version}}"
+      build_number: ${{needs.prepare.outputs.build_number}}
+      path: "fastlane/builds/"
+      filename: "Tangem-${{needs.prepare.outputs.stage}}-${{needs.prepare.outputs.version}}(${{needs.prepare.outputs.build_number}}).ipa"
+    secrets:
+      GH_MOBILE_PAT: ${{ secrets.GH_MOBILE_PAT}}
+
+  deploy:
+    name: Google Distribution
+    needs: [prepare,build]
+    uses: tangem/actions/.github/workflows/deploy-firebase.yml@main
+    with:
+      stage: ${{needs.prepare.outputs.stage}}
+      version: "${{needs.prepare.outputs.version}}"
+      build_number: ${{needs.prepare.outputs.build_number}}
+      changelog: "${{needs.prepare.outputs.changelog}}"
+      filename: "Tangem-${{needs.prepare.outputs.stage}}-${{needs.prepare.outputs.version}}(${{needs.prepare.outputs.build_number}}).ipa"
+    secrets:
+      FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID}}
+      FIREBASE_CLI_TOKEN: ${{ secrets.FIREBASE_CLI_TOKEN}}
+      GH_MOBILE_PAT: ${{ secrets.GH_MOBILE_PAT}}
+
+  notification:
+    name: Deploy Notification
+    needs: [prepare,deploy]
+    uses: tangem/actions/.github/workflows/notification.yml@main
+    with:
+      channel: ${{vars.SLACK_CHANNEL_DEPLOYMENTS_IOS}}
+      status: "success"
+      app_name: ${{vars.APP_BETA}}
+      deploy_to: ${{vars.DEPLOYMENT_GOOGLE_DISTRIBUTION}}
+      version: ${{needs.prepare.outputs.version}}
+      build_number: ${{needs.prepare.outputs.build_number}}
+      changelog: ${{needs.prepare.outputs.changelog}}
+    secrets:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN}}
+
+  error_notification:
+    name: Error Notification
+    if: failure()
+    needs: [prepare,deploy]
+    uses: tangem/actions/.github/workflows/notification.yml@main
+    with:
+      channel: ${{vars.SLACK_CHANNEL_DEPLOYMENTS_IOS}}
+      status: "error"
+      app_name: ${{vars.APP_BETA}}
+      deploy_to: ${{vars.DEPLOYMENT_GOOGLE_DISTRIBUTION}}
+      version: ${{needs.prepare.outputs.version}}
+      build_number: ${{needs.prepare.outputs.build_number}}
+      changelog: ${{needs.prepare.outputs.changelog}}
+    secrets:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN}}
