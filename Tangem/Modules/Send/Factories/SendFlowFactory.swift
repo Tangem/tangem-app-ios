@@ -149,7 +149,7 @@ struct SendFlowFactory {
     func makeOnrampViewModel(router: SendRoutable) -> SendViewModel {
         let builder = SendDependenciesBuilder(userWalletModel: userWalletModel, walletModel: walletModel)
         let sendAmountStepBuilder = SendAmountStepBuilder(walletModel: walletModel, builder: builder)
-        let onrampStepBuilder = OnrampStepBuilder()
+        let onrampStepBuilder = OnrampStepBuilder(walletModel: walletModel)
         let sendFinishStepBuilder = SendFinishStepBuilder(walletModel: walletModel)
 
         let baseBuilder = OnrampFlowBaseBuilder(

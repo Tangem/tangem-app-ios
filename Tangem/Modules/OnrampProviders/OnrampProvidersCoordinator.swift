@@ -19,8 +19,7 @@ class OnrampProvidersCoordinator: CoordinatorObject {
 
     // MARK: - Child view models
 
-    // TODO: https://tangem.atlassian.net/browse/IOS-8361
-    // Payment methods view
+    @Published var onrampPaymentMethodsViewModel: OnrampPaymentMethodsViewModel?
 
     required init(
         dismissAction: @escaping Action<Void>,
@@ -45,4 +44,12 @@ extension OnrampProvidersCoordinator {
 
 // MARK: - OnrampProvidersRoutable
 
-extension OnrampProvidersCoordinator: OnrampProvidersRoutable {}
+extension OnrampProvidersCoordinator: OnrampProvidersRoutable {
+    func openOnrampPaymentMethods() {
+        onrampPaymentMethodsViewModel = .init(coordinator: self)
+    }
+}
+
+// MARK: - OnrampPaymentMethodsRoutable
+
+extension OnrampProvidersCoordinator: OnrampPaymentMethodsRoutable {}
