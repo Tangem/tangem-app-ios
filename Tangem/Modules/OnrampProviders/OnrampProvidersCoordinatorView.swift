@@ -24,10 +24,15 @@ struct OnrampProvidersCoordinatorView: CoordinatorView {
                 }
             }
         }
+        .tint(Colors.Text.primary1)
     }
 
     @ViewBuilder
     private var links: some View {
-        EmptyView()
+        NavHolder()
+            .navigation(item: $coordinator.onrampPaymentMethodsViewModel) {
+                OnrampPaymentMethodsView(viewModel: $0)
+            }
+            .emptyNavigationLink()
     }
 }

@@ -7,5 +7,5 @@
 //
 
 protocol OnrampSummaryRoutable: AnyObject {
-    func summaryStepRequestEditProvider()
+    func onrampStepRequestEditProvider()
 }

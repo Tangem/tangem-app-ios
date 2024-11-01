@@ -81,11 +81,3 @@ extension CommonOnrampStepsManager: SendStepsManager {
         assertionFailure("There's not continue action in this flow")
     }
 }
-
-// MARK: - OnrampSummaryRoutable
-
-extension CommonOnrampStepsManager: OnrampSummaryRoutable {
-    func summaryStepRequestEditProvider() {
-        coordinator.openOnrampProviders()
-    }
-}
