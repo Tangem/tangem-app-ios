@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TangemFoundation
 
 struct SuiCoinObject {
     let coinType: String

@@ -144,7 +144,6 @@
 		5D20812A27D2439700D8A970 /* WCExample.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D20812927D2439700D8A970 /* WCExample.json */; };
 		5D225CB92524B721001564A3 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D225CB82524B721001564A3 /* Analytics.swift */; };
 		5D242A5F273C1F24008F79B5 /* Publisher+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D74F718262722FF00B03897 /* Publisher+.swift */; };
-		5D24A12C24FF9E3A002A3BCA /* Decimal+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D24A12B24FF9E3A002A3BCA /* Decimal+.swift */; };
 		5D383E3F24D95BA600C9BFF6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5D383E4124D95BA600C9BFF6 /* Localizable.strings */; };
 		5D384B9124FD4E1800C2C92C /* String+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D384B9024FD4E1800C2C92C /* String+.swift */; };
 		5D384B9424FD51C000C2C92C /* DetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D384B9324FD51C000C2C92C /* DetailsViewModel.swift */; };
@@ -426,7 +425,6 @@
 		B06C9B862A3AE65A00875852 /* ExchangeCryptoUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06C9B852A3AE65A00875852 /* ExchangeCryptoUtility.swift */; };
 		B06CF2932993BF77000C7D93 /* TransactionsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06CF2922993BF77000C7D93 /* TransactionsListView.swift */; };
 		B06F033D2B5A8C1200F04F0E /* LimitsResponseParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06F033C2B5A8C1200F04F0E /* LimitsResponseParser.swift */; };
-		B06F033F2B5A8C4600F04F0E /* Decimal+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06F033E2B5A8C4600F04F0E /* Decimal+.swift */; };
 		B06F03412B5A8C6300F04F0E /* VisaParserError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06F03402B5A8C6300F04F0E /* VisaParserError.swift */; };
 		B06F03442B5A993800F04F0E /* VisaWalletModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06F03432B5A993700F04F0E /* VisaWalletModel.swift */; };
 		B072E12E2B18B26000B0AB27 /* PendingExpressTxStatusBottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B072E12D2B18B26000B0AB27 /* PendingExpressTxStatusBottomSheetView.swift */; };
@@ -1536,14 +1534,11 @@
 		B62D42C52CBC79DB00C2460E /* MoyaPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F792CBC79DA00C2460E /* MoyaPublisher.swift */; };
 		B62D42C62CBC79DB00C2460E /* AnyPublisher+Async.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F7B2CBC79DA00C2460E /* AnyPublisher+Async.swift */; };
 		B62D42C72CBC79DB00C2460E /* BigUInt+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F7C2CBC79DA00C2460E /* BigUInt+.swift */; };
-		B62D42C82CBC79DB00C2460E /* Bundle+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F7D2CBC79DA00C2460E /* Bundle+.swift */; };
 		B62D42C92CBC79DB00C2460E /* CBOR+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F7E2CBC79DA00C2460E /* CBOR+.swift */; };
 		B62D42CA2CBC79DB00C2460E /* Collection+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F7F2CBC79DA00C2460E /* Collection+.swift */; };
 		B62D42CB2CBC79DB00C2460E /* Data+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F802CBC79DA00C2460E /* Data+.swift */; };
 		B62D42CC2CBC79DB00C2460E /* DateFormatter+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F812CBC79DA00C2460E /* DateFormatter+.swift */; };
 		B62D42CD2CBC79DB00C2460E /* Decimal+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F822CBC79DA00C2460E /* Decimal+.swift */; };
-		B62D42CE2CBC79DB00C2460E /* Future+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F832CBC79DA00C2460E /* Future+.swift */; };
-		B62D42CF2CBC79DB00C2460E /* Int+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F842CBC79DA00C2460E /* Int+.swift */; };
 		B62D42D02CBC79DB00C2460E /* JSONDecoder+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F852CBC79DA00C2460E /* JSONDecoder+.swift */; };
 		B62D42D12CBC79DB00C2460E /* JSONEncoder+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F862CBC79DA00C2460E /* JSONEncoder+.swift */; };
 		B62D42D22CBC79DB00C2460E /* KeyedDecodingContainer+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F872CBC79DA00C2460E /* KeyedDecodingContainer+.swift */; };
@@ -1557,7 +1552,6 @@
 		B62D42DA2CBC79DB00C2460E /* ThenProcessable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F8F2CBC79DA00C2460E /* ThenProcessable.swift */; };
 		B62D42DB2CBC79DB00C2460E /* TWCoin+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F902CBC79DA00C2460E /* TWCoin+.swift */; };
 		B62D42DC2CBC79DB00C2460E /* TWPublicKey+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F912CBC79DA00C2460E /* TWPublicKey+.swift */; };
-		B62D42DD2CBC79DB00C2460E /* Uint64+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F922CBC79DA00C2460E /* Uint64+.swift */; };
 		B62D42DE2CBC79DB00C2460E /* URL+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F932CBC79DA00C2460E /* URL+.swift */; };
 		B62D43372CBC79E400C2460E /* ICPTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D42DF2CBC79E000C2460E /* ICPTests.swift */; };
 		B62D43382CBC79E400C2460E /* StellarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D42E12CBC79E000C2460E /* StellarTests.swift */; };
@@ -1643,6 +1637,9 @@
 		B63B72892AF5F23B004B80BF /* TokenSectionsSourcePublisherFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63B72882AF5F23B004B80BF /* TokenSectionsSourcePublisherFactory.swift */; };
 		B63BAA6C2B7410AE00DA26C9 /* TangemWalletCoreBinariesWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = B63BAA6B2B7410AE00DA26C9 /* TangemWalletCoreBinariesWrapper */; };
 		B63D4CAD2B2B8C6200DB2420 /* MutableCollection+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63D4CAC2B2B8C6200DB2420 /* MutableCollection+.swift */; };
+		B63DFC4A2CD4DBED00720D9F /* TangemModules in Frameworks */ = {isa = PBXBuildFile; productRef = B63DFC492CD4DBED00720D9F /* TangemModules */; };
+		B63DFC4C2CD4EA1C00720D9F /* TangemModules in Frameworks */ = {isa = PBXBuildFile; productRef = B63DFC4B2CD4EA1C00720D9F /* TangemModules */; };
+		B63DFC4E2CD4EABB00720D9F /* TangemModules in Frameworks */ = {isa = PBXBuildFile; productRef = B63DFC4D2CD4EABB00720D9F /* TangemModules */; };
 		B63FDB182A5F09F10080240F /* CardsInfoPagerFlexibleFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63FDB172A5F09F10080240F /* CardsInfoPagerFlexibleFooterView.swift */; };
 		B6421A8D2C9272800053DD8B /* MainBottomSheetHeaderViewModelDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6421A8C2C9272800053DD8B /* MainBottomSheetHeaderViewModelDelegate.swift */; };
 		B643B8072B1965EA002DE401 /* PerformanceMonitorConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B643B8062B1965EA002DE401 /* PerformanceMonitorConfigurator.swift */; };
@@ -3111,7 +3108,6 @@
 		5D20812727D242E500D8A970 /* cryptofights.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = cryptofights.json; sourceTree = "<group>"; };
 		5D20812927D2439700D8A970 /* WCExample.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = WCExample.json; sourceTree = "<group>"; };
 		5D225CB82524B721001564A3 /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
-		5D24A12B24FF9E3A002A3BCA /* Decimal+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Decimal+.swift"; sourceTree = "<group>"; };
 		5D383E4024D95BA600C9BFF6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5D384B9024FD4E1800C2C92C /* String+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+.swift"; sourceTree = "<group>"; };
 		5D384B9324FD51C000C2C92C /* DetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewModel.swift; sourceTree = "<group>"; };
@@ -3431,7 +3427,6 @@
 		B06C9B852A3AE65A00875852 /* ExchangeCryptoUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeCryptoUtility.swift; sourceTree = "<group>"; };
 		B06CF2922993BF77000C7D93 /* TransactionsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsListView.swift; sourceTree = "<group>"; };
 		B06F033C2B5A8C1200F04F0E /* LimitsResponseParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LimitsResponseParser.swift; sourceTree = "<group>"; };
-		B06F033E2B5A8C4600F04F0E /* Decimal+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Decimal+.swift"; sourceTree = "<group>"; };
 		B06F03402B5A8C6300F04F0E /* VisaParserError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisaParserError.swift; sourceTree = "<group>"; };
 		B06F03432B5A993700F04F0E /* VisaWalletModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisaWalletModel.swift; sourceTree = "<group>"; };
 		B072E12D2B18B26000B0AB27 /* PendingExpressTxStatusBottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingExpressTxStatusBottomSheetView.swift; sourceTree = "<group>"; };
@@ -4535,14 +4530,11 @@
 		B62D3F792CBC79DA00C2460E /* MoyaPublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoyaPublisher.swift; sourceTree = "<group>"; };
 		B62D3F7B2CBC79DA00C2460E /* AnyPublisher+Async.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AnyPublisher+Async.swift"; sourceTree = "<group>"; };
 		B62D3F7C2CBC79DA00C2460E /* BigUInt+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BigUInt+.swift"; sourceTree = "<group>"; };
-		B62D3F7D2CBC79DA00C2460E /* Bundle+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bundle+.swift"; sourceTree = "<group>"; };
 		B62D3F7E2CBC79DA00C2460E /* CBOR+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CBOR+.swift"; sourceTree = "<group>"; };
 		B62D3F7F2CBC79DA00C2460E /* Collection+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Collection+.swift"; sourceTree = "<group>"; };
 		B62D3F802CBC79DA00C2460E /* Data+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+.swift"; sourceTree = "<group>"; };
 		B62D3F812CBC79DA00C2460E /* DateFormatter+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DateFormatter+.swift"; sourceTree = "<group>"; };
 		B62D3F822CBC79DA00C2460E /* Decimal+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Decimal+.swift"; sourceTree = "<group>"; };
-		B62D3F832CBC79DA00C2460E /* Future+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Future+.swift"; sourceTree = "<group>"; };
-		B62D3F842CBC79DA00C2460E /* Int+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Int+.swift"; sourceTree = "<group>"; };
 		B62D3F852CBC79DA00C2460E /* JSONDecoder+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JSONDecoder+.swift"; sourceTree = "<group>"; };
 		B62D3F862CBC79DA00C2460E /* JSONEncoder+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JSONEncoder+.swift"; sourceTree = "<group>"; };
 		B62D3F872CBC79DA00C2460E /* KeyedDecodingContainer+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "KeyedDecodingContainer+.swift"; sourceTree = "<group>"; };
@@ -4556,7 +4548,6 @@
 		B62D3F8F2CBC79DA00C2460E /* ThenProcessable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThenProcessable.swift; sourceTree = "<group>"; };
 		B62D3F902CBC79DA00C2460E /* TWCoin+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TWCoin+.swift"; sourceTree = "<group>"; };
 		B62D3F912CBC79DA00C2460E /* TWPublicKey+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TWPublicKey+.swift"; sourceTree = "<group>"; };
-		B62D3F922CBC79DA00C2460E /* Uint64+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Uint64+.swift"; sourceTree = "<group>"; };
 		B62D3F932CBC79DA00C2460E /* URL+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+.swift"; sourceTree = "<group>"; };
 		B62D42DF2CBC79E000C2460E /* ICPTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ICPTests.swift; sourceTree = "<group>"; };
 		B62D42E12CBC79E000C2460E /* StellarTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StellarTests.swift; sourceTree = "<group>"; };
@@ -5822,6 +5813,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AB5DE0569C12F3BDA9530564 /* Pods_TangemTests.framework in Frameworks */,
+				B63DFC4E2CD4EABB00720D9F /* TangemModules in Frameworks */,
 				B67E38C72CC7259B00D660EB /* TangemSdk in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5877,6 +5869,7 @@
 				B6C0D3F62CBDC552001113ED /* BinanceChain in Frameworks */,
 				B6FFC31F2CC70E1D00F4400E /* BitcoinCore in Frameworks */,
 				B68E1F962CBC451D0043E598 /* ScaleCodec in Frameworks */,
+				B63DFC4A2CD4DBED00720D9F /* TangemModules in Frameworks */,
 				B67E38B92CC7147600D660EB /* TangemSdk in Frameworks */,
 				B6CAC1CC2CC336220001A427 /* SolanaSwift in Frameworks */,
 				B62D34502CBC67D500C2460E /* AnyCodable in Frameworks */,
@@ -5896,6 +5889,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B68E1F6D2CBC44060043E598 /* BlockchainSdk.framework in Frameworks */,
+				B63DFC4C2CD4EA1C00720D9F /* TangemModules in Frameworks */,
 				B67E38C52CC7252900D660EB /* TangemSdk in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -6639,7 +6633,6 @@
 				5DFE855624EF051400194106 /* Error+.swift */,
 				5D384B9024FD4E1800C2C92C /* String+.swift */,
 				DAF97FC82BAAF2CC006D9A44 /* Locale+.swift */,
-				5D24A12B24FF9E3A002A3BCA /* Decimal+.swift */,
 				5D06E03F250A5D54004218D0 /* NSRegualrExpression+.swift */,
 				5D80ED462550186A0008DEF0 /* View+.swift */,
 				B63457762A3A097C00E164C5 /* View+ReadGeometry.swift */,
@@ -7222,14 +7215,6 @@
 			path = Visa;
 			sourceTree = "<group>";
 		};
-		B05145072B5933FA00EDAD1E /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				B06F033E2B5A8C4600F04F0E /* Decimal+.swift */,
-			);
-			path = Extensions;
-			sourceTree = "<group>";
-		};
 		B051450A2B59342E00EDAD1E /* SmartContractMethods */ = {
 			isa = PBXGroup;
 			children = (
@@ -7720,7 +7705,6 @@
 				B08D3C122BF6267E00C83299 /* Config */,
 				B050F4F22B5FB02B00B2E53C /* APIService */,
 				B099339B2B55194900240CDB /* BridgeInteractor */,
-				B05145072B5933FA00EDAD1E /* Extensions */,
 				B051451A2B59353D00EDAD1E /* Models */,
 				B099339A2B55194000240CDB /* Settings */,
 				B05145152B5934E200EDAD1E /* Utilities */,
@@ -10669,14 +10653,11 @@
 				B62D3F7A2CBC79DA00C2460E /* Moya+Combine */,
 				B62D3F7B2CBC79DA00C2460E /* AnyPublisher+Async.swift */,
 				B62D3F7C2CBC79DA00C2460E /* BigUInt+.swift */,
-				B62D3F7D2CBC79DA00C2460E /* Bundle+.swift */,
 				B62D3F7E2CBC79DA00C2460E /* CBOR+.swift */,
 				B62D3F7F2CBC79DA00C2460E /* Collection+.swift */,
 				B62D3F802CBC79DA00C2460E /* Data+.swift */,
 				B62D3F812CBC79DA00C2460E /* DateFormatter+.swift */,
 				B62D3F822CBC79DA00C2460E /* Decimal+.swift */,
-				B62D3F832CBC79DA00C2460E /* Future+.swift */,
-				B62D3F842CBC79DA00C2460E /* Int+.swift */,
 				B62D3F852CBC79DA00C2460E /* JSONDecoder+.swift */,
 				B62D3F862CBC79DA00C2460E /* JSONEncoder+.swift */,
 				B62D3F872CBC79DA00C2460E /* KeyedDecodingContainer+.swift */,
@@ -10690,7 +10671,6 @@
 				B62D3F8F2CBC79DA00C2460E /* ThenProcessable.swift */,
 				B62D3F902CBC79DA00C2460E /* TWCoin+.swift */,
 				B62D3F912CBC79DA00C2460E /* TWPublicKey+.swift */,
-				B62D3F922CBC79DA00C2460E /* Uint64+.swift */,
 				B62D3F932CBC79DA00C2460E /* URL+.swift */,
 			);
 			path = Extensions;
@@ -14840,6 +14820,7 @@
 			name = TangemTests;
 			packageProductDependencies = (
 				B67E38C62CC7259B00D660EB /* TangemSdk */,
+				B63DFC4D2CD4EABB00720D9F /* TangemModules */,
 			);
 			productName = "Tangem TapTests";
 			productReference = 5D3F77D824BF56DC00E8695B /* TangemTests.xctest */;
@@ -14967,6 +14948,7 @@
 				B6CAC1CB2CC336220001A427 /* SolanaSwift */,
 				B6FFC31E2CC70E1D00F4400E /* BitcoinCore */,
 				B67E38B82CC7147600D660EB /* TangemSdk */,
+				B63DFC492CD4DBED00720D9F /* TangemModules */,
 			);
 			productName = BlockchainSdk;
 			productReference = B68E1F652CBC44050043E598 /* BlockchainSdk.framework */;
@@ -14989,6 +14971,7 @@
 			name = BlockchainSdkTests;
 			packageProductDependencies = (
 				B67E38C42CC7252900D660EB /* TangemSdk */,
+				B63DFC4B2CD4EA1C00720D9F /* TangemModules */,
 			);
 			productName = BlockchainSdkTests;
 			productReference = B68E1F6C2CBC44060043E598 /* BlockchainSdkTests.xctest */;
@@ -16060,7 +16043,6 @@
 				B0DD16292A331C2100CB23AA /* TokenDetailsCoordinatorView.swift in Sources */,
 				B0F318F62A738ACC009F131E /* LockedUserTokenListManager.swift in Sources */,
 				EF729B512AF1248400D80205 /* FeeRowViewModel.swift in Sources */,
-				5D24A12C24FF9E3A002A3BCA /* Decimal+.swift in Sources */,
 				DADBECDF2BBE910C007E7885 /* CustomFeeService.swift in Sources */,
 				B0B56AAD2C207586001FD72A /* VisaUtilities+FeatureStorage.swift in Sources */,
 				5D5D013C25CC1F3900DA8616 /* TransparentModal.swift in Sources */,
@@ -17134,7 +17116,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B051451E2B59355E00EDAD1E /* VisaLimits.swift in Sources */,
-				B06F033F2B5A8C4600F04F0E /* Decimal+.swift in Sources */,
 				B051450C2B59344100EDAD1E /* GetPaymentAccountByCardMethod.swift in Sources */,
 				B05F19552BF3589C007E5552 /* GetTokenInfoMethod.swift in Sources */,
 				B08D3C162BF628A500C83299 /* VisaConfigProvider.swift in Sources */,
@@ -17208,7 +17189,6 @@
 				B62D42802CBC79DB00C2460E /* AlgorandTransactionHistoryMapper.swift in Sources */,
 				B62D403A2CBC79DA00C2460E /* AdaliteBalanceResponseDTO.swift in Sources */,
 				B62D40382CBC79DA00C2460E /* BitcoinCashWalletAssembly.swift in Sources */,
-				B62D42C82CBC79DB00C2460E /* Bundle+.swift in Sources */,
 				B62D420B2CBC79DB00C2460E /* XRPTransaction.swift in Sources */,
 				B62D41CC2CBC79DB00C2460E /* proposal_contract.pb.swift in Sources */,
 				B62D408D2CBC79DA00C2460E /* EthereumExternalLinkProvider.swift in Sources */,
@@ -17556,7 +17536,6 @@
 				B62D40692CBC79DA00C2460E /* CosmosFeeParameters.swift in Sources */,
 				B62D3F9F2CBC79DA00C2460E /* AlgorandResponse+PendingTransaction.swift in Sources */,
 				B62D400A2CBC79DA00C2460E /* OP_CAT.swift in Sources */,
-				B62D42DD2CBC79DB00C2460E /* Uint64+.swift in Sources */,
 				B62D42A62CBC79DB00C2460E /* Constants.swift in Sources */,
 				B62D427F2CBC79DB00C2460E /* AlgorandIndexProviderTarget.swift in Sources */,
 				B62D409C2CBC79DA00C2460E /* ETHError.swift in Sources */,
@@ -17816,7 +17795,6 @@
 				B62D41512CBC79DA00C2460E /* SubscanAPIParams.ExtrinsicsList.swift in Sources */,
 				B62D3FA92CBC79DA00C2460E /* AlgorandWalletManager.swift in Sources */,
 				B62D40D72CBC79DA00C2460E /* FilecoinTransactionBuilder.swift in Sources */,
-				B62D42CE2CBC79DB00C2460E /* Future+.swift in Sources */,
 				B62D429C2CBC79DB00C2460E /* URLSessionWebSocketTaskWrapper.swift in Sources */,
 				B62D41A12CBC79DA00C2460E /* SuiTarget.swift in Sources */,
 				B62D41EC2CBC79DB00C2460E /* VeChainNetworkParams.swift in Sources */,
@@ -17928,7 +17906,6 @@
 				B62D3FB42CBC79DA00C2460E /* AptosExternalLinkProvider.swift in Sources */,
 				B62D415A2CBC79DA00C2460E /* AzeroExternalLinkProvider.swift in Sources */,
 				B62D420F2CBC79DB00C2460E /* WebSocket+Convenience.swift in Sources */,
-				B62D42CF2CBC79DB00C2460E /* Int+.swift in Sources */,
 				B62D41412CBC79DA00C2460E /* NEARNetworkProvider.swift in Sources */,
 				B62D409B2CBC79DA00C2460E /* EthereumTransactionParams.swift in Sources */,
 				B62D403B2CBC79DA00C2460E /* AdaliteBaseResponseDTO.swift in Sources */,
@@ -24726,6 +24703,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B6F525902B6C05210079ADD1 /* XCRemoteSwiftPackageReference "wallet-core-binaries-ios" */;
 			productName = TangemWalletCoreBinariesWrapper;
+		};
+		B63DFC492CD4DBED00720D9F /* TangemModules */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6C0D3DF2CBDC2E3001113ED /* XCLocalSwiftPackageReference "Modules" */;
+			productName = TangemModules;
+		};
+		B63DFC4B2CD4EA1C00720D9F /* TangemModules */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6C0D3DF2CBDC2E3001113ED /* XCLocalSwiftPackageReference "Modules" */;
+			productName = TangemModules;
+		};
+		B63DFC4D2CD4EABB00720D9F /* TangemModules */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6C0D3DF2CBDC2E3001113ED /* XCLocalSwiftPackageReference "Modules" */;
+			productName = TangemModules;
 		};
 		B655F5792CBC871F002391AF /* secp256k1 */ = {
 			isa = XCSwiftPackageProductDependency;

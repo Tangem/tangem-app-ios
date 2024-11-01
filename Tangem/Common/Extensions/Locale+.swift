@@ -41,7 +41,4 @@ extension Locale {
 
         return Locale(identifier: identifier).currencySymbol
     }
-
-    /// See https://developer.apple.com/documentation/foundation/nsdateformatter#2528261 for details.
-    static let posixEnUS = Locale(identifier: "en_US_POSIX")
 }
