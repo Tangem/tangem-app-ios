@@ -1,8 +1,9 @@
 import Foundation
+
 /**
  Enumeration for CLType
  */
-public enum CLType {
+enum CLType {
     case boolClType
     case i32ClType
     case i64ClType
@@ -29,30 +30,32 @@ public enum CLType {
     case clTypeAny
     case none
 }
+
 /**
  Class  for handling the  conversion from Json String to  CLType
  */
-public class CLTypeHelper {
+enum CLTypeHelper {
     // CLType to Json all
 
-    public static func CLTypeToJsonString(clType: CLType) -> String {
+    static func CLTypeToJsonString(clType: CLType) -> String {
         if CLValue.isCLTypePrimitive(clType1: clType) {
-            return "\""+CLTypeHelper.CLTypePrimitiveToJsonString(clType: clType)+"\""
+            return "\"" + CLTypeHelper.CLTypePrimitiveToJsonString(clType: clType) + "\""
         } else {
             return CLTypeHelper.CLTypeCompoundToJsonString(clType: clType)
         }
     }
 
-    public static func CLTypeToJson(clType: CLType) -> AnyObject {
+    static func CLTypeToJson(clType: CLType) -> AnyObject {
         if CLValue.isCLTypePrimitive(clType1: clType) {
             return CLTypeHelper.CLTypePrimitiveToJson(clType: clType) as AnyObject
         } else {
             return CLTypeHelper.CLTypeCompoundToJson(clType: clType) as AnyObject
         }
     }
+
     // CLType to Json string primitive
 
-    public static func CLTypePrimitiveToJsonString(clType: CLType) -> String {
+    static func CLTypePrimitiveToJsonString(clType: CLType) -> String {
         switch clType {
         case .boolClType:
             return "Bool"
@@ -92,10 +95,10 @@ public class CLTypeHelper {
         return "NONE"
     }
 
-    public static func CLTypeCompoundToJsonString(clType: CLType) -> String {
-        var ret: String = ""
+    static func CLTypeCompoundToJsonString(clType: CLType) -> String {
+        var ret = ""
         switch clType {
-        case .bytesArrayClType(_):
+        case .bytesArrayClType:
             ret = "{\"ByteArray\": 32}"
             return ret
         case .resultClType(let clType1, let clType2):
@@ -154,22 +157,22 @@ public class CLTypeHelper {
                 let clType1Str = CLTypeHelper.CLTypePrimitiveToJson(clType: clType1)
                 if CLValue.isCLTypePrimitive(clType1: clType2) {
                     let clType2Str = CLTypeHelper.CLTypePrimitiveToJson(clType: clType2)
-                    let retResult: String = "{\"key\": \"\(clType1Str)\", \"value\": \"\(clType2Str)\"}"
+                    let retResult = "{\"key\": \"\(clType1Str)\", \"value\": \"\(clType2Str)\"}"
                     ret = "{\"Map\": \(retResult)}"
                 } else {
                     let clType2Str = CLTypeHelper.CLTypeCompoundToJson(clType: clType2)
-                    let retResult: String = "{\"key\": \"\(clType1Str)\", \"value\": \(clType2Str)}"
+                    let retResult = "{\"key\": \"\(clType1Str)\", \"value\": \(clType2Str)}"
                     ret = "{\"Map\": \(retResult)}"
                 }
             } else {
                 let clType1Str = CLTypeHelper.CLTypeCompoundToJson(clType: clType1)
                 if CLValue.isCLTypePrimitive(clType1: clType2) {
                     let clType2Str = CLTypeHelper.CLTypePrimitiveToJson(clType: clType2)
-                    let retResult: String = "{\"key\": \"\(clType1Str)\", \"value\": \"\(clType2Str)\"}"
+                    let retResult = "{\"key\": \"\(clType1Str)\", \"value\": \"\(clType2Str)\"}"
                     ret = "{\"Map\": \(retResult)}"
                 } else {
                     let clType2Str = CLTypeHelper.CLTypeCompoundToJson(clType: clType2)
-                    let retResult: String = "{\"key\": \(clType1Str), \"value\": \(clType2Str)}"
+                    let retResult = "{\"key\": \(clType1Str), \"value\": \(clType2Str)}"
                     ret = "{\"Map\": \(retResult)}"
                 }
             }
@@ -206,10 +209,10 @@ public class CLTypeHelper {
         case .tuple3(let cLTypeTuple1, let cLTypeTuple2, let cLTypeTuple3):
             ret = "{\"Tuple3\": ["
             if CLValue.isCLTypePrimitive(clType1: cLTypeTuple1) {
-                let  clTypeStr1: String = "\"" + CLTypeHelper.CLTypePrimitiveToJson(clType: cLTypeTuple1) + "\""
+                let clTypeStr1: String = "\"" + CLTypeHelper.CLTypePrimitiveToJson(clType: cLTypeTuple1) + "\""
                 ret = ret + "\(clTypeStr1), "
             } else {
-                let  clTypeStr1: [String: Any] = CLTypeHelper.CLTypeCompoundToJson(clType: cLTypeTuple1)
+                let clTypeStr1: [String: Any] = CLTypeHelper.CLTypeCompoundToJson(clType: cLTypeTuple1)
                 ret = ret + "\(clTypeStr1), "
             }
             if CLValue.isCLTypePrimitive(clType1: cLTypeTuple2) {
@@ -235,7 +238,7 @@ public class CLTypeHelper {
         return ret
     }
 
-    public static func CLTypePrimitiveToJson(clType: CLType) -> String {
+    static func CLTypePrimitiveToJson(clType: CLType) -> String {
         switch clType {
         case .boolClType:
             return "Bool"
@@ -274,16 +277,17 @@ public class CLTypeHelper {
         }
         return "NONE"
     }
+
     /**
         Function to get  json object from CLType object
        - Parameter: CLType object
        - Returns: json object representing the current deploy object, in form of [String: Any]
      */
 
-    public static func CLTypeCompoundToJson(clType: CLType) -> [String: Any] {
+    static func CLTypeCompoundToJson(clType: CLType) -> [String: Any] {
         var ret: [String: Any]!
         switch clType {
-        case .bytesArrayClType(_):
+        case .bytesArrayClType:
             ret = ["BytesArray": 32]
             return ret
         case .resultClType(let clType1, let clType2):
@@ -315,7 +319,7 @@ public class CLTypeHelper {
                 }
             }
         case .option(let cLTypeOption):
-            var optionRet: [String: Any] = [: ]
+            var optionRet: [String: Any] = [:]
             if CLValue.isCLTypePrimitive(clType1: cLTypeOption) {
                 let clTypeStr = CLTypeHelper.CLTypePrimitiveToJson(clType: cLTypeOption)
                 optionRet = ["Option": clTypeStr]
@@ -325,7 +329,7 @@ public class CLTypeHelper {
             }
             return optionRet
         case .listClType(let clTypeList):
-            var listRet: [String: Any] = [: ]
+            var listRet: [String: Any] = [:]
             if CLValue.isCLTypePrimitive(clType1: clTypeList) {
                 let clTypeStr = CLTypeHelper.CLTypePrimitiveToJson(clType: clTypeList)
                 listRet = ["List": clTypeStr]
@@ -335,7 +339,7 @@ public class CLTypeHelper {
             }
             return listRet
         case .fixedListClType(let cLTypeList):
-            var listRet: [String: Any] = [: ]
+            var listRet: [String: Any] = [:]
             if CLValue.isCLTypePrimitive(clType1: cLTypeList) {
                 let clTypeStr = CLTypeHelper.CLTypePrimitiveToJson(clType: cLTypeList)
                 listRet = ["List": clTypeStr]
@@ -406,7 +410,7 @@ public class CLTypeHelper {
                     return realRet
                 }
             }
-        case .tuple3(_, _, _):
+        case .tuple3:
             return ["": ""]
         case .none:
             return ["": ""]
@@ -414,30 +418,31 @@ public class CLTypeHelper {
             return ["": ""]
         }
     }
+
     /**
      Get CLType from Json string
      - Parameter: a Json String represent the CLType object
      - Returns: CLType object
      */
 
-    public static func jsonToCLType(from: AnyObject, keyStr: String = "cl_type") -> CLType {
+    static func jsonToCLType(from: AnyObject, keyStr: String = "cl_type") -> CLType {
         var ret: CLType = .none
         if let clTypeWrapper = from[keyStr] as? String {
             ret = CLTypeHelper.stringToCLTypePrimitive(input: clTypeWrapper)
             return ret
-        }
-        else if let clTypeWrapper = from[keyStr] as? AnyObject {
-            ret = CLTypeHelper.jsonToCLTypeCompound(from: clTypeWrapper as  AnyObject)
+        } else if let clTypeWrapper = from[keyStr] as? AnyObject {
+            ret = CLTypeHelper.jsonToCLTypeCompound(from: clTypeWrapper as AnyObject)
         }
         return ret
     }
+
     /**
      Get CLType primitive (CLType with no recursive type inside) from Json string
      - Parameter: a Json String represent the CLType object
      - Returns: CLType object
      */
 
-    public static func jsonToCLTypePrimitive(from: AnyObject, keyStr: String="cl_type") -> CLType {
+    static func jsonToCLTypePrimitive(from: AnyObject, keyStr: String = "cl_type") -> CLType {
         let clType: CLType = .none
         // primitive type
         if (from["Bool"] as? Bool) != nil {
@@ -493,13 +498,14 @@ public class CLTypeHelper {
         }
         return clType
     }
+
     /**
      Get CLType compound from Json string, which are the recursive CLType such as List(CLType), Map(CLType, CLType), Tuple1(CLType), Tuple2(CLType, CLType), Tuple3(CLType, CLType, CLType)...
      - Parameter: a Json String represent the CLType object
      - Returns: CLType object
      */
 
-    public static func jsonToCLTypeCompound(from: AnyObject, keyStr: String="cl_type") -> CLType {
+    static func jsonToCLTypeCompound(from: AnyObject, keyStr: String = "cl_type") -> CLType {
         var clType: CLType = .none
         if let listCLType = from["List"] as? String {
             clType = CLTypeHelper.stringToCLTypePrimitive(input: listCLType)
@@ -522,7 +528,7 @@ public class CLTypeHelper {
         }
         if let tuple1CLType = from["Tuple1"] as? [AnyObject] {
             var tuple1: CLType?
-            var counter: Int = 0
+            var counter = 0
             for oneTuple in tuple1CLType {
                 if counter == 0 {
                     tuple1 = CLTypeHelper.directJsonToCLType(from: oneTuple)
@@ -534,7 +540,7 @@ public class CLTypeHelper {
         if let tuple2CLType = from["Tuple2"] as? [AnyObject] {
             var tuple1: CLType?
             var tuple2: CLType?
-            var counter: Int = 0
+            var counter = 0
             for oneTuple in tuple2CLType {
                 if counter == 0 {
                     tuple1 = CLTypeHelper.directJsonToCLType(from: oneTuple)
@@ -549,7 +555,7 @@ public class CLTypeHelper {
             var tuple1: CLType?
             var tuple2: CLType?
             var tuple3: CLType?
-            var counter: Int = 0
+            var counter = 0
             for oneTuple in tuple3CLType {
                 if counter == 0 {
                     tuple1 = CLTypeHelper.directJsonToCLType(from: oneTuple)
@@ -582,13 +588,14 @@ public class CLTypeHelper {
         }
         return .none
     }
+
     /**
      Get CLType  from Json string. If the Json string can convert to CLType primitive, then return the CLType primitive, otherwise return the CLType getting from the CLType compound
      - Parameter: a Json String represent the CLType object
      - Returns: CLType object
      */
 
-    public static func directJsonToCLType(from: AnyObject?) -> CLType {
+    static func directJsonToCLType(from: AnyObject?) -> CLType {
         var ret: CLType = .none
         if let clTypeWrapper = from as? String {
             ret = CLTypeHelper.stringToCLTypePrimitive(input: clTypeWrapper)
@@ -599,13 +606,14 @@ public class CLTypeHelper {
         }
         return ret
     }
+
     /**
      Get CLType primitive from String
      - Parameter: a  String represent the CLType object
      - Returns: CLType object
      */
 
-    public static func stringToCLTypePrimitive(input: String) -> CLType {
+    static func stringToCLTypePrimitive(input: String) -> CLType {
         if input == "String" {
             return .stringClType
         } else if input == "Bool" {
@@ -641,5 +649,4 @@ public class CLTypeHelper {
         }
         return .none
     }
-
 }

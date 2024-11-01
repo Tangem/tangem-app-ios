@@ -87,19 +87,20 @@
 		2DA57B732CD3E0E000C890DF /* CLValueWrapperToJsonString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA57B712CD3E0E000C890DF /* CLValueWrapperToJsonString.swift */; };
 		2DA57B742CD3E0E000C890DF /* CLValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA57B6F2CD3E0E000C890DF /* CLValue.swift */; };
 		2DA57B752CD3E0E000C890DF /* CLType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA57B6E2CD3E0E000C890DF /* CLType.swift */; };
-		2DA57B792CD3E12300C890DF /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA57B772CD3E12300C890DF /* Utils.swift */; };
+		2DA57B792CD3E12300C890DF /* CSPRUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA57B772CD3E12300C890DF /* CSPRUtils.swift */; };
 		2DA57B7D2CD3E16B00C890DF /* CommonObjs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA57B7A2CD3E16B00C890DF /* CommonObjs.swift */; };
 		2DA57B7E2CD3E16B00C890DF /* DeployExecutionResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA57B7B2CD3E16B00C890DF /* DeployExecutionResults.swift */; };
 		2DA57B812CD3E19D00C890DF /* DeploySerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA57B802CD3E19D00C890DF /* DeploySerialization.swift */; };
 		2DA57B882CD3E26100C890DF /* DeployInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA57B862CD3E26100C890DF /* DeployInfo.swift */; };
-		2DA57B892CD3E26100C890DF /* Bytes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA57B832CD3E26100C890DF /* Bytes.swift */; };
+		2DA57B892CD3E26100C890DF /* CSPRBytes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA57B832CD3E26100C890DF /* CSPRBytes.swift */; };
 		2DA57B8A2CD3E26100C890DF /* Deploy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA57B842CD3E26100C890DF /* Deploy.swift */; };
 		2DA57B8B2CD3E26100C890DF /* DeployHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA57B852CD3E26100C890DF /* DeployHeader.swift */; };
 		2DA57B8E2CD3E3A600C890DF /* ExecutableDeployItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA57B8D2CD3E3A600C890DF /* ExecutableDeployItem.swift */; };
-		2DA57B912CD3E3ED00C890DF /* CasperError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA57B902CD3E3ED00C890DF /* CasperError.swift */; };
+		2DA57B912CD3E3ED00C890DF /* CSPRError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA57B902CD3E3ED00C890DF /* CSPRError.swift */; };
 		2DA57BB12CD3E52B00C890DF /* RuntimeArgs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA57BB02CD3E52B00C890DF /* RuntimeArgs.swift */; };
 		2DA57BB22CD3E52B00C890DF /* ProtocolVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA57BAF2CD3E52B00C890DF /* ProtocolVersion.swift */; };
 		2DA57BB42CD3E5AE00C890DF /* URef.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA57BB32CD3E5AE00C890DF /* URef.swift */; };
+		2DA57BB82CD4FB4300C890DF /* CapertSerializationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA57BB72CD4FB4300C890DF /* CapertSerializationTests.swift */; };
 		2DA8AB122A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA8AB112A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift */; };
 		2DB3614B2C14FBAB00BB1D38 /* SegmentedPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB3614A2C14FBAB00BB1D38 /* SegmentedPickerView.swift */; };
 		2DB3614D2C14FBF500BB1D38 /* SegmentedPickerView+EnviromentValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB3614C2C14FBF500BB1D38 /* SegmentedPickerView+EnviromentValues.swift */; };
@@ -3069,19 +3070,20 @@
 		2DA57B6F2CD3E0E000C890DF /* CLValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLValue.swift; sourceTree = "<group>"; };
 		2DA57B702CD3E0E000C890DF /* CLValueToJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLValueToJson.swift; sourceTree = "<group>"; };
 		2DA57B712CD3E0E000C890DF /* CLValueWrapperToJsonString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLValueWrapperToJsonString.swift; sourceTree = "<group>"; };
-		2DA57B772CD3E12300C890DF /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		2DA57B772CD3E12300C890DF /* CSPRUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSPRUtils.swift; sourceTree = "<group>"; };
 		2DA57B7A2CD3E16B00C890DF /* CommonObjs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonObjs.swift; sourceTree = "<group>"; };
 		2DA57B7B2CD3E16B00C890DF /* DeployExecutionResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeployExecutionResults.swift; sourceTree = "<group>"; };
 		2DA57B802CD3E19D00C890DF /* DeploySerialization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeploySerialization.swift; sourceTree = "<group>"; };
-		2DA57B832CD3E26100C890DF /* Bytes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bytes.swift; sourceTree = "<group>"; };
+		2DA57B832CD3E26100C890DF /* CSPRBytes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSPRBytes.swift; sourceTree = "<group>"; };
 		2DA57B842CD3E26100C890DF /* Deploy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deploy.swift; sourceTree = "<group>"; };
 		2DA57B852CD3E26100C890DF /* DeployHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeployHeader.swift; sourceTree = "<group>"; };
 		2DA57B862CD3E26100C890DF /* DeployInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeployInfo.swift; sourceTree = "<group>"; };
 		2DA57B8D2CD3E3A600C890DF /* ExecutableDeployItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExecutableDeployItem.swift; sourceTree = "<group>"; };
-		2DA57B902CD3E3ED00C890DF /* CasperError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasperError.swift; sourceTree = "<group>"; };
+		2DA57B902CD3E3ED00C890DF /* CSPRError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSPRError.swift; sourceTree = "<group>"; };
 		2DA57BAF2CD3E52B00C890DF /* ProtocolVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtocolVersion.swift; sourceTree = "<group>"; };
 		2DA57BB02CD3E52B00C890DF /* RuntimeArgs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuntimeArgs.swift; sourceTree = "<group>"; };
 		2DA57BB32CD3E5AE00C890DF /* URef.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URef.swift; sourceTree = "<group>"; };
+		2DA57BB72CD4FB4300C890DF /* CapertSerializationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapertSerializationTests.swift; sourceTree = "<group>"; };
 		2DA8AB112A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Analytics+BlockchainExceptionHandler.swift"; sourceTree = "<group>"; };
 		2DB3614A2C14FBAB00BB1D38 /* SegmentedPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPickerView.swift; sourceTree = "<group>"; };
 		2DB3614C2C14FBF500BB1D38 /* SegmentedPickerView+EnviromentValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SegmentedPickerView+EnviromentValues.swift"; sourceTree = "<group>"; };
@@ -6141,6 +6143,7 @@
 			isa = PBXGroup;
 			children = (
 				2D616FF52CD142BE00581EA6 /* CasperTests.swift */,
+				2DA57BB72CD4FB4300C890DF /* CapertSerializationTests.swift */,
 			);
 			path = Casper;
 			sourceTree = "<group>";
@@ -6178,8 +6181,8 @@
 		2DA57B6B2CD3E09200C890DF /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				2DA57B902CD3E3ED00C890DF /* CasperError.swift */,
-				2DA57B772CD3E12300C890DF /* Utils.swift */,
+				2DA57B902CD3E3ED00C890DF /* CSPRError.swift */,
+				2DA57B772CD3E12300C890DF /* CSPRUtils.swift */,
 				2DA57B8C2CD3E28B00C890DF /* CL */,
 				2DA57B822CD3E25500C890DF /* Entity */,
 				2DA57B7C2CD3E16B00C890DF /* Objects */,
@@ -6221,7 +6224,7 @@
 		2DA57B872CD3E26100C890DF /* Deploy */ = {
 			isa = PBXGroup;
 			children = (
-				2DA57B832CD3E26100C890DF /* Bytes.swift */,
+				2DA57B832CD3E26100C890DF /* CSPRBytes.swift */,
 				2DA57B842CD3E26100C890DF /* Deploy.swift */,
 				2DA57B852CD3E26100C890DF /* DeployHeader.swift */,
 				2DA57B862CD3E26100C890DF /* DeployInfo.swift */,
@@ -17455,7 +17458,7 @@
 				B62D40932CBC79DA00C2460E /* IdentityEthereumAddressConverter.swift in Sources */,
 				B62D40D32CBC79DA00C2460E /* FilecoinTarget.swift in Sources */,
 				B62D40982CBC79DA00C2460E /* EthereumFeeParameters.swift in Sources */,
-				2DA57B792CD3E12300C890DF /* Utils.swift in Sources */,
+				2DA57B792CD3E12300C890DF /* CSPRUtils.swift in Sources */,
 				B62D3FB02CBC79DA00C2460E /* AptosResponse.swift in Sources */,
 				B62D3FAF2CBC79DA00C2460E /* AptosRequest.swift in Sources */,
 				B62D41022CBC79DA00C2460E /* KaspaNetworkProvider.swift in Sources */,
@@ -17645,7 +17648,7 @@
 				B62D40432CBC79DA00C2460E /* RosettaNetworkProvider.swift in Sources */,
 				B62D40152CBC79DA00C2460E /* OP_DROP.swift in Sources */,
 				B62D40332CBC79DA00C2460E /* BitcoinCashAddressService.swift in Sources */,
-				2DA57B912CD3E3ED00C890DF /* CasperError.swift in Sources */,
+				2DA57B912CD3E3ED00C890DF /* CSPRError.swift in Sources */,
 				B62D419F2CBC79DA00C2460E /* SuiNetworkService.swift in Sources */,
 				B62D3F952CBC79DA00C2460E /* AlgorandAccountModel.swift in Sources */,
 				B62D40052CBC79DA00C2460E /* OP_N.swift in Sources */,
@@ -18135,7 +18138,7 @@
 				B62D40B82CBC79DA00C2460E /* OptimismExternalLinkProvider.swift in Sources */,
 				B62D407D2CBC79DA00C2460E /* DogecoinNetworkParams.swift in Sources */,
 				2DA57B882CD3E26100C890DF /* DeployInfo.swift in Sources */,
-				2DA57B892CD3E26100C890DF /* Bytes.swift in Sources */,
+				2DA57B892CD3E26100C890DF /* CSPRBytes.swift in Sources */,
 				2DA57B8A2CD3E26100C890DF /* Deploy.swift in Sources */,
 				2DA57B8B2CD3E26100C890DF /* DeployHeader.swift in Sources */,
 				B62D41352CBC79DA00C2460E /* NEARNetworkParams.Transaction.swift in Sources */,
@@ -18215,6 +18218,7 @@
 				B62D43542CBC79E400C2460E /* SolanaEd25519Tests.swift in Sources */,
 				B62D43532CBC79E400C2460E /* SolanaEd25519Slip0010Tests.swift in Sources */,
 				B62D43652CBC79E400C2460E /* TWCurve+.swift in Sources */,
+				2DA57BB82CD4FB4300C890DF /* CapertSerializationTests.swift in Sources */,
 				B62D43492CBC79E400C2460E /* WalletCoreSignerTesterUtility.swift in Sources */,
 				B62D433A2CBC79E400C2460E /* SeiTransactionTests.swift in Sources */,
 				B62D43692CBC79E400C2460E /* CardanoTests.swift in Sources */,

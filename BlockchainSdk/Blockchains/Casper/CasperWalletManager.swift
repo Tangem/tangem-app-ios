@@ -17,26 +17,26 @@ class CasperWalletManager: BaseManager, WalletManager {
     var allowsFeeSelection: Bool {
         false
     }
-    
+
     // MARK: - Private Implementation
-    
+
     private let networkService: CasperNetworkService
     private let transactionBuilder: CasperTransactionBuilder
-    
+
     // MARK: - Init
-    
+
     init(wallet: Wallet, networkService: CasperNetworkService, transactionBuilder: CasperTransactionBuilder) {
         self.networkService = networkService
         self.transactionBuilder = transactionBuilder
         super.init(wallet: wallet)
     }
-    
+
     // MARK: - Manager Implementation
 
     override func update(completion: @escaping (Result<Void, any Error>) -> Void) {
         let balanceInfoPublisher = networkService
             .getBalance(address: wallet.address)
-        
+
         cancellable = balanceInfoPublisher
             .withWeakCaptureOf(self)
             .sink(receiveCompletion: { [weak self] result in
@@ -59,14 +59,14 @@ class CasperWalletManager: BaseManager, WalletManager {
 
     func send(_ transaction: Transaction, signer: any TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError> {
         let hashForSign: Data
-        
+
         do {
             let transactionForSign = try transactionBuilder.buildForSign(transaction: transaction)
             hashForSign = transactionForSign.getSha256()
         } catch {
             return .sendTxFail(error: WalletError.failedToBuildTx)
         }
-        
+
         return signer
             .sign(hash: hashForSign, walletPublicKey: wallet.publicKey)
             .withWeakCaptureOf(self)
@@ -90,17 +90,16 @@ class CasperWalletManager: BaseManager, WalletManager {
             .eraseSendError()
             .eraseToAnyPublisher()
     }
-    
+
     // MARK: - Private Implementation
-    
+
     private func updateWallet(balanceInfo: CasperBalance) {
         if balanceInfo.value != wallet.amounts[.coin]?.value {
             wallet.clearPendingTransaction()
         }
-        
+
         wallet.add(amount: Amount(with: wallet.blockchain, type: .coin, value: balanceInfo.value))
     }
-    
 }
 
 extension CasperWalletManager {

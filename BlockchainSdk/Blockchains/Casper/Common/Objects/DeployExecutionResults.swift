@@ -1,21 +1,22 @@
 import Foundation
+
 /**
  Class represents the NamedArg
  */
 
-public class NamedArg {
+class NamedArg {
     /// Name of NamedArg
-    public var name: String = ""
+    var name: String = ""
     /// ArgsItem in CLValue
-    public var argsItem: CLValue=CLValue()
+    var argsItem: CLValue = .init()
     /**
-       Get CLValue  from Json string
-       - Parameter : a Json String represents the CLValue object
-       - Returns: CLValue object
-       */
+     Get CLValue  from Json string
+     - Parameter : a Json String represents the CLValue object
+     - Returns: CLValue object
+     */
 
-    public static func jsonToCLValue(input: [String: Any]) -> CLValue {
-        let retArg: CLValue = CLValue()
+    static func jsonToCLValue(input: [String: Any]) -> CLValue {
+        let retArg = CLValue()
         if let bytes = input["bytes"] as? String {
             retArg.bytes = bytes
         }
@@ -23,5 +24,4 @@ public class NamedArg {
         retArg.parsed = CLValue.getCLValueWrapper(from: input as AnyObject, clType: retArg.clType)
         return retArg
     }
-
 }

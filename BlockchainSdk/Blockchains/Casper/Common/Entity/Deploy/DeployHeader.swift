@@ -1,35 +1,36 @@
 import Foundation
+
 /**
  Class for Deploy Header object
  */
-public class DeployHeader: Codable {
+class DeployHeader: Codable {
     /// Deploy Header  account hash
-    public var account: String = ""
+    var account: String = ""
     /// Deploy Header body hash
-    public var bodyHash: String = ""
+    var bodyHash: String = ""
     /// Deploy Header  chain name
-    public var chainName: String = ""
+    var chainName: String = ""
     /// Deploy Header gas price, in UInt64 format
-    public var gasPrice: UInt64 = 0
+    var gasPrice: UInt64 = 0
     /// Deploy Header  timestamp
-    public var timestamp: String = ""
+    var timestamp: String = ""
     /// Deploy Header  time to live, in format of "1day", "2h", "30m" ...
-    public var ttl: String = ""
+    var ttl: String = ""
     /// Deploy Header list of dependencies
-    public var dependencies: [String] = [String]()
+    var dependencies: [String] = .init()
     /**
      Get DeployHeader object from Json string
      - Parameter : a Json String represent the DeployHeader object
      - Returns: DeployHeader object
      */
 
-    public static func getDeployHeader(from: [String: Any]) -> DeployHeader {
-        let retDeploy: DeployHeader = DeployHeader()
+    static func getDeployHeader(from: [String: Any]) -> DeployHeader {
+        let retDeploy = DeployHeader()
         if let account = from["account"] as? String {
             retDeploy.account = account
         }
         if let bodyHash = from["body_hash"] as? String {
-           retDeploy.bodyHash = bodyHash
+            retDeploy.bodyHash = bodyHash
         }
         if let chainName = from["chain_name"] as? String {
             retDeploy.chainName = chainName
@@ -50,5 +51,4 @@ public class DeployHeader: Codable {
         }
         return retDeploy
     }
-
 }

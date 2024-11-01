@@ -10,15 +10,13 @@ import BigInt
 import TangemSdk
 
 final class CasperTransactionBuilder {
-    
     func buildForSign(transaction: Transaction) throws -> Data {
         Data()
     }
-    
+
     func buildForSend(transaction: Transaction, signature: Data) throws -> Data {
         Data()
     }
-    
 }
 
 // MARK: - Private Implentation

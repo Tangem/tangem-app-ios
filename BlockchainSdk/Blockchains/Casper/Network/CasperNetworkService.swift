@@ -11,21 +11,21 @@ import Combine
 
 final class CasperNetworkService: MultiNetworkProvider {
     // MARK: - MultiNetwork Provider
-    
+
     var currentProviderIndex: Int = 0
-    
+
     // MARK: - Properties
-    
+
     let providers: [CasperNetworkProvider]
     let blockchainDecimalValue: Decimal
-    
+
     // MARK: - Init
 
     init(providers: [CasperNetworkProvider], blockchainDecimalValue: Decimal) {
         self.providers = providers
         self.blockchainDecimalValue = blockchainDecimalValue
     }
-    
+
     // MARK: - Implementation
 
     func getBalance(address: String) -> AnyPublisher<CasperBalance, Error> {

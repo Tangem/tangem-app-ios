@@ -42,7 +42,7 @@ struct CasperTarget: TargetType {
         case .getBalance(let data):
             let encoder = JSONEncoder()
             encoder.keyEncodingStrategy = .convertToSnakeCase
-            
+
             return .requestJSONRPC(
                 id: Constants.jsonRPCMethodId,
                 method: Method.queryBalance.rawValue,
@@ -59,7 +59,7 @@ extension CasperTarget {
     enum TargetType {
         case getBalance(data: CasperNetworkRequest.QueryBalance)
     }
-    
+
     enum Method: String, Encodable {
         case queryBalance = "query_balance"
     }

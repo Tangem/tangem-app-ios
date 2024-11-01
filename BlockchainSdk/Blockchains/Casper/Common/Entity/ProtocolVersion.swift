@@ -1,9 +1,10 @@
 import Foundation
+
 /**
  Class represents the ProtocolVersion
  */
 
-public class ProtocolVersion {
+class ProtocolVersion {
     var protocolString = ""
     var major: Int = 1
     var minor: Int = 0
@@ -17,23 +18,23 @@ public class ProtocolVersion {
         patch = Int(strArr[2]) ?? 0
     }
 
-    public func getProtocolString() -> String {
+    func getProtocolString() -> String {
         return protocolString
     }
 
-    public func setProtolString(str: String) {
+    func setProtolString(str: String) {
         protocolString = str
     }
-    /**
-       Get ProtocolVersion object from  string
-       - Parameter :  a  String represents the ProtocolVersion object
-       - Returns:  ProtocolVersion object
-       */
 
-    public static func strToProtocol(from: String) -> ProtocolVersion {
-        let protocolVersion: ProtocolVersion = ProtocolVersion()
+    /**
+     Get ProtocolVersion object from  string
+     - Parameter :  a  String represents the ProtocolVersion object
+     - Returns:  ProtocolVersion object
+     */
+
+    static func strToProtocol(from: String) -> ProtocolVersion {
+        let protocolVersion = ProtocolVersion()
         protocolVersion.protocolString = from
         return protocolVersion
     }
-
 }

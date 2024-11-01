@@ -1,10 +1,11 @@
 import Foundation
+
 /// a self-defined null value return when parse for CLValue but getting nil or no value
 let constNullReturnValue: String = "______NULL______"
 /**
  Enumeration for CLValue. The CLValue is wrapped in an enumeration structure with name CLValueWrapper, in which each value hold the CLValue and its corresponding CLType for the CLValue.
  */
-public enum CLValueWrapper {
+enum CLValueWrapper {
     case bool(Bool)
     case i32(Int32)
     case i64(Int64)
@@ -32,35 +33,37 @@ public enum CLValueWrapper {
     case nullCLValue
     case none
 }
+
 /**
  Class for CLValue with 3 attributes:
  - bytes - the serialization of the CLValue
  - cl_type: of type CLType
  - parsed: of type CLValueWrapper, hold the CLValue and its corresponding CLType
  */
-public class CLValue {
+class CLValue {
     /// The serialization of CLValue
-    public var bytes: String = ""
+    var bytes: String = ""
     /// The CLType of the CLValue
-    public var clType: CLType = .none
+    var clType: CLType = .none
     /// The actual value of CLValue, which is wrapped in an enumration object CLValueWrapper
-    public var parsed: CLValueWrapper = .none
+    var parsed: CLValueWrapper = .none
 
-    public static func getParsedValueBool(clValueWrapper: CLValueWrapper) -> Bool {
+    static func getParsedValueBool(clValueWrapper: CLValueWrapper) -> Bool {
         switch clValueWrapper {
         case .bool(let bool):
-           return bool
+            return bool
         default:
             return false
         }
     }
+
     /**
         Function to get  parsed value in form of string from CLValueWrapper object
        - Parameter: CLValueWrapper object
        - Returns: CLValueWrapper.parsed value in form of string
      */
 
-    public static func getParsedValueString(clValueWrapper: CLValueWrapper) -> String {
+    static func getParsedValueString(clValueWrapper: CLValueWrapper) -> String {
         switch clValueWrapper {
         case .u128(let u128Class):
             return u128Class.valueInStr
@@ -84,6 +87,7 @@ public class CLValue {
             return ""
         }
     }
+
     /**
         Function to check if a CLType is primitive, which means no recursive call to CLType inside
        - Parameter: a CLType object
@@ -92,7 +96,7 @@ public class CLValue {
      The following CLType is compound: BytesArray, Option, List, FixedList,Map,Tuple1, Tuple2, Tuple3, Result
      */
 
-    public static func isCLTypePrimitive(clType1: CLType) -> Bool {
+    static func isCLTypePrimitive(clType1: CLType) -> Bool {
         var ret = true
         switch clType1 {
         case .boolClType:
@@ -123,23 +127,23 @@ public class CLValue {
             break
         case .publicKey:
             break
-        case .bytesArrayClType(_):
+        case .bytesArrayClType:
             ret = false
-        case .resultClType(_, _):
+        case .resultClType:
             ret = false
-        case .option(_):
+        case .option:
             ret = false
-        case .listClType(_):
+        case .listClType:
             ret = false
-        case .fixedListClType(_):
+        case .fixedListClType:
             ret = false
-        case .mapClType(_, _):
+        case .mapClType:
             ret = false
-        case .tuple1(_):
+        case .tuple1:
             ret = false
-        case .tuple2(_, _):
+        case .tuple2:
             ret = false
-        case .tuple3(_, _, _):
+        case .tuple3:
             ret = false
         case .clTypeAny:
             ret = true
@@ -148,6 +152,7 @@ public class CLValue {
         }
         return ret
     }
+
     /**
         Function to get json data from CLType if the CLType is primitive, which mean the CLType does not contain recursive declaration to other CLType
        - Parameter: a CLType object
@@ -164,7 +169,7 @@ public class CLValue {
         If the CLValueWrapper of CLType I32, then the return value will be "I32"
      */
 
-    public static func getCLTypeString(clType1: CLType) -> String {
+    static func getCLTypeString(clType1: CLType) -> String {
         switch clType1 {
         case .boolClType:
             return "Bool"
@@ -218,6 +223,7 @@ public class CLValue {
             return ""
         }
     }
+
     /**
      Get CLValue from Json string, with given CLType for that CLValue. The Json string is from the input with name "from", and you have to know what CLType to parse to get the corresponding CLValue for that such CLType, retrieve from the input parameter
      - Parameter:
@@ -226,7 +232,7 @@ public class CLValue {
      - Returns: CLValueWrapper object
      */
 
-    public static func getCLValueWrapperDirect(from: AnyObject, clType: CLType) -> CLValueWrapper {
+    static func getCLValueWrapperDirect(from: AnyObject, clType: CLType) -> CLValueWrapper {
         var ret = getCLValueWrapperPrimitive(from: from, clType: clType)
         switch ret {
         case .none:
@@ -236,6 +242,7 @@ public class CLValue {
         }
         return ret
     }
+
     /**
      Get raw value for CLValueWrapper, of type .String(value). Use this function for CLValue Map serialization. This function unwrap the CLValueWrapper with value .String(value) to just value
      - Parameter:
@@ -243,7 +250,7 @@ public class CLValue {
      - Returns: the string value inside the clValue
      */
 
-    public static func getRawValueOfStringType(clValue: CLValueWrapper) -> String {
+    static func getRawValueOfStringType(clValue: CLValueWrapper) -> String {
         switch clValue {
         case .string(let string):
             return string
@@ -251,6 +258,7 @@ public class CLValue {
             return ""
         }
     }
+
     /**
      Get raw value for CLValueWrapper, of type .PublicKey(value). Use this function for CLValue json exporter. This function unwrap the CLValueWrapper with value .PublicKey(value) to just value
      - Parameter:
@@ -258,7 +266,7 @@ public class CLValue {
      - Returns: the string value inside the PublicKey
      */
 
-    public static func getRawValueOfPublicKeyType(clValue: CLValueWrapper) -> String {
+    static func getRawValueOfPublicKeyType(clValue: CLValueWrapper) -> String {
         switch clValue {
         case .publicKey(let pk):
             return pk
@@ -266,6 +274,7 @@ public class CLValue {
             return ""
         }
     }
+
     /**
      Get raw value for CLValueWrapper, of type .URef(value). Use this function for CLValue json exporter. This function unwrap the CLValueWrapper with value .URef(value) to just value
      - Parameter:
@@ -273,7 +282,7 @@ public class CLValue {
      - Returns: the string value inside the URef
      */
 
-    public static func getRawValueOfURef(clValue: CLValueWrapper) -> String {
+    static func getRawValueOfURef(clValue: CLValueWrapper) -> String {
         switch clValue {
         case .uRef(let uref):
             return uref
@@ -281,6 +290,7 @@ public class CLValue {
             return ""
         }
     }
+
     /**
      Get raw value for CLValueWrapper, of type .Key. Use this function for CLValue json exporter. This function unwrap the CLValueWrapper with value .Key(String) to just value inside of the Key
      - Parameter:
@@ -290,7 +300,7 @@ public class CLValue {
         "Account": "c6d93dd827202f3b37297382b1cb9269c07d71a79a49824bb1a008c650a04473"
      */
 
-    public static func getRawValueOfKey(clValue: CLValueWrapper) -> [String: String] {
+    static func getRawValueOfKey(clValue: CLValueWrapper) -> [String: String] {
         switch clValue {
         case .key(let keyValue):
             // check if key is Account, Hash or URef
@@ -306,6 +316,7 @@ public class CLValue {
             return ["": ""]
         }
     }
+
     /**
      Get raw value for CLValueWrapper, of type .I32(value). Use this function for CLValue Map serialization. This function unwrap the CLValueWrapper with value .I32(value) to just value
      - Parameter:
@@ -313,7 +324,7 @@ public class CLValue {
      - Returns: the I32 value inside the clValue
      */
 
-    public static func getRawValueOfI32(clValue: CLValueWrapper) -> Int32 {
+    static func getRawValueOfI32(clValue: CLValueWrapper) -> Int32 {
         switch clValue {
         case .i32(let int32):
             return int32
@@ -321,6 +332,7 @@ public class CLValue {
             return Int32.min
         }
     }
+
     /**
      Get raw value for CLValueWrapper, of type .I64(value). Use this function for CLValue Map serialization. This function unwrap the CLValueWrapper with value .I64(value) to just value
      - Parameter:
@@ -328,7 +340,7 @@ public class CLValue {
      - Returns: the I64 value inside the clValue
      */
 
-    public static func getRawValueOfI64(clValue: CLValueWrapper) -> Int64 {
+    static func getRawValueOfI64(clValue: CLValueWrapper) -> Int64 {
         switch clValue {
         case .i64(let int64):
             return int64
@@ -336,6 +348,7 @@ public class CLValue {
             return Int64.min
         }
     }
+
     /**
      Get raw value for CLValueWrapper, of type .UInt8(value). Use this function for CLValue Map serialization. This function unwrap the CLValueWrapper with value .UInt8(value) to just value
      - Parameter:
@@ -343,7 +356,7 @@ public class CLValue {
      - Returns: the UInt8 value inside the clValue
      */
 
-    public static func getRawValueOfU8(clValue: CLValueWrapper) -> UInt8 {
+    static func getRawValueOfU8(clValue: CLValueWrapper) -> UInt8 {
         switch clValue {
         case .u8(let uInt8):
             return uInt8
@@ -351,6 +364,7 @@ public class CLValue {
             return 0
         }
     }
+
     /**
      Get raw value for CLValueWrapper, of type .UInt32(value). Use this function for CLValue Map serialization. This function unwrap the CLValueWrapper with value .UInt32(value) to just value
      - Parameter:
@@ -358,7 +372,7 @@ public class CLValue {
      - Returns: the UInt32 value inside the clValue
      */
 
-    public static func getRawValueOfU32(clValue: CLValueWrapper) -> UInt32 {
+    static func getRawValueOfU32(clValue: CLValueWrapper) -> UInt32 {
         switch clValue {
         case .u32(let uInt32):
             return uInt32
@@ -366,6 +380,7 @@ public class CLValue {
             return 0
         }
     }
+
     /**
      Get raw value for CLValueWrapper, of type .UInt64(value). Use this function for CLValue Map serialization. This function unwrap the CLValueWrapper with value .UInt64(value) to just value
      - Parameter:
@@ -373,7 +388,7 @@ public class CLValue {
      - Returns: the UInt64 value inside the clValue
      */
 
-    public static func getRawValueOfU64(clValue: CLValueWrapper) -> UInt64 {
+    static func getRawValueOfU64(clValue: CLValueWrapper) -> UInt64 {
         switch clValue {
         case .u64(let uInt64):
             return uInt64
@@ -381,6 +396,7 @@ public class CLValue {
             return 0
         }
     }
+
     /**
      Get raw value for CLValueWrapper, of type .U128(value). Use this function for CLValue Map serialization. This function unwrap the CLValueWrapper with value .U128(value) to just value
      - Parameter:
@@ -388,7 +404,7 @@ public class CLValue {
      - Returns: the U128 value inside the clValue
      */
 
-    public static func getRawValueOfU128(clValue: CLValueWrapper) -> U128Class {
+    static func getRawValueOfU128(clValue: CLValueWrapper) -> U128Class {
         switch clValue {
         case .u128(let u128Class):
             return u128Class
@@ -396,6 +412,7 @@ public class CLValue {
             return U128Class.fromStringToU128(from: "0")
         }
     }
+
     /**
      Get raw value for CLValueWrapper, of type .U256(value). Use this function for CLValue Map serialization. This function unwrap the CLValueWrapper with value .U256(value) to just value
      - Parameter:
@@ -403,7 +420,7 @@ public class CLValue {
      - Returns: the U256 value inside the clValue
      */
 
-    public static func getRawValueOfU256(clValue: CLValueWrapper) -> U256Class {
+    static func getRawValueOfU256(clValue: CLValueWrapper) -> U256Class {
         switch clValue {
         case .u256(let u256Class):
             return u256Class
@@ -411,6 +428,7 @@ public class CLValue {
             return U256Class.fromStringToU256(from: "0")
         }
     }
+
     /**
      Get raw value for CLValueWrapper, of type .U512(value). Use this function for CLValue Map serialization. This function unwrap the CLValueWrapper with value .U512(value) to just value
      - Parameter:
@@ -418,7 +436,7 @@ public class CLValue {
      - Returns: the U512 value inside the clValue
      */
 
-    public static func getRawValueOfU512(clValue: CLValueWrapper) -> U512Class {
+    static func getRawValueOfU512(clValue: CLValueWrapper) -> U512Class {
         switch clValue {
         case .u512(let u512Class):
             return u512Class
@@ -426,6 +444,7 @@ public class CLValue {
             return U512Class.fromStringToU512(from: "0")
         }
     }
+
     /**
      Check if the clValue is comparable, for example Int, String can be compare to sort ascending, but List or Map or Tuple can not. Use this function for CLValue Map serialization.
      - Parameter:
@@ -433,56 +452,56 @@ public class CLValue {
      - Returns: String represent the type of the comparable clValue, "none" if not.
      */
 
-    public static func getComparableType(clValue: CLValueWrapper) -> String {
-        let noneCompareType: String = "none"
+    static func getComparableType(clValue: CLValueWrapper) -> String {
+        let noneCompareType = "none"
         switch clValue {
-        case .bool(_):
+        case .bool:
             return noneCompareType
-        case .i32(_):
+        case .i32:
             return "I32"
-        case .i64(_):
+        case .i64:
             return "I64"
-        case .u8(_):
+        case .u8:
             return "UInt8"
-        case .u32(_):
+        case .u32:
             return "UInt32"
-        case .u64(_):
+        case .u64:
             return "UInt64"
-        case .u128(_):
+        case .u128:
             return "U128"
-        case .u256(_):
+        case .u256:
             return "U256"
-        case .u512(_):
+        case .u512:
             return "U512"
-        case .unit( _):
+        case .unit:
             return noneCompareType
-        case .string( _):
+        case .string:
             return "String"
-        case .key( _):
+        case .key:
             return noneCompareType
-        case .uRef( _):
+        case .uRef:
             return noneCompareType
-        case .publicKey( _):
+        case .publicKey:
             return noneCompareType
-        case .bytesArray( _):
+        case .bytesArray:
             return noneCompareType
-        case .optionWrapper( _):
+        case .optionWrapper:
             return noneCompareType
-        case .listWrapper( _):
+        case .listWrapper:
             return noneCompareType
-        case .fixedListWrapper( _):
+        case .fixedListWrapper:
             return noneCompareType
-        case .resultWrapper( _, _):
+        case .resultWrapper:
             return noneCompareType
-        case .mapWrapper(_, _):
+        case .mapWrapper:
             return noneCompareType
-        case .tuple1Wrapper( _):
+        case .tuple1Wrapper:
             return noneCompareType
-        case .tuple2Wrapper( _, _):
+        case .tuple2Wrapper:
             return noneCompareType
-        case .tuple3Wrapper( _, _, _):
+        case .tuple3Wrapper:
             return noneCompareType
-        case .anyCLValue(_):
+        case .anyCLValue:
             return noneCompareType
         case .nullCLValue:
             return noneCompareType
@@ -490,6 +509,7 @@ public class CLValue {
             return noneCompareType
         }
     }
+
     /**
      Get CLValue from Json string, with given CLType for that CLValue. The Json string is from the input with name "from", and you have to know what CLType to parse to get the corresponding CLValue for that such CLType, retrieve from the input parameter
      - Parameter:
@@ -499,7 +519,7 @@ public class CLValue {
      - Returns: CLValueWrapper object
      */
 
-    public static func getCLValueWrapper(from: AnyObject, clType: CLType, keyStr: String = "parsed") -> CLValueWrapper {
+    static func getCLValueWrapper(from: AnyObject, clType: CLType, keyStr: String = "parsed") -> CLValueWrapper {
         if let parsedJson = from[keyStr] as? AnyObject {
             var ret = getCLValueWrapperPrimitive(from: parsedJson, clType: clType)
             switch ret {
@@ -509,11 +529,11 @@ public class CLValue {
                 break
             }
             return ret
-        }
-        else {
+        } else {
             return CLValueWrapper.none
         }
     }
+
     /**
      Get CLValue primitive from Json string, with given CLType for that CLValue. The Json string is from the input with name "from", and you have to know what CLType to parse to get the corresponding CLValue for that such CLType, retrieve from the input parameter. This function deal with CLType primitive of no recursive part in side that CLType, such as Bool, String, Int
      - Parameter:
@@ -522,7 +542,7 @@ public class CLValue {
      - Returns: CLValueWrapper object
      */
 
-    public static func getCLValueWrapperPrimitiveFromRaw(input: AnyObject, clType: CLType) -> CLValueWrapper {
+    static func getCLValueWrapperPrimitiveFromRaw(input: AnyObject, clType: CLType) -> CLValueWrapper {
         switch clType {
         case .boolClType:
             if let input1 = input as? Bool {
@@ -554,7 +574,7 @@ public class CLValue {
             }
         case .u256ClType:
             if let input1 = input as? String {
-                return  .u256(U256Class.fromStringToU256(from: input1))
+                return .u256(U256Class.fromStringToU256(from: input1))
             }
         case .u512:
             if let input1 = input as? String {
@@ -564,21 +584,19 @@ public class CLValue {
             if let input1 = input as? String {
                 return .unit(input1)
             }
-            break
         case .stringClType:
             if let input1 = input as? String {
                 return .string(input1)
             }
-            break
         case .keyClType:
-                if let account = input["Account"] as? String {
-                    return .key(account)
+            if let account = input["Account"] as? String {
+                return .key(account)
             }
         case .urefClType:
             break
         case .publicKey:
             break
-        case .bytesArrayClType(_):
+        case .bytesArrayClType:
             break
         case .clTypeAny:
             break
@@ -589,6 +607,7 @@ public class CLValue {
         }
         return .none
     }
+
     /**
      Get CLValue primitive from  a parameter of type primitive (with no recursive part inside), with given CLType for that CLValue. The string is from the input with name "from", and you have to know what CLType to parse to get the corresponding CLValue for that such CLType, retrieve from the input parameter. This function deal with CLType primitive of no recursive part in side that CLType, such as Bool, String, Int
      - Parameter:
@@ -597,7 +616,7 @@ public class CLValue {
      - Returns: CLValueWrapper object
      */
 
-    public static func getCLValueWrapperPrimitive(from: AnyObject?, clType: CLType) -> CLValueWrapper {
+    static func getCLValueWrapperPrimitive(from: AnyObject?, clType: CLType) -> CLValueWrapper {
         switch clType {
         case .boolClType:
             if let parsed = from as? Bool {
@@ -629,27 +648,25 @@ public class CLValue {
             }
         case .u256ClType:
             if let parsed = from as? String {
-                return  .u256(U256Class.fromStringToU256(from: parsed))
+                return .u256(U256Class.fromStringToU256(from: parsed))
             }
         case .u512:
             if let parsed = from as? String {
                 return .u512(U512Class.fromStringToU512(from: parsed))
             }
         case .unitClType:
-                if let parsed = from as? String {
-                    if parsed == "<null>" {
-                        return .unit(constNullReturnValue)
-                    } else {
-                    }
-                    return .unit(parsed)
-                } else {
+            if let parsed = from as? String {
+                if parsed == "<null>" {
                     return .unit(constNullReturnValue)
-                }
+                } else {}
+                return .unit(parsed)
+            } else {
+                return .unit(constNullReturnValue)
+            }
         case .stringClType:
             if let parsed = from as? String {
                 return .string(parsed)
             }
-            break
         case .keyClType:
             if let parsed = from as? [String: String] {
                 for (_, value) in parsed {
@@ -660,13 +677,11 @@ public class CLValue {
             if let parsed = from as? String {
                 return .uRef(parsed)
             }
-            break
         case .publicKey:
             if let parsed = from as? String {
                 return .publicKey(parsed)
             }
-            break
-        case .bytesArrayClType(_):
+        case .bytesArrayClType:
             if let parsed = from as? String {
                 return .bytesArray(parsed)
             }
@@ -679,6 +694,7 @@ public class CLValue {
         }
         return .none
     }
+
     /**
      Get CLValue from  a parameter of type compound (with  recursive part inside), with given CLType for that CLValue. The string is from the input with name "from", and you have to know what CLType to parse to get the corresponding CLValue for that such CLType, retrieve from the input parameter. This function deal with CLType compound with recursive part in side that CLType, such as List, Map, Tuple1, Tuple2, Tuple3 ...
      - Parameter:
@@ -687,7 +703,7 @@ public class CLValue {
      - Returns: CLValueWrapper object
      */
 
-    public static func getCLValueWrapperCompound(from: AnyObject, clType: CLType) -> CLValueWrapper {
+    static func getCLValueWrapperCompound(from: AnyObject, clType: CLType) -> CLValueWrapper {
         switch clType {
         case .resultClType(let cLType1, let cLType2):
             if let okValue = from["Ok"] as? AnyObject {
@@ -702,14 +718,13 @@ public class CLValue {
                     return .resultWrapper("Err", ret1)
                 }
             }
-            break
         case .option(let cLType):
             let ret = CLValue.getCLValueWrapperDirect(from: from, clType: cLType)
             return .optionWrapper(ret)
         case .listClType(let cLTypeInList):
-            var retList: [CLValueWrapper] = [CLValueWrapper]()
+            var retList: [CLValueWrapper] = .init()
             if let parseds = from as? [AnyObject] {
-                var counter: Int = 0
+                var counter = 0
                 for parsed in parseds {
                     counter += 1
                     let oneParsed = CLValue.getCLValueWrapperPrimitive(from: parsed, clType: cLTypeInList)
@@ -717,19 +732,16 @@ public class CLValue {
                     case .none:
                         let oneParsed = CLValue.getCLValueWrapperCompound(from: parsed, clType: cLTypeInList)
                         retList.append(oneParsed)
-                        break
                     default:
                         retList.append(oneParsed)
-                        break
                     }
                 }
                 return .listWrapper(retList)
             }
-            break
         case .mapClType(let cLType1, let cLType2):
             var counter: Int = 0
-            var mapList1: [CLValueWrapper] = [CLValueWrapper]()
-            var mapList2: [CLValueWrapper] = [CLValueWrapper]()
+            var mapList1: [CLValueWrapper] = .init()
+            var mapList2: [CLValueWrapper] = .init()
             if let fromList = from as? [AnyObject] {
                 for from1 in fromList {
                     counter += 1
@@ -740,11 +752,10 @@ public class CLValue {
                 }
                 return .mapWrapper(mapList1, mapList2)
             }
-            break
         case .tuple1(let cLType1):
             var clValueType1: CLValueWrapper = .none
             if let fromList = from as? [AnyObject] {
-                let counter: Int = 0
+                let counter = 0
                 for from1 in fromList {
                     if counter == 0 {
                         clValueType1 = CLValue.getCLValueWrapperDirect(from: from1, clType: cLType1)
@@ -752,12 +763,11 @@ public class CLValue {
                 }
                 return .tuple1Wrapper(clValueType1)
             }
-            break
         case .tuple2(let cLType1, let cLType2):
             var clValueType1: CLValueWrapper = .none
             var clValueType2: CLValueWrapper = .none
             if let fromList = from as? [AnyObject] {
-                var counter: Int = 0
+                var counter = 0
                 for from1 in fromList {
                     if counter == 0 {
                         clValueType1 = CLValue.getCLValueWrapperDirect(from: from1, clType: cLType1)
@@ -768,13 +778,12 @@ public class CLValue {
                 }
                 return .tuple2Wrapper(clValueType1, clValueType2)
             }
-            break
         case .tuple3(let cLType1, let cLType2, let cLType3):
-                var clValueType1: CLValueWrapper = .none
-                var clValueType2: CLValueWrapper = .none
-                var clValueType3: CLValueWrapper = .none
+            var clValueType1: CLValueWrapper = .none
+            var clValueType2: CLValueWrapper = .none
+            var clValueType3: CLValueWrapper = .none
             if let fromList = from as? [AnyObject] {
-                var counter: Int = 0
+                var counter = 0
                 for from1 in fromList {
                     if counter == 0 {
                         clValueType1 = CLValue.getCLValueWrapperDirect(from: from1, clType: cLType1)
@@ -787,7 +796,6 @@ public class CLValue {
                 }
                 return .tuple3Wrapper(clValueType1, clValueType2, clValueType3)
             }
-            break
         case .clTypeAny:
             break
         case .none:
@@ -797,6 +805,7 @@ public class CLValue {
         }
         return .none
     }
+
     /**
      Get CLValue with full value: bytes, parsed and cl_type. This function do the task of retrieving information of bytes,parsed and cl_type from the string map [String: Any] from the input.
      - Parameter:
@@ -804,8 +813,8 @@ public class CLValue {
      - Returns: CLValue object, which hold the 3 kinds of value: bytes, parsed and cl_type
      */
 
-    public static func getCLValue(from: [String: Any]) -> CLValue {
-        let clValue: CLValue = CLValue()
+    static func getCLValue(from: [String: Any]) -> CLValue {
+        let clValue = CLValue()
         if let bytes = from["bytes"] as? String {
             clValue.bytes = bytes
         }
@@ -813,5 +822,4 @@ public class CLValue {
         clValue.parsed = CLValue.getCLValueWrapper(from: from as AnyObject, clType: clValue.clType)
         return clValue
     }
-
 }

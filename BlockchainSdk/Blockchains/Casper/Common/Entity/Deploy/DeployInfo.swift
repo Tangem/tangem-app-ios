@@ -1,24 +1,24 @@
 import Foundation
+
 /**
  Class represents the DeployInfo
  */
 
-public class DeployInfo {
-
-    public var deployHash: String=""
-    public var transfers: [String]=[String]()
-    public var from: String=""
-    public var source: URef=URef()
-    public var gas: U512Class=U512Class()
+class DeployInfo {
+    var deployHash: String = ""
+    var transfers: [String] = .init()
+    var from: String = ""
+    var source: URef = .init()
+    var gas: U512Class = .init()
 
     /**
-       Get DeployInfo object from Json string
-       - Parameter : a Json String represents the DeployInfo object
-       - Returns: DeployInfo object
-       */
+     Get DeployInfo object from Json string
+     - Parameter : a Json String represents the DeployInfo object
+     - Returns: DeployInfo object
+     */
 
-    public static func fromJsonToDeployInfo(from: [String: Any]) -> DeployInfo {
-        let oneDeployInfo: DeployInfo = DeployInfo()
+    static func fromJsonToDeployInfo(from: [String: Any]) -> DeployInfo {
+        let oneDeployInfo = DeployInfo()
         if let deployHash: String = from["deploy_hash"] as? String {
             oneDeployInfo.deployHash = deployHash
         }
@@ -38,5 +38,4 @@ public class DeployInfo {
         }
         return oneDeployInfo
     }
-
 }

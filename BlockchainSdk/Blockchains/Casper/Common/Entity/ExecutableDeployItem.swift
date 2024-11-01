@@ -4,11 +4,11 @@ import Foundation
  Enumeration type represents the ExecutableDeployItem
  */
 let versionNullValue: UInt32 = 100000
-public enum ExecutableDeployItem {
-    case moduleBytes(module_bytes: Bytes, args: RuntimeArgs)
+enum ExecutableDeployItem {
+    case moduleBytes(module_bytes: CSPRBytes, args: RuntimeArgs)
     case storedContractByHash(hash: String, entryPoint: String, args: RuntimeArgs)
     case storedContractByName(name: String, entryPoint: String, args: RuntimeArgs)
-    case storedVersionedContractByHash (hash: String, version: UInt32?, entryPoint: String, args: RuntimeArgs)
+    case storedVersionedContractByHash(hash: String, version: UInt32?, entryPoint: String, args: RuntimeArgs)
     case storedVersionedContractByName(name: String, version: UInt32?, entryPoint: String, args: RuntimeArgs)
     case transfer(args: RuntimeArgs)
     case none
@@ -18,56 +18,55 @@ public enum ExecutableDeployItem {
  Class supports the getting of ExecutableDeployItem from Json String
  */
 
-public class ExecutableDeployItemHelper {
+enum ExecutableDeployItemHelper {
     /**
         Function to get  json string from ExecutableDeployItem enum type
        - Parameter: a ExecutableDeployItem enum type  value
        - Returns: json string representing the ExecutableDeployItem enum type value
      */
 
-    public static func toJsonString(input: ExecutableDeployItem) -> String {
-        var retStr: String = ""
+    static func toJsonString(input: ExecutableDeployItem) -> String {
+        var retStr = ""
         switch input {
         case .moduleBytes(let moduleBytes, let args):
             let argsString = ExecutableDeployItemHelper.argsToJsonString(args: args)
-            let innerJson: String = "{\"module_bytes\": \"\(moduleBytes.value)\",\(argsString)}"
+            let innerJson = "{\"module_bytes\": \"\(moduleBytes.value)\",\(argsString)}"
             retStr = "{\"ModuleBytes\": \(innerJson)}"
             return retStr
         case .storedContractByHash(let hash, let entryPoint, let args):
             let argsString = ExecutableDeployItemHelper.argsToJsonString(args: args)
-            let innerJson: String  = "{\"hash\": \"\(hash)\",\"entry_point\": \"\(entryPoint)\",\(argsString)}"
+            let innerJson = "{\"hash\": \"\(hash)\",\"entry_point\": \"\(entryPoint)\",\(argsString)}"
             retStr = "{\"StoredContractByHash\": \(innerJson)}"
             return retStr
         case .storedContractByName(let name, let entryPoint, let args):
             let argsString = ExecutableDeployItemHelper.argsToJsonString(args: args)
-            let innerJson: String  = "{\"name\": \"\(name)\",\"entry_point\": \"\(entryPoint)\",\(argsString)}"
+            let innerJson = "{\"name\": \"\(name)\",\"entry_point\": \"\(entryPoint)\",\(argsString)}"
             retStr = "{\"StoredContractByName\": \(innerJson)}"
             return retStr
         case .storedVersionedContractByHash(let hash, let version, let entryPoint, let args):
             let argsString = ExecutableDeployItemHelper.argsToJsonString(args: args)
             if version == versionNullValue {
-                let innerJson: String  = "{\"hash\": \"\(hash)\",\"version\": null , \"entry_point\": \"\(entryPoint)\",\(argsString)}"
+                let innerJson = "{\"hash\": \"\(hash)\",\"version\": null , \"entry_point\": \"\(entryPoint)\",\(argsString)}"
                 retStr = "{\"StoredVersionedContractByHash\": \(innerJson)}"
                 return retStr
-            }
-            else {
-                let innerJson: String  = "{\"hash\": \"\(hash)\",\"version\": \(version!), \"entry_point\": \"\(entryPoint)\",\(argsString)}"
+            } else {
+                let innerJson = "{\"hash\": \"\(hash)\",\"version\": \(version!), \"entry_point\": \"\(entryPoint)\",\(argsString)}"
                 retStr = "{\"StoredVersionedContractByHash\": \(innerJson)}"
             }
             return retStr
         case .storedVersionedContractByName(let name, let version, let entryPoint, let args):
             let argsString: String = ExecutableDeployItemHelper.argsToJsonString(args: args)
             if version == versionNullValue {
-                let innerJson: String = "{\"name\": \"\(name)\",\"version\": null, \"entry_point\": \"\(entryPoint)\",\(argsString)}"
+                let innerJson = "{\"name\": \"\(name)\",\"version\": null, \"entry_point\": \"\(entryPoint)\",\(argsString)}"
                 retStr = "{\"StoredVersionedContractByName\": \(innerJson)}"
             } else {
-                let innerJson: String = "{\"name\": \"\(name)\",\"version\": \(version!), \"entry_point\": \"\(entryPoint)\",\(argsString)}"
+                let innerJson = "{\"name\": \"\(name)\",\"version\": \(version!), \"entry_point\": \"\(entryPoint)\",\(argsString)}"
                 retStr = "{\"StoredVersionedContractByName\": \(innerJson)}"
             }
             return retStr
         case .transfer(let args):
             let argsString = ExecutableDeployItemHelper.argsToJsonString(args: args)
-            let innerJson: String = "{\(argsString)}"
+            let innerJson = "{\(argsString)}"
             retStr = "{\"Transfer\": \(innerJson)}"
             return retStr
         case .none:
@@ -75,26 +74,27 @@ public class ExecutableDeployItemHelper {
         }
         return retStr
     }
-    /**
-       Get ExecutableDeployItem object from Json string
-       - Parameter: a Json String represents the ExecutableDeployItem object
-       - Returns: ExecutableDeployItem object
-       */
 
-    public static func getExecutableDeployItem(from: [String: Any]) -> ExecutableDeployItem {
+    /**
+     Get ExecutableDeployItem object from Json string
+     - Parameter: a Json String represents the ExecutableDeployItem object
+     - Returns: ExecutableDeployItem object
+     */
+
+    static func getExecutableDeployItem(from: [String: Any]) -> ExecutableDeployItem {
         var retExecutionDeployItem: ExecutableDeployItem = .none
         if let argsType = from["ModuleBytes"] as? [String: Any] {
-            var moduleBytes: Bytes = Bytes()
+            var moduleBytes = CSPRBytes()
             if let moduleBytes1 = argsType["module_bytes"] as? String {
-                moduleBytes = Bytes.fromStrToBytes(from: moduleBytes1)
+                moduleBytes = CSPRBytes.fromStrToBytes(from: moduleBytes1)
             }
-            var runtimesArgList: [NamedArg] = [NamedArg]()
-            var retArgs: RuntimeArgs = RuntimeArgs()
+            var runtimesArgList = [NamedArg]()
+            var retArgs = RuntimeArgs()
             if let args = argsType["args"] as? [AnyObject] {
-                var counter: Int = 0
+                var counter = 0
                 for arg in args {
                     counter += 1
-                    let runtimeArg: NamedArg = NamedArg()
+                    let runtimeArg = NamedArg()
                     if let name = arg[0] as? String {
                         runtimeArg.name = name
                     }
@@ -109,20 +109,20 @@ public class ExecutableDeployItemHelper {
             retExecutionDeployItem = .moduleBytes(module_bytes: moduleBytes, args: retArgs)
         }
         if let argsType = from["StoredContractByHash"] as? [String: Any] {
-            var hash1: String = ""
-            var entryPoint1: String = ""
+            var hash1 = ""
+            var entryPoint1 = ""
             if let hash = argsType["hash"] as? String {
                 hash1 = hash
             }
             if let entryPoint = argsType["entry_point"] as? String {
                 entryPoint1 = entryPoint
             }
-            var runtimesArgList: [NamedArg] = [NamedArg]()
+            var runtimesArgList = [NamedArg]()
             if let args = argsType["args"] as? [AnyObject] {
-                var counter: Int = 0
+                var counter = 0
                 for arg in args {
                     counter += 1
-                    let runtimeArg: NamedArg = NamedArg()
+                    let runtimeArg = NamedArg()
                     if let name = arg[0] as? String {
                         runtimeArg.name = name
                     }
@@ -136,9 +136,9 @@ public class ExecutableDeployItemHelper {
             retExecutionDeployItem = .storedContractByHash(hash: hash1, entryPoint: entryPoint1, args: RuntimeArgs.fromListToRuntimeArgs(from: runtimesArgList))
         }
         if let argsType = from["StoredContractByName"] as? [String: Any] {
-            var name: String = ""
-            var entryPoint: String = ""
-            var runtimesArgList: [NamedArg] = [NamedArg]()
+            var name = ""
+            var entryPoint = ""
+            var runtimesArgList = [NamedArg]()
             if let name1 = argsType["name"] as? String {
                 name = name1
             }
@@ -146,10 +146,10 @@ public class ExecutableDeployItemHelper {
                 entryPoint = entryPoint1
             }
             if let args = argsType["args"] as? [AnyObject] {
-                var counter: Int = 0
+                var counter = 0
                 for arg in args {
                     counter += 1
-                    let runtimeArg: NamedArg = NamedArg()
+                    let runtimeArg = NamedArg()
                     if let name1 = arg[0] as? String {
                         runtimeArg.name = name1
                     }
@@ -163,10 +163,10 @@ public class ExecutableDeployItemHelper {
             retExecutionDeployItem = .storedContractByName(name: name, entryPoint: entryPoint, args: RuntimeArgs.fromListToRuntimeArgs(from: runtimesArgList))
         }
         if let argsType = from["StoredVersionedContractByHash"] as? [String: Any] {
-            var hash: String = ""
+            var hash = ""
             var version: UInt32?
-            var entryPoint: String = ""
-            var runtimesArgList: [NamedArg] = [NamedArg]()
+            var entryPoint = ""
+            var runtimesArgList = [NamedArg]()
             if let hash1 = argsType["hash"] as? String {
                 hash = hash1
             }
@@ -177,10 +177,10 @@ public class ExecutableDeployItemHelper {
                 version = version1
             }
             if let args = argsType["args"] as? [AnyObject] {
-                var counter: Int = 0
+                var counter = 0
                 for arg in args {
                     counter += 1
-                    let runtimeArg: NamedArg = NamedArg()
+                    let runtimeArg = NamedArg()
                     if let name = arg[0] as? String {
                         runtimeArg.name = name
                     }
@@ -194,8 +194,8 @@ public class ExecutableDeployItemHelper {
             retExecutionDeployItem = .storedVersionedContractByHash(hash: hash, version: version, entryPoint: entryPoint, args: RuntimeArgs.fromListToRuntimeArgs(from: runtimesArgList))
         }
         if let argsType = from["StoredVersionedContractByName"] as? [String: Any] {
-            var name: String = ""
-            var entryPoint: String = ""
+            var name = ""
+            var entryPoint = ""
             var version: UInt32?
             if let name1 = argsType["name"] as? String {
                 name = name1
@@ -206,12 +206,12 @@ public class ExecutableDeployItemHelper {
             if let version1 = argsType["version"] as? UInt32 {
                 version = version1
             }
-            var runtimesArgList: [NamedArg] = [NamedArg]()
+            var runtimesArgList = [NamedArg]()
             if let args = argsType["args"] as? [AnyObject] {
-                var counter: Int = 0
+                var counter = 0
                 for arg in args {
                     counter += 1
-                    let runtimeArg: NamedArg = NamedArg()
+                    let runtimeArg = NamedArg()
                     if let name = arg[0] as? String {
                         runtimeArg.name = name
                     }
@@ -225,12 +225,12 @@ public class ExecutableDeployItemHelper {
             retExecutionDeployItem = .storedVersionedContractByName(name: name, version: version, entryPoint: entryPoint, args: RuntimeArgs.fromListToRuntimeArgs(from: runtimesArgList))
         }
         if let argsType = from["Transfer"] as? [String: Any] {
-            var runtimesArgList: [NamedArg] = [NamedArg]()
+            var runtimesArgList = [NamedArg]()
             if let args = argsType["args"] as? [AnyObject] {
-                var counter: Int = 0
+                var counter = 0
                 for arg in args {
                     counter += 1
-                    let runtimeArg: NamedArg = NamedArg()
+                    let runtimeArg = NamedArg()
                     if let name = arg[0] as? String {
                         runtimeArg.name = name
                     }
@@ -245,18 +245,19 @@ public class ExecutableDeployItemHelper {
         }
         return retExecutionDeployItem
     }
+
     /**
         Function to get  json string from RuntimeArgs object
        - Parameter: a RuntimeArgs object
        - Returns: json string representing the RuntimeArgs object
      */
 
-    public static func argsToJsonString(args: RuntimeArgs) -> String {
-        var ret: String = ""
+    static func argsToJsonString(args: RuntimeArgs) -> String {
+        var ret = ""
         let totalArg: Int = args.listNamedArg.count
-        for i in 0 ... totalArg-1 {
+        for i in 0 ... totalArg - 1 {
             let clValueStr: String = CLValueToJson.getJsonString(clValue: args.listNamedArg[i].argsItem)
-            let argStr: String = "[\"\(args.listNamedArg[i].name)\",\(clValueStr)]"
+            let argStr = "[\"\(args.listNamedArg[i].name)\",\(clValueStr)]"
             ret = ret + argStr + ","
         }
         let index = ret.index(ret.endIndex, offsetBy: -1)
@@ -264,5 +265,4 @@ public class ExecutableDeployItemHelper {
         ret = "\"args\": [" + ret + "]"
         return ret
     }
-
 }

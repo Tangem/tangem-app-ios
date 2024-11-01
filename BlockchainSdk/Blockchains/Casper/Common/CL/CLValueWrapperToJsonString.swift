@@ -1,14 +1,15 @@
 import Foundation
-let parsedFixStr: String = "!!!!!___PARSED___!!!!!"
-public class CLValueWrapperToJsonString {
 
-    public static func toJsonString(clValue: CLValueWrapper) -> String {
+let parsedFixStr: String = "!!!!!___PARSED___!!!!!"
+enum CLValueWrapperToJsonString {
+    static func toJsonString(clValue: CLValueWrapper) -> String {
         if CLValueWrapperToJsonString.isParsedPrimitive(clValueWrapper: clValue) {
             return CLValueWrapperToJsonString.getParsedPrimitiveString(clValueWrapper: clValue)
         } else {
             return CLValueWrapperToJsonString.getParsedCompound(clValueWrapper: clValue)
         }
     }
+
     /**
         Function to get  json data from CLValue object
        - Parameter: none
@@ -21,56 +22,56 @@ public class CLValueWrapperToJsonString {
      }
      */
 
-    public static func isParsedPrimitive(clValueWrapper: CLValueWrapper) -> Bool {
-        var ret: Bool = true
+    static func isParsedPrimitive(clValueWrapper: CLValueWrapper) -> Bool {
+        var ret = true
         switch clValueWrapper {
-        case .bool(_):
+        case .bool:
             break
-        case .i32(_):
+        case .i32:
             break
-        case .i64(_):
+        case .i64:
             break
-        case .u8(_):
+        case .u8:
             break
-        case .u32(_):
+        case .u32:
             break
-        case .u64(_):
+        case .u64:
             break
-        case .u128(_):
+        case .u128:
             break
-        case .u256(_):
+        case .u256:
             break
-        case .u512(_):
+        case .u512:
             break
-        case .unit(_):
+        case .unit:
             break
-        case .string(_):
+        case .string:
             break
-        case .key(_):
+        case .key:
             break
-        case .uRef(_):
+        case .uRef:
             break
-        case .publicKey(_):
+        case .publicKey:
             break
-        case .bytesArray(_):
+        case .bytesArray:
             break
-        case .optionWrapper(_):
+        case .optionWrapper:
             ret = false
-        case .listWrapper(_):
+        case .listWrapper:
             ret = false
-        case .fixedListWrapper(_):
+        case .fixedListWrapper:
             ret = false
-        case .resultWrapper(_, _):
+        case .resultWrapper:
             ret = false
-        case .mapWrapper(_, _):
+        case .mapWrapper:
             ret = false
-        case .tuple1Wrapper(_):
+        case .tuple1Wrapper:
             ret = false
-        case .tuple2Wrapper(_, _):
+        case .tuple2Wrapper:
             ret = false
-        case .tuple3Wrapper(_, _, _):
+        case .tuple3Wrapper:
             ret = false
-        case .anyCLValue(_):
+        case .anyCLValue:
             ret = false
         case .nullCLValue:
             ret = false
@@ -80,56 +81,56 @@ public class CLValueWrapperToJsonString {
         return ret
     }
 
-    public static func isParsedStringPrimitive(clValueWrapper: CLValueWrapper) -> Bool {
-        var ret: Bool = true
+    static func isParsedStringPrimitive(clValueWrapper: CLValueWrapper) -> Bool {
+        var ret = true
         switch clValueWrapper {
-        case .bool(_):
+        case .bool:
             ret = false
-        case .i32(_):
+        case .i32:
             ret = false
-        case .i64(_):
+        case .i64:
             ret = false
-        case .u8(_):
+        case .u8:
             ret = false
-        case .u32(_):
+        case .u32:
             ret = false
-        case .u64(_):
+        case .u64:
             ret = false
-        case .u128(_):
+        case .u128:
             break
-        case .u256(_):
+        case .u256:
             break
-        case .u512(_):
+        case .u512:
             break
-        case .unit(_):
+        case .unit:
             break
-        case .string(_):
+        case .string:
             break
-        case .key(_):
+        case .key:
             break
-        case .uRef(_):
+        case .uRef:
             break
-        case .publicKey(_):
+        case .publicKey:
             break
-        case .bytesArray(_):
+        case .bytesArray:
             break
-        case .optionWrapper(_):
+        case .optionWrapper:
             ret = false
-        case .listWrapper(_):
+        case .listWrapper:
             ret = false
-        case .fixedListWrapper(_):
+        case .fixedListWrapper:
             ret = false
-        case .resultWrapper(_, _):
+        case .resultWrapper:
             ret = false
-        case .mapWrapper(_, _):
+        case .mapWrapper:
             ret = false
-        case .tuple1Wrapper(_):
+        case .tuple1Wrapper:
             ret = false
-        case .tuple2Wrapper(_, _):
+        case .tuple2Wrapper:
             ret = false
-        case .tuple3Wrapper(_, _, _):
+        case .tuple3Wrapper:
             ret = false
-        case .anyCLValue(_):
+        case .anyCLValue:
             ret = false
         case .nullCLValue:
             ret = false
@@ -139,99 +140,98 @@ public class CLValueWrapperToJsonString {
         return ret
     }
 
-    public static func getParsedBool(clValueWrapper: CLValueWrapper) -> Bool {
+    static func getParsedBool(clValueWrapper: CLValueWrapper) -> Bool {
         if case .bool(let bool) = clValueWrapper {
             return bool
         }
         return false
     }
 
-    public static func getParsedI32(clValueWrapper: CLValueWrapper) -> Int32 {
+    static func getParsedI32(clValueWrapper: CLValueWrapper) -> Int32 {
         if case .i32(let i32) = clValueWrapper {
             return i32
         }
         return 0
     }
 
-    public static func getParsedI64(clValueWrapper: CLValueWrapper) -> Int64 {
+    static func getParsedI64(clValueWrapper: CLValueWrapper) -> Int64 {
         if case .i64(let i64) = clValueWrapper {
             return i64
         }
         return 0
     }
 
-    public static func getParsedU8(clValueWrapper: CLValueWrapper) -> UInt8 {
+    static func getParsedU8(clValueWrapper: CLValueWrapper) -> UInt8 {
         if case .u8(let u8) = clValueWrapper {
             return u8
         }
         return 0
     }
 
-    public static func getParsedU32(clValueWrapper: CLValueWrapper) -> UInt32 {
+    static func getParsedU32(clValueWrapper: CLValueWrapper) -> UInt32 {
         if case .u32(let u32) = clValueWrapper {
             return u32
         }
         return 0
     }
 
-    public static func getParsedU64(clValueWrapper: CLValueWrapper) -> UInt64 {
+    static func getParsedU64(clValueWrapper: CLValueWrapper) -> UInt64 {
         if case .u64(let u64) = clValueWrapper {
             return u64
         }
         return 0
     }
 
-   public static func getParsedPrimitiveString(clValueWrapper: CLValueWrapper) -> String {
+    static func getParsedPrimitiveString(clValueWrapper: CLValueWrapper) -> String {
         switch clValueWrapper {
-            case .bool(let bool):
-                return "\(parsedFixStr): \(bool)"
-            case .i32(let i32):
-                return "\(parsedFixStr): \(i32)"
-            case .i64(let i64):
-                return "\(parsedFixStr): \(i64)"
-            case .u8(let u8):
-                return "\(parsedFixStr): \(u8)"
-            case .u32(let u32):
-                return "\(parsedFixStr): \(u32)"
-            case .u64(let u64):
-                return "\(parsedFixStr): \(u64)"
-            case .u128(let u128Class):
-                return "\"\(u128Class.valueInStr)\""
-            case .u256(let u256Class):
+        case .bool(let bool):
+            return "\(parsedFixStr): \(bool)"
+        case .i32(let i32):
+            return "\(parsedFixStr): \(i32)"
+        case .i64(let i64):
+            return "\(parsedFixStr): \(i64)"
+        case .u8(let u8):
+            return "\(parsedFixStr): \(u8)"
+        case .u32(let u32):
+            return "\(parsedFixStr): \(u32)"
+        case .u64(let u64):
+            return "\(parsedFixStr): \(u64)"
+        case .u128(let u128Class):
+            return "\"\(u128Class.valueInStr)\""
+        case .u256(let u256Class):
             return "\"\(u256Class.valueInStr)\""
-            case .u512(let u512Class):
-                return "\"\(u512Class.valueInStr)\""
-            case .unit(let string):
-                return "\"\(string)\""
-            case .string(let string):
-                return "\"\(string)\""
-            case .key(let string):
-                let element = string.components(separatedBy: "-")
-                if element[0] == "account" {
-                    return "{\"Account\": \"\(string)\"}"
-                }
-                else if element[0] == "hash" {
-                    return "{\"Hash\": \"\(string)\"}"
-                } else {
-                    return "{\"URef\": \"\(string)\"}"
-                }
-            case .uRef(let string):
-                return "\"\(string)\""
-            case .publicKey(let string):
-                return "\"\(string)\""
-            case .bytesArray(let string):
-                return "\"\(string)\""
-            default:
-                break
+        case .u512(let u512Class):
+            return "\"\(u512Class.valueInStr)\""
+        case .unit(let string):
+            return "\"\(string)\""
+        case .string(let string):
+            return "\"\(string)\""
+        case .key(let string):
+            let element = string.components(separatedBy: "-")
+            if element[0] == "account" {
+                return "{\"Account\": \"\(string)\"}"
+            } else if element[0] == "hash" {
+                return "{\"Hash\": \"\(string)\"}"
+            } else {
+                return "{\"URef\": \"\(string)\"}"
+            }
+        case .uRef(let string):
+            return "\"\(string)\""
+        case .publicKey(let string):
+            return "\"\(string)\""
+        case .bytesArray(let string):
+            return "\"\(string)\""
+        default:
+            break
         }
         return ""
     }
 
-    public static func getParsedCompound(clValueWrapper: CLValueWrapper) -> String {
+    static func getParsedCompound(clValueWrapper: CLValueWrapper) -> String {
         if CLValueWrapperToJsonString.isParsedPrimitive(clValueWrapper: clValueWrapper) {
             return ""
         }
-        var ret: String = ""
+        var ret = ""
         switch clValueWrapper {
         case .optionWrapper(let cLValueWrapperOption):
             if case .nullCLValue = cLValueWrapperOption {
@@ -269,7 +269,7 @@ public class CLValueWrapperToJsonString {
             }
             ret = ret + "]"
         case .resultWrapper(let string, let cLValueWrapperResult):
-            var wrapperStr: String = ""
+            var wrapperStr = ""
             if CLValueWrapperToJsonString.isParsedPrimitive(clValueWrapper: cLValueWrapperResult) {
                 wrapperStr = CLValueWrapperToJsonString.getParsedPrimitiveString(clValueWrapper: cLValueWrapperResult)
             } else {
@@ -282,8 +282,8 @@ public class CLValueWrapperToJsonString {
                 return "[]"
             }
             ret = "["
-            var keyStr: String = ""
-            var valueStr: String = ""
+            var keyStr = ""
+            var valueStr = ""
             for i in 0 ... totalElement - 1 {
                 let keyElement = keyArray[i]
                 let valueElement = valueArray[i]
@@ -304,7 +304,7 @@ public class CLValueWrapperToJsonString {
             ret = retStr + "]"
         case .tuple1Wrapper(let cLValueWrapperTuple1):
             ret = "["
-            var tupleStr: String = ""
+            var tupleStr = ""
             if CLValueWrapperToJsonString.isParsedPrimitive(clValueWrapper: cLValueWrapperTuple1) {
                 tupleStr = CLValueWrapperToJsonString.getParsedPrimitiveString(clValueWrapper: cLValueWrapperTuple1)
             } else {
@@ -313,8 +313,8 @@ public class CLValueWrapperToJsonString {
             ret = ret + tupleStr
             ret = ret + "]"
         case .tuple2Wrapper(let cLValueWrapperTuple21, let cLValueWrapperTuple22):
-            var tupleStr1: String = ""
-            var tupleStr2: String = ""
+            var tupleStr1 = ""
+            var tupleStr2 = ""
             if CLValueWrapperToJsonString.isParsedPrimitive(clValueWrapper: cLValueWrapperTuple21) {
                 tupleStr1 = CLValueWrapperToJsonString.getParsedPrimitiveString(clValueWrapper: cLValueWrapperTuple21)
             } else {
@@ -327,9 +327,9 @@ public class CLValueWrapperToJsonString {
             }
             ret = "[" + tupleStr1 + "," + tupleStr2 + "]"
         case .tuple3Wrapper(let cLValueWrapperTuple31, let cLValueWrapperTuple32, let cLValueWrapperTuple33):
-            var tupleStr1: String = ""
-            var tupleStr2: String = ""
-            var tupleStr3: String = ""
+            var tupleStr1 = ""
+            var tupleStr2 = ""
+            var tupleStr3 = ""
             if CLValueWrapperToJsonString.isParsedPrimitive(clValueWrapper: cLValueWrapperTuple31) {
                 tupleStr1 = CLValueWrapperToJsonString.getParsedPrimitiveString(clValueWrapper: cLValueWrapperTuple31)
             } else {
@@ -346,7 +346,7 @@ public class CLValueWrapperToJsonString {
                 tupleStr3 = CLValueWrapperToJsonString.getParsedCompound(clValueWrapper: cLValueWrapperTuple33)
             }
             ret = "[" + tupleStr1 + "," + tupleStr2 + "," + tupleStr3 + "]"
-        case .anyCLValue(_):
+        case .anyCLValue:
             return "NULL"
         case .nullCLValue:
             return "NULL"
@@ -357,5 +357,4 @@ public class CLValueWrapperToJsonString {
         }
         return ret
     }
-
 }
