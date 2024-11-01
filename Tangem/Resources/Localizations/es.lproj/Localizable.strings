@@ -668,6 +668,7 @@
 "staking_active_footer" = "Para eliminar el staking de sus activos, presione el bloque de arriba";
 "staking_amount_requirement_error" = "El monto del staking debe ser al menos %@";
 "staking_amount_tron_integer_error" = "El monto del staking se redondeará a %1$@ TRX debido a las reglas de la red.";
+"staking_amount_tron_integer_error_unstaking" = "Staking amount will be rounded to %1$@ TRX due to network rules.";
 "staking_claim_unstaked" = "Unstaking de la reclamación";
 "staking_details_account_fee" = "Tarifa de staking de la cuenta ";
 "staking_details_account_fee_info" = "Una cuenta de staking es una cuenta especial donde se almacenan los tokens SOL de staking. Se crea cuando delegas sus tokens a un validador para participar en la validación de transacciones y ganar recompensas. Se cobra una pequeña tarifa por crear la cuenta de staking, que se devuelve una vez que se completa el staking.";

@@ -321,8 +321,8 @@ struct SendDependenciesBuilder {
         StakingFeeIncludedCalculator(tokenItem: walletModel.tokenItem, validator: walletModel.transactionValidator)
     }
 
-    func makeStakingAmountModifier() -> SendAmountModifier {
-        StakingAmountModifier(tokenItem: walletModel.tokenItem)
+    func makeStakingAmountModifier(actionType: SendFlowActionType) -> SendAmountModifier {
+        StakingAmountModifier(tokenItem: walletModel.tokenItem, actionType: actionType)
     }
 
     func makeStakingBaseDataBuilder(input: StakingBaseDataBuilderInput) -> StakingBaseDataBuilder {

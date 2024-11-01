@@ -668,6 +668,7 @@
 "staking_active_footer" = "To unstake your assets, tap the block above";
 "staking_amount_requirement_error" = "The amount to stake must be at least %@";
 "staking_amount_tron_integer_error" = "Staking amount will be rounded to %1$@ TRX due to network rules.";
+"staking_amount_tron_integer_error_unstaking" = "Unstaking amount will be rounded to %1$@ TRX due to network rules.";
 "staking_claim_unstaked" = "Claim unstaked";
 "staking_details_account_fee" = "Stake account fee";
 "staking_details_account_fee_info" = "A staking account is a special account where staked SOL tokens are stored. It is created when you delegate your tokens to a validator to participate in transaction validation and earn rewards. A small fee is charged for creating the staking account, which is returned after the staking is completed.";

@@ -668,6 +668,7 @@
 "staking_active_footer" = "Um deine Vermögenswerte freizugeben, tippe auf den Block oben";
 "staking_amount_requirement_error" = "Die Anzahl der zu stakenden Krypros muss mindesten %@ betragen";
 "staking_amount_tron_integer_error" = "Der Stakingbetrag wird aufgrund der Netzwerkregeln auf %1$@ TRX aufgerundet.";
+"staking_amount_tron_integer_error_unstaking" = "Der Betrag der unstaked wird, wird aufgrund der Netzwerkregeln auf %1$@ TRX gerundet.";
 "staking_claim_unstaked" = "Nicht gestakte beanspruche";
 "staking_details_account_fee" = "Gebühr für das Staking-Konto";
 "staking_details_account_fee_info" = "Ein Staking-Konto ist ein spezielles Konto, auf dem eingesetzte SOL-Token gelagert werden. Es wird erstellt, wenn du deine Token an einen Validator delegierst, um an der Transaktionsvalidierung teilzunehmen und Belohnungen zu verdienen. Für die Erstellung des Staking-Kontos wird eine geringe Gebühr erhoben, die nach Abschluss des Stakings zurückgegeben wird.";
