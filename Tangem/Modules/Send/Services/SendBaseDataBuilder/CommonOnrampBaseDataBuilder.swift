@@ -10,22 +10,27 @@ import TangemExpress
 
 protocol OnrampBaseDataBuilderInput {}
 
-struct CommonOnrampBaseDataBuilder: OnrampBaseDataBuilder {
-    private let input: OnrampBaseDataBuilderInput
-    private let walletModel: WalletModel
+struct CommonOnrampBaseDataBuilder {
     private let onrampRepository: OnrampRepository
+    private let onrampDataRepository: OnrampDataRepository
 
     init(
-        input: OnrampBaseDataBuilderInput,
-        walletModel: WalletModel,
-        onrampRepository: OnrampRepository
+        onrampRepository: OnrampRepository,
+        onrampDataRepository: OnrampDataRepository
     ) {
-        self.input = input
-        self.walletModel = walletModel
         self.onrampRepository = onrampRepository
+        self.onrampDataRepository = onrampDataRepository
+    }
+}
+
+// MARK: - OnrampBaseDataBuilder
+
+extension CommonOnrampBaseDataBuilder: OnrampBaseDataBuilder {
+    func makeDataForOnrampCountryBottomSheet() -> OnrampRepository {
+        return onrampRepository
     }
 
-    func makeDataForOnrampCountryBottomSheet() -> any TangemExpress.OnrampRepository {
-        onrampRepository
+    func makeDataForOnrampCountrySelectorView() -> (preferenceRepository: OnrampRepository, dataRepository: OnrampDataRepository) {
+        return (preferenceRepository: onrampRepository, dataRepository: onrampDataRepository)
     }
 }

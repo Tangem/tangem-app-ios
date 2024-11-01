@@ -68,6 +68,10 @@ class BitcoinTests: XCTestCase {
         XCTAssertTrue(addressService.validate("bc1qxzdqcmh6pknevm2ugtw94y50dwhsu3l0p5tg63"))
     }
 
+    func testTaprootAddressValidation() {
+        XCTAssertTrue(addressService.validate("bc1pyzns9j3llzxar0dd50nrus6p0cdqjxxqz6y33cmml3qsedlejsyq867kcg"))
+    }
+
     func testBtcTxBuilder() throws {
         let pubkey = Data(hex: "046DB397495FA03FE263EE4021B77C49496E5C7DB8266E6E33A03D5B3A370C3D6D744A863B14DE2457D82BEE322416523E336530760C4533AEE980F4A4CDB9A98D")
         let compressedPubkey = try! Secp256k1Key(with: pubkey).compress()
