@@ -1541,7 +1541,6 @@
 		B62D42CC2CBC79DB00C2460E /* DateFormatter+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F812CBC79DA00C2460E /* DateFormatter+.swift */; };
 		B62D42CD2CBC79DB00C2460E /* Decimal+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F822CBC79DA00C2460E /* Decimal+.swift */; };
 		B62D42CE2CBC79DB00C2460E /* Future+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F832CBC79DA00C2460E /* Future+.swift */; };
-		B62D42CF2CBC79DB00C2460E /* Int+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F842CBC79DA00C2460E /* Int+.swift */; };
 		B62D42D02CBC79DB00C2460E /* JSONDecoder+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F852CBC79DA00C2460E /* JSONDecoder+.swift */; };
 		B62D42D12CBC79DB00C2460E /* JSONEncoder+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F862CBC79DA00C2460E /* JSONEncoder+.swift */; };
 		B62D42D22CBC79DB00C2460E /* KeyedDecodingContainer+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F872CBC79DA00C2460E /* KeyedDecodingContainer+.swift */; };
@@ -1555,7 +1554,6 @@
 		B62D42DA2CBC79DB00C2460E /* ThenProcessable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F8F2CBC79DA00C2460E /* ThenProcessable.swift */; };
 		B62D42DB2CBC79DB00C2460E /* TWCoin+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F902CBC79DA00C2460E /* TWCoin+.swift */; };
 		B62D42DC2CBC79DB00C2460E /* TWPublicKey+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F912CBC79DA00C2460E /* TWPublicKey+.swift */; };
-		B62D42DD2CBC79DB00C2460E /* Uint64+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F922CBC79DA00C2460E /* Uint64+.swift */; };
 		B62D42DE2CBC79DB00C2460E /* URL+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F932CBC79DA00C2460E /* URL+.swift */; };
 		B62D43372CBC79E400C2460E /* ICPTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D42DF2CBC79E000C2460E /* ICPTests.swift */; };
 		B62D43382CBC79E400C2460E /* StellarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D42E12CBC79E000C2460E /* StellarTests.swift */; };
@@ -4539,7 +4537,6 @@
 		B62D3F812CBC79DA00C2460E /* DateFormatter+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DateFormatter+.swift"; sourceTree = "<group>"; };
 		B62D3F822CBC79DA00C2460E /* Decimal+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Decimal+.swift"; sourceTree = "<group>"; };
 		B62D3F832CBC79DA00C2460E /* Future+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Future+.swift"; sourceTree = "<group>"; };
-		B62D3F842CBC79DA00C2460E /* Int+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Int+.swift"; sourceTree = "<group>"; };
 		B62D3F852CBC79DA00C2460E /* JSONDecoder+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JSONDecoder+.swift"; sourceTree = "<group>"; };
 		B62D3F862CBC79DA00C2460E /* JSONEncoder+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JSONEncoder+.swift"; sourceTree = "<group>"; };
 		B62D3F872CBC79DA00C2460E /* KeyedDecodingContainer+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "KeyedDecodingContainer+.swift"; sourceTree = "<group>"; };
@@ -4553,7 +4550,6 @@
 		B62D3F8F2CBC79DA00C2460E /* ThenProcessable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThenProcessable.swift; sourceTree = "<group>"; };
 		B62D3F902CBC79DA00C2460E /* TWCoin+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TWCoin+.swift"; sourceTree = "<group>"; };
 		B62D3F912CBC79DA00C2460E /* TWPublicKey+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TWPublicKey+.swift"; sourceTree = "<group>"; };
-		B62D3F922CBC79DA00C2460E /* Uint64+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Uint64+.swift"; sourceTree = "<group>"; };
 		B62D3F932CBC79DA00C2460E /* URL+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+.swift"; sourceTree = "<group>"; };
 		B62D42DF2CBC79E000C2460E /* ICPTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ICPTests.swift; sourceTree = "<group>"; };
 		B62D42E12CBC79E000C2460E /* StellarTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StellarTests.swift; sourceTree = "<group>"; };
@@ -10665,7 +10661,6 @@
 				B62D3F812CBC79DA00C2460E /* DateFormatter+.swift */,
 				B62D3F822CBC79DA00C2460E /* Decimal+.swift */,
 				B62D3F832CBC79DA00C2460E /* Future+.swift */,
-				B62D3F842CBC79DA00C2460E /* Int+.swift */,
 				B62D3F852CBC79DA00C2460E /* JSONDecoder+.swift */,
 				B62D3F862CBC79DA00C2460E /* JSONEncoder+.swift */,
 				B62D3F872CBC79DA00C2460E /* KeyedDecodingContainer+.swift */,
@@ -10679,7 +10674,6 @@
 				B62D3F8F2CBC79DA00C2460E /* ThenProcessable.swift */,
 				B62D3F902CBC79DA00C2460E /* TWCoin+.swift */,
 				B62D3F912CBC79DA00C2460E /* TWPublicKey+.swift */,
-				B62D3F922CBC79DA00C2460E /* Uint64+.swift */,
 				B62D3F932CBC79DA00C2460E /* URL+.swift */,
 			);
 			path = Extensions;
@@ -17544,7 +17538,6 @@
 				B62D40692CBC79DA00C2460E /* CosmosFeeParameters.swift in Sources */,
 				B62D3F9F2CBC79DA00C2460E /* AlgorandResponse+PendingTransaction.swift in Sources */,
 				B62D400A2CBC79DA00C2460E /* OP_CAT.swift in Sources */,
-				B62D42DD2CBC79DB00C2460E /* Uint64+.swift in Sources */,
 				B62D42A62CBC79DB00C2460E /* Constants.swift in Sources */,
 				B62D427F2CBC79DB00C2460E /* AlgorandIndexProviderTarget.swift in Sources */,
 				B62D409C2CBC79DA00C2460E /* ETHError.swift in Sources */,
@@ -17916,7 +17909,6 @@
 				B62D3FB42CBC79DA00C2460E /* AptosExternalLinkProvider.swift in Sources */,
 				B62D415A2CBC79DA00C2460E /* AzeroExternalLinkProvider.swift in Sources */,
 				B62D420F2CBC79DB00C2460E /* WebSocket+Convenience.swift in Sources */,
-				B62D42CF2CBC79DB00C2460E /* Int+.swift in Sources */,
 				B62D41412CBC79DA00C2460E /* NEARNetworkProvider.swift in Sources */,
 				B62D409B2CBC79DA00C2460E /* EthereumTransactionParams.swift in Sources */,
 				B62D403B2CBC79DA00C2460E /* AdaliteBaseResponseDTO.swift in Sources */,
