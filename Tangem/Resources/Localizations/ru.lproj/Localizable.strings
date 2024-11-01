@@ -755,6 +755,7 @@
 "staking_unbonding_in" = "Отзыв через";
 "staking_unlocked_locked" = "Разблокировать";
 "staking_unlocking" = "Разблокировка";
+"staking_unstake_amount_requirement_error" = "The amount to unstake must be at least %@";
 "staking_unstake_amount_validation_error" = "Сумма превышает застейканный баланс";
 "staking_unstaked" = "Вывод из стейкинга";
 "staking_unstaked_footer" = "Проверьте процесс завершения стейкинга, чтобы вывести свои средства.";

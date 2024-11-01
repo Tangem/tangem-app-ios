@@ -755,6 +755,7 @@
 "staking_unbonding_in" = "Розблокування через";
 "staking_unlocked_locked" = "Розблокувати";
 "staking_unlocking" = "Розблокування";
+"staking_unstake_amount_requirement_error" = "The amount to unstake must be at least %@";
 "staking_unstake_amount_validation_error" = "Сума перевищує баланс стейкінгу";
 "staking_unstaked" = "Вивід зі стейкінгу";
 "staking_unstaked_footer" = "Перевірити незастейкані, щоб отримати свої активи";

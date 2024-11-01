@@ -755,6 +755,7 @@
 "staking_unbonding_in" = "Desunión en";
 "staking_unlocked_locked" = "Desbloquear";
 "staking_unlocking" = "Desbloqueando";
+"staking_unstake_amount_requirement_error" = "The amount to unstake must be at least %@";
 "staking_unstake_amount_validation_error" = "El monto excede el saldo apostado";
 "staking_unstaked" = "Sin staking";
 "staking_unstaked_footer" = "Marque activos sin staking para reclamarlos";

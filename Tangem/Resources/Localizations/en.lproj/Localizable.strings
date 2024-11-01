@@ -755,6 +755,7 @@
 "staking_unbonding_in" = "Unbonding in";
 "staking_unlocked_locked" = "Unlock";
 "staking_unlocking" = "Unlocking";
+"staking_unstake_amount_requirement_error" = "The amount to unstake must be at least %@";
 "staking_unstake_amount_validation_error" = "Amount exceeds staked balance";
 "staking_unstaked" = "Unstaked";
 "staking_unstaked_footer" = "Check unstaked to claim your assets";
