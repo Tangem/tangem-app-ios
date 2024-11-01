@@ -35,7 +35,7 @@ final class CapertSerializationTests: XCTestCase {
         oneNamedArg.argsItem.bytes = "0400e1f505"
         let runtimeArgs = RuntimeArgs()
         runtimeArgs.listNamedArg = [oneNamedArg]
-        let emptyByte = Bytes()
+        let emptyByte = CSPRBytes()
         let edi: ExecutableDeployItem = .moduleBytes(module_bytes: emptyByte, args: runtimeArgs)
         let ediSerialization = ExecutableDeployItemSerializaton.serialize(from: edi)
         XCTAssert(ediSerialization == "00000000000100000006000000616d6f756e74050000000400e1f50508")
@@ -49,7 +49,7 @@ final class CapertSerializationTests: XCTestCase {
         oneNamedArg0.argsItem.bytes = "1837f578fca55492f299ea354eaca52b6e9de47d592453c728"
         let runtimeArgs0 = RuntimeArgs()
         runtimeArgs0.listNamedArg = [oneNamedArg0]
-        let moduleBytes = Bytes.fromStrToBytes(from: "123456789123456789123456789123456789123456789123456789")
+        let moduleBytes = CSPRBytes.fromStrToBytes(from: "123456789123456789123456789123456789123456789123456789")
         let edi0: ExecutableDeployItem = .moduleBytes(module_bytes: moduleBytes, args: runtimeArgs0)
         let edi0Serialization = ExecutableDeployItemSerializaton.serialize(from: edi0)
         XCTAssert(edi0Serialization == "00360000003132333435363738393132333435363738393132333435363738393132333435363738393132333435363738393132333435363738390100000006000000616d6f756e74190000001837f578fca55492f299ea354eaca52b6e9de47d592453c72808")

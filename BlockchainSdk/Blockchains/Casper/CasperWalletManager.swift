@@ -61,7 +61,11 @@ class CasperWalletManager: BaseManager, WalletManager {
         let hashForSign: Data
 
         do {
-            let transactionForSign = try transactionBuilder.buildForSign(transaction: transaction)
+            let transactionForSign = try transactionBuilder.buildForSign(
+                transaction: transaction,
+                timestamp: Date().toString()
+            )
+
             hashForSign = transactionForSign.getSha256()
         } catch {
             return .sendTxFail(error: WalletError.failedToBuildTx)
