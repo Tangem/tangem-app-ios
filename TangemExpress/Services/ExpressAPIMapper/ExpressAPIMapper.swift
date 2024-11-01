@@ -183,8 +183,11 @@ struct ExpressAPIMapper {
     }
 
     func mapToOnrampQuote(response: ExpressDTO.Onramp.Quote.Response) throws -> OnrampQuote {
-        // TODO: https://tangem.atlassian.net/browse/IOS-8310
-        return OnrampQuote()
+        guard var toAmount = Decimal(string: response.toAmount) else {
+            throw ExpressAPIMapperError.mapToDecimalError(response.toAmount)
+        }
+
+        return OnrampQuote(expectedAmount: toAmount)
     }
 
     func mapToOnrampRedirectData(

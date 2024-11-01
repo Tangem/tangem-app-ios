@@ -19,15 +19,20 @@ final class OnrampProvidersViewModel: ObservableObject {
 
     // MARK: - Dependencies
 
+    private let tokenItem: TokenItem
     private let interactor: OnrampProvidersInteractor
     private weak var coordinator: OnrampProvidersRoutable?
+
+    private let balanceFormatter = BalanceFormatter()
 
     private var bag: Set<AnyCancellable> = []
 
     init(
+        tokenItem: TokenItem,
         interactor: OnrampProvidersInteractor,
         coordinator: OnrampProvidersRoutable
     ) {
+        self.tokenItem = tokenItem
         self.interactor = interactor
         self.coordinator = coordinator
 
@@ -44,7 +49,6 @@ private extension OnrampProvidersViewModel {
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, provider in
-                // TODO: https://tangem.atlassian.net/browse/IOS-8310
                 viewModel.selectedProviderId = provider.value?.provider.id
             }
             .store(in: &bag)
@@ -63,7 +67,9 @@ private extension OnrampProvidersViewModel {
             interactor.paymentMethodPublisher
         )
         .map { providers, paymentMethod in
-            providers.filter { $0.paymentMethod.identity.code == paymentMethod.identity.code }
+            providers.filter {
+                $0.paymentMethod.identity.code == paymentMethod.identity.code
+            }
         }
         .withWeakCaptureOf(self)
         .receive(on: DispatchQueue.main)
@@ -89,7 +95,8 @@ private extension OnrampProvidersViewModel {
                 id: provider.provider.id,
                 name: provider.provider.name,
                 iconURL: provider.provider.imageURL,
-                formattedAmount: "0,00453 BTC",
+                formattedAmount: formattedAmount(state: provider.manager.state),
+                state: state(state: provider.manager.state),
                 badge: .bestRate,
                 isSelected: selectedProviderId == provider.provider.id,
                 action: { [weak self] in
@@ -98,6 +105,30 @@ private extension OnrampProvidersViewModel {
                     self?.interactor.update(selectedProvider: provider)
                 }
             )
+        }
+    }
+
+    func formattedAmount(state: OnrampProviderManagerState) -> String? {
+        guard case .loaded(let onrampQuote) = state else {
+            return nil
+        }
+
+        return balanceFormatter.formatCryptoBalance(
+            onrampQuote.expectedAmount,
+            currencyCode: tokenItem.currencySymbol
+        )
+    }
+
+    func state(state: OnrampProviderManagerState) -> OnrampProviderRowViewData.State? {
+        switch state {
+        case .created, .loading:
+            return nil
+        case .failed(let error):
+            return .error(error)
+        case .loaded(let quote):
+            return .available(time: "5 min")
+        case .notSupported:
+            return .unavailable
         }
     }
 }

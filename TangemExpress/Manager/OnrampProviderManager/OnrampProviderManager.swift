@@ -6,7 +6,7 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-public protocol OnrampProviderManager: Actor {
+public protocol OnrampProviderManager {
     /// Get actual state
     var state: OnrampProviderManagerState { get }
 

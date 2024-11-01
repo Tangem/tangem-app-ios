@@ -6,7 +6,7 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-actor CommonOnrampProviderManager {
+class CommonOnrampProviderManager {
     // Dependencies
 
     private let pairItem: OnrampPairRequestItem
