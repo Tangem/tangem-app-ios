@@ -1,5 +1,5 @@
 {
-  "originHash" : "ecb41df938240aaaac4ff2918e5283b5c34eacf4a572404d53bc5ef086fd0509",
+  "originHash" : "1f666c3412fd6871db0315f2aa4b674d447cc2f17ac07d97a719ffe3c77566e7",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -40,7 +40,7 @@
     {
       "identity" : "bigint",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/attaswift/BigInt",
+      "location" : "https://github.com/attaswift/BigInt.git",
       "state" : {
         "revision" : "0ed110f7555c34ff468e72e1686e59721f2b0da6",
         "version" : "5.3.0"
@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/bitcoincore.git",
       "state" : {
-        "revision" : "c00b5c60ab9560acee8309f39620fabfde32b518",
-        "version" : "0.0.21"
+        "revision" : "4ec53e5e223885a4c0884d80985cf43677434eb0",
+        "version" : "0.0.23"
       }
     },
     {

@@ -7,19 +7,22 @@
 //
 
 public actor CommonOnrampManager {
-    private let provider: ExpressAPIProvider
+    private let apiProvider: ExpressAPIProvider
     private let onrampRepository: OnrampRepository
+    private let dataRepository: OnrampDataRepository
     private let logger: Logger
 
-    private var _providers: [OnrampProvider] = []
+    private var _providers: [Provider] = []
 
     public init(
-        provider: ExpressAPIProvider,
+        apiProvider: ExpressAPIProvider,
         onrampRepository: OnrampRepository,
+        dataRepository: OnrampDataRepository,
         logger: Logger
     ) {
-        self.provider = provider
+        self.apiProvider = apiProvider
         self.onrampRepository = onrampRepository
+        self.dataRepository = dataRepository
         self.logger = logger
     }
 }
@@ -27,35 +30,54 @@ public actor CommonOnrampManager {
 // MARK: - OnrampManager
 
 extension CommonOnrampManager: OnrampManager {
-    public func getCountry() async throws -> OnrampCountry {
-        if let country = onrampRepository.savedCountry {
-            return country
-        }
-
-        let country: OnrampCountry = try await provider.onrampCountryByIP()
-        onrampRepository.updatePreference(country: country)
+    public func initialSetupCountry() async throws -> OnrampCountry {
+        let country = try await apiProvider.onrampCountryByIP()
         return country
     }
 
-    public func updatePaymentMethod() async throws -> OnrampPaymentMethod {
-        // Load payment methods
-        // Or get it from repository (?)
-        throw OnrampManagerError.notImplement
+    public func setupProviders(request: OnrampPairRequestItem) async throws {
+        let pairs = try await apiProvider.onrampPairs(
+            from: request.fiatCurrency,
+            to: [request.destination.expressCurrency],
+            country: request.country
+        )
+
+        _providers = pairs.flatMap { $0.providers }.map { provider in
+            makeProvider(item: request, provider: provider)
+        }
     }
 
-    public func update(pair: OnrampPair) async throws -> [OnrampProvider] {
-        // Load providers from API
-        // Make provides
-        // Save providers
-        throw OnrampManagerError.notImplement
+    public func setupQuotes(amount: Decimal) async throws {
+        /*
+         TODO: https://tangem.atlassian.net/browse/IOS-8310
+         await withTaskGroup(of: Void.self) { [weak self] group in
+             await self?._providers.forEach { provider in
+                 _ = group.addTaskUnlessCancelled {
+                     await provider.manager.update(amount: amount)
+                 }
+             }
+         }
+         */
     }
 
-    public func update(amount: Decimal) async throws -> [OnrampProvider] {
-        return _providers
-    }
-
-    public func loadOnrampData(request: OnrampSwappableItem) async throws -> OnrampRedirectData {
+    public func loadOnrampData(request: OnrampQuotesRequestItem) async throws -> OnrampRedirectData {
         // Load data from API
         throw OnrampManagerError.notImplement
+    }
+}
+
+// MARK: - Private
+
+private extension CommonOnrampManager {
+    func makeProvider(item: OnrampPairRequestItem, provider: OnrampProvider) -> Provider {
+        // Construct a Provider wrapper with autoupdating itself
+        // TODO: https://tangem.atlassian.net/browse/IOS-8310
+        Provider(provider: provider)
+    }
+}
+
+private extension CommonOnrampManager {
+    struct Provider {
+        let provider: OnrampProvider
     }
 }

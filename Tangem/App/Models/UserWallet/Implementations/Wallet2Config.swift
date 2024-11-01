@@ -226,6 +226,15 @@ extension Wallet2Config: UserWalletConfig {
         // BTC Gold
         case "AF71":
             return cardsCount == 2 ? Assets.Cards.btcNew2 : Assets.Cards.btcNew3
+        // Stealth wallet
+        case "AF60", "AF74", "AF88":
+            return cardsCount == 2 ? Assets.Cards.stealthWalletSET2 : Assets.Cards.stealthWalletSET3
+        // Crypto Org
+        case "AF57":
+            return cardsCount == 2 ? Assets.Cards.cryptorgSet2 : Assets.Cards.cryptorgSet3
+        // CryptoCasey
+        case "AF21", "AF22", "AF23":
+            return cardsCount == 2 ? Assets.Cards.cryptoCaseySet2 : Assets.Cards.cryptoCaseySet3
         // Tangem Wallet 2.0
         default:
 

@@ -8,4 +8,6 @@
 
 import Foundation
 
-protocol OnrampProvidersRoutable: AnyObject {}
+protocol OnrampProvidersRoutable: AnyObject {
+    func openOnrampPaymentMethods()
+}
