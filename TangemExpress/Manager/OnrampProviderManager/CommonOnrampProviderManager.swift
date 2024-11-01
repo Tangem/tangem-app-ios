@@ -21,14 +21,14 @@ actor CommonOnrampProviderManager {
 
     init(
         pairItem: OnrampPairRequestItem,
-        expressProvider: ExpressProvider,
-        paymentMethod: OnrampPaymentMethod,
+        expressProviderId: String,
+        paymentMethodId: String,
         apiProvider: ExpressAPIProvider,
         state: OnrampProviderManagerState
     ) {
         self.pairItem = pairItem
-        expressProviderId = expressProvider.id
-        paymentMethodId = paymentMethod.identity.code
+        self.expressProviderId = expressProviderId
+        self.paymentMethodId = paymentMethodId
         self.apiProvider = apiProvider
 
         _state = state
@@ -39,6 +39,10 @@ actor CommonOnrampProviderManager {
 
 private extension CommonOnrampProviderManager {
     func updateState() async {
+        guard _state.isSupported else {
+            return
+        }
+
         do {
             _state = .loading
             let quote = try await loadQuotes()

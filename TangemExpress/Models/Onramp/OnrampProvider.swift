@@ -8,10 +8,16 @@
 
 public class OnrampProvider {
     public let provider: ExpressProvider
+    public let paymentMethod: OnrampPaymentMethod
     public let manager: OnrampProviderManager
 
-    init(provider: ExpressProvider, manager: OnrampProviderManager) {
+    init(
+        provider: ExpressProvider,
+        paymentMethod: OnrampPaymentMethod,
+        manager: OnrampProviderManager
+    ) {
         self.provider = provider
+        self.paymentMethod = paymentMethod
         self.manager = manager
     }
 }

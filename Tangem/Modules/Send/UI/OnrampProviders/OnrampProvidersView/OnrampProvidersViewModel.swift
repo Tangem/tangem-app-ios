@@ -58,21 +58,28 @@ private extension OnrampProvidersViewModel {
             }
             .store(in: &bag)
 
-        interactor
-            .providesPublisher
-            .withWeakCaptureOf(self)
-            .receive(on: DispatchQueue.main)
-            .sink { viewModel, providers in
-                viewModel.updateProvidersView(providers: providers)
-            }
-            .store(in: &bag)
+        Publishers.CombineLatest(
+            interactor.providesPublisher,
+            interactor.paymentMethodPublisher
+        )
+        .map { providers, paymentMethod in
+            providers.filter { $0.paymentMethod.identity.code == paymentMethod.identity.code }
+        }
+        .withWeakCaptureOf(self)
+        .receive(on: DispatchQueue.main)
+        .sink { viewModel, providers in
+            viewModel.updateProvidersView(providers: providers)
+        }
+        .store(in: &bag)
     }
 
     func updatePaymentView(payment: OnrampPaymentMethod) {
         paymentViewData = .init(
             name: payment.identity.name,
             iconURL: payment.identity.image,
-            action: {}
+            action: { [weak self] in
+                self?.coordinator?.openOnrampPaymentMethods()
+            }
         )
     }
 
@@ -80,8 +87,8 @@ private extension OnrampProvidersViewModel {
         providersViewData = providers.map { provider in
             OnrampProviderRowViewData(
                 id: provider.provider.id,
-                name: "1Inch",
-                iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/1INCH512.png"),
+                name: provider.provider.name,
+                iconURL: provider.provider.imageURL,
                 formattedAmount: "0,00453 BTC",
                 badge: .bestRate,
                 isSelected: selectedProviderId == provider.provider.id,

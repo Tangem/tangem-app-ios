@@ -92,13 +92,13 @@ private extension CommonOnrampManager {
             for paymentMethod in paymentMethods {
                 let manager = CommonOnrampProviderManager(
                     pairItem: item,
-                    expressProvider: provider,
-                    paymentMethod: paymentMethod,
+                    expressProviderId: provider.id,
+                    paymentMethodId: paymentMethod.identity.code,
                     apiProvider: apiProvider,
                     state: state(provider: provider, paymentMethod: paymentMethod)
                 )
 
-                availableProviders.append(OnrampProvider(provider: provider, manager: manager))
+                availableProviders.append(OnrampProvider(provider: provider, paymentMethod: paymentMethod, manager: manager))
             }
         }
 

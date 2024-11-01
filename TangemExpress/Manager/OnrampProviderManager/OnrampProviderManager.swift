@@ -21,6 +21,13 @@ public enum OnrampProviderManagerState: Hashable {
     case failed(error: String)
     case loaded(OnrampQuote)
 
+    public var isSupported: Bool {
+        switch self {
+        case .created, .loading, .failed, .loaded: true
+        case .notSupported: false
+        }
+    }
+
     public enum NotSupported: Hashable {
         case currentPair
         case paymentMethod
