@@ -9,6 +9,7 @@
 import Foundation
 import CryptoKit
 import TangemSdk
+import TangemFoundation
 
 final class ChiaTransactionBuilder {
     // MARK: - Private Properties

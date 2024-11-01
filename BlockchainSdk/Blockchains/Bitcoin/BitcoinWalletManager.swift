@@ -10,6 +10,7 @@ import Foundation
 import TangemSdk
 import Combine
 import BitcoinCore
+import TangemFoundation
 
 class BitcoinWalletManager: BaseManager, WalletManager, DustRestrictable {
     var allowsFeeSelection: Bool { true }

@@ -9,6 +9,7 @@
 import Foundation
 import TangemSdk
 import WalletCore
+import TangemFoundation
 
 class RadiantTransactionBuilder {
     private let walletPublicKey: Data

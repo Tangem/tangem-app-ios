@@ -10,6 +10,7 @@ import Foundation
 import Moya
 import Combine
 import BigInt
+import TangemFoundation
 
 class EthereumNetworkService: MultiNetworkProvider {
     let providers: [EthereumJsonRpcProvider]

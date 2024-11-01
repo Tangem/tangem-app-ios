@@ -8,6 +8,7 @@
 
 import Foundation
 import BigInt
+import TangemFoundation
 
 public struct Amount: CustomStringConvertible, Hashable, Comparable {
     public enum AmountType {
