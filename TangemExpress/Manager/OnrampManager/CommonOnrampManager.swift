@@ -42,7 +42,7 @@ extension CommonOnrampManager: OnrampManager {
             country: request.country
         )
 
-        //          TODO: https://tangem.atlassian.net/browse/IOS-8310
+        // TODO: https://tangem.atlassian.net/browse/IOS-8310
 
         return _providers
     }

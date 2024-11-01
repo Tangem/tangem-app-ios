@@ -50,6 +50,7 @@ struct OnrampProvidersCompactProviderView: View {
             Text("\(Localization.onrampVia) \(data.providerName)")
                 .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
         }
+        .lineLimit(1)
     }
 
     private var badgeView: some View {

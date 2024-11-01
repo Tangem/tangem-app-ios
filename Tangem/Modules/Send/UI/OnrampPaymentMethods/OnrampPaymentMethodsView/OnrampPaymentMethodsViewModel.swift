@@ -62,39 +62,14 @@ private extension OnrampPaymentMethodsViewModel {
             OnrampPaymentMethodRowViewData(
                 id: method.identity.code,
                 name: method.identity.name,
-                iconURL: method.identity.image, // URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/OKX_512.png")!
+                iconURL: method.identity.image,
                 isSelected: selectedPaymentMethod == method.identity.code,
                 action: { [weak self] in
                     self?.selectedPaymentMethod = method.identity.code
+                    self?.interactor.update(selectedPaymentMethod: method)
                     self?.updateView(paymentMethods: methods)
                 }
             )
         }
     }
-    /*
-        func setupView() {
-            paymentMethods = [
-                .init(
-                    id: "card",
-                    name: "Card",
-                    iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/OKX_512.png")!,
-                    isSelected: selectedPaymentMethod == "card",
-                    action: { [weak self] in
-                        self?.selectedPaymentMethod = "card"
-                        self?.setupView()
-                    }
-                ),
-                .init(
-                    id: "paypal",
-                    name: "PayPal",
-                    iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/NOW_512.png")!,
-                    isSelected: selectedPaymentMethod == "paypal",
-                    action: { [weak self] in
-                        self?.selectedPaymentMethod = "paypal"
-                        self?.setupView()
-                    }
-                ),
-            ]
-        }
-     */
 }

@@ -45,7 +45,7 @@ private extension OnrampProvidersViewModel {
             .receive(on: DispatchQueue.main)
             .sink { viewModel, provider in
                 // TODO: https://tangem.atlassian.net/browse/IOS-8310
-                // viewModel.selectedProviderId = provider.value?.provider.id
+                viewModel.selectedProviderId = provider.value?.provider.id
             }
             .store(in: &bag)
 
@@ -95,35 +95,4 @@ private extension OnrampProvidersViewModel {
             )
         }
     }
-
-    /*
-     func setupView() {
-         providers = [
-             OnrampProviderRowViewData(
-                 id: "1inch",
-                 name: "1Inch",
-                 iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/1INCH512.png"),
-                 formattedAmount: "0,00453 BTC",
-                 badge: .bestRate,
-                 isSelected: selectedProviderId == "1inch",
-                 action: { [weak self] in
-                     self?.selectedProviderId = "1inch"
-                     self?.setupView()
-                 }
-             ),
-             OnrampProviderRowViewData(
-                 id: "changenow",
-                 name: "Changenow",
-                 iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/NOW512.png"),
-                 formattedAmount: "0,00450 BTC",
-                 badge: .percent("-0.03%", signType: .negative),
-                 isSelected: selectedProviderId == "changenow",
-                 action: { [weak self] in
-                     self?.selectedProviderId = "changenow"
-                     self?.setupView()
-                 }
-             ),
-         ]
-     }
-      */
 }
