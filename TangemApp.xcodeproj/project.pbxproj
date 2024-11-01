@@ -1534,7 +1534,6 @@
 		B62D42C52CBC79DB00C2460E /* MoyaPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F792CBC79DA00C2460E /* MoyaPublisher.swift */; };
 		B62D42C62CBC79DB00C2460E /* AnyPublisher+Async.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F7B2CBC79DA00C2460E /* AnyPublisher+Async.swift */; };
 		B62D42C72CBC79DB00C2460E /* BigUInt+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F7C2CBC79DA00C2460E /* BigUInt+.swift */; };
-		B62D42C82CBC79DB00C2460E /* Bundle+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F7D2CBC79DA00C2460E /* Bundle+.swift */; };
 		B62D42C92CBC79DB00C2460E /* CBOR+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F7E2CBC79DA00C2460E /* CBOR+.swift */; };
 		B62D42CA2CBC79DB00C2460E /* Collection+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F7F2CBC79DA00C2460E /* Collection+.swift */; };
 		B62D42CB2CBC79DB00C2460E /* Data+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D3F802CBC79DA00C2460E /* Data+.swift */; };
@@ -4530,7 +4529,6 @@
 		B62D3F792CBC79DA00C2460E /* MoyaPublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoyaPublisher.swift; sourceTree = "<group>"; };
 		B62D3F7B2CBC79DA00C2460E /* AnyPublisher+Async.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AnyPublisher+Async.swift"; sourceTree = "<group>"; };
 		B62D3F7C2CBC79DA00C2460E /* BigUInt+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BigUInt+.swift"; sourceTree = "<group>"; };
-		B62D3F7D2CBC79DA00C2460E /* Bundle+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bundle+.swift"; sourceTree = "<group>"; };
 		B62D3F7E2CBC79DA00C2460E /* CBOR+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CBOR+.swift"; sourceTree = "<group>"; };
 		B62D3F7F2CBC79DA00C2460E /* Collection+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Collection+.swift"; sourceTree = "<group>"; };
 		B62D3F802CBC79DA00C2460E /* Data+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+.swift"; sourceTree = "<group>"; };
@@ -10654,7 +10652,6 @@
 				B62D3F7A2CBC79DA00C2460E /* Moya+Combine */,
 				B62D3F7B2CBC79DA00C2460E /* AnyPublisher+Async.swift */,
 				B62D3F7C2CBC79DA00C2460E /* BigUInt+.swift */,
-				B62D3F7D2CBC79DA00C2460E /* Bundle+.swift */,
 				B62D3F7E2CBC79DA00C2460E /* CBOR+.swift */,
 				B62D3F7F2CBC79DA00C2460E /* Collection+.swift */,
 				B62D3F802CBC79DA00C2460E /* Data+.swift */,
@@ -17190,7 +17187,6 @@
 				B62D42802CBC79DB00C2460E /* AlgorandTransactionHistoryMapper.swift in Sources */,
 				B62D403A2CBC79DA00C2460E /* AdaliteBalanceResponseDTO.swift in Sources */,
 				B62D40382CBC79DA00C2460E /* BitcoinCashWalletAssembly.swift in Sources */,
-				B62D42C82CBC79DB00C2460E /* Bundle+.swift in Sources */,
 				B62D420B2CBC79DB00C2460E /* XRPTransaction.swift in Sources */,
 				B62D41CC2CBC79DB00C2460E /* proposal_contract.pb.swift in Sources */,
 				B62D408D2CBC79DA00C2460E /* EthereumExternalLinkProvider.swift in Sources */,
