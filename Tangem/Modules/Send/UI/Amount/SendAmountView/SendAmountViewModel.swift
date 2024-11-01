@@ -204,7 +204,6 @@ extension SendAmountViewModel {
         let userWalletName: String
         let tokenItem: TokenItem
         let tokenIconInfo: TokenIconInfo
-        let balanceValue: Decimal
         let balanceFormatted: String
         let currencyPickerData: SendCurrencyPickerData
         let actionType: SendFlowActionType
