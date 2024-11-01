@@ -81,27 +81,11 @@ private extension SendAmountStepBuilder {
         actionType: SendFlowActionType,
         sendQRCodeService: SendQRCodeService?
     ) -> SendAmountViewModel {
-        let balanceFormatted: WalletModel.BalanceFormatted
-        switch actionType {
-        case .unstake:
-            let balance = WalletModel.Balance(
-                crypto: io.input.amount?.crypto,
-                fiat: io.input.amount?.fiat
-            )
-            let cryptoFormatted = walletModel.formatter.formatCryptoBalance(
-                balance.crypto,
-                currencyCode: walletModel.tokenItem.currencySymbol
-            )
-            let fiatFormatted = walletModel.formatter.formatFiatBalance(balance.fiat)
-            balanceFormatted = WalletModel.BalanceFormatted(crypto: cryptoFormatted, fiat: fiatFormatted)
-        default:
-            balanceFormatted = walletModel.availableBalanceFormatted
-        }
         let initital = SendAmountViewModel.Settings(
-            userWalletName: builder.walletName(),
+            walletHeaderText: builder.walletHeaderText(for: actionType),
             tokenItem: walletModel.tokenItem,
             tokenIconInfo: builder.makeTokenIconInfo(),
-            balanceFormatted: Localization.commonCryptoFiatFormat(balanceFormatted.crypto, balanceFormatted.fiat),
+            balanceFormatted: builder.formattedBalance(for: io.input.amount, actionType: actionType),
             currencyPickerData: builder.makeCurrencyPickerData(),
             actionType: actionType
         )

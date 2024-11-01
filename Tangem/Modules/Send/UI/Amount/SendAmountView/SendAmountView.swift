@@ -46,7 +46,7 @@ struct SendAmountView: View {
 
     private var walletInfoView: some View {
         VStack(spacing: 4) {
-            Text(viewModel.userWalletName)
+            Text(viewModel.walletHeaderText)
                 .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
                 .lineLimit(1)
                 .matchedGeometryEffect(id: namespace.names.walletName, in: namespace.id)
