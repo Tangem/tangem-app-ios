@@ -627,7 +627,8 @@ public indirect enum Blockchain: Equatable, Hashable {
              .veChain,
              .hedera,
              .ton,
-             .cardano:
+             .cardano,
+             .kaspa:
             return true
         case _ where isEvm:
             return true
