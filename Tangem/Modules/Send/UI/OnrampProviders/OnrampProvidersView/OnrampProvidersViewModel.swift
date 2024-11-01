@@ -44,7 +44,8 @@ private extension OnrampProvidersViewModel {
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, provider in
-                viewModel.selectedProviderId = provider.value?.provider.id
+                // TODO: https://tangem.atlassian.net/browse/IOS-8310
+                // viewModel.selectedProviderId = provider.value?.provider.id
             }
             .store(in: &bag)
 
@@ -69,13 +70,15 @@ private extension OnrampProvidersViewModel {
 
     func updatePaymentView(payment: OnrampPaymentMethod) {
         paymentViewData = .init(
-            name: payment.identity.name, // "Card"
-            iconURL: payment.identity.image, //  URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/OKX_512.png")!
+            name: payment.identity.name,
+            iconURL: payment.identity.image,
             action: {}
         )
     }
 
-    func updateProvidersView(providers: [OnrampAvailableProvider]) {
+    func updateProvidersView(providers: [OnrampProvider]) {
+        // TODO: https://tangem.atlassian.net/browse/IOS-8310
+
         providersViewData = providers.map { provider in
             OnrampProviderRowViewData(
                 id: provider.provider.id,

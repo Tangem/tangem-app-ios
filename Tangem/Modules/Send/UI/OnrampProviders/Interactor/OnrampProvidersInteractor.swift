@@ -12,10 +12,10 @@ import TangemExpress
 protocol OnrampProvidersInteractor {
     var paymentMethodPublisher: AnyPublisher<OnrampPaymentMethod, Never> { get }
 
-    var selectedProviderPublisher: AnyPublisher<LoadingValue<OnrampAvailableProvider>, Never> { get }
-    var providesPublisher: AnyPublisher<[OnrampAvailableProvider], Never> { get }
+    var selectedProviderPublisher: AnyPublisher<LoadingValue<OnrampProvider>, Never> { get }
+    var providesPublisher: AnyPublisher<[OnrampProvider], Never> { get }
 
-    func update(selectedProvider: OnrampAvailableProvider)
+    func update(selectedProvider: OnrampProvider)
 }
 
 class CommonOnrampProvidersInteractor {
@@ -49,7 +49,7 @@ extension CommonOnrampProvidersInteractor: OnrampProvidersInteractor {
             .eraseToAnyPublisher()
     }
 
-    var selectedProviderPublisher: AnyPublisher<LoadingValue<OnrampAvailableProvider>, Never> {
+    var selectedProviderPublisher: AnyPublisher<LoadingValue<OnrampProvider>, Never> {
         guard let input else {
             assertionFailure("OnrampProvidersInput not found")
             return Empty().eraseToAnyPublisher()
@@ -61,7 +61,7 @@ extension CommonOnrampProvidersInteractor: OnrampProvidersInteractor {
             .eraseToAnyPublisher()
     }
 
-    var providesPublisher: AnyPublisher<[OnrampAvailableProvider], Never> {
+    var providesPublisher: AnyPublisher<[OnrampProvider], Never> {
         guard let input else {
             assertionFailure("OnrampAmountInput not found")
             return Empty().eraseToAnyPublisher()
@@ -70,7 +70,7 @@ extension CommonOnrampProvidersInteractor: OnrampProvidersInteractor {
         return input.onrampProvidersPublisher.eraseToAnyPublisher()
     }
 
-    func update(selectedProvider: OnrampAvailableProvider) {
+    func update(selectedProvider: OnrampProvider) {
         output?.userDidSelect(provider: selectedProvider)
     }
 }

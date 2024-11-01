@@ -20,12 +20,11 @@ class OnrampModel {
 
     private let _currency: CurrentValueSubject<LoadingValue<OnrampFiatCurrency>, Never>
     private let _amount: CurrentValueSubject<SendAmount?, Never> = .init(.none)
-    private let _selectedOnrampProvider: CurrentValueSubject<LoadingValue<OnrampAvailableProvider>?, Never> = .init(.none)
+    private let _selectedOnrampProvider: CurrentValueSubject<LoadingValue<OnrampProvider>?, Never> = .init(.none)
     private let _selectedOnrampPaymentMethod: CurrentValueSubject<OnrampPaymentMethod?, Never> = .init(.none)
-    private let _onrampProviders: CurrentValueSubject<[OnrampAvailableProvider], Never> = .init([])
+    private let _onrampProviders: CurrentValueSubject<[OnrampProvider], Never> = .init([])
     private let _isLoading: CurrentValueSubject<Bool, Never> = .init(false)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
-    private let _isLoading = CurrentValueSubject<Bool, Never>(false)
 
     // MARK: - Dependencies
 
@@ -186,15 +185,15 @@ extension OnrampModel: OnrampAmountOutput {
 // MARK: - OnrampProvidersInput
 
 extension OnrampModel: OnrampProvidersInput {
-    var selectedOnrampProvider: OnrampAvailableProvider? {
+    var selectedOnrampProvider: OnrampProvider? {
         _selectedOnrampProvider.value?.value
     }
 
-    var selectedOnrampProviderPublisher: AnyPublisher<LoadingValue<OnrampAvailableProvider>?, Never> {
+    var selectedOnrampProviderPublisher: AnyPublisher<LoadingValue<OnrampProvider>?, Never> {
         _selectedOnrampProvider.eraseToAnyPublisher()
     }
 
-    var onrampProvidersPublisher: AnyPublisher<[OnrampAvailableProvider], Never> {
+    var onrampProvidersPublisher: AnyPublisher<[OnrampProvider], Never> {
         _onrampProviders.eraseToAnyPublisher()
     }
 }
@@ -202,7 +201,7 @@ extension OnrampModel: OnrampProvidersInput {
 // MARK: - OnrampProvidersOutput
 
 extension OnrampModel: OnrampProvidersOutput {
-    func userDidSelect(provider: OnrampAvailableProvider) {
+    func userDidSelect(provider: OnrampProvider) {
         _selectedOnrampProvider.send(.loaded(provider))
     }
 }

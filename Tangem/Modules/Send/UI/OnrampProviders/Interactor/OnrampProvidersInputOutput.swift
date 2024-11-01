@@ -10,12 +10,12 @@ import Combine
 import TangemExpress
 
 protocol OnrampProvidersInput: AnyObject {
-    var selectedOnrampProvider: OnrampAvailableProvider? { get }
-    var selectedOnrampProviderPublisher: AnyPublisher<LoadingValue<OnrampAvailableProvider>?, Never> { get }
+    var selectedOnrampProvider: OnrampProvider? { get }
+    var selectedOnrampProviderPublisher: AnyPublisher<LoadingValue<OnrampProvider>?, Never> { get }
 
-    var onrampProvidersPublisher: AnyPublisher<[OnrampAvailableProvider], Never> { get }
+    var onrampProvidersPublisher: AnyPublisher<[OnrampProvider], Never> { get }
 }
 
 protocol OnrampProvidersOutput: AnyObject {
-    func userDidSelect(provider: OnrampAvailableProvider)
+    func userDidSelect(provider: OnrampProvider)
 }
