@@ -144,7 +144,6 @@
 		5D20812A27D2439700D8A970 /* WCExample.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D20812927D2439700D8A970 /* WCExample.json */; };
 		5D225CB92524B721001564A3 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D225CB82524B721001564A3 /* Analytics.swift */; };
 		5D242A5F273C1F24008F79B5 /* Publisher+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D74F718262722FF00B03897 /* Publisher+.swift */; };
-		5D24A12C24FF9E3A002A3BCA /* Decimal+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D24A12B24FF9E3A002A3BCA /* Decimal+.swift */; };
 		5D383E3F24D95BA600C9BFF6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5D383E4124D95BA600C9BFF6 /* Localizable.strings */; };
 		5D384B9124FD4E1800C2C92C /* String+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D384B9024FD4E1800C2C92C /* String+.swift */; };
 		5D384B9424FD51C000C2C92C /* DetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D384B9324FD51C000C2C92C /* DetailsViewModel.swift */; };
@@ -426,7 +425,6 @@
 		B06C9B862A3AE65A00875852 /* ExchangeCryptoUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06C9B852A3AE65A00875852 /* ExchangeCryptoUtility.swift */; };
 		B06CF2932993BF77000C7D93 /* TransactionsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06CF2922993BF77000C7D93 /* TransactionsListView.swift */; };
 		B06F033D2B5A8C1200F04F0E /* LimitsResponseParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06F033C2B5A8C1200F04F0E /* LimitsResponseParser.swift */; };
-		B06F033F2B5A8C4600F04F0E /* Decimal+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06F033E2B5A8C4600F04F0E /* Decimal+.swift */; };
 		B06F03412B5A8C6300F04F0E /* VisaParserError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06F03402B5A8C6300F04F0E /* VisaParserError.swift */; };
 		B06F03442B5A993800F04F0E /* VisaWalletModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06F03432B5A993700F04F0E /* VisaWalletModel.swift */; };
 		B072E12E2B18B26000B0AB27 /* PendingExpressTxStatusBottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B072E12D2B18B26000B0AB27 /* PendingExpressTxStatusBottomSheetView.swift */; };
@@ -3112,7 +3110,6 @@
 		5D20812727D242E500D8A970 /* cryptofights.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = cryptofights.json; sourceTree = "<group>"; };
 		5D20812927D2439700D8A970 /* WCExample.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = WCExample.json; sourceTree = "<group>"; };
 		5D225CB82524B721001564A3 /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
-		5D24A12B24FF9E3A002A3BCA /* Decimal+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Decimal+.swift"; sourceTree = "<group>"; };
 		5D383E4024D95BA600C9BFF6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5D384B9024FD4E1800C2C92C /* String+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+.swift"; sourceTree = "<group>"; };
 		5D384B9324FD51C000C2C92C /* DetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewModel.swift; sourceTree = "<group>"; };
@@ -3432,7 +3429,6 @@
 		B06C9B852A3AE65A00875852 /* ExchangeCryptoUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeCryptoUtility.swift; sourceTree = "<group>"; };
 		B06CF2922993BF77000C7D93 /* TransactionsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsListView.swift; sourceTree = "<group>"; };
 		B06F033C2B5A8C1200F04F0E /* LimitsResponseParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LimitsResponseParser.swift; sourceTree = "<group>"; };
-		B06F033E2B5A8C4600F04F0E /* Decimal+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Decimal+.swift"; sourceTree = "<group>"; };
 		B06F03402B5A8C6300F04F0E /* VisaParserError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisaParserError.swift; sourceTree = "<group>"; };
 		B06F03432B5A993700F04F0E /* VisaWalletModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisaWalletModel.swift; sourceTree = "<group>"; };
 		B072E12D2B18B26000B0AB27 /* PendingExpressTxStatusBottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingExpressTxStatusBottomSheetView.swift; sourceTree = "<group>"; };
@@ -6641,7 +6637,6 @@
 				5DFE855624EF051400194106 /* Error+.swift */,
 				5D384B9024FD4E1800C2C92C /* String+.swift */,
 				DAF97FC82BAAF2CC006D9A44 /* Locale+.swift */,
-				5D24A12B24FF9E3A002A3BCA /* Decimal+.swift */,
 				5D06E03F250A5D54004218D0 /* NSRegualrExpression+.swift */,
 				5D80ED462550186A0008DEF0 /* View+.swift */,
 				B63457762A3A097C00E164C5 /* View+ReadGeometry.swift */,
@@ -7222,14 +7217,6 @@
 				B050F5072B6283CF00B2E53C /* VisaTransactionHistoryMapper.swift */,
 			);
 			path = Visa;
-			sourceTree = "<group>";
-		};
-		B05145072B5933FA00EDAD1E /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				B06F033E2B5A8C4600F04F0E /* Decimal+.swift */,
-			);
-			path = Extensions;
 			sourceTree = "<group>";
 		};
 		B051450A2B59342E00EDAD1E /* SmartContractMethods */ = {
@@ -16063,7 +16050,6 @@
 				B0DD16292A331C2100CB23AA /* TokenDetailsCoordinatorView.swift in Sources */,
 				B0F318F62A738ACC009F131E /* LockedUserTokenListManager.swift in Sources */,
 				EF729B512AF1248400D80205 /* FeeRowViewModel.swift in Sources */,
-				5D24A12C24FF9E3A002A3BCA /* Decimal+.swift in Sources */,
 				DADBECDF2BBE910C007E7885 /* CustomFeeService.swift in Sources */,
 				B0B56AAD2C207586001FD72A /* VisaUtilities+FeatureStorage.swift in Sources */,
 				5D5D013C25CC1F3900DA8616 /* TransparentModal.swift in Sources */,
@@ -17137,7 +17123,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B051451E2B59355E00EDAD1E /* VisaLimits.swift in Sources */,
-				B06F033F2B5A8C4600F04F0E /* Decimal+.swift in Sources */,
 				B051450C2B59344100EDAD1E /* GetPaymentAccountByCardMethod.swift in Sources */,
 				B05F19552BF3589C007E5552 /* GetTokenInfoMethod.swift in Sources */,
 				B08D3C162BF628A500C83299 /* VisaConfigProvider.swift in Sources */,
