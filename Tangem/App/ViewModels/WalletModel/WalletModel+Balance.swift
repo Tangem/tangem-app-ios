@@ -132,7 +132,7 @@ extension WalletModel {
         return .init(crypto: stakingBalance, fiat: fiatBalance)
     }
 
-    func formatted(_ balance: Balance) -> BalanceFormatted {
+    private func formatted(_ balance: Balance) -> BalanceFormatted {
         let cryptoFormatted = formatter.formatCryptoBalance(balance.crypto, currencyCode: tokenItem.currencySymbol)
         let fiatFormatted = formatter.formatFiatBalance(balance.fiat)
 

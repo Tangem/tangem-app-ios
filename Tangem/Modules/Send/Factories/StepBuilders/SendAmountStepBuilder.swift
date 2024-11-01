@@ -88,7 +88,12 @@ private extension SendAmountStepBuilder {
                 crypto: io.input.amount?.crypto,
                 fiat: io.input.amount?.fiat
             )
-            balanceFormatted = walletModel.formatted(balance)
+            let cryptoFormatted = walletModel.formatter.formatCryptoBalance(
+                balance.crypto,
+                currencyCode: walletModel.tokenItem.currencySymbol
+            )
+            let fiatFormatted = walletModel.formatter.formatFiatBalance(balance.fiat)
+            balanceFormatted = WalletModel.BalanceFormatted(crypto: cryptoFormatted, fiat: fiatFormatted)
         default:
             balanceFormatted = walletModel.availableBalanceFormatted
         }
