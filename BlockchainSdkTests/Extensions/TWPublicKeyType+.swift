@@ -107,7 +107,7 @@ extension PublicKeyType {
              .ducatus,
              .azero,
              .gnosis,
-             .kaspa, .kaspaKRC20,
+             .kaspa,
              .cronos,
              .telos,
              .octa,

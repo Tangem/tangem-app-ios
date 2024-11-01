@@ -49,7 +49,7 @@ struct AddressTypesConfig {
              .optimism,
              .ton,
              .kava,
-             .kaspa, .kaspaKRC20,
+             .kaspa,
              .ravencoin,
              .cosmos,
              .terraV1, .terraV2,

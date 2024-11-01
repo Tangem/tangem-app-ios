@@ -91,7 +91,7 @@ extension CoinType {
              .disChain,
              .rsk,
              .gnosis,
-             .kaspa, .kaspaKRC20,
+             .kaspa,
              .cronos,
              .azero,
              .telos,

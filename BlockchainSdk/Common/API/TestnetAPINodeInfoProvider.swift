@@ -228,10 +228,6 @@ struct TestnetAPINodeInfoProvider {
             return [
                 .init(url: URL(string: "https://api-tn10.kaspa.org")!),
             ]
-        case .kaspaKRC20:
-            return [
-                .init(url: URL(string: "https://tn10api.kasplex.org/v1")!),
-            ]
         case .energyWebEVM:
             return [
                 .init(url: URL(string: "https://73799.rpc.thirdweb.com")!),

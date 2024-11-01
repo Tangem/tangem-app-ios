@@ -74,7 +74,7 @@ struct TransactionParamsBuilder {
              .gnosis,
              .optimism,
              .kava,
-             .kaspa, .kaspaKRC20,
+             .kaspa,
              .ravencoin,
              .cronos,
              .telos,

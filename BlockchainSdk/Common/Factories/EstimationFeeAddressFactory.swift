@@ -25,7 +25,7 @@ struct EstimationFeeAddressFactory {
         case .internetComputer:
             // ICP has a fixed 0.0001 ICP fee
             return ""
-        case .kaspa, .kaspaKRC20:
+        case .kaspa:
             return "kaspa:qyp2f0ust8wyvuvqrzajvehx5jyh43vcjgessjdkw9vyw6rww4fdlsgzysspfuq"
         case .hedera:
             // Doesn't depend on destination

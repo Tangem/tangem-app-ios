@@ -97,7 +97,7 @@ struct DerivationConfigV3: DerivationConfig {
             return "m/44'/5'/0'/0/0"
         case .ton:
             return "m/44'/607'/0'"
-        case .kaspa, .kaspaKRC20:
+        case .kaspa:
             return "m/44'/111111'/0'/0/0"
         case .ravencoin:
             return "m/44'/175'/0'/0/0"

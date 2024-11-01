@@ -17,8 +17,8 @@ class KaspaNetworkProviderKRC20: HostProvider {
     private let url: URL
     private let provider: NetworkProvider<KaspaTargetKRC20>
 
-    init(url: URL, networkConfiguration: NetworkProviderConfiguration) {
-        self.url = url
+    init(testnet: Bool, networkConfiguration: NetworkProviderConfiguration) {
+        url = testnet ? URL("https://tn10api.kasplex.org/v1")! : URL("https://api.kasplex.org/v1/")!
         provider = NetworkProvider<KaspaTargetKRC20>(configuration: networkConfiguration)
     }
 

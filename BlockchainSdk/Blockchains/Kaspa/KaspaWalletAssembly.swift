@@ -23,13 +23,7 @@ struct KaspaWalletAssembly: WalletManagerAssembly {
                     )
                 }
 
-            let providersKRC20 = APIResolver(blockchain: .kaspaKRC20(testnet: blockchain.isTestnet), config: input.blockchainSdkConfig)
-                .resolveProviders(apiInfos: input.apiInfo) { nodeInfo, _ in
-                    KaspaNetworkProviderKRC20(
-                        url: nodeInfo.url,
-                        networkConfiguration: input.networkConfig
-                    )
-                }
+            let providersKRC20 = [KaspaNetworkProviderKRC20(testnet: blockchain.isTestnet, networkConfiguration: input.networkConfig)]
 
             walletManager.networkService = KaspaNetworkService(providers: providers, blockchain: blockchain)
             walletManager.networkServiceKRC20 = KaspaNetworkServiceKRC20(providers: providersKRC20, blockchain: blockchain)

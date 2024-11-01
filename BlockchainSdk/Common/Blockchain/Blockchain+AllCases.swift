@@ -43,7 +43,7 @@ public extension Blockchain {
         case .ethereumPoW: break
         case .ton: break
         case .kava: break
-        case .kaspa, .kaspaKRC20: break
+        case .kaspa: break
         case .ravencoin: break
         case .cosmos: break
         case .terraV1: break
