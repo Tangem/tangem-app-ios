@@ -26,14 +26,4 @@ extension Decimal {
     func intValue(roundingMode: NSDecimalNumber.RoundingMode = .down) -> Int {
         (rounded(roundingMode: roundingMode) as NSDecimalNumber).intValue
     }
-
-    /// Parses given string using a fixed `en_US_POSIX` locale.
-    /// - Note: Prefer this initializer to the `init?(string:locale:)` or `init?(_:)`.
-    init?(stringValue: String?) {
-        guard let stringValue = stringValue else {
-            return nil
-        }
-
-        self.init(string: stringValue, locale: .posixEnUS)
-    }
 }
