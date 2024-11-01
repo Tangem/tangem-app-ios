@@ -10,6 +10,7 @@ import Foundation
 import TangemStaking
 import Combine
 import BlockchainSdk
+import TangemFoundation
 
 protocol UnstakingModelStateProvider {
     var stakingAction: UnstakingModel.Action { get }
@@ -92,7 +93,7 @@ private extension UnstakingModel {
 
         estimatedFeeTask?.cancel()
 
-        estimatedFeeTask = runTask(in: self) { model in
+        estimatedFeeTask = TangemFoundation.runTask(in: self) { model in
             do {
                 model.update(state: .loading)
                 let state = try await model.state(amount: amount)
@@ -105,7 +106,8 @@ private extension UnstakingModel {
     }
 
     func state(amount: Decimal) async throws -> UnstakingModel.State {
-        let estimateFee = try await stakingManager.estimateFee(action: action)
+        let updatedAction = StakingAction(amount: amount, validatorType: action.validatorType, type: action.type)
+        let estimateFee = try await stakingManager.estimateFee(action: updatedAction)
 
         if let error = validate(amount: amount, fee: estimateFee) {
             return error
@@ -207,7 +209,9 @@ private extension UnstakingModel {
 // MARK: - SendFeeLoader
 
 extension UnstakingModel: SendFeeLoader {
-    func updateFees() {}
+    func updateFees() {
+        updateState()
+    }
 }
 
 // MARK: - SendAmountInput
