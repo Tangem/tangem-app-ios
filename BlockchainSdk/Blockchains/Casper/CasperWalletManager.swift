@@ -21,11 +21,13 @@ class CasperWalletManager: BaseManager, WalletManager {
     // MARK: - Private Implementation
     
     private let networkService: CasperNetworkService
+    private let transactionBuilder: CasperTransactionBuilder
     
     // MARK: - Init
     
-    init(wallet: Wallet, networkService: CasperNetworkService) {
+    init(wallet: Wallet, networkService: CasperNetworkService, transactionBuilder: CasperTransactionBuilder) {
         self.networkService = networkService
+        self.transactionBuilder = transactionBuilder
         super.init(wallet: wallet)
     }
     
@@ -56,8 +58,37 @@ class CasperWalletManager: BaseManager, WalletManager {
     }
 
     func send(_ transaction: Transaction, signer: any TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError> {
-        // TODO: - https://tangem.atlassian.net/browse/IOS-8316
-        return .anyFail(error: SendTxError(error: WalletError.empty))
+        let hashForSign: Data
+        
+        do {
+            let transactionForSign = try transactionBuilder.buildForSign(transaction: transaction)
+            hashForSign = transactionForSign.getSha256()
+        } catch {
+            return .sendTxFail(error: WalletError.failedToBuildTx)
+        }
+        
+        return signer
+            .sign(hash: hashForSign, walletPublicKey: wallet.publicKey)
+            .withWeakCaptureOf(self)
+            .flatMap { walletManager, signature -> AnyPublisher<String, Error> in
+                guard let rawTransactionData = try? self.transactionBuilder.buildForSend(
+                    transaction: transaction,
+                    signature: signature.signature
+                ) else {
+                    return .anyFail(error: WalletError.failedToSendTx)
+                }
+
+                return .anyFail(error: WalletError.failedToSendTx)
+            }
+            .withWeakCaptureOf(self)
+            .map { walletManager, transactionHash in
+                let mapper = PendingTransactionRecordMapper()
+                let record = mapper.mapToPendingTransactionRecord(transaction: transaction, hash: transactionHash)
+                walletManager.wallet.addPendingTransaction(record)
+                return TransactionSendResult(hash: transactionHash)
+            }
+            .eraseSendError()
+            .eraseToAnyPublisher()
     }
     
     // MARK: - Private Implementation
