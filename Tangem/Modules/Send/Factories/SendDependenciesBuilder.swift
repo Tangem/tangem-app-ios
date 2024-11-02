@@ -365,11 +365,16 @@ struct SendDependenciesBuilder {
 
     // MARK: - Onramp
 
-    func makeOnrampModel(onrampManager: some OnrampManager, onrampRepository: OnrampRepository) -> OnrampModel {
+    func makeOnrampModel(
+        onrampManager: some OnrampManager,
+        onrampRepository: OnrampRepository,
+        dataRepository: OnrampDataRepository
+    ) -> OnrampModel {
         OnrampModel(
             walletModel: walletModel,
             onrampManager: onrampManager,
-            onrampRepository: onrampRepository
+            onrampRepository: onrampRepository,
+            paymentMethodDeterminer: makePaymentMethodDeterminer(dataRepository: dataRepository)
         )
     }
 
@@ -413,5 +418,9 @@ struct SendDependenciesBuilder {
             providersBuilder: providersBuilder,
             paymentMethodsBuilder: paymentMethodsBuilder
         )
+    }
+
+    func makePaymentMethodDeterminer(dataRepository: OnrampDataRepository) -> PaymentMethodDeterminer {
+        PaymentMethodDeterminer(dataRepository: dataRepository)
     }
 }

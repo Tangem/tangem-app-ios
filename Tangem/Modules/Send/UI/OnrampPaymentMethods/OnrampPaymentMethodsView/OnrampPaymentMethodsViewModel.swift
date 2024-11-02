@@ -56,7 +56,7 @@ private extension OnrampPaymentMethodsViewModel {
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, payment in
-                viewModel.selectedPaymentMethod = payment.identity.code
+                viewModel.selectedPaymentMethod = payment.id
             }
             .store(in: &bag)
     }
@@ -65,12 +65,12 @@ private extension OnrampPaymentMethodsViewModel {
     func updateView(paymentMethods methods: [OnrampPaymentMethod]) {
         paymentMethods = methods.map { method in
             OnrampPaymentMethodRowViewData(
-                id: method.identity.code,
-                name: method.identity.name,
-                iconURL: method.identity.image,
-                isSelected: selectedPaymentMethod == method.identity.code,
+                id: method.id,
+                name: method.name,
+                iconURL: method.image,
+                isSelected: selectedPaymentMethod == method.id,
                 action: { [weak self] in
-                    self?.selectedPaymentMethod = method.identity.code
+                    self?.selectedPaymentMethod = method.id
                     self?.interactor.update(selectedPaymentMethod: method)
                     self?.updateView(paymentMethods: methods)
                 }

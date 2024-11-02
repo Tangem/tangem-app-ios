@@ -68,7 +68,7 @@ private extension OnrampProvidersViewModel {
         )
         .map { providers, paymentMethod in
             providers.filter {
-                $0.paymentMethod.identity.code == paymentMethod.identity.code
+                $0.paymentMethod.id == paymentMethod.id
             }
         }
         .withWeakCaptureOf(self)
@@ -81,8 +81,8 @@ private extension OnrampProvidersViewModel {
 
     func updatePaymentView(payment: OnrampPaymentMethod) {
         paymentViewData = .init(
-            name: payment.identity.name,
-            iconURL: payment.identity.image,
+            name: payment.name,
+            iconURL: payment.image,
             action: { [weak self] in
                 self?.coordinator?.openOnrampPaymentMethods()
             }

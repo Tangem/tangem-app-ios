@@ -38,6 +38,7 @@ class OnrampModel {
     private let walletModel: WalletModel
     private let onrampManager: OnrampManager
     private let onrampRepository: OnrampRepository
+    private let paymentMethodDeterminer: PaymentMethodDeterminer
 
     private var task: Task<Void, Never>?
     private var bag: Set<AnyCancellable> = []
@@ -45,11 +46,13 @@ class OnrampModel {
     init(
         walletModel: WalletModel,
         onrampManager: OnrampManager,
-        onrampRepository: OnrampRepository
+        onrampRepository: OnrampRepository,
+        paymentMethodDeterminer: PaymentMethodDeterminer
     ) {
         self.walletModel = walletModel
         self.onrampManager = onrampManager
         self.onrampRepository = onrampRepository
+        self.paymentMethodDeterminer = paymentMethodDeterminer
 
         _currency = .init(
             onrampRepository.preferenceCurrency.map { .loaded($0) } ?? .loading
@@ -63,6 +66,12 @@ class OnrampModel {
 
 private extension OnrampModel {
     func bind() {
+        _amount
+            .sink { [weak self] amount in
+                self?.updateQuotes(amount: amount?.fiat)
+            }
+            .store(in: &bag)
+
         // Handle the settings changes
         onrampRepository
             .preferenceCurrencyPublisher
@@ -71,39 +80,12 @@ private extension OnrampModel {
             }
             .store(in: &bag)
 
-        _amount
-            .sink { [weak self] amount in
-                self?.updateQuotes(amount: amount?.fiat)
+        onrampRepository
+            .preferencePaymentMethodPublisher
+            .sink { [weak self] paymentMethod in
+                self?.preferenceDidChange(paymentMethod: paymentMethod)
             }
             .store(in: &bag)
-    }
-
-    func preferenceDidChange(currency: OnrampFiatCurrency?) {
-        guard let country = onrampRepository.preferenceCountry, let currency else {
-            startTask {
-                try await $0.initiateCountryDefinition()
-            }
-            return
-        }
-
-        // Update amount UI
-        _currency.send(.loaded(currency))
-
-        startTask {
-            try await $0.updateProviders(country: country, currency: currency)
-        }
-    }
-
-    func initiateCountryDefinition() async throws {
-        let country = try await onrampManager.initialSetupCountry()
-
-        // Update amount UI
-        _currency.send(.loaded(country.currency))
-
-        // We have to show confirmation bottom sheet
-        await runOnMain {
-            router?.openOnrampCountryBottomSheet(country: country)
-        }
     }
 
     func updateProviders(country: OnrampCountry, currency: OnrampFiatCurrency) async throws {
@@ -120,9 +102,56 @@ private extension OnrampModel {
         }
 
         _selectedOnrampProvider.send(.loading)
-        startTask { model in
+        mainTask { model in
             let providers = try await model.onrampManager.setupQuotes(amount: amount)
             model._onrampProviders.send(providers)
+        }
+    }
+}
+
+// MARK: - Preference bindings
+
+private extension OnrampModel {
+    func preferenceDidChange(currency: OnrampFiatCurrency?) {
+        guard let country = onrampRepository.preferenceCountry, let currency else {
+            TangemFoundation.runTask(in: self) {
+                try await $0.initiateCountryDefinition()
+            }
+            return
+        }
+
+        // Update amount UI
+        _currency.send(.loaded(currency))
+
+        mainTask {
+            try await $0.updateProviders(country: country, currency: currency)
+        }
+    }
+
+    func initiateCountryDefinition() async throws {
+        let country = try await onrampManager.initialSetupCountry()
+
+        // Update amount UI
+        _currency.send(.loaded(country.currency))
+
+        // We have to show confirmation bottom sheet
+        await runOnMain {
+            router?.openOnrampCountryBottomSheet(country: country)
+        }
+    }
+
+    func preferenceDidChange(paymentMethod: OnrampPaymentMethod?) {
+        guard paymentMethod == nil else {
+            // The paymentMethod is already set up
+            // Just update UI
+
+            _selectedOnrampPaymentMethod.send(paymentMethod)
+            return
+        }
+
+        TangemFoundation.runTask(in: self) {
+            let paymentMethod = try await $0.paymentMethodDeterminer.preferredPaymentMethod()
+            $0.onrampRepository.updatePreference(paymentMethod: paymentMethod)
         }
     }
 }
@@ -134,7 +163,7 @@ private extension OnrampModel {
         OnrampPairRequestItem(fiatCurrency: currency, country: country, destination: walletModel)
     }
 
-    func startTask(code: @escaping (OnrampModel) async throws -> Void) {
+    func mainTask(code: @escaping (OnrampModel) async throws -> Void) {
         task = TangemFoundation.runTask(in: self) { model in
             do {
                 try await code(model)

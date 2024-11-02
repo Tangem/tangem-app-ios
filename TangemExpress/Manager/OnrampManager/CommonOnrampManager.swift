@@ -93,7 +93,7 @@ private extension CommonOnrampManager {
                 let manager = CommonOnrampProviderManager(
                     pairItem: item,
                     expressProviderId: provider.id,
-                    paymentMethodId: paymentMethod.identity.code,
+                    paymentMethodId: paymentMethod.id,
                     apiProvider: apiProvider,
                     state: state(provider: provider, paymentMethod: paymentMethod)
                 )
@@ -107,7 +107,7 @@ private extension CommonOnrampManager {
                 return .notSupported(.currentPair)
             }
 
-            let isSupportedForPaymentMethods = supportedProvider.paymentMethods.contains { $0 == paymentMethod.identity.code }
+            let isSupportedForPaymentMethods = supportedProvider.paymentMethods.contains { $0 == paymentMethod.id }
             guard isSupportedForPaymentMethods else {
                 return .notSupported(.paymentMethod)
             }

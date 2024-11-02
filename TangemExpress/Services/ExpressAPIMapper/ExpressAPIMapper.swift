@@ -168,8 +168,7 @@ struct ExpressAPIMapper {
     }
 
     func mapToOnrampPaymentMethod(response: ExpressDTO.Onramp.PaymentMethod) -> OnrampPaymentMethod {
-        let identity = OnrampIdentity(name: response.name, code: response.id, image: URL(string: response.image))
-        return OnrampPaymentMethod(identity: identity)
+        return OnrampPaymentMethod(id: response.id, name: response.name, image: URL(string: response.image))
     }
 
     func mapToOnrampPair(response: ExpressDTO.Onramp.Pairs.Response) -> OnrampPair {
@@ -186,6 +185,8 @@ struct ExpressAPIMapper {
         guard var toAmount = Decimal(string: response.toAmount) else {
             throw ExpressAPIMapperError.mapToDecimalError(response.toAmount)
         }
+
+        toAmount /= pow(10, response.toDecimals)
 
         return OnrampQuote(expectedAmount: toAmount)
     }
