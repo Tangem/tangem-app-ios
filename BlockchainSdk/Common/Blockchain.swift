@@ -1151,7 +1151,7 @@ private extension Blockchain {
         case .polygon:
             switch type {
             case .network: return "polygon-pos"
-            case .coin: return "matic-network"
+            case .coin: return "polygon-ecosystem-token"
             }
         case .avalanche:
             switch type {
