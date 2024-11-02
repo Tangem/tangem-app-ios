@@ -96,10 +96,12 @@ jobs:
           JIRA_ISSUES_SUMMARY: '${{ steps.jira-get-issues-summary.outputs.result }}'
           ADDITIONAL_CHANGELOG: '${{ inputs.changelog }}'
         run: |
+          JIRA_ISSUES_SUMMARY="Jira issues summary:"$'\n'"${JIRA_ISSUES_SUMMARY}"
+
           if [[ -n "${ADDITIONAL_CHANGELOG}" ]]; then
-            OUTPUT_VALUE="Description: ${ADDITIONAL_CHANGELOG}"$'\n'"Jira issues summary:"$'\n'"${JIRA_ISSUES_SUMMARY}"
+            OUTPUT_VALUE="Description: ${ADDITIONAL_CHANGELOG}"$'\n'"${JIRA_ISSUES_SUMMARY}"
           else
-            OUTPUT_VALUE="Jira issues summary:"$'\n'"${JIRA_ISSUES_SUMMARY}"
+            OUTPUT_VALUE="${JIRA_ISSUES_SUMMARY}"
           fi
 
           # Workaround for a multi-line text in GH output
