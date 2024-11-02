@@ -39,8 +39,7 @@ jobs:
         uses: tangem/github-action@main
         with:
           github-token: '${{ secrets.GH_MOBILE_PAT }}'
-          #base: 'master'
-          base: 'test/master_for_beta_builds' # TODO: Test only, remove
+          base: 'master'
           head: 'develop'
 
       - name: Jira Login
