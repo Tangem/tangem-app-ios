@@ -127,6 +127,7 @@ jobs:
     needs:
       - prepare
       - build
+      - deploy
     with:
       channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
       status: 'success'
@@ -140,7 +141,8 @@ jobs:
 
   error_notification:
     name: Error Notification
-    if: failure()
+    # if: failure()
+    if: false # TODO: Test only, remove
     uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8113_ci_cd_beta_builds_workflow
     needs:
       - prepare
