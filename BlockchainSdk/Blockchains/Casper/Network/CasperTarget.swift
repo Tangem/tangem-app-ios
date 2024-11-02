@@ -38,30 +38,45 @@ struct CasperTarget: TargetType {
     }
 
     var task: Task {
+        let encoder = JSONEncoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        
         switch type {
         case .getBalance(let data):
-            let encoder = JSONEncoder()
-            encoder.keyEncodingStrategy = .convertToSnakeCase
-
             return .requestJSONRPC(
                 id: Constants.jsonRPCMethodId,
                 method: Method.queryBalance.rawValue,
                 params: data,
                 encoder: encoder
             )
+        case .putDeploy(let data):
+            return .requestData(data)
         }
     }
 
-    var headers: [String: String]?
+    var headers: [String: String]? {
+        var headers = [String:String]()
+
+        switch type {
+        case .putDeploy:
+            headers["Content-Type"] = "application/json"
+        default:
+            break
+        }
+
+        return headers
+    }
 }
 
 extension CasperTarget {
     enum TargetType {
         case getBalance(data: CasperNetworkRequest.QueryBalance)
+        case putDeploy(data: Data)
     }
 
     enum Method: String, Encodable {
         case queryBalance = "query_balance"
+        case putDeploy = "account_put_deploy"
     }
 }
 

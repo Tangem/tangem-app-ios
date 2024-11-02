@@ -60,7 +60,7 @@ final class CasperTests: XCTestCase {
 
     // MARK: - Transaction Tests
 
-    func testBuildTransaction() throws {
+    func testBuildForSign() throws {
         let txBuilder = CasperTransactionBuilder(blockchain: blockchain)
         let transferAmount = Amount(with: blockchain, value: 2.5)
         let feeAmount = Amount(with: blockchain, value: 0.1)

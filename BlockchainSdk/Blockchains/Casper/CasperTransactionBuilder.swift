@@ -13,32 +13,48 @@ final class CasperTransactionBuilder {
     // MARK: - Private Properties
 
     private let blockchain: Blockchain
+    private let curve: EllipticCurve
 
     // MARK: - Init
 
-    init(blockchain: Blockchain) {
+    init(blockchain: Blockchain, curve: EllipticCurve) {
         self.blockchain = blockchain
+        self.curve = curve
     }
 
     // MARK: - Implementation
 
     func buildForSign(transaction: Transaction, timestamp: String) throws -> Data {
-        let deployHash = try build(transaction: transaction, with: timestamp)
-        return Data(hexString: deployHash)
+        let deploy = try build(transaction: transaction, with: timestamp)
+
+        guard let dataHash = deploy.hash.hexadecimal else {
+            throw WalletError.failedToBuildTx
+        }
+
+        return dataHash
     }
 
-    func buildForSend(transaction: Transaction, signature: Data) throws -> Data {
-        Data()
+    func buildForSend(transaction: Transaction, timestamp: String, signature: Data) throws -> Data {
+        let deploy = try build(transaction: transaction, with: timestamp)
+
+        let dai1 = DeployApprovalItem()
+        dai1.signer = deploy.header.account
+        dai1.signature = try signatureByCurveWithPrefix(signature: signature, for: curve)
+
+        let approvals: [DeployApprovalItem] = [dai1]
+        deploy.approvals = approvals
+
+        return deploy.toJsonData()
     }
 }
 
 // MARK: - Private Implentation
 
 private extension CasperTransactionBuilder {
-    func build(transaction: Transaction, with timestamp: String) throws -> String {
+    func build(transaction: Transaction, with timestamp: String) throws -> Deploy {
         let deploy = Deploy()
 
-        let deployHeader = buildDeployHeader(from: transaction, timestamp: timestamp)        
+        let deployHeader = buildDeployHeader(from: transaction, timestamp: timestamp)
         let deployPayment = try buildPayment(with: transaction.fee)
         let deploySession = try buildDeployTransfer(from: transaction)
 
@@ -49,7 +65,7 @@ private extension CasperTransactionBuilder {
         deployHeader.bodyHash = DeploySerialization.getBodyHash(fromDeploy: deploy)
         deploy.hash = DeploySerialization.getHeaderHash(fromDeployHeader: deployHeader)
 
-        return deploy.hash
+        return deploy
     }
 
     func buildDeployTransfer(from transaction: Transaction) throws -> ExecutableDeployItem {
@@ -126,6 +142,17 @@ private extension CasperTransactionBuilder {
         runTimeArgs.listNamedArg = [namedArg]
 
         return ExecutableDeployItem.moduleBytes(module_bytes: CSPRBytes.fromStrToBytes(from: ""), args: runTimeArgs)
+    }
+    
+    func signatureByCurveWithPrefix(signature: Data, for elipticCurve: EllipticCurve) throws -> String {
+        switch elipticCurve {
+        case .ed25519, .ed25519_slip0010:
+            "01".appending(signature.toHexString())
+        case .secp256k1:
+            "02".appending(signature.toHexString())
+        default:
+            throw WalletError.failedToBuildTx
+        }
     }
 }
 

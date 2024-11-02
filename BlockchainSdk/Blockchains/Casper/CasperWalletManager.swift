@@ -53,20 +53,23 @@ class CasperWalletManager: BaseManager, WalletManager {
     }
 
     func getFee(amount: Amount, destination: String) -> AnyPublisher<[Fee], any Error> {
-        // TODO: - https://tangem.atlassian.net/browse/IOS-8316
-        return .anyFail(error: WalletError.empty)
+        guard let decimalFeeValue = Constants.constantFeeValue else {
+            return .anyFail(error: WalletError.failedToGetFee)
+        }
+        
+        let amountFee = Amount(with: wallet.blockchain, type: .coin, value: decimalFeeValue)
+        return .justWithError(output: [Fee(amountFee)])
     }
 
     func send(_ transaction: Transaction, signer: any TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError> {
+        let timestamp = getCurrentTimestamp()
         let hashForSign: Data
 
         do {
-            let transactionForSign = try transactionBuilder.buildForSign(
+            hashForSign = try transactionBuilder.buildForSign(
                 transaction: transaction,
-                timestamp: Date().toString()
+                timestamp: timestamp
             )
-
-            hashForSign = transactionForSign.getSha256()
         } catch {
             return .sendTxFail(error: WalletError.failedToBuildTx)
         }
@@ -77,12 +80,14 @@ class CasperWalletManager: BaseManager, WalletManager {
             .flatMap { walletManager, signature -> AnyPublisher<String, Error> in
                 guard let rawTransactionData = try? self.transactionBuilder.buildForSend(
                     transaction: transaction,
+                    timestamp: timestamp,
                     signature: signature.signature
                 ) else {
                     return .anyFail(error: WalletError.failedToSendTx)
                 }
 
-                return .anyFail(error: WalletError.failedToSendTx)
+                return walletManager.networkService.putDeploy(rawData: rawTransactionData)
+            
             }
             .withWeakCaptureOf(self)
             .map { walletManager, transactionHash in
@@ -103,6 +108,20 @@ class CasperWalletManager: BaseManager, WalletManager {
         }
 
         wallet.add(amount: Amount(with: wallet.blockchain, type: .coin, value: balanceInfo.value))
+    }
+    
+    private func getCurrentTimestamp() -> String {
+        let timestamp = Date().timeIntervalSince1970
+        let tE = String(timestamp).components(separatedBy: ".")
+        let mili = tE[1]
+        let indexMili = mili.index(mili.startIndex, offsetBy: 3)
+        let miliStr = mili[..<indexMili]
+        let myTimeInterval = TimeInterval(timestamp)
+        let time = NSDate(timeIntervalSince1970: TimeInterval(myTimeInterval))
+        let timeStr = String(time.description)
+        let timeElements = timeStr.components(separatedBy: " ")
+        let newTimeStr = timeElements[0] + "T" + timeElements[1] + ".\(miliStr)Z"
+        return newTimeStr
     }
 }
 

@@ -29,9 +29,9 @@ final class CasperNetworkService: MultiNetworkProvider {
     // MARK: - Implementation
 
     func getBalance(address: String) -> AnyPublisher<CasperBalance, Error> {
-        return providerPublisher { provider in
-            return provider
-                .getBalance(address: "01f03bbc42a3d5901c7232987ba84ab2c6d210973a0cfe742284dcb1d8b4cbe1c3")
+        providerPublisher { provider in
+            provider
+                .getBalance(address: address)
                 .withWeakCaptureOf(self)
                 .tryMap { service, result in
                     guard let balanceValue = Decimal(string: result.balance) else {
@@ -51,6 +51,18 @@ final class CasperNetworkService: MultiNetworkProvider {
                         )
                     }
                     return .anyFail(error: error)
+                }
+                .eraseToAnyPublisher()
+        }
+    }
+    
+    func putDeploy(rawData: Data) -> AnyPublisher<String, Error> {
+        providerPublisher { provider in
+            provider
+                .putDeploy(rawJSON: rawData)
+                .withWeakCaptureOf(self)
+                .tryMap { service, result in
+                    return result.deployHash
                 }
                 .eraseToAnyPublisher()
         }

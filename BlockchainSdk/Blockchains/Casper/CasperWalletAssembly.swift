@@ -22,7 +22,7 @@ struct CasperWalletAssembly: WalletManagerAssembly {
                     },
                 blockchainDecimalValue: input.blockchain.decimalValue
             ),
-            transactionBuilder: CasperTransactionBuilder(blockchain: input.blockchain)
+            transactionBuilder: CasperTransactionBuilder(blockchain: input.blockchain, curve: .secp256k1)
         )
     }
 }

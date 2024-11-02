@@ -52,30 +52,6 @@ class Deploy {
     }
 }
 
-enum DeployUtil {
-    // return the deploy_hash
-
-    static func getDeployResult(from: [String: Any]) throws -> String {
-        if let error = from["error"] as AnyObject? {
-            var code: Int!
-            var message: String!
-            if let code1 = error["code"] as? Int {
-                code = code1
-            }
-            if let message1 = error["message"] as? String {
-                message = message1
-            }
-            throw CSPRMethodCallError.casperError(code: code, message: message, methodCall: "account_put_deploy")
-        }
-        if let result = from["result"] as? [String: Any] {
-            if let deployHash = result["deploy_hash"] as? String {
-                return deployHash
-            }
-        }
-        return "NONE"
-    }
-}
-
 class NamedArgJson: Codable {
     var clType: String
     var bytes: String
