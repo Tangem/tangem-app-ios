@@ -9,7 +9,7 @@
 import Foundation
 import PassKit
 
-public struct PaymentMethodDeterminer {
+struct PaymentMethodDeterminer {
     private let dataRepository: OnrampDataRepository
 
     public init(dataRepository: OnrampDataRepository) {
@@ -17,10 +17,8 @@ public struct PaymentMethodDeterminer {
     }
 }
 
-// MARK: - PaymentMethodDeterminer
-
-public extension PaymentMethodDeterminer {
-    func preferredPaymentMethod() async throws -> OnrampPaymentMethod? {
+extension PaymentMethodDeterminer {
+    func preferredPaymentMethod() async throws -> OnrampPaymentMethod {
         let paymentMethods = try await dataRepository.paymentMethods()
 
         if PKPaymentAuthorizationController.canMakePayments(),
@@ -32,7 +30,11 @@ public extension PaymentMethodDeterminer {
             return card
         }
 
-        return paymentMethods.first
+        if let first = paymentMethods.first {
+            return first
+        }
+
+        throw PaymentMethodDeterminerError.paymentMethodNotFound
     }
 }
 
@@ -40,5 +42,15 @@ extension PaymentMethodDeterminer {
     enum OnrampPaymentMethodType: String {
         case card
         case applePay = "apple-pay"
+    }
+}
+
+enum PaymentMethodDeterminerError: LocalizedError {
+    case paymentMethodNotFound
+
+    var errorDescription: String? {
+        switch self {
+        case .paymentMethodNotFound: "The preferred payment method could not be determined"
+        }
     }
 }

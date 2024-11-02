@@ -62,21 +62,13 @@ private extension OnrampProvidersViewModel {
             }
             .store(in: &bag)
 
-        Publishers.CombineLatest(
-            interactor.providesPublisher,
-            interactor.paymentMethodPublisher
-        )
-        .map { providers, paymentMethod in
-            providers.filter {
-                $0.paymentMethod.id == paymentMethod.id
+        interactor.providesPublisher
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, providers in
+                viewModel.updateProvidersView(providers: providers)
             }
-        }
-        .withWeakCaptureOf(self)
-        .receive(on: DispatchQueue.main)
-        .sink { viewModel, providers in
-            viewModel.updateProvidersView(providers: providers)
-        }
-        .store(in: &bag)
+            .store(in: &bag)
     }
 
     func updatePaymentView(payment: OnrampPaymentMethod) {

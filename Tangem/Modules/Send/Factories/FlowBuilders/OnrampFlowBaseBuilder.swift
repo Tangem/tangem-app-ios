@@ -37,7 +37,8 @@ struct OnrampFlowBaseBuilder {
 
         let paymentMethodsBuilder = OnrampPaymentMethodsBuilder(
             io: (input: onrampModel, output: onrampModel),
-            dataRepository: onrampDataRepository
+            dataRepository: onrampDataRepository,
+            onrampRepository: onrampRepository
         )
 
         let (onrampAmountViewModel, _) = onrampAmountBuilder.makeOnrampAmountViewModel(

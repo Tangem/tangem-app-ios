@@ -13,6 +13,7 @@ public actor CommonOnrampManager {
     private let logger: Logger
 
     private var _providers: [OnrampProvider] = []
+    private var _selectedProvider: OnrampProvider?
 
     public init(
         apiProvider: ExpressAPIProvider,
@@ -30,12 +31,22 @@ public actor CommonOnrampManager {
 // MARK: - OnrampManager
 
 extension CommonOnrampManager: OnrampManager {
+    public var providers: [OnrampProvider] { _providers }
+
+    public var selectedProvider: OnrampProvider? { _selectedProvider }
+
     public func initialSetupCountry() async throws -> OnrampCountry {
         let country = try await apiProvider.onrampCountryByIP()
         return country
     }
 
-    public func setupProviders(request item: OnrampPairRequestItem) async throws -> [OnrampProvider] {
+    public func initialSetupPaymentMethod() async throws -> OnrampPaymentMethod {
+        let paymentMethodDeterminer = PaymentMethodDeterminer(dataRepository: dataRepository)
+        let method = try await paymentMethodDeterminer.preferredPaymentMethod()
+        return method
+    }
+
+    public func setupProviders(request item: OnrampPairRequestItem) async throws {
         let pairs = try await apiProvider.onrampPairs(
             from: item.fiatCurrency,
             to: [item.destination.expressCurrency],
@@ -45,19 +56,25 @@ extension CommonOnrampManager: OnrampManager {
         let supportedProviders = pairs.flatMap { $0.providers }
         guard !supportedProviders.isEmpty else {
             // Exclude unnecessary requests
-            return []
+            return
         }
 
         // Fill the `_providers` with all possible options
         _providers = try await prepareProviders(item: item, supportedProviders: supportedProviders)
 
-        return _providers
+        return
     }
 
-    public func setupQuotes(amount: Decimal) async throws -> [OnrampProvider] {
-        try await updateQuotesInEachManager(amount: amount)
+    public func setupQuotes(amount: Decimal) async throws {
+        await withTaskGroup(of: Void.self) { [weak self] group in
+            await self?._providers.forEach { provider in
+                _ = group.addTaskUnlessCancelled {
+                    await provider.manager.update(amount: amount)
+                }
+            }
+        }
 
-        return _providers
+        updateSelectedProvider()
     }
 
     public func loadOnrampData(request: OnrampQuotesRequestItem) async throws -> OnrampRedirectData {
@@ -69,14 +86,9 @@ extension CommonOnrampManager: OnrampManager {
 // MARK: - Private
 
 private extension CommonOnrampManager {
-    func updateQuotesInEachManager(amount: Decimal) async throws {
-        await withTaskGroup(of: Void.self) { [weak self] group in
-            await self?._providers.forEach { provider in
-                _ = group.addTaskUnlessCancelled {
-                    await provider.manager.update(amount: amount)
-                }
-            }
-        }
+    func updateSelectedProvider() {
+        // TODO: Update logic
+        _selectedProvider = _providers.first
     }
 
     func prepareProviders(

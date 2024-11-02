@@ -16,7 +16,7 @@ struct OnrampPaymentMethodsBuilder {
     private let io: IO
     private let dataRepository: OnrampDataRepository
 
-    init(io: IO, dataRepository: OnrampDataRepository) {
+    init(io: IO, dataRepository: OnrampDataRepository, onrampRepository: OnrampRepository) {
         self.io = io
         self.dataRepository = dataRepository
     }

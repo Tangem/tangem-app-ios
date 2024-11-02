@@ -23,7 +23,7 @@ class OnrampModel {
     private let _currency: CurrentValueSubject<LoadingValue<OnrampFiatCurrency>, Never>
     private let _amount: CurrentValueSubject<SendAmount?, Never> = .init(.none)
     private let _selectedOnrampProvider: CurrentValueSubject<LoadingValue<OnrampProvider>?, Never> = .init(.none)
-    private let _selectedOnrampPaymentMethod: CurrentValueSubject<OnrampPaymentMethod?, Never> = .init(.none)
+    private let _selectedOnrampPaymentMethod: CurrentValueSubject<OnrampPaymentMethod?, Never>
     private let _onrampProviders: CurrentValueSubject<[OnrampProvider], Never> = .init([])
     private let _isLoading: CurrentValueSubject<Bool, Never> = .init(false)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
@@ -38,7 +38,6 @@ class OnrampModel {
     private let walletModel: WalletModel
     private let onrampManager: OnrampManager
     private let onrampRepository: OnrampRepository
-    private let paymentMethodDeterminer: PaymentMethodDeterminer
 
     private var task: Task<Void, Never>?
     private var bag: Set<AnyCancellable> = []
@@ -46,19 +45,20 @@ class OnrampModel {
     init(
         walletModel: WalletModel,
         onrampManager: OnrampManager,
-        onrampRepository: OnrampRepository,
-        paymentMethodDeterminer: PaymentMethodDeterminer
+        onrampRepository: OnrampRepository
     ) {
         self.walletModel = walletModel
         self.onrampManager = onrampManager
         self.onrampRepository = onrampRepository
-        self.paymentMethodDeterminer = paymentMethodDeterminer
 
         _currency = .init(
             onrampRepository.preferenceCurrency.map { .loaded($0) } ?? .loading
         )
 
+        _selectedOnrampPaymentMethod = .init(onrampRepository.preferencePaymentMethod)
+
         bind()
+        initiatePaymentMethodDefinitionIfNeeded()
     }
 }
 
@@ -75,15 +75,16 @@ private extension OnrampModel {
         // Handle the settings changes
         onrampRepository
             .preferenceCurrencyPublisher
+            .removeDuplicates()
             .sink { [weak self] currency in
                 self?.preferenceDidChange(currency: currency)
             }
             .store(in: &bag)
 
-        onrampRepository
-            .preferencePaymentMethodPublisher
+        _selectedOnrampPaymentMethod
+            .removeDuplicates()
             .sink { [weak self] paymentMethod in
-                self?.preferenceDidChange(paymentMethod: paymentMethod)
+                self?.onrampRepository.updatePreference(paymentMethod: paymentMethod)
             }
             .store(in: &bag)
     }
@@ -102,9 +103,13 @@ private extension OnrampModel {
         }
 
         _selectedOnrampProvider.send(.loading)
-        mainTask { model in
-            let providers = try await model.onrampManager.setupQuotes(amount: amount)
-            model._onrampProviders.send(providers)
+        mainTask {
+            try await $0.onrampManager.setupQuotes(amount: amount)
+
+            await $0._onrampProviders.send($0.onrampManager.providers)
+            if let selectedProvider = await $0.onrampManager.selectedProvider {
+                $0._selectedOnrampProvider.send(.loaded(selectedProvider))
+            }
         }
     }
 }
@@ -140,18 +145,17 @@ private extension OnrampModel {
         }
     }
 
-    func preferenceDidChange(paymentMethod: OnrampPaymentMethod?) {
-        guard paymentMethod == nil else {
-            // The paymentMethod is already set up
-            // Just update UI
-
-            _selectedOnrampPaymentMethod.send(paymentMethod)
+    func initiatePaymentMethodDefinitionIfNeeded() {
+        guard _selectedOnrampPaymentMethod.value == nil else {
             return
         }
 
         TangemFoundation.runTask(in: self) {
-            let paymentMethod = try await $0.paymentMethodDeterminer.preferredPaymentMethod()
+            let paymentMethod = try await $0.onrampManager.initialSetupPaymentMethod()
             $0.onrampRepository.updatePreference(paymentMethod: paymentMethod)
+
+            // Update UI
+            $0._selectedOnrampPaymentMethod.send(paymentMethod)
         }
     }
 }

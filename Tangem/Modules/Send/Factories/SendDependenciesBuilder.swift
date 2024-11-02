@@ -373,8 +373,7 @@ struct SendDependenciesBuilder {
         OnrampModel(
             walletModel: walletModel,
             onrampManager: onrampManager,
-            onrampRepository: onrampRepository,
-            paymentMethodDeterminer: makePaymentMethodDeterminer(dataRepository: dataRepository)
+            onrampRepository: onrampRepository
         )
     }
 
@@ -418,9 +417,5 @@ struct SendDependenciesBuilder {
             providersBuilder: providersBuilder,
             paymentMethodsBuilder: paymentMethodsBuilder
         )
-    }
-
-    func makePaymentMethodDeterminer(dataRepository: OnrampDataRepository) -> PaymentMethodDeterminer {
-        PaymentMethodDeterminer(dataRepository: dataRepository)
     }
 }
