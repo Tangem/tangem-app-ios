@@ -11,6 +11,7 @@ import Combine
 import CryptoKit
 import TangemSdk
 import BigInt
+import TangemFoundation
 
 class PolkadotWalletManager: BaseManager, WalletManager {
     private let network: PolkadotNetwork
@@ -42,7 +43,7 @@ class PolkadotWalletManager: BaseManager, WalletManager {
         let decimals = wallet.blockchain.decimalCount
         guard
             let formatted = EthereumUtils.formatToPrecision(balance, numberDecimals: decimals, formattingDecimals: decimals, decimalSeparator: ".", fallbackToScientific: false),
-            let value = Decimal(formatted)
+            let value = Decimal(stringValue: formatted)
         else {
             return
         }

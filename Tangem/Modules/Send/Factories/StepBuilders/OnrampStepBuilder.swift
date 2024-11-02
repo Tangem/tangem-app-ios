@@ -13,10 +13,16 @@ struct OnrampStepBuilder {
     typealias IO = (input: OnrampInput, output: OnrampOutput)
     typealias ReturnValue = (step: OnrampStep, interactor: OnrampInteractor)
 
+    private let walletModel: WalletModel
+
+    init(walletModel: WalletModel) {
+        self.walletModel = walletModel
+    }
+
     func makeOnrampStep(io: IO, onrampManager: some OnrampManager, onrampAmountViewModel: OnrampAmountViewModel) -> ReturnValue {
         let interactor = makeOnrampInteractor(io: io, onrampManager: onrampManager)
         let viewModel = makeOnrampViewModel(onrampAmountViewModel: onrampAmountViewModel, interactor: interactor)
-        let step = OnrampStep(viewModel: viewModel, interactor: interactor)
+        let step = OnrampStep(tokenItem: walletModel.tokenItem, viewModel: viewModel, interactor: interactor)
 
         return (step: step, interactor: interactor)
     }

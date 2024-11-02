@@ -9,6 +9,7 @@
 import Foundation
 import TangemExpress
 import BlockchainSdk
+import TangemFoundation
 
 struct ExpressPendingTransactionRecord: Codable, Equatable {
     let userWalletId: String
@@ -103,9 +104,9 @@ extension ExpressPendingTransactionRecord {
 }
 
 private func convertToDecimal(_ str: String) -> Decimal {
-    let cleanedStr = str.replacingOccurrences(of: ",", with: ".")
-    let locale = Locale(identifier: "en-US")
-    return Decimal(string: cleanedStr, locale: locale) ?? 0
+    let decimalSeparator = Locale.posixEnUS.decimalSeparator ?? "."
+    let cleanedStr = str.replacingOccurrences(of: ",", with: decimalSeparator)
+    return Decimal(stringValue: cleanedStr) ?? 0
 }
 
 // MARK: - Migration

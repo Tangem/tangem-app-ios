@@ -322,18 +322,25 @@ extension SendViewModel: OnrampModelRoutable {
             alert = error.alertBinder
         }
     }
+}
 
-    func openOnrampCountriesSelector() {
+// MARK: - OnrampSummaryRoutable
+
+extension SendViewModel: OnrampSummaryRoutable {
+    func onrampStepRequestEditProvider() {
         /*
-          TODO: https://tangem.atlassian.net/browse/IOS-8158
          do {
              let builder = try dataBuilder.onrampBuilder()
-             let repository = builder.makeDataForOnrampCountryBottomSheet()
-             coordinator?.openOnrampCountry(country: country, repository: repository)
+             let (preferenceRepository, dataRepository) = builder.makeDataForOnrampCountrySelectorView()
+             // Make input data
+             // TODO: https://tangem.atlassian.net/browse/IOS-8360
+             coordinator?.openOnrampProviders()
          } catch {
              alert = error.alertBinder
          }
          */
+
+        coordinator?.openOnrampProviders()
     }
 }
 

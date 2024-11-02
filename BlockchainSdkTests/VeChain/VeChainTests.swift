@@ -247,9 +247,9 @@ final class VeChainTests: XCTestCase {
 
     func testFeeForCoinTransfers() throws {
         let expectedValues = [
-            Decimal("0.21"),
-            Decimal("0.31458823529"),
-            Decimal("0.42"),
+            Decimal(stringValue: "0.21"),
+            Decimal(stringValue: "0.31458823529"),
+            Decimal(stringValue: "0.42"),
         ]
 
         try zip(VeChainFeeParams.TransactionPriority.allCases, expectedValues)
@@ -275,9 +275,9 @@ final class VeChainTests: XCTestCase {
 
     func testFeeForTokenTransfers() throws {
         let expectedValues = [
-            Decimal("0.53952"),
-            Decimal("0.80822211764"),
-            Decimal("1.07904"),
+            Decimal(stringValue: "0.53952"),
+            Decimal(stringValue: "0.80822211764"),
+            Decimal(stringValue: "1.07904"),
         ]
 
         try zip(VeChainFeeParams.TransactionPriority.allCases, expectedValues)

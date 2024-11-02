@@ -144,6 +144,16 @@ extension SendCoordinator: OnrampRoutable {
         )
     }
 
+    func openOnrampCountrySelectorView(repository: any OnrampRepository, dataRepository: any OnrampDataRepository) {
+        // TODO: Aleksei Muraveinik
+        // https://tangem.atlassian.net/browse/IOS-8357
+    }
+
+    func openOnrampCurrencySelectorView(repository: any OnrampRepository, dataRepository: any OnrampDataRepository) {
+        // TODO: Aleksei Muraveinik
+        // https://tangem.atlassian.net/browse/IOS-8158
+    }
+
     func openOnrampProviders() {
         let coordinator = OnrampProvidersCoordinator { [weak self] in
             self?.onrampProvidersCoordinator = nil

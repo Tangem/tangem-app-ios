@@ -187,7 +187,7 @@ struct ExpressAPIMapper {
     }
 
     func mapToOnrampRedirectData(
-        item: OnrampSwappableItem,
+        item: OnrampRedirectDataRequestItem,
         request: ExpressDTO.Onramp.Data.Request,
         response: ExpressDTO.Onramp.Data.Response
     ) throws -> OnrampRedirectData {
