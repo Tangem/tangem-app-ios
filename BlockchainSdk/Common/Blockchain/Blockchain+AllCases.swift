@@ -86,6 +86,7 @@ public extension Blockchain {
         case .energyWebEVM: break
         case .energyWebX: break
         case .core: break
+        case .canxium: break
             // READ BELOW:
             //
             // Did you get a compilation error here? If so, add your new blockchain to the array below
@@ -165,6 +166,7 @@ public extension Blockchain {
             .energyWebEVM(testnet: false),
             .energyWebX(curve: .ed25519_slip0010),
             .core(testnet: false),
+            .canxium,
         ]
     }
 }
