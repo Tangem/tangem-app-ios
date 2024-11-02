@@ -9,6 +9,7 @@
 import Foundation
 import stellarsdk
 import Combine
+import TangemFoundation
 
 @available(iOS 13.0, *)
 class StellarNetworkProvider: HostProvider {
@@ -53,7 +54,9 @@ class StellarNetworkProvider: HostProvider {
                 }
 
                 let baseReserveStroops = Decimal(ledgerResponse.baseReserveInStroops)
-                guard let balance = Decimal(accountResponse.balances.first(where: { $0.assetType == AssetTypeAsString.NATIVE })?.balance) else {
+                guard let balance = Decimal(
+                    stringValue: accountResponse.balances.first(where: { $0.assetType == AssetTypeAsString.NATIVE })?.balance
+                ) else {
                     throw WalletError.failedToParseNetworkResponse()
                 }
 
@@ -63,7 +66,7 @@ class StellarNetworkProvider: HostProvider {
                     .map { assetBalance -> StellarAssetResponse in
                         guard let code = assetBalance.assetCode,
                               let issuer = assetBalance.assetIssuer,
-                              let balance = Decimal(assetBalance.balance) else {
+                              let balance = Decimal(stringValue: assetBalance.balance) else {
                             throw WalletError.failedToParseNetworkResponse()
                         }
 
@@ -87,9 +90,9 @@ class StellarNetworkProvider: HostProvider {
     func getFee() -> AnyPublisher<[Amount], Error> {
         stellarSdk.feeStats.getFeeStats()
             .tryMap { [blockchain] feeStats -> [Amount] in
-                guard let feeChargedModeInStroops = Decimal(feeStats.feeCharged.mode),
-                      let feeChargedP80InStroops = Decimal(feeStats.feeCharged.p80),
-                      let feeChargedP99InStroops = Decimal(feeStats.feeCharged.p99)
+                guard let feeChargedModeInStroops = Decimal(stringValue: feeStats.feeCharged.mode),
+                      let feeChargedP80InStroops = Decimal(stringValue: feeStats.feeCharged.p80),
+                      let feeChargedP99InStroops = Decimal(stringValue: feeStats.feeCharged.p99)
                 else {
                     throw WalletError.failedToGetFee
                 }

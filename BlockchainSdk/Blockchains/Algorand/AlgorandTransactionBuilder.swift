@@ -10,6 +10,7 @@ import Foundation
 import WalletCore
 import TangemSdk
 import CryptoKit
+import TangemFoundation
 
 final class AlgorandTransactionBuilder {
     private let publicKey: Data

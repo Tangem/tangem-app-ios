@@ -11,6 +11,7 @@ import CryptoKit
 import WalletCore
 import TonSwift
 import BigInt
+import TangemFoundation
 
 /// Transaction builder for TON wallet
 final class TONTransactionBuilder {
