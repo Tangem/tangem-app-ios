@@ -22,10 +22,8 @@ struct OnrampProviderRowViewData: Identifiable {
 
 extension OnrampProviderRowViewData {
     enum State: Hashable {
-        case available(time: String)
+        case available(estimatedTime: String)
         case availableFromAmount(minAmount: String)
-        case unavailable
-        case error(String)
     }
 
     enum Badge: Hashable {

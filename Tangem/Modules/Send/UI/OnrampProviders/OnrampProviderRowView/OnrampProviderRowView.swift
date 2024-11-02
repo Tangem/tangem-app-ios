@@ -107,12 +107,6 @@ struct OnrampProviderRowView: View {
         case .availableFromAmount(let minAmount):
             Text(minAmount)
                 .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-        case .unavailable:
-            Text("Unavailable")
-                .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-        case .error(let string):
-            Text(string)
-                .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
         }
     }
 }
@@ -125,7 +119,7 @@ struct OnrampProviderRowView: View {
                 name: "1Inch",
                 iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/1INCH512.png"),
                 formattedAmount: "0,00453 BTC",
-                state: .available(time: "5 min"),
+                state: .available(estimatedTime: "5 min"),
                 badge: .bestRate,
                 isSelected: true,
                 action: {}
@@ -135,7 +129,7 @@ struct OnrampProviderRowView: View {
                 name: "Changenow",
                 iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/NOW512.png"),
                 formattedAmount: "0,00450 BTC",
-                state: .unavailable,
+                state: .availableFromAmount(minAmount: "15 USD"),
                 badge: .percent("-0.03%", signType: .negative),
                 isSelected: false,
                 action: {}

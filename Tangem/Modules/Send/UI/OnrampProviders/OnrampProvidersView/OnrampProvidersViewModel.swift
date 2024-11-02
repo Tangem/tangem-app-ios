@@ -121,14 +121,12 @@ private extension OnrampProvidersViewModel {
 
     func state(state: OnrampProviderManagerState) -> OnrampProviderRowViewData.State? {
         switch state {
-        case .created, .loading:
+        case .created, .loading, .notSupported, .failed:
             return nil
-        case .failed(let error):
-            return .error(error)
         case .loaded(let quote):
-            return .available(time: "5 min")
-        case .notSupported:
-            return .unavailable
+            return .available(estimatedTime: "5 min")
+//        case .failed(error:):
+//            return .unavailable
         }
     }
 }

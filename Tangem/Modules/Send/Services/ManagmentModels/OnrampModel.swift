@@ -120,8 +120,6 @@ private extension OnrampModel {
         }
 
         _selectedOnrampProvider.send(.loading)
-        _selectedOnrampPaymentMethod.send(.init(identity: OnrampIdentity.eur))
-
         startTask { model in
             let providers = try await model.onrampManager.setupQuotes(amount: amount)
             let selected = providers.first!
