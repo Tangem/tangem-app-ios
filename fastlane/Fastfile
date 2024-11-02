@@ -145,29 +145,25 @@ lane :build_Alpha do |options|
 end
 
 desc """
-A lane that builds a \"Tangem Beta\" scheme and uploads the archive to Firebase for testing.
-Using enviroment: Production
+A lane that builds a \"Tangem Beta\" scheme binary. Result binary can be used only for ad-hoc distribution.
 Options:
-- version: app version
-- build: optional build number
-- changelog: string for description archive
+- version: App version
+- build: Build number
+- filename: Name of the resulting artefact (IPA file)
+- path: Path to binary
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 """
-lane :beta do |options|
+lane :build_Beta do |options|
   increment_version_number(version_number: options[:version])
   increment_firebase_build_number(app_id: ENV["APP_ID_BETA"], build: options[:build])
-  build(scheme: BETA_SCHEME, export_method: "ad-hoc", filename: BETA_SCHEME, path: BUILD_PATH)
 
-  upload_dsyms(app_id: ENV["APP_ID_BETA"], name: BETA_SCHEME)
-  upload_firebase(
-    name: BETA_SCHEME,
-    app_id: ENV["APP_ID_BETA"],
-    changelog: options[:changelog]
-  )
-  clean_artifacts
-  slack_message(
-    message: "Tangem Beta successfully uploaded to Firebase",
-    changelog: options[:changelog]
+  build(
+    export_method: "ad-hoc",
+    scheme: BETA_SCHEME,
+    version: options[:version],
+    build: options[:build],
+    filename: options[:filename],
+    path: options[:path]
   )
 end
 
@@ -182,6 +178,19 @@ Options:
 """
 lane :alpha do |options|
   UI.error("Use `Alpha - Build and Deploy` Github action instead")
+end
+
+desc """
+A lane that builds a \"Tangem Beta\" scheme and uploads the archive to Firebase for testing.
+Using enviroment: Production
+Options:
+- version: app version
+- build: optional build number
+- changelog: string for description archive
+- xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+"""
+lane :beta do |options|
+  UI.error("Use `Beta - Build and Deploy` Github action instead")
 end
 
 desc """
