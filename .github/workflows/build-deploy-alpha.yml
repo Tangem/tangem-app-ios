@@ -51,8 +51,6 @@ jobs:
           JIRA_ISSUE_KEY: '${{ steps.jira.outputs.key }}'
           BUILD_VERSION_OVERRIDE: '${{ inputs.build_version_override }}'
         run: |
-          BUILD_VERSION=""
-
           if [[ -n "${BUILD_VERSION_OVERRIDE}" ]]; then
             # Use the build version value from user input (if any)
             BUILD_VERSION="${BUILD_VERSION_OVERRIDE}"
@@ -73,7 +71,14 @@ jobs:
           JIRA_ISSUE_KEY: '${{ steps.jira.outputs.key }}'
           ADDITIONAL_CHANGELOG: '${{ inputs.changelog }}'
         run: |
-          JIRA_DESCRIPTION="Jira issue: ${JIRA_ISSUE_KEY} ${JIRA_ISSUE_SUMMARY}"
+          JIRA_DESCRIPTION="${JIRA_ISSUE_KEY} ${JIRA_ISSUE_SUMMARY}"
+
+          if [[ "${JIRA_DESCRIPTION}" == " " ]]; then
+            JIRA_DESCRIPTION="N/A"
+          fi
+
+          JIRA_DESCRIPTION="Jira issue: ${JIRA_DESCRIPTION}"
+
           if [[ -n "${ADDITIONAL_CHANGELOG}" ]]; then
             OUTPUT_VALUE="Description: ${ADDITIONAL_CHANGELOG}"$'\n'"${JIRA_DESCRIPTION}"
           else
