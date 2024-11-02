@@ -19,6 +19,10 @@ before_all do |lane, options|
     next
   end
 
+  Dir.chdir("..") do
+    sh("./bootstrap.sh")
+  end
+
   # Xcode version overrides available only on CI
   if ENV["CI"]&.downcase == "true"
     if options[:xcode_version_override]&.empty?
@@ -32,10 +36,6 @@ before_all do |lane, options|
         select_for_current_build_only: true
       )
     end
-  end
-
-  Dir.chdir("..") do
-    sh("./bootstrap.sh")
   end
 
   ENV["FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT"] = "120"
