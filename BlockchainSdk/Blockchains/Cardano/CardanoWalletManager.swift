@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import TangemSdk
+import TangemFoundation
 
 class CardanoWalletManager: BaseManager, WalletManager {
     var transactionBuilder: CardanoTransactionBuilder!

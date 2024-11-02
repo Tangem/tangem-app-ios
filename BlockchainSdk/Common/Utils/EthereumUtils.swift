@@ -8,6 +8,7 @@
 
 import Foundation
 import BigInt
+import TangemFoundation
 
 public enum EthereumUtils {
     public static func parseEthereumDecimal(_ string: String, decimalsCount: Int) -> Decimal? {

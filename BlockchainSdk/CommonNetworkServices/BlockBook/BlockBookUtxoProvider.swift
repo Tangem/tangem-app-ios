@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import TangemFoundation
 
 /// Documentation: https://github.com/trezor/blockbook/blob/master/docs/api.md
 class BlockBookUtxoProvider {

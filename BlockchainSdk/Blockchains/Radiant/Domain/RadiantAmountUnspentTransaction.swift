@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TangemFoundation
 
 struct RadiantAmountUnspentTransaction {
     let decimalValue: Decimal

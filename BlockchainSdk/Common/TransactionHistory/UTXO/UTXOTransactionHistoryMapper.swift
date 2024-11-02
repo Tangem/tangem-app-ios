@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import TangemFoundation
 
 struct UTXOTransactionHistoryMapper {
     private let blockchain: Blockchain
@@ -33,7 +34,7 @@ extension UTXOTransactionHistoryMapper: TransactionHistoryMapper {
         }
 
         return transactions.compactMap { transaction -> TransactionRecord? in
-            guard let feeSatoshi = Decimal(transaction.fees) else {
+            guard let feeSatoshi = Decimal(stringValue: transaction.fees) else {
                 return nil
             }
 
@@ -57,7 +58,7 @@ extension UTXOTransactionHistoryMapper: TransactionHistoryMapper {
         func sourceType(vin: [BlockBookAddressResponse.Vin]) -> TransactionRecord.SourceType {
             let spenders: [TransactionRecord.Source] = vin.reduce([]) { result, input in
                 guard let value = input.value,
-                      let amountSatoshi = Decimal(value),
+                      let amountSatoshi = Decimal(stringValue: value),
                       let address = input.addresses.first else {
                     return result
                 }
@@ -75,7 +76,7 @@ extension UTXOTransactionHistoryMapper: TransactionHistoryMapper {
 
         func destinationType(vout: [BlockBookAddressResponse.Vout]) -> TransactionRecord.DestinationType {
             let destinations: [TransactionRecord.Destination] = vout.reduce([]) { result, output in
-                guard let amountSatoshi = Decimal(output.value),
+                guard let amountSatoshi = Decimal(stringValue: output.value),
                       let address = output.addresses.first else {
                     return result
                 }

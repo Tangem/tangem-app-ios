@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TangemFoundation
 
 @preconcurrency import SwiftProtobuf // TODO: Andrey Fedorov - Remove after migration to Swift 6 structured concurrency (IOS-8369)
 import CryptoSwift
