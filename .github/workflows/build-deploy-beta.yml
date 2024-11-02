@@ -18,7 +18,7 @@ on:
         type: string
 
 concurrency:
-  group: '${{ github.workflow }} ${{ github.sha }}'
+  group: '${{ github.workflow }} (${{ github.head_ref || github.ref_name }})'
   cancel-in-progress: true
 
 env:
@@ -157,7 +157,8 @@ jobs:
 
   error_notification:
     name: Error Notification
-    if: failure()
+    # if: failure()
+    if: false # TODO: Test only, remove
     uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8112_ci_cd_alpha_builds_workflow
     needs:
       - prepare
