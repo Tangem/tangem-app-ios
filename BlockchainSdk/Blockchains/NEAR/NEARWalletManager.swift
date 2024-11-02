@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import TangemFoundation
 
 final class NEARWalletManager: BaseManager {
     private let networkService: NEARNetworkService

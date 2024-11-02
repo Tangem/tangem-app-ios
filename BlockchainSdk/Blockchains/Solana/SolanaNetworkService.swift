@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import SolanaSwift
+import TangemFoundation
 
 @available(iOS 13.0, *)
 class SolanaNetworkService {
@@ -251,7 +252,7 @@ class SolanaNetworkService {
             guard
                 let info = $0.account.data.value?.parsed.info,
                 let token = tokens.first(where: { $0.contractAddress == info.mint }),
-                let integerAmount = Decimal(info.tokenAmount.amount)
+                let integerAmount = Decimal(stringValue: info.tokenAmount.amount)
             else {
                 return nil
             }

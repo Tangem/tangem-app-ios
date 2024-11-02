@@ -16,7 +16,6 @@ final class CasperNetworkProvider: HostProvider {
 
     private let node: NodeInfo
 
-    // TODO: -
     private let provider: NetworkProvider<CasperTarget>
 
     init(

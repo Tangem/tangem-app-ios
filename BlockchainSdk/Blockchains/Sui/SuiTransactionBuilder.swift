@@ -9,6 +9,7 @@
 import Foundation
 import WalletCore
 import TangemSdk
+import TangemFoundation
 
 class SuiTransactionBuilder {
     private let walletAddress: String
