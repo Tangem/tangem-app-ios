@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TangemFoundation
 
 struct SignificantFractionDigitRounder {
     let roundingMode: NSDecimalNumber.RoundingMode

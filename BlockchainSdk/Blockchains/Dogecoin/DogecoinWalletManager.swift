@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import TangemSdk
+import TangemFoundation
 
 class DogecoinWalletManager: BitcoinWalletManager {
     override var minimalFee: Decimal { 0.01 }

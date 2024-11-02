@@ -1,6 +1,6 @@
 //
 //  Int+.swift
-//  BlockchainSdk
+//  TangemFoundation
 //
 //  Created by Alexander Osokin on 10.12.2019.
 //  Copyright © 2019 Tangem AG. All rights reserved.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension Int {
+public extension Int {
     /// return 2 bytes of integer. LittleEndian format
     var bytes2LE: Data {
         let clamped = UInt16(clamping: self)

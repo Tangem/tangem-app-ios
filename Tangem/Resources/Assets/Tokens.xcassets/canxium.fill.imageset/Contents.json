@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "Name=Canxium, Active=On, Web=Off.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

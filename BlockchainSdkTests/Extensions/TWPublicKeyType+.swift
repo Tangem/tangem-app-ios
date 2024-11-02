@@ -61,7 +61,8 @@ extension PublicKeyType {
              .blast,
              .cyber,
              .energyWebEVM,
-             .core:
+             .core,
+             .canxium:
             self = PublicKeyType.secp256k1Extended
         case .stellar,
              .ton,
