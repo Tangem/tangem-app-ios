@@ -6,6 +6,8 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
+import Combine
+
 public protocol OnrampDataRepository: Actor {
     func paymentMethods() async throws -> [OnrampPaymentMethod]
     func countries() async throws -> [OnrampCountry]
@@ -64,5 +66,28 @@ public extension OnrampDataRepository {
                 precision: 2
             ),
         ]
+    }
+}
+
+public extension OnrampDataRepository {
+    nonisolated var countriesPublisher: AnyPublisher<[OnrampCountry], Error> {
+        Future.async {
+            try await self.countries()
+        }
+        .eraseToAnyPublisher()
+    }
+
+    nonisolated var currenciesPublisher: AnyPublisher<[OnrampFiatCurrency], Error> {
+        Future.async {
+            try await self.currencies()
+        }
+        .eraseToAnyPublisher()
+    }
+
+    nonisolated var popularFiatsPublisher: AnyPublisher<[OnrampFiatCurrency], Error> {
+        Future.async {
+            await self.popularFiats
+        }
+        .eraseToAnyPublisher()
     }
 }
