@@ -99,7 +99,7 @@ final class OnrampCountrySelectorViewModel: Identifiable, ObservableObject {
 
         preferenceCountry = repository.preferenceCountry
 
-        let countriesPublisher = Async {
+        let countriesPublisher = Future {
             try await dataRepository.countries()
         }
 
@@ -150,7 +150,8 @@ struct OnrampCountrySelectorView: View {
             }
         }
         .background(
-            Colors.Background.primary.ignoresSafeArea()
+            Colors.Background.primary
+                .ignoresSafeArea()
         )
     }
 
@@ -278,7 +279,7 @@ struct OnrampSettingsView: View {
         .padding(.horizontal, 14)
         .padding(.vertical, 11)
         .background(
-            Colors.Background.primary
+            Colors.Background.action
                 .cornerRadius(14, corners: .allCorners)
         )
     }
@@ -307,12 +308,12 @@ final class OnrampCurrencySelectorViewModel: Identifiable, ObservableObject {
 
         preferenceCurrency = repository.preferenceCurrency
 
-        Async {
+        Future {
             await dataRepository.popularFiats
         }
         .assign(to: &$popularFiats)
 
-        let currenciesPublisher = Async {
+        let currenciesPublisher = Future {
             try await dataRepository.currencies()
         }
 
@@ -441,28 +442,30 @@ struct OnrampCurrencySelectorView: View {
     }
 }
 
-func Async<T>(_ operation: @escaping () async throws -> T) -> AnyPublisher<T, Error> {
-    Future { promise in
-        Task {
-            do {
-                let result = try await operation()
-                promise(.success(result))
-            } catch {
-                promise(.failure(error))
+extension Future where Failure == Error {
+    convenience init(operation: @escaping () async throws -> Output) {
+        self.init { promise in
+            Task {
+                do {
+                    let output = try await operation()
+                    promise(.success(output))
+                } catch {
+                    promise(.failure(error))
+                }
             }
         }
     }
-    .eraseToAnyPublisher()
 }
 
-func Async<T>(_ operation: @escaping () async -> T) -> AnyPublisher<T, Never> {
-    Future { promise in
-        Task {
-            let result = await operation()
-            promise(.success(result))
+extension Future where Failure == Never {
+    convenience init(operation: @escaping () async -> Output) {
+        self.init { promise in
+            Task {
+                let output = await operation()
+                promise(.success(output))
+            }
         }
     }
-    .eraseToAnyPublisher()
 }
 
 enum SearchUtil<T> {
