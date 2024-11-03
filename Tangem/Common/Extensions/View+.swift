@@ -20,19 +20,6 @@ extension View {
         }
     }
 
-    @ViewBuilder
-    func `if`<ContentThen: View, ContentElse: View>(
-        _ condition: Bool,
-        transform: (Self) -> ContentThen,
-        else: (Self) -> ContentElse
-    ) -> some View {
-        if condition {
-            transform(self)
-        } else {
-            `else`(self)
-        }
-    }
-
     func style(_ font: Font, color: Color) -> some View {
         self.font(font).foregroundColor(color)
     }

@@ -18,7 +18,10 @@ struct OnrampView: View {
         GroupedScrollView(spacing: 14) {
             OnrampAmountView(
                 viewModel: viewModel.onrampAmountViewModel,
-                namespace: .init(id: namespace.id, names: namespace.names)
+                namespace: .init(id: namespace.id, names: namespace.names),
+                selectCurrency: {
+                    viewModel.router?.openOnrampCurrencySelectorView()
+                }
             )
 
             paymentSection

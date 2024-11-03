@@ -37,7 +37,7 @@ class SendCoordinator: CoordinatorObject {
 
     @Published var onrampSettingsViewModel: OnrampSettingsViewModel?
     @Published var onrampCountrySelectorViewModel: OnrampCountrySelectorViewModel?
-    @Published var onrampCurrencySelectViewModel: OnrampCountryViewModel?
+    @Published var onrampCurrencySelectViewModel: OnrampCurrencySelectorViewModel?
 
     required init(
         dismissAction: @escaping Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?>,
@@ -163,7 +163,13 @@ extension SendCoordinator: OnrampRoutable {
         )
     }
 
-    func openOnrampCurrencySelectorView(repository: any OnrampRepository, dataRepository: any OnrampDataRepository) {}
+    func openOnrampCurrencySelectorView(repository: any OnrampRepository, dataRepository: any OnrampDataRepository) {
+        onrampCurrencySelectViewModel = OnrampCurrencySelectorViewModel(
+            repository: repository,
+            dataRepository: dataRepository,
+            coordinator: self
+        )
+    }
 
     func openOnrampProviders() {
         let coordinator = OnrampProvidersCoordinator { [weak self] in
@@ -195,10 +201,6 @@ extension SendCoordinator: OnrampCountryRoutable {
         rootViewModel?.openOnrampCountrySelectorView()
     }
 
-    func openSettings() {
-        rootViewModel?.openOnrampSettingsView()
-    }
-
     func dismissConfirmCountryView() {
         onrampCountryViewModel = nil
     }
@@ -217,5 +219,13 @@ extension SendCoordinator: OnrampCountrySelectorRoutable {
 extension SendCoordinator: OnrampSettingsRoutable {
     func openOnrampCountrySelector() {
         rootViewModel?.openOnrampCountrySelectorView()
+    }
+}
+
+// MARK: - OnrampCurrencySelectorRoutable
+
+extension SendCoordinator: OnrampCurrencySelectorRoutable {
+    func dismissCurrencySelector() {
+        onrampCurrencySelectViewModel = nil
     }
 }

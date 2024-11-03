@@ -68,6 +68,9 @@ struct SendCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.onrampCountrySelectorViewModel) {
                 OnrampCountrySelectorView(viewModel: $0)
             }
+            .sheet(item: $coordinator.onrampCurrencySelectViewModel) {
+                OnrampCurrencySelectorView(viewModel: $0)
+            }
     }
 }
 
@@ -79,14 +82,11 @@ protocol OnrampCountrySelectorRoutable: AnyObject {
 }
 
 final class OnrampCountrySelectorViewModel: Identifiable, ObservableObject {
+    let preferenceCountry: OnrampCountry?
     @Published var searchText: String = ""
     @Published private(set) var countries: [OnrampCountry] = []
-    @Published private(set) var preferenceCountry: OnrampCountry?
-
-    private let loadedCountries = CurrentValueSubject<[OnrampCountry], Never>([])
 
     private let repository: OnrampRepository
-    private let dataRepository: OnrampDataRepository
     private weak var coordinator: OnrampCountrySelectorRoutable?
 
     init(
@@ -95,35 +95,27 @@ final class OnrampCountrySelectorViewModel: Identifiable, ObservableObject {
         coordinator: OnrampCountrySelectorRoutable
     ) {
         self.repository = repository
-        self.dataRepository = dataRepository
         self.coordinator = coordinator
 
         preferenceCountry = repository.preferenceCountry
 
-        repository.preferenceCountryPublisher
-            .receive(on: DispatchQueue.main)
-            .assign(to: &$preferenceCountry)
+        let countriesPublisher = Async {
+            try await dataRepository.countries()
+        }
 
         Publishers.CombineLatest(
-            loadedCountries,
-            $searchText
+            countriesPublisher,
+            $searchText.eraseError()
         )
         .map { items, searchText in
-            items.filter {
-                $0.identity.name.starts(with: searchText)
-            }
+            SearchUtil.search(searchText, in: items, keyPath: \.identity.name)
+        }
+        .catch { error in
+            // TODO: Handle error
+            return Just([])
         }
         .receive(on: DispatchQueue.main)
         .assign(to: &$countries)
-
-        Task {
-            do {
-                let countries = try await dataRepository.countries()
-                self.loadedCountries.send(countries)
-            } catch {
-                // TODO: Handle error
-            }
-        }
     }
 
     func onSelect(country: OnrampCountry) {
@@ -162,7 +154,21 @@ struct OnrampCountrySelectorView: View {
         )
     }
 
+    @ViewBuilder
     private func listItem(country: OnrampCountry) -> some View {
+        if country.onrampAvailable {
+            Button {
+                viewModel.onSelect(country: country)
+            } label: {
+                row(country: country)
+            }
+        } else {
+            row(country: country)
+                .opacity(0.4)
+        }
+    }
+
+    private func row(country: OnrampCountry) -> some View {
         HStack(alignment: .center, spacing: .zero) {
             if let imageURL = country.identity.image {
                 IconView(
@@ -174,7 +180,6 @@ struct OnrampCountrySelectorView: View {
 
             Text(country.identity.name)
                 .lineLimit(1)
-                .truncationMode(.tail)
                 .font(Fonts.Bold.subheadline)
                 .foregroundColor(Colors.Text.primary1)
                 .padding(.trailing, 6)
@@ -183,6 +188,7 @@ struct OnrampCountrySelectorView: View {
 
             if !country.onrampAvailable {
                 Text("Unavailable")
+                    .lineLimit(1)
                     .font(Fonts.Regular.caption1)
                     .foregroundColor(Colors.Text.tertiary)
             } else if country == viewModel.preferenceCountry {
@@ -194,13 +200,6 @@ struct OnrampCountrySelectorView: View {
         }
         .padding(.vertical, 15)
         .padding(.horizontal, 16)
-        .if(country.onrampAvailable) { view in
-            view.onTapGesture {
-                viewModel.onSelect(country: country)
-            }
-        } else: { view in
-            view.opacity(0.4)
-        }
     }
 }
 
@@ -217,7 +216,8 @@ final class OnrampSettingsViewModel: ObservableObject {
         self.coordinator = coordinator
         selectedCountry = repository.preferenceCountry
 
-        repository.preferenceCountryPublisher.assign(to: &$selectedCountry)
+        repository.preferenceCountryPublisher
+            .assign(to: &$selectedCountry)
     }
 
     func onTapResidence() {
@@ -253,6 +253,7 @@ struct OnrampSettingsView: View {
     private var rowView: some View {
         HStack(spacing: 6) {
             Text("Residence")
+                .lineLimit(1)
                 .font(Fonts.Regular.footnote)
                 .foregroundColor(Colors.Text.secondary)
 
@@ -265,10 +266,9 @@ struct OnrampSettingsView: View {
                 )
 
                 Text(country.name)
+                    .lineLimit(1)
                     .font(Fonts.Regular.subheadline)
                     .foregroundColor(Colors.Text.primary1)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
             }
 
             Assets.chevronRightWithOffset24.image
@@ -281,5 +281,206 @@ struct OnrampSettingsView: View {
             Colors.Background.primary
                 .cornerRadius(14, corners: .allCorners)
         )
+    }
+}
+
+protocol OnrampCurrencySelectorRoutable: AnyObject {
+    func dismissCurrencySelector()
+}
+
+final class OnrampCurrencySelectorViewModel: Identifiable, ObservableObject {
+    let preferenceCurrency: OnrampFiatCurrency?
+    @Published var searchText: String = ""
+    @Published private(set) var popularFiats: [OnrampFiatCurrency] = []
+    @Published private(set) var currencies: [OnrampFiatCurrency] = []
+
+    private let repository: OnrampRepository
+    private weak var coordinator: OnrampCurrencySelectorRoutable?
+
+    init(
+        repository: OnrampRepository,
+        dataRepository: OnrampDataRepository,
+        coordinator: OnrampCurrencySelectorRoutable
+    ) {
+        self.repository = repository
+        self.coordinator = coordinator
+
+        preferenceCurrency = repository.preferenceCurrency
+
+        Async {
+            await dataRepository.popularFiats
+        }
+        .assign(to: &$popularFiats)
+
+        let currenciesPublisher = Async {
+            try await dataRepository.currencies()
+        }
+
+        Publishers.CombineLatest3(
+            currenciesPublisher,
+            $searchText.eraseError(),
+            $popularFiats.eraseError()
+        )
+        .map { items, searchText, popular in
+            guard !searchText.isEmpty else {
+                return items.filter {
+                    !popular.contains($0)
+                }
+            }
+
+            return SearchUtil.search(searchText, in: items, keyPath: \.identity.name)
+        }
+        .catch { error in
+            // TODO: Handle error
+            return Just([])
+        }
+        .receive(on: DispatchQueue.main)
+        .assign(to: &$currencies)
+    }
+
+    func onSelect(currency: OnrampFiatCurrency) {
+        repository.updatePreference(currency: currency)
+        coordinator?.dismissCurrencySelector()
+    }
+}
+
+struct OnrampCurrencySelectorView: View {
+    @ObservedObject var viewModel: OnrampCurrencySelectorViewModel
+
+    var body: some View {
+        VStack(alignment: .center, spacing: .zero) {
+            Color(UIColor.iconInactive)
+                .frame(width: 32, height: 4)
+                .cornerRadius(2, corners: .allCorners)
+                .padding(.vertical, 8)
+
+            CustomSearchBar(
+                searchText: $viewModel.searchText,
+                placeholder: "Search by currency",
+                keyboardType: .alphabet,
+                style: .translucent,
+                clearButtonAction: { viewModel.searchText = "" }
+            )
+            .padding(.horizontal, 16)
+
+            ScrollView {
+                VStack(alignment: .leading, spacing: .zero) {
+                    if viewModel.searchText.isEmpty {
+                        if !viewModel.popularFiats.isEmpty {
+                            Text("Popular Fiats")
+                                .font(Fonts.Bold.footnote)
+                                .foregroundColor(Colors.Text.tertiary)
+                                .padding(.leading, 16)
+                                .padding(.top, 12)
+                                .padding(.bottom, 8)
+
+                            ForEach(viewModel.popularFiats, content: listItem)
+                        }
+
+                        if !viewModel.currencies.isEmpty {
+                            Text("Other currencies")
+                                .font(Fonts.Bold.footnote)
+                                .foregroundColor(Colors.Text.tertiary)
+                                .padding(.leading, 16)
+                                .padding(.top, 12)
+                                .padding(.bottom, 8)
+                        }
+                    }
+
+                    ForEach(viewModel.currencies, content: listItem)
+                }
+            }
+        }
+        .background(
+            Colors.Background.primary.ignoresSafeArea()
+        )
+    }
+
+    @ViewBuilder
+    private func listItem(currency: OnrampFiatCurrency) -> some View {
+        Button {
+            viewModel.onSelect(currency: currency)
+        } label: {
+            row(currency: currency)
+        }
+    }
+
+    private func row(currency: OnrampFiatCurrency) -> some View {
+        HStack(alignment: .center, spacing: .zero) {
+            if let imageURL = currency.identity.image {
+                IconView(
+                    url: imageURL,
+                    size: .init(bothDimensions: 36)
+                )
+                .padding(.trailing, 12)
+            }
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(currency.identity.code)
+                    .font(Fonts.Bold.subheadline)
+                    .foregroundColor(Colors.Text.primary1)
+
+                Text(currency.identity.name)
+                    .lineLimit(1)
+                    .font(Fonts.Regular.caption1)
+                    .foregroundColor(Colors.Text.tertiary)
+            }
+            .padding(.trailing, 6)
+
+            Spacer()
+
+            if currency == viewModel.preferenceCurrency {
+                Assets.checkmark20.image
+                    .resizable()
+                    .frame(size: .init(bothDimensions: 24))
+                    .foregroundColor(Colors.Icon.accent)
+            }
+        }
+        .padding(.vertical, 15)
+        .padding(.horizontal, 16)
+    }
+}
+
+func Async<T>(_ operation: @escaping () async throws -> T) -> AnyPublisher<T, Error> {
+    Future { promise in
+        Task {
+            do {
+                let result = try await operation()
+                promise(.success(result))
+            } catch {
+                promise(.failure(error))
+            }
+        }
+    }
+    .eraseToAnyPublisher()
+}
+
+func Async<T>(_ operation: @escaping () async -> T) -> AnyPublisher<T, Never> {
+    Future { promise in
+        Task {
+            let result = await operation()
+            promise(.success(result))
+        }
+    }
+    .eraseToAnyPublisher()
+}
+
+enum SearchUtil<T> {
+    static func search(_ searchText: String, in items: [T], keyPath: KeyPath<T, String>) -> [T] {
+        if searchText.isEmpty {
+            return items
+        }
+
+        return items
+            .filter { item in
+                item[keyPath: keyPath]
+                    .lowercased()
+                    .contains(searchText.lowercased())
+            }
+            .sorted { item, _ in
+                item[keyPath: keyPath]
+                    .split(separator: " ")
+                    .contains { $0.starts(with: searchText) }
+            }
     }
 }
