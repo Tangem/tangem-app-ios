@@ -35,6 +35,7 @@ class SendCoordinator: CoordinatorObject {
     @Published var expressApproveViewModel: ExpressApproveViewModel?
     @Published var onrampCountryViewModel: OnrampCountryViewModel?
 
+    @Published var onrampSettingsViewModel: OnrampSettingsViewModel?
     @Published var onrampCountrySelectorViewModel: OnrampCountrySelectorViewModel?
     @Published var onrampCurrencySelectViewModel: OnrampCountryViewModel?
 
@@ -155,6 +156,13 @@ extension SendCoordinator: OnrampRoutable {
         )
     }
 
+    func openOnrampSettings(repository: any OnrampRepository) {
+        onrampSettingsViewModel = OnrampSettingsViewModel(
+            repository: repository,
+            coordinator: self
+        )
+    }
+
     func openOnrampCurrencySelectorView(repository: any OnrampRepository, dataRepository: any OnrampDataRepository) {}
 
     func openOnrampProviders() {
@@ -187,6 +195,10 @@ extension SendCoordinator: OnrampCountryRoutable {
         rootViewModel?.openOnrampCountrySelectorView()
     }
 
+    func openSettings() {
+        rootViewModel?.openOnrampSettingsView()
+    }
+
     func dismissConfirmCountryView() {
         onrampCountryViewModel = nil
     }
@@ -197,5 +209,13 @@ extension SendCoordinator: OnrampCountryRoutable {
 extension SendCoordinator: OnrampCountrySelectorRoutable {
     func dismissCountrySelector() {
         onrampCountrySelectorViewModel = nil
+    }
+}
+
+// MARK: - OnrampSettingsRoutable
+
+extension SendCoordinator: OnrampSettingsRoutable {
+    func openOnrampCountrySelector() {
+        rootViewModel?.openOnrampCountrySelectorView()
     }
 }

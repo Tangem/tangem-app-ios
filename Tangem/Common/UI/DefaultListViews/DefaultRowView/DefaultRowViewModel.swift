@@ -50,5 +50,6 @@ extension DefaultRowViewModel {
         case text(_ string: String, sensitive: Bool = false)
         case loader
         case icon(_ image: ImageType)
+        case iconText(_ image: ImageType, string: String, spacing: CGFloat = 6)
     }
 }

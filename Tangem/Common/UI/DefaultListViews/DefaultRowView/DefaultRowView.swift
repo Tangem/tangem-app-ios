@@ -85,6 +85,12 @@ struct DefaultRowView: View {
             )
         case .icon(let imageType):
             imageType.image
+        case .iconText(let imageType, let string, let spacing):
+            HStack(spacing: spacing) {
+                imageType.image
+                Text(string)
+                    .style(appearance.font, color: appearance.detailsColor)
+            }
         }
     }
 }

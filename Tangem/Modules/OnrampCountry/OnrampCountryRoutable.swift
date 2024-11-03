@@ -8,6 +8,7 @@
 
 protocol OnrampCountryRoutable: AnyObject {
     func openChangeCountry()
+    func openSettings()
     func dismissConfirmCountryView()
     func dismiss()
 }

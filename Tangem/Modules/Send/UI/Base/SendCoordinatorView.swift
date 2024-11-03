@@ -16,19 +16,25 @@ struct SendCoordinatorView: CoordinatorView {
     }
 
     var body: some View {
-        ZStack {
-            if let rootViewModel = coordinator.rootViewModel {
-                SendView(viewModel: rootViewModel, transitionService: .init())
-                    .navigationLinks(links)
-            }
+        NavigationView {
+            ZStack {
+                if let rootViewModel = coordinator.rootViewModel {
+                    SendView(viewModel: rootViewModel, transitionService: .init())
+                        .navigationLinks(links)
+                }
 
-            sheets
+                sheets
+            }
         }
+        .accentColor(Colors.Text.primary1)
     }
 
     @ViewBuilder
     private var links: some View {
-        EmptyView()
+        NavHolder()
+            .navigation(item: $coordinator.onrampSettingsViewModel) {
+                OnrampSettingsView(viewModel: $0)
+            }
     }
 
     @ViewBuilder
@@ -151,6 +157,9 @@ struct OnrampCountrySelectorView: View {
                 }
             }
         }
+        .background(
+            Colors.Background.primary.ignoresSafeArea()
+        )
     }
 
     private func listItem(country: OnrampCountry) -> some View {
@@ -192,5 +201,85 @@ struct OnrampCountrySelectorView: View {
         } else: { view in
             view.opacity(0.4)
         }
+    }
+}
+
+protocol OnrampSettingsRoutable: AnyObject {
+    func openOnrampCountrySelector()
+}
+
+final class OnrampSettingsViewModel: ObservableObject {
+    @Published private(set) var selectedCountry: OnrampCountry?
+
+    private weak var coordinator: OnrampSettingsRoutable?
+
+    init(repository: OnrampRepository, coordinator: OnrampSettingsRoutable) {
+        self.coordinator = coordinator
+        selectedCountry = repository.preferenceCountry
+
+        repository.preferenceCountryPublisher.assign(to: &$selectedCountry)
+    }
+
+    func onTapResidence() {
+        coordinator?.openOnrampCountrySelector()
+    }
+}
+
+struct OnrampSettingsView: View {
+    @ObservedObject var viewModel: OnrampSettingsViewModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Button(action: viewModel.onTapResidence) {
+                rowView
+            }
+
+            Text("Please select the correct country to ensure accurate payment options and services.")
+                .font(Fonts.Regular.footnote)
+                .foregroundColor(Colors.Text.tertiary)
+                .padding(.horizontal, 14)
+
+            Spacer()
+        }
+        .padding(.horizontal, 16)
+        .background(
+            Colors.Background.tertiary
+                .ignoresSafeArea()
+        )
+        .navigationBarTitle("Settings", displayMode: .inline)
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private var rowView: some View {
+        HStack(spacing: 6) {
+            Text("Residence")
+                .font(Fonts.Regular.footnote)
+                .foregroundColor(Colors.Text.secondary)
+
+            Spacer()
+
+            if let country = viewModel.selectedCountry?.identity {
+                IconView(
+                    url: country.image,
+                    size: .init(bothDimensions: 20)
+                )
+
+                Text(country.name)
+                    .font(Fonts.Regular.subheadline)
+                    .foregroundColor(Colors.Text.primary1)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+            }
+
+            Assets.chevronRightWithOffset24.image
+                .frame(size: .init(bothDimensions: 24))
+                .foregroundColor(Colors.Icon.informative)
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 11)
+        .background(
+            Colors.Background.primary
+                .cornerRadius(14, corners: .allCorners)
+        )
     }
 }
