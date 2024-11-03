@@ -10,6 +10,7 @@ import Foundation
 import Combine
 import SwiftUI
 import BlockchainSdk
+import TangemFoundation
 
 class SingleTokenBaseViewModel: NotificationTapDelegate {
     @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
