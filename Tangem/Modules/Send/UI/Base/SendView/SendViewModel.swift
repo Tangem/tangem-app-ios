@@ -322,6 +322,19 @@ extension SendViewModel: OnrampModelRoutable {
             alert = error.alertBinder
         }
     }
+
+    func openOnrampCountrySelectorView() {
+        do {
+            let builder = try dataBuilder.onrampBuilder()
+            let (repository, dataRepository) = builder.makeDataForOnrampCountrySelectorView()
+            coordinator?.openOnrampCountrySelector(
+                repository: repository,
+                dataRepository: dataRepository
+            )
+        } catch {
+            alert = error.alertBinder
+        }
+    }
 }
 
 // MARK: - OnrampSummaryRoutable

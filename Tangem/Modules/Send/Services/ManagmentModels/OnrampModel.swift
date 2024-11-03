@@ -12,6 +12,7 @@ import Combine
 
 protocol OnrampModelRoutable: AnyObject {
     func openOnrampCountryBottomSheet(country: OnrampCountry)
+    func openOnrampCountrySelectorView()
 }
 
 class OnrampModel {
