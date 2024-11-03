@@ -55,7 +55,7 @@ final class CasperNetworkService: MultiNetworkProvider {
                 .eraseToAnyPublisher()
         }
     }
-    
+
     func putDeploy(rawData: Data) -> AnyPublisher<String, Error> {
         providerPublisher { provider in
             provider

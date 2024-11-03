@@ -56,7 +56,7 @@ class CasperWalletManager: BaseManager, WalletManager {
         guard let decimalFeeValue = Constants.constantFeeValue else {
             return .anyFail(error: WalletError.failedToGetFee)
         }
-        
+
         let amountFee = Amount(with: wallet.blockchain, type: .coin, value: decimalFeeValue)
         return .justWithError(output: [Fee(amountFee)])
     }
@@ -75,7 +75,7 @@ class CasperWalletManager: BaseManager, WalletManager {
         }
 
         return signer
-            .sign(hash: hashForSign, walletPublicKey: wallet.publicKey)
+            .sign(hash: hashForSign.hexString.sha256(), walletPublicKey: wallet.publicKey)
             .withWeakCaptureOf(self)
             .flatMap { walletManager, signature -> AnyPublisher<String, Error> in
                 guard let rawTransactionData = try? self.transactionBuilder.buildForSend(
@@ -87,7 +87,6 @@ class CasperWalletManager: BaseManager, WalletManager {
                 }
 
                 return walletManager.networkService.putDeploy(rawData: rawTransactionData)
-            
             }
             .withWeakCaptureOf(self)
             .map { walletManager, transactionHash in
@@ -109,7 +108,7 @@ class CasperWalletManager: BaseManager, WalletManager {
 
         wallet.add(amount: Amount(with: wallet.blockchain, type: .coin, value: balanceInfo.value))
     }
-    
+
     private func getCurrentTimestamp() -> String {
         let timestamp = Date().timeIntervalSince1970
         let tE = String(timestamp).components(separatedBy: ".")

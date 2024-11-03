@@ -960,7 +960,7 @@ extension Blockchain: Codable {
         case .energyWebEVM: return "energyWebEVM"
         case .energyWebX: return "energyWebX"
         case .core: return "core"
-        case .casper: return "casper"
+        case .casper: return "casper-network"
         }
     }
 
@@ -1057,7 +1057,7 @@ extension Blockchain: Codable {
         case "energyWebEVM": self = .energyWebEVM(testnet: isTestnet)
         case "energyWebX": self = .energyWebX(curve: curve)
         case "core": self = .core(testnet: isTestnet)
-        case "casper": self = .casper(testnet: isTestnet)
+        case "casper-network": self = .casper(testnet: isTestnet)
         default:
             throw BlockchainSdkError.decodingFailed
         }
@@ -1299,7 +1299,7 @@ private extension Blockchain {
             case .coin: return "coredaoorg"
             }
         case .casper:
-            return "casper"
+            return "casper-network"
         }
     }
 

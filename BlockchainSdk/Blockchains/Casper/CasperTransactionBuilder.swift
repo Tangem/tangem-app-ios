@@ -103,7 +103,7 @@ private extension CasperTransactionBuilder {
         namedArgSessionId.argsItem = clValueSessionId
 
         let runTimeArgsSession = RuntimeArgs()
-        runTimeArgsSession.listNamedArg = [namedArgSessionAmount, namedArgSessionTarget]
+        runTimeArgsSession.listNamedArg = [namedArgSessionAmount, namedArgSessionTarget, namedArgSessionId]
         let session: ExecutableDeployItem = .transfer(args: runTimeArgsSession)
 
         return session
@@ -143,7 +143,7 @@ private extension CasperTransactionBuilder {
 
         return ExecutableDeployItem.moduleBytes(module_bytes: CSPRBytes.fromStrToBytes(from: ""), args: runTimeArgs)
     }
-    
+
     func signatureByCurveWithPrefix(signature: Data, for elipticCurve: EllipticCurve) throws -> String {
         switch elipticCurve {
         case .ed25519, .ed25519_slip0010:

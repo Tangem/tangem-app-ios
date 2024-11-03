@@ -60,8 +60,21 @@ final class CasperTests: XCTestCase {
 
     // MARK: - Transaction Tests
 
+    /*
+
+     private companion object {
+         const val PUBLIC_KEY = "03ae9bdc765678be0ef74c3845f1f506fa8dbbef7a57aaa39a40daafc13dc9ac60"
+         const val SIGNATURE = "020d735191dbc378a30d9c122384bf77169d165d0123ce16c31cf3d86cb213aa1b26842d9e204f0c2c5f6719f1371fd9710d01b766bd724a099c45305fae776185"
+         const val SOURCE_ADDRESS = "0203ae9bdc765678be0ef74c3845f1f506fa8dbbef7a57aaa39a40daafc13dc9ac60"
+         const val DESTINATION_ADDRESS = "0198c07d7e72d89a681d7227a7af8a6fd5f22fe0105c8741d55a95df415454b82e"
+         const val TIMESTAMP = "2024-10-12T12:04:41.031Z"
+
+         val CSPR_AMOUNT = Amount(currencySymbol = "CSPR", value = null, decimals = 9, type = AmountType.Coin)
+     }
+     */
+
     func testBuildForSign() throws {
-        let txBuilder = CasperTransactionBuilder(blockchain: blockchain)
+        let txBuilder = CasperTransactionBuilder(blockchain: blockchain, curve: .secp256k1)
         let transferAmount = Amount(with: blockchain, value: 2.5)
         let feeAmount = Amount(with: blockchain, value: 0.1)
 

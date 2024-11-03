@@ -40,7 +40,7 @@ struct CasperTarget: TargetType {
     var task: Task {
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
-        
+
         switch type {
         case .getBalance(let data):
             return .requestJSONRPC(
@@ -55,7 +55,7 @@ struct CasperTarget: TargetType {
     }
 
     var headers: [String: String]? {
-        var headers = [String:String]()
+        var headers = [String: String]()
 
         switch type {
         case .putDeploy:

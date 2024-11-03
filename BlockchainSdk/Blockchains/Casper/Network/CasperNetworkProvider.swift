@@ -35,7 +35,7 @@ final class CasperNetworkProvider: HostProvider {
         let query = CasperNetworkRequest.QueryBalance(purseIdentifier: .init(mainPurseUnderPublicKey: address))
         return requestPublisher(for: .getBalance(data: query))
     }
-    
+
     func putDeploy(rawJSON: Data) -> AnyPublisher<CasperNetworkResponse.Transaction, Error> {
         return requestPublisher(for: .putDeploy(data: rawJSON))
     }
