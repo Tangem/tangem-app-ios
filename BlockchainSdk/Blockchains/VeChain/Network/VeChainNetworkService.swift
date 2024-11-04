@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import BigInt
+import TangemFoundation
 
 final class VeChainNetworkService: MultiNetworkProvider {
     let providers: [VeChainNetworkProvider]
