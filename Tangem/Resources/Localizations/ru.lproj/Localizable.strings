@@ -711,6 +711,8 @@
 "staking_notification_earn_rewards_text_period_week" = "Стейкинг дает возможность вам получать %1$@. Награда будет зачисляться каждую неделю.";
 "staking_notification_earn_rewards_text_weekly" = "Стейкайте безопасно и начинайте получать еженедельные награды.";
 "staking_notification_earn_rewards_title" = "Получите награду за стейкинг";
+"staking_notification_low_staked_balance_text" = "Your remaining staked balance will be too low to unstake. You’ll need to stake more to meet the minimum unstake amount.";
+"staking_notification_low_staked_balance_title" = "Low staked balance";
 "staking_notification_network_error_text" = "Стейкинг временно недоступен из-за проблем в сети. Пожалуйста, попробуйте позже.";
 "staking_notification_new_validator_funds_transfer" = "Стейкинг в сети %1$@ с новым валидатором автоматически переведет ваши текущие застейканные средства на него.";
 "staking_notification_restake_rewards_text" = "Реинвестируйте свои заработанные награды в вашу застейканную сумму, увеличивая потенциальный доход";
@@ -755,6 +757,7 @@
 "staking_unbonding_in" = "Отзыв через";
 "staking_unlocked_locked" = "Разблокировать";
 "staking_unlocking" = "Разблокировка";
+"staking_unstake_amount_requirement_error" = "The amount to unstake must be at least %@";
 "staking_unstake_amount_validation_error" = "Сумма превышает застейканный баланс";
 "staking_unstaked" = "Вывод из стейкинга";
 "staking_unstaked_footer" = "Проверьте процесс завершения стейкинга, чтобы вывести свои средства.";

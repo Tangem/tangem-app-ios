@@ -95,12 +95,10 @@ private extension CommonStakingNotificationManager {
         }
     }
 
-    func update(state: UnstakingModel.State, yield: YieldInfo, action: UnstakingModel.Action) {
+    func update(state: UnstakingModel.State, yield: YieldInfo, action: UnstakingModel.Action, stakedBalance: Decimal) {
         switch (state, action.type) {
-        case (.loading, .pending(.withdraw)), (.ready, .pending(.withdraw)):
-            show(notification: .withdraw)
-            hideErrorNotifications()
-        case (.loading, .pending(.claimUnstaked)), (.ready, .pending(.claimUnstaked)):
+        case (.loading, .pending(.withdraw)), (.ready, .pending(.withdraw)),
+             (.loading, .pending(.claimUnstaked)), (.ready, .pending(.claimUnstaked)):
             show(notification: .withdraw)
             hideErrorNotifications()
         case (.loading, .pending(.claimRewards)), (.ready, .pending(.claimRewards)):
@@ -125,8 +123,14 @@ private extension CommonStakingNotificationManager {
                     )
                 }
             }()
+            let unstakeNotificationEvent: StakingNotificationEvent = .unstake(description: description)
 
-            show(notification: .unstake(description: description))
+            let remainingAmount = stakedBalance - action.amount
+            if remainingAmount > 0, remainingAmount < yield.exitMinimumRequirement {
+                show(events: [unstakeNotificationEvent, .lowStakedBalance])
+            } else {
+                show(notification: unstakeNotificationEvent)
+            }
             hideErrorNotifications()
         case (.validationError(let validationError, _), _):
             let factory = BlockchainSDKNotificationMapper(tokenItem: tokenItem, feeTokenItem: feeTokenItem)
@@ -231,7 +235,12 @@ extension CommonStakingNotificationManager: StakingNotificationManager {
         )
         .withWeakCaptureOf(self)
         .sink { manager, state in
-            manager.update(state: state.0, yield: state.1, action: provider.stakingAction)
+            manager.update(
+                state: state.0,
+                yield: state.1,
+                action: provider.stakingAction,
+                stakedBalance: provider.stakedBalance
+            )
         }
     }
 
@@ -253,7 +262,7 @@ extension CommonStakingNotificationManager: StakingNotificationManager {
         )
         .withWeakCaptureOf(self)
         .sink { manager, state in
-            manager.update(state: state.0, yield: state.1, action: provider.stakingAction)
+            manager.update(state: state.0, yield: state.1, action: provider.stakingAction, stakedBalance: provider.stakingAction.amount)
         }
     }
 

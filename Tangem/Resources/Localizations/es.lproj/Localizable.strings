@@ -711,6 +711,8 @@
 "staking_notification_earn_rewards_text_period_week" = "El staking le permite ganar %1$@. Sus recompensas por apostar llegan todas las semanas.";
 "staking_notification_earn_rewards_text_weekly" = "Haga staking de forma segura y comience a ganar recompensas semanales";
 "staking_notification_earn_rewards_title" = "Gane recompensas por staking";
+"staking_notification_low_staked_balance_text" = "Your remaining staked balance will be too low to unstake. You’ll need to stake more to meet the minimum unstake amount.";
+"staking_notification_low_staked_balance_title" = "Low staked balance";
 "staking_notification_network_error_text" = "El staking no está disponible actualmente debido a las condiciones de la red. Inténtelo de nuevo más tarde.";
 "staking_notification_new_validator_funds_transfer" = "El staking en la red %1$@ con un nuevo validador transferirá automáticamente todos los fondos previamente en staking a este validador.";
 "staking_notification_restake_rewards_text" = "Reinvierta las recompensas obtenidas en el monto apostado, aumentando las ganancias potenciales.";
@@ -755,6 +757,7 @@
 "staking_unbonding_in" = "Desunión en";
 "staking_unlocked_locked" = "Desbloquear";
 "staking_unlocking" = "Desbloqueando";
+"staking_unstake_amount_requirement_error" = "The amount to unstake must be at least %@";
 "staking_unstake_amount_validation_error" = "El monto excede el saldo apostado";
 "staking_unstaked" = "Sin staking";
 "staking_unstaked_footer" = "Marque activos sin staking para reclamarlos";

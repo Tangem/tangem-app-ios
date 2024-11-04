@@ -711,6 +711,8 @@
 "staking_notification_earn_rewards_text_period_week" = "Mit dem Staking kannst Du %1$@ verdienen. Deine Staking-Belohnungen erhältst Du jede Woche.";
 "staking_notification_earn_rewards_text_weekly" = "Sicher staken und wöchentliche Belohnungen verdienen.";
 "staking_notification_earn_rewards_title" = "Verdiene Staking-Belohnungen";
+"staking_notification_low_staked_balance_text" = "Your remaining staked balance will be too low to unstake. You’ll need to stake more to meet the minimum unstake amount.";
+"staking_notification_low_staked_balance_title" = "Low staked balance";
 "staking_notification_network_error_text" = "Aufgrund von Netzwerkproblemen ist Staking derzeit nicht verfügbar. Bitte versuche es später erneut.";
 "staking_notification_new_validator_funds_transfer" = "Beim Staking im %1$@ -Netzwerk mit einem neuen Validator werden alle zuvor eingesetzten Kryptos automatisch an diesen Validator übertragen";
 "staking_notification_restake_rewards_text" = "Reinvestiert Deine verdienten Prämien in Deinen Einsatzbetrag und erhöht so den potenziellen Gewinn.";
@@ -755,6 +757,7 @@
 "staking_unbonding_in" = "Entbindung in";
 "staking_unlocked_locked" = "Gelocktes unlocken";
 "staking_unlocking" = "Entsperren";
+"staking_unstake_amount_requirement_error" = "The amount to unstake must be at least %@";
 "staking_unstake_amount_validation_error" = "Der Betrag übersteigt das eingesetzte Guthaben";
 "staking_unstaked" = "Unstaken";
 "staking_unstaked_footer" = "Prüfe, was nicht eingesetzt wurde, um dein Vermögen zu beanspruchen";
