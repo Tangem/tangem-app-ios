@@ -747,6 +747,7 @@
 "staking_rewards" = "Винагороди";
 "staking_stake_locked" = "Стейкінг закрито";
 "staking_stake_more" = "Застейкати більше";
+"staking_staked_amount" = "Staked amount";
 "staking_summary_description_text" = "Ви стейкаєте %1$@ і будете отримуватиме винагороду %2$@";
 "staking_tap_to_unlock" = "Натисніть, щоб розблокувати";
 "staking_tap_to_unlock_or_vote" = "Натисніть, щоб розблокувати або проголосувати";

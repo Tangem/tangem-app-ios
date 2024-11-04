@@ -62,6 +62,33 @@ struct SendDependenciesBuilder {
         }
     }
 
+    func walletHeaderText(for actionType: SendFlowActionType) -> String {
+        switch actionType {
+        case .unstake: Localization.stakingStakedAmount
+        default: walletName()
+        }
+    }
+
+    func formattedBalance(for amount: SendAmount?, actionType: SendFlowActionType) -> String {
+        let balanceFormatted: WalletModel.BalanceFormatted
+        switch actionType {
+        case .unstake:
+            let balance = WalletModel.Balance(
+                crypto: amount?.crypto,
+                fiat: amount?.fiat
+            )
+            let cryptoFormatted = walletModel.formatter.formatCryptoBalance(
+                balance.crypto,
+                currencyCode: walletModel.tokenItem.currencySymbol
+            )
+            let fiatFormatted = walletModel.formatter.formatFiatBalance(balance.fiat)
+            balanceFormatted = WalletModel.BalanceFormatted(crypto: cryptoFormatted, fiat: fiatFormatted)
+        default:
+            balanceFormatted = walletModel.availableBalanceFormatted
+        }
+        return Localization.commonCryptoFiatFormat(balanceFormatted.crypto, balanceFormatted.fiat)
+    }
+
     func walletName() -> String {
         userWalletModel.name
     }

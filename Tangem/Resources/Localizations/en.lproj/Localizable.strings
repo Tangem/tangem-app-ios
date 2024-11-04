@@ -747,6 +747,7 @@
 "staking_rewards" = "Rewards";
 "staking_stake_locked" = "Stake locked";
 "staking_stake_more" = "Stake more";
+"staking_staked_amount" = "Staked amount";
 "staking_summary_description_text" = "You stake %1$@ and will be receiving your reward %2$@";
 "staking_tap_to_unlock" = "Tap to unlock";
 "staking_tap_to_unlock_or_vote" = "Tap to unlock or vote";

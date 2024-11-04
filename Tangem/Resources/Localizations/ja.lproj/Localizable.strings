@@ -747,6 +747,7 @@
 "staking_rewards" = "報酬";
 "staking_stake_locked" = "ステーキングはロックされています";
 "staking_stake_more" = "もっとステーキングする";
+"staking_staked_amount" = "Staked amount";
 "staking_summary_description_text" = "%1$@をステーキングし、報酬%2$@を受け取ります";
 "staking_tap_to_unlock" = "タップしてロック解除";
 "staking_tap_to_unlock_or_vote" = "タップしてロック解除もしくは投票";

@@ -747,6 +747,7 @@
 "staking_rewards" = "Belohnungen";
 "staking_stake_locked" = "Stake gesperrt";
 "staking_stake_more" = "Mehr staken";
+"staking_staked_amount" = "Staked amount";
 "staking_summary_description_text" = "Du setzt %1$@ ein und ethältst Deine Belohnung %2$@";
 "staking_tap_to_unlock" = "Zum Entsperren antippen";
 "staking_tap_to_unlock_or_vote" = "Tippe zum Entsperren oder Abstimmen";
