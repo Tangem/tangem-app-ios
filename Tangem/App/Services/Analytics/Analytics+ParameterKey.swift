@@ -27,6 +27,7 @@ extension Analytics {
         case currency = "Currency Type" // fiat
         case success
         case token = "Token"
+        case tokens = "Tokens"
         case derivationPath = "Derivation Path"
         case derivation = "Derivation"
         case network = "Network"

@@ -256,7 +256,7 @@ extension TokenNotificationEvent {
         case .notEnoughFeeForTransaction(let configuration):
             return [.token: configuration.eventConfiguration.feeAmountTypeCurrencySymbol]
         case .someNetworksUnreachable(let networks):
-            return [.token: networks.map(\.tokenItem.currencySymbol).joined(separator: ",")]
+            return [.tokens: networks.map(\.tokenItem.currencySymbol).joined(separator: ", ")]
         case .rentFee,
              .noAccount,
              .existentialDepositWarning,
