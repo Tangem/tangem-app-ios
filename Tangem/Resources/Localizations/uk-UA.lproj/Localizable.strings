@@ -668,6 +668,7 @@
 "staking_active_footer" = "Для завершення стейкінгу натисніть на блок вище";
 "staking_amount_requirement_error" = "Сума для стейкінгу має бути не менше %@";
 "staking_amount_tron_integer_error" = "Сума стейкінгу буде округлена до %1$@ TRX відповідно до правил мережі.";
+"staking_amount_tron_integer_error_unstaking" = "Staking amount will be rounded to %1$@ TRX due to network rules.";
 "staking_claim_unstaked" = "Зняти кошти";
 "staking_details_account_fee" = "Комісія за стейкінг-акаунт";
 "staking_details_account_fee_info" = "Стейкінг-акаунт - це спеціальний рахунок, на якому зберігаються застейкані SOL токени. Він створюється, коли ви делегуєте свої токени валідатору для участі у перевірці транзакцій та отримання винагород. За створення стейкінг-акаунту стягується невелика комісія, яка повертається після завершення стейкінгу.";

@@ -668,6 +668,7 @@
 "staking_active_footer" = "資産のステーキングを解除するには、上のブロックをタップしてください";
 "staking_amount_requirement_error" = "ステーキング金額は %@ 以上である必要があります";
 "staking_amount_tron_integer_error" = "ネットワークルールにより、ステーキング金額は%1$@ TRX に切り上げられます。";
+"staking_amount_tron_integer_error_unstaking" = "ネットワークルールにより、ステーキング解除の量は[%1$s] TRX に切り上げられます。";
 "staking_claim_unstaked" = "ステーキング解除分を請求する";
 "staking_details_account_fee" = "ステーキングアカウント手数料";
 "staking_details_account_fee_info" = "ステーキングアカウントは、ステーキングされたSOLトークンが保管される特別なアカウントです。取引の検証に参加して報酬を得るために、トークンをバリデーターに委任すると、このアカウントが作成されます。ステーキングアカウントの作成には少額の手数料がかかりますが、この手数料はステーキングが完了すると返金されます。";

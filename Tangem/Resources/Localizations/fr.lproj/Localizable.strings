@@ -668,6 +668,7 @@
 "staking_active_footer" = "Afin d'unstaker vos actifs, appuyez sur le bloc ci-dessus";
 "staking_amount_requirement_error" = "Le montant à staker doit être au moins %@";
 "staking_amount_tron_integer_error" = "Le montant du staking sera arrondi à %1$@ TRX en raison des règles du réseau.";
+"staking_amount_tron_integer_error_unstaking" = "Staking amount will be rounded to %1$@ TRX due to network rules.";
 "staking_claim_unstaked" = "Réclamation déstakée";
 "staking_details_account_fee" = "Frais de staking du compte";
 "staking_details_account_fee_info" = "Un compte de staking est un compte spécial où sont stockés les jetons SOL stakés. Il est créé lorsque vous déléguez vos jetons à un validateur pour participer à la validation des transactions et gagner des récompenses. Des frais minimes sont facturés pour la création du compte de staking, qui sont restitués une fois le staking terminé.";
