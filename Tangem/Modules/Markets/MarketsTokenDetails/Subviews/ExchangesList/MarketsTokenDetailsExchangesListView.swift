@@ -15,6 +15,7 @@ struct MarketsTokenDetailsExchangesListView: View {
 
     @State private var isListContentObscured = false
     @State private var headerHeight: CGFloat = .zero
+    @State private var safeArea: EdgeInsets = .init()
 
     private var isDarkColorScheme: Bool { colorScheme == .dark }
     private var defaultBackgroundColor: Color { Colors.Background.primary }
@@ -37,6 +38,7 @@ struct MarketsTokenDetailsExchangesListView: View {
             .background(defaultBackgroundColor.ignoresSafeArea())
             .animation(.default, value: viewModel.exchangesList)
             .ignoresSafeArea(.container, edges: .top) // Without it, the content won't go into the safe area top zone on over-scroll
+            .readGeometry(\.safeAreaInsets, bindTo: $safeArea)
     }
 
     @ViewBuilder
@@ -46,11 +48,17 @@ struct MarketsTokenDetailsExchangesListView: View {
                 .opacity(viewModel.overlayContentHidingProgress)
 
             VStack(spacing: 0) {
-                MarketsNavigationBar(
-                    isMarketsSheetStyle: viewModel.isMarketsSheetStyle,
-                    title: navigationBarTitle,
-                    onBackButtonAction: viewModel.onBackButtonAction
-                )
+                if viewModel.isMarketsSheetStyle {
+                    MarketsNavigationBar(
+                        isMarketsSheetStyle: viewModel.isMarketsSheetStyle,
+                        title: navigationBarTitle,
+                        onBackButtonAction: viewModel.onBackButtonAction
+                    )
+                } else {
+                    // Native navigation bar is used, so we install an invisible spacer to align the header below the navigation bar
+                    Color.clear
+                        .frame(height: safeArea.top)
+                }
 
                 header
                     .opacity(viewModel.overlayContentHidingProgress)

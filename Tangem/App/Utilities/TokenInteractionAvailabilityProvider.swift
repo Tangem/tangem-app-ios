@@ -105,8 +105,8 @@ struct TokenInteractionAvailabilityProvider {
              .energyWebEVM,
              .energyWebX,
              .core,
+             .canxium,
              .casper:
-
             // Checking that we have at least one valid (non-empty) address
             //
             // If necessary, add more specific conditions for newly added blockchains
