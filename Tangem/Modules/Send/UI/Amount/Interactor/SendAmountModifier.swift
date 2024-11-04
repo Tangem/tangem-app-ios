@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import TangemFoundation
 
 protocol SendAmountModifier {
     var modifyingMessagePublisher: AnyPublisher<String?, Never> { get }
