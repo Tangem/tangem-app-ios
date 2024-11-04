@@ -10,6 +10,7 @@ import Foundation
 import BlockchainSdk
 import Combine
 import BigInt
+import TangemFoundation
 
 class CustomEvmFeeService {
     private weak var output: CustomFeeServiceOutput?

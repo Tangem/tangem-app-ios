@@ -52,8 +52,8 @@ class ChiaTests: XCTestCase {
 
     func testTransactionVector1() throws {
         let walletPublicKey = Data(hexString: "8FAC07255C7F3FE670E21E49CC5E70328F4181440A535CC18CF369FD280BA18FA26E28B52035717DB29BFF67105894B2")
-        let sendValue = Decimal("0.0003")!
-        let feeValue = Decimal("0.000000164238")!
+        let sendValue = Decimal(stringValue: "0.0003")!
+        let feeValue = Decimal(stringValue: "0.000000164238")!
         let destinationAddress = "xch1g36l3auawuejw3nvq08p29lw4wst4qrq9hddvtn9vv9nz822avgsrwte2v"
         let sourceAddress = try addressService.makeAddress(from: walletPublicKey)
 
@@ -108,8 +108,8 @@ class ChiaTests: XCTestCase {
     func testTransactionVector2() throws {
         let walletPublicKey = Data(hexString: "a259d941e9c70adb0dfa5b7ddc399d7eda3fe263b24cfd8123114b6c89a2e8c5263d063f48dabf50d72c05a2afc0f4fc")
 
-        let sendValue = Decimal("0.02")!
-        let feeValue = Decimal("0.000000027006")!
+        let sendValue = Decimal(stringValue: "0.02")!
+        let feeValue = Decimal(stringValue: "0.000000027006")!
         let destinationAddress = "xch1m2g36ha9krk4xr7aazzhl98ghy5gzklxtrga3ce62zf6at7ef72s22xhyx"
         let sourceAddress = try addressService.makeAddress(from: walletPublicKey)
 

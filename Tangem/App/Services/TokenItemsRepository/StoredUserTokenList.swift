@@ -26,6 +26,10 @@ struct StoredUserTokenList: Codable, Equatable {
         let decimalCount: Int
         let blockchainNetwork: BlockchainNetwork
         let contractAddress: String?
+
+        var coinId: String? {
+            contractAddress == nil ? blockchainNetwork.blockchain.coinId : id
+        }
     }
 
     let entries: [Entry]

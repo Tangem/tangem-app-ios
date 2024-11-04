@@ -9,6 +9,7 @@
 import Foundation
 import Moya
 import Combine
+import TangemFoundation
 
 class XRPNetworkProvider: XRPNetworkServiceType, HostProvider {
     var host: String {
@@ -69,7 +70,7 @@ class XRPNetworkProvider: XRPNetworkServiceType, HostProvider {
                 try xrpResponse.assertAccountCreated()
 
                 guard let unconfirmedBalanceString = xrpResponse.result?.account_data?.balance,
-                      let unconfirmedBalance = Decimal(unconfirmedBalanceString) else {
+                      let unconfirmedBalance = Decimal(stringValue: unconfirmedBalanceString) else {
                     throw XRPError.failedLoadUnconfirmed
                 }
 
@@ -100,7 +101,7 @@ class XRPNetworkProvider: XRPNetworkServiceType, HostProvider {
                 guard let accountResponse = xrpResponse.result?.account_data,
                       let balanceString = accountResponse.balance,
                       let sequence = accountResponse.sequence,
-                      let balance = Decimal(balanceString) else {
+                      let balance = Decimal(stringValue: balanceString) else {
                     throw XRPError.failedLoadInfo
                 }
 

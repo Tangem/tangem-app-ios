@@ -9,6 +9,7 @@
 import Foundation
 import Moya
 import Combine
+import TangemFoundation
 
 /// Documentations:
 /// https://github.com/RavenDevKit/insight-api
@@ -144,7 +145,7 @@ private extension RavencoinNetworkProvider {
                 $0.scriptPubKey.addresses.contains { $0 == walletAddress }
             }
 
-            value = outputs.compactMap { Decimal($0.value) }.reduce(0, +)
+            value = outputs.compactMap { Decimal(stringValue: $0.value) }.reduce(0, +)
 
         } else {
             // Find all outputs from the our address
@@ -152,7 +153,7 @@ private extension RavencoinNetworkProvider {
                 $0.scriptPubKey.addresses.contains { $0 != walletAddress }
             }
 
-            value = outputs.compactMap { Decimal($0.value) }.reduce(0, +)
+            value = outputs.compactMap { Decimal(stringValue: $0.value) }.reduce(0, +)
         }
 
         let otherAddresses = transaction.vout.filter {

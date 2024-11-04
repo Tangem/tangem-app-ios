@@ -8,6 +8,7 @@
 
 import BigInt
 import Combine
+import TangemFoundation
 
 // This is a workaround for sending a Mantle transaction.
 // Unfortunately, Mantle's current implementation does not conform to our existing fee calculation rules.
