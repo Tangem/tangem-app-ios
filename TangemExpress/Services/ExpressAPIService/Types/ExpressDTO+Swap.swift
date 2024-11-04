@@ -33,6 +33,7 @@ extension ExpressDTO {
                 let contractAddress: String
                 let network: String
                 let exchangeAvailable: Bool
+                let onrampAvailable: Bool?
             }
         }
 

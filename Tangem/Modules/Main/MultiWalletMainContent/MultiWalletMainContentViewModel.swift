@@ -13,8 +13,6 @@ import CombineExt
 import TangemStaking
 
 final class MultiWalletMainContentViewModel: ObservableObject {
-    @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
-
     // MARK: - ViewState
 
     @Published var isLoadingTokenList: Bool = true
