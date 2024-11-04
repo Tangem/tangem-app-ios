@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TangemFoundation
 
 /// Formatter that can work around NumberFormatter's limitations on Decimal numbers with currency
 struct SendCryptoValueFormatter {

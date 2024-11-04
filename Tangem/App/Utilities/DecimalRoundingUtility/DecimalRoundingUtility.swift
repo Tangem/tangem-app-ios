@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TangemFoundation
 
 struct DecimalRoundingUtility {
     func roundDecimal(_ value: Decimal, with roundingType: AmountRoundingType?) -> Decimal {

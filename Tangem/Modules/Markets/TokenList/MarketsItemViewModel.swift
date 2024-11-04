@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import TangemFoundation
 
 class MarketsItemViewModel: Identifiable, ObservableObject {
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository

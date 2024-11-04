@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import TangemFoundation
 
 final class NEARNetworkService: MultiNetworkProvider {
     let providers: [NEARNetworkProvider]
@@ -67,7 +68,7 @@ final class NEARNetworkService: MultiNetworkProvider {
                     let senderIsNotReceiverCumulativeAdditionalSendCost = Decimal(createAccountCostConfig.sendNotSir)
                         + Decimal(addKeyCostConfig.sendNotSir)
 
-                    let storageAmountPerByte = Decimal(result.runtimeConfig.storageAmountPerByte)
+                    let storageAmountPerByte = Decimal(stringValue: result.runtimeConfig.storageAmountPerByte)
                         ?? NEARProtocolConfig.fallbackProtocolConfig.storageAmountPerByte
 
                     return NEARProtocolConfig(

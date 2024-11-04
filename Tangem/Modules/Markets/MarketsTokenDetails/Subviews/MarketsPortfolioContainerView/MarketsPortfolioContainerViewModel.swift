@@ -144,7 +144,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             var networkIds = availableNetworksIds
             let userTokenList = userWalletModel.userTokenListManager.userTokensList
             for entry in userTokenList.entries {
-                guard let entryId = entry.id else {
+                guard let entryId = entry.coinId else {
                     continue
                 }
 
