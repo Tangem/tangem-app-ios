@@ -31,7 +31,7 @@ final class CasperNetworkService: MultiNetworkProvider {
     func getBalance(address: String) -> AnyPublisher<CasperBalance, Error> {
         return providerPublisher { provider in
             return provider
-                .getBalance(address: "01f03bbc42a3d5901c7232987ba84ab2c6d210973a0cfe742284dcb1d8b4cbe1c3")
+                .getBalance(address: address)
                 .withWeakCaptureOf(self)
                 .tryMap { service, result in
                     guard let balanceValue = Decimal(string: result.balance) else {
