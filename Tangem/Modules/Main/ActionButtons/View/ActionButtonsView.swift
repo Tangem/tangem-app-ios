@@ -15,12 +15,9 @@ struct ActionButtonsView: View {
         HStack(spacing: 8) {
             ForEach(viewModel.actionButtonViewModels) {
                 ActionButtonView(viewModel: $0)
+                    .disabled(viewModel.isButtonsDisabled)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 16)
-        .task {
-            await viewModel.fetchData()
-        }
     }
 }

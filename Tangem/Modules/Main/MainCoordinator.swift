@@ -39,6 +39,7 @@ class MainCoordinator: CoordinatorObject {
     @Published var modalOnboardingCoordinator: OnboardingCoordinator?
     @Published var sendCoordinator: SendCoordinator? = nil
     @Published var expressCoordinator: ExpressCoordinator? = nil
+    @Published var actionButtonsBuyCoordinator: ActionButtonsBuyCoordinator<ActionButtonsTokenSelectorItemBuilder>? = nil
 
     // MARK: - Child view models
 
@@ -78,8 +79,7 @@ class MainCoordinator: CoordinatorObject {
             coordinator: self,
             swipeDiscoveryHelper: swipeDiscoveryHelper,
             mainUserWalletPageBuilderFactory: CommonMainUserWalletPageBuilderFactory(coordinator: self),
-            pushNotificationsAvailabilityProvider: pushNotificationsAvailabilityProvider,
-            actionButtonsViewModel: makeActionButtonsViewModel()
+            pushNotificationsAvailabilityProvider: pushNotificationsAvailabilityProvider
         )
 
         swipeDiscoveryHelper.delegate = viewModel
@@ -456,8 +456,18 @@ extension MainCoordinator: PushNotificationsPermissionRequestDelegate {
 // MARK: - Action buttons
 
 extension MainCoordinator: ActionButtonsRoutable {
-    func openBuy() {
-        // IOS-8237
+    func openBuy(userWalletModel: UserWalletModel) {
+        actionButtonsBuyCoordinator = ActionButtonsBuyCoordinator(
+            expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel),
+            openBuy: { url in
+                self.openBuyCrypto(
+                    at: url,
+                    action: { [weak self] in
+                        self?.actionButtonsBuyCoordinator = nil
+                    }
+                )
+            }
+        )
     }
 
     func openSwap() {
@@ -466,17 +476,6 @@ extension MainCoordinator: ActionButtonsRoutable {
 
     func openSell() {
         // IOS-8237
-    }
-}
-
-extension MainCoordinator {
-    private func makeActionButtonsViewModel() -> ActionButtonsViewModel {
-        ActionButtonsViewModel(
-            actionButtonFactory: CommonActionButtonsFactory(
-                coordinator: self,
-                actionButtons: [.buy, .swap, .sell]
-            )
-        )
     }
 }
 

@@ -13,6 +13,10 @@ struct MultiWalletMainContentView: View {
 
     var body: some View {
         VStack(spacing: 14) {
+            if let actionButtonsViewModel = viewModel.actionButtonsViewModel {
+                ActionButtonsView(viewModel: actionButtonsViewModel)
+            }
+
             ForEach(viewModel.bannerNotificationInputs) { input in
                 NotificationView(input: input)
                     .transition(.notificationTransition)
