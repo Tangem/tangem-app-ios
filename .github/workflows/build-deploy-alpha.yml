@@ -73,7 +73,7 @@ jobs:
         run: |
           JIRA_DESCRIPTION="${JIRA_ISSUE_KEY} ${JIRA_ISSUE_SUMMARY}"
 
-          if [[ "${JIRA_DESCRIPTION}" == " " ]]; then
+          if [[ "${JIRA_DESCRIPTION}" =~ ^[[:space:]]*$ ]]; then
             JIRA_DESCRIPTION="N/A"
           fi
 
