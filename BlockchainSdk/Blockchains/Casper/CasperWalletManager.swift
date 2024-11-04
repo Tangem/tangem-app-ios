@@ -75,13 +75,13 @@ class CasperWalletManager: BaseManager, WalletManager {
         }
 
         return signer
-            .sign(hash: hashForSign.hexString.sha256(), walletPublicKey: wallet.publicKey)
+            .sign(hash: hashForSign.sha256(), walletPublicKey: wallet.publicKey)
             .withWeakCaptureOf(self)
             .flatMap { walletManager, signature -> AnyPublisher<String, Error> in
                 guard let rawTransactionData = try? self.transactionBuilder.buildForSend(
                     transaction: transaction,
                     timestamp: timestamp,
-                    signature: signature.signature
+                    signature: signature
                 ) else {
                     return .anyFail(error: WalletError.failedToSendTx)
                 }

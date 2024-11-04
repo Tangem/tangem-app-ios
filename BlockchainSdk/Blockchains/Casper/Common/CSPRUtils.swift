@@ -53,119 +53,15 @@ enum CSPRUtils {
             }
             return valueBack
         }
-        if ttl.contains("days") {
-            let index = ttl.index(ttl.endIndex, offsetBy: -4)
-            let day64 = UInt64(String(ttl[..<index]))! * 24 * 3600 * 1000
-            return day64
-        } else if ttl.contains("day") {
-            let index = ttl.index(ttl.endIndex, offsetBy: -3)
-            let day64 = UInt64(String(ttl[..<index]))! * 24 * 3600 * 1000
-            return day64
-        } else if ttl.contains("months") {
-            let index = ttl.index(ttl.endIndex, offsetBy: -6)
-            let h64 = UInt64(String(ttl[..<index]))!
-            let result = h64 * 3600 * 1000 * 24 * 30 + h64 * 3600 * 440 * 24
-            return result
-        } else if ttl.contains("month") {
-            let index = ttl.index(ttl.endIndex, offsetBy: -5)
-            let h64 = UInt64(String(ttl[..<index]))!
-            let result = h64 * 3600 * 1000 * 24 * 30 + h64 * 3600 * 440 * 24
-            return result
-        } else if ttl.contains("M") {
-            let index = ttl.index(ttl.endIndex, offsetBy: -1)
-            let h64 = UInt64(String(ttl[..<index]))!
-            let result = h64 * 3600 * 1000 * 24 * 30 + h64 * 3600 * 440 * 24
-            return result
-        } else if ttl.contains("minutes") {
-            let index = ttl.index(ttl.endIndex, offsetBy: -7)
-            let m64 = UInt64(String(ttl[..<index]))! * 60 * 1000
-            return m64
-        } else if ttl.contains("minute") {
-            let index = ttl.index(ttl.endIndex, offsetBy: -6)
-            let m64 = UInt64(String(ttl[..<index]))! * 60 * 1000
-            return m64
-        } else if ttl.contains("min") {
-            let index = ttl.index(ttl.endIndex, offsetBy: -3)
-            let m64 = UInt64(String(ttl[..<index]))! * 60 * 1000
-            return m64
-        } else if ttl.contains("hours") {
-            let index = ttl.index(ttl.endIndex, offsetBy: -5)
-            let h64 = UInt64(String(ttl[..<index]))! * 3600 * 1000
-            return h64
-        } else if ttl.contains("hour") {
-            let index = ttl.index(ttl.endIndex, offsetBy: -4)
-            let h64 = UInt64(String(ttl[..<index]))! * 3600 * 1000
-            return h64
-        } else if ttl.contains("hr") {
-            let index = ttl.index(ttl.endIndex, offsetBy: -2)
-            let h64 = UInt64(String(ttl[..<index]))! * 3600 * 1000
-            return h64
-        } else if ttl.contains("weeks") {
-            let index = ttl.index(ttl.endIndex, offsetBy: -5)
-            let h64 = UInt64(String(ttl[..<index]))! * 3600 * 1000 * 24 * 7
-            return h64
-        } else if ttl.contains("week") {
-            let index = ttl.index(ttl.endIndex, offsetBy: -4)
-            let h64 = UInt64(String(ttl[..<index]))! * 3600 * 1000 * 24 * 7
-            return h64
-        } else if ttl.contains("w") {
-            let index = ttl.index(ttl.endIndex, offsetBy: -1)
-            let h64 = UInt64(String(ttl[..<index]))! * 3600 * 1000 * 24 * 7
-            return h64
-        } else if ttl.contains("years") {
-            let index = ttl.index(ttl.endIndex, offsetBy: -5)
-            let h64 = UInt64(String(ttl[..<index]))!
-            let result = h64 * 3600 * 1000 * 24 * 365 + h64 * 3600 * 250 * 24
-            return result
-        } else if ttl.contains("year") {
-            let index = ttl.index(ttl.endIndex, offsetBy: -4)
-            let h64 = UInt64(String(ttl[..<index]))!
-            let result = h64 * 3600 * 1000 * 24 * 365 + h64 * 3600 * 250 * 24
-            return result
-        } else if ttl.contains("y") {
-            let index = ttl.index(ttl.endIndex, offsetBy: -1)
-            let h64 = UInt64(String(ttl[..<index]))!
-            let result = h64 * 3600 * 1000 * 24 * 365 + h64 * 3600 * 250 * 24
-            return result
-        } else if ttl.contains("msec") {
+
+        if ttl.contains("msec") {
             let index = ttl.index(ttl.endIndex, offsetBy: -4)
             return UInt64(String(ttl[..<index]))!
         } else if ttl.contains("ms") {
             let index = ttl.index(ttl.endIndex, offsetBy: -2)
             return UInt64(String(ttl[..<index]))!
-        } else if ttl.contains("seconds") {
-            let index = ttl.index(ttl.endIndex, offsetBy: -7)
-            let h64 = UInt64(String(ttl[..<index]))!
-            let result = h64 * 1000
-            return result
-        } else if ttl.contains("second") {
-            let index = ttl.index(ttl.endIndex, offsetBy: -6)
-            let h64 = UInt64(String(ttl[..<index]))!
-            let result = h64 * 1000
-            return result
-        } else if ttl.contains("sec") {
-            let index = ttl.index(ttl.endIndex, offsetBy: -3)
-            let h64 = UInt64(String(ttl[..<index]))!
-            let result = h64 * 1000
-            return result
-        } else if ttl.contains("s") {
-            let index = ttl.index(ttl.endIndex, offsetBy: -1)
-            let h64 = UInt64(String(ttl[..<index]))!
-            let result = h64 * 1000
-            return result
-        } else if ttl.contains("m") {
-            let index = ttl.index(ttl.endIndex, offsetBy: -1)
-            let m64 = UInt64(String(ttl[..<index]))! * 60 * 1000
-            return m64
-        } else if ttl.contains("h") {
-            let index = ttl.index(ttl.endIndex, offsetBy: -1)
-            let h64 = UInt64(String(ttl[..<index]))! * 3600 * 1000
-            return h64
-        } else if ttl.contains("d") {
-            let index = ttl.index(ttl.endIndex, offsetBy: -1)
-            let day64 = UInt64(String(ttl[..<index]))! * 24 * 3600 * 1000
-            return day64
         }
+
         return 0
     }
 

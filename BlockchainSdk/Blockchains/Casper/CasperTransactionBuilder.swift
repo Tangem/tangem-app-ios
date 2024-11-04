@@ -39,10 +39,12 @@ final class CasperTransactionBuilder {
 
         let dai1 = DeployApprovalItem()
         dai1.signer = deploy.header.account
-        dai1.signature = try signatureByCurveWithPrefix(signature: signature, for: curve)
+        dai1.signature = try signatureByCurveWithPrefix(signature: signature, for: curve).hexString.lowercased()
 
         let approvals: [DeployApprovalItem] = [dai1]
         deploy.approvals = approvals
+        
+        print(deploy.toJsonData())
 
         return deploy.toJsonData()
     }
@@ -84,7 +86,7 @@ private extension CasperTransactionBuilder {
         let clValueSessionTargetParsed: CLValueWrapper = .publicKey(transaction.destinationAddress.lowercased())
         let clValueSessionTarget = CLValue()
         clValueSessionTarget.bytes = try CLTypeSerializeHelper.CLValueSerialize(input: clValueSessionTargetParsed)
-        clValueSessionTarget.parsed = .publicKey(transaction.destinationAddress)
+        clValueSessionTarget.parsed = clValueSessionTargetParsed
         clValueSessionTarget.clType = .publicKey
 
         let namedArgSessionTarget = NamedArg()
@@ -92,10 +94,17 @@ private extension CasperTransactionBuilder {
         namedArgSessionTarget.argsItem = clValueSessionTarget
 
         // 3rd namedArg
-        let clValueSessionIdParsed: CLValueWrapper = .optionWrapper(.u64(0))
+        let clValueSessionIdParsed: CLValueWrapper
+
+        if let params = transaction.params as? CasperTransactionParams {
+            clValueSessionIdParsed = .optionWrapper(.u64(params.memo))
+        } else {
+            clValueSessionIdParsed = .optionWrapper(.nullCLValue)
+        }
+
         let clValueSessionId = CLValue()
         clValueSessionId.bytes = try CLTypeSerializeHelper.CLValueSerialize(input: clValueSessionIdParsed)
-        clValueSessionId.parsed = .optionWrapper(.u64(0))
+        clValueSessionId.parsed = clValueSessionIdParsed
         clValueSessionId.clType = .option(.u64)
 
         let namedArgSessionId = NamedArg()
@@ -133,7 +142,7 @@ private extension CasperTransactionBuilder {
         let clValue = CLValue()
         clValue.bytes = try CLTypeSerializeHelper.CLValueSerialize(input: clValueFeeParsed)
         clValue.clType = .u512
-        clValue.parsed = .u512(U512Class.fromStringToU512(from: feeStringValue))
+        clValue.parsed = clValueFeeParsed
 
         let namedArg = NamedArg()
         namedArg.name = "amount"
@@ -144,12 +153,12 @@ private extension CasperTransactionBuilder {
         return ExecutableDeployItem.moduleBytes(module_bytes: CSPRBytes.fromStrToBytes(from: ""), args: runTimeArgs)
     }
 
-    func signatureByCurveWithPrefix(signature: Data, for elipticCurve: EllipticCurve) throws -> String {
+    func signatureByCurveWithPrefix(signature: Data, for elipticCurve: EllipticCurve) throws -> Data {
         switch elipticCurve {
         case .ed25519, .ed25519_slip0010:
-            "01".appending(signature.toHexString())
+            Data(hexString: CasperConstants.prefixED25519) + signature
         case .secp256k1:
-            "02".appending(signature.toHexString())
+            Data(hexString: CasperConstants.prefixSECP256K1) + signature
         default:
             throw WalletError.failedToBuildTx
         }
@@ -159,7 +168,7 @@ private extension CasperTransactionBuilder {
 private extension CasperTransactionBuilder {
     enum Constants {
         static let defaultChainName: String = "casper"
-        static let defaultTTL = "30m"
+        static let defaultTTL = "1800000ms"
         static let defaultGASPrice: UInt64 = 1
     }
 }

@@ -235,7 +235,7 @@ enum CLValueWrapperToJsonString {
         switch clValueWrapper {
         case .optionWrapper(let cLValueWrapperOption):
             if case .nullCLValue = cLValueWrapperOption {
-                return "NULL"
+                return "\"\("NULL")\""
             } else if CLValueWrapperToJsonString.isParsedPrimitive(clValueWrapper: cLValueWrapperOption) {
                 ret = CLValueWrapperToJsonString.getParsedPrimitiveString(clValueWrapper: cLValueWrapperOption)
             } else {
@@ -347,11 +347,11 @@ enum CLValueWrapperToJsonString {
             }
             ret = "[" + tupleStr1 + "," + tupleStr2 + "," + tupleStr3 + "]"
         case .anyCLValue:
-            return "NULL"
+            return "\"\("NULL")\""
         case .nullCLValue:
-            return "NULL"
+            return "\"\("NULL")\""
         case .none:
-            return "NULL"
+            return "\"\("NULL")\""
         default:
             return ""
         }
