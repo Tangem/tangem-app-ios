@@ -2,7 +2,7 @@ name: Beta - Build and Deploy
 
 on:
   push:
-   branches: 
+   branches:
     - 'develop'
     - 'feature/IOS-8113_ci_cd_beta_builds_workflow' # TODO: Test only, remove
   workflow_dispatch:
@@ -72,14 +72,6 @@ jobs:
           action: 'createVersion'
           project: 'IOS'
           version: '${{ env.nextVersionName }}'
-
-      - name: Debug
-        env:
-          ISSUES: '${{ steps.git-diff.outputs.issues }}'
-          HAS_NEW_VERSION: '${{ steps.jira-check-version.outputs.result }}'
-        run: |
-          echo "HAS_NEW_VERSION: ${HAS_NEW_VERSION}"
-          echo "ISSUES: ${ISSUES}"
 
       - name: Jira Set Version To Issues
         if: false # TODO: Test only, remove
