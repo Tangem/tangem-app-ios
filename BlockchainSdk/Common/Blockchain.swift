@@ -91,6 +91,7 @@ public indirect enum Blockchain: Equatable, Hashable {
     /// Polkadot parachain
     case energyWebX(curve: EllipticCurve)
     case core(testnet: Bool)
+    case canxium
     case casper(testnet: Bool)
 
     public var isTestnet: Bool {
@@ -158,7 +159,8 @@ public indirect enum Blockchain: Equatable, Hashable {
              .internetComputer,
              .bittensor,
              .filecoin,
-             .energyWebX:
+             .energyWebX,
+             .canxium:
             return false
         case .stellar(_, let testnet),
              .hedera(_, let testnet),
@@ -293,7 +295,8 @@ public indirect enum Blockchain: Equatable, Hashable {
              .filecoin,
              .energyWebEVM,
              .energyWebX,
-             .core:
+             .core,
+             .canxium:
             return 18
         case .cardano,
              .xrp,
@@ -462,6 +465,8 @@ public indirect enum Blockchain: Equatable, Hashable {
             return "EWT"
         case .core:
             return isTestnet ? "tCORE" : "CORE"
+        case .canxium:
+            return "CAU"
         case .casper:
             return "CSPR"
         }
@@ -754,6 +759,7 @@ public extension Blockchain {
         case .blast: return isTestnet ? 168587773 : 81457
         case .energyWebEVM: return isTestnet ? 73799 : 246
         case .core: return isTestnet ? 1115 : 1116
+        case .canxium: return 3003
         default:
             return nil
         }
@@ -960,7 +966,8 @@ extension Blockchain: Codable {
         case .energyWebEVM: return "energyWebEVM"
         case .energyWebX: return "energyWebX"
         case .core: return "core"
-        case .casper: return "casper"
+        case .canxium: return "canxium"
+        case .casper: return "casper-network"
         }
     }
 
@@ -1057,7 +1064,8 @@ extension Blockchain: Codable {
         case "energyWebEVM": self = .energyWebEVM(testnet: isTestnet)
         case "energyWebX": self = .energyWebX(curve: curve)
         case "core": self = .core(testnet: isTestnet)
-        case "casper": self = .casper(testnet: isTestnet)
+        case "canxium": self = .canxium
+        case "casper-network": self = .casper(testnet: isTestnet)
         default:
             throw BlockchainSdkError.decodingFailed
         }
@@ -1149,7 +1157,7 @@ private extension Blockchain {
         case .polygon:
             switch type {
             case .network: return "polygon-pos"
-            case .coin: return "matic-network"
+            case .coin: return "polygon-ecosystem-token"
             }
         case .avalanche:
             switch type {
@@ -1298,8 +1306,10 @@ private extension Blockchain {
             case .network: return "core"
             case .coin: return "coredaoorg"
             }
+        case .canxium:
+            return "canxium"
         case .casper:
-            return "casper"
+            return "casper-network"
         }
     }
 
@@ -1354,7 +1364,8 @@ extension Blockchain {
              .xdc,
              .telos,
              .energyWebEVM,
-             .core:
+             .core,
+             .canxium:
             return EthereumWalletAssembly()
         case .optimism,
              .manta,

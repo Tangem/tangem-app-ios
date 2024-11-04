@@ -86,6 +86,7 @@ public extension Blockchain {
         case .energyWebEVM: break
         case .energyWebX: break
         case .core: break
+        case .canxium: break
         case .casper: break
             // READ BELOW:
             //
@@ -166,6 +167,7 @@ public extension Blockchain {
             .energyWebEVM(testnet: false),
             .energyWebX(curve: .ed25519_slip0010),
             .core(testnet: false),
+            .canxium,
             .casper(testnet: false),
         ]
     }
