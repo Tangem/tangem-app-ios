@@ -1,12 +1,12 @@
 import Foundation
 
-fileprivate let secondInMillisecond: UInt64 = .init(1000)
-fileprivate let miniuteInMilisecond: UInt64 = .init(60 * 1000)
-fileprivate let hourInMilisecond: UInt64 = .init(3600 * 1000)
-fileprivate let dayInMilisecond: UInt64 = hourInMilisecond * 24
-fileprivate let weekInMilisecond: UInt64 = dayInMilisecond * 7
-fileprivate let monthInMilisecond: UInt64 = dayInMilisecond * 30
-fileprivate let yearInMilisecond: UInt64 = dayInMilisecond * 365
+private let secondInMillisecond: UInt64 = .init(1000)
+private let miniuteInMilisecond: UInt64 = .init(60 * 1000)
+private let hourInMilisecond: UInt64 = .init(3600 * 1000)
+private let dayInMilisecond: UInt64 = hourInMilisecond * 24
+private let weekInMilisecond: UInt64 = dayInMilisecond * 7
+private let monthInMilisecond: UInt64 = dayInMilisecond * 30
+private let yearInMilisecond: UInt64 = dayInMilisecond * 365
 
 enum CSPRUtils {
     static var deploy: Deploy = .init()
@@ -143,7 +143,7 @@ enum CSPRUtils {
     }
 }
 
-fileprivate extension Date {
+private extension Date {
     var millisecondsSince1970: Int64 {
         Int64((timeIntervalSince1970 * 1000.0).rounded())
     }
@@ -153,7 +153,7 @@ fileprivate extension Date {
     }
 }
 
-fileprivate extension String {
+private extension String {
     func utf8DecodedString() -> String {
         let data = data(using: .utf8)
         let message = String(data: data!, encoding: .nonLossyASCII) ?? ""

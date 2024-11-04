@@ -43,7 +43,7 @@ final class CasperTransactionBuilder {
 
         let approvals: [DeployApprovalItem] = [dai1]
         deploy.approvals = approvals
-        
+
         print(deploy.toJsonData())
 
         return deploy.toJsonData()
