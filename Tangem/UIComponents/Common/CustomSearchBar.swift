@@ -124,6 +124,9 @@ struct CustomSearchBar: View {
         case .translucent:
             background
                 .fill(.bar)
+        case .focused:
+            background
+                .fill(Colors.Field.focused)
         }
     }
 }
@@ -147,6 +150,7 @@ extension CustomSearchBar {
     enum Style {
         case `default`
         case translucent
+        case focused
     }
 }
 

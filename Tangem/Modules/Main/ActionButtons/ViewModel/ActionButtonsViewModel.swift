@@ -6,19 +6,46 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
+import Combine
 import Foundation
 
 final class ActionButtonsViewModel: ObservableObject {
-    @Published private(set) var actionButtonViewModels: [ActionButtonViewModel]
+    @Injected(\.exchangeService) private var exchangeService: ExchangeService
 
-    init(actionButtonFactory: some ActionButtonsFactory) {
-        actionButtonViewModels = actionButtonFactory.makeActionButtonViewModels()
+    @Published private(set) var actionButtonViewModels: [ActionButtonViewModel]
+    @Published private(set) var isButtonsDisabled = false
+
+    private var cancellables = Set<AnyCancellable>()
+
+    private let expressTokensListAdapter: ExpressTokensListAdapter
+
+    init(
+        actionButtonViewModels: [ActionButtonViewModel],
+        expressTokensListAdapter: some ExpressTokensListAdapter
+    ) {
+        self.actionButtonViewModels = actionButtonViewModels
+        self.expressTokensListAdapter = expressTokensListAdapter
+
+        bind()
+        fetchData()
     }
 
-    func fetchData() async {
-        async let _ = fetchSwapData()
-        async let _ = fetchBuyData()
-        async let _ = fetchSellData()
+    func fetchData() {
+        Task {
+            async let _ = fetchBuyData()
+            async let _ = fetchSwapData()
+            async let _ = fetchSellData()
+        }
+    }
+
+    func bind() {
+        expressTokensListAdapter
+            .walletModels()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] walletModels in
+                self?.isButtonsDisabled = walletModels.isEmpty
+            }
+            .store(in: &cancellables)
     }
 }
 
@@ -30,7 +57,8 @@ private extension ActionButtonsViewModel {
     }
 
     private func fetchBuyData() async {
-        // IOS-8237
+        // TODO: Should be modified in onramp
+        await buyActionButtonViewModel?.updateState(to: .idle)
     }
 }
 
