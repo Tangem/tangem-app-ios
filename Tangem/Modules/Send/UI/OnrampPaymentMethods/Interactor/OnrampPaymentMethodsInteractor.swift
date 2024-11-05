@@ -11,7 +11,6 @@ import TangemExpress
 
 protocol OnrampPaymentMethodsInteractor {
     var paymentMethodPublisher: AnyPublisher<OnrampPaymentMethod, Never> { get }
-    var paymentMethods: AnyPublisher<[OnrampPaymentMethod], Never> { get }
 
     func update(selectedPaymentMethod: OnrampPaymentMethod)
 }
@@ -19,16 +18,13 @@ protocol OnrampPaymentMethodsInteractor {
 class CommonOnrampPaymentMethodsInteractor {
     private weak var input: OnrampPaymentMethodsInput?
     private weak var output: OnrampPaymentMethodsOutput?
-    private let dataRepository: OnrampDataRepository
 
     init(
         input: OnrampPaymentMethodsInput,
-        output: OnrampPaymentMethodsOutput,
-        dataRepository: OnrampDataRepository
+        output: OnrampPaymentMethodsOutput
     ) {
         self.input = input
         self.output = output
-        self.dataRepository = dataRepository
     }
 }
 
@@ -45,14 +41,6 @@ extension CommonOnrampPaymentMethodsInteractor: OnrampPaymentMethodsInteractor {
             .selectedOnrampPaymentMethodPublisher
             .compactMap { $0 }
             .eraseToAnyPublisher()
-    }
-
-    var paymentMethods: AnyPublisher<[OnrampPaymentMethod], Never> {
-        Future.async {
-            try await self.dataRepository.paymentMethods()
-        }
-        .replaceError(with: [])
-        .eraseToAnyPublisher()
     }
 
     func update(selectedPaymentMethod: OnrampPaymentMethod) {

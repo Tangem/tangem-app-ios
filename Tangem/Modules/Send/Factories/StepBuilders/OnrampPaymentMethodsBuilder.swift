@@ -23,7 +23,7 @@ struct OnrampPaymentMethodsBuilder {
 
     func makeOnrampPaymentMethodsViewModel(coordinator: any OnrampPaymentMethodsRoutable) -> ReturnValue {
         let interactor = makeOnrampPaymentMethodsInteractor(io: io)
-        let viewModel = OnrampPaymentMethodsViewModel(interactor: interactor, coordinator: coordinator)
+        let viewModel = OnrampPaymentMethodsViewModel(interactor: interactor, dataRepository: dataRepository, coordinator: coordinator)
 
         return viewModel
     }
@@ -35,8 +35,7 @@ private extension OnrampPaymentMethodsBuilder {
     func makeOnrampPaymentMethodsInteractor(io: IO) -> OnrampPaymentMethodsInteractor {
         CommonOnrampPaymentMethodsInteractor(
             input: io.input,
-            output: io.output,
-            dataRepository: dataRepository
+            output: io.output
         )
     }
 }
