@@ -1312,8 +1312,6 @@ class AddressesTests: XCTestCase {
     }
 
     func testCasperAddressGeneration() throws {
-        let blockchain = Blockchain.casper(testnet: false)
-
         let ed25519WalletPublicKey = Data(hexString: "98C07D7E72D89A681D7227A7AF8A6FD5F22FE0105C8741D55A95DF415454B82E")
         let ed25519ExpectedAddress = "0198c07D7e72D89A681d7227a7Af8A6fd5F22fe0105c8741d55A95dF415454b82E"
 
