@@ -13,13 +13,11 @@ final class CasperTransactionBuilder {
     // MARK: - Private Properties
 
     private let blockchain: Blockchain
-    private let curve: EllipticCurve
 
     // MARK: - Init
 
-    init(blockchain: Blockchain, curve: EllipticCurve) {
+    init(blockchain: Blockchain) {
         self.blockchain = blockchain
-        self.curve = curve
     }
 
     // MARK: - Implementation
@@ -39,7 +37,7 @@ final class CasperTransactionBuilder {
 
         let dai1 = CSPRDeployApprovalItem()
         dai1.signer = deploy.header.account
-        dai1.signature = try signatureByCurveWithPrefix(signature: signature, for: curve).hexString.lowercased()
+        dai1.signature = try signatureByCurveWithPrefix(signature: signature, for: blockchain.curve).hexString.lowercased()
 
         let approvals: [CSPRDeployApprovalItem] = [dai1]
         deploy.approvals = approvals
