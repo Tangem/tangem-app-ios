@@ -18,5 +18,4 @@ protocol SendRoutable: SendFeeRoutable, SendDestinationRoutable, OnrampRoutable,
     func openExplorer(url: URL)
     func openShareSheet(url: URL)
     func openApproveView(settings: ExpressApproveViewModel.Settings, approveViewModelInput: any ApproveViewModelInput)
-    func openOnrampCountry(country: OnrampCountry, repository: OnrampRepository)
 }

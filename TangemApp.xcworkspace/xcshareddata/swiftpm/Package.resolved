@@ -1,5 +1,5 @@
 {
-  "originHash" : "ecb41df938240aaaac4ff2918e5283b5c34eacf4a572404d53bc5ef086fd0509",
+  "originHash" : "584ca60af0fbbc527d504d4d480a556058e05f97a79e92bf44c594618d31cc9a",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/bitcoincore.git",
       "state" : {
-        "revision" : "c00b5c60ab9560acee8309f39620fabfde32b518",
-        "version" : "0.0.21"
+        "revision" : "4ec53e5e223885a4c0884d80985cf43677434eb0",
+        "version" : "0.0.23"
       }
     },
     {
@@ -429,8 +429,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Tangem/tangem-sdk-ios.git",
       "state" : {
-        "revision" : "eedb44b085adc47b876fc2f292dd6dbc2547108c",
-        "version" : "3.11.0"
+        "revision" : "f490a80f2156067a9b1c6f24974aaaab316e8639"
       }
     },
     {

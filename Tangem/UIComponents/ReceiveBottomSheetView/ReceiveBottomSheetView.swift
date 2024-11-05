@@ -41,9 +41,7 @@ struct ReceiveBottomSheetView: View {
                         .padding(.horizontal, 48)
                         .padding(.top, 18)
 
-                    Text(info.address)
-                        .multilineTextAlignment(.center)
-                        .style(Fonts.Bold.callout, color: Colors.Text.primary1)
+                    SUILabel(viewModel.stringForAddress(info.address))
                         .padding(.horizontal, 60)
                         .padding(.top, 20)
 

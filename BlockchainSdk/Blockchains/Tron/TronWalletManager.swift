@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import TangemSdk
+import TangemFoundation
 
 class TronWalletManager: BaseManager, WalletManager {
     var networkService: TronNetworkService!

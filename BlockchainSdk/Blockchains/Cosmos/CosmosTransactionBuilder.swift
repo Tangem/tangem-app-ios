@@ -8,6 +8,7 @@
 
 import Foundation
 import WalletCore
+import TangemFoundation
 
 class CosmosTransactionBuilder {
     private let publicKey: Data

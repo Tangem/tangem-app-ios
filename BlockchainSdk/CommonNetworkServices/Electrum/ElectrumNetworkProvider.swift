@@ -6,7 +6,9 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
+import Foundation
 import Combine
+import TangemFoundation
 
 class ElectrumNetworkProvider: MultiNetworkProvider {
     let providers: [ElectrumWebSocketProvider]
