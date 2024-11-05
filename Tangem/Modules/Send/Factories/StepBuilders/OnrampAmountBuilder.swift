@@ -21,9 +21,13 @@ struct OnrampAmountBuilder {
         self.builder = builder
     }
 
-    func makeOnrampAmountViewModel(io: IO) -> ReturnValue {
+    func makeOnrampAmountViewModel(io: IO, coordinator: OnrampAmountRoutable) -> ReturnValue {
         let interactor = makeOnrampAmountInteractor(io: io)
-        let viewModel = OnrampAmountViewModel(tokenItem: walletModel.tokenItem, interactor: interactor)
+        let viewModel = OnrampAmountViewModel(
+            tokenItem: walletModel.tokenItem,
+            interactor: interactor,
+            coordinator: coordinator
+        )
 
         return (viewModel: viewModel, interactor: interactor)
     }
