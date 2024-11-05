@@ -68,7 +68,7 @@ extension CasperAddressService {
 
 // MARK: - Helpers
 
-fileprivate extension String {
+private extension String {
     func isSameCase() -> Bool {
         lowercased() == self || uppercased() == self
     }

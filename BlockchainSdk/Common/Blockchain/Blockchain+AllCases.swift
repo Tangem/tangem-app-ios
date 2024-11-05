@@ -168,7 +168,7 @@ public extension Blockchain {
             .energyWebX(curve: .ed25519_slip0010),
             .core(testnet: false),
             .canxium,
-            .casper(testnet: false),
+            .casper(curve: .secp256k1, testnet: false),
         ]
     }
 }
