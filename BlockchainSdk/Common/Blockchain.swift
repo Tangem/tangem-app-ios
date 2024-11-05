@@ -92,7 +92,7 @@ public indirect enum Blockchain: Equatable, Hashable {
     case energyWebX(curve: EllipticCurve)
     case core(testnet: Bool)
     case canxium
-    case casper(testnet: Bool)
+    case casper(curve: EllipticCurve, testnet: Bool)
 
     public var isTestnet: Bool {
         switch self {
@@ -136,8 +136,7 @@ public indirect enum Blockchain: Equatable, Hashable {
              .sei(let testnet),
              .kaspa(let testnet),
              .energyWebEVM(let testnet),
-             .core(let testnet),
-             .casper(let testnet):
+             .core(let testnet):
             return testnet
         case .litecoin,
              .ducatus,
@@ -172,7 +171,9 @@ public indirect enum Blockchain: Equatable, Hashable {
              .algorand(_, let testnet),
              .aptos(_, let testnet),
              .shibarium(let testnet),
-             .sui(_, let testnet):
+             .sui(_, let testnet),
+             .casper(_, let testnet)
+             :
             return testnet
         }
     }
@@ -196,7 +197,8 @@ public indirect enum Blockchain: Equatable, Hashable {
              .hedera(let curve, _),
              .bittensor(let curve),
              .sui(let curve, _),
-             .energyWebX(let curve):
+             .energyWebX(let curve),
+             .casper(let curve, _):
             return curve
         case .chia:
             return .bls12381_G2_AUG
@@ -1065,7 +1067,7 @@ extension Blockchain: Codable {
         case "energyWebX": self = .energyWebX(curve: curve)
         case "core": self = .core(testnet: isTestnet)
         case "canxium": self = .canxium
-        case "casper-network": self = .casper(testnet: isTestnet)
+        case "casper-network": self = .casper(curve: curve, testnet: isTestnet)
         default:
             throw BlockchainSdkError.decodingFailed
         }
