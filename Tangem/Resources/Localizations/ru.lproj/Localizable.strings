@@ -529,10 +529,18 @@
 "onboarding_wallet_info_title_fourth" = "Восстановление кода доступа";
 "onboarding_wallet_info_title_second" = "Идентичные карты";
 "onboarding_wallet_info_title_third" = "Код доступа";
+"onramp_country_search" = "Search by country";
+"onramp_country_unavailable" = "Unavailable";
+"onramp_currency_other" = "Other currencies";
+"onramp_currency_popular" = "Popular Fiats";
+"onramp_currency_search" = "Search by currency";
 "onramp_pay_with" = "Оплата с";
 "onramp_residency_bottomsheet_country_not_supported" = "Our services are not available in this country";
 "onramp_residency_bottomsheet_country_subtitle" = "Change or confirm it";
 "onramp_residency_bottomsheet_title" = "Your residence has been identified as";
+"onramp_settings_residence" = "Residence";
+"onramp_settings_residence_description" = "Please select the correct country to ensure accurate payment options and services.";
+"onramp_settings_title" = "Settings";
 "onramp_via" = "Через";
 "organize_tokens_group" = "Группы";
 "organize_tokens_sort_by_balance" = "По балансу";
@@ -668,6 +676,7 @@
 "staking_active_footer" = "Для завершения стейкинга нажмите на блок выше";
 "staking_amount_requirement_error" = "Сумма для стейкинга должна быть не менее %@";
 "staking_amount_tron_integer_error" = "Согласно правилам сети, сумма стейкинга будет округлена до %1$@TRX.";
+"staking_amount_tron_integer_error_unstaking" = "Сумма для вывода из стейкинга будет округлена до %1$@ TRX ввиду особенностей сети.";
 "staking_claim_unstaked" = "Забрать средства";
 "staking_details_account_fee" = "Комиссия за стейкинг аккаунт";
 "staking_details_account_fee_info" = "Стейкинг аккаунт — это специальный счет, на котором хранятся застейканные токены SOL. Он создается при делегировании ваших токенов валидатору для участия в подтверждении транзакций и получении наград. За создание стейкинг аккаунта взимается небольшая комиссия, которая возвращается после завершения стейкинга.";
@@ -711,10 +720,13 @@
 "staking_notification_earn_rewards_text_period_week" = "Стейкинг дает возможность вам получать %1$@. Награда будет зачисляться каждую неделю.";
 "staking_notification_earn_rewards_text_weekly" = "Стейкайте безопасно и начинайте получать еженедельные награды.";
 "staking_notification_earn_rewards_title" = "Получите награду за стейкинг";
+"staking_notification_low_staked_balance_text" = "Оставшийся застейканный баланс будет слишком мал для вывода. Вам потребуется застейкать больше средств, чтобы достичь минимальной суммы для вывода.";
+"staking_notification_low_staked_balance_title" = "Low staked balance";
 "staking_notification_network_error_text" = "Стейкинг временно недоступен из-за проблем в сети. Пожалуйста, попробуйте позже.";
 "staking_notification_new_validator_funds_transfer" = "Стейкинг в сети %1$@ с новым валидатором автоматически переведет ваши текущие застейканные средства на него.";
 "staking_notification_restake_rewards_text" = "Реинвестируйте свои заработанные награды в вашу застейканную сумму, увеличивая потенциальный доход";
 "staking_notification_restake_text" = "Рестейк позволяет вам переместить средства из одного валидатора в другого без необходимости выхода из стейкинга.";
+"staking_notification_stake_entire_balance_text" = "Вы собираетесь застейкать весь баланс, рекомендуем оставить небольшую сумму для оплаты комиссии сети при выходе из стейкинга или получении награды.";
 "staking_notification_unlock_text" = "Разблокируйте свои средства, чтобы вывести их из стейкинга. Разблокировка займёт %@.";
 "staking_notification_unstake_cosmos_text" = "Ваши средства будут доступны для использования после 21-дневного периода отзыва. Награда будет выведена вместе с вашими выводими средствами.";
 "staking_notification_unstake_text" = "Ваши средства будут доступны после %@ периода отзыва.";
@@ -744,6 +756,7 @@
 "staking_rewards" = "Вознаграждения";
 "staking_stake_locked" = "Стейкинг закрыт";
 "staking_stake_more" = "Застейкать еще";
+"staking_staked_amount" = "Staked amount";
 "staking_summary_description_text" = "Вы стейкаете %1$@ и будете получать награду %2$@";
 "staking_tap_to_unlock" = "Нажмите для разблокировки";
 "staking_tap_to_unlock_or_vote" = "Нажмите для разблокировки";
@@ -755,6 +768,7 @@
 "staking_unbonding_in" = "Отзыв через";
 "staking_unlocked_locked" = "Разблокировать";
 "staking_unlocking" = "Разблокировка";
+"staking_unstake_amount_requirement_error" = "Сумма для вывода из стейкинга должна быть не менее %@";
 "staking_unstake_amount_validation_error" = "Сумма превышает застейканный баланс";
 "staking_unstaked" = "Вывод из стейкинга";
 "staking_unstaked_footer" = "Проверьте процесс завершения стейкинга, чтобы вывести свои средства.";
@@ -787,7 +801,8 @@
 "swapping_alert_cex_description_with_slippage" = "В сумму включено: \n• комиссия провайдера сервиса\n• комиссия сети за отправку %1$@ от биржи обратно на адрес пользователя \n\nПроскальзывание провайдера составляет до %2$@";
 "swapping_alert_dex_description" = "В сумму включена комиссия провайдера сервиса.";
 "swapping_alert_dex_description_with_slippage" = "В сумму включена комиссия провайдера сервиса. \n\nПроскальзывание провайдера составляет до %@";
-"swapping_alert_title" = "Комиссии";
+"swapping_alert_slippage_description" = "Проскальзывание провайдера составляет до %@.";
+"swapping_alert_title" = "Информация";
 "swapping_approve_information_text" = "Подтверждения считаются отраслевым стандартом для всех децентрализованных бирж и защищают ваш кошелек от доступа со стороны смарт-контракта без вашего разрешения. По замыслу смарт-контракты не могут получить доступ к вашим токенам, если вы не одобрите доступ со своей стороны. «Разблокируя» свои токены, вы даете смарт-контракту 1inch разрешение тратить ваши активы. Майнеры сети получают компенсацию за газ (оплачиваемый вами) за запись этого действия в блокчейне. Как только разрешение будет предоставлено, вы сможете обменять свой токен.";
 "swapping_approve_information_title" = "Подтвердить";
 "swapping_fee_estimation_error_text" = "Ошибка расчета комиссии. Пожалуйста, отправьте информацию в поддержку.";
@@ -834,6 +849,7 @@
 "transaction_history_transaction_from_address" = "от: %@";
 "transaction_history_transaction_to_address" = "на: %@";
 "transaction_history_transaction_validator" = "валидатор: %@";
+"transfer_notification_invalid_minimum_transaction_amount_text" = "The minimum transaction amount is %1$@.";
 "try_to_load_data_again_button_title" = "Попробовать снова";
 "twin_error_same_card" = "Вы отсканировали ту же карту. Для создания twin-кошелька вам необходимо отсканировать карту с номером %li";
 "twin_error_wrong_twin" = "Вы отсканировали не ту twin-карту. Пожалуйста, попробуйте отсканировать другую";

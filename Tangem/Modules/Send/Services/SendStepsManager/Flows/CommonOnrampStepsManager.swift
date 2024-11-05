@@ -58,7 +58,7 @@ extension CommonOnrampStepsManager: SendStepsManager {
     }
 
     var shouldShowDismissAlert: Bool {
-        return false
+        return true
     }
 
     func set(output: SendStepsManagerOutput) {

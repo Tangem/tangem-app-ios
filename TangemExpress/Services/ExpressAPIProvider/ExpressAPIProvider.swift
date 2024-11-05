@@ -11,7 +11,7 @@ import Foundation
 public protocol ExpressAPIProvider {
     /// Requests from Express API `exchangeAvailable` state for currencies included in filter
     /// - Returns: All `ExpressCurrency` that available to exchange specified by filter
-    func assets(with filter: [ExpressCurrency]) async throws -> [ExpressAsset]
+    func assets(currencies: Set<ExpressCurrency>) async throws -> [ExpressAsset]
     func pairs(from: [ExpressCurrency], to: [ExpressCurrency]) async throws -> [ExpressPair]
 
     func providers() async throws -> [ExpressProvider]
