@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TangemVisa
 
 class OnboardingCoordinator: CoordinatorObject {
     var dismissAction: Action<OutputOptions>
@@ -68,6 +69,14 @@ class OnboardingCoordinator: CoordinatorObject {
             let model = WalletOnboardingViewModel(input: input, coordinator: self)
             onDismissalAttempt = model.backButtonAction
             viewState = .wallet(model)
+        case .visa:
+            let model = VisaOnboardingViewModel(
+                input: input,
+                visaActivationManager: VisaActivationManagerFactory().make(),
+                coordinator: self
+            )
+            onDismissalAttempt = model.backButtonAction
+            viewState = .visa(model)
         }
 
         Analytics.log(.onboardingStarted)
@@ -196,6 +205,8 @@ extension OnboardingCoordinator: OnboardingRoutable {
     }
 }
 
+extension OnboardingCoordinator: VisaOnboardingRoutable {}
+
 // MARK: ViewState
 
 extension OnboardingCoordinator {
@@ -203,6 +214,7 @@ extension OnboardingCoordinator {
         case singleCard(SingleCardOnboardingViewModel)
         case twins(TwinsOnboardingViewModel)
         case wallet(WalletOnboardingViewModel)
+        case visa(VisaOnboardingViewModel)
         case main(MainCoordinator)
 
         var isMain: Bool {
