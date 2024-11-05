@@ -12,8 +12,8 @@ import TangemSdk
 struct VisaOnboardingStepsBuilder {
     private let isPushNotificationsAvailable: Bool
 
-    private var otherSteps: [SingleCardOnboardingStep] {
-        var steps: [SingleCardOnboardingStep] = []
+    private var otherSteps: [VisaOnboardingStep] {
+        var steps: [VisaOnboardingStep] = []
 
         if BiometricsUtil.isAvailable,
            !AppSettings.shared.saveUserWallets,
@@ -37,11 +37,13 @@ struct VisaOnboardingStepsBuilder {
 
 extension VisaOnboardingStepsBuilder: OnboardingStepsBuilder {
     func buildOnboardingSteps() -> OnboardingSteps {
-        var steps = [SingleCardOnboardingStep]()
+        var steps = [VisaOnboardingStep]()
+
+        steps.append(.welcome)
 
         steps.append(contentsOf: otherSteps)
 
-        return .singleWallet(steps)
+        return .visa(steps)
     }
 
     func buildBackupSteps() -> OnboardingSteps? {

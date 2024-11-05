@@ -25,8 +25,8 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
 
     /// Requests from Express API `exchangeAvailable` state for currencies included in filter
     /// - Returns: All `ExpressCurrency` that available to exchange specified by filter
-    func assets(with filter: [ExpressCurrency]) async throws -> [ExpressAsset] {
-        let tokens = filter.map(expressAPIMapper.mapToDTOCurrency(currency:))
+    func assets(currencies: Set<ExpressCurrency>) async throws -> [ExpressAsset] {
+        let tokens = currencies.map(expressAPIMapper.mapToDTOCurrency(currency:))
         let request = ExpressDTO.Swap.Assets.Request(tokensList: tokens)
         let response = try await expressAPIService.assets(request: request)
         let assets: [ExpressAsset] = response.map(expressAPIMapper.mapToExpressAsset(response:))
