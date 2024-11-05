@@ -12,8 +12,8 @@ import XCTest
 @testable import BlockchainSdk
 
 final class CasperTests: XCTestCase {
-    private let blockchain = Blockchain.casper(testnet: false)
-    private lazy var txBuilder = CasperTransactionBuilder(blockchain: blockchain, curve: .secp256k1)
+    private let blockchain = Blockchain.casper(curve: .secp256k1, testnet: false)
+    private lazy var txBuilder = CasperTransactionBuilder(blockchain: blockchain)
 
     // MARK: - Private Properties
 
