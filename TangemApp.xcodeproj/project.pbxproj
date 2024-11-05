@@ -61,7 +61,6 @@
 		2D1B27512CDA1FF20066F484 /* CasperTransactionBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1B274F2CDA1FF20066F484 /* CasperTransactionBuilder.swift */; };
 		2D1B27522CDA1FF20066F484 /* CaspertTransactionParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1B27502CDA1FF20066F484 /* CaspertTransactionParams.swift */; };
 		2D1B27542CDA202E0066F484 /* CasperNetworkResponse.Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1B27532CDA202E0066F484 /* CasperNetworkResponse.Transaction.swift */; };
-		2D1B27562CDA27D00066F484 /* CaperSerializationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1B27552CDA27D00066F484 /* CaperSerializationTests.swift */; };
 		2D1BB3682C07421C008392F7 /* MarketsTokenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1BB3672C07421C008392F7 /* MarketsTokenModel.swift */; };
 		2D1BB36A2C074534008392F7 /* MarketsDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1BB3692C074534008392F7 /* MarketsDTO.swift */; };
 		2D1BB36C2C0745ED008392F7 /* MarketsListOrderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1BB36B2C0745ED008392F7 /* MarketsListOrderType.swift */; };
@@ -3056,7 +3055,6 @@
 		2D1B274F2CDA1FF20066F484 /* CasperTransactionBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasperTransactionBuilder.swift; sourceTree = "<group>"; };
 		2D1B27502CDA1FF20066F484 /* CaspertTransactionParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaspertTransactionParams.swift; sourceTree = "<group>"; };
 		2D1B27532CDA202E0066F484 /* CasperNetworkResponse.Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasperNetworkResponse.Transaction.swift; sourceTree = "<group>"; };
-		2D1B27552CDA27D00066F484 /* CaperSerializationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaperSerializationTests.swift; sourceTree = "<group>"; };
 		2D1BB3672C07421C008392F7 /* MarketsTokenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenModel.swift; sourceTree = "<group>"; };
 		2D1BB3692C074534008392F7 /* MarketsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsDTO.swift; sourceTree = "<group>"; };
 		2D1BB36B2C0745ED008392F7 /* MarketsListOrderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsListOrderType.swift; sourceTree = "<group>"; };
@@ -6257,7 +6255,6 @@
 		2D616FF62CD142BE00581EA6 /* Casper */ = {
 			isa = PBXGroup;
 			children = (
-				2D1B27552CDA27D00066F484 /* CaperSerializationTests.swift */,
 				2D616FF52CD142BE00581EA6 /* CasperTests.swift */,
 			);
 			path = Casper;
@@ -18299,7 +18296,6 @@
 				B62D43542CBC79E400C2460E /* SolanaEd25519Tests.swift in Sources */,
 				B62D43532CBC79E400C2460E /* SolanaEd25519Slip0010Tests.swift in Sources */,
 				B62D43652CBC79E400C2460E /* TWCurve+.swift in Sources */,
-				2D1B27562CDA27D00066F484 /* CaperSerializationTests.swift in Sources */,
 				B62D43492CBC79E400C2460E /* WalletCoreSignerTesterUtility.swift in Sources */,
 				B62D433A2CBC79E400C2460E /* SeiTransactionTests.swift in Sources */,
 				B62D43692CBC79E400C2460E /* CardanoTests.swift in Sources */,
