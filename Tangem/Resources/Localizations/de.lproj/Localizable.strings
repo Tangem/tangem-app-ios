@@ -529,9 +529,11 @@
 "onboarding_wallet_info_title_fourth" = "Zugangscode wiederherstellen";
 "onboarding_wallet_info_title_second" = "Identische Karten oder Ring";
 "onboarding_wallet_info_title_third" = "Zugangscode";
+"onramp_pay_with" = "Pay with";
 "onramp_residency_bottomsheet_country_not_supported" = "Unsere Dienstleistungen sind in diesem Land nicht verfügbar";
 "onramp_residency_bottomsheet_country_subtitle" = "Änder oder bestätige bitte";
 "onramp_residency_bottomsheet_title" = "Dein Wohnsitz wurde identifiziert als";
+"onramp_via" = "Via";
 "organize_tokens_group" = "Gruppe erstellen";
 "organize_tokens_sort_by_balance" = "Nach Guthaben";
 "organize_tokens_title" = "Token organisieren";
@@ -666,6 +668,7 @@
 "staking_active_footer" = "Um deine Vermögenswerte freizugeben, tippe auf den Block oben";
 "staking_amount_requirement_error" = "Die Anzahl der zu stakenden Krypros muss mindesten %@ betragen";
 "staking_amount_tron_integer_error" = "Der Stakingbetrag wird aufgrund der Netzwerkregeln auf %1$@ TRX aufgerundet.";
+"staking_amount_tron_integer_error_unstaking" = "Der Betrag der unstaked wird, wird aufgrund der Netzwerkregeln auf %1$@ TRX gerundet.";
 "staking_claim_unstaked" = "Nicht gestakte beanspruche";
 "staking_details_account_fee" = "Gebühr für das Staking-Konto";
 "staking_details_account_fee_info" = "Ein Staking-Konto ist ein spezielles Konto, auf dem eingesetzte SOL-Token gelagert werden. Es wird erstellt, wenn du deine Token an einen Validator delegierst, um an der Transaktionsvalidierung teilzunehmen und Belohnungen zu verdienen. Für die Erstellung des Staking-Kontos wird eine geringe Gebühr erhoben, die nach Abschluss des Stakings zurückgegeben wird.";
@@ -709,6 +712,8 @@
 "staking_notification_earn_rewards_text_period_week" = "Mit dem Staking kannst Du %1$@ verdienen. Deine Staking-Belohnungen erhältst Du jede Woche.";
 "staking_notification_earn_rewards_text_weekly" = "Sicher staken und wöchentliche Belohnungen verdienen.";
 "staking_notification_earn_rewards_title" = "Verdiene Staking-Belohnungen";
+"staking_notification_low_staked_balance_text" = "Your remaining staked balance will be too low to unstake. You’ll need to stake more to meet the minimum unstake amount.";
+"staking_notification_low_staked_balance_title" = "Low staked balance";
 "staking_notification_network_error_text" = "Aufgrund von Netzwerkproblemen ist Staking derzeit nicht verfügbar. Bitte versuche es später erneut.";
 "staking_notification_new_validator_funds_transfer" = "Beim Staking im %1$@ -Netzwerk mit einem neuen Validator werden alle zuvor eingesetzten Kryptos automatisch an diesen Validator übertragen";
 "staking_notification_restake_rewards_text" = "Reinvestiert Deine verdienten Prämien in Deinen Einsatzbetrag und erhöht so den potenziellen Gewinn.";
@@ -742,6 +747,7 @@
 "staking_rewards" = "Belohnungen";
 "staking_stake_locked" = "Stake gesperrt";
 "staking_stake_more" = "Mehr staken";
+"staking_staked_amount" = "Staked amount";
 "staking_summary_description_text" = "Du setzt %1$@ ein und ethältst Deine Belohnung %2$@";
 "staking_tap_to_unlock" = "Zum Entsperren antippen";
 "staking_tap_to_unlock_or_vote" = "Tippe zum Entsperren oder Abstimmen";
@@ -753,6 +759,7 @@
 "staking_unbonding_in" = "Entbindung in";
 "staking_unlocked_locked" = "Gelocktes unlocken";
 "staking_unlocking" = "Entsperren";
+"staking_unstake_amount_requirement_error" = "The amount to unstake must be at least %@";
 "staking_unstake_amount_validation_error" = "Der Betrag übersteigt das eingesetzte Guthaben";
 "staking_unstaked" = "Unstaken";
 "staking_unstaked_footer" = "Prüfe, was nicht eingesetzt wurde, um dein Vermögen zu beanspruchen";
@@ -845,6 +852,7 @@
 "twins_recreate_warning" = "Diese Aktion ist unumkehrbar. Du hast keinen Zugriff mehr auf die alte Wallet.";
 "twins_scan_twin_with_number" = "Tippe auf die Doppelkarte oder Ring mit der Nummer %@ und entferne sie erst am Ende des Vorgangs.";
 "unlock_wallet_description_full" = "Verwende %@ oder scanne eine Karte oder Ring, um Zugriff auf deine Wallet zu erhalten.";
+"unsupported_wc_version" = "Verbindung fehlgeschlagen: Diese dApp verwendet Wallet Connect Version 1.0, die nicht unterstützt wird. Bitte stelle sicher, dass die dApp Wallet Connect Version 2.0 unterstützt, um eine erfolgreiche Verbindung herzustellen.";
 "user_push_notification_agreement_argument_one" = "Bleib auf dem Laufenden mit den neuesten Funktionen und Neuigkeiten";
 "user_push_notification_agreement_argument_two" = "Sei der Erste, der von neuen Aktionen erfährt";
 "user_push_notification_agreement_header" = "Möchtest du Push-Benachrichtigungen verwenden?";

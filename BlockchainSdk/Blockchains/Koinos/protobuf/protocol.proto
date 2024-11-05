@@ -1,0 +1,136 @@
+syntax = "proto3";
+
+package koinos.protocol;
+option go_package = "github.com/koinos/koinos-proto-golang/v2/koinos/protocol";
+
+import "options.proto";
+
+message object_space {
+   bool system = 1;
+   bytes zone = 2;
+   uint32 id = 3;
+}
+
+message event_data {
+   uint32 sequence = 1;
+   bytes source = 2 [(btype) = CONTRACT_ID];
+   string name = 3;
+   bytes data = 4;
+   repeated bytes impacted = 5 [(btype) = ADDRESS];
+}
+
+message contract_call_bundle {
+   bytes contract_id = 1 [(btype) = CONTRACT_ID];
+   uint32 entry_point = 2;
+}
+
+message system_call_target {
+   oneof target {
+      uint32 thunk_id = 1;
+      contract_call_bundle system_call_bundle = 2;
+   }
+}
+
+message upload_contract_operation {
+   bytes contract_id = 1 [(btype) = CONTRACT_ID];
+   bytes bytecode = 2;
+   string abi = 3;
+   bool authorizes_call_contract = 4;
+   bool authorizes_transaction_application = 5;
+   bool authorizes_upload_contract = 6;
+}
+
+message call_contract_operation {
+   bytes contract_id = 1 [(btype) = CONTRACT_ID];
+   uint32 entry_point = 2;
+   bytes args = 3;
+}
+
+message set_system_call_operation {
+   uint32 call_id = 1;
+   system_call_target target = 2;
+}
+
+message set_system_contract_operation {
+   bytes contract_id = 1 [(btype) = CONTRACT_ID];
+   bool system_contract = 2;
+}
+
+message operation {
+   oneof op {
+      upload_contract_operation upload_contract = 1;
+      call_contract_operation call_contract = 2;
+      set_system_call_operation set_system_call = 3;
+      set_system_contract_operation set_system_contract = 4;
+   }
+}
+
+message transaction_header {
+   bytes chain_id = 1;
+   uint64 rc_limit = 2 [jstype = JS_STRING];
+   bytes nonce = 3;
+   bytes operation_merkle_root = 4;
+   bytes payer = 5 [(btype) = ADDRESS];
+   bytes payee = 6 [(btype) = ADDRESS];
+}
+
+message transaction {
+   bytes id = 1 [(btype) = TRANSACTION_ID];
+   transaction_header header = 2;
+   repeated operation operations = 3;
+   repeated bytes signatures = 4;
+}
+
+message transaction_receipt {
+   bytes id = 1 [(btype) = TRANSACTION_ID];
+   bytes payer = 2 [(btype) = ADDRESS];
+   uint64 max_payer_rc = 3 [jstype = JS_STRING];
+   uint64 rc_limit = 4 [jstype = JS_STRING];
+   uint64 rc_used = 5 [jstype = JS_STRING];
+   uint64 disk_storage_used = 6 [jstype = JS_STRING];
+   uint64 network_bandwidth_used = 7 [jstype = JS_STRING];
+   uint64 compute_bandwidth_used = 8 [jstype = JS_STRING];
+   bool reverted = 9;
+   repeated event_data events = 10;
+   repeated string logs = 11;
+   repeated state_delta_entry state_delta_entries = 12;
+}
+
+message block_header {
+   bytes previous = 1 [(btype) = BLOCK_ID];
+   uint64 height = 2 [jstype = JS_STRING];
+   uint64 timestamp = 3 [jstype = JS_STRING];
+   bytes previous_state_merkle_root = 4;
+   bytes transaction_merkle_root = 5;
+   bytes signer = 6 [(btype) = ADDRESS];
+   repeated bytes approved_proposals = 7 [(btype) = TRANSACTION_ID];
+}
+
+message block {
+   bytes id = 1 [(btype) = BLOCK_ID];
+   block_header header = 2;
+   repeated transaction transactions = 3;
+   bytes signature = 4;
+}
+
+message block_receipt {
+   bytes id = 1 [(btype) = BLOCK_ID];
+   uint64 height = 2 [jstype = JS_STRING];
+   uint64 disk_storage_used = 3 [jstype = JS_STRING];
+   uint64 network_bandwidth_used = 4 [jstype = JS_STRING];
+   uint64 compute_bandwidth_used = 5 [jstype = JS_STRING];
+   bytes state_merkle_root = 6;
+   repeated event_data events = 7;
+   repeated transaction_receipt transaction_receipts = 8;
+   repeated string logs = 9;
+   uint64 disk_storage_charged = 10 [jstype = JS_STRING];
+   uint64 network_bandwidth_charged = 11 [jstype = JS_STRING];
+   uint64 compute_bandwidth_charged = 12 [jstype = JS_STRING];
+   repeated state_delta_entry state_delta_entries = 13;
+}
+
+message state_delta_entry {
+   object_space object_space = 1;
+   bytes key = 2;
+   optional bytes value = 3;
+}

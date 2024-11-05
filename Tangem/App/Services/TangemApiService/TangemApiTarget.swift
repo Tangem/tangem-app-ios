@@ -6,6 +6,7 @@
 //  Copyright © 2022 Tangem AG. All rights reserved.
 //
 
+import Foundation
 import Moya
 import TangemSdk
 
@@ -171,7 +172,7 @@ struct TangemApiTarget: TargetType {
                 ],
                 encoding: URLEncoding.default
             )
-        case .tokenExchangesList(let requestModel):
+        case .tokenExchangesList:
             return .requestPlain
         }
     }

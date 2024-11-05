@@ -62,6 +62,20 @@ class ReceiveBottomSheetViewModel: ObservableObject, Identifiable {
         return Localization.receiveBottomSheetWarningMessage(name, tokenItem.currencySymbol, tokenItem.networkName)
     }
 
+    func stringForAddress(_ address: String) -> NSAttributedString {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineBreakMode = .byCharWrapping
+        paragraphStyle.alignment = .center
+
+        let attributes: [NSAttributedString.Key: Any] = [
+            .paragraphStyle: paragraphStyle,
+            .font: UIFonts.Bold.callout,
+            .foregroundColor: UIColor(Colors.Text.primary1),
+        ]
+
+        return NSAttributedString(string: address, attributes: attributes)
+    }
+
     func copyToClipboard() {
         Analytics.log(event: .buttonCopyAddress, params: [
             .token: tokenItem.currencySymbol,

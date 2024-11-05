@@ -23,7 +23,7 @@ class CommonStakingManager {
     private let _state = CurrentValueSubject<StakingManagerState, Never>(.loading)
     private var canStakeMore: Bool {
         switch wallet.item.network {
-        case .solana, .cosmos, .tron, .ethereum: true
+        case .solana, .cosmos, .tron, .ethereum, .binance: true
         default: false
         }
     }
@@ -216,11 +216,12 @@ private extension CommonStakingManager {
         case .claimRewards(let passthrough),
              .restakeRewards(let passthrough),
              .voteLocked(let passthrough),
-             .unlockLocked(let passthrough):
+             .unlockLocked(let passthrough),
+             .restake(let passthrough):
             let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
             let action = try await getPendingTransactionAction(request: request)
             return action
-        case .withdraw(let passthroughs):
+        case .withdraw(let passthroughs), .claimUnstaked(let passthroughs):
             let actions = try await passthroughs.asyncMap { passthrough in
                 let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
                 let action = try await getPendingTransactionAction(request: request)
@@ -259,10 +260,11 @@ private extension CommonStakingManager {
         case .claimRewards(let passthrough),
              .restakeRewards(let passthrough),
              .voteLocked(let passthrough),
-             .unlockLocked(let passthrough):
+             .unlockLocked(let passthrough),
+             .restake(let passthrough):
             let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
             return try await execute(try await provider.estimatePendingFee(request: request))
-        case .withdraw(let passthroughs):
+        case .withdraw(let passthroughs), .claimUnstaked(let passthroughs):
             let fees = try await passthroughs.asyncMap { passthrough in
                 let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
                 return try await execute(try await provider.estimatePendingFee(request: request))
@@ -400,7 +402,7 @@ private extension CommonStakingManager {
 private extension CommonStakingManager {
     func getAdditionalAddresses() -> AdditionalAddresses? {
         switch wallet.item.network {
-        case .cosmos:
+        case .cosmos, .kava, .near:
             guard let compressedPublicKey = try? Secp256k1Key(with: wallet.publicKey).compress() else {
                 return nil
             }

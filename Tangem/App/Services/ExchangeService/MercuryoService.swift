@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import class UIKit.UITraitCollection
 import Combine
 import BlockchainSdk
 import TangemSdk
@@ -282,8 +283,9 @@ private extension Blockchain {
              .sui,
              .energyWebEVM,
              .energyWebX,
-             .core:
-            // Did you get a compilation error here? If so, check whether the network is supported at https://api.mercuryo.io/v1.6/lib/currencies
+             .core,
+             .canxium:
+            // Did you get a compilation error here? If so, check whether the network is supported at
             return nil
         }
     }

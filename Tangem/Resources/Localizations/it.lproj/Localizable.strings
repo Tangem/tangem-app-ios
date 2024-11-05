@@ -529,9 +529,11 @@
 "onboarding_wallet_info_title_fourth" = "Access code restore";
 "onboarding_wallet_info_title_second" = "Identical cards";
 "onboarding_wallet_info_title_third" = "Access code";
+"onramp_pay_with" = "Pay with";
 "onramp_residency_bottomsheet_country_not_supported" = "Our services are not available in this country";
 "onramp_residency_bottomsheet_country_subtitle" = "Change or confirm it";
 "onramp_residency_bottomsheet_title" = "Your residence has been identified as";
+"onramp_via" = "Via";
 "organize_tokens_group" = "Group";
 "organize_tokens_sort_by_balance" = "By balance";
 "organize_tokens_title" = "Organize tokens";
@@ -666,6 +668,7 @@
 "staking_active_footer" = "To unstake your assets, tap the block above";
 "staking_amount_requirement_error" = "The amount to stake must be at least %@";
 "staking_amount_tron_integer_error" = "Staking amount will be rounded to %1$@ TRX due to network rules.";
+"staking_amount_tron_integer_error_unstaking" = "Staking amount will be rounded to %1$@ TRX due to network rules.";
 "staking_claim_unstaked" = "Claim unstaked";
 "staking_details_account_fee" = "Stake account fee";
 "staking_details_account_fee_info" = "A staking account is a special account where staked SOL tokens are stored. It is created when you delegate your tokens to a validator to participate in transaction validation and earn rewards. A small fee is charged for creating the staking account, which is returned after the staking is completed.";
@@ -709,6 +712,8 @@
 "staking_notification_earn_rewards_text_period_week" = "Staking allows you to earn %1$@. Your staking rewards arrive every week.";
 "staking_notification_earn_rewards_text_weekly" = "Stake securely and start earning weekly rewards";
 "staking_notification_earn_rewards_title" = "Earn staking rewards";
+"staking_notification_low_staked_balance_text" = "Your remaining staked balance will be too low to unstake. You’ll need to stake more to meet the minimum unstake amount.";
+"staking_notification_low_staked_balance_title" = "Low staked balance";
 "staking_notification_network_error_text" = "Staking is currently unavailable due to network conditions. Please try again later.";
 "staking_notification_new_validator_funds_transfer" = "Staking in the %1$@ network with a new validator will automatically transfer all previously staked funds to this validator";
 "staking_notification_restake_rewards_text" = "Reinvests your earned rewards in your staked amount, increasing potential earnings.";
@@ -742,6 +747,7 @@
 "staking_rewards" = "Rewards";
 "staking_stake_locked" = "Stake locked";
 "staking_stake_more" = "Stake more";
+"staking_staked_amount" = "Staked amount";
 "staking_summary_description_text" = "You stake %1$@ and will be receiving your reward %2$@";
 "staking_tap_to_unlock" = "Tap to unlock";
 "staking_tap_to_unlock_or_vote" = "Tap to unlock or vote";
@@ -753,6 +759,7 @@
 "staking_unbonding_in" = "Unbonding in";
 "staking_unlocked_locked" = "Unlock";
 "staking_unlocking" = "Unlocking";
+"staking_unstake_amount_requirement_error" = "The amount to unstake must be at least %@";
 "staking_unstake_amount_validation_error" = "Amount exceeds staked balance";
 "staking_unstaked" = "Unstaked";
 "staking_unstaked_footer" = "Check unstaked to claim your assets";
@@ -845,6 +852,7 @@
 "twins_recreate_warning" = "This action is irreversible. You will not have access to the old wallet.";
 "twins_scan_twin_with_number" = "Tap the twin card with number %@ and do not remove until the end of the operation";
 "unlock_wallet_description_full" = "Use %@ or scan a card/ring to have access to your wallet";
+"unsupported_wc_version" = "Connection failed: This dApp uses Wallet Connect version 1.0, which is not supported. Please ensure the dApp supports Wallet Connect version 2.0 to connect successfully.";
 "user_push_notification_agreement_argument_one" = "Stay up to date with the latest features and news";
 "user_push_notification_agreement_argument_two" = "Be the first to know about new promotions";
 "user_push_notification_agreement_header" = "Would you like to use\nPush-notifications?";

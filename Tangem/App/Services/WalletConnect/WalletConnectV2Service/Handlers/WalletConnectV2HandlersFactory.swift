@@ -7,7 +7,7 @@
 //
 
 import BlockchainSdk
-import struct WalletConnectSwiftV2.AnyCodable
+import struct Commons.AnyCodable
 
 protocol WalletConnectHandlersCreator: AnyObject {
     func createHandler(
@@ -74,6 +74,20 @@ final class WalletConnectHandlersFactory: WalletConnectHandlersCreator {
                 signer: signer,
                 walletModelProvider: walletModelProvider,
                 uiDelegate: uiDelegate
+            )
+        case .solanaSignMessage:
+            return try WalletConnectSolanaSignMessageHandler(
+                request: params,
+                signer: SolanaWalletConnectSigner(signer: signer),
+                blockchainId: blockchainId,
+                walletModelProvider: walletModelProvider
+            )
+        case .solanaSignTransaction:
+            return try WalletConnectSolanaSignTransactionHandler(
+                request: params,
+                blockchainId: blockchainId,
+                signer: SolanaWalletConnectSigner(signer: signer),
+                walletModelProvider: walletModelProvider
             )
         case .bnbSign, .bnbTxConfirmation:
             // TODO: https://tangem.atlassian.net/browse/IOS-2896

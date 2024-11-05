@@ -13,9 +13,9 @@ struct MarketsTokenDetailsExchangesListView: View {
 
     @Environment(\.colorScheme) private var colorScheme
 
-    @State private var safeArea: EdgeInsets = .init()
     @State private var isListContentObscured = false
     @State private var headerHeight: CGFloat = .zero
+    @State private var safeArea: EdgeInsets = .init()
 
     private var isDarkColorScheme: Bool { colorScheme == .dark }
     private var defaultBackgroundColor: Color { Colors.Background.primary }
@@ -48,15 +48,20 @@ struct MarketsTokenDetailsExchangesListView: View {
                 .opacity(viewModel.overlayContentHidingProgress)
 
             VStack(spacing: 0) {
-                MarketsNavigationBar(
-                    isMarketsSheetStyle: viewModel.isMarketsSheetStyle,
-                    title: navigationBarTitle,
-                    onBackButtonAction: viewModel.onBackButtonAction
-                )
+                if viewModel.isMarketsSheetStyle {
+                    MarketsNavigationBar(
+                        isMarketsSheetStyle: viewModel.isMarketsSheetStyle,
+                        title: navigationBarTitle,
+                        onBackButtonAction: viewModel.onBackButtonAction
+                    )
+                } else {
+                    // Native navigation bar is used, so we install an invisible spacer to align the header below the navigation bar
+                    Color.clear
+                        .frame(height: safeArea.top)
+                }
 
                 header
                     .opacity(viewModel.overlayContentHidingProgress)
-                    .padding(.top, safeArea.top)
             }
             .background {
                 MarketsNavigationBarBackgroundView(

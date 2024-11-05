@@ -32,7 +32,7 @@ enum PerformanceMonitorConfigurator {
     }
 
     private static var isEnabledUsingFeatureToggle: Bool {
-        return FeatureStorage().isPerformanceMonitorEnabled
+        return FeatureStorage.instance.isPerformanceMonitorEnabled
     }
 
     static func configureIfAvailable() {

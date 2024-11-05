@@ -126,7 +126,7 @@ enum AlertBuilder {
             withExtendedLifetime(fieldValidator) {}
             let text = nameTextField?.text ?? ""
             let mappedText = mapText(text)
-            action(text)
+            action(mappedText)
         }
         alert.addAction(acceptButton)
 

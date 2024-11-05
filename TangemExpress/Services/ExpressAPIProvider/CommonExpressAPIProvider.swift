@@ -21,11 +21,13 @@ class CommonExpressAPIProvider {
 // MARK: - ExpressAPIProvider
 
 extension CommonExpressAPIProvider: ExpressAPIProvider {
+    // MARK: - Swap
+
     /// Requests from Express API `exchangeAvailable` state for currencies included in filter
     /// - Returns: All `ExpressCurrency` that available to exchange specified by filter
     func assets(with filter: [ExpressCurrency]) async throws -> [ExpressAsset] {
         let tokens = filter.map(expressAPIMapper.mapToDTOCurrency(currency:))
-        let request = ExpressDTO.Assets.Request(tokensList: tokens)
+        let request = ExpressDTO.Swap.Assets.Request(tokensList: tokens)
         let response = try await expressAPIService.assets(request: request)
         let assets: [ExpressAsset] = response.map(expressAPIMapper.mapToExpressAsset(response:))
         return assets
@@ -34,7 +36,7 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
     func pairs(from: [ExpressCurrency], to: [ExpressCurrency]) async throws -> [ExpressPair] {
         let from = from.map(expressAPIMapper.mapToDTOCurrency(currency:))
         let to = to.map(expressAPIMapper.mapToDTOCurrency(currency:))
-        let request = ExpressDTO.Pairs.Request(from: from, to: to)
+        let request = ExpressDTO.Swap.Pairs.Request(from: from, to: to)
         let response = try await expressAPIService.pairs(request: request)
         let pairs = response.map(expressAPIMapper.mapToExpressPair(response:))
         return pairs
@@ -47,7 +49,7 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
     }
 
     func exchangeQuote(item: ExpressSwappableItem) async throws -> ExpressQuote {
-        let request = ExpressDTO.ExchangeQuote.Request(
+        let request = ExpressDTO.Swap.ExchangeQuote.Request(
             fromContractAddress: item.source.expressCurrency.contractAddress,
             fromNetwork: item.source.expressCurrency.network,
             toContractAddress: item.destination.expressCurrency.contractAddress,
@@ -71,7 +73,7 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
 
     func exchangeData(item: ExpressSwappableItem) async throws -> ExpressTransactionData {
         let requestId: String = UUID().uuidString
-        let request = ExpressDTO.ExchangeData.Request(
+        let request = ExpressDTO.Swap.ExchangeData.Request(
             requestId: requestId,
             fromAddress: item.source.defaultAddress,
             fromContractAddress: item.source.expressCurrency.contractAddress,
@@ -94,14 +96,14 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
     }
 
     func exchangeStatus(transactionId: String) async throws -> ExpressTransaction {
-        let request = ExpressDTO.ExchangeStatus.Request(txId: transactionId)
+        let request = ExpressDTO.Swap.ExchangeStatus.Request(txId: transactionId)
         let response = try await expressAPIService.exchangeStatus(request: request)
         let transaction = expressAPIMapper.mapToExpressTransaction(response: response)
         return transaction
     }
 
     func exchangeSent(result: ExpressTransactionSentResult) async throws {
-        let request = ExpressDTO.ExchangeSent.Request(
+        let request = ExpressDTO.Swap.ExchangeSent.Request(
             txHash: result.hash,
             txId: result.data.expressTransactionId,
             fromNetwork: result.source.expressCurrency.network,
@@ -111,5 +113,84 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
         )
 
         _ = try await expressAPIService.exchangeSent(request: request)
+    }
+
+    // MARK: - Onramp
+
+    func onrampCurrencies() async throws -> [OnrampFiatCurrency] {
+        let response = try await expressAPIService.onrampCurrencies()
+        let currencies = response.map(expressAPIMapper.mapToOnrampFiatCurrency(response:))
+        return currencies
+    }
+
+    func onrampCountries() async throws -> [OnrampCountry] {
+        let response = try await expressAPIService.onrampCountries()
+        let countries = response.map(expressAPIMapper.mapToOnrampCountry(response:))
+        return countries
+    }
+
+    func onrampCountryByIP() async throws -> OnrampCountry {
+        let response = try await expressAPIService.onrampCountryByIP()
+        let country = expressAPIMapper.mapToOnrampCountry(response: response)
+        return country
+    }
+
+    func onrampPaymentMethods() async throws -> [OnrampPaymentMethod] {
+        let response = try await expressAPIService.onrampPaymentMethods()
+        let methods = response.map(expressAPIMapper.mapToOnrampPaymentMethod(response:))
+        return methods
+    }
+
+    func onrampPairs(from fiat: OnrampFiatCurrency, to: [ExpressCurrency], country: OnrampCountry) async throws -> [OnrampPair] {
+        let to = to.map(expressAPIMapper.mapToDTOCurrency(currency:))
+        let request = ExpressDTO.Onramp.Pairs.Request(fromCurrencyCode: fiat.identity.code, countryCode: country.identity.code, to: to)
+        let response = try await expressAPIService.onrampPairs(request: request)
+        let pairs = response.map(expressAPIMapper.mapToOnrampPair(response:))
+        return pairs
+    }
+
+    func onrampQuote(item: OnrampQuotesRequestItem) async throws -> OnrampQuote {
+        let request = ExpressDTO.Onramp.Quote.Request(
+            fromCurrencyCode: item.pairItem.fiatCurrency.identity.code,
+            toContractAddress: item.pairItem.destination.expressCurrency.contractAddress,
+            toNetwork: item.pairItem.destination.expressCurrency.network,
+            paymentMethod: item.paymentMethod.identity.code,
+            countryCode: item.pairItem.country.identity.code,
+            fromAmount: item.destinationAmountWEI(),
+            toDecimals: item.pairItem.destination.decimalCount,
+            providerId: item.providerInfo.id
+        )
+
+        let response = try await expressAPIService.onrampQuote(request: request)
+        let quote = try expressAPIMapper.mapToOnrampQuote(response: response)
+        return quote
+    }
+
+    func onrampData(item: OnrampRedirectDataRequestItem) async throws -> OnrampRedirectData {
+        let requestId: String = UUID().uuidString
+        let request = ExpressDTO.Onramp.Data.Request(
+            fromCurrencyCode: item.quotesItem.pairItem.fiatCurrency.identity.code,
+            toContractAddress: item.quotesItem.pairItem.destination.expressCurrency.contractAddress,
+            toNetwork: item.quotesItem.pairItem.destination.expressCurrency.network,
+            paymentMethod: item.quotesItem.paymentMethod.identity.code,
+            countryCode: item.quotesItem.pairItem.country.identity.code,
+            fromAmount: item.quotesItem.sourceAmountWEI(),
+            toDecimals: item.quotesItem.pairItem.destination.decimalCount,
+            providerId: item.quotesItem.providerInfo.id,
+            toAddress: item.quotesItem.pairItem.destination.defaultAddress,
+            toExtraId: nil, // There is no memo on the client side
+            redirectUrl: item.redirectSettings.successURL,
+            language: item.redirectSettings.language,
+            theme: item.redirectSettings.theme,
+            requestId: requestId
+        )
+
+        let response = try await expressAPIService.onrampData(request: request)
+        let data = try expressAPIMapper.mapToOnrampRedirectData(item: item, request: request, response: response)
+        return data
+    }
+
+    func onrampStatus(transactionId: String) async throws {
+        // TODO: https://tangem.atlassian.net/browse/IOS-8308
     }
 }

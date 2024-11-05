@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import BlockchainSdk
+import CryptoSwift
 
 struct SmartContractMethodPrefixCreator {
     func createPrefixForMethod(with name: String) -> String {

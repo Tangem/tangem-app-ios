@@ -8,7 +8,7 @@
 
 import Foundation
 import CryptoSwift
-import WalletConnectSwiftV2
+import ReownWalletKit
 import TangemSdk
 
 struct WalletConnectCryptoProvider: CryptoProvider {

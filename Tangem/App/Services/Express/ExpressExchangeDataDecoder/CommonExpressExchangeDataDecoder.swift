@@ -13,7 +13,7 @@ import TangemSdk
 struct CommonExpressExchangeDataDecoder: ExpressExchangeDataDecoder {
     let publicKey: String
 
-    func decode(txDetailsJson: String, signature: String) throws -> DecodedTransactionDetails {
+    func decode<T: Decodable>(txDetailsJson: String, signature: String) throws -> T {
         let txDetailsData = Data(txDetailsJson.utf8)
         let signatureData = Data(hexString: signature)
         let publicKeyData = Data(hexString: publicKey).suffix(65)
@@ -24,7 +24,7 @@ struct CommonExpressExchangeDataDecoder: ExpressExchangeDataDecoder {
         }
 
         AppLog.shared.debug("[Express] The signature is verified")
-        let details = try JSONDecoder().decode(DecodedTransactionDetails.self, from: txDetailsData)
+        let details = try JSONDecoder().decode(T.self, from: txDetailsData)
         return details
     }
 }

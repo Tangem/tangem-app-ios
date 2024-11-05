@@ -529,9 +529,11 @@
 "onboarding_wallet_info_title_fourth" = "アクセスコードの復元";
 "onboarding_wallet_info_title_second" = "同一のカード";
 "onboarding_wallet_info_title_third" = "アクセスコード";
+"onramp_pay_with" = "Pay with";
 "onramp_residency_bottomsheet_country_not_supported" = "この国では当社のサービスはご利用いただけません";
 "onramp_residency_bottomsheet_country_subtitle" = "変更または確認";
 "onramp_residency_bottomsheet_title" = "あなたの住居は次のように識別されています";
+"onramp_via" = "Via";
 "organize_tokens_group" = "グループ";
 "organize_tokens_sort_by_balance" = "残高順";
 "organize_tokens_title" = "トークンを整理する";
@@ -666,6 +668,7 @@
 "staking_active_footer" = "資産のステーキングを解除するには、上のブロックをタップしてください";
 "staking_amount_requirement_error" = "ステーキング金額は %@ 以上である必要があります";
 "staking_amount_tron_integer_error" = "ネットワークルールにより、ステーキング金額は%1$@ TRX に切り上げられます。";
+"staking_amount_tron_integer_error_unstaking" = "ネットワークルールにより、ステーキング解除の量は[%1$s] TRX に切り上げられます。";
 "staking_claim_unstaked" = "ステーキング解除分を請求する";
 "staking_details_account_fee" = "ステーキングアカウント手数料";
 "staking_details_account_fee_info" = "ステーキングアカウントは、ステーキングされたSOLトークンが保管される特別なアカウントです。取引の検証に参加して報酬を得るために、トークンをバリデーターに委任すると、このアカウントが作成されます。ステーキングアカウントの作成には少額の手数料がかかりますが、この手数料はステーキングが完了すると返金されます。";
@@ -709,6 +712,8 @@
 "staking_notification_earn_rewards_text_period_week" = "ステーキングにより%1$@を獲得できます。ステーキング報酬は毎週受け取れます。";
 "staking_notification_earn_rewards_text_weekly" = "安全にステーキングして、報酬を毎週獲得しましょう";
 "staking_notification_earn_rewards_title" = "ステーキング報酬を獲得";
+"staking_notification_low_staked_balance_text" = "Your remaining staked balance will be too low to unstake. You’ll need to stake more to meet the minimum unstake amount.";
+"staking_notification_low_staked_balance_title" = "Low staked balance";
 "staking_notification_network_error_text" = "ネットワークの状態により、現在ステーキングはご利用いただけません。しばらくしてからもう一度お試しください。";
 "staking_notification_new_validator_funds_transfer" = "新しいバリデーターで%1$@ネットワークにステーキングすると、以前にステーキングされた資金はすべてこのバリデーターに自動的に転送されます。";
 "staking_notification_restake_rewards_text" = "獲得した報酬をステーキングに再投資し、潜在的な収益を増やします。";
@@ -742,6 +747,7 @@
 "staking_rewards" = "報酬";
 "staking_stake_locked" = "ステーキングはロックされています";
 "staking_stake_more" = "もっとステーキングする";
+"staking_staked_amount" = "Staked amount";
 "staking_summary_description_text" = "%1$@をステーキングし、報酬%2$@を受け取ります";
 "staking_tap_to_unlock" = "タップしてロック解除";
 "staking_tap_to_unlock_or_vote" = "タップしてロック解除もしくは投票";
@@ -753,6 +759,7 @@
 "staking_unbonding_in" = "解約完了まで";
 "staking_unlocked_locked" = "ロック解除";
 "staking_unlocking" = "ロック解除中";
+"staking_unstake_amount_requirement_error" = "The amount to unstake must be at least %@";
 "staking_unstake_amount_validation_error" = "金額がステーキング残高を超えています";
 "staking_unstaked" = "ステーキングされていない";
 "staking_unstaked_footer" = "資産を請求するために、unstakedを確認してください";
@@ -845,6 +852,7 @@
 "twins_recreate_warning" = "この操作は元に戻せません。古いウォレットにはアクセスできなくなります。";
 "twins_scan_twin_with_number" = "番号%@のツインカードをタップし、操作が終了するまで取り外さないでください。";
 "unlock_wallet_description_full" = "%@を使用するか、カード / リングをスキャンしてウォレットにアクセスしてください";
+"unsupported_wc_version" = "接続に失敗しました：このdAppは、サポートされていないWallet Connectバージョン1.0を使用しています。正常に接続するには、dAppがWallet Connectバージョン2.0をサポートしていることを確認してください。";
 "user_push_notification_agreement_argument_one" = "最新の機能とニュースをお届けします";
 "user_push_notification_agreement_argument_two" = "新しいプロモーション情報をいち早く入手しましょう";
 "user_push_notification_agreement_header" = "プッシュ通知を使用しますか?";
