@@ -45,6 +45,6 @@ struct OnrampCountryView: View {
                     .foregroundColor(Colors.Icon.accent)
             }
         }
-        .padding(.vertical, 15)
+        .padding(.vertical, 14)
     }
 }

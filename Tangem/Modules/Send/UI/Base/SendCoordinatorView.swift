@@ -26,7 +26,7 @@ struct SendCoordinatorView: CoordinatorView {
                 sheets
             }
         }
-        .accentColor(Colors.Text.primary1)
+        .tint(Colors.Text.primary1)
     }
 
     @ViewBuilder

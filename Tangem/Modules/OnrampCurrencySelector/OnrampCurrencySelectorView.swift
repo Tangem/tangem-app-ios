@@ -48,7 +48,7 @@ private extension OnrampCurrencySelectorView {
     var failedToLoadView: some View {
         Spacer()
 
-        MarketsUnableToLoadDataView(
+        UnableToLoadDataView(
             isButtonBusy: false,
             retryButtonAction: viewModel.loadCurrencies
         )

@@ -48,7 +48,7 @@ private extension OnrampCountrySelectorView {
     var failedToLoadView: some View {
         Spacer()
 
-        MarketsUnableToLoadDataView(
+        UnableToLoadDataView(
             isButtonBusy: false,
             retryButtonAction: viewModel.loadCountries
         )

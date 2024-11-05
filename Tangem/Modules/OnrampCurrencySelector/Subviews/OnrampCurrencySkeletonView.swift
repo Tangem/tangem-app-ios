@@ -15,7 +15,7 @@ struct OnrampCurrencySkeletonView: View {
                 .frame(width: 36, height: 36)
                 .cornerRadiusContinuous(18)
 
-            VStack(alignment: .leading, spacing: 7) {
+            VStack(alignment: .leading, spacing: 6) {
                 SkeletonView()
                     .frame(width: 70, height: 12)
                     .cornerRadiusContinuous(3)
@@ -25,6 +25,6 @@ struct OnrampCurrencySkeletonView: View {
                     .cornerRadiusContinuous(3)
             }
         }
-        .padding(.vertical, 15)
+        .padding(.vertical, 14)
     }
 }

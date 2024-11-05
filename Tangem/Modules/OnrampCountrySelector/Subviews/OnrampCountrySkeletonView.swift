@@ -19,6 +19,6 @@ struct OnrampCountrySkeletonView: View {
                 .frame(width: 70, height: 12)
                 .cornerRadiusContinuous(3)
         }
-        .padding(.vertical, 15)
+        .padding(.vertical, 14)
     }
 }

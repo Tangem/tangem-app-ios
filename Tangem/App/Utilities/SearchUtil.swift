@@ -12,7 +12,7 @@ enum SearchUtil<T> {
             return items
         }
 
-        let loweccasedSearchText = searchText.lowercased()
+        let loweccasedSearchText = searchText.lowercased().trimmed()
 
         return items
             .filter { item in
