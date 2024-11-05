@@ -11,3 +11,16 @@ public protocol OnrampDataRepository: Actor {
     func countries() async throws -> [OnrampCountry]
     func currencies() async throws -> [OnrampFiatCurrency]
 }
+
+public extension OnrampDataRepository {
+    nonisolated var popularFiatCodes: Set<String> {
+        [
+            "GBP",
+            "USD",
+            "CAD",
+            "AUD",
+            "HKD",
+            "EUR",
+        ]
+    }
+}
