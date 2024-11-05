@@ -34,8 +34,8 @@ class OnrampAmountViewModel: ObservableObject {
         interactor: OnrampAmountInteractor,
         coordinator: OnrampAmountRoutable
     ) {
-        self.interactor = interactor
         self.tokenItem = tokenItem
+        self.interactor = interactor
         self.coordinator = coordinator
 
         decimalNumberTextFieldViewModel = .init(maximumFractionDigits: 2)

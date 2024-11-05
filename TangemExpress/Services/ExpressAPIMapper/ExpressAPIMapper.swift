@@ -186,8 +186,6 @@ struct ExpressAPIMapper {
             throw ExpressAPIMapperError.mapToDecimalError(response.toAmount)
         }
 
-        toAmount /= pow(10, response.toDecimals)
-
         return OnrampQuote(expectedAmount: toAmount)
     }
 

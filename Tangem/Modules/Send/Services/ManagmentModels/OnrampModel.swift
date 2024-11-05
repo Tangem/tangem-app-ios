@@ -24,7 +24,7 @@ class OnrampModel {
     private let _amount: CurrentValueSubject<SendAmount?, Never> = .init(.none)
     private let _selectedOnrampProvider: CurrentValueSubject<LoadingValue<OnrampProvider>?, Never> = .init(.none)
     private let _selectedOnrampPaymentMethod: CurrentValueSubject<OnrampPaymentMethod?, Never>
-    private let _onrampProviders: CurrentValueSubject<[OnrampProvider], Never> = .init([])
+    private let _onrampProviders: CurrentValueSubject<LoadingValue<[OnrampProvider]>?, Never> = .init(.none)
     private let _isLoading: CurrentValueSubject<Bool, Never> = .init(false)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
 
@@ -91,14 +91,19 @@ private extension OnrampModel {
 
     func updateProviders(country: OnrampCountry, currency: OnrampFiatCurrency) async throws {
         let request = makeOnrampPairRequestItem(country: country, currency: currency)
-        // TODO: Check the providers is empty
-        _ = try await onrampManager.setupProviders(request: request)
+        try await onrampManager.setupProviders(request: request)
+
+        await _onrampProviders.send(.loaded(onrampManager.providers))
     }
 
     func updateQuotes(amount: Decimal?) {
         guard let amount else {
             _selectedOnrampProvider.send(.none)
             // Clear onrampManager
+            mainTask {
+                try await $0.onrampManager.setupQuotes(amount: nil)
+            }
+
             return
         }
 
@@ -106,7 +111,7 @@ private extension OnrampModel {
         mainTask {
             try await $0.onrampManager.setupQuotes(amount: amount)
 
-            await $0._onrampProviders.send($0.onrampManager.providers)
+            await $0._onrampProviders.send(.loaded($0.onrampManager.providers))
             if let selectedProvider = await $0.onrampManager.selectedProvider {
                 $0._selectedOnrampProvider.send(.loaded(selectedProvider))
             }
@@ -248,8 +253,8 @@ extension OnrampModel: OnrampProvidersInput {
         _selectedOnrampProvider.eraseToAnyPublisher()
     }
 
-    var onrampProvidersPublisher: AnyPublisher<[OnrampProvider], Never> {
-        _onrampProviders.eraseToAnyPublisher()
+    var onrampProvidersPublisher: AnyPublisher<LoadingValue<[OnrampProvider]>, Never> {
+        _onrampProviders.compactMap { $0 }.eraseToAnyPublisher()
     }
 }
 
@@ -283,7 +288,13 @@ extension OnrampModel: OnrampPaymentMethodsOutput {
 
 // MARK: - OnrampInput
 
-extension OnrampModel: OnrampInput {}
+extension OnrampModel: OnrampInput {
+    var isValidPublisher: AnyPublisher<Bool, Never> {
+        _selectedOnrampProvider
+            .compactMap { $0?.value?.manager.state.isReadyToBuy }
+            .eraseToAnyPublisher()
+    }
+}
 
 // MARK: - OnrampOutput
 

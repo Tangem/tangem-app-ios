@@ -45,6 +45,8 @@ final class OnrampPaymentMethodsViewModel: ObservableObject {
 private extension OnrampPaymentMethodsViewModel {
     func setupView() {
         TangemFoundation.runTask(in: self) {
+            // Logic will be updated. PaymentMethods will be filtered
+            // TODO: https://tangem.atlassian.net/browse/IOS-8487
             do {
                 let methods = try await $0.dataRepository.paymentMethods()
                 await $0.updateView(paymentMethods: methods)

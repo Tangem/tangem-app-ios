@@ -68,7 +68,7 @@ extension CommonOnrampProvidersInteractor: OnrampProvidersInteractor {
         }
 
         return Publishers
-            .CombineLatest(input.onrampProvidersPublisher, paymentMethodPublisher)
+            .CombineLatest(input.onrampProvidersPublisher.compactMap { $0.value }, paymentMethodPublisher)
             .map { providers, paymentMethod in
                 providers.filter {
                     $0.paymentMethod.id == paymentMethod.id

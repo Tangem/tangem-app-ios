@@ -61,11 +61,9 @@ extension CommonOnrampManager: OnrampManager {
 
         // Fill the `_providers` with all possible options
         _providers = try await prepareProviders(item: item, supportedProviders: supportedProviders)
-
-        return
     }
 
-    public func setupQuotes(amount: Decimal) async throws {
+    public func setupQuotes(amount: Decimal?) async throws {
         await withTaskGroup(of: Void.self) { [weak self] group in
             await self?._providers.forEach { provider in
                 _ = group.addTaskUnlessCancelled {
@@ -87,7 +85,8 @@ extension CommonOnrampManager: OnrampManager {
 
 private extension CommonOnrampManager {
     func updateSelectedProvider() {
-        // TODO: Update logic
+        // Logic will be updated. Make a some sort by priority
+        // TODO: https://tangem.atlassian.net/browse/IOS-8487
         _selectedProvider = _providers.first
     }
 
@@ -124,7 +123,7 @@ private extension CommonOnrampManager {
                 return .notSupported(.paymentMethod)
             }
 
-            return .created
+            return .idle
         }
 
         return availableProviders

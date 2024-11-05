@@ -21,7 +21,7 @@ public protocol OnrampManager: Actor {
     func setupProviders(request: OnrampPairRequestItem) async throws
 
     /// The user changed the amount. We upload providers quotes
-    func setupQuotes(amount: Decimal) async throws
+    func setupQuotes(amount: Decimal?) async throws
 
     /// Load the data to perform the onramp action
     func loadOnrampData(request: OnrampQuotesRequestItem) async throws -> OnrampRedirectData

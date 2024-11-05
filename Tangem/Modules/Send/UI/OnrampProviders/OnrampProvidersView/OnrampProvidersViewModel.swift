@@ -113,12 +113,16 @@ private extension OnrampProvidersViewModel {
 
     func state(state: OnrampProviderManagerState) -> OnrampProviderRowViewData.State? {
         switch state {
-        case .created, .loading, .notSupported, .failed:
+        case .idle, .loading, .notSupported:
             return nil
         case .loaded(let quote):
             // Time will be hardcoded (?)
             // TODO: https://tangem.atlassian.net/browse/IOS-8487
             return .available(estimatedTime: "5 min")
+        case .restriction(.tooSmallAmount(let minAmount)):
+            return .availableFromAmount(minAmount: minAmount)
+        case .restriction(.tooBigAmount(let maxAmount)):
+            return .availableToAmount(maxAmount: maxAmount)
         case .failed(let error):
             return .unavailable(reason: error.localizedDescription)
         }

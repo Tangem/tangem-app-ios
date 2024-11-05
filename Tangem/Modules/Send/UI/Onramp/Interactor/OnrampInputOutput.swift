@@ -6,6 +6,10 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-protocol OnrampInput: AnyObject {}
+import Combine
+
+protocol OnrampInput: AnyObject {
+    var isValidPublisher: AnyPublisher<Bool, Never> { get }
+}
 
 protocol OnrampOutput: AnyObject {}
