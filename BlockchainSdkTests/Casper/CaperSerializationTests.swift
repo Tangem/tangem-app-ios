@@ -14,7 +14,7 @@ import XCTest
 final class CapertSerializationTests: XCTestCase {
     func testAll() {
         // Test 1: deploy header serialization test
-        let deployHeader = DeployHeader()
+        let deployHeader = CSPRDeployHeader()
         deployHeader.account = "01d9bf2148748a85c89da5aad8ee0b0fc2d105fd39d41a4c796536354f0ae2900c"
         deployHeader.timestamp = "2020-11-17T00:39:24.072Z"
         deployHeader.ttl = "1h"
@@ -88,16 +88,16 @@ final class CapertSerializationTests: XCTestCase {
         let sessionSerialization = ExecutableDeployItemSerializaton.serialize(from: session)
         XCTAssert(sessionSerialization == "050100000006000000616d6f756e7404000000e803000001")
         // Test 9. approval serialization test
-        let da = DeployApprovalItem()
+        let da = CSPRDeployApprovalItem()
         da.signature = "012dbf03817a51794a8e19e0724884075e6d1fbec326b766ecfa6658b41f81290da85e23b24e88b1c8d9761185c961daee1adab0649912a6477bcd2e69bd91bd08"
         da.signer = "01d9bf2148748a85c89da5aad8ee0b0fc2d105fd39d41a4c796536354f0ae2900c"
-        let deployApprovals: [DeployApprovalItem] = [da]
+        let deployApprovals: [CSPRDeployApprovalItem] = [da]
         let approvalSerialization = DeployApprovalSerialization.serialize(from: deployApprovals)
         XCTAssert(approvalSerialization == "0100000001d9bf2148748a85c89da5aad8ee0b0fc2d105fd39d41a4c796536354f0ae2900c012dbf03817a51794a8e19e0724884075e6d1fbec326b766ecfa6658b41f81290da85e23b24e88b1c8d9761185c961daee1adab0649912a6477bcd2e69bd91bd08")
         // Test 10. Test for the whole deploy
         // This is the deploy used as an example at this address
         // https: // caspernetwork.readthedocs.io/en/latest/implementation/serialization-standard.html?highlight=serialization#serialization-standard
-        let deploy = Deploy()
+        let deploy = CSPRDeploy()
         deploy.header = deployHeader
         deploy.payment = payment
         deploy.session = session
