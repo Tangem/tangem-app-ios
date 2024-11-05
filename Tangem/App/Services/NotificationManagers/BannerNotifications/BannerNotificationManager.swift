@@ -11,7 +11,7 @@ import Combine
 
 class BannerNotificationManager {
     @Injected(\.bannerPromotionService) private var bannerPromotionService: BannerPromotionService
-    @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
+    @Injected(\.expressAvailabilityProvider) private var expressAvailabilityProvider: ExpressAvailabilityProvider
 
     private let analyticsService = NotificationsAnalyticsService()
 

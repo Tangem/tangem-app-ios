@@ -529,10 +529,18 @@
 "onboarding_wallet_info_title_fourth" = "Відновлення коду доступу";
 "onboarding_wallet_info_title_second" = "Ідентичні картки";
 "onboarding_wallet_info_title_third" = "Код доступу";
+"onramp_country_search" = "Search by country";
+"onramp_country_unavailable" = "Unavailable";
+"onramp_currency_other" = "Other currencies";
+"onramp_currency_popular" = "Popular Fiats";
+"onramp_currency_search" = "Search by currency";
 "onramp_pay_with" = "Pay with";
 "onramp_residency_bottomsheet_country_not_supported" = "Наші сервіси недоступні в цій країні";
 "onramp_residency_bottomsheet_country_subtitle" = "Змінити або підтвердити";
 "onramp_residency_bottomsheet_title" = "Ваше місце проживання визначено як";
+"onramp_settings_residence" = "Residence";
+"onramp_settings_residence_description" = "Please select the correct country to ensure accurate payment options and services.";
+"onramp_settings_title" = "Settings";
 "onramp_via" = "Via";
 "organize_tokens_group" = "Групами";
 "organize_tokens_sort_by_balance" = "За балансом";
@@ -668,6 +676,7 @@
 "staking_active_footer" = "Для завершення стейкінгу натисніть на блок вище";
 "staking_amount_requirement_error" = "Сума для стейкінгу має бути не менше %@";
 "staking_amount_tron_integer_error" = "Сума стейкінгу буде округлена до %1$@ TRX відповідно до правил мережі.";
+"staking_amount_tron_integer_error_unstaking" = "Unstaking amount will be rounded to %1$@ TRX due to network rules.";
 "staking_claim_unstaked" = "Зняти кошти";
 "staking_details_account_fee" = "Комісія за стейкінг-акаунт";
 "staking_details_account_fee_info" = "Стейкінг-акаунт - це спеціальний рахунок, на якому зберігаються застейкані SOL токени. Він створюється, коли ви делегуєте свої токени валідатору для участі у перевірці транзакцій та отримання винагород. За створення стейкінг-акаунту стягується невелика комісія, яка повертається після завершення стейкінгу.";
@@ -711,10 +720,13 @@
 "staking_notification_earn_rewards_text_period_week" = "Стейкінг дає змогу вам отримувати %1$@. Винагорода буде зараховуватися кожен тиждень.";
 "staking_notification_earn_rewards_text_weekly" = "Стейкайте безпечно та почніть отримувати винагороди щотижня";
 "staking_notification_earn_rewards_title" = "Отримуйте винагороду за стейкінг";
+"staking_notification_low_staked_balance_text" = "Your remaining staked balance will be too low to unstake. You’ll need to stake more to meet the minimum unstake amount.";
+"staking_notification_low_staked_balance_title" = "Low staked balance";
 "staking_notification_network_error_text" = "Стейкінг тимчасово недоступний через проблеми в мережі. Будь ласка, спробуйте пізніше.";
 "staking_notification_new_validator_funds_transfer" = "Стейкінг в мережі %1$@ з новим валідатором автоматично переведе всі раніше застейкані кошти до цього валідатора";
 "staking_notification_restake_rewards_text" = "Реінвестуйте зароблені винагороди у суму стейкінгу, щоб збільшити потенційний прибуток.";
 "staking_notification_restake_text" = "Рестейк дозволяє вам перемістити ваші кошти від одного валідатора до іншого без необхідності виводити кошти зі стейкінгу";
+"staking_notification_stake_entire_balance_text" = "You’re about to stake your entire balance. We recommend leaving a small amount to cover network fees for unstaking or claiming rewards.";
 "staking_notification_unlock_text" = "Розблокуйте свої кошти, щоб вивести їх зі стейкінгу. Розблокування займе %@.";
 "staking_notification_unstake_cosmos_text" = "Ваші кошти будуть доступні для використання після закінчення 21-денного періоду розблокування. Винагорода буде отримана разом з вашими незастейканими коштами.";
 "staking_notification_unstake_text" = "Ваші кошти будуть доступні після %@ періоду розблокування.";
@@ -744,6 +756,7 @@
 "staking_rewards" = "Винагороди";
 "staking_stake_locked" = "Стейкінг закрито";
 "staking_stake_more" = "Застейкати більше";
+"staking_staked_amount" = "Staked amount";
 "staking_summary_description_text" = "Ви стейкаєте %1$@ і будете отримуватиме винагороду %2$@";
 "staking_tap_to_unlock" = "Натисніть, щоб розблокувати";
 "staking_tap_to_unlock_or_vote" = "Натисніть, щоб розблокувати або проголосувати";
@@ -755,6 +768,7 @@
 "staking_unbonding_in" = "Розблокування через";
 "staking_unlocked_locked" = "Розблокувати";
 "staking_unlocking" = "Розблокування";
+"staking_unstake_amount_requirement_error" = "Сума для стейкінгу має бути не менше %@";
 "staking_unstake_amount_validation_error" = "Сума перевищує баланс стейкінгу";
 "staking_unstaked" = "Вивід зі стейкінгу";
 "staking_unstaked_footer" = "Перевірити незастейкані, щоб отримати свої активи";
@@ -787,6 +801,7 @@
 "swapping_alert_cex_description_with_slippage" = "У суму входить:\n- комісія провайдера\n- мережева комісія за відправку %1$@ з біржі назад на адресу користувача. \n\nПроскакування провайдера становить до %2$@";
 "swapping_alert_dex_description" = "Сума включає комісію постачальника послуг.";
 "swapping_alert_dex_description_with_slippage" = "Сума включає комісію провайдера послуг. \n\nПроскакування провайдера до %@";
+"swapping_alert_slippage_description" = "Provider slippage is up to %@.";
 "swapping_alert_title" = "Комісії";
 "swapping_approve_information_text" = "Всі децентралізовані біржі вимагають схвалення, щоб запобігти доступу смарт-контрактів до вашого гаманця без вашого дозволу. За задумом смарт-контракти не можуть отримати доступ до ваших токенів без вашого схвалення. \"Розблоковуючи\" свої токени, ви дозволяєте смарт-контракту 1inch витрачати ваші активи. Майнери мережі отримують плату за газ (сплачену вами), щоб зафіксувати цю дію в блокчейні. Ви можете обміняти свій токен після того, як дасте дозвіл.";
 "swapping_approve_information_title" = "Підтвердити";
@@ -834,6 +849,7 @@
 "transaction_history_transaction_from_address" = "від: %@";
 "transaction_history_transaction_to_address" = "до: %@";
 "transaction_history_transaction_validator" = "валідатор: %@";
+"transfer_notification_invalid_minimum_transaction_amount_text" = "The minimum transaction amount is %1$@.";
 "try_to_load_data_again_button_title" = "Спробуйте знову";
 "twin_error_same_card" = "Ви відсканували одну й ту саму картку. Для створення twin-гаманця вам потрібно відсканувати картку з номером %li";
 "twin_error_wrong_twin" = "Ви відсканували не ту twin-картку. Будь ласка, спробуйте відсканувати іншу";

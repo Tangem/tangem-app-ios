@@ -12,7 +12,7 @@ extension CasperNetworkRequest {
     struct QueryBalance: Encodable {
         let purseIdentifier: PurseIdentifier
     }
-    
+
     struct PurseIdentifier: Encodable {
         let mainPurseUnderPublicKey: String
     }

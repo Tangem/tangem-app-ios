@@ -55,20 +55,6 @@ struct SendAmountStepBuilder {
             tokenItem: walletModel.tokenItem
         )
     }
-
-    func makeOnrampAmountViewModel(
-        io: IO,
-        sendAmountValidator: SendAmountValidator
-    ) -> OnrampAmountViewModel {
-        let interactor = makeSendAmountInteractor(
-            io: io,
-            sendAmountValidator: sendAmountValidator,
-            amountModifier: nil,
-            type: .fiat
-        )
-
-        return OnrampAmountViewModel(tokenItem: walletModel.tokenItem, interactor: interactor)
-    }
 }
 
 // MARK: - Private

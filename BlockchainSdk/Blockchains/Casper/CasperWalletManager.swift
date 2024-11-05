@@ -17,24 +17,24 @@ class CasperWalletManager: BaseManager, WalletManager {
     var allowsFeeSelection: Bool {
         false
     }
-    
+
     // MARK: - Private Implementation
-    
+
     private let networkService: CasperNetworkService
-    
+
     // MARK: - Init
-    
+
     init(wallet: Wallet, networkService: CasperNetworkService) {
         self.networkService = networkService
         super.init(wallet: wallet)
     }
-    
+
     // MARK: - Manager Implementation
 
     override func update(completion: @escaping (Result<Void, any Error>) -> Void) {
         let balanceInfoPublisher = networkService
             .getBalance(address: wallet.address)
-        
+
         cancellable = balanceInfoPublisher
             .withWeakCaptureOf(self)
             .sink(receiveCompletion: { [weak self] result in
@@ -59,17 +59,16 @@ class CasperWalletManager: BaseManager, WalletManager {
         // TODO: - https://tangem.atlassian.net/browse/IOS-8316
         return .anyFail(error: SendTxError(error: WalletError.empty))
     }
-    
+
     // MARK: - Private Implementation
-    
+
     private func updateWallet(balanceInfo: CasperBalance) {
         if balanceInfo.value != wallet.amounts[.coin]?.value {
             wallet.clearPendingTransaction()
         }
-        
+
         wallet.add(amount: Amount(with: wallet.blockchain, type: .coin, value: balanceInfo.value))
     }
-    
 }
 
 extension CasperWalletManager {
