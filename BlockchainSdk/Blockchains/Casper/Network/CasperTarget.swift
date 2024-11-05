@@ -9,7 +9,6 @@
 import Foundation
 import Moya
 
-// TODO: - https://tangem.atlassian.net/browse/IOS-8316
 struct CasperTarget: TargetType {
     // MARK: - Properties
 
@@ -43,6 +42,9 @@ struct CasperTarget: TargetType {
 
         switch type {
         case .getBalance(let data):
+            let encoder = JSONEncoder()
+            encoder.keyEncodingStrategy = .convertToSnakeCase
+
             return .requestJSONRPC(
                 id: Constants.jsonRPCMethodId,
                 method: Method.queryBalance.rawValue,

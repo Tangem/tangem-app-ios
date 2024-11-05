@@ -37,11 +37,11 @@ final class CasperTransactionBuilder {
     func buildForSend(transaction: Transaction, timestamp: String, signature: Data) throws -> Data {
         let deploy = try build(transaction: transaction, with: timestamp)
 
-        let dai1 = DeployApprovalItem()
+        let dai1 = CSPRDeployApprovalItem()
         dai1.signer = deploy.header.account
         dai1.signature = try signatureByCurveWithPrefix(signature: signature, for: curve).hexString.lowercased()
 
-        let approvals: [DeployApprovalItem] = [dai1]
+        let approvals: [CSPRDeployApprovalItem] = [dai1]
         deploy.approvals = approvals
 
         print(deploy.toJsonData())
@@ -53,8 +53,8 @@ final class CasperTransactionBuilder {
 // MARK: - Private Implentation
 
 private extension CasperTransactionBuilder {
-    func build(transaction: Transaction, with timestamp: String) throws -> Deploy {
-        let deploy = Deploy()
+    func build(transaction: Transaction, with timestamp: String) throws -> CSPRDeploy {
+        let deploy = CSPRDeploy()
 
         let deployHeader = buildDeployHeader(from: transaction, timestamp: timestamp)
         let deployPayment = try buildPayment(with: transaction.fee)
@@ -118,8 +118,8 @@ private extension CasperTransactionBuilder {
         return session
     }
 
-    func buildDeployHeader(from transaction: Transaction, timestamp: String) -> DeployHeader {
-        let deployHeader = DeployHeader()
+    func buildDeployHeader(from transaction: Transaction, timestamp: String) -> CSPRDeployHeader {
+        let deployHeader = CSPRDeployHeader()
         deployHeader.account = transaction.sourceAddress.lowercased()
         deployHeader.timestamp = timestamp
         deployHeader.ttl = Constants.defaultTTL
@@ -129,7 +129,7 @@ private extension CasperTransactionBuilder {
         return deployHeader
     }
 
-    func getBodyHash(deploy: Deploy) -> String {
+    func getBodyHash(deploy: CSPRDeploy) -> String {
         DeploySerialization.getBodyHash(fromDeploy: deploy)
     }
 

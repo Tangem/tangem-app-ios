@@ -1333,6 +1333,8 @@ class AddressesTests: XCTestCase {
         let ed25519Address = "0198c07D7e72D89A681d7227a7Af8A6fd5F22fe0105c8741d55A95dF415454b82E"
         let ed25519AddressService = CasperAddressService(curve: .ed25519)
 
+        XCTAssertTrue(ed25519AddressService.validate(ed25519Address))
+
         let secp256k1Address = "02021f997DfbbFd32817C0E110EAeE26BCbD2BB70b4640C515D9721c9664312eaCd8"
         let secp256k1AddressService = CasperAddressService(curve: .secp256k1)
 

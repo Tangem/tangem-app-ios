@@ -25,7 +25,7 @@ public struct CasperAddressService {
 
 extension CasperAddressService: AddressProvider {
     public func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
-        guard let prefixAddresss = CasperConstants.prefix(by: curve) else {
+        guard let prefixAddresss = CasperConstants.getPrefix(by: curve) else {
             throw Error.unsupportedAddressPrefix
         }
 
@@ -46,7 +46,15 @@ extension CasperAddressService: AddressValidator {
             return false
         }
 
-        return true
+        if address.isSameCase() {
+            return true
+        }
+
+        do {
+            return try address == CasperAddressUtils().checksum(input: Data(hexString: address))
+        } catch {
+            return false
+        }
     }
 }
 
@@ -55,5 +63,13 @@ extension CasperAddressService: AddressValidator {
 extension CasperAddressService {
     enum Error: LocalizedError {
         case unsupportedAddressPrefix
+    }
+}
+
+// MARK: - Helpers
+
+private extension String {
+    func isSameCase() -> Bool {
+        lowercased() == self || uppercased() == self
     }
 }

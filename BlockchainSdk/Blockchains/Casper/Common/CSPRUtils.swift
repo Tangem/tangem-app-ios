@@ -9,7 +9,7 @@ private let monthInMilisecond: UInt64 = dayInMilisecond * 30
 private let yearInMilisecond: UInt64 = dayInMilisecond * 365
 
 enum CSPRUtils {
-    static var deploy: Deploy = .init()
+    static var deploy: CSPRDeploy = .init()
     static var isPutDeployUsingSecp256k1: Bool = false
     static var deployHash: String = ""
     static var putDeployCounter: Int = 0

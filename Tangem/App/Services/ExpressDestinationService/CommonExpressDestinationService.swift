@@ -10,7 +10,7 @@ import Foundation
 import TangemExpress
 
 struct CommonExpressDestinationService {
-    @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
+    @Injected(\.expressAvailabilityProvider) private var expressAvailabilityProvider: ExpressAvailabilityProvider
     @Injected(\.expressPendingTransactionsRepository) private var pendingTransactionRepository: ExpressPendingTransactionRepository
 
     private let walletModelsManager: WalletModelsManager
@@ -32,7 +32,7 @@ extension CommonExpressDestinationService: ExpressDestinationService {
         let availablePairs = await expressRepository.getPairs(from: source)
         let searchableWalletModels = walletModelsManager.walletModels.filter { wallet in
             let isNotSource = wallet.id != source.id
-            let isAvailable = swapAvailabilityProvider.canSwap(tokenItem: wallet.tokenItem)
+            let isAvailable = expressAvailabilityProvider.canSwap(tokenItem: wallet.tokenItem)
             let isNotCustom = !wallet.isCustom
             let hasPair = availablePairs.contains(where: { $0.destination == wallet.expressCurrency })
 

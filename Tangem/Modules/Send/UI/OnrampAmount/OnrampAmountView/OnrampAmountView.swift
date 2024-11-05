@@ -40,6 +40,7 @@ struct OnrampAmountView: View {
                     .prefixSuffixOptions(viewModel.currentFieldOptions)
                     .minTextScale(SendAmountStep.Constants.amountMinTextScale)
                     .matchedGeometryEffect(id: namespace.names.amountCryptoText, in: namespace.id)
+                    .skeletonable(isShown: viewModel.isLoading)
 
                 // Keep empty text so that the view maintains its place in the layout
                 Text(viewModel.alternativeAmount ?? " ")

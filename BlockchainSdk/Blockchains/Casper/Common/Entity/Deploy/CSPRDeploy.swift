@@ -3,13 +3,13 @@ import Foundation
 /**
  Class for Deploy object
  */
-class Deploy {
+class CSPRDeploy {
     /// Deploy hash
     var hash: String = ""
     /// List of DeployApprovalItem
-    var approvals: [DeployApprovalItem] = .init()
+    var approvals: [CSPRDeployApprovalItem] = .init()
     /// Deploy Header
-    var header: DeployHeader = .init()
+    var header: CSPRDeployHeader = .init()
     /// Deploy Payment, which is object of class ExecutableDeployItem
     var payment: ExecutableDeployItem?
     /// Deploy Session, which is object of class ExecutableDeployItem
@@ -52,7 +52,7 @@ class Deploy {
     }
 }
 
-class NamedArgJson: Codable {
+class CSPRNamedArgJson: Codable {
     var clType: String
     var bytes: String
     var parsed: String
@@ -62,7 +62,7 @@ class NamedArgJson: Codable {
  Class for DeployApprovalItem object
  */
 
-class DeployApprovalItem {
+class CSPRDeployApprovalItem {
     /// signature  of the Approval
     var signature: String = ""
     /// singer  of the Approval

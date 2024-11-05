@@ -4,7 +4,7 @@ import Foundation
  Class represents the DeployInfo
  */
 
-class DeployInfo {
+class CSPRDeployInfo {
     var deployHash: String = ""
     var transfers: [String] = .init()
     var from: String = ""
@@ -17,8 +17,8 @@ class DeployInfo {
      - Returns: DeployInfo object
      */
 
-    static func fromJsonToDeployInfo(from: [String: Any]) -> DeployInfo {
-        let oneDeployInfo = DeployInfo()
+    static func fromJsonToDeployInfo(from: [String: Any]) -> CSPRDeployInfo {
+        let oneDeployInfo = CSPRDeployInfo()
         if let deployHash: String = from["deploy_hash"] as? String {
             oneDeployInfo.deployHash = deployHash
         }

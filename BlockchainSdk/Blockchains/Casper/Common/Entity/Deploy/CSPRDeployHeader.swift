@@ -3,7 +3,7 @@ import Foundation
 /**
  Class for Deploy Header object
  */
-class DeployHeader: Codable {
+class CSPRDeployHeader: Codable {
     /// Deploy Header  account hash
     var account: String = ""
     /// Deploy Header body hash
@@ -24,8 +24,8 @@ class DeployHeader: Codable {
      - Returns: DeployHeader object
      */
 
-    static func getDeployHeader(from: [String: Any]) -> DeployHeader {
-        let retDeploy = DeployHeader()
+    static func getDeployHeader(from: [String: Any]) -> CSPRDeployHeader {
+        let retDeploy = CSPRDeployHeader()
         if let account = from["account"] as? String {
             retDeploy.account = account
         }
