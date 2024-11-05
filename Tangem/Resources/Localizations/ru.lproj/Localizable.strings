@@ -668,6 +668,7 @@
 "staking_active_footer" = "Для завершения стейкинга нажмите на блок выше";
 "staking_amount_requirement_error" = "Сумма для стейкинга должна быть не менее %@";
 "staking_amount_tron_integer_error" = "Согласно правилам сети, сумма стейкинга будет округлена до %1$@TRX.";
+"staking_amount_tron_integer_error_unstaking" = "Staking amount will be rounded to %1$@ TRX due to network rules.";
 "staking_claim_unstaked" = "Забрать средства";
 "staking_details_account_fee" = "Комиссия за стейкинг аккаунт";
 "staking_details_account_fee_info" = "Стейкинг аккаунт — это специальный счет, на котором хранятся застейканные токены SOL. Он создается при делегировании ваших токенов валидатору для участия в подтверждении транзакций и получении наград. За создание стейкинг аккаунта взимается небольшая комиссия, которая возвращается после завершения стейкинга.";
@@ -711,6 +712,8 @@
 "staking_notification_earn_rewards_text_period_week" = "Стейкинг дает возможность вам получать %1$@. Награда будет зачисляться каждую неделю.";
 "staking_notification_earn_rewards_text_weekly" = "Стейкайте безопасно и начинайте получать еженедельные награды.";
 "staking_notification_earn_rewards_title" = "Получите награду за стейкинг";
+"staking_notification_low_staked_balance_text" = "Your remaining staked balance will be too low to unstake. You’ll need to stake more to meet the minimum unstake amount.";
+"staking_notification_low_staked_balance_title" = "Low staked balance";
 "staking_notification_network_error_text" = "Стейкинг временно недоступен из-за проблем в сети. Пожалуйста, попробуйте позже.";
 "staking_notification_new_validator_funds_transfer" = "Стейкинг в сети %1$@ с новым валидатором автоматически переведет ваши текущие застейканные средства на него.";
 "staking_notification_restake_rewards_text" = "Реинвестируйте свои заработанные награды в вашу застейканную сумму, увеличивая потенциальный доход";
@@ -744,6 +747,7 @@
 "staking_rewards" = "Вознаграждения";
 "staking_stake_locked" = "Стейкинг закрыт";
 "staking_stake_more" = "Застейкать еще";
+"staking_staked_amount" = "Staked amount";
 "staking_summary_description_text" = "Вы стейкаете %1$@ и будете получать награду %2$@";
 "staking_tap_to_unlock" = "Нажмите для разблокировки";
 "staking_tap_to_unlock_or_vote" = "Нажмите для разблокировки";
@@ -755,6 +759,7 @@
 "staking_unbonding_in" = "Отзыв через";
 "staking_unlocked_locked" = "Разблокировать";
 "staking_unlocking" = "Разблокировка";
+"staking_unstake_amount_requirement_error" = "The amount to unstake must be at least %@";
 "staking_unstake_amount_validation_error" = "Сумма превышает застейканный баланс";
 "staking_unstaked" = "Вывод из стейкинга";
 "staking_unstaked_footer" = "Проверьте процесс завершения стейкинга, чтобы вывести свои средства.";
