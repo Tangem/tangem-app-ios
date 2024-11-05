@@ -13,6 +13,7 @@ import XCTest
 
 final class CasperTests: XCTestCase {
     private let blockchain = Blockchain.casper(testnet: false)
+    private lazy var txBuilder = CasperTransactionBuilder(blockchain: blockchain, curve: .secp256k1)
 
     // MARK: - Private Properties
 
@@ -25,7 +26,34 @@ final class CasperTests: XCTestCase {
     // MARK: - Transaction Tests
 
     func testBuildForSign() throws {
-        let txBuilder = CasperTransactionBuilder(blockchain: blockchain, curve: .secp256k1)
+        let transaction = transactionData()
+        let hashForSign = try txBuilder.buildForSign(transaction: transaction, timestamp: timestamp)
+        XCTAssertEqual(hashForSign.hexString.lowercased(), "951f30645f15e5955750d7aa3b50cadd8ca4044f46aa49cfe389d90825f8122f")
+    }
+
+    /*
+     https://cspr.live/deploy/951f30645f15e5955750d7aa3b50cadd8ca4044f46aa49cfe389d90825f8122f
+     */
+    func testBuildForSend() throws {
+        let transaction = transactionData()
+        let hashForSend = try txBuilder.buildForSend(
+            transaction: transaction,
+            timestamp: timestamp,
+            signature: Data(hexString: secp256k1Signature)
+        )
+
+        /*
+         If the transaction is correctly assembled, the json object must not be empty
+
+         Checking the correctness of the hash takes place in the method above
+         */
+
+        XCTAssertTrue(!hashForSend.isEmpty)
+    }
+
+    // MARK: - Private Implementation
+
+    private func transactionData() -> Transaction {
         let transferAmount = Amount(with: blockchain, value: 2.5)
         let feeAmount = Amount(with: blockchain, value: 0.1)
 
@@ -37,7 +65,6 @@ final class CasperTests: XCTestCase {
             changeAddress: sourceAddress
         )
 
-        let hashForSign = try txBuilder.buildForSign(transaction: transaction, timestamp: timestamp)
-        XCTAssertEqual(hashForSign.hexString.lowercased(), "951f30645f15e5955750d7aa3b50cadd8ca4044f46aa49cfe389d90825f8122f")
+        return transaction
     }
 }

@@ -44,8 +44,6 @@ final class CasperTransactionBuilder {
         let approvals: [CSPRDeployApprovalItem] = [dai1]
         deploy.approvals = approvals
 
-        print(deploy.toJsonData())
-
         return deploy.toJsonData()
     }
 }
