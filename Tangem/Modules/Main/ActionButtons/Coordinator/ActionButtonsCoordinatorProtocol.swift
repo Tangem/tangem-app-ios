@@ -9,7 +9,7 @@
 import Foundation
 
 protocol ActionButtonsRoutable {
-    func openBuy(userWalletModel: UserWalletModel)
+    func openBuyCryptoIfPossible(userWalletModel: UserWalletModel)
     func openSwap()
     func openSell()
 }

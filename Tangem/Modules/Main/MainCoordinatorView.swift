@@ -92,7 +92,7 @@ struct MainCoordinatorView: CoordinatorView {
                 VisaTransactionDetailsView(viewModel: $0)
             }
             .sheet(item: $coordinator.actionButtonsBuyCoordinator) {
-                ActionButtonsBuyView(coordinator: $0)
+                ActionButtonsBuyCoordinatorView(coordinator: $0)
             }
 
         NavHolder()

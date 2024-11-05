@@ -12,12 +12,11 @@ protocol ActionButtonsFactory {
 
 final class CommonActionButtonsFactory: ActionButtonsFactory {
     private let coordinator: ActionButtonsRoutable
-    private let actionButtons: [ActionButtonModel]
+    private let actionButtons: [ActionButtonModel] = [.buy, .sell, .swap]
     private let userWalletModel: UserWalletModel
 
-    init(coordinator: some ActionButtonsRoutable, actionButtons: [ActionButtonModel], userWalletModel: UserWalletModel) {
+    init(coordinator: some ActionButtonsRoutable, userWalletModel: UserWalletModel) {
         self.coordinator = coordinator
-        self.actionButtons = actionButtons
         self.userWalletModel = userWalletModel
     }
 
@@ -32,7 +31,7 @@ private extension ActionButtonViewModel {
     convenience init(from dataModel: ActionButtonModel, coordinator: ActionButtonsRoutable, userWalletModel: UserWalletModel) {
         let didTapAction: () -> Void = {
             switch dataModel {
-            case .buy: { coordinator.openBuy(userWalletModel: userWalletModel) }
+            case .buy: { coordinator.openBuyCryptoIfPossible(userWalletModel: userWalletModel) }
             case .swap: coordinator.openSwap
             case .sell: coordinator.openSell
             }

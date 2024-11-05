@@ -8,6 +8,7 @@
 
 import Combine
 import Foundation
+import TangemFoundation
 
 final class ActionButtonsViewModel: ObservableObject {
     @Injected(\.exchangeService) private var exchangeService: ExchangeService
@@ -17,24 +18,28 @@ final class ActionButtonsViewModel: ObservableObject {
 
     private var cancellables = Set<AnyCancellable>()
 
+    private let actionButtonsFactory: ActionButtonsFactory
     private let expressTokensListAdapter: ExpressTokensListAdapter
 
     init(
-        actionButtonViewModels: [ActionButtonViewModel],
+        actionButtonsFactory: some ActionButtonsFactory,
         expressTokensListAdapter: some ExpressTokensListAdapter
     ) {
-        self.actionButtonViewModels = actionButtonViewModels
+        self.actionButtonsFactory = actionButtonsFactory
         self.expressTokensListAdapter = expressTokensListAdapter
+        actionButtonViewModels = actionButtonsFactory.makeActionButtonViewModels()
 
         bind()
         fetchData()
     }
 
     func fetchData() {
-        Task {
-            async let _ = fetchBuyData()
-            async let _ = fetchSwapData()
-            async let _ = fetchSellData()
+        TangemFoundation.runTask(in: self) {
+            async let _ = $0.fetchBuyData()
+            
+            async let _ = $0.fetchSwapData()
+            
+            async let _ = $0.fetchSellData()
         }
     }
 

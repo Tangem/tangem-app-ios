@@ -18,7 +18,9 @@ struct ActionButtonsTokenSelectorItemBuilder: TokenSelectorItemBuilder {
             balance: walletModel.balance,
             fiatBalance: walletModel.fiatBalance,
             isDisabled: isDisabled,
-            walletModel: walletModel
+            amountType: walletModel.amountType,
+            blockchain: walletModel.blockchainNetwork.blockchain,
+            defaultAddress: walletModel.defaultAddress
         )
     }
 }

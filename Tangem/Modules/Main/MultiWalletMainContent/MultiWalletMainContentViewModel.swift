@@ -144,9 +144,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
     }
 
     private func refreshActionButtonsData() {
-        Task {
-            await actionButtonsViewModel?.fetchData()
-        }
+        actionButtonsViewModel?.fetchData()
     }
 
     private func bind() {
@@ -524,14 +522,11 @@ private extension MultiWalletMainContentViewModel {
     func makeActionButtonsViewModel() -> ActionButtonsViewModel? {
         guard let coordinator else { return nil }
 
-        let actionButtonsFactory = CommonActionButtonsFactory(
-            coordinator: coordinator,
-            actionButtons: [.buy, .sell, .swap],
-            userWalletModel: userWalletModel
-        )
-
         return .init(
-            actionButtonViewModels: actionButtonsFactory.makeActionButtonViewModels(),
+            actionButtonsFactory: CommonActionButtonsFactory(
+                coordinator: coordinator,
+                userWalletModel: userWalletModel
+            ),
             expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel)
         )
     }

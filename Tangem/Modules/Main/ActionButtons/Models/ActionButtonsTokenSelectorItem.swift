@@ -6,6 +6,8 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
+import BlockchainSdk
+
 struct ActionButtonsTokenSelectorItem: Identifiable, Equatable {
     let id: Int
     let tokenIconInfo: TokenIconInfo
@@ -14,5 +16,7 @@ struct ActionButtonsTokenSelectorItem: Identifiable, Equatable {
     let balance: String
     let fiatBalance: String
     let isDisabled: Bool
-    let walletModel: WalletModel
+    let amountType: Amount.AmountType
+    let blockchain: Blockchain
+    let defaultAddress: String
 }

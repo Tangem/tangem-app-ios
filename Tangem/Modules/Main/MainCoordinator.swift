@@ -22,6 +22,7 @@ class MainCoordinator: CoordinatorObject {
     @Injected(\.safariManager) private var safariManager: SafariManager
     @Injected(\.pushNotificationsInteractor) private var pushNotificationsInteractor: PushNotificationsInteractor
     @Injected(\.mainBottomSheetUIManager) private var mainBottomSheetUIManager: MainBottomSheetUIManager
+    @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
 
     // MARK: - Root view model
 
@@ -456,18 +457,16 @@ extension MainCoordinator: PushNotificationsPermissionRequestDelegate {
 // MARK: - Action buttons
 
 extension MainCoordinator: ActionButtonsRoutable {
-    func openBuy(userWalletModel: UserWalletModel) {
-        actionButtonsBuyCoordinator = ActionButtonsBuyCoordinator(
-            expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel),
-            openBuy: { url in
-                self.openBuyCrypto(
-                    at: url,
-                    action: { [weak self] in
-                        self?.actionButtonsBuyCoordinator = nil
-                    }
-                )
+    func openBuyCryptoIfPossible(userWalletModel: UserWalletModel) {
+        if tangemApiService.geoIpRegionCode == LanguageCode.ru {
+            openBankWarning { [weak self] in
+                self?.openBuy(userWalletModel: userWalletModel)
+            } declineCallback: { [weak self] in
+                self?.openP2PTutorial()
             }
-        )
+        } else {
+            openBuy(userWalletModel: userWalletModel)
+        }
     }
 
     func openSwap() {
@@ -476,6 +475,35 @@ extension MainCoordinator: ActionButtonsRoutable {
 
     func openSell() {
         // IOS-8237
+    }
+}
+
+// MARK: - Action buttons helpers
+
+extension MainCoordinator {
+    private func openBuy(userWalletModel: UserWalletModel) {
+        let dismissAction: Action<Void> = { [weak self] _ in
+            self?.actionButtonsBuyCoordinator = nil
+        }
+
+        let openBuy: (URL) -> Void = { url in
+            self.openBuyCrypto(
+                at: url,
+                action: { [weak self] in
+                    self?.actionButtonsBuyCoordinator = nil
+                }
+            )
+        }
+
+        let coordinator = ActionButtonsBuyCoordinator(
+            expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel),
+            dismissAction: dismissAction,
+            openBuy: openBuy
+        )
+
+        coordinator.start(with: .default)
+
+        actionButtonsBuyCoordinator = coordinator
     }
 }
 
