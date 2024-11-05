@@ -149,7 +149,7 @@ extension CommonStakingManager: StakingManager {
     }
 
     func transactionDidSent(action: StakingAction) {
-        Task(operation: actions)
+        Task(operation: updateState)
     }
 }
 
@@ -169,7 +169,7 @@ private extension CommonStakingManager {
         let stakingBalances = balances.map { balance in
             mapToStakingBalance(balance: balance, yield: yield)
         }
-        
+
         let mergedBalances = mergeBalancesAndProcessingActions(
             realBalances: stakingBalances,
             processingActions: actions,
@@ -182,14 +182,14 @@ private extension CommonStakingManager {
 
         return .staked(.init(balances: mergedBalances, yieldInfo: yield, canStakeMore: canStakeMore))
     }
-    
+
     private func mergeBalancesAndProcessingActions(
         realBalances: [StakingBalance],
         processingActions: [PendingAction],
         yield: YieldInfo
     ) -> [StakingBalance] {
         var balances = realBalances
-        
+
         processingActions.forEach { action in
             switch action.type {
             case .stake, .vote, .voteLocked:
@@ -203,7 +203,7 @@ private extension CommonStakingManager {
             default: break // intentionally do nothing
             }
         }
-        
+
         return balances
     }
 
@@ -213,7 +213,7 @@ private extension CommonStakingManager {
         ) else { return }
 
         let balance = balances[index]
-        
+
         let updatedBalance = StakingBalance(
             item: balance.item,
             amount: balance.amount,
@@ -222,7 +222,7 @@ private extension CommonStakingManager {
             inProgress: true,
             actions: balance.actions
         )
-        
+
         balances[index] = updatedBalance
     }
 

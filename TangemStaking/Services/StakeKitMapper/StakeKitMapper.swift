@@ -232,7 +232,7 @@ struct StakeKitMapper {
             )
         }
     }
-    
+
     func mapToActionType(
         from actionType: StakeKitDTO.Actions.ActionType
     ) throws -> StakingPendingActionInfo.ActionType {
