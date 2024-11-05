@@ -34,7 +34,6 @@ extension UInt8 {
 
 extension Array where Element == UInt8 {
     func toBitArray() -> [Bit] {
-        let arrayBits = map { $0.toBits() }
-        return arrayBits.reduce(into: []) { partialResult, bits in partialResult.append(contentsOf: bits) }
+        flatMap { $0.toBits() }
     }
 }

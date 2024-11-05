@@ -12,7 +12,7 @@ import XCTest
 @testable import BlockchainSdk
 
 final class CasperTests: XCTestCase {
-    private let blockchain = Blockchain.casper(testnet: false)
+    private let blockchain = Blockchain.casper(curve: .secp256k1, testnet: false)
 
     // TODO: - https://tangem.atlassian.net/browse/IOS-8318
 }
