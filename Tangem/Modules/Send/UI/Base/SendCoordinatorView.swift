@@ -20,6 +20,7 @@ struct SendCoordinatorView: CoordinatorView {
             ZStack {
                 if let rootViewModel = coordinator.rootViewModel {
                     SendView(viewModel: rootViewModel, transitionService: .init())
+                        .navigationBarHidden(true)
                         .navigationLinks(links)
                 }
 
