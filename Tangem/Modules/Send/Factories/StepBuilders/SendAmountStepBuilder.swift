@@ -29,7 +29,8 @@ struct SendAmountStepBuilder {
             io: io,
             sendAmountValidator: sendAmountValidator,
             amountModifier: amountModifier,
-            type: .crypto
+            type: .crypto,
+            actionType: actionType
         )
         let viewModel = makeSendAmountViewModel(
             io: io,
@@ -65,7 +66,8 @@ struct SendAmountStepBuilder {
             io: io,
             sendAmountValidator: sendAmountValidator,
             amountModifier: nil,
-            type: .fiat
+            type: .fiat,
+            actionType: .onramp
         )
 
         return OnrampAmountViewModel(tokenItem: walletModel.tokenItem, interactor: interactor)
@@ -101,13 +103,14 @@ private extension SendAmountStepBuilder {
         io: IO,
         sendAmountValidator: SendAmountValidator,
         amountModifier: SendAmountModifier?,
-        type: SendAmountCalculationType
+        type: SendAmountCalculationType,
+        actionType: SendFlowActionType
     ) -> SendAmountInteractor {
         CommonSendAmountInteractor(
             input: io.input,
             output: io.output,
             tokenItem: walletModel.tokenItem,
-            balanceValue: walletModel.balanceValue ?? 0,
+            maxAmount: builder.maxAmount(for: io.input.amount, actionType: actionType),
             validator: sendAmountValidator,
             amountModifier: amountModifier,
             type: type

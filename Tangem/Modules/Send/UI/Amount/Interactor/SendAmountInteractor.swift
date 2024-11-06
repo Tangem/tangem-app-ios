@@ -24,7 +24,7 @@ protocol SendAmountInteractor {
 
 class CommonSendAmountInteractor {
     private let tokenItem: TokenItem
-    private let balanceValue: Decimal
+    private let maxAmount: Decimal
 
     private weak var input: SendAmountInput?
     private weak var output: SendAmountOutput?
@@ -44,7 +44,7 @@ class CommonSendAmountInteractor {
         input: SendAmountInput,
         output: SendAmountOutput,
         tokenItem: TokenItem,
-        balanceValue: Decimal,
+        maxAmount: Decimal,
         validator: SendAmountValidator,
         amountModifier: SendAmountModifier?,
         type: SendAmountCalculationType
@@ -52,7 +52,7 @@ class CommonSendAmountInteractor {
         self.input = input
         self.output = output
         self.tokenItem = tokenItem
-        self.balanceValue = balanceValue
+        self.maxAmount = maxAmount
         self.validator = validator
         self.amountModifier = amountModifier
         self.type = type
@@ -188,13 +188,13 @@ extension CommonSendAmountInteractor: SendAmountInteractor {
     func updateToMaxAmount() -> SendAmount? {
         switch type {
         case .crypto:
-            let fiat = convertToFiat(cryptoValue: balanceValue)
-            let amount = SendAmount(type: .typical(crypto: balanceValue, fiat: fiat))
+            let fiat = convertToFiat(cryptoValue: maxAmount)
+            let amount = SendAmount(type: .typical(crypto: maxAmount, fiat: fiat))
             _cachedAmount.send(amount)
             return amount
         case .fiat:
-            let fiat = convertToFiat(cryptoValue: balanceValue)
-            let amount = SendAmount(type: .alternative(fiat: fiat, crypto: balanceValue))
+            let fiat = convertToFiat(cryptoValue: maxAmount)
+            let amount = SendAmount(type: .alternative(fiat: fiat, crypto: maxAmount))
             _cachedAmount.send(amount)
             return amount
         }

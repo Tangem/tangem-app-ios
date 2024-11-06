@@ -69,6 +69,13 @@ struct SendDependenciesBuilder {
         }
     }
 
+    func maxAmount(for amount: SendAmount?, actionType: SendFlowActionType) -> Decimal {
+        switch actionType {
+        case .unstake: amount?.crypto ?? 0
+        default: walletModel.balanceValue ?? 0
+        }
+    }
+
     func formattedBalance(for amount: SendAmount?, actionType: SendFlowActionType) -> String {
         let balanceFormatted: WalletModel.BalanceFormatted
         switch actionType {
