@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/tangem/lokalise-fastlane-actions.git
+  revision: 47f763e1dee6983a161bff990faee2f18b13b57c
+  branch: feature/IOS-8302_cardsdk_localise_workflow
+  specs:
+    fastlane-plugin-lokalise (2.0.6.pre.tangem1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -294,6 +301,7 @@ DEPENDENCIES
   cocoapods
   fastlane
   fastlane-plugin-firebase_app_distribution
+  fastlane-plugin-lokalise!
 
 BUNDLED WITH
    2.4.22

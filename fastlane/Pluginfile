@@ -1,2 +1,5 @@
 # Plugin for upload to the Firebase
 gem "fastlane-plugin-firebase_app_distribution"
+
+# TODO: Replace with tag
+gem "fastlane-plugin-lokalise", :git => "https://github.com/tangem/lokalise-fastlane-actions.git", :branch => "feature/IOS-8302_cardsdk_localise_workflow"
