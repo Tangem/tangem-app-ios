@@ -59,7 +59,7 @@ final class StakingDetailsViewModel: ObservableObject {
 
     func refresh(completion: @escaping () -> Void = {}) {
         Task {
-            let _ = await (stakingManager.updateState(), stakingManager.actions())
+            await stakingManager.updateState()
             completion()
         }
     }
@@ -89,17 +89,14 @@ final class StakingDetailsViewModel: ObservableObject {
 
 private extension StakingDetailsViewModel {
     func bind() {
-        Publishers.CombineLatest(
-            stakingManager.statePublisher,
-            stakingManager.actionsPublisher
-        )
-        .withWeakCaptureOf(self)
-        .receive(on: DispatchQueue.main)
-        .sink { result in
-            let (viewModel, (state, actions)) = result
-            viewModel.setupView(state: state, actions: actions)
-        }
-        .store(in: &bag)
+        stakingManager
+            .statePublisher
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, state in
+                viewModel.setupView(state: state)
+            }
+            .store(in: &bag)
 
         walletModel
             .walletDidChangePublisher
@@ -121,7 +118,7 @@ private extension StakingDetailsViewModel {
         }
     }
 
-    func setupView(state: StakingManagerState, actions: [PendingAction]) {
+    func setupView(state: StakingManagerState) {
         switch state {
         case .loading:
             actionButtonLoading = true
@@ -132,22 +129,22 @@ private extension StakingDetailsViewModel {
             actionButtonLoading = false
             actionButtonType = .none
         case .temporaryUnavailable(let yieldInfo), .availableToStake(let yieldInfo):
-            setupView(yield: yieldInfo, balances: [], actions: [])
+            setupView(yield: yieldInfo, balances: [])
 
             actionButtonLoading = false
             actionButtonType = .stake
         case .staked(let staked):
-            setupView(yield: staked.yieldInfo, balances: staked.balances, actions: actions)
+            setupView(yield: staked.yieldInfo, balances: staked.balances)
 
             actionButtonLoading = false
             actionButtonType = staked.canStakeMore ? .stakeMore : .none
         }
     }
 
-    func setupView(yield: YieldInfo, balances: [StakingBalance], actions: [PendingAction]) {
+    func setupView(yield: YieldInfo, balances: [StakingBalance]) {
         setupHeaderView(hasBalances: !balances.isEmpty)
         setupDetailsSection(yield: yield)
-        setupStakes(yield: yield, staking: balances.stakes(), actions: actions)
+        setupStakes(yield: yield, staking: balances.stakes())
         setupRewardView(yield: yield, balances: balances)
     }
 
@@ -282,8 +279,7 @@ private extension StakingDetailsViewModel {
         }
     }
 
-    func setupStakes(yield: YieldInfo, staking: [StakingBalance], actions: [PendingAction]) {
-        print("test")
+    func setupStakes(yield: YieldInfo, staking: [StakingBalance]) {
         let staking = staking.map { balance in
             stakesBuilder.mapToStakingDetailsStakeViewData(yield: yield, balance: balance) { [weak self] in
                 Analytics.log(

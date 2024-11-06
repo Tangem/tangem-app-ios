@@ -114,6 +114,7 @@ struct StakeKitTarget: Moya.TargetType {
                     "network": request.network.rawValue,
                     "status": request.status.rawValue,
                     "limit": request.limit,
+                    "sort": "createdAtDesc",
                 ],
                 encoding: URLEncoding.queryString
             )

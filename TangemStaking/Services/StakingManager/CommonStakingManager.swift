@@ -74,10 +74,7 @@ extension CommonStakingManager: StakingManager {
             async let balances = provider.balances(wallet: wallet)
             async let yield = provider.yield(integrationId: integrationId)
             async let actions = provider.actions(wallet: wallet)
-
-            let result = try await (balances, yield, actions)
-
-            updateState(state(balances: result.0, yield: result.1, actions: result.2))
+            try await updateState(state(balances: balances, yield: yield, actions: actions))
         } catch {
             analyticsLogger.logAPIError(
                 errorDescription: error.localizedDescription,
@@ -161,7 +158,7 @@ private extension CommonStakingManager {
         _state.send(state)
     }
 
-    func state(balances: [StakingBalanceInfo], yield: YieldInfo, actions: [PendingAction]) -> StakingManagerState {
+    func state(balances: [StakingBalanceInfo], yield: YieldInfo, actions: [PendingAction]?) -> StakingManagerState {
         guard yield.isAvailable else {
             return .temporaryUnavailable(yield)
         }
@@ -185,33 +182,45 @@ private extension CommonStakingManager {
 
     private func mergeBalancesAndProcessingActions(
         realBalances: [StakingBalance],
-        processingActions: [PendingAction],
+        processingActions: [PendingAction]?,
         yield: YieldInfo
     ) -> [StakingBalance] {
+        guard let processingActions else { return realBalances }
         var balances = realBalances
 
         processingActions.forEach { action in
-            switch action.type {
-            case .stake, .vote, .voteLocked:
-                balances.append(mapToStakingBalance(action: action, yield: yield, balanceType: .active))
-            case .withdraw:
-                modifyBalancesByStatus(balances: &balances, action: action, type: .unstaked)
-            case .unlockLocked:
-                modifyBalancesByStatus(balances: &balances, action: action, type: .locked)
-            case .unstake:
-                modifyBalancesByStatus(balances: &balances, action: action, type: .active)
-            default: break // intentionally do nothing
+            let balanceType: StakingBalanceType? = switch action.type {
+            case .stake, .vote, .voteLocked: .active
+            case .withdraw, .claimUnstaked: .unstaked
+            case .unlockLocked: .locked
+            case .unstake: .active
+            default: nil
+            }
+
+            guard let balanceType else { return }
+
+            if let balanceIndex = balanceIndexForAction(balanceType: balanceType, action: action, balances: balances) {
+                makeBalanceAtIndexInProgress(index: balanceIndex, balances: &balances)
+            } else {
+                balances.append(mapToStakingBalance(action: action, yield: yield, balanceType: balanceType))
             }
         }
 
         return balances
     }
 
-    private func modifyBalancesByStatus(balances: inout [StakingBalance], action: PendingAction, type: StakingBalanceType) {
-        guard let index = balances.firstIndex(
-            where: { !$0.inProgress && $0.amount == action.amount && $0.balanceType == type }
-        ) else { return }
+    private func balanceIndexForAction(
+        balanceType: StakingBalanceType,
+        action: PendingAction,
+        balances: [StakingBalance]
+    ) -> Int? {
+        balances.firstIndex(where: { !$0.inProgress && $0.amount == action.amount && $0.balanceType == balanceType })
+    }
 
+    private func makeBalanceAtIndexInProgress(
+        index: Int,
+        balances: inout [StakingBalance]
+    ) {
         let balance = balances[index]
 
         let updatedBalance = StakingBalance(
@@ -224,6 +233,20 @@ private extension CommonStakingManager {
         )
 
         balances[index] = updatedBalance
+    }
+
+    private func modifyBalancesByStatus(
+        balances: inout [StakingBalance],
+        action: PendingAction,
+        type: StakingBalanceType
+    ) {
+        guard let index = balanceIndexForAction(
+            balanceType: type,
+            action: action,
+            balances: balances
+        ) else { return }
+
+        makeBalanceAtIndexInProgress(index: index, balances: &balances)
     }
 
     func getStakeTransactionInfo(request: ActionGenericRequest) async throws -> StakingTransactionAction {
