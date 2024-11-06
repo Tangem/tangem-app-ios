@@ -18,7 +18,7 @@ struct ActionButtonsBuyView: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
-                        CloseButton(dismiss: { viewModel.coordinator.dismissAction(()) })
+                        CloseButton(dismiss: { viewModel.handleViewAction(.close) })
                     }
                 }
         }
@@ -30,7 +30,7 @@ struct ActionButtonsBuyView: View {
             viewModel: viewModel.tokenSelectorViewModel,
             tokenCellContent: { token in
                 ActionButtonsTokenSelectItemView(model: token) {
-                    viewModel.coordinator.openBuy(for: token)
+                    viewModel.handleViewAction(.didTapToken(token))
                 }
             },
             emptySearchContent: {

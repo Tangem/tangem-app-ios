@@ -1,14 +1,13 @@
 //
-//  ActionButtonsBuyRoutable.swift
+//  ActionButtonsBuyCryptoRoutable.swift
 //  TangemApp
 //
-//  Created by GuitarKitty on 06.11.2024.
+//  Created by GuitarKitty on 05.11.2024.
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
 import Foundation
 
-protocol ActionButtonsBuyRoutable {
+protocol ActionButtonsBuyCryptoRoutable {
     func openBuyCrypto(from url: URL)
-    func dismiss()
 }

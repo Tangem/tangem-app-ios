@@ -9,20 +9,42 @@
 import Foundation
 
 final class ActionButtonsBuyViewModel: ObservableObject {
-    let coordinator: ActionButtonsBuyCoordinator
     let tokenSelectorViewModel: TokenSelectorViewModel<
         ActionButtonsTokenSelectorItem,
         ActionButtonsTokenSelectorItemBuilder
     >
 
+    private let coordinator: ActionButtonsBuyRoutable
+    private let interactor: ActionButtonsBuyInteractor
+
     init(
-        coordinator: ActionButtonsBuyCoordinator,
+        coordinator: ActionButtonsBuyRoutable,
+        interactor: some ActionButtonsBuyInteractor,
         tokenSelectorViewModel: TokenSelectorViewModel<
             ActionButtonsTokenSelectorItem,
             ActionButtonsTokenSelectorItemBuilder
         >
     ) {
         self.coordinator = coordinator
+        self.interactor = interactor
         self.tokenSelectorViewModel = tokenSelectorViewModel
+    }
+
+    func handleViewAction(_ action: Action) {
+        switch action {
+        case .close:
+            coordinator.dismiss()
+        case .didTapToken(let token):
+            guard let url = interactor.makeBuyUrl(from: token) else { return }
+
+            coordinator.openBuyCrypto(from: url)
+        }
+    }
+}
+
+extension ActionButtonsBuyViewModel {
+    enum Action {
+        case close
+        case didTapToken(ActionButtonsTokenSelectorItem)
     }
 }

@@ -8,28 +8,18 @@
 
 import Foundation
 
-final class ActionButtonViewModel: ObservableObject, Identifiable {
+class BaseActionButtonViewModel: ObservableObject, Identifiable {
     @Published private(set) var presentationState: ActionButtonPresentationState = .unexplicitLoading
 
     let model: ActionButtonModel
 
-    private let didTapAction: () -> Void
-
-    init(model: ActionButtonModel, didTapAction: @escaping () -> Void) {
+    init(model: ActionButtonModel) {
         self.model = model
-        self.didTapAction = didTapAction
     }
 
     @MainActor
     func tap() {
-        switch presentationState {
-        case .loading:
-            break
-        case .unexplicitLoading:
-            updateState(to: .loading)
-        case .idle:
-            didTapAction()
-        }
+        // Should be override
     }
 
     @MainActor

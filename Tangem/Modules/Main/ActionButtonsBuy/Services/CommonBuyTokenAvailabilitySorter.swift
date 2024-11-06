@@ -6,11 +6,7 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-protocol BuyTokenAvailabilitySorter {
-    func sortModels(walletModels: [WalletModel]) -> (availableModels: [WalletModel], unavailableModels: [WalletModel])
-}
-
-struct CommonBuyTokenAvailabilitySorter: BuyTokenAvailabilitySorter {
+struct CommonBuyTokenAvailabilitySorter: TokenAvailabilitySorter {
     @Injected(\.exchangeService) private var exchangeService: ExchangeService
 
     func sortModels(walletModels: [WalletModel]) -> (availableModels: [WalletModel], unavailableModels: [WalletModel]) {

@@ -8,6 +8,7 @@
 
 import Combine
 import Foundation
+import TangemFoundation
 
 final class TokenSelectorViewModel<
     TokenModel: Identifiable & Equatable,
@@ -25,18 +26,18 @@ final class TokenSelectorViewModel<
 
     private let tokenSelectorItemBuilder: Builder
     private let expressTokensListAdapter: ExpressTokensListAdapter
-    private let sortModels: ([WalletModel]) -> (availableModels: [WalletModel], unavailableModels: [WalletModel])
+    private let tokenSorter: TokenAvailabilitySorter
 
     init(
         tokenSelectorItemBuilder: Builder,
         strings: some TokenSelectorLocalizable,
         expressTokensListAdapter: some ExpressTokensListAdapter,
-        sortModels: @escaping ([WalletModel]) -> (availableModels: [WalletModel], unavailableModels: [WalletModel])
+        tokenSorter: some TokenAvailabilitySorter
     ) {
         self.tokenSelectorItemBuilder = tokenSelectorItemBuilder
         self.strings = strings
         self.expressTokensListAdapter = expressTokensListAdapter
-        self.sortModels = sortModels
+        self.tokenSorter = tokenSorter
 
         bind()
     }
@@ -51,7 +52,7 @@ final class TokenSelectorViewModel<
             .walletModels()
             .withWeakCaptureOf(self)
             .sink { viewModel, walletModels in
-                let sortedWalletModels = viewModel.sortModels(walletModels)
+                let sortedWalletModels = viewModel.tokenSorter.sortModels(walletModels: walletModels)
                 viewModel.availableWalletModels = sortedWalletModels.availableModels
                 viewModel.unavailableWalletModels = sortedWalletModels.unavailableModels
 
@@ -86,7 +87,7 @@ private extension TokenSelectorViewModel {
             .dropFirst()
             .withWeakCaptureOf(self)
             .sink { viewModel, searchText in
-                viewModel.updateView(searchText: searchText)
+                viewModel.updateView(searchText: searchText.trimmed())
             }
             .store(in: &cancellables)
     }
@@ -96,11 +97,11 @@ private extension TokenSelectorViewModel {
             .filter { filter(searchText, item: $0.tokenItem) }
             .map { tokenSelectorItemBuilder.map(from: $0, isDisabled: false) }
 
-        let unavailableTokenItems = unavailableWalletModels.map { tokenSelectorItemBuilder.map(from: $0, isDisabled: true) }
-
-        Task { @MainActor [weak self] in
-            self?.viewState = .data(availableTokens: availableTokenItems, unavailableTokens: unavailableTokenItems)
+        let unavailableTokenItems = unavailableWalletModels.map {
+            tokenSelectorItemBuilder.map(from: $0, isDisabled: true)
         }
+
+        viewState = .data(availableTokens: availableTokenItems, unavailableTokens: unavailableTokenItems)
     }
 
     func filter(_ text: String, item: TokenItem) -> Bool {
@@ -108,8 +109,8 @@ private extension TokenSelectorViewModel {
             return true
         }
 
-        let isContainsName = item.name.lowercased().contains(text.lowercased())
-        let isContainsCurrencySymbol = item.currencySymbol.lowercased().contains(text.lowercased())
+        let isContainsName = item.name.caseInsensitiveContains(text)
+        let isContainsCurrencySymbol = item.currencySymbol.caseInsensitiveContains(text)
 
         return isContainsName || isContainsCurrencySymbol
     }

@@ -9,39 +9,35 @@
 import Foundation
 
 final class ActionButtonsBuyCoordinator: CoordinatorObject {
-    @Injected(\.exchangeService) private var exchangeService: ExchangeService
-
     private(set) var actionButtonsBuyViewModel: ActionButtonsBuyViewModel?
 
     let dismissAction: Action<Void>
     let popToRootAction: Action<PopToRootOptions>
 
+    private let rootCoordinator: ActionButtonsBuyCryptoRoutable
     private let expressTokensListAdapter: ExpressTokensListAdapter
-    private let tokenSorter: BuyTokenAvailabilitySorter
-    private let openBuy: (URL) -> Void
+    private let tokenSorter: TokenAvailabilitySorter
 
     required init(
+        rootCoordinator: some ActionButtonsBuyCryptoRoutable,
         expressTokensListAdapter: some ExpressTokensListAdapter,
-        tokenSorter: some BuyTokenAvailabilitySorter = CommonBuyTokenAvailabilitySorter(),
+        tokenSorter: some TokenAvailabilitySorter = CommonBuyTokenAvailabilitySorter(),
         dismissAction: @escaping Action<Void>,
-        popToRootAction: @escaping Action<PopToRootOptions> = { _ in },
-        openBuy: @escaping (URL) -> Void
+        popToRootAction: @escaping Action<PopToRootOptions> = { _ in }
     ) {
+        self.rootCoordinator = rootCoordinator
         self.expressTokensListAdapter = expressTokensListAdapter
         self.tokenSorter = tokenSorter
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
-        self.openBuy = openBuy
     }
 
     func start(with options: Options) {
         actionButtonsBuyViewModel = ActionButtonsBuyViewModel(
-            coordinator: self, tokenSelectorViewModel: makeTokenSelectorViewModel()
+            coordinator: self,
+            interactor: CommonActionButtonsBuyInteractor(),
+            tokenSelectorViewModel: makeTokenSelectorViewModel()
         )
-    }
-
-    private func makeActionButtonsBuyViewModel() -> ActionButtonsBuyViewModel {
-        ActionButtonsBuyViewModel(coordinator: self, tokenSelectorViewModel: makeTokenSelectorViewModel())
     }
 
     private func makeTokenSelectorViewModel() -> TokenSelectorViewModel<
@@ -52,25 +48,14 @@ final class ActionButtonsBuyCoordinator: CoordinatorObject {
             tokenSelectorItemBuilder: ActionButtonsTokenSelectorItemBuilder(),
             strings: BuyTokenSelectorStrings(),
             expressTokensListAdapter: expressTokensListAdapter,
-            sortModels: tokenSorter.sortModels(walletModels:)
+            tokenSorter: tokenSorter
         )
     }
 }
 
 extension ActionButtonsBuyCoordinator: ActionButtonsBuyRoutable {
-    func openBuy(for token: ActionButtonsTokenSelectorItem) {
-        guard
-            let buyUrl = exchangeService.getBuyUrl(
-                currencySymbol: token.symbol,
-                amountType: token.amountType,
-                blockchain: token.blockchain,
-                walletAddress: token.defaultAddress
-            )
-        else {
-            return
-        }
-
-        openBuy(buyUrl)
+    func openBuyCrypto(from url: URL) {
+        rootCoordinator.openBuyCrypto(from: url)
     }
 }
 

@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct ActionButtonView: View {
-    @ObservedObject var viewModel: ActionButtonViewModel
+    @ObservedObject var viewModel: BaseActionButtonViewModel
 
     var body: some View {
         Button(

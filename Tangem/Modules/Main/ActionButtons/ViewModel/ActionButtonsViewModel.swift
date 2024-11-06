@@ -11,9 +11,7 @@ import Foundation
 import TangemFoundation
 
 final class ActionButtonsViewModel: ObservableObject {
-    @Injected(\.exchangeService) private var exchangeService: ExchangeService
-
-    @Published private(set) var actionButtonViewModels: [ActionButtonViewModel]
+    @Published private(set) var actionButtonViewModels: [BaseActionButtonViewModel]
     @Published private(set) var isButtonsDisabled = false
 
     private var cancellables = Set<AnyCancellable>()
@@ -36,9 +34,9 @@ final class ActionButtonsViewModel: ObservableObject {
     func fetchData() {
         TangemFoundation.runTask(in: self) {
             async let _ = $0.fetchBuyData()
-            
+
             async let _ = $0.fetchSwapData()
-            
+
             async let _ = $0.fetchSellData()
         }
     }
@@ -57,7 +55,7 @@ final class ActionButtonsViewModel: ObservableObject {
 // MARK: - Buy
 
 private extension ActionButtonsViewModel {
-    private var buyActionButtonViewModel: ActionButtonViewModel? {
+    private var buyActionButtonViewModel: BaseActionButtonViewModel? {
         actionButtonViewModels.first { $0.model == .buy }
     }
 
@@ -70,7 +68,7 @@ private extension ActionButtonsViewModel {
 // MARK: - Swap
 
 private extension ActionButtonsViewModel {
-    var swapActionButtonViewModel: ActionButtonViewModel? {
+    var swapActionButtonViewModel: BaseActionButtonViewModel? {
         actionButtonViewModels.first { $0.model == .swap }
     }
 
@@ -82,7 +80,7 @@ private extension ActionButtonsViewModel {
 // MARK: - Sell
 
 private extension ActionButtonsViewModel {
-    private var sellActionButtonViewModel: ActionButtonViewModel? {
+    private var sellActionButtonViewModel: BaseActionButtonViewModel? {
         actionButtonViewModels.first { $0.model == .sell }
     }
 

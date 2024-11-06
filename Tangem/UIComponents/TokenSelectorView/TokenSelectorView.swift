@@ -88,7 +88,7 @@ struct TokenSelectorView<
 private extension TokenSelectorView {
     @ViewBuilder
     func availableSection(title: String, items: [TokenModel]) -> some View {
-        if !viewModel.searchText.isEmpty || items.isNotEmpty {
+        if viewModel.searchText.isNotEmpty || items.isNotEmpty {
             GroupedSection(
                 items,
                 content: { item in

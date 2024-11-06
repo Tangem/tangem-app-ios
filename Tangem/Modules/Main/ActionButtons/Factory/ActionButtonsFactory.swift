@@ -6,8 +6,10 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
+typealias ActionButtonsRoutable = ActionButtonsBuyRootRoutable & ActionButtonsSellRootRoutable & ActionButtonsSwapRootRoutable
+
 protocol ActionButtonsFactory {
-    func makeActionButtonViewModels() -> [ActionButtonViewModel]
+    func makeActionButtonViewModels() -> [BaseActionButtonViewModel]
 }
 
 final class CommonActionButtonsFactory: ActionButtonsFactory {
@@ -15,28 +17,27 @@ final class CommonActionButtonsFactory: ActionButtonsFactory {
     private let actionButtons: [ActionButtonModel] = [.buy, .sell, .swap]
     private let userWalletModel: UserWalletModel
 
-    init(coordinator: some ActionButtonsRoutable, userWalletModel: UserWalletModel) {
+    init(
+        coordinator: some ActionButtonsRoutable & ActionButtonsBuyRootRoutable,
+        userWalletModel: UserWalletModel
+    ) {
         self.coordinator = coordinator
         self.userWalletModel = userWalletModel
     }
 
-    func makeActionButtonViewModels() -> [ActionButtonViewModel] {
+    func makeActionButtonViewModels() -> [BaseActionButtonViewModel] {
         actionButtons.map { dataModel in
-            .init(from: dataModel, coordinator: coordinator, userWalletModel: userWalletModel)
-        }
-    }
-}
-
-private extension ActionButtonViewModel {
-    convenience init(from dataModel: ActionButtonModel, coordinator: ActionButtonsRoutable, userWalletModel: UserWalletModel) {
-        let didTapAction: () -> Void = {
             switch dataModel {
-            case .buy: { coordinator.openBuyCryptoIfPossible(userWalletModel: userWalletModel) }
-            case .swap: coordinator.openSwap
-            case .sell: coordinator.openSell
+            case .buy:
+                BuyActionButtonViewModel(
+                    interactor: CommonBuyActionButtonInteractor(),
+                    coordinator: coordinator,
+                    userWalletModel: userWalletModel,
+                    model: dataModel
+                )
+            case .swap, .sell:
+                BaseActionButtonViewModel(model: dataModel)
             }
-        }()
-
-        self.init(model: dataModel, didTapAction: didTapAction)
+        }
     }
 }

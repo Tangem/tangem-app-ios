@@ -46,4 +46,8 @@ extension String {
         let range = NSRange(location: 0, length: count)
         return regex.stringByReplacingMatches(in: self, options: [], range: range, withTemplate: "_$1").lowercased()
     }
+
+    func caseInsensitiveContains(_ other: some StringProtocol) -> Bool {
+        return range(of: other, options: .caseInsensitive) != nil
+    }
 }

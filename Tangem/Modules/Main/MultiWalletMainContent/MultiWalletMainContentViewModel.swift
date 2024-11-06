@@ -32,9 +32,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
 
     private(set) lazy var bottomSheetFooterViewModel = MainBottomSheetFooterViewModel()
 
-    var actionButtonsViewModel: ActionButtonsViewModel? {
-        makeActionButtonsViewModel()
-    }
+    private(set) var actionButtonsViewModel: ActionButtonsViewModel?
 
     var isOrganizeTokensVisible: Bool {
         guard canManageTokens else { return false }
@@ -98,6 +96,10 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         self.coordinator = coordinator
 
         bind()
+
+        if FeatureProvider.isAvailable(.actionButtons) {
+            actionButtonsViewModel = makeActionButtonsViewModel()
+        }
     }
 
     deinit {
