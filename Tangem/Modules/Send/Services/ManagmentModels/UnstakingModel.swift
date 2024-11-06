@@ -103,6 +103,8 @@ private extension UnstakingModel {
                 model.update(state: .loading)
                 let state = try await model.state(amount: amount)
                 model.update(state: state)
+            } catch _ as CancellationError {
+                // Do nothing
             } catch {
                 AppLog.shared.error(error)
                 model.update(state: .networkError(error))
