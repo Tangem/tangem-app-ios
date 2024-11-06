@@ -260,7 +260,6 @@ private extension StakingModel {
             )
             let transactionInfo = try await stakingManager.transaction(action: action)
             let result = try await stakingTransactionDispatcher.send(transaction: .staking(transactionInfo))
-            let actions = try await stakingManager
             stakingManager.transactionDidSent(action: action)
 
             proceed(result: result)

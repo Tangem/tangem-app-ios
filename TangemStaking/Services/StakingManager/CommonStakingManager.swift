@@ -189,20 +189,30 @@ private extension CommonStakingManager {
         var balances = realBalances
 
         processingActions.forEach { action in
-            let balanceType: StakingBalanceType? = switch action.type {
-            case .stake, .vote, .voteLocked: .active
-            case .withdraw, .claimUnstaked: .unstaked
-            case .unlockLocked: .locked
-            case .unstake: .active
+            let balanceTypesToMatch: [StakingBalanceType]? = switch action.type {
+            case .stake, .vote, .voteLocked: [.active, .warmup]
+            case .withdraw, .claimUnstaked: [.unstaked]
+            case .unlockLocked: [.locked]
+            case .unstake: [.active]
             default: nil
             }
 
-            guard let balanceType else { return }
+            guard let balanceTypesToMatch else { return }
 
-            if let balanceIndex = balanceIndexForAction(balanceType: balanceType, action: action, balances: balances) {
+            if let balanceIndex = balanceIndexForAction(balanceTypes: balanceTypesToMatch, action: action, balances: balances) {
                 makeBalanceAtIndexInProgress(index: balanceIndex, balances: &balances)
             } else {
-                balances.append(mapToStakingBalance(action: action, yield: yield, balanceType: balanceType))
+                let balanceTypeToAdd: StakingBalanceType? = switch action.type {
+                case .stake, .vote, .voteLocked: .active
+                case .withdraw, .claimUnstaked: .unstaked
+                case .unlockLocked: .locked
+                case .unstake: .active
+                default: nil
+                }
+
+                guard let balanceTypeToAdd else { return }
+
+                balances.append(mapToStakingBalance(action: action, yield: yield, balanceType: balanceTypeToAdd))
             }
         }
 
@@ -210,11 +220,13 @@ private extension CommonStakingManager {
     }
 
     private func balanceIndexForAction(
-        balanceType: StakingBalanceType,
+        balanceTypes: [StakingBalanceType],
         action: PendingAction,
         balances: [StakingBalance]
     ) -> Int? {
-        balances.firstIndex(where: { !$0.inProgress && $0.amount == action.amount && $0.balanceType == balanceType })
+        balances.firstIndex(
+            where: { !$0.inProgress && $0.amount == action.amount && balanceTypes.contains($0.balanceType) }
+        )
     }
 
     private func makeBalanceAtIndexInProgress(
@@ -233,20 +245,6 @@ private extension CommonStakingManager {
         )
 
         balances[index] = updatedBalance
-    }
-
-    private func modifyBalancesByStatus(
-        balances: inout [StakingBalance],
-        action: PendingAction,
-        type: StakingBalanceType
-    ) {
-        guard let index = balanceIndexForAction(
-            balanceType: type,
-            action: action,
-            balances: balances
-        ) else { return }
-
-        makeBalanceAtIndexInProgress(index: index, balances: &balances)
     }
 
     func getStakeTransactionInfo(request: ActionGenericRequest) async throws -> StakingTransactionAction {
@@ -327,8 +325,8 @@ private extension CommonStakingManager {
             actionID: action.id,
             amount: action.amount,
             validator: request.request.validator,
-            transactions: transactions
-//            transactions: [transactions.first!]
+//            transactions: transactions
+            transactions: [transactions.first!]
         )
     }
 
