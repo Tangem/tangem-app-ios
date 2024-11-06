@@ -110,7 +110,8 @@ struct TransactionParamsBuilder {
              .energyWebEVM,
              .energyWebX,
              .core,
-             .canxium:
+             .canxium,
+             .casper:
             throw TransactionParamsBuilderError.extraIdNotSupported
         }
     }

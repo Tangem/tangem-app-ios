@@ -284,7 +284,8 @@ private extension Blockchain {
              .energyWebEVM,
              .energyWebX,
              .core,
-             .canxium:
+             .canxium,
+             .casper:
             // Did you get a compilation error here? If so, check whether the network is supported at
             return nil
         }
