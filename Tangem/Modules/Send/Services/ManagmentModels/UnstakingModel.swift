@@ -64,7 +64,6 @@ class UnstakingModel {
 
         _amount = CurrentValueSubject(SendAmount(type: .typical(crypto: action.amount, fiat: fiat)))
 
-        updateState()
         logOpenScreen()
     }
 }
