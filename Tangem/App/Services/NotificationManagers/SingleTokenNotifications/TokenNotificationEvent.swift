@@ -11,7 +11,7 @@ import SwiftUI
 
 enum TokenNotificationEvent: Hashable {
     case networkUnreachable(currencySymbol: String)
-    case someNetworksUnreachable(networks: [WalletModel])
+    case someNetworksUnreachable(currencySymbols: [String])
     case rentFee(rentMessage: String)
     case noAccount(message: String)
     case existentialDepositWarning(message: String)
@@ -256,7 +256,7 @@ extension TokenNotificationEvent {
         case .notEnoughFeeForTransaction(let configuration):
             return [.token: configuration.eventConfiguration.feeAmountTypeCurrencySymbol]
         case .someNetworksUnreachable(let networks):
-            return [.tokens: networks.map(\.tokenItem.currencySymbol).joined(separator: ", ")]
+            return [.tokens: networks.joined(separator: ", ")]
         case .rentFee,
              .noAccount,
              .existentialDepositWarning,

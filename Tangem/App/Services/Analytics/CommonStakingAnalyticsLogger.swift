@@ -15,12 +15,8 @@ struct CommonStakingAnalyticsLogger: StakingAnalyticsLogger {
         var parameters: [Analytics.ParameterKey: String] = [.token: currencySymbol]
         switch error {
         case let apiError as StakeKitAPIError:
-            if let code = apiError.code {
-                parameters[.errorCode] = code
-            }
-            if let message = apiError.message {
-                parameters[.errorMessage] = message
-            }
+            parameters[.errorCode] = apiError.code
+            parameters[.errorMessage] = apiError.message
             event = .stakingErrors
         case let httpError as StakeKitHTTPError:
             parameters[.errorDescription] = httpError.errorDescription
