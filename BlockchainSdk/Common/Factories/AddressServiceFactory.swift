@@ -141,7 +141,6 @@ public struct AddressServiceFactory {
         case .energyWebX(let curve):
             return PolkadotAddressService(network: .energyWebX(curve: curve))
         case .casper(let curve, _):
-            // We only support this type of curve
             return CasperAddressService(curve: curve)
         }
     }
