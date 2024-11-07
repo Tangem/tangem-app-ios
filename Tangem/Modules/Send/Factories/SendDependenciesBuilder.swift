@@ -272,7 +272,8 @@ struct SendDependenciesBuilder {
             transactionDispatcher: makeTransactionDispatcher(),
             allowanceProvider: makeAllowanceProvider(),
             tokenItem: walletModel.tokenItem,
-            feeTokenItem: walletModel.feeTokenItem
+            feeTokenItem: walletModel.feeTokenItem,
+            balance: walletModel.balanceValue
         )
     }
 
