@@ -1,3 +1,11 @@
+"action_buttons_buy_empty_search_message" = "Token not found in your portfolio? Check the Markets to find and add it for purchase";
+"action_buttons_sell_empty_search_message" = "Token not found in your portfolio? Check the Markets to find and add it for sell";
+"action_buttons_swap_choose_token" = "Choose the Token";
+"action_buttons_swap_empty_search_message" = "Token not found in your portfolio? Check the Markets to find and add it for swap";
+"action_buttons_swap_no_available_pair_notification_message" = "There are no available tokens to swap with the selected token. Please choose another one.";
+"action_buttons_swap_no_available_pair_notification_title" = "No available pair";
+"action_buttons_you_want_to_receive" = "You want to Receive";
+"action_buttons_you_want_to_swap" = "You want to Swap";
 "add_custom_token_choose_network" = "Elige red";
 "add_custom_token_title" = "Agregue un token personalizado";
 "add_tokens_title" = "Gestionar tokens";
@@ -87,7 +95,7 @@
 "common_claim" = "Reclamar";
 "common_claim_rewards" = "Reclame recompensas";
 "common_close" = "Cerrar";
-"common_confirm" = "confirme";
+"common_confirm" = "Confirme";
 "common_continue" = "Continuar";
 "common_copy" = "Copiar";
 "common_copy_address" = "Copiar la dirección";
@@ -529,10 +537,21 @@
 "onboarding_wallet_info_title_fourth" = "Restaurar código de acceso";
 "onboarding_wallet_info_title_second" = "Tarjetas idénticas";
 "onboarding_wallet_info_title_third" = "Código de acceso";
+"onramp_country_search" = "Search by country";
+"onramp_country_unavailable" = "Unavailable";
+"onramp_currency_other" = "Other currencies";
+"onramp_currency_popular" = "Popular Fiats";
+"onramp_currency_search" = "Search by currency";
+"onramp_max_amount_restriction" = "The purchase amount should be no more than %@";
+"onramp_min_amount_restriction" = "The amount to buy must be at least %@";
+"onramp_no_available_providers" = "No available providers for this currency";
 "onramp_pay_with" = "Pay with";
 "onramp_residency_bottomsheet_country_not_supported" = "Nuestros servicios no están disponibles en este país";
 "onramp_residency_bottomsheet_country_subtitle" = "Cámbielo o confírmelo";
 "onramp_residency_bottomsheet_title" = "Su residencia ha sido identificada como";
+"onramp_settings_residence" = "Residence";
+"onramp_settings_residence_description" = "Please select the correct country to ensure accurate payment options and services.";
+"onramp_settings_title" = "Settings";
 "onramp_via" = "Via";
 "organize_tokens_group" = "Agrupar";
 "organize_tokens_sort_by_balance" = "Por saldo";
@@ -668,7 +687,7 @@
 "staking_active_footer" = "Para eliminar el staking de sus activos, presione el bloque de arriba";
 "staking_amount_requirement_error" = "El monto del staking debe ser al menos %@";
 "staking_amount_tron_integer_error" = "El monto del staking se redondeará a %1$@ TRX debido a las reglas de la red.";
-"staking_amount_tron_integer_error_unstaking" = "Staking amount will be rounded to %1$@ TRX due to network rules.";
+"staking_amount_tron_integer_error_unstaking" = "Unstaking amount will be rounded to %1$@ TRX due to network rules.";
 "staking_claim_unstaked" = "Unstaking de la reclamación";
 "staking_details_account_fee" = "Tarifa de staking de la cuenta ";
 "staking_details_account_fee_info" = "Una cuenta de staking es una cuenta especial donde se almacenan los tokens SOL de staking. Se crea cuando delegas sus tokens a un validador para participar en la validación de transacciones y ganar recompensas. Se cobra una pequeña tarifa por crear la cuenta de staking, que se devuelve una vez que se completa el staking.";
@@ -718,6 +737,7 @@
 "staking_notification_new_validator_funds_transfer" = "El staking en la red %1$@ con un nuevo validador transferirá automáticamente todos los fondos previamente en staking a este validador.";
 "staking_notification_restake_rewards_text" = "Reinvierta las recompensas obtenidas en el monto apostado, aumentando las ganancias potenciales.";
 "staking_notification_restake_text" = "La opción de volver a staking le permite mover sus fondos de un validador a otro sin necesidad de retirarlos.";
+"staking_notification_stake_entire_balance_text" = "Está a punto de hacer staking con todo su saldo. Recomendamos dejar una cantidad para cubrir las tarifas de la red por unstaking o reclamo de recompensas.";
 "staking_notification_unlock_text" = "Desbloquee su dinero para retirarlo del proceso de staking. El desbloqueo demora %@ minuto.";
 "staking_notification_unstake_cosmos_text" = "Sus fondos estarán disponibles para su uso después del período de desvinculación de 21 días. La recompensa se retirará junto con los fondos de desvinculación.";
 "staking_notification_unstake_text" = "Sus fondos estarán disponibles para su uso después del período de desvinculación de %@.";
@@ -759,7 +779,7 @@
 "staking_unbonding_in" = "Desunión en";
 "staking_unlocked_locked" = "Desbloquear";
 "staking_unlocking" = "Desbloqueando";
-"staking_unstake_amount_requirement_error" = "The amount to unstake must be at least %@";
+"staking_unstake_amount_requirement_error" = "El monto del staking debe ser al menos %@";
 "staking_unstake_amount_validation_error" = "El monto excede el saldo apostado";
 "staking_unstaked" = "Sin staking";
 "staking_unstaked_footer" = "Marque activos sin staking para reclamarlos";
@@ -792,6 +812,7 @@
 "swapping_alert_cex_description_with_slippage" = "El monto incluye:\n• tarifas del proveedor de servicios\n• tarifas de red por enviar %1$@ desde el intercambio a la dirección del usuario. \n\nEl slippage del proveedor puede alcanzar el %2$@";
 "swapping_alert_dex_description" = "El importe incluye los honorarios del proveedor de servicios.";
 "swapping_alert_dex_description_with_slippage" = "El importe incluye las tarifas del proveedor de servicios. \n\nEl slippage del proveedor puede alcanzar el %@";
+"swapping_alert_slippage_description" = "Provider slippage is up to %@.";
 "swapping_alert_title" = "Tarifa";
 "swapping_approve_information_text" = "Todos los exchanges descentralizados requieren aprobaciones para evitar que los smart contracts accedan a su billetera sin su permiso. Por diseño, los smart contracts no pueden acceder a tus tokens a menos que lo apruebes. Al \"desbloquear\" sus tokens, autoriza al smart contract de 1-inch a gastarlos. Los mineros de la red reciben una tarifa de gas (pagada por voz) para registrar esta acción en la blockchain. Puede intercambiar su token después de dar la aprobación.";
 "swapping_approve_information_title" = "Aprobar";
@@ -830,6 +851,10 @@
 "token_details_unable_hide_alert_message" = "El token %1$@ (%2$@) es la moneda principal en la red %3$@ y no se puede ocultar mientras tengas otros tokens de esta red en la lista";
 "token_details_unable_hide_alert_title" = "No se puede ocultar %@";
 "token_swap_promotion_button" = "Intercambie ahora";
+"tokens_list_hot_crypto_header" = "Hot crypto 🔥";
+"tokens_list_unavailable_to_purchase_header" = "Unavailable to purchase";
+"tokens_list_unavailable_to_sell_header" = "Unavailable to sell";
+"tokens_list_unavailable_to_swap_header" = "Unavailable for swap from %@";
 "transaction_history_contract_address" = "contacto: %@";
 "transaction_history_empty_transactions" = "Aún no tiene ninguna transacción";
 "transaction_history_error_failed_to_load" = "Error al cargar el historial de transacciones.\nHaga clic en el botón de recarga para actualizar la información.";
@@ -839,6 +864,7 @@
 "transaction_history_transaction_from_address" = "desde: %@";
 "transaction_history_transaction_to_address" = "a: %@";
 "transaction_history_transaction_validator" = "validador: %@";
+"transfer_notification_invalid_minimum_transaction_amount_text" = "El monto mínimo para realizar esta transacción es %1$@.";
 "try_to_load_data_again_button_title" = "Inténtelo de nuevo";
 "twin_error_same_card" = "Ha escaneado la misma tarjeta. Para crear una billetera gemela, necesite escanear la tarjeta con no. %li";
 "twin_error_wrong_twin" = "Ha escaneado la tarjeta gemela incorrecta. Por favor, intente con otra";
