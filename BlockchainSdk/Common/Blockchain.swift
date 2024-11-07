@@ -172,8 +172,7 @@ public indirect enum Blockchain: Equatable, Hashable {
              .aptos(_, let testnet),
              .shibarium(let testnet),
              .sui(_, let testnet),
-             .casper(_, let testnet)
-             :
+             .casper(_, let testnet):
             return testnet
         }
     }

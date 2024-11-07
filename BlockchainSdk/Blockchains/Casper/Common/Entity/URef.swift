@@ -3,16 +3,16 @@ import Foundation
 /**
  Class represents the URef
  */
-public class URef {
+class URef {
     let uREFPREFIX: String = "uref"
-    public var value: String?
+    var value: String?
     /**
      Get URef object from  string
      - Parameter :  a  String represents the URef object
      - Returns:  URef object
      */
 
-    public static func fromStringToUref(from: String) -> URef {
+    static func fromStringToUref(from: String) -> URef {
         let uref = URef()
         uref.value = from
         return uref

@@ -12,8 +12,10 @@ import XCTest
 @testable import BlockchainSdk
 
 final class CasperTests: XCTestCase {
+    private let sizeUtility = TransactionSizeTesterUtility()
+    
     private let blockchain = Blockchain.casper(curve: .secp256k1, testnet: false)
-    private lazy var txBuilder = CasperTransactionBuilder(blockchain: blockchain)
+    private lazy var txBuilder = CasperTransactionBuilder(curve: .secp256k1, blockchainDecimalValue: blockchain.decimalValue)
 
     // MARK: - Private Properties
 
@@ -28,6 +30,9 @@ final class CasperTests: XCTestCase {
     func testBuildForSign() throws {
         let transaction = transactionData()
         let hashForSign = try txBuilder.buildForSign(transaction: transaction, timestamp: timestamp)
+        
+        sizeUtility.testTxSize(hashForSign)
+        
         XCTAssertEqual(hashForSign.hexString.lowercased(), "951f30645f15e5955750d7aa3b50cadd8ca4044f46aa49cfe389d90825f8122f")
     }
 
@@ -54,8 +59,8 @@ final class CasperTests: XCTestCase {
     // MARK: - Private Implementation
 
     private func transactionData() -> Transaction {
-        let transferAmount = Amount(with: blockchain, value: 2.5)
-        let feeAmount = Amount(with: blockchain, value: 0.1)
+        let transferAmount = Amount(with: blockchain, value: Decimal(stringValue: "2.5")!)
+        let feeAmount = Amount(with: blockchain, value: Decimal(stringValue: "0.1")!)
 
         let transaction = Transaction(
             amount: transferAmount,

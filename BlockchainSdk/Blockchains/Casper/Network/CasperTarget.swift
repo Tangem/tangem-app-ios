@@ -66,12 +66,14 @@ struct CasperTarget: TargetType {
 }
 
 extension CasperTarget {
-    static var jsonRPCMethodId: Int = 0
-
     enum TargetType {
         case getBalance(data: CasperNetworkRequest.QueryBalance)
         case putDeploy(data: Data)
     }
+}
+
+private extension CasperTarget {
+    static var jsonRPCMethodId: Int = 0
 
     enum Method: String, Encodable {
         case queryBalance = "query_balance"
