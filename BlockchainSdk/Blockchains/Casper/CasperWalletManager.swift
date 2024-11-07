@@ -51,12 +51,12 @@ class CasperWalletManager: BaseManager, WalletManager {
     }
 
     func getFee(amount: Amount, destination: String) -> AnyPublisher<[Fee], any Error> {
-        // TODO: - https://tangem.atlassian.net/browse/IOS-8316
+        // TODO: - https://tangem.atlassian.net/browse/IOS-8317
         return .anyFail(error: WalletError.empty)
     }
 
     func send(_ transaction: Transaction, signer: any TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError> {
-        // TODO: - https://tangem.atlassian.net/browse/IOS-8316
+        // TODO: - https://tangem.atlassian.net/browse/IOS-8317
         return .anyFail(error: SendTxError(error: WalletError.empty))
     }
 
@@ -71,7 +71,7 @@ class CasperWalletManager: BaseManager, WalletManager {
     }
 }
 
-extension CasperWalletManager {
+private extension CasperWalletManager {
     enum Constants {
         static let constantFeeValue = Decimal(stringValue: "0.1")
     }
