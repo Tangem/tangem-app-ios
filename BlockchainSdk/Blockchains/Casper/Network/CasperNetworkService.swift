@@ -43,13 +43,10 @@ final class CasperNetworkService: MultiNetworkProvider {
                 }
                 .tryCatch { error -> AnyPublisher<CasperBalance, Error> in
                     if let error = error as? JSONRPC.APIError, error.code == Constants.ERROR_CODE_QUERY_FAILED {
-                        return .anyFail(
-                            error: WalletError.noAccount(
-                                message: Localization.noAccountSendToCreate,
-                                amountToCreate: 0
-                            )
-                        )
+                        let zeroBalance = CasperBalance(value: .zero)
+                        return .justWithError(output: zeroBalance)
                     }
+
                     return .anyFail(error: error)
                 }
                 .eraseToAnyPublisher()

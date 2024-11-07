@@ -124,7 +124,7 @@ class CasperWalletManager: BaseManager, WalletManager {
     }
 }
 
-extension CasperWalletManager {
+private extension CasperWalletManager {
     enum Constants {
         static let constantFeeValue = Decimal(stringValue: "0.1")
     }
