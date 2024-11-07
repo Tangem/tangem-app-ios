@@ -34,7 +34,7 @@ final class CasperNetworkService: MultiNetworkProvider {
                 .getBalance(address: address)
                 .withWeakCaptureOf(self)
                 .tryMap { service, result in
-                    guard let balanceValue = Decimal(string: result.balance) else {
+                    guard let balanceValue = Decimal(stringValue: result.balance) else {
                         throw WalletError.failedToParseNetworkResponse()
                     }
 
@@ -57,9 +57,8 @@ final class CasperNetworkService: MultiNetworkProvider {
         providerPublisher { provider in
             provider
                 .putDeploy(rawJSON: rawData)
-                .withWeakCaptureOf(self)
-                .tryMap { service, result in
-                    return result.deployHash
+                .map { result in
+                    result.deployHash
                 }
                 .eraseToAnyPublisher()
         }

@@ -6,7 +6,6 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-import BigInt
 import TangemSdk
 
 final class CasperTransactionBuilder {
@@ -68,7 +67,7 @@ private extension CasperTransactionBuilder {
     }
 
     func buildDeployTransfer(from transaction: Transaction) throws -> ExecutableDeployItem {
-        let amountStringValue = String((transaction.amount.value * blockchainDecimalValue).uint64Value)
+        let amountStringValue = (transaction.amount.value * blockchainDecimalValue).stringValue
 
         let clValueSessionAmountParsed: CLValueWrapper = .u512(U512Class.fromStringToU512(from: amountStringValue))
         let clValueSessionAmount = CLValue()

@@ -119,9 +119,10 @@ extension String: @retroactive LocalizedError {
 }
 
 extension String {
+    private static var numericSet: Set<Character> = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
     var isNumeric: Bool {
         guard !isEmpty else { return false }
-        let nums: Set<Character> = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-        return Set(self).isSubset(of: nums)
+        return Set(self).isSubset(of: String.numericSet)
     }
 }

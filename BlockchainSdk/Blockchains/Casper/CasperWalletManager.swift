@@ -23,6 +23,12 @@ class CasperWalletManager: BaseManager, WalletManager {
     private let networkService: CasperNetworkService
     private let transactionBuilder: CasperTransactionBuilder
 
+    private static let formatter: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withFullDate, .withFullTime, .withFractionalSeconds]
+        return formatter
+    }()
+
     // MARK: - Init
 
     init(wallet: Wallet, networkService: CasperNetworkService, transactionBuilder: CasperTransactionBuilder) {
@@ -81,8 +87,10 @@ class CasperWalletManager: BaseManager, WalletManager {
                 )
             }
             .withWeakCaptureOf(self)
-            .flatMap { walletManager, rawTransactionData -> AnyPublisher<String, Error> in
-                walletManager.networkService.putDeploy(rawData: rawTransactionData)
+            .flatMap { walletManager, rawTransactionData in
+                walletManager.networkService
+                    .putDeploy(rawData: rawTransactionData)
+                    .mapSendError(tx: rawTransactionData.hexString)
             }
             .withWeakCaptureOf(self)
             .map { walletManager, transactionHash in
@@ -105,18 +113,8 @@ class CasperWalletManager: BaseManager, WalletManager {
         wallet.add(coinValue: balanceInfo.value)
     }
 
-    private func getCurrentTimestamp() -> String {
-        let timestamp = Date().timeIntervalSince1970
-        let tE = String(timestamp).components(separatedBy: ".")
-        let mili = tE[1]
-        let indexMili = mili.index(mili.startIndex, offsetBy: 3)
-        let miliStr = mili[..<indexMili]
-        let myTimeInterval = TimeInterval(timestamp)
-        let time = NSDate(timeIntervalSince1970: TimeInterval(myTimeInterval))
-        let timeStr = String(time.description)
-        let timeElements = timeStr.components(separatedBy: " ")
-        let newTimeStr = timeElements[0] + "T" + timeElements[1] + ".\(miliStr)Z"
-        return newTimeStr
+    func getCurrentTimestamp() -> String {
+        CasperWalletManager.formatter.string(from: Date())
     }
 }
 

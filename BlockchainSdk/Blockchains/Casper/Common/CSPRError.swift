@@ -8,12 +8,12 @@
 
 import Foundation
 
-public enum CSPRError: Error {
+enum CSPRError: Error {
     case invalidNumber
     case none
 }
 
-public enum CSPRMethodError: Error {
+enum CSPRMethodError: Error {
     case invalidURL
     case invalidParams
     case parseError
@@ -23,7 +23,7 @@ public enum CSPRMethodError: Error {
     case NONE
 }
 
-public enum CSPRMethodCallError: Error {
+enum CSPRMethodCallError: Error {
     case casperError(code: Int, message: String, methodCall: String)
     case none
 }
