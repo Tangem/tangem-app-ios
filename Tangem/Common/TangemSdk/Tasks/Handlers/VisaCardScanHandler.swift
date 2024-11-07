@@ -41,8 +41,7 @@ class VisaCardScanHandler {
         do {
             log("Requesting authorization challenge to sign")
             let challengeResponse = try await authorizationService.getAuthorizationChallenge(
-                //                cardId: card.cardId,
-                cardId: "FF00000000000061",
+                cardId: card.cardId,
                 cardPublicKey: card.cardPublicKey.hexString
             )
             log("Received challenge to sign: \(challengeResponse)")

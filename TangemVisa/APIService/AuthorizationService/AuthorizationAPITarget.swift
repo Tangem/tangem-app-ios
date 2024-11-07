@@ -40,7 +40,7 @@ struct AuthorizationAPITarget: TargetType {
         switch target {
         case .generateNonceByCID(let cid, let cardPublicKey):
             params[.cardId] = cid
-            params[.publicKey] = cardPublicKey
+            params[.cardPublicKey] = cardPublicKey
         case .getAccessToken(let signature, let sessionId):
             params[.clientId] = clientId
             params[.sessionId] = sessionId
@@ -73,7 +73,7 @@ extension AuthorizationAPITarget {
 private extension AuthorizationAPITarget {
     enum ParameterKey: String {
         case cardId = "card_id"
-        case publicKey = "public_key"
+        case cardPublicKey = "card_public_key"
         case customerId = "customer_id"
         case refreshToken = "refresh_token"
         case sessionId = "session_id"
