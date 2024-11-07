@@ -839,6 +839,7 @@
 "transaction_history_transaction_from_address" = "от: %@";
 "transaction_history_transaction_to_address" = "на: %@";
 "transaction_history_transaction_validator" = "валидатор: %@";
+"transfer_notification_invalid_minimum_transaction_amount_text" = "The minimum transaction amount is %1$@.";
 "try_to_load_data_again_button_title" = "Попробовать снова";
 "twin_error_same_card" = "Вы отсканировали ту же карту. Для создания twin-кошелька вам необходимо отсканировать карту с номером %li";
 "twin_error_wrong_twin" = "Вы отсканировали не ту twin-карту. Пожалуйста, попробуйте отсканировать другую";

@@ -48,6 +48,9 @@ struct ExpressCurrencyView<Content: View>: View {
             case .insufficientFunds:
                 Text(Localization.swappingInsufficientFunds)
                     .style(Fonts.Regular.caption1, color: Colors.Text.warning)
+            case .error(let text):
+                Text(text)
+                    .style(Fonts.Regular.footnote, color: Colors.Text.warning)
             }
 
             Spacer()

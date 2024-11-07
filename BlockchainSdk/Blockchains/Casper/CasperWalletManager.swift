@@ -124,8 +124,21 @@ class CasperWalletManager: BaseManager, WalletManager {
     }
 }
 
+// MARK: - MinimumAmountRestrictable
+
+extension CasperWalletManager: MinimumAmountRestrictable {
+    var minimumAmountRestrictValue: Amount {
+        guard let value = Constants.minimumAmountDustValue else {
+            return .init(with: wallet.blockchain, value: .zero)
+        }
+
+        return .init(with: wallet.blockchain, value: value)
+    }
+}
+
 private extension CasperWalletManager {
     enum Constants {
         static let constantFeeValue = Decimal(stringValue: "0.1")
+        static let minimumAmountDustValue = Decimal(stringValue: "2.5")
     }
 }

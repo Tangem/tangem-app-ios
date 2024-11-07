@@ -399,6 +399,8 @@ private extension ExpressViewModel {
         case .restriction(.notEnoughAmountForTxValue, _),
              .restriction(.notEnoughAmountForFee, _) where interactor.getSender().isFeeCurrency:
             sendCurrencyViewModel?.expressCurrencyViewModel.update(titleState: .insufficientFunds)
+        case .restriction(.validationError(.minimumRestrictAmount(let minimumAmount), _), _):
+            sendCurrencyViewModel?.expressCurrencyViewModel.update(titleState: .error(minimumAmount.string()))
         default:
             sendCurrencyViewModel?.expressCurrencyViewModel.update(titleState: .text(Localization.swappingFromTitle))
         }

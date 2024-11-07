@@ -157,6 +157,9 @@ class ExpressNotificationManager {
 
             event = notEnoughFeeForTokenTxEvent
 
+        case .minimumRestrictAmount:
+            return
+
         case .dustRestriction,
              .existentialDeposit,
              .amountExceedMaximumUTXO,

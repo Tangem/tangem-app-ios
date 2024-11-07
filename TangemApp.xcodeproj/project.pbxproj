@@ -97,6 +97,7 @@
 		2D665C312CDCA3FC00C9BA85 /* CLValueWrapperToJsonString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D665C0D2CDCA3FC00C9BA85 /* CLValueWrapperToJsonString.swift */; };
 		2D665C322CDCA3FC00C9BA85 /* CLValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D665C0B2CDCA3FC00C9BA85 /* CLValue.swift */; };
 		2D665C342CDCA46C00C9BA85 /* CasperNetworkResponse.Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D665C332CDCA46C00C9BA85 /* CasperNetworkResponse.Transaction.swift */; };
+		2D665C362CDCD1F700C9BA85 /* MinimumAmountRestrictable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D665C352CDCD1F700C9BA85 /* MinimumAmountRestrictable.swift */; };
 		2D70C61D2B21E90A00BD1DAB /* MarketsAddCustomItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D70C61B2B21E90A00BD1DAB /* MarketsAddCustomItemView.swift */; };
 		2DA57BBF2CD650E900C890DF /* CasperWalletAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D616FE92CD1414000581EA6 /* CasperWalletAssembly.swift */; };
 		2DA57BC02CD650E900C890DF /* CasperExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D616FE82CD1414000581EA6 /* CasperExternalLinkProvider.swift */; };
@@ -3093,6 +3094,7 @@
 		2D665C1E2CDCA3FC00C9BA85 /* CLTypeSerializeHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLTypeSerializeHelper.swift; sourceTree = "<group>"; };
 		2D665C1F2CDCA3FC00C9BA85 /* DeploySerialization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeploySerialization.swift; sourceTree = "<group>"; };
 		2D665C332CDCA46C00C9BA85 /* CasperNetworkResponse.Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasperNetworkResponse.Transaction.swift; sourceTree = "<group>"; };
+		2D665C352CDCD1F700C9BA85 /* MinimumAmountRestrictable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimumAmountRestrictable.swift; sourceTree = "<group>"; };
 		2D70C61B2B21E90A00BD1DAB /* MarketsAddCustomItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsAddCustomItemView.swift; sourceTree = "<group>"; };
 		2D788E7F2ADD657000E0884B /* WalletSelectorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletSelectorViewModel.swift; sourceTree = "<group>"; };
 		2D788E822ADD657000E0884B /* WalletSelectorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletSelectorView.swift; sourceTree = "<group>"; };
@@ -10623,6 +10625,7 @@
 				B62D3F052CBC79D900C2460E /* DustRestrictable.swift */,
 				B62D3F062CBC79D900C2460E /* FeeResourceRestrictable.swift */,
 				B62D3F072CBC79D900C2460E /* MaximumAmountRestrictable.swift */,
+				2D665C352CDCD1F700C9BA85 /* MinimumAmountRestrictable.swift */,
 				B62D3F082CBC79D900C2460E /* MinimumBalanceRestrictable.swift */,
 				B62D3F092CBC79D900C2460E /* ReserveAmountRestrictable.swift */,
 				B62D3F0A2CBC79D900C2460E /* TransactionValidator.swift */,
@@ -18160,6 +18163,7 @@
 				B62D42D02CBC79DB00C2460E /* JSONDecoder+.swift in Sources */,
 				B62D41042CBC79DA00C2460E /* KaspaTarget.swift in Sources */,
 				B62D40572CBC79DA00C2460E /* ChiaPuzzleUtils.swift in Sources */,
+				2D665C362CDCD1F700C9BA85 /* MinimumAmountRestrictable.swift in Sources */,
 				B62D3FDD2CBC79DA00C2460E /* OP_NUMEQUALVERIFY.swift in Sources */,
 				B62D42872CBC79DB00C2460E /* PolygonTransactionHistoryMapper.swift in Sources */,
 				B62D42592CBC79DB00C2460E /* AnyEncodable.swift in Sources */,

@@ -839,6 +839,7 @@
 "transaction_history_transaction_from_address" = "from: %@";
 "transaction_history_transaction_to_address" = "to: %@";
 "transaction_history_transaction_validator" = "validator: %@";
+"transfer_notification_invalid_minimum_transaction_amount_text" = "The minimum transaction amount is %1$@.";
 "try_to_load_data_again_button_title" = "Try again";
 "twin_error_same_card" = "You've scanned the same card. To create a twin wallet you need to scan the card with number %li";
 "twin_error_wrong_twin" = "You've scanned wrong twin card. Please try another one";
