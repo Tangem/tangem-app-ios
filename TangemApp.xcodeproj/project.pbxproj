@@ -2065,7 +2065,6 @@
 		DC261CB7292CF6B700875E64 /* UncompletedBackupRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC261CB2292CF6B700875E64 /* UncompletedBackupRoutable.swift */; };
 		DC261CBB292CFBB500875E64 /* StartupProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC261CBA292CFBB500875E64 /* StartupProcessor.swift */; };
 		DC283AB82CCA60BB0043F7D2 /* ActionButtonViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC283AB72CCA60BB0043F7D2 /* ActionButtonViewModel.swift */; };
-		DC283ABF2CCA70A40043F7D2 /* ActionButtonsFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC283ABE2CCA70A40043F7D2 /* ActionButtonsFactory.swift */; };
 		DC288C002C06553300FF94A0 /* ResetToFactoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC288BFF2C06553300FF94A0 /* ResetToFactoryService.swift */; };
 		DC2891642CD47E9D00F57F59 /* ActionButtonsBuyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891632CD47E9600F57F59 /* ActionButtonsBuyView.swift */; };
 		DC2891672CD4AB9000F57F59 /* ActionButtonsBuyCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891662CD4AB8E00F57F59 /* ActionButtonsBuyCoordinator.swift */; };
@@ -2081,12 +2080,8 @@
 		DC2891842CDA488500F57F59 /* ActionButtonsBuyCryptoRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891832CDA488400F57F59 /* ActionButtonsBuyCryptoRoutable.swift */; };
 		DC2891862CDA4B2D00F57F59 /* ActionButtonsBuyCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891852CDA4B2B00F57F59 /* ActionButtonsBuyCoordinatorView.swift */; };
 		DC2891882CDA4B5E00F57F59 /* ActionButtonsBuyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891872CDA4B5D00F57F59 /* ActionButtonsBuyViewModel.swift */; };
-		DC2891A22CDAE82900F57F59 /* ActionButtonsBuyInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891A12CDAE82600F57F59 /* ActionButtonsBuyInteractor.swift */; };
-		DC2891A42CDAE83C00F57F59 /* CommonActionButtonsBuyInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891A32CDAE83B00F57F59 /* CommonActionButtonsBuyInteractor.swift */; };
-		DC2891A92CDAE92500F57F59 /* CommonBuyActionButtonInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891A82CDAE92300F57F59 /* CommonBuyActionButtonInteractor.swift */; };
 		DC2891AB2CDAE93C00F57F59 /* BuyActionButtonViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891AA2CDAE93A00F57F59 /* BuyActionButtonViewModel.swift */; };
 		DC2891AD2CDAEF9E00F57F59 /* ActionButtonsBuyRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891AC2CDAEF9C00F57F59 /* ActionButtonsBuyRoutable.swift */; };
-		DC2891AF2CDAF3B600F57F59 /* Collection+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891AE2CDAF3B200F57F59 /* Collection+.swift */; };
 		DC2891B12CDAF4E700F57F59 /* TokenAvailabilitySorter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891B02CDAF4E600F57F59 /* TokenAvailabilitySorter.swift */; };
 		DC2891B42CDB09A700F57F59 /* ActionButtonsBuyRootRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891B32CDB09A600F57F59 /* ActionButtonsBuyRootRoutable.swift */; };
 		DC2891B62CDB09CA00F57F59 /* ActionButtonsSwapRootRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891B52CDB09C900F57F59 /* ActionButtonsSwapRootRoutable.swift */; };
@@ -5042,7 +5037,6 @@
 		DC261CB2292CF6B700875E64 /* UncompletedBackupRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UncompletedBackupRoutable.swift; sourceTree = "<group>"; };
 		DC261CBA292CFBB500875E64 /* StartupProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupProcessor.swift; sourceTree = "<group>"; };
 		DC283AB72CCA60BB0043F7D2 /* ActionButtonViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonViewModel.swift; sourceTree = "<group>"; };
-		DC283ABE2CCA70A40043F7D2 /* ActionButtonsFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsFactory.swift; sourceTree = "<group>"; };
 		DC288BFF2C06553300FF94A0 /* ResetToFactoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetToFactoryService.swift; sourceTree = "<group>"; };
 		DC2891632CD47E9600F57F59 /* ActionButtonsBuyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsBuyView.swift; sourceTree = "<group>"; };
 		DC2891662CD4AB8E00F57F59 /* ActionButtonsBuyCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsBuyCoordinator.swift; sourceTree = "<group>"; };
@@ -5058,12 +5052,8 @@
 		DC2891832CDA488400F57F59 /* ActionButtonsBuyCryptoRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsBuyCryptoRoutable.swift; sourceTree = "<group>"; };
 		DC2891852CDA4B2B00F57F59 /* ActionButtonsBuyCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsBuyCoordinatorView.swift; sourceTree = "<group>"; };
 		DC2891872CDA4B5D00F57F59 /* ActionButtonsBuyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsBuyViewModel.swift; sourceTree = "<group>"; };
-		DC2891A12CDAE82600F57F59 /* ActionButtonsBuyInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsBuyInteractor.swift; sourceTree = "<group>"; };
-		DC2891A32CDAE83B00F57F59 /* CommonActionButtonsBuyInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonActionButtonsBuyInteractor.swift; sourceTree = "<group>"; };
-		DC2891A82CDAE92300F57F59 /* CommonBuyActionButtonInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonBuyActionButtonInteractor.swift; sourceTree = "<group>"; };
 		DC2891AA2CDAE93A00F57F59 /* BuyActionButtonViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuyActionButtonViewModel.swift; sourceTree = "<group>"; };
 		DC2891AC2CDAEF9C00F57F59 /* ActionButtonsBuyRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsBuyRoutable.swift; sourceTree = "<group>"; };
-		DC2891AE2CDAF3B200F57F59 /* Collection+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+.swift"; sourceTree = "<group>"; };
 		DC2891B02CDAF4E600F57F59 /* TokenAvailabilitySorter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenAvailabilitySorter.swift; sourceTree = "<group>"; };
 		DC2891B32CDB09A600F57F59 /* ActionButtonsBuyRootRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsBuyRootRoutable.swift; sourceTree = "<group>"; };
 		DC2891B52CDB09C900F57F59 /* ActionButtonsSwapRootRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsSwapRootRoutable.swift; sourceTree = "<group>"; };
@@ -6639,7 +6629,6 @@
 				5DD95B8B24FA959C00E6B9D0 /* VerticalAlignment+.swift */,
 				5DBBAB0A24D853B600E78F1C /* Color+.swift */,
 				B0FB98A42598D24300B769A3 /* Card+.swift */,
-				DC2891AE2CDAF3B200F57F59 /* Collection+.swift */,
 				5DFE855624EF051400194106 /* Error+.swift */,
 				5D384B9024FD4E1800C2C92C /* String+.swift */,
 				DAF97FC82BAAF2CC006D9A44 /* Locale+.swift */,
@@ -12241,18 +12230,9 @@
 			path = Coordinator;
 			sourceTree = "<group>";
 		};
-		DC283ABD2CCA70970043F7D2 /* Factory */ = {
-			isa = PBXGroup;
-			children = (
-				DC283ABE2CCA70A40043F7D2 /* ActionButtonsFactory.swift */,
-			);
-			path = Factory;
-			sourceTree = "<group>";
-		};
 		DC2891622CD47E8F00F57F59 /* ActionButtonsBuy */ = {
 			isa = PBXGroup;
 			children = (
-				DC2891A02CDAE81700F57F59 /* Interactor */,
 				DC2891892CDA508800F57F59 /* Models */,
 				DC2891822CDA33FC00F57F59 /* ViewModel */,
 				DC2891812CD92DBA00F57F59 /* View */,
@@ -12330,19 +12310,9 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		DC2891A02CDAE81700F57F59 /* Interactor */ = {
-			isa = PBXGroup;
-			children = (
-				DC2891A32CDAE83B00F57F59 /* CommonActionButtonsBuyInteractor.swift */,
-				DC2891A12CDAE82600F57F59 /* ActionButtonsBuyInteractor.swift */,
-			);
-			path = Interactor;
-			sourceTree = "<group>";
-		};
 		DC2891A52CDAE90200F57F59 /* BuyButton */ = {
 			isa = PBXGroup;
 			children = (
-				DC2891A72CDAE91100F57F59 /* Interactor */,
 				DC2891A62CDAE90A00F57F59 /* ViewModel */,
 			);
 			path = BuyButton;
@@ -12354,14 +12324,6 @@
 				DC2891AA2CDAE93A00F57F59 /* BuyActionButtonViewModel.swift */,
 			);
 			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		DC2891A72CDAE91100F57F59 /* Interactor */ = {
-			isa = PBXGroup;
-			children = (
-				DC2891A82CDAE92300F57F59 /* CommonBuyActionButtonInteractor.swift */,
-			);
-			path = Interactor;
 			sourceTree = "<group>";
 		};
 		DC2911B02C623CFE00DF53CC /* TransactionDispatcher */ = {
@@ -12723,7 +12685,6 @@
 				DC2891A52CDAE90200F57F59 /* BuyButton */,
 				DC28917E2CD92CD800F57F59 /* Models */,
 				DC283AB42CCA60940043F7D2 /* BaseActionButton */,
-				DC283ABD2CCA70970043F7D2 /* Factory */,
 				DC283ABA2CCA61AB0043F7D2 /* Coordinator */,
 				DC283AB32CCA607D0043F7D2 /* ViewModel */,
 				DC283AB22CCA60760043F7D2 /* View */,
@@ -15830,7 +15791,6 @@
 				EF032C532955C725006C1FF3 /* CheckIconView.swift in Sources */,
 				B6FCEE712C40E14300CA9252 /* UIScrollView+.swift in Sources */,
 				DC0A57D82822A3C80031BECC /* InjectedValues.swift in Sources */,
-				DC2891A22CDAE82900F57F59 /* ActionButtonsBuyInteractor.swift in Sources */,
 				EF842DEA2AFA58C5006E472E /* ExpressTokensListView.swift in Sources */,
 				B0F16D7126EF5ED800687C47 /* ProgressBar.swift in Sources */,
 				EF5E5A822B70FF3700D19BBB /* CommonBannerPromotionService.swift in Sources */,
@@ -15838,7 +15798,6 @@
 				DC2CD3442B0FE3D600C0D677 /* SendCurrencyView.swift in Sources */,
 				EF5A5AD528D86094002544AC /* CardImageProvider.swift in Sources */,
 				DC99D0DF2C982B23006AE8FA /* AdaptiveSizeSheetViewModel.swift in Sources */,
-				DC2891AF2CDAF3B600F57F59 /* Collection+.swift in Sources */,
 				B65108B32CAC2A8100690C22 /* ShapeStyle+.swift in Sources */,
 				DC10A7C6295DED4E00367574 /* BindableError.swift in Sources */,
 				EF9E2A552B56A6E800418559 /* UserWalletModelMock.swift in Sources */,
@@ -16090,7 +16049,6 @@
 				B68907852A32482F00A0D246 /* ForEach+.swift in Sources */,
 				B6ED082C2A7D9DCD0090E51F /* UserTokensReorderingOptions.swift in Sources */,
 				2DD754D72AE1660D0009CA64 /* GenerateAddressesViewModel.swift in Sources */,
-				DC2891A92CDAE92500F57F59 /* CommonBuyActionButtonInteractor.swift in Sources */,
 				DA559C322B0261F400F59584 /* SendModel.swift in Sources */,
 				EFFC861328BCF6C500F863CE /* StorageEntry.swift in Sources */,
 				EFC84AC22C35CB2900546882 /* SendFinishViewModel.swift in Sources */,
@@ -16219,7 +16177,6 @@
 				EFA580632893E6AA00110DB0 /* BiometricAuthorizationUtils.swift in Sources */,
 				DAA5E30228D21369003C0E80 /* UserWalletStorageAgreementView.swift in Sources */,
 				EF7B9CF5286C7023004C33A9 /* CardSettingsCoordinator.swift in Sources */,
-				DC283ABF2CCA70A40043F7D2 /* ActionButtonsFactory.swift in Sources */,
 				B0E20E122C2B01F600213580 /* PriceChangeUtility.swift in Sources */,
 				B0AEC7D72C5B857100E60A93 /* MarketsUnableToLoadDataView.swift in Sources */,
 				B0A4C4A02A270F5B0060E039 /* BalanceWithButtonsView.swift in Sources */,
@@ -16698,7 +16655,6 @@
 				B0CF5A572C2D420300B197D4 /* MarketsDTO+Coin.swift in Sources */,
 				EFD68F302CC2D02500693C97 /* OnrampCountryView.swift in Sources */,
 				EF0DC11B2A0CE29E007E3DA7 /* ExpressApproveView.swift in Sources */,
-				DC2891A42CDAE83C00F57F59 /* CommonActionButtonsBuyInteractor.swift in Sources */,
 				B6A89DB82BB1AE2B007A1619 /* BackgroundTaskWrapper.swift in Sources */,
 				5D225CB92524B721001564A3 /* Analytics.swift in Sources */,
 				EFA4E3752C3EE6ED008815AD /* StakingValidatorsInteractor.swift in Sources */,

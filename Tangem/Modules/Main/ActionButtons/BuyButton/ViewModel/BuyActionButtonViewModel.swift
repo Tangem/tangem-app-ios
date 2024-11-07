@@ -6,25 +6,32 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-final class BuyActionButtonViewModel: BaseActionButtonViewModel {
-    private let interactor: BuyActionButtonInteractor
+final class BuyActionButtonViewModel: ActionButtonViewModel {
+    @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
+
+    private(set) var presentationState: ActionButtonPresentationState = .unexplicitLoading
+
+    let model: ActionButtonModel
+
+    private var isBuyAvailable: Bool {
+        tangemApiService.geoIpRegionCode != LanguageCode.ru
+    }
+
     private let coordinator: ActionButtonsBuyRootRoutable
     private let userWalletModel: UserWalletModel
 
     init(
-        interactor: some BuyActionButtonInteractor,
+        model: ActionButtonModel,
         coordinator: some ActionButtonsBuyRootRoutable,
-        userWalletModel: some UserWalletModel,
-        model: ActionButtonModel
+        userWalletModel: some UserWalletModel
     ) {
-        self.interactor = interactor
+        self.model = model
         self.coordinator = coordinator
         self.userWalletModel = userWalletModel
-        super.init(model: model)
     }
 
     @MainActor
-    override func tap() {
+    func tap() {
         switch presentationState {
         case .unexplicitLoading:
             updateState(to: .loading)
@@ -35,8 +42,13 @@ final class BuyActionButtonViewModel: BaseActionButtonViewModel {
         }
     }
 
+    @MainActor
+    func updateState(to state: ActionButtonPresentationState) {
+        presentationState = state
+    }
+
     private func didTap() {
-        if interactor.isBuyAvailable {
+        if isBuyAvailable {
             coordinator.openBuy(userWalletModel: userWalletModel)
         } else {
             openBanking()

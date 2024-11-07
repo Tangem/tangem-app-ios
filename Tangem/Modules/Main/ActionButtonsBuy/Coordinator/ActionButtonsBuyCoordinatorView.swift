@@ -13,7 +13,9 @@ struct ActionButtonsBuyCoordinatorView: View {
 
     var body: some View {
         if let actionButtonsBuyViewModel = coordinator.actionButtonsBuyViewModel {
-            ActionButtonsBuyView(viewModel: actionButtonsBuyViewModel)
+            NavigationView {
+                ActionButtonsBuyView(viewModel: actionButtonsBuyViewModel)
+            }
         }
     }
 }

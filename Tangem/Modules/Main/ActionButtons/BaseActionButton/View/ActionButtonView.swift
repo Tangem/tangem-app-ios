@@ -8,8 +8,8 @@
 
 import SwiftUI
 
-struct ActionButtonView: View {
-    @ObservedObject var viewModel: BaseActionButtonViewModel
+struct ActionButtonView<ViewModel: ActionButtonViewModel>: View {
+    @ObservedObject var viewModel: ViewModel
 
     var body: some View {
         Button(

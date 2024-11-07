@@ -8,7 +8,19 @@
 
 import Foundation
 
-class BaseActionButtonViewModel: ObservableObject, Identifiable {
+protocol ActionButtonViewModel: ObservableObject, Identifiable {
+    var presentationState: ActionButtonPresentationState { get }
+    var model: ActionButtonModel { get }
+
+    @MainActor
+    func tap()
+
+    @MainActor
+    func updateState(to state: ActionButtonPresentationState)
+}
+
+// TODO: Should be removed in 8238
+class BaseActionButtonViewModel: ActionButtonViewModel {
     @Published private(set) var presentationState: ActionButtonPresentationState = .unexplicitLoading
 
     let model: ActionButtonModel

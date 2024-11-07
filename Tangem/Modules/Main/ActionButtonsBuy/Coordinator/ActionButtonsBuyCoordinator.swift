@@ -35,7 +35,6 @@ final class ActionButtonsBuyCoordinator: CoordinatorObject {
     func start(with options: Options) {
         actionButtonsBuyViewModel = ActionButtonsBuyViewModel(
             coordinator: self,
-            interactor: CommonActionButtonsBuyInteractor(),
             tokenSelectorViewModel: makeTokenSelectorViewModel()
         )
     }

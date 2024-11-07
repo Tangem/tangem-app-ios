@@ -12,16 +12,14 @@ struct ActionButtonsBuyView: View {
     @ObservedObject var viewModel: ActionButtonsBuyViewModel
 
     var body: some View {
-        NavigationView {
-            content
-                .navigationTitle(Localization.commonBuy)
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        CloseButton(dismiss: { viewModel.handleViewAction(.close) })
-                    }
+        content
+            .navigationTitle(Localization.commonBuy)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    CloseButton(dismiss: { viewModel.handleViewAction(.close) })
                 }
-        }
+            }
     }
 
     @ViewBuilder

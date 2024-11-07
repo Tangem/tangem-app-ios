@@ -9,24 +9,23 @@
 import Foundation
 
 final class ActionButtonsBuyViewModel: ObservableObject {
+    @Injected(\.exchangeService) private var exchangeService: ExchangeService
+
     let tokenSelectorViewModel: TokenSelectorViewModel<
         ActionButtonsTokenSelectorItem,
         ActionButtonsTokenSelectorItemBuilder
     >
 
     private let coordinator: ActionButtonsBuyRoutable
-    private let interactor: ActionButtonsBuyInteractor
 
     init(
         coordinator: ActionButtonsBuyRoutable,
-        interactor: some ActionButtonsBuyInteractor,
         tokenSelectorViewModel: TokenSelectorViewModel<
             ActionButtonsTokenSelectorItem,
             ActionButtonsTokenSelectorItemBuilder
         >
     ) {
         self.coordinator = coordinator
-        self.interactor = interactor
         self.tokenSelectorViewModel = tokenSelectorViewModel
     }
 
@@ -35,10 +34,21 @@ final class ActionButtonsBuyViewModel: ObservableObject {
         case .close:
             coordinator.dismiss()
         case .didTapToken(let token):
-            guard let url = interactor.makeBuyUrl(from: token) else { return }
+            guard let url = makeBuyUrl(from: token) else { return }
 
             coordinator.openBuyCrypto(from: url)
         }
+    }
+
+    private func makeBuyUrl(from token: ActionButtonsTokenSelectorItem) -> URL? {
+        let buyUrl = exchangeService.getBuyUrl(
+            currencySymbol: token.symbol,
+            amountType: token.amountType,
+            blockchain: token.blockchain,
+            walletAddress: token.defaultAddress
+        )
+
+        return buyUrl
     }
 }
 

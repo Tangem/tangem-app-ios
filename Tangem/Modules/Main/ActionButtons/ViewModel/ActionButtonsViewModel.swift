@@ -10,22 +10,35 @@ import Combine
 import Foundation
 import TangemFoundation
 
+typealias ActionButtonsRoutable = ActionButtonsBuyRootRoutable & ActionButtonsSellRootRoutable & ActionButtonsSwapRootRoutable
+
 final class ActionButtonsViewModel: ObservableObject {
-    @Published private(set) var actionButtonViewModels: [BaseActionButtonViewModel]
+    @Injected(\.exchangeService) private var exchangeService: ExchangeService
+
     @Published private(set) var isButtonsDisabled = false
 
-    private var cancellables = Set<AnyCancellable>()
+    // MARK: - Button ViewModels
 
-    private let actionButtonsFactory: ActionButtonsFactory
+    let buyActionButtonViewModel: BuyActionButtonViewModel
+    let sellActionButtonViewModel = BaseActionButtonViewModel(model: .sell)
+    let swapActionButtonViewModel = BaseActionButtonViewModel(model: .swap)
+
+    private var bag = Set<AnyCancellable>()
+
     private let expressTokensListAdapter: ExpressTokensListAdapter
 
     init(
-        actionButtonsFactory: some ActionButtonsFactory,
-        expressTokensListAdapter: some ExpressTokensListAdapter
+        coordinator: some ActionButtonsRoutable,
+        expressTokensListAdapter: some ExpressTokensListAdapter,
+        userWalletModel: some UserWalletModel
     ) {
-        self.actionButtonsFactory = actionButtonsFactory
         self.expressTokensListAdapter = expressTokensListAdapter
-        actionButtonViewModels = actionButtonsFactory.makeActionButtonViewModels()
+
+        buyActionButtonViewModel = BuyActionButtonViewModel(
+            model: .buy,
+            coordinator: coordinator,
+            userWalletModel: userWalletModel
+        )
 
         bind()
         fetchData()
@@ -33,45 +46,51 @@ final class ActionButtonsViewModel: ObservableObject {
 
     func fetchData() {
         TangemFoundation.runTask(in: self) {
-            async let _ = $0.fetchBuyData()
-
             async let _ = $0.fetchSwapData()
-
-            async let _ = $0.fetchSellData()
         }
     }
+}
 
+// MARK: - Bind
+
+private extension ActionButtonsViewModel {
     func bind() {
+        bindWalletModels()
+        bindAvailableExchange()
+    }
+
+    func bindWalletModels() {
         expressTokensListAdapter
             .walletModels()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] walletModels in
                 self?.isButtonsDisabled = walletModels.isEmpty
             }
-            .store(in: &cancellables)
-    }
-}
-
-// MARK: - Buy
-
-private extension ActionButtonsViewModel {
-    private var buyActionButtonViewModel: BaseActionButtonViewModel? {
-        actionButtonViewModels.first { $0.model == .buy }
+            .store(in: &bag)
     }
 
-    private func fetchBuyData() async {
-        // TODO: Should be modified in onramp
-        await buyActionButtonViewModel?.updateState(to: .idle)
+    func bindAvailableExchange() {
+        exchangeService
+            .initializationPublisher
+            .withWeakCaptureOf(self)
+            .sink { viewModel, isExchangeAvailable in
+                TangemFoundation.runTask(in: viewModel) { viewModel in
+                    if isExchangeAvailable {
+                        await viewModel.sellActionButtonViewModel.updateState(to: .idle)
+                        await viewModel.buyActionButtonViewModel.updateState(to: .idle)
+                    } else {
+                        await viewModel.sellActionButtonViewModel.updateState(to: .unexplicitLoading)
+                        await viewModel.buyActionButtonViewModel.updateState(to: .unexplicitLoading)
+                    }
+                }
+            }
+            .store(in: &bag)
     }
 }
 
 // MARK: - Swap
 
 private extension ActionButtonsViewModel {
-    var swapActionButtonViewModel: BaseActionButtonViewModel? {
-        actionButtonViewModels.first { $0.model == .swap }
-    }
-
     func fetchSwapData() async {
         // IOS-8238
     }
@@ -80,10 +99,6 @@ private extension ActionButtonsViewModel {
 // MARK: - Sell
 
 private extension ActionButtonsViewModel {
-    private var sellActionButtonViewModel: BaseActionButtonViewModel? {
-        actionButtonViewModels.first { $0.model == .sell }
-    }
-
     func fetchSellData() async {
         // IOS-8238
     }

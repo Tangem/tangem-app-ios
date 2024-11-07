@@ -525,11 +525,9 @@ private extension MultiWalletMainContentViewModel {
         guard let coordinator else { return nil }
 
         return .init(
-            actionButtonsFactory: CommonActionButtonsFactory(
-                coordinator: coordinator,
-                userWalletModel: userWalletModel
-            ),
-            expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel)
+            coordinator: coordinator,
+            expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel),
+            userWalletModel: userWalletModel
         )
     }
 }

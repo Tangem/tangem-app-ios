@@ -8,7 +8,6 @@
 
 import Combine
 import Foundation
-import TangemFoundation
 
 final class TokenSelectorViewModel<
     TokenModel: Identifiable & Equatable,
@@ -22,7 +21,7 @@ final class TokenSelectorViewModel<
 
     private var availableWalletModels: [WalletModel] = []
     private var unavailableWalletModels: [WalletModel] = []
-    private var cancellables: Set<AnyCancellable> = []
+    private var bag: Set<AnyCancellable> = []
 
     private let tokenSelectorItemBuilder: Builder
     private let expressTokensListAdapter: ExpressTokensListAdapter
@@ -61,7 +60,7 @@ final class TokenSelectorViewModel<
                     unavailableModels: sortedWalletModels.unavailableModels
                 )
             }
-            .store(in: &cancellables)
+            .store(in: &bag)
     }
 
     private func updateView(availableModels: [WalletModel], unavailableModels: [WalletModel]) {
@@ -89,7 +88,7 @@ private extension TokenSelectorViewModel {
             .sink { viewModel, searchText in
                 viewModel.updateView(searchText: searchText.trimmed())
             }
-            .store(in: &cancellables)
+            .store(in: &bag)
     }
 
     func updateView(searchText: String = "") {

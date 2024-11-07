@@ -13,11 +13,11 @@ struct ActionButtonsView: View {
 
     var body: some View {
         HStack(spacing: 8) {
-            ForEach(viewModel.actionButtonViewModels) {
-                ActionButtonView(viewModel: $0)
-                    .disabled(viewModel.isButtonsDisabled)
-            }
+            ActionButtonView(viewModel: viewModel.buyActionButtonViewModel)
+            ActionButtonView(viewModel: viewModel.swapActionButtonViewModel)
+            ActionButtonView(viewModel: viewModel.sellActionButtonViewModel)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .disabled(viewModel.isButtonsDisabled)
     }
 }
