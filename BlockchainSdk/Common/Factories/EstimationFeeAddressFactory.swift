@@ -25,6 +25,9 @@ struct EstimationFeeAddressFactory {
         case .internetComputer:
             // ICP has a fixed 0.0001 ICP fee
             return ""
+        case .casper:
+            // CSPR has a fixed 0.1 ICP fee
+            return ""
         case .kaspa:
             return "kaspa:qyp2f0ust8wyvuvqrzajvehx5jyh43vcjgessjdkw9vyw6rww4fdlsgzysspfuq"
         case .hedera:
@@ -105,9 +108,6 @@ struct EstimationFeeAddressFactory {
             return "sei1lhjvds604fvac32j4eygpr820lyc82dlfv0ea4"
         case .energyWebX:
             return "5CogUCbb5PYYbEHhDVGDN6JRRYBkd4sFRVc4wwP8oy5Su34Z"
-        case .casper:
-            // TODO: - It is necessary to clarify
-            return ""
         }
     }
 }

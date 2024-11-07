@@ -14,12 +14,15 @@ struct CasperTarget: TargetType {
 
     let node: NodeInfo
     let type: TargetType
+    let encoder = JSONEncoder()
 
     // MARK: - Init
 
     init(node: NodeInfo, type: TargetType) {
         self.node = node
         self.type = type
+
+        encoder.keyEncodingStrategy = .convertToSnakeCase
     }
 
     // MARK: - TargetType
@@ -37,16 +40,12 @@ struct CasperTarget: TargetType {
     }
 
     var task: Task {
-        let encoder = JSONEncoder()
-        encoder.keyEncodingStrategy = .convertToSnakeCase
+        CasperTarget.jsonRPCMethodId += 1
 
         switch type {
         case .getBalance(let data):
-            let encoder = JSONEncoder()
-            encoder.keyEncodingStrategy = .convertToSnakeCase
-
             return .requestJSONRPC(
-                id: Constants.jsonRPCMethodId,
+                id: CasperTarget.jsonRPCMethodId,
                 method: Method.queryBalance.rawValue,
                 params: data,
                 encoder: encoder
@@ -57,20 +56,18 @@ struct CasperTarget: TargetType {
     }
 
     var headers: [String: String]? {
-        var headers = [String: String]()
-
         switch type {
         case .putDeploy:
-            headers["Content-Type"] = "application/json"
+            return ["Content-Type": "application/json"]
         default:
-            break
+            return [:]
         }
-
-        return headers
     }
 }
 
 extension CasperTarget {
+    static var jsonRPCMethodId: Int = 0
+
     enum TargetType {
         case getBalance(data: CasperNetworkRequest.QueryBalance)
         case putDeploy(data: Data)
@@ -79,11 +76,5 @@ extension CasperTarget {
     enum Method: String, Encodable {
         case queryBalance = "query_balance"
         case putDeploy = "account_put_deploy"
-    }
-}
-
-private extension CasperTarget {
-    enum Constants {
-        static let jsonRPCMethodId: Int = 1
     }
 }

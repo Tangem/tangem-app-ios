@@ -12,12 +12,14 @@ import TangemSdk
 final class CasperTransactionBuilder {
     // MARK: - Private Properties
 
-    private let blockchain: Blockchain
+    private let curve: EllipticCurve
+    private let blockchainDecimalValue: Decimal
 
     // MARK: - Init
 
-    init(blockchain: Blockchain) {
-        self.blockchain = blockchain
+    init(curve: EllipticCurve, blockchainDecimalValue: Decimal) {
+        self.curve = curve
+        self.blockchainDecimalValue = blockchainDecimalValue
     }
 
     // MARK: - Implementation
@@ -26,7 +28,7 @@ final class CasperTransactionBuilder {
         let deploy = try build(transaction: transaction, with: timestamp)
 
         guard let dataHash = deploy.hash.hexadecimal else {
-            throw WalletError.failedToBuildTx
+            throw CasperTransactionBuilderError.undefinedDeployHash
         }
 
         return dataHash
@@ -37,10 +39,9 @@ final class CasperTransactionBuilder {
 
         let dai1 = CSPRDeployApprovalItem()
         dai1.signer = deploy.header.account
-        dai1.signature = try signatureByCurveWithPrefix(signature: signature, for: blockchain.curve).hexString.lowercased()
+        dai1.signature = try signatureByCurveWithPrefix(signature: signature, for: curve).hexString.lowercased()
 
-        let approvals: [CSPRDeployApprovalItem] = [dai1]
-        deploy.approvals = approvals
+        deploy.approvals = [dai1]
 
         return deploy.toJsonData()
     }
@@ -67,7 +68,7 @@ private extension CasperTransactionBuilder {
     }
 
     func buildDeployTransfer(from transaction: Transaction) throws -> ExecutableDeployItem {
-        let amountStringValue = String((transaction.amount.value * blockchain.decimalValue).uint64Value)
+        let amountStringValue = String((transaction.amount.value * blockchainDecimalValue).uint64Value)
 
         let clValueSessionAmountParsed: CLValueWrapper = .u512(U512Class.fromStringToU512(from: amountStringValue))
         let clValueSessionAmount = CLValue()
@@ -131,7 +132,7 @@ private extension CasperTransactionBuilder {
 
     // Deploy payment initialization
     func buildPayment(with fee: Fee) throws -> ExecutableDeployItem {
-        let feeStringValue = String((fee.amount.value * blockchain.decimalValue).uint64Value)
+        let feeStringValue = String((fee.amount.value * blockchainDecimalValue).uint64Value)
 
         let clValueFeeParsed: CLValueWrapper = .u512(U512Class.fromStringToU512(from: feeStringValue))
 
@@ -156,10 +157,12 @@ private extension CasperTransactionBuilder {
         case .secp256k1:
             Data(hexString: CasperConstants.prefixSECP256K1) + signature
         default:
-            throw WalletError.failedToBuildTx
+            throw CasperTransactionBuilderError.unsupportedCurve
         }
     }
 }
+
+// MARK: - Constants
 
 private extension CasperTransactionBuilder {
     enum Constants {
@@ -167,4 +170,11 @@ private extension CasperTransactionBuilder {
         static let defaultTTL = "1800000ms"
         static let defaultGASPrice: UInt64 = 1
     }
+}
+
+// MARK: - Errors
+
+private enum CasperTransactionBuilderError: Error {
+    case undefinedDeployHash
+    case unsupportedCurve
 }

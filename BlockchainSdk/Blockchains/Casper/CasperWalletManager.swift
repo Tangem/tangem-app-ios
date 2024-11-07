@@ -53,11 +53,7 @@ class CasperWalletManager: BaseManager, WalletManager {
     }
 
     func getFee(amount: Amount, destination: String) -> AnyPublisher<[Fee], any Error> {
-        guard let decimalFeeValue = Constants.constantFeeValue else {
-            return .anyFail(error: WalletError.failedToGetFee)
-        }
-
-        let amountFee = Amount(with: wallet.blockchain, type: .coin, value: decimalFeeValue)
+        let amountFee = Amount(with: wallet.blockchain, type: .coin, value: Constants.constantFeeValue)
         return .justWithError(output: [Fee(amountFee)])
     }
 
@@ -71,22 +67,22 @@ class CasperWalletManager: BaseManager, WalletManager {
                 timestamp: timestamp
             )
         } catch {
-            return .sendTxFail(error: WalletError.failedToBuildTx)
+            return .sendTxFail(error: error)
         }
 
         return signer
             .sign(hash: hashForSign.sha256(), walletPublicKey: wallet.publicKey)
             .withWeakCaptureOf(self)
-            .flatMap { walletManager, signature -> AnyPublisher<String, Error> in
-                guard let rawTransactionData = try? self.transactionBuilder.buildForSend(
+            .tryMap { walletManager, signature in
+                try walletManager.transactionBuilder.buildForSend(
                     transaction: transaction,
                     timestamp: timestamp,
                     signature: signature
-                ) else {
-                    return .anyFail(error: WalletError.failedToSendTx)
-                }
-
-                return walletManager.networkService.putDeploy(rawData: rawTransactionData)
+                )
+            }
+            .withWeakCaptureOf(self)
+            .flatMap { walletManager, rawTransactionData -> AnyPublisher<String, Error> in
+                walletManager.networkService.putDeploy(rawData: rawTransactionData)
             }
             .withWeakCaptureOf(self)
             .map { walletManager, transactionHash in
@@ -106,7 +102,7 @@ class CasperWalletManager: BaseManager, WalletManager {
             wallet.clearPendingTransaction()
         }
 
-        wallet.add(amount: Amount(with: wallet.blockchain, type: .coin, value: balanceInfo.value))
+        wallet.add(coinValue: balanceInfo.value)
     }
 
     private func getCurrentTimestamp() -> String {
@@ -126,6 +122,6 @@ class CasperWalletManager: BaseManager, WalletManager {
 
 private extension CasperWalletManager {
     enum Constants {
-        static let constantFeeValue = Decimal(stringValue: "0.1")
+        static let constantFeeValue = Decimal(stringValue: "0.1")!
     }
 }
