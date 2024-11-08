@@ -189,29 +189,12 @@ private extension CommonStakingManager {
         var balances = realBalances
 
         processingActions.forEach { action in
-            let balanceTypesToMatch: [StakingBalanceType]? = switch action.type {
-            case .stake, .vote, .voteLocked: [.active, .warmup]
-            case .withdraw, .claimUnstaked: [.unstaked]
-            case .unlockLocked: [.locked]
-            case .unstake: [.active]
-            default: nil
-            }
-
-            guard let balanceTypesToMatch else { return }
-
-            if let balanceIndex = balanceIndexForAction(balanceTypes: balanceTypesToMatch, action: action, balances: balances) {
+            if let balanceIndex = balanceIndexForAction(action: action, balances: balances) {
+                // update existing balance
                 makeBalanceAtIndexInProgress(index: balanceIndex, balances: &balances)
             } else {
-                let balanceTypeToAdd: StakingBalanceType? = switch action.type {
-                case .stake, .vote, .voteLocked: .active
-                case .withdraw, .claimUnstaked: .unstaked
-                case .unlockLocked: .locked
-                case .unstake: .active
-                default: nil
-                }
-
-                guard let balanceTypeToAdd else { return }
-
+                // add new dummy in progress balance
+                guard let balanceTypeToAdd = balanceTypeToAdd(for: action.type) else { return }
                 balances.append(mapToStakingBalance(action: action, yield: yield, balanceType: balanceTypeToAdd))
             }
         }
@@ -220,13 +203,36 @@ private extension CommonStakingManager {
     }
 
     private func balanceIndexForAction(
-        balanceTypes: [StakingBalanceType],
         action: PendingAction,
         balances: [StakingBalance]
     ) -> Int? {
         balances.firstIndex(
-            where: { !$0.inProgress && $0.amount == action.amount && balanceTypes.contains($0.balanceType) }
+            where: {
+                !$0.inProgress &&
+                    $0.amount == action.amount &&
+                    actionTypesToMatch(for: $0.balanceType).contains(action.type)
+            }
         )
+    }
+
+    private func balanceTypeToAdd(for actionType: StakingPendingActionInfo.ActionType) -> StakingBalanceType? {
+        switch actionType {
+        case .stake, .vote, .voteLocked: .active
+        case .withdraw, .claimUnstaked: .unstaked
+        case .unlockLocked: .locked
+        case .unstake: .active
+        default: nil
+        }
+    }
+
+    private func actionTypesToMatch(for balanceType: StakingBalanceType) -> [StakingPendingActionInfo.ActionType] {
+        switch balanceType {
+        case .active, .warmup: [.stake, .vote, .voteLocked, .unstake, .unlockLocked]
+        case .unstaked: [.withdraw, .claimUnstaked]
+        case .locked: [.unlockLocked]
+        case .unbonding: [.unstake]
+        default: []
+        }
     }
 
     private func makeBalanceAtIndexInProgress(
