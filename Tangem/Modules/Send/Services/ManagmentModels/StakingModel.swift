@@ -41,7 +41,6 @@ class StakingModel {
     private let allowanceProvider: AllowanceProvider
     private let tokenItem: TokenItem
     private let feeTokenItem: TokenItem
-    private let balance: Decimal?
 
     private var timerTask: Task<Void, Error>?
     private var estimatedFeeTask: Task<Void, Never>?
@@ -57,8 +56,7 @@ class StakingModel {
         transactionDispatcher: TransactionDispatcher,
         allowanceProvider: AllowanceProvider,
         tokenItem: TokenItem,
-        feeTokenItem: TokenItem,
-        balance: Decimal?
+        feeTokenItem: TokenItem
     ) {
         self.stakingManager = stakingManager
         self.transactionCreator = transactionCreator
@@ -69,7 +67,6 @@ class StakingModel {
         self.allowanceProvider = allowanceProvider
         self.tokenItem = tokenItem
         self.feeTokenItem = feeTokenItem
-        self.balance = balance
     }
 }
 
@@ -146,8 +143,7 @@ private extension StakingModel {
                 amount: newAmount,
                 fee: fee,
                 isFeeIncluded: includeFee,
-                stakeOnDifferentValidator: hasPreviousStakeOnDifferentValidator,
-                maxAmountStaking: amount == balance
+                stakeOnDifferentValidator: hasPreviousStakeOnDifferentValidator
             )
         )
     }
@@ -263,8 +259,8 @@ private extension StakingModel {
                 type: .stake
             )
             let transactionInfo = try await stakingManager.transaction(action: action)
-            if readyToStake.maxAmountStaking,
-               transactionInfo.transactions.reduce(Decimal.zero, { $0 + $1.fee }) == readyToStake.fee {
+            if readyToStake.isFeeIncluded,
+               transactionInfo.transactions.reduce(Decimal.zero, { $0 + $1.fee }) > readyToStake.fee {
                 updateFees()
                 throw TransactionDispatcherResult.Error.informationRelevanceServiceFeeWasIncreased
             }
@@ -542,7 +538,6 @@ extension StakingModel {
             let fee: Decimal
             let isFeeIncluded: Bool
             let stakeOnDifferentValidator: Bool
-            let maxAmountStaking: Bool
         }
     }
 }

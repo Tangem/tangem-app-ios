@@ -75,9 +75,7 @@ private extension CommonStakingNotificationManager {
                     )
                 )
 
-                if readyToStake.maxAmountStaking {
-                    events.append(.maxAmountStaking)
-                }
+                events.append(.maxAmountStaking)
             }
 
             if !tokenItem.supportsStakingOnDifferentValidators, readyToStake.stakeOnDifferentValidator {
