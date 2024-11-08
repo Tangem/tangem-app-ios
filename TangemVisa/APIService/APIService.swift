@@ -72,10 +72,10 @@ struct APIService<Target: TargetType, ErrorType: Error & Decodable> {
         logger.debug(
             subsystem: .apiService,
             """
-            [Visa] [API Service] Request target: \(target.path)
-            [Visa] [API Service] Task: \(target.task)
-            [Visa] [API Service] Response: \(info)
-            [Visa] [API Service] Error: \(String(describing: error))
+            Request target: \(target.path)
+            Task: \(target.task)
+            Response: \(info)
+            Error: \(String(describing: error))
             """
         )
     }
