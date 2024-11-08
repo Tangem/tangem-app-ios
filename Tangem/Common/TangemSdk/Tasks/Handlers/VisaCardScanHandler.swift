@@ -47,9 +47,10 @@ class VisaCardScanHandler {
             log("Received challenge to sign: \(challengeResponse)")
 
             let signedChallenge = try await signChallenge(session: session, challenge: challengeResponse.nonce)
-            log("Challenged signed. Result: \(signedChallenge.hexString)")
+            log("Challenged signed. Result: \(signedChallenge.signature.hexString)")
             let accessTokenResponse = try await authorizationService.getAccessTokens(
-                signedChallenge: signedChallenge.hexString,
+                signedChallenge: signedChallenge.signature.hexString,
+                salt: signedChallenge.salt.hexString,
                 sessionId: challengeResponse.sessionId
             )
             log("Access token response: \(accessTokenResponse)")
@@ -68,14 +69,14 @@ class VisaCardScanHandler {
         }
     }
 
-    private func signChallenge(session: CardSession, challenge: String) async throws -> Data {
+    private func signChallenge(session: CardSession, challenge: String) async throws -> (signature: Data, salt: Data) {
         try await withCheckedThrowingContinuation { [session] continuation in
             let data = Data(hexString: challenge)
             let signTask = AttestCardKeyCommand(challenge: data)
             signTask.run(in: session) { result in
                 switch result {
                 case .success(let response):
-                    continuation.resume(returning: response.cardSignature)
+                    continuation.resume(returning: (response.cardSignature, response.salt))
                 case .failure(let error):
                     continuation.resume(throwing: error)
                 }

@@ -41,10 +41,11 @@ struct AuthorizationAPITarget: TargetType {
         case .generateNonceByCID(let cid, let cardPublicKey):
             params[.cardId] = cid
             params[.cardPublicKey] = cardPublicKey
-        case .getAccessToken(let signature, let sessionId):
+        case .getAccessToken(let signature, let salt, let sessionId):
             params[.clientId] = clientId
             params[.sessionId] = sessionId
             params[.signature] = signature
+            params[.salt] = salt
             params[.grantType] = GrantType.password
         case .refreshAccessToken(let refreshToken):
             params[.clientId] = clientId
@@ -65,7 +66,7 @@ struct AuthorizationAPITarget: TargetType {
 extension AuthorizationAPITarget {
     enum Target {
         case generateNonceByCID(cid: String, cardPublicKey: String)
-        case getAccessToken(signature: String, sessionId: String)
+        case getAccessToken(signature: String, salt: String, sessionId: String)
         case refreshAccessToken(refreshToken: String)
     }
 }
@@ -81,6 +82,7 @@ private extension AuthorizationAPITarget {
         case grantType = "grant_type"
 
         case signature
+        case salt
     }
 
     enum GrantType: String {

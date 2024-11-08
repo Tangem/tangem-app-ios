@@ -11,7 +11,7 @@ import Moya
 
 public protocol VisaAuthorizationService {
     func getAuthorizationChallenge(cardId: String, cardPublicKey: String) async throws -> VisaAuthChallengeResponse
-    func getAccessTokens(signedChallenge: String, sessionId: String) async throws -> VisaAccessToken
+    func getAccessTokens(signedChallenge: String, salt: String, sessionId: String) async throws -> VisaAccessToken
 }
 
 class CommonVisaAuthorizationService {
@@ -36,9 +36,9 @@ extension CommonVisaAuthorizationService: VisaAuthorizationService {
         ))
     }
 
-    func getAccessTokens(signedChallenge: String, sessionId: String) async throws -> VisaAccessToken {
+    func getAccessTokens(signedChallenge: String, salt: String, sessionId: String) async throws -> VisaAccessToken {
         try await apiService.request(.init(
-            target: .getAccessToken(signature: signedChallenge, sessionId: sessionId)
+            target: .getAccessToken(signature: signedChallenge, salt: salt, sessionId: sessionId)
         ))
     }
 }
