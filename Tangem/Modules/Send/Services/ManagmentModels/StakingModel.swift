@@ -263,6 +263,11 @@ private extension StakingModel {
                 type: .stake
             )
             let transactionInfo = try await stakingManager.transaction(action: action)
+            if readyToStake.maxAmountStaking,
+               transactionInfo.transactions.reduce(Decimal.zero, { $0 + $1.fee }) == readyToStake.fee {
+                updateFees()
+                throw TransactionDispatcherResult.Error.informationRelevanceServiceFeeWasIncreased
+            }
             let result = try await stakingTransactionDispatcher.send(transaction: .staking(transactionInfo))
             stakingManager.transactionDidSent(action: action)
 
