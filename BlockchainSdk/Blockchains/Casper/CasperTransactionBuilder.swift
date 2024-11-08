@@ -68,7 +68,7 @@ private extension CasperTransactionBuilder {
     }
 
     func buildDeployTransfer(from transaction: Transaction) throws -> ExecutableDeployItem {
-        let amountStringValue = (transaction.amount.value * blockchainDecimalValue).roundedDecimalNumber.stringValue
+        let amountStringValue = (transaction.amount.value * blockchainDecimalValue).roundedDownDecimalNumber.stringValue
 
         let clValueSessionAmountParsed: CLValueWrapper = .u512(U512Class.fromStringToU512(from: amountStringValue))
         let clValueSessionAmount = CLValue()
@@ -132,7 +132,7 @@ private extension CasperTransactionBuilder {
 
     // Deploy payment initialization
     func buildPayment(with fee: Fee) throws -> ExecutableDeployItem {
-        let feeStringValue = (fee.amount.value * blockchainDecimalValue).roundedDecimalNumber.stringValue
+        let feeStringValue = (fee.amount.value * blockchainDecimalValue).roundedDownDecimalNumber.stringValue
 
         let clValueFeeParsed: CLValueWrapper = .u512(U512Class.fromStringToU512(from: feeStringValue))
 
