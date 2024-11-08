@@ -27,14 +27,7 @@ struct OnrampCountrySelectorView: View {
             )
             .padding(.horizontal, 16)
 
-            switch viewModel.countries {
-            case .loading:
-                skeletonsView
-            case .loaded(let data):
-                countriesView(data: data)
-            case .failedToLoad:
-                failedToLoadView
-            }
+            contentView
         }
         .background(
             Colors.Background.primary
@@ -44,6 +37,21 @@ struct OnrampCountrySelectorView: View {
 }
 
 private extension OnrampCountrySelectorView {
+    @ViewBuilder
+    var contentView: some View {
+        switch viewModel.countries {
+        case .loading:
+            skeletonsView
+                .transition(.opacityLinear())
+        case .loaded(let data):
+            countriesView(data: data)
+                .transition(.opacityLinear())
+        case .failedToLoad:
+            failedToLoadView
+                .transition(.opacityLinear())
+        }
+    }
+
     @ViewBuilder
     var failedToLoadView: some View {
         Spacer()

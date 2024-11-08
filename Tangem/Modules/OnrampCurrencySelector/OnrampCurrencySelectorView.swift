@@ -27,14 +27,7 @@ struct OnrampCurrencySelectorView: View {
             )
             .padding(.horizontal, 16)
 
-            switch viewModel.currencies {
-            case .loading:
-                skeletonsView
-            case .loaded(let currencies):
-                sectionsView(for: currencies)
-            case .failedToLoad:
-                failedToLoadView
-            }
+            contentView
         }
         .background(
             Colors.Background.primary
@@ -44,6 +37,21 @@ struct OnrampCurrencySelectorView: View {
 }
 
 private extension OnrampCurrencySelectorView {
+    @ViewBuilder
+    var contentView: some View {
+        switch viewModel.currencies {
+        case .loading:
+            skeletonsView
+                .transition(.opacityLinear())
+        case .loaded(let currencies):
+            sectionsView(for: currencies)
+                .transition(.opacityLinear())
+        case .failedToLoad:
+            failedToLoadView
+                .transition(.opacityLinear())
+        }
+    }
+
     @ViewBuilder
     var failedToLoadView: some View {
         Spacer()

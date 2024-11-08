@@ -33,6 +33,27 @@ final class OnrampCurrencySelectorViewModel: Identifiable, ObservableObject {
         self.dataRepository = dataRepository
         self.coordinator = coordinator
 
+        bind()
+        loadCurrencies()
+    }
+
+    func loadCurrencies() {
+        currencies = .loading
+        Task {
+            do {
+                let currencies = try await dataRepository.currencies()
+                currenciesSubject.send(currencies)
+            } catch {
+                await runOnMain {
+                    currencies = .failedToLoad(error: error)
+                }
+            }
+        }
+    }
+}
+
+private extension OnrampCurrencySelectorViewModel {
+    func bind() {
         Publishers.CombineLatest(
             currenciesSubject,
             $searchText
@@ -49,24 +70,8 @@ final class OnrampCurrencySelectorViewModel: Identifiable, ObservableObject {
         }
         .receive(on: DispatchQueue.main)
         .assign(to: &$currencies)
-
-        loadCurrencies()
     }
 
-    func loadCurrencies() {
-        currencies = .loading
-        Task {
-            do {
-                let currencies = try await dataRepository.currencies()
-                currenciesSubject.send(currencies)
-            } catch {
-                currencies = .failedToLoad(error: error)
-            }
-        }
-    }
-}
-
-private extension OnrampCurrencySelectorViewModel {
     func mapToState(
         currencies: [OnrampFiatCurrency],
         searchText: String

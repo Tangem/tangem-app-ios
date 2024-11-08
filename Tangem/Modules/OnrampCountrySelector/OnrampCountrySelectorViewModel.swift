@@ -28,6 +28,27 @@ final class OnrampCountrySelectorViewModel: Identifiable, ObservableObject {
         self.dataRepository = dataRepository
         self.coordinator = coordinator
 
+        bind()
+        loadCountries()
+    }
+
+    func loadCountries() {
+        countries = .loading
+        Task {
+            do {
+                let countries = try await dataRepository.countries()
+                countriesSubject.send(countries)
+            } catch {
+                await runOnMain {
+                    countries = .failedToLoad(error: error)
+                }
+            }
+        }
+    }
+}
+
+private extension OnrampCountrySelectorViewModel {
+    func bind() {
         Publishers.CombineLatest(
             countriesSubject,
             $searchText
@@ -44,24 +65,8 @@ final class OnrampCountrySelectorViewModel: Identifiable, ObservableObject {
         }
         .receive(on: DispatchQueue.main)
         .assign(to: &$countries)
-
-        loadCountries()
     }
 
-    func loadCountries() {
-        countries = .loading
-        Task {
-            do {
-                let countries = try await dataRepository.countries()
-                countriesSubject.send(countries)
-            } catch {
-                countries = .failedToLoad(error: error)
-            }
-        }
-    }
-}
-
-private extension OnrampCountrySelectorViewModel {
     func mapToCountriesViewData(countries: [OnrampCountry], searchText: String) -> [OnrampCountryViewData] {
         SearchUtil.search(
             countries,
