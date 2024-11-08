@@ -405,6 +405,7 @@ struct SendDependenciesBuilder {
         paymentMethodsBuilder: OnrampPaymentMethodsBuilder
     ) -> OnrampBaseDataBuilder {
         CommonOnrampBaseDataBuilder(
+            tokenItem: walletModel.tokenItem,
             onrampRepository: onrampRepository,
             onrampDataRepository: onrampDataRepository,
             onrampManager: onrampManager,

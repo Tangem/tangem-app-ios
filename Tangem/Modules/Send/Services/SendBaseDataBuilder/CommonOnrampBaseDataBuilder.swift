@@ -11,6 +11,7 @@ import TangemExpress
 protocol OnrampBaseDataBuilderInput {}
 
 struct CommonOnrampBaseDataBuilder {
+    private let tokenItem: TokenItem
     private let onrampRepository: OnrampRepository
     private let onrampDataRepository: OnrampDataRepository
     private let onrampManager: OnrampManager
@@ -18,12 +19,14 @@ struct CommonOnrampBaseDataBuilder {
     private let paymentMethodsBuilder: OnrampPaymentMethodsBuilder
 
     init(
+        tokenItem: TokenItem,
         onrampRepository: OnrampRepository,
         onrampDataRepository: OnrampDataRepository,
         onrampManager: OnrampManager,
         providersBuilder: OnrampProvidersBuilder,
         paymentMethodsBuilder: OnrampPaymentMethodsBuilder
     ) {
+        self.tokenItem = tokenItem
         self.onrampRepository = onrampRepository
         self.onrampDataRepository = onrampDataRepository
         self.onrampManager = onrampManager
@@ -47,7 +50,7 @@ extension CommonOnrampBaseDataBuilder: OnrampBaseDataBuilder {
         return (providersBuilder: providersBuilder, paymentMethodsBuilder: paymentMethodsBuilder)
     }
 
-    func makeDataForOnrampWebView() -> OnrampManager {
-        return onrampManager
+    func makeDataForOnrampRedirecting() -> (tokenItem: TokenItem, onrampManager: OnrampManager) {
+        return (tokenItem: tokenItem, onrampManager: onrampManager)
     }
 }

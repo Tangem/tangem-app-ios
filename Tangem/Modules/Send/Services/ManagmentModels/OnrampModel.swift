@@ -15,6 +15,7 @@ protocol OnrampModelRoutable: AnyObject {
     func openOnrampCountryBottomSheet(country: OnrampCountry)
     func openOnrampCountrySelectorView()
     func openOnrampSettingsView()
+    func openOnrampRedirecting(provider: OnrampProvider)
     func openOnrampWebView(provider: OnrampProvider)
 }
 
@@ -197,7 +198,7 @@ private extension OnrampModel {
             }
 
             await runOnMain {
-                router?.openOnrampWebView(provider: provider)
+                router?.openOnrampRedirecting(provider: provider)
             }
 
             try await Task.sleep(seconds: .hour)

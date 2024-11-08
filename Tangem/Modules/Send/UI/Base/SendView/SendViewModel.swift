@@ -336,11 +336,11 @@ extension SendViewModel: OnrampModelRoutable {
         }
     }
 
-    func openOnrampWebView(provider: OnrampProvider) {
+    func openOnrampRedirecting(provider: OnrampProvider) {
         do {
             let builder = try dataBuilder.onrampBuilder()
-            let onrampManager = builder.makeDataForOnrampWebView()
-            coordinator?.openOnrampWebView(provider: provider, onrampManager: onrampManager)
+            let (tokenItem, onrampManager) = builder.makeDataForOnrampRedirecting()
+            coordinator?.openOnrampRedirecting(tokenItem: tokenItem, provider: provider, onrampManager: onrampManager)
         } catch {
             alert = error.alertBinder
         }
