@@ -235,6 +235,10 @@ struct MarketsTokenDetailsView: View {
                 MarketsTokenDetailsInsightsView(viewModel: insightsViewModel, viewWidth: blocksWidth)
             }
 
+            if let securityScoreViewModel = viewModel.securityScoreViewModel {
+                MarketsTokenDetailsSecurityScoreView(viewModel: securityScoreViewModel)
+            }
+
             if let metricsViewModel = viewModel.metricsViewModel {
                 MarketsTokenDetailsMetricsView(viewModel: metricsViewModel, viewWidth: blocksWidth)
             }

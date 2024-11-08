@@ -44,6 +44,7 @@ struct MarketsTokenDetailsMapper {
             priceChangePercentage: try mapPriceChangePercentage(response: response),
             insights: .init(dto: response.insights),
             metrics: response.metrics,
+            securityData: response.securityData,
             pricePerformance: mapPricePerformance(response: response),
             links: response.links,
             availableNetworks: networks

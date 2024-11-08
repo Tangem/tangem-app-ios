@@ -35,6 +35,7 @@ class MarketsTokenDetailsViewModel: MarketsBaseViewModel {
     @Published private(set) var linksSections: [MarketsTokenDetailsLinkSection] = []
     @Published private(set) var portfolioViewModel: MarketsPortfolioContainerViewModel?
     @Published private(set) var historyChartViewModel: MarketsHistoryChartViewModel?
+    @Published private(set) var securityScoreViewModel: MarketsTokenDetailsSecurityScoreViewModel?
     @Published private(set) var numberOfExchangesListedOn: Int?
 
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
@@ -427,6 +428,14 @@ private extension MarketsTokenDetailsViewModel {
             )
         }
 
+        if let securityData = model.securityData {
+            securityScoreViewModel = .init(
+                providerData: securityData.providerData,
+                securityScoreValue: securityData.totalSecurityScore,
+                routable: self
+            )
+        }
+
         linksSections = MarketsTokenDetailsLinksMapper(
             openLinkAction: weakify(self, forFunction: MarketsTokenDetailsViewModel.openLinkAction(_:))
         ).mapToSections(model.links)
@@ -500,6 +509,8 @@ extension MarketsTokenDetailsViewModel: MarketsTokenDetailsBottomSheetRouter {
         )
     }
 }
+
+extension MarketsTokenDetailsViewModel: MarketsTokenDetailsSecurityScoreRoutable {}
 
 // MARK: - Constants
 
