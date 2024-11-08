@@ -15,6 +15,7 @@ protocol OnrampModelRoutable: AnyObject {
     func openOnrampCountryBottomSheet(country: OnrampCountry)
     func openOnrampCountrySelectorView()
     func openOnrampSettingsView()
+    func openOnrampWebView(provider: OnrampProvider)
 }
 
 class OnrampModel {
@@ -191,6 +192,15 @@ private extension OnrampModel {
 private extension OnrampModel {
     func send() async throws -> TransactionDispatcherResult {
         do {
+            guard let provider = _selectedOnrampProvider.value?.value else {
+                throw OnrampModelError.notFound("Onramp provider")
+            }
+
+            await runOnMain {
+                router?.openOnrampWebView(provider: provider)
+            }
+
+            try await Task.sleep(seconds: .hour)
             let result = TransactionDispatcherResult(hash: "", url: nil, signerType: "")
             proceed(result: result)
             return result

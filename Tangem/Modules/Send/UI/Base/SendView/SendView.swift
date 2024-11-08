@@ -44,6 +44,7 @@ struct SendView: View {
         .onReceive(viewModel.$isKeyboardActive, perform: { isKeyboardActive in
             focused = isKeyboardActive
         })
+        .navigationBarHidden(true)
     }
 
     @ViewBuilder

@@ -13,17 +13,20 @@ protocol OnrampBaseDataBuilderInput {}
 struct CommonOnrampBaseDataBuilder {
     private let onrampRepository: OnrampRepository
     private let onrampDataRepository: OnrampDataRepository
+    private let onrampManager: OnrampManager
     private let providersBuilder: OnrampProvidersBuilder
     private let paymentMethodsBuilder: OnrampPaymentMethodsBuilder
 
     init(
         onrampRepository: OnrampRepository,
         onrampDataRepository: OnrampDataRepository,
+        onrampManager: OnrampManager,
         providersBuilder: OnrampProvidersBuilder,
         paymentMethodsBuilder: OnrampPaymentMethodsBuilder
     ) {
         self.onrampRepository = onrampRepository
         self.onrampDataRepository = onrampDataRepository
+        self.onrampManager = onrampManager
         self.providersBuilder = providersBuilder
         self.paymentMethodsBuilder = paymentMethodsBuilder
     }
@@ -42,5 +45,9 @@ extension CommonOnrampBaseDataBuilder: OnrampBaseDataBuilder {
 
     func makeDataForOnrampProvidersPaymentMethodsView() -> (providersBuilder: OnrampProvidersBuilder, paymentMethodsBuilder: OnrampPaymentMethodsBuilder) {
         return (providersBuilder: providersBuilder, paymentMethodsBuilder: paymentMethodsBuilder)
+    }
+
+    func makeDataForOnrampWebView() -> OnrampManager {
+        return onrampManager
     }
 }

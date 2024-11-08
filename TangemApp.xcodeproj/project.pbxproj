@@ -2433,6 +2433,11 @@
 		EF22B9912C66235900839110 /* StakingTransactionSummaryDescriptionBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF22B9902C66235900839110 /* StakingTransactionSummaryDescriptionBuilder.swift */; };
 		EF25610E2CC69ECF00D3C16A /* OnrampStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF25610D2CC69EC500D3C16A /* OnrampStorage.swift */; };
 		EF2561122CC6A91900D3C16A /* CommonOnrampStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2561112CC6A91200D3C16A /* CommonOnrampStorage.swift */; };
+		EF2800F22CDD0C08002AEB9A /* OnrampWebViewCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2800EE2CDD0C08002AEB9A /* OnrampWebViewCoordinatorView.swift */; };
+		EF2800F32CDD0C08002AEB9A /* OnrampWebViewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2800F02CDD0C08002AEB9A /* OnrampWebViewView.swift */; };
+		EF2800F42CDD0C08002AEB9A /* OnrampWebViewRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2800EF2CDD0C08002AEB9A /* OnrampWebViewRoutable.swift */; };
+		EF2800F52CDD0C08002AEB9A /* OnrampWebViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2800F12CDD0C08002AEB9A /* OnrampWebViewViewModel.swift */; };
+		EF2800F62CDD0C08002AEB9A /* OnrampWebViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2800ED2CDD0C08002AEB9A /* OnrampWebViewCoordinator.swift */; };
 		EF2A54192C452B8500341060 /* ValidatorInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2A54182C452B8500341060 /* ValidatorInfo.swift */; };
 		EF2FE4652C6671190015940A /* StakeKitDTO+EstimateGas.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2FE4642C6671190015940A /* StakeKitDTO+EstimateGas.swift */; };
 		EF2FE4992C6B80560015940A /* AllowanceChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2FE4982C6B80560015940A /* AllowanceChecker.swift */; };
@@ -5521,6 +5526,11 @@
 		EF22B9902C66235900839110 /* StakingTransactionSummaryDescriptionBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingTransactionSummaryDescriptionBuilder.swift; sourceTree = "<group>"; };
 		EF25610D2CC69EC500D3C16A /* OnrampStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampStorage.swift; sourceTree = "<group>"; };
 		EF2561112CC6A91200D3C16A /* CommonOnrampStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonOnrampStorage.swift; sourceTree = "<group>"; };
+		EF2800ED2CDD0C08002AEB9A /* OnrampWebViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampWebViewCoordinator.swift; sourceTree = "<group>"; };
+		EF2800EE2CDD0C08002AEB9A /* OnrampWebViewCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampWebViewCoordinatorView.swift; sourceTree = "<group>"; };
+		EF2800EF2CDD0C08002AEB9A /* OnrampWebViewRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampWebViewRoutable.swift; sourceTree = "<group>"; };
+		EF2800F02CDD0C08002AEB9A /* OnrampWebViewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampWebViewView.swift; sourceTree = "<group>"; };
+		EF2800F12CDD0C08002AEB9A /* OnrampWebViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampWebViewViewModel.swift; sourceTree = "<group>"; };
 		EF2A54182C452B8500341060 /* ValidatorInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidatorInfo.swift; sourceTree = "<group>"; };
 		EF2EFDE12865C05D00798051 /* Production.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Production.xcconfig; sourceTree = "<group>"; };
 		EF2EFDE22865C07100798051 /* Beta.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Beta.xcconfig; sourceTree = "<group>"; };
@@ -13495,6 +13505,18 @@
 			path = Onramp;
 			sourceTree = "<group>";
 		};
+		EF2800EA2CDD0B9A002AEB9A /* OnrampWebView */ = {
+			isa = PBXGroup;
+			children = (
+				EF2800ED2CDD0C08002AEB9A /* OnrampWebViewCoordinator.swift */,
+				EF2800EE2CDD0C08002AEB9A /* OnrampWebViewCoordinatorView.swift */,
+				EF2800EF2CDD0C08002AEB9A /* OnrampWebViewRoutable.swift */,
+				EF2800F02CDD0C08002AEB9A /* OnrampWebViewView.swift */,
+				EF2800F12CDD0C08002AEB9A /* OnrampWebViewViewModel.swift */,
+			);
+			path = OnrampWebView;
+			sourceTree = "<group>";
+		};
 		EF2EFDE02865BFE800798051 /* Configurations */ = {
 			isa = PBXGroup;
 			children = (
@@ -13977,6 +13999,8 @@
 		EF665E3D2CBD238600F79B87 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				DA47C9C02CE2508E00F15D5E /* OnrampProviders */,
+				EF2800EA2CDD0B9A002AEB9A /* OnrampWebView */,
 				EF031A632C0A32AB001535C9 /* Namespace */,
 				DA1D3B6F2B56C7DC00247393 /* QRScanView */,
 				EFC84AEC2C37F91400546882 /* Base */,
@@ -17074,6 +17098,11 @@
 				B6AA13742A2A378A00B53937 /* CardInfoPageWarningIconAndTitleCellPreviewViewModel.swift in Sources */,
 				0A2A04DB2C91B167007EAE64 /* TronSendTransactionSummaryDescriptionBuilder.swift in Sources */,
 				EF6CCBED2C91D7DF0002D2B4 /* StakingSendAlertBuilder.swift in Sources */,
+				EF2800F22CDD0C08002AEB9A /* OnrampWebViewCoordinatorView.swift in Sources */,
+				EF2800F32CDD0C08002AEB9A /* OnrampWebViewView.swift in Sources */,
+				EF2800F42CDD0C08002AEB9A /* OnrampWebViewRoutable.swift in Sources */,
+				EF2800F52CDD0C08002AEB9A /* OnrampWebViewViewModel.swift in Sources */,
+				EF2800F62CDD0C08002AEB9A /* OnrampWebViewCoordinator.swift in Sources */,
 				B018FE612B0CD33400D8D31E /* ExpressNotificationManager.swift in Sources */,
 				EF5D83E42B0CADEE00516B5F /* ExpressTransactionBuilder.swift in Sources */,
 				DC0A57E82822AC410031BECC /* PersistentStorageProtocol.swift in Sources */,

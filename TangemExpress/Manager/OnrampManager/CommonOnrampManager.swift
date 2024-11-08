@@ -64,13 +64,7 @@ extension CommonOnrampManager: OnrampManager {
     }
 
     public func setupQuotes(amount: Decimal?) async throws {
-        await withTaskGroup(of: Void.self) { [weak self] group in
-            await self?._providers.forEach { provider in
-                _ = group.addTaskUnlessCancelled {
-                    await provider.manager.update(amount: amount)
-                }
-            }
-        }
+        await updateQuotesInEachManager(amount: amount)
 
         updateSelectedProvider()
     }
@@ -84,6 +78,16 @@ extension CommonOnrampManager: OnrampManager {
 // MARK: - Private
 
 private extension CommonOnrampManager {
+    func updateQuotesInEachManager(amount: Decimal?) async throws {
+        await withTaskGroup(of: Void.self) { [weak self] group in
+            await self?._providers.forEach { provider in
+                _ = group.addTaskUnlessCancelled {
+                    await provider.manager.update(amount: amount)
+                }
+            }
+        }
+    }
+
     func updateSelectedProvider() {
         // Logic will be updated. Make a some sort by priority
         // TODO: https://tangem.atlassian.net/browse/IOS-8487

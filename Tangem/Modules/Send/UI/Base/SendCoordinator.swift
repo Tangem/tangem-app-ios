@@ -28,6 +28,7 @@ class SendCoordinator: CoordinatorObject {
 
     @Published var qrScanViewCoordinator: QRScanViewCoordinator?
     @Published var onrampProvidersCoordinator: OnrampProvidersCoordinator?
+    @Published var onrampWebViewCoordinator: OnrampWebViewCoordinator?
 
     // MARK: - Child view models
 
@@ -182,6 +183,16 @@ extension SendCoordinator: OnrampRoutable {
 
         coordinator.start(with: .default)
         onrampProvidersCoordinator = coordinator
+    }
+
+    func openOnrampWebView(provider: OnrampProvider, onrampManager: OnrampManager) {
+        let coordinator = OnrampWebViewCoordinator(dismissAction: { [weak self] in
+            self?.onrampWebViewCoordinator = nil
+        }, popToRootAction: popToRootAction)
+
+        coordinator.start(with: .init(provider: provider, onrampManager: onrampManager))
+
+        onrampWebViewCoordinator = coordinator
     }
 }
 

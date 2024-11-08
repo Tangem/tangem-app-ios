@@ -50,7 +50,6 @@ struct OnrampFlowBaseBuilder {
 
         let onramp = onrampStepBuilder.makeOnrampStep(
             io: (input: onrampModel, output: onrampModel),
-            onrampManager: onrampManager,
             onrampAmountViewModel: onrampAmountViewModel,
             onrampProvidersCompactViewModel: onrampProvidersCompactViewModel
         )
@@ -76,6 +75,7 @@ struct OnrampFlowBaseBuilder {
         let dataBuilder = builder.makeOnrampBaseDataBuilder(
             onrampRepository: onrampRepository,
             onrampDataRepository: onrampDataRepository,
+            onrampManager: onrampManager,
             providersBuilder: providersBuilder,
             paymentMethodsBuilder: paymentMethodsBuilder
         )

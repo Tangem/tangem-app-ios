@@ -20,7 +20,6 @@ struct SendCoordinatorView: CoordinatorView {
             ZStack {
                 if let rootViewModel = coordinator.rootViewModel {
                     SendView(viewModel: rootViewModel, transitionService: .init())
-                        .navigationBarHidden(true)
                         .navigationLinks(links)
                 }
 
@@ -35,6 +34,9 @@ struct SendCoordinatorView: CoordinatorView {
         NavHolder()
             .navigation(item: $coordinator.onrampSettingsViewModel) {
                 OnrampSettingsView(viewModel: $0)
+            }
+            .navigation(item: $coordinator.onrampWebViewCoordinator) {
+                OnrampWebViewCoordinatorView(coordinator: $0)
             }
             .emptyNavigationLink()
     }
