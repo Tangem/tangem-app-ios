@@ -6,6 +6,6 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-protocol ActionButtonsSellRootRoutable {
+protocol ActionButtonsSellFlowRoutable {
     func openSell()
 }

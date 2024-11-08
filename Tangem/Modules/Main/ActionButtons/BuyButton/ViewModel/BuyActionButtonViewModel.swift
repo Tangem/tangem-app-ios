@@ -9,7 +9,7 @@
 final class BuyActionButtonViewModel: ActionButtonViewModel {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
 
-    private(set) var presentationState: ActionButtonPresentationState = .unexplicitLoading
+    private(set) var presentationState: ActionButtonPresentationState = .initial
 
     let model: ActionButtonModel
 
@@ -17,12 +17,12 @@ final class BuyActionButtonViewModel: ActionButtonViewModel {
         tangemApiService.geoIpRegionCode != LanguageCode.ru
     }
 
-    private let coordinator: ActionButtonsBuyRootRoutable
+    private let coordinator: ActionButtonsBuyFlowRoutable
     private let userWalletModel: UserWalletModel
 
     init(
         model: ActionButtonModel,
-        coordinator: some ActionButtonsBuyRootRoutable,
+        coordinator: some ActionButtonsBuyFlowRoutable,
         userWalletModel: some UserWalletModel
     ) {
         self.model = model
@@ -33,7 +33,7 @@ final class BuyActionButtonViewModel: ActionButtonViewModel {
     @MainActor
     func tap() {
         switch presentationState {
-        case .unexplicitLoading:
+        case .initial:
             updateState(to: .loading)
         case .loading:
             break

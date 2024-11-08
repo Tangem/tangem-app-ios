@@ -21,7 +21,7 @@ protocol ActionButtonViewModel: ObservableObject, Identifiable {
 
 // TODO: Should be removed in 8238
 class BaseActionButtonViewModel: ActionButtonViewModel {
-    @Published private(set) var presentationState: ActionButtonPresentationState = .unexplicitLoading
+    @Published private(set) var presentationState: ActionButtonPresentationState = .initial
 
     let model: ActionButtonModel
 

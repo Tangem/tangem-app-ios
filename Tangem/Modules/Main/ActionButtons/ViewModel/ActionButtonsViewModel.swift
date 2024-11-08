@@ -10,7 +10,7 @@ import Combine
 import Foundation
 import TangemFoundation
 
-typealias ActionButtonsRoutable = ActionButtonsBuyRootRoutable & ActionButtonsSellRootRoutable & ActionButtonsSwapRootRoutable
+typealias ActionButtonsRoutable = ActionButtonsBuyFlowRoutable & ActionButtonsSellFlowRoutable & ActionButtonsSwapFlowRoutable
 
 final class ActionButtonsViewModel: ObservableObject {
     @Injected(\.exchangeService) private var exchangeService: ExchangeService
@@ -62,10 +62,8 @@ private extension ActionButtonsViewModel {
     func bindWalletModels() {
         expressTokensListAdapter
             .walletModels()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] walletModels in
-                self?.isButtonsDisabled = walletModels.isEmpty
-            }
+            .map(\.isEmpty)
+            .assign(to: \.isButtonsDisabled, on: self, ownership: .weak)
             .store(in: &bag)
     }
 
@@ -79,8 +77,8 @@ private extension ActionButtonsViewModel {
                         await viewModel.sellActionButtonViewModel.updateState(to: .idle)
                         await viewModel.buyActionButtonViewModel.updateState(to: .idle)
                     } else {
-                        await viewModel.sellActionButtonViewModel.updateState(to: .unexplicitLoading)
-                        await viewModel.buyActionButtonViewModel.updateState(to: .unexplicitLoading)
+                        await viewModel.sellActionButtonViewModel.updateState(to: .initial)
+                        await viewModel.buyActionButtonViewModel.updateState(to: .initial)
                     }
                 }
             }

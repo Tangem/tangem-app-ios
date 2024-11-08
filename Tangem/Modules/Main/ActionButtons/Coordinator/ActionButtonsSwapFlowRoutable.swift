@@ -6,6 +6,6 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-protocol ActionButtonsSwapRootRoutable {
+protocol ActionButtonsSwapFlowRoutable {
     func openSwap()
 }

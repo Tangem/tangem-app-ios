@@ -2083,9 +2083,9 @@
 		DC2891AB2CDAE93C00F57F59 /* BuyActionButtonViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891AA2CDAE93A00F57F59 /* BuyActionButtonViewModel.swift */; };
 		DC2891AD2CDAEF9E00F57F59 /* ActionButtonsBuyRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891AC2CDAEF9C00F57F59 /* ActionButtonsBuyRoutable.swift */; };
 		DC2891B12CDAF4E700F57F59 /* TokenAvailabilitySorter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891B02CDAF4E600F57F59 /* TokenAvailabilitySorter.swift */; };
-		DC2891B42CDB09A700F57F59 /* ActionButtonsBuyRootRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891B32CDB09A600F57F59 /* ActionButtonsBuyRootRoutable.swift */; };
-		DC2891B62CDB09CA00F57F59 /* ActionButtonsSwapRootRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891B52CDB09C900F57F59 /* ActionButtonsSwapRootRoutable.swift */; };
-		DC2891B82CDB09DE00F57F59 /* ActionButtonsSellRootRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891B72CDB09D000F57F59 /* ActionButtonsSellRootRoutable.swift */; };
+		DC2891B42CDB09A700F57F59 /* ActionButtonsBuyFlowRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891B32CDB09A600F57F59 /* ActionButtonsBuyFlowRoutable.swift */; };
+		DC2891B62CDB09CA00F57F59 /* ActionButtonsSwapFlowRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891B52CDB09C900F57F59 /* ActionButtonsSwapFlowRoutable.swift */; };
+		DC2891B82CDB09DE00F57F59 /* ActionButtonsSellFlowRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891B72CDB09D000F57F59 /* ActionButtonsSellFlowRoutable.swift */; };
 		DC2911B22C623D1E00DF53CC /* SendTransactionDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2911B12C623D1E00DF53CC /* SendTransactionDispatcher.swift */; };
 		DC2911B42C623D2C00DF53CC /* StakingTransactionDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2911B32C623D2C00DF53CC /* StakingTransactionDispatcher.swift */; };
 		DC2911B62C623DE300DF53CC /* DemoSendTransactionDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2911B52C623DE300DF53CC /* DemoSendTransactionDispatcher.swift */; };
@@ -5055,9 +5055,9 @@
 		DC2891AA2CDAE93A00F57F59 /* BuyActionButtonViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuyActionButtonViewModel.swift; sourceTree = "<group>"; };
 		DC2891AC2CDAEF9C00F57F59 /* ActionButtonsBuyRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsBuyRoutable.swift; sourceTree = "<group>"; };
 		DC2891B02CDAF4E600F57F59 /* TokenAvailabilitySorter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenAvailabilitySorter.swift; sourceTree = "<group>"; };
-		DC2891B32CDB09A600F57F59 /* ActionButtonsBuyRootRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsBuyRootRoutable.swift; sourceTree = "<group>"; };
-		DC2891B52CDB09C900F57F59 /* ActionButtonsSwapRootRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsSwapRootRoutable.swift; sourceTree = "<group>"; };
-		DC2891B72CDB09D000F57F59 /* ActionButtonsSellRootRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsSellRootRoutable.swift; sourceTree = "<group>"; };
+		DC2891B32CDB09A600F57F59 /* ActionButtonsBuyFlowRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsBuyFlowRoutable.swift; sourceTree = "<group>"; };
+		DC2891B52CDB09C900F57F59 /* ActionButtonsSwapFlowRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsSwapFlowRoutable.swift; sourceTree = "<group>"; };
+		DC2891B72CDB09D000F57F59 /* ActionButtonsSellFlowRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsSellFlowRoutable.swift; sourceTree = "<group>"; };
 		DC2911B12C623D1E00DF53CC /* SendTransactionDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendTransactionDispatcher.swift; sourceTree = "<group>"; };
 		DC2911B32C623D2C00DF53CC /* StakingTransactionDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingTransactionDispatcher.swift; sourceTree = "<group>"; };
 		DC2911B52C623DE300DF53CC /* DemoSendTransactionDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoSendTransactionDispatcher.swift; sourceTree = "<group>"; };
@@ -12223,9 +12223,9 @@
 		DC283ABA2CCA61AB0043F7D2 /* Coordinator */ = {
 			isa = PBXGroup;
 			children = (
-				DC2891B32CDB09A600F57F59 /* ActionButtonsBuyRootRoutable.swift */,
-				DC2891B72CDB09D000F57F59 /* ActionButtonsSellRootRoutable.swift */,
-				DC2891B52CDB09C900F57F59 /* ActionButtonsSwapRootRoutable.swift */,
+				DC2891B32CDB09A600F57F59 /* ActionButtonsBuyFlowRoutable.swift */,
+				DC2891B72CDB09D000F57F59 /* ActionButtonsSellFlowRoutable.swift */,
+				DC2891B52CDB09C900F57F59 /* ActionButtonsSwapFlowRoutable.swift */,
 			);
 			path = Coordinator;
 			sourceTree = "<group>";
@@ -15606,7 +15606,7 @@
 				B09FA3362C25595700A608C9 /* ManageTokensListItemView.swift in Sources */,
 				B0BA7BC526C4F96B00D7066F /* NonDismissableModalView.swift in Sources */,
 				EFC84B0D2C37FAB500546882 /* SendFinishStepBuilder.swift in Sources */,
-				DC2891B62CDB09CA00F57F59 /* ActionButtonsSwapRootRoutable.swift in Sources */,
+				DC2891B62CDB09CA00F57F59 /* ActionButtonsSwapFlowRoutable.swift in Sources */,
 				B6ACD0142AD6A8A1005A6CA3 /* OrganizeTokensDragAndDropGesturePredicate.swift in Sources */,
 				B0FE88812CB51FDB006F01F9 /* MarketsNavigationBar.swift in Sources */,
 				DC0A582928252FEB0031BECC /* TokenItemsRepository.swift in Sources */,
@@ -16632,7 +16632,7 @@
 				DA4371A02A7D1937006215CA /* ListDataLoader.swift in Sources */,
 				DC939F9B2C3C0323002D0326 /* XPUBGeneratorFactory.swift in Sources */,
 				DA78444C2B3080AF002281B8 /* SuccessToast.swift in Sources */,
-				DC2891B82CDB09DE00F57F59 /* ActionButtonsSellRootRoutable.swift in Sources */,
+				DC2891B82CDB09DE00F57F59 /* ActionButtonsSellFlowRoutable.swift in Sources */,
 				EF661E2F28BF41D6005769E5 /* Intents.intentdefinition in Sources */,
 				DAF59CC32ACC4D8C004FCA86 /* AddCustomTokenDerivationPathSelectorView.swift in Sources */,
 				DC70C0192B95EED9002205BA /* FactorySettingsResettingCardInteractor.swift in Sources */,
@@ -16829,7 +16829,7 @@
 				65C9FCAE28644F9D00FDE63E /* DetailsView.swift in Sources */,
 				EF4535372976C1D80030639A /* FixedSpacer.swift in Sources */,
 				DA8C67292B0B44EF00E1C9B8 /* SendDestinationSummaryViewType.swift in Sources */,
-				DC2891B42CDB09A700F57F59 /* ActionButtonsBuyRootRoutable.swift in Sources */,
+				DC2891B42CDB09A700F57F59 /* ActionButtonsBuyFlowRoutable.swift in Sources */,
 				B0E1D175257DE75D00A3AB98 /* CommonKeysManager.swift in Sources */,
 				2DCAEE4B2B13E4F800C87E09 /* GetBlockAccessTokens.swift in Sources */,
 				DC3DCAEF2A49C6E600F72554 /* CommonWalletManagersRepository.swift in Sources */,

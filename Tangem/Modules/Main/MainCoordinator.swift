@@ -455,14 +455,14 @@ extension MainCoordinator: PushNotificationsPermissionRequestDelegate {
 
 // MARK: - Action buttons buy routable
 
-extension MainCoordinator: ActionButtonsBuyRootRoutable, ActionButtonsBuyCryptoRoutable {
+extension MainCoordinator: ActionButtonsBuyFlowRoutable, ActionButtonsBuyCryptoRoutable {
     func openBuy(userWalletModel: UserWalletModel) {
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.actionButtonsBuyCoordinator = nil
         }
 
         let coordinator = ActionButtonsBuyCoordinator(
-            rootCoordinator: self,
+            buyCryptoCoordinator: self,
             expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel),
             dismissAction: dismissAction
         )
@@ -481,13 +481,13 @@ extension MainCoordinator: ActionButtonsBuyRootRoutable, ActionButtonsBuyCryptoR
 
 // MARK: - Action buttons sell routable
 
-extension MainCoordinator: ActionButtonsSellRootRoutable {
+extension MainCoordinator: ActionButtonsSellFlowRoutable {
     func openSell() {}
 }
 
 // MARK: - Action buttons swap routable
 
-extension MainCoordinator: ActionButtonsSwapRootRoutable {
+extension MainCoordinator: ActionButtonsSwapFlowRoutable {
     func openSwap() {}
 }
 

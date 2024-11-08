@@ -34,7 +34,7 @@ struct ActionButtonView<ViewModel: ActionButtonViewModel>: View {
     @ViewBuilder
     private var leadingItem: some View {
         switch viewModel.presentationState {
-        case .unexplicitLoading, .idle:
+        case .initial, .idle:
             buttonIcon
         case .loading:
             progressView

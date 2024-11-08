@@ -19,7 +19,7 @@ final class ActionButtonsBuyViewModel: ObservableObject {
     private let coordinator: ActionButtonsBuyRoutable
 
     init(
-        coordinator: ActionButtonsBuyRoutable,
+        coordinator: some ActionButtonsBuyRoutable,
         tokenSelectorViewModel: TokenSelectorViewModel<
             ActionButtonsTokenSelectorItem,
             ActionButtonsTokenSelectorItemBuilder
