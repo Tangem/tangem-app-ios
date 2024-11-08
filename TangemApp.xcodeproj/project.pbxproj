@@ -2498,12 +2498,6 @@
 		EF8BE6BD2CCA994F001FBA2B /* OnrampRedirectDataRequestItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8BE6BC2CCA9941001FBA2B /* OnrampRedirectDataRequestItem.swift */; };
 		EF8BE6C02CCA9CC3001FBA2B /* CommonOnrampDataRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8BE6BF2CCA9CC3001FBA2B /* CommonOnrampDataRepository.swift */; };
 		EF8BE6C42CCB95D7001FBA2B /* OnrampRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8BE6C32CCB95D7001FBA2B /* OnrampRoutable.swift */; };
-		EF8BE6B02CCA71E3001FBA2B /* CommonOnrampProviderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8BE6AF2CCA71E0001FBA2B /* CommonOnrampProviderManager.swift */; };
-		EF8BE6B32CCA8800001FBA2B /* OnrampDataRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8BE6B22CCA87FE001FBA2B /* OnrampDataRepository.swift */; };
-		EF8BE6BB2CCA98CB001FBA2B /* OnrampPairRequestItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8BE6BA2CCA98CA001FBA2B /* OnrampPairRequestItem.swift */; };
-		EF8BE6BD2CCA994F001FBA2B /* OnrampRedirectDataRequestItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8BE6BC2CCA9941001FBA2B /* OnrampRedirectDataRequestItem.swift */; };
-		EF8BE6C02CCA9CC3001FBA2B /* CommonOnrampDataRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8BE6BF2CCA9CC3001FBA2B /* CommonOnrampDataRepository.swift */; };
-		EF8BE6C42CCB95D7001FBA2B /* OnrampRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8BE6C32CCB95D7001FBA2B /* OnrampRoutable.swift */; };
 		EF8D780F2981458500B67418 /* UserTokenListManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8D780E2981458500B67418 /* UserTokenListManagerMock.swift */; };
 		EF8DBCDD2C060A03009072CF /* StakingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8DBCDC2C060A03009072CF /* StakingManager.swift */; };
 		EF8DBCE02C060CCE009072CF /* StakingDependenciesFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8DBCDF2C060CCE009072CF /* StakingDependenciesFactory.swift */; };
@@ -5508,12 +5502,6 @@
 		EF842DE62AFA58C5006E472E /* ExpressTokensListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressTokensListViewModel.swift; sourceTree = "<group>"; };
 		EF842DE72AFA58C5006E472E /* ExpressTokensListRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressTokensListRoutable.swift; sourceTree = "<group>"; };
 		EF842DED2AFA6D07006E472E /* ProviderRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderRowViewModel.swift; sourceTree = "<group>"; };
-		EF8BE6B22CCA87FE001FBA2B /* OnrampDataRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampDataRepository.swift; sourceTree = "<group>"; };
-		EF8BE6BA2CCA98CA001FBA2B /* OnrampPairRequestItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPairRequestItem.swift; sourceTree = "<group>"; };
-		EF8BE6BC2CCA9941001FBA2B /* OnrampRedirectDataRequestItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampRedirectDataRequestItem.swift; sourceTree = "<group>"; };
-		EF8BE6BF2CCA9CC3001FBA2B /* CommonOnrampDataRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonOnrampDataRepository.swift; sourceTree = "<group>"; };
-		EF8BE6C32CCB95D7001FBA2B /* OnrampRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampRoutable.swift; sourceTree = "<group>"; };
-		EF8BE6AF2CCA71E0001FBA2B /* CommonOnrampProviderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonOnrampProviderManager.swift; sourceTree = "<group>"; };
 		EF8BE6B22CCA87FE001FBA2B /* OnrampDataRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampDataRepository.swift; sourceTree = "<group>"; };
 		EF8BE6BA2CCA98CA001FBA2B /* OnrampPairRequestItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPairRequestItem.swift; sourceTree = "<group>"; };
 		EF8BE6BC2CCA9941001FBA2B /* OnrampRedirectDataRequestItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampRedirectDataRequestItem.swift; sourceTree = "<group>"; };
