@@ -30,7 +30,7 @@ extension StakingNotificationEvent: NotificationEvent {
     var id: NotificationViewId {
         switch self {
         case .approveTransactionInProgress: "approveTransactionInProgress".hashValue
-        case .feeWillBeSubtractFromSendingAmount: "feeWillBeSubtractFromSendingAmount".hashValue
+        case .feeWillBeSubtractFromSendingAmount(let cryptoAmountFormatted, _): "feeWillBeSubtractFromSendingAmount \(cryptoAmountFormatted)".hashValue
         case .unstake: "unstake".hashValue
         case .withdraw: "withdraw".hashValue
         case .claimRewards: "claimRewards".hashValue
