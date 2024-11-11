@@ -23,13 +23,14 @@ enum StakingNotificationEvent {
     case feeWillBeSubtractFromSendingAmount(cryptoAmountFormatted: String, fiatAmountFormatted: String)
     case stakesWillMoveToNewValidator(blockchain: String)
     case lowStakedBalance
+    case maxAmountStaking
 }
 
 extension StakingNotificationEvent: NotificationEvent {
     var id: NotificationViewId {
         switch self {
         case .approveTransactionInProgress: "approveTransactionInProgress".hashValue
-        case .feeWillBeSubtractFromSendingAmount: "feeWillBeSubtractFromSendingAmount".hashValue
+        case .feeWillBeSubtractFromSendingAmount(let cryptoAmountFormatted, _): "feeWillBeSubtractFromSendingAmount \(cryptoAmountFormatted)".hashValue
         case .unstake: "unstake".hashValue
         case .withdraw: "withdraw".hashValue
         case .claimRewards: "claimRewards".hashValue
@@ -41,6 +42,7 @@ extension StakingNotificationEvent: NotificationEvent {
         case .networkUnreachable: "networkUnreachable".hashValue
         case .stakesWillMoveToNewValidator: "stakesWillMoveToNewValidator".hashValue
         case .lowStakedBalance: "lowStakedBalance".hashValue
+        case .maxAmountStaking: "maxAmountStaking".hashValue
         }
     }
 
@@ -59,6 +61,7 @@ extension StakingNotificationEvent: NotificationEvent {
         case .networkUnreachable: .string(Localization.sendFeeUnreachableErrorTitle)
         case .stakesWillMoveToNewValidator: .string(Localization.stakingRevote)
         case .lowStakedBalance: .string(Localization.stakingNotificationLowStakedBalanceTitle)
+        case .maxAmountStaking: .string(Localization.commonNetworkFeeTitle)
         }
     }
 
@@ -91,6 +94,8 @@ extension StakingNotificationEvent: NotificationEvent {
             Localization.stakingNotificationNewValidatorFundsTransfer(blockchain)
         case .lowStakedBalance:
             Localization.stakingNotificationLowStakedBalanceText
+        case .maxAmountStaking:
+            Localization.stakingNotificationStakeEntireBalanceText
         }
     }
 
@@ -100,7 +105,7 @@ extension StakingNotificationEvent: NotificationEvent {
              .stakesWillMoveToNewValidator, .lowStakedBalance:
             .secondary
         case .unstake, .networkUnreachable, .withdraw, .claimRewards,
-             .restakeRewards, .restake, .unlock, .revote:
+             .restakeRewards, .restake, .unlock, .revote, .maxAmountStaking:
             .action
         case .validationErrorEvent(let event): event.colorScheme
         }
@@ -113,7 +118,7 @@ extension StakingNotificationEvent: NotificationEvent {
         case .approveTransactionInProgress:
             return .init(iconType: .progressView)
         case .unstake, .withdraw, .claimRewards, .restakeRewards, .restake,
-             .unlock, .stakesWillMoveToNewValidator, .revote:
+             .unlock, .stakesWillMoveToNewValidator, .revote, .maxAmountStaking:
             return .init(iconType: .image(Assets.blueCircleWarning.image))
         case .validationErrorEvent(let event):
             return event.icon
@@ -134,6 +139,7 @@ extension StakingNotificationEvent: NotificationEvent {
              .unlock,
              .revote,
              .lowStakedBalance,
+             .maxAmountStaking,
              .stakesWillMoveToNewValidator:
             return .info
         case .validationErrorEvent(let event):
@@ -157,6 +163,7 @@ extension StakingNotificationEvent: NotificationEvent {
              .unlock,
              .revote,
              .lowStakedBalance,
+             .maxAmountStaking,
              .stakesWillMoveToNewValidator:
             return nil
         }
