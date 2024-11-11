@@ -12,10 +12,10 @@ public protocol OnrampManager: Actor {
     func initialSetupCountry() async throws -> OnrampCountry
 
     /// User has selected a currency. We are preparing onramp providers
-    func setupProviders(request: OnrampPairRequestItem) async throws
+    func setupProviders(request: OnrampPairRequestItem) async throws -> [OnrampProvider]
 
     /// The user changed the amount. We upload providers quotes
-    func setupQuotes(amount: Decimal) async throws
+    func setupQuotes(amount: Decimal) async throws -> [OnrampProvider]
 
     /// Load the data to perform the onramp action
     func loadOnrampData(request: OnrampQuotesRequestItem) async throws -> OnrampRedirectData

@@ -41,14 +41,14 @@ struct OnrampProvidersView: View {
 
     @ViewBuilder
     private var paymentSection: some View {
-        if let data = viewModel.payment {
+        if let data = viewModel.paymentViewData {
             OnrampProvidersPaymentView(data: data)
         }
     }
 
     @ViewBuilder
     private var providersSection: some View {
-        ForEach(viewModel.providers) {
+        ForEach(viewModel.providersViewData) {
             OnrampProviderRowView(data: $0)
 
             Separator(height: .minimal, color: Colors.Stroke.primary)

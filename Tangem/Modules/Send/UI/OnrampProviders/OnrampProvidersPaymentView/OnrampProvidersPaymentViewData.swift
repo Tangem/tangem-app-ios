@@ -12,7 +12,7 @@ struct OnrampProvidersPaymentViewData: Identifiable {
     var id: Int { hashValue }
 
     let name: String
-    let iconURL: URL
+    let iconURL: URL?
     let action: () -> Void
 }
 
