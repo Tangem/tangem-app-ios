@@ -39,13 +39,13 @@ final class OnrampCurrencySelectorViewModel: Identifiable, ObservableObject {
 
     func loadCurrencies() {
         currencies = .loading
-        Task {
+        runTask(in: self) { viewModel in
             do {
-                let currencies = try await dataRepository.currencies()
-                currenciesSubject.send(currencies)
+                let currencies = try await viewModel.dataRepository.currencies()
+                viewModel.currenciesSubject.send(currencies)
             } catch {
                 await runOnMain {
-                    currencies = .failedToLoad(error: error)
+                    viewModel.currencies = .failedToLoad(error: error)
                 }
             }
         }

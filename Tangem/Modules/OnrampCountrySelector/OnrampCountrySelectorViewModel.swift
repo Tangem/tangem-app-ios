@@ -34,13 +34,13 @@ final class OnrampCountrySelectorViewModel: Identifiable, ObservableObject {
 
     func loadCountries() {
         countries = .loading
-        Task {
+        runTask(in: self) { viewModel in
             do {
-                let countries = try await dataRepository.countries()
-                countriesSubject.send(countries)
+                let countries = try await viewModel.dataRepository.countries()
+                viewModel.countriesSubject.send(countries)
             } catch {
                 await runOnMain {
-                    countries = .failedToLoad(error: error)
+                    viewModel.countries = .failedToLoad(error: error)
                 }
             }
         }
