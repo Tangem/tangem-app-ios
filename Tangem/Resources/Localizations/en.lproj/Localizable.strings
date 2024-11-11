@@ -437,7 +437,7 @@
 "markets_token_details_price_performance" = "Price performance";
 "markets_token_details_repository" = "Repository";
 "markets_token_details_security_score" = "Security score";
-"markets_token_details_security_score_description" = "";
+"markets_token_details_security_score_description" = "Security score of a token is a metric that assesses the security level of a blockchain or token based on various factors and is compiled from the sources listed below.";
 "markets_token_details_social" = "Social";
 "markets_token_details_total_supply" = "Total supply";
 "markets_token_details_total_supply_description" = "The maximum number of coins or tokens that can ever exist for a particular cryptocurrency";
@@ -546,6 +546,8 @@
 "onramp_min_amount_restriction" = "The amount to buy must be at least %@";
 "onramp_no_available_providers" = "No available providers for this currency";
 "onramp_pay_with" = "Pay with";
+"onramp_redirecting_to_provider_subtitle" = "You will be able to complete your transaction on the third-party provider, %@";
+"onramp_redirecting_to_provider_title" = "Redirecting to %@...";
 "onramp_residency_bottomsheet_country_not_supported" = "Our services are not available in this country";
 "onramp_residency_bottomsheet_country_subtitle" = "Change or confirm it";
 "onramp_residency_bottomsheet_title" = "Your residence has been identified as";
@@ -864,6 +866,7 @@
 "transaction_history_transaction_from_address" = "from: %@";
 "transaction_history_transaction_to_address" = "to: %@";
 "transaction_history_transaction_validator" = "validator: %@";
+"transfer_min_amount_error" = "Minimum %@";
 "transfer_notification_invalid_minimum_transaction_amount_text" = "The minimum transaction amount is %1$@.";
 "try_to_load_data_again_button_title" = "Try again";
 "twin_error_same_card" = "You've scanned the same card. To create a twin wallet you need to scan the card with number %li";
@@ -995,7 +998,7 @@
 "warning_send_blocked_funds_for_fee_message" = "%1$@ is an asset in the %2$@ network. To make a %3$@ transaction, you must deposit some %4$@ (%5$@) to cover the network fee.";
 "warning_send_blocked_funds_for_fee_title" = "Insufficient %1$@ to cover network fee";
 "warning_solana_rent_fee_message" = "Solana network charges a rent of %1$@ every 2 days. Accounts that can't afford the rent are purged from the network. Deposit your account with more than %2$@ to use it for free.";
-"warning_some_networks_unreachable_message" = "Some networks currently are unreachable. Please try again later.";
+"warning_some_networks_unreachable_message" = "Swipe down to refresh or try again later.";
 "warning_some_networks_unreachable_title" = "Some networks are unreachable";
 "warning_system_deprecation_title" = "System update required";
 "warning_system_deprecation_with_date_message" = "Support for your version of the operating system will end on %@. To receive future app updates you must update it to the latest version.";
