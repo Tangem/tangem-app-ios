@@ -716,6 +716,7 @@
 "staking_notification_new_validator_funds_transfer" = "Staking in the %1$@ network with a new validator will automatically transfer all previously staked funds to this validator";
 "staking_notification_restake_rewards_text" = "Reinvests your earned rewards in your staked amount, increasing potential earnings.";
 "staking_notification_restake_text" = "Restake lets you move your funds from one validator to another without the need to unstake";
+"staking_notification_stake_entire_balance_text" = "You’re about to stake your entire balance. We recommend leaving a small amount to cover network fees for unstaking or claiming rewards.";
 "staking_notification_unlock_text" = "Unlock your money to withdraw it from staking process. Unlocking takes %@.";
 "staking_notification_unstake_cosmos_text" = "Your funds will be available for use after the 21-day unbonding period. Reward will be withdrawn along with your unstaking funds.";
 "staking_notification_unstake_text" = "Your funds will be available for use after the %@ unbonding period.";
