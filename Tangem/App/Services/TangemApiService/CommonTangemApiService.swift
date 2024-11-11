@@ -196,11 +196,6 @@ extension CommonTangemApiService: TangemApiService {
     }
 
     func expressPromotion(request model: ExpressPromotion.Request) async throws -> ExpressPromotion.Response {
-        let decoder = JSONDecoder()
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-        decoder.dateDecodingStrategy = .formatted(dateFormatter)
-
         return try await request(for: .promotion(request: model), decoder: decoder)
     }
 
