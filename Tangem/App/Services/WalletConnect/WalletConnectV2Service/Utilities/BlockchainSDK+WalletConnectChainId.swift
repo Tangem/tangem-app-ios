@@ -20,7 +20,7 @@ extension BlockchainSdk.Blockchain {
             return isTestnet ? testnetIds : mainnetIds
         default:
             guard let chainId, isEvm else { return nil }
-            
+
             return [String(chainId)]
         }
     }
