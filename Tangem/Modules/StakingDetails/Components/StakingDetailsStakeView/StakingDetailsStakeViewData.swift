@@ -25,9 +25,9 @@ struct StakingDetailsStakeViewData: Identifiable {
         case .none:
             return nil
         case .locked(let hasVoteLocked) where hasVoteLocked:
-            return string(Localization.stakingTapToUnlockOrVote)
+            return inProgress ? nil : string(Localization.stakingTapToUnlockOrVote)
         case .locked:
-            return string(Localization.stakingTapToUnlock)
+            return inProgress ? nil : string(Localization.stakingTapToUnlock)
         case .warmup(let period):
             return string(Localization.stakingDetailsWarmupPeriod, accent: period)
         case .active(let apr):

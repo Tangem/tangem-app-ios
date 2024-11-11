@@ -85,15 +85,6 @@ extension CommonStakingManager: StakingManager {
         }
     }
 
-    func actions() async {
-        do {
-            let actions = try await provider.actions(wallet: wallet)
-            _actions.send(actions)
-        } catch {
-            logger.error(error)
-        }
-    }
-
     func estimateFee(action: StakingAction) async throws -> Decimal {
         switch (state, action.type) {
         case (.loading, _):
@@ -218,8 +209,7 @@ private extension CommonStakingManager {
     private func balanceTypeToAdd(for actionType: StakingPendingActionInfo.ActionType) -> StakingBalanceType? {
         switch actionType {
         case .stake, .vote, .voteLocked: .active
-        case .withdraw, .claimUnstaked: .unstaked
-        case .unlockLocked: .locked
+        case .withdraw, .claimUnstaked, .unlockLocked: .unstaked
         case .unstake: .active
         default: nil
         }
@@ -229,7 +219,7 @@ private extension CommonStakingManager {
         switch balanceType {
         case .active, .warmup: [.stake, .vote, .voteLocked, .unstake, .unlockLocked]
         case .unstaked: [.withdraw, .claimUnstaked]
-        case .locked: [.unlockLocked]
+        case .locked: [.unlockLocked, .stake]
         case .unbonding: [.unstake]
         default: []
         }
@@ -331,8 +321,7 @@ private extension CommonStakingManager {
             actionID: action.id,
             amount: action.amount,
             validator: request.request.validator,
-//            transactions: transactions
-            transactions: [transactions.first!]
+            transactions: transactions
         )
     }
 
