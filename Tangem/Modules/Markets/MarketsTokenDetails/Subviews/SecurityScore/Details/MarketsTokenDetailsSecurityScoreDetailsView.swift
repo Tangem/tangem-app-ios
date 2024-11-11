@@ -30,9 +30,10 @@ struct MarketsTokenDetailsSecurityScoreDetailsView: View {
                             Text(provider.name)
                                 .style(Fonts.Bold.subheadline.weight(.medium), color: Colors.Text.primary1)
 
-                            Text(provider.auditDate ?? /* " " */ "01.01.2001") // Empty string to preserve layout when hidden
-                                .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-//                                .hidden(provider.auditDate == nil)
+                            if let auditDate = provider.auditDate {
+                                Text(auditDate)
+                                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                            }
                         }
                     }
 
@@ -44,15 +45,21 @@ struct MarketsTokenDetailsSecurityScoreDetailsView: View {
                         },
                         label: {
                             VStack(alignment: .trailing, spacing: 2.0) {
-                                MarketsTokenDetailsSecurityScoreRatingView(viewData: .init(ratingBullets: provider.ratingBullets, securityScore: provider.securityScore))
+                                MarketsTokenDetailsSecurityScoreRatingView(
+                                    viewData: .init(
+                                        ratingBullets: provider.ratingBullets,
+                                        securityScore: provider.securityScore
+                                    )
+                                )
 
-                                Text(provider.linkTitle ?? /* " " */ "link example") // Empty string to preserve layout when hidden
-                                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-//                                    .hidden(provider.linkTitle == nil)
+                                if let linkTitle = provider.linkTitle {
+                                    Text(linkTitle)
+                                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                                }
                             }
                         }
                     )
-//                    .disabled(provider.linkTitle == nil)
+                    .disabled(provider.linkTitle == nil)
                 }
                 .padding(.vertical, 14.0)
             }
