@@ -28,7 +28,7 @@ class StakingDetailsStakeViewDataBuilder {
         let title: String = {
             switch balance.balanceType {
             case .rewards: Localization.stakingRewards
-            case .locked: Localization.stakingLocked
+            case .locked: inProgress ? Localization.stakingUnlocking : Localization.stakingLocked
             case .warmup, .active, .pending: validator?.name ?? Localization.stakingValidator
             case .unbonding: Localization.stakingUnstaking
             case .unstaked: Localization.stakingUnstaked
@@ -58,7 +58,11 @@ class StakingDetailsStakeViewDataBuilder {
                         colors: .init(foreground: Colors.Icon.inactive, background: Colors.Icon.primary1)
                     )
                     : .image(url: validator?.iconURL)
-            case .locked: .icon(Assets.stakingLockIcon, colors: .init(foreground: Colors.Icon.informative))
+            case .locked:
+                .icon(
+                    inProgress ? Assets.stakingUnlockingIcon : Assets.stakingLockIcon,
+                    colors: .init(foreground: inProgress ? Colors.Icon.accent : Colors.Icon.informative)
+                )
             case .unbonding: .icon(Assets.unstakedIcon, colors: .init(foreground: Colors.Icon.accent))
             case .unstaked: .icon(Assets.unstakedIcon, colors: .init(foreground: Colors.Icon.informative))
             }
