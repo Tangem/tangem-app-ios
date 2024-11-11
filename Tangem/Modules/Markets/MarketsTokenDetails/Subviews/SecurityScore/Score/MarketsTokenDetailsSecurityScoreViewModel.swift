@@ -9,9 +9,9 @@
 import Foundation
 
 final class MarketsTokenDetailsSecurityScoreViewModel {
-    var title: String { "Security score" } // TODO: Andrey Fedorov - Localization
+    var title: String { Localization.marketsTokenDetailsSecurityScore }
 
-    var subtitle: String { "Based on \(providerData.count) ratings" } // TODO: Andrey Fedorov - Localization
+    var subtitle: String { Localization.marketsTokenDetailsBasedOnRatings(providerData.count) }
 
     private(set) lazy var securityScore: String = MarketsTokenDetailsSecurityScoreRatingHelper()
         .makeSecurityScore(forSecurityScoreValue: securityScoreValue)

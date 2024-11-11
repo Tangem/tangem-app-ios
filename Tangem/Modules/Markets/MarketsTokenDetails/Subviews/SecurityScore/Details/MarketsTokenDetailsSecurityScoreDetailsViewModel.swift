@@ -40,15 +40,9 @@ final class MarketsTokenDetailsSecurityScoreDetailsViewModel: ObservableObject, 
         }
     }
 
-    // TODO: Andrey Fedorov - Localization
-    var title: String {
-        "Security score"
-    }
+    var title: String { Localization.marketsTokenDetailsSecurityScore }
 
-    // TODO: Andrey Fedorov - Localization
-    var subtitle: String {
-        "Security score of a token is a metric that assesses the security level of a blockchain or token based on various factors and is compiled from the sources listed below."
-    }
+    var subtitle: String { Localization.marketsTokenDetailsSecurityScoreDescription }
 
     let providers: [SecurityScoreProviderData]
 
