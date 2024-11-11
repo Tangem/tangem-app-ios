@@ -36,6 +36,7 @@ class MarketsTokenDetailsViewModel: MarketsBaseViewModel {
     @Published private(set) var portfolioViewModel: MarketsPortfolioContainerViewModel?
     @Published private(set) var historyChartViewModel: MarketsHistoryChartViewModel?
     @Published private(set) var securityScoreViewModel: MarketsTokenDetailsSecurityScoreViewModel?
+    @Published var securityScoreDetailsViewModel: MarketsTokenDetailsSecurityScoreDetailsViewModel?
     @Published private(set) var numberOfExchangesListedOn: Int?
 
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
@@ -510,7 +511,29 @@ extension MarketsTokenDetailsViewModel: MarketsTokenDetailsBottomSheetRouter {
     }
 }
 
-extension MarketsTokenDetailsViewModel: MarketsTokenDetailsSecurityScoreRoutable {}
+extension MarketsTokenDetailsViewModel: MarketsTokenDetailsSecurityScoreRoutable {
+    func openSecurityScoreDetails(with providerData: [MarketsTokenDetailsSecurityData.ProviderData]) {
+        // TODO: Andrey Fedorov - Use factory to perform mapping and VM creation
+        securityScoreDetailsViewModel = .init(
+            providers: (providerData + providerData).map { providerData in
+                .init(
+                    name: providerData.providerName,
+                    auditDate: providerData.lastAuditDate?.toString(), // FIXME: Andrey Fedorov - Test only, remove when not needed
+                    iconURL: IconURLBuilder().securityScoreProviderIconURL(providerId: providerData.providerId, size: .small),
+                    providerURL: providerData.link,
+                    securityScoreValue: providerData.securityScore
+                )
+            },
+            routable: self
+        )
+    }
+}
+
+extension MarketsTokenDetailsViewModel: MarketsTokenDetailsSecurityScoreDetailsRoutable {
+    func openSecurityAudit(at url: URL) {
+        coordinator?.openURL(url)
+    }
+}
 
 // MARK: - Constants
 

@@ -129,6 +129,11 @@ struct MarketsTokenDetailsView: View {
             backgroundColor: Colors.Background.action,
             onGeneratedAITapAction: viewModel.onGenerateAITapAction
         )
+        .sheet(item: $viewModel.securityScoreDetailsViewModel) { viewModel in
+            MarketsTokenDetailsSecurityScoreDetailsView(viewModel: viewModel)
+                .adaptivePresentationDetents()
+                .background(Colors.Background.tertiary.ignoresSafeArea())
+        }
         .animation(.default, value: viewModel.state)
         .animation(.default, value: viewModel.isLoading)
         .animation(.default, value: viewModel.allDataLoadFailed)
