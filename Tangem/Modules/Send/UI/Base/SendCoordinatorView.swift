@@ -16,17 +16,18 @@ struct SendCoordinatorView: CoordinatorView {
     }
 
     var body: some View {
-        NavigationView {
-            ZStack {
-                if let rootViewModel = coordinator.rootViewModel {
+        if let rootViewModel = coordinator.rootViewModel {
+            NavigationView {
+                ZStack {
                     SendView(viewModel: rootViewModel, transitionService: .init())
                         .navigationLinks(links)
-                }
 
-                sheets
+                    sheets
+                }
             }
+            .tint(Colors.Text.primary1)
+            .interactiveDismissDisabled(rootViewModel.shouldShowDismissAlert)
         }
-        .tint(Colors.Text.primary1)
     }
 
     @ViewBuilder

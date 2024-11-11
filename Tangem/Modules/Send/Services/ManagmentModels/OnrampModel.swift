@@ -14,9 +14,7 @@ import TangemFoundation
 protocol OnrampModelRoutable: AnyObject {
     func openOnrampCountryBottomSheet(country: OnrampCountry)
     func openOnrampCountrySelectorView()
-    func openOnrampSettingsView()
-    func openOnrampRedirecting(provider: OnrampProvider)
-    func openOnrampWebView(provider: OnrampProvider)
+    func openWebView(settings: OnrampWebViewViewModel.Settings)
     func openFinishStep()
 }
 
@@ -189,52 +187,6 @@ private extension OnrampModel {
     }
 }
 
-// MARK: - Buy
-
-/*
- private extension OnrampModel {
-     func send() async throws -> TransactionDispatcherResult {
-         do {
-             guard let provider = _selectedOnrampProvider.value?.value else {
-                 throw OnrampModelError.notFound("Onramp provider")
-             }
-
-             await runOnMain {
-                 router?.openOnrampRedirecting(provider: provider)
-             }
-
-             try await Task.sleep(seconds: .hour)
-             let result = TransactionDispatcherResult(hash: "", url: nil, signerType: "")
-             proceed(result: result)
-             return result
-         } catch let error as TransactionDispatcherResult.Error {
-             proceed(error: error)
-             throw error
-         } catch {
-             throw TransactionDispatcherResult.Error.loadTransactionInfo(error: error)
-         }
-     }
-
-     func proceed(result: TransactionDispatcherResult) {
-         _transactionTime.send(Date())
-     }
-
-     func proceed(error: TransactionDispatcherResult.Error) {
-         switch error {
-         case .demoAlert,
-              .userCancelled,
-              .informationRelevanceServiceError,
-              .informationRelevanceServiceFeeWasIncreased,
-              .transactionNotFound,
-              .loadTransactionInfo:
-             break
-         case .sendTxError:
-             break
-         }
-     }
- }
- */
-
 // MARK: - OnrampAmountInput
 
 extension OnrampModel: OnrampAmountInput {
@@ -307,7 +259,9 @@ extension OnrampModel: OnrampRedirectingInput {}
 
 extension OnrampModel: OnrampRedirectingOutput {
     func redirectDataDidLoad(data: OnrampRedirectData) {
-//        router?.openWebView()
+        // Update logic
+        // TODO: https://tangem.atlassian.net/browse/IOS-8309
+        // router?.openWebView()
     }
 }
 

@@ -189,6 +189,10 @@ extension SendCoordinator: OnrampRoutable {
     func openOnrampRedirecting(onrampRedirectingBuilder: OnrampRedirectingBuilder) {
         onrampRedirectingViewModel = onrampRedirectingBuilder.makeOnrampRedirectingViewModel(coordinator: self)
     }
+
+    func openOnrampWebView(settings: OnrampWebViewViewModel.Settings) {
+        onrampWebViewViewModel = .init(settings: settings, coordinator: self)
+    }
 }
 
 // MARK: - ExpressApproveRoutable
@@ -248,8 +252,18 @@ extension SendCoordinator: OnrampAmountRoutable {
     }
 }
 
+// MARK: - OnrampRedirectingRoutable
+
 extension SendCoordinator: OnrampRedirectingRoutable {
     func dismissOnrampRedirecting() {
         onrampRedirectingViewModel = nil
+    }
+}
+
+// MARK: - OnrampWebViewRoutable
+
+extension SendCoordinator: OnrampWebViewRoutable {
+    func dismissOnrampWebView() {
+        onrampWebViewViewModel = nil
     }
 }

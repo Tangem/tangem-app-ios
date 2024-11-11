@@ -101,6 +101,8 @@ struct OnrampFlowBaseBuilder {
         stepsManager.set(output: viewModel)
 
         onrampProvidersCompactViewModel.router = viewModel
+        onramp.step.set(router: viewModel)
+
         onrampModel.router = viewModel
         onrampModel.alertPresenter = viewModel
 

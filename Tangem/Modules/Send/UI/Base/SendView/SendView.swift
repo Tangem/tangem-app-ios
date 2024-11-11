@@ -34,7 +34,6 @@ struct SendView: View {
             .animation(SendTransitionService.Constants.defaultAnimation, value: viewModel.step.type)
         }
         .background(backgroundColor.ignoresSafeArea())
-        .interactiveDismissDisabled(viewModel.shouldShowDismissAlert)
         .scrollDismissesKeyboardCompat(.immediately)
         .alert(item: $viewModel.alert) { $0.alert }
         .safeAreaInset(edge: .bottom) {

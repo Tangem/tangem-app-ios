@@ -45,9 +45,6 @@ final class OnrampRedirectingViewModel: ObservableObject {
 
     func loadRedirectData() async {
         do {
-//            let redirectSettings = OnrampRedirectSettings(successURL: "https://tangem.com/onramp/success", theme: "light", language: "en")
-//            let item = try onrampProvider.manager.makeOnrampQuotesRequestItem()
-//            let requestItem = OnrampRedirectDataRequestItem(quotesItem: item, redirectSettings: redirectSettings)
             try await interactor.loadRedirectData()
             try await Task.sleep(seconds: 10)
 
@@ -55,8 +52,10 @@ final class OnrampRedirectingViewModel: ObservableObject {
                 coordinator?.dismissOnrampRedirecting()
             }
         } catch {
-            // TODO: close view ?
-            alert = error.alertBinder
+            await runOnMain {
+                // TODO: close view ?
+                alert = error.alertBinder
+            }
         }
     }
 }

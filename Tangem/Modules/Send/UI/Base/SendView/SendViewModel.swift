@@ -347,6 +347,10 @@ extension SendViewModel: OnrampModelRoutable {
         }
     }
 
+    func openWebView(settings: OnrampWebViewViewModel.Settings) {
+        coordinator?.openOnrampWebView(settings: settings)
+    }
+
     func openFinishStep() {
         stepsManager.performFinish()
     }

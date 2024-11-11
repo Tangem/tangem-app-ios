@@ -2393,6 +2393,11 @@
 		EF0E1D9F2CE37DA4003D47AA /* OnrampProvidersPaymentViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0E1D8A2CE37DA4003D47AA /* OnrampProvidersPaymentViewData.swift */; };
 		EF0E1DA02CE37DA4003D47AA /* OnrampProvidersCompactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0E1D862CE37DA4003D47AA /* OnrampProvidersCompactView.swift */; };
 		EF0E1DA12CE37DA4003D47AA /* OnrampProvidersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0E1D8D2CE37DA4003D47AA /* OnrampProvidersView.swift */; };
+		EF0E1DA32CE3A1F3003D47AA /* OnrampWebViewBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0E1DA22CE3A1EB003D47AA /* OnrampWebViewBuilder.swift */; };
+		EF0E1DA62CE3A222003D47AA /* OnrampRedirectingInputOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0E1DA52CE3A21D003D47AA /* OnrampRedirectingInputOutput.swift */; };
+		EF0E1DAB2CE3A255003D47AA /* OnrampRedirectingInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0E1DAA2CE3A255003D47AA /* OnrampRedirectingInteractor.swift */; };
+		EF0E1DAD2CE3A2A0003D47AA /* ProgressDots.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0E1DAC2CE3A2A0003D47AA /* ProgressDots.swift */; };
+		EF0E1DB12CE3A394003D47AA /* OnrampWebViewInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0E1DB02CE3A393003D47AA /* OnrampWebViewInteractor.swift */; };
 		EF0F99AA289028F8008B01DF /* AppSettingsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0F99A5289028F8008B01DF /* AppSettingsCoordinator.swift */; };
 		EF0F99AB289028F8008B01DF /* AppSettingsCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0F99A6289028F8008B01DF /* AppSettingsCoordinatorView.swift */; };
 		EF0F99AC289028F8008B01DF /* AppSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0F99A7289028F8008B01DF /* AppSettingsViewModel.swift */; };
@@ -5488,6 +5493,11 @@
 		EF0E1D8E2CE37DA4003D47AA /* OnrampProvidersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersViewModel.swift; sourceTree = "<group>"; };
 		EF0E1D902CE37DA4003D47AA /* OnrampProvidersCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersCoordinator.swift; sourceTree = "<group>"; };
 		EF0E1D912CE37DA4003D47AA /* OnrampProvidersCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersCoordinatorView.swift; sourceTree = "<group>"; };
+		EF0E1DA22CE3A1EB003D47AA /* OnrampWebViewBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampWebViewBuilder.swift; sourceTree = "<group>"; };
+		EF0E1DA52CE3A21D003D47AA /* OnrampRedirectingInputOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampRedirectingInputOutput.swift; sourceTree = "<group>"; };
+		EF0E1DAA2CE3A255003D47AA /* OnrampRedirectingInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampRedirectingInteractor.swift; sourceTree = "<group>"; };
+		EF0E1DAC2CE3A2A0003D47AA /* ProgressDots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressDots.swift; sourceTree = "<group>"; };
+		EF0E1DB02CE3A393003D47AA /* OnrampWebViewInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampWebViewInteractor.swift; sourceTree = "<group>"; };
 		EF0F99A5289028F8008B01DF /* AppSettingsCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSettingsCoordinator.swift; sourceTree = "<group>"; };
 		EF0F99A6289028F8008B01DF /* AppSettingsCoordinatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSettingsCoordinatorView.swift; sourceTree = "<group>"; };
 		EF0F99A7289028F8008B01DF /* AppSettingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSettingsViewModel.swift; sourceTree = "<group>"; };
@@ -8063,6 +8073,7 @@
 				DC2891772CD9107E00F57F59 /* CloseToolbarButton */,
 				DCC05A5E2CD17DE6004CE6A4 /* TokenSelectorView */,
 				DC77F2542CD508D9001B2929 /* SUILabel.swift */,
+				EF0E1DAE2CE3A2A5003D47AA /* ProgressDots */,
 				B0340B9C2C50C7B2008FF6FC /* AnimationModifiers */,
 				B0FF12662C4A811000C81ED8 /* EnvironmentKeys */,
 				B0EA18AB2C465D5D0023B72A /* DescriptionBottomSheet */,
@@ -13351,6 +13362,15 @@
 			children = (
 				EF0E1D7D2CE37DA4003D47AA /* OnrampProvidersInputOutput.swift */,
 				EF0E1D7E2CE37DA4003D47AA /* OnrampProvidersInteractor.swift */,
+				);
+			path = Interactor;
+			sourceTree = "<group>";
+		};
+		EF0E1DA42CE3A207003D47AA /* Interactor */ = {
+			isa = PBXGroup;
+			children = (
+				EF0E1DAA2CE3A255003D47AA /* OnrampRedirectingInteractor.swift */,
+				EF0E1DA52CE3A21D003D47AA /* OnrampRedirectingInputOutput.swift */,
 			);
 			path = Interactor;
 			sourceTree = "<group>";
@@ -13414,6 +13434,40 @@
 				EF0E1D912CE37DA4003D47AA /* OnrampProvidersCoordinatorView.swift */,
 			);
 			path = OnrampProviders;
+		EF0E1DA72CE3A240003D47AA /* OnrampRedirectingView */ = {
+			isa = PBXGroup;
+			children = (
+				EF2800F02CDD0C08002AEB9A /* OnrampRedirectingView.swift */,
+				EF2800F12CDD0C08002AEB9A /* OnrampRedirectingViewModel.swift */,
+				EF2800EF2CDD0C08002AEB9A /* OnrampRedirectingRoutable.swift */,
+			);
+			path = OnrampRedirectingView;
+			sourceTree = "<group>";
+		};
+		EF0E1DAE2CE3A2A5003D47AA /* ProgressDots */ = {
+			isa = PBXGroup;
+			children = (
+				EF0E1DAC2CE3A2A0003D47AA /* ProgressDots.swift */,
+			);
+			path = ProgressDots;
+			sourceTree = "<group>";
+		};
+		EF0E1DAF2CE3A38A003D47AA /* Interactor */ = {
+			isa = PBXGroup;
+			children = (
+				EF0E1DB02CE3A393003D47AA /* OnrampWebViewInteractor.swift */,
+			);
+			path = Interactor;
+			sourceTree = "<group>";
+		};
+		EF0E1DB32CE3A3A4003D47AA /* OnrampWebViewView */ = {
+			isa = PBXGroup;
+			children = (
+				EF2800FB2CDE4B41002AEB9A /* OnrampWebViewView.swift */,
+				EF2800FC2CDE4B41002AEB9A /* OnrampWebViewViewModel.swift */,
+				EF2800FA2CDE4B41002AEB9A /* OnrampWebViewRoutable.swift */,
+			);
+			path = OnrampWebViewView;
 			sourceTree = "<group>";
 		};
 		EF0FBB682C53BE1E0095A6BD /* SendDestinationCompactView */ = {
@@ -13514,9 +13568,8 @@
 		EF2800EA2CDD0B9A002AEB9A /* OnrampRedirecting */ = {
 			isa = PBXGroup;
 			children = (
-				EF2800F02CDD0C08002AEB9A /* OnrampRedirectingView.swift */,
-				EF2800F12CDD0C08002AEB9A /* OnrampRedirectingViewModel.swift */,
-				EF2800EF2CDD0C08002AEB9A /* OnrampRedirectingRoutable.swift */,
+				EF0E1DA72CE3A240003D47AA /* OnrampRedirectingView */,
+				EF0E1DA42CE3A207003D47AA /* Interactor */,
 			);
 			path = OnrampRedirecting;
 			sourceTree = "<group>";
@@ -13524,9 +13577,8 @@
 		EF2800F72CDE4B37002AEB9A /* OnrampWebView */ = {
 			isa = PBXGroup;
 			children = (
-				EF2800FB2CDE4B41002AEB9A /* OnrampWebViewView.swift */,
-				EF2800FC2CDE4B41002AEB9A /* OnrampWebViewViewModel.swift */,
-				EF2800FA2CDE4B41002AEB9A /* OnrampWebViewRoutable.swift */,
+				EF0E1DB32CE3A3A4003D47AA /* OnrampWebViewView */,
+				EF0E1DAF2CE3A38A003D47AA /* Interactor */,
 			);
 			path = OnrampWebView;
 			sourceTree = "<group>";
@@ -14015,7 +14067,6 @@
 			isa = PBXGroup;
 			children = (
 				DA47C9C02CE2508E00F15D5E /* OnrampProviders */,
-				EF2800EA2CDD0B9A002AEB9A /* OnrampWebView */,
 				EF031A632C0A32AB001535C9 /* Namespace */,
 				DA1D3B6F2B56C7DC00247393 /* QRScanView */,
 				EFC84AEC2C37F91400546882 /* Base */,
@@ -15140,6 +15191,7 @@
 				EFC98FEF2CD39A630098B7C8 /* OnrampProvidersBuilder.swift */,
 				EFC990022CD3A6890098B7C8 /* OnrampPaymentMethodsBuilder.swift */,
 				EF28010F2CDE84C2002AEB9A /* OnrampRedirectingBuilder.swift */,
+				EF0E1DA22CE3A1EB003D47AA /* OnrampWebViewBuilder.swift */,
 			);
 			path = StepBuilders;
 			sourceTree = "<group>";
@@ -16311,6 +16363,7 @@
 				DC70BFD72B9105BF002205BA /* SecurityOptionChangingCardInteractor.swift in Sources */,
 				B06734392A7A988F008DE8F9 /* FakeUserTokenListManager.swift in Sources */,
 				B6E932C52A2F2D860068D466 /* OrganizeTokensRoutable.swift in Sources */,
+				EF0E1DAD2CE3A2A0003D47AA /* ProgressDots.swift in Sources */,
 				B012A10F2AA5A6F80079BAB4 /* WalletModel+.swift in Sources */,
 				EF9F9081299CFCE9006F638F /* WebView.swift in Sources */,
 				2DB648882C35877000DA100D /* MarketsRatingHeaderViewModel.swift in Sources */,
@@ -16530,6 +16583,7 @@
 				2D1BB3932C089816008392F7 /* MarketsItemViewModel.swift in Sources */,
 				B6FCEE752C40E28700CA9252 /* CGPoint+.swift in Sources */,
 				B06C083D2A73E0E900D982BC /* MainHeaderSubtitleInfo.swift in Sources */,
+				EF0E1DAB2CE3A255003D47AA /* OnrampRedirectingInteractor.swift in Sources */,
 				5D6784D925EBA1D800149995 /* TokenItems+Array.swift in Sources */,
 				EFA6B04129532D990090A92F /* NavigationBusyButton.swift in Sources */,
 				B0F319042A7394C2009F131E /* FakeUserWalletModel.swift in Sources */,
@@ -16566,6 +16620,7 @@
 				B0290CD92CAED764008ABBD2 /* MarketsTokenDetailsExchangeItemInfo.swift in Sources */,
 				EF8DBD4C2C07318F009072CF /* RewardViewData.swift in Sources */,
 				B66AB8B72BBC7AF200C8F3E7 /* UserTokensReorderingLogger.swift in Sources */,
+				EF0E1DA32CE3A1F3003D47AA /* OnrampWebViewBuilder.swift in Sources */,
 				EF4BEF7F28AB872E00C5D1BE /* UserTokenList.swift in Sources */,
 				DC0A5806282501530031BECC /* KeysManager.swift in Sources */,
 				EF5E5A852B7100D700D19BBB /* ExpressPromotion.swift in Sources */,
@@ -17148,6 +17203,7 @@
 				B6DF90652CA317A70099FED5 /* MainBottomSheetFooterShadowView.swift in Sources */,
 				B6E9A8C92A9A410A005CF137 /* CardsInfoPagerView+.swift in Sources */,
 				B0323F2C258C041D005C7CD5 /* SignerUtils.swift in Sources */,
+				EF0E1DB12CE3A394003D47AA /* OnrampWebViewInteractor.swift in Sources */,
 				5DBBAB0824D850EA00E78F1C /* CircleView.swift in Sources */,
 				EF435A052C2B124A00B627EB /* SendDestinationInputOutput.swift in Sources */,
 				DC3B49F62893E51B00C207EA /* UserWalletConfig.swift in Sources */,
@@ -17781,6 +17837,7 @@
 				DCFCA17528F4232F0037586C /* Array+.swift in Sources */,
 				B69E7FC62B21C0F200B78D9A /* RateAppService.swift in Sources */,
 				B0AF2DF42B1DF29F001A8696 /* PendingExpressTransactionsConverter.swift in Sources */,
+				EF0E1DA62CE3A222003D47AA /* OnrampRedirectingInputOutput.swift in Sources */,
 				EF5D83DB2B0B7A2B00516B5F /* ExpressSuccessSentRoutable.swift in Sources */,
 				EFA6B044295334AF0090A92F /* ResetToFactoryView.swift in Sources */,
 				EF48E6C42B02273800FE0072 /* ExpressTokenItemViewModel.swift in Sources */,

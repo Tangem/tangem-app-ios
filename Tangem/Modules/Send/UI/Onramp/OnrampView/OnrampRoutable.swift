@@ -15,4 +15,5 @@ protocol OnrampRoutable {
     func openOnrampCurrencySelector(repository: OnrampRepository, dataRepository: OnrampDataRepository)
     func openOnrampProviders(providersBuilder: OnrampProvidersBuilder, paymentMethodsBuilder: OnrampPaymentMethodsBuilder)
     func openOnrampRedirecting(onrampRedirectingBuilder: OnrampRedirectingBuilder)
+    func openOnrampWebView(settings: OnrampWebViewViewModel.Settings)
 }
