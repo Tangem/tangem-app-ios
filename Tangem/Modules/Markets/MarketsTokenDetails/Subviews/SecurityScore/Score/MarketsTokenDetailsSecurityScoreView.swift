@@ -9,7 +9,6 @@
 import SwiftUI
 
 // TODO: Andrey Fedorov - Check with dynamic fonts
-// TODO: Andrey Fedorov - Compare with mockups
 struct MarketsTokenDetailsSecurityScoreView: View {
     let viewModel: MarketsTokenDetailsSecurityScoreViewModel
 
@@ -21,11 +20,16 @@ struct MarketsTokenDetailsSecurityScoreView: View {
                 subtitle
             }
             .foregroundStyle(Colors.Text.tertiary)
-            .padding(.vertical, 2.0)
+            .padding(.vertical, Constants.defaultSpacing)
 
             Spacer()
 
-            rating
+            MarketsTokenDetailsSecurityScoreRatingView(
+                viewData: .init(
+                    ratingBullets: viewModel.ratingBullets,
+                    securityScore: viewModel.securityScore
+                )
+            )
         }
         .padding(.vertical, 12.0)
         .defaultRoundedBackground(
@@ -53,20 +57,6 @@ struct MarketsTokenDetailsSecurityScoreView: View {
         Text(viewModel.subtitle)
             .font(Fonts.Regular.caption1)
     }
-
-    private var rating: some View {
-        HStack(spacing: Constants.defaultSpacing) {
-            Text(viewModel.securityScore)
-                .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
-
-            ForEach(viewModel.ratingBullets.indexed(), id: \.0) { _, ratingBullet in
-                MarketsTokenDetailsSecurityScoreRatingView(
-                    ratingBullet: ratingBullet,
-                    dimensions: Constants.ratingViewDimensions
-                )
-            }
-        }
-    }
 }
 
 // MARK: - Constants
@@ -74,14 +64,14 @@ struct MarketsTokenDetailsSecurityScoreView: View {
 private extension MarketsTokenDetailsSecurityScoreView {
     enum Constants {
         static let defaultSpacing = 4.0
-        static let ratingViewDimensions = CGSize(bothDimensions: 14.0)
     }
 }
 
 // MARK: - Previews
 
 #Preview {
-    MarketsTokenDetailsSecurityScoreView(
-        viewModel: .init(providerData: [], securityScoreValue: .zero, routable: nil) // FIXME: Andrey Fedorov - Test only, remove when not needed
-    )
+    // TODO: Andrey Fedorov - Add actual implementation
+//    MarketsTokenDetailsSecurityScoreView(
+//        viewModel: .init(providerData: [], securityScoreValue: .zero, routable: nil)
+//    )
 }
