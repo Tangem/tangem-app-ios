@@ -16,7 +16,7 @@ class StakeKitStakingAPIService: StakingAPIService {
 
     private let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .customIso8601
+        decoder.dateDecodingStrategy = .iso8601WithFractionalSeconds
         return decoder
     }()
 
@@ -127,11 +127,4 @@ extension StakeKitHTTPError: LocalizedError {
         case .badStatusCode(let response, let code): response ?? "HTTP error \(code)"
         }
     }
-}
-
-extension JSONDecoder.DateDecodingStrategy {
-    static var customIso8601: JSONDecoder.DateDecodingStrategy = {
-        let dateFormatter = DateFormatter(dateFormat: "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-        return .formatted(dateFormatter)
-    }()
 }
