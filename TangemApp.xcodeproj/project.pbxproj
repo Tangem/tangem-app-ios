@@ -2439,6 +2439,8 @@
 		EF2800FE2CDE4B41002AEB9A /* OnrampWebViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2800FC2CDE4B41002AEB9A /* OnrampWebViewViewModel.swift */; };
 		EF2800FF2CDE4B41002AEB9A /* OnrampWebViewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2800FB2CDE4B41002AEB9A /* OnrampWebViewView.swift */; };
 		EF2801002CDE4B41002AEB9A /* OnrampWebViewRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2800FA2CDE4B41002AEB9A /* OnrampWebViewRoutable.swift */; };
+		EF28010E2CDE7FC6002AEB9A /* OnrampStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF28010D2CDE7FC4002AEB9A /* OnrampStatus.swift */; };
+		EF2801102CDE84CB002AEB9A /* OnrampRedirectingBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF28010F2CDE84C2002AEB9A /* OnrampRedirectingBuilder.swift */; };
 		EF2A54192C452B8500341060 /* ValidatorInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2A54182C452B8500341060 /* ValidatorInfo.swift */; };
 		EF2FE4652C6671190015940A /* StakeKitDTO+EstimateGas.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2FE4642C6671190015940A /* StakeKitDTO+EstimateGas.swift */; };
 		EF2FE4992C6B80560015940A /* AllowanceChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2FE4982C6B80560015940A /* AllowanceChecker.swift */; };
@@ -5533,6 +5535,8 @@
 		EF2800FA2CDE4B41002AEB9A /* OnrampWebViewRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampWebViewRoutable.swift; sourceTree = "<group>"; };
 		EF2800FB2CDE4B41002AEB9A /* OnrampWebViewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampWebViewView.swift; sourceTree = "<group>"; };
 		EF2800FC2CDE4B41002AEB9A /* OnrampWebViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampWebViewViewModel.swift; sourceTree = "<group>"; };
+		EF28010D2CDE7FC4002AEB9A /* OnrampStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampStatus.swift; sourceTree = "<group>"; };
+		EF28010F2CDE84C2002AEB9A /* OnrampRedirectingBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampRedirectingBuilder.swift; sourceTree = "<group>"; };
 		EF2A54182C452B8500341060 /* ValidatorInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidatorInfo.swift; sourceTree = "<group>"; };
 		EF2EFDE12865C05D00798051 /* Production.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Production.xcconfig; sourceTree = "<group>"; };
 		EF2EFDE22865C07100798051 /* Beta.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Beta.xcconfig; sourceTree = "<group>"; };
@@ -13784,6 +13788,7 @@
 				EF49C0642CAD85B20062AF06 /* OnrampPair.swift */,
 				EF49C0622CAD859D0062AF06 /* OnrampCountry.swift */,
 				EF49C0602CAD858D0062AF06 /* OnrampIdentity.swift */,
+				EF28010D2CDE7FC4002AEB9A /* OnrampStatus.swift */,
 			);
 			path = Onramp;
 			sourceTree = "<group>";
@@ -15134,6 +15139,7 @@
 				EFA154812CD2542100A0642C /* OnrampAmountBuilder.swift */,
 				EFC98FEF2CD39A630098B7C8 /* OnrampProvidersBuilder.swift */,
 				EFC990022CD3A6890098B7C8 /* OnrampPaymentMethodsBuilder.swift */,
+				EF28010F2CDE84C2002AEB9A /* OnrampRedirectingBuilder.swift */,
 			);
 			path = StepBuilders;
 			sourceTree = "<group>";
@@ -17466,6 +17472,7 @@
 				DC66BBFE285A389000CDF765 /* View+Navigation.swift in Sources */,
 				EFE255F62C3D79BB00B17DAC /* BSDKTransaction.swift in Sources */,
 				B04090C42AF3969700DF8DD5 /* NotificationsAnalyticsService.swift in Sources */,
+				EF2801102CDE84CB002AEB9A /* OnrampRedirectingBuilder.swift in Sources */,
 				EF1E97FD2B03F93300D4B511 /* CommonExpressDestinationService.swift in Sources */,
 				5DA3A2F1251CB6CA009A8E08 /* SecurityModeView.swift in Sources */,
 				B6AA13782A2A37B100B53937 /* CardInfoPageTransactionDefaultCellPreviewView.swift in Sources */,
@@ -18928,6 +18935,7 @@
 				EF9E2A0F2B4F0CD100418559 /* CommonExpressProviderManagerFactory.swift in Sources */,
 				EF8BE6BB2CCA98CB001FBA2B /* OnrampPairRequestItem.swift in Sources */,
 				EF1399742CBD0A5500AC9E2B /* OnrampRedirectData.swift in Sources */,
+				EF28010E2CDE7FC6002AEB9A /* OnrampStatus.swift in Sources */,
 				EF9E2A3C2B4F0CD100418559 /* ExpressManagerError.swift in Sources */,
 				EF9E2A292B4F0CD100418559 /* ExpressAvailableProvider.swift in Sources */,
 				EF1399702CBCFD3100AC9E2B /* OnrampProvider.swift in Sources */,

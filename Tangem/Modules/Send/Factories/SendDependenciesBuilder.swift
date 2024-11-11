@@ -400,17 +400,16 @@ struct SendDependenciesBuilder {
     func makeOnrampBaseDataBuilder(
         onrampRepository: OnrampRepository,
         onrampDataRepository: OnrampDataRepository,
-        onrampManager: OnrampManager,
         providersBuilder: OnrampProvidersBuilder,
-        paymentMethodsBuilder: OnrampPaymentMethodsBuilder
+        paymentMethodsBuilder: OnrampPaymentMethodsBuilder,
+        onrampRedirectingBuilder: OnrampRedirectingBuilder
     ) -> OnrampBaseDataBuilder {
         CommonOnrampBaseDataBuilder(
-            tokenItem: walletModel.tokenItem,
             onrampRepository: onrampRepository,
             onrampDataRepository: onrampDataRepository,
-            onrampManager: onrampManager,
             providersBuilder: providersBuilder,
-            paymentMethodsBuilder: paymentMethodsBuilder
+            paymentMethodsBuilder: paymentMethodsBuilder,
+            onrampRedirectingBuilder: onrampRedirectingBuilder
         )
     }
 }

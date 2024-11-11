@@ -28,17 +28,18 @@ class SendCoordinator: CoordinatorObject {
 
     @Published var qrScanViewCoordinator: QRScanViewCoordinator?
     @Published var onrampProvidersCoordinator: OnrampProvidersCoordinator?
-    @Published var onrampWebViewCoordinator: OnrampRedirectingCoordinator?
 
     // MARK: - Child view models
 
     @Published var mailViewModel: MailViewModel?
     @Published var expressApproveViewModel: ExpressApproveViewModel?
-    @Published var onrampCountryDetectionViewModel: OnrampCountryDetectionViewModel?
 
+    @Published var onrampCountryDetectionViewModel: OnrampCountryDetectionViewModel?
     @Published var onrampSettingsViewModel: OnrampSettingsViewModel?
     @Published var onrampCountrySelectorViewModel: OnrampCountrySelectorViewModel?
     @Published var onrampCurrencySelectorViewModel: OnrampCurrencySelectorViewModel?
+    @Published var onrampRedirectingViewModel: OnrampRedirectingViewModel?
+    @Published var onrampWebViewViewModel: OnrampWebViewViewModel?
 
     required init(
         dismissAction: @escaping Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?>,
@@ -185,14 +186,8 @@ extension SendCoordinator: OnrampRoutable {
         onrampProvidersCoordinator = coordinator
     }
 
-    func openOnrampRedirecting(tokenItem: TokenItem, provider: OnrampProvider, onrampManager: OnrampManager) {
-        let coordinator = OnrampRedirectingCoordinator(dismissAction: { [weak self] in
-            self?.onrampWebViewCoordinator = nil
-        }, popToRootAction: popToRootAction)
-
-        coordinator.start(with: .init(tokenItem: tokenItem, provider: provider, onrampManager: onrampManager))
-
-        onrampWebViewCoordinator = coordinator
+    func openOnrampRedirecting(onrampRedirectingBuilder: OnrampRedirectingBuilder) {
+        onrampRedirectingViewModel = onrampRedirectingBuilder.makeOnrampRedirectingViewModel(coordinator: self)
     }
 }
 
@@ -250,5 +245,11 @@ extension SendCoordinator: OnrampCurrencySelectorRoutable {
 extension SendCoordinator: OnrampAmountRoutable {
     func openOnrampCurrencySelector() {
         rootViewModel?.openOnrampCurrencySelectorView()
+    }
+}
+
+extension SendCoordinator: OnrampRedirectingRoutable {
+    func dismissOnrampRedirecting() {
+        onrampRedirectingViewModel = nil
     }
 }

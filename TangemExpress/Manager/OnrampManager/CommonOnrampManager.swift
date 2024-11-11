@@ -91,7 +91,7 @@ private extension CommonOnrampManager {
     func updateSelectedProvider() {
         // Logic will be updated. Make a some sort by priority
         // TODO: https://tangem.atlassian.net/browse/IOS-8487
-        _selectedProvider = _providers.first
+        _selectedProvider = _providers.first { $0.manager.state.isReadyToBuy } ?? _providers.first
     }
 
     func prepareProviders(

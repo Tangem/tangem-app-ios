@@ -13,28 +13,33 @@ import TangemExpress
 final class OnrampRedirectingViewModel: ObservableObject {
     // MARK: - ViewState
 
-    var title: String { "\(Localization.commonBuy) \(tokenItem.name)" }
-    var providerImageURL: URL? { onrampProvider.provider.imageURL }
-    var providerName: String { onrampProvider.provider.name }
+    var title: String {
+        "\(Localization.commonBuy) \(tokenItem.name)"
+    }
+
+    var providerImageURL: URL? {
+        interactor.onrampProvider?.provider.imageURL
+    }
+
+    var providerName: String {
+        interactor.onrampProvider?.provider.name ?? Localization.expressProvider
+    }
 
     @Published var alert: AlertBinder?
 
     // MARK: - Dependencies
 
     private let tokenItem: TokenItem
-    private let onrampProvider: OnrampProvider
-    private let onrampManager: OnrampManager
+    private let interactor: OnrampRedirectingInteractor
     private weak var coordinator: OnrampRedirectingRoutable?
 
     init(
         tokenItem: TokenItem,
-        onrampProvider: OnrampProvider,
-        onrampManager: OnrampManager,
+        interactor: OnrampRedirectingInteractor,
         coordinator: OnrampRedirectingRoutable
     ) {
         self.tokenItem = tokenItem
-        self.onrampProvider = onrampProvider
-        self.onrampManager = onrampManager
+        self.interactor = interactor
         self.coordinator = coordinator
     }
 
@@ -43,22 +48,15 @@ final class OnrampRedirectingViewModel: ObservableObject {
 //            let redirectSettings = OnrampRedirectSettings(successURL: "https://tangem.com/onramp/success", theme: "light", language: "en")
 //            let item = try onrampProvider.manager.makeOnrampQuotesRequestItem()
 //            let requestItem = OnrampRedirectDataRequestItem(quotesItem: item, redirectSettings: redirectSettings)
-            let data = try await onrampManager.loadRedirectData(provider: onrampProvider)
+            try await interactor.loadRedirectData()
+            try await Task.sleep(seconds: 10)
 
-            guard let url = URL(string: data.widgetUrl) else {
-                throw Error.wrongURL
+            await runOnMain {
+                coordinator?.dismissOnrampRedirecting()
             }
-
-            coordinator?.openURL(url: url)
         } catch {
             // TODO: close view ?
             alert = error.alertBinder
         }
-    }
-}
-
-extension OnrampRedirectingViewModel {
-    enum Error: LocalizedError {
-        case wrongURL
     }
 }

@@ -35,8 +35,8 @@ struct SendCoordinatorView: CoordinatorView {
             .navigation(item: $coordinator.onrampSettingsViewModel) {
                 OnrampSettingsView(viewModel: $0)
             }
-            .navigation(item: $coordinator.onrampWebViewCoordinator) {
-                OnrampRedirectingCoordinatorView(coordinator: $0)
+            .navigation(item: $coordinator.onrampRedirectingViewModel) {
+                OnrampRedirectingView(viewModel: $0)
             }
             .emptyNavigationLink()
     }

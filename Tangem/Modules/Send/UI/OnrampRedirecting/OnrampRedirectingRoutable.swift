@@ -9,5 +9,5 @@
 import Foundation
 
 protocol OnrampRedirectingRoutable: AnyObject {
-    func openURL(url: URL)
+    func dismissOnrampRedirecting()
 }

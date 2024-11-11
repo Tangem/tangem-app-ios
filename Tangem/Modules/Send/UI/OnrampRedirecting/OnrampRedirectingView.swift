@@ -54,10 +54,10 @@ struct OnrampRedirectingView: View {
     var tangemIcon: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 8)
-                .fill(Colors.Background.primary)
+                .fill(Colors.Background.action)
                 .frame(width: 64, height: 64)
 
-            Assets.tangemIcon.image
+            Assets.tangemIconMedium.image
                 .renderingMode(.template)
                 .foregroundColor(Colors.Icon.primary1)
         }

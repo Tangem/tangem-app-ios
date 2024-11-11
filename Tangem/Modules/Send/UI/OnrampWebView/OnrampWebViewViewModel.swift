@@ -18,7 +18,7 @@ final class OnrampWebViewViewModel: ObservableObject {
         [
             successURL: { [weak self] _ in
                 self?.coordinator?.dismissOnrampWebView()
-            }
+            },
         ]
     }
 
@@ -35,9 +35,9 @@ final class OnrampWebViewViewModel: ObservableObject {
         settings: Settings,
         coordinator: OnrampWebViewRoutable
     ) {
-        self.tokenItem = settings.tokenItem
-        self.widgetURL = settings.widgetURL
-        self.successURL = settings.successURL
+        tokenItem = settings.tokenItem
+        widgetURL = settings.widgetURL
+        successURL = settings.successURL
 
         self.coordinator = coordinator
     }

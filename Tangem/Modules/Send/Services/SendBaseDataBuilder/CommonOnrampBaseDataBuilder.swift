@@ -7,31 +7,31 @@
 //
 
 import TangemExpress
-
-protocol OnrampBaseDataBuilderInput {}
+import Combine
 
 struct CommonOnrampBaseDataBuilder {
-    private let tokenItem: TokenItem
+//    private let tokenItem: TokenItem
     private let onrampRepository: OnrampRepository
     private let onrampDataRepository: OnrampDataRepository
-    private let onrampManager: OnrampManager
+//    private let onrampManager: OnrampManager
     private let providersBuilder: OnrampProvidersBuilder
     private let paymentMethodsBuilder: OnrampPaymentMethodsBuilder
+    private let onrampRedirectingBuilder: OnrampRedirectingBuilder
 
     init(
-        tokenItem: TokenItem,
         onrampRepository: OnrampRepository,
         onrampDataRepository: OnrampDataRepository,
-        onrampManager: OnrampManager,
+//        onrampManager: OnrampManager,
         providersBuilder: OnrampProvidersBuilder,
-        paymentMethodsBuilder: OnrampPaymentMethodsBuilder
+        paymentMethodsBuilder: OnrampPaymentMethodsBuilder,
+        onrampRedirectingBuilder: OnrampRedirectingBuilder
     ) {
-        self.tokenItem = tokenItem
         self.onrampRepository = onrampRepository
         self.onrampDataRepository = onrampDataRepository
-        self.onrampManager = onrampManager
+//        self.onrampManager = onrampManager
         self.providersBuilder = providersBuilder
         self.paymentMethodsBuilder = paymentMethodsBuilder
+        self.onrampRedirectingBuilder = onrampRedirectingBuilder
     }
 }
 
@@ -50,7 +50,11 @@ extension CommonOnrampBaseDataBuilder: OnrampBaseDataBuilder {
         return (providersBuilder: providersBuilder, paymentMethodsBuilder: paymentMethodsBuilder)
     }
 
-    func makeDataForOnrampRedirecting() -> (tokenItem: TokenItem, onrampManager: OnrampManager) {
-        return (tokenItem: tokenItem, onrampManager: onrampManager)
+    func makeDataForOnrampRedirecting() -> OnrampRedirectingBuilder {
+        return onrampRedirectingBuilder
     }
+}
+
+enum OnrampBaseDataBuilderError: LocalizedError {
+    case selectedProviderNotFound
 }

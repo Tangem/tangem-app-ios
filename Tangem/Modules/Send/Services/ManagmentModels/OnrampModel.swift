@@ -17,6 +17,7 @@ protocol OnrampModelRoutable: AnyObject {
     func openOnrampSettingsView()
     func openOnrampRedirecting(provider: OnrampProvider)
     func openOnrampWebView(provider: OnrampProvider)
+    func openFinishStep()
 }
 
 class OnrampModel {
@@ -190,47 +191,49 @@ private extension OnrampModel {
 
 // MARK: - Buy
 
-private extension OnrampModel {
-    func send() async throws -> TransactionDispatcherResult {
-        do {
-            guard let provider = _selectedOnrampProvider.value?.value else {
-                throw OnrampModelError.notFound("Onramp provider")
-            }
+/*
+ private extension OnrampModel {
+     func send() async throws -> TransactionDispatcherResult {
+         do {
+             guard let provider = _selectedOnrampProvider.value?.value else {
+                 throw OnrampModelError.notFound("Onramp provider")
+             }
 
-            await runOnMain {
-                router?.openOnrampRedirecting(provider: provider)
-            }
+             await runOnMain {
+                 router?.openOnrampRedirecting(provider: provider)
+             }
 
-            try await Task.sleep(seconds: .hour)
-            let result = TransactionDispatcherResult(hash: "", url: nil, signerType: "")
-            proceed(result: result)
-            return result
-        } catch let error as TransactionDispatcherResult.Error {
-            proceed(error: error)
-            throw error
-        } catch {
-            throw TransactionDispatcherResult.Error.loadTransactionInfo(error: error)
-        }
-    }
+             try await Task.sleep(seconds: .hour)
+             let result = TransactionDispatcherResult(hash: "", url: nil, signerType: "")
+             proceed(result: result)
+             return result
+         } catch let error as TransactionDispatcherResult.Error {
+             proceed(error: error)
+             throw error
+         } catch {
+             throw TransactionDispatcherResult.Error.loadTransactionInfo(error: error)
+         }
+     }
 
-    func proceed(result: TransactionDispatcherResult) {
-        _transactionTime.send(Date())
-    }
+     func proceed(result: TransactionDispatcherResult) {
+         _transactionTime.send(Date())
+     }
 
-    func proceed(error: TransactionDispatcherResult.Error) {
-        switch error {
-        case .demoAlert,
-             .userCancelled,
-             .informationRelevanceServiceError,
-             .informationRelevanceServiceFeeWasIncreased,
-             .transactionNotFound,
-             .loadTransactionInfo:
-            break
-        case .sendTxError:
-            break
-        }
-    }
-}
+     func proceed(error: TransactionDispatcherResult.Error) {
+         switch error {
+         case .demoAlert,
+              .userCancelled,
+              .informationRelevanceServiceError,
+              .informationRelevanceServiceFeeWasIncreased,
+              .transactionNotFound,
+              .loadTransactionInfo:
+             break
+         case .sendTxError:
+             break
+         }
+     }
+ }
+ */
 
 // MARK: - OnrampAmountInput
 
@@ -296,6 +299,18 @@ extension OnrampModel: OnrampPaymentMethodsOutput {
     }
 }
 
+// MARK: - OnrampRedirectingInput
+
+extension OnrampModel: OnrampRedirectingInput {}
+
+// MARK: - OnrampRedirectingOutput
+
+extension OnrampModel: OnrampRedirectingOutput {
+    func redirectDataDidLoad(data: OnrampRedirectData) {
+//        router?.openWebView()
+    }
+}
+
 // MARK: - OnrampInput
 
 extension OnrampModel: OnrampInput {
@@ -340,16 +355,16 @@ extension OnrampModel: SendBaseInput {
 
 extension OnrampModel: SendBaseOutput {
     func performAction() async throws -> TransactionDispatcherResult {
-        _isLoading.send(true)
-        defer { _isLoading.send(false) }
-
-        return try await send()
+        assertionFailure("OnrampModel doesn't support the send transaction action")
+        throw TransactionDispatcherResult.Error.actionNotSupported
     }
 }
 
-// MARK: - OnrampBaseDataBuilderInput
+protocol OnrampWebViewDelegate {
+    var selectedProvider: TangemExpress.OnrampProvider? { get }
 
-extension OnrampModel: OnrampBaseDataBuilderInput {}
+    func onrampDidFinish(with result: Result<Void, Error>)
+}
 
 enum OnrampModelError: String, LocalizedError {
     case countryNotFound
