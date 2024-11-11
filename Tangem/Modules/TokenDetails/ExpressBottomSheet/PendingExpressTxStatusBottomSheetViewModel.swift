@@ -19,6 +19,9 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
         Constants.animationDuration
     }
 
+    let sheetTitle: String
+    let statusTitle: String
+    
     let timeString: String
     let sourceTokenIconInfo: TokenIconInfo
     let destinationTokenIconInfo: TokenIconInfo
@@ -28,7 +31,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     @Published var providerRowViewModel: ProviderRowViewModel
     @Published var sourceFiatAmountTextState: LoadableTextView.State = .loading
     @Published var destinationFiatAmountTextState: LoadableTextView.State = .loading
-    @Published var statusesList: [PendingExpressTransactionStatusRow.StatusRowData] = []
+    @Published var statusesList: [PendingExpressTxStatusRow.StatusRowData] = []
     @Published var currentStatusIndex = 0
     @Published var showGoToProviderHeaderButton = true
     @Published var notificationViewInputs: [NotificationViewInput] = []
@@ -51,6 +54,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     }
 
     init(
+        kind: PendingExpressTxKind,
         pendingTransaction: PendingExpressTransaction,
         currentTokenItem: TokenItem,
         pendingTransactionsManager: PendingExpressTransactionsManager,
@@ -62,6 +66,10 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
         self.router = router
 
         let provider = pendingTransaction.transactionRecord.provider
+        
+        self.sheetTitle = kind.title
+        self.statusTitle = kind.statusTitle(providerName: provider.name)
+        
         providerRowViewModel = .init(
             provider: expressProviderFormatter.mapToProvider(provider: provider),
             titleFormat: .name,
@@ -217,7 +225,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     }
 
     private func updateUI(
-        statusesList: [PendingExpressTransactionStatusRow.StatusRowData],
+        statusesList: [PendingExpressTxStatusRow.StatusRowData],
         currentIndex: Int,
         currentStatus: PendingExpressTransactionStatus,
         refundedTokenItem: TokenItem?,

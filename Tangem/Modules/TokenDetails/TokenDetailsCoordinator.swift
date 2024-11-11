@@ -120,6 +120,7 @@ extension TokenDetailsCoordinator: TokenDetailsRoutable {
         pendingTransactionsManager: PendingExpressTransactionsManager
     ) {
         pendingExpressTxStatusBottomSheetViewModel = .init(
+            kind: .exchange,
             pendingTransaction: pendingTransaction,
             currentTokenItem: tokenItem,
             pendingTransactionsManager: pendingTransactionsManager,
