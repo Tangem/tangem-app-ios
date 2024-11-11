@@ -15,7 +15,8 @@ class OnboardingPinViewModel: ObservableObject {
     let pinCodeLength = 4
 
     var isPinCodeValid: Bool {
-        pinCode.trimmed().count == pinCodeLength
+        pinCode.trimmed().count == pinCodeLength &&
+            pinCode.allSatisfy(\.isWholeNumber)
     }
 
     private let pinCodeSaver: SavePinCode

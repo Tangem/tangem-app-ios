@@ -23,6 +23,7 @@ struct OnboardingPinView: View {
                     .style(Fonts.Regular.callout, color: Colors.Text.secondary)
                     .multilineTextAlignment(.center)
             }
+            .padding(.horizontal, 40)
 
             OnboardingPinStackView(
                 maxDigits: viewModel.pinCodeLength,
@@ -36,6 +37,8 @@ struct OnboardingPinView: View {
                 isDisabled: !viewModel.isPinCodeValid,
                 action: viewModel.submitPinCodeAction
             )
+            .padding(.bottom, 20)
+            .padding(.horizontal, 16)
         }
     }
 }
