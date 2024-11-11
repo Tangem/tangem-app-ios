@@ -74,19 +74,40 @@ class SolanaNetworkService {
     }
 
     func sendSplToken(amount: UInt64, computeUnitLimit: UInt32?, computeUnitPrice: UInt64?, sourceTokenAddress: String, destinationAddress: String, token: Token, tokenProgramId: PublicKey, signer: SolanaTransactionSigner) -> AnyPublisher<TransactionID, Error> {
-        solanaSdk.action.sendSPLTokens(
-            mintAddress: token.contractAddress,
-            tokenProgramId: tokenProgramId,
-            decimals: Decimals(token.decimalCount),
-            from: sourceTokenAddress,
-            to: destinationAddress,
-            amount: amount,
-            computeUnitLimit: computeUnitLimit,
-            computeUnitPrice: computeUnitPrice,
-            allowUnfundedRecipient: true,
-            signer: signer
-        )
-        .eraseToAnyPublisher()
+        solanaSdk.api.getAccountInfo(account: destinationAddress, decodedTo: AccountInfo.self)
+            .eraseToAnyPublisher()
+            .mapToResult()
+            .withWeakCaptureOf(self)
+            .flatMap { manager, result in
+
+                let isAllowUnfundedAccountRecipient: Bool
+
+                switch result {
+                case .success(let info):
+                    if info.owner == PublicKey.programId.base58EncodedString {
+                        isAllowUnfundedAccountRecipient = true
+                    } else {
+                        isAllowUnfundedAccountRecipient = false
+                    }
+
+                case .failure(let error):
+                    return AnyPublisher<TransactionID, Error>.anyFail(error: error)
+                }
+
+                return manager.solanaSdk.action.sendSPLTokens(
+                    mintAddress: token.contractAddress,
+                    tokenProgramId: tokenProgramId,
+                    decimals: Decimals(token.decimalCount),
+                    from: sourceTokenAddress,
+                    to: destinationAddress,
+                    amount: amount,
+                    computeUnitLimit: computeUnitLimit,
+                    computeUnitPrice: computeUnitPrice,
+                    allowUnfundedRecipient: isAllowUnfundedAccountRecipient,
+                    signer: signer
+                )
+            }
+            .eraseToAnyPublisher()
     }
 
     func getFeeForMessage(
