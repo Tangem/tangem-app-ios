@@ -8,6 +8,7 @@
 
 import Foundation
 import TangemSdk
+import TangemFoundation
 
 class KoinosTransactionBuilder {
     private let koinosNetworkParams: KoinosNetworkParams

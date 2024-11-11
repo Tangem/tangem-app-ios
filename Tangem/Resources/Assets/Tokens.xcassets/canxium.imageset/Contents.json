@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "Name=CAU, Active=Off.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TangemFoundation
 
 struct PriceChangeFormatter {
     private let percentFormatter: PercentFormatter

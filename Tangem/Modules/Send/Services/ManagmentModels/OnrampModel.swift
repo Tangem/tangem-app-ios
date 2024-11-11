@@ -9,16 +9,18 @@
 import Foundation
 import TangemExpress
 import Combine
+import TangemFoundation
 
 protocol OnrampModelRoutable: AnyObject {
-    func openOnrampCountriesSelector()
     func openOnrampCountryBottomSheet(country: OnrampCountry)
 }
 
 class OnrampModel {
     // MARK: - Data
 
-    private let _amount = CurrentValueSubject<SendAmount?, Never>(nil)
+    private let _currency: CurrentValueSubject<LoadingValue<OnrampFiatCurrency>, Never>
+    private let _amount: CurrentValueSubject<SendAmount?, Never> = .init(.none)
+    private let _selectedQuote: CurrentValueSubject<LoadingValue<OnrampQuote>?, Never> = .init(.none)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
     private let _isLoading = CurrentValueSubject<Bool, Never>(false)
 
@@ -29,31 +31,90 @@ class OnrampModel {
 
     // MARK: - Private injections
 
+    private let walletModel: WalletModel
     private let onrampManager: OnrampManager
+    private let onrampRepository: OnrampRepository
 
     private var task: Task<Void, Never>?
     private var bag: Set<AnyCancellable> = []
 
-    init(onrampManager: OnrampManager) {
+    init(
+        walletModel: WalletModel,
+        onrampManager: OnrampManager,
+        onrampRepository: OnrampRepository
+    ) {
+        self.walletModel = walletModel
         self.onrampManager = onrampManager
+        self.onrampRepository = onrampRepository
+
+        _currency = .init(
+            onrampRepository.preferenceCurrency.map { .loaded($0) } ?? .loading
+        )
 
         bind()
-        updateCountry()
     }
 }
 
 // MARK: - Bind
 
 private extension OnrampModel {
-    func bind() {}
+    func bind() {
+        // Handle the settings changes
+        onrampRepository
+            .preferenceCurrencyPublisher
+            .sink { [weak self] currency in
+                self?.preferenceDidChange(currency: currency)
+            }
+            .store(in: &bag)
+    }
 
-    func updateCountry() {
-        task = runTask(in: self) { model in
+    func preferenceDidChange(currency: OnrampFiatCurrency?) {
+        guard let country = onrampRepository.preferenceCountry, let currency else {
+            startTask {
+                try await $0.initiateCountryDefinition()
+            }
+            return
+        }
+
+        // Update amount UI
+        _currency.send(.loaded(currency))
+
+        startTask {
+            try await $0.updateProviders(country: country, currency: currency)
+        }
+    }
+
+    func initiateCountryDefinition() async throws {
+        let country = try await onrampManager.initialSetupCountry()
+
+        // Update amount UI
+        _currency.send(.loaded(country.currency))
+
+        // We have to show confirmation bottom sheet
+        await runOnMain {
+            router?.openOnrampCountryBottomSheet(country: country)
+        }
+    }
+
+    func updateProviders(country: OnrampCountry, currency: OnrampFiatCurrency) async throws {
+        let request = makeOnrampPairRequestItem(country: country, currency: currency)
+        try await onrampManager.setupProviders(request: request)
+    }
+}
+
+// MARK: - Helpers
+
+private extension OnrampModel {
+    func makeOnrampPairRequestItem(country: OnrampCountry, currency: OnrampFiatCurrency) -> OnrampPairRequestItem {
+        OnrampPairRequestItem(fiatCurrency: currency, country: country, destination: walletModel)
+    }
+
+    func startTask(code: @escaping (OnrampModel) async throws -> Void) {
+        task = TangemFoundation.runTask(in: self) { model in
             do {
-                let country = try await model.onrampManager.getCountry()
-                await runOnMain {
-                    model.router?.openOnrampCountryBottomSheet(country: country)
-                }
+                try await code(model)
+            } catch _ as CancellationError {
+                // Do nothing
             } catch {
                 await runOnMain {
                     model.alertPresenter?.showAlert(error.alertBinder)
@@ -98,6 +159,26 @@ private extension OnrampModel {
     }
 }
 
+// MARK: - OnrampAmountInput
+
+extension OnrampModel: OnrampAmountInput {
+    var fiatCurrency: LoadingValue<OnrampFiatCurrency> {
+        _currency.value
+    }
+
+    var fiatCurrencyPublisher: AnyPublisher<LoadingValue<OnrampFiatCurrency>, Never> {
+        _currency.eraseToAnyPublisher()
+    }
+}
+
+// MARK: - OnrampAmountOutput
+
+extension OnrampModel: OnrampAmountOutput {
+    func amountDidChanged(amount: SendAmount?) {
+        _amount.send(amount)
+    }
+}
+
 // MARK: - OnrampInput
 
 extension OnrampModel: OnrampInput {}
@@ -113,14 +194,6 @@ extension OnrampModel: SendAmountInput {
 
     var amountPublisher: AnyPublisher<SendAmount?, Never> {
         _amount.eraseToAnyPublisher()
-    }
-}
-
-// MARK: - SendAmountOutput
-
-extension OnrampModel: SendAmountOutput {
-    func amountDidChanged(amount: SendAmount?) {
-        _amount.send(amount)
     }
 }
 
@@ -154,3 +227,10 @@ extension OnrampModel: SendBaseOutput {
 // MARK: - OnrampBaseDataBuilderInput
 
 extension OnrampModel: OnrampBaseDataBuilderInput {}
+
+enum OnrampModelError: String, LocalizedError {
+    case countryNotFound
+    case currencyNotFound
+
+    var errorDescription: String? { rawValue }
+}

@@ -26,10 +26,12 @@ class SendCoordinator: CoordinatorObject {
 
     // MARK: - Child coordinators
 
+    @Published var qrScanViewCoordinator: QRScanViewCoordinator?
+    @Published var onrampProvidersCoordinator: OnrampProvidersCoordinator?
+
     // MARK: - Child view models
 
     @Published var mailViewModel: MailViewModel?
-    @Published var qrScanViewCoordinator: QRScanViewCoordinator?
     @Published var expressApproveViewModel: ExpressApproveViewModel?
     @Published var onrampCountryViewModel: OnrampCountryViewModel?
 
@@ -129,13 +131,36 @@ extension SendCoordinator: SendRoutable {
             coordinator: self
         )
     }
+}
 
+// MARK: - ExpressApproveRoutable
+
+extension SendCoordinator: OnrampRoutable {
     func openOnrampCountry(country: OnrampCountry, repository: OnrampRepository) {
         onrampCountryViewModel = .init(
             country: country,
             repository: repository,
             coordinator: self
         )
+    }
+
+    func openOnrampCountrySelectorView(repository: any OnrampRepository, dataRepository: any OnrampDataRepository) {
+        // TODO: Aleksei Muraveinik
+        // https://tangem.atlassian.net/browse/IOS-8357
+    }
+
+    func openOnrampCurrencySelectorView(repository: any OnrampRepository, dataRepository: any OnrampDataRepository) {
+        // TODO: Aleksei Muraveinik
+        // https://tangem.atlassian.net/browse/IOS-8158
+    }
+
+    func openOnrampProviders() {
+        let coordinator = OnrampProvidersCoordinator { [weak self] in
+            self?.onrampProvidersCoordinator = nil
+        }
+
+        coordinator.start(with: .default)
+        onrampProvidersCoordinator = coordinator
     }
 }
 

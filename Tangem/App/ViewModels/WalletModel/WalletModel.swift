@@ -14,7 +14,7 @@ import TangemStaking
 
 class WalletModel {
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
-    @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
+    @Injected(\.expressAvailabilityProvider) private var expressAvailabilityProvider: ExpressAvailabilityProvider
     @Injected(\.accountHealthChecker) private var accountHealthChecker: AccountHealthChecker
 
     var walletModelId: WalletModel.Id {
@@ -182,7 +182,7 @@ class WalletModel {
 
     var actionsUpdatePublisher: AnyPublisher<Void, Never> {
         Publishers.Merge(
-            swapAvailabilityProvider.tokenItemsAvailableToSwapPublisher.mapToVoid(),
+            expressAvailabilityProvider.availabilityDidChangePublisher,
             stakingManagerStatePublisher.mapToVoid()
         )
         .eraseToAnyPublisher()
