@@ -27,7 +27,7 @@ enum ValidationErrorEvent: Hashable {
     case manaLimit(availableAmount: Decimal)
     case koinosInsufficientBalanceToSendKoin
 
-    case minimumRestrictAmount(amountFormatted: String)
+    case minimumRestrictAmount(restrictAmountFormatted: String)
 }
 
 extension ValidationErrorEvent: NotificationEvent {
@@ -94,8 +94,8 @@ extension ValidationErrorEvent: NotificationEvent {
             return Localization.koinosManaExceedsKoinBalanceDescription(validMax)
         case .koinosInsufficientBalanceToSendKoin:
             return Localization.koinosInsufficientBalanceToSendKoinDescription
-        case .minimumRestrictAmount(let amountFormatted):
-            return Localization.transferNotificationInvalidMinimumTransactionAmountText(amountFormatted)
+        case .minimumRestrictAmount(let restrictAmountFormatted):
+            return Localization.transferNotificationInvalidMinimumTransactionAmountText(restrictAmountFormatted)
         }
     }
 

@@ -121,7 +121,7 @@ class CasperWalletManager: BaseManager, WalletManager {
 // MARK: - MinimumAmountRestrictable
 
 extension CasperWalletManager: MinimumAmountRestrictable {
-    var minimumAmountRestrictValue: Amount {
+    var minimumRestrictAmount: Amount {
         Amount(with: wallet.blockchain, value: Constants.minimumAmountRestrictValue)
     }
 }

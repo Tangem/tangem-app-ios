@@ -22,7 +22,7 @@ public enum ValidationError: Hashable, LocalizedError {
     case maximumUTXO(blockchainName: String, newAmount: Amount, maxUtxo: Int)
     case reserve(amount: Amount)
 
-    case minimumRestrictAmount(minimumAmount: Amount)
+    case minimumRestrictAmount(amount: Amount)
 
     case cardanoHasTokens(minimumAmount: Amount)
     case cardanoInsufficientBalanceToSendToken

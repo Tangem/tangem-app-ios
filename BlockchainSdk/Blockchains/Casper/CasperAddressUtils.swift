@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CryptoSwift
 
 /*
  https://github.com/casper-ecosystem/casper-js-sdk/blob/dev/src/lib/ChecksummedHex.ts
@@ -79,5 +80,34 @@ extension CasperAddressUtils {
     enum Error: LocalizedError {
         case failedSizeInputChecksum
         case failedHashBlake2b
+    }
+}
+
+private extension Bit {
+    var boolValue: Bool {
+        self == .one
+    }
+}
+
+private extension UInt8 {
+    func toBits() -> [Bit] {
+        var byte = self
+        var bits = [Bit](repeating: .zero, count: 8)
+        for i in 0 ..< 8 {
+            let currentBit = byte & 0x01
+            if currentBit != 0 {
+                bits[i] = .one
+            }
+
+            byte >>= 1
+        }
+
+        return bits
+    }
+}
+
+private extension Array where Element == UInt8 {
+    func toBitArray() -> [Bit] {
+        flatMap { $0.toBits() }
     }
 }

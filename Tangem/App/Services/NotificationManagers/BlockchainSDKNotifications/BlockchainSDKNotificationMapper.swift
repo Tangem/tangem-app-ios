@@ -64,8 +64,8 @@ struct BlockchainSDKNotificationMapper {
             return .manaLimit(availableAmount: availableAmount)
         case .feeExceedsMaxFeeResource:
             return .koinosInsufficientBalanceToSendKoin
-        case .minimumRestrictAmount(let minimumRestrictAmount):
-            return .minimumRestrictAmount(amountFormatted: minimumRestrictAmount.string())
+        case .minimumRestrictAmount(let restrictAmount):
+            return .minimumRestrictAmount(restrictAmountFormatted: restrictAmount.string())
         }
     }
 

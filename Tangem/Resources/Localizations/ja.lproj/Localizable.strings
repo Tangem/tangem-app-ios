@@ -437,7 +437,7 @@
 "markets_token_details_price_performance" = "値動き";
 "markets_token_details_repository" = "リポジトリ";
 "markets_token_details_security_score" = "セキュリティ・スコア";
-"markets_token_details_security_score_description" = "";
+"markets_token_details_security_score_description" = "Security score of a token is a metric that assesses the security level of a blockchain or token based on various factors and is compiled from the sources listed below.";
 "markets_token_details_social" = "ソーシャル";
 "markets_token_details_total_supply" = "総供給量";
 "markets_token_details_total_supply_description" = "特定の暗号資産に存在しうるコインまたはトークンの最大数";
@@ -542,10 +542,12 @@
 "onramp_currency_other" = "その他の通貨";
 "onramp_currency_popular" = "人気の法定通貨";
 "onramp_currency_search" = "通貨で検索";
-"onramp_max_amount_restriction" = "The purchase amount should be no more than %@";
-"onramp_min_amount_restriction" = "The amount to buy must be at least %@";
-"onramp_no_available_providers" = "No available providers for this currency";
+"onramp_max_amount_restriction" = "買付金額は%@以下にしてください";
+"onramp_min_amount_restriction" = "買付金額は少なくとも%@である必要があります";
+"onramp_no_available_providers" = "この通貨で利用可能なプロバイダーはありません";
 "onramp_pay_with" = "支払う";
+"onramp_redirecting_to_provider_subtitle" = "サードパーティプロバイダー%@で取引を完了できます。";
+"onramp_redirecting_to_provider_title" = "%@にリダイレクトしています...";
 "onramp_residency_bottomsheet_country_not_supported" = "この国では当社のサービスはご利用いただけません";
 "onramp_residency_bottomsheet_country_subtitle" = "変更または確認";
 "onramp_residency_bottomsheet_title" = "あなたの住居は次のように識別されています";
@@ -864,6 +866,7 @@
 "transaction_history_transaction_from_address" = "送金元: %@";
 "transaction_history_transaction_to_address" = "送金先: %@";
 "transaction_history_transaction_validator" = "バリデーター: %@";
+"transfer_min_amount_error" = "最小%@";
 "transfer_notification_invalid_minimum_transaction_amount_text" = "最小取引金額は%1$@です。";
 "try_to_load_data_again_button_title" = "もう一度やり直してください";
 "twin_error_same_card" = "同じカードをスキャンしました。ツインウォレットを作成するには、番号%liのカードをスキャンする必要があります。";
