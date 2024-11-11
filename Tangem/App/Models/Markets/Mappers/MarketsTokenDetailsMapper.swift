@@ -44,7 +44,7 @@ struct MarketsTokenDetailsMapper {
             priceChangePercentage: try mapPriceChangePercentage(response: response),
             insights: .init(dto: response.insights),
             metrics: response.metrics,
-            securityData: response.securityData,
+            securityScore: mapSecurityScore(response: response),
             pricePerformance: mapPricePerformance(response: response),
             links: response.links,
             availableNetworks: networks
@@ -74,6 +74,29 @@ struct MarketsTokenDetailsMapper {
 
             partialResult[intervalType] = pair.value
         }
+    }
+
+    private func mapSecurityScore(response: MarketsDTO.Coins.Response) -> MarketsTokenDetailsSecurityScore? {
+        guard
+            let securityData = response.securityData,
+            let totalSecurityScore = securityData.totalSecurityScore,
+            let providerData = securityData.providerData?.nilIfEmpty // `SecurityData` DTO with an empty `providerData` field is invalid
+        else {
+            return nil
+        }
+
+        return MarketsTokenDetailsSecurityScore(
+            securityScore: totalSecurityScore,
+            providers: providerData.map { provider in
+                return .init(
+                    id: provider.providerId,
+                    name: provider.providerName,
+                    securityScore: provider.securityScore,
+                    auditURL: provider.link,
+                    auditDate: provider.lastAuditDate
+                )
+            }
+        )
     }
 }
 

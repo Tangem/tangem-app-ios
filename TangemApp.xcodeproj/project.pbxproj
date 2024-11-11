@@ -1794,7 +1794,6 @@
 		B6AEF9742A796713004663C3 /* TokenSectionsAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AEF9732A796713004663C3 /* TokenSectionsAdapter.swift */; };
 		B6B1BC292C6CCE88003EDB47 /* IntrospectResponderChainViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B1BC282C6CCE88003EDB47 /* IntrospectResponderChainViewModifier.swift */; };
 		B6B1CCCA2C460BB9006C1B44 /* UIPanGestureRecognizer+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B1CCC92C460BB9006C1B44 /* UIPanGestureRecognizer+.swift */; };
-		B6B7B6002CDABFBB00479729 /* MarketsTokenDetailsSecurityData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B7B5FF2CDABFBB00479729 /* MarketsTokenDetailsSecurityData.swift */; };
 		B6B7B6052CDAC6F500479729 /* MarketsTokenDetailsSecurityScoreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B7B6042CDAC6F500479729 /* MarketsTokenDetailsSecurityScoreViewModel.swift */; };
 		B6BB2CE22BAC4A9B009C12F2 /* ExpressDeviceInfoPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6BB2CE12BAC4A9B009C12F2 /* ExpressDeviceInfoPlugin.swift */; };
 		B6C0D3E12CBDC2E3001113ED /* TangemModules in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0D3E02CBDC2E3001113ED /* TangemModules */; };
@@ -4800,7 +4799,6 @@
 		B6AEF9732A796713004663C3 /* TokenSectionsAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenSectionsAdapter.swift; sourceTree = "<group>"; };
 		B6B1BC282C6CCE88003EDB47 /* IntrospectResponderChainViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntrospectResponderChainViewModifier.swift; sourceTree = "<group>"; };
 		B6B1CCC92C460BB9006C1B44 /* UIPanGestureRecognizer+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIPanGestureRecognizer+.swift"; sourceTree = "<group>"; };
-		B6B7B5FF2CDABFBB00479729 /* MarketsTokenDetailsSecurityData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenDetailsSecurityData.swift; sourceTree = "<group>"; };
 		B6B7B6042CDAC6F500479729 /* MarketsTokenDetailsSecurityScoreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenDetailsSecurityScoreViewModel.swift; sourceTree = "<group>"; };
 		B6BB2CE12BAC4A9B009C12F2 /* ExpressDeviceInfoPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressDeviceInfoPlugin.swift; sourceTree = "<group>"; };
 		B6C1B9FE2AE1627500A98D2F /* OrganizeTokensScrollState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensScrollState.swift; sourceTree = "<group>"; };
@@ -6034,7 +6032,6 @@
 				B0BEE7E02C411ACC00B8FE25 /* MarketsTokenDetailsLinks.swift */,
 				B041C96A2C3FF70800CE027A /* MarketsPricePerformanceData.swift */,
 				B0806A842C78742800D374FA /* MarketsInsightsNetworkInfo.swift */,
-				B6B7B5FF2CDABFBB00479729 /* MarketsTokenDetailsSecurityData.swift */,
 			);
 			path = Markets;
 			sourceTree = "<group>";
@@ -16419,7 +16416,6 @@
 				DCF8972D28ACF8CA002A85F6 /* TangemSdkConfigFactory.swift in Sources */,
 				B0A596542991FC1200C7C512 /* UtorgService.swift in Sources */,
 				EFA154822CD2542700A0642C /* OnrampAmountBuilder.swift in Sources */,
-				B6B7B6002CDABFBB00479729 /* MarketsTokenDetailsSecurityData.swift in Sources */,
 				B020FFB425DE7F9300EF422C /* DataCollectors.swift in Sources */,
 				B6ACD00E2AD698F6005A6CA3 /* DragAndDropGestureContextProviding.swift in Sources */,
 				EFD68F282CC2993000693C97 /* OnrampInteractor.swift in Sources */,

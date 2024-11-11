@@ -20,7 +20,7 @@ struct MarketsTokenDetailsModel: Identifiable {
     let priceChangePercentage: [String: Decimal]
     let insights: MarketsTokenDetailsInsights?
     let metrics: MarketsTokenDetailsMetrics?
-    let securityData: MarketsTokenDetailsSecurityData?
+    let securityScore: MarketsTokenDetailsSecurityScore?
     let pricePerformance: [MarketsPriceIntervalType: MarketsPricePerformanceData]?
     let links: MarketsTokenDetailsLinks?
     let availableNetworks: [NetworkModel]
@@ -35,7 +35,7 @@ extension MarketsTokenDetailsModel: Equatable {
             && lhs.metrics == rhs.metrics
             && lhs.pricePerformance == rhs.pricePerformance
             && lhs.links == rhs.links
-            && lhs.securityData == rhs.securityData
+            && lhs.securityScore == rhs.securityScore
     }
 }
 
@@ -70,4 +70,17 @@ struct MarketsTokenDetailsInsights: Equatable {
         experiencedBuyers = mapToInterval(dto.experiencedBuyerChange)
         networksInfo = dto.networks
     }
+}
+
+struct MarketsTokenDetailsSecurityScore: Equatable {
+    struct Provider: Equatable {
+        let id: String
+        let name: String
+        let securityScore: Double
+        let auditURL: URL?
+        let auditDate: Date?
+    }
+
+    let securityScore: Double
+    let providers: [Provider]
 }

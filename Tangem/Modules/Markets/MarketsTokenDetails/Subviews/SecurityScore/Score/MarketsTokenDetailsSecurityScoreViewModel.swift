@@ -11,7 +11,7 @@ import Foundation
 final class MarketsTokenDetailsSecurityScoreViewModel {
     var title: String { Localization.marketsTokenDetailsSecurityScore }
 
-    var subtitle: String { Localization.marketsTokenDetailsBasedOnRatings(providerData.count) }
+    var subtitle: String { Localization.marketsTokenDetailsBasedOnRatings(providers.count) }
 
     private(set) lazy var securityScore: String = MarketsTokenDetailsSecurityScoreRatingHelper()
         .makeSecurityScore(forSecurityScoreValue: securityScoreValue)
@@ -19,22 +19,22 @@ final class MarketsTokenDetailsSecurityScoreViewModel {
     private(set) lazy var ratingBullets: [MarketsTokenDetailsSecurityScoreRatingViewData.RatingBullet] = MarketsTokenDetailsSecurityScoreRatingHelper()
         .makeRatingBullets(forSecurityScoreValue: securityScoreValue)
 
-    private let providerData: [MarketsTokenDetailsSecurityData.ProviderData] // TODO: Andrey Fedorov - Replace with a dedicated domain model and rename
+    private let providers: [MarketsTokenDetailsSecurityScore.Provider] // TODO: Andrey Fedorov - Replace with a dedicated domain model and rename
     private let securityScoreValue: Double
 
     private weak var routable: MarketsTokenDetailsSecurityScoreRoutable?
 
     init(
-        providerData: [MarketsTokenDetailsSecurityData.ProviderData],
         securityScoreValue: Double,
+        providers: [MarketsTokenDetailsSecurityScore.Provider],
         routable: MarketsTokenDetailsSecurityScoreRoutable?
     ) {
-        self.providerData = providerData
         self.securityScoreValue = securityScoreValue
+        self.providers = providers
         self.routable = routable
     }
 
     func onInfoButtonTap() {
-        routable?.openSecurityScoreDetails(with: providerData)
+        routable?.openSecurityScoreDetails(with: providers)
     }
 }

@@ -9,5 +9,5 @@
 import Foundation
 
 protocol MarketsTokenDetailsSecurityScoreRoutable: AnyObject {
-    func openSecurityScoreDetails(with providerData: [MarketsTokenDetailsSecurityData.ProviderData])
+    func openSecurityScoreDetails(with providers: [MarketsTokenDetailsSecurityScore.Provider])
 }

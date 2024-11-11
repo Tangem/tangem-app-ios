@@ -13,8 +13,6 @@ extension MarketsDTO {
 }
 
 extension MarketsDTO.Coins {
-    typealias SecurityData = MarketsTokenDetailsSecurityData // TODO: Andrey Fedorov - Use dedicated DTO instead?
-
     struct Request: Encodable {
         let tokenId: TokenItemId
         let currency: String
@@ -46,5 +44,18 @@ extension MarketsDTO.Coins {
         let buyPressureChange: [String: Decimal?]
         let experiencedBuyerChange: [String: Decimal?]
         let networks: [MarketsInsightsNetworkInfo]?
+    }
+
+    struct SecurityData: Decodable {
+        struct ProviderData: Decodable {
+            let providerId: String
+            let providerName: String
+            let securityScore: Double
+            let link: URL?
+            let lastAuditDate: Date?
+        }
+
+        let totalSecurityScore: Double?
+        let providerData: [ProviderData]?
     }
 }

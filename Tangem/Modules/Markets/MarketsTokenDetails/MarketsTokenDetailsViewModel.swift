@@ -429,10 +429,10 @@ private extension MarketsTokenDetailsViewModel {
             )
         }
 
-        if let securityData = model.securityData {
+        if let securityScore = model.securityScore {
             securityScoreViewModel = .init(
-                providerData: securityData.providerData,
-                securityScoreValue: securityData.totalSecurityScore,
+                securityScoreValue: securityScore.securityScore,
+                providers: securityScore.providers,
                 routable: self
             )
         }
@@ -512,16 +512,19 @@ extension MarketsTokenDetailsViewModel: MarketsTokenDetailsBottomSheetRouter {
 }
 
 extension MarketsTokenDetailsViewModel: MarketsTokenDetailsSecurityScoreRoutable {
-    func openSecurityScoreDetails(with providerData: [MarketsTokenDetailsSecurityData.ProviderData]) {
+    func openSecurityScoreDetails(with providers: [MarketsTokenDetailsSecurityScore.Provider]) {
         // TODO: Andrey Fedorov - Use factory to perform mapping and VM creation
+        let iconBuilder = IconURLBuilder()
+
         securityScoreDetailsViewModel = .init(
-            providers: (providerData + providerData).map { providerData in
-                .init(
-                    name: providerData.providerName,
-                    auditDate: providerData.lastAuditDate?.toString(), // FIXME: Andrey Fedorov - Test only, remove when not needed
-                    iconURL: IconURLBuilder().securityScoreProviderIconURL(providerId: providerData.providerId, size: .small),
-                    providerURL: providerData.link,
-                    securityScoreValue: providerData.securityScore
+            providers: (providers + providers).map { provider in // FIXME: Andrey Fedorov - Test only, remove when not needed
+                let iconURL = iconBuilder.securityScoreProviderIconURL(providerId: provider.id, size: .small)
+                return .init(
+                    name: provider.name,
+                    auditDate: provider.auditDate?.toString(), // FIXME: Andrey Fedorov - Test only, remove when not needed
+                    iconURL: iconURL,
+                    providerURL: provider.auditURL,
+                    securityScoreValue: provider.securityScore
                 )
             },
             routable: self
