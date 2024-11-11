@@ -12,13 +12,13 @@ enum SearchUtil<T> {
             return items
         }
 
-        let loweccasedSearchText = searchText.lowercased().trimmed()
+        let lowercasedSearchText = searchText.lowercased().trimmed()
 
         return items
             .filter { item in
                 item[keyPath: keyPath]
                     .lowercased()
-                    .contains(loweccasedSearchText)
+                    .contains(lowercasedSearchText)
             }
             .sorted { item, _ in
                 item[keyPath: keyPath]
