@@ -13,7 +13,7 @@ import XCTest
 
 final class CasperTests: XCTestCase {
     private let sizeUtility = TransactionSizeTesterUtility()
-    
+
     private let blockchain = Blockchain.casper(curve: .secp256k1, testnet: false)
     private lazy var txBuilder = CasperTransactionBuilder(curve: .secp256k1, blockchainDecimalValue: blockchain.decimalValue)
 
@@ -30,9 +30,9 @@ final class CasperTests: XCTestCase {
     func testBuildForSign() throws {
         let transaction = transactionData()
         let hashForSign = try txBuilder.buildForSign(transaction: transaction, timestamp: timestamp)
-        
+
         sizeUtility.testTxSize(hashForSign)
-        
+
         XCTAssertEqual(hashForSign.hexString.lowercased(), "951f30645f15e5955750d7aa3b50cadd8ca4044f46aa49cfe389d90825f8122f")
     }
 

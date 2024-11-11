@@ -1,5 +1,5 @@
 //
-//  CaspertTransactionParams.swift
+//  CasperTransactionParams.swift
 //  BlockchainSdk
 //
 //  Created by Alexander Skibin on 04.11.2024.
