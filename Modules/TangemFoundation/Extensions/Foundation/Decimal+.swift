@@ -47,7 +47,7 @@ public extension Decimal {
     var roundedDecimalNumber: NSDecimalNumber {
         rounded(roundingMode: .up) as NSDecimalNumber
     }
-    
+
     var roundedDownDecimalNumber: NSDecimalNumber {
         rounded(roundingMode: .down) as NSDecimalNumber
     }

@@ -846,3 +846,12 @@ enum CLTypeSerializeHelper {
         return ""
     }
 }
+
+private extension String {
+    private static var numericSet: Set<Character> = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
+    var isNumeric: Bool {
+        guard !isEmpty else { return false }
+        return Set(self).isSubset(of: String.numericSet)
+    }
+}
