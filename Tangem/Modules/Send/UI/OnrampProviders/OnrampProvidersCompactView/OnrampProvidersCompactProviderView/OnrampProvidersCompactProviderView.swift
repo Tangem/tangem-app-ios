@@ -1,15 +1,15 @@
 //
-//  OnrampProvidersCompactView.swift
+//  OnrampProvidersCompactProviderView.swift
 //  TangemApp
 //
-//  Created by Sergey Balashov on 25.10.2024.
+//  Created by Sergey Balashov on 31.10.2024.
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
 import SwiftUI
 
-struct OnrampProvidersCompactView: View {
-    let data: OnrampProvidersCompactViewData
+struct OnrampProvidersCompactProviderView: View {
+    let data: OnrampProvidersCompactProviderViewData
 
     var body: some View {
         Button(action: data.action) {
@@ -50,6 +50,7 @@ struct OnrampProvidersCompactView: View {
             Text("\(Localization.onrampVia) \(data.providerName)")
                 .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
         }
+        .lineLimit(1)
     }
 
     private var badgeView: some View {

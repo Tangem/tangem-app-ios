@@ -24,10 +24,6 @@ class OnrampStep {
         self.viewModel = viewModel
         self.interactor = interactor
     }
-
-    func setup(router: OnrampSummaryRoutable) {
-        viewModel.router = router
-    }
 }
 
 // MARK: - SendStep
@@ -40,7 +36,7 @@ extension OnrampStep: SendStep {
     var sendStepViewAnimatable: any SendStepViewAnimatable { viewModel }
 
     var navigationTrailingViewType: SendStepNavigationTrailingViewType? {
-        .dotsButton { [weak router = viewModel.router] in
+        .dotsButton { [weak router = viewModel.onrampProvidersCompactViewModel.router] in
             router?.openOnrampSettingsView()
         }
     }

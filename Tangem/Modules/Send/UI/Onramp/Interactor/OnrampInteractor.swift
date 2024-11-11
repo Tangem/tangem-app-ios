@@ -17,9 +17,12 @@ class CommonOnrampInteractor {
     private weak var input: OnrampInput?
     private weak var output: OnrampOutput?
 
-    private let _isValid: CurrentValueSubject<Bool, Never> = .init(true)
+    private let _isValid: CurrentValueSubject<Bool, Never> = .init(false)
 
-    init(input: OnrampInput, output: OnrampOutput) {
+    init(
+        input: OnrampInput,
+        output: OnrampOutput
+    ) {
         self.input = input
         self.output = output
     }

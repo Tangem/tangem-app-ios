@@ -21,16 +21,25 @@ class OnrampProvidersCoordinator: CoordinatorObject {
 
     @Published var onrampPaymentMethodsViewModel: OnrampPaymentMethodsViewModel?
 
+    // MARK: - Dependencies
+
+    private let onrampProvidersBuilder: OnrampProvidersBuilder
+    private let onrampPaymentMethodsBuilder: OnrampPaymentMethodsBuilder
+
     required init(
+        onrampProvidersBuilder: OnrampProvidersBuilder,
+        onrampPaymentMethodsBuilder: OnrampPaymentMethodsBuilder,
         dismissAction: @escaping Action<Void>,
         popToRootAction: @escaping Action<PopToRootOptions>
     ) {
+        self.onrampProvidersBuilder = onrampProvidersBuilder
+        self.onrampPaymentMethodsBuilder = onrampPaymentMethodsBuilder
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
     }
 
     func start(with options: Options) {
-        rootViewModel = .init(coordinator: self)
+        rootViewModel = onrampProvidersBuilder.makeOnrampProvidersViewModel(coordinator: self)
     }
 }
 
@@ -46,7 +55,7 @@ extension OnrampProvidersCoordinator {
 
 extension OnrampProvidersCoordinator: OnrampProvidersRoutable {
     func openOnrampPaymentMethods() {
-        onrampPaymentMethodsViewModel = .init(coordinator: self)
+        onrampPaymentMethodsViewModel = onrampPaymentMethodsBuilder.makeOnrampPaymentMethodsViewModel(coordinator: self)
     }
 }
 

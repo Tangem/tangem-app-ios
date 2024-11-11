@@ -12,7 +12,7 @@ public actor CommonOnrampManager {
     private let dataRepository: OnrampDataRepository
     private let logger: Logger
 
-    private var _providers: [Provider] = []
+    private var _providers: [OnrampProvider] = []
 
     public init(
         apiProvider: ExpressAPIProvider,
@@ -35,19 +35,19 @@ extension CommonOnrampManager: OnrampManager {
         return country
     }
 
-    public func setupProviders(request: OnrampPairRequestItem) async throws {
+    public func setupProviders(request: OnrampPairRequestItem) async throws -> [OnrampProvider] {
         let pairs = try await apiProvider.onrampPairs(
             from: request.fiatCurrency,
             to: [request.destination.expressCurrency],
             country: request.country
         )
 
-        _providers = pairs.flatMap { $0.providers }.map { provider in
-            makeProvider(item: request, provider: provider)
-        }
+        // TODO: https://tangem.atlassian.net/browse/IOS-8310
+
+        return _providers
     }
 
-    public func setupQuotes(amount: Decimal) async throws {
+    public func setupQuotes(amount: Decimal) async throws -> [OnrampProvider] {
         /*
          TODO: https://tangem.atlassian.net/browse/IOS-8310
          await withTaskGroup(of: Void.self) { [weak self] group in
@@ -58,6 +58,8 @@ extension CommonOnrampManager: OnrampManager {
              }
          }
          */
+
+        return _providers
     }
 
     public func loadOnrampData(request: OnrampQuotesRequestItem) async throws -> OnrampRedirectData {
@@ -69,15 +71,9 @@ extension CommonOnrampManager: OnrampManager {
 // MARK: - Private
 
 private extension CommonOnrampManager {
-    func makeProvider(item: OnrampPairRequestItem, provider: OnrampProvider) -> Provider {
-        // Construct a Provider wrapper with autoupdating itself
+    func makeProvider(item: OnrampPairRequestItem, provider: OnrampPair.Provider) -> OnrampProvider {
+        // Construct a OnrampProvider wrapper with autoupdating itself
         // TODO: https://tangem.atlassian.net/browse/IOS-8310
-        Provider(provider: provider)
-    }
-}
-
-private extension CommonOnrampManager {
-    struct Provider {
-        let provider: OnrampProvider
+        OnrampProvider(provider: provider)
     }
 }
