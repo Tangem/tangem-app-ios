@@ -65,7 +65,7 @@ final class MultiWalletNotificationManager {
                     for: TokenNotificationEvent.someNetworksUnreachable(
                         currencySymbols: unreachableNetworks.map(\.tokenItem.currencySymbol)
                     )
-                )
+                ),
             ]
         )
     }
