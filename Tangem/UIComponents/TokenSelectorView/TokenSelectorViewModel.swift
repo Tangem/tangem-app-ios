@@ -52,6 +52,7 @@ final class TokenSelectorViewModel<
             .withWeakCaptureOf(self)
             .sink { viewModel, walletModels in
                 let sortedWalletModels = viewModel.tokenSorter.sortModels(walletModels: walletModels)
+
                 viewModel.availableWalletModels = sortedWalletModels.availableModels
                 viewModel.unavailableWalletModels = sortedWalletModels.unavailableModels
 
