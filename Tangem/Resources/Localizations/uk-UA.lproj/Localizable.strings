@@ -437,7 +437,7 @@
 "markets_token_details_price_performance" = "Цінова ефективність";
 "markets_token_details_repository" = "Репозиторій";
 "markets_token_details_security_score" = "Оцінка безпеки";
-"markets_token_details_security_score_description" = "";
+"markets_token_details_security_score_description" = "Security score of a token is a metric that assesses the security level of a blockchain or token based on various factors and is compiled from the sources listed below.";
 "markets_token_details_social" = "Соцмережі";
 "markets_token_details_total_supply" = "Загальна проп.";
 "markets_token_details_total_supply_description" = "Максимальна кількість монет або токенів, яка може коли-небудь існувати для певної криптовалюти";
@@ -546,6 +546,8 @@
 "onramp_min_amount_restriction" = "The amount to buy must be at least %@";
 "onramp_no_available_providers" = "No available providers for this currency";
 "onramp_pay_with" = "Оплата з";
+"onramp_redirecting_to_provider_subtitle" = "You will be able to complete your transaction on the third-party provider, %@";
+"onramp_redirecting_to_provider_title" = "Redirecting to %@...";
 "onramp_residency_bottomsheet_country_not_supported" = "Наші сервіси недоступні в цій країні";
 "onramp_residency_bottomsheet_country_subtitle" = "Змінити або підтвердити";
 "onramp_residency_bottomsheet_title" = "Ваше місце проживання визначено як";
@@ -864,6 +866,7 @@
 "transaction_history_transaction_from_address" = "від: %@";
 "transaction_history_transaction_to_address" = "до: %@";
 "transaction_history_transaction_validator" = "валідатор: %@";
+"transfer_min_amount_error" = "Minimum %@";
 "transfer_notification_invalid_minimum_transaction_amount_text" = "Мінімальна сума транзакції становить %1$@.";
 "try_to_load_data_again_button_title" = "Спробуйте знову";
 "twin_error_same_card" = "Ви відсканували одну й ту саму картку. Для створення twin-гаманця вам потрібно відсканувати картку з номером %li";
@@ -995,7 +998,7 @@
 "warning_send_blocked_funds_for_fee_message" = "%1$@ є активом у мережі %2$@. Щоб здійснити транзакцію %3$@, ви повинні внести певну суму %4$@ (%5$@), щоб покрити комісію мережі.";
 "warning_send_blocked_funds_for_fee_title" = "Недостатньо %1$@ для покриття комісії мережі";
 "warning_solana_rent_fee_message" = "Мережа Solana стягує орендну плату у розмірі %1$@ кожні 2 дні. Акаунти, які не можуть дозволити собі орендну плату, видаляються з мережі. Поповніть свій рахунок на суму понад %2$@, щоб не платити орендну плату.";
-"warning_some_networks_unreachable_message" = "Деякі мережі наразі недоступні. Будь ласка, спробуйте пізніше.";
+"warning_some_networks_unreachable_message" = "Проведіть пальцем вниз для оновлення або спробуйте пізніше.";
 "warning_some_networks_unreachable_title" = "Деякі мережі недоступні";
 "warning_system_deprecation_title" = "Потрібне оновлення системи";
 "warning_system_deprecation_with_date_message" = "Підтримка вашої версії операційної системи буде припинена %@. Щоб отримувати майбутні оновлення програми, ви повинні оновити її до останньої версії.";
