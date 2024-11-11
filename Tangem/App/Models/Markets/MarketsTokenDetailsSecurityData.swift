@@ -19,6 +19,6 @@ struct MarketsTokenDetailsSecurityData: Equatable, Decodable {
         let lastAuditDate: Date?
     }
 
-    let totalSecurityScore: Double  // FIXME: Andrey Fedorov - An optional field?
+    let totalSecurityScore: Double // FIXME: Andrey Fedorov - An optional field?
     let providerData: [ProviderData]
 }
