@@ -7,6 +7,7 @@
 //
 
 import Combine
+import TangemFoundation
 import TangemExpress
 
 final class OnrampCountrySelectorViewModel: Identifiable, ObservableObject {
@@ -18,6 +19,7 @@ final class OnrampCountrySelectorViewModel: Identifiable, ObservableObject {
     private weak var coordinator: OnrampCountrySelectorRoutable?
 
     private let countriesSubject = PassthroughSubject<[OnrampCountry], Never>()
+    private var bag = Set<AnyCancellable>()
 
     init(
         repository: OnrampRepository,
@@ -34,7 +36,7 @@ final class OnrampCountrySelectorViewModel: Identifiable, ObservableObject {
 
     func loadCountries() {
         countries = .loading
-        runTask(in: self) { viewModel in
+        TangemFoundation.runTask(in: self) { viewModel in
             do {
                 let countries = try await viewModel.dataRepository.countries()
                 viewModel.countriesSubject.send(countries)
@@ -44,6 +46,8 @@ final class OnrampCountrySelectorViewModel: Identifiable, ObservableObject {
                 }
             }
         }
+        .eraseToAnyCancellable()
+        .store(in: &bag)
     }
 }
 
@@ -64,7 +68,8 @@ private extension OnrampCountrySelectorViewModel {
             )
         }
         .receive(on: DispatchQueue.main)
-        .assign(to: &$countries)
+        .assign(to: \.countries, on: self, ownership: .weak)
+        .store(in: &bag)
     }
 
     func mapToCountriesViewData(countries: [OnrampCountry], searchText: String) -> [OnrampCountryViewData] {

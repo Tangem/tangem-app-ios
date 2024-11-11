@@ -7,6 +7,7 @@
 //
 
 import Combine
+import TangemFoundation
 import TangemExpress
 
 enum OnrampCurrencySelectorState {
@@ -23,6 +24,7 @@ final class OnrampCurrencySelectorViewModel: Identifiable, ObservableObject {
     private weak var coordinator: OnrampCurrencySelectorRoutable?
 
     private let currenciesSubject = PassthroughSubject<[OnrampFiatCurrency], Never>()
+    private var bag = Set<AnyCancellable>()
 
     init(
         repository: OnrampRepository,
@@ -39,7 +41,7 @@ final class OnrampCurrencySelectorViewModel: Identifiable, ObservableObject {
 
     func loadCurrencies() {
         currencies = .loading
-        runTask(in: self) { viewModel in
+        TangemFoundation.runTask(in: self) { viewModel in
             do {
                 let currencies = try await viewModel.dataRepository.currencies()
                 viewModel.currenciesSubject.send(currencies)
@@ -49,6 +51,8 @@ final class OnrampCurrencySelectorViewModel: Identifiable, ObservableObject {
                 }
             }
         }
+        .eraseToAnyCancellable()
+        .store(in: &bag)
     }
 }
 
@@ -69,7 +73,8 @@ private extension OnrampCurrencySelectorViewModel {
             )
         }
         .receive(on: DispatchQueue.main)
-        .assign(to: &$currencies)
+        .assign(to: \.currencies, on: self, ownership: .weak)
+        .store(in: &bag)
     }
 
     func mapToState(
