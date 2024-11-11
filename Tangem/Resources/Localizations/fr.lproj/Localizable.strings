@@ -529,10 +529,18 @@
 "onboarding_wallet_info_title_fourth" = "Restauration du code d'accès";
 "onboarding_wallet_info_title_second" = "Cartes identiques";
 "onboarding_wallet_info_title_third" = "Code d'accès";
+"onramp_country_search" = "Search by country";
+"onramp_country_unavailable" = "Unavailable";
+"onramp_currency_other" = "Other currencies";
+"onramp_currency_popular" = "Popular Fiats";
+"onramp_currency_search" = "Search by currency";
 "onramp_pay_with" = "Pay with";
 "onramp_residency_bottomsheet_country_not_supported" = "Nos services ne sont pas disponibles dans ce pays";
 "onramp_residency_bottomsheet_country_subtitle" = "Modifiez-le ou confirmez-le";
 "onramp_residency_bottomsheet_title" = "Votre résidence a été identifiée comme";
+"onramp_settings_residence" = "Residence";
+"onramp_settings_residence_description" = "Please select the correct country to ensure accurate payment options and services.";
+"onramp_settings_title" = "Settings";
 "onramp_via" = "Via";
 "organize_tokens_group" = "Grouper";
 "organize_tokens_sort_by_balance" = "Par solde";
@@ -668,6 +676,7 @@
 "staking_active_footer" = "Afin d'unstaker vos actifs, appuyez sur le bloc ci-dessus";
 "staking_amount_requirement_error" = "Le montant à staker doit être au moins %@";
 "staking_amount_tron_integer_error" = "Le montant du staking sera arrondi à %1$@ TRX en raison des règles du réseau.";
+"staking_amount_tron_integer_error_unstaking" = "Unstaking amount will be rounded to %1$@ TRX due to network rules.";
 "staking_claim_unstaked" = "Réclamation déstakée";
 "staking_details_account_fee" = "Frais de staking du compte";
 "staking_details_account_fee_info" = "Un compte de staking est un compte spécial où sont stockés les jetons SOL stakés. Il est créé lorsque vous déléguez vos jetons à un validateur pour participer à la validation des transactions et gagner des récompenses. Des frais minimes sont facturés pour la création du compte de staking, qui sont restitués une fois le staking terminé.";
@@ -711,10 +720,13 @@
 "staking_notification_earn_rewards_text_period_week" = "Le staking vous permet de gagner %1$@. Vos récompenses de staking arrivent toutes les semaines.";
 "staking_notification_earn_rewards_text_weekly" = "Stakez en toute sécurité et commencez à gagner des récompenses hebdomadaires";
 "staking_notification_earn_rewards_title" = "Gagnez des récompenses de staking";
+"staking_notification_low_staked_balance_text" = "Your remaining staked balance will be too low to unstake. You’ll need to stake more to meet the minimum unstake amount.";
+"staking_notification_low_staked_balance_title" = "Low staked balance";
 "staking_notification_network_error_text" = "L'option de staking n'est actuellement pas disponible en raison des conditions du réseau. Veuillez réessayer plus tard.";
 "staking_notification_new_validator_funds_transfer" = "Le staking dans le réseau %1$@ avec un nouveau validateur transférera automatiquement tous les fonds précédemment stakés vers ce validateur";
 "staking_notification_restake_rewards_text" = "Réinvestissez vos récompenses gagnées dans le montant que vous avez staké, augmentant ainsi vos gains potentiels.";
 "staking_notification_restake_text" = "L'option de restaker vous permet de déplacer vos fonds d'un validateur à un autre sans avoir besoin de les déstaker.";
+"staking_notification_stake_entire_balance_text" = "Vous êtes sur le point de staker l'intégralité de votre solde. Nous vous recommandons de laisser un petit montant pour couvrir les frais de réseau pour unstaking ou la réclamation des récompenses.";
 "staking_notification_unlock_text" = "Débloquez votre argent pour le retirer du processus de staking. Le déverrouillage prend %@.";
 "staking_notification_unstake_cosmos_text" = "Vos fonds seront disponibles à l'utilisation après la période de déblocage de 21 jours. La récompense sera retirée en même temps que vos fonds de déblocage.";
 "staking_notification_unstake_text" = "Vos fonds seront disponibles pour utilisation après la période de désengagement %@.";
@@ -744,6 +756,7 @@
 "staking_rewards" = "Récompenses";
 "staking_stake_locked" = "Stake verrouillé";
 "staking_stake_more" = "Staker plus";
+"staking_staked_amount" = "Staked amount";
 "staking_summary_description_text" = "Vous stakez %1$@ et recevrez %2$@";
 "staking_tap_to_unlock" = "Appuyez pour déverrouiller";
 "staking_tap_to_unlock_or_vote" = "Appuyez pour déverrouiller ou voter";
@@ -755,6 +768,7 @@
 "staking_unbonding_in" = "Dissociation en";
 "staking_unlocked_locked" = "Débloquer";
 "staking_unlocking" = "Déverrouillage";
+"staking_unstake_amount_requirement_error" = "Le montant à staker doit être au moins %@";
 "staking_unstake_amount_validation_error" = "Le montant dépasse le solde misé";
 "staking_unstaked" = "Non-staké";
 "staking_unstaked_footer" = "Vérifiez non-stakés pour réclamer vos actifs";
@@ -787,6 +801,7 @@
 "swapping_alert_cex_description_with_slippage" = "Le montant comprend :\n• les frais du fournisseur de services\n• les frais de réseau pour l'envoi de %1$@ depuis l'échange vers l'adresse de l'utilisateur. \n\nLe slippage du fournisseur peut atteindre %2$@";
 "swapping_alert_dex_description" = "Le montant comprend les frais du fournisseur de services.";
 "swapping_alert_dex_description_with_slippage" = "Le montant comprend les frais du fournisseur de services. \n\nLe slippage du fournisseur peut atteindre %@";
+"swapping_alert_slippage_description" = "Provider slippage is up to %@.";
 "swapping_alert_title" = "Frais";
 "swapping_approve_information_text" = "Tous les échanges décentralisés nécessitent des approbations pour empêcher les smart contracts d'accéder à votre portefeuille sans votre permission. Par conception, les smart contracts ne peuvent pas accéder à vos jetons sans votre approbation. En « déverrouillant » vos jetons, vous autorisez le smart contract 1-inch à les dépenser. Les mineurs du réseau reçoivent des frais de gaz (payés par vous) pour enregistrer cette action sur la blockchain. Vous pouvez échanger votre jeton après avoir donné votre approbation.";
 "swapping_approve_information_title" = "Approuver";
@@ -834,6 +849,7 @@
 "transaction_history_transaction_from_address" = "de : %@";
 "transaction_history_transaction_to_address" = "à : %@";
 "transaction_history_transaction_validator" = "validateur : %@";
+"transfer_notification_invalid_minimum_transaction_amount_text" = "The minimum transaction amount is %1$@.";
 "try_to_load_data_again_button_title" = "Réessayez";
 "twin_error_same_card" = "Vous avez scanné la même carte. Pour créer un portefeuille jumeau, vous devez scanner la carte portant le numéro %li";
 "twin_error_wrong_twin" = "Vous avez scanné une mauvaise carte jumelle. S'il vous plaît, essayez-en un autre";

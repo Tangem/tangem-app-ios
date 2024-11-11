@@ -8,21 +8,10 @@
 
 import Foundation
 
-enum TokenItemSwapState: Equatable {
+enum TokenItemExpressState: Hashable {
     case available
     case unavailable
     case loading
-    case failedToLoadInfo(Error)
+    case failedToLoadInfo(String)
     case notLoaded
-
-    static func == (lhs: TokenItemSwapState, rhs: TokenItemSwapState) -> Bool {
-        switch (lhs, rhs) {
-        case (.available, .available): return true
-        case (.unavailable, .unavailable): return true
-        case (.loading, .loading): return true
-        case (.notLoaded, .notLoaded): return true
-        case (.failedToLoadInfo, .failedToLoadInfo): return true
-        default: return false
-        }
-    }
 }

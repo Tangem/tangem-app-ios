@@ -7,6 +7,6 @@
 //
 
 public struct OnrampProvider: Hashable {
-    public let id: String
-    public let paymentMethods: [String]
+    // TODO: https://tangem.atlassian.net/browse/IOS-8310
+    public let provider: OnrampPair.Provider
 }

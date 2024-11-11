@@ -27,6 +27,7 @@ struct SendAmount: Hashable {
     func formatAlternative(
         currencySymbol: String,
         balanceFormatter: BalanceFormatter = .init(),
+        trimFractions: Bool = true,
         decimalCount: Int
     ) -> String? {
         switch type {
@@ -40,7 +41,7 @@ struct SendAmount: Hashable {
             let formatter = SendCryptoValueFormatter(
                 decimals: decimalCount,
                 currencySymbol: currencySymbol,
-                trimFractions: true
+                trimFractions: trimFractions
             )
 
             return formatter.string(from: crypto)

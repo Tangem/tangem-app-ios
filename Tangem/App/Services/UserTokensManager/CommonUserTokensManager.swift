@@ -12,7 +12,7 @@ import TangemSdk
 import BlockchainSdk
 
 class CommonUserTokensManager {
-    @Injected(\.swapAvailabilityController) private var swapAvailabilityController: SwapAvailabilityController
+    @Injected(\.expressAvailabilityProvider) private var expressAvailabilityProvider: ExpressAvailabilityProvider
 
     let derivationManager: DerivationManager?
 
@@ -91,7 +91,11 @@ class CommonUserTokensManager {
 
         let converter = StorageEntryConverter()
         let tokenItems = converter.convertToTokenItem(userTokenListManager.userTokensList.entries)
-        swapAvailabilityController.loadSwapAvailability(for: tokenItems, forceReload: forceReload, userWalletId: userWalletId.stringValue)
+        expressAvailabilityProvider.updateExpressAvailability(
+            for: tokenItems,
+            forceReload: forceReload,
+            userWalletId: userWalletId.stringValue
+        )
     }
 
     private func validateDerivation(for tokenItem: TokenItem) throws {

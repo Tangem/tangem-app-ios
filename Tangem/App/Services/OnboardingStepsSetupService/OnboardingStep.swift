@@ -12,6 +12,7 @@ enum OnboardingSteps {
     case singleWallet([SingleCardOnboardingStep])
     case twins([TwinsOnboardingStep])
     case wallet([WalletOnboardingStep])
+    case visa([VisaOnboardingStep])
 
     var needOnboarding: Bool {
         stepsCount > 0
@@ -24,6 +25,8 @@ enum OnboardingSteps {
         case .twins(let steps):
             return steps.count
         case .wallet(let steps):
+            return steps.count
+        case .visa(let steps):
             return steps.count
         }
     }
