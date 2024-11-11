@@ -74,6 +74,8 @@ private extension CommonStakingNotificationManager {
                         fiatAmountFormatted: fiatAmountFormatted
                     )
                 )
+
+                events.append(.maxAmountStaking)
             }
 
             if !tokenItem.supportsStakingOnDifferentValidators, readyToStake.stakeOnDifferentValidator {
