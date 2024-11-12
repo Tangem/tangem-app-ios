@@ -51,8 +51,6 @@ final class OnrampCurrencySelectorViewModel: Identifiable, ObservableObject {
                 }
             }
         }
-        .eraseToAnyCancellable()
-        .store(in: &bag)
     }
 }
 

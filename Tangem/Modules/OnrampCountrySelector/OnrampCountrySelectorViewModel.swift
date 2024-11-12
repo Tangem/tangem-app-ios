@@ -46,8 +46,6 @@ final class OnrampCountrySelectorViewModel: Identifiable, ObservableObject {
                 }
             }
         }
-        .eraseToAnyCancellable()
-        .store(in: &bag)
     }
 }
 
