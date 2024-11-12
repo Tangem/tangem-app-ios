@@ -74,19 +74,23 @@ class SolanaNetworkService {
     }
 
     func sendSplToken(amount: UInt64, computeUnitLimit: UInt32?, computeUnitPrice: UInt64?, sourceTokenAddress: String, destinationAddress: String, token: Token, tokenProgramId: PublicKey, signer: SolanaTransactionSigner) -> AnyPublisher<TransactionID, Error> {
-        solanaSdk.action.sendSPLTokens(
-            mintAddress: token.contractAddress,
-            tokenProgramId: tokenProgramId,
-            decimals: Decimals(token.decimalCount),
-            from: sourceTokenAddress,
-            to: destinationAddress,
-            amount: amount,
-            computeUnitLimit: computeUnitLimit,
-            computeUnitPrice: computeUnitPrice,
-            allowUnfundedRecipient: true,
-            signer: signer
-        )
-        .eraseToAnyPublisher()
+        checkIfSolanaAccount(destinationAddress: destinationAddress)
+            .withWeakCaptureOf(self)
+            .flatMap { service, isSolanaAccount in
+                service.solanaSdk.action.sendSPLTokens(
+                    mintAddress: token.contractAddress,
+                    tokenProgramId: tokenProgramId,
+                    decimals: Decimals(token.decimalCount),
+                    from: sourceTokenAddress,
+                    to: destinationAddress,
+                    amount: amount,
+                    computeUnitLimit: computeUnitLimit,
+                    computeUnitPrice: computeUnitPrice,
+                    allowUnfundedRecipient: isSolanaAccount,
+                    signer: signer
+                )
+            }
+            .eraseToAnyPublisher()
     }
 
     func getFeeForMessage(
@@ -275,5 +279,33 @@ class SolanaNetworkService {
             tokensByMint: tokensByMint,
             confirmedTransactionIDs: confirmedTransactionIDs
         )
+    }
+
+    /// Destination account checker
+    /// - Parameter destinationAddress: destinationAddress to check
+    /// - Returns: true if this address is solana base account, false if it is derived token account.
+    /// - throws error if the account is not registered yet
+    private func checkIfSolanaAccount(destinationAddress: String) -> AnyPublisher<Bool, Error> {
+        solanaSdk.api.getAccountInfo(account: destinationAddress, decodedTo: AccountInfo.self)
+            .tryMap { accountInfo in
+                if accountInfo.owner == PublicKey.programId.base58EncodedString {
+                    return true
+                } else {
+                    return false
+                }
+            }
+            .tryCatch { error -> AnyPublisher<Bool, Error> in
+                if let solanaError = error as? SolanaError {
+                    switch solanaError {
+                    case .nullValue:
+                        return .anyFail(error: WalletError.accountNotActivated)
+                    default:
+                        break
+                    }
+                }
+
+                return .anyFail(error: error)
+            }
+            .eraseToAnyPublisher()
     }
 }

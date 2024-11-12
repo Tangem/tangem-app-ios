@@ -226,6 +226,10 @@ public indirect enum Blockchain: Equatable, Hashable {
     /// Just drop the last node to generate XPUB
     /// https://iancoleman.io/bip39/
     public var isBip44DerivationStyleXPUB: Bool {
+        isUTXO
+    }
+
+    public var isUTXO: Bool {
         switch self {
         case .bitcoin,
              .bitcoinCash,
