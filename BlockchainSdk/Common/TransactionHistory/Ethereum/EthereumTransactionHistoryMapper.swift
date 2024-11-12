@@ -300,21 +300,6 @@ private extension EthereumTransactionHistoryMapper {
     }
 }
 
-private extension Blockchain {
-    func stakingHistoryInfo(validator: String?) -> [String: TransactionRecord.TransactionType]? {
-        switch self {
-        case .bsc:
-            [
-                "0x982ef0a7": .staking(type: .stake, validator: validator),
-                "0xaad3ec96": .staking(type: .claimRewards, validator: validator),
-                "0x4d99dd16": .staking(type: .unstake, validator: validator),
-                "0x59491871": .staking(type: .restake, validator: validator),
-            ]
-        default: nil
-        }
-    }
-}
-
 // MARK: - Convenience types
 
 private extension EthereumTransactionHistoryMapper {
