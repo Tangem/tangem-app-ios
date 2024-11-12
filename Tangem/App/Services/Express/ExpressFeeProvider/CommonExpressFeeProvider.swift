@@ -85,11 +85,9 @@ private extension CommonExpressFeeProvider {
         switch fees.count {
         case 1:
             return .single(fees[0])
+        case 3 where wallet.tokenItem.blockchain.isUTXO:
+            return .single(fees[1])
         case 3:
-            if wallet.tokenItem.blockchain.isUTXO {
-                return .single(fees[1])
-            }
-
             return .double(market: fees[1], fast: fees[2])
         default:
             throw ExpressFeeProviderError.feeNotFound
