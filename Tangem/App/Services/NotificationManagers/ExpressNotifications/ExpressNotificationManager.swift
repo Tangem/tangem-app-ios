@@ -158,6 +158,7 @@ class ExpressNotificationManager {
             event = notEnoughFeeForTokenTxEvent
 
         case .minimumRestrictAmount:
+            // The error will be displayed above the amount input field
             return
 
         case .dustRestriction,
