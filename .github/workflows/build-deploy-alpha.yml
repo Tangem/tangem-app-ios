@@ -29,6 +29,7 @@ jobs:
       version: '${{ steps.version.outputs.build_version }}'
       stage: 'Alpha'
       build_number: '${{ github.run_number }}'
+      jira_summary: '${{ steps.jira.outputs.summary }}'
     steps:
       - name: Jira Login
         uses: atlassian/gajira-login@master
@@ -87,7 +88,7 @@ jobs:
       stage: '${{ needs.prepare.outputs.stage }}'
       version: '${{ needs.prepare.outputs.version }}'
       build_number: '${{ needs.prepare.outputs.build_number }}'
-      changelog: '${{ steps.jira.outputs.summary }}'
+      changelog: '${{ needs.prepare.outputs.jira_summary }}'
       build_description: '${{ inputs.build_description }}'
       filename: 'Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa'
     secrets:
@@ -110,7 +111,7 @@ jobs:
       deploy_to: '${{ vars.DEPLOYMENT_GOOGLE_DISTRIBUTION }}'
       version: '${{ needs.prepare.outputs.version }}'
       build_number: '${{ needs.prepare.outputs.build_number }}'
-      changelog: '${{ steps.jira.outputs.summary }}'
+      changelog: '${{ needs.prepare.outputs.jira_summary }}'
       build_description: '${{ inputs.build_description }}'
     secrets:
       SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN }}'
@@ -130,7 +131,7 @@ jobs:
       deploy_to: '${{ vars.DEPLOYMENT_GOOGLE_DISTRIBUTION }}'
       version: '${{ needs.prepare.outputs.version }}'
       build_number: '${{ needs.prepare.outputs.build_number }}'
-      changelog: '${{ steps.jira.outputs.summary }}'
+      changelog: '${{ needs.prepare.outputs.jira_summary }}'
       build_description: '${{ inputs.build_description }}'
     secrets:
       SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN }}'
