@@ -66,6 +66,10 @@ struct SendView: View {
                                 .renderingMode(.template)
                                 .foregroundColor(Colors.Icon.primary1)
                         }
+                    case .dotsButton(let action):
+                        Button(action: action) {
+                            NavbarDotsImage()
+                        }
                     }
                 }
 
