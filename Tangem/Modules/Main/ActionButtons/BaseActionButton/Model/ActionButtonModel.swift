@@ -37,7 +37,7 @@ enum ActionButtonModel: Hashable {
 }
 
 enum ActionButtonPresentationState: Equatable {
-    case unexplicitLoading
+    case initial
     case loading
     case idle
 }
