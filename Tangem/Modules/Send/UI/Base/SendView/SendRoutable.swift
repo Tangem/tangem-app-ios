@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 import TangemExpress
 
-protocol SendRoutable: SendFeeRoutable, SendDestinationRoutable, OnrampRoutable, AnyObject {
+protocol SendRoutable: SendFeeRoutable, SendDestinationRoutable, OnrampRoutable, OnrampAmountRoutable, AnyObject {
     func dismiss()
     func openMail(with dataCollector: EmailDataCollector, recipient: String)
     func openQRScanner(with codeBinding: Binding<String>, networkName: String)

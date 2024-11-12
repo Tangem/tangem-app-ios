@@ -9,7 +9,7 @@
 import Foundation
 import Moya
 
-struct VisaAPITarget: TargetType {
+struct VisaPayAPITarget: TargetType {
     let isTestnet: Bool
     let target: Target
     let additionalHeaders: [String: String]
@@ -52,7 +52,7 @@ struct VisaAPITarget: TargetType {
     }
 }
 
-extension VisaAPITarget {
+extension VisaPayAPITarget {
     enum Target {
         case transactionHistory(request: VisaTransactionHistoryDTO.APIRequest)
     }

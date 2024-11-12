@@ -1,14 +1,14 @@
 //
-//  MarketsUnableToLoadDataView.swift
+//  UnableToLoadDataView.swift
 //  Tangem
 //
-//  Created by Andrew Son on 01/08/24.
+//  Created by Aleksei Muraveinik on 5.11.24..
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
 import SwiftUI
 
-struct MarketsUnableToLoadDataView: View {
+struct UnableToLoadDataView: View {
     let isButtonBusy: Bool
     let retryButtonAction: () -> Void
 
@@ -41,7 +41,7 @@ struct MarketsUnableToLoadDataView: View {
         @State var isLoading = false
 
         var body: some View {
-            MarketsUnableToLoadDataView(isButtonBusy: isLoading) {
+            UnableToLoadDataView(isButtonBusy: isLoading) {
                 isLoading = true
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     isLoading = false
