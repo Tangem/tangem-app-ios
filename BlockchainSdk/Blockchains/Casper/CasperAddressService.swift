@@ -29,7 +29,17 @@ extension CasperAddressService: AddressProvider {
             throw Error.unsupportedAddressPrefix
         }
 
-        let addressBytes = Data(hexString: prefixAddresss) + publicKey.blockchainKey
+        let addressBytes: Data
+
+        switch curve {
+        case .ed25519, .ed25519_slip0010:
+            addressBytes = Data(hexString: prefixAddresss) + publicKey.blockchainKey
+        case .secp256k1:
+            addressBytes = try Data(hexString: prefixAddresss) + Secp256k1Key(with: publicKey.blockchainKey).compress()
+        default:
+            throw Error.unsupportedCurve
+        }
+
         let address = try CasperAddressUtils().checksum(input: addressBytes)
         return PlainAddress(value: address, publicKey: publicKey, type: addressType)
     }
@@ -63,6 +73,7 @@ extension CasperAddressService: AddressValidator {
 extension CasperAddressService {
     enum Error: LocalizedError {
         case unsupportedAddressPrefix
+        case unsupportedCurve
     }
 }
 

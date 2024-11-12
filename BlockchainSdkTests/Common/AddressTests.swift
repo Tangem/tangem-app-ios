@@ -1325,6 +1325,11 @@ class AddressesTests: XCTestCase {
         let secp256k1AddressService = CasperAddressService(curve: .secp256k1)
 
         try XCTAssertEqual(secp256k1AddressService.makeAddress(from: secp256k1WalletPublicKey).value, secp256k1ExpectedAddress)
+
+        let compressedKey = try secp256k1AddressService.makeAddress(from: secpCompressedKey)
+        let decompressedKey = try secp256k1AddressService.makeAddress(from: secpDecompressedKey)
+
+        XCTAssertEqual(compressedKey.value, decompressedKey.value)
     }
 
     func testCasperAddressValidation() {
