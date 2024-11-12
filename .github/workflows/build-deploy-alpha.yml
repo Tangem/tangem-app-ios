@@ -7,9 +7,9 @@ on:
         description: >
           Optional build version override. Leave blank (default value) to use the default value derived from the branch name
         type: string
-      changelog:
+      build_description:
         description: >
-          Optional additional info about build
+          Optional additional info about the build
         type: string
       xcode_version_override:
         description: >
@@ -29,7 +29,6 @@ jobs:
       version: '${{ steps.version.outputs.build_version }}'
       stage: 'Alpha'
       build_number: '${{ github.run_number }}'
-      changelog: '${{ steps.changelog.outputs.result }}'
     steps:
       - name: Jira Login
         uses: atlassian/gajira-login@master
@@ -64,32 +63,6 @@ jobs:
 
           echo "build_version=${BUILD_VERSION}" >> "$GITHUB_OUTPUT"
 
-      - name: Create changelog
-        id: changelog
-        env:
-          JIRA_ISSUE_SUMMARY: '${{ steps.jira.outputs.summary }}'
-          JIRA_ISSUE_KEY: '${{ steps.jira.outputs.key }}'
-          ADDITIONAL_CHANGELOG: '${{ inputs.changelog }}'
-        run: |
-          JIRA_DESCRIPTION="${JIRA_ISSUE_KEY} ${JIRA_ISSUE_SUMMARY}"
-
-          if [[ "${JIRA_DESCRIPTION}" =~ ^[[:space:]]*$ ]]; then
-            JIRA_DESCRIPTION="N/A"
-          fi
-
-          JIRA_DESCRIPTION="Jira issue: ${JIRA_DESCRIPTION}"
-
-          if [[ -n "${ADDITIONAL_CHANGELOG}" ]]; then
-            OUTPUT_VALUE="Description: ${ADDITIONAL_CHANGELOG}"$'\n'"${JIRA_DESCRIPTION}"
-          else
-            OUTPUT_VALUE="${JIRA_DESCRIPTION}"
-          fi
-
-          # Workaround for a multi-line text in GH output
-          echo 'result<<EOF' >> $GITHUB_OUTPUT
-          echo "${OUTPUT_VALUE}" >> $GITHUB_OUTPUT
-          echo 'EOF' >> $GITHUB_OUTPUT
-
   build:
     name: Tangem Alpha
     needs: prepare
@@ -114,7 +87,8 @@ jobs:
       stage: '${{ needs.prepare.outputs.stage }}'
       version: '${{ needs.prepare.outputs.version }}'
       build_number: '${{ needs.prepare.outputs.build_number }}'
-      changelog: '${{ needs.prepare.outputs.changelog }}'
+      changelog: '${{ steps.jira.outputs.summary }}'
+      build_description: '${{ inputs.build_description }}'
       filename: 'Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa'
     secrets:
       FIREBASE_APP_ID: '${{ secrets.FIREBASE_APP_ID }}'
@@ -135,7 +109,8 @@ jobs:
       deploy_to: '${{ vars.DEPLOYMENT_GOOGLE_DISTRIBUTION }}'
       version: '${{ needs.prepare.outputs.version }}'
       build_number: '${{ needs.prepare.outputs.build_number }}'
-      changelog: '${{ needs.prepare.outputs.changelog }}'
+      changelog: '${{ steps.jira.outputs.summary }}'
+      build_description: '${{ inputs.build_description }}'
     secrets:
       SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN }}'
 
@@ -154,6 +129,7 @@ jobs:
       deploy_to: '${{ vars.DEPLOYMENT_GOOGLE_DISTRIBUTION }}'
       version: '${{ needs.prepare.outputs.version }}'
       build_number: '${{ needs.prepare.outputs.build_number }}'
-      changelog: '${{ needs.prepare.outputs.changelog }}'
+      changelog: '${{ steps.jira.outputs.summary }}'
+      build_description: '${{ inputs.build_description }}'
     secrets:
       SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN }}'
