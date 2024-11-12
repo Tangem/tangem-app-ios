@@ -12,69 +12,60 @@ import TangemExpress
 
 class OnrampViewModel: ObservableObject, Identifiable {
     @Published private(set) var onrampAmountViewModel: OnrampAmountViewModel
-    @Published private(set) var paymentState: PaymentState?
+    @Published private(set) var onrampProvidersCompactViewModel: OnrampProvidersCompactViewModel
 
     private let interactor: OnrampInteractor
 
-    weak var router: OnrampSummaryRoutable?
     private var bag: Set<AnyCancellable> = []
 
     init(
         onrampAmountViewModel: OnrampAmountViewModel,
+        onrampProvidersCompactViewModel: OnrampProvidersCompactViewModel,
         interactor: OnrampInteractor
     ) {
         self.onrampAmountViewModel = onrampAmountViewModel
-        self.interactor = interactor
+        self.onrampProvidersCompactViewModel = onrampProvidersCompactViewModel
 
-        bind()
+        self.interactor = interactor
     }
 }
 
 // MARK: - Private
 
-private extension OnrampViewModel {
-    func bind() {
-        /*
-          // TODO: https://tangem.atlassian.net/browse/IOS-8310
-         interactor
-             .selectedQuotePublisher
-             .withWeakCaptureOf(self)
-             .receive(on: DispatchQueue.main)
-             .sink { viewModel, quote in
-                 viewModel.updateQuoteView(quote: quote)
-             }
-             .store(in: &bag)
-          */
-    }
+/*
+ // TODO: https://tangem.atlassian.net/browse/IOS-8310
+ private extension OnrampViewModel {
+     func bind() {
+          interactor
+              .selectedQuotePublisher
+              .withWeakCaptureOf(self)
+              .receive(on: DispatchQueue.main)
+              .sink { viewModel, quote in
+                  viewModel.updateQuoteView(quote: quote)
+              }
+              .store(in: &bag)
+     }
 
-    func updateQuoteView(quote: LoadingValue<OnrampQuote>?) {
-        switch quote {
-        case .none, .failedToLoad:
-            paymentState = .none
-        case .loading:
-            paymentState = .loading
-        case .loaded(let quote):
-            // TODO: Fill from quote
-            paymentState = .loaded(
-                data: .init(iconURL: nil, paymentMethodName: "Card", providerName: "1Inch", badge: .bestRate) { [weak self] in
-                    self?.router?.onrampStepRequestEditProvider()
-                }
-            )
-        }
-    }
-}
+     func updateQuoteView(quote: LoadingValue<OnrampQuote>?) {
+         switch quote {
+         case .none, .failedToLoad:
+             paymentState = .none
+         case .loading:
+             paymentState = .loading
+         case .loaded(let quote):
+             // TODO: Fill from quote
+             paymentState = .loaded(
+                 data: .init(iconURL: nil, paymentMethodName: "Card", providerName: "1Inch", badge: .bestRate) { [weak self] in
+                     self?.router?.onrampStepRequestEditProvider()
+                 }
+             )
+         }
+     }
+ }
+ */
 
 // MARK: - SendStepViewAnimatable
 
 extension OnrampViewModel: SendStepViewAnimatable {
     func viewDidChangeVisibilityState(_ state: SendStepVisibilityState) {}
-}
-
-extension OnrampViewModel {
-    enum PaymentState: Hashable, Identifiable {
-        case loading
-        case loaded(data: OnrampProvidersCompactViewData)
-
-        var id: Int { hashValue }
-    }
 }
