@@ -280,6 +280,7 @@
 		B02B74B429879F2A006473F2 /* WalletConnectV2HandlersService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02B74B329879F2A006473F2 /* WalletConnectV2HandlersService.swift */; };
 		B02B74B629879F4A006473F2 /* WalletConnectMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02B74B529879F4A006473F2 /* WalletConnectMessageHandler.swift */; };
 		B02B74B82987A628006473F2 /* WalletConnectV2SignTypedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02B74B72987A628006473F2 /* WalletConnectV2SignTypedData.swift */; };
+		B02C15552CDB81E10049EDE3 /* VisaCardScanHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02C15542CDB81E10049EDE3 /* VisaCardScanHandler.swift */; };
 		B02E11B92A41DB0900776290 /* TokenMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02E11B82A41DB0900776290 /* TokenMocks.swift */; };
 		B030B4DB2A8CE1DA0023DB8B /* LockedWalletMainContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B030B4DA2A8CE1DA0023DB8B /* LockedWalletMainContentView.swift */; };
 		B03156A82A86369B001D9646 /* DefaultTokenItemInfoProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03156A72A86369A001D9646 /* DefaultTokenItemInfoProvider.swift */; };
@@ -345,11 +346,11 @@
 		B04D81DE2BDA232A0020AAC0 /* APIListUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B04D81DD2BDA232A0020AAC0 /* APIListUtils.swift */; };
 		B04EADEA2A80D62E009B5768 /* SingleTokenBaseRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B04EADE92A80D62E009B5768 /* SingleTokenBaseRoutable.swift */; };
 		B04EADEC2A80D659009B5768 /* SingleTokenBaseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B04EADEB2A80D659009B5768 /* SingleTokenBaseViewModel.swift */; };
-		B050F4F42B5FB03F00B2E53C /* VisaAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B050F4F32B5FB03F00B2E53C /* VisaAPIService.swift */; };
+		B050F4F42B5FB03F00B2E53C /* VisaTransactionHistoryAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B050F4F32B5FB03F00B2E53C /* VisaTransactionHistoryAPIService.swift */; };
 		B050F4F62B60E7F400B2E53C /* VisaTransactionRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = B050F4F52B60E7F400B2E53C /* VisaTransactionRecord.swift */; };
 		B050F4FA2B60F60600B2E53C /* VisaAPIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B050F4F92B60F60600B2E53C /* VisaAPIError.swift */; };
-		B050F4FC2B60F9F300B2E53C /* VisaAPITarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B050F4FB2B60F9F300B2E53C /* VisaAPITarget.swift */; };
-		B050F4FE2B60FA1800B2E53C /* CommonVisaAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B050F4FD2B60FA1800B2E53C /* CommonVisaAPIService.swift */; };
+		B050F4FC2B60F9F300B2E53C /* PayAPITarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B050F4FB2B60F9F300B2E53C /* PayAPITarget.swift */; };
+		B050F4FE2B60FA1800B2E53C /* PayAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B050F4FD2B60FA1800B2E53C /* PayAPIService.swift */; };
 		B050F5002B60FCE500B2E53C /* VisaAPIServiceBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B050F4FF2B60FCE500B2E53C /* VisaAPIServiceBuilder.swift */; };
 		B050F5032B613A6F00B2E53C /* VisaTransactionHistoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B050F5022B613A6F00B2E53C /* VisaTransactionHistoryService.swift */; };
 		B050F5082B6283CF00B2E53C /* VisaTransactionHistoryMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B050F5072B6283CF00B2E53C /* VisaTransactionHistoryMapper.swift */; };
@@ -385,6 +386,9 @@
 		B05D063229DEA11E0031C6AB /* AccessCodeRecoverySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B05D063129DEA11E0031C6AB /* AccessCodeRecoverySettingsView.swift */; };
 		B05D063429DEA4580031C6AB /* AccessCodeRecoverySettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B05D063329DEA4580031C6AB /* AccessCodeRecoverySettingsViewModel.swift */; };
 		B05DD9652A9F12A700B24ED9 /* TokenNotificationEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B05DD9642A9F12A700B24ED9 /* TokenNotificationEvent.swift */; };
+		B05E36922CDA0F2C00CE44F2 /* VisaAuthorizationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B05E36912CDA0F2C00CE44F2 /* VisaAuthorizationService.swift */; };
+		B05E36D22CDA3D2200CE44F2 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B05E36D12CDA3D2200CE44F2 /* APIService.swift */; };
+		B05E36D52CDA418800CE44F2 /* JSONDecoderFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B05E36D42CDA418800CE44F2 /* JSONDecoderFactory.swift */; };
 		B05F19552BF3589C007E5552 /* GetTokenInfoMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = B05F19542BF3589C007E5552 /* GetTokenInfoMethod.swift */; };
 		B05F1E66299CB81D00E27E32 /* TransactionViewPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B05F1E65299CB81D00E27E32 /* TransactionViewPlaceholder.swift */; };
 		B05FADF02C4810BB00ED96E5 /* AsyncTaskScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B05FADEF2C4810BB00ED96E5 /* AsyncTaskScheduler.swift */; };
@@ -622,6 +626,9 @@
 		B0DD162B2A331C2100CB23AA /* TokenDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DD16262A331C2100CB23AA /* TokenDetailsViewModel.swift */; };
 		B0DD162C2A331C2100CB23AA /* TokenDetailsRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DD16272A331C2100CB23AA /* TokenDetailsRoutable.swift */; };
 		B0DE006C2A431BA6005A77D4 /* LocalizationIconParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DE006B2A431BA6005A77D4 /* LocalizationIconParser.swift */; };
+		B0DE6EE52CDCF5A300254675 /* AuthorizationAPITarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DE6EE42CDCF5A200254675 /* AuthorizationAPITarget.swift */; };
+		B0DE6EE72CDCFC7700254675 /* VisaAuthorizationAPIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DE6EE62CDCFC7700254675 /* VisaAuthorizationAPIError.swift */; };
+		B0DE6EE92CDCFCC500254675 /* VisaAuthorizationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DE6EE82CDCFCC500254675 /* VisaAuthorizationModels.swift */; };
 		B0E0AF5D2996488100E52F7B /* TransactionHistoryMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E0AF5C2996488100E52F7B /* TransactionHistoryMapper.swift */; };
 		B0E1564B26B941A4005B33E4 /* SingleCardOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E1564A26B941A4005B33E4 /* SingleCardOnboardingView.swift */; };
 		B0E1564D26B941AF005B33E4 /* SingleCardOnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E1564C26B941AF005B33E4 /* SingleCardOnboardingViewModel.swift */; };
@@ -3315,6 +3322,7 @@
 		B02B74B329879F2A006473F2 /* WalletConnectV2HandlersService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectV2HandlersService.swift; sourceTree = "<group>"; };
 		B02B74B529879F4A006473F2 /* WalletConnectMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectMessageHandler.swift; sourceTree = "<group>"; };
 		B02B74B72987A628006473F2 /* WalletConnectV2SignTypedData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectV2SignTypedData.swift; sourceTree = "<group>"; };
+		B02C15542CDB81E10049EDE3 /* VisaCardScanHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisaCardScanHandler.swift; sourceTree = "<group>"; };
 		B02E11B82A41DB0900776290 /* TokenMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenMocks.swift; sourceTree = "<group>"; };
 		B030B4DA2A8CE1DA0023DB8B /* LockedWalletMainContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockedWalletMainContentView.swift; sourceTree = "<group>"; };
 		B03156A72A86369A001D9646 /* DefaultTokenItemInfoProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultTokenItemInfoProvider.swift; sourceTree = "<group>"; };
@@ -3382,11 +3390,11 @@
 		B04D81DD2BDA232A0020AAC0 /* APIListUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIListUtils.swift; sourceTree = "<group>"; };
 		B04EADE92A80D62E009B5768 /* SingleTokenBaseRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleTokenBaseRoutable.swift; sourceTree = "<group>"; };
 		B04EADEB2A80D659009B5768 /* SingleTokenBaseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleTokenBaseViewModel.swift; sourceTree = "<group>"; };
-		B050F4F32B5FB03F00B2E53C /* VisaAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisaAPIService.swift; sourceTree = "<group>"; };
+		B050F4F32B5FB03F00B2E53C /* VisaTransactionHistoryAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisaTransactionHistoryAPIService.swift; sourceTree = "<group>"; };
 		B050F4F52B60E7F400B2E53C /* VisaTransactionRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisaTransactionRecord.swift; sourceTree = "<group>"; };
 		B050F4F92B60F60600B2E53C /* VisaAPIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisaAPIError.swift; sourceTree = "<group>"; };
-		B050F4FB2B60F9F300B2E53C /* VisaAPITarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisaAPITarget.swift; sourceTree = "<group>"; };
-		B050F4FD2B60FA1800B2E53C /* CommonVisaAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonVisaAPIService.swift; sourceTree = "<group>"; };
+		B050F4FB2B60F9F300B2E53C /* PayAPITarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayAPITarget.swift; sourceTree = "<group>"; };
+		B050F4FD2B60FA1800B2E53C /* PayAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayAPIService.swift; sourceTree = "<group>"; };
 		B050F4FF2B60FCE500B2E53C /* VisaAPIServiceBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisaAPIServiceBuilder.swift; sourceTree = "<group>"; };
 		B050F5022B613A6F00B2E53C /* VisaTransactionHistoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisaTransactionHistoryService.swift; sourceTree = "<group>"; };
 		B050F5072B6283CF00B2E53C /* VisaTransactionHistoryMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisaTransactionHistoryMapper.swift; sourceTree = "<group>"; };
@@ -3423,6 +3431,9 @@
 		B05D063129DEA11E0031C6AB /* AccessCodeRecoverySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessCodeRecoverySettingsView.swift; sourceTree = "<group>"; };
 		B05D063329DEA4580031C6AB /* AccessCodeRecoverySettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessCodeRecoverySettingsViewModel.swift; sourceTree = "<group>"; };
 		B05DD9642A9F12A700B24ED9 /* TokenNotificationEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenNotificationEvent.swift; sourceTree = "<group>"; };
+		B05E36912CDA0F2C00CE44F2 /* VisaAuthorizationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisaAuthorizationService.swift; sourceTree = "<group>"; };
+		B05E36D12CDA3D2200CE44F2 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
+		B05E36D42CDA418800CE44F2 /* JSONDecoderFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONDecoderFactory.swift; sourceTree = "<group>"; };
 		B05F19542BF3589C007E5552 /* GetTokenInfoMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetTokenInfoMethod.swift; sourceTree = "<group>"; };
 		B05F1E65299CB81D00E27E32 /* TransactionViewPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewPlaceholder.swift; sourceTree = "<group>"; };
 		B05FADEF2C4810BB00ED96E5 /* AsyncTaskScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncTaskScheduler.swift; sourceTree = "<group>"; };
@@ -3659,6 +3670,9 @@
 		B0DD16262A331C2100CB23AA /* TokenDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenDetailsViewModel.swift; sourceTree = "<group>"; };
 		B0DD16272A331C2100CB23AA /* TokenDetailsRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenDetailsRoutable.swift; sourceTree = "<group>"; };
 		B0DE006B2A431BA6005A77D4 /* LocalizationIconParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationIconParser.swift; sourceTree = "<group>"; };
+		B0DE6EE42CDCF5A200254675 /* AuthorizationAPITarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationAPITarget.swift; sourceTree = "<group>"; };
+		B0DE6EE62CDCFC7700254675 /* VisaAuthorizationAPIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisaAuthorizationAPIError.swift; sourceTree = "<group>"; };
+		B0DE6EE82CDCFCC500254675 /* VisaAuthorizationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisaAuthorizationModels.swift; sourceTree = "<group>"; };
 		B0E0AF5C2996488100E52F7B /* TransactionHistoryMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionHistoryMapper.swift; sourceTree = "<group>"; };
 		B0E1564A26B941A4005B33E4 /* SingleCardOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleCardOnboardingView.swift; sourceTree = "<group>"; };
 		B0E1564C26B941AF005B33E4 /* SingleCardOnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleCardOnboardingViewModel.swift; sourceTree = "<group>"; };
@@ -7281,9 +7295,10 @@
 		B050F4F22B5FB02B00B2E53C /* APIService */ = {
 			isa = PBXGroup;
 			children = (
-				B050F4F32B5FB03F00B2E53C /* VisaAPIService.swift */,
-				B050F4FB2B60F9F300B2E53C /* VisaAPITarget.swift */,
-				B050F4FD2B60FA1800B2E53C /* CommonVisaAPIService.swift */,
+				B0DE6EE32CDCF56000254675 /* AuthorizationService */,
+				B05E36D32CDA3EEF00CE44F2 /* PayAPI */,
+				B05E36D12CDA3D2200CE44F2 /* APIService.swift */,
+				B050F4F32B5FB03F00B2E53C /* VisaTransactionHistoryAPIService.swift */,
 				B050F4FF2B60FCE500B2E53C /* VisaAPIServiceBuilder.swift */,
 			);
 			path = APIService;
@@ -7318,6 +7333,7 @@
 				B06F033C2B5A8C1200F04F0E /* LimitsResponseParser.swift */,
 				B03FF8A12B5E5C4500202EC0 /* VisaLogger.swift */,
 				B08D3C152BF628A500C83299 /* VisaConfigProvider.swift */,
+				B05E36D42CDA418800CE44F2 /* JSONDecoderFactory.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -7390,6 +7406,15 @@
 				B05D063329DEA4580031C6AB /* AccessCodeRecoverySettingsViewModel.swift */,
 			);
 			path = AccessCodeRecoverySettingsView;
+			sourceTree = "<group>";
+		};
+		B05E36D32CDA3EEF00CE44F2 /* PayAPI */ = {
+			isa = PBXGroup;
+			children = (
+				B050F4FD2B60FA1800B2E53C /* PayAPIService.swift */,
+				B050F4FB2B60F9F300B2E53C /* PayAPITarget.swift */,
+			);
+			path = PayAPI;
 			sourceTree = "<group>";
 		};
 		B06243062AA9B75F00F7B9B2 /* Utilities */ = {
@@ -7645,6 +7670,7 @@
 		B07E07AC2CD8C113007DEDA6 /* Handlers */ = {
 			isa = PBXGroup;
 			children = (
+				B02C15542CDB81E10049EDE3 /* VisaCardScanHandler.swift */,
 			);
 			path = Handlers;
 			sourceTree = "<group>";
@@ -8339,6 +8365,17 @@
 				B0DD16272A331C2100CB23AA /* TokenDetailsRoutable.swift */,
 			);
 			path = TokenDetails;
+			sourceTree = "<group>";
+		};
+		B0DE6EE32CDCF56000254675 /* AuthorizationService */ = {
+			isa = PBXGroup;
+			children = (
+				B05E36912CDA0F2C00CE44F2 /* VisaAuthorizationService.swift */,
+				B0DE6EE42CDCF5A200254675 /* AuthorizationAPITarget.swift */,
+				B0DE6EE62CDCFC7700254675 /* VisaAuthorizationAPIError.swift */,
+				B0DE6EE82CDCFCC500254675 /* VisaAuthorizationModels.swift */,
+			);
+			path = AuthorizationService;
 			sourceTree = "<group>";
 		};
 		B0E1564926B9417E005B33E4 /* Onboarding */ = {
@@ -15818,6 +15855,7 @@
 				B62C65D02C38D06B00189AD4 /* PushNotificationsPermissionManager.swift in Sources */,
 				DAE4BB022CD795900020CE3F /* OnrampCountrySelectorView.swift in Sources */,
 				5DB862B8252396CD00566AA0 /* TangemSigner.swift in Sources */,
+				B02C15552CDB81E10049EDE3 /* VisaCardScanHandler.swift in Sources */,
 				B61980102AB8BD5200153886 /* PreviewContentShapeModifier.swift in Sources */,
 				DAB19D4B2B2C72A100DD08C4 /* AddCustomTokenCoordinatorView.swift in Sources */,
 				EFD1438A2CC552DD00B5BA57 /* CommonOnrampBaseDataBuilder.swift in Sources */,
@@ -17419,19 +17457,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0DE6EE92CDCFCC500254675 /* VisaAuthorizationModels.swift in Sources */,
 				B051451E2B59355E00EDAD1E /* VisaLimits.swift in Sources */,
 				B051450C2B59344100EDAD1E /* GetPaymentAccountByCardMethod.swift in Sources */,
 				B05F19552BF3589C007E5552 /* GetTokenInfoMethod.swift in Sources */,
+				B05E36D52CDA418800CE44F2 /* JSONDecoderFactory.swift in Sources */,
 				B08D3C162BF628A500C83299 /* VisaConfigProvider.swift in Sources */,
 				B05145172B5934FD00EDAD1E /* VisaAddressParser.swift in Sources */,
 				B05145192B59351E00EDAD1E /* VisaBridgeInteractorBuilder.swift in Sources */,
+				B05E36922CDA0F2C00CE44F2 /* VisaAuthorizationService.swift in Sources */,
 				B051450E2B59346500EDAD1E /* GetTotalBalanceMethod.swift in Sources */,
 				B05145142B5934BB00EDAD1E /* VisaSmartContractRequest.swift in Sources */,
+				B0DE6EE72CDCFC7700254675 /* VisaAuthorizationAPIError.swift in Sources */,
 				B050F4F62B60E7F400B2E53C /* VisaTransactionRecord.swift in Sources */,
-				B050F4F42B5FB03F00B2E53C /* VisaAPIService.swift in Sources */,
-				B050F4FC2B60F9F300B2E53C /* VisaAPITarget.swift in Sources */,
+				B050F4F42B5FB03F00B2E53C /* VisaTransactionHistoryAPIService.swift in Sources */,
+				B050F4FC2B60F9F300B2E53C /* PayAPITarget.swift in Sources */,
 				B08BC1BE2BF72C0B00041E95 /* VisaTokenInfoLoader.swift in Sources */,
-				B050F4FE2B60FA1800B2E53C /* CommonVisaAPIService.swift in Sources */,
+				B050F4FE2B60FA1800B2E53C /* PayAPIService.swift in Sources */,
 				B07D96782CD4CCE700A3BAF2 /* VisaActivationManager.swift in Sources */,
 				B050F5002B60FCE500B2E53C /* VisaAPIServiceBuilder.swift in Sources */,
 				B050F4FA2B60F60600B2E53C /* VisaAPIError.swift in Sources */,
@@ -17439,7 +17481,9 @@
 				B03FF8A42B5E737600202EC0 /* CommonBridgeInteractor.swift in Sources */,
 				B051451C2B59354C00EDAD1E /* VisaBalances.swift in Sources */,
 				B06F03412B5A8C6300F04F0E /* VisaParserError.swift in Sources */,
+				B05E36D22CDA3D2200CE44F2 /* APIService.swift in Sources */,
 				B099339D2B55196700240CDB /* VisaBridgeInteractor.swift in Sources */,
+				B0DE6EE52CDCF5A300254675 /* AuthorizationAPITarget.swift in Sources */,
 				B05145062B5933E000EDAD1E /* VisaUtilities.swift in Sources */,
 				B05145122B59349100EDAD1E /* SmartContractMethodPrefixCreator.swift in Sources */,
 				B03FF8A22B5E5C4500202EC0 /* VisaLogger.swift in Sources */,
