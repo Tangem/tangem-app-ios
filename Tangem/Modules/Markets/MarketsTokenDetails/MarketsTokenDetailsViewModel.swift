@@ -513,20 +513,8 @@ extension MarketsTokenDetailsViewModel: MarketsTokenDetailsBottomSheetRouter {
 
 extension MarketsTokenDetailsViewModel: MarketsTokenDetailsSecurityScoreRoutable {
     func openSecurityScoreDetails(with providers: [MarketsTokenDetailsSecurityScore.Provider]) {
-        // TODO: Andrey Fedorov - Use factory to perform mapping and VM creation
-        let iconBuilder = IconURLBuilder()
-
-        securityScoreDetailsViewModel = .init(
-            providers: (providers + providers).map { provider in // FIXME: Andrey Fedorov - Test only, remove when not needed
-                let iconURL = iconBuilder.securityScoreProviderIconURL(providerId: provider.id, size: .small)
-                return .init(
-                    name: provider.name,
-                    auditDate: provider.auditDate?.toString(), // FIXME: Andrey Fedorov - Test only, remove when not needed
-                    iconURL: iconURL,
-                    providerURL: provider.auditURL,
-                    securityScoreValue: provider.securityScore
-                )
-            },
+        securityScoreDetailsViewModel = MarketsTokenDetailsSecurityScoreDetailsFactory().makeViewModel(
+            with: providers,
             routable: self
         )
     }

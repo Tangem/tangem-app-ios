@@ -10,16 +10,17 @@ import Foundation
 
 final class MarketsTokenDetailsSecurityScoreViewModel {
     var title: String { Localization.marketsTokenDetailsSecurityScore }
-
     var subtitle: String { Localization.marketsTokenDetailsBasedOnRatings(providers.count) }
 
-    private(set) lazy var securityScore: String = MarketsTokenDetailsSecurityScoreRatingHelper()
-        .makeSecurityScore(forSecurityScoreValue: securityScoreValue)
+    private(set) lazy var ratingViewData: MarketsTokenDetailsSecurityScoreRatingViewData = {
+        let helper = MarketsTokenDetailsSecurityScoreRatingHelper()
+        let ratingBullets = helper.makeRatingBullets(forSecurityScoreValue: securityScoreValue)
+        let securityScore = helper.makeSecurityScore(forSecurityScoreValue: securityScoreValue)
 
-    private(set) lazy var ratingBullets: [MarketsTokenDetailsSecurityScoreRatingViewData.RatingBullet] = MarketsTokenDetailsSecurityScoreRatingHelper()
-        .makeRatingBullets(forSecurityScoreValue: securityScoreValue)
+        return MarketsTokenDetailsSecurityScoreRatingViewData(ratingBullets: ratingBullets, securityScore: securityScore)
+    }()
 
-    private let providers: [MarketsTokenDetailsSecurityScore.Provider] // TODO: Andrey Fedorov - Replace with a dedicated domain model and rename
+    private let providers: [MarketsTokenDetailsSecurityScore.Provider]
     private let securityScoreValue: Double
 
     private weak var routable: MarketsTokenDetailsSecurityScoreRoutable?

@@ -24,12 +24,7 @@ struct MarketsTokenDetailsSecurityScoreView: View {
 
             Spacer()
 
-            MarketsTokenDetailsSecurityScoreRatingView(
-                viewData: .init(
-                    ratingBullets: viewModel.ratingBullets,
-                    securityScore: viewModel.securityScore
-                )
-            )
+            MarketsTokenDetailsSecurityScoreRatingView(viewData: viewModel.ratingViewData)
         }
         .padding(.vertical, 12.0)
         .defaultRoundedBackground(

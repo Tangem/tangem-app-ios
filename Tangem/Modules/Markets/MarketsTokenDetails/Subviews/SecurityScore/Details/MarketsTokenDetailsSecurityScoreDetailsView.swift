@@ -45,12 +45,7 @@ struct MarketsTokenDetailsSecurityScoreDetailsView: View {
                         },
                         label: {
                             VStack(alignment: .trailing, spacing: 2.0) {
-                                MarketsTokenDetailsSecurityScoreRatingView(
-                                    viewData: .init(
-                                        ratingBullets: provider.ratingBullets,
-                                        securityScore: provider.securityScore
-                                    )
-                                )
+                                MarketsTokenDetailsSecurityScoreRatingView(viewData: provider.ratingViewData)
 
                                 if let linkTitle = provider.linkTitle {
                                     Text(linkTitle)

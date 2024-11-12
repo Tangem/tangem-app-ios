@@ -8,42 +8,9 @@
 
 import Foundation
 
-final class MarketsTokenDetailsSecurityScoreDetailsViewModel: ObservableObject, Identifiable {
-    struct SecurityScoreProviderData: Identifiable {
-        var securityScore: String {
-            MarketsTokenDetailsSecurityScoreRatingHelper().makeSecurityScore(forSecurityScoreValue: securityScoreValue)
-        }
-
-//        private(set) lazy var securityScore: String = MarketsTokenDetailsSecurityScoreRatingHelper()
-//            .makeSecurityScore(forSecurityScoreValue: securityScoreValue)
-
-        var ratingBullets: [MarketsTokenDetailsSecurityScoreRatingViewData.RatingBullet] {
-            MarketsTokenDetailsSecurityScoreRatingHelper().makeRatingBullets(forSecurityScoreValue: securityScoreValue)
-        }
-
-//        private(set) lazy var ratingBullets: [MarketsTokenDetailsSecurityScoreRatingViewData.RatingBullet] = MarketsTokenDetailsSecurityScoreRatingHelper()
-//            .makeRatingBullets(forSecurityScoreValue: securityScoreValue)
-
-        let id = UUID()
-        let name: String
-        let auditDate: String?
-        let iconURL: URL
-        let providerURL: URL?
-        let securityScoreValue: Double
-
-        var linkTitle: String? {
-            if #available(iOS 16.0, *) {
-                providerURL?.host()
-            } else {
-                providerURL?.host
-            }
-        }
-    }
-
+final class MarketsTokenDetailsSecurityScoreDetailsViewModel: Identifiable {
     var title: String { Localization.marketsTokenDetailsSecurityScore }
-
     var subtitle: String { Localization.marketsTokenDetailsSecurityScoreDescription }
-
     let providers: [SecurityScoreProviderData]
 
     private weak var routable: MarketsTokenDetailsSecurityScoreDetailsRoutable?
@@ -59,11 +26,32 @@ final class MarketsTokenDetailsSecurityScoreDetailsViewModel: ObservableObject, 
     func onProviderLinkTap(with identifier: SecurityScoreProviderData.ID) {
         guard
             let provider = providers.first(where: { $0.id == identifier }),
-            let providerURL = provider.providerURL
+            let auditURL = provider.auditURL
         else {
             return
         }
 
-        routable?.openSecurityAudit(at: providerURL)
+        routable?.openSecurityAudit(at: auditURL)
+    }
+}
+
+// MARK: - Auxiliary types
+
+extension MarketsTokenDetailsSecurityScoreDetailsViewModel {
+    struct SecurityScoreProviderData: Identifiable {
+        let id = UUID()
+        let name: String
+        let iconURL: URL
+        let ratingViewData: MarketsTokenDetailsSecurityScoreRatingViewData
+        let auditDate: String?
+        let auditURL: URL?
+
+        var linkTitle: String? {
+            if #available(iOS 16.0, *) {
+                auditURL?.host()
+            } else {
+                auditURL?.host
+            }
+        }
     }
 }
