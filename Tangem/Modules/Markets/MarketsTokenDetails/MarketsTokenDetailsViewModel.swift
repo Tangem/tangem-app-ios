@@ -226,6 +226,8 @@ class MarketsTokenDetailsViewModel: MarketsBaseViewModel {
             return
         }
 
+        Analytics.log(event: .marketsChartExchangesScreenOpened, params: [.token: tokenInfo.symbol.uppercased()])
+
         coordinator?.openExchangesList(tokenId: tokenInfo.id, numberOfExchangesListedOn: numberOfExchangesListedOn, presentationStyle: presentationStyle)
     }
 

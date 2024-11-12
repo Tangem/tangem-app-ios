@@ -10,6 +10,7 @@ import Foundation
 import Hedera
 import CryptoSwift
 import TangemSdk
+import TangemFoundation
 
 final class HederaTransactionBuilder {
     private let publicKey: Data

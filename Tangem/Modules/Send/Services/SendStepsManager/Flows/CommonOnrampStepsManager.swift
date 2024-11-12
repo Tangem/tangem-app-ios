@@ -12,6 +12,7 @@ import Combine
 class CommonOnrampStepsManager {
     private let onrampStep: OnrampStep
     private let finishStep: SendFinishStep
+    private let coordinator: OnrampRoutable
     private let shouldActivateKeyboard: Bool
 
     private var stack: [SendStep]
@@ -20,10 +21,12 @@ class CommonOnrampStepsManager {
     init(
         onrampStep: OnrampStep,
         finishStep: SendFinishStep,
+        coordinator: OnrampRoutable,
         shouldActivateKeyboard: Bool
     ) {
         self.onrampStep = onrampStep
         self.finishStep = finishStep
+        self.coordinator = coordinator
         self.shouldActivateKeyboard = shouldActivateKeyboard
 
         stack = [onrampStep]
@@ -55,7 +58,7 @@ extension CommonOnrampStepsManager: SendStepsManager {
     }
 
     var shouldShowDismissAlert: Bool {
-        return false
+        return true
     }
 
     func set(output: SendStepsManagerOutput) {

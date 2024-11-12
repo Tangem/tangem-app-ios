@@ -10,6 +10,7 @@ import Foundation
 import Combine
 import BinanceChain
 import struct TangemSdk.SignResponse
+import TangemFoundation
 
 class BinanceWalletManager: BaseManager, WalletManager {
     var txBuilder: BinanceTransactionBuilder!
@@ -100,7 +101,7 @@ extension BinanceWalletManager: TransactionFeeProvider {
             .tryMap { [weak self] feeString throws -> [Fee] in
                 guard let self = self else { throw WalletError.empty }
 
-                guard let feeValue = Decimal(feeString) else {
+                guard let feeValue = Decimal(stringValue: feeString) else {
                     throw WalletError.failedToGetFee
                 }
 

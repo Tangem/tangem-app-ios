@@ -20,6 +20,10 @@ struct OnrampView: View {
                 viewModel: viewModel.onrampAmountViewModel,
                 namespace: .init(id: namespace.id, names: namespace.names)
             )
+
+            OnrampProvidersCompactView(
+                viewModel: viewModel.onrampProvidersCompactViewModel
+            )
         }
     }
 }

@@ -17,3 +17,9 @@ public struct OnrampCountry: Hashable {
         self.onrampAvailable = onrampAvailable
     }
 }
+
+extension OnrampCountry: Identifiable {
+    public var id: OnrampIdentity {
+        identity
+    }
+}

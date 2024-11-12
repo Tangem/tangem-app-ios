@@ -9,15 +9,10 @@
 public struct OnrampPair: Hashable {
     public let fiatCurrencyCode: String?
     public let currency: ExpressCurrency
-    public let providers: [OnrampProvider]
+    public let providers: [Provider]
 
-    public init(
-        fiatCurrencyCode: String?,
-        currency: ExpressCurrency,
-        providers: [OnrampProvider]
-    ) {
-        self.fiatCurrencyCode = fiatCurrencyCode
-        self.currency = currency
-        self.providers = providers
+    public struct Provider: Hashable {
+        public let id: String
+        public let paymentMethods: [String]
     }
 }

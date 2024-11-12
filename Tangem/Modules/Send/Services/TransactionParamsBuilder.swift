@@ -48,6 +48,12 @@ struct TransactionParamsBuilder {
             } else {
                 throw TransactionParamsBuilderError.invalidMemoDestinationTag
             }
+        case .casper:
+            if let memo = UInt64(value) {
+                return CasperTransactionParams(memo: memo)
+            } else {
+                throw TransactionParamsBuilderError.invalidMemoDestinationTag
+            }
         case .bitcoin,
              .litecoin,
              .ethereum,
@@ -109,7 +115,8 @@ struct TransactionParamsBuilder {
              .sui,
              .energyWebEVM,
              .energyWebX,
-             .core:
+             .core,
+             .canxium:
             throw TransactionParamsBuilderError.extraIdNotSupported
         }
     }

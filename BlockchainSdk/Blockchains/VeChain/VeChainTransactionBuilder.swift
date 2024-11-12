@@ -10,6 +10,7 @@ import Foundation
 import TangemSdk
 import WalletCore
 import BigInt
+import TangemFoundation
 
 final class VeChainTransactionBuilder {
     private let isTestnet: Bool

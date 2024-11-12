@@ -22,6 +22,8 @@ public enum ValidationError: Hashable, LocalizedError {
     case maximumUTXO(blockchainName: String, newAmount: Amount, maxUtxo: Int)
     case reserve(amount: Amount)
 
+    case minimumRestrictAmount(amount: Amount)
+
     case cardanoHasTokens(minimumAmount: Amount)
     case cardanoInsufficientBalanceToSendToken
 
@@ -57,6 +59,8 @@ public enum ValidationError: Hashable, LocalizedError {
             return Localization.sendErrorNoTargetAccount(amount.description)
         case .insufficientFeeResource(.mana, let current, let max):
             return Localization.koinosInsufficientManaToSendKoinDescription(current, max)
+        case .minimumRestrictAmount:
+            return Localization.sendValidationInvalidAmount
         }
     }
 }

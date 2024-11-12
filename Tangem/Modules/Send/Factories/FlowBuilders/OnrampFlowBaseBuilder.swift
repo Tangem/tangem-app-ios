@@ -13,36 +13,45 @@ struct OnrampFlowBaseBuilder {
     let userWalletModel: UserWalletModel
     let walletModel: WalletModel
     let sendAmountStepBuilder: SendAmountStepBuilder
+    let onrampAmountBuilder: OnrampAmountBuilder
     let onrampStepBuilder: OnrampStepBuilder
     let sendFinishStepBuilder: SendFinishStepBuilder
     let builder: SendDependenciesBuilder
 
     func makeSendViewModel(router: SendRoutable) -> SendViewModel {
-        let expressAPIProvider = ExpressAPIProviderFactory().makeExpressAPIProvider(userId: userWalletModel.userWalletId.stringValue, logger: AppLog.shared)
-        let onrampRepository = builder.makeOnrampRepository()
-
-        let onrampManager = TangemExpressFactory().makeOnrampManager(
-            expressAPIProvider: expressAPIProvider,
-            onrampRepository: onrampRepository,
-            logger: AppLog.shared
+        let (onrampManager, onrampRepository, onrampDataRepository) = builder.makeOnrampDependencies(
+            userWalletId: userWalletModel.userWalletId.stringValue
         )
 
-        let onrampModel = builder.makeOnrampModel(onrampManager: onrampManager)
+        let onrampModel = builder.makeOnrampModel(onrampManager: onrampManager, onrampRepository: onrampRepository)
 
-        let onrampAmountViewModel = sendAmountStepBuilder.makeOnrampAmountViewModel(
+        let providersBuilder = OnrampProvidersBuilder(
             io: (input: onrampModel, output: onrampModel),
-            repository: onrampRepository,
-            sendAmountValidator: builder.makeOnrampAmountValidator()
+            tokenItem: walletModel.tokenItem,
+            paymentMethodsInput: onrampModel
+        )
+
+        let paymentMethodsBuilder = OnrampPaymentMethodsBuilder(
+            io: (input: onrampModel, output: onrampModel),
+            dataRepository: onrampDataRepository
+        )
+
+        let (onrampAmountViewModel, _) = onrampAmountBuilder.makeOnrampAmountViewModel(
+            io: (input: onrampModel, output: onrampModel),
+            coordinator: router
         )
 
         let sendAmountCompactViewModel = sendAmountStepBuilder.makeSendAmountCompactViewModel(
             input: onrampModel
         )
 
+        let onrampProvidersCompactViewModel = providersBuilder.makeOnrampProvidersCompactViewModel()
+
         let onramp = onrampStepBuilder.makeOnrampStep(
             io: (input: onrampModel, output: onrampModel),
             onrampManager: onrampManager,
-            onrampAmountViewModel: onrampAmountViewModel
+            onrampAmountViewModel: onrampAmountViewModel,
+            onrampProvidersCompactViewModel: onrampProvidersCompactViewModel
         )
 
         let finish = sendFinishStepBuilder.makeSendFinishStep(
@@ -57,14 +66,20 @@ struct OnrampFlowBaseBuilder {
         let stepsManager = CommonOnrampStepsManager(
             onrampStep: onramp.step,
             finishStep: finish,
+            coordinator: router,
             // If user already has saved country in the repository then the bottom sheet will not show
             // And we can show keyboard safely
-            shouldActivateKeyboard: onrampRepository.savedCountry != nil
+            shouldActivateKeyboard: onrampRepository.preferenceCountry != nil
+        )
+
+        let dataBuilder = builder.makeOnrampBaseDataBuilder(
+            onrampRepository: onrampRepository,
+            onrampDataRepository: onrampDataRepository,
+            providersBuilder: providersBuilder,
+            paymentMethodsBuilder: paymentMethodsBuilder
         )
 
         let interactor = CommonSendBaseInteractor(input: onrampModel, output: onrampModel)
-        let dataBuilder = builder.makeOnrampBaseDataBuilder(input: onrampModel, onrampRepository: onrampRepository)
-
         let viewModel = SendViewModel(
             interactor: interactor,
             stepsManager: stepsManager,
@@ -77,6 +92,8 @@ struct OnrampFlowBaseBuilder {
         )
 
         stepsManager.set(output: viewModel)
+
+        onrampProvidersCompactViewModel.router = viewModel
         onrampModel.router = viewModel
         onrampModel.alertPresenter = viewModel
 

@@ -42,6 +42,8 @@ struct EthereumStakeKitTransactionHelper {
         let compiledTransaction = try JSONDecoder()
             .decode(EthereumCompiledTransaction.self, from: compiledTransactionData)
 
+        let coinAmount: BigUInt = compiledTransaction.value.flatMap { BigUInt(Data(hex: $0)) } ?? .zero
+
         let gasLimit = BigUInt(Data(hex: compiledTransaction.gasLimit))
         guard gasLimit > 0 else {
             throw EthereumTransactionBuilderError.feeParametersNotFound
@@ -69,7 +71,7 @@ struct EthereumStakeKitTransactionHelper {
 
         return try transactionBuilder.buildSigningInput(
             destination: compiledTransaction.to,
-            coinAmount: .zero,
+            coinAmount: coinAmount,
             fee: Fee(
                 stakingTransaction.fee.amount,
                 parameters: feeParameters
@@ -91,4 +93,5 @@ private struct EthereumCompiledTransaction: Decodable {
     let maxPriorityFeePerGas: String?
     let gasPrice: String?
     let chainId: Int
+    let value: String?
 }

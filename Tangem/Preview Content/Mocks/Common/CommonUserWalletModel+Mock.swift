@@ -12,4 +12,8 @@ extension CommonUserWalletModel {
     static let mock = CommonUserWalletModelFactory().makeModel(
         cardInfo: CardMock.wallet.cardInfo
     )
+
+    static let visaMock = CommonUserWalletModelFactory().makeModel(
+        cardInfo: CardMock.visa.cardInfo
+    )
 }

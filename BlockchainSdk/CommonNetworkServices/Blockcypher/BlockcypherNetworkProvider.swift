@@ -11,6 +11,7 @@ import Moya
 import Combine
 import BitcoinCore
 import TangemSdk
+import TangemFoundation
 
 class BlockcypherNetworkProvider: BitcoinNetworkProvider {
     var supportsTransactionPush: Bool { false }

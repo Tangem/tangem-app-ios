@@ -82,7 +82,10 @@ final class StakingDetailsViewModel: ObservableObject {
         let balances = stakingManager.state.balances.flatMap { String($0.count) } ?? String(0)
         Analytics.log(
             event: .stakingInfoScreenOpened,
-            params: [.validatorsCount: balances]
+            params: [
+                .validatorsCount: balances,
+                .token: walletModel.tokenItem.currencySymbol,
+            ]
         )
     }
 }
@@ -446,6 +449,7 @@ extension StakingAction.ActionType {
         case .pending(.voteLocked): Localization.stakingVote
         case .pending(.unlockLocked): Localization.stakingUnlockedLocked
         case .pending(.restake): Localization.stakingRestake
+        case .pending(.claimUnstaked): Localization.stakingWithdraw
         }
     }
 }

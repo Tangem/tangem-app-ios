@@ -8,6 +8,7 @@
 
 import Combine
 import BlockchainSdk
+import TangemFoundation
 
 protocol SendNotificationManagerInput {
     var feeValues: AnyPublisher<[SendFee], Never> { get }
@@ -243,7 +244,8 @@ private extension CommonSendNotificationManager {
                  .notEnoughMana,
                  .manaLimit,
                  .koinosInsufficientBalanceToSendKoin,
-                 .insufficientAmountToReserveAtDestination:
+                 .insufficientAmountToReserveAtDestination,
+                 .minimumRestrictAmount:
                 show(notification: .validationErrorEvent(validationErrorEvent))
             case .invalidNumber:
                 hideAllValidationErrorEvent()

@@ -9,7 +9,7 @@
 import Foundation
 
 struct TokenContextActionsBuilder {
-    @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
+    @Injected(\.expressAvailabilityProvider) private var expressAvailabilityProvider: ExpressAvailabilityProvider
 
     func buildContextActions(
         tokenItem: TokenItem,
@@ -67,7 +67,11 @@ struct TokenContextActionsBuilder {
         // On the Main view we have to hide send button if we have any sending restrictions
         let canSend = userWalletModel.config.hasFeature(.send) && walletModel.sendingRestrictions == .none
         let canSwap = userWalletModel.config.isFeatureVisible(.swapping) &&
-            swapAvailabilityProvider.canSwap(tokenItem: walletModel.tokenItem) &&
+            expressAvailabilityProvider.canSwap(tokenItem: walletModel.tokenItem) &&
+            !walletModel.isCustom
+
+        let canOnramp = userWalletModel.config.isFeatureVisible(.exchange) &&
+            expressAvailabilityProvider.canOnramp(tokenItem: walletModel.tokenItem) &&
             !walletModel.isCustom
 
         let canStake = StakingFeatureProvider(config: userWalletModel.config).isAvailable(for: walletModel.tokenItem)
@@ -80,6 +84,7 @@ struct TokenContextActionsBuilder {
             canSignTransactions: canSignTransactions,
             canSend: canSend,
             canSwap: canSwap,
+            canOnramp: canOnramp,
             canStake: canStake,
             isBlockchainReachable: isBlockchainReachable,
             exchangeUtility: utility

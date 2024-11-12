@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 import TangemExpress
 
-protocol SendRoutable: SendFeeRoutable, SendDestinationRoutable, OnrampRoutable, AnyObject {
+protocol SendRoutable: SendFeeRoutable, SendDestinationRoutable, OnrampRoutable, OnrampAmountRoutable, AnyObject {
     func dismiss()
     func openMail(with dataCollector: EmailDataCollector, recipient: String)
     func openQRScanner(with codeBinding: Binding<String>, networkName: String)
@@ -18,5 +18,4 @@ protocol SendRoutable: SendFeeRoutable, SendDestinationRoutable, OnrampRoutable,
     func openExplorer(url: URL)
     func openShareSheet(url: URL)
     func openApproveView(settings: ExpressApproveViewModel.Settings, approveViewModelInput: any ApproveViewModelInput)
-    func openOnrampCountry(country: OnrampCountry, repository: OnrampRepository)
 }

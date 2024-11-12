@@ -39,6 +39,7 @@ class MainCoordinator: CoordinatorObject {
     @Published var modalOnboardingCoordinator: OnboardingCoordinator?
     @Published var sendCoordinator: SendCoordinator? = nil
     @Published var expressCoordinator: ExpressCoordinator? = nil
+    @Published var actionButtonsBuyCoordinator: ActionButtonsBuyCoordinator? = nil
 
     // MARK: - Child view models
 
@@ -78,8 +79,7 @@ class MainCoordinator: CoordinatorObject {
             coordinator: self,
             swipeDiscoveryHelper: swipeDiscoveryHelper,
             mainUserWalletPageBuilderFactory: CommonMainUserWalletPageBuilderFactory(coordinator: self),
-            pushNotificationsAvailabilityProvider: pushNotificationsAvailabilityProvider,
-            actionButtonsViewModel: makeActionButtonsViewModel()
+            pushNotificationsAvailabilityProvider: pushNotificationsAvailabilityProvider
         )
 
         swipeDiscoveryHelper.delegate = viewModel
@@ -192,8 +192,6 @@ extension MainCoordinator: MainRoutable {
 extension MainCoordinator: MultiWalletMainContentRoutable {
     func openTokenDetails(for model: WalletModel, userWalletModel: UserWalletModel) {
         mainBottomSheetUIManager.hide()
-
-        Analytics.log(.tokenIsTapped)
 
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.tokenDetailsCoordinator = nil
@@ -453,31 +451,42 @@ extension MainCoordinator: PushNotificationsPermissionRequestDelegate {
     }
 }
 
-// MARK: - Action buttons
+// MARK: - Action buttons buy routable
 
-extension MainCoordinator: ActionButtonsRoutable {
-    func openBuy() {
-        // IOS-8237
+extension MainCoordinator: ActionButtonsBuyFlowRoutable, ActionButtonsBuyCryptoRoutable {
+    func openBuy(userWalletModel: UserWalletModel) {
+        let dismissAction: Action<Void> = { [weak self] _ in
+            self?.actionButtonsBuyCoordinator = nil
+        }
+
+        let coordinator = ActionButtonsBuyCoordinator(
+            buyCryptoCoordinator: self,
+            expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel),
+            dismissAction: dismissAction
+        )
+
+        coordinator.start(with: .default)
+
+        actionButtonsBuyCoordinator = coordinator
     }
 
-    func openSwap() {
-        // IOS-8238
-    }
-
-    func openSell() {
-        // IOS-8237
+    func openBuyCrypto(from url: URL) {
+        openBuyCrypto(at: url) {
+            self.actionButtonsBuyCoordinator = nil
+        }
     }
 }
 
-extension MainCoordinator {
-    private func makeActionButtonsViewModel() -> ActionButtonsViewModel {
-        ActionButtonsViewModel(
-            actionButtonFactory: CommonActionButtonsFactory(
-                coordinator: self,
-                actionButtons: [.buy, .swap, .sell]
-            )
-        )
-    }
+// MARK: - Action buttons sell routable
+
+extension MainCoordinator: ActionButtonsSellFlowRoutable {
+    func openSell() {}
+}
+
+// MARK: - Action buttons swap routable
+
+extension MainCoordinator: ActionButtonsSwapFlowRoutable {
+    func openSwap() {}
 }
 
 extension MainCoordinator {
