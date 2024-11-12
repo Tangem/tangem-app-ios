@@ -30,6 +30,8 @@ final class MultiWalletMainContentViewModel: ObservableObject {
 
     private(set) lazy var bottomSheetFooterViewModel = MainBottomSheetFooterViewModel()
 
+    private(set) var actionButtonsViewModel: ActionButtonsViewModel?
+
     var isOrganizeTokensVisible: Bool {
         guard canManageTokens else { return false }
 
@@ -54,7 +56,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
     private let tokenRouter: SingleTokenRoutable
     private let optionsEditing: OrganizeTokensOptionsEditing
     private let rateAppController: RateAppInteractionController
-    private weak var coordinator: MultiWalletMainContentRoutable?
+    private weak var coordinator: (MultiWalletMainContentRoutable & ActionButtonsRoutable)?
 
     private var canManageTokens: Bool { userWalletModel.config.hasFeature(.multiCurrency) }
 
@@ -79,7 +81,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         tokenSectionsAdapter: TokenSectionsAdapter,
         tokenRouter: SingleTokenRoutable,
         optionsEditing: OrganizeTokensOptionsEditing,
-        coordinator: MultiWalletMainContentRoutable?
+        coordinator: (MultiWalletMainContentRoutable & ActionButtonsRoutable)?
     ) {
         self.userWalletModel = userWalletModel
         self.userWalletNotificationManager = userWalletNotificationManager
@@ -92,6 +94,10 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         self.coordinator = coordinator
 
         bind()
+
+        if FeatureProvider.isAvailable(.actionButtons) {
+            actionButtonsViewModel = makeActionButtonsViewModel()
+        }
     }
 
     deinit {
@@ -104,6 +110,11 @@ final class MultiWalletMainContentViewModel: ObservableObject {
         }
 
         isUpdating = true
+
+        if FeatureProvider.isAvailable(.actionButtons) {
+            refreshActionButtonsData()
+        }
+
         userWalletModel.userTokensManager.sync { [weak self] in
             self?.isUpdating = false
             completionHandler()
@@ -129,6 +140,10 @@ final class MultiWalletMainContentViewModel: ObservableObject {
 
     func onOpenOrganizeTokensButtonTap() {
         openOrganizeTokens()
+    }
+
+    private func refreshActionButtonsData() {
+        actionButtonsViewModel?.fetchData()
     }
 
     private func bind() {
@@ -497,5 +512,19 @@ extension MultiWalletMainContentViewModel {
 private extension TokenSectionsAdapter.Section {
     var walletModels: [WalletModel] {
         return items.compactMap(\.walletModel)
+    }
+}
+
+// MARK: - Action buttons
+
+private extension MultiWalletMainContentViewModel {
+    func makeActionButtonsViewModel() -> ActionButtonsViewModel? {
+        guard let coordinator else { return nil }
+
+        return .init(
+            coordinator: coordinator,
+            expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel),
+            userWalletModel: userWalletModel
+        )
     }
 }
