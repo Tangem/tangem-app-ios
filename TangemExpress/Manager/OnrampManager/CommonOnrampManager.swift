@@ -69,8 +69,7 @@ extension CommonOnrampManager: OnrampManager {
         updateSelectedProvider()
     }
 
-    public func loadRedirectData(provider: OnrampProvider) async throws -> OnrampRedirectData {
-        let redirectSettings = OnrampRedirectSettings(successURL: "https://tangem.com/onramp/success", theme: "light", language: "en")
+    public func loadRedirectData(provider: OnrampProvider, redirectSettings: OnrampRedirectSettings) async throws -> OnrampRedirectData {
         let item = try provider.manager.makeOnrampQuotesRequestItem()
         let requestItem = OnrampRedirectDataRequestItem(quotesItem: item, redirectSettings: redirectSettings)
         let data = try await apiProvider.onrampData(item: requestItem)

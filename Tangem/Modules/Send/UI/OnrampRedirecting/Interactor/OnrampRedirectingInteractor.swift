@@ -45,7 +45,13 @@ extension CommonOnrampRedirectingInteractor: OnrampRedirectingInteractor {
         }
 
         // TODO: https://tangem.atlassian.net/browse/IOS-8309
-        // let redirectData = try await onrampManager.loadRedirectData(provider: provider)
-        // output?.redirectDataDidLoad(data: redirectData)
+        let redirectSettings = OnrampRedirectSettings(
+            successURL: IncomingActionConstants.externalSuccessURL,
+            theme: "light",
+            language: "en"
+        )
+
+        let redirectData = try await onrampManager.loadRedirectData(provider: provider, redirectSettings: redirectSettings)
+        output?.redirectDataDidLoad(data: redirectData)
     }
 }

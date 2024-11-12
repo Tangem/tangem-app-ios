@@ -259,9 +259,11 @@ extension OnrampModel: OnrampRedirectingInput {}
 
 extension OnrampModel: OnrampRedirectingOutput {
     func redirectDataDidLoad(data: OnrampRedirectData) {
-        // Update logic
+        // Check full logic
         // TODO: https://tangem.atlassian.net/browse/IOS-8309
-        // router?.openWebView()
+        router?.openWebView(url: URL(string: data.widgetUrl)!) { [weak self] in
+            self?.router?.openFinishStep()
+        }
     }
 }
 
