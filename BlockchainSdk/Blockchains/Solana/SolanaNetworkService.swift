@@ -74,27 +74,10 @@ class SolanaNetworkService {
     }
 
     func sendSplToken(amount: UInt64, computeUnitLimit: UInt32?, computeUnitPrice: UInt64?, sourceTokenAddress: String, destinationAddress: String, token: Token, tokenProgramId: PublicKey, signer: SolanaTransactionSigner) -> AnyPublisher<TransactionID, Error> {
-        solanaSdk.api.getAccountInfo(account: destinationAddress, decodedTo: AccountInfo.self)
-            .eraseToAnyPublisher()
-            .mapToResult()
+        checkUnfundedAllowance(destinationAddress: destinationAddress)
             .withWeakCaptureOf(self)
-            .flatMap { manager, result in
-
-                let isAllowUnfundedAccountRecipient: Bool
-
-                switch result {
-                case .success(let info):
-                    if info.owner == PublicKey.programId.base58EncodedString {
-                        isAllowUnfundedAccountRecipient = true
-                    } else {
-                        isAllowUnfundedAccountRecipient = false
-                    }
-
-                case .failure(let error):
-                    return AnyPublisher<TransactionID, Error>.anyFail(error: error)
-                }
-
-                return manager.solanaSdk.action.sendSPLTokens(
+            .flatMap { service, allowUnfundedRecipient in
+                service.solanaSdk.action.sendSPLTokens(
                     mintAddress: token.contractAddress,
                     tokenProgramId: tokenProgramId,
                     decimals: Decimals(token.decimalCount),
@@ -103,7 +86,7 @@ class SolanaNetworkService {
                     amount: amount,
                     computeUnitLimit: computeUnitLimit,
                     computeUnitPrice: computeUnitPrice,
-                    allowUnfundedRecipient: isAllowUnfundedAccountRecipient,
+                    allowUnfundedRecipient: allowUnfundedRecipient,
                     signer: signer
                 )
             }
@@ -296,5 +279,17 @@ class SolanaNetworkService {
             tokensByMint: tokensByMint,
             confirmedTransactionIDs: confirmedTransactionIDs
         )
+    }
+
+    private func checkUnfundedAllowance(destinationAddress: String) -> AnyPublisher<Bool, Error> {
+        solanaSdk.api.getAccountInfo(account: destinationAddress, decodedTo: AccountInfo.self)
+            .tryMap { accountInfo in
+                if accountInfo.owner == PublicKey.programId.base58EncodedString {
+                    return true
+                } else {
+                    return false
+                }
+            }
+            .eraseToAnyPublisher()
     }
 }
