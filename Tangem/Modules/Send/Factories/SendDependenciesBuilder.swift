@@ -62,6 +62,40 @@ struct SendDependenciesBuilder {
         }
     }
 
+    func walletHeaderText(for actionType: SendFlowActionType) -> String {
+        switch actionType {
+        case .unstake: Localization.stakingStakedAmount
+        default: walletName()
+        }
+    }
+
+    func maxAmount(for amount: SendAmount?, actionType: SendFlowActionType) -> Decimal {
+        switch actionType {
+        case .unstake: amount?.crypto ?? 0
+        default: walletModel.balanceValue ?? 0
+        }
+    }
+
+    func formattedBalance(for amount: SendAmount?, actionType: SendFlowActionType) -> String {
+        let balanceFormatted: WalletModel.BalanceFormatted
+        switch actionType {
+        case .unstake:
+            let balance = WalletModel.Balance(
+                crypto: amount?.crypto,
+                fiat: amount?.fiat
+            )
+            let cryptoFormatted = walletModel.formatter.formatCryptoBalance(
+                balance.crypto,
+                currencyCode: walletModel.tokenItem.currencySymbol
+            )
+            let fiatFormatted = walletModel.formatter.formatFiatBalance(balance.fiat)
+            balanceFormatted = WalletModel.BalanceFormatted(crypto: cryptoFormatted, fiat: fiatFormatted)
+        default:
+            balanceFormatted = walletModel.availableBalanceFormatted
+        }
+        return Localization.commonCryptoFiatFormat(balanceFormatted.crypto, balanceFormatted.fiat)
+    }
+
     func walletName() -> String {
         userWalletModel.name
     }
@@ -321,8 +355,8 @@ struct SendDependenciesBuilder {
         StakingFeeIncludedCalculator(tokenItem: walletModel.tokenItem, validator: walletModel.transactionValidator)
     }
 
-    func makeStakingAmountModifier() -> SendAmountModifier {
-        StakingAmountModifier(tokenItem: walletModel.tokenItem)
+    func makeStakingAmountModifier(actionType: SendFlowActionType) -> SendAmountModifier {
+        StakingAmountModifier(tokenItem: walletModel.tokenItem, actionType: actionType)
     }
 
     func makeStakingBaseDataBuilder(input: StakingBaseDataBuilderInput) -> StakingBaseDataBuilder {

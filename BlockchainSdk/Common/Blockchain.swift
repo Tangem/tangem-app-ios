@@ -92,6 +92,7 @@ public indirect enum Blockchain: Equatable, Hashable {
     case energyWebX(curve: EllipticCurve)
     case core(testnet: Bool)
     case canxium
+    case casper(curve: EllipticCurve, testnet: Bool)
 
     public var isTestnet: Bool {
         switch self {
@@ -170,7 +171,8 @@ public indirect enum Blockchain: Equatable, Hashable {
              .algorand(_, let testnet),
              .aptos(_, let testnet),
              .shibarium(let testnet),
-             .sui(_, let testnet):
+             .sui(_, let testnet),
+             .casper(_, let testnet):
             return testnet
         }
     }
@@ -194,7 +196,8 @@ public indirect enum Blockchain: Equatable, Hashable {
              .hedera(let curve, _),
              .bittensor(let curve),
              .sui(let curve, _),
-             .energyWebX(let curve):
+             .energyWebX(let curve),
+             .casper(let curve, _):
             return curve
         case .chia:
             return .bls12381_G2_AUG
@@ -307,7 +310,7 @@ public indirect enum Blockchain: Equatable, Hashable {
             return 6
         case .stellar:
             return 7
-        case .solana, .ton, .bittensor, .sui:
+        case .solana, .ton, .bittensor, .sui, .casper:
             return 9
         case .polkadot(_, let testnet):
             return testnet ? 12 : 10
@@ -465,6 +468,8 @@ public indirect enum Blockchain: Equatable, Hashable {
             return isTestnet ? "tCORE" : "CORE"
         case .canxium:
             return "CAU"
+        case .casper:
+            return "CSPR"
         }
     }
 
@@ -963,6 +968,7 @@ extension Blockchain: Codable {
         case .energyWebX: return "energyWebX"
         case .core: return "core"
         case .canxium: return "canxium"
+        case .casper: return "casper-network"
         }
     }
 
@@ -1060,6 +1066,7 @@ extension Blockchain: Codable {
         case "energyWebX": self = .energyWebX(curve: curve)
         case "core": self = .core(testnet: isTestnet)
         case "canxium": self = .canxium
+        case "casper-network": self = .casper(curve: curve, testnet: isTestnet)
         default:
             throw BlockchainSdkError.decodingFailed
         }
@@ -1302,6 +1309,8 @@ private extension Blockchain {
             }
         case .canxium:
             return "canxium"
+        case .casper:
+            return "casper-network"
         }
     }
 
@@ -1417,6 +1426,8 @@ extension Blockchain {
             return SuiWalletAssembly()
         case .filecoin:
             return FilecoinWalletAssembly()
+        case .casper:
+            return CasperWalletAssembly()
         }
     }
 }

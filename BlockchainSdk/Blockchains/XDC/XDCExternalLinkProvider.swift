@@ -9,15 +9,15 @@
 import Foundation
 
 struct XDCExternalLinkProvider: ExternalLinkProvider {
-    var testnetFaucetURL: URL? = URL(string: "https://faucet.apothem.network/")
+    var testnetFaucetURL: URL? = URL(string: "https://faucet.blocksscan.io/")
 
     private let isTestnet: Bool
 
     private var baseExplorerUrl: String {
         if isTestnet {
-            return "https://explorer.apothem.network"
+            return "https://apothem.xdcscan.io"
         } else {
-            return "https://explorer.xinfin.network"
+            return "https://xdcscan.io"
         }
     }
 
@@ -30,6 +30,6 @@ struct XDCExternalLinkProvider: ExternalLinkProvider {
     }
 
     func url(transaction hash: String) -> URL? {
-        return URL(string: "\(baseExplorerUrl)/txs/\(hash)")
+        return URL(string: "\(baseExplorerUrl)/tx/\(hash)")
     }
 }

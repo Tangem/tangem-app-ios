@@ -193,8 +193,6 @@ extension MainCoordinator: MultiWalletMainContentRoutable {
     func openTokenDetails(for model: WalletModel, userWalletModel: UserWalletModel) {
         mainBottomSheetUIManager.hide()
 
-        Analytics.log(.tokenIsTapped)
-
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.tokenDetailsCoordinator = nil
         }

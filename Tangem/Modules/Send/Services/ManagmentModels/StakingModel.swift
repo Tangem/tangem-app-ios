@@ -125,27 +125,8 @@ private extension StakingModel {
         }
 
         let fee = try await estimateFee(amount: amount, validator: validator)
-        let includeFee = feeIncludedCalculator.shouldIncludeFee(makeFee(value: fee), into: makeAmount(value: amount))
-        let newAmount = includeFee ? amount - fee : amount
-        _isFeeIncluded.send(includeFee)
 
-        if let validateError = validate(amount: newAmount, fee: fee) {
-            return validateError
-        }
-
-        let balances = stakingManager.state.balances ?? []
-        let hasPreviousStakeOnDifferentValidator = balances.contains { balance in
-            balance.balanceType == .active && balance.validatorType.validator != validator
-        }
-
-        return .readyToStake(
-            .init(
-                amount: newAmount,
-                fee: fee,
-                isFeeIncluded: includeFee,
-                stakeOnDifferentValidator: hasPreviousStakeOnDifferentValidator
-            )
-        )
+        return makeState(amount: amount, fee: fee)
     }
 
     func validate(amount: Decimal, fee: Decimal) -> StakingModel.State? {
@@ -206,6 +187,30 @@ private extension StakingModel {
         Fee(.init(with: feeTokenItem.blockchain, type: feeTokenItem.amountType, value: value))
     }
 
+    private func makeState(amount: Decimal, fee: Decimal) -> State {
+        let includeFee = feeIncludedCalculator.shouldIncludeFee(makeFee(value: fee), into: makeAmount(value: amount))
+        let newAmount = includeFee ? amount - fee : amount
+        _isFeeIncluded.send(includeFee)
+
+        if let validateError = validate(amount: newAmount, fee: fee) {
+            return validateError
+        }
+
+        let balances = stakingManager.state.balances ?? []
+        let hasPreviousStakeOnDifferentValidator = balances.contains { balance in
+            balance.balanceType == .active && balance.validatorType.validator != validator
+        }
+
+        return .readyToStake(
+            .init(
+                amount: newAmount,
+                fee: fee,
+                isFeeIncluded: includeFee,
+                stakeOnDifferentValidator: hasPreviousStakeOnDifferentValidator
+            )
+        )
+    }
+
     func log(_ args: String) {
         AppLog.shared.debug("[Staking] \(objectDescription(self)) \(args)")
     }
@@ -259,6 +264,13 @@ private extension StakingModel {
                 type: .stake
             )
             let transactionInfo = try await stakingManager.transaction(action: action)
+            let transactionsFee = transactionInfo.transactions.reduce(Decimal.zero) { $0 + $1.fee }
+            if readyToStake.isFeeIncluded,
+               transactionsFee > readyToStake.fee,
+               let amount = _amount.value?.crypto {
+                update(state: makeState(amount: amount, fee: transactionsFee))
+                throw TransactionDispatcherResult.Error.informationRelevanceServiceFeeWasIncreased
+            }
             let result = try await stakingTransactionDispatcher.send(transaction: .staking(transactionInfo))
             stakingManager.transactionDidSent(action: action)
 

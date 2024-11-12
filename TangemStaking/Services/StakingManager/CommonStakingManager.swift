@@ -74,8 +74,8 @@ extension CommonStakingManager: StakingManager {
             try await repository.checkIfConfirmed(balances: balances)
             try await updateState(state(balances: balances, yield: yield))
         } catch {
-            analyticsLogger.logAPIError(
-                errorDescription: error.localizedDescription,
+            analyticsLogger.logError(
+                error,
                 currencySymbol: wallet.item.symbol
             )
             logger.error(error)
@@ -107,7 +107,7 @@ extension CommonStakingManager: StakingManager {
             )
         default:
             log("Invalid staking manager state: \(state), for action: \(action)")
-            throw StakingManagerError.stakingManagerStateNotSupportTransactionAction(action: action)
+            throw StakingManagerError.stakingManagerStateNotSupportEstimateFeeAction(action: action, state: state)
         }
     }
 
@@ -130,7 +130,7 @@ extension CommonStakingManager: StakingManager {
                 type: type
             )
         default:
-            throw StakingManagerError.stakingManagerStateNotSupportTransactionAction(action: action)
+            throw StakingManagerError.stakingManagerStateNotSupportTransactionAction(action: action, state: state)
         }
     }
 
@@ -278,8 +278,8 @@ private extension CommonStakingManager {
         do {
             return try await request()
         } catch {
-            analyticsLogger.logAPIError(
-                errorDescription: error.localizedDescription,
+            analyticsLogger.logError(
+                error,
                 currencySymbol: wallet.item.symbol
             )
             throw error
@@ -438,28 +438,16 @@ private extension CommonStakingManager {
 }
 
 public enum StakingManagerError: LocalizedError {
-    case stakingManagerStateNotSupportTransactionAction(action: StakingAction)
-    case stakedBalanceNotFound(validator: String)
-    case pendingActionNotFound(validator: String)
-    case transactionNotFound
-    case notImplemented
-    case notFound
+    case stakingManagerStateNotSupportTransactionAction(action: StakingAction, state: StakingManagerState)
+    case stakingManagerStateNotSupportEstimateFeeAction(action: StakingAction, state: StakingManagerState)
     case stakingManagerIsLoading
 
     public var errorDescription: String? {
         switch self {
-        case .stakingManagerStateNotSupportTransactionAction(let action):
-            "StakingManagerNotSupportTransactionAction \(action)"
-        case .stakedBalanceNotFound(let validator):
-            "stakedBalanceNotFound \(validator)"
-        case .pendingActionNotFound(let validator):
-            "pendingActionNotFound \(validator)"
-        case .transactionNotFound:
-            "transactionNotFound"
-        case .notImplemented:
-            "notImplemented"
-        case .notFound:
-            "notFound"
+        case .stakingManagerStateNotSupportTransactionAction(let action, let state):
+            "StakingManagerNotSupportTransactionAction \(action.type) state \(state.description)"
+        case .stakingManagerStateNotSupportEstimateFeeAction(let action, let state):
+            "StakingManagerNotSupportTransactionAction \(action.type) state \(state.description)"
         case .stakingManagerIsLoading:
             "StakingManagerIsLoading"
         }

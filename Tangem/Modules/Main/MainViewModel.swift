@@ -147,8 +147,6 @@ final class MainViewModel: ObservableObject {
     }
 
     func onPullToRefresh(completionHandler: @escaping RefreshCompletionHandler) {
-        Analytics.log(.mainRefreshed)
-
         isHorizontalScrollDisabled = true
         let completion = { [weak self] in
             self?.isHorizontalScrollDisabled = false
@@ -185,8 +183,6 @@ final class MainViewModel: ObservableObject {
 
     func onPageChange(dueTo reason: CardsInfoPageChangeReason) {
         guard reason == .byGesture else { return }
-
-        Analytics.log(.mainScreenWalletChangedBySwipe)
 
         if !AppSettings.shared.userDidSwipeWalletsOnMainScreen {
             AppSettings.shared.userDidSwipeWalletsOnMainScreen = true
@@ -346,7 +342,6 @@ final class MainViewModel: ObservableObject {
                 guard let userWalletId = viewModel.pages[safe: newIndex]?.id else {
                     return
                 }
-                Analytics.log(.walletOpened)
                 viewModel.userWalletRepository.setSelectedUserWalletId(
                     userWalletId,
                     reason: .userSelected

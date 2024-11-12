@@ -163,6 +163,8 @@ public struct ExternalLinkProviderFactory {
             return CoreExternalLinkProvider(isTestnet: isTestnet)
         case .canxium:
             return CanxiumExternalLinkProvider()
+        case .casper:
+            return CasperExternalLinkProvider(isTestnet: isTestnet)
         }
     }
 }

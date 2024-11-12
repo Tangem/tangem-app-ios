@@ -29,9 +29,11 @@ struct SendAmountStepBuilder {
             io: io,
             sendAmountValidator: sendAmountValidator,
             amountModifier: amountModifier,
-            type: .crypto
+            type: .crypto,
+            actionType: actionType
         )
         let viewModel = makeSendAmountViewModel(
+            io: io,
             interactor: interactor,
             actionType: actionType,
             sendQRCodeService: sendQRCodeService
@@ -61,16 +63,16 @@ struct SendAmountStepBuilder {
 
 private extension SendAmountStepBuilder {
     func makeSendAmountViewModel(
+        io: IO,
         interactor: SendAmountInteractor,
         actionType: SendFlowActionType,
         sendQRCodeService: SendQRCodeService?
     ) -> SendAmountViewModel {
         let initital = SendAmountViewModel.Settings(
-            userWalletName: builder.walletName(),
+            walletHeaderText: builder.walletHeaderText(for: actionType),
             tokenItem: walletModel.tokenItem,
             tokenIconInfo: builder.makeTokenIconInfo(),
-            balanceValue: walletModel.balanceValue ?? 0,
-            balanceFormatted: Localization.commonCryptoFiatFormat(walletModel.balance, walletModel.fiatBalance),
+            balanceFormatted: builder.formattedBalance(for: io.input.amount, actionType: actionType),
             currencyPickerData: builder.makeCurrencyPickerData(),
             actionType: actionType
         )
@@ -86,13 +88,14 @@ private extension SendAmountStepBuilder {
         io: IO,
         sendAmountValidator: SendAmountValidator,
         amountModifier: SendAmountModifier?,
-        type: SendAmountCalculationType
+        type: SendAmountCalculationType,
+        actionType: SendFlowActionType
     ) -> SendAmountInteractor {
         CommonSendAmountInteractor(
             input: io.input,
             output: io.output,
             tokenItem: walletModel.tokenItem,
-            balanceValue: walletModel.balanceValue ?? 0,
+            maxAmount: builder.maxAmount(for: io.input.amount, actionType: actionType),
             validator: sendAmountValidator,
             amountModifier: amountModifier,
             type: type

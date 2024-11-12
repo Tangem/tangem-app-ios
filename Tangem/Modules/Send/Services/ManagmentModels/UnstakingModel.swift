@@ -13,6 +13,7 @@ import BlockchainSdk
 import TangemFoundation
 
 protocol UnstakingModelStateProvider {
+    var stakedBalance: Decimal { get }
     var stakingAction: UnstakingModel.Action { get }
 
     var state: UnstakingModel.State { get }
@@ -36,7 +37,7 @@ class UnstakingModel {
     private let stakingManager: StakingManager
     private let transactionDispatcher: TransactionDispatcher
     private let transactionValidator: TransactionValidator
-    private let action: Action
+    private let initialAction: Action
     private let tokenItem: TokenItem
     private let feeTokenItem: TokenItem
 
@@ -54,7 +55,7 @@ class UnstakingModel {
         self.stakingManager = stakingManager
         self.transactionDispatcher = transactionDispatcher
         self.transactionValidator = transactionValidator
-        self.action = action
+        initialAction = action
         self.tokenItem = tokenItem
         self.feeTokenItem = feeTokenItem
 
@@ -64,7 +65,6 @@ class UnstakingModel {
 
         _amount = CurrentValueSubject(SendAmount(type: .typical(crypto: action.amount, fiat: fiat)))
 
-        updateState()
         logOpenScreen()
     }
 }
@@ -72,8 +72,13 @@ class UnstakingModel {
 // MARK: - UnstakingModelStateProvider
 
 extension UnstakingModel: UnstakingModelStateProvider {
+    var stakedBalance: Decimal {
+        initialAction.amount
+    }
+
     var stakingAction: Action {
-        action
+        let amount = _amount.value?.crypto ?? initialAction.amount
+        return Action(amount: amount, validatorType: initialAction.validatorType, type: initialAction.type)
     }
 
     var state: State {
@@ -98,6 +103,8 @@ private extension UnstakingModel {
                 model.update(state: .loading)
                 let state = try await model.state(amount: amount)
                 model.update(state: state)
+            } catch _ as CancellationError {
+                // Do nothing
             } catch {
                 AppLog.shared.error(error)
                 model.update(state: .networkError(error))
@@ -106,8 +113,7 @@ private extension UnstakingModel {
     }
 
     func state(amount: Decimal) async throws -> UnstakingModel.State {
-        let updatedAction = StakingAction(amount: amount, validatorType: action.validatorType, type: action.type)
-        let estimateFee = try await stakingManager.estimateFee(action: updatedAction)
+        let estimateFee = try await stakingManager.estimateFee(action: stakingAction)
 
         if let error = validate(amount: amount, fee: estimateFee) {
             return error
@@ -155,21 +161,19 @@ private extension UnstakingModel {
 
 private extension UnstakingModel {
     private func send() async throws -> TransactionDispatcherResult {
-        if let analyticsEvent = action.type.analyticsEvent {
-            Analytics.log(event: analyticsEvent, params: [.validator: action.validatorInfo?.name ?? ""])
+        if let analyticsEvent = initialAction.type.analyticsEvent {
+            Analytics.log(event: analyticsEvent, params: [.validator: initialAction.validatorInfo?.name ?? ""])
         }
 
         guard let amountCrypto = amount?.crypto else {
             throw TransactionDispatcherResult.Error.transactionNotFound
         }
 
-        let action = amountCrypto == action.amount ? action : StakingAction(amount: amountCrypto, validatorType: action.validatorType, type: action.type)
-
         do {
-            let transaction = try await stakingManager.transaction(action: action)
+            let transaction = try await stakingManager.transaction(action: stakingAction)
             let result = try await transactionDispatcher.send(transaction: .staking(transaction))
             proceed(result: result)
-            stakingManager.transactionDidSent(action: action)
+            stakingManager.transactionDidSent(action: stakingAction)
 
             return result
         } catch let error as TransactionDispatcherResult.Error {
@@ -347,7 +351,7 @@ extension UnstakingModel: StakingBaseDataBuilderInput {
 
     var isFeeIncluded: Bool { false }
 
-    var validator: ValidatorInfo? { action.validatorInfo }
+    var validator: ValidatorInfo? { initialAction.validatorInfo }
 
     var selectedPolicy: ApprovePolicy? { nil }
 
@@ -371,11 +375,11 @@ extension UnstakingModel {
 
 private extension UnstakingModel {
     func logOpenScreen() {
-        switch action.type {
+        switch initialAction.type {
         case .pending(.claimRewards), .pending(.restakeRewards):
             Analytics.log(
                 event: .stakingRewardScreenOpened,
-                params: [.validator: action.validatorInfo?.address ?? ""]
+                params: [.validator: initialAction.validatorInfo?.address ?? ""]
             )
         default:
             break
