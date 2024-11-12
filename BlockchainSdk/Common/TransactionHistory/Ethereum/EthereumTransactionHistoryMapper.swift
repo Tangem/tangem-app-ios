@@ -226,16 +226,14 @@ private extension EthereumTransactionHistoryMapper {
         let ethereumSpecific = transaction.ethereumSpecific
         let methodId = ethereumSpecific?.parsedData?.methodId ?? methodIdFromRawData(ethereumSpecific?.data)
 
-        guard let methodId = methodId else {
-            return .transfer
-        }
+        let validatorAddress = transaction.vout?.first(where: { $0.isAddress })?.addresses.first
 
-        // MethodId is empty for the coin transfers
-        if methodId.isEmpty {
-            return .transfer
+        return switch methodId {
+        case .none, "":
+            .transfer
+        case .some(let methodId):
+            blockchain.stakingHistoryInfo(validator: validatorAddress)?[methodId] ?? .contractMethodIdentifier(id: methodId)
         }
-
-        return .contractMethodIdentifier(id: methodId)
     }
 
     func methodIdFromRawData(_ rawData: String?) -> String? {
@@ -296,6 +294,21 @@ private extension EthereumTransactionHistoryMapper {
                 date: Date(timeIntervalSince1970: TimeInterval(transaction.blockTime)),
                 tokenTransfers: tokenTransfers(transaction)
             )
+        }
+    }
+}
+
+private extension Blockchain {
+    func stakingHistoryInfo(validator: String?) -> [String: TransactionRecord.TransactionType]? {
+        switch self {
+        case .bsc:
+            [
+                "0x982ef0a7": .staking(type: .stake, validator: validator),
+                "0xaad3ec96": .staking(type: .claimRewards, validator: validator),
+                "0x4d99dd16": .staking(type: .unstake, validator: validator),
+                "0x59491871": .staking(type: .restake, validator: validator),
+            ]
+        default: nil
         }
     }
 }

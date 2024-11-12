@@ -26,7 +26,7 @@ struct TransactionViewModel: Hashable, Identifiable {
         switch transactionType {
         case .approve, .vote, .withdraw:
             return nil
-        case .transfer, .swap, .operation, .unknownOperation, .stake, .unstake, .claimRewards:
+        case .transfer, .swap, .operation, .unknownOperation, .stake, .unstake, .claimRewards, .restake:
             return amount
         }
     }
@@ -75,6 +75,7 @@ struct TransactionViewModel: Hashable, Identifiable {
         case .vote: Localization.stakingVote
         case .withdraw: Localization.stakingWithdraw
         case .claimRewards: Localization.commonClaimRewards
+        case .restake: Localization.stakingRestake
         }
     }
 
@@ -88,7 +89,7 @@ struct TransactionViewModel: Hashable, Identifiable {
             return Assets.approve.image
         case .transfer, .swap, .operation, .unknownOperation:
             return isOutgoing ? Assets.arrowUpMini.image : Assets.arrowDownMini.image
-        case .stake, .vote:
+        case .stake, .vote, .restake:
             return Assets.TokenItemContextMenu.menuStaking.image
         case .unstake, .withdraw:
             return Assets.unstakedIcon.image
@@ -179,6 +180,7 @@ extension TransactionViewModel {
         case vote
         case withdraw
         case claimRewards
+        case restake
         case unknownOperation
         case operation(name: String)
     }
