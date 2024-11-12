@@ -35,10 +35,10 @@ struct OnrampRedirectingView: View {
             }
 
             VStack(alignment: .center, spacing: 12) {
-                Text("Redirecting to \(viewModel.providerName)...")
+                Text(Localization.onrampRedirectingToProviderTitle(viewModel.providerName))
                     .style(Fonts.Bold.title3, color: Colors.Text.primary1)
 
-                Text("You will be able to complete your transaction on the third-party provider, \(viewModel.providerName)")
+                Text(Localization.onrampRedirectingToProviderSubtitle(viewModel.providerName))
                     .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
                     .multilineTextAlignment(.center)
             }

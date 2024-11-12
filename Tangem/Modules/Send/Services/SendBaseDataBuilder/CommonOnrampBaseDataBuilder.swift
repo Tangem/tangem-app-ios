@@ -10,10 +10,8 @@ import TangemExpress
 import Combine
 
 struct CommonOnrampBaseDataBuilder {
-//    private let tokenItem: TokenItem
     private let onrampRepository: OnrampRepository
     private let onrampDataRepository: OnrampDataRepository
-//    private let onrampManager: OnrampManager
     private let providersBuilder: OnrampProvidersBuilder
     private let paymentMethodsBuilder: OnrampPaymentMethodsBuilder
     private let onrampRedirectingBuilder: OnrampRedirectingBuilder
@@ -21,14 +19,12 @@ struct CommonOnrampBaseDataBuilder {
     init(
         onrampRepository: OnrampRepository,
         onrampDataRepository: OnrampDataRepository,
-//        onrampManager: OnrampManager,
         providersBuilder: OnrampProvidersBuilder,
         paymentMethodsBuilder: OnrampPaymentMethodsBuilder,
         onrampRedirectingBuilder: OnrampRedirectingBuilder
     ) {
         self.onrampRepository = onrampRepository
         self.onrampDataRepository = onrampDataRepository
-//        self.onrampManager = onrampManager
         self.providersBuilder = providersBuilder
         self.paymentMethodsBuilder = paymentMethodsBuilder
         self.onrampRedirectingBuilder = onrampRedirectingBuilder
@@ -53,8 +49,4 @@ extension CommonOnrampBaseDataBuilder: OnrampBaseDataBuilder {
     func makeDataForOnrampRedirecting() -> OnrampRedirectingBuilder {
         return onrampRedirectingBuilder
     }
-}
-
-enum OnrampBaseDataBuilderError: LocalizedError {
-    case selectedProviderNotFound
 }

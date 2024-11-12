@@ -39,7 +39,6 @@ class SendCoordinator: CoordinatorObject {
     @Published var onrampCountrySelectorViewModel: OnrampCountrySelectorViewModel?
     @Published var onrampCurrencySelectorViewModel: OnrampCurrencySelectorViewModel?
     @Published var onrampRedirectingViewModel: OnrampRedirectingViewModel?
-    @Published var onrampWebViewViewModel: OnrampWebViewViewModel?
 
     private var safariHandle: SafariHandle?
 
@@ -262,13 +261,5 @@ extension SendCoordinator: OnrampAmountRoutable {
 extension SendCoordinator: OnrampRedirectingRoutable {
     func dismissOnrampRedirecting() {
         onrampRedirectingViewModel = nil
-    }
-}
-
-// MARK: - OnrampWebViewRoutable
-
-extension SendCoordinator: OnrampWebViewRoutable {
-    func dismissOnrampWebView() {
-        onrampWebViewViewModel = nil
     }
 }

@@ -316,12 +316,6 @@ extension OnrampModel: SendBaseOutput {
     }
 }
 
-protocol OnrampWebViewDelegate {
-    var selectedProvider: TangemExpress.OnrampProvider? { get }
-
-    func onrampDidFinish(with result: Result<Void, Error>)
-}
-
 enum OnrampModelError: String, LocalizedError {
     case countryNotFound
     case currencyNotFound
