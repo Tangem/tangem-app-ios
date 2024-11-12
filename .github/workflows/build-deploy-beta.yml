@@ -4,12 +4,12 @@ on:
   push:
    branches:
     - 'develop'
-    - 'feature/IOS-8113_ci_cd_beta_builds_workflow' # TODO: Test only, remove
+    #- 'feature/IOS-8113_ci_cd_beta_builds_workflow' # TODO: Test only, remove
   workflow_dispatch:
     inputs:
-      changelog:
+      build_description:
         description: >
-          Optional additional info about build
+          Optional additional info about the build
         type: string
       xcode_version_override:
         description: >
