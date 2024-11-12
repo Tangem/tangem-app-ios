@@ -25,12 +25,21 @@ struct OnrampAmountView: View {
 
     private var amountContent: some View {
         VStack(spacing: 18) {
-            IconView(
-                url: viewModel.fiatIconURL,
-                size: CGSize(width: 36, height: 36),
-                // Kingfisher shows a gray background even if it has a cached image
-                forceKingfisher: false
-            )
+            Button(action: viewModel.onChangeCurrencyTap) {
+                HStack(spacing: 8) {
+                    IconView(
+                        url: viewModel.fiatIconURL,
+                        size: CGSize(width: 36, height: 36),
+                        // Kingfisher shows a gray background even if it has a cached image
+                        forceKingfisher: false
+                    )
+
+                    Assets.chevronDownMini.image
+                        .resizable()
+                        .frame(size: .init(bothDimensions: 9))
+                        .foregroundColor(Colors.Icon.informative)
+                }
+            }
             .matchedGeometryEffect(id: namespace.names.tokenIcon, in: namespace.id)
 
             VStack(spacing: 6) {

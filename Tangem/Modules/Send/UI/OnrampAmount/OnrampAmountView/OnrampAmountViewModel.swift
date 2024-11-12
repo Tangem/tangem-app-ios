@@ -23,6 +23,7 @@ class OnrampAmountViewModel: ObservableObject {
 
     private let tokenItem: TokenItem
     private let interactor: OnrampAmountInteractor
+    private weak var coordinator: OnrampAmountRoutable?
     private let prefixSuffixOptionsFactory: SendDecimalNumberTextField.PrefixSuffixOptionsFactory = .init()
 
     private var updatingAmountTask: Task<Void, Never>?
@@ -30,14 +31,20 @@ class OnrampAmountViewModel: ObservableObject {
 
     init(
         tokenItem: TokenItem,
-        interactor: OnrampAmountInteractor
+        interactor: OnrampAmountInteractor,
+        coordinator: OnrampAmountRoutable
     ) {
         self.interactor = interactor
         self.tokenItem = tokenItem
+        self.coordinator = coordinator
 
         decimalNumberTextFieldViewModel = .init(maximumFractionDigits: 2)
 
         bind()
+    }
+
+    func onChangeCurrencyTap() {
+        coordinator?.openOnrampCurrencySelector()
     }
 }
 
