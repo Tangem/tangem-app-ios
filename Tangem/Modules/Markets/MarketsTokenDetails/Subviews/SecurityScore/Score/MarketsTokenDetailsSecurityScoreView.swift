@@ -8,7 +8,6 @@
 
 import SwiftUI
 
-// TODO: Andrey Fedorov - Check with dynamic fonts
 struct MarketsTokenDetailsSecurityScoreView: View {
     let viewModel: MarketsTokenDetailsSecurityScoreViewModel
 

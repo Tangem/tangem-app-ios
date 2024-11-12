@@ -12,15 +12,12 @@ struct MarketsTokenDetailsSecurityScoreRatingView: View {
     let viewData: MarketsTokenDetailsSecurityScoreRatingViewData
 
     var body: some View {
-        HStack(spacing: Constants.defaultSpacing) {
+        HStack(spacing: 6.0) {
             Text(viewData.securityScore)
                 .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
 
             ForEach(viewData.ratingBullets.indexed(), id: \.0) { _, ratingBullet in
-                RatingBulletView(
-                    ratingBullet: ratingBullet,
-                    dimensions: Constants.ratingViewDimensions
-                )
+                RatingBulletView(ratingBullet: ratingBullet)
             }
         }
     }
@@ -31,14 +28,16 @@ struct MarketsTokenDetailsSecurityScoreRatingView: View {
 private extension MarketsTokenDetailsSecurityScoreRatingView {
     struct RatingBulletView: View {
         let ratingBullet: MarketsTokenDetailsSecurityScoreRatingViewData.RatingBullet
-        let dimensions: CGSize
 
         var body: some View {
             ZStack {
                 makeAsset(Assets.starThickFill)
                     .mask(alignment: .leading) {
                         Rectangle()
-                            .frame(width: dimensions.width * ratingBullet.value, height: dimensions.height)
+                            .frame(
+                                width: Constants.ratingViewDimensions.width * ratingBullet.value,
+                                height: Constants.ratingViewDimensions.height
+                            )
                     }
 
                 makeAsset(Assets.starThick)
@@ -52,7 +51,7 @@ private extension MarketsTokenDetailsSecurityScoreRatingView {
                 .resizable()
                 .renderingMode(.template)
                 .foregroundStyle(Colors.Icon.accent)
-                .frame(size: dimensions)
+                .frame(size: Constants.ratingViewDimensions)
         }
     }
 }
@@ -61,7 +60,6 @@ private extension MarketsTokenDetailsSecurityScoreRatingView {
 
 private extension MarketsTokenDetailsSecurityScoreRatingView {
     enum Constants {
-        static let defaultSpacing = 6.0
         static let ratingViewDimensions = CGSize(bothDimensions: 14.0)
     }
 }
