@@ -99,7 +99,6 @@ jobs:
   notification:
     name: Deploy Notification
     uses: tangem/actions/.github/workflows/notification.yml@test/IOS-8112_ci_cd_alpha_builds_workflow
-    if: false # TODO: Test only, remove
     needs:
       - prepare
       - build
