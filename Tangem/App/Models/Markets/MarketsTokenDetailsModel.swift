@@ -77,8 +77,8 @@ struct MarketsTokenDetailsSecurityScore: Equatable {
         let id: String
         let name: String
         let securityScore: Double
-        let auditURL: URL?
         let auditDate: Date?
+        let auditURL: URL?
     }
 
     let securityScore: Double

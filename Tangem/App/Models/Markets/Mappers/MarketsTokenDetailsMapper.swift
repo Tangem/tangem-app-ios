@@ -92,8 +92,8 @@ struct MarketsTokenDetailsMapper {
                     id: provider.providerId,
                     name: provider.providerName,
                     securityScore: provider.securityScore,
-                    auditURL: provider.link,
-                    auditDate: provider.lastAuditDate
+                    auditDate: provider.lastAuditDate,
+                    auditURL: provider.link
                 )
             }
         )

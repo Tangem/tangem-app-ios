@@ -38,7 +38,7 @@ extension MarketsDTO.Coins {
         let pricePerformance: [String: MarketsPricePerformanceData]?
     }
 
-    struct Insights: Codable {
+    struct Insights: Decodable {
         let holdersChange: [String: Decimal?]
         let liquidityChange: [String: Decimal?]
         let buyPressureChange: [String: Decimal?]
