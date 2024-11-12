@@ -74,9 +74,9 @@ class SolanaNetworkService {
     }
 
     func sendSplToken(amount: UInt64, computeUnitLimit: UInt32?, computeUnitPrice: UInt64?, sourceTokenAddress: String, destinationAddress: String, token: Token, tokenProgramId: PublicKey, signer: SolanaTransactionSigner) -> AnyPublisher<TransactionID, Error> {
-        checkUnfundedAllowance(destinationAddress: destinationAddress)
+        checkIfSolanaAccount(destinationAddress: destinationAddress)
             .withWeakCaptureOf(self)
-            .flatMap { service, allowUnfundedRecipient in
+            .flatMap { service, isSolanaAccount in
                 service.solanaSdk.action.sendSPLTokens(
                     mintAddress: token.contractAddress,
                     tokenProgramId: tokenProgramId,
@@ -86,7 +86,7 @@ class SolanaNetworkService {
                     amount: amount,
                     computeUnitLimit: computeUnitLimit,
                     computeUnitPrice: computeUnitPrice,
-                    allowUnfundedRecipient: allowUnfundedRecipient,
+                    allowUnfundedRecipient: isSolanaAccount,
                     signer: signer
                 )
             }
@@ -281,7 +281,11 @@ class SolanaNetworkService {
         )
     }
 
-    private func checkUnfundedAllowance(destinationAddress: String) -> AnyPublisher<Bool, Error> {
+    /// Destination account checker
+    /// - Parameter destinationAddress: destinationAddress to check
+    /// - Returns: true if this address is solana base account, false if it is derived token account.
+    /// - throws error if the account is not registered yet
+    private func checkIfSolanaAccount(destinationAddress: String) -> AnyPublisher<Bool, Error> {
         solanaSdk.api.getAccountInfo(account: destinationAddress, decodedTo: AccountInfo.self)
             .tryMap { accountInfo in
                 if accountInfo.owner == PublicKey.programId.base58EncodedString {
@@ -289,6 +293,18 @@ class SolanaNetworkService {
                 } else {
                     return false
                 }
+            }
+            .tryCatch { error -> AnyPublisher<Bool, Error> in
+                if let solanaError = error as? SolanaError {
+                    switch solanaError {
+                    case .nullValue:
+                        return .anyFail(error: WalletError.accountNotActivated)
+                    default:
+                        break
+                    }
+                }
+
+                return .anyFail(error: error)
             }
             .eraseToAnyPublisher()
     }
