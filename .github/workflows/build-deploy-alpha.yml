@@ -112,6 +112,7 @@ jobs:
       build_number: '${{ needs.prepare.outputs.build_number }}'
       changelog: '${{ needs.prepare.outputs.jira_summary }}'
       build_description: '${{ inputs.build_description }}'
+      encoded_release_url: '${{ needs.deploy.outputs.encoded_release_url }}'
     secrets:
       SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN }}'
 
