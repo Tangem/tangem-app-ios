@@ -106,6 +106,43 @@ private extension MarketsTokenDetailsSecurityScoreDetailsView {
 // MARK: - Previews
 
 #Preview {
-    // TODO: Andrey Fedorov - Add actual implementation
-//    MarketsTokenDetailsSecurityScoreDetailsView()
+    let helper = MarketsTokenDetailsSecurityScoreRatingHelper()
+
+    MarketsTokenDetailsSecurityScoreDetailsView(
+        viewModel: .init(
+            providers: [
+                .init(
+                    name: "Provider #1",
+                    iconURL: URL(string: "about:blank")!,
+                    ratingViewData: .init(
+                        ratingBullets: helper.makeRatingBullets(forSecurityScoreValue: 2.5),
+                        securityScore: helper.makeSecurityScore(forSecurityScoreValue: 2.5)
+                    ),
+                    auditDate: Date().formatted(date: .numeric, time: .omitted),
+                    auditURL: URL(string: "https://www.certik.com")
+                ),
+                .init(
+                    name: "Provider #2",
+                    iconURL: URL(string: "about:blank")!,
+                    ratingViewData: .init(
+                        ratingBullets: helper.makeRatingBullets(forSecurityScoreValue: 4.5),
+                        securityScore: helper.makeSecurityScore(forSecurityScoreValue: 4.5)
+                    ),
+                    auditDate: Date().formatted(date: .numeric, time: .omitted),
+                    auditURL: URL(string: "https://www.certik.com")
+                ),
+                .init(
+                    name: "Provider #3",
+                    iconURL: URL(string: "about:blank")!,
+                    ratingViewData: .init(
+                        ratingBullets: helper.makeRatingBullets(forSecurityScoreValue: 3.5),
+                        securityScore: helper.makeSecurityScore(forSecurityScoreValue: 3.5)
+                    ),
+                    auditDate: Date().formatted(date: .numeric, time: .omitted),
+                    auditURL: URL(string: "https://www.certik.com")
+                ),
+            ],
+            routable: nil
+        )
+    )
 }

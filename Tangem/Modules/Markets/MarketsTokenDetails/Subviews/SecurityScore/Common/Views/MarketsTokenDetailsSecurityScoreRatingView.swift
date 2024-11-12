@@ -67,10 +67,15 @@ private extension MarketsTokenDetailsSecurityScoreRatingView {
 // MARK: - Previews
 
 #Preview {
-    // TODO: Andrey Fedorov - Add actual implementation
-//    MarketsTokenDetailsSecurityScoreRatingView(ratingBullet: .init(value: 1.0), dimensions: .init(bothDimensions: 24.0))
+    let securityScores = [0.0, 1.5, 3.7, 4.2, 5.0, 5.6, 6.1]
+    let helper = MarketsTokenDetailsSecurityScoreRatingHelper()
 
-//    MarketsTokenDetailsSecurityScoreRatingView(ratingBullet: .init(value: 0.4), dimensions: .init(bothDimensions: 24.0))
-
-//    MarketsTokenDetailsSecurityScoreRatingView(ratingBullet: .init(value: 0.1), dimensions: .init(bothDimensions: 24.0))
+    ForEach(securityScores, id: \.self) { securityScore in
+        MarketsTokenDetailsSecurityScoreRatingView(
+            viewData: .init(
+                ratingBullets: helper.makeRatingBullets(forSecurityScoreValue: securityScore),
+                securityScore: helper.makeSecurityScore(forSecurityScoreValue: securityScore)
+            )
+        )
+    }
 }

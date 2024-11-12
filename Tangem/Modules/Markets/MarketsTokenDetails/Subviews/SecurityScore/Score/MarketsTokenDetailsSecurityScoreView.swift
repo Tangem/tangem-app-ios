@@ -64,8 +64,33 @@ private extension MarketsTokenDetailsSecurityScoreView {
 // MARK: - Previews
 
 #Preview {
-    // TODO: Andrey Fedorov - Add actual implementation
-//    MarketsTokenDetailsSecurityScoreView(
-//        viewModel: .init(providerData: [], securityScoreValue: .zero, routable: nil)
-//    )
+    MarketsTokenDetailsSecurityScoreView(
+        viewModel: .init(
+            securityScoreValue: 3.3,
+            providers: [
+                .init(
+                    id: "provider1",
+                    name: "Provider #1",
+                    securityScore: 2.5,
+                    auditDate: Date(),
+                    auditURL: URL(string: "https://www.certik.com")
+                ),
+                .init(
+                    id: "provider2",
+                    name: "Provider #2",
+                    securityScore: 4.5,
+                    auditDate: nil,
+                    auditURL: nil
+                ),
+                .init(
+                    id: "provider3",
+                    name: "Provider #3",
+                    securityScore: 3.5,
+                    auditDate: Date(),
+                    auditURL: nil
+                ),
+            ],
+            routable: nil
+        )
+    )
 }
