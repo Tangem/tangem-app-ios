@@ -227,6 +227,15 @@ public indirect enum Blockchain: Equatable, Hashable {
     /// https://iancoleman.io/bip39/
     public var isBip44DerivationStyleXPUB: Bool {
         switch self {
+        case _ where isUTXO:
+            return true
+        default:
+            return false
+        }
+    }
+
+    public var isUTXO: Bool {
+        switch self {
         case .bitcoin,
              .bitcoinCash,
              .litecoin,
