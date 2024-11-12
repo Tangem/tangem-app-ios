@@ -70,6 +70,12 @@ private extension OnrampModel {
                 self?.preferenceDidChange(currency: currency)
             }
             .store(in: &bag)
+
+        _amount
+            .sink { [weak self] amount in
+                self?.updateQuotes(amount: amount?.fiat)
+            }
+            .store(in: &bag)
     }
 
     func preferenceDidChange(currency: OnrampFiatCurrency?) {
@@ -104,6 +110,20 @@ private extension OnrampModel {
         let request = makeOnrampPairRequestItem(country: country, currency: currency)
         // TODO: Check the providers is empty
         _ = try await onrampManager.setupProviders(request: request)
+    }
+
+    func updateQuotes(amount: Decimal?) {
+        guard let amount else {
+            _selectedOnrampProvider.send(.none)
+            // Clear onrampManager
+            return
+        }
+
+        _selectedOnrampProvider.send(.loading)
+        startTask { model in
+            let providers = try await model.onrampManager.setupQuotes(amount: amount)
+            model._onrampProviders.send(providers)
+        }
     }
 }
 

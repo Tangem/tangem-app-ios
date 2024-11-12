@@ -341,19 +341,13 @@ extension SendViewModel: OnrampModelRoutable {
 
 extension SendViewModel: OnrampSummaryRoutable {
     func onrampStepRequestEditProvider() {
-        /*
-         do {
-             let builder = try dataBuilder.onrampBuilder()
-             let (preferenceRepository, dataRepository) = builder.makeDataForOnrampCountrySelectorView()
-             // Make input data
-             // TODO: https://tangem.atlassian.net/browse/IOS-8360
-             coordinator?.openOnrampProviders()
-         } catch {
-             alert = error.alertBinder
-         }
-         */
-
-        coordinator?.openOnrampProviders()
+        do {
+            let builder = try dataBuilder.onrampBuilder()
+            let (providersBuilder, paymentMethodsBuilder) = builder.makeDataForOnrampProvidersPaymentMethodsView()
+            coordinator?.openOnrampProviders(providersBuilder: providersBuilder, paymentMethodsBuilder: paymentMethodsBuilder)
+        } catch {
+            alert = error.alertBinder
+        }
     }
 
     func openOnrampSettingsView() {

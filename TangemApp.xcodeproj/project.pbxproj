@@ -2777,6 +2777,11 @@
 		EFC990032CD3A6890098B7C8 /* OnrampPaymentMethodsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC990022CD3A6890098B7C8 /* OnrampPaymentMethodsBuilder.swift */; };
 		EFC990082CD3A6D90098B7C8 /* OnrampPaymentMethodsInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC990072CD3A6D90098B7C8 /* OnrampPaymentMethodsInteractor.swift */; };
 		EFC9900C2CD3A70C0098B7C8 /* OnrampPaymentMethodsInputOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC9900B2CD3A70C0098B7C8 /* OnrampPaymentMethodsInputOutput.swift */; };
+		EFC990102CD3A74A0098B7C8 /* OnrampProvidersInputOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC9900F2CD3A74A0098B7C8 /* OnrampProvidersInputOutput.swift */; };
+		EFC990132CD3BAFF0098B7C8 /* OnrampProvidersCompactProviderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC990122CD3BAFF0098B7C8 /* OnrampProvidersCompactProviderView.swift */; };
+		EFC990152CD3BB130098B7C8 /* OnrampProvidersCompactProviderViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC990142CD3BB130098B7C8 /* OnrampProvidersCompactProviderViewData.swift */; };
+		EFC990172CD3CC9C0098B7C8 /* ExpressBranch.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC990162CD3CC9C0098B7C8 /* ExpressBranch.swift */; };
+		EFC9901A2CD4F0A90098B7C8 /* CommonOnrampProviderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC990192CD4F0A90098B7C8 /* CommonOnrampProviderManager.swift */; };
 		EFD0A14B2C9985CF0010E642 /* SendAmountModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD0A14A2C9985CD0010E642 /* SendAmountModifier.swift */; };
 		EFD143832CC550C000B5BA57 /* SendBaseDataBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD143822CC550BE00B5BA57 /* SendBaseDataBuilder.swift */; };
 		EFD143852CC5517E00B5BA57 /* CommonSendBaseDataBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD143842CC5517D00B5BA57 /* CommonSendBaseDataBuilder.swift */; };
@@ -5861,6 +5866,11 @@
 		EFC990022CD3A6890098B7C8 /* OnrampPaymentMethodsBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPaymentMethodsBuilder.swift; sourceTree = "<group>"; };
 		EFC990072CD3A6D90098B7C8 /* OnrampPaymentMethodsInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPaymentMethodsInteractor.swift; sourceTree = "<group>"; };
 		EFC9900B2CD3A70C0098B7C8 /* OnrampPaymentMethodsInputOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPaymentMethodsInputOutput.swift; sourceTree = "<group>"; };
+		EFC9900F2CD3A74A0098B7C8 /* OnrampProvidersInputOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersInputOutput.swift; sourceTree = "<group>"; };
+		EFC990122CD3BAFF0098B7C8 /* OnrampProvidersCompactProviderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersCompactProviderView.swift; sourceTree = "<group>"; };
+		EFC990142CD3BB130098B7C8 /* OnrampProvidersCompactProviderViewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersCompactProviderViewData.swift; sourceTree = "<group>"; };
+		EFC990162CD3CC9C0098B7C8 /* ExpressBranch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressBranch.swift; sourceTree = "<group>"; };
+		EFC990192CD4F0A90098B7C8 /* CommonOnrampProviderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonOnrampProviderManager.swift; sourceTree = "<group>"; };
 		EFCC66E028AA6FC500EC7757 /* UserTokenList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTokenList.swift; sourceTree = "<group>"; };
 		EFD0A14A2C9985CD0010E642 /* SendAmountModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendAmountModifier.swift; sourceTree = "<group>"; };
 		EFD143822CC550BE00B5BA57 /* SendBaseDataBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendBaseDataBuilder.swift; sourceTree = "<group>"; };
@@ -13272,6 +13282,7 @@
 			isa = PBXGroup;
 			children = (
 				EF1399762CBD0AA800AC9E2B /* OnrampProviderManager.swift */,
+				EFC990192CD4F0A90098B7C8 /* CommonOnrampProviderManager.swift */,
 			);
 			path = OnrampProviderManager;
 			sourceTree = "<group>";
@@ -14435,6 +14446,7 @@
 		EF9E29DC2B4F0CCE00418559 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				EFC990162CD3CC9C0098B7C8 /* ExpressBranch.swift */,
 				EF49C05E2CAD85690062AF06 /* Swap */,
 				EF49C05F2CAD85770062AF06 /* Onramp */,
 			);
@@ -18691,10 +18703,12 @@
 				EF9E2A182B4F0CD100418559 /* ExpressAPITarget.swift in Sources */,
 				EF49C05D2CAD70320062AF06 /* OnrampManager.swift in Sources */,
 				EF49C0672CAD85C80062AF06 /* OnrampCurrency.swift in Sources */,
+				EFC9901A2CD4F0A90098B7C8 /* CommonOnrampProviderManager.swift in Sources */,
 				EF9E2A162B4F0CD100418559 /* ExpressDTO.swift in Sources */,
 				EF9E2A0D2B4F0CD100418559 /* ExpressManagerMapper.swift in Sources */,
 				EF25610E2CC69ECF00D3C16A /* OnrampStorage.swift in Sources */,
 				EF9E2A122B4F0CD100418559 /* Logger.swift in Sources */,
+				EFC990172CD3CC9C0098B7C8 /* ExpressBranch.swift in Sources */,
 				EF9E2A2C2B4F0CD100418559 /* TangemExpressFactory.swift in Sources */,
 				EF8BE6BD2CCA994F001FBA2B /* OnrampRedirectDataRequestItem.swift in Sources */,
 				EF49C0612CAD85910062AF06 /* OnrampIdentity.swift in Sources */,

@@ -19,15 +19,20 @@ final class OnrampProvidersViewModel: ObservableObject {
 
     // MARK: - Dependencies
 
+    private let tokenItem: TokenItem
     private let interactor: OnrampProvidersInteractor
     private weak var coordinator: OnrampProvidersRoutable?
+
+    private let balanceFormatter = BalanceFormatter()
 
     private var bag: Set<AnyCancellable> = []
 
     init(
+        tokenItem: TokenItem,
         interactor: OnrampProvidersInteractor,
         coordinator: OnrampProvidersRoutable
     ) {
+        self.tokenItem = tokenItem
         self.interactor = interactor
         self.coordinator = coordinator
 
@@ -44,7 +49,6 @@ private extension OnrampProvidersViewModel {
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, provider in
-                // TODO: https://tangem.atlassian.net/browse/IOS-8310
                 viewModel.selectedProviderId = provider.value?.provider.id
             }
             .store(in: &bag)
@@ -58,33 +62,41 @@ private extension OnrampProvidersViewModel {
             }
             .store(in: &bag)
 
-        interactor
-            .providesPublisher
-            .withWeakCaptureOf(self)
-            .receive(on: DispatchQueue.main)
-            .sink { viewModel, providers in
-                viewModel.updateProvidersView(providers: providers)
+        Publishers.CombineLatest(
+            interactor.providesPublisher,
+            interactor.paymentMethodPublisher
+        )
+        .map { providers, paymentMethod in
+            providers.filter {
+                $0.paymentMethod.identity.code == paymentMethod.identity.code
             }
-            .store(in: &bag)
+        }
+        .withWeakCaptureOf(self)
+        .receive(on: DispatchQueue.main)
+        .sink { viewModel, providers in
+            viewModel.updateProvidersView(providers: providers)
+        }
+        .store(in: &bag)
     }
 
     func updatePaymentView(payment: OnrampPaymentMethod) {
         paymentViewData = .init(
             name: payment.identity.name,
             iconURL: payment.identity.image,
-            action: {}
+            action: { [weak self] in
+                self?.coordinator?.openOnrampPaymentMethods()
+            }
         )
     }
 
     func updateProvidersView(providers: [OnrampProvider]) {
-        // TODO: https://tangem.atlassian.net/browse/IOS-8310
-
         providersViewData = providers.map { provider in
             OnrampProviderRowViewData(
                 id: provider.provider.id,
-                name: "1Inch",
-                iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/1INCH512.png"),
-                formattedAmount: "0,00453 BTC",
+                name: provider.provider.name,
+                iconURL: provider.provider.imageURL,
+                formattedAmount: formattedAmount(state: provider.manager.state),
+                state: state(state: provider.manager.state),
                 badge: .bestRate,
                 isSelected: selectedProviderId == provider.provider.id,
                 action: { [weak self] in
@@ -93,6 +105,30 @@ private extension OnrampProvidersViewModel {
                     self?.interactor.update(selectedProvider: provider)
                 }
             )
+        }
+    }
+
+    func formattedAmount(state: OnrampProviderManagerState) -> String? {
+        guard case .loaded(let onrampQuote) = state else {
+            return nil
+        }
+
+        return balanceFormatter.formatCryptoBalance(
+            onrampQuote.expectedAmount,
+            currencyCode: tokenItem.currencySymbol
+        )
+    }
+
+    func state(state: OnrampProviderManagerState) -> OnrampProviderRowViewData.State? {
+        switch state {
+        case .created, .loading, .notSupported, .failed:
+            return nil
+        case .loaded(let quote):
+            // Time will be hardcoded (?)
+            // TODO: https://tangem.atlassian.net/browse/IOS-8487
+            return .available(estimatedTime: "5 min")
+        case .failed(let error):
+            return .unavailable(reason: error.localizedDescription)
         }
     }
 }

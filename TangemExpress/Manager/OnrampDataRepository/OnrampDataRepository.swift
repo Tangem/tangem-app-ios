@@ -7,6 +7,7 @@
 //
 
 public protocol OnrampDataRepository: Actor {
+    func providers() async throws -> [ExpressProvider]
     func paymentMethods() async throws -> [OnrampPaymentMethod]
     func countries() async throws -> [OnrampCountry]
     func currencies() async throws -> [OnrampFiatCurrency]

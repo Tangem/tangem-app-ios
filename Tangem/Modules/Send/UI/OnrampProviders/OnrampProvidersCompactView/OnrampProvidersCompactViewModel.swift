@@ -41,10 +41,10 @@ class OnrampProvidersCompactViewModel: ObservableObject {
 
     func updateView(provider: LoadingValue<OnrampProvider>?, paymentMethod: OnrampPaymentMethod?) {
         switch (provider, paymentMethod) {
-        case (.none, _), (.failedToLoad, _), (_, .none):
-            paymentState = .none
         case (.loading, _):
             paymentState = .loading
+        case (.none, _), (.failedToLoad, _), (_, .none):
+            paymentState = .none
         case (.loaded(let provider), .some(let paymentMethod)):
             paymentState = .loaded(
                 data: .init(

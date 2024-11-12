@@ -68,13 +68,17 @@ struct OnrampProviderRowView: View {
 
             Spacer()
 
-            Text(data.formattedAmount)
-                .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+            if let formattedAmount = data.formattedAmount {
+                Text(formattedAmount)
+                    .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+            }
         }
     }
 
     private var bottomLineView: some View {
         HStack(spacing: 12) {
+            stateView
+
             Spacer()
 
             switch data.badge {
@@ -91,6 +95,26 @@ struct OnrampProviderRowView: View {
             }
         }
     }
+
+    @ViewBuilder
+    private var stateView: some View {
+        // View will be updated when term will be ready
+        // TODO: https://tangem.atlassian.net/browse/IOS-8487
+
+        switch data.state {
+        case .none:
+            EmptyView()
+        case .available(let time):
+            Text(time)
+                .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+        case .availableFromAmount(let minAmount):
+            Text(minAmount)
+                .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+        case .unavailable(let reason):
+            Text(reason)
+                .style(Fonts.Regular.caption1, color: Colors.Text.warning)
+        }
+    }
 }
 
 #Preview {
@@ -101,6 +125,7 @@ struct OnrampProviderRowView: View {
                 name: "1Inch",
                 iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/1INCH512.png"),
                 formattedAmount: "0,00453 BTC",
+                state: .available(estimatedTime: "5 min"),
                 badge: .bestRate,
                 isSelected: true,
                 action: {}
@@ -110,6 +135,7 @@ struct OnrampProviderRowView: View {
                 name: "Changenow",
                 iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/NOW512.png"),
                 formattedAmount: "0,00450 BTC",
+                state: .availableFromAmount(minAmount: "15 USD"),
                 badge: .percent("-0.03%", signType: .negative),
                 isSelected: false,
                 action: {}

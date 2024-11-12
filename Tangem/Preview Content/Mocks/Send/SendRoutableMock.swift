@@ -24,6 +24,5 @@ class SendRoutableMock: SendRoutable {
     func openOnrampSettings(repository: any OnrampRepository) {}
     func openOnrampCurrencySelector(repository: any OnrampRepository, dataRepository: any OnrampDataRepository) {}
     func openOnrampCurrencySelector() {}
-
-    func openOnrampProviders() {}
+    func openOnrampProviders(providersBuilder: OnrampProvidersBuilder, paymentMethodsBuilder: OnrampPaymentMethodsBuilder) {}
 }

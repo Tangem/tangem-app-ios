@@ -36,6 +36,7 @@ final class OnrampPaymentMethodsViewModel: ObservableObject {
         self.coordinator = coordinator
 
         bind()
+        setupView()
     }
 }
 

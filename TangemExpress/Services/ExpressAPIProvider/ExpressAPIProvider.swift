@@ -14,7 +14,7 @@ public protocol ExpressAPIProvider {
     func assets(currencies: Set<ExpressCurrency>) async throws -> [ExpressAsset]
     func pairs(from: [ExpressCurrency], to: [ExpressCurrency]) async throws -> [ExpressPair]
 
-    func providers() async throws -> [ExpressProvider]
+    func providers(branch: ExpressBranch) async throws -> [ExpressProvider]
     func exchangeQuote(item: ExpressSwappableItem) async throws -> ExpressQuote
     func exchangeData(item: ExpressSwappableItem) async throws -> ExpressTransactionData
     func exchangeStatus(transactionId: String) async throws -> ExpressTransaction

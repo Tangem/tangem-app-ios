@@ -9,5 +9,5 @@
 import Foundation
 
 protocol ExpressProviderManagerFactory {
-    func makeExpressProviderManager(provider: ExpressProvider) -> ExpressProviderManager
+    func makeExpressProviderManager(provider: ExpressProvider) -> ExpressProviderManager?
 }
