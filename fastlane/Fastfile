@@ -261,7 +261,7 @@ lane :deploy_firebase do |options|
   # Applying base64 encoding twice to prevent GA bug "Skip output 'output' since it may contain secret."
   # See https://github.com/orgs/community/discussions/13082#discussioncomment-6776428 for details
   encoded_release_url = Base64.strict_encode64(Base64.strict_encode64(release_url))
-  sh("echo encoded_release_url=#{encoded_release_url} >> $GITHUB_ENV")
+  sh("echo 'encoded_release_url=#{encoded_release_url}' >> $GITHUB_ENV")
 end
 
 private_lane :build do |options|
