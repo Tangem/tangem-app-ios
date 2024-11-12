@@ -124,9 +124,11 @@ private extension OnrampProvidersViewModel {
         case .created, .loading, .notSupported, .failed:
             return nil
         case .loaded(let quote):
+            // Time will be hardcoded (?)
+            // TODO: https://tangem.atlassian.net/browse/IOS-8487
             return .available(estimatedTime: "5 min")
-//        case .failed(error:):
-//            return .unavailable
+        case .failed(let error):
+            return .unavailable(reason: error.localizedDescription)
         }
     }
 }

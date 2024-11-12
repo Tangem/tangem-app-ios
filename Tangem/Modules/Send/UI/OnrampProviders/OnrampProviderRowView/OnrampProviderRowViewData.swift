@@ -24,6 +24,7 @@ extension OnrampProviderRowViewData {
     enum State: Hashable {
         case available(estimatedTime: String)
         case availableFromAmount(minAmount: String)
+        case unavailable(reason: String)
     }
 
     enum Badge: Hashable {

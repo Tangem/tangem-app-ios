@@ -98,6 +98,9 @@ struct OnrampProviderRowView: View {
 
     @ViewBuilder
     private var stateView: some View {
+        // View will be updated when term will be ready
+        // TODO: https://tangem.atlassian.net/browse/IOS-8487
+
         switch data.state {
         case .none:
             EmptyView()
@@ -107,6 +110,9 @@ struct OnrampProviderRowView: View {
         case .availableFromAmount(let minAmount):
             Text(minAmount)
                 .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+        case .unavailable(let reason):
+            Text(reason)
+                .style(Fonts.Regular.caption1, color: Colors.Text.warning)
         }
     }
 }

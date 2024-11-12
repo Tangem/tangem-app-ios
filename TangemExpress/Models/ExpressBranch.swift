@@ -10,7 +10,7 @@ public enum ExpressBranch: String, Hashable {
     case swap
     case onramp
 
-    var supportedProviderTypes: [ExpressProviderType] {
+    var supportedProviderTypes: Set<ExpressProviderType> {
         switch self {
         case .swap: [.dex, .cex, .dexBridge]
         case .onramp: [.onramp]
