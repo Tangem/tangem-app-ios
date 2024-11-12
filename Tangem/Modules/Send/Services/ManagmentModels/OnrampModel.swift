@@ -14,7 +14,7 @@ import TangemFoundation
 protocol OnrampModelRoutable: AnyObject {
     func openOnrampCountryBottomSheet(country: OnrampCountry)
     func openOnrampCountrySelectorView()
-    func openWebView(settings: OnrampWebViewViewModel.Settings)
+    func openWebView(url: URL, success: @escaping () -> Void)
     func openFinishStep()
 }
 

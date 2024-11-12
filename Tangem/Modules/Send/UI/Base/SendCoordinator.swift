@@ -41,6 +41,8 @@ class SendCoordinator: CoordinatorObject {
     @Published var onrampRedirectingViewModel: OnrampRedirectingViewModel?
     @Published var onrampWebViewViewModel: OnrampWebViewViewModel?
 
+    private var safariHandle: SafariHandle?
+
     required init(
         dismissAction: @escaping Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?>,
         popToRootAction: @escaping Action<PopToRootOptions>
@@ -190,8 +192,11 @@ extension SendCoordinator: OnrampRoutable {
         onrampRedirectingViewModel = onrampRedirectingBuilder.makeOnrampRedirectingViewModel(coordinator: self)
     }
 
-    func openOnrampWebView(settings: OnrampWebViewViewModel.Settings) {
-        onrampWebViewViewModel = .init(settings: settings, coordinator: self)
+    func openOnrampWebView(url: URL, success: @escaping () -> Void) {
+        safariHandle = safariManager.openURL(url) { [weak self] _ in
+            self?.safariHandle = nil
+            success()
+        }
     }
 }
 
