@@ -12,7 +12,8 @@ struct OnrampProviderRowViewData: Identifiable {
     let id: String
     let name: String
     let iconURL: URL?
-    let formattedAmount: String
+    let formattedAmount: String?
+    let state: State?
     let badge: Badge
     let isSelected: Bool
 
@@ -20,6 +21,12 @@ struct OnrampProviderRowViewData: Identifiable {
 }
 
 extension OnrampProviderRowViewData {
+    enum State: Hashable {
+        case available(estimatedTime: String)
+        case availableFromAmount(minAmount: String)
+        case unavailable(reason: String)
+    }
+
     enum Badge: Hashable {
         case bestRate
         case percent(String, signType: ChangeSignType)

@@ -89,7 +89,8 @@ struct AddressTypesConfig {
              .energyWebEVM,
              .energyWebX,
              .core,
-             .canxium:
+             .canxium,
+             .casper:
             return [.default]
         }
     }

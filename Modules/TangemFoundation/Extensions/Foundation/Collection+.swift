@@ -9,6 +9,10 @@
 import Foundation
 
 public extension Swift.Collection {
+    var isNotEmpty: Bool {
+        return !isEmpty
+    }
+
     var nilIfEmpty: Self? {
         return isEmpty ? nil : self
     }

@@ -12,7 +12,7 @@ import TangemVisa
 import TangemFoundation
 
 class VisaTransactionHistoryService {
-    private let apiService: VisaAPIService
+    private let apiService: VisaTransactionHistoryAPIService
     private let storage: ThreadSafeContainer<[VisaTransactionRecord]> = []
 
     private let cardPublicKey: String
@@ -22,7 +22,7 @@ class VisaTransactionHistoryService {
 
     private let stateSubject = CurrentValueSubject<TransactionHistoryServiceState, Never>(.initial)
 
-    init(cardPublicKey: String, apiService: VisaAPIService) {
+    init(cardPublicKey: String, apiService: VisaTransactionHistoryAPIService) {
         self.cardPublicKey = cardPublicKey
         self.apiService = apiService
     }

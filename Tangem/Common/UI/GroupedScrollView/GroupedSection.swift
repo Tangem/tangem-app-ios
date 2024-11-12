@@ -22,65 +22,88 @@ import SwiftUI
  `- footerSpacing`
  `Footer`
  */
-struct GroupedSection<Model: Identifiable, Content: View, Footer: View, Header: View>: View {
+struct GroupedSection<Model: Identifiable, Content: View, Footer: View, Header: View, EmptyContent: View>: View {
     private let models: [Model]
     private let content: (Model) -> Content
     private let header: () -> Header
     private let footer: () -> Footer
+    private let emptyContent: () -> EmptyContent
 
     private var settings: Settings = .init()
+
+    private var isEmptyContentRequired: Bool {
+        EmptyContent.self != EmptyView.self
+    }
 
     init(
         _ models: [Model],
         @ViewBuilder content: @escaping (Model) -> Content,
         @ViewBuilder header: @escaping () -> Header = { EmptyView() },
-        @ViewBuilder footer: @escaping () -> Footer = { EmptyView() }
+        @ViewBuilder footer: @escaping () -> Footer = { EmptyView() },
+        @ViewBuilder emptyContent: @escaping () -> EmptyContent = { EmptyView() }
     ) {
         self.models = models
         self.content = content
         self.header = header
         self.footer = footer
+        self.emptyContent = emptyContent
     }
 
     init(
         _ model: Model?,
         @ViewBuilder content: @escaping (Model) -> Content,
         @ViewBuilder header: @escaping () -> Header = { EmptyView() },
-        @ViewBuilder footer: @escaping () -> Footer = { EmptyView() }
+        @ViewBuilder footer: @escaping () -> Footer = { EmptyView() },
+        @ViewBuilder emptyContent: @escaping () -> EmptyContent = { EmptyView() }
     ) {
         models = model.map { [$0] } ?? []
         self.content = content
         self.header = header
         self.footer = footer
+        self.emptyContent = emptyContent
     }
 
     var body: some View {
-        if !models.isEmpty {
-            VStack(alignment: .leading, spacing: GroupedSectionConstants.footerSpacing) {
-                VStack(alignment: settings.contentAlignment, spacing: settings.interItemSpacing) {
-                    header()
-                        .padding(.horizontal, settings.horizontalPadding)
+        if models.isNotEmpty || isEmptyContentRequired {
+            groupedContent
+        }
+    }
 
-                    ForEach(models) { model in
-                        content(model)
-                            .padding(.horizontal, settings.horizontalPadding)
-
-                        if models.last?.id != model.id {
-                            separator
-                                .matchedGeometryEffect(settings.separatorGeometryEffect(model))
-                        }
-                    }
-                }
-                .padding(.vertical, settings.innerContentPadding)
-                .background(
-                    settings.backgroundColor
-                        .matchedGeometryEffect(settings.backgroundGeometryEffect)
-                )
-                .cornerRadiusContinuous(GroupedSectionConstants.defaultCornerRadius)
-
-                footer()
+    private var groupedContent: some View {
+        VStack(alignment: .leading, spacing: GroupedSectionConstants.footerSpacing) {
+            VStack(alignment: settings.contentAlignment, spacing: settings.interItemSpacing) {
+                header()
                     .padding(.horizontal, settings.horizontalPadding)
+
+                modelsList
             }
+            .padding(.vertical, settings.innerContentPadding)
+            .background(
+                settings.backgroundColor
+                    .matchedGeometryEffect(settings.backgroundGeometryEffect)
+            )
+            .cornerRadiusContinuous(GroupedSectionConstants.defaultCornerRadius)
+
+            footer()
+                .padding(.horizontal, settings.horizontalPadding)
+        }
+    }
+
+    @ViewBuilder
+    private var modelsList: some View {
+        if models.isNotEmpty {
+            ForEach(models) { model in
+                content(model)
+                    .padding(.horizontal, settings.horizontalPadding)
+
+                if models.last?.id != model.id {
+                    separator
+                        .matchedGeometryEffect(settings.separatorGeometryEffect(model))
+                }
+            }
+        } else {
+            emptyContent()
+                .padding(.horizontal, settings.horizontalPadding)
         }
     }
 

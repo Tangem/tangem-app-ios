@@ -14,16 +14,18 @@ struct OnrampProvidersBuilder {
     typealias ReturnValue = OnrampProvidersViewModel
 
     private let io: IO
+    private let tokenItem: TokenItem
     private let paymentMethodsInput: OnrampPaymentMethodsInput
 
-    init(io: IO, paymentMethodsInput: OnrampPaymentMethodsInput) {
+    init(io: IO, tokenItem: TokenItem, paymentMethodsInput: OnrampPaymentMethodsInput) {
         self.io = io
+        self.tokenItem = tokenItem
         self.paymentMethodsInput = paymentMethodsInput
     }
 
     func makeOnrampProvidersViewModel(coordinator: any OnrampProvidersRoutable) -> ReturnValue {
         let interactor = makeOnrampProvidersInteractor(io: io)
-        let viewModel = OnrampProvidersViewModel(interactor: interactor, coordinator: coordinator)
+        let viewModel = OnrampProvidersViewModel(tokenItem: tokenItem, interactor: interactor, coordinator: coordinator)
 
         return viewModel
     }

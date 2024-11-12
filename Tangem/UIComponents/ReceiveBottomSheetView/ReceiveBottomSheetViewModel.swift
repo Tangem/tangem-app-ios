@@ -49,7 +49,7 @@ class ReceiveBottomSheetViewModel: ObservableObject, Identifiable {
     }
 
     func onViewAppear() {
-        Analytics.log(.receiveScreenOpened)
+        Analytics.log(event: .receiveScreenOpened, params: [.token: tokenItem.currencySymbol])
     }
 
     func headerForAddress(with info: ReceiveAddressInfo) -> String {

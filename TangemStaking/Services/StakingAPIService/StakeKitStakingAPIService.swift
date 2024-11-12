@@ -109,7 +109,7 @@ private extension StakeKitStakingAPIService {
 
     func tryMapError(target: StakeKitTarget, response: Moya.Response) -> Error? {
         do {
-            let error = try JSONDecoder().decode(StakeKitDTO.APIError.self, from: response.data)
+            let error = try JSONDecoder().decode(StakeKitAPIError.self, from: response.data)
             return error
         } catch {
             return nil
@@ -117,12 +117,12 @@ private extension StakeKitStakingAPIService {
     }
 }
 
-private enum StakeKitHTTPError: Error {
+public enum StakeKitHTTPError: Error {
     case badStatusCode(response: String?, code: Int)
 }
 
 extension StakeKitHTTPError: LocalizedError {
-    var errorDescription: String? {
+    public var errorDescription: String? {
         switch self {
         case .badStatusCode(let response, let code): response ?? "HTTP error \(code)"
         }

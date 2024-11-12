@@ -35,12 +35,13 @@ final class MultiWalletNotificationManager {
                     }
             }
             .sink { [weak self] walletModels in
-                guard walletModels.contains(where: { $0.state.isBlockchainUnreachable }) else {
+                let unreachableNetworks = walletModels.filter { $0.state.isBlockchainUnreachable }
+                guard !unreachableNetworks.isEmpty else {
                     self?.removeSomeNetworksUnreachable()
                     return
                 }
 
-                self?.setupSomeNetworksUnreachable()
+                self?.setupSomeNetworksUnreachable(unreachableNetworks)
             }
     }
 
@@ -49,14 +50,24 @@ final class MultiWalletNotificationManager {
             guard let event = $0.settings.event as? TokenNotificationEvent else {
                 return false
             }
-
-            return event == .someNetworksUnreachable
+            switch event {
+            case .someNetworksUnreachable: return true
+            default: return false
+            }
         }
     }
 
-    private func setupSomeNetworksUnreachable() {
+    private func setupSomeNetworksUnreachable(_ unreachableNetworks: [WalletModel]) {
         let factory = NotificationsFactory()
-        notificationInputsSubject.send([factory.buildNotificationInput(for: TokenNotificationEvent.someNetworksUnreachable)])
+        notificationInputsSubject.send(
+            [
+                factory.buildNotificationInput(
+                    for: TokenNotificationEvent.someNetworksUnreachable(
+                        currencySymbols: unreachableNetworks.map(\.tokenItem.currencySymbol)
+                    )
+                ),
+            ]
+        )
     }
 }
 

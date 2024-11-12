@@ -317,7 +317,20 @@ extension SendViewModel: OnrampModelRoutable {
         do {
             let builder = try dataBuilder.onrampBuilder()
             let repository = builder.makeDataForOnrampCountryBottomSheet()
-            coordinator?.openOnrampCountry(country: country, repository: repository)
+            coordinator?.openOnrampCountryDetection(country: country, repository: repository)
+        } catch {
+            alert = error.alertBinder
+        }
+    }
+
+    func openOnrampCountrySelectorView() {
+        do {
+            let builder = try dataBuilder.onrampBuilder()
+            let (repository, dataRepository) = builder.makeDataForOnrampCountrySelectorView()
+            coordinator?.openOnrampCountrySelector(
+                repository: repository,
+                dataRepository: dataRepository
+            )
         } catch {
             alert = error.alertBinder
         }
@@ -328,19 +341,36 @@ extension SendViewModel: OnrampModelRoutable {
 
 extension SendViewModel: OnrampSummaryRoutable {
     func onrampStepRequestEditProvider() {
-        /*
-         do {
-             let builder = try dataBuilder.onrampBuilder()
-             let (preferenceRepository, dataRepository) = builder.makeDataForOnrampCountrySelectorView()
-             // Make input data
-             // TODO: https://tangem.atlassian.net/browse/IOS-8360
-             coordinator?.openOnrampProviders()
-         } catch {
-             alert = error.alertBinder
-         }
-         */
+        do {
+            let builder = try dataBuilder.onrampBuilder()
+            let (providersBuilder, paymentMethodsBuilder) = builder.makeDataForOnrampProvidersPaymentMethodsView()
+            coordinator?.openOnrampProviders(providersBuilder: providersBuilder, paymentMethodsBuilder: paymentMethodsBuilder)
+        } catch {
+            alert = error.alertBinder
+        }
+    }
 
-        coordinator?.openOnrampProviders()
+    func openOnrampSettingsView() {
+        do {
+            let builder = try dataBuilder.onrampBuilder()
+            let repository = builder.makeDataForOnrampCountryBottomSheet()
+            coordinator?.openOnrampSettings(repository: repository)
+        } catch {
+            alert = error.alertBinder
+        }
+    }
+
+    func openOnrampCurrencySelectorView() {
+        do {
+            let builder = try dataBuilder.onrampBuilder()
+            let (repository, dataRepository) = builder.makeDataForOnrampCountrySelectorView()
+            coordinator?.openOnrampCurrencySelector(
+                repository: repository,
+                dataRepository: dataRepository
+            )
+        } catch {
+            alert = error.alertBinder
+        }
     }
 }
 

@@ -391,6 +391,7 @@ private extension Blockchain {
         case .energyWebX: return nil
         case .core: return nil
         case .canxium: return nil
+        case .casper: return nil
             // Did you get a compilation error here? If so, check whether the network is supported at https://api.moonpay.com/v3/currencies
         }
     }
@@ -472,6 +473,7 @@ private extension Blockchain {
         case .energyWebX: return nil
         case .core: return nil
         case .canxium: return nil
+        case .casper: return nil
             // Did you get a compilation error here? If so, check whether the network is supported at https://api.moonpay.com/v3/currencies
         }
     }
