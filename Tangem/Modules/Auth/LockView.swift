@@ -10,24 +10,19 @@ import Foundation
 import SwiftUI
 
 struct LockView: View {
+    private let usesNamespace: Bool
     private var namespace: Namespace.ID?
 
-    var body: some View {
-        VStack(spacing: 0) {
-            TangemIconView()
-                .matchedGeometryEffectOptional(id: TangemIconView.namespaceId, in: namespace)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Colors.Background.primary)
-        .edgesIgnoringSafeArea(.all)
+    init(usesNamespace: Bool) {
+        self.usesNamespace = usesNamespace
     }
-}
 
-// Copy of the view without matchedGeometryEffect
-struct LockViewCompat: View {
     var body: some View {
         VStack(spacing: 0) {
             TangemIconView()
+                .if(usesNamespace) {
+                    $0.matchedGeometryEffectOptional(id: TangemIconView.namespaceId, in: namespace)
+                }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Colors.Background.primary)

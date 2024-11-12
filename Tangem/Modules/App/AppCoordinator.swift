@@ -79,7 +79,7 @@ class AppCoordinator: CoordinatorObject {
         if appLockController.isLocked {
             handleLock(reason: .loggedOut) { [weak self] in
                 self?.setupLock()
-                // more time needed for ios 15 and 16 to update ui under the lock view
+                // more time needed for ios 15 and 16 to update ui under the lock view. Keep for all ios for uniformity.
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     hideLockView()
                 }
@@ -258,7 +258,7 @@ extension AppCoordinator {
             switch self {
             case .auth, .welcome:
                 return false
-            default:
+            case .lock, .main, .onboarding, .uncompleteBackup:
                 return true
             }
         }

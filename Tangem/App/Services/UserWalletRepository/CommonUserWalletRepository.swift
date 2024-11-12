@@ -158,15 +158,6 @@ class CommonUserWalletRepository: UserWalletRepository {
         }
     }
 
-    func unlockInternal(with method: UserWalletRepositoryUnlockMethod, completion: @escaping (UserWalletRepositoryResult?) -> Void) {
-        switch method {
-        case .biometry:
-            unlockWithBiometry(completion: completion)
-        case .card(let userWalletId, let scanner):
-            unlockWithCard(scanner: scanner, userWalletId, completion: completion)
-        }
-    }
-
     func addOrScan(scanner: CardScanner, completion: @escaping (UserWalletRepositoryResult?) -> Void) {
         if AppSettings.shared.saveUserWallets {
             add(scanner: scanner, completion)
@@ -262,7 +253,7 @@ class CommonUserWalletRepository: UserWalletRepository {
     }
 
     func lock() {
-        guard models.contains(where: { !$0.isUserWalletLocked }) else {
+        guard !isLocked else {
             return
         }
 
@@ -341,6 +332,15 @@ class CommonUserWalletRepository: UserWalletRepository {
 
         resetServices()
         analyticsContext.clearSession()
+    }
+
+    private func unlockInternal(with method: UserWalletRepositoryUnlockMethod, completion: @escaping (UserWalletRepositoryResult?) -> Void) {
+        switch method {
+        case .biometry:
+            unlockWithBiometry(completion: completion)
+        case .card(let userWalletId, let scanner):
+            unlockWithCard(scanner: scanner, userWalletId, completion: completion)
+        }
     }
 
     func clearNonSelectedUserWallets() {

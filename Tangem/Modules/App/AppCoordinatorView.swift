@@ -75,7 +75,7 @@ struct AppCoordinatorView: CoordinatorView {
                     .transition(.opacity)
                     .navigationBarHidden(true)
             case .lock:
-                LockView()
+                LockView(usesNamespace: true)
                     .setNamespace(namespace)
                     .transition(.asymmetric(insertion: .identity, removal: .opacity.animation(.easeOut(duration: 0.3))))
             case .none:

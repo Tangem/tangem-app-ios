@@ -18,7 +18,7 @@ class WelcomeViewModel: ObservableObject {
     @Published var showTroubleshootingView: Bool = false
     @Published var error: AlertBinder?
 
-    var storiesModel: StoriesViewModel
+    let storiesModel: StoriesViewModel
 
     var isScanningCard: CurrentValueSubject<Bool, Never> = .init(false)
 

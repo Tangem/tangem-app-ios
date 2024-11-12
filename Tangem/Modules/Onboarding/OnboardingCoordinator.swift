@@ -192,13 +192,6 @@ extension OnboardingCoordinator {
         case singleCard(SingleCardOnboardingViewModel)
         case twins(TwinsOnboardingViewModel)
         case wallet(WalletOnboardingViewModel)
-        case main(MainCoordinator)
-
-        var isMain: Bool {
-            if case .main = self {
-                return true
-            }
-            return false
-        }
+        case visa(VisaOnboardingViewModel)
     }
 }

@@ -49,7 +49,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if appCoordinator.viewState?.shouldAddLockView == true,
            let windowScene = scene as? UIWindowScene {
             lockWindow = UIWindow(windowScene: windowScene)
-            lockWindow?.rootViewController = UIHostingController(rootView: LockViewCompat())
+            lockWindow?.rootViewController = UIHostingController(rootView: LockView(usesNamespace: false))
             lockWindow?.windowLevel = .alert + 1
             lockWindow?.makeKeyAndVisible()
         }
