@@ -14,6 +14,7 @@ enum DefaultWalletData: Codable {
     case file(WalletData)
     case legacy(WalletData)
     case twin(WalletData, TwinData)
+    case visa(accessToken: String, refreshToken: String)
     case none
 
     var twinData: TwinData? {
@@ -68,6 +69,11 @@ final class AppScanTask: CardSessionRunnable {
     public func run(in session: CardSession, completion: @escaping CompletionResult<AppScanTaskResponse>) {
         guard let card = session.environment.card else {
             completion(.failure(.missingPreflightRead))
+            return
+        }
+
+        if FirmwareVersion.visaRange.contains(card.firmwareVersion.doubleValue) {
+            readVisaCard(session, completion)
             return
         }
 
@@ -215,6 +221,21 @@ final class AppScanTask: CardSessionRunnable {
             case .failure: // ignore any error
                 self.deriveKeysIfNeeded(session, completion)
             }
+        }
+    }
+
+    private func readVisaCard(_ session: CardSession, _ completion: @escaping CompletionResult<AppScanTaskResponse>) {
+        let handler = VisaCardScanHandler()
+        handler.handleVisaCardScan(session: session) { result in
+            switch result {
+            case .success(let success):
+                self.walletData = success
+                self.readExtra(session: session, completion: completion)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+
+            withExtendedLifetime(handler) {}
         }
     }
 

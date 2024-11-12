@@ -317,7 +317,20 @@ extension SendViewModel: OnrampModelRoutable {
         do {
             let builder = try dataBuilder.onrampBuilder()
             let repository = builder.makeDataForOnrampCountryBottomSheet()
-            coordinator?.openOnrampCountry(country: country, repository: repository)
+            coordinator?.openOnrampCountryDetection(country: country, repository: repository)
+        } catch {
+            alert = error.alertBinder
+        }
+    }
+
+    func openOnrampCountrySelectorView() {
+        do {
+            let builder = try dataBuilder.onrampBuilder()
+            let (repository, dataRepository) = builder.makeDataForOnrampCountrySelectorView()
+            coordinator?.openOnrampCountrySelector(
+                repository: repository,
+                dataRepository: dataRepository
+            )
         } catch {
             alert = error.alertBinder
         }
@@ -341,6 +354,29 @@ extension SendViewModel: OnrampSummaryRoutable {
          */
 
         coordinator?.openOnrampProviders()
+    }
+
+    func openOnrampSettingsView() {
+        do {
+            let builder = try dataBuilder.onrampBuilder()
+            let repository = builder.makeDataForOnrampCountryBottomSheet()
+            coordinator?.openOnrampSettings(repository: repository)
+        } catch {
+            alert = error.alertBinder
+        }
+    }
+
+    func openOnrampCurrencySelectorView() {
+        do {
+            let builder = try dataBuilder.onrampBuilder()
+            let (repository, dataRepository) = builder.makeDataForOnrampCountrySelectorView()
+            coordinator?.openOnrampCurrencySelector(
+                repository: repository,
+                dataRepository: dataRepository
+            )
+        } catch {
+            alert = error.alertBinder
+        }
     }
 }
 

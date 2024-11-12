@@ -35,6 +35,12 @@ extension OnrampStep: SendStep {
 
     var sendStepViewAnimatable: any SendStepViewAnimatable { viewModel }
 
+    var navigationTrailingViewType: SendStepNavigationTrailingViewType? {
+        .dotsButton { [weak router = viewModel.onrampProvidersCompactViewModel.router] in
+            router?.openOnrampSettingsView()
+        }
+    }
+
     var isValidPublisher: AnyPublisher<Bool, Never> {
         interactor.isValidPublisher
     }

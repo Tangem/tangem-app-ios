@@ -13,6 +13,8 @@ import TangemFoundation
 
 protocol OnrampModelRoutable: AnyObject {
     func openOnrampCountryBottomSheet(country: OnrampCountry)
+    func openOnrampCountrySelectorView()
+    func openOnrampSettingsView()
 }
 
 class OnrampModel {
