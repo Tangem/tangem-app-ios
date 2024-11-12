@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TangemFoundation
 
 final class MarketsTokenDetailsSecurityScoreDetailsViewModel: Identifiable {
     var title: String { Localization.marketsTokenDetailsSecurityScore }
@@ -45,13 +46,6 @@ extension MarketsTokenDetailsSecurityScoreDetailsViewModel {
         let ratingViewData: MarketsTokenDetailsSecurityScoreRatingViewData
         let auditDate: String?
         let auditURL: URL?
-
-        var linkTitle: String? {
-            if #available(iOS 16.0, *) {
-                auditURL?.host()
-            } else {
-                auditURL?.host
-            }
-        }
+        var auditURLTitle: String? { auditURL?.topLevelDomain }
     }
 }

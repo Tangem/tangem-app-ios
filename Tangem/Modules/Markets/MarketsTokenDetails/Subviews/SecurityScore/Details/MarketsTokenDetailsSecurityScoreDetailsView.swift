@@ -76,9 +76,9 @@ struct MarketsTokenDetailsSecurityScoreDetailsView: View {
                 VStack(alignment: .trailing, spacing: Constants.defaultVerticalSpacing) {
                     MarketsTokenDetailsSecurityScoreRatingView(viewData: provider.ratingViewData)
 
-                    if let linkTitle = provider.linkTitle {
+                    if let auditURLTitle = provider.auditURLTitle {
                         HStack(spacing: 4.0) {
-                            Text(linkTitle)
+                            Text(auditURLTitle)
 
                             Assets.arrowRightUpMini.image
                                 .resizable()
@@ -90,7 +90,7 @@ struct MarketsTokenDetailsSecurityScoreDetailsView: View {
                 }
             }
         )
-        .disabled(provider.linkTitle == nil)
+        .disabled(provider.auditURLTitle == nil)
     }
 }
 
