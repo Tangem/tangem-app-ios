@@ -1,5 +1,5 @@
 //
-//  OnrampCountryViewModel.swift
+//  OnrampCountryDetectionViewModel.swift
 //  TangemApp
 //
 //  Created by Sergey Balashov on 18.10.2024.
@@ -9,7 +9,7 @@
 import Combine
 import TangemExpress
 
-final class OnrampCountryViewModel: ObservableObject, Identifiable {
+final class OnrampCountryDetectionViewModel: ObservableObject, Identifiable {
     // MARK: - ViewState
 
     let iconURL: URL?
@@ -24,14 +24,14 @@ final class OnrampCountryViewModel: ObservableObject, Identifiable {
 
     private let country: OnrampCountry
     private let repository: OnrampRepository
-    private weak var coordinator: OnrampCountryRoutable?
+    private weak var coordinator: OnrampCountryDetectionRoutable?
 
     private var bag: Set<AnyCancellable> = []
 
     init(
         country: OnrampCountry,
         repository: OnrampRepository,
-        coordinator: OnrampCountryRoutable
+        coordinator: OnrampCountryDetectionRoutable
     ) {
         iconURL = country.identity.image
         title = country.identity.name
@@ -61,11 +61,11 @@ final class OnrampCountryViewModel: ObservableObject, Identifiable {
 
 // MARK: - Private
 
-private extension OnrampCountryViewModel {
+private extension OnrampCountryDetectionViewModel {
     func bind() {}
 }
 
-extension OnrampCountryViewModel {
+extension OnrampCountryDetectionViewModel {
     enum Subtitle: Hashable {
         case info
         case notSupport

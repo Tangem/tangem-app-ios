@@ -107,7 +107,7 @@ struct MarketsTokenDetailsExchangesListView: View {
         case .loading, .loaded:
             scrollContent
         case .failedToLoad:
-            MarketsUnableToLoadDataView(
+            UnableToLoadDataView(
                 isButtonBusy: false,
                 retryButtonAction: {
                     viewModel.reloadExchangesList()

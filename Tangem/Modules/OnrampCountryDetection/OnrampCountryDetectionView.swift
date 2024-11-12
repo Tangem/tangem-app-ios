@@ -8,10 +8,10 @@
 
 import SwiftUI
 
-struct OnrampCountryView: View {
-    @ObservedObject private var viewModel: OnrampCountryViewModel
+struct OnrampCountryDetectionView: View {
+    @ObservedObject private var viewModel: OnrampCountryDetectionViewModel
 
-    init(viewModel: OnrampCountryViewModel) {
+    init(viewModel: OnrampCountryDetectionViewModel) {
         self.viewModel = viewModel
     }
 

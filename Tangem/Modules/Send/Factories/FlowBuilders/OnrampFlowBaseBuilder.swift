@@ -36,7 +36,8 @@ struct OnrampFlowBaseBuilder {
         )
 
         let (onrampAmountViewModel, _) = onrampAmountBuilder.makeOnrampAmountViewModel(
-            io: (input: onrampModel, output: onrampModel)
+            io: (input: onrampModel, output: onrampModel),
+            coordinator: router
         )
 
         let sendAmountCompactViewModel = sendAmountStepBuilder.makeSendAmountCompactViewModel(

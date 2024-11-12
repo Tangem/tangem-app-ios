@@ -25,7 +25,7 @@ struct MarketsHistoryChartView: View {
                     noDataView
                 case .failed:
                     // No need to add state for button, because view will switch to loading state and remove this view
-                    MarketsUnableToLoadDataView(isButtonBusy: false, retryButtonAction: viewModel.reload)
+                    UnableToLoadDataView(isButtonBusy: false, retryButtonAction: viewModel.reload)
                 }
             }
             .transition(.opacity)
