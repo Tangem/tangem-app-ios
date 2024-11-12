@@ -226,14 +226,16 @@ private extension EthereumTransactionHistoryMapper {
         let ethereumSpecific = transaction.ethereumSpecific
         let methodId = ethereumSpecific?.parsedData?.methodId ?? methodIdFromRawData(ethereumSpecific?.data)
 
-        let validatorAddress = transaction.vout?.first(where: { $0.isAddress })?.addresses.first
-
-        return switch methodId {
-        case .none, "":
-            .transfer
-        case .some(let methodId):
-            blockchain.stakingHistoryInfo(validator: validatorAddress)?[methodId] ?? .contractMethodIdentifier(id: methodId)
+        guard let methodId = methodId else {
+            return .transfer
         }
+
+        // MethodId is empty for the coin transfers
+        if methodId.isEmpty {
+            return .transfer
+        }
+
+        return .contractMethodIdentifier(id: methodId)
     }
 
     func methodIdFromRawData(_ rawData: String?) -> String? {
