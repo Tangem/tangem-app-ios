@@ -40,6 +40,7 @@ class MainCoordinator: CoordinatorObject {
     @Published var sendCoordinator: SendCoordinator? = nil
     @Published var expressCoordinator: ExpressCoordinator? = nil
     @Published var actionButtonsBuyCoordinator: ActionButtonsBuyCoordinator? = nil
+    @Published var actionButtonsSellCoordinator: ActionButtonsSellCoordinator? = nil
 
     // MARK: - Child view models
 
@@ -456,7 +457,7 @@ extension MainCoordinator: PushNotificationsPermissionRequestDelegate {
 // MARK: - Action buttons buy routable
 
 extension MainCoordinator: ActionButtonsBuyFlowRoutable, ActionButtonsBuyCryptoRoutable {
-    func openBuy(userWalletModel: UserWalletModel) {
+    func openBuy(userWalletModel: some UserWalletModel) {
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.actionButtonsBuyCoordinator = nil
         }
@@ -481,8 +482,28 @@ extension MainCoordinator: ActionButtonsBuyFlowRoutable, ActionButtonsBuyCryptoR
 
 // MARK: - Action buttons sell routable
 
-extension MainCoordinator: ActionButtonsSellFlowRoutable {
-    func openSell() {}
+extension MainCoordinator: ActionButtonsSellFlowRoutable, ActionButtonsSellCryptoRoutable {
+    func openSell(userWalletModel: some UserWalletModel) {
+        let dismissAction: Action<Void> = { [weak self] _ in
+            self?.actionButtonsSellCoordinator = nil
+        }
+
+        let coordinator = ActionButtonsSellCoordinator(
+            sellCryptoCoordinator: self,
+            expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel),
+            dismissAction: dismissAction
+        )
+
+        coordinator.start(with: .default)
+
+        actionButtonsSellCoordinator = coordinator
+    }
+
+    func openSellCrypto(from url: URL) {
+        openSellCrypto(at: url) { _ in
+            self.actionButtonsSellCoordinator = nil
+        }
+    }
 }
 
 // MARK: - Action buttons swap routable
