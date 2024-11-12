@@ -254,7 +254,7 @@ struct MarketsView: View {
     }
 
     private var errorStateView: some View {
-        MarketsUnableToLoadDataView(
+        UnableToLoadDataView(
             isButtonBusy: false,
             retryButtonAction: viewModel.onTryLoadList
         )

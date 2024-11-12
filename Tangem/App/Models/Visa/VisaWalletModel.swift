@@ -72,7 +72,7 @@ class VisaWalletModel {
     init(userWalletModel: UserWalletModel) {
         self.userWalletModel = userWalletModel
 
-        let apiService = VisaAPIServiceBuilder().build(
+        let apiService = VisaAPIServiceBuilder().buildTransactionHistoryService(
             isTestnet: FeatureStorage.instance.isVisaTestnet,
             urlSessionConfiguration: .defaultConfiguration,
             logger: AppLog.shared

@@ -34,7 +34,8 @@ struct ExpressAPIMapper {
     func mapToExpressAsset(response: ExpressDTO.Swap.Assets.Response) -> ExpressAsset {
         ExpressAsset(
             currency: ExpressCurrency(contractAddress: response.contractAddress, network: response.network),
-            isExchangeable: response.exchangeAvailable
+            isExchangeable: response.exchangeAvailable,
+            isOnrampable: response.onrampAvailable ?? false
         )
     }
 
@@ -169,15 +170,13 @@ struct ExpressAPIMapper {
         return OnrampPaymentMethod(identity: identity)
     }
 
-    func mapToOnrampProvider(response: ExpressDTO.Onramp.Provider) -> OnrampProvider {
-        OnrampProvider(id: response.providerId, paymentMethods: response.paymentMethods)
-    }
-
     func mapToOnrampPair(response: ExpressDTO.Onramp.Pairs.Response) -> OnrampPair {
         OnrampPair(
             fiatCurrencyCode: response.fromCurrencyCode,
             currency: mapToExpressCurrency(currency: response.to),
-            providers: response.providers.map(mapToOnrampProvider)
+            providers: response.providers.map { provider in
+                OnrampPair.Provider(id: provider.providerId, paymentMethods: provider.paymentMethods)
+            }
         )
     }
 

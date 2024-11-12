@@ -10,6 +10,7 @@ import Foundation
 import TangemStaking
 import Combine
 import BlockchainSdk
+import TangemFoundation
 
 protocol UnstakingModelStateProvider {
     var stakedBalance: Decimal { get }
@@ -97,7 +98,7 @@ private extension UnstakingModel {
 
         estimatedFeeTask?.cancel()
 
-        estimatedFeeTask = runTask(in: self) { model in
+        estimatedFeeTask = TangemFoundation.runTask(in: self) { model in
             do {
                 model.update(state: .loading)
                 let state = try await model.state(amount: amount)

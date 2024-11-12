@@ -13,7 +13,7 @@ import BlockchainSdk
 import TangemFoundation
 
 class SingleTokenBaseViewModel: NotificationTapDelegate {
-    @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
+    @Injected(\.expressAvailabilityProvider) private var expressAvailabilityProvider: ExpressAvailabilityProvider
 
     @Published var alert: AlertBinder? = nil
     @Published var transactionHistoryState: TransactionsListView.State = .loading
@@ -461,7 +461,7 @@ extension SingleTokenBaseViewModel {
             break
         }
 
-        return !swapAvailabilityProvider.canSwap(tokenItem: walletModel.tokenItem)
+        return !expressAvailabilityProvider.canSwap(tokenItem: walletModel.tokenItem)
     }
 
     private func isReceiveDisabled() -> Bool {
@@ -492,12 +492,27 @@ extension SingleTokenBaseViewModel {
             return
         }
 
-        if !exchangeUtility.buyAvailable {
-            alert = SingleTokenAlertBuilder().buyUnavailableAlert(for: walletModel.tokenItem)
-            return
-        }
+        if FeatureProvider.isAvailable(.onramp) {
+            let alertBuilder = SingleTokenAlertBuilder()
+            if let alertToDisplay = alertBuilder.buyAlert(
+                for: walletModel.tokenItem,
+                tokenItemSwapState: expressAvailabilityProvider.onrampState(for: walletModel.tokenItem),
+                isCustom: walletModel.isCustom
+            ) {
+                alert = alertToDisplay
+                return
+            }
 
-        tokenRouter.openBuyCryptoIfPossible(walletModel: walletModel)
+            tokenRouter.openBuyCryptoIfPossible(walletModel: walletModel)
+        } else {
+            // Old code
+            if !exchangeUtility.buyAvailable {
+                alert = SingleTokenAlertBuilder().buyUnavailableAlert(for: walletModel.tokenItem)
+                return
+            }
+
+            tokenRouter.openBuyCryptoIfPossible(walletModel: walletModel)
+        }
     }
 
     func openSend() {
@@ -527,7 +542,7 @@ extension SingleTokenBaseViewModel {
 
         if let alertToDisplay = alertBuilder.swapAlert(
             for: walletModel.tokenItem,
-            tokenItemSwapState: swapAvailabilityProvider.swapState(for: walletModel.tokenItem),
+            tokenItemSwapState: expressAvailabilityProvider.swapState(for: walletModel.tokenItem),
             isCustom: walletModel.isCustom
         ) {
             alert = alertToDisplay
