@@ -9,6 +9,8 @@
 import Foundation
 
 struct MarketsTokenDetailsSecurityScoreRatingHelper {
+    typealias RatingBullet = MarketsTokenDetailsSecurityScoreRatingViewData.RatingBullet
+
     private let ratingBulletsCount: Int
 
     init(ratingBulletsCount: Int = 5) {
@@ -24,13 +26,14 @@ struct MarketsTokenDetailsSecurityScoreRatingHelper {
         )
     }
 
-    func makeRatingBullets(forSecurityScoreValue securityScoreValue: Double) -> [MarketsTokenDetailsSecurityScoreRatingViewData.RatingBullet] {
+    func makeRatingBullets(forSecurityScoreValue securityScoreValue: Double) -> [RatingBullet] {
         let filletBulletsCount = Int(securityScoreValue)
         let intermediateBulletValue = securityScoreValue - Double(filletBulletsCount)
         let emptyBulletsCount = max(ratingBulletsCount - filletBulletsCount - 1, 0) // `-1` here due to an intermediate rating bullet
+        let ratingBullets = [RatingBullet](repeating: .init(value: 1.0), count: filletBulletsCount)
+            + [RatingBullet(value: intermediateBulletValue)]
+            + [RatingBullet](repeating: .init(value: 0.0), count: emptyBulletsCount)
 
-        return [MarketsTokenDetailsSecurityScoreRatingViewData.RatingBullet](repeating: .init(value: 1.0), count: filletBulletsCount)
-            + [.init(value: intermediateBulletValue)]
-            + [MarketsTokenDetailsSecurityScoreRatingViewData.RatingBullet](repeating: .init(value: 0.0), count: emptyBulletsCount)
+        return Array(ratingBullets.prefix(ratingBulletsCount))
     }
 }
