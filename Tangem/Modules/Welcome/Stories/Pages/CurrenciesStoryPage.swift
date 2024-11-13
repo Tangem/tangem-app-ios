@@ -9,8 +9,8 @@
 import SwiftUI
 
 struct CurrenciesStoryPage: View {
-    @Binding var progress: Double
-    @Binding var isScanning: Bool
+    var progress: Double
+    var isScanning: Bool
     let scanCard: () -> Void
     let orderCard: () -> Void
     let searchTokens: () -> Void
@@ -77,9 +77,15 @@ struct CurrenciesStoryPage: View {
                 .padding(.horizontal, 16)
             }
 
-            StoriesBottomButtons(scanColorStyle: .primary, orderColorStyle: .secondary, isScanning: $isScanning, scanCard: scanCard, orderCard: orderCard)
-                .padding(.horizontal)
-                .padding(.bottom, 6)
+            StoriesBottomButtons(
+                scanColorStyle: .primary,
+                orderColorStyle: .secondary,
+                isScanning: isScanning,
+                scanCard: scanCard,
+                orderCard: orderCard
+            )
+            .padding(.horizontal)
+            .padding(.bottom, 6)
         }
         .background(Colors.Old.tangemStoryBackground.edgesIgnoringSafeArea(.all))
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -88,7 +94,7 @@ struct CurrenciesStoryPage: View {
 
 struct CurrenciesStoryPage_Previews: PreviewProvider {
     static var previews: some View {
-        CurrenciesStoryPage(progress: .constant(1), isScanning: .constant(false)) {} orderCard: {} searchTokens: {}
+        CurrenciesStoryPage(progress: 1, isScanning: false) {} orderCard: {} searchTokens: {}
             .previewGroup(devices: [.iPhone7, .iPhone12ProMax], withZoomed: false)
     }
 }

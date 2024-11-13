@@ -12,7 +12,7 @@ struct StoriesBottomButtons: View {
     let scanColorStyle: MainButton.Style
     let orderColorStyle: MainButton.Style
 
-    @Binding var isScanning: Bool
+    var isScanning: Bool
 
     let scanCard: () -> Void
     let orderCard: () -> Void
@@ -39,6 +39,6 @@ struct StoriesBottomButtons: View {
 
 struct StoriesBottomButtons_Previews: PreviewProvider {
     static var previews: some View {
-        StoriesBottomButtons(scanColorStyle: .primary, orderColorStyle: .secondary, isScanning: .constant(false)) {} orderCard: {}
+        StoriesBottomButtons(scanColorStyle: .primary, orderColorStyle: .secondary, isScanning: false) {} orderCard: {}
     }
 }
