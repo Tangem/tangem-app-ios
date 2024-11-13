@@ -6,21 +6,25 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-public protocol OnrampManager {
-    // Load country by IP or get from repository
-    func getCountry() async throws -> OnrampCountry
+public protocol OnrampManager: Actor {
+    var providers: [OnrampProvider] { get }
+    var selectedProvider: OnrampProvider? { get }
 
-    // Load methods
-    func updatePaymentMethod() async throws -> OnrampPaymentMethod
+    /// Initial loading country by IP
+    /// If the country has already been setup then return nil
+    func initialSetupCountry() async throws -> OnrampCountry
 
-    // User did choose country. We prepare providers
-    func update(pair: OnrampPair) async throws -> [OnrampProvider]
+    /// Determine the payment method that you will be offered to use
+    func initialSetupPaymentMethod() async throws -> OnrampPaymentMethod
 
-    // User did change amount. We load quotes providers
-    func update(amount: Decimal) async throws -> [OnrampProvider]
+    /// User has selected a currency. We are preparing onramp providers
+    func setupProviders(request: OnrampPairRequestItem) async throws
 
-    // load data to make onramp
-    func loadOnrampData(request: OnrampSwappableItem) async throws -> OnrampRedirectData
+    /// The user changed the amount. We upload providers quotes
+    func setupQuotes(amount: Decimal?) async throws
+
+    /// Load the data to perform the onramp action
+    func loadOnrampData(request: OnrampQuotesRequestItem) async throws -> OnrampRedirectData
 }
 
 public enum OnrampManagerError: LocalizedError {

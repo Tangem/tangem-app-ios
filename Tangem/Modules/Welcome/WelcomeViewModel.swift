@@ -16,23 +16,23 @@ class WelcomeViewModel: ObservableObject {
     @Injected(\.incomingActionManager) private var incomingActionManager: IncomingActionManaging
 
     @Published var showTroubleshootingView: Bool = false
-    @Published var isScanningCard: Bool = false
     @Published var error: AlertBinder?
-    @Published var storiesModel: StoriesViewModel = .init()
 
-    private var storiesModelSubscription: AnyCancellable?
+    let storiesModel: StoriesViewModel
+
+    var isScanningCard: CurrentValueSubject<Bool, Never> = .init(false)
+
     private var shouldScanOnAppear: Bool = false
 
     private weak var coordinator: WelcomeRoutable?
 
-    init(shouldScanOnAppear: Bool, coordinator: WelcomeRoutable) {
-        self.shouldScanOnAppear = shouldScanOnAppear
+    init(coordinator: WelcomeRoutable, storiesModel: StoriesViewModel) {
         self.coordinator = coordinator
-        storiesModelSubscription = storiesModel.objectWillChange
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] in
-                self?.objectWillChange.send()
-            })
+        self.storiesModel = storiesModel
+    }
+
+    deinit {
+        AppLog.shared.debug("WelcomeViewModel deinit")
     }
 
     func scanCardTapped() {
@@ -57,7 +57,7 @@ class WelcomeViewModel: ObservableObject {
 
     func orderCard() {
         // For some reason the button can be tapped even after we've this flag to FALSE to disable it
-        guard !isScanningCard else { return }
+        guard !isScanningCard.value else { return }
 
         openShop()
         Analytics.log(.buttonBuyCards)
@@ -68,24 +68,16 @@ class WelcomeViewModel: ObservableObject {
         incomingActionManager.becomeFirstResponder(self)
     }
 
-    func onDidAppear() {
-        if shouldScanOnAppear {
-            DispatchQueue.main.async {
-                self.scanCard()
-            }
-        }
-    }
-
     func onDisappear() {
         incomingActionManager.resignFirstResponder(self)
     }
 
-    private func scanCard() {
-        isScanningCard = true
+    internal func scanCard() {
+        isScanningCard.send(true)
         Analytics.beginLoggingCardScan(source: .welcome)
 
         userWalletRepository.unlock(with: .card(userWalletId: nil, scanner: CardScannerFactory().makeDefaultScanner())) { [weak self] result in
-            self?.isScanningCard = false
+            self?.isScanningCard.send(false)
 
             if result?.isSuccess != true {
                 self?.incomingActionManager.discardIncomingAction()
@@ -106,11 +98,6 @@ class WelcomeViewModel: ObservableObject {
             case .error(let error):
                 self.error = error.alertBinder
             case .success(let model), .partial(let model, _): // partial unlock is impossible in this case
-                Analytics.log(event: .signedIn, params: [
-                    .signInType: Analytics.ParameterValue.card.rawValue,
-                    .walletsCount: "1", // we don't have any saved wallets, just log one,
-                    .walletHasBackup: Analytics.ParameterValue.affirmativeOrNegative(for: model.hasBackupCards).rawValue,
-                ])
                 openMain(with: model)
             }
         }
@@ -120,27 +107,6 @@ class WelcomeViewModel: ObservableObject {
 // MARK: - Navigation
 
 extension WelcomeViewModel {
-    func openMail() {
-        coordinator?.openMail(with: failedCardScanTracker, recipient: EmailConfig.default.recipient)
-    }
-
-    func openPromotion() {
-        Analytics.log(.introductionProcessLearn)
-        coordinator?.openPromotion()
-    }
-
-    func openTokensList() {
-        // For some reason the button can be tapped even after we've this flag to FALSE to disable it
-        guard !isScanningCard else { return }
-
-        Analytics.log(.buttonTokensList)
-        coordinator?.openTokensList()
-    }
-
-    func openShop() {
-        coordinator?.openShop()
-    }
-
     func openOnboarding(with input: OnboardingInput) {
         coordinator?.openOnboarding(with: input)
     }
@@ -150,15 +116,32 @@ extension WelcomeViewModel {
     }
 }
 
-// MARK: - WelcomeViewLifecycleListener
+// MARK: - StoriesDelegate
 
-extension WelcomeViewModel: WelcomeViewLifecycleListener {
-    func resignActive() {
-        storiesModel.resignActive()
+extension WelcomeViewModel: StoriesDelegate {
+    var isScanning: AnyPublisher<Bool, Never> {
+        isScanningCard.eraseToAnyPublisher()
     }
 
-    func becomeActive() {
-        storiesModel.becomeActive()
+    func openTokenList() {
+        // For some reason the button can be tapped even after we've this flag to FALSE to disable it
+        guard !isScanningCard.value else { return }
+
+        Analytics.log(.buttonTokensList)
+        coordinator?.openTokensList()
+    }
+
+    func openMail() {
+        coordinator?.openMail(with: failedCardScanTracker, recipient: EmailConfig.default.recipient)
+    }
+
+    func openPromotion() {
+        Analytics.log(.introductionProcessLearn)
+        coordinator?.openPromotion()
+    }
+
+    func openShop() {
+        coordinator?.openShop()
     }
 }
 

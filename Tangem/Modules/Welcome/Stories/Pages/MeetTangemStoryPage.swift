@@ -9,8 +9,8 @@
 import SwiftUI
 
 struct MeetTangemStoryPage: View {
-    @Binding var progress: Double
-    @Binding var isScanning: Bool
+    var progress: Double
+    var isScanning: Bool
     let scanCard: () -> Void
     let orderCard: () -> Void
 
@@ -43,9 +43,15 @@ struct MeetTangemStoryPage: View {
 
             Spacer(minLength: 150)
 
-            StoriesBottomButtons(scanColorStyle: .primary, orderColorStyle: .secondary, isScanning: $isScanning, scanCard: scanCard, orderCard: orderCard)
-                .padding(.horizontal)
-                .padding(.bottom, 6)
+            StoriesBottomButtons(
+                scanColorStyle: .primary,
+                orderColorStyle: .secondary,
+                isScanning: isScanning,
+                scanCard: scanCard,
+                orderCard: orderCard
+            )
+            .padding(.horizontal)
+            .padding(.bottom, 6)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Colors.Old.tangemStoryBackground.edgesIgnoringSafeArea(.all))
@@ -54,7 +60,7 @@ struct MeetTangemStoryPage: View {
 
 struct MeetTangemStoryPage_Previews: PreviewProvider {
     static var previews: some View {
-        MeetTangemStoryPage(progress: .constant(0.8), isScanning: .constant(false)) {} orderCard: {}
+        MeetTangemStoryPage(progress: 0.8, isScanning: false) {} orderCard: {}
             .previewGroup(devices: [.iPhone7, .iPhone12ProMax], withZoomed: false)
             .environment(\.colorScheme, .dark)
     }

@@ -9,6 +9,7 @@
 import Foundation
 import TangemSdk
 import WalletCore
+import TangemFoundation
 
 struct RadiantScriptUtils {
     /// Default implementation BitcoinCash signed scripts

@@ -8,6 +8,7 @@
 
 import Foundation
 import BlockchainSdk
+import TangemFoundation
 
 /// Supports https://github.com/bitcoin/bips/blob/master/bip-0020.mediawiki and https://eips.ethereum.org/EIPS/eip-681 (partially).
 struct QRCodeParser {
@@ -114,7 +115,7 @@ struct QRCodeParser {
     }
 
     private func parseDecimal(_ stringValue: String) -> Decimal? {
-        let decimalSeparator = Constants.decimalParsingLocale.decimalSeparator ?? "."
+        let decimalSeparator = Locale.posixEnUS.decimalSeparator ?? "."
         let normalizedStringValue = stringValue.replacingOccurrences(of: ",", with: decimalSeparator)
 
         // If the normalized string contains more than one separators (i.e. it can be divided into 3 or more parts),
@@ -122,7 +123,7 @@ struct QRCodeParser {
         // In this case, we consider the given string to be malformed, and we stop the decimal number parsing routine
         guard
             normalizedStringValue.split(separator: decimalSeparator.first!).count < 3,
-            let value = Decimal(string: normalizedStringValue, locale: Constants.decimalParsingLocale)
+            let value = Decimal(stringValue: normalizedStringValue)
         else {
             return nil
         }
@@ -155,9 +156,6 @@ private extension QRCodeParser {
             "/",
             "?",
         ]
-
-        /// Locale for string literals parsing.
-        static let decimalParsingLocale = Locale(identifier: "en_US_POSIX")
     }
 
     /// We don't care about other params from ERC-681, like `gasLimit`, `gasPrice` and so on.

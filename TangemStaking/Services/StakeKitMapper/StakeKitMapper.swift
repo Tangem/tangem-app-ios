@@ -369,8 +369,18 @@ struct StakeKitMapper {
     }
 }
 
-enum StakeKitMapperError: Error {
+public enum StakeKitMapperError: Error {
     case notImplement
     case noData(String)
     case tronTransactionMappingFailed
+}
+
+extension StakeKitMapperError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .notImplement: "Not implemented"
+        case .noData(let string): string
+        case .tronTransactionMappingFailed: "TronTransactionMappingFailed"
+        }
+    }
 }

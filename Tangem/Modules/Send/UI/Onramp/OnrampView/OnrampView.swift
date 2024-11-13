@@ -21,22 +21,10 @@ struct OnrampView: View {
                 namespace: .init(id: namespace.id, names: namespace.names)
             )
 
-            paymentSection
+            OnrampProvidersCompactView(
+                viewModel: viewModel.onrampProvidersCompactViewModel
+            )
         }
-    }
-
-    private var paymentSection: some View {
-        GroupedSection(viewModel.paymentState) { state in
-            switch state {
-            case .loading:
-                LoadingProvidersRow()
-            case .loaded(let data):
-                OnrampProvidersCompactView(data: data)
-            }
-        }
-        .innerContentPadding(14)
-        .backgroundColor(Colors.Background.action)
-        .animation(.default, value: viewModel.paymentState)
     }
 }
 

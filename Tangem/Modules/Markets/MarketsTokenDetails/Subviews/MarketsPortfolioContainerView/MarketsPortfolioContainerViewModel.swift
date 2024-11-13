@@ -12,10 +12,6 @@ import SwiftUI
 import BlockchainSdk
 
 class MarketsPortfolioContainerViewModel: ObservableObject {
-    // MARK: - Services
-
-    @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
-
     // MARK: - Published Properties
 
     @Published var isAddTokenButtonDisabled: Bool = true
@@ -144,7 +140,7 @@ class MarketsPortfolioContainerViewModel: ObservableObject {
             var networkIds = availableNetworksIds
             let userTokenList = userWalletModel.userTokenListManager.userTokensList
             for entry in userTokenList.entries {
-                guard let entryId = entry.id else {
+                guard let entryId = entry.coinId else {
                     continue
                 }
 

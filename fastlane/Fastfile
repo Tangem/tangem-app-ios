@@ -1,3 +1,5 @@
+require 'base64'
+
 default_platform(:ios)
 
 BUILD_PATH = "./fastlane/builds/"
@@ -19,6 +21,10 @@ before_all do |lane, options|
     next
   end
 
+  Dir.chdir("..") do
+    sh("./bootstrap.sh")
+  end
+
   # Xcode version overrides available only on CI
   if ENV["CI"]&.downcase == "true"
     if options[:xcode_version_override]&.empty?
@@ -32,10 +38,6 @@ before_all do |lane, options|
         select_for_current_build_only: true
       )
     end
-  end
-
-  Dir.chdir("..") do
-    sh("./bootstrap.sh")
   end
 
   ENV["FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT"] = "120"
@@ -238,13 +240,19 @@ Options:
 lane :deploy_firebase do |options|
   path = options[:path]
   release_notes = "#{options[:changelog]}\nGitHash: #{last_git_commit[:commit_hash]}"
-  firebase_app_distribution(
+  uploaded_release = firebase_app_distribution(
     app: options[:app_id],
     ipa_path: path,
     groups: FIREBASE_TESTERS_GROUP,
     firebase_cli_token: options[:firebase_token],
     release_notes: release_notes
   )
+  release_url = uploaded_release[:testingUri]
+
+  # Applying base64 encoding twice to prevent GA bug "Skip output 'output' since it may contain secret."
+  # See https://github.com/orgs/community/discussions/13082#discussioncomment-6776428 for details
+  encoded_release_url = Base64.strict_encode64(Base64.strict_encode64(release_url))
+  sh("echo 'encoded_release_url=#{encoded_release_url}' >> $GITHUB_ENV")
 end
 
 private_lane :build do |options|

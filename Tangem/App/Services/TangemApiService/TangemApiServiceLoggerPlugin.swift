@@ -206,13 +206,13 @@ public extension TangemApiServiceLoggerPlugin.Configuration {
 private extension TangemApiTarget {
     var shouldLogResponseBody: Bool {
         switch type {
-        case .currencies, .coins, .quotes, .apiList:
+        case .currencies, .coins, .quotes, .apiList, .coinsList, .coinsHistoryChartPreview, .historyChart:
             return false
         case .geo, .features, .getUserWalletTokens, .saveUserWalletTokens, .loadReferralProgramInfo, .participateInReferralProgram, .createAccount, .promotion, .validateNewUserPromotionEligibility, .validateOldUserPromotionEligibility, .awardNewUser, .awardOldUser, .resetAward:
             return true
 
         // Markets requests
-        case .coinsList, .coinsHistoryChartPreview, .tokenMarketsDetails, .historyChart, .tokenExchangesList:
+        case .tokenMarketsDetails, .tokenExchangesList:
             return true
         }
     }

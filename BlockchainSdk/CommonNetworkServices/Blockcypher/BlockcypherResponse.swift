@@ -8,6 +8,7 @@
 
 import Foundation
 import BitcoinCore
+import TangemFoundation
 
 /// Response for standart address request
 struct BlockcypherAddressResponse: Codable {

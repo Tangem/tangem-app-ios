@@ -158,7 +158,9 @@ private extension UserWalletSettingsViewModel {
 
     func didConfirmWalletDeletion() {
         userWalletRepository.delete(userWalletModel.userWalletId, logoutIfNeeded: true)
-        coordinator?.dismiss()
+        if !userWalletRepository.isLocked {
+            coordinator?.dismiss()
+        }
     }
 
     func showErrorAlert(error: Error) {

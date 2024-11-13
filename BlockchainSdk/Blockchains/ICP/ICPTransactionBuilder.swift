@@ -10,6 +10,7 @@ import Foundation
 import WalletCore
 import IcpKit
 import Combine
+import TangemFoundation
 
 final class ICPTransactionBuilder {
     // MARK: - Private Properties

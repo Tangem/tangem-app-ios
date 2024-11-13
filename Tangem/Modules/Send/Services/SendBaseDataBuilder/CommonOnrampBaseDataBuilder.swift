@@ -10,22 +10,37 @@ import TangemExpress
 
 protocol OnrampBaseDataBuilderInput {}
 
-struct CommonOnrampBaseDataBuilder: OnrampBaseDataBuilder {
-    private let input: OnrampBaseDataBuilderInput
-    private let walletModel: WalletModel
+struct CommonOnrampBaseDataBuilder {
     private let onrampRepository: OnrampRepository
+    private let onrampDataRepository: OnrampDataRepository
+    private let providersBuilder: OnrampProvidersBuilder
+    private let paymentMethodsBuilder: OnrampPaymentMethodsBuilder
 
     init(
-        input: OnrampBaseDataBuilderInput,
-        walletModel: WalletModel,
-        onrampRepository: OnrampRepository
+        onrampRepository: OnrampRepository,
+        onrampDataRepository: OnrampDataRepository,
+        providersBuilder: OnrampProvidersBuilder,
+        paymentMethodsBuilder: OnrampPaymentMethodsBuilder
     ) {
-        self.input = input
-        self.walletModel = walletModel
         self.onrampRepository = onrampRepository
+        self.onrampDataRepository = onrampDataRepository
+        self.providersBuilder = providersBuilder
+        self.paymentMethodsBuilder = paymentMethodsBuilder
+    }
+}
+
+// MARK: - OnrampBaseDataBuilder
+
+extension CommonOnrampBaseDataBuilder: OnrampBaseDataBuilder {
+    func makeDataForOnrampCountryBottomSheet() -> OnrampRepository {
+        return onrampRepository
     }
 
-    func makeDataForOnrampCountryBottomSheet() -> any TangemExpress.OnrampRepository {
-        onrampRepository
+    func makeDataForOnrampCountrySelectorView() -> (preferenceRepository: OnrampRepository, dataRepository: OnrampDataRepository) {
+        return (preferenceRepository: onrampRepository, dataRepository: onrampDataRepository)
+    }
+
+    func makeDataForOnrampProvidersPaymentMethodsView() -> (providersBuilder: OnrampProvidersBuilder, paymentMethodsBuilder: OnrampPaymentMethodsBuilder) {
+        return (providersBuilder: providersBuilder, paymentMethodsBuilder: paymentMethodsBuilder)
     }
 }

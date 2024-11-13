@@ -66,7 +66,8 @@ struct DerivationConfigV2: DerivationConfig {
              .cyber,
              .blast,
              .energyWebEVM,
-             .core:
+             .core,
+             .canxium:
             return "m/44'/60'/0'/0/0"
         case .binance:
             return "m/44'/714'/0'/0/0"
@@ -128,6 +129,8 @@ struct DerivationConfigV2: DerivationConfig {
             return "m/44'/461'/0'/0/0"
         case .energyWebX:
             return "m/44'/246'/0'/0'/0'"
+        case .casper:
+            return "m/44'/506'/0'/0/0"
         }
     }
 }

@@ -9,8 +9,8 @@
 import SwiftUI
 
 struct FinishStoryPage: View {
-    @Binding var progress: Double
-    @Binding var isScanning: Bool
+    var progress: Double
+    var isScanning: Bool
     let scanCard: () -> Void
     let orderCard: () -> Void
 
@@ -55,9 +55,15 @@ struct FinishStoryPage: View {
 
             Spacer()
 
-            StoriesBottomButtons(scanColorStyle: .primary, orderColorStyle: .secondary, isScanning: $isScanning, scanCard: scanCard, orderCard: orderCard)
-                .padding(.horizontal)
-                .padding(.bottom, 6)
+            StoriesBottomButtons(
+                scanColorStyle: .primary,
+                orderColorStyle: .secondary,
+                isScanning: isScanning,
+                scanCard: scanCard,
+                orderCard: orderCard
+            )
+            .padding(.horizontal)
+            .padding(.bottom, 6)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Colors.Old.tangemStoryBackground.edgesIgnoringSafeArea(.all))
@@ -66,7 +72,7 @@ struct FinishStoryPage: View {
 
 struct FinishStoryPage_Previews: PreviewProvider {
     static var previews: some View {
-        FinishStoryPage(progress: .constant(1), isScanning: .constant(false)) {} orderCard: {}
+        FinishStoryPage(progress: 1, isScanning: false) {} orderCard: {}
             .previewGroup(devices: [.iPhone7, .iPhone12ProMax], withZoomed: false)
             .environment(\.colorScheme, .dark)
     }

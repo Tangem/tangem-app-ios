@@ -13,10 +13,25 @@ struct OnrampStepBuilder {
     typealias IO = (input: OnrampInput, output: OnrampOutput)
     typealias ReturnValue = (step: OnrampStep, interactor: OnrampInteractor)
 
-    func makeOnrampStep(io: IO, onrampManager: some OnrampManager, onrampAmountViewModel: OnrampAmountViewModel) -> ReturnValue {
+    private let walletModel: WalletModel
+
+    init(walletModel: WalletModel) {
+        self.walletModel = walletModel
+    }
+
+    func makeOnrampStep(
+        io: IO,
+        onrampManager: some OnrampManager,
+        onrampAmountViewModel: OnrampAmountViewModel,
+        onrampProvidersCompactViewModel: OnrampProvidersCompactViewModel
+    ) -> ReturnValue {
         let interactor = makeOnrampInteractor(io: io, onrampManager: onrampManager)
-        let viewModel = makeOnrampViewModel(onrampAmountViewModel: onrampAmountViewModel, interactor: interactor)
-        let step = OnrampStep(viewModel: viewModel, interactor: interactor)
+        let viewModel = makeOnrampViewModel(
+            onrampAmountViewModel: onrampAmountViewModel,
+            onrampProvidersCompactViewModel: onrampProvidersCompactViewModel,
+            interactor: interactor
+        )
+        let step = OnrampStep(tokenItem: walletModel.tokenItem, viewModel: viewModel, interactor: interactor)
 
         return (step: step, interactor: interactor)
     }
@@ -27,9 +42,14 @@ struct OnrampStepBuilder {
 private extension OnrampStepBuilder {
     func makeOnrampViewModel(
         onrampAmountViewModel: OnrampAmountViewModel,
+        onrampProvidersCompactViewModel: OnrampProvidersCompactViewModel,
         interactor: OnrampInteractor
     ) -> OnrampViewModel {
-        OnrampViewModel(onrampAmountViewModel: onrampAmountViewModel, interactor: interactor)
+        OnrampViewModel(
+            onrampAmountViewModel: onrampAmountViewModel,
+            onrampProvidersCompactViewModel: onrampProvidersCompactViewModel,
+            interactor: interactor
+        )
     }
 
     func makeOnrampInteractor(io: IO, onrampManager: some OnrampManager) -> OnrampInteractor {

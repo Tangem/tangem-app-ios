@@ -35,7 +35,7 @@ extension CommonExpressRepository: ExpressRepository {
             return providers
         }
 
-        let providers = try await expressAPIProvider.providers()
+        let providers = try await expressAPIProvider.providers(branch: .swap)
         self.providers = providers
         return providers
     }

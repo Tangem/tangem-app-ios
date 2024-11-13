@@ -9,6 +9,7 @@
 import Foundation
 import TangemExpress
 import BlockchainSdk
+import TangemFoundation
 
 struct ExpressPendingTransactionRecord: Codable, Equatable {
     let userWalletId: String
@@ -82,12 +83,14 @@ extension ExpressPendingTransactionRecord {
         case cex
         case dex
         case dexBridge
+        case unknown
 
         static func type(from type: ExpressProviderType) -> ProviderType {
             switch type {
             case .dex: return .dex
             case .cex: return .cex
             case .dexBridge: return .dexBridge
+            case .onramp, .unknown: return .unknown
             }
         }
 
@@ -95,7 +98,7 @@ extension ExpressPendingTransactionRecord {
             switch self {
             case .cex, .dexBridge:
                 return true
-            case .dex:
+            case .dex, .unknown:
                 return false
             }
         }
@@ -103,9 +106,9 @@ extension ExpressPendingTransactionRecord {
 }
 
 private func convertToDecimal(_ str: String) -> Decimal {
-    let cleanedStr = str.replacingOccurrences(of: ",", with: ".")
-    let locale = Locale(identifier: "en-US")
-    return Decimal(string: cleanedStr, locale: locale) ?? 0
+    let decimalSeparator = Locale.posixEnUS.decimalSeparator ?? "."
+    let cleanedStr = str.replacingOccurrences(of: ",", with: decimalSeparator)
+    return Decimal(stringValue: cleanedStr) ?? 0
 }
 
 // MARK: - Migration

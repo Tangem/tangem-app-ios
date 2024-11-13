@@ -7,14 +7,8 @@
 
 import SwiftUI
 
-struct StoriesView<Content: View>: View {
+struct StoriesView: View {
     @ObservedObject var viewModel: StoriesViewModel
-    @ViewBuilder private let content: () -> Content
-
-    init(viewModel: StoriesViewModel, @ViewBuilder content: @escaping () -> Content) {
-        self.viewModel = viewModel
-        self.content = content
-    }
 
     var body: some View {
         ZStack {
@@ -35,7 +29,7 @@ struct StoriesView<Content: View>: View {
     var contentView: some View {
         GeometryReader { geo in
             ZStack(alignment: .top) {
-                content()
+                currentStoryPage()
                     .contentShape(Rectangle())
                     .gesture(
                         DragGesture(minimumDistance: 0)
@@ -55,17 +49,63 @@ struct StoriesView<Content: View>: View {
         .onAppear(perform: viewModel.onAppear)
         .onDisappear(perform: viewModel.onDisappear)
     }
+
+    @ViewBuilder
+    func currentStoryPage() -> some View {
+        switch viewModel.currentPage {
+        case WelcomeStoryPage.learn:
+            LearnAndEarnStoryPage(
+                learn: { viewModel.delegate?.openPromotion() }
+            )
+        case WelcomeStoryPage.meetTangem:
+            MeetTangemStoryPage(
+                progress: viewModel.currentProgress,
+                isScanning: viewModel.isScanning,
+                scanCard: { viewModel.delegate?.scanCard() },
+                orderCard: { viewModel.delegate?.orderCard() }
+            )
+        case WelcomeStoryPage.awe:
+            AweStoryPage(
+                progress: viewModel.currentProgress,
+                isScanning: viewModel.isScanning,
+                scanCard: { viewModel.delegate?.scanCard() },
+                orderCard: { viewModel.delegate?.orderCard() }
+            )
+        case WelcomeStoryPage.backup:
+            BackupStoryPage(
+                progress: viewModel.currentProgress,
+                isScanning: viewModel.isScanning,
+                scanCard: { viewModel.delegate?.scanCard() },
+                orderCard: { viewModel.delegate?.orderCard() }
+            )
+        case WelcomeStoryPage.currencies:
+            CurrenciesStoryPage(
+                progress: viewModel.currentProgress,
+                isScanning: viewModel.isScanning,
+                scanCard: { viewModel.delegate?.scanCard() },
+                orderCard: { viewModel.delegate?.orderCard() },
+                searchTokens: { viewModel.delegate?.openTokenList() }
+            )
+        //        case WelcomeStoryPage.web3:
+        //            Web3StoryPage(
+        //                progress: viewModel.currentProgress,
+        //                isScanning: viewModel.makeScanBinding(),
+        //                scanCard: { viewModel.delegate?.scanCard() },
+        //                orderCard: { viewModel.delegate?.orderCard() }
+        //            )
+        case WelcomeStoryPage.finish:
+            FinishStoryPage(
+                progress: viewModel.currentProgress,
+                isScanning: viewModel.isScanning,
+                scanCard: { viewModel.delegate?.scanCard() },
+                orderCard: { viewModel.delegate?.orderCard() }
+            )
+        }
+    }
 }
 
 struct StoriesView_Previews: PreviewProvider {
     static var previews: some View {
-        StoriesView(viewModel: StoriesViewModel()) {
-            Group {
-                Color.red.tag(0)
-                Color.blue.tag(1)
-                Color.yellow.tag(2)
-                Color.purple.tag(3)
-            }
-        }
+        StoriesView(viewModel: StoriesViewModel())
     }
 }

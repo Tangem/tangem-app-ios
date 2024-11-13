@@ -34,7 +34,8 @@ struct ExpressAPIMapper {
     func mapToExpressAsset(response: ExpressDTO.Swap.Assets.Response) -> ExpressAsset {
         ExpressAsset(
             currency: ExpressCurrency(contractAddress: response.contractAddress, network: response.network),
-            isExchangeable: response.exchangeAvailable
+            isExchangeable: response.exchangeAvailable,
+            isOnrampable: response.onrampAvailable ?? false
         )
     }
 
@@ -42,7 +43,7 @@ struct ExpressAPIMapper {
         ExpressProvider(
             id: .init(provider.id),
             name: provider.name,
-            type: provider.type,
+            type: provider.type ?? .unknown,
             imageURL: provider.imageSmall.flatMap(URL.init(string:)),
             termsOfUse: provider.termsOfUse.flatMap(URL.init(string:)),
             privacyPolicy: provider.privacyPolicy.flatMap(URL.init(string:)),
@@ -110,6 +111,8 @@ struct ExpressAPIMapper {
         case .dex, .dexBridge:
             // For DEX we have txValue amount as coin. Because it's EVM
             txValue /= pow(10, item.source.feeCurrencyDecimalCount)
+        case .onramp, .unknown:
+            throw ExpressAPIMapperError.wrongProviderType
         }
 
         let otherNativeFee = txDetails.otherNativeFee
@@ -165,29 +168,29 @@ struct ExpressAPIMapper {
     }
 
     func mapToOnrampPaymentMethod(response: ExpressDTO.Onramp.PaymentMethod) -> OnrampPaymentMethod {
-        let identity = OnrampIdentity(name: response.name, code: response.id, image: URL(string: response.image))
-        return OnrampPaymentMethod(identity: identity)
-    }
-
-    func mapToOnrampProvider(response: ExpressDTO.Onramp.Provider) -> OnrampProvider {
-        OnrampProvider(id: response.providerId, paymentMethods: response.paymentMethods)
+        return OnrampPaymentMethod(id: response.id, name: response.name, image: URL(string: response.image))
     }
 
     func mapToOnrampPair(response: ExpressDTO.Onramp.Pairs.Response) -> OnrampPair {
         OnrampPair(
             fiatCurrencyCode: response.fromCurrencyCode,
             currency: mapToExpressCurrency(currency: response.to),
-            providers: response.providers.map(mapToOnrampProvider)
+            providers: response.providers.map { provider in
+                OnrampPair.Provider(id: provider.providerId, paymentMethods: provider.paymentMethods)
+            }
         )
     }
 
     func mapToOnrampQuote(response: ExpressDTO.Onramp.Quote.Response) throws -> OnrampQuote {
-        // TODO: https://tangem.atlassian.net/browse/IOS-8310
-        return OnrampQuote()
+        guard var toAmount = Decimal(string: response.toAmount) else {
+            throw ExpressAPIMapperError.mapToDecimalError(response.toAmount)
+        }
+
+        return OnrampQuote(expectedAmount: toAmount)
     }
 
     func mapToOnrampRedirectData(
-        item: OnrampSwappableItem,
+        item: OnrampRedirectDataRequestItem,
         request: ExpressDTO.Onramp.Data.Request,
         response: ExpressDTO.Onramp.Data.Response
     ) throws -> OnrampRedirectData {
@@ -209,4 +212,5 @@ enum ExpressAPIMapperError: Error {
     case mapToDecimalError(_ string: String)
     case requestIdNotEqual
     case payoutAddressNotEqual
+    case wrongProviderType
 }

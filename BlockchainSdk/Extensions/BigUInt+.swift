@@ -9,6 +9,7 @@
 import Foundation
 import struct BigInt.BigUInt
 import struct BigInt.BigInt
+import TangemFoundation
 
 public extension BigUInt {
     /// 1. For integers only, will return `nil` if the value isn't an integer number.
@@ -24,7 +25,7 @@ public extension BigUInt {
             self = BigUInt(2).power(256) - 1
         } else {
             // We're using a fixed locale here to avoid any possible ambiguity with the string representation
-            let stringValue = decimalValue.decimalNumber.description(withLocale: Locale.enUS)
+            let stringValue = decimalValue.decimalNumber.description(withLocale: Locale.posixEnUS)
             self.init(stringValue, radix: 10)
         }
     }
@@ -36,7 +37,7 @@ public extension BigUInt {
 
         // Check that the decimal has been correctly formatted from the string without any loss
         guard
-            let result = Decimal(string: bigUIntFormatted, locale: Locale.enUS),
+            let result = Decimal(stringValue: bigUIntFormatted),
             let decimalFormatted = Self.decimalFormatter.string(from: NSDecimalNumber(decimal: result)),
             decimalFormatted == bigUIntFormatted
         else {
@@ -49,7 +50,7 @@ public extension BigUInt {
     private static var decimalFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
-        formatter.locale = Locale(identifier: "en_US")
+        formatter.locale = .posixEnUS
         formatter.usesGroupingSeparator = false
         return formatter
     }()
@@ -63,7 +64,7 @@ public extension BigInt {
 
         // Check that the decimal has been correctly formatted from the string without any loss
         guard
-            let result = Decimal(string: bigIntFormatted, locale: Locale.enUS),
+            let result = Decimal(stringValue: bigIntFormatted),
             let decimalFormatted = Self.decimalFormatter.string(from: NSDecimalNumber(decimal: result)),
             decimalFormatted == bigIntFormatted
         else {
@@ -76,14 +77,8 @@ public extension BigInt {
     private static var decimalFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
-        formatter.locale = Locale(identifier: "en_US")
+        formatter.locale = .posixEnUS
         formatter.usesGroupingSeparator = false
         return formatter
     }()
-}
-
-// MARK: - Convenience extensions
-
-private extension Locale {
-    static let enUS: Locale = .init(identifier: "en_US")
 }

@@ -100,7 +100,7 @@ struct MarketsTokenDetailsView: View {
                 chart
                     .hidden(viewModel.allDataLoadFailed)
                     .overlay(content: {
-                        MarketsUnableToLoadDataView(
+                        UnableToLoadDataView(
                             isButtonBusy: viewModel.isLoading,
                             retryButtonAction: viewModel.loadDetailedInfo
                         )
@@ -209,7 +209,7 @@ struct MarketsTokenDetailsView: View {
             case .loaded:
                 contentBlocks
             case .failedToLoadDetails:
-                MarketsUnableToLoadDataView(
+                UnableToLoadDataView(
                     isButtonBusy: viewModel.isLoading,
                     retryButtonAction: viewModel.loadDetailedInfo
                 )
