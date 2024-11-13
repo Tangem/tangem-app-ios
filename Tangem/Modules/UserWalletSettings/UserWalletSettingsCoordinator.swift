@@ -71,10 +71,6 @@ extension UserWalletSettingsCoordinator: UserWalletSettingsRoutable {
     }
 
     func openScanCardSettings(with input: ScanCardSettingsViewModel.Input) {
-        let dismissAction: Action<Void> = { [weak self] _ in
-            self?.scanCardSettingsCoordinator = nil
-        }
-
         let coordinator = ScanCardSettingsCoordinator(dismissAction: dismissAction)
         coordinator.start(with: .init(input: input))
         scanCardSettingsCoordinator = coordinator
