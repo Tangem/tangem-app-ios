@@ -437,7 +437,7 @@
 "markets_token_details_price_performance" = "Preisleistung";
 "markets_token_details_repository" = "Aufbewahrungsort";
 "markets_token_details_security_score" = "Sicherheitsbewertung";
-"markets_token_details_security_score_description" = "";
+"markets_token_details_security_score_description" = "Security score of a token is a metric that assesses the security level of a blockchain or token based on various factors and is compiled from the sources listed below.";
 "markets_token_details_social" = "Soziales";
 "markets_token_details_total_supply" = "Gesamtangebot";
 "markets_token_details_total_supply_description" = "Die maximale Anzahl von Coins oder Tokens, die jemals für eine bestimmte Kryptowährung existieren können";

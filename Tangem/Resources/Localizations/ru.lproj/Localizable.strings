@@ -437,7 +437,7 @@
 "markets_token_details_price_performance" = "Динамика цены";
 "markets_token_details_repository" = "Репозиторий";
 "markets_token_details_security_score" = "Оценка безопасности";
-"markets_token_details_security_score_description" = "";
+"markets_token_details_security_score_description" = "Security score of a token is a metric that assesses the security level of a blockchain or token based on various factors and is compiled from the sources listed below.";
 "markets_token_details_social" = "Социальные";
 "markets_token_details_total_supply" = "Общ. предл.";
 "markets_token_details_total_supply_description" = "Максимальное количество монет или токенов, которое может когда-либо существовать для выбранной криптовалюты";

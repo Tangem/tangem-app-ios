@@ -36,7 +36,7 @@ class UnstakingSendAmountValidator {
                 case .availableToStake(let yieldInfo):
                     return yieldInfo.enterMinimumRequirement
                 case .staked(let staked):
-                    return staked.yieldInfo.enterMinimumRequirement
+                    return staked.yieldInfo.exitMinimumRequirement
                 default:
                     return nil
                 }
@@ -51,7 +51,7 @@ class UnstakingSendAmountValidator {
 extension UnstakingSendAmountValidator: SendAmountValidator {
     func validate(amount: Decimal) throws {
         if let minAmount = minimumAmount, amount < minAmount {
-            throw StakingValidationError.amountRequirementError(minAmount: minAmount)
+            throw UnstakingValidationError.amountRequirementError(minAmount: minAmount)
         }
 
         guard amount >= 0 else {
@@ -66,11 +66,14 @@ extension UnstakingSendAmountValidator: SendAmountValidator {
 
 enum UnstakingValidationError: LocalizedError {
     case amountExceedsStakingBalance
+    case amountRequirementError(minAmount: Decimal)
 
     var errorDescription: String? {
         switch self {
         case .amountExceedsStakingBalance:
             Localization.stakingUnstakeAmountValidationError
+        case .amountRequirementError(let minAmount):
+            Localization.stakingUnstakeAmountRequirementError(minAmount)
         }
     }
 }

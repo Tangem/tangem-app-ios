@@ -171,10 +171,14 @@ extension SendCoordinator: OnrampRoutable {
         )
     }
 
-    func openOnrampProviders() {
-        let coordinator = OnrampProvidersCoordinator { [weak self] in
-            self?.onrampProvidersCoordinator = nil
-        }
+    func openOnrampProviders(providersBuilder: OnrampProvidersBuilder, paymentMethodsBuilder: OnrampPaymentMethodsBuilder) {
+        let coordinator = OnrampProvidersCoordinator(
+            onrampProvidersBuilder: providersBuilder,
+            onrampPaymentMethodsBuilder: paymentMethodsBuilder,
+            dismissAction: { [weak self] in
+                self?.onrampProvidersCoordinator = nil
+            }, popToRootAction: popToRootAction
+        )
 
         coordinator.start(with: .default)
         onrampProvidersCoordinator = coordinator

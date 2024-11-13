@@ -437,7 +437,7 @@
 "markets_token_details_price_performance" = "Price performance";
 "markets_token_details_repository" = "Repository";
 "markets_token_details_security_score" = "Security score";
-"markets_token_details_security_score_description" = "";
+"markets_token_details_security_score_description" = "Security score of a token is a metric that assesses the security level of a blockchain or token based on various factors and is compiled from the sources listed below.";
 "markets_token_details_social" = "Social";
 "markets_token_details_total_supply" = "Total supply";
 "markets_token_details_total_supply_description" = "The maximum number of coins or tokens that can ever exist for a particular cryptocurrency";

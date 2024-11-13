@@ -42,9 +42,12 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
         return pairs
     }
 
-    func providers() async throws -> [ExpressProvider] {
+    func providers(branch: ExpressBranch) async throws -> [ExpressProvider] {
         let response = try await expressAPIService.providers()
-        let providers = response.map(expressAPIMapper.mapToExpressProvider(provider:))
+        let providers = response
+            .map(expressAPIMapper.mapToExpressProvider(provider:))
+            .filter { branch.supportedProviderTypes.contains($0.type) }
+
         return providers
     }
 
@@ -154,7 +157,7 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
             fromCurrencyCode: item.pairItem.fiatCurrency.identity.code,
             toContractAddress: item.pairItem.destination.expressCurrency.contractAddress,
             toNetwork: item.pairItem.destination.expressCurrency.network,
-            paymentMethod: item.paymentMethod.identity.code,
+            paymentMethod: item.paymentMethod.id,
             countryCode: item.pairItem.country.identity.code,
             fromAmount: item.destinationAmountWEI(),
             toDecimals: item.pairItem.destination.decimalCount,
@@ -172,7 +175,7 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
             fromCurrencyCode: item.quotesItem.pairItem.fiatCurrency.identity.code,
             toContractAddress: item.quotesItem.pairItem.destination.expressCurrency.contractAddress,
             toNetwork: item.quotesItem.pairItem.destination.expressCurrency.network,
-            paymentMethod: item.quotesItem.paymentMethod.identity.code,
+            paymentMethod: item.quotesItem.paymentMethod.id,
             countryCode: item.quotesItem.pairItem.country.identity.code,
             fromAmount: item.quotesItem.sourceAmountWEI(),
             toDecimals: item.quotesItem.pairItem.destination.decimalCount,

@@ -21,7 +21,7 @@ final class ActionButtonsSellCoordinator: CoordinatorObject {
     required init(
         sellCryptoCoordinator: some ActionButtonsSellCryptoRoutable,
         expressTokensListAdapter: some ExpressTokensListAdapter,
-        tokenSorter: some TokenAvailabilitySorter = CommonBuyTokenAvailabilitySorter(),
+        tokenSorter: some TokenAvailabilitySorter = CommonSellTokenAvailabilitySorter(),
         dismissAction: @escaping Action<Void>,
         popToRootAction: @escaping Action<PopToRootOptions> = { _ in }
     ) {

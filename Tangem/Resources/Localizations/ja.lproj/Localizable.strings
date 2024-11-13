@@ -437,7 +437,7 @@
 "markets_token_details_price_performance" = "値動き";
 "markets_token_details_repository" = "リポジトリ";
 "markets_token_details_security_score" = "セキュリティ・スコア";
-"markets_token_details_security_score_description" = "";
+"markets_token_details_security_score_description" = "Security score of a token is a metric that assesses the security level of a blockchain or token based on various factors and is compiled from the sources listed below.";
 "markets_token_details_social" = "ソーシャル";
 "markets_token_details_total_supply" = "総供給量";
 "markets_token_details_total_supply_description" = "特定の暗号資産に存在しうるコインまたはトークンの最大数";
