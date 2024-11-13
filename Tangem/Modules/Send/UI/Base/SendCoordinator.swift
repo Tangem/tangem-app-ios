@@ -188,6 +188,7 @@ extension SendCoordinator: OnrampRoutable {
     }
 
     func openOnrampRedirecting(onrampRedirectingBuilder: OnrampRedirectingBuilder) {
+        UIApplication.shared.endEditing()
         onrampRedirectingViewModel = onrampRedirectingBuilder.makeOnrampRedirectingViewModel(coordinator: self)
     }
 

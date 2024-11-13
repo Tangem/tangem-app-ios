@@ -28,5 +28,5 @@ public protocol OnrampManager: Actor {
 }
 
 public enum OnrampManagerError: LocalizedError {
-    case notImplement
+    case providersIsEmpty
 }
