@@ -20,7 +20,7 @@ on:
 
 jobs:
   update-localizations:
-    runs-on: macos-14
+    runs-on: macos-15
     env:
       APP_LOCALIZATIONS_DESTINATION: "Tangem/Resources/Localizations"
       BSDK_LOCALIZATIONS_DESTINATION: "BlockchainSdk/Resources/Localizations"
@@ -59,7 +59,7 @@ jobs:
       - name: Push changes and open a pull-request
         env:
           GH_TOKEN: ${{ github.token }}
-          SOURCE_BRANCH: lokalise-translations-sync
+          SOURCE_BRANCH: 'lokalise/${{ github.ref_name }}'
           TARGET_BRANCH: ${{ github.ref_name }}
           LANGUAGES: ${{ github.event.inputs.langs }}
           GH_RUN_ID: ${{ github.run_id }}
