@@ -68,6 +68,7 @@ class OnrampModel {
 private extension OnrampModel {
     func bind() {
         _amount
+            .dropFirst()
             .withWeakCaptureOf(self)
             .sink { model, amount in
                 model.updateQuotes(amount: amount?.fiat)
@@ -265,9 +266,7 @@ extension OnrampModel: OnrampRedirectingInput {}
 
 extension OnrampModel: OnrampRedirectingOutput {
     func redirectDataDidLoad(data: OnrampRedirectData) {
-        // Check full logic
-        // TODO: https://tangem.atlassian.net/browse/IOS-8309
-        router?.openWebView(url: URL(string: data.widgetUrl)!) { [weak self] in
+        router?.openWebView(url: data.widgetUrl) { [weak self] in
             self?._transactionTime.send(Date())
             self?.router?.openFinishStep()
         }

@@ -132,8 +132,6 @@ final class SendViewModel: ObservableObject {
         //    isKeyboardActive = true
         case (_, .amount):
             isKeyboardActive = true
-        case (_, .onramp):
-            isKeyboardActive = true
         default:
             break
         }
@@ -187,6 +185,7 @@ final class SendViewModel: ObservableObject {
 private extension SendViewModel {
     func performOnramp() {
         do {
+            isKeyboardActive = false
             let onrampRedirectingBuilder = try dataBuilder.onrampBuilder().makeDataForOnrampRedirecting()
             coordinator?.openOnrampRedirecting(onrampRedirectingBuilder: onrampRedirectingBuilder)
         } catch {
