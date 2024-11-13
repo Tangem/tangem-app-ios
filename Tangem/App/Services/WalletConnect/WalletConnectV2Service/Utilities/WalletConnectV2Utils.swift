@@ -105,8 +105,10 @@ struct WalletConnectV2Utils {
             }
 
             supportedChains.insert(wcBlockchain)
+
             let filteredWallets = walletModelProvider.getModels(with: blockchain.id)
-            if filteredWallets.isEmpty {
+
+            if filteredWallets.isEmpty, proposal.namespaceRequiredChains.contains(wcBlockchain) {
                 missingBlockchains.append(blockchain.displayName)
                 return nil
             }

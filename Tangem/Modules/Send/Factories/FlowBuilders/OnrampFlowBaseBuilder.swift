@@ -27,6 +27,7 @@ struct OnrampFlowBaseBuilder {
 
         let providersBuilder = OnrampProvidersBuilder(
             io: (input: onrampModel, output: onrampModel),
+            tokenItem: walletModel.tokenItem,
             paymentMethodsInput: onrampModel
         )
 

@@ -48,6 +48,10 @@ public extension Decimal {
         rounded(roundingMode: .up) as NSDecimalNumber
     }
 
+    var roundedDownDecimalNumber: NSDecimalNumber {
+        rounded(roundingMode: .down) as NSDecimalNumber
+    }
+
     var doubleValue: Double {
         decimalNumber.doubleValue
     }

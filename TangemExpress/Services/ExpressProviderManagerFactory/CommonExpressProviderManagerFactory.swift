@@ -29,7 +29,7 @@ struct CommonExpressProviderManagerFactory: ExpressProviderManagerFactory {
         self.mapper = mapper
     }
 
-    func makeExpressProviderManager(provider: ExpressProvider) -> ExpressProviderManager {
+    func makeExpressProviderManager(provider: ExpressProvider) -> ExpressProviderManager? {
         switch provider.type {
         case .dex, .dexBridge:
             return DEXExpressProviderManager(
@@ -48,6 +48,8 @@ struct CommonExpressProviderManagerFactory: ExpressProviderManagerFactory {
                 logger: logger,
                 mapper: mapper
             )
+        case .onramp, .unknown:
+            return nil
         }
     }
 }

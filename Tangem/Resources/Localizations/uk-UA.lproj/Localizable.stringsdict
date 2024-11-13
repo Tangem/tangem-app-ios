@@ -133,7 +133,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>слово</string>
+        <string></string>
         <key>few</key>
         <string>%li слова</string>
         <key>many</key>

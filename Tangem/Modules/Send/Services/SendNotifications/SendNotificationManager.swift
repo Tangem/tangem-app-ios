@@ -244,7 +244,8 @@ private extension CommonSendNotificationManager {
                  .notEnoughMana,
                  .manaLimit,
                  .koinosInsufficientBalanceToSendKoin,
-                 .insufficientAmountToReserveAtDestination:
+                 .insufficientAmountToReserveAtDestination,
+                 .minimumRestrictAmount:
                 show(notification: .validationErrorEvent(validationErrorEvent))
             case .invalidNumber:
                 hideAllValidationErrorEvent()

@@ -178,15 +178,18 @@ private extension CommonExpressManager {
         // Setup providers manager only once
         if availableProviders.isEmpty {
             let providers = try await expressRepository.providers()
-            allProviders = providers
-                .map { provider in
-                    ExpressAvailableProvider(
-                        provider: provider,
-                        isBest: false,
-                        isAvailable: availableProviderIds.contains(provider.id),
-                        manager: expressProviderManagerFactory.makeExpressProviderManager(provider: provider)
-                    )
+            allProviders = providers.compactMap { provider in
+                guard let manager = expressProviderManagerFactory.makeExpressProviderManager(provider: provider) else {
+                    return nil
                 }
+
+                return ExpressAvailableProvider(
+                    provider: provider,
+                    isBest: false,
+                    isAvailable: availableProviderIds.contains(provider.id),
+                    manager: manager
+                )
+            }
         }
 
         allProviders.forEach { provider in

@@ -35,29 +35,27 @@ extension CommonOnrampManager: OnrampManager {
         return country
     }
 
-    public func setupProviders(request: OnrampPairRequestItem) async throws -> [OnrampProvider] {
+    public func setupProviders(request item: OnrampPairRequestItem) async throws -> [OnrampProvider] {
         let pairs = try await apiProvider.onrampPairs(
-            from: request.fiatCurrency,
-            to: [request.destination.expressCurrency],
-            country: request.country
+            from: item.fiatCurrency,
+            to: [item.destination.expressCurrency],
+            country: item.country
         )
 
-        // TODO: https://tangem.atlassian.net/browse/IOS-8310
+        let supportedProviders = pairs.flatMap { $0.providers }
+        guard !supportedProviders.isEmpty else {
+            // Exclude unnecessary requests
+            return []
+        }
+
+        // Fill the `_providers` with all possible options
+        _providers = try await prepareProviders(item: item, supportedProviders: supportedProviders)
 
         return _providers
     }
 
     public func setupQuotes(amount: Decimal) async throws -> [OnrampProvider] {
-        /*
-         TODO: https://tangem.atlassian.net/browse/IOS-8310
-         await withTaskGroup(of: Void.self) { [weak self] group in
-             await self?._providers.forEach { provider in
-                 _ = group.addTaskUnlessCancelled {
-                     await provider.manager.update(amount: amount)
-                 }
-             }
-         }
-         */
+        try await updateQuotesInEachManager(amount: amount)
 
         return _providers
     }
@@ -71,9 +69,52 @@ extension CommonOnrampManager: OnrampManager {
 // MARK: - Private
 
 private extension CommonOnrampManager {
-    func makeProvider(item: OnrampPairRequestItem, provider: OnrampPair.Provider) -> OnrampProvider {
-        // Construct a OnrampProvider wrapper with autoupdating itself
-        // TODO: https://tangem.atlassian.net/browse/IOS-8310
-        OnrampProvider(provider: provider)
+    func updateQuotesInEachManager(amount: Decimal) async throws {
+        await withTaskGroup(of: Void.self) { [weak self] group in
+            await self?._providers.forEach { provider in
+                _ = group.addTaskUnlessCancelled {
+                    await provider.manager.update(amount: amount)
+                }
+            }
+        }
+    }
+
+    func prepareProviders(
+        item: OnrampPairRequestItem,
+        supportedProviders: [OnrampPair.Provider]
+    ) async throws -> [OnrampProvider] {
+        let providers = try await dataRepository.providers()
+        let paymentMethods = try await dataRepository.paymentMethods()
+
+        var availableProviders: [OnrampProvider] = []
+
+        for provider in providers {
+            for paymentMethod in paymentMethods {
+                let manager = CommonOnrampProviderManager(
+                    pairItem: item,
+                    expressProviderId: provider.id,
+                    paymentMethodId: paymentMethod.identity.code,
+                    apiProvider: apiProvider,
+                    state: state(provider: provider, paymentMethod: paymentMethod)
+                )
+
+                availableProviders.append(OnrampProvider(provider: provider, paymentMethod: paymentMethod, manager: manager))
+            }
+        }
+
+        func state(provider: ExpressProvider, paymentMethod: OnrampPaymentMethod) -> OnrampProviderManagerState {
+            guard let supportedProvider = supportedProviders.first(where: { $0.id == provider.id }) else {
+                return .notSupported(.currentPair)
+            }
+
+            let isSupportedForPaymentMethods = supportedProvider.paymentMethods.contains { $0 == paymentMethod.identity.code }
+            guard isSupportedForPaymentMethods else {
+                return .notSupported(.paymentMethod)
+            }
+
+            return .created
+        }
+
+        return availableProviders
     }
 }

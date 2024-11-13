@@ -57,13 +57,13 @@ private extension CommonOnrampAmountInteractor {
 
     private func validateAndUpdate(amount: SendAmount?) {
         do {
-            guard let crypto = amount?.crypto, crypto > 0 else {
+            guard let fiat = amount?.fiat, fiat > 0 else {
                 // Field is empty or zero
                 update(amount: .none, isValid: false, error: .none)
                 return
             }
 
-            try validator.validate(amount: crypto)
+            try validator.validate(amount: fiat)
             update(amount: amount, isValid: true, error: .none)
         } catch {
             update(amount: .none, isValid: false, error: error)
@@ -100,6 +100,7 @@ extension CommonOnrampAmountInteractor: OnrampAmountInteractor {
         }
 
         let sendAmount = await makeSendAmount(fiat: amount)
+        validateAndUpdate(amount: sendAmount)
         return sendAmount
     }
 }
