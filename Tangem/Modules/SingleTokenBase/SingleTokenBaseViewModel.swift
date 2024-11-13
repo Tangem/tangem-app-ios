@@ -446,11 +446,11 @@ extension SingleTokenBaseViewModel {
     }
 
     private func isBuyDisabled() -> Bool {
-        if walletModel.isCustom {
-            return true
-        }
-
         if FeatureProvider.isAvailable(.onramp) {
+            if walletModel.isCustom {
+                return true
+            }
+            
             return expressAvailabilityProvider.canOnramp(tokenItem: walletModel.tokenItem)
         } else {
             return !exchangeUtility.buyAvailable
