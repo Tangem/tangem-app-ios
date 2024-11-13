@@ -717,7 +717,7 @@
 "staking_details_warmup_period_info" = "Le temps imparti pour activer la participation au staking.";
 "staking_dismiss_message" = "Êtes-vous sûr(e) de vouloir fermer l'écran de staking ?";
 "staking_give_permission_fee_footer" = "Le réseau facturera des frais d’approbation de jeton pour vérifier que vous autorisez l’utilisation de votre jeton pour le jalonnement.";
-"staking_legal" = "En utilisant la fonctionnalité de staking, vous acceptez les  %1$@ et %2$@ du fournisseur";
+"staking_legal" = "En utilisant la fonctionnalité de staking, vous acceptez les %1$@ et %2$@ du fournisseur";
 "staking_locked" = "Bloqué";
 "staking_migrate" = "Migrer";
 "staking_native" = "Native staking";
@@ -781,7 +781,7 @@
 "staking_unbonding_in" = "Dissociation en";
 "staking_unlocked_locked" = "Débloquer";
 "staking_unlocking" = "Déverrouillage";
-"staking_unstake_amount_requirement_error" = "Le montant à staker doit être au moins %@";
+"staking_unstake_amount_requirement_error" = "Le montant à destaker doit être au moins %@";
 "staking_unstake_amount_validation_error" = "Le montant dépasse le solde misé";
 "staking_unstaked" = "Non-staké";
 "staking_unstaked_footer" = "Vérifiez non-stakés pour réclamer vos actifs";
