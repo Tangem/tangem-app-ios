@@ -15,6 +15,7 @@ class StoriesViewModel: ObservableObject {
     @Published var currentPage: WelcomeStoryPage = .meetTangem
     @Published var currentProgress = 0.0
     @Published var checkingPromotionAvailability = true
+    @Published var isScanning = false
 
     var currentPageIndex: Int {
         pages.firstIndex(of: currentPage) ?? 0
@@ -33,6 +34,35 @@ class StoriesViewModel: ObservableObject {
     private let minimumSwipeDistance = 100.0
     private let promotionCheckTimeout: TimeInterval = 5
     private var shouldStartTimer: Bool = true
+
+    weak var delegate: StoriesDelegate?
+
+    deinit {
+        AppLog.shared.debug("StoriesViewModel deinit")
+    }
+
+    func setDelegate(delegate: StoriesDelegate) {
+        self.delegate = delegate
+
+        self.delegate?.isScanning
+            .assign(to: \.isScanning, on: self, ownership: .weak)
+            .store(in: &bag)
+    }
+
+    func setLifecyclePublisher(publisher: AnyPublisher<Bool, Never>) {
+        publisher
+            .delay(for: 0.5, scheduler: DispatchQueue.main) // to fix issue with no-opening of tokens search
+            .sink { [weak self] viewDismissed in
+                guard let self else { return }
+
+                if viewDismissed {
+                    becomeActive()
+                } else {
+                    resignActive()
+                }
+            }
+            .store(in: &bag)
+    }
 
     func checkPromotion() async {
         let isNewCard = true
@@ -66,39 +96,6 @@ class StoriesViewModel: ObservableObject {
 
     func onDisappear() {
         pauseTimer()
-        bag = []
-    }
-
-    @ViewBuilder
-    func currentStoryPage(
-        isScanning: Binding<Bool>,
-        scanCard: @escaping () -> Void,
-        orderCard: @escaping () -> Void,
-        openPromotion: @escaping () -> Void,
-        searchTokens: @escaping () -> Void
-    ) -> some View {
-        let progressBinding = Binding<Double> { [weak self] in
-            self?.currentProgress ?? 0
-        } set: { [weak self] in
-            self?.currentProgress = $0
-        }
-
-        switch currentPage {
-        case WelcomeStoryPage.learn:
-            LearnAndEarnStoryPage(learn: openPromotion)
-        case WelcomeStoryPage.meetTangem:
-            MeetTangemStoryPage(progress: progressBinding, isScanning: isScanning, scanCard: scanCard, orderCard: orderCard)
-        case WelcomeStoryPage.awe:
-            AweStoryPage(progress: progressBinding, isScanning: isScanning, scanCard: scanCard, orderCard: orderCard)
-        case WelcomeStoryPage.backup:
-            BackupStoryPage(progress: progressBinding, isScanning: isScanning, scanCard: scanCard, orderCard: orderCard)
-        case WelcomeStoryPage.currencies:
-            CurrenciesStoryPage(progress: progressBinding, isScanning: isScanning, scanCard: scanCard, orderCard: orderCard, searchTokens: searchTokens)
-//        case WelcomeStoryPage.web3:
-//            Web3StoryPage(progress: progressBinding, isScanning: isScanning, scanCard: scanCard, orderCard: orderCard)
-        case WelcomeStoryPage.finish:
-            FinishStoryPage(progress: progressBinding, isScanning: isScanning, scanCard: scanCard, orderCard: orderCard)
-        }
     }
 
     func didDrag(_ current: CGPoint) {

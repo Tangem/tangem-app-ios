@@ -19,18 +19,15 @@ struct MultiWalletMainContentView: View {
 
             ForEach(viewModel.bannerNotificationInputs) { input in
                 NotificationView(input: input)
-                    .transition(.notificationTransition)
             }
 
             ForEach(viewModel.notificationInputs) { input in
                 NotificationView(input: input)
                     .setButtonsLoadingState(to: viewModel.isScannerBusy)
-                    .transition(.notificationTransition)
             }
 
             ForEach(viewModel.tokensNotificationInputs) { input in
                 NotificationView(input: input)
-                    .transition(.notificationTransition)
             }
 
             tokensContent
@@ -45,9 +42,6 @@ struct MultiWalletMainContentView: View {
                 .infinityFrame(axis: .horizontal)
             }
         }
-        .animation(.default, value: viewModel.bannerNotificationInputs)
-        .animation(.default, value: viewModel.notificationInputs)
-        .animation(.default, value: viewModel.tokensNotificationInputs)
         .padding(.horizontal, 16)
         .bindAlert($viewModel.error)
     }

@@ -19,9 +19,6 @@ struct OnboardingCoordinatorView: CoordinatorView {
             content
             sheets
         }
-        .navigationBarHidden(coordinator.isNavigationBarHidden)
-        .animation(.default, value: coordinator.transitionAnimationValue)
-        .transition(.opacity)
     }
 
     @ViewBuilder
@@ -35,8 +32,6 @@ struct OnboardingCoordinatorView: CoordinatorView {
             WalletOnboardingView(viewModel: walletOnboardingViewModel)
         case .visa(let visaViewModel):
             VisaOnboardingView(viewModel: visaViewModel)
-        case .main(let mainCoordinator):
-            MainCoordinatorView(coordinator: mainCoordinator)
         case .none:
             EmptyView()
         }
