@@ -459,8 +459,8 @@ extension SendModel {
 
             var analyticsValue: Analytics.ParameterValue {
                 switch self {
-                case .send: .transactionSourceSend
-                case .sell: .transactionSourceSell
+                case .send: .send
+                case .sell: .sell
                 case .staking: .transactionSourceStaking
                 }
             }

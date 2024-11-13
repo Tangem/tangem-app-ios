@@ -45,12 +45,13 @@ extension Analytics {
         case signIn = "Sign In"
         case receive = "Receive"
         case stories = "Stories"
+        case buy = "Buy"
+        case sell = "Sell"
+        case swap = "Swap"
+        case send = "Send"
 
-        case transactionSourceSend = "Send"
-        case transactionSourceSwap = "Swap"
         case transactionSourceApprove = "Approve"
         case transactionSourceWalletConnect = "WalletConnect"
-        case transactionSourceSell = "Sell"
         case transactionSourceStaking = "Staking"
 
         case transactionFeeFixed = "Fixed"
