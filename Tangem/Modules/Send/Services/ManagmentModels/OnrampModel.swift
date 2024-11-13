@@ -262,6 +262,7 @@ extension OnrampModel: OnrampRedirectingOutput {
         // Check full logic
         // TODO: https://tangem.atlassian.net/browse/IOS-8309
         router?.openWebView(url: URL(string: data.widgetUrl)!) { [weak self] in
+            self?._transactionTime.send(Date())
             self?.router?.openFinishStep()
         }
     }
