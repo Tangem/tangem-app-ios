@@ -1941,21 +1941,6 @@
 		DA406C1C2BD0D84200D1FC5E /* AddressTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA406C1B2BD0D84200D1FC5E /* AddressTextView.swift */; };
 		DA4333322B5A5B880058D467 /* QRScanViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4333312B5A5B880058D467 /* QRScanViewModel.swift */; };
 		DA4371A02A7D1937006215CA /* ListDataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4371912A7D1937006215CA /* ListDataLoader.swift */; };
-		DA47C9C12CE2508E00F15D5E /* OnrampProvidersCompactViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA47C9B52CE2508E00F15D5E /* OnrampProvidersCompactViewModel.swift */; };
-		DA47C9C22CE2508E00F15D5E /* OnrampProvidersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA47C9BB2CE2508E00F15D5E /* OnrampProvidersView.swift */; };
-		DA47C9C32CE2508E00F15D5E /* OnrampProvidersInputOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA47C9AB2CE2508E00F15D5E /* OnrampProvidersInputOutput.swift */; };
-		DA47C9C42CE2508E00F15D5E /* OnrampProvidersCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA47C9BF2CE2508E00F15D5E /* OnrampProvidersCoordinatorView.swift */; };
-		DA47C9C52CE2508E00F15D5E /* OnrampProvidersRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA47C9BA2CE2508E00F15D5E /* OnrampProvidersRoutable.swift */; };
-		DA47C9C62CE2508E00F15D5E /* OnrampProvidersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA47C9BC2CE2508E00F15D5E /* OnrampProvidersViewModel.swift */; };
-		DA47C9C72CE2508E00F15D5E /* OnrampProvidersCompactProviderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA47C9B12CE2508E00F15D5E /* OnrampProvidersCompactProviderView.swift */; };
-		DA47C9C82CE2508E00F15D5E /* OnrampProviderRowViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA47C9AF2CE2508E00F15D5E /* OnrampProviderRowViewData.swift */; };
-		DA47C9C92CE2508E00F15D5E /* OnrampProvidersCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA47C9BE2CE2508E00F15D5E /* OnrampProvidersCoordinator.swift */; };
-		DA47C9CA2CE2508E00F15D5E /* OnrampProvidersPaymentViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA47C9B82CE2508E00F15D5E /* OnrampProvidersPaymentViewData.swift */; };
-		DA47C9CB2CE2508E00F15D5E /* OnrampProvidersPaymentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA47C9B72CE2508E00F15D5E /* OnrampProvidersPaymentView.swift */; };
-		DA47C9CC2CE2508E00F15D5E /* OnrampProvidersCompactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA47C9B42CE2508E00F15D5E /* OnrampProvidersCompactView.swift */; };
-		DA47C9CD2CE2508E00F15D5E /* OnrampProvidersInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA47C9AC2CE2508E00F15D5E /* OnrampProvidersInteractor.swift */; };
-		DA47C9CE2CE2508E00F15D5E /* OnrampProvidersCompactProviderViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA47C9B22CE2508E00F15D5E /* OnrampProvidersCompactProviderViewData.swift */; };
-		DA47C9CF2CE2508E00F15D5E /* OnrampProviderRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA47C9AE2CE2508E00F15D5E /* OnrampProviderRowView.swift */; };
 		DA4C84CD27DA2D6D00B76F91 /* AnimatableModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4C84CB27DA2D6D00B76F91 /* AnimatableModifiers.swift */; };
 		DA4C84CE27DA2D6D00B76F91 /* StoriesConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4C84CC27DA2D6D00B76F91 /* StoriesConstants.swift */; };
 		DA5044E32ABACA6600D1E5CF /* MarketPriceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5044E22ABACA6600D1E5CF /* MarketPriceView.swift */; };
@@ -2393,6 +2378,21 @@
 		EF0DD7982B026B690099527D /* CommonAllowanceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0DD7972B026B690099527D /* CommonAllowanceProvider.swift */; };
 		EF0DD7A12B02B3230099527D /* ExpressFeeRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0DD7A02B02B3230099527D /* ExpressFeeRow.swift */; };
 		EF0DD7A32B02B5C00099527D /* ExpressFeeRowData.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0DD7A22B02B5C00099527D /* ExpressFeeRowData.swift */; };
+		EF0E1D932CE37DA4003D47AA /* OnrampProvidersRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0E1D8C2CE37DA4003D47AA /* OnrampProvidersRoutable.swift */; };
+		EF0E1D942CE37DA4003D47AA /* OnrampProvidersCompactProviderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0E1D832CE37DA4003D47AA /* OnrampProvidersCompactProviderView.swift */; };
+		EF0E1D952CE37DA4003D47AA /* OnrampProvidersCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0E1D912CE37DA4003D47AA /* OnrampProvidersCoordinatorView.swift */; };
+		EF0E1D962CE37DA4003D47AA /* OnrampProvidersPaymentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0E1D892CE37DA4003D47AA /* OnrampProvidersPaymentView.swift */; };
+		EF0E1D972CE37DA4003D47AA /* OnrampProviderRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0E1D802CE37DA4003D47AA /* OnrampProviderRowView.swift */; };
+		EF0E1D982CE37DA4003D47AA /* OnrampProvidersCompactViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0E1D872CE37DA4003D47AA /* OnrampProvidersCompactViewModel.swift */; };
+		EF0E1D992CE37DA4003D47AA /* OnrampProvidersCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0E1D902CE37DA4003D47AA /* OnrampProvidersCoordinator.swift */; };
+		EF0E1D9A2CE37DA4003D47AA /* OnrampProviderRowViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0E1D812CE37DA4003D47AA /* OnrampProviderRowViewData.swift */; };
+		EF0E1D9B2CE37DA4003D47AA /* OnrampProvidersInputOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0E1D7D2CE37DA4003D47AA /* OnrampProvidersInputOutput.swift */; };
+		EF0E1D9C2CE37DA4003D47AA /* OnrampProvidersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0E1D8E2CE37DA4003D47AA /* OnrampProvidersViewModel.swift */; };
+		EF0E1D9D2CE37DA4003D47AA /* OnrampProvidersCompactProviderViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0E1D842CE37DA4003D47AA /* OnrampProvidersCompactProviderViewData.swift */; };
+		EF0E1D9E2CE37DA4003D47AA /* OnrampProvidersInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0E1D7E2CE37DA4003D47AA /* OnrampProvidersInteractor.swift */; };
+		EF0E1D9F2CE37DA4003D47AA /* OnrampProvidersPaymentViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0E1D8A2CE37DA4003D47AA /* OnrampProvidersPaymentViewData.swift */; };
+		EF0E1DA02CE37DA4003D47AA /* OnrampProvidersCompactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0E1D862CE37DA4003D47AA /* OnrampProvidersCompactView.swift */; };
+		EF0E1DA12CE37DA4003D47AA /* OnrampProvidersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0E1D8D2CE37DA4003D47AA /* OnrampProvidersView.swift */; };
 		EF0F99AA289028F8008B01DF /* AppSettingsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0F99A5289028F8008B01DF /* AppSettingsCoordinator.swift */; };
 		EF0F99AB289028F8008B01DF /* AppSettingsCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0F99A6289028F8008B01DF /* AppSettingsCoordinatorView.swift */; };
 		EF0F99AC289028F8008B01DF /* AppSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0F99A7289028F8008B01DF /* AppSettingsViewModel.swift */; };
@@ -2546,6 +2546,7 @@
 		EF6A8AFE2B2786E400CA3535 /* ExpressFeeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6A8AFD2B2786E400CA3535 /* ExpressFeeProvider.swift */; };
 		EF6A8B002B2786F900CA3535 /* CommonExpressFeeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6A8AFF2B2786F900CA3535 /* CommonExpressFeeProvider.swift */; };
 		EF6A8B032B278A6200CA3535 /* CommonExpressRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6A8B022B278A6200CA3535 /* CommonExpressRepository.swift */; };
+		EF6C1B762CD642A200B75743 /* PaymentMethodDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6C1B752CD642A200B75743 /* PaymentMethodDeterminer.swift */; };
 		EF6CB17E292E1190001335EA /* EnvironmentSetupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6CB17D292E1190001335EA /* EnvironmentSetupViewModel.swift */; };
 		EF6CCBEB2C91D7C70002D2B4 /* CommonSendAlertBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6CCBEA2C91D7C50002D2B4 /* CommonSendAlertBuilder.swift */; };
 		EF6CCBED2C91D7DF0002D2B4 /* StakingSendAlertBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6CCBEC2C91D7DE0002D2B4 /* StakingSendAlertBuilder.swift */; };
@@ -2800,9 +2801,6 @@
 		EFC990032CD3A6890098B7C8 /* OnrampPaymentMethodsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC990022CD3A6890098B7C8 /* OnrampPaymentMethodsBuilder.swift */; };
 		EFC990082CD3A6D90098B7C8 /* OnrampPaymentMethodsInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC990072CD3A6D90098B7C8 /* OnrampPaymentMethodsInteractor.swift */; };
 		EFC9900C2CD3A70C0098B7C8 /* OnrampPaymentMethodsInputOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC9900B2CD3A70C0098B7C8 /* OnrampPaymentMethodsInputOutput.swift */; };
-		EFC990102CD3A74A0098B7C8 /* OnrampProvidersInputOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC9900F2CD3A74A0098B7C8 /* OnrampProvidersInputOutput.swift */; };
-		EFC990132CD3BAFF0098B7C8 /* OnrampProvidersCompactProviderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC990122CD3BAFF0098B7C8 /* OnrampProvidersCompactProviderView.swift */; };
-		EFC990152CD3BB130098B7C8 /* OnrampProvidersCompactProviderViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC990142CD3BB130098B7C8 /* OnrampProvidersCompactProviderViewData.swift */; };
 		EFC990172CD3CC9C0098B7C8 /* ExpressBranch.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC990162CD3CC9C0098B7C8 /* ExpressBranch.swift */; };
 		EFC9901A2CD4F0A90098B7C8 /* CommonOnrampProviderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC990192CD4F0A90098B7C8 /* CommonOnrampProviderManager.swift */; };
 		EFD0A14B2C9985CF0010E642 /* SendAmountModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD0A14A2C9985CD0010E642 /* SendAmountModifier.swift */; };
@@ -2827,7 +2825,6 @@
 		EFD68F262CC2990900693C97 /* OnrampStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F252CC2990800693C97 /* OnrampStep.swift */; };
 		EFD68F282CC2993000693C97 /* OnrampInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F272CC2992F00693C97 /* OnrampInteractor.swift */; };
 		EFD68F2A2CC2B06B00693C97 /* CommonOnrampStepsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F292CC2B06B00693C97 /* CommonOnrampStepsManager.swift */; };
-		EFD68F2C2CC2C63500693C97 /* OnrampAmountValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F2B2CC2C63500693C97 /* OnrampAmountValidator.swift */; };
 		EFD68F302CC2D02500693C97 /* OnrampCountryDetectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F2F2CC2D02300693C97 /* OnrampCountryDetectionView.swift */; };
 		EFD68F322CC2D04500693C97 /* OnrampCountryDetectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F312CC2D04400693C97 /* OnrampCountryDetectionViewModel.swift */; };
 		EFD68F342CC2D29C00693C97 /* OnrampCountryDetectionRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD68F332CC2D29700693C97 /* OnrampCountryDetectionRoutable.swift */; };
@@ -5017,21 +5014,6 @@
 		DA406C1B2BD0D84200D1FC5E /* AddressTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressTextView.swift; sourceTree = "<group>"; };
 		DA4333312B5A5B880058D467 /* QRScanViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScanViewModel.swift; sourceTree = "<group>"; };
 		DA4371912A7D1937006215CA /* ListDataLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListDataLoader.swift; sourceTree = "<group>"; };
-		DA47C9AB2CE2508E00F15D5E /* OnrampProvidersInputOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersInputOutput.swift; sourceTree = "<group>"; };
-		DA47C9AC2CE2508E00F15D5E /* OnrampProvidersInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersInteractor.swift; sourceTree = "<group>"; };
-		DA47C9AE2CE2508E00F15D5E /* OnrampProviderRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProviderRowView.swift; sourceTree = "<group>"; };
-		DA47C9AF2CE2508E00F15D5E /* OnrampProviderRowViewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProviderRowViewData.swift; sourceTree = "<group>"; };
-		DA47C9B12CE2508E00F15D5E /* OnrampProvidersCompactProviderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersCompactProviderView.swift; sourceTree = "<group>"; };
-		DA47C9B22CE2508E00F15D5E /* OnrampProvidersCompactProviderViewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersCompactProviderViewData.swift; sourceTree = "<group>"; };
-		DA47C9B42CE2508E00F15D5E /* OnrampProvidersCompactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersCompactView.swift; sourceTree = "<group>"; };
-		DA47C9B52CE2508E00F15D5E /* OnrampProvidersCompactViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersCompactViewModel.swift; sourceTree = "<group>"; };
-		DA47C9B72CE2508E00F15D5E /* OnrampProvidersPaymentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersPaymentView.swift; sourceTree = "<group>"; };
-		DA47C9B82CE2508E00F15D5E /* OnrampProvidersPaymentViewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersPaymentViewData.swift; sourceTree = "<group>"; };
-		DA47C9BA2CE2508E00F15D5E /* OnrampProvidersRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersRoutable.swift; sourceTree = "<group>"; };
-		DA47C9BB2CE2508E00F15D5E /* OnrampProvidersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersView.swift; sourceTree = "<group>"; };
-		DA47C9BC2CE2508E00F15D5E /* OnrampProvidersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersViewModel.swift; sourceTree = "<group>"; };
-		DA47C9BE2CE2508E00F15D5E /* OnrampProvidersCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersCoordinator.swift; sourceTree = "<group>"; };
-		DA47C9BF2CE2508E00F15D5E /* OnrampProvidersCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersCoordinatorView.swift; sourceTree = "<group>"; };
 		DA4C84CB27DA2D6D00B76F91 /* AnimatableModifiers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimatableModifiers.swift; sourceTree = "<group>"; };
 		DA4C84CC27DA2D6D00B76F91 /* StoriesConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoriesConstants.swift; sourceTree = "<group>"; };
 		DA5044E22ABACA6600D1E5CF /* MarketPriceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketPriceView.swift; sourceTree = "<group>"; };
@@ -5483,6 +5465,21 @@
 		EF0DD7972B026B690099527D /* CommonAllowanceProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonAllowanceProvider.swift; sourceTree = "<group>"; };
 		EF0DD7A02B02B3230099527D /* ExpressFeeRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressFeeRow.swift; sourceTree = "<group>"; };
 		EF0DD7A22B02B5C00099527D /* ExpressFeeRowData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressFeeRowData.swift; sourceTree = "<group>"; };
+		EF0E1D7D2CE37DA4003D47AA /* OnrampProvidersInputOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersInputOutput.swift; sourceTree = "<group>"; };
+		EF0E1D7E2CE37DA4003D47AA /* OnrampProvidersInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersInteractor.swift; sourceTree = "<group>"; };
+		EF0E1D802CE37DA4003D47AA /* OnrampProviderRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProviderRowView.swift; sourceTree = "<group>"; };
+		EF0E1D812CE37DA4003D47AA /* OnrampProviderRowViewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProviderRowViewData.swift; sourceTree = "<group>"; };
+		EF0E1D832CE37DA4003D47AA /* OnrampProvidersCompactProviderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersCompactProviderView.swift; sourceTree = "<group>"; };
+		EF0E1D842CE37DA4003D47AA /* OnrampProvidersCompactProviderViewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersCompactProviderViewData.swift; sourceTree = "<group>"; };
+		EF0E1D862CE37DA4003D47AA /* OnrampProvidersCompactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersCompactView.swift; sourceTree = "<group>"; };
+		EF0E1D872CE37DA4003D47AA /* OnrampProvidersCompactViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersCompactViewModel.swift; sourceTree = "<group>"; };
+		EF0E1D892CE37DA4003D47AA /* OnrampProvidersPaymentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersPaymentView.swift; sourceTree = "<group>"; };
+		EF0E1D8A2CE37DA4003D47AA /* OnrampProvidersPaymentViewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersPaymentViewData.swift; sourceTree = "<group>"; };
+		EF0E1D8C2CE37DA4003D47AA /* OnrampProvidersRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersRoutable.swift; sourceTree = "<group>"; };
+		EF0E1D8D2CE37DA4003D47AA /* OnrampProvidersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersView.swift; sourceTree = "<group>"; };
+		EF0E1D8E2CE37DA4003D47AA /* OnrampProvidersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersViewModel.swift; sourceTree = "<group>"; };
+		EF0E1D902CE37DA4003D47AA /* OnrampProvidersCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersCoordinator.swift; sourceTree = "<group>"; };
+		EF0E1D912CE37DA4003D47AA /* OnrampProvidersCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersCoordinatorView.swift; sourceTree = "<group>"; };
 		EF0F99A5289028F8008B01DF /* AppSettingsCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSettingsCoordinator.swift; sourceTree = "<group>"; };
 		EF0F99A6289028F8008B01DF /* AppSettingsCoordinatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSettingsCoordinatorView.swift; sourceTree = "<group>"; };
 		EF0F99A7289028F8008B01DF /* AppSettingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSettingsViewModel.swift; sourceTree = "<group>"; };
@@ -5649,6 +5646,7 @@
 		EF6A8AFD2B2786E400CA3535 /* ExpressFeeProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressFeeProvider.swift; sourceTree = "<group>"; };
 		EF6A8AFF2B2786F900CA3535 /* CommonExpressFeeProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonExpressFeeProvider.swift; sourceTree = "<group>"; };
 		EF6A8B022B278A6200CA3535 /* CommonExpressRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonExpressRepository.swift; sourceTree = "<group>"; };
+		EF6C1B752CD642A200B75743 /* PaymentMethodDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethodDeterminer.swift; sourceTree = "<group>"; };
 		EF6CB17D292E1190001335EA /* EnvironmentSetupViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnvironmentSetupViewModel.swift; sourceTree = "<group>"; };
 		EF6CCBEA2C91D7C50002D2B4 /* CommonSendAlertBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonSendAlertBuilder.swift; sourceTree = "<group>"; };
 		EF6CCBEC2C91D7DE0002D2B4 /* StakingSendAlertBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingSendAlertBuilder.swift; sourceTree = "<group>"; };
@@ -5912,9 +5910,6 @@
 		EFC990022CD3A6890098B7C8 /* OnrampPaymentMethodsBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPaymentMethodsBuilder.swift; sourceTree = "<group>"; };
 		EFC990072CD3A6D90098B7C8 /* OnrampPaymentMethodsInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPaymentMethodsInteractor.swift; sourceTree = "<group>"; };
 		EFC9900B2CD3A70C0098B7C8 /* OnrampPaymentMethodsInputOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPaymentMethodsInputOutput.swift; sourceTree = "<group>"; };
-		EFC9900F2CD3A74A0098B7C8 /* OnrampProvidersInputOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersInputOutput.swift; sourceTree = "<group>"; };
-		EFC990122CD3BAFF0098B7C8 /* OnrampProvidersCompactProviderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersCompactProviderView.swift; sourceTree = "<group>"; };
-		EFC990142CD3BB130098B7C8 /* OnrampProvidersCompactProviderViewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampProvidersCompactProviderViewData.swift; sourceTree = "<group>"; };
 		EFC990162CD3CC9C0098B7C8 /* ExpressBranch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressBranch.swift; sourceTree = "<group>"; };
 		EFC990192CD4F0A90098B7C8 /* CommonOnrampProviderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonOnrampProviderManager.swift; sourceTree = "<group>"; };
 		EFCC66E028AA6FC500EC7757 /* UserTokenList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTokenList.swift; sourceTree = "<group>"; };
@@ -5940,7 +5935,6 @@
 		EFD68F252CC2990800693C97 /* OnrampStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampStep.swift; sourceTree = "<group>"; };
 		EFD68F272CC2992F00693C97 /* OnrampInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampInteractor.swift; sourceTree = "<group>"; };
 		EFD68F292CC2B06B00693C97 /* CommonOnrampStepsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonOnrampStepsManager.swift; sourceTree = "<group>"; };
-		EFD68F2B2CC2C63500693C97 /* OnrampAmountValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampAmountValidator.swift; sourceTree = "<group>"; };
 		EFD68F2F2CC2D02300693C97 /* OnrampCountryDetectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampCountryDetectionView.swift; sourceTree = "<group>"; };
 		EFD68F312CC2D04400693C97 /* OnrampCountryDetectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampCountryDetectionViewModel.swift; sourceTree = "<group>"; };
 		EFD68F332CC2D29700693C97 /* OnrampCountryDetectionRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampCountryDetectionRoutable.swift; sourceTree = "<group>"; };
@@ -12023,76 +12017,6 @@
 			path = AddCustomTokenNetworkSelector;
 			sourceTree = "<group>";
 		};
-		DA47C9AD2CE2508E00F15D5E /* Interactor */ = {
-			isa = PBXGroup;
-			children = (
-				DA47C9AB2CE2508E00F15D5E /* OnrampProvidersInputOutput.swift */,
-				DA47C9AC2CE2508E00F15D5E /* OnrampProvidersInteractor.swift */,
-			);
-			path = Interactor;
-			sourceTree = "<group>";
-		};
-		DA47C9B02CE2508E00F15D5E /* OnrampProviderRowView */ = {
-			isa = PBXGroup;
-			children = (
-				DA47C9AE2CE2508E00F15D5E /* OnrampProviderRowView.swift */,
-				DA47C9AF2CE2508E00F15D5E /* OnrampProviderRowViewData.swift */,
-			);
-			path = OnrampProviderRowView;
-			sourceTree = "<group>";
-		};
-		DA47C9B32CE2508E00F15D5E /* OnrampProvidersCompactProviderView */ = {
-			isa = PBXGroup;
-			children = (
-				DA47C9B12CE2508E00F15D5E /* OnrampProvidersCompactProviderView.swift */,
-				DA47C9B22CE2508E00F15D5E /* OnrampProvidersCompactProviderViewData.swift */,
-			);
-			path = OnrampProvidersCompactProviderView;
-			sourceTree = "<group>";
-		};
-		DA47C9B62CE2508E00F15D5E /* OnrampProvidersCompactView */ = {
-			isa = PBXGroup;
-			children = (
-				DA47C9B32CE2508E00F15D5E /* OnrampProvidersCompactProviderView */,
-				DA47C9B42CE2508E00F15D5E /* OnrampProvidersCompactView.swift */,
-				DA47C9B52CE2508E00F15D5E /* OnrampProvidersCompactViewModel.swift */,
-			);
-			path = OnrampProvidersCompactView;
-			sourceTree = "<group>";
-		};
-		DA47C9B92CE2508E00F15D5E /* OnrampProvidersPaymentView */ = {
-			isa = PBXGroup;
-			children = (
-				DA47C9B72CE2508E00F15D5E /* OnrampProvidersPaymentView.swift */,
-				DA47C9B82CE2508E00F15D5E /* OnrampProvidersPaymentViewData.swift */,
-			);
-			path = OnrampProvidersPaymentView;
-			sourceTree = "<group>";
-		};
-		DA47C9BD2CE2508E00F15D5E /* OnrampProvidersView */ = {
-			isa = PBXGroup;
-			children = (
-				DA47C9BA2CE2508E00F15D5E /* OnrampProvidersRoutable.swift */,
-				DA47C9BB2CE2508E00F15D5E /* OnrampProvidersView.swift */,
-				DA47C9BC2CE2508E00F15D5E /* OnrampProvidersViewModel.swift */,
-			);
-			path = OnrampProvidersView;
-			sourceTree = "<group>";
-		};
-		DA47C9C02CE2508E00F15D5E /* OnrampProviders */ = {
-			isa = PBXGroup;
-			children = (
-				DA47C9AD2CE2508E00F15D5E /* Interactor */,
-				DA47C9B02CE2508E00F15D5E /* OnrampProviderRowView */,
-				DA47C9B62CE2508E00F15D5E /* OnrampProvidersCompactView */,
-				DA47C9B92CE2508E00F15D5E /* OnrampProvidersPaymentView */,
-				DA47C9BD2CE2508E00F15D5E /* OnrampProvidersView */,
-				DA47C9BE2CE2508E00F15D5E /* OnrampProvidersCoordinator.swift */,
-				DA47C9BF2CE2508E00F15D5E /* OnrampProvidersCoordinatorView.swift */,
-			);
-			path = OnrampProviders;
-			sourceTree = "<group>";
-		};
 		DA5044E12ABACA4700D1E5CF /* MarketPriceView */ = {
 			isa = PBXGroup;
 			children = (
@@ -13338,7 +13262,6 @@
 		EF031A7D2C0DD234001535C9 /* Interactor */ = {
 			isa = PBXGroup;
 			children = (
-				EFD68F2B2CC2C63500693C97 /* OnrampAmountValidator.swift */,
 				EFD0A14A2C9985CD0010E642 /* SendAmountModifier.swift */,
 				EF339E742C24820B00B5CDC9 /* SendAmountInteractor.swift */,
 				EF031A7E2C0DD243001535C9 /* SendAmountConverter.swift */,
@@ -13405,6 +13328,76 @@
 				EF0DD7A22B02B5C00099527D /* ExpressFeeRowData.swift */,
 			);
 			path = ExpressFeeRow;
+			sourceTree = "<group>";
+		};
+		EF0E1D7F2CE37DA4003D47AA /* Interactor */ = {
+			isa = PBXGroup;
+			children = (
+				EF0E1D7D2CE37DA4003D47AA /* OnrampProvidersInputOutput.swift */,
+				EF0E1D7E2CE37DA4003D47AA /* OnrampProvidersInteractor.swift */,
+			);
+			path = Interactor;
+			sourceTree = "<group>";
+		};
+		EF0E1D822CE37DA4003D47AA /* OnrampProviderRowView */ = {
+			isa = PBXGroup;
+			children = (
+				EF0E1D802CE37DA4003D47AA /* OnrampProviderRowView.swift */,
+				EF0E1D812CE37DA4003D47AA /* OnrampProviderRowViewData.swift */,
+			);
+			path = OnrampProviderRowView;
+			sourceTree = "<group>";
+		};
+		EF0E1D852CE37DA4003D47AA /* OnrampProvidersCompactProviderView */ = {
+			isa = PBXGroup;
+			children = (
+				EF0E1D832CE37DA4003D47AA /* OnrampProvidersCompactProviderView.swift */,
+				EF0E1D842CE37DA4003D47AA /* OnrampProvidersCompactProviderViewData.swift */,
+			);
+			path = OnrampProvidersCompactProviderView;
+			sourceTree = "<group>";
+		};
+		EF0E1D882CE37DA4003D47AA /* OnrampProvidersCompactView */ = {
+			isa = PBXGroup;
+			children = (
+				EF0E1D852CE37DA4003D47AA /* OnrampProvidersCompactProviderView */,
+				EF0E1D862CE37DA4003D47AA /* OnrampProvidersCompactView.swift */,
+				EF0E1D872CE37DA4003D47AA /* OnrampProvidersCompactViewModel.swift */,
+			);
+			path = OnrampProvidersCompactView;
+			sourceTree = "<group>";
+		};
+		EF0E1D8B2CE37DA4003D47AA /* OnrampProvidersPaymentView */ = {
+			isa = PBXGroup;
+			children = (
+				EF0E1D892CE37DA4003D47AA /* OnrampProvidersPaymentView.swift */,
+				EF0E1D8A2CE37DA4003D47AA /* OnrampProvidersPaymentViewData.swift */,
+			);
+			path = OnrampProvidersPaymentView;
+			sourceTree = "<group>";
+		};
+		EF0E1D8F2CE37DA4003D47AA /* OnrampProvidersView */ = {
+			isa = PBXGroup;
+			children = (
+				EF0E1D8C2CE37DA4003D47AA /* OnrampProvidersRoutable.swift */,
+				EF0E1D8D2CE37DA4003D47AA /* OnrampProvidersView.swift */,
+				EF0E1D8E2CE37DA4003D47AA /* OnrampProvidersViewModel.swift */,
+			);
+			path = OnrampProvidersView;
+			sourceTree = "<group>";
+		};
+		EF0E1D922CE37DA4003D47AA /* OnrampProviders */ = {
+			isa = PBXGroup;
+			children = (
+				EF0E1D7F2CE37DA4003D47AA /* Interactor */,
+				EF0E1D822CE37DA4003D47AA /* OnrampProviderRowView */,
+				EF0E1D882CE37DA4003D47AA /* OnrampProvidersCompactView */,
+				EF0E1D8B2CE37DA4003D47AA /* OnrampProvidersPaymentView */,
+				EF0E1D8F2CE37DA4003D47AA /* OnrampProvidersView */,
+				EF0E1D902CE37DA4003D47AA /* OnrampProvidersCoordinator.swift */,
+				EF0E1D912CE37DA4003D47AA /* OnrampProvidersCoordinatorView.swift */,
+			);
+			path = OnrampProviders;
 			sourceTree = "<group>";
 		};
 		EF0FBB682C53BE1E0095A6BD /* SendDestinationCompactView */ = {
@@ -13984,7 +13977,6 @@
 		EF665E3D2CBD238600F79B87 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				DA47C9C02CE2508E00F15D5E /* OnrampProviders */,
 				EF031A632C0A32AB001535C9 /* Namespace */,
 				DA1D3B6F2B56C7DC00247393 /* QRScanView */,
 				EFC84AEC2C37F91400546882 /* Base */,
@@ -13995,6 +13987,7 @@
 				DA559C272B0261F400F59584 /* Summary */,
 				EFB23F2E2CBE7FA4005A6719 /* Onramp */,
 				EFA1547B2CD24B5300A0642C /* OnrampAmount */,
+				EF0E1D922CE37DA4003D47AA /* OnrampProviders */,
 				EFC98FFC2CD3A3F80098B7C8 /* OnrampPaymentMethods */,
 				DAF72F3E2B0F480A0006B44F /* Finish */,
 				EF665E462CBD24F800F79B87 /* UITypes */,
@@ -14128,6 +14121,14 @@
 				EF6A8B022B278A6200CA3535 /* CommonExpressRepository.swift */,
 			);
 			path = ExpressRepository;
+			sourceTree = "<group>";
+		};
+		EF6C1B722CD6428200B75743 /* PaymentMethodDeterminer */ = {
+			isa = PBXGroup;
+			children = (
+				EF6C1B752CD642A200B75743 /* PaymentMethodDeterminer.swift */,
+			);
+			path = PaymentMethodDeterminer;
 			sourceTree = "<group>";
 		};
 		EF6CCBE92C91D7B30002D2B4 /* SendAlertBuilder */ = {
@@ -14530,6 +14531,7 @@
 		EF9E29C32B4F0CCE00418559 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				EF6C1B722CD6428200B75743 /* PaymentMethodDeterminer */,
 				DC1D4C3F2C385F0C00B2A422 /* ExpressAnalyticsLogger */,
 				EF9E29C42B4F0CCE00418559 /* ExpressManagerMapper */,
 				EF9E29C62B4F0CCE00418559 /* ExpressProviderManagerFactory */,
@@ -16485,7 +16487,6 @@
 				B06C083D2A73E0E900D982BC /* MainHeaderSubtitleInfo.swift in Sources */,
 				5D6784D925EBA1D800149995 /* TokenItems+Array.swift in Sources */,
 				EFA6B04129532D990090A92F /* NavigationBusyButton.swift in Sources */,
-				EFD68F2C2CC2C63500693C97 /* OnrampAmountValidator.swift in Sources */,
 				B0F319042A7394C2009F131E /* FakeUserWalletModel.swift in Sources */,
 				B0541DBC26FB2FF50043893E /* WalletOnboardingView.swift in Sources */,
 				EF5820482B33349300940387 /* CommonExpressExchangeDataDecoder.swift in Sources */,
@@ -17506,6 +17507,21 @@
 				DA8C67292B0B44EF00E1C9B8 /* SendDestinationSummaryViewType.swift in Sources */,
 				DC2891B42CDB09A700F57F59 /* ActionButtonsBuyFlowRoutable.swift in Sources */,
 				B0E1D175257DE75D00A3AB98 /* CommonKeysManager.swift in Sources */,
+				EF0E1D932CE37DA4003D47AA /* OnrampProvidersRoutable.swift in Sources */,
+				EF0E1D942CE37DA4003D47AA /* OnrampProvidersCompactProviderView.swift in Sources */,
+				EF0E1D952CE37DA4003D47AA /* OnrampProvidersCoordinatorView.swift in Sources */,
+				EF0E1D962CE37DA4003D47AA /* OnrampProvidersPaymentView.swift in Sources */,
+				EF0E1D972CE37DA4003D47AA /* OnrampProviderRowView.swift in Sources */,
+				EF0E1D982CE37DA4003D47AA /* OnrampProvidersCompactViewModel.swift in Sources */,
+				EF0E1D992CE37DA4003D47AA /* OnrampProvidersCoordinator.swift in Sources */,
+				EF0E1D9A2CE37DA4003D47AA /* OnrampProviderRowViewData.swift in Sources */,
+				EF0E1D9B2CE37DA4003D47AA /* OnrampProvidersInputOutput.swift in Sources */,
+				EF0E1D9C2CE37DA4003D47AA /* OnrampProvidersViewModel.swift in Sources */,
+				EF0E1D9D2CE37DA4003D47AA /* OnrampProvidersCompactProviderViewData.swift in Sources */,
+				EF0E1D9E2CE37DA4003D47AA /* OnrampProvidersInteractor.swift in Sources */,
+				EF0E1D9F2CE37DA4003D47AA /* OnrampProvidersPaymentViewData.swift in Sources */,
+				EF0E1DA02CE37DA4003D47AA /* OnrampProvidersCompactView.swift in Sources */,
+				EF0E1DA12CE37DA4003D47AA /* OnrampProvidersView.swift in Sources */,
 				2DCAEE4B2B13E4F800C87E09 /* GetBlockAccessTokens.swift in Sources */,
 				DC3DCAEF2A49C6E600F72554 /* CommonWalletManagersRepository.swift in Sources */,
 				DC0DE2782B61709D00E7247F /* IncomingActionURLHelper.swift in Sources */,
@@ -17554,21 +17570,6 @@
 				EFEE236A2BFE20860099917E /* StakingDetailsCoordinator.swift in Sources */,
 				EF0FBB742C53BE4A0095A6BD /* StakingValidatorsCompactViewModel.swift in Sources */,
 				EFEE236B2BFE20860099917E /* StakingDetailsCoordinatorView.swift in Sources */,
-				DA47C9C12CE2508E00F15D5E /* OnrampProvidersCompactViewModel.swift in Sources */,
-				DA47C9C22CE2508E00F15D5E /* OnrampProvidersView.swift in Sources */,
-				DA47C9C32CE2508E00F15D5E /* OnrampProvidersInputOutput.swift in Sources */,
-				DA47C9C42CE2508E00F15D5E /* OnrampProvidersCoordinatorView.swift in Sources */,
-				DA47C9C52CE2508E00F15D5E /* OnrampProvidersRoutable.swift in Sources */,
-				DA47C9C62CE2508E00F15D5E /* OnrampProvidersViewModel.swift in Sources */,
-				DA47C9C72CE2508E00F15D5E /* OnrampProvidersCompactProviderView.swift in Sources */,
-				DA47C9C82CE2508E00F15D5E /* OnrampProviderRowViewData.swift in Sources */,
-				DA47C9C92CE2508E00F15D5E /* OnrampProvidersCoordinator.swift in Sources */,
-				DA47C9CA2CE2508E00F15D5E /* OnrampProvidersPaymentViewData.swift in Sources */,
-				DA47C9CB2CE2508E00F15D5E /* OnrampProvidersPaymentView.swift in Sources */,
-				DA47C9CC2CE2508E00F15D5E /* OnrampProvidersCompactView.swift in Sources */,
-				DA47C9CD2CE2508E00F15D5E /* OnrampProvidersInteractor.swift in Sources */,
-				DA47C9CE2CE2508E00F15D5E /* OnrampProvidersCompactProviderViewData.swift in Sources */,
-				DA47C9CF2CE2508E00F15D5E /* OnrampProviderRowView.swift in Sources */,
 				EFEE236C2BFE20860099917E /* StakingDetailsView.swift in Sources */,
 				B040FA342C3BCA00002C127B /* MarketsTokenDetailsInsightsView.swift in Sources */,
 				EFEE236D2BFE20860099917E /* StakingDetailsViewModel.swift in Sources */,
@@ -18854,6 +18855,7 @@
 				EF9E2A0E2B4F0CD100418559 /* ExpressProviderManagerFactory.swift in Sources */,
 				DC1D4C412C385F2C00B2A422 /* AnalyticsLogger.swift in Sources */,
 				EF1399772CBD0AAB00AC9E2B /* OnrampProviderManager.swift in Sources */,
+				EF6C1B762CD642A200B75743 /* PaymentMethodDeterminer.swift in Sources */,
 				EFD68F392CC3D7DE00693C97 /* ExpressDTO+Swap.swift in Sources */,
 				EF9E2A252B4F0CD100418559 /* ExpressProvider.swift in Sources */,
 				EFA727832C0887A0003D9D81 /* ExpressTransactionSentResult.swift in Sources */,

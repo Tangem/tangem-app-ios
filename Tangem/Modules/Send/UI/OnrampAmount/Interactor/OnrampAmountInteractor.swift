@@ -21,28 +21,50 @@ class CommonOnrampAmountInteractor {
 
     private weak var input: OnrampAmountInput?
     private weak var output: OnrampAmountOutput?
+    private weak var onrampProvidersInput: OnrampProvidersInput?
     private let tokenItem: TokenItem
-    private let validator: SendAmountValidator
 
     private var _error: CurrentValueSubject<String?, Never> = .init(nil)
-    private var _isValid: CurrentValueSubject<Bool, Never> = .init(false)
+    private var bag: Set<AnyCancellable> = []
 
     init(
         input: OnrampAmountInput,
         output: OnrampAmountOutput,
-        tokenItem: TokenItem,
-        validator: SendAmountValidator
+        onrampProvidersInput: OnrampProvidersInput,
+        tokenItem: TokenItem
     ) {
         self.input = input
         self.output = output
+        self.onrampProvidersInput = onrampProvidersInput
         self.tokenItem = tokenItem
-        self.validator = validator
+
+        bind(onrampProvidersInput: onrampProvidersInput)
     }
 }
 
 // MARK: - Private
 
 private extension CommonOnrampAmountInteractor {
+    func bind(onrampProvidersInput: OnrampProvidersInput) {
+        Publishers.CombineLatest(
+            onrampProvidersInput.onrampProvidersPublisher,
+            onrampProvidersInput.selectedOnrampProviderPublisher.map { $0?.value?.manager.state }
+        ).map { providers, state in
+            switch (providers, state) {
+            case (.loaded(let providers), _) where providers.isEmpty:
+                return Localization.onrampNoAvailableProviders
+            case (_, .restriction(.tooSmallAmount(let minAmount))):
+                return Localization.onrampMinAmountRestriction(minAmount)
+            case (_, .restriction(.tooBigAmount(let maxAmount))):
+                return Localization.onrampMaxAmountRestriction(maxAmount)
+            default:
+                return nil
+            }
+        }
+        .assign(to: \._error.value, on: self, ownership: .weak)
+        .store(in: &bag)
+    }
+
     func makeSendAmount(fiat: Decimal) async -> SendAmount {
         guard let currency = input?.fiatCurrency.value,
               let currencyId = tokenItem.currencyId else {
@@ -50,29 +72,18 @@ private extension CommonOnrampAmountInteractor {
         }
 
         let price = await quotesRepository.loadPrice(currencyCode: currency.identity.code, currencyId: currencyId)
-        let crypto = price.map { fiat * $0 }
+        let crypto = price.map { fiat / $0 }
 
         return .init(type: .alternative(fiat: fiat, crypto: crypto))
     }
 
     private func validateAndUpdate(amount: SendAmount?) {
-        do {
-            guard let fiat = amount?.fiat, fiat > 0 else {
-                // Field is empty or zero
-                update(amount: .none, isValid: false, error: .none)
-                return
-            }
-
-            try validator.validate(amount: fiat)
-            update(amount: amount, isValid: true, error: .none)
-        } catch {
-            update(amount: .none, isValid: false, error: error)
+        guard let fiat = amount?.fiat, fiat > 0 else {
+            // Field is empty or zero
+            output?.amountDidChanged(amount: .none)
+            return
         }
-    }
 
-    private func update(amount: SendAmount?, isValid: Bool, error: Error?) {
-        _error.send(error?.localizedDescription)
-        _isValid.send(isValid)
         output?.amountDidChanged(amount: amount)
     }
 }

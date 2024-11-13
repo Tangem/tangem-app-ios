@@ -62,27 +62,19 @@ private extension OnrampProvidersViewModel {
             }
             .store(in: &bag)
 
-        Publishers.CombineLatest(
-            interactor.providesPublisher,
-            interactor.paymentMethodPublisher
-        )
-        .map { providers, paymentMethod in
-            providers.filter {
-                $0.paymentMethod.identity.code == paymentMethod.identity.code
+        interactor.providesPublisher
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, providers in
+                viewModel.updateProvidersView(providers: providers)
             }
-        }
-        .withWeakCaptureOf(self)
-        .receive(on: DispatchQueue.main)
-        .sink { viewModel, providers in
-            viewModel.updateProvidersView(providers: providers)
-        }
-        .store(in: &bag)
+            .store(in: &bag)
     }
 
     func updatePaymentView(payment: OnrampPaymentMethod) {
         paymentViewData = .init(
-            name: payment.identity.name,
-            iconURL: payment.identity.image,
+            name: payment.name,
+            iconURL: payment.image,
             action: { [weak self] in
                 self?.coordinator?.openOnrampPaymentMethods()
             }
@@ -121,14 +113,18 @@ private extension OnrampProvidersViewModel {
 
     func state(state: OnrampProviderManagerState) -> OnrampProviderRowViewData.State? {
         switch state {
-        case .created, .loading, .notSupported, .failed:
+        case .idle, .loading, .notSupported:
             return nil
         case .loaded(let quote):
             // Time will be hardcoded (?)
             // TODO: https://tangem.atlassian.net/browse/IOS-8487
             return .available(estimatedTime: "5 min")
+        case .restriction(.tooSmallAmount(let minAmount)):
+            return .availableFromAmount(minAmount: minAmount)
+        case .restriction(.tooBigAmount(let maxAmount)):
+            return .availableToAmount(maxAmount: maxAmount)
         case .failed(let error):
-            return .unavailable(reason: error.localizedDescription)
+            return .unavailable(reason: error)
         }
     }
 }
