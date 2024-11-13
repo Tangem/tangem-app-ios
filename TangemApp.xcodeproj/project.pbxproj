@@ -13426,6 +13426,8 @@
 				EF0E1D912CE37DA4003D47AA /* OnrampProvidersCoordinatorView.swift */,
 			);
 			path = OnrampProviders;
+			sourceTree = "<group>";
+		};
 		EF0E1DA72CE3A240003D47AA /* OnrampRedirectingView */ = {
 			isa = PBXGroup;
 			children = (
@@ -14031,7 +14033,6 @@
 		EF665E3D2CBD238600F79B87 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				DA47C9C02CE2508E00F15D5E /* OnrampProviders */,
 				EF031A632C0A32AB001535C9 /* Namespace */,
 				DA1D3B6F2B56C7DC00247393 /* QRScanView */,
 				EFC84AEC2C37F91400546882 /* Base */,

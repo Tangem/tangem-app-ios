@@ -81,7 +81,7 @@ extension CommonOnrampManager: OnrampManager {
 // MARK: - Private
 
 private extension CommonOnrampManager {
-    func updateQuotesInEachManager(amount: Decimal?) async throws {
+    func updateQuotesInEachManager(amount: Decimal?) async {
         await withTaskGroup(of: Void.self) { [weak self] group in
             await self?._providers.forEach { provider in
                 _ = group.addTaskUnlessCancelled {
