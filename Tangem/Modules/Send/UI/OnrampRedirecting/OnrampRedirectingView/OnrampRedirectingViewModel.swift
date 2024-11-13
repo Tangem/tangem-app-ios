@@ -48,9 +48,6 @@ final class OnrampRedirectingViewModel: ObservableObject {
     func loadRedirectData() async {
         do {
             try await interactor.loadRedirectData(redirectSettings: makeOnrampRedirectSettings())
-            await runOnMain {
-                coordinator?.dismissOnrampRedirecting()
-            }
         } catch {
             await runOnMain {
                 alert = AlertBuilder.makeOkErrorAlert(message: error.localizedDescription) { [weak self] in

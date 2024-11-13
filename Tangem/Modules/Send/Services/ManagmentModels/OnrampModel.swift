@@ -266,9 +266,11 @@ extension OnrampModel: OnrampRedirectingInput {}
 
 extension OnrampModel: OnrampRedirectingOutput {
     func redirectDataDidLoad(data: OnrampRedirectData) {
-        router?.openWebView(url: data.widgetUrl) { [weak self] in
-            self?._transactionTime.send(Date())
-            self?.router?.openFinishStep()
+        DispatchQueue.main.async { [weak self] in
+            self?.router?.openWebView(url: data.widgetUrl) { [weak self] in
+                self?._transactionTime.send(Date())
+                self?.router?.openFinishStep()
+            }
         }
     }
 }

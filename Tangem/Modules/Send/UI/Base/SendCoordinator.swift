@@ -188,7 +188,6 @@ extension SendCoordinator: OnrampRoutable {
     }
 
     func openOnrampRedirecting(onrampRedirectingBuilder: OnrampRedirectingBuilder) {
-        UIApplication.shared.endEditing()
         onrampRedirectingViewModel = onrampRedirectingBuilder.makeOnrampRedirectingViewModel(coordinator: self)
     }
 
@@ -197,6 +196,8 @@ extension SendCoordinator: OnrampRoutable {
             self?.safariHandle = nil
             success()
         }
+
+        dismissOnrampRedirecting()
     }
 }
 
