@@ -48,9 +48,9 @@ class OnrampProvidersCompactViewModel: ObservableObject {
         case (.loaded(let provider), .some(let paymentMethod)):
             paymentState = .loaded(
                 data: .init(
-                    iconURL: paymentMethod.identity.image,
-                    paymentMethodName: paymentMethod.identity.name,
-                    providerName: provider.provider.id,
+                    iconURL: paymentMethod.image,
+                    paymentMethodName: paymentMethod.name,
+                    providerName: provider.provider.name,
                     badge: .bestRate
                 ) { [weak self] in
                     self?.router?.onrampStepRequestEditProvider()

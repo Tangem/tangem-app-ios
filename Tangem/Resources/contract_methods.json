@@ -141,5 +141,65 @@
        "info":"swapTokensForExactETC",
        "source":"https://etc.blockscout.com/tx/0xd79e03ca6b71529c94d576ff78c55b4371e2ef3ff8f9a47007995e5b9e77f879",
        "name":"swap"
+   },
+   "0x6ab15071": {
+       "info": "stakePOL",
+       "source": "https://etherscan.io/tx/0x490d2f31faa3f2fdb1a9505888761d89aba1dd3dcfeb65f08651d094c1ee5021",
+       "name": "buyVoucher"
+   },
+   "0xe4457a8a": {
+       "info": "stakePOL",
+       "source": "https://etherscan.io/tx/0xb7b67ea0261fe2067e285eb942be6883ef34b3d313160f3ce122cad3e91f95f7",
+       "name": "buyVoucherPOL"
+   },
+   "0xc83ec04d": {
+       "info": "stakePOL",
+       "source": "https://etherscan.io/tx/0x0f7fa7154be5ae9bbe229963e3c0d3eea16b74311c50c4a35f3fcffc9519baed",
+       "name": "sellVoucher_new"
+   },
+   "0xe570b78b": {
+       "info": "stakePOL",
+       "source": "https://etherscan.io/tx/0xde1dda9ff3aed8b1d5feff53f72032cbd106a57c1ae2e7fa80016349e2e68341",
+       "name": "sellVoucher_newPOL"
+   },
+   "0xe97fddc2": {
+       "info": "stakePOL",
+       "source": "https://etherscan.io/tx/0x0478bc1229722c049eed737ef5a56baee6d7bde7ae21afad7a10e029700b378c",
+       "name": "unstakeClaimTokens_new"
+   },
+   "0x8759c234": {
+       "info": "stakePOL",
+       "source": "https://etherscan.io/tx/0x79075778b470358bef4cfc25a74a43e7ae60f1bc292e0bca3ebc163fee8bf0c7",
+       "name": "unstakeClaimTokens_newPOL"
+   },
+   "0xc7b8981c": {
+       "info": "stakePOL",
+       "source": "https://etherscan.io/tx/0xc2df9b41f7b3780a2dd06f0dfff72ecd5d3a5bde3f1d3f0eb926e14ff975e957",
+       "name": "withdrawRewards"
+   },
+   "0xe0db556b": {
+       "info": "stakePOL",
+       "source": "https://etherscan.io/tx/0x96ee64ad31a045982a4776336d852af3c25dc39b6d01bea987aefd460b816773",
+       "name": "withdrawRewardsPOL"
+   },
+   "0x982ef0a7": {
+       "info": "stakeBSC",
+       "source": "https://bscscan.com/tx/0xd5ab62ee525f3dc2821de44c31e278f2b49a0202f4e0279e6d0fced05a034595",
+       "name": "delegate"
+   },
+   "0x4d99dd16": {
+       "info": "stakeBSC",
+       "source": "https://bscscan.com/tx/0x866ba857e96051d7cea271723fccde4113c9909dccb534202a2a87ad4c56cb67",
+       "name": "undelegate"
+   },
+   "0x59491871": {
+       "info": "stakeBSC",
+       "source": "https://bscscan.com/tx/0x69615650be1e8a6d94258483f4e880fc6b4d4d9ae53d967c82d847691d91dd71",
+       "name": "redelegate"
+   },
+   "0xaad3ec96": {
+       "info": "stakeBSC",
+       "source": "https://bscscan.com/tx/0xfcbeac6e0a4ba5768d97d14b5115d08dda92defa8a8deee8bba34e2f0655c52b",
+       "name": "claim"
    }
 }

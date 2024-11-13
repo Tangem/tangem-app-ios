@@ -159,7 +159,7 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
             toNetwork: item.pairItem.destination.expressCurrency.network,
             paymentMethod: item.paymentMethod.id,
             countryCode: item.pairItem.country.identity.code,
-            fromAmount: item.destinationAmountWEI(),
+            fromAmount: item.sourceAmountWEI(),
             toDecimals: item.pairItem.destination.decimalCount,
             providerId: item.providerInfo.id
         )

@@ -397,10 +397,6 @@ struct SendDependenciesBuilder {
         )
     }
 
-    func makeOnrampAmountValidator() -> SendAmountValidator {
-        OnrampAmountValidator()
-    }
-
     func makeOnrampBaseDataBuilder(
         onrampRepository: OnrampRepository,
         onrampDataRepository: OnrampDataRepository,

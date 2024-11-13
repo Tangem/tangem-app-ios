@@ -3,11 +3,7 @@
 import SwiftUI
 
 struct ___VARIABLE_moduleName:identifier___View: View {
-    @ObservedObject private var viewModel: ___VARIABLE_moduleName: identifier___ViewModel
-
-    init(viewModel: ___VARIABLE_moduleName: identifier___ViewModel) {
-        self.viewModel = viewModel
-    }
+    @ObservedObject var viewModel: ___VARIABLE_moduleName:identifier___ViewModel
 
     var body: some View {
         VStack {
@@ -16,10 +12,8 @@ struct ___VARIABLE_moduleName:identifier___View: View {
     }
 }
 
-struct ___VARIABLE_moduleName:identifier___View_Preview: PreviewProvider {
-    static let viewModel = ___VARIABLE_moduleName: identifier___ViewModel(coordinator: ___VARIABLE_moduleName:identifier___Coordinator())
-
-    static var previews: some View {
-        ___VARIABLE_moduleName: identifier___View(viewModel: viewModel)
-    }
+#Preview {
+    ___VARIABLE_moduleName: identifier___View(
+        viewModel: ___VARIABLE_moduleName:identifier___ViewModel(coordinator: ___VARIABLE_moduleName:identifier___Coordinator())
+    )
 }
