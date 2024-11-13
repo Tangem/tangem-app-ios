@@ -125,7 +125,7 @@ private extension OnrampModel {
     func preferenceDidChange(currency: OnrampFiatCurrency?) {
         guard let country = onrampRepository.preferenceCountry, let currency else {
             TangemFoundation.runTask(in: self) {
-                try await $0.initiateCountryDefinition()
+                await $0.initiateCountryDefinition()
             }
             return
         }
@@ -138,15 +138,21 @@ private extension OnrampModel {
         }
     }
 
-    func initiateCountryDefinition() async throws {
-        let country = try await onrampManager.initialSetupCountry()
+    func initiateCountryDefinition() async {
+        do {
+            let country = try await onrampManager.initialSetupCountry()
 
-        // Update amount UI
-        _currency.send(.loaded(country.currency))
+            // Update amount UI
+            _currency.send(.loaded(country.currency))
 
-        // We have to show confirmation bottom sheet
-        await runOnMain {
-            router?.openOnrampCountryBottomSheet(country: country)
+            // We have to show confirmation bottom sheet
+            await runOnMain {
+                router?.openOnrampCountryBottomSheet(country: country)
+            }
+        } catch {
+            await runOnMain {
+                alertPresenter?.showAlert(error.alertBinder)
+            }
         }
     }
 
