@@ -67,7 +67,14 @@ extension CommonOnrampProvidersInteractor: OnrampProvidersInteractor {
             return Empty().eraseToAnyPublisher()
         }
 
-        return input.onrampProvidersPublisher.eraseToAnyPublisher()
+        return Publishers
+            .CombineLatest(input.onrampProvidersPublisher.compactMap { $0.value }, paymentMethodPublisher)
+            .map { providers, paymentMethod in
+                providers.filter {
+                    $0.paymentMethod.id == paymentMethod.id
+                }
+            }
+            .eraseToAnyPublisher()
     }
 
     func update(selectedProvider: OnrampProvider) {

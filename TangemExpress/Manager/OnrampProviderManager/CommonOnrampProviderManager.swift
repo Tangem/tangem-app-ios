@@ -43,23 +43,35 @@ private extension CommonOnrampProviderManager {
             return
         }
 
+        guard let amount = _amount else {
+            // If amount is nil clear manager
+            _state = .idle
+            return
+        }
+
         do {
             _state = .loading
-            let quote = try await loadQuotes()
+            let quote = try await loadQuotes(amount: amount)
             _state = .loaded(quote)
+        } catch let error as ExpressAPIError where error.errorCode == .exchangeTooSmallAmountError {
+            _state = .restriction(.tooSmallAmount(formatAmount(amount: error.value?.amount)))
+        } catch let error as ExpressAPIError where error.errorCode == .exchangeTooBigAmountError {
+            _state = .restriction(.tooBigAmount(formatAmount(amount: error.value?.amount)))
+        } catch let error as ExpressAPIError {
+            _state = .failed(error: "Error code: \(error.localizedDescription)")
         } catch {
             _state = .failed(error: error.localizedDescription)
         }
     }
 
-    func loadQuotes() async throws -> OnrampQuote {
-        let item = try makeOnrampSwappableItem()
+    func loadQuotes(amount: Decimal) async throws -> OnrampQuote {
+        let item = try makeOnrampSwappableItem(amount: amount)
         let quote = try await apiProvider.onrampQuote(item: item)
         return quote
     }
 
-    func makeOnrampSwappableItem() throws -> OnrampQuotesRequestItem {
-        guard let amount = _amount, amount > 0 else {
+    func makeOnrampSwappableItem(amount: Decimal) throws -> OnrampQuotesRequestItem {
+        guard amount > 0 else {
             throw OnrampProviderManagerError.amountNotFound
         }
 
@@ -70,6 +82,14 @@ private extension CommonOnrampProviderManager {
             amount: amount
         )
     }
+
+    func formatAmount(amount: Decimal?) -> String {
+        guard let amount else {
+            return "-"
+        }
+
+        return "\(amount) \(pairItem.fiatCurrency.identity.code)"
+    }
 }
 
 // MARK: - OnrampProviderManager
@@ -77,7 +97,7 @@ private extension CommonOnrampProviderManager {
 extension CommonOnrampProviderManager: OnrampProviderManager {
     var state: OnrampProviderManagerState { _state }
 
-    func update(amount: Decimal) async {
+    func update(amount: Decimal?) async {
         _amount = amount
         await updateState()
     }

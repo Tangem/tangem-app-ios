@@ -107,8 +107,8 @@ struct OnrampProviderRowView: View {
         case .available(let time):
             Text(time)
                 .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-        case .availableFromAmount(let minAmount):
-            Text(minAmount)
+        case .availableFromAmount(let amount), .availableToAmount(let amount):
+            Text(amount)
                 .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
         case .unavailable(let reason):
             Text(reason)
