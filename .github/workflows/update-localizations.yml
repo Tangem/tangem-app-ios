@@ -59,7 +59,7 @@ jobs:
       - name: Push changes and open a pull-request
         env:
           GH_TOKEN: ${{ github.token }}
-          SOURCE_BRANCH: lokalise-translations-sync
+          SOURCE_BRANCH: 'lokalise/${{ github.ref_name }}_translations_sync'
           TARGET_BRANCH: ${{ github.ref_name }}
           LANGUAGES: ${{ github.event.inputs.langs }}
           GH_RUN_ID: ${{ github.run_id }}
