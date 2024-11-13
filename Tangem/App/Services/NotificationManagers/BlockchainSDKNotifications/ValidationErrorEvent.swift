@@ -26,6 +26,8 @@ enum ValidationErrorEvent: Hashable {
     case notEnoughMana(current: Decimal, max: Decimal)
     case manaLimit(availableAmount: Decimal)
     case koinosInsufficientBalanceToSendKoin
+
+    case minimumRestrictAmount(restrictAmountFormatted: String)
 }
 
 extension ValidationErrorEvent: NotificationEvent {
@@ -55,6 +57,8 @@ extension ValidationErrorEvent: NotificationEvent {
             return .string(Localization.koinosManaExceedsKoinBalanceTitle)
         case .koinosInsufficientBalanceToSendKoin:
             return .string(Localization.koinosInsufficientBalanceToSendKoinTitle)
+        case .minimumRestrictAmount:
+            return .string(Localization.sendNotificationInvalidAmountTitle)
         }
     }
 
@@ -90,6 +94,8 @@ extension ValidationErrorEvent: NotificationEvent {
             return Localization.koinosManaExceedsKoinBalanceDescription(validMax)
         case .koinosInsufficientBalanceToSendKoin:
             return Localization.koinosInsufficientBalanceToSendKoinDescription
+        case .minimumRestrictAmount(let restrictAmountFormatted):
+            return Localization.transferNotificationInvalidMinimumTransactionAmountText(restrictAmountFormatted)
         }
     }
 
@@ -116,7 +122,8 @@ extension ValidationErrorEvent: NotificationEvent {
              .cardanoInsufficientBalanceToSendToken,
              .notEnoughMana,
              .manaLimit,
-             .koinosInsufficientBalanceToSendKoin:
+             .koinosInsufficientBalanceToSendKoin,
+             .minimumRestrictAmount:
             return .init(iconType: .image(Assets.redCircleWarning.image))
         }
     }
@@ -134,7 +141,8 @@ extension ValidationErrorEvent: NotificationEvent {
              .cardanoInsufficientBalanceToSendToken,
              .notEnoughMana,
              .manaLimit,
-             .koinosInsufficientBalanceToSendKoin:
+             .koinosInsufficientBalanceToSendKoin,
+             .minimumRestrictAmount:
             return .critical
         }
     }
@@ -164,7 +172,8 @@ extension ValidationErrorEvent {
              .cardanoCannotBeSentBecauseHasTokens,
              .cardanoInsufficientBalanceToSendToken,
              .notEnoughMana,
-             .koinosInsufficientBalanceToSendKoin:
+             .koinosInsufficientBalanceToSendKoin,
+             .minimumRestrictAmount:
             return nil
         }
     }
