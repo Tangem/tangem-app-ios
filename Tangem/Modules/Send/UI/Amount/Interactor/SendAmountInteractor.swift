@@ -72,29 +72,22 @@ class CommonSendAmountInteractor {
     }
 
     private func validateAndUpdate(amount: SendAmount?) {
-        guard let crypto = positiveCryptoAmount(for: amount) else { return }
+        guard let crypto = amount?.crypto, crypto > 0 else {
+            // Field is empty or zero
+            update(amount: .none, isValid: false, error: .none)
+            return
+        }
 
         do {
             try validator.validate(amount: crypto)
 
-            let amount = modifyIfNeeded(amount: amount)
-
-            guard let crypto = positiveCryptoAmount(for: amount) else { return }
+            guard let crypto = modifyIfNeeded(amount: amount)?.crypto else { return }
 
             try validator.validate(amount: crypto)
             update(amount: amount, isValid: true, error: .none)
         } catch {
             update(amount: .none, isValid: false, error: error)
         }
-    }
-
-    private func positiveCryptoAmount(for amount: SendAmount?) -> Decimal? {
-        guard let crypto = amount?.crypto, crypto > 0 else {
-            // Field is empty or zero
-            update(amount: .none, isValid: false, error: .none)
-            return nil
-        }
-        return crypto
     }
 
     private func update(amount: SendAmount?, isValid: Bool, error: Error?) {
