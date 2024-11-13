@@ -450,7 +450,7 @@ extension SingleTokenBaseViewModel {
             if walletModel.isCustom {
                 return true
             }
-            
+
             return expressAvailabilityProvider.canOnramp(tokenItem: walletModel.tokenItem)
         } else {
             return !exchangeUtility.buyAvailable
@@ -623,6 +623,7 @@ extension SingleTokenBaseViewModel {
             Analytics.log(event: .tokenNoticeActionInactive, params: [
                 .token: walletModel.tokenItem.currencySymbol,
                 .action: Analytics.ParameterValue.swap.rawValue,
+                .reason: walletModel.sendingRestrictions.analyticsUnavailableReason,
             ])
         }
 
@@ -649,6 +650,7 @@ extension SingleTokenBaseViewModel {
             Analytics.log(event: .tokenNoticeActionInactive, params: [
                 .token: walletModel.tokenItem.currencySymbol,
                 .action: Analytics.ParameterValue.sell.rawValue,
+                .reason: walletModel.sendingRestrictions.analyticsUnavailableReason,
             ])
         }
 
@@ -662,9 +664,10 @@ extension SingleTokenBaseViewModel {
             Analytics.log(event: .tokenNoticeActionInactive, params: [
                 .token: walletModel.tokenItem.currencySymbol,
                 .action: Analytics.ParameterValue.send.rawValue,
+                .reason: walletModel.sendingRestrictions.analyticsUnavailableReason,
             ])
         }
-
+        
         openSend()
     }
 
@@ -692,5 +695,20 @@ extension SingleTokenBaseViewModel: CustomStringConvertible {
                 "WalletModel": walletModel.description,
             ]
         )
+    }
+}
+
+// MARK: - TransactionSendAvailabilityProvider.SendingRestrictions
+
+private extension TransactionSendAvailabilityProvider.SendingRestrictions? {
+    var analyticsUnavailableReason: String {
+        switch self {
+        case .zeroWalletBalance:
+            return Analytics.ParameterValue.empty.rawValue
+        case .none:
+            return Analytics.ParameterValue.null.rawValue
+        default:
+            return Analytics.ParameterValue.unavailable.rawValue
+        }
     }
 }
