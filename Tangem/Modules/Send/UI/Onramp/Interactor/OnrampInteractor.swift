@@ -35,6 +35,6 @@ extension CommonOnrampInteractor: OnrampInteractor {
             return Empty().eraseToAnyPublisher()
         }
 
-        return input.isValidPublisher
+        return input.isValidToRedirectPublisher
     }
 }

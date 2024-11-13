@@ -9,7 +9,7 @@
 import Combine
 
 protocol OnrampInput: AnyObject {
-    var isValidPublisher: AnyPublisher<Bool, Never> { get }
+    var isValidToRedirectPublisher: AnyPublisher<Bool, Never> { get }
 }
 
 protocol OnrampOutput: AnyObject {}

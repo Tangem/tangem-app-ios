@@ -67,8 +67,9 @@ class OnrampModel {
 private extension OnrampModel {
     func bind() {
         _amount
-            .sink { [weak self] amount in
-                self?.updateQuotes(amount: amount?.fiat)
+            .withWeakCaptureOf(self)
+            .sink { model, amount in
+                model.updateQuotes(amount: amount?.fiat)
             }
             .store(in: &bag)
 
@@ -97,18 +98,16 @@ private extension OnrampModel {
     }
 
     func updateQuotes(amount: Decimal?) {
-        guard let amount else {
-            _selectedOnrampProvider.send(.none)
-            // Clear onrampManager
-            mainTask {
-                try await $0.onrampManager.setupQuotes(amount: nil)
-            }
-
-            return
-        }
-
-        _selectedOnrampProvider.send(.loading)
         mainTask {
+            guard let amount else {
+                $0._selectedOnrampProvider.send(.none)
+                // Clear onrampManager
+                try await $0.onrampManager.setupQuotes(amount: nil)
+                return
+            }
+            
+            $0._selectedOnrampProvider.send(.loading)
+
             try await $0.onrampManager.setupQuotes(amount: amount)
 
             await $0._onrampProviders.send(.loaded($0.onrampManager.providers))
@@ -289,7 +288,7 @@ extension OnrampModel: OnrampPaymentMethodsOutput {
 // MARK: - OnrampInput
 
 extension OnrampModel: OnrampInput {
-    var isValidPublisher: AnyPublisher<Bool, Never> {
+    var isValidToRedirectPublisher: AnyPublisher<Bool, Never> {
         _selectedOnrampProvider
             .compactMap { $0?.value?.manager.state.isReadyToBuy }
             .eraseToAnyPublisher()
