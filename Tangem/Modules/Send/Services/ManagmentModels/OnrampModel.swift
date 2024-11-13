@@ -105,7 +105,7 @@ private extension OnrampModel {
                 try await $0.onrampManager.setupQuotes(amount: nil)
                 return
             }
-            
+
             $0._selectedOnrampProvider.send(.loading)
 
             try await $0.onrampManager.setupQuotes(amount: amount)
