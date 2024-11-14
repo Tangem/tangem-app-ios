@@ -4,7 +4,7 @@ on:
   push:
    branches:
     - 'develop' # TODO: prevent triggering when merging release* branches
-    #- 'feature/IOS-8113_ci_cd_beta_builds_workflow' # TODO: Test only, remove
+    - 'feature/IOS-8113_ci_cd_beta_builds_workflow' # TODO: Test only, remove
   workflow_dispatch:
     inputs:
       build_description:
