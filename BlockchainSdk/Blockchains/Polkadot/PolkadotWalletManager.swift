@@ -184,3 +184,25 @@ private class Ed25519DummyTransactionSigner: TransactionSigner {
             .eraseToAnyPublisher()
     }
 }
+
+// MARK: - StakeKitTransactionSender, StakeKitTransactionSenderProvider
+
+extension PolkadotWalletManager: StakeKitTransactionSender, StakeKitTransactionSenderProvider {
+    typealias RawTransaction = String
+
+    func prepareDataForSign(transaction: StakeKitTransaction) throws -> Data {
+        try PolkadotStakeKitTransactionHelper(transactionBuilder: txBuilder).prepareForSign(transaction)
+    }
+
+    func prepareDataForSend(transaction: StakeKitTransaction, signature: SignatureInfo) throws -> RawTransaction {
+        try PolkadotStakeKitTransactionHelper(transactionBuilder: txBuilder)
+            .prepareForSend(stakingTransaction: transaction, signatureInfo: signature)
+            .hexString
+            .lowercased()
+            .addHexPrefix()
+    }
+
+    func broadcast(transaction: StakeKitTransaction, rawTransaction: RawTransaction) async throws -> String {
+        fatalError()
+    }
+}

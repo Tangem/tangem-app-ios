@@ -13,6 +13,7 @@
 		0A0E01772C64AA79009E01F2 /* StakingSendAmountValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0E01762C64AA79009E01F2 /* StakingSendAmountValidator.swift */; };
 		0A1992A62B5FBDF800344312 /* CurrencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1992A52B5FBDF800344312 /* CurrencyTests.swift */; };
 		0A2A04DB2C91B167007EAE64 /* TronSendTransactionSummaryDescriptionBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2A04DA2C91B167007EAE64 /* TronSendTransactionSummaryDescriptionBuilder.swift */; };
+		0A33ADA02CE5C2F200CF44C1 /* PolkadotStakeKitTransactionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A33AD9F2CE5C2F200CF44C1 /* PolkadotStakeKitTransactionHelper.swift */; };
 		0A3BF9692C6CDAD900163492 /* AdditionalAddresses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3BF9682C6CDAD900163492 /* AdditionalAddresses.swift */; };
 		0A3BF96B2C6CE96B00163492 /* StakingAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3BF96A2C6CE96B00163492 /* StakingAction.swift */; };
 		0A713CEC2CAA6DA30042FC27 /* RestakingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A713CEB2CAA6DA30042FC27 /* RestakingModel.swift */; };
@@ -3065,6 +3066,7 @@
 		0A0E01762C64AA79009E01F2 /* StakingSendAmountValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingSendAmountValidator.swift; sourceTree = "<group>"; };
 		0A1992A52B5FBDF800344312 /* CurrencyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrencyTests.swift; sourceTree = "<group>"; };
 		0A2A04DA2C91B167007EAE64 /* TronSendTransactionSummaryDescriptionBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TronSendTransactionSummaryDescriptionBuilder.swift; sourceTree = "<group>"; };
+		0A33AD9F2CE5C2F200CF44C1 /* PolkadotStakeKitTransactionHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolkadotStakeKitTransactionHelper.swift; sourceTree = "<group>"; };
 		0A3BF9682C6CDAD900163492 /* AdditionalAddresses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdditionalAddresses.swift; sourceTree = "<group>"; };
 		0A3BF96A2C6CE96B00163492 /* StakingAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingAction.swift; sourceTree = "<group>"; };
 		0A713CEB2CAA6DA30042FC27 /* RestakingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestakingModel.swift; sourceTree = "<group>"; };
@@ -10118,6 +10120,7 @@
 				B62D3DBB2CBC79D900C2460E /* AccountHealthCheck */,
 				B62D3DC12CBC79D900C2460E /* OtherChains */,
 				B62D3DC22CBC79D900C2460E /* PolkadotAddress.swift */,
+				0A33AD9F2CE5C2F200CF44C1 /* PolkadotStakeKitTransactionHelper.swift */,
 				B62D3DC32CBC79D900C2460E /* PolkadotAddressService.swift */,
 				B62D3DC42CBC79D900C2460E /* PolkadotBlockchainMeta.swift */,
 				B62D3DC52CBC79D900C2460E /* PolkadotExternalLinkProvider.swift */,
@@ -18030,6 +18033,7 @@
 				B62D3FB32CBC79DA00C2460E /* AptosAddressService.swift in Sources */,
 				B62D40612CBC79DA00C2460E /* ChiaTransactionBuilder.swift in Sources */,
 				B62D40B32CBC79DA00C2460E /* MantaExternalLinkProvider.swift in Sources */,
+				0A33ADA02CE5C2F200CF44C1 /* PolkadotStakeKitTransactionHelper.swift in Sources */,
 				B62D42232CBC79DB00C2460E /* XRPWalletAssembly.swift in Sources */,
 				B62D41BE2CBC79DB00C2460E /* TONError.swift in Sources */,
 				B62D42622CBC79DB00C2460E /* SendTxErrorFactory.swift in Sources */,
