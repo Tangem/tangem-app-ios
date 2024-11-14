@@ -11,41 +11,21 @@ import SwiftUI
 struct AuthCoordinatorView: CoordinatorView {
     @ObservedObject var coordinator: AuthCoordinator
 
+    private var namespace: Namespace.ID?
+
     init(coordinator: AuthCoordinator) {
         self.coordinator = coordinator
     }
 
     var body: some View {
         ZStack {
-            content
+            if let rootViewModel = coordinator.rootViewModel {
+                AuthView(viewModel: rootViewModel)
+                    .setNamespace(namespace)
+            }
 
             sheets
         }
-        // modifiers order is changed intentionally (see OnboardingCoordinatorView, WelcomeCoordinatorView):
-        // navigation bar animation looks redundant in case of regular authentication
-        .animation(.default, value: coordinator.transitionAnimationValue)
-        .navigationBarHidden(coordinator.isNavigationBarHidden)
-    }
-
-    @ViewBuilder
-    private var content: some View {
-        switch coordinator.viewState {
-        case .auth(let authViewModel):
-            AuthView(viewModel: authViewModel)
-                .navigationLinks(links)
-        case .main(let mainCoordinator):
-            MainCoordinatorView(coordinator: mainCoordinator)
-        case .none:
-            EmptyView()
-        }
-    }
-
-    @ViewBuilder
-    private var links: some View {
-        NavHolder()
-            .navigation(item: $coordinator.pushedOnboardingCoordinator) {
-                OnboardingCoordinatorView(coordinator: $0)
-            }
     }
 
     @ViewBuilder
@@ -54,5 +34,11 @@ struct AuthCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.mailViewModel) {
                 MailView(viewModel: $0)
             }
+    }
+}
+
+extension AuthCoordinatorView: Setupable {
+    func setNamespace(_ namespace: Namespace.ID) -> Self {
+        map { $0.namespace = namespace }
     }
 }

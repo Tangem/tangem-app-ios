@@ -1310,4 +1310,37 @@ class AddressesTests: XCTestCase {
 
         XCTAssertTrue(addressService.validate("f7b1299849420e082bbdd9de92cb36e0645e7870513a6eb833d5449a88799699"))
     }
+
+    func testCasperAddressGeneration() throws {
+        let ed25519WalletPublicKey = Data(hexString: "98C07D7E72D89A681D7227A7AF8A6FD5F22FE0105C8741D55A95DF415454B82E")
+        let ed25519ExpectedAddress = "0198c07D7e72D89A681d7227a7Af8A6fd5F22fe0105c8741d55A95dF415454b82E"
+
+        let ed25519AddressService = CasperAddressService(curve: .ed25519)
+
+        try XCTAssertEqual(ed25519AddressService.makeAddress(from: ed25519WalletPublicKey).value, ed25519ExpectedAddress)
+
+        let secp256k1WalletPublicKey = Data(hexString: "021F997DFBBFD32817C0E110EAEE26BCBD2BB70B4640C515D9721C9664312EACD8")
+        let secp256k1ExpectedAddress = "02021f997DfbbFd32817C0E110EAeE26BCbD2BB70b4640C515D9721c9664312eaCd8"
+
+        let secp256k1AddressService = CasperAddressService(curve: .secp256k1)
+
+        try XCTAssertEqual(secp256k1AddressService.makeAddress(from: secp256k1WalletPublicKey).value, secp256k1ExpectedAddress)
+
+        let compressedKey = try secp256k1AddressService.makeAddress(from: secpCompressedKey)
+        let decompressedKey = try secp256k1AddressService.makeAddress(from: secpDecompressedKey)
+
+        XCTAssertEqual(compressedKey.value, decompressedKey.value)
+    }
+
+    func testCasperAddressValidation() {
+        let ed25519Address = "0198c07D7e72D89A681d7227a7Af8A6fd5F22fe0105c8741d55A95dF415454b82E"
+        let ed25519AddressService = CasperAddressService(curve: .ed25519)
+
+        XCTAssertTrue(ed25519AddressService.validate(ed25519Address))
+
+        let secp256k1Address = "02021f997DfbbFd32817C0E110EAeE26BCbD2BB70b4640C515D9721c9664312eaCd8"
+        let secp256k1AddressService = CasperAddressService(curve: .secp256k1)
+
+        XCTAssertTrue(secp256k1AddressService.validate(secp256k1Address))
+    }
 }

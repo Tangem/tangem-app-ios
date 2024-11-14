@@ -17,9 +17,10 @@ class CommonOnrampInteractor {
     private weak var input: OnrampInput?
     private weak var output: OnrampOutput?
 
-    private let _isValid: CurrentValueSubject<Bool, Never> = .init(true)
-
-    init(input: OnrampInput, output: OnrampOutput) {
+    init(
+        input: OnrampInput,
+        output: OnrampOutput
+    ) {
         self.input = input
         self.output = output
     }
@@ -29,6 +30,11 @@ class CommonOnrampInteractor {
 
 extension CommonOnrampInteractor: OnrampInteractor {
     var isValidPublisher: AnyPublisher<Bool, Never> {
-        _isValid.eraseToAnyPublisher()
+        guard let input else {
+            assertionFailure("OnrampInput not found")
+            return Empty().eraseToAnyPublisher()
+        }
+
+        return input.isValidToRedirectPublisher
     }
 }

@@ -38,8 +38,9 @@ struct TransactionView: View {
                             .truncationMode(.middle)
                     }
                 }
+                .layoutPriority(1)
 
-                Spacer()
+                Spacer(minLength: 4)
 
                 VStack(alignment: .trailing, spacing: 4) {
                     if let amount = viewModel.formattedAmount {
@@ -50,6 +51,7 @@ struct TransactionView: View {
                     Text(viewModel.subtitleText)
                         .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
                 }
+                .layoutPriority(2)
             }
         }
         .padding(.horizontal, 14)

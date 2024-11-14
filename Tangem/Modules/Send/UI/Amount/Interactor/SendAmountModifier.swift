@@ -18,11 +18,13 @@ protocol SendAmountModifier {
 
 struct StakingAmountModifier: SendAmountModifier {
     private let tokenItem: TokenItem
+    private let actionType: SendFlowActionType
 
     private var _message: CurrentValueSubject<String?, Never> = .init(nil)
 
-    init(tokenItem: TokenItem) {
+    init(tokenItem: TokenItem, actionType: SendFlowActionType) {
         self.tokenItem = tokenItem
+        self.actionType = actionType
     }
 
     var modifyingMessagePublisher: AnyPublisher<String?, Never> {
@@ -43,7 +45,12 @@ struct StakingAmountModifier: SendAmountModifier {
             return amount
         }
 
-        _message.send(Localization.stakingAmountTronIntegerError(rounded))
+        let message = switch actionType {
+        case .unstake: Localization.stakingAmountTronIntegerErrorUnstaking(rounded)
+        default: Localization.stakingAmountTronIntegerError(rounded)
+        }
+
+        _message.send(message)
         return rounded
     }
 }

@@ -26,14 +26,12 @@ final class AuthViewModel: ObservableObject {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
     @Injected(\.incomingActionManager) private var incomingActionManager: IncomingActionManaging
 
-    private var unlockOnStart: Bool
     private weak var coordinator: AuthRoutable?
 
-    init(
-        unlockOnStart: Bool,
-        coordinator: AuthRoutable
-    ) {
-        self.unlockOnStart = unlockOnStart
+    private var unlockOnAppear: Bool
+
+    init(unlockOnAppear: Bool = false, coordinator: AuthRoutable) {
+        self.unlockOnAppear = unlockOnAppear
         self.coordinator = coordinator
     }
 
@@ -60,21 +58,7 @@ final class AuthViewModel: ObservableObject {
 
     func unlockWithBiometry() {
         userWalletRepository.unlock(with: .biometry) { [weak self] result in
-            guard let self else { return }
-
-            didFinishUnlocking(result)
-
-            switch result {
-            case .success(let model), .partial(let model, _):
-                let walletHasBackup = Analytics.ParameterValue.affirmativeOrNegative(for: model.hasBackupCards)
-                Analytics.log(event: .signedIn, params: [
-                    .signInType: Analytics.ParameterValue.signInTypeBiometrics.rawValue,
-                    .walletsCount: "\(userWalletRepository.models.count)",
-                    .walletHasBackup: walletHasBackup.rawValue,
-                ])
-            default:
-                break
-            }
+            self?.didFinishUnlocking(result)
         }
     }
 
@@ -83,36 +67,20 @@ final class AuthViewModel: ObservableObject {
         Analytics.beginLoggingCardScan(source: .auth)
 
         userWalletRepository.unlock(with: .card(userWalletId: nil, scanner: CardScannerFactory().makeDefaultScanner())) { [weak self] result in
-            guard let self else { return }
 
-            didFinishUnlocking(result)
-
-            switch result {
-            case .success(let model), .partial(let model, _):
-                let walletHasBackup = Analytics.ParameterValue.affirmativeOrNegative(for: model.hasBackupCards)
-                Analytics.log(event: .signedIn, params: [
-                    .signInType: Analytics.ParameterValue.card.rawValue,
-                    .walletsCount: "\(userWalletRepository.models.count)",
-                    .walletHasBackup: walletHasBackup.rawValue,
-                ])
-            default:
-                break
-            }
+            self?.didFinishUnlocking(result)
         }
     }
 
     func onAppear() {
         Analytics.log(.signInScreenOpened)
         incomingActionManager.becomeFirstResponder(self)
-    }
 
-    func onDidAppear() {
-        guard unlockOnStart else { return }
-
-        unlockOnStart = false
-
-        DispatchQueue.main.async {
-            self.unlockWithBiometry()
+        if unlockOnAppear {
+            DispatchQueue.main.async {
+                self.unlockOnAppear = false
+                self.unlockWithBiometry()
+            }
         }
     }
 
@@ -167,7 +135,7 @@ extension AuthViewModel {
 
 extension AuthViewModel: IncomingActionResponder {
     func didReceiveIncomingAction(_ action: IncomingAction) -> Bool {
-        if !unlockOnStart {
+        if !unlockOnAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 self.unlockWithBiometry()
             }

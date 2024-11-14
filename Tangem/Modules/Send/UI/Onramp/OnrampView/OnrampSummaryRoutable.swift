@@ -8,4 +8,6 @@
 
 protocol OnrampSummaryRoutable: AnyObject {
     func onrampStepRequestEditProvider()
+    func openOnrampSettingsView()
+    func openOnrampCurrencySelectorView()
 }

@@ -33,7 +33,11 @@ class SendCoordinator: CoordinatorObject {
 
     @Published var mailViewModel: MailViewModel?
     @Published var expressApproveViewModel: ExpressApproveViewModel?
-    @Published var onrampCountryViewModel: OnrampCountryViewModel?
+    @Published var onrampCountryDetectionViewModel: OnrampCountryDetectionViewModel?
+
+    @Published var onrampSettingsViewModel: OnrampSettingsViewModel?
+    @Published var onrampCountrySelectorViewModel: OnrampCountrySelectorViewModel?
+    @Published var onrampCurrencySelectorViewModel: OnrampCurrencySelectorViewModel?
 
     required init(
         dismissAction: @escaping Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?>,
@@ -136,28 +140,45 @@ extension SendCoordinator: SendRoutable {
 // MARK: - ExpressApproveRoutable
 
 extension SendCoordinator: OnrampRoutable {
-    func openOnrampCountry(country: OnrampCountry, repository: OnrampRepository) {
-        onrampCountryViewModel = .init(
+    func openOnrampCountryDetection(country: OnrampCountry, repository: OnrampRepository) {
+        onrampCountryDetectionViewModel = OnrampCountryDetectionViewModel(
             country: country,
             repository: repository,
             coordinator: self
         )
     }
 
-    func openOnrampCountrySelectorView(repository: any OnrampRepository, dataRepository: any OnrampDataRepository) {
-        // TODO: Aleksei Muraveinik
-        // https://tangem.atlassian.net/browse/IOS-8357
+    func openOnrampCountrySelector(repository: any OnrampRepository, dataRepository: any OnrampDataRepository) {
+        onrampCountrySelectorViewModel = OnrampCountrySelectorViewModel(
+            repository: repository,
+            dataRepository: dataRepository,
+            coordinator: self
+        )
     }
 
-    func openOnrampCurrencySelectorView(repository: any OnrampRepository, dataRepository: any OnrampDataRepository) {
-        // TODO: Aleksei Muraveinik
-        // https://tangem.atlassian.net/browse/IOS-8158
+    func openOnrampSettings(repository: any OnrampRepository) {
+        onrampSettingsViewModel = OnrampSettingsViewModel(
+            repository: repository,
+            coordinator: self
+        )
     }
 
-    func openOnrampProviders() {
-        let coordinator = OnrampProvidersCoordinator { [weak self] in
-            self?.onrampProvidersCoordinator = nil
-        }
+    func openOnrampCurrencySelector(repository: any OnrampRepository, dataRepository: any OnrampDataRepository) {
+        onrampCurrencySelectorViewModel = OnrampCurrencySelectorViewModel(
+            repository: repository,
+            dataRepository: dataRepository,
+            coordinator: self
+        )
+    }
+
+    func openOnrampProviders(providersBuilder: OnrampProvidersBuilder, paymentMethodsBuilder: OnrampPaymentMethodsBuilder) {
+        let coordinator = OnrampProvidersCoordinator(
+            onrampProvidersBuilder: providersBuilder,
+            onrampPaymentMethodsBuilder: paymentMethodsBuilder,
+            dismissAction: { [weak self] in
+                self?.onrampProvidersCoordinator = nil
+            }, popToRootAction: popToRootAction
+        )
 
         coordinator.start(with: .default)
         onrampProvidersCoordinator = coordinator
@@ -176,16 +197,47 @@ extension SendCoordinator: ExpressApproveRoutable {
     }
 }
 
-// MARK: - OnrampCountryRoutable
+// MARK: - OnrampCountryDetectionRoutable
 
-extension SendCoordinator: OnrampCountryRoutable {
+extension SendCoordinator: OnrampCountryDetectionRoutable {
     func openChangeCountry() {
-        // Uncomment when add `OnrampCountriesSelector`
-        // onrampCountryViewModel = nil
-        // rootViewModel?.openOnrampCountriesSelector()
+        onrampCountryDetectionViewModel = nil
+        rootViewModel?.openOnrampCountrySelectorView()
     }
 
     func dismissConfirmCountryView() {
-        onrampCountryViewModel = nil
+        onrampCountryDetectionViewModel = nil
+    }
+}
+
+// MARK: - OnrampCountrySelectorRoutable
+
+extension SendCoordinator: OnrampCountrySelectorRoutable {
+    func dismissCountrySelector() {
+        onrampCountrySelectorViewModel = nil
+    }
+}
+
+// MARK: - OnrampSettingsRoutable
+
+extension SendCoordinator: OnrampSettingsRoutable {
+    func openOnrampCountrySelector() {
+        rootViewModel?.openOnrampCountrySelectorView()
+    }
+}
+
+// MARK: - OnrampCurrencySelectorRoutable
+
+extension SendCoordinator: OnrampCurrencySelectorRoutable {
+    func dismissCurrencySelector() {
+        onrampCurrencySelectorViewModel = nil
+    }
+}
+
+// MARK: - OnrampAmountRoutable
+
+extension SendCoordinator: OnrampAmountRoutable {
+    func openOnrampCurrencySelector() {
+        rootViewModel?.openOnrampCurrencySelectorView()
     }
 }

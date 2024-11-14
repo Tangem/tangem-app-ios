@@ -8,15 +8,16 @@
 
 import Foundation
 
+public struct StakeKitAPIError: Decodable, LocalizedError {
+    public let code: String?
+    public let message: String?
+    let level: String?
+
+    public var errorDescription: String? { message }
+}
+
 enum StakeKitDTO {
     // MARK: - Common
-
-    struct APIError: Decodable, LocalizedError {
-        let message: String?
-        let level: String?
-
-        var errorDescription: String? { message }
-    }
 
     struct Token: Codable {
         let network: String

@@ -7,7 +7,21 @@
 //
 
 public protocol OnrampDataRepository: Actor {
+    func providers() async throws -> [ExpressProvider]
     func paymentMethods() async throws -> [OnrampPaymentMethod]
     func countries() async throws -> [OnrampCountry]
     func currencies() async throws -> [OnrampFiatCurrency]
+}
+
+public extension OnrampDataRepository {
+    nonisolated var popularFiatCodes: Set<String> {
+        [
+            "GBP",
+            "USD",
+            "CAD",
+            "AUD",
+            "HKD",
+            "EUR",
+        ]
+    }
 }

@@ -6,30 +6,44 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-// For every onramp provider
-public protocol OnrampProviderManager: Actor {
-    // Update quotes for amount
-    func update(amount: Decimal) async
+public protocol OnrampProviderManager {
+    /// Get actual state
+    var state: OnrampProviderManagerState { get }
 
-    // Get actual state
-    func state() -> OnrampProviderManagerState
+    /// Update quotes for amount
+    func update(amount: Decimal?) async
 }
 
 public enum OnrampProviderManagerState: Hashable {
-    case created
+    case idle
+    case notSupported(NotSupported)
     case loading
-    case failed(String)
-    case loaded([Loaded])
+    case restriction(Restriction)
+    case failed(error: String)
+    case loaded(OnrampQuote)
 
-    public struct Loaded: Hashable {
-        public let paymentMethod: OnrampPaymentMethod
-        public let state: State
-
-        public enum State: Hashable {
-            case notSupported
-            case failed(error: String)
-            case quote(OnrampQuote)
+    public var isSupported: Bool {
+        switch self {
+        case .idle, .loading, .failed, .loaded, .restriction: true
+        case .notSupported: false
         }
+    }
+
+    public var isReadyToBuy: Bool {
+        switch self {
+        case .loaded: true
+        case .idle, .loading, .failed, .notSupported, .restriction: false
+        }
+    }
+
+    public enum Restriction: Hashable {
+        case tooSmallAmount(_ minAmount: String)
+        case tooBigAmount(_ maxAmount: String)
+    }
+
+    public enum NotSupported: Hashable {
+        case currentPair
+        case paymentMethod
     }
 }
 

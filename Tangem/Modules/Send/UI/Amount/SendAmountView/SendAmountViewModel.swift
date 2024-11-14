@@ -13,7 +13,7 @@ import Combine
 class SendAmountViewModel: ObservableObject {
     // MARK: - ViewState
 
-    let userWalletName: String
+    let walletHeaderText: String
     let balance: String
     let tokenIconInfo: TokenIconInfo
     let currencyPickerData: SendCurrencyPickerData
@@ -55,7 +55,7 @@ class SendAmountViewModel: ObservableObject {
         sendQRCodeService: SendQRCodeService?
     ) {
         tokenItem = initial.tokenItem
-        userWalletName = initial.userWalletName
+        walletHeaderText = initial.walletHeaderText
         balance = initial.balanceFormatted
         tokenIconInfo = initial.tokenIconInfo
         currencyPickerData = initial.currencyPickerData
@@ -201,10 +201,9 @@ extension SendAmountViewModel: SendStepViewAnimatable {
 
 extension SendAmountViewModel {
     struct Settings {
-        let userWalletName: String
+        let walletHeaderText: String
         let tokenItem: TokenItem
         let tokenIconInfo: TokenIconInfo
-        let balanceValue: Decimal
         let balanceFormatted: String
         let currencyPickerData: SendCurrencyPickerData
         let actionType: SendFlowActionType

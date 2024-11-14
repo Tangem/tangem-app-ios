@@ -65,7 +65,7 @@ public enum WalletError: Error, LocalizedError {
     }
 
     private var errorCodeDescription: String {
-        return "wallet_error \(errorCode)"
+        return "Wallet error \(errorCode)"
     }
 }
 

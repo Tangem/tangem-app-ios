@@ -110,7 +110,9 @@ private extension CommonOnrampRepository {
 
     func mapToOnrampPaymentMethod(paymentMethod: OnrampUserPreference.PaymentMethod) -> OnrampPaymentMethod {
         OnrampPaymentMethod(
-            identity: .init(name: paymentMethod.name, code: paymentMethod.id, image: paymentMethod.image)
+            id: paymentMethod.id,
+            name: paymentMethod.name,
+            image: paymentMethod.image
         )
     }
 
@@ -135,9 +137,9 @@ private extension CommonOnrampRepository {
 
     func mapToOnrampUserPreferencePaymentMethod(paymentMethod: OnrampPaymentMethod) -> OnrampUserPreference.PaymentMethod {
         OnrampUserPreference.PaymentMethod(
-            name: paymentMethod.identity.name,
-            id: paymentMethod.identity.code,
-            image: paymentMethod.identity.image
+            name: paymentMethod.name,
+            id: paymentMethod.id,
+            image: paymentMethod.image
         )
     }
 }

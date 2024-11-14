@@ -65,16 +65,12 @@ extension UserWalletSettingsCoordinator: UserWalletSettingsRoutable {
         }
 
         let coordinator = OnboardingCoordinator(dismissAction: dismissAction)
-        let options = OnboardingCoordinator.Options(input: input, destination: .dismiss)
+        let options = OnboardingCoordinator.Options(input: input)
         coordinator.start(with: options)
         modalOnboardingCoordinator = coordinator
     }
 
     func openScanCardSettings(with input: ScanCardSettingsViewModel.Input) {
-        let dismissAction: Action<Void> = { [weak self] _ in
-            self?.scanCardSettingsCoordinator = nil
-        }
-
         let coordinator = ScanCardSettingsCoordinator(dismissAction: dismissAction)
         coordinator.start(with: .init(input: input))
         scanCardSettingsCoordinator = coordinator

@@ -8,13 +8,13 @@
 
 public struct OnrampQuotesRequestItem {
     public let pairItem: OnrampPairRequestItem
-    public let paymentMethod: OnrampPaymentMethod
+    public let paymentMethod: PaymentMethodInfo
     public let providerInfo: ProviderInfo
     public let amount: Decimal
 
     public init(
         pairItem: OnrampPairRequestItem,
-        paymentMethod: OnrampPaymentMethod,
+        paymentMethod: PaymentMethodInfo,
         providerInfo: ProviderInfo,
         amount: Decimal
     ) {
@@ -36,6 +36,10 @@ public struct OnrampQuotesRequestItem {
 }
 
 public extension OnrampQuotesRequestItem {
+    struct PaymentMethodInfo: Hashable {
+        let id: String
+    }
+
     struct ProviderInfo: Hashable {
         let id: String
     }

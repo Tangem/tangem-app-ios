@@ -61,6 +61,8 @@ struct UserWalletConfigFactory {
             }
 
             return LegacyConfig(card: cardInfo.card, walletData: walletData)
+        case .visa:
+            return VisaConfig(card: cardInfo.card)
         }
     }
 }
