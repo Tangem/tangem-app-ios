@@ -25,15 +25,19 @@ public protocol OnrampManager: Actor {
     /// The user changed the amount. We upload providers quotes
     func setupQuotes(amount: Decimal?) async throws
 
+    func updatePaymentMethod(paymentMethod: OnrampPaymentMethod) throws
+
     /// Load the data to perform the onramp action
     func loadRedirectData(provider: OnrampProvider, redirectSettings: OnrampRedirectSettings) async throws -> OnrampRedirectData
 }
 
 public enum OnrampManagerError: LocalizedError {
+    case noProviderForPaymentMethod
     case providersIsEmpty
 
     public var errorDescription: String? {
         switch self {
+        case .noProviderForPaymentMethod: "No provider for payment method"
         case .providersIsEmpty: "Providers is empty"
         }
     }

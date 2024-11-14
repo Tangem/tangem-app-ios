@@ -84,7 +84,6 @@ private extension OnrampProvidersViewModel {
     func updateProvidersView(providers: [OnrampProvider]) {
         providersViewData = providers.map { provider in
             OnrampProviderRowViewData(
-                id: provider.provider.id,
                 name: provider.provider.name,
                 iconURL: provider.provider.imageURL,
                 formattedAmount: formattedAmount(state: provider.manager.state),

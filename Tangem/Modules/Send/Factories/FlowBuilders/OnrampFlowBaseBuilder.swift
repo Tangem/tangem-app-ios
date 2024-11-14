@@ -31,8 +31,7 @@ struct OnrampFlowBaseBuilder {
         )
 
         let paymentMethodsBuilder = OnrampPaymentMethodsBuilder(
-            io: (input: onrampModel, output: onrampModel),
-            dataRepository: onrampDataRepository
+            io: (input: onrampModel, output: onrampModel)
         )
 
         let onrampRedirectingBuilder = OnrampRedirectingBuilder(

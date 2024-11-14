@@ -121,7 +121,6 @@ struct OnrampProviderRowView: View {
     LazyVStack {
         ForEach([
             OnrampProviderRowViewData(
-                id: "1inch",
                 name: "1Inch",
                 iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/1INCH512.png"),
                 formattedAmount: "0,00453 BTC",
@@ -131,7 +130,6 @@ struct OnrampProviderRowView: View {
                 action: {}
             ),
             OnrampProviderRowViewData(
-                id: "changenow",
                 name: "Changenow",
                 iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/NOW512.png"),
                 formattedAmount: "0,00450 BTC",

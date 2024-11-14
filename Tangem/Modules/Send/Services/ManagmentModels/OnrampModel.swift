@@ -24,7 +24,6 @@ class OnrampModel {
     private let _currency: CurrentValueSubject<LoadingValue<OnrampFiatCurrency>, Never>
     private let _amount: CurrentValueSubject<SendAmount?, Never> = .init(.none)
     private let _selectedOnrampProvider: CurrentValueSubject<LoadingValue<OnrampProvider>?, Never> = .init(.none)
-    private let _selectedOnrampPaymentMethod: CurrentValueSubject<OnrampPaymentMethod?, Never> = .init(.none)
     private let _onrampProviders: CurrentValueSubject<LoadingValue<ProvidersList>?, Never> = .init(.none)
     private let _isLoading: CurrentValueSubject<Bool, Never> = .init(false)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
@@ -82,11 +81,14 @@ private extension OnrampModel {
             .store(in: &bag)
     }
 
-    func updateProviders(country: OnrampCountry, currency: OnrampFiatCurrency) async throws {
-        let request = makeOnrampPairRequestItem(country: country, currency: currency)
-        try await onrampManager.setupProviders(request: request)
+    func updateProviders(country: OnrampCountry, currency: OnrampFiatCurrency) {
+        mainTask {
+            let request = $0.makeOnrampPairRequestItem(country: country, currency: currency)
+            try await $0.onrampManager.setupProviders(request: request)
+            let providers = await $0.onrampManager.providers
 
-        await _onrampProviders.send(.loaded(onrampManager.providers))
+            $0._onrampProviders.send(.loaded(providers))
+        }
     }
 
     func updateQuotes(amount: Decimal?) {
@@ -108,6 +110,15 @@ private extension OnrampModel {
             }
         }
     }
+
+    func updatePaymentMethod(method: OnrampPaymentMethod) {
+        mainTask {
+            try await $0.onrampManager.updatePaymentMethod(paymentMethod: method)
+            if let selectedProvider = await $0.onrampManager.selectedProvider {
+                $0._selectedOnrampProvider.send(.loaded(selectedProvider))
+            }
+        }
+    }
 }
 
 // MARK: - Preference bindings
@@ -124,9 +135,7 @@ private extension OnrampModel {
         // Update amount UI
         _currency.send(.loaded(currency))
 
-        mainTask {
-            try await $0.updateProviders(country: country, currency: currency)
-        }
+        updateProviders(country: country, currency: currency)
     }
 
     func initiateCountryDefinition() async {
@@ -217,12 +226,16 @@ extension OnrampModel: OnrampProvidersOutput {
 // MARK: - OnrampPaymentMethodsInput
 
 extension OnrampModel: OnrampPaymentMethodsInput {
-    var selectedOnrampPaymentMethod: OnrampPaymentMethod? {
+    var selectedPaymentMethod: OnrampPaymentMethod? {
         _selectedOnrampProvider.value?.value?.paymentMethod
     }
 
-    var selectedOnrampPaymentMethodPublisher: AnyPublisher<OnrampPaymentMethod?, Never> {
+    var selectedPaymentMethodPublisher: AnyPublisher<OnrampPaymentMethod?, Never> {
         _selectedOnrampProvider.map { $0?.value?.paymentMethod }.eraseToAnyPublisher()
+    }
+
+    var paymentMethodsPublisher: AnyPublisher<[OnrampPaymentMethod], Never> {
+        _onrampProviders.compactMap { $0?.value?.keys.toSet() }.map { Array($0) }.eraseToAnyPublisher()
     }
 }
 
@@ -230,7 +243,7 @@ extension OnrampModel: OnrampPaymentMethodsInput {
 
 extension OnrampModel: OnrampPaymentMethodsOutput {
     func userDidSelect(paymentMethod: OnrampPaymentMethod) {
-        _selectedOnrampPaymentMethod.send(paymentMethod)
+        updatePaymentMethod(method: paymentMethod)
     }
 }
 

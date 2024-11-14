@@ -70,7 +70,14 @@ extension CommonOnrampManager: OnrampManager {
 
         await updateQuotesInEachManager(amount: amount)
 
-        updateSelectedProvider()
+        let paymentMethodDeterminer = PaymentMethodDeterminer(dataRepository: dataRepository)
+        let paymentMethod = try await paymentMethodDeterminer.preferredPaymentMethod()
+
+        try updateSelectedProvider(paymentMethod: paymentMethod)
+    }
+
+    public func updatePaymentMethod(paymentMethod: OnrampPaymentMethod) throws {
+        try updateSelectedProvider(paymentMethod: paymentMethod)
     }
 
     public func loadRedirectData(provider: OnrampProvider, redirectSettings: OnrampRedirectSettings) async throws -> OnrampRedirectData {
@@ -89,18 +96,24 @@ private extension CommonOnrampManager {
         await withTaskGroup(of: Void.self) { [weak self] group in
             await self?._providers.values.flatMap { $0 }.forEach { provider in
                 _ = group.addTaskUnlessCancelled {
+                    try? await Task.sleep(nanoseconds: NSEC_PER_SEC)
                     await provider.manager.update(amount: amount)
                 }
             }
+
+            await group.waitForAll()
         }
     }
 
-    func updateSelectedProvider() {
-        // Logic will be updated. Make a some sort by priority
-        // TODO: https://tangem.atlassian.net/browse/IOS-8487
-        _selectedProvider = _providers.values
-            .flatMap { $0 }
-            .first(where: { $0.manager.state.isReadyToBuy })
+    func updateSelectedProvider(paymentMethod: OnrampPaymentMethod) throws {
+        guard let providers = _providers[paymentMethod] else {
+            throw OnrampManagerError.noProviderForPaymentMethod
+        }
+
+        let sortedProviders = providers
+            .sorted(by: { sort(lhs: $0.manager.state, rhs: $1.manager.state) })
+
+        _selectedProvider = sortedProviders.first
     }
 
     func prepareProviders(
@@ -148,5 +161,18 @@ private extension CommonOnrampManager {
         }
 
         return availableProviders
+    }
+
+    func sort(lhs: OnrampProviderManagerState, rhs: OnrampProviderManagerState) -> Bool {
+        switch (lhs, rhs) {
+        case (_, .restriction):
+            return true
+        case (.restriction, _):
+            return false
+        case (.loaded(let lhsQuote), .loaded(let rhsQuote)):
+            return lhsQuote.expectedAmount > rhsQuote.expectedAmount
+        default:
+            return false
+        }
     }
 }

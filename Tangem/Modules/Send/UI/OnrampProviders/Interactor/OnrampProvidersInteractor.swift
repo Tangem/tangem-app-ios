@@ -44,7 +44,7 @@ extension CommonOnrampProvidersInteractor: OnrampProvidersInteractor {
         }
 
         return input
-            .selectedOnrampPaymentMethodPublisher
+            .selectedPaymentMethodPublisher
             .compactMap { $0 }
             .eraseToAnyPublisher()
     }

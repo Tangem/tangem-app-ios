@@ -7,6 +7,9 @@
 //
 
 public protocol OnrampProviderManager {
+    /// Get priority according quotes
+    var priority: OnrampProviderManagerPriority { get }
+
     /// Get actual state
     var state: OnrampProviderManagerState { get }
 
@@ -48,6 +51,12 @@ public enum OnrampProviderManagerState: Hashable {
         case currentPair
         case paymentMethod
     }
+}
+
+public enum OnrampProviderManagerPriority: Int, Hashable {
+    case high
+    case medium
+    case low
 }
 
 public enum OnrampProviderManagerError: LocalizedError {

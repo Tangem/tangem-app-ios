@@ -9,7 +9,8 @@
 import Foundation
 
 struct OnrampProviderRowViewData: Identifiable {
-    let id: String
+    var id: Int { hashValue }
+
     let name: String
     let iconURL: URL?
     let formattedAmount: String?
@@ -42,10 +43,10 @@ extension OnrampProviderRowViewData: Hashable {
     }
 
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
         hasher.combine(name)
         hasher.combine(iconURL)
         hasher.combine(formattedAmount)
+        hasher.combine(state)
         hasher.combine(badge)
         hasher.combine(isSelected)
     }
