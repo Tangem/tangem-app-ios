@@ -451,7 +451,7 @@ extension SingleTokenBaseViewModel {
                 return true
             }
 
-            return expressAvailabilityProvider.canOnramp(tokenItem: walletModel.tokenItem)
+            return !expressAvailabilityProvider.canOnramp(tokenItem: walletModel.tokenItem)
         } else {
             return !exchangeUtility.buyAvailable
         }
