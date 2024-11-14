@@ -15,7 +15,7 @@ struct OnrampProviderRowViewData: Identifiable {
     let iconURL: URL?
     let formattedAmount: String?
     let state: State?
-    let badge: Badge
+    let badge: Badge?
     let isSelected: Bool
 
     let action: () -> Void

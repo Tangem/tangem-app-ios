@@ -70,14 +70,11 @@ extension CommonOnrampManager: OnrampManager {
 
         await updateQuotesInEachManager(amount: amount)
 
-        let paymentMethodDeterminer = PaymentMethodDeterminer(dataRepository: dataRepository)
-        let paymentMethod = try await paymentMethodDeterminer.preferredPaymentMethod()
-
-        try updateSelectedProvider(paymentMethod: paymentMethod)
+        try await proceedProviders()
     }
 
     public func updatePaymentMethod(paymentMethod: OnrampPaymentMethod) throws {
-        try updateSelectedProvider(paymentMethod: paymentMethod)
+        _selectedProvider = _providers[paymentMethod]?.first
     }
 
     public func loadRedirectData(provider: OnrampProvider, redirectSettings: OnrampRedirectSettings) async throws -> OnrampRedirectData {
@@ -96,7 +93,6 @@ private extension CommonOnrampManager {
         await withTaskGroup(of: Void.self) { [weak self] group in
             await self?._providers.values.flatMap { $0 }.forEach { provider in
                 _ = group.addTaskUnlessCancelled {
-                    try? await Task.sleep(nanoseconds: NSEC_PER_SEC)
                     await provider.manager.update(amount: amount)
                 }
             }
@@ -105,14 +101,23 @@ private extension CommonOnrampManager {
         }
     }
 
-    func updateSelectedProvider(paymentMethod: OnrampPaymentMethod) throws {
+    func proceedProviders() async throws {
+        let paymentMethodDeterminer = PaymentMethodDeterminer(dataRepository: dataRepository)
+        let paymentMethod = try await paymentMethodDeterminer.preferredPaymentMethod()
+
+        try proceedProviders(paymentMethod: paymentMethod)
+    }
+
+    func proceedProviders(paymentMethod: OnrampPaymentMethod) throws {
         guard let providers = _providers[paymentMethod] else {
             throw OnrampManagerError.noProviderForPaymentMethod
         }
 
-        let sortedProviders = providers
-            .sorted(by: { sort(lhs: $0.manager.state, rhs: $1.manager.state) })
+        let sortedProviders = providers.sorted(by: {
+            sort(lhs: $0.manager.state, rhs: $1.manager.state)
+        })
 
+        _providers[paymentMethod] = sortedProviders
         _selectedProvider = sortedProviders.first
     }
 

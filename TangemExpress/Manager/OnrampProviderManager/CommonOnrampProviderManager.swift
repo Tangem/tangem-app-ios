@@ -97,17 +97,6 @@ private extension CommonOnrampProviderManager {
 extension CommonOnrampProviderManager: OnrampProviderManager {
     var state: OnrampProviderManagerState { _state }
 
-    var priority: OnrampProviderManagerPriority {
-        switch state {
-        case .idle, .notSupported, .loading, .failed:
-            return .low
-        case .restriction(let restriction):
-            return .medium
-        case .loaded(let onrampQuote):
-            return .high
-        }
-    }
-
     func update(amount: Decimal?) async {
         _amount = amount
         await updateState()
