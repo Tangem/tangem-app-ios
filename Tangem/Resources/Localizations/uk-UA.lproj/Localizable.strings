@@ -173,6 +173,7 @@
 "common_terms_of_use" = "Умовами використання";
 "common_today" = "Сьогодні";
 "common_transaction_failed" = "Помилка транзакції";
+"common_transaction_status" = "Статус транзакції";
 "common_transactions" = "Транзакції";
 "common_transfer" = "Переказ";
 "common_understand" = "Я зрозумів";
@@ -181,6 +182,7 @@
 "common_unstake" = "Скасувати стейкінг";
 "common_warning" = "Увага";
 "common_week" = "тиждень";
+"common_with" = "з";
 "common_yes" = "Так";
 "contract_address_copied_message" = "Адреса контракту скопійована!";
 "currency_subtitle_expanded" = "Доступні мережі";
@@ -437,7 +439,7 @@
 "markets_token_details_price_performance" = "Цінова ефективність";
 "markets_token_details_repository" = "Репозиторій";
 "markets_token_details_security_score" = "Оцінка безпеки";
-"markets_token_details_security_score_description" = "Security score of a token is a metric that assesses the security level of a blockchain or token based on various factors and is compiled from the sources listed below.";
+"markets_token_details_security_score_description" = "Оцінка безпеки токена – це метрика, яка оцінює рівень безпеки блокчейну або токена на основі різних факторів і складається з джерел, перелічених нижче.";
 "markets_token_details_social" = "Соцмережі";
 "markets_token_details_total_supply" = "Загальна проп.";
 "markets_token_details_total_supply_description" = "Максимальна кількість монет або токенів, яка може коли-небудь існувати для певної криптовалюти";
@@ -542,18 +544,19 @@
 "onramp_currency_other" = "Інші валюти";
 "onramp_currency_popular" = "Популярні фіати";
 "onramp_currency_search" = "Пошук по валюті";
-"onramp_max_amount_restriction" = "The purchase amount should be no more than %@";
-"onramp_min_amount_restriction" = "The amount to buy must be at least %@";
-"onramp_no_available_providers" = "No available providers for this currency";
+"onramp_max_amount_restriction" = "Сума покупки не може бути більше ніж %@";
+"onramp_min_amount_restriction" = "Сума покупки повинна бути не менше %@";
+"onramp_no_available_providers" = "Для данної валюти немає доступних провайдерів";
 "onramp_pay_with" = "Оплата з";
-"onramp_redirecting_to_provider_subtitle" = "You will be able to complete your transaction on the third-party provider, %@";
-"onramp_redirecting_to_provider_title" = "Redirecting to %@...";
+"onramp_redirecting_to_provider_subtitle" = "Ви зможете завершити транзакцію у стороннього постачальника, %@";
+"onramp_redirecting_to_provider_title" = "Перенаправлення на %@...";
 "onramp_residency_bottomsheet_country_not_supported" = "Наші сервіси недоступні в цій країні";
 "onramp_residency_bottomsheet_country_subtitle" = "Змінити або підтвердити";
 "onramp_residency_bottomsheet_title" = "Ваше місце проживання визначено як";
 "onramp_settings_residence" = "Residence";
 "onramp_settings_residence_description" = "Будь ласка, виберіть правильну країну, щоб забезпечити точні способи оплати та послуги.";
 "onramp_settings_title" = "Параметри";
+"onramp_transaction_status_footer_text" = "Ви можете перевірити статус транзакції на сторінці токена";
 "onramp_via" = "Через";
 "organize_tokens_group" = "Групами";
 "organize_tokens_sort_by_balance" = "За балансом";
@@ -692,7 +695,7 @@
 "staking_amount_tron_integer_error_unstaking" = "Сума зняття зі стейкінгу буде округлена до %1$@ TRX через мережеві правила.";
 "staking_claim_unstaked" = "Зняти кошти";
 "staking_details_account_fee" = "Комісія за стейкінг-акаунт";
-"staking_details_account_fee_info" = "Стейкінг-акаунт - це спеціальний рахунок, на якому зберігаються застейкані SOL токени. Він створюється, коли ви делегуєте свої токени валідатору для участі у перевірці транзакцій та отримання винагород. За створення стейкінг-акаунту стягується невелика комісія, яка повертається після завершення стейкінгу.";
+"staking_details_account_fee_info" = "Стейкінг-акаунт — це спеціальний рахунок, на якому зберігаються застейкані SOL токени. Він створюється, коли ви делегуєте свої токени валідатору для участі у перевірці транзакцій та отримання винагород. За створення стейкінг-акаунту стягується невелика комісія, яка повертається після завершення стейкінгу.";
 "staking_details_annual_percentage_rate" = "Процентна ставка";
 "staking_details_annual_percentage_rate_info" = "Річний відсоток, який ви можете отримати, беручи участь у стейкінгу.";
 "staking_details_apr" = "APR";
@@ -781,7 +784,7 @@
 "staking_unbonding_in" = "Розблокування через";
 "staking_unlocked_locked" = "Розблокувати";
 "staking_unlocking" = "Розблокування";
-"staking_unstake_amount_requirement_error" = "Сума для стейкінгу має бути не менше %@";
+"staking_unstake_amount_requirement_error" = "Сума для виведення зі стейкінгу повинна бути не менше %@";
 "staking_unstake_amount_validation_error" = "Сума перевищує баланс стейкінгу";
 "staking_unstaked" = "Вивід зі стейкінгу";
 "staking_unstaked_footer" = "Перевірити незастейкані, щоб отримати свої активи";
@@ -815,7 +818,7 @@
 "swapping_alert_dex_description" = "Сума включає комісію постачальника послуг.";
 "swapping_alert_dex_description_with_slippage" = "Сума включає комісію провайдера послуг. \n\nПроскакування провайдера до %@";
 "swapping_alert_slippage_description" = "Прослизання провайдера становить до %@.";
-"swapping_alert_title" = "Комісії";
+"swapping_alert_title" = "Інформація";
 "swapping_approve_information_text" = "Всі децентралізовані біржі вимагають схвалення, щоб запобігти доступу смарт-контрактів до вашого гаманця без вашого дозволу. За задумом смарт-контракти не можуть отримати доступ до ваших токенів без вашого схвалення. \"Розблоковуючи\" свої токени, ви дозволяєте смарт-контракту 1inch витрачати ваші активи. Майнери мережі отримують плату за газ (сплачену вами), щоб зафіксувати цю дію в блокчейні. Ви можете обміняти свій токен після того, як дасте дозвіл.";
 "swapping_approve_information_title" = "Підтвердити";
 "swapping_fee_estimation_error_text" = "Помилка при розрахунку комісії. Будь ласка, надішліть відгук до служби підтримки.";
@@ -866,7 +869,7 @@
 "transaction_history_transaction_from_address" = "від: %@";
 "transaction_history_transaction_to_address" = "до: %@";
 "transaction_history_transaction_validator" = "валідатор: %@";
-"transfer_min_amount_error" = "Minimum %@";
+"transfer_min_amount_error" = "Мінімум %@";
 "transfer_notification_invalid_minimum_transaction_amount_text" = "Мінімальна сума транзакції становить %1$@.";
 "try_to_load_data_again_button_title" = "Спробуйте знову";
 "twin_error_same_card" = "Ви відсканували одну й ту саму картку. Для створення twin-гаманця вам потрібно відсканувати картку з номером %li";
