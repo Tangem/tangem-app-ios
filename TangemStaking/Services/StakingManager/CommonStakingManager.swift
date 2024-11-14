@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import TangemSdk
+import TangemFoundation
 
 class CommonStakingManager {
     private let integrationId: String
@@ -62,12 +63,12 @@ extension CommonStakingManager: StakingManager {
         }
     }
 
-    func updateState() async {
+    func updateState(loadActions: Bool) async {
         updateState(.loading)
         do {
             async let balances = provider.balances(wallet: wallet)
             async let yield = provider.yield(integrationId: integrationId)
-            async let actions = provider.actions(wallet: wallet)
+            async let actions = loadActions ? provider.actions(wallet: wallet) : []
             try await updateState(state(balances: balances, yield: yield, actions: actions))
         } catch {
             analyticsLogger.logError(
@@ -131,7 +132,9 @@ extension CommonStakingManager: StakingManager {
     }
 
     func transactionDidSent(action: StakingAction) {
-        Task(operation: updateState)
+        runTask(in: self) {
+            await $0.updateState(loadActions: true)
+        }
     }
 }
 

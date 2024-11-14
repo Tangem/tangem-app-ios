@@ -17,7 +17,7 @@ public struct PendingAction: Hashable {
     public let currentStepIndex: Int
     public let transactions: [ActionTransaction]
     public let validatorAddress: String?
-    
+
     public init(
         id: String,
         accountAddresses: [String]? = nil,

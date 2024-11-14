@@ -14,11 +14,17 @@ public protocol StakingManager {
     var statePublisher: AnyPublisher<StakingManagerState, Never> { get }
     var allowanceAddress: String? { get }
 
-    func updateState() async
+    func updateState(loadActions: Bool) async
     func estimateFee(action: StakingAction) async throws -> Decimal
     func transaction(action: StakingAction) async throws -> StakingTransactionAction
 
     func transactionDidSent(action: StakingAction)
+}
+
+public extension StakingManager {
+    func updateState() async {
+        await updateState(loadActions: false)
+    }
 }
 
 public enum StakingManagerState: Hashable, CustomStringConvertible {
