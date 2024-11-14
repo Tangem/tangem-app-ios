@@ -322,7 +322,7 @@ extension Analytics {
         case manageTokensSearched = "[Manage Tokens] Token Searched"
         case manageTokensWalletSelected = "[Manage Tokens] Wallet Selected"
 
-        // MARK: - Manange Tokens / Custom
+        // MARK: - Manage Tokens / Custom
 
         case manageTokensButtonCustomToken = "[Manage Tokens / Custom] Button - Custom Token"
         case manageTokensCustomTokenScreenOpened = "[Manage Tokens / Custom] Custom Token Screen Opened"
