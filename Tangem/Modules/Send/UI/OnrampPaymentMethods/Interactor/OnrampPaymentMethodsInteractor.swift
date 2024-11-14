@@ -52,7 +52,7 @@ extension CommonOnrampPaymentMethodsInteractor: OnrampPaymentMethodsInteractor {
 
         return input
             .paymentMethodsPublisher
-            .map { $0.sorted(by: \.name) }
+            .map { $0.sorted { $0.type.priority > $1.type.priority } }
             .eraseToAnyPublisher()
     }
 

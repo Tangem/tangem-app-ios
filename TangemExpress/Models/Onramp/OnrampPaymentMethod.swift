@@ -33,7 +33,7 @@ public extension OnrampPaymentMethod {
         // Generic for other not so important methods
         case other
 
-        var priority: Int {
+        public var priority: Int {
             switch self {
             case .applePay: return 2
             case .card: return 1
