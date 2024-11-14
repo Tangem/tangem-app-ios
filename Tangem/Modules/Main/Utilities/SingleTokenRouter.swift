@@ -37,8 +37,6 @@ final class SingleTokenRouter: SingleTokenRoutable {
     }
 
     func openReceive(walletModel: WalletModel) {
-        sendAnalyticsEvent(.buttonReceive, for: walletModel)
-
         let infos = walletModel.wallet.addresses.map { address in
             ReceiveAddressInfo(
                 address: address.value,
@@ -54,7 +52,6 @@ final class SingleTokenRouter: SingleTokenRoutable {
     }
 
     func openBuyCryptoIfPossible(walletModel: WalletModel) {
-        sendAnalyticsEvent(.buttonBuy, for: walletModel)
         if tangemApiService.geoIpRegionCode == LanguageCode.ru {
             coordinator?.openBankWarning { [weak self] in
                 self?.openBuy(for: walletModel)
@@ -67,7 +64,6 @@ final class SingleTokenRouter: SingleTokenRoutable {
     }
 
     func openSend(walletModel: WalletModel) {
-        sendAnalyticsEvent(.buttonSend, for: walletModel)
         coordinator?.openSend(
             userWalletModel: userWalletModel,
             walletModel: walletModel
@@ -95,8 +91,6 @@ final class SingleTokenRouter: SingleTokenRoutable {
     }
 
     func openSell(for walletModel: WalletModel) {
-        sendAnalyticsEvent(.buttonSell, for: walletModel)
-
         let exchangeUtility = buildExchangeCryptoUtility(for: walletModel)
         guard let url = exchangeUtility.sellURL else {
             return

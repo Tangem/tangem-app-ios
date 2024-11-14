@@ -254,7 +254,7 @@ private extension SendViewModel {
     }
 
     func openMail(error: Error) {
-        Analytics.log(.requestSupport, params: [.source: .transactionSourceSend])
+        Analytics.log(.requestSupport, params: [.source: .send])
 
         do {
             let (emailDataCollector, recipient) = try dataBuilder.stakingBuilder().makeMailData(stakingRequestError: error)
@@ -265,7 +265,7 @@ private extension SendViewModel {
     }
 
     func openMail(transaction: SendTransactionType, error: SendTxError) {
-        Analytics.log(.requestSupport, params: [.source: .transactionSourceSend])
+        Analytics.log(.requestSupport, params: [.source: .send])
 
         do {
             switch transaction {
