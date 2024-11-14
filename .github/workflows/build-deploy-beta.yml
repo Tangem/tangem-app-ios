@@ -3,7 +3,7 @@ name: Beta - Build and Deploy
 on:
   push:
    branches:
-    - 'develop'
+    - 'develop' # TODO: prevent triggering when merging release* branches
     #- 'feature/IOS-8113_ci_cd_beta_builds_workflow' # TODO: Test only, remove
   workflow_dispatch:
     inputs:
@@ -15,6 +15,11 @@ on:
         description: >
           Optional Xcode version override. Leave blank (default value) to use the default Xcode version; 
           pass a custom value (e.g. '16.0', '10.2.1', '11 Beta 7', '11.2 GM seed', etc) to use a different Xcode version for the build
+        type: string
+      base_branch:
+        description: >
+          Optional base branch for constructing Jira issues diff. 
+          Leave blank (default value) to use the most recent release branch ('releases/*') created from the current branch
         type: string
 
 concurrency:
@@ -29,18 +34,33 @@ jobs:
     name: Prepare information
     runs-on: ubuntu-latest
     outputs:
-      version: 'develop'
+      version: '${{ github.ref_name }}'
       stage: 'Beta'
       build_number: '${{ github.run_number }}'
       jira-issues-summary: '${{ steps.jira-issues-summary.outputs.result }}'
     steps:
+      - name: Checkout 'find-latest-release-branch' script
+        if: ${{ !inputs.base_branch || inputs.base_branch == '' }}
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            Utilites/find-latest-release-branch.sh
+          sparse-checkout-cone-mode: false
+
+      - name: Find latest release branch
+        id: find-latest-release-branch
+        if: ${{ !inputs.base_branch || inputs.base_branch == '' }}
+        run: |
+          ./Utilites/find-latest-release-branch.sh '${{ github.ref_name }}'
+          echo "result=$?" >> $GITHUB_OUTPUT
+
       - name: Get unreleased tasks
         id: git-diff
         uses: tangem/github-action@main
         with:
           github-token: '${{ secrets.GH_MOBILE_PAT }}'
-          base: 'master'
-          head: 'develop'
+          base: '${{ inputs.base_branch || steps.find-latest-release-branch.outputs.result }}'
+          head: '${{ github.ref_name }}'
 
       - name: Jira Login
         uses: atlassian/gajira-login@master
