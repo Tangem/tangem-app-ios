@@ -230,6 +230,8 @@ extension Analytics {
         case mainNoticeBackupErrors = "[Main Screen] Notice - Backup Errors"
         case tokenNoticeNetworkUnreachable = "[Token] Notice - Network Unreachable"
         case tokenNoticeNotEnoughFee = "[Token] Notice - Not Enough Fee"
+        case walletPromoButtonClicked = "[Main Screen] Note Promo Button"
+        case walletPromoAppear = "[Main Screen] Notice - Note Promo"
 
         // MARK: - BlockchainSdk exceptions
 
