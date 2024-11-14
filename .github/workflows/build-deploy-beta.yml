@@ -3,8 +3,7 @@ name: Beta - Build and Deploy
 on:
   push:
    branches:
-    - 'develop' # TODO: prevent triggering when merging release* branches
-    - 'feature/IOS-8113_ci_cd_beta_builds_workflow' # TODO: Test only, remove
+    - 'develop'
   workflow_dispatch:
     inputs:
       build_description:
@@ -104,18 +103,6 @@ jobs:
           project: 'IOS'
           version: '${{ env.next_version_name }}'
           issues: '${{ steps.git-diff.outputs.issues }}'
-
-      # TODO: Remove
-      - name: Debug
-        env:
-          JIRA_ISSUES: '${{ steps.jira-issues-summary.outputs.result }}'
-        run: |
-          echo "Has version: '${{ steps.jira-check-version.outputs.result }}'"
-
-          cat <<EOF
-          Jira issues:
-          ${JIRA_ISSUES}
-          EOF
 
   build:
     name: Tangem Beta
