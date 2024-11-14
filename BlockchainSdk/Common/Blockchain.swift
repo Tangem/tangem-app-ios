@@ -93,6 +93,7 @@ public indirect enum Blockchain: Equatable, Hashable {
     case core(testnet: Bool)
     case canxium
     case casper(curve: EllipticCurve, testnet: Bool)
+    case xodex
 
     public var isTestnet: Bool {
         switch self {
@@ -159,7 +160,8 @@ public indirect enum Blockchain: Equatable, Hashable {
              .bittensor,
              .filecoin,
              .energyWebX,
-             .canxium:
+             .canxium,
+             .xodex:
             return false
         case .stellar(_, let testnet),
              .hedera(_, let testnet),
@@ -301,7 +303,8 @@ public indirect enum Blockchain: Equatable, Hashable {
              .energyWebEVM,
              .energyWebX,
              .core,
-             .canxium:
+             .canxium,
+             .xodex:
             return 18
         case .cardano,
              .xrp,
@@ -474,6 +477,8 @@ public indirect enum Blockchain: Equatable, Hashable {
             return "CAU"
         case .casper:
             return "CSPR"
+        case .xodex:
+            return "XODEX"
         }
     }
 
@@ -765,6 +770,7 @@ public extension Blockchain {
         case .energyWebEVM: return isTestnet ? 73799 : 246
         case .core: return isTestnet ? 1115 : 1116
         case .canxium: return 3003
+        case .xodex: return 2415
         default:
             return nil
         }
@@ -973,6 +979,7 @@ extension Blockchain: Codable {
         case .core: return "core"
         case .canxium: return "canxium"
         case .casper: return "casper-network"
+        case .xodex: return "xodex"
         }
     }
 
@@ -1071,6 +1078,7 @@ extension Blockchain: Codable {
         case "core": self = .core(testnet: isTestnet)
         case "canxium": self = .canxium
         case "casper-network": self = .casper(curve: curve, testnet: isTestnet)
+        case "xodex": self = .xodex
         default:
             throw BlockchainSdkError.decodingFailed
         }
@@ -1315,6 +1323,8 @@ private extension Blockchain {
             return "canxium"
         case .casper:
             return "casper-network"
+        case .xodex:
+            return "xodex"
         }
     }
 
@@ -1370,7 +1380,8 @@ extension Blockchain {
              .telos,
              .energyWebEVM,
              .core,
-             .canxium:
+             .canxium,
+             .xodex:
             return EthereumWalletAssembly()
         case .optimism,
              .manta,
