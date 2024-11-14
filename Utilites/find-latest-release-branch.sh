@@ -38,5 +38,8 @@ if [ -z "$latest_branch" ]; then
   exit 2
 fi
 
+# Stripping 'origin/' prefix if needed
+latest_branch="${latest_branch#origin/}"
+
 echo "$latest_branch" > "find-latest-release-branch.output"
-echo "Latest release branch created directly from $base_branch: $latest_branch"
+echo "Latest release branch created directly from '$base_branch' or its ancestor: '$latest_branch'"

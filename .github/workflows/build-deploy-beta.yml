@@ -54,12 +54,7 @@ jobs:
         if: ${{ env.should_find_latest_release_branch }}
         run: |
           ./Utilites/find-latest-release-branch.sh '${{ github.ref_name }}'
-
-          # Fetching the latest release branch and stripping 'origin/' prefix if needed
-          LATEST_RELEASE_BRANCH=$(< "find-latest-release-branch.output")
-          LATEST_RELEASE_BRANCH="${LATEST_RELEASE_BRANCH#origin/}"
-
-          echo "result=${LATEST_RELEASE_BRANCH}" >> $GITHUB_OUTPUT
+          echo "result=$(< 'find-latest-release-branch.output')" >> $GITHUB_OUTPUT
 
       - name: Get unreleased tasks
         id: git-diff
