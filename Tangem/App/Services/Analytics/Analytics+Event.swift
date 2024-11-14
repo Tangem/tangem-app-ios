@@ -308,6 +308,8 @@ extension Analytics {
         case marketsChartButtonSwap = "[Markets / Chart] Button - Swap"
         case marketsChartDataError = "[Markets / Chart] Data Error"
         case marketsChartExchangesScreenOpened = "[Markets / Chart] Exchanges Screen Opened"
+        case marketsChartSecurityScoreInfo = "[Markets / Chart] Security Score Info"
+        case marketsChartSecurityScoreProviderClicked = "[Markets / Chart] Security Score Provider Clicked"
 
         // MARK: - Manage Tokens
 
