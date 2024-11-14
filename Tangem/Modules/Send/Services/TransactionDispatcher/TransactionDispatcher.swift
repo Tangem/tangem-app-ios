@@ -31,6 +31,7 @@ extension TransactionDispatcherResult {
         case sendTxError(transaction: SendTransactionType, error: SendTxError)
 
         case demoAlert
+        case actionNotSupported
 
         var errorDescription: String? {
             switch self {
@@ -48,6 +49,8 @@ extension TransactionDispatcherResult {
                 return "Transaction not found"
             case .userCancelled:
                 return "User cancelled"
+            case .actionNotSupported:
+                return "Action not supported"
             }
         }
     }

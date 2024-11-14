@@ -98,6 +98,8 @@ final class SendViewModel: ObservableObject {
             stepsManager.performContinue()
         case .action where flowActionType == .approve:
             performApprove()
+        case .action where flowActionType == .onramp:
+            performOnramp()
         case .action:
             performAction()
         case .close:
@@ -182,6 +184,15 @@ final class SendViewModel: ObservableObject {
 // MARK: - Private
 
 private extension SendViewModel {
+    func performOnramp() {
+        do {
+            let onrampRedirectingBuilder = try dataBuilder.onrampBuilder().makeDataForOnrampRedirecting()
+            coordinator?.openOnrampRedirecting(onrampRedirectingBuilder: onrampRedirectingBuilder)
+        } catch {
+            alert = error.alertBinder
+        }
+    }
+
     func performApprove() {
         do {
             let (settings, approveViewModelInput) = try dataBuilder.stakingBuilder().makeDataForExpressApproveViewModel()
@@ -219,7 +230,7 @@ private extension SendViewModel {
     @MainActor
     func proceed(error: TransactionDispatcherResult.Error) {
         switch error {
-        case .userCancelled, .transactionNotFound:
+        case .userCancelled, .transactionNotFound, .actionNotSupported:
             break
         case .informationRelevanceServiceError:
             alert = alertBuilder.makeFeeRetryAlert { [weak self] in
@@ -334,6 +345,14 @@ extension SendViewModel: OnrampModelRoutable {
         } catch {
             alert = error.alertBinder
         }
+    }
+
+    func openWebView(url: URL, success: @escaping () -> Void) {
+        coordinator?.openOnrampWebView(url: url, success: success)
+    }
+
+    func openFinishStep() {
+        stepsManager.performFinish()
     }
 }
 
