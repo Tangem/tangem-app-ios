@@ -27,7 +27,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  nextVersionName: 'Next Release'
+  next_version_name: 'Next Release'
+  should_find_latest_release_branch: ${{ !inputs.base_branch || inputs.base_branch == '' }}
 
 jobs:
   prepare:
@@ -40,7 +41,7 @@ jobs:
       jira-issues-summary: '${{ steps.jira-issues-summary.outputs.result }}'
     steps:
       - name: Checkout 'find-latest-release-branch' script
-        if: ${{ !inputs.base_branch || inputs.base_branch == '' }}
+        if: ${{ env.should_find_latest_release_branch }}
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -50,7 +51,7 @@ jobs:
 
       - name: Find latest release branch
         id: find-latest-release-branch
-        if: ${{ !inputs.base_branch || inputs.base_branch == '' }}
+        if: ${{ env.should_find_latest_release_branch }}
         run: |
           ./Utilites/find-latest-release-branch.sh '${{ github.ref_name }}'
 
@@ -88,7 +89,7 @@ jobs:
         with:
           action: 'checkVersion'
           project: 'IOS'
-          version: '${{ env.nextVersionName }}'
+          version: '${{ env.next_version_name }}'
 
       - name: Jira Create Version
         if: false # TODO: Test only, remove
@@ -97,7 +98,7 @@ jobs:
         with:
           action: 'createVersion'
           project: 'IOS'
-          version: '${{ env.nextVersionName }}'
+          version: '${{ env.next_version_name }}'
 
       - name: Jira Set Version To Issues
         if: false # TODO: Test only, remove
@@ -105,7 +106,7 @@ jobs:
         with:
           action: 'setVersionToIssues'
           project: 'IOS'
-          version: '${{ env.nextVersionName }}'
+          version: '${{ env.next_version_name }}'
           issues: '${{ steps.git-diff.outputs.issues }}'
 
       # TODO: Remove
