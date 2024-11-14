@@ -137,7 +137,7 @@ extension GroupedSection {
         var innerContentPadding: CGFloat = 0
 
         // Use "Colors.Background.primary" as default with "Colors.Background.secondary" background
-        // Use "Colors.Background.action" on sheets with "Colors.Background.teritary" background
+        // Use "Colors.Background.action" on sheets with "Colors.Background.tertiary" background
         var backgroundColor: Color = Colors.Background.primary
         var contentAlignment: HorizontalAlignment = .leading
         var innerHeaderPadding: CGFloat = GroupedSectionConstants.headerSpacing
