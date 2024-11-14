@@ -12,7 +12,7 @@ public actor CommonOnrampManager {
     private let dataRepository: OnrampDataRepository
     private let logger: Logger
 
-    private var _providers: [OnrampProvider] = []
+    private var _providers: ProvidersList = [:]
     private var _selectedProvider: OnrampProvider?
 
     public init(
@@ -31,7 +31,7 @@ public actor CommonOnrampManager {
 // MARK: - OnrampManager
 
 extension CommonOnrampManager: OnrampManager {
-    public var providers: [OnrampProvider] { _providers }
+    public var providers: ProvidersList { _providers }
 
     public var selectedProvider: OnrampProvider? { _selectedProvider }
 
@@ -87,7 +87,7 @@ extension CommonOnrampManager: OnrampManager {
 private extension CommonOnrampManager {
     func updateQuotesInEachManager(amount: Decimal?) async {
         await withTaskGroup(of: Void.self) { [weak self] group in
-            await self?._providers.forEach { provider in
+            await self?._providers.values.flatMap { $0 }.forEach { provider in
                 _ = group.addTaskUnlessCancelled {
                     await provider.manager.update(amount: amount)
                 }
@@ -98,20 +98,26 @@ private extension CommonOnrampManager {
     func updateSelectedProvider() {
         // Logic will be updated. Make a some sort by priority
         // TODO: https://tangem.atlassian.net/browse/IOS-8487
-        _selectedProvider = _providers.first { $0.manager.state.isReadyToBuy } ?? _providers.first
+        _selectedProvider = _providers.values
+            .flatMap { $0 }
+            .first(where: { $0.manager.state.isReadyToBuy })
     }
 
     func prepareProviders(
         item: OnrampPairRequestItem,
         supportedProviders: [OnrampPair.Provider]
-    ) async throws -> [OnrampProvider] {
+    ) async throws -> ProvidersList {
         let providers = try await dataRepository.providers()
         let paymentMethods = try await dataRepository.paymentMethods()
 
-        var availableProviders: [OnrampProvider] = []
+        let supportedPaymentMethods = supportedProviders
+            .flatMap { $0.paymentMethods }
+            .compactMap { paymentMethodId in
+                paymentMethods.first(where: { $0.id == paymentMethodId })
+            }
 
-        for provider in providers {
-            for paymentMethod in paymentMethods {
+        let availableProviders: ProvidersList = supportedPaymentMethods.reduce(into: [:]) { result, paymentMethod in
+            result[paymentMethod] = providers.map { provider in
                 let manager = CommonOnrampProviderManager(
                     pairItem: item,
                     expressProviderId: provider.id,
@@ -120,7 +126,11 @@ private extension CommonOnrampManager {
                     state: state(provider: provider, paymentMethod: paymentMethod)
                 )
 
-                availableProviders.append(OnrampProvider(provider: provider, paymentMethod: paymentMethod, manager: manager))
+                return OnrampProvider(
+                    provider: provider,
+                    paymentMethod: paymentMethod,
+                    manager: manager
+                )
             }
         }
 
