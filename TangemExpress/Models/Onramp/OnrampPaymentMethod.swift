@@ -7,9 +7,13 @@
 //
 
 public struct OnrampPaymentMethod: Hashable {
-    public let identity: OnrampIdentity
+    public let id: String
+    public let name: String
+    public let image: URL?
 
-    public init(identity: OnrampIdentity) {
-        self.identity = identity
+    public init(id: String, name: String, image: URL?) {
+        self.id = id
+        self.name = name
+        self.image = image
     }
 }

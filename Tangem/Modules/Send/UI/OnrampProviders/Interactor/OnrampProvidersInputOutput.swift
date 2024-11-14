@@ -13,7 +13,7 @@ protocol OnrampProvidersInput: AnyObject {
     var selectedOnrampProvider: OnrampProvider? { get }
     var selectedOnrampProviderPublisher: AnyPublisher<LoadingValue<OnrampProvider>?, Never> { get }
 
-    var onrampProvidersPublisher: AnyPublisher<[OnrampProvider], Never> { get }
+    var onrampProvidersPublisher: AnyPublisher<LoadingValue<[OnrampProvider]>, Never> { get }
 }
 
 protocol OnrampProvidersOutput: AnyObject {

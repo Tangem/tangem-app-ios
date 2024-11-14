@@ -15,23 +15,12 @@ struct AppCoordinatorView: CoordinatorView {
 
     @Environment(\.mainWindowSize) var mainWindowSize: CGSize
     @Environment(\.overlayContentContainer) private var overlayContentContainer
+    @Namespace private var namespace
 
     var body: some View {
         NavigationView {
-            switch coordinator.viewState {
-            case .welcome(let welcomeCoordinator):
-                WelcomeCoordinatorView(coordinator: welcomeCoordinator)
-            case .uncompleteBackup(let uncompletedBackupCoordinator):
-                UncompletedBackupCoordinatorView(coordinator: uncompletedBackupCoordinator)
-            case .auth(let authCoordinator):
-                AuthCoordinatorView(coordinator: authCoordinator)
-            case .main(let mainCoordinator):
-                MainCoordinatorView(coordinator: mainCoordinator)
-            case .none:
-                EmptyView()
-            }
+            content
         }
-        .animation(.default, value: coordinator.viewState)
         .navigationViewStyle(.stack)
         .accentColor(Colors.Text.primary1)
         .overlayContentContainer(item: $coordinator.marketsCoordinator) { coordinator in
@@ -58,5 +47,42 @@ struct AppCoordinatorView: CoordinatorView {
         .onChange(of: coordinator.isOverlayContentContainerShown) { isShown in
             overlayContentContainer.setOverlayHidden(!isShown)
         }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        ZStack {
+            switch coordinator.viewState {
+            case .welcome(let welcomeCoordinator):
+                WelcomeCoordinatorView(coordinator: welcomeCoordinator)
+                    .transition(.opacity)
+                    .navigationBarHidden(true)
+            case .uncompleteBackup(let uncompletedBackupCoordinator):
+                UncompletedBackupCoordinatorView(coordinator: uncompletedBackupCoordinator)
+                    .transition(.opacity)
+                    .navigationBarHidden(true)
+            case .auth(let authCoordinator):
+                AuthCoordinatorView(coordinator: authCoordinator)
+                    .setNamespace(namespace)
+                    .transition(.opacity)
+                    .navigationBarHidden(true)
+            case .main(let mainCoordinator):
+                MainCoordinatorView(coordinator: mainCoordinator)
+                    .transition(.opacity)
+                    .navigationBarHidden(false)
+            case .onboarding(let onboardingCoordinator):
+                OnboardingCoordinatorView(coordinator: onboardingCoordinator)
+                    .transition(.opacity)
+                    .navigationBarHidden(true)
+            case .lock:
+                LockView(usesNamespace: true)
+                    .setNamespace(namespace)
+                    .transition(.asymmetric(insertion: .identity, removal: .opacity.animation(.easeOut(duration: 0.3))))
+            case .none:
+                EmptyView()
+            }
+        }
+        // We need stack to force transition animation work
+        .animation(.easeIn, value: coordinator.viewState)
     }
 }

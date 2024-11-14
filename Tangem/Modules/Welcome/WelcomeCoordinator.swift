@@ -11,25 +11,20 @@ import Combine
 import TangemSdk
 
 class WelcomeCoordinator: CoordinatorObject {
-    var dismissAction: Action<Void>
+    var dismissAction: Action<ScanDismissOptions>
     var popToRootAction: Action<PopToRootOptions>
-
-    var isNavigationBarHidden: Bool {
-        viewState?.isMain == false
-    }
 
     // MARK: - Dependencies
 
     @Injected(\.safariManager) private var safariManager: SafariManager
     @Injected(\.pushNotificationsInteractor) private var pushNotificationsInteractor: PushNotificationsInteractor
 
-    // MARK: - Main view model
+    // MARK: - Root view model
 
-    @Published private(set) var viewState: ViewState? = nil
+    @Published var rootViewModel: WelcomeViewModel?
 
     // MARK: - Child coordinators
 
-    @Published var pushedOnboardingCoordinator: OnboardingCoordinator? = nil
     @Published var promotionCoordinator: PromotionCoordinator? = nil
     @Published var welcomeOnboardingCoordinator: WelcomeOnboardingCoordinator? = nil
 
@@ -39,8 +34,6 @@ class WelcomeCoordinator: CoordinatorObject {
     @Published var mailViewModel: MailViewModel? = nil
 
     // MARK: - Private
-
-    private var welcomeLifecycleSubscription: AnyCancellable?
 
     private var lifecyclePublisher: AnyPublisher<Bool, Never> {
         // Only modals, because the modal presentation will not trigger onAppear/onDisappear events
@@ -54,28 +47,22 @@ class WelcomeCoordinator: CoordinatorObject {
             .eraseToAnyPublisher()
     }
 
-    required init(dismissAction: @escaping Action<Void>, popToRootAction: @escaping Action<PopToRootOptions>) {
+    required init(dismissAction: @escaping Action<ScanDismissOptions>, popToRootAction: @escaping Action<PopToRootOptions>) {
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
     }
 
-    func start(with options: WelcomeCoordinator.Options) {
-        viewState = .welcome(WelcomeViewModel(shouldScanOnAppear: options.shouldScan, coordinator: self))
-        subscribeToWelcomeLifecycle()
-        showWelcomeOnboardingIfNeeded()
+    deinit {
+        AppLog.shared.debug("WelcomeCoordinator deinit")
     }
 
-    private func subscribeToWelcomeLifecycle() {
-        welcomeLifecycleSubscription = lifecyclePublisher
-            .sink { [weak self] viewDismissed in
-                guard let self else { return }
-
-                if viewDismissed {
-                    viewState?.welcomeViewModel?.becomeActive()
-                } else {
-                    viewState?.welcomeViewModel?.resignActive()
-                }
-            }
+    func start(with options: WelcomeCoordinator.Options) {
+        let storiesModel = StoriesViewModel()
+        let welcomeViewModel = WelcomeViewModel(coordinator: self, storiesModel: storiesModel)
+        storiesModel.setDelegate(delegate: welcomeViewModel)
+        storiesModel.setLifecyclePublisher(publisher: lifecyclePublisher)
+        rootViewModel = welcomeViewModel
+        showWelcomeOnboardingIfNeeded()
     }
 
     private func showWelcomeOnboardingIfNeeded() {
@@ -101,30 +88,18 @@ class WelcomeCoordinator: CoordinatorObject {
 // MARK: - Options
 
 extension WelcomeCoordinator {
-    struct Options {
-        let shouldScan: Bool
-    }
+    struct Options {}
 }
 
 // MARK: - WelcomeRoutable
 
 extension WelcomeCoordinator: WelcomeRoutable {
     func openOnboarding(with input: OnboardingInput) {
-        let dismissAction: Action<OnboardingCoordinator.OutputOptions> = { [weak self] _ in
-            self?.pushedOnboardingCoordinator = nil
-        }
-
-        let coordinator = OnboardingCoordinator(dismissAction: dismissAction, popToRootAction: popToRootAction)
-        let options = OnboardingCoordinator.Options(input: input, destination: .main)
-        coordinator.start(with: options)
-        pushedOnboardingCoordinator = coordinator
+        dismiss(with: .onboarding(input))
     }
 
     func openMain(with userWalletModel: UserWalletModel) {
-        let coordinator = MainCoordinator(popToRootAction: popToRootAction)
-        let options = MainCoordinator.Options(userWalletModel: userWalletModel)
-        coordinator.start(with: options)
-        viewState = .main(coordinator)
+        dismiss(with: .main(userWalletModel))
     }
 
     func openMail(with dataCollector: EmailDataCollector, recipient: String) {
@@ -153,37 +128,5 @@ extension WelcomeCoordinator: WelcomeRoutable {
 
     func openScanCardManual() {
         safariManager.openURL(TangemBlogUrlBuilder().url(post: .scanCard))
-    }
-}
-
-// MARK: ViewState
-
-extension WelcomeCoordinator {
-    enum ViewState: Equatable {
-        case welcome(WelcomeViewModel)
-        case main(MainCoordinator)
-
-        var isMain: Bool {
-            if case .main = self {
-                return true
-            }
-            return false
-        }
-
-        var welcomeViewModel: WelcomeViewModel? {
-            if case .welcome(let viewModel) = self {
-                return viewModel
-            }
-            return nil
-        }
-
-        static func == (lhs: WelcomeCoordinator.ViewState, rhs: WelcomeCoordinator.ViewState) -> Bool {
-            switch (lhs, rhs) {
-            case (.welcome, .welcome), (.main, .main):
-                return true
-            default:
-                return false
-            }
-        }
     }
 }

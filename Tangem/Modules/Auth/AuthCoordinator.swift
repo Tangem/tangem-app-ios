@@ -10,24 +10,18 @@ import Foundation
 import Combine
 
 class AuthCoordinator: CoordinatorObject {
+    typealias OutputOptions = ScanDismissOptions
+
     // MARK: - Dependencies
 
-    let dismissAction: Action<Void>
+    let dismissAction: Action<ScanDismissOptions>
     let popToRootAction: Action<PopToRootOptions>
 
     @Injected(\.safariManager) private var safariManager: SafariManager
 
-    var isNavigationBarHidden: Bool {
-        viewState?.isMain == false
-    }
-
-    var transitionAnimationValue: Bool {
-        viewState?.isMain == false
-    }
-
     // MARK: - Root view model
 
-    @Published private(set) var viewState: ViewState? = nil
+    @Published var rootViewModel: AuthViewModel?
 
     // MARK: - Child coordinators
 
@@ -38,15 +32,15 @@ class AuthCoordinator: CoordinatorObject {
     @Published var mailViewModel: MailViewModel?
 
     required init(
-        dismissAction: @escaping Action<Void>,
+        dismissAction: @escaping Action<ScanDismissOptions>,
         popToRootAction: @escaping Action<PopToRootOptions>
     ) {
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
     }
 
-    func start(with options: Options = .default) {
-        viewState = .auth(AuthViewModel(unlockOnStart: options.unlockOnStart, coordinator: self))
+    func start(with options: Options) {
+        rootViewModel = AuthViewModel(unlockOnAppear: options.unlockOnAppear, coordinator: self)
     }
 }
 
@@ -54,9 +48,7 @@ class AuthCoordinator: CoordinatorObject {
 
 extension AuthCoordinator {
     struct Options {
-        let unlockOnStart: Bool
-
-        static let `default` = Options(unlockOnStart: false)
+        let unlockOnAppear: Bool
     }
 }
 
@@ -64,21 +56,11 @@ extension AuthCoordinator {
 
 extension AuthCoordinator: AuthRoutable {
     func openOnboarding(with input: OnboardingInput) {
-        let dismissAction: Action<OnboardingCoordinator.OutputOptions> = { [weak self] _ in
-            self?.pushedOnboardingCoordinator = nil
-        }
-
-        let coordinator = OnboardingCoordinator(dismissAction: dismissAction, popToRootAction: popToRootAction)
-        let options = OnboardingCoordinator.Options(input: input, destination: .main)
-        coordinator.start(with: options)
-        pushedOnboardingCoordinator = coordinator
+        dismiss(with: .onboarding(input))
     }
 
     func openMain(with userWalletModel: UserWalletModel) {
-        let coordinator = MainCoordinator(popToRootAction: popToRootAction)
-        let options = MainCoordinator.Options(userWalletModel: userWalletModel)
-        coordinator.start(with: options)
-        viewState = .main(coordinator)
+        dismiss(with: .main(userWalletModel))
     }
 
     func openMail(with dataCollector: EmailDataCollector, recipient: String) {
@@ -88,30 +70,5 @@ extension AuthCoordinator: AuthRoutable {
 
     func openScanCardManual() {
         safariManager.openURL(TangemBlogUrlBuilder().url(post: .scanCard))
-    }
-}
-
-// MARK: ViewState
-
-extension AuthCoordinator {
-    enum ViewState: Equatable {
-        case auth(AuthViewModel)
-        case main(MainCoordinator)
-
-        var isMain: Bool {
-            if case .main = self {
-                return true
-            }
-            return false
-        }
-
-        static func == (lhs: AuthCoordinator.ViewState, rhs: AuthCoordinator.ViewState) -> Bool {
-            switch (lhs, rhs) {
-            case (.auth, .auth), (.main, .main):
-                return true
-            default:
-                return false
-            }
-        }
     }
 }

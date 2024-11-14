@@ -39,7 +39,7 @@ jobs:
 
   test:
     name: Run unit tests
-    runs-on: macos-14
+    runs-on: macos-15
     needs: check_if_pr_has_always_run_tests_label
     if: github.event.pull_request.draft == false || needs.check_if_pr_has_always_run_tests_label.outputs.has_always_run_tests_label == 'true'
     steps:

@@ -21,8 +21,8 @@ struct OnrampAmountBuilder {
         self.builder = builder
     }
 
-    func makeOnrampAmountViewModel(io: IO, coordinator: OnrampAmountRoutable) -> ReturnValue {
-        let interactor = makeOnrampAmountInteractor(io: io)
+    func makeOnrampAmountViewModel(io: IO, onrampProvidersInput: OnrampProvidersInput, coordinator: OnrampAmountRoutable) -> ReturnValue {
+        let interactor = makeOnrampAmountInteractor(io: io, onrampProvidersInput: onrampProvidersInput)
         let viewModel = OnrampAmountViewModel(
             tokenItem: walletModel.tokenItem,
             interactor: interactor,
@@ -36,12 +36,12 @@ struct OnrampAmountBuilder {
 // MARK: - Private
 
 private extension OnrampAmountBuilder {
-    func makeOnrampAmountInteractor(io: IO) -> OnrampAmountInteractor {
+    func makeOnrampAmountInteractor(io: IO, onrampProvidersInput: OnrampProvidersInput) -> OnrampAmountInteractor {
         CommonOnrampAmountInteractor(
             input: io.input,
             output: io.output,
-            tokenItem: walletModel.tokenItem,
-            validator: builder.makeOnrampAmountValidator()
+            onrampProvidersInput: onrampProvidersInput,
+            tokenItem: walletModel.tokenItem
         )
     }
 }

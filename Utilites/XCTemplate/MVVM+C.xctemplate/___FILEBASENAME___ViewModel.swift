@@ -1,7 +1,7 @@
 //___FILEHEADER___
 
+import Foundation
 import Combine
-import SwiftUI
 
 final class ___VARIABLE_moduleName:identifier___ViewModel: ObservableObject {
     // MARK: - ViewState

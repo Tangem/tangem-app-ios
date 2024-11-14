@@ -23,8 +23,8 @@ class OnrampModel {
     private let _currency: CurrentValueSubject<LoadingValue<OnrampFiatCurrency>, Never>
     private let _amount: CurrentValueSubject<SendAmount?, Never> = .init(.none)
     private let _selectedOnrampProvider: CurrentValueSubject<LoadingValue<OnrampProvider>?, Never> = .init(.none)
-    private let _selectedOnrampPaymentMethod: CurrentValueSubject<OnrampPaymentMethod?, Never> = .init(.none)
-    private let _onrampProviders: CurrentValueSubject<[OnrampProvider], Never> = .init([])
+    private let _selectedOnrampPaymentMethod: CurrentValueSubject<OnrampPaymentMethod?, Never>
+    private let _onrampProviders: CurrentValueSubject<LoadingValue<[OnrampProvider]>?, Never> = .init(.none)
     private let _isLoading: CurrentValueSubject<Bool, Never> = .init(false)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
 
@@ -55,7 +55,10 @@ class OnrampModel {
             onrampRepository.preferenceCurrency.map { .loaded($0) } ?? .loading
         )
 
+        _selectedOnrampPaymentMethod = .init(onrampRepository.preferencePaymentMethod)
+
         bind()
+        initiatePaymentMethodDefinitionIfNeeded()
     }
 }
 
@@ -63,24 +66,64 @@ class OnrampModel {
 
 private extension OnrampModel {
     func bind() {
+        _amount
+            .withWeakCaptureOf(self)
+            .sink { model, amount in
+                model.updateQuotes(amount: amount?.fiat)
+            }
+            .store(in: &bag)
+
         // Handle the settings changes
         onrampRepository
             .preferenceCurrencyPublisher
+            .removeDuplicates()
             .sink { [weak self] currency in
                 self?.preferenceDidChange(currency: currency)
             }
             .store(in: &bag)
 
-        _amount
-            .sink { [weak self] amount in
-                self?.updateQuotes(amount: amount?.fiat)
+        _selectedOnrampPaymentMethod
+            .removeDuplicates()
+            .sink { [weak self] paymentMethod in
+                self?.onrampRepository.updatePreference(paymentMethod: paymentMethod)
             }
             .store(in: &bag)
     }
 
+    func updateProviders(country: OnrampCountry, currency: OnrampFiatCurrency) async throws {
+        let request = makeOnrampPairRequestItem(country: country, currency: currency)
+        try await onrampManager.setupProviders(request: request)
+
+        await _onrampProviders.send(.loaded(onrampManager.providers))
+    }
+
+    func updateQuotes(amount: Decimal?) {
+        mainTask {
+            guard let amount else {
+                $0._selectedOnrampProvider.send(.none)
+                // Clear onrampManager
+                try await $0.onrampManager.setupQuotes(amount: nil)
+                return
+            }
+
+            $0._selectedOnrampProvider.send(.loading)
+
+            try await $0.onrampManager.setupQuotes(amount: amount)
+
+            await $0._onrampProviders.send(.loaded($0.onrampManager.providers))
+            if let selectedProvider = await $0.onrampManager.selectedProvider {
+                $0._selectedOnrampProvider.send(.loaded(selectedProvider))
+            }
+        }
+    }
+}
+
+// MARK: - Preference bindings
+
+private extension OnrampModel {
     func preferenceDidChange(currency: OnrampFiatCurrency?) {
         guard let country = onrampRepository.preferenceCountry, let currency else {
-            startTask {
+            TangemFoundation.runTask(in: self) {
                 try await $0.initiateCountryDefinition()
             }
             return
@@ -89,7 +132,7 @@ private extension OnrampModel {
         // Update amount UI
         _currency.send(.loaded(currency))
 
-        startTask {
+        mainTask {
             try await $0.updateProviders(country: country, currency: currency)
         }
     }
@@ -106,23 +149,17 @@ private extension OnrampModel {
         }
     }
 
-    func updateProviders(country: OnrampCountry, currency: OnrampFiatCurrency) async throws {
-        let request = makeOnrampPairRequestItem(country: country, currency: currency)
-        // TODO: Check the providers is empty
-        _ = try await onrampManager.setupProviders(request: request)
-    }
-
-    func updateQuotes(amount: Decimal?) {
-        guard let amount else {
-            _selectedOnrampProvider.send(.none)
-            // Clear onrampManager
+    func initiatePaymentMethodDefinitionIfNeeded() {
+        guard _selectedOnrampPaymentMethod.value == nil else {
             return
         }
 
-        _selectedOnrampProvider.send(.loading)
-        startTask { model in
-            let providers = try await model.onrampManager.setupQuotes(amount: amount)
-            model._onrampProviders.send(providers)
+        TangemFoundation.runTask(in: self) {
+            let paymentMethod = try await $0.onrampManager.initialSetupPaymentMethod()
+            $0.onrampRepository.updatePreference(paymentMethod: paymentMethod)
+
+            // Update UI
+            $0._selectedOnrampPaymentMethod.send(paymentMethod)
         }
     }
 }
@@ -134,7 +171,7 @@ private extension OnrampModel {
         OnrampPairRequestItem(fiatCurrency: currency, country: country, destination: walletModel)
     }
 
-    func startTask(code: @escaping (OnrampModel) async throws -> Void) {
+    func mainTask(code: @escaping (OnrampModel) async throws -> Void) {
         task = TangemFoundation.runTask(in: self) { model in
             do {
                 try await code(model)
@@ -215,8 +252,8 @@ extension OnrampModel: OnrampProvidersInput {
         _selectedOnrampProvider.eraseToAnyPublisher()
     }
 
-    var onrampProvidersPublisher: AnyPublisher<[OnrampProvider], Never> {
-        _onrampProviders.eraseToAnyPublisher()
+    var onrampProvidersPublisher: AnyPublisher<LoadingValue<[OnrampProvider]>, Never> {
+        _onrampProviders.compactMap { $0 }.eraseToAnyPublisher()
     }
 }
 
@@ -250,7 +287,13 @@ extension OnrampModel: OnrampPaymentMethodsOutput {
 
 // MARK: - OnrampInput
 
-extension OnrampModel: OnrampInput {}
+extension OnrampModel: OnrampInput {
+    var isValidToRedirectPublisher: AnyPublisher<Bool, Never> {
+        _selectedOnrampProvider
+            .compactMap { $0?.value?.manager.state.isReadyToBuy }
+            .eraseToAnyPublisher()
+    }
+}
 
 // MARK: - OnrampOutput
 

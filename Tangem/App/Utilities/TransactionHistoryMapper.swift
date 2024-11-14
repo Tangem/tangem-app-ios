@@ -220,22 +220,23 @@ private extension TransactionHistoryMapper {
             case .vote: return .vote
             case .withdraw: return .withdraw
             case .claimRewards: return .claimRewards
+            case .restake: return .restake
             }
         }
     }
 
     func transactionType(fromContractMethodName contractMethodName: String?) -> TransactionViewModel.TransactionType {
         switch contractMethodName?.nilIfEmpty {
-        case "transfer":
-            return .transfer
-        case "approve":
-            return .approve
-        case "swap":
-            return .swap
-        case .none:
-            return .unknownOperation
-        case .some(let name):
-            return .operation(name: name.capitalizingFirstLetter())
+        case "transfer": .transfer
+        case "approve": .approve
+        case "swap": .swap
+        case "buyVoucher", "buyVoucherPOL", "delegate": .stake
+        case "sellVoucher_new", "sellVoucher_newPOL", "undelegate": .unstake
+        case "unstakeClaimTokens_new", "unstakeClaimTokens_newPOL", "claim": .withdraw
+        case "withdrawRewards", "withdrawRewardsPOL": .claimRewards
+        case "redelegate": .restake
+        case .none: .unknownOperation
+        case .some(let name): .operation(name: name.capitalizingFirstLetter())
         }
     }
 
