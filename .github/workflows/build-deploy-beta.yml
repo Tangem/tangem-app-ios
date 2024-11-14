@@ -34,7 +34,7 @@ jobs:
     name: Prepare information
     runs-on: ubuntu-latest
     outputs:
-      version: '${{ github.ref_name }}'
+      version: 'develop'
       stage: 'Beta'
       build_number: '${{ github.run_number }}'
       jira-issues-summary: '${{ steps.jira-issues-summary.outputs.result }}'
@@ -43,6 +43,7 @@ jobs:
         if: ${{ !inputs.base_branch || inputs.base_branch == '' }}
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           sparse-checkout: |
             Utilites/find-latest-release-branch.sh
           sparse-checkout-cone-mode: false
@@ -52,7 +53,12 @@ jobs:
         if: ${{ !inputs.base_branch || inputs.base_branch == '' }}
         run: |
           ./Utilites/find-latest-release-branch.sh '${{ github.ref_name }}'
-          echo "result=$?" >> $GITHUB_OUTPUT
+
+          # Fetching the latest release branch and stripping 'origin/' prefix if needed
+          LATEST_RELEASE_BRANCH=$(< "find-latest-release-branch.output")
+          LATEST_RELEASE_BRANCH="${LATEST_RELEASE_BRANCH#origin/}"
+
+          echo "result=${LATEST_RELEASE_BRANCH}" >> $GITHUB_OUTPUT
 
       - name: Get unreleased tasks
         id: git-diff

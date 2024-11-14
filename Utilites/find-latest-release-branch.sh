@@ -38,4 +38,5 @@ if [ -z "$latest_branch" ]; then
   exit 2
 fi
 
-echo "$latest_branch"
+echo "$latest_branch" > "find-latest-release-branch.output"
+echo "Latest release branch created directly from $base_branch: $latest_branch"
