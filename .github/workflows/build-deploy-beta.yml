@@ -32,7 +32,7 @@ jobs:
       version: 'develop'
       stage: 'Beta'
       build_number: '${{ github.run_number }}'
-      changelog: '${{ steps.changelog.outputs.result }}'
+      jira-issues-summary: '${{ steps.jira-issues-summary.outputs.result }}'
     steps:
       - name: Get unreleased tasks
         id: git-diff
@@ -51,7 +51,7 @@ jobs:
 
       - name: Jira Get Issues Summary
         uses: tangem/jira-action@master
-        id: jira-get-issues-summary
+        id: jira-issues-summary
         with:
           action: 'getIssuesSummary'
           issues: '${{ steps.git-diff.outputs.issues }}'
@@ -82,24 +82,17 @@ jobs:
           version: '${{ env.nextVersionName }}'
           issues: '${{ steps.git-diff.outputs.issues }}'
 
-      - name: Create changelog
-        id: changelog
+      # TODO: Remove
+      - name: Debug
         env:
-          JIRA_ISSUES_SUMMARY: '${{ steps.jira-get-issues-summary.outputs.result }}'
-          ADDITIONAL_CHANGELOG: '${{ inputs.changelog }}'
+          JIRA_ISSUES: '${{ steps.jira-issues-summary.outputs.result }}'
         run: |
-          JIRA_ISSUES_SUMMARY="Jira issues summary:"$'\n'"${JIRA_ISSUES_SUMMARY}"
+          echo "Has version: '${{ steps.jira-check-version.outputs.result }}'"
 
-          if [[ -n "${ADDITIONAL_CHANGELOG}" ]]; then
-            OUTPUT_VALUE="Description: ${ADDITIONAL_CHANGELOG}"$'\n'"${JIRA_ISSUES_SUMMARY}"
-          else
-            OUTPUT_VALUE="${JIRA_ISSUES_SUMMARY}"
-          fi
-
-          # Workaround for a multi-line text in GH output
-          echo 'result<<EOF' >> $GITHUB_OUTPUT
-          echo "${OUTPUT_VALUE}" >> $GITHUB_OUTPUT
-          echo 'EOF' >> $GITHUB_OUTPUT
+          cat <<EOF
+          Jira issues:
+          ${JIRA_ISSUES}
+          EOF
 
   build:
     name: Tangem Beta
@@ -125,7 +118,8 @@ jobs:
       stage: '${{ needs.prepare.outputs.stage }}'
       version: '${{ needs.prepare.outputs.version }}'
       build_number: '${{ needs.prepare.outputs.build_number }}'
-      changelog: '${{ needs.prepare.outputs.changelog }}'
+      changelog: '${{ needs.prepare.outputs.jira-issues-summary }}'
+      build_description: '${{ inputs.build_description }}'
       filename: 'Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa'
     secrets:
       FIREBASE_APP_ID: '${{ secrets.FIREBASE_APP_ID }}'
@@ -146,7 +140,9 @@ jobs:
       deploy_to: '${{ vars.DEPLOYMENT_GOOGLE_DISTRIBUTION }}'
       version: '${{ needs.prepare.outputs.version }}'
       build_number: '${{ needs.prepare.outputs.build_number }}'
-      changelog: '${{ needs.prepare.outputs.changelog }}'
+      changelog: '${{ needs.prepare.outputs.jira-issues-summary }}'
+      build_description: '${{ inputs.build_description }}'
+      encoded_release_url: '${{ needs.deploy.outputs.encoded_release_url }}'
     secrets:
       SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN }}'
 
@@ -165,6 +161,6 @@ jobs:
       deploy_to: '${{ vars.DEPLOYMENT_GOOGLE_DISTRIBUTION }}'
       version: '${{ needs.prepare.outputs.version }}'
       build_number: '${{ needs.prepare.outputs.build_number }}'
-      changelog: '${{ needs.prepare.outputs.changelog }}'
+      changelog: '${{ needs.prepare.outputs.jira-issues-summary }}'
     secrets:
       SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN }}'
