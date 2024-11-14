@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemExpress
 
 struct PendingExpressTxStatusBottomSheetView: View {
     @ObservedObject var viewModel: PendingExpressTxStatusBottomSheetViewModel
@@ -19,7 +20,7 @@ struct PendingExpressTxStatusBottomSheetView: View {
     var body: some View {
         VStack(spacing: 0) {
             VStack(spacing: 12) {
-                Text(viewModel.sheetTitle)
+                Text(viewModel.expressBranch.sheetTitle)
                     .style(Fonts.Regular.headline, color: Colors.Text.primary1)
 
                 Text(Localization.expressExchangeStatusSubtitle)
@@ -74,13 +75,35 @@ struct PendingExpressTxStatusBottomSheetView: View {
 
     private var statusesView: some View {
         PendingExpressTxStatusView(
-            title: viewModel.statusTitle,
+            title: viewModel.expressBranch.statusTitle(
+                providerName: viewModel.providerRowViewModel.provider.name
+            ),
             showGoToProviderHeaderButton: viewModel.showGoToProviderHeaderButton,
             openProviderFromStatusHeader: viewModel.openProviderFromStatusHeader,
             statusesList: viewModel.statusesList
         )
         // This prevents notification to appear and disappear on top of the statuses list
         .zIndex(5)
+    }
+}
+
+private extension ExpressBranch {
+    var sheetTitle: String {
+        switch self {
+        case .swap:
+            Localization.expressExchangeStatusTitle
+        case .onramp:
+            Localization.commonTransactionStatus
+        }
+    }
+
+    func statusTitle(providerName: String) -> String {
+        switch self {
+        case .swap:
+            Localization.expressExchangeBy(providerName)
+        case .onramp:
+            Localization.commonTransactionStatus
+        }
     }
 }
 
@@ -119,7 +142,7 @@ struct ExpressPendingTxStatusBottomSheetView_Preview: PreviewProvider {
         )
         let pendingTransaction = factory.buildPendingExpressTransaction(currentExpressStatus: .sending, refundedTokenItem: .blockchain(.init(.ethereum(testnet: false), derivationPath: nil)), for: record)
         return .init(
-            kind: .exchange,
+            expressBranch: .swap,
             pendingTransaction: pendingTransaction,
             currentTokenItem: tokenItem,
             pendingTransactionsManager: CommonPendingExpressTransactionsManager(

@@ -32,9 +32,9 @@ struct PendingExpressTxAmountView: View {
             }
 
             HStack(spacing: 12) {
-                tokenInfo(
-                    with: sourceTokenIconInfo,
-                    cryptoAmountText: sourceAmountText,
+                PendingExpressTxTokenInfoView(
+                    tokenIconInfo: sourceTokenIconInfo,
+                    amountText: sourceAmountText,
                     fiatAmountTextState: sourceFiatAmountTextState
                 )
 
@@ -44,33 +44,13 @@ struct PendingExpressTxAmountView: View {
                     .frame(size: .init(bothDimensions: 12))
                     .foregroundColor(Colors.Icon.informative)
 
-                tokenInfo(
-                    with: destinationTokenIconInfo,
-                    cryptoAmountText: destinationAmountText,
+                PendingExpressTxTokenInfoView(
+                    tokenIconInfo: destinationTokenIconInfo,
+                    amountText: destinationAmountText,
                     fiatAmountTextState: destinationFiatAmountTextState
                 )
             }
         }
         .defaultRoundedBackground(with: Colors.Background.action)
-    }
-
-    private func tokenInfo(with tokenIconInfo: TokenIconInfo, cryptoAmountText: String, fiatAmountTextState: LoadableTextView.State) -> some View {
-        HStack(spacing: 12) {
-            TokenIcon(tokenIconInfo: tokenIconInfo, size: iconSize)
-
-            VStack(alignment: .leading, spacing: 2) {
-                SensitiveText(cryptoAmountText)
-
-                    .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
-
-                LoadableTextView(
-                    state: fiatAmountTextState,
-                    font: Fonts.Regular.caption1,
-                    textColor: Colors.Text.tertiary,
-                    loaderSize: .init(width: 52, height: 12),
-                    isSensitiveText: true
-                )
-            }
-        }
     }
 }

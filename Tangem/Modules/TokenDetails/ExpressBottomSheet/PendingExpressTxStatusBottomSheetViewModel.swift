@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import TangemExpress
 import UIKit
 
 class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable {
@@ -19,9 +20,8 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
         Constants.animationDuration
     }
 
-    let sheetTitle: String
-    let statusTitle: String
-    
+    let expressBranch: ExpressBranch
+
     let timeString: String
     let sourceTokenIconInfo: TokenIconInfo
     let destinationTokenIconInfo: TokenIconInfo
@@ -54,21 +54,19 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     }
 
     init(
-        kind: PendingExpressTxKind,
+        expressBranch: ExpressBranch,
         pendingTransaction: PendingExpressTransaction,
         currentTokenItem: TokenItem,
         pendingTransactionsManager: PendingExpressTransactionsManager,
         router: PendingExpressTxStatusRoutable
     ) {
+        self.expressBranch = expressBranch
         self.pendingTransaction = pendingTransaction
         self.currentTokenItem = currentTokenItem
         self.pendingTransactionsManager = pendingTransactionsManager
         self.router = router
 
         let provider = pendingTransaction.transactionRecord.provider
-        
-        self.sheetTitle = kind.title
-        self.statusTitle = kind.statusTitle(providerName: provider.name)
         
         providerRowViewModel = .init(
             provider: expressProviderFormatter.mapToProvider(provider: provider),
