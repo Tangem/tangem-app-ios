@@ -173,6 +173,7 @@
 "common_terms_of_use" = "利用規約";
 "common_today" = "今日";
 "common_transaction_failed" = "取引が失敗しました";
+"common_transaction_status" = "Transaction status";
 "common_transactions" = "取引";
 "common_transfer" = "送金";
 "common_understand" = "わかりました";
@@ -181,6 +182,7 @@
 "common_unstake" = "ステーキング解除";
 "common_warning" = "警告";
 "common_week" = "週";
+"common_with" = "with";
 "common_yes" = "はい";
 "contract_address_copied_message" = "コントラクトアドレスをコピーしました!";
 "currency_subtitle_expanded" = "利用可能なネットワーク";
@@ -437,7 +439,7 @@
 "markets_token_details_price_performance" = "値動き";
 "markets_token_details_repository" = "リポジトリ";
 "markets_token_details_security_score" = "セキュリティ・スコア";
-"markets_token_details_security_score_description" = "Security score of a token is a metric that assesses the security level of a blockchain or token based on various factors and is compiled from the sources listed below.";
+"markets_token_details_security_score_description" = "トークンのセキュリティ・スコアとは、ブロックチェーンやトークンのセキュリティ・レベルを様々な要因に基づいて評価する指標で、以下の情報源から集計されます。";
 "markets_token_details_social" = "ソーシャル";
 "markets_token_details_total_supply" = "総供給量";
 "markets_token_details_total_supply_description" = "特定の暗号資産に存在しうるコインまたはトークンの最大数";
@@ -554,6 +556,7 @@
 "onramp_settings_residence" = "住居";
 "onramp_settings_residence_description" = "正確なお支払い方法とサービスを確保するため、正しい国を選択してください。";
 "onramp_settings_title" = "設定";
+"onramp_transaction_status_footer_text" = "You can check the transaction status from the token page";
 "onramp_via" = "経由";
 "organize_tokens_group" = "グループ";
 "organize_tokens_sort_by_balance" = "残高順";
@@ -781,7 +784,7 @@
 "staking_unbonding_in" = "解約完了まで";
 "staking_unlocked_locked" = "ロック解除";
 "staking_unlocking" = "ロック解除中";
-"staking_unstake_amount_requirement_error" = "ステーキング金額は %@ 以上である必要があります";
+"staking_unstake_amount_requirement_error" = "ステーキング解除する金額は少なくとも%@である必要があります";
 "staking_unstake_amount_validation_error" = "金額がステーキング残高を超えています";
 "staking_unstaked" = "ステーキングされていない";
 "staking_unstaked_footer" = "資産を請求するために、unstakedを確認してください";

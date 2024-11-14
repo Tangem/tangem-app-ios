@@ -173,6 +173,7 @@
 "common_terms_of_use" = "Nutzungsbedingungen";
 "common_today" = "Heute";
 "common_transaction_failed" = "Transaktion fehlgeschlagen";
+"common_transaction_status" = "Transaction status";
 "common_transactions" = "Transaktionen";
 "common_transfer" = "Überweisung";
 "common_understand" = "Ich verstehe";
@@ -181,6 +182,7 @@
 "common_unstake" = "staking beenden";
 "common_warning" = "Warnung";
 "common_week" = "woche";
+"common_with" = "with";
 "common_yes" = "Ja";
 "contract_address_copied_message" = "Vertragsadresse kopiert!";
 "currency_subtitle_expanded" = "Verfügbare Netzwerke";
@@ -258,7 +260,7 @@
 "express_exchange_status_canceled" = "Abgebrochen";
 "express_exchange_status_confirmed" = "Bestätigt";
 "express_exchange_status_confirming" = "Bestätigen";
-"express_exchange_status_confirming_active" = "wird bestätigt...";
+"express_exchange_status_confirming_active" = "Wird bestätigt...";
 "express_exchange_status_exchanged" = "Getauscht";
 "express_exchange_status_exchanging" = "Tauschen läuft";
 "express_exchange_status_exchanging_active" = "Austauschen...";
@@ -437,7 +439,7 @@
 "markets_token_details_price_performance" = "Preisleistung";
 "markets_token_details_repository" = "Aufbewahrungsort";
 "markets_token_details_security_score" = "Sicherheitsbewertung";
-"markets_token_details_security_score_description" = "Security score of a token is a metric that assesses the security level of a blockchain or token based on various factors and is compiled from the sources listed below.";
+"markets_token_details_security_score_description" = "Der Security Score eines Tokens ist eine Metrik, die das Sicherheitsniveau einer Blockchain oder eines Tokens anhand verschiedener Faktoren bewertet und aus den unten aufgeführten Quellen zusammengestellt wird.";
 "markets_token_details_social" = "Soziales";
 "markets_token_details_total_supply" = "Gesamtangebot";
 "markets_token_details_total_supply_description" = "Die maximale Anzahl von Coins oder Tokens, die jemals für eine bestimmte Kryptowährung existieren können";
@@ -547,13 +549,14 @@
 "onramp_no_available_providers" = "Keine verfügbaren Anbieter für diese Währung";
 "onramp_pay_with" = "Bezahlen mit";
 "onramp_redirecting_to_provider_subtitle" = "Du kannst Deine Transaktion beim Drittanbieter %@ abschließen.";
-"onramp_redirecting_to_provider_title" = "Umleitung auf %@...";
+"onramp_redirecting_to_provider_title" = "Umleitung auf %@ …";
 "onramp_residency_bottomsheet_country_not_supported" = "Unsere Dienstleistungen sind in diesem Land nicht verfügbar";
 "onramp_residency_bottomsheet_country_subtitle" = "Änder oder bestätige bitte";
 "onramp_residency_bottomsheet_title" = "Dein Wohnsitz wurde identifiziert als";
 "onramp_settings_residence" = "Residenz";
 "onramp_settings_residence_description" = "Bitte wähle das richtige Land aus, um korrekte Zahlungsoptionen und Dienstleistungen zu gewährleisten.";
 "onramp_settings_title" = "Einstellungen";
+"onramp_transaction_status_footer_text" = "You can check the transaction status from the token page";
 "onramp_via" = "Über";
 "organize_tokens_group" = "Gruppe erstellen";
 "organize_tokens_sort_by_balance" = "Nach Guthaben";
@@ -647,7 +650,7 @@
 "send_notification_high_fee_text" = "Aufgrund der Besonderheiten des Netzes %1$@ ist die Gebühr für die Überweisung des gesamten Guthabens höher. Um die Kommission zu reduzieren, Kannst du %2$@ verlassen.";
 "send_notification_high_fee_title" = "Die Gebühr ist höher";
 "send_notification_invalid_amount_text" = "Die enthaltene Kommission übersteigt den Überweisungsbetrag, was zu einem negativen Wert führt";
-"send_notification_invalid_amount_title" = "ungültige Menge";
+"send_notification_invalid_amount_title" = "Ungültige Menge";
 "send_notification_invalid_minimum_amount_text" = "Der Mindestbetrag für den Versand beträgt %1$@. Bitte stell sicher, dass der Restbetrag nach dem Versand nicht unter %2$@ liegt.";
 "send_notification_invalid_reserve_amount_text" = "Das Zielkonto wurde nicht erstellt. Bitte änder den zu sendenden Betrag.";
 "send_notification_invalid_reserve_amount_title" = "Der zu sendende Betrag muss mindestens %@ betragen";
@@ -781,7 +784,7 @@
 "staking_unbonding_in" = "Entbindung in";
 "staking_unlocked_locked" = "Gelocktes unlocken";
 "staking_unlocking" = "Entsperren";
-"staking_unstake_amount_requirement_error" = "Der unstaking-Betrag muss mindestens %@ betragen.";
+"staking_unstake_amount_requirement_error" = "Der unstaking-Betrag muss mindestens %@ betragen";
 "staking_unstake_amount_validation_error" = "Der Betrag übersteigt das eingesetzte Guthaben";
 "staking_unstaked" = "Unstaken";
 "staking_unstaked_footer" = "Prüfe, was nicht eingesetzt wurde, um dein Vermögen zu beanspruchen";
