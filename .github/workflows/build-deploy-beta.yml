@@ -41,7 +41,7 @@ jobs:
       jira-issues-summary: '${{ steps.jira-issues-summary.outputs.result }}'
     steps:
       - name: Checkout 'find-latest-release-branch' script
-        if: ${{ env.should_find_latest_release_branch }}
+        if: ${{ env.should_find_latest_release_branch == 'true' }}
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -51,7 +51,7 @@ jobs:
 
       - name: Find latest release branch
         id: find-latest-release-branch
-        if: ${{ env.should_find_latest_release_branch }}
+        if: ${{ env.should_find_latest_release_branch == 'true' }}
         run: |
           ./Utilites/find-latest-release-branch.sh '${{ github.ref_name }}'
           echo "result=$(< 'find-latest-release-branch.output')" >> $GITHUB_OUTPUT
