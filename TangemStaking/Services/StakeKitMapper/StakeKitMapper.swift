@@ -138,6 +138,7 @@ struct StakeKitMapper {
 
             return try PendingAction(
                 id: action.id,
+                accountAddresses: action.accountAddresses,
                 status: mapToActionStatus(from: action.status),
                 amount: amount,
                 type: mapToActionType(from: action.type),
@@ -164,6 +165,7 @@ struct StakeKitMapper {
 
         return try PendingAction(
             id: response.id,
+            accountAddresses: nil,
             status: mapToActionStatus(from: response.status),
             amount: amount,
             type: mapToActionType(from: response.type),
@@ -217,6 +219,7 @@ struct StakeKitMapper {
             return try StakingBalanceInfo(
                 item: mapToStakingTokenItem(from: balance.token),
                 amount: amount,
+                accountAddress: balance.accountAddress,
                 balanceType: mapToBalanceType(from: balance),
                 validatorAddress: balance.validatorAddress ?? balance.validatorAddresses?.first,
                 actions: mapToStakingBalanceInfoPendingAction(from: balance)
@@ -224,7 +227,9 @@ struct StakeKitMapper {
         }
     }
 
-    func mapToStakingBalanceInfoPendingAction(from balance: StakeKitDTO.Balances.Response.Balance) throws -> [StakingPendingActionInfo] {
+    func mapToStakingBalanceInfoPendingAction(
+        from balance: StakeKitDTO.Balances.Response.Balance
+    ) throws -> [StakingPendingActionInfo] {
         try balance.pendingActions.compactMap { action in
             StakingPendingActionInfo(
                 type: try mapToActionType(from: action.type),

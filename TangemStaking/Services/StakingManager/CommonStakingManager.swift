@@ -176,7 +176,7 @@ private extension CommonStakingManager {
         processingActions: [PendingAction]?,
         yield: YieldInfo
     ) -> [StakingBalance] {
-        guard let processingActions else { return realBalances }
+        guard let processingActions, !processingActions.isEmpty else { return realBalances }
         var balances = realBalances
 
         processingActions.forEach { action in
@@ -196,14 +196,17 @@ private extension CommonStakingManager {
 
         return balances
     }
-    
+
     private func balanceIndexByType(
-        balances: inout [StakingBalance],
+        balances: [StakingBalance],
         action: PendingAction,
         type: StakingBalanceType
     ) -> Int? {
         balances.firstIndex(where: {
-            !$0.inProgress && $0.amount == action.amount && $0.balanceType == type
+            !$0.inProgress
+                && $0.balanceType == type
+                && $0.validatorType.validator?.address == action.validatorAddress
+                && $0.accountAddress.flatMap { action.accountAddresses?.contains($0) } ?? true
         })
     }
 
@@ -212,13 +215,17 @@ private extension CommonStakingManager {
         action: PendingAction,
         type: StakingBalanceType
     ) {
-        guard let index = balanceIndexByType(balances: &balances, action: action, type: type) else { return }
+        guard let index = balanceIndexByType(balances: balances, action: action, type: type) else { return }
 
         let balance = balances[index]
 
+        // reduce amount of existing balance to avoid an attemp to unstake already unstaked
+        let amount = action.type == .unstake ? balance.amount - action.amount : balance.amount
+
         let updatedBalance = StakingBalance(
             item: balance.item,
-            amount: balance.amount,
+            amount: amount,
+            accountAddress: balance.accountAddress,
             balanceType: balance.balanceType,
             validatorType: balance.validatorType,
             inProgress: true,
@@ -380,6 +387,7 @@ private extension CommonStakingManager {
         return StakingBalance(
             item: balance.item,
             amount: balance.amount,
+            accountAddress: balance.accountAddress,
             balanceType: balance.balanceType,
             validatorType: validatorType,
             inProgress: false,

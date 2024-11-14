@@ -10,6 +10,7 @@ import Foundation
 
 public struct PendingAction: Hashable {
     public let id: String
+    public let accountAddresses: [String]?
     public let status: ActionStatus
     public let amount: Decimal
     public let type: StakingPendingActionInfo.ActionType

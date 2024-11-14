@@ -100,6 +100,7 @@ enum StakeKitDTO {
         let USDAmount: String?
         let validatorAddress: String?
         let validatorAddresses: [String]?
+        let accountAddresses: [String]?
     }
 
     struct Required: Decodable {
