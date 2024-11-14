@@ -91,6 +91,8 @@ extension CommonWalletModelsFactory: WalletModelsFactory {
         let currentDerivation = walletManager.wallet.publicKey.derivationPath
         let isMainCoinCustom = !isDerivationDefault(blockchain: currentBlockchain, derivationPath: currentDerivation)
         let blockchainNetwork = BlockchainNetwork(currentBlockchain, derivationPath: currentDerivation)
+        let sendAvailabilityProvider = TransactionSendAvailabilityProvider(isSendingSupportedByCard: config.hasFeature(.send))
+
         if types.contains(.coin) {
             let tokenItem: TokenItem = .blockchain(blockchainNetwork)
             let transactionHistoryService = makeTransactionHistoryService(
@@ -108,7 +110,8 @@ extension CommonWalletModelsFactory: WalletModelsFactory {
                 transactionHistoryService: transactionHistoryService,
                 amountType: .coin,
                 shouldPerformHealthCheck: shouldPerformHealthCheck,
-                isCustom: isMainCoinCustom
+                isCustom: isMainCoinCustom,
+                sendAvailabilityProvider: sendAvailabilityProvider
             )
             models.append(mainCoinModel)
         }
@@ -133,7 +136,8 @@ extension CommonWalletModelsFactory: WalletModelsFactory {
                     transactionHistoryService: transactionHistoryService,
                     amountType: amountType,
                     shouldPerformHealthCheck: shouldPerformHealthCheck,
-                    isCustom: isTokenCustom
+                    isCustom: isTokenCustom,
+                    sendAvailabilityProvider: sendAvailabilityProvider
                 )
                 models.append(tokenModel)
             }

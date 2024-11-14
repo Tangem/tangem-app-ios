@@ -33,11 +33,14 @@ class SendCoordinator: CoordinatorObject {
 
     @Published var mailViewModel: MailViewModel?
     @Published var expressApproveViewModel: ExpressApproveViewModel?
-    @Published var onrampCountryDetectionViewModel: OnrampCountryDetectionViewModel?
 
+    @Published var onrampCountryDetectionViewModel: OnrampCountryDetectionViewModel?
     @Published var onrampSettingsViewModel: OnrampSettingsViewModel?
     @Published var onrampCountrySelectorViewModel: OnrampCountrySelectorViewModel?
     @Published var onrampCurrencySelectorViewModel: OnrampCurrencySelectorViewModel?
+    @Published var onrampRedirectingViewModel: OnrampRedirectingViewModel?
+
+    private var safariHandle: SafariHandle?
 
     required init(
         dismissAction: @escaping Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?>,
@@ -183,6 +186,17 @@ extension SendCoordinator: OnrampRoutable {
         coordinator.start(with: .default)
         onrampProvidersCoordinator = coordinator
     }
+
+    func openOnrampRedirecting(onrampRedirectingBuilder: OnrampRedirectingBuilder) {
+        onrampRedirectingViewModel = onrampRedirectingBuilder.makeOnrampRedirectingViewModel(coordinator: self)
+    }
+
+    func openOnrampWebView(url: URL, success: @escaping () -> Void) {
+        safariHandle = safariManager.openURL(url) { [weak self] _ in
+            self?.safariHandle = nil
+            success()
+        }
+    }
 }
 
 // MARK: - ExpressApproveRoutable
@@ -239,5 +253,13 @@ extension SendCoordinator: OnrampCurrencySelectorRoutable {
 extension SendCoordinator: OnrampAmountRoutable {
     func openOnrampCurrencySelector() {
         rootViewModel?.openOnrampCurrencySelectorView()
+    }
+}
+
+// MARK: - OnrampRedirectingRoutable
+
+extension SendCoordinator: OnrampRedirectingRoutable {
+    func dismissOnrampRedirecting() {
+        onrampRedirectingViewModel = nil
     }
 }

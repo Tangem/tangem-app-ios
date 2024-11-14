@@ -43,4 +43,12 @@ struct IconURLBuilder {
             .appendingPathComponent(size.rawValue)
             .appendingPathComponent("\(exchangeId.lowercased()).png")
     }
+
+    func securityScoreProviderIconURL(providerId: String, size: TokenURLIconSize = .large) -> URL {
+        baseURL
+            .appendingPathComponent("security_provider")
+            .appendingPathComponent(size.rawValue)
+            .appendingPathComponent(providerId.lowercased())
+            .appendingPathExtension(for: .png)
+    }
 }
