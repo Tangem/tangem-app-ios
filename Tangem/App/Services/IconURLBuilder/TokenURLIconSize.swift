@@ -9,6 +9,8 @@
 import Foundation
 
 enum TokenURLIconSize: String {
+    /// 25x25
+    case thumb
     /// 50x50
     case small
     /// 250x250

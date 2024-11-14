@@ -11,6 +11,7 @@ import Combine
 import CombineExt
 import Moya
 import BlockchainSdk
+import TangemFoundation
 
 class CommonTangemApiService {
     private let provider = TangemProvider<TangemApiTarget>(plugins: [
@@ -31,11 +32,12 @@ class CommonTangemApiService {
     private let coinsQueue = DispatchQueue(label: "coins_request_queue", qos: .default)
     private let currenciesQueue = DispatchQueue(label: "currencies_request_queue", qos: .default)
 
-    private var snakeCaseJSONDecoder: JSONDecoder {
+    private let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601WithFractionalSeconds
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return decoder
-    }
+    }()
 
     deinit {
         AppLog.shared.debug("CommonTangemApiService deinit")
@@ -135,7 +137,7 @@ extension CommonTangemApiService: TangemApiService {
     }
 
     func loadCoins(requestModel: CoinsList.Request) async throws -> CoinsList.Response {
-        return try await request(for: .coins(requestModel), decoder: snakeCaseJSONDecoder)
+        return try await request(for: .coins(requestModel), decoder: decoder)
     }
 
     func loadQuotes(requestModel: QuotesDTO.Request) -> AnyPublisher<[Quote], Error> {
@@ -194,11 +196,6 @@ extension CommonTangemApiService: TangemApiService {
     }
 
     func expressPromotion(request model: ExpressPromotion.Request) async throws -> ExpressPromotion.Response {
-        let decoder = JSONDecoder()
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-        decoder.dateDecodingStrategy = .formatted(dateFormatter)
-
         return try await request(for: .promotion(request: model), decoder: decoder)
     }
 
@@ -242,29 +239,29 @@ extension CommonTangemApiService: TangemApiService {
     // MARK: - Markets Implementation
 
     func loadCoinsList(requestModel: MarketsDTO.General.Request) async throws -> MarketsDTO.General.Response {
-        return try await request(for: .coinsList(requestModel), decoder: snakeCaseJSONDecoder)
+        return try await request(for: .coinsList(requestModel), decoder: decoder)
     }
 
     func loadCoinsHistoryChartPreview(
         requestModel: MarketsDTO.ChartsHistory.PreviewRequest
     ) async throws -> MarketsDTO.ChartsHistory.PreviewResponse {
-        return try await request(for: .coinsHistoryChartPreview(requestModel), decoder: snakeCaseJSONDecoder)
+        return try await request(for: .coinsHistoryChartPreview(requestModel), decoder: decoder)
     }
 
     func loadTokenMarketsDetails(requestModel: MarketsDTO.Coins.Request) async throws -> MarketsDTO.Coins.Response {
-        return try await request(for: .tokenMarketsDetails(requestModel), decoder: snakeCaseJSONDecoder)
+        return try await request(for: .tokenMarketsDetails(requestModel), decoder: decoder)
     }
 
     func loadHistoryChart(
         requestModel: MarketsDTO.ChartsHistory.HistoryRequest
     ) async throws -> MarketsDTO.ChartsHistory.HistoryResponse {
-        return try await request(for: .historyChart(requestModel), decoder: snakeCaseJSONDecoder)
+        return try await request(for: .historyChart(requestModel), decoder: decoder)
     }
 
     func loadTokenExchangesListDetails(
         requestModel: MarketsDTO.ExchangesRequest
     ) async throws -> MarketsDTO.ExchangesResponse {
-        return try await request(for: .tokenExchangesList(requestModel), decoder: snakeCaseJSONDecoder)
+        return try await request(for: .tokenExchangesList(requestModel), decoder: decoder)
     }
 
     // MARK: - Init

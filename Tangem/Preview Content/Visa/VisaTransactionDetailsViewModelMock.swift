@@ -8,17 +8,17 @@
 
 import Foundation
 import TangemVisa
+import TangemFoundation
 
 extension VisaTransactionDetailsViewModel {
     static var uiMock: VisaTransactionDetailsViewModel {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
         let decoder = JSONDecoder()
+
         do {
             let url = Bundle.main.url(forResource: "visaSingleTransaction", withExtension: "json")!
             let jsonContent = try String(contentsOf: url)
             decoder.keyDecodingStrategy = .convertFromSnakeCase
-            decoder.dateDecodingStrategy = .formatted(formatter)
+            decoder.dateDecodingStrategy = .iso8601WithFractionalSeconds
 
             let transaction = try decoder.decode(VisaTransactionRecord.self, from: jsonContent.data(using: .utf8)!)
             let utils = VisaUtilities()
