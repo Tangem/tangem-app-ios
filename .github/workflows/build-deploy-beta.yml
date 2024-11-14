@@ -17,8 +17,8 @@ on:
         type: string
       base_branch:
         description: >
-          Optional base branch for constructing Jira issues diff. 
-          Leave blank (default value) to use the most recent release branch ('releases/*') created from the current branch
+          Optional base branch for constructing Jira issues diff. Leave blank (default value) to use 
+          the most recent release branch ('releases/*') created from the current branch or its ancestor
         type: string
 
 concurrency:
