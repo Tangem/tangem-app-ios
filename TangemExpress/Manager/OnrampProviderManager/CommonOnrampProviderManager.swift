@@ -101,4 +101,12 @@ extension CommonOnrampProviderManager: OnrampProviderManager {
         _amount = amount
         await updateState()
     }
+
+    func makeOnrampQuotesRequestItem() throws -> OnrampQuotesRequestItem {
+        guard let amount = _amount, amount > 0 else {
+            throw OnrampProviderManagerError.amountNotFound
+        }
+
+        return try makeOnrampSwappableItem(amount: amount)
+    }
 }

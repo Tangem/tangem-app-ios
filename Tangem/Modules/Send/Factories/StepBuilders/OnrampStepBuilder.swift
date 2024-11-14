@@ -21,11 +21,10 @@ struct OnrampStepBuilder {
 
     func makeOnrampStep(
         io: IO,
-        onrampManager: some OnrampManager,
         onrampAmountViewModel: OnrampAmountViewModel,
         onrampProvidersCompactViewModel: OnrampProvidersCompactViewModel
     ) -> ReturnValue {
-        let interactor = makeOnrampInteractor(io: io, onrampManager: onrampManager)
+        let interactor = makeOnrampInteractor(io: io)
         let viewModel = makeOnrampViewModel(
             onrampAmountViewModel: onrampAmountViewModel,
             onrampProvidersCompactViewModel: onrampProvidersCompactViewModel,
@@ -52,7 +51,7 @@ private extension OnrampStepBuilder {
         )
     }
 
-    func makeOnrampInteractor(io: IO, onrampManager: some OnrampManager) -> OnrampInteractor {
+    func makeOnrampInteractor(io: IO) -> OnrampInteractor {
         CommonOnrampInteractor(input: io.input, output: io.output)
     }
 }

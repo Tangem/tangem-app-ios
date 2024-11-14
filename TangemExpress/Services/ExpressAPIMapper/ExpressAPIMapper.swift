@@ -208,9 +208,18 @@ struct ExpressAPIMapper {
     }
 }
 
-enum ExpressAPIMapperError: Error {
+enum ExpressAPIMapperError: LocalizedError {
     case mapToDecimalError(_ string: String)
     case requestIdNotEqual
     case payoutAddressNotEqual
     case wrongProviderType
+
+    var errorDescription: String? {
+        switch self {
+        case .mapToDecimalError(let value): "Wrong decimal value \(value)"
+        case .requestIdNotEqual: "Request id is not matched with value in the request"
+        case .payoutAddressNotEqual: "Payout address is not matched with value in the request"
+        case .wrongProviderType: "Provider type is not support"
+        }
+    }
 }
