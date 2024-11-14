@@ -437,12 +437,8 @@ extension SingleTokenBaseViewModel {
     }
 
     private func sendIsDisabled() -> Bool {
-        guard userWalletModel.config.hasFeature(.send) else {
-            return true
-        }
-
         switch walletModel.sendingRestrictions {
-        case .zeroWalletBalance, .cantSignLongTransactions, .hasPendingTransaction, .blockchainUnreachable:
+        case .zeroWalletBalance, .cantSignLongTransactions, .hasPendingTransaction, .blockchainUnreachable, .oldCard:
             return true
         case .none, .zeroFeeCurrencyBalance:
             return false
