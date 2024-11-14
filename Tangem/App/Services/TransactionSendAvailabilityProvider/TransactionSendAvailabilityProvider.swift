@@ -10,7 +10,17 @@ import Foundation
 import BlockchainSdk
 
 struct TransactionSendAvailabilityProvider {
+    private let isSendingSupportedByCard: Bool
+
+    init(isSendingSupportedByCard: Bool) {
+        self.isSendingSupportedByCard = isSendingSupportedByCard
+    }
+
     func sendingRestrictions(walletModel: WalletModel) -> SendingRestrictions? {
+        guard isSendingSupportedByCard else {
+            return .oldCard
+        }
+
         let wallet = walletModel.wallet
 
         if !AppUtils().canSignTransaction(for: walletModel.tokenItem) {
@@ -65,6 +75,7 @@ extension TransactionSendAvailabilityProvider {
         case hasPendingTransaction(blockchain: Blockchain)
         case zeroFeeCurrencyBalance(configuration: NotEnoughFeeConfiguration)
         case blockchainUnreachable
+        case oldCard
 
         struct NotEnoughFeeConfiguration: Hashable {
             let transactionAmountTypeName: String
