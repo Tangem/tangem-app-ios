@@ -30,15 +30,22 @@ class CommonStakingAPIProvider: StakingAPIProvider {
     }
 
     func balances(wallet: StakingWallet) async throws -> [StakingBalanceInfo] {
-        let request = StakeKitDTO.Balances.Request(addresses: .init(address: wallet.address), network: wallet.item.network)
+        let request = StakeKitDTO.Balances.Request(
+            addresses: .init(address: wallet.address),
+            network: wallet.item.network
+        )
         let response = try await service.getBalances(request: request)
         let balancesInfo = try mapper.mapToBalanceInfo(from: response)
         return balancesInfo
     }
 
     func actions(wallet: StakingWallet) async throws -> [PendingAction] {
-        let responseLimit = 50 // maximum that supports stakekit API
-        let request = StakeKitDTO.Actions.List.Request(walletAddress: wallet.address, network: wallet.item.network, status: .processing, limit: responseLimit)
+        let request = StakeKitDTO.Actions.List.Request(
+            walletAddress: wallet.address,
+            network: wallet.item.network,
+            status: .processing,
+            limit: Constants.pendingActionsResponseLimit
+        )
         let response = try await service.actions(request: request)
         return try mapper.mapToPendingActions(from: response)
     }
@@ -115,5 +122,11 @@ class CommonStakingAPIProvider: StakingAPIProvider {
 
     func submitHash(hash: String, transactionId: String) async throws {
         try await service.submitHash(id: transactionId, request: .init(hash: hash))
+    }
+}
+
+extension CommonStakingAPIProvider {
+    enum Constants {
+        static let pendingActionsResponseLimit = 50 // maximum that supports stakekit API
     }
 }

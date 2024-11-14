@@ -17,4 +17,24 @@ public struct PendingAction: Hashable {
     public let currentStepIndex: Int
     public let transactions: [ActionTransaction]
     public let validatorAddress: String?
+    
+    public init(
+        id: String,
+        accountAddresses: [String]? = nil,
+        status: ActionStatus,
+        amount: Decimal,
+        type: StakingPendingActionInfo.ActionType,
+        currentStepIndex: Int,
+        transactions: [ActionTransaction],
+        validatorAddress: String? = nil
+    ) {
+        self.id = id
+        self.accountAddresses = accountAddresses
+        self.status = status
+        self.amount = amount
+        self.type = type
+        self.currentStepIndex = currentStepIndex
+        self.transactions = transactions
+        self.validatorAddress = validatorAddress
+    }
 }

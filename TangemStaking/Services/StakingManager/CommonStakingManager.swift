@@ -20,7 +20,6 @@ class CommonStakingManager {
     // MARK: Private
 
     private let _state = CurrentValueSubject<StakingManagerState, Never>(.loading)
-    private let _actions = CurrentValueSubject<[PendingAction]?, Never>(nil)
     private var canStakeMore: Bool {
         switch wallet.item.network {
         case .solana, .cosmos, .tron, .ethereum, .binance: true
@@ -61,11 +60,6 @@ extension CommonStakingManager: StakingManager {
         default:
             return nil
         }
-    }
-
-    var actionsPublisher: AnyPublisher<[PendingAction], Never> {
-        _actions.compactMap { $0 }
-            .eraseToAnyPublisher()
     }
 
     func updateState() async {

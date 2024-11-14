@@ -165,7 +165,6 @@ struct StakeKitMapper {
 
         return try PendingAction(
             id: response.id,
-            accountAddresses: nil,
             status: mapToActionStatus(from: response.status),
             amount: amount,
             type: mapToActionType(from: response.type),
