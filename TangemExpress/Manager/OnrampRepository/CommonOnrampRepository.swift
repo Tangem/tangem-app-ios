@@ -32,10 +32,6 @@ extension CommonOnrampRepository: OnrampRepository {
         preference.value.currency.map(mapToOnrampFiatCurrency)
     }
 
-    var preferencePaymentMethod: OnrampPaymentMethod? {
-        preference.value.paymentMethod.map(mapToOnrampPaymentMethod)
-    }
-
     var preferenceCountryPublisher: AnyPublisher<OnrampCountry?, Never> {
         preference.map { [weak self] preference in
             preference.country.flatMap { country in
@@ -54,16 +50,7 @@ extension CommonOnrampRepository: OnrampRepository {
         .eraseToAnyPublisher()
     }
 
-    var preferencePaymentMethodPublisher: AnyPublisher<OnrampPaymentMethod?, Never> {
-        preference.map { [weak self] preference in
-            preference.paymentMethod.flatMap { paymentMethod in
-                self?.mapToOnrampPaymentMethod(paymentMethod: paymentMethod)
-            }
-        }
-        .eraseToAnyPublisher()
-    }
-
-    func updatePreference(country: OnrampCountry?, currency: OnrampFiatCurrency?, paymentMethod: OnrampPaymentMethod?) {
+    func updatePreference(country: OnrampCountry?, currency: OnrampFiatCurrency?) {
         var newPreference = preference.value
 
         if let country {
@@ -72,10 +59,6 @@ extension CommonOnrampRepository: OnrampRepository {
 
         if let currency {
             newPreference.currency = mapToOnrampUserPreferenceCurrency(currency: currency)
-        }
-
-        if let paymentMethod {
-            newPreference.paymentMethod = mapToOnrampUserPreferencePaymentMethod(paymentMethod: paymentMethod)
         }
 
         lockQueue.sync {
@@ -108,14 +91,6 @@ private extension CommonOnrampRepository {
         )
     }
 
-    func mapToOnrampPaymentMethod(paymentMethod: OnrampUserPreference.PaymentMethod) -> OnrampPaymentMethod {
-        OnrampPaymentMethod(
-            id: paymentMethod.id,
-            name: paymentMethod.name,
-            image: paymentMethod.image
-        )
-    }
-
     func mapToOnrampUserPreferenceCountry(country: OnrampCountry) -> OnrampUserPreference.Country {
         OnrampUserPreference.Country(
             name: country.identity.name,
@@ -132,14 +107,6 @@ private extension CommonOnrampRepository {
             code: currency.identity.code,
             image: currency.identity.image,
             precision: currency.precision
-        )
-    }
-
-    func mapToOnrampUserPreferencePaymentMethod(paymentMethod: OnrampPaymentMethod) -> OnrampUserPreference.PaymentMethod {
-        OnrampUserPreference.PaymentMethod(
-            name: paymentMethod.name,
-            id: paymentMethod.id,
-            image: paymentMethod.image
         )
     }
 }

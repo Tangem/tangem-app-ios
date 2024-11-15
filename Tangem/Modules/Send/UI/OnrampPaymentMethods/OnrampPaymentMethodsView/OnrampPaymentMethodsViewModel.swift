@@ -21,41 +21,24 @@ final class OnrampPaymentMethodsViewModel: ObservableObject {
     // MARK: - Dependencies
 
     private let interactor: OnrampPaymentMethodsInteractor
-    private let dataRepository: OnrampDataRepository
     private weak var coordinator: OnrampPaymentMethodsRoutable?
 
     private var bag: Set<AnyCancellable> = []
 
     init(
         interactor: OnrampPaymentMethodsInteractor,
-        dataRepository: OnrampDataRepository,
         coordinator: OnrampPaymentMethodsRoutable
     ) {
         self.interactor = interactor
-        self.dataRepository = dataRepository
         self.coordinator = coordinator
 
         bind()
-        setupView()
     }
 }
 
 // MARK: - Private
 
 private extension OnrampPaymentMethodsViewModel {
-    func setupView() {
-        TangemFoundation.runTask(in: self) {
-            // Logic will be updated. PaymentMethods will be filtered
-            // TODO: https://tangem.atlassian.net/browse/IOS-8487
-            do {
-                let methods = try await $0.dataRepository.paymentMethods()
-                await $0.updateView(paymentMethods: methods)
-            } catch {
-                $0.alert = error.alertBinder
-            }
-        }
-    }
-
     func bind() {
         interactor
             .paymentMethodPublisher
@@ -65,9 +48,17 @@ private extension OnrampPaymentMethodsViewModel {
                 viewModel.selectedPaymentMethod = payment.id
             }
             .store(in: &bag)
+
+        interactor
+            .paymentMethodsPublisher
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, paymentMethods in
+                viewModel.updateView(paymentMethods: paymentMethods)
+            }
+            .store(in: &bag)
     }
 
-    @MainActor
     func updateView(paymentMethods methods: [OnrampPaymentMethod]) {
         paymentMethods = methods.map { method in
             OnrampPaymentMethodRowViewData(

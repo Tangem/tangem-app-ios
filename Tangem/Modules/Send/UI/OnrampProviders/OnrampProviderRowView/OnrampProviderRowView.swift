@@ -82,6 +82,8 @@ struct OnrampProviderRowView: View {
             Spacer()
 
             switch data.badge {
+            case .none:
+                EmptyView()
             case .percent(let text, let signType):
                 Text(text)
                     .style(Fonts.Regular.subheadline, color: signType.textColor)
@@ -98,15 +100,11 @@ struct OnrampProviderRowView: View {
 
     @ViewBuilder
     private var stateView: some View {
-        // View will be updated when term will be ready
-        // TODO: https://tangem.atlassian.net/browse/IOS-8487
-
         switch data.state {
         case .none:
             EmptyView()
         case .available(let time):
-            Text(time)
-                .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+            timeView(time: time)
         case .availableFromAmount(let amount), .availableToAmount(let amount):
             Text(amount)
                 .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
@@ -115,13 +113,32 @@ struct OnrampProviderRowView: View {
                 .style(Fonts.Regular.caption1, color: Colors.Text.warning)
         }
     }
+
+    @ViewBuilder
+    private func timeView(time: String) -> some View {
+        HStack(spacing: 4) {
+            Assets.speedMiniIcon.image
+                .renderingMode(.template)
+                .resizable()
+                .frame(width: 10, height: 10)
+                .foregroundColor(Colors.Icon.informative)
+
+            Text(time)
+                .style(Fonts.Regular.caption2, color: Colors.Text.tertiary)
+        }
+        .padding(.vertical, 2)
+        .padding(.horizontal, 4)
+        .overlay(
+            RoundedRectangle(cornerRadius: 6)
+                .stroke(Colors.Stroke.primary, lineWidth: 1)
+        )
+    }
 }
 
 #Preview {
     LazyVStack {
         ForEach([
             OnrampProviderRowViewData(
-                id: "1inch",
                 name: "1Inch",
                 iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/1INCH512.png"),
                 formattedAmount: "0,00453 BTC",
@@ -131,7 +148,6 @@ struct OnrampProviderRowView: View {
                 action: {}
             ),
             OnrampProviderRowViewData(
-                id: "changenow",
                 name: "Changenow",
                 iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/NOW512.png"),
                 formattedAmount: "0,00450 BTC",
