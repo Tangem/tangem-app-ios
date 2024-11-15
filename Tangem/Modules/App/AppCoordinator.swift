@@ -65,7 +65,6 @@ class AppCoordinator: CoordinatorObject {
 
     func sceneDidEnterBackground() {
         appLockController.sceneDidEnterBackground()
-        mainBottomSheetUIManager.hide(shouldUpdateFooterSnapshot: false)
     }
 
     func sceneWillEnterForeground(hideLockView: @escaping () -> Void) {
@@ -87,7 +86,6 @@ class AppCoordinator: CoordinatorObject {
             }
         } else {
             hideLockView()
-            mainBottomSheetUIManager.show()
         }
     }
 
