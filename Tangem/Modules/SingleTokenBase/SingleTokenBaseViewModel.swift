@@ -667,7 +667,7 @@ extension SingleTokenBaseViewModel {
                 .reason: walletModel.sendingRestrictions.analyticsUnavailableReason,
             ])
         }
-        
+
         openSend()
     }
 
