@@ -14,12 +14,10 @@ public protocol OnrampStorage {
 public struct OnrampUserPreference: Codable {
     var country: Country?
     var currency: Currency?
-    var paymentMethod: PaymentMethod?
 
-    init(country: Country? = nil, currency: Currency? = nil, paymentMethod: PaymentMethod? = nil) {
+    init(country: Country? = nil, currency: Currency? = nil) {
         self.country = country
         self.currency = currency
-        self.paymentMethod = paymentMethod
     }
 }
 
@@ -37,11 +35,5 @@ extension OnrampUserPreference {
         let code: String
         let image: URL?
         let precision: Int
-    }
-
-    struct PaymentMethod: Codable {
-        let name: String
-        let id: String
-        let image: URL?
     }
 }

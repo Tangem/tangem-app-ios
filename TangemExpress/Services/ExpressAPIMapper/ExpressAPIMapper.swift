@@ -168,11 +168,13 @@ struct ExpressAPIMapper {
     }
 
     func mapToOnrampPaymentMethod(response: ExpressDTO.Onramp.PaymentMethod) -> OnrampPaymentMethod? {
-        if response.id == "google-pay" {
+        let method = OnrampPaymentMethod(id: response.id, name: response.name, image: response.image)
+
+        if method.type == .googlePay {
             return nil
         }
 
-        return OnrampPaymentMethod(id: response.id, name: response.name, image: URL(string: response.image))
+        return method
     }
 
     func mapToOnrampPair(response: ExpressDTO.Onramp.Pairs.Response) -> OnrampPair {

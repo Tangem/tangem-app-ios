@@ -40,12 +40,6 @@ extension CommonOnrampManager: OnrampManager {
         return country
     }
 
-    public func initialSetupPaymentMethod() async throws -> OnrampPaymentMethod {
-        let paymentMethodDeterminer = PaymentMethodDeterminer(dataRepository: dataRepository)
-        let method = try await paymentMethodDeterminer.preferredPaymentMethod()
-        return method
-    }
-
     public func setupProviders(request item: OnrampPairRequestItem) async throws {
         let pairs = try await apiProvider.onrampPairs(
             from: item.fiatCurrency,
@@ -70,10 +64,10 @@ extension CommonOnrampManager: OnrampManager {
 
         await updateQuotesInEachManager(amount: amount)
 
-        try await proceedProviders()
+        proceedProviders()
     }
 
-    public func updatePaymentMethod(paymentMethod: OnrampPaymentMethod) throws {
+    public func updatePaymentMethod(paymentMethod: OnrampPaymentMethod) {
         _selectedProvider = _providers[paymentMethod]?.first
     }
 
@@ -96,29 +90,25 @@ private extension CommonOnrampManager {
                     await provider.manager.update(amount: amount)
                 }
             }
-
-            await group.waitForAll()
         }
     }
 
-    func proceedProviders() async throws {
-        let paymentMethodDeterminer = PaymentMethodDeterminer(dataRepository: dataRepository)
-        let paymentMethod = try await paymentMethodDeterminer.preferredPaymentMethod()
+    func proceedProviders() {
+        let paymentMethods = _providers.keys.sorted(by: { $0.type.priority > $1.type.priority })
 
-        try proceedProviders(paymentMethod: paymentMethod)
-    }
+        for paymentMethod in paymentMethods {
+            let sortedProviders = _providers[paymentMethod]?.sorted(by: {
+                sort(lhs: $0.manager.state, rhs: $1.manager.state)
+            })
 
-    func proceedProviders(paymentMethod: OnrampPaymentMethod) throws {
-        guard let providers = _providers[paymentMethod] else {
-            throw OnrampManagerError.noProviderForPaymentMethod
+            _providers[paymentMethod] = sortedProviders
+
+            if let maxPriorityProvider = sortedProviders?.first {
+                _selectedProvider = maxPriorityProvider
+                // Stop the cycle
+                break
+            }
         }
-
-        let sortedProviders = providers.sorted(by: {
-            sort(lhs: $0.manager.state, rhs: $1.manager.state)
-        })
-
-        _providers[paymentMethod] = sortedProviders
-        _selectedProvider = sortedProviders.first
     }
 
     func prepareProviders(

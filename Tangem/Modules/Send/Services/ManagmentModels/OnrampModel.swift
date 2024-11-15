@@ -103,6 +103,7 @@ private extension OnrampModel {
             $0._selectedOnrampProvider.send(.loading)
 
             try await $0.onrampManager.setupQuotes(amount: amount)
+            try Task.checkCancellation()
 
             await $0._onrampProviders.send(.loaded($0.onrampManager.providers))
             if let selectedProvider = await $0.onrampManager.selectedProvider {
@@ -113,7 +114,7 @@ private extension OnrampModel {
 
     func updatePaymentMethod(method: OnrampPaymentMethod) {
         mainTask {
-            try await $0.onrampManager.updatePaymentMethod(paymentMethod: method)
+            await $0.onrampManager.updatePaymentMethod(paymentMethod: method)
             if let selectedProvider = await $0.onrampManager.selectedProvider {
                 $0._selectedOnrampProvider.send(.loaded(selectedProvider))
             }
