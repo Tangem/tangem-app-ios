@@ -51,6 +51,13 @@ else
     brew install mint
 fi
 
+if which -a xcodes > /dev/null; then
+    echo "🟢 Xcodes installed. Skipping install"
+else
+    echo "🔴 Xcodes not installed. Start install"
+    brew install xcodes
+fi
+
 if [ "${CI}" = true ] ; then
     MINTFILE="./Utilites/Mintfile@ci"
 else
