@@ -246,11 +246,8 @@ struct StakeKitMapper {
 
         let validators = response.validators.map(mapToValidatorInfo)
         let preferredValidators = validators.filter { $0.preferred }.sorted { lhs, rhs in
-            if lhs.name.caseInsensitiveCompare(StakingConstants.partnerName) == .orderedSame {
+            if lhs.partner {
                 return true
-            }
-            if lhs.apr == rhs.apr {
-                return lhs.partner
             }
 
             return lhs.apr ?? 0 > rhs.apr ?? 0
