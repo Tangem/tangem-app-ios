@@ -36,19 +36,53 @@ final class ActionButtonsSellViewModel: ObservableObject {
         case .didTapToken(let token):
             guard let url = makeSellUrl(from: token) else { return }
 
-            coordinator.openSellCrypto(from: url)
+            coordinator.openSellCrypto(from: url) { response -> SendToSellModel? in
+                self.makeSendToSellModel(from: response, and: token.walletModel)
+            }
         }
     }
+}
 
-    private func makeSellUrl(from token: ActionButtonsTokenSelectorItem) -> URL? {
+// MARK: - Fabric methods
+
+private extension ActionButtonsSellViewModel {
+    func makeSendToSellModel(from response: String, and walletModel: WalletModel) -> SendToSellModel? {
+        let exchangeUtility = makeExchangeCryptoUtility(for: walletModel)
+        
+        guard
+            let sellCryptoRequest = exchangeUtility.extractSellCryptoRequest(from: response),
+            var amountToSend = walletModel.wallet.amounts[walletModel.amountType]
+        else {
+            return nil
+        }
+        
+        amountToSend.value = sellCryptoRequest.amount
+        
+        return .init(
+            amountToSend: amountToSend,
+            destination: sellCryptoRequest.targetAddress,
+            tag: sellCryptoRequest.tag,
+            walletModel: walletModel
+        )
+    }
+    
+    func makeSellUrl(from token: ActionButtonsTokenSelectorItem) -> URL? {
         let sellUrl = exchangeService.getSellUrl(
             currencySymbol: token.symbol,
-            amountType: token.amountType,
-            blockchain: token.blockchain,
-            walletAddress: token.defaultAddress
+            amountType: token.walletModel.amountType,
+            blockchain: token.walletModel.blockchainNetwork.blockchain,
+            walletAddress: token.walletModel.defaultAddress
         )
-
+        
         return sellUrl
+    }
+    
+    func makeExchangeCryptoUtility(for walletModel: WalletModel) -> ExchangeCryptoUtility {
+        return ExchangeCryptoUtility(
+            blockchain: walletModel.blockchainNetwork.blockchain,
+            address: walletModel.defaultAddress,
+            amountType: walletModel.amountType
+        )
     }
 }
 

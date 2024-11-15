@@ -489,7 +489,8 @@ extension MainCoordinator: ActionButtonsSellFlowRoutable, ActionButtonsSellCrypt
         let coordinator = ActionButtonsSellCoordinator(
             sellCryptoCoordinator: self,
             expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel),
-            dismissAction: dismissAction
+            dismissAction: dismissAction,
+            userWalletModel: userWalletModel
         )
 
         coordinator.start(with: .default)
@@ -497,9 +498,24 @@ extension MainCoordinator: ActionButtonsSellFlowRoutable, ActionButtonsSellCrypt
         actionButtonsSellCoordinator = coordinator
     }
 
-    func openSellCrypto(from url: URL) {
-        openSellCrypto(at: url) { _ in
-            self.actionButtonsSellCoordinator = nil
+    func openSellCrypto(
+        from url: URL,
+        action: @escaping (String) -> SendToSellModel?,
+        userWalletModel: some UserWalletModel
+    ) {
+        openSellCrypto(at: url) { [weak self] response in
+
+            guard let model = action(response) else { return }
+
+            self?.actionButtonsSellCoordinator = nil
+
+            self?.openSendToSell(
+                amountToSend: model.amountToSend,
+                destination: model.destination,
+                tag: model.tag,
+                userWalletModel: userWalletModel,
+                walletModel: model.walletModel
+            )
         }
     }
 }

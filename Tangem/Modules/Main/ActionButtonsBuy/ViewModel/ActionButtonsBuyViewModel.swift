@@ -43,9 +43,9 @@ final class ActionButtonsBuyViewModel: ObservableObject {
     private func makeBuyUrl(from token: ActionButtonsTokenSelectorItem) -> URL? {
         let buyUrl = exchangeService.getBuyUrl(
             currencySymbol: token.symbol,
-            amountType: token.amountType,
-            blockchain: token.blockchain,
-            walletAddress: token.defaultAddress
+            amountType: token.walletModel.amountType,
+            blockchain: token.walletModel.blockchainNetwork.blockchain,
+            walletAddress: token.walletModel.defaultAddress
         )
 
         return buyUrl

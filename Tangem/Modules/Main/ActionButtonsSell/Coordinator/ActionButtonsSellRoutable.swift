@@ -9,6 +9,9 @@
 import Foundation
 
 protocol ActionButtonsSellRoutable {
-    func openSellCrypto(from url: URL)
+    func openSellCrypto(
+        from url: URL,
+        action: @escaping (String) -> SendToSellModel?
+    )
     func dismiss()
 }

@@ -17,19 +17,22 @@ final class ActionButtonsSellCoordinator: CoordinatorObject {
     private let sellCryptoCoordinator: ActionButtonsSellCryptoRoutable
     private let expressTokensListAdapter: ExpressTokensListAdapter
     private let tokenSorter: TokenAvailabilitySorter
+    private let userWalletModel: UserWalletModel
 
     required init(
         sellCryptoCoordinator: some ActionButtonsSellCryptoRoutable,
         expressTokensListAdapter: some ExpressTokensListAdapter,
         tokenSorter: some TokenAvailabilitySorter = CommonSellTokenAvailabilitySorter(),
         dismissAction: @escaping Action<Void>,
-        popToRootAction: @escaping Action<PopToRootOptions> = { _ in }
+        popToRootAction: @escaping Action<PopToRootOptions> = { _ in },
+        userWalletModel: some UserWalletModel
     ) {
         self.sellCryptoCoordinator = sellCryptoCoordinator
         self.expressTokensListAdapter = expressTokensListAdapter
         self.tokenSorter = tokenSorter
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
+        self.userWalletModel = userWalletModel
     }
 
     func start(with options: Options) {
@@ -53,8 +56,15 @@ final class ActionButtonsSellCoordinator: CoordinatorObject {
 }
 
 extension ActionButtonsSellCoordinator: ActionButtonsSellRoutable {
-    func openSellCrypto(from url: URL) {
-        sellCryptoCoordinator.openSellCrypto(from: url)
+    func openSellCrypto(
+        from url: URL,
+        action: @escaping (String) -> SendToSellModel?
+    ) {
+        sellCryptoCoordinator.openSellCrypto(
+            from: url,
+            action: action,
+            userWalletModel: userWalletModel
+        )
     }
 }
 
