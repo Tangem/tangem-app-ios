@@ -133,8 +133,9 @@ Options:
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 """
 lane :build_Alpha do |options|
+  app_id = ENV["APP_ID_ALPHA"]
   increment_version_number(version_number: options[:version])
-  increment_firebase_build_number(app_id: ENV["APP_ID_ALPHA"], build: options[:build])
+  increment_firebase_build_number(app_id: app_id, build: options[:build])
 
   build(
     export_method: "ad-hoc",
@@ -144,6 +145,7 @@ lane :build_Alpha do |options|
     filename: options[:filename],
     path: options[:path]
   )
+  upload_dsyms(app_id: app_id, name: ALPHA_SCHEME)
 end
 
 desc """
@@ -156,8 +158,9 @@ Options:
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 """
 lane :build_Beta do |options|
+  app_id = ENV["APP_ID_BETA"]
   increment_version_number(version_number: options[:version])
-  increment_firebase_build_number(app_id: ENV["APP_ID_BETA"], build: options[:build])
+  increment_firebase_build_number(app_id: app_id, build: options[:build])
 
   build(
     export_method: "ad-hoc",
@@ -167,6 +170,7 @@ lane :build_Beta do |options|
     filename: options[:filename],
     path: options[:path]
   )
+  upload_dsyms(app_id: app_id, name: BETA_SCHEME)
 end
 
 desc """
