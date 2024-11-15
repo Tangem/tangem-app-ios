@@ -32,7 +32,7 @@ final class MarketsTokenDetailsSecurityScoreDetailsViewModel: Identifiable {
             return
         }
 
-        routable?.openSecurityAudit(at: auditURL)
+        routable?.openSecurityAudit(at: auditURL, providerName: provider.name)
     }
 }
 

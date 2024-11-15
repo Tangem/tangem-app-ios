@@ -9,5 +9,5 @@
 import Foundation
 
 protocol MarketsTokenDetailsSecurityScoreDetailsRoutable: AnyObject {
-    func openSecurityAudit(at url: URL)
+    func openSecurityAudit(at url: URL, providerName: String)
 }
