@@ -118,7 +118,6 @@ class KaspaWalletManager: BaseManager, WalletManager {
             }
 
             let resultReveal = try txBuilder.buildRevealTransaction(
-                external: false,
                 sourceAddress: transaction.sourceAddress,
                 params: resultCommit.params,
                 fee: .init(revealFee.amount)
@@ -211,7 +210,6 @@ class KaspaWalletManager: BaseManager, WalletManager {
 
         do {
             let result = try txBuilder.buildRevealTransaction(
-                external: true,
                 sourceAddress: transaction.sourceAddress,
                 params: params,
                 fee: transaction.fee
@@ -411,35 +409,15 @@ extension KaspaWalletManager: KaspaIncompleteTransactionUtilProtocol {
 
     func getIncompleteTokenTransaction(for token: Token) async -> Transaction? {
         let key = KaspaIncompleteTokenTransactionStorageID(contract: token.contractAddress).id
-
-        /* if we store multiple transactions
-         let data: [String: KaspaKRC20.IncompleteTokenTransactionParams] = await dataStorage.get(key: key) ?? [:]
-         guard let txId = dict.first?.key else {
-             return nil
-         }
-         guard let tx = data[txId] else {
-             return nil
-         }
-         */
-
-        /* else */
         guard let tx: KaspaKRC20.IncompleteTokenTransactionParams = await dataStorage.get(key: key) else {
             return nil
         }
-        /* endif */
 
         return transaction(from: tx, for: token)
     }
 
     func store(incompleteTokenTransaction: KaspaKRC20.IncompleteTokenTransactionParams, for token: Token) async {
         let key = KaspaIncompleteTokenTransactionStorageID(contract: token.contractAddress).id
-
-        /* if we store multiple transactions
-         var data: [String: KaspaKRC20.IncompleteTokenTransactionParams] = await dataStorage.get(key: key) ?? [:]
-         data[incompleteTokenTransaction.transactionId] = incompleteTokenTransaction
-         */
-
-        /* else */
         let data = incompleteTokenTransaction
 
         await dataStorage.store(key: key, value: data)
@@ -447,21 +425,11 @@ extension KaspaWalletManager: KaspaIncompleteTransactionUtilProtocol {
 
     func remove(incompleteTokenTransactionID: String, for token: Token) async {
         let key = KaspaIncompleteTokenTransactionStorageID(contract: token.contractAddress).id
-
-        /* if */
-        /* we store multiple transactions
-         var data: [String: KaspaKRC20.IncompleteTokenTransactionParams] = await dataStorage.get(key: key) ?? [:]
-         data[incompleteTokenTransactionID] = nil
-
-         await dataStorage.store(key: key, value: data)
-         */
-
         await dataStorage.store(key: key, value: nil as KaspaKRC20.IncompleteTokenTransactionParams?)
     }
 
     func transaction(from incompleteTokenTransationID: String, for token: Token) async -> Transaction? {
         let key = KaspaIncompleteTokenTransactionStorageID(contract: token.contractAddress).id
-
         let dict: [String: KaspaKRC20.IncompleteTokenTransactionParams] = await dataStorage.get(key: key) ?? [:]
 
         guard let params = dict[incompleteTokenTransationID] else {
@@ -477,6 +445,7 @@ extension KaspaWalletManager: KaspaIncompleteTransactionUtilProtocol {
         }
 
         let transactionAmount = tokenValue / token.decimalValue
+        let fee = Decimal(incompleteTokenTransationParams.amount / wallet.blockchain.decimalValue.uint64Value) - dustValue.value
 
         return Transaction(
             amount: .init(
@@ -484,7 +453,7 @@ extension KaspaWalletManager: KaspaIncompleteTransactionUtilProtocol {
                 type: .token(value: token),
                 value: transactionAmount
             ),
-            fee: .init(.init(with: wallet.blockchain, value: 0)),
+            fee: .init(.init(with: wallet.blockchain, value: fee)),
             sourceAddress: defaultSourceAddress,
             destinationAddress: incompleteTokenTransationParams.envelope.to,
             changeAddress: defaultSourceAddress,
