@@ -16,7 +16,7 @@ final class ActionButtonsBuyViewModel: ObservableObject {
         ActionButtonsTokenSelectorItemBuilder
     >
 
-    private let coordinator: ActionButtonsBuyRoutable
+    private weak var coordinator: ActionButtonsBuyRoutable?
 
     init(
         coordinator: some ActionButtonsBuyRoutable,
@@ -32,11 +32,11 @@ final class ActionButtonsBuyViewModel: ObservableObject {
     func handleViewAction(_ action: Action) {
         switch action {
         case .close:
-            coordinator.dismiss()
+            coordinator?.dismiss()
         case .didTapToken(let token):
             guard let url = makeBuyUrl(from: token) else { return }
 
-            coordinator.openBuyCrypto(from: url)
+            coordinator?.openBuyCrypto(at: url)
         }
     }
 

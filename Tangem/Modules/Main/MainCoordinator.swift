@@ -454,14 +454,13 @@ extension MainCoordinator: PushNotificationsPermissionRequestDelegate {
 
 // MARK: - Action buttons buy routable
 
-extension MainCoordinator: ActionButtonsBuyFlowRoutable, ActionButtonsBuyCryptoRoutable {
+extension MainCoordinator: ActionButtonsBuyFlowRoutable {
     func openBuy(userWalletModel: some UserWalletModel) {
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.actionButtonsBuyCoordinator = nil
         }
 
         let coordinator = ActionButtonsBuyCoordinator(
-            buyCryptoCoordinator: self,
             expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel),
             dismissAction: dismissAction
         )
@@ -470,44 +469,16 @@ extension MainCoordinator: ActionButtonsBuyFlowRoutable, ActionButtonsBuyCryptoR
 
         actionButtonsBuyCoordinator = coordinator
     }
-
-    func openBuyCrypto(from url: URL) {
-        openBuyCrypto(at: url) {
-            self.actionButtonsBuyCoordinator = nil
-        }
-    }
 }
 
 // MARK: - Action buttons sell routable
 
-extension MainCoordinator: ActionButtonsSellFlowRoutable, ActionButtonsSellCryptoRoutable {
+extension MainCoordinator: ActionButtonsSellFlowRoutable {
     func openSell(userWalletModel: some UserWalletModel) {
-        let dismissAction: Action<Void> = { [weak self] _ in
+        let dismissAction: Action<ActionButtonsSendToSellModel?> = { [weak self] model in
             self?.actionButtonsSellCoordinator = nil
-        }
 
-        let coordinator = ActionButtonsSellCoordinator(
-            sellCryptoCoordinator: self,
-            expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel),
-            dismissAction: dismissAction,
-            userWalletModel: userWalletModel
-        )
-
-        coordinator.start(with: .default)
-
-        actionButtonsSellCoordinator = coordinator
-    }
-
-    func openSellCrypto(
-        from url: URL,
-        action: @escaping (String) -> SendToSellModel?,
-        userWalletModel: some UserWalletModel
-    ) {
-        openSellCrypto(at: url) { [weak self] response in
-
-            guard let model = action(response) else { return }
-
-            self?.actionButtonsSellCoordinator = nil
+            guard let model else { return }
 
             self?.openSendToSell(
                 amountToSend: model.amountToSend,
@@ -517,6 +488,16 @@ extension MainCoordinator: ActionButtonsSellFlowRoutable, ActionButtonsSellCrypt
                 walletModel: model.walletModel
             )
         }
+
+        let coordinator = ActionButtonsSellCoordinator(
+            expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel),
+            dismissAction: dismissAction,
+            userWalletModel: userWalletModel
+        )
+
+        coordinator.start(with: .default)
+
+        actionButtonsSellCoordinator = coordinator
     }
 }
 

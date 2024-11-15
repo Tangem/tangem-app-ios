@@ -16,7 +16,7 @@ final class ActionButtonsSellViewModel: ObservableObject {
         ActionButtonsTokenSelectorItemBuilder
     >
 
-    private let coordinator: ActionButtonsSellRoutable
+    private weak var coordinator: ActionButtonsSellRoutable?
 
     init(
         coordinator: some ActionButtonsSellRoutable,
@@ -32,11 +32,11 @@ final class ActionButtonsSellViewModel: ObservableObject {
     func handleViewAction(_ action: Action) {
         switch action {
         case .close:
-            coordinator.dismiss()
+            coordinator?.dismiss()
         case .didTapToken(let token):
             guard let url = makeSellUrl(from: token) else { return }
 
-            coordinator.openSellCrypto(from: url) { response -> SendToSellModel? in
+            coordinator?.openSellCrypto(at: url) { response in
                 self.makeSendToSellModel(from: response, and: token.walletModel)
             }
         }
@@ -46,18 +46,21 @@ final class ActionButtonsSellViewModel: ObservableObject {
 // MARK: - Fabric methods
 
 private extension ActionButtonsSellViewModel {
-    func makeSendToSellModel(from response: String, and walletModel: WalletModel) -> SendToSellModel? {
+    func makeSendToSellModel(
+        from response: String,
+        and walletModel: WalletModel
+    ) -> ActionButtonsSendToSellModel? {
         let exchangeUtility = makeExchangeCryptoUtility(for: walletModel)
-        
+
         guard
             let sellCryptoRequest = exchangeUtility.extractSellCryptoRequest(from: response),
             var amountToSend = walletModel.wallet.amounts[walletModel.amountType]
         else {
             return nil
         }
-        
+
         amountToSend.value = sellCryptoRequest.amount
-        
+
         return .init(
             amountToSend: amountToSend,
             destination: sellCryptoRequest.targetAddress,
@@ -65,7 +68,7 @@ private extension ActionButtonsSellViewModel {
             walletModel: walletModel
         )
     }
-    
+
     func makeSellUrl(from token: ActionButtonsTokenSelectorItem) -> URL? {
         let sellUrl = exchangeService.getSellUrl(
             currencySymbol: token.symbol,
@@ -73,10 +76,10 @@ private extension ActionButtonsSellViewModel {
             blockchain: token.walletModel.blockchainNetwork.blockchain,
             walletAddress: token.walletModel.defaultAddress
         )
-        
+
         return sellUrl
     }
-    
+
     func makeExchangeCryptoUtility(for walletModel: WalletModel) -> ExchangeCryptoUtility {
         return ExchangeCryptoUtility(
             blockchain: walletModel.blockchainNetwork.blockchain,

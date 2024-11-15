@@ -8,10 +8,10 @@
 
 import Foundation
 
-protocol ActionButtonsSellRoutable {
+protocol ActionButtonsSellRoutable: AnyObject {
     func openSellCrypto(
-        from url: URL,
-        action: @escaping (String) -> SendToSellModel?
+        at url: URL,
+        makeSellToSendToModel: @escaping (String) -> ActionButtonsSendToSellModel?
     )
     func dismiss()
 }

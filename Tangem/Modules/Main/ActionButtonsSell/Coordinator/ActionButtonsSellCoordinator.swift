@@ -9,25 +9,26 @@
 import Foundation
 
 final class ActionButtonsSellCoordinator: CoordinatorObject {
+    @Injected(\.safariManager) private var safariManager: SafariManager
+
     @Published private(set) var actionButtonsSellViewModel: ActionButtonsSellViewModel?
 
-    let dismissAction: Action<Void>
+    let dismissAction: Action<ActionButtonsSendToSellModel?>
     let popToRootAction: Action<PopToRootOptions>
 
-    private let sellCryptoCoordinator: ActionButtonsSellCryptoRoutable
+    private var safariHandle: SafariHandle?
+
     private let expressTokensListAdapter: ExpressTokensListAdapter
     private let tokenSorter: TokenAvailabilitySorter
     private let userWalletModel: UserWalletModel
 
     required init(
-        sellCryptoCoordinator: some ActionButtonsSellCryptoRoutable,
         expressTokensListAdapter: some ExpressTokensListAdapter,
         tokenSorter: some TokenAvailabilitySorter = CommonSellTokenAvailabilitySorter(),
-        dismissAction: @escaping Action<Void>,
+        dismissAction: @escaping Action<ActionButtonsSendToSellModel?>,
         popToRootAction: @escaping Action<PopToRootOptions> = { _ in },
         userWalletModel: some UserWalletModel
     ) {
-        self.sellCryptoCoordinator = sellCryptoCoordinator
         self.expressTokensListAdapter = expressTokensListAdapter
         self.tokenSorter = tokenSorter
         self.dismissAction = dismissAction
@@ -57,14 +58,19 @@ final class ActionButtonsSellCoordinator: CoordinatorObject {
 
 extension ActionButtonsSellCoordinator: ActionButtonsSellRoutable {
     func openSellCrypto(
-        from url: URL,
-        action: @escaping (String) -> SendToSellModel?
+        at url: URL,
+        makeSellToSendToModel: @escaping (String) -> ActionButtonsSendToSellModel?
     ) {
-        sellCryptoCoordinator.openSellCrypto(
-            from: url,
-            action: action,
-            userWalletModel: userWalletModel
-        )
+        safariHandle = safariManager.openURL(url) { [weak self] closeURL in
+            let sendToSellModel = makeSellToSendToModel(closeURL.absoluteString)
+
+            self?.safariHandle = nil
+            self?.dismiss(with: sendToSellModel)
+        }
+    }
+
+    func dismiss() {
+        dismiss(with: nil)
     }
 }
 

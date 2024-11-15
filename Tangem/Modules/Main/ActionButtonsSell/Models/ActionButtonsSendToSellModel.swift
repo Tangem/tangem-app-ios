@@ -1,5 +1,5 @@
 //
-//  SendToSellModel.swift
+//  ActionButtonsSendToSellModel.swift
 //  TangemApp
 //
 //  Created by GuitarKitty on 15.11.2024.
@@ -8,7 +8,7 @@
 
 import BlockchainSdk
 
-struct SendToSellModel {
+struct ActionButtonsSendToSellModel {
     let amountToSend: Amount
     let destination: String
     let tag: String?
