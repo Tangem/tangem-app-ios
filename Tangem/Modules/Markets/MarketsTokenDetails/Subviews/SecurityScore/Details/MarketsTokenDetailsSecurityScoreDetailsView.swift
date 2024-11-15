@@ -108,7 +108,7 @@ private extension MarketsTokenDetailsSecurityScoreDetailsView {
 #Preview {
     let helper = MarketsTokenDetailsSecurityScoreRatingHelper()
 
-    MarketsTokenDetailsSecurityScoreDetailsView(
+    return MarketsTokenDetailsSecurityScoreDetailsView(
         viewModel: .init(
             providers: [
                 .init(

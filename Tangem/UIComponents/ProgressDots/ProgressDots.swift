@@ -66,7 +66,9 @@ extension ProgressDots {
 }
 
 #Preview {
-    ProgressDots(style: .small)
+    VStack {
+        ProgressDots(style: .small)
 
-    ProgressDots(style: .large)
+        ProgressDots(style: .large)
+    }
 }

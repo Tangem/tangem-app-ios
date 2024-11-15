@@ -70,7 +70,7 @@ private extension MarketsTokenDetailsSecurityScoreRatingView {
     let securityScores = [0.0, 1.5, 3.7, 4.2, 5.0, 5.6, 6.1]
     let helper = MarketsTokenDetailsSecurityScoreRatingHelper()
 
-    ForEach(securityScores, id: \.self) { securityScore in
+    return ForEach(securityScores, id: \.self) { securityScore in
         MarketsTokenDetailsSecurityScoreRatingView(
             viewData: .init(
                 ratingBullets: helper.makeRatingBullets(forSecurityScoreValue: securityScore),
