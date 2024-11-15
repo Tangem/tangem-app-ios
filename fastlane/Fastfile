@@ -145,7 +145,7 @@ lane :build_Alpha do |options|
     filename: options[:filename],
     path: options[:path]
   )
-  upload_dsyms(app_id: app_id, name: ALPHA_SCHEME)
+  #upload_dsyms(app_id: app_id, name: ALPHA_SCHEME)
 end
 
 desc """
@@ -170,7 +170,7 @@ lane :build_Beta do |options|
     filename: options[:filename],
     path: options[:path]
   )
-  upload_dsyms(app_id: app_id, name: BETA_SCHEME)
+  #upload_dsyms(app_id: app_id, name: BETA_SCHEME)
 end
 
 desc """
