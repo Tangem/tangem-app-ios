@@ -28,5 +28,11 @@ public protocol OnrampManager: Actor {
 }
 
 public enum OnrampManagerError: LocalizedError {
-    case notImplement
+    case providersIsEmpty
+
+    public var errorDescription: String? {
+        switch self {
+        case .providersIsEmpty: "Providers is empty"
+        }
+    }
 }

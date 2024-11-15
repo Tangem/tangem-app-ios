@@ -64,6 +64,10 @@ extension CommonOnrampManager: OnrampManager {
     }
 
     public func setupQuotes(amount: Decimal?) async throws {
+        if _providers.isEmpty {
+            throw OnrampManagerError.providersIsEmpty
+        }
+
         await updateQuotesInEachManager(amount: amount)
 
         updateSelectedProvider()

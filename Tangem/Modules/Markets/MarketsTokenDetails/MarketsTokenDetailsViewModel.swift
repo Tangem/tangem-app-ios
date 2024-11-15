@@ -515,6 +515,12 @@ extension MarketsTokenDetailsViewModel: MarketsTokenDetailsBottomSheetRouter {
 
 extension MarketsTokenDetailsViewModel: MarketsTokenDetailsSecurityScoreRoutable {
     func openSecurityScoreDetails(with providers: [MarketsTokenDetailsSecurityScore.Provider]) {
+        Analytics.log(
+            event: .marketsChartSecurityScoreInfo,
+            params: [
+                .token: tokenInfo.symbol.uppercased(),
+            ]
+        )
         securityScoreDetailsViewModel = MarketsTokenDetailsSecurityScoreDetailsFactory().makeViewModel(
             with: providers,
             routable: self
@@ -523,7 +529,14 @@ extension MarketsTokenDetailsViewModel: MarketsTokenDetailsSecurityScoreRoutable
 }
 
 extension MarketsTokenDetailsViewModel: MarketsTokenDetailsSecurityScoreDetailsRoutable {
-    func openSecurityAudit(at url: URL) {
+    func openSecurityAudit(at url: URL, providerName: String) {
+        Analytics.log(
+            event: .marketsChartSecurityScoreProviderClicked,
+            params: [
+                .token: tokenInfo.symbol.uppercased(),
+                .provider: providerName,
+            ]
+        )
         coordinator?.openURL(url)
     }
 }

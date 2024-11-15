@@ -63,6 +63,7 @@ struct UnstakingFlowBaseBuilder {
             actionType: actionType,
             sendDestinationCompactViewModel: .none,
             sendAmountCompactViewModel: amount.compact,
+            onrampAmountCompactViewModel: .none,
             stakingValidatorsCompactViewModel: .none,
             sendFeeCompactViewModel: sendFeeCompactViewModel
         )

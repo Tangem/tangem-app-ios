@@ -12,7 +12,6 @@ import TangemExpress
 struct OnrampFlowBaseBuilder {
     let userWalletModel: UserWalletModel
     let walletModel: WalletModel
-    let sendAmountStepBuilder: SendAmountStepBuilder
     let onrampAmountBuilder: OnrampAmountBuilder
     let onrampStepBuilder: OnrampStepBuilder
     let sendFinishStepBuilder: SendFinishStepBuilder
@@ -48,11 +47,11 @@ struct OnrampFlowBaseBuilder {
             coordinator: router
         )
 
-        let sendAmountCompactViewModel = sendAmountStepBuilder.makeSendAmountCompactViewModel(
-            input: onrampModel
-        )
-
         let onrampProvidersCompactViewModel = providersBuilder.makeOnrampProvidersCompactViewModel()
+        let onrampAmountCompactViewModel = onrampAmountBuilder.makeOnrampAmountCompactViewModel(
+            onrampAmountInput: onrampModel,
+            onrampProvidersInput: onrampModel
+        )
 
         let onramp = onrampStepBuilder.makeOnrampStep(
             io: (input: onrampModel, output: onrampModel),
@@ -64,7 +63,8 @@ struct OnrampFlowBaseBuilder {
             input: onrampModel,
             actionType: .onramp,
             sendDestinationCompactViewModel: .none,
-            sendAmountCompactViewModel: sendAmountCompactViewModel,
+            sendAmountCompactViewModel: .none,
+            onrampAmountCompactViewModel: onrampAmountCompactViewModel,
             stakingValidatorsCompactViewModel: .none,
             sendFeeCompactViewModel: .none
         )
