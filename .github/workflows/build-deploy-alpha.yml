@@ -118,7 +118,8 @@ jobs:
 
   error_notification:
     name: Error Notification
-    if: failure()
+    if: false # TODO: Remove
+    # if: failure()
     uses: tangem/actions/.github/workflows/notification.yml@test/ci_cd_builder2_tests
     needs:
       - prepare
