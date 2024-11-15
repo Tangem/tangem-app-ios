@@ -112,7 +112,7 @@ extension String {
     }
 }
 
-extension String: @retroactive LocalizedError {
+extension String: LocalizedError {
     public var errorDescription: String? {
         return self
     }

@@ -8,7 +8,7 @@
 
 import CoreGraphics
 
-extension CGSize: @retroactive CustomStringConvertible {
+extension CGSize: CustomStringConvertible {
     public var description: String {
         "w: \(width.rounded()), h: \(height.rounded())"
     }

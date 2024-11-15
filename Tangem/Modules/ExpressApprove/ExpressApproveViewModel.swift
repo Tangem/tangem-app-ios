@@ -176,7 +176,7 @@ extension ExpressApproveViewModel {
     }
 }
 
-extension ExpressApprovePolicy: @retroactive Identifiable {
+extension ExpressApprovePolicy: Identifiable {
     public var id: Int { hashValue }
 }
 

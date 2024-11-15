@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension URLSessionWebSocketTask.Message: @retroactive CustomStringConvertible {
+extension URLSessionWebSocketTask.Message: CustomStringConvertible {
     public var description: String {
         switch self {
         case .data(let data):
