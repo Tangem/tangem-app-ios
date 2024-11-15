@@ -14,8 +14,9 @@ class OnrampViewModel: ObservableObject, Identifiable {
     @Published private(set) var onrampAmountViewModel: OnrampAmountViewModel
     @Published private(set) var onrampProvidersCompactViewModel: OnrampProvidersCompactViewModel
 
-    private let interactor: OnrampInteractor
+    weak var router: OnrampSummaryRoutable?
 
+    private let interactor: OnrampInteractor
     private var bag: Set<AnyCancellable> = []
 
     init(
@@ -27,6 +28,10 @@ class OnrampViewModel: ObservableObject, Identifiable {
         self.onrampProvidersCompactViewModel = onrampProvidersCompactViewModel
 
         self.interactor = interactor
+    }
+
+    func openOnrampSettingsView() {
+        router?.openOnrampSettingsView()
     }
 }
 

@@ -179,7 +179,7 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
     func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
         switch action {
         case .buyCrypto:
-            openBuyCryptoIfPossible()
+            openBuyCrypto()
         case .addHederaTokenAssociation:
             fulfillAssetRequirements()
         case .stake:
@@ -402,15 +402,15 @@ extension SingleTokenBaseViewModel {
     private func isButtonDisabled(with type: TokenActionType) -> Bool {
         switch type {
         case .buy:
-            return !exchangeUtility.buyAvailable
+            return isBuyDisabled()
         case .send:
-            return sendIsDisabled()
+            return isSendDisabled()
         case .receive:
             return isReceiveDisabled()
         case .exchange:
             return isSwapDisabled()
         case .sell:
-            return sendIsDisabled() || !exchangeUtility.sellAvailable
+            return isSellDisabled()
         case .copyAddress, .hide, .stake, .marketsDetails:
             return true
         }
@@ -418,11 +418,11 @@ extension SingleTokenBaseViewModel {
 
     private func action(for buttonType: TokenActionType) -> (() -> Void)? {
         switch buttonType {
-        case .buy: return openBuyCryptoIfPossible
-        case .send: return openSend
-        case .receive: return openReceive
-        case .exchange: return openExchangeAndLogAnalytics
-        case .sell: return openSell
+        case .buy: return openBuyCryptoAction
+        case .send: return openSendAction
+        case .receive: return openReceiveAction
+        case .exchange: return openExchangeAction
+        case .sell: return openSellAction
         case .copyAddress, .hide, .stake, .marketsDetails: return nil
         }
     }
@@ -436,17 +436,29 @@ extension SingleTokenBaseViewModel {
         }
     }
 
-    private func sendIsDisabled() -> Bool {
-        guard userWalletModel.config.hasFeature(.send) else {
-            return true
-        }
-
+    private func isSendDisabled() -> Bool {
         switch walletModel.sendingRestrictions {
-        case .zeroWalletBalance, .cantSignLongTransactions, .hasPendingTransaction, .blockchainUnreachable:
+        case .zeroWalletBalance, .cantSignLongTransactions, .hasPendingTransaction, .blockchainUnreachable, .oldCard:
             return true
         case .none, .zeroFeeCurrencyBalance:
             return false
         }
+    }
+
+    private func isBuyDisabled() -> Bool {
+        if FeatureProvider.isAvailable(.onramp) {
+            if walletModel.isCustom {
+                return true
+            }
+
+            return !expressAvailabilityProvider.canOnramp(tokenItem: walletModel.tokenItem)
+        } else {
+            return !exchangeUtility.buyAvailable
+        }
+    }
+
+    private func isSellDisabled() -> Bool {
+        isSendDisabled() || !exchangeUtility.sellAvailable
     }
 
     private func isSwapDisabled() -> Bool {
@@ -486,7 +498,7 @@ extension SingleTokenBaseViewModel {
         tokenRouter.openReceive(walletModel: walletModel)
     }
 
-    func openBuyCryptoIfPossible() {
+    func openBuyCrypto() {
         if let disabledLocalizedReason = userWalletModel.config.getDisabledLocalizedReason(for: .exchange) {
             alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
             return
@@ -522,11 +534,6 @@ extension SingleTokenBaseViewModel {
         }
 
         tokenRouter.openSend(walletModel: walletModel)
-    }
-
-    func openExchangeAndLogAnalytics() {
-        Analytics.log(event: .buttonExchange, params: [.token: walletModel.tokenItem.currencySymbol])
-        openExchange()
     }
 
     func openExchange() {
@@ -608,6 +615,74 @@ extension SingleTokenBaseViewModel {
 
         openExplorer(at: url)
     }
+
+    private func openExchangeAction() {
+        Analytics.log(event: .buttonExchange, params: [.token: walletModel.tokenItem.currencySymbol])
+
+        if isButtonDisabled(with: .exchange) {
+            Analytics.log(event: .tokenNoticeActionInactive, params: [
+                .token: walletModel.tokenItem.currencySymbol,
+                .action: Analytics.ParameterValue.swap.rawValue,
+                .reason: walletModel.sendingRestrictions.analyticsUnavailableReason,
+            ])
+        }
+
+        openExchange()
+    }
+
+    private func openBuyCryptoAction() {
+        Analytics.log(event: .buttonBuy, params: [.token: walletModel.tokenItem.currencySymbol])
+
+        if isButtonDisabled(with: .buy) {
+            Analytics.log(event: .tokenNoticeActionInactive, params: [
+                .token: walletModel.tokenItem.currencySymbol,
+                .action: Analytics.ParameterValue.buy.rawValue,
+            ])
+        }
+
+        openBuyCrypto()
+    }
+
+    private func openSellAction() {
+        Analytics.log(event: .buttonSell, params: [.token: walletModel.tokenItem.currencySymbol])
+
+        if isButtonDisabled(with: .sell) {
+            Analytics.log(event: .tokenNoticeActionInactive, params: [
+                .token: walletModel.tokenItem.currencySymbol,
+                .action: Analytics.ParameterValue.sell.rawValue,
+                .reason: walletModel.sendingRestrictions.analyticsUnavailableReason,
+            ])
+        }
+
+        openSell()
+    }
+
+    private func openSendAction() {
+        Analytics.log(event: .buttonSend, params: [.token: walletModel.tokenItem.currencySymbol])
+
+        if isButtonDisabled(with: .send) {
+            Analytics.log(event: .tokenNoticeActionInactive, params: [
+                .token: walletModel.tokenItem.currencySymbol,
+                .action: Analytics.ParameterValue.send.rawValue,
+                .reason: walletModel.sendingRestrictions.analyticsUnavailableReason,
+            ])
+        }
+
+        openSend()
+    }
+
+    private func openReceiveAction() {
+        Analytics.log(event: .buttonReceive, params: [.token: walletModel.tokenItem.currencySymbol])
+
+        if isButtonDisabled(with: .receive) {
+            Analytics.log(event: .tokenNoticeActionInactive, params: [
+                .token: walletModel.tokenItem.currencySymbol,
+                .action: Analytics.ParameterValue.receive.rawValue,
+            ])
+        }
+
+        openReceive()
+    }
 }
 
 // MARK: - CustomStringConvertible protocol conformance
@@ -620,5 +695,20 @@ extension SingleTokenBaseViewModel: CustomStringConvertible {
                 "WalletModel": walletModel.description,
             ]
         )
+    }
+}
+
+// MARK: - TransactionSendAvailabilityProvider.SendingRestrictions
+
+private extension TransactionSendAvailabilityProvider.SendingRestrictions? {
+    var analyticsUnavailableReason: String {
+        switch self {
+        case .zeroWalletBalance:
+            return Analytics.ParameterValue.empty.rawValue
+        case .none:
+            return Analytics.ParameterValue.null.rawValue
+        default:
+            return Analytics.ParameterValue.unavailable.rawValue
+        }
     }
 }

@@ -64,6 +64,24 @@ extension CommonOnrampManager: OnrampManager {
     }
 
     public func setupQuotes(amount: Decimal?) async throws {
+        await updateQuotesInEachManager(amount: amount)
+
+        updateSelectedProvider()
+    }
+
+    public func loadRedirectData(provider: OnrampProvider, redirectSettings: OnrampRedirectSettings) async throws -> OnrampRedirectData {
+        let item = try provider.manager.makeOnrampQuotesRequestItem()
+        let requestItem = OnrampRedirectDataRequestItem(quotesItem: item, redirectSettings: redirectSettings)
+        let data = try await apiProvider.onrampData(item: requestItem)
+
+        return data
+    }
+}
+
+// MARK: - Private
+
+private extension CommonOnrampManager {
+    func updateQuotesInEachManager(amount: Decimal?) async {
         await withTaskGroup(of: Void.self) { [weak self] group in
             await self?._providers.forEach { provider in
                 _ = group.addTaskUnlessCancelled {
@@ -71,23 +89,12 @@ extension CommonOnrampManager: OnrampManager {
                 }
             }
         }
-
-        updateSelectedProvider()
     }
 
-    public func loadOnrampData(request: OnrampQuotesRequestItem) async throws -> OnrampRedirectData {
-        // Load data from API
-        throw OnrampManagerError.notImplement
-    }
-}
-
-// MARK: - Private
-
-private extension CommonOnrampManager {
     func updateSelectedProvider() {
         // Logic will be updated. Make a some sort by priority
         // TODO: https://tangem.atlassian.net/browse/IOS-8487
-        _selectedProvider = _providers.first
+        _selectedProvider = _providers.first { $0.manager.state.isReadyToBuy } ?? _providers.first
     }
 
     func prepareProviders(

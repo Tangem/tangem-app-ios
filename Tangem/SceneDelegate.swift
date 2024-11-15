@@ -15,6 +15,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     @Injected(\.incomingActionHandler) private var incomingActionHandler: IncomingActionHandler
 
     var window: UIWindow?
+    var lockWindow: UIWindow?
 
     private lazy var appCoordinator = AppCoordinator()
     private var isSceneStarted = false
@@ -29,7 +30,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
-            appCoordinator.start(with: .init(newScan: nil))
+            appCoordinator.start(with: .default)
             let appView = AppCoordinatorView(coordinator: appCoordinator)
             let factory = RootViewControllerFactory()
             let rootViewController = factory.makeRootViewController(for: appView, window: window)
@@ -37,6 +38,27 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             self.window = window
             window.overrideUserInterfaceStyle = AppSettings.shared.appTheme.interfaceStyle
             window.makeKeyAndVisible()
+        }
+    }
+
+    func sceneDidEnterBackground(_ scene: UIScene) {
+        appCoordinator.sceneDidEnterBackground()
+
+        // Additional view to fix no-refresh in bg issue for iOS prior to 17.
+        // Just keep this code to unify behavior between different ios versions
+        if appCoordinator.viewState?.shouldAddLockView == true,
+           let windowScene = scene as? UIWindowScene {
+            lockWindow = UIWindow(windowScene: windowScene)
+            lockWindow?.rootViewController = UIHostingController(rootView: LockView(usesNamespace: false))
+            lockWindow?.windowLevel = .alert + 1
+            lockWindow?.makeKeyAndVisible()
+        }
+    }
+
+    func sceneWillEnterForeground(_ scene: UIScene) {
+        appCoordinator.sceneWillEnterForeground { [weak self] in
+            self?.lockWindow?.isHidden = true
+            self?.lockWindow = nil
         }
     }
 

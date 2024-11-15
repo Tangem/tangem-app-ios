@@ -35,6 +35,8 @@ class MarketsTokenDetailsViewModel: MarketsBaseViewModel {
     @Published private(set) var linksSections: [MarketsTokenDetailsLinkSection] = []
     @Published private(set) var portfolioViewModel: MarketsPortfolioContainerViewModel?
     @Published private(set) var historyChartViewModel: MarketsHistoryChartViewModel?
+    @Published private(set) var securityScoreViewModel: MarketsTokenDetailsSecurityScoreViewModel?
+    @Published var securityScoreDetailsViewModel: MarketsTokenDetailsSecurityScoreDetailsViewModel?
     @Published private(set) var numberOfExchangesListedOn: Int?
 
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
@@ -429,6 +431,14 @@ private extension MarketsTokenDetailsViewModel {
             )
         }
 
+        if let securityScore = model.securityScore {
+            securityScoreViewModel = .init(
+                securityScoreValue: securityScore.securityScore,
+                providers: securityScore.providers,
+                routable: self
+            )
+        }
+
         linksSections = MarketsTokenDetailsLinksMapper(
             openLinkAction: weakify(self, forFunction: MarketsTokenDetailsViewModel.openLinkAction(_:))
         ).mapToSections(model.links)
@@ -500,6 +510,21 @@ extension MarketsTokenDetailsViewModel: MarketsTokenDetailsBottomSheetRouter {
             title: title,
             description: message
         )
+    }
+}
+
+extension MarketsTokenDetailsViewModel: MarketsTokenDetailsSecurityScoreRoutable {
+    func openSecurityScoreDetails(with providers: [MarketsTokenDetailsSecurityScore.Provider]) {
+        securityScoreDetailsViewModel = MarketsTokenDetailsSecurityScoreDetailsFactory().makeViewModel(
+            with: providers,
+            routable: self
+        )
+    }
+}
+
+extension MarketsTokenDetailsViewModel: MarketsTokenDetailsSecurityScoreDetailsRoutable {
+    func openSecurityAudit(at url: URL) {
+        coordinator?.openURL(url)
     }
 }
 

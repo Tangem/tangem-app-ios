@@ -27,7 +27,7 @@ enum TokenNotificationEvent: Hashable {
         isFeeCurrencyPurchaseAllowed: Bool
     ) -> TokenNotificationEvent? {
         switch reason {
-        case .zeroWalletBalance, .hasPendingTransaction, .blockchainUnreachable, .cantSignLongTransactions:
+        case .zeroWalletBalance, .hasPendingTransaction, .blockchainUnreachable, .cantSignLongTransactions, .oldCard:
             return nil
         case .zeroFeeCurrencyBalance(let eventConfiguration):
             let configuration = NotEnoughFeeConfiguration(

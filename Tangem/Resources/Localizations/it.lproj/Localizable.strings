@@ -173,6 +173,7 @@
 "common_terms_of_use" = "Terms of Use";
 "common_today" = "Today";
 "common_transaction_failed" = "Transaction failed";
+"common_transaction_status" = "Transaction status";
 "common_transactions" = "Transactions";
 "common_transfer" = "Transfer";
 "common_understand" = "I understand";
@@ -181,6 +182,7 @@
 "common_unstake" = "Unstake";
 "common_warning" = "Avviso";
 "common_week" = "week";
+"common_with" = "with";
 "common_yes" = "Yes";
 "contract_address_copied_message" = "Contract address copied!";
 "currency_subtitle_expanded" = "Available networks";
@@ -554,6 +556,7 @@
 "onramp_settings_residence" = "Residence";
 "onramp_settings_residence_description" = "Please select the correct country to ensure accurate payment options and services.";
 "onramp_settings_title" = "Settings";
+"onramp_transaction_status_footer_text" = "You can check the transaction status from the token page";
 "onramp_via" = "Via";
 "organize_tokens_group" = "Group";
 "organize_tokens_sort_by_balance" = "By balance";
@@ -832,14 +835,14 @@
 "toast_balances_shown" = "Balances shown";
 "toast_undo" = "Undo";
 "token_button_unavailability_generic_description" = "This operation is currently unavailable. Please try again later.";
-"token_button_unavailability_reason_buy_unavailable" = "Buying %@ is not available at the moment. Please check our updates.";
+"token_button_unavailability_reason_buy_unavailable" = "Buying %@ is not available at the moment. Please check back later.";
 "token_button_unavailability_reason_empty_balance_sell" = "You do not have funds to sell. Top up your account to be able to sell funds from it.";
 "token_button_unavailability_reason_empty_balance_send" = "You do not have funds to send. Top up your account to be able to send funds from it.";
 "token_button_unavailability_reason_not_exchangeable" = "Swapping %@ is not available at the moment. Please check our updates.";
 "token_button_unavailability_reason_pending_transaction_sell" = "Selling funds will be available once the pending transaction(s) in network %@ is complete";
 "token_button_unavailability_reason_pending_transaction_send" = "Sending funds will be available once the pending transaction(s) in network %@ is complete";
-"token_button_unavailability_reason_sell_unavailable" = "Selling %@ is not available at the moment. Please check our updates.";
-"token_button_unavailability_reason_staking_unavailable" = "Staking %@ is not available at the moment. Please check our updates.";
+"token_button_unavailability_reason_sell_unavailable" = "Selling %@ is not available at the moment. Please check back later.";
+"token_button_unavailability_reason_staking_unavailable" = "Staking %@ is not available at the moment. Please check back later.";
 "token_details_choose_address" = "Choose address";
 "token_details_generate_xpub" = "Generate XPUB";
 "token_details_hide_alert_hide" = "Hide";
