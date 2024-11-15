@@ -161,19 +161,3 @@ extension Task {
         return AnyCancellable(cancel)
     }
 }
-
-extension Task where Failure == Error {
-    static func delayed(
-        withDelay delaySeconds: TimeInterval,
-        priority: TaskPriority? = nil,
-        operation: @escaping @Sendable () async throws -> Success
-    ) -> Task {
-        Task(priority: priority) {
-            if delaySeconds > 0 {
-                try await Task<Never, Never>.sleep(seconds: delaySeconds)
-            }
-            try Task<Never, Never>.checkCancellation()
-            return try await operation()
-        }
-    }
-}
