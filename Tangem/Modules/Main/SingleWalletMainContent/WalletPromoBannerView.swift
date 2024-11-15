@@ -35,7 +35,7 @@ struct WalletPromoBannerView: View {
             .padding(.bottom, 12)
         }
         .padding(.horizontal, 14)
-        .background(Color(hex: "#1E1E1E")!)
+        .background(Colors.Background.primary)
         .environment(\.colorScheme, .dark)
         .cornerRadiusContinuous(14)
         .onAppear(perform: viewModel.onAppear)
