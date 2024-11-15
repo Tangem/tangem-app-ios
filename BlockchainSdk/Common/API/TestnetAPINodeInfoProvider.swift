@@ -240,6 +240,11 @@ struct TestnetAPINodeInfoProvider {
             return [
                 .init(url: URL(string: "https://testnet.phantom-rpc.com/rpc")!),
             ]
+        case .chiliz:
+            return [
+                .init(url: URL(string: "https://spicy-rpc.chiliz.com")!),
+                .init(url: URL(string: "https://chiliz-spicy.publicnode.com/")!),
+            ]
         // TODO: Refactor in IOS-6639
         case .bitcoin, .litecoin, .disChain, .rsk, .bitcoinCash, .binance, .cardano,
              .xrp, .ducatus, .tezos, .dogecoin, .solana, .kusama, .dash, .gnosis,

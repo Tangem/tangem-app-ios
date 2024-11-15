@@ -107,6 +107,7 @@ struct TokenInteractionAvailabilityProvider {
              .core,
              .canxium,
              .casper,
+             .chiliz,
              .xodex:
             // Checking that we have at least one valid (non-empty) address
             //

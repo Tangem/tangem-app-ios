@@ -734,7 +734,7 @@ private extension ExpressInteractor {
         }()
 
         Analytics.log(event: .transactionSent, params: [
-            .source: Analytics.ParameterValue.transactionSourceSwap.rawValue,
+            .source: Analytics.ParameterValue.swap.rawValue,
             .token: data.source.tokenItem.currencySymbol,
             .blockchain: data.source.tokenItem.blockchain.displayName,
             .feeType: analyticsFeeType.rawValue,

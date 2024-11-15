@@ -64,6 +64,7 @@ struct SupportedBlockchains {
     /// Blockchains for test. They don't include in supported blockchains by default
     private func testableBlockchains() -> Set<Blockchain> {
         [
+            .chiliz(testnet: false),
             .xodex,
         ]
     }

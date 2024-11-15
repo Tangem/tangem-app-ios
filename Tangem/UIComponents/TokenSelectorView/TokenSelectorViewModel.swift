@@ -8,6 +8,7 @@
 
 import Combine
 import Foundation
+import TangemFoundation
 
 final class TokenSelectorViewModel<
     TokenModel: Identifiable & Equatable,

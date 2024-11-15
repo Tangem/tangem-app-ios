@@ -71,6 +71,7 @@ struct DerivationConfigV3: DerivationConfig {
              .energyWebEVM,
              .core,
              .canxium,
+             .chiliz,
              .xodex:
             return "m/44'/60'/0'/0/0"
         case .ethereumClassic:

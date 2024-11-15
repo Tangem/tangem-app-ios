@@ -173,6 +173,7 @@
 "common_terms_of_use" = "Condiciones de uso";
 "common_today" = "Hoy";
 "common_transaction_failed" = "Transacción fallida";
+"common_transaction_status" = "Transaction status";
 "common_transactions" = "Transacciones";
 "common_transfer" = "Transferencia";
 "common_understand" = "Entiendo";
@@ -181,6 +182,7 @@
 "common_unstake" = "Termine el staking";
 "common_warning" = "Alerta";
 "common_week" = "semana";
+"common_with" = "with";
 "common_yes" = "Sí";
 "contract_address_copied_message" = "Dirección del contract copiada";
 "currency_subtitle_expanded" = "Redes disponibles";
@@ -554,6 +556,7 @@
 "onramp_settings_residence" = "Residencia";
 "onramp_settings_residence_description" = "Seleccione el país correcto para garantizar opciones de pago y servicios precisos.";
 "onramp_settings_title" = "Ajustes";
+"onramp_transaction_status_footer_text" = "You can check the transaction status from the token page";
 "onramp_via" = "Vía";
 "organize_tokens_group" = "Agrupar";
 "organize_tokens_sort_by_balance" = "Por saldo";
@@ -717,7 +720,7 @@
 "staking_details_warmup_period_info" = "El tiempo permitido para activar la participación en la apuesta.";
 "staking_dismiss_message" = "¿Está seguro(a) de que desea cerrar la pantalla de staking?";
 "staking_give_permission_fee_footer" = "La red cobrará una tarifa de aprobación de token para verificar que usted está autorizando el uso de su token para el staking.";
-"staking_legal" = "Al utilizar la función de staking, usted acepta %1$@ y  %2$@ del proveedor";
+"staking_legal" = "Al utilizar la función de staking, usted acepta %1$@ y %2$@ del proveedor";
 "staking_locked" = "Bloqueado";
 "staking_migrate" = "Migrar";
 "staking_native" = "Native staking";
@@ -781,7 +784,7 @@
 "staking_unbonding_in" = "Desunión en";
 "staking_unlocked_locked" = "Desbloquear";
 "staking_unlocking" = "Desbloqueando";
-"staking_unstake_amount_requirement_error" = "El monto del staking debe ser al menos %@";
+"staking_unstake_amount_requirement_error" = "La cantidad para el unstaking debe ser al menos %@";
 "staking_unstake_amount_validation_error" = "El monto excede el saldo apostado";
 "staking_unstaked" = "Sin staking";
 "staking_unstaked_footer" = "Marque activos sin staking para reclamarlos";
@@ -866,7 +869,7 @@
 "transaction_history_transaction_from_address" = "desde: %@";
 "transaction_history_transaction_to_address" = "a: %@";
 "transaction_history_transaction_validator" = "validador: %@";
-"transfer_min_amount_error" = "Minimum %@";
+"transfer_min_amount_error" = "Mínimo %@";
 "transfer_notification_invalid_minimum_transaction_amount_text" = "El monto mínimo para realizar esta transacción es %1$@.";
 "try_to_load_data_again_button_title" = "Inténtelo de nuevo";
 "twin_error_same_card" = "Ha escaneado la misma tarjeta. Para crear una billetera gemela, necesite escanear la tarjeta con no. %li";
