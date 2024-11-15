@@ -184,7 +184,7 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
             toExtraId: nil, // There is no memo on the client side
             redirectUrl: item.redirectSettings.successURL,
             language: item.redirectSettings.language,
-            theme: item.redirectSettings.theme,
+            theme: item.redirectSettings.theme.rawValue,
             requestId: requestId
         )
 
