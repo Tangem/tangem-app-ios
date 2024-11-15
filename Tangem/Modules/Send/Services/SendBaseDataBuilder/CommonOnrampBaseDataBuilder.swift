@@ -7,25 +7,27 @@
 //
 
 import TangemExpress
-
-protocol OnrampBaseDataBuilderInput {}
+import Combine
 
 struct CommonOnrampBaseDataBuilder {
     private let onrampRepository: OnrampRepository
     private let onrampDataRepository: OnrampDataRepository
     private let providersBuilder: OnrampProvidersBuilder
     private let paymentMethodsBuilder: OnrampPaymentMethodsBuilder
+    private let onrampRedirectingBuilder: OnrampRedirectingBuilder
 
     init(
         onrampRepository: OnrampRepository,
         onrampDataRepository: OnrampDataRepository,
         providersBuilder: OnrampProvidersBuilder,
-        paymentMethodsBuilder: OnrampPaymentMethodsBuilder
+        paymentMethodsBuilder: OnrampPaymentMethodsBuilder,
+        onrampRedirectingBuilder: OnrampRedirectingBuilder
     ) {
         self.onrampRepository = onrampRepository
         self.onrampDataRepository = onrampDataRepository
         self.providersBuilder = providersBuilder
         self.paymentMethodsBuilder = paymentMethodsBuilder
+        self.onrampRedirectingBuilder = onrampRedirectingBuilder
     }
 }
 
@@ -33,14 +35,18 @@ struct CommonOnrampBaseDataBuilder {
 
 extension CommonOnrampBaseDataBuilder: OnrampBaseDataBuilder {
     func makeDataForOnrampCountryBottomSheet() -> OnrampRepository {
-        return onrampRepository
+        onrampRepository
     }
 
     func makeDataForOnrampCountrySelectorView() -> (preferenceRepository: OnrampRepository, dataRepository: OnrampDataRepository) {
-        return (preferenceRepository: onrampRepository, dataRepository: onrampDataRepository)
+        (preferenceRepository: onrampRepository, dataRepository: onrampDataRepository)
     }
 
     func makeDataForOnrampProvidersPaymentMethodsView() -> (providersBuilder: OnrampProvidersBuilder, paymentMethodsBuilder: OnrampPaymentMethodsBuilder) {
-        return (providersBuilder: providersBuilder, paymentMethodsBuilder: paymentMethodsBuilder)
+        (providersBuilder: providersBuilder, paymentMethodsBuilder: paymentMethodsBuilder)
+    }
+
+    func makeDataForOnrampRedirecting() -> OnrampRedirectingBuilder {
+        onrampRedirectingBuilder
     }
 }

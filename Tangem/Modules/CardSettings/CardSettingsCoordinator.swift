@@ -61,21 +61,25 @@ extension CardSettingsCoordinator {
 
 extension CardSettingsCoordinator: CardSettingsRoutable {
     func openOnboarding(with input: OnboardingInput) {
-        let dismissAction: Action<OnboardingCoordinator.OutputOptions> = { [weak self] _ in
-            self?.modalOnboardingCoordinator = nil
+        let dismissAction: Action<OnboardingCoordinator.OutputOptions> = { [weak self] result in
+            guard let self else { return }
+
+            modalOnboardingCoordinator = nil
+
+            guard result.isSuccessful else { return }
+
+            let hasOtherCards = AppSettings.shared.saveUserWallets && userWalletRepository.models.count > 1
+
+            // go to main
+            if hasOtherCards {
+                dismiss()
+            } else {
+                popToRoot()
+            }
         }
 
-        let popToMainAction: Action<PopToRootOptions> = { [weak self] _ in
-            self?.modalOnboardingCoordinator = nil
-            self?.dismiss()
-        }
-
-        let hasOtherCards = AppSettings.shared.saveUserWallets && userWalletRepository.models.count > 1
-        let coordinator = OnboardingCoordinator(
-            dismissAction: dismissAction,
-            popToRootAction: hasOtherCards ? popToMainAction : popToRootAction
-        )
-        let options = OnboardingCoordinator.Options(input: input, destination: .root)
+        let coordinator = OnboardingCoordinator(dismissAction: dismissAction)
+        let options = OnboardingCoordinator.Options(input: input)
         coordinator.start(with: options)
         modalOnboardingCoordinator = coordinator
     }

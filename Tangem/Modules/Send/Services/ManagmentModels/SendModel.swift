@@ -194,7 +194,8 @@ private extension SendModel {
              .transactionNotFound,
              .demoAlert,
              .userCancelled,
-             .loadTransactionInfo:
+             .loadTransactionInfo,
+             .actionNotSupported:
             break
         case .sendTxError:
             Analytics.log(event: .sendErrorTransactionRejected, params: [
@@ -459,8 +460,8 @@ extension SendModel {
 
             var analyticsValue: Analytics.ParameterValue {
                 switch self {
-                case .send: .transactionSourceSend
-                case .sell: .transactionSourceSell
+                case .send: .send
+                case .sell: .sell
                 case .staking: .transactionSourceStaking
                 }
             }

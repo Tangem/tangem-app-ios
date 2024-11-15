@@ -11,12 +11,14 @@ import Combine
 
 protocol UserWalletRepository: Initializable {
     var hasSavedWallets: Bool { get }
+    var isLocked: Bool { get }
     var models: [UserWalletModel] { get }
     var selectedModel: UserWalletModel? { get }
     var selectedUserWalletId: UserWalletId? { get }
     var selectedIndexUserWalletModel: Int? { get }
     var eventProvider: AnyPublisher<UserWalletRepositoryEvent, Never> { get }
 
+    func lock()
     func unlock(with method: UserWalletRepositoryUnlockMethod, completion: @escaping (UserWalletRepositoryResult?) -> Void)
     func setSelectedUserWalletId(_ userWalletId: UserWalletId, reason: UserWalletRepositorySelectionChangeReason)
     func updateSelection()
@@ -84,6 +86,15 @@ enum UserWalletRepositoryLockReason {
 enum UserWalletRepositoryUnlockMethod {
     case biometry
     case card(userWalletId: UserWalletId?, scanner: CardScanner)
+
+    var analyticsValue: Analytics.ParameterValue {
+        switch self {
+        case .biometry:
+            return Analytics.ParameterValue.signInTypeBiometrics
+        case .card:
+            return Analytics.ParameterValue.card
+        }
+    }
 }
 
 enum UserWalletRepositoryError: String, Error, LocalizedError, BindableError {

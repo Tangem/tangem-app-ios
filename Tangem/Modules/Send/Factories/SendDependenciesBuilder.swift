@@ -401,13 +401,15 @@ struct SendDependenciesBuilder {
         onrampRepository: OnrampRepository,
         onrampDataRepository: OnrampDataRepository,
         providersBuilder: OnrampProvidersBuilder,
-        paymentMethodsBuilder: OnrampPaymentMethodsBuilder
+        paymentMethodsBuilder: OnrampPaymentMethodsBuilder,
+        onrampRedirectingBuilder: OnrampRedirectingBuilder
     ) -> OnrampBaseDataBuilder {
         CommonOnrampBaseDataBuilder(
             onrampRepository: onrampRepository,
             onrampDataRepository: onrampDataRepository,
             providersBuilder: providersBuilder,
-            paymentMethodsBuilder: paymentMethodsBuilder
+            paymentMethodsBuilder: paymentMethodsBuilder,
+            onrampRedirectingBuilder: onrampRedirectingBuilder
         )
     }
 }

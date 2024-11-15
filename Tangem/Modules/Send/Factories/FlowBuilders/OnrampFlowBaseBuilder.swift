@@ -36,6 +36,12 @@ struct OnrampFlowBaseBuilder {
             dataRepository: onrampDataRepository
         )
 
+        let onrampRedirectingBuilder = OnrampRedirectingBuilder(
+            io: (input: onrampModel, output: onrampModel),
+            tokenItem: walletModel.tokenItem,
+            onrampManager: onrampManager
+        )
+
         let (onrampAmountViewModel, _) = onrampAmountBuilder.makeOnrampAmountViewModel(
             io: (input: onrampModel, output: onrampModel),
             onrampProvidersInput: onrampModel,
@@ -50,7 +56,6 @@ struct OnrampFlowBaseBuilder {
 
         let onramp = onrampStepBuilder.makeOnrampStep(
             io: (input: onrampModel, output: onrampModel),
-            onrampManager: onrampManager,
             onrampAmountViewModel: onrampAmountViewModel,
             onrampProvidersCompactViewModel: onrampProvidersCompactViewModel
         )
@@ -77,7 +82,8 @@ struct OnrampFlowBaseBuilder {
             onrampRepository: onrampRepository,
             onrampDataRepository: onrampDataRepository,
             providersBuilder: providersBuilder,
-            paymentMethodsBuilder: paymentMethodsBuilder
+            paymentMethodsBuilder: paymentMethodsBuilder,
+            onrampRedirectingBuilder: onrampRedirectingBuilder
         )
 
         let interactor = CommonSendBaseInteractor(input: onrampModel, output: onrampModel)
@@ -95,6 +101,8 @@ struct OnrampFlowBaseBuilder {
         stepsManager.set(output: viewModel)
 
         onrampProvidersCompactViewModel.router = viewModel
+        onramp.step.set(router: viewModel)
+
         onrampModel.router = viewModel
         onrampModel.alertPresenter = viewModel
 

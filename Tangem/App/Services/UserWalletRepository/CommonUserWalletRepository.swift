@@ -18,6 +18,11 @@ class CommonUserWalletRepository: UserWalletRepository {
     @Injected(\.analyticsContext) var analyticsContext: AnalyticsContext
     @Injected(\.pushNotificationsInteractor) private var pushNotificationsInteractor: PushNotificationsInteractor
 
+    var isLocked: Bool {
+        let hasUnlockedModels = models.contains(where: { !$0.isUserWalletLocked })
+        return !hasUnlockedModels
+    }
+
     var selectedModel: UserWalletModel? {
         return models.first {
             $0.userWalletId == selectedUserWalletId
@@ -46,39 +51,18 @@ class CommonUserWalletRepository: UserWalletRepository {
 
     private(set) var models = [UserWalletModel]()
 
-    var isLocked: Bool { models.contains { $0.isUserWalletLocked } }
-
     private var encryptionKeyByUserWalletId: [UserWalletId: UserWalletEncryptionKey] = [:]
 
     private let encryptionKeyStorage = UserWalletEncryptionKeyStorage()
 
     private let eventSubject = PassthroughSubject<UserWalletRepositoryEvent, Never>()
 
-    private let minimizedAppTimer = MinimizedAppTimer(interval: 5 * 60)
-
     private var bag: Set<AnyCancellable> = .init()
 
-    init() {
-        bind()
-    }
+    init() {}
 
     deinit {
         AppLog.shared.debug("UserWalletRepository deinit")
-    }
-
-    func bind() {
-        minimizedAppTimer
-            .timer
-            .filter { [weak self] in
-                guard let self else { return false }
-
-                return !isLocked
-            }
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in
-                self?.lock(reason: .loggedOut)
-            }
-            .store(in: &bag)
     }
 
     private func scanPublisher(_ scanner: CardScanner) -> AnyPublisher<UserWalletRepositoryResult?, Never> {
@@ -154,11 +138,23 @@ class CommonUserWalletRepository: UserWalletRepository {
     }
 
     func unlock(with method: UserWalletRepositoryUnlockMethod, completion: @escaping (UserWalletRepositoryResult?) -> Void) {
-        switch method {
-        case .biometry:
-            unlockWithBiometry(completion: completion)
-        case .card(let userWalletId, let scanner):
-            unlockWithCard(scanner: scanner, userWalletId, completion: completion)
+        unlockInternal(with: method) { [weak self] result in
+            guard let self else { return }
+
+            switch result {
+            case .success(let model), .partial(let model, _):
+                let walletHasBackup = Analytics.ParameterValue.affirmativeOrNegative(for: model.hasBackupCards)
+
+                Analytics.log(event: .signedIn, params: [
+                    .signInType: method.analyticsValue.rawValue,
+                    .walletsCount: "\(models.count)",
+                    .walletHasBackup: walletHasBackup.rawValue,
+                ])
+            default:
+                break
+            }
+
+            completion(result)
         }
     }
 
@@ -256,12 +252,22 @@ class CommonUserWalletRepository: UserWalletRepository {
         initializeServicesForSelectedModel()
     }
 
+    func lock() {
+        guard !isLocked else {
+            return
+        }
+
+        lockInternal()
+        sendEvent(.locked(reason: .loggedOut))
+    }
+
     func logoutIfNeeded() {
         if models.contains(where: { !$0.isUserWalletLocked }) {
             return
         }
 
-        lock(reason: .nothingToDisplay)
+        lockInternal()
+        sendEvent(.locked(reason: .nothingToDisplay))
     }
 
     func setSelectedUserWalletId(_ userWalletId: UserWalletId, reason: UserWalletRepositorySelectionChangeReason) {
@@ -321,13 +327,20 @@ class CommonUserWalletRepository: UserWalletRepository {
         sendEvent(.deleted(userWalletIds: [userWalletId]))
     }
 
-    func lock(reason: UserWalletRepositoryLockReason) {
+    private func lockInternal() {
         discardSensitiveData()
 
         resetServices()
         analyticsContext.clearSession()
+    }
 
-        sendEvent(.locked(reason: reason))
+    private func unlockInternal(with method: UserWalletRepositoryUnlockMethod, completion: @escaping (UserWalletRepositoryResult?) -> Void) {
+        switch method {
+        case .biometry:
+            unlockWithBiometry(completion: completion)
+        case .card(let userWalletId, let scanner):
+            unlockWithCard(scanner: scanner, userWalletId, completion: completion)
+        }
     }
 
     func clearNonSelectedUserWallets() {

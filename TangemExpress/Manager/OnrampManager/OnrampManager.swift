@@ -24,7 +24,7 @@ public protocol OnrampManager: Actor {
     func setupQuotes(amount: Decimal?) async throws
 
     /// Load the data to perform the onramp action
-    func loadOnrampData(request: OnrampQuotesRequestItem) async throws -> OnrampRedirectData
+    func loadRedirectData(provider: OnrampProvider, redirectSettings: OnrampRedirectSettings) async throws -> OnrampRedirectData
 }
 
 public enum OnrampManagerError: LocalizedError {

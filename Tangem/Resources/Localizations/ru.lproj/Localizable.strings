@@ -173,6 +173,7 @@
 "common_terms_of_use" = "Условиями использования";
 "common_today" = "Сегодня";
 "common_transaction_failed" = "Ошибка транзакции";
+"common_transaction_status" = "Transaction status";
 "common_transactions" = "Транзакции";
 "common_transfer" = "Перевод";
 "common_understand" = "Я понял";
@@ -181,6 +182,7 @@
 "common_unstake" = "Завершить стейкинг";
 "common_warning" = "Предупреждение";
 "common_week" = "неделю";
+"common_with" = "with";
 "common_yes" = "Да";
 "contract_address_copied_message" = "Адрес контракта скопирован!";
 "currency_subtitle_expanded" = "Доступные сети";
@@ -305,7 +307,7 @@
 "give_permission_current_transaction" = "Транзакция";
 "give_permission_policy_type_footer" = "Укажите лимит доступа к выбранному токену";
 "give_permission_rows_amount" = "Количество %@";
-"give_permission_staking_footer" = "Функция подтверждения необходима для предоставления другому адресу разрешения на использование определенного количества ваших токенов.По замыслу смарт-контракты не могут получить доступ к вашим токенам, если вы не одобрите доступ со своей стороны. «Разблокируя» свои токены, вы даете смарт-контракту StakeKit разрешение использовать ваши активы. Майнеры сети получают компенсацию за газ (оплачиваемый вами) за запись этого действия в блокчейне. Как только разрешение будет предоставлено, вы сможете осуществить стейкинг токена.";
+"give_permission_staking_footer" = "Функция подтверждения необходима для предоставления другому адресу разрешения на использование определенного количества ваших токенов. По замыслу смарт-контракты не могут получить доступ к вашим токенам, если вы не одобрите доступ со своей стороны. «Разблокируя» свои токены, вы даете смарт-контракту StakeKit разрешение использовать ваши активы. Майнеры сети получают компенсацию за газ (оплачиваемый вами) за запись этого действия в блокчейне. Как только разрешение будет предоставлено, вы сможете осуществить стейкинг токена.";
 "give_permission_staking_subtitle" = "Чтобы продолжить, вам необходимо разрешить смарт контракту Polygon использовать ваш %@";
 "give_permission_swap_subtitle" = "Чтобы продолжить, вам нужно разрешить смарт-контракту %1@ использовать ваш %2@";
 "give_permission_title" = "Дать разрешение";
@@ -544,16 +546,17 @@
 "onramp_currency_search" = "Поиск по валюте";
 "onramp_max_amount_restriction" = "Сумма покупки не может быть больше, чем %@";
 "onramp_min_amount_restriction" = "Сумма покупки должна составлять минимум %@";
-"onramp_no_available_providers" = "No available providers for this currency";
+"onramp_no_available_providers" = "Для данной валюты нет доступных провайдеров";
 "onramp_pay_with" = "Оплата с";
-"onramp_redirecting_to_provider_subtitle" = "You will be able to complete your transaction on the third-party provider, %@";
-"onramp_redirecting_to_provider_title" = "Redirecting to %@...";
+"onramp_redirecting_to_provider_subtitle" = "Вы сможете завершить транзакцию через сервис стороннего провайдера, %@";
+"onramp_redirecting_to_provider_title" = "Переход к %@ ...";
 "onramp_residency_bottomsheet_country_not_supported" = "Наши сервисы недоступны в данной стране";
 "onramp_residency_bottomsheet_country_subtitle" = "Change or confirm it";
 "onramp_residency_bottomsheet_title" = "Your residence has been identified as";
 "onramp_settings_residence" = "Residence";
 "onramp_settings_residence_description" = "Please select the correct country to ensure accurate payment options and services.";
 "onramp_settings_title" = "Настройки";
+"onramp_transaction_status_footer_text" = "You can check the transaction status from the token page";
 "onramp_via" = "Через";
 "organize_tokens_group" = "Группы";
 "organize_tokens_sort_by_balance" = "По балансу";
@@ -866,7 +869,7 @@
 "transaction_history_transaction_from_address" = "от: %@";
 "transaction_history_transaction_to_address" = "на: %@";
 "transaction_history_transaction_validator" = "валидатор: %@";
-"transfer_min_amount_error" = "Minimum %@";
+"transfer_min_amount_error" = "Минимум %@";
 "transfer_notification_invalid_minimum_transaction_amount_text" = "Минимальная сумма транзакции равна %1$@.";
 "try_to_load_data_again_button_title" = "Попробовать снова";
 "twin_error_same_card" = "Вы отсканировали ту же карту. Для создания twin-кошелька вам необходимо отсканировать карту с номером %li";
@@ -910,7 +913,7 @@
 "wallet_connect_error_with_framework_message" = "Произошла непредвиденная ошибка. Сообщение ошибки: %@ Попробуйте, пожалуйста, позже. Если проблема будет продолжать возникать - обратитесь в службу поддержки.";
 "wallet_connect_error_wrong_card_selected" = "Неверная карта или кольцо выбрана в приложении Tangem";
 "wallet_connect_failed_to_build_tx" = "Не удалось создать транзакцию из данных Dapp. Код: %@";
-"wallet_connect_generic_error_with_code" = "Произошла непредвиденная ошибка. Код ошибки: %li. Попробуйте, пожалуйста, позже. Если проблема будет продолжать возникать - обратитесь в службу поддержки.";
+"wallet_connect_generic_error_with_code" = "Произошла непредвиденная ошибка. Код ошибки: %li. Попробуйте, пожалуйста, позже. Если проблема будет продолжать возникать — обратитесь в службу поддержки.";
 "wallet_connect_no_sessions_message" = "Нет открытых сессий WalletConnect";
 "wallet_connect_no_sessions_title" = "Упс. Нет сессий.";
 "wallet_connect_pairing_error" = "Не удалось создать пару WalletConnect: %1$@";
@@ -961,7 +964,7 @@
 "warning_express_notification_invalid_reserve_amount_title" = "Сумма получения не может быть менее %@";
 "warning_express_pair_unavailable_message" = "Это может произойти из-за того, что провайдер временно не предоставляет обмен выбранной вами пары. Пожалуйста, подождите некоторое время и попробуйте снова. (Код %@)";
 "warning_express_pair_unavailable_title" = "Выбранная пара временно недоступна";
-"warning_express_refresh_required_title" = "Cервис временно недоступен";
+"warning_express_refresh_required_title" = "Сервис временно недоступен";
 "warning_express_too_maximum_amount_title" = "Сумма для обмена должна быть не более %@";
 "warning_express_too_minimal_amount_title" = "Сумма для обмена должна быть не менее %@";
 "warning_express_wrong_amount_description" = "Пожалуйста, измените сумму для обмена";
