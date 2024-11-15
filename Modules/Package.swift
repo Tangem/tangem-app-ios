@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 5.10
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -34,7 +34,7 @@ var serviceModules: [PackageDescription.Target] {
             name: "TangemFoundation",
             swiftSettings: [
                 // TODO: Andrey Fedorov - Remove after migration to Swift 6 structured concurrency (IOS-8369)
-                .swiftLanguageMode(.v5),
+//                .swiftLanguageMode(.v5),
             ]
         ),
         .tangemTarget(
@@ -45,7 +45,7 @@ var serviceModules: [PackageDescription.Target] {
             ],
             swiftSettings: [
                 // TODO: Andrey Fedorov - Remove after migration to Swift 6 structured concurrency (IOS-8369)
-                .swiftLanguageMode(.v5),
+//                .swiftLanguageMode(.v5),
             ]
         ),
     ]
