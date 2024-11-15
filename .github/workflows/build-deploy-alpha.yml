@@ -67,7 +67,7 @@ jobs:
   build:
     name: Tangem Alpha
     needs: prepare
-    uses: tangem/actions/.github/workflows/build.yml@feature/IOS-8113_ci_cd_beta_builds_workflow
+    uses: tangem/actions/.github/workflows/build.yml@test/ci_cd_builder2_tests
     with:
       stage: '${{ needs.prepare.outputs.stage }}'
       version: '${{ needs.prepare.outputs.version }}'
@@ -80,7 +80,7 @@ jobs:
 
   deploy:
     name: Google Distribution
-    uses: tangem/actions/.github/workflows/deploy-firebase.yml@feature/IOS-8113_ci_cd_beta_builds_workflow
+    uses: tangem/actions/.github/workflows/deploy-firebase.yml@test/ci_cd_builder2_tests
     needs:
       - prepare
       - build
@@ -98,7 +98,7 @@ jobs:
 
   notification:
     name: Deploy Notification
-    uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8113_ci_cd_beta_builds_workflow
+    uses: tangem/actions/.github/workflows/notification.yml@test/ci_cd_builder2_tests
     needs:
       - prepare
       - build
@@ -119,7 +119,7 @@ jobs:
   error_notification:
     name: Error Notification
     if: failure()
-    uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8113_ci_cd_beta_builds_workflow
+    uses: tangem/actions/.github/workflows/notification.yml@test/ci_cd_builder2_tests
     needs:
       - prepare
       - build
