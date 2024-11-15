@@ -196,6 +196,8 @@ extension SendCoordinator: OnrampRoutable {
             self?.safariHandle = nil
             success()
         }
+
+        dismissOnrampRedirecting()
     }
 }
 

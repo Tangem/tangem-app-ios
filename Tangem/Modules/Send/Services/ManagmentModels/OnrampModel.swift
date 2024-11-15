@@ -68,6 +68,7 @@ class OnrampModel {
 private extension OnrampModel {
     func bind() {
         _amount
+            .dropFirst()
             .withWeakCaptureOf(self)
             .sink { model, amount in
                 model.updateQuotes(amount: amount?.fiat)
@@ -125,7 +126,7 @@ private extension OnrampModel {
     func preferenceDidChange(currency: OnrampFiatCurrency?) {
         guard let country = onrampRepository.preferenceCountry, let currency else {
             TangemFoundation.runTask(in: self) {
-                try await $0.initiateCountryDefinition()
+                await $0.initiateCountryDefinition()
             }
             return
         }
@@ -138,15 +139,21 @@ private extension OnrampModel {
         }
     }
 
-    func initiateCountryDefinition() async throws {
-        let country = try await onrampManager.initialSetupCountry()
+    func initiateCountryDefinition() async {
+        do {
+            let country = try await onrampManager.initialSetupCountry()
 
-        // Update amount UI
-        _currency.send(.loaded(country.currency))
+            // Update amount UI
+            _currency.send(.loaded(country.currency))
 
-        // We have to show confirmation bottom sheet
-        await runOnMain {
-            router?.openOnrampCountryBottomSheet(country: country)
+            // We have to show confirmation bottom sheet
+            await runOnMain {
+                router?.openOnrampCountryBottomSheet(country: country)
+            }
+        } catch {
+            await runOnMain {
+                alertPresenter?.showAlert(error.alertBinder)
+            }
         }
     }
 
@@ -259,10 +266,11 @@ extension OnrampModel: OnrampRedirectingInput {}
 
 extension OnrampModel: OnrampRedirectingOutput {
     func redirectDataDidLoad(data: OnrampRedirectData) {
-        // Check full logic
-        // TODO: https://tangem.atlassian.net/browse/IOS-8309
-        router?.openWebView(url: URL(string: data.widgetUrl)!) { [weak self] in
-            self?.router?.openFinishStep()
+        DispatchQueue.main.async {
+            self.router?.openWebView(url: data.widgetUrl) { [weak self] in
+                self?._transactionTime.send(Date())
+                self?.router?.openFinishStep()
+            }
         }
     }
 }

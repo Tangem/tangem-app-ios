@@ -35,40 +35,6 @@ class OnrampViewModel: ObservableObject, Identifiable {
     }
 }
 
-// MARK: - Private
-
-/*
- // TODO: https://tangem.atlassian.net/browse/IOS-8310
- private extension OnrampViewModel {
-     func bind() {
-          interactor
-              .selectedQuotePublisher
-              .withWeakCaptureOf(self)
-              .receive(on: DispatchQueue.main)
-              .sink { viewModel, quote in
-                  viewModel.updateQuoteView(quote: quote)
-              }
-              .store(in: &bag)
-     }
-
-     func updateQuoteView(quote: LoadingValue<OnrampQuote>?) {
-         switch quote {
-         case .none, .failedToLoad:
-             paymentState = .none
-         case .loading:
-             paymentState = .loading
-         case .loaded(let quote):
-             // TODO: Fill from quote
-             paymentState = .loaded(
-                 data: .init(iconURL: nil, paymentMethodName: "Card", providerName: "1Inch", badge: .bestRate) { [weak self] in
-                     self?.router?.onrampStepRequestEditProvider()
-                 }
-             )
-         }
-     }
- }
- */
-
 // MARK: - SendStepViewAnimatable
 
 extension OnrampViewModel: SendStepViewAnimatable {

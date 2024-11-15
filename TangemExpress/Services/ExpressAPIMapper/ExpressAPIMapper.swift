@@ -203,7 +203,6 @@ struct ExpressAPIMapper {
             throw ExpressAPIMapperError.requestIdNotEqual
         }
 
-        // TODO: https://tangem.atlassian.net/browse/IOS-8309
         return redirectData
     }
 }

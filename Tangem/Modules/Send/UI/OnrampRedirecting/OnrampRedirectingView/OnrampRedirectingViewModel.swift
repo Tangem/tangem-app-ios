@@ -33,6 +33,8 @@ final class OnrampRedirectingViewModel: ObservableObject {
     private let interactor: OnrampRedirectingInteractor
     private weak var coordinator: OnrampRedirectingRoutable?
 
+    private var colorScheme: ColorScheme = .light
+
     init(
         tokenItem: TokenItem,
         interactor: OnrampRedirectingInteractor,
@@ -45,17 +47,41 @@ final class OnrampRedirectingViewModel: ObservableObject {
 
     func loadRedirectData() async {
         do {
-            try await interactor.loadRedirectData()
-            try await Task.sleep(seconds: 10)
-
-            await runOnMain {
-                coordinator?.dismissOnrampRedirecting()
-            }
+            try await interactor.loadRedirectData(redirectSettings: makeOnrampRedirectSettings())
         } catch {
             await runOnMain {
-                // TODO: close view ?
-                alert = error.alertBinder
+                alert = AlertBuilder.makeOkErrorAlert(message: error.localizedDescription) { [weak self] in
+                    self?.coordinator?.dismissOnrampRedirecting()
+                }
             }
         }
+    }
+
+    func update(colorScheme: ColorScheme) {
+        self.colorScheme = colorScheme
+    }
+}
+
+// MARK: - Private
+
+private extension OnrampRedirectingViewModel {
+    func makeOnrampRedirectSettings() -> OnrampRedirectSettings {
+        let theme: OnrampRedirectSettings.Theme = {
+            switch colorScheme {
+            case .light: .light
+            case .dark: .dark
+            @unknown default: .light
+            }
+        }()
+
+        // We don't use `Locale.current.languageCode`
+        // Because it gives us the phone language not app
+        let appLanguageCode = Bundle.main.preferredLocalizations[0]
+
+        return OnrampRedirectSettings(
+            successURL: IncomingActionConstants.externalSuccessURL,
+            theme: theme,
+            language: appLanguageCode
+        )
     }
 }
