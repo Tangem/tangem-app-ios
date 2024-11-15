@@ -17,6 +17,7 @@ class SendFinishViewModel: ObservableObject, Identifiable {
 
     @Published var sendDestinationCompactViewModel: SendDestinationCompactViewModel?
     @Published var sendAmountCompactViewModel: SendAmountCompactViewModel?
+    @Published var onrampAmountCompactViewModel: OnrampAmountCompactViewModel?
     @Published var stakingValidatorsCompactViewModel: StakingValidatorsCompactViewModel?
     @Published var sendFeeCompactViewModel: SendFeeCompactViewModel?
 
@@ -30,6 +31,7 @@ class SendFinishViewModel: ObservableObject, Identifiable {
         input: SendFinishInput,
         sendDestinationCompactViewModel: SendDestinationCompactViewModel?,
         sendAmountCompactViewModel: SendAmountCompactViewModel?,
+        onrampAmountCompactViewModel: OnrampAmountCompactViewModel?,
         stakingValidatorsCompactViewModel: StakingValidatorsCompactViewModel?,
         sendFeeCompactViewModel: SendFeeCompactViewModel?
     ) {
@@ -37,6 +39,7 @@ class SendFinishViewModel: ObservableObject, Identifiable {
         actionType = settings.actionType
         self.sendDestinationCompactViewModel = sendDestinationCompactViewModel
         self.sendAmountCompactViewModel = sendAmountCompactViewModel
+        self.onrampAmountCompactViewModel = onrampAmountCompactViewModel
         self.stakingValidatorsCompactViewModel = stakingValidatorsCompactViewModel
         self.sendFeeCompactViewModel = sendFeeCompactViewModel
 

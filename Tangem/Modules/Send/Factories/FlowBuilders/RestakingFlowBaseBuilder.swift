@@ -57,6 +57,7 @@ struct RestakingFlowBaseBuilder {
             actionType: actionType,
             sendDestinationCompactViewModel: .none,
             sendAmountCompactViewModel: sendAmountCompactViewModel,
+            onrampAmountCompactViewModel: .none,
             stakingValidatorsCompactViewModel: validators.compact,
             sendFeeCompactViewModel: sendFeeCompactViewModel
         )

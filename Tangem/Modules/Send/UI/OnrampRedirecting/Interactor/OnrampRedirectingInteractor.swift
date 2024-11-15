@@ -12,7 +12,7 @@ import TangemExpress
 protocol OnrampRedirectingInteractor {
     var onrampProvider: OnrampProvider? { get }
 
-    func loadRedirectData() async throws
+    func loadRedirectData(redirectSettings: OnrampRedirectSettings) async throws
 }
 
 class CommonOnrampRedirectingInteractor {
@@ -39,17 +39,10 @@ extension CommonOnrampRedirectingInteractor: OnrampRedirectingInteractor {
         input?.selectedOnrampProvider
     }
 
-    func loadRedirectData() async throws {
+    func loadRedirectData(redirectSettings: OnrampRedirectSettings) async throws {
         guard let provider = input?.selectedOnrampProvider else {
             throw CommonError.noData
         }
-
-        // TODO: https://tangem.atlassian.net/browse/IOS-8309
-        let redirectSettings = OnrampRedirectSettings(
-            successURL: IncomingActionConstants.externalSuccessURL,
-            theme: "light",
-            language: "en"
-        )
 
         let redirectData = try await onrampManager.loadRedirectData(provider: provider, redirectSettings: redirectSettings)
         output?.redirectDataDidLoad(data: redirectData)

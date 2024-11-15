@@ -63,6 +63,7 @@ struct SendFlowBaseBuilder {
             actionType: .send,
             sendDestinationCompactViewModel: destination.compact,
             sendAmountCompactViewModel: amount.compact,
+            onrampAmountCompactViewModel: .none,
             stakingValidatorsCompactViewModel: nil,
             sendFeeCompactViewModel: fee.compact
         )

@@ -27,10 +27,10 @@ struct MarketsTokenDetailsSecurityScoreRatingHelper {
     }
 
     func makeRatingBullets(forSecurityScoreValue securityScoreValue: Double) -> [RatingBullet] {
-        let filletBulletsCount = Int(securityScoreValue)
-        let intermediateBulletValue = securityScoreValue - Double(filletBulletsCount)
-        let emptyBulletsCount = max(ratingBulletsCount - filletBulletsCount - 1, 0) // `-1` here due to an intermediate rating bullet
-        let ratingBullets = [RatingBullet](repeating: .init(value: 1.0), count: filletBulletsCount)
+        let filledBulletsCount = Int(securityScoreValue)
+        let intermediateBulletValue = securityScoreValue - Double(filledBulletsCount)
+        let emptyBulletsCount = max(ratingBulletsCount - filledBulletsCount - 1, 0) // `-1` here due to an intermediate rating bullet
+        let ratingBullets = [RatingBullet](repeating: .init(value: 1.0), count: filledBulletsCount)
             + [RatingBullet(value: intermediateBulletValue)]
             + [RatingBullet](repeating: .init(value: 0.0), count: emptyBulletsCount)
 
