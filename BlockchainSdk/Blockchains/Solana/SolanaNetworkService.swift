@@ -298,7 +298,7 @@ class SolanaNetworkService {
                 if let solanaError = error as? SolanaError {
                     switch solanaError {
                     case .nullValue:
-                        return .anyFail(error: WalletError.accountNotActivated)
+                        return .justWithError(output: true)
                     default:
                         break
                     }
