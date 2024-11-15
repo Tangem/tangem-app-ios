@@ -246,8 +246,8 @@ struct StakeKitMapper {
 
         let validators = response.validators.map(mapToValidatorInfo)
         let preferredValidators = validators.filter { $0.preferred }.sorted { lhs, rhs in
-            if lhs.apr == rhs.apr {
-                return lhs.partner
+            if lhs.partner {
+                return true
             }
 
             return lhs.apr ?? 0 > rhs.apr ?? 0
