@@ -24,8 +24,7 @@ class OnrampModel {
     private let _currency: CurrentValueSubject<LoadingValue<OnrampFiatCurrency>, Never>
     private let _amount: CurrentValueSubject<SendAmount?, Never> = .init(.none)
     private let _selectedOnrampProvider: CurrentValueSubject<LoadingValue<OnrampProvider>?, Never> = .init(.none)
-    private let _selectedOnrampPaymentMethod: CurrentValueSubject<OnrampPaymentMethod?, Never>
-    private let _onrampProviders: CurrentValueSubject<LoadingValue<[OnrampProvider]>?, Never> = .init(.none)
+    private let _onrampProviders: CurrentValueSubject<LoadingValue<ProvidersList>?, Never> = .init(.none)
     private let _isLoading: CurrentValueSubject<Bool, Never> = .init(false)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
 
@@ -56,10 +55,7 @@ class OnrampModel {
             onrampRepository.preferenceCurrency.map { .loaded($0) } ?? .loading
         )
 
-        _selectedOnrampPaymentMethod = .init(onrampRepository.preferencePaymentMethod)
-
         bind()
-        initiatePaymentMethodDefinitionIfNeeded()
     }
 }
 
@@ -83,20 +79,16 @@ private extension OnrampModel {
                 self?.preferenceDidChange(currency: currency)
             }
             .store(in: &bag)
-
-        _selectedOnrampPaymentMethod
-            .removeDuplicates()
-            .sink { [weak self] paymentMethod in
-                self?.onrampRepository.updatePreference(paymentMethod: paymentMethod)
-            }
-            .store(in: &bag)
     }
 
-    func updateProviders(country: OnrampCountry, currency: OnrampFiatCurrency) async throws {
-        let request = makeOnrampPairRequestItem(country: country, currency: currency)
-        try await onrampManager.setupProviders(request: request)
+    func updateProviders(country: OnrampCountry, currency: OnrampFiatCurrency) {
+        mainTask {
+            let request = $0.makeOnrampPairRequestItem(country: country, currency: currency)
+            try await $0.onrampManager.setupProviders(request: request)
+            let providers = await $0.onrampManager.providers
 
-        await _onrampProviders.send(.loaded(onrampManager.providers))
+            $0._onrampProviders.send(.loaded(providers))
+        }
     }
 
     func updateQuotes(amount: Decimal?) {
@@ -111,8 +103,18 @@ private extension OnrampModel {
             $0._selectedOnrampProvider.send(.loading)
 
             try await $0.onrampManager.setupQuotes(amount: amount)
+            try Task.checkCancellation()
 
             await $0._onrampProviders.send(.loaded($0.onrampManager.providers))
+            if let selectedProvider = await $0.onrampManager.selectedProvider {
+                $0._selectedOnrampProvider.send(.loaded(selectedProvider))
+            }
+        }
+    }
+
+    func updatePaymentMethod(method: OnrampPaymentMethod) {
+        mainTask {
+            await $0.onrampManager.updatePaymentMethod(paymentMethod: method)
             if let selectedProvider = await $0.onrampManager.selectedProvider {
                 $0._selectedOnrampProvider.send(.loaded(selectedProvider))
             }
@@ -134,9 +136,7 @@ private extension OnrampModel {
         // Update amount UI
         _currency.send(.loaded(currency))
 
-        mainTask {
-            try await $0.updateProviders(country: country, currency: currency)
-        }
+        updateProviders(country: country, currency: currency)
     }
 
     func initiateCountryDefinition() async {
@@ -154,20 +154,6 @@ private extension OnrampModel {
             await runOnMain {
                 alertPresenter?.showAlert(error.alertBinder)
             }
-        }
-    }
-
-    func initiatePaymentMethodDefinitionIfNeeded() {
-        guard _selectedOnrampPaymentMethod.value == nil else {
-            return
-        }
-
-        TangemFoundation.runTask(in: self) {
-            let paymentMethod = try await $0.onrampManager.initialSetupPaymentMethod()
-            $0.onrampRepository.updatePreference(paymentMethod: paymentMethod)
-
-            // Update UI
-            $0._selectedOnrampPaymentMethod.send(paymentMethod)
         }
     }
 }
@@ -225,7 +211,7 @@ extension OnrampModel: OnrampProvidersInput {
         _selectedOnrampProvider.eraseToAnyPublisher()
     }
 
-    var onrampProvidersPublisher: AnyPublisher<LoadingValue<[OnrampProvider]>, Never> {
+    var onrampProvidersPublisher: AnyPublisher<LoadingValue<ProvidersList>, Never> {
         _onrampProviders.compactMap { $0 }.eraseToAnyPublisher()
     }
 }
@@ -241,12 +227,16 @@ extension OnrampModel: OnrampProvidersOutput {
 // MARK: - OnrampPaymentMethodsInput
 
 extension OnrampModel: OnrampPaymentMethodsInput {
-    var selectedOnrampPaymentMethod: OnrampPaymentMethod? {
-        _selectedOnrampPaymentMethod.value
+    var selectedPaymentMethod: OnrampPaymentMethod? {
+        _selectedOnrampProvider.value?.value?.paymentMethod
     }
 
-    var selectedOnrampPaymentMethodPublisher: AnyPublisher<OnrampPaymentMethod?, Never> {
-        _selectedOnrampPaymentMethod.eraseToAnyPublisher()
+    var selectedPaymentMethodPublisher: AnyPublisher<OnrampPaymentMethod?, Never> {
+        _selectedOnrampProvider.map { $0?.value?.paymentMethod }.eraseToAnyPublisher()
+    }
+
+    var paymentMethodsPublisher: AnyPublisher<[OnrampPaymentMethod], Never> {
+        _onrampProviders.compactMap { $0?.value?.keys.toSet() }.map { Array($0) }.eraseToAnyPublisher()
     }
 }
 
@@ -254,7 +244,7 @@ extension OnrampModel: OnrampPaymentMethodsInput {
 
 extension OnrampModel: OnrampPaymentMethodsOutput {
     func userDidSelect(paymentMethod: OnrampPaymentMethod) {
-        _selectedOnrampPaymentMethod.send(paymentMethod)
+        updatePaymentMethod(method: paymentMethod)
     }
 }
 

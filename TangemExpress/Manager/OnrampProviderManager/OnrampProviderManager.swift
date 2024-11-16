@@ -39,6 +39,13 @@ public enum OnrampProviderManagerState: Hashable {
         }
     }
 
+    public var canBeShow: Bool {
+        switch self {
+        case .restriction, .loaded: true
+        case .idle, .loading, .failed, .notSupported: false
+        }
+    }
+
     public enum Restriction: Hashable {
         case tooSmallAmount(_ minAmount: String)
         case tooBigAmount(_ maxAmount: String)

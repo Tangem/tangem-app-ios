@@ -20,7 +20,7 @@ final class ActionButtonsViewModel: ObservableObject {
     // MARK: - Button ViewModels
 
     let buyActionButtonViewModel: BuyActionButtonViewModel
-    let sellActionButtonViewModel = BaseActionButtonViewModel(model: .sell)
+    let sellActionButtonViewModel: SellActionButtonViewModel
     let swapActionButtonViewModel = BaseActionButtonViewModel(model: .swap)
 
     private var bag = Set<AnyCancellable>()
@@ -36,6 +36,12 @@ final class ActionButtonsViewModel: ObservableObject {
 
         buyActionButtonViewModel = BuyActionButtonViewModel(
             model: .buy,
+            coordinator: coordinator,
+            userWalletModel: userWalletModel
+        )
+
+        sellActionButtonViewModel = SellActionButtonViewModel(
+            model: .sell,
             coordinator: coordinator,
             userWalletModel: userWalletModel
         )
@@ -90,14 +96,6 @@ private extension ActionButtonsViewModel {
 
 private extension ActionButtonsViewModel {
     func fetchSwapData() async {
-        // IOS-8238
-    }
-}
-
-// MARK: - Sell
-
-private extension ActionButtonsViewModel {
-    func fetchSellData() async {
         // IOS-8238
     }
 }
