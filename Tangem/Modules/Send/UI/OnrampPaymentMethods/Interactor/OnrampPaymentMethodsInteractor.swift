@@ -10,6 +10,7 @@ import Combine
 import TangemExpress
 
 protocol OnrampPaymentMethodsInteractor {
+    var paymentMethodsPublisher: AnyPublisher<[OnrampPaymentMethod], Never> { get }
     var paymentMethodPublisher: AnyPublisher<OnrampPaymentMethod, Never> { get }
 
     func update(selectedPaymentMethod: OnrampPaymentMethod)
@@ -38,8 +39,20 @@ extension CommonOnrampPaymentMethodsInteractor: OnrampPaymentMethodsInteractor {
         }
 
         return input
-            .selectedOnrampPaymentMethodPublisher
+            .selectedPaymentMethodPublisher
             .compactMap { $0 }
+            .eraseToAnyPublisher()
+    }
+
+    var paymentMethodsPublisher: AnyPublisher<[OnrampPaymentMethod], Never> {
+        guard let input else {
+            assertionFailure("OnrampProvidersInput not found")
+            return Empty().eraseToAnyPublisher()
+        }
+
+        return input
+            .paymentMethodsPublisher
+            .map { $0.sorted { $0.type.priority > $1.type.priority } }
             .eraseToAnyPublisher()
     }
 
