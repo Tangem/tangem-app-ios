@@ -38,6 +38,7 @@ class MarketsTokenDetailsViewModel: MarketsBaseViewModel {
     @Published private(set) var numberOfExchangesListedOn: Int?
 
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
+    @Published var fullDescriptionBottomSheetInfo: DescriptionBottomSheetInfo?
 
     // Private published properties used for calculation `price`, `priceChangeState` and `priceDate` properties
 
@@ -204,7 +205,7 @@ class MarketsTokenDetailsViewModel: MarketsBaseViewModel {
 
         Analytics.log(event: .marketsChartButtonReadMore, params: [.token: tokenInfo.symbol.uppercased()])
 
-        descriptionBottomSheetInfo = .init(
+        fullDescriptionBottomSheetInfo = .init(
             title: Localization.marketsTokenDetailsAboutTokenTitle(tokenInfo.name),
             description: fullDescription,
             showCloseButton: true
