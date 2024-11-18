@@ -9,14 +9,30 @@
 import Foundation
 import Combine
 
-class KaspaWalletManager: BaseManager, WalletManager {
-    var txBuilder: KaspaTransactionBuilder!
-    var networkService: KaspaNetworkService!
-    var networkServiceKRC20: KaspaNetworkServiceKRC20!
-    var dataStorage: BlockchainDataStorage!
+final class KaspaWalletManager: BaseManager, WalletManager {
+    private let txBuilder: KaspaTransactionBuilder
+    private let networkService: KaspaNetworkService
+    private let networkServiceKRC20: KaspaNetworkServiceKRC20
+    private let dataStorage: BlockchainDataStorage
 
     var currentHost: String { networkService.host }
     var allowsFeeSelection: Bool { false }
+
+    // MARK: - Initialization/Deinitialization
+
+    init(
+        wallet: Wallet,
+        networkService: KaspaNetworkService,
+        networkServiceKRC20: KaspaNetworkServiceKRC20,
+        txBuilder: KaspaTransactionBuilder,
+        dataStorage: BlockchainDataStorage
+    ) {
+        self.networkService = networkService
+        self.networkServiceKRC20 = networkServiceKRC20
+        self.txBuilder = txBuilder
+        self.dataStorage = dataStorage
+        super.init(wallet: wallet)
+    }
 
     override func update(completion: @escaping (Result<Void, Error>) -> Void) {
         let unconfirmedTransactionHashes = wallet.pendingTransactions.map { $0.hash }
