@@ -92,5 +92,6 @@ extension Analytics {
         case validator = "Validator"
 
         case walletForm = "WalletForm"
+        case reason = "Reason"
     }
 }

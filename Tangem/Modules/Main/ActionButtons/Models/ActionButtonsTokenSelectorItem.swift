@@ -16,7 +16,5 @@ struct ActionButtonsTokenSelectorItem: Identifiable, Equatable {
     let balance: String
     let fiatBalance: String
     let isDisabled: Bool
-    let amountType: Amount.AmountType
-    let blockchain: Blockchain
-    let defaultAddress: String
+    let walletModel: WalletModel
 }

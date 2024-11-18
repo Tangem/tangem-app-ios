@@ -40,6 +40,8 @@ struct SingleTokenAlertBuilder {
             return .init(title: "", message: Localization.tokenButtonUnavailabilityReasonEmptyBalanceSend)
         case .blockchainUnreachable:
             return tryAgainLaterAlert
+        case .oldCard:
+            return .init(title: "", message: Localization.warningOldCardMessage)
         case .none, .zeroFeeCurrencyBalance:
             break
         }

@@ -16,18 +16,18 @@ struct SendCoordinatorView: CoordinatorView {
     }
 
     var body: some View {
-        NavigationView {
-            ZStack {
-                if let rootViewModel = coordinator.rootViewModel {
+        if let rootViewModel = coordinator.rootViewModel {
+            NavigationView {
+                ZStack {
                     SendView(viewModel: rootViewModel, transitionService: .init())
-                        .navigationBarHidden(true)
                         .navigationLinks(links)
-                }
 
-                sheets
+                    sheets
+                }
             }
+            .tint(Colors.Text.primary1)
+            .interactiveDismissDisabled(rootViewModel.shouldShowDismissAlert)
         }
-        .tint(Colors.Text.primary1)
     }
 
     @ViewBuilder
@@ -35,6 +35,9 @@ struct SendCoordinatorView: CoordinatorView {
         NavHolder()
             .navigation(item: $coordinator.onrampSettingsViewModel) {
                 OnrampSettingsView(viewModel: $0)
+            }
+            .navigation(item: $coordinator.onrampRedirectingViewModel) {
+                OnrampRedirectingView(viewModel: $0)
             }
             .emptyNavigationLink()
     }

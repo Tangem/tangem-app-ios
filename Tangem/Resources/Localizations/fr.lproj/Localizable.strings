@@ -173,6 +173,7 @@
 "common_terms_of_use" = "Conditions d'utilisation";
 "common_today" = "Aujourd'hui";
 "common_transaction_failed" = "La transaction a échoué";
+"common_transaction_status" = "Transaction status";
 "common_transactions" = "Transactions";
 "common_transfer" = "Transfert";
 "common_understand" = "Je comprends";
@@ -181,6 +182,7 @@
 "common_unstake" = "Unstakez";
 "common_warning" = "Alerte";
 "common_week" = "semaine";
+"common_with" = "with";
 "common_yes" = "Oui";
 "contract_address_copied_message" = "Adresse du contrat copiée !";
 "currency_subtitle_expanded" = "Réseaux disponibles";
@@ -554,6 +556,7 @@
 "onramp_settings_residence" = "Résidence";
 "onramp_settings_residence_description" = "Veuillez sélectionner le bon pays pour garantir des options de paiement et des services précis.";
 "onramp_settings_title" = "Paramètres";
+"onramp_transaction_status_footer_text" = "You can check the transaction status from the token page";
 "onramp_via" = "Via";
 "organize_tokens_group" = "Grouper";
 "organize_tokens_sort_by_balance" = "Par solde";
@@ -717,7 +720,7 @@
 "staking_details_warmup_period_info" = "Le temps imparti pour activer la participation au staking.";
 "staking_dismiss_message" = "Êtes-vous sûr(e) de vouloir fermer l'écran de staking ?";
 "staking_give_permission_fee_footer" = "Le réseau facturera des frais d’approbation de jeton pour vérifier que vous autorisez l’utilisation de votre jeton pour le jalonnement.";
-"staking_legal" = "En utilisant la fonctionnalité de staking, vous acceptez les  %1$@ et %2$@ du fournisseur";
+"staking_legal" = "En utilisant la fonctionnalité de staking, vous acceptez les %1$@ et %2$@ du fournisseur";
 "staking_locked" = "Bloqué";
 "staking_migrate" = "Migrer";
 "staking_native" = "Native staking";
@@ -781,7 +784,7 @@
 "staking_unbonding_in" = "Dissociation en";
 "staking_unlocked_locked" = "Débloquer";
 "staking_unlocking" = "Déverrouillage";
-"staking_unstake_amount_requirement_error" = "Le montant à staker doit être au moins %@";
+"staking_unstake_amount_requirement_error" = "Le montant à destaker doit être au moins %@";
 "staking_unstake_amount_validation_error" = "Le montant dépasse le solde misé";
 "staking_unstaked" = "Non-staké";
 "staking_unstaked_footer" = "Vérifiez non-stakés pour réclamer vos actifs";

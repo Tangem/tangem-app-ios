@@ -31,6 +31,17 @@ struct OnrampAmountBuilder {
 
         return (viewModel: viewModel, interactor: interactor)
     }
+
+    func makeOnrampAmountCompactViewModel(
+        onrampAmountInput: OnrampAmountInput,
+        onrampProvidersInput: OnrampProvidersInput
+    ) -> OnrampAmountCompactViewModel {
+        OnrampAmountCompactViewModel(
+            onrampAmountInput: onrampAmountInput,
+            onrampProvidersInput: onrampProvidersInput,
+            tokenItem: walletModel.tokenItem
+        )
+    }
 }
 
 // MARK: - Private

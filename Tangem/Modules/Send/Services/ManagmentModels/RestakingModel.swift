@@ -208,7 +208,8 @@ private extension RestakingModel {
              .informationRelevanceServiceError,
              .informationRelevanceServiceFeeWasIncreased,
              .transactionNotFound,
-             .loadTransactionInfo:
+             .loadTransactionInfo,
+             .actionNotSupported:
             break
         case .sendTxError:
             Analytics.log(event: .stakingErrorTransactionRejected, params: [.token: tokenItem.currencySymbol])
