@@ -7,5 +7,5 @@
 //
 
 protocol ActionButtonsSellFlowRoutable {
-    func openSell()
+    func openSell(userWalletModel: some UserWalletModel)
 }

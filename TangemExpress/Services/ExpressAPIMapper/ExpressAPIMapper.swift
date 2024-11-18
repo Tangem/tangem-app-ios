@@ -167,8 +167,14 @@ struct ExpressAPIMapper {
         return OnrampCountry(identity: identity, currency: currency, onrampAvailable: response.onrampAvailable)
     }
 
-    func mapToOnrampPaymentMethod(response: ExpressDTO.Onramp.PaymentMethod) -> OnrampPaymentMethod {
-        return OnrampPaymentMethod(id: response.id, name: response.name, image: URL(string: response.image))
+    func mapToOnrampPaymentMethod(response: ExpressDTO.Onramp.PaymentMethod) -> OnrampPaymentMethod? {
+        let method = OnrampPaymentMethod(id: response.id, name: response.name, image: response.image)
+
+        if method.type == .googlePay {
+            return nil
+        }
+
+        return method
     }
 
     func mapToOnrampPair(response: ExpressDTO.Onramp.Pairs.Response) -> OnrampPair {
@@ -182,7 +188,7 @@ struct ExpressAPIMapper {
     }
 
     func mapToOnrampQuote(response: ExpressDTO.Onramp.Quote.Response) throws -> OnrampQuote {
-        guard var toAmount = Decimal(string: response.toAmount) else {
+        guard let toAmount = Decimal(string: response.toAmount) else {
             throw ExpressAPIMapperError.mapToDecimalError(response.toAmount)
         }
 
