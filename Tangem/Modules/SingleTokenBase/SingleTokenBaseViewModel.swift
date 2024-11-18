@@ -180,7 +180,8 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
         switch action {
         case .buyCrypto:
             openBuyCrypto()
-        case .addHederaTokenAssociation:
+        case .addHederaTokenAssociation,
+             .retryKaspaTokenTransaction: // TODO: Andrey Fedorov - Adjust `fulfillAssetRequirements` logic
             fulfillAssetRequirements()
         case .stake:
             openStaking()

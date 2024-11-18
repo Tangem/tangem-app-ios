@@ -58,6 +58,8 @@ extension TokenNotificationEvent: NotificationEvent {
             return .string(Localization.warningBeaconChainRetirementTitle)
         case .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation):
             return .string(Localization.warningHederaMissingTokenAssociationTitle)
+        case .hasUnfulfilledRequirements(configuration: .incompleteKaspaTokenTransaction):
+            return .string(Localization.warningKaspaUnfinishedTokenTransactionTitle)
         case .staking(_, let earnUpToFormatted):
             return .string(Localization.tokenDetailsStakingBlockTitle(earnUpToFormatted))
         case .manaLevel:
@@ -98,6 +100,11 @@ extension TokenNotificationEvent: NotificationEvent {
                 associationFee.formattedValue,
                 associationFee.currencySymbol
             )
+        case .hasUnfulfilledRequirements(configuration: .incompleteKaspaTokenTransaction(let revealTransaction)):
+            return Localization.warningKaspaUnfinishedTokenTransactionMessage(
+                revealTransaction.formattedValue,
+                revealTransaction.currencySymbol
+            )
         case .staking:
             return Localization.stakingNotificationEarnRewardsText
         case .manaLevel(let currentMana, let maxMana):
@@ -121,6 +128,7 @@ extension TokenNotificationEvent: NotificationEvent {
         // One white notification will be added later
         case .notEnoughFeeForTransaction,
              .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation),
+             .hasUnfulfilledRequirements(configuration: .incompleteKaspaTokenTransaction), // TODO: Andrey Fedorov - Double check the appearance
              .staking:
             return .primary
         }
@@ -139,6 +147,8 @@ extension TokenNotificationEvent: NotificationEvent {
             return .init(iconType: .image(Image(configuration.eventConfiguration.feeAmountTypeIconName)))
         case .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation):
             return .init(iconType: .image(Tokens.hederaFill.image))
+        case .hasUnfulfilledRequirements(configuration: .incompleteKaspaTokenTransaction):
+            return .init(iconType: .image(Assets.redCircleWarning.image))
         case .staking(let tokenIconInfo, _):
             return .init(iconType: .icon(tokenIconInfo))
         }
@@ -157,14 +167,17 @@ extension TokenNotificationEvent: NotificationEvent {
              .someNetworksUnreachable,
              .notEnoughFeeForTransaction,
              .bnbBeaconChainRetirement,
-             .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation):
+             .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation),
+             .hasUnfulfilledRequirements(configuration: .incompleteKaspaTokenTransaction):
             return .warning
         }
     }
 
+    // TODO: Andrey Fedorov - Add action on dismiss
     var isDismissable: Bool {
         switch self {
-        case .rentFee:
+        case .rentFee,
+             .hasUnfulfilledRequirements(configuration: .incompleteKaspaTokenTransaction):
             return true
         case .networkUnreachable,
              .someNetworksUnreachable,
@@ -202,6 +215,8 @@ extension TokenNotificationEvent: NotificationEvent {
             return nil
         case .hasUnfulfilledRequirements(.missingHederaTokenAssociation):
             return .init(.addHederaTokenAssociation)
+        case .hasUnfulfilledRequirements(configuration: .incompleteKaspaTokenTransaction):
+            return .init(.retryKaspaTokenTransaction)
         case .staking:
             return .init(.stake)
         }
@@ -223,10 +238,14 @@ extension TokenNotificationEvent {
             let currencySymbol: String
         }
 
+        // TODO: Andrey Fedorov - Use dedicated type instead?
+        typealias KaspaTokenRevealTransaction = HederaTokenAssociationFee
+
         /// `associationFee` fetched asynchronously and therefore may be absent in some cases.
         case missingHederaTokenAssociation(associationFee: HederaTokenAssociationFee?)
         @available(*, unavailable, message: "Token trust lines support not implemented yet")
         case missingTokenTrustline
+        case incompleteKaspaTokenTransaction(revealTransaction: KaspaTokenRevealTransaction)
     }
 }
 
@@ -243,6 +262,7 @@ extension TokenNotificationEvent {
         case .notEnoughFeeForTransaction: return .tokenNoticeNotEnoughFee
         case .bnbBeaconChainRetirement: return nil
         case .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation): return nil
+        case .hasUnfulfilledRequirements(configuration: .incompleteKaspaTokenTransaction): return nil
         case .staking: return nil
         case .manaLevel: return nil
         case .maticMigration: return nil
@@ -257,6 +277,8 @@ extension TokenNotificationEvent {
             return [.token: configuration.eventConfiguration.feeAmountTypeCurrencySymbol]
         case .someNetworksUnreachable(let networks):
             return [.tokens: networks.joined(separator: ", ")]
+        case .hasUnfulfilledRequirements(configuration: .incompleteKaspaTokenTransaction(let revealTransaction)):
+            return [.token: revealTransaction.currencySymbol]
         case .rentFee,
              .noAccount,
              .existentialDepositWarning,

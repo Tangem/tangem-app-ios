@@ -109,6 +109,7 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
              .reduceAmountBy,
              .reduceAmountTo,
              .addHederaTokenAssociation,
+             .retryKaspaTokenTransaction,
              .leaveAmount,
              .openLink,
              .stake,
