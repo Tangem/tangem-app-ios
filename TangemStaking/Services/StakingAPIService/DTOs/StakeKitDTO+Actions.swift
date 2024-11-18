@@ -168,6 +168,7 @@ extension StakeKitDTO {
                 let network: StakeKitNetworkType
                 let status: ActionStatus
                 let limit: Int
+                let sort: String = "createdAtDesc"
             }
 
             struct Response: Decodable {

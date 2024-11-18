@@ -108,16 +108,7 @@ struct StakeKitTarget: Moya.TargetType {
         case .estimateGasPendingAction(let request):
             return .requestJSONEncodable(request)
         case .actions(let request):
-            return .requestParameters(
-                parameters: [
-                    "walletAddress": request.walletAddress,
-                    "network": request.network.rawValue,
-                    "status": request.status.rawValue,
-                    "limit": request.limit,
-                    "sort": "createdAtDesc",
-                ],
-                encoding: URLEncoding.queryString
-            )
+            return .requestParameters(request, encoding: URLEncoding.queryString)
         }
     }
 
