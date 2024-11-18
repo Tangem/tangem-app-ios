@@ -21,7 +21,7 @@ class SolanaWalletManager: BaseManager, WalletManager {
     var usePriorityFees = !NFCUtils.isPoorNfcQualityDevice
 
     // It is taken into account in the calculation of the account rent commission for the sender
-    var mainAccountRentExemption: Decimal = 0
+    private var mainAccountRentExemption: Decimal = 0
 
     override func update(completion: @escaping (Result<Void, Error>) -> Void) {
         let transactionIDs = wallet.pendingTransactions.map { $0.hash }
@@ -105,7 +105,7 @@ extension SolanaWalletManager: TransactionSender {
             }
             .withWeakCaptureOf(self)
             .tryMap { walletManager, feeInfo -> [Fee] in
-                let totalFee = feeInfo.feeForMessage + feeInfo.feeParameters.accountCreationFee + walletManager.mainAccountRentExemption
+                let totalFee = feeInfo.feeForMessage + feeInfo.feeParameters.accountCreationFee
                 let amount = Amount(with: walletManager.wallet.blockchain, type: .coin, value: totalFee)
 
                 return [Fee(amount, parameters: feeInfo.feeParameters)]
@@ -329,5 +329,29 @@ extension SolanaWalletManager: StakeKitTransactionSender, StakeKitTransactionSen
 
     func broadcast(transaction: StakeKitTransaction, rawTransaction: RawTransaction) async throws -> String {
         try await networkService.sendRaw(base64serializedTransaction: rawTransaction).async()
+    }
+}
+
+// MARK: - MinimumBalanceRestrictable
+
+extension SolanaWalletManager: MinimumBalanceRestrictable {
+    var minimumBalance: Amount {
+        Amount(with: wallet.blockchain, value: mainAccountRentExemption)
+    }
+
+    // Required to determine the remaining rent when sending the token
+    func validateMinimumBalance(amount: Amount, fee: Amount) throws {
+        guard case .token = amount.type else {
+            return
+        }
+
+        guard let balance = wallet.amounts[.coin] else {
+            throw ValidationError.balanceNotFound
+        }
+
+        let remainderBalance = balance - fee
+        if remainderBalance < minimumBalance {
+            throw ValidationError.minimumBalance(minimumBalance: minimumBalance)
+        }
     }
 }
