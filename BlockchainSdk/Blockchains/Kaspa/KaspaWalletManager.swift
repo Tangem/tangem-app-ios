@@ -456,9 +456,8 @@ extension KaspaWalletManager: KaspaIncompleteTransactionUtilProtocol {
          */
 
         /* else */
-        let data = incompleteTokenTransaction
 
-        await dataStorage.store(key: key, value: data)
+        await dataStorage.store(key: key, value: incompleteTokenTransaction)
     }
 
     func remove(incompleteTokenTransactionID: String, for token: Token) async {
@@ -475,20 +474,20 @@ extension KaspaWalletManager: KaspaIncompleteTransactionUtilProtocol {
         await dataStorage.store(key: key, value: nil as KaspaKRC20.IncompleteTokenTransactionParams?)
     }
 
-    func transaction(from incompleteTokenTransationID: String, for token: Token) async -> Transaction? {
+    func transaction(from incompleteTokenTransactionID: String, for token: Token) async -> Transaction? {
         let key = KaspaIncompleteTokenTransactionStorageID(contract: token.contractAddress).id
 
         let dict: [String: KaspaKRC20.IncompleteTokenTransactionParams] = await dataStorage.get(key: key) ?? [:]
 
-        guard let params = dict[incompleteTokenTransationID] else {
+        guard let params = dict[incompleteTokenTransactionID] else {
             return nil
         }
 
         return transaction(from: params, for: token)
     }
 
-    func transaction(from incompleteTokenTransationParams: KaspaKRC20.IncompleteTokenTransactionParams, for token: Token) -> Transaction? {
-        guard let tokenValue = Decimal(stringValue: incompleteTokenTransationParams.envelope.amt) else {
+    func transaction(from incompleteTokenTransactionParams: KaspaKRC20.IncompleteTokenTransactionParams, for token: Token) -> Transaction? {
+        guard let tokenValue = Decimal(stringValue: incompleteTokenTransactionParams.envelope.amt) else {
             return nil
         }
 
@@ -502,9 +501,9 @@ extension KaspaWalletManager: KaspaIncompleteTransactionUtilProtocol {
             ),
             fee: .init(.init(with: wallet.blockchain, value: 0)),
             sourceAddress: defaultSourceAddress,
-            destinationAddress: incompleteTokenTransationParams.envelope.to,
+            destinationAddress: incompleteTokenTransactionParams.envelope.to,
             changeAddress: defaultSourceAddress,
-            params: incompleteTokenTransationParams
+            params: incompleteTokenTransactionParams
         )
     }
 }

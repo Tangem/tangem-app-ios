@@ -214,6 +214,7 @@ extension KaspaTransactionBuilder {
     func buildForMassCalculationKRC20(transaction: Transaction, token: Token) throws -> KaspaTransactionData {
         let dummySignature = Data(repeating: 1, count: 65)
         let commitTx = try buildCommitTransactionKRC20(transaction: transaction, token: token, includeFee: false)
+        // TODO: Andrey Fedorov - Do we need this?
         let revealTx = try buildRevealTransaction(
             external: false,
             sourceAddress: transaction.sourceAddress,
