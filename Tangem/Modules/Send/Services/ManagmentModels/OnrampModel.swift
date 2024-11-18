@@ -301,7 +301,9 @@ extension OnrampModel: SendFinishInput {
 
 extension OnrampModel: SendBaseInput {
     var actionInProcessing: AnyPublisher<Bool, Never> {
-        _isLoading.eraseToAnyPublisher()
+        Publishers
+            .Merge(_isLoading, _currency.map { $0.isLoading })
+            .eraseToAnyPublisher()
     }
 }
 
