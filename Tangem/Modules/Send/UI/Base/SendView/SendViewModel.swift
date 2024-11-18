@@ -7,9 +7,10 @@
 //
 
 import Combine
-import SwiftUI
-import BlockchainSdk
 import TangemExpress
+import TangemFoundation
+import SwiftUI
+import struct BlockchainSdk.SendTxError
 
 protocol SendViewAlertPresenter: AnyObject {
     func showAlert(_ alert: AlertBinder)
@@ -131,8 +132,6 @@ final class SendViewModel: ObservableObject {
         //    isKeyboardActive = true
         case (_, .amount):
             isKeyboardActive = true
-        case (_, .onramp):
-            isKeyboardActive = true
         default:
             break
         }
@@ -186,6 +185,7 @@ final class SendViewModel: ObservableObject {
 private extension SendViewModel {
     func performOnramp() {
         do {
+            isKeyboardActive = false
             let onrampRedirectingBuilder = try dataBuilder.onrampBuilder().makeDataForOnrampRedirecting()
             coordinator?.openOnrampRedirecting(onrampRedirectingBuilder: onrampRedirectingBuilder)
         } catch {
@@ -204,7 +204,7 @@ private extension SendViewModel {
 
     func performAction() {
         sendTask?.cancel()
-        sendTask = runTask(in: self) { viewModel in
+        sendTask = TangemFoundation.runTask(in: self) { viewModel in
             do {
                 let result = try await viewModel.interactor.action()
                 await viewModel.proceed(result: result)
@@ -254,7 +254,7 @@ private extension SendViewModel {
     }
 
     func openMail(error: Error) {
-        Analytics.log(.requestSupport, params: [.source: .transactionSourceSend])
+        Analytics.log(.requestSupport, params: [.source: .send])
 
         do {
             let (emailDataCollector, recipient) = try dataBuilder.stakingBuilder().makeMailData(stakingRequestError: error)
@@ -265,7 +265,7 @@ private extension SendViewModel {
     }
 
     func openMail(transaction: SendTransactionType, error: SendTxError) {
-        Analytics.log(.requestSupport, params: [.source: .transactionSourceSend])
+        Analytics.log(.requestSupport, params: [.source: .send])
 
         do {
             switch transaction {

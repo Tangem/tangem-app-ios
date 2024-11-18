@@ -10,8 +10,9 @@ import Combine
 import TangemExpress
 
 protocol OnrampPaymentMethodsInput: AnyObject {
-    var selectedOnrampPaymentMethod: OnrampPaymentMethod? { get }
-    var selectedOnrampPaymentMethodPublisher: AnyPublisher<OnrampPaymentMethod?, Never> { get }
+    var selectedPaymentMethod: OnrampPaymentMethod? { get }
+    var selectedPaymentMethodPublisher: AnyPublisher<OnrampPaymentMethod?, Never> { get }
+    var paymentMethodsPublisher: AnyPublisher<[OnrampPaymentMethod], Never> { get }
 }
 
 protocol OnrampPaymentMethodsOutput: AnyObject {

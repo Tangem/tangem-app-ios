@@ -35,7 +35,7 @@ extension ExpressDTO {
         struct PaymentMethod: Decodable {
             let id: String
             let name: String
-            let image: String
+            let image: URL
         }
 
         // MARK: - Pairs

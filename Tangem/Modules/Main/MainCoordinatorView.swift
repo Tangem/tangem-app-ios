@@ -94,6 +94,9 @@ struct MainCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.actionButtonsBuyCoordinator) {
                 ActionButtonsBuyCoordinatorView(coordinator: $0)
             }
+            .sheet(item: $coordinator.actionButtonsSellCoordinator) {
+                ActionButtonsSellCoordinatorView(coordinator: $0)
+            }
 
         NavHolder()
             .bottomSheet(

@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol ActionButtonsBuyRoutable {
-    func openBuyCrypto(from url: URL)
+protocol ActionButtonsBuyRoutable: AnyObject {
+    func openBuyCrypto(at url: URL)
     func dismiss()
 }
