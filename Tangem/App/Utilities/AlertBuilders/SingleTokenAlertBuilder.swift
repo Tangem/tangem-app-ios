@@ -124,7 +124,7 @@ struct SingleTokenAlertBuilder {
                 title: "",
                 message: Localization.warningHederaTokenAssociationNotEnoughHbarMessage(feeTokenItem.currencySymbol)
             )
-        case .paidTransactionWithFee(let feeAmount) where !hasFeeCurrency:
+        case .paidTransactionWithFee(_, let feeAmount) where !hasFeeCurrency:
             assert(
                 feeAmount.type == feeTokenItem.amountType,
                 "Incorrect fee token item received: expected '\(feeAmount.currencySymbol)', got '\(feeTokenItem.currencySymbol)'"

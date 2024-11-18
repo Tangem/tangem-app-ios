@@ -12,9 +12,9 @@ import Foundation
 /// An 'asset' can be either a coin or token.
 public enum AssetRequirementsCondition {
     /// The exact value of the fee for this type of condition is unknown.
-    case paidTransaction
+    case paidTransaction(blockchain: Blockchain)
     /// The exact value of the fee for this type of condition is stored in `feeAmount`.
-    case paidTransactionWithFee(feeAmount: Amount)
+    case paidTransactionWithFee(blockchain: Blockchain, feeAmount: Amount)
     @available(*, unavailable, message: "Token trust lines support not implemented yet")
     case minimumBalanceChange(newMinimumBalance: Amount)
 }

@@ -225,7 +225,7 @@ final class SingleTokenNotificationManager {
         switch assetRequirementsManager.requirementsCondition(for: asset) {
         case .paidTransaction:
             return [.hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation(associationFee: nil))]
-        case .paidTransactionWithFee(let feeAmount):
+        case .paidTransactionWithFee(_, let feeAmount):
             let balanceFormatter = BalanceFormatter()
             let associationFee = TokenNotificationEvent.UnfulfilledRequirementsConfiguration.HederaTokenAssociationFee(
                 formattedValue: balanceFormatter.formatDecimal(feeAmount.value),
