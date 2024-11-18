@@ -17,10 +17,10 @@ public struct OnrampRedirectData: Hashable, Decodable {
     public let toDecimals: Int
     public let providerId: String
     public let toAddress: String
-    public let redirectUrl: String
+    public let redirectUrl: URL
     public let language: String?
     public let theme: String?
     public let requestId: String
     public let externalTxId: String
-    public let widgetUrl: String
+    public let widgetUrl: URL
 }
