@@ -104,7 +104,7 @@ extension SolanaWalletManager: TransactionSender {
                 .map { (feeForMessage: $0, feeParameters: feeParameters) }
             }
             .withWeakCaptureOf(self)
-            .tryMap { walletManager, feeInfo -> [Fee] in
+            .map { walletManager, feeInfo -> [Fee] in
                 let totalFee = feeInfo.feeForMessage + feeInfo.feeParameters.accountCreationFee
                 let amount = Amount(with: walletManager.wallet.blockchain, type: .coin, value: totalFee)
 
