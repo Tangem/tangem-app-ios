@@ -105,14 +105,8 @@ extension SolanaWalletManager: TransactionSender {
             }
             .withWeakCaptureOf(self)
             .tryMap { walletManager, feeInfo -> [Fee] in
-                let totalFee = feeInfo.feeForMessage + feeInfo.feeParameters.accountCreationFee
+                let totalFee = feeInfo.feeForMessage + feeInfo.feeParameters.accountCreationFee + walletManager.minimalRentExamptionFee
                 let amount = Amount(with: walletManager.wallet.blockchain, type: .coin, value: totalFee)
-
-                // Сюда встроить проверку
-
-                guard totalFee > walletManager.minimalRentExamptionFee else {
-                    throw WalletError.failedToGetFee
-                }
 
                 return [Fee(amount, parameters: feeInfo.feeParameters)]
             }
