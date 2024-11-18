@@ -245,12 +245,16 @@ struct StakeKitMapper {
         }
 
         let validators = response.validators.map(mapToValidatorInfo)
+        let preferredValidators = validators.filter { $0.preferred }.sorted { lhs, rhs in
+            if lhs.partner {
+                return true
+            }
 
-        var preferredValidators = validators.filter { $0.preferred }.sorted { $0.apr ?? 0 > $1.apr ?? 0 }
+            if rhs.partner {
+                return false
+            }
 
-        if let partnerIndex = preferredValidators.firstIndex(where: { $0.partner }), partnerIndex > 0 {
-            let partner = preferredValidators.remove(at: partnerIndex)
-            preferredValidators.insert(partner, at: 0)
+            return lhs.apr ?? 0 > rhs.apr ?? 0
         }
 
         let rewardRateValues = RewardRateValues(
