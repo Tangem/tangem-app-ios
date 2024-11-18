@@ -140,6 +140,20 @@ extension TransactionValidator where Self: MaximumAmountRestrictable {
     }
 }
 
+// MARK: - MinimumAmountRestrictable
+
+extension TransactionValidator where Self: MinimumAmountRestrictable {
+    func validate(amount: Amount, fee: Fee, destination: DestinationType) async throws {
+        Log.debug("TransactionValidator \(self) doesn't checking destination. If you want it, make our own implementation")
+        try validate(amount: amount, fee: fee)
+    }
+
+    func validate(amount: Amount, fee: Fee) throws {
+        try validateAmounts(amount: amount, fee: fee.amount)
+        try validateMinimumRestrictAmount(amount: amount, fee: fee.amount)
+    }
+}
+
 // MARK: - DustRestrictable, MaximumAmountRestrictable e.g. KaspaWalletManager
 
 extension TransactionValidator where Self: MaximumAmountRestrictable, Self: DustRestrictable {

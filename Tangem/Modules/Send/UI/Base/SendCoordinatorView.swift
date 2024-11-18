@@ -16,19 +16,30 @@ struct SendCoordinatorView: CoordinatorView {
     }
 
     var body: some View {
-        ZStack {
-            if let rootViewModel = coordinator.rootViewModel {
-                SendView(viewModel: rootViewModel, transitionService: .init())
-                    .navigationLinks(links)
-            }
+        if let rootViewModel = coordinator.rootViewModel {
+            NavigationView {
+                ZStack {
+                    SendView(viewModel: rootViewModel, transitionService: .init())
+                        .navigationLinks(links)
 
-            sheets
+                    sheets
+                }
+            }
+            .tint(Colors.Text.primary1)
+            .interactiveDismissDisabled(rootViewModel.shouldShowDismissAlert)
         }
     }
 
     @ViewBuilder
     private var links: some View {
-        EmptyView()
+        NavHolder()
+            .navigation(item: $coordinator.onrampSettingsViewModel) {
+                OnrampSettingsView(viewModel: $0)
+            }
+            .navigation(item: $coordinator.onrampRedirectingViewModel) {
+                OnrampRedirectingView(viewModel: $0)
+            }
+            .emptyNavigationLink()
     }
 
     @ViewBuilder
@@ -41,13 +52,13 @@ struct SendCoordinatorView: CoordinatorView {
                 ExpressApproveView(viewModel: $0)
             }
             .bottomSheet(
-                item: $coordinator.onrampCountryViewModel,
+                item: $coordinator.onrampCountryDetectionViewModel,
                 settings: .init(
                     backgroundColor: Colors.Background.tertiary,
                     hidingOption: .nonHideable
                 )
             ) {
-                OnrampCountryView(viewModel: $0)
+                OnrampCountryDetectionView(viewModel: $0)
             }
             .sheet(item: $coordinator.mailViewModel) {
                 MailView(viewModel: $0)
@@ -58,6 +69,12 @@ struct SendCoordinatorView: CoordinatorView {
             }
             .sheet(item: $coordinator.onrampProvidersCoordinator) {
                 OnrampProvidersCoordinatorView(coordinator: $0)
+            }
+            .sheet(item: $coordinator.onrampCountrySelectorViewModel) {
+                OnrampCountrySelectorView(viewModel: $0)
+            }
+            .sheet(item: $coordinator.onrampCurrencySelectorViewModel) {
+                OnrampCurrencySelectorView(viewModel: $0)
             }
     }
 }

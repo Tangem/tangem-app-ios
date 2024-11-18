@@ -17,12 +17,10 @@ struct SingleWalletMainContentView: View {
 
             ForEach(viewModel.notificationInputs) { input in
                 NotificationView(input: input)
-                    .transition(.notificationTransition)
             }
 
             ForEach(viewModel.tokenNotificationInputs) { input in
                 NotificationView(input: input)
-                    .transition(.notificationTransition)
             }
 
             MarketPriceView(
@@ -47,8 +45,6 @@ struct SingleWalletMainContentView: View {
                 fetchMore: viewModel.fetchMoreHistory()
             )
         }
-        .animation(.default, value: viewModel.notificationInputs)
-        .animation(.default, value: viewModel.tokenNotificationInputs)
         .padding(.horizontal, 16)
         .bindAlert($viewModel.alert)
     }

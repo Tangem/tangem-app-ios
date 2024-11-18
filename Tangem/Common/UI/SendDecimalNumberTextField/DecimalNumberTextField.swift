@@ -162,6 +162,22 @@ extension DecimalNumberTextField {
                 .eraseToAnyPublisher()
         }
 
+        var debouncedValuePublisher: AnyPublisher<Decimal?, Never> {
+            valuePublisher
+                .flatMapLatest { value in
+                    if value == nil {
+                        // Nil value will be emitted without debounce
+                        return Just(value).eraseToAnyPublisher()
+                    }
+
+                    // But if have the value we will wait a bit
+                    return Just(value)
+                        .delay(for: 1, scheduler: DispatchQueue.global())
+                        .eraseToAnyPublisher()
+                }
+                .eraseToAnyPublisher()
+        }
+
         // Fileprivate
         @Published fileprivate var decimalValue: DecimalValue?
 

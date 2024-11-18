@@ -19,7 +19,7 @@ extension MarketsDTO.Coins {
         let language: String
     }
 
-    struct Response: Codable {
+    struct Response: Decodable {
         let id: String
         let name: String
         let symbol: String
@@ -34,14 +34,28 @@ extension MarketsDTO.Coins {
         let insights: Insights?
         let links: MarketsTokenDetailsLinks?
         let metrics: MarketsTokenDetailsMetrics?
+        let securityData: SecurityData?
         let pricePerformance: [String: MarketsPricePerformanceData]?
     }
 
-    struct Insights: Codable {
+    struct Insights: Decodable {
         let holdersChange: [String: Decimal?]
         let liquidityChange: [String: Decimal?]
         let buyPressureChange: [String: Decimal?]
         let experiencedBuyerChange: [String: Decimal?]
         let networks: [MarketsInsightsNetworkInfo]?
+    }
+
+    struct SecurityData: Decodable {
+        struct ProviderData: Decodable {
+            let providerId: String
+            let providerName: String
+            let securityScore: Double
+            let link: URL?
+            let lastAuditDate: Date?
+        }
+
+        let totalSecurityScore: Double?
+        let providerData: [ProviderData]?
     }
 }

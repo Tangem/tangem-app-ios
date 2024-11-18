@@ -8,6 +8,7 @@
 
 import Foundation
 import WalletCore
+import TangemFoundation
 
 class KaspaTransactionBuilder {
     let maxInputCount = 84

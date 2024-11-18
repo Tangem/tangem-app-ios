@@ -58,7 +58,7 @@ extension CommonOnrampStepsManager: SendStepsManager {
     }
 
     var shouldShowDismissAlert: Bool {
-        return false
+        return true
     }
 
     func set(output: SendStepsManagerOutput) {
@@ -79,13 +79,5 @@ extension CommonOnrampStepsManager: SendStepsManager {
 
     func performContinue() {
         assertionFailure("There's not continue action in this flow")
-    }
-}
-
-// MARK: - OnrampSummaryRoutable
-
-extension CommonOnrampStepsManager: OnrampSummaryRoutable {
-    func summaryStepRequestEditProvider() {
-        coordinator.openOnrampProviders()
     }
 }

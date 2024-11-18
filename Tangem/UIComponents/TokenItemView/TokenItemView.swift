@@ -22,14 +22,7 @@ struct TokenItemView: View {
 
     var body: some View {
         HStack(alignment: .center, spacing: Constants.spacerLength) {
-            TokenItemViewLeadingComponent(
-                name: viewModel.name,
-                imageURL: viewModel.imageURL,
-                customTokenColor: viewModel.customTokenColor,
-                blockchainIconName: viewModel.blockchainIconName,
-                hasMonochromeIcon: viewModel.hasMonochromeIcon,
-                isCustom: viewModel.isCustom
-            )
+            TokenItemViewLeadingComponent(from: viewModel)
 
             VStack(spacing: 4) {
                 HStack(alignment: .firstTextBaseline, spacing: 0) {

@@ -1,5 +1,5 @@
 {
-  "originHash" : "1f666c3412fd6871db0315f2aa4b674d447cc2f17ac07d97a719ffe3c77566e7",
+  "originHash" : "584ca60af0fbbc527d504d4d480a556058e05f97a79e92bf44c594618d31cc9a",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -40,7 +40,7 @@
     {
       "identity" : "bigint",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/attaswift/BigInt.git",
+      "location" : "https://github.com/attaswift/BigInt",
       "state" : {
         "revision" : "0ed110f7555c34ff468e72e1686e59721f2b0da6",
         "version" : "5.3.0"
@@ -429,8 +429,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Tangem/tangem-sdk-ios.git",
       "state" : {
-        "revision" : "eedb44b085adc47b876fc2f292dd6dbc2547108c",
-        "version" : "3.11.0"
+        "revision" : "f490a80f2156067a9b1c6f24974aaaab316e8639"
       }
     },
     {

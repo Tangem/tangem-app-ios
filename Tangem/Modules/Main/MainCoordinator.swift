@@ -39,6 +39,8 @@ class MainCoordinator: CoordinatorObject {
     @Published var modalOnboardingCoordinator: OnboardingCoordinator?
     @Published var sendCoordinator: SendCoordinator? = nil
     @Published var expressCoordinator: ExpressCoordinator? = nil
+    @Published var actionButtonsBuyCoordinator: ActionButtonsBuyCoordinator? = nil
+    @Published var actionButtonsSellCoordinator: ActionButtonsSellCoordinator? = nil
 
     // MARK: - Child view models
 
@@ -78,8 +80,7 @@ class MainCoordinator: CoordinatorObject {
             coordinator: self,
             swipeDiscoveryHelper: swipeDiscoveryHelper,
             mainUserWalletPageBuilderFactory: CommonMainUserWalletPageBuilderFactory(coordinator: self),
-            pushNotificationsAvailabilityProvider: pushNotificationsAvailabilityProvider,
-            actionButtonsViewModel: makeActionButtonsViewModel()
+            pushNotificationsAvailabilityProvider: pushNotificationsAvailabilityProvider
         )
 
         swipeDiscoveryHelper.delegate = viewModel
@@ -167,7 +168,7 @@ extension MainCoordinator: MainRoutable {
         }
 
         let coordinator = OnboardingCoordinator(dismissAction: dismissAction)
-        let options = OnboardingCoordinator.Options(input: input, destination: .dismiss)
+        let options = OnboardingCoordinator.Options(input: input)
         coordinator.start(with: options)
         modalOnboardingCoordinator = coordinator
     }
@@ -192,8 +193,6 @@ extension MainCoordinator: MainRoutable {
 extension MainCoordinator: MultiWalletMainContentRoutable {
     func openTokenDetails(for model: WalletModel, userWalletModel: UserWalletModel) {
         mainBottomSheetUIManager.hide()
-
-        Analytics.log(.tokenIsTapped)
 
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.tokenDetailsCoordinator = nil
@@ -453,31 +452,59 @@ extension MainCoordinator: PushNotificationsPermissionRequestDelegate {
     }
 }
 
-// MARK: - Action buttons
+// MARK: - Action buttons buy routable
 
-extension MainCoordinator: ActionButtonsRoutable {
-    func openBuy() {
-        // IOS-8237
-    }
+extension MainCoordinator: ActionButtonsBuyFlowRoutable {
+    func openBuy(userWalletModel: some UserWalletModel) {
+        let dismissAction: Action<Void> = { [weak self] _ in
+            self?.actionButtonsBuyCoordinator = nil
+        }
 
-    func openSwap() {
-        // IOS-8238
-    }
+        let coordinator = ActionButtonsBuyCoordinator(
+            expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel),
+            dismissAction: dismissAction
+        )
 
-    func openSell() {
-        // IOS-8237
+        coordinator.start(with: .default)
+
+        actionButtonsBuyCoordinator = coordinator
     }
 }
 
-extension MainCoordinator {
-    private func makeActionButtonsViewModel() -> ActionButtonsViewModel {
-        ActionButtonsViewModel(
-            actionButtonFactory: CommonActionButtonsFactory(
-                coordinator: self,
-                actionButtons: [.buy, .swap, .sell]
+// MARK: - Action buttons sell routable
+
+extension MainCoordinator: ActionButtonsSellFlowRoutable {
+    func openSell(userWalletModel: some UserWalletModel) {
+        let dismissAction: Action<ActionButtonsSendToSellModel?> = { [weak self] model in
+            self?.actionButtonsSellCoordinator = nil
+
+            guard let model else { return }
+
+            self?.openSendToSell(
+                amountToSend: model.amountToSend,
+                destination: model.destination,
+                tag: model.tag,
+                userWalletModel: userWalletModel,
+                walletModel: model.walletModel
             )
+        }
+
+        let coordinator = ActionButtonsSellCoordinator(
+            expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel),
+            dismissAction: dismissAction,
+            userWalletModel: userWalletModel
         )
+
+        coordinator.start(with: .default)
+
+        actionButtonsSellCoordinator = coordinator
     }
+}
+
+// MARK: - Action buttons swap routable
+
+extension MainCoordinator: ActionButtonsSwapFlowRoutable {
+    func openSwap() {}
 }
 
 extension MainCoordinator {

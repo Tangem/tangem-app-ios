@@ -100,7 +100,7 @@ struct MarketsTokenDetailsView: View {
                 chart
                     .hidden(viewModel.allDataLoadFailed)
                     .overlay(content: {
-                        MarketsUnableToLoadDataView(
+                        UnableToLoadDataView(
                             isButtonBusy: viewModel.isLoading,
                             retryButtonAction: viewModel.loadDetailedInfo
                         )
@@ -129,6 +129,11 @@ struct MarketsTokenDetailsView: View {
             backgroundColor: Colors.Background.action,
             onGeneratedAITapAction: viewModel.onGenerateAITapAction
         )
+        .sheet(item: $viewModel.securityScoreDetailsViewModel) { viewModel in
+            MarketsTokenDetailsSecurityScoreDetailsView(viewModel: viewModel)
+                .adaptivePresentationDetents()
+                .background(Colors.Background.tertiary.ignoresSafeArea())
+        }
         .animation(.default, value: viewModel.state)
         .animation(.default, value: viewModel.isLoading)
         .animation(.default, value: viewModel.allDataLoadFailed)
@@ -209,7 +214,7 @@ struct MarketsTokenDetailsView: View {
             case .loaded:
                 contentBlocks
             case .failedToLoadDetails:
-                MarketsUnableToLoadDataView(
+                UnableToLoadDataView(
                     isButtonBusy: viewModel.isLoading,
                     retryButtonAction: viewModel.loadDetailedInfo
                 )
@@ -233,6 +238,10 @@ struct MarketsTokenDetailsView: View {
             let blocksWidth = mainWindowSize.width - Constants.blockHorizontalPadding * 2
             if let insightsViewModel = viewModel.insightsViewModel {
                 MarketsTokenDetailsInsightsView(viewModel: insightsViewModel, viewWidth: blocksWidth)
+            }
+
+            if let securityScoreViewModel = viewModel.securityScoreViewModel {
+                MarketsTokenDetailsSecurityScoreView(viewModel: securityScoreViewModel)
             }
 
             if let metricsViewModel = viewModel.metricsViewModel {

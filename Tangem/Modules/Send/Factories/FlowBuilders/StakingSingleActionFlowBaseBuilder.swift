@@ -48,6 +48,7 @@ struct StakingSingleActionFlowBaseBuilder {
             actionType: actionType,
             sendDestinationCompactViewModel: .none,
             sendAmountCompactViewModel: sendAmountCompactViewModel,
+            onrampAmountCompactViewModel: .none,
             stakingValidatorsCompactViewModel: .none,
             sendFeeCompactViewModel: sendFeeCompactViewModel
         )

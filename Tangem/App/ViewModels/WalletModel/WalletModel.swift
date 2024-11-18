@@ -14,7 +14,7 @@ import TangemStaking
 
 class WalletModel {
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
-    @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
+    @Injected(\.expressAvailabilityProvider) private var expressAvailabilityProvider: ExpressAvailabilityProvider
     @Injected(\.accountHealthChecker) private var accountHealthChecker: AccountHealthChecker
 
     var walletModelId: WalletModel.Id {
@@ -177,12 +177,12 @@ class WalletModel {
     }
 
     var sendingRestrictions: TransactionSendAvailabilityProvider.SendingRestrictions? {
-        TransactionSendAvailabilityProvider().sendingRestrictions(walletModel: self)
+        sendAvailabilityProvider.sendingRestrictions(walletModel: self)
     }
 
     var actionsUpdatePublisher: AnyPublisher<Void, Never> {
         Publishers.Merge(
-            swapAvailabilityProvider.tokenItemsAvailableToSwapPublisher.mapToVoid(),
+            expressAvailabilityProvider.availabilityDidChangePublisher,
             stakingManagerStatePublisher.mapToVoid()
         )
         .eraseToAnyPublisher()
@@ -194,6 +194,7 @@ class WalletModel {
     let amountType: Amount.AmountType
     let isCustom: Bool
 
+    private let sendAvailabilityProvider: TransactionSendAvailabilityProvider
     private let walletManager: WalletManager
     private let _stakingManager: StakingManager?
     private let _transactionHistoryService: TransactionHistoryService?
@@ -220,13 +221,15 @@ class WalletModel {
         transactionHistoryService: TransactionHistoryService?,
         amountType: Amount.AmountType,
         shouldPerformHealthCheck: Bool,
-        isCustom: Bool
+        isCustom: Bool,
+        sendAvailabilityProvider: TransactionSendAvailabilityProvider
     ) {
         self.walletManager = walletManager
         _stakingManager = stakingManager
         _transactionHistoryService = transactionHistoryService
         self.amountType = amountType
         self.isCustom = isCustom
+        self.sendAvailabilityProvider = sendAvailabilityProvider
 
         bind()
         performHealthCheckIfNeeded(shouldPerform: shouldPerformHealthCheck)

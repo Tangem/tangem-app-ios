@@ -7,18 +7,11 @@
 //
 
 import Foundation
+import TangemVisa
 
 class OnboardingCoordinator: CoordinatorObject {
     var dismissAction: Action<OutputOptions>
     var popToRootAction: Action<PopToRootOptions>
-
-    var isNavigationBarHidden: Bool {
-        viewState?.isMain == false
-    }
-
-    var transitionAnimationValue: Bool {
-        viewState?.isMain == false
-    }
 
     // MARK: - Dependencies
 
@@ -68,6 +61,14 @@ class OnboardingCoordinator: CoordinatorObject {
             let model = WalletOnboardingViewModel(input: input, coordinator: self)
             onDismissalAttempt = model.backButtonAction
             viewState = .wallet(model)
+        case .visa:
+            let model = VisaOnboardingViewModel(
+                input: input,
+                visaActivationManager: VisaActivationManagerFactory().make(),
+                coordinator: self
+            )
+            onDismissalAttempt = model.backButtonAction
+            viewState = .visa(model)
         }
 
         Analytics.log(.onboardingStarted)
@@ -77,19 +78,22 @@ class OnboardingCoordinator: CoordinatorObject {
 // MARK: - Options
 
 extension OnboardingCoordinator {
-    enum DestinationOnFinish {
-        case main
-        case root
-        case dismiss
-    }
-
     struct Options {
         let input: OnboardingInput
-        let destination: DestinationOnFinish
     }
 
-    struct OutputOptions {
-        let isSuccessful: Bool
+    enum OutputOptions {
+        case main(userWalletModel: UserWalletModel)
+        case dismiss(isSuccessful: Bool)
+
+        var isSuccessful: Bool {
+            switch self {
+            case .main:
+                return true
+            case .dismiss(let isSuccessful):
+                return isSuccessful
+            }
+        }
     }
 }
 
@@ -167,34 +171,19 @@ extension OnboardingCoordinator: WalletOnboardingRoutable {
 
 extension OnboardingCoordinator: OnboardingRoutable {
     func onboardingDidFinish(userWalletModel: UserWalletModel?) {
-        switch options.destination {
-        case .main:
-            if let userWalletModel {
-                openMain(with: userWalletModel)
-                return
-            }
-
-            dismiss(with: .init(isSuccessful: true))
-        case .root:
-            popToRoot()
-        case .dismiss:
-            dismiss(with: .init(isSuccessful: true))
+        if let userWalletModel {
+            dismiss(with: .main(userWalletModel: userWalletModel))
+        } else {
+            dismiss(with: .dismiss(isSuccessful: true))
         }
     }
 
     func closeOnboarding() {
-        dismiss(with: .init(isSuccessful: false))
-    }
-
-    private func openMain(with userWalletModel: UserWalletModel) {
-        let coordinator = MainCoordinator(popToRootAction: popToRootAction)
-
-        let options = MainCoordinator.Options(userWalletModel: userWalletModel)
-        coordinator.start(with: options)
-
-        viewState = .main(coordinator)
+        dismiss(with: .dismiss(isSuccessful: false))
     }
 }
+
+extension OnboardingCoordinator: VisaOnboardingRoutable {}
 
 // MARK: ViewState
 
@@ -203,13 +192,6 @@ extension OnboardingCoordinator {
         case singleCard(SingleCardOnboardingViewModel)
         case twins(TwinsOnboardingViewModel)
         case wallet(WalletOnboardingViewModel)
-        case main(MainCoordinator)
-
-        var isMain: Bool {
-            if case .main = self {
-                return true
-            }
-            return false
-        }
+        case visa(VisaOnboardingViewModel)
     }
 }

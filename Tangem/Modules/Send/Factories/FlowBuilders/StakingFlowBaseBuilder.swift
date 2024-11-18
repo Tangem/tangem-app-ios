@@ -34,7 +34,7 @@ struct StakingFlowBaseBuilder {
             sendFeeLoader: stakingModel,
             sendQRCodeService: .none,
             sendAmountValidator: builder.makeStakingSendAmountValidator(stakingManager: manager),
-            amountModifier: builder.makeStakingAmountModifier(),
+            amountModifier: builder.makeStakingAmountModifier(actionType: .stake),
             source: .staking
         )
 
@@ -62,6 +62,7 @@ struct StakingFlowBaseBuilder {
             actionType: .stake,
             sendDestinationCompactViewModel: .none,
             sendAmountCompactViewModel: amount.compact,
+            onrampAmountCompactViewModel: .none,
             stakingValidatorsCompactViewModel: validators.compact,
             sendFeeCompactViewModel: sendFeeCompactViewModel
         )

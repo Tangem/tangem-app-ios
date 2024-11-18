@@ -11,18 +11,21 @@ import Combine
 import SwiftUI
 
 class OnrampStep {
+    private let tokenItem: TokenItem
     private let viewModel: OnrampViewModel
     private let interactor: OnrampInteractor
 
     init(
+        tokenItem: TokenItem,
         viewModel: OnrampViewModel,
         interactor: OnrampInteractor
     ) {
+        self.tokenItem = tokenItem
         self.viewModel = viewModel
         self.interactor = interactor
     }
 
-    func setup(router: OnrampSummaryRoutable) {
+    func set(router: OnrampSummaryRoutable) {
         viewModel.router = router
     }
 }
@@ -30,11 +33,17 @@ class OnrampStep {
 // MARK: - SendStep
 
 extension OnrampStep: SendStep {
-    var title: String? { Localization.stakingValidator }
+    var title: String? { "\(Localization.commonBuy) \(tokenItem.name)" }
 
     var type: SendStepType { .onramp(viewModel) }
 
     var sendStepViewAnimatable: any SendStepViewAnimatable { viewModel }
+
+    var navigationTrailingViewType: SendStepNavigationTrailingViewType? {
+        .dotsButton { [weak self] in
+            self?.viewModel.openOnrampSettingsView()
+        }
+    }
 
     var isValidPublisher: AnyPublisher<Bool, Never> {
         interactor.isValidPublisher

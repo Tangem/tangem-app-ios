@@ -80,13 +80,14 @@ extension DetailsCoordinator: DetailsRoutable {
     func openOnboardingModal(with input: OnboardingInput) {
         let dismissAction: Action<OnboardingCoordinator.OutputOptions> = { [weak self] result in
             self?.modalOnboardingCoordinator = nil
+
             if result.isSuccessful {
                 self?.dismiss()
             }
         }
 
         let coordinator = OnboardingCoordinator(dismissAction: dismissAction)
-        let options = OnboardingCoordinator.Options(input: input, destination: .dismiss)
+        let options = OnboardingCoordinator.Options(input: input)
         coordinator.start(with: options)
         modalOnboardingCoordinator = coordinator
     }

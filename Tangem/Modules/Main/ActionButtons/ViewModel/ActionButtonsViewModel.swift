@@ -6,54 +6,96 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
+import Combine
 import Foundation
+import TangemFoundation
+
+typealias ActionButtonsRoutable = ActionButtonsBuyFlowRoutable & ActionButtonsSellFlowRoutable & ActionButtonsSwapFlowRoutable
 
 final class ActionButtonsViewModel: ObservableObject {
-    @Published private(set) var actionButtonViewModels: [ActionButtonViewModel]
+    @Injected(\.exchangeService) private var exchangeService: ExchangeService
 
-    init(actionButtonFactory: some ActionButtonsFactory) {
-        actionButtonViewModels = actionButtonFactory.makeActionButtonViewModels()
+    @Published private(set) var isButtonsDisabled = false
+
+    // MARK: - Button ViewModels
+
+    let buyActionButtonViewModel: BuyActionButtonViewModel
+    let sellActionButtonViewModel: SellActionButtonViewModel
+    let swapActionButtonViewModel = BaseActionButtonViewModel(model: .swap)
+
+    private var bag = Set<AnyCancellable>()
+
+    private let expressTokensListAdapter: ExpressTokensListAdapter
+
+    init(
+        coordinator: some ActionButtonsRoutable,
+        expressTokensListAdapter: some ExpressTokensListAdapter,
+        userWalletModel: some UserWalletModel
+    ) {
+        self.expressTokensListAdapter = expressTokensListAdapter
+
+        buyActionButtonViewModel = BuyActionButtonViewModel(
+            model: .buy,
+            coordinator: coordinator,
+            userWalletModel: userWalletModel
+        )
+
+        sellActionButtonViewModel = SellActionButtonViewModel(
+            model: .sell,
+            coordinator: coordinator,
+            userWalletModel: userWalletModel
+        )
+
+        bind()
+        fetchData()
     }
 
-    func fetchData() async {
-        async let _ = fetchSwapData()
-        async let _ = fetchBuyData()
-        async let _ = fetchSellData()
+    func fetchData() {
+        TangemFoundation.runTask(in: self) {
+            async let _ = $0.fetchSwapData()
+        }
     }
 }
 
-// MARK: - Buy
+// MARK: - Bind
 
 private extension ActionButtonsViewModel {
-    private var buyActionButtonViewModel: ActionButtonViewModel? {
-        actionButtonViewModels.first { $0.model == .buy }
+    func bind() {
+        bindWalletModels()
+        bindAvailableExchange()
     }
 
-    private func fetchBuyData() async {
-        // IOS-8237
+    func bindWalletModels() {
+        expressTokensListAdapter
+            .walletModels()
+            .map(\.isEmpty)
+            .assign(to: \.isButtonsDisabled, on: self, ownership: .weak)
+            .store(in: &bag)
+    }
+
+    func bindAvailableExchange() {
+        exchangeService
+            .initializationPublisher
+            .withWeakCaptureOf(self)
+            .sink { viewModel, isExchangeAvailable in
+                TangemFoundation.runTask(in: viewModel) { viewModel in
+                    if isExchangeAvailable {
+                        await viewModel.sellActionButtonViewModel.updateState(to: .idle)
+                        await viewModel.buyActionButtonViewModel.updateState(to: .idle)
+                    } else {
+                        await viewModel.sellActionButtonViewModel.updateState(to: .initial)
+                        await viewModel.buyActionButtonViewModel.updateState(to: .initial)
+                    }
+                }
+            }
+            .store(in: &bag)
     }
 }
 
 // MARK: - Swap
 
 private extension ActionButtonsViewModel {
-    var swapActionButtonViewModel: ActionButtonViewModel? {
-        actionButtonViewModels.first { $0.model == .swap }
-    }
-
     func fetchSwapData() async {
-        // IOS-8238
-    }
-}
-
-// MARK: - Sell
-
-private extension ActionButtonsViewModel {
-    private var sellActionButtonViewModel: ActionButtonViewModel? {
-        actionButtonViewModels.first { $0.model == .sell }
-    }
-
-    func fetchSellData() async {
         // IOS-8238
     }
 }

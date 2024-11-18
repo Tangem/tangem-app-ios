@@ -6,23 +6,37 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-public protocol OnrampManager {
-    // Load country by IP or get from repository
-    func getCountry() async throws -> OnrampCountry
+public typealias ProvidersList = [OnrampPaymentMethod: [OnrampProvider]]
 
-    // Load methods
-    func updatePaymentMethod() async throws -> OnrampPaymentMethod
+public protocol OnrampManager: Actor {
+    var providers: ProvidersList { get }
+    var selectedProvider: OnrampProvider? { get }
 
-    // User did choose country. We prepare providers
-    func update(pair: OnrampPair) async throws -> [OnrampProvider]
+    /// Initial loading country by IP
+    /// If the country has already been setup then return nil
+    func initialSetupCountry() async throws -> OnrampCountry
 
-    // User did change amount. We load quotes providers
-    func update(amount: Decimal) async throws -> [OnrampProvider]
+    /// User has selected a currency. We are preparing onramp providers
+    func setupProviders(request: OnrampPairRequestItem) async throws
 
-    // load data to make onramp
-    func loadOnrampData(request: OnrampSwappableItem) async throws -> OnrampRedirectData
+    /// The user changed the amount. We upload providers quotes
+    func setupQuotes(amount: Decimal?) async throws
+
+    /// Reselect `paymentMethod` and sort providers according to it
+    func updatePaymentMethod(paymentMethod: OnrampPaymentMethod)
+
+    /// Load the data to perform the onramp action
+    func loadRedirectData(provider: OnrampProvider, redirectSettings: OnrampRedirectSettings) async throws -> OnrampRedirectData
 }
 
 public enum OnrampManagerError: LocalizedError {
-    case notImplement
+    case noProviderForPaymentMethod
+    case providersIsEmpty
+
+    public var errorDescription: String? {
+        switch self {
+        case .noProviderForPaymentMethod: "No provider for payment method"
+        case .providersIsEmpty: "Providers is empty"
+        }
+    }
 }

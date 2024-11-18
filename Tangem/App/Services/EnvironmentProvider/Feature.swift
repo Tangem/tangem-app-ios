@@ -32,7 +32,7 @@ enum Feature: String, Hashable, CaseIterable {
         case .disableFirmwareVersionLimit: return .unspecified
         case .learnToEarn: return .unspecified
         case .dynamicFonts: return .version("5.18")
-        case .partialUnstake: return .unspecified
+        case .partialUnstake: return .version("5.18")
         case .onramp: return .unspecified
         case .actionButtons: return .unspecified
         }

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TangemFoundation
 
 struct NEARProtocolConfig {
     struct Costs {
@@ -48,7 +49,7 @@ extension NEARProtocolConfig {
                 cumulativeAdditionalSendCost: Decimal(3850000000000) + Decimal(101765125000),
                 cumulativeAdditionalExecutionCost: Decimal(3850000000000) + Decimal(101765125000)
             ),
-            storageAmountPerByte: Decimal("10000000000000000000")!
+            storageAmountPerByte: Decimal(stringValue: "10000000000000000000")!
         )
     }
 }

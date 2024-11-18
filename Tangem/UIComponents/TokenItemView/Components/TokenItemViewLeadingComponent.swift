@@ -51,3 +51,15 @@ struct TokenItemViewLeadingComponent: View {
         .saturation(hasMonochromeIcon ? 0 : 1)
     }
 }
+
+extension TokenItemViewLeadingComponent {
+    init(from tokenItemViewModel: TokenItemViewModel, networkBorderColor: Color = Colors.Background.primary) {
+        name = tokenItemViewModel.name
+        imageURL = tokenItemViewModel.imageURL
+        customTokenColor = tokenItemViewModel.customTokenColor
+        blockchainIconName = tokenItemViewModel.blockchainIconName
+        hasMonochromeIcon = tokenItemViewModel.hasMonochromeIcon
+        isCustom = tokenItemViewModel.isCustom
+        self.networkBorderColor = networkBorderColor
+    }
+}

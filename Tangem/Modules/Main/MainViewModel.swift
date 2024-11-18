@@ -25,7 +25,6 @@ final class MainViewModel: ObservableObject {
     @Published var actionSheet: ActionSheetBinder?
 
     @Published var unlockWalletBottomSheetViewModel: UnlockUserWalletBottomSheetViewModel?
-    @Published private(set) var actionButtonsViewModel: ActionButtonsViewModel
 
     let swipeDiscoveryAnimationTrigger = CardsInfoPagerSwipeDiscoveryAnimationTrigger()
 
@@ -53,14 +52,12 @@ final class MainViewModel: ObservableObject {
         coordinator: MainRoutable,
         swipeDiscoveryHelper: WalletSwipeDiscoveryHelper,
         mainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory,
-        pushNotificationsAvailabilityProvider: PushNotificationsAvailabilityProvider,
-        actionButtonsViewModel: ActionButtonsViewModel
+        pushNotificationsAvailabilityProvider: PushNotificationsAvailabilityProvider
     ) {
         self.coordinator = coordinator
         self.swipeDiscoveryHelper = swipeDiscoveryHelper
         self.mainUserWalletPageBuilderFactory = mainUserWalletPageBuilderFactory
         self.pushNotificationsAvailabilityProvider = pushNotificationsAvailabilityProvider
-        self.actionButtonsViewModel = actionButtonsViewModel
 
         pages = mainUserWalletPageBuilderFactory.createPages(
             from: userWalletRepository.models,
@@ -79,15 +76,13 @@ final class MainViewModel: ObservableObject {
         coordinator: MainRoutable,
         swipeDiscoveryHelper: WalletSwipeDiscoveryHelper,
         mainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory,
-        pushNotificationsAvailabilityProvider: PushNotificationsAvailabilityProvider,
-        actionButtonsViewModel: ActionButtonsViewModel
+        pushNotificationsAvailabilityProvider: PushNotificationsAvailabilityProvider
     ) {
         self.init(
             coordinator: coordinator,
             swipeDiscoveryHelper: swipeDiscoveryHelper,
             mainUserWalletPageBuilderFactory: mainUserWalletPageBuilderFactory,
-            pushNotificationsAvailabilityProvider: pushNotificationsAvailabilityProvider,
-            actionButtonsViewModel: actionButtonsViewModel
+            pushNotificationsAvailabilityProvider: pushNotificationsAvailabilityProvider
         )
 
         if let selectedIndex = pages.firstIndex(where: { $0.id == selectedUserWalletId }) {
@@ -147,18 +142,12 @@ final class MainViewModel: ObservableObject {
     }
 
     func onPullToRefresh(completionHandler: @escaping RefreshCompletionHandler) {
-        Analytics.log(.mainRefreshed)
-
         isHorizontalScrollDisabled = true
         let completion = { [weak self] in
             self?.isHorizontalScrollDisabled = false
             completionHandler()
         }
         let page = pages[selectedCardIndex]
-
-        if FeatureProvider.isAvailable(.actionButtons) {
-            refreshActionButtonsData(page: page)
-        }
 
         switch page {
         case .singleWallet(_, _, let viewModel):
@@ -172,21 +161,8 @@ final class MainViewModel: ObservableObject {
         }
     }
 
-    func refreshActionButtonsData(page: MainUserWalletPageBuilder) {
-        switch page {
-        case .singleWallet:
-            break
-        case .multiWallet, .lockedWallet, .visaWallet:
-            Task {
-                await actionButtonsViewModel.fetchData()
-            }
-        }
-    }
-
     func onPageChange(dueTo reason: CardsInfoPageChangeReason) {
         guard reason == .byGesture else { return }
-
-        Analytics.log(.mainScreenWalletChangedBySwipe)
 
         if !AppSettings.shared.userDidSwipeWalletsOnMainScreen {
             AppSettings.shared.userDidSwipeWalletsOnMainScreen = true
@@ -346,7 +322,6 @@ final class MainViewModel: ObservableObject {
                 guard let userWalletId = viewModel.pages[safe: newIndex]?.id else {
                     return
                 }
-                Analytics.log(.walletOpened)
                 viewModel.userWalletRepository.setSelectedUserWalletId(
                     userWalletId,
                     reason: .userSelected
