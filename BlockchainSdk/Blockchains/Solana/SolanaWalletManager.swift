@@ -21,7 +21,7 @@ class SolanaWalletManager: BaseManager, WalletManager {
     var usePriorityFees = !NFCUtils.isPoorNfcQualityDevice
 
     // It is taken into account in the calculation of the account rent commission for the sender
-    var minimalRentExamptionFee: Decimal = 0
+    var mainAccountRentExemption: Decimal = 0
 
     override func update(completion: @escaping (Result<Void, Error>) -> Void) {
         let transactionIDs = wallet.pendingTransactions.map { $0.hash }
@@ -41,7 +41,7 @@ class SolanaWalletManager: BaseManager, WalletManager {
     }
 
     private func updateWallet(info: SolanaAccountInfoResponse) {
-        minimalRentExamptionFee = info.balance - info.mainAccountRentExemption
+        mainAccountRentExemption = info.mainAccountRentExemption
 
         wallet.add(coinValue: info.balance)
 
@@ -105,7 +105,7 @@ extension SolanaWalletManager: TransactionSender {
             }
             .withWeakCaptureOf(self)
             .tryMap { walletManager, feeInfo -> [Fee] in
-                let totalFee = feeInfo.feeForMessage + feeInfo.feeParameters.accountCreationFee + walletManager.minimalRentExamptionFee
+                let totalFee = feeInfo.feeForMessage + feeInfo.feeParameters.accountCreationFee + walletManager.mainAccountRentExemption
                 let amount = Amount(with: walletManager.wallet.blockchain, type: .coin, value: totalFee)
 
                 return [Fee(amount, parameters: feeInfo.feeParameters)]
