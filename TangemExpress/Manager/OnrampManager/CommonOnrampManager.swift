@@ -12,7 +12,7 @@ public actor CommonOnrampManager {
     private let dataRepository: OnrampDataRepository
     private let logger: Logger
 
-    private var _providers: ProvidersList = [:]
+    private var _providers: ProvidersList = []
     private var _selectedProvider: OnrampProvider?
 
     public init(
@@ -58,17 +58,14 @@ extension CommonOnrampManager: OnrampManager {
     }
 
     public func setupQuotes(amount: Decimal?) async throws {
-        if _providers.isEmpty {
-            throw OnrampManagerError.providersIsEmpty
-        }
-
-        await updateQuotesInEachManager(amount: amount)
+        try await updateQuotesInEachManager(providers: _providers.flatMap { $0.providers }, amount: amount)
 
         proceedProviders()
     }
 
     public func updatePaymentMethod(paymentMethod: OnrampPaymentMethod) {
-        _selectedProvider = _providers[paymentMethod]?.first
+        let providerItem = _providers.select(for: paymentMethod)
+        _selectedProvider = providerItem?.suggestProvider() ?? providerItem?.providers.first
     }
 
     public func loadRedirectData(provider: OnrampProvider, redirectSettings: OnrampRedirectSettings) async throws -> OnrampRedirectData {
@@ -83,9 +80,13 @@ extension CommonOnrampManager: OnrampManager {
 // MARK: - Private
 
 private extension CommonOnrampManager {
-    func updateQuotesInEachManager(amount: Decimal?) async {
-        await withTaskGroup(of: Void.self) { [weak self] group in
-            await self?._providers.values.flatMap { $0 }.forEach { provider in
+    func updateQuotesInEachManager(providers: [OnrampProvider], amount: Decimal?) async throws {
+        if providers.isEmpty {
+            throw OnrampManagerError.providersIsEmpty
+        }
+
+        await withTaskGroup(of: Void.self) { group in
+            providers.forEach { provider in
                 _ = group.addTaskUnlessCancelled {
                     await provider.manager.update(amount: amount)
                 }
@@ -94,27 +95,23 @@ private extension CommonOnrampManager {
     }
 
     func proceedProviders() {
-        let paymentMethods = _providers.keys.sorted(by: { $0.type.priority > $1.type.priority })
+        for provider in _providers {
+            provider.sort()
 
-        for paymentMethod in paymentMethods {
-            let sortedProviders = _providers[paymentMethod]?.sorted(by: {
-                sort(lhs: $0.manager.state, rhs: $1.manager.state)
-            })
-
-            _providers[paymentMethod] = sortedProviders
-
-            if let maxPriorityProvider = sortedProviders?.first {
+            if let maxPriorityProvider = provider.suggestProvider() {
                 _selectedProvider = maxPriorityProvider
                 // Stop the cycle
                 break
             }
         }
+
+        if _selectedProvider == nil {
+            print("We can't find any provider without error")
+            _selectedProvider = _providers.first?.suggestProvider()
+        }
     }
 
-    func prepareProviders(
-        item: OnrampPairRequestItem,
-        supportedProviders: [OnrampPair.Provider]
-    ) async throws -> ProvidersList {
+    func prepareProviders(item: OnrampPairRequestItem, supportedProviders: [OnrampPair.Provider]) async throws -> ProvidersList {
         let providers = try await dataRepository.providers()
         let paymentMethods = try await dataRepository.paymentMethods()
 
@@ -123,26 +120,36 @@ private extension CommonOnrampManager {
             .compactMap { paymentMethodId in
                 paymentMethods.first(where: { $0.id == paymentMethodId })
             }
+            // Sort payment methods to order which will suggest to user
+            .sorted(by: { $0.type.priority > $1.type.priority })
 
-        let availableProviders: ProvidersList = supportedPaymentMethods.reduce(into: [:]) { result, paymentMethod in
-            result[paymentMethod] = providers.map { provider in
-                let manager = CommonOnrampProviderManager(
-                    pairItem: item,
-                    expressProviderId: provider.id,
-                    paymentMethodId: paymentMethod.id,
-                    apiProvider: apiProvider,
-                    state: state(provider: provider, paymentMethod: paymentMethod)
-                )
-
-                return OnrampProvider(
+        let availableProviders: ProvidersList = supportedPaymentMethods.map { paymentMethod in
+            let providers = providers.map { provider in
+                OnrampProvider(
                     provider: provider,
                     paymentMethod: paymentMethod,
-                    manager: manager
+                    manager: makeOnrampProviderManager(
+                        item: item,
+                        provider: provider,
+                        paymentMethod: paymentMethod,
+                        supportedProviders: supportedProviders
+                    )
                 )
             }
+
+            return ProviderItem(paymentMethod: paymentMethod, providers: providers)
         }
 
-        func state(provider: ExpressProvider, paymentMethod: OnrampPaymentMethod) -> OnrampProviderManagerState {
+        return availableProviders
+    }
+
+    func makeOnrampProviderManager(
+        item: OnrampPairRequestItem,
+        provider: ExpressProvider,
+        paymentMethod: OnrampPaymentMethod,
+        supportedProviders: [OnrampPair.Provider]
+    ) -> OnrampProviderManager {
+        let state: OnrampProviderManagerState = {
             guard let supportedProvider = supportedProviders.first(where: { $0.id == provider.id }) else {
                 return .notSupported(.currentPair)
             }
@@ -153,21 +160,14 @@ private extension CommonOnrampManager {
             }
 
             return .idle
-        }
+        }()
 
-        return availableProviders
-    }
-
-    func sort(lhs: OnrampProviderManagerState, rhs: OnrampProviderManagerState) -> Bool {
-        switch (lhs, rhs) {
-        case (_, .restriction):
-            return true
-        case (.restriction, _):
-            return false
-        case (.loaded(let lhsQuote), .loaded(let rhsQuote)):
-            return lhsQuote.expectedAmount > rhsQuote.expectedAmount
-        default:
-            return false
-        }
+        return CommonOnrampProviderManager(
+            pairItem: item,
+            expressProviderId: provider.id,
+            paymentMethodId: paymentMethod.id,
+            apiProvider: apiProvider,
+            state: state
+        )
     }
 }

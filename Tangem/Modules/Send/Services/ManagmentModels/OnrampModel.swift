@@ -239,7 +239,7 @@ extension OnrampModel: OnrampPaymentMethodsInput {
     }
 
     var paymentMethodsPublisher: AnyPublisher<[OnrampPaymentMethod], Never> {
-        _onrampProviders.compactMap { $0?.value?.keys.toSet() }.map { Array($0) }.eraseToAnyPublisher()
+        _onrampProviders.compactMap { $0?.value?.map(\.paymentMethod) }.eraseToAnyPublisher()
     }
 }
 
