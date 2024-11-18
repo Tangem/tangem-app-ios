@@ -250,6 +250,10 @@ struct StakeKitMapper {
                 return true
             }
 
+            if rhs.partner {
+                return false
+            }
+
             return lhs.apr ?? 0 > rhs.apr ?? 0
         }
 
