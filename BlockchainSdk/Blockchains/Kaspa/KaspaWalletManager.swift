@@ -8,12 +8,18 @@
 
 import Foundation
 import Combine
+import TangemFoundation
 
 final class KaspaWalletManager: BaseManager, WalletManager {
     private let txBuilder: KaspaTransactionBuilder
     private let networkService: KaspaNetworkService
     private let networkServiceKRC20: KaspaNetworkServiceKRC20
     private let dataStorage: BlockchainDataStorage
+
+    @available(*, deprecated, message: "Test only")
+    private var testInMemoryStorage: ThreadSafeContainer<
+        [KaspaIncompleteTokenTransactionStorageID: KaspaKRC20.IncompleteTokenTransactionParams]
+    > = [:]
 
     var currentHost: String { networkService.host }
     var allowsFeeSelection: Bool { false }
@@ -190,6 +196,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             .delay(for: .seconds(2), scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .flatMap { manager, response -> AnyPublisher<KaspaTransactionResponse, Error> in
+                return .anyFail(error: WalletError.failedToBuildTx) // FIXME: Andrey Fedorov - Test only, remove when not needed
                 // Send Reveal
                 guard let tx = builtKaspaRevealTx else {
                     return .anyFail(error: WalletError.failedToBuildTx)
@@ -407,12 +414,32 @@ extension KaspaWalletManager: MaximumAmountRestrictable {
     }
 }
 
-public protocol KaspaIncompleteTransactionUtilProtocol {
-    func getIncompleteTokenTransaction(for token: Token) async -> Transaction?
-    func getFeeIncompleteTokenTransaction() -> AnyPublisher<[Fee], Error>
+// MARK: - AssetRequirementsManager protocol conformance
+
+extension KaspaWalletManager: AssetRequirementsManager {
+    func hasRequirements(for asset: Asset) -> Bool {
+        switch asset {
+        case .coin, .reserve, .feeResource:
+            return false
+        case .token(let token):
+            return testInMemoryStorage[token.asStorageID] != nil
+        }
+    }
+
+    func requirementsCondition(for asset: Asset) -> AssetRequirementsCondition? {
+        return .paidTransaction(blockchain: wallet.blockchain)
+    }
+
+    func fulfillRequirements(for asset: Asset, signer: any TransactionSigner) -> AnyPublisher<Void, Error> {
+        // TODO: Andrey Fedorov - Add actual implementation
+        return .anyFail(error: WalletError.empty)
+    }
 }
 
-extension KaspaWalletManager: KaspaIncompleteTransactionUtilProtocol {
+// MARK: - KRC20 Management
+
+// TODO: Andrey Fedorov - Move to the main part
+private extension KaspaWalletManager {
     func getFeeIncompleteTokenTransaction() -> AnyPublisher<[Fee], Error> {
         let blockchain = wallet.blockchain
         let isTestnet = blockchain.isTestnet
@@ -457,6 +484,7 @@ extension KaspaWalletManager: KaspaIncompleteTransactionUtilProtocol {
 
         /* else */
 
+        testInMemoryStorage.mutate { $0[token.asStorageID] = incompleteTokenTransaction }
         await dataStorage.store(key: key, value: incompleteTokenTransaction)
     }
 
@@ -471,6 +499,7 @@ extension KaspaWalletManager: KaspaIncompleteTransactionUtilProtocol {
          await dataStorage.store(key: key, value: data)
          */
 
+        testInMemoryStorage.mutate { $0[token.asStorageID] = nil }
         await dataStorage.store(key: key, value: nil as KaspaKRC20.IncompleteTokenTransactionParams?)
     }
 
