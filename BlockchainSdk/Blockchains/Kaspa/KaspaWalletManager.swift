@@ -507,3 +507,9 @@ extension KaspaWalletManager: KaspaIncompleteTransactionUtilProtocol {
         )
     }
 }
+
+// MARK: - Convenience extensions
+
+private extension Token {
+    var asStorageID: KaspaIncompleteTokenTransactionStorageID { .init(contract: contractAddress) }
+}

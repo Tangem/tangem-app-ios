@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct KaspaIncompleteTokenTransactionStorageID: CustomStringConvertible {
+struct KaspaIncompleteTokenTransactionStorageID: CustomStringConvertible, Hashable, Identifiable {
     let id: String
 
     init(contract: String) {
