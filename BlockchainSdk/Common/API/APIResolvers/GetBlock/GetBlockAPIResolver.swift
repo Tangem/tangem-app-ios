@@ -32,7 +32,7 @@ struct GetBlockAPIResolver {
         switch blockchain {
         case .cosmos, .tron, .algorand, .aptos:
             return credentials.credential(for: blockchain, type: .rest)
-        case .near, .ton, .ethereum, .ethereumClassic, .rsk, .bsc, .polygon, .fantom, .gnosis, .cronos, .zkSync, .moonbeam, .polygonZkEVM, .avalanche, .base, .xrp, .blast, .filecoin:
+        case .near, .ton, .ethereum, .ethereumClassic, .rsk, .bsc, .polygon, .fantom, .gnosis, .cronos, .zkSync, .moonbeam, .polygonZkEVM, .avalanche, .base, .xrp, .blast, .filecoin, .solana:
             return credentials.credential(for: blockchain, type: .jsonRpc)
         case .cardano:
             return credentials.credential(for: blockchain, type: .rosetta)
