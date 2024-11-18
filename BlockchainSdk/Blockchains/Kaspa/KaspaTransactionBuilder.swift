@@ -211,7 +211,7 @@ class KaspaTransactionBuilder {
 }
 
 extension KaspaTransactionBuilder {
-    func buildForMassCalculationKRC20(transaction: Transaction, token: Token) throws -> (commit: KaspaTransactionData, reveal: KaspaTransactionData) {
+    func buildForMassCalculationKRC20(transaction: Transaction, token: Token) throws -> KaspaTransactionData {
         let dummySignature = Data(repeating: 1, count: 65)
         let commitTx = try buildCommitTransactionKRC20(transaction: transaction, token: token, includeFee: false)
         let revealTx = try buildRevealTransaction(
@@ -221,23 +221,11 @@ extension KaspaTransactionBuilder {
             fee: transaction.fee
         )
 
-        return (
-            commit:
-            buildForSend(
-                transaction: commitTx.transaction,
-                signatures: Array(
-                    repeating: dummySignature,
-                    count: commitTx.transaction.inputs.count
-                )
-            ),
-            reveal:
-            buildForSendReveal(
-                transaction: revealTx.transaction,
-                commitRedeemScript: commitTx.redeemScript,
-                signatures: Array(
-                    repeating: dummySignature,
-                    count: revealTx.transaction.inputs.count
-                )
+        return buildForSend(
+            transaction: commitTx.transaction,
+            signatures: Array(
+                repeating: dummySignature,
+                count: commitTx.transaction.inputs.count
             )
         )
     }

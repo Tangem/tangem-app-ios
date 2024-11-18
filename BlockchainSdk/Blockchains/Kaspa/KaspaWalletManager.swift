@@ -275,12 +275,12 @@ class KaspaWalletManager: BaseManager, WalletManager {
             .publisher
             .withWeakCaptureOf(networkService)
             .flatMap { networkService, transactionData in
-                networkService.mass(data: transactionData.commit)
+                networkService.mass(data: transactionData)
                     .zip(networkService.feeEstimate())
             }
             .map { mass, feeEstimate in
                 let feeMapper = KaspaFeeMapper(isTestnet: isTestnet)
-                return feeMapper.mapTokenFee(mass: mass, feeEstimate: feeEstimate)
+                return feeMapper.mapTokenFee(mass: Decimal(mass.mass), feeEstimate: feeEstimate)
             }
             .eraseToAnyPublisher()
 
