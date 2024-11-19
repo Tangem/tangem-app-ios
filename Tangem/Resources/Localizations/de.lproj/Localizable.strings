@@ -289,6 +289,9 @@
 "express_provider_not_available" = "Für dieses Paar nicht verfügbar";
 "express_provider_permission_needed" = "Erlaubnis erforderlich";
 "express_provider_recommended" = "Empfohlen";
+"express_status_bought" = "Bought %@";
+"express_status_buying" = "Buying %@";
+"express_status_buying_active" = "Buying %@...";
 "express_token_list_empty_search" = "Keine Token gefunden. Bitte versuche eine andere Anfrage";
 "express_transaction_id" = "ID: %@";
 "express_transaction_id_copied" = "Transaktions-ID kopiert";
@@ -549,7 +552,7 @@
 "onramp_no_available_providers" = "Keine verfügbaren Anbieter für diese Währung";
 "onramp_pay_with" = "Bezahlen mit";
 "onramp_redirecting_to_provider_subtitle" = "Du kannst Deine Transaktion beim Drittanbieter %@ abschließen.";
-"onramp_redirecting_to_provider_title" = "Umleitung auf %@ …";
+"onramp_redirecting_to_provider_title" = "Umleitung auf %@…";
 "onramp_residency_bottomsheet_country_not_supported" = "Unsere Dienstleistungen sind in diesem Land nicht verfügbar";
 "onramp_residency_bottomsheet_country_subtitle" = "Änder oder bestätige bitte";
 "onramp_residency_bottomsheet_title" = "Dein Wohnsitz wurde identifiziert als";
@@ -978,6 +981,9 @@
 "warning_hedera_missing_token_association_message_brief" = "Dieses Token muss mit deinem Hedera-Konto verknüpft sein, bevor du ihn erhalten kannst.";
 "warning_hedera_missing_token_association_title" = "Verknüpfe deinen Token";
 "warning_hedera_token_association_not_enough_hbar_message" = "Nicht genug %@. Lade dein Hedera-Konto auf, um dieses Token zuzuordnen";
+"warning_kaspa_unfinished_token_transaction_discard_message" = "Are you sure you want to cancel the transaction? You will not be able to retry the transaction again";
+"warning_kaspa_unfinished_token_transaction_message" = "Your transaction with an amount of %1$@ %2$@ was not completed. You can try again to complete it.";
+"warning_kaspa_unfinished_token_transaction_title" = "You have unfinished transaction";
 "warning_long_transaction_message" = "iPhone 7/7+ kann in diesem Netzwerk keine Transaktionen signieren. Um diesen Vorgang abzuschließen, verwende bitte ein anderes Telefon.";
 "warning_long_transaction_title" = "Transaktionssignierung nicht verfügbar";
 "warning_low_signatures_message" = "Auf dieser Karte oder Ring sind nur noch %@ Unterschriften übrig. Du musst dein gesamtes Guthaben abheben.";
