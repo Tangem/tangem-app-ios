@@ -35,14 +35,9 @@ enum KaspaKRC20 {
 
     struct IncompleteTokenTransactionParams: TransactionParams, Codable {
         let transactionId: String
-        let amount: UInt64
+        let amount: Decimal
+        let targetOutputAmount: UInt64
         let envelope: KaspaKRC20.Envelope
-
-        public init(transactionId: String, amount: UInt64, envelope: KaspaKRC20.Envelope) {
-            self.transactionId = transactionId
-            self.amount = amount
-            self.envelope = envelope
-        }
     }
 
     struct RevealTransactionFeeParameter: FeeParameters {

@@ -308,7 +308,8 @@ extension KaspaTransactionBuilder {
             sourceAddress: transaction.sourceAddress,
             params: .init(
                 transactionId: txid.hexadecimal,
-                amount: targetOutputAmount,
+                amount: transaction.amount.value,
+                targetOutputAmount: targetOutputAmount,
                 envelope: envelope
             )
         )
@@ -319,7 +320,12 @@ extension KaspaTransactionBuilder {
         let redeemScript = KaspaKRC20.RedeemScript(publicKey: walletPublicKey.blockchainKey, envelope: params.envelope)
 
         let commitTransactionOutput = [
-            BitcoinUnspentOutput(transactionHash: params.transactionId, outputIndex: 0, amount: params.amount, outputScript: redeemScript.redeemScriptHash.hexadecimal),
+            BitcoinUnspentOutput(
+                transactionHash: params.transactionId,
+                outputIndex: 0,
+                amount: params.targetOutputAmount,
+                outputScript: redeemScript.redeemScriptHash.hexadecimal
+            ),
         ]
 
         let utxo = external ? commitTransactionOutput + unspentOutputs : commitTransactionOutput

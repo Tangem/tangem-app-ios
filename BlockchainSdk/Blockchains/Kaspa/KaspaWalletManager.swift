@@ -418,16 +418,22 @@ extension KaspaWalletManager: MaximumAmountRestrictable {
 
 extension KaspaWalletManager: AssetRequirementsManager {
     func hasRequirements(for asset: Asset) -> Bool {
-        switch asset {
-        case .coin, .reserve, .feeResource:
-            return false
-        case .token(let token):
-            return testInMemoryStorage[token.asStorageID] != nil
-        }
+        return getIncompleteTokenTransaction(for: asset) != nil
     }
 
     func requirementsCondition(for asset: Asset) -> AssetRequirementsCondition? {
-        return .paidTransaction(blockchain: wallet.blockchain)
+        guard
+            let token = asset.token,
+            let incompleteTokenTransaction = getIncompleteTokenTransaction(for: asset)
+        else {
+            return nil
+        }
+
+        return .paidTransactionWithFee(
+            blockchain: wallet.blockchain,
+            transactionAmount: .init(with: token, value: incompleteTokenTransaction.amount),
+            feeAmount: nil
+        )
     }
 
     func fulfillRequirements(for asset: Asset, signer: any TransactionSigner) -> AnyPublisher<Void, Error> {
@@ -440,6 +446,15 @@ extension KaspaWalletManager: AssetRequirementsManager {
 
 // TODO: Andrey Fedorov - Move to the main part
 private extension KaspaWalletManager {
+    func getIncompleteTokenTransaction(for asset: Asset) -> KaspaKRC20.IncompleteTokenTransactionParams? {
+        switch asset {
+        case .coin, .reserve, .feeResource:
+            return nil
+        case .token(let token):
+            return testInMemoryStorage[token.asStorageID]
+        }
+    }
+
     func getFeeIncompleteTokenTransaction() -> AnyPublisher<[Fee], Error> {
         let blockchain = wallet.blockchain
         let isTestnet = blockchain.isTestnet
