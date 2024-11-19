@@ -16,8 +16,20 @@ struct KaspaIncompleteTokenTransactionStorageID: CustomStringConvertible {
     }
 }
 
-enum KaspaKRC20 {
+public enum KaspaKRC20 {
     static let RevealTransactionMassConstant: Decimal = 4100
+    
+    struct TransactionGroup {
+        let kaspaCommitTransaction: KaspaTransaction
+        let kaspaRevealTransaction: KaspaTransaction
+        let hashesCommit: [Data]
+        let hashesReveal: [Data]
+    }
+    
+    struct TransactionMeta {
+        let redeemScriptCommit: KaspaKRC20.RedeemScript
+        let incompleteTransactionParams: KaspaKRC20.IncompleteTokenTransactionParams
+    }
 
     struct CommitTransction {
         let transaction: KaspaTransaction
@@ -38,7 +50,7 @@ enum KaspaKRC20 {
         let amount: UInt64
         let envelope: KaspaKRC20.Envelope
 
-        public init(transactionId: String, amount: UInt64, envelope: KaspaKRC20.Envelope) {
+        init(transactionId: String, amount: UInt64, envelope: KaspaKRC20.Envelope) {
             self.transactionId = transactionId
             self.amount = amount
             self.envelope = envelope

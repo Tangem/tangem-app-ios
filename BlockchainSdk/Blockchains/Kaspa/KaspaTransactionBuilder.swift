@@ -213,17 +213,41 @@ extension KaspaTransactionBuilder {
     func buildForMassCalculationKRC20(transaction: Transaction, token: Token) throws -> KaspaTransactionData {
         let dummySignature = Data(repeating: 1, count: 65)
         let commitTx = try buildCommitTransactionKRC20(transaction: transaction, token: token, includeFee: false)
-        let revealTx = try buildRevealTransaction(
-            sourceAddress: transaction.sourceAddress,
-            params: commitTx.params,
-            fee: transaction.fee
-        )
 
         return buildForSend(
             transaction: commitTx.transaction,
             signatures: Array(
                 repeating: dummySignature,
                 count: commitTx.transaction.inputs.count
+            )
+        )
+    }
+    
+    func buildForSendKRC20(transaction: Transaction, token: Token) throws -> (KaspaKRC20.TransactionGroup, KaspaKRC20.TransactionMeta) {
+        // Commit
+        let resultCommit = try buildCommitTransactionKRC20(transaction: transaction, token: token)
+
+        // Reveal
+        guard let revealFee = transaction.fee.parameters as? KaspaKRC20.RevealTransactionFeeParameter else {
+            throw WalletError.failedToBuildTx
+        }
+
+        let resultReveal = try buildRevealTransaction(
+            sourceAddress: transaction.sourceAddress,
+            params: resultCommit.params,
+            fee: .init(revealFee.amount)
+        )
+
+        return (
+            KaspaKRC20.TransactionGroup(
+                kaspaCommitTransaction: resultCommit.transaction,
+                kaspaRevealTransaction: resultReveal.transaction,
+                hashesCommit: resultCommit.hashes,
+                hashesReveal: resultReveal.hashes
+            ),
+            KaspaKRC20.TransactionMeta(
+                redeemScriptCommit: resultCommit.redeemScript,
+                incompleteTransactionParams: resultCommit.params
             )
         )
     }
