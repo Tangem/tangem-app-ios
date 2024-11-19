@@ -81,7 +81,7 @@ extension OnrampProviderManagerState: CustomStringConvertible {
         case .loading: "Loading"
         case .restriction(let restriction): "Restriction: \(restriction)"
         case .failed(error: let error): "Failed: \(error)"
-        case .loaded(let quote): "quote \(quote.expectedAmount)"
+        case .loaded(let quote): "Quote with amount: \(quote.expectedAmount)"
         }
     }
 }

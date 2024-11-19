@@ -70,8 +70,13 @@ extension CommonOnrampManager: OnrampManager {
     }
 
     public func updatePaymentMethod(paymentMethod: OnrampPaymentMethod) {
+        log(message: "Payment method was updated by user to: \(paymentMethod)")
+
         let providerItem = _providers.select(for: paymentMethod)
-        _selectedProvider = providerItem?.suggestProvider() ?? providerItem?.providers.first
+        let selectedProvider = providerItem?.suggestProvider() ?? providerItem?.providers.first
+
+        log(message: "New selected provider was updated to: \(selectedProvider as Any)")
+        _selectedProvider = selectedProvider
     }
 
     public func loadRedirectData(provider: OnrampProvider, redirectSettings: OnrampRedirectSettings) async throws -> OnrampRedirectData {
