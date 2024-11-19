@@ -96,6 +96,10 @@ private extension OnrampModel {
 
     func updateQuotes(amount: Decimal?) {
         mainTask {
+            guard $0._onrampProviders.value?.value?.hasProviders() == true else {
+                return
+            }
+
             guard let amount else {
                 $0._selectedOnrampProvider.send(.none)
                 // Clear onrampManager
