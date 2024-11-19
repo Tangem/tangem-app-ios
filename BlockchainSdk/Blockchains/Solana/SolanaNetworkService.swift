@@ -203,8 +203,23 @@ class SolanaNetworkService {
                     accountExists: true,
                     rentExemption: 0
                 )
-                
+
                 return accountInfo
+
+                /*
+                 // TODO: - https://tangem.atlassian.net/browse/IOS-8538
+
+                 service.minimalBalanceForRentExemption(dataLength: info.space ?? 0)
+                     .tryMap { rentExemption in
+                         let lamports = info.lamports
+                         let accountInfo = SolanaMainAccountInfoResponse(
+                             balance: lamports,
+                             accountExists: true,
+                             rentExemption: rentExemption
+                         )
+                         return accountInfo
+                     }
+                 */
             }
             .tryCatch { (error: Error) -> AnyPublisher<SolanaMainAccountInfoResponse, Error> in
                 if let solanaError = error as? SolanaError {
