@@ -71,7 +71,7 @@ extension CommonOnrampManager: OnrampManager {
         _selectedProvider = _providers[paymentMethod]?.first
     }
 
-    public func loadRedirectData(provider: OnrampProvider, redirectSettings: OnrampRedirectSettings) async throws -> OnrampRedirectData {
+    public func loadRedirectData(provider: OnrampProvider, redirectSettings: OnrampRedirectSettings) async throws -> OnrampRedirectDataWithId {
         let item = try provider.manager.makeOnrampQuotesRequestItem()
         let requestItem = OnrampRedirectDataRequestItem(quotesItem: item, redirectSettings: redirectSettings)
         let data = try await apiProvider.onrampData(item: requestItem)

@@ -199,7 +199,7 @@ struct ExpressAPIMapper {
         item: OnrampRedirectDataRequestItem,
         request: ExpressDTO.Onramp.Data.Request,
         response: ExpressDTO.Onramp.Data.Response
-    ) throws -> OnrampRedirectData {
+    ) throws -> OnrampRedirectDataWithId {
         let redirectData: OnrampRedirectData = try exchangeDataDecoder.decode(
             txDetailsJson: response.dataJson,
             signature: response.signature
@@ -209,7 +209,7 @@ struct ExpressAPIMapper {
             throw ExpressAPIMapperError.requestIdNotEqual
         }
 
-        return redirectData
+        return OnrampRedirectDataWithId(txId: response.txId, redirectData: redirectData)
     }
 }
 

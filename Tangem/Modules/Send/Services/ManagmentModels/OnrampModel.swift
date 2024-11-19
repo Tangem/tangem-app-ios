@@ -256,10 +256,10 @@ extension OnrampModel: OnrampRedirectingInput {}
 // MARK: - OnrampRedirectingOutput
 
 extension OnrampModel: OnrampRedirectingOutput {
-    func redirectDataDidLoad(data: OnrampRedirectData) {
-        onrampPendingTransactionsRepository.onrampTransactionDidSend(data.externalTxId)
+    func redirectDataDidLoad(data: OnrampRedirectDataWithId) {
+        onrampPendingTransactionsRepository.onrampTransactionDidSend(data.txId)
         DispatchQueue.main.async {
-            self.router?.openWebView(url: data.widgetUrl) { [weak self] in
+            self.router?.openWebView(url: data.redirectData.widgetUrl) { [weak self] in
                 self?._transactionTime.send(Date())
                 self?.router?.openFinishStep()
             }
