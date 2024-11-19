@@ -9,6 +9,7 @@
 import Foundation
 import class Combine.AnyCancellable
 
+@available(*, deprecated, message: "Use equivalent helpers from 'TangemFoundation' module instead")
 @discardableResult
 func runTask(_ code: @escaping () async -> Void) -> Task<Void, Never> {
     Task {
@@ -16,6 +17,7 @@ func runTask(_ code: @escaping () async -> Void) -> Task<Void, Never> {
     }
 }
 
+@available(*, deprecated, message: "Use equivalent helpers from 'TangemFoundation' module instead")
 @discardableResult
 func runTask(_ code: @escaping () async throws -> Void) -> Task<Void, Error> {
     Task {
@@ -23,6 +25,7 @@ func runTask(_ code: @escaping () async throws -> Void) -> Task<Void, Error> {
     }
 }
 
+@available(*, deprecated, message: "Use equivalent helpers from 'TangemFoundation' module instead")
 @discardableResult
 func runTask(_ code: @escaping () -> Void) -> Task<Void, Never> {
     Task {
@@ -30,6 +33,7 @@ func runTask(_ code: @escaping () -> Void) -> Task<Void, Never> {
     }
 }
 
+@available(*, deprecated, message: "Use equivalent helpers from 'TangemFoundation' module instead")
 @discardableResult
 func runTask<T: AnyObject>(in object: T, code: @escaping (T) async throws -> Void) -> Task<Void, Error> {
     Task { [weak object] in
@@ -39,6 +43,7 @@ func runTask<T: AnyObject>(in object: T, code: @escaping (T) async throws -> Voi
     }
 }
 
+@available(*, deprecated, message: "Use equivalent helpers from 'TangemFoundation' module instead")
 @discardableResult
 func runTask<T: AnyObject>(in object: T, code: @escaping (T) async -> Void) -> Task<Void, Never> {
     Task { [weak object] in

@@ -159,6 +159,7 @@ extension ExpressCurrencyViewModel {
     enum TitleState: Hashable {
         case text(String)
         case insufficientFunds
+        case error(String)
     }
 
     enum BalanceState: Hashable {

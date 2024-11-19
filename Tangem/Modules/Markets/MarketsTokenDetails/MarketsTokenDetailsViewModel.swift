@@ -38,6 +38,7 @@ class MarketsTokenDetailsViewModel: MarketsBaseViewModel {
     @Published private(set) var numberOfExchangesListedOn: Int?
 
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
+    @Published var fullDescriptionBottomSheetInfo: DescriptionBottomSheetInfo?
 
     // Private published properties used for calculation `price`, `priceChangeState` and `priceDate` properties
 
@@ -204,7 +205,7 @@ class MarketsTokenDetailsViewModel: MarketsBaseViewModel {
 
         Analytics.log(event: .marketsChartButtonReadMore, params: [.token: tokenInfo.symbol.uppercased()])
 
-        descriptionBottomSheetInfo = .init(
+        fullDescriptionBottomSheetInfo = .init(
             title: Localization.marketsTokenDetailsAboutTokenTitle(tokenInfo.name),
             description: fullDescription,
             showCloseButton: true
@@ -226,11 +227,13 @@ class MarketsTokenDetailsViewModel: MarketsBaseViewModel {
             return
         }
 
+        Analytics.log(event: .marketsChartExchangesScreenOpened, params: [.token: tokenInfo.symbol.uppercased()])
+
         coordinator?.openExchangesList(tokenId: tokenInfo.id, numberOfExchangesListedOn: numberOfExchangesListedOn, presentationStyle: presentationStyle)
     }
 
     func onGenerateAITapAction() {
-        descriptionBottomSheetInfo = nil
+        fullDescriptionBottomSheetInfo = nil
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
             guard let self else { return }

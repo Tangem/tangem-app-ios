@@ -130,7 +130,6 @@ final class MultiWalletMainContentViewModel: ObservableObject {
     }
 
     func onOpenOrganizeTokensButtonTap() {
-        Analytics.log(.buttonOrganizeTokens)
         openOrganizeTokens()
     }
 

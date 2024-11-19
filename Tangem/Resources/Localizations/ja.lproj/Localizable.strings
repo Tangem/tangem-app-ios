@@ -1,3 +1,11 @@
+"action_buttons_buy_empty_search_message" = "ポートフォリオにトークンが見つかりませんか？マーケットから見つけ、買付のために追加してください";
+"action_buttons_sell_empty_search_message" = "ポートフォリオにトークンが見つかりませんか？マーケットから見つけ、売却のために追加してください";
+"action_buttons_swap_choose_token" = "トークンを選択";
+"action_buttons_swap_empty_search_message" = "ポートフォリオにトークンが見つかりませんか？マーケットから見つけ、スワップのために追加してください";
+"action_buttons_swap_no_available_pair_notification_message" = "選択したトークンと交換できるトークンがありません。別のトークンを選択してください。";
+"action_buttons_swap_no_available_pair_notification_title" = "利用可能なペアがありません";
+"action_buttons_you_want_to_receive" = "受け取りたい";
+"action_buttons_you_want_to_swap" = "交換したい";
 "add_custom_token_choose_network" = "ネットワークを選択";
 "add_custom_token_title" = "カスタムトークンの追加";
 "add_tokens_title" = "トークンの管理";
@@ -165,6 +173,7 @@
 "common_terms_of_use" = "利用規約";
 "common_today" = "今日";
 "common_transaction_failed" = "取引が失敗しました";
+"common_transaction_status" = "取引状況";
 "common_transactions" = "取引";
 "common_transfer" = "送金";
 "common_understand" = "わかりました";
@@ -173,6 +182,7 @@
 "common_unstake" = "ステーキング解除";
 "common_warning" = "警告";
 "common_week" = "週";
+"common_with" = "で";
 "common_yes" = "はい";
 "contract_address_copied_message" = "コントラクトアドレスをコピーしました!";
 "currency_subtitle_expanded" = "利用可能なネットワーク";
@@ -429,7 +439,7 @@
 "markets_token_details_price_performance" = "値動き";
 "markets_token_details_repository" = "リポジトリ";
 "markets_token_details_security_score" = "セキュリティ・スコア";
-"markets_token_details_security_score_description" = "";
+"markets_token_details_security_score_description" = "トークンのセキュリティ・スコアとは、ブロックチェーンやトークンのセキュリティ・レベルを様々な要因に基づいて評価する指標で、以下の情報源から集計されます。";
 "markets_token_details_social" = "ソーシャル";
 "markets_token_details_total_supply" = "総供給量";
 "markets_token_details_total_supply_description" = "特定の暗号資産に存在しうるコインまたはトークンの最大数";
@@ -529,9 +539,25 @@
 "onboarding_wallet_info_title_fourth" = "アクセスコードの復元";
 "onboarding_wallet_info_title_second" = "同一のカード";
 "onboarding_wallet_info_title_third" = "アクセスコード";
+"onramp_country_search" = "国で検索";
+"onramp_country_unavailable" = "利用不可";
+"onramp_currency_other" = "その他の通貨";
+"onramp_currency_popular" = "人気の法定通貨";
+"onramp_currency_search" = "通貨で検索";
+"onramp_max_amount_restriction" = "買付金額は%@以下にしてください";
+"onramp_min_amount_restriction" = "買付金額は少なくとも%@である必要があります";
+"onramp_no_available_providers" = "この通貨で利用可能なプロバイダーはありません";
+"onramp_pay_with" = "支払う";
+"onramp_redirecting_to_provider_subtitle" = "サードパーティプロバイダー%@で取引を完了できます。";
+"onramp_redirecting_to_provider_title" = "%@にリダイレクトしています...";
 "onramp_residency_bottomsheet_country_not_supported" = "この国では当社のサービスはご利用いただけません";
 "onramp_residency_bottomsheet_country_subtitle" = "変更または確認";
 "onramp_residency_bottomsheet_title" = "あなたの住居は次のように識別されています";
+"onramp_settings_residence" = "住居";
+"onramp_settings_residence_description" = "正確なお支払い方法とサービスを確保するため、正しい国を選択してください。";
+"onramp_settings_title" = "設定";
+"onramp_transaction_status_footer_text" = "トークンページから取引状況を確認できます";
+"onramp_via" = "経由";
 "organize_tokens_group" = "グループ";
 "organize_tokens_sort_by_balance" = "残高順";
 "organize_tokens_title" = "トークンを整理する";
@@ -666,6 +692,7 @@
 "staking_active_footer" = "資産のステーキングを解除するには、上のブロックをタップしてください";
 "staking_amount_requirement_error" = "ステーキング金額は %@ 以上である必要があります";
 "staking_amount_tron_integer_error" = "ネットワークルールにより、ステーキング金額は%1$@ TRX に切り上げられます。";
+"staking_amount_tron_integer_error_unstaking" = "ネットワークルールにより、ステーキング解除の量は%1$@ TRX に切り上げられます。";
 "staking_claim_unstaked" = "ステーキング解除分を請求する";
 "staking_details_account_fee" = "ステーキングアカウント手数料";
 "staking_details_account_fee_info" = "ステーキングアカウントは、ステーキングされたSOLトークンが保管される特別なアカウントです。取引の検証に参加して報酬を得るために、トークンをバリデーターに委任すると、このアカウントが作成されます。ステーキングアカウントの作成には少額の手数料がかかりますが、この手数料はステーキングが完了すると返金されます。";
@@ -709,10 +736,13 @@
 "staking_notification_earn_rewards_text_period_week" = "ステーキングにより%1$@を獲得できます。ステーキング報酬は毎週受け取れます。";
 "staking_notification_earn_rewards_text_weekly" = "安全にステーキングして、報酬を毎週獲得しましょう";
 "staking_notification_earn_rewards_title" = "ステーキング報酬を獲得";
+"staking_notification_low_staked_balance_text" = "残りのステーキング残高が少なすぎてステーキングを解除できません。最小のステーキング解除残高を満たすには、さらにステーキングする必要があります。";
+"staking_notification_low_staked_balance_title" = "ステーキング残高が低いです";
 "staking_notification_network_error_text" = "ネットワークの状態により、現在ステーキングはご利用いただけません。しばらくしてからもう一度お試しください。";
 "staking_notification_new_validator_funds_transfer" = "新しいバリデーターで%1$@ネットワークにステーキングすると、以前にステーキングされた資金はすべてこのバリデーターに自動的に転送されます。";
 "staking_notification_restake_rewards_text" = "獲得した報酬をステーキングに再投資し、潜在的な収益を増やします。";
 "staking_notification_restake_text" = "再ステーキングを使うと、ステーキングを解除することなく、あるバリデータから別のバリデータに資金を移動できます。";
+"staking_notification_stake_entire_balance_text" = "残高のすべてをステーキングしようとしています。ステーキング解除や報酬請求にかかるネットワーク手数料をカバーするために、少額を残しておくことをお勧めします。";
 "staking_notification_unlock_text" = "資金をステーキングから引き出すには、ロックを解除してください。ロック解除には%@かかります。";
 "staking_notification_unstake_cosmos_text" = "資金は、21日間のロック解除期間後に使用可能になります。報酬は、ロック解除後の資金とともに引き出されます。";
 "staking_notification_unstake_text" = "%@のステーキング解除期間後、資金はすぐ利用可能となります。";
@@ -742,6 +772,7 @@
 "staking_rewards" = "報酬";
 "staking_stake_locked" = "ステーキングはロックされています";
 "staking_stake_more" = "もっとステーキングする";
+"staking_staked_amount" = "ステーキング中の金額";
 "staking_summary_description_text" = "%1$@をステーキングし、報酬%2$@を受け取ります";
 "staking_tap_to_unlock" = "タップしてロック解除";
 "staking_tap_to_unlock_or_vote" = "タップしてロック解除もしくは投票";
@@ -753,6 +784,7 @@
 "staking_unbonding_in" = "解約完了まで";
 "staking_unlocked_locked" = "ロック解除";
 "staking_unlocking" = "ロック解除中";
+"staking_unstake_amount_requirement_error" = "ステーキング解除する金額は少なくとも%@である必要があります";
 "staking_unstake_amount_validation_error" = "金額がステーキング残高を超えています";
 "staking_unstaked" = "ステーキングされていない";
 "staking_unstaked_footer" = "資産を請求するために、unstakedを確認してください";
@@ -785,6 +817,7 @@
 "swapping_alert_cex_description_with_slippage" = "金額には以下が含まれます: \n • サービス プロバイダーの手数料\n • 取引所からユーザーのアドレスに%1$@を送金するためのネットワーク手数料。 \n\nプロバイダーのスリッページは最大%2$@です";
 "swapping_alert_dex_description" = "この金額には、サービスプロバイダーの手数料が含まれています。";
 "swapping_alert_dex_description_with_slippage" = "金額にはサービスプロバイダーの手数料が含まれます。 \n\nプロバイダーのスリッページは最大%@ です";
+"swapping_alert_slippage_description" = "プロバイダーのスリッページは最大%@です。";
 "swapping_alert_title" = "手数料";
 "swapping_approve_information_text" = "すべての分散型取引所は、スマートコントラクトがあなたの許可なくウォレットにアクセスするのを防ぐために承認を必要とします。設計上、スマートコントラクトは承認なしでトークンにアクセスできません。トークンを「ロック解除」することで、あなたは1-inchのスマートコントラクトがトークンを使うことを承認します。ネットワークのマイナーは、このアクションをブロックチェーンに記録するためのガス料金（あなたが支払う）を受け取ります。承認後、トークンを交換することができます。";
 "swapping_approve_information_title" = "承認";
@@ -823,6 +856,10 @@
 "token_details_unable_hide_alert_message" = "%1$@ ( %2$@ ) トークンは%3$@ネットワークの主要通貨であり、このネットワーク上の他のトークンがリストにある限り、非表示にすることはできません。";
 "token_details_unable_hide_alert_title" = "%@を非表示にできません";
 "token_swap_promotion_button" = "今すぐスワップ";
+"tokens_list_hot_crypto_header" = "ホットな暗号資産🔥";
+"tokens_list_unavailable_to_purchase_header" = "買付できません";
+"tokens_list_unavailable_to_sell_header" = "売却できません";
+"tokens_list_unavailable_to_swap_header" = "%@からのスワップは利用できません";
 "transaction_history_contract_address" = "コントラクト: %@";
 "transaction_history_empty_transactions" = "まだ取引はありません";
 "transaction_history_error_failed_to_load" = "取引履歴の読み込みに失敗しました。\n情報を更新するには、リロードボタンをクリックしてください。";
@@ -832,6 +869,8 @@
 "transaction_history_transaction_from_address" = "送金元: %@";
 "transaction_history_transaction_to_address" = "送金先: %@";
 "transaction_history_transaction_validator" = "バリデーター: %@";
+"transfer_min_amount_error" = "最小%@";
+"transfer_notification_invalid_minimum_transaction_amount_text" = "最小取引金額は%1$@です。";
 "try_to_load_data_again_button_title" = "もう一度やり直してください";
 "twin_error_same_card" = "同じカードをスキャンしました。ツインウォレットを作成するには、番号%liのカードをスキャンする必要があります。";
 "twin_error_wrong_twin" = "間違ったツインカードをスキャンしました。別のカードをお試しください。";
@@ -845,6 +884,7 @@
 "twins_recreate_warning" = "この操作は元に戻せません。古いウォレットにはアクセスできなくなります。";
 "twins_scan_twin_with_number" = "番号%@のツインカードをタップし、操作が終了するまで取り外さないでください。";
 "unlock_wallet_description_full" = "%@を使用するか、カード / リングをスキャンしてウォレットにアクセスしてください";
+"unsupported_wc_version" = "接続に失敗しました：このdAppは、サポートされていないWallet Connectバージョン1.0を使用しています。正常に接続するには、dAppがWallet Connectバージョン2.0をサポートしていることを確認してください。";
 "user_push_notification_agreement_argument_one" = "最新の機能とニュースをお届けします";
 "user_push_notification_agreement_argument_two" = "新しいプロモーション情報をいち早く入手しましょう";
 "user_push_notification_agreement_header" = "プッシュ通知を使用しますか?";
@@ -892,6 +932,9 @@
 "wallet_marketprice_block_update_time" = "直近24時間";
 "wallet_network_group_title" = "%@ネットワーク";
 "wallet_notification_address_copied" = "アドレスがクリップボードにコピーされました";
+"wallet_promo_banner_button_title" = "今すぐ10 %オフで購入";
+"wallet_promo_banner_description" = "1.3万種類以上の暗号資産にアクセス。ワンタップで買付、売却、スワップ、ステーキングが可能です。\nバックアップ用に最大3枚のカードを連携できます。";
+"wallet_promo_banner_title" = "Tangemウォレットを見る";
 "wallet_settings_title" = "ウォレット設定";
 "wallet_title" = "Tangem";
 "warning_access_denied_message" = "%@を使用するか、カード / リングをスキャンしてウォレットにアクセスしてください";

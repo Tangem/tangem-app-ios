@@ -11,6 +11,7 @@ import TangemExpress
 import UIKit
 import enum TangemSdk.TangemSdkError
 import struct BlockchainSdk.Fee
+import TangemFoundation
 
 final class ExpressViewModel: ObservableObject {
     // MARK: - ViewState
@@ -105,22 +106,29 @@ final class ExpressViewModel: ObservableObject {
     }
 
     func userDidTapPriceChangeInfoButton(isBigLoss: Bool) {
-        runTask(in: self) { viewModel in
-            guard let providerType = await viewModel.interactor.getSelectedProvider()?.provider.type else {
+        runTask(in: self) { [weak self] viewModel in
+            guard
+                let selectedProvider = await viewModel.interactor.getSelectedProvider()?.provider,
+                let tokenItemSymbol = viewModel.interactor.getDestination()?.tokenItem.currencySymbol
+            else {
                 return
             }
 
-            let message: String = {
-                switch providerType {
-                case .cex:
-                    let tokenItemSymbol = viewModel.interactor.getDestination()?.tokenItem.currencySymbol ?? ""
-                    return Localization.swappingAlertCexDescription(tokenItemSymbol)
-                case .dex, .dexBridge:
-                    if isBigLoss {
-                        return "\(Localization.swappingHighPriceImpactDescription)\n\n\(Localization.swappingAlertDexDescription)"
-                    }
+            let message: String = { [weak self] in
 
-                    return Localization.swappingAlertDexDescription
+                guard let self else { return "" }
+
+                let slippage = formatDoubleToIntString(selectedProvider.slippage)
+
+                switch selectedProvider.type {
+                case .cex:
+                    return formSlippageMessage(tokenItemSymbol: tokenItemSymbol, slippage: slippage)
+                case .dex, .dexBridge:
+                    return formSlippageMessage(
+                        tokenItemSymbol: tokenItemSymbol,
+                        slippage: slippage,
+                        isBigLoss: isBigLoss
+                    )
                 }
             }()
 
@@ -160,6 +168,44 @@ final class ExpressViewModel: ObservableObject {
 
     func didTapCloseButton() {
         coordinator?.closeSwappingView()
+    }
+}
+
+// MARK: - Provider slippage message
+
+private extension ExpressViewModel {
+    func formSlippageMessage(tokenItemSymbol: String, slippage: String?) -> String {
+        if let slippage {
+            return Localization.swappingAlertCexDescriptionWithSlippage(tokenItemSymbol, "\(slippage)%")
+        } else {
+            return Localization.swappingAlertCexDescription(tokenItemSymbol)
+        }
+    }
+
+    func formSlippageMessage(tokenItemSymbol: String, slippage: String?, isBigLoss: Bool) -> String {
+        let swappingAlertDexDescription: String = {
+            if let slippage {
+                Localization.swappingAlertDexDescriptionWithSlippage("\(slippage)%")
+            } else {
+                Localization.swappingAlertDexDescription
+            }
+        }()
+
+        if isBigLoss {
+            return "\(Localization.swappingHighPriceImpactDescription)\n\n\(swappingAlertDexDescription)"
+        }
+
+        return swappingAlertDexDescription
+    }
+
+    func formatDoubleToIntString(_ value: Double?) -> String? {
+        guard let value else { return nil }
+
+        if value.truncatingRemainder(dividingBy: 1) == 0 {
+            return String(Int(value))
+        } else {
+            return String(value)
+        }
     }
 }
 
@@ -353,6 +399,9 @@ private extension ExpressViewModel {
         case .restriction(.notEnoughAmountForTxValue, _),
              .restriction(.notEnoughAmountForFee, _) where interactor.getSender().isFeeCurrency:
             sendCurrencyViewModel?.expressCurrencyViewModel.update(titleState: .insufficientFunds)
+        case .restriction(.validationError(.minimumRestrictAmount(let minimumAmount), _), _):
+            let errorText = Localization.transferMinAmountError(minimumAmount.string())
+            sendCurrencyViewModel?.expressCurrencyViewModel.update(titleState: .error(errorText))
         default:
             sendCurrencyViewModel?.expressCurrencyViewModel.update(titleState: .text(Localization.swappingFromTitle))
         }
@@ -620,7 +669,7 @@ private extension ExpressViewModel {
                 try Task.checkCancellation()
 
                 await root.openSuccessView(sentTransactionData: sentTransactionData)
-            } catch SendTransactionDispatcherResult.Error.userCancelled {
+            } catch TransactionDispatcherResult.Error.userCancelled {
                 root.restartTimer()
             } catch let error as ExpressAPIError {
                 await runOnMain {

@@ -7,9 +7,8 @@
 //
 
 import Foundation
+import UIKit
 import Combine
-import BlockchainSdk
-import TangemFoundation
 
 class CommonTokenQuotesRepository {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService

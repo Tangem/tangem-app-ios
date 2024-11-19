@@ -1,34 +1,7 @@
 PODS:
-  - Alamofire (5.9.1)
   - AmplitudeSwift (1.6.2):
     - AnalyticsConnector (~> 1.0.1)
   - AnalyticsConnector (1.0.3)
-  - AnyCodable-FlightSchool (0.6.7)
-  - BigInt (5.2.0)
-  - BinanceChain (1.0.1-beta):
-    - BinanceChain/Core (= 1.0.1-beta)
-  - BinanceChain/Core (1.0.1-beta):
-    - Alamofire
-    - BinanceChain/Libraries
-    - BinanceChain/Protobuf
-    - BinanceChain/Util
-    - SwiftDate
-    - SwiftyJSON
-  - BinanceChain/Libraries (1.0.1-beta)
-  - BinanceChain/Protobuf (1.0.1-beta)
-  - BinanceChain/Util (1.0.1-beta)
-  - BitcoinCore.swift (0.15.4)
-  - BlockchainSdk (0.0.1):
-    - AnyCodable-FlightSchool (= 0.6.7)
-    - BinanceChain
-    - BitcoinCore.swift
-    - Moya (= 15.0.0)
-    - Sodium (= 0.9.1)
-    - Solana.Swift
-    - stellar-ios-mac-sdk (= 2.5.4)
-    - SwiftCBOR (= 0.4.5)
-    - SwiftyJSON (= 5.0.1)
-    - TangemSdk
   - BlockiesSwift (0.1.2)
   - CombineExt (1.8.0)
   - Firebase/Analytics (10.29.0):
@@ -157,10 +130,6 @@ PODS:
     - GoogleUtilities/Logger
     - GoogleUtilities/Privacy
   - Kingfisher (7.11.0)
-  - Moya (15.0.0):
-    - Moya/Core (= 15.0.0)
-  - Moya/Core (15.0.0):
-    - Alamofire (~> 5.0)
   - nanopb (2.30910.0):
     - nanopb/decode (= 2.30910.0)
     - nanopb/encode (= 2.30910.0)
@@ -169,65 +138,9 @@ PODS:
   - PromisesObjC (2.4.0)
   - PromisesSwift (2.4.0):
     - PromisesObjC (= 2.4.0)
-  - Sodium (0.9.1)
-  - Solana.Swift (1.1):
-    - Starscream (= 4.0.8)
-  - Starscream (4.0.8)
-  - stellar-ios-mac-sdk (2.5.4)
-  - SwiftCBOR (0.4.5)
-  - SwiftDate (7.0.0)
-  - SwiftyJSON (5.0.1)
-  - TangemSdk (3.10.0)
-  - TonSwift (1.0.10):
-    - BigInt
-    - TweetNacl
-  - TweetNacl (1.0.2)
-  - WalletConnectSwiftV2 (1.18.7):
-    - WalletConnectSwiftV2/WalletConnect (= 1.18.7)
-  - WalletConnectSwiftV2/Commons (1.18.7)
-  - WalletConnectSwiftV2/HTTPClient (1.18.7)
-  - WalletConnectSwiftV2/JSONRPC (1.18.7):
-    - WalletConnectSwiftV2/Commons
-  - WalletConnectSwiftV2/WalletConnect (1.18.7):
-    - WalletConnectSwiftV2/WalletConnectAuth
-    - WalletConnectSwiftV2/WalletConnectPush
-    - WalletConnectSwiftV2/WalletConnectSign
-    - WalletConnectSwiftV2/WalletConnectVerify
-  - WalletConnectSwiftV2/WalletConnectAuth (1.18.7):
-    - WalletConnectSwiftV2/WalletConnectPairing
-    - WalletConnectSwiftV2/WalletConnectSigner
-    - WalletConnectSwiftV2/WalletConnectVerify
-  - WalletConnectSwiftV2/WalletConnectJWT (1.18.7):
-    - WalletConnectSwiftV2/WalletConnectKMS
-  - WalletConnectSwiftV2/WalletConnectKMS (1.18.7):
-    - WalletConnectSwiftV2/WalletConnectUtils
-  - WalletConnectSwiftV2/WalletConnectNetworking (1.18.7):
-    - WalletConnectSwiftV2/HTTPClient
-    - WalletConnectSwiftV2/WalletConnectRelay
-  - WalletConnectSwiftV2/WalletConnectPairing (1.18.7):
-    - WalletConnectSwiftV2/WalletConnectNetworking
-  - WalletConnectSwiftV2/WalletConnectPush (1.18.7):
-    - WalletConnectSwiftV2/WalletConnectJWT
-    - WalletConnectSwiftV2/WalletConnectNetworking
-  - WalletConnectSwiftV2/WalletConnectRelay (1.18.7):
-    - WalletConnectSwiftV2/WalletConnectJWT
-  - WalletConnectSwiftV2/WalletConnectSign (1.18.7):
-    - WalletConnectSwiftV2/WalletConnectPairing
-    - WalletConnectSwiftV2/WalletConnectSigner
-    - WalletConnectSwiftV2/WalletConnectVerify
-  - WalletConnectSwiftV2/WalletConnectSigner (1.18.7):
-    - WalletConnectSwiftV2/WalletConnectNetworking
-  - WalletConnectSwiftV2/WalletConnectUtils (1.18.7):
-    - WalletConnectSwiftV2/JSONRPC
-  - WalletConnectSwiftV2/WalletConnectVerify (1.18.7):
-    - WalletConnectSwiftV2/WalletConnectNetworking
-    - WalletConnectSwiftV2/WalletConnectUtils
 
 DEPENDENCIES:
   - AmplitudeSwift (= 1.6.2)
-  - BinanceChain (from `https://github.com/tangem/swiftbinancechain.git`, tag `0.0.11`)
-  - BitcoinCore.swift (from `https://github.com/tangem/bitcoincore.git`, tag `0.0.20`)
-  - BlockchainSdk (from `https://github.com/tangem/blockchain-sdk-swift.git`, tag `develop-707`)
   - BlockiesSwift (~> 0.1.2)
   - CombineExt (~> 1.8.0)
   - Firebase/Analytics (= 10.29.0)
@@ -235,19 +148,11 @@ DEPENDENCIES:
   - Firebase/Messaging (= 10.29.0)
   - GDPerformanceView-Swift (~> 2.1)
   - Kingfisher (~> 7.11.0)
-  - Moya
-  - Solana.Swift (from `https://github.com/tangem/Solana.Swift`, tag `1.2.0-tangem11`)
-  - SwiftyJSON (from `https://github.com/tangem/SwiftyJSON.git`, tag `5.0.1-tangem1`)
-  - TangemSdk (from `https://github.com/Tangem/tangem-sdk-ios.git`, tag `develop-313`)
-  - WalletConnectSwiftV2 (from `https://github.com/WalletConnect/WalletConnectSwiftV2`, tag `1.18.7`)
 
 SPEC REPOS:
   trunk:
-    - Alamofire
     - AmplitudeSwift
     - AnalyticsConnector
-    - AnyCodable-FlightSchool
-    - BigInt
     - BlockiesSwift
     - CombineExt
     - Firebase
@@ -265,72 +170,13 @@ SPEC REPOS:
     - GoogleDataTransport
     - GoogleUtilities
     - Kingfisher
-    - Moya
     - nanopb
     - PromisesObjC
     - PromisesSwift
-    - Sodium
-    - Starscream
-    - stellar-ios-mac-sdk
-    - SwiftCBOR
-    - SwiftDate
-    - TweetNacl
-
-EXTERNAL SOURCES:
-  BinanceChain:
-    :git: https://github.com/tangem/swiftbinancechain.git
-    :tag: 0.0.11
-  BitcoinCore.swift:
-    :git: https://github.com/tangem/bitcoincore.git
-    :tag: 0.0.20
-  BlockchainSdk:
-    :git: https://github.com/tangem/blockchain-sdk-swift.git
-    :tag: develop-707
-  Solana.Swift:
-    :git: https://github.com/tangem/Solana.Swift
-    :tag: 1.2.0-tangem11
-  SwiftyJSON:
-    :git: https://github.com/tangem/SwiftyJSON.git
-    :tag: 5.0.1-tangem1
-  TangemSdk:
-    :git: https://github.com/Tangem/tangem-sdk-ios.git
-    :tag: develop-313
-  WalletConnectSwiftV2:
-    :git: https://github.com/WalletConnect/WalletConnectSwiftV2
-    :tag: 1.18.7
-
-CHECKOUT OPTIONS:
-  BinanceChain:
-    :git: https://github.com/tangem/swiftbinancechain.git
-    :tag: 0.0.11
-  BitcoinCore.swift:
-    :git: https://github.com/tangem/bitcoincore.git
-    :tag: 0.0.20
-  BlockchainSdk:
-    :git: https://github.com/tangem/blockchain-sdk-swift.git
-    :tag: develop-707
-  Solana.Swift:
-    :git: https://github.com/tangem/Solana.Swift
-    :tag: 1.2.0-tangem11
-  SwiftyJSON:
-    :git: https://github.com/tangem/SwiftyJSON.git
-    :tag: 5.0.1-tangem1
-  TangemSdk:
-    :git: https://github.com/Tangem/tangem-sdk-ios.git
-    :tag: develop-313
-  WalletConnectSwiftV2:
-    :git: https://github.com/WalletConnect/WalletConnectSwiftV2
-    :tag: 1.18.7
 
 SPEC CHECKSUMS:
-  Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
   AmplitudeSwift: cc22038404dc5581e2dea5dc2501302959dd3c90
   AnalyticsConnector: a53214d38ae22734c6266106c0492b37832633a9
-  AnyCodable-FlightSchool: 261cbe76757802b17d471b9059b21e6fa5edf57b
-  BigInt: f668a80089607f521586bbe29513d708491ef2f7
-  BinanceChain: f727abc7a20ba71f4497e46b7400124027b25692
-  BitcoinCore.swift: 64ac4e69d9a6ef917bcbb0c23f1324cf57a822fb
-  BlockchainSdk: b744a57e39d5b5e76c8ecfaa8feb41753f9fa7df
   BlockiesSwift: 22d8d56dd187e6bfd16cb8c8fbd4fd4896c3e65d
   CombineExt: c4daa97ef75754d8ef319bd79edeef82652f3eea
   Firebase: cec914dab6fd7b1bd8ab56ea07ce4e03dd251c2d
@@ -348,20 +194,10 @@ SPEC CHECKSUMS:
   GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
   GoogleUtilities: ea963c370a38a8069cc5f7ba4ca849a60b6d7d15
   Kingfisher: b9c985d864d43515f404f1ef4a8ce7d802ace3ac
-  Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
   nanopb: 438bc412db1928dac798aa6fd75726007be04262
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   PromisesSwift: 9d77319bbe72ebf6d872900551f7eeba9bce2851
-  Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
-  Solana.Swift: b926815c93f483628ce51d9a51c96567ae14709e
-  Starscream: 19b5533ddb925208db698f0ac508a100b884a1b9
-  stellar-ios-mac-sdk: 01055b326a62d1e9bb50999eadeb85c9dec60658
-  SwiftCBOR: ac340b74d3b2cf1f8884bb748bd09875848e3873
-  SwiftDate: bbc26e26fc8c0c33fbee8c140c5e8a68293a148a
-  SwiftyJSON: c0bd75b5969785b3d9ae41d5709fe75bc5de4002
-  TangemSdk: 145675e87bf4720d13968510b19e03b5402ed028
-  WalletConnectSwiftV2: 5ea47db4d86e39fc749b66a05a661af9e87b277d
 
-PODFILE CHECKSUM: bd9a184070351de50c5df0b9804d0ef763895408
+PODFILE CHECKSUM: 641a395bff5e1baffc9490794e9787a869d13eb7
 
 COCOAPODS: 1.15.2

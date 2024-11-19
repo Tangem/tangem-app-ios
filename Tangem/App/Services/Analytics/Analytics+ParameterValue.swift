@@ -173,7 +173,6 @@ extension Analytics {
         case stakeActionRestakeRewards = "Restake Rewards"
         case stakeActionWithdraw = "Withdraw"
         case stakeActionRestake = "Restake"
-        case stakeActionClaimUnstaked = "Claim Unstaked"
         case stakeActionUnlockLocked = "Unlock Locked"
         case stakeActionStakeLocked = "Stake Locked"
         case stakeActionVote = "Vote"
@@ -182,6 +181,10 @@ extension Analytics {
         case stakeActionRevote = "Revote"
         case stakeActionRebond = "Rebond"
         case stakeActionMigrate = "Migrate"
+
+        // MARK: - Onramp
+
+        case onramp = "Onramp"
 
         // MARK: - Common
 

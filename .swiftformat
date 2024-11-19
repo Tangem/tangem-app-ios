@@ -1,7 +1,9 @@
 # file options
 --exclude Pods
 --exclude Tangem/Resources/Generated
+--exclude BlockchainSdk/Resources/Generated
 --exclude Utilites/XCTemplate
+--exclude **/*.pb.swift    # Protobufs
 
 # Format options
 # Disable all default options

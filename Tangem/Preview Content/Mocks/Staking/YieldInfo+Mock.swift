@@ -35,6 +35,24 @@ extension YieldInfo {
                 apr: 0.032
             ),
         ],
+        preferredValidators: [
+            .init(
+                address: UUID().uuidString,
+                name: "InfStones",
+                preferred: true,
+                partner: false,
+                iconURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
+                apr: 0.08
+            ),
+            .init(
+                address: UUID().uuidString,
+                name: "Aconcagua",
+                preferred: true,
+                partner: false,
+                iconURL: URL(string: "https://assets.stakek.it/validators/aconcagua.png"),
+                apr: 0.032
+            ),
+        ],
         item: .init(network: .tron, contractAddress: nil, name: "", decimals: 0, symbol: ""),
         unbondingPeriod: .days(14),
         warmupPeriod: .days(0),

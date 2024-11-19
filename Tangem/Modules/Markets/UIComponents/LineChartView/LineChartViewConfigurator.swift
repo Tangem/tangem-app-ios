@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import DGCharts
+import TangemFoundation
 
 struct LineChartViewConfigurator {
     let chartData: LineChartViewData

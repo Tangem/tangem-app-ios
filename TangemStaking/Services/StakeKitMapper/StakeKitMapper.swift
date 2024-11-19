@@ -63,6 +63,8 @@ struct StakeKitMapper {
         case .restakeRewards: .restakeRewards
         case .voteLocked: .voteLocked
         case .unlockLocked: .unlockLocked
+        case .restake: .restake
+        case .claimUnstaked: .claimUnstaked
         }
     }
 
@@ -201,18 +203,14 @@ struct StakeKitMapper {
     func mapToStakingBalanceInfoPendingAction(from balance: StakeKitDTO.Balances.Response.Balance) throws -> [StakingPendingActionInfo] {
         try balance.pendingActions.compactMap { action in
             switch action.type {
-            case .withdraw:
-                return .init(type: .withdraw, passthrough: action.passthrough)
-            case .claimRewards:
-                return .init(type: .claimRewards, passthrough: action.passthrough)
-            case .restakeRewards:
-                return .init(type: .restakeRewards, passthrough: action.passthrough)
-            case .voteLocked, .revote:
-                return .init(type: .voteLocked, passthrough: action.passthrough)
-            case .unlockLocked:
-                return .init(type: .unlockLocked, passthrough: action.passthrough)
-            default:
-                throw StakeKitMapperError.noData("PendingAction.type \(action.type) doesn't supported")
+            case .withdraw: .init(type: .withdraw, passthrough: action.passthrough)
+            case .claimRewards: .init(type: .claimRewards, passthrough: action.passthrough)
+            case .restakeRewards: .init(type: .restakeRewards, passthrough: action.passthrough)
+            case .voteLocked, .revote: .init(type: .voteLocked, passthrough: action.passthrough)
+            case .unlockLocked: .init(type: .unlockLocked, passthrough: action.passthrough)
+            case .restake: .init(type: .restake, passthrough: action.passthrough)
+            case .claimUnstaked: .init(type: .claimUnstaked, passthrough: action.passthrough)
+            default: throw StakeKitMapperError.noData("PendingAction.type \(action.type) doesn't supported")
             }
         }
     }
@@ -246,18 +244,21 @@ struct StakeKitMapper {
             throw StakeKitMapperError.noData("Enter or exit action is not found")
         }
 
-        let validators = response.validators
-            .map(mapToValidatorInfo)
-            .sorted(by: { lhs, rhs in
-                if lhs.apr == rhs.apr {
-                    return lhs.partner
-                }
+        let validators = response.validators.map(mapToValidatorInfo)
+        let preferredValidators = validators.filter { $0.preferred }.sorted { lhs, rhs in
+            if lhs.partner {
+                return true
+            }
 
-                return lhs.apr ?? 0 > rhs.apr ?? 0
-            })
+            if rhs.partner {
+                return false
+            }
+
+            return lhs.apr ?? 0 > rhs.apr ?? 0
+        }
 
         let rewardRateValues = RewardRateValues(
-            aprs: validators.filter { $0.preferred }.compactMap(\.apr),
+            aprs: preferredValidators.compactMap(\.apr),
             rewardRate: response.rewardRate
         )
 
@@ -268,9 +269,10 @@ struct StakeKitMapper {
             isAvailable: response.isAvailable,
             rewardType: mapToRewardType(from: response.rewardType),
             rewardRateValues: rewardRateValues,
-            enterMinimumRequirement: enterAction.args.amount.minimum,
-            exitMinimumRequirement: exitAction.args.amount.minimum,
+            enterMinimumRequirement: enterAction.args.amount.minimum ?? .zero,
+            exitMinimumRequirement: exitAction.args.amount.minimum ?? .zero,
             validators: validators,
+            preferredValidators: preferredValidators,
             item: item,
             unbondingPeriod: mapToPeriod(from: response.metadata.cooldownPeriod),
             warmupPeriod: mapToPeriod(from: response.metadata.warmupPeriod),
@@ -371,8 +373,18 @@ struct StakeKitMapper {
     }
 }
 
-enum StakeKitMapperError: Error {
+public enum StakeKitMapperError: Error {
     case notImplement
     case noData(String)
     case tronTransactionMappingFailed
+}
+
+extension StakeKitMapperError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .notImplement: "Not implemented"
+        case .noData(let string): string
+        case .tronTransactionMappingFailed: "TronTransactionMappingFailed"
+        }
+    }
 }

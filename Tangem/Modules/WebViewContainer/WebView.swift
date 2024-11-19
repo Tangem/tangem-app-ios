@@ -7,8 +7,9 @@
 //
 
 import Foundation
-import WebKit
 import SwiftUI
+
+@preconcurrency import WebKit
 
 struct WebView: UIViewRepresentable {
     var url: URL?
