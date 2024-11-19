@@ -25,7 +25,7 @@ struct SubstrateWalletAssembly: WalletManagerAssembly {
                     PolkadotJsonRpcProvider(node: nodeInfo, configuration: networkConfig)
                 }
 
-            walletManager.networkService = PolkadotNetworkService(providers: providers, network: network)
+            walletManager.networkService = PolkadotNetworkService(providers: [providers.last!], network: network)
             walletManager.txBuilder = PolkadotTransactionBuilder(
                 blockchain: blockchain,
                 walletPublicKey: input.wallet.publicKey.blockchainKey,

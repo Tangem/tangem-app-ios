@@ -64,12 +64,17 @@ class PolkadotTransactionBuilder {
         self.runtimeVersionProvider = runtimeVersionProvider
     }
 
-    func buildForSign(amount: Amount, destination: String, meta: PolkadotBlockchainMeta) throws -> Data {
+    func buildForSign(
+        amount: Amount,
+        destination: String,
+        call: Data? = nil,
+        meta: PolkadotBlockchainMeta
+    ) throws -> Data {
         let rawAddress = encodingRawAddress(specVersion: meta.specVersion)
         let runtimeVersion = runtimeVersionProvider.runtimeVersion(for: meta)
 
         var message = Data()
-        message.append(try encodeCall(amount: amount, destination: destination, rawAddress: rawAddress))
+        message.append(try call ?? encodeTransferCall(amount: amount, destination: destination, rawAddress: rawAddress))
         message.append(try encodeEraNonceTip(era: meta.era, nonce: meta.nonce, tip: 0))
         message.append(try encodeCheckMetadataHashExtensionModeIfNeeded(runtimeVersion: runtimeVersion))
         message.append(try codec.encode(meta.specVersion))
@@ -81,7 +86,13 @@ class PolkadotTransactionBuilder {
         return message
     }
 
-    func buildForSend(amount: Amount, destination: String, meta: PolkadotBlockchainMeta, signature: Data) throws -> Data {
+    func buildForSend(
+        amount: Amount,
+        destination: String,
+        call: Data? = nil,
+        meta: PolkadotBlockchainMeta,
+        signature: Data
+    ) throws -> Data {
         let rawAddress = encodingRawAddress(specVersion: meta.specVersion)
         let runtimeVersion = runtimeVersionProvider.runtimeVersion(for: meta)
 
@@ -97,7 +108,9 @@ class PolkadotTransactionBuilder {
         transactionData.append(signature)
         transactionData.append(try encodeEraNonceTip(era: meta.era, nonce: meta.nonce, tip: 0))
         transactionData.append(try encodeCheckMetadataHashExtensionModeIfNeeded(runtimeVersion: runtimeVersion))
-        transactionData.append(try encodeCall(amount: amount, destination: destination, rawAddress: rawAddress))
+        transactionData.append(
+            try call ?? encodeTransferCall(amount: amount, destination: destination, rawAddress: rawAddress)
+        )
 
         let messageLength = try messageLength(transactionData)
         transactionData = messageLength + transactionData
@@ -105,7 +118,7 @@ class PolkadotTransactionBuilder {
         return transactionData
     }
 
-    private func encodeCall(amount: Amount, destination: String, rawAddress: Bool) throws -> Data {
+    private func encodeTransferCall(amount: Amount, destination: String, rawAddress: Bool) throws -> Data {
         var call = Data()
 
         call.append(balanceTransferCallIndex)
