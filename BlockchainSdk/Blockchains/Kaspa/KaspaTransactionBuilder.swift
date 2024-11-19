@@ -231,7 +231,7 @@ extension KaspaTransactionBuilder {
         )
     }
 
-    public func buildCommitTransactionKRC20(transaction: Transaction, token: Token, includeFee: Bool = true) throws -> KaspaKRC20.CommitTransction {
+    public func buildCommitTransactionKRC20(transaction: Transaction, token: Token, includeFee: Bool = true) throws -> KaspaKRC20.CommitTransaction {
         let availableInputValue = availableAmount()
 
         guard transaction.fee.amount.type == availableInputValue.type,
@@ -301,7 +301,7 @@ extension KaspaTransactionBuilder {
             throw WalletError.failedToBuildTx
         }
 
-        return KaspaKRC20.CommitTransction(
+        return KaspaKRC20.CommitTransaction(
             transaction: commitTransaction,
             hashes: commitHashes,
             redeemScript: redeemScript,

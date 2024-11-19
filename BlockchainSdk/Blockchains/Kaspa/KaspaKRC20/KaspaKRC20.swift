@@ -19,7 +19,7 @@ struct KaspaIncompleteTokenTransactionStorageID: CustomStringConvertible, Hashab
 enum KaspaKRC20 {
     static let RevealTransactionMassConstant: Decimal = 4100
 
-    struct CommitTransction {
+    struct CommitTransaction {
         let transaction: KaspaTransaction
         let hashes: [Data]
         let redeemScript: KaspaKRC20.RedeemScript
