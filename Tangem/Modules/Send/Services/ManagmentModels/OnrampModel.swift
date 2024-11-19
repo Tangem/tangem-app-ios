@@ -88,6 +88,9 @@ private extension OnrampModel {
             let providers = await $0.onrampManager.providers
 
             $0._onrampProviders.send(.loaded(providers))
+            if let selectedProvider = await $0.onrampManager.selectedProvider {
+                $0._selectedOnrampProvider.send(.loaded(selectedProvider))
+            }
         }
     }
 
@@ -301,7 +304,9 @@ extension OnrampModel: SendFinishInput {
 
 extension OnrampModel: SendBaseInput {
     var actionInProcessing: AnyPublisher<Bool, Never> {
-        _isLoading.eraseToAnyPublisher()
+        Publishers
+            .Merge(_isLoading, _currency.map { $0.isLoading })
+            .eraseToAnyPublisher()
     }
 }
 
