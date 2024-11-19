@@ -552,7 +552,7 @@ extension HederaWalletManager: AssetRequirementsManager {
             return nil
         case .token:
             guard let tokenAssociationFeeExchangeRate else {
-                return .paidTransaction(blockchain: wallet.blockchain)
+                return .paidTransactionWithFee(blockchain: wallet.blockchain, transactionAmount: nil, feeAmount: nil)
             }
 
             let feeValue = tokenAssociationFeeExchangeRate * Constants.tokenAssociateServiceCostInUSD
@@ -561,7 +561,7 @@ extension HederaWalletManager: AssetRequirementsManager {
             let feeRoundedValue = feeValue.rounded(blockchain: wallet.blockchain, roundingMode: .up)
             let feeAmount = Amount(with: wallet.blockchain, value: feeRoundedValue)
 
-            return .paidTransactionWithFee(blockchain: wallet.blockchain, feeAmount: feeAmount)
+            return .paidTransactionWithFee(blockchain: wallet.blockchain, transactionAmount: nil, feeAmount: feeAmount)
         }
     }
 

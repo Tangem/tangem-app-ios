@@ -20,8 +20,7 @@ struct SingleTokenAlertBuilder {
 
     func receiveAlert(for requirementsCondition: AssetRequirementsCondition?) -> AlertBinder? {
         switch requirementsCondition {
-        case .paidTransaction,
-             .paidTransactionWithFee:
+        case .paidTransactionWithFee:
             return AlertBinder(title: "", message: Localization.warningReceiveBlockedHederaTokenAssociationRequiredMessage)
         case .none:
             break
@@ -119,12 +118,12 @@ struct SingleTokenAlertBuilder {
         hasFeeCurrency: Bool
     ) -> AlertBinder? {
         switch requirementsCondition {
-        case .paidTransaction where !hasFeeCurrency:
+        case .paidTransactionWithFee(_, _, feeAmount: .none) where !hasFeeCurrency:
             return AlertBinder(
                 title: "",
                 message: Localization.warningHederaTokenAssociationNotEnoughHbarMessage(feeTokenItem.currencySymbol)
             )
-        case .paidTransactionWithFee(_, let feeAmount) where !hasFeeCurrency:
+        case .paidTransactionWithFee(_, _, .some(let feeAmount)) where !hasFeeCurrency:
             assert(
                 feeAmount.type == feeTokenItem.amountType,
                 "Incorrect fee token item received: expected '\(feeAmount.currencySymbol)', got '\(feeTokenItem.currencySymbol)'"
@@ -133,8 +132,7 @@ struct SingleTokenAlertBuilder {
                 title: "",
                 message: Localization.warningHederaTokenAssociationNotEnoughHbarMessage(feeTokenItem.currencySymbol)
             )
-        case .paidTransaction,
-             .paidTransactionWithFee,
+        case .paidTransactionWithFee,
              .none:
             break
         }

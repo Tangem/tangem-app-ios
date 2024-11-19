@@ -211,6 +211,7 @@ final class SingleTokenNotificationManager {
         return input
     }
 
+    // TODO: Andrey Fedorov - Extract somewhere?
     private func makeAssetRequirementsNotificationEvents() -> [TokenNotificationEvent] {
         let asset = walletModel.amountType
 
@@ -223,18 +224,64 @@ final class SingleTokenNotificationManager {
         }
 
         switch assetRequirementsManager.requirementsCondition(for: asset) {
-        case .paidTransaction:
-            return [.hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation(associationFee: nil))]
-        case .paidTransactionWithFee(_, let feeAmount):
-            let balanceFormatter = BalanceFormatter()
-            let associationFee = TokenNotificationEvent.UnfulfilledRequirementsConfiguration.HederaTokenAssociationFee(
-                formattedValue: balanceFormatter.formatDecimal(feeAmount.value),
-                currencySymbol: feeAmount.currencySymbol
+        case .paidTransactionWithFee(let blockchain, let transactionAmount, let feeAmount):
+            let configuration = makeUnfulfilledRequirementsConfiguration(
+                blockchain: blockchain,
+                transactionAmount: transactionAmount,
+                feeAmount: feeAmount
             )
-            return [.hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation(associationFee: associationFee))]
+            return [.hasUnfulfilledRequirements(configuration: configuration)]
         case .none:
             return []
         }
+    }
+
+    // TODO: Andrey Fedorov - Extract somewhere
+    private func makeUnfulfilledRequirementsConfiguration(
+        blockchain: Blockchain,
+        transactionAmount: Amount?,
+        feeAmount: Amount?
+    ) -> TokenNotificationEvent.UnfulfilledRequirementsConfiguration {
+        switch blockchain {
+        case .hedera:
+            guard let associationFee = makeRequirementsConfigurationData(from: feeAmount) else {
+                return .missingHederaTokenAssociation(associationFee: nil)
+            }
+
+            return .missingHederaTokenAssociation(
+                associationFee: .init(
+                    formattedValue: associationFee.formattedValue,
+                    currencySymbol: associationFee.currencySymbol
+                )
+            )
+        case .kaspa:
+            guard let transactionAmount = makeRequirementsConfigurationData(from: transactionAmount) else {
+                preconditionFailure() // TODO: Andrey Fedorov - Add actual implementation
+            }
+
+            return .incompleteKaspaTokenTransaction(
+                revealTransaction: .init(
+                    formattedValue: transactionAmount.formattedValue,
+                    currencySymbol: transactionAmount.currencySymbol
+                )
+            )
+        default:
+            preconditionFailure() // TODO: Andrey Fedorov - Add actual implementation
+        }
+    }
+
+    // TODO: Andrey Fedorov - Extract somewhere
+    private func makeRequirementsConfigurationData(
+        from amount: Amount?
+    ) -> (formattedValue: String, currencySymbol: String)? {
+        guard let amount else {
+            return nil
+        }
+
+        let balanceFormatter = BalanceFormatter()
+        let formattedValue = balanceFormatter.formatDecimal(amount.value)
+
+        return (formattedValue, amount.currencySymbol)
     }
 
     func makeStakingNotificationEvent() -> TokenNotificationEvent? {
