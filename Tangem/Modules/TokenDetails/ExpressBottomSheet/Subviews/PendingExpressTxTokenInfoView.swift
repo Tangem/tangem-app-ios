@@ -9,23 +9,10 @@
 import SwiftUI
 
 struct PendingExpressTxTokenInfoView: View {
-    private let tokenIconInfo: TokenIconInfo
-    private let amountText: String
-    private let fiatAmountTextState: LoadableTextView.State
-
-    private let iconSize: CGSize
-
-    init(
-        tokenIconInfo: TokenIconInfo,
-        amountText: String,
-        fiatAmountTextState: LoadableTextView.State,
-        iconSize: CGSize = CGSize(bothDimensions: 36)
-    ) {
-        self.tokenIconInfo = tokenIconInfo
-        self.amountText = amountText
-        self.fiatAmountTextState = fiatAmountTextState
-        self.iconSize = iconSize
-    }
+    let tokenIconInfo: TokenIconInfo
+    let amountText: String
+    let fiatAmountTextState: LoadableTextView.State
+    let iconSize: CGSize = .init(bothDimensions: 36)
 
     var body: some View {
         HStack(spacing: 12) {

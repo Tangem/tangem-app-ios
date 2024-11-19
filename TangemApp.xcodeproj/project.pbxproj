@@ -2031,8 +2031,6 @@
 		DAAA3C6D2B3D64B90002DBB0 /* EmailDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAAA3C6C2B3D64B90002DBB0 /* EmailDataProvider.swift */; };
 		DAAA3C6F2B3D79FA0002DBB0 /* TransactionParamsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAAA3C6E2B3D79FA0002DBB0 /* TransactionParamsBuilder.swift */; };
 		DAAD053A2CE21B1600E53EF3 /* PendingExpressTxStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAAD05392CE21B1600E53EF3 /* PendingExpressTxStatusView.swift */; };
-		DAAD053D2CE21CD900E53EF3 /* PendingExpressTxProviderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAAD053C2CE21CD900E53EF3 /* PendingExpressTxProviderView.swift */; };
-		DAAD053F2CE21D8A00E53EF3 /* PendingExpressTxAmountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAAD053E2CE21D8A00E53EF3 /* PendingExpressTxAmountView.swift */; };
 		DAAEC38D2BF31A8800184D7C /* SendFeatureProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAAEC38C2BF31A8800184D7C /* SendFeatureProvider.swift */; };
 		DAB19D482B2C72A100DD08C4 /* AddCustomTokenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB19D432B2C72A100DD08C4 /* AddCustomTokenCoordinator.swift */; };
 		DAB19D492B2C72A100DD08C4 /* AddCustomTokenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB19D442B2C72A100DD08C4 /* AddCustomTokenViewModel.swift */; };
@@ -5146,8 +5144,6 @@
 		DAAA3C6C2B3D64B90002DBB0 /* EmailDataProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmailDataProvider.swift; sourceTree = "<group>"; };
 		DAAA3C6E2B3D79FA0002DBB0 /* TransactionParamsBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransactionParamsBuilder.swift; sourceTree = "<group>"; };
 		DAAD05392CE21B1600E53EF3 /* PendingExpressTxStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingExpressTxStatusView.swift; sourceTree = "<group>"; };
-		DAAD053C2CE21CD900E53EF3 /* PendingExpressTxProviderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingExpressTxProviderView.swift; sourceTree = "<group>"; };
-		DAAD053E2CE21D8A00E53EF3 /* PendingExpressTxAmountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingExpressTxAmountView.swift; sourceTree = "<group>"; };
 		DAAEC38C2BF31A8800184D7C /* SendFeatureProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendFeatureProvider.swift; sourceTree = "<group>"; };
 		DAB19D432B2C72A100DD08C4 /* AddCustomTokenCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddCustomTokenCoordinator.swift; sourceTree = "<group>"; };
 		DAB19D442B2C72A100DD08C4 /* AddCustomTokenViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddCustomTokenViewModel.swift; sourceTree = "<group>"; };
@@ -12328,8 +12324,6 @@
 			isa = PBXGroup;
 			children = (
 				DA89AC092CE6B18000AFB755 /* PendingExpressTxTokenInfoView.swift */,
-				DAAD053E2CE21D8A00E53EF3 /* PendingExpressTxAmountView.swift */,
-				DAAD053C2CE21CD900E53EF3 /* PendingExpressTxProviderView.swift */,
 				DAAD05392CE21B1600E53EF3 /* PendingExpressTxStatusView.swift */,
 				B03574C72B1F876300118786 /* PendingExpressTxStatusRow.swift */,
 			);
@@ -17238,7 +17232,6 @@
 				EF4662222924DEEE00346B6C /* DefaultToggleRowView.swift in Sources */,
 				EF46621B2924DEEE00346B6C /* DefaultHeaderView.swift in Sources */,
 				DC66BBEB2859AB8600CDF765 /* TOSViewModel.swift in Sources */,
-				DAAD053F2CE21D8A00E53EF3 /* PendingExpressTxAmountView.swift in Sources */,
 				B600F4D12C50F714008E53FE /* MarketsHistoryChartView.swift in Sources */,
 				DA1010202CDA4DC200EE0D05 /* OnrampCountrySkeletonView.swift in Sources */,
 				DC3DCAE82A49B5D500F72554 /* UserTokensManager.swift in Sources */,
@@ -17733,7 +17726,6 @@
 				B6FECF512C4032930030A8A9 /* PushNotificationsAvailabilityProviderStub.swift in Sources */,
 				DC2AB6E72C08D9F80050796C /* WelcomeOnboardingTOSViewModel.swift in Sources */,
 				DA6C7528292613D00070EEFD /* UserWalletIdFactory.swift in Sources */,
-				DAAD053D2CE21CD900E53EF3 /* PendingExpressTxProviderView.swift in Sources */,
 				DC3DCAD72A40AA4B00F72554 /* WalletModelsFactory.swift in Sources */,
 				DA559C372B0261F400F59584 /* SendRoutable.swift in Sources */,
 				EF9C52B3287C77A10015D540 /* CardSettingsRoutable.swift in Sources */,

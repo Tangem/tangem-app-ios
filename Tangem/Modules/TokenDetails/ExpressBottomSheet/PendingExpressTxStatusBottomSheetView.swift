@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import TangemExpress
 
 struct PendingExpressTxStatusBottomSheetView: View {
     @ObservedObject var viewModel: PendingExpressTxStatusBottomSheetViewModel
@@ -20,7 +19,7 @@ struct PendingExpressTxStatusBottomSheetView: View {
     var body: some View {
         VStack(spacing: 0) {
             VStack(spacing: 12) {
-                Text(viewModel.expressBranch.sheetTitle)
+                Text(viewModel.sheetTitle)
                     .style(Fonts.Regular.headline, color: Colors.Text.primary1)
 
                 Text(Localization.expressExchangeStatusSubtitle)
@@ -54,56 +53,79 @@ struct PendingExpressTxStatusBottomSheetView: View {
     }
 
     private var amountsView: some View {
-        PendingExpressTxAmountView(
-            timeString: viewModel.timeString,
-            sourceTokenIconInfo: viewModel.sourceTokenIconInfo,
-            sourceAmountText: viewModel.sourceAmountText,
-            sourceFiatAmountTextState: viewModel.sourceFiatAmountTextState,
-            destinationTokenIconInfo: viewModel.destinationTokenIconInfo,
-            destinationAmountText: viewModel.destinationAmountText,
-            destinationFiatAmountTextState: viewModel.destinationFiatAmountTextState
-        )
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 0) {
+                Text(Localization.expressEstimatedAmount)
+                    .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+
+                Spacer(minLength: 8)
+
+                Text(viewModel.timeString)
+                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+            }
+
+            HStack(spacing: 12) {
+                PendingExpressTxTokenInfoView(
+                    tokenIconInfo: viewModel.sourceTokenIconInfo,
+                    amountText: viewModel.sourceAmountText,
+                    fiatAmountTextState: viewModel.sourceFiatAmountTextState
+                )
+
+                Assets.arrowRightMini.image
+                    .renderingMode(.template)
+                    .resizable()
+                    .frame(size: .init(bothDimensions: 12))
+                    .foregroundColor(Colors.Icon.informative)
+
+                PendingExpressTxTokenInfoView(
+                    tokenIconInfo: viewModel.destinationTokenIconInfo,
+                    amountText: viewModel.destinationAmountText,
+                    fiatAmountTextState: viewModel.destinationFiatAmountTextState
+                )
+            }
+        }
+        .defaultRoundedBackground(with: Colors.Background.action)
     }
 
     private var providerView: some View {
-        PendingExpressTxProviderView(
-            transactionID: viewModel.transactionID,
-            copyTransactionIDAction: viewModel.copyTransactionID,
-            providerRowViewModel: viewModel.providerRowViewModel
-        )
+        VStack(spacing: 12) {
+            HStack {
+                Text(Localization.expressProvider)
+                    .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+
+                Spacer()
+
+                if let transactionID = viewModel.transactionID {
+                    Button(action: viewModel.copyTransactionID) {
+                        HStack(spacing: 4) {
+                            Assets.copy.image
+                                .resizable()
+                                .renderingMode(.template)
+                                .frame(width: 16, height: 16)
+                                .foregroundColor(Colors.Icon.informative)
+
+                            Text(Localization.expressTransactionId(transactionID))
+                                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                        }
+                        .lineLimit(1)
+                    }
+                }
+            }
+
+            ProviderRowView(viewModel: viewModel.providerRowViewModel)
+        }
+        .defaultRoundedBackground(with: Colors.Background.action)
     }
 
     private var statusesView: some View {
         PendingExpressTxStatusView(
-            title: viewModel.expressBranch.statusTitle(
-                providerName: viewModel.providerRowViewModel.provider.name
-            ),
+            title: viewModel.statusViewTitle,
+            statusesList: viewModel.statusesList,
             showGoToProviderHeaderButton: viewModel.showGoToProviderHeaderButton,
-            openProviderFromStatusHeader: viewModel.openProviderFromStatusHeader,
-            statusesList: viewModel.statusesList
+            openProviderFromStatusHeader: viewModel.openProviderFromStatusHeader
         )
         // This prevents notification to appear and disappear on top of the statuses list
         .zIndex(5)
-    }
-}
-
-private extension ExpressBranch {
-    var sheetTitle: String {
-        switch self {
-        case .swap:
-            Localization.expressExchangeStatusTitle
-        case .onramp:
-            Localization.commonTransactionStatus
-        }
-    }
-
-    func statusTitle(providerName: String) -> String {
-        switch self {
-        case .swap:
-            Localization.expressExchangeBy(providerName)
-        case .onramp:
-            Localization.commonTransactionStatus
-        }
     }
 }
 

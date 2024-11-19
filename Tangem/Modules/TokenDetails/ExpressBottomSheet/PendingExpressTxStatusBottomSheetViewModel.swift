@@ -20,7 +20,8 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
         Constants.animationDuration
     }
 
-    let expressBranch: ExpressBranch
+    let sheetTitle: String
+    let statusViewTitle: String
 
     let timeString: String
     let sourceTokenIconInfo: TokenIconInfo
@@ -60,14 +61,22 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
         pendingTransactionsManager: PendingExpressTransactionsManager,
         router: PendingExpressTxStatusRoutable
     ) {
-        self.expressBranch = expressBranch
         self.pendingTransaction = pendingTransaction
         self.currentTokenItem = currentTokenItem
         self.pendingTransactionsManager = pendingTransactionsManager
         self.router = router
 
         let provider = pendingTransaction.transactionRecord.provider
-        
+
+        switch expressBranch {
+        case .swap:
+            sheetTitle = Localization.expressExchangeStatusTitle
+            statusViewTitle = Localization.expressExchangeBy(provider.name)
+        case .onramp:
+            sheetTitle = Localization.commonTransactionStatus
+            statusViewTitle = Localization.commonTransactionStatus
+        }
+
         providerRowViewModel = .init(
             provider: expressProviderFormatter.mapToProvider(provider: provider),
             titleFormat: .name,

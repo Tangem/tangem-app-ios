@@ -10,9 +10,9 @@ import SwiftUI
 
 struct PendingExpressTxStatusView: View {
     let title: String
+    let statusesList: [PendingExpressTxStatusRow.StatusRowData]
     let showGoToProviderHeaderButton: Bool
     let openProviderFromStatusHeader: () -> Void
-    let statusesList: [PendingExpressTxStatusRow.StatusRowData]
 
     var body: some View {
         VStack(spacing: 14) {
