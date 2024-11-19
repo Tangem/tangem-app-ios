@@ -64,7 +64,10 @@ class OnboardingCoordinator: CoordinatorObject {
         case .visa:
             let model = VisaOnboardingViewModel(
                 input: input,
-                visaActivationManager: VisaActivationManagerFactory().make(),
+                visaActivationManager: VisaActivationManagerFactory().make(
+                    urlSessionConfiguration: .default,
+                    logger: AppLog.shared
+                ),
                 coordinator: self
             )
             onDismissalAttempt = model.backButtonAction

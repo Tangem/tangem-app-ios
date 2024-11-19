@@ -46,10 +46,10 @@ struct AuthorizationAPITarget: TargetType {
             params[.sessionId] = sessionId
             params[.signature] = signature
             params[.salt] = salt
-            params[.grantType] = GrantType.password
+            params[.grantType] = GrantType.password.rawValue
         case .refreshAccessToken(let refreshToken):
             params[.clientId] = clientId
-            params[.grantType] = GrantType.refreshToken
+            params[.grantType] = GrantType.refreshToken.rawValue
             params[.refreshToken] = refreshToken
         }
 
