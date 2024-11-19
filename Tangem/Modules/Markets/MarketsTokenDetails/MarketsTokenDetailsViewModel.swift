@@ -233,7 +233,7 @@ class MarketsTokenDetailsViewModel: MarketsBaseViewModel {
     }
 
     func onGenerateAITapAction() {
-        descriptionBottomSheetInfo = nil
+        fullDescriptionBottomSheetInfo = nil
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
             guard let self else { return }
