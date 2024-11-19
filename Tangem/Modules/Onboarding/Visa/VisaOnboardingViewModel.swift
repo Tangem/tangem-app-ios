@@ -48,6 +48,8 @@ class VisaOnboardingViewModel: ObservableObject {
         startActivationDelegate: weakify(self, forFunction: VisaOnboardingViewModel.goToNextStep)
     )
 
+    lazy var accessCodeSetupViewModel = VisaOnboardingAccessCodeSetupViewModel(delegate: self)
+
     var navigationBarTitle: String {
         currentStep.navigationTitle
     }
@@ -80,12 +82,22 @@ class VisaOnboardingViewModel: ObservableObject {
         self.input = input
         self.visaActivationManager = visaActivationManager
         self.coordinator = coordinator
+
+        if case .visa(let visaSteps) = input.steps {
+            steps = visaSteps
+        }
     }
 
     func backButtonAction() {
         switch currentStep {
         case .welcome, .pushNotifications, .saveUserWallet:
             alert = AlertBuilder.makeExitAlert(okAction: weakify(self, forFunction: VisaOnboardingViewModel.closeOnboarding))
+        case .accessCode:
+            guard accessCodeSetupViewModel.canGoBack() else {
+                return
+            }
+
+            goToStep(.welcome)
         case .success:
             break
         }
@@ -120,7 +132,9 @@ private extension VisaOnboardingViewModel {
     func goToNextStep() {
         switch currentStep {
         case .welcome:
-            startActivation()
+            goToStep(.accessCode)
+        case .accessCode:
+            break
         case .saveUserWallet, .pushNotifications:
             break
         case .success:
@@ -205,6 +219,19 @@ extension VisaOnboardingViewModel: UserWalletStorageAgreementRoutable {
 extension VisaOnboardingViewModel: PushNotificationsPermissionRequestDelegate {
     func didFinishPushNotificationOnboarding() {
         goToNextStep()
+    }
+}
+
+extension VisaOnboardingViewModel: VisaOnboardingAccessCodeSetupDelegate {
+    /// We need to show alert in parent view, otherwise it won't be presented
+    @MainActor
+    func showAlert(_ alert: AlertBinder) async {
+        self.alert = alert
+    }
+
+    func useSelectedCode(accessCode: String) async throws {
+        try await Task.sleep(seconds: 5)
+        throw "Will be implemented later IOS-8509"
     }
 }
 
