@@ -177,7 +177,6 @@ extension TokenNotificationEvent: NotificationEvent {
         }
     }
 
-    // TODO: Andrey Fedorov - Add action on dismiss
     var isDismissable: Bool {
         switch self {
         case .rentFee,
@@ -242,14 +241,27 @@ extension TokenNotificationEvent {
             let currencySymbol: String
         }
 
-        // TODO: Andrey Fedorov - Use dedicated type instead?
-        typealias KaspaTokenRevealTransaction = HederaTokenAssociationFee
+        /// `onTransactionDiscard` is intentionally ignored by `Equatable` and `Hashable` implementations.
+        struct KaspaTokenRevealTransaction: Hashable {
+            let formattedValue: String
+            let currencySymbol: String
+            let onTransactionDiscard: () -> Void
+
+            static func == (lhs: Self, rhs: Self) -> Bool {
+                return lhs.formattedValue == rhs.formattedValue && lhs.currencySymbol == rhs.currencySymbol
+            }
+
+            func hash(into hasher: inout Hasher) {
+                hasher.combine(formattedValue)
+                hasher.combine(currencySymbol)
+            }
+        }
 
         /// `associationFee` fetched asynchronously and therefore may be absent in some cases.
         case missingHederaTokenAssociation(associationFee: HederaTokenAssociationFee?)
+        case incompleteKaspaTokenTransaction(revealTransaction: KaspaTokenRevealTransaction)
         @available(*, unavailable, message: "Token trust lines support not implemented yet")
         case missingTokenTrustline
-        case incompleteKaspaTokenTransaction(revealTransaction: KaspaTokenRevealTransaction)
     }
 }
 

@@ -216,7 +216,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             .withWeakCaptureOf(self)
             .asyncMap { manager, response in
                 // Delete Commit
-                await manager.remove(incompleteTokenTransactionID: incompleteTransactionParams.transactionId, for: token)
+                await manager.remove(for: token)
                 return TransactionSendResult(hash: response.transactionId)
             }
             .eraseSendError()
@@ -270,7 +270,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             })
             .withWeakCaptureOf(self)
             .asyncMap { manager, input in
-                await manager.remove(incompleteTokenTransactionID: params.transactionId, for: token)
+                await manager.remove(for: token)
                 return TransactionSendResult(hash: input.transactionId)
             }
             .eraseSendError()
@@ -436,6 +436,16 @@ extension KaspaWalletManager: AssetRequirementsManager {
         // TODO: Andrey Fedorov - Add actual implementation
         return .anyFail(error: WalletError.empty)
     }
+
+    func discardRequirements(for asset: Asset) {
+        guard let token = asset.token else {
+            return
+        }
+
+        runTask(in: self) { walletManager in
+            await walletManager.remove(for: token)
+        }
+    }
 }
 
 // MARK: - KRC20 Management
@@ -499,7 +509,8 @@ private extension KaspaWalletManager {
         await dataStorage.store(key: key, value: incompleteTokenTransaction)
     }
 
-    func remove(incompleteTokenTransactionID: String, for token: Token) async {
+    // TODO: Andrey Fedorov - Do we need this arg? Improve naming
+    func remove( /* incompleteTokenTransactionID: String, */ for token: Token) async {
         let key = KaspaIncompleteTokenTransactionStorageID(contract: token.contractAddress).id
 
         /* if */

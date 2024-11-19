@@ -243,26 +243,33 @@ final class SingleTokenNotificationManager {
     ) -> TokenNotificationEvent.UnfulfilledRequirementsConfiguration {
         switch blockchain {
         case .hedera:
-            guard let associationFee = makeRequirementsConfigurationData(from: feeAmount) else {
+            guard let configurationData = makeRequirementsConfigurationData(from: feeAmount) else {
                 return .missingHederaTokenAssociation(associationFee: nil)
             }
 
             return .missingHederaTokenAssociation(
                 associationFee: .init(
-                    formattedValue: associationFee.formattedValue,
-                    currencySymbol: associationFee.currencySymbol
+                    formattedValue: configurationData.formattedValue,
+                    currencySymbol: configurationData.currencySymbol
                 )
             )
         case .kaspa:
-            guard let transactionAmount = makeRequirementsConfigurationData(from: transactionAmount) else {
+            guard
+                let transactionAmount,
+                let configurationData = makeRequirementsConfigurationData(from: transactionAmount)
+            else {
                 preconditionFailure() // TODO: Andrey Fedorov - Add actual implementation
             }
 
+            let asset = transactionAmount.type
+
             return .incompleteKaspaTokenTransaction(
                 revealTransaction: .init(
-                    formattedValue: transactionAmount.formattedValue,
-                    currencySymbol: transactionAmount.currencySymbol
-                )
+                    formattedValue: configurationData.formattedValue,
+                    currencySymbol: configurationData.currencySymbol
+                ) { [weak walletModel] in
+                    walletModel?.assetRequirementsManager?.discardRequirements(for: asset)
+                }
             )
         default:
             preconditionFailure() // TODO: Andrey Fedorov - Add actual implementation
@@ -312,7 +319,20 @@ extension SingleTokenNotificationManager: NotificationManager {
     }
 
     func dismissNotification(with id: NotificationViewId) {
-        notificationInputsSubject.value.removeAll(where: { $0.id == id })
+        guard let notification = notificationInputsSubject.value.first(where: { $0.id == id }) else {
+            return
+        }
+
+        if let event = notification.settings.event as? TokenNotificationEvent {
+            switch event {
+            case .hasUnfulfilledRequirements(.incompleteKaspaTokenTransaction(let revealTransaction)):
+                revealTransaction.onTransactionDiscard()
+            default:
+                break
+            }
+        }
+
+        notificationInputsSubject.value.removeAll { $0 == notification }
     }
 }
 
