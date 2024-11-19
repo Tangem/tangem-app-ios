@@ -53,11 +53,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             mainBottomSheetUIManager.hide(shouldUpdateFooterSnapshot: false)
             startApp(scene: scene, appCoordinatorOptions: .locked)
             hideLockView()
-
-            // more time needed for ios 15 and 16 to update ui under the lock view. Keep for all ios for uniformity.
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-//                hideLockView()
-//            }
         } else {
             hideLockView()
         }
