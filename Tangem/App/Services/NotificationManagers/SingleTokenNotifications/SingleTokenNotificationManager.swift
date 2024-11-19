@@ -217,8 +217,7 @@ final class SingleTokenNotificationManager {
 
         guard
             !walletModel.hasPendingTransactions,
-            let assetRequirementsManager = walletModel.assetRequirementsManager,
-            assetRequirementsManager.hasRequirements(for: asset)
+            let assetRequirementsManager = walletModel.assetRequirementsManager
         else {
             return []
         }

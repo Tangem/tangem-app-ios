@@ -400,6 +400,15 @@ final class HederaWalletManager: BaseManager {
         }
     }
 
+    private func assetRequiresAssociation(_ asset: Asset) -> Bool {
+        switch asset {
+        case .coin, .reserve, .feeResource:
+            return false
+        case .token(let token):
+            return !(associatedTokens ?? []).contains(token.contractAddress)
+        }
+    }
+
     // MARK: - Transaction dependencies and building
 
     private func getFee(amount: Amount, doesAccountExistPublisher: some Publisher<Bool, Error>) -> AnyPublisher<[Fee], Error> {
@@ -533,17 +542,8 @@ extension HederaWalletManager: WalletManager {
 // MARK: - AssetRequirementsManager protocol conformance
 
 extension HederaWalletManager: AssetRequirementsManager {
-    func hasRequirements(for asset: Asset) -> Bool {
-        switch asset {
-        case .coin, .reserve, .feeResource:
-            return false
-        case .token(let token):
-            return !(associatedTokens ?? []).contains(token.contractAddress)
-        }
-    }
-
     func requirementsCondition(for asset: Asset) -> AssetRequirementsCondition? {
-        guard hasRequirements(for: asset) else {
+        guard assetRequiresAssociation(asset) else {
             return nil
         }
 
@@ -566,7 +566,7 @@ extension HederaWalletManager: AssetRequirementsManager {
     }
 
     func fulfillRequirements(for asset: Asset, signer: any TransactionSigner) -> AnyPublisher<Void, Error> {
-        guard hasRequirements(for: asset) else {
+        guard assetRequiresAssociation(asset) else {
             return .justWithError(output: ())
         }
 

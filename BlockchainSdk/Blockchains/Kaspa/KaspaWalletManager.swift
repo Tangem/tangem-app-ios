@@ -417,10 +417,6 @@ extension KaspaWalletManager: MaximumAmountRestrictable {
 // MARK: - AssetRequirementsManager protocol conformance
 
 extension KaspaWalletManager: AssetRequirementsManager {
-    func hasRequirements(for asset: Asset) -> Bool {
-        return getIncompleteTokenTransaction(for: asset) != nil
-    }
-
     func requirementsCondition(for asset: Asset) -> AssetRequirementsCondition? {
         guard
             let token = asset.token,
