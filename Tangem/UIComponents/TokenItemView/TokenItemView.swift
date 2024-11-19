@@ -35,7 +35,7 @@ struct TokenItemView: View {
                             .lineLimit(1)
 
                         if viewModel.hasPendingTransactions {
-                            Assets.pendingTxIndicator.image
+                            ProgressDots(style: .small)
                         }
                     }
                     .frame(minWidth: 0.3 * textBlockSize.width, alignment: .leading)
