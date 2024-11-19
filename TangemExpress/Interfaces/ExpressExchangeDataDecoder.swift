@@ -9,5 +9,5 @@
 import Foundation
 
 public protocol ExpressExchangeDataDecoder {
-    func decode(txDetailsJson: String, signature: String) throws -> DecodedTransactionDetails
+    func decode<T: Decodable>(txDetailsJson: String, signature: String) throws -> T
 }

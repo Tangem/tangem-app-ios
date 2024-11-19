@@ -152,7 +152,7 @@ private extension ExpressApproveViewModel {
             do {
                 try await viewModel.approveViewModelInput.sendApproveTransaction()
                 await viewModel.didSendApproveTransaction()
-            } catch SendTransactionDispatcherResult.Error.userCancelled {
+            } catch TransactionDispatcherResult.Error.userCancelled {
                 // Do nothing
             } catch {
                 viewModel.logger.error(error)
@@ -176,9 +176,11 @@ extension ExpressApproveViewModel {
     }
 }
 
-extension ExpressApprovePolicy: DefaultMenuRowViewModelAction {
+extension ExpressApprovePolicy: @retroactive Identifiable {
     public var id: Int { hashValue }
+}
 
+extension ExpressApprovePolicy: DefaultMenuRowViewModelAction {
     public var title: String {
         switch self {
         case .specified:

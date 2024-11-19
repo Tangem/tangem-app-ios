@@ -60,10 +60,12 @@ struct BlockchainSDKNotificationMapper {
             return .cardanoInsufficientBalanceToSendToken(tokenSymbol: tokenItemSymbol)
         case .insufficientFeeResource(.mana, let current, let max):
             return .notEnoughMana(current: current, max: max)
-        case .amountExeedsFeeResourceCapacity(.mana, let availableAmount):
+        case .amountExceedsFeeResourceCapacity(.mana, let availableAmount):
             return .manaLimit(availableAmount: availableAmount)
         case .feeExceedsMaxFeeResource:
             return .koinosInsufficientBalanceToSendKoin
+        case .minimumRestrictAmount(let restrictAmount):
+            return .minimumRestrictAmount(restrictAmountFormatted: restrictAmount.string())
         }
     }
 

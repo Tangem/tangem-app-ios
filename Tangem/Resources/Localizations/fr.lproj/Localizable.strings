@@ -1,3 +1,11 @@
+"action_buttons_buy_empty_search_message" = "Jeton non trouvé dans votre portefeuille ? Consultez les marchés pour le trouver et l'ajouter à l'achat";
+"action_buttons_sell_empty_search_message" = "Jeton non trouvé dans votre portefeuille ? Consultez les marchés pour le trouver et l'ajouter à la vente";
+"action_buttons_swap_choose_token" = "Choisissez le jeton";
+"action_buttons_swap_empty_search_message" = "Jeton non trouvé dans votre portefeuille ? Consultez les marchés pour le trouver et l'ajouter à l'échange";
+"action_buttons_swap_no_available_pair_notification_message" = "Il n'y a pas de token disponible pour échanger avec le token sélectionné. Veuillez en choisir un autre.";
+"action_buttons_swap_no_available_pair_notification_title" = "Aucune paire disponible";
+"action_buttons_you_want_to_receive" = "Vous souhaitez recevoir";
+"action_buttons_you_want_to_swap" = "Vous souhaitez échanger";
 "add_custom_token_choose_network" = "Choisissez le réseau";
 "add_custom_token_title" = "Ajouter un jeton personnalisé";
 "add_tokens_title" = "Gérer les jetons";
@@ -165,6 +173,7 @@
 "common_terms_of_use" = "Conditions d'utilisation";
 "common_today" = "Aujourd'hui";
 "common_transaction_failed" = "La transaction a échoué";
+"common_transaction_status" = "Transaction status";
 "common_transactions" = "Transactions";
 "common_transfer" = "Transfert";
 "common_understand" = "Je comprends";
@@ -173,6 +182,7 @@
 "common_unstake" = "Unstakez";
 "common_warning" = "Alerte";
 "common_week" = "semaine";
+"common_with" = "with";
 "common_yes" = "Oui";
 "contract_address_copied_message" = "Adresse du contrat copiée !";
 "currency_subtitle_expanded" = "Réseaux disponibles";
@@ -429,7 +439,7 @@
 "markets_token_details_price_performance" = "Performance des prix";
 "markets_token_details_repository" = "Dépôt";
 "markets_token_details_security_score" = "Score de sécurité";
-"markets_token_details_security_score_description" = "";
+"markets_token_details_security_score_description" = "Security score of a token is a metric that assesses the security level of a blockchain or token based on various factors and is compiled from the sources listed below.";
 "markets_token_details_social" = "Social";
 "markets_token_details_total_supply" = "Approvisionnement total";
 "markets_token_details_total_supply_description" = "Le nombre maximal de pièces ou de jetons pouvant exister pour une crypto-monnaie particulière";
@@ -529,9 +539,25 @@
 "onboarding_wallet_info_title_fourth" = "Restauration du code d'accès";
 "onboarding_wallet_info_title_second" = "Cartes identiques";
 "onboarding_wallet_info_title_third" = "Code d'accès";
+"onramp_country_search" = "Recherche par pays";
+"onramp_country_unavailable" = "Indisponible";
+"onramp_currency_other" = "Autres devises";
+"onramp_currency_popular" = "Devises Fiats Populaires";
+"onramp_currency_search" = "Recherche par devise";
+"onramp_max_amount_restriction" = "Le montant de l'achat ne doit pas dépasser %@";
+"onramp_min_amount_restriction" = "Le montant à acheter doit être au moins %@";
+"onramp_no_available_providers" = "Aucun fournisseur disponible pour cette devise";
+"onramp_pay_with" = "Payer avec";
+"onramp_redirecting_to_provider_subtitle" = "You will be able to complete your transaction on the third-party provider, %@";
+"onramp_redirecting_to_provider_title" = "Redirecting to %@...";
 "onramp_residency_bottomsheet_country_not_supported" = "Nos services ne sont pas disponibles dans ce pays";
 "onramp_residency_bottomsheet_country_subtitle" = "Modifiez-le ou confirmez-le";
 "onramp_residency_bottomsheet_title" = "Votre résidence a été identifiée comme";
+"onramp_settings_residence" = "Résidence";
+"onramp_settings_residence_description" = "Veuillez sélectionner le bon pays pour garantir des options de paiement et des services précis.";
+"onramp_settings_title" = "Paramètres";
+"onramp_transaction_status_footer_text" = "You can check the transaction status from the token page";
+"onramp_via" = "Via";
 "organize_tokens_group" = "Grouper";
 "organize_tokens_sort_by_balance" = "Par solde";
 "organize_tokens_title" = "Organiser les jetons";
@@ -666,6 +692,7 @@
 "staking_active_footer" = "Afin d'unstaker vos actifs, appuyez sur le bloc ci-dessus";
 "staking_amount_requirement_error" = "Le montant à staker doit être au moins %@";
 "staking_amount_tron_integer_error" = "Le montant du staking sera arrondi à %1$@ TRX en raison des règles du réseau.";
+"staking_amount_tron_integer_error_unstaking" = "Le montant d'annulation du staking sera arrondi à %1$@ TRX en raison des règles du réseau.";
 "staking_claim_unstaked" = "Réclamation déstakée";
 "staking_details_account_fee" = "Frais de staking du compte";
 "staking_details_account_fee_info" = "Un compte de staking est un compte spécial où sont stockés les jetons SOL stakés. Il est créé lorsque vous déléguez vos jetons à un validateur pour participer à la validation des transactions et gagner des récompenses. Des frais minimes sont facturés pour la création du compte de staking, qui sont restitués une fois le staking terminé.";
@@ -693,7 +720,7 @@
 "staking_details_warmup_period_info" = "Le temps imparti pour activer la participation au staking.";
 "staking_dismiss_message" = "Êtes-vous sûr(e) de vouloir fermer l'écran de staking ?";
 "staking_give_permission_fee_footer" = "Le réseau facturera des frais d’approbation de jeton pour vérifier que vous autorisez l’utilisation de votre jeton pour le jalonnement.";
-"staking_legal" = "En utilisant la fonctionnalité de staking, vous acceptez les  %1$@ et %2$@ du fournisseur";
+"staking_legal" = "En utilisant la fonctionnalité de staking, vous acceptez les %1$@ et %2$@ du fournisseur";
 "staking_locked" = "Bloqué";
 "staking_migrate" = "Migrer";
 "staking_native" = "Native staking";
@@ -709,10 +736,13 @@
 "staking_notification_earn_rewards_text_period_week" = "Le staking vous permet de gagner %1$@. Vos récompenses de staking arrivent toutes les semaines.";
 "staking_notification_earn_rewards_text_weekly" = "Stakez en toute sécurité et commencez à gagner des récompenses hebdomadaires";
 "staking_notification_earn_rewards_title" = "Gagnez des récompenses de staking";
+"staking_notification_low_staked_balance_text" = "Votre solde stakée sera trop faible pour annuler votre staking. Vous devrez staker davantage pour atteindre le montant minimum pour annuler le staking.";
+"staking_notification_low_staked_balance_title" = "Solde de staking faible";
 "staking_notification_network_error_text" = "L'option de staking n'est actuellement pas disponible en raison des conditions du réseau. Veuillez réessayer plus tard.";
 "staking_notification_new_validator_funds_transfer" = "Le staking dans le réseau %1$@ avec un nouveau validateur transférera automatiquement tous les fonds précédemment stakés vers ce validateur";
 "staking_notification_restake_rewards_text" = "Réinvestissez vos récompenses gagnées dans le montant que vous avez staké, augmentant ainsi vos gains potentiels.";
 "staking_notification_restake_text" = "L'option de restaker vous permet de déplacer vos fonds d'un validateur à un autre sans avoir besoin de les déstaker.";
+"staking_notification_stake_entire_balance_text" = "Vous êtes sur le point de staker l'intégralité de votre solde. Nous vous recommandons de laisser un petit montant pour couvrir les frais de réseau pour unstaking ou la réclamation des récompenses.";
 "staking_notification_unlock_text" = "Débloquez votre argent pour le retirer du processus de staking. Le déverrouillage prend %@.";
 "staking_notification_unstake_cosmos_text" = "Vos fonds seront disponibles à l'utilisation après la période de déblocage de 21 jours. La récompense sera retirée en même temps que vos fonds de déblocage.";
 "staking_notification_unstake_text" = "Vos fonds seront disponibles pour utilisation après la période de désengagement %@.";
@@ -742,6 +772,7 @@
 "staking_rewards" = "Récompenses";
 "staking_stake_locked" = "Stake verrouillé";
 "staking_stake_more" = "Staker plus";
+"staking_staked_amount" = "Montant staké";
 "staking_summary_description_text" = "Vous stakez %1$@ et recevrez %2$@";
 "staking_tap_to_unlock" = "Appuyez pour déverrouiller";
 "staking_tap_to_unlock_or_vote" = "Appuyez pour déverrouiller ou voter";
@@ -753,6 +784,7 @@
 "staking_unbonding_in" = "Dissociation en";
 "staking_unlocked_locked" = "Débloquer";
 "staking_unlocking" = "Déverrouillage";
+"staking_unstake_amount_requirement_error" = "Le montant à destaker doit être au moins %@";
 "staking_unstake_amount_validation_error" = "Le montant dépasse le solde misé";
 "staking_unstaked" = "Non-staké";
 "staking_unstaked_footer" = "Vérifiez non-stakés pour réclamer vos actifs";
@@ -785,6 +817,7 @@
 "swapping_alert_cex_description_with_slippage" = "Le montant comprend :\n• les frais du fournisseur de services\n• les frais de réseau pour l'envoi de %1$@ depuis l'échange vers l'adresse de l'utilisateur. \n\nLe slippage du fournisseur peut atteindre %2$@";
 "swapping_alert_dex_description" = "Le montant comprend les frais du fournisseur de services.";
 "swapping_alert_dex_description_with_slippage" = "Le montant comprend les frais du fournisseur de services. \n\nLe slippage du fournisseur peut atteindre %@";
+"swapping_alert_slippage_description" = "Le slippage des fournisseurs peut aller jusqu'à %@";
 "swapping_alert_title" = "Frais";
 "swapping_approve_information_text" = "Tous les échanges décentralisés nécessitent des approbations pour empêcher les smart contracts d'accéder à votre portefeuille sans votre permission. Par conception, les smart contracts ne peuvent pas accéder à vos jetons sans votre approbation. En « déverrouillant » vos jetons, vous autorisez le smart contract 1-inch à les dépenser. Les mineurs du réseau reçoivent des frais de gaz (payés par vous) pour enregistrer cette action sur la blockchain. Vous pouvez échanger votre jeton après avoir donné votre approbation.";
 "swapping_approve_information_title" = "Approuver";
@@ -823,6 +856,10 @@
 "token_details_unable_hide_alert_message" = "Le jeton %1$@ (%2$@) est la principale devise du réseau %3$@ et ne peut pas être masqué tant que vous avez d'autres jetons de ce réseau dans la liste";
 "token_details_unable_hide_alert_title" = "Impossible de masquer %@";
 "token_swap_promotion_button" = "Échangez maintenant";
+"tokens_list_hot_crypto_header" = "Crypto-monnaies populaire 🔥";
+"tokens_list_unavailable_to_purchase_header" = "Non disponible à l'achat";
+"tokens_list_unavailable_to_sell_header" = "Indisponible à la vente";
+"tokens_list_unavailable_to_swap_header" = "Non disponible pour l'échange de %@";
 "transaction_history_contract_address" = "contrat : %@";
 "transaction_history_empty_transactions" = "Vous n'avez pas encore de transactions";
 "transaction_history_error_failed_to_load" = "Échec du chargement de l'historique des transactions.\nCliquez sur le bouton de rechargement pour mettre à jour les informations.";
@@ -832,6 +869,8 @@
 "transaction_history_transaction_from_address" = "de : %@";
 "transaction_history_transaction_to_address" = "à : %@";
 "transaction_history_transaction_validator" = "validateur : %@";
+"transfer_min_amount_error" = "Minimum %@";
+"transfer_notification_invalid_minimum_transaction_amount_text" = "Le montant minimum pour effectuer cette transaction est %1$@.";
 "try_to_load_data_again_button_title" = "Réessayez";
 "twin_error_same_card" = "Vous avez scanné la même carte. Pour créer un portefeuille jumeau, vous devez scanner la carte portant le numéro %li";
 "twin_error_wrong_twin" = "Vous avez scanné une mauvaise carte jumelle. S'il vous plaît, essayez-en un autre";
@@ -845,6 +884,7 @@
 "twins_recreate_warning" = "Cette action est irréversible. Vous n'aurez plus accès à l'ancien portefeuille.";
 "twins_scan_twin_with_number" = "Appuyez sur la carte jumelle avec le numéro %@ et ne la retirez pas jusqu'à la fin de l'opération";
 "unlock_wallet_description_full" = "Utilisez %@ ou scannez une carte/bague pour avoir accès à votre portefeuille";
+"unsupported_wc_version" = "Échec de la connexion : Cette dApp utilise Wallet Connect version1.0, qui n'est pas prise en charge. Veuillez vous assurer que la dApp prend en charge Wallet Connect version2.0 pour réussir la connexion.";
 "user_push_notification_agreement_argument_one" = "Restez à jour avec les dernières fonctionnalités et actualités";
 "user_push_notification_agreement_argument_two" = "Soyez le premier informé des nouvelles promotions";
 "user_push_notification_agreement_header" = "Souhaitez-vous utiliser les\nnotifications push?";
@@ -892,6 +932,9 @@
 "wallet_marketprice_block_update_time" = "dernières 24h";
 "wallet_network_group_title" = "%@ réseau";
 "wallet_notification_address_copied" = "L'adresse a été copiée avec succès";
+"wallet_promo_banner_button_title" = "Get now with 10%% off";
+"wallet_promo_banner_description" = "Access 13,000+ cryptocurrencies. Buy, sell, swap, and stake with a single tap.\nLink up to three cards for a backup.";
+"wallet_promo_banner_title" = "Discover Tangem Wallet";
 "wallet_settings_title" = "Paramètres du portefeuille";
 "wallet_title" = "Tangem";
 "warning_access_denied_message" = "Utilisez %@ ou scannez une carte/bague pour déverrouiller l'accès à votre portefeuille";

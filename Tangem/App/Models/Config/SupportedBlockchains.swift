@@ -54,7 +54,7 @@ struct SupportedBlockchains {
             return mainnetBlockchains
         }
 
-        let betaTestingBlockchains = FeatureStorage().supportedBlockchainsIds.compactMap { id in
+        let betaTestingBlockchains = FeatureStorage.instance.supportedBlockchainsIds.compactMap { id in
             testableBlockchains().first { $0.networkId == id }
         }
 
@@ -141,6 +141,8 @@ struct SupportedBlockchains {
             .energyWebEVM(testnet: false),
             .energyWebX(curve: ed25519Curve(for: version)),
             .core(testnet: false),
+            .canxium,
+            .casper(curve: .secp256k1, testnet: false),
         ]
     }
 

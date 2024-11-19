@@ -231,7 +231,7 @@ extension SendDecimalNumberTextField: Setupable {
         map { $0.toolbarType = toolbarType }
     }
 
-    func prefixSuffixOptions(_ prefixSuffixOptions: PrefixSuffixOptions) -> Self {
+    func prefixSuffixOptions(_ prefixSuffixOptions: PrefixSuffixOptions?) -> Self {
         map { $0.prefixSuffixOptions = prefixSuffixOptions }
     }
 

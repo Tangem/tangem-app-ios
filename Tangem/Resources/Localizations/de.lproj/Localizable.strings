@@ -1,3 +1,11 @@
+"action_buttons_buy_empty_search_message" = "Token nicht in Deinem Portfolio gefunden? Überprüfe die Märkte, um es zu finden und zum Kauf hinzuzufügen";
+"action_buttons_sell_empty_search_message" = "Token nicht in Deinem Portfolio gefunden? Überprüfe die Märkte, um es zu finden und zum Verkauf hinzuzufügen";
+"action_buttons_swap_choose_token" = "Wähle den Token";
+"action_buttons_swap_empty_search_message" = "Token nicht in Deinem Portfolio gefunden? Überprüfe die Märkte, um es für Swaps zu finden und hinzuzufügen";
+"action_buttons_swap_no_available_pair_notification_message" = "Es gibt keine verfügbaren Token, die mit dem ausgewählten Token getauscht werden können. Bitte wähle einen anderen.";
+"action_buttons_swap_no_available_pair_notification_title" = "Kein verfügbares Paar";
+"action_buttons_you_want_to_receive" = "Du möchtest erhalten";
+"action_buttons_you_want_to_swap" = "Du möchtest tauschen";
 "add_custom_token_choose_network" = "Netzwerk wählen";
 "add_custom_token_title" = "Token anlegen";
 "add_tokens_title" = "Token verwalten";
@@ -165,6 +173,7 @@
 "common_terms_of_use" = "Nutzungsbedingungen";
 "common_today" = "Heute";
 "common_transaction_failed" = "Transaktion fehlgeschlagen";
+"common_transaction_status" = "Transaction status";
 "common_transactions" = "Transaktionen";
 "common_transfer" = "Überweisung";
 "common_understand" = "Ich verstehe";
@@ -173,6 +182,7 @@
 "common_unstake" = "staking beenden";
 "common_warning" = "Warnung";
 "common_week" = "woche";
+"common_with" = "with";
 "common_yes" = "Ja";
 "contract_address_copied_message" = "Vertragsadresse kopiert!";
 "currency_subtitle_expanded" = "Verfügbare Netzwerke";
@@ -250,7 +260,7 @@
 "express_exchange_status_canceled" = "Abgebrochen";
 "express_exchange_status_confirmed" = "Bestätigt";
 "express_exchange_status_confirming" = "Bestätigen";
-"express_exchange_status_confirming_active" = "wird bestätigt...";
+"express_exchange_status_confirming_active" = "Wird bestätigt...";
 "express_exchange_status_exchanged" = "Getauscht";
 "express_exchange_status_exchanging" = "Tauschen läuft";
 "express_exchange_status_exchanging_active" = "Austauschen...";
@@ -429,7 +439,7 @@
 "markets_token_details_price_performance" = "Preisleistung";
 "markets_token_details_repository" = "Aufbewahrungsort";
 "markets_token_details_security_score" = "Sicherheitsbewertung";
-"markets_token_details_security_score_description" = "";
+"markets_token_details_security_score_description" = "Der Security Score eines Tokens ist eine Metrik, die das Sicherheitsniveau einer Blockchain oder eines Tokens anhand verschiedener Faktoren bewertet und aus den unten aufgeführten Quellen zusammengestellt wird.";
 "markets_token_details_social" = "Soziales";
 "markets_token_details_total_supply" = "Gesamtangebot";
 "markets_token_details_total_supply_description" = "Die maximale Anzahl von Coins oder Tokens, die jemals für eine bestimmte Kryptowährung existieren können";
@@ -529,9 +539,25 @@
 "onboarding_wallet_info_title_fourth" = "Zugangscode wiederherstellen";
 "onboarding_wallet_info_title_second" = "Identische Karten oder Ring";
 "onboarding_wallet_info_title_third" = "Zugangscode";
+"onramp_country_search" = "Suche nach Land";
+"onramp_country_unavailable" = "Nicht verfügbar";
+"onramp_currency_other" = "Andere Währungen";
+"onramp_currency_popular" = "Beliebte Fiats";
+"onramp_currency_search" = "Suche nach Währung";
+"onramp_max_amount_restriction" = "Der Kaufbetrag sollte nicht höher sein als %@";
+"onramp_min_amount_restriction" = "Der zu kaufende Betrag muss mindestens %@ betragen";
+"onramp_no_available_providers" = "Keine verfügbaren Anbieter für diese Währung";
+"onramp_pay_with" = "Bezahlen mit";
+"onramp_redirecting_to_provider_subtitle" = "Du kannst Deine Transaktion beim Drittanbieter %@ abschließen.";
+"onramp_redirecting_to_provider_title" = "Umleitung auf %@ …";
 "onramp_residency_bottomsheet_country_not_supported" = "Unsere Dienstleistungen sind in diesem Land nicht verfügbar";
 "onramp_residency_bottomsheet_country_subtitle" = "Änder oder bestätige bitte";
 "onramp_residency_bottomsheet_title" = "Dein Wohnsitz wurde identifiziert als";
+"onramp_settings_residence" = "Residenz";
+"onramp_settings_residence_description" = "Bitte wähle das richtige Land aus, um korrekte Zahlungsoptionen und Dienstleistungen zu gewährleisten.";
+"onramp_settings_title" = "Einstellungen";
+"onramp_transaction_status_footer_text" = "You can check the transaction status from the token page";
+"onramp_via" = "Über";
 "organize_tokens_group" = "Gruppe erstellen";
 "organize_tokens_sort_by_balance" = "Nach Guthaben";
 "organize_tokens_title" = "Token organisieren";
@@ -624,7 +650,7 @@
 "send_notification_high_fee_text" = "Aufgrund der Besonderheiten des Netzes %1$@ ist die Gebühr für die Überweisung des gesamten Guthabens höher. Um die Kommission zu reduzieren, Kannst du %2$@ verlassen.";
 "send_notification_high_fee_title" = "Die Gebühr ist höher";
 "send_notification_invalid_amount_text" = "Die enthaltene Kommission übersteigt den Überweisungsbetrag, was zu einem negativen Wert führt";
-"send_notification_invalid_amount_title" = "ungültige Menge";
+"send_notification_invalid_amount_title" = "Ungültige Menge";
 "send_notification_invalid_minimum_amount_text" = "Der Mindestbetrag für den Versand beträgt %1$@. Bitte stell sicher, dass der Restbetrag nach dem Versand nicht unter %2$@ liegt.";
 "send_notification_invalid_reserve_amount_text" = "Das Zielkonto wurde nicht erstellt. Bitte änder den zu sendenden Betrag.";
 "send_notification_invalid_reserve_amount_title" = "Der zu sendende Betrag muss mindestens %@ betragen";
@@ -666,6 +692,7 @@
 "staking_active_footer" = "Um deine Vermögenswerte freizugeben, tippe auf den Block oben";
 "staking_amount_requirement_error" = "Die Anzahl der zu stakenden Krypros muss mindesten %@ betragen";
 "staking_amount_tron_integer_error" = "Der Stakingbetrag wird aufgrund der Netzwerkregeln auf %1$@ TRX aufgerundet.";
+"staking_amount_tron_integer_error_unstaking" = "Der Betrag der unstaked wird, wird aufgrund der Netzwerkregeln auf %1$@ TRX gerundet.";
 "staking_claim_unstaked" = "Nicht gestakte beanspruche";
 "staking_details_account_fee" = "Gebühr für das Staking-Konto";
 "staking_details_account_fee_info" = "Ein Staking-Konto ist ein spezielles Konto, auf dem eingesetzte SOL-Token gelagert werden. Es wird erstellt, wenn du deine Token an einen Validator delegierst, um an der Transaktionsvalidierung teilzunehmen und Belohnungen zu verdienen. Für die Erstellung des Staking-Kontos wird eine geringe Gebühr erhoben, die nach Abschluss des Stakings zurückgegeben wird.";
@@ -709,10 +736,13 @@
 "staking_notification_earn_rewards_text_period_week" = "Mit dem Staking kannst Du %1$@ verdienen. Deine Staking-Belohnungen erhältst Du jede Woche.";
 "staking_notification_earn_rewards_text_weekly" = "Sicher staken und wöchentliche Belohnungen verdienen.";
 "staking_notification_earn_rewards_title" = "Verdiene Staking-Belohnungen";
+"staking_notification_low_staked_balance_text" = "Dein verbleibender Stakingbetrag ist zu niedrig, um den Einsatz aufzuheben. Du musst mehr Staken, um den Mindestbetrag zum Aufheben des Einsatzes zu erreichen.";
+"staking_notification_low_staked_balance_title" = "Niedriges Stakingguthaben";
 "staking_notification_network_error_text" = "Aufgrund von Netzwerkproblemen ist Staking derzeit nicht verfügbar. Bitte versuche es später erneut.";
 "staking_notification_new_validator_funds_transfer" = "Beim Staking im %1$@ -Netzwerk mit einem neuen Validator werden alle zuvor eingesetzten Kryptos automatisch an diesen Validator übertragen";
 "staking_notification_restake_rewards_text" = "Reinvestiert Deine verdienten Prämien in Deinen Einsatzbetrag und erhöht so den potenziellen Gewinn.";
 "staking_notification_restake_text" = "Mit Restake kannst Du Dein Guthaben von einem Validator zu einem anderen verschieben, ohne dass Du den Stake aufheben musst.";
+"staking_notification_stake_entire_balance_text" = "Du bist dabei, Dein gesamtes Guthaben zu staken. Wir empfehlen, einen kleinen Betrag übrig zu lassen, um die Netzwerkgebühren für die Aufhebung des Stakes oder das Einfordern von Prämien abzudecken.";
 "staking_notification_unlock_text" = "Entsperre dein Geld, um es aus dem Staking-Prozess abzuheben. Das Freischalten nimmt %@.";
 "staking_notification_unstake_cosmos_text" = "Nach Ablauf der 21-tägigen Bindungsfrist kannst Du über Dein Guthaben verfügen. Die Prämie wird zusammen mit dem ungestaketen Guthaben abgehoben.";
 "staking_notification_unstake_text" = "Deine Assets steht Dir nach Ablauf der Frist für die Aufhebung der Bindung %@ zur Verfügung.";
@@ -742,6 +772,7 @@
 "staking_rewards" = "Belohnungen";
 "staking_stake_locked" = "Stake gesperrt";
 "staking_stake_more" = "Mehr staken";
+"staking_staked_amount" = "Gestakeder Betrag";
 "staking_summary_description_text" = "Du setzt %1$@ ein und ethältst Deine Belohnung %2$@";
 "staking_tap_to_unlock" = "Zum Entsperren antippen";
 "staking_tap_to_unlock_or_vote" = "Tippe zum Entsperren oder Abstimmen";
@@ -753,6 +784,7 @@
 "staking_unbonding_in" = "Entbindung in";
 "staking_unlocked_locked" = "Gelocktes unlocken";
 "staking_unlocking" = "Entsperren";
+"staking_unstake_amount_requirement_error" = "Der unstaking-Betrag muss mindestens %@ betragen";
 "staking_unstake_amount_validation_error" = "Der Betrag übersteigt das eingesetzte Guthaben";
 "staking_unstaked" = "Unstaken";
 "staking_unstaked_footer" = "Prüfe, was nicht eingesetzt wurde, um dein Vermögen zu beanspruchen";
@@ -785,7 +817,8 @@
 "swapping_alert_cex_description_with_slippage" = "Der Betrag beinhaltet:\n• Honorar des Dienstleisters\n• Netzwerkgebühr für das Senden %1$@ von der Börse zurück an die Adresse des Benutzers. \n\n Provider-Slippage kann bis zu %2$@";
 "swapping_alert_dex_description" = "Der Betrag enthält die Gebühren des Dienstleisters.";
 "swapping_alert_dex_description_with_slippage" = "Der Betrag beinhaltet die Gebühr des Dienstleisters. \n\nProvider-Slippage kann bis zu %@";
-"swapping_alert_title" = "Gebühren";
+"swapping_alert_slippage_description" = "Anbieter-Slippage kann bis zu %@ ausfallen.";
+"swapping_alert_title" = "Information";
 "swapping_approve_information_text" = "Alle dezentralen Börsen benötigen Genehmigungen, um zu verhindern, dass intelligente Verträge ohne Ihre Erlaubnis auf Ihre Geldbörse zugreifen. Smart Contracts können nicht auf Ihre Token zugreifen, wenn Sie nicht zustimmen. Indem Sie Ihre Token \"freischalten\", ermächtigen Sie den 1-Zoll-Smart-Contract, sie auszugeben. Die Miner des Netzwerks erhalten eine (von Ihnen bezahlte) Gasgebühr, um diese Aktion in der Blockchain aufzuzeichnen. Sie können Ihre Token tauschen, nachdem Sie Ihre Zustimmung gegeben haben.";
 "swapping_approve_information_title" = "Genehmigen";
 "swapping_fee_estimation_error_text" = "Fehler bei der Gebührenschätzung. Bitte sende dein Feedback an den Support.";
@@ -823,6 +856,10 @@
 "token_details_unable_hide_alert_message" = "Der %1$@ (%2$@) Token ist die Hauptwährung im %3$@ Netzwerk und kann nicht versteckt werden, solange du andere Token dieses Netzwerks in der Liste aktiv hast.";
 "token_details_unable_hide_alert_title" = "%@ kann nicht ausgeblendet werden";
 "token_swap_promotion_button" = "Jetzt tauschen";
+"tokens_list_hot_crypto_header" = "Hot Krypto 🔥";
+"tokens_list_unavailable_to_purchase_header" = "Nicht verfügbar zum Kauf";
+"tokens_list_unavailable_to_sell_header" = "Nicht zum Verkauf verfügbar";
+"tokens_list_unavailable_to_swap_header" = "Nicht verfügbar für Tausch von %@";
 "transaction_history_contract_address" = "Vertrag: %@";
 "transaction_history_empty_transactions" = "Du hast noch keine Transaktionen";
 "transaction_history_error_failed_to_load" = "Der Transaktionsverlauf konnte nicht geladen werden.\nKlicke auf die Schaltfläche Neu laden, um die Informationen zu aktualisieren.";
@@ -832,6 +869,8 @@
 "transaction_history_transaction_from_address" = "von: %@";
 "transaction_history_transaction_to_address" = "zu: %@";
 "transaction_history_transaction_validator" = "Validierer: %@";
+"transfer_min_amount_error" = "Minimum %@";
+"transfer_notification_invalid_minimum_transaction_amount_text" = "Der Mindesttransaktionsbetrag beträgt %1$@.";
 "try_to_load_data_again_button_title" = "Versuche es erneut";
 "twin_error_same_card" = "Du hast dieselbe Karte oder Ring gescannt. Um ein Zwillings-Wallet zu erstellen, musst du die Karte oder Ring mit der Nummer %li scannen.";
 "twin_error_wrong_twin" = "Du hast die falsche Doppelkarte oder Ring gescannt. Bitte versuche eine andere Karte oder Ring";
@@ -845,6 +884,7 @@
 "twins_recreate_warning" = "Diese Aktion ist unumkehrbar. Du hast keinen Zugriff mehr auf die alte Wallet.";
 "twins_scan_twin_with_number" = "Tippe auf die Doppelkarte oder Ring mit der Nummer %@ und entferne sie erst am Ende des Vorgangs.";
 "unlock_wallet_description_full" = "Verwende %@ oder scanne eine Karte oder Ring, um Zugriff auf deine Wallet zu erhalten.";
+"unsupported_wc_version" = "Verbindung fehlgeschlagen: Diese dApp verwendet Wallet Connect Version 1.0, die nicht unterstützt wird. Bitte stelle sicher, dass die dApp Wallet Connect Version 2.0 unterstützt, um eine erfolgreiche Verbindung herzustellen.";
 "user_push_notification_agreement_argument_one" = "Bleib auf dem Laufenden mit den neuesten Funktionen und Neuigkeiten";
 "user_push_notification_agreement_argument_two" = "Sei der Erste, der von neuen Aktionen erfährt";
 "user_push_notification_agreement_header" = "Möchtest du Push-Benachrichtigungen verwenden?";
@@ -892,6 +932,9 @@
 "wallet_marketprice_block_update_time" = "letzte 24h";
 "wallet_network_group_title" = "%@ Netzwerk";
 "wallet_notification_address_copied" = "Die Adresse wurde erfolgreich kopiert";
+"wallet_promo_banner_button_title" = "Get now with 10%% off";
+"wallet_promo_banner_description" = "Access 13,000+ cryptocurrencies. Buy, sell, swap, and stake with a single tap.\nLink up to three cards for a backup.";
+"wallet_promo_banner_title" = "Discover Tangem Wallet";
 "wallet_settings_title" = "Wallet-Einstellungen";
 "wallet_title" = "Tangem";
 "warning_access_denied_message" = "Verwende %@ oder scanne eine Karte oder Ring, um den Zugriff auf deine Wallet freizuschalten.";
@@ -961,7 +1004,7 @@
 "warning_send_blocked_funds_for_fee_message" = "%1$@ ist ein Vermögenswert im %2$@ Netzwerk. Um eine %3$@ Transaktion durchzuführen, musst du etwas %4$@ (%5$@) einzahlen, um die Netzwerkgebühr zu decken.";
 "warning_send_blocked_funds_for_fee_title" = "Unzureichende %1$@ zur Deckung der Netzgebühr";
 "warning_solana_rent_fee_message" = "Das Solana-Netzwerk erhebt alle 2 Tage eine Miete von %1$@. Konten, die sich die Miete nicht leisten können, werden aus dem Netzwerk gelöscht. Hinterlege deinem Konto mit mehr als %2$@, um es kostenlos zu nutzen.";
-"warning_some_networks_unreachable_message" = "Einige Netzwerke sind derzeit nicht erreichbar. Bitte versuche es später erneut.";
+"warning_some_networks_unreachable_message" = "Wischen Sie nach unten, um zu aktualisieren, oder versuchen Sie es später erneut.";
 "warning_some_networks_unreachable_title" = "Einige Netzwerke sind nicht erreichbar";
 "warning_system_deprecation_title" = "Systemupdate erforderlich";
 "warning_system_deprecation_with_date_message" = "Der Support für deine Betriebssystemversion endet am %@ . Um zukünftige App-Updates zu erhalten, musst du auf die neueste Version aktualisieren.";

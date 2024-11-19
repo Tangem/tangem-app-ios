@@ -1,6 +1,15 @@
 {
-  "originHash" : "dd280b305b0856afed44da3a23d7aa227c3a100d5fab9ce792c1e01541801b56",
+  "originHash" : "584ca60af0fbbc527d504d4d480a556058e05f97a79e92bf44c594618d31cc9a",
   "pins" : [
+    {
+      "identity" : "alamofire",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Alamofire/Alamofire.git",
+      "state" : {
+        "revision" : "f455c2975872ccd2d9c81594c658af65716e9b9a",
+        "version" : "5.9.1"
+      }
+    },
     {
       "identity" : "anyasyncsequence",
       "kind" : "remoteSourceControl",
@@ -8,6 +17,15 @@
       "state" : {
         "revision" : "9fee8443252bb25e191b0b3b03a006aabac44088",
         "version" : "1.0.2"
+      }
+    },
+    {
+      "identity" : "anycodable",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Flight-School/AnyCodable.git",
+      "state" : {
+        "revision" : "862808b2070cd908cb04f9aafe7de83d35f81b05",
+        "version" : "0.6.7"
       }
     },
     {
@@ -26,6 +44,15 @@
       "state" : {
         "revision" : "0ed110f7555c34ff468e72e1686e59721f2b0da6",
         "version" : "5.3.0"
+      }
+    },
+    {
+      "identity" : "bitcoincore",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tangem/bitcoincore.git",
+      "state" : {
+        "revision" : "4ec53e5e223885a4c0884d80985cf43677434eb0",
+        "version" : "0.0.23"
       }
     },
     {
@@ -60,8 +87,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/grpc-swift.git",
       "state" : {
-        "revision" : "d1d312e2547f0091341efb9f465791dd8380a24c",
-        "version" : "1.21.0-tangem1"
+        "revision" : "db2f35c1a02e6480afe936949f6e739576cad622",
+        "version" : "1.21.0-tangem2"
       }
     },
     {
@@ -69,8 +96,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/hedera-sdk-swift.git",
       "state" : {
-        "revision" : "4363eee442377ba3bb4254330bb567bb75780ec1",
-        "version" : "0.26.0-tangem3"
+        "revision" : "601ed82daac59bbd0050073adea057c20bcd73ef",
+        "version" : "0.26.0-tangem4"
       }
     },
     {
@@ -80,6 +107,15 @@
       "state" : {
         "revision" : "48d906f7a3eca66dd4cbc239f21fd829dfc9decf",
         "version" : "0.1.2-tangem4"
+      }
+    },
+    {
+      "identity" : "moya",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Moya/Moya.git",
+      "state" : {
+        "revision" : "c263811c1f3dbf002be9bd83107f7cdc38992b26",
+        "version" : "15.0.3"
       }
     },
     {
@@ -101,12 +137,48 @@
       }
     },
     {
+      "identity" : "qrcode",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/WalletConnect/QRCode",
+      "state" : {
+        "revision" : "263f280d2c8144adfb0b6676109846cfc8dd552b",
+        "version" : "14.3.1"
+      }
+    },
+    {
+      "identity" : "reactiveswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ReactiveCocoa/ReactiveSwift.git",
+      "state" : {
+        "revision" : "c43bae3dac73fdd3cb906bd5a1914686ca71ed3c",
+        "version" : "6.7.0"
+      }
+    },
+    {
       "identity" : "regex",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/sharplet/Regex.git",
       "state" : {
         "revision" : "76c2b73d4281d77fc3118391877efd1bf972f515",
         "version" : "2.1.1"
+      }
+    },
+    {
+      "identity" : "reown-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/reown-com/reown-swift.git",
+      "state" : {
+        "revision" : "8c1a43e28358a30dc03367dca2f38476f1573ece",
+        "version" : "1.0.4"
+      }
+    },
+    {
+      "identity" : "rxswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ReactiveX/RxSwift.git",
+      "state" : {
+        "revision" : "c7c7d2cf50a3211fe2843f76869c698e4e417930",
+        "version" : "6.8.0"
       }
     },
     {
@@ -125,6 +197,33 @@
       "state" : {
         "revision" : "1a14e189def5eaa92f839afdd2faad8e43b61a6e",
         "version" : "0.12.2"
+      }
+    },
+    {
+      "identity" : "solana.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tangem/Solana.Swift.git",
+      "state" : {
+        "revision" : "54f15e1afd87e14b45c848a71030cab6798451ec",
+        "version" : "1.2.0-tangem12"
+      }
+    },
+    {
+      "identity" : "starscream",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/daltoniam/Starscream.git",
+      "state" : {
+        "revision" : "c6bfd1af48efcc9a9ad203665db12375ba6b145a",
+        "version" : "4.0.8"
+      }
+    },
+    {
+      "identity" : "stellar-ios-mac-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Soneso/stellar-ios-mac-sdk.git",
+      "state" : {
+        "revision" : "952762a66ca49e0e28ba14a8dc5dbb72da361a95",
+        "version" : "2.5.4"
       }
     },
     {
@@ -249,8 +348,26 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/swift-protobuf-binaries.git",
       "state" : {
-        "revision" : "de30521530591d98be12133724e3d78bc0524e41",
-        "version" : "1.25.2-tangem1"
+        "revision" : "594a9b8c47df13087ee0a1f25dbc64173604d0e9",
+        "version" : "1.25.2-tangem3"
+      }
+    },
+    {
+      "identity" : "swift-qrcode-generator",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/dagronf/swift-qrcode-generator",
+      "state" : {
+        "revision" : "5ca09b6a2ad190f94aa3d6ddef45b187f8c0343b",
+        "version" : "1.0.3"
+      }
+    },
+    {
+      "identity" : "swift-sodium",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jedisct1/swift-sodium.git",
+      "state" : {
+        "revision" : "4f9164a0a2c9a6a7ff53a2833d54a5c79c957342",
+        "version" : "0.9.1"
       }
     },
     {
@@ -260,6 +377,59 @@
       "state" : {
         "revision" : "d2ba781702a1d8285419c15ee62fd734a9437ff5",
         "version" : "1.3.2"
+      }
+    },
+    {
+      "identity" : "swiftbinancechain",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tangem/SwiftBinanceChain.git",
+      "state" : {
+        "revision" : "beaa96aee991b744c6f0e48b19238767e89a22d2",
+        "version" : "0.0.13"
+      }
+    },
+    {
+      "identity" : "swiftcbor",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/valpackett/SwiftCBOR.git",
+      "state" : {
+        "revision" : "98a59c305cca5c5367c3422d5e127661d4e76e24",
+        "version" : "0.4.5"
+      }
+    },
+    {
+      "identity" : "swiftdate",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/malcommac/SwiftDate",
+      "state" : {
+        "revision" : "5d943224c3bb173e6ecf27295611615eba90c80e",
+        "version" : "7.0.0"
+      }
+    },
+    {
+      "identity" : "swiftimagereadwrite",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/dagronf/SwiftImageReadWrite",
+      "state" : {
+        "revision" : "5596407d1cf61b953b8e658fa8636a471df3c509",
+        "version" : "1.1.6"
+      }
+    },
+    {
+      "identity" : "swiftyjson",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tangem/SwiftyJSON.git",
+      "state" : {
+        "revision" : "acff55ab1a8b138a49477ff523287b18833fc1a0",
+        "version" : "5.0.1-tangem1"
+      }
+    },
+    {
+      "identity" : "tangem-sdk-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Tangem/tangem-sdk-ios.git",
+      "state" : {
+        "revision" : "f490a80f2156067a9b1c6f24974aaaab316e8639"
       }
     },
     {
@@ -285,8 +455,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/wallet-core-binaries-ios.git",
       "state" : {
-        "revision" : "67be5876186284e85a5f5f8757de209ba53d5729",
-        "version" : "4.0.46-tangem1"
+        "revision" : "954aa903bcf3899b9bb99267ff847f7967f12327",
+        "version" : "4.0.46-tangem3.1"
+      }
+    },
+    {
+      "identity" : "wallet-mobile-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/MobileWalletProtocol/wallet-mobile-sdk",
+      "state" : {
+        "revision" : "84b3d3f25a2e3b140ec12bb0d22c35b58f817d44",
+        "version" : "1.0.0"
       }
     },
     {

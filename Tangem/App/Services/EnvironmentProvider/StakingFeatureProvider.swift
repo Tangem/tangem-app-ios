@@ -43,7 +43,7 @@ class StakingFeatureProvider {
         let item = StakingItem(network: stakingTokenItem.network, contractAddress: stakingTokenItem.contractAddress)
         let itemID = item.id
         let isSupported = StakingFeatureProvider.supportedBlockchainItems.contains(item)
-        let isTesting = FeatureStorage().stakingBlockchainsIds.contains(itemID)
+        let isTesting = FeatureStorage.instance.stakingBlockchainsIds.contains(itemID)
 
         guard isSupported || isTesting else {
             return nil
@@ -68,6 +68,7 @@ extension StakingFeatureProvider {
             StakingItem(network: .cosmos, contractAddress: nil),
             StakingItem(network: .tron, contractAddress: nil),
             StakingItem(network: .ethereum, contractAddress: StakingConstants.polygonContractAddress),
+            StakingItem(network: .binance, contractAddress: nil),
         ]
     }
 
@@ -86,6 +87,8 @@ extension StakingFeatureProvider {
             return "ethereum-matic-native-staking"
         case (.tron, .none):
             return "tron-trx-native-staking"
+        case (.binance, .none):
+            return "bsc-bnb-native-staking"
         default:
             return nil
         }

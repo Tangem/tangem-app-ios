@@ -6,11 +6,10 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
+import Foundation
 import Combine
-import BlockchainSdk
-import TangemFoundation
-import TangemStaking
 import SwiftUI
+import TangemStaking
 
 final class StakingDetailsViewModel: ObservableObject {
     // MARK: - ViewState
@@ -70,6 +69,11 @@ final class StakingDetailsViewModel: ObservableObject {
     }
 
     func userDidTapActionButton() {
+        guard stakingManager.state.yieldInfo?.preferredValidators.isEmpty == false else {
+            alert = .init(title: Localization.commonWarning, message: Localization.stakingNoValidatorsErrorMessage)
+            return
+        }
+
         coordinator?.openStakingFlow()
     }
 
@@ -78,7 +82,10 @@ final class StakingDetailsViewModel: ObservableObject {
         let balances = stakingManager.state.balances.flatMap { String($0.count) } ?? String(0)
         Analytics.log(
             event: .stakingInfoScreenOpened,
-            params: [.validatorsCount: balances]
+            params: [
+                .validatorsCount: balances,
+                .token: walletModel.tokenItem.currencySymbol,
+            ]
         )
     }
 }
@@ -263,7 +270,7 @@ private extension StakingDetailsViewModel {
                     cryptoFormatted: rewardsCryptoFormatted
                 ) { [weak self] in
                     if rewards.count == 1, let balance = rewards.first {
-                        self?.openFlow(balance: balance)
+                        self?.openFlow(balance: balance, validators: yield.validators)
 
                         let name = balance.validatorType.validator?.name
                         Analytics.log(event: .stakingButtonRewards, params: [.validator: name ?? ""])
@@ -282,7 +289,7 @@ private extension StakingDetailsViewModel {
                     event: .stakingButtonValidator,
                     params: [.source: Analytics.ParameterValue.stakeSourceStakeInfo.rawValue]
                 )
-                self?.openFlow(balance: balance)
+                self?.openFlow(balance: balance, validators: yield.validators)
             }
         }
 
@@ -299,9 +306,9 @@ private extension StakingDetailsViewModel {
         descriptionBottomSheetInfo = DescriptionBottomSheetInfo(title: title, description: description)
     }
 
-    func openFlow(balance: StakingBalance) {
+    func openFlow(balance: StakingBalance, validators: [ValidatorInfo]) {
         do {
-            let action = try PendingActionMapper(balance: balance).getAction()
+            let action = try PendingActionMapper(balance: balance, validators: validators).getAction()
             switch action {
             case .single(let action):
                 openFlow(for: action)
@@ -328,6 +335,8 @@ private extension StakingDetailsViewModel {
             coordinator?.openRestakingFlow(action: action)
         case .unstake:
             coordinator?.openUnstakingFlow(action: action)
+        case .pending(.restake):
+            coordinator?.openRestakingFlow(action: action)
         case .pending:
             coordinator?.openStakingSingleActionFlow(action: action)
         }
@@ -439,6 +448,8 @@ extension StakingAction.ActionType {
         case .pending(.restakeRewards): Localization.stakingRestakeRewards
         case .pending(.voteLocked): Localization.stakingVote
         case .pending(.unlockLocked): Localization.stakingUnlockedLocked
+        case .pending(.restake): Localization.stakingRestake
+        case .pending(.claimUnstaked): Localization.stakingWithdraw
         }
     }
 }

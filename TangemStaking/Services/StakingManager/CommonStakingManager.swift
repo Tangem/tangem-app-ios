@@ -23,7 +23,7 @@ class CommonStakingManager {
     private let _state = CurrentValueSubject<StakingManagerState, Never>(.loading)
     private var canStakeMore: Bool {
         switch wallet.item.network {
-        case .solana, .cosmos, .tron, .ethereum: true
+        case .solana, .cosmos, .tron, .ethereum, .binance: true
         default: false
         }
     }
@@ -74,8 +74,8 @@ extension CommonStakingManager: StakingManager {
             try await repository.checkIfConfirmed(balances: balances)
             try await updateState(state(balances: balances, yield: yield))
         } catch {
-            analyticsLogger.logAPIError(
-                errorDescription: error.localizedDescription,
+            analyticsLogger.logError(
+                error,
                 currencySymbol: wallet.item.symbol
             )
             logger.error(error)
@@ -107,7 +107,7 @@ extension CommonStakingManager: StakingManager {
             )
         default:
             log("Invalid staking manager state: \(state), for action: \(action)")
-            throw StakingManagerError.stakingManagerStateNotSupportTransactionAction(action: action)
+            throw StakingManagerError.stakingManagerStateNotSupportEstimateFeeAction(action: action, state: state)
         }
     }
 
@@ -130,7 +130,7 @@ extension CommonStakingManager: StakingManager {
                 type: type
             )
         default:
-            throw StakingManagerError.stakingManagerStateNotSupportTransactionAction(action: action)
+            throw StakingManagerError.stakingManagerStateNotSupportTransactionAction(action: action, state: state)
         }
     }
 
@@ -216,11 +216,12 @@ private extension CommonStakingManager {
         case .claimRewards(let passthrough),
              .restakeRewards(let passthrough),
              .voteLocked(let passthrough),
-             .unlockLocked(let passthrough):
+             .unlockLocked(let passthrough),
+             .restake(let passthrough):
             let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
             let action = try await getPendingTransactionAction(request: request)
             return action
-        case .withdraw(let passthroughs):
+        case .withdraw(let passthroughs), .claimUnstaked(let passthroughs):
             let actions = try await passthroughs.asyncMap { passthrough in
                 let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
                 let action = try await getPendingTransactionAction(request: request)
@@ -259,10 +260,11 @@ private extension CommonStakingManager {
         case .claimRewards(let passthrough),
              .restakeRewards(let passthrough),
              .voteLocked(let passthrough),
-             .unlockLocked(let passthrough):
+             .unlockLocked(let passthrough),
+             .restake(let passthrough):
             let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
             return try await execute(try await provider.estimatePendingFee(request: request))
-        case .withdraw(let passthroughs):
+        case .withdraw(let passthroughs), .claimUnstaked(let passthroughs):
             let fees = try await passthroughs.asyncMap { passthrough in
                 let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
                 return try await execute(try await provider.estimatePendingFee(request: request))
@@ -276,8 +278,8 @@ private extension CommonStakingManager {
         do {
             return try await request()
         } catch {
-            analyticsLogger.logAPIError(
-                errorDescription: error.localizedDescription,
+            analyticsLogger.logError(
+                error,
                 currencySymbol: wallet.item.symbol
             )
             throw error
@@ -400,7 +402,7 @@ private extension CommonStakingManager {
 private extension CommonStakingManager {
     func getAdditionalAddresses() -> AdditionalAddresses? {
         switch wallet.item.network {
-        case .cosmos:
+        case .cosmos, .kava, .near:
             guard let compressedPublicKey = try? Secp256k1Key(with: wallet.publicKey).compress() else {
                 return nil
             }
@@ -436,28 +438,16 @@ private extension CommonStakingManager {
 }
 
 public enum StakingManagerError: LocalizedError {
-    case stakingManagerStateNotSupportTransactionAction(action: StakingAction)
-    case stakedBalanceNotFound(validator: String)
-    case pendingActionNotFound(validator: String)
-    case transactionNotFound
-    case notImplemented
-    case notFound
+    case stakingManagerStateNotSupportTransactionAction(action: StakingAction, state: StakingManagerState)
+    case stakingManagerStateNotSupportEstimateFeeAction(action: StakingAction, state: StakingManagerState)
     case stakingManagerIsLoading
 
     public var errorDescription: String? {
         switch self {
-        case .stakingManagerStateNotSupportTransactionAction(let action):
-            "StakingManagerNotSupportTransactionAction \(action)"
-        case .stakedBalanceNotFound(let validator):
-            "stakedBalanceNotFound \(validator)"
-        case .pendingActionNotFound(let validator):
-            "pendingActionNotFound \(validator)"
-        case .transactionNotFound:
-            "transactionNotFound"
-        case .notImplemented:
-            "notImplemented"
-        case .notFound:
-            "notFound"
+        case .stakingManagerStateNotSupportTransactionAction(let action, let state):
+            "StakingManagerNotSupportTransactionAction \(action.type) state \(state.description)"
+        case .stakingManagerStateNotSupportEstimateFeeAction(let action, let state):
+            "StakingManagerNotSupportTransactionAction \(action.type) state \(state.description)"
         case .stakingManagerIsLoading:
             "StakingManagerIsLoading"
         }

@@ -12,7 +12,6 @@ extension Analytics {
     enum Event: String {
         case signedIn = "[Basic] Signed in"
         case toppedUp = "[Basic] Topped up"
-        case walletOpened = "[Basic] Wallet Opened"
         case balanceLoaded = "[Basic] Balance Loaded"
         case tokenBalanceLoaded = "[Basic] Token Balance"
         case cardWasScanned = "[Basic] Card Was Scanned"
@@ -54,12 +53,9 @@ extension Analytics {
         case twinSetupFinished = "[Onboarding / Twins] Twin Setup Finished"
         case onboardingButtonChat = "[Onboarding] Button - Chat"
         case mainScreenOpened = "[Main Screen] Screen opened"
-        case mainScreenWalletChangedBySwipe = "[Main Screen] Wallet Swipe"
         case noticeRateTheAppButtonTapped = "[Main Screen] Notice - Rate The App Button Tapped"
         case buttonManageTokens = "[Portfolio] Button - Manage Tokens"
-        case tokenIsTapped = "[Portfolio] Token is Tapped"
-        case mainRefreshed = "[Portfolio] Refreshed"
-        case buttonOrganizeTokens = "[Portfolio] Button - Organize Tokens"
+
         case organizeTokensScreenOpened = "[Portfolio / Organize Tokens] Organize Tokens Screen Opened"
         case organizeTokensButtonSortByBalance = "[Portfolio / Organize Tokens] Button - By Balance"
         case organizeTokensButtonGroup = "[Portfolio / Organize Tokens] Button - Group"
@@ -69,7 +65,6 @@ extension Analytics {
         case buttonRemoveToken = "[Token] Button - Remove Token"
         case buttonExplore = "[Token] Button - Explore"
         case buttonReload = "[Token] Button - Reload"
-        case refreshed = "[Token] Refreshed"
         case buttonBuy = "[Token] Button - Buy"
         case buttonSell = "[Token] Button - Sell"
         case buttonExchange = "[Token] Button - Exchange"
@@ -288,6 +283,7 @@ extension Analytics {
         case stakingConfirmationScreenOpened = "[Staking] Confirmation Screen Opened"
         case stakingErrors = "[Staking] Errors"
         case stakingErrorTransactionRejected = "[Staking] Error - Transaction Rejected"
+        case stakingAppErrors = "[Staking] App Errors"
         case stakingSelectedCurrency = "[Staking] Selected Currency"
         case stakingButtonShare = "[Staking] Button - Share"
         case stakingButtonExplore = "[Staking] Button - Explore"
@@ -311,6 +307,7 @@ extension Analytics {
         case marketsChartButtonReceive = "[Markets / Chart] Button - Receive"
         case marketsChartButtonSwap = "[Markets / Chart] Button - Swap"
         case marketsChartDataError = "[Markets / Chart] Data Error"
+        case marketsChartExchangesScreenOpened = "[Markets / Chart] Exchanges Screen Opened"
 
         // MARK: - Manage Tokens
 

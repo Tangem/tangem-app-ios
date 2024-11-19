@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import TangemFoundation
 
 class MarketsItemViewModel: Identifiable, ObservableObject {
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
@@ -68,10 +69,10 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
             self.marketRating = "\(marketRating)"
         }
 
-        setupPriceInfo(
-            price: tokenModel.currentPrice,
-            priceChangePercent: tokenModel.priceChangePercentage[filterProvider.currentFilterValue.interval.rawValue]
-        )
+        setupPriceInfo(input: formatViewUpdateInput(
+            forPrice: tokenModel.currentPrice,
+            priceChange: tokenModel.priceChangePercentage[filterProvider.currentFilterValue.interval.rawValue]
+        ))
         findAndAssignChartsValue(from: chartsProvider.items, with: filterProvider.currentFilterValue.interval)
 
         bindToIntervalUpdates()
@@ -89,9 +90,9 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
 
     // MARK: - Private Implementation
 
-    private func setupPriceInfo(price: Decimal?, priceChangePercent: Decimal?) {
-        priceValue = priceFormatter.formatPrice(price)
-        priceChangeState = priceChangeUtility.convertToPriceChangeState(changePercent: priceChangePercent)
+    private func setupPriceInfo(input: ViewUpdateInput) {
+        priceValue = input.priceValue
+        priceChangeState = input.priceChangeState
     }
 
     private func bindToIntervalUpdates() {
@@ -100,7 +101,7 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
             .removeDuplicates()
             .withWeakCaptureOf(self)
             .sink { viewModel, filter in
-                viewModel.updatePrice(by: viewModel.quotesRepository.quotes[viewModel.tokenId], with: filter.interval)
+                viewModel.updatePrice(for: viewModel.quotesRepository.quotes[viewModel.tokenId], with: filter.interval)
             }
             .store(in: &bag)
     }
@@ -111,15 +112,22 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
             .compactMap { viewModel, quotes in
                 quotes[viewModel.tokenId]
             }
-            .receive(on: DispatchQueue.main)
             .withPrevious()
             .withWeakCaptureOf(self)
-            .sink { elements in
-                let (viewModel, (previousValue, newQuote)) = elements
+            .map { viewModel, elements in
+                let (previousValue, newQuote) = elements
 
-                viewModel.updatePrice(by: newQuote, with: viewModel.filterProvider?.currentFilterValue.interval)
-                viewModel.priceChangeAnimation = .calculateChange(from: previousValue?.price, to: newQuote.price)
+                let input = viewModel.calculateViewUpdateInput(for: newQuote, with: viewModel.filterProvider?.currentFilterValue.interval)
+                let priceChangeAnimation: ForegroundBlinkAnimationModifier.Change = .calculateChange(from: previousValue?.price, to: newQuote.price)
+                return (input, priceChangeAnimation)
             }
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink(receiveValue: { items in
+                let (viewModel, (input, priceChangeAnimation)) = items
+                viewModel.setupPriceInfo(input: input)
+                viewModel.priceChangeAnimation = priceChangeAnimation
+            })
             .store(in: &bag)
     }
 
@@ -140,12 +148,12 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         from chartsDictionary: [String: [MarketsPriceIntervalType: MarketsChartModel]],
         with interval: MarketsPriceIntervalType
     ) {
-        guard let chart = chartsDictionary.first(where: { $0.key == tokenId }) else {
+        guard let loadedChartsModels = chartsDictionary[tokenId] else {
             charts = nil
             return
         }
 
-        let model = chart.value[interval]
+        let model = loadedChartsModels[interval]
         charts = makeChartsValues(from: model)
     }
 
@@ -166,10 +174,14 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
         }
     }
 
-    private func updatePrice(by newQuote: TokenQuote?, with interval: MarketsPriceIntervalType?) {
+    private func updatePrice(for newQuote: TokenQuote?, with interval: MarketsPriceIntervalType?) {
+        let input = calculateViewUpdateInput(for: newQuote, with: interval)
+        setupPriceInfo(input: input)
+    }
+
+    private func calculateViewUpdateInput(for newQuote: TokenQuote?, with interval: MarketsPriceIntervalType?) -> ViewUpdateInput {
         guard let newQuote else {
-            setupPriceInfo(price: nil, priceChangePercent: nil)
-            return
+            return formatViewUpdateInput(forPrice: nil, priceChange: nil)
         }
 
         let priceChangePercent: Decimal?
@@ -185,6 +197,16 @@ class MarketsItemViewModel: Identifiable, ObservableObject {
             priceChangePercent = nil
         }
 
-        setupPriceInfo(price: newQuote.price, priceChangePercent: priceChangePercent)
+        return formatViewUpdateInput(forPrice: newQuote.price, priceChange: priceChangePercent)
     }
+
+    private func formatViewUpdateInput(forPrice: Decimal?, priceChange: Decimal?) -> ViewUpdateInput {
+        let priceValue = priceFormatter.formatPrice(forPrice)
+        let priceChangeState = priceChangeUtility.convertToPriceChangeState(changePercent: priceChange)
+        return (priceValue, priceChangeState)
+    }
+}
+
+private extension MarketsItemViewModel {
+    typealias ViewUpdateInput = (priceValue: String, priceChangeState: TokenPriceChangeView.State)
 }

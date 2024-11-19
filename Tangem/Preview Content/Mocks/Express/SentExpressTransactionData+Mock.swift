@@ -16,7 +16,16 @@ extension SentExpressTransactionData {
         destination: .mockETH,
         fee: 0.032,
         feeOption: .market,
-        provider: ExpressProvider(id: "1inch", name: "1inch", type: .dex, imageURL: nil, termsOfUse: nil, privacyPolicy: nil, recommended: nil),
+        provider: ExpressProvider(
+            id: "1inch",
+            name: "1inch",
+            type: .dex,
+            imageURL: nil,
+            termsOfUse: nil,
+            privacyPolicy: nil,
+            recommended: nil,
+            slippage: nil
+        ),
         date: Date(),
         expressTransactionData: .init(
             requestId: "",

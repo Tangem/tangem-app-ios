@@ -70,5 +70,8 @@ fastlane/test_output/
 fastlane/report.xml
 
 # Generated
-Tangem/Resources/Generated/Localizable+Generated.swift
-Tangem/Resources/Generated/XCAssets+Generated.swift
+Tangem/Resources/Generated/**.swift
+BlockchainSdk/Resources/Generated/**.swift
+
+# Rubygems
+vendor/bundle

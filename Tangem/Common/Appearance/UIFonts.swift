@@ -29,7 +29,24 @@ enum UIFonts {
         }
     }
 
+    struct BoldFont {
+        let isDynamic: () -> Bool
+
+        var callout: UIFont {
+            let staticFont = UIFont.systemFont(ofSize: 16, weight: .medium)
+
+            if isDynamic() {
+                let metrics = UIFontMetrics(forTextStyle: .callout)
+                return metrics.scaledFont(for: staticFont)
+            }
+
+            return staticFont
+        }
+    }
+
     static let Regular = RegularFont(isDynamic: { FeatureProvider.isAvailable(.dynamicFonts) })
+
+    static let Bold = BoldFont(isDynamic: { FeatureProvider.isAvailable(.dynamicFonts) })
 
     static let RegularStatic = RegularFont(isDynamic: { false })
 }

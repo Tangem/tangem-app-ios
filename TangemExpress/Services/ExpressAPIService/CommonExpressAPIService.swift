@@ -6,6 +6,7 @@
 //  Copyright © 2023 Tangem AG. All rights reserved.
 //
 
+import Foundation
 import Moya
 import TangemFoundation
 
@@ -25,33 +26,71 @@ struct CommonExpressAPIService {
     }
 }
 
+// MARK: - ExpressAPIService
+
 extension CommonExpressAPIService: ExpressAPIService {
-    func assets(request: ExpressDTO.Assets.Request) async throws -> [ExpressDTO.Assets.Response] {
+    // MARK: - Swap
+
+    func assets(request: ExpressDTO.Swap.Assets.Request) async throws -> [ExpressDTO.Swap.Assets.Response] {
         try await _request(target: .assets(request: request))
     }
 
-    func pairs(request: ExpressDTO.Pairs.Request) async throws -> [ExpressDTO.Pairs.Response] {
+    func pairs(request: ExpressDTO.Swap.Pairs.Request) async throws -> [ExpressDTO.Swap.Pairs.Response] {
         try await _request(target: .pairs(request: request))
     }
 
-    func providers() async throws -> [ExpressDTO.Providers.Response] {
+    func providers() async throws -> [ExpressDTO.Swap.Providers.Response] {
         try await _request(target: .providers)
     }
 
-    func exchangeQuote(request: ExpressDTO.ExchangeQuote.Request) async throws -> ExpressDTO.ExchangeQuote.Response {
+    func exchangeQuote(request: ExpressDTO.Swap.ExchangeQuote.Request) async throws -> ExpressDTO.Swap.ExchangeQuote.Response {
         try await _request(target: .exchangeQuote(request: request))
     }
 
-    func exchangeData(request: ExpressDTO.ExchangeData.Request) async throws -> ExpressDTO.ExchangeData.Response {
+    func exchangeData(request: ExpressDTO.Swap.ExchangeData.Request) async throws -> ExpressDTO.Swap.ExchangeData.Response {
         try await _request(target: .exchangeData(request: request))
     }
 
-    func exchangeStatus(request: ExpressDTO.ExchangeStatus.Request) async throws -> ExpressDTO.ExchangeStatus.Response {
+    func exchangeStatus(request: ExpressDTO.Swap.ExchangeStatus.Request) async throws -> ExpressDTO.Swap.ExchangeStatus.Response {
         try await _request(target: .exchangeStatus(request: request))
     }
 
-    func exchangeSent(request: ExpressDTO.ExchangeSent.Request) async throws -> ExpressDTO.ExchangeSent.Response {
+    func exchangeSent(request: ExpressDTO.Swap.ExchangeSent.Request) async throws -> ExpressDTO.Swap.ExchangeSent.Response {
         try await _request(target: .exchangeSent(request: request))
+    }
+
+    // MARK: - Onramp
+
+    func onrampCurrencies() async throws -> [ExpressDTO.Onramp.FiatCurrency] {
+        try await _request(target: .onrampCurrencies)
+    }
+
+    func onrampCountries() async throws -> [ExpressDTO.Onramp.Country] {
+        try await _request(target: .onrampCountries)
+    }
+
+    func onrampCountryByIP() async throws -> ExpressDTO.Onramp.Country {
+        try await _request(target: .onrampCountryByIP)
+    }
+
+    func onrampPaymentMethods() async throws -> [ExpressDTO.Onramp.PaymentMethod] {
+        try await _request(target: .onrampPaymentMethods)
+    }
+
+    func onrampPairs(request: ExpressDTO.Onramp.Pairs.Request) async throws -> [ExpressDTO.Onramp.Pairs.Response] {
+        try await _request(target: .onrampPairs(request: request))
+    }
+
+    func onrampQuote(request: ExpressDTO.Onramp.Quote.Request) async throws -> ExpressDTO.Onramp.Quote.Response {
+        try await _request(target: .onrampQuote(request: request))
+    }
+
+    func onrampData(request: ExpressDTO.Onramp.Data.Request) async throws -> ExpressDTO.Onramp.Data.Response {
+        try await _request(target: .onrampData(request: request))
+    }
+
+    func onrampStatus(request: ExpressDTO.Onramp.Status.Request) async throws -> ExpressDTO.Onramp.Status.Response {
+        try await _request(target: .onrampStatus(request: request))
     }
 }
 

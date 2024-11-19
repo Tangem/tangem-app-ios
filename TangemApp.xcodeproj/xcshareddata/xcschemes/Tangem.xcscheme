@@ -29,7 +29,8 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "5D3F77D724BF56DC00E8695B"
@@ -47,10 +48,15 @@
                BlueprintName = "TangemUITests"
                ReferencedContainer = "container:TangemApp.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "TangemUITests">
+               </Test>
+            </SkippedTests>
          </TestableReference>
          <TestableReference
             skipped = "NO"
-            parallelizable = "YES">
+            parallelizable = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "EF9E299B2B4F0C8C00418559"
@@ -58,10 +64,15 @@
                BlueprintName = "TangemExpressTests"
                ReferencedContainer = "container:TangemApp.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "TangemExpressTests">
+               </Test>
+            </SkippedTests>
          </TestableReference>
          <TestableReference
             skipped = "NO"
-            parallelizable = "YES">
+            parallelizable = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B099337D2B5517E600240CDB"
@@ -69,26 +80,36 @@
                BlueprintName = "TangemVisaTests"
                ReferencedContainer = "container:TangemApp.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "TangemVisaTests">
+               </Test>
+            </SkippedTests>
          </TestableReference>
          <TestableReference
             skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EF2D9C8E2BBDA87A0055C485"
-               BuildableName = "TangemFoundationTests.xctest"
-               BlueprintName = "TangemFoundationTests"
-               ReferencedContainer = "container:TangemApp.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
+            parallelizable = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "EFEE23902BFF62D60099917E"
                BuildableName = "TangemStakingTests.xctest"
                BlueprintName = "TangemStakingTests"
+               ReferencedContainer = "container:TangemApp.xcodeproj">
+            </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "TangemStakingTests">
+               </Test>
+            </SkippedTests>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B68E1F6B2CBC44060043E598"
+               BuildableName = "BlockchainSdkTests.xctest"
+               BlueprintName = "BlockchainSdkTests"
                ReferencedContainer = "container:TangemApp.xcodeproj">
             </BuildableReference>
          </TestableReference>

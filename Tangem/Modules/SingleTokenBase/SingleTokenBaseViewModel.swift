@@ -10,6 +10,7 @@ import Foundation
 import Combine
 import SwiftUI
 import BlockchainSdk
+import TangemFoundation
 
 class SingleTokenBaseViewModel: NotificationTapDelegate {
     @Injected(\.swapAvailabilityProvider) private var swapAvailabilityProvider: SwapAvailabilityProvider
@@ -126,8 +127,6 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
         guard updateSubscription == nil else {
             return
         }
-
-        Analytics.log(.refreshed)
 
         if let id = walletModel.tokenItem.currencyId, miniChartsProvider.items.isEmpty {
             miniChartsProvider.fetch(for: [id], with: miniChartPriceIntervalType)
