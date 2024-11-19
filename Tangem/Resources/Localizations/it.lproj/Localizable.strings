@@ -289,6 +289,9 @@
 "express_provider_not_available" = "Unavailable for this pair";
 "express_provider_permission_needed" = "Permission Required";
 "express_provider_recommended" = "Recommended";
+"express_status_bought" = "Bought %@";
+"express_status_buying" = "Buying %@";
+"express_status_buying_active" = "Buying %@...";
 "express_token_list_empty_search" = "No tokens found. Please try another request";
 "express_transaction_id" = "ID: %@";
 "express_transaction_id_copied" = "Transaction ID copied";
@@ -978,6 +981,9 @@
 "warning_hedera_missing_token_association_message_brief" = "This token must be associated with your Hedera account before you can receive it";
 "warning_hedera_missing_token_association_title" = "Associate your token";
 "warning_hedera_token_association_not_enough_hbar_message" = "Not enough %@. Top up your Hedera account to associate this token";
+"warning_kaspa_unfinished_token_transaction_discard_message" = "Are you sure you want to cancel the transaction? You will not be able to retry the transaction again";
+"warning_kaspa_unfinished_token_transaction_message" = "Your transaction with an amount of %1$@ %2$@ was not completed. You can try again to complete it.";
+"warning_kaspa_unfinished_token_transaction_title" = "You have unfinished transaction";
 "warning_long_transaction_message" = "iPhone 7/7+ cannot sign transactions on this network. To complete this operation, please use a different phone.";
 "warning_long_transaction_title" = "Transaction signing unavailable";
 "warning_low_signatures_message" = "Only %@ signatures are left on this card. You must withdraw all of your funds.";

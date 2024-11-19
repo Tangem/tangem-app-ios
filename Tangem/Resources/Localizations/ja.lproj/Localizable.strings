@@ -289,6 +289,9 @@
 "express_provider_not_available" = "このペアは利用できません";
 "express_provider_permission_needed" = "許可が必要です";
 "express_provider_recommended" = "推奨";
+"express_status_bought" = "%@を買い付けました";
+"express_status_buying" = "%@を買い付けています";
+"express_status_buying_active" = "%@を買い付けています...";
 "express_token_list_empty_search" = "トークンが見つかりません。別のリクエストをお試しください。";
 "express_transaction_id" = "ID: %@";
 "express_transaction_id_copied" = "取引IDをコピーしました";
@@ -818,7 +821,7 @@
 "swapping_alert_dex_description" = "この金額には、サービスプロバイダーの手数料が含まれています。";
 "swapping_alert_dex_description_with_slippage" = "金額にはサービスプロバイダーの手数料が含まれます。 \n\nプロバイダーのスリッページは最大%@ です";
 "swapping_alert_slippage_description" = "プロバイダーのスリッページは最大%@です。";
-"swapping_alert_title" = "手数料";
+"swapping_alert_title" = "情報";
 "swapping_approve_information_text" = "すべての分散型取引所は、スマートコントラクトがあなたの許可なくウォレットにアクセスするのを防ぐために承認を必要とします。設計上、スマートコントラクトは承認なしでトークンにアクセスできません。トークンを「ロック解除」することで、あなたは1-inchのスマートコントラクトがトークンを使うことを承認します。ネットワークのマイナーは、このアクションをブロックチェーンに記録するためのガス料金（あなたが支払う）を受け取ります。承認後、トークンを交換することができます。";
 "swapping_approve_information_title" = "承認";
 "swapping_fee_estimation_error_text" = "手数料見積りエラーです。サポートにフィードバックをお送りください。";
@@ -835,14 +838,14 @@
 "toast_balances_shown" = "残高表示";
 "toast_undo" = "元に戻す";
 "token_button_unavailability_generic_description" = "この操作は現在利用できません。しばらくしてからもう一度お試しください。";
-"token_button_unavailability_reason_buy_unavailable" = "現在、 %@の買付はご利用いただけません。アップデート情報をご確認ください。";
+"token_button_unavailability_reason_buy_unavailable" = "%@の買付は、現在のプロバイダーではサポートされていませんが、より多くのオプションを追加できるよう取り組んでいます。";
 "token_button_unavailability_reason_empty_balance_sell" = "売却できる資金がありません。アカウントに入金して、売却できるようにしてください。";
 "token_button_unavailability_reason_empty_balance_send" = "送金する資金がありません。アカウントに入金して、送金できるようにしてください。";
-"token_button_unavailability_reason_not_exchangeable" = "現在、 %@の交換はご利用いただけません。アップデート情報を確認してください。";
+"token_button_unavailability_reason_not_exchangeable" = "%@のスワップは、現在のプロバイダーではサポートされていませんが、より多くのオプションを追加できるよう取り組んでいます。";
 "token_button_unavailability_reason_pending_transaction_sell" = "ネットワーク%@内の保留中の取引が完了すると、資金の売却が可能になります。";
 "token_button_unavailability_reason_pending_transaction_send" = "ネットワーク%@内の保留中の取引が完了すると、送金が可能になります。";
-"token_button_unavailability_reason_sell_unavailable" = "現在、 %@の売却はご利用いただけません。アップデート情報をご確認ください。";
-"token_button_unavailability_reason_staking_unavailable" = "%@ のステーキングは現在ご利用いただけません。最新情報をご確認ください。";
+"token_button_unavailability_reason_sell_unavailable" = "%@の売却は、現在のプロバイダーではサポートされていませんが、より多くのオプションを追加できるよう取り組んでいます。";
+"token_button_unavailability_reason_staking_unavailable" = "%@のステーキングは、現在のプロバイダーではサポートされていませんが、より多くのオプションを追加できるよう取り組んでいます。";
 "token_details_choose_address" = "アドレスを選択";
 "token_details_generate_xpub" = "XPUBを生成する";
 "token_details_hide_alert_hide" = "非表示";
@@ -932,7 +935,7 @@
 "wallet_marketprice_block_update_time" = "直近24時間";
 "wallet_network_group_title" = "%@ネットワーク";
 "wallet_notification_address_copied" = "アドレスがクリップボードにコピーされました";
-"wallet_promo_banner_button_title" = "今すぐ10 %オフで購入";
+"wallet_promo_banner_button_title" = "今すぐ10 %%オフで購入";
 "wallet_promo_banner_description" = "1.3万種類以上の暗号資産にアクセス。ワンタップで買付、売却、スワップ、ステーキングが可能です。\nバックアップ用に最大3枚のカードを連携できます。";
 "wallet_promo_banner_title" = "Tangemウォレットを見る";
 "wallet_settings_title" = "ウォレット設定";
@@ -978,6 +981,9 @@
 "warning_hedera_missing_token_association_message_brief" = "このトークンを受け取るには、Hederaアカウントに関連付ける必要があります。";
 "warning_hedera_missing_token_association_title" = "トークンを関連付ける";
 "warning_hedera_token_association_not_enough_hbar_message" = "%@が不足しています。このトークンを関連付けるには、Hederaアカウントに資金を追加してください。";
+"warning_kaspa_unfinished_token_transaction_discard_message" = "取引をキャンセルしてもよろしいですか? 取引を再試行することはできません";
+"warning_kaspa_unfinished_token_transaction_message" = "%1$@ %2$@の取引が完了しませんでした。もう一度試して完了してください。";
+"warning_kaspa_unfinished_token_transaction_title" = "未完了の取引があります";
 "warning_long_transaction_message" = "iPhone 7/7+ はこのネットワーク上で取引に署名できません。この操作を完了するには、別のデバイスを使用してください。";
 "warning_long_transaction_title" = "取引署名は利用できません";
 "warning_low_signatures_message" = "このカードには%@の署名のみが残っています。資金をすべて引き出す必要があります。";
@@ -1004,7 +1010,7 @@
 "warning_send_blocked_funds_for_fee_message" = "%1$@ は %2$@ ネットワーク内のアセットです。%3$@ 取引を行うには、ネットワーク手数料のために %4$@ (%5$@) を入金する必要があります。";
 "warning_send_blocked_funds_for_fee_title" = "ネットワーク料金をカバーするための%1$@が足りません";
 "warning_solana_rent_fee_message" = "Solana ネットワークは 2 日ごとに%1$@のレンタル料を請求します。レンタル料を支払えないアカウントはネットワークから削除されます。アカウントに%2$@以上入金すると、無料で使用できます。";
-"warning_some_networks_unreachable_message" = "現在、一部のネットワークにアクセスできません。しばらくしてからもう一度お試しください。";
+"warning_some_networks_unreachable_message" = "下にスワイプして更新するか、後でもう一度お試しください。";
 "warning_some_networks_unreachable_title" = "一部のネットワークにアクセスできません";
 "warning_system_deprecation_title" = "システムアップデートが必要です";
 "warning_system_deprecation_with_date_message" = "お使いのバージョンのオペレーティングシステムのサポートは%@に終了します。今後アプリのアップデートを受け取るには、最新バージョンにアップデートする必要があります。";
