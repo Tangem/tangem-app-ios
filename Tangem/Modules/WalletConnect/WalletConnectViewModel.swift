@@ -57,12 +57,12 @@ class WalletConnectViewModel: ObservableObject {
         }
     }
 
-    func readFromClipboard() -> WalletConnectRequestURI? {
+    func readFromClipboard() throws -> WalletConnectRequestURI? {
         guard let pasteboardValue = UIPasteboard.general.string else {
             return nil
         }
 
-        return try? WalletConnectURLParser().parse(uriString: pasteboardValue)
+        return try WalletConnectURLParser().parse(uriString: pasteboardValue)
     }
 
     func pasteFromClipboard() {
@@ -80,7 +80,14 @@ class WalletConnectViewModel: ObservableObject {
             return
         }
 
-        if let pendingURI = readFromClipboard() {
+        do {
+            pendingURI = try readFromClipboard()
+        } catch {
+            makeAlert(with: error.localizedDescription)
+            return
+        }
+
+        if pendingURI != nil {
             isActionSheetVisible = true
         } else {
             openQRScanner()

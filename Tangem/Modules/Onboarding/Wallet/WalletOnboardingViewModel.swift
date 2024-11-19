@@ -525,11 +525,6 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
         }
     }
 
-    override func didAskToSaveUserWallets(agreed: Bool) {
-        super.didAskToSaveUserWallets(agreed: agreed)
-        trySaveAccessCodes()
-    }
-
     private func back() {
         closeOnboarding()
 
@@ -765,7 +760,13 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
                                     AppSettings.shared.userWalletIdsWithRing.insert(userWalletId)
                                 }
 
-                                trySaveAccessCodes()
+                                if AppSettings.shared.saveAccessCodes,
+                                   let accessCode = accessCode,
+                                   let cardIds = cardIds {
+                                    let accessCodeData: Data = accessCode.sha256()
+                                    let accessCodeRepository = AccessCodeRepository()
+                                    try? accessCodeRepository.save(accessCodeData, for: cardIds)
+                                }
 
                                 pendingBackupManager.onBackupCompleted()
                                 userWalletModel?.onBackupUpdate(type: .backupCompleted)
@@ -802,18 +803,6 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
                     self?.isMainButtonBusy = false
                 }
             }
-    }
-
-    private func trySaveAccessCodes() {
-        guard AppSettings.shared.saveAccessCodes,
-              let accessCode = accessCode,
-              let cardIds = cardIds else {
-            return
-        }
-
-        let accessCodeData: Data = accessCode.sha256()
-        let accessCodeRepository = AccessCodeRepository()
-        try? accessCodeRepository.save(accessCodeData, for: cardIds)
     }
 
     private func previewGoToNextStepDelayed(_ delay: TimeInterval = 2) {

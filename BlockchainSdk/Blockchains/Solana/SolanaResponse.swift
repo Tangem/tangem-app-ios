@@ -14,13 +14,12 @@ struct SolanaAccountInfoResponse {
     let accountExists: Bool
     let tokensByMint: [String: SolanaTokenAccountInfoResponse]
     let confirmedTransactionIDs: [String]
-    let mainAccountRentExemption: Decimal
 }
 
 struct SolanaMainAccountInfoResponse {
     let balance: Lamports
     let accountExists: Bool
-    let rentExemption: Decimal
+    let space: UInt64?
 }
 
 struct SolanaTokenAccountInfoResponse {
