@@ -289,6 +289,9 @@
 "express_provider_not_available" = "Недоступно для этой пары";
 "express_provider_permission_needed" = "Требуется разрешение";
 "express_provider_recommended" = "Рекомендовано";
+"express_status_bought" = "Bought %@";
+"express_status_buying" = "Buying %@";
+"express_status_buying_active" = "Buying %@...";
 "express_token_list_empty_search" = "Токены не найдены. Пожалуйста, попробуйте другой запрос";
 "express_transaction_id" = "ID: %@";
 "express_transaction_id_copied" = "ID транзакции скопирован";
@@ -549,7 +552,7 @@
 "onramp_no_available_providers" = "Для данной валюты нет доступных провайдеров";
 "onramp_pay_with" = "Оплата с";
 "onramp_redirecting_to_provider_subtitle" = "Вы сможете завершить транзакцию через сервис стороннего провайдера, %@";
-"onramp_redirecting_to_provider_title" = "Переход к %@ ...";
+"onramp_redirecting_to_provider_title" = "Переход к %@...";
 "onramp_residency_bottomsheet_country_not_supported" = "Наши сервисы недоступны в данной стране";
 "onramp_residency_bottomsheet_country_subtitle" = "Change or confirm it";
 "onramp_residency_bottomsheet_title" = "Your residence has been identified as";
@@ -934,7 +937,7 @@
 "wallet_notification_address_copied" = "Адрес скопирован в буфер обмена";
 "wallet_promo_banner_button_title" = "Получить с 10%% скидкой";
 "wallet_promo_banner_description" = "Получите доступ к более чем 13 000 криптовалют. Покупайте, продавайте, обменяйте и стейкайте в один клик. Свяжите до трех карт для резервного копирования. ";
-"wallet_promo_banner_title" = "Откройте Tangem Wallet ";
+"wallet_promo_banner_title" = "Откройте Tangem Wallet";
 "wallet_settings_title" = "Настройки кошелька";
 "wallet_title" = "Tangem";
 "warning_access_denied_message" = "Используйте %@ или отсканируйте карту/кольцо, чтобы разблокировать доступ к вашему кошельку";
@@ -978,6 +981,9 @@
 "warning_hedera_missing_token_association_message_brief" = "Этот токен должен быть ассоциирован с вашей учетной записью Hedera, прежде чем вы сможете его принять";
 "warning_hedera_missing_token_association_title" = "Ассоциируете свой токен";
 "warning_hedera_token_association_not_enough_hbar_message" = "Недостаточно %@. Пополните ваш аккаунт Hedera для ассоциации этого токена";
+"warning_kaspa_unfinished_token_transaction_discard_message" = "Вы уверены что хотите отменить эту транзакцию? Вы не сможете отправить ее еще раз";
+"warning_kaspa_unfinished_token_transaction_message" = "Ваша транзакция %1$@ %2$@ не была завершена. Вы можете попробовать отправить ее еще раз.";
+"warning_kaspa_unfinished_token_transaction_title" = "У вас есть незавершенная транзакция";
 "warning_long_transaction_message" = "iPhone 7/7+ не может подписывать транзакции в данной сети. Для завершения этой операции, пожалуйста, используйте другой телефон";
 "warning_long_transaction_title" = "Невозможно подписать транзакцию";
 "warning_low_signatures_message" = "На этой карте осталось всего %@ подписей. Вам следует вывести все ваши средства.";
