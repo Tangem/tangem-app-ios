@@ -113,7 +113,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>Запишіть це %li слово у порядку, вказаному нижче, та збережіть його у надійному місці.</string>
+        <string></string>
         <key>few</key>
         <string>Запишіть ці %li слова у порядку, вказаному нижче, та збережіть їх у надійному місці.</string>
         <key>many</key>

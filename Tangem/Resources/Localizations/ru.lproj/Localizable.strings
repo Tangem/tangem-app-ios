@@ -124,7 +124,7 @@
 "common_import" = "Импортировать";
 "common_in_progress" = "В процессе";
 "common_later" = "Позже";
-"common_learn_and_earn" = "Learn & Earn";
+"common_learn_and_earn" = "Учись и зарабатывай";
 "common_left" = "Осталось %1$@";
 "common_locked" = "Заблокирован";
 "common_main_network" = "Основная сеть";
@@ -173,7 +173,7 @@
 "common_terms_of_use" = "Условиями использования";
 "common_today" = "Сегодня";
 "common_transaction_failed" = "Ошибка транзакции";
-"common_transaction_status" = "Transaction status";
+"common_transaction_status" = "Статус транзакции";
 "common_transactions" = "Транзакции";
 "common_transfer" = "Перевод";
 "common_understand" = "Я понял";
@@ -182,7 +182,7 @@
 "common_unstake" = "Завершить стейкинг";
 "common_warning" = "Предупреждение";
 "common_week" = "неделю";
-"common_with" = "with";
+"common_with" = "с";
 "common_yes" = "Да";
 "contract_address_copied_message" = "Адрес контракта скопирован!";
 "currency_subtitle_expanded" = "Доступные сети";
@@ -542,7 +542,7 @@
 "onramp_country_search" = "Поиск по стране";
 "onramp_country_unavailable" = "Недоступно";
 "onramp_currency_other" = "Другие валюты";
-"onramp_currency_popular" = "Popular Fiats";
+"onramp_currency_popular" = "Популярные фиаты";
 "onramp_currency_search" = "Поиск по валюте";
 "onramp_max_amount_restriction" = "Сумма покупки не может быть больше, чем %@";
 "onramp_min_amount_restriction" = "Сумма покупки должна составлять минимум %@";
@@ -835,14 +835,14 @@
 "toast_balances_shown" = "Балансы показаны";
 "toast_undo" = "Отменить";
 "token_button_unavailability_generic_description" = "Выбранная операция в данный момент недоступна. Попробуйте позже.";
-"token_button_unavailability_reason_buy_unavailable" = "В данный момент покупка монеты %@ недоступна. Следите за нашими обновлениями.";
+"token_button_unavailability_reason_buy_unavailable" = "Покупка %@ в данный момент не поддерживается ни одним провайдером. Мы работаем над добавлением новых возможностей. Следите за нашими новостями.";
 "token_button_unavailability_reason_empty_balance_sell" = "У вас нет средств для продажи. Пополните счет, чтобы иметь возможность продать с него средства.";
 "token_button_unavailability_reason_empty_balance_send" = "У вас нет средств для отправки. Пополните счет, чтобы иметь возможность отправить с него средства.";
-"token_button_unavailability_reason_not_exchangeable" = "В данный момент обмен монеты %@ недоступен. Следите за нашими обновлениями.";
+"token_button_unavailability_reason_not_exchangeable" = "Обмен %@ в данный момент не поддерживается ни одним провайдером. Мы работаем над добавлением новых возможностей. Следите за нашими новостями.";
 "token_button_unavailability_reason_pending_transaction_sell" = "Продажа средств станет доступной после завершения транзакции(-ий) в сети %@";
 "token_button_unavailability_reason_pending_transaction_send" = "Отправка средств станет доступной после завершения транзакции(-ий) в сети %@";
-"token_button_unavailability_reason_sell_unavailable" = "В данный момент продажа %@ недоступна. Следите за нашими обновлениями.";
-"token_button_unavailability_reason_staking_unavailable" = "В данный момент стейкинг монеты %@ недоступен. Следите за нашими обновлениями.";
+"token_button_unavailability_reason_sell_unavailable" = "Продажа %@ в данный момент не поддерживается ни одним провайдером. Мы работаем над добавлением новых возможностей. Следите за нашими новостями.";
+"token_button_unavailability_reason_staking_unavailable" = "Стейкинг %@ в данный момент не поддерживается ни одним провайдером. Мы работаем над добавлением новых возможностей. Следите за нашими новостями.";
 "token_details_choose_address" = "Выберите адрес";
 "token_details_generate_xpub" = "Сгенерировать XPUB";
 "token_details_hide_alert_hide" = "Скрыть";
@@ -932,6 +932,9 @@
 "wallet_marketprice_block_update_time" = "за 24 часа";
 "wallet_network_group_title" = "Сеть %@";
 "wallet_notification_address_copied" = "Адрес скопирован в буфер обмена";
+"wallet_promo_banner_button_title" = "Получить с 10%% скидкой";
+"wallet_promo_banner_description" = "Получите доступ к более чем 13 000 криптовалют. Покупайте, продавайте, обменяйте и стейкайте в один клик. Свяжите до трех карт для резервного копирования. ";
+"wallet_promo_banner_title" = "Откройте Tangem Wallet ";
 "wallet_settings_title" = "Настройки кошелька";
 "wallet_title" = "Tangem";
 "warning_access_denied_message" = "Используйте %@ или отсканируйте карту/кольцо, чтобы разблокировать доступ к вашему кошельку";
