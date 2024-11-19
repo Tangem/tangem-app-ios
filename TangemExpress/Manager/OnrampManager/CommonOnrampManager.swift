@@ -96,10 +96,11 @@ private extension CommonOnrampManager {
             throw OnrampManagerError.providersIsEmpty
         }
 
-        await withTaskGroup(of: Void.self) { group in
+        await withTaskGroup(of: Void.self) { [weak self] group in
             providers.forEach { provider in
                 _ = group.addTaskUnlessCancelled {
                     await provider.manager.update(amount: amount)
+                    await self?.log(message: "Quotes was loaded in: \(provider)")
                 }
             }
         }
@@ -110,7 +111,7 @@ private extension CommonOnrampManager {
 
         for provider in _providers {
             let sorted = provider.sort()
-            log(message: "Providers was sorted to order \(sorted)") // .map { $0.provider.name }
+            log(message: "Providers for paymentMethod: \(provider.paymentMethod.name) was sorted to order: \(sorted)")
 
             let best = provider.updateBest()
             log(message: "The best provider was define to \(best as Any)")
