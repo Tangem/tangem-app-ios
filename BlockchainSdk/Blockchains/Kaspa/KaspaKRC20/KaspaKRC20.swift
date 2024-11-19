@@ -16,7 +16,7 @@ struct KaspaIncompleteTokenTransactionStorageID: CustomStringConvertible {
     }
 }
 
-public enum KaspaKRC20 {
+enum KaspaKRC20 {
     static let RevealTransactionMassConstant: Decimal = 4100
     
     struct TransactionGroup {
