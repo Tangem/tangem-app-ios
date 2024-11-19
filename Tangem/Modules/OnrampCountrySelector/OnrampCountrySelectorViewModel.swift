@@ -83,10 +83,20 @@ private extension OnrampCountrySelectorViewModel {
                 isAvailable: country.onrampAvailable,
                 isSelected: repository.preferenceCountry == country,
                 action: { [weak self] in
-                    self?.repository.updatePreference(country: country)
+                    self?.updatePreference(country: country)
                     self?.coordinator?.dismissCountrySelector()
                 }
             )
+        }
+    }
+
+    func updatePreference(country: OnrampCountry) {
+        // We have to save the currency in repository
+        // if we don't have one
+        if repository.preferenceCurrency == nil {
+            repository.updatePreference(country: country, currency: country.currency)
+        } else {
+            repository.updatePreference(country: country)
         }
     }
 }

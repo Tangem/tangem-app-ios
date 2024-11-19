@@ -13,7 +13,13 @@ public struct VisaAuthChallengeResponse: Decodable {
     public let sessionId: String
 }
 
-public struct VisaAccessToken: Decodable {
+public struct VisaAuthorizationTokens: Decodable {
     public let accessToken: String
     public let refreshToken: String
+
+    // Will be updated in IOS-8509. Requirements for activation flow was reworked, so for now this function is for testing purposes
+    public init(accessToken: String, refreshToken: String) {
+        self.accessToken = accessToken
+        self.refreshToken = refreshToken
+    }
 }
