@@ -25,7 +25,9 @@ public class OnrampProvider {
         self.manager = manager
     }
 
-    func update(isBest: Bool) {}
+    func update(isBest: Bool) {
+        self.isBest = isBest
+    }
 }
 
 // MARK: - CustomStringConvertible

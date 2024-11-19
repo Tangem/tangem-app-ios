@@ -19,8 +19,7 @@ public class ProviderItem {
     }
 
     public func suggestProvider() -> OnrampProvider? {
-        // Has to sort again ?
-        return providers.first(where: { $0.manager.state.canBeShow })
+        providers.first(where: { $0.manager.state.canBeShow })
     }
 
     @discardableResult
