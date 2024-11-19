@@ -60,13 +60,11 @@ class FakeUserWalletRepository: UserWalletRepository {
 
     func lock() {}
 
-    func logoutIfNeeded() {}
-
     func add(_ userWalletModel: UserWalletModel) {}
 
     func addOrScan(scanner: CardScanner, completion: @escaping (UserWalletRepositoryResult?) -> Void) {}
 
-    func delete(_ userWalletId: UserWalletId, logoutIfNeeded shouldAutoLogout: Bool) {}
+    func delete(_ userWalletId: UserWalletId) {}
 
     func clearNonSelectedUserWallets() {}
 
