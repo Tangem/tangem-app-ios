@@ -332,26 +332,30 @@ extension SolanaWalletManager: StakeKitTransactionSender, StakeKitTransactionSen
     }
 }
 
-// MARK: - MinimumBalanceRestrictable
+/*
+ // TODO: - https://tangem.atlassian.net/browse/IOS-8538
 
-extension SolanaWalletManager: MinimumBalanceRestrictable {
-    var minimumBalance: Amount {
-        Amount(with: wallet.blockchain, value: mainAccountRentExemption)
-    }
+ // MARK: - MinimumBalanceRestrictable
 
-    // Required to determine the remaining rent when sending the token
-    func validateMinimumBalance(amount: Amount, fee: Amount) throws {
-        guard case .token = amount.type else {
-            return
-        }
+ extension SolanaWalletManager: MinimumBalanceRestrictable {
+     var minimumBalance: Amount {
+         Amount(with: wallet.blockchain, value: mainAccountRentExemption)
+     }
 
-        guard let balance = wallet.amounts[.coin] else {
-            throw ValidationError.balanceNotFound
-        }
+     // Required to determine the remaining rent when sending the token
+     func validateMinimumBalance(amount: Amount, fee: Amount) throws {
+         guard case .token = amount.type else {
+             return
+         }
 
-        let remainderBalance = balance - fee
-        if remainderBalance < minimumBalance {
-            throw ValidationError.minimumBalance(minimumBalance: minimumBalance)
-        }
-    }
-}
+         guard let balance = wallet.amounts[.coin] else {
+             throw ValidationError.balanceNotFound
+         }
+
+         let remainderBalance = balance - fee
+         if remainderBalance < minimumBalance {
+             throw ValidationError.amountExceedsBalance
+         }
+     }
+ }
+ */
