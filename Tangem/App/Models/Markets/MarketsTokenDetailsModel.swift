@@ -20,6 +20,7 @@ struct MarketsTokenDetailsModel: Identifiable {
     let priceChangePercentage: [String: Decimal]
     let insights: MarketsTokenDetailsInsights?
     let metrics: MarketsTokenDetailsMetrics?
+    let securityScore: MarketsTokenDetailsSecurityScore?
     let pricePerformance: [MarketsPriceIntervalType: MarketsPricePerformanceData]?
     let links: MarketsTokenDetailsLinks?
     let availableNetworks: [NetworkModel]
@@ -29,8 +30,12 @@ extension MarketsTokenDetailsModel: Equatable {
     // This model won't be reloaded for now (no PTR or some kind of refresh mechanism),
     // so it is safe to compare this fields.
     static func == (lhs: MarketsTokenDetailsModel, rhs: MarketsTokenDetailsModel) -> Bool {
-        return lhs.id == rhs.id && lhs.insights == rhs.insights && lhs.metrics == rhs.metrics
-            && lhs.pricePerformance == rhs.pricePerformance && lhs.links == rhs.links
+        return lhs.id == rhs.id
+            && lhs.insights == rhs.insights
+            && lhs.metrics == rhs.metrics
+            && lhs.pricePerformance == rhs.pricePerformance
+            && lhs.links == rhs.links
+            && lhs.securityScore == rhs.securityScore
     }
 }
 
@@ -65,4 +70,17 @@ struct MarketsTokenDetailsInsights: Equatable {
         experiencedBuyers = mapToInterval(dto.experiencedBuyerChange)
         networksInfo = dto.networks
     }
+}
+
+struct MarketsTokenDetailsSecurityScore: Equatable {
+    struct Provider: Equatable {
+        let id: String
+        let name: String
+        let securityScore: Double
+        let auditDate: Date?
+        let auditURL: URL?
+    }
+
+    let securityScore: Double
+    let providers: [Provider]
 }

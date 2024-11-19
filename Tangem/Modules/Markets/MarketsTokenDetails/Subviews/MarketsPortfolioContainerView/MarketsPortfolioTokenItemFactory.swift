@@ -43,7 +43,7 @@ struct MarketsPortfolioTokenItemFactory {
         let tokenItemTypes: [TokenItemType] = entries
             .filter { entry in
 
-                if entry.id == coinId {
+                if entry.coinId == coinId {
                     return true
                 }
 

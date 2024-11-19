@@ -6,4 +6,6 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-public struct OnrampQuote: Hashable {}
+public struct OnrampQuote: Hashable {
+    public let expectedAmount: Decimal
+}

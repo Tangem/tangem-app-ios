@@ -7,25 +7,46 @@
 //
 
 import TangemExpress
+import Combine
 
-protocol OnrampBaseDataBuilderInput {}
-
-struct CommonOnrampBaseDataBuilder: OnrampBaseDataBuilder {
-    private let input: OnrampBaseDataBuilderInput
-    private let walletModel: WalletModel
+struct CommonOnrampBaseDataBuilder {
     private let onrampRepository: OnrampRepository
+    private let onrampDataRepository: OnrampDataRepository
+    private let providersBuilder: OnrampProvidersBuilder
+    private let paymentMethodsBuilder: OnrampPaymentMethodsBuilder
+    private let onrampRedirectingBuilder: OnrampRedirectingBuilder
 
     init(
-        input: OnrampBaseDataBuilderInput,
-        walletModel: WalletModel,
-        onrampRepository: OnrampRepository
+        onrampRepository: OnrampRepository,
+        onrampDataRepository: OnrampDataRepository,
+        providersBuilder: OnrampProvidersBuilder,
+        paymentMethodsBuilder: OnrampPaymentMethodsBuilder,
+        onrampRedirectingBuilder: OnrampRedirectingBuilder
     ) {
-        self.input = input
-        self.walletModel = walletModel
         self.onrampRepository = onrampRepository
+        self.onrampDataRepository = onrampDataRepository
+        self.providersBuilder = providersBuilder
+        self.paymentMethodsBuilder = paymentMethodsBuilder
+        self.onrampRedirectingBuilder = onrampRedirectingBuilder
+    }
+}
+
+// MARK: - OnrampBaseDataBuilder
+
+extension CommonOnrampBaseDataBuilder: OnrampBaseDataBuilder {
+    func makeDataForOnrampCountryBottomSheet() -> OnrampRepository {
+        onrampRepository
     }
 
-    func makeDataForOnrampCountryBottomSheet() -> any TangemExpress.OnrampRepository {
-        onrampRepository
+    func makeDataForOnrampCountrySelectorView() -> (preferenceRepository: OnrampRepository, dataRepository: OnrampDataRepository) {
+        (preferenceRepository: onrampRepository, dataRepository: onrampDataRepository)
+    }
+
+    func makeDataForOnrampProvidersPaymentMethodsView() -> (providersBuilder: OnrampProvidersBuilder, paymentMethodsBuilder: OnrampPaymentMethodsBuilder) {
+        (providersBuilder: providersBuilder, paymentMethodsBuilder: paymentMethodsBuilder)
+    }
+
+    func makeDataForOnrampRedirecting() -> OnrampRedirectingBuilder {
+        onrampRedirectingBuilder
     }
 }

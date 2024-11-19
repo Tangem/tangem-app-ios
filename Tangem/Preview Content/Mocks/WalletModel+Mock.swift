@@ -17,7 +17,8 @@ extension WalletModel {
         transactionHistoryService: nil,
         amountType: .coin,
         shouldPerformHealthCheck: false,
-        isCustom: false
+        isCustom: false,
+        sendAvailabilityProvider: TransactionSendAvailabilityProvider(isSendingSupportedByCard: true)
     )
 }
 

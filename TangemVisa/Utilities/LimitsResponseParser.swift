@@ -8,6 +8,7 @@
 
 import Foundation
 import BlockchainSdk
+import TangemFoundation
 
 struct LimitsResponseParser {
     private let responseLength = 962

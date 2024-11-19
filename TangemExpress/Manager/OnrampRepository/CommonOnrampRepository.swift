@@ -12,6 +12,7 @@ import TangemFoundation
 class CommonOnrampRepository {
     private let storage: OnrampStorage
     private let preference: CurrentValueSubject<OnrampUserPreference, Never>
+    private let lockQueue = DispatchQueue(label: "com.tangem.OnrampRepository.lockQueue")
 
     init(storage: OnrampStorage) {
         self.storage = storage
@@ -23,42 +24,52 @@ class CommonOnrampRepository {
 // MARK: - OnrampRepository
 
 extension CommonOnrampRepository: OnrampRepository {
-    var savedCountry: OnrampCountry? {
-        preference.value.country.map { country in
-            mapToOnrampCountry(country: country)
+    var preferenceCountry: OnrampCountry? {
+        preference.value.country.map(mapToOnrampCountry)
+    }
+
+    var preferenceCurrency: OnrampFiatCurrency? {
+        preference.value.currency.map(mapToOnrampFiatCurrency)
+    }
+
+    var preferenceCountryPublisher: AnyPublisher<OnrampCountry?, Never> {
+        preference.map { [weak self] preference in
+            preference.country.flatMap { country in
+                self?.mapToOnrampCountry(country: country)
+            }
         }
+        .eraseToAnyPublisher()
     }
 
-    var savedPaymentMethod: OnrampPaymentMethod? {
-        preference.value.paymentMethod.map { paymentMethod in
-            mapToOnrampPaymentMethod(paymentMethod: paymentMethod)
+    var preferenceCurrencyPublisher: AnyPublisher<OnrampFiatCurrency?, Never> {
+        preference.map { [weak self] preference in
+            preference.currency.flatMap { currency in
+                self?.mapToOnrampFiatCurrency(currency: currency)
+            }
         }
+        .eraseToAnyPublisher()
     }
 
-    var savedCurrency: OnrampFiatCurrency? {
-        preference.value.currency.map { currency in
-            mapToOnrampFiatCurrency(currency: currency)
+    func updatePreference(country: OnrampCountry?, currency: OnrampFiatCurrency?) {
+        var newPreference = preference.value
+
+        if let country {
+            newPreference.country = mapToOnrampUserPreferenceCountry(country: country)
         }
-    }
 
-    func updatePreference(country: OnrampCountry) {
-        preference.value.country = mapToOnrampUserPreferenceCountry(country: country)
-    }
+        if let currency {
+            newPreference.currency = mapToOnrampUserPreferenceCurrency(currency: currency)
+        }
 
-    func updatePreference(currency: OnrampFiatCurrency) {
-        preference.value.currency = mapToOnrampUserPreferenceCurrency(currency: currency)
-    }
+        lockQueue.sync {
+            storage.save(preference: newPreference)
+        }
 
-    func updatePreference(paymentMethod: OnrampPaymentMethod) {
-        preference.value.paymentMethod = mapToOnrampUserPreferencePaymentMethod(paymentMethod: paymentMethod)
+        preference.send(newPreference)
     }
 
     var preferenceDidChangedPublisher: AnyPublisher<Void, Never> {
         preference.map { _ in () }.eraseToAnyPublisher()
-    }
-
-    func saveChanges() {
-        storage.save(preference: preference.value)
     }
 }
 
@@ -80,12 +91,6 @@ private extension CommonOnrampRepository {
         )
     }
 
-    func mapToOnrampPaymentMethod(paymentMethod: OnrampUserPreference.PaymentMethod) -> OnrampPaymentMethod {
-        OnrampPaymentMethod(
-            identity: .init(name: paymentMethod.name, code: paymentMethod.id, image: paymentMethod.image)
-        )
-    }
-
     func mapToOnrampUserPreferenceCountry(country: OnrampCountry) -> OnrampUserPreference.Country {
         OnrampUserPreference.Country(
             name: country.identity.name,
@@ -102,14 +107,6 @@ private extension CommonOnrampRepository {
             code: currency.identity.code,
             image: currency.identity.image,
             precision: currency.precision
-        )
-    }
-
-    func mapToOnrampUserPreferencePaymentMethod(paymentMethod: OnrampPaymentMethod) -> OnrampUserPreference.PaymentMethod {
-        OnrampUserPreference.PaymentMethod(
-            name: paymentMethod.identity.name,
-            id: paymentMethod.identity.code,
-            image: paymentMethod.identity.image
         )
     }
 }

@@ -65,7 +65,13 @@ private struct TextViewWrapper: UIViewRepresentable {
         textView.backgroundColor = .clear
         textView.textContainer.lineFragmentPadding = 0
 
-        textView.attributedText = attributedText(text)
+        let newAttributedText = attributedText(text)
+        // UITextView instance won't use attributes from an empty NSAttributedString, so we temporarily
+        // assign a dummy non-empty attributed string to set all attributes in the UITextView instance
+        if newAttributedText.string.isEmpty {
+            textView.attributedText = attributedText(#fileID)
+        }
+        textView.attributedText = newAttributedText
 
         return textView
     }

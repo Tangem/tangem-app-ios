@@ -7,9 +7,10 @@
 //
 
 import Combine
-import SwiftUI
-import BlockchainSdk
 import TangemExpress
+import TangemFoundation
+import SwiftUI
+import struct BlockchainSdk.SendTxError
 
 protocol SendViewAlertPresenter: AnyObject {
     func showAlert(_ alert: AlertBinder)
@@ -98,6 +99,8 @@ final class SendViewModel: ObservableObject {
             stepsManager.performContinue()
         case .action where flowActionType == .approve:
             performApprove()
+        case .action where flowActionType == .onramp:
+            performOnramp()
         case .action:
             performAction()
         case .close:
@@ -128,8 +131,6 @@ final class SendViewModel: ObservableObject {
         // case (_, .destination):
         //    isKeyboardActive = true
         case (_, .amount):
-            isKeyboardActive = true
-        case (_, .onramp):
             isKeyboardActive = true
         default:
             break
@@ -182,6 +183,16 @@ final class SendViewModel: ObservableObject {
 // MARK: - Private
 
 private extension SendViewModel {
+    func performOnramp() {
+        do {
+            isKeyboardActive = false
+            let onrampRedirectingBuilder = try dataBuilder.onrampBuilder().makeDataForOnrampRedirecting()
+            coordinator?.openOnrampRedirecting(onrampRedirectingBuilder: onrampRedirectingBuilder)
+        } catch {
+            alert = error.alertBinder
+        }
+    }
+
     func performApprove() {
         do {
             let (settings, approveViewModelInput) = try dataBuilder.stakingBuilder().makeDataForExpressApproveViewModel()
@@ -193,7 +204,7 @@ private extension SendViewModel {
 
     func performAction() {
         sendTask?.cancel()
-        sendTask = runTask(in: self) { viewModel in
+        sendTask = TangemFoundation.runTask(in: self) { viewModel in
             do {
                 let result = try await viewModel.interactor.action()
                 await viewModel.proceed(result: result)
@@ -219,7 +230,7 @@ private extension SendViewModel {
     @MainActor
     func proceed(error: TransactionDispatcherResult.Error) {
         switch error {
-        case .userCancelled, .transactionNotFound:
+        case .userCancelled, .transactionNotFound, .actionNotSupported:
             break
         case .informationRelevanceServiceError:
             alert = alertBuilder.makeFeeRetryAlert { [weak self] in
@@ -243,7 +254,7 @@ private extension SendViewModel {
     }
 
     func openMail(error: Error) {
-        Analytics.log(.requestSupport, params: [.source: .transactionSourceSend])
+        Analytics.log(.requestSupport, params: [.source: .send])
 
         do {
             let (emailDataCollector, recipient) = try dataBuilder.stakingBuilder().makeMailData(stakingRequestError: error)
@@ -254,7 +265,7 @@ private extension SendViewModel {
     }
 
     func openMail(transaction: SendTransactionType, error: SendTxError) {
-        Analytics.log(.requestSupport, params: [.source: .transactionSourceSend])
+        Analytics.log(.requestSupport, params: [.source: .send])
 
         do {
             switch transaction {
@@ -317,23 +328,68 @@ extension SendViewModel: OnrampModelRoutable {
         do {
             let builder = try dataBuilder.onrampBuilder()
             let repository = builder.makeDataForOnrampCountryBottomSheet()
-            coordinator?.openOnrampCountry(country: country, repository: repository)
+            coordinator?.openOnrampCountryDetection(country: country, repository: repository)
         } catch {
             alert = error.alertBinder
         }
     }
 
-    func openOnrampCountriesSelector() {
-        /*
-          TODO: https://tangem.atlassian.net/browse/IOS-8158
-         do {
-             let builder = try dataBuilder.onrampBuilder()
-             let repository = builder.makeDataForOnrampCountryBottomSheet()
-             coordinator?.openOnrampCountry(country: country, repository: repository)
-         } catch {
-             alert = error.alertBinder
-         }
-         */
+    func openOnrampCountrySelectorView() {
+        do {
+            let builder = try dataBuilder.onrampBuilder()
+            let (repository, dataRepository) = builder.makeDataForOnrampCountrySelectorView()
+            coordinator?.openOnrampCountrySelector(
+                repository: repository,
+                dataRepository: dataRepository
+            )
+        } catch {
+            alert = error.alertBinder
+        }
+    }
+
+    func openWebView(url: URL, success: @escaping () -> Void) {
+        coordinator?.openOnrampWebView(url: url, success: success)
+    }
+
+    func openFinishStep() {
+        stepsManager.performFinish()
+    }
+}
+
+// MARK: - OnrampSummaryRoutable
+
+extension SendViewModel: OnrampSummaryRoutable {
+    func onrampStepRequestEditProvider() {
+        do {
+            let builder = try dataBuilder.onrampBuilder()
+            let (providersBuilder, paymentMethodsBuilder) = builder.makeDataForOnrampProvidersPaymentMethodsView()
+            coordinator?.openOnrampProviders(providersBuilder: providersBuilder, paymentMethodsBuilder: paymentMethodsBuilder)
+        } catch {
+            alert = error.alertBinder
+        }
+    }
+
+    func openOnrampSettingsView() {
+        do {
+            let builder = try dataBuilder.onrampBuilder()
+            let repository = builder.makeDataForOnrampCountryBottomSheet()
+            coordinator?.openOnrampSettings(repository: repository)
+        } catch {
+            alert = error.alertBinder
+        }
+    }
+
+    func openOnrampCurrencySelectorView() {
+        do {
+            let builder = try dataBuilder.onrampBuilder()
+            let (repository, dataRepository) = builder.makeDataForOnrampCountrySelectorView()
+            coordinator?.openOnrampCurrencySelector(
+                repository: repository,
+                dataRepository: dataRepository
+            )
+        } catch {
+            alert = error.alertBinder
+        }
     }
 }
 

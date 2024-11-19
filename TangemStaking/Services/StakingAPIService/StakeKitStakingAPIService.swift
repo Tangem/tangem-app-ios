@@ -16,7 +16,7 @@ class StakeKitStakingAPIService: StakingAPIService {
 
     private let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .customIso8601
+        decoder.dateDecodingStrategy = .iso8601WithFractionalSeconds
         return decoder
     }()
 
@@ -109,7 +109,7 @@ private extension StakeKitStakingAPIService {
 
     func tryMapError(target: StakeKitTarget, response: Moya.Response) -> Error? {
         do {
-            let error = try JSONDecoder().decode(StakeKitDTO.APIError.self, from: response.data)
+            let error = try JSONDecoder().decode(StakeKitAPIError.self, from: response.data)
             return error
         } catch {
             return nil
@@ -117,21 +117,14 @@ private extension StakeKitStakingAPIService {
     }
 }
 
-private enum StakeKitHTTPError: Error {
+public enum StakeKitHTTPError: Error {
     case badStatusCode(response: String?, code: Int)
 }
 
 extension StakeKitHTTPError: LocalizedError {
-    var errorDescription: String? {
+    public var errorDescription: String? {
         switch self {
         case .badStatusCode(let response, let code): response ?? "HTTP error \(code)"
         }
     }
-}
-
-extension JSONDecoder.DateDecodingStrategy {
-    static var customIso8601: JSONDecoder.DateDecodingStrategy = {
-        let dateFormatter = DateFormatter(dateFormat: "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-        return .formatted(dateFormatter)
-    }()
 }

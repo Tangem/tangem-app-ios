@@ -8,41 +8,30 @@
 
 import Foundation
 import Combine
+import TangemExpress
 
 class OnrampViewModel: ObservableObject, Identifiable {
     @Published private(set) var onrampAmountViewModel: OnrampAmountViewModel
-    @Published private(set) var paymentState: PaymentState?
-
-    private let interactor: OnrampInteractor
+    @Published private(set) var onrampProvidersCompactViewModel: OnrampProvidersCompactViewModel
 
     weak var router: OnrampSummaryRoutable?
 
+    private let interactor: OnrampInteractor
+    private var bag: Set<AnyCancellable> = []
+
     init(
         onrampAmountViewModel: OnrampAmountViewModel,
+        onrampProvidersCompactViewModel: OnrampProvidersCompactViewModel,
         interactor: OnrampInteractor
     ) {
         self.onrampAmountViewModel = onrampAmountViewModel
+        self.onrampProvidersCompactViewModel = onrampProvidersCompactViewModel
+
         self.interactor = interactor
-
-        bind()
     }
-}
 
-// MARK: - Private
-
-private extension OnrampViewModel {
-    func bind() {
-        // TODO: Listen interactor to update view
-        // Temp mock
-        paymentState = .loading
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
-            self?.paymentState = .loaded(
-                data: .init(iconURL: nil, paymentMethodName: "Card", providerName: "1Inch", badge: .bestRate) {
-                    self?.router?.summaryStepRequestEditProvider()
-                }
-            )
-        }
+    func openOnrampSettingsView() {
+        router?.openOnrampSettingsView()
     }
 }
 
@@ -50,13 +39,4 @@ private extension OnrampViewModel {
 
 extension OnrampViewModel: SendStepViewAnimatable {
     func viewDidChangeVisibilityState(_ state: SendStepVisibilityState) {}
-}
-
-extension OnrampViewModel {
-    enum PaymentState: Hashable, Identifiable {
-        case loading
-        case loaded(data: OnrampProvidersCompactViewData)
-
-        var id: Int { hashValue }
-    }
 }

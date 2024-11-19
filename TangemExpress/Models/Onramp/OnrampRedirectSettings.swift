@@ -8,12 +8,19 @@
 
 public struct OnrampRedirectSettings: Hashable {
     public let successURL: String
-    public let theme: String
+    public let theme: Theme
     public let language: String
 
-    public init(successURL: String, theme: String, language: String) {
+    public init(successURL: String, theme: Theme, language: String) {
         self.successURL = successURL
         self.theme = theme
         self.language = language
+    }
+}
+
+public extension OnrampRedirectSettings {
+    enum Theme: String, Hashable {
+        case light
+        case dark
     }
 }

@@ -33,6 +33,7 @@ extension ExpressDTO {
                 let contractAddress: String
                 let network: String
                 let exchangeAvailable: Bool
+                let onrampAvailable: Bool?
             }
         }
 
@@ -57,7 +58,7 @@ extension ExpressDTO {
             struct Response: Decodable {
                 let id: Provider.Id
                 let name: String
-                let type: ExpressProviderType
+                let type: ExpressProviderType?
                 let imageLarge: String?
                 let imageSmall: String?
                 let termsOfUse: String?

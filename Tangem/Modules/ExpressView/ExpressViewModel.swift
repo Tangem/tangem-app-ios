@@ -11,6 +11,7 @@ import TangemExpress
 import UIKit
 import enum TangemSdk.TangemSdkError
 import struct BlockchainSdk.Fee
+import TangemFoundation
 
 final class ExpressViewModel: ObservableObject {
     // MARK: - ViewState
@@ -113,9 +114,8 @@ final class ExpressViewModel: ObservableObject {
                 return
             }
 
-            let message: String = { [weak self] in
-
-                guard let self else { return "" }
+            let message: String? = { [weak self] in
+                guard let self else { return nil }
 
                 let slippage = formatDoubleToIntString(selectedProvider.slippage)
 
@@ -128,8 +128,12 @@ final class ExpressViewModel: ObservableObject {
                         slippage: slippage,
                         isBigLoss: isBigLoss
                     )
+                case .onramp, .unknown:
+                    return nil
                 }
             }()
+
+            guard let message else { return }
 
             await runOnMain {
                 viewModel.alert = .init(title: "", message: message)
@@ -398,6 +402,9 @@ private extension ExpressViewModel {
         case .restriction(.notEnoughAmountForTxValue, _),
              .restriction(.notEnoughAmountForFee, _) where interactor.getSender().isFeeCurrency:
             sendCurrencyViewModel?.expressCurrencyViewModel.update(titleState: .insufficientFunds)
+        case .restriction(.validationError(.minimumRestrictAmount(let minimumAmount), _), _):
+            let errorText = Localization.transferMinAmountError(minimumAmount.string())
+            sendCurrencyViewModel?.expressCurrencyViewModel.update(titleState: .error(errorText))
         default:
             sendCurrencyViewModel?.expressCurrencyViewModel.update(titleState: .text(Localization.swappingFromTitle))
         }

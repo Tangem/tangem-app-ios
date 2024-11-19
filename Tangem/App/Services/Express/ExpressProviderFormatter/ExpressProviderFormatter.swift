@@ -143,7 +143,7 @@ struct ExpressProviderFormatter {
 private extension ExpressProviderType {
     var title: String {
         switch self {
-        case .dex, .cex:
+        case .dex, .cex, .onramp, .unknown:
             return rawValue.uppercased()
         case .dexBridge:
             return "DEX/Bridge"
@@ -154,7 +154,7 @@ private extension ExpressProviderType {
 private extension ExpressPendingTransactionRecord.ProviderType {
     var title: String {
         switch self {
-        case .dex, .cex:
+        case .dex, .cex, .unknown:
             return rawValue.uppercased()
         case .dexBridge:
             return "DEX/Bridge"

@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import TangemFoundation
 
 class AptosNetworkService: MultiNetworkProvider {
     // MARK: - Protperties
@@ -38,8 +39,8 @@ class AptosNetworkService: MultiNetworkProvider {
                     }
 
                     guard
-                        let balanceValue = Decimal(coinJson.data.coin?.value),
-                        let sequenceNumber = Decimal(accountJson.data.sequenceNumber)
+                        let balanceValue = Decimal(stringValue: coinJson.data.coin?.value),
+                        let sequenceNumber = Decimal(stringValue: accountJson.data.sequenceNumber)
                     else {
                         throw WalletError.failedToParseNetworkResponse()
                     }
@@ -73,7 +74,7 @@ class AptosNetworkService: MultiNetworkProvider {
                 .calculateUsedGasPriceUnit(transactionBody: transactionBody)
                 .withWeakCaptureOf(self)
                 .tryMap { service, response in
-                    guard let gasUsed = Decimal(response.first?.gasUsed) else {
+                    guard let gasUsed = Decimal(stringValue: response.first?.gasUsed) else {
                         throw WalletError.failedToGetFee
                     }
 

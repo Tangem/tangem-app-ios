@@ -49,7 +49,7 @@ class ReceiveBottomSheetViewModel: ObservableObject, Identifiable {
     }
 
     func onViewAppear() {
-        Analytics.log(.receiveScreenOpened)
+        Analytics.log(event: .receiveScreenOpened, params: [.token: tokenItem.currencySymbol])
     }
 
     func headerForAddress(with info: ReceiveAddressInfo) -> String {
@@ -60,6 +60,20 @@ class ReceiveBottomSheetViewModel: ObservableObject, Identifiable {
             name = tokenItem.name
         }
         return Localization.receiveBottomSheetWarningMessage(name, tokenItem.currencySymbol, tokenItem.networkName)
+    }
+
+    func stringForAddress(_ address: String) -> NSAttributedString {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineBreakMode = .byCharWrapping
+        paragraphStyle.alignment = .center
+
+        let attributes: [NSAttributedString.Key: Any] = [
+            .paragraphStyle: paragraphStyle,
+            .font: UIFonts.Bold.callout,
+            .foregroundColor: UIColor(Colors.Text.primary1),
+        ]
+
+        return NSAttributedString(string: address, attributes: attributes)
     }
 
     func copyToClipboard() {

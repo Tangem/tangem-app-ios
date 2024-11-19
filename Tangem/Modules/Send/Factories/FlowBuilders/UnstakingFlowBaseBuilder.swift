@@ -37,7 +37,7 @@ struct UnstakingFlowBaseBuilder {
                 stakingManager: manager,
                 stakedAmount: action.amount
             ),
-            amountModifier: builder.makeStakingAmountModifier(),
+            amountModifier: builder.makeStakingAmountModifier(actionType: actionType),
             source: .staking
         )
 
@@ -63,6 +63,7 @@ struct UnstakingFlowBaseBuilder {
             actionType: actionType,
             sendDestinationCompactViewModel: .none,
             sendAmountCompactViewModel: amount.compact,
+            onrampAmountCompactViewModel: .none,
             stakingValidatorsCompactViewModel: .none,
             sendFeeCompactViewModel: sendFeeCompactViewModel
         )

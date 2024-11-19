@@ -12,4 +12,7 @@ public enum ExpressProviderType: String, Hashable, Decodable {
     case dex
     case cex
     case dexBridge = "dex-bridge"
+    case onramp
+    /// For possible future types
+    case unknown
 }

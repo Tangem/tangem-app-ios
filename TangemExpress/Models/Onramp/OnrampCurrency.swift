@@ -16,3 +16,9 @@ public struct OnrampFiatCurrency: Hashable {
         self.precision = precision
     }
 }
+
+extension OnrampFiatCurrency: Identifiable {
+    public var id: OnrampIdentity {
+        identity
+    }
+}

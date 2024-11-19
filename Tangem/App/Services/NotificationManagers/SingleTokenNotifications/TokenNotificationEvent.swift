@@ -11,7 +11,7 @@ import SwiftUI
 
 enum TokenNotificationEvent: Hashable {
     case networkUnreachable(currencySymbol: String)
-    case someNetworksUnreachable
+    case someNetworksUnreachable(currencySymbols: [String])
     case rentFee(rentMessage: String)
     case noAccount(message: String)
     case existentialDepositWarning(message: String)
@@ -27,7 +27,7 @@ enum TokenNotificationEvent: Hashable {
         isFeeCurrencyPurchaseAllowed: Bool
     ) -> TokenNotificationEvent? {
         switch reason {
-        case .zeroWalletBalance, .hasPendingTransaction, .blockchainUnreachable, .cantSignLongTransactions:
+        case .zeroWalletBalance, .hasPendingTransaction, .blockchainUnreachable, .cantSignLongTransactions, .oldCard:
             return nil
         case .zeroFeeCurrencyBalance(let eventConfiguration):
             let configuration = NotEnoughFeeConfiguration(
@@ -255,8 +255,9 @@ extension TokenNotificationEvent {
             return [.token: currencySymbol]
         case .notEnoughFeeForTransaction(let configuration):
             return [.token: configuration.eventConfiguration.feeAmountTypeCurrencySymbol]
-        case .someNetworksUnreachable,
-             .rentFee,
+        case .someNetworksUnreachable(let networks):
+            return [.tokens: networks.joined(separator: ", ")]
+        case .rentFee,
              .noAccount,
              .existentialDepositWarning,
              .bnbBeaconChainRetirement,
