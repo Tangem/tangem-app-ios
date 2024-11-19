@@ -122,7 +122,7 @@ struct PendingExpressTxStatusBottomSheetView: View {
             title: viewModel.statusViewTitle,
             statusesList: viewModel.statusesList,
             showGoToProviderHeaderButton: viewModel.showGoToProviderHeaderButton,
-            openProviderFromStatusHeader: viewModel.openProviderFromStatusHeader
+            openProviderAction: viewModel.openProviderFromStatusHeader
         )
         // This prevents notification to appear and disappear on top of the statuses list
         .zIndex(5)

@@ -12,37 +12,48 @@ struct PendingExpressTxStatusView: View {
     let title: String
     let statusesList: [PendingExpressTxStatusRow.StatusRowData]
     let showGoToProviderHeaderButton: Bool
-    let openProviderFromStatusHeader: () -> Void
+    let openProviderAction: () -> Void
 
     var body: some View {
         VStack(spacing: 14) {
-            HStack(spacing: 10) {
-                Text(title)
-                    .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
-
-                Spacer()
-
-                Button(action: openProviderFromStatusHeader) {
-                    HStack(spacing: 4) {
-                        Assets.arrowRightUpMini.image
-                            .resizable()
-                            .renderingMode(.template)
-                            .foregroundColor(Colors.Text.tertiary)
-                            .frame(size: .init(bothDimensions: 18))
-
-                        Text(Localization.commonGoToProvider)
-                            .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-                    }
-                }
-                .opacity(showGoToProviderHeaderButton ? 1.0 : 0.0)
-            }
-
-            VStack(spacing: 0) {
-                ForEach(statusesList.indexed(), id: \.1) { index, status in
-                    PendingExpressTxStatusRow(isFirstRow: index == 0, info: status)
-                }
-            }
+            headerView
+            statusesView
         }
         .defaultRoundedBackground(with: Colors.Background.action)
+    }
+
+    private var headerView: some View {
+        HStack {
+            Text(title)
+                .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
+
+            Spacer()
+
+            Button(action: openProviderAction) {
+                openProviderButtonLabel
+            }
+            .opacity(showGoToProviderHeaderButton ? 1.0 : 0.0)
+        }
+    }
+
+    private var openProviderButtonLabel: some View {
+        HStack(spacing: 4) {
+            Assets.arrowRightUpMini.image
+                .resizable()
+                .renderingMode(.template)
+                .foregroundColor(Colors.Text.tertiary)
+                .frame(size: .init(bothDimensions: 18))
+
+            Text(Localization.commonGoToProvider)
+                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+        }
+    }
+
+    private var statusesView: some View {
+        VStack(spacing: 0) {
+            ForEach(statusesList.indexed(), id: \.1) { index, status in
+                PendingExpressTxStatusRow(isFirstRow: index == 0, info: status)
+            }
+        }
     }
 }
