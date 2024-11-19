@@ -76,32 +76,6 @@ class AppCoordinator: CoordinatorObject {
         }
     }
 
-//    func sceneDidEnterBackground() {
-//        appLockController.sceneDidEnterBackground()
-//    }
-
-//    func sceneWillEnterForeground(hideLockView: @escaping () -> Void) {
-//        appLockController.sceneWillEnterForeground()
-//
-//        guard viewState?.shouldAddLockView ?? false else {
-//            hideLockView()
-//            return
-//        }
-//
-//        if appLockController.isLocked {
-//            handleLock(reason: .loggedOut) { [weak self] in
-//                self?.setupLock()
-//                // more time needed for ios 15 and 16 to update ui under the lock view. Keep for all ios for uniformity.
-//                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-//                    hideLockView()
-//                }
-//                self?.tryUnlockWithBiometry()
-//            }
-//        } else {
-//            hideLockView()
-//        }
-//    }
-
     private func tryUnlockWithBiometry() {
         appLockController.unlockApp { [weak self] result in
             guard let self else { return }
