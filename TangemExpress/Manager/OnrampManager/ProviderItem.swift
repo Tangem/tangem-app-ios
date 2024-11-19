@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TangemFoundation
 
 public class ProviderItem {
     public let paymentMethod: OnrampPaymentMethod
@@ -22,8 +23,22 @@ public class ProviderItem {
         return providers.first(where: { $0.manager.state.canBeShow })
     }
 
-    public func sort() {
+    @discardableResult
+    public func sort() -> [OnrampProvider] {
         providers.sort(by: { sort(lhs: $0.manager.state, rhs: $1.manager.state) })
+        // Return sorted providers
+        return providers
+    }
+
+    /// Providers has to be already sorted
+    @discardableResult
+    public func updateBest() -> OnrampProvider? {
+        if let best = providers.first(where: { $0.manager.state.isReadyToBuy }) {
+            best.update(isBest: true)
+            return best
+        }
+
+        return nil
     }
 
     private func sort(lhs: OnrampProviderManagerState, rhs: OnrampProviderManagerState) -> Bool {
@@ -39,6 +54,21 @@ public class ProviderItem {
         }
     }
 }
+
+// MARK: - CustomDebugStringConvertible
+
+extension ProviderItem: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        TangemFoundation.objectDescription(self, userInfo: [
+            "paymentMethod": paymentMethod.name,
+            "providers": providers.map {
+                "providerName: \($0.provider.name), state: \($0.manager.state)"
+            },
+        ])
+    }
+}
+
+// MARK: - Array<ProviderItem>
 
 public extension Array where Element == ProviderItem {
     func hasProviders() -> Bool {

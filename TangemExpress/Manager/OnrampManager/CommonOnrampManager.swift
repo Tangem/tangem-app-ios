@@ -6,6 +6,8 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
+import TangemFoundation
+
 public actor CommonOnrampManager {
     private let apiProvider: ExpressAPIProvider
     private let onrampRepository: OnrampRepository
@@ -48,6 +50,7 @@ extension CommonOnrampManager: OnrampManager {
         )
 
         let supportedProviders = pairs.flatMap { $0.providers }
+        log(message: "Load pairs with supported providers \(supportedProviders)")
         guard !supportedProviders.isEmpty else {
             // Exclude unnecessary requests
             return
@@ -58,7 +61,10 @@ extension CommonOnrampManager: OnrampManager {
     }
 
     public func setupQuotes(amount: Decimal?) async throws {
-        try await updateQuotesInEachManager(providers: _providers.flatMap { $0.providers }, amount: amount)
+        log(message: "Start update quotes")
+        let providers = _providers.flatMap { $0.providers }
+        try await updateQuotesInEachManager(providers: providers, amount: amount)
+        log(message: "The quotes was updated")
 
         proceedProviders()
     }
@@ -95,10 +101,17 @@ private extension CommonOnrampManager {
     }
 
     func proceedProviders() {
+        log(message: "Start to find the best provider")
+
         for provider in _providers {
-            provider.sort()
+            let sorted = provider.sort()
+            log(message: "Providers was sorted to order \(sorted)") // .map { $0.provider.name }
+
+            let best = provider.updateBest()
+            log(message: "The best provider was define to \(best as Any)")
 
             if let maxPriorityProvider = provider.suggestProvider() {
+                log(message: "The selected provider was updated to \(maxPriorityProvider)")
                 _selectedProvider = maxPriorityProvider
                 // Stop the cycle
                 break
@@ -106,8 +119,10 @@ private extension CommonOnrampManager {
         }
 
         if _selectedProvider == nil {
-            print("We can't find any provider without error")
-            _selectedProvider = _providers.first?.suggestProvider()
+            log(message: "We couldn't find any provider without error")
+            let suggestProvider = _providers.first?.suggestProvider()
+            log(message: "Then update selected provider to \(suggestProvider as Any)")
+            _selectedProvider = suggestProvider
         }
     }
 
@@ -140,6 +155,8 @@ private extension CommonOnrampManager {
             return ProviderItem(paymentMethod: paymentMethod, providers: providers)
         }
 
+        log(message: "Built providers \(availableProviders)")
+
         return availableProviders
     }
 
@@ -169,5 +186,9 @@ private extension CommonOnrampManager {
             apiProvider: apiProvider,
             state: state
         )
+    }
+
+    func log(message: String) {
+        logger.debug("[\(TangemFoundation.objectDescription(self))] \(message)")
     }
 }
