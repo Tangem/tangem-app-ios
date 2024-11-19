@@ -18,9 +18,9 @@ extension View {
     }
 
     @ViewBuilder
-    func skeletonable(isShown: Bool, radius: CGFloat = 3) -> some View {
+    func skeletonable(isShown: Bool, width: CGFloat? = nil, height: CGFloat? = nil, radius: CGFloat = 3) -> some View {
         modifier(
-            SkeletonModifier(isShown: isShown, modificationType: .overlay, radius: radius)
+            SkeletonModifier(isShown: isShown, modificationType: .overlay(width: width, height: height), radius: radius)
         )
     }
 }
@@ -48,11 +48,12 @@ public struct SkeletonModifier: ViewModifier {
         //
         // See https://www.objc.io/blog/2021/08/24/conditional-view-modifiers/ for details
         switch modificationType {
-        case .overlay:
+        case .overlay(let width, let height):
             content
                 .overlay(
                     SkeletonView()
                         .cornerRadius(radius)
+                        .frame(width: width, height: height)
                         .hidden(!isShown)
                 )
         case .size(let size, let paddings):
@@ -82,6 +83,6 @@ public struct SkeletonModifier: ViewModifier {
 public extension SkeletonModifier {
     enum ModificationType {
         case size(size: CGSize, paddings: EdgeInsets)
-        case overlay
+        case overlay(width: CGFloat? = nil, height: CGFloat? = nil)
     }
 }

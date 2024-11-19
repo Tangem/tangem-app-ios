@@ -31,7 +31,7 @@ struct OnrampProvidersBuilder {
     }
 
     func makeOnrampProvidersCompactViewModel() -> OnrampProvidersCompactViewModel {
-        OnrampProvidersCompactViewModel(providersInput: io.input, paymentMethodInput: paymentMethodsInput)
+        OnrampProvidersCompactViewModel(providersInput: io.input)
     }
 }
 

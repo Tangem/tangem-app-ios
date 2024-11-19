@@ -84,12 +84,11 @@ private extension OnrampProvidersViewModel {
     func updateProvidersView(providers: [OnrampProvider]) {
         providersViewData = providers.map { provider in
             OnrampProviderRowViewData(
-                id: provider.provider.id,
                 name: provider.provider.name,
                 iconURL: provider.provider.imageURL,
                 formattedAmount: formattedAmount(state: provider.manager.state),
                 state: state(state: provider.manager.state),
-                badge: .bestRate,
+                badge: .none,
                 isSelected: selectedProviderId == provider.provider.id,
                 action: { [weak self] in
                     self?.selectedProviderId = provider.provider.id
@@ -115,14 +114,12 @@ private extension OnrampProvidersViewModel {
         switch state {
         case .idle, .loading, .notSupported:
             return nil
-        case .loaded(let quote):
-            // Time will be hardcoded (?)
-            // TODO: https://tangem.atlassian.net/browse/IOS-8487
+        case .loaded:
             return .available(estimatedTime: "5 min")
         case .restriction(.tooSmallAmount(let minAmount)):
-            return .availableFromAmount(minAmount: minAmount)
+            return .availableFromAmount(minAmount: Localization.onrampMinAmountRestriction(minAmount))
         case .restriction(.tooBigAmount(let maxAmount)):
-            return .availableToAmount(maxAmount: maxAmount)
+            return .availableToAmount(maxAmount: Localization.onrampMaxAmountRestriction(maxAmount))
         case .failed(let error):
             return .unavailable(reason: error)
         }

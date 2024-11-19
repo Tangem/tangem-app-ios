@@ -24,7 +24,7 @@ struct OnrampAmountView: View {
     }
 
     private var amountContent: some View {
-        VStack(spacing: 18) {
+        VStack(spacing: 16) {
             Button(action: viewModel.onChangeCurrencyTap) {
                 HStack(spacing: 8) {
                     IconView(
@@ -42,23 +42,31 @@ struct OnrampAmountView: View {
             }
             .matchedGeometryEffect(id: namespace.names.tokenIcon, in: namespace.id)
 
-            VStack(spacing: 6) {
-                SendDecimalNumberTextField(viewModel: viewModel.decimalNumberTextFieldViewModel)
-                    .initialFocusBehavior(.noFocus)
-                    .alignment(.center)
-                    .prefixSuffixOptions(viewModel.currentFieldOptions)
-                    .minTextScale(SendAmountStep.Constants.amountMinTextScale)
-                    .matchedGeometryEffect(id: namespace.names.amountCryptoText, in: namespace.id)
-                    .skeletonable(isShown: viewModel.isLoading)
-
-                // Keep empty text so that the view maintains its place in the layout
-                Text(viewModel.alternativeAmount ?? " ")
-                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-                    .lineLimit(1)
-                    .matchedGeometryEffect(id: namespace.names.amountFiatText, in: namespace.id)
+            VStack(spacing: 8) {
+                textView
 
                 bottomInfoText
             }
+        }
+        .padding(.top, 20)
+    }
+
+    private var textView: some View {
+        VStack(spacing: 6) {
+            SendDecimalNumberTextField(viewModel: viewModel.decimalNumberTextFieldViewModel)
+                .initialFocusBehavior(.noFocus)
+                .alignment(.center)
+                .prefixSuffixOptions(viewModel.currentFieldOptions)
+                .minTextScale(SendAmountStep.Constants.amountMinTextScale)
+                .matchedGeometryEffect(id: namespace.names.amountCryptoText, in: namespace.id)
+                .skeletonable(isShown: viewModel.isLoading, width: 100, height: 28)
+
+            // Keep empty text so that the view maintains its place in the layout
+            Text(viewModel.alternativeAmount ?? " ")
+                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                .lineLimit(1)
+                .matchedGeometryEffect(id: namespace.names.amountFiatText, in: namespace.id)
+                .skeletonable(isShown: viewModel.isLoading, width: 80, height: 13)
         }
     }
 

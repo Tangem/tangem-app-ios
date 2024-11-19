@@ -57,20 +57,8 @@ struct SendView: View {
 
                     Spacer()
 
-                    switch viewModel.step.navigationTrailingViewType {
-                    case .none:
-                        EmptyView()
-                    case .qrCodeButton(let action):
-                        Button(action: action) {
-                            Assets.qrCode.image
-                                .renderingMode(.template)
-                                .foregroundColor(Colors.Icon.primary1)
-                        }
-                    case .dotsButton(let action):
-                        Button(action: action) {
-                            NavbarDotsImage()
-                        }
-                    }
+                    trailingView
+                        .disabled(viewModel.trailingButtonDisabled)
                 }
 
                 headerText(title: title)
@@ -79,6 +67,25 @@ struct SendView: View {
             .frame(height: 44)
             .padding(.top, 8)
             .padding(.horizontal, 16)
+        }
+    }
+
+    @ViewBuilder
+    private var trailingView: some View {
+        switch viewModel.step.navigationTrailingViewType {
+        case .none:
+            EmptyView()
+        case .qrCodeButton(let action):
+            Button(action: action) {
+                Assets.qrCode.image
+                    .renderingMode(.template)
+                    .foregroundColor(Colors.Icon.primary1)
+            }
+
+        case .dotsButton(let action):
+            Button(action: action) {
+                NavbarDotsImage()
+            }
         }
     }
 

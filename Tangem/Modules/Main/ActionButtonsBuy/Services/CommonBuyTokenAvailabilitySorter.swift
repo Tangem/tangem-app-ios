@@ -10,7 +10,9 @@ struct CommonBuyTokenAvailabilitySorter: TokenAvailabilitySorter {
     @Injected(\.exchangeService) private var exchangeService: ExchangeService
 
     func sortModels(walletModels: [WalletModel]) -> (availableModels: [WalletModel], unavailableModels: [WalletModel]) {
-        walletModels.reduce(into: (availableModels: [WalletModel](), unavailableModels: [WalletModel]())) { result, walletModel in
+        walletModels.reduce(
+            into: (availableModels: [WalletModel](), unavailableModels: [WalletModel]())
+        ) { result, walletModel in
             if exchangeService.canBuy(
                 walletModel.tokenItem.currencySymbol,
                 amountType: walletModel.amountType,
