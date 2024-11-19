@@ -17,4 +17,9 @@ protocol TokenDetailsRoutable: AnyObject {
         tokenItem: TokenItem,
         pendingTransactionsManager: PendingExpressTransactionsManager
     )
+    func openPendingOnrampTransactionDetails(
+        for pendingTransaction: PendingExpressTransaction,
+        tokenItem: TokenItem,
+        pendingTransactionsManager: PendingExpressTransactionsManager
+    )
 }

@@ -29,7 +29,7 @@ struct PendingExpressTransactionsConverter {
 
             return .init(
                 id: record.expressTransactionId,
-                providerName: record.provider.name,
+                title: Localization.expressExchangeBy(record.provider.name),
                 sourceIconInfo: iconBuilder.build(from: sourceTokenItem, isCustom: record.sourceTokenTxInfo.isCustom),
                 sourceAmountText: balanceFormatter.formatCryptoBalance(record.sourceTokenTxInfo.amount, currencyCode: sourceTokenItem.currencySymbol),
                 destinationIconInfo: iconBuilder.build(from: destinationTokenItem, isCustom: record.destinationTokenTxInfo.isCustom),

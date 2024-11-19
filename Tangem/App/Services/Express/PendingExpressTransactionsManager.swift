@@ -265,3 +265,150 @@ extension CommonPendingExpressTransactionsManager {
         static let statusUpdateTimeout: Double = 10
     }
 }
+
+protocol PendingOnrampTransactionsManager: AnyObject {
+    var pendingTransactions: [OnrampTransaction] { get }
+    var pendingTransactionsPublisher: AnyPublisher<[OnrampTransaction], Never> { get }
+}
+
+final class CommonPendingOnrampTransactionsManager {
+    @Injected(\.onrampPendingTransactionsRepository) private var onrampPendingTransactionsRepository: OnrampPendingTransactionRepository
+
+    private let userWalletId: String
+    private let walletModel: WalletModel
+    private let expressAPIProvider: ExpressAPIProvider
+
+    private let transactionsInProgressSubject = CurrentValueSubject<[OnrampTransaction], Never>([])
+
+    private var bag = Set<AnyCancellable>()
+    private var updateTask: Task<Void, Never>?
+    private var transactionsScheduledForUpdate: [String] = []
+    private var tokenItem: TokenItem { walletModel.tokenItem }
+
+    init(
+        userWalletId: String,
+        walletModel: WalletModel
+    ) {
+        self.userWalletId = userWalletId
+        self.walletModel = walletModel
+        expressAPIProvider = ExpressAPIProviderFactory().makeExpressAPIProvider(userId: userWalletId, logger: AppLog.shared)
+
+        bind()
+    }
+
+    private func cancelTask() {
+        updateTask?.cancel()
+        updateTask = nil
+    }
+
+    private func bind() {
+        onrampPendingTransactionsRepository
+            .transactionsPublisher
+            .removeDuplicates()
+            .withWeakCaptureOf(self)
+            .sink { manager, transactionIds in
+                // If transactions updated their statuses only no need to cancel currently scheduled task and force reload it
+                let shouldForceReload = manager.transactionsScheduledForUpdate.count != transactionIds.count
+                manager.transactionsScheduledForUpdate = transactionIds
+                manager.updateTransactionsStatuses(forceReload: shouldForceReload)
+            }
+            .store(in: &bag)
+    }
+
+    deinit {
+        cancelTask()
+    }
+
+    private func updateTransactionsStatuses(forceReload: Bool) {
+        if !forceReload, updateTask != nil {
+            return
+        }
+
+        cancelTask()
+
+        if transactionsScheduledForUpdate.isEmpty {
+            return
+        }
+        let pendingTransactionIdsToRequest = transactionsScheduledForUpdate
+        transactionsScheduledForUpdate = []
+
+        updateTask = Task { [weak self] in
+            do {
+                var transactionsToSchedule = [String]()
+                var transactionsInProgress = [OnrampTransaction]()
+                var transactionsToUpdateInRepository = [ExpressPendingTransactionRecord]()
+
+                for pendingTransaction in pendingTransactionIdsToRequest {
+//                    let record = pendingTransaction.transactionRecord
+
+                    // We have not any sense to update the terminated status
+//                    guard !record.transactionStatus.isTerminated else {
+//                        transactionsInProgress.append(pendingTransaction)
+//                        transactionsToSchedule.append(pendingTransaction)
+//                        continue
+//                    }
+
+                    guard let loadedPendingTransaction = await self?.loadPendingTransactionStatus(for: pendingTransaction) else {
+                        // If received error from backend and transaction was already displayed on TokenDetails screen
+                        // we need to send previously received transaction, otherwise it will hide on TokenDetails
+                        if let previousResult = self?.transactionsInProgressSubject.value.first(where: { $0.txId == pendingTransaction }) {
+                            transactionsInProgress.append(previousResult)
+                        }
+                        transactionsToSchedule.append(pendingTransaction)
+                        continue
+                    }
+
+                    // We need to send finished transaction one more time to properly update status on bottom sheet
+                    transactionsInProgress.append(loadedPendingTransaction)
+
+//                    if record.transactionStatus != loadedPendingTransaction.transactionRecord.transactionStatus {
+//                        transactionsToUpdateInRepository.append(loadedPendingTransaction.transactionRecord)
+//                    }
+
+                    // If transaction is done we have to update balance
+//                    if loadedPendingTransaction.transactionRecord.transactionStatus.isDone {
+//                        self?.walletModel.update(silent: true)
+//                    }
+
+                    transactionsToSchedule.append(loadedPendingTransaction.txId)
+                    try Task.checkCancellation()
+                }
+
+                self?.transactionsScheduledForUpdate = transactionsToSchedule
+                self?.transactionsInProgressSubject.send(transactionsInProgress)
+            } catch {
+                if error is CancellationError || Task.isCancelled {
+                    return
+                }
+
+                self?.transactionsScheduledForUpdate = pendingTransactionIdsToRequest
+                self?.updateTransactionsStatuses(forceReload: false)
+            }
+        }
+    }
+
+    private func loadPendingTransactionStatus(for transactionId: String) async -> OnrampTransaction? {
+        do {
+            let onrampTransaction = try await expressAPIProvider.onrampStatus(transactionId: transactionId)
+            return onrampTransaction
+        } catch {
+            return nil
+        }
+    }
+}
+
+extension CommonPendingOnrampTransactionsManager: PendingOnrampTransactionsManager {
+    var pendingTransactions: [OnrampTransaction] {
+        transactionsInProgressSubject.value
+    }
+
+    var pendingTransactionsPublisher: AnyPublisher<[OnrampTransaction], Never> {
+        transactionsInProgressSubject.eraseToAnyPublisher()
+    }
+}
+
+extension CommonPendingOnrampTransactionsManager {
+    enum Constants {
+        static let statusUpdateTimeout: Double = 10
+    }
+}

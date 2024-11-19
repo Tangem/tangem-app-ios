@@ -30,6 +30,7 @@ class OnrampModel {
 
     // MARK: - Dependencies
 
+    @Injected(\.onrampPendingTransactionsRepository) var onrampPendingTransactionsRepository: OnrampPendingTransactionRepository
     weak var router: OnrampModelRoutable?
     weak var alertPresenter: SendViewAlertPresenter?
 
@@ -256,6 +257,7 @@ extension OnrampModel: OnrampRedirectingInput {}
 
 extension OnrampModel: OnrampRedirectingOutput {
     func redirectDataDidLoad(data: OnrampRedirectData) {
+        onrampPendingTransactionsRepository.onrampTransactionDidSend(data.externalTxId)
         DispatchQueue.main.async {
             self.router?.openWebView(url: data.widgetUrl) { [weak self] in
                 self?._transactionTime.send(Date())

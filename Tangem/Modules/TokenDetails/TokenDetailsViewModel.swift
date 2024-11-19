@@ -26,6 +26,7 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
 
     private weak var coordinator: TokenDetailsRoutable?
     private let pendingExpressTransactionsManager: PendingExpressTransactionsManager
+    private let pendingOnrampTransactionsManager: PendingOnrampTransactionsManager
     private let bannerNotificationManager: NotificationManager?
     private let xpubGenerator: XPUBGenerator?
 
@@ -58,12 +59,14 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
         notificationManager: NotificationManager,
         bannerNotificationManager: NotificationManager?,
         pendingExpressTransactionsManager: PendingExpressTransactionsManager,
+        pendingOnrampTransactionsManager: PendingOnrampTransactionsManager,
         xpubGenerator: XPUBGenerator?,
         coordinator: TokenDetailsRoutable,
         tokenRouter: SingleTokenRoutable
     ) {
         self.coordinator = coordinator
         self.pendingExpressTransactionsManager = pendingExpressTransactionsManager
+        self.pendingOnrampTransactionsManager = pendingOnrampTransactionsManager
         self.bannerNotificationManager = bannerNotificationManager
         self.xpubGenerator = xpubGenerator
         super.init(
@@ -242,7 +245,8 @@ private extension TokenDetailsViewModel {
         }
         .store(in: &bag)
 
-        pendingExpressTransactionsManager.pendingTransactionsPublisher
+        let swapPendingTransactions = pendingExpressTransactionsManager
+            .pendingTransactionsPublisher
             .withWeakCaptureOf(self)
             .map { viewModel, pendingTxs in
                 let factory = PendingExpressTransactionsConverter()
@@ -252,9 +256,45 @@ private extension TokenDetailsViewModel {
                     tapAction: weakify(viewModel, forFunction: TokenDetailsViewModel.didTapPendingExpressTransaction(with:))
                 )
             }
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.pendingExpressTransactions, on: self, ownership: .weak)
-            .store(in: &bag)
+
+        let onrampPendingTransactions = pendingOnrampTransactionsManager
+            .pendingTransactionsPublisher
+            .withWeakCaptureOf(self)
+            .map { viewModel, pendingTxs in
+                pendingTxs.map { tx in
+                    PendingExpressTransactionView.Info(
+                        id: tx.txId,
+                        title: "Buying \(tx.toNetwork)",
+                        sourceIconInfo: .init(
+                            name: "sourceName",
+                            blockchainIconName: nil,
+                            imageURL: nil,
+                            isCustom: false,
+                            customTokenColor: nil
+                        ),
+                        sourceAmountText: tx.fromAmount,
+                        destinationIconInfo: .init(
+                            name: "destinationName",
+                            blockchainIconName: nil,
+                            imageURL: nil,
+                            isCustom: false,
+                            customTokenColor: nil
+                        ),
+                        destinationCurrencySymbol: tx.toAmount,
+                        state: .inProgress,
+                        action: weakify(viewModel, forFunction: TokenDetailsViewModel.didTapPendingOnrampTransaction(with:))
+                    )
+                }
+            }
+
+        Publishers.CombineLatest(
+            swapPendingTransactions,
+            onrampPendingTransactions
+        )
+        .map { $0 + $1 }
+        .receive(on: DispatchQueue.main)
+        .assign(to: \.pendingExpressTransactions, on: self, ownership: .weak)
+        .store(in: &bag)
 
         bannerNotificationManager?.notificationPublisher
             .receive(on: DispatchQueue.main)
@@ -327,6 +367,22 @@ private extension TokenDetailsViewModel {
             tokenItem: walletModel.tokenItem,
             pendingTransactionsManager: pendingExpressTransactionsManager
         )
+    }
+
+    private func didTapPendingOnrampTransaction(with id: String) {
+        guard
+            let pendingTransaction = pendingOnrampTransactionsManager.pendingTransactions.first(where: { $0.txId == id })
+        else {
+            return
+        }
+
+        assertionFailure("Da vse ok")
+
+//        coordinator?.openPendingOnrampTransactionDetails(
+//            for: pendingTransaction,
+//            tokenItem: walletModel.tokenItem,
+//            pendingTransactionsManager: pendingExpressTransactionsManager
+//        )
     }
 }
 

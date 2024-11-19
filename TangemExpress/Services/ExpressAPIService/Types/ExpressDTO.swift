@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum ExpressDTO {
+public enum ExpressDTO {
     // MARK: - Common
 
     struct Currency: Codable {

@@ -193,7 +193,8 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
         return data
     }
 
-    func onrampStatus(transactionId: String) async throws {
-        // TODO: https://tangem.atlassian.net/browse/IOS-8308
+    func onrampStatus(transactionId: String) async throws -> OnrampTransaction {
+        let request = ExpressDTO.Onramp.Status.Request(txId: transactionId)
+        return try await expressAPIService.onrampStatus(request: request)
     }
 }

@@ -29,3 +29,21 @@ extension InjectedValues {
         set { Self[ExpressPendingTransactionRepositoryKey.self] = newValue }
     }
 }
+
+protocol OnrampPendingTransactionRepository: AnyObject {
+    var transactions: [String] { get }
+    var transactionsPublisher: AnyPublisher<[String], Never> { get }
+
+    func onrampTransactionDidSend(_ transactionId: String)
+}
+
+private struct OnrampPendingTransactionRepositoryKey: InjectionKey {
+    static var currentValue: OnrampPendingTransactionRepository = CommonOnrampPendingTransactionRepository()
+}
+
+extension InjectedValues {
+    var onrampPendingTransactionsRepository: OnrampPendingTransactionRepository {
+        get { Self[OnrampPendingTransactionRepositoryKey.self] }
+        set { Self[OnrampPendingTransactionRepositoryKey.self] = newValue }
+    }
+}

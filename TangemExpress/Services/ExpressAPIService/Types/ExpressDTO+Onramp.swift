@@ -6,7 +6,7 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-extension ExpressDTO {
+public extension ExpressDTO {
     enum Onramp {
         // MARK: - Common
 
@@ -115,34 +115,34 @@ extension ExpressDTO {
 
         // MARK: - Status
 
-        enum Status {
+        public enum Status {
             struct Request: Encodable {
                 let txId: String
             }
 
-            struct Response: Decodable {
-                let txId: String
-                let providerId: String // Provider's alphanumeric ID
-                let payoutAddress: String // Address to which the coins are sent
-                let status: String? // Status of the transaction (adjust this type as needed)
-                let failReason: String? // Optional field for failure reason
-                let externalTxId: String // External transaction ID
-                let externalTxUrl: String? // Optional URL to track the external transaction
-                let payoutHash: String? // Optional payout hash
-                let createdAt: String // ISO date for when the transaction was created
+            public struct Response: Decodable {
+                public let txId: String
+                public let providerId: String // Provider's alphanumeric ID
+                public let payoutAddress: String // Address to which the coins are sent
+                public let status: OnrampTransactionStatus // Status of the transaction
+                public let failReason: String? // Optional field for failure reason
+                public let externalTxId: String // External transaction ID
+                public let externalTxUrl: String? // Optional URL to track the external transaction
+                public let payoutHash: String? // Optional payout hash
+                public let createdAt: String // ISO date for when the transaction was created
 
-                let fromCurrencyCode: String // Source currency
-                let fromAmount: String // Amount of the source currency
+                public let fromCurrencyCode: String // Source currency
+                public let fromAmount: String // Amount of the source currency
 
                 // ToAsset information:
-                let toContractAddress: String
-                let toNetwork: String
-                let toDecimals: Int
-                let toAmount: String
-                let toActualAmount: String
+                public let toContractAddress: String
+                public let toNetwork: String
+                public let toDecimals: Int
+                public let toAmount: String
+                public let toActualAmount: String
 
-                let paymentMethod: String // Payment method used
-                let countryCode: String // Country code
+                public let paymentMethod: String // Payment method used
+                public let countryCode: String // Country code
             }
         }
     }

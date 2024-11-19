@@ -150,10 +150,14 @@ private extension TokenDetailsView {
         walletModelsManager: userWalletModel.walletModelsManager,
         contextDataProvider: nil
     )
-    let pendingTxsManager = CommonPendingExpressTransactionsManager(
+    let pendingExpressTxsManager = CommonPendingExpressTransactionsManager(
         userWalletId: userWalletModel.userWalletId.stringValue,
         walletModel: walletModel,
         expressRefundedTokenHandler: ExpressRefundedTokenHandlerMock()
+    )
+    let pendingOnrampTxsManager = CommonPendingOnrampTransactionsManager(
+        userWalletId: userWalletModel.userWalletId.stringValue,
+        walletModel: walletModel
     )
     let coordinator = TokenDetailsCoordinator()
 
@@ -165,7 +169,8 @@ private extension TokenDetailsView {
         exchangeUtility: exchangeUtility,
         notificationManager: notifManager,
         bannerNotificationManager: bannerNotificationManager,
-        pendingExpressTransactionsManager: pendingTxsManager,
+        pendingExpressTransactionsManager: pendingExpressTxsManager,
+        pendingOnrampTransactionsManager: pendingOnrampTxsManager,
         xpubGenerator: nil,
         coordinator: coordinator,
         tokenRouter: SingleTokenRouter(userWalletModel: userWalletModel, coordinator: coordinator)

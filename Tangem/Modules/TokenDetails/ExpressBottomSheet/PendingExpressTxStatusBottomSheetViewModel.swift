@@ -67,7 +67,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
         self.router = router
 
         let provider = pendingTransaction.transactionRecord.provider
-        
+
         providerRowViewModel = .init(
             provider: expressProviderFormatter.mapToProvider(provider: provider),
             titleFormat: .name,
