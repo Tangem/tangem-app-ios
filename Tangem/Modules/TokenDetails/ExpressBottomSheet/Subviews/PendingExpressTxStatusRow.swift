@@ -38,7 +38,7 @@ struct PendingExpressTxStatusRow: View {
 }
 
 extension PendingExpressTxStatusRow {
-    struct StatusRowData: Identifiable, Hashable {
+    struct StatusRowData: Identifiable, Hashable, Equatable {
         let title: String
         let state: State
 
