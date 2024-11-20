@@ -75,6 +75,7 @@ final class CommonPendingOnrampTransactionsManager {
 
     private func filterRelatedTokenTransactions(list: [OnrampPendingTransactionRecord]) -> [OnrampPendingTransactionRecord] {
         list.filter { record in
+            // TODO: Should there be something similar?
 //            guard !record.isHidden else {
 //                return false
 //            }
@@ -84,17 +85,11 @@ final class CommonPendingOnrampTransactionsManager {
 //                return false
 //            }
 //
-//            guard record.userWalletId == userWalletId else {
-//                return false
-//            }
-//
-//
-//
-//            let isSame = record.sourceTokenTxInfo.tokenItem == tokenItem
-//                || record.destinationTokenTxInfo.tokenItem == tokenItem
-//
-//            return isSame
-            record.destinationTokenTxInfo.tokenItem == tokenItem
+            guard record.userWalletId == userWalletId else {
+                return false
+            }
+
+            return record.destinationTokenTxInfo.tokenItem == tokenItem
         }
     }
 
@@ -141,7 +136,6 @@ final class CommonPendingOnrampTransactionsManager {
                     transactionsInProgress.append(loadedPendingTransaction)
 
                     if pendingTransaction.transactionRecord.transactionStatus != loadedPendingTransaction.transactionRecord.transactionStatus {
-                        // TODO: Uncommend and fix
                         transactionsToUpdateInRepository.append(loadedPendingTransaction.transactionRecord)
                     }
 

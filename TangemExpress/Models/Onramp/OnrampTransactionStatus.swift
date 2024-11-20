@@ -19,17 +19,4 @@ public enum OnrampTransactionStatus: String, Codable {
     case sending
     case finished
     case paused
-
-    public var isTerminated: Bool {
-        switch self {
-        case .finished, .failed, .expired:
-            return true
-        case .created, .waitingForPayment, .paymentProcessing, .verifying, .paid, .sending, .paused:
-            return false
-        }
-    }
-
-    public var isDone: Bool {
-        self == .finished
-    }
 }

@@ -275,8 +275,7 @@ extension OnrampModel: OnrampRedirectingOutput {
             onrampTransactionData: data.redirectData
         )
 
-        // TODO: userWalletId?
-        onrampPendingTransactionsRepository.onrampTransactionDidSend(txData, userWalletId: "")
+        onrampPendingTransactionsRepository.onrampTransactionDidSend(txData, userWalletId: userWalletId)
 
         DispatchQueue.main.async {
             self.router?.openWebView(url: data.redirectData.widgetUrl) { [weak self] in
