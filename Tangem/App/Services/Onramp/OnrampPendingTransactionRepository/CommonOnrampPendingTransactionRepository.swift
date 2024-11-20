@@ -24,7 +24,7 @@ final class CommonOnrampPendingTransactionRepository {
         do {
             pendingTransactionSubject.value = try storage.value(for: .pendingOnrampTransactions) ?? []
         } catch {
-            // TODO: Logging
+            log("Couldn't get the express transactions list from the storage with error \(error)")
         }
     }
 
@@ -41,8 +41,12 @@ final class CommonOnrampPendingTransactionRepository {
         do {
             try storage.store(value: pendingTransactionSubject.value, for: .pendingOnrampTransactions)
         } catch {
-            // TODO: Logging
+            log("Failed to save changes in storage. Reason: \(error)")
         }
+    }
+    
+    private func log<T>(_ message: @autoclosure () -> T) {
+        AppLog.shared.debug("[Onramp Tx Repository] \(message())")
     }
 }
 
