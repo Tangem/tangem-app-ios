@@ -93,6 +93,7 @@ public indirect enum Blockchain: Equatable, Hashable {
     case core(testnet: Bool)
     case canxium
     case casper(curve: EllipticCurve, testnet: Bool)
+    case clore
 
     public var isTestnet: Bool {
         switch self {
@@ -159,7 +160,8 @@ public indirect enum Blockchain: Equatable, Hashable {
              .bittensor,
              .filecoin,
              .energyWebX,
-             .canxium:
+             .canxium,
+             .clore:
             return false
         case .stellar(_, let testnet),
              .hedera(_, let testnet),
@@ -260,7 +262,8 @@ public indirect enum Blockchain: Equatable, Hashable {
              .radiant,
              .internetComputer,
              .koinos,
-             .aptos:
+             .aptos,
+             .clore:
             return 8
         case .ethereum,
              .ethereumClassic,
@@ -474,6 +477,8 @@ public indirect enum Blockchain: Equatable, Hashable {
             return "CAU"
         case .casper:
             return "CSPR"
+        case .clore:
+            return "CLORE"
         }
     }
 
@@ -973,6 +978,7 @@ extension Blockchain: Codable {
         case .core: return "core"
         case .canxium: return "canxium"
         case .casper: return "casper-network"
+        case .clore: return "clore-ai"
         }
     }
 
@@ -1071,6 +1077,7 @@ extension Blockchain: Codable {
         case "core": self = .core(testnet: isTestnet)
         case "canxium": self = .canxium
         case "casper-network": self = .casper(curve: curve, testnet: isTestnet)
+        case "clore-ai": self = .clore
         default:
             throw BlockchainSdkError.decodingFailed
         }
@@ -1124,6 +1131,7 @@ public extension Blockchain {
         case "xtz": return .tezos(curve: curve)
         case "doge": return .dogecoin
         case "bsc": return .bsc(testnet: isTestnet)
+        case "clore-ai": return .clore
         // DO NOT ADD new blockchains here. This is legacy code and used only for Tangem Note and cards release before 4.12 firmware
         default: return nil
         }
@@ -1315,6 +1323,8 @@ private extension Blockchain {
             return "canxium"
         case .casper:
             return "casper-network"
+        case .clore:
+            return "clore-ai"
         }
     }
 
@@ -1432,6 +1442,8 @@ extension Blockchain {
             return FilecoinWalletAssembly()
         case .casper:
             return CasperWalletAssembly()
+        case .clore:
+            return CloreWalletAssembly()
         }
     }
 }

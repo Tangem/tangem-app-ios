@@ -136,6 +136,8 @@ struct DerivationConfigV3: DerivationConfig {
             return "m/44'/246'/0'/0'/0'"
         case .casper:
             return "m/44'/506'/0'/0/0"
+        case .clore:
+            return "m/44'/175'/0'/0/0"
         }
     }
 }

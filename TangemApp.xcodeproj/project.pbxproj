@@ -31,6 +31,9 @@
 		2D1400CA2C43F79F00B75A42 /* MarketsPortfolioContextActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1400C82C43F4FD00B75A42 /* MarketsPortfolioContextActions.swift */; };
 		2D1400CE2C44090400B75A42 /* MarketsPortfolioContainerRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1400CD2C44090400B75A42 /* MarketsPortfolioContainerRoutable.swift */; };
 		2D1400D22C4425B300B75A42 /* MarketsTokenDetailsPortfolioCoordinatorFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1400D12C4425B300B75A42 /* MarketsTokenDetailsPortfolioCoordinatorFactory.swift */; };
+		2D1838062CEDAFF3002FE30D /* CloreMainNetworkParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1838052CEDAFF3002FE30D /* CloreMainNetworkParams.swift */; };
+		2D1838082CEDCB5E002FE30D /* CloreWalletAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1838072CEDCB5E002FE30D /* CloreWalletAssembly.swift */; };
+		2D18380A2CEDCDF2002FE30D /* CloreExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1838092CEDCDF2002FE30D /* CloreExternalLinkProvider.swift */; };
 		2D1BB3682C07421C008392F7 /* MarketsTokenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1BB3672C07421C008392F7 /* MarketsTokenModel.swift */; };
 		2D1BB36A2C074534008392F7 /* MarketsDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1BB3692C074534008392F7 /* MarketsDTO.swift */; };
 		2D1BB36C2C0745ED008392F7 /* MarketsListOrderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1BB36B2C0745ED008392F7 /* MarketsListOrderType.swift */; };
@@ -3127,6 +3130,9 @@
 		2D1400C82C43F4FD00B75A42 /* MarketsPortfolioContextActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsPortfolioContextActions.swift; sourceTree = "<group>"; };
 		2D1400CD2C44090400B75A42 /* MarketsPortfolioContainerRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsPortfolioContainerRoutable.swift; sourceTree = "<group>"; };
 		2D1400D12C4425B300B75A42 /* MarketsTokenDetailsPortfolioCoordinatorFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenDetailsPortfolioCoordinatorFactory.swift; sourceTree = "<group>"; };
+		2D1838052CEDAFF3002FE30D /* CloreMainNetworkParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloreMainNetworkParams.swift; sourceTree = "<group>"; };
+		2D1838072CEDCB5E002FE30D /* CloreWalletAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloreWalletAssembly.swift; sourceTree = "<group>"; };
+		2D1838092CEDCDF2002FE30D /* CloreExternalLinkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloreExternalLinkProvider.swift; sourceTree = "<group>"; };
 		2D1BB3672C07421C008392F7 /* MarketsTokenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenModel.swift; sourceTree = "<group>"; };
 		2D1BB3692C074534008392F7 /* MarketsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsDTO.swift; sourceTree = "<group>"; };
 		2D1BB36B2C0745ED008392F7 /* MarketsListOrderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsListOrderType.swift; sourceTree = "<group>"; };
@@ -6244,6 +6250,16 @@
 				2D1400D12C4425B300B75A42 /* MarketsTokenDetailsPortfolioCoordinatorFactory.swift */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		2D1838042CEDAEFE002FE30D /* Clore */ = {
+			isa = PBXGroup;
+			children = (
+				2D1838052CEDAFF3002FE30D /* CloreMainNetworkParams.swift */,
+				2D1838072CEDCB5E002FE30D /* CloreWalletAssembly.swift */,
+				2D1838092CEDCDF2002FE30D /* CloreExternalLinkProvider.swift */,
+			);
+			path = Clore;
 			sourceTree = "<group>";
 		};
 		2D1BB3662C074207008392F7 /* Markets */ = {
@@ -10665,6 +10681,7 @@
 				B62D3C7F2CBC79D900C2460E /* Cardano */,
 				2D616FEB2CD1414000581EA6 /* Casper */,
 				B62D3C922CBC79D900C2460E /* Chia */,
+				2D1838042CEDAEFE002FE30D /* Clore */,
 				B62D3CA42CBC79D900C2460E /* Cosmos */,
 				B62D3CA92CBC79D900C2460E /* Dash */,
 				B62D3CAE2CBC79D900C2460E /* Decimal */,
@@ -18756,6 +18773,7 @@
 				B62D40D22CBC79DA00C2460E /* FilecoinNetworkService.swift in Sources */,
 				B62D41A62CBC79DA00C2460E /* SuiExternalLinkPrivider.swift in Sources */,
 				B62D42682CBC79DB00C2460E /* WithdrawalSuggestionProvider.swift in Sources */,
+				2D1838062CEDAFF3002FE30D /* CloreMainNetworkParams.swift in Sources */,
 				B62D412E2CBC79DA00C2460E /* NEARAccountInfo.swift in Sources */,
 				B62D426A2CBC79DB00C2460E /* DustRestrictable.swift in Sources */,
 				B62D41112CBC79DA00C2460E /* KoinosTransactionParams.swift in Sources */,
@@ -18841,6 +18859,7 @@
 				B62D41C32CBC79DB00C2460E /* TONWalletAssembly.swift in Sources */,
 				B62D42B52CBC79DB00C2460E /* SS58.swift in Sources */,
 				B62D41232CBC79DA00C2460E /* KoinosNetworkParams.swift in Sources */,
+				2D18380A2CEDCDF2002FE30D /* CloreExternalLinkProvider.swift in Sources */,
 				B62D41D42CBC79DB00C2460E /* TronInventoryItems.pb.swift in Sources */,
 				B62D40662CBC79DA00C2460E /* TerraV2ExternalLinkProvider.swift in Sources */,
 				B62D42402CBC79DB00C2460E /* PlainAddress.swift in Sources */,
@@ -18904,6 +18923,7 @@
 				B62D3FC52CBC79DA00C2460E /* BitcoinScriptAddressProvider.swift in Sources */,
 				B62D41DD2CBC79DB00C2460E /* TronNetworkService.swift in Sources */,
 				B62D42062CBC79DB00C2460E /* XRPCurrentLedgerInfo.swift in Sources */,
+				2D1838082CEDCB5E002FE30D /* CloreWalletAssembly.swift in Sources */,
 				B62D42002CBC79DB00C2460E /* XDCAddressService.swift in Sources */,
 				B62D40912CBC79DA00C2460E /* EthereumAddressConverterError.swift in Sources */,
 				B62D41792CBC79DA00C2460E /* RavencoinRawTransaction.swift in Sources */,
