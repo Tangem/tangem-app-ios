@@ -127,8 +127,18 @@ extension MarketsTokenHistoryChartMapper {
 // MARK: - Auxiliary types
 
 extension MarketsTokenHistoryChartMapper {
-    enum ParsingError: Error {
+    enum ParsingError: LocalizedError {
         case notEnoughData
         case timeStampParsingFailed
+
+        var errorDescription: String? {
+            let description = switch self {
+            case .notEnoughData:
+                "Not enough data"
+            case .timeStampParsingFailed:
+                "Timestamp parsing failed"
+            }
+            return "ParsingError: " + description
+        }
     }
 }

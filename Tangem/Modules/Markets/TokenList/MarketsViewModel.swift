@@ -288,14 +288,13 @@ private extension MarketsViewModel {
                 let (oldEvent, newEvent) = events
                 switch newEvent {
                 case .loading:
-                    if oldEvent != .failedToFetchData {
-                        viewModel.tokenListLoadingState = .loading
-                    }
+                    if case .failedToFetchData = oldEvent { return }
+                    viewModel.tokenListLoadingState = .loading
                 case .idle:
                     break
-                case .failedToFetchData:
+                case .failedToFetchData(let error):
                     if viewModel.dataProvider.items.isEmpty {
-                        Analytics.log(.marketsDataError)
+                        Analytics.log(event: .marketsDataError, params: error.marketsAnalyticsParams)
                         viewModel.tokenListLoadingState = .error
                         viewModel.quotesUpdatesScheduler.cancelUpdates()
                     } else {
@@ -506,5 +505,22 @@ private extension MarketsListDataProvider.Event {
         }
 
         return false
+    }
+}
+
+import Moya
+
+extension Error {
+    var marketsAnalyticsParams: [Analytics.ParameterKey: String] {
+        var analyticsParams = [Analytics.ParameterKey: String]()
+        if let error = self as? LocalizedError {
+            analyticsParams[.errorDescription] = error.localizedDescription
+        }
+
+        if let error = self as? MoyaError {
+            analyticsParams[.errorCode] = error.response.flatMap { String($0.statusCode) }
+        }
+
+        return analyticsParams
     }
 }
