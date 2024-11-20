@@ -26,7 +26,7 @@ struct PendingExpressTransactionsConverter {
             } else if let onrampSpecific = record.onrampSpecific {
                 sourceIconInfo = iconBuilder.build(from: onrampSpecific.fromCurrencyCode)
                 sourceAmountText = balanceFormatter.formatFiatBalance(
-                    Decimal(stringValue: onrampSpecific.fromAmount).flatMap { $0 / 100 }, // TODO: Use better way
+                    onrampSpecific.fromAmount,
                     currencyCode: onrampSpecific.fromCurrencyCode
                 )
             } else {

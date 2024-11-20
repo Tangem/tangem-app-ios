@@ -70,7 +70,7 @@ extension ExpressPendingTransactionRecord {
     }
 
     struct OnrampSpecific: Codable, Equatable {
-        let fromAmount: String
+        let fromAmount: Decimal
         let fromCurrencyCode: String
     }
 

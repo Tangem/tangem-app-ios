@@ -102,7 +102,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
         } else if let onrampSpecific = pendingTransaction.transactionRecord.onrampSpecific {
             sourceTokenIconInfo = iconInfoBuilder.build(from: onrampSpecific.fromCurrencyCode)
             sourceAmountText = balanceFormatter.formatFiatBalance(
-                Decimal(stringValue: onrampSpecific.fromAmount).flatMap { $0 / 100 }, // TODO: Use better way
+                onrampSpecific.fromAmount,
                 currencyCode: onrampSpecific.fromCurrencyCode
             )
         } else {
@@ -169,7 +169,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
         } else if let onrampSpecific = pendingTransaction.transactionRecord.onrampSpecific {
             sourceFiatAmountTextState = .loaded(
                 text: balanceFormatter.formatFiatBalance(
-                    Decimal(stringValue: onrampSpecific.fromAmount).flatMap { $0 / 100 }, // TODO: Use better way
+                    onrampSpecific.fromAmount,
                     currencyCode: onrampSpecific.fromCurrencyCode
                 )
             )

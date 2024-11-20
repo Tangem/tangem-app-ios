@@ -95,6 +95,14 @@ extension CommonExpressPendingTransactionRepository: ExpressPendingTransactionRe
     }
 
     func onrampTransactionDidSend(_ txData: SentOnrampTransactionData, userWalletId: String) {
+        let fromAmount = txData.onrampTransactionData.fromAmount
+        guard var fromAmount = Decimal(string: fromAmount) else {
+            assertionFailure("Unable to map fromAmount '\(fromAmount)' to Decimal")
+            return
+        }
+
+        fromAmount /= 100
+
         let expressPendingTransactionRecord = ExpressPendingTransactionRecord(
             userWalletId: userWalletId,
             expressTransactionId: txData.txId,
@@ -109,7 +117,7 @@ extension CommonExpressPendingTransactionRepository: ExpressPendingTransactionRe
             date: txData.date,
             expressSpecific: nil,
             onrampSpecific: .init(
-                fromAmount: txData.onrampTransactionData.fromAmount,
+                fromAmount: fromAmount,
                 fromCurrencyCode: txData.onrampTransactionData.fromCurrencyCode
             ),
             isHidden: false,
