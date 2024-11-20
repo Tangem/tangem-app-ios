@@ -31,6 +31,9 @@ struct ProgressDots: View {
                 loading = true
             }
         }
+        .onDisappear {
+            loading = false
+        }
     }
 
     func animation(index: Int) -> Animation {
