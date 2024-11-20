@@ -93,7 +93,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string></string>
+        <string>Vacío</string>
         <key>other</key>
         <string>Escriba estas %li palabras en el orden que se indica a continuación y guárdelas en un lugar seguro y secreto.</string>
       </dict>
@@ -109,7 +109,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string></string>
+        <string>Vacío</string>
         <key>other</key>
         <string>%li palabras</string>
       </dict>

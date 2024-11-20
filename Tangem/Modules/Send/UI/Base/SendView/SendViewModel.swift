@@ -28,6 +28,7 @@ final class SendViewModel: ObservableObject {
     @Published var transactionURL: URL?
 
     @Published var closeButtonDisabled = false
+    @Published var trailingButtonDisabled = false
     @Published var isUserInteractionDisabled = false
     @Published var mainButtonLoading: Bool = false
     @Published var actionIsAvailable: Bool = false
@@ -293,6 +294,11 @@ private extension SendViewModel {
         interactor.actionInProcessing
             .receive(on: DispatchQueue.main)
             .assign(to: \.closeButtonDisabled, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        interactor.actionInProcessing
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.trailingButtonDisabled, on: self, ownership: .weak)
             .store(in: &bag)
 
         interactor.actionInProcessing
