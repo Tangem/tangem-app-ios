@@ -932,6 +932,9 @@
 "wallet_marketprice_block_update_time" = "за 24 години";
 "wallet_network_group_title" = "Мережа %@";
 "wallet_notification_address_copied" = "Адреса скопійована в буфер обміну";
+"wallet_promo_banner_button_title" = "Get now with 10%% off";
+"wallet_promo_banner_description" = "Access 13,000+ cryptocurrencies. Buy, sell, swap, and stake with a single tap.\nLink up to three cards for a backup.";
+"wallet_promo_banner_title" = "Discover Tangem Wallet";
 "wallet_settings_title" = "Налаштування гаманця";
 "wallet_title" = "Tangem";
 "warning_access_denied_message" = "Використовуйте %@ або відскануйте картку/кільце, щоб розблокувати доступ до вашого гаманця";
