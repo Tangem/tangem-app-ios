@@ -2145,6 +2145,8 @@
 		DC3ED8A52C1B489E00C89C62 /* DefaultPickerRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3ED8A42C1B489E00C89C62 /* DefaultPickerRowViewModel.swift */; };
 		DC3ED8A72C1B49F900C89C62 /* DefaultPickerRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3ED8A62C1B49F900C89C62 /* DefaultPickerRowView.swift */; };
 		DC4020F12CB039DC00002902 /* RingUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4020F02CB039DB00002902 /* RingUtil.swift */; };
+		DC43E8662CE66DED00DD7B06 /* WalletPromoBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC43E8652CE66DED00DD7B06 /* WalletPromoBannerView.swift */; };
+		DC43E8682CE67AB400DD7B06 /* WalletPromoBannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC43E8672CE67AB300DD7B06 /* WalletPromoBannerViewModel.swift */; };
 		DC44C58C2B4DC59400888BED /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = DC44C58A2B4DC41F00888BED /* PrivacyInfo.xcprivacy */; };
 		DC4512622BD0458000DE6F94 /* MockedCardScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4512612BD0458000DE6F94 /* MockedCardScanner.swift */; };
 		DC4512702BD1531B00DE6F94 /* CardScannerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC45126F2BD1531B00DE6F94 /* CardScannerFactory.swift */; };
@@ -5153,6 +5155,8 @@
 		DC3ED8A42C1B489E00C89C62 /* DefaultPickerRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultPickerRowViewModel.swift; sourceTree = "<group>"; };
 		DC3ED8A62C1B49F900C89C62 /* DefaultPickerRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultPickerRowView.swift; sourceTree = "<group>"; };
 		DC4020F02CB039DB00002902 /* RingUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingUtil.swift; sourceTree = "<group>"; };
+		DC43E8652CE66DED00DD7B06 /* WalletPromoBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletPromoBannerView.swift; sourceTree = "<group>"; };
+		DC43E8672CE67AB300DD7B06 /* WalletPromoBannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletPromoBannerViewModel.swift; sourceTree = "<group>"; };
 		DC44C58A2B4DC41F00888BED /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		DC4512612BD0458000DE6F94 /* MockedCardScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockedCardScanner.swift; sourceTree = "<group>"; };
 		DC45126F2BD1531B00DE6F94 /* CardScannerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardScannerFactory.swift; sourceTree = "<group>"; };
@@ -7649,6 +7653,8 @@
 				B06C08622A73FCDE00D982BC /* SingleWalletMainContentView.swift */,
 				B06C08632A73FCDE00D982BC /* SingleWalletMainContentViewModel.swift */,
 				DAC4F9EF2AC314E100BEBCF8 /* SingleWalletMainContentDelegate.swift */,
+				DC43E8652CE66DED00DD7B06 /* WalletPromoBannerView.swift */,
+				DC43E8672CE67AB300DD7B06 /* WalletPromoBannerViewModel.swift */,
 			);
 			path = SingleWalletMainContent;
 			sourceTree = "<group>";
@@ -15868,6 +15874,7 @@
 				B600F4D72C50F73E008E53FE /* MarketsHistoryChartViewModel.swift in Sources */,
 				B67DC1EC2B7C4CB9008ACB0E /* FakeBlockchainDataStorage.swift in Sources */,
 				EF5D83E62B0CAEB100516B5F /* CommonExpressTransactionBuilder.swift in Sources */,
+				DC43E8682CE67AB400DD7B06 /* WalletPromoBannerViewModel.swift in Sources */,
 				EF95442E2C3C52A400041FCD /* SendStepsManager.swift in Sources */,
 				DC7D3A0929E065E3007BCD23 /* BackupHelper.swift in Sources */,
 				DC72548C2A02B97A0003FE1B /* ResetToFactoryViewModelInput.swift in Sources */,
@@ -16883,6 +16890,7 @@
 				EF0FF8712866021B00B7CEAF /* AppEnvironment.swift in Sources */,
 				DC7D39FF29E02BC6007BCD23 /* AccessCodeRequestPolicyFactory.swift in Sources */,
 				EFA4E37B2C3EEC6D008815AD /* StakingValidatorsStepBuilder.swift in Sources */,
+				DC43E8662CE66DED00DD7B06 /* WalletPromoBannerView.swift in Sources */,
 				B675A1E62A1E05F700F624B6 /* CardsInfoPagerView.swift in Sources */,
 				B01EB9C426E9F18A0060E2FB /* StackCalculator.swift in Sources */,
 				EF92E2BA29963E7400DD9B06 /* ExpressKeys.swift in Sources */,

@@ -44,7 +44,7 @@ enum Fonts {
 
         var title2: Font { isDynamic() ? DynamicFonts.title2Bold : StaticFonts.title2Bold }
 
-        var title3: Font { isDynamic() ? DynamicFonts.title3Bold : StaticFonts.title3Bold }
+        var title3: Font { isDynamic() ? DynamicFonts.title3Semibold : StaticFonts.title3Semibold }
 
         var headline: Font { isDynamic() ? DynamicFonts.headline : StaticFonts.headline }
 
@@ -86,7 +86,7 @@ private enum StaticFonts {
     static let largeTitleBold: Font = .system(size: 34, weight: .bold)
     static let title1Bold: Font = .system(size: 28, weight: .bold)
     static let title2Bold: Font = .system(size: 22, weight: .bold)
-    static let title3Bold: Font = .system(size: 20, weight: .semibold)
+    static let title3Semibold: Font = .system(size: 20, weight: .semibold)
     static let headlineSemibold: Font = .system(size: 17, weight: .semibold)
     static let bodySemibold: Font = .system(size: 17, weight: .semibold)
     static let calloutMedium: Font = .system(size: 16, weight: .medium)
@@ -112,7 +112,7 @@ private enum DynamicFonts {
     static let largeTitleBold: Font = .largeTitle.weight(.bold)
     static let title1Bold: Font = .title.weight(.bold)
     static let title2Bold: Font = .title2.weight(.bold)
-    static let title3Bold: Font = .title3.weight(.bold)
+    static let title3Semibold: Font = .title3.weight(.semibold)
     static let bodySemibold: Font = .body.weight(.semibold)
     static let calloutMedium: Font = .callout.weight(.medium)
     static let subheadlineMedium: Font = .subheadline.weight(.medium)

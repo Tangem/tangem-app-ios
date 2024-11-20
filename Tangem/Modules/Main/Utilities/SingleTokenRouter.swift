@@ -21,6 +21,7 @@ protocol SingleTokenRoutable {
     func openSendToSell(with request: SellCryptoRequest, for walletModel: WalletModel)
     func openExplorer(at url: URL, for walletModel: WalletModel)
     func openMarketsTokenDetails(for tokenItem: TokenItem)
+    func openInSafari(url: URL)
 }
 
 final class SingleTokenRouter: SingleTokenRoutable {
@@ -148,6 +149,10 @@ final class SingleTokenRouter: SingleTokenRoutable {
         )
 
         coordinator?.openMarketsTokenDetails(tokenModel: model)
+    }
+
+    func openInSafari(url: URL) {
+        coordinator?.openInSafari(url: url)
     }
 
     private func getTokenItemId(for tokenItem: TokenItem) -> TokenItemId? {
