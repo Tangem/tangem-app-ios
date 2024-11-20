@@ -64,7 +64,6 @@ final class KaspaWalletManager: BaseManager, WalletManager {
     func send(_ transaction: Transaction, signer: TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError> {
         switch transaction.amount.type {
         case .token(value: let token):
-
             switch transaction.params {
             case is KaspaKRC20.IncompleteTokenTransactionParams:
                 return sendKaspaRevealTokenTransaction(transaction, token: token, signer: signer)
@@ -353,7 +352,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
         }
 
         let transactionAmount = tokenValue / token.decimalValue
-        let fee = Decimal(incompleteTokenTransactionParams.targetOutputAmount / wallet.blockchain.decimalValue.uint64Value) - dustValue.value
+        let fee = Decimal(incompleteTokenTransactionParams.targetOutputAmount) / wallet.blockchain.decimalValue - dustValue.value
         let feeAmount = Amount(with: wallet.blockchain, value: fee)
 
         return Transaction(
