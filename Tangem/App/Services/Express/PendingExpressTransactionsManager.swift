@@ -209,23 +209,35 @@ class CommonPendingExpressTransactionsManager {
 
     private func loadPendingTransactionStatus(for transactionRecord: ExpressPendingTransactionRecord) async -> PendingExpressTransaction? {
         do {
-            log("Requesting exchange status for transaction with id: \(transactionRecord.expressTransactionId)")
-            let expressTransaction = try await expressAPIProvider.exchangeStatus(transactionId: transactionRecord.expressTransactionId)
-            let refundedTokenItem = await handleRefundedTokenIfNeeded(for: expressTransaction, providerType: transactionRecord.provider.type)
+            let pendingTransaction: PendingExpressTransaction
+            if let expressSpecific = transactionRecord.expressSpecific {
+                log("Requesting exchange status for transaction with id: \(transactionRecord.expressTransactionId)")
+                let expressTransaction = try await expressAPIProvider.exchangeStatus(transactionId: transactionRecord.expressTransactionId)
+                let refundedTokenItem = await handleRefundedTokenIfNeeded(for: expressTransaction, providerType: transactionRecord.provider.type)
 
-            let pendingTransaction = pendingTransactionFactory.buildPendingExpressTransaction(
-                currentExpressStatus: expressTransaction.externalStatus,
-                refundedTokenItem: refundedTokenItem,
-                for: transactionRecord
-            )
-            log("Transaction external status: \(expressTransaction.externalStatus.rawValue)")
-            log("Refunded token: \(String(describing: refundedTokenItem))")
-            pendingExpressTransactionAnalyticsTracker.trackStatusForTransaction(
-                with: pendingTransaction.transactionRecord.expressTransactionId,
-                tokenSymbol: tokenItem.currencySymbol,
-                status: pendingTransaction.transactionRecord.transactionStatus,
-                provider: pendingTransaction.transactionRecord.provider
-            )
+                pendingTransaction = pendingTransactionFactory.buildPendingExpressTransaction(
+                    currentExpressStatus: expressTransaction.externalStatus,
+                    refundedTokenItem: refundedTokenItem,
+                    for: transactionRecord
+                )
+                log("Transaction external status: \(expressTransaction.externalStatus.rawValue)")
+                log("Refunded token: \(String(describing: refundedTokenItem))")
+                pendingExpressTransactionAnalyticsTracker.trackStatusForTransaction(
+                    with: pendingTransaction.transactionRecord.expressTransactionId,
+                    tokenSymbol: tokenItem.currencySymbol,
+                    status: pendingTransaction.transactionRecord.transactionStatus,
+                    provider: pendingTransaction.transactionRecord.provider
+                )
+            } else if let onrampSpecific = transactionRecord.onrampSpecific {
+                let onrampTransactionStatus = try await expressAPIProvider.onrampStatus(transactionId: transactionRecord.expressTransactionId)
+                pendingTransaction = pendingTransactionFactory.buildPendingOnrampTransaction(
+                    currentOnrampStatus: onrampTransactionStatus,
+                    for: transactionRecord
+                )
+            } else {
+                fatalError("unexpected state")
+            }
+
             return pendingTransaction
         } catch {
             log("Failed to load status info for transaction with id: \(transactionRecord.expressTransactionId). Error: \(error)")
