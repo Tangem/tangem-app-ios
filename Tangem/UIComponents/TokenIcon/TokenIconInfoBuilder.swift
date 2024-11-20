@@ -9,7 +9,6 @@
 import Foundation
 import SwiftUI
 import BlockchainSdk
-import TangemExpress
 
 struct TokenIconInfoBuilder {
     func build(for type: Amount.AmountType, in blockchain: Blockchain, isCustom: Bool) -> TokenIconInfo {

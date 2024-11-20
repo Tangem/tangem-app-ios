@@ -198,7 +198,7 @@ class CommonPendingExpressTransactionsManager {
             let isSourceSame = if let sourceTokenTxInfo = record.expressSpecific?.sourceTokenTxInfo {
                 sourceTokenTxInfo.tokenItem == tokenItem
             } else {
-                true
+                false
             }
 
             let isDestinationSame = record.destinationTokenTxInfo.tokenItem == tokenItem
