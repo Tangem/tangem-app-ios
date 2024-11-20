@@ -261,7 +261,7 @@ private extension TokenDetailsViewModel {
             .pendingTransactionsPublisher
             .withWeakCaptureOf(self)
             .map { viewModel, pendingTxs in
-                let factory = PendingExpressTransactionsConverter()
+                let factory = PendingOnrampTransactionsConverter()
 
                 return factory.convertToTokenDetailsPendingTxInfo(
                     pendingTxs,
@@ -358,7 +358,7 @@ private extension TokenDetailsViewModel {
             return
         }
 
-        // TODO: Open bottom sheet
+        // TODO: Open bottom sheet https://tangem.atlassian.net/browse/IOS-8363
 //        coordinator?.openPendingOnrampTransactionDetails(
 //            for: pendingTransaction,
 //            tokenItem: walletModel.tokenItem,

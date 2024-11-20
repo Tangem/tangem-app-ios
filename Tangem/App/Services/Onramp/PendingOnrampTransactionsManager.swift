@@ -177,9 +177,9 @@ final class CommonPendingOnrampTransactionsManager {
 
     private func loadPendingTransactionStatus(for transactionRecord: OnrampPendingTransactionRecord) async -> PendingOnrampTransaction? {
         do {
-            let onrampTransaction = try await expressAPIProvider.onrampStatus(transactionId: transactionRecord.txId)
+            let onrampTransactionStatus = try await expressAPIProvider.onrampStatus(transactionId: transactionRecord.txId)
             let pendingTransaction = pendingTransactionFactory.buildPendingOnrampTransaction(
-                currentOnrampStatus: onrampTransaction.status,
+                currentOnrampStatus: onrampTransactionStatus,
                 for: transactionRecord
             )
             return pendingTransaction

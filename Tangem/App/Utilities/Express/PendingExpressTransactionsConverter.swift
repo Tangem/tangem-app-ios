@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import TangemExpress
 
 struct PendingExpressTransactionsConverter {
     func convertToTokenDetailsPendingTxInfo(_ records: [PendingExpressTransaction], tapAction: @escaping (String) -> Void) -> [PendingExpressTransactionView.Info] {
@@ -34,46 +33,6 @@ struct PendingExpressTransactionsConverter {
                 sourceIconInfo: iconBuilder.build(from: sourceTokenItem, isCustom: record.sourceTokenTxInfo.isCustom),
                 sourceAmountText: balanceFormatter.formatCryptoBalance(record.sourceTokenTxInfo.amount, currencyCode: sourceTokenItem.currencySymbol),
                 destinationIconInfo: iconBuilder.build(from: destinationTokenItem, isCustom: record.destinationTokenTxInfo.isCustom),
-                destinationCurrencySymbol: destinationTokenItem.currencySymbol,
-                state: state,
-                action: tapAction
-            )
-        }
-    }
-
-    func convertToTokenDetailsPendingTxInfo(_ transactions: [PendingOnrampTransaction], tapAction: @escaping (String) -> Void) -> [PendingExpressTransactionView.Info] {
-        let iconBuilder = TokenIconInfoBuilder()
-        let balanceFormatter = BalanceFormatter()
-        let iconURLBuilder = IconURLBuilder(
-            baseURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/")! // TODO: Remeve when start using non-dev api
-        )
-
-        return transactions.compactMap { transaction in
-            let record = transaction.transactionRecord
-            let destinationTokenItem = record.destinationTokenTxInfo.tokenItem
-
-            let state: PendingExpressTransactionView.State
-            switch record.transactionStatus {
-            case .awaitingDeposit, .confirming, .exchanging, .sendingToUser, .done, .refunded:
-                state = .inProgress
-            case .failed, .canceled, .unknown, .paused:
-                state = .error
-            case .verificationRequired, .awaitingHash:
-                state = .warning
-            }
-
-            return PendingExpressTransactionView.Info(
-                id: transaction.transactionRecord.txId,
-                title: "Buying \(destinationTokenItem.name)",
-                sourceIconInfo: .init(
-                    name: record.fromCurrencyCode,
-                    blockchainIconName: nil,
-                    imageURL: iconURLBuilder.fiatIconURL(currencyCode: record.fromCurrencyCode),
-                    isCustom: false,
-                    customTokenColor: nil
-                ),
-                sourceAmountText: balanceFormatter.formatFiatBalance(record.fromAmount, currencyCode: record.fromCurrencyCode),
-                destinationIconInfo: iconBuilder.build(from: destinationTokenItem, isCustom: false),
                 destinationCurrencySymbol: destinationTokenItem.currencySymbol,
                 state: state,
                 action: tapAction

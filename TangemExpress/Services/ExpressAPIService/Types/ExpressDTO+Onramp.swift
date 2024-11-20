@@ -6,7 +6,7 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-public extension ExpressDTO {
+extension ExpressDTO {
     enum Onramp {
         // MARK: - Common
 
@@ -115,74 +115,34 @@ public extension ExpressDTO {
 
         // MARK: - Status
 
-        public enum Status {
+        enum Status {
             struct Request: Encodable {
                 let txId: String
             }
 
-            public struct Response: Decodable {
-                public let txId: String
-                public let providerId: String // Provider's alphanumeric ID
-                public let payoutAddress: String // Address to which the coins are sent
-                public let status: OnrampTransactionStatus // Status of the transaction
-                public let failReason: String? // Optional field for failure reason
-                public let externalTxId: String // External transaction ID
-                public let externalTxUrl: String? // Optional URL to track the external transaction
-                public let payoutHash: String? // Optional payout hash
-                public let createdAt: String // ISO date for when the transaction was created
+            struct Response: Decodable {
+                let txId: String
+                let providerId: String // Provider's alphanumeric ID
+                let payoutAddress: String // Address to which the coins are sent
+                let status: OnrampTransactionStatus // Status of the transaction
+                let failReason: String? // Optional field for failure reason
+                let externalTxId: String // External transaction ID
+                let externalTxUrl: String? // Optional URL to track the external transaction
+                let payoutHash: String? // Optional payout hash
+                let createdAt: String // ISO date for when the transaction was created
 
-                public let fromCurrencyCode: String // Source currency
-                public let fromAmount: String // Amount of the source currency
+                let fromCurrencyCode: String // Source currency
+                let fromAmount: String // Amount of the source currency
 
                 // ToAsset information:
-                public let toContractAddress: String
-                public let toNetwork: String
-                public let toDecimals: Int
-                public let toAmount: String?
-                public let toActualAmount: String?
+                let toContractAddress: String
+                let toNetwork: String
+                let toDecimals: Int
+                let toAmount: String?
+                let toActualAmount: String?
 
-                public let paymentMethod: String // Payment method used
-                public let countryCode: String // Country code
-
-                public init(
-                    txId: String,
-                    providerId: String,
-                    payoutAddress: String,
-                    status: OnrampTransactionStatus,
-                    failReason: String?,
-                    externalTxId: String,
-                    externalTxUrl: String?,
-                    payoutHash: String?,
-                    createdAt: String,
-                    fromCurrencyCode: String,
-                    fromAmount: String,
-                    toContractAddress: String,
-                    toNetwork: String,
-                    toDecimals: Int,
-                    toAmount: String?,
-                    toActualAmount: String?,
-                    paymentMethod: String,
-                    countryCode: String
-                ) {
-                    self.txId = txId
-                    self.providerId = providerId
-                    self.payoutAddress = payoutAddress
-                    self.status = status
-                    self.failReason = failReason
-                    self.externalTxId = externalTxId
-                    self.externalTxUrl = externalTxUrl
-                    self.payoutHash = payoutHash
-                    self.createdAt = createdAt
-                    self.fromCurrencyCode = fromCurrencyCode
-                    self.fromAmount = fromAmount
-                    self.toContractAddress = toContractAddress
-                    self.toNetwork = toNetwork
-                    self.toDecimals = toDecimals
-                    self.toAmount = toAmount
-                    self.toActualAmount = toActualAmount
-                    self.paymentMethod = paymentMethod
-                    self.countryCode = countryCode
-                }
+                let paymentMethod: String // Payment method used
+                let countryCode: String // Country code
             }
         }
     }
