@@ -132,7 +132,7 @@ extension TokenNotificationEvent: NotificationEvent {
         // One white notification will be added later
         case .notEnoughFeeForTransaction,
              .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation),
-             .hasUnfulfilledRequirements(configuration: .incompleteKaspaTokenTransaction), // TODO: Andrey Fedorov - Double check the appearance
+             .hasUnfulfilledRequirements(configuration: .incompleteKaspaTokenTransaction),
              .staking:
             return .primary
         }

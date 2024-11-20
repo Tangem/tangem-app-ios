@@ -245,9 +245,11 @@ final class SingleTokenNotificationManager {
     ) -> TokenNotificationEvent.UnfulfilledRequirementsConfiguration {
         switch blockchain {
         case .hedera:
-            guard let configurationData = makeRequirementsConfigurationData(from: feeAmount) else {
+            guard let feeAmount else {
                 return .missingHederaTokenAssociation(associationFee: nil)
             }
+
+            let configurationData = makeRequirementsConfigurationData(from: feeAmount)
 
             return .missingHederaTokenAssociation(
                 associationFee: .init(
@@ -256,13 +258,11 @@ final class SingleTokenNotificationManager {
                 )
             )
         case .kaspa:
-            guard
-                let transactionAmount,
-                let configurationData = makeRequirementsConfigurationData(from: transactionAmount)
-            else {
-                preconditionFailure() // TODO: Andrey Fedorov - Add actual implementation
+            guard let transactionAmount else {
+                preconditionFailure("tx amount is required for making unfulfilled requirements configuration for blockchain '\(blockchain.displayName)'")
             }
 
+            let configurationData = makeRequirementsConfigurationData(from: transactionAmount)
             let asset = transactionAmount.type
 
             return .incompleteKaspaTokenTransaction(
@@ -274,18 +274,14 @@ final class SingleTokenNotificationManager {
                 }
             )
         default:
-            preconditionFailure() // TODO: Andrey Fedorov - Add actual implementation
+            preconditionFailure("Unsupported blockchain '\(blockchain.displayName)', can't create unfulfilled requirements configuration")
         }
     }
 
     // TODO: Andrey Fedorov - Extract somewhere
     private func makeRequirementsConfigurationData(
-        from amount: Amount?
-    ) -> (formattedValue: String, currencySymbol: String)? {
-        guard let amount else {
-            return nil
-        }
-
+        from amount: Amount
+    ) -> (formattedValue: String, currencySymbol: String) {
         let balanceFormatter = BalanceFormatter()
         let formattedValue = balanceFormatter.formatDecimal(amount.value)
 

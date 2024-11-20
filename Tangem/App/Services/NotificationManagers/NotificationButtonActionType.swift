@@ -136,7 +136,7 @@ enum NotificationButtonActionType: Identifiable, Hashable {
              .reduceAmountBy,
              .reduceAmountTo,
              .addHederaTokenAssociation,
-             .retryKaspaTokenTransaction, // TODO: Andrey Fedorov - Double check the appearance
+             .retryKaspaTokenTransaction,
              .leaveAmount,
              .support,
              .stake,
