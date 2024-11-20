@@ -210,7 +210,7 @@ class CommonPendingExpressTransactionsManager {
     private func loadPendingTransactionStatus(for transactionRecord: ExpressPendingTransactionRecord) async -> PendingExpressTransaction? {
         do {
             let pendingTransaction: PendingExpressTransaction
-            if let expressSpecific = transactionRecord.expressSpecific {
+            if transactionRecord.expressSpecific != nil {
                 log("Requesting exchange status for transaction with id: \(transactionRecord.expressTransactionId)")
                 let expressTransaction = try await expressAPIProvider.exchangeStatus(transactionId: transactionRecord.expressTransactionId)
                 let refundedTokenItem = await handleRefundedTokenIfNeeded(for: expressTransaction, providerType: transactionRecord.provider.type)
@@ -228,7 +228,8 @@ class CommonPendingExpressTransactionsManager {
                     status: pendingTransaction.transactionRecord.transactionStatus,
                     provider: pendingTransaction.transactionRecord.provider
                 )
-            } else if let onrampSpecific = transactionRecord.onrampSpecific {
+            } else if transactionRecord.onrampSpecific != nil {
+                log("Requesting onramp status for transaction with id: \(transactionRecord.expressTransactionId)")
                 let onrampTransactionStatus = try await expressAPIProvider.onrampStatus(transactionId: transactionRecord.expressTransactionId)
                 pendingTransaction = pendingTransactionFactory.buildPendingOnrampTransaction(
                     currentOnrampStatus: onrampTransactionStatus,
