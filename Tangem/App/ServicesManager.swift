@@ -22,8 +22,6 @@ class ServicesManager {
 
     private var stakingPendingHashesSender: StakingPendingHashesSender?
 
-    private var bag = Set<AnyCancellable>()
-
     init() {
         stakingPendingHashesSender = StakingDependenciesFactory().makePendingHashesSender()
     }
@@ -72,6 +70,15 @@ class ServicesManager {
 
     private func configureBlockchainSdkExceptionHandler() {
         ExceptionHandler.shared.append(output: Analytics.BlockchainExceptionHandler())
+    }
+}
+
+// Some services should be initialized later, in SceneDelegate to bypass locked keychain during preheating
+class KeychainSensitiveServicesManager {
+    @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
+
+    func initialize() {
+        userWalletRepository.initialize()
     }
 }
 

@@ -258,16 +258,6 @@ class CommonUserWalletRepository: UserWalletRepository {
         }
 
         lockInternal()
-        sendEvent(.locked(reason: .loggedOut))
-    }
-
-    func logoutIfNeeded() {
-        if models.contains(where: { !$0.isUserWalletLocked }) {
-            return
-        }
-
-        lockInternal()
-        sendEvent(.locked(reason: .nothingToDisplay))
     }
 
     func setSelectedUserWalletId(_ userWalletId: UserWalletId, reason: UserWalletRepositorySelectionChangeReason) {
@@ -282,7 +272,7 @@ class CommonUserWalletRepository: UserWalletRepository {
         sendEvent(.selected(userWalletId: model.userWalletId, reason: reason))
     }
 
-    func delete(_ userWalletId: UserWalletId, logoutIfNeeded shouldAutoLogout: Bool) {
+    func delete(_ userWalletId: UserWalletId) {
         guard let userWallet = models.first(where: { $0.userWalletId == userWalletId })?.userWallet else {
             return
         }
@@ -319,19 +309,19 @@ class CommonUserWalletRepository: UserWalletRepository {
             setSelectedUserWalletId(newModel.userWalletId, reason: .deleted)
         }
 
-        if shouldAutoLogout {
-            logoutIfNeeded()
-        }
-
         walletConnectService.disconnectAllSessionsForUserWallet(with: userWalletId.stringValue)
         sendEvent(.deleted(userWalletIds: [userWalletId]))
+
+        if !models.contains(where: { !$0.isUserWalletLocked }) {
+            lockInternal()
+        }
     }
 
     private func lockInternal() {
         discardSensitiveData()
-
         resetServices()
         analyticsContext.clearSession()
+        sendEvent(.locked)
     }
 
     private func unlockInternal(with method: UserWalletRepositoryUnlockMethod, completion: @escaping (UserWalletRepositoryResult?) -> Void) {
