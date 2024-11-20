@@ -88,7 +88,7 @@ private extension OnrampProvidersViewModel {
                 iconURL: provider.provider.imageURL,
                 formattedAmount: formattedAmount(state: provider.manager.state),
                 state: state(state: provider.manager.state),
-                badge: .none,
+                badge: provider.isBest ? .bestRate : .none,
                 isSelected: selectedProviderId == provider.provider.id,
                 action: { [weak self] in
                     self?.selectedProviderId = provider.provider.id

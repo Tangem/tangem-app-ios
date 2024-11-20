@@ -173,7 +173,7 @@
 "common_terms_of_use" = "利用規約";
 "common_today" = "今日";
 "common_transaction_failed" = "取引が失敗しました";
-"common_transaction_status" = "Transaction status";
+"common_transaction_status" = "取引状況";
 "common_transactions" = "取引";
 "common_transfer" = "送金";
 "common_understand" = "わかりました";
@@ -182,7 +182,7 @@
 "common_unstake" = "ステーキング解除";
 "common_warning" = "警告";
 "common_week" = "週";
-"common_with" = "with";
+"common_with" = "で";
 "common_yes" = "はい";
 "contract_address_copied_message" = "コントラクトアドレスをコピーしました!";
 "currency_subtitle_expanded" = "利用可能なネットワーク";
@@ -556,7 +556,7 @@
 "onramp_settings_residence" = "住居";
 "onramp_settings_residence_description" = "正確なお支払い方法とサービスを確保するため、正しい国を選択してください。";
 "onramp_settings_title" = "設定";
-"onramp_transaction_status_footer_text" = "You can check the transaction status from the token page";
+"onramp_transaction_status_footer_text" = "トークンページから取引状況を確認できます";
 "onramp_via" = "経由";
 "organize_tokens_group" = "グループ";
 "organize_tokens_sort_by_balance" = "残高順";
@@ -932,6 +932,9 @@
 "wallet_marketprice_block_update_time" = "直近24時間";
 "wallet_network_group_title" = "%@ネットワーク";
 "wallet_notification_address_copied" = "アドレスがクリップボードにコピーされました";
+"wallet_promo_banner_button_title" = "今すぐ10 %オフで購入";
+"wallet_promo_banner_description" = "1.3万種類以上の暗号資産にアクセス。ワンタップで買付、売却、スワップ、ステーキングが可能です。\nバックアップ用に最大3枚のカードを連携できます。";
+"wallet_promo_banner_title" = "Tangemウォレットを見る";
 "wallet_settings_title" = "ウォレット設定";
 "wallet_title" = "Tangem";
 "warning_access_denied_message" = "%@を使用するか、カード / リングをスキャンしてウォレットにアクセスしてください";

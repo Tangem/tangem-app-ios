@@ -22,6 +22,5 @@ struct OnrampProvidersCompactView: View {
         }
         .innerContentPadding(14)
         .backgroundColor(Colors.Background.action)
-        .animation(.default, value: viewModel.paymentState)
     }
 }
