@@ -19,7 +19,7 @@ struct TONWalletInfo {
     /// Wallet availability
     let isAvailable: Bool
 
-    let tokensInfo: [Token: TokenInfo]
+    let tokensInfo: [Token: Result<TokenInfo, Error>]
 
     struct TokenInfo {
         let jettonWalletAddress: String

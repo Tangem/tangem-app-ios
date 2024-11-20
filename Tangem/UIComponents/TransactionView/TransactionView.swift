@@ -77,7 +77,7 @@ struct TransactionView: View {
                 .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
 
             if viewModel.inProgress {
-                Assets.pendingTxIndicator.image
+                ProgressDots(style: .small)
             }
         }
     }

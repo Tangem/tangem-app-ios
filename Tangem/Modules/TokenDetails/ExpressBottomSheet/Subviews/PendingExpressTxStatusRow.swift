@@ -1,5 +1,5 @@
 //
-//  PendingExpressTransactionStatusRow.swift
+//  PendingExpressTxStatusRow.swift
 //  Tangem
 //
 //  Created by Andrew Son on 05/12/23.
@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct PendingExpressTransactionStatusRow: View {
+struct PendingExpressTxStatusRow: View {
     let isFirstRow: Bool
     let info: StatusRowData
 
@@ -37,8 +37,8 @@ struct PendingExpressTransactionStatusRow: View {
     }
 }
 
-extension PendingExpressTransactionStatusRow {
-    struct StatusRowData: Identifiable, Hashable {
+extension PendingExpressTxStatusRow {
+    struct StatusRowData: Identifiable, Hashable, Equatable {
         let title: String
         let state: State
 
@@ -112,17 +112,17 @@ extension PendingExpressTransactionStatusRow {
     }
 }
 
-struct PendingExpressTransactionStatusRow_Previews: PreviewProvider {
+struct PendingExpressTxStatusRow_Previews: PreviewProvider {
     static var previews: some View {
         VStack(spacing: 0) {
-            PendingExpressTransactionStatusRow(isFirstRow: true, info: .init(title: "Deposit received", state: .checkmark))
-            PendingExpressTransactionStatusRow(isFirstRow: false, info: .init(title: "Exchanging...", state: .loader))
-            PendingExpressTransactionStatusRow(isFirstRow: false, info: .init(title: "Failed", state: .cross(passed: false)))
-            PendingExpressTransactionStatusRow(isFirstRow: false, info: .init(title: "Failed", state: .cross(passed: true)))
-            PendingExpressTransactionStatusRow(isFirstRow: false, info: .init(title: "Canceled", state: .cross(passed: false)))
-            PendingExpressTransactionStatusRow(isFirstRow: false, info: .init(title: "Refunded", state: .empty))
-            PendingExpressTransactionStatusRow(isFirstRow: false, info: .init(title: "Refunded", state: .checkmark))
-            PendingExpressTransactionStatusRow(isFirstRow: false, info: .init(title: "Verification required", state: .exclamationMark))
+            PendingExpressTxStatusRow(isFirstRow: true, info: .init(title: "Deposit received", state: .checkmark))
+            PendingExpressTxStatusRow(isFirstRow: false, info: .init(title: "Exchanging...", state: .loader))
+            PendingExpressTxStatusRow(isFirstRow: false, info: .init(title: "Failed", state: .cross(passed: false)))
+            PendingExpressTxStatusRow(isFirstRow: false, info: .init(title: "Failed", state: .cross(passed: true)))
+            PendingExpressTxStatusRow(isFirstRow: false, info: .init(title: "Canceled", state: .cross(passed: false)))
+            PendingExpressTxStatusRow(isFirstRow: false, info: .init(title: "Refunded", state: .empty))
+            PendingExpressTxStatusRow(isFirstRow: false, info: .init(title: "Refunded", state: .checkmark))
+            PendingExpressTxStatusRow(isFirstRow: false, info: .init(title: "Verification required", state: .exclamationMark))
         }
     }
 }
