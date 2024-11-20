@@ -92,16 +92,27 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
         dateFormatter.timeStyle = .short
         timeString = dateFormatter.string(from: pendingTransaction.transactionRecord.date)
 
-        let sourceTokenTxInfo = pendingTransaction.transactionRecord.sourceTokenTxInfo
-        let sourceTokenItem = sourceTokenTxInfo.tokenItem
+        let iconInfoBuilder = TokenIconInfoBuilder()
+
+        if let expressSpecific = pendingTransaction.transactionRecord.expressSpecific {
+            let sourceTokenTxInfo = expressSpecific.sourceTokenTxInfo
+            let sourceTokenItem = sourceTokenTxInfo.tokenItem
+            sourceTokenIconInfo = iconInfoBuilder.build(from: sourceTokenItem, isCustom: sourceTokenTxInfo.isCustom)
+            sourceAmountText = balanceFormatter.formatCryptoBalance(sourceTokenTxInfo.amount, currencyCode: sourceTokenItem.currencySymbol)
+        } else if let onrampSpecific = pendingTransaction.transactionRecord.onrampSpecific {
+            sourceTokenIconInfo = iconInfoBuilder.build(from: onrampSpecific.fromCurrencyCode)
+            sourceAmountText = balanceFormatter.formatFiatBalance(
+                Decimal(stringValue: onrampSpecific.fromAmount).flatMap { $0 / 100 }, // TODO: Use better way
+                currencyCode: onrampSpecific.fromCurrencyCode
+            )
+        } else {
+            fatalError("unexpected state")
+        }
+
         let destinationTokenTxInfo = pendingTransaction.transactionRecord.destinationTokenTxInfo
         let destinationTokenItem = destinationTokenTxInfo.tokenItem
 
-        let iconInfoBuilder = TokenIconInfoBuilder()
-        sourceTokenIconInfo = iconInfoBuilder.build(from: sourceTokenItem, isCustom: sourceTokenTxInfo.isCustom)
         destinationTokenIconInfo = iconInfoBuilder.build(from: destinationTokenItem, isCustom: destinationTokenTxInfo.isCustom)
-
-        sourceAmountText = balanceFormatter.formatCryptoBalance(sourceTokenTxInfo.amount, currencyCode: sourceTokenItem.currencySymbol)
         destinationAmountText = balanceFormatter.formatCryptoBalance(destinationTokenTxInfo.amount, currencyCode: destinationTokenItem.currencySymbol)
 
         loadEmptyFiatRates()
@@ -153,7 +164,9 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     }
 
     private func loadEmptyFiatRates() {
-        loadRatesIfNeeded(stateKeyPath: \.sourceFiatAmountTextState, for: pendingTransaction.transactionRecord.sourceTokenTxInfo, on: self)
+        if let expressSpecific = pendingTransaction.transactionRecord.expressSpecific {
+            loadRatesIfNeeded(stateKeyPath: \.sourceFiatAmountTextState, for: expressSpecific.sourceTokenTxInfo, on: self)
+        }
         loadRatesIfNeeded(stateKeyPath: \.destinationFiatAmountTextState, for: pendingTransaction.transactionRecord.destinationTokenTxInfo, on: self)
     }
 

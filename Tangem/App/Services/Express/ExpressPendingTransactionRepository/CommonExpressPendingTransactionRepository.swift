@@ -65,23 +65,26 @@ extension CommonExpressPendingTransactionRepository: ExpressPendingTransactionRe
         let expressPendingTransactionRecord = ExpressPendingTransactionRecord(
             userWalletId: userWalletId,
             expressTransactionId: txData.expressTransactionData.expressTransactionId,
-            transactionType: .type(from: txData.expressTransactionData.transactionType),
-            transactionHash: txData.hash,
-            sourceTokenTxInfo: .init(
-                tokenItem: txData.source.tokenItem,
-                amountString: txData.expressTransactionData.fromAmount.stringValue,
-                isCustom: txData.source.isCustom
-            ),
             destinationTokenTxInfo: .init(
                 tokenItem: txData.destination.tokenItem,
                 amountString: txData.expressTransactionData.toAmount.stringValue,
                 isCustom: txData.destination.isCustom
             ),
-            feeString: txData.fee.stringValue,
             provider: .init(provider: txData.provider),
-            date: txData.date,
             externalTxId: txData.expressTransactionData.externalTxId,
             externalTxURL: txData.expressTransactionData.externalTxUrl,
+            date: txData.date,
+            expressSpecific: .init(
+                transactionType: .type(from: txData.expressTransactionData.transactionType),
+                transactionHash: txData.hash,
+                sourceTokenTxInfo: .init(
+                    tokenItem: txData.source.tokenItem,
+                    amountString: txData.expressTransactionData.fromAmount.stringValue,
+                    isCustom: txData.source.isCustom
+                ),
+                feeString: txData.fee.stringValue
+            ),
+            onrampSpecific: nil,
             isHidden: false,
             transactionStatus: .awaitingDeposit
         )
@@ -95,25 +98,23 @@ extension CommonExpressPendingTransactionRepository: ExpressPendingTransactionRe
         let expressPendingTransactionRecord = ExpressPendingTransactionRecord(
             userWalletId: userWalletId,
             expressTransactionId: txData.txId,
-            transactionType: .send, // TODO: Nope
-            transactionHash: "", // TODO: Nope
-            sourceTokenTxInfo: .init(
-                tokenItem: .blockchain(.init(.bitcoin(testnet: false), derivationPath: nil)), // TODO: Should be fiat
-                amountString: txData.onrampTransactionData.fromAmount,
-                isCustom: false // TODO: Questionable
-            ),
             destinationTokenTxInfo: .init(
                 tokenItem: txData.destinationTokenItem,
-                amountString: "",
-                isCustom: false // TODO: Questionable
+                amountString: txData.onrampTransactionData.toAmount ?? "",
+                isCustom: false
             ),
-            feeString: "",
             provider: .init(provider: txData.provider.provider),
-            date: txData.date,
             externalTxId: txData.onrampTransactionData.externalTxId,
-            externalTxURL: "", // TODO: Should be url
+            externalTxURL: nil,
+            date: txData.date,
+            expressSpecific: nil,
+            onrampSpecific: .init(
+                fromAmount: txData.onrampTransactionData.fromAmount,
+                fromCurrencyCode: txData.onrampTransactionData.fromCurrencyCode
+            ),
             isHidden: false,
-            transactionStatus: .awaitingDeposit
+            transactionStatus: .awaitingDeposit,
+            refundedTokenItem: nil
         )
 
         lockQueue.async { [weak self] in

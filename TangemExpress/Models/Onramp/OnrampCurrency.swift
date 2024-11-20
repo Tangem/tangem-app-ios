@@ -6,7 +6,7 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-public struct OnrampFiatCurrency: Hashable {
+public struct OnrampFiatCurrency: Hashable, Codable {
     public let identity: OnrampIdentity
     /// Max fraction digits
     public let precision: Int

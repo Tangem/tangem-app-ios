@@ -15,7 +15,21 @@ struct PendingExpressTransactionsConverter {
 
         return records.compactMap {
             let record = $0.transactionRecord
-            let sourceTokenItem = record.sourceTokenTxInfo.tokenItem
+
+            let sourceIconInfo: TokenIconInfo
+            let sourceAmountText: String
+            if let expressSpecific = record.expressSpecific {
+                let sourceTokenTxInfo = expressSpecific.sourceTokenTxInfo
+                let sourceTokenItem = sourceTokenTxInfo.tokenItem
+                sourceIconInfo = iconBuilder.build(from: sourceTokenItem, isCustom: sourceTokenTxInfo.isCustom)
+                sourceAmountText = balanceFormatter.formatCryptoBalance(sourceTokenTxInfo.amount, currencyCode: sourceTokenItem.currencySymbol)
+            } else if let onrampSpecific = record.onrampSpecific {
+                sourceIconInfo = iconBuilder.build(from: onrampSpecific.fromCurrencyCode)
+                sourceAmountText = onrampSpecific.fromAmount
+            } else {
+                fatalError("unexpected state")
+            }
+
             let destinationTokenItem = record.destinationTokenTxInfo.tokenItem
             let state: PendingExpressTransactionView.State
             switch $0.transactionRecord.transactionStatus {
@@ -30,8 +44,8 @@ struct PendingExpressTransactionsConverter {
             return .init(
                 id: record.expressTransactionId,
                 title: Localization.expressExchangeBy(record.provider.name),
-                sourceIconInfo: iconBuilder.build(from: sourceTokenItem, isCustom: record.sourceTokenTxInfo.isCustom),
-                sourceAmountText: balanceFormatter.formatCryptoBalance(record.sourceTokenTxInfo.amount, currencyCode: sourceTokenItem.currencySymbol),
+                sourceIconInfo: sourceIconInfo,
+                sourceAmountText: sourceAmountText,
                 destinationIconInfo: iconBuilder.build(from: destinationTokenItem, isCustom: record.destinationTokenTxInfo.isCustom),
                 destinationCurrencySymbol: destinationTokenItem.currencySymbol,
                 state: state,

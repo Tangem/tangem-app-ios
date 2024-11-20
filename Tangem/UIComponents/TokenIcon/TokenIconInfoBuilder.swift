@@ -9,6 +9,7 @@
 import Foundation
 import SwiftUI
 import BlockchainSdk
+import TangemExpress
 
 struct TokenIconInfoBuilder {
     func build(for type: Amount.AmountType, in blockchain: Blockchain, isCustom: Bool) -> TokenIconInfo {
@@ -39,5 +40,15 @@ struct TokenIconInfoBuilder {
 
     func build(from tokenItem: TokenItem, isCustom: Bool) -> TokenIconInfo {
         build(for: tokenItem.amountType, in: tokenItem.blockchain, isCustom: isCustom)
+    }
+
+    func build(from currencyCode: String) -> TokenIconInfo {
+        TokenIconInfo(
+            name: "",
+            blockchainIconName: nil,
+            imageURL: IconURLBuilder().fiatIconURL(currencyCode: currencyCode),
+            isCustom: false,
+            customTokenColor: nil
+        )
     }
 }
