@@ -171,7 +171,6 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             .delay(for: .seconds(2), scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .flatMap { manager, response -> AnyPublisher<KaspaTransactionResponse, Error> in
-                return .anyFail(error: WalletError.failedToBuildTx) // FIXME: Andrey Fedorov - Test only, remove when not needed
                 // Send Reveal
                 guard let tx = builtKaspaRevealTx else {
                     return .anyFail(error: WalletError.failedToBuildTx)
