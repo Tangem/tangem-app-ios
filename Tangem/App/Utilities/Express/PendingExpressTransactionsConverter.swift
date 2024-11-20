@@ -40,7 +40,7 @@ struct PendingExpressTransactionsConverter {
         }
     }
 
-    func convertToStatusRowDataList(for pendingTransaction: PendingExpressTransaction) -> (list: [PendingExpressTransactionStatusRow.StatusRowData], currentIndex: Int) {
+    func convertToStatusRowDataList(for pendingTransaction: PendingExpressTransaction) -> (list: [PendingExpressTxStatusRow.StatusRowData], currentIndex: Int) {
         let statuses = pendingTransaction.statuses
         let currentStatusIndex = statuses.firstIndex(of: pendingTransaction.transactionRecord.transactionStatus) ?? 0
 
@@ -61,7 +61,7 @@ struct PendingExpressTransactionsConverter {
         currentStatusIndex: Int,
         currentStatus: PendingExpressTransactionStatus,
         lastStatusIndex: Int
-    ) -> PendingExpressTransactionStatusRow.StatusRowData {
+    ) -> PendingExpressTxStatusRow.StatusRowData {
         let isFinished = currentStatus.isTerminated
         if isFinished {
             // Always display cross for failed state
@@ -82,7 +82,7 @@ struct PendingExpressTransactionsConverter {
         let isPendingStatus = index > currentStatusIndex
 
         let title: String = isCurrentStatus ? status.activeStatusTitle : isPendingStatus ? status.pendingStatusTitle : status.passedStatusTitle
-        var state: PendingExpressTransactionStatusRow.State = isCurrentStatus ? .loader : isPendingStatus ? .empty : .checkmark
+        var state: PendingExpressTxStatusRow.State = isCurrentStatus ? .loader : isPendingStatus ? .empty : .checkmark
 
         switch status {
         case .failed, .unknown, .paused:

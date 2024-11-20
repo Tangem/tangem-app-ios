@@ -195,16 +195,37 @@ class SolanaNetworkService {
 
     private func mainAccountInfo(accountId: String) -> AnyPublisher<SolanaMainAccountInfoResponse, Error> {
         solanaSdk.api.getAccountInfo(account: accountId, decodedTo: AccountInfo.self)
-            .tryMap { info in
+            .withWeakCaptureOf(self)
+            .tryMap { service, info in
                 let lamports = info.lamports
-                let accountInfo = SolanaMainAccountInfoResponse(balance: lamports, accountExists: true, space: info.space)
+                let accountInfo = SolanaMainAccountInfoResponse(
+                    balance: lamports,
+                    accountExists: true,
+                    rentExemption: 0
+                )
+
                 return accountInfo
+
+                /*
+                 // TODO: - https://tangem.atlassian.net/browse/IOS-8538
+
+                 service.minimalBalanceForRentExemption(dataLength: info.space ?? 0)
+                     .tryMap { rentExemption in
+                         let lamports = info.lamports
+                         let accountInfo = SolanaMainAccountInfoResponse(
+                             balance: lamports,
+                             accountExists: true,
+                             rentExemption: rentExemption
+                         )
+                         return accountInfo
+                     }
+                 */
             }
             .tryCatch { (error: Error) -> AnyPublisher<SolanaMainAccountInfoResponse, Error> in
                 if let solanaError = error as? SolanaError {
                     switch solanaError {
                     case .nullValue:
-                        let info = SolanaMainAccountInfoResponse(balance: 0, accountExists: false, space: nil)
+                        let info = SolanaMainAccountInfoResponse(balance: 0, accountExists: false, rentExemption: 0)
                         return Just(info)
                             .setFailureType(to: Error.self)
                             .eraseToAnyPublisher()
@@ -277,7 +298,8 @@ class SolanaNetworkService {
             balance: balance,
             accountExists: accountExists,
             tokensByMint: tokensByMint,
-            confirmedTransactionIDs: confirmedTransactionIDs
+            confirmedTransactionIDs: confirmedTransactionIDs,
+            mainAccountRentExemption: mainAccountInfo.rentExemption
         )
     }
 
@@ -298,7 +320,7 @@ class SolanaNetworkService {
                 if let solanaError = error as? SolanaError {
                     switch solanaError {
                     case .nullValue:
-                        return .anyFail(error: WalletError.accountNotActivated)
+                        return .justWithError(output: true)
                     default:
                         break
                     }

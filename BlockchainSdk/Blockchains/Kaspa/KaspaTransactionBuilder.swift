@@ -48,7 +48,7 @@ class KaspaTransactionBuilder {
             let commitTx = try buildCommitTransactionKRC20(transaction: transaction, token: token)
             return (commitTx.transaction, commitTx.hashes)
         default:
-            ()
+            break
         }
 
         let availableInputValue = availableAmount()
@@ -214,13 +214,6 @@ extension KaspaTransactionBuilder {
     func buildForMassCalculationKRC20(transaction: Transaction, token: Token) throws -> KaspaTransactionData {
         let dummySignature = Data(repeating: 1, count: 65)
         let commitTx = try buildCommitTransactionKRC20(transaction: transaction, token: token, includeFee: false)
-        // TODO: Andrey Fedorov - Do we need this?
-        let revealTx = try buildRevealTransaction(
-            external: false,
-            sourceAddress: transaction.sourceAddress,
-            params: commitTx.params,
-            fee: transaction.fee
-        )
 
         return buildForSend(
             transaction: commitTx.transaction,
@@ -230,43 +223,83 @@ extension KaspaTransactionBuilder {
             )
         )
     }
+    
+    func buildForSendKRC20(transaction: Transaction, token: Token) throws -> (KaspaKRC20.TransactionGroup, KaspaKRC20.TransactionMeta) {
+        // Commit
+        let resultCommit = try buildCommitTransactionKRC20(transaction: transaction, token: token)
+
+        // Reveal
+        guard let revealFee = transaction.fee.parameters as? KaspaKRC20.RevealTransactionFeeParameter else {
+            throw WalletError.failedToBuildTx
+        }
+
+        let resultReveal = try buildRevealTransaction(
+            sourceAddress: transaction.sourceAddress,
+            params: resultCommit.params,
+            fee: .init(revealFee.amount)
+        )
+
+        return (
+            KaspaKRC20.TransactionGroup(
+                kaspaCommitTransaction: resultCommit.transaction,
+                kaspaRevealTransaction: resultReveal.transaction,
+                hashesCommit: resultCommit.hashes,
+                hashesReveal: resultReveal.hashes
+            ),
+            KaspaKRC20.TransactionMeta(
+                redeemScriptCommit: resultCommit.redeemScript,
+                incompleteTransactionParams: resultCommit.params
+            )
+        )
+    }
 
     public func buildCommitTransactionKRC20(transaction: Transaction, token: Token, includeFee: Bool = true) throws -> KaspaKRC20.CommitTransaction {
         let availableInputValue = availableAmount()
 
+        // We check there are enough funds to cover the commission,
+        // the token transfer amount is not included in the verification
         guard transaction.fee.amount.type == availableInputValue.type,
               transaction.fee.amount <= availableInputValue else {
             throw WalletError.failedToBuildTx
         }
 
+        // Get the decimals value for the token to create an envelope
         guard let tokenDecimalValue = transaction.amount.type.token?.decimalValue else {
             throw WalletError.failedToBuildTx
         }
 
+        // We determine the commission value for reveal transaction,
         var revealFeeParams: KaspaKRC20.RevealTransactionFeeParameter?
 
+        // The includeFee flag determines whether we already know the commission value
+        // or the method is called for preliminary calculation mass
         if includeFee {
+            // if the commission is included,
+            // but the additional fee parameter KaspaKRC20.RevealTransactionFeeParameter is missing - it is impossible to build a transaction
             guard let revealFee = transaction.fee.parameters as? KaspaKRC20.RevealTransactionFeeParameter else {
                 throw WalletError.failedToBuildTx
             }
             revealFeeParams = revealFee
         }
 
+        // if we don't know the commission, commission for reveal transaction will be set to zero
         let feeEstimationRevealTransactionValue = ((revealFeeParams?.amount.value ?? 0) * blockchain.decimalValue).rounded()
         let dust = (Decimal(0.2) * blockchain.decimalValue).rounded()
 
         let tokenAmount = transaction.amount.value * tokenDecimalValue
-        let sourceAddressScript = try scriptPublicKey(address: transaction.sourceAddress).hexString.lowercased()
-
+        
+        // The envelope will be used to create the RedeemScript and saved for use when building the Reveal transaction
         let envelope = KaspaKRC20.Envelope(
             amount: tokenAmount,
             recipient: transaction.destinationAddress,
             ticker: token.contractAddress
         )
 
+        // Create a RedeemScript for the 1st output of the Commit transaction, this is part of the KRC20 protocol
         let redeemScript = KaspaKRC20.RedeemScript(publicKey: walletPublicKey.blockchainKey, envelope: envelope)
         let targetOutputAmount = dust.uint64Value + feeEstimationRevealTransactionValue.uint64Value
 
+        // 1st output of the Commit transction
         var outputs = [
             KaspaOutput(
                 amount: targetOutputAmount,
@@ -274,9 +307,10 @@ extension KaspaTransactionBuilder {
             ),
         ]
 
-        /*
-         dust + estimated reveal transaction fee
-         */
+        let sourceAddressScript = try scriptPublicKey(address: transaction.sourceAddress).hexString.lowercased()
+        
+        // 2nd output of the Commit transction, create it if we still have funds that need to be returned to the source address.
+        // Change = all available funds - (dust + estimated reveal transaction fee + estimated commit transaction fee)
         if let change = try change(amount: dust + feeEstimationRevealTransactionValue, fee: (transaction.fee.amount.value * blockchain.decimalValue).rounded(), unspentOutputs: unspentOutputs) {
             outputs.append(
                 KaspaOutput(
@@ -286,8 +320,10 @@ extension KaspaTransactionBuilder {
             )
         }
 
+        // Build Commmit transaction
         let commitTransaction = KaspaTransaction(inputs: unspentOutputs, outputs: outputs)
 
+        // Prepare hashes for signing
         let commitHashes = unspentOutputs.enumerated().map { index, unspentOutput in
             let value = unspentOutput.amount
             return commitTransaction.hashForSignatureWitness(
@@ -297,11 +333,13 @@ extension KaspaTransactionBuilder {
             )
         }
 
+        // Get transactionId of the Commit transaction for use when creating utxo for Reveal transaction
         guard let txid = commitTransaction.transactionId else {
             throw WalletError.failedToBuildTx
         }
 
-        return KaspaKRC20.CommitTransaction(
+        // Return CommitTransction structure, that includes IncompleteTokenTransactionParams to persist if the Reveal transaction fails
+        return KaspaKRC20.CommitTransction(
             transaction: commitTransaction,
             hashes: commitHashes,
             redeemScript: redeemScript,
@@ -315,20 +353,13 @@ extension KaspaTransactionBuilder {
         )
     }
 
-    public func buildRevealTransaction(external: Bool, sourceAddress: String, params: KaspaKRC20.IncompleteTokenTransactionParams, fee: Fee) throws -> KaspaKRC20.RevealTransaction {
+    public func buildRevealTransaction(sourceAddress: String, params: KaspaKRC20.IncompleteTokenTransactionParams, fee: Fee) throws -> KaspaKRC20.RevealTransaction {
         let sourceAddressScript = try scriptPublicKey(address: sourceAddress).hexString.lowercased()
         let redeemScript = KaspaKRC20.RedeemScript(publicKey: walletPublicKey.blockchainKey, envelope: params.envelope)
 
-        let commitTransactionOutput = [
-            BitcoinUnspentOutput(
-                transactionHash: params.transactionId,
-                outputIndex: 0,
-                amount: params.targetOutputAmount,
-                outputScript: redeemScript.redeemScriptHash.hexadecimal
-            ),
+        let utxo = [
+            BitcoinUnspentOutput(transactionHash: params.transactionId, outputIndex: 0, amount: params.amount, outputScript: redeemScript.redeemScriptHash.hexadecimal),
         ]
-
-        let utxo = external ? commitTransactionOutput + unspentOutputs : commitTransactionOutput
 
         let change = try change(amount: 0, fee: (fee.amount.value * blockchain.decimalValue).rounded(), unspentOutputs: utxo)!
 

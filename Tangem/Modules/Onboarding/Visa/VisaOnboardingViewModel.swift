@@ -9,6 +9,7 @@
 import SwiftUI
 import Combine
 import TangemSdk
+import TangemFoundation
 import TangemVisa
 
 protocol VisaOnboardingRoutable: AnyObject {
@@ -69,6 +70,8 @@ class VisaOnboardingViewModel: ObservableObject {
     private var userWalletModel: UserWalletModel?
     private weak var coordinator: VisaOnboardingRoutable?
 
+    private var activationManagerTask: AnyCancellable?
+
     init(
         input: OnboardingInput,
         visaActivationManager: VisaActivationManager,
@@ -114,7 +117,16 @@ class VisaOnboardingViewModel: ObservableObject {
 }
 
 private extension VisaOnboardingViewModel {
-    func goToNextStep() {}
+    func goToNextStep() {
+        switch currentStep {
+        case .welcome:
+            startActivation()
+        case .saveUserWallet, .pushNotifications:
+            break
+        case .success:
+            closeOnboarding()
+        }
+    }
 
     func goToStep(_ step: VisaOnboardingStep) {
         guard steps.contains(step) else {
@@ -132,6 +144,28 @@ private extension VisaOnboardingViewModel {
     func closeOnboarding() {
         userWalletRepository.updateSelection()
         coordinator?.closeOnboarding()
+    }
+
+    // This function will be updated in IOS-8509. Requirements for activation flow was reworked,
+    // so for now this function is for testing purposes
+    func startActivation() {
+        guard activationManagerTask == nil else {
+            print("Activation task already exists, skipping")
+            return
+        }
+
+        guard
+            case .cardInfo(let cardInfo) = input.cardInput,
+            case .visa(let accessToken, let refreshToken) = cardInfo.walletData
+        else {
+            print("Wrong onboarding input")
+            return
+        }
+
+        let authorizationTokens = VisaAuthorizationTokens(accessToken: accessToken, refreshToken: refreshToken)
+        activationManagerTask = runTask(in: self, isDetached: false) { viewModel in
+            try await viewModel.visaActivationManager.startActivation(authorizationTokens)
+        }.eraseToAnyCancellable()
     }
 }
 
@@ -174,7 +208,10 @@ extension VisaOnboardingViewModel: PushNotificationsPermissionRequestDelegate {
     }
 }
 
+#if DEBUG
 extension VisaOnboardingViewModel {
+    static let coordinator = OnboardingCoordinator()
+
     static var mock: VisaOnboardingViewModel {
         let cardMock = CardMock.visa
         let visaUserWalletModelMock = CommonUserWalletModel.visaMock
@@ -189,8 +226,12 @@ extension VisaOnboardingViewModel {
 
         return .init(
             input: inputFactory.makeOnboardingInput()!,
-            visaActivationManager: VisaActivationManagerFactory().make(),
-            coordinator: OnboardingCoordinator()
+            visaActivationManager: VisaActivationManagerFactory().make(
+                urlSessionConfiguration: .default,
+                logger: AppLog.shared
+            ),
+            coordinator: coordinator
         )
     }
 }
+#endif

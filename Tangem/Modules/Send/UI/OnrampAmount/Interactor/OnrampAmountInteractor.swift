@@ -51,7 +51,7 @@ private extension CommonOnrampAmountInteractor {
             onrampProvidersInput.selectedOnrampProviderPublisher.map { $0?.value?.manager.state }
         ).map { providers, state in
             switch (providers, state) {
-            case (.loaded(let providers), _) where providers.isEmpty:
+            case (.loaded(let providers), _) where !providers.hasProviders():
                 return Localization.onrampNoAvailableProviders
             case (_, .restriction(.tooSmallAmount(let minAmount))):
                 return Localization.onrampMinAmountRestriction(minAmount)

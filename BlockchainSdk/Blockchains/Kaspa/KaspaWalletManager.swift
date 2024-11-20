@@ -118,57 +118,32 @@ final class KaspaWalletManager: BaseManager, WalletManager {
     }
 
     private func sendKaspaTokenTransaction(_ transaction: Transaction, token: Token, signer: TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError> {
-        // Commit
-        let kaspaCommitTransaction: KaspaTransaction
-        let redeemScriptCommit: KaspaKRC20.RedeemScript
-        let hashesCommit: [Data]
-        let incompleteTransactionParams: KaspaKRC20.IncompleteTokenTransactionParams
-        // Reveal
-        let kaspaRevealTransaction: KaspaTransaction
-        let hashesReveal: [Data]
+        let txgroup: KaspaKRC20.TransactionGroup
+        let meta: KaspaKRC20.TransactionMeta
         var builtKaspaRevealTx: KaspaTransactionData?
-
+        
         do {
-            let resultCommit = try txBuilder.buildCommitTransactionKRC20(transaction: transaction, token: token)
-            kaspaCommitTransaction = resultCommit.transaction
-            hashesCommit = resultCommit.hashes
-            redeemScriptCommit = resultCommit.redeemScript
-            incompleteTransactionParams = resultCommit.params
-
-            guard let revealFee = transaction.fee.parameters as? KaspaKRC20.RevealTransactionFeeParameter else {
-                throw WalletError.failedToBuildTx
-            }
-
-            let resultReveal = try txBuilder.buildRevealTransaction(
-                external: false,
-                sourceAddress: transaction.sourceAddress,
-                params: resultCommit.params,
-                fee: .init(revealFee.amount)
-            )
-
-            kaspaRevealTransaction = resultReveal.transaction
-            hashesReveal = resultReveal.hashes
-
+            let result = try txBuilder.buildForSendKRC20(transaction: transaction, token: token)
+            txgroup = result.0
+            meta = result.1
         } catch {
             return .sendTxFail(error: error)
         }
-
-        let hashes = hashesCommit + hashesReveal
-
-        return signer.sign(hashes: hashes, walletPublicKey: wallet.publicKey)
+        
+        return signer.sign(hashes: txgroup.hashesCommit + txgroup.hashesReveal, walletPublicKey: wallet.publicKey)
             .tryMap { [weak self] signatures in
                 guard let self = self else { throw WalletError.empty }
                 // Build Commit & Reveal
-                let commitSignatures = Array(signatures[..<hashesCommit.count])
-                let revealSignatures = Array(signatures[hashesCommit.count...])
+                let commitSignatures = Array(signatures[..<txgroup.hashesCommit.count])
+                let revealSignatures = Array(signatures[txgroup.hashesCommit.count...])
 
                 let commitTx = txBuilder.buildForSend(
-                    transaction: kaspaCommitTransaction,
+                    transaction: txgroup.kaspaCommitTransaction,
                     signatures: commitSignatures
                 )
                 let revealTx = txBuilder.buildForSendReveal(
-                    transaction: kaspaRevealTransaction,
-                    commitRedeemScript: redeemScriptCommit,
+                    transaction: txgroup.kaspaRevealTransaction,
+                    commitRedeemScript: meta.redeemScriptCommit,
                     signatures: revealSignatures
                 )
 
@@ -189,7 +164,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             .withWeakCaptureOf(self)
             .asyncMap { manager, response in
                 // Store Commit
-                await manager.store(incompleteTokenTransaction: incompleteTransactionParams, for: token)
+                await manager.store(incompleteTokenTransaction: meta.incompleteTransactionParams, for: token)
                 return response
             }
             .eraseToAnyPublisher()
@@ -216,7 +191,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             .withWeakCaptureOf(self)
             .asyncMap { manager, response in
                 // Delete Commit
-                await manager.removeIncompleteTokenTransaction(for: token)
+                await manager.remove(incompleteTokenTransactionID: meta.incompleteTransactionParams.transactionId, for: token)
                 return TransactionSendResult(hash: response.transactionId)
             }
             .eraseSendError()
@@ -228,16 +203,18 @@ final class KaspaWalletManager: BaseManager, WalletManager {
         let commitRedeemScript: KaspaKRC20.RedeemScript
         let hashes: [Data]
 
-        guard let params = transaction.params as? KaspaKRC20.IncompleteTokenTransactionParams else {
+        guard let params = transaction.params as? KaspaKRC20.IncompleteTokenTransactionParams,
+              // Here, we use fee, which is obtained from previously saved data and the hardcoded dust value
+              let feeParams = transaction.fee.parameters as? KaspaKRC20.RevealTransactionFeeParameter
+        else {
             return .sendTxFail(error: WalletError.failedToBuildTx)
         }
 
         do {
             let result = try txBuilder.buildRevealTransaction(
-                external: true,
                 sourceAddress: transaction.sourceAddress,
                 params: params,
-                fee: transaction.fee
+                fee: .init(feeParams.amount)
             )
 
             kaspaTransaction = result.transaction
