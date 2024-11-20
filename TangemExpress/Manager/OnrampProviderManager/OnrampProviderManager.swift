@@ -6,6 +6,8 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
+import TangemFoundation
+
 public protocol OnrampProviderManager {
     /// Get actual state
     var state: OnrampProviderManagerState { get }
@@ -22,7 +24,7 @@ public enum OnrampProviderManagerState: Hashable {
     case notSupported(NotSupported)
     case loading
     case restriction(Restriction)
-    case failed(error: String)
+    case failed(error: HashableError)
     case loaded(OnrampQuote)
 
     public var isSupported: Bool {

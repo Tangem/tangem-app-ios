@@ -412,4 +412,8 @@ struct SendDependenciesBuilder {
             onrampRedirectingBuilder: onrampRedirectingBuilder
         )
     }
+
+    func makeOnrampNotificationManager() -> OnrampNotificationManager {
+        CommonOnrampNotificationManager()
+    }
 }

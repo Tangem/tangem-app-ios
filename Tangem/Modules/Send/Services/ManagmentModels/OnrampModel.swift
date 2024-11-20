@@ -82,29 +82,27 @@ private extension OnrampModel {
     }
 
     func updateProviders(country: OnrampCountry, currency: OnrampFiatCurrency) {
-        mainTask {
+        mainTask(keeper: _onrampProviders.send) {
+            $0._onrampProviders.send(.loading)
+
             let request = $0.makeOnrampPairRequestItem(country: country, currency: currency)
             try await $0.onrampManager.setupProviders(request: request)
-            let providers = await $0.onrampManager.providers
+            try Task.checkCancellation()
 
-            $0._onrampProviders.send(.loaded(providers))
-            if let selectedProvider = await $0.onrampManager.selectedProvider {
-                $0._selectedOnrampProvider.send(.loaded(selectedProvider))
-            }
+            return await $0.onrampManager.providers
         }
     }
 
     func updateQuotes(amount: Decimal?) {
-        mainTask {
-            guard $0._onrampProviders.value?.value?.hasProviders() == true else {
-                return
-            }
+        guard _onrampProviders.value?.value?.hasProviders() == true else {
+            return
+        }
 
+        mainTask(keeper: _selectedOnrampProvider.send) {
             guard let amount else {
-                $0._selectedOnrampProvider.send(.none)
                 // Clear onrampManager
-                try await $0.onrampManager.setupQuotes(amount: nil)
-                return
+                try await $0.onrampManager.setupQuotes(amount: .none)
+                return .none
             }
 
             $0._selectedOnrampProvider.send(.loading)
@@ -112,19 +110,15 @@ private extension OnrampModel {
             try await $0.onrampManager.setupQuotes(amount: amount)
             try Task.checkCancellation()
 
-            await $0._onrampProviders.send(.loaded($0.onrampManager.providers))
-            if let selectedProvider = await $0.onrampManager.selectedProvider {
-                $0._selectedOnrampProvider.send(.loaded(selectedProvider))
-            }
+            return await $0.onrampManager.selectedProvider
         }
     }
 
     func updatePaymentMethod(method: OnrampPaymentMethod) {
-        mainTask {
+        mainTask(keeper: _selectedOnrampProvider.send) {
             await $0.onrampManager.updatePaymentMethod(paymentMethod: method)
-            if let selectedProvider = await $0.onrampManager.selectedProvider {
-                $0._selectedOnrampProvider.send(.loaded(selectedProvider))
-            }
+
+            return await $0.onrampManager.selectedProvider
         }
     }
 }
@@ -172,16 +166,19 @@ private extension OnrampModel {
         OnrampPairRequestItem(fiatCurrency: currency, country: country, destination: walletModel)
     }
 
-    func mainTask(code: @escaping (OnrampModel) async throws -> Void) {
-        task = TangemFoundation.runTask(in: self) { model in
+    func mainTask<T>(keeper: @escaping (LoadingValue<T>?) -> Void, load: @escaping (OnrampModel) async throws -> T?) {
+        task = TangemFoundation.runTask(in: self) {
             do {
-                try await code(model)
+                if let value = try await load($0) {
+                    keeper(.loaded(value))
+                } else {
+                    keeper(.none)
+                }
+
             } catch _ as CancellationError {
                 // Do nothing
             } catch {
-                await runOnMain {
-                    model.alertPresenter?.showAlert(error.alertBinder)
-                }
+                keeper(.failedToLoad(error: error))
             }
         }
     }
@@ -323,9 +320,75 @@ extension OnrampModel: SendBaseOutput {
     }
 }
 
-enum OnrampModelError: String, LocalizedError {
-    case countryNotFound
-    case currencyNotFound
+// MARK: - OnrampNotificationManagerInput
 
-    var errorDescription: String? { rawValue }
+extension OnrampModel: OnrampNotificationManagerInput {
+    var errorPublisher: AnyPublisher<OnrampModelError?, Never> {
+        Publishers
+            .CombineLatest3(_currency, _onrampProviders, _selectedOnrampProvider)
+            .map { currency, providers, provider -> OnrampModelError? in
+                if let currencyError = currency.error {
+                    return .loadingCountry(error: currencyError)
+                }
+
+                if let providersError = providers?.error {
+                    return .loadingProviders(error: providersError)
+                }
+
+                if case .failed(let providerError) = provider?.value?.manager.state {
+                    return .loadingQuotes(error: providerError)
+                }
+
+                return nil
+            }
+            .eraseToAnyPublisher()
+    }
+
+    func refreshError() {
+        if let currencyError = _currency.value.error {
+            TangemFoundation.runTask(in: self) {
+                await $0.initiateCountryDefinition()
+            }
+        }
+
+        if let providersError = _onrampProviders.value?.error,
+           let country = onrampRepository.preferenceCountry,
+           let currency = onrampRepository.preferenceCurrency {
+            updateProviders(country: country, currency: currency)
+        }
+
+        if case .failed(let providerError) = _selectedOnrampProvider.value?.value?.manager.state {
+            updateQuotes(amount: _amount.value?.fiat)
+        }
+    }
+}
+
+// MARK: - NotificationTapDelegate
+
+extension OnrampModel: NotificationTapDelegate {
+    func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
+        switch action {
+        case .refresh:
+            refreshError()
+        default:
+            assertionFailure("Action not supported: \(action)")
+        }
+    }
+}
+
+enum OnrampModelError: LocalizedError {
+    case loadingCountry(error: Error)
+    case loadingProviders(error: Error)
+    case loadingQuotes(error: Error)
+
+    var errorDescription: String? {
+        switch self {
+        case .loadingCountry(error: let error):
+            "Failed to load country: \(error.localizedDescription)"
+        case .loadingProviders(error: let error):
+            "Failed to load providers: \(error.localizedDescription)"
+        case .loadingQuotes(error: let error):
+            "Failed to load quotes: \(error.localizedDescription))"
+        }
+    }
 }
