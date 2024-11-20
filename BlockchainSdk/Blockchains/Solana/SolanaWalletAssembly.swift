@@ -53,6 +53,12 @@ struct SolanaWalletAssembly: WalletManagerAssembly {
                             urlWebSocket: urlWebSocket,
                             network: .mainnetBeta
                         )
+                    case .getBlock:
+                        return RPCEndpoint(
+                            url: nodeInfo.url,
+                            urlWebSocket: urlWebSocket,
+                            network: .mainnetBeta
+                        )
                     default:
                         return nil
                     }

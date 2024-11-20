@@ -173,7 +173,7 @@
 "common_terms_of_use" = "Condiciones de uso";
 "common_today" = "Hoy";
 "common_transaction_failed" = "Transacción fallida";
-"common_transaction_status" = "Transaction status";
+"common_transaction_status" = "Estado de la transacción";
 "common_transactions" = "Transacciones";
 "common_transfer" = "Transferencia";
 "common_understand" = "Entiendo";
@@ -182,7 +182,7 @@
 "common_unstake" = "Termine el staking";
 "common_warning" = "Alerta";
 "common_week" = "semana";
-"common_with" = "with";
+"common_with" = "con";
 "common_yes" = "Sí";
 "contract_address_copied_message" = "Dirección del contract copiada";
 "currency_subtitle_expanded" = "Redes disponibles";
@@ -411,7 +411,7 @@
 "markets_token_details_fully_diluted_valuation_description" = "El valor teórico total de una criptomoneda si todas las monedas que podrían existir estuvieran en circulación, incluidas las que actualmente no circulan.";
 "markets_token_details_fully_diluted_valuation_full" = "Valoración totalmente diluida";
 "markets_token_details_genesis_date" = "Dato de Genesis";
-"markets_token_details_genesis_date_description" = "";
+"markets_token_details_genesis_date_description" = "Vacío";
 "markets_token_details_high" = "Alto";
 "markets_token_details_holders" = "Titulares";
 "markets_token_details_holders_description" = "El cambio en el número de poseedores de tokens dentro de un período de tiempo específico";
@@ -422,7 +422,7 @@
 "markets_token_details_liquidity_description" = "El cambio en la cantidad de liquidez disponible para el token durante el período de tiempo especificado";
 "markets_token_details_liquidity_full" = "Liquidez";
 "markets_token_details_liquidity_index" = "Índice de liquidez";
-"markets_token_details_liquidity_index_description" = "";
+"markets_token_details_liquidity_index_description" = "Vacío";
 "markets_token_details_listed_on" = "Listado en";
 "markets_token_details_low" = "Bajo";
 "markets_token_details_market_capitalization" = "Capital. de mercado";
@@ -439,7 +439,7 @@
 "markets_token_details_price_performance" = "Rendimiento de precios";
 "markets_token_details_repository" = "Repositorio";
 "markets_token_details_security_score" = "Puntuación de seguridad";
-"markets_token_details_security_score_description" = "Security score of a token is a metric that assesses the security level of a blockchain or token based on various factors and is compiled from the sources listed below.";
+"markets_token_details_security_score_description" = "La puntuación de seguridad de un token es una métrica que evalúa el nivel de seguridad de una blockchain o token en función de varios factores y se genera a partir de las fuentes que se enumeran a continuación.";
 "markets_token_details_social" = "Social";
 "markets_token_details_total_supply" = "Suministro total";
 "markets_token_details_total_supply_description" = "La cantidad máxima de monedas o tokens que pueden existir para una criptomoneda en particular";
@@ -548,15 +548,15 @@
 "onramp_min_amount_restriction" = "La cantidad a comprar debe ser como mínimo %@";
 "onramp_no_available_providers" = "No hay proveedores disponibles para esta moneda";
 "onramp_pay_with" = "Pagar con";
-"onramp_redirecting_to_provider_subtitle" = "You will be able to complete your transaction on the third-party provider, %@";
-"onramp_redirecting_to_provider_title" = "Redirecting to %@...";
+"onramp_redirecting_to_provider_subtitle" = "Podrá completar su transacción en el proveedor externo, %@";
+"onramp_redirecting_to_provider_title" = "Redirigiendo a %@...";
 "onramp_residency_bottomsheet_country_not_supported" = "Nuestros servicios no están disponibles en este país";
 "onramp_residency_bottomsheet_country_subtitle" = "Cámbielo o confírmelo";
 "onramp_residency_bottomsheet_title" = "Su residencia ha sido identificada como";
 "onramp_settings_residence" = "Residencia";
 "onramp_settings_residence_description" = "Seleccione el país correcto para garantizar opciones de pago y servicios precisos.";
 "onramp_settings_title" = "Ajustes";
-"onramp_transaction_status_footer_text" = "You can check the transaction status from the token page";
+"onramp_transaction_status_footer_text" = "Puede comprobar el estado de la transacción desde la página del token";
 "onramp_via" = "Vía";
 "organize_tokens_group" = "Agrupar";
 "organize_tokens_sort_by_balance" = "Por saldo";
@@ -932,6 +932,9 @@
 "wallet_marketprice_block_update_time" = "últimas 24h";
 "wallet_network_group_title" = "%@ red";
 "wallet_notification_address_copied" = "La dirección se copió correctamente";
+"wallet_promo_banner_button_title" = "Consíguelo ahora con un 10 %% de descuento";
+"wallet_promo_banner_description" = "Accede a más de 13 000 criptomonedas. Compra, vende, intercambia y realiza staking con un solo toque.\nVincula hasta tres tarjetas para hacer copias de seguridad.";
+"wallet_promo_banner_title" = "Descubre Tangem Wallet";
 "wallet_settings_title" = "Ajusta de la wallet";
 "wallet_title" = "Tangem";
 "warning_access_denied_message" = "Use %@ o escanee una tarjeta/anillo para desbloquear el acceso a su billetera";
