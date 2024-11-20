@@ -216,7 +216,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             .withWeakCaptureOf(self)
             .asyncMap { manager, response in
                 // Delete Commit
-                await manager.remove(for: token)
+                await manager.removeIncompleteTokenTransaction(for: token)
                 return TransactionSendResult(hash: response.transactionId)
             }
             .eraseSendError()
@@ -270,7 +270,8 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             })
             .withWeakCaptureOf(self)
             .asyncMap { manager, input in
-                await manager.remove(for: token)
+                // Delete Commit
+                await manager.removeIncompleteTokenTransaction(for: token)
                 return TransactionSendResult(hash: input.transactionId)
             }
             .eraseSendError()
@@ -343,9 +344,54 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             info.confirmedTransactionHashes.contains(hash)
         }
     }
-}
 
-extension KaspaWalletManager: ThenProcessable {}
+    // MARK: - KRC20 Tokens management
+
+    private func getIncompleteTokenTransaction(for asset: Asset) -> KaspaKRC20.IncompleteTokenTransactionParams? {
+        switch asset {
+        case .coin, .reserve, .feeResource:
+            return nil
+        case .token(let token):
+            return testInMemoryStorage[token.asStorageID]
+        }
+    }
+
+    private func store(incompleteTokenTransaction: KaspaKRC20.IncompleteTokenTransactionParams, for token: Token) async {
+        let storageId = token.asStorageID
+        testInMemoryStorage.mutate { $0[storageId] = incompleteTokenTransaction }
+        await dataStorage.store(key: storageId.id, value: incompleteTokenTransaction)
+    }
+
+    private func removeIncompleteTokenTransaction(for token: Token) async {
+        let storageId = token.asStorageID
+        testInMemoryStorage.mutate { $0[storageId] = nil }
+        await dataStorage.store(key: storageId.id, value: nil as KaspaKRC20.IncompleteTokenTransactionParams?)
+    }
+
+    private func makeTransaction(
+        from incompleteTokenTransactionParams: KaspaKRC20.IncompleteTokenTransactionParams,
+        for token: Token
+    ) -> Transaction? {
+        guard let tokenValue = Decimal(stringValue: incompleteTokenTransactionParams.envelope.amt) else {
+            return nil
+        }
+
+        let transactionAmount = tokenValue / token.decimalValue
+
+        return Transaction(
+            amount: .init(
+                with: wallet.blockchain,
+                type: .token(value: token),
+                value: transactionAmount
+            ),
+            fee: .init(.init(with: wallet.blockchain, value: 0)),
+            sourceAddress: defaultSourceAddress,
+            destinationAddress: incompleteTokenTransactionParams.envelope.to,
+            changeAddress: defaultSourceAddress,
+            params: incompleteTokenTransactionParams
+        )
+    }
+}
 
 extension KaspaWalletManager: DustRestrictable {
     var dustValue: Amount {
@@ -444,7 +490,7 @@ extension KaspaWalletManager: AssetRequirementsManager {
                 }
 
                 guard
-                    let tokenTransaction = walletManager.transaction(from: incompleteTokenTransaction, for: token)
+                    let tokenTransaction = walletManager.makeTransaction(from: incompleteTokenTransaction, for: token)
                 else {
                     throw KaspaKRC20.Error.unableToBuildRevealTransaction
                 }
@@ -467,119 +513,8 @@ extension KaspaWalletManager: AssetRequirementsManager {
         }
 
         runTask(in: self) { walletManager in
-            await walletManager.remove(for: token)
+            await walletManager.removeIncompleteTokenTransaction(for: token)
         }
-    }
-}
-
-// MARK: - KRC20 Management
-
-// TODO: Andrey Fedorov - Move to the main part
-private extension KaspaWalletManager {
-    func getIncompleteTokenTransaction(for asset: Asset) -> KaspaKRC20.IncompleteTokenTransactionParams? {
-        switch asset {
-        case .coin, .reserve, .feeResource:
-            return nil
-        case .token(let token):
-            return testInMemoryStorage[token.asStorageID]
-        }
-    }
-
-    func getFeeIncompleteTokenTransaction() -> AnyPublisher<[Fee], Error> {
-        let blockchain = wallet.blockchain
-        let isTestnet = blockchain.isTestnet
-
-        return networkService.feeEstimate()
-            .map { feeEstimate in
-                let feeMapper = KaspaFeeMapper(isTestnet: isTestnet)
-                return feeMapper.mapTokenFee(mass: KaspaKRC20.RevealTransactionMassConstant, feeEstimate: feeEstimate)
-            }
-            .eraseToAnyPublisher()
-    }
-
-    func getIncompleteTokenTransaction(for token: Token) async -> Transaction? {
-        let key = KaspaIncompleteTokenTransactionStorageID(contract: token.contractAddress).id
-
-        /* if we store multiple transactions
-         let data: [String: KaspaKRC20.IncompleteTokenTransactionParams] = await dataStorage.get(key: key) ?? [:]
-         guard let txId = dict.first?.key else {
-             return nil
-         }
-         guard let tx = data[txId] else {
-             return nil
-         }
-         */
-
-        /* else */
-        guard let tx: KaspaKRC20.IncompleteTokenTransactionParams = await dataStorage.get(key: key) else {
-            return nil
-        }
-        /* endif */
-
-        return transaction(from: tx, for: token)
-    }
-
-    func store(incompleteTokenTransaction: KaspaKRC20.IncompleteTokenTransactionParams, for token: Token) async {
-        let key = KaspaIncompleteTokenTransactionStorageID(contract: token.contractAddress).id
-
-        /* if we store multiple transactions
-         var data: [String: KaspaKRC20.IncompleteTokenTransactionParams] = await dataStorage.get(key: key) ?? [:]
-         data[incompleteTokenTransaction.transactionId] = incompleteTokenTransaction
-         */
-
-        /* else */
-
-        testInMemoryStorage.mutate { $0[token.asStorageID] = incompleteTokenTransaction }
-        await dataStorage.store(key: key, value: incompleteTokenTransaction)
-    }
-
-    // TODO: Andrey Fedorov - Do we need this arg? Improve naming
-    func remove( /* incompleteTokenTransactionID: String, */ for token: Token) async {
-        let key = KaspaIncompleteTokenTransactionStorageID(contract: token.contractAddress).id
-
-        /* if */
-        /* we store multiple transactions
-         var data: [String: KaspaKRC20.IncompleteTokenTransactionParams] = await dataStorage.get(key: key) ?? [:]
-         data[incompleteTokenTransactionID] = nil
-
-         await dataStorage.store(key: key, value: data)
-         */
-
-        testInMemoryStorage.mutate { $0[token.asStorageID] = nil }
-        await dataStorage.store(key: key, value: nil as KaspaKRC20.IncompleteTokenTransactionParams?)
-    }
-
-    func transaction(from incompleteTokenTransactionID: String, for token: Token) async -> Transaction? {
-        let key = KaspaIncompleteTokenTransactionStorageID(contract: token.contractAddress).id
-
-        let dict: [String: KaspaKRC20.IncompleteTokenTransactionParams] = await dataStorage.get(key: key) ?? [:]
-
-        guard let params = dict[incompleteTokenTransactionID] else {
-            return nil
-        }
-
-        return transaction(from: params, for: token)
-    }
-
-    func transaction(from incompleteTokenTransactionParams: KaspaKRC20.IncompleteTokenTransactionParams, for token: Token) -> Transaction? {
-        guard let tokenValue = Decimal(stringValue: incompleteTokenTransactionParams.envelope.amt) else {
-            return nil
-        }
-
-        let transactionAmount = tokenValue / token.decimalValue
-
-        return Transaction(
-            amount: .init(
-                with: wallet.blockchain,
-                type: .token(value: token),
-                value: transactionAmount
-            ),
-            fee: .init(.init(with: wallet.blockchain, value: 0)),
-            sourceAddress: defaultSourceAddress,
-            destinationAddress: incompleteTokenTransactionParams.envelope.to,
-            changeAddress: defaultSourceAddress,
-            params: incompleteTokenTransactionParams
-        )
     }
 }
 
