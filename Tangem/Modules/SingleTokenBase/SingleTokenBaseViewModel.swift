@@ -478,18 +478,7 @@ extension SingleTokenBaseViewModel {
     }
 
     private func isReceiveDisabled() -> Bool {
-        // TODO: Andrey Fedorov - Extract into resolver or something
-        guard let assetRequirementsManager = walletModel.assetRequirementsManager else {
-            return false
-        }
-
-        switch assetRequirementsManager.requirementsCondition(for: walletModel.amountType) {
-        case .paidTransactionWithFee(blockchain: .hedera, _, _):
-            return true
-        case .paidTransactionWithFee,
-             .none:
-            return false
-        }
+        return !TokenInteractionAvailabilityProvider(walletModel: walletModel).isReceiveAvailable()
     }
 }
 

@@ -39,6 +39,20 @@ struct TokenInteractionAvailabilityProvider {
         return defaultInteractionAvailability()
     }
 
+    func isReceiveAvailable() -> Bool {
+        guard let assetRequirementsManager = walletModel.assetRequirementsManager else {
+            return true
+        }
+
+        switch assetRequirementsManager.requirementsCondition(for: walletModel.amountType) {
+        case .paidTransactionWithFee(blockchain: .hedera, _, _):
+            return false
+        case .paidTransactionWithFee,
+             .none:
+            return defaultInteractionAvailability()
+        }
+    }
+
     private func defaultInteractionAvailability() -> Bool {
         switch walletModel.wallet.blockchain {
         case .bitcoin,

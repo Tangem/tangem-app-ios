@@ -213,7 +213,6 @@ final class SingleTokenNotificationManager {
         return input
     }
 
-    // TODO: Andrey Fedorov - Extract somewhere?
     private func makeAssetRequirementsNotificationEvents() -> [TokenNotificationEvent] {
         let asset = walletModel.amountType
 
@@ -237,7 +236,6 @@ final class SingleTokenNotificationManager {
         }
     }
 
-    // TODO: Andrey Fedorov - Extract somewhere
     private func makeUnfulfilledRequirementsConfiguration(
         blockchain: Blockchain,
         transactionAmount: Amount?,
@@ -259,7 +257,7 @@ final class SingleTokenNotificationManager {
             )
         case .kaspa:
             guard let transactionAmount else {
-                preconditionFailure("tx amount is required for making unfulfilled requirements configuration for blockchain '\(blockchain.displayName)'")
+                preconditionFailure("Tx amount is required for making unfulfilled requirements configuration for blockchain '\(blockchain.displayName)'")
             }
 
             let configurationData = makeRequirementsConfigurationData(from: transactionAmount)
@@ -278,7 +276,6 @@ final class SingleTokenNotificationManager {
         }
     }
 
-    // TODO: Andrey Fedorov - Extract somewhere
     private func makeRequirementsConfigurationData(
         from amount: Amount
     ) -> (formattedValue: String, currencySymbol: String) {
