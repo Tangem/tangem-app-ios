@@ -37,13 +37,15 @@ private extension CommonOnrampNotificationManager {
         case .loadingCountry(let error as ExpressAPIError),
              .loadingProviders(let error as ExpressAPIError),
              .loadingQuotes(let error as ExpressAPIError):
-            show(event:
-                .refreshRequired(title: error.localizedTitle, message: error.localizedMessage)
-            )
+            show(event: .refreshRequired(
+                title: error.localizedTitle,
+                message: error.localizedMessage
+            ))
         case .loadingCountry, .loadingProviders, .loadingQuotes:
-            show(event:
-                .refreshRequired(title: Localization.commonError, message: Localization.commonUnknownError)
-            )
+            show(event: .refreshRequired(
+                title: Localization.commonError,
+                message: Localization.commonUnknownError
+            ))
         }
     }
 }

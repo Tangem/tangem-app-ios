@@ -22,12 +22,14 @@ struct OnrampStepBuilder {
     func makeOnrampStep(
         io: IO,
         onrampAmountViewModel: OnrampAmountViewModel,
-        onrampProvidersCompactViewModel: OnrampProvidersCompactViewModel
+        onrampProvidersCompactViewModel: OnrampProvidersCompactViewModel,
+        notificationManager: some NotificationManager
     ) -> ReturnValue {
         let interactor = makeOnrampInteractor(io: io)
         let viewModel = makeOnrampViewModel(
             onrampAmountViewModel: onrampAmountViewModel,
             onrampProvidersCompactViewModel: onrampProvidersCompactViewModel,
+            notificationManager: notificationManager,
             interactor: interactor
         )
         let step = OnrampStep(tokenItem: walletModel.tokenItem, viewModel: viewModel, interactor: interactor)
@@ -42,11 +44,13 @@ private extension OnrampStepBuilder {
     func makeOnrampViewModel(
         onrampAmountViewModel: OnrampAmountViewModel,
         onrampProvidersCompactViewModel: OnrampProvidersCompactViewModel,
+        notificationManager: some NotificationManager,
         interactor: OnrampInteractor
     ) -> OnrampViewModel {
         OnrampViewModel(
             onrampAmountViewModel: onrampAmountViewModel,
             onrampProvidersCompactViewModel: onrampProvidersCompactViewModel,
+            notificationManager: notificationManager,
             interactor: interactor
         )
     }

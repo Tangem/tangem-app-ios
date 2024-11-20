@@ -335,8 +335,8 @@ extension OnrampModel: OnrampNotificationManagerInput {
                     return .loadingProviders(error: providersError)
                 }
 
-                if case .failed(let providerError) = provider?.value?.manager.state {
-                    return .loadingQuotes(error: providerError)
+                if let error = provider?.value?.manager.state.error {
+                    return .loadingQuotes(error: error.error)
                 }
 
                 return nil
@@ -345,19 +345,19 @@ extension OnrampModel: OnrampNotificationManagerInput {
     }
 
     func refreshError() {
-        if let currencyError = _currency.value.error {
+        if case .failedToLoad = _currency.value {
             TangemFoundation.runTask(in: self) {
                 await $0.initiateCountryDefinition()
             }
         }
 
-        if let providersError = _onrampProviders.value?.error,
+        if case .failedToLoad = _onrampProviders.value,
            let country = onrampRepository.preferenceCountry,
            let currency = onrampRepository.preferenceCurrency {
             updateProviders(country: country, currency: currency)
         }
 
-        if case .failed(let providerError) = _selectedOnrampProvider.value?.value?.manager.state {
+        if case .failed = _selectedOnrampProvider.value?.value?.manager.state {
             updateQuotes(amount: _amount.value?.fiat)
         }
     }

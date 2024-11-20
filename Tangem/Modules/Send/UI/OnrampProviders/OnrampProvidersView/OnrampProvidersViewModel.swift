@@ -121,7 +121,7 @@ private extension OnrampProvidersViewModel {
         case .restriction(.tooBigAmount(let maxAmount)):
             return .availableToAmount(maxAmount: Localization.onrampMaxAmountRestriction(maxAmount))
         case .failed(let error):
-            return .unavailable(reason: error)
+            return .unavailable(reason: error.localizedDescription)
         }
     }
 }

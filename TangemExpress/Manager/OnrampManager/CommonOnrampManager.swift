@@ -73,9 +73,12 @@ extension CommonOnrampManager: OnrampManager {
         log(message: "Payment method was updated by user to: \(paymentMethod)")
 
         let providerItem = _providers.select(for: paymentMethod)
-        let selectedProvider = providerItem?.suggestProvider() ?? providerItem?.providers.first
+        let best = providerItem?.updateBest()
+        log(message: "The best provider was define to \(best as Any)")
 
+        let selectedProvider = providerItem?.suggestProvider()
         log(message: "New selected provider was updated to: \(selectedProvider as Any)")
+
         _selectedProvider = selectedProvider
     }
 

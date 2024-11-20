@@ -21,7 +21,7 @@ class OnrampProvidersCompactViewModel: ObservableObject {
         bind(providersInput: providersInput)
     }
 
-    func bind(providersInput: OnrampProvidersInput) {
+    private func bind(providersInput: OnrampProvidersInput) {
         providersInput
             .selectedOnrampProviderPublisher
             .receive(on: DispatchQueue.main)
@@ -31,23 +31,27 @@ class OnrampProvidersCompactViewModel: ObservableObject {
             .store(in: &bag)
     }
 
-    func updateView(provider: LoadingValue<OnrampProvider>?) {
+    private func updateView(provider: LoadingValue<OnrampProvider>?) {
         switch provider {
-        case .none, .failedToLoad:
-            paymentState = .none
         case .loading:
             paymentState = .loading
-        case .loaded(let provider):
+        case .loaded(let provider) where provider.manager.state.error == .none:
             paymentState = .loaded(
-                data: .init(
-                    iconURL: provider.paymentMethod.image,
-                    paymentMethodName: provider.paymentMethod.name,
-                    providerName: provider.provider.name,
-                    badge: provider.isBest ? .bestRate : .none
-                ) { [weak self] in
-                    self?.router?.onrampStepRequestEditProvider()
-                }
+                data: makeOnrampProvidersCompactProviderViewData(provider: provider)
             )
+        case .none, .failedToLoad, .loaded:
+            paymentState = .none
+        }
+    }
+
+    private func makeOnrampProvidersCompactProviderViewData(provider: OnrampProvider) -> OnrampProvidersCompactProviderViewData {
+        OnrampProvidersCompactProviderViewData(
+            iconURL: provider.paymentMethod.image,
+            paymentMethodName: provider.paymentMethod.name,
+            providerName: provider.provider.name,
+            badge: provider.isBest ? .bestRate : .none
+        ) { [weak self] in
+            self?.router?.onrampStepRequestEditProvider()
         }
     }
 }

@@ -14,24 +14,45 @@ class OnrampViewModel: ObservableObject, Identifiable {
     @Published private(set) var onrampAmountViewModel: OnrampAmountViewModel
     @Published private(set) var onrampProvidersCompactViewModel: OnrampProvidersCompactViewModel
 
+    @Published private(set) var notificationInputs: [NotificationViewInput] = []
+
     weak var router: OnrampSummaryRoutable?
 
     private let interactor: OnrampInteractor
+    private let notificationManager: NotificationManager
     private var bag: Set<AnyCancellable> = []
 
     init(
         onrampAmountViewModel: OnrampAmountViewModel,
         onrampProvidersCompactViewModel: OnrampProvidersCompactViewModel,
+        notificationManager: NotificationManager,
         interactor: OnrampInteractor
     ) {
         self.onrampAmountViewModel = onrampAmountViewModel
         self.onrampProvidersCompactViewModel = onrampProvidersCompactViewModel
-
+        self.notificationManager = notificationManager
         self.interactor = interactor
+
+        bind()
     }
 
     func openOnrampSettingsView() {
         router?.openOnrampSettingsView()
+    }
+}
+
+// MARK: - Private
+
+private extension OnrampViewModel {
+    func bind() {
+        notificationManager
+            .notificationPublisher
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, notificationInputs in
+                viewModel.notificationInputs = notificationInputs
+            }
+            .store(in: &bag)
     }
 }
 
