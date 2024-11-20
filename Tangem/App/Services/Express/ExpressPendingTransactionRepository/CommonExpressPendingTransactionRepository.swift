@@ -108,7 +108,7 @@ extension CommonExpressPendingTransactionRepository: ExpressPendingTransactionRe
             expressTransactionId: txData.txId,
             destinationTokenTxInfo: .init(
                 tokenItem: txData.destinationTokenItem,
-                amountString: txData.onrampTransactionData.toAmount ?? "",
+                amountString: "",
                 isCustom: false
             ),
             provider: .init(provider: txData.provider.provider),
