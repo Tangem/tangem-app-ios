@@ -2614,6 +2614,7 @@
 		EF74F50E289BF5AE001034D2 /* Text+.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF74F50C289BF5AE001034D2 /* Text+.swift */; };
 		EF75A3CF2B06416F0023A60A /* TokenItem+ExpressCurrency.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF75A3CE2B06416F0023A60A /* TokenItem+ExpressCurrency.swift */; };
 		EF7673402B0FD6840027D8E0 /* SentExpressTransactionData.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF76733F2B0FD6840027D8E0 /* SentExpressTransactionData.swift */; };
+		EF798DBC2CEBB0E0003AE6CA /* ProviderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF798DBB2CEBB0E0003AE6CA /* ProviderItem.swift */; };
 		EF7A070F2C2EF628003DED83 /* SendFinishInputOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7A070E2C2EF628003DED83 /* SendFinishInputOutput.swift */; };
 		EF7A072C2C2F06D0003DED83 /* SendTransactionSummaryDescriptionBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7A072B2C2F06D0003DED83 /* SendTransactionSummaryDescriptionBuilder.swift */; };
 		EF7A072E2C2F0738003DED83 /* TransactionDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7A072D2C2F0738003DED83 /* TransactionDispatcher.swift */; };
@@ -5755,6 +5756,7 @@
 		EF74F50C289BF5AE001034D2 /* Text+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Text+.swift"; sourceTree = "<group>"; };
 		EF75A3CE2B06416F0023A60A /* TokenItem+ExpressCurrency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TokenItem+ExpressCurrency.swift"; sourceTree = "<group>"; };
 		EF76733F2B0FD6840027D8E0 /* SentExpressTransactionData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SentExpressTransactionData.swift; sourceTree = "<group>"; };
+		EF798DBB2CEBB0E0003AE6CA /* ProviderItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderItem.swift; sourceTree = "<group>"; };
 		EF7A070E2C2EF628003DED83 /* SendFinishInputOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendFinishInputOutput.swift; sourceTree = "<group>"; };
 		EF7A072B2C2F06D0003DED83 /* SendTransactionSummaryDescriptionBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendTransactionSummaryDescriptionBuilder.swift; sourceTree = "<group>"; };
 		EF7A072D2C2F0738003DED83 /* TransactionDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDispatcher.swift; sourceTree = "<group>"; };
@@ -13982,6 +13984,7 @@
 		EF49C05A2CAD70230062AF06 /* OnrampManager */ = {
 			isa = PBXGroup;
 			children = (
+				EF798DBB2CEBB0E0003AE6CA /* ProviderItem.swift */,
 				EF49C05C2CAD70310062AF06 /* OnrampManager.swift */,
 				EF49C0682CAD85E40062AF06 /* CommonOnrampManager.swift */,
 			);
@@ -19213,6 +19216,7 @@
 				EFC990172CD3CC9C0098B7C8 /* ExpressBranch.swift in Sources */,
 				EF9E2A2C2B4F0CD100418559 /* TangemExpressFactory.swift in Sources */,
 				EF8BE6BD2CCA994F001FBA2B /* OnrampRedirectDataRequestItem.swift in Sources */,
+				EF798DBC2CEBB0E0003AE6CA /* ProviderItem.swift in Sources */,
 				EF49C0612CAD85910062AF06 /* OnrampIdentity.swift in Sources */,
 				DC1D4C432C38605800B2A422 /* CommonAnalyticsLogger.swift in Sources */,
 				EFD68F3B2CC3D7E600693C97 /* ExpressDTO+Onramp.swift in Sources */,

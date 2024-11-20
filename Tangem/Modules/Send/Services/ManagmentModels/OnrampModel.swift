@@ -96,6 +96,10 @@ private extension OnrampModel {
 
     func updateQuotes(amount: Decimal?) {
         mainTask {
+            guard $0._onrampProviders.value?.value?.hasProviders() == true else {
+                return
+            }
+
             guard let amount else {
                 $0._selectedOnrampProvider.send(.none)
                 // Clear onrampManager
@@ -239,7 +243,7 @@ extension OnrampModel: OnrampPaymentMethodsInput {
     }
 
     var paymentMethodsPublisher: AnyPublisher<[OnrampPaymentMethod], Never> {
-        _onrampProviders.compactMap { $0?.value?.keys.toSet() }.map { Array($0) }.eraseToAnyPublisher()
+        _onrampProviders.compactMap { $0?.value?.map(\.paymentMethod) }.eraseToAnyPublisher()
     }
 }
 

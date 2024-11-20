@@ -46,14 +46,43 @@ public enum OnrampProviderManagerState: Hashable {
         }
     }
 
-    public enum Restriction: Hashable {
+    public enum Restriction: Hashable, CustomStringConvertible {
         case tooSmallAmount(_ minAmount: String)
         case tooBigAmount(_ maxAmount: String)
+
+        public var description: String {
+            switch self {
+            case .tooSmallAmount(let minAmount): "Too small amount: \(minAmount)"
+            case .tooBigAmount(let maxAmount): "Too big amount: \(maxAmount))"
+            }
+        }
     }
 
-    public enum NotSupported: Hashable {
+    public enum NotSupported: Hashable, CustomStringConvertible {
         case currentPair
         case paymentMethod
+
+        public var description: String {
+            switch self {
+            case .currentPair: "Current pair"
+            case .paymentMethod: "Payment method"
+            }
+        }
+    }
+}
+
+// MARK: - CustomStringConvertible
+
+extension OnrampProviderManagerState: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .idle: "Idle"
+        case .notSupported(let type): "Not supported: \(type)"
+        case .loading: "Loading"
+        case .restriction(let restriction): "Restriction: \(restriction)"
+        case .failed(error: let error): "Failed: \(error)"
+        case .loaded(let quote): "Quote with amount: \(quote.expectedAmount)"
+        }
     }
 }
 
