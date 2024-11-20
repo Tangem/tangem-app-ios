@@ -18,14 +18,14 @@ struct KaspaIncompleteTokenTransactionStorageID: CustomStringConvertible, Hashab
 
 enum KaspaKRC20 {
     static let RevealTransactionMassConstant: Decimal = 4100
-    
+
     struct TransactionGroup {
         let kaspaCommitTransaction: KaspaTransaction
         let kaspaRevealTransaction: KaspaTransaction
         let hashesCommit: [Data]
         let hashesReveal: [Data]
     }
-    
+
     struct TransactionMeta {
         let redeemScriptCommit: KaspaKRC20.RedeemScript
         let incompleteTransactionParams: KaspaKRC20.IncompleteTokenTransactionParams
@@ -47,7 +47,9 @@ enum KaspaKRC20 {
 
     struct IncompleteTokenTransactionParams: TransactionParams, Codable {
         let transactionId: String
+        /// Original tx amount, as entered by user.
         let amount: Decimal
+        /// Calculated tx amount, in atomic units of the asset.
         let targetOutputAmount: UInt64
         let envelope: KaspaKRC20.Envelope
     }
