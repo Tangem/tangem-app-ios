@@ -40,40 +40,13 @@ class VisaOnboardingAccessCodeSetupViewModel: ObservableObject {
     func mainButtonAction() {
         switch viewState {
         case .accessCode:
-            selectedAccessCode = accessCode
-            withAnimation {
-                viewState = .repeatAccessCode
-                accessCode = ""
-            }
+            goToRepeatAccessCode()
         case .repeatAccessCode:
-            if selectedAccessCode.isEmpty {
-                log("Main button on access code setup is enabled while error is present. State: \(viewState.title)")
-                return
-            }
-
-            UIApplication.shared.endEditing()
-            isButtonBusy = true
-            // We need to disable input, because a lot of operations will be done on this page
-            // May be changed)
-            isInputDisabled = true
-            runTask(in: self, isDetached: false) { viewModel in
-                do {
-                    try await viewModel.delegate?.useSelectedCode(accessCode: viewModel.selectedAccessCode)
-                } catch {
-                    viewModel.log("Failed to use selected access code. Reason: \(error)")
-                    /// We need to show alert in parent view, otherwise it won't be shown
-                    await viewModel.delegate?.showAlert(error.alertBinder)
-                }
-
-                await runOnMain {
-                    viewModel.isInputDisabled = false
-                    viewModel.isButtonBusy = false
-                }
-            }
+            finishAccessCodeSetup()
         }
     }
 
-    func canGoBack() -> Bool {
+    func goBack() -> Bool {
         switch viewState {
         case .accessCode:
             UIApplication.shared.endEditing()
@@ -142,6 +115,43 @@ class VisaOnboardingAccessCodeSetupViewModel: ObservableObject {
 
     private func log<T>(_ message: @autoclosure () -> T) {
         AppLog.shared.debug("[VisaAccessCodeViewModel] - \(message())")
+    }
+}
+
+private extension VisaOnboardingAccessCodeSetupViewModel {
+    func goToRepeatAccessCode() {
+        selectedAccessCode = accessCode
+        withAnimation {
+            viewState = .repeatAccessCode
+            accessCode = ""
+        }
+    }
+
+    func finishAccessCodeSetup() {
+        if selectedAccessCode.isEmpty {
+            log("Main button on access code setup is enabled while error is present. State: \(viewState.title)")
+            return
+        }
+
+        UIApplication.shared.endEditing()
+        isButtonBusy = true
+        // We need to disable input, because a lot of operations will be done on this page
+        // May be changed)
+        isInputDisabled = true
+        runTask(in: self, isDetached: false) { viewModel in
+            do {
+                try await viewModel.delegate?.useSelectedCode(accessCode: viewModel.selectedAccessCode)
+            } catch {
+                viewModel.log("Failed to use selected access code. Reason: \(error)")
+                /// We need to show alert in parent view, otherwise it won't be shown
+                await viewModel.delegate?.showAlert(error.alertBinder)
+            }
+
+            await runOnMain {
+                viewModel.isInputDisabled = false
+                viewModel.isButtonBusy = false
+            }
+        }
     }
 }
 

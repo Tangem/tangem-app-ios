@@ -93,7 +93,7 @@ class VisaOnboardingViewModel: ObservableObject {
         case .welcome, .pushNotifications, .saveUserWallet:
             alert = AlertBuilder.makeExitAlert(okAction: weakify(self, forFunction: VisaOnboardingViewModel.closeOnboarding))
         case .accessCode:
-            guard accessCodeSetupViewModel.canGoBack() else {
+            guard accessCodeSetupViewModel.goBack() else {
                 return
             }
 
