@@ -849,6 +849,7 @@ public extension Blockchain {
         case .energyWebEVM: return false // eth_feeHistory all zeroes
         case .core: return false
         case .chiliz: return false
+        case .xodex: return false
         default:
             assertionFailure("Don't forget about evm here")
             return false
