@@ -25,7 +25,10 @@ struct PendingExpressTransactionsConverter {
                 sourceAmountText = balanceFormatter.formatCryptoBalance(sourceTokenTxInfo.amount, currencyCode: sourceTokenItem.currencySymbol)
             } else if let onrampSpecific = record.onrampSpecific {
                 sourceIconInfo = iconBuilder.build(from: onrampSpecific.fromCurrencyCode)
-                sourceAmountText = onrampSpecific.fromAmount
+                sourceAmountText = balanceFormatter.formatFiatBalance(
+                    Decimal(stringValue: onrampSpecific.fromAmount).flatMap { $0 / 100 }, // TODO: Use better way
+                    currencyCode: onrampSpecific.fromCurrencyCode
+                )
             } else {
                 fatalError("unexpected state")
             }

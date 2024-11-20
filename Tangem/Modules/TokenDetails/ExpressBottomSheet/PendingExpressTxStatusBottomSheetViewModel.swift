@@ -55,7 +55,6 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     }
 
     init(
-        expressBranch: ExpressBranch,
         pendingTransaction: PendingExpressTransaction,
         currentTokenItem: TokenItem,
         pendingTransactionsManager: PendingExpressTransactionsManager,
@@ -68,13 +67,14 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
 
         let provider = pendingTransaction.transactionRecord.provider
 
-        switch expressBranch {
-        case .swap:
+        if pendingTransaction.transactionRecord.expressSpecific != nil {
             sheetTitle = Localization.expressExchangeStatusTitle
             statusViewTitle = Localization.expressExchangeBy(provider.name)
-        case .onramp:
+        } else if pendingTransaction.transactionRecord.onrampSpecific != nil {
             sheetTitle = Localization.commonTransactionStatus
             statusViewTitle = Localization.commonTransactionStatus
+        } else {
+            fatalError("unexpected state")
         }
 
         providerRowViewModel = .init(
@@ -166,6 +166,15 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     private func loadEmptyFiatRates() {
         if let expressSpecific = pendingTransaction.transactionRecord.expressSpecific {
             loadRatesIfNeeded(stateKeyPath: \.sourceFiatAmountTextState, for: expressSpecific.sourceTokenTxInfo, on: self)
+        } else if let onrampSpecific = pendingTransaction.transactionRecord.onrampSpecific {
+            sourceFiatAmountTextState = .loaded(
+                text: balanceFormatter.formatFiatBalance(
+                    Decimal(stringValue: onrampSpecific.fromAmount).flatMap { $0 / 100 }, // TODO: Use better way
+                    currencyCode: onrampSpecific.fromCurrencyCode
+                )
+            )
+        } else {
+            fatalError("unexpected state")
         }
         loadRatesIfNeeded(stateKeyPath: \.destinationFiatAmountTextState, for: pendingTransaction.transactionRecord.destinationTokenTxInfo, on: self)
     }

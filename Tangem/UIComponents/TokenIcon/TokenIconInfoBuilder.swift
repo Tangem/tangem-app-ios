@@ -45,7 +45,9 @@ struct TokenIconInfoBuilder {
         TokenIconInfo(
             name: "",
             blockchainIconName: nil,
-            imageURL: IconURLBuilder().fiatIconURL(currencyCode: currencyCode),
+            imageURL: IconURLBuilder(
+                baseURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/")! // TODO: Remove
+            ).fiatIconURL(currencyCode: currencyCode),
             isCustom: false,
             customTokenColor: nil
         )
