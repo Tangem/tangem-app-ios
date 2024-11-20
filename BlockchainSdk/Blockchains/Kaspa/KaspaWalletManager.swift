@@ -433,8 +433,32 @@ extension KaspaWalletManager: AssetRequirementsManager {
     }
 
     func fulfillRequirements(for asset: Asset, signer: any TransactionSigner) -> AnyPublisher<Void, Error> {
-        // TODO: Andrey Fedorov - Add actual implementation
-        return .anyFail(error: WalletError.empty)
+        return Just(asset)
+            .withWeakCaptureOf(self)
+            .tryMap { walletManager, asset in
+                guard
+                    let token = asset.token,
+                    let incompleteTokenTransaction = walletManager.getIncompleteTokenTransaction(for: asset)
+                else {
+                    throw KaspaKRC20.Error.unableToFindIncompleteTokenTransaction
+                }
+
+                guard
+                    let tokenTransaction = walletManager.transaction(from: incompleteTokenTransaction, for: token)
+                else {
+                    throw KaspaKRC20.Error.unableToBuildRevealTransaction
+                }
+
+                return tokenTransaction
+            }
+            .withWeakCaptureOf(self)
+            .flatMap { walletManager, tokenTransaction in
+                return walletManager
+                    .send(tokenTransaction, signer: signer)
+                    .mapError { $0 }
+            }
+            .mapToVoid()
+            .eraseToAnyPublisher()
     }
 
     func discardRequirements(for asset: Asset) {

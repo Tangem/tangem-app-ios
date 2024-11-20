@@ -101,4 +101,9 @@ enum KaspaKRC20 {
             return OpCode.OP_HASH256.value.data + UInt8(32).data + data.hashBlake2b(outputLength: 32)! + OpCode.OP_EQUAL.value.data
         }
     }
+
+    enum Error: Swift.Error {
+        case unableToFindIncompleteTokenTransaction
+        case unableToBuildRevealTransaction
+    }
 }
