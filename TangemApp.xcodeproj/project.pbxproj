@@ -25868,17 +25868,14 @@
 		};
 		B63DFC492CD4DBED00720D9F /* TangemModules */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = B6C0D3DF2CBDC2E3001113ED /* XCLocalSwiftPackageReference "Modules" */;
 			productName = TangemModules;
 		};
 		B63DFC4B2CD4EA1C00720D9F /* TangemModules */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = B6C0D3DF2CBDC2E3001113ED /* XCLocalSwiftPackageReference "Modules" */;
 			productName = TangemModules;
 		};
 		B63DFC4D2CD4EABB00720D9F /* TangemModules */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = B6C0D3DF2CBDC2E3001113ED /* XCLocalSwiftPackageReference "Modules" */;
 			productName = TangemModules;
 		};
 		B655F5792CBC871F002391AF /* secp256k1 */ = {
