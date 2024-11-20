@@ -13,6 +13,8 @@ import BlockchainSdk
 import TangemStaking
 
 final class SingleTokenNotificationManager {
+    weak var interactionDelegate: SingleTokenNotificationManagerInteractionDelegate?
+
     private let analyticsService: NotificationsAnalyticsService = .init()
 
     private let walletModel: WalletModel
@@ -300,6 +302,10 @@ final class SingleTokenNotificationManager {
 
         return .staking(tokenIconInfo: tokenIconInfo, earnUpToFormatted: apyFormatted)
     }
+
+    private func hideNotification(_ notification: NotificationViewInput) {
+        notificationInputsSubject.value.removeAll { $0 == notification }
+    }
 }
 
 extension SingleTokenNotificationManager: NotificationManager {
@@ -326,13 +332,21 @@ extension SingleTokenNotificationManager: NotificationManager {
         if let event = notification.settings.event as? TokenNotificationEvent {
             switch event {
             case .hasUnfulfilledRequirements(.incompleteKaspaTokenTransaction(let revealTransaction)):
-                revealTransaction.onTransactionDiscard()
+                interactionDelegate?.confirmDiscardingUnfulfilledAssetRequirements(
+                    with: .incompleteKaspaTokenTransaction(revealTransaction: revealTransaction),
+                    confirmationAction: { [weak self] in
+                        revealTransaction.onTransactionDiscard()
+                        self?.hideNotification(notification)
+                    }
+                )
+                // Early exit since `hideNotification(_:)` is called inside `confirmationAction` callback
+                return
             default:
                 break
             }
         }
 
-        notificationInputsSubject.value.removeAll { $0 == notification }
+        hideNotification(notification)
     }
 }
 

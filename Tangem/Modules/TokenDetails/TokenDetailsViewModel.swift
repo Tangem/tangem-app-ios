@@ -349,3 +349,15 @@ private extension TokenDetailsViewModel {
         coordinator?.openFeeCurrency(for: feeCurrencyWalletModel, userWalletModel: userWalletModel)
     }
 }
+
+// MARK: - SingleTokenNotificationManagerInteractionDelegate protocol conformance
+
+extension TokenDetailsViewModel: SingleTokenNotificationManagerInteractionDelegate {
+    func confirmDiscardingUnfulfilledAssetRequirements(
+        with configuration: TokenNotificationEvent.UnfulfilledRequirementsConfiguration,
+        confirmationAction: @escaping () -> Void
+    ) {
+        let alertBuilder = SingleTokenAlertBuilder()
+        alert = alertBuilder.fulfillAssetRequirementsDiscardedAlert(confirmationAction: confirmationAction)
+    }
+}

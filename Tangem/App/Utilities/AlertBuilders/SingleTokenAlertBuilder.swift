@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SwiftUI
 import enum BlockchainSdk.AssetRequirementsCondition
 
 struct SingleTokenAlertBuilder {
@@ -145,6 +146,17 @@ struct SingleTokenAlertBuilder {
         return .init(
             title: Localization.commonTransactionFailed,
             message: networkName + " " + error.localizedDescription
+        )
+    }
+
+    func fulfillAssetRequirementsDiscardedAlert(confirmationAction: @escaping () -> Void) -> AlertBinder {
+        return AlertBinder(
+            alert: Alert(
+                title: Text(Localization.commonWarning),
+                message: Text(Localization.warningKaspaUnfinishedTokenTransactionDiscardMessage),
+                primaryButton: .default(Text(Localization.commonNo)),
+                secondaryButton: .destructive(Text(Localization.commonYes), action: confirmationAction)
+            )
         )
     }
 }
