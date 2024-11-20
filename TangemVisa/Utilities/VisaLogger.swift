@@ -35,5 +35,6 @@ extension InternalLogger {
         case bridgeInteractor = "[Visa] [Bridge Interactor]:\n"
         case apiService = "[Visa] [API Service]\n"
         case tokenInfoLoader = "[Visa] [TokenInfoLoader]:\n"
+        case authorizationTokenHandler = "[Visa] [AuthorizationTokenHandler]: "
     }
 }

@@ -9,23 +9,24 @@
 import Foundation
 
 final class ActionButtonsBuyCoordinator: CoordinatorObject {
+    @Injected(\.safariManager) private var safariManager: SafariManager
+
     @Published private(set) var actionButtonsBuyViewModel: ActionButtonsBuyViewModel?
+
+    private var safariHandle: SafariHandle?
 
     let dismissAction: Action<Void>
     let popToRootAction: Action<PopToRootOptions>
 
-    private let buyCryptoCoordinator: ActionButtonsBuyCryptoRoutable
     private let expressTokensListAdapter: ExpressTokensListAdapter
     private let tokenSorter: TokenAvailabilitySorter
 
     required init(
-        buyCryptoCoordinator: some ActionButtonsBuyCryptoRoutable,
         expressTokensListAdapter: some ExpressTokensListAdapter,
         tokenSorter: some TokenAvailabilitySorter = CommonBuyTokenAvailabilitySorter(),
         dismissAction: @escaping Action<Void>,
         popToRootAction: @escaping Action<PopToRootOptions> = { _ in }
     ) {
-        self.buyCryptoCoordinator = buyCryptoCoordinator
         self.expressTokensListAdapter = expressTokensListAdapter
         self.tokenSorter = tokenSorter
         self.dismissAction = dismissAction
@@ -53,8 +54,11 @@ final class ActionButtonsBuyCoordinator: CoordinatorObject {
 }
 
 extension ActionButtonsBuyCoordinator: ActionButtonsBuyRoutable {
-    func openBuyCrypto(from url: URL) {
-        buyCryptoCoordinator.openBuyCrypto(from: url)
+    func openBuyCrypto(at url: URL) {
+        safariHandle = safariManager.openURL(url) { [weak self] _ in
+            self?.safariHandle = nil
+            self?.dismiss()
+        }
     }
 }
 

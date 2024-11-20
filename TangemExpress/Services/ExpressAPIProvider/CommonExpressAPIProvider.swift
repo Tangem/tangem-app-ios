@@ -140,7 +140,7 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
 
     func onrampPaymentMethods() async throws -> [OnrampPaymentMethod] {
         let response = try await expressAPIService.onrampPaymentMethods()
-        let methods = response.map(expressAPIMapper.mapToOnrampPaymentMethod(response:))
+        let methods = response.compactMap(expressAPIMapper.mapToOnrampPaymentMethod(response:))
         return methods
     }
 
