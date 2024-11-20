@@ -138,11 +138,51 @@ public extension ExpressDTO {
                 public let toContractAddress: String
                 public let toNetwork: String
                 public let toDecimals: Int
-                public let toAmount: String
-                public let toActualAmount: String
+                public let toAmount: String?
+                public let toActualAmount: String?
 
                 public let paymentMethod: String // Payment method used
                 public let countryCode: String // Country code
+
+                public init(
+                    txId: String,
+                    providerId: String,
+                    payoutAddress: String,
+                    status: OnrampTransactionStatus,
+                    failReason: String?,
+                    externalTxId: String,
+                    externalTxUrl: String?,
+                    payoutHash: String?,
+                    createdAt: String,
+                    fromCurrencyCode: String,
+                    fromAmount: String,
+                    toContractAddress: String,
+                    toNetwork: String,
+                    toDecimals: Int,
+                    toAmount: String?,
+                    toActualAmount: String?,
+                    paymentMethod: String,
+                    countryCode: String
+                ) {
+                    self.txId = txId
+                    self.providerId = providerId
+                    self.payoutAddress = payoutAddress
+                    self.status = status
+                    self.failReason = failReason
+                    self.externalTxId = externalTxId
+                    self.externalTxUrl = externalTxUrl
+                    self.payoutHash = payoutHash
+                    self.createdAt = createdAt
+                    self.fromCurrencyCode = fromCurrencyCode
+                    self.fromAmount = fromAmount
+                    self.toContractAddress = toContractAddress
+                    self.toNetwork = toNetwork
+                    self.toDecimals = toDecimals
+                    self.toAmount = toAmount
+                    self.toActualAmount = toActualAmount
+                    self.paymentMethod = paymentMethod
+                    self.countryCode = countryCode
+                }
             }
         }
     }

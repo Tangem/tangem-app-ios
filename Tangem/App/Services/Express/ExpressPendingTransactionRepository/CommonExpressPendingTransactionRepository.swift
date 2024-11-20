@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import TangemFoundation
+import TangemExpress
 
 class CommonExpressPendingTransactionRepository {
     @Injected(\.persistentStorage) private var storage: PersistentStorageProtocol
@@ -137,59 +138,5 @@ extension CommonExpressPendingTransactionRepository: ExpressPendingTransactionRe
 extension CommonExpressPendingTransactionRepository: CustomStringConvertible {
     var description: String {
         objectDescription(self)
-    }
-}
-
-final class CommonOnrampPendingTransactionRepository {
-    @Injected(\.persistentStorage) private var storage: PersistentStorageProtocol
-
-    private let lockQueue = DispatchQueue(label: "com.tangem.CommonOnrampPendingTransactionRepository.lockQueue")
-
-    private var pendingTransactionSubject = CurrentValueSubject<[String], Never>([])
-
-    init() {
-        loadPendingTransactions()
-    }
-
-    private func loadPendingTransactions() {
-        do {
-            pendingTransactionSubject.value = try storage.value(for: .pendingOnrampTransactions) ?? []
-        } catch {
-            // TODO: Logging
-        }
-    }
-
-    private func addRecordIfNeeded(_ record: String) {
-        if pendingTransactionSubject.value.contains(record) {
-            return
-        }
-
-        pendingTransactionSubject.value.append(record)
-        saveChanges()
-    }
-
-    private func saveChanges() {
-        do {
-            try storage.store(value: pendingTransactionSubject.value, for: .pendingOnrampTransactions)
-        } catch {
-            // TODO: Logging
-        }
-    }
-}
-
-extension CommonOnrampPendingTransactionRepository: OnrampPendingTransactionRepository {
-    var transactions: [String] {
-        pendingTransactionSubject.value
-    }
-
-    var transactionsPublisher: AnyPublisher<[String], Never> {
-        pendingTransactionSubject
-            .eraseToAnyPublisher()
-    }
-
-    func onrampTransactionDidSend(_ transactionId: String) {
-        lockQueue.async { [weak self] in
-            self?.addRecordIfNeeded(transactionId)
-        }
     }
 }

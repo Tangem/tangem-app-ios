@@ -6,12 +6,12 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-public struct OnrampRedirectDataWithId {
+public struct OnrampRedirectDataWithId: Codable, Equatable {
     public let txId: String
     public let redirectData: OnrampRedirectData
 }
 
-public struct OnrampRedirectData: Hashable, Decodable {
+public struct OnrampRedirectData: Hashable, Codable, Equatable {
     public let fromCurrencyCode: String
     public let toContractAddress: String
     public let toNetwork: String

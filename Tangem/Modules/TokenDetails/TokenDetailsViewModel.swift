@@ -261,30 +261,12 @@ private extension TokenDetailsViewModel {
             .pendingTransactionsPublisher
             .withWeakCaptureOf(self)
             .map { viewModel, pendingTxs in
-                pendingTxs.map { tx in
-                    PendingExpressTransactionView.Info(
-                        id: tx.txId,
-                        title: "Buying \(tx.toNetwork)",
-                        sourceIconInfo: .init(
-                            name: "sourceName",
-                            blockchainIconName: nil,
-                            imageURL: nil,
-                            isCustom: false,
-                            customTokenColor: nil
-                        ),
-                        sourceAmountText: tx.fromAmount,
-                        destinationIconInfo: .init(
-                            name: "destinationName",
-                            blockchainIconName: nil,
-                            imageURL: nil,
-                            isCustom: false,
-                            customTokenColor: nil
-                        ),
-                        destinationCurrencySymbol: tx.toAmount,
-                        state: .inProgress,
-                        action: weakify(viewModel, forFunction: TokenDetailsViewModel.didTapPendingOnrampTransaction(with:))
-                    )
-                }
+                let factory = PendingExpressTransactionsConverter()
+
+                return factory.convertToTokenDetailsPendingTxInfo(
+                    pendingTxs,
+                    tapAction: weakify(viewModel, forFunction: TokenDetailsViewModel.didTapPendingOnrampTransaction(with:))
+                )
             }
 
         Publishers.CombineLatest(
