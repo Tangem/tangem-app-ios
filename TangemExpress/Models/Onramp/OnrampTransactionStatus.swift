@@ -6,8 +6,6 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-// TODO: Aleksei Muraveinik
-// https://tangem.atlassian.net/browse/IOS-8308
 public enum OnrampTransactionStatus: String, Codable {
     case created
     case expired
