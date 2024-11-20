@@ -13,4 +13,5 @@ struct SentOnrampTransactionData {
     let provider: OnrampProvider
     let destinationTokenItem: TokenItem
     let onrampTransactionData: OnrampRedirectData
+    let date: Date
 }

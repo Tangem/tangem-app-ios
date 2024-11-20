@@ -1995,15 +1995,7 @@
 		DA64C36D27CCAD7E005B5E9A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DA64C36F27CCAD7E005B5E9A /* InfoPlist.strings */; };
 		DA64DAC92C08BE71000CBC1E /* UserWalletNameIndexationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA64DAC72C08BE71000CBC1E /* UserWalletNameIndexationHelper.swift */; };
 		DA64DACB2C08BE7B000CBC1E /* UserWalletNameIndexationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA64DACA2C08BE7B000CBC1E /* UserWalletNameIndexationTests.swift */; };
-		DA67AF2A2CEDB95E008B05D3 /* CommonOnrampPendingTransactionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67AF292CEDB95E008B05D3 /* CommonOnrampPendingTransactionRepository.swift */; };
-		DA67AF2C2CEDB981008B05D3 /* OnrampPendingTransactionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67AF2B2CEDB981008B05D3 /* OnrampPendingTransactionRepository.swift */; };
-		DA67AF2E2CEDB9AA008B05D3 /* PendingOnrampTransactionsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67AF2D2CEDB9AA008B05D3 /* PendingOnrampTransactionsManager.swift */; };
-		DA67AF302CEDC28A008B05D3 /* OnrampPendingTransactionRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67AF2F2CEDC28A008B05D3 /* OnrampPendingTransactionRecord.swift */; };
-		DA67AF332CEDC329008B05D3 /* PendingOnrampTransactionStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67AF322CEDC329008B05D3 /* PendingOnrampTransactionStatus.swift */; };
-		DA67AF352CEDC360008B05D3 /* PendingOnrampTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67AF342CEDC360008B05D3 /* PendingOnrampTransaction.swift */; };
 		DA67AF372CEDC426008B05D3 /* SentOnrampTransactionData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67AF362CEDC426008B05D3 /* SentOnrampTransactionData.swift */; };
-		DA67AF3A2CEDC76A008B05D3 /* PendingOnrampTransactionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67AF392CEDC76A008B05D3 /* PendingOnrampTransactionFactory.swift */; };
-		DA67AF3C2CEDD71D008B05D3 /* PendingOnrampTransactionsConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA67AF3B2CEDD71D008B05D3 /* PendingOnrampTransactionsConverter.swift */; };
 		DA682F962A29D08F0083CA79 /* PromotionNetworkModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA682F952A29D08F0083CA79 /* PromotionNetworkModels.swift */; };
 		DA6915A62A9CE2BD00DB4339 /* Tokens.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA6915A52A9CE2BD00DB4339 /* Tokens.xcassets */; };
 		DA6C7522292224E00070EEFD /* UserWalletEncryptionKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6C7521292224E00070EEFD /* UserWalletEncryptionKey.swift */; };
@@ -5117,15 +5109,7 @@
 		DA64C37027CCAD7F005B5E9A /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		DA64DAC72C08BE71000CBC1E /* UserWalletNameIndexationHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserWalletNameIndexationHelper.swift; sourceTree = "<group>"; };
 		DA64DACA2C08BE7B000CBC1E /* UserWalletNameIndexationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserWalletNameIndexationTests.swift; sourceTree = "<group>"; };
-		DA67AF292CEDB95E008B05D3 /* CommonOnrampPendingTransactionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonOnrampPendingTransactionRepository.swift; sourceTree = "<group>"; };
-		DA67AF2B2CEDB981008B05D3 /* OnrampPendingTransactionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPendingTransactionRepository.swift; sourceTree = "<group>"; };
-		DA67AF2D2CEDB9AA008B05D3 /* PendingOnrampTransactionsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingOnrampTransactionsManager.swift; sourceTree = "<group>"; };
-		DA67AF2F2CEDC28A008B05D3 /* OnrampPendingTransactionRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPendingTransactionRecord.swift; sourceTree = "<group>"; };
-		DA67AF322CEDC329008B05D3 /* PendingOnrampTransactionStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingOnrampTransactionStatus.swift; sourceTree = "<group>"; };
-		DA67AF342CEDC360008B05D3 /* PendingOnrampTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingOnrampTransaction.swift; sourceTree = "<group>"; };
 		DA67AF362CEDC426008B05D3 /* SentOnrampTransactionData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SentOnrampTransactionData.swift; sourceTree = "<group>"; };
-		DA67AF392CEDC76A008B05D3 /* PendingOnrampTransactionFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingOnrampTransactionFactory.swift; sourceTree = "<group>"; };
-		DA67AF3B2CEDD71D008B05D3 /* PendingOnrampTransactionsConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingOnrampTransactionsConverter.swift; sourceTree = "<group>"; };
 		DA682F952A29D08F0083CA79 /* PromotionNetworkModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromotionNetworkModels.swift; sourceTree = "<group>"; };
 		DA6915A52A9CE2BD00DB4339 /* Tokens.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Tokens.xcassets; sourceTree = "<group>"; };
 		DA69F557298BB3AC004A5A93 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.stringsdict"; sourceTree = "<group>"; };
@@ -7798,7 +7782,6 @@
 				B0E1C2402C2430B2005309E1 /* AlertBuilders */,
 				EF031A322C09EBB9001535C9 /* PercentFormatter */,
 				B0AF2DF22B1DF282001A8696 /* Express */,
-				DA67AF382CEDC754008B05D3 /* Onramp */,
 				B0B56AAB2C20756F001FD72A /* Visa */,
 				B068A7E625678A8800D28CD2 /* TwinCardsUtils.swift */,
 				B0C87B422566461600F861DE /* TwinCardsFileCoder.swift */,
@@ -12278,31 +12261,10 @@
 			path = UserWalletNameIndexationHelper;
 			sourceTree = "<group>";
 		};
-		DA67AF282CEDB951008B05D3 /* OnrampPendingTransactionRepository */ = {
-			isa = PBXGroup;
-			children = (
-				DA67AF292CEDB95E008B05D3 /* CommonOnrampPendingTransactionRepository.swift */,
-				DA67AF2B2CEDB981008B05D3 /* OnrampPendingTransactionRepository.swift */,
-				DA67AF2F2CEDC28A008B05D3 /* OnrampPendingTransactionRecord.swift */,
-			);
-			path = OnrampPendingTransactionRepository;
-			sourceTree = "<group>";
-		};
 		DA67AF312CEDC318008B05D3 /* Onramp */ = {
 			isa = PBXGroup;
 			children = (
 				DA67AF362CEDC426008B05D3 /* SentOnrampTransactionData.swift */,
-				DA67AF342CEDC360008B05D3 /* PendingOnrampTransaction.swift */,
-				DA67AF322CEDC329008B05D3 /* PendingOnrampTransactionStatus.swift */,
-			);
-			path = Onramp;
-			sourceTree = "<group>";
-		};
-		DA67AF382CEDC754008B05D3 /* Onramp */ = {
-			isa = PBXGroup;
-			children = (
-				DA67AF3B2CEDD71D008B05D3 /* PendingOnrampTransactionsConverter.swift */,
-				DA67AF392CEDC76A008B05D3 /* PendingOnrampTransactionFactory.swift */,
 			);
 			path = Onramp;
 			sourceTree = "<group>";
@@ -13796,9 +13758,7 @@
 		EF2561102CC6A8E000D3C16A /* Onramp */ = {
 			isa = PBXGroup;
 			children = (
-				DA67AF282CEDB951008B05D3 /* OnrampPendingTransactionRepository */,
 				EF2561112CC6A91200D3C16A /* CommonOnrampStorage.swift */,
-				DA67AF2D2CEDB9AA008B05D3 /* PendingOnrampTransactionsManager.swift */,
 			);
 			path = Onramp;
 			sourceTree = "<group>";
@@ -16695,7 +16655,6 @@
 				B600F4D92C50F73E008E53FE /* MarketsHistoryChartXAxisValueFormatter.swift in Sources */,
 				DCE2F7E02CE3532300BDE145 /* ActionButtonsSellRoutable.swift in Sources */,
 				B08394E12B2998580025176F /* VisaConfig.swift in Sources */,
-				DA67AF3A2CEDC76A008B05D3 /* PendingOnrampTransactionFactory.swift in Sources */,
 				EF666C282A2DFA1C0044986F /* View+BottomSheet.swift in Sources */,
 				B0E1CED62B19B682006DDF98 /* PendingExpressTxStatusBottomSheetViewModel.swift in Sources */,
 				B098DD4C29C46EC300D2D55B /* UIFonts.swift in Sources */,
@@ -16952,7 +16911,6 @@
 				B0C4F78126F0CCF70086D815 /* OnboardingStep.swift in Sources */,
 				B05DD9652A9F12A700B24ED9 /* TokenNotificationEvent.swift in Sources */,
 				DA1DF0612BA4630D008310E4 /* FormattedFeeComponents.swift in Sources */,
-				DA67AF332CEDC329008B05D3 /* PendingOnrampTransactionStatus.swift in Sources */,
 				EF9544292C3C528900041FCD /* SendBaseInputOutput.swift in Sources */,
 				B0F1CC3A2C086B18000DE4A0 /* ManageTokensCoordinatorView.swift in Sources */,
 				DCBC944D2993FE380050BC35 /* Analytics+ParameterKey.swift in Sources */,
@@ -17025,7 +16983,6 @@
 				5D80ED422550172A0008DEF0 /* UIApplication+.swift in Sources */,
 				DADBECE22BBE910C007E7885 /* CustomEvmFeeService.swift in Sources */,
 				B07E07B42CD8F7EE007DEDA6 /* PushNotificationsInteractorMock.swift in Sources */,
-				DA67AF3C2CEDD71D008B05D3 /* PendingOnrampTransactionsConverter.swift in Sources */,
 				B04126EF29CC322D00A8BB43 /* OnboardingSeedPhraseUserValidationViewModel.swift in Sources */,
 				B00FA51C2C05C496007041B0 /* OnboardingAddTokensDelegate.swift in Sources */,
 				5D6784CE25EB92F300149995 /* TestnetTokensRepository.swift in Sources */,
@@ -17156,7 +17113,6 @@
 				B06015E529730C3D00D0F809 /* WalletConnectUIDelegate.swift in Sources */,
 				EF666C262A2DF9EF0044986F /* BottomSheetModifier.swift in Sources */,
 				EF842DEB2AFA58C5006E472E /* ExpressTokensListViewModel.swift in Sources */,
-				DA67AF2A2CEDB95E008B05D3 /* CommonOnrampPendingTransactionRepository.swift in Sources */,
 				DA1D3B712B56C7E900247393 /* QRScanViewCoordinator.swift in Sources */,
 				2D2ACE1A2B30FAA90004CBB6 /* PresentationConfigurationViewModifier.swift in Sources */,
 				B0C4F77326F08CB50086D815 /* OnboardingCardFrameCalculator.swift in Sources */,
@@ -17465,7 +17421,6 @@
 				B003BDAC2A029C4300B282F7 /* BalanceConverter.swift in Sources */,
 				DCBAF6992A4AEEDD0029480A /* AnyWalletManagerFactory.swift in Sources */,
 				EFF9A2FD2BD6B45E007C63D2 /* UserWalletSettingsViewModel.swift in Sources */,
-				DA67AF352CEDC360008B05D3 /* PendingOnrampTransaction.swift in Sources */,
 				DC5E6FDE2C9063B6008A98D0 /* CommonAppLockController.swift in Sources */,
 				EF0B173529F2CDF4002A3C6D /* UIDevice+.swift in Sources */,
 				B0290CDD2CAED941008ABBD2 /* MarketsTokenDetailsExchangeItemView.swift in Sources */,
@@ -17523,7 +17478,6 @@
 				EF48E6E22B02408500FE0072 /* ExpressView.swift in Sources */,
 				2D3E1DC32C99CCEE006AF975 /* MainBottomSheetHintView.swift in Sources */,
 				2D1BB3682C07421C008392F7 /* MarketsTokenModel.swift in Sources */,
-				DA67AF2C2CEDB981008B05D3 /* OnrampPendingTransactionRepository.swift in Sources */,
 				2DFC27942C78E833009B247E /* TokenItemType.swift in Sources */,
 				B6E972202AA0266C00D2B1D1 /* TokenSectionView.swift in Sources */,
 				EFE8C70E2C77388A0067CF2E /* MultipleRewardsView.swift in Sources */,
@@ -17630,7 +17584,6 @@
 				B6934E8D2B5EAF88004AA300 /* RateAppControllerStub.swift in Sources */,
 				DCA21D942BA1C77A000A3C1A /* ValidationMode.swift in Sources */,
 				DC72548E2A02BB810003FE1B /* CardInitializerMock.swift in Sources */,
-				DA67AF302CEDC28A008B05D3 /* OnrampPendingTransactionRecord.swift in Sources */,
 				B0CC818325CD63FB006D49B9 /* Token+.swift in Sources */,
 				EFA1547E2CD24B7C00A0642C /* OnrampAmountInteractor.swift in Sources */,
 				DC22535B28A4FDE90094F30C /* GeneralNotificationEventsFactory.swift in Sources */,
@@ -17846,7 +17799,6 @@
 				B05A13AE29FBED3000FB511A /* ScrollableButtonsView.swift in Sources */,
 				DC66BC08285B6E6400CDF765 /* DetailsRoutable.swift in Sources */,
 				2D535E702A0CB4D20081EB76 /* NotificationView.swift in Sources */,
-				DA67AF2E2CEDB9AA008B05D3 /* PendingOnrampTransactionsManager.swift in Sources */,
 				B031AAB126C1443E00015003 /* Confetti.swift in Sources */,
 				EF729B542AF12B1500D80205 /* BottomSheetHeaderView.swift in Sources */,
 				2DC567682B0DFFAF00B0244F /* MarketsCoordinatorView.swift in Sources */,

@@ -30,7 +30,7 @@ class OnrampModel {
 
     // MARK: - Dependencies
 
-    @Injected(\.onrampPendingTransactionsRepository) var onrampPendingTransactionsRepository: OnrampPendingTransactionRepository
+    @Injected(\.expressPendingTransactionsRepository) private var expressPendingTransactionsRepository: ExpressPendingTransactionRepository
     weak var router: OnrampModelRoutable?
     weak var alertPresenter: SendViewAlertPresenter?
 
@@ -272,10 +272,11 @@ extension OnrampModel: OnrampRedirectingOutput {
             txId: data.txId,
             provider: provider,
             destinationTokenItem: walletModel.tokenItem,
-            onrampTransactionData: data.redirectData
+            onrampTransactionData: data.redirectData,
+            date: Date()
         )
 
-        onrampPendingTransactionsRepository.onrampTransactionDidSend(txData, userWalletId: userWalletId)
+        expressPendingTransactionsRepository.onrampTransactionDidSend(txData, userWalletId: userWalletId)
 
         DispatchQueue.main.async {
             self.router?.openWebView(url: data.redirectData.widgetUrl) { [weak self] in

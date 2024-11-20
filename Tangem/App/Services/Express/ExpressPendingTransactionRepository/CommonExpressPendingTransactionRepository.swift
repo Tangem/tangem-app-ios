@@ -91,6 +91,36 @@ extension CommonExpressPendingTransactionRepository: ExpressPendingTransactionRe
         }
     }
 
+    func onrampTransactionDidSend(_ txData: SentOnrampTransactionData, userWalletId: String) {
+        let expressPendingTransactionRecord = ExpressPendingTransactionRecord(
+            userWalletId: userWalletId,
+            expressTransactionId: txData.txId,
+            transactionType: .send, // TODO: Nope
+            transactionHash: "", // TODO: Nope
+            sourceTokenTxInfo: .init(
+                tokenItem: .blockchain(.init(.bitcoin(testnet: false), derivationPath: nil)), // TODO: Should be fiat
+                amountString: txData.onrampTransactionData.fromAmount,
+                isCustom: false // TODO: Questionable
+            ),
+            destinationTokenTxInfo: .init(
+                tokenItem: txData.destinationTokenItem,
+                amountString: "",
+                isCustom: false // TODO: Questionable
+            ),
+            feeString: "",
+            provider: .init(provider: txData.provider.provider),
+            date: txData.date,
+            externalTxId: txData.onrampTransactionData.externalTxId,
+            externalTxURL: "", // TODO: Should be url
+            isHidden: false,
+            transactionStatus: .awaitingDeposit
+        )
+
+        lockQueue.async { [weak self] in
+            self?.addRecordIfNeeded(expressPendingTransactionRecord)
+        }
+    }
+
     func hideSwapTransaction(with id: String) {
         lockQueue.async { [weak self] in
             guard let self else { return }

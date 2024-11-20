@@ -155,10 +155,6 @@ private extension TokenDetailsView {
         walletModel: walletModel,
         expressRefundedTokenHandler: ExpressRefundedTokenHandlerMock()
     )
-    let pendingOnrampTxsManager = CommonPendingOnrampTransactionsManager(
-        userWalletId: userWalletModel.userWalletId.stringValue,
-        walletModel: walletModel
-    )
     let coordinator = TokenDetailsCoordinator()
 
     let bannerNotificationManager = BannerNotificationManager(userWalletId: UserWalletId(value: Data()), placement: .tokenDetails(walletModel.tokenItem), contextDataProvider: nil)
@@ -170,7 +166,6 @@ private extension TokenDetailsView {
         notificationManager: notifManager,
         bannerNotificationManager: bannerNotificationManager,
         pendingExpressTransactionsManager: pendingExpressTxsManager,
-        pendingOnrampTransactionsManager: pendingOnrampTxsManager,
         xpubGenerator: nil,
         coordinator: coordinator,
         tokenRouter: SingleTokenRouter(userWalletModel: userWalletModel, coordinator: coordinator)
