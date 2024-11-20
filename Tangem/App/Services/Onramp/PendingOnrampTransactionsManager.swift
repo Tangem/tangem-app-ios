@@ -10,8 +10,8 @@ import Combine
 import TangemExpress
 
 protocol PendingOnrampTransactionsManager: AnyObject {
-    var pendingTransactions: [OnrampTransaction] { get }
-    var pendingTransactionsPublisher: AnyPublisher<[OnrampTransaction], Never> { get }
+    var pendingTransactions: [PendingOnrampTransaction] { get }
+    var pendingTransactionsPublisher: AnyPublisher<[PendingOnrampTransaction], Never> { get }
 }
 
 final class CommonPendingOnrampTransactionsManager {
@@ -21,11 +21,12 @@ final class CommonPendingOnrampTransactionsManager {
     private let walletModel: WalletModel
     private let expressAPIProvider: ExpressAPIProvider
 
-    private let transactionsInProgressSubject = CurrentValueSubject<[OnrampTransaction], Never>([])
+    private let transactionsInProgressSubject = CurrentValueSubject<[PendingOnrampTransaction], Never>([])
+    private let pendingTransactionFactory = PendingOnrampTransactionFactory()
 
     private var bag = Set<AnyCancellable>()
     private var updateTask: Task<Void, Never>?
-    private var transactionsScheduledForUpdate: [OnrampTransaction] = []
+    private var transactionsScheduledForUpdate: [PendingOnrampTransaction] = []
     private var tokenItem: TokenItem { walletModel.tokenItem }
 
     init(
@@ -54,29 +55,9 @@ final class CommonPendingOnrampTransactionsManager {
                 manager.filterRelatedTokenTransactions(list: transactions)
             }
             .removeDuplicates()
-            .map { transactions in
-                transactions.map { transaction in
-                    OnrampTransaction(
-                        txId: transaction.txId,
-                        providerId: transaction.redirectData.providerId,
-                        payoutAddress: "",
-                        status: .created,
-                        failReason: nil,
-                        externalTxId: "",
-                        externalTxUrl: nil,
-                        payoutHash: nil,
-                        createdAt: Date().ISO8601Format(),
-                        fromCurrencyCode: transaction.redirectData.fromCurrencyCode,
-                        fromAmount: transaction.redirectData.fromAmount,
-                        toContractAddress: transaction.redirectData.toContractAddress,
-                        toNetwork: transaction.redirectData.toNetwork,
-                        toDecimals: transaction.redirectData.toDecimals,
-                        toAmount: transaction.redirectData.toAmount,
-                        toActualAmount: transaction.redirectData.toAmount,
-                        paymentMethod: transaction.redirectData.paymentMethod,
-                        countryCode: transaction.redirectData.countryCode
-                    )
-                }
+            .withWeakCaptureOf(self)
+            .map { manager, records in
+                records.map(manager.pendingTransactionFactory.buildPendingOnrampTransaction)
             }
             .withWeakCaptureOf(self)
             .sink { manager, transactions in
@@ -92,7 +73,7 @@ final class CommonPendingOnrampTransactionsManager {
         cancelTask()
     }
 
-    private func filterRelatedTokenTransactions(list: [OnrampRedirectDataWithId]) -> [OnrampRedirectDataWithId] {
+    private func filterRelatedTokenTransactions(list: [OnrampPendingTransactionRecord]) -> [OnrampPendingTransactionRecord] {
         list.filter { record in
 //            guard !record.isHidden else {
 //                return false
@@ -113,7 +94,7 @@ final class CommonPendingOnrampTransactionsManager {
 //                || record.destinationTokenTxInfo.tokenItem == tokenItem
 //
 //            return isSame
-            record.redirectData.toNetwork.lowercased() == tokenItem.networkName.lowercased()
+            record.destinationTokenTxInfo.tokenItem == tokenItem
         }
     }
 
@@ -132,22 +113,24 @@ final class CommonPendingOnrampTransactionsManager {
 
         updateTask = Task { [weak self] in
             do {
-                var transactionsToSchedule = [OnrampTransaction]()
-                var transactionsInProgress = [OnrampTransaction]()
-                var transactionsToUpdateInRepository = [OnrampRedirectDataWithId]()
+                var transactionsToSchedule = [PendingOnrampTransaction]()
+                var transactionsInProgress = [PendingOnrampTransaction]()
+                var transactionsToUpdateInRepository = [OnrampPendingTransactionRecord]()
 
                 for pendingTransaction in pendingTransactionsToRequest {
+                    let record = pendingTransaction.transactionRecord
+
                     // We have not any sense to update the terminated status
-                    guard !pendingTransaction.status.isTerminated else {
+                    guard !record.transactionStatus.isTerminated else {
                         transactionsInProgress.append(pendingTransaction)
                         transactionsToSchedule.append(pendingTransaction)
                         continue
                     }
 
-                    guard let loadedPendingTransaction = await self?.loadPendingTransactionStatus(for: pendingTransaction.txId) else {
+                    guard let loadedPendingTransaction = await self?.loadPendingTransactionStatus(for: record) else {
                         // If received error from backend and transaction was already displayed on TokenDetails screen
                         // we need to send previously received transaction, otherwise it will hide on TokenDetails
-                        if let previousResult = self?.transactionsInProgressSubject.value.first(where: { $0.txId == pendingTransaction.txId }) {
+                        if let previousResult = self?.transactionsInProgressSubject.value.first(where: { $0.transactionRecord.txId == record.txId }) {
                             transactionsInProgress.append(previousResult)
                         }
                         transactionsToSchedule.append(pendingTransaction)
@@ -157,13 +140,13 @@ final class CommonPendingOnrampTransactionsManager {
                     // We need to send finished transaction one more time to properly update status on bottom sheet
                     transactionsInProgress.append(loadedPendingTransaction)
 
-                    if pendingTransaction.status != loadedPendingTransaction.status {
+                    if pendingTransaction.transactionRecord.transactionStatus != loadedPendingTransaction.transactionRecord.transactionStatus {
                         // TODO: Uncommend and fix
-//                        transactionsToUpdateInRepository.append(loadedPendingTransaction)
+                        transactionsToUpdateInRepository.append(loadedPendingTransaction.transactionRecord)
                     }
 
                     // If transaction is done we have to update balance
-                    if loadedPendingTransaction.status.isDone {
+                    if loadedPendingTransaction.transactionRecord.transactionStatus.isDone {
                         self?.walletModel.update(silent: true)
                     }
 
@@ -198,9 +181,14 @@ final class CommonPendingOnrampTransactionsManager {
         }
     }
 
-    private func loadPendingTransactionStatus(for transactionId: String) async -> OnrampTransaction? {
+    private func loadPendingTransactionStatus(for transactionRecord: OnrampPendingTransactionRecord) async -> PendingOnrampTransaction? {
         do {
-            return try await expressAPIProvider.onrampStatus(transactionId: transactionId)
+            let onrampTransaction = try await expressAPIProvider.onrampStatus(transactionId: transactionRecord.txId)
+            let pendingTransaction = pendingTransactionFactory.buildPendingOnrampTransaction(
+                currentOnrampStatus: onrampTransaction.status,
+                for: transactionRecord
+            )
+            return pendingTransaction
         } catch {
             return nil
         }
@@ -208,11 +196,11 @@ final class CommonPendingOnrampTransactionsManager {
 }
 
 extension CommonPendingOnrampTransactionsManager: PendingOnrampTransactionsManager {
-    var pendingTransactions: [OnrampTransaction] {
+    var pendingTransactions: [PendingOnrampTransaction] {
         transactionsInProgressSubject.value
     }
 
-    var pendingTransactionsPublisher: AnyPublisher<[OnrampTransaction], Never> {
+    var pendingTransactionsPublisher: AnyPublisher<[PendingOnrampTransaction], Never> {
         transactionsInProgressSubject.eraseToAnyPublisher()
     }
 }

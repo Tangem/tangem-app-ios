@@ -14,7 +14,7 @@ final class CommonOnrampPendingTransactionRepository {
 
     private let lockQueue = DispatchQueue(label: "com.tangem.CommonOnrampPendingTransactionRepository.lockQueue")
 
-    private var pendingTransactionSubject = CurrentValueSubject<[OnrampRedirectDataWithId], Never>([])
+    private var pendingTransactionSubject = CurrentValueSubject<[OnrampPendingTransactionRecord], Never>([])
 
     init() {
         loadPendingTransactions()
@@ -28,7 +28,7 @@ final class CommonOnrampPendingTransactionRepository {
         }
     }
 
-    private func addRecordIfNeeded(_ redirectDataWithId: OnrampRedirectDataWithId) {
+    private func addRecordIfNeeded(_ redirectDataWithId: OnrampPendingTransactionRecord) {
         if pendingTransactionSubject.value.contains(where: { $0.txId == redirectDataWithId.txId }) {
             return
         }
@@ -44,29 +44,43 @@ final class CommonOnrampPendingTransactionRepository {
             log("Failed to save changes in storage. Reason: \(error)")
         }
     }
-    
+
     private func log<T>(_ message: @autoclosure () -> T) {
         AppLog.shared.debug("[Onramp Tx Repository] \(message())")
     }
 }
 
 extension CommonOnrampPendingTransactionRepository: OnrampPendingTransactionRepository {
-    var transactions: [OnrampRedirectDataWithId] {
+    var transactions: [OnrampPendingTransactionRecord] {
         pendingTransactionSubject.value
     }
 
-    var transactionsPublisher: AnyPublisher<[OnrampRedirectDataWithId], Never> {
+    var transactionsPublisher: AnyPublisher<[OnrampPendingTransactionRecord], Never> {
         pendingTransactionSubject
             .eraseToAnyPublisher()
     }
 
-    func onrampTransactionDidSend(_ redirectDataWithId: OnrampRedirectDataWithId) {
+    func onrampTransactionDidSend(_ txData: SentOnrampTransactionData, userWalletId: String) {
+        let onrampPendingTransactionRecord = OnrampPendingTransactionRecord(
+            userWalletId: userWalletId,
+            txId: txData.txId,
+            provider: .init(provider: txData.provider.provider),
+            fromAmount: Decimal(stringValue: txData.onrampTransactionData.fromAmount).flatMap { $0 / 100 } ?? .zero, // TODO: Maybe some better way?
+            fromCurrencyCode: txData.onrampTransactionData.fromCurrencyCode,
+            destinationTokenTxInfo: .init(
+                tokenItem: txData.destinationTokenItem,
+                amountString: txData.onrampTransactionData.toAmount ?? "", // TODO: Should not be nullable
+                isCustom: false
+            ),
+            transactionStatus: .awaitingDeposit
+        )
+
         lockQueue.async { [weak self] in
-            self?.addRecordIfNeeded(redirectDataWithId)
+            self?.addRecordIfNeeded(onrampPendingTransactionRecord)
         }
     }
 
-    func updateItems(_ items: [OnrampRedirectDataWithId]) {
+    func updateItems(_ items: [OnrampPendingTransactionRecord]) {
         if items.isEmpty {
             return
         }

@@ -41,42 +41,40 @@ struct PendingExpressTransactionsConverter {
         }
     }
 
-    func convertToTokenDetailsPendingTxInfo(_ transactions: [OnrampTransaction], tapAction: @escaping (String) -> Void) -> [PendingExpressTransactionView.Info] {
+    func convertToTokenDetailsPendingTxInfo(_ transactions: [PendingOnrampTransaction], tapAction: @escaping (String) -> Void) -> [PendingExpressTransactionView.Info] {
+        let iconBuilder = TokenIconInfoBuilder()
         let balanceFormatter = BalanceFormatter()
         let iconURLBuilder = IconURLBuilder(
             baseURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/")! // TODO: Remeve when start using non-dev api
         )
 
         return transactions.compactMap { transaction in
+            let record = transaction.transactionRecord
+            let destinationTokenItem = record.destinationTokenTxInfo.tokenItem
+
             let state: PendingExpressTransactionView.State
-            switch transaction.status {
-            case .created, .waitingForPayment, .paymentProcessing, .sending, .paid, .finished:
+            switch record.transactionStatus {
+            case .awaitingDeposit, .confirming, .exchanging, .sendingToUser, .done, .refunded:
                 state = .inProgress
-            case .expired, .failed, .paused:
+            case .failed, .canceled, .unknown, .paused:
                 state = .error
-            case .verifying:
+            case .verificationRequired, .awaitingHash:
                 state = .warning
             }
 
             return PendingExpressTransactionView.Info(
-                id: transaction.txId,
-                title: "Buying \(transaction.toNetwork.capitalized)",
+                id: transaction.transactionRecord.txId,
+                title: "Buying \(destinationTokenItem.name)",
                 sourceIconInfo: .init(
-                    name: "sourceName",
+                    name: record.fromCurrencyCode,
                     blockchainIconName: nil,
-                    imageURL: iconURLBuilder.fiatIconURL(currencyCode: transaction.fromCurrencyCode),
+                    imageURL: iconURLBuilder.fiatIconURL(currencyCode: record.fromCurrencyCode),
                     isCustom: false,
                     customTokenColor: nil
                 ),
-                sourceAmountText: balanceFormatter.formatFiatBalance(Decimal(stringValue: transaction.fromAmount).flatMap { $0 / 100 }, currencyCode: transaction.fromCurrencyCode),
-                destinationIconInfo: .init(
-                    name: "destinationName",
-                    blockchainIconName: transaction.toNetwork,
-                    imageURL: iconURLBuilder.tokenIconURL(id: transaction.toNetwork),
-                    isCustom: false,
-                    customTokenColor: nil
-                ),
-                destinationCurrencySymbol: transaction.toAmount ?? "null",
+                sourceAmountText: balanceFormatter.formatFiatBalance(record.fromAmount, currencyCode: record.fromCurrencyCode),
+                destinationIconInfo: iconBuilder.build(from: destinationTokenItem, isCustom: false),
+                destinationCurrencySymbol: destinationTokenItem.currencySymbol,
                 state: state,
                 action: tapAction
             )

@@ -10,11 +10,11 @@ import Combine
 import TangemExpress
 
 protocol OnrampPendingTransactionRepository: AnyObject {
-    var transactions: [OnrampRedirectDataWithId] { get }
-    var transactionsPublisher: AnyPublisher<[OnrampRedirectDataWithId], Never> { get }
+    var transactions: [OnrampPendingTransactionRecord] { get }
+    var transactionsPublisher: AnyPublisher<[OnrampPendingTransactionRecord], Never> { get }
 
-    func onrampTransactionDidSend(_ redirectDataWithId: OnrampRedirectDataWithId)
-    func updateItems(_ items: [OnrampRedirectDataWithId])
+    func onrampTransactionDidSend(_ txData: SentOnrampTransactionData, userWalletId: String)
+    func updateItems(_ items: [OnrampPendingTransactionRecord])
 }
 
 private struct OnrampPendingTransactionRepositoryKey: InjectionKey {

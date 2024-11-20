@@ -353,13 +353,12 @@ private extension TokenDetailsViewModel {
 
     private func didTapPendingOnrampTransaction(with id: String) {
         guard
-            let pendingTransaction = pendingOnrampTransactionsManager.pendingTransactions.first(where: { $0.txId == id })
+            let pendingTransaction = pendingOnrampTransactionsManager.pendingTransactions.first(where: { $0.transactionRecord.txId == id })
         else {
             return
         }
 
-        assertionFailure("Da vse ok")
-
+        // TODO: Open bottom sheet
 //        coordinator?.openPendingOnrampTransactionDetails(
 //            for: pendingTransaction,
 //            tokenItem: walletModel.tokenItem,

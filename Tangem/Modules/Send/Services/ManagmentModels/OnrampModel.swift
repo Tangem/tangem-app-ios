@@ -36,6 +36,7 @@ class OnrampModel {
 
     // MARK: - Private injections
 
+    private let userWalletId: String
     private let walletModel: WalletModel
     private let onrampManager: OnrampManager
     private let onrampRepository: OnrampRepository
@@ -44,10 +45,12 @@ class OnrampModel {
     private var bag: Set<AnyCancellable> = []
 
     init(
+        userWalletId: String,
         walletModel: WalletModel,
         onrampManager: OnrampManager,
         onrampRepository: OnrampRepository
     ) {
+        self.userWalletId = userWalletId
         self.walletModel = walletModel
         self.onrampManager = onrampManager
         self.onrampRepository = onrampRepository
@@ -260,7 +263,21 @@ extension OnrampModel: OnrampRedirectingInput {}
 
 extension OnrampModel: OnrampRedirectingOutput {
     func redirectDataDidLoad(data: OnrampRedirectDataWithId) {
-        onrampPendingTransactionsRepository.onrampTransactionDidSend(data)
+        guard let provider = selectedOnrampProvider else {
+            assertionFailure("selectedOnrampProvider is unexpectedly nil")
+            return
+        }
+
+        let txData = SentOnrampTransactionData(
+            txId: data.txId,
+            provider: provider,
+            destinationTokenItem: walletModel.tokenItem,
+            onrampTransactionData: data.redirectData
+        )
+
+        // TODO: userWalletId?
+        onrampPendingTransactionsRepository.onrampTransactionDidSend(txData, userWalletId: "")
+
         DispatchQueue.main.async {
             self.router?.openWebView(url: data.redirectData.widgetUrl) { [weak self] in
                 self?._transactionTime.send(Date())
