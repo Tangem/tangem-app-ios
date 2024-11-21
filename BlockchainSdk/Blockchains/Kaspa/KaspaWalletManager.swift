@@ -208,10 +208,9 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                 .mapSendError(tx: encodedRawTransactionData?.hexString.lowercased())
         }
         .withWeakCaptureOf(self)
-        .asyncMap { manager, response in
+        .asyncMap { manager, _ in
             // Delete Commit on success
             await manager.removeIncompleteTokenTransaction(for: token)
-            return response.transactionId
         }
         .receiveCompletion { [weak self] _ in
             // Both successful and failed KRC20 reveal transactions remove the pending transaction for the KRC20 commit transaction
