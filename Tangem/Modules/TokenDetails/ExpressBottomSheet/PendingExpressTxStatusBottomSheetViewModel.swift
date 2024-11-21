@@ -79,14 +79,11 @@ struct PendingTransaction {
 
     static func from(_ transaction: PendingExpressTransaction) -> PendingTransaction {
         let record = transaction.transactionRecord
-        guard let expressSpecific = record.expressSpecific else {
-            fatalError("unexpected state")
-        }
 
         let iconInfoBuilder = TokenIconInfoBuilder()
         let balanceFormatter = BalanceFormatter()
 
-        let sourceTokenTxInfo = expressSpecific.sourceTokenTxInfo
+        let sourceTokenTxInfo = record.sourceTokenTxInfo
         let sourceTokenItem = sourceTokenTxInfo.tokenItem
 
         let destinationTokenTxInfo = record.destinationTokenTxInfo
@@ -101,12 +98,45 @@ struct PendingTransaction {
             date: record.date,
             sourceTokenIconInfo: iconInfoBuilder.build(from: sourceTokenItem, isCustom: sourceTokenTxInfo.isCustom),
             sourceAmountText: balanceFormatter.formatCryptoBalance(sourceTokenTxInfo.amount, currencyCode: sourceTokenItem.currencySymbol),
-            sourceFiatInfo: .tokenTxInfo(expressSpecific.sourceTokenTxInfo),
+            sourceFiatInfo: .tokenTxInfo(record.sourceTokenTxInfo),
             destinationTokenIconInfo: iconInfoBuilder.build(from: destinationTokenItem, isCustom: destinationTokenTxInfo.isCustom),
             destinationAmountText: balanceFormatter.formatCryptoBalance(destinationTokenTxInfo.amount, currencyCode: destinationTokenItem.currencySymbol),
             destinationFiatInfo: .tokenTxInfo(record.destinationTokenTxInfo),
             transactionStatus: record.transactionStatus,
             refundedTokenItem: record.refundedTokenItem,
+            statuses: transaction.statuses
+        )
+    }
+
+    static func from(_ transaction: PendingOnrampTransaction) -> PendingTransaction {
+        let record = transaction.transactionRecord
+
+        let iconInfoBuilder = TokenIconInfoBuilder()
+        let balanceFormatter = BalanceFormatter()
+
+        let sourceAmountText = balanceFormatter.formatFiatBalance(
+            record.fromAmount,
+            currencyCode: record.fromCurrencyCode
+        )
+
+        let destinationTokenTxInfo = record.destinationTokenTxInfo
+        let destinationTokenItem = destinationTokenTxInfo.tokenItem
+
+        return PendingTransaction(
+            branch: .onramp,
+            expressTransactionId: record.expressTransactionId,
+            externalTxId: record.externalTxId,
+            externalTxURL: record.externalTxURL,
+            provider: record.provider,
+            date: record.date,
+            sourceTokenIconInfo: iconInfoBuilder.build(from: record.fromCurrencyCode),
+            sourceAmountText: sourceAmountText,
+            sourceFiatInfo: .string(sourceAmountText),
+            destinationTokenIconInfo: iconInfoBuilder.build(from: destinationTokenItem, isCustom: destinationTokenTxInfo.isCustom),
+            destinationAmountText: balanceFormatter.formatCryptoBalance(destinationTokenTxInfo.amount, currencyCode: destinationTokenItem.currencySymbol),
+            destinationFiatInfo: .tokenTxInfo(destinationTokenTxInfo),
+            transactionStatus: record.transactionStatus,
+            refundedTokenItem: nil,
             statuses: transaction.statuses
         )
     }

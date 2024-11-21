@@ -11,8 +11,8 @@ import Combine
 import TangemExpress
 
 protocol PendingOnrampTransactionsManager: PendingGenericTransactionsManager {
-    var pendingTransactions: [PendingExpressTransaction] { get }
-    var pendingTransactionsPublisher: AnyPublisher<[PendingExpressTransaction], Never> { get }
+    var pendingTransactions: [PendingOnrampTransaction] { get }
+    var pendingTransactionsPublisher: AnyPublisher<[PendingOnrampTransaction], Never> { get }
 
     func hideTransaction(with id: String)
 }
@@ -36,16 +36,16 @@ extension PendingOnrampTransactionsManager {
 }
 
 class CommonPendingOnrampTransactionsManager {
-    @Injected(\.expressPendingTransactionsRepository) private var expressPendingTransactionsRepository: ExpressPendingTransactionRepository
+    @Injected(\.onrampPendingTransactionsRepository) private var onrampPendingTransactionsRepository: OnrampPendingTransactionRepository
 
     private let userWalletId: String
     private let walletModel: WalletModel
     private let expressAPIProvider: ExpressAPIProvider
 
     private let pendingTransactionFactory = PendingExpressTransactionFactory()
-    private let pollingService: PollingService<PendingExpressTransaction, PendingExpressTransaction>
+    private let pollingService: PollingService<PendingOnrampTransaction, PendingOnrampTransaction>
 
-    private let pendingTransactionsSubject = CurrentValueSubject<[PendingExpressTransaction], Never>([])
+    private let pendingTransactionsSubject = CurrentValueSubject<[PendingOnrampTransaction], Never>([])
     private var bag = Set<AnyCancellable>()
     private var tokenItem: TokenItem { walletModel.tokenItem }
 
@@ -84,7 +84,7 @@ class CommonPendingOnrampTransactionsManager {
     }
 
     private func bind() {
-        expressPendingTransactionsRepository.transactionsPublisher
+        onrampPendingTransactionsRepository.transactionsPublisher
             .withWeakCaptureOf(self)
             .map { manager, txRecords in
                 manager.filterRelatedTokenTransactions(list: txRecords)
@@ -92,11 +92,11 @@ class CommonPendingOnrampTransactionsManager {
             .removeDuplicates()
             .map { transactions in
                 let factory = PendingExpressTransactionFactory()
-                let savedPendingTransactions = transactions.map(factory.buildPendingExpressTransaction(for:))
+                let savedPendingTransactions = transactions.map(factory.buildPendingOnrampTransaction(for:))
                 return savedPendingTransactions
             }
             .withPrevious()
-            .sink { [pollingService] (previous: [PendingExpressTransaction]?, current: [PendingExpressTransaction]) in
+            .sink { [pollingService] previous, current in
                 let shouldForceReload = previous?.count ?? 0 != current.count
                 pollingService.startPolling(requests: current, force: shouldForceReload)
             }
@@ -117,13 +117,13 @@ class CommonPendingOnrampTransactionsManager {
                     return nil
                 }
             }
-            .sink { [expressPendingTransactionsRepository] transactionsToUpdateInRepository in
-                expressPendingTransactionsRepository.updateItems(transactionsToUpdateInRepository)
+            .sink { [onrampPendingTransactionsRepository] transactionsToUpdateInRepository in
+                onrampPendingTransactionsRepository.updateItems(transactionsToUpdateInRepository)
             }
             .store(in: &bag)
     }
 
-    private func filterRelatedTokenTransactions(list: [ExpressPendingTransactionRecord]) -> [ExpressPendingTransactionRecord] {
+    private func filterRelatedTokenTransactions(list: [OnrampPendingTransactionRecord]) -> [OnrampPendingTransactionRecord] {
         list.filter { record in
             guard !record.isHidden else {
                 return false
@@ -138,30 +138,22 @@ class CommonPendingOnrampTransactionsManager {
                 return false
             }
 
-            let isSourceSame = if let sourceTokenTxInfo = record.expressSpecific?.sourceTokenTxInfo {
-                sourceTokenTxInfo.tokenItem == tokenItem
-            } else {
-                false
-            }
-
-            let isDestinationSame = record.destinationTokenTxInfo.tokenItem == tokenItem
-
-            return isSourceSame || isDestinationSame
+            return record.destinationTokenTxInfo.tokenItem == tokenItem
         }
     }
 }
 
 extension CommonPendingOnrampTransactionsManager: PendingOnrampTransactionsManager {
-    var pendingTransactions: [PendingExpressTransaction] {
+    var pendingTransactions: [PendingOnrampTransaction] {
         pendingTransactionsSubject.value
     }
 
-    var pendingTransactionsPublisher: AnyPublisher<[PendingExpressTransaction], Never> {
+    var pendingTransactionsPublisher: AnyPublisher<[PendingOnrampTransaction], Never> {
         pendingTransactionsSubject.eraseToAnyPublisher()
     }
 
     func hideTransaction(with id: String) {
-        expressPendingTransactionsRepository.hideSwapTransaction(with: id)
+        onrampPendingTransactionsRepository.hideSwapTransaction(with: id)
     }
 }
 

@@ -10,7 +10,7 @@ import Foundation
 import Combine
 import TangemExpress
 
-protocol PendingExpressTransactionsManager: PendingGenericTransactionsManager {
+protocol PendingExpressTransactionsManager: AnyObject {
     var pendingTransactions: [PendingExpressTransaction] { get }
     var pendingTransactionsPublisher: AnyPublisher<[PendingExpressTransaction], Never> { get }
 
@@ -213,15 +213,10 @@ class CommonPendingExpressTransactionsManager {
                 return false
             }
 
-            if let expressSpecific = record.expressSpecific {
-                let isSame = expressSpecific.sourceTokenTxInfo.tokenItem == tokenItem
-                    || record.destinationTokenTxInfo.tokenItem == tokenItem
+            let isSame = record.sourceTokenTxInfo.tokenItem == tokenItem
+                || record.destinationTokenTxInfo.tokenItem == tokenItem
 
-                return isSame
-            }
-
-//            assertionFailure("unexpected state")
-            return false
+            return isSame
         }
     }
 

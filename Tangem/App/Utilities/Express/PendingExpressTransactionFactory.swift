@@ -95,8 +95,8 @@ struct PendingExpressTransactionFactory {
 
     func buildPendingOnrampTransaction(
         currentOnrampStatus: OnrampTransactionStatus,
-        for transactionRecord: ExpressPendingTransactionRecord
-    ) -> PendingExpressTransaction {
+        for transactionRecord: OnrampPendingTransactionRecord
+    ) -> PendingOnrampTransaction {
         let currentStatus: PendingExpressTransactionStatus
         var statusesList: [PendingExpressTransactionStatus] = defaultStatusesList
         var transactionRecord = transactionRecord
@@ -126,9 +126,32 @@ struct PendingExpressTransactionFactory {
 
         transactionRecord.transactionStatus = currentStatus
 
-        return PendingExpressTransaction(
+        return PendingOnrampTransaction(
             transactionRecord: transactionRecord,
             statuses: statusesList
         )
+    }
+    
+    func buildPendingOnrampTransaction(for transactionRecord: OnrampPendingTransactionRecord) -> PendingOnrampTransaction {
+        let statusesList: [PendingExpressTransactionStatus] = {
+            switch transactionRecord.transactionStatus {
+            case .awaitingDeposit, .confirming, .exchanging, .sendingToUser, .done:
+                return defaultStatusesList
+            case .canceled:
+                return canceledStatusesList
+            case .failed, .refunded:
+                return failedStatusesList
+            case .paused:
+                return pausedStatusesList
+            case .awaitingHash:
+                return awaitingHashStatusesList
+            case .unknown:
+                return unknownHashStatusesList
+            case .verificationRequired:
+                return verifyingStatusesList
+            }
+        }()
+
+        return .init(transactionRecord: transactionRecord, statuses: statusesList)
     }
 }

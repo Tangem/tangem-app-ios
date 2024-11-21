@@ -14,72 +14,28 @@ import TangemFoundation
 struct ExpressPendingTransactionRecord: Codable, Equatable {
     let userWalletId: String
     let expressTransactionId: String
+    let transactionType: TransactionType
+    let transactionHash: String
+    let sourceTokenTxInfo: TokenTxInfo
     let destinationTokenTxInfo: TokenTxInfo
+    let feeString: String
     let provider: Provider
+    let date: Date
     let externalTxId: String?
     let externalTxURL: String?
-    let date: Date
-
-    let expressSpecific: ExpressSpecific?
-    let onrampSpecific: OnrampSpecific?
 
     // Flag for hide transaction from UI. But keep saving in the storage
     var isHidden: Bool
     var transactionStatus: PendingExpressTransactionStatus
 
     var refundedTokenItem: TokenItem?
-}
 
-extension ExpressPendingTransactionRecord: Identifiable {
-    var id: String {
-        expressTransactionId
+    var fee: Decimal {
+        convertToDecimal(feeString)
     }
 }
 
 extension ExpressPendingTransactionRecord {
-    struct ExpressSpecific: Codable, Equatable {
-        let transactionType: TransactionType
-        let transactionHash: String
-        let sourceTokenTxInfo: TokenTxInfo
-        let feeString: String
-
-        var fee: Decimal {
-            convertToDecimal(feeString)
-        }
-
-        init(
-            transactionType: ExpressPendingTransactionRecord.TransactionType,
-            transactionHash: String,
-            sourceTokenTxInfo: ExpressPendingTransactionRecord.TokenTxInfo,
-            feeString: String
-        ) {
-            self.transactionType = transactionType
-            self.transactionHash = transactionHash
-            self.sourceTokenTxInfo = sourceTokenTxInfo
-            self.feeString = feeString
-        }
-
-        init(from decoder: any Decoder) throws {
-            let container = try decoder.container(keyedBy: CodingKeys.self)
-            transactionType = try container.decode(ExpressPendingTransactionRecord.TransactionType.self, forKey: .transactionType)
-            transactionHash = try container.decode(String.self, forKey: .transactionHash)
-
-            if let sourceTokenTxInfo = try? container.decode(ExpressPendingTransactionRecord.TokenTxInfo.self, forKey: .sourceTokenTxInfo) {
-                self.sourceTokenTxInfo = sourceTokenTxInfo
-            } else {
-                let legacySourceTokenTxInfo = try container.decode(ExpressPendingTransactionRecord.LegacyTokenTxInfo.self, forKey: .sourceTokenTxInfo)
-                sourceTokenTxInfo = try legacySourceTokenTxInfo.mapToTokenTxInfo()
-            }
-
-            feeString = try container.decode(String.self, forKey: .feeString)
-        }
-    }
-
-    struct OnrampSpecific: Codable, Equatable {
-        let fromAmount: Decimal
-        let fromCurrencyCode: String
-    }
-
     struct TokenTxInfo: Codable, Equatable {
         let tokenItem: TokenItem
         let amountString: String
@@ -128,21 +84,19 @@ extension ExpressPendingTransactionRecord {
         case dex
         case dexBridge
         case unknown
-        case onramp
 
         static func type(from type: ExpressProviderType) -> ProviderType {
             switch type {
             case .dex: return .dex
             case .cex: return .cex
             case .dexBridge: return .dexBridge
-            case .onramp: return .onramp
-            case .unknown: return .unknown
+            case .onramp, .unknown: return .unknown
             }
         }
 
         var supportStatusTracking: Bool {
             switch self {
-            case .cex, .dexBridge, .onramp:
+            case .cex, .dexBridge:
                 return true
             case .dex, .unknown:
                 return false
@@ -210,6 +164,15 @@ extension ExpressPendingTransactionRecord {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         userWalletId = try container.decode(String.self, forKey: .userWalletId)
         expressTransactionId = try container.decode(String.self, forKey: .expressTransactionId)
+        transactionType = try container.decode(ExpressPendingTransactionRecord.TransactionType.self, forKey: .transactionType)
+        transactionHash = try container.decode(String.self, forKey: .transactionHash)
+
+        if let sourceTokenTxInfo = try? container.decode(ExpressPendingTransactionRecord.TokenTxInfo.self, forKey: .sourceTokenTxInfo) {
+            self.sourceTokenTxInfo = sourceTokenTxInfo
+        } else {
+            let legacySourceTokenTxInfo = try container.decode(ExpressPendingTransactionRecord.LegacyTokenTxInfo.self, forKey: .sourceTokenTxInfo)
+            sourceTokenTxInfo = try legacySourceTokenTxInfo.mapToTokenTxInfo()
+        }
 
         if let destinationTokenTxInfo = try? container.decode(ExpressPendingTransactionRecord.TokenTxInfo.self, forKey: .destinationTokenTxInfo) {
             self.destinationTokenTxInfo = destinationTokenTxInfo
@@ -218,14 +181,12 @@ extension ExpressPendingTransactionRecord {
             destinationTokenTxInfo = try legacyDestinationTokenTxInfo.mapToTokenTxInfo()
         }
 
+        feeString = try container.decode(String.self, forKey: .feeString)
         provider = try container.decode(ExpressPendingTransactionRecord.Provider.self, forKey: .provider)
+        date = try container.decode(Date.self, forKey: .date)
         externalTxId = try container.decodeIfPresent(String.self, forKey: .externalTxId)
         externalTxURL = try container.decodeIfPresent(String.self, forKey: .externalTxURL)
         isHidden = try container.decode(Bool.self, forKey: .isHidden)
         transactionStatus = try container.decode(PendingExpressTransactionStatus.self, forKey: .transactionStatus)
-        date = try container.decode(Date.self, forKey: .date)
-
-        expressSpecific = try container.decodeIfPresent(ExpressSpecific.self, forKey: .expressSpecific)
-        onrampSpecific = try container.decodeIfPresent(OnrampSpecific.self, forKey: .onrampSpecific)
     }
 }

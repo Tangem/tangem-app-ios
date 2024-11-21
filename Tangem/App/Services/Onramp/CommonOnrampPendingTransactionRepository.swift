@@ -1,21 +1,20 @@
 //
-//  CommonExpressPendingTransactionRepository.swift
-//  Tangem
+//  CommonOnrampPendingTransactionRepository.swift
+//  TangemApp
 //
-//  Created by Sergey Balashov on 13.11.2023.
-//  Copyright © 2023 Tangem AG. All rights reserved.
+//  Created by Aleksei Muraveinik on 21.11.24.
+//  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-import Foundation
 import Combine
-import TangemFoundation
+import Foundation
 
-class CommonExpressPendingTransactionRepository {
+class CommonOnrampPendingTransactionRepository {
     @Injected(\.persistentStorage) private var storage: PersistentStorageProtocol
 
-    private let lockQueue = DispatchQueue(label: "com.tangem.CommonExpressPendingTransactionRepository.lockQueue")
+    private let lockQueue = DispatchQueue(label: "com.tangem.CommonOnrampPendingTransactionRepository.lockQueue")
 
-    private var pendingTransactionSubject = CurrentValueSubject<[ExpressPendingTransactionRecord], Never>([])
+    private var pendingTransactionSubject = CurrentValueSubject<[OnrampPendingTransactionRecord], Never>([])
 
     init() {
         loadPendingTransactions()
@@ -23,13 +22,13 @@ class CommonExpressPendingTransactionRepository {
 
     private func loadPendingTransactions() {
         do {
-            pendingTransactionSubject.value = try storage.value(for: .pendingExpressTransactions) ?? []
+            pendingTransactionSubject.value = try storage.value(for: .pendingOnrampTransactions) ?? []
         } catch {
             log("Couldn't get the express transactions list from the storage with error \(error)")
         }
     }
 
-    private func addRecordIfNeeded(_ record: ExpressPendingTransactionRecord) {
+    private func addRecordIfNeeded(_ record: OnrampPendingTransactionRecord) {
         if pendingTransactionSubject.value.contains(where: { $0.expressTransactionId == record.expressTransactionId }) {
             return
         }
@@ -40,7 +39,7 @@ class CommonExpressPendingTransactionRepository {
 
     private func saveChanges() {
         do {
-            try storage.store(value: pendingTransactionSubject.value, for: .pendingExpressTransactions)
+            try storage.store(value: pendingTransactionSubject.value, for: .pendingOnrampTransactions)
         } catch {
             log("Failed to save changes in storage. Reason: \(error)")
         }
@@ -51,43 +50,45 @@ class CommonExpressPendingTransactionRepository {
     }
 }
 
-extension CommonExpressPendingTransactionRepository: ExpressPendingTransactionRepository {
-    var transactions: [ExpressPendingTransactionRecord] {
+extension CommonOnrampPendingTransactionRepository: OnrampPendingTransactionRepository {
+    var transactions: [OnrampPendingTransactionRecord] {
         pendingTransactionSubject.value
     }
 
-    var transactionsPublisher: AnyPublisher<[ExpressPendingTransactionRecord], Never> {
+    var transactionsPublisher: AnyPublisher<[OnrampPendingTransactionRecord], Never> {
         pendingTransactionSubject
             .eraseToAnyPublisher()
     }
 
-    func swapTransactionDidSend(_ txData: SentExpressTransactionData, userWalletId: String) {
-        let expressPendingTransactionRecord = ExpressPendingTransactionRecord(
+    func onrampTransactionDidSend(_ txData: SentOnrampTransactionData, userWalletId: String) {
+        let fromAmount = txData.onrampTransactionData.fromAmount
+        guard var fromAmount = Decimal(string: fromAmount) else {
+            assertionFailure("Unable to map fromAmount '\(fromAmount)' to Decimal")
+            return
+        }
+
+        fromAmount /= 100
+
+        let onrampPendingTransactionRecord = OnrampPendingTransactionRecord(
             userWalletId: userWalletId,
-            expressTransactionId: txData.expressTransactionData.expressTransactionId,
-            transactionType: .type(from: txData.expressTransactionData.transactionType),
-            transactionHash: txData.hash,
-            sourceTokenTxInfo: .init(
-                tokenItem: txData.source.tokenItem,
-                amountString: txData.expressTransactionData.fromAmount.stringValue,
-                isCustom: txData.source.isCustom
-            ),
+            expressTransactionId: txData.txId,
+            fromAmount: fromAmount,
+            fromCurrencyCode: txData.onrampTransactionData.fromCurrencyCode,
             destinationTokenTxInfo: .init(
-                tokenItem: txData.destination.tokenItem,
-                amountString: txData.expressTransactionData.toAmount.stringValue,
-                isCustom: txData.destination.isCustom
+                tokenItem: txData.destinationTokenItem,
+                amountString: "",
+                isCustom: false
             ),
-            feeString: txData.fee.stringValue,
-            provider: .init(provider: txData.provider),
+            provider: .init(provider: txData.provider.provider),
             date: txData.date,
-            externalTxId: txData.expressTransactionData.externalTxId,
-            externalTxURL: txData.expressTransactionData.externalTxUrl,
+            externalTxId: txData.onrampTransactionData.externalTxId,
+            externalTxURL: nil,
             isHidden: false,
             transactionStatus: .awaitingDeposit
         )
 
         lockQueue.async { [weak self] in
-            self?.addRecordIfNeeded(expressPendingTransactionRecord)
+            self?.addRecordIfNeeded(onrampPendingTransactionRecord)
         }
     }
 
@@ -104,7 +105,7 @@ extension CommonExpressPendingTransactionRepository: ExpressPendingTransactionRe
         }
     }
 
-    func updateItems(_ items: [ExpressPendingTransactionRecord]) {
+    func updateItems(_ items: [OnrampPendingTransactionRecord]) {
         if items.isEmpty {
             return
         }
@@ -131,11 +132,5 @@ extension CommonExpressPendingTransactionRepository: ExpressPendingTransactionRe
             pendingTransactionSubject.value = pendingTransactions
             saveChanges()
         }
-    }
-}
-
-extension CommonExpressPendingTransactionRepository: CustomStringConvertible {
-    var description: String {
-        objectDescription(self)
     }
 }
