@@ -50,7 +50,7 @@ extension CommonOnrampInteractor: OnrampInteractor {
 
         return Publishers.CombineLatest(
             providersInput.selectedOnrampProviderPublisher.map { $0?.isLoading ?? false },
-            providersInput.onrampProvidersPublisher.map { $0.isLoading }
+            providersInput.onrampProvidersPublisher.map { $0?.isLoading ?? false }
         )
         .map { $0 || $1 }
         .eraseToAnyPublisher()

@@ -6,8 +6,6 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-public typealias ProvidersList = [ProviderItem]
-
 public protocol OnrampManager: Actor {
     var providers: ProvidersList { get }
     var selectedProvider: OnrampProvider? { get }

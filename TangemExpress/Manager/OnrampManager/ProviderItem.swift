@@ -9,6 +9,8 @@
 import Foundation
 import TangemFoundation
 
+public typealias ProvidersList = [ProviderItem]
+
 public class ProviderItem {
     public let paymentMethod: OnrampPaymentMethod
     public private(set) var providers: [OnrampProvider]
@@ -73,7 +75,7 @@ extension ProviderItem: CustomDebugStringConvertible {
 
 // MARK: - Array<ProviderItem>
 
-public extension Array where Element == ProviderItem {
+public extension ProvidersList {
     func hasProviders() -> Bool {
         !flatMap { $0.providers }.isEmpty
     }

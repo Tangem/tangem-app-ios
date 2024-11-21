@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import TangemExpress
+import TangemFoundation
 
 class OnrampProvidersCompactViewModel: ObservableObject {
     @Published private(set) var paymentState: PaymentState?
@@ -31,15 +32,15 @@ class OnrampProvidersCompactViewModel: ObservableObject {
             .store(in: &bag)
     }
 
-    private func updateView(provider: LoadingValue<OnrampProvider>?) {
+    private func updateView(provider: LoadingResult<OnrampProvider, Never>?) {
         switch provider {
         case .loading:
             paymentState = .loading
-        case .loaded(let provider) where provider.error == .none:
+        case .success(let provider) where provider.error == .none:
             paymentState = .loaded(
                 data: makeOnrampProvidersCompactProviderViewData(provider: provider)
             )
-        case .none, .failedToLoad, .loaded:
+        case .none, .success:
             paymentState = .none
         }
     }
