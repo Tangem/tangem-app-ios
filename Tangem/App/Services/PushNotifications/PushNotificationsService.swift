@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import UserNotifications
+import os.log
 
 final class PushNotificationsService: NSObject {
     /// - Note: Checks only explicit authorization (`UNAuthorizationStatus.authorized`) and ignores implicit
@@ -76,6 +77,7 @@ final class PushNotificationsService: NSObject {
 
 extension PushNotificationsService: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+        os_log("___\(#fileID)___: \(#function)") // FIXME: Andrey Fedorov - Test only, remove when not needed
         Analytics.log(.pushNotificationOpened)
     }
 }

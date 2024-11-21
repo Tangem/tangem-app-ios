@@ -79,6 +79,7 @@ struct EnvironmentSetupView: View {
             VStack(spacing: 15) {
                 HStack {
                     Text("FCM token: \(viewModel.fcmToken)")
+                        .font(.footnote)
 
                     Button {
                         viewModel.copyField(\.fcmToken)
