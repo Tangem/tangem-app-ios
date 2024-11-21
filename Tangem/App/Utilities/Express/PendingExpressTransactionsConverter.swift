@@ -15,11 +15,14 @@ struct PendingExpressTransactionsConverter {
 
         return records.compactMap { record in
             let title: String
+            let sourceAmountText: String
+            let destinationAmountText: String
+
             switch record.branch {
             case .swap:
                 title = Localization.expressExchangeBy(record.provider.name)
             case .onramp:
-                title = "Buying Bitcoin" // TODO: Use real
+                title = "Buying \(record.destinationTokenItem?.name ?? "")" // TODO: Use localization
             }
 
             let state: PendingExpressTransactionView.State
@@ -32,21 +35,13 @@ struct PendingExpressTransactionsConverter {
                 state = .warning
             }
 
-            let destinationCurrencySymbol: String
-            switch record.destinationInfo {
-            case .fiat(_, let currencySymbol):
-                destinationCurrencySymbol = currencySymbol
-            case .tokenTxInfo(let tokenInfo):
-                destinationCurrencySymbol = tokenInfo.tokenItem.currencySymbol
-            }
-
             return .init(
                 id: record.expressTransactionId,
                 title: title,
                 sourceIconInfo: record.sourceTokenIconInfo,
-                sourceAmountText: record.sourceAmountText,
+                sourceAmountText: record.sourceAmountString,
                 destinationIconInfo: record.destinationTokenIconInfo,
-                destinationCurrencySymbol: destinationCurrencySymbol,
+                destinationAmountText: record.destinationAmountString,
                 state: state,
                 action: tapAction
             )

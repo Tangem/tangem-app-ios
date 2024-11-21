@@ -9,11 +9,6 @@
 import Combine
 import TangemExpress
 
-enum PendingTransactionInfo {
-    case fiat(fullText: String, currencySymbol: String)
-    case tokenTxInfo(ExpressPendingTransactionRecord.TokenTxInfo)
-}
-
 struct PendingTransaction {
     let branch: ExpressBranch
 
@@ -24,12 +19,12 @@ struct PendingTransaction {
     let date: Date
 
     let sourceTokenIconInfo: TokenIconInfo
-    let sourceAmountText: String
-    let sourceInfo: PendingTransactionInfo
+    let sourceAmountString: String
+    let sourceTokenItem: TokenItem?
 
     let destinationTokenIconInfo: TokenIconInfo
-    let destinationAmountText: String
-    let destinationInfo: PendingTransactionInfo
+    let destinationAmountString: String
+    let destinationTokenItem: TokenItem?
 
     let transactionStatus: PendingExpressTransactionStatus
 

@@ -94,14 +94,14 @@ struct PendingExpressTransactionFactory {
     }
 
     func buildPendingOnrampTransaction(
-        currentOnrampStatus: OnrampTransactionStatus,
+        currentOnrampTransaction: OnrampTransaction,
         for transactionRecord: OnrampPendingTransactionRecord
     ) -> PendingOnrampTransaction {
         let currentStatus: PendingExpressTransactionStatus
         var statusesList: [PendingExpressTransactionStatus] = defaultStatusesList
         var transactionRecord = transactionRecord
 
-        switch currentOnrampStatus {
+        switch currentOnrampTransaction.status {
         case .created, .waitingForPayment:
             currentStatus = .awaitingDeposit
         case .paymentProcessing, .paid:
@@ -125,6 +125,11 @@ struct PendingExpressTransactionFactory {
         }
 
         transactionRecord.transactionStatus = currentStatus
+        transactionRecord.destinationTokenTxInfo = .init(
+            tokenItem: transactionRecord.destinationTokenTxInfo.tokenItem,
+            amountString: currentOnrampTransaction.toAmount.map(\.stringValue) ?? "",
+            isCustom: transactionRecord.destinationTokenTxInfo.isCustom
+        )
 
         return PendingOnrampTransaction(
             transactionRecord: transactionRecord,

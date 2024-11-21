@@ -36,9 +36,9 @@ class CommonPendingOnrampTransactionsManager {
             request: { [expressAPIProvider, pendingTransactionFactory] prendinTransaction in
                 do {
                     let record = prendinTransaction.transactionRecord
-                    let onrampTransactionStatus = try await expressAPIProvider.onrampStatus(transactionId: record.expressTransactionId)
+                    let onrampTransaction = try await expressAPIProvider.onrampStatus(transactionId: record.expressTransactionId)
                     let pendingTransaction = pendingTransactionFactory.buildPendingOnrampTransaction(
-                        currentOnrampStatus: onrampTransactionStatus,
+                        currentOnrampTransaction: onrampTransaction,
                         for: record
                     )
                     return pendingTransaction
@@ -46,12 +46,8 @@ class CommonPendingOnrampTransactionsManager {
                     return nil
                 }
             },
-            shouldStopPolling: { pendingTransaction in
-                pendingTransaction.transactionRecord.transactionStatus.isTerminated
-            },
-            hasChanges: { pendingTransactionA, pendingTransactionB in
-                pendingTransactionA.transactionRecord.transactionStatus != pendingTransactionB.transactionRecord.transactionStatus
-            },
+            shouldStopPolling: { $0.transactionRecord.transactionStatus.isTerminated },
+            hasChanges: { $0.transactionRecord.transactionStatus != $1.transactionRecord.transactionStatus },
             pollingInterval: Constants.statusUpdateTimeout
         )
 

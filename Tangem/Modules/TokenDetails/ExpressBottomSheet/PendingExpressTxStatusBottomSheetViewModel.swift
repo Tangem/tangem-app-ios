@@ -92,10 +92,10 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
         timeString = dateFormatter.string(from: pendingTransaction.date)
 
         sourceTokenIconInfo = pendingTransaction.sourceTokenIconInfo
-        sourceAmountText = pendingTransaction.sourceAmountText
+        sourceAmountText = pendingTransaction.sourceAmountString
 
         destinationTokenIconInfo = pendingTransaction.destinationTokenIconInfo
-        destinationAmountText = pendingTransaction.destinationAmountText
+        destinationAmountText = pendingTransaction.destinationAmountString
 
         loadEmptyFiatRates()
         updateUI(with: pendingTransaction, delay: 0)
@@ -146,32 +146,45 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     }
 
     private func loadEmptyFiatRates() {
-        switch pendingTransaction.sourceInfo {
-        case .fiat(let fullText, _):
-            sourceFiatAmountTextState = .loaded(text: fullText)
-        case .tokenTxInfo(let tokenTxInfo):
-            loadRatesIfNeeded(stateKeyPath: \.sourceFiatAmountTextState, for: tokenTxInfo, on: self)
-        }
-
-        switch pendingTransaction.destinationInfo {
-        case .fiat(let fullText, _):
-            destinationFiatAmountTextState = .loaded(text: fullText)
-        case .tokenTxInfo(let tokenTxInfo):
-            loadRatesIfNeeded(stateKeyPath: \.destinationFiatAmountTextState, for: tokenTxInfo, on: self)
+        switch pendingTransaction.branch {
+        case .swap:
+            loadRatesIfNeeded(
+                stateKeyPath: \.sourceFiatAmountTextState,
+                for: pendingTransaction.sourceTokenItem,
+                amountString: pendingTransaction.sourceAmountString,
+                on: self
+            )
+            loadRatesIfNeeded(
+                stateKeyPath: \.destinationFiatAmountTextState,
+                for: pendingTransaction.destinationTokenItem,
+                amountString: pendingTransaction.destinationAmountString,
+                on: self
+            )
+        case .onramp:
+            sourceFiatAmountTextState = .noData
+            loadRatesIfNeeded(
+                stateKeyPath: \.destinationFiatAmountTextState,
+                for: pendingTransaction.destinationTokenItem,
+                amountString: pendingTransaction.destinationAmountString,
+                on: self
+            )
         }
     }
 
     private func loadRatesIfNeeded(
         stateKeyPath: ReferenceWritableKeyPath<PendingExpressTxStatusBottomSheetViewModel, LoadableTextView.State>,
-        for tokenTxInfo: ExpressPendingTransactionRecord.TokenTxInfo,
+        for tokenItem: TokenItem?,
+        amountString: String,
         on root: PendingExpressTxStatusBottomSheetViewModel
     ) {
-        guard let currencyId = tokenTxInfo.tokenItem.currencyId else {
+        guard let currencyId = tokenItem?.currencyId else {
             root[keyPath: stateKeyPath] = .noData
             return
         }
 
-        if let fiat = balanceConverter.convertToFiat(tokenTxInfo.amount, currencyId: currencyId) {
+        let amount = ExpressPendingTransactionRecord.convertToDecimal(amountString)
+
+        if let fiat = balanceConverter.convertToFiat(amount, currencyId: currencyId) {
             root[keyPath: stateKeyPath] = .loaded(text: balanceFormatter.formatFiatBalance(fiat))
             return
         }
@@ -179,7 +192,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
         Task { [weak root] in
             guard let root = root else { return }
 
-            let fiatAmount = try await root.balanceConverter.convertToFiat(tokenTxInfo.amount, currencyId: currencyId)
+            let fiatAmount = try await root.balanceConverter.convertToFiat(amount, currencyId: currencyId)
             let formattedFiat = root.balanceFormatter.formatFiatBalance(fiatAmount)
             await runOnMain {
                 root[keyPath: stateKeyPath] = .loaded(text: formattedFiat)

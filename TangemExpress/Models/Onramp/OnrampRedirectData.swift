@@ -18,8 +18,7 @@ public struct OnrampRedirectData: Hashable, Codable, Equatable {
     public let paymentMethod: String
     public let countryCode: String
     public let fromAmount: String
-    public let toAmount: String?
-    public let toDecimals: Int
+    public let toAmount: Decimal?
     public let providerId: String
     public let toAddress: String
     public let redirectUrl: URL

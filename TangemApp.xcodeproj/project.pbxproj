@@ -2013,6 +2013,7 @@
 		DA76BF4A2CEF958700199317 /* OnrampPendingTransactionRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA76BF492CEF958700199317 /* OnrampPendingTransactionRecord.swift */; };
 		DA76BF4C2CEF95DF00199317 /* PendingOnrampTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA76BF4B2CEF95DF00199317 /* PendingOnrampTransaction.swift */; };
 		DA76BF4F2CEF964300199317 /* OnrampPendingTransactionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA76BF4E2CEF964300199317 /* OnrampPendingTransactionRepository.swift */; };
+		DA76BF522CEF9E0C00199317 /* OnrampTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA76BF512CEF9E0C00199317 /* OnrampTransaction.swift */; };
 		DA78444C2B3080AF002281B8 /* SuccessToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA78444B2B3080AF002281B8 /* SuccessToast.swift */; };
 		DA7859E12AB0451F004FAE04 /* GenerateAddressesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7859E02AB0451F004FAE04 /* GenerateAddressesView.swift */; };
 		DA7B2C512B6B893500FB9622 /* SendNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7B2C4F2B6B893500FB9622 /* SendNotificationManager.swift */; };
@@ -5139,6 +5140,7 @@
 		DA76BF492CEF958700199317 /* OnrampPendingTransactionRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPendingTransactionRecord.swift; sourceTree = "<group>"; };
 		DA76BF4B2CEF95DF00199317 /* PendingOnrampTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingOnrampTransaction.swift; sourceTree = "<group>"; };
 		DA76BF4E2CEF964300199317 /* OnrampPendingTransactionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPendingTransactionRepository.swift; sourceTree = "<group>"; };
+		DA76BF512CEF9E0C00199317 /* OnrampTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampTransaction.swift; sourceTree = "<group>"; };
 		DA78444B2B3080AF002281B8 /* SuccessToast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessToast.swift; sourceTree = "<group>"; };
 		DA7859E02AB0451F004FAE04 /* GenerateAddressesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateAddressesView.swift; sourceTree = "<group>"; };
 		DA7B2C4F2B6B893500FB9622 /* SendNotificationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendNotificationManager.swift; sourceTree = "<group>"; };
@@ -14079,6 +14081,7 @@
 				EF49C0622CAD859D0062AF06 /* OnrampCountry.swift */,
 				EF49C0602CAD858D0062AF06 /* OnrampIdentity.swift */,
 				EF28010D2CDE7FC4002AEB9A /* OnrampTransactionStatus.swift */,
+				DA76BF512CEF9E0C00199317 /* OnrampTransaction.swift */,
 			);
 			path = Onramp;
 			sourceTree = "<group>";
@@ -19235,6 +19238,7 @@
 				EF9E2A1D2B4F0CD100418559 /* ExpressPair.swift in Sources */,
 				EF9E2A302B4F0CD100418559 /* ExpressExchangeDataDecoder.swift in Sources */,
 				EF9E2A102B4F0CD100418559 /* CommonExpressAPIProvider.swift in Sources */,
+				DA76BF522CEF9E0C00199317 /* OnrampTransaction.swift in Sources */,
 				EF9E2A192B4F0CD100418559 /* ExpressAPIError.swift in Sources */,
 				EF1399722CBCFD3F00AC9E2B /* OnrampQuotesRequestItem.swift in Sources */,
 				EF9E2A3B2B4F0CD100418559 /* CommonExpressManager.swift in Sources */,

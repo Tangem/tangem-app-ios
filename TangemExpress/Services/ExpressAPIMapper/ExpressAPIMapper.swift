@@ -211,6 +211,24 @@ struct ExpressAPIMapper {
 
         return OnrampRedirectDataWithId(txId: response.txId, redirectData: redirectData)
     }
+
+    func mapToOnrampTransaction(response: ExpressDTO.Onramp.Status.Response) throws -> OnrampTransaction {
+        guard var fromAmount = Decimal(string: response.fromAmount) else {
+            throw ExpressAPIMapperError.mapToDecimalError(response.fromAmount)
+        }
+
+        fromAmount /= pow(10, 2)
+
+        let toAmount = response.toAmount
+            .flatMap(Decimal.init)
+            .map { $0 / pow(10, response.toDecimals) }
+
+        return OnrampTransaction(
+            fromAmount: fromAmount,
+            toAmount: toAmount,
+            status: response.status
+        )
+    }
 }
 
 enum ExpressAPIMapperError: LocalizedError {

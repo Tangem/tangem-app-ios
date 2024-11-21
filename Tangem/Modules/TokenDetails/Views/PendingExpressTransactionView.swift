@@ -49,7 +49,7 @@ struct PendingExpressTransactionView: View {
                         isWithOverlays: false
                     )
 
-                    Text(info.destinationCurrencySymbol)
+                    Text(info.destinationAmountText)
                         .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
                 }
             }
@@ -89,7 +89,7 @@ extension PendingExpressTransactionView {
         let sourceIconInfo: TokenIconInfo
         let sourceAmountText: String
         let destinationIconInfo: TokenIconInfo
-        let destinationCurrencySymbol: String
+        let destinationAmountText: String
         let state: State
         let action: (String) -> Void
 
@@ -121,7 +121,7 @@ struct PendingExpressTransactionView_Previews: PreviewProvider {
                         from: .token(.shibaInuMock, .init(.arbitrum(testnet: false), derivationPath: nil)),
                         isCustom: false
                     ),
-                    destinationCurrencySymbol: "SHIB",
+                    destinationAmountText: "SHIB",
                     state: .inProgress,
                     action: { _ in }
                 ))
@@ -138,7 +138,7 @@ struct PendingExpressTransactionView_Previews: PreviewProvider {
                         from: .blockchain(.init(.ethereum(testnet: false), derivationPath: nil)),
                         isCustom: true
                     ),
-                    destinationCurrencySymbol: "ETH",
+                    destinationAmountText: "ETH",
                     state: .warning,
                     action: { _ in }
                 ))
@@ -155,7 +155,7 @@ struct PendingExpressTransactionView_Previews: PreviewProvider {
                         from: .blockchain(.init(.cardano(extended: false), derivationPath: nil)),
                         isCustom: false
                     ),
-                    destinationCurrencySymbol: "ADA",
+                    destinationAmountText: "ADA",
                     state: .error,
                     action: { _ in }
                 ))

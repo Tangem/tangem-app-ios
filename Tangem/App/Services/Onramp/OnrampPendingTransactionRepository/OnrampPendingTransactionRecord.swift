@@ -11,9 +11,9 @@ import Foundation
 struct OnrampPendingTransactionRecord: Codable, Equatable {
     let userWalletId: String
     let expressTransactionId: String
-    let fromAmount: Decimal?
+    let fromAmount: Decimal
     let fromCurrencyCode: String
-    let destinationTokenTxInfo: ExpressPendingTransactionRecord.TokenTxInfo
+    var destinationTokenTxInfo: ExpressPendingTransactionRecord.TokenTxInfo
     let provider: ExpressPendingTransactionRecord.Provider
     let date: Date
     let externalTxId: String?
