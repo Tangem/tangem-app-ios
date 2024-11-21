@@ -34,6 +34,8 @@ final class PushNotificationsService: NSObject {
         .ephemeral,
     ]
 
+    private var respondedNotificationIds: Set<String> = []
+
     private var userNotificationCenter: UNUserNotificationCenter { .current() }
     private let application: UIApplication
 
@@ -77,7 +79,17 @@ final class PushNotificationsService: NSObject {
 
 extension PushNotificationsService: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
-        os_log("___\(#fileID)___: \(#function)") // FIXME: Andrey Fedorov - Test only, remove when not needed
+        let identifier = response.notification.request.identifier
+
+        guard
+            response.actionIdentifier == UNNotificationDefaultActionIdentifier,
+            !respondedNotificationIds.contains(identifier)
+        else {
+            return
+        }
+
+        respondedNotificationIds.insert(identifier)
         Analytics.log(.pushNotificationOpened)
+        os_log("___\(#fileID)___: \(#function) \(response)") // FIXME: Andrey Fedorov - Test only, remove when not needed
     }
 }
