@@ -30,8 +30,3 @@ public extension OnrampRepository {
             .eraseToAnyPublisher()
     }
 }
-
-public struct OnrampPreference: Hashable {
-    public let country: OnrampCountry?
-    public let currency: OnrampFiatCurrency?
-}

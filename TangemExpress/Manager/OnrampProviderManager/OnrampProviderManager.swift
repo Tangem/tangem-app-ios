@@ -6,8 +6,6 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-import TangemFoundation
-
 public protocol OnrampProviderManager {
     /// Get actual state
     var state: OnrampProviderManagerState { get }
