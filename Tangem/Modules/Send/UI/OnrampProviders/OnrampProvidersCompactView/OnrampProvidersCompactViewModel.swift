@@ -43,7 +43,7 @@ class OnrampProvidersCompactViewModel: ObservableObject {
                     iconURL: provider.paymentMethod.image,
                     paymentMethodName: provider.paymentMethod.name,
                     providerName: provider.provider.name,
-                    badge: .none
+                    badge: provider.isBest ? .bestRate : .none
                 ) { [weak self] in
                     self?.router?.onrampStepRequestEditProvider()
                 }

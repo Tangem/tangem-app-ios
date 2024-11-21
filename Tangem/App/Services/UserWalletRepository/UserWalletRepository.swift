@@ -22,9 +22,8 @@ protocol UserWalletRepository: Initializable {
     func unlock(with method: UserWalletRepositoryUnlockMethod, completion: @escaping (UserWalletRepositoryResult?) -> Void)
     func setSelectedUserWalletId(_ userWalletId: UserWalletId, reason: UserWalletRepositorySelectionChangeReason)
     func updateSelection()
-    func logoutIfNeeded()
     func add(_ userWalletModel: UserWalletModel)
-    func delete(_ userWalletId: UserWalletId, logoutIfNeeded shouldAutoLogout: Bool)
+    func delete(_ userWalletId: UserWalletId)
     func save()
     func clearNonSelectedUserWallets()
     func initializeServices(for userWalletModel: UserWalletModel)
@@ -62,7 +61,7 @@ enum UserWalletRepositoryResult {
 }
 
 enum UserWalletRepositoryEvent {
-    case locked(reason: UserWalletRepositoryLockReason)
+    case locked
     case biometryUnlocked
     case scan(isScanning: Bool)
     case inserted(userWalletId: UserWalletId)
@@ -76,11 +75,6 @@ enum UserWalletRepositorySelectionChangeReason {
     case userSelected
     case inserted
     case deleted
-}
-
-enum UserWalletRepositoryLockReason {
-    case loggedOut
-    case nothingToDisplay
 }
 
 enum UserWalletRepositoryUnlockMethod {

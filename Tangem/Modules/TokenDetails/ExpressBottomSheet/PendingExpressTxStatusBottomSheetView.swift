@@ -11,8 +11,6 @@ import SwiftUI
 struct PendingExpressTxStatusBottomSheetView: View {
     @ObservedObject var viewModel: PendingExpressTxStatusBottomSheetViewModel
 
-    private let iconSize = CGSize(bothDimensions: 36)
-
     // This animation is created explicitly to synchronise them with the delayed appearance of the notification
     private var animation: Animation {
         .easeInOut(duration: viewModel.animationDuration)
@@ -21,7 +19,7 @@ struct PendingExpressTxStatusBottomSheetView: View {
     var body: some View {
         VStack(spacing: 0) {
             VStack(spacing: 12) {
-                Text(Localization.expressExchangeStatusTitle)
+                Text(viewModel.sheetTitle)
                     .style(Fonts.Regular.headline, color: Colors.Text.primary1)
 
                 Text(Localization.expressExchangeStatusSubtitle)
@@ -67,9 +65,9 @@ struct PendingExpressTxStatusBottomSheetView: View {
             }
 
             HStack(spacing: 12) {
-                tokenInfo(
-                    with: viewModel.sourceTokenIconInfo,
-                    cryptoAmountText: viewModel.sourceAmountText,
+                PendingExpressTxTokenInfoView(
+                    tokenIconInfo: viewModel.sourceTokenIconInfo,
+                    amountText: viewModel.sourceAmountText,
                     fiatAmountTextState: viewModel.sourceFiatAmountTextState
                 )
 
@@ -79,9 +77,9 @@ struct PendingExpressTxStatusBottomSheetView: View {
                     .frame(size: .init(bothDimensions: 12))
                     .foregroundColor(Colors.Icon.informative)
 
-                tokenInfo(
-                    with: viewModel.destinationTokenIconInfo,
-                    cryptoAmountText: viewModel.destinationAmountText,
+                PendingExpressTxTokenInfoView(
+                    tokenIconInfo: viewModel.destinationTokenIconInfo,
+                    amountText: viewModel.destinationAmountText,
                     fiatAmountTextState: viewModel.destinationFiatAmountTextState
                 )
             }
@@ -98,9 +96,7 @@ struct PendingExpressTxStatusBottomSheetView: View {
                 Spacer()
 
                 if let transactionID = viewModel.transactionID {
-                    Button {
-                        viewModel.copyTransactionID()
-                    } label: {
+                    Button(action: viewModel.copyTransactionID) {
                         HStack(spacing: 4) {
                             Assets.copy.image
                                 .resizable()
@@ -122,57 +118,14 @@ struct PendingExpressTxStatusBottomSheetView: View {
     }
 
     private var statusesView: some View {
-        VStack(spacing: 14) {
-            HStack(spacing: 10) {
-                Text(Localization.expressExchangeBy(viewModel.providerRowViewModel.provider.name))
-                    .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
-
-                Spacer()
-
-                Button(action: viewModel.openProviderFromStatusHeader, label: {
-                    HStack(spacing: 4) {
-                        Assets.arrowRightUpMini.image
-                            .resizable()
-                            .renderingMode(.template)
-                            .foregroundColor(Colors.Text.tertiary)
-                            .frame(size: .init(bothDimensions: 18))
-
-                        Text(Localization.commonGoToProvider)
-                            .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-                    }
-                })
-                .opacity(viewModel.showGoToProviderHeaderButton ? 1.0 : 0.0)
-            }
-
-            VStack(spacing: 0) {
-                ForEach(viewModel.statusesList.indexed(), id: \.1) { index, status in
-                    PendingExpressTransactionStatusRow(isFirstRow: index == 0, info: status)
-                }
-            }
-        }
-        .defaultRoundedBackground(with: Colors.Background.action)
+        PendingExpressTxStatusView(
+            title: viewModel.statusViewTitle,
+            statusesList: viewModel.statusesList,
+            showGoToProviderHeaderButton: viewModel.showGoToProviderHeaderButton,
+            openProviderAction: viewModel.openProviderFromStatusHeader
+        )
         // This prevents notification to appear and disappear on top of the statuses list
         .zIndex(5)
-    }
-
-    private func tokenInfo(with tokenIconInfo: TokenIconInfo, cryptoAmountText: String, fiatAmountTextState: LoadableTextView.State) -> some View {
-        HStack(spacing: 12) {
-            TokenIcon(tokenIconInfo: tokenIconInfo, size: iconSize)
-
-            VStack(alignment: .leading, spacing: 2) {
-                SensitiveText(cryptoAmountText)
-
-                    .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
-
-                LoadableTextView(
-                    state: fiatAmountTextState,
-                    font: Fonts.Regular.caption1,
-                    textColor: Colors.Text.tertiary,
-                    loaderSize: .init(width: 52, height: 12),
-                    isSensitiveText: true
-                )
-            }
-        }
     }
 }
 
@@ -211,6 +164,7 @@ struct ExpressPendingTxStatusBottomSheetView_Preview: PreviewProvider {
         )
         let pendingTransaction = factory.buildPendingExpressTransaction(currentExpressStatus: .sending, refundedTokenItem: .blockchain(.init(.ethereum(testnet: false), derivationPath: nil)), for: record)
         return .init(
+            expressBranch: .swap,
             pendingTransaction: pendingTransaction,
             currentTokenItem: tokenItem,
             pendingTransactionsManager: CommonPendingExpressTransactionsManager(

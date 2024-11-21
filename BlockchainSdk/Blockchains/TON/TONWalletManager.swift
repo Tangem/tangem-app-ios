@@ -160,10 +160,15 @@ private extension TONWalletManager {
         wallet.add(coinValue: info.balance)
 
         for (token, tokenInfo) in info.tokensInfo {
-            wallet.add(tokenValue: tokenInfo.balance, for: token)
-
-            // jetton wallet address is used to calculate fee and build transaction
-            jettonWalletAddressCache[token] = tokenInfo.jettonWalletAddress
+            switch tokenInfo {
+            case .success(let value):
+                wallet.add(tokenValue: value.balance, for: token)
+                // jetton wallet address is used to calculate fee and build transaction
+                jettonWalletAddressCache[token] = value.jettonWalletAddress
+            case .failure:
+                wallet.clearAmount(for: token)
+                jettonWalletAddressCache[token] = nil
+            }
         }
 
         txBuilder.sequenceNumber = info.sequenceNumber

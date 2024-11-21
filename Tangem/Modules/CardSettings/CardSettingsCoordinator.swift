@@ -108,8 +108,11 @@ extension CardSettingsCoordinator: CardSettingsRoutable {
 
 extension CardSettingsCoordinator: ResetToFactoryViewRoutable {
     func dismiss() {
-        if userWalletRepository.selectedModel == nil {
-            popToRoot()
+        if userWalletRepository.models.isEmpty {
+            // fix stories animation no-resume issue
+            DispatchQueue.main.async {
+                self.popToRoot()
+            }
         } else {
             dismissAction(())
         }
