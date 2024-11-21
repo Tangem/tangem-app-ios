@@ -44,7 +44,8 @@ class CommonStakingAPIProvider: StakingAPIProvider {
             walletAddress: wallet.address,
             network: wallet.item.network,
             status: .processing,
-            limit: Constants.pendingActionsResponseLimit
+            limit: Constants.pendingActionsResponseLimit,
+            sort: Constants.pendingActionsResponseSort
         )
         let response = try await service.actions(request: request)
         return try mapper.mapToPendingActions(from: response)
@@ -128,5 +129,6 @@ class CommonStakingAPIProvider: StakingAPIProvider {
 extension CommonStakingAPIProvider {
     enum Constants {
         static let pendingActionsResponseLimit = 50 // maximum that supports stakekit API
+        static let pendingActionsResponseSort = "createdAtDesc"
     }
 }

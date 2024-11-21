@@ -127,10 +127,13 @@ struct StakeKitMapper {
     }
 
     func mapToPendingActions(from response: StakeKitDTO.Actions.List.Response) throws -> [PendingAction] {
-        try response.data.map { action in
+        try response.data.compactMap { action in
             guard let amountString = action.amount, let amount = Decimal(string: amountString) else {
                 throw StakeKitMapperError.noData("PendingAction.amount not found")
             }
+
+            // just to make sure zero or negative amount will not be displayed on UI
+            guard amount > 0 else { return nil }
 
             let actionTransaction: [ActionTransaction] = action.transactions.map { transaction in
                 ActionTransaction(id: transaction.id, stepIndex: transaction.stepIndex)
