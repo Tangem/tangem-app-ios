@@ -82,7 +82,7 @@ public extension LoadingResult {
     }
 }
 
-// MARK: - Mapping
+// MARK: - Error
 
 public enum LoadingResultError: LocalizedError {
     case loadingInProcess
