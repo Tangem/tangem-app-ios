@@ -10,11 +10,29 @@ import Foundation
 import Combine
 import TangemExpress
 
-protocol PendingOnrampTransactionsManager: AnyObject {
+protocol PendingOnrampTransactionsManager: PendingGenericTransactionsManager {
     var pendingTransactions: [PendingExpressTransaction] { get }
     var pendingTransactionsPublisher: AnyPublisher<[PendingExpressTransaction], Never> { get }
 
     func hideTransaction(with id: String)
+}
+
+extension PendingOnrampTransactionsManager {
+    var pendingGenericTransactions: [PendingTransaction] {
+        pendingTransactions.map(PendingTransaction.from)
+    }
+
+    var pendingGenericTransactionsPublisher: AnyPublisher<[PendingTransaction], Never> {
+        pendingTransactionsPublisher
+            .map { transactions in
+                transactions.map(PendingTransaction.from)
+            }
+            .eraseToAnyPublisher()
+    }
+
+    func hideGenericTransaction(with id: String) {
+        hideTransaction(with: id)
+    }
 }
 
 class CommonPendingOnrampTransactionsManager {

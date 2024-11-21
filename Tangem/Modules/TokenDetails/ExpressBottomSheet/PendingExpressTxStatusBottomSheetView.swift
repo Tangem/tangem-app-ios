@@ -167,12 +167,18 @@ struct ExpressPendingTxStatusBottomSheetView_Preview: PreviewProvider {
         )
         let pendingTransaction = factory.buildPendingExpressTransaction(currentExpressStatus: .sending, refundedTokenItem: .blockchain(.init(.ethereum(testnet: false), derivationPath: nil)), for: record)
         return .init(
-            pendingTransaction: pendingTransaction,
+            pendingTransaction: PendingTransaction.from(pendingTransaction),
             currentTokenItem: tokenItem,
-            pendingTransactionsManager: CommonPendingExpressTransactionsManager(
-                userWalletId: userWalletId,
-                walletModel: .mockETH,
-                expressRefundedTokenHandler: ExpressRefundedTokenHandlerMock()
+            pendingTransactionsManager: CompoundPendingGenericTransactionsManager(
+                first: CommonPendingExpressTransactionsManager(
+                    userWalletId: userWalletId,
+                    walletModel: .mockETH,
+                    expressRefundedTokenHandler: ExpressRefundedTokenHandlerMock()
+                ),
+                second: CommonPendingOnrampTransactionsManager(
+                    userWalletId: userWalletId,
+                    walletModel: .mockETH
+                )
             ),
             router: TokenDetailsCoordinator()
         )

@@ -347,7 +347,10 @@ private extension TokenDetailsViewModel {
         coordinator?.openPendingExpressTransactionDetails(
             for: pendingTransaction,
             tokenItem: walletModel.tokenItem,
-            pendingTransactionsManager: pendingExpressTransactionsManager
+            pendingTransactionsManager: CompoundPendingGenericTransactionsManager(
+                first: pendingExpressTransactionsManager,
+                second: pendingOnrampTransactionsManager
+            )
         )
     }
 
@@ -361,7 +364,10 @@ private extension TokenDetailsViewModel {
         coordinator?.openPendingExpressTransactionDetails(
             for: pendingTransaction,
             tokenItem: walletModel.tokenItem,
-            pendingTransactionsManager: pendingExpressTransactionsManager
+            pendingTransactionsManager: CompoundPendingGenericTransactionsManager(
+                first: pendingExpressTransactionsManager,
+                second: pendingOnrampTransactionsManager
+            )
         )
     }
 }

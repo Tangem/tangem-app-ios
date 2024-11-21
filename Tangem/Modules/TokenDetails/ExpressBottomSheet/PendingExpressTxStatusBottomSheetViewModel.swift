@@ -11,9 +11,110 @@ import Combine
 import TangemExpress
 import UIKit
 
+protocol PendingGenericTransactionsManager: AnyObject {
+    var pendingGenericTransactions: [PendingTransaction] { get }
+    var pendingGenericTransactionsPublisher: AnyPublisher<[PendingTransaction], Never> { get }
+
+    func hideGenericTransaction(with id: String)
+}
+
+final class CompoundPendingGenericTransactionsManager: PendingGenericTransactionsManager {
+    private let first: PendingGenericTransactionsManager
+    private let second: PendingGenericTransactionsManager
+
+    init(
+        first: PendingGenericTransactionsManager,
+        second: PendingGenericTransactionsManager
+    ) {
+        self.first = first
+        self.second = second
+    }
+
+    var pendingGenericTransactions: [PendingTransaction] {
+        first.pendingGenericTransactions + second.pendingGenericTransactions
+    }
+
+    var pendingGenericTransactionsPublisher: AnyPublisher<[PendingTransaction], Never> {
+        Publishers.CombineLatest(
+            first.pendingGenericTransactionsPublisher,
+            second.pendingGenericTransactionsPublisher
+        )
+        .map { $0 + $1 }
+        .eraseToAnyPublisher()
+    }
+
+    func hideGenericTransaction(with id: String) {
+        first.hideGenericTransaction(with: id)
+        second.hideGenericTransaction(with: id)
+    }
+}
+
+enum PendingTransactionFiatInfo {
+    case string(String)
+    case tokenTxInfo(ExpressPendingTransactionRecord.TokenTxInfo)
+}
+
+struct PendingTransaction {
+    let branch: ExpressBranch
+
+    let expressTransactionId: String
+    let externalTxId: String?
+    let externalTxURL: String?
+    let provider: ExpressPendingTransactionRecord.Provider
+    let date: Date
+
+    let sourceTokenIconInfo: TokenIconInfo
+    let sourceAmountText: String
+    let sourceFiatInfo: PendingTransactionFiatInfo
+
+    let destinationTokenIconInfo: TokenIconInfo
+    let destinationAmountText: String
+    let destinationFiatInfo: PendingTransactionFiatInfo
+
+    let transactionStatus: PendingExpressTransactionStatus
+
+    let refundedTokenItem: TokenItem?
+
+    let statuses: [PendingExpressTransactionStatus]
+
+    static func from(_ transaction: PendingExpressTransaction) -> PendingTransaction {
+        let record = transaction.transactionRecord
+        guard let expressSpecific = record.expressSpecific else {
+            fatalError("unexpected state")
+        }
+
+        let iconInfoBuilder = TokenIconInfoBuilder()
+        let balanceFormatter = BalanceFormatter()
+
+        let sourceTokenTxInfo = expressSpecific.sourceTokenTxInfo
+        let sourceTokenItem = sourceTokenTxInfo.tokenItem
+
+        let destinationTokenTxInfo = record.destinationTokenTxInfo
+        let destinationTokenItem = destinationTokenTxInfo.tokenItem
+
+        return PendingTransaction(
+            branch: .swap,
+            expressTransactionId: record.expressTransactionId,
+            externalTxId: record.externalTxId,
+            externalTxURL: record.externalTxURL,
+            provider: record.provider,
+            date: record.date,
+            sourceTokenIconInfo: iconInfoBuilder.build(from: sourceTokenItem, isCustom: sourceTokenTxInfo.isCustom),
+            sourceAmountText: balanceFormatter.formatCryptoBalance(sourceTokenTxInfo.amount, currencyCode: sourceTokenItem.currencySymbol),
+            sourceFiatInfo: .tokenTxInfo(expressSpecific.sourceTokenTxInfo),
+            destinationTokenIconInfo: iconInfoBuilder.build(from: destinationTokenItem, isCustom: destinationTokenTxInfo.isCustom),
+            destinationAmountText: balanceFormatter.formatCryptoBalance(destinationTokenTxInfo.amount, currencyCode: destinationTokenItem.currencySymbol),
+            destinationFiatInfo: .tokenTxInfo(record.destinationTokenTxInfo),
+            transactionStatus: record.transactionStatus,
+            refundedTokenItem: record.refundedTokenItem,
+            statuses: transaction.statuses
+        )
+    }
+}
+
 class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable {
     var transactionID: String? {
-        pendingTransaction.transactionRecord.externalTxId
+        pendingTransaction.externalTxId
     }
 
     var animationDuration: TimeInterval {
@@ -38,9 +139,9 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     @Published var notificationViewInputs: [NotificationViewInput] = []
 
     private let expressProviderFormatter = ExpressProviderFormatter(balanceFormatter: .init())
-    private weak var pendingTransactionsManager: (any PendingExpressTransactionsManager)?
+    private weak var pendingTransactionsManager: (any PendingGenericTransactionsManager)?
 
-    private let pendingTransaction: PendingExpressTransaction
+    private let pendingTransaction: PendingTransaction
     private let currentTokenItem: TokenItem
 
     private let balanceConverter = BalanceConverter()
@@ -51,13 +152,13 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     private weak var router: PendingExpressTxStatusRoutable?
     private var successToast: Toast<SuccessToast>?
     private var externalProviderTxURL: URL? {
-        pendingTransaction.transactionRecord.externalTxURL.flatMap { URL(string: $0) }
+        pendingTransaction.externalTxURL.flatMap { URL(string: $0) }
     }
 
     init(
-        pendingTransaction: PendingExpressTransaction,
+        pendingTransaction: PendingTransaction,
         currentTokenItem: TokenItem,
-        pendingTransactionsManager: PendingExpressTransactionsManager,
+        pendingTransactionsManager: PendingGenericTransactionsManager,
         router: PendingExpressTxStatusRoutable
     ) {
         self.pendingTransaction = pendingTransaction
@@ -65,16 +166,15 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
         self.pendingTransactionsManager = pendingTransactionsManager
         self.router = router
 
-        let provider = pendingTransaction.transactionRecord.provider
+        let provider = pendingTransaction.provider
 
-        if pendingTransaction.transactionRecord.expressSpecific != nil {
+        switch pendingTransaction.branch {
+        case .swap:
             sheetTitle = Localization.expressExchangeStatusTitle
             statusViewTitle = Localization.expressExchangeBy(provider.name)
-        } else if pendingTransaction.transactionRecord.onrampSpecific != nil {
+        case .onramp:
             sheetTitle = Localization.commonTransactionStatus
             statusViewTitle = Localization.commonTransactionStatus
-        } else {
-            fatalError("unexpected state")
         }
 
         providerRowViewModel = .init(
@@ -90,30 +190,34 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
         dateFormatter.doesRelativeDateFormatting = true
         dateFormatter.dateStyle = .short
         dateFormatter.timeStyle = .short
-        timeString = dateFormatter.string(from: pendingTransaction.transactionRecord.date)
+        timeString = dateFormatter.string(from: pendingTransaction.date)
 
-        let iconInfoBuilder = TokenIconInfoBuilder()
+        sourceTokenIconInfo = pendingTransaction.sourceTokenIconInfo
+        sourceAmountText = pendingTransaction.sourceAmountText
 
-        if let expressSpecific = pendingTransaction.transactionRecord.expressSpecific {
-            let sourceTokenTxInfo = expressSpecific.sourceTokenTxInfo
-            let sourceTokenItem = sourceTokenTxInfo.tokenItem
-            sourceTokenIconInfo = iconInfoBuilder.build(from: sourceTokenItem, isCustom: sourceTokenTxInfo.isCustom)
-            sourceAmountText = balanceFormatter.formatCryptoBalance(sourceTokenTxInfo.amount, currencyCode: sourceTokenItem.currencySymbol)
-        } else if let onrampSpecific = pendingTransaction.transactionRecord.onrampSpecific {
-            sourceTokenIconInfo = iconInfoBuilder.build(from: onrampSpecific.fromCurrencyCode)
-            sourceAmountText = balanceFormatter.formatFiatBalance(
-                onrampSpecific.fromAmount,
-                currencyCode: onrampSpecific.fromCurrencyCode
-            )
-        } else {
-            fatalError("unexpected state")
-        }
+//        if let expressSpecific = pendingTransaction.transactionRecord.expressSpecific {
+//            let sourceTokenTxInfo = expressSpecific.sourceTokenTxInfo
+//            let sourceTokenItem = sourceTokenTxInfo.tokenItem
+//            sourceTokenIconInfo = iconInfoBuilder.build(from: sourceTokenItem, isCustom: sourceTokenTxInfo.isCustom)
+//            sourceAmountText = balanceFormatter.formatCryptoBalance(sourceTokenTxInfo.amount, currencyCode: sourceTokenItem.currencySymbol)
+//        } else if let onrampSpecific = pendingTransaction.transactionRecord.onrampSpecific {
+//            sourceTokenIconInfo = iconInfoBuilder.build(from: onrampSpecific.fromCurrencyCode)
+//            sourceAmountText = balanceFormatter.formatFiatBalance(
+//                onrampSpecific.fromAmount,
+//                currencyCode: onrampSpecific.fromCurrencyCode
+//            )
+//        } else {
+//            fatalError("unexpected state")
+//        }
 
-        let destinationTokenTxInfo = pendingTransaction.transactionRecord.destinationTokenTxInfo
-        let destinationTokenItem = destinationTokenTxInfo.tokenItem
+//        let destinationTokenTxInfo = pendingTransaction.transactionRecord.destinationTokenTxInfo
+//        let destinationTokenItem = destinationTokenTxInfo.tokenItem
+//
+//        destinationTokenIconInfo = iconInfoBuilder.build(from: destinationTokenItem, isCustom: destinationTokenTxInfo.isCustom)
+//        destinationAmountText = balanceFormatter.formatCryptoBalance(destinationTokenTxInfo.amount, currencyCode: destinationTokenItem.currencySymbol)
 
-        destinationTokenIconInfo = iconInfoBuilder.build(from: destinationTokenItem, isCustom: destinationTokenTxInfo.isCustom)
-        destinationAmountText = balanceFormatter.formatCryptoBalance(destinationTokenTxInfo.amount, currencyCode: destinationTokenItem.currencySymbol)
+        destinationTokenIconInfo = pendingTransaction.destinationTokenIconInfo
+        destinationAmountText = pendingTransaction.destinationAmountText
 
         loadEmptyFiatRates()
         updateUI(with: pendingTransaction, delay: 0)
@@ -125,7 +229,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
             event: .tokenSwapStatusScreenOpened,
             params: [
                 .token: currentTokenItem.currencySymbol,
-                .provider: pendingTransaction.transactionRecord.provider.name,
+                .provider: pendingTransaction.provider.name,
             ]
         )
     }
@@ -164,19 +268,19 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     }
 
     private func loadEmptyFiatRates() {
-        if let expressSpecific = pendingTransaction.transactionRecord.expressSpecific {
-            loadRatesIfNeeded(stateKeyPath: \.sourceFiatAmountTextState, for: expressSpecific.sourceTokenTxInfo, on: self)
-        } else if let onrampSpecific = pendingTransaction.transactionRecord.onrampSpecific {
-            sourceFiatAmountTextState = .loaded(
-                text: balanceFormatter.formatFiatBalance(
-                    onrampSpecific.fromAmount,
-                    currencyCode: onrampSpecific.fromCurrencyCode
-                )
-            )
-        } else {
-            fatalError("unexpected state")
+        switch pendingTransaction.sourceFiatInfo {
+        case .string(let text):
+            sourceFiatAmountTextState = .loaded(text: text)
+        case .tokenTxInfo(let tokenTxInfo):
+            loadRatesIfNeeded(stateKeyPath: \.sourceFiatAmountTextState, for: tokenTxInfo, on: self)
         }
-        loadRatesIfNeeded(stateKeyPath: \.destinationFiatAmountTextState, for: pendingTransaction.transactionRecord.destinationTokenTxInfo, on: self)
+
+        switch pendingTransaction.destinationFiatInfo {
+        case .string(let text):
+            destinationFiatAmountTextState = .loaded(text: text)
+        case .tokenTxInfo(let tokenTxInfo):
+            loadRatesIfNeeded(stateKeyPath: \.destinationFiatAmountTextState, for: tokenTxInfo, on: self)
+        }
     }
 
     private func loadRatesIfNeeded(
@@ -206,11 +310,11 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     }
 
     private func bind() {
-        subscription = pendingTransactionsManager?.pendingTransactionsPublisher
+        subscription = pendingTransactionsManager?.pendingGenericTransactionsPublisher
             .withWeakCaptureOf(self)
             .map { viewModel, pendingTransactions in
                 guard let first = pendingTransactions.first(where: { tx in
-                    tx.transactionRecord.expressTransactionId == viewModel.pendingTransaction.transactionRecord.expressTransactionId
+                    tx.expressTransactionId == viewModel.pendingTransaction.expressTransactionId
                 }) else {
                     return (viewModel, nil)
                 }
@@ -218,7 +322,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
                 return (viewModel, first)
             }
             .receive(on: DispatchQueue.main)
-            .sink { (viewModel: PendingExpressTxStatusBottomSheetViewModel, pendingTx: PendingExpressTransaction?) in
+            .sink { (viewModel: PendingExpressTxStatusBottomSheetViewModel, pendingTx: PendingTransaction?) in
                 // If we've failed to find this transaction in manager it means that it was finished in either way on the provider side
                 // We can remove subscription and just display final state of transaction
                 guard let pendingTx else {
@@ -227,8 +331,8 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
                 }
 
                 // We will hide it via separate notification in case of refunded token
-                if pendingTx.transactionRecord.transactionStatus.isTerminated, pendingTx.transactionRecord.refundedTokenItem == nil {
-                    viewModel.hidePendingTx(expressTransactionId: pendingTx.transactionRecord.expressTransactionId)
+                if pendingTx.transactionStatus.isTerminated, pendingTx.refundedTokenItem == nil {
+                    viewModel.hidePendingTx(expressTransactionId: pendingTx.expressTransactionId)
                 }
 
                 viewModel.updateUI(with: pendingTx, delay: Constants.notificationAnimationDelay)
@@ -236,19 +340,19 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     }
 
     private func hidePendingTx(expressTransactionId: String) {
-        pendingTransactionsManager?.hideTransaction(with: expressTransactionId)
+        pendingTransactionsManager?.hideGenericTransaction(with: expressTransactionId)
     }
 
-    private func updateUI(with pendingTransaction: PendingExpressTransaction, delay: TimeInterval) {
+    private func updateUI(with pendingTransaction: PendingTransaction, delay: TimeInterval) {
         let converter = PendingExpressTransactionsConverter()
         let (list, currentIndex) = converter.convertToStatusRowDataList(for: pendingTransaction)
 
         updateUI(
             statusesList: list,
             currentIndex: currentIndex,
-            currentStatus: pendingTransaction.transactionRecord.transactionStatus,
-            refundedTokenItem: pendingTransaction.transactionRecord.refundedTokenItem,
-            hasExternalURL: pendingTransaction.transactionRecord.externalTxURL != nil,
+            currentStatus: pendingTransaction.transactionStatus,
+            refundedTokenItem: pendingTransaction.refundedTokenItem,
+            hasExternalURL: pendingTransaction.externalTxURL != nil,
             delay: delay
         )
     }
@@ -353,7 +457,7 @@ extension PendingExpressTxStatusBottomSheetViewModel {
             openProvider()
 
         case .refunded(let tokenItem):
-            hidePendingTx(expressTransactionId: pendingTransaction.transactionRecord.expressTransactionId)
+            hidePendingTx(expressTransactionId: pendingTransaction.expressTransactionId)
             openCurrency(tokenItem: tokenItem)
 
         default:

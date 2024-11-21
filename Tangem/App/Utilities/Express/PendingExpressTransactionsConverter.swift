@@ -57,16 +57,16 @@ struct PendingExpressTransactionsConverter {
         }
     }
 
-    func convertToStatusRowDataList(for pendingTransaction: PendingExpressTransaction) -> (list: [PendingExpressTxStatusRow.StatusRowData], currentIndex: Int) {
+    func convertToStatusRowDataList(for pendingTransaction: PendingTransaction) -> (list: [PendingExpressTxStatusRow.StatusRowData], currentIndex: Int) {
         let statuses = pendingTransaction.statuses
-        let currentStatusIndex = statuses.firstIndex(of: pendingTransaction.transactionRecord.transactionStatus) ?? 0
+        let currentStatusIndex = statuses.firstIndex(of: pendingTransaction.transactionStatus) ?? 0
 
         return (statuses.indexed().map { index, status in
             convertToStatusRowData(
                 index: index,
                 status: status,
                 currentStatusIndex: currentStatusIndex,
-                currentStatus: pendingTransaction.transactionRecord.transactionStatus,
+                currentStatus: pendingTransaction.transactionStatus,
                 lastStatusIndex: statuses.count - 1
             )
         }, currentStatusIndex)

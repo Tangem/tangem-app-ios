@@ -120,10 +120,10 @@ extension TokenDetailsCoordinator: TokenDetailsRoutable {
     func openPendingExpressTransactionDetails(
         for pendingTransaction: PendingExpressTransaction,
         tokenItem: TokenItem,
-        pendingTransactionsManager: PendingExpressTransactionsManager
+        pendingTransactionsManager: PendingGenericTransactionsManager
     ) {
         pendingExpressTxStatusBottomSheetViewModel = PendingExpressTxStatusBottomSheetViewModel(
-            pendingTransaction: pendingTransaction,
+            pendingTransaction: PendingTransaction.from(pendingTransaction),
             currentTokenItem: tokenItem,
             pendingTransactionsManager: pendingTransactionsManager,
             router: self
