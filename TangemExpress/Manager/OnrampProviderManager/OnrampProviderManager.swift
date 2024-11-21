@@ -34,27 +34,6 @@ public enum OnrampProviderManagerState: Hashable {
         }
     }
 
-    public var isReadyToBuy: Bool {
-        switch self {
-        case .loaded: true
-        case .idle, .loading, .failed, .notSupported, .restriction: false
-        }
-    }
-
-    public var canBeShow: Bool {
-        switch self {
-        case .restriction, .loaded: true
-        case .idle, .loading, .failed, .notSupported: false
-        }
-    }
-
-    public var error: HashableError? {
-        switch self {
-        case .failed(let error): error
-        case .restriction, .loaded, .idle, .loading, .notSupported: nil
-        }
-    }
-
     public enum Restriction: Hashable, CustomStringConvertible {
         case tooSmallAmount(_ minAmount: String)
         case tooBigAmount(_ maxAmount: String)

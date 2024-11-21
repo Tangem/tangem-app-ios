@@ -75,8 +75,9 @@ private extension OnrampModel {
         onrampRepository
             .preferenceCurrencyPublisher
             .removeDuplicates()
-            .sink { [weak self] currency in
-                self?.preferenceDidChange(currency: currency)
+            .withWeakCaptureOf(self)
+            .sink { model, currency in
+                model.preferenceDidChange(currency: currency)
             }
             .store(in: &bag)
     }
@@ -101,13 +102,13 @@ private extension OnrampModel {
         mainTask(keeper: _selectedOnrampProvider.send) {
             guard let amount else {
                 // Clear onrampManager
-                try await $0.onrampManager.setupQuotes(amount: .none)
+                await $0.onrampManager.setupQuotes(amount: .none)
                 return .none
             }
 
             $0._selectedOnrampProvider.send(.loading)
 
-            try await $0.onrampManager.setupQuotes(amount: amount)
+            await $0.onrampManager.setupQuotes(amount: amount)
             try Task.checkCancellation()
 
             return await $0.onrampManager.selectedProvider
@@ -116,7 +117,7 @@ private extension OnrampModel {
 
     func updatePaymentMethod(method: OnrampPaymentMethod) {
         mainTask(keeper: _selectedOnrampProvider.send) {
-            await $0.onrampManager.updatePaymentMethod(paymentMethod: method)
+            try await $0.onrampManager.updatePaymentMethod(paymentMethod: method)
 
             return await $0.onrampManager.selectedProvider
         }
@@ -240,7 +241,9 @@ extension OnrampModel: OnrampPaymentMethodsInput {
     }
 
     var paymentMethodsPublisher: AnyPublisher<[OnrampPaymentMethod], Never> {
-        _onrampProviders.compactMap { $0?.value?.map(\.paymentMethod) }.eraseToAnyPublisher()
+        _onrampProviders.compactMap {
+            $0?.value?.filter { $0.hasProviders() }.map(\.paymentMethod)
+        }.eraseToAnyPublisher()
     }
 }
 
@@ -274,7 +277,7 @@ extension OnrampModel: OnrampRedirectingOutput {
 extension OnrampModel: OnrampInput {
     var isValidToRedirectPublisher: AnyPublisher<Bool, Never> {
         _selectedOnrampProvider
-            .compactMap { $0?.value?.manager.state.isReadyToBuy }
+            .compactMap { $0?.value?.isReadyToBuy }
             .eraseToAnyPublisher()
     }
 }
@@ -323,25 +326,27 @@ extension OnrampModel: SendBaseOutput {
 // MARK: - OnrampNotificationManagerInput
 
 extension OnrampModel: OnrampNotificationManagerInput {
-    var errorPublisher: AnyPublisher<OnrampModelError?, Never> {
-        Publishers
-            .CombineLatest3(_currency, _onrampProviders, _selectedOnrampProvider)
-            .map { currency, providers, provider -> OnrampModelError? in
-                if let currencyError = currency.error {
-                    return .loadingCountry(error: currencyError)
-                }
+    var errorPublisher: AnyPublisher<Error?, Never> {
+        let currencyErrorPublisher = _currency
+            .filter { !$0.isLoading }
+            .map { $0.error }
 
-                if let providersError = providers?.error {
-                    return .loadingProviders(error: providersError)
-                }
+        let onrampProvidersErrorPublisher = _onrampProviders
+            .compactMap { $0 }
+            .filter { !$0.isLoading }
+            .map { $0.error }
 
-                if let error = provider?.value?.manager.state.error {
-                    return .loadingQuotes(error: error.error)
-                }
+        let selectedOnrampProviderErrorPublisher = _selectedOnrampProvider
+            // Here we clear error on `loading` state
+            // Because we have the LoadingView
+            .map { $0?.value?.error?.error }
 
-                return nil
-            }
-            .eraseToAnyPublisher()
+        return Publishers.Merge3(
+            currencyErrorPublisher,
+            onrampProvidersErrorPublisher,
+            selectedOnrampProviderErrorPublisher
+        )
+        .eraseToAnyPublisher()
     }
 
     func refreshError() {
@@ -357,7 +362,7 @@ extension OnrampModel: OnrampNotificationManagerInput {
             updateProviders(country: country, currency: currency)
         }
 
-        if case .failed = _selectedOnrampProvider.value?.value?.manager.state {
+        if case .failed = _selectedOnrampProvider.value?.value?.state {
             updateQuotes(amount: _amount.value?.fiat)
         }
     }
@@ -372,23 +377,6 @@ extension OnrampModel: NotificationTapDelegate {
             refreshError()
         default:
             assertionFailure("Action not supported: \(action)")
-        }
-    }
-}
-
-enum OnrampModelError: LocalizedError {
-    case loadingCountry(error: Error)
-    case loadingProviders(error: Error)
-    case loadingQuotes(error: Error)
-
-    var errorDescription: String? {
-        switch self {
-        case .loadingCountry(error: let error):
-            "Failed to load country: \(error.localizedDescription)"
-        case .loadingProviders(error: let error):
-            "Failed to load providers: \(error.localizedDescription)"
-        case .loadingQuotes(error: let error):
-            "Failed to load quotes: \(error.localizedDescription))"
         }
     }
 }

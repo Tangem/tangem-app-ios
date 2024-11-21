@@ -20,10 +20,10 @@ public protocol OnrampManager: Actor {
     func setupProviders(request: OnrampPairRequestItem) async throws
 
     /// The user changed the amount. We upload providers quotes
-    func setupQuotes(amount: Decimal?) async throws
+    func setupQuotes(amount: Decimal?) async
 
     /// Reselect `paymentMethod` and sort providers according to it
-    func updatePaymentMethod(paymentMethod: OnrampPaymentMethod)
+    func updatePaymentMethod(paymentMethod: OnrampPaymentMethod) throws
 
     /// Load the data to perform the onramp action
     func loadRedirectData(provider: OnrampProvider, redirectSettings: OnrampRedirectSettings) async throws -> OnrampRedirectData

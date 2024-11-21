@@ -11,7 +11,7 @@ import Combine
 import TangemExpress
 
 protocol OnrampNotificationManagerInput {
-    var errorPublisher: AnyPublisher<OnrampModelError?, Never> { get }
+    var errorPublisher: AnyPublisher<Error?, Never> { get }
 }
 
 protocol OnrampNotificationManager: NotificationManager {
@@ -30,22 +30,24 @@ class CommonOnrampNotificationManager {
 // MARK: - Bind
 
 private extension CommonOnrampNotificationManager {
-    func update(error: OnrampModelError?) {
+    func update(error: Error?) {
         switch error {
         case .none:
             hideNotifications()
-        case .loadingCountry(let error as ExpressAPIError),
-             .loadingProviders(let error as ExpressAPIError),
-             .loadingQuotes(let error as ExpressAPIError):
-            show(event: .refreshRequired(
-                title: error.localizedTitle,
-                message: error.localizedMessage
-            ))
-        case .loadingCountry, .loadingProviders, .loadingQuotes:
-            show(event: .refreshRequired(
-                title: Localization.commonError,
-                message: Localization.commonUnknownError
-            ))
+        case .some(let error as ExpressAPIError):
+            show(
+                event: .refreshRequired(
+                    title: error.localizedTitle,
+                    message: error.localizedMessage
+                )
+            )
+        case .some:
+            show(
+                event: .refreshRequired(
+                    title: Localization.commonError,
+                    message: Localization.commonUnknownError
+                )
+            )
         }
     }
 }

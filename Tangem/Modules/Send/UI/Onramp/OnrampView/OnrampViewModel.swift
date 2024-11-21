@@ -15,6 +15,7 @@ class OnrampViewModel: ObservableObject, Identifiable {
     @Published private(set) var onrampProvidersCompactViewModel: OnrampProvidersCompactViewModel
 
     @Published private(set) var notificationInputs: [NotificationViewInput] = []
+    @Published private(set) var notificationButtonIsLoading = false
 
     weak var router: OnrampSummaryRoutable?
 
@@ -51,6 +52,15 @@ private extension OnrampViewModel {
             .receive(on: DispatchQueue.main)
             .sink { viewModel, notificationInputs in
                 viewModel.notificationInputs = notificationInputs
+            }
+            .store(in: &bag)
+
+        interactor
+            .isLoadingPublisher
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, isLoading in
+                viewModel.notificationButtonIsLoading = isLoading
             }
             .store(in: &bag)
     }

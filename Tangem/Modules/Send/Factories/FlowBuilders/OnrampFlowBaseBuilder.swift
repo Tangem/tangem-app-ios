@@ -55,6 +55,7 @@ struct OnrampFlowBaseBuilder {
 
         let onramp = onrampStepBuilder.makeOnrampStep(
             io: (input: onrampModel, output: onrampModel),
+            providersInput: onrampModel,
             onrampAmountViewModel: onrampAmountViewModel,
             onrampProvidersCompactViewModel: onrampProvidersCompactViewModel,
             notificationManager: notificationManager

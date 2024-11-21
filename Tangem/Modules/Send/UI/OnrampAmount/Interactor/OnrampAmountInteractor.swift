@@ -48,7 +48,7 @@ private extension CommonOnrampAmountInteractor {
     func bind(onrampProvidersInput: OnrampProvidersInput) {
         Publishers.CombineLatest(
             onrampProvidersInput.onrampProvidersPublisher,
-            onrampProvidersInput.selectedOnrampProviderPublisher.map { $0?.value?.manager.state }
+            onrampProvidersInput.selectedOnrampProviderPublisher.map { $0?.value?.state }
         ).map { providers, state in
             switch (providers, state) {
             case (.loaded(let providers), _) where !providers.hasProviders():

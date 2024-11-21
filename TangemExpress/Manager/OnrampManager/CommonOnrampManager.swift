@@ -60,30 +60,32 @@ extension CommonOnrampManager: OnrampManager {
         _providers = try await prepareProviders(item: item, supportedProviders: supportedProviders)
     }
 
-    public func setupQuotes(amount: Decimal?) async throws {
+    public func setupQuotes(amount: Decimal?) async {
         log(message: "Start update quotes")
         let providers = _providers.flatMap { $0.providers }
-        try await updateQuotesInEachManager(providers: providers, amount: amount)
+        await updateQuotesInEachManager(providers: providers, amount: amount)
         log(message: "The quotes was updated")
 
         proceedProviders()
     }
 
-    public func updatePaymentMethod(paymentMethod: OnrampPaymentMethod) {
+    public func updatePaymentMethod(paymentMethod: OnrampPaymentMethod) throws {
         log(message: "Payment method was updated by user to: \(paymentMethod)")
 
         let providerItem = _providers.select(for: paymentMethod)
         let best = providerItem?.updateBest()
         log(message: "The best provider was define to \(best as Any)")
 
-        let selectedProvider = providerItem?.suggestProvider()
-        log(message: "New selected provider was updated to: \(selectedProvider as Any)")
+        guard let selectedProvider = providerItem?.suggestProvider() else {
+            throw OnrampManagerError.noProviderForPaymentMethod
+        }
 
+        log(message: "New selected provider was updated to: \(selectedProvider as Any)")
         _selectedProvider = selectedProvider
     }
 
     public func loadRedirectData(provider: OnrampProvider, redirectSettings: OnrampRedirectSettings) async throws -> OnrampRedirectData {
-        let item = try provider.manager.makeOnrampQuotesRequestItem()
+        let item = try provider.makeOnrampQuotesRequestItem()
         let requestItem = OnrampRedirectDataRequestItem(quotesItem: item, redirectSettings: redirectSettings)
         let data = try await apiProvider.onrampData(item: requestItem)
 
@@ -94,15 +96,11 @@ extension CommonOnrampManager: OnrampManager {
 // MARK: - Private
 
 private extension CommonOnrampManager {
-    func updateQuotesInEachManager(providers: [OnrampProvider], amount: Decimal?) async throws {
-        if providers.isEmpty {
-            throw OnrampManagerError.providersIsEmpty
-        }
-
+    func updateQuotesInEachManager(providers: [OnrampProvider], amount: Decimal?) async {
         await withTaskGroup(of: Void.self) { [weak self] group in
             providers.forEach { provider in
                 _ = group.addTaskUnlessCancelled {
-                    await provider.manager.update(amount: amount)
+                    await provider.update(amount: amount)
                     await self?.log(message: "Quotes was loaded in: \(provider)")
                 }
             }
@@ -129,7 +127,7 @@ private extension CommonOnrampManager {
 
         if _selectedProvider == nil {
             log(message: "We couldn't find any provider without error")
-            let suggestProvider = _providers.first?.suggestProvider()
+            let suggestProvider = _providers.first?.providers.first
             log(message: "Then update selected provider to \(suggestProvider as Any)")
             _selectedProvider = suggestProvider
         }

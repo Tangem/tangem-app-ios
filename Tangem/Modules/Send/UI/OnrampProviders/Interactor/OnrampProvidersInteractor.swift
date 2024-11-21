@@ -12,7 +12,7 @@ import TangemExpress
 protocol OnrampProvidersInteractor {
     var paymentMethodPublisher: AnyPublisher<OnrampPaymentMethod, Never> { get }
 
-    var selectedProviderPublisher: AnyPublisher<LoadingValue<OnrampProvider>, Never> { get }
+    var selectedProviderPublisher: AnyPublisher<OnrampProvider?, Never> { get }
     var providesPublisher: AnyPublisher<[OnrampProvider], Never> { get }
 
     func update(selectedProvider: OnrampProvider)
@@ -49,7 +49,7 @@ extension CommonOnrampProvidersInteractor: OnrampProvidersInteractor {
             .eraseToAnyPublisher()
     }
 
-    var selectedProviderPublisher: AnyPublisher<LoadingValue<OnrampProvider>, Never> {
+    var selectedProviderPublisher: AnyPublisher<OnrampProvider?, Never> {
         guard let input else {
             assertionFailure("OnrampProvidersInput not found")
             return Empty().eraseToAnyPublisher()
@@ -57,7 +57,7 @@ extension CommonOnrampProvidersInteractor: OnrampProvidersInteractor {
 
         return input
             .selectedOnrampProviderPublisher
-            .compactMap { $0 }
+            .map { $0?.value }
             .eraseToAnyPublisher()
     }
 
