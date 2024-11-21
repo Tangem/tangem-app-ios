@@ -13,11 +13,15 @@ import BlockchainSdk
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     @Injected(\.incomingActionHandler) private var incomingActionHandler: IncomingActionHandler
+    @Injected(\.appLockController) private var appLockController: AppLockController
+    @Injected(\.mainBottomSheetUIManager) private var mainBottomSheetUIManager: MainBottomSheetUIManager
 
     var window: UIWindow?
     var lockWindow: UIWindow?
 
-    private lazy var appCoordinator = AppCoordinator()
+    private lazy var servicesManager = KeychainSensitiveServicesManager()
+
+    private var appCoordinator: AppCoordinator?
     private var isSceneStarted = false
 
     // MARK: - Lifecycle
@@ -28,37 +32,29 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             handleActivities(connectionOptions.userActivities)
         }
 
-        if let windowScene = scene as? UIWindowScene {
-            let window = UIWindow(windowScene: windowScene)
-            appCoordinator.start(with: .default)
-            let appView = AppCoordinatorView(coordinator: appCoordinator)
-            let factory = RootViewControllerFactory()
-            let rootViewController = factory.makeRootViewController(for: appView, window: window)
-            window.rootViewController = rootViewController
-            self.window = window
-            window.overrideUserInterfaceStyle = AppSettings.shared.appTheme.interfaceStyle
-            window.makeKeyAndVisible()
-        }
+        servicesManager.initialize()
+        startApp(scene: scene, appCoordinatorOptions: .default)
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
-        appCoordinator.sceneDidEnterBackground()
-
-        // Additional view to fix no-refresh in bg issue for iOS prior to 17.
-        // Just keep this code to unify behavior between different ios versions
-        if appCoordinator.viewState?.shouldAddLockView == true,
-           let windowScene = scene as? UIWindowScene {
-            lockWindow = UIWindow(windowScene: windowScene)
-            lockWindow?.rootViewController = UIHostingController(rootView: LockView(usesNamespace: false))
-            lockWindow?.windowLevel = .alert + 1
-            lockWindow?.makeKeyAndVisible()
-        }
+        appLockController.sceneDidEnterBackground()
+        addLockViewIfNeeded(scene: scene)
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
-        appCoordinator.sceneWillEnterForeground { [weak self] in
-            self?.lockWindow?.isHidden = true
-            self?.lockWindow = nil
+        appLockController.sceneWillEnterForeground()
+
+        guard appCoordinator?.viewState?.shouldAddLockView ?? false else {
+            hideLockView()
+            return
+        }
+
+        if appLockController.isLocked {
+            mainBottomSheetUIManager.hide(shouldUpdateFooterSnapshot: false)
+            startApp(scene: scene, appCoordinatorOptions: .locked)
+            hideLockView()
+        } else {
+            hideLockView()
         }
     }
 
@@ -70,6 +66,45 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         PerformanceMonitorConfigurator.configureIfAvailable()
 
         guard AppEnvironment.current.isProduction else { return }
+    }
+
+    // Additional view to fix no-refresh in bg issue for iOS prior to 17.
+    // Just keep this code to unify behavior between different ios versions
+    private func addLockViewIfNeeded(scene: UIScene) {
+        guard appCoordinator?.viewState?.shouldAddLockView == true,
+              let windowScene = scene as? UIWindowScene else {
+            return
+        }
+
+        let lockWindow = UIWindow(windowScene: windowScene)
+        lockWindow.rootViewController = UIHostingController(rootView: LockView(usesNamespace: false))
+        lockWindow.windowLevel = .alert + 1
+        lockWindow.overrideUserInterfaceStyle = AppSettings.shared.appTheme.interfaceStyle
+        self.lockWindow = lockWindow
+        lockWindow.makeKeyAndVisible()
+    }
+
+    private func startApp(scene: UIScene, appCoordinatorOptions: AppCoordinator.Options) {
+        guard let windowScene = scene as? UIWindowScene else {
+            return
+        }
+
+        let window = UIWindow(windowScene: windowScene)
+        let appCoordinator = AppCoordinator()
+        let appView = AppCoordinatorView(coordinator: appCoordinator)
+        let factory = RootViewControllerFactory()
+        let rootViewController = factory.makeRootViewController(for: appView, window: window)
+        window.rootViewController = rootViewController
+        appCoordinator.start(with: appCoordinatorOptions)
+        self.appCoordinator = appCoordinator
+        self.window = window
+        window.overrideUserInterfaceStyle = AppSettings.shared.appTheme.interfaceStyle
+        window.makeKeyAndVisible()
+    }
+
+    private func hideLockView() {
+        lockWindow?.isHidden = true
+        lockWindow = nil
     }
 
     // MARK: - Incoming actions
