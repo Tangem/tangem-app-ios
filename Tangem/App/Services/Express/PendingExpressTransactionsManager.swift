@@ -283,3 +283,64 @@ extension CommonPendingExpressTransactionsManager {
         static let statusUpdateTimeout: Double = 10
     }
 }
+
+final class PollingService<RequestData, ResponseData> {
+    let resultPublisher: AnyPublisher<ResponseData, Never>
+    
+    private let request: (RequestData) async -> ResponseData?
+    private let shouldStopPolling: (ResponseData) -> Bool
+    private let pollingInterval: TimeInterval
+    
+    private let resultSubject = CurrentValueSubject<ResponseData?, Never>(nil)
+    private var updateTask: Task<Void, Never>?
+    
+    init(
+        request: @escaping (RequestData) -> ResponseData,
+        shouldStopPolling: @escaping (ResponseData) -> Bool,
+        pollingInterval: TimeInterval
+    ) {
+        self.request = request
+        self.shouldStopPolling = shouldStopPolling
+        self.pollingInterval = pollingInterval
+        
+        self.resultPublisher = resultSubject
+            .compactMap { $0 }
+            .eraseToAnyPublisher()
+    }
+    
+    func startPolling(request: RequestData, force: Bool) {
+        guard updateTask == nil || force else {
+            return
+        }
+
+        cancelTask()
+        
+        updateTask = Task { [weak self] in
+            do {
+                let result = try await self?.poll(for: request)
+                self?.resultSubject.send(result)
+            } catch {
+                self?.cancelTask()
+            }
+        }
+    }
+    
+    private func poll(for requestData: RequestData) async throws -> ResponseData {
+        while true {
+            try Task.checkCancellation()
+            let responseData = await request(requestData)
+            
+            try Task.checkCancellation()
+            if let responseData, shouldStopPolling(responseData) {
+                return responseData
+            }
+            
+            try await Task.sleep(seconds: pollingInterval)
+        }
+    }
+    
+    private func cancelTask() {
+        updateTask?.cancel()
+        updateTask = nil
+    }
+}
