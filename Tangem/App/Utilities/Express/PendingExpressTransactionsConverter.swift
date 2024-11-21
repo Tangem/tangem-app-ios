@@ -17,12 +17,22 @@ struct PendingExpressTransactionsConverter {
             let title: String
             let sourceAmountText: String
             let destinationAmountText: String
+            let sourceIconInfo: TokenIconInfo
+            let destinationIconInfo: TokenIconInfo
 
             switch record.branch {
-            case .swap:
+            case .swap(let source, let destination):
                 title = Localization.expressExchangeBy(record.provider.name)
-            case .onramp:
-                title = "Buying \(record.destinationTokenItem?.name ?? "")" // TODO: Use localization
+                sourceAmountText = balanceFormatter.formatCryptoBalance(source.amount, currencyCode: source.tokenItem.currencySymbol)
+                destinationAmountText = balanceFormatter.formatCryptoBalance(destination.amount, currencyCode: destination.tokenItem.currencySymbol)
+                sourceIconInfo = iconBuilder.build(from: source.tokenItem, isCustom: source.isCustom)
+                destinationIconInfo = iconBuilder.build(from: destination.tokenItem, isCustom: destination.isCustom)
+            case .onramp(let sourceAmount, let sourceCurrencySymbol, let destination):
+                title = "Buying \(destination.tokenItem.name)" // TODO: Use localization
+                sourceAmountText = balanceFormatter.formatFiatBalance(sourceAmount, currencyCode: sourceCurrencySymbol)
+                destinationAmountText = balanceFormatter.formatCryptoBalance(destination.amount, currencyCode: destination.tokenItem.currencySymbol)
+                sourceIconInfo = iconBuilder.build(from: sourceCurrencySymbol)
+                destinationIconInfo = iconBuilder.build(from: destination.tokenItem, isCustom: destination.isCustom)
             }
 
             let state: PendingExpressTransactionView.State
@@ -38,10 +48,10 @@ struct PendingExpressTransactionsConverter {
             return .init(
                 id: record.expressTransactionId,
                 title: title,
-                sourceIconInfo: record.sourceTokenIconInfo,
-                sourceAmountText: record.sourceAmountString,
-                destinationIconInfo: record.destinationTokenIconInfo,
-                destinationAmountText: record.destinationAmountString,
+                sourceIconInfo: sourceIconInfo,
+                sourceAmountText: sourceAmountText,
+                destinationIconInfo: destinationIconInfo,
+                destinationAmountText: destinationAmountText,
                 state: state,
                 action: tapAction
             )

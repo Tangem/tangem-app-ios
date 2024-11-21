@@ -31,18 +31,18 @@ struct ExpressPendingTransactionRecord: Codable, Equatable {
     var refundedTokenItem: TokenItem?
 
     var fee: Decimal {
-        ExpressPendingTransactionRecord.convertToDecimal(feeString)
+        convertToDecimal(feeString)
     }
 }
 
 extension ExpressPendingTransactionRecord {
     struct TokenTxInfo: Codable, Equatable {
         let tokenItem: TokenItem
-        let amountString: String
+        let amountString: String?
         let isCustom: Bool
 
-        var amount: Decimal {
-            ExpressPendingTransactionRecord.convertToDecimal(amountString)
+        var amount: Decimal? {
+            amountString.map(convertToDecimal)
         }
     }
 
@@ -105,12 +105,12 @@ extension ExpressPendingTransactionRecord {
             }
         }
     }
+}
 
-    static func convertToDecimal(_ str: String) -> Decimal {
-        let decimalSeparator = Locale.posixEnUS.decimalSeparator ?? "."
-        let cleanedStr = str.replacingOccurrences(of: ",", with: decimalSeparator)
-        return Decimal(stringValue: cleanedStr) ?? 0
-    }
+private func convertToDecimal(_ str: String) -> Decimal {
+    let decimalSeparator = Locale.posixEnUS.decimalSeparator ?? "."
+    let cleanedStr = str.replacingOccurrences(of: ",", with: decimalSeparator)
+    return Decimal(stringValue: cleanedStr) ?? 0
 }
 
 // MARK: - Migration

@@ -274,10 +274,12 @@ extension OnrampModel: OnrampRedirectingOutput {
 
         let txData = SentOnrampTransactionData(
             txId: data.txId,
-            provider: provider,
+            provider: provider.provider,
             destinationTokenItem: walletModel.tokenItem,
-            onrampTransactionData: data.redirectData,
-            date: Date()
+            date: Date(),
+            fromAmount: data.fromAmount,
+            fromCurrencyCode: data.fromCurrencyCode,
+            externalTxId: data.externalTxId
         )
 
         onrampPendingTransactionsRepository.onrampTransactionDidSend(
@@ -286,7 +288,7 @@ extension OnrampModel: OnrampRedirectingOutput {
         )
 
         DispatchQueue.main.async {
-            self.router?.openWebView(url: data.redirectData.widgetUrl) { [weak self] in
+            self.router?.openWebView(url: data.widgetUrl) { [weak self] in
                 guard let self else { return }
                 _transactionTime.send(Date())
                 router?.openFinishStep()

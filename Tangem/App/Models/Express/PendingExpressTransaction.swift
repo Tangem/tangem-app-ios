@@ -27,18 +27,12 @@ extension PendingExpressTransaction {
         let destinationTokenItem = destinationTokenTxInfo.tokenItem
 
         return PendingTransaction(
-            branch: .swap,
+            branch: .swap(source: sourceTokenTxInfo, destination: destinationTokenTxInfo),
             expressTransactionId: record.expressTransactionId,
             externalTxId: record.externalTxId,
             externalTxURL: record.externalTxURL,
             provider: record.provider,
             date: record.date,
-            sourceTokenIconInfo: iconInfoBuilder.build(from: sourceTokenItem, isCustom: sourceTokenTxInfo.isCustom),
-            sourceAmountString: sourceTokenTxInfo.amountString,
-            sourceTokenItem: sourceTokenItem,
-            destinationTokenIconInfo: iconInfoBuilder.build(from: destinationTokenItem, isCustom: destinationTokenTxInfo.isCustom),
-            destinationAmountString: destinationTokenTxInfo.amountString,
-            destinationTokenItem: destinationTokenItem,
             transactionStatus: record.transactionStatus,
             refundedTokenItem: record.refundedTokenItem,
             statuses: statuses

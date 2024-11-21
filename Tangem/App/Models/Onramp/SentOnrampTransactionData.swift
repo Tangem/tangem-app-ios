@@ -10,8 +10,10 @@ import TangemExpress
 
 struct SentOnrampTransactionData {
     let txId: String
-    let provider: OnrampProvider
+    let provider: ExpressProvider
     let destinationTokenItem: TokenItem
-    let onrampTransactionData: OnrampRedirectData
     let date: Date
+    let fromAmount: Decimal
+    let fromCurrencyCode: String
+    let externalTxId: String
 }

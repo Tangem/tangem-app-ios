@@ -21,33 +21,18 @@ extension PendingOnrampTransaction: Identifiable {
 
 extension PendingOnrampTransaction {
     var pendingTransaction: PendingTransaction {
-        let record = transactionRecord
-
-        let iconInfoBuilder = TokenIconInfoBuilder()
-        let balanceFormatter = BalanceFormatter()
-
-        let sourceAmountText = balanceFormatter.formatFiatBalance(
-            record.fromAmount,
-            currencyCode: record.fromCurrencyCode
-        )
-
-        let destinationTokenTxInfo = record.destinationTokenTxInfo
-        let destinationTokenItem = destinationTokenTxInfo.tokenItem
-
-        return PendingTransaction(
-            branch: .onramp,
-            expressTransactionId: record.expressTransactionId,
-            externalTxId: record.externalTxId,
-            externalTxURL: record.externalTxURL,
-            provider: record.provider,
-            date: record.date,
-            sourceTokenIconInfo: iconInfoBuilder.build(from: record.fromCurrencyCode),
-            sourceAmountString: sourceAmountText,
-            sourceTokenItem: nil,
-            destinationTokenIconInfo: iconInfoBuilder.build(from: destinationTokenItem, isCustom: destinationTokenTxInfo.isCustom),
-            destinationAmountString: destinationTokenTxInfo.amountString,
-            destinationTokenItem: destinationTokenItem,
-            transactionStatus: record.transactionStatus,
+        PendingTransaction(
+            branch: .onramp(
+                sourceAmount: transactionRecord.fromAmount,
+                sourceCurrencySymbol: transactionRecord.fromCurrencyCode,
+                destination: transactionRecord.destinationTokenTxInfo
+            ),
+            expressTransactionId: transactionRecord.expressTransactionId,
+            externalTxId: transactionRecord.externalTxId,
+            externalTxURL: transactionRecord.externalTxURL,
+            provider: transactionRecord.provider,
+            date: transactionRecord.date,
+            transactionStatus: transactionRecord.transactionStatus,
             refundedTokenItem: nil,
             statuses: statuses
         )

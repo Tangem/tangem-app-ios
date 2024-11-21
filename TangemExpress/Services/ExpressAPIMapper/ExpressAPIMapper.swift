@@ -209,7 +209,19 @@ struct ExpressAPIMapper {
             throw ExpressAPIMapperError.requestIdNotEqual
         }
 
-        return OnrampRedirectDataWithId(txId: response.txId, redirectData: redirectData)
+        guard var fromAmount = Decimal(string: redirectData.fromAmount) else {
+            throw ExpressAPIMapperError.mapToDecimalError(redirectData.fromAmount)
+        }
+
+        fromAmount /= pow(10, 2)
+
+        return OnrampRedirectDataWithId(
+            txId: response.txId,
+            widgetUrl: redirectData.widgetUrl,
+            fromAmount: fromAmount,
+            fromCurrencyCode: redirectData.fromCurrencyCode,
+            externalTxId: redirectData.externalTxId
+        )
     }
 
     func mapToOnrampTransaction(response: ExpressDTO.Onramp.Status.Response) throws -> OnrampTransaction {
@@ -226,7 +238,8 @@ struct ExpressAPIMapper {
         return OnrampTransaction(
             fromAmount: fromAmount,
             toAmount: toAmount,
-            status: response.status
+            status: response.status,
+            externatTxURL: response.externalTxUrl
         )
     }
 }

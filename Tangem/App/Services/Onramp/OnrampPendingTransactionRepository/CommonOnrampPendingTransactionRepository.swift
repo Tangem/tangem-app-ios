@@ -14,7 +14,7 @@ class CommonOnrampPendingTransactionRepository {
 
     private let lockQueue = DispatchQueue(label: "com.tangem.CommonOnrampPendingTransactionRepository.lockQueue")
 
-    private var pendingTransactionSubject = CurrentValueSubject<[OnrampPendingTransactionRecord], Never>([])
+    private let pendingTransactionSubject = CurrentValueSubject<[OnrampPendingTransactionRecord], Never>([])
 
     init() {
         loadPendingTransactions()
@@ -24,7 +24,7 @@ class CommonOnrampPendingTransactionRepository {
         do {
             pendingTransactionSubject.value = try storage.value(for: .pendingOnrampTransactions) ?? []
         } catch {
-            log("Couldn't get the express transactions list from the storage with error \(error)")
+            log("Couldn't get the onramp transactions list from the storage with error \(error)")
         }
     }
 
@@ -46,7 +46,7 @@ class CommonOnrampPendingTransactionRepository {
     }
 
     private func log<T>(_ message: @autoclosure () -> T) {
-        AppLog.shared.debug("[Express Tx Repository] \(message())")
+        AppLog.shared.debug("[Onramp Tx Repository] \(message())")
     }
 }
 
@@ -61,27 +61,19 @@ extension CommonOnrampPendingTransactionRepository: OnrampPendingTransactionRepo
     }
 
     func onrampTransactionDidSend(_ txData: SentOnrampTransactionData, userWalletId: String) {
-        let fromAmount = txData.onrampTransactionData.fromAmount
-        guard var fromAmount = Decimal(string: fromAmount) else {
-            assertionFailure("Unable to map fromAmount '\(fromAmount)' to Decimal")
-            return
-        }
-
-        fromAmount /= 100
-
         let onrampPendingTransactionRecord = OnrampPendingTransactionRecord(
             userWalletId: userWalletId,
             expressTransactionId: txData.txId,
-            fromAmount: fromAmount,
-            fromCurrencyCode: txData.onrampTransactionData.fromCurrencyCode,
+            fromAmount: txData.fromAmount,
+            fromCurrencyCode: txData.fromCurrencyCode,
             destinationTokenTxInfo: .init(
                 tokenItem: txData.destinationTokenItem,
                 amountString: "",
                 isCustom: false
             ),
-            provider: .init(provider: txData.provider.provider),
+            provider: .init(provider: txData.provider),
             date: txData.date,
-            externalTxId: txData.onrampTransactionData.externalTxId,
+            externalTxId: txData.externalTxId,
             externalTxURL: nil,
             isHidden: false,
             transactionStatus: .awaitingDeposit

@@ -8,7 +8,10 @@
 
 public struct OnrampRedirectDataWithId: Codable, Equatable {
     public let txId: String
-    public let redirectData: OnrampRedirectData
+    public let widgetUrl: URL
+    public let fromAmount: Decimal
+    public let fromCurrencyCode: String
+    public let externalTxId: String
 }
 
 public struct OnrampRedirectData: Hashable, Codable, Equatable {

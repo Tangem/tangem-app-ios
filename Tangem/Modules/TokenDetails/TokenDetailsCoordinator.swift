@@ -9,7 +9,6 @@
 import Foundation
 import Combine
 import BlockchainSdk
-import TangemExpress
 
 class TokenDetailsCoordinator: CoordinatorObject {
     let dismissAction: Action<Void>
