@@ -21,7 +21,7 @@ protocol OnrampModelRoutable: AnyObject {
 class OnrampModel {
     // MARK: - Data
 
-    private let _currency: CurrentValueSubject<LoadingValue<OnrampFiatCurrency>, Never>
+    private let _currency: CurrentValueSubject<LoadingResult<OnrampFiatCurrency, Never>, Never>
     private let _amount: CurrentValueSubject<SendAmount?, Never> = .init(.none)
     private let _onrampProviders: CurrentValueSubject<LoadingResult<ProvidersList, Error>?, Never> = .init(.none)
     private let _selectedOnrampProvider: CurrentValueSubject<LoadingResult<OnrampProvider, Never>?, Never> = .init(.none)
@@ -52,7 +52,7 @@ class OnrampModel {
         self.onrampRepository = onrampRepository
 
         _currency = .init(
-            onrampRepository.preferenceCurrency.map { .loaded($0) } ?? .loading
+            onrampRepository.preferenceCurrency.map { .success($0) } ?? .loading
         )
 
         bind()
@@ -166,7 +166,7 @@ private extension OnrampModel {
         }
 
         // Update amount UI
-        _currency.send(.loaded(currency))
+        _currency.send(.success(currency))
         mainTask {
             await $0.updateProviders(country: country, currency: currency)
         }
@@ -177,7 +177,7 @@ private extension OnrampModel {
             let country = try await onrampManager.initialSetupCountry()
 
             // Update amount UI
-            _currency.send(.loaded(country.currency))
+            _currency.send(.success(country.currency))
 
             // We have to show confirmation bottom sheet
             await runOnMain {
@@ -216,11 +216,11 @@ private extension OnrampModel {
 // MARK: - OnrampAmountInput
 
 extension OnrampModel: OnrampAmountInput {
-    var fiatCurrency: LoadingValue<OnrampFiatCurrency> {
+    var fiatCurrency: LoadingResult<OnrampFiatCurrency, Never> {
         _currency.value
     }
 
-    var fiatCurrencyPublisher: AnyPublisher<LoadingValue<OnrampFiatCurrency>, Never> {
+    var fiatCurrencyPublisher: AnyPublisher<LoadingResult<OnrampFiatCurrency, Never>, Never> {
         _currency.eraseToAnyPublisher()
     }
 }
@@ -355,10 +355,6 @@ extension OnrampModel: SendBaseOutput {
 
 extension OnrampModel: OnrampNotificationManagerInput {
     var errorPublisher: AnyPublisher<Error?, Never> {
-        let currencyErrorPublisher = _currency
-            .filter { !$0.isLoading }
-            .map { $0.error }
-
         let onrampProvidersErrorPublisher = _onrampProviders
             .compactMap { $0 }
             .filter { !$0.isLoading }
@@ -369,8 +365,7 @@ extension OnrampModel: OnrampNotificationManagerInput {
             // Because we have the LoadingView
             .map { $0?.value?.error }
 
-        return Publishers.Merge3(
-            currencyErrorPublisher,
+        return Publishers.Merge(
             onrampProvidersErrorPublisher,
             selectedOnrampProviderErrorPublisher
         )
@@ -378,7 +373,7 @@ extension OnrampModel: OnrampNotificationManagerInput {
     }
 
     func refreshError() {
-        if case .failedToLoad = _currency.value {
+        if case .failure = _currency.value {
             TangemFoundation.runTask(in: self) {
                 await $0.initiateCountryDefinition()
             }
