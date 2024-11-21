@@ -413,7 +413,7 @@ struct SendDependenciesBuilder {
         )
     }
 
-    func makeOnrampNotificationManager() -> OnrampNotificationManager {
-        CommonOnrampNotificationManager()
+    func makeOnrampNotificationManager(input: OnrampNotificationManagerInput, delegate: NotificationTapDelegate) -> OnrampNotificationManager {
+        CommonOnrampNotificationManager(input: input, delegate: delegate)
     }
 }

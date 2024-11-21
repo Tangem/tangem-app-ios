@@ -65,7 +65,7 @@ extension OnrampProvider: OnrampProviderManager {
         }
     }
 
-    public var error: HashableError? {
+    public var error: Error? {
         switch state {
         case .failed(let error): error
         case .restriction, .loaded, .idle, .loading, .notSupported: nil

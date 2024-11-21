@@ -21,10 +21,10 @@ protocol OnrampModelRoutable: AnyObject {
 class OnrampModel {
     // MARK: - Data
 
-    private let _currency: CurrentValueSubject<LoadingResult<OnrampFiatCurrency, Error>, Never>
+    private let _currency: CurrentValueSubject<LoadingValue<OnrampFiatCurrency>, Never>
     private let _amount: CurrentValueSubject<SendAmount?, Never> = .init(.none)
-    private let _selectedOnrampProvider: CurrentValueSubject<LoadingResult<OnrampProvider, Never>?, Never> = .init(.none)
     private let _onrampProviders: CurrentValueSubject<LoadingResult<ProvidersList, Error>?, Never> = .init(.none)
+    private let _selectedOnrampProvider: CurrentValueSubject<LoadingResult<OnrampProvider, Never>?, Never> = .init(.none)
     private let _isLoading: CurrentValueSubject<Bool, Never> = .init(false)
     private let _transactionTime = PassthroughSubject<Date?, Never>()
 
@@ -52,7 +52,7 @@ class OnrampModel {
         self.onrampRepository = onrampRepository
 
         _currency = .init(
-            onrampRepository.preferenceCurrency.map { .success($0) } ?? .loading
+            onrampRepository.preferenceCurrency.map { .loaded($0) } ?? .loading
         )
 
         bind()
@@ -67,7 +67,7 @@ private extension OnrampModel {
             .dropFirst()
             .withWeakCaptureOf(self)
             .sink { model, amount in
-                model.updateQuotes(amount: amount?.fiat)
+                model.amountDidChange(amount: amount?.fiat)
             }
             .store(in: &bag)
 
@@ -82,64 +82,65 @@ private extension OnrampModel {
             .store(in: &bag)
     }
 
-    func updateProviders() {
+    func updateProviders() async {
         guard let country = onrampRepository.preferenceCountry,
               let currency = onrampRepository.preferenceCurrency else {
             return
         }
 
-        updateProviders(country: country, currency: currency)
+        await updateProviders(country: country, currency: currency)
     }
 
-    func updateProviders(country: OnrampCountry, currency: OnrampFiatCurrency) {
-        mainTask {
-            do {
-                $0._onrampProviders.send(.loading)
-                let request = $0.makeOnrampPairRequestItem(country: country, currency: currency)
-                try await $0.onrampManager.setupProviders(request: request)
-                try Task.checkCancellation()
-                await $0._onrampProviders.send(.success($0.onrampManager.providers))
-            } catch {
-                $0._onrampProviders.send(.failure(error))
-            }
+    func updateProviders(country: OnrampCountry, currency: OnrampFiatCurrency) async {
+        do {
+            _onrampProviders.send(.loading)
+            let request = makeOnrampPairRequestItem(country: country, currency: currency)
+            try await onrampManager.setupProviders(request: request)
+            try Task.checkCancellation()
+            await _onrampProviders.send(.success(onrampManager.providers))
+            try await updateQuotes()
+        } catch {
+            _onrampProviders.send(.failure(error))
         }
     }
 
     func amountDidChange(amount: Decimal?) {
         switch _onrampProviders.value {
         case .success(let list) where list.hasProviders():
-            updateQuotes(amount: amount)
+            mainTask {
+                try await $0.updateQuotes(amount: amount)
+            }
         case .none, .loading, .success, .failure:
             // TODO: What we do when providers in the one of state above?
             return
         }
     }
 
-    func clearOnrampManager() {
-        mainTask {
-            _ = await $0.onrampManager.setupQuotes(amount: .none)
-            $0._selectedOnrampProvider.send(.none)
-        }
+    func updateQuotes() async throws {
+        try await updateQuotes(amount: _amount.value?.fiat)
     }
 
-    func updateQuotes() {
-        updateQuotes(amount: _amount.value?.fiat)
-    }
-
-    func updateQuotes(amount: Decimal?) {
+    func updateQuotes(amount: Decimal?) async throws {
         guard let amount else {
-            clearOnrampManager()
+            await clearOnrampManager()
             return
         }
 
-        mainTask {
-            $0._selectedOnrampProvider.send(.loading)
-            await $0.onrampManager.setupQuotes(amount: amount)
-            try Task.checkCancellation()
-            await $0._selectedOnrampProvider.send(
-                $0.onrampManager.selectedProvider.map { .success($0) }
-            )
-        }
+        try await updateOnrampManager(amount: amount)
+    }
+
+    func clearOnrampManager() async {
+        await onrampManager.setupQuotes(amount: .none)
+        _selectedOnrampProvider.send(.none)
+    }
+
+    func updateOnrampManager(amount: Decimal?) async throws {
+        _selectedOnrampProvider.send(.loading)
+        await onrampManager.setupQuotes(amount: amount)
+        try Task.checkCancellation()
+        await _selectedOnrampProvider.send(
+            onrampManager.selectedProvider.map { .success($0) }
+        )
     }
 
     func updatePaymentMethod(method: OnrampPaymentMethod) {
@@ -165,9 +166,10 @@ private extension OnrampModel {
         }
 
         // Update amount UI
-        _currency.send(.success(currency))
-
-        updateProviders(country: country, currency: currency)
+        _currency.send(.loaded(currency))
+        mainTask {
+            await $0.updateProviders(country: country, currency: currency)
+        }
     }
 
     func initiateCountryDefinition() async {
@@ -175,7 +177,7 @@ private extension OnrampModel {
             let country = try await onrampManager.initialSetupCountry()
 
             // Update amount UI
-            _currency.send(.success(country.currency))
+            _currency.send(.loaded(country.currency))
 
             // We have to show confirmation bottom sheet
             await runOnMain {
@@ -214,11 +216,11 @@ private extension OnrampModel {
 // MARK: - OnrampAmountInput
 
 extension OnrampModel: OnrampAmountInput {
-    var fiatCurrency: LoadingResult<OnrampFiatCurrency, Error> {
+    var fiatCurrency: LoadingValue<OnrampFiatCurrency> {
         _currency.value
     }
 
-    var fiatCurrencyPublisher: AnyPublisher<LoadingResult<OnrampFiatCurrency, Error>, Never> {
+    var fiatCurrencyPublisher: AnyPublisher<LoadingValue<OnrampFiatCurrency>, Never> {
         _currency.eraseToAnyPublisher()
     }
 }
@@ -303,7 +305,7 @@ extension OnrampModel: OnrampRedirectingOutput {
 extension OnrampModel: OnrampInput {
     var isValidToRedirectPublisher: AnyPublisher<Bool, Never> {
         _selectedOnrampProvider
-            .compactMap { $0?.value?.isReadyToBuy }
+            .map { $0?.value?.isReadyToBuy ?? false }
             .eraseToAnyPublisher()
     }
 }
@@ -365,7 +367,7 @@ extension OnrampModel: OnrampNotificationManagerInput {
         let selectedOnrampProviderErrorPublisher = _selectedOnrampProvider
             // Here we clear error on `loading` state
             // Because we have the LoadingView
-            .map { $0?.value?.error?.error }
+            .map { $0?.value?.error }
 
         return Publishers.Merge3(
             currencyErrorPublisher,
@@ -376,18 +378,22 @@ extension OnrampModel: OnrampNotificationManagerInput {
     }
 
     func refreshError() {
-        if case .failure = _currency.value {
+        if case .failedToLoad = _currency.value {
             TangemFoundation.runTask(in: self) {
                 await $0.initiateCountryDefinition()
             }
         }
 
         if case .failure = _onrampProviders.value {
-            updateProviders()
+            mainTask {
+                await $0.updateProviders()
+            }
         }
 
         if case .failed = _selectedOnrampProvider.value?.value?.state {
-            updateQuotes()
+            mainTask {
+                try await $0.updateQuotes()
+            }
         }
     }
 }
@@ -402,12 +408,5 @@ extension OnrampModel: NotificationTapDelegate {
         default:
             assertionFailure("Action not supported: \(action)")
         }
-    }
-}
-
-extension OnrampModel {
-    enum State {
-        case providers(ProvidersList)
-        case selectedProviders(ProvidersList)
     }
 }

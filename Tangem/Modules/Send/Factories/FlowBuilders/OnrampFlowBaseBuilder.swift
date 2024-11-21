@@ -23,7 +23,7 @@ struct OnrampFlowBaseBuilder {
         )
 
         let onrampModel = builder.makeOnrampModel(onrampManager: onrampManager, onrampRepository: onrampRepository)
-        let notificationManager = builder.makeOnrampNotificationManager()
+        let notificationManager = builder.makeOnrampNotificationManager(input: onrampModel, delegate: onrampModel)
 
         let providersBuilder = OnrampProvidersBuilder(
             io: (input: onrampModel, output: onrampModel),
@@ -107,9 +107,6 @@ struct OnrampFlowBaseBuilder {
 
         onrampModel.router = viewModel
         onrampModel.alertPresenter = viewModel
-
-        notificationManager.setupManager(with: onrampModel)
-        notificationManager.setup(input: onrampModel)
 
         return viewModel
     }

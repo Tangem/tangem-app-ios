@@ -60,7 +60,7 @@ extension LoadingResult: Equatable where Success: Equatable, Failure: Equatable 
 
 extension LoadingResult: Hashable where Success: Hashable, Failure: Hashable {}
 
-// MARK: - Hashable
+// MARK: - Mapping
 
 public extension LoadingResult {
     func mapValue<T>(_ transform: (Success) throws -> T) rethrows -> LoadingResult<T, Failure> {

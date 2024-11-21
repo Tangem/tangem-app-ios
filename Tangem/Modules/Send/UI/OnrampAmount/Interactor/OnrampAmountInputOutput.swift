@@ -8,11 +8,10 @@
 
 import Combine
 import TangemExpress
-import TangemFoundation
 
 protocol OnrampAmountInput: AnyObject {
-    var fiatCurrency: LoadingResult<OnrampFiatCurrency, Error> { get }
-    var fiatCurrencyPublisher: AnyPublisher<LoadingResult<OnrampFiatCurrency, Error>, Never> { get }
+    var fiatCurrency: LoadingValue<OnrampFiatCurrency> { get }
+    var fiatCurrencyPublisher: AnyPublisher<LoadingValue<OnrampFiatCurrency>, Never> { get }
 
     var amountPublisher: AnyPublisher<SendAmount?, Never> { get }
 }

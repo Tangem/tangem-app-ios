@@ -14,9 +14,7 @@ protocol OnrampNotificationManagerInput {
     var errorPublisher: AnyPublisher<Error?, Never> { get }
 }
 
-protocol OnrampNotificationManager: NotificationManager {
-    func setup(input: OnrampNotificationManagerInput)
-}
+protocol OnrampNotificationManager: NotificationManager {}
 
 class CommonOnrampNotificationManager {
     private let notificationInputsSubject = CurrentValueSubject<[NotificationViewInput], Never>([])
@@ -24,12 +22,24 @@ class CommonOnrampNotificationManager {
 
     private weak var delegate: NotificationTapDelegate?
 
-    init() {}
+    init(input: OnrampNotificationManagerInput, delegate: NotificationTapDelegate) {
+        self.delegate = delegate
+
+        bind(input: input)
+    }
 }
 
 // MARK: - Bind
 
 private extension CommonOnrampNotificationManager {
+    func bind(input: some OnrampNotificationManagerInput) {
+        inputSubscription = input.errorPublisher
+            .withWeakCaptureOf(self)
+            .sink { manager, error in
+                manager.update(error: error)
+            }
+    }
+
     func update(error: Error?) {
         switch error {
         case .none:
@@ -77,14 +87,6 @@ private extension CommonOnrampNotificationManager {
 // MARK: - NotificationManager
 
 extension CommonOnrampNotificationManager: OnrampNotificationManager {
-    func setup(input: any OnrampNotificationManagerInput) {
-        inputSubscription = input.errorPublisher
-            .withWeakCaptureOf(self)
-            .sink { manager, error in
-                manager.update(error: error)
-            }
-    }
-
     var notificationInputs: [NotificationViewInput] {
         notificationInputsSubject.value
     }

@@ -19,12 +19,12 @@ public protocol OnrampProviderManager {
     func makeOnrampQuotesRequestItem() throws -> OnrampQuotesRequestItem
 }
 
-public enum OnrampProviderManagerState: Hashable {
+public enum OnrampProviderManagerState {
     case idle
     case notSupported(NotSupported)
     case loading
     case restriction(Restriction)
-    case failed(error: HashableError)
+    case failed(error: Error)
     case loaded(OnrampQuote)
 
     public var isSupported: Bool {
