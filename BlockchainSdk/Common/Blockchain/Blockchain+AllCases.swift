@@ -88,6 +88,7 @@ public extension Blockchain {
         case .core: break
         case .canxium: break
         case .casper: break
+        case .chiliz: break
         case .clore: break
             // READ BELOW:
             //
@@ -170,6 +171,7 @@ public extension Blockchain {
             .core(testnet: false),
             .canxium,
             .casper(curve: .secp256k1, testnet: false),
+            .chiliz(testnet: false),
             .clore,
         ]
     }

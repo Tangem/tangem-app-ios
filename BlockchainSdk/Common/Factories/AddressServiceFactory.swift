@@ -62,7 +62,8 @@ public struct AddressServiceFactory {
              .blast,
              .energyWebEVM,
              .core,
-             .canxium:
+             .canxium,
+             .chiliz:
             return EthereumAddressService()
         case .rsk:
             return RskAddressService()
