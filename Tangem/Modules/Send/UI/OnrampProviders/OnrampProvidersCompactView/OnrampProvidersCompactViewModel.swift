@@ -36,7 +36,7 @@ class OnrampProvidersCompactViewModel: ObservableObject {
         switch provider {
         case .loading:
             paymentState = .loading
-        case .success(let provider) where provider.error == nil:
+        case .success(let provider) where provider.canBeShow:
             paymentState = .loaded(
                 data: makeOnrampProvidersCompactProviderViewData(provider: provider)
             )

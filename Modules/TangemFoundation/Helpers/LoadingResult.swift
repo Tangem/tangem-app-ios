@@ -6,6 +6,8 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
+import Foundation
+
 /// LoadingResult to wrap the loading process
 /// Can be used in two ways
 /// - `LoadingResult<Value, Never>` with two possible option `loading` and `value`
@@ -50,6 +52,14 @@ public extension LoadingResult {
         case .loading, .success: nil
         }
     }
+
+    func get() throws -> Success {
+        switch self {
+        case .success(let success): return success
+        case .failure(let failure): throw failure
+        case .loading: throw LoadingResultError.loadingInProcess
+        }
+    }
 }
 
 // MARK: - Equatable
@@ -68,6 +78,18 @@ public extension LoadingResult {
         case .loading: .loading
         case .success(let value): .success(try transform(value))
         case .failure(let error): .failure(error)
+        }
+    }
+}
+
+// MARK: - Mapping
+
+public enum LoadingResultError: LocalizedError {
+    case loadingInProcess
+
+    public var errorDescription: String? {
+        switch self {
+        case .loadingInProcess: "Loading in process"
         }
     }
 }

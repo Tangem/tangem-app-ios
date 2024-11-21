@@ -65,6 +65,7 @@ private extension OnrampModel {
     func bind() {
         _amount
             .dropFirst()
+            .print("amount ->>")
             .withWeakCaptureOf(self)
             .sink { model, amount in
                 model.amountDidChange(amount: amount?.fiat)
@@ -82,6 +83,8 @@ private extension OnrampModel {
             .store(in: &bag)
     }
 
+    // MARK: - Providers list
+
     func updateProviders() async {
         guard let country = onrampRepository.preferenceCountry,
               let currency = onrampRepository.preferenceCurrency else {
@@ -95,14 +98,26 @@ private extension OnrampModel {
         do {
             _onrampProviders.send(.loading)
             let request = makeOnrampPairRequestItem(country: country, currency: currency)
-            try await onrampManager.setupProviders(request: request)
+            let providers = try await onrampManager.setupProviders(request: request)
             try Task.checkCancellation()
-            await _onrampProviders.send(.success(onrampManager.providers))
+            _onrampProviders.send(.success(providers))
+
+            try Task.checkCancellation()
             try await updateQuotes()
         } catch {
             _onrampProviders.send(.failure(error))
         }
     }
+
+    func providersList() throws -> ProvidersList {
+        guard let providers = _onrampProviders.value else {
+            throw OnrampManagerError.providersIsEmpty
+        }
+
+        return try providers.get()
+    }
+
+    // MARK: - Quotes
 
     func amountDidChange(amount: Decimal?) {
         switch _onrampProviders.value {
@@ -122,34 +137,33 @@ private extension OnrampModel {
 
     func updateQuotes(amount: Decimal?) async throws {
         guard let amount else {
-            await clearOnrampManager()
+            try await clearOnrampManager()
             return
         }
 
         try await updateOnrampManager(amount: amount)
     }
 
-    func clearOnrampManager() async {
-        await onrampManager.setupQuotes(amount: .none)
-        _selectedOnrampProvider.send(.none)
+    func clearOnrampManager() async throws {
+        let provider = try await onrampManager.setupQuotes(in: providersList(), amount: .none)
+        try Task.checkCancellation()
+        _selectedOnrampProvider.send(.success(provider))
     }
 
     func updateOnrampManager(amount: Decimal?) async throws {
         _selectedOnrampProvider.send(.loading)
-        await onrampManager.setupQuotes(amount: amount)
+        let provider = try await onrampManager.setupQuotes(in: providersList(), amount: amount)
         try Task.checkCancellation()
-        await _selectedOnrampProvider.send(
-            onrampManager.selectedProvider.map { .success($0) }
-        )
+        _selectedOnrampProvider.send(.success(provider))
     }
+
+    // MARK: - Payment method
 
     func updatePaymentMethod(method: OnrampPaymentMethod) {
         mainTask {
-            try await $0.onrampManager.updatePaymentMethod(paymentMethod: method)
+            let provider = try await $0.onrampManager.suggestProvider(in: $0.providersList(), paymentMethod: method)
             try Task.checkCancellation()
-            await $0._selectedOnrampProvider.send(
-                $0.onrampManager.selectedProvider.map { .success($0) }
-            )
+            $0._selectedOnrampProvider.send(.success(provider))
         }
     }
 }
@@ -199,6 +213,7 @@ private extension OnrampModel {
     }
 
     func mainTask(code: @escaping (OnrampModel) async throws -> Void) {
+        task?.cancel()
         task = TangemFoundation.runTask(in: self) { model in
             do {
                 try await code(model)
@@ -337,7 +352,11 @@ extension OnrampModel: SendFinishInput {
 extension OnrampModel: SendBaseInput {
     var actionInProcessing: AnyPublisher<Bool, Never> {
         Publishers
-            .Merge(_isLoading, _currency.map { $0.isLoading })
+            .Merge3(
+                _isLoading,
+                _currency.map { $0.isLoading },
+                _onrampProviders.compactMap { $0?.isLoading }
+            )
             .eraseToAnyPublisher()
     }
 }
@@ -402,6 +421,18 @@ extension OnrampModel: NotificationTapDelegate {
             refreshError()
         default:
             assertionFailure("Action not supported: \(action)")
+        }
+    }
+}
+
+private extension OnrampModel {
+    struct ProviderState {
+        let list: ProvidersList
+        let selected: OnrampProvider
+
+        enum LoadingError {
+            case pairs(Error)
+            case quotes(Error)
         }
     }
 }

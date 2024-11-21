@@ -58,7 +58,7 @@ private extension CommonOnrampProviderManager {
         } catch let error as ExpressAPIError where error.errorCode == .exchangeTooBigAmountError {
             _state = .restriction(.tooBigAmount(formatAmount(amount: error.value?.amount)))
         } catch {
-            _state = .failed(error: error.asHashable())
+            _state = .failed(error: error)
         }
     }
 
