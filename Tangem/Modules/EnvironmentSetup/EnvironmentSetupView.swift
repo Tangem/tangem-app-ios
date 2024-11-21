@@ -90,6 +90,7 @@ struct EnvironmentSetupView: View {
                 }
             }
         }
+        .padding(.horizontal)
     }
 
     private var promotionProgramControls: some View {
