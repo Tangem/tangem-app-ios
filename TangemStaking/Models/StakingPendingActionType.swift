@@ -13,6 +13,9 @@ public struct StakingPendingActionInfo: Hashable {
     public let passthrough: String
 
     public enum ActionType: Hashable {
+        case stake
+        case vote
+        case unstake
         case withdraw
         case claimRewards
         case restakeRewards

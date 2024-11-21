@@ -8,7 +8,7 @@
 
 import Combine
 
-protocol WalletConnectSessionsStorage: Actor, Initializable {
+protocol WalletConnectSessionsStorage: Actor {
     var sessions: AsyncStream<[WalletConnectSavedSession]> { get async }
 
     func loadSessions()
@@ -28,8 +28,6 @@ extension InjectedValues {
         get { Self[WalletConnectSessionsStorageKey.self] }
         set { Self[WalletConnectSessionsStorageKey.self] = newValue }
     }
-
-    var walletConnectSessionsStorageInitializable: Initializable { Self[WalletConnectSessionsStorageKey.self] }
 }
 
 actor CommonWalletConnectSessionsStorage {
@@ -112,28 +110,5 @@ extension CommonWalletConnectSessionsStorage: WalletConnectSessionsStorage {
         allSessions.value = sessions
         log("All sessions for \(userWalletId) was removed. Number of removed sessions: \(removedSessions.count)")
         return removedSessions
-    }
-}
-
-// Temp logic for migrating from old saved sessions file structure to a new one
-extension CommonWalletConnectSessionsStorage: Initializable {
-    nonisolated func initialize() {
-        runTask { [weak self] in
-            await self?.migrateSavedSessions()
-        }
-    }
-
-    private func migrateSavedSessions() {
-        var sessionsToSave = [WalletConnectSavedSession]()
-        for userWallet in userWalletRepository.models {
-            if let oldSavedSessions: [WalletConnectSavedSession] = try? storage.value(for: .walletConnectSessions(userWalletId: userWallet.userWalletId.stringValue)) {
-                sessionsToSave.append(contentsOf: oldSavedSessions)
-                try? storage.store(value: [WalletConnectSavedSession]?(nil), for: .walletConnectSessions(userWalletId: userWallet.userWalletId.stringValue))
-            }
-        }
-
-        if sessionsToSave.isEmpty { return }
-
-        saveSessionsToFile(sessionsToSave)
     }
 }

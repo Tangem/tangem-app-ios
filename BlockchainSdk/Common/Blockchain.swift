@@ -93,6 +93,7 @@ public indirect enum Blockchain: Equatable, Hashable {
     case core(testnet: Bool)
     case canxium
     case casper(curve: EllipticCurve, testnet: Bool)
+    case chiliz(testnet: Bool)
 
     public var isTestnet: Bool {
         switch self {
@@ -136,7 +137,8 @@ public indirect enum Blockchain: Equatable, Hashable {
              .sei(let testnet),
              .kaspa(let testnet),
              .energyWebEVM(let testnet),
-             .core(let testnet):
+             .core(let testnet),
+             .chiliz(let testnet):
             return testnet
         case .litecoin,
              .ducatus,
@@ -301,7 +303,8 @@ public indirect enum Blockchain: Equatable, Hashable {
              .energyWebEVM,
              .energyWebX,
              .core,
-             .canxium:
+             .canxium,
+             .chiliz:
             return 18
         case .cardano,
              .xrp,
@@ -474,6 +477,8 @@ public indirect enum Blockchain: Equatable, Hashable {
             return "CAU"
         case .casper:
             return "CSPR"
+        case .chiliz:
+            return "CHZ"
         }
     }
 
@@ -552,6 +557,8 @@ public indirect enum Blockchain: Equatable, Hashable {
             return "Energy Web Chain" + (isTestnet ? " Volta Testnet" : "")
         case .energyWebX:
             return "Energy Web X" + (isTestnet ? " Paseo Testnet" : "")
+        case .chiliz:
+            return "Chiliz" + (isTestnet ? "Spicy Testnet " : "")
         default:
             var name = "\(self)".capitalizingFirstLetter()
             if let index = name.firstIndex(of: "(") {
@@ -765,6 +772,7 @@ public extension Blockchain {
         case .energyWebEVM: return isTestnet ? 73799 : 246
         case .core: return isTestnet ? 1115 : 1116
         case .canxium: return 3003
+        case .chiliz: return isTestnet ? 88882 : 88888
         default:
             return nil
         }
@@ -834,6 +842,7 @@ public extension Blockchain {
         /// This change hasn't been made to avoid impacting other functionality, especially since the .energyWebEVM request isn't currently used.
         case .energyWebEVM: return false // eth_feeHistory all zeroes
         case .core: return false
+        case .chiliz: return false
         default:
             assertionFailure("Don't forget about evm here")
             return false
@@ -973,6 +982,7 @@ extension Blockchain: Codable {
         case .core: return "core"
         case .canxium: return "canxium"
         case .casper: return "casper-network"
+        case .chiliz: return "chiliz"
         }
     }
 
@@ -1071,6 +1081,7 @@ extension Blockchain: Codable {
         case "core": self = .core(testnet: isTestnet)
         case "canxium": self = .canxium
         case "casper-network": self = .casper(curve: curve, testnet: isTestnet)
+        case "chiliz": self = .chiliz(testnet: isTestnet)
         default:
             throw BlockchainSdkError.decodingFailed
         }
@@ -1315,6 +1326,8 @@ private extension Blockchain {
             return "canxium"
         case .casper:
             return "casper-network"
+        case .chiliz:
+            return "chiliz"
         }
     }
 
@@ -1370,7 +1383,8 @@ extension Blockchain {
              .telos,
              .energyWebEVM,
              .core,
-             .canxium:
+             .canxium,
+             .chiliz:
             return EthereumWalletAssembly()
         case .optimism,
              .manta,

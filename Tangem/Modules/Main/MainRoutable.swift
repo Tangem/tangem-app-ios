@@ -14,4 +14,5 @@ protocol MainRoutable: AnyObject {
     func openOnboardingModal(with input: OnboardingInput)
     func openScanCardManual()
     func openPushNotificationsAuthorization()
+    func popToRoot()
 }
