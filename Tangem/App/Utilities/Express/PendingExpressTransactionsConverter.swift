@@ -28,7 +28,7 @@ struct PendingExpressTransactionsConverter {
                 sourceIconInfo = iconBuilder.build(from: source.tokenItem, isCustom: source.isCustom)
                 destinationIconInfo = iconBuilder.build(from: destination.tokenItem, isCustom: destination.isCustom)
             case .onramp(let sourceAmount, let sourceCurrencySymbol, let destination):
-                title = "Buying \(destination.tokenItem.name)" // TODO: Use localization
+                title = Localization.expressStatusBuying(destination.tokenItem.name)
                 sourceAmountText = balanceFormatter.formatFiatBalance(sourceAmount, currencyCode: sourceCurrencySymbol)
                 destinationAmountText = balanceFormatter.formatCryptoBalance(destination.amount, currencyCode: destination.tokenItem.currencySymbol)
                 sourceIconInfo = iconBuilder.build(from: sourceCurrencySymbol)
