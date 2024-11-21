@@ -161,5 +161,22 @@ extension StakeKitDTO {
                 self.tronResource = tronResource
             }
         }
+
+        enum List {
+            struct Request: Encodable {
+                let walletAddress: String
+                let network: StakeKitNetworkType
+                let status: ActionStatus
+                let limit: Int
+                let sort: String
+            }
+
+            struct Response: Decodable {
+                let page: Int
+                let data: [Action]
+                let hasNextPage: Bool
+                let limit: Int
+            }
+        }
     }
 }

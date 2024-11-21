@@ -59,7 +59,7 @@ final class StakingDetailsViewModel: ObservableObject {
 
     func refresh(completion: @escaping () -> Void = {}) {
         Task {
-            await stakingManager.updateState()
+            await stakingManager.updateState(loadActions: true)
             completion()
         }
     }
