@@ -64,13 +64,14 @@ class BlockchainSdkExampleViewModel: ObservableObject {
     private let sdk: TangemSdk
     private lazy var walletManagerFactory = {
         let utils = ConfigUtils()
+        let apiList = utils.parseProvidersJson()
         return WalletManagerFactory(
             config: utils.parseKeysJson(),
             dependencies: .init(
                 accountCreator: SimpleAccountCreator { [weak self] in self?.card },
                 dataStorage: InMemoryBlockchainDataStorage { return nil }
             ),
-            apiList: utils.parseProvidersJson()
+            apiList: apiList
         )
     }()
 

@@ -52,7 +52,7 @@ struct APIKeysInfoProvider {
                 headerName: "apikey",
                 headerValue: config.koinosProApiKey
             )
-        case .public, .quickNode, .getBlock, .blockchair, .blockcypher, .infura, .adalite, .tangemRosetta, .solana, .kaspa, .dwellir, .none:
+        case .public, .quickNode, .getBlock, .blockchair, .blockcypher, .infura, .adalite, .tangemRosetta, .solana, .kaspa, .dwellir, .clore, .none:
             return nil
         }
     }

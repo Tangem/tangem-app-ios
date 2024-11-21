@@ -23,7 +23,7 @@ struct BitcoinWalletAssembly: WalletManagerAssembly {
                 case .getBlock:
                     if input.blockchain.isTestnet {
                         break
-                    }
+                }
 
                     partialResult.append(networkProviderAssembly.makeBlockBookUtxoProvider(with: input, for: .getBlock).eraseToAnyBitcoinNetworkProvider())
                 case .blockchair:

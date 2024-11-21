@@ -29,6 +29,7 @@ public enum NetworkProviderType {
     case dwellir
     case onfinality
     case koinos
+    case clore
 }
 
 struct NodeInfo: HostProvider {

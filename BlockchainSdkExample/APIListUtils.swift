@@ -156,6 +156,7 @@ enum APIProvider: String {
     case solana
     case kaspa
     case koinos
+    case clore
 
     var blockchainProvider: NetworkProviderType {
         switch self {
@@ -175,6 +176,7 @@ enum APIProvider: String {
         case .solana: return .solana
         case .kaspa: return .kaspa
         case .koinos: return .koinos
+        case .clore: return .clore
         }
     }
 }

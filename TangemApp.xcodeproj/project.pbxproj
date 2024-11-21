@@ -78,6 +78,8 @@
 		2D6167202C763500006FCEA6 /* MarketsTokenNetworkSelectorCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D61671F2C763500006FCEA6 /* MarketsTokenNetworkSelectorCoordinator.swift */; };
 		2D6167222C763505006FCEA6 /* MarketsTokenNetworkSelectorCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6167212C763505006FCEA6 /* MarketsTokenNetworkSelectorCoordinatorView.swift */; };
 		2D616FF72CD142BE00581EA6 /* CasperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D616FF52CD142BE00581EA6 /* CasperTests.swift */; };
+		2D633CF52CEF236C009ADDDB /* CloreBlockBookConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D633CF42CEF236C009ADDDB /* CloreBlockBookConfig.swift */; };
+		2D633CF72CEF5B43009ADDDB /* CloreAPIResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D633CF62CEF5B43009ADDDB /* CloreAPIResolver.swift */; };
 		2D665C082CDCA3F000C9BA85 /* CasperTransactionBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D665C062CDCA3F000C9BA85 /* CasperTransactionBuilder.swift */; };
 		2D665C092CDCA3F000C9BA85 /* CasperTransactionParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D665C072CDCA3F000C9BA85 /* CasperTransactionParams.swift */; };
 		2D665C212CDCA3FC00C9BA85 /* CLValueToJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D665C0C2CDCA3FC00C9BA85 /* CLValueToJson.swift */; };
@@ -3185,6 +3187,8 @@
 		2D616FE92CD1414000581EA6 /* CasperWalletAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasperWalletAssembly.swift; sourceTree = "<group>"; };
 		2D616FEA2CD1414000581EA6 /* CasperWalletManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasperWalletManager.swift; sourceTree = "<group>"; };
 		2D616FF52CD142BE00581EA6 /* CasperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasperTests.swift; sourceTree = "<group>"; };
+		2D633CF42CEF236C009ADDDB /* CloreBlockBookConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloreBlockBookConfig.swift; sourceTree = "<group>"; };
+		2D633CF62CEF5B43009ADDDB /* CloreAPIResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloreAPIResolver.swift; sourceTree = "<group>"; };
 		2D665C062CDCA3F000C9BA85 /* CasperTransactionBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasperTransactionBuilder.swift; sourceTree = "<group>"; };
 		2D665C072CDCA3F000C9BA85 /* CasperTransactionParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasperTransactionParams.swift; sourceTree = "<group>"; };
 		2D665C0A2CDCA3FC00C9BA85 /* CLType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLType.swift; sourceTree = "<group>"; };
@@ -6264,6 +6268,7 @@
 				2D1838052CEDAFF3002FE30D /* CloreMainNetworkParams.swift */,
 				2D1838072CEDCB5E002FE30D /* CloreWalletAssembly.swift */,
 				2D1838092CEDCDF2002FE30D /* CloreExternalLinkProvider.swift */,
+				2D633CF62CEF5B43009ADDDB /* CloreAPIResolver.swift */,
 			);
 			path = Clore;
 			sourceTree = "<group>";
@@ -10726,6 +10731,7 @@
 			children = (
 				B62D3EAA2CBC79D900C2460E /* GetBlockBlockBookConfig.swift */,
 				B62D3EAB2CBC79D900C2460E /* NowNodesBlockBookConfig.swift */,
+				2D633CF42CEF236C009ADDDB /* CloreBlockBookConfig.swift */,
 			);
 			path = Implementations;
 			sourceTree = "<group>";
@@ -18494,6 +18500,7 @@
 				B62D40372CBC79DA00C2460E /* BitcoinCashNowNodesNetworkProvider.swift in Sources */,
 				B62D42372CBC79DB00C2460E /* ElectrumDTO.swift in Sources */,
 				B62D402E2CBC79DA00C2460E /* BitcoinModels.swift in Sources */,
+				2D633CF72CEF5B43009ADDDB /* CloreAPIResolver.swift in Sources */,
 				B62D40F92CBC79DA00C2460E /* ICPProviderTarget.swift in Sources */,
 				B604D5FF2CC2902B00CECFE2 /* Localizable+Generated.swift in Sources */,
 				B62D42742CBC79DB00C2460E /* TransactionFeeProvider.swift in Sources */,
@@ -19035,6 +19042,7 @@
 				B62D40572CBC79DA00C2460E /* ChiaPuzzleUtils.swift in Sources */,
 				B62D3FDD2CBC79DA00C2460E /* OP_NUMEQUALVERIFY.swift in Sources */,
 				B62D42872CBC79DB00C2460E /* PolygonTransactionHistoryMapper.swift in Sources */,
+				2D633CF52CEF236C009ADDDB /* CloreBlockBookConfig.swift in Sources */,
 				B62D42592CBC79DB00C2460E /* AnyEncodable.swift in Sources */,
 				B62D3FC32CBC79DA00C2460E /* BitcoinScriptAddress.swift in Sources */,
 				B62D40AF2CBC79DA00C2460E /* FlareExternalLinkProvider.swift in Sources */,

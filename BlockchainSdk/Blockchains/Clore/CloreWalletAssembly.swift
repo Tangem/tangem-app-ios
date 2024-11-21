@@ -26,15 +26,10 @@ struct CloreWalletAssembly: WalletManagerAssembly {
                 bitcoinManager: bitcoinManager,
                 addresses: input.wallet.addresses
             )
-
-            let blockchain = input.blockchain
-            let providers: [AnyBitcoinNetworkProvider] = APIResolver(blockchain: blockchain, config: input.blockchainSdkConfig)
+            
+            let providers: [AnyBitcoinNetworkProvider] = APIResolver(blockchain: input.blockchain, config: input.blockchainSdkConfig)
                 .resolveProviders(apiInfos: input.apiInfo) { nodeInfo, _ in
-                    RavencoinNetworkProvider(
-                        host: nodeInfo.link,
-                        provider: .init(configuration: input.networkConfig)
-                    )
-                    .eraseToAnyBitcoinNetworkProvider()
+                    networkProviderAssembly.makeBlockBookUtxoProvider(with: input, for: .clore(nodeInfo.url)).eraseToAnyBitcoinNetworkProvider()
                 }
 
             $0.networkService = BitcoinNetworkService(providers: providers)
