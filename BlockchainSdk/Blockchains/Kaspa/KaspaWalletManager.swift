@@ -148,15 +148,15 @@ final class KaspaWalletManager: BaseManager, WalletManager {
 
                 builtKaspaRevealTx = revealTx
 
-                return (commitTx, revealTx)
+                return commitTx
             }
             .withWeakCaptureOf(self)
-            .flatMap { (manager, txs: (tx: KaspaTransactionData, tx2: KaspaTransactionData)) -> AnyPublisher<KaspaTransactionResponse, Error> in
+            .flatMap { manager, commitTx in
                 // Send Commit
-                let encodedRawTransactionData = try? JSONEncoder().encode(txs.tx)
+                let encodedRawTransactionData = try? JSONEncoder().encode(commitTx)
 
                 return manager.networkService
-                    .send(transaction: KaspaTransactionRequest(transaction: txs.tx))
+                    .send(transaction: KaspaTransactionRequest(transaction: commitTx))
                     .mapSendError(tx: encodedRawTransactionData?.hexString.lowercased())
                     .eraseToAnyPublisher()
             }
@@ -166,37 +166,67 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                 await manager.store(incompleteTokenTransaction: meta.incompleteTransactionParams, for: token)
                 return response
             }
-            .eraseToAnyPublisher()
-            .delay(for: .seconds(2), scheduler: DispatchQueue.main)
-            .withWeakCaptureOf(self)
-            .flatMap { manager, response -> AnyPublisher<KaspaTransactionResponse, Error> in
-                // Send Reveal
-                guard let tx = builtKaspaRevealTx else {
-                    return .anyFail(error: WalletError.failedToBuildTx)
-                }
-
-                let encodedRawTransactionData = try? JSONEncoder().encode(tx)
-                return manager.networkService
-                    .send(transaction: KaspaTransactionRequest(transaction: tx))
-                    .mapSendError(tx: encodedRawTransactionData?.hexString.lowercased())
-                    .eraseToAnyPublisher()
-            }
-            .handleEvents(receiveOutput: { [weak self] in
+            .handleEvents(receiveOutput: { [weak self] response in
                 let mapper = PendingTransactionRecordMapper()
-                let record = mapper.mapToPendingTransactionRecord(transaction: transaction, hash: $0.transactionId)
+                let commitTransactionId = response.transactionId
+                let record = mapper.mapToPendingTransactionRecord(transaction: transaction, hash: commitTransactionId)
                 self?.wallet.addPendingTransaction(record)
+                self?.scheduleRevealTransactionSending(builtKaspaRevealTx, forCommitTransactionWithId: commitTransactionId, token: token)
             })
-            .withWeakCaptureOf(self)
-            .asyncMap { manager, response in
-                // Delete Commit
-                await manager.removeIncompleteTokenTransaction(for: token)
+            .map { response in
                 return TransactionSendResult(hash: response.transactionId)
             }
             .eraseSendError()
             .eraseToAnyPublisher()
     }
 
-    private func sendKaspaRevealTokenTransaction(_ transaction: Transaction, token: Token, signer: TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError> {
+    /// Used to send reveal transaction for the first time after successful commit transaction.
+    /// - Note: Successful KRC20 reveal transaction won't add pending transaction to the wallet.
+    private func scheduleRevealTransactionSending(
+        _ revealTransaction: KaspaTransactionData?,
+        forCommitTransactionWithId commitTransactionId: String,
+        token: Token
+    ) {
+        var cancellable: AnyCancellable?
+
+        cancellable = Deferred {
+            Future { promise in
+                if let revealTransaction {
+                    promise(.success(revealTransaction))
+                } else {
+                    promise(.failure(KaspaKRC20.Error.unableToSendRevealTransaction))
+                }
+            }
+        }
+        .delay(for: .seconds(2), scheduler: DispatchQueue.main)
+        .withWeakCaptureOf(self)
+        .flatMap { walletManager, revealTransaction in
+            let encodedRawTransactionData = try? JSONEncoder().encode(revealTransaction)
+
+            return walletManager.networkService
+                .send(transaction: KaspaTransactionRequest(transaction: revealTransaction))
+                .mapSendError(tx: encodedRawTransactionData?.hexString.lowercased())
+        }
+        .withWeakCaptureOf(self)
+        .asyncMap { manager, response in
+            // Delete Commit on success
+            await manager.removeIncompleteTokenTransaction(for: token)
+            return response.transactionId
+        }
+        .receiveCompletion { [weak self] _ in
+            // Both successful and failed KRC20 reveal transactions remove the pending transaction for the KRC20 commit transaction
+            self?.removePendingTransactions(withHashes: [commitTransactionId])
+            withExtendedLifetime(cancellable) {}
+        }
+    }
+
+    /// Used to retry a previously failed reveal transaction.
+    /// - Note: Successful KRC20 reveal transaction won't add pending transaction to the wallet.
+    private func sendKaspaRevealTokenTransaction(
+        _ transaction: Transaction,
+        token: Token,
+        signer: TransactionSigner
+    ) -> AnyPublisher<TransactionSendResult, SendTxError> {
         let kaspaTransaction: KaspaTransaction
         let commitRedeemScript: KaspaKRC20.RedeemScript
         let hashes: [Data]
@@ -315,8 +345,12 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             }
         }
 
+        removePendingTransactions(withHashes: info.confirmedTransactionHashes)
+    }
+
+    private func removePendingTransactions(withHashes pendingTransactionHashes: [String]) {
         wallet.removePendingTransaction { hash in
-            info.confirmedTransactionHashes.contains(hash)
+            pendingTransactionHashes.contains(hash)
         }
     }
 
