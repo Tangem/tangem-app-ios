@@ -65,7 +65,6 @@ private extension OnrampModel {
     func bind() {
         _amount
             .dropFirst()
-            .print("amount ->>")
             .withWeakCaptureOf(self)
             .sink { model, amount in
                 model.amountDidChange(amount: amount?.fiat)
@@ -74,11 +73,10 @@ private extension OnrampModel {
 
         // Handle the settings changes
         onrampRepository
-            .preferenceCurrencyPublisher
-            .removeDuplicates()
+            .preferencePublisher
             .withWeakCaptureOf(self)
-            .sink { model, currency in
-                model.preferenceDidChange(currency: currency)
+            .sink { model, preference in
+                model.preferenceDidChange(country: preference.country, currency: preference.currency)
             }
             .store(in: &bag)
     }
@@ -97,8 +95,18 @@ private extension OnrampModel {
     func updateProviders(country: OnrampCountry, currency: OnrampFiatCurrency) async {
         do {
             _onrampProviders.send(.loading)
+
+            // In case when user change country / currency
+            // And we have an amount in the filed
+            // We'll show loading view like we load /quotes
+            // When we load /pairs
+            if hasAmount() {
+                _selectedOnrampProvider.send(.loading)
+            }
+
             let request = makeOnrampPairRequestItem(country: country, currency: currency)
             let providers = try await onrampManager.setupProviders(request: request)
+
             try Task.checkCancellation()
             _onrampProviders.send(.success(providers))
 
@@ -117,6 +125,10 @@ private extension OnrampModel {
         return try providers.get()
     }
 
+    func hasAmount() -> Bool {
+        _amount.value?.fiat != nil
+    }
+
     // MARK: - Quotes
 
     func amountDidChange(amount: Decimal?) {
@@ -132,7 +144,13 @@ private extension OnrampModel {
     }
 
     func updateQuotes() async throws {
-        try await updateQuotes(amount: _amount.value?.fiat)
+        do {
+            try await updateQuotes(amount: _amount.value?.fiat)
+        } catch OnrampManagerError.providersIsEmpty {
+            _selectedOnrampProvider.send(.none)
+        } catch {
+            throw error
+        }
     }
 
     func updateQuotes(amount: Decimal?) async throws {
@@ -171,8 +189,8 @@ private extension OnrampModel {
 // MARK: - Preference bindings
 
 private extension OnrampModel {
-    func preferenceDidChange(currency: OnrampFiatCurrency?) {
-        guard let country = onrampRepository.preferenceCountry, let currency else {
+    func preferenceDidChange(country: OnrampCountry?, currency: OnrampFiatCurrency?) {
+        guard let country, let currency else {
             TangemFoundation.runTask(in: self) {
                 await $0.initiateCountryDefinition()
             }
@@ -421,18 +439,6 @@ extension OnrampModel: NotificationTapDelegate {
             refreshError()
         default:
             assertionFailure("Action not supported: \(action)")
-        }
-    }
-}
-
-private extension OnrampModel {
-    struct ProviderState {
-        let list: ProvidersList
-        let selected: OnrampProvider
-
-        enum LoadingError {
-            case pairs(Error)
-            case quotes(Error)
         }
     }
 }

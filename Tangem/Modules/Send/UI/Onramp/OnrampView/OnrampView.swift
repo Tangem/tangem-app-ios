@@ -28,7 +28,6 @@ struct OnrampView: View {
             ForEach(viewModel.notificationInputs) { input in
                 NotificationView(input: input)
                     .setButtonsLoadingState(to: viewModel.notificationButtonIsLoading)
-                    .transition(.notificationTransition)
             }
         }
     }

@@ -14,8 +14,6 @@ public actor CommonOnrampManager {
     private let dataRepository: OnrampDataRepository
     private let logger: Logger
 
-//    private var _providers: ProvidersList = []
-
     public init(
         apiProvider: ExpressAPIProvider,
         onrampRepository: OnrampRepository,

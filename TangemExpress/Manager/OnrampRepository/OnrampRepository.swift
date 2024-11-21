@@ -22,4 +22,16 @@ public extension OnrampRepository {
     func updatePreference(country: OnrampCountry? = nil, currency: OnrampFiatCurrency? = nil) {
         updatePreference(country: country, currency: currency)
     }
+
+    var preferencePublisher: AnyPublisher<OnrampPreference, Never> {
+        Publishers.CombineLatest(preferenceCountryPublisher, preferenceCurrencyPublisher)
+            .map { OnrampPreference(country: $0, currency: $1) }
+            .removeDuplicates()
+            .eraseToAnyPublisher()
+    }
+}
+
+public struct OnrampPreference: Hashable {
+    public let country: OnrampCountry?
+    public let currency: OnrampFiatCurrency?
 }
