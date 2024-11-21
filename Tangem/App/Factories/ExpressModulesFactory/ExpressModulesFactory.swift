@@ -31,4 +31,5 @@ protocol ExpressModulesFactory {
     ) -> ExpressSuccessSentViewModel
 
     func makePendingExpressTransactionsManager() -> PendingExpressTransactionsManager
+    func makePendingOnrampTransactionsManager() -> PendingOnrampTransactionsManager
 }

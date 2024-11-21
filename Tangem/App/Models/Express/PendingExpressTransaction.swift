@@ -12,3 +12,9 @@ struct PendingExpressTransaction: Equatable {
     let transactionRecord: ExpressPendingTransactionRecord
     let statuses: [PendingExpressTransactionStatus]
 }
+
+extension PendingExpressTransaction: Identifiable {
+    var id: String {
+        transactionRecord.id
+    }
+}

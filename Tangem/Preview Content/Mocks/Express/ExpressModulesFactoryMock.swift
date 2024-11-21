@@ -111,6 +111,13 @@ class ExpressModulesFactoryMock: ExpressModulesFactory {
             expressRefundedTokenHandler: ExpressRefundedTokenHandlerMock()
         )
     }
+
+    func makePendingOnrampTransactionsManager() -> any PendingOnrampTransactionsManager {
+        CommonPendingOnrampTransactionsManager(
+            userWalletId: userWalletModel.userWalletId.stringValue,
+            walletModel: initialWalletModel
+        )
+    }
 }
 
 // MARK: Dependencies

@@ -280,13 +280,14 @@ extension OnrampModel: OnrampRedirectingOutput {
             date: Date()
         )
 
+        expressPendingTransactionsRepository.onrampTransactionDidSend(
+            txData,
+            userWalletId: userWalletId
+        )
+
         DispatchQueue.main.async {
             self.router?.openWebView(url: data.redirectData.widgetUrl) { [weak self] in
                 guard let self else { return }
-                expressPendingTransactionsRepository.onrampTransactionDidSend(
-                    txData,
-                    userWalletId: userWalletId
-                )
                 _transactionTime.send(Date())
                 router?.openFinishStep()
             }

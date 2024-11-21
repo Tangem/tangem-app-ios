@@ -77,6 +77,7 @@ class TokenDetailsCoordinator: CoordinatorObject {
         )
 
         let pendingExpressTransactionsManager = expressFactory.makePendingExpressTransactionsManager()
+        let pendingOnrampTransactionsManager = expressFactory.makePendingOnrampTransactionsManager()
 
         let bannerNotificationManager = options.userWalletModel.config.hasFeature(.multiCurrency)
             ? BannerNotificationManager(userWalletId: options.userWalletModel.userWalletId, placement: .tokenDetails(options.walletModel.tokenItem), contextDataProvider: options.userWalletModel)
@@ -95,6 +96,7 @@ class TokenDetailsCoordinator: CoordinatorObject {
             notificationManager: notificationManager,
             bannerNotificationManager: bannerNotificationManager,
             pendingExpressTransactionsManager: pendingExpressTransactionsManager,
+            pendingOnrampTransactionsManager: pendingOnrampTransactionsManager,
             xpubGenerator: xpubGenerator,
             coordinator: self,
             tokenRouter: tokenRouter

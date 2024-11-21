@@ -195,50 +195,37 @@ class CommonPendingExpressTransactionsManager {
                 return false
             }
 
-            let isSourceSame = if let sourceTokenTxInfo = record.expressSpecific?.sourceTokenTxInfo {
-                sourceTokenTxInfo.tokenItem == tokenItem
-            } else {
-                false
+            if let expressSpecific = record.expressSpecific {
+                let isSame = expressSpecific.sourceTokenTxInfo.tokenItem == tokenItem
+                    || record.destinationTokenTxInfo.tokenItem == tokenItem
+
+                return isSame
             }
 
-            let isDestinationSame = record.destinationTokenTxInfo.tokenItem == tokenItem
-
-            return isSourceSame || isDestinationSame
+//            assertionFailure("unexpected state")
+            return false
         }
     }
 
     private func loadPendingTransactionStatus(for transactionRecord: ExpressPendingTransactionRecord) async -> PendingExpressTransaction? {
         do {
-            let pendingTransaction: PendingExpressTransaction
-            if transactionRecord.expressSpecific != nil {
-                log("Requesting exchange status for transaction with id: \(transactionRecord.expressTransactionId)")
-                let expressTransaction = try await expressAPIProvider.exchangeStatus(transactionId: transactionRecord.expressTransactionId)
-                let refundedTokenItem = await handleRefundedTokenIfNeeded(for: expressTransaction, providerType: transactionRecord.provider.type)
+            log("Requesting exchange status for transaction with id: \(transactionRecord.expressTransactionId)")
+            let expressTransaction = try await expressAPIProvider.exchangeStatus(transactionId: transactionRecord.expressTransactionId)
+            let refundedTokenItem = await handleRefundedTokenIfNeeded(for: expressTransaction, providerType: transactionRecord.provider.type)
 
-                pendingTransaction = pendingTransactionFactory.buildPendingExpressTransaction(
-                    currentExpressStatus: expressTransaction.externalStatus,
-                    refundedTokenItem: refundedTokenItem,
-                    for: transactionRecord
-                )
-                log("Transaction external status: \(expressTransaction.externalStatus.rawValue)")
-                log("Refunded token: \(String(describing: refundedTokenItem))")
-                pendingExpressTransactionAnalyticsTracker.trackStatusForTransaction(
-                    with: pendingTransaction.transactionRecord.expressTransactionId,
-                    tokenSymbol: tokenItem.currencySymbol,
-                    status: pendingTransaction.transactionRecord.transactionStatus,
-                    provider: pendingTransaction.transactionRecord.provider
-                )
-            } else if transactionRecord.onrampSpecific != nil {
-                log("Requesting onramp status for transaction with id: \(transactionRecord.expressTransactionId)")
-                let onrampTransactionStatus = try await expressAPIProvider.onrampStatus(transactionId: transactionRecord.expressTransactionId)
-                pendingTransaction = pendingTransactionFactory.buildPendingOnrampTransaction(
-                    currentOnrampStatus: onrampTransactionStatus,
-                    for: transactionRecord
-                )
-            } else {
-                fatalError("unexpected state")
-            }
-
+            let pendingTransaction = pendingTransactionFactory.buildPendingExpressTransaction(
+                currentExpressStatus: expressTransaction.externalStatus,
+                refundedTokenItem: refundedTokenItem,
+                for: transactionRecord
+            )
+            log("Transaction external status: \(expressTransaction.externalStatus.rawValue)")
+            log("Refunded token: \(String(describing: refundedTokenItem))")
+            pendingExpressTransactionAnalyticsTracker.trackStatusForTransaction(
+                with: pendingTransaction.transactionRecord.expressTransactionId,
+                tokenSymbol: tokenItem.currencySymbol,
+                status: pendingTransaction.transactionRecord.transactionStatus,
+                provider: pendingTransaction.transactionRecord.provider
+            )
             return pendingTransaction
         } catch {
             log("Failed to load status info for transaction with id: \(transactionRecord.expressTransactionId). Error: \(error)")
@@ -281,66 +268,5 @@ extension CommonPendingExpressTransactionsManager: PendingExpressTransactionsMan
 extension CommonPendingExpressTransactionsManager {
     enum Constants {
         static let statusUpdateTimeout: Double = 10
-    }
-}
-
-final class PollingService<RequestData, ResponseData> {
-    let resultPublisher: AnyPublisher<ResponseData, Never>
-    
-    private let request: (RequestData) async -> ResponseData?
-    private let shouldStopPolling: (ResponseData) -> Bool
-    private let pollingInterval: TimeInterval
-    
-    private let resultSubject = CurrentValueSubject<ResponseData?, Never>(nil)
-    private var updateTask: Task<Void, Never>?
-    
-    init(
-        request: @escaping (RequestData) -> ResponseData,
-        shouldStopPolling: @escaping (ResponseData) -> Bool,
-        pollingInterval: TimeInterval
-    ) {
-        self.request = request
-        self.shouldStopPolling = shouldStopPolling
-        self.pollingInterval = pollingInterval
-        
-        self.resultPublisher = resultSubject
-            .compactMap { $0 }
-            .eraseToAnyPublisher()
-    }
-    
-    func startPolling(request: RequestData, force: Bool) {
-        guard updateTask == nil || force else {
-            return
-        }
-
-        cancelTask()
-        
-        updateTask = Task { [weak self] in
-            do {
-                let result = try await self?.poll(for: request)
-                self?.resultSubject.send(result)
-            } catch {
-                self?.cancelTask()
-            }
-        }
-    }
-    
-    private func poll(for requestData: RequestData) async throws -> ResponseData {
-        while true {
-            try Task.checkCancellation()
-            let responseData = await request(requestData)
-            
-            try Task.checkCancellation()
-            if let responseData, shouldStopPolling(responseData) {
-                return responseData
-            }
-            
-            try await Task.sleep(seconds: pollingInterval)
-        }
-    }
-    
-    private func cancelTask() {
-        updateTask?.cancel()
-        updateTask = nil
     }
 }

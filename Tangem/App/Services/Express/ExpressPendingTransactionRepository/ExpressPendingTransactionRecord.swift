@@ -30,6 +30,12 @@ struct ExpressPendingTransactionRecord: Codable, Equatable {
     var refundedTokenItem: TokenItem?
 }
 
+extension ExpressPendingTransactionRecord: Identifiable {
+    var id: String {
+        expressTransactionId
+    }
+}
+
 extension ExpressPendingTransactionRecord {
     struct ExpressSpecific: Codable, Equatable {
         let transactionType: TransactionType

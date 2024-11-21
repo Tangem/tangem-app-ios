@@ -134,6 +134,13 @@ extension CommonExpressModulesFactory: ExpressModulesFactory {
 
         return pendingExpressTransactionsManager
     }
+
+    func makePendingOnrampTransactionsManager() -> any PendingOnrampTransactionsManager {
+        CommonPendingOnrampTransactionsManager(
+            userWalletId: userWalletModel.userWalletId.stringValue,
+            walletModel: initialWalletModel
+        )
+    }
 }
 
 // MARK: Dependencies
