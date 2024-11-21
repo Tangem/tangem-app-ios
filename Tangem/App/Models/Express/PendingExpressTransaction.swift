@@ -15,26 +15,18 @@ struct PendingExpressTransaction: Equatable {
 
 extension PendingExpressTransaction {
     var pendingTransaction: PendingTransaction {
-        let record = transactionRecord
-
-        let iconInfoBuilder = TokenIconInfoBuilder()
-        let balanceFormatter = BalanceFormatter()
-
-        let sourceTokenTxInfo = record.sourceTokenTxInfo
-        let sourceTokenItem = sourceTokenTxInfo.tokenItem
-
-        let destinationTokenTxInfo = record.destinationTokenTxInfo
-        let destinationTokenItem = destinationTokenTxInfo.tokenItem
-
-        return PendingTransaction(
-            branch: .swap(source: sourceTokenTxInfo, destination: destinationTokenTxInfo),
-            expressTransactionId: record.expressTransactionId,
-            externalTxId: record.externalTxId,
-            externalTxURL: record.externalTxURL,
-            provider: record.provider,
-            date: record.date,
-            transactionStatus: record.transactionStatus,
-            refundedTokenItem: record.refundedTokenItem,
+        PendingTransaction(
+            branch: .swap(
+                source: transactionRecord.sourceTokenTxInfo,
+                destination: transactionRecord.destinationTokenTxInfo
+            ),
+            expressTransactionId: transactionRecord.expressTransactionId,
+            externalTxId: transactionRecord.externalTxId,
+            externalTxURL: transactionRecord.externalTxURL,
+            provider: transactionRecord.provider,
+            date: transactionRecord.date,
+            transactionStatus: transactionRecord.transactionStatus,
+            refundedTokenItem: transactionRecord.refundedTokenItem,
             statuses: statuses
         )
     }
