@@ -74,7 +74,8 @@ extension PublicKeyType {
              .algorand,
              .aptos,
              .sui,
-             .energyWebX:
+             .energyWebX,
+             .chiliz:
             self = PublicKeyType.ed25519
         case .cardano(let extended):
             self = extended ? PublicKeyType.ed25519Cardano : .ed25519
