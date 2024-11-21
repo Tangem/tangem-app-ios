@@ -30,7 +30,7 @@ class OnrampModel {
 
     // MARK: - Dependencies
 
-    @Injected(\.expressPendingTransactionsRepository) private var expressPendingTransactionsRepository: ExpressPendingTransactionRepository
+    @Injected(\.onrampPendingTransactionsRepository) private var onrampPendingTransactionsRepository: OnrampPendingTransactionRepository
     weak var router: OnrampModelRoutable?
     weak var alertPresenter: SendViewAlertPresenter?
 
@@ -280,7 +280,7 @@ extension OnrampModel: OnrampRedirectingOutput {
             date: Date()
         )
 
-        expressPendingTransactionsRepository.onrampTransactionDidSend(
+        onrampPendingTransactionsRepository.onrampTransactionDidSend(
             txData,
             userWalletId: userWalletId
         )

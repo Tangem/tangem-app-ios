@@ -11,137 +11,6 @@ import Combine
 import TangemExpress
 import UIKit
 
-protocol PendingGenericTransactionsManager: AnyObject {
-    var pendingGenericTransactions: [PendingTransaction] { get }
-    var pendingGenericTransactionsPublisher: AnyPublisher<[PendingTransaction], Never> { get }
-
-    func hideGenericTransaction(with id: String)
-}
-
-final class CompoundPendingGenericTransactionsManager: PendingGenericTransactionsManager {
-    private let first: PendingGenericTransactionsManager
-    private let second: PendingGenericTransactionsManager
-
-    init(
-        first: PendingGenericTransactionsManager,
-        second: PendingGenericTransactionsManager
-    ) {
-        self.first = first
-        self.second = second
-    }
-
-    var pendingGenericTransactions: [PendingTransaction] {
-        first.pendingGenericTransactions + second.pendingGenericTransactions
-    }
-
-    var pendingGenericTransactionsPublisher: AnyPublisher<[PendingTransaction], Never> {
-        Publishers.CombineLatest(
-            first.pendingGenericTransactionsPublisher,
-            second.pendingGenericTransactionsPublisher
-        )
-        .map { $0 + $1 }
-        .eraseToAnyPublisher()
-    }
-
-    func hideGenericTransaction(with id: String) {
-        first.hideGenericTransaction(with: id)
-        second.hideGenericTransaction(with: id)
-    }
-}
-
-enum PendingTransactionFiatInfo {
-    case string(String)
-    case tokenTxInfo(ExpressPendingTransactionRecord.TokenTxInfo)
-}
-
-struct PendingTransaction {
-    let branch: ExpressBranch
-
-    let expressTransactionId: String
-    let externalTxId: String?
-    let externalTxURL: String?
-    let provider: ExpressPendingTransactionRecord.Provider
-    let date: Date
-
-    let sourceTokenIconInfo: TokenIconInfo
-    let sourceAmountText: String
-    let sourceFiatInfo: PendingTransactionFiatInfo
-
-    let destinationTokenIconInfo: TokenIconInfo
-    let destinationAmountText: String
-    let destinationFiatInfo: PendingTransactionFiatInfo
-
-    let transactionStatus: PendingExpressTransactionStatus
-
-    let refundedTokenItem: TokenItem?
-
-    let statuses: [PendingExpressTransactionStatus]
-
-    static func from(_ transaction: PendingExpressTransaction) -> PendingTransaction {
-        let record = transaction.transactionRecord
-
-        let iconInfoBuilder = TokenIconInfoBuilder()
-        let balanceFormatter = BalanceFormatter()
-
-        let sourceTokenTxInfo = record.sourceTokenTxInfo
-        let sourceTokenItem = sourceTokenTxInfo.tokenItem
-
-        let destinationTokenTxInfo = record.destinationTokenTxInfo
-        let destinationTokenItem = destinationTokenTxInfo.tokenItem
-
-        return PendingTransaction(
-            branch: .swap,
-            expressTransactionId: record.expressTransactionId,
-            externalTxId: record.externalTxId,
-            externalTxURL: record.externalTxURL,
-            provider: record.provider,
-            date: record.date,
-            sourceTokenIconInfo: iconInfoBuilder.build(from: sourceTokenItem, isCustom: sourceTokenTxInfo.isCustom),
-            sourceAmountText: balanceFormatter.formatCryptoBalance(sourceTokenTxInfo.amount, currencyCode: sourceTokenItem.currencySymbol),
-            sourceFiatInfo: .tokenTxInfo(record.sourceTokenTxInfo),
-            destinationTokenIconInfo: iconInfoBuilder.build(from: destinationTokenItem, isCustom: destinationTokenTxInfo.isCustom),
-            destinationAmountText: balanceFormatter.formatCryptoBalance(destinationTokenTxInfo.amount, currencyCode: destinationTokenItem.currencySymbol),
-            destinationFiatInfo: .tokenTxInfo(record.destinationTokenTxInfo),
-            transactionStatus: record.transactionStatus,
-            refundedTokenItem: record.refundedTokenItem,
-            statuses: transaction.statuses
-        )
-    }
-
-    static func from(_ transaction: PendingOnrampTransaction) -> PendingTransaction {
-        let record = transaction.transactionRecord
-
-        let iconInfoBuilder = TokenIconInfoBuilder()
-        let balanceFormatter = BalanceFormatter()
-
-        let sourceAmountText = balanceFormatter.formatFiatBalance(
-            record.fromAmount,
-            currencyCode: record.fromCurrencyCode
-        )
-
-        let destinationTokenTxInfo = record.destinationTokenTxInfo
-        let destinationTokenItem = destinationTokenTxInfo.tokenItem
-
-        return PendingTransaction(
-            branch: .onramp,
-            expressTransactionId: record.expressTransactionId,
-            externalTxId: record.externalTxId,
-            externalTxURL: record.externalTxURL,
-            provider: record.provider,
-            date: record.date,
-            sourceTokenIconInfo: iconInfoBuilder.build(from: record.fromCurrencyCode),
-            sourceAmountText: sourceAmountText,
-            sourceFiatInfo: .string(sourceAmountText),
-            destinationTokenIconInfo: iconInfoBuilder.build(from: destinationTokenItem, isCustom: destinationTokenTxInfo.isCustom),
-            destinationAmountText: balanceFormatter.formatCryptoBalance(destinationTokenTxInfo.amount, currencyCode: destinationTokenItem.currencySymbol),
-            destinationFiatInfo: .tokenTxInfo(destinationTokenTxInfo),
-            transactionStatus: record.transactionStatus,
-            refundedTokenItem: nil,
-            statuses: transaction.statuses
-        )
-    }
-}
-
 class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable {
     var transactionID: String? {
         pendingTransaction.externalTxId
@@ -169,7 +38,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     @Published var notificationViewInputs: [NotificationViewInput] = []
 
     private let expressProviderFormatter = ExpressProviderFormatter(balanceFormatter: .init())
-    private weak var pendingTransactionsManager: (any PendingGenericTransactionsManager)?
+    private weak var pendingTransactionsManager: (any PendingTransactionsManager)?
 
     private let pendingTransaction: PendingTransaction
     private let currentTokenItem: TokenItem
@@ -188,7 +57,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     init(
         pendingTransaction: PendingTransaction,
         currentTokenItem: TokenItem,
-        pendingTransactionsManager: PendingGenericTransactionsManager,
+        pendingTransactionsManager: PendingTransactionsManager,
         router: PendingExpressTxStatusRoutable
     ) {
         self.pendingTransaction = pendingTransaction
@@ -224,27 +93,6 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
 
         sourceTokenIconInfo = pendingTransaction.sourceTokenIconInfo
         sourceAmountText = pendingTransaction.sourceAmountText
-
-//        if let expressSpecific = pendingTransaction.transactionRecord.expressSpecific {
-//            let sourceTokenTxInfo = expressSpecific.sourceTokenTxInfo
-//            let sourceTokenItem = sourceTokenTxInfo.tokenItem
-//            sourceTokenIconInfo = iconInfoBuilder.build(from: sourceTokenItem, isCustom: sourceTokenTxInfo.isCustom)
-//            sourceAmountText = balanceFormatter.formatCryptoBalance(sourceTokenTxInfo.amount, currencyCode: sourceTokenItem.currencySymbol)
-//        } else if let onrampSpecific = pendingTransaction.transactionRecord.onrampSpecific {
-//            sourceTokenIconInfo = iconInfoBuilder.build(from: onrampSpecific.fromCurrencyCode)
-//            sourceAmountText = balanceFormatter.formatFiatBalance(
-//                onrampSpecific.fromAmount,
-//                currencyCode: onrampSpecific.fromCurrencyCode
-//            )
-//        } else {
-//            fatalError("unexpected state")
-//        }
-
-//        let destinationTokenTxInfo = pendingTransaction.transactionRecord.destinationTokenTxInfo
-//        let destinationTokenItem = destinationTokenTxInfo.tokenItem
-//
-//        destinationTokenIconInfo = iconInfoBuilder.build(from: destinationTokenItem, isCustom: destinationTokenTxInfo.isCustom)
-//        destinationAmountText = balanceFormatter.formatCryptoBalance(destinationTokenTxInfo.amount, currencyCode: destinationTokenItem.currencySymbol)
 
         destinationTokenIconInfo = pendingTransaction.destinationTokenIconInfo
         destinationAmountText = pendingTransaction.destinationAmountText
@@ -298,16 +146,16 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     }
 
     private func loadEmptyFiatRates() {
-        switch pendingTransaction.sourceFiatInfo {
-        case .string(let text):
-            sourceFiatAmountTextState = .loaded(text: text)
+        switch pendingTransaction.sourceInfo {
+        case .fiat(let fullText, _):
+            sourceFiatAmountTextState = .loaded(text: fullText)
         case .tokenTxInfo(let tokenTxInfo):
             loadRatesIfNeeded(stateKeyPath: \.sourceFiatAmountTextState, for: tokenTxInfo, on: self)
         }
 
-        switch pendingTransaction.destinationFiatInfo {
-        case .string(let text):
-            destinationFiatAmountTextState = .loaded(text: text)
+        switch pendingTransaction.destinationInfo {
+        case .fiat(let fullText, _):
+            destinationFiatAmountTextState = .loaded(text: fullText)
         case .tokenTxInfo(let tokenTxInfo):
             loadRatesIfNeeded(stateKeyPath: \.destinationFiatAmountTextState, for: tokenTxInfo, on: self)
         }
@@ -340,7 +188,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     }
 
     private func bind() {
-        subscription = pendingTransactionsManager?.pendingGenericTransactionsPublisher
+        subscription = pendingTransactionsManager?.pendingTransactionsPublisher
             .withWeakCaptureOf(self)
             .map { viewModel, pendingTransactions in
                 guard let first = pendingTransactions.first(where: { tx in
@@ -370,7 +218,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     }
 
     private func hidePendingTx(expressTransactionId: String) {
-        pendingTransactionsManager?.hideGenericTransaction(with: expressTransactionId)
+        pendingTransactionsManager?.hideTransaction(with: expressTransactionId)
     }
 
     private func updateUI(with pendingTransaction: PendingTransaction, delay: TimeInterval) {

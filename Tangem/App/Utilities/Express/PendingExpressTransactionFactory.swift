@@ -131,7 +131,7 @@ struct PendingExpressTransactionFactory {
             statuses: statusesList
         )
     }
-    
+
     func buildPendingOnrampTransaction(for transactionRecord: OnrampPendingTransactionRecord) -> PendingOnrampTransaction {
         let statusesList: [PendingExpressTransactionStatus] = {
             switch transactionRecord.transactionStatus {

@@ -2009,6 +2009,10 @@
 		DA76BF402CEF5BB800199317 /* PendingOnrampTransactionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA76BF3F2CEF5BB800199317 /* PendingOnrampTransactionManager.swift */; };
 		DA76BF422CEF5BBE00199317 /* PollingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA76BF412CEF5BBE00199317 /* PollingService.swift */; };
 		DA76BF442CEF7C8800199317 /* CommonOnrampPendingTransactionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA76BF432CEF7C8800199317 /* CommonOnrampPendingTransactionRepository.swift */; };
+		DA76BF462CEF91B600199317 /* PendingTransactionsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA76BF452CEF91B600199317 /* PendingTransactionsManager.swift */; };
+		DA76BF4A2CEF958700199317 /* OnrampPendingTransactionRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA76BF492CEF958700199317 /* OnrampPendingTransactionRecord.swift */; };
+		DA76BF4C2CEF95DF00199317 /* PendingOnrampTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA76BF4B2CEF95DF00199317 /* PendingOnrampTransaction.swift */; };
+		DA76BF4F2CEF964300199317 /* OnrampPendingTransactionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA76BF4E2CEF964300199317 /* OnrampPendingTransactionRepository.swift */; };
 		DA78444C2B3080AF002281B8 /* SuccessToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA78444B2B3080AF002281B8 /* SuccessToast.swift */; };
 		DA7859E12AB0451F004FAE04 /* GenerateAddressesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7859E02AB0451F004FAE04 /* GenerateAddressesView.swift */; };
 		DA7B2C512B6B893500FB9622 /* SendNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7B2C4F2B6B893500FB9622 /* SendNotificationManager.swift */; };
@@ -5131,6 +5135,10 @@
 		DA76BF3F2CEF5BB800199317 /* PendingOnrampTransactionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingOnrampTransactionManager.swift; sourceTree = "<group>"; };
 		DA76BF412CEF5BBE00199317 /* PollingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollingService.swift; sourceTree = "<group>"; };
 		DA76BF432CEF7C8800199317 /* CommonOnrampPendingTransactionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonOnrampPendingTransactionRepository.swift; sourceTree = "<group>"; };
+		DA76BF452CEF91B600199317 /* PendingTransactionsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingTransactionsManager.swift; sourceTree = "<group>"; };
+		DA76BF492CEF958700199317 /* OnrampPendingTransactionRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPendingTransactionRecord.swift; sourceTree = "<group>"; };
+		DA76BF4B2CEF95DF00199317 /* PendingOnrampTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingOnrampTransaction.swift; sourceTree = "<group>"; };
+		DA76BF4E2CEF964300199317 /* OnrampPendingTransactionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPendingTransactionRepository.swift; sourceTree = "<group>"; };
 		DA78444B2B3080AF002281B8 /* SuccessToast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessToast.swift; sourceTree = "<group>"; };
 		DA7859E02AB0451F004FAE04 /* GenerateAddressesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateAddressesView.swift; sourceTree = "<group>"; };
 		DA7B2C4F2B6B893500FB9622 /* SendNotificationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendNotificationManager.swift; sourceTree = "<group>"; };
@@ -12272,6 +12280,7 @@
 		DA67AF312CEDC318008B05D3 /* Onramp */ = {
 			isa = PBXGroup;
 			children = (
+				DA76BF4B2CEF95DF00199317 /* PendingOnrampTransaction.swift */,
 				DA67AF362CEDC426008B05D3 /* SentOnrampTransactionData.swift */,
 			);
 			path = Onramp;
@@ -12293,6 +12302,25 @@
 				DA682F952A29D08F0083CA79 /* PromotionNetworkModels.swift */,
 			);
 			path = PromotionService;
+			sourceTree = "<group>";
+		};
+		DA76BF4D2CEF961F00199317 /* OnrampPendingTransactionRepository */ = {
+			isa = PBXGroup;
+			children = (
+				DA76BF432CEF7C8800199317 /* CommonOnrampPendingTransactionRepository.swift */,
+				DA76BF4E2CEF964300199317 /* OnrampPendingTransactionRepository.swift */,
+				DA76BF492CEF958700199317 /* OnrampPendingTransactionRecord.swift */,
+			);
+			path = OnrampPendingTransactionRepository;
+			sourceTree = "<group>";
+		};
+		DA76BF502CEF966300199317 /* PendingTransactionsManager */ = {
+			isa = PBXGroup;
+			children = (
+				DA76BF452CEF91B600199317 /* PendingTransactionsManager.swift */,
+				DA76BF412CEF5BBE00199317 /* PollingService.swift */,
+			);
+			path = PendingTransactionsManager;
 			sourceTree = "<group>";
 		};
 		DA7B2C4E2B6B893500FB9622 /* SendNotifications */ = {
@@ -12546,6 +12574,7 @@
 		DC0A57DA2822A4DC0031BECC /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				DA76BF502CEF966300199317 /* PendingTransactionsManager */,
 				EF2561102CC6A8E000D3C16A /* Onramp */,
 				DA64DAC82C08BE71000CBC1E /* UserWalletNameIndexationHelper */,
 				DC5E6FDA2C906331008A98D0 /* AppLockController */,
@@ -13766,8 +13795,7 @@
 		EF2561102CC6A8E000D3C16A /* Onramp */ = {
 			isa = PBXGroup;
 			children = (
-				DA76BF432CEF7C8800199317 /* CommonOnrampPendingTransactionRepository.swift */,
-				DA76BF412CEF5BBE00199317 /* PollingService.swift */,
+				DA76BF4D2CEF961F00199317 /* OnrampPendingTransactionRepository */,
 				EF2561112CC6A91200D3C16A /* CommonOnrampStorage.swift */,
 				DA76BF3F2CEF5BB800199317 /* PendingOnrampTransactionManager.swift */,
 			);
@@ -16548,6 +16576,7 @@
 				B6ACD0142AD6A8A1005A6CA3 /* OrganizeTokensDragAndDropGesturePredicate.swift in Sources */,
 				B0FE88812CB51FDB006F01F9 /* MarketsNavigationBar.swift in Sources */,
 				DC0A582928252FEB0031BECC /* TokenItemsRepository.swift in Sources */,
+				DA76BF4C2CEF95DF00199317 /* PendingOnrampTransaction.swift in Sources */,
 				2D70C61D2B21E90A00BD1DAB /* MarketsAddCustomItemView.swift in Sources */,
 				EFA5683E2C480F6C0064EBA1 /* StakingTransactionInfo+Mock.swift in Sources */,
 				B06F03442B5A993800F04F0E /* VisaWalletModel.swift in Sources */,
@@ -16598,6 +16627,7 @@
 				B0CAE5A92AAB193300670C2B /* SingleTokenRoutableMock.swift in Sources */,
 				B055B66D2C0887C6003DFFEB /* ManageTokensRoutable.swift in Sources */,
 				5D384B9124FD4E1800C2C92C /* String+.swift in Sources */,
+				DA76BF462CEF91B600199317 /* PendingTransactionsManager.swift in Sources */,
 				B64598FF2B59B4AC000FD73F /* RateAppAction.swift in Sources */,
 				DC3ED8A52C1B489E00C89C62 /* DefaultPickerRowViewModel.swift in Sources */,
 				DCE2F7F22CE7253A00BDE145 /* ActionButtonsSendToSellModel.swift in Sources */,
@@ -16844,6 +16874,7 @@
 				2DB6488B2C3587D900DA100D /* WalletSelectorDataSource.swift in Sources */,
 				B0CF5A5B2C2D492100B197D4 /* MarketsTokenDetailsDataProvider.swift in Sources */,
 				EF6A8B032B278A6200CA3535 /* CommonExpressRepository.swift in Sources */,
+				DA76BF4F2CEF964300199317 /* OnrampPendingTransactionRepository.swift in Sources */,
 				DAE4BB0E2CD796210020CE3F /* OnrampCurrencySelectorRoutable.swift in Sources */,
 				B037B1EE256E747F0022EFFF /* TwinsFinalizeWalletCreationTask.swift in Sources */,
 				EF8DBD442C073116009072CF /* AverageRewardingView.swift in Sources */,
@@ -17463,6 +17494,7 @@
 				DCBC945D299404510050BC35 /* CommonAnalyticsContext.swift in Sources */,
 				B00371BE2A8A5E5900D77A4B /* FakeUserTokensManager.swift in Sources */,
 				DC261CA9292CF56600875E64 /* AuthCoordinatorView.swift in Sources */,
+				DA76BF4A2CEF958700199317 /* OnrampPendingTransactionRecord.swift in Sources */,
 				2DB4EADC2C41938E00F9E860 /* MarketsPortfolioTokenItemViewModel.swift in Sources */,
 				DAA5E30328D21369003C0E80 /* BiometryLogoImage.swift in Sources */,
 				2DDFA7952C230E2F00E51F7F /* MarketCapFormatter.swift in Sources */,

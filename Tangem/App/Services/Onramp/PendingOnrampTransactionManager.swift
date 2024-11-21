@@ -10,31 +10,6 @@ import Foundation
 import Combine
 import TangemExpress
 
-protocol PendingOnrampTransactionsManager: PendingGenericTransactionsManager {
-    var pendingTransactions: [PendingOnrampTransaction] { get }
-    var pendingTransactionsPublisher: AnyPublisher<[PendingOnrampTransaction], Never> { get }
-
-    func hideTransaction(with id: String)
-}
-
-extension PendingOnrampTransactionsManager {
-    var pendingGenericTransactions: [PendingTransaction] {
-        pendingTransactions.map(PendingTransaction.from)
-    }
-
-    var pendingGenericTransactionsPublisher: AnyPublisher<[PendingTransaction], Never> {
-        pendingTransactionsPublisher
-            .map { transactions in
-                transactions.map(PendingTransaction.from)
-            }
-            .eraseToAnyPublisher()
-    }
-
-    func hideGenericTransaction(with id: String) {
-        hideTransaction(with: id)
-    }
-}
-
 class CommonPendingOnrampTransactionsManager {
     @Injected(\.onrampPendingTransactionsRepository) private var onrampPendingTransactionsRepository: OnrampPendingTransactionRepository
 
@@ -143,13 +118,15 @@ class CommonPendingOnrampTransactionsManager {
     }
 }
 
-extension CommonPendingOnrampTransactionsManager: PendingOnrampTransactionsManager {
-    var pendingTransactions: [PendingOnrampTransaction] {
-        pendingTransactionsSubject.value
+extension CommonPendingOnrampTransactionsManager: PendingTransactionsManager {
+    var pendingTransactions: [PendingTransaction] {
+        pendingTransactionsSubject.value.map(\.pendingTransaction)
     }
 
-    var pendingTransactionsPublisher: AnyPublisher<[PendingOnrampTransaction], Never> {
-        pendingTransactionsSubject.eraseToAnyPublisher()
+    var pendingTransactionsPublisher: AnyPublisher<[PendingTransaction], Never> {
+        pendingTransactionsSubject
+            .map { $0.map(\.pendingTransaction) }
+            .eraseToAnyPublisher()
     }
 
     func hideTransaction(with id: String) {

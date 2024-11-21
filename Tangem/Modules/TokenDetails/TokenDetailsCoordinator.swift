@@ -76,8 +76,7 @@ class TokenDetailsCoordinator: CoordinatorObject {
             )
         )
 
-        let pendingExpressTransactionsManager = expressFactory.makePendingExpressTransactionsManager()
-        let pendingOnrampTransactionsManager = expressFactory.makePendingOnrampTransactionsManager()
+        let pendingTransactionsManager = expressFactory.makePendingTransactionsManager()
 
         let bannerNotificationManager = options.userWalletModel.config.hasFeature(.multiCurrency)
             ? BannerNotificationManager(userWalletId: options.userWalletModel.userWalletId, placement: .tokenDetails(options.walletModel.tokenItem), contextDataProvider: options.userWalletModel)
@@ -95,8 +94,7 @@ class TokenDetailsCoordinator: CoordinatorObject {
             exchangeUtility: exchangeUtility,
             notificationManager: notificationManager,
             bannerNotificationManager: bannerNotificationManager,
-            pendingExpressTransactionsManager: pendingExpressTransactionsManager,
-            pendingOnrampTransactionsManager: pendingOnrampTransactionsManager,
+            pendingTransactionsManager: pendingTransactionsManager,
             xpubGenerator: xpubGenerator,
             coordinator: self,
             tokenRouter: tokenRouter
@@ -117,13 +115,13 @@ extension TokenDetailsCoordinator {
 // MARK: - TokenDetailsRoutable
 
 extension TokenDetailsCoordinator: TokenDetailsRoutable {
-    func openPendingExpressTransactionDetails(
-        for pendingTransaction: PendingExpressTransaction,
+    func openPendingTransactionDetails(
+        for pendingTransaction: PendingTransaction,
         tokenItem: TokenItem,
-        pendingTransactionsManager: PendingGenericTransactionsManager
+        pendingTransactionsManager: PendingTransactionsManager
     ) {
         pendingExpressTxStatusBottomSheetViewModel = PendingExpressTxStatusBottomSheetViewModel(
-            pendingTransaction: PendingTransaction.from(pendingTransaction),
+            pendingTransaction: pendingTransaction,
             currentTokenItem: tokenItem,
             pendingTransactionsManager: pendingTransactionsManager,
             router: self

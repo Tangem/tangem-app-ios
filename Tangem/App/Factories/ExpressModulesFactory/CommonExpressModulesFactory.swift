@@ -118,7 +118,7 @@ extension CommonExpressModulesFactory: ExpressModulesFactory {
         )
     }
 
-    func makePendingExpressTransactionsManager() -> any PendingExpressTransactionsManager {
+    func makePendingTransactionsManager() -> any PendingTransactionsManager {
         let tokenFinder = CommonTokenFinder(supportedBlockchains: userWalletModel.config.supportedBlockchains)
 
         let expressRefundedTokenHandler = CommonExpressRefundedTokenHandler(
@@ -132,13 +132,14 @@ extension CommonExpressModulesFactory: ExpressModulesFactory {
             expressRefundedTokenHandler: expressRefundedTokenHandler
         )
 
-        return pendingExpressTransactionsManager
-    }
-
-    func makePendingOnrampTransactionsManager() -> any PendingOnrampTransactionsManager {
-        CommonPendingOnrampTransactionsManager(
+        let pendingOnrampTransactionsManager = CommonPendingOnrampTransactionsManager(
             userWalletId: userWalletModel.userWalletId.stringValue,
             walletModel: initialWalletModel
+        )
+
+        return CompoundPendingTransactionsManager(
+            first: pendingExpressTransactionsManager,
+            second: pendingOnrampTransactionsManager
         )
     }
 }

@@ -9,33 +9,21 @@
 import Foundation
 
 struct PendingExpressTransactionsConverter {
-    func convertToTokenDetailsPendingTxInfo(_ records: [PendingExpressTransaction], tapAction: @escaping (String) -> Void) -> [PendingExpressTransactionView.Info] {
+    func convertToTokenDetailsPendingTxInfo(_ records: [PendingTransaction], tapAction: @escaping (String) -> Void) -> [PendingExpressTransactionView.Info] {
         let iconBuilder = TokenIconInfoBuilder()
         let balanceFormatter = BalanceFormatter()
 
-        return records.compactMap {
-            let record = $0.transactionRecord
-
-            let sourceIconInfo: TokenIconInfo
-            let sourceAmountText: String
-            if let expressSpecific = record.expressSpecific {
-                let sourceTokenTxInfo = expressSpecific.sourceTokenTxInfo
-                let sourceTokenItem = sourceTokenTxInfo.tokenItem
-                sourceIconInfo = iconBuilder.build(from: sourceTokenItem, isCustom: sourceTokenTxInfo.isCustom)
-                sourceAmountText = balanceFormatter.formatCryptoBalance(sourceTokenTxInfo.amount, currencyCode: sourceTokenItem.currencySymbol)
-            } else if let onrampSpecific = record.onrampSpecific {
-                sourceIconInfo = iconBuilder.build(from: onrampSpecific.fromCurrencyCode)
-                sourceAmountText = balanceFormatter.formatFiatBalance(
-                    onrampSpecific.fromAmount,
-                    currencyCode: onrampSpecific.fromCurrencyCode
-                )
-            } else {
-                fatalError("unexpected state")
+        return records.compactMap { record in
+            let title: String
+            switch record.branch {
+            case .swap:
+                title = Localization.expressExchangeBy(record.provider.name)
+            case .onramp:
+                title = "Buying Bitcoin" // TODO: Use real
             }
 
-            let destinationTokenItem = record.destinationTokenTxInfo.tokenItem
             let state: PendingExpressTransactionView.State
-            switch $0.transactionRecord.transactionStatus {
+            switch record.transactionStatus {
             case .awaitingDeposit, .confirming, .exchanging, .sendingToUser, .done, .refunded:
                 state = .inProgress
             case .failed, .canceled, .unknown, .paused:
@@ -44,13 +32,21 @@ struct PendingExpressTransactionsConverter {
                 state = .warning
             }
 
+            let destinationCurrencySymbol: String
+            switch record.destinationInfo {
+            case .fiat(_, let currencySymbol):
+                destinationCurrencySymbol = currencySymbol
+            case .tokenTxInfo(let tokenInfo):
+                destinationCurrencySymbol = tokenInfo.tokenItem.currencySymbol
+            }
+
             return .init(
                 id: record.expressTransactionId,
-                title: Localization.expressExchangeBy(record.provider.name),
-                sourceIconInfo: sourceIconInfo,
-                sourceAmountText: sourceAmountText,
-                destinationIconInfo: iconBuilder.build(from: destinationTokenItem, isCustom: record.destinationTokenTxInfo.isCustom),
-                destinationCurrencySymbol: destinationTokenItem.currencySymbol,
+                title: title,
+                sourceIconInfo: record.sourceTokenIconInfo,
+                sourceAmountText: record.sourceAmountText,
+                destinationIconInfo: record.destinationTokenIconInfo,
+                destinationCurrencySymbol: destinationCurrencySymbol,
                 state: state,
                 action: tapAction
             )
