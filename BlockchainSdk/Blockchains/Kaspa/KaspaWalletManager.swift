@@ -268,11 +268,6 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                     .mapSendError(tx: encodedRawTransactionData?.hexString.lowercased())
                     .eraseToAnyPublisher()
             }
-            .handleEvents(receiveOutput: { [weak self] in
-                let mapper = PendingTransactionRecordMapper()
-                let record = mapper.mapToPendingTransactionRecord(transaction: transaction, hash: $0.transactionId)
-                self?.wallet.addPendingTransaction(record)
-            })
             .withWeakCaptureOf(self)
             .asyncMap { manager, input in
                 // Delete Commit
