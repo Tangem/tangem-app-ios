@@ -90,6 +90,8 @@ struct VisaOnboardingView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     VisaOnboardingView(viewModel: .mock)
 }
+#endif // DEBUG

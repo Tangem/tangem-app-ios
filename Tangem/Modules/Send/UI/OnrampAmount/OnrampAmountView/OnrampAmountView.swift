@@ -59,13 +59,14 @@ struct OnrampAmountView: View {
                 .prefixSuffixOptions(viewModel.currentFieldOptions)
                 .minTextScale(SendAmountStep.Constants.amountMinTextScale)
                 .matchedGeometryEffect(id: namespace.names.amountCryptoText, in: namespace.id)
-                .skeletonable(isShown: viewModel.isLoading)
+                .skeletonable(isShown: viewModel.isLoading, width: 100, height: 28)
 
             // Keep empty text so that the view maintains its place in the layout
             Text(viewModel.alternativeAmount ?? " ")
                 .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
                 .lineLimit(1)
                 .matchedGeometryEffect(id: namespace.names.amountFiatText, in: namespace.id)
+                .skeletonable(isShown: viewModel.isLoading, width: 80, height: 13)
         }
     }
 

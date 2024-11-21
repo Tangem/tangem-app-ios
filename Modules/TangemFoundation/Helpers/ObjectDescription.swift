@@ -14,8 +14,7 @@ import Foundation
 /// // Output example:
 /// <UIDimmingView: 0x14622ddc0; frame = (-414 -736; 1242 2208); opaque = NO>
 /// ```
-@available(*, deprecated, message: "Use TangemFoundation.objectDescription(_:userInfo:) instead.")
-func objectDescription(
+public func objectDescription(
     _ object: AnyObject,
     userInfo: KeyValuePairs<AnyHashable, Any> = [:]
 ) -> String {

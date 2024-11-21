@@ -106,16 +106,20 @@ class TONNetworkService: MultiNetworkProvider {
     private func getTokensInfo(
         address: String,
         tokens: [Token]
-    ) -> AnyPublisher<[Token: TONWalletInfo.TokenInfo], Error> {
+    ) -> AnyPublisher<[Token: Result<TONWalletInfo.TokenInfo, Error>], Error> {
         tokens
             .publisher
             .setFailureType(to: Error.self)
             .withWeakCaptureOf(self)
             .flatMap { networkService, token in
-                networkService.getTokenInfo(address: address, token: token).map { (token, $0) }
+                networkService.getTokenInfo(address: address, token: token)
+                    .mapToResult()
+                    .setFailureType(to: Error.self)
+                    .map { (token, $0) }
+                    .eraseToAnyPublisher()
             }
             .collect()
-            .map { $0.reduce(into: [Token: TONWalletInfo.TokenInfo]()) { $0[$1.0] = $1.1 }}
+            .map { $0.reduce(into: [Token: Result<TONWalletInfo.TokenInfo, Error>]()) { $0[$1.0] = $1.1 }}
             .eraseToAnyPublisher()
     }
 

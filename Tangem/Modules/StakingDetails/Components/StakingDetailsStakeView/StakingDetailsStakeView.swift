@@ -66,7 +66,7 @@ struct StakingDetailsStakeView: View {
                     .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
 
                 if data.inProgress {
-                    Assets.pendingTxIndicator.image
+                    ProgressDots(style: .small)
                 }
             }
 

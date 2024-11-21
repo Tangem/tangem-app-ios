@@ -88,11 +88,18 @@ private extension OnrampModel {
             let providers = await $0.onrampManager.providers
 
             $0._onrampProviders.send(.loaded(providers))
+            if let selectedProvider = await $0.onrampManager.selectedProvider {
+                $0._selectedOnrampProvider.send(.loaded(selectedProvider))
+            }
         }
     }
 
     func updateQuotes(amount: Decimal?) {
         mainTask {
+            guard $0._onrampProviders.value?.value?.hasProviders() == true else {
+                return
+            }
+
             guard let amount else {
                 $0._selectedOnrampProvider.send(.none)
                 // Clear onrampManager
@@ -236,7 +243,7 @@ extension OnrampModel: OnrampPaymentMethodsInput {
     }
 
     var paymentMethodsPublisher: AnyPublisher<[OnrampPaymentMethod], Never> {
-        _onrampProviders.compactMap { $0?.value?.keys.toSet() }.map { Array($0) }.eraseToAnyPublisher()
+        _onrampProviders.compactMap { $0?.value?.map(\.paymentMethod) }.eraseToAnyPublisher()
     }
 }
 
@@ -301,7 +308,9 @@ extension OnrampModel: SendFinishInput {
 
 extension OnrampModel: SendBaseInput {
     var actionInProcessing: AnyPublisher<Bool, Never> {
-        _isLoading.eraseToAnyPublisher()
+        Publishers
+            .Merge(_isLoading, _currency.map { $0.isLoading })
+            .eraseToAnyPublisher()
     }
 }
 
