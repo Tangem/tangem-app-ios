@@ -261,6 +261,7 @@ extension Analytics {
         case pushButtonAllow = "[Push] Button - Allow"
         case pushButtonPostpone = "[Push] Button - Later"
         case pushPermissionStatus = "[Push] Permission Status"
+        case pushNotificationOpened = "[Push] Push Notification Opened"
 
         // MARK: - Staking
 

@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import UserNotifications
 
-final class PushNotificationsService {
+final class PushNotificationsService: NSObject {
     /// - Note: Checks only explicit authorization (`UNAuthorizationStatus.authorized`) and ignores implicit
     /// authorization statuses such as `UNAuthorizationStatus.provisional` or `UNAuthorizationStatus.ephemeral`.
     @MainActor
@@ -38,6 +38,8 @@ final class PushNotificationsService {
 
     init(application: UIApplication) {
         self.application = application
+        super.init()
+        userNotificationCenter.delegate = self
     }
 
     func requestAuthorizationAndRegister() async {
@@ -67,5 +69,13 @@ final class PushNotificationsService {
         if !AppEnvironment.current.isDebug {
             application.registerForRemoteNotifications()
         }
+    }
+}
+
+// MARK: - UNUserNotificationCenterDelegate protocol conformance
+
+extension PushNotificationsService: UNUserNotificationCenterDelegate {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+        Analytics.log(.pushNotificationOpened)
     }
 }
