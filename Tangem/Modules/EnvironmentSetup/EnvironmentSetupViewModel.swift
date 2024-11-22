@@ -9,6 +9,7 @@
 import Combine
 import SwiftUI
 import TangemExpress
+import FirebaseMessaging
 
 final class EnvironmentSetupViewModel: ObservableObject {
     @Injected(\.promotionService) var promotionService: PromotionServiceProtocol
@@ -23,6 +24,9 @@ final class EnvironmentSetupViewModel: ObservableObject {
 
     // Demo
     @Published var forcedDemoCardId: String = ""
+
+    // FirebaseMessaging
+    @Published private(set) var fcmToken: String = ""
 
     // Promotion
     @Published var currentPromoCode: String = ""
@@ -146,13 +150,13 @@ final class EnvironmentSetupViewModel: ObservableObject {
                 AppSettings.shared.forcedDemoCardId = newValue.nilIfEmpty
             }
             .store(in: &bag)
+
+        fcmToken = Messaging.messaging().fcmToken ?? "none"
     }
 
-    func copyCurrentPromoCode() {
-        guard let promoCode = promotionService.promoCode else { return }
-
-        UIPasteboard.general.string = promoCode
-
+    func copyField(_ keyPath: KeyPath<EnvironmentSetupViewModel, String>) {
+        let value = self[keyPath: keyPath]
+        UIPasteboard.general.string = value
         UINotificationFeedbackGenerator().notificationOccurred(.success)
     }
 
@@ -192,7 +196,7 @@ final class EnvironmentSetupViewModel: ObservableObject {
     }
 
     private func updateCurrentPromoCode() {
-        currentPromoCode = promotionService.promoCode ?? "[none]"
+        currentPromoCode = promotionService.promoCode ?? "none"
     }
 
     private func updateFinishedPromotionNames() {
