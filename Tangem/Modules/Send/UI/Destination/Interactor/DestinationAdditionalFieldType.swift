@@ -39,33 +39,3 @@ enum SendDestinationAdditionalFieldType {
         }
     }
 }
-
-extension Blockchain {
-    var hasMemo: Bool {
-        switch self {
-        case .stellar,
-             .binance,
-             .ton,
-             .cosmos,
-             .terraV1,
-             .terraV2,
-             .algorand,
-             .hedera,
-             .sei,
-             .internetComputer,
-             .casper:
-            true
-        default:
-            false
-        }
-    }
-
-    var hasDestinationTag: Bool {
-        switch self {
-        case .xrp:
-            true
-        default:
-            false
-        }
-    }
-}
