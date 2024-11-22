@@ -8,21 +8,20 @@
 
 import Combine
 import TangemExpress
+import TangemFoundation
 
 protocol OnrampAmountInteractor {
     var currencyPublisher: AnyPublisher<OnrampFiatCurrency?, Never> { get }
+    var selectedOnrampProviderPublisher: AnyPublisher<LoadingResult<OnrampProvider, Never>?, Never> { get }
     var errorPublisher: AnyPublisher<String?, Never> { get }
 
-    func update(amount: Decimal?) async -> SendAmount?
+    func update(fiat: Decimal?)
 }
 
 class CommonOnrampAmountInteractor {
-    @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
-
     private weak var input: OnrampAmountInput?
     private weak var output: OnrampAmountOutput?
     private weak var onrampProvidersInput: OnrampProvidersInput?
-    private let tokenItem: TokenItem
 
     private var _error: CurrentValueSubject<String?, Never> = .init(nil)
     private var bag: Set<AnyCancellable> = []
@@ -30,13 +29,11 @@ class CommonOnrampAmountInteractor {
     init(
         input: OnrampAmountInput,
         output: OnrampAmountOutput,
-        onrampProvidersInput: OnrampProvidersInput,
-        tokenItem: TokenItem
+        onrampProvidersInput: OnrampProvidersInput
     ) {
         self.input = input
         self.output = output
         self.onrampProvidersInput = onrampProvidersInput
-        self.tokenItem = tokenItem
 
         bind(onrampProvidersInput: onrampProvidersInput)
     }
@@ -64,28 +61,6 @@ private extension CommonOnrampAmountInteractor {
         .assign(to: \._error.value, on: self, ownership: .weak)
         .store(in: &bag)
     }
-
-    func makeSendAmount(fiat: Decimal) async -> SendAmount {
-        guard let currency = input?.fiatCurrency.value,
-              let currencyId = tokenItem.currencyId else {
-            return .init(type: .alternative(fiat: fiat, crypto: nil))
-        }
-
-        let price = await quotesRepository.loadPrice(currencyCode: currency.identity.code, currencyId: currencyId)
-        let crypto = price.map { fiat / $0 }
-
-        return .init(type: .alternative(fiat: fiat, crypto: crypto))
-    }
-
-    private func validateAndUpdate(amount: SendAmount?) {
-        guard let fiat = amount?.fiat, fiat > 0 else {
-            // Field is empty or zero
-            output?.amountDidChanged(amount: .none)
-            return
-        }
-
-        output?.amountDidChanged(amount: amount)
-    }
 }
 
 // MARK: - OnrampAmountInteractor
@@ -100,18 +75,28 @@ extension CommonOnrampAmountInteractor: OnrampAmountInteractor {
         return input.fiatCurrencyPublisher.map { $0.value }.eraseToAnyPublisher()
     }
 
+    var selectedOnrampProviderPublisher: AnyPublisher<LoadingResult<OnrampProvider, Never>?, Never> {
+        guard let onrampProvidersInput else {
+            assertionFailure("OnrampProvidersInput not found")
+            return Empty().eraseToAnyPublisher()
+        }
+
+        return onrampProvidersInput
+            .selectedOnrampProviderPublisher
+            .eraseToAnyPublisher()
+    }
+
     var errorPublisher: AnyPublisher<String?, Never> {
         _error.eraseToAnyPublisher()
     }
 
-    func update(amount: Decimal?) async -> SendAmount? {
-        guard let amount else {
-            validateAndUpdate(amount: nil)
-            return nil
+    func update(fiat: Decimal?) {
+        guard let fiat, fiat > 0 else {
+            // Field is empty or zero
+            output?.amountDidChanged(fiat: .none)
+            return
         }
 
-        let sendAmount = await makeSendAmount(fiat: amount)
-        validateAndUpdate(amount: sendAmount)
-        return sendAmount
+        output?.amountDidChanged(fiat: fiat)
     }
 }

@@ -13,10 +13,8 @@ import TangemFoundation
 protocol OnrampAmountInput: AnyObject {
     var fiatCurrency: LoadingResult<OnrampFiatCurrency, Never> { get }
     var fiatCurrencyPublisher: AnyPublisher<LoadingResult<OnrampFiatCurrency, Never>, Never> { get }
-
-    var amountPublisher: AnyPublisher<SendAmount?, Never> { get }
 }
 
 protocol OnrampAmountOutput: AnyObject {
-    func amountDidChanged(amount: SendAmount?)
+    func amountDidChanged(fiat: Decimal?)
 }
