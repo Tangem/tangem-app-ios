@@ -289,6 +289,9 @@
 "express_provider_not_available" = "No disponible para este par";
 "express_provider_permission_needed" = "Permiso requerido";
 "express_provider_recommended" = "Recomendado";
+"express_status_bought" = "Comprado %@";
+"express_status_buying" = "Comprando %@";
+"express_status_buying_active" = "Comprando %@...";
 "express_token_list_empty_search" = "No se encontraron fichas. Por favor intenta con otra solicitud";
 "express_transaction_id" = "ID : %@";
 "express_transaction_id_copied" = "ID de transacción copiado";
@@ -411,7 +414,6 @@
 "markets_token_details_fully_diluted_valuation_description" = "El valor teórico total de una criptomoneda si todas las monedas que podrían existir estuvieran en circulación, incluidas las que actualmente no circulan.";
 "markets_token_details_fully_diluted_valuation_full" = "Valoración totalmente diluida";
 "markets_token_details_genesis_date" = "Dato de Genesis";
-"markets_token_details_genesis_date_description" = "Vacío";
 "markets_token_details_high" = "Alto";
 "markets_token_details_holders" = "Titulares";
 "markets_token_details_holders_description" = "El cambio en el número de poseedores de tokens dentro de un período de tiempo específico";
@@ -422,7 +424,6 @@
 "markets_token_details_liquidity_description" = "El cambio en la cantidad de liquidez disponible para el token durante el período de tiempo especificado";
 "markets_token_details_liquidity_full" = "Liquidez";
 "markets_token_details_liquidity_index" = "Índice de liquidez";
-"markets_token_details_liquidity_index_description" = "Vacío";
 "markets_token_details_listed_on" = "Listado en";
 "markets_token_details_low" = "Bajo";
 "markets_token_details_market_capitalization" = "Capital. de mercado";
@@ -566,8 +567,11 @@
 "qr_scanner_camera_denied_settings_button" = "Ajustes";
 "qr_scanner_camera_denied_text" = "No ha dado acceso a su cámara";
 "qr_scanner_camera_denied_title" = "Acceso a la cámara denegado";
+"receive_bottom_sheet_no_memo_required_message" = "No memo required";
 "receive_bottom_sheet_warning_message" = "%1$@ (%2$@) en la red %3$@";
+"receive_bottom_sheet_warning_message_description" = "Sending any other currency will result in its irreversible loss.";
 "receive_bottom_sheet_warning_message_full" = "Envíe solo %@ a esta dirección. Enviar cualquier otra moneda resultará en su pérdida irreversible.";
+"receive_bottom_sheet_warning_message_title" = "Send only %@ to this address.";
 "receive_token_description" = "Transfiera fondos desde otra billetera o intercambio";
 "referral_button_participate" = "Participar";
 "referral_error_failed_to_load_info" = "Error al cargar la información sobre el programa de referidos. Por favor, inténtelo de nuevo más tarde.";
@@ -835,14 +839,14 @@
 "toast_balances_shown" = "Saldos mostrados";
 "toast_undo" = "Cancelar";
 "token_button_unavailability_generic_description" = "Esta operación no está disponible actualmente. Por favor, inténtalo de nuevo más tarde.";
-"token_button_unavailability_reason_buy_unavailable" = "Comprar %@ no está disponible en este momento. Por favor revise sus actualizaciones.";
+"token_button_unavailability_reason_buy_unavailable" = "Comprar %@ no está disponible con los proveedores actuales pero estamos trabajando para agregar más opciones.";
 "token_button_unavailability_reason_empty_balance_sell" = "No tiene fondos para vender. Recargue su cuenta para poder vender fondos desde ella.";
 "token_button_unavailability_reason_empty_balance_send" = "No tienes fondos para enviar. Recarga tu cuenta para poder enviar fondos desde ella.";
-"token_button_unavailability_reason_not_exchangeable" = "El servicio de intercambio %@ no está disponible en este momento. Por favor consulte nuestras actualizaciones.";
+"token_button_unavailability_reason_not_exchangeable" = "El servicio de intercambio %@ no está compatible con los proveedores actuales pero estamos trabajando para agregar más opciones.";
 "token_button_unavailability_reason_pending_transaction_sell" = "La venta de fondos estará disponible una vez que la(s) transacción(es) pendiente(s) en la red %@ se complete";
 "token_button_unavailability_reason_pending_transaction_send" = "El envío de fondos estará disponible una vez que se completen las transacciones pendientes en la red %@.";
-"token_button_unavailability_reason_sell_unavailable" = "La venta de %@ no está disponible en este momento. Por favor consulte nuestras actualizaciones.";
-"token_button_unavailability_reason_staking_unavailable" = "El staking %@ no está disponible en este momento. Por favor consulte nuestras actualizaciones.";
+"token_button_unavailability_reason_sell_unavailable" = "Vender %@ no es compatible con los proveedores actuales, pero estamos trabajando para agregar más opciones.";
+"token_button_unavailability_reason_staking_unavailable" = "El staking de %@ no es compatible con los proveedores actuales, pero estamos trabajando para agregar más opciones.";
 "token_details_choose_address" = "Elige dirección";
 "token_details_generate_xpub" = "Generar XPUB";
 "token_details_hide_alert_hide" = "Ocultar";
@@ -860,6 +864,7 @@
 "tokens_list_unavailable_to_purchase_header" = "No disponible para compra";
 "tokens_list_unavailable_to_sell_header" = "No disponible para vender";
 "tokens_list_unavailable_to_swap_header" = "No disponible para cambio desde %@";
+"tokens_list_unavailable_to_swap_source_header" = "Unavailable for swap";
 "transaction_history_contract_address" = "contacto: %@";
 "transaction_history_empty_transactions" = "Aún no tiene ninguna transacción";
 "transaction_history_error_failed_to_load" = "Error al cargar el historial de transacciones.\nHaga clic en el botón de recarga para actualizar la información.";
@@ -978,6 +983,9 @@
 "warning_hedera_missing_token_association_message_brief" = "Este token debe estar asociado con su cuenta de Hedera antes de poder recibirlo.";
 "warning_hedera_missing_token_association_title" = "Asocie su token";
 "warning_hedera_token_association_not_enough_hbar_message" = "No hay suficiente %@. Recargue su cuenta de Hedera para asociar este token";
+"warning_kaspa_unfinished_token_transaction_discard_message" = "¿Está seguro(a) de que desea cancelar la transacción? No podrá volver a intentar realizarla.";
+"warning_kaspa_unfinished_token_transaction_message" = "Su transacción con un importe de %1$@ %2$@ no se ha completado. Puede volver a intentarlo para completarla.";
+"warning_kaspa_unfinished_token_transaction_title" = "Tiene una transacción sin terminar";
 "warning_long_transaction_message" = "iPhone 7/7+ no puede firmar transacciones en esta red. Para completar esta operación, por favor use un teléfono diferente.";
 "warning_long_transaction_title" = "Firma de transacción no disponible";
 "warning_low_signatures_message" = "Solo quedan %@ firmas en esta tarjeta. Deba retirar todos sus fondos.";

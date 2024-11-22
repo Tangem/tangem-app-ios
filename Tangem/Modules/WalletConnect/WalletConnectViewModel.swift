@@ -80,7 +80,9 @@ class WalletConnectViewModel: ObservableObject {
             return
         }
 
-        if let pendingURI = readFromClipboard() {
+        pendingURI = readFromClipboard()
+
+        if pendingURI != nil {
             isActionSheetVisible = true
         } else {
             openQRScanner()
