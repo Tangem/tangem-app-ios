@@ -414,7 +414,6 @@
 "markets_token_details_fully_diluted_valuation_description" = "Общая теоретическая стоимость криптовалюты, если все монеты, которые могут существовать, находятся в обращении, включая те, которые в настоящее время не обращаются";
 "markets_token_details_fully_diluted_valuation_full" = "Полностью разбавленная капитализация";
 "markets_token_details_genesis_date" = "Дата создания";
-"markets_token_details_genesis_date_description" = "";
 "markets_token_details_high" = "Высокий";
 "markets_token_details_holders" = "Держатели";
 "markets_token_details_holders_description" = "Изменение количества держателей токенов в течение выбранного периода времени";
@@ -425,7 +424,6 @@
 "markets_token_details_liquidity_description" = "Изменение объема ликвидности, доступной для токена в течение указанного периода времени.";
 "markets_token_details_liquidity_full" = "Ликвидность";
 "markets_token_details_liquidity_index" = "Индекс ликвидности";
-"markets_token_details_liquidity_index_description" = "";
 "markets_token_details_listed_on" = "Листинг на";
 "markets_token_details_low" = "Низкий";
 "markets_token_details_market_capitalization" = "Рын. кап.";
@@ -866,6 +864,7 @@
 "tokens_list_unavailable_to_purchase_header" = "Недоступно для покупки";
 "tokens_list_unavailable_to_sell_header" = "Недоступно для продажи";
 "tokens_list_unavailable_to_swap_header" = "Недоступно для обмена с %@";
+"tokens_list_unavailable_to_swap_source_header" = "Недоступно для обмена";
 "transaction_history_contract_address" = "контракт: %@";
 "transaction_history_empty_transactions" = "У вас еще нет транзакций";
 "transaction_history_error_failed_to_load" = "Не удалось загрузить историю транзакций.\nНажмите на кнопку перезагрузки, чтобы обновить информацию.";

@@ -414,7 +414,6 @@
 "markets_token_details_fully_diluted_valuation_description" = "Загальна теоретична вартість криптовалюти, якщо всі монети, які могли б існувати, перебувають в обігу, включаючи ті, що не перебувають в обігу в даний час";
 "markets_token_details_fully_diluted_valuation_full" = "Повністю розведена капіталізація";
 "markets_token_details_genesis_date" = "Дата створення";
-"markets_token_details_genesis_date_description" = "";
 "markets_token_details_high" = "Високий";
 "markets_token_details_holders" = "Тримачі";
 "markets_token_details_holders_description" = "Зміна кількості власників токенів протягом певного періоду часу";
@@ -425,7 +424,6 @@
 "markets_token_details_liquidity_description" = "Зміна того, скільки ліквідності доступно для токена протягом зазначеного періоду часу";
 "markets_token_details_liquidity_full" = "Ліквідність";
 "markets_token_details_liquidity_index" = "Індекс ліквідності";
-"markets_token_details_liquidity_index_description" = "";
 "markets_token_details_listed_on" = "Лістинг на";
 "markets_token_details_low" = "Низький";
 "markets_token_details_market_capitalization" = "Рин. кап.";
@@ -866,6 +864,7 @@
 "tokens_list_unavailable_to_purchase_header" = "Недоступно для покупки";
 "tokens_list_unavailable_to_sell_header" = "Недоступно для продажу";
 "tokens_list_unavailable_to_swap_header" = "Недоступно для обміну з %@";
+"tokens_list_unavailable_to_swap_source_header" = "Unavailable for swap";
 "transaction_history_contract_address" = "контракт: %@";
 "transaction_history_empty_transactions" = "У вас ще немає транзакцій";
 "transaction_history_error_failed_to_load" = "Не вдалося завантажити історію транзакцій.\nНатисніть кнопку нижче, щоб оновити інформацію";

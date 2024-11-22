@@ -414,7 +414,6 @@
 "markets_token_details_fully_diluted_valuation_description" = "The total theoretical value of a cryptocurrency if all coins that could exist are in circulation, including those not currently circulating";
 "markets_token_details_fully_diluted_valuation_full" = "Fully diluted valuation";
 "markets_token_details_genesis_date" = "Genesis date";
-"markets_token_details_genesis_date_description" = "";
 "markets_token_details_high" = "High";
 "markets_token_details_holders" = "Holders";
 "markets_token_details_holders_description" = "The change in the number of token holders within a specific timeframe";
@@ -425,7 +424,6 @@
 "markets_token_details_liquidity_description" = "The change in how much liquidity is available for the token during the specified timeframe";
 "markets_token_details_liquidity_full" = "Liquidity";
 "markets_token_details_liquidity_index" = "Liquidity index";
-"markets_token_details_liquidity_index_description" = "";
 "markets_token_details_listed_on" = "Listed on";
 "markets_token_details_low" = "Low";
 "markets_token_details_market_capitalization" = "Market cap";
@@ -866,6 +864,7 @@
 "tokens_list_unavailable_to_purchase_header" = "Unavailable to purchase";
 "tokens_list_unavailable_to_sell_header" = "Unavailable to sell";
 "tokens_list_unavailable_to_swap_header" = "Unavailable for swap from %@";
+"tokens_list_unavailable_to_swap_source_header" = "Unavailable for swap";
 "transaction_history_contract_address" = "contract: %@";
 "transaction_history_empty_transactions" = "You don't have any transactions yet";
 "transaction_history_error_failed_to_load" = "Failed to load transaction history.\nClick on reload button to update the information.";

@@ -414,7 +414,6 @@
 "markets_token_details_fully_diluted_valuation_description" = "現在流通していないものも含め、存在する可能性のあるすべてのコインが流通している場合の暗号資産の理論上の合計価値";
 "markets_token_details_fully_diluted_valuation_full" = "完全希薄化後評価額";
 "markets_token_details_genesis_date" = "ジェネシスの日付";
-"markets_token_details_genesis_date_description" = "";
 "markets_token_details_high" = "高い";
 "markets_token_details_holders" = "ホルダー";
 "markets_token_details_holders_description" = "特定の期間内のトークンホルダー数の変化";
@@ -425,7 +424,6 @@
 "markets_token_details_liquidity_description" = "指定された期間中のトークンに利用可能な流動性の変化";
 "markets_token_details_liquidity_full" = "流動性";
 "markets_token_details_liquidity_index" = "流動性指数";
-"markets_token_details_liquidity_index_description" = "";
 "markets_token_details_listed_on" = "上場先";
 "markets_token_details_low" = "低い";
 "markets_token_details_market_capitalization" = "時価総額";
@@ -866,6 +864,7 @@
 "tokens_list_unavailable_to_purchase_header" = "買付できません";
 "tokens_list_unavailable_to_sell_header" = "売却できません";
 "tokens_list_unavailable_to_swap_header" = "%@からのスワップは利用できません";
+"tokens_list_unavailable_to_swap_source_header" = "Unavailable for swap";
 "transaction_history_contract_address" = "コントラクト: %@";
 "transaction_history_empty_transactions" = "まだ取引はありません";
 "transaction_history_error_failed_to_load" = "取引履歴の読み込みに失敗しました。\n情報を更新するには、リロードボタンをクリックしてください。";

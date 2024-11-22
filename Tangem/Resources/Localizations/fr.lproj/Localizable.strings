@@ -414,7 +414,6 @@
 "markets_token_details_fully_diluted_valuation_description" = "La valeur théorique totale d'une crypto-monnaie si toutes les pièces qui pourraient exister étaient en circulation, y compris celles qui ne circulent pas actuellement";
 "markets_token_details_fully_diluted_valuation_full" = "Valorisation entièrement diluée";
 "markets_token_details_genesis_date" = "Date de la Genesis";
-"markets_token_details_genesis_date_description" = "";
 "markets_token_details_high" = "Haut";
 "markets_token_details_holders" = "Détenteurs";
 "markets_token_details_holders_description" = "L'évolution du nombre de détenteurs de jetons au cours d'une période donnée";
@@ -425,7 +424,6 @@
 "markets_token_details_liquidity_description" = "Le changement dans la quantité de liquidité disponible pour le jeton pendant la période spécifiée";
 "markets_token_details_liquidity_full" = "Liquidité";
 "markets_token_details_liquidity_index" = "Indice de liquidité";
-"markets_token_details_liquidity_index_description" = "";
 "markets_token_details_listed_on" = "Listé sur";
 "markets_token_details_low" = "Faible";
 "markets_token_details_market_capitalization" = "Cap. boursière";
@@ -866,6 +864,7 @@
 "tokens_list_unavailable_to_purchase_header" = "Non disponible à l'achat";
 "tokens_list_unavailable_to_sell_header" = "Indisponible à la vente";
 "tokens_list_unavailable_to_swap_header" = "Non disponible pour l'échange de %@";
+"tokens_list_unavailable_to_swap_source_header" = "Unavailable for swap";
 "transaction_history_contract_address" = "contrat : %@";
 "transaction_history_empty_transactions" = "Vous n'avez pas encore de transactions";
 "transaction_history_error_failed_to_load" = "Échec du chargement de l'historique des transactions.\nCliquez sur le bouton de rechargement pour mettre à jour les informations.";
