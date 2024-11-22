@@ -22,7 +22,7 @@ class OnrampModel {
     // MARK: - Data
 
     private let _currency: CurrentValueSubject<LoadingResult<OnrampFiatCurrency, Never>, Never>
-    private let _amount: CurrentValueSubject<SendAmount?, Never> = .init(.none)
+    private let _amount: CurrentValueSubject<Decimal?, Never> = .init(.none)
     private let _onrampProviders: CurrentValueSubject<LoadingResult<ProvidersList, Error>?, Never> = .init(.none)
     private let _selectedOnrampProvider: CurrentValueSubject<LoadingResult<OnrampProvider, Never>?, Never> = .init(.none)
     private let _isLoading: CurrentValueSubject<Bool, Never> = .init(false)
@@ -67,7 +67,7 @@ private extension OnrampModel {
             .dropFirst()
             .withWeakCaptureOf(self)
             .sink { model, amount in
-                model.amountDidChange(amount: amount?.fiat)
+                model.amountDidChange(amount: amount)
             }
             .store(in: &bag)
 
@@ -126,7 +126,7 @@ private extension OnrampModel {
     }
 
     func hasAmount() -> Bool {
-        _amount.value?.fiat != nil
+        _amount.value != nil
     }
 
     // MARK: - Quotes
@@ -145,7 +145,7 @@ private extension OnrampModel {
 
     func updateQuotes() async throws {
         do {
-            try await updateQuotes(amount: _amount.value?.fiat)
+            try await updateQuotes(amount: _amount.value)
         } catch OnrampManagerError.providersIsEmpty {
             _selectedOnrampProvider.send(.none)
         } catch {
@@ -249,6 +249,10 @@ private extension OnrampModel {
 // MARK: - OnrampAmountInput
 
 extension OnrampModel: OnrampAmountInput {
+    var amountPublisher: AnyPublisher<Decimal?, Never> {
+        _amount.eraseToAnyPublisher()
+    }
+
     var fiatCurrency: LoadingResult<OnrampFiatCurrency, Never> {
         _currency.value
     }
@@ -261,8 +265,8 @@ extension OnrampModel: OnrampAmountInput {
 // MARK: - OnrampAmountOutput
 
 extension OnrampModel: OnrampAmountOutput {
-    func amountDidChanged(amount: SendAmount?) {
-        _amount.send(amount)
+    func amountDidChanged(fiat: Decimal?) {
+        _amount.send(fiat)
     }
 }
 
@@ -346,16 +350,6 @@ extension OnrampModel: OnrampInput {
 // MARK: - OnrampOutput
 
 extension OnrampModel: OnrampOutput {}
-
-// MARK: - SendAmountInput
-
-extension OnrampModel: SendAmountInput {
-    var amount: SendAmount? { _amount.value }
-
-    var amountPublisher: AnyPublisher<SendAmount?, Never> {
-        _amount.eraseToAnyPublisher()
-    }
-}
 
 // MARK: - SendFinishInput
 

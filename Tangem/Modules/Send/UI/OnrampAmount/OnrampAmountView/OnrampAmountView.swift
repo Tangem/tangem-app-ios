@@ -61,12 +61,14 @@ struct OnrampAmountView: View {
                 .matchedGeometryEffect(id: namespace.names.amountCryptoText, in: namespace.id)
                 .skeletonable(isShown: viewModel.isLoading, width: 100, height: 28)
 
-            // Keep empty text so that the view maintains its place in the layout
-            Text(viewModel.alternativeAmount ?? " ")
-                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-                .lineLimit(1)
-                .matchedGeometryEffect(id: namespace.names.amountFiatText, in: namespace.id)
-                .skeletonable(isShown: viewModel.isLoading, width: 80, height: 13)
+            LoadableTextView(
+                state: viewModel.alternativeAmount,
+                font: Fonts.Regular.footnote,
+                textColor: Colors.Text.tertiary,
+                loaderSize: CGSize(width: 80, height: 13)
+            )
+            .lineLimit(1)
+            .matchedGeometryEffect(id: namespace.names.amountFiatText, in: namespace.id)
         }
     }
 

@@ -65,6 +65,13 @@ extension OnrampProvider: OnrampProviderManager {
         }
     }
 
+    public var quote: OnrampQuote? {
+        switch state {
+        case .loaded(let quote): quote
+        case .restriction, .failed, .idle, .loading, .notSupported: nil
+        }
+    }
+
     public var error: Error? {
         switch state {
         case .failed(let error): error

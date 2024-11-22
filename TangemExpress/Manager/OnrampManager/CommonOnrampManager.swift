@@ -115,7 +115,7 @@ private extension CommonOnrampManager {
             log(message: "The best provider was defined to \(best as Any)")
 
             if let maxPriorityProvider = provider.suggestProvider() {
-                log(message: "The suggested provider is \(maxPriorityProvider)")
+                log(message: "The selected provider is \(maxPriorityProvider)")
                 return maxPriorityProvider
             }
         }

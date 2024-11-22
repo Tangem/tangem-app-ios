@@ -14,7 +14,7 @@ import TangemFoundation
 class OnrampAmountViewModel: ObservableObject {
     @Published var fiatIconURL: URL?
     @Published var decimalNumberTextFieldViewModel: DecimalNumberTextField.ViewModel
-    @Published var alternativeAmount: String?
+    @Published var alternativeAmount: LoadableTextView.State = .initialized
     @Published var bottomInfoText: SendAmountViewModel.BottomInfoTextType?
     @Published var currentFieldOptions: SendDecimalNumberTextField.PrefixSuffixOptions?
     @Published var isLoading: Bool = false
@@ -25,8 +25,8 @@ class OnrampAmountViewModel: ObservableObject {
     private let interactor: OnrampAmountInteractor
     private weak var coordinator: OnrampAmountRoutable?
     private let prefixSuffixOptionsFactory: SendDecimalNumberTextField.PrefixSuffixOptionsFactory = .init()
+    private let formatter: SendCryptoValueFormatter
 
-    private var updatingAmountTask: Task<Void, Never>?
     private var bag: Set<AnyCancellable> = []
 
     init(
@@ -39,6 +39,11 @@ class OnrampAmountViewModel: ObservableObject {
         self.coordinator = coordinator
 
         decimalNumberTextFieldViewModel = .init(maximumFractionDigits: 2)
+        formatter = SendCryptoValueFormatter(
+            decimals: tokenItem.decimalCount,
+            currencySymbol: tokenItem.currencySymbol,
+            trimFractions: false
+        )
 
         bind()
     }
@@ -76,6 +81,15 @@ private extension OnrampAmountViewModel {
             .receive(on: DispatchQueue.main)
             .assign(to: \.bottomInfoText, on: self, ownership: .weak)
             .store(in: &bag)
+
+        interactor
+            .expectedTokenAmountPublisher
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, amount in
+                viewModel.updateCryptoAmount(amount: amount)
+            }
+            .store(in: &bag)
     }
 
     func update(currency: OnrampFiatCurrency?) {
@@ -83,6 +97,7 @@ private extension OnrampAmountViewModel {
         case .none:
             // Equal to loading state
             fiatIconURL = nil
+            currentFieldOptions = nil
             isLoading = true
 
         case .some(let currency):
@@ -91,28 +106,29 @@ private extension OnrampAmountViewModel {
             currentFieldOptions = prefixSuffixOptionsFactory.makeFiatOptions(
                 fiatCurrencyCode: currency.identity.code
             )
-            updateAlternativeAmount(amount: .none)
+//            updateCryptoAmount(amount: .none)
             isLoading = false
         }
     }
 
     func textFieldValueDidChanged(amount: Decimal?) {
-        updatingAmountTask?.cancel()
-        updatingAmountTask = TangemFoundation.runTask(in: self) { viewModel in
-            let amount = await viewModel.interactor.update(amount: amount)
-
-            await runOnMain {
-                viewModel.updateAlternativeAmount(amount: amount)
-            }
-        }
+        interactor.update(fiat: amount)
     }
 
-    func updateAlternativeAmount(amount: SendAmount?) {
-        let amount = amount ?? SendAmount(type: .alternative(fiat: nil, crypto: 0))
-        alternativeAmount = amount.formatAlternative(
-            currencySymbol: tokenItem.currencySymbol,
-            trimFractions: false,
-            decimalCount: tokenItem.decimalCount
-        )
+    func updateCryptoAmount(amount: LoadingResult<Decimal?, Never>?) {
+        switch amount {
+        case .none:
+            alternativeAmount = .initialized
+        case .loading:
+            alternativeAmount = .loading
+        case .success(.some(let crypto)):
+            if let formatted = formatter.string(from: crypto) {
+                alternativeAmount = .loaded(text: "\(AppConstants.tildeSign) \(formatted)")
+            } else {
+                fallthrough
+            }
+        case .success(.none):
+            alternativeAmount = .noData
+        }
     }
 }
