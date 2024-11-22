@@ -101,7 +101,15 @@ struct MarketsTokenDetailsMapper {
 }
 
 extension MarketsTokenDetailsMapper {
-    enum MapperError: Error {
+    enum MapperError: LocalizedError {
         case missingAllTimePriceChangeValue
+
+        var errorDescription: String? {
+            let description = switch self {
+            case .missingAllTimePriceChangeValue:
+                "Missing all time price change value"
+            }
+            return "MapperError: " + description
+        }
     }
 }
