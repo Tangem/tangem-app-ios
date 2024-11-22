@@ -41,6 +41,10 @@ final class PollingService<RequestData: Identifiable, ResponseData: Identifiable
             .eraseToAnyPublisher()
     }
 
+    deinit {
+        cancelTask()
+    }
+
     func startPolling(requests: [RequestData], force: Bool) {
         guard updateTask == nil || force else {
             return
@@ -48,10 +52,15 @@ final class PollingService<RequestData: Identifiable, ResponseData: Identifiable
 
         cancelTask()
 
-        TangemFoundation.runTask(in: self) {
+        updateTask = TangemFoundation.runTask(in: self) {
             await $0.poll(for: requests)
             $0.cancelTask()
         }
+    }
+
+    func cancelTask() {
+        updateTask?.cancel()
+        updateTask = nil
     }
 
     private func poll(for requests: [RequestData]) async {
@@ -60,10 +69,10 @@ final class PollingService<RequestData: Identifiable, ResponseData: Identifiable
         }
 
         while !Task.isCancelled {
-            let responses = await withTaskGroup(of: Response?.self) { taskGroup in
+            let responses = await withTaskGroup(of: Response?.self) { [weak self] taskGroup in
                 for requestData in requests {
                     taskGroup.addTask {
-                        await self.getResponse(for: requestData)
+                        await self?.getResponse(for: requestData)
                     }
                 }
 
@@ -103,14 +112,5 @@ final class PollingService<RequestData: Identifiable, ResponseData: Identifiable
         }
 
         return Response(data: responseData, hasChanges: true)
-    }
-
-    private func cancelTask() {
-        updateTask?.cancel()
-        updateTask = nil
-    }
-
-    deinit {
-        cancelTask()
     }
 }
