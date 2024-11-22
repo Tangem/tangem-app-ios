@@ -24,9 +24,9 @@ struct DecimalNumberTextField: View {
         ZStack(alignment: .leading) {
             // A dummy invisible view that controls the layout (i.e. limits the max width) of `DecimalNumberTextField`.
             //
-            // For unknown reasons, sometimes the calculated max width of this view is not enough and causes `textField`
+            // For unknown reasons, sometimes the calculated width of this view is not enough and causes `textField`
             // to truncate its text. Using `TextField` instead of `Text` doesn't help; the issue persists.
-            // To mitigate this, we add additional 1pt horizontal paddings that prevents the text from being truncation.
+            // To mitigate this, we add additional 1pt horizontal paddings that prevents the text from being truncated.
             Text(viewModel.textFieldText.isEmpty ? placeholder : viewModel.textFieldText)
                 .font(appearance.font)
                 .padding(.horizontal, 1.0)
@@ -40,7 +40,7 @@ struct DecimalNumberTextField: View {
 
     private var textField: some View {
         TextField(text: $viewModel.textFieldText, prompt: prompt, label: {})
-            .multilineTextAlignment(.center)
+            .multilineTextAlignment(.center) // Aligns `textField` text; required due to additional horizontal paddings above
             .style(appearance.font, color: appearance.textColor)
             .tint(appearance.textColor)
             .labelsHidden()
