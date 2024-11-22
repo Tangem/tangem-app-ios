@@ -1,5 +1,5 @@
 "action_buttons_buy_empty_search_message" = "Token not found in your portfolio? Check the Markets to find and add it for purchase";
-"action_buttons_sell_empty_search_message" = "Token not found in your portfolio? Check the Markets to find and add it for sell";
+"action_buttons_sell_empty_search_message" = "Token not found in your portfolio? Check the Markets to find and add it for selling";
 "action_buttons_swap_choose_token" = "Выберите токен";
 "action_buttons_swap_empty_search_message" = "Token not found in your portfolio? Check the Markets to find and add it for swap";
 "action_buttons_swap_no_available_pair_notification_message" = "Нет доступных токенов для обмена с выбранным токеном, пожалуйста, выберите другой.";
@@ -290,8 +290,8 @@
 "express_provider_permission_needed" = "Требуется разрешение";
 "express_provider_recommended" = "Рекомендовано";
 "express_status_bought" = "Bought %@";
-"express_status_buying" = "Buying %@";
-"express_status_buying_active" = "Buying %@...";
+"express_status_buying" = "Покупка %@";
+"express_status_buying_active" = "Покупка %@...";
 "express_token_list_empty_search" = "Токены не найдены. Пожалуйста, попробуйте другой запрос";
 "express_transaction_id" = "ID: %@";
 "express_transaction_id_copied" = "ID транзакции скопирован";
@@ -414,7 +414,6 @@
 "markets_token_details_fully_diluted_valuation_description" = "Общая теоретическая стоимость криптовалюты, если все монеты, которые могут существовать, находятся в обращении, включая те, которые в настоящее время не обращаются";
 "markets_token_details_fully_diluted_valuation_full" = "Полностью разбавленная капитализация";
 "markets_token_details_genesis_date" = "Дата создания";
-"markets_token_details_genesis_date_description" = "";
 "markets_token_details_high" = "Высокий";
 "markets_token_details_holders" = "Держатели";
 "markets_token_details_holders_description" = "Изменение количества держателей токенов в течение выбранного периода времени";
@@ -425,7 +424,6 @@
 "markets_token_details_liquidity_description" = "Изменение объема ликвидности, доступной для токена в течение указанного периода времени.";
 "markets_token_details_liquidity_full" = "Ликвидность";
 "markets_token_details_liquidity_index" = "Индекс ликвидности";
-"markets_token_details_liquidity_index_description" = "";
 "markets_token_details_listed_on" = "Листинг на";
 "markets_token_details_low" = "Низкий";
 "markets_token_details_market_capitalization" = "Рын. кап.";
@@ -569,8 +567,11 @@
 "qr_scanner_camera_denied_settings_button" = "Настройки";
 "qr_scanner_camera_denied_text" = "Вы не предоставили доступ к вашей камере";
 "qr_scanner_camera_denied_title" = "Доступ к камере запрещен";
+"receive_bottom_sheet_no_memo_required_message" = "No memo required";
 "receive_bottom_sheet_warning_message" = "%1$@ (%2$@) в сети %3$@";
+"receive_bottom_sheet_warning_message_description" = "Sending any other currency will result in its irreversible loss.";
 "receive_bottom_sheet_warning_message_full" = "Отправляйте только %@ на этот адрес. Использование другой сети может привести к утрате средств.";
+"receive_bottom_sheet_warning_message_title" = "Send only %@ to this address.";
 "receive_token_description" = "Переводите средства с любого кошелька или биржи";
 "referral_button_participate" = "Участвовать";
 "referral_error_failed_to_load_info" = "Не удалось загрузить информацию по реферальной программе. Пожалуйста, попробуйте позже.";
@@ -862,7 +863,8 @@
 "tokens_list_hot_crypto_header" = "В тренде🔥";
 "tokens_list_unavailable_to_purchase_header" = "Недоступно для покупки";
 "tokens_list_unavailable_to_sell_header" = "Недоступно для продажи";
-"tokens_list_unavailable_to_swap_header" = "Unavailable for swap from %@";
+"tokens_list_unavailable_to_swap_header" = "Недоступно для обмена с %@";
+"tokens_list_unavailable_to_swap_source_header" = "Недоступно для обмена";
 "transaction_history_contract_address" = "контракт: %@";
 "transaction_history_empty_transactions" = "У вас еще нет транзакций";
 "transaction_history_error_failed_to_load" = "Не удалось загрузить историю транзакций.\nНажмите на кнопку перезагрузки, чтобы обновить информацию.";
