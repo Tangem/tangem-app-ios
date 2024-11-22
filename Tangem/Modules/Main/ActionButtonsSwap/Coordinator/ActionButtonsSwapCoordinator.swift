@@ -21,7 +21,7 @@ final class ActionButtonsSwapCoordinator: CoordinatorObject {
 
     required init(
         expressTokensListAdapter: some ExpressTokensListAdapter,
-        tokenSorter: some TokenAvailabilitySorter = CommonSwapTokenAvailabilitySorter(),
+        tokenSorter: some TokenAvailabilitySorter = SwapSourceTokenAvailabilitySorter(),
         userWalletModel: some UserWalletModel,
         dismissAction: @escaping Action<Void>,
         popToRootAction: @escaping Action<PopToRootOptions> = { _ in }

@@ -1,5 +1,5 @@
 //
-//  SwapToTokenAvailabilitySorter.swift
+//  SwapDestinationTokenAvailabilitySorter.swift
 //  TangemApp
 //
 //  Created by Viacheslav E. on 22.11.2024.
@@ -8,7 +8,7 @@
 
 import TangemExpress
 
-struct SwapSourceTokenAvailabilitySorter: TokenAvailabilitySorter {
+struct SwapDestinationTokenAvailabilitySorter: TokenAvailabilitySorter {
     @Injected(\.expressAvailabilityProvider)
     private var expressAvailabilityProvider: ExpressAvailabilityProvider
 

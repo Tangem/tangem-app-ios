@@ -1,12 +1,12 @@
 //
-//  CommonSwapTokenAvailabilitySorter.swift
+//  SwapSourceTokenAvailabilitySorter.swift
 //  TangemApp
 //
 //  Created by Viacheslav E. on 22.11.2024.
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-struct CommonSwapTokenAvailabilitySorter: TokenAvailabilitySorter {
+struct SwapSourceTokenAvailabilitySorter: TokenAvailabilitySorter {
     @Injected(\.expressAvailabilityProvider)
     private var expressAvailabilityProvider: ExpressAvailabilityProvider
 

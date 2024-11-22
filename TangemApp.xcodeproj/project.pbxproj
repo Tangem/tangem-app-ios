@@ -2386,11 +2386,11 @@
 		DCFCA17528F4232F0037586C /* Array+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFCA17428F4232F0037586C /* Array+.swift */; };
 		DCFE143E294B31C00053106B /* AppPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFE143D294B31C00053106B /* AppPresenter.swift */; };
 		DCFEFE442CF07D94002DFE58 /* SwapTokenSelectorStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFEFE432CF07D93002DFE58 /* SwapTokenSelectorStrings.swift */; };
-		DCFEFE472CF080E5002DFE58 /* CommonSwapTokenAvailabilitySorter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFEFE462CF080E4002DFE58 /* CommonSwapTokenAvailabilitySorter.swift */; };
+		DCFEFE472CF080E5002DFE58 /* SwapSourceTokenAvailabilitySorter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFEFE462CF080E4002DFE58 /* SwapSourceTokenAvailabilitySorter.swift */; };
 		DCFEFE4A2CF081DD002DFE58 /* ActionButtonsSwapCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFEFE492CF081DC002DFE58 /* ActionButtonsSwapCoordinatorView.swift */; };
 		DCFEFE4C2CF08270002DFE58 /* ActionButtonsSwapCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFEFE4B2CF0826F002DFE58 /* ActionButtonsSwapCoordinator.swift */; };
 		DCFEFE4E2CF0834C002DFE58 /* ActionButtonsSwapRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFEFE4D2CF0834B002DFE58 /* ActionButtonsSwapRoutable.swift */; };
-		DCFEFE502CF08496002DFE58 /* SwapToTokenAvailabilitySorter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFEFE4F2CF08494002DFE58 /* SwapToTokenAvailabilitySorter.swift */; };
+		DCFEFE502CF08496002DFE58 /* SwapDestinationTokenAvailabilitySorter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFEFE4F2CF08494002DFE58 /* SwapDestinationTokenAvailabilitySorter.swift */; };
 		DCFEFE532CF08A1B002DFE58 /* ActionButtonsSwapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFEFE522CF08A1A002DFE58 /* ActionButtonsSwapViewModel.swift */; };
 		E9C17C5F291951BF00FDE4BC /* AnyPublisher+.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C17C5E291951BF00FDE4BC /* AnyPublisher+.swift */; };
 		EF0295592A9DCDEE000B2142 /* SensitiveText.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0295582A9DCDEE000B2142 /* SensitiveText.swift */; };
@@ -5487,11 +5487,11 @@
 		DCFCA17428F4232F0037586C /* Array+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+.swift"; sourceTree = "<group>"; };
 		DCFE143D294B31C00053106B /* AppPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPresenter.swift; sourceTree = "<group>"; };
 		DCFEFE432CF07D93002DFE58 /* SwapTokenSelectorStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapTokenSelectorStrings.swift; sourceTree = "<group>"; };
-		DCFEFE462CF080E4002DFE58 /* CommonSwapTokenAvailabilitySorter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonSwapTokenAvailabilitySorter.swift; sourceTree = "<group>"; };
+		DCFEFE462CF080E4002DFE58 /* SwapSourceTokenAvailabilitySorter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapSourceTokenAvailabilitySorter.swift; sourceTree = "<group>"; };
 		DCFEFE492CF081DC002DFE58 /* ActionButtonsSwapCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsSwapCoordinatorView.swift; sourceTree = "<group>"; };
 		DCFEFE4B2CF0826F002DFE58 /* ActionButtonsSwapCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsSwapCoordinator.swift; sourceTree = "<group>"; };
 		DCFEFE4D2CF0834B002DFE58 /* ActionButtonsSwapRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsSwapRoutable.swift; sourceTree = "<group>"; };
-		DCFEFE4F2CF08494002DFE58 /* SwapToTokenAvailabilitySorter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapToTokenAvailabilitySorter.swift; sourceTree = "<group>"; };
+		DCFEFE4F2CF08494002DFE58 /* SwapDestinationTokenAvailabilitySorter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapDestinationTokenAvailabilitySorter.swift; sourceTree = "<group>"; };
 		DCFEFE522CF08A1A002DFE58 /* ActionButtonsSwapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsSwapViewModel.swift; sourceTree = "<group>"; };
 		E9C17C5E291951BF00FDE4BC /* AnyPublisher+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnyPublisher+.swift"; sourceTree = "<group>"; };
 		EBF238BB655AD76764C2F901 /* Pods-TangemTests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.debug(beta).xcconfig"; sourceTree = "<group>"; };
@@ -13464,8 +13464,8 @@
 		DCFEFE452CF080DC002DFE58 /* Service */ = {
 			isa = PBXGroup;
 			children = (
-				DCFEFE4F2CF08494002DFE58 /* SwapToTokenAvailabilitySorter.swift */,
-				DCFEFE462CF080E4002DFE58 /* CommonSwapTokenAvailabilitySorter.swift */,
+				DCFEFE4F2CF08494002DFE58 /* SwapDestinationTokenAvailabilitySorter.swift */,
+				DCFEFE462CF080E4002DFE58 /* SwapSourceTokenAvailabilitySorter.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -17228,7 +17228,7 @@
 				B0BF631B2A0D1C6F009EB975 /* TotalBalanceFormattingOptions.swift in Sources */,
 				DCC5C99A2C136C52001B970A /* PushNotificationsPermissionRequestViewModel.swift in Sources */,
 				DAB19D492B2C72A100DD08C4 /* AddCustomTokenViewModel.swift in Sources */,
-				DCFEFE502CF08496002DFE58 /* SwapToTokenAvailabilitySorter.swift in Sources */,
+				DCFEFE502CF08496002DFE58 /* SwapDestinationTokenAvailabilitySorter.swift in Sources */,
 				DC3B49F42893E50700C207EA /* StoredUserWallet.swift in Sources */,
 				EF2FE4992C6B80560015940A /* AllowanceChecker.swift in Sources */,
 				EF8BE6C42CCB95D7001FBA2B /* OnrampRoutable.swift in Sources */,
@@ -17732,7 +17732,7 @@
 				B66655732C6ECD91001E2C68 /* OverlayContentContainerProgress.swift in Sources */,
 				EFF034AC28B4B6ED00F70FF7 /* Publisher+TangemAPIError.swift in Sources */,
 				EF9F6F4428D499F600D6B190 /* LoadingValue.swift in Sources */,
-				DCFEFE472CF080E5002DFE58 /* CommonSwapTokenAvailabilitySorter.swift in Sources */,
+				DCFEFE472CF080E5002DFE58 /* SwapSourceTokenAvailabilitySorter.swift in Sources */,
 				EFE1812C292E30DF0072D80C /* OnboardingCardView.swift in Sources */,
 				2D2276602C0F0BEC006BB6A1 /* MarketsListDataFilterProvider.swift in Sources */,
 				5D3951672559A87E002CC452 /* CurrencySelectViewModel.swift in Sources */,
