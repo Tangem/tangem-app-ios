@@ -40,4 +40,5 @@ enum ActionButtonPresentationState: Equatable {
     case initial
     case loading
     case idle
+    case disabled
 }

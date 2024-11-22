@@ -9,7 +9,7 @@
 struct CommonBuyTokenAvailabilitySorter: TokenAvailabilitySorter {
     @Injected(\.exchangeService) private var exchangeService: ExchangeService
 
-    func sortModels(walletModels: [WalletModel]) -> (availableModels: [WalletModel], unavailableModels: [WalletModel]) {
+    func sortModels(walletModels: [WalletModel]) async -> (availableModels: [WalletModel], unavailableModels: [WalletModel]) {
         walletModels.reduce(
             into: (availableModels: [WalletModel](), unavailableModels: [WalletModel]())
         ) { result, walletModel in

@@ -143,7 +143,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
     }
 
     private func refreshActionButtonsData() {
-        actionButtonsViewModel?.fetchData()
+        actionButtonsViewModel?.refresh()
     }
 
     private func bind() {

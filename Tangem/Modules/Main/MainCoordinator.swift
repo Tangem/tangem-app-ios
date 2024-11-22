@@ -41,6 +41,7 @@ class MainCoordinator: CoordinatorObject {
     @Published var expressCoordinator: ExpressCoordinator? = nil
     @Published var actionButtonsBuyCoordinator: ActionButtonsBuyCoordinator? = nil
     @Published var actionButtonsSellCoordinator: ActionButtonsSellCoordinator? = nil
+    @Published var actionButtonsSwapCoordinator: ActionButtonsSwapCoordinator? = nil
 
     // MARK: - Child view models
 
@@ -504,7 +505,21 @@ extension MainCoordinator: ActionButtonsSellFlowRoutable {
 // MARK: - Action buttons swap routable
 
 extension MainCoordinator: ActionButtonsSwapFlowRoutable {
-    func openSwap() {}
+    func openSwap(userWalletModel: some UserWalletModel) {
+        let dismissAction: Action<Void> = { [weak self] _ in
+            self?.actionButtonsSwapCoordinator = nil
+        }
+
+        let coordinator = ActionButtonsSwapCoordinator(
+            expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel),
+            userWalletModel: userWalletModel,
+            dismissAction: dismissAction
+        )
+
+        coordinator.start(with: .default)
+
+        actionButtonsSwapCoordinator = coordinator
+    }
 }
 
 extension MainCoordinator {

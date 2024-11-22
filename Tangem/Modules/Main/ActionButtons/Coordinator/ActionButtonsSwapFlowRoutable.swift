@@ -7,5 +7,5 @@
 //
 
 protocol ActionButtonsSwapFlowRoutable {
-    func openSwap()
+    func openSwap(userWalletModel: some UserWalletModel)
 }

@@ -6,7 +6,10 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
+import Foundation
+
 final class SellActionButtonViewModel: ActionButtonViewModel {
+    @Published
     private(set) var presentationState: ActionButtonPresentationState = .initial
 
     let model: ActionButtonModel
@@ -29,7 +32,7 @@ final class SellActionButtonViewModel: ActionButtonViewModel {
         switch presentationState {
         case .initial:
             updateState(to: .loading)
-        case .loading:
+        case .loading, .disabled:
             break
         case .idle:
             coordinator.openSell(userWalletModel: userWalletModel)

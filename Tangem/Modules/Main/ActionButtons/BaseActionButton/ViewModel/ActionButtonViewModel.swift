@@ -11,6 +11,7 @@ import Foundation
 protocol ActionButtonViewModel: ObservableObject, Identifiable {
     var presentationState: ActionButtonPresentationState { get }
     var model: ActionButtonModel { get }
+    var isDisabled: Bool { get }
 
     @MainActor
     func tap()
@@ -19,23 +20,11 @@ protocol ActionButtonViewModel: ObservableObject, Identifiable {
     func updateState(to state: ActionButtonPresentationState)
 }
 
-// TODO: Should be removed in 8238
-class BaseActionButtonViewModel: ActionButtonViewModel {
-    @Published private(set) var presentationState: ActionButtonPresentationState = .initial
-
-    let model: ActionButtonModel
-
-    init(model: ActionButtonModel) {
-        self.model = model
-    }
-
-    @MainActor
-    func tap() {
-        // Should be override
-    }
-
-    @MainActor
-    func updateState(to state: ActionButtonPresentationState) {
-        presentationState = state
+extension ActionButtonViewModel {
+    var isDisabled: Bool {
+        switch presentationState {
+        case .initial, .idle: false
+        case .disabled, .loading: true
+        }
     }
 }

@@ -28,7 +28,11 @@ struct CommonExpressDestinationService {
 // MARK: - ExpressDestinationService
 
 extension CommonExpressDestinationService: ExpressDestinationService {
-    func getDestination(source: WalletModel) async throws -> WalletModel {
+    func getDestination(source: WalletModel, destination: WalletModel? = nil) async throws -> WalletModel {
+        if let destination {
+            return destination
+        }
+
         let availablePairs = await expressRepository.getPairs(from: source)
         let searchableWalletModels = walletModelsManager.walletModels.filter { wallet in
             let isNotSource = wallet.id != source.id

@@ -1,0 +1,210 @@
+//
+//  ActionButtonsSwapView.swift
+//  TangemApp
+//
+//  Created by Viacheslav E. on 18.11.2024.
+//  Copyright © 2024 Tangem AG. All rights reserved.
+//
+
+import SwiftUI
+import TangemExpress
+
+struct ActionButtonsSwapView: View {
+    @ObservedObject var viewModel: ActionButtonsSwapViewModel
+
+    var body: some View {
+        content
+            .animation(.easeInOut, value: viewModel.sourceToken)
+            .animation(.easeOut, value: viewModel.destinationToken)
+            .animation(.easeInOut, value: viewModel.swapPairsListState)
+            .padding(.top, 10)
+            .background(Colors.Background.tertiary.ignoresSafeArea())
+            .disabled(viewModel.swapPairsListState == .loading)
+    }
+
+    private var content: some View {
+        ScrollView {
+            VStack(spacing: 14) {
+                swapPair
+
+                if viewModel.destinationToken == nil {
+                    tokensListView
+                }
+            }
+            .padding(.horizontal, 16)
+        }
+    }
+
+    private var swapPair: some View {
+        VStack(spacing: 14) {
+            ActionButtonsChooseTokenView(selectedToken: $viewModel.sourceToken, field: .from)
+
+            if viewModel.isSourceTokenSelected, viewModel.swapPairsListState == .loaded {
+                if viewModel.isNotAvailablePairs {
+                    noAvailablePairsNotification
+                        .transition(.opacity.animation(.easeInOut))
+                } else {
+                    ActionButtonsChooseTokenView(selectedToken: $viewModel.destinationToken, field: .to)
+                }
+            }
+        }
+        .overlay(content: expressTransitionProgress)
+    }
+}
+
+private extension ActionButtonsSwapView {
+    var noAvailablePairsNotification: some View {
+        HStack(spacing: 12) {
+            Assets.warningIcon.image
+                .resizable()
+                .frame(size: .init(bothDimensions: 20))
+            VStack(alignment: .leading, spacing: 4) {
+                Text(Localization.actionButtonsSwapNoAvailablePairNotificationTitle)
+                    .style(Fonts.Bold.footnote, color: Colors.Text.primary1)
+                Text(Localization.actionButtonsSwapNoAvailablePairNotificationMessage)
+                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+        .padding(.init(top: 12, leading: 14, bottom: 12, trailing: 14))
+        .frame(alignment: .leading)
+        .background(Colors.Background.action)
+        .cornerRadiusContinuous(14)
+        .transition(.opacity.animation(.easeInOut))
+    }
+
+    @ViewBuilder
+    func expressTransitionProgress() -> some View {
+        if viewModel.destinationToken != nil {
+            Circle()
+                .stroke(style: .init(lineWidth: 1))
+                .foregroundStyle(Colors.Stroke.primary)
+                .frame(size: .init(bothDimensions: 44))
+
+            Circle()
+                .foregroundStyle(Colors.Background.primary)
+                .frame(size: .init(bothDimensions: 43))
+
+            ProgressView()
+                .progressViewStyle(CircularProgressViewStyle(tint: Colors.Icon.primary1))
+        }
+    }
+
+    @ViewBuilder
+    var tokensListView: some View {
+        switch viewModel.swapPairsListState {
+        case .error(let notificationViewInput):
+            NotificationView(input: notificationViewInput)
+
+        case .loading:
+            tokenSelectorStub
+
+        case .loaded:
+            tokenSelector
+        }
+    }
+
+    var tokenSelector: some View {
+        TokenSelectorView(
+            viewModel: viewModel.tokenSelectorViewModel,
+            tokenCellContent: { token in
+                ActionButtonsTokenSelectItemView(model: token) {
+                    viewModel.handleViewAction(.didTapToken(token))
+                }
+                .padding(.vertical, 16)
+            },
+            emptySearchContent: {
+                Text(viewModel.tokenSelectorViewModel.strings.emptySearchMessage)
+                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                    .multilineTextAlignment(.center)
+                    .animation(.default, value: viewModel.tokenSelectorViewModel.searchText)
+            }
+        )
+    }
+}
+
+// MARK: - Token selector stub
+
+private extension ActionButtonsSwapView {
+    var tokenSelectorStub: some View {
+        GroupedSection(
+            [0, 1, 2],
+            content: { _ in
+                tokenSelectorStubItem
+                    .padding(.vertical, 16)
+            },
+            header: {
+                tokenSelectorHeaderStub
+                    .padding(.init(top: 12, leading: 0, bottom: 8, trailing: 0))
+            }
+        )
+        .settings(\.backgroundColor, Colors.Background.action)
+    }
+
+    var tokenSelectorStubItem: some View {
+        HStack(spacing: 0) {
+            tokenIconStub
+
+            tokenInfoStub
+                .padding(.leading, 8)
+
+            Spacer()
+
+            balanceInfoStub
+        }
+    }
+
+    var tokenIconStub: some View {
+        SkeletonView()
+            .frame(size: .init(bothDimensions: 36))
+            .cornerRadius(18, corners: .allCorners)
+            .overlay(alignment: .topTrailing) {
+                ZStack {
+                    Circle()
+                        .stroke(lineWidth: 2)
+                        .frame(size: .init(bothDimensions: 16))
+                        .foregroundStyle(Colors.Background.action)
+
+                    SkeletonView()
+                        .frame(size: .init(bothDimensions: 14))
+                        .cornerRadius(7, corners: .allCorners)
+                }
+                .offset(x: 4, y: -4)
+            }
+    }
+
+    var tokenInfoStub: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            makeSkeleton(width: 70)
+
+            makeSkeleton(width: 52)
+        }
+    }
+
+    var balanceInfoStub: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            makeSkeleton(width: 40)
+
+            makeSkeleton(width: 40)
+        }
+    }
+
+    var tokenSelectorHeaderStub: some View {
+        VStack(alignment: .leading, spacing: 26) {
+            CustomSearchBar(
+                searchText: .constant(""),
+                placeholder: Localization.commonSearch,
+                style: .focused
+            )
+            .allowsTightening(false)
+
+            DefaultHeaderView(Localization.exchangeTokensAvailableTokensHeader)
+        }
+    }
+
+    func makeSkeleton(width: CGFloat, height: CGFloat = 12, cornerRadius: CGFloat = 3) -> some View {
+        SkeletonView()
+            .frame(width: width, height: height)
+            .cornerRadiusContinuous(cornerRadius)
+    }
+}

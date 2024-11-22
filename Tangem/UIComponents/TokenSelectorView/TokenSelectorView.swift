@@ -46,7 +46,7 @@ struct TokenSelectorView<
         case .empty:
             emptyContent
         case .data(let availableTokens, let unavailableTokens):
-            GroupedScrollView(alignment: .leading, spacing: 14) {
+            LazyVStack(alignment: .leading, spacing: 14) {
                 availableSection(
                     title: viewModel.strings.availableTokensListTitle,
                     items: availableTokens

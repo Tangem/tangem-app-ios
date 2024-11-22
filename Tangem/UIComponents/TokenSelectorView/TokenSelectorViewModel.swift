@@ -50,10 +50,11 @@ final class TokenSelectorViewModel<
     private func bindWalletModels() {
         expressTokensListAdapter
             .walletModels()
+            .asyncMap { walletModels in
+                await self.tokenSorter.sortModels(walletModels: walletModels)
+            }
             .withWeakCaptureOf(self)
-            .sink { viewModel, walletModels in
-                let sortedWalletModels = viewModel.tokenSorter.sortModels(walletModels: walletModels)
-
+            .sink { viewModel, sortedWalletModels in
                 viewModel.availableWalletModels = sortedWalletModels.availableModels
                 viewModel.unavailableWalletModels = sortedWalletModels.unavailableModels
 

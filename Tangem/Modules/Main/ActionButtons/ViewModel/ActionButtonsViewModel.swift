@@ -14,6 +14,7 @@ typealias ActionButtonsRoutable = ActionButtonsBuyFlowRoutable & ActionButtonsSe
 
 final class ActionButtonsViewModel: ObservableObject {
     @Injected(\.exchangeService) private var exchangeService: ExchangeService
+    @Injected(\.expressAvailabilityProvider) private var expressAvailabilityProvider: ExpressAvailabilityProvider
 
     @Published private(set) var isButtonsDisabled = false
 
@@ -21,11 +22,11 @@ final class ActionButtonsViewModel: ObservableObject {
 
     let buyActionButtonViewModel: BuyActionButtonViewModel
     let sellActionButtonViewModel: SellActionButtonViewModel
-    let swapActionButtonViewModel = BaseActionButtonViewModel(model: .swap)
+    let swapActionButtonViewModel: SwapActionButtonViewModel
 
     private var bag = Set<AnyCancellable>()
-
     private let expressTokensListAdapter: ExpressTokensListAdapter
+    private let userWalletModel: UserWalletModel
 
     init(
         coordinator: some ActionButtonsRoutable,
@@ -33,6 +34,7 @@ final class ActionButtonsViewModel: ObservableObject {
         userWalletModel: some UserWalletModel
     ) {
         self.expressTokensListAdapter = expressTokensListAdapter
+        self.userWalletModel = userWalletModel
 
         buyActionButtonViewModel = BuyActionButtonViewModel(
             model: .buy,
@@ -46,14 +48,18 @@ final class ActionButtonsViewModel: ObservableObject {
             userWalletModel: userWalletModel
         )
 
+        swapActionButtonViewModel = SwapActionButtonViewModel(
+            model: .swap,
+            coordinator: coordinator,
+            userWalletModel: userWalletModel
+        )
+
         bind()
-        fetchData()
     }
 
-    func fetchData() {
-        TangemFoundation.runTask(in: self) {
-            async let _ = $0.fetchSwapData()
-        }
+    func refresh() {
+        exchangeService.initialize()
+        updateSwapButtonState()
     }
 }
 
@@ -62,40 +68,101 @@ final class ActionButtonsViewModel: ObservableObject {
 private extension ActionButtonsViewModel {
     func bind() {
         bindWalletModels()
-        bindAvailableExchange()
+        bindSwapAvailability()
+        bindBuySellAvailability()
     }
 
     func bindWalletModels() {
         expressTokensListAdapter
             .walletModels()
-            .map(\.isEmpty)
-            .assign(to: \.isButtonsDisabled, on: self, ownership: .weak)
-            .store(in: &bag)
-    }
-
-    func bindAvailableExchange() {
-        exchangeService
-            .initializationPublisher
-            .withWeakCaptureOf(self)
-            .sink { viewModel, isExchangeAvailable in
-                TangemFoundation.runTask(in: viewModel) { viewModel in
-                    if isExchangeAvailable {
-                        await viewModel.sellActionButtonViewModel.updateState(to: .idle)
-                        await viewModel.buyActionButtonViewModel.updateState(to: .idle)
-                    } else {
-                        await viewModel.sellActionButtonViewModel.updateState(to: .initial)
-                        await viewModel.buyActionButtonViewModel.updateState(to: .initial)
-                    }
-                }
+            .receive(on: DispatchQueue.main)
+            .sink {
+                self.isButtonsDisabled = $0.isEmpty
+                self.updateBuyButtonState()
+                self.updateSellButtonState()
+                self.updateSwapButtonState()
             }
             .store(in: &bag)
     }
-}
 
-// MARK: - Swap
+    func bindBuySellAvailability() {
+        exchangeService
+            .initializationPublisher
+            .sink { _ in
+                self.updateBuyButtonState()
+                self.updateSellButtonState()
+            }
+            .store(in: &bag)
+    }
 
-private extension ActionButtonsViewModel {
-    func fetchSwapData() async {
-        // IOS-8238
+    func bindSwapAvailability() {
+        expressAvailabilityProvider
+            .availabilityDidChangePublisher
+            .sink { _ in
+                self.updateSwapButtonState()
+            }
+            .store(in: &bag)
+    }
+
+    func updateBuyButtonState() {
+        Task { @MainActor in
+            let walletModels = userWalletModel.walletModelsManager.walletModels
+
+            buyActionButtonViewModel.updateState(to: .initial)
+
+            let isBuyAvailable = walletModels.filter {
+                exchangeService.canBuy(
+                    $0.tokenItem.currencySymbol,
+                    amountType: $0.amountType,
+                    blockchain: $0.blockchainNetwork.blockchain
+                )
+            }.isNotEmpty
+
+            if isBuyAvailable {
+                buyActionButtonViewModel.updateState(to: .idle)
+            } else {
+                buyActionButtonViewModel.updateState(to: .disabled)
+            }
+        }
+    }
+
+    func updateSellButtonState() {
+        Task { @MainActor in
+            let walletModels = userWalletModel.walletModelsManager.walletModels
+
+            sellActionButtonViewModel.updateState(to: .initial)
+
+            let isSellAvailable = walletModels.filter {
+                exchangeService.canSell(
+                    $0.tokenItem.currencySymbol,
+                    amountType: $0.amountType,
+                    blockchain: $0.blockchainNetwork.blockchain
+                )
+            }.isNotEmpty
+
+            if isSellAvailable {
+                sellActionButtonViewModel.updateState(to: .idle)
+            } else {
+                sellActionButtonViewModel.updateState(to: .disabled)
+            }
+        }
+    }
+
+    func updateSwapButtonState() {
+        Task { @MainActor in
+            let walletModels = userWalletModel.walletModelsManager.walletModels
+
+            swapActionButtonViewModel.updateState(to: .initial)
+
+            let isSwapAvailable = walletModels.filter {
+                expressAvailabilityProvider.canSwap(tokenItem: $0.tokenItem)
+            }.count > 1
+
+            if isSwapAvailable {
+                swapActionButtonViewModel.updateState(to: .idle)
+            } else {
+                swapActionButtonViewModel.updateState(to: .disabled)
+            }
+        }
     }
 }

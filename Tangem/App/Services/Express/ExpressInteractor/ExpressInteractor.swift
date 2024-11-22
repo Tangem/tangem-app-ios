@@ -27,6 +27,7 @@ class ExpressInteractor {
 
     private let userWalletId: String
     private let initialWallet: WalletModel
+    private let destinationWallet: WalletModel?
     private let expressManager: ExpressManager
     private let allowanceProvider: UpdatableAllowanceProvider
     private let feeProvider: ExpressFeeProvider
@@ -49,6 +50,7 @@ class ExpressInteractor {
     init(
         userWalletId: String,
         initialWallet: WalletModel,
+        destinationWallet: WalletModel?,
         expressManager: ExpressManager,
         allowanceProvider: UpdatableAllowanceProvider,
         feeProvider: ExpressFeeProvider,
@@ -62,6 +64,7 @@ class ExpressInteractor {
     ) {
         self.userWalletId = userWalletId
         self.initialWallet = initialWallet
+        self.destinationWallet = destinationWallet
         self.expressManager = expressManager
         self.allowanceProvider = allowanceProvider
         self.feeProvider = feeProvider
@@ -648,8 +651,16 @@ private extension ExpressInteractor {
 
         do {
             try await expressRepository.updatePairs(for: wallet)
-            let destination = try await expressDestinationService.getDestination(source: wallet)
-            update(destination: destination)
+
+            if let destinationWallet {
+                update(destination: destinationWallet)
+            } else {
+                let destination = try await expressDestinationService.getDestination(
+                    source: wallet, destination: destinationWallet
+                )
+                update(destination: destination)
+            }
+
             return nil
         } catch ExpressDestinationServiceError.destinationNotFound {
             Analytics.log(.swapNoticeNoAvailableTokensToSwap)
