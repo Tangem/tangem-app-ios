@@ -9,13 +9,13 @@
 import Combine
 import TangemExpress
 
-enum PendingTransactionBranch {
+enum PendingTransactionType {
     case swap(source: ExpressPendingTransactionRecord.TokenTxInfo, destination: ExpressPendingTransactionRecord.TokenTxInfo)
     case onramp(sourceAmount: Decimal, sourceCurrencySymbol: String, destination: ExpressPendingTransactionRecord.TokenTxInfo)
 }
 
 struct PendingTransaction {
-    let branch: PendingTransactionBranch
+    let type: PendingTransactionType
 
     let expressTransactionId: String
     let externalTxId: String?

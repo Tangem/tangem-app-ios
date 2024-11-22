@@ -16,7 +16,7 @@ struct PendingExpressTransaction: Equatable {
 extension PendingExpressTransaction {
     var pendingTransaction: PendingTransaction {
         PendingTransaction(
-            branch: .swap(
+            type: .swap(
                 source: transactionRecord.sourceTokenTxInfo,
                 destination: transactionRecord.destinationTokenTxInfo
             ),

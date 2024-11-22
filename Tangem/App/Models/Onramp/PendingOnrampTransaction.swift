@@ -22,7 +22,7 @@ extension PendingOnrampTransaction: Identifiable {
 extension PendingOnrampTransaction {
     var pendingTransaction: PendingTransaction {
         PendingTransaction(
-            branch: .onramp(
+            type: .onramp(
                 sourceAmount: transactionRecord.fromAmount,
                 sourceCurrencySymbol: transactionRecord.fromCurrencyCode,
                 destination: transactionRecord.destinationTokenTxInfo

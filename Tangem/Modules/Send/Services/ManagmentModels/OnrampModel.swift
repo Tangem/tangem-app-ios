@@ -266,7 +266,7 @@ extension OnrampModel: OnrampRedirectingInput {}
 // MARK: - OnrampRedirectingOutput
 
 extension OnrampModel: OnrampRedirectingOutput {
-    func redirectDataDidLoad(data: OnrampRedirectDataWithId) {
+    func redirectDataDidLoad(data: OnrampRedirectData) {
         guard let provider = selectedOnrampProvider else {
             assertionFailure("selectedOnrampProvider is unexpectedly nil")
             return

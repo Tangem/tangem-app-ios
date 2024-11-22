@@ -111,6 +111,24 @@ extension ExpressDTO {
                 let dataJson: String // Decodes the nested JSON object
                 let signature: String
             }
+
+            struct CodedData: Decodable {
+                let fromCurrencyCode: String
+                let toContractAddress: String
+                let toNetwork: String
+                let paymentMethod: String
+                let countryCode: String
+                let fromAmount: String
+                let toAmount: Decimal?
+                let providerId: String
+                let toAddress: String
+                let redirectUrl: URL
+                let language: String?
+                let theme: String?
+                let requestId: String
+                let externalTxId: String
+                let widgetUrl: URL
+            }
         }
 
         // MARK: - Status

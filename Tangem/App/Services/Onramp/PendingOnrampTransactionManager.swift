@@ -82,10 +82,9 @@ class CommonPendingOnrampTransactionsManager {
         pollingService.resultPublisher
             .map { responses in
                 responses.compactMap { result in
-                    if result.hasChanges {
-                        return result.data.transactionRecord
-                    }
-                    return nil
+                    result.hasChanges
+                        ? result.data.transactionRecord
+                        : nil
                 }
             }
             .sink { [onrampPendingTransactionsRepository] transactionsToUpdateInRepository in

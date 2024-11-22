@@ -199,28 +199,28 @@ struct ExpressAPIMapper {
         item: OnrampRedirectDataRequestItem,
         request: ExpressDTO.Onramp.Data.Request,
         response: ExpressDTO.Onramp.Data.Response
-    ) throws -> OnrampRedirectDataWithId {
-        let redirectData: OnrampRedirectData = try exchangeDataDecoder.decode(
+    ) throws -> OnrampRedirectData {
+        let codedData: ExpressDTO.Onramp.Data.CodedData = try exchangeDataDecoder.decode(
             txDetailsJson: response.dataJson,
             signature: response.signature
         )
 
-        guard request.requestId == redirectData.requestId else {
+        guard request.requestId == codedData.requestId else {
             throw ExpressAPIMapperError.requestIdNotEqual
         }
 
-        guard var fromAmount = Decimal(string: redirectData.fromAmount) else {
-            throw ExpressAPIMapperError.mapToDecimalError(redirectData.fromAmount)
+        guard var fromAmount = Decimal(string: codedData.fromAmount) else {
+            throw ExpressAPIMapperError.mapToDecimalError(codedData.fromAmount)
         }
 
         fromAmount /= pow(10, 2)
 
-        return OnrampRedirectDataWithId(
+        return OnrampRedirectData(
             txId: response.txId,
-            widgetUrl: redirectData.widgetUrl,
+            widgetUrl: codedData.widgetUrl,
             fromAmount: fromAmount,
-            fromCurrencyCode: redirectData.fromCurrencyCode,
-            externalTxId: redirectData.externalTxId
+            fromCurrencyCode: codedData.fromCurrencyCode,
+            externalTxId: codedData.externalTxId
         )
     }
 

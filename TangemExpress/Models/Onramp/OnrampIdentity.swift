@@ -6,7 +6,7 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-public struct OnrampIdentity: Hashable, Codable {
+public struct OnrampIdentity: Hashable {
     public let name: String
     public let code: String
     public let image: URL?

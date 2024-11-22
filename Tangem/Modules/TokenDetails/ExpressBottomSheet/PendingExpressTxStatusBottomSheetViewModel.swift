@@ -68,7 +68,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
         let provider = pendingTransaction.provider
         let iconBuilder = TokenIconInfoBuilder()
 
-        switch pendingTransaction.branch {
+        switch pendingTransaction.type {
         case .swap(let source, let destination):
             sheetTitle = Localization.expressExchangeStatusTitle
             statusViewTitle = Localization.expressExchangeBy(provider.name)
@@ -149,7 +149,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     }
 
     private func loadEmptyFiatRates() {
-        switch pendingTransaction.branch {
+        switch pendingTransaction.type {
         case .swap(let source, let destination):
             loadRatesIfNeeded(stateKeyPath: \.sourceFiatAmountTextState, for: source, on: self)
             loadRatesIfNeeded(stateKeyPath: \.destinationFiatAmountTextState, for: destination, on: self)

@@ -26,7 +26,7 @@ public protocol OnrampManager: Actor {
     func updatePaymentMethod(paymentMethod: OnrampPaymentMethod)
 
     /// Load the data to perform the onramp action
-    func loadRedirectData(provider: OnrampProvider, redirectSettings: OnrampRedirectSettings) async throws -> OnrampRedirectDataWithId
+    func loadRedirectData(provider: OnrampProvider, redirectSettings: OnrampRedirectSettings) async throws -> OnrampRedirectData
 }
 
 public enum OnrampManagerError: LocalizedError {

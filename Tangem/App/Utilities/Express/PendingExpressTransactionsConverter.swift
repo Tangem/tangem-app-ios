@@ -20,7 +20,7 @@ struct PendingExpressTransactionsConverter {
             let sourceIconInfo: TokenIconInfo
             let destinationIconInfo: TokenIconInfo
 
-            switch record.branch {
+            switch record.type {
             case .swap(let source, let destination):
                 title = Localization.expressExchangeBy(record.provider.name)
                 sourceAmountText = balanceFormatter.formatCryptoBalance(source.amount, currencyCode: source.tokenItem.currencySymbol)

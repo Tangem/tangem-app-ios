@@ -169,7 +169,7 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
         return quote
     }
 
-    func onrampData(item: OnrampRedirectDataRequestItem) async throws -> OnrampRedirectDataWithId {
+    func onrampData(item: OnrampRedirectDataRequestItem) async throws -> OnrampRedirectData {
         let requestId: String = UUID().uuidString
         let request = ExpressDTO.Onramp.Data.Request(
             fromCurrencyCode: item.quotesItem.pairItem.fiatCurrency.identity.code,

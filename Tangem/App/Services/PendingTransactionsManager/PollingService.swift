@@ -8,6 +8,7 @@
 
 import Combine
 import Foundation
+import TangemFoundation
 
 final class PollingService<RequestData: Identifiable, ResponseData: Identifiable> where RequestData.ID == ResponseData.ID {
     struct Response {
@@ -47,9 +48,9 @@ final class PollingService<RequestData: Identifiable, ResponseData: Identifiable
 
         cancelTask()
 
-        updateTask = Task { [weak self] in
-            await self?.poll(for: requests)
-            self?.cancelTask()
+        TangemFoundation.runTask(in: self) {
+            await $0.poll(for: requests)
+            $0.cancelTask()
         }
     }
 
@@ -59,16 +60,20 @@ final class PollingService<RequestData: Identifiable, ResponseData: Identifiable
         }
 
         while !Task.isCancelled {
-            var responses = [Response]()
-
-            for requestData in requests {
-                if let response = await getResponse(for: requestData) {
-                    responses.append(response)
+            let responses = await withTaskGroup(of: Response?.self) { taskGroup in
+                for requestData in requests {
+                    taskGroup.addTask {
+                        await self.getResponse(for: requestData)
+                    }
                 }
 
-                if Task.isCancelled {
-                    return
+                var responses = [Response]()
+                for await response in taskGroup {
+                    if let response {
+                        responses.append(response)
+                    }
                 }
+                return responses
             }
 
             resultSubject.value = responses
