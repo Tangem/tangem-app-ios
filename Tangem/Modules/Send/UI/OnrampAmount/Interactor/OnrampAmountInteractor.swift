@@ -12,7 +12,7 @@ import TangemFoundation
 
 protocol OnrampAmountInteractor {
     var currencyPublisher: AnyPublisher<OnrampFiatCurrency?, Never> { get }
-    var expectedTokenAmountPublisher: AnyPublisher<LoadingResult<Decimal?, Never>?, Never> { get }
+    var selectedOnrampProviderPublisher: AnyPublisher<LoadingResult<OnrampProvider, Never>?, Never> { get }
     var errorPublisher: AnyPublisher<String?, Never> { get }
 
     func update(fiat: Decimal?)
@@ -75,7 +75,7 @@ extension CommonOnrampAmountInteractor: OnrampAmountInteractor {
         return input.fiatCurrencyPublisher.map { $0.value }.eraseToAnyPublisher()
     }
 
-    var expectedTokenAmountPublisher: AnyPublisher<LoadingResult<Decimal?, Never>?, Never> {
+    var selectedOnrampProviderPublisher: AnyPublisher<LoadingResult<OnrampProvider, Never>?, Never> {
         guard let onrampProvidersInput else {
             assertionFailure("OnrampProvidersInput not found")
             return Empty().eraseToAnyPublisher()
@@ -83,16 +83,6 @@ extension CommonOnrampAmountInteractor: OnrampAmountInteractor {
 
         return onrampProvidersInput
             .selectedOnrampProviderPublisher
-            .withWeakCaptureOf(self)
-            .map { interactor, provider in
-                provider?.mapValue { provider in
-                    switch provider.state {
-                    case .idle: 0 // Placeholder
-                    case .loaded(let quote): quote.expectedAmount
-                    case .restriction, .failed, .loading, .notSupported: nil
-                    }
-                }
-            }
             .eraseToAnyPublisher()
     }
 

@@ -83,11 +83,11 @@ private extension OnrampAmountViewModel {
             .store(in: &bag)
 
         interactor
-            .expectedTokenAmountPublisher
+            .selectedOnrampProviderPublisher
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
-            .sink { viewModel, amount in
-                viewModel.updateCryptoAmount(amount: amount)
+            .sink { viewModel, provider in
+                viewModel.updateCryptoAmount(provider: provider)
             }
             .store(in: &bag)
     }
@@ -106,7 +106,7 @@ private extension OnrampAmountViewModel {
             currentFieldOptions = prefixSuffixOptionsFactory.makeFiatOptions(
                 fiatCurrencyCode: currency.identity.code
             )
-//            updateCryptoAmount(amount: .none)
+            updateCryptoAmount(provider: .none)
             isLoading = false
         }
     }
@@ -115,20 +115,34 @@ private extension OnrampAmountViewModel {
         interactor.update(fiat: amount)
     }
 
-    func updateCryptoAmount(amount: LoadingResult<Decimal?, Never>?) {
-        switch amount {
+    func updateCryptoAmount(provider: LoadingResult<OnrampProvider, Never>?) {
+        switch provider {
         case .none:
-            alternativeAmount = .initialized
+            alternativeAmount = format(crypto: 0)
         case .loading:
             alternativeAmount = .loading
-        case .success(.some(let crypto)):
-            if let formatted = formatter.string(from: crypto) {
-                alternativeAmount = .loaded(text: "\(AppConstants.tildeSign) \(formatted)")
-            } else {
-                fallthrough
+        case .success(let provider):
+            switch provider.state {
+            case .idle:
+                alternativeAmount = format(crypto: 0)
+            case .loaded(let quote):
+                alternativeAmount = format(crypto: quote.expectedAmount)
+            case .restriction, .failed, .loading, .notSupported:
+                alternativeAmount = .noData
             }
-        case .success(.none):
-            alternativeAmount = .noData
         }
+    }
+
+    func format(crypto: Decimal) -> LoadableTextView.State {
+        guard let formatted = formatter.string(from: crypto) else {
+            return .noData
+        }
+
+        if crypto > 0 {
+            return .loaded(text: "\(AppConstants.tildeSign) \(formatted)")
+        }
+
+        // Like placeholder
+        return .loaded(text: formatted)
     }
 }
