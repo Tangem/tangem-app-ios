@@ -99,11 +99,6 @@ class CommonPendingOnrampTransactionsManager {
                 return false
             }
 
-            // We should show only `supportStatusTracking` transaction on UI
-            guard record.provider.type.supportStatusTracking else {
-                return false
-            }
-
             guard record.userWalletId == userWalletId else {
                 return false
             }
@@ -113,7 +108,7 @@ class CommonPendingOnrampTransactionsManager {
     }
 }
 
-extension CommonPendingOnrampTransactionsManager: PendingTransactionsManager {
+extension CommonPendingOnrampTransactionsManager: PendingExpressTransactionsManager {
     var pendingTransactions: [PendingTransaction] {
         pendingTransactionsSubject.value.map(\.pendingTransaction)
     }

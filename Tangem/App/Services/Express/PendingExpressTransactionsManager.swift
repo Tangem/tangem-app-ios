@@ -10,6 +10,13 @@ import Foundation
 import Combine
 import TangemExpress
 
+protocol PendingExpressTransactionsManager: AnyObject {
+    var pendingTransactions: [PendingTransaction] { get }
+    var pendingTransactionsPublisher: AnyPublisher<[PendingTransaction], Never> { get }
+
+    func hideTransaction(with id: String)
+}
+
 class CommonPendingExpressTransactionsManager {
     @Injected(\.expressPendingTransactionsRepository) private var expressPendingTransactionsRepository: ExpressPendingTransactionRepository
     @Injected(\.pendingExpressTransactionAnalayticsTracker) private var pendingExpressTransactionAnalyticsTracker: PendingExpressTransactionAnalyticsTracker
@@ -238,7 +245,7 @@ class CommonPendingExpressTransactionsManager {
     }
 }
 
-extension CommonPendingExpressTransactionsManager: PendingTransactionsManager {
+extension CommonPendingExpressTransactionsManager: PendingExpressTransactionsManager {
     var pendingTransactions: [PendingTransaction] {
         transactionsInProgressSubject.value.map(\.pendingTransaction)
     }

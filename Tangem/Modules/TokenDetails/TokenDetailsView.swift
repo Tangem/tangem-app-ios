@@ -173,7 +173,7 @@ private extension TokenDetailsView {
         exchangeUtility: exchangeUtility,
         notificationManager: notifManager,
         bannerNotificationManager: bannerNotificationManager,
-        pendingTransactionsManager: pendingTxsManager,
+        pendingExpressTransactionsManager: pendingTxsManager,
         xpubGenerator: nil,
         coordinator: coordinator,
         tokenRouter: SingleTokenRouter(userWalletModel: userWalletModel, coordinator: coordinator)

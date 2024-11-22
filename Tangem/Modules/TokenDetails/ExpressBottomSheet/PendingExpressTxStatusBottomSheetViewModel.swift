@@ -38,7 +38,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     @Published var notificationViewInputs: [NotificationViewInput] = []
 
     private let expressProviderFormatter = ExpressProviderFormatter(balanceFormatter: .init())
-    private weak var pendingTransactionsManager: (any PendingTransactionsManager)?
+    private weak var pendingTransactionsManager: (any PendingExpressTransactionsManager)?
 
     private let pendingTransaction: PendingTransaction
     private let currentTokenItem: TokenItem
@@ -57,7 +57,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     init(
         pendingTransaction: PendingTransaction,
         currentTokenItem: TokenItem,
-        pendingTransactionsManager: PendingTransactionsManager,
+        pendingTransactionsManager: PendingExpressTransactionsManager,
         router: PendingExpressTxStatusRoutable
     ) {
         self.pendingTransaction = pendingTransaction
@@ -164,12 +164,12 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
         for tokenTxInfo: ExpressPendingTransactionRecord.TokenTxInfo,
         on root: PendingExpressTxStatusBottomSheetViewModel
     ) {
-        guard let currencyId = tokenTxInfo.tokenItem.currencyId, let amount = tokenTxInfo.amount else {
+        guard let currencyId = tokenTxInfo.tokenItem.currencyId else {
             root[keyPath: stateKeyPath] = .noData
             return
         }
 
-        if let fiat = balanceConverter.convertToFiat(amount, currencyId: currencyId) {
+        if let fiat = balanceConverter.convertToFiat(tokenTxInfo.amount, currencyId: currencyId) {
             root[keyPath: stateKeyPath] = .loaded(text: balanceFormatter.formatFiatBalance(fiat))
             return
         }
@@ -177,7 +177,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
         Task { [weak root] in
             guard let root = root else { return }
 
-            let fiatAmount = try await root.balanceConverter.convertToFiat(amount, currencyId: currencyId)
+            let fiatAmount = try await root.balanceConverter.convertToFiat(tokenTxInfo.amount, currencyId: currencyId)
             let formattedFiat = root.balanceFormatter.formatFiatBalance(fiatAmount)
             await runOnMain {
                 root[keyPath: stateKeyPath] = .loaded(text: formattedFiat)

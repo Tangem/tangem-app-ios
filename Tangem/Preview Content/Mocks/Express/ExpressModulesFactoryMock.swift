@@ -104,7 +104,7 @@ class ExpressModulesFactoryMock: ExpressModulesFactory {
         )
     }
 
-    func makePendingTransactionsManager() -> any PendingTransactionsManager {
+    func makePendingExpressTransactionsManager() -> any PendingExpressTransactionsManager {
         CompoundPendingTransactionsManager(
             first: CommonPendingExpressTransactionsManager(
                 userWalletId: userWalletModel.userWalletId.stringValue,

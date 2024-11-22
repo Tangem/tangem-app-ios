@@ -154,7 +154,7 @@ private extension ExpressProviderType {
 private extension ExpressPendingTransactionRecord.ProviderType {
     var title: String {
         switch self {
-        case .dex, .cex, .onramp, .unknown:
+        case .dex, .cex, .unknown:
             return rawValue.uppercased()
         case .dexBridge:
             return "DEX/Bridge"

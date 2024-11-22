@@ -30,20 +30,13 @@ struct PendingTransaction {
     let statuses: [PendingExpressTransactionStatus]
 }
 
-protocol PendingTransactionsManager: AnyObject {
-    var pendingTransactions: [PendingTransaction] { get }
-    var pendingTransactionsPublisher: AnyPublisher<[PendingTransaction], Never> { get }
-
-    func hideTransaction(with id: String)
-}
-
-final class CompoundPendingTransactionsManager: PendingTransactionsManager {
-    private let first: PendingTransactionsManager
-    private let second: PendingTransactionsManager
+final class CompoundPendingTransactionsManager: PendingExpressTransactionsManager {
+    private let first: PendingExpressTransactionsManager
+    private let second: PendingExpressTransactionsManager
 
     init(
-        first: PendingTransactionsManager,
-        second: PendingTransactionsManager
+        first: PendingExpressTransactionsManager,
+        second: PendingExpressTransactionsManager
     ) {
         self.first = first
         self.second = second

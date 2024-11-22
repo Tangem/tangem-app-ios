@@ -38,11 +38,11 @@ struct ExpressPendingTransactionRecord: Codable, Equatable {
 extension ExpressPendingTransactionRecord {
     struct TokenTxInfo: Codable, Equatable {
         let tokenItem: TokenItem
-        let amountString: String?
+        let amountString: String
         let isCustom: Bool
 
-        var amount: Decimal? {
-            amountString.map(convertToDecimal)
+        var amount: Decimal {
+            convertToDecimal(amountString)
         }
     }
 
@@ -83,7 +83,6 @@ extension ExpressPendingTransactionRecord {
         case cex
         case dex
         case dexBridge
-        case onramp
         case unknown
 
         static func type(from type: ExpressProviderType) -> ProviderType {
@@ -91,14 +90,13 @@ extension ExpressPendingTransactionRecord {
             case .dex: return .dex
             case .cex: return .cex
             case .dexBridge: return .dexBridge
-            case .onramp: return .onramp
-            case .unknown: return .unknown
+            case .onramp, .unknown: return .unknown
             }
         }
 
         var supportStatusTracking: Bool {
             switch self {
-            case .cex, .dexBridge, .onramp:
+            case .cex, .dexBridge:
                 return true
             case .dex, .unknown:
                 return false

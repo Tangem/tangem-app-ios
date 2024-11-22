@@ -25,7 +25,7 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
     @Published private(set) var activeStakingViewData: ActiveStakingViewData?
 
     private weak var coordinator: TokenDetailsRoutable?
-    private let pendingTransactionsManager: PendingTransactionsManager
+    private let pendingExpressTransactionsManager: PendingExpressTransactionsManager
     private let bannerNotificationManager: NotificationManager?
     private let xpubGenerator: XPUBGenerator?
 
@@ -57,13 +57,13 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
         exchangeUtility: ExchangeCryptoUtility,
         notificationManager: NotificationManager,
         bannerNotificationManager: NotificationManager?,
-        pendingTransactionsManager: PendingTransactionsManager,
+        pendingExpressTransactionsManager: PendingExpressTransactionsManager,
         xpubGenerator: XPUBGenerator?,
         coordinator: TokenDetailsRoutable,
         tokenRouter: SingleTokenRoutable
     ) {
         self.coordinator = coordinator
-        self.pendingTransactionsManager = pendingTransactionsManager
+        self.pendingExpressTransactionsManager = pendingExpressTransactionsManager
         self.bannerNotificationManager = bannerNotificationManager
         self.xpubGenerator = xpubGenerator
         super.init(
@@ -242,15 +242,14 @@ private extension TokenDetailsViewModel {
         }
         .store(in: &bag)
 
-        pendingTransactionsManager
-            .pendingTransactionsPublisher
+        pendingExpressTransactionsManager.pendingTransactionsPublisher
             .withWeakCaptureOf(self)
             .map { viewModel, pendingTxs in
                 let factory = PendingExpressTransactionsConverter()
 
                 return factory.convertToTokenDetailsPendingTxInfo(
                     pendingTxs,
-                    tapAction: weakify(viewModel, forFunction: TokenDetailsViewModel.didTapPendingTransaction(with:))
+                    tapAction: weakify(viewModel, forFunction: TokenDetailsViewModel.didTapPendingExpressTransaction(with:))
                 )
             }
             .receive(on: DispatchQueue.main)
@@ -316,17 +315,17 @@ private extension TokenDetailsViewModel {
         }
     }
 
-    private func didTapPendingTransaction(with id: String) {
+    private func didTapPendingExpressTransaction(with id: String) {
         guard
-            let pendingTransaction = pendingTransactionsManager.pendingTransactions.first(where: { $0.expressTransactionId == id })
+            let pendingTransaction = pendingExpressTransactionsManager.pendingTransactions.first(where: { $0.expressTransactionId == id })
         else {
             return
         }
 
-        coordinator?.openPendingTransactionDetails(
+        coordinator?.openPendingExpressTransactionDetails(
             for: pendingTransaction,
             tokenItem: walletModel.tokenItem,
-            pendingTransactionsManager: pendingTransactionsManager
+            pendingTransactionsManager: pendingExpressTransactionsManager
         )
     }
 }

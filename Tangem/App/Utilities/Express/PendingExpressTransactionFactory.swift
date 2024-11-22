@@ -127,7 +127,7 @@ struct PendingExpressTransactionFactory {
         transactionRecord.transactionStatus = currentStatus
         transactionRecord.destinationTokenTxInfo = .init(
             tokenItem: transactionRecord.destinationTokenTxInfo.tokenItem,
-            amountString: currentOnrampTransaction.toAmount.map(\.stringValue),
+            amountString: currentOnrampTransaction.toAmount.map(\.stringValue) ?? "",
             isCustom: transactionRecord.destinationTokenTxInfo.isCustom
         )
         transactionRecord.externalTxURL = currentOnrampTransaction.externatTxURL

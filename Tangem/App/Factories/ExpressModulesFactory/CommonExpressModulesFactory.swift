@@ -118,7 +118,7 @@ extension CommonExpressModulesFactory: ExpressModulesFactory {
         )
     }
 
-    func makePendingTransactionsManager() -> any PendingTransactionsManager {
+    func makePendingExpressTransactionsManager() -> any PendingExpressTransactionsManager {
         let tokenFinder = CommonTokenFinder(supportedBlockchains: userWalletModel.config.supportedBlockchains)
 
         let expressRefundedTokenHandler = CommonExpressRefundedTokenHandler(
