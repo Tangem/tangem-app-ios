@@ -74,6 +74,7 @@ private extension OnrampModel {
         // Handle the settings changes
         onrampRepository
             .preferencePublisher
+            .removeDuplicates()
             .withWeakCaptureOf(self)
             .sink { model, preference in
                 model.preferenceDidChange(country: preference.country, currency: preference.currency)
