@@ -48,20 +48,14 @@ private extension OnrampViewModel {
     func bind() {
         notificationManager
             .notificationPublisher
-            .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
-            .sink { viewModel, notificationInputs in
-                viewModel.notificationInputs = notificationInputs
-            }
+            .assign(to: \.notificationInputs, on: self, ownership: .weak)
             .store(in: &bag)
 
         interactor
             .isLoadingPublisher
-            .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
-            .sink { viewModel, isLoading in
-                viewModel.notificationButtonIsLoading = isLoading
-            }
+            .assign(to: \.notificationButtonIsLoading, on: self, ownership: .weak)
             .store(in: &bag)
     }
 }
