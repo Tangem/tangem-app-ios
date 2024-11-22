@@ -1,5 +1,5 @@
 "action_buttons_buy_empty_search_message" = "Token not found in your portfolio? Check the Markets to find and add it for purchase";
-"action_buttons_sell_empty_search_message" = "Token not found in your portfolio? Check the Markets to find and add it for sell";
+"action_buttons_sell_empty_search_message" = "Token not found in your portfolio? Check the Markets to find and add it for selling";
 "action_buttons_swap_choose_token" = "Choose the Token";
 "action_buttons_swap_empty_search_message" = "Token not found in your portfolio? Check the Markets to find and add it for swap";
 "action_buttons_swap_no_available_pair_notification_message" = "There are no available tokens to swap with the selected token. Please choose another one.";
@@ -414,7 +414,6 @@
 "markets_token_details_fully_diluted_valuation_description" = "The total theoretical value of a cryptocurrency if all coins that could exist are in circulation, including those not currently circulating";
 "markets_token_details_fully_diluted_valuation_full" = "Fully diluted valuation";
 "markets_token_details_genesis_date" = "Genesis date";
-"markets_token_details_genesis_date_description" = "";
 "markets_token_details_high" = "High";
 "markets_token_details_holders" = "Holders";
 "markets_token_details_holders_description" = "The change in the number of token holders within a specific timeframe";
@@ -425,7 +424,6 @@
 "markets_token_details_liquidity_description" = "The change in how much liquidity is available for the token during the specified timeframe";
 "markets_token_details_liquidity_full" = "Liquidity";
 "markets_token_details_liquidity_index" = "Liquidity index";
-"markets_token_details_liquidity_index_description" = "";
 "markets_token_details_listed_on" = "Listed on";
 "markets_token_details_low" = "Low";
 "markets_token_details_market_capitalization" = "Market cap";
@@ -569,8 +567,11 @@
 "qr_scanner_camera_denied_settings_button" = "Settings";
 "qr_scanner_camera_denied_text" = "You have not given access to your camera";
 "qr_scanner_camera_denied_title" = "Camera access denied";
+"receive_bottom_sheet_no_memo_required_message" = "No memo required";
 "receive_bottom_sheet_warning_message" = "%1$@ (%2$@) on %3$@ network";
+"receive_bottom_sheet_warning_message_description" = "Sending any other currency will result in its irreversible loss.";
 "receive_bottom_sheet_warning_message_full" = "Send only %@ to this address. Sending any other currency will result in its irreversible loss.";
+"receive_bottom_sheet_warning_message_title" = "Send only %@ to this address.";
 "receive_token_description" = "Transfer funds from any wallet or exchange";
 "referral_button_participate" = "Participate";
 "referral_error_failed_to_load_info" = "Failed to load the information about the referral program. Please try again later.";
@@ -863,6 +864,7 @@
 "tokens_list_unavailable_to_purchase_header" = "Unavailable to purchase";
 "tokens_list_unavailable_to_sell_header" = "Unavailable to sell";
 "tokens_list_unavailable_to_swap_header" = "Unavailable for swap from %@";
+"tokens_list_unavailable_to_swap_source_header" = "Unavailable for swap";
 "transaction_history_contract_address" = "contract: %@";
 "transaction_history_empty_transactions" = "You don't have any transactions yet";
 "transaction_history_error_failed_to_load" = "Failed to load transaction history.\nClick on reload button to update the information.";
