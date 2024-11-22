@@ -21,11 +21,11 @@ protocol VisaOnboardingAccessCodeSetupDelegate: AnyObject {
 
 class VisaOnboardingAccessCodeSetupViewModel: ObservableObject {
     @Published var accessCode: String = ""
-    @Published var viewState: State = .accessCode
-    @Published var isButtonBusy: Bool = false
-    @Published var isButtonDisabled: Bool = true
-    @Published var isInputDisabled: Bool = false
-    @Published var errorMessage: String? = nil
+    @Published private(set) var viewState: State = .accessCode
+    @Published private(set) var isButtonBusy: Bool = false
+    @Published private(set) var isButtonDisabled: Bool = true
+    @Published private(set) var isInputDisabled: Bool = false
+    @Published private(set) var errorMessage: String? = nil
 
     private var selectedAccessCode: String = ""
     private var accessCodeInputSubscription: AnyCancellable?

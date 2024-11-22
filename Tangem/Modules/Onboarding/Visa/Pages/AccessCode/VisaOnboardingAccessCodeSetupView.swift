@@ -30,21 +30,18 @@ struct VisaOnboardingAccessCodeSetupView: View {
                 action: viewModel.mainButtonAction
             )
         }
-        .padding(.horizontal, 16)
-        .padding(.top, 32)
-        .padding(.bottom, 10)
+        .padding(.init(top: 32, leading: 16, bottom: 10, trailing: 16))
     }
 
     private var descriptionContent: some View {
         VStack(spacing: 10) {
             Text(viewModel.viewState.title)
-                .multilineTextAlignment(.center)
                 .style(Fonts.Bold.title1, color: Colors.Text.primary1)
 
             Text(viewModel.viewState.description)
-                .multilineTextAlignment(.center)
                 .style(Fonts.Regular.callout, color: Colors.Text.secondary)
         }
+        .multilineTextAlignment(.center)
     }
 
     private var inputContent: some View {
