@@ -26,7 +26,7 @@ struct CloreWalletAssembly: WalletManagerAssembly {
                 bitcoinManager: bitcoinManager,
                 addresses: input.wallet.addresses
             )
-            
+
             let providers: [AnyBitcoinNetworkProvider] = APIResolver(blockchain: input.blockchain, config: input.blockchainSdkConfig)
                 .resolveProviders(apiInfos: input.apiInfo) { nodeInfo, _ in
                     networkProviderAssembly.makeBlockBookUtxoProvider(with: input, for: .clore(nodeInfo.url)).eraseToAnyBitcoinNetworkProvider()

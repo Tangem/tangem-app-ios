@@ -10,10 +10,10 @@ import Foundation
 
 struct CloreBlockBookConfig: BlockBookConfig {
     let urlNode: URL
-    
+
     let apiKeyHeaderName: String?
     let apiKeyHeaderValue: String?
-    
+
     init(urlNode: URL, apiKeyHeaderName: String? = nil, apiKeyHeaderValue: String? = nil) {
         self.urlNode = urlNode
         self.apiKeyHeaderName = apiKeyHeaderName
@@ -31,7 +31,7 @@ extension CloreBlockBookConfig {
             assertionFailure("Any blockchains does not supported for this blockbook")
             return .init(rpcNode: "", restNode: "")
         }
-        
+
         return BlockBookNode(
             rpcNode: urlNode.absoluteString,
             restNode: urlNode.absoluteString

@@ -480,8 +480,8 @@ public indirect enum Blockchain: Equatable, Hashable {
             return "CAU"
         case .casper:
             return "CSPR"
-            return "CHZ"
         case .chiliz:
+            return "CHZ"
         case .clore:
             return "CLORE"
         }
