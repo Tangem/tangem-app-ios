@@ -1,23 +1,30 @@
 //
-//  PendingExpressTransaction.swift
-//  Tangem
+//  PendingOnrampTransaction.swift
+//  TangemApp
 //
-//  Created by Andrew Son on 04/12/23.
-//  Copyright © 2023 Tangem AG. All rights reserved.
+//  Created by Aleksei Muraveinik on 21.11.24.
+//  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
 import Foundation
 
-struct PendingExpressTransaction: Equatable {
-    let transactionRecord: ExpressPendingTransactionRecord
+struct PendingOnrampTransaction: Equatable {
+    let transactionRecord: OnrampPendingTransactionRecord
     let statuses: [PendingExpressTransactionStatus]
 }
 
-extension PendingExpressTransaction {
+extension PendingOnrampTransaction: Identifiable {
+    var id: String {
+        transactionRecord.id
+    }
+}
+
+extension PendingOnrampTransaction {
     var pendingTransaction: PendingTransaction {
         PendingTransaction(
-            type: .swap(
-                source: transactionRecord.sourceTokenTxInfo,
+            type: .onramp(
+                sourceAmount: transactionRecord.fromAmount,
+                sourceCurrencySymbol: transactionRecord.fromCurrencyCode,
                 destination: transactionRecord.destinationTokenTxInfo
             ),
             expressTransactionId: transactionRecord.expressTransactionId,
@@ -26,7 +33,7 @@ extension PendingExpressTransaction {
             provider: transactionRecord.provider,
             date: transactionRecord.date,
             transactionStatus: transactionRecord.transactionStatus,
-            refundedTokenItem: transactionRecord.refundedTokenItem,
+            refundedTokenItem: nil,
             statuses: statuses
         )
     }

@@ -75,7 +75,7 @@ class TokenDetailsCoordinator: CoordinatorObject {
             )
         )
 
-        let pendingExpressTransactionsManager = expressFactory.makePendingExpressTransactionsManager()
+        let pendingTransactionsManager = expressFactory.makePendingExpressTransactionsManager()
 
         let bannerNotificationManager = options.userWalletModel.config.hasFeature(.multiCurrency)
             ? BannerNotificationManager(userWalletId: options.userWalletModel.userWalletId, placement: .tokenDetails(options.walletModel.tokenItem), contextDataProvider: options.userWalletModel)
@@ -93,7 +93,7 @@ class TokenDetailsCoordinator: CoordinatorObject {
             exchangeUtility: exchangeUtility,
             notificationManager: notificationManager,
             bannerNotificationManager: bannerNotificationManager,
-            pendingExpressTransactionsManager: pendingExpressTransactionsManager,
+            pendingExpressTransactionsManager: pendingTransactionsManager,
             xpubGenerator: xpubGenerator,
             coordinator: self,
             tokenRouter: tokenRouter
@@ -115,12 +115,11 @@ extension TokenDetailsCoordinator {
 
 extension TokenDetailsCoordinator: TokenDetailsRoutable {
     func openPendingExpressTransactionDetails(
-        for pendingTransaction: PendingExpressTransaction,
+        for pendingTransaction: PendingTransaction,
         tokenItem: TokenItem,
         pendingTransactionsManager: PendingExpressTransactionsManager
     ) {
-        pendingExpressTxStatusBottomSheetViewModel = .init(
-            expressBranch: .swap,
+        pendingExpressTxStatusBottomSheetViewModel = PendingExpressTxStatusBottomSheetViewModel(
             pendingTransaction: pendingTransaction,
             currentTokenItem: tokenItem,
             pendingTransactionsManager: pendingTransactionsManager,

@@ -9,16 +9,34 @@
 import Foundation
 
 struct PendingExpressTransactionsConverter {
-    func convertToTokenDetailsPendingTxInfo(_ records: [PendingExpressTransaction], tapAction: @escaping (String) -> Void) -> [PendingExpressTransactionView.Info] {
+    func convertToTokenDetailsPendingTxInfo(_ records: [PendingTransaction], tapAction: @escaping (String) -> Void) -> [PendingExpressTransactionView.Info] {
         let iconBuilder = TokenIconInfoBuilder()
         let balanceFormatter = BalanceFormatter()
 
-        return records.compactMap {
-            let record = $0.transactionRecord
-            let sourceTokenItem = record.sourceTokenTxInfo.tokenItem
-            let destinationTokenItem = record.destinationTokenTxInfo.tokenItem
+        return records.compactMap { record in
+            let title: String
+            let sourceAmountText: String
+            let destinationAmountText: String
+            let sourceIconInfo: TokenIconInfo
+            let destinationIconInfo: TokenIconInfo
+
+            switch record.type {
+            case .swap(let source, let destination):
+                title = Localization.expressExchangeBy(record.provider.name)
+                sourceAmountText = balanceFormatter.formatCryptoBalance(source.amount, currencyCode: source.tokenItem.currencySymbol)
+                destinationAmountText = balanceFormatter.formatCryptoBalance(destination.amount, currencyCode: destination.tokenItem.currencySymbol)
+                sourceIconInfo = iconBuilder.build(from: source.tokenItem, isCustom: source.isCustom)
+                destinationIconInfo = iconBuilder.build(from: destination.tokenItem, isCustom: destination.isCustom)
+            case .onramp(let sourceAmount, let sourceCurrencySymbol, let destination):
+                title = Localization.expressStatusBuying(destination.tokenItem.name)
+                sourceAmountText = balanceFormatter.formatFiatBalance(sourceAmount, currencyCode: sourceCurrencySymbol)
+                destinationAmountText = balanceFormatter.formatCryptoBalance(destination.amount, currencyCode: destination.tokenItem.currencySymbol)
+                sourceIconInfo = iconBuilder.build(from: sourceCurrencySymbol)
+                destinationIconInfo = iconBuilder.build(from: destination.tokenItem, isCustom: destination.isCustom)
+            }
+
             let state: PendingExpressTransactionView.State
-            switch $0.transactionRecord.transactionStatus {
+            switch record.transactionStatus {
             case .awaitingDeposit, .confirming, .exchanging, .sendingToUser, .done, .refunded:
                 state = .inProgress
             case .failed, .canceled, .unknown, .paused:
@@ -29,27 +47,27 @@ struct PendingExpressTransactionsConverter {
 
             return .init(
                 id: record.expressTransactionId,
-                providerName: record.provider.name,
-                sourceIconInfo: iconBuilder.build(from: sourceTokenItem, isCustom: record.sourceTokenTxInfo.isCustom),
-                sourceAmountText: balanceFormatter.formatCryptoBalance(record.sourceTokenTxInfo.amount, currencyCode: sourceTokenItem.currencySymbol),
-                destinationIconInfo: iconBuilder.build(from: destinationTokenItem, isCustom: record.destinationTokenTxInfo.isCustom),
-                destinationCurrencySymbol: destinationTokenItem.currencySymbol,
+                title: title,
+                sourceIconInfo: sourceIconInfo,
+                sourceAmountText: sourceAmountText,
+                destinationIconInfo: destinationIconInfo,
+                destinationAmountText: destinationAmountText,
                 state: state,
                 action: tapAction
             )
         }
     }
 
-    func convertToStatusRowDataList(for pendingTransaction: PendingExpressTransaction) -> (list: [PendingExpressTxStatusRow.StatusRowData], currentIndex: Int) {
+    func convertToStatusRowDataList(for pendingTransaction: PendingTransaction) -> (list: [PendingExpressTxStatusRow.StatusRowData], currentIndex: Int) {
         let statuses = pendingTransaction.statuses
-        let currentStatusIndex = statuses.firstIndex(of: pendingTransaction.transactionRecord.transactionStatus) ?? 0
+        let currentStatusIndex = statuses.firstIndex(of: pendingTransaction.transactionStatus) ?? 0
 
         return (statuses.indexed().map { index, status in
             convertToStatusRowData(
                 index: index,
                 status: status,
                 currentStatusIndex: currentStatusIndex,
-                currentStatus: pendingTransaction.transactionRecord.transactionStatus,
+                currentStatus: pendingTransaction.transactionStatus,
                 lastStatusIndex: statuses.count - 1
             )
         }, currentStatusIndex)

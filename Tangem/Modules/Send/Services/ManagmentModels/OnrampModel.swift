@@ -30,11 +30,13 @@ class OnrampModel {
 
     // MARK: - Dependencies
 
+    @Injected(\.onrampPendingTransactionsRepository) private var onrampPendingTransactionsRepository: OnrampPendingTransactionRepository
     weak var router: OnrampModelRoutable?
     weak var alertPresenter: SendViewAlertPresenter?
 
     // MARK: - Private injections
 
+    private let userWalletId: String
     private let walletModel: WalletModel
     private let onrampManager: OnrampManager
     private let onrampRepository: OnrampRepository
@@ -43,10 +45,12 @@ class OnrampModel {
     private var bag: Set<AnyCancellable> = []
 
     init(
+        userWalletId: String,
         walletModel: WalletModel,
         onrampManager: OnrampManager,
         onrampRepository: OnrampRepository
     ) {
+        self.userWalletId = userWalletId
         self.walletModel = walletModel
         self.onrampManager = onrampManager
         self.onrampRepository = onrampRepository
@@ -329,10 +333,30 @@ extension OnrampModel: OnrampRedirectingInput {}
 
 extension OnrampModel: OnrampRedirectingOutput {
     func redirectDataDidLoad(data: OnrampRedirectData) {
+        guard let provider = selectedOnrampProvider else {
+            assertionFailure("selectedOnrampProvider is unexpectedly nil")
+            return
+        }
+
+        let txData = SentOnrampTransactionData(
+            txId: data.txId,
+            provider: provider.provider,
+            destinationTokenItem: walletModel.tokenItem,
+            date: Date(),
+            fromAmount: data.fromAmount,
+            fromCurrencyCode: data.fromCurrencyCode,
+            externalTxId: data.externalTxId
+        )
+
         DispatchQueue.main.async {
             self.router?.openWebView(url: data.widgetUrl) { [weak self] in
-                self?._transactionTime.send(Date())
-                self?.router?.openFinishStep()
+                guard let self else { return }
+                onrampPendingTransactionsRepository.onrampTransactionDidSend(
+                    txData,
+                    userWalletId: userWalletId
+                )
+                _transactionTime.send(Date())
+                router?.openFinishStep()
             }
         }
     }
