@@ -54,6 +54,10 @@ class CommonPendingOnrampTransactionsManager {
         bind()
     }
 
+    deinit {
+        pollingService.cancelTask()
+    }
+
     private func bind() {
         onrampPendingTransactionsRepository.transactionsPublisher
             .withWeakCaptureOf(self)
@@ -75,7 +79,11 @@ class CommonPendingOnrampTransactionsManager {
 
         pollingService
             .resultPublisher
-            .map { $0.map(\.data) }
+            .map { pendingTransactions in
+                pendingTransactions
+                    .map(\.data)
+                    .sorted(by: \.id)
+            }
             .assign(to: \.pendingTransactionsSubject.value, on: self, ownership: .weak)
             .store(in: &bag)
 
