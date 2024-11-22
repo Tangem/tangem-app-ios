@@ -24,6 +24,11 @@ struct OnrampView: View {
             OnrampProvidersCompactView(
                 viewModel: viewModel.onrampProvidersCompactViewModel
             )
+
+            ForEach(viewModel.notificationInputs) { input in
+                NotificationView(input: input)
+                    .setButtonsLoadingState(to: viewModel.notificationButtonIsLoading)
+            }
         }
     }
 }

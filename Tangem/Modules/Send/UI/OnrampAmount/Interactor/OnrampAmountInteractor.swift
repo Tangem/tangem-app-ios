@@ -48,10 +48,10 @@ private extension CommonOnrampAmountInteractor {
     func bind(onrampProvidersInput: OnrampProvidersInput) {
         Publishers.CombineLatest(
             onrampProvidersInput.onrampProvidersPublisher,
-            onrampProvidersInput.selectedOnrampProviderPublisher.map { $0?.value?.manager.state }
-        ).map { providers, state in
-            switch (providers, state) {
-            case (.loaded(let providers), _) where !providers.hasProviders():
+            onrampProvidersInput.selectedOnrampProviderPublisher
+        ).map { providers, provider in
+            switch (providers, provider?.value?.state) {
+            case (.success(let providers), _) where !providers.hasProviders():
                 return Localization.onrampNoAvailableProviders
             case (_, .restriction(.tooSmallAmount(let minAmount))):
                 return Localization.onrampMinAmountRestriction(minAmount)
