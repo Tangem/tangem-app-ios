@@ -38,3 +38,26 @@ private extension WalletPromoBannerViewModel {
         static let url = URL(string: "https://tangem.com/en/?promocode=Note10")!
     }
 }
+
+// MARK: - WalletPromoBannerUtil
+
+struct WalletPromoBannerUtil {
+    @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
+
+    func shouldShowBanner() -> Bool {
+        let allUserWallets = userWalletRepository.models
+        let hasWalletProduct = allUserWallets.contains(where: { $0.config.productType.isWalletProduct })
+        return !hasWalletProduct
+    }
+}
+
+private extension Analytics.ProductType {
+    var isWalletProduct: Bool {
+        switch self {
+        case .demoWallet, .wallet, .wallet2, .ring:
+            return true
+        case .demoNote, .note, .other, .start2coin, .twin, .visa, .visaBackup:
+            return false
+        }
+    }
+}
