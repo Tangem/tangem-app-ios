@@ -266,7 +266,7 @@ private extension MarketsTokenDetailsViewModel {
 
             await setupFailedState()
 
-            sendBlocksAnalyticsErrors()
+            sendBlocksAnalyticsErrors(error)
 
             log("Failed to load detailed info. Reason: \(error)")
         }
@@ -466,11 +466,11 @@ private extension MarketsTokenDetailsViewModel {
         )
     }
 
-    func sendBlocksAnalyticsErrors() {
-        Analytics.log(event: .marketsChartDataError, params: [
-            .token: tokenInfo.symbol.uppercased(),
-            .source: Analytics.ParameterValue.blocks.rawValue,
-        ])
+    func sendBlocksAnalyticsErrors(_ error: Error) {
+        var params = error.marketsAnalyticsParams
+        params[.token] = tokenInfo.symbol.uppercased()
+        params[.source] = Analytics.ParameterValue.blocks.rawValue
+        Analytics.log(event: .marketsChartDataError, params: params)
     }
 
     func setupInsights(_ insights: MarketsTokenDetailsInsights?) {

@@ -231,6 +231,8 @@ extension Analytics {
         case tokenNoticeNetworkUnreachable = "[Token] Notice - Network Unreachable"
         case tokenNoticeNotEnoughFee = "[Token] Notice - Not Enough Fee"
         case tokenNoticeActionInactive = "[Token] Notice - Action Inactive"
+        case walletPromoButtonClicked = "[Main Screen] Note Promo Button"
+        case walletPromoAppear = "[Main Screen] Notice - Note Promo"
 
         // MARK: - BlockchainSdk exceptions
 
@@ -261,6 +263,7 @@ extension Analytics {
         case pushButtonAllow = "[Push] Button - Allow"
         case pushButtonPostpone = "[Push] Button - Later"
         case pushPermissionStatus = "[Push] Permission Status"
+        case pushNotificationOpened = "[Push] Push Notification Opened"
 
         // MARK: - Staking
 

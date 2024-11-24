@@ -57,7 +57,7 @@ class OnboardingAccessCodeViewModel: ObservableObject, Identifiable {
         }
     }
 
-    func onDissappearAction() {
+    func onDisappearAction() {
         DispatchQueue.main.async {
             self.error = .none
         }
