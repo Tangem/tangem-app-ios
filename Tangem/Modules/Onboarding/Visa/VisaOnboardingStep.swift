@@ -8,6 +8,7 @@
 
 enum VisaOnboardingStep {
     case welcome
+    case accessCode
 
     case saveUserWallet
     case pushNotifications
@@ -18,6 +19,8 @@ enum VisaOnboardingStep {
         switch self {
         case .welcome:
             return Localization.onboardingGettingStarted
+        case .accessCode:
+            return Localization.onboardingWalletInfoTitleThird
         case .saveUserWallet:
             return Localization.onboardingNavbarSaveWallet
         case .pushNotifications:

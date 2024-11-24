@@ -22,13 +22,15 @@ struct PendingExpressTxTokenInfoView: View {
                 SensitiveText(amountText)
                     .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
 
-                LoadableTextView(
-                    state: fiatAmountTextState,
-                    font: Fonts.Regular.caption1,
-                    textColor: Colors.Text.tertiary,
-                    loaderSize: .init(width: 52, height: 12),
-                    isSensitiveText: true
-                )
+                if fiatAmountTextState != .noData {
+                    LoadableTextView(
+                        state: fiatAmountTextState,
+                        font: Fonts.Regular.caption1,
+                        textColor: Colors.Text.tertiary,
+                        loaderSize: .init(width: 52, height: 12),
+                        isSensitiveText: true
+                    )
+                }
             }
         }
     }

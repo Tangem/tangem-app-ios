@@ -51,14 +51,21 @@ public extension ExpressAPIError {
         case forbiddenError = 2020
         case notFoundError = 2030
         case requestLoggerError = 2040
-
-        // ExchangeAdapter
-        case eaRequestError = 2110
-        case eaRequestTimeoutError = 2120
-        case eaInvalidAdapterResponse = 2130
+        case rateLimitError = 2050
 
         // CoreError
         case coreError = 2100
+
+        // External error
+        case externalServiceError = 2110
+        case externalServiceRequestError = 2111
+        case externalServiceRequestTimeoutError = 2112
+        case externalServiceInvalidAdapterResponse = 2113
+        case externalServiceRateLimit = 2114
+        case externalServiceBadGateWay = 2115
+        case eaRequestTimeoutError = 2120
+        case eaInvalidAdapterResponse = 2130
+
         case exchangeInternalError = 2200
         case exchangeProviderNotFoundError = 2210
         case exchangeProviderNotActiveError = 2220
@@ -71,6 +78,9 @@ public extension ExpressAPIError {
         case exchangeNotEnoughBalanceError = 2270
         case exchangeNotEnoughAllowanceError = 2280
         case exchangeInvalidDecimalsError = 2290
+        case exchangeUnsupportedRateType = 2300
+        case exchangeProviderRespondWithInvalidFromAmount = 2320
+        case networkNotFound = 2330
 
         case exchangeTransactionNotFoundError = 2500
 

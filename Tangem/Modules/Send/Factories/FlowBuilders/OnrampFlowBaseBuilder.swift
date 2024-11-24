@@ -23,6 +23,7 @@ struct OnrampFlowBaseBuilder {
         )
 
         let onrampModel = builder.makeOnrampModel(onrampManager: onrampManager, onrampRepository: onrampRepository)
+        let notificationManager = builder.makeOnrampNotificationManager(input: onrampModel, delegate: onrampModel)
 
         let providersBuilder = OnrampProvidersBuilder(
             io: (input: onrampModel, output: onrampModel),
@@ -54,8 +55,10 @@ struct OnrampFlowBaseBuilder {
 
         let onramp = onrampStepBuilder.makeOnrampStep(
             io: (input: onrampModel, output: onrampModel),
+            providersInput: onrampModel,
             onrampAmountViewModel: onrampAmountViewModel,
-            onrampProvidersCompactViewModel: onrampProvidersCompactViewModel
+            onrampProvidersCompactViewModel: onrampProvidersCompactViewModel,
+            notificationManager: notificationManager
         )
 
         let finish = sendFinishStepBuilder.makeSendFinishStep(

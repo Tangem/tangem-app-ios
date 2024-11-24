@@ -19,7 +19,8 @@ final class OnrampSettingsViewModel: ObservableObject {
         self.coordinator = coordinator
         selectedCountry = repository.preferenceCountry
 
-        repository.preferenceCountryPublisher
+        repository.preferencePublisher
+            .map { $0.country }
             .assign(to: \.selectedCountry, on: self, ownership: .weak)
             .store(in: &bag)
     }

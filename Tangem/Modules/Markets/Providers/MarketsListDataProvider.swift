@@ -144,10 +144,23 @@ extension MarketsListDataProvider {
     enum Event: Equatable {
         case loading
         case idle
-        case failedToFetchData
+        case failedToFetchData(error: Error)
         case appendedItems(items: [MarketsTokenModel], lastPage: Bool)
         case startInitialFetch
         case cleared
+
+        static func == (lhs: MarketsListDataProvider.Event, rhs: MarketsListDataProvider.Event) -> Bool {
+            switch (lhs, rhs) {
+            case (.loading, .loading), (.idle, .idle),
+                 (.startInitialFetch, .startInitialFetch), (.cleared, .cleared),
+                 (.failedToFetchData, .failedToFetchData):
+                true
+            case (.appendedItems(let items1, let lastPage1), .appendedItems(let items2, let lastPage2)):
+                items1 == items2 && lastPage1 == lastPage2
+            default:
+                false
+            }
+        }
     }
 }
 
@@ -171,7 +184,7 @@ private extension MarketsListDataProvider {
                 return
             }
 
-            lastEvent = .failedToFetchData
+            lastEvent = .failedToFetchData(error: error)
             log("Failed to load next page. Error: \(error)")
             if items.isEmpty {
                 isLoading = false

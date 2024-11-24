@@ -69,8 +69,7 @@ struct ExpressAPITarget: Moya.TargetType {
         case .assets,
              .pairs,
              .exchangeSent,
-             .onrampPairs,
-             .onrampStatus:
+             .onrampPairs:
             return .post
         case .providers,
              .exchangeQuote,
@@ -81,7 +80,8 @@ struct ExpressAPITarget: Moya.TargetType {
              .onrampCountryByIP,
              .onrampPaymentMethods,
              .onrampQuote,
-             .onrampData:
+             .onrampData,
+             .onrampStatus:
             return .get
         }
     }

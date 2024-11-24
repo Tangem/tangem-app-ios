@@ -317,7 +317,7 @@ private extension TokenDetailsViewModel {
 
     private func didTapPendingExpressTransaction(with id: String) {
         guard
-            let pendingTransaction = pendingExpressTransactionsManager.pendingTransactions.first(where: { $0.transactionRecord.expressTransactionId == id })
+            let pendingTransaction = pendingExpressTransactionsManager.pendingTransactions.first(where: { $0.expressTransactionId == id })
         else {
             return
         }
