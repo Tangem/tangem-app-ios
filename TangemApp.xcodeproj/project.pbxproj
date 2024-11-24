@@ -1877,6 +1877,8 @@
 		B6DDDE752CF39079008DEA94 /* BlockiesSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B6DDDE742CF39079008DEA94 /* BlockiesSwift */; };
 		B6DDDE782CF39158008DEA94 /* CombineExt in Frameworks */ = {isa = PBXBuildFile; productRef = B6DDDE772CF39158008DEA94 /* CombineExt */; };
 		B6DDDE7B2CF391EF008DEA94 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = B6DDDE7A2CF391EF008DEA94 /* Kingfisher */; };
+		B6DDDE7E2CF39729008DEA94 /* AmplitudeSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B6DDDE7D2CF39729008DEA94 /* AmplitudeSwift */; };
+		B6DDDE812CF39C69008DEA94 /* AnalyticsConnector in Frameworks */ = {isa = PBXBuildFile; productRef = B6DDDE802CF39C69008DEA94 /* AnalyticsConnector */; };
 		B6DF7E792AA95DBB007C92BD /* ListFooterOverlayShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF7E782AA95DBB007C92BD /* ListFooterOverlayShadowView.swift */; };
 		B6DF90572CA2FA0F0099FED5 /* UINavigationController+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF90562CA2FA0F0099FED5 /* UINavigationController+.swift */; };
 		B6DF90592CA302280099FED5 /* MainCoordinatorNavigationAssertion.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF90582CA302270099FED5 /* MainCoordinatorNavigationAssertion.swift */; };
@@ -6121,10 +6123,12 @@
 				B6C1BE6D2B6C2F4E008FE5A0 /* secp256k1 in Frameworks */,
 				B67E38C12CC71A2C00D660EB /* TangemSdk in Frameworks */,
 				B68E1F782CBC44060043E598 /* BlockchainSdk.framework in Frameworks */,
+				B6DDDE7E2CF39729008DEA94 /* AmplitudeSwift in Frameworks */,
 				EF9E29A82B4F0C9900418559 /* TangemExpress.framework in Frameworks */,
 				EFEE239D2BFF62D60099917E /* TangemStaking.framework in Frameworks */,
 				B620FCAE2C5D337900AD0FD1 /* DGCharts in Frameworks */,
 				B62C16812CBE0BA000522683 /* Alamofire in Frameworks */,
+				B6DDDE812CF39C69008DEA94 /* AnalyticsConnector in Frameworks */,
 				B6DDDE7B2CF391EF008DEA94 /* Kingfisher in Frameworks */,
 				B6DDDE752CF39079008DEA94 /* BlockiesSwift in Frameworks */,
 				B6F625302C85E1A600DEF098 /* DGCharts in Frameworks */,
@@ -15851,6 +15855,8 @@
 				B6DDDE742CF39079008DEA94 /* BlockiesSwift */,
 				B6DDDE772CF39158008DEA94 /* CombineExt */,
 				B6DDDE7A2CF391EF008DEA94 /* Kingfisher */,
+				B6DDDE7D2CF39729008DEA94 /* AmplitudeSwift */,
+				B6DDDE802CF39C69008DEA94 /* AnalyticsConnector */,
 			);
 			productName = "Tangem Tap";
 			productReference = 5D3F77C224BF56D800E8695B /* Tangem.app */;
@@ -16223,6 +16229,8 @@
 				B6DDDE732CF39079008DEA94 /* XCRemoteSwiftPackageReference "BlockiesSwift" */,
 				B6DDDE762CF39157008DEA94 /* XCRemoteSwiftPackageReference "CombineExt" */,
 				B6DDDE792CF391EF008DEA94 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				B6DDDE7C2CF39729008DEA94 /* XCRemoteSwiftPackageReference "Amplitude-Swift" */,
+				B6DDDE7F2CF39C69008DEA94 /* XCRemoteSwiftPackageReference "analytics-connector-ios" */,
 			);
 			productRefGroup = 5D3F77C324BF56D800E8695B /* Products */;
 			projectDirPath = "";
@@ -19841,10 +19849,6 @@
 					"-framework",
 					"\"Accelerate\"",
 					"-framework",
-					"\"AmplitudeSwift\"",
-					"-framework",
-					"\"AnalyticsConnector\"",
-					"-framework",
 					"\"CFNetwork\"",
 					"-framework",
 					"\"CoreImage\"",
@@ -19944,10 +19948,6 @@
 					"-l\"z\"",
 					"-framework",
 					"\"Accelerate\"",
-					"-framework",
-					"\"AmplitudeSwift\"",
-					"-framework",
-					"\"AnalyticsConnector\"",
 					"-framework",
 					"\"CFNetwork\"",
 					"-framework",
@@ -22724,10 +22724,6 @@
 					"-framework",
 					"\"Accelerate\"",
 					"-framework",
-					"\"AmplitudeSwift\"",
-					"-framework",
-					"\"AnalyticsConnector\"",
-					"-framework",
 					"\"CFNetwork\"",
 					"-framework",
 					"\"CoreImage\"",
@@ -22940,10 +22936,6 @@
 					"-l\"z\"",
 					"-framework",
 					"\"Accelerate\"",
-					"-framework",
-					"\"AmplitudeSwift\"",
-					"-framework",
-					"\"AnalyticsConnector\"",
 					"-framework",
 					"\"CFNetwork\"",
 					"-framework",
@@ -25109,10 +25101,6 @@
 					"-framework",
 					"\"Accelerate\"",
 					"-framework",
-					"\"AmplitudeSwift\"",
-					"-framework",
-					"\"AnalyticsConnector\"",
-					"-framework",
 					"\"CFNetwork\"",
 					"-framework",
 					"\"CoreImage\"",
@@ -25325,10 +25313,6 @@
 					"-l\"z\"",
 					"-framework",
 					"\"Accelerate\"",
-					"-framework",
-					"\"AmplitudeSwift\"",
-					"-framework",
-					"\"AnalyticsConnector\"",
 					"-framework",
 					"\"CFNetwork\"",
 					"-framework",
@@ -25824,6 +25808,22 @@
 				minimumVersion = 7.0.0;
 			};
 		};
+		B6DDDE7C2CF39729008DEA94 /* XCRemoteSwiftPackageReference "Amplitude-Swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/amplitude/Amplitude-Swift";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 1.6.2;
+			};
+		};
+		B6DDDE7F2CF39C69008DEA94 /* XCRemoteSwiftPackageReference "analytics-connector-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/amplitude/analytics-connector-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		B6F525902B6C05210079ADD1 /* XCRemoteSwiftPackageReference "wallet-core-binaries-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tangem/wallet-core-binaries-ios.git";
@@ -26115,6 +26115,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B6DDDE792CF391EF008DEA94 /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
+		};
+		B6DDDE7D2CF39729008DEA94 /* AmplitudeSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6DDDE7C2CF39729008DEA94 /* XCRemoteSwiftPackageReference "Amplitude-Swift" */;
+			productName = AmplitudeSwift;
+		};
+		B6DDDE802CF39C69008DEA94 /* AnalyticsConnector */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6DDDE7F2CF39C69008DEA94 /* XCRemoteSwiftPackageReference "analytics-connector-ios" */;
+			productName = AnalyticsConnector;
 		};
 		B6E352722CC0B06B002636BC /* TangemWalletCoreBinariesWrapper */ = {
 			isa = XCSwiftPackageProductDependency;
