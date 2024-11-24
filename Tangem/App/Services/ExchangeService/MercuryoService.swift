@@ -286,7 +286,8 @@ private extension Blockchain {
              .core,
              .canxium,
              .casper,
-             .chiliz:
+             .chiliz,
+             .clore:
             // Did you get a compilation error here? If so, check whether the network is supported at
             return nil
         }
