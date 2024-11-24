@@ -1874,6 +1874,9 @@
 		B6D274E82C38318900FEFCDC /* OnboardingLayoutConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D274E72C38318900FEFCDC /* OnboardingLayoutConstants.swift */; };
 		B6D274EB2C38384400FEFCDC /* PushNotificationsBottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D274EA2C38384400FEFCDC /* PushNotificationsBottomSheetView.swift */; };
 		B6DA215E2C52BC790047B1A0 /* FakeMarketsHistoryChartViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DA215D2C52BC790047B1A0 /* FakeMarketsHistoryChartViewModelFactory.swift */; };
+		B6DDDE752CF39079008DEA94 /* BlockiesSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B6DDDE742CF39079008DEA94 /* BlockiesSwift */; };
+		B6DDDE782CF39158008DEA94 /* CombineExt in Frameworks */ = {isa = PBXBuildFile; productRef = B6DDDE772CF39158008DEA94 /* CombineExt */; };
+		B6DDDE7B2CF391EF008DEA94 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = B6DDDE7A2CF391EF008DEA94 /* Kingfisher */; };
 		B6DF7E792AA95DBB007C92BD /* ListFooterOverlayShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF7E782AA95DBB007C92BD /* ListFooterOverlayShadowView.swift */; };
 		B6DF90572CA2FA0F0099FED5 /* UINavigationController+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF90562CA2FA0F0099FED5 /* UINavigationController+.swift */; };
 		B6DF90592CA302280099FED5 /* MainCoordinatorNavigationAssertion.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF90582CA302270099FED5 /* MainCoordinatorNavigationAssertion.swift */; };
@@ -6122,9 +6125,12 @@
 				EFEE239D2BFF62D60099917E /* TangemStaking.framework in Frameworks */,
 				B620FCAE2C5D337900AD0FD1 /* DGCharts in Frameworks */,
 				B62C16812CBE0BA000522683 /* Alamofire in Frameworks */,
+				B6DDDE7B2CF391EF008DEA94 /* Kingfisher in Frameworks */,
+				B6DDDE752CF39079008DEA94 /* BlockiesSwift in Frameworks */,
 				B6F625302C85E1A600DEF098 /* DGCharts in Frameworks */,
 				5DAC0888251391D900B73E8B /* CoreNFC.framework in Frameworks */,
 				B099338A2B5517EC00240CDB /* TangemVisa.framework in Frameworks */,
+				B6DDDE782CF39158008DEA94 /* CombineExt in Frameworks */,
 				B63BAA6C2B7410AE00DA26C9 /* TangemWalletCoreBinariesWrapper in Frameworks */,
 				0A81B38E2BB3018E0008F21C /* ZIPFoundation in Frameworks */,
 				0ABC61152C410AFD00065EBA /* TweetNacl in Frameworks */,
@@ -15842,6 +15848,9 @@
 				B62C167E2CBE0B7900522683 /* Moya */,
 				B62C16802CBE0BA000522683 /* Alamofire */,
 				B67E38C02CC71A2C00D660EB /* TangemSdk */,
+				B6DDDE742CF39079008DEA94 /* BlockiesSwift */,
+				B6DDDE772CF39158008DEA94 /* CombineExt */,
+				B6DDDE7A2CF391EF008DEA94 /* Kingfisher */,
 			);
 			productName = "Tangem Tap";
 			productReference = 5D3F77C224BF56D800E8695B /* Tangem.app */;
@@ -16211,6 +16220,9 @@
 				B6FFC31D2CC70E1D00F4400E /* XCRemoteSwiftPackageReference "bitcoincore" */,
 				B67E38B72CC7147600D660EB /* XCRemoteSwiftPackageReference "tangem-sdk-ios" */,
 				B09FF1882CE24DF5004881F6 /* XCRemoteSwiftPackageReference "JWTDecode" */,
+				B6DDDE732CF39079008DEA94 /* XCRemoteSwiftPackageReference "BlockiesSwift" */,
+				B6DDDE762CF39157008DEA94 /* XCRemoteSwiftPackageReference "CombineExt" */,
+				B6DDDE792CF391EF008DEA94 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			productRefGroup = 5D3F77C324BF56D800E8695B /* Products */;
 			projectDirPath = "";
@@ -19865,8 +19877,6 @@
 					"-framework",
 					"\"GoogleUtilities\"",
 					"-framework",
-					"\"Kingfisher\"",
-					"-framework",
 					"\"Promises\"",
 					"-framework",
 					"\"Security\"",
@@ -19970,8 +19980,6 @@
 					"\"GoogleDataTransport\"",
 					"-framework",
 					"\"GoogleUtilities\"",
-					"-framework",
-					"\"Kingfisher\"",
 					"-framework",
 					"\"Promises\"",
 					"-framework",
@@ -22752,8 +22760,6 @@
 					"-framework",
 					"\"GoogleUtilities\"",
 					"-framework",
-					"\"Kingfisher\"",
-					"-framework",
 					"\"Promises\"",
 					"-framework",
 					"\"Security\"",
@@ -22970,8 +22976,6 @@
 					"\"GoogleDataTransport\"",
 					"-framework",
 					"\"GoogleUtilities\"",
-					"-framework",
-					"\"Kingfisher\"",
 					"-framework",
 					"\"Promises\"",
 					"-framework",
@@ -25141,8 +25145,6 @@
 					"-framework",
 					"\"GoogleUtilities\"",
 					"-framework",
-					"\"Kingfisher\"",
-					"-framework",
 					"\"Promises\"",
 					"-framework",
 					"\"Security\"",
@@ -25359,8 +25361,6 @@
 					"\"GoogleDataTransport\"",
 					"-framework",
 					"\"GoogleUtilities\"",
-					"-framework",
-					"\"Kingfisher\"",
 					"-framework",
 					"\"Promises\"",
 					"-framework",
@@ -25800,6 +25800,30 @@
 				version = "1.2.0-tangem12";
 			};
 		};
+		B6DDDE732CF39079008DEA94 /* XCRemoteSwiftPackageReference "BlockiesSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tangem/BlockiesSwift.git";
+			requirement = {
+				branch = "feature/IOS-8413_migrate_all_dependencies_to_spm";
+				kind = branch;
+			};
+		};
+		B6DDDE762CF39157008DEA94 /* XCRemoteSwiftPackageReference "CombineExt" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/CombineCommunity/CombineExt.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.8.1;
+			};
+		};
+		B6DDDE792CF391EF008DEA94 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
+			};
+		};
 		B6F525902B6C05210079ADD1 /* XCRemoteSwiftPackageReference "wallet-core-binaries-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tangem/wallet-core-binaries-ios.git";
@@ -26076,6 +26100,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B6CAC1C82CC3352D0001A427 /* XCRemoteSwiftPackageReference "Solana.Swift" */;
 			productName = SolanaSwift;
+		};
+		B6DDDE742CF39079008DEA94 /* BlockiesSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6DDDE732CF39079008DEA94 /* XCRemoteSwiftPackageReference "BlockiesSwift" */;
+			productName = BlockiesSwift;
+		};
+		B6DDDE772CF39158008DEA94 /* CombineExt */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6DDDE762CF39157008DEA94 /* XCRemoteSwiftPackageReference "CombineExt" */;
+			productName = CombineExt;
+		};
+		B6DDDE7A2CF391EF008DEA94 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6DDDE792CF391EF008DEA94 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
 		};
 		B6E352722CC0B06B002636BC /* TangemWalletCoreBinariesWrapper */ = {
 			isa = XCSwiftPackageProductDependency;

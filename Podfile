@@ -24,11 +24,6 @@ use_frameworks!
 inhibit_all_warnings!
 
 target 'Tangem' do
-  # Pods for Tangem
-  pod 'Kingfisher', '~> 7.11.0'
-  pod 'BlockiesSwift', '~> 0.1.2'
-  pod 'CombineExt', '~> 1.8.0'
-
   # Debug and development pods
   pod 'GDPerformanceView-Swift', '~> 2.1', :configurations => [
     debug_configuration,

@@ -1,5 +1,5 @@
 {
-  "originHash" : "6b035953f736066530f0d187d9ba246ef7feaaf3f9e8bf5106f9f10b0ba6d560",
+  "originHash" : "1bbacf2caf8878a1ed1999b57f1e6b2c44654cae44a48cd691c70e7de36b4714",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -53,6 +53,24 @@
       "state" : {
         "revision" : "4ec53e5e223885a4c0884d80985cf43677434eb0",
         "version" : "0.0.23"
+      }
+    },
+    {
+      "identity" : "blockiesswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tangem/BlockiesSwift.git",
+      "state" : {
+        "branch" : "feature/IOS-8413_migrate_all_dependencies_to_spm",
+        "revision" : "b8edc8658ae5e51cbc578f5d0007d952cea99b43"
+      }
+    },
+    {
+      "identity" : "combineext",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/CombineCommunity/CombineExt.git",
+      "state" : {
+        "revision" : "d7b896fa9ca8b47fa7bcde6b43ef9b70bf8c1f56",
+        "version" : "1.8.1"
       }
     },
     {
@@ -116,6 +134,15 @@
       "state" : {
         "revision" : "1e153ef009969543191970c66b7c60163c0b4a65",
         "version" : "3.2.0"
+      }
+    },
+    {
+      "identity" : "kingfisher",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/onevcat/Kingfisher.git",
+      "state" : {
+        "revision" : "2ef543ee21d63734e1c004ad6c870255e8716c50",
+        "version" : "7.12.0"
       }
     },
     {
