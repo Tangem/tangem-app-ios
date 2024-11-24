@@ -685,6 +685,16 @@ public indirect enum Blockchain: Equatable, Hashable {
         }
     }
 
+    /// This parameter is used to process the commission parameter when sending the token
+    public var supportedZeroFeePaidToken: Bool {
+        switch self {
+        case .xodex:
+            return true
+        default:
+            return false
+        }
+    }
+
     public func isFeeApproximate(for amountType: Amount.AmountType) -> Bool {
         switch self {
         case .stellar,

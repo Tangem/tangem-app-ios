@@ -19,7 +19,13 @@ public extension Wallet {
     }
 
     func hasFeeCurrency(amountType: Amount.AmountType) -> Bool {
-        feeCurrencyBalance(amountType: amountType) > 0
+        let feeValue = feeCurrencyBalance(amountType: amountType)
+
+        if amountType.isToken, blockchain.supportedZeroFeePaidToken {
+            return feeValue >= 0
+        }
+
+        return feeValue > 0
     }
 
     private func feeAmountType(transactionAmountType: Amount.AmountType) -> Amount.AmountType {
