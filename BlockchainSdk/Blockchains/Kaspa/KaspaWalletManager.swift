@@ -21,6 +21,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
     private let dataStorage: BlockchainDataStorage
     private var incompleteTokenTransactionsInMemoryStorage: IncompleteTokenTransactionsInMemoryStorage = [:]
     private var lastLoadedCardTokens: [Token] = []
+    private var pendingTokenTransactionHashes: [Token: Set<String>] = [:]
 
     var currentHost: String { networkService.host }
     var allowsFeeSelection: Bool { false }
@@ -203,9 +204,11 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             }
             .withWeakCaptureOf(self)
             .handleEvents(receiveOutput: { manager, response in
+                let hash = response.transactionId
                 let mapper = PendingTransactionRecordMapper()
-                let record = mapper.mapToPendingTransactionRecord(transaction: transaction, hash: response.transactionId)
+                let record = mapper.mapToPendingTransactionRecord(transaction: transaction, hash: hash)
                 manager.wallet.addPendingTransaction(record)
+                manager.pendingTokenTransactionHashes[token, default: []].insert(hash)
             })
             .asyncMap { manager, response in
                 // Delete Commit
@@ -362,19 +365,25 @@ final class KaspaWalletManager: BaseManager, WalletManager {
     private func updateWallet(_ info: KaspaAddressInfo, tokensInfo: [Token: Result<KaspaBalanceResponseKRC20, Error>]) {
         wallet.add(amount: Amount(with: wallet.blockchain, value: info.balance))
         txBuilder.setUnspentOutputs(info.unspentOutputs)
+        var confirmedTransactionHashes = info.confirmedTransactionHashes.toSet()
 
-        for token in tokensInfo {
-            switch token.value {
+        for (token, value) in tokensInfo {
+            switch value {
             case .success(let tokenBalance):
-                let decimalTokenBalance = (Decimal(stringValue: tokenBalance.result.first?.balance) ?? 0) / token.key.decimalValue
-                wallet.add(tokenValue: decimalTokenBalance, for: token.key)
+                let decimalTokenBalance = (Decimal(stringValue: tokenBalance.result.first?.balance) ?? 0) / token.decimalValue
+                // Currently, KRC20 doesn't provide an API endpoint to fetch the status of the transaction;
+                // therefore, we manage pending transactions using this ugly and fragile approach
+                if wallet.amounts[.token(value: token)]?.value != decimalTokenBalance, let pending = pendingTokenTransactionHashes[token] {
+                    confirmedTransactionHashes.formUnion(pending)
+                }
+                wallet.add(tokenValue: decimalTokenBalance, for: token)
             case .failure:
-                wallet.clearAmount(for: token.key)
+                wallet.clearAmount(for: token)
             }
         }
 
         wallet.removePendingTransaction { hash in
-            info.confirmedTransactionHashes.contains(hash)
+            confirmedTransactionHashes.contains(hash)
         }
     }
 
