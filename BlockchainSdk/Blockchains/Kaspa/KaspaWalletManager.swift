@@ -46,15 +46,15 @@ final class KaspaWalletManager: BaseManager, WalletManager {
 
         cancellable = loadCachedIncompleteTokenTransactionsIfNeeded()
             .withWeakCaptureOf(self)
-            .flatMap { walletManager, _ in
+            .flatMap { manager, _ in
                 Publishers.Zip(
-                    walletManager.networkService.getInfo(
-                        address: walletManager.wallet.address,
+                    manager.networkService.getInfo(
+                        address: manager.wallet.address,
                         unconfirmedTransactionHashes: unconfirmedTransactionHashes
                     ),
-                    walletManager.networkServiceKRC20.balance(
-                        address: walletManager.wallet.address,
-                        tokens: walletManager.cardTokens
+                    manager.networkServiceKRC20.balance(
+                        address: manager.wallet.address,
+                        tokens: manager.cardTokens
                     )
                 )
             }
@@ -173,7 +173,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                 return (commitTx, revealTx)
             }
             .withWeakCaptureOf(self)
-            .flatMap { manager, input -> AnyPublisher<KaspaTransactionData, Error> in
+            .flatMap { manager, input in
                 // Send Commit
                 let (commitTx, revealTx) = input
                 let encodedRawTransactionData = try? JSONEncoder().encode(commitTx)
@@ -193,7 +193,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             .eraseToAnyPublisher()
             .delay(for: .seconds(2), scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
-            .flatMap { manager, revealTx -> AnyPublisher<KaspaTransactionResponse, Error> in
+            .flatMap { manager, revealTx in
                 // Send Reveal
                 let encodedRawTransactionData = try? JSONEncoder().encode(revealTx)
                 return manager.networkService
@@ -201,12 +201,12 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                     .mapSendError(tx: encodedRawTransactionData?.hexString.lowercased())
                     .eraseToAnyPublisher()
             }
-            .handleEvents(receiveOutput: { [weak self] in
-                let mapper = PendingTransactionRecordMapper()
-                let record = mapper.mapToPendingTransactionRecord(transaction: transaction, hash: $0.transactionId)
-                self?.wallet.addPendingTransaction(record)
-            })
             .withWeakCaptureOf(self)
+            .handleEvents(receiveOutput: { manager, response in
+                let mapper = PendingTransactionRecordMapper()
+                let record = mapper.mapToPendingTransactionRecord(transaction: transaction, hash: response.transactionId)
+                manager.wallet.addPendingTransaction(record)
+            })
             .asyncMap { manager, response in
                 // Delete Commit
                 await manager.removeIncompleteTokenTransaction(for: token)
@@ -223,10 +223,10 @@ final class KaspaWalletManager: BaseManager, WalletManager {
     ) -> some Publisher<TransactionSendResult, SendTxError> {
         return Just(asset)
             .withWeakCaptureOf(self)
-            .tryMap { walletManager, asset in
+            .tryMap { manager, asset in
                 guard
                     let token = asset.token,
-                    let incompleteTokenTransaction = walletManager.getIncompleteTokenTransaction(for: asset)
+                    let incompleteTokenTransaction = manager.getIncompleteTokenTransaction(for: asset)
                 else {
                     throw KaspaKRC20.Error.unableToFindIncompleteTokenTransaction
                 }
@@ -238,7 +238,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                 }
 
                 guard
-                    let tokenTransaction = walletManager.makeTransaction(from: incompleteTokenTransaction, for: token)
+                    let tokenTransaction = manager.makeTransaction(from: incompleteTokenTransaction, for: token)
                 else {
                     throw KaspaKRC20.Error.unableToBuildRevealTransaction
                 }
@@ -247,8 +247,8 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             }
             .eraseSendError()
             .withWeakCaptureOf(self)
-            .flatMap { walletManager, tokenTransaction in
-                return walletManager.send(tokenTransaction, signer: signer)
+            .flatMap { manager, tokenTransaction in
+                return manager.send(tokenTransaction, signer: signer)
             }
     }
 
@@ -292,7 +292,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                 )
             }
             .withWeakCaptureOf(self)
-            .flatMap { manager, tx -> AnyPublisher<KaspaTransactionResponse, Error> in
+            .flatMap { manager, tx in
                 let encodedRawTransactionData = try? JSONEncoder().encode(tx)
 
                 return manager
@@ -389,9 +389,9 @@ final class KaspaWalletManager: BaseManager, WalletManager {
         return Just
             .justWithError(output: cardTokens)
             .withWeakCaptureOf(self)
-            .asyncMap { walletManager, cardTokens in
-                let dataStorage = walletManager.dataStorage
-                let inMemoryStorage = walletManager.incompleteTokenTransactionsInMemoryStorage
+            .asyncMap { manager, cardTokens in
+                let dataStorage = manager.dataStorage
+                let inMemoryStorage = manager.incompleteTokenTransactionsInMemoryStorage
 
                 let storedTransactionParams = await withTaskGroup(
                     of: (KaspaIncompleteTokenTransactionStorageID, KaspaKRC20.IncompleteTokenTransactionParams?).self,
@@ -418,8 +418,8 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             }
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
-            .handleEvents(receiveOutput: { walletManager, loadedCardTokens in
-                walletManager.lastLoadedCardTokens = loadedCardTokens
+            .handleEvents(receiveOutput: { manager, loadedCardTokens in
+                manager.lastLoadedCardTokens = loadedCardTokens
             })
             .mapToVoid()
             .eraseToAnyPublisher()
