@@ -297,7 +297,6 @@ private extension EthereumWalletManager {
         for tokenBalance in response.tokenBalances {
             switch tokenBalance.value {
             case .success(let value):
-                if wallet.blockchain == .xodex {
                 wallet.add(tokenValue: value, for: tokenBalance.key)
             case .failure:
                 wallet.clearAmount(for: tokenBalance.key)
