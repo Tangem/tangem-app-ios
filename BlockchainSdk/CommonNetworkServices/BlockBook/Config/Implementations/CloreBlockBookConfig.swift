@@ -39,11 +39,6 @@ extension CloreBlockBookConfig {
     }
 
     func path(for request: BlockBookTarget.Request) -> String {
-        switch request {
-        case .fees:
-            return "/"
-        default:
-            return "/api/v2"
-        }
+        return "api/v2"
     }
 }

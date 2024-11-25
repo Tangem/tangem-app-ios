@@ -37,12 +37,14 @@ struct BlockBookTarget: TargetType {
             return basePath + "/utxo/\(address)"
         case .fees, .sendNode:
             return basePath
+        case .getFees(let confirmationBlocks):
+            return basePath + "/estimatefee/\(confirmationBlocks)"
         }
     }
 
     var method: Moya.Method {
         switch request {
-        case .address, .utxo:
+        case .address, .utxo, .getFees:
             return .get
         case .sendBlockBook, .sendNode, .txDetails, .fees:
             return .post
@@ -51,7 +53,7 @@ struct BlockBookTarget: TargetType {
 
     var task: Moya.Task {
         switch request {
-        case .txDetails, .utxo:
+        case .txDetails, .utxo, .getFees:
             return .requestPlain
         case .sendBlockBook(let tx):
             return .requestData(tx)
@@ -94,6 +96,12 @@ extension BlockBookTarget {
         case txDetails(txHash: String)
         case utxo(address: String)
         case fees(_ request: NodeRequest<Int>)
+        
+        /*
+         Use any method getFees request. Used for blockchains:
+            - CloreAI
+         */
+        case getFees(confirmationBlocks: Int)
     }
 
     struct AddressRequestParameters: Encodable {
