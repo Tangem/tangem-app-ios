@@ -7,12 +7,16 @@
 //
 
 import Foundation
+import CryptoSwift
 
-struct KaspaIncompleteTokenTransactionStorageID: CustomStringConvertible, Hashable, Identifiable {
+struct KaspaIncompleteTokenTransactionStorageID: Hashable, Identifiable {
     let id: String
 
-    init(contract: String) {
-        id = "KaspaTokenIncompleteTransactions\(contract)"
+    init(
+        walletAddress: String,
+        contractAddress: String
+    ) {
+        id = "KaspaTokenIncompleteTransactions_\(walletAddress.sha256())_\(contractAddress)"
     }
 }
 
