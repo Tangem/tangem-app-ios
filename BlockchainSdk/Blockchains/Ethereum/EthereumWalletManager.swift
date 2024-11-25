@@ -298,10 +298,6 @@ private extension EthereumWalletManager {
             switch tokenBalance.value {
             case .success(let value):
                 if wallet.blockchain == .xodex {
-                    wallet.add(tokenValue: 100, for: Token(name: "Test", symbol: "Test", contractAddress: "0xe42fc7041710cfadf21ae16ab43adbb230b5bdf8", decimalCount: 18))
-                    return
-                }
-
                 wallet.add(tokenValue: value, for: tokenBalance.key)
             case .failure:
                 wallet.clearAmount(for: tokenBalance.key)
