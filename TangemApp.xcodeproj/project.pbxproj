@@ -25693,7 +25693,7 @@
 			repositoryURL = "https://github.com/Soneso/stellar-ios-mac-sdk.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.5.4;
+				minimumVersion = 3.0.0;
 			};
 		};
 		B62D344E2CBC67D500C2460E /* XCRemoteSwiftPackageReference "AnyCodable" */ = {
