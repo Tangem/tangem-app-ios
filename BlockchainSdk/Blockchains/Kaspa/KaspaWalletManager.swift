@@ -114,28 +114,28 @@ final class KaspaWalletManager: BaseManager, WalletManager {
         }
 
         return signer.sign(hashes: hashes, walletPublicKey: wallet.publicKey)
-            .tryMap { [weak self] signatures in
-                guard let self = self else { throw WalletError.empty }
-
-                return txBuilder.buildForSend(transaction: kaspaTransaction, signatures: signatures)
+            .withWeakCaptureOf(self)
+            .tryMap { manager, signatures in
+                return manager.txBuilder.buildForSend(transaction: kaspaTransaction, signatures: signatures)
             }
-            .flatMap { [weak self] tx -> AnyPublisher<KaspaTransactionResponse, Error> in
-                guard let self = self else { return .emptyFail }
-
+            .withWeakCaptureOf(self)
+            .flatMap { manager, tx in
                 let encodedRawTransactionData = try? JSONEncoder().encode(tx)
 
-                return networkService
+                return manager
+                    .networkService
                     .send(transaction: KaspaTransactionRequest(transaction: tx))
                     .mapSendError(tx: encodedRawTransactionData?.hexString.lowercased())
                     .eraseToAnyPublisher()
             }
-            .handleEvents(receiveOutput: { [weak self] in
+            .withWeakCaptureOf(self)
+            .handleEvents(receiveOutput: { manager, response in
                 let mapper = PendingTransactionRecordMapper()
-                let record = mapper.mapToPendingTransactionRecord(transaction: transaction, hash: $0.transactionId)
-                self?.wallet.addPendingTransaction(record)
+                let record = mapper.mapToPendingTransactionRecord(transaction: transaction, hash: response.transactionId)
+                manager.wallet.addPendingTransaction(record)
             })
-            .map {
-                TransactionSendResult(hash: $0.transactionId)
+            .map { _, response in
+                TransactionSendResult(hash: response.transactionId)
             }
             .eraseSendError()
             .eraseToAnyPublisher()
