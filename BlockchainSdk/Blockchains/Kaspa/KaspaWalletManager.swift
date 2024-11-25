@@ -58,10 +58,10 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                     )
                 )
             }
-            .sink(receiveCompletion: { result in
+            .sink(receiveCompletion: { [weak self] result in
                 switch result {
                 case .failure(let error):
-                    self.wallet.clearAmounts()
+                    self?.wallet.clearAmounts()
                     completion(.failure(error))
                 case .finished:
                     completion(.success(()))
