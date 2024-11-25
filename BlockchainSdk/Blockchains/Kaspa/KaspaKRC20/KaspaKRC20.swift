@@ -116,8 +116,19 @@ enum KaspaKRC20 {
         }
     }
 
+    struct IncompleteTokenTransactionComparator {
+        func isIncompleteTokenTransaction(
+            _ incompleteTokenTransaction: IncompleteTokenTransactionParams,
+            equalTo transaction: Transaction
+        ) -> Bool {
+            return incompleteTokenTransaction.amount == transaction.amount.value
+                && incompleteTokenTransaction.envelope.to == transaction.destinationAddress
+        }
+    }
+
     enum Error: Swift.Error {
         case unableToFindIncompleteTokenTransaction
+        case invalidIncompleteTokenTransaction
         case unableToBuildRevealTransaction
     }
 }

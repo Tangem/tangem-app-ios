@@ -72,17 +72,31 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             })
     }
 
-    func send(_ transaction: Transaction, signer: TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError> {
-        switch transaction.amount.type {
-        case .token(value: let token):
-            switch transaction.params {
-            case is KaspaKRC20.IncompleteTokenTransactionParams:
-                return sendKaspaRevealTokenTransaction(transaction, token: token, signer: signer)
-            default:
+    func send(_ transaction: Transaction, signer: any TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError> {
+        let amountType = transaction.amount.type
+
+        switch amountType {
+        case .token(let token) where transaction.params is KaspaKRC20.IncompleteTokenTransactionParams:
+            return sendKaspaRevealTokenTransaction(transaction, token: token, signer: signer)
+        case .token(let token):
+            let comparator = KaspaKRC20.IncompleteTokenTransactionComparator()
+            return sendIncompleteKaspaTokenTransactionIfPossible(
+                for: amountType,
+                signer: signer,
+                validator: { comparator.isIncompleteTokenTransaction($0, equalTo: transaction) }
+            )
+            .tryCatch { [weak self] _ in
+                guard let self else {
+                    throw WalletError.empty
+                }
+
+                // `sendIncompleteKaspaTokenTransactionIfPossible` above attempts to re-send a cached incomplete token transaction if one exists.
+                // Any errors thrown from `sendIncompleteKaspaTokenTransactionIfAvailable` resulted in sending a new token transaction (created from scratch)
                 return sendKaspaTokenTransaction(transaction, token: token, signer: signer)
             }
-
-        default:
+            .eraseSendError()
+            .eraseToAnyPublisher()
+        case .coin, .reserve, .feeResource:
             return sendKaspaCoinTransaction(transaction, signer: signer)
         }
     }
@@ -207,7 +221,42 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             .eraseToAnyPublisher()
     }
 
-    /// Used to retry a previously failed reveal transaction.
+    private func sendIncompleteKaspaTokenTransactionIfPossible(
+        for asset: Asset,
+        signer: any TransactionSigner,
+        validator isIncompleteTokenTransactionValid: @escaping (_ tx: KaspaKRC20.IncompleteTokenTransactionParams) -> Bool
+    ) -> some Publisher<TransactionSendResult, SendTxError> {
+        return Just(asset)
+            .withWeakCaptureOf(self)
+            .tryMap { walletManager, asset in
+                guard
+                    let token = asset.token,
+                    let incompleteTokenTransaction = walletManager.getIncompleteTokenTransaction(for: asset)
+                else {
+                    throw KaspaKRC20.Error.unableToFindIncompleteTokenTransaction
+                }
+
+                guard
+                    isIncompleteTokenTransactionValid(incompleteTokenTransaction)
+                else {
+                    throw KaspaKRC20.Error.invalidIncompleteTokenTransaction
+                }
+
+                guard
+                    let tokenTransaction = walletManager.makeTransaction(from: incompleteTokenTransaction, for: token)
+                else {
+                    throw KaspaKRC20.Error.unableToBuildRevealTransaction
+                }
+
+                return tokenTransaction
+            }
+            .eraseSendError()
+            .withWeakCaptureOf(self)
+            .flatMap { walletManager, tokenTransaction in
+                return walletManager.send(tokenTransaction, signer: signer)
+            }
+    }
+
     private func sendKaspaRevealTokenTransaction(
         _ transaction: Transaction,
         token: Token,
@@ -512,32 +561,14 @@ extension KaspaWalletManager: AssetRequirementsManager {
     }
 
     func fulfillRequirements(for asset: Asset, signer: any TransactionSigner) -> AnyPublisher<Void, Error> {
-        return Just(asset)
-            .withWeakCaptureOf(self)
-            .tryMap { walletManager, asset in
-                guard
-                    let token = asset.token,
-                    let incompleteTokenTransaction = walletManager.getIncompleteTokenTransaction(for: asset)
-                else {
-                    throw KaspaKRC20.Error.unableToFindIncompleteTokenTransaction
-                }
-
-                guard
-                    let tokenTransaction = walletManager.makeTransaction(from: incompleteTokenTransaction, for: token)
-                else {
-                    throw KaspaKRC20.Error.unableToBuildRevealTransaction
-                }
-
-                return tokenTransaction
-            }
-            .withWeakCaptureOf(self)
-            .flatMap { walletManager, tokenTransaction in
-                return walletManager
-                    .send(tokenTransaction, signer: signer)
-                    .mapError { $0 }
-            }
-            .mapToVoid()
-            .eraseToAnyPublisher()
+        return sendIncompleteKaspaTokenTransactionIfPossible(
+            for: asset,
+            signer: signer,
+            validator: { _ in true }
+        )
+        .mapError { $0 }
+        .mapToVoid()
+        .eraseToAnyPublisher()
     }
 
     func discardRequirements(for asset: Asset) {
