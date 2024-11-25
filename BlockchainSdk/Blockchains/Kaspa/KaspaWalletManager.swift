@@ -387,7 +387,10 @@ extension KaspaWalletManager: KaspaIncompleteTransactionUtilProtocol {
     }
 
     func getIncompleteTokenTransaction(for token: Token) async -> Transaction? {
-        let key = KaspaIncompleteTokenTransactionStorageID(contract: token.contractAddress).id
+        let key = KaspaIncompleteTokenTransactionStorageID(
+            walletAddress: wallet.address,
+            contractAddress: token.contractAddress
+        ).id
         guard let tx: KaspaKRC20.IncompleteTokenTransactionParams = await dataStorage.get(key: key) else {
             return nil
         }
@@ -396,19 +399,28 @@ extension KaspaWalletManager: KaspaIncompleteTransactionUtilProtocol {
     }
 
     func store(incompleteTokenTransaction: KaspaKRC20.IncompleteTokenTransactionParams, for token: Token) async {
-        let key = KaspaIncompleteTokenTransactionStorageID(contract: token.contractAddress).id
+        let key = KaspaIncompleteTokenTransactionStorageID(
+            walletAddress: wallet.address,
+            contractAddress: token.contractAddress
+        ).id
         let data = incompleteTokenTransaction
 
         await dataStorage.store(key: key, value: data)
     }
 
     func remove(incompleteTokenTransactionID: String, for token: Token) async {
-        let key = KaspaIncompleteTokenTransactionStorageID(contract: token.contractAddress).id
+        let key = KaspaIncompleteTokenTransactionStorageID(
+            walletAddress: wallet.address,
+            contractAddress: token.contractAddress
+        ).id
         await dataStorage.store(key: key, value: nil as KaspaKRC20.IncompleteTokenTransactionParams?)
     }
 
     func transaction(from incompleteTokenTransationID: String, for token: Token) async -> Transaction? {
-        let key = KaspaIncompleteTokenTransactionStorageID(contract: token.contractAddress).id
+        let key = KaspaIncompleteTokenTransactionStorageID(
+            walletAddress: wallet.address,
+            contractAddress: token.contractAddress
+        ).id
         let dict: [String: KaspaKRC20.IncompleteTokenTransactionParams] = await dataStorage.get(key: key) ?? [:]
 
         guard let params = dict[incompleteTokenTransationID] else {

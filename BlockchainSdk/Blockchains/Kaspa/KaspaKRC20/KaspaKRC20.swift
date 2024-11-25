@@ -7,12 +7,16 @@
 //
 
 import Foundation
+import CryptoSwift
 
-struct KaspaIncompleteTokenTransactionStorageID: CustomStringConvertible {
+struct KaspaIncompleteTokenTransactionStorageID: Hashable, Identifiable {
     let id: String
 
-    init(contract: String) {
-        id = "KaspaTokenIncompleteTransactions\(contract)"
+    init(
+        walletAddress: String,
+        contractAddress: String
+    ) {
+        id = "KaspaTokenIncompleteTransactions_\(walletAddress.sha256())_\(contractAddress)"
     }
 }
 
@@ -49,12 +53,6 @@ enum KaspaKRC20 {
         let transactionId: String
         let amount: UInt64
         let envelope: KaspaKRC20.Envelope
-
-        init(transactionId: String, amount: UInt64, envelope: KaspaKRC20.Envelope) {
-            self.transactionId = transactionId
-            self.amount = amount
-            self.envelope = envelope
-        }
     }
 
     struct RevealTransactionFeeParameter: FeeParameters {

@@ -10015,10 +10015,10 @@
 		B62D3D592CBC79D900C2460E /* Kaspa */ = {
 			isa = PBXGroup;
 			children = (
-				F990070B2CD3E1D800DFE2D3 /* KaspaUtils.swift */,
 				F9F62C822CBFE1DF008A3EE6 /* KaspaKRC20 */,
 				B62D3D4C2CBC79D900C2460E /* Address */,
 				B62D3D512CBC79D900C2460E /* Network */,
+				F990070B2CD3E1D800DFE2D3 /* KaspaUtils.swift */,
 				B62D3D522CBC79D900C2460E /* KaspaAPIResolver.swift */,
 				B62D3D532CBC79D900C2460E /* KaspaExternalLinkProvider.swift */,
 				B62D3D542CBC79D900C2460E /* KaspaFeeMapper.swift */,
