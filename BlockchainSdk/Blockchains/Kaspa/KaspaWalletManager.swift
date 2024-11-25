@@ -173,14 +173,15 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                 return (commitTx, revealTx)
             }
             .withWeakCaptureOf(self)
-            .flatMap { (manager, txs: (tx: KaspaTransactionData, tx2: KaspaTransactionData)) -> AnyPublisher<KaspaTransactionData, Error> in
+            .flatMap { manager, input -> AnyPublisher<KaspaTransactionData, Error> in
                 // Send Commit
-                let encodedRawTransactionData = try? JSONEncoder().encode(txs.tx)
+                let (commitTx, revealTx) = input
+                let encodedRawTransactionData = try? JSONEncoder().encode(commitTx)
 
                 return manager.networkService
-                    .send(transaction: KaspaTransactionRequest(transaction: txs.tx))
+                    .send(transaction: KaspaTransactionRequest(transaction: commitTx))
                     .mapSendError(tx: encodedRawTransactionData?.hexString.lowercased())
-                    .map { _ in txs.tx2 }
+                    .mapToValue(revealTx)
                     .eraseToAnyPublisher()
             }
             .withWeakCaptureOf(self)
