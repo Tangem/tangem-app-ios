@@ -32,13 +32,32 @@ extension WalletModel {
         availableBalance.fiat
     }
 
+    var isSuccessfullyLoaded: Bool {
+        let isStakingSuccessfullyLoaded = stakingManager?.state.isSuccessfullyLoaded ?? true
+        return state.isSuccessfullyLoaded && isStakingSuccessfullyLoaded
+    }
+
     var totalBalance: Balance {
         let cryptoBalance: Decimal? = {
             switch (availableBalance.crypto, stakedBalance.crypto) {
-            case (.none, _): nil
-            // What we have to do if we have only blocked balance?
-            case (.some(let available), .none): available
-            case (.some(let available), .some(let blocked)): available + blocked
+            case (.none, _):
+                return nil
+            case (.some(let available), .none):
+                // staking unsupported
+                guard let stakingManager else {
+                    return available
+                }
+
+                // no staled balance
+                if stakingManager.state.isSuccessfullyLoaded {
+                    return available
+                }
+
+                // staking error
+                return nil
+
+            case (.some(let available), .some(let blocked)):
+                return available + blocked
             }
         }()
 

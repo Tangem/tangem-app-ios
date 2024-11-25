@@ -47,6 +47,15 @@ public enum StakingManagerState: Hashable, CustomStringConvertible {
         }
     }
 
+    public var isSuccessfullyLoaded: Bool {
+        switch self {
+        case .staked, .availableToStake:
+            return true
+        default:
+            return false
+        }
+    }
+
     public var balances: [StakingBalance]? {
         guard case .staked(let stakeInfo) = self else {
             return nil

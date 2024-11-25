@@ -142,7 +142,7 @@ private extension TotalBalanceProvider {
                 hasCryptoError = true
             }
 
-            if !token.state.isSuccessfullyLoaded {
+            if !token.isSuccessfullyLoaded {
                 balance = nil
                 break
             }
