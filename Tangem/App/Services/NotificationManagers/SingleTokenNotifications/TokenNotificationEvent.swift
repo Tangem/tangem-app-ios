@@ -241,7 +241,7 @@ extension TokenNotificationEvent {
             let currencySymbol: String
         }
 
-        /// `onTransactionDiscard` is intentionally ignored by `Equatable` and `Hashable` implementations.
+        /// `onTransactionDiscard` callback is intentionally ignored by `Equatable` and `Hashable` implementations.
         struct KaspaTokenRevealTransaction: Hashable {
             let formattedValue: String
             let currencySymbol: String

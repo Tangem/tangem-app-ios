@@ -101,10 +101,6 @@ extension Publisher {
             .collect()
             .eraseToAnyPublisher()
     }
-
-    func receiveCompletion(_ receiveCompletion: @escaping ((Subscribers.Completion<Self.Failure>) -> Void)) -> AnyCancellable {
-        sink(receiveCompletion: receiveCompletion, receiveValue: { _ in })
-    }
 }
 
 extension Publisher where Failure == Error {

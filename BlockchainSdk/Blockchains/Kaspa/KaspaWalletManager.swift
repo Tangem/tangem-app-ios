@@ -91,8 +91,10 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                     throw WalletError.empty
                 }
 
-                // `sendIncompleteKaspaTokenTransactionIfPossible` above attempts to re-send a cached incomplete token transaction if one exists.
-                // Any errors thrown from `sendIncompleteKaspaTokenTransactionIfAvailable` resulted in sending a new token transaction (created from scratch)
+                // `sendIncompleteKaspaTokenTransactionIfPossible` call above attempts to re-send a cached incomplete
+                // token transaction if one exists.
+                // Any errors thrown from `sendIncompleteKaspaTokenTransactionIfAvailable` call will result in sending
+                // a new token transaction (created from scratch).
                 return sendKaspaTokenTransaction(transaction, token: token, signer: signer)
             }
             .eraseSendError()
