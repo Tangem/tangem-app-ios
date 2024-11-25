@@ -11,6 +11,7 @@ import Foundation
 public struct StakingBalance: Hashable {
     public let item: StakingTokenItem
     public let amount: Decimal
+    public let accountAddress: String?
     public let balanceType: StakingBalanceType
     public let validatorType: StakingValidatorType
     public let inProgress: Bool
@@ -19,6 +20,7 @@ public struct StakingBalance: Hashable {
     public init(
         item: StakingTokenItem,
         amount: Decimal,
+        accountAddress: String? = nil,
         balanceType: StakingBalanceType,
         validatorType: StakingValidatorType,
         inProgress: Bool,
@@ -26,6 +28,7 @@ public struct StakingBalance: Hashable {
     ) {
         self.item = item
         self.amount = amount
+        self.accountAddress = accountAddress
         self.balanceType = balanceType
         self.validatorType = validatorType
         self.inProgress = inProgress

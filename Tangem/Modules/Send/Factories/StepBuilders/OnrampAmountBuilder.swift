@@ -51,8 +51,7 @@ private extension OnrampAmountBuilder {
         CommonOnrampAmountInteractor(
             input: io.input,
             output: io.output,
-            onrampProvidersInput: onrampProvidersInput,
-            tokenItem: walletModel.tokenItem
+            onrampProvidersInput: onrampProvidersInput
         )
     }
 }

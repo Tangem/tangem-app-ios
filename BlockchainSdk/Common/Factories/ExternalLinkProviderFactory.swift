@@ -165,6 +165,8 @@ public struct ExternalLinkProviderFactory {
             return CanxiumExternalLinkProvider()
         case .casper:
             return CasperExternalLinkProvider(isTestnet: isTestnet)
+        case .chiliz:
+            return ChilizExternalLinkProvider(isTestnet: isTestnet)
         }
     }
 }

@@ -40,4 +40,14 @@ struct TokenIconInfoBuilder {
     func build(from tokenItem: TokenItem, isCustom: Bool) -> TokenIconInfo {
         build(for: tokenItem.amountType, in: tokenItem.blockchain, isCustom: isCustom)
     }
+
+    func build(from currencyCode: String) -> TokenIconInfo {
+        TokenIconInfo(
+            name: "",
+            blockchainIconName: nil,
+            imageURL: IconURLBuilder().fiatIconURL(currencyCode: currencyCode),
+            isCustom: false,
+            customTokenColor: nil
+        )
+    }
 }

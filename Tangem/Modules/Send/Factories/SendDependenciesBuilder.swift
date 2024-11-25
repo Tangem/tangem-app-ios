@@ -367,6 +367,7 @@ struct SendDependenciesBuilder {
 
     func makeOnrampModel(onrampManager: some OnrampManager, onrampRepository: OnrampRepository) -> OnrampModel {
         OnrampModel(
+            userWalletId: userWalletModel.userWalletId.stringValue,
             walletModel: walletModel,
             onrampManager: onrampManager,
             onrampRepository: onrampRepository
@@ -411,5 +412,9 @@ struct SendDependenciesBuilder {
             paymentMethodsBuilder: paymentMethodsBuilder,
             onrampRedirectingBuilder: onrampRedirectingBuilder
         )
+    }
+
+    func makeOnrampNotificationManager(input: OnrampNotificationManagerInput, delegate: NotificationTapDelegate) -> OnrampNotificationManager {
+        CommonOnrampNotificationManager(input: input, delegate: delegate)
     }
 }

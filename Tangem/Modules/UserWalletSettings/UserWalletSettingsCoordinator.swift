@@ -13,6 +13,10 @@ class UserWalletSettingsCoordinator: CoordinatorObject {
     let dismissAction: Action<Void>
     let popToRootAction: Action<PopToRootOptions>
 
+    // MARK: - Injected
+
+    @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
+
     // MARK: - Root view model
 
     @Published private(set) var rootViewModel: UserWalletSettingsViewModel?
@@ -71,7 +75,7 @@ extension UserWalletSettingsCoordinator: UserWalletSettingsRoutable {
     }
 
     func openScanCardSettings(with input: ScanCardSettingsViewModel.Input) {
-        let coordinator = ScanCardSettingsCoordinator(dismissAction: dismissAction)
+        let coordinator = ScanCardSettingsCoordinator(dismissAction: dismissAction, popToRootAction: popToRootAction)
         coordinator.start(with: .init(input: input))
         scanCardSettingsCoordinator = coordinator
     }
@@ -95,5 +99,16 @@ extension UserWalletSettingsCoordinator: UserWalletSettingsRoutable {
         let coordinator = ManageTokensCoordinator(dismissAction: dismissAction)
         coordinator.start(with: .init(userWalletModel: userWalletModel))
         manageTokensCoordinator = coordinator
+    }
+
+    func dismiss() {
+        if userWalletRepository.models.isEmpty {
+            // fix stories animation no-resume issue
+            DispatchQueue.main.async {
+                self.popToRoot()
+            }
+        } else {
+            dismissAction(())
+        }
     }
 }

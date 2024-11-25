@@ -24,7 +24,7 @@ struct PendingExpressTransactionView: View {
     private var content: some View {
         HStack(spacing: 0) {
             VStack(alignment: .leading, spacing: 8) {
-                Text(Localization.expressExchangeBy(info.providerName))
+                Text(info.title)
                     .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
 
                 HStack(spacing: 6) {
@@ -49,7 +49,7 @@ struct PendingExpressTransactionView: View {
                         isWithOverlays: false
                     )
 
-                    Text(info.destinationCurrencySymbol)
+                    Text(info.destinationAmountText)
                         .style(Fonts.Regular.footnote, color: Colors.Text.primary1)
                 }
             }
@@ -85,11 +85,11 @@ struct PendingExpressTransactionView: View {
 extension PendingExpressTransactionView {
     struct Info: Identifiable, Equatable {
         let id: String
-        let providerName: String
+        let title: String
         let sourceIconInfo: TokenIconInfo
         let sourceAmountText: String
         let destinationIconInfo: TokenIconInfo
-        let destinationCurrencySymbol: String
+        let destinationAmountText: String
         let state: State
         let action: (String) -> Void
 
@@ -114,21 +114,21 @@ struct PendingExpressTransactionView_Previews: PreviewProvider {
             VStack {
                 PendingExpressTransactionView(info: .init(
                     id: UUID().uuidString,
-                    providerName: "ChangeNow",
+                    title: Localization.expressExchangeBy("ChangeNow"),
                     sourceIconInfo: iconInfoBuilder.build(from: .blockchain(.init(.polygon(testnet: false), derivationPath: nil)), isCustom: false),
                     sourceAmountText: "10 BTC",
                     destinationIconInfo: iconInfoBuilder.build(
                         from: .token(.shibaInuMock, .init(.arbitrum(testnet: false), derivationPath: nil)),
                         isCustom: false
                     ),
-                    destinationCurrencySymbol: "SHIB",
+                    destinationAmountText: "SHIB",
                     state: .inProgress,
                     action: { _ in }
                 ))
 
                 PendingExpressTransactionView(info: .init(
                     id: UUID().uuidString,
-                    providerName: "1inch",
+                    title: Localization.expressExchangeBy("1inch"),
                     sourceIconInfo: iconInfoBuilder.build(
                         from: .token(.inverseBTCBlaBlaBlaMock, .init(.ethereum(testnet: false), derivationPath: nil)),
                         isCustom: true
@@ -138,14 +138,14 @@ struct PendingExpressTransactionView_Previews: PreviewProvider {
                         from: .blockchain(.init(.ethereum(testnet: false), derivationPath: nil)),
                         isCustom: true
                     ),
-                    destinationCurrencySymbol: "ETH",
+                    destinationAmountText: "ETH",
                     state: .warning,
                     action: { _ in }
                 ))
 
                 PendingExpressTransactionView(info: .init(
                     id: UUID().uuidString,
-                    providerName: "ChangeNow",
+                    title: Localization.expressExchangeBy("ChangeNow"),
                     sourceIconInfo: iconInfoBuilder.build(
                         from: .blockchain(.init(.bitcoin(testnet: false), derivationPath: nil)),
                         isCustom: false
@@ -155,7 +155,7 @@ struct PendingExpressTransactionView_Previews: PreviewProvider {
                         from: .blockchain(.init(.cardano(extended: false), derivationPath: nil)),
                         isCustom: false
                     ),
-                    destinationCurrencySymbol: "ADA",
+                    destinationAmountText: "ADA",
                     state: .error,
                     action: { _ in }
                 ))

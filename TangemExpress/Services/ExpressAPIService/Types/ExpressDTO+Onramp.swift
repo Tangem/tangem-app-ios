@@ -111,6 +111,24 @@ extension ExpressDTO {
                 let dataJson: String // Decodes the nested JSON object
                 let signature: String
             }
+
+            struct CodedData: Decodable {
+                let fromCurrencyCode: String
+                let toContractAddress: String
+                let toNetwork: String
+                let paymentMethod: String
+                let countryCode: String
+                let fromAmount: String
+                let toAmount: Decimal?
+                let providerId: String
+                let toAddress: String
+                let redirectUrl: URL
+                let language: String?
+                let theme: String?
+                let requestId: String
+                let externalTxId: String
+                let widgetUrl: URL
+            }
         }
 
         // MARK: - Status
@@ -124,7 +142,7 @@ extension ExpressDTO {
                 let txId: String
                 let providerId: String // Provider's alphanumeric ID
                 let payoutAddress: String // Address to which the coins are sent
-                let status: String? // Status of the transaction (adjust this type as needed)
+                let status: OnrampTransactionStatus // Status of the transaction
                 let failReason: String? // Optional field for failure reason
                 let externalTxId: String // External transaction ID
                 let externalTxUrl: String? // Optional URL to track the external transaction
@@ -138,8 +156,8 @@ extension ExpressDTO {
                 let toContractAddress: String
                 let toNetwork: String
                 let toDecimals: Int
-                let toAmount: String
-                let toActualAmount: String
+                let toAmount: String?
+                let toActualAmount: String?
 
                 let paymentMethod: String // Payment method used
                 let countryCode: String // Country code

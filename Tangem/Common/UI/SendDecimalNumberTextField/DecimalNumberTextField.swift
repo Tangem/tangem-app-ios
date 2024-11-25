@@ -172,7 +172,7 @@ extension DecimalNumberTextField {
 
                     // But if have the value we will wait a bit
                     return Just(value)
-                        .delay(for: 1, scheduler: DispatchQueue.global())
+                        .delay(for: 0.5, scheduler: DispatchQueue.global())
                         .eraseToAnyPublisher()
                 }
                 .eraseToAnyPublisher()

@@ -40,6 +40,7 @@ extension VisaOnboardingStepsBuilder: OnboardingStepsBuilder {
         var steps = [VisaOnboardingStep]()
 
         steps.append(.welcome)
+        steps.append(.accessCode)
 
         steps.append(contentsOf: otherSteps)
 
