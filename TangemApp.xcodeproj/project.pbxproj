@@ -5985,11 +5985,6 @@
 		EFBAABAC2927CCBA0065C6D4 /* DecimalNumberTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DecimalNumberTextField.swift; sourceTree = "<group>"; };
 		EFBAABAD2927CCBA0065C6D4 /* DecimalNumberFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DecimalNumberFormatter.swift; sourceTree = "<group>"; };
 		EFBB77B12CCBE924002D4A10 /* OnrampSummaryRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampSummaryRoutable.swift; sourceTree = "<group>"; };
-		EFBB77CA2CD0FF2E002D4A10 /* OnrampPaymentMethodsRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPaymentMethodsRoutable.swift; sourceTree = "<group>"; };
-		EFBB77CB2CD0FF2E002D4A10 /* OnrampPaymentMethodsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPaymentMethodsView.swift; sourceTree = "<group>"; };
-		EFBB77CC2CD0FF2E002D4A10 /* OnrampPaymentMethodsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPaymentMethodsViewModel.swift; sourceTree = "<group>"; };
-		EFBB77D72CD0FF8C002D4A10 /* OnrampPaymentMethodRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPaymentMethodRowView.swift; sourceTree = "<group>"; };
-		EFBB77D92CD10008002D4A10 /* OnrampPaymentMethodRowViewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPaymentMethodRowViewData.swift; sourceTree = "<group>"; };
 		EFBC5C6D2C00A74100B662E0 /* YieldInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YieldInfo.swift; sourceTree = "<group>"; };
 		EFBC5C6E2C00A74100B662E0 /* StakingWallet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StakingWallet.swift; sourceTree = "<group>"; };
 		EFBC5C702C00A74100B662E0 /* StakingAPIService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StakingAPIService.swift; sourceTree = "<group>"; };
@@ -6872,7 +6867,6 @@
 				5D3F77C324BF56D800E8695B /* Products */,
 				BBA154748909F0AB4121528D /* Pods */,
 				2E5061A84512B23CCB5F2E17 /* Frameworks */,
-				EFC98FF52CD3A3D30098B7C8 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -15504,18 +15498,6 @@
 				EFB999AD2C3D9A7200F6A987 /* Flows */,
 			);
 			path = SendStepsManager;
-			sourceTree = "<group>";
-		};
-		EFC98FF52CD3A3D30098B7C8 /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-				EFBB77D92CD10008002D4A10 /* OnrampPaymentMethodRowViewData.swift */,
-				EFBB77CC2CD0FF2E002D4A10 /* OnrampPaymentMethodsViewModel.swift */,
-				EFBB77CA2CD0FF2E002D4A10 /* OnrampPaymentMethodsRoutable.swift */,
-				EFBB77CB2CD0FF2E002D4A10 /* OnrampPaymentMethodsView.swift */,
-				EFBB77D72CD0FF8C002D4A10 /* OnrampPaymentMethodRowView.swift */,
-			);
-			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 		EFC98FF82CD3A3F80098B7C8 /* OnrampPaymentMethodRowView */ = {
