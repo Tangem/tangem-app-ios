@@ -31,6 +31,8 @@ struct SendDependenciesBuilder {
         case .pending(.unlockLocked): .unlockLocked
         case .pending(.restake): .restake
         case .pending(.claimUnstaked): .claimUnstaked
+        case .pending(.rebond): .rebond
+        case .pending(.vote): .vote
         }
     }
 

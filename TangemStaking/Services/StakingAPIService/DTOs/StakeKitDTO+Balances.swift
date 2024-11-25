@@ -24,7 +24,7 @@ extension StakeKitDTO {
                 let groupId: String
                 let type: BalanceType
                 let amount: String
-                let date: Date?
+                let date = Date()
                 let pricePerShare: String
                 let pendingActions: [PendingAction]
                 let token: Token

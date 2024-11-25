@@ -65,6 +65,8 @@ struct StakeKitMapper {
         case .unlockLocked: .unlockLocked
         case .restake: .restake
         case .claimUnstaked: .claimUnstaked
+        case .rebond: .rebond
+        case .vote: .vote
         }
     }
 
@@ -254,6 +256,7 @@ struct StakeKitMapper {
         case .unlockLocked: .unlockLocked
         case .restake: .restake
         case .claimUnstaked: .claimUnstaked
+        case .rebond: .rebond
         default: throw StakeKitMapperError.noData("PendingAction.type \(actionType) doesn't supported")
         }
     }

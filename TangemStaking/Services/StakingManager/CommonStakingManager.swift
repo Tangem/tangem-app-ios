@@ -23,7 +23,7 @@ class CommonStakingManager {
     private let _state = CurrentValueSubject<StakingManagerState, Never>(.loading)
     private var canStakeMore: Bool {
         switch wallet.item.network {
-        case .solana, .cosmos, .tron, .ethereum, .binance: true
+        case .solana, .cosmos, .tron, .ethereum, .binance, .polkadot: true
         default: false
         }
     }
@@ -275,7 +275,9 @@ private extension CommonStakingManager {
         case .claimRewards(let passthrough),
              .restakeRewards(let passthrough),
              .voteLocked(let passthrough),
+             .vote(let passthrough),
              .unlockLocked(let passthrough),
+             .rebond(let passthrough),
              .restake(let passthrough):
             let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
             let action = try await getPendingTransactionAction(request: request)
@@ -319,7 +321,9 @@ private extension CommonStakingManager {
         case .claimRewards(let passthrough),
              .restakeRewards(let passthrough),
              .voteLocked(let passthrough),
+             .vote(let passthrough),
              .unlockLocked(let passthrough),
+             .rebond(let passthrough),
              .restake(let passthrough):
             let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
             return try await execute(try await provider.estimatePendingFee(request: request))

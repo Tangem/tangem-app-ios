@@ -102,6 +102,10 @@ extension CommonUnstakingStepsManager: SendStepsManager {
             return .unlockLocked
         case .pending(.claimUnstaked):
             return .claimUnstaked
+        case .pending(.rebond):
+            return .rebond
+        case .pending(.vote):
+            return .vote
         case .stake:
             assertionFailure("Doesn't support in UnstakingFlow")
             return .unstake

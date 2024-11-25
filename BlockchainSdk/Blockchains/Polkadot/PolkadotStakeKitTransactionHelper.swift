@@ -47,9 +47,9 @@ struct PolkadotStakeKitTransactionHelper {
         guard let compiledTransactionData = stakingTransaction.unsignedData.data(using: .utf8) else {
             throw EthereumTransactionBuilderError.invalidStakingTransaction
         }
+
         let compiledTransaction = try JSONDecoder()
             .decode(CompiledTransaction.self, from: compiledTransactionData)
-
         guard let transactionVersion = UInt32(compiledTransaction.tx.transactionVersion.removeHexPrefix(), radix: 16),
               let nonce = UInt64(compiledTransaction.tx.nonce.removeHexPrefix(), radix: 16),
               let blockNumber = UInt64(compiledTransaction.tx.blockNumber.removeHexPrefix(), radix: 16),
@@ -65,7 +65,7 @@ struct PolkadotStakeKitTransactionHelper {
             nonce: nonce,
             era: .init(
                 blockNumber: blockNumber,
-                period: era
+                period: 128
             )
         )
         return SigningInput(
@@ -92,7 +92,6 @@ private extension PolkadotStakeKitTransactionHelper {
             let address: String
             let tip: String
             let metadataRpc: String
-            let assetId: Int
             let blockNumber: String
             let era: String
             let transactionVersion: String
