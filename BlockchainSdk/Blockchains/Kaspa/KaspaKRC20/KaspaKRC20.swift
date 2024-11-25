@@ -119,6 +119,5 @@ enum KaspaKRC20 {
     enum Error: Swift.Error {
         case unableToFindIncompleteTokenTransaction
         case unableToBuildRevealTransaction
-        case unableToSendRevealTransaction
     }
 }
