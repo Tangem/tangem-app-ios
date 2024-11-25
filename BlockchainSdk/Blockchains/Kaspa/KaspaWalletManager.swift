@@ -144,7 +144,6 @@ final class KaspaWalletManager: BaseManager, WalletManager {
     private func sendKaspaTokenTransaction(_ transaction: Transaction, token: Token, signer: TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError> {
         let txgroup: KaspaKRC20.TransactionGroup
         let meta: KaspaKRC20.TransactionMeta
-        var builtKaspaRevealTx: KaspaTransactionData?
 
         do {
             let result = try txBuilder.buildForSendKRC20(transaction: transaction, token: token)
@@ -171,38 +170,33 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                     signatures: revealSignatures
                 )
 
-                builtKaspaRevealTx = revealTx
-
                 return (commitTx, revealTx)
             }
             .withWeakCaptureOf(self)
-            .flatMap { (manager, txs: (tx: KaspaTransactionData, tx2: KaspaTransactionData)) -> AnyPublisher<KaspaTransactionResponse, Error> in
+            .flatMap { (manager, txs: (tx: KaspaTransactionData, tx2: KaspaTransactionData)) -> AnyPublisher<KaspaTransactionData, Error> in
                 // Send Commit
                 let encodedRawTransactionData = try? JSONEncoder().encode(txs.tx)
 
                 return manager.networkService
                     .send(transaction: KaspaTransactionRequest(transaction: txs.tx))
                     .mapSendError(tx: encodedRawTransactionData?.hexString.lowercased())
+                    .map { _ in txs.tx2 }
                     .eraseToAnyPublisher()
             }
             .withWeakCaptureOf(self)
-            .asyncMap { manager, response in
+            .asyncMap { manager, revealTx in
                 // Store Commit
                 await manager.store(incompleteTokenTransaction: meta.incompleteTransactionParams, for: token)
-                return response
+                return revealTx
             }
             .eraseToAnyPublisher()
             .delay(for: .seconds(2), scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
-            .flatMap { manager, response -> AnyPublisher<KaspaTransactionResponse, Error> in
+            .flatMap { manager, revealTx -> AnyPublisher<KaspaTransactionResponse, Error> in
                 // Send Reveal
-                guard let tx = builtKaspaRevealTx else {
-                    return .anyFail(error: WalletError.failedToBuildTx)
-                }
-
-                let encodedRawTransactionData = try? JSONEncoder().encode(tx)
+                let encodedRawTransactionData = try? JSONEncoder().encode(revealTx)
                 return manager.networkService
-                    .send(transaction: KaspaTransactionRequest(transaction: tx))
+                    .send(transaction: KaspaTransactionRequest(transaction: revealTx))
                     .mapSendError(tx: encodedRawTransactionData?.hexString.lowercased())
                     .eraseToAnyPublisher()
             }
