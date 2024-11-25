@@ -32,20 +32,17 @@ extension CommonOnrampRepository: OnrampRepository {
         preference.value.currency.map(mapToOnrampFiatCurrency)
     }
 
-    var preferenceCountryPublisher: AnyPublisher<OnrampCountry?, Never> {
+    var preferencePublisher: AnyPublisher<OnrampPreference, Never> {
         preference.map { [weak self] preference in
-            preference.country.flatMap { country in
+            let country = preference.country.flatMap { country in
                 self?.mapToOnrampCountry(country: country)
             }
-        }
-        .eraseToAnyPublisher()
-    }
 
-    var preferenceCurrencyPublisher: AnyPublisher<OnrampFiatCurrency?, Never> {
-        preference.map { [weak self] preference in
-            preference.currency.flatMap { currency in
+            let currency = preference.currency.flatMap { currency in
                 self?.mapToOnrampFiatCurrency(currency: currency)
             }
+
+            return OnrampPreference(country: country, currency: currency)
         }
         .eraseToAnyPublisher()
     }

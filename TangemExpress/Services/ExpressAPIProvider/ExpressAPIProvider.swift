@@ -27,5 +27,5 @@ public protocol ExpressAPIProvider {
     func onrampPairs(from: OnrampFiatCurrency, to: [ExpressCurrency], country: OnrampCountry) async throws -> [OnrampPair]
     func onrampQuote(item: OnrampQuotesRequestItem) async throws -> OnrampQuote
     func onrampData(item: OnrampRedirectDataRequestItem) async throws -> OnrampRedirectData
-    func onrampStatus(transactionId: String) async throws
+    func onrampStatus(transactionId: String) async throws -> OnrampTransaction
 }

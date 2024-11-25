@@ -11,8 +11,8 @@ import Combine
 import TangemExpress
 
 protocol PendingExpressTransactionsManager: AnyObject {
-    var pendingTransactions: [PendingExpressTransaction] { get }
-    var pendingTransactionsPublisher: AnyPublisher<[PendingExpressTransaction], Never> { get }
+    var pendingTransactions: [PendingTransaction] { get }
+    var pendingTransactionsPublisher: AnyPublisher<[PendingTransaction], Never> { get }
 
     func hideTransaction(with id: String)
 }
@@ -246,12 +246,14 @@ class CommonPendingExpressTransactionsManager {
 }
 
 extension CommonPendingExpressTransactionsManager: PendingExpressTransactionsManager {
-    var pendingTransactions: [PendingExpressTransaction] {
-        transactionsInProgressSubject.value
+    var pendingTransactions: [PendingTransaction] {
+        transactionsInProgressSubject.value.map(\.pendingTransaction)
     }
 
-    var pendingTransactionsPublisher: AnyPublisher<[PendingExpressTransaction], Never> {
-        transactionsInProgressSubject.eraseToAnyPublisher()
+    var pendingTransactionsPublisher: AnyPublisher<[PendingTransaction], Never> {
+        transactionsInProgressSubject
+            .map { $0.map(\.pendingTransaction) }
+            .eraseToAnyPublisher()
     }
 
     func hideTransaction(with id: String) {

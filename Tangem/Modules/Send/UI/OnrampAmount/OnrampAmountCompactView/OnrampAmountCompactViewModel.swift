@@ -23,6 +23,7 @@ class OnrampAmountCompactViewModel: ObservableObject {
 
     private let tokenItem: TokenItem
     private let prefixSuffixOptionsFactory: SendDecimalNumberTextField.PrefixSuffixOptionsFactory = .init()
+    private let formatter: SendCryptoValueFormatter
 
     private var bag: Set<AnyCancellable> = []
 
@@ -30,6 +31,11 @@ class OnrampAmountCompactViewModel: ObservableObject {
         self.tokenItem = tokenItem
 
         decimalNumberTextFieldViewModel = .init(maximumFractionDigits: 2)
+        formatter = SendCryptoValueFormatter(
+            decimals: tokenItem.decimalCount,
+            currencySymbol: tokenItem.currencySymbol,
+            trimFractions: false
+        )
 
         bind(onrampAmountInput: onrampAmountInput, onrampProvidersInput: onrampProvidersInput)
     }
@@ -49,18 +55,9 @@ private extension OnrampAmountCompactViewModel {
             }
             .store(in: &bag)
 
-        onrampAmountInput
-            .amountPublisher
-            .withWeakCaptureOf(self)
-            .receive(on: DispatchQueue.main)
-            .sink { viewModel, amount in
-                viewModel.update(amount: amount)
-            }
-            .store(in: &bag)
-
         onrampProvidersInput
             .selectedOnrampProviderPublisher
-            .compactMap { $0?.value?.provider }
+            .compactMap { $0?.value }
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, provider in
@@ -77,19 +74,12 @@ private extension OnrampAmountCompactViewModel {
         )
     }
 
-    func update(amount: SendAmount?) {
-        let amount = amount ?? SendAmount(type: .alternative(fiat: nil, crypto: 0))
+    func update(provider: OnrampProvider) {
+        providerName = provider.provider.name
+        providerIconURL = provider.provider.imageURL
 
-        decimalNumberTextFieldViewModel.update(value: amount.main)
-        alternativeAmount = amount.formatAlternative(
-            currencySymbol: tokenItem.currencySymbol,
-            trimFractions: false,
-            decimalCount: tokenItem.decimalCount
-        )
-    }
-
-    func update(provider: ExpressProvider) {
-        providerName = provider.name
-        providerIconURL = provider.imageURL
+        let amount = provider.quote?.expectedAmount
+        let formatted = amount.flatMap { formatter.string(from: $0) }
+        alternativeAmount = formatted.map { "\(AppConstants.tildeSign) \($0)" }
     }
 }

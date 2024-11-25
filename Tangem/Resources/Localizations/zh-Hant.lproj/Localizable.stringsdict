@@ -105,7 +105,7 @@
         <key>NSStringFormatValueTypeKey</key>
         <string>li</string>
         <key>one</key>
-        <string>%li word</string>
+        <string></string>
         <key>other</key>
         <string>%li words</string>
       </dict>

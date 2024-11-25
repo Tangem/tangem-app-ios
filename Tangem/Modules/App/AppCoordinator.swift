@@ -16,12 +16,18 @@ class AppCoordinator: CoordinatorObject {
     // MARK: - Dependencies
 
     let dismissAction: Action<Void> = { _ in }
-    let popToRootAction: Action<PopToRootOptions> = { _ in }
+
+    lazy var popToRootAction: Action<PopToRootOptions> = { [weak self] _ in
+        guard let self else { return }
+
+        marketsCoordinator = nil
+        mainBottomSheetUIManager.hide(shouldUpdateFooterSnapshot: false)
+        setupWelcome()
+    }
 
     // MARK: - Injected
 
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
-    @Injected(\.walletConnectSessionsStorageInitializable) private var walletConnectSessionStorageInitializer: Initializable
     @Injected(\.mainBottomSheetUIManager) private var mainBottomSheetUIManager: MainBottomSheetUIManager
     @Injected(\.appLockController) private var appLockController: AppLockController
 
@@ -43,13 +49,20 @@ class AppCoordinator: CoordinatorObject {
     private var bag: Set<AnyCancellable> = []
 
     init() {
-        // We can't move it into ServicesManager because of locked keychain during preheating
-        userWalletRepository.initialize()
-        walletConnectSessionStorageInitializer.initialize()
         bind()
     }
 
     func start(with options: AppCoordinator.Options = .default) {
+        if options == .locked {
+            setupLock()
+
+            DispatchQueue.main.async {
+                self.tryUnlockWithBiometry()
+            }
+
+            return
+        }
+
         let startupProcessor = StartupProcessor()
         let startupOption = startupProcessor.getStartupOption()
 
@@ -60,32 +73,6 @@ class AppCoordinator: CoordinatorObject {
             setupAuth(unlockOnAppear: true)
         case .uncompletedBackup:
             setupUncompletedBackup()
-        }
-    }
-
-    func sceneDidEnterBackground() {
-        appLockController.sceneDidEnterBackground()
-    }
-
-    func sceneWillEnterForeground(hideLockView: @escaping () -> Void) {
-        appLockController.sceneWillEnterForeground()
-
-        guard viewState?.shouldAddLockView ?? false else {
-            hideLockView()
-            return
-        }
-
-        if appLockController.isLocked {
-            handleLock(reason: .loggedOut) { [weak self] in
-                self?.setupLock()
-                // more time needed for ios 15 and 16 to update ui under the lock view. Keep for all ios for uniformity.
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    hideLockView()
-                }
-                self?.tryUnlockWithBiometry()
-            }
-        } else {
-            hideLockView()
         }
     }
 
@@ -173,17 +160,6 @@ class AppCoordinator: CoordinatorObject {
     }
 
     private func bind() {
-        userWalletRepository
-            .eventProvider
-            .sink { [weak self] event in
-                if case .locked(reason: .nothingToDisplay) = event {
-                    self?.handleLock(reason: .nothingToDisplay) { [weak self] in
-                        self?.setupWelcome()
-                    }
-                }
-            }
-            .store(in: &bag)
-
         mainBottomSheetUIManager
             .isShownPublisher
             .filter { $0 }
@@ -198,39 +174,6 @@ class AppCoordinator: CoordinatorObject {
             .assign(to: \.isOverlayContentContainerShown, on: self, ownership: .weak)
             .store(in: &bag)
     }
-
-    private func handleLock(reason: LockReason, completion: @escaping () -> Void) {
-        let animated = reason.shouldAnimateLogout
-
-        marketsCoordinator = nil
-        mainBottomSheetUIManager.hide(shouldUpdateFooterSnapshot: false)
-
-        closeAllSheetsIfNeeded(animated: animated) {
-            if animated {
-                completion()
-            } else {
-                UIApplication.performWithoutAnimations {
-                    completion()
-                }
-            }
-        }
-    }
-
-    private func closeAllSheetsIfNeeded(animated: Bool, completion: @escaping () -> Void = {}) {
-        guard
-            let topViewController = UIApplication.topViewController,
-            topViewController.presentingViewController != nil
-        else {
-            DispatchQueue.main.async {
-                completion()
-            }
-            return
-        }
-
-        topViewController.dismiss(animated: animated) {
-            self.closeAllSheetsIfNeeded(animated: animated, completion: completion)
-        }
-    }
 }
 
 // MARK: - Options
@@ -238,6 +181,7 @@ class AppCoordinator: CoordinatorObject {
 extension AppCoordinator {
     enum Options {
         case `default`
+        case locked
     }
 }
 
@@ -297,22 +241,6 @@ extension AppCoordinator {
         coordinator.start(with: options)
 
         viewState = .main(coordinator)
-    }
-}
-
-// LockReason
-
-private enum LockReason {
-    case nothingToDisplay
-    case loggedOut
-
-    var shouldAnimateLogout: Bool {
-        switch self {
-        case .loggedOut:
-            false
-        case .nothingToDisplay:
-            true
-        }
     }
 }
 

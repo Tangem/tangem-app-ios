@@ -71,6 +71,8 @@ struct VisaOnboardingView: View {
         switch viewModel.currentStep {
         case .welcome:
             VisaOnboardingWelcomeView(viewModel: viewModel.welcomeViewModel)
+        case .accessCode:
+            VisaOnboardingAccessCodeSetupView(viewModel: viewModel.accessCodeSetupViewModel)
         case .saveUserWallet:
             UserWalletStorageAgreementView(
                 viewModel: viewModel.userWalletStorageAgreementViewModel,
