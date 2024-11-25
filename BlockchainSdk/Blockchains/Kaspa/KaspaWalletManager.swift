@@ -305,10 +305,17 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                     .eraseToAnyPublisher()
             }
             .withWeakCaptureOf(self)
-            .asyncMap { manager, input in
+            .handleEvents(receiveOutput: { manager, response in
+                let hash = response.transactionId
+                let mapper = PendingTransactionRecordMapper()
+                let record = mapper.mapToPendingTransactionRecord(transaction: transaction, hash: hash)
+                manager.wallet.addPendingTransaction(record)
+                manager.pendingTokenTransactionHashes[token, default: []].insert(hash)
+            })
+            .asyncMap { manager, response in
                 // Delete Commit
                 await manager.removeIncompleteTokenTransaction(for: token)
-                return TransactionSendResult(hash: input.transactionId)
+                return TransactionSendResult(hash: response.transactionId)
             }
             .eraseSendError()
             .eraseToAnyPublisher()
