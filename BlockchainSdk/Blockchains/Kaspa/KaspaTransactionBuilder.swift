@@ -223,7 +223,7 @@ extension KaspaTransactionBuilder {
             )
         )
     }
-    
+
     func buildForSendKRC20(transaction: Transaction, token: Token) throws -> (KaspaKRC20.TransactionGroup, KaspaKRC20.TransactionMeta) {
         // Commit
         let resultCommit = try buildCommitTransactionKRC20(transaction: transaction, token: token)
@@ -287,7 +287,7 @@ extension KaspaTransactionBuilder {
         let dust = (Decimal(0.2) * blockchain.decimalValue).rounded()
 
         let tokenAmount = transaction.amount.value * tokenDecimalValue
-        
+
         // The envelope will be used to create the RedeemScript and saved for use when building the Reveal transaction
         let envelope = KaspaKRC20.Envelope(
             amount: tokenAmount,
@@ -308,7 +308,7 @@ extension KaspaTransactionBuilder {
         ]
 
         let sourceAddressScript = try scriptPublicKey(address: transaction.sourceAddress).hexString.lowercased()
-        
+
         // 2nd output of the Commit transction, create it if we still have funds that need to be returned to the source address.
         // Change = all available funds - (dust + estimated reveal transaction fee + estimated commit transaction fee)
         if let change = try change(amount: dust + feeEstimationRevealTransactionValue, fee: (transaction.fee.amount.value * blockchain.decimalValue).rounded(), unspentOutputs: unspentOutputs) {

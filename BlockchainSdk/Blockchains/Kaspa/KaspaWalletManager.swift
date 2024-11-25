@@ -99,7 +99,7 @@ class KaspaWalletManager: BaseManager, WalletManager {
         let txgroup: KaspaKRC20.TransactionGroup
         let meta: KaspaKRC20.TransactionMeta
         var builtKaspaRevealTx: KaspaTransactionData?
-        
+
         do {
             let result = try txBuilder.buildForSendKRC20(transaction: transaction, token: token)
             txgroup = result.0
@@ -107,7 +107,7 @@ class KaspaWalletManager: BaseManager, WalletManager {
         } catch {
             return .sendTxFail(error: error)
         }
-        
+
         return signer.sign(hashes: txgroup.hashesCommit + txgroup.hashesReveal, walletPublicKey: wallet.publicKey)
             .tryMap { [weak self] signatures in
                 guard let self = self else { throw WalletError.empty }
