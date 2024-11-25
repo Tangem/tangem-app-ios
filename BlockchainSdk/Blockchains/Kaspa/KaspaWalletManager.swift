@@ -409,6 +409,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             .asyncMap { manager, cardTokens in
                 let dataStorage = manager.dataStorage
                 let inMemoryStorage = manager.incompleteTokenTransactionsInMemoryStorage
+                let walletAddress = manager.wallet.address
 
                 let storedTransactionParams = await withTaskGroup(
                     of: (KaspaIncompleteTokenTransactionStorageID, KaspaKRC20.IncompleteTokenTransactionParams?).self,
@@ -416,7 +417,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                 ) { taskGroup in
                     for token in cardTokens {
                         taskGroup.addTask {
-                            let storageId = token.asStorageId
+                            let storageId = token.asStorageId(walletAddress: walletAddress)
                             return (storageId, await dataStorage.get(key: storageId.id))
                         }
                     }
@@ -447,18 +448,18 @@ final class KaspaWalletManager: BaseManager, WalletManager {
         case .coin, .reserve, .feeResource:
             return nil
         case .token(let token):
-            return incompleteTokenTransactionsInMemoryStorage[token.asStorageId]
+            return incompleteTokenTransactionsInMemoryStorage[token.asStorageId(walletAddress: wallet.address)]
         }
     }
 
     private func store(incompleteTokenTransaction: KaspaKRC20.IncompleteTokenTransactionParams, for token: Token) async {
-        let storageId = token.asStorageId
+        let storageId = token.asStorageId(walletAddress: wallet.address)
         incompleteTokenTransactionsInMemoryStorage.mutate { $0[storageId] = incompleteTokenTransaction }
         await dataStorage.store(key: storageId.id, value: incompleteTokenTransaction)
     }
 
     private func removeIncompleteTokenTransaction(for token: Token) async {
-        let storageId = token.asStorageId
+        let storageId = token.asStorageId(walletAddress: wallet.address)
         incompleteTokenTransactionsInMemoryStorage.mutate { $0[storageId] = nil }
         await dataStorage.store(key: storageId.id, value: nil as KaspaKRC20.IncompleteTokenTransactionParams?)
     }
@@ -600,5 +601,7 @@ extension KaspaWalletManager: AssetRequirementsManager {
 // MARK: - Convenience extensions
 
 private extension Token {
-    var asStorageId: KaspaIncompleteTokenTransactionStorageID { .init(contract: contractAddress) }
+    func asStorageId(walletAddress: String) -> KaspaIncompleteTokenTransactionStorageID {
+        return KaspaIncompleteTokenTransactionStorageID(walletAddress: walletAddress, contractAddress: contractAddress)
+    }
 }
