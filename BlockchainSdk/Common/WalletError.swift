@@ -18,7 +18,6 @@ public enum WalletError: Error, LocalizedError {
     case failedToCalculateTxSize
     case empty
     case blockchainUnavailable(underlyingError: Error)
-
     case accountNotActivated
 
     public var errorDescription: String? {

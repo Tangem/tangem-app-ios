@@ -197,7 +197,8 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             .flatMap { manager, revealTx in
                 // Send Reveal
                 let encodedRawTransactionData = try? JSONEncoder().encode(revealTx)
-                return manager.networkService
+                return manager
+                    .networkService
                     .send(transaction: KaspaTransactionRequest(transaction: revealTx))
                     .mapSendError(tx: encodedRawTransactionData?.hexString.lowercased())
                     .eraseToAnyPublisher()
