@@ -8,7 +8,6 @@
 
 import Foundation
 import BlockchainSdk
-import Firebase
 
 extension Analytics {
     struct BlockchainExceptionHandler: ExceptionHandlerOutput {
