@@ -48,7 +48,7 @@ extension WalletModel {
                     return available
                 }
 
-                // no staled balance
+                // no staked balance
                 if stakingManager.state.isSuccessfullyLoaded {
                     return available
                 }
