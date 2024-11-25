@@ -49,7 +49,7 @@ private extension OnrampProvidersViewModel {
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, provider in
-                viewModel.selectedProviderId = provider.value?.provider.id
+                viewModel.selectedProviderId = provider?.provider.id
             }
             .store(in: &bag)
 
@@ -86,8 +86,8 @@ private extension OnrampProvidersViewModel {
             OnrampProviderRowViewData(
                 name: provider.provider.name,
                 iconURL: provider.provider.imageURL,
-                formattedAmount: formattedAmount(state: provider.manager.state),
-                state: state(state: provider.manager.state),
+                formattedAmount: formattedAmount(state: provider.state),
+                state: state(state: provider.state),
                 badge: provider.isBest ? .bestRate : .none,
                 isSelected: selectedProviderId == provider.provider.id,
                 action: { [weak self] in
@@ -121,7 +121,7 @@ private extension OnrampProvidersViewModel {
         case .restriction(.tooBigAmount(let maxAmount)):
             return .availableToAmount(maxAmount: Localization.onrampMaxAmountRestriction(maxAmount))
         case .failed(let error):
-            return .unavailable(reason: error)
+            return .unavailable(reason: error.localizedDescription)
         }
     }
 }

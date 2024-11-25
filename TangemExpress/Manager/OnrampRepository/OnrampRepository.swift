@@ -11,9 +11,7 @@ import Combine
 public protocol OnrampRepository {
     var preferenceCountry: OnrampCountry? { get }
     var preferenceCurrency: OnrampFiatCurrency? { get }
-
-    var preferenceCountryPublisher: AnyPublisher<OnrampCountry?, Never> { get }
-    var preferenceCurrencyPublisher: AnyPublisher<OnrampFiatCurrency?, Never> { get }
+    var preferencePublisher: AnyPublisher<OnrampPreference, Never> { get }
 
     func updatePreference(country: OnrampCountry?, currency: OnrampFiatCurrency?)
 }

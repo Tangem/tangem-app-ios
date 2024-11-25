@@ -17,32 +17,18 @@ public protocol OnrampProviderManager {
     func makeOnrampQuotesRequestItem() throws -> OnrampQuotesRequestItem
 }
 
-public enum OnrampProviderManagerState: Hashable {
+public enum OnrampProviderManagerState {
     case idle
     case notSupported(NotSupported)
     case loading
     case restriction(Restriction)
-    case failed(error: String)
+    case failed(error: Error)
     case loaded(OnrampQuote)
 
     public var isSupported: Bool {
         switch self {
         case .idle, .loading, .failed, .loaded, .restriction: true
         case .notSupported: false
-        }
-    }
-
-    public var isReadyToBuy: Bool {
-        switch self {
-        case .loaded: true
-        case .idle, .loading, .failed, .notSupported, .restriction: false
-        }
-    }
-
-    public var canBeShow: Bool {
-        switch self {
-        case .restriction, .loaded: true
-        case .idle, .loading, .failed, .notSupported: false
         }
     }
 
