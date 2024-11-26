@@ -70,6 +70,7 @@ private extension OnrampPaymentMethodsViewModel {
                     self?.selectedPaymentMethod = method.id
                     self?.interactor.update(selectedPaymentMethod: method)
                     self?.updateView(paymentMethods: methods)
+                    self?.coordinator?.closeOnrampPaymentMethodsView()
                 }
             )
         }

@@ -66,12 +66,14 @@ struct SendDecimalNumberTextField: View {
                 HStack(alignment: .center, spacing: 0) {
                     if case .prefix(.some(let prefix), let hasSpace) = prefixSuffixOptions {
                         prefixSuffixView(prefix, hasSpaceAfterText: hasSpace)
+                            .layoutPriority(1000.0)
                     }
 
                     textField
 
                     if case .suffix(.some(let suffix), let hasSpace) = prefixSuffixOptions {
                         prefixSuffixView(suffix, hasSpaceBeforeText: hasSpace)
+                            .layoutPriority(1000.0)
                     }
                 }
                 .frame(width: width, alignment: alignment)
