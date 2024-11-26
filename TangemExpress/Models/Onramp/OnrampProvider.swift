@@ -51,8 +51,8 @@ extension OnrampProvider: OnrampProviderManager {
     /// Can be used as `_selectedProvider`
     public var isSelectable: Bool {
         switch state {
-        case .idle, .restriction, .loaded, .failed: true
-        case .loading, .notSupported: false
+        case .idle, .loading, .restriction, .loaded, .failed: true
+        case .notSupported: false
         }
     }
 

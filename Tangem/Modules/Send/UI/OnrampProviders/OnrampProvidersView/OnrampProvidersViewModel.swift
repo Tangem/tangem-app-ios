@@ -132,6 +132,8 @@ private extension OnrampProvidersViewModel {
             return .availableFromAmount(minAmount: Localization.onrampMinAmountRestriction(minAmount))
         case .restriction(.tooBigAmount(let maxAmount)):
             return .availableToAmount(maxAmount: Localization.onrampMaxAmountRestriction(maxAmount))
+        case .failed(let error as ExpressAPIError):
+            return .unavailable(reason: error.localizedMessage)
         case .failed(let error):
             return .unavailable(reason: error.localizedDescription)
         }
