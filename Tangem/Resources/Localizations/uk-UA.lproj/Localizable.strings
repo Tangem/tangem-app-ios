@@ -289,6 +289,9 @@
 "express_provider_not_available" = "Недоступно для цієї пари";
 "express_provider_permission_needed" = "Потрібен дозвіл";
 "express_provider_recommended" = "Рекомендовано";
+"express_status_bought" = "Купив %@";
+"express_status_buying" = "Купівля %@";
+"express_status_buying_active" = "Купівля %@...";
 "express_token_list_empty_search" = "Токенів не знайдено. Будь ласка, спробуйте інший запит";
 "express_transaction_id" = "ID: %@";
 "express_transaction_id_copied" = "ID транзакції скопійовано";
@@ -411,7 +414,6 @@
 "markets_token_details_fully_diluted_valuation_description" = "Загальна теоретична вартість криптовалюти, якщо всі монети, які могли б існувати, перебувають в обігу, включаючи ті, що не перебувають в обігу в даний час";
 "markets_token_details_fully_diluted_valuation_full" = "Повністю розведена капіталізація";
 "markets_token_details_genesis_date" = "Дата створення";
-"markets_token_details_genesis_date_description" = "";
 "markets_token_details_high" = "Високий";
 "markets_token_details_holders" = "Тримачі";
 "markets_token_details_holders_description" = "Зміна кількості власників токенів протягом певного періоду часу";
@@ -422,7 +424,6 @@
 "markets_token_details_liquidity_description" = "Зміна того, скільки ліквідності доступно для токена протягом зазначеного періоду часу";
 "markets_token_details_liquidity_full" = "Ліквідність";
 "markets_token_details_liquidity_index" = "Індекс ліквідності";
-"markets_token_details_liquidity_index_description" = "";
 "markets_token_details_listed_on" = "Лістинг на";
 "markets_token_details_low" = "Низький";
 "markets_token_details_market_capitalization" = "Рин. кап.";
@@ -566,8 +567,11 @@
 "qr_scanner_camera_denied_settings_button" = "Налаштування";
 "qr_scanner_camera_denied_text" = "Ви не надали доступ до своєї камери";
 "qr_scanner_camera_denied_title" = "Доступ до камери заборонено";
+"receive_bottom_sheet_no_memo_required_message" = "No memo required";
 "receive_bottom_sheet_warning_message" = "%1$@ (%2$@) у мережі %3$@";
+"receive_bottom_sheet_warning_message_description" = "Sending any other currency will result in its irreversible loss.";
 "receive_bottom_sheet_warning_message_full" = "Надсилайте лише %@ на цю адресу. Надсилання будь-якої іншої валюти призведе до її незворотної втрати.";
+"receive_bottom_sheet_warning_message_title" = "Send only %@ to this address.";
 "receive_token_description" = "Переказуйте кошти з будь-якого гаманця або біржі";
 "referral_button_participate" = "Взяти участь";
 "referral_error_failed_to_load_info" = "Не вдалося завантажити інформацію по реферальній програмі. Будь ласка, спробуйте пізніше.";
@@ -860,6 +864,7 @@
 "tokens_list_unavailable_to_purchase_header" = "Недоступно для покупки";
 "tokens_list_unavailable_to_sell_header" = "Недоступно для продажу";
 "tokens_list_unavailable_to_swap_header" = "Недоступно для обміну з %@";
+"tokens_list_unavailable_to_swap_source_header" = "Unavailable for swap";
 "transaction_history_contract_address" = "контракт: %@";
 "transaction_history_empty_transactions" = "У вас ще немає транзакцій";
 "transaction_history_error_failed_to_load" = "Не вдалося завантажити історію транзакцій.\nНатисніть кнопку нижче, щоб оновити інформацію";
@@ -932,9 +937,9 @@
 "wallet_marketprice_block_update_time" = "за 24 години";
 "wallet_network_group_title" = "Мережа %@";
 "wallet_notification_address_copied" = "Адреса скопійована в буфер обміну";
-"wallet_promo_banner_button_title" = "Get now with 10%% off";
-"wallet_promo_banner_description" = "Access 13,000+ cryptocurrencies. Buy, sell, swap, and stake with a single tap.\nLink up to three cards for a backup.";
-"wallet_promo_banner_title" = "Discover Tangem Wallet";
+"wallet_promo_banner_button_title" = "Отримати з 10%% знижкою";
+"wallet_promo_banner_description" = "Доступ до 13,000+ криптовалют. Купуйте, продавайте, обмінюйте та стейкайте одним дотиком.\nЗ’єднайте до трьох карток для бекапу.";
+"wallet_promo_banner_title" = "Відкрийте Tangem Wallet";
 "wallet_settings_title" = "Налаштування гаманця";
 "wallet_title" = "Tangem";
 "warning_access_denied_message" = "Використовуйте %@ або відскануйте картку/кільце, щоб розблокувати доступ до вашого гаманця";
@@ -978,6 +983,9 @@
 "warning_hedera_missing_token_association_message_brief" = "Цей токен повинен бути асоційований з вашим обліковим записом Hedera, перш ніж ви зможете його прийняти";
 "warning_hedera_missing_token_association_title" = "Асоціюйте свій токен";
 "warning_hedera_token_association_not_enough_hbar_message" = "Недостатньо %@. Поповніть ваш обліковий запис Hedera для асоціації цього токена";
+"warning_kaspa_unfinished_token_transaction_discard_message" = "Ви впевнені, що хочете скасувати цю транзакцію? Ви не зможете відправити її ще раз";
+"warning_kaspa_unfinished_token_transaction_message" = "Ваша транзакція %1$@ %2$@ не була завершена. Ви можете спробувати відправити її ще раз.";
+"warning_kaspa_unfinished_token_transaction_title" = "У вас є незавершена транзакція";
 "warning_long_transaction_message" = "iPhone 7/7+ не може підписувати транзакції в цій мережі. Щоб виконати цю операцію, скористайтеся, будь ласка, іншим телефоном";
 "warning_long_transaction_title" = "Підписання транзакції недоступне";
 "warning_low_signatures_message" = "На цій картці залишається лише %@ підписів. Ви повинні вивести всі свої кошти.";

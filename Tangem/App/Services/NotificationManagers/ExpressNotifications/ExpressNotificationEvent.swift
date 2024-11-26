@@ -210,15 +210,6 @@ extension ExpressNotificationEvent: NotificationEvent {
         }
     }
 
-    var isWithLoader: Bool {
-        switch self {
-        case .refreshRequired:
-            return true
-        default:
-            return false
-        }
-    }
-
     var removingOnFullLoadingState: Bool {
         switch self {
         case .noDestinationTokens, .refreshRequired, .verificationRequired, .cexOperationFailed, .refunded:

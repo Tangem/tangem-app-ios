@@ -9,6 +9,8 @@
 import Foundation
 import TangemFoundation
 
+public typealias ProvidersList = [ProviderItem]
+
 public class ProviderItem {
     public let paymentMethod: OnrampPaymentMethod
     public private(set) var providers: [OnrampProvider]
@@ -18,13 +20,17 @@ public class ProviderItem {
         self.providers = providers
     }
 
+    public func hasProviders() -> Bool {
+        providers.filter { $0.canBeShow }.isNotEmpty
+    }
+
     public func suggestProvider() -> OnrampProvider? {
-        providers.first(where: { $0.manager.state.canBeShow })
+        providers.first(where: { $0.canBeSelected })
     }
 
     @discardableResult
     public func sort() -> [OnrampProvider] {
-        providers.sort(by: { sort(lhs: $0.manager.state, rhs: $1.manager.state) })
+        providers.sort(by: { sort(lhs: $0, rhs: $1) })
         // Return sorted providers
         return providers
     }
@@ -32,7 +38,7 @@ public class ProviderItem {
     /// Providers has to be already sorted
     @discardableResult
     public func updateBest() -> OnrampProvider? {
-        if let best = providers.first(where: { $0.manager.state.isReadyToBuy }) {
+        if let best = providers.first(where: { $0.isReadyToBuy }) {
             best.update(isBest: true)
             return best
         }
@@ -40,8 +46,8 @@ public class ProviderItem {
         return nil
     }
 
-    private func sort(lhs: OnrampProviderManagerState, rhs: OnrampProviderManagerState) -> Bool {
-        switch (lhs, rhs) {
+    private func sort(lhs: OnrampProvider, rhs: OnrampProvider) -> Bool {
+        switch (lhs.state, rhs.state) {
         case (.loaded(let lhsQuote), .loaded(let rhsQuote)):
             return lhsQuote.expectedAmount > rhsQuote.expectedAmount
         case (.restriction, _):
@@ -61,7 +67,7 @@ extension ProviderItem: CustomDebugStringConvertible {
         TangemFoundation.objectDescription(self, userInfo: [
             "paymentMethod": paymentMethod.name,
             "providers": providers.map {
-                "providerName: \($0.provider.name), state: \($0.manager.state)"
+                "providerName: \($0.provider.name), state: \($0.state)"
             },
         ])
     }
@@ -69,7 +75,7 @@ extension ProviderItem: CustomDebugStringConvertible {
 
 // MARK: - Array<ProviderItem>
 
-public extension Array where Element == ProviderItem {
+public extension ProvidersList {
     func hasProviders() -> Bool {
         !flatMap { $0.providers }.isEmpty
     }

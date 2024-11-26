@@ -14,9 +14,6 @@ public actor CommonOnrampManager {
     private let dataRepository: OnrampDataRepository
     private let logger: Logger
 
-    private var _providers: ProvidersList = []
-    private var _selectedProvider: OnrampProvider?
-
     public init(
         apiProvider: ExpressAPIProvider,
         onrampRepository: OnrampRepository,
@@ -33,16 +30,12 @@ public actor CommonOnrampManager {
 // MARK: - OnrampManager
 
 extension CommonOnrampManager: OnrampManager {
-    public var providers: ProvidersList { _providers }
-
-    public var selectedProvider: OnrampProvider? { _selectedProvider }
-
     public func initialSetupCountry() async throws -> OnrampCountry {
         let country = try await apiProvider.onrampCountryByIP()
         return country
     }
 
-    public func setupProviders(request item: OnrampPairRequestItem) async throws {
+    public func setupProviders(request item: OnrampPairRequestItem) async throws -> ProvidersList {
         let pairs = try await apiProvider.onrampPairs(
             from: item.fiatCurrency,
             to: [item.destination.expressCurrency],
@@ -53,34 +46,39 @@ extension CommonOnrampManager: OnrampManager {
         log(message: "Load pairs with supported providers \(supportedProviders)")
         guard !supportedProviders.isEmpty else {
             // Exclude unnecessary requests
-            return
+            return []
         }
 
         // Fill the `_providers` with all possible options
-        _providers = try await prepareProviders(item: item, supportedProviders: supportedProviders)
+        let providers = try await prepareProviders(item: item, supportedProviders: supportedProviders)
+        return providers
     }
 
-    public func setupQuotes(amount: Decimal?) async throws {
+    public func setupQuotes(in providers: ProvidersList, amount: Decimal?) async throws -> OnrampProvider {
         log(message: "Start update quotes")
-        let providers = _providers.flatMap { $0.providers }
         try await updateQuotesInEachManager(providers: providers, amount: amount)
         log(message: "The quotes was updated")
 
-        proceedProviders()
+        return try proceedProviders(providers: providers)
     }
 
-    public func updatePaymentMethod(paymentMethod: OnrampPaymentMethod) {
+    public func suggestProvider(in providers: ProvidersList, paymentMethod: OnrampPaymentMethod) throws -> OnrampProvider {
         log(message: "Payment method was updated by user to: \(paymentMethod)")
 
-        let providerItem = _providers.select(for: paymentMethod)
-        let selectedProvider = providerItem?.suggestProvider() ?? providerItem?.providers.first
+        let providerItem = providers.select(for: paymentMethod)
+        let best = providerItem?.updateBest()
+        log(message: "The best provider was define to \(best as Any)")
+
+        guard let selectedProvider = providerItem?.suggestProvider() else {
+            throw OnrampManagerError.noProviderForPaymentMethod
+        }
 
         log(message: "New selected provider was updated to: \(selectedProvider as Any)")
-        _selectedProvider = selectedProvider
+        return selectedProvider
     }
 
     public func loadRedirectData(provider: OnrampProvider, redirectSettings: OnrampRedirectSettings) async throws -> OnrampRedirectData {
-        let item = try provider.manager.makeOnrampQuotesRequestItem()
+        let item = try provider.makeOnrampQuotesRequestItem()
         let requestItem = OnrampRedirectDataRequestItem(quotesItem: item, redirectSettings: redirectSettings)
         let data = try await apiProvider.onrampData(item: requestItem)
 
@@ -91,45 +89,44 @@ extension CommonOnrampManager: OnrampManager {
 // MARK: - Private
 
 private extension CommonOnrampManager {
-    func updateQuotesInEachManager(providers: [OnrampProvider], amount: Decimal?) async throws {
+    func updateQuotesInEachManager(providers: ProvidersList, amount: Decimal?) async throws {
         if providers.isEmpty {
             throw OnrampManagerError.providersIsEmpty
         }
 
         await withTaskGroup(of: Void.self) { [weak self] group in
-            providers.forEach { provider in
+            providers.flatMap { $0.providers }.forEach { provider in
                 _ = group.addTaskUnlessCancelled {
-                    await provider.manager.update(amount: amount)
+                    await provider.update(amount: amount)
                     await self?.log(message: "Quotes was loaded in: \(provider)")
                 }
             }
         }
     }
 
-    func proceedProviders() {
+    func proceedProviders(providers: ProvidersList) throws -> OnrampProvider {
         log(message: "Start to find the best provider")
 
-        for provider in _providers {
+        for provider in providers {
             let sorted = provider.sort()
             log(message: "Providers for paymentMethod: \(provider.paymentMethod.name) was sorted to order: \(sorted)")
 
             let best = provider.updateBest()
-            log(message: "The best provider was define to \(best as Any)")
+            log(message: "The best provider was defined to \(best as Any)")
 
             if let maxPriorityProvider = provider.suggestProvider() {
-                log(message: "The selected provider was updated to \(maxPriorityProvider)")
-                _selectedProvider = maxPriorityProvider
-                // Stop the cycle
-                break
+                log(message: "The selected provider is \(maxPriorityProvider)")
+                return maxPriorityProvider
             }
         }
 
-        if _selectedProvider == nil {
-            log(message: "We couldn't find any provider without error")
-            let suggestProvider = _providers.first?.suggestProvider()
-            log(message: "Then update selected provider to \(suggestProvider as Any)")
-            _selectedProvider = suggestProvider
+        log(message: "We couldn't find any provider without error")
+        guard let suggestProvider = providers.first?.providers.first else {
+            throw OnrampManagerError.suggestedProviderNotFound
         }
+
+        log(message: "Then update selected provider to \(suggestProvider as Any)")
+        return suggestProvider
     }
 
     func prepareProviders(item: OnrampPairRequestItem, supportedProviders: [OnrampPair.Provider]) async throws -> ProvidersList {
