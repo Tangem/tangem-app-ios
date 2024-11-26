@@ -40,9 +40,6 @@ class CommonSendStepsManager {
 
     private func currentStep() -> SendStep {
         let last = stack.last
-
-        assert(last != nil, "Stack is empty")
-
         return last ?? initialState.step
     }
 
@@ -78,6 +75,11 @@ class CommonSendStepsManager {
     }
 
     private func back() {
+        guard !stack.isEmpty else {
+            // Ignore double click
+            return
+        }
+
         stack.removeLast()
         let step = currentStep()
 
