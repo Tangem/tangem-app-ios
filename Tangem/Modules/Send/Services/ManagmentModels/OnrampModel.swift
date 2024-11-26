@@ -312,7 +312,7 @@ extension OnrampModel: OnrampPaymentMethodsInput {
 
     var paymentMethodsPublisher: AnyPublisher<[OnrampPaymentMethod], Never> {
         _onrampProviders.compactMap {
-            $0?.value?.filter { $0.hasProviders() }.map(\.paymentMethod)
+            $0?.value?.filter { $0.hasShowableProviders() }.map(\.paymentMethod)
         }.eraseToAnyPublisher()
     }
 }
@@ -367,7 +367,7 @@ extension OnrampModel: OnrampRedirectingOutput {
 extension OnrampModel: OnrampInput {
     var isValidToRedirectPublisher: AnyPublisher<Bool, Never> {
         _selectedOnrampProvider
-            .map { $0?.value?.isReadyToBuy ?? false }
+            .map { $0?.value?.isSuccessfullyLoaded ?? false }
             .eraseToAnyPublisher()
     }
 }

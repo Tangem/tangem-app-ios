@@ -66,7 +66,8 @@ private extension OnrampProvidersViewModel {
             }
             .store(in: &bag)
 
-        interactor.providesPublisher
+        interactor
+            .providesPublisher
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, providers in
@@ -119,12 +120,13 @@ private extension OnrampProvidersViewModel {
         case .idle, .loading:
             return nil
         case .notSupported(.currentPair):
-            // Will be update
-            return .unavailable(reason: "Unavailable for this pair")
-        case .notSupported(.paymentMethod):
-            // Will be update
-            return .unavailable(reason: "Unavailable for this payment method")
+            // It's not to be showed
+            return .unavailable(reason: Localization.expressProviderNotAvailable)
+        case .notSupported(.paymentMethod(let supported)):
+            let methods = supported.map(\.name).joined(separator: ", ")
+            return .availableForPaymentMethods(methods: methods)
         case .loaded:
+            // Will be updated
             return .available(estimatedTime: "5 min")
         case .restriction(.tooSmallAmount(let minAmount)):
             return .availableFromAmount(minAmount: Localization.onrampMinAmountRestriction(minAmount))

@@ -40,28 +40,23 @@ extension OnrampProvider: OnrampProviderManager {
         state.isSupported
     }
 
-    public var isLoading: Bool {
-        switch state {
-        case .loading: true
-        case .idle, .loaded, .failed, .notSupported, .restriction: false
-        }
-    }
-
-    public var canBeShow: Bool {
-        switch state {
-        case .restriction, .loaded, .failed: true
-        case .idle, .loading, .notSupported: false
-        }
-    }
-
-    public var canBeSelected: Bool {
+    /// Can be used for showing user
+    public var isShowable: Bool {
         switch state {
         case .idle, .restriction, .loaded: true
         case .loading, .failed, .notSupported: false
         }
     }
 
-    public var isReadyToBuy: Bool {
+    /// Can be used as `_selectedProvider`
+    public var isSelectable: Bool {
+        switch state {
+        case .idle, .restriction, .loaded, .failed: true
+        case .loading, .notSupported: false
+        }
+    }
+
+    public var isSuccessfullyLoaded: Bool {
         switch state {
         case .loaded: true
         case .idle, .loading, .failed, .notSupported, .restriction: false
