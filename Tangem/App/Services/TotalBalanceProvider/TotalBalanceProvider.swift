@@ -143,7 +143,6 @@ private extension TotalBalanceProvider {
             }
 
             if !token.isSuccessfullyLoaded {
-                print("total: \(token.tokenItem.name), \(token.state), \(token.stakingManager?.state)")
                 balance = nil
                 break
             }
