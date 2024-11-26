@@ -61,4 +61,8 @@ extension OnrampProvidersCoordinator: OnrampProvidersRoutable {
 
 // MARK: - OnrampPaymentMethodsRoutable
 
-extension OnrampProvidersCoordinator: OnrampPaymentMethodsRoutable {}
+extension OnrampProvidersCoordinator: OnrampPaymentMethodsRoutable {
+    func closeOnrampPaymentMethodsView() {
+        onrampPaymentMethodsViewModel = nil
+    }
+}
