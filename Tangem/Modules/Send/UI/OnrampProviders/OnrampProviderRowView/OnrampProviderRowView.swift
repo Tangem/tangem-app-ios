@@ -16,7 +16,7 @@ struct OnrampProviderRowView: View {
             content
         }
         .buttonStyle(.plain)
-        .disabled(!data.isTappable)
+        .allowsHitTesting(data.isTappable)
     }
 
     private var content: some View {
@@ -60,6 +60,7 @@ struct OnrampProviderRowView: View {
             // Kingfisher shows a gray background even if it has a cached image
             forceKingfisher: false
         )
+        .opacity(data.isTappable ? 1 : 0.4)
     }
 
     private var topLineView: some View {

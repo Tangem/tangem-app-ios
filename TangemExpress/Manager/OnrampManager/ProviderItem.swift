@@ -39,10 +39,10 @@ public class ProviderItem {
         return providers
     }
 
-    /// Providers has to be already sorted
+    /// Providers will be sorted
     @discardableResult
     public func updateBest() -> OnrampProvider? {
-        if let best = providers.first(where: { $0.isSuccessfullyLoaded }) {
+        if let best = sort().first(where: { $0.isSuccessfullyLoaded }) {
             best.update(isBest: true)
             return best
         }
@@ -54,10 +54,14 @@ public class ProviderItem {
         switch (lhs.state, rhs.state) {
         case (.loaded(let lhsQuote), .loaded(let rhsQuote)):
             return lhsQuote.expectedAmount > rhsQuote.expectedAmount
-        case (.restriction, _):
-            return true
-        case (_, .restriction):
+        // All cases which is not `loaded` have to be ordered after
+        case (_, .loaded):
             return false
+        // All cases which is `loaded` have to be ordered before `rhs`
+        // All cases which is `restriction` have to be ordered before `rhs`
+        // Exclude case where `rhs == .loaded`. This case processed above
+        case (.loaded, _), (.restriction, _):
+            return true
         default:
             return false
         }

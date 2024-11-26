@@ -63,7 +63,7 @@ extension CommonOnrampManager: OnrampManager {
     }
 
     public func suggestProvider(in providers: ProvidersList, paymentMethod: OnrampPaymentMethod) throws -> OnrampProvider {
-        log(message: "Payment method was updated by user to: \(paymentMethod)")
+        log(message: "Payment method was updated by user to: \(paymentMethod.name)")
 
         let providerItem = providers.select(for: paymentMethod)
         let best = providerItem?.updateBest()
@@ -108,10 +108,8 @@ private extension CommonOnrampManager {
         log(message: "Start to find the best provider")
 
         for provider in providers {
-            let sorted = provider.sort()
-            log(message: "Providers for paymentMethod: \(provider.paymentMethod.name) was sorted to order: \(sorted)")
-
             let best = provider.updateBest()
+            log(message: "Providers for paymentMethod: \(provider.paymentMethod.name) was sorted to order: \(provider.providers)")
             log(message: "The best provider was defined to \(best as Any)")
 
             if let maxPriorityProvider = provider.showableProvider() {
