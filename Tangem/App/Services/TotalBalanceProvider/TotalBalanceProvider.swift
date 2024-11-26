@@ -98,6 +98,7 @@ private extension TotalBalanceProvider {
                 // We can still have loading items
                 walletModels.allConforms { !$0.isLoading }
             }
+            .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { balanceProvider, input in
                 let (walletModels, hasEntriesWithoutDerivation) = input
