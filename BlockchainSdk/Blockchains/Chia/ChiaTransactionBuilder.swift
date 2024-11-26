@@ -87,10 +87,10 @@ final class ChiaTransactionBuilder {
     }
 
     func buildToSend(signatures: [Data]) throws -> ChiaSpendBundle {
-        let aggregatedSignature = try BLSUtils().aggregate(signatures: signatures.map { $0.hexString.addHexPrefix() })
+        let aggregatedSignature = try BLSUtils().aggregate(signatures: signatures.map { $0.hexString })
 
         return ChiaSpendBundle(
-            aggregatedSignature: aggregatedSignature,
+            aggregatedSignature: aggregatedSignature.addHexPrefix(),
             coinSpends: coinSpends
         )
     }
