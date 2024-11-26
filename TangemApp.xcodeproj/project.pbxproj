@@ -1823,6 +1823,7 @@
 		B69E78782A69795D007E358A /* CardInfoPagePreviewConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B69E78772A69795D007E358A /* CardInfoPagePreviewConfig.swift */; };
 		B69E7FC62B21C0F200B78D9A /* RateAppService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B69E7FC52B21C0F200B78D9A /* RateAppService.swift */; };
 		B69E7FC82B220C3400B78D9A /* Dictionary+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B69E7FC72B220C3300B78D9A /* Dictionary+.swift */; };
+		B69FC9092CF67D9300A5C51D /* GDPerformanceView-Swift in Frameworks */ = {isa = PBXBuildFile; productRef = B69FC9082CF67D9300A5C51D /* GDPerformanceView-Swift */; };
 		B6A1C6942C04FC85001FC7EE /* RateAppInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A1C6932C04FC85001FC7EE /* RateAppInteractionController.swift */; };
 		B6A1C6962C04FCA4001FC7EE /* RateAppNotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A1C6952C04FCA4001FC7EE /* RateAppNotificationController.swift */; };
 		B6A373082A45CF2B0076A11C /* UserTokenListUpdateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A373072A45CF2B0076A11C /* UserTokenListUpdateType.swift */; };
@@ -6122,6 +6123,7 @@
 				B6EE3B622C789C6E00B464FC /* DGCharts in Frameworks */,
 				B0B11A082C787FE70018A2A6 /* MarkdownUI in Frameworks */,
 				B6C0D3E12CBDC2E3001113ED /* TangemModules in Frameworks */,
+				B69FC9092CF67D9300A5C51D /* GDPerformanceView-Swift in Frameworks */,
 				B6C1BE6D2B6C2F4E008FE5A0 /* secp256k1 in Frameworks */,
 				B67E38C12CC71A2C00D660EB /* TangemSdk in Frameworks */,
 				B68E1F782CBC44060043E598 /* BlockchainSdk.framework in Frameworks */,
@@ -15835,7 +15837,6 @@
 				B066823E26564ADB00CB86CF /* Embed Foundation Extensions */,
 				EF9E29632B4F0BB500418559 /* Embed Frameworks */,
 				B66EB7E92B7E15F2002484BF /* Remove duplicate signatures */,
-				4FD33571C955E1EFF8E83834 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -15870,6 +15871,7 @@
 				B62C24862CF48327003377F1 /* FirebaseAnalytics */,
 				B62C24882CF48327003377F1 /* FirebaseCrashlytics */,
 				B62C248A2CF48327003377F1 /* FirebaseMessaging */,
+				B69FC9082CF67D9300A5C51D /* GDPerformanceView-Swift */,
 			);
 			productName = "Tangem Tap";
 			productReference = 5D3F77C224BF56D800E8695B /* Tangem.app */;
@@ -15906,7 +15908,6 @@
 				5D3F77DF24BF56DC00E8695B /* Sources */,
 				5D3F77E024BF56DC00E8695B /* Frameworks */,
 				5D3F77E124BF56DC00E8695B /* Resources */,
-				E551D05F64007527CC513710 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -16245,6 +16246,7 @@
 				B6DDDE7C2CF39729008DEA94 /* XCRemoteSwiftPackageReference "Amplitude-Swift" */,
 				B6DDDE7F2CF39C69008DEA94 /* XCRemoteSwiftPackageReference "analytics-connector-ios" */,
 				B62C24852CF48327003377F1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				B69FC9072CF67D9300A5C51D /* XCRemoteSwiftPackageReference "GDPerformanceView-Swift" */,
 			);
 			productRefGroup = 5D3F77C324BF56D800E8695B /* Products */;
 			projectDirPath = "";
@@ -16422,23 +16424,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		4FD33571C955E1EFF8E83834 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Tangem/Pods-Tangem-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Tangem/Pods-Tangem-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Tangem/Pods-Tangem-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		5D58055BF0B032F83A5BFAFE /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -16521,23 +16506,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"./Utilites/sort-strings.sh\"\n";
-		};
-		E551D05F64007527CC513710 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
 		};
 		E82499590BF2B4AA6C72FA3E /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -25576,6 +25544,14 @@
 				version = "0.1.2-tangem4";
 			};
 		};
+		B69FC9072CF67D9300A5C51D /* XCRemoteSwiftPackageReference "GDPerformanceView-Swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/dani-gavrilov/GDPerformanceView-Swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.1.1;
+			};
+		};
 		B6C0D3EA2CBDC3E0001113ED /* XCRemoteSwiftPackageReference "SwiftBinanceChain" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tangem/SwiftBinanceChain.git";
@@ -25888,6 +25864,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B68E1F972CBC453E0043E598 /* XCRemoteSwiftPackageReference "IcpKit" */;
 			productName = IcpKit;
+		};
+		B69FC9082CF67D9300A5C51D /* GDPerformanceView-Swift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B69FC9072CF67D9300A5C51D /* XCRemoteSwiftPackageReference "GDPerformanceView-Swift" */;
+			productName = "GDPerformanceView-Swift";
 		};
 		B6C0D3E02CBDC2E3001113ED /* TangemModules */ = {
 			isa = XCSwiftPackageProductDependency;

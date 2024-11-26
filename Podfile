@@ -24,15 +24,6 @@ use_frameworks!
 inhibit_all_warnings!
 
 target 'Tangem' do
-  # Debug and development pods
-  pod 'GDPerformanceView-Swift', '~> 2.1', :configurations => [
-    debug_configuration,
-    debug_alpha_configuration,
-    debug_beta_configuration,
-    release_alpha_configuration,
-    release_beta_configuration,
-  ]
-
   # Support chat
   #pod 'SPRMessengerClient', :git => 'https://github.com/tangem/SPRMessengerClient-binaries-ios.git', :tag => 'sprinklr-3.6.2-tangem1'
 

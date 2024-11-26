@@ -1,5 +1,5 @@
 {
-  "originHash" : "37b048d3c7b07f2f9127a72353de45915ddfcae3928cb2d579b7f7e43aeea895",
+  "originHash" : "a9f7afff7db3c1d712d75aba6939657320ad0bb55cdaeaaf5db3e9eab375a7da",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -143,6 +143,15 @@
       "state" : {
         "revision" : "936ae66adccf1c91bcaeeb9c0cddde78a13695c3",
         "version" : "1.1.1"
+      }
+    },
+    {
+      "identity" : "gdperformanceview-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/dani-gavrilov/GDPerformanceView-Swift.git",
+      "state" : {
+        "revision" : "171a656040135d667f4228c3ec82f2384770d87d",
+        "version" : "2.1.1"
       }
     },
     {
