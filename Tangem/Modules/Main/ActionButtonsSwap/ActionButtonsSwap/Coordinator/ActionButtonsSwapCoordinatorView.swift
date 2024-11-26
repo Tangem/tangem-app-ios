@@ -17,7 +17,7 @@ struct ActionButtonsSwapCoordinatorView: View {
                 if let viewModel = coordinator.actionButtonsSwapViewModel {
                     ActionButtonsSwapView(viewModel: viewModel)
                         .opacity(coordinator.expressCoordinator == nil ? 1 : 0)
-                        .animation(.easeInOut, value: coordinator.expressCoordinator == nil)
+                        .animation(.easeIn, value: coordinator.expressCoordinator == nil)
                 }
 
                 if let expressCoordinator = coordinator.expressCoordinator {

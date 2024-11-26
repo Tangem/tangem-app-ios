@@ -13,16 +13,23 @@ import TangemFoundation
 typealias ActionButtonsRoutable = ActionButtonsBuyFlowRoutable & ActionButtonsSellFlowRoutable & ActionButtonsSwapFlowRoutable
 
 final class ActionButtonsViewModel: ObservableObject {
-    @Injected(\.exchangeService) private var exchangeService: ExchangeService
-    @Injected(\.expressAvailabilityProvider) private var expressAvailabilityProvider: ExpressAvailabilityProvider
+    // MARK: Dependencies
+
+    @Injected(\.exchangeService)
+    private var exchangeService: ExchangeService
+
+    @Injected(\.expressAvailabilityProvider)
+    private var expressAvailabilityProvider: ExpressAvailabilityProvider
 
     @Published private(set) var isButtonsDisabled = false
 
-    // MARK: - Button ViewModels
+    // MARK: Button ViewModels
 
     let buyActionButtonViewModel: BuyActionButtonViewModel
     let sellActionButtonViewModel: SellActionButtonViewModel
     let swapActionButtonViewModel: SwapActionButtonViewModel
+
+    // MARK: Private properties
 
     private var bag = Set<AnyCancellable>()
     private let expressTokensListAdapter: ExpressTokensListAdapter
@@ -69,7 +76,7 @@ private extension ActionButtonsViewModel {
     func bind() {
         bindWalletModels()
         bindSwapAvailability()
-        bindBuySellAvailability()
+        bindExchangeAvailability()
     }
 
     func bindWalletModels() {
@@ -78,23 +85,15 @@ private extension ActionButtonsViewModel {
             .receive(on: DispatchQueue.main)
             .sink {
                 self.isButtonsDisabled = $0.isEmpty
-                self.updateBuyButtonState()
-                self.updateSellButtonState()
                 self.updateSwapButtonState()
             }
             .store(in: &bag)
     }
+}
 
-    func bindBuySellAvailability() {
-        exchangeService
-            .initializationPublisher
-            .sink { _ in
-                self.updateBuyButtonState()
-                self.updateSellButtonState()
-            }
-            .store(in: &bag)
-    }
+// MARK: - Swap
 
+private extension ActionButtonsViewModel {
     func bindSwapAvailability() {
         expressAvailabilityProvider
             .availabilityDidChangePublisher
@@ -104,64 +103,39 @@ private extension ActionButtonsViewModel {
             .store(in: &bag)
     }
 
-    func updateBuyButtonState() {
-        Task { @MainActor in
-            let walletModels = userWalletModel.walletModelsManager.walletModels
-
-            buyActionButtonViewModel.updateState(to: .initial)
-
-            let isBuyAvailable = walletModels.filter {
-                exchangeService.canBuy(
-                    $0.tokenItem.currencySymbol,
-                    amountType: $0.amountType,
-                    blockchain: $0.blockchainNetwork.blockchain
-                )
-            }.isNotEmpty
-
-            if isBuyAvailable {
-                buyActionButtonViewModel.updateState(to: .idle)
-            } else {
-                buyActionButtonViewModel.updateState(to: .disabled)
-            }
-        }
-    }
-
-    func updateSellButtonState() {
-        Task { @MainActor in
-            let walletModels = userWalletModel.walletModelsManager.walletModels
-
-            sellActionButtonViewModel.updateState(to: .initial)
-
-            let isSellAvailable = walletModels.filter {
-                exchangeService.canSell(
-                    $0.tokenItem.currencySymbol,
-                    amountType: $0.amountType,
-                    blockchain: $0.blockchainNetwork.blockchain
-                )
-            }.isNotEmpty
-
-            if isSellAvailable {
-                sellActionButtonViewModel.updateState(to: .idle)
-            } else {
-                sellActionButtonViewModel.updateState(to: .disabled)
-            }
-        }
-    }
-
     func updateSwapButtonState() {
         Task { @MainActor in
             let walletModels = userWalletModel.walletModelsManager.walletModels
 
             swapActionButtonViewModel.updateState(to: .initial)
 
-            let isSwapAvailable = walletModels.filter {
-                expressAvailabilityProvider.canSwap(tokenItem: $0.tokenItem)
-            }.count > 1
-
-            if isSwapAvailable {
+            if walletModels.count > 1 {
                 swapActionButtonViewModel.updateState(to: .idle)
             } else {
                 swapActionButtonViewModel.updateState(to: .disabled)
+            }
+        }
+    }
+}
+
+// MARK: - Sell
+
+private extension ActionButtonsViewModel {
+    func bindExchangeAvailability() {
+        exchangeService
+            .initializationPublisher
+            .sink {
+                self.updateSellButtonState($0)
+            }
+            .store(in: &bag)
+    }
+
+    func updateSellButtonState(_ isAvailable: Bool) {
+        Task { @MainActor in
+            if isAvailable {
+                sellActionButtonViewModel.updateState(to: .idle)
+            } else {
+                sellActionButtonViewModel.updateState(to: .disabled)
             }
         }
     }

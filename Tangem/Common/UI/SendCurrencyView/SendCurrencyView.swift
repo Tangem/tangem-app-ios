@@ -23,6 +23,7 @@ struct SendCurrencyView: View {
         ExpressCurrencyView(viewModel: viewModel.expressCurrencyViewModel) {
             SendDecimalNumberTextField(viewModel: viewModel.decimalNumberTextFieldViewModel)
                 .toolbarType(maxAmountAction.map { .maxAmount(action: $0) })
+                .appearance(.init(font: Fonts.Regular.title1))
                 .initialFocusBehavior(.immediateFocus)
                 .minTextScale(SendAmountStep.Constants.amountMinTextScale)
                 .offset(x: isShaking ? 10 : 0)

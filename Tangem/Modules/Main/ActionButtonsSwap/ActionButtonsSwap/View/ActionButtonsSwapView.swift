@@ -14,7 +14,7 @@ struct ActionButtonsSwapView: View {
 
     var body: some View {
         content
-            .animation(.easeInOut, value: viewModel.sourceToken)
+            .animation(.easeInOut(duration: 0.2), value: viewModel.sourceToken)
             .animation(.easeOut, value: viewModel.destinationToken)
             .animation(.easeInOut, value: viewModel.swapPairsListState)
             .padding(.top, 10)
@@ -37,15 +37,11 @@ struct ActionButtonsSwapView: View {
 
     private var swapPair: some View {
         VStack(spacing: 14) {
-            ActionButtonsChooseTokenView(selectedToken: $viewModel.sourceToken, field: .from)
+            ActionButtonsChooseTokenView(field: .source, selectedToken: $viewModel.sourceToken)
 
-            if viewModel.isSourceTokenSelected, viewModel.swapPairsListState == .loaded {
-                if viewModel.isNotAvailablePairs {
-                    noAvailablePairsNotification
-                        .transition(.opacity.animation(.easeInOut))
-                } else {
-                    ActionButtonsChooseTokenView(selectedToken: $viewModel.destinationToken, field: .to)
-                }
+            if viewModel.isSourceTokenSelected {
+                ActionButtonsChooseTokenView(field: .destination, selectedToken: $viewModel.destinationToken)
+                    .transition(.notificationTransition)
             }
         }
         .overlay(content: expressTransitionProgress)
@@ -100,6 +96,10 @@ private extension ActionButtonsSwapView {
             tokenSelectorStub
 
         case .loaded:
+            if viewModel.isNotAvailablePairs {
+                noAvailablePairsNotification
+                    .transition(.opacity.animation(.easeInOut))
+            }
             tokenSelector
         }
     }
@@ -118,6 +118,7 @@ private extension ActionButtonsSwapView {
                     .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
                     .multilineTextAlignment(.center)
                     .animation(.default, value: viewModel.tokenSelectorViewModel.searchText)
+                    .frame(width: 252)
             }
         )
     }
@@ -134,8 +135,9 @@ private extension ActionButtonsSwapView {
                     .padding(.vertical, 16)
             },
             header: {
-                tokenSelectorHeaderStub
-                    .padding(.init(top: 12, leading: 0, bottom: 8, trailing: 0))
+                DefaultHeaderView(Localization.exchangeTokensAvailableTokensHeader)
+                    .frame(height: 18)
+                    .padding(.init(top: 14, leading: 0, bottom: 10, trailing: 0))
             }
         )
         .settings(\.backgroundColor, Colors.Background.action)
@@ -186,19 +188,6 @@ private extension ActionButtonsSwapView {
             makeSkeleton(width: 40)
 
             makeSkeleton(width: 40)
-        }
-    }
-
-    var tokenSelectorHeaderStub: some View {
-        VStack(alignment: .leading, spacing: 26) {
-            CustomSearchBar(
-                searchText: .constant(""),
-                placeholder: Localization.commonSearch,
-                style: .focused
-            )
-            .allowsTightening(false)
-
-            DefaultHeaderView(Localization.exchangeTokensAvailableTokensHeader)
         }
     }
 

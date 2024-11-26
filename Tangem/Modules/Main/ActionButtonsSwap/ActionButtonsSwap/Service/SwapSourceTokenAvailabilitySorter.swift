@@ -14,7 +14,8 @@ struct SwapSourceTokenAvailabilitySorter: TokenAvailabilitySorter {
         walletModels.reduce(
             into: (availableModels: [WalletModel](), unavailableModels: [WalletModel]())
         ) { result, walletModel in
-            if expressAvailabilityProvider.canSwap(tokenItem: walletModel.tokenItem) {
+
+            if expressAvailabilityProvider.canSwap(tokenItem: walletModel.tokenItem), !walletModel.isCustom, !walletModel.state.isBlockchainUnreachable {
                 result.availableModels.append(walletModel)
             } else {
                 result.unavailableModels.append(walletModel)

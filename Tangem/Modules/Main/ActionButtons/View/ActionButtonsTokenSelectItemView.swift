@@ -65,7 +65,7 @@ struct ActionButtonsTokenSelectItemView: View {
             Text(model.symbol)
                 .style(
                     Fonts.Regular.caption1,
-                    color: model.isDisabled ? Colors.Text.tertiary : Colors.Text.primary1
+                    color: Colors.Text.tertiary
                 )
 
             Spacer(minLength: 4)

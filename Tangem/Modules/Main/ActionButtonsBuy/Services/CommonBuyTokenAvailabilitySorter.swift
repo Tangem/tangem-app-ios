@@ -7,17 +7,14 @@
 //
 
 struct CommonBuyTokenAvailabilitySorter: TokenAvailabilitySorter {
-    @Injected(\.exchangeService) private var exchangeService: ExchangeService
+    @Injected(\.expressAvailabilityProvider)
+    private var expressAvailabilityProvider: ExpressAvailabilityProvider
 
     func sortModels(walletModels: [WalletModel]) async -> (availableModels: [WalletModel], unavailableModels: [WalletModel]) {
         walletModels.reduce(
             into: (availableModels: [WalletModel](), unavailableModels: [WalletModel]())
         ) { result, walletModel in
-            if exchangeService.canBuy(
-                walletModel.tokenItem.currencySymbol,
-                amountType: walletModel.amountType,
-                blockchain: walletModel.blockchainNetwork.blockchain
-            ) {
+            if expressAvailabilityProvider.canOnramp(tokenItem: walletModel.tokenItem) {
                 result.availableModels.append(walletModel)
             } else {
                 result.unavailableModels.append(walletModel)

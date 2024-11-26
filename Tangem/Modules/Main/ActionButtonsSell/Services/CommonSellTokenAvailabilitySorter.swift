@@ -13,15 +13,20 @@ struct CommonSellTokenAvailabilitySorter: TokenAvailabilitySorter {
         walletModels.reduce(
             into: (availableModels: [WalletModel](), unavailableModels: [WalletModel]())
         ) { result, walletModel in
-            if exchangeService.canSell(
-                walletModel.tokenItem.currencySymbol,
-                amountType: walletModel.amountType,
-                blockchain: walletModel.blockchainNetwork.blockchain
-            ) {
-                result.availableModels.append(walletModel)
-            } else {
+
+            guard
+                exchangeService.canSell(
+                    walletModel.tokenItem.currencySymbol,
+                    amountType: walletModel.amountType,
+                    blockchain: walletModel.blockchainNetwork.blockchain
+                ),
+                !walletModel.state.isBlockchainUnreachable
+            else {
                 result.unavailableModels.append(walletModel)
+                return
             }
+
+            result.availableModels.append(walletModel)
         }
     }
 }

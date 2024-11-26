@@ -68,7 +68,6 @@ struct ExpressView: View {
                 }
                 .innerContentPadding(12)
                 .backgroundColor(Colors.Background.action)
-                .frame(height: 110)
 
                 GroupedSection(viewModel.receiveCurrencyViewModel) {
                     ReceiveCurrencyView(viewModel: $0)
@@ -77,7 +76,6 @@ struct ExpressView: View {
                 }
                 .innerContentPadding(12)
                 .backgroundColor(Colors.Background.action)
-                .frame(height: 110)
             }
 
             swappingButton

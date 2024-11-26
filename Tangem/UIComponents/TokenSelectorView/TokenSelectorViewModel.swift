@@ -99,9 +99,9 @@ private extension TokenSelectorViewModel {
             .filter { filter(searchText, item: $0.tokenItem) }
             .map { tokenSelectorItemBuilder.map(from: $0, isDisabled: false) }
 
-        let unavailableTokenItems = unavailableWalletModels.map {
-            tokenSelectorItemBuilder.map(from: $0, isDisabled: true)
-        }
+        let unavailableTokenItems = unavailableWalletModels
+            .filter { filter(searchText, item: $0.tokenItem) }
+            .map { tokenSelectorItemBuilder.map(from: $0, isDisabled: true) }
 
         viewState = .data(availableTokens: availableTokenItems, unavailableTokens: unavailableTokenItems)
     }

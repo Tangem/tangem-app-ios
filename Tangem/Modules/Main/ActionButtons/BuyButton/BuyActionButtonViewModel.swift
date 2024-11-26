@@ -9,16 +9,10 @@
 import Foundation
 
 final class BuyActionButtonViewModel: ActionButtonViewModel {
-    @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
-
     @Published
-    private(set) var presentationState: ActionButtonPresentationState = .initial
+    private(set) var presentationState: ActionButtonPresentationState = .idle
 
     let model: ActionButtonModel
-
-    private var isBuyAvailable: Bool {
-        tangemApiService.geoIpRegionCode != LanguageCode.ru
-    }
 
     private let coordinator: ActionButtonsBuyFlowRoutable
     private let userWalletModel: UserWalletModel
@@ -36,38 +30,15 @@ final class BuyActionButtonViewModel: ActionButtonViewModel {
     @MainActor
     func tap() {
         switch presentationState {
-        case .initial:
-            updateState(to: .loading)
-        case .loading, .disabled:
+        case .loading, .disabled, .initial:
             break
         case .idle:
-            didTap()
+            coordinator.openBuy(userWalletModel: userWalletModel)
         }
     }
 
     @MainActor
     func updateState(to state: ActionButtonPresentationState) {
         presentationState = state
-    }
-
-    private func didTap() {
-        if isBuyAvailable {
-            coordinator.openBuy(userWalletModel: userWalletModel)
-        } else {
-            openBanking()
-        }
-    }
-
-    private func openBanking() {
-        coordinator.openBankWarning(
-            confirmCallback: { [weak self] in
-                guard let self else { return }
-
-                coordinator.openBuy(userWalletModel: userWalletModel)
-            },
-            declineCallback: { [weak self] in
-                self?.coordinator.openP2PTutorial()
-            }
-        )
     }
 }

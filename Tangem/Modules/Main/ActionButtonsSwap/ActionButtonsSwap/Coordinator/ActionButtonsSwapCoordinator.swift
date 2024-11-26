@@ -42,6 +42,12 @@ final class ActionButtonsSwapCoordinator: CoordinatorObject {
     }
 }
 
+extension ActionButtonsSwapCoordinator {
+    enum Options {
+        case `default`
+    }
+}
+
 extension ActionButtonsSwapCoordinator: ActionButtonsSwapRoutable {
     func openExpress(
         for sourceWalletModel: WalletModel,
@@ -62,16 +68,10 @@ extension ActionButtonsSwapCoordinator: ActionButtonsSwapRoutable {
     }
 }
 
-extension ActionButtonsSwapCoordinator {
-    enum Options {
-        case `default`
-    }
-}
-
 // MARK: - Factory methods
 
-extension ActionButtonsSwapCoordinator {
-    private func makeTokenSelectorViewModel() -> TokenSelectorViewModel<
+private extension ActionButtonsSwapCoordinator {
+    func makeTokenSelectorViewModel() -> TokenSelectorViewModel<
         ActionButtonsTokenSelectorItem,
         ActionButtonsTokenSelectorItemBuilder
     > {
@@ -83,7 +83,7 @@ extension ActionButtonsSwapCoordinator {
         )
     }
 
-    private func makeExpressCoordinator(
+    func makeExpressCoordinator(
         for walletModel: WalletModel,
         and destinationWalletModel: WalletModel,
         with userWalletModel: UserWalletModel,

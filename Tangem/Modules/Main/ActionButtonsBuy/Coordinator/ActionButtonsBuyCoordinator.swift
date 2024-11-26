@@ -12,6 +12,7 @@ final class ActionButtonsBuyCoordinator: CoordinatorObject {
     @Injected(\.safariManager) private var safariManager: SafariManager
 
     @Published private(set) var actionButtonsBuyViewModel: ActionButtonsBuyViewModel?
+    @Published private(set) var sendCoordinator: SendCoordinator? = nil
 
     private var safariHandle: SafariHandle?
 
@@ -20,16 +21,19 @@ final class ActionButtonsBuyCoordinator: CoordinatorObject {
 
     private let expressTokensListAdapter: ExpressTokensListAdapter
     private let tokenSorter: TokenAvailabilitySorter
+    private let userWalletModel: UserWalletModel
 
     required init(
         expressTokensListAdapter: some ExpressTokensListAdapter,
         tokenSorter: some TokenAvailabilitySorter = CommonBuyTokenAvailabilitySorter(),
         dismissAction: @escaping Action<Void>,
+        userWalletModel: some UserWalletModel,
         popToRootAction: @escaping Action<PopToRootOptions> = { _ in }
     ) {
         self.expressTokensListAdapter = expressTokensListAdapter
         self.tokenSorter = tokenSorter
         self.dismissAction = dismissAction
+        self.userWalletModel = userWalletModel
         self.popToRootAction = popToRootAction
     }
 
@@ -54,11 +58,20 @@ final class ActionButtonsBuyCoordinator: CoordinatorObject {
 }
 
 extension ActionButtonsBuyCoordinator: ActionButtonsBuyRoutable {
-    func openBuyCrypto(at url: URL) {
-        safariHandle = safariManager.openURL(url) { [weak self] _ in
-            self?.safariHandle = nil
+    func openOnramp(walletModel: WalletModel) {
+        let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] _ in
             self?.dismiss()
+            self?.sendCoordinator = nil
         }
+
+        let coordinator = SendCoordinator(dismissAction: dismissAction)
+        let options = SendCoordinator.Options(
+            walletModel: walletModel,
+            userWalletModel: userWalletModel,
+            type: .onramp
+        )
+        coordinator.start(with: options)
+        sendCoordinator = coordinator
     }
 }
 

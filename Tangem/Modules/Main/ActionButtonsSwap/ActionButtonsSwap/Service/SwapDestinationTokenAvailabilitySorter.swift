@@ -29,7 +29,7 @@ struct SwapDestinationTokenAvailabilitySorter: TokenAvailabilitySorter {
         let result = walletModels.filter { $0 != sourceTokenWalletModel }.reduce(
             into: (availableModels: [WalletModel](), unavailableModels: [WalletModel]())
         ) { result, walletModel in
-            if availablePairs.map(\.destination).contains(walletModel.expressCurrency) {
+            if availablePairs.map(\.destination).contains(walletModel.expressCurrency), !walletModel.isCustom {
                 result.availableModels.append(walletModel)
             } else {
                 result.unavailableModels.append(walletModel)

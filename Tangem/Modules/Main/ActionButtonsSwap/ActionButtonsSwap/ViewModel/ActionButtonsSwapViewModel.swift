@@ -11,12 +11,6 @@ import TangemFoundation
 import Combine
 
 final class ActionButtonsSwapViewModel: ObservableObject {
-    @OptionalPublishedObject
-    private var destinationTokenSelectorViewModel: TokenSelectorViewModel<
-        ActionButtonsTokenSelectorItem,
-        ActionButtonsTokenSelectorItemBuilder
-    >?
-
     @Published var sourceToken: ActionButtonsTokenSelectorItem? {
         didSet {
             if sourceToken == nil {
@@ -32,19 +26,20 @@ final class ActionButtonsSwapViewModel: ObservableObject {
         ActionButtonsTokenSelectorItem,
         ActionButtonsTokenSelectorItemBuilder
     > {
-        guard let destinationTokenSelectorViewModel else {
-            return sourceSwapTokeSelectorViewModel
-        }
-
-        return destinationTokenSelectorViewModel
+        destinationTokenSelectorViewModel ?? sourceSwapTokenSelectorViewModel
     }
 
     var isNotAvailablePairs: Bool {
-        if case .data(let availableModels, _) = destinationTokenSelectorViewModel?.viewState, availableModels.isEmpty {
-            return true
+        guard
+            let destinationTokenSelectorViewModel,
+            case .data(let availableModels, _) = destinationTokenSelectorViewModel.viewState,
+            availableModels.isEmpty,
+            destinationTokenSelectorViewModel.searchText.isEmpty
+        else {
+            return false
         }
 
-        return false
+        return true
     }
 
     var isSourceTokenSelected: Bool {
@@ -52,10 +47,14 @@ final class ActionButtonsSwapViewModel: ObservableObject {
     }
 
     private weak var coordinator: ActionButtonsSwapRoutable?
+    private var destinationTokenSelectorViewModel: TokenSelectorViewModel<
+        ActionButtonsTokenSelectorItem,
+        ActionButtonsTokenSelectorItemBuilder
+    >?
 
     private let expressRepository: ExpressRepository
     private let userWalletModel: UserWalletModel
-    private let sourceSwapTokeSelectorViewModel: TokenSelectorViewModel<
+    private let sourceSwapTokenSelectorViewModel: TokenSelectorViewModel<
         ActionButtonsTokenSelectorItem,
         ActionButtonsTokenSelectorItemBuilder
     >
@@ -70,7 +69,7 @@ final class ActionButtonsSwapViewModel: ObservableObject {
     ) {
         self.coordinator = coordinator
         self.userWalletModel = userWalletModel
-        self.sourceSwapTokeSelectorViewModel = sourceSwapTokeSelectorViewModel
+        sourceSwapTokenSelectorViewModel = sourceSwapTokeSelectorViewModel
 
         let expressAPIProviderFactory = ExpressAPIProviderFactory().makeExpressAPIProvider(
             userId: userWalletModel.userWalletId.stringValue,

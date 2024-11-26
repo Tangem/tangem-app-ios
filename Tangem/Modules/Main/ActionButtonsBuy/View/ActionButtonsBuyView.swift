@@ -20,6 +20,7 @@ struct ActionButtonsBuyView: View {
                     CloseButton(dismiss: { viewModel.handleViewAction(.close) })
                 }
             }
+            .transition(.opacity.animation(.easeInOut))
     }
 
     @ViewBuilder
