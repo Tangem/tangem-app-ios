@@ -98,7 +98,7 @@ extension WalletModel {
     }
 
     var stakedRewards: Balance {
-        let rewardsToClaim = stakingManagerState.balances?.rewards().sum()
+        let rewardsToClaim = stakingManager?.balances?.rewards().sum()
         let fiatBalance: Decimal? = {
             guard let rewardsToClaim, let currencyId = tokenItem.currencyId else {
                 return nil
@@ -131,7 +131,7 @@ extension WalletModel {
     }
 
     private var stakedBalance: Balance {
-        let stakingBalance = stakingManagerState.balances?.blocked().sum()
+        let stakingBalance = stakingManager?.balances?.blocked().sum()
         let fiatBalance: Decimal? = {
             guard let stakingBalance, let currencyId = tokenItem.currencyId else {
                 return nil
@@ -144,7 +144,7 @@ extension WalletModel {
     }
 
     private var stakedWithPendingBalance: Balance {
-        let stakingBalance = stakingManagerState.balances?.stakes().sum()
+        let stakingBalance = stakingManager?.balances?.stakes().sum()
         let fiatBalance: Decimal? = {
             guard let stakingBalance, let currencyId = tokenItem.currencyId else {
                 return nil
