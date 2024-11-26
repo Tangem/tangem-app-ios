@@ -20,7 +20,7 @@ struct OnrampPaymentMethodRowView: View {
 
     private var content: some View {
         HStack(spacing: 12) {
-            iconView
+            OnrampPaymentMethodIconView(url: data.iconURL)
 
             titleView
 
@@ -46,16 +46,6 @@ struct OnrampPaymentMethodRowView: View {
             }
             .padding(2.5)
         }
-    }
-
-    private var iconView: some View {
-        IconView(
-            url: data.iconURL,
-            size: CGSize(width: 36, height: 36),
-            cornerRadius: 0,
-            // Kingfisher shows a gray background even if it has a cached image
-            forceKingfisher: false
-        )
     }
 
     private var titleView: some View {

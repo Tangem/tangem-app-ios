@@ -20,13 +20,7 @@ struct OnrampProvidersCompactProviderView: View {
 
     private var content: some View {
         HStack {
-            IconView(
-                url: data.iconURL,
-                size: CGSize(width: 36, height: 36),
-                cornerRadius: 0,
-                // Kingfisher shows a gray background even if it has a cached image
-                forceKingfisher: false
-            )
+            OnrampPaymentMethodIconView(url: data.iconURL)
 
             titleView
 

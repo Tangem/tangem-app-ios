@@ -71,8 +71,7 @@ struct TokenContextActionsBuilder {
             !walletModel.isCustom
 
         let canOnramp = userWalletModel.config.isFeatureVisible(.exchange) &&
-            expressAvailabilityProvider.canOnramp(tokenItem: walletModel.tokenItem) &&
-            !walletModel.isCustom
+            expressAvailabilityProvider.canOnramp(tokenItem: walletModel.tokenItem)
 
         let canStake = StakingFeatureProvider(config: userWalletModel.config).isAvailable(for: walletModel.tokenItem)
 
