@@ -34,8 +34,7 @@ class VisaCardScanHandler {
             completion(.success(.visa(
                 activationInput: VisaCardActivationInput(cardId: card.cardId, cardPublicKey: card.cardPublicKey),
                 tokens: nil
-            )
-            ))
+            )))
             return
         }
 

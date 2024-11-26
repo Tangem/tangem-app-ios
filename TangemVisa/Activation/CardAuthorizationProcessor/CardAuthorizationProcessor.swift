@@ -60,12 +60,12 @@ private extension CommonCardAuthorizationProcessor {
     ) async throws -> VisaAuthorizationTokens {
         guard let authorizationChallengeInput else {
             log("Failed to find saved authorization challenge input and session")
-            throw "Authorization challenge request not found"
+            throw CardAuthorizationProcessorError.authorizationChallengeNotFound
         }
 
         guard authorizationChallengeInput.cardInput == cardInput else {
             log("Card input in authorization challenge input didn't match with input provided")
-            throw "Invalid card input"
+            throw CardAuthorizationProcessorError.invalidCardInput
         }
 
         log("Attempting to load access tokens for signed challenge")
@@ -121,10 +121,4 @@ extension CommonCardAuthorizationProcessor: CardAuthorizationProcessor {
 
         return .init(authorizationTokens: accessToken, cardSession: cardSession)
     }
-}
-
-enum CardAuthorizationProcessorError: Error {
-    case authorizationChallengeNotFound
-    case invalidCardInput
-    case networkError(Error)
 }

@@ -15,13 +15,16 @@ protocol CardActivationOrderProvider {
 
 final class CommonCardActivationOrderProvider {
     private let accessTokenProvider: AuthorizationTokenHandler
+    private let customerInfoService: CustomerInfoService
     private let logger: InternalLogger
 
     init(
         accessTokenProvider: AuthorizationTokenHandler,
+        customerInfoService: CustomerInfoService,
         logger: InternalLogger
     ) {
         self.accessTokenProvider = accessTokenProvider
+        self.customerInfoService = customerInfoService
         self.logger = logger
     }
 

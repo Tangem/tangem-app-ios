@@ -566,6 +566,7 @@
 		B0A37B702C2D9A9F005397FA /* MarketsTokenDetailsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A37B6F2C2D9A9F005397FA /* MarketsTokenDetailsModel.swift */; };
 		B0A4C4A02A270F5B0060E039 /* BalanceWithButtonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A4C49F2A270F5B0060E039 /* BalanceWithButtonsView.swift */; };
 		B0A4C4A22A271CD20060E039 /* BalanceWithButtonsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A4C4A12A271CD20060E039 /* BalanceWithButtonsViewModel.swift */; };
+		B0A593532CF5D7A000C386EE /* CardAuthorizationProcessorError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A593522CF5D7A000C386EE /* CardAuthorizationProcessorError.swift */; };
 		B0A596542991FC1200C7C512 /* UtorgService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A596532991FC1200C7C512 /* UtorgService.swift */; };
 		B0A596562992A5B700C7C512 /* FixedSizeButtonWithIconInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A596552992A5B700C7C512 /* FixedSizeButtonWithIconInfo.swift */; };
 		B0A7DB4E2C58E2AC00986D95 /* MarketsQuotesUpdatesScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A7DB4D2C58E2AC00986D95 /* MarketsQuotesUpdatesScheduler.swift */; };
@@ -3734,6 +3735,7 @@
 		B0A37B6F2C2D9A9F005397FA /* MarketsTokenDetailsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenDetailsModel.swift; sourceTree = "<group>"; };
 		B0A4C49F2A270F5B0060E039 /* BalanceWithButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceWithButtonsView.swift; sourceTree = "<group>"; };
 		B0A4C4A12A271CD20060E039 /* BalanceWithButtonsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceWithButtonsViewModel.swift; sourceTree = "<group>"; };
+		B0A593522CF5D7A000C386EE /* CardAuthorizationProcessorError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardAuthorizationProcessorError.swift; sourceTree = "<group>"; };
 		B0A596532991FC1200C7C512 /* UtorgService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtorgService.swift; sourceTree = "<group>"; };
 		B0A596552992A5B700C7C512 /* FixedSizeButtonWithIconInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedSizeButtonWithIconInfo.swift; sourceTree = "<group>"; };
 		B0A7DB4D2C58E2AC00986D95 /* MarketsQuotesUpdatesScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsQuotesUpdatesScheduler.swift; sourceTree = "<group>"; };
@@ -8072,11 +8074,11 @@
 		B07D96762CD4CCD400A3BAF2 /* Activation */ = {
 			isa = PBXGroup;
 			children = (
+				B0A593512CF5D78800C386EE /* CardAuthorizationProcessor */,
 				B0EC860B2CEE2537003E5B67 /* VisaActivationError.swift */,
 				B07D96772CD4CCE700A3BAF2 /* VisaActivationManager.swift */,
 				B0EC86092CEE2524003E5B67 /* VisaActivationManagerFactory.swift */,
 				B03C19A52CF071B500CCB4F1 /* VisaCardActivationInput.swift */,
-				B0BB3A872CF472C800631829 /* CardAuthorizationProcessor.swift */,
 				B0DB542E2CF47AF90069131C /* CardActivationOrderProvider.swift */,
 			);
 			path = Activation;
@@ -8432,6 +8434,15 @@
 				B0A4C4A12A271CD20060E039 /* BalanceWithButtonsViewModel.swift */,
 			);
 			path = BalanceWithButtonsView;
+			sourceTree = "<group>";
+		};
+		B0A593512CF5D78800C386EE /* CardAuthorizationProcessor */ = {
+			isa = PBXGroup;
+			children = (
+				B0BB3A872CF472C800631829 /* CardAuthorizationProcessor.swift */,
+				B0A593522CF5D7A000C386EE /* CardAuthorizationProcessorError.swift */,
+			);
+			path = CardAuthorizationProcessor;
 			sourceTree = "<group>";
 		};
 		B0A7DB4C2C58E29A00986D95 /* Utilities */ = {
@@ -18349,6 +18360,7 @@
 				B05E36D22CDA3D2200CE44F2 /* APIService.swift in Sources */,
 				B099339D2B55196700240CDB /* VisaBridgeInteractor.swift in Sources */,
 				B0DE6EE52CDCF5A300254675 /* AuthorizationAPITarget.swift in Sources */,
+				B0A593532CF5D7A000C386EE /* CardAuthorizationProcessorError.swift in Sources */,
 				B06C6D2A2CE48A1900B30325 /* AuthorizationTokensHandler.swift in Sources */,
 				B05145062B5933E000EDAD1E /* VisaUtilities.swift in Sources */,
 				B0A359AA2CE6FCA10001499E /* VisaAccessTokenHandlerError.swift in Sources */,

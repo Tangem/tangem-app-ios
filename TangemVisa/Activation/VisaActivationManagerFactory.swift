@@ -40,6 +40,7 @@ public struct VisaActivationManagerFactory {
 
         let activationOrderProvider = CommonCardActivationOrderProvider(
             accessTokenProvider: tokenHandler,
+            customerInfoService: customerInfoService,
             logger: internalLogger
         )
 
@@ -47,7 +48,6 @@ public struct VisaActivationManagerFactory {
             cardInput: cardInput,
             authorizationService: authorizationService,
             authorizationTokenHandler: tokenHandler,
-            customerInfoService: customerInfoService,
             authorizationProcessor: authorizationProcessor,
             cardSetupHandler: cardSetupHandler,
             cardActivationOrderProvider: activationOrderProvider,

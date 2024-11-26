@@ -29,7 +29,6 @@ final class CommonVisaActivationManager {
     private let authorizationService: VisaAuthorizationService
     private let authorizationTokenHandler: AuthorizationTokenHandler
 
-    private let customerInfoService: CustomerInfoService
     private let authorizationProcessor: CardAuthorizationProcessor
     private let cardSetupHandler: CardSetupHandler
     private let cardActivationOrderProvider: CardActivationOrderProvider
@@ -43,7 +42,6 @@ final class CommonVisaActivationManager {
         cardInput: VisaCardActivationInput,
         authorizationService: VisaAuthorizationService,
         authorizationTokenHandler: AuthorizationTokenHandler,
-        customerInfoService: CustomerInfoService,
         authorizationProcessor: CardAuthorizationProcessor,
         cardSetupHandler: CardSetupHandler,
         cardActivationOrderProvider: CardActivationOrderProvider,
@@ -54,7 +52,6 @@ final class CommonVisaActivationManager {
         self.authorizationService = authorizationService
         self.authorizationTokenHandler = authorizationTokenHandler
 
-        self.customerInfoService = customerInfoService
         self.authorizationProcessor = authorizationProcessor
         self.cardSetupHandler = cardSetupHandler
         self.cardActivationOrderProvider = cardActivationOrderProvider
@@ -95,7 +92,7 @@ extension CommonVisaActivationManager: VisaActivationManager {
         }
 
         guard let selectedAccessCode else {
-            throw "Missing access code"
+            throw VisaActivationError.missingAccessCode
         }
 
         var cardSession: CardSession?
@@ -104,7 +101,7 @@ extension CommonVisaActivationManager: VisaActivationManager {
             cardSession = try await startCardSession()
             guard let cardSession else {
                 log("Failed to find active NFC session")
-                throw "Failed to find active NFC session"
+                throw VisaActivationError.missingActiveCardSession
             }
 
             log("Continuing card setup with access code")
@@ -123,6 +120,7 @@ extension CommonVisaActivationManager: VisaActivationManager {
         } catch let error as CardAuthorizationProcessorError {
             log("Card authorization processor error: \(error)")
             cardSession?.stop(error: error, completion: nil)
+            throw error
         } catch {
             log("Failed to finish activation. Reason: \(error)")
             log("Stopping NFC session")
@@ -132,7 +130,7 @@ extension CommonVisaActivationManager: VisaActivationManager {
             log("Canceling loading of card activation order")
             cardActivationOrderProvider.cancelOrderLoading()
             log("Failed to activate Visa card")
-            throw error
+            throw VisaActivationError.underlyingError(error)
         }
     }
 }
@@ -140,7 +138,8 @@ extension CommonVisaActivationManager: VisaActivationManager {
 private extension CommonVisaActivationManager {
     func startCardSession() async throws -> CardSession {
         if await authorizationTokenHandler.containsAccessToken {
-            throw "Access token exists, flow not implemented."
+            log( "Access token exists, flow not implemented")
+            throw VisaActivationError.notImplemented
         } else {
             log("Authorization tokens not found, starting authorization process")
             let cardAuthorizationResult = try await authorizationProcessor.authorizeCard(with: cardInput)
