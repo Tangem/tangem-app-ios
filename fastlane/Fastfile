@@ -7,7 +7,7 @@ PRODUCTION_SCHEME = "Tangem"
 BETA_SCHEME = "Tangem Beta"
 ALPHA_SCHEME = "Tangem Alpha"
 BSDK_EXAMPLE_SCHEME = "BlockchainSdkExample"
-WORKSPACE_NAME = "TangemApp.xcworkspace"
+PROJECT_NAME = "TangemApp.xcodeproj"
 FIREBASE_TESTERS_GROUP = "testers"
 
 before_all do |lane, options|
@@ -52,7 +52,7 @@ Options:
 """
 lane :test do
   run_tests(
-    workspace: WORKSPACE_NAME,
+    project: PROJECT_NAME,
     scheme: PRODUCTION_SCHEME,
     clean: true,
     code_coverage: true
@@ -116,7 +116,7 @@ A lane that builds a \"BlockchainSdkExample\" scheme without running or publishi
 lane :check_bsdk_example_buildable do |options|
   clear_derived_data  # Required otherwise raw xcodebuild doesn't work reliably
   xcodebuild(
-    workspace: WORKSPACE_NAME,
+    project: PROJECT_NAME,
     scheme: BSDK_EXAMPLE_SCHEME,
     xcargs: "-allowProvisioningUpdates",
     analyze: true
