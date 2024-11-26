@@ -9,12 +9,13 @@
 import Foundation
 import TangemSdk
 import BlockchainSdk
+import TangemVisa
 
 enum DefaultWalletData: Codable {
     case file(WalletData)
     case legacy(WalletData)
     case twin(WalletData, TwinData)
-    case visa(accessToken: String, refreshToken: String)
+    case visa(activationInput: VisaCardActivationInput, tokens: VisaAuthorizationTokens?)
     case none
 
     var twinData: TwinData? {

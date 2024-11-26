@@ -24,6 +24,21 @@ class VisaCardScanHandler {
 
     func handleVisaCardScan(session: CardSession, completion: @escaping CompletionResult<DefaultWalletData>) {
         log("Attempting to handle Visa card scan")
+        let mandatoryCurve = VisaUtilities().mandatoryCurve
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+
+        guard card.wallets.contains(where: { $0.curve == mandatoryCurve }) else {
+            completion(.success(.visa(
+                activationInput: VisaCardActivationInput(cardId: card.cardId, cardPublicKey: card.cardPublicKey),
+                tokens: nil
+            )
+            ))
+            return
+        }
+
         Task(priority: .userInitiated) { [weak self] in
             self?.log("Running task for Visa card scan")
             await self?.handleVisaCardScanAsync(session: session, completion: completion)
@@ -56,8 +71,8 @@ class VisaCardScanHandler {
             log("Access token response: \(accessTokenResponse)")
 
             let visaWalletData = DefaultWalletData.visa(
-                accessToken: accessTokenResponse.accessToken,
-                refreshToken: accessTokenResponse.refreshToken
+                activationInput: VisaCardActivationInput(cardId: card.cardId, cardPublicKey: card.cardPublicKey),
+                tokens: accessTokenResponse
             )
             completion(.success(visaWalletData))
         } catch let error as TangemSdkError {
