@@ -37,8 +37,7 @@ struct OnrampCountryView: View {
 
                 switch viewModel.style {
                 case .info:
-                    Text(Localization.onrampResidencyBottomsheetCountrySubtitle)
-                        .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                    EmptyView()
                 case .notSupport:
                     Text(Localization.onrampResidencyBottomsheetCountryNotSupported)
                         .style(Fonts.Regular.footnote, color: Colors.Text.warning)
