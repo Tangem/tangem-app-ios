@@ -69,7 +69,7 @@ extension CommonOnrampManager: OnrampManager {
         let best = providerItem?.updateBest()
         log(message: "The best provider was define to \(best as Any)")
 
-        guard let selectedProvider = providerItem?.suggestProvider() else {
+        guard let selectedProvider = providerItem?.providerForAutoSelect() else {
             throw OnrampManagerError.noProviderForPaymentMethod
         }
 
@@ -114,19 +114,24 @@ private extension CommonOnrampManager {
             let best = provider.updateBest()
             log(message: "The best provider was defined to \(best as Any)")
 
-            if let maxPriorityProvider = provider.suggestProvider() {
+            if let maxPriorityProvider = provider.providerForAutoSelect() {
                 log(message: "The selected provider is \(maxPriorityProvider)")
                 return maxPriorityProvider
             }
         }
 
         log(message: "We couldn't find any provider without error")
-        guard let suggestProvider = providers.first?.providers.first else {
-            throw OnrampManagerError.suggestedProviderNotFound
+        log(message: "Start the second search to find any provider to show user")
+
+        for provider in providers {
+            if let suggestProvider = provider.providerForShow() {
+                log(message: "Then update selected provider to \(suggestProvider as Any)")
+                return suggestProvider
+            }
         }
 
-        log(message: "Then update selected provider to \(suggestProvider as Any)")
-        return suggestProvider
+        log(message: "We couldn't find any provider to suggest")
+        throw OnrampManagerError.suggestedProviderNotFound
     }
 
     func prepareProviders(item: OnrampPairRequestItem, supportedProviders: [OnrampPair.Provider]) async throws -> ProvidersList {
@@ -135,6 +140,7 @@ private extension CommonOnrampManager {
 
         let supportedPaymentMethods = supportedProviders
             .flatMap { $0.paymentMethods }
+            .unique()
             .compactMap { paymentMethodId in
                 paymentMethods.first(where: { $0.id == paymentMethodId })
             }
