@@ -26,7 +26,7 @@ class SolanaWalletManager: BaseManager, WalletManager {
     override func update(completion: @escaping (Result<Void, Error>) -> Void) {
         let transactionIDs = wallet.pendingTransactions.map { $0.hash }
 
-        cancellable = networkService.getInfo(accountId: wallet.address, tokens: cardTokens, transactionIDs: transactionIDs)
+        cancellable = networkService.getInfo(accountId: wallet.address, tokens: cardTokens)
             .sink { [weak self] in
                 switch $0 {
                 case .failure(let error):
@@ -49,10 +49,6 @@ class SolanaWalletManager: BaseManager, WalletManager {
             let mintAddress = cardToken.contractAddress
             let balance = info.tokensByMint[mintAddress]?.balance ?? Decimal(0)
             wallet.add(tokenValue: balance, for: cardToken)
-        }
-
-        wallet.removePendingTransaction { hash in
-            info.confirmedTransactionIDs.contains(hash)
         }
     }
 }
@@ -216,7 +212,7 @@ private extension SolanaWalletManager {
         let tokens: [Token] = amountType.token.map { [$0] } ?? []
 
         return networkService
-            .getInfo(accountId: destination, tokens: tokens, transactionIDs: [])
+            .getInfo(accountId: destination, tokens: tokens)
             .map { info in
                 switch amountType {
                 case .coin:
