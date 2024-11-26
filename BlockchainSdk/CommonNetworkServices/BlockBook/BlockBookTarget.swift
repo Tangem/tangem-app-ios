@@ -96,7 +96,7 @@ extension BlockBookTarget {
         case txDetails(txHash: String)
         case utxo(address: String)
         case fees(_ request: NodeRequest<Int>)
-        
+
         /*
          Use any method getFees request. Used for blockchains:
             - CloreAI
