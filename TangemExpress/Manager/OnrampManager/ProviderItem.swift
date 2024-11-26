@@ -24,8 +24,14 @@ public class ProviderItem {
         providers.filter { $0.canBeShow }.isNotEmpty
     }
 
-    public func suggestProvider() -> OnrampProvider? {
+    /// First provider with `canBeSelected == true` flag
+    public func providerForAutoSelect() -> OnrampProvider? {
         providers.first(where: { $0.canBeSelected })
+    }
+
+    /// First provider with `canBeShow == true` flag
+    public func providerForShow() -> OnrampProvider? {
+        providers.first(where: { $0.canBeShow })
     }
 
     @discardableResult

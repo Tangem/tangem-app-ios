@@ -49,13 +49,16 @@ extension OnrampProvider: OnrampProviderManager {
 
     public var canBeShow: Bool {
         switch state {
-        case .restriction, .loaded: true
-        case .idle, .loading, .failed, .notSupported: false
+        case .restriction, .loaded, .failed: true
+        case .idle, .loading, .notSupported: false
         }
     }
 
     public var canBeSelected: Bool {
-        error == nil
+        switch state {
+        case .idle, .restriction, .loaded: true
+        case .loading, .failed, .notSupported: false
+        }
     }
 
     public var isReadyToBuy: Bool {

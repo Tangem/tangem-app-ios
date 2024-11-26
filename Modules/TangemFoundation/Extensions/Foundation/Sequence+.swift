@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension Sequence {
+public extension Sequence {
     /// Creates a new dictionary whose keys are defined by the given keypath and whose values
     /// are the first elements of the sequence that have these keys.
     func keyedFirst<T>(by keyPath: KeyPath<Element, T>) -> [T: Element] where T: Hashable {
@@ -55,5 +55,19 @@ extension Sequence {
             let property = element[keyPath: keyPath]
             return seen.insert(property).inserted ? property : nil
         }
+    }
+}
+
+// MARK: - Sequence + Hashable
+
+public extension Sequence where Element: Hashable {
+    /// Just a shim for `Set(_:)`.
+    func toSet() -> Set<Element> {
+        return Set(self)
+    }
+
+    /// Returns an ordered collection of unique/distinct elements.
+    func unique() -> [Element] {
+        return unique(by: \.self)
     }
 }
