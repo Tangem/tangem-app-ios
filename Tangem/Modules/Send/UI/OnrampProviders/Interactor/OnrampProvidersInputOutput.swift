@@ -8,12 +8,13 @@
 
 import Combine
 import TangemExpress
+import TangemFoundation
 
 protocol OnrampProvidersInput: AnyObject {
     var selectedOnrampProvider: OnrampProvider? { get }
-    var selectedOnrampProviderPublisher: AnyPublisher<LoadingValue<OnrampProvider>?, Never> { get }
+    var selectedOnrampProviderPublisher: AnyPublisher<LoadingResult<OnrampProvider, Never>?, Never> { get }
 
-    var onrampProvidersPublisher: AnyPublisher<LoadingValue<ProvidersList>, Never> { get }
+    var onrampProvidersPublisher: AnyPublisher<LoadingResult<ProvidersList, Error>?, Never> { get }
 }
 
 protocol OnrampProvidersOutput: AnyObject {

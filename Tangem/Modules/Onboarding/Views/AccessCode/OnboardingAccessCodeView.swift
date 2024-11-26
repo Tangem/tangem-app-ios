@@ -45,7 +45,7 @@ struct OnboardingAccessCodeView: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, 6)
         }
-        .onDisappear(perform: viewModel.onDissappearAction)
+        .onDisappear(perform: viewModel.onDisappearAction)
         .animation(.default, value: viewModel.error)
         .animation(.default, value: viewModel.state)
     }
