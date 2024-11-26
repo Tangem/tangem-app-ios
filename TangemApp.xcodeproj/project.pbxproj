@@ -5960,7 +5960,9 @@
 		EFB0194C2C417F01009EE857 /* YieldInfo+Mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "YieldInfo+Mock.swift"; sourceTree = "<group>"; };
 		EFB0194E2C4187BB009EE857 /* TokenItem+StakingTokenItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TokenItem+StakingTokenItem.swift"; sourceTree = "<group>"; };
 		EFB2162D2CF4A9FD002BED0F /* OnrampPaymentMethodIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPaymentMethodIconView.swift; sourceTree = "<group>"; };
+		EFB23F2C2CBE7F1F005A6719 /* OnrampModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampModel.swift; sourceTree = "<group>"; };
 		EFB23F302CBE7FBB005A6719 /* OnrampView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampView.swift; sourceTree = "<group>"; };
+		EFB23F352CBE84F2005A6719 /* OnrampAmountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampAmountViewModel.swift; sourceTree = "<group>"; };
 		EFB23F372CBE86A5005A6719 /* OnrampViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampViewModel.swift; sourceTree = "<group>"; };
 		EFB23F392CBE8703005A6719 /* OnrampAmountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampAmountView.swift; sourceTree = "<group>"; };
 		EFB23F3B2CBE914D005A6719 /* OnrampFlowBaseBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampFlowBaseBuilder.swift; sourceTree = "<group>"; };
