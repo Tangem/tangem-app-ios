@@ -7,22 +7,32 @@
 //
 
 import Foundation
+import TangemStaking
 
 extension TokenItemViewState {
-    init(walletModelState: WalletModel.State) {
-        switch walletModelState {
+    init(walletModel: WalletModel) {
+        if walletModel.isLoading {
+            self = .loading
+            return
+        }
+
+        if walletModel.isSuccessfullyLoaded {
+            self = .loaded
+            return
+        }
+
+        switch walletModel.state {
         case .created:
             self = .notLoaded
-        case .idle:
-            self = .loaded
-        case .loading:
-            self = .loading
         case .noAccount(let message, _):
             self = .noAccount(message: message)
         case .failed(let error):
             self = .networkError(error)
         case .noDerivation:
             self = .noDerivation
+        case .loading, .idle:
+            // impossible case
+            self = .loaded
         }
     }
 }
