@@ -47,6 +47,15 @@ public enum StakingManagerState: Hashable, CustomStringConvertible {
         }
     }
 
+    public var isLoading: Bool {
+        switch self {
+        case .loading:
+            return true
+        default:
+            return false
+        }
+    }
+
     public var isSuccessfullyLoaded: Bool {
         switch self {
         case .staked, .availableToStake:

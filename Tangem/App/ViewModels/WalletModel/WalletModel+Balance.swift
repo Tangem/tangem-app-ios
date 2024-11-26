@@ -37,6 +37,11 @@ extension WalletModel {
         return state.isSuccessfullyLoaded && isStakingSuccessfullyLoaded
     }
 
+    var isLoading: Bool {
+        let isStakingLoading = stakingManager?.state.isLoading ?? false
+        return state.isLoading || isStakingLoading
+    }
+
     var totalBalance: Balance {
         let cryptoBalance: Decimal? = {
             switch (availableBalance.crypto, stakedBalance.crypto) {
