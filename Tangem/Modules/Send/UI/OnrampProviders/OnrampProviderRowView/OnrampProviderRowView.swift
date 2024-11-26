@@ -16,6 +16,7 @@ struct OnrampProviderRowView: View {
             content
         }
         .buttonStyle(.plain)
+        .disabled(!data.isTappable)
     }
 
     private var content: some View {
@@ -105,8 +106,10 @@ struct OnrampProviderRowView: View {
             EmptyView()
         case .available(let time):
             timeView(time: time)
-        case .availableFromAmount(let amount), .availableToAmount(let amount):
-            Text(amount)
+        case .availableFromAmount(let text),
+             .availableToAmount(let text),
+             .availableForPaymentMethods(let text):
+            Text(text)
                 .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
         case .unavailable(let reason):
             Text(reason)

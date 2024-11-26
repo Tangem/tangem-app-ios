@@ -20,18 +20,16 @@ public class ProviderItem {
         self.providers = providers
     }
 
-    public func hasProviders() -> Bool {
-        providers.filter { $0.canBeShow }.isNotEmpty
+    public func hasShowableProviders() -> Bool {
+        providers.filter { $0.isShowable }.isNotEmpty
     }
 
-    /// First provider with `canBeSelected == true` flag
-    public func providerForAutoSelect() -> OnrampProvider? {
-        providers.first(where: { $0.canBeSelected })
+    public func showableProvider() -> OnrampProvider? {
+        providers.first(where: { $0.isShowable })
     }
 
-    /// First provider with `canBeShow == true` flag
-    public func providerForShow() -> OnrampProvider? {
-        providers.first(where: { $0.canBeShow })
+    public func selectableProvider() -> OnrampProvider? {
+        providers.first(where: { $0.isSelectable })
     }
 
     @discardableResult
@@ -44,7 +42,7 @@ public class ProviderItem {
     /// Providers has to be already sorted
     @discardableResult
     public func updateBest() -> OnrampProvider? {
-        if let best = providers.first(where: { $0.isReadyToBuy }) {
+        if let best = providers.first(where: { $0.isSuccessfullyLoaded }) {
             best.update(isBest: true)
             return best
         }

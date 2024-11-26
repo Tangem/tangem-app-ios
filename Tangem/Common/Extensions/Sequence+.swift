@@ -57,3 +57,15 @@ extension Sequence {
         }
     }
 }
+
+extension Sequence where Element: Hashable {
+    /// Just a shim for `Set(_:)`.
+    func toSet() -> Set<Element> {
+        return Set(self)
+    }
+
+    /// Returns an ordered collection of unique/distinct elements.
+    func unique() -> [Element] {
+        return unique(by: \.self)
+    }
+}

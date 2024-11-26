@@ -18,6 +18,15 @@ struct OnrampProviderRowViewData: Identifiable {
     let badge: Badge?
     let isSelected: Bool
 
+    var isTappable: Bool {
+        switch state {
+        case .available, .availableFromAmount, .availableToAmount:
+            return true
+        case .none, .availableForPaymentMethods, .unavailable:
+            return false
+        }
+    }
+
     let action: () -> Void
 }
 
@@ -26,6 +35,7 @@ extension OnrampProviderRowViewData {
         case available(estimatedTime: String)
         case availableFromAmount(minAmount: String)
         case availableToAmount(maxAmount: String)
+        case availableForPaymentMethods(methods: String)
         case unavailable(reason: String)
     }
 
