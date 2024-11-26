@@ -48,11 +48,6 @@ struct OnrampProvidersView: View {
 
     @ViewBuilder
     private var providersSection: some View {
-        ForEach(viewModel.providersViewData) {
-            OnrampProviderRowView(data: $0)
-
-            Separator(height: .minimal, color: Colors.Stroke.primary)
-                .padding(.leading, 62)
-        }
+        ExpressProvidersList(providersViewData: viewModel.providersViewData)
     }
 }
