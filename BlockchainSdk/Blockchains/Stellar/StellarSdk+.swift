@@ -205,11 +205,15 @@ extension HorizonRequestError {
             return message
         case .rateLimitExceeded(let message, _):
             return message
-        case .requestFailed(let message):
+        case .requestFailed(let message, _):
             return message
         case .staleHistory(let message, _):
             return message
         case .unauthorized(let message):
+            return message
+        case .duplicate(let message, _):
+            return message
+        case .timeout(let message, _):
             return message
         }
     }
