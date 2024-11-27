@@ -28,6 +28,7 @@ struct OnrampProvidersView: View {
             }
         }
         .background(Colors.Background.primary)
+        .navigationBarHidden(true)
     }
 
     private var headerView: some View {
