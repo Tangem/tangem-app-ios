@@ -89,10 +89,8 @@ public extension ExpressAPIError {
         case exchangeNotEnoughAllowanceError = 2280
         case exchangeInvalidDecimalsError = 2290
         case exchangeUnsupportedRateType = 2300
-        case exchangeProviderRespondWithInvalidFromAmount = 2320
-        case networkNotFound = 2330
-
         case exchangeRoundUpError = 2320
+        case networkNotFound = 2330
 
         case exchangeTransactionNotFoundError = 2500
 
