@@ -38,6 +38,10 @@ final class OnrampProvidersViewModel: ObservableObject {
 
         bind()
     }
+
+    func closeView() {
+        coordinator?.closeOnrampProviders()
+    }
 }
 
 // MARK: - Private
