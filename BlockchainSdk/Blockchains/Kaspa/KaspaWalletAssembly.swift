@@ -12,22 +12,33 @@ import TangemSdk
 struct KaspaWalletAssembly: WalletManagerAssembly {
     func make(with input: WalletManagerAssemblyInput) throws -> WalletManager {
         let blockchain = input.blockchain
+        let apiResolver = APIResolver(blockchain: blockchain, config: input.blockchainSdkConfig)
 
-        let providers = APIResolver(blockchain: blockchain, config: input.blockchainSdkConfig)
+        let providers: [KaspaNetworkProvider] = apiResolver
             .resolveProviders(apiInfos: input.apiInfo) { nodeInfo, _ in
-                KaspaNetworkProvider(
+                // Skip KRC20 nodes
+                if nodeInfo.host.contains(KaspaKRC20APIResolver.host) {
+                    return nil
+                }
+
+                return KaspaNetworkProvider(
                     url: nodeInfo.url,
                     networkConfiguration: input.networkConfig
                 )
             }
 
-        let providerKRC20URL = blockchain.isTestnet ? URL("https://tn10api.kasplex.org/v1")! : URL("https://api.kasplex.org/v1/")!
-        let providersKRC20 = [
-            KaspaNetworkProviderKRC20(
-                url: providerKRC20URL,
-                networkConfiguration: input.networkConfig
-            ),
-        ]
+        let providersKRC20: [KaspaNetworkProviderKRC20] = apiResolver
+            .resolveProviders(apiInfos: input.apiInfo) { nodeInfo, _ in
+                // Skip Kaspa nodes
+                if !nodeInfo.host.contains(KaspaKRC20APIResolver.host) {
+                    return nil
+                }
+
+                return KaspaNetworkProviderKRC20(
+                    url: nodeInfo.url,
+                    networkConfiguration: input.networkConfig
+                )
+            }
 
         return KaspaWalletManager(
             wallet: input.wallet,
