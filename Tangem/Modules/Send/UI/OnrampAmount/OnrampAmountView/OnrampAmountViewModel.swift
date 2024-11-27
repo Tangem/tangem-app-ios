@@ -25,7 +25,7 @@ class OnrampAmountViewModel: ObservableObject {
     private let interactor: OnrampAmountInteractor
     private weak var coordinator: OnrampAmountRoutable?
     private let prefixSuffixOptionsFactory: SendDecimalNumberTextField.PrefixSuffixOptionsFactory = .init()
-    private let formatter: SendCryptoValueFormatter
+    private let formatter: BalanceFormatter
 
     private var bag: Set<AnyCancellable> = []
 
@@ -39,11 +39,7 @@ class OnrampAmountViewModel: ObservableObject {
         self.coordinator = coordinator
 
         decimalNumberTextFieldViewModel = .init(maximumFractionDigits: 2)
-        formatter = SendCryptoValueFormatter(
-            decimals: tokenItem.decimalCount,
-            currencySymbol: tokenItem.currencySymbol,
-            trimFractions: false
-        )
+        formatter = BalanceFormatter()
 
         bind()
     }
@@ -134,9 +130,7 @@ private extension OnrampAmountViewModel {
     }
 
     func format(crypto: Decimal) -> LoadableTextView.State {
-        guard let formatted = formatter.string(from: crypto) else {
-            return .noData
-        }
+        let formatted = formatter.formatCryptoBalance(crypto, currencyCode: tokenItem.currencySymbol)
 
         if crypto > 0 {
             return .loaded(text: "\(AppConstants.tildeSign) \(formatted)")
