@@ -134,7 +134,15 @@ extension CommonExpressModulesFactory: ExpressModulesFactory {
             expressRefundedTokenHandler: expressRefundedTokenHandler
         )
 
-        return pendingExpressTransactionsManager
+        let pendingOnrampTransactionsManager = CommonPendingOnrampTransactionsManager(
+            userWalletId: userWalletModel.userWalletId.stringValue,
+            walletModel: initialWalletModel
+        )
+
+        return CompoundPendingTransactionsManager(
+            first: pendingExpressTransactionsManager,
+            second: pendingOnrampTransactionsManager
+        )
     }
 }
 

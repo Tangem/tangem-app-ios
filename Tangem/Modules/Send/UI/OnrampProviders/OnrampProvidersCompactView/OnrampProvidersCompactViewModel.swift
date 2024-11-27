@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import TangemExpress
+import TangemFoundation
 
 class OnrampProvidersCompactViewModel: ObservableObject {
     @Published private(set) var paymentState: PaymentState?
@@ -21,7 +22,7 @@ class OnrampProvidersCompactViewModel: ObservableObject {
         bind(providersInput: providersInput)
     }
 
-    func bind(providersInput: OnrampProvidersInput) {
+    private func bind(providersInput: OnrampProvidersInput) {
         providersInput
             .selectedOnrampProviderPublisher
             .receive(on: DispatchQueue.main)
@@ -31,23 +32,27 @@ class OnrampProvidersCompactViewModel: ObservableObject {
             .store(in: &bag)
     }
 
-    func updateView(provider: LoadingValue<OnrampProvider>?) {
+    private func updateView(provider: LoadingResult<OnrampProvider, Never>?) {
         switch provider {
-        case .none, .failedToLoad:
-            paymentState = .none
         case .loading:
             paymentState = .loading
-        case .loaded(let provider):
+        case .success(let provider) where provider.canBeShow:
             paymentState = .loaded(
-                data: .init(
-                    iconURL: provider.paymentMethod.image,
-                    paymentMethodName: provider.paymentMethod.name,
-                    providerName: provider.provider.name,
-                    badge: provider.isBest ? .bestRate : .none
-                ) { [weak self] in
-                    self?.router?.onrampStepRequestEditProvider()
-                }
+                data: makeOnrampProvidersCompactProviderViewData(provider: provider)
             )
+        case .none, .success:
+            paymentState = .none
+        }
+    }
+
+    private func makeOnrampProvidersCompactProviderViewData(provider: OnrampProvider) -> OnrampProvidersCompactProviderViewData {
+        OnrampProvidersCompactProviderViewData(
+            iconURL: provider.paymentMethod.image,
+            paymentMethodName: provider.paymentMethod.name,
+            providerName: provider.provider.name,
+            badge: provider.isBest ? .bestRate : .none
+        ) { [weak self] in
+            self?.router?.onrampStepRequestEditProvider()
         }
     }
 }

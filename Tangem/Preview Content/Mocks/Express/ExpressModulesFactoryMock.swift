@@ -105,10 +105,16 @@ class ExpressModulesFactoryMock: ExpressModulesFactory {
     }
 
     func makePendingExpressTransactionsManager() -> any PendingExpressTransactionsManager {
-        CommonPendingExpressTransactionsManager(
-            userWalletId: userWalletModel.userWalletId.stringValue,
-            walletModel: initialWalletModel,
-            expressRefundedTokenHandler: ExpressRefundedTokenHandlerMock()
+        CompoundPendingTransactionsManager(
+            first: CommonPendingExpressTransactionsManager(
+                userWalletId: userWalletModel.userWalletId.stringValue,
+                walletModel: initialWalletModel,
+                expressRefundedTokenHandler: ExpressRefundedTokenHandlerMock()
+            ),
+            second: CommonPendingOnrampTransactionsManager(
+                userWalletId: userWalletModel.userWalletId.stringValue,
+                walletModel: initialWalletModel
+            )
         )
     }
 }

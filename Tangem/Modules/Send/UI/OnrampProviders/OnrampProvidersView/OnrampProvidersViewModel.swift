@@ -38,6 +38,10 @@ final class OnrampProvidersViewModel: ObservableObject {
 
         bind()
     }
+
+    func closeView() {
+        coordinator?.closeOnrampProviders()
+    }
 }
 
 // MARK: - Private
@@ -49,7 +53,7 @@ private extension OnrampProvidersViewModel {
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, provider in
-                viewModel.selectedProviderId = provider.value?.provider.id
+                viewModel.selectedProviderId = provider?.provider.id
             }
             .store(in: &bag)
 
@@ -86,8 +90,8 @@ private extension OnrampProvidersViewModel {
             OnrampProviderRowViewData(
                 name: provider.provider.name,
                 iconURL: provider.provider.imageURL,
-                formattedAmount: formattedAmount(state: provider.manager.state),
-                state: state(state: provider.manager.state),
+                formattedAmount: formattedAmount(state: provider.state),
+                state: state(state: provider.state),
                 badge: provider.isBest ? .bestRate : .none,
                 isSelected: selectedProviderId == provider.provider.id,
                 action: { [weak self] in
@@ -112,8 +116,14 @@ private extension OnrampProvidersViewModel {
 
     func state(state: OnrampProviderManagerState) -> OnrampProviderRowViewData.State? {
         switch state {
-        case .idle, .loading, .notSupported:
+        case .idle, .loading:
             return nil
+        case .notSupported(.currentPair):
+            // Will be update
+            return .unavailable(reason: "Unavailable for this pair")
+        case .notSupported(.paymentMethod):
+            // Will be update
+            return .unavailable(reason: "Unavailable for this payment method")
         case .loaded:
             return .available(estimatedTime: "5 min")
         case .restriction(.tooSmallAmount(let minAmount)):
@@ -121,7 +131,7 @@ private extension OnrampProvidersViewModel {
         case .restriction(.tooBigAmount(let maxAmount)):
             return .availableToAmount(maxAmount: Localization.onrampMaxAmountRestriction(maxAmount))
         case .failed(let error):
-            return .unavailable(reason: error)
+            return .unavailable(reason: error.localizedDescription)
         }
     }
 }

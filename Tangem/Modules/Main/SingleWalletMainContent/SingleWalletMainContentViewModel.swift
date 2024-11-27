@@ -14,6 +14,7 @@ final class SingleWalletMainContentViewModel: SingleTokenBaseViewModel, Observab
     // MARK: - ViewState
 
     @Published var notificationInputs: [NotificationViewInput] = []
+    @Published var walletPromoBannerViewModel: WalletPromoBannerViewModel?
 
     private(set) lazy var bottomSheetFooterViewModel = MainBottomSheetFooterViewModel()
 
@@ -42,6 +43,13 @@ final class SingleWalletMainContentViewModel: SingleTokenBaseViewModel, Observab
         self.userWalletNotificationManager = userWalletNotificationManager
         self.rateAppController = rateAppController
         self.delegate = delegate
+
+        if WalletPromoBannerUtil().shouldShowBanner() {
+            walletPromoBannerViewModel = .init(
+                currencySymbol: walletModel.tokenItem.currencySymbol,
+                tokenRouter: tokenRouter
+            )
+        }
 
         super.init(
             userWalletModel: userWalletModel,

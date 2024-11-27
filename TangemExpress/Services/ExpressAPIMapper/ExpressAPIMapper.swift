@@ -188,9 +188,11 @@ struct ExpressAPIMapper {
     }
 
     func mapToOnrampQuote(response: ExpressDTO.Onramp.Quote.Response) throws -> OnrampQuote {
-        guard let toAmount = Decimal(string: response.toAmount) else {
+        guard var toAmount = Decimal(string: response.toAmount) else {
             throw ExpressAPIMapperError.mapToDecimalError(response.toAmount)
         }
+
+        toAmount /= pow(10, response.toDecimals)
 
         return OnrampQuote(expectedAmount: toAmount)
     }
@@ -200,16 +202,47 @@ struct ExpressAPIMapper {
         request: ExpressDTO.Onramp.Data.Request,
         response: ExpressDTO.Onramp.Data.Response
     ) throws -> OnrampRedirectData {
-        let redirectData: OnrampRedirectData = try exchangeDataDecoder.decode(
+        let codedData: ExpressDTO.Onramp.Data.CodedData = try exchangeDataDecoder.decode(
             txDetailsJson: response.dataJson,
             signature: response.signature
         )
 
-        guard request.requestId == redirectData.requestId else {
+        guard request.requestId == codedData.requestId else {
             throw ExpressAPIMapperError.requestIdNotEqual
         }
 
-        return redirectData
+        guard var fromAmount = Decimal(string: codedData.fromAmount) else {
+            throw ExpressAPIMapperError.mapToDecimalError(codedData.fromAmount)
+        }
+
+        fromAmount /= pow(10, 2)
+
+        return OnrampRedirectData(
+            txId: response.txId,
+            widgetUrl: codedData.widgetUrl,
+            fromAmount: fromAmount,
+            fromCurrencyCode: codedData.fromCurrencyCode,
+            externalTxId: codedData.externalTxId
+        )
+    }
+
+    func mapToOnrampTransaction(response: ExpressDTO.Onramp.Status.Response) throws -> OnrampTransaction {
+        guard var fromAmount = Decimal(string: response.fromAmount) else {
+            throw ExpressAPIMapperError.mapToDecimalError(response.fromAmount)
+        }
+
+        fromAmount /= pow(10, 2)
+
+        let toAmount = response.toAmount
+            .flatMap(Decimal.init)
+            .map { $0 / pow(10, response.toDecimals) }
+
+        return OnrampTransaction(
+            fromAmount: fromAmount,
+            toAmount: toAmount,
+            status: response.status,
+            externatTxURL: response.externalTxUrl
+        )
     }
 }
 
