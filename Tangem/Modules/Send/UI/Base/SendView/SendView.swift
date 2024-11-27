@@ -202,7 +202,7 @@ struct SendView: View {
 
                 MainButton(
                     title: viewModel.mainButtonType.title(action: viewModel.flowActionType),
-                    icon: viewModel.mainButtonType.icon,
+                    icon: viewModel.mainButtonType.icon(action: viewModel.flowActionType),
                     style: .primary,
                     size: .default,
                     isLoading: viewModel.mainButtonLoading,

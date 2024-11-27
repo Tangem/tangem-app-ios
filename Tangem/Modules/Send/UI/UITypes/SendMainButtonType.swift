@@ -92,12 +92,11 @@ extension SendMainButtonType {
         }
     }
 
-    var icon: MainButton.Icon? {
+    func icon(action: SendFlowActionType) -> MainButton.Icon? {
         switch self {
-        case .action:
-            .trailing(Assets.tangemIcon)
-        default:
-            nil
+        case .action where action == .onramp: nil
+        case .action: .trailing(Assets.tangemIcon)
+        default: nil
         }
     }
 }
