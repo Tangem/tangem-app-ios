@@ -94,7 +94,7 @@ struct TokenSelectorView<
 private extension TokenSelectorView {
     @ViewBuilder
     func availableSection(title: String, items: [TokenModel]) -> some View {
-        if items.isNotEmpty {
+        if viewModel.isAvailableItemsBlockVisible {
             GroupedSection(
                 items,
                 content: { item in

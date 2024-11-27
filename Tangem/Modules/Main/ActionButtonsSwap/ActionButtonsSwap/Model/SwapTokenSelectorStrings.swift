@@ -7,7 +7,7 @@
 //
 
 struct SwapTokenSelectorStrings: TokenSelectorLocalizable {
-    let availableTokensListTitle = Localization.exchangeTokensAvailableTokensHeader
+    let availableTokensListTitle = Localization.tokensListAvailableToSwapHeader
     var unavailableTokensListTitle: String {
         if let tokenName {
             Localization.tokensListUnavailableToSwapHeader(tokenName)

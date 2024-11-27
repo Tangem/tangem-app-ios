@@ -12920,7 +12920,7 @@
 		DC2891622CD47E8F00F57F59 /* ActionButtonsBuy */ = {
 			isa = PBXGroup;
 			children = (
-				DC2891892CDA508800F57F59 /* Models */,
+				DC2891892CDA508800F57F59 /* Model */,
 				DC2891822CDA33FC00F57F59 /* ViewModel */,
 				DC2891812CD92DBA00F57F59 /* View */,
 				DC2891762CD4BF8700F57F59 /* Coordinator */,
@@ -12979,12 +12979,12 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		DC2891892CDA508800F57F59 /* Models */ = {
+		DC2891892CDA508800F57F59 /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				DC28917C2CD920F900F57F59 /* BuyTokenSelectorStrings.swift */,
 			);
-			path = Models;
+			path = Model;
 			sourceTree = "<group>";
 		};
 		DC2891A52CDAE90200F57F59 /* BuyButton */ = {
@@ -13093,6 +13093,32 @@
 				DC3ED8A62C1B49F900C89C62 /* DefaultPickerRowView.swift */,
 			);
 			path = DefaultPickerRowView;
+			sourceTree = "<group>";
+		};
+		DC4328A62CF87FB1000BF72D /* View */ = {
+			isa = PBXGroup;
+			children = (
+				DCC05A5F2CD17DF6004CE6A4 /* TokenSelectorView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		DC4328A72CF87FB9000BF72D /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				DC28916A2CD4B30E00F57F59 /* TokenSelectorViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		DC4328A82CF87FBF000BF72D /* Interface */ = {
+			isa = PBXGroup;
+			children = (
+				DC2891B02CDAF4E600F57F59 /* TokenAvailabilitySorter.swift */,
+				DC28917A2CD9123900F57F59 /* TokenSelectorLocalizable.swift */,
+				DC28916C2CD4B3E800F57F59 /* TokenSelectorItemBuilder.swift */,
+			);
+			path = Interface;
 			sourceTree = "<group>";
 		};
 		DC51185D28609CA5004FB954 /* CardOperation */ = {
@@ -13403,11 +13429,9 @@
 		DCC05A5E2CD17DE6004CE6A4 /* TokenSelectorView */ = {
 			isa = PBXGroup;
 			children = (
-				DC2891B02CDAF4E600F57F59 /* TokenAvailabilitySorter.swift */,
-				DC28917A2CD9123900F57F59 /* TokenSelectorLocalizable.swift */,
-				DC28916C2CD4B3E800F57F59 /* TokenSelectorItemBuilder.swift */,
-				DC28916A2CD4B30E00F57F59 /* TokenSelectorViewModel.swift */,
-				DCC05A5F2CD17DF6004CE6A4 /* TokenSelectorView.swift */,
+				DC4328A82CF87FBF000BF72D /* Interface */,
+				DC4328A72CF87FB9000BF72D /* ViewModel */,
+				DC4328A62CF87FB1000BF72D /* View */,
 			);
 			path = TokenSelectorView;
 			sourceTree = "<group>";
@@ -13446,18 +13470,18 @@
 				DCE2F7D42CE350E000BDE145 /* View */,
 				DCE2F7D22CE350D000BDE145 /* Services */,
 				DCE2F7D12CE350C900BDE145 /* Coordinator */,
-				DCE2F7D02CE350C000BDE145 /* Models */,
+				DCE2F7D02CE350C000BDE145 /* Model */,
 			);
 			path = ActionButtonsSell;
 			sourceTree = "<group>";
 		};
-		DCE2F7D02CE350C000BDE145 /* Models */ = {
+		DCE2F7D02CE350C000BDE145 /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				DCE2F7F12CE7253300BDE145 /* ActionButtonsSendToSellModel.swift */,
 				DCE2F7D62CE350EF00BDE145 /* SellTokenSelectorStrings.swift */,
 			);
-			path = Models;
+			path = Model;
 			sourceTree = "<group>";
 		};
 		DCE2F7D12CE350C900BDE145 /* Coordinator */ = {

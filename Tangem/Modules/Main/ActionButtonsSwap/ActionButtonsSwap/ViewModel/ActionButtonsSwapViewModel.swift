@@ -11,6 +11,8 @@ import TangemFoundation
 import Combine
 
 final class ActionButtonsSwapViewModel: ObservableObject {
+    // MARK: Published property
+
     @Published var sourceToken: ActionButtonsTokenSelectorItem? {
         didSet {
             if sourceToken == nil {
@@ -21,6 +23,8 @@ final class ActionButtonsSwapViewModel: ObservableObject {
 
     @Published var destinationToken: ActionButtonsTokenSelectorItem?
     @Published private(set) var swapPairsListState: SwapPairsListState = .loaded
+
+    // MARK: Public property
 
     var tokenSelectorViewModel: TokenSelectorViewModel<
         ActionButtonsTokenSelectorItem,
@@ -45,6 +49,8 @@ final class ActionButtonsSwapViewModel: ObservableObject {
     var isSourceTokenSelected: Bool {
         sourceToken != nil
     }
+
+    // MARK: Private property
 
     private weak var coordinator: ActionButtonsSwapRoutable?
     private var destinationTokenSelectorViewModel: TokenSelectorViewModel<

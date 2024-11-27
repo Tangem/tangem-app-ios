@@ -20,7 +20,8 @@ struct CommonSellTokenAvailabilitySorter: TokenAvailabilitySorter {
                     amountType: walletModel.amountType,
                     blockchain: walletModel.blockchainNetwork.blockchain
                 ),
-                !walletModel.state.isBlockchainUnreachable
+                !walletModel.state.isBlockchainUnreachable,
+                !walletModel.isZeroAmount
             else {
                 result.unavailableModels.append(walletModel)
                 return

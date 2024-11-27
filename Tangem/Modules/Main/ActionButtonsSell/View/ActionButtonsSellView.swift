@@ -13,7 +13,7 @@ struct ActionButtonsSellView: View {
 
     var body: some View {
         content
-            .navigationTitle(Localization.commonSell)
+            .navigationTitle(Localization.actionButtonsSellNavigationBarTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {

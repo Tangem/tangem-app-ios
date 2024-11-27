@@ -20,7 +20,7 @@ class CommonCombinedExpressService {
 
     private let utorgService: UtorgService?
 
-    init(buyService: MercuryoService, utorgService: UtorgService?, sellService: ExchangeService) {
+    init(buyService: MercuryoService, utorgService: UtorgService?, sellService: MoonPayService) {
         self.buyService = buyService
         self.utorgService = utorgService
         self.sellService = sellService

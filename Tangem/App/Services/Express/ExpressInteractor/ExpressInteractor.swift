@@ -76,7 +76,19 @@ class ExpressInteractor {
         self.signer = signer
         self.logger = logger
 
-        _swappingPair = .init(SwappingPair(sender: initialWallet, destination: .loading))
+        _swappingPair = .init(
+            SwappingPair(
+                sender: initialWallet,
+                destination: { () -> LoadingValue<WalletModel> in
+                    if let destinationWallet {
+                        return .loaded(destinationWallet)
+                    }
+
+                    return .loading
+                }()
+            )
+        )
+
         initialLoading(wallet: initialWallet)
     }
 }
@@ -629,7 +641,7 @@ private extension ExpressInteractor {
 
     func initialLoading(wallet: WalletModel) {
         updateTask { interactor in
-            if let restriction = await interactor.loadDestination(wallet: wallet) {
+            if let restriction = await interactor.initialLoading(wallet: wallet) {
                 return .restriction(restriction, quote: .none)
             }
 
@@ -643,21 +655,16 @@ private extension ExpressInteractor {
         }
 
         let wallet = getSender()
-        return await loadDestination(wallet: wallet)
+        return await initialLoading(wallet: wallet)
     }
 
-    func loadDestination(wallet: WalletModel) async -> RestrictionType? {
-        _swappingPair.value.destination = .loading
-
+    func initialLoading(wallet: WalletModel) async -> RestrictionType? {
         do {
             try await expressRepository.updatePairs(for: wallet)
 
-            if let destinationWallet {
-                update(destination: destinationWallet)
-            } else {
-                let destination = try await expressDestinationService.getDestination(
-                    source: wallet, destination: destinationWallet
-                )
+            if _swappingPair.value.destination.value == nil {
+                _swappingPair.value.destination = .loading
+                let destination = try await expressDestinationService.getDestination(source: wallet)
                 update(destination: destination)
             }
 

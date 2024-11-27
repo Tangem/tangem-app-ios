@@ -25,7 +25,7 @@ struct ActionButtonsSwapCoordinatorView: View {
                         .transition(.opacity.animation(.easeInOut))
                 }
             }
-            .navigationBarTitle(Text(Localization.commonSwap), displayMode: .inline)
+            .navigationBarTitle(Text(Localization.actionButtonsSwapNavigationBarTitle), displayMode: .inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     CloseButton(dismiss: { coordinator.dismiss() })

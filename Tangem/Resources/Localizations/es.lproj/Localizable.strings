@@ -1,7 +1,10 @@
 "action_buttons_buy_empty_search_message" = "¿No encuentra el token en su billetera? Consulte los mercados para encontrarlo y añadirlo a la compra";
+"action_buttons_buy_navigation_bar_title" = "Buy crypto";
 "action_buttons_sell_empty_search_message" = "¿No encuentra el token en su billetera? Consulte los mercados para encontrarlo y añadirlo a la venta";
+"action_buttons_sell_navigation_bar_title" = "Sell crypto";
 "action_buttons_swap_choose_token" = "Elige el token";
 "action_buttons_swap_empty_search_message" = "¿No encuentras el token en tu billetera? Consulte los mercados para encontrarlo y agregarlo al intercambio";
+"action_buttons_swap_navigation_bar_title" = "Swap crypto";
 "action_buttons_swap_no_available_pair_notification_message" = "No hay tokens disponibles para intercambiar con el token seleccionado. Por favor elige otro.";
 "action_buttons_swap_no_available_pair_notification_title" = "No hay par disponible";
 "action_buttons_you_want_to_receive" = "Choose the Token you want to Receive";
@@ -117,7 +120,7 @@
 "common_fee_selector_option_market" = "Mercado";
 "common_fee_selector_option_slow" = "Lento";
 "common_fee_selector_title" = "Velocidad y tarifa";
-"common_generate_addresses" = "Obtener direcciones";
+"common_generate_addresses" = "Sincronizar direcciones";
 "common_go_to_provider" = "Ir al proveedor";
 "common_go_to_token" = "Ir al token";
 "common_hour" = "hora";
@@ -415,7 +418,6 @@
 "markets_token_details_fully_diluted_valuation_description" = "El valor teórico total de una criptomoneda si todas las monedas que podrían existir estuvieran en circulación, incluidas las que actualmente no circulan.";
 "markets_token_details_fully_diluted_valuation_full" = "Valoración totalmente diluida";
 "markets_token_details_genesis_date" = "Dato de Genesis";
-"markets_token_details_genesis_date_description" = "";
 "markets_token_details_high" = "Alto";
 "markets_token_details_holders" = "Titulares";
 "markets_token_details_holders_description" = "El cambio en el número de poseedores de tokens dentro de un período de tiempo específico";
@@ -426,7 +428,6 @@
 "markets_token_details_liquidity_description" = "El cambio en la cantidad de liquidez disponible para el token durante el período de tiempo especificado";
 "markets_token_details_liquidity_full" = "Liquidez";
 "markets_token_details_liquidity_index" = "Índice de liquidez";
-"markets_token_details_liquidity_index_description" = "";
 "markets_token_details_listed_on" = "Listado en";
 "markets_token_details_low" = "Bajo";
 "markets_token_details_market_capitalization" = "Capital. de mercado";
@@ -543,7 +544,8 @@
 "onboarding_wallet_info_title_fourth" = "Restaurar código de acceso";
 "onboarding_wallet_info_title_second" = "Tarjetas idénticas";
 "onboarding_wallet_info_title_third" = "Código de acceso";
-"onramp_choose_provider_title_hint" = "Providers facilitate transactions, ensuring smooth and efficient token exchanges";
+"onramp_avaiable_with_payment_methods" = "Available with %@";
+"onramp_choose_provider_title_hint" = "Tangem offers token buying via 3rd-party providers according to each provider's terms";
 "onramp_country_search" = "Buscar por país";
 "onramp_country_unavailable" = "Indisponible";
 "onramp_currency_other" = "Otras monedas";
@@ -553,6 +555,8 @@
 "onramp_min_amount_restriction" = "La cantidad a comprar debe ser como mínimo %@";
 "onramp_no_available_providers" = "No hay proveedores disponibles para esta moneda";
 "onramp_pay_with" = "Pagar con";
+"onramp_provider_max_amount" = "Disponible hasta %@";
+"onramp_provider_min_amount" = "Disponible desde %@";
 "onramp_redirecting_to_provider_subtitle" = "Podrá completar su transacción en el proveedor externo, %@";
 "onramp_redirecting_to_provider_title" = "Redirigiendo a %@...";
 "onramp_residency_bottomsheet_country_not_supported" = "Nuestros servicios no están disponibles en este país";
@@ -863,6 +867,9 @@
 "token_details_unable_hide_alert_message" = "El token %1$@ (%2$@) es la moneda principal en la red %3$@ y no se puede ocultar mientras tengas otros tokens de esta red en la lista";
 "token_details_unable_hide_alert_title" = "No se puede ocultar %@";
 "token_swap_promotion_button" = "Intercambie ahora";
+"tokens_list_available_to_buy_header" = "Choose token you want to buy";
+"tokens_list_available_to_sell_header" = "Choose token you want to sell";
+"tokens_list_available_to_swap_header" = "Choose token you want to swap";
 "tokens_list_hot_crypto_header" = "Crypto-monnaies populaire 🔥";
 "tokens_list_unavailable_to_purchase_header" = "No disponible para compra";
 "tokens_list_unavailable_to_sell_header" = "No disponible para vender";
@@ -982,12 +989,12 @@
 "warning_failed_to_verify_card_message" = "Esta tarjeta podría ser una muestra de producción o una falsificación";
 "warning_failed_to_verify_card_title" = "La verificación de autenticidad falló";
 "warning_hedera_missing_token_association_button_title" = "Asociar";
-"warning_hedera_missing_token_association_message" = "Este token debe estar asociado a tu cuenta de Hedera antes de que pueda recibirlo. Tarifa de asociación ~%1$@ %2$@";
+"warning_hedera_missing_token_association_message" = "Este token debe estar asociado a tu cuenta de Hedera antes de que pueda recibirlo. Tarifa de asociación ~%1$@ %2$@";
 "warning_hedera_missing_token_association_message_brief" = "Este token debe estar asociado con su cuenta de Hedera antes de poder recibirlo.";
 "warning_hedera_missing_token_association_title" = "Asocie su token";
 "warning_hedera_token_association_not_enough_hbar_message" = "No hay suficiente %@. Recargue su cuenta de Hedera para asociar este token";
 "warning_kaspa_unfinished_token_transaction_discard_message" = "¿Está seguro(a) de que desea cancelar la transacción? No podrá volver a intentar realizarla.";
-"warning_kaspa_unfinished_token_transaction_message" = "Su transacción con un importe de %1$@ %2$@ no se ha completado. Puede volver a intentarlo para completarla.";
+"warning_kaspa_unfinished_token_transaction_message" = "Su transacción con un importe de %1$@ %2$@ no se ha completado. Puede volver a intentarlo para completarla.";
 "warning_kaspa_unfinished_token_transaction_title" = "Tiene una transacción sin terminar";
 "warning_long_transaction_message" = "iPhone 7/7+ no puede firmar transacciones en esta red. Para completar esta operación, por favor use un teléfono diferente.";
 "warning_long_transaction_title" = "Firma de transacción no disponible";

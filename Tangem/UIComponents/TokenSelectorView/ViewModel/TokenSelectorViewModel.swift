@@ -18,6 +18,17 @@ final class TokenSelectorViewModel<
 
     @Published private(set) var viewState: ViewState = .empty
 
+    var isAvailableItemsBlockVisible: Bool {
+        guard
+            case .data(let availableItems, let unavailableItems) = viewState,
+            (availableItems.isEmpty && unavailableItems.isEmpty) || availableItems.isNotEmpty
+        else {
+            return false
+        }
+
+        return true
+    }
+
     let strings: TokenSelectorLocalizable
 
     private var availableWalletModels: [WalletModel] = []

@@ -245,67 +245,77 @@ extension MoonPayService: ExchangeService {
             session.dataTaskPublisher(for: URL(string: "https://api.moonpay.com/v4/ip_address?" + QueryKey.apiKey.rawValue + "=" + keys.apiKey)!),
             session.dataTaskPublisher(for: URL(string: "https://api.moonpay.com/v3/currencies?" + QueryKey.apiKey.rawValue + "=" + keys.apiKey)!)
         )
-        .sink(receiveCompletion: { _ in }) { [weak self] ipOutput, currenciesOutput in
-            guard let self = self else { return }
-            let decoder = JSONDecoder()
-            var countryCode = ""
-            var stateCode = ""
-
-            do {
-                let decodedResponse = try decoder.decode(IpCheckResponse.self, from: ipOutput.data)
-                canBuyCrypto = decodedResponse.isBuyAllowed
-                canSellCrypto = decodedResponse.isSellAllowed
-                countryCode = decodedResponse.countryCode
-                stateCode = decodedResponse.stateCode
-            } catch {
-                AppLog.shared.debug("Failed to check IP address")
-                AppLog.shared.error(error)
-            }
-
-            do {
-                var currenciesToBuy = Set<MoonpaySupportedCurrency>()
-                var currenciesToSell = Set<MoonpaySupportedCurrency>()
-                let decodedResponse = try decoder.decode([MoonpayCurrency].self, from: currenciesOutput.data)
-                decodedResponse.forEach {
-                    guard
-                        $0.type == .crypto,
-                        let isSuspended = $0.isSuspended, !isSuspended,
-                        let supportsLiveMode = $0.supportsLiveMode, supportsLiveMode,
-                        let metadata = $0.metadata
-                    else { return }
-
-                    if countryCode == "USA" {
-                        if $0.isSupportedInUS == false {
-                            return
-                        }
-
-                        if let notAllowedUSStates = $0.notAllowedUSStates, notAllowedUSStates.contains(stateCode) {
-                            return
-                        }
-                    }
-
-                    let moonpayCurrency = MoonpaySupportedCurrency(
-                        currencyCode: $0.code,
-                        networkCode: metadata.networkCode,
-                        contractAddress: metadata.contractAddress
-                    )
-
-                    currenciesToBuy.insert(moonpayCurrency)
-
-                    if $0.isSellSupported == true {
-                        currenciesToSell.insert(moonpayCurrency)
-                    }
+        .sink(
+            receiveCompletion: { result in
+                switch result {
+                case .finished: break
+                case .failure(let error):
+                    AppLog.shared.debug("Failed both requests: \(error.localizedDescription)")
+                    self.initializeState = .failed(.networkError)
                 }
-                availableToBuy = currenciesToBuy
-                availableToSell = currenciesToSell
+            },
+            receiveValue: { [weak self] ipOutput, currenciesOutput in
+                guard let self = self else { return }
+                let decoder = JSONDecoder()
+                var countryCode = ""
+                var stateCode = ""
 
-                initializeState = canSellCrypto ? .initialized : .failed(.countryNotSupported)
-            } catch {
-                AppLog.shared.debug("Failed to load currencies")
-                AppLog.shared.error(error)
-                initializeState = .failed(.networkError)
+                do {
+                    let decodedResponse = try decoder.decode(IpCheckResponse.self, from: ipOutput.data)
+                    canBuyCrypto = decodedResponse.isBuyAllowed
+                    canSellCrypto = decodedResponse.isSellAllowed
+                    countryCode = decodedResponse.countryCode
+                    stateCode = decodedResponse.stateCode
+                } catch {
+                    AppLog.shared.debug("Failed to check IP address")
+                    AppLog.shared.error(error)
+                }
+
+                do {
+                    var currenciesToBuy = Set<MoonpaySupportedCurrency>()
+                    var currenciesToSell = Set<MoonpaySupportedCurrency>()
+                    let decodedResponse = try decoder.decode([MoonpayCurrency].self, from: currenciesOutput.data)
+                    decodedResponse.forEach {
+                        guard
+                            $0.type == .crypto,
+                            let isSuspended = $0.isSuspended, !isSuspended,
+                            let supportsLiveMode = $0.supportsLiveMode, supportsLiveMode,
+                            let metadata = $0.metadata
+                        else { return }
+
+                        if countryCode == "USA" {
+                            if $0.isSupportedInUS == false {
+                                return
+                            }
+
+                            if let notAllowedUSStates = $0.notAllowedUSStates, notAllowedUSStates.contains(stateCode) {
+                                return
+                            }
+                        }
+
+                        let moonpayCurrency = MoonpaySupportedCurrency(
+                            currencyCode: $0.code,
+                            networkCode: metadata.networkCode,
+                            contractAddress: metadata.contractAddress
+                        )
+
+                        currenciesToBuy.insert(moonpayCurrency)
+
+                        if $0.isSellSupported == true {
+                            currenciesToSell.insert(moonpayCurrency)
+                        }
+                    }
+                    availableToBuy = currenciesToBuy
+                    availableToSell = currenciesToSell
+
+                    initializeState = canSellCrypto ? .initialized : .failed(.countryNotSupported)
+                } catch {
+                    AppLog.shared.debug("Failed to load currencies")
+                    AppLog.shared.error(error)
+                    initializeState = .failed(.networkError)
+                }
             }
-        }
+        )
         .store(in: &bag)
     }
 }

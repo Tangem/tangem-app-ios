@@ -36,7 +36,7 @@ final class ActionButtonsViewModel: ObservableObject {
     private var bag = Set<AnyCancellable>()
     private let lastButtonTapped = PassthroughSubject<ActionButtonModel, Never>()
 
-    private var currentSwapUpdateState: ExpressAvailabilityUpdateState = .updating
+    private var currentSwapUpdateState: ExpressAvailabilityUpdateState?
     private let expressTokensListAdapter: ExpressTokensListAdapter
     private let userWalletModel: UserWalletModel
 
@@ -98,7 +98,10 @@ private extension ActionButtonsViewModel {
             .withWeakCaptureOf(self)
             .sink { viewModel, walletModels in
                 viewModel.isButtonsDisabled = walletModels.isEmpty
-                viewModel.updateSwapButtonState(viewModel.currentSwapUpdateState)
+
+                if let currentSwapUpdateState = viewModel.currentSwapUpdateState {
+                    viewModel.updateSwapButtonState(currentSwapUpdateState)
+                }
             }
             .store(in: &bag)
     }
@@ -110,6 +113,7 @@ private extension ActionButtonsViewModel {
     func bindSwapAvailability() {
         expressAvailabilityProvider
             .expressAvailabilityUpdateState
+            .removeDuplicates()
             .sink {
                 self.updateSwapButtonState($0)
             }
@@ -174,23 +178,25 @@ private extension ActionButtonsViewModel {
     func updateSellButtonState(_ exchangeServiceState: ExchangeServiceState) {
         TangemFoundation.runTask(in: self) { @MainActor viewModel in
             switch exchangeServiceState {
-            case .initializing:
-                viewModel.sellActionButtonViewModel.updateState(to: .initial)
-            case .initialized:
-                viewModel.sellActionButtonViewModel.updateState(to: .idle)
-            case .failed(let reason):
-                // TODO: Should be removed later
-                let message: String = {
-                    switch reason {
-                    case .networkError: "Что-то пошло не так, попробуйте позже."
-                    case .countryNotSupported: "Покупка недоступна в вашем регионе."
-                    }
-                }()
-
-                viewModel.sellActionButtonViewModel.updateState(
-                    to: .disabled(message: message)
-                )
+            case .initializing: viewModel.sellActionButtonViewModel.updateState(to: .initial)
+            case .initialized: viewModel.sellActionButtonViewModel.updateState(to: .idle)
+            case .failed(let reason): viewModel.handleFailedSellState(reason: reason)
             }
         }
+    }
+
+    @MainActor
+    func handleFailedSellState(reason: ExchangeServiceState.FailReason) {
+        // TODO: Should be removed later
+        let message: String = {
+            switch reason {
+            case .networkError: "Что-то пошло не так, попробуйте позже."
+            case .countryNotSupported: "Покупка недоступна в вашем регионе."
+            }
+        }()
+
+        sellActionButtonViewModel.updateState(
+            to: .disabled(message: message)
+        )
     }
 }
