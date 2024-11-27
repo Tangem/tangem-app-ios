@@ -207,11 +207,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             }
             .withWeakCaptureOf(self)
             .handleEvents(receiveOutput: { manager, response in
-                let hash = response.transactionId
-                let mapper = PendingTransactionRecordMapper()
-                let record = mapper.mapToPendingTransactionRecord(transaction: transaction, hash: hash)
-                manager.wallet.addPendingTransaction(record)
-                manager.pendingTokenTransactionHashes[token, default: []].insert(hash)
+                manager.handleSuccessfulRevealTokenTransaction(transaction, token: token, response: response)
             })
             .asyncMap { manager, response in
                 // Delete Commit
@@ -309,11 +305,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             }
             .withWeakCaptureOf(self)
             .handleEvents(receiveOutput: { manager, response in
-                let hash = response.transactionId
-                let mapper = PendingTransactionRecordMapper()
-                let record = mapper.mapToPendingTransactionRecord(transaction: transaction, hash: hash)
-                manager.wallet.addPendingTransaction(record)
-                manager.pendingTokenTransactionHashes[token, default: []].insert(hash)
+                manager.handleSuccessfulRevealTokenTransaction(transaction, token: token, response: response)
             })
             .asyncMap { manager, response in
                 // Delete Commit
@@ -490,6 +482,18 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             changeAddress: defaultSourceAddress,
             params: incompleteTokenTransactionParams
         )
+    }
+
+    private func handleSuccessfulRevealTokenTransaction(
+        _ transaction: Transaction,
+        token: Token,
+        response: KaspaTransactionResponse
+    ) {
+        let hash = response.transactionId
+        let mapper = PendingTransactionRecordMapper()
+        let record = mapper.mapToPendingTransactionRecord(transaction: transaction, hash: hash)
+        wallet.addPendingTransaction(record)
+        pendingTokenTransactionHashes[token, default: []].insert(hash)
     }
 }
 
