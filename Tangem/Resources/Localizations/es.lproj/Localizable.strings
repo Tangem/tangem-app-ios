@@ -4,8 +4,8 @@
 "action_buttons_swap_empty_search_message" = "¿No encuentras el token en tu billetera? Consulte los mercados para encontrarlo y agregarlo al intercambio";
 "action_buttons_swap_no_available_pair_notification_message" = "No hay tokens disponibles para intercambiar con el token seleccionado. Por favor elige otro.";
 "action_buttons_swap_no_available_pair_notification_title" = "No hay par disponible";
-"action_buttons_you_want_to_receive" = "Desea recibir";
-"action_buttons_you_want_to_swap" = "Quiere intercambiar";
+"action_buttons_you_want_to_receive" = "Choose the Token you want to Receive";
+"action_buttons_you_want_to_swap" = "Choose the Token you want to Swap";
 "add_custom_token_choose_network" = "Elige red";
 "add_custom_token_title" = "Agregue un token personalizado";
 "add_tokens_title" = "Gestionar tokens";
@@ -247,6 +247,7 @@
 "express_choose_providers_subtitle" = "Tangem ofrece swaps de tokens a través de proveedores externos según los términos de cada proveedor";
 "express_choose_providers_title" = "Elige un proveedor";
 "express_error_code" = "Ha ocurrido un error. Código: %@";
+"express_error_provider_amount_roundup" = "Error %1$@. The selected provider cannot process the specified transaction. Please round the value up to %2$@ or change it";
 "express_error_swap_pair_unavailable" = "El proveedor seleccionado no está disponible actualmente. Inténtelo de nuevo más tarde. (Código: %@)";
 "express_error_swap_unavailable" = "Los cambios no están disponibles en este momento. Inténtelo de nuevo más tarde. (Código: %@)";
 "express_estimated_amount" = "Cantidad estimada";
@@ -540,6 +541,7 @@
 "onboarding_wallet_info_title_fourth" = "Restaurar código de acceso";
 "onboarding_wallet_info_title_second" = "Tarjetas idénticas";
 "onboarding_wallet_info_title_third" = "Código de acceso";
+"onramp_choose_provider_title_hint" = "Providers facilitate transactions, ensuring smooth and efficient token exchanges";
 "onramp_country_search" = "Buscar por país";
 "onramp_country_unavailable" = "Indisponible";
 "onramp_currency_other" = "Otras monedas";
@@ -552,7 +554,6 @@
 "onramp_redirecting_to_provider_subtitle" = "Podrá completar su transacción en el proveedor externo, %@";
 "onramp_redirecting_to_provider_title" = "Redirigiendo a %@...";
 "onramp_residency_bottomsheet_country_not_supported" = "Nuestros servicios no están disponibles en este país";
-"onramp_residency_bottomsheet_country_subtitle" = "Cámbielo o confírmelo";
 "onramp_residency_bottomsheet_title" = "Su residencia ha sido identificada como";
 "onramp_settings_residence" = "Residencia";
 "onramp_settings_residence_description" = "Seleccione el país correcto para garantizar opciones de pago y servicios precisos.";

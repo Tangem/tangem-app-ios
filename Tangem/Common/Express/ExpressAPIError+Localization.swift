@@ -26,6 +26,8 @@ extension ExpressAPIError {
             return Localization.expressErrorSwapPairUnavailable(errorCode.rawValue)
         case .exchangeNotPossibleError:
             return Localization.warningExpressPairUnavailableMessage(errorCode.rawValue)
+        case .exchangeRoundUpError:
+            return Localization.expressErrorProviderAmountRoundup(errorCode.rawValue, value?.roundUpAmount ?? "")
         default:
             return Localization.expressErrorCode(errorCode.localizedDescription)
         }
