@@ -10,7 +10,7 @@ import Foundation
 import BlockchainSdk
 
 protocol ExchangeService: AnyObject, Initializable {
-    var initializationPublisher: Published<Bool>.Publisher { get }
+    var initializationPublisher: Published<ExchangeServiceState>.Publisher { get }
     var successCloseUrl: String { get }
     var sellRequestUrl: String { get }
     func canBuy(_ currencySymbol: String, amountType: Amount.AmountType, blockchain: Blockchain) -> Bool
@@ -20,16 +20,27 @@ protocol ExchangeService: AnyObject, Initializable {
     func extractSellCryptoRequest(from data: String) -> SellCryptoRequest?
 }
 
+enum ExchangeServiceState: Equatable {
+    case initializing
+    case initialized
+    case failed(FailReason)
+
+    enum FailReason {
+        case networkError
+        case countryNotSupported
+    }
+}
+
 private struct ExchangeServiceKey: InjectionKey {
-    static var currentValue: ExchangeService = CombinedExchangeService(
-        mercuryoService: MercuryoService(),
+    static var currentValue: ExchangeService & CombinedExchangeService = CommonCombinedExpressService(
+        buyService: MercuryoService(),
         utorgService: nil, // Remove optional from the ExchangeService and set the utorgSID in the CommonKeysManager tore-integrate Utorg
         sellService: MoonPayService()
     )
 }
 
 extension InjectedValues {
-    var exchangeService: ExchangeService {
+    var exchangeService: ExchangeService & CombinedExchangeService {
         get { Self[ExchangeServiceKey.self] }
         set { Self[ExchangeServiceKey.self] = newValue }
     }

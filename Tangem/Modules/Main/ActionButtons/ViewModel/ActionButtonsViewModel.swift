@@ -16,10 +16,12 @@ final class ActionButtonsViewModel: ObservableObject {
     // MARK: Dependencies
 
     @Injected(\.exchangeService)
-    private var exchangeService: ExchangeService
+    private var exchangeService: ExchangeService & CombinedExchangeService
 
     @Injected(\.expressAvailabilityProvider)
     private var expressAvailabilityProvider: ExpressAvailabilityProvider
+
+    // MARK: Published properties
 
     @Published private(set) var isButtonsDisabled = false
 
@@ -32,6 +34,9 @@ final class ActionButtonsViewModel: ObservableObject {
     // MARK: Private properties
 
     private var bag = Set<AnyCancellable>()
+    private let lastButtonTapped = PassthroughSubject<ActionButtonModel, Never>()
+
+    private var currentSwapUpdateState: ExpressAvailabilityUpdateState = .updating
     private let expressTokensListAdapter: ExpressTokensListAdapter
     private let userWalletModel: UserWalletModel
 
@@ -45,6 +50,7 @@ final class ActionButtonsViewModel: ObservableObject {
 
         buyActionButtonViewModel = BuyActionButtonViewModel(
             model: .buy,
+            lastButtonTapped: lastButtonTapped,
             coordinator: coordinator,
             userWalletModel: userWalletModel
         )
@@ -52,12 +58,14 @@ final class ActionButtonsViewModel: ObservableObject {
         sellActionButtonViewModel = SellActionButtonViewModel(
             model: .sell,
             coordinator: coordinator,
+            lastButtonTapped: lastButtonTapped,
             userWalletModel: userWalletModel
         )
 
         swapActionButtonViewModel = SwapActionButtonViewModel(
             model: .swap,
             coordinator: coordinator,
+            lastButtonTapped: lastButtonTapped,
             userWalletModel: userWalletModel
         )
 
@@ -66,7 +74,11 @@ final class ActionButtonsViewModel: ObservableObject {
 
     func refresh() {
         exchangeService.initialize()
-        updateSwapButtonState()
+        expressAvailabilityProvider.updateExpressAvailability(
+            for: userWalletModel.walletModelsManager.walletModels.map(\.tokenItem),
+            forceReload: true,
+            userWalletId: userWalletModel.userWalletId.stringValue
+        )
     }
 }
 
@@ -83,9 +95,10 @@ private extension ActionButtonsViewModel {
         expressTokensListAdapter
             .walletModels()
             .receive(on: DispatchQueue.main)
-            .sink {
-                self.isButtonsDisabled = $0.isEmpty
-                self.updateSwapButtonState()
+            .withWeakCaptureOf(self)
+            .sink { viewModel, walletModels in
+                viewModel.isButtonsDisabled = walletModels.isEmpty
+                viewModel.updateSwapButtonState(viewModel.currentSwapUpdateState)
             }
             .store(in: &bag)
     }
@@ -96,24 +109,52 @@ private extension ActionButtonsViewModel {
 private extension ActionButtonsViewModel {
     func bindSwapAvailability() {
         expressAvailabilityProvider
-            .availabilityDidChangePublisher
-            .sink { _ in
-                self.updateSwapButtonState()
+            .expressAvailabilityUpdateState
+            .sink {
+                self.updateSwapButtonState($0)
             }
             .store(in: &bag)
     }
 
-    func updateSwapButtonState() {
-        Task { @MainActor in
-            let walletModels = userWalletModel.walletModelsManager.walletModels
+    func updateSwapButtonState(_ expressUpdateState: ExpressAvailabilityUpdateState) {
+        TangemFoundation.runTask(in: self) { @MainActor viewModel in
+            viewModel.currentSwapUpdateState = expressUpdateState
 
-            swapActionButtonViewModel.updateState(to: .initial)
-
-            if walletModels.count > 1 {
-                swapActionButtonViewModel.updateState(to: .idle)
-            } else {
-                swapActionButtonViewModel.updateState(to: .disabled)
+            switch expressUpdateState {
+            case .updating: viewModel.handleUpdatingExpressState()
+            case .updated: viewModel.handleUpdatedSwapState()
+            case .failed:
+                // TODO: Should be removed later
+                viewModel.swapActionButtonViewModel.updateState(
+                    to: .disabled(message: "Что-то пошло не так, попробуйте позже.")
+                )
             }
+        }
+    }
+
+    @MainActor
+    func handleUpdatingExpressState() {
+        switch swapActionButtonViewModel.presentationState {
+        case .idle:
+            swapActionButtonViewModel.updateState(to: .initial)
+        case .disabled, .loading, .initial:
+            break
+        }
+    }
+
+    @MainActor
+    func handleUpdatedSwapState() {
+        let walletModels = userWalletModel.walletModelsManager.walletModels
+
+        if walletModels.count > 1 {
+            swapActionButtonViewModel.updateState(to: .idle)
+        } else {
+            // TODO: Should be removed later
+            swapActionButtonViewModel.updateState(
+                to: .disabled(
+                    message: "Количество токенов в портфеле менее двух. Пожалуйста, добавьте еще один токен."
+                )
+            )
         }
     }
 }
@@ -123,19 +164,32 @@ private extension ActionButtonsViewModel {
 private extension ActionButtonsViewModel {
     func bindExchangeAvailability() {
         exchangeService
-            .initializationPublisher
+            .sellInitializationPublisher
             .sink {
                 self.updateSellButtonState($0)
             }
             .store(in: &bag)
     }
 
-    func updateSellButtonState(_ isAvailable: Bool) {
-        Task { @MainActor in
-            if isAvailable {
-                sellActionButtonViewModel.updateState(to: .idle)
-            } else {
-                sellActionButtonViewModel.updateState(to: .disabled)
+    func updateSellButtonState(_ exchangeServiceState: ExchangeServiceState) {
+        TangemFoundation.runTask(in: self) { @MainActor viewModel in
+            switch exchangeServiceState {
+            case .initializing:
+                viewModel.sellActionButtonViewModel.updateState(to: .initial)
+            case .initialized:
+                viewModel.sellActionButtonViewModel.updateState(to: .idle)
+            case .failed(let reason):
+                // TODO: Should be removed later
+                let message: String = {
+                    switch reason {
+                    case .networkError: "Что-то пошло не так, попробуйте позже."
+                    case .countryNotSupported: "Покупка недоступна в вашем регионе."
+                    }
+                }()
+
+                viewModel.sellActionButtonViewModel.updateState(
+                    to: .disabled(message: message)
+                )
             }
         }
     }

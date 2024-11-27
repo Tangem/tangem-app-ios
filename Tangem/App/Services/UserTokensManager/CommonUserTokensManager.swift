@@ -6,10 +6,11 @@
 //  Copyright © 2023 Tangem AG. All rights reserved.
 //
 
-import Foundation
-import Combine
-import TangemSdk
 import BlockchainSdk
+import Combine
+import Foundation
+import TangemFoundation
+import TangemSdk
 
 class CommonUserTokensManager {
     @Injected(\.expressAvailabilityProvider) private var expressAvailabilityProvider: ExpressAvailabilityProvider
@@ -91,11 +92,14 @@ class CommonUserTokensManager {
 
         let converter = StorageEntryConverter()
         let tokenItems = converter.convertToTokenItem(userTokenListManager.userTokensList.entries)
-        expressAvailabilityProvider.updateExpressAvailability(
-            for: tokenItems,
-            forceReload: forceReload,
-            userWalletId: userWalletId.stringValue
-        )
+
+        TangemFoundation.runTask(in: self) { tokenManager in
+            tokenManager.expressAvailabilityProvider.updateExpressAvailability(
+                for: tokenItems,
+                forceReload: forceReload,
+                userWalletId: tokenManager.userWalletId.stringValue
+            )
+        }
     }
 
     private func validateDerivation(for tokenItem: TokenItem) throws {

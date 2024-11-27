@@ -415,10 +415,7 @@
 "markets_token_details_fully_diluted_valuation_description" = "El valor teórico total de una criptomoneda si todas las monedas que podrían existir estuvieran en circulación, incluidas las que actualmente no circulan.";
 "markets_token_details_fully_diluted_valuation_full" = "Valoración totalmente diluida";
 "markets_token_details_genesis_date" = "Dato de Genesis";
-<<<<<<< HEAD
 "markets_token_details_genesis_date_description" = "";
-=======
->>>>>>> develop
 "markets_token_details_high" = "Alto";
 "markets_token_details_holders" = "Titulares";
 "markets_token_details_holders_description" = "El cambio en el número de poseedores de tokens dentro de un período de tiempo específico";
@@ -429,10 +426,7 @@
 "markets_token_details_liquidity_description" = "El cambio en la cantidad de liquidez disponible para el token durante el período de tiempo especificado";
 "markets_token_details_liquidity_full" = "Liquidez";
 "markets_token_details_liquidity_index" = "Índice de liquidez";
-<<<<<<< HEAD
 "markets_token_details_liquidity_index_description" = "";
-=======
->>>>>>> develop
 "markets_token_details_listed_on" = "Listado en";
 "markets_token_details_low" = "Bajo";
 "markets_token_details_market_capitalization" = "Capital. de mercado";

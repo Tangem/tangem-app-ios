@@ -75,7 +75,7 @@ private struct MoonpaySupportedCurrency: Hashable {
 class MoonPayService {
     @Injected(\.keysManager) var keysManager: KeysManager
 
-    @Published private var initialized = false
+    @Published private var initializeState: ExchangeServiceState = .initializing
 
     // TODO: pk_test doesn't
     private var keys: MoonPayKeys { keysManager.moonPayKeys }
@@ -107,7 +107,7 @@ class MoonPayService {
 }
 
 extension MoonPayService: ExchangeService {
-    var initializationPublisher: Published<Bool>.Publisher { $initialized }
+    var initializationPublisher: Published<ExchangeServiceState>.Publisher { $initializeState }
 
     var successCloseUrl: String { "https://success.tangem.com" }
 
@@ -231,7 +231,7 @@ extension MoonPayService: ExchangeService {
     }
 
     func initialize() {
-        if initialized {
+        if initializeState == .initialized {
             return
         }
 
@@ -250,6 +250,7 @@ extension MoonPayService: ExchangeService {
             let decoder = JSONDecoder()
             var countryCode = ""
             var stateCode = ""
+
             do {
                 let decodedResponse = try decoder.decode(IpCheckResponse.self, from: ipOutput.data)
                 canBuyCrypto = decodedResponse.isBuyAllowed
@@ -260,6 +261,7 @@ extension MoonPayService: ExchangeService {
                 AppLog.shared.debug("Failed to check IP address")
                 AppLog.shared.error(error)
             }
+
             do {
                 var currenciesToBuy = Set<MoonpaySupportedCurrency>()
                 var currenciesToSell = Set<MoonpaySupportedCurrency>()
@@ -296,12 +298,13 @@ extension MoonPayService: ExchangeService {
                 }
                 availableToBuy = currenciesToBuy
                 availableToSell = currenciesToSell
+
+                initializeState = canSellCrypto ? .initialized : .failed(.countryNotSupported)
             } catch {
                 AppLog.shared.debug("Failed to load currencies")
                 AppLog.shared.error(error)
+                initializeState = .failed(.networkError)
             }
-
-            initialized = true
         }
         .store(in: &bag)
     }
