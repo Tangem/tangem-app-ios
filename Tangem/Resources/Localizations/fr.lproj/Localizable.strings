@@ -1,7 +1,10 @@
 "action_buttons_buy_empty_search_message" = "Jeton non trouvé dans votre portefeuille ? Consultez les marchés pour le trouver et l'ajouter à l'achat";
+"action_buttons_buy_navigation_bar_title" = "";
 "action_buttons_sell_empty_search_message" = "Jeton non trouvé dans votre portefeuille ? Consultez les marchés pour le trouver et l'ajouter à la vente";
+"action_buttons_sell_navigation_bar_title" = "";
 "action_buttons_swap_choose_token" = "Choisissez le jeton";
 "action_buttons_swap_empty_search_message" = "Jeton non trouvé dans votre portefeuille ? Consultez les marchés pour le trouver et l'ajouter à l'échange";
+"action_buttons_swap_navigation_bar_title" = "";
 "action_buttons_swap_no_available_pair_notification_message" = "Il n'y a pas de token disponible pour échanger avec le token sélectionné. Veuillez en choisir un autre.";
 "action_buttons_swap_no_available_pair_notification_title" = "Aucune paire disponible";
 "action_buttons_you_want_to_receive" = "Choose the Token you want to Receive";
@@ -117,7 +120,7 @@
 "common_fee_selector_option_market" = "Marché";
 "common_fee_selector_option_slow" = "Lent";
 "common_fee_selector_title" = "Vitesse et frais";
-"common_generate_addresses" = "Obtenir des adresses";
+"common_generate_addresses" = "Synchroniser les adresses";
 "common_go_to_provider" = "Aller au fournisseur";
 "common_go_to_token" = "Aller au jeton";
 "common_hour" = "heure";
@@ -541,6 +544,7 @@
 "onboarding_wallet_info_title_fourth" = "Restauration du code d'accès";
 "onboarding_wallet_info_title_second" = "Cartes identiques";
 "onboarding_wallet_info_title_third" = "Code d'accès";
+"onramp_avaiable_with_payment_methods" = "Available with %@";
 "onramp_choose_provider_title_hint" = "Providers facilitate transactions, ensuring smooth and efficient token exchanges";
 "onramp_country_search" = "Recherche par pays";
 "onramp_country_unavailable" = "Indisponible";
@@ -861,6 +865,9 @@
 "token_details_unable_hide_alert_message" = "Le jeton %1$@ (%2$@) est la principale devise du réseau %3$@ et ne peut pas être masqué tant que vous avez d'autres jetons de ce réseau dans la liste";
 "token_details_unable_hide_alert_title" = "Impossible de masquer %@";
 "token_swap_promotion_button" = "Échangez maintenant";
+"tokens_list_available_to_buy_header" = "";
+"tokens_list_available_to_sell_header" = "";
+"tokens_list_available_to_swap_header" = "";
 "tokens_list_hot_crypto_header" = "Crypto-monnaies populaire 🔥";
 "tokens_list_unavailable_to_purchase_header" = "Non disponible à l'achat";
 "tokens_list_unavailable_to_sell_header" = "Indisponible à la vente";

@@ -1,7 +1,10 @@
 "action_buttons_buy_empty_search_message" = "Токен не знайдено у вашому портфелі? Перевірте Ринки, щоб знайти та додати його для покупки";
+"action_buttons_buy_navigation_bar_title" = "";
 "action_buttons_sell_empty_search_message" = "Токен не знайдено у вашому портфелі? Перевірте Ринки, щоб знайти та додати його для продажу";
+"action_buttons_sell_navigation_bar_title" = "";
 "action_buttons_swap_choose_token" = "Оберіть токен";
 "action_buttons_swap_empty_search_message" = "Токен не знайдено у вашому портфелі? Перевірте ринки, щоб знайти та додати його для обміну";
+"action_buttons_swap_navigation_bar_title" = "";
 "action_buttons_swap_no_available_pair_notification_message" = "Немає доступних токенів для обміну з обраним токеном. Будь ласка, оберіть інший.";
 "action_buttons_swap_no_available_pair_notification_title" = "Немає вільної пари";
 "action_buttons_you_want_to_receive" = "Choose the Token you want to Receive";
@@ -541,6 +544,7 @@
 "onboarding_wallet_info_title_fourth" = "Відновлення коду доступу";
 "onboarding_wallet_info_title_second" = "Ідентичні картки";
 "onboarding_wallet_info_title_third" = "Код доступу";
+"onramp_avaiable_with_payment_methods" = "Available with %@";
 "onramp_choose_provider_title_hint" = "Providers facilitate transactions, ensuring smooth and efficient token exchanges";
 "onramp_country_search" = "Пошук за країною";
 "onramp_country_unavailable" = "Недоступно";
@@ -861,6 +865,9 @@
 "token_details_unable_hide_alert_message" = "Токен %1$@ (%2$@) є основною валютою в мережі %3$@ і не може бути прихований до тих пір, поки у вас в списку є інші токени цієї мережі";
 "token_details_unable_hide_alert_title" = "Неможливо приховати %@";
 "token_swap_promotion_button" = "Обміняти";
+"tokens_list_available_to_buy_header" = "";
+"tokens_list_available_to_sell_header" = "";
+"tokens_list_available_to_swap_header" = "";
 "tokens_list_hot_crypto_header" = "В тренді 🔥";
 "tokens_list_unavailable_to_purchase_header" = "Недоступно для покупки";
 "tokens_list_unavailable_to_sell_header" = "Недоступно для продажу";
