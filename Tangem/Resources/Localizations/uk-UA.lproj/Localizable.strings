@@ -4,8 +4,8 @@
 "action_buttons_swap_empty_search_message" = "Токен не знайдено у вашому портфелі? Перевірте ринки, щоб знайти та додати його для обміну";
 "action_buttons_swap_no_available_pair_notification_message" = "Немає доступних токенів для обміну з обраним токеном. Будь ласка, оберіть інший.";
 "action_buttons_swap_no_available_pair_notification_title" = "Немає вільної пари";
-"action_buttons_you_want_to_receive" = "Ви хочете отримати";
-"action_buttons_you_want_to_swap" = "Ви хочете обміняти";
+"action_buttons_you_want_to_receive" = "Choose the Token you want to Receive";
+"action_buttons_you_want_to_swap" = "Choose the Token you want to Swap";
 "add_custom_token_choose_network" = "Оберіть мережу";
 "add_custom_token_title" = "Додати токен";
 "add_tokens_title" = "Токени";
@@ -247,6 +247,7 @@
 "express_choose_providers_subtitle" = "Tangem пропонує обмін токенів через сторонніх провайдерів відповідно до умов кожного провайдера";
 "express_choose_providers_title" = "Оберіть провайдера";
 "express_error_code" = "Виникла помилка. Код: %@";
+"express_error_provider_amount_roundup" = "Error %1$@. The selected provider cannot process the specified transaction. Please round the value up to %2$@ or change it";
 "express_error_swap_pair_unavailable" = "Наразі обраний провайдер недоступний для обміну. Спробуй пізніше. (Код: %@)";
 "express_error_swap_unavailable" = "Наразі обмін неможливий. Спробуй пізніше. (Код: %@)";
 "express_estimated_amount" = "Курс обміну";
@@ -540,6 +541,7 @@
 "onboarding_wallet_info_title_fourth" = "Відновлення коду доступу";
 "onboarding_wallet_info_title_second" = "Ідентичні картки";
 "onboarding_wallet_info_title_third" = "Код доступу";
+"onramp_choose_provider_title_hint" = "Providers facilitate transactions, ensuring smooth and efficient token exchanges";
 "onramp_country_search" = "Пошук за країною";
 "onramp_country_unavailable" = "Недоступно";
 "onramp_currency_other" = "Інші валюти";
@@ -552,7 +554,6 @@
 "onramp_redirecting_to_provider_subtitle" = "Ви зможете завершити транзакцію у стороннього постачальника, %@";
 "onramp_redirecting_to_provider_title" = "Перенаправлення на %@...";
 "onramp_residency_bottomsheet_country_not_supported" = "Наші сервіси недоступні в цій країні";
-"onramp_residency_bottomsheet_country_subtitle" = "Змінити або підтвердити";
 "onramp_residency_bottomsheet_title" = "Ваше місце проживання визначено як";
 "onramp_settings_residence" = "Residence";
 "onramp_settings_residence_description" = "Будь ласка, виберіть правильну країну, щоб забезпечити точні способи оплати та послуги.";
