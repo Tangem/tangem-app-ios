@@ -26,7 +26,6 @@ public enum NetworkProviderType {
     case tangemChia
     case solana
     case kaspa
-    case kasplexKRC20
     case dwellir
     case onfinality
     case koinos

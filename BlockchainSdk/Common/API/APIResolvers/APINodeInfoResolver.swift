@@ -47,9 +47,6 @@ struct APINodeInfoResolver {
         case .kaspa:
             return KaspaAPIResolver(config: config)
                 .resolve(blockchain: blockchain)
-        case .kasplexKRC20:
-            return KaspaKRC20APIResolver(config: config)
-                .resolve(blockchain: blockchain)
         case .onfinality:
             return OnfinalityAPIResolver(config: config)
                 .resolve()

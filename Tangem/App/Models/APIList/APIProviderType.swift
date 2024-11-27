@@ -25,7 +25,6 @@ enum APIProvider: String {
     case tangemChia
     case solana
     case kaspa
-    case kasplexKRC20
     case dwellirBittensor
     case onfinalityBittensor
 
@@ -46,7 +45,6 @@ enum APIProvider: String {
         case .tangemChia: return .tangemChia
         case .solana: return .solana
         case .kaspa: return .kaspa
-        case .kasplexKRC20: return .kasplexKRC20
         case .dwellirBittensor: return .dwellir
         case .onfinalityBittensor: return .onfinality
         }
