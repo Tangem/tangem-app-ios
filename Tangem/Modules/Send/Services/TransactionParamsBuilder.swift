@@ -118,6 +118,7 @@ struct TransactionParamsBuilder {
              .core,
              .canxium,
              .chiliz,
+             .xodex,
              .clore:
             throw TransactionParamsBuilderError.extraIdNotSupported
         }

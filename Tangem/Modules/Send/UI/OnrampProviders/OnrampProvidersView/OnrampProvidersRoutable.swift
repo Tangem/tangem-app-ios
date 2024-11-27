@@ -10,4 +10,5 @@ import Foundation
 
 protocol OnrampProvidersRoutable: AnyObject {
     func openOnrampPaymentMethods()
+    func closeOnrampProviders()
 }
