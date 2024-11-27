@@ -27,13 +27,9 @@ struct OnrampAmountView: View {
         VStack(spacing: 16) {
             tokenIconView
 
-            VStack(spacing: 8) {
-                textView
-
-                bottomInfoText
-            }
+            textView
         }
-        .padding(.top, 20)
+        .padding(.vertical, 20)
     }
 
     @ViewBuilder
@@ -72,32 +68,13 @@ struct OnrampAmountView: View {
                 .skeletonable(isShown: viewModel.isLoading, width: 100, height: 28)
 
             LoadableTextView(
-                state: viewModel.alternativeAmount,
+                state: viewModel.bottomInfoText.state,
                 font: Fonts.Regular.footnote,
-                textColor: Colors.Text.tertiary,
+                textColor: viewModel.bottomInfoText.isError ? Colors.Text.warning : Colors.Text.tertiary,
                 loaderSize: CGSize(width: 80, height: 13)
             )
-            .lineLimit(1)
+            .lineLimit(2)
             .matchedGeometryEffect(id: namespace.names.amountFiatText, in: namespace.id)
         }
-    }
-
-    private var bottomInfoText: some View {
-        Group {
-            switch viewModel.bottomInfoText {
-            case .none:
-                // Hold empty space
-                Text(" ")
-                    .style(Fonts.Regular.caption1, color: Colors.Text.warning)
-            case .info(let string):
-                Text(string)
-                    .style(Fonts.Regular.caption1, color: Colors.Text.attention)
-            case .error(let string):
-                Text(string)
-                    .style(Fonts.Regular.caption1, color: Colors.Text.warning)
-            }
-        }
-        .multilineTextAlignment(.center)
-        .lineLimit(2)
     }
 }
