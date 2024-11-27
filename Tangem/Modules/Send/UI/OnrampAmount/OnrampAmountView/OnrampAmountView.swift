@@ -25,22 +25,7 @@ struct OnrampAmountView: View {
 
     private var amountContent: some View {
         VStack(spacing: 16) {
-            Button(action: viewModel.onChangeCurrencyTap) {
-                HStack(spacing: 8) {
-                    IconView(
-                        url: viewModel.fiatIconURL,
-                        size: CGSize(width: 36, height: 36),
-                        // Kingfisher shows a gray background even if it has a cached image
-                        forceKingfisher: false
-                    )
-
-                    Assets.chevronDownMini.image
-                        .resizable()
-                        .frame(size: .init(bothDimensions: 9))
-                        .foregroundColor(Colors.Icon.informative)
-                }
-            }
-            .matchedGeometryEffect(id: namespace.names.tokenIcon, in: namespace.id)
+            tokenIconView
 
             VStack(spacing: 8) {
                 textView
@@ -49,6 +34,31 @@ struct OnrampAmountView: View {
             }
         }
         .padding(.top, 20)
+    }
+
+    @ViewBuilder
+    private var tokenIconView: some View {
+        let chevronSize: CGFloat = 9
+
+        Button(action: viewModel.onChangeCurrencyTap) {
+            HStack(spacing: 8) {
+                // Use the `Spacer` for center `IconView`
+                FixedSpacer(width: chevronSize)
+
+                IconView(
+                    url: viewModel.fiatIconURL,
+                    size: CGSize(width: 36, height: 36),
+                    // Kingfisher shows a gray background even if it has a cached image
+                    forceKingfisher: false
+                )
+
+                Assets.chevronDownMini.image
+                    .resizable()
+                    .frame(size: .init(bothDimensions: chevronSize))
+                    .foregroundColor(Colors.Icon.informative)
+            }
+        }
+        .matchedGeometryEffect(id: namespace.names.tokenIcon, in: namespace.id)
     }
 
     private var textView: some View {
