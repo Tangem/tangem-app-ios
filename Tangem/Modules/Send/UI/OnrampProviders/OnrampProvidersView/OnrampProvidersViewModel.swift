@@ -124,7 +124,7 @@ private extension OnrampProvidersViewModel {
             return .unavailable(reason: Localization.expressProviderNotAvailable)
         case .notSupported(.paymentMethod(let supported)):
             let methods = supported.map(\.name).joined(separator: ", ")
-            return .availableForPaymentMethods(methods: methods)
+            return .availableForPaymentMethods(methods: Localization.onrampAvaiableWithPaymentMethods(methods))
         case .loaded:
             // Will be updated
             return .available(estimatedTime: "5 min")
