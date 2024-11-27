@@ -188,9 +188,11 @@ struct ExpressAPIMapper {
     }
 
     func mapToOnrampQuote(response: ExpressDTO.Onramp.Quote.Response) throws -> OnrampQuote {
-        guard let toAmount = Decimal(string: response.toAmount) else {
+        guard var toAmount = Decimal(string: response.toAmount) else {
             throw ExpressAPIMapperError.mapToDecimalError(response.toAmount)
         }
+
+        toAmount /= pow(10, response.toDecimals)
 
         return OnrampQuote(expectedAmount: toAmount)
     }

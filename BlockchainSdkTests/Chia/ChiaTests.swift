@@ -86,12 +86,12 @@ class ChiaTests: XCTestCase {
         let expectedHashToSign1 = Data(hexString: "8242AB52301FF9B0DDBD5C3219729720794D96C4BDE074BEC3FB4FEFBAC5AA37831B02578BF5C3AAAF37835F9B83C29709B3DF84D9A33CCB6700CCC2B3FFF9777603CD4F12A3EE3F26C2F425B6998BA9F586E5ADF5BCBBD1935995607C9E0DC0")
 
         let expectedSignedTransaction = ChiaSpendBundle(
-            aggregatedSignature: "a1af85f8f921d18c1e6a81481d3e9cbf89caad7632a825dbbdeefa4c7a918903436f0b37cad1156dfd90ae94d2c0270d08e07190543dcd4e0e2a94ae2f15960ed3adb40e7ac1166bd5bfbfcc536389cfe0e1967db9ff00d09df1a1e3210460ee",
+            aggregatedSignature: "0xa1af85f8f921d18c1e6a81481d3e9cbf89caad7632a825dbbdeefa4c7a918903436f0b37cad1156dfd90ae94d2c0270d08e07190543dcd4e0e2a94ae2f15960ed3adb40e7ac1166bd5bfbfcc536389cfe0e1967db9ff00d09df1a1e3210460ee",
             coinSpends: [
                 ChiaCoinSpend(
                     coin: unspentCoins[0],
-                    puzzleReveal: "ff02ffff01ff02ffff01ff04ffff04ff04ffff04ff05ffff04ffff02ff06ffff04ff02ffff04ff0bff80808080ff80808080ff0b80ffff04ffff01ff32ff02ffff03ffff07ff0580ffff01ff0bffff0102ffff02ff06ffff04ff02ffff04ff09ff80808080ffff02ff06ffff04ff02ffff04ff0dff8080808080ffff01ff0bffff0101ff058080ff0180ff018080ffff04ffff01b08fac07255c7f3fe670e21e49cc5e70328f4181440a535cc18cf369fd280ba18fa26e28b52035717db29bff67105894b2ff018080",
-                    solution: "ffffff33ffa04475f8f79d773327466c03ce1517eeaba0ba80602ddad62e65630b311d4aeb11ff8411e1a30080ffff33ffa09488ae2f6f0d2655aca94c6e658fdc31bd2217f74d676407112c0558d3d217d2ff8501240b2c71808080"
+                    puzzleReveal: "0xff02ffff01ff02ffff01ff04ffff04ff04ffff04ff05ffff04ffff02ff06ffff04ff02ffff04ff0bff80808080ff80808080ff0b80ffff04ffff01ff32ff02ffff03ffff07ff0580ffff01ff0bffff0102ffff02ff06ffff04ff02ffff04ff09ff80808080ffff02ff06ffff04ff02ffff04ff0dff8080808080ffff01ff0bffff0101ff058080ff0180ff018080ffff04ffff01b08fac07255c7f3fe670e21e49cc5e70328f4181440a535cc18cf369fd280ba18fa26e28b52035717db29bff67105894b2ff018080",
+                    solution: "0xffffff33ffa04475f8f79d773327466c03ce1517eeaba0ba80602ddad62e65630b311d4aeb11ff8411e1a30080ffff33ffa09488ae2f6f0d2655aca94c6e658fdc31bd2217f74d676407112c0558d3d217d2ff8501240b2c71808080"
                 ),
             ]
         )
@@ -152,17 +152,17 @@ class ChiaTests: XCTestCase {
         }
 
         let expectedSignedTransaction = ChiaSpendBundle(
-            aggregatedSignature: "98e46525cfef4e221e2e1813a3738e73c5be98b50e6f092e7a28f1e51bd5306e4d4e9859159bb507543117e74688732601969087ead4ae26c132a8ddea3052fa4b41a409ebbe0ab63d03c43be76e38047ec77a31c7db5b62c12c877c36193a2e",
+            aggregatedSignature: "0x98e46525cfef4e221e2e1813a3738e73c5be98b50e6f092e7a28f1e51bd5306e4d4e9859159bb507543117e74688732601969087ead4ae26c132a8ddea3052fa4b41a409ebbe0ab63d03c43be76e38047ec77a31c7db5b62c12c877c36193a2e",
             coinSpends: [
                 ChiaCoinSpend(
                     coin: unspentCoins[0],
-                    puzzleReveal: "ff02ffff01ff02ffff01ff04ffff04ff04ffff04ff05ffff04ffff02ff06ffff04ff02ffff04ff0bff80808080ff80808080ff0b80ffff04ffff01ff32ff02ffff03ffff07ff0580ffff01ff0bffff0102ffff02ff06ffff04ff02ffff04ff09ff80808080ffff02ff06ffff04ff02ffff04ff0dff8080808080ffff01ff0bffff0101ff058080ff0180ff018080ffff04ffff01b0a259d941e9c70adb0dfa5b7ddc399d7eda3fe263b24cfd8123114b6c89a2e8c5263d063f48dabf50d72c05a2afc0f4fcff018080",
-                    solution: "ffffff33ffa0da911d5fa5b0ed530fdde8857f94e8b928815be658d1d8e33a5093aeafd94f95ff8504a817c80080ffff33ffa04475f8f79d773327466c03ce1517eeaba0ba80602ddad62e65630b311d4aeb11ff85139097c103808080"
+                    puzzleReveal: "0xff02ffff01ff02ffff01ff04ffff04ff04ffff04ff05ffff04ffff02ff06ffff04ff02ffff04ff0bff80808080ff80808080ff0b80ffff04ffff01ff32ff02ffff03ffff07ff0580ffff01ff0bffff0102ffff02ff06ffff04ff02ffff04ff09ff80808080ffff02ff06ffff04ff02ffff04ff0dff8080808080ffff01ff0bffff0101ff058080ff0180ff018080ffff04ffff01b0a259d941e9c70adb0dfa5b7ddc399d7eda3fe263b24cfd8123114b6c89a2e8c5263d063f48dabf50d72c05a2afc0f4fcff018080",
+                    solution: "0xffffff33ffa0da911d5fa5b0ed530fdde8857f94e8b928815be658d1d8e33a5093aeafd94f95ff8504a817c80080ffff33ffa04475f8f79d773327466c03ce1517eeaba0ba80602ddad62e65630b311d4aeb11ff85139097c103808080"
                 ),
                 ChiaCoinSpend(
                     coin: unspentCoins[1],
-                    puzzleReveal: "ff02ffff01ff02ffff01ff04ffff04ff04ffff04ff05ffff04ffff02ff06ffff04ff02ffff04ff0bff80808080ff80808080ff0b80ffff04ffff01ff32ff02ffff03ffff07ff0580ffff01ff0bffff0102ffff02ff06ffff04ff02ffff04ff09ff80808080ffff02ff06ffff04ff02ffff04ff0dff8080808080ffff01ff0bffff0101ff058080ff0180ff018080ffff04ffff01b0a259d941e9c70adb0dfa5b7ddc399d7eda3fe263b24cfd8123114b6c89a2e8c5263d063f48dabf50d72c05a2afc0f4fcff018080",
-                    solution: "ffffff01808080"
+                    puzzleReveal: "0xff02ffff01ff02ffff01ff04ffff04ff04ffff04ff05ffff04ffff02ff06ffff04ff02ffff04ff0bff80808080ff80808080ff0b80ffff04ffff01ff32ff02ffff03ffff07ff0580ffff01ff0bffff0102ffff02ff06ffff04ff02ffff04ff09ff80808080ffff02ff06ffff04ff02ffff04ff0dff8080808080ffff01ff0bffff0101ff058080ff0180ff018080ffff04ffff01b0a259d941e9c70adb0dfa5b7ddc399d7eda3fe263b24cfd8123114b6c89a2e8c5263d063f48dabf50d72c05a2afc0f4fcff018080",
+                    solution: "0xffffff01808080"
                 ),
             ]
         )

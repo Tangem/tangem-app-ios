@@ -4,8 +4,8 @@
 "action_buttons_swap_empty_search_message" = "Token not found in your portfolio? Check the Markets to find and add it for swap";
 "action_buttons_swap_no_available_pair_notification_message" = "There are no available tokens to swap with the selected token. Please choose another one.";
 "action_buttons_swap_no_available_pair_notification_title" = "No available pair";
-"action_buttons_you_want_to_receive" = "You want to Receive";
-"action_buttons_you_want_to_swap" = "You want to Swap";
+"action_buttons_you_want_to_receive" = "Choose the Token you want to Receive";
+"action_buttons_you_want_to_swap" = "Choose the Token you want to Swap";
 "add_custom_token_choose_network" = "Choose network";
 "add_custom_token_title" = "Add custom token";
 "add_tokens_title" = "Manage tokens";
@@ -117,7 +117,7 @@
 "common_fee_selector_option_market" = "Market";
 "common_fee_selector_option_slow" = "Slow";
 "common_fee_selector_title" = "Speed and fee";
-"common_generate_addresses" = "Get your addresses";
+"common_generate_addresses" = "Synchronize addresses";
 "common_go_to_provider" = "Go to provider";
 "common_go_to_token" = "Go to token";
 "common_hour" = "hour";
@@ -247,6 +247,7 @@
 "express_choose_providers_subtitle" = "Tangem offers token swaps via 3rd-party providers according to each provider's terms";
 "express_choose_providers_title" = "Choose provider";
 "express_error_code" = "An error occurred. Code: %@";
+"express_error_provider_amount_roundup" = "Error %1$@. The selected provider cannot process the specified transaction. Please round the value up to %2$@ or change it";
 "express_error_swap_pair_unavailable" = "Selected provider is unavailable at the moment. Please try again later. (Code: %@)";
 "express_error_swap_unavailable" = "Swaps are unavailable at the moment. Please try again later. (Code: %@)";
 "express_estimated_amount" = "Estimated amount";
@@ -540,6 +541,7 @@
 "onboarding_wallet_info_title_fourth" = "Access code restore";
 "onboarding_wallet_info_title_second" = "Identical cards";
 "onboarding_wallet_info_title_third" = "Access code";
+"onramp_choose_provider_title_hint" = "Providers facilitate transactions, ensuring smooth and efficient token exchanges";
 "onramp_country_search" = "Search by country";
 "onramp_country_unavailable" = "Unavailable";
 "onramp_currency_other" = "Other currencies";
@@ -552,7 +554,6 @@
 "onramp_redirecting_to_provider_subtitle" = "You will be able to complete your transaction on the third-party provider, %@";
 "onramp_redirecting_to_provider_title" = "Redirecting to %@...";
 "onramp_residency_bottomsheet_country_not_supported" = "Our services are not available in this country";
-"onramp_residency_bottomsheet_country_subtitle" = "Change or confirm it";
 "onramp_residency_bottomsheet_title" = "Your residence has been identified as";
 "onramp_settings_residence" = "Residence";
 "onramp_settings_residence_description" = "Please select the correct country to ensure accurate payment options and services.";
