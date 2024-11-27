@@ -203,6 +203,11 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                     .networkService
                     .send(transaction: KaspaTransactionRequest(transaction: revealTx))
                     .mapSendError(tx: encodedRawTransactionData?.hexString.lowercased())
+                    .handleEvents(receiveFailure: { [weak manager] _ in
+                        // A failed reveal tx should trigger `wallet` update so the SDK consumer
+                        // can observe and handle it (e.g. display a notification)
+                        manager?.wallet.setAssetRequirements()
+                    })
                     .eraseToAnyPublisher()
             }
             .withWeakCaptureOf(self)
@@ -301,6 +306,11 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                     .networkService
                     .send(transaction: KaspaTransactionRequest(transaction: tx))
                     .mapSendError(tx: encodedRawTransactionData?.hexString.lowercased())
+                    .handleEvents(receiveFailure: { [weak manager] _ in
+                        // A failed reveal tx should trigger `wallet` update so the SDK consumer
+                        // can observe and handle it (e.g. display a notification)
+                        manager?.wallet.setAssetRequirements()
+                    })
                     .eraseToAnyPublisher()
             }
             .withWeakCaptureOf(self)
@@ -494,6 +504,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
         let record = mapper.mapToPendingTransactionRecord(transaction: transaction, hash: hash)
         wallet.addPendingTransaction(record)
         pendingTokenTransactionHashes[token, default: []].insert(hash)
+        wallet.clearAssetRequirements()
     }
 }
 

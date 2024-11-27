@@ -37,6 +37,10 @@ public struct Wallet {
         return !pendingTransactions.isEmpty
     }
 
+    /// This variable is not meant to be read outside of the wallet and simply triggers
+    /// willSet/didSet/CurrentValueSubject with the value of this `Wallet` to update.
+    private var hasAssetRequirements: Bool = false
+
     public init(blockchain: Blockchain, addresses: [AddressType: Address]) {
         self.blockchain = blockchain
         walletAddresses = addresses
@@ -143,5 +147,13 @@ extension Wallet {
 
     mutating func clearPendingTransaction() {
         pendingTransactions.removeAll()
+    }
+
+    mutating func setAssetRequirements() {
+        hasAssetRequirements = true
+    }
+
+    mutating func clearAssetRequirements() {
+        hasAssetRequirements = false
     }
 }
