@@ -48,6 +48,7 @@
 		2D3E1DF52C9ACE80006AF975 /* CardsInfoPagerBottomOverlayFactoryParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3E1DF42C9ACE80006AF975 /* CardsInfoPagerBottomOverlayFactoryParams.swift */; };
 		2D3E1EDF2C9D6F96006AF975 /* WalletSelectorRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3E1EDE2C9D6F96006AF975 /* WalletSelectorRoutable.swift */; };
 		2D42AA592C6379DC006A2FD4 /* Analytics+Markets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D42AA582C6379DC006A2FD4 /* Analytics+Markets.swift */; };
+		2D4C5E922CE7B676001346E4 /* XodexExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4C5E902CE7B676001346E4 /* XodexExternalLinkProvider.swift */; };
 		2D535E702A0CB4D20081EB76 /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D535E6B2A0CB4D20081EB76 /* NotificationView.swift */; };
 		2D535E722A0CB4D20081EB76 /* BottomSheetInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D535E6E2A0CB4D20081EB76 /* BottomSheetInfoView.swift */; };
 		2D535E732A0CB4D20081EB76 /* BottomSheetInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D535E6F2A0CB4D20081EB76 /* BottomSheetInfoViewModel.swift */; };
@@ -3163,6 +3164,7 @@
 		2D3E1DF42C9ACE80006AF975 /* CardsInfoPagerBottomOverlayFactoryParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardsInfoPagerBottomOverlayFactoryParams.swift; sourceTree = "<group>"; };
 		2D3E1EDE2C9D6F96006AF975 /* WalletSelectorRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletSelectorRoutable.swift; sourceTree = "<group>"; };
 		2D42AA582C6379DC006A2FD4 /* Analytics+Markets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Analytics+Markets.swift"; sourceTree = "<group>"; };
+		2D4C5E902CE7B676001346E4 /* XodexExternalLinkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XodexExternalLinkProvider.swift; sourceTree = "<group>"; };
 		2D535E6B2A0CB4D20081EB76 /* NotificationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 		2D535E6E2A0CB4D20081EB76 /* BottomSheetInfoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BottomSheetInfoView.swift; sourceTree = "<group>"; };
 		2D535E6F2A0CB4D20081EB76 /* BottomSheetInfoViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BottomSheetInfoViewModel.swift; sourceTree = "<group>"; };
@@ -6347,6 +6349,14 @@
 				2D3E1DC22C99CCEE006AF975 /* MainBottomSheetHintView.swift */,
 			);
 			path = UIComponents;
+			sourceTree = "<group>";
+		};
+		2D4C5E912CE7B676001346E4 /* Xodex */ = {
+			isa = PBXGroup;
+			children = (
+				2D4C5E902CE7B676001346E4 /* XodexExternalLinkProvider.swift */,
+			);
+			path = Xodex;
 			sourceTree = "<group>";
 		};
 		2D535E6A2A0CB4D20081EB76 /* NotificationView */ = {
@@ -10755,6 +10765,7 @@
 				B62D3E792CBC79D900C2460E /* VeChain */,
 				B62D3E7D2CBC79D900C2460E /* XDC */,
 				B62D3EA82CBC79D900C2460E /* XRP */,
+				2D4C5E912CE7B676001346E4 /* Xodex */,
 			);
 			path = Blockchains;
 			sourceTree = "<group>";
@@ -19020,6 +19031,7 @@
 				B62D41512CBC79DA00C2460E /* SubscanAPIParams.ExtrinsicsList.swift in Sources */,
 				B62D3FA92CBC79DA00C2460E /* AlgorandWalletManager.swift in Sources */,
 				B62D40D72CBC79DA00C2460E /* FilecoinTransactionBuilder.swift in Sources */,
+				2D4C5E922CE7B676001346E4 /* XodexExternalLinkProvider.swift in Sources */,
 				B62D429C2CBC79DB00C2460E /* URLSessionWebSocketTaskWrapper.swift in Sources */,
 				B62D41A12CBC79DA00C2460E /* SuiTarget.swift in Sources */,
 				B62D41EC2CBC79DB00C2460E /* VeChainNetworkParams.swift in Sources */,
