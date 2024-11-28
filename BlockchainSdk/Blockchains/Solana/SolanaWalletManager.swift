@@ -23,8 +23,6 @@ class SolanaWalletManager: BaseManager, WalletManager {
     // It is taken into account in the calculation of the account rent commission for the sender
     private var mainAccountRentExemption: Decimal = 0
 
-    private var minimalBalanceForRentExemptionValue: Amount?
-
     override func update(completion: @escaping (Result<Void, Error>) -> Void) {
         let transactionIDs = wallet.pendingTransactions.map { $0.hash }
 
@@ -276,19 +274,8 @@ private extension SolanaWalletManager {
 
 extension SolanaWalletManager: RentProvider {
     func minimalBalanceForRentExemption() -> AnyPublisher<Amount, Error> {
-        networkService.minimalBalanceForRentExemption()
-            .tryMap { [weak self] balance in
-                guard let self = self else {
-                    throw WalletError.empty
-                }
-
-                let blockchain = wallet.blockchain
-                return Amount(with: blockchain, type: .coin, value: balance)
-            }
-            .handleEvents(receiveOutput: { [weak self] output in
-                self?.minimalBalanceForRentExemptionValue = output
-            })
-            .eraseToAnyPublisher()
+        let amountValue = Amount(with: wallet.blockchain, value: mainAccountRentExemption)
+        return CurrentValueSubject(amountValue).eraseToAnyPublisher()
     }
 
     func rentAmount() -> AnyPublisher<Amount, Error> {
@@ -315,8 +302,8 @@ extension SolanaWalletManager: TransactionValidator {
     }
 
     private func validateInternal(amount: Amount, fee: Fee) throws {
-        if let balance = wallet.amounts[.coin],
-           let minimalBalanceForRentExemptionValue {
+        if let balance = wallet.amounts[.coin]  {
+            let minimalBalanceForRentExemptionValue = Amount(with: wallet.blockchain, value: mainAccountRentExemption)
             let remainingBalance = balance.value - (amount.value + fee.amount.value)
 
             if remainingBalance > 0, remainingBalance < minimalBalanceForRentExemptionValue.value {
@@ -359,31 +346,3 @@ extension SolanaWalletManager: StakeKitTransactionSender, StakeKitTransactionSen
         try await networkService.sendRaw(base64serializedTransaction: rawTransaction).async()
     }
 }
-
-/*
- // TODO: - https://tangem.atlassian.net/browse/IOS-8538
-
- // MARK: - MinimumBalanceRestrictable
-
- extension SolanaWalletManager: MinimumBalanceRestrictable {
-     var minimumBalance: Amount {
-         Amount(with: wallet.blockchain, value: mainAccountRentExemption)
-     }
-
-     // Required to determine the remaining rent when sending the token
-     func validateMinimumBalance(amount: Amount, fee: Amount) throws {
-         guard case .token = amount.type else {
-             return
-         }
-
-         guard let balance = wallet.amounts[.coin] else {
-             throw ValidationError.balanceNotFound
-         }
-
-         let remainderBalance = balance - fee
-         if remainderBalance < minimumBalance {
-             throw ValidationError.amountExceedsBalance
-         }
-     }
- }
- */
