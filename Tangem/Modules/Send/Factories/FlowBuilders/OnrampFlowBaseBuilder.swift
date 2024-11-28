@@ -68,7 +68,8 @@ struct OnrampFlowBaseBuilder {
             sendAmountCompactViewModel: .none,
             onrampAmountCompactViewModel: onrampAmountCompactViewModel,
             stakingValidatorsCompactViewModel: .none,
-            sendFeeCompactViewModel: .none
+            sendFeeCompactViewModel: .none,
+            onrampStatusCompactViewModel: .init()
         )
 
         let stepsManager = CommonOnrampStepsManager(

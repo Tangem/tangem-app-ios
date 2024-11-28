@@ -348,15 +348,13 @@ extension OnrampModel: OnrampRedirectingOutput {
             externalTxId: data.externalTxId
         )
 
+        onrampPendingTransactionsRepository
+            .onrampTransactionDidSend(txData, userWalletId: userWalletId)
+
         DispatchQueue.main.async {
             self.router?.openWebView(url: data.widgetUrl) { [weak self] in
-                guard let self else { return }
-                onrampPendingTransactionsRepository.onrampTransactionDidSend(
-                    txData,
-                    userWalletId: userWalletId
-                )
-                _transactionTime.send(Date())
-                router?.openFinishStep()
+                self?._transactionTime.send(Date())
+                self?.router?.openFinishStep()
             }
         }
     }
