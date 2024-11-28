@@ -15,6 +15,15 @@ struct CardAuthorizationResult {
 }
 
 protocol CardAuthorizationProcessor {
+    // Task implementation
+    func getAuthorizationChallenge(for input: VisaCardActivationInput) async throws -> String
+    func getAccessToken(
+        signedChallenge: Data,
+        salt: Data,
+        cardInput: VisaCardActivationInput
+    ) async throws -> VisaAuthorizationTokens
+
+    // Async implementation
     func authorizeCard(with input: VisaCardActivationInput) async throws -> CardAuthorizationResult
 }
 
@@ -40,7 +49,7 @@ final class CommonCardAuthorizationProcessor {
     }
 }
 
-private extension CommonCardAuthorizationProcessor {
+extension CommonCardAuthorizationProcessor {
     func getAuthorizationChallenge(for input: VisaCardActivationInput) async throws -> String {
         log("Attempting to load authorization challenge")
         let challengeResponse = try await authorizationService.getAuthorizationChallenge(

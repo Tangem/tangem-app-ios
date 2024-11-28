@@ -64,7 +64,7 @@ private extension CommonCardSetupHandler {
         }
 
         let createWalletTask = CreateWalletTask(curve: utils.mandatoryCurve)
-        let _ = try await createWalletTask.run(in: session)
+        _ = try await createWalletTask.run(in: session)
         log("Wallet successfully created. Start generating OTP")
 
         try await createOTP(accessCode: accessCode, in: session, on: card)

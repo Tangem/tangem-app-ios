@@ -48,6 +48,7 @@ public struct VisaActivationManagerFactory {
             cardInput: cardInput,
             authorizationService: authorizationService,
             authorizationTokenHandler: tokenHandler,
+            tangemSdk: tangemSdk,
             authorizationProcessor: authorizationProcessor,
             cardSetupHandler: cardSetupHandler,
             cardActivationOrderProvider: activationOrderProvider,
