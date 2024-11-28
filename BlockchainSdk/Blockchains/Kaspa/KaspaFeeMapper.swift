@@ -45,7 +45,7 @@ struct KaspaFeeMapper {
         return buckets.map { bucket in
             let feeRate = Decimal(bucket.feerate)
             let value = mass * feeRate / blockchain.decimalValue
-            let valueRevealFeeMock = KaspaKRC20.RevealTransactionMassConstant * feeRate / blockchain.decimalValue
+            let valueRevealFeeMock = KaspaKRC20.Constants.revealTransactionMass * feeRate / blockchain.decimalValue
             return Fee(
                 Amount(with: blockchain, value: value),
                 parameters: KaspaKRC20.RevealTransactionFeeParameter(amount: .init(with: blockchain, value: valueRevealFeeMock))

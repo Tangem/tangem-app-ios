@@ -194,7 +194,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                 return revealTx
             }
             .eraseToAnyPublisher()
-            .delay(for: .seconds(2), scheduler: DispatchQueue.main)
+            .delay(for: .seconds(KaspaKRC20.Constants.revealTransactionSendDelay), scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .flatMap { manager, revealTx in
                 // Send Reveal

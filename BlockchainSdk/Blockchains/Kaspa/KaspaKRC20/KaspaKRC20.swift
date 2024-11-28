@@ -21,8 +21,6 @@ struct KaspaIncompleteTokenTransactionStorageID: Hashable, Identifiable {
 }
 
 enum KaspaKRC20 {
-    static let RevealTransactionMassConstant: Decimal = 4100
-
     struct TransactionGroup {
         let kaspaCommitTransaction: KaspaTransaction
         let kaspaRevealTransaction: KaspaTransaction
@@ -134,5 +132,10 @@ enum KaspaKRC20 {
         case unableToFindIncompleteTokenTransaction
         case invalidIncompleteTokenTransaction
         case unableToBuildRevealTransaction
+    }
+
+    enum Constants {
+        static let revealTransactionMass: Decimal = 4100
+        static let revealTransactionSendDelay: TimeInterval = 2.0
     }
 }
