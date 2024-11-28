@@ -87,13 +87,13 @@ struct NowNodesAPIResolver {
         case .kusama:
             link = "https://ksm.nownodes.io/\(apiKey)"
         case .pulsechain:
-            link = "https://pulse.nownodes.io/\(apiKey)/"
+            link = "https://pulse.nownodes.io/\(apiKey)"
         case .ravencoin:
-            link = "https://rvn.nownodes.io/\(apiKey)/"
+            link = "https://rvn.nownodes.io/\(apiKey)"
         case .sui:
-            link = "https://sui.nownodes.io/\(apiKey)/"
+            link = "https://sui.nownodes.io/\(apiKey)"
         case .tezos:
-            link = "https://xtz.nownodes.io/\(apiKey)/"
+            link = "https://xtz.nownodes.io/\(apiKey)"
         default:
             return nil
         }
