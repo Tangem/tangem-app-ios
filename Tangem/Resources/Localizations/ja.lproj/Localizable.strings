@@ -653,6 +653,7 @@
 "send_notification_fee_too_high_title" = "カスタム手数料が高くなっています";
 "send_notification_high_fee_text" = "%1$@ネットワークの特殊性により、残高全体を転送する場合の手数料は高くなります。手数料を削減するには、 %2$@を残します。";
 "send_notification_high_fee_title" = "手数料が高くなっています";
+"send_notification_invalid_amount_rent_fee" = "Your account balance cannot be lower than the rent fee. Please maintain at least %@ on your account or withdraw all funds.";
 "send_notification_invalid_amount_text" = "手数料が送金金額を超えており、マイナスの値になってしまいます。";
 "send_notification_invalid_amount_title" = "無効な金額";
 "send_notification_invalid_minimum_amount_text" = "最低送金金額は%1$@です。送金後の残高が%2$@未満にならないようにしてください。";

@@ -653,6 +653,7 @@
 "send_notification_fee_too_high_title" = "Установлена высокая комиссия";
 "send_notification_high_fee_text" = "Ввиду особенности сети %1$@ комиссия при переводе всего баланса выше. Для того, чтобы снизить комиссию Вы можете оставить %2$@.";
 "send_notification_high_fee_title" = "Комиссия повышена";
+"send_notification_invalid_amount_rent_fee" = "Your account balance cannot be lower than the rent fee. Please maintain at least %@ on your account or withdraw all funds.";
 "send_notification_invalid_amount_text" = "Включенная комиссия превышает сумму перевода, что приводит к отрицательному значению";
 "send_notification_invalid_amount_title" = "Недопустимая сумма";
 "send_notification_invalid_minimum_amount_text" = "Минимальная сумма отправки - %1$@. Пожалуйста, убедитесь, что остаток после отправки также не будет меньше %2$@.";

@@ -182,6 +182,15 @@ private extension CommonSendNotificationManager {
     }
 
     func updateFeeInclusionEvent(isFeeIncluded: Bool, feeCryptoValue: Decimal) {
+        let isAmountIsLessThanRentFeeNotificationVisible = notificationInputsSubject.value.contains(where: { input in
+            guard let event = input.settings.event as? ValidationErrorEvent else {
+                return false
+            }
+            if case .amountIsLessThanRentFee = event {
+                return true
+            }
+            return false
+        })
         if isFeeIncluded {
             let feeFiatValue = feeTokenItem.currencyId.flatMap { BalanceConverter().convertToFiat(feeCryptoValue, currencyId: $0) }
 
@@ -245,6 +254,7 @@ private extension CommonSendNotificationManager {
                  .manaLimit,
                  .koinosInsufficientBalanceToSendKoin,
                  .insufficientAmountToReserveAtDestination,
+                 .amountIsLessThanRentFee,
                  .minimumRestrictAmount:
                 show(notification: .validationErrorEvent(validationErrorEvent))
             case .invalidNumber:

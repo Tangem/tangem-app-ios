@@ -74,7 +74,9 @@ private extension CommonStakingNotificationManager {
                         fiatAmountFormatted: fiatAmountFormatted
                     )
                 )
+            }
 
+            if readyToStake.maxAmount {
                 events.append(.maxAmountStaking)
             }
 
@@ -89,7 +91,9 @@ private extension CommonStakingNotificationManager {
             hideApproveInProgressNotification()
             let factory = BlockchainSDKNotificationMapper(tokenItem: tokenItem, feeTokenItem: feeTokenItem)
             let validationErrorEvent = factory.mapToValidationErrorEvent(validationError)
-
+            if case .remainingAmountIsLessThanRentFee = validationError {
+                hideAmountRelatedNotifications()
+            }
             show(error: .validationErrorEvent(validationErrorEvent))
         case .networkError:
             hideApproveInProgressNotification()
@@ -210,6 +214,17 @@ private extension CommonStakingNotificationManager {
         notificationInputsSubject.value.removeAll { input in
             switch input.settings.event {
             case StakingNotificationEvent.approveTransactionInProgress: true
+            default: false
+            }
+        }
+    }
+
+    func hideAmountRelatedNotifications() {
+        notificationInputsSubject.value.removeAll { input in
+            switch input.settings.event {
+            case StakingNotificationEvent.maxAmountStaking,
+                 StakingNotificationEvent.feeWillBeSubtractFromSendingAmount:
+                true
             default: false
             }
         }

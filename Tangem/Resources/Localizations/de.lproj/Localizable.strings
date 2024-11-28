@@ -653,6 +653,7 @@
 "send_notification_fee_too_high_title" = "Die individuelle Gebühr ist hoch";
 "send_notification_high_fee_text" = "Aufgrund der Besonderheiten des Netzes %1$@ ist die Gebühr für die Überweisung des gesamten Guthabens höher. Um die Kommission zu reduzieren, Kannst du %2$@ verlassen.";
 "send_notification_high_fee_title" = "Die Gebühr ist höher";
+"send_notification_invalid_amount_rent_fee" = "Your account balance cannot be lower than the rent fee. Please maintain at least %@ on your account or withdraw all funds.";
 "send_notification_invalid_amount_text" = "Die enthaltene Kommission übersteigt den Überweisungsbetrag, was zu einem negativen Wert führt";
 "send_notification_invalid_amount_title" = "Ungültige Menge";
 "send_notification_invalid_minimum_amount_text" = "Der Mindestbetrag für den Versand beträgt %1$@. Bitte stell sicher, dass der Restbetrag nach dem Versand nicht unter %2$@ liegt.";

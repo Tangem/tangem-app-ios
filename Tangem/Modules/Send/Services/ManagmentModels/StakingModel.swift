@@ -41,6 +41,7 @@ class StakingModel {
     private let allowanceProvider: AllowanceProvider
     private let tokenItem: TokenItem
     private let feeTokenItem: TokenItem
+    private let maxAmount: Decimal?
 
     private var timerTask: Task<Void, Error>?
     private var estimatedFeeTask: Task<Void, Never>?
@@ -56,7 +57,8 @@ class StakingModel {
         transactionDispatcher: TransactionDispatcher,
         allowanceProvider: AllowanceProvider,
         tokenItem: TokenItem,
-        feeTokenItem: TokenItem
+        feeTokenItem: TokenItem,
+        maxAmount: Decimal?
     ) {
         self.stakingManager = stakingManager
         self.transactionCreator = transactionCreator
@@ -67,6 +69,7 @@ class StakingModel {
         self.allowanceProvider = allowanceProvider
         self.tokenItem = tokenItem
         self.feeTokenItem = feeTokenItem
+        self.maxAmount = maxAmount
     }
 }
 
@@ -206,7 +209,8 @@ private extension StakingModel {
                 amount: newAmount,
                 fee: fee,
                 isFeeIncluded: includeFee,
-                stakeOnDifferentValidator: hasPreviousStakeOnDifferentValidator
+                stakeOnDifferentValidator: hasPreviousStakeOnDifferentValidator,
+                maxAmount: maxAmount.flatMap { $0 == amount } ?? false
             )
         )
     }
@@ -546,6 +550,7 @@ extension StakingModel {
             let fee: Decimal
             let isFeeIncluded: Bool
             let stakeOnDifferentValidator: Bool
+            let maxAmount: Bool
         }
     }
 }

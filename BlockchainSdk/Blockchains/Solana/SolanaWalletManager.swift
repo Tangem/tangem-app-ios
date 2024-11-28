@@ -23,6 +23,8 @@ class SolanaWalletManager: BaseManager, WalletManager {
     // It is taken into account in the calculation of the account rent commission for the sender
     private var mainAccountRentExemption: Decimal = 0
 
+    private var minimalBalanceForRentExemptionValue: Amount?
+
     override func update(completion: @escaping (Result<Void, Error>) -> Void) {
         let transactionIDs = wallet.pendingTransactions.map { $0.hash }
 
@@ -283,6 +285,9 @@ extension SolanaWalletManager: RentProvider {
                 let blockchain = wallet.blockchain
                 return Amount(with: blockchain, type: .coin, value: balance)
             }
+            .handleEvents(receiveOutput: { [weak self] output in
+                self?.minimalBalanceForRentExemptionValue = output
+            })
             .eraseToAnyPublisher()
     }
 
@@ -297,6 +302,38 @@ extension SolanaWalletManager: RentProvider {
                 return Amount(with: blockchain, type: .coin, value: fee)
             }
             .eraseToAnyPublisher()
+    }
+}
+
+extension SolanaWalletManager: TransactionValidator {
+    func validate(amount: Amount, fee: Fee, destination: DestinationType) async throws {
+        try validateInternal(amount: amount, fee: fee)
+    }
+
+    func validate(amount: Amount, fee: Fee) throws {
+        try validateInternal(amount: amount, fee: fee)
+    }
+
+    private func validateInternal(amount: Amount, fee: Fee) throws {
+        let defaultValidation = { [self] in
+            try validateAmounts(amount: amount, fee: fee.amount)
+        }
+
+        guard let balance = wallet.amounts[.coin],
+              let minimalBalanceForRentExemptionValue,
+              // no error for max amount operation
+              amount.value + fee.amount.value < balance.value else {
+            try defaultValidation()
+            return
+        }
+
+        let remainingBalance = balance.value - amount.value
+
+        if remainingBalance > 0, remainingBalance < minimalBalanceForRentExemptionValue.value {
+            throw ValidationError.remainingAmountIsLessThanRentFee(amount: minimalBalanceForRentExemptionValue)
+        }
+
+        try defaultValidation()
     }
 }
 

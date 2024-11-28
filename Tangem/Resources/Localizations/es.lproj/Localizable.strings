@@ -653,6 +653,7 @@
 "send_notification_fee_too_high_title" = "Los aranceles aduaneros son altos";
 "send_notification_high_fee_text" = "Debido a las peculiaridades de la red %1$@, la tarifa por transferir el saldo completo es más alta. Para reducir la comisión, puedes dejar %2$@.";
 "send_notification_high_fee_title" = "La tarifa es más alta";
+"send_notification_invalid_amount_rent_fee" = "Your account balance cannot be lower than the rent fee. Please maintain at least %@ on your account or withdraw all funds.";
 "send_notification_invalid_amount_text" = "La comisión incluida excede el monto de la transferencia, lo que resulta en un valor negativo";
 "send_notification_invalid_amount_title" = "Cantidad no válida";
 "send_notification_invalid_minimum_amount_text" = "La cantidad mínima de envío es %1$@. Asegúrate de que el saldo restante después del envío no sea menor que %2$@.";
