@@ -7,8 +7,8 @@
 "action_buttons_swap_navigation_bar_title" = "Swap crypto";
 "action_buttons_swap_no_available_pair_notification_message" = "Немає доступних токенів для обміну з обраним токеном. Будь ласка, оберіть інший.";
 "action_buttons_swap_no_available_pair_notification_title" = "Немає вільної пари";
-"action_buttons_you_want_to_receive" = "Choose the Token you want to Receive";
-"action_buttons_you_want_to_swap" = "Choose the Token you want to Swap";
+"action_buttons_you_want_to_receive" = "Choose the token you want to receive";
+"action_buttons_you_want_to_swap" = "Choose the token you want to swap";
 "add_custom_token_choose_network" = "Оберіть мережу";
 "add_custom_token_title" = "Додати токен";
 "add_tokens_title" = "Токени";
@@ -545,7 +545,7 @@
 "onboarding_wallet_info_title_second" = "Ідентичні картки";
 "onboarding_wallet_info_title_third" = "Код доступу";
 "onramp_avaiable_with_payment_methods" = "Available with %@";
-"onramp_choose_provider_title_hint" = "Tangem offers token buying via 3rd-party providers according to each provider's terms";
+"onramp_choose_provider_title_hint" = "Buying crypto in Tangem is powered by third-party providers on their terms.";
 "onramp_country_search" = "Пошук за країною";
 "onramp_country_unavailable" = "Недоступно";
 "onramp_currency_other" = "Інші валюти";
@@ -660,6 +660,7 @@
 "send_notification_fee_too_high_title" = "Встановлена комісія завелика";
 "send_notification_high_fee_text" = "Через особливості мережі %1$@ комісія за переказ всього балансу вища. Щоб зменшити комісію, Ви можете залишити %2$@.";
 "send_notification_high_fee_title" = "Підвищена комісія";
+"send_notification_invalid_amount_rent_fee" = "Your account balance cannot be lower than the rent fee. Please maintain at least %1$@ on your account or withdraw all funds.";
 "send_notification_invalid_amount_text" = "Включена комісія перевищує суму переказу, що призводить до від’ємного значення";
 "send_notification_invalid_amount_title" = "Недопустима сума";
 "send_notification_invalid_minimum_amount_text" = "Мінімальна сума переказу - %1$@. Будь ласка, переконайтеся, що залишок після переказу не буде меншим ніж %2$@.";

@@ -65,8 +65,9 @@ struct ActionButtonsChooseTokenView: View {
         } else {
             Text(viewModel.description)
                 .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
-                .frame(maxWidth: .infinity)
                 .padding(.init(top: 12, leading: 33, bottom: 12, trailing: 33))
+                .frame(maxWidth: .infinity)
+                .multilineTextAlignment(.center)
                 .background {
                     RoundedRectangle(cornerRadius: 12)
                         .stroke(style: .init(lineWidth: 1, dash: [4], dashPhase: 6))

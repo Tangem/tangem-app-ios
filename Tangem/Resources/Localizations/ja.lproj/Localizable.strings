@@ -1,10 +1,10 @@
 "action_buttons_buy_empty_search_message" = "ポートフォリオにトークンが見つかりませんか？マーケットから見つけ、買付のために追加してください";
-"action_buttons_buy_navigation_bar_title" = "Buy crypto";
+"action_buttons_buy_navigation_bar_title" = "暗号資産を買付";
 "action_buttons_sell_empty_search_message" = "ポートフォリオにトークンが見つかりませんか？マーケットから見つけ、売却のために追加してください";
-"action_buttons_sell_navigation_bar_title" = "Sell crypto";
+"action_buttons_sell_navigation_bar_title" = "暗号資産を売却";
 "action_buttons_swap_choose_token" = "トークンを選択";
 "action_buttons_swap_empty_search_message" = "ポートフォリオにトークンが見つかりませんか？マーケットから見つけ、スワップのために追加してください";
-"action_buttons_swap_navigation_bar_title" = "Swap crypto";
+"action_buttons_swap_navigation_bar_title" = "暗号資産をスワップ";
 "action_buttons_swap_no_available_pair_notification_message" = "選択したトークンと交換できるトークンがありません。別のトークンを選択してください。";
 "action_buttons_swap_no_available_pair_notification_title" = "利用可能なペアがありません";
 "action_buttons_you_want_to_receive" = "受け取りたいトークンを選択します";
@@ -660,6 +660,7 @@
 "send_notification_fee_too_high_title" = "カスタム手数料が高くなっています";
 "send_notification_high_fee_text" = "%1$@ネットワークの特殊性により、残高全体を転送する場合の手数料は高くなります。手数料を削減するには、 %2$@を残します。";
 "send_notification_high_fee_title" = "手数料が高くなっています";
+"send_notification_invalid_amount_rent_fee" = "Your account balance cannot be lower than the rent fee. Please maintain at least %1$@ on your account or withdraw all funds.";
 "send_notification_invalid_amount_text" = "手数料が送金金額を超えており、マイナスの値になってしまいます。";
 "send_notification_invalid_amount_title" = "無効な金額";
 "send_notification_invalid_minimum_amount_text" = "最低送金金額は%1$@です。送金後の残高が%2$@未満にならないようにしてください。";
@@ -867,9 +868,9 @@
 "token_details_unable_hide_alert_message" = "%1$@ ( %2$@ ) トークンは%3$@ネットワークの主要通貨であり、このネットワーク上の他のトークンがリストにある限り、非表示にすることはできません。";
 "token_details_unable_hide_alert_title" = "%@を非表示にできません";
 "token_swap_promotion_button" = "今すぐスワップ";
-"tokens_list_available_to_buy_header" = "Choose token you want to buy";
-"tokens_list_available_to_sell_header" = "Choose token you want to sell";
-"tokens_list_available_to_swap_header" = "Choose token you want to swap";
+"tokens_list_available_to_buy_header" = "買付したいトークンを選択します";
+"tokens_list_available_to_sell_header" = "売却したいトークンを選択します";
+"tokens_list_available_to_swap_header" = "スワップしたいトークンを選択します";
 "tokens_list_hot_crypto_header" = "ホットな暗号資産🔥";
 "tokens_list_unavailable_to_purchase_header" = "買付できません";
 "tokens_list_unavailable_to_sell_header" = "売却できません";

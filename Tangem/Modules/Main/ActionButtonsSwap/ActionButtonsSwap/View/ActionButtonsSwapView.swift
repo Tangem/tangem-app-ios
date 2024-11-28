@@ -28,7 +28,7 @@ struct ActionButtonsSwapView: View {
         ScrollView {
             VStack(spacing: 14) {
                 swapPair
-                
+
                 tokensListView
             }
             .padding(.horizontal, 16)

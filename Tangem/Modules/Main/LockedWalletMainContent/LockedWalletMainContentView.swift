@@ -13,6 +13,11 @@ struct LockedWalletMainContentView: View {
 
     var body: some View {
         VStack(spacing: 14) {
+            if let actionButtonsViewModel = viewModel.actionButtonsViewModel {
+                ActionButtonsView(viewModel: actionButtonsViewModel)
+                    .disabled(true)
+            }
+
             NotificationView(input: viewModel.lockedNotificationInput)
 
             if viewModel.isMultiWallet {

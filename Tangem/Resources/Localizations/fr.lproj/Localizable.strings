@@ -7,8 +7,8 @@
 "action_buttons_swap_navigation_bar_title" = "Swap crypto";
 "action_buttons_swap_no_available_pair_notification_message" = "Il n'y a pas de token disponible pour échanger avec le token sélectionné. Veuillez en choisir un autre.";
 "action_buttons_swap_no_available_pair_notification_title" = "Aucune paire disponible";
-"action_buttons_you_want_to_receive" = "Choose the Token you want to Receive";
-"action_buttons_you_want_to_swap" = "Choose the Token you want to Swap";
+"action_buttons_you_want_to_receive" = "Choose the token you want to receive";
+"action_buttons_you_want_to_swap" = "Choose the token you want to swap";
 "add_custom_token_choose_network" = "Choisissez le réseau";
 "add_custom_token_title" = "Ajouter un jeton personnalisé";
 "add_tokens_title" = "Gérer les jetons";
@@ -545,7 +545,7 @@
 "onboarding_wallet_info_title_second" = "Cartes identiques";
 "onboarding_wallet_info_title_third" = "Code d'accès";
 "onramp_avaiable_with_payment_methods" = "Available with %@";
-"onramp_choose_provider_title_hint" = "Tangem offers token buying via 3rd-party providers according to each provider's terms";
+"onramp_choose_provider_title_hint" = "Buying crypto in Tangem is powered by third-party providers on their terms.";
 "onramp_country_search" = "Recherche par pays";
 "onramp_country_unavailable" = "Indisponible";
 "onramp_currency_other" = "Autres devises";
@@ -660,6 +660,7 @@
 "send_notification_fee_too_high_title" = "Les frais de douane sont élevés";
 "send_notification_high_fee_text" = "En raison des particularités du réseau %1$@, les frais de transfert de la totalité du solde sont plus élevés. Pour réduire la commission, vous pouvez en laisser %2$@.";
 "send_notification_high_fee_title" = "Les frais sont plus élevés";
+"send_notification_invalid_amount_rent_fee" = "Your account balance cannot be lower than the rent fee. Please maintain at least %1$@ on your account or withdraw all funds.";
 "send_notification_invalid_amount_text" = "La commission incluse dépasse le montant du transfert, ce qui entraîne une valeur négative";
 "send_notification_invalid_amount_title" = "Montant invalide";
 "send_notification_invalid_minimum_amount_text" = "Le montant minimum d'envoi est de %1$@. Veuillez vous assurer que le solde restant après l'envoi ne sera pas inférieur à %2$@.";

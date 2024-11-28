@@ -36,6 +36,9 @@ struct MarketsTokenDetailsCoordinatorView: CoordinatorView {
                 ExpressCoordinatorView(coordinator: coordinator)
                     .expressNavigationView()
             }
+            .sheet(item: $coordinator.sendCoordinator) {
+                SendCoordinatorView(coordinator: $0)
+            }
             .detentBottomSheet(
                 item: $coordinator.tokenNetworkSelectorCoordinator,
                 detents: [.large],
