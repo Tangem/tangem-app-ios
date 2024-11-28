@@ -1,7 +1,10 @@
 "action_buttons_buy_empty_search_message" = "¿No encuentra el token en su billetera? Consulte los mercados para encontrarlo y añadirlo a la compra";
+"action_buttons_buy_navigation_bar_title" = "";
 "action_buttons_sell_empty_search_message" = "¿No encuentra el token en su billetera? Consulte los mercados para encontrarlo y añadirlo a la venta";
+"action_buttons_sell_navigation_bar_title" = "";
 "action_buttons_swap_choose_token" = "Elige el token";
 "action_buttons_swap_empty_search_message" = "¿No encuentras el token en tu billetera? Consulte los mercados para encontrarlo y agregarlo al intercambio";
+"action_buttons_swap_navigation_bar_title" = "";
 "action_buttons_swap_no_available_pair_notification_message" = "No hay tokens disponibles para intercambiar con el token seleccionado. Por favor elige otro.";
 "action_buttons_swap_no_available_pair_notification_title" = "No hay par disponible";
 "action_buttons_you_want_to_receive" = "Choose the Token you want to Receive";
@@ -117,7 +120,7 @@
 "common_fee_selector_option_market" = "Mercado";
 "common_fee_selector_option_slow" = "Lento";
 "common_fee_selector_title" = "Velocidad y tarifa";
-"common_generate_addresses" = "Obtener direcciones";
+"common_generate_addresses" = "Sincronizar direcciones";
 "common_go_to_provider" = "Ir al proveedor";
 "common_go_to_token" = "Ir al token";
 "common_hour" = "hora";
@@ -541,6 +544,7 @@
 "onboarding_wallet_info_title_fourth" = "Restaurar código de acceso";
 "onboarding_wallet_info_title_second" = "Tarjetas idénticas";
 "onboarding_wallet_info_title_third" = "Código de acceso";
+"onramp_avaiable_with_payment_methods" = "Available with %@";
 "onramp_choose_provider_title_hint" = "Providers facilitate transactions, ensuring smooth and efficient token exchanges";
 "onramp_country_search" = "Buscar por país";
 "onramp_country_unavailable" = "Indisponible";
@@ -861,6 +865,9 @@
 "token_details_unable_hide_alert_message" = "El token %1$@ (%2$@) es la moneda principal en la red %3$@ y no se puede ocultar mientras tengas otros tokens de esta red en la lista";
 "token_details_unable_hide_alert_title" = "No se puede ocultar %@";
 "token_swap_promotion_button" = "Intercambie ahora";
+"tokens_list_available_to_buy_header" = "";
+"tokens_list_available_to_sell_header" = "";
+"tokens_list_available_to_swap_header" = "";
 "tokens_list_hot_crypto_header" = "Crypto-monnaies populaire 🔥";
 "tokens_list_unavailable_to_purchase_header" = "No disponible para compra";
 "tokens_list_unavailable_to_sell_header" = "No disponible para vender";
