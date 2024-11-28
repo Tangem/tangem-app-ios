@@ -74,9 +74,7 @@ private extension CommonStakingNotificationManager {
                         fiatAmountFormatted: fiatAmountFormatted
                     )
                 )
-            }
 
-            if readyToStake.maxAmount {
                 events.append(.maxAmountStaking)
             }
 

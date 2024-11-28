@@ -28,7 +28,7 @@ enum ValidationErrorEvent: Hashable {
     case koinosInsufficientBalanceToSendKoin
 
     case minimumRestrictAmount(restrictAmountFormatted: String)
-    case amountIsLessThanRentFee(amount: String)
+    case remainingAmountIsLessThanRentFee(amount: String)
 }
 
 extension ValidationErrorEvent: NotificationEvent {
@@ -40,7 +40,7 @@ extension ValidationErrorEvent: NotificationEvent {
             return .string(Localization.sendNotificationExceedBalanceTitle)
         case .insufficientBalanceForFee(let configuration):
             return .string(Localization.warningSendBlockedFundsForFeeTitle(configuration.feeAmountTypeName))
-        case .dustRestriction, .amountIsLessThanRentFee:
+        case .dustRestriction, .remainingAmountIsLessThanRentFee:
             return .string(Localization.sendNotificationInvalidAmountTitle)
         case .existentialDeposit:
             return .string(Localization.sendNotificationExistentialDepositTitle)
@@ -97,7 +97,7 @@ extension ValidationErrorEvent: NotificationEvent {
             return Localization.koinosInsufficientBalanceToSendKoinDescription
         case .minimumRestrictAmount(let restrictAmountFormatted):
             return Localization.transferNotificationInvalidMinimumTransactionAmountText(restrictAmountFormatted)
-        case .amountIsLessThanRentFee(let amount):
+        case .remainingAmountIsLessThanRentFee(let amount):
             return Localization.sendNotificationInvalidAmountRentFee(amount)
         }
     }
@@ -126,7 +126,7 @@ extension ValidationErrorEvent: NotificationEvent {
              .notEnoughMana,
              .manaLimit,
              .koinosInsufficientBalanceToSendKoin,
-             .amountIsLessThanRentFee,
+             .remainingAmountIsLessThanRentFee,
              .minimumRestrictAmount:
             return .init(iconType: .image(Assets.redCircleWarning.image))
         }
@@ -146,7 +146,7 @@ extension ValidationErrorEvent: NotificationEvent {
              .notEnoughMana,
              .manaLimit,
              .koinosInsufficientBalanceToSendKoin,
-             .amountIsLessThanRentFee,
+             .remainingAmountIsLessThanRentFee,
              .minimumRestrictAmount:
             return .critical
         }
@@ -178,7 +178,7 @@ extension ValidationErrorEvent {
              .cardanoInsufficientBalanceToSendToken,
              .notEnoughMana,
              .koinosInsufficientBalanceToSendKoin,
-             .amountIsLessThanRentFee,
+             .remainingAmountIsLessThanRentFee,
              .minimumRestrictAmount:
             return nil
         }
