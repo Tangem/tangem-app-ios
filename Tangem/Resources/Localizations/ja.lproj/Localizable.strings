@@ -1,11 +1,14 @@
 "action_buttons_buy_empty_search_message" = "ポートフォリオにトークンが見つかりませんか？マーケットから見つけ、買付のために追加してください";
+"action_buttons_buy_navigation_bar_title" = "";
 "action_buttons_sell_empty_search_message" = "ポートフォリオにトークンが見つかりませんか？マーケットから見つけ、売却のために追加してください";
+"action_buttons_sell_navigation_bar_title" = "";
 "action_buttons_swap_choose_token" = "トークンを選択";
 "action_buttons_swap_empty_search_message" = "ポートフォリオにトークンが見つかりませんか？マーケットから見つけ、スワップのために追加してください";
+"action_buttons_swap_navigation_bar_title" = "";
 "action_buttons_swap_no_available_pair_notification_message" = "選択したトークンと交換できるトークンがありません。別のトークンを選択してください。";
 "action_buttons_swap_no_available_pair_notification_title" = "利用可能なペアがありません";
-"action_buttons_you_want_to_receive" = "Choose the Token you want to Receive";
-"action_buttons_you_want_to_swap" = "Choose the Token you want to Swap";
+"action_buttons_you_want_to_receive" = "受け取りたいトークンを選択します";
+"action_buttons_you_want_to_swap" = "スワップしたいトークンを選択します";
 "add_custom_token_choose_network" = "ネットワークを選択";
 "add_custom_token_title" = "カスタムトークンの追加";
 "add_tokens_title" = "トークンの管理";
@@ -247,7 +250,7 @@
 "express_choose_providers_subtitle" = "Tangemは、各プロバイダーの条件に従って、サードパーティプロバイダーを介してトークンスワップを提供します。";
 "express_choose_providers_title" = "プロバイダーを選択";
 "express_error_code" = "エラーが発生しました。コード: %@";
-"express_error_provider_amount_roundup" = "Error %1$@. The selected provider cannot process the specified transaction. Please round the value up to %2$@ or change it";
+"express_error_provider_amount_roundup" = "エラー%1$@ 。選択したプロバイダーは指定された取引を処理できません。値を%2$@に切り上げるか、変更してください。";
 "express_error_swap_pair_unavailable" = "選択したプロバイダーは現在利用できません。しばらくしてからもう一度お試しください。(コード: %@ )";
 "express_error_swap_unavailable" = "現在、交換はご利用いただけません。しばらくしてからもう一度お試しください。(コード: %@ )";
 "express_estimated_amount" = "推定金額";
@@ -541,6 +544,7 @@
 "onboarding_wallet_info_title_fourth" = "アクセスコードの復元";
 "onboarding_wallet_info_title_second" = "同一のカード";
 "onboarding_wallet_info_title_third" = "アクセスコード";
+"onramp_avaiable_with_payment_methods" = "%@で利用可能";
 "onramp_choose_provider_title_hint" = "プロバイダーは取引を促進し、スムーズで効率的なトークン交換を保証します";
 "onramp_country_search" = "国で検索";
 "onramp_country_unavailable" = "利用不可";
@@ -861,6 +865,9 @@
 "token_details_unable_hide_alert_message" = "%1$@ ( %2$@ ) トークンは%3$@ネットワークの主要通貨であり、このネットワーク上の他のトークンがリストにある限り、非表示にすることはできません。";
 "token_details_unable_hide_alert_title" = "%@を非表示にできません";
 "token_swap_promotion_button" = "今すぐスワップ";
+"tokens_list_available_to_buy_header" = "";
+"tokens_list_available_to_sell_header" = "";
+"tokens_list_available_to_swap_header" = "";
 "tokens_list_hot_crypto_header" = "ホットな暗号資産🔥";
 "tokens_list_unavailable_to_purchase_header" = "買付できません";
 "tokens_list_unavailable_to_sell_header" = "売却できません";

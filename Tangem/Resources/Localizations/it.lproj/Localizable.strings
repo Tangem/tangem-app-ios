@@ -1,7 +1,10 @@
 "action_buttons_buy_empty_search_message" = "Token not found in your portfolio? Check the Markets to find and add it for purchase";
+"action_buttons_buy_navigation_bar_title" = "";
 "action_buttons_sell_empty_search_message" = "Token not found in your portfolio? Check the Markets to find and add it for selling";
+"action_buttons_sell_navigation_bar_title" = "";
 "action_buttons_swap_choose_token" = "Choose the Token";
 "action_buttons_swap_empty_search_message" = "Token not found in your portfolio? Check the Markets to find and add it for swap";
+"action_buttons_swap_navigation_bar_title" = "";
 "action_buttons_swap_no_available_pair_notification_message" = "There are no available tokens to swap with the selected token. Please choose another one.";
 "action_buttons_swap_no_available_pair_notification_title" = "No available pair";
 "action_buttons_you_want_to_receive" = "Choose the Token you want to Receive";
@@ -541,6 +544,7 @@
 "onboarding_wallet_info_title_fourth" = "Access code restore";
 "onboarding_wallet_info_title_second" = "Identical cards";
 "onboarding_wallet_info_title_third" = "Access code";
+"onramp_avaiable_with_payment_methods" = "Available with %@";
 "onramp_choose_provider_title_hint" = "Providers facilitate transactions, ensuring smooth and efficient token exchanges";
 "onramp_country_search" = "Search by country";
 "onramp_country_unavailable" = "Unavailable";
@@ -861,6 +865,9 @@
 "token_details_unable_hide_alert_message" = "The %1$@ (%2$@) token is the main currency on the %3$@ network and cannot be hidden as long as you have other tokens on this network in the list";
 "token_details_unable_hide_alert_title" = "Unable to hide %@";
 "token_swap_promotion_button" = "Swap now";
+"tokens_list_available_to_buy_header" = "";
+"tokens_list_available_to_sell_header" = "";
+"tokens_list_available_to_swap_header" = "";
 "tokens_list_hot_crypto_header" = "Hot crypto 🔥";
 "tokens_list_unavailable_to_purchase_header" = "Unavailable to purchase";
 "tokens_list_unavailable_to_sell_header" = "Unavailable to sell";
