@@ -16,7 +16,13 @@ struct OnrampPaymentMethodsFilter {
         }
 
         if paymentMethod.type == .applePay {
-            return PKPaymentAuthorizationViewController.canMakePayments()
+            // We have to specify `networks` because on devices that
+            // support making payments but don’t have any payment cards configured,
+            // the `canMakePayments()` method returns true because
+            // the hardware and parental controls allow making payments
+            return PKPaymentAuthorizationViewController.canMakePayments(
+                usingNetworks: [.visa, .masterCard]
+            )
         }
 
         return true
