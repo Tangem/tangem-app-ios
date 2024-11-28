@@ -191,6 +191,9 @@ private extension CommonSendNotificationManager {
             }
             return false
         })
+        guard !isAmountIsLessThanRentFeeNotificationVisible else {
+            return
+        }
         if isFeeIncluded {
             let feeFiatValue = feeTokenItem.currencyId.flatMap { BalanceConverter().convertToFiat(feeCryptoValue, currencyId: $0) }
 
@@ -203,13 +206,17 @@ private extension CommonSendNotificationManager {
                 fiatAmountFormatted: fiatAmountFormatted
             ))
         } else {
-            hideAllNotification { event in
-                if case .feeWillBeSubtractFromSendingAmount = event {
-                    return true
-                }
+            hideFeeWillBeSubtractedNotification()
+        }
+    }
 
-                return false
+    private func hideFeeWillBeSubtractedNotification() {
+        hideAllNotification { event in
+            if case .feeWillBeSubtractFromSendingAmount = event {
+                return true
             }
+
+            return false
         }
     }
 }
@@ -243,6 +250,9 @@ private extension CommonSendNotificationManager {
             let validationErrorEvent = factory.mapToValidationErrorEvent(validationError)
 
             switch validationErrorEvent {
+            case .amountIsLessThanRentFee:
+                hideFeeWillBeSubtractedNotification()
+                fallthrough
             case .dustRestriction,
                  .insufficientBalance,
                  .insufficientBalanceForFee,
@@ -254,7 +264,6 @@ private extension CommonSendNotificationManager {
                  .manaLimit,
                  .koinosInsufficientBalanceToSendKoin,
                  .insufficientAmountToReserveAtDestination,
-                 .amountIsLessThanRentFee,
                  .minimumRestrictAmount:
                 show(notification: .validationErrorEvent(validationErrorEvent))
             case .invalidNumber:
