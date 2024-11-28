@@ -15,7 +15,7 @@ struct OnrampStatusCompactView: View {
         VStack(spacing: 10) {
             statusesView
 
-            DefaultFooterView("You can check the transaction status from the token page.")
+            DefaultFooterView(Localization.onrampStatusesViewFooter)
                 .padding(.horizontal, 14)
         }
     }
