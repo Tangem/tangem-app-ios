@@ -1,7 +1,10 @@
 "action_buttons_buy_empty_search_message" = "Token not found in your portfolio? Check the Markets to find and add it for purchase";
+"action_buttons_buy_navigation_bar_title" = "";
 "action_buttons_sell_empty_search_message" = "Token not found in your portfolio? Check the Markets to find and add it for selling";
+"action_buttons_sell_navigation_bar_title" = "";
 "action_buttons_swap_choose_token" = "Выберите токен";
 "action_buttons_swap_empty_search_message" = "Token not found in your portfolio? Check the Markets to find and add it for swap";
+"action_buttons_swap_navigation_bar_title" = "";
 "action_buttons_swap_no_available_pair_notification_message" = "Нет доступных токенов для обмена с выбранным токеном, пожалуйста, выберите другой.";
 "action_buttons_swap_no_available_pair_notification_title" = "Нет доступных пар";
 "action_buttons_you_want_to_receive" = "Choose the Token you want to Receive";
@@ -541,6 +544,7 @@
 "onboarding_wallet_info_title_fourth" = "Восстановление кода доступа";
 "onboarding_wallet_info_title_second" = "Идентичные карты";
 "onboarding_wallet_info_title_third" = "Код доступа";
+"onramp_avaiable_with_payment_methods" = "Available with %@";
 "onramp_choose_provider_title_hint" = "Providers facilitate transactions, ensuring smooth and efficient token exchanges";
 "onramp_country_search" = "Поиск по стране";
 "onramp_country_unavailable" = "Недоступно";
@@ -861,6 +865,9 @@
 "token_details_unable_hide_alert_message" = "Токен %1$@ (%2$@) является основной валютой в сети %3$@ и не может быть скрыт до тех пор, пока у вас в списке есть другие токены этой сети";
 "token_details_unable_hide_alert_title" = "Невозможно скрыть %@";
 "token_swap_promotion_button" = "Обменять";
+"tokens_list_available_to_buy_header" = "";
+"tokens_list_available_to_sell_header" = "";
+"tokens_list_available_to_swap_header" = "";
 "tokens_list_hot_crypto_header" = "В тренде🔥";
 "tokens_list_unavailable_to_purchase_header" = "Недоступно для покупки";
 "tokens_list_unavailable_to_sell_header" = "Недоступно для продажи";
@@ -939,7 +946,7 @@
 "wallet_network_group_title" = "Сеть %@";
 "wallet_notification_address_copied" = "Адрес скопирован в буфер обмена";
 "wallet_promo_banner_button_title" = "Получить с 10%% скидкой";
-"wallet_promo_banner_description" = "Получите доступ к более чем 13 000 криптовалют. Покупайте, продавайте, обменяйте и стейкайте в один клик. Свяжите до трех карт для резервного копирования. ";
+"wallet_promo_banner_description" = "Получите доступ к более чем 13 000 криптовалют. Покупайте, продавайте, обменивайте и стейкайте в один клик. Свяжите до трех карт для резервного копирования. ";
 "wallet_promo_banner_title" = "Откройте Tangem Wallet";
 "wallet_settings_title" = "Настройки кошелька";
 "wallet_title" = "Tangem";

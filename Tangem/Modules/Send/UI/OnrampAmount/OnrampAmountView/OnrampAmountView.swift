@@ -25,30 +25,36 @@ struct OnrampAmountView: View {
 
     private var amountContent: some View {
         VStack(spacing: 16) {
-            Button(action: viewModel.onChangeCurrencyTap) {
-                HStack(spacing: 8) {
-                    IconView(
-                        url: viewModel.fiatIconURL,
-                        size: CGSize(width: 36, height: 36),
-                        // Kingfisher shows a gray background even if it has a cached image
-                        forceKingfisher: false
-                    )
+            tokenIconView
 
-                    Assets.chevronDownMini.image
-                        .resizable()
-                        .frame(size: .init(bothDimensions: 9))
-                        .foregroundColor(Colors.Icon.informative)
-                }
-            }
-            .matchedGeometryEffect(id: namespace.names.tokenIcon, in: namespace.id)
+            textView
+        }
+        .padding(.vertical, 20)
+    }
 
-            VStack(spacing: 8) {
-                textView
+    @ViewBuilder
+    private var tokenIconView: some View {
+        let chevronSize: CGFloat = 9
 
-                bottomInfoText
+        Button(action: viewModel.onChangeCurrencyTap) {
+            HStack(spacing: 8) {
+                // Use the `Spacer` for center `IconView`
+                FixedSpacer(width: chevronSize)
+
+                IconView(
+                    url: viewModel.fiatIconURL,
+                    size: CGSize(width: 36, height: 36),
+                    // Kingfisher shows a gray background even if it has a cached image
+                    forceKingfisher: false
+                )
+
+                Assets.chevronDownMini.image
+                    .resizable()
+                    .frame(size: .init(bothDimensions: chevronSize))
+                    .foregroundColor(Colors.Icon.informative)
             }
         }
-        .padding(.top, 20)
+        .matchedGeometryEffect(id: namespace.names.tokenIcon, in: namespace.id)
     }
 
     private var textView: some View {
@@ -62,32 +68,13 @@ struct OnrampAmountView: View {
                 .skeletonable(isShown: viewModel.isLoading, width: 100, height: 28)
 
             LoadableTextView(
-                state: viewModel.alternativeAmount,
+                state: viewModel.bottomInfoText.state,
                 font: Fonts.Regular.footnote,
-                textColor: Colors.Text.tertiary,
+                textColor: viewModel.bottomInfoText.isError ? Colors.Text.warning : Colors.Text.tertiary,
                 loaderSize: CGSize(width: 80, height: 13)
             )
-            .lineLimit(1)
+            .lineLimit(2)
             .matchedGeometryEffect(id: namespace.names.amountFiatText, in: namespace.id)
         }
-    }
-
-    private var bottomInfoText: some View {
-        Group {
-            switch viewModel.bottomInfoText {
-            case .none:
-                // Hold empty space
-                Text(" ")
-                    .style(Fonts.Regular.caption1, color: Colors.Text.warning)
-            case .info(let string):
-                Text(string)
-                    .style(Fonts.Regular.caption1, color: Colors.Text.attention)
-            case .error(let string):
-                Text(string)
-                    .style(Fonts.Regular.caption1, color: Colors.Text.warning)
-            }
-        }
-        .multilineTextAlignment(.center)
-        .lineLimit(2)
     }
 }

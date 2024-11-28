@@ -60,7 +60,7 @@ class CommonRestakingStepsManager {
             // Ignore double click
             return
         }
-        
+
         stack.removeLast()
         let step = currentStep()
 
