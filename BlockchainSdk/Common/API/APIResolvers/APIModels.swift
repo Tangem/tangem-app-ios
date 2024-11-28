@@ -24,6 +24,7 @@ public enum NetworkProviderType {
     case tangemRosetta
     case fireAcademy
     case tangemChia
+    case tangemChia3
     case solana
     case kaspa
     case dwellir
