@@ -4,8 +4,8 @@
 "action_buttons_swap_empty_search_message" = "Token not found in your portfolio? Check the Markets to find and add it for swap";
 "action_buttons_swap_no_available_pair_notification_message" = "Нет доступных токенов для обмена с выбранным токеном, пожалуйста, выберите другой.";
 "action_buttons_swap_no_available_pair_notification_title" = "Нет доступных пар";
-"action_buttons_you_want_to_receive" = "Вы хотите получить";
-"action_buttons_you_want_to_swap" = "Вы хотите обменять";
+"action_buttons_you_want_to_receive" = "Choose the Token you want to Receive";
+"action_buttons_you_want_to_swap" = "Choose the Token you want to Swap";
 "add_custom_token_choose_network" = "Выберите сеть";
 "add_custom_token_title" = "Добавить токен";
 "add_tokens_title" = "Валюты";
@@ -117,7 +117,7 @@
 "common_fee_selector_option_market" = "По рынку";
 "common_fee_selector_option_slow" = "Медленно";
 "common_fee_selector_title" = "Скорость и комиссия";
-"common_generate_addresses" = "Получить ваши адреса";
+"common_generate_addresses" = "Синхронизировать адреса";
 "common_go_to_provider" = "К провайдеру";
 "common_go_to_token" = "Перейти в токен";
 "common_hour" = "час";
@@ -247,6 +247,7 @@
 "express_choose_providers_subtitle" = "Tangem предоставляет доступ к обмену через сторонних поставщиков в соответствии с их правилами";
 "express_choose_providers_title" = "Выберите провайдера";
 "express_error_code" = "Произошла ошибка. Код: %@";
+"express_error_provider_amount_roundup" = "Error %1$@. The selected provider cannot process the specified transaction. Please round the value up to %2$@ or change it";
 "express_error_swap_pair_unavailable" = "Выбранный провайдер недоступен для обмена. Попробуйте позже. (Код: %@)";
 "express_error_swap_unavailable" = "В данный момент обмен невозможен. Попробуйте позже. (Код: %@)";
 "express_estimated_amount" = "Курс обмена";
@@ -540,6 +541,7 @@
 "onboarding_wallet_info_title_fourth" = "Восстановление кода доступа";
 "onboarding_wallet_info_title_second" = "Идентичные карты";
 "onboarding_wallet_info_title_third" = "Код доступа";
+"onramp_choose_provider_title_hint" = "Providers facilitate transactions, ensuring smooth and efficient token exchanges";
 "onramp_country_search" = "Поиск по стране";
 "onramp_country_unavailable" = "Недоступно";
 "onramp_currency_other" = "Другие валюты";
@@ -552,7 +554,6 @@
 "onramp_redirecting_to_provider_subtitle" = "Вы сможете завершить транзакцию через сервис стороннего провайдера, %@";
 "onramp_redirecting_to_provider_title" = "Переход к %@...";
 "onramp_residency_bottomsheet_country_not_supported" = "Наши сервисы недоступны в данной стране";
-"onramp_residency_bottomsheet_country_subtitle" = "Change or confirm it";
 "onramp_residency_bottomsheet_title" = "Your residence has been identified as";
 "onramp_settings_residence" = "Residence";
 "onramp_settings_residence_description" = "Please select the correct country to ensure accurate payment options and services.";

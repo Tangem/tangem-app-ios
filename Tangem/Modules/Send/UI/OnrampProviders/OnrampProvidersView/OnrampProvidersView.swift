@@ -33,7 +33,10 @@ struct OnrampProvidersView: View {
     private var headerView: some View {
         BottomSheetHeaderView(
             title: Localization.expressChooseProvidersTitle,
-            subtitle: Localization.expressChooseProvidersSubtitle
+            subtitle: Localization.expressChooseProvidersSubtitle,
+            leading: {
+                CloseButton(dismiss: viewModel.closeView)
+            }
         )
         .padding(.top, 8)
         .padding(.horizontal, 16)
