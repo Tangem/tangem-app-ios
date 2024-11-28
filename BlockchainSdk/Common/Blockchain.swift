@@ -94,6 +94,7 @@ public indirect enum Blockchain: Equatable, Hashable {
     case canxium
     case casper(curve: EllipticCurve, testnet: Bool)
     case chiliz(testnet: Bool)
+    case xodex
 
     public var isTestnet: Bool {
         switch self {
@@ -161,7 +162,8 @@ public indirect enum Blockchain: Equatable, Hashable {
              .bittensor,
              .filecoin,
              .energyWebX,
-             .canxium:
+             .canxium,
+             .xodex:
             return false
         case .stellar(_, let testnet),
              .hedera(_, let testnet),
@@ -304,7 +306,8 @@ public indirect enum Blockchain: Equatable, Hashable {
              .energyWebX,
              .core,
              .canxium,
-             .chiliz:
+             .chiliz,
+             .xodex:
             return 18
         case .cardano,
              .xrp,
@@ -479,6 +482,8 @@ public indirect enum Blockchain: Equatable, Hashable {
             return "CSPR"
         case .chiliz:
             return "CHZ"
+        case .xodex:
+            return "XODEX"
         }
     }
 
@@ -719,10 +724,20 @@ public indirect enum Blockchain: Equatable, Hashable {
     // TODO: This property only for EVM for now. Refactor all other wallet managers
     var allowsFeeSelection: Bool {
         switch self {
-        case .telos:
+        case .telos, .xodex:
             return false
         default:
             return true
+        }
+    }
+
+    /// This parameter is used to process the commission parameter when sending the token
+    public var allowsZeroFeePaid: Bool {
+        switch self {
+        case .xodex:
+            return true
+        default:
+            return false
         }
     }
 }
@@ -775,6 +790,7 @@ public extension Blockchain {
         case .core: return isTestnet ? 1115 : 1116
         case .canxium: return 3003
         case .chiliz: return isTestnet ? 88882 : 88888
+        case .xodex: return 2415
         default:
             return nil
         }
@@ -845,6 +861,7 @@ public extension Blockchain {
         case .energyWebEVM: return false // eth_feeHistory all zeroes
         case .core: return false
         case .chiliz: return false
+        case .xodex: return false
         default:
             assertionFailure("Don't forget about evm here")
             return false
@@ -985,6 +1002,7 @@ extension Blockchain: Codable {
         case .canxium: return "canxium"
         case .casper: return "casper-network"
         case .chiliz: return "chiliz"
+        case .xodex: return "xodex"
         }
     }
 
@@ -1084,6 +1102,7 @@ extension Blockchain: Codable {
         case "canxium": self = .canxium
         case "casper-network": self = .casper(curve: curve, testnet: isTestnet)
         case "chiliz": self = .chiliz(testnet: isTestnet)
+        case "xodex": self = .xodex
         default:
             throw BlockchainSdkError.decodingFailed
         }
@@ -1330,6 +1349,8 @@ private extension Blockchain {
             return "casper-network"
         case .chiliz:
             return "chiliz"
+        case .xodex:
+            return "xodex"
         }
     }
 
@@ -1386,7 +1407,8 @@ extension Blockchain {
              .energyWebEVM,
              .core,
              .canxium,
-             .chiliz:
+             .chiliz,
+             .xodex:
             return EthereumWalletAssembly()
         case .optimism,
              .manta,

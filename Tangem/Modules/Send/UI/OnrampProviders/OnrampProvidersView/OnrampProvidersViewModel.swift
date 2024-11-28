@@ -38,6 +38,10 @@ final class OnrampProvidersViewModel: ObservableObject {
 
         bind()
     }
+
+    func closeView() {
+        coordinator?.closeOnrampProviders()
+    }
 }
 
 // MARK: - Private
@@ -112,8 +116,14 @@ private extension OnrampProvidersViewModel {
 
     func state(state: OnrampProviderManagerState) -> OnrampProviderRowViewData.State? {
         switch state {
-        case .idle, .loading, .notSupported:
+        case .idle, .loading:
             return nil
+        case .notSupported(.currentPair):
+            // Will be update
+            return .unavailable(reason: "Unavailable for this pair")
+        case .notSupported(.paymentMethod):
+            // Will be update
+            return .unavailable(reason: "Unavailable for this payment method")
         case .loaded:
             return .available(estimatedTime: "5 min")
         case .restriction(.tooSmallAmount(let minAmount)):

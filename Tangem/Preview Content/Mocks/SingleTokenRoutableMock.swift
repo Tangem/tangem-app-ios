@@ -31,4 +31,6 @@ class SingleTokenRoutableMock: SingleTokenRoutable {
     func openMarketsTokenDetails(for tokenItem: TokenItem) {}
 
     func openInSafari(url: URL) {}
+
+    func openOnramp(walletModel: WalletModel) {}
 }
