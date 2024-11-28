@@ -23,6 +23,7 @@ extension TokenItemViewState {
         case .loading:
             self = .loading
         case .idle:
+            // respect walletModel.isLoading and walletModel.isSuccessfullyLoaded
             switch walletModel.stakingManagerState {
             case .loadingError(let error):
                 self = .networkError(error)
