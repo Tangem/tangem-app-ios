@@ -564,6 +564,7 @@
 "onramp_settings_residence" = "Страна проживания";
 "onramp_settings_residence_description" = "Пожалуйста, укажите правильную страну, чтобы обеспечить точность доступных способов оплаты и услуг.";
 "onramp_settings_title" = "Настройки";
+"onramp_statuses_view_footer" = "You can check the transaction status from the token page.";
 "onramp_transaction_status_footer_text" = "Вы можете закрыть этот экран и проверить статус транзакции на экране информации о токене.";
 "onramp_via" = "Через";
 "organize_tokens_group" = "Группы";
@@ -622,6 +623,10 @@
 "scan_card_settings_button" = "Сканировать";
 "scan_card_settings_message" = "Отсканируйте карту или кольцо, чтобы изменить ее настройки. Изменения затронут только ту карту или кольцо, которые вы отсканировали, и не повлияют на другие устройства, привязанные к вашему кошельку.";
 "scan_card_settings_title" = "Приготовьте свой Tangem!";
+"selling_insufficient_balance_alert_message" = "На вашем балансе недостаточно средств для продажи этой криптовалюты. Пожалуйста, пополните нужный актив, чтобы продолжить.";
+"selling_insufficient_balance_alert_title" = "Недостаточно средств";
+"selling_regional_restriction_alert_message" = "Продажа криптовалюты в вашем регионе временно недоступна. Мы активно работаем над тем, чтобы добавить эту возможность. Следите за нашими новостями!";
+"selling_regional_restriction_alert_title" = "Региональные ограничения";
 "send_additional_field_already_included" = "Уже содержится во введенном адресе";
 "send_alert_fee_too_high_text" = "Сумма комиссии в %@ раз превышает рекомендованную. Убедитесь, что указанная комиссия верна.";
 "send_alert_fee_too_low_text" = "Вы указали комиссию ниже рекомендуемой, это может привести к задержке исполнения вашей транзакции. Продолжить?";

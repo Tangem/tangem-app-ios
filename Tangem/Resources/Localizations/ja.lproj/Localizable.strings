@@ -564,6 +564,7 @@
 "onramp_settings_residence" = "住居";
 "onramp_settings_residence_description" = "正確なお支払い方法とサービスを確保するため、正しい国を選択してください。";
 "onramp_settings_title" = "設定";
+"onramp_statuses_view_footer" = "You can check the transaction status from the token page.";
 "onramp_transaction_status_footer_text" = "トークンページから取引状況を確認できます";
 "onramp_via" = "経由";
 "organize_tokens_group" = "グループ";
@@ -622,6 +623,10 @@
 "scan_card_settings_button" = "カードまたはリングをスキャン";
 "scan_card_settings_message" = "カードまたはリングをスキャンして設定を変更します。変更はスキャンしたカードまたはリングにのみ影響し、ウォレットに関連付けられている他のデバイスには影響しません。";
 "scan_card_settings_title" = "Tangemを準備してください！";
+"selling_insufficient_balance_alert_message" = "You don’t have enough funds in your balance to sell this cryptocurrency. Please deposit the desired asset to proceed.";
+"selling_insufficient_balance_alert_title" = "Insufficient Balance";
+"selling_regional_restriction_alert_message" = "Selling cryptocurrency is unavailable in your region at the moment. We’re actively working to bring this option to you soon—stay tuned!";
+"selling_regional_restriction_alert_title" = "Regional Restriction";
 "send_additional_field_already_included" = "入力したアドレスにすでに含まれています";
 "send_alert_fee_too_high_text" = "手数料額が推奨額の%@倍となっています。設定を再度確認し、調整してください。";
 "send_alert_fee_too_low_text" = "推奨手数料を下回る手数料が指定されたため、取引に遅れが生じる可能性があります。続行しますか？";

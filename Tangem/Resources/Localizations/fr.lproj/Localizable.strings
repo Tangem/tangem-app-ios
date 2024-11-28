@@ -564,6 +564,7 @@
 "onramp_settings_residence" = "Résidence";
 "onramp_settings_residence_description" = "Veuillez sélectionner le bon pays pour garantir des options de paiement et des services précis.";
 "onramp_settings_title" = "Paramètres";
+"onramp_statuses_view_footer" = "You can check the transaction status from the token page.";
 "onramp_transaction_status_footer_text" = "Vous pouvez vérifier l'état de la transaction à partir de la page du jeton";
 "onramp_via" = "Via";
 "organize_tokens_group" = "Grouper";
@@ -622,6 +623,10 @@
 "scan_card_settings_button" = "Scannez votre carte";
 "scan_card_settings_message" = "Scannez la carte pour modifier ses paramètres. Les modifications n'affecteront que la carte que vous avez scannée et n'affecteront pas les autres cartes liées à votre portefeuille.";
 "scan_card_settings_title" = "Préparez votre carte !";
+"selling_insufficient_balance_alert_message" = "You don’t have enough funds in your balance to sell this cryptocurrency. Please deposit the desired asset to proceed.";
+"selling_insufficient_balance_alert_title" = "Insufficient Balance";
+"selling_regional_restriction_alert_message" = "Selling cryptocurrency is unavailable in your region at the moment. We’re actively working to bring this option to you soon—stay tuned!";
+"selling_regional_restriction_alert_title" = "Regional Restriction";
 "send_additional_field_already_included" = "Déjà inclus dans l'adresse saisie";
 "send_alert_fee_too_high_text" = "Le montant de la commission est %@ fois le montant recommandé. Assurez-vous que les paramètres personnalisés sont corrects.";
 "send_alert_fee_too_low_text" = "Vous avez spécifié une commission inférieure au montant recommandé, ce qui pourrait entraîner un retard dans votre transaction. Continuer?";
