@@ -11,16 +11,6 @@ import TangemStaking
 
 extension TokenItemViewState {
     init(walletModel: WalletModel) {
-        if walletModel.isLoading {
-            self = .loading
-            return
-        }
-
-        if walletModel.isSuccessfullyLoaded {
-            self = .loaded
-            return
-        }
-
         switch walletModel.state {
         case .created:
             self = .notLoaded
@@ -30,9 +20,19 @@ extension TokenItemViewState {
             self = .networkError(error)
         case .noDerivation:
             self = .noDerivation
-        case .loading, .idle:
-            // impossible case
-            self = .loaded
+        case .loading:
+            self = .loading
+        case .idle:
+            switch walletModel.stakingManagerState {
+            case .loadingError(let error):
+                self = .networkError(error)
+            case .availableToStake, .staked:
+                self = .loaded
+            case .loading:
+                self = .loading
+            case .notEnabled, .temporaryUnavailable:
+                self = .networkError(StakingManagerError.stakingUnavailable)
+            }
         }
     }
 }
