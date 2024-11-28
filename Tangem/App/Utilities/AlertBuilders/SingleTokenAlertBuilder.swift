@@ -52,10 +52,7 @@ struct SingleTokenAlertBuilder {
     func buyAlert(for tokenItem: TokenItem, tokenItemSwapState: TokenItemExpressState) -> AlertBinder? {
         switch tokenItemSwapState {
         case .unavailable:
-            return AlertBinder(
-                title: "",
-                message: Localization.tokenButtonUnavailabilityReasonNotExchangeable(tokenItem.name)
-            )
+            return buyUnavailableAlert(for: tokenItem)
         case .loading, .failedToLoadInfo, .notLoaded:
             return tryAgainLaterAlert
         case .available:

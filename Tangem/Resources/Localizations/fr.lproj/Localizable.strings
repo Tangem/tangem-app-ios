@@ -1,11 +1,14 @@
 "action_buttons_buy_empty_search_message" = "Jeton non trouvé dans votre portefeuille ? Consultez les marchés pour le trouver et l'ajouter à l'achat";
+"action_buttons_buy_navigation_bar_title" = "";
 "action_buttons_sell_empty_search_message" = "Jeton non trouvé dans votre portefeuille ? Consultez les marchés pour le trouver et l'ajouter à la vente";
+"action_buttons_sell_navigation_bar_title" = "";
 "action_buttons_swap_choose_token" = "Choisissez le jeton";
 "action_buttons_swap_empty_search_message" = "Jeton non trouvé dans votre portefeuille ? Consultez les marchés pour le trouver et l'ajouter à l'échange";
+"action_buttons_swap_navigation_bar_title" = "";
 "action_buttons_swap_no_available_pair_notification_message" = "Il n'y a pas de token disponible pour échanger avec le token sélectionné. Veuillez en choisir un autre.";
 "action_buttons_swap_no_available_pair_notification_title" = "Aucune paire disponible";
-"action_buttons_you_want_to_receive" = "Vous souhaitez recevoir";
-"action_buttons_you_want_to_swap" = "Vous souhaitez échanger";
+"action_buttons_you_want_to_receive" = "Choose the Token you want to Receive";
+"action_buttons_you_want_to_swap" = "Choose the Token you want to Swap";
 "add_custom_token_choose_network" = "Choisissez le réseau";
 "add_custom_token_title" = "Ajouter un jeton personnalisé";
 "add_tokens_title" = "Gérer les jetons";
@@ -117,7 +120,7 @@
 "common_fee_selector_option_market" = "Marché";
 "common_fee_selector_option_slow" = "Lent";
 "common_fee_selector_title" = "Vitesse et frais";
-"common_generate_addresses" = "Obtenir des adresses";
+"common_generate_addresses" = "Synchroniser les adresses";
 "common_go_to_provider" = "Aller au fournisseur";
 "common_go_to_token" = "Aller au jeton";
 "common_hour" = "heure";
@@ -247,6 +250,7 @@
 "express_choose_providers_subtitle" = "Tangem propose des échanges de jetons via des fournisseurs tiers selon les conditions de chaque fournisseur";
 "express_choose_providers_title" = "Choisissez un fournisseur";
 "express_error_code" = "Une erreur s'est produite. Code : %@";
+"express_error_provider_amount_roundup" = "Error %1$@. The selected provider cannot process the specified transaction. Please round the value up to %2$@ or change it";
 "express_error_swap_pair_unavailable" = "Le fournisseur sélectionné n'est pas disponible pour le moment. Veuillez réessayer plus tard. (Code : %@)";
 "express_error_swap_unavailable" = "Les échanges ne sont pas disponibles pour le moment. Veuillez réessayer plus tard. (Code : %@)";
 "express_estimated_amount" = "Montant estimé";
@@ -360,7 +364,7 @@
 "manage_tokens_wallet_selector_title" = "Choisissez un portefeuille";
 "manage_tokens_wallet_support_only_one_network_title" = "Le portefeuille ne prend pas en charge plus d'un réseau";
 "markets_add_to_my_portfolio_description" = "Pour acheter, échanger ou recevoir cet actif, ajoutez-le à votre portefeuille";
-"markets_add_to_my_portfolio_unavailable_description" = "Cet actif n'est plus pris en charge dans le portefeuille";
+"markets_add_to_my_portfolio_unavailable_description" = "Cet actif n'est pas pris en charge dans le portefeuille";
 "markets_add_to_my_portfolio_unavailable_for_wallet_description" = "Cet actif n'est pas disponible pour ce portefeuille";
 "markets_add_to_portfolio_button" = "Ajouter au portfolio";
 "markets_add_token" = "Ajoutez un jeton";
@@ -540,6 +544,8 @@
 "onboarding_wallet_info_title_fourth" = "Restauration du code d'accès";
 "onboarding_wallet_info_title_second" = "Cartes identiques";
 "onboarding_wallet_info_title_third" = "Code d'accès";
+"onramp_avaiable_with_payment_methods" = "Available with %@";
+"onramp_choose_provider_title_hint" = "Providers facilitate transactions, ensuring smooth and efficient token exchanges";
 "onramp_country_search" = "Recherche par pays";
 "onramp_country_unavailable" = "Indisponible";
 "onramp_currency_other" = "Autres devises";
@@ -552,7 +558,6 @@
 "onramp_redirecting_to_provider_subtitle" = "Vous pourrez finaliser votre transaction sur le fournisseur tiers, %@";
 "onramp_redirecting_to_provider_title" = "Redirection vers %@...";
 "onramp_residency_bottomsheet_country_not_supported" = "Nos services ne sont pas disponibles dans ce pays";
-"onramp_residency_bottomsheet_country_subtitle" = "Modifiez-le ou confirmez-le";
 "onramp_residency_bottomsheet_title" = "Votre résidence a été identifiée comme";
 "onramp_settings_residence" = "Résidence";
 "onramp_settings_residence_description" = "Veuillez sélectionner le bon pays pour garantir des options de paiement et des services précis.";
@@ -860,6 +865,9 @@
 "token_details_unable_hide_alert_message" = "Le jeton %1$@ (%2$@) est la principale devise du réseau %3$@ et ne peut pas être masqué tant que vous avez d'autres jetons de ce réseau dans la liste";
 "token_details_unable_hide_alert_title" = "Impossible de masquer %@";
 "token_swap_promotion_button" = "Échangez maintenant";
+"tokens_list_available_to_buy_header" = "";
+"tokens_list_available_to_sell_header" = "";
+"tokens_list_available_to_swap_header" = "";
 "tokens_list_hot_crypto_header" = "Crypto-monnaies populaire 🔥";
 "tokens_list_unavailable_to_purchase_header" = "Non disponible à l'achat";
 "tokens_list_unavailable_to_sell_header" = "Indisponible à la vente";
