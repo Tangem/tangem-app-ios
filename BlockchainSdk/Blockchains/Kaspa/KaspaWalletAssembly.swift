@@ -32,7 +32,7 @@ struct KaspaWalletAssembly: WalletManagerAssembly {
         return KaspaWalletManager(
             wallet: input.wallet,
             networkService: KaspaNetworkService(providers: providers, blockchain: blockchain),
-            networkServiceKRC20: KaspaNetworkServiceKRC20(providers: providersKRC20, blockchain: blockchain),
+            networkServiceKRC20: KaspaNetworkServiceKRC20(providers: providersKRC20),
             txBuilder: KaspaTransactionBuilder(walletPublicKey: input.wallet.publicKey, blockchain: blockchain),
             dataStorage: input.blockchainSdkDependencies.dataStorage
         )
