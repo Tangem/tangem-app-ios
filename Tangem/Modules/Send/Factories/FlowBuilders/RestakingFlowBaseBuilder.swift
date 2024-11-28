@@ -59,7 +59,8 @@ struct RestakingFlowBaseBuilder {
             sendAmountCompactViewModel: sendAmountCompactViewModel,
             onrampAmountCompactViewModel: .none,
             stakingValidatorsCompactViewModel: validators.compact,
-            sendFeeCompactViewModel: sendFeeCompactViewModel
+            sendFeeCompactViewModel: sendFeeCompactViewModel,
+            onrampStatusCompactViewModel: .none
         )
 
         let stepsManager = CommonRestakingStepsManager(
