@@ -50,7 +50,7 @@ class SolanaWalletManager: BaseManager, WalletManager {
             let balance = info.tokensByMint[mintAddress]?.balance ?? Decimal(0)
             wallet.add(tokenValue: balance, for: cardToken)
         }
-        
+
         wallet.clearPendingTransaction()
     }
 }
@@ -74,11 +74,11 @@ extension SolanaWalletManager: TransactionSender {
                 guard let self else {
                     throw WalletError.empty
                 }
-                
+
                 let mapper = PendingTransactionRecordMapper()
                 let record = mapper.mapToPendingTransactionRecord(transaction: transaction, hash: hash)
-                self.wallet.addPendingTransaction(record)
-                
+                wallet.addPendingTransaction(record)
+
                 return TransactionSendResult(hash: hash)
             }
             .eraseSendError()
