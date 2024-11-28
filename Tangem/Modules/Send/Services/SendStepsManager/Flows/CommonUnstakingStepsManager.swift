@@ -73,7 +73,7 @@ class CommonUnstakingStepsManager {
             // Ignore double click
             return
         }
-        
+
         stack.removeLast()
         let step = currentStep()
 

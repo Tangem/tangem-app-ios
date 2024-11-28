@@ -170,7 +170,7 @@ struct ExpressAPIMapper {
     func mapToOnrampPaymentMethod(response: ExpressDTO.Onramp.PaymentMethod) -> OnrampPaymentMethod? {
         let method = OnrampPaymentMethod(id: response.id, name: response.name, image: response.image)
 
-        if method.type == .googlePay {
+        guard OnrampPaymentMethodsFilter().isSupported(paymentMethod: method) else {
             return nil
         }
 
