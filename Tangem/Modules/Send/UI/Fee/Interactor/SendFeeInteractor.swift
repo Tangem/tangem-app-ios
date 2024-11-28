@@ -236,11 +236,14 @@ private extension CommonSendFeeInteractor {
         case 1:
             return [SendFee(option: .market, value: .loaded(fees[0]))]
         case 3:
-            return [
+            let fees = [
                 SendFee(option: .slow, value: .loaded(fees[0])),
                 SendFee(option: .market, value: .loaded(fees[1])),
                 SendFee(option: .fast, value: .loaded(fees[2])),
             ]
+
+            // This filter hides the values if we have not passed the default values
+            return fees.filter { defaultFeeOptions.contains($0.option) }
         default:
             assertionFailure("Wrong count of fees")
             return []
