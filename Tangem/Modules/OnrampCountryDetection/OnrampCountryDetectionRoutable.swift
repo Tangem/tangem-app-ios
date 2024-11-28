@@ -9,5 +9,5 @@
 protocol OnrampCountryDetectionRoutable: AnyObject {
     func openChangeCountry()
     func dismissConfirmCountryView()
-    func dismiss()
+    func dismissOnramp()
 }
