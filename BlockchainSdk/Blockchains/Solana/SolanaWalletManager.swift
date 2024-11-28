@@ -315,25 +315,16 @@ extension SolanaWalletManager: TransactionValidator {
     }
 
     private func validateInternal(amount: Amount, fee: Fee) throws {
-        let defaultValidation = { [self] in
-            try validateAmounts(amount: amount, fee: fee.amount)
+        if let balance = wallet.amounts[.coin],
+           let minimalBalanceForRentExemptionValue {
+            let remainingBalance = balance.value - (amount.value + fee.amount.value)
+
+            if remainingBalance > 0, remainingBalance < minimalBalanceForRentExemptionValue.value {
+                throw ValidationError.remainingAmountIsLessThanRentFee(amount: minimalBalanceForRentExemptionValue)
+            }
         }
-
-        guard let balance = wallet.amounts[.coin],
-              let minimalBalanceForRentExemptionValue,
-              // no error for max amount operation
-              amount.value + fee.amount.value < balance.value else {
-            try defaultValidation()
-            return
-        }
-
-        let remainingBalance = balance.value - amount.value
-
-        if remainingBalance > 0, remainingBalance < minimalBalanceForRentExemptionValue.value {
-            throw ValidationError.remainingAmountIsLessThanRentFee(amount: minimalBalanceForRentExemptionValue)
-        }
-
-        try defaultValidation()
+        // default implementation
+        try validateAmounts(amount: amount, fee: fee.amount)
     }
 }
 
