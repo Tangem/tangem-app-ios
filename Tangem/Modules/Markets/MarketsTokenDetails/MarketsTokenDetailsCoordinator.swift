@@ -156,6 +156,21 @@ extension MarketsTokenDetailsCoordinator {
             popToRootAction: popToRootAction
         )
     }
+
+    func openOnramp(for walletModel: WalletModel, with userWalletModel: UserWalletModel) {
+        let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] navigationInfo in
+            self?.sendCoordinator = nil
+        }
+
+        let coordinator = SendCoordinator(dismissAction: dismissAction)
+        let options = SendCoordinator.Options(
+            walletModel: walletModel,
+            userWalletModel: userWalletModel,
+            type: .onramp
+        )
+        coordinator.start(with: options)
+        sendCoordinator = coordinator
+    }
 }
 
 // MARK: - Utilities functions
