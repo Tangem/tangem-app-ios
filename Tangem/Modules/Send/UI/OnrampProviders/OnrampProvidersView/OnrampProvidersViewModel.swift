@@ -23,6 +23,7 @@ final class OnrampProvidersViewModel: ObservableObject {
     private let interactor: OnrampProvidersInteractor
     private weak var coordinator: OnrampProvidersRoutable?
 
+    private let priceChangeFormatter = PriceChangeFormatter()
     private let balanceFormatter = BalanceFormatter()
 
     private var bag: Set<AnyCancellable> = []
@@ -93,7 +94,7 @@ private extension OnrampProvidersViewModel {
                 iconURL: provider.provider.imageURL,
                 formattedAmount: formattedAmount(state: provider.state),
                 state: state(state: provider.state),
-                badge: provider.isBest ? .bestRate : .none,
+                badge: badge(provider: provider),
                 isSelected: selectedProviderId == provider.provider.id,
                 action: { [weak self] in
                     self?.selectedProviderId = provider.provider.id
@@ -101,6 +102,18 @@ private extension OnrampProvidersViewModel {
                     self?.interactor.update(selectedProvider: provider)
                 }
             )
+        }
+    }
+
+    func badge(provider: OnrampProvider) -> OnrampProviderRowViewData.Badge? {
+        switch provider.attractiveType {
+        case .none:
+            return .none
+        case .best:
+            return .bestRate
+        case .loss(let percent):
+            let result = priceChangeFormatter.formatFractionalValue(percent, option: .express)
+            return .percent(result.formattedText, signType: result.signType)
         }
     }
 

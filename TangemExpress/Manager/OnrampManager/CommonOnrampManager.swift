@@ -66,7 +66,7 @@ extension CommonOnrampManager: OnrampManager {
         log(message: "Payment method was updated by user to: \(paymentMethod.name)")
 
         let providerItem = providers.select(for: paymentMethod)
-        let best = providerItem?.updateBest()
+        let best = providerItem?.updateAttractiveTypes()
         log(message: "The best provider was define to \(best as Any)")
 
         guard let selectedProvider = providerItem?.showableProvider() else {
@@ -108,7 +108,7 @@ private extension CommonOnrampManager {
         log(message: "Start to find the best provider")
 
         for provider in providers {
-            let best = provider.updateBest()
+            let best = provider.updateAttractiveTypes()
             log(message: "Providers for paymentMethod: \(provider.paymentMethod.name) was sorted to order: \(provider.providers)")
             log(message: "The best provider was defined to \(best as Any)")
 
@@ -166,7 +166,6 @@ private extension CommonOnrampManager {
                     )
                 )
             }
-
             return ProviderItem(paymentMethod: paymentMethod, providers: providers)
         }
 

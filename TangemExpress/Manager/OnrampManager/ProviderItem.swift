@@ -41,10 +41,21 @@ public class ProviderItem {
 
     /// Providers will be sorted
     @discardableResult
-    public func updateBest() -> OnrampProvider? {
-        if let best = sort().first(where: { $0.isSuccessfullyLoaded }) {
-            best.update(isBest: true)
-            return best
+    public func updateAttractiveTypes() -> OnrampProvider? {
+        var bestQuote: Decimal?
+
+        sort().indexed().forEach { index, provider in
+            switch (index, provider.state) {
+            case (.zero, .loaded(let quote)):
+                provider.update(attractiveType: .best)
+                bestQuote = quote.expectedAmount
+
+            case (_, .loaded(let quote)) where bestQuote != nil:
+                let percent = quote.expectedAmount / bestQuote! - 1
+                provider.update(attractiveType: .loss(percent: percent))
+            case (_, _):
+                provider.update(attractiveType: .none)
+            }
         }
 
         return nil

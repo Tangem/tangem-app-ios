@@ -12,7 +12,7 @@ public class OnrampProvider {
     public let provider: ExpressProvider
     public let paymentMethod: OnrampPaymentMethod
 
-    public private(set) var isBest: Bool = false
+    public private(set) var attractiveType: AttractiveType?
 
     private let manager: OnrampProviderManager
 
@@ -26,8 +26,22 @@ public class OnrampProvider {
         self.manager = manager
     }
 
-    func update(isBest: Bool) {
-        self.isBest = isBest
+    func update(attractiveType: AttractiveType?) {
+        self.attractiveType = attractiveType
+    }
+}
+
+public extension OnrampProvider {
+    enum AttractiveType: Hashable, CustomStringConvertible {
+        case best
+        case loss(percent: Decimal)
+
+        public var description: String {
+            switch self {
+            case .best: "Best"
+            case .loss(let percent): "Loss \(percent)"
+            }
+        }
     }
 }
 
@@ -94,6 +108,7 @@ extension OnrampProvider: CustomStringConvertible {
             "provider": provider.name,
             "paymentMethod": paymentMethod.name,
             "manager.state": manager.state,
+            "attractiveType": attractiveType as Any,
         ])
     }
 }
