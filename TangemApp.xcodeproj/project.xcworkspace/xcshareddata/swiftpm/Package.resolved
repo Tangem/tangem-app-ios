@@ -96,8 +96,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/BlockiesSwift.git",
       "state" : {
-        "branch" : "feature/IOS-8413_migrate_all_dependencies_to_spm",
-        "revision" : "b8edc8658ae5e51cbc578f5d0007d952cea99b43"
+        "revision" : "c262694df4e5290a711cff291124ae4da76d8bd4",
+        "version" : "0.1.2-tangem1"
       }
     },
     {
@@ -132,8 +132,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/firebase-ios-sdk.git",
       "state" : {
-        "branch" : "feature/IOS-8413_migrate_all_dependencies_to_spm",
-        "revision" : "5faa3aec04c2dda27c1e33196a9559a2ecdd4659"
+        "revision" : "8052608b6da963182c57e414d6242c13b4abc2b9",
+        "version" : "10.29.0-tangem1"
       }
     },
     {

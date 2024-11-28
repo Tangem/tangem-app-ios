@@ -25305,8 +25305,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tangem/firebase-ios-sdk.git";
 			requirement = {
-				branch = "feature/IOS-8413_migrate_all_dependencies_to_spm";
-				kind = branch;
+				kind = exactVersion;
+				version = "10.29.0-tangem1";
 			};
 		};
 		B62D343B2CBC4FD000C2460E /* XCRemoteSwiftPackageReference "swift-sodium" */ = {
@@ -25449,8 +25449,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tangem/BlockiesSwift.git";
 			requirement = {
-				branch = "feature/IOS-8413_migrate_all_dependencies_to_spm";
-				kind = branch;
+				kind = exactVersion;
+				version = "0.1.2-tangem1";
 			};
 		};
 		B6DDDE762CF39157008DEA94 /* XCRemoteSwiftPackageReference "CombineExt" */ = {
