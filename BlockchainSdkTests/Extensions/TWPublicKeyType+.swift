@@ -63,7 +63,9 @@ extension PublicKeyType {
              .cyber,
              .energyWebEVM,
              .core,
-             .canxium:
+             .canxium,
+             .xodex,
+             .chiliz:
             self = PublicKeyType.secp256k1Extended
         case .stellar,
              .ton,
@@ -74,8 +76,7 @@ extension PublicKeyType {
              .algorand,
              .aptos,
              .sui,
-             .energyWebX,
-             .chiliz:
+             .energyWebX:
             self = PublicKeyType.ed25519
         case .cardano(let extended):
             self = extended ? PublicKeyType.ed25519Cardano : .ed25519
