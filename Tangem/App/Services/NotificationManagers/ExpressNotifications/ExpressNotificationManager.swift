@@ -169,7 +169,7 @@ class ExpressNotificationManager {
              .cardanoInsufficientBalanceToSendToken,
              .notEnoughMana,
              .manaLimit,
-             .remainingAmountIsLessThanRentFee,
+             .remainingAmountIsLessThanRentExtemption,
              .koinosInsufficientBalanceToSendKoin:
             event = .validationErrorEvent(event: validationErrorEvent, context: context)
         }
