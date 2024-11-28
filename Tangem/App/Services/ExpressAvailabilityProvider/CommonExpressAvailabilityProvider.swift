@@ -27,7 +27,7 @@ class CommonExpressAvailabilityProvider {
 enum ExpressAvailabilityUpdateState {
     case updating
     case updated
-    case failed
+    case failed(error: Error)
 }
 
 extension CommonExpressAvailabilityProvider: ExpressAvailabilityProvider {
@@ -37,7 +37,7 @@ extension CommonExpressAvailabilityProvider: ExpressAvailabilityProvider {
                 return switch state {
                 case .loading, .none: .updating
                 case .success: .updated
-                case .failure: .failed
+                case .failure(let error): .failed(error: error)
                 }
             }
             .eraseToAnyPublisher()

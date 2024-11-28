@@ -17,19 +17,19 @@ final class ActionButtonsSwapViewModel: ObservableObject {
         didSet {
             if sourceToken == nil {
                 destinationTokenSelectorViewModel = nil
+                tokenSelectorState = .initial
             }
         }
     }
 
+    @Published var notificationInputs: [NotificationViewInput] = []
     @Published var destinationToken: ActionButtonsTokenSelectorItem?
-    @Published private(set) var swapPairsListState: SwapPairsListState = .loaded
+
+    @Published private(set) var tokenSelectorState: ActionButtonsTokenSelectorState = .initial
 
     // MARK: Public property
 
-    var tokenSelectorViewModel: TokenSelectorViewModel<
-        ActionButtonsTokenSelectorItem,
-        ActionButtonsTokenSelectorItemBuilder
-    > {
+    var tokenSelectorViewModel: ActionButtonsTokenSelectorViewModel {
         destinationTokenSelectorViewModel ?? sourceSwapTokenSelectorViewModel
     }
 
@@ -53,25 +53,27 @@ final class ActionButtonsSwapViewModel: ObservableObject {
     // MARK: Private property
 
     private weak var coordinator: ActionButtonsSwapRoutable?
-    private var destinationTokenSelectorViewModel: TokenSelectorViewModel<
-        ActionButtonsTokenSelectorItem,
-        ActionButtonsTokenSelectorItemBuilder
-    >?
+    private var destinationTokenSelectorViewModel: ActionButtonsTokenSelectorViewModel?
+    private var bag = Set<AnyCancellable>()
+
+    private lazy var notificationManager: some NotificationManager = {
+        let notificationManager = ActionButtonsSwapNotificationManager(
+            statePublisher: $tokenSelectorState.eraseToAnyPublisher()
+        )
+
+        notificationManager.setupManager(with: self)
+
+        return notificationManager
+    }()
 
     private let expressRepository: ExpressRepository
     private let userWalletModel: UserWalletModel
-    private let sourceSwapTokenSelectorViewModel: TokenSelectorViewModel<
-        ActionButtonsTokenSelectorItem,
-        ActionButtonsTokenSelectorItemBuilder
-    >
+    private let sourceSwapTokenSelectorViewModel: ActionButtonsTokenSelectorViewModel
 
     init(
         coordinator: some ActionButtonsSwapRoutable,
         userWalletModel: some UserWalletModel,
-        sourceSwapTokeSelectorViewModel: TokenSelectorViewModel<
-            ActionButtonsTokenSelectorItem,
-            ActionButtonsTokenSelectorItemBuilder
-        >
+        sourceSwapTokeSelectorViewModel: ActionButtonsTokenSelectorViewModel
     ) {
         self.coordinator = coordinator
         self.userWalletModel = userWalletModel
@@ -86,6 +88,33 @@ final class ActionButtonsSwapViewModel: ObservableObject {
             walletModelsManager: userWalletModel.walletModelsManager,
             expressAPIProvider: expressAPIProviderFactory
         )
+
+        bind()
+    }
+
+    func bind() {
+        let makeNotificationPublisher = { [notificationManager] filter in
+            notificationManager
+                .notificationPublisher
+                .removeDuplicates()
+                .scan(([NotificationViewInput](), [NotificationViewInput]())) { prev, new in
+                    (prev.1, new)
+                }
+                .filter(filter)
+                .map(\.1)
+        }
+
+        // Publisher for showing new notifications with a delay to prevent unwanted animations
+        makeNotificationPublisher { $1.count >= $0.count }
+            .debounce(for: 0.2, scheduler: DispatchQueue.main)
+            .assign(to: \.notificationInputs, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        // Publisher for immediate updates when notifications are removed (e.g., from 2 to 0 or 1)
+        // to fix 'jumping' animation bug
+        makeNotificationPublisher { $1.count < $0.count }
+            .assign(to: \.notificationInputs, on: self, ownership: .weak)
+            .store(in: &bag)
     }
 
     func handleViewAction(_ action: Action) {
@@ -98,7 +127,7 @@ final class ActionButtonsSwapViewModel: ObservableObject {
                     sourceToken = token
                     await updatePairs(for: token, userWalletModel: userWalletModel)
                 } else {
-                    selectToToken(token)
+                    selectDestinationToken(token)
                 }
             }
         }
@@ -106,7 +135,7 @@ final class ActionButtonsSwapViewModel: ObservableObject {
 
     @MainActor
     func updatePairs(for token: ActionButtonsTokenSelectorItem, userWalletModel: UserWalletModel) async {
-        swapPairsListState = .loading
+        tokenSelectorState = .loading
 
         do {
             try await expressRepository.updatePairs(for: token.walletModel)
@@ -117,14 +146,18 @@ final class ActionButtonsSwapViewModel: ObservableObject {
                 expressRepository: expressRepository
             )
 
-            swapPairsListState = .loaded
+            tokenSelectorState = isNotAvailablePairs ? .noAvailablePairs : .loaded
         } catch {
-            swapPairsListState = .error(input: makeErrorNotificationInput(from: token, and: userWalletModel))
+            tokenSelectorState = .refreshRequired(
+                title: Localization.commonError,
+                message: Localization.commonUnknownError
+            )
         }
     }
 
-    private func selectToToken(_ token: ActionButtonsTokenSelectorItem) {
+    private func selectDestinationToken(_ token: ActionButtonsTokenSelectorItem) {
         destinationToken = token
+        tokenSelectorState = .readyToSwap
 
         guard let sourceToken, let destinationToken else { return }
 
@@ -141,10 +174,13 @@ final class ActionButtonsSwapViewModel: ObservableObject {
 // MARK: Enums
 
 extension ActionButtonsSwapViewModel {
-    enum SwapPairsListState: Equatable {
-        case error(input: NotificationViewInput)
+    enum ActionButtonsTokenSelectorState: Equatable {
+        case initial
         case loading
         case loaded
+        case readyToSwap
+        case refreshRequired(title: String, message: String)
+        case noAvailablePairs
     }
 
     enum Action {
@@ -153,43 +189,37 @@ extension ActionButtonsSwapViewModel {
     }
 }
 
+// MARK: - Notification
+
+extension ActionButtonsSwapViewModel: NotificationTapDelegate {
+    func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType) {
+        guard
+            let notification = notificationInputs.first(where: { $0.id == id }),
+            let _ = notification.settings.event as? ActionButtonsNotificationEvent,
+            let sourceToken
+        else {
+            return
+        }
+
+        switch action {
+        case .refresh:
+            Task {
+                await self.updatePairs(for: sourceToken, userWalletModel: userWalletModel)
+            }
+        default:
+            break
+        }
+    }
+}
+
 // MARK: - Fabric methods
 
 private extension ActionButtonsSwapViewModel {
-    func makeErrorNotificationInput(
-        from token: ActionButtonsTokenSelectorItem,
-        and userWalletModel: some UserWalletModel
-    ) -> NotificationViewInput {
-        let refreshRequiredEvent: ExpressNotificationEvent = .refreshRequired(
-            title: Localization.commonError,
-            message: Localization.commonUnknownError
-        )
-
-        return .init(
-            style: .withButtons([
-                .init(
-                    action: { _, _ in
-                        Task {
-                            await self.updatePairs(for: token, userWalletModel: userWalletModel)
-                        }
-                    },
-                    actionType: .refresh,
-                    isWithLoader: false
-                ),
-            ]),
-            severity: .warning,
-            settings: .init(event: refreshRequiredEvent, dismissAction: nil)
-        )
-    }
-
     func makeToSwapTokenSelectorViewModel(
         from token: ActionButtonsTokenSelectorItem,
         userWalletModel: UserWalletModel,
         expressRepository: some ExpressRepository
-    ) -> TokenSelectorViewModel<
-        ActionButtonsTokenSelectorItem,
-        ActionButtonsTokenSelectorItemBuilder
-    > {
+    ) -> ActionButtonsTokenSelectorViewModel {
         .init(
             tokenSelectorItemBuilder: ActionButtonsTokenSelectorItemBuilder(),
             strings: SwapTokenSelectorStrings(tokenName: token.name),

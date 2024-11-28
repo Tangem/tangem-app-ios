@@ -6,10 +6,16 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-struct CommonBuyTokenAvailabilitySorter: TokenAvailabilitySorter {
+struct CommonBuyTokenAvailabilitySorter {
+    // MARK: - Dependencies
+
     @Injected(\.expressAvailabilityProvider)
     private var expressAvailabilityProvider: ExpressAvailabilityProvider
+}
 
+// MARK: - TokenAvailabilitySorter
+
+extension CommonBuyTokenAvailabilitySorter: TokenAvailabilitySorter {
     func sortModels(walletModels: [WalletModel]) async -> (availableModels: [WalletModel], unavailableModels: [WalletModel]) {
         walletModels.reduce(
             into: (availableModels: [WalletModel](), unavailableModels: [WalletModel]())

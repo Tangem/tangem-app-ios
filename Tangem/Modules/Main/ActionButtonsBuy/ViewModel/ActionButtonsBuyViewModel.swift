@@ -9,21 +9,21 @@
 import Foundation
 
 final class ActionButtonsBuyViewModel: ObservableObject {
+    // MARK: - Dependencies
+
     @Injected(\.exchangeService) private var exchangeService: ExchangeService
 
-    let tokenSelectorViewModel: TokenSelectorViewModel<
-        ActionButtonsTokenSelectorItem,
-        ActionButtonsTokenSelectorItemBuilder
-    >
+    // MARK: - Child viewModel
+
+    let tokenSelectorViewModel: ActionButtonsTokenSelectorViewModel
+
+    // MARK: - Private property
 
     private weak var coordinator: ActionButtonsBuyRoutable?
 
     init(
         coordinator: some ActionButtonsBuyRoutable,
-        tokenSelectorViewModel: TokenSelectorViewModel<
-            ActionButtonsTokenSelectorItem,
-            ActionButtonsTokenSelectorItemBuilder
-        >
+        tokenSelectorViewModel: ActionButtonsTokenSelectorViewModel
     ) {
         self.coordinator = coordinator
         self.tokenSelectorViewModel = tokenSelectorViewModel
@@ -38,6 +38,8 @@ final class ActionButtonsBuyViewModel: ObservableObject {
         }
     }
 }
+
+// MARK: - Action
 
 extension ActionButtonsBuyViewModel {
     enum Action {

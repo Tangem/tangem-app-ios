@@ -8,12 +8,21 @@
 
 import Foundation
 
+typealias ActionButtonsTokenSelectorViewModel = TokenSelectorViewModel<
+    ActionButtonsTokenSelectorItem,
+    ActionButtonsTokenSelectorItemBuilder
+>
+
 final class ActionButtonsSwapCoordinator: CoordinatorObject {
+    let dismissAction: Action<Void>
+    let popToRootAction: Action<PopToRootOptions>
+
+    // MARK: - Published property
+
     @Published private(set) var actionButtonsSwapViewModel: ActionButtonsSwapViewModel?
     @Published private(set) var expressCoordinator: ExpressCoordinator?
 
-    let dismissAction: Action<Void>
-    let popToRootAction: Action<PopToRootOptions>
+    // MARK: - Private property
 
     private let expressTokensListAdapter: ExpressTokensListAdapter
     private let tokenSorter: TokenAvailabilitySorter
@@ -42,11 +51,15 @@ final class ActionButtonsSwapCoordinator: CoordinatorObject {
     }
 }
 
+// MARK: - Options
+
 extension ActionButtonsSwapCoordinator {
     enum Options {
         case `default`
     }
 }
+
+// MARK: - ActionButtonsSwapRoutable
 
 extension ActionButtonsSwapCoordinator: ActionButtonsSwapRoutable {
     func openExpress(
@@ -54,7 +67,7 @@ extension ActionButtonsSwapCoordinator: ActionButtonsSwapRoutable {
         and destinationWalletModel: WalletModel,
         with userWalletModel: UserWalletModel
     ) {
-        let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] navigationInfo in
+        let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] _ in
             self?.dismiss()
         }
 
@@ -71,10 +84,7 @@ extension ActionButtonsSwapCoordinator: ActionButtonsSwapRoutable {
 // MARK: - Factory methods
 
 private extension ActionButtonsSwapCoordinator {
-    func makeTokenSelectorViewModel() -> TokenSelectorViewModel<
-        ActionButtonsTokenSelectorItem,
-        ActionButtonsTokenSelectorItemBuilder
-    > {
+    func makeTokenSelectorViewModel() -> ActionButtonsTokenSelectorViewModel {
         TokenSelectorViewModel(
             tokenSelectorItemBuilder: ActionButtonsTokenSelectorItemBuilder(),
             strings: SwapTokenSelectorStrings(),

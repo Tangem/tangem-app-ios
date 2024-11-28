@@ -17,20 +17,19 @@ struct ActionButtonsSwapView: View {
             .scrollDismissesKeyboardCompat(.immediately)
             .animation(.easeInOut(duration: 0.2), value: viewModel.sourceToken)
             .animation(.easeOut, value: viewModel.destinationToken)
-            .animation(.easeInOut, value: viewModel.swapPairsListState)
+            .animation(.easeInOut, value: viewModel.tokenSelectorState)
+            .animation(.easeInOut, value: viewModel.notificationInputs)
             .padding(.top, 10)
             .background(Colors.Background.tertiary.ignoresSafeArea())
-            .disabled(viewModel.swapPairsListState == .loading)
+            .disabled(viewModel.tokenSelectorState == .loading)
     }
 
     private var content: some View {
         ScrollView {
             VStack(spacing: 14) {
                 swapPair
-
-                if viewModel.destinationToken == nil {
-                    tokensListView
-                }
+                
+                tokensListView
             }
             .padding(.horizontal, 16)
         }
@@ -50,26 +49,6 @@ struct ActionButtonsSwapView: View {
 }
 
 private extension ActionButtonsSwapView {
-    var noAvailablePairsNotification: some View {
-        HStack(spacing: 12) {
-            Assets.warningIcon.image
-                .resizable()
-                .frame(size: .init(bothDimensions: 20))
-            VStack(alignment: .leading, spacing: 4) {
-                Text(Localization.actionButtonsSwapNoAvailablePairNotificationTitle)
-                    .style(Fonts.Bold.footnote, color: Colors.Text.primary1)
-                Text(Localization.actionButtonsSwapNoAvailablePairNotificationMessage)
-                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-        }
-        .padding(.init(top: 12, leading: 14, bottom: 12, trailing: 14))
-        .frame(alignment: .leading)
-        .background(Colors.Background.action)
-        .cornerRadiusContinuous(14)
-        .transition(.opacity.animation(.easeInOut))
-    }
-
     @ViewBuilder
     func expressTransitionProgress() -> some View {
         if viewModel.destinationToken != nil {
@@ -89,19 +68,25 @@ private extension ActionButtonsSwapView {
 
     @ViewBuilder
     var tokensListView: some View {
-        switch viewModel.swapPairsListState {
-        case .error(let notificationViewInput):
-            NotificationView(input: notificationViewInput)
-
+        switch viewModel.tokenSelectorState {
+        case .initial, .loaded:
+            tokenSelector
         case .loading:
             tokenSelectorStub
-
-        case .loaded:
-            if viewModel.isNotAvailablePairs {
-                noAvailablePairsNotification
-                    .transition(.opacity.animation(.easeInOut))
-            }
+        case .noAvailablePairs:
+            notificationView
             tokenSelector
+        case .refreshRequired:
+            notificationView
+        case .readyToSwap:
+            EmptyView()
+        }
+    }
+
+    var notificationView: some View {
+        ForEach(viewModel.notificationInputs) {
+            NotificationView(input: $0)
+                .transition(.opacity.animation(.easeInOut))
         }
     }
 

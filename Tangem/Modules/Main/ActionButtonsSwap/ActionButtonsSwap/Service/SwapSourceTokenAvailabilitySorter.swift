@@ -6,10 +6,16 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-struct SwapSourceTokenAvailabilitySorter: TokenAvailabilitySorter {
+struct SwapSourceTokenAvailabilitySorter {
+    // MARK: - Dependencies
+
     @Injected(\.expressAvailabilityProvider)
     private var expressAvailabilityProvider: ExpressAvailabilityProvider
+}
 
+// MARK: - TokenAvailabilitySorter
+
+extension SwapSourceTokenAvailabilitySorter: TokenAvailabilitySorter {
     func sortModels(walletModels: [WalletModel]) -> (availableModels: [WalletModel], unavailableModels: [WalletModel]) {
         walletModels.reduce(
             into: (availableModels: [WalletModel](), unavailableModels: [WalletModel]())

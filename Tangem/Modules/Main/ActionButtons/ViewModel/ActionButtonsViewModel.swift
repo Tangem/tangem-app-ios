@@ -113,7 +113,6 @@ private extension ActionButtonsViewModel {
     func bindSwapAvailability() {
         expressAvailabilityProvider
             .expressAvailabilityUpdateState
-            .removeDuplicates()
             .sink {
                 self.updateSwapButtonState($0)
             }

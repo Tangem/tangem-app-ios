@@ -9,15 +9,21 @@
 import Foundation
 
 final class ActionButtonsBuyCoordinator: CoordinatorObject {
+    let dismissAction: Action<Void>
+    let popToRootAction: Action<PopToRootOptions>
+
+    // MARK: - Dependencies
+
     @Injected(\.safariManager) private var safariManager: SafariManager
+
+    // MARK: - Published property
 
     @Published private(set) var actionButtonsBuyViewModel: ActionButtonsBuyViewModel?
     @Published private(set) var sendCoordinator: SendCoordinator? = nil
 
-    private var safariHandle: SafariHandle?
+    // MARK: - Private property
 
-    let dismissAction: Action<Void>
-    let popToRootAction: Action<PopToRootOptions>
+    private var safariHandle: SafariHandle?
 
     private let expressTokensListAdapter: ExpressTokensListAdapter
     private let tokenSorter: TokenAvailabilitySorter
@@ -43,19 +49,9 @@ final class ActionButtonsBuyCoordinator: CoordinatorObject {
             tokenSelectorViewModel: makeTokenSelectorViewModel()
         )
     }
-
-    private func makeTokenSelectorViewModel() -> TokenSelectorViewModel<
-        ActionButtonsTokenSelectorItem,
-        ActionButtonsTokenSelectorItemBuilder
-    > {
-        TokenSelectorViewModel(
-            tokenSelectorItemBuilder: ActionButtonsTokenSelectorItemBuilder(),
-            strings: BuyTokenSelectorStrings(),
-            expressTokensListAdapter: expressTokensListAdapter,
-            tokenSorter: tokenSorter
-        )
-    }
 }
+
+// MARK: - ActionButtonsBuyRoutable
 
 extension ActionButtonsBuyCoordinator: ActionButtonsBuyRoutable {
     func openOnramp(walletModel: WalletModel) {
@@ -75,8 +71,23 @@ extension ActionButtonsBuyCoordinator: ActionButtonsBuyRoutable {
     }
 }
 
+// MARK: - Options
+
 extension ActionButtonsBuyCoordinator {
     enum Options {
         case `default`
+    }
+}
+
+// MARK: - Factory method
+
+private extension ActionButtonsBuyCoordinator {
+    func makeTokenSelectorViewModel() -> ActionButtonsTokenSelectorViewModel {
+        TokenSelectorViewModel(
+            tokenSelectorItemBuilder: ActionButtonsTokenSelectorItemBuilder(),
+            strings: BuyTokenSelectorStrings(),
+            expressTokensListAdapter: expressTokensListAdapter,
+            tokenSorter: tokenSorter
+        )
     }
 }

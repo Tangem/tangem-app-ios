@@ -2302,6 +2302,8 @@
 		DC77F2572CD6381D001B2929 /* CanxiumExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC77F2562CD63813001B2929 /* CanxiumExternalLinkProvider.swift */; };
 		DC7AC968292BD64D00580668 /* config_alpha.json in Resources */ = {isa = PBXBuildFile; fileRef = DC7AC967292BD64D00580668 /* config_alpha.json */; };
 		DC7AC96A292BE2C900580668 /* TangemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3F77DC24BF56DC00E8695B /* TangemTests.swift */; };
+		DC7C45672CF8B35000747589 /* ActionButtonsNotificationEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC7C45662CF8B35000747589 /* ActionButtonsNotificationEvent.swift */; };
+		DC7C45692CF8B36F00747589 /* ActionButtonsSwapNoficationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC7C45682CF8B36F00747589 /* ActionButtonsSwapNoficationManager.swift */; };
 		DC7D39EF29DFFBDC007BCD23 /* OnboardingStepsBuilderFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC7D39EE29DFFBDC007BCD23 /* OnboardingStepsBuilderFactory.swift */; };
 		DC7D39F329E00290007BCD23 /* SingleCardOnboardingStepsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC7D39F229E00290007BCD23 /* SingleCardOnboardingStepsBuilder.swift */; };
 		DC7D39F729E00635007BCD23 /* TwinOnboardingStepsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC7D39F629E00635007BCD23 /* TwinOnboardingStepsBuilder.swift */; };
@@ -5417,6 +5419,8 @@
 		DC77F2542CD508D9001B2929 /* SUILabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SUILabel.swift; sourceTree = "<group>"; };
 		DC77F2562CD63813001B2929 /* CanxiumExternalLinkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanxiumExternalLinkProvider.swift; sourceTree = "<group>"; };
 		DC7AC967292BD64D00580668 /* config_alpha.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = config_alpha.json; path = "tangem-app-config/config_alpha.json"; sourceTree = SOURCE_ROOT; };
+		DC7C45662CF8B35000747589 /* ActionButtonsNotificationEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsNotificationEvent.swift; sourceTree = "<group>"; };
+		DC7C45682CF8B36F00747589 /* ActionButtonsSwapNoficationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsSwapNoficationManager.swift; sourceTree = "<group>"; };
 		DC7D39EE29DFFBDC007BCD23 /* OnboardingStepsBuilderFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStepsBuilderFactory.swift; sourceTree = "<group>"; };
 		DC7D39F229E00290007BCD23 /* SingleCardOnboardingStepsBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleCardOnboardingStepsBuilder.swift; sourceTree = "<group>"; };
 		DC7D39F629E00635007BCD23 /* TwinOnboardingStepsBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwinOnboardingStepsBuilder.swift; sourceTree = "<group>"; };
@@ -13277,6 +13281,15 @@
 			path = CardScanner;
 			sourceTree = "<group>";
 		};
+		DC7C45652CF8B33B00747589 /* NotificationManager */ = {
+			isa = PBXGroup;
+			children = (
+				DC7C45682CF8B36F00747589 /* ActionButtonsSwapNoficationManager.swift */,
+				DC7C45662CF8B35000747589 /* ActionButtonsNotificationEvent.swift */,
+			);
+			path = NotificationManager;
+			sourceTree = "<group>";
+		};
 		DC7DA8152844E79700AD6DBD /* Navigation */ = {
 			isa = PBXGroup;
 			children = (
@@ -13630,6 +13643,7 @@
 		DCFEFE5B2CF5B52F002DFE58 /* ActionButtonsSwap */ = {
 			isa = PBXGroup;
 			children = (
+				DC7C45652CF8B33B00747589 /* NotificationManager */,
 				DCFEFE512CF08A12002DFE58 /* ViewModel */,
 				DCFEFE482CF081D5002DFE58 /* Coordinator */,
 				DCFEFE452CF080DC002DFE58 /* Service */,
@@ -17660,6 +17674,7 @@
 				DCBC945D299404510050BC35 /* CommonAnalyticsContext.swift in Sources */,
 				B00371BE2A8A5E5900D77A4B /* FakeUserTokensManager.swift in Sources */,
 				DC261CA9292CF56600875E64 /* AuthCoordinatorView.swift in Sources */,
+				DC7C45672CF8B35000747589 /* ActionButtonsNotificationEvent.swift in Sources */,
 				DA76BF4A2CEF958700199317 /* OnrampPendingTransactionRecord.swift in Sources */,
 				2DB4EADC2C41938E00F9E860 /* MarketsPortfolioTokenItemViewModel.swift in Sources */,
 				DAA5E30328D21369003C0E80 /* BiometryLogoImage.swift in Sources */,
@@ -17956,6 +17971,7 @@
 				EF2801102CDE84CB002AEB9A /* OnrampRedirectingBuilder.swift in Sources */,
 				EF1E97FD2B03F93300D4B511 /* CommonExpressDestinationService.swift in Sources */,
 				5DA3A2F1251CB6CA009A8E08 /* SecurityModeView.swift in Sources */,
+				DC7C45692CF8B36F00747589 /* ActionButtonsSwapNoficationManager.swift in Sources */,
 				B6AA13782A2A37B100B53937 /* CardInfoPageTransactionDefaultCellPreviewView.swift in Sources */,
 				DC0A57EA2822AD6D0031BECC /* PersistentStorageKey.swift in Sources */,
 				B04CD34429122C8D001EA84A /* ReferralCoordinatorView.swift in Sources */,
