@@ -636,6 +636,7 @@ public indirect enum Blockchain: Equatable, Hashable {
         case .veChain: return "VIP180"
         case .xdc: return "XRC20"
         case .hedera: return "HTS"
+        case .kaspa: return "KRC20"
         default:
             return nil
         }
@@ -653,7 +654,8 @@ public indirect enum Blockchain: Equatable, Hashable {
              .veChain,
              .hedera,
              .ton,
-             .cardano:
+             .cardano,
+             .kaspa:
             return true
         case _ where isEvm:
             return true

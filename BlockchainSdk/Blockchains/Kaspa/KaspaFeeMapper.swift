@@ -15,14 +15,18 @@ struct KaspaFeeMapper {
         blockchain = .kaspa(testnet: isTestnet)
     }
 
-    func mapFee(mass: KaspaMassResponse, feeEstimate: KaspaFeeEstimateResponse) -> [Fee] {
-        let buckets = (
+    private func buckets(from feeEstimate: KaspaFeeEstimateResponse) -> [KaspaFee] {
+        return (
             feeEstimate.lowBuckets
                 + feeEstimate.normalBuckets
                 + [feeEstimate.priorityBucket]
         )
         .sorted() // just in case, because it's not described in the documentation.
         .suffix(3) // select the 3 largest baskets
+    }
+
+    func mapFee(mass: KaspaMassResponse, feeEstimate: KaspaFeeEstimateResponse) -> [Fee] {
+        let buckets = buckets(from: feeEstimate)
 
         let mass = Decimal(mass.mass)
 
@@ -30,6 +34,24 @@ struct KaspaFeeMapper {
             let feeRate = Decimal(bucket.feerate)
             let value = mass * feeRate / blockchain.decimalValue
             return Fee(Amount(with: blockchain, value: value))
+        }
+
+        return fees
+    }
+
+    func mapTokenFee(mass: Decimal, feeEstimate: KaspaFeeEstimateResponse) -> [Fee] {
+        let buckets = buckets(from: feeEstimate)
+
+        let mass = mass
+
+        let fees = buckets.map { bucket in
+            let feeRate = Decimal(bucket.feerate)
+            let value = mass * feeRate / blockchain.decimalValue
+            let valueRevealFeeMock = KaspaKRC20.RevealTransactionMassConstant * feeRate / blockchain.decimalValue
+            return Fee(
+                Amount(with: blockchain, value: value),
+                parameters: KaspaKRC20.RevealTransactionFeeParameter(amount: .init(with: blockchain, value: valueRevealFeeMock))
+            )
         }
 
         return fees
