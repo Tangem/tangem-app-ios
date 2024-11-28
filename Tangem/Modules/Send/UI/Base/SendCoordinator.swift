@@ -28,13 +28,13 @@ class SendCoordinator: CoordinatorObject {
 
     @Published var qrScanViewCoordinator: QRScanViewCoordinator?
     @Published var onrampProvidersCoordinator: OnrampProvidersCoordinator?
+    @Published var onrampCountryDetectionCoordinator: OnrampCountryDetectionCoordinator?
 
     // MARK: - Child view models
 
     @Published var mailViewModel: MailViewModel?
     @Published var expressApproveViewModel: ExpressApproveViewModel?
 
-    @Published var onrampCountryDetectionCoordinator: OnrampCountryDetectionCoordinator?
     @Published var onrampSettingsViewModel: OnrampSettingsViewModel?
     @Published var onrampCountrySelectorViewModel: OnrampCountrySelectorViewModel?
     @Published var onrampCurrencySelectorViewModel: OnrampCurrencySelectorViewModel?
