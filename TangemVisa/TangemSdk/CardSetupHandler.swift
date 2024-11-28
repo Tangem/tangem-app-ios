@@ -43,3 +43,29 @@ extension CommonCardSetupHandler: CardSetupHandler {
         isCardSetupCancelled = true
     }
 }
+
+private extension CommonCardSetupHandler {
+    private func createWallet(accessCode: String, in session: CardSession, on card: Card) async throws {
+        if isCardSetupCancelled {
+            log("Card setup was cancelled before wallet creation")
+            return
+        }
+
+        let utils = VisaUtilities(isTestnet: false)
+        if card.wallets.contains(where: { $0.curve == utils.mandatoryCurve }) {
+            log("Wallet with \(utils.mandatoryCurve.rawValue) already created skipping wallet creation command")
+            try await createOTP(accessCode: accessCode, in: session, on: card)
+            return
+        }
+
+        let createWalletTask = CreateWalletTask(curve: utils.mandatoryCurve)
+        _ = try await createWalletTask.run(in: session)
+        log("Wallet successfully created. Start generating OTP")
+
+        try await createOTP(accessCode: accessCode, in: session, on: card)
+    }
+
+    private func createOTP(accessCode: String, in session: CardSession, on card: Card) async throws {
+        // TODO: IOS-8571
+    }
+}

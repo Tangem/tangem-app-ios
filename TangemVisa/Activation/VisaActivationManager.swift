@@ -28,6 +28,7 @@ final class CommonVisaActivationManager {
 
     private let authorizationService: VisaAuthorizationService
     private let authorizationTokenHandler: AuthorizationTokenHandler
+    private let tangemSdk: TangemSdk
 
     private let authorizationProcessor: CardAuthorizationProcessor
     private let cardSetupHandler: CardSetupHandler
@@ -42,6 +43,7 @@ final class CommonVisaActivationManager {
         cardInput: VisaCardActivationInput,
         authorizationService: VisaAuthorizationService,
         authorizationTokenHandler: AuthorizationTokenHandler,
+        tangemSdk: TangemSdk,
         authorizationProcessor: CardAuthorizationProcessor,
         cardSetupHandler: CardSetupHandler,
         cardActivationOrderProvider: CardActivationOrderProvider,
@@ -51,6 +53,7 @@ final class CommonVisaActivationManager {
 
         self.authorizationService = authorizationService
         self.authorizationTokenHandler = authorizationTokenHandler
+        self.tangemSdk = tangemSdk
 
         self.authorizationProcessor = authorizationProcessor
         self.cardSetupHandler = cardSetupHandler
@@ -95,6 +98,89 @@ extension CommonVisaActivationManager: VisaActivationManager {
             throw VisaActivationError.missingAccessCode
         }
 
+        // async version
+//        try await asyncActivation(accessCode: selectedAccessCode)
+
+        // old-style implementation
+        try await taskActivation(accessCode: selectedAccessCode)
+    }
+}
+
+// MARK: - Task implementation
+
+extension CommonVisaActivationManager: SignedAuthorizationChallengeDelegate {
+    func challengeSigned(signedChallenge: Data, salt: Data, completion: @escaping (Result<Void, Error>) -> Void) {
+        Task { [weak self] in
+            guard let self else {
+                return
+            }
+
+            do {
+                let tokens = try await authorizationProcessor.getAccessToken(
+                    signedChallenge: signedChallenge,
+                    salt: salt,
+                    cardInput: cardInput
+                )
+                try await authorizationTokenHandler.setupTokens(tokens)
+                completion(.success(()))
+            } catch {
+                log("Failed to load authorization tokens: \(error)")
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func taskActivation(accessCode: String) async throws {
+        do {
+            var authorizationChallenge: String?
+            if await authorizationTokenHandler.containsAccessToken {
+                authorizationChallenge = try await authorizationProcessor.getAuthorizationChallenge(for: cardInput)
+            }
+
+            let activationResponse: VisaCardActivationResponse = try await withCheckedThrowingContinuation { [weak self] continuation in
+                guard let self else {
+                    continuation.resume(throwing: "Deinitialized")
+                    return
+                }
+
+                let task = CardActivationTask(
+                    activationInput: cardInput,
+                    challengeToSign: authorizationChallenge,
+                    orderToSign: nil,
+                    activationOrderProvider: cardActivationOrderProvider,
+                    signedAuthorizationChallengeDelegate: self,
+                    logger: logger
+                )
+
+                tangemSdk.startSession(with: task) { result in
+                    switch result {
+                    case .success(let response):
+                        continuation.resume(with: .success(response))
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                    }
+                }
+            }
+
+            log("Do something with activation response: \(activationResponse)")
+        } catch let sdkError as TangemSdkError {
+            if sdkError.isUserCancelled {
+                return
+            }
+
+            log("Failed to activate card. Tangem SDK Error: \(sdkError)")
+            throw VisaActivationError.underlyingError(sdkError)
+        } catch {
+            log("Failed to activate card. Generic error: \(error)")
+            throw VisaActivationError.underlyingError(error)
+        }
+    }
+}
+
+// MARK: - Async Implementation
+
+private extension CommonVisaActivationManager {
+    func asyncActivation(accessCode: String) async throws {
         var cardSession: CardSession?
 
         do {
@@ -105,9 +191,10 @@ extension CommonVisaActivationManager: VisaActivationManager {
             }
 
             log("Continuing card setup with access code")
-            try await cardSetupHandler.setupCard(accessCode: selectedAccessCode, in: cardSession)
+            try await cardSetupHandler.setupCard(accessCode: accessCode, in: cardSession)
             log("Start loading order info")
-            try await cardActivationOrderProvider.provideActivationOrderForSign()
+            let orderToSign = try await cardActivationOrderProvider.provideActivationOrderForSign()
+            log("Receive order to sign")
 
             cardSession.stop(message: "Implemented activation flow finished successfully")
         } catch let tangemSdkError as TangemSdkError {
@@ -133,9 +220,7 @@ extension CommonVisaActivationManager: VisaActivationManager {
             throw VisaActivationError.underlyingError(error)
         }
     }
-}
 
-private extension CommonVisaActivationManager {
     func startCardSession() async throws -> CardSession {
         if await authorizationTokenHandler.containsAccessToken {
             log( "Access token exists, flow not implemented")

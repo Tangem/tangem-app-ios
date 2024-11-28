@@ -40,5 +40,6 @@ extension InternalLogger {
         case cardSetupHandler = "[Visa] [CardSetupHandler]: "
         case cardActivationOrderProvider = "[Visa] [CommonCardActivationOrderProvider]: "
         case cardAuthorizationProcessor = "[Visa] [CardAuthorizationProcessor]: "
+        case cardActivationTask = "[Visa] [CardActivationTask]: "
     }
 }

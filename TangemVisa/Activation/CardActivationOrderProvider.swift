@@ -8,8 +8,8 @@
 
 import Foundation
 
-protocol CardActivationOrderProvider {
-    func provideActivationOrderForSign() async throws
+protocol CardActivationOrderProvider: AnyObject {
+    func provideActivationOrderForSign() async throws -> String
     func cancelOrderLoading()
 }
 
@@ -34,8 +34,15 @@ final class CommonCardActivationOrderProvider {
 }
 
 extension CommonCardActivationOrderProvider: CardActivationOrderProvider {
-    func provideActivationOrderForSign() async throws {
+    func provideActivationOrderForSign() async throws -> String {
         // TODO: IOS-8572
+        try await Task.sleep(seconds: 5)
+        let random = Int.random(in: 1 ... 2)
+        if random % 2 == 0 {
+            throw "Not implemented"
+        } else {
+            return "Activation order to sign"
+        }
     }
 
     func cancelOrderLoading() {
