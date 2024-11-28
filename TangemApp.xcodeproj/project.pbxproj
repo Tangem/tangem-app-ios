@@ -1858,10 +1858,7 @@
 		B6C0D3F92CBDC5A3001113ED /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0D3F82CBDC5A3001113ED /* SwiftyJSON */; };
 		B6C0D3FB2CBDC6DD001113ED /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0D3FA2CBDC6DD001113ED /* Moya */; };
 		B6C0D3FD2CBDC6FE001113ED /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0D3FC2CBDC6FE001113ED /* Moya */; };
-		B6C0D3FF2CBDC73E001113ED /* TangemModules in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0D3FE2CBDC73E001113ED /* TangemModules */; };
-		B6C0D4012CBDC759001113ED /* TangemModules in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0D4002CBDC759001113ED /* TangemModules */; };
 		B6C0D4092CBDCD34001113ED /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0D4082CBDCD34001113ED /* Moya */; };
-		B6C0D40B2CBDCD47001113ED /* TangemModules in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0D40A2CBDCD47001113ED /* TangemModules */; };
 		B6C1B9FF2AE1627500A98D2F /* OrganizeTokensScrollState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C1B9FE2AE1627500A98D2F /* OrganizeTokensScrollState.swift */; };
 		B6C1BE6D2B6C2F4E008FE5A0 /* secp256k1 in Frameworks */ = {isa = PBXBuildFile; productRef = B6C1BE6C2B6C2F4E008FE5A0 /* secp256k1 */; };
 		B6C2D00B2C816F080009FDFC /* MarketsTokenDetailsDateFormatterRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C2D00A2C816F080009FDFC /* MarketsTokenDetailsDateFormatterRepository.swift */; };
@@ -2946,6 +2943,22 @@
 		EFFC861328BCF6C500F863CE /* StorageEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFC861228BCF6C500F863CE /* StorageEntry.swift */; };
 		EFFE2CE928B8E0B300B9F279 /* UserWalletModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFE2CE828B8E0B300B9F279 /* UserWalletModel.swift */; };
 		EFFE2CEC28B8E1B000B9F279 /* CommonDerivationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFE2CEB28B8E1B000B9F279 /* CommonDerivationManager.swift */; };
+		F91094E32CC7E11600042E9E /* (null) in Sources */ = {isa = PBXBuildFile; };
+		F92DB9C72CD4C24800C16530 /* TangemModules in Frameworks */ = {isa = PBXBuildFile; productRef = F92DB9C62CD4C24800C16530 /* TangemModules */; };
+		F92DB9C92CD4C2F400C16530 /* TangemModules in Frameworks */ = {isa = PBXBuildFile; productRef = F92DB9C82CD4C2F400C16530 /* TangemModules */; };
+		F92DB9CB2CD4C36100C16530 /* TangemModules in Frameworks */ = {isa = PBXBuildFile; productRef = F92DB9CA2CD4C36100C16530 /* TangemModules */; };
+		F92DB9CD2CD4C3D200C16530 /* TangemModules in Frameworks */ = {isa = PBXBuildFile; productRef = F92DB9CC2CD4C3D200C16530 /* TangemModules */; };
+		F99007062CD3E1C700DFE2D3 /* KaspaNetworkModelsKRC20.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99007012CD3E1C700DFE2D3 /* KaspaNetworkModelsKRC20.swift */; };
+		F99007072CD3E1C700DFE2D3 /* KaspaKRC20.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99007022CD3E1C700DFE2D3 /* KaspaKRC20.swift */; };
+		F99007082CD3E1C700DFE2D3 /* KaspaNetworkServiceKRC20.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99007032CD3E1C700DFE2D3 /* KaspaNetworkServiceKRC20.swift */; };
+		F99007092CD3E1C700DFE2D3 /* KaspaTargetKRC20.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99007042CD3E1C700DFE2D3 /* KaspaTargetKRC20.swift */; };
+		F990070A2CD3E1C700DFE2D3 /* KaspaNetworkProviderKRC20.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99007052CD3E1C700DFE2D3 /* KaspaNetworkProviderKRC20.swift */; };
+		F990070C2CD3E1D800DFE2D3 /* KaspaUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = F990070B2CD3E1D800DFE2D3 /* KaspaUtils.swift */; };
+		F9F62C842CBFE21E008A3EE6 /* (null) in Sources */ = {isa = PBXBuildFile; };
+		F9F62C862CC15EF4008A3EE6 /* (null) in Sources */ = {isa = PBXBuildFile; };
+		F9F62C882CC15F17008A3EE6 /* (null) in Sources */ = {isa = PBXBuildFile; };
+		F9F62C8A2CC15FA8008A3EE6 /* (null) in Sources */ = {isa = PBXBuildFile; };
+		F9F62C8C2CC169E4008A3EE6 /* (null) in Sources */ = {isa = PBXBuildFile; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -5983,11 +5996,6 @@
 		EFBAABAC2927CCBA0065C6D4 /* DecimalNumberTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DecimalNumberTextField.swift; sourceTree = "<group>"; };
 		EFBAABAD2927CCBA0065C6D4 /* DecimalNumberFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DecimalNumberFormatter.swift; sourceTree = "<group>"; };
 		EFBB77B12CCBE924002D4A10 /* OnrampSummaryRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampSummaryRoutable.swift; sourceTree = "<group>"; };
-		EFBB77CA2CD0FF2E002D4A10 /* OnrampPaymentMethodsRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPaymentMethodsRoutable.swift; sourceTree = "<group>"; };
-		EFBB77CB2CD0FF2E002D4A10 /* OnrampPaymentMethodsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPaymentMethodsView.swift; sourceTree = "<group>"; };
-		EFBB77CC2CD0FF2E002D4A10 /* OnrampPaymentMethodsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPaymentMethodsViewModel.swift; sourceTree = "<group>"; };
-		EFBB77D72CD0FF8C002D4A10 /* OnrampPaymentMethodRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPaymentMethodRowView.swift; sourceTree = "<group>"; };
-		EFBB77D92CD10008002D4A10 /* OnrampPaymentMethodRowViewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPaymentMethodRowViewData.swift; sourceTree = "<group>"; };
 		EFBC5C6D2C00A74100B662E0 /* YieldInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YieldInfo.swift; sourceTree = "<group>"; };
 		EFBC5C6E2C00A74100B662E0 /* StakingWallet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StakingWallet.swift; sourceTree = "<group>"; };
 		EFBC5C702C00A74100B662E0 /* StakingAPIService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StakingAPIService.swift; sourceTree = "<group>"; };
@@ -6109,6 +6117,12 @@
 		EFFE2CEB28B8E1B000B9F279 /* CommonDerivationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonDerivationManager.swift; sourceTree = "<group>"; };
 		F331D905EEAD64DFAAB0B61A /* Pods-TangemFoundation.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundation.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemFoundation/Pods-TangemFoundation.debug(production).xcconfig"; sourceTree = "<group>"; };
 		F4916AA53286A77C171FB941 /* Pods-TangemUITests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemUITests.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemUITests/Pods-TangemUITests.debug(production).xcconfig"; sourceTree = "<group>"; };
+		F99007012CD3E1C700DFE2D3 /* KaspaNetworkModelsKRC20.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KaspaNetworkModelsKRC20.swift; sourceTree = "<group>"; };
+		F99007022CD3E1C700DFE2D3 /* KaspaKRC20.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KaspaKRC20.swift; sourceTree = "<group>"; };
+		F99007032CD3E1C700DFE2D3 /* KaspaNetworkServiceKRC20.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KaspaNetworkServiceKRC20.swift; sourceTree = "<group>"; };
+		F99007042CD3E1C700DFE2D3 /* KaspaTargetKRC20.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KaspaTargetKRC20.swift; sourceTree = "<group>"; };
+		F99007052CD3E1C700DFE2D3 /* KaspaNetworkProviderKRC20.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KaspaNetworkProviderKRC20.swift; sourceTree = "<group>"; };
+		F990070B2CD3E1D800DFE2D3 /* KaspaUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KaspaUtils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -6128,6 +6142,7 @@
 				EFEE239D2BFF62D60099917E /* TangemStaking.framework in Frameworks */,
 				B620FCAE2C5D337900AD0FD1 /* DGCharts in Frameworks */,
 				B62C16812CBE0BA000522683 /* Alamofire in Frameworks */,
+				F92DB9C72CD4C24800C16530 /* TangemModules in Frameworks */,
 				B6F625302C85E1A600DEF098 /* DGCharts in Frameworks */,
 				5DAC0888251391D900B73E8B /* CoreNFC.framework in Frameworks */,
 				B099338A2B5517EC00240CDB /* TangemVisa.framework in Frameworks */,
@@ -6162,11 +6177,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F92DB9C92CD4C2F400C16530 /* TangemModules in Frameworks */,
 				B62C16792CBE095A00522683 /* Alamofire in Frameworks */,
 				B62D34102CBC4C5800C2460E /* BlockchainSdk.framework in Frameworks */,
 				B0D70D482CE5FB6800A8A0F1 /* JWTDecode in Frameworks */,
 				B67E38BB2CC7179000D660EB /* TangemSdk in Frameworks */,
-				B6C0D3FF2CBDC73E001113ED /* TangemModules in Frameworks */,
 				B6C0D3FB2CBDC6DD001113ED /* Moya in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -6231,10 +6246,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F92DB9CD2CD4C3D200C16530 /* TangemModules in Frameworks */,
 				B62C167D2CBE0A3D00522683 /* Alamofire in Frameworks */,
 				B62D34152CBC4C6F00C2460E /* BlockchainSdk.framework in Frameworks */,
 				B67E38BD2CC7179600D660EB /* TangemSdk in Frameworks */,
-				B6C0D40B2CBDCD47001113ED /* TangemModules in Frameworks */,
 				B6C0D4092CBDCD34001113ED /* Moya in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -6251,10 +6266,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F92DB9CB2CD4C36100C16530 /* TangemModules in Frameworks */,
 				B62C167B2CBE0A1E00522683 /* Alamofire in Frameworks */,
 				B62D34402CBC506E00C2460E /* BlockchainSdk.framework in Frameworks */,
 				B67E38BF2CC717A300D660EB /* TangemSdk in Frameworks */,
-				B6C0D4012CBDC759001113ED /* TangemModules in Frameworks */,
 				B6C0D3FD2CBDC6FE001113ED /* Moya in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -6870,7 +6885,6 @@
 				5D3F77C324BF56D800E8695B /* Products */,
 				BBA154748909F0AB4121528D /* Pods */,
 				2E5061A84512B23CCB5F2E17 /* Frameworks */,
-				EFC98FF52CD3A3D30098B7C8 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -10015,8 +10029,10 @@
 		B62D3D592CBC79D900C2460E /* Kaspa */ = {
 			isa = PBXGroup;
 			children = (
+				F9F62C822CBFE1DF008A3EE6 /* KaspaKRC20 */,
 				B62D3D4C2CBC79D900C2460E /* Address */,
 				B62D3D512CBC79D900C2460E /* Network */,
+				F990070B2CD3E1D800DFE2D3 /* KaspaUtils.swift */,
 				B62D3D522CBC79D900C2460E /* KaspaAPIResolver.swift */,
 				B62D3D532CBC79D900C2460E /* KaspaExternalLinkProvider.swift */,
 				B62D3D542CBC79D900C2460E /* KaspaFeeMapper.swift */,
@@ -15522,18 +15538,6 @@
 			path = SendStepsManager;
 			sourceTree = "<group>";
 		};
-		EFC98FF52CD3A3D30098B7C8 /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-				EFBB77D92CD10008002D4A10 /* OnrampPaymentMethodRowViewData.swift */,
-				EFBB77CC2CD0FF2E002D4A10 /* OnrampPaymentMethodsViewModel.swift */,
-				EFBB77CA2CD0FF2E002D4A10 /* OnrampPaymentMethodsRoutable.swift */,
-				EFBB77CB2CD0FF2E002D4A10 /* OnrampPaymentMethodsView.swift */,
-				EFBB77D72CD0FF8C002D4A10 /* OnrampPaymentMethodRowView.swift */,
-			);
-			name = "Recovered References";
-			sourceTree = "<group>";
-		};
 		EFC98FF82CD3A3F80098B7C8 /* OnrampPaymentMethodRowView */ = {
 			isa = PBXGroup;
 			children = (
@@ -15789,6 +15793,18 @@
 			path = DerivationManager;
 			sourceTree = "<group>";
 		};
+		F9F62C822CBFE1DF008A3EE6 /* KaspaKRC20 */ = {
+			isa = PBXGroup;
+			children = (
+				F99007022CD3E1C700DFE2D3 /* KaspaKRC20.swift */,
+				F99007012CD3E1C700DFE2D3 /* KaspaNetworkModelsKRC20.swift */,
+				F99007052CD3E1C700DFE2D3 /* KaspaNetworkProviderKRC20.swift */,
+				F99007032CD3E1C700DFE2D3 /* KaspaNetworkServiceKRC20.swift */,
+				F99007042CD3E1C700DFE2D3 /* KaspaTargetKRC20.swift */,
+			);
+			path = KaspaKRC20;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -15875,6 +15891,7 @@
 				B62C167E2CBE0B7900522683 /* Moya */,
 				B62C16802CBE0BA000522683 /* Alamofire */,
 				B67E38C02CC71A2C00D660EB /* TangemSdk */,
+				F92DB9C62CD4C24800C16530 /* TangemModules */,
 			);
 			productName = "Tangem Tap";
 			productReference = 5D3F77C224BF56D800E8695B /* Tangem.app */;
@@ -15940,10 +15957,10 @@
 			name = TangemVisa;
 			packageProductDependencies = (
 				B6C0D3FA2CBDC6DD001113ED /* Moya */,
-				B6C0D3FE2CBDC73E001113ED /* TangemModules */,
 				B62C16782CBE095A00522683 /* Alamofire */,
 				B67E38BA2CC7179000D660EB /* TangemSdk */,
 				B0D70D472CE5FB6800A8A0F1 /* JWTDecode */,
+				F92DB9C82CD4C2F400C16530 /* TangemModules */,
 			);
 			productName = TangemVisa;
 			productReference = B09933772B5517E300240CDB /* TangemVisa.framework */;
@@ -16072,9 +16089,9 @@
 			name = TangemExpress;
 			packageProductDependencies = (
 				B6C0D4082CBDCD34001113ED /* Moya */,
-				B6C0D40A2CBDCD47001113ED /* TangemModules */,
 				B62C167C2CBE0A3D00522683 /* Alamofire */,
 				B67E38BC2CC7179600D660EB /* TangemSdk */,
+				F92DB9CC2CD4C3D200C16530 /* TangemModules */,
 			);
 			productName = TangemExpress;
 			productReference = EF9E29932B4F0C8800418559 /* TangemExpress.framework */;
@@ -16116,9 +16133,9 @@
 			name = TangemStaking;
 			packageProductDependencies = (
 				B6C0D3FC2CBDC6FE001113ED /* Moya */,
-				B6C0D4002CBDC759001113ED /* TangemModules */,
 				B62C167A2CBE0A1E00522683 /* Alamofire */,
 				B67E38BE2CC717A300D660EB /* TangemSdk */,
+				F92DB9CA2CD4C36100C16530 /* TangemModules */,
 			);
 			productName = TangemStaking;
 			productReference = EFEE23882BFF62D50099917E /* TangemStaking.framework */;
@@ -16235,7 +16252,6 @@
 				B62D34452CBC51D400C2460E /* XCRemoteSwiftPackageReference "SwiftCBOR" */,
 				B62D344B2CBC675600C2460E /* XCRemoteSwiftPackageReference "stellar-ios-mac-sdk" */,
 				B62D344E2CBC67D500C2460E /* XCRemoteSwiftPackageReference "AnyCodable" */,
-				B6C0D3DF2CBDC2E3001113ED /* XCLocalSwiftPackageReference "Modules" */,
 				B6C0D3EA2CBDC3E0001113ED /* XCRemoteSwiftPackageReference "SwiftBinanceChain" */,
 				B6C0D3F02CBDC52D001113ED /* XCRemoteSwiftPackageReference "Moya" */,
 				B6C0D3F72CBDC5A3001113ED /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
@@ -16244,6 +16260,7 @@
 				B6FFC31D2CC70E1D00F4400E /* XCRemoteSwiftPackageReference "bitcoincore" */,
 				B67E38B72CC7147600D660EB /* XCRemoteSwiftPackageReference "tangem-sdk-ios" */,
 				B09FF1882CE24DF5004881F6 /* XCRemoteSwiftPackageReference "JWTDecode" */,
+				F92DB9C52CD4C24800C16530 /* XCLocalSwiftPackageReference "Modules" */,
 			);
 			productRefGroup = 5D3F77C324BF56D800E8695B /* Products */;
 			projectDirPath = "";
@@ -18392,6 +18409,7 @@
 				B62D41CC2CBC79DB00C2460E /* proposal_contract.pb.swift in Sources */,
 				B62D408D2CBC79DA00C2460E /* EthereumExternalLinkProvider.swift in Sources */,
 				B62D41332CBC79DA00C2460E /* NEARNetworkParams.ProtocolConfig.swift in Sources */,
+				F99007082CD3E1C700DFE2D3 /* KaspaNetworkServiceKRC20.swift in Sources */,
 				B62D41A92CBC79DA00C2460E /* SUIUtils.swift in Sources */,
 				B62D42932CBC79DB00C2460E /* EthereumUtils.swift in Sources */,
 				B62D400B2CBC79DA00C2460E /* OP_NUM2BIN.swift in Sources */,
@@ -18540,6 +18558,7 @@
 				B62D40602CBC79DA00C2460E /* ChiaNetworkService.swift in Sources */,
 				B62D422D2CBC79DB00C2460E /* BlockBookTarget.swift in Sources */,
 				B62D42832CBC79DB00C2460E /* EthereumTransactionHistoryProvider.swift in Sources */,
+				F9F62C8A2CC15FA8008A3EE6 /* (null) in Sources */,
 				B62D3FA12CBC79DA00C2460E /* AlgorandResponse+TransactionHistory.swift in Sources */,
 				B62D42BC2CBC79DB00C2460E /* Wallet.swift in Sources */,
 				B62D40892CBC79DA00C2460E /* ABIEncoder.swift in Sources */,
@@ -18743,6 +18762,7 @@
 				B62D3FFB2CBC79DA00C2460E /* OP_VERIF.swift in Sources */,
 				B62D41962CBC79DA00C2460E /* StellarNetworkProvider.swift in Sources */,
 				B62D41502CBC79DA00C2460E /* SubscanAPIParams.ExtrinsicInfo.swift in Sources */,
+				F9F62C862CC15EF4008A3EE6 /* (null) in Sources */,
 				B62D40542CBC79DA00C2460E /* Chia+Int64.swift in Sources */,
 				B62D406D2CBC79DA00C2460E /* CosmosRestProvider.swift in Sources */,
 				B62D3FCD2CBC79DA00C2460E /* OP_ADD.swift in Sources */,
@@ -18872,6 +18892,7 @@
 				B62D41B22CBC79DB00C2460E /* TezosPrefix.swift in Sources */,
 				B62D41892CBC79DA00C2460E /* SolanaDummyAccountStorage.swift in Sources */,
 				B62D40762CBC79DA00C2460E /* DashTestNetworkParams.swift in Sources */,
+				F9F62C842CBFE21E008A3EE6 /* (null) in Sources */,
 				B62D3FB62CBC79DA00C2460E /* AptosTransactionBuilder.swift in Sources */,
 				B62D3FA02CBC79DA00C2460E /* AlgorandResponse+Transaction.swift in Sources */,
 				B62D3FA72CBC79DA00C2460E /* AlgorandTransactionBuilder.swift in Sources */,
@@ -18898,10 +18919,12 @@
 				B62D41B12CBC79DB00C2460E /* TezosNetworkService.swift in Sources */,
 				B62D41E32CBC79DB00C2460E /* TronUtils.swift in Sources */,
 				B62D3FE62CBC79DA00C2460E /* OP_OR.swift in Sources */,
+				F990070C2CD3E1D800DFE2D3 /* KaspaUtils.swift in Sources */,
 				B62D42C62CBC79DB00C2460E /* AnyPublisher+Async.swift in Sources */,
 				B62D42202CBC79DB00C2460E /* XRPTarget.swift in Sources */,
 				B62D41E42CBC79DB00C2460E /* TronWalletAssembly.swift in Sources */,
 				B62D42522CBC79DB00C2460E /* Blockchain+AllCases.swift in Sources */,
+				F9F62C8C2CC169E4008A3EE6 /* (null) in Sources */,
 				B62D40E42CBC79DA00C2460E /* HederaNetworkResult.ExchangeRate.swift in Sources */,
 				B62D41072CBC79DA00C2460E /* KaspaFeeMapper.swift in Sources */,
 				B62D419B2CBC79DA00C2460E /* StellarWalletAssembly.swift in Sources */,
@@ -18910,6 +18933,7 @@
 				B62D418E2CBC79DA00C2460E /* SolanaResponse.swift in Sources */,
 				B62D3FAA2CBC79DA00C2460E /* AptosAccountInfo.swift in Sources */,
 				B62D42472CBC79DB00C2460E /* APINodeInfoResolver.swift in Sources */,
+				F990070A2CD3E1C700DFE2D3 /* KaspaNetworkProviderKRC20.swift in Sources */,
 				B62D42AC2CBC79DB00C2460E /* ExternalLinkProvider.swift in Sources */,
 				B62D40812CBC79DA00C2460E /* BitcoreResponse.swift in Sources */,
 				B62D40D22CBC79DA00C2460E /* FilecoinNetworkService.swift in Sources */,
@@ -18972,6 +18996,7 @@
 				B62D41682CBC79DA00C2460E /* PolkadotTransactionBuilder.swift in Sources */,
 				B62D41FA2CBC79DB00C2460E /* VeChainFeeParams.swift in Sources */,
 				B62D429A2CBC79DB00C2460E /* URLSessionWebSocketTask.CloseCode+CustomStringConvertible.swift in Sources */,
+				F99007092CD3E1C700DFE2D3 /* KaspaTargetKRC20.swift in Sources */,
 				B62D40992CBC79DA00C2460E /* EthereumModels.swift in Sources */,
 				B62D40272CBC79DA00C2460E /* OpCodeProtocol.swift in Sources */,
 				B62D3FE72CBC79DA00C2460E /* OP_RESERVED1.swift in Sources */,
@@ -18982,6 +19007,7 @@
 				B62D40182CBC79DA00C2460E /* OP_IFDUP.swift in Sources */,
 				B62D42B22CBC79DB00C2460E /* PendingTransactionRecord.swift in Sources */,
 				B62D40EF2CBC79DA00C2460E /* HederaCreatedAccount.swift in Sources */,
+				F99007062CD3E1C700DFE2D3 /* KaspaNetworkModelsKRC20.swift in Sources */,
 				B62D405E2CBC79DA00C2460E /* ChiaAPIResolver.swift in Sources */,
 				B62D40BA2CBC79DA00C2460E /* PolygonExternalLinkProvider.swift in Sources */,
 				B62D40622CBC79DA00C2460E /* ChiaWalletAssembly.swift in Sources */,
@@ -19101,11 +19127,13 @@
 				B62D40B02CBC79DA00C2460E /* GnosisExternalLinkProvider.swift in Sources */,
 				B62D40A82CBC79DA00C2460E /* CronosExternalLinkProvider.swift in Sources */,
 				B62D42DC2CBC79DB00C2460E /* TWPublicKey+.swift in Sources */,
+				F91094E32CC7E11600042E9E /* (null) in Sources */,
 				B62D41012CBC79DA00C2460E /* KaspaNetworkModels.swift in Sources */,
 				B62D3FD02CBC79DA00C2460E /* OP_DIV.swift in Sources */,
 				B62D42DA2CBC79DB00C2460E /* ThenProcessable.swift in Sources */,
 				B62D40232CBC79DA00C2460E /* BitcoinScriptBuilder.swift in Sources */,
 				B62D420E2CBC79DB00C2460E /* WebSocket.swift in Sources */,
+				F99007072CD3E1C700DFE2D3 /* KaspaKRC20.swift in Sources */,
 				B62D41092CBC79DA00C2460E /* KaspaTransactionBuilder.swift in Sources */,
 				B62D419E2CBC79DA00C2460E /* SuiNetworkProvider.swift in Sources */,
 				B62D42282CBC79DB00C2460E /* BlockBookNode.swift in Sources */,
@@ -19169,6 +19197,7 @@
 				B62D40BE2CBC79DA00C2460E /* TaraxaExternalLinkProvider.swift in Sources */,
 				B62D40BD2CBC79DA00C2460E /* ShibariumExternalLinkProvider.swift in Sources */,
 				B62D3FEE2CBC79DA00C2460E /* OP_CODESEPARATOR.swift in Sources */,
+				F9F62C882CC15F17008A3EE6 /* (null) in Sources */,
 				B62D40592CBC79DA00C2460E /* ChiaNetworkProvider.swift in Sources */,
 				B62D416E2CBC79DA00C2460E /* RadiantAmountUnspentTransaction.swift in Sources */,
 				B62D40772CBC79DA00C2460E /* DashWalletAssembly.swift in Sources */,
@@ -25661,7 +25690,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		B6C0D3DF2CBDC2E3001113ED /* XCLocalSwiftPackageReference "Modules" */ = {
+		F92DB9C52CD4C24800C16530 /* XCLocalSwiftPackageReference "Modules" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Modules;
 		};
@@ -25961,17 +25990,14 @@
 		};
 		B63DFC492CD4DBED00720D9F /* TangemModules */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = B6C0D3DF2CBDC2E3001113ED /* XCLocalSwiftPackageReference "Modules" */;
 			productName = TangemModules;
 		};
 		B63DFC4B2CD4EA1C00720D9F /* TangemModules */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = B6C0D3DF2CBDC2E3001113ED /* XCLocalSwiftPackageReference "Modules" */;
 			productName = TangemModules;
 		};
 		B63DFC4D2CD4EABB00720D9F /* TangemModules */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = B6C0D3DF2CBDC2E3001113ED /* XCLocalSwiftPackageReference "Modules" */;
 			productName = TangemModules;
 		};
 		B655F5792CBC871F002391AF /* secp256k1 */ = {
@@ -26083,25 +26109,10 @@
 			package = B6C0D3F02CBDC52D001113ED /* XCRemoteSwiftPackageReference "Moya" */;
 			productName = Moya;
 		};
-		B6C0D3FE2CBDC73E001113ED /* TangemModules */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B6C0D3DF2CBDC2E3001113ED /* XCLocalSwiftPackageReference "Modules" */;
-			productName = TangemModules;
-		};
-		B6C0D4002CBDC759001113ED /* TangemModules */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B6C0D3DF2CBDC2E3001113ED /* XCLocalSwiftPackageReference "Modules" */;
-			productName = TangemModules;
-		};
 		B6C0D4082CBDCD34001113ED /* Moya */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B6C0D3F02CBDC52D001113ED /* XCRemoteSwiftPackageReference "Moya" */;
 			productName = Moya;
-		};
-		B6C0D40A2CBDCD47001113ED /* TangemModules */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B6C0D3DF2CBDC2E3001113ED /* XCLocalSwiftPackageReference "Modules" */;
-			productName = TangemModules;
 		};
 		B6C1BE6C2B6C2F4E008FE5A0 /* secp256k1 */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -26141,6 +26152,25 @@
 			isa = XCSwiftPackageProductDependency;
 			package = DCB616E32CB39A8100BE4481 /* XCRemoteSwiftPackageReference "reown-swift" */;
 			productName = ReownWalletKit;
+		};
+		F92DB9C62CD4C24800C16530 /* TangemModules */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TangemModules;
+		};
+		F92DB9C82CD4C2F400C16530 /* TangemModules */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F92DB9C52CD4C24800C16530 /* XCLocalSwiftPackageReference "Modules" */;
+			productName = TangemModules;
+		};
+		F92DB9CA2CD4C36100C16530 /* TangemModules */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F92DB9C52CD4C24800C16530 /* XCLocalSwiftPackageReference "Modules" */;
+			productName = TangemModules;
+		};
+		F92DB9CC2CD4C3D200C16530 /* TangemModules */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F92DB9C52CD4C24800C16530 /* XCLocalSwiftPackageReference "Modules" */;
+			productName = TangemModules;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
