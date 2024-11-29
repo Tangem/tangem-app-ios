@@ -674,6 +674,34 @@ public indirect enum Blockchain: Equatable, Hashable {
         }
     }
 
+    public var hasMemo: Bool {
+        switch self {
+        case .stellar,
+             .binance,
+             .ton,
+             .cosmos,
+             .terraV1,
+             .terraV2,
+             .algorand,
+             .hedera,
+             .sei,
+             .internetComputer,
+             .casper:
+            true
+        default:
+            false
+        }
+    }
+
+    public var hasDestinationTag: Bool {
+        switch self {
+        case .xrp:
+            true
+        default:
+            false
+        }
+    }
+
     public var feePaidCurrency: FeePaidCurrency {
         switch self {
         case .terraV1:
