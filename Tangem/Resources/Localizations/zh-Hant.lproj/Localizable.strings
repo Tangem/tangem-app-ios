@@ -652,6 +652,7 @@
 "send_notification_fee_too_high_title" = "Custom fee is high";
 "send_notification_high_fee_text" = "Due to the peculiarities of the %1$@ network, the fee for transferring the entire balance is higher. To reduce the commission, you can leave %2$@.";
 "send_notification_high_fee_title" = "The fee is higher";
+"send_notification_invalid_amount_rent_fee" = "Your account balance cannot be lower than the rent fee. Please maintain at least %@ on your account or withdraw all funds.";
 "send_notification_invalid_amount_text" = "The included commission exceeds the transfer amount, leading to a negative value";
 "send_notification_invalid_amount_title" = "Invalid amount";
 "send_notification_invalid_minimum_amount_text" = "The minimum sending amount is %1$@. Please ensure that the remaining balance after sending will not be less than %2$@.";

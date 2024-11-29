@@ -30,6 +30,7 @@ public enum ValidationError: Hashable, LocalizedError {
     case insufficientFeeResource(type: FeeResourceType, current: Decimal, max: Decimal)
     case amountExceedsFeeResourceCapacity(type: FeeResourceType, availableAmount: Decimal)
     case feeExceedsMaxFeeResource
+    case remainingAmountIsLessThanRentExtemption(amount: Amount)
 
     public var errorDescription: String? {
         switch self {
@@ -61,6 +62,8 @@ public enum ValidationError: Hashable, LocalizedError {
             return Localization.koinosInsufficientManaToSendKoinDescription(current, max)
         case .minimumRestrictAmount:
             return Localization.sendValidationInvalidAmount
+        case .remainingAmountIsLessThanRentExtemption(let amount):
+            return .none // displayed as notification
         }
     }
 }
