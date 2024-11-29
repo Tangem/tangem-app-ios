@@ -23,6 +23,7 @@ final class OnrampProvidersViewModel: ObservableObject {
     private let interactor: OnrampProvidersInteractor
     private weak var coordinator: OnrampProvidersRoutable?
 
+    private let priceChangeFormatter = PriceChangeFormatter()
     private let balanceFormatter = BalanceFormatter()
 
     private var bag: Set<AnyCancellable> = []
@@ -66,7 +67,8 @@ private extension OnrampProvidersViewModel {
             }
             .store(in: &bag)
 
-        interactor.providesPublisher
+        interactor
+            .providesPublisher
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, providers in
@@ -92,7 +94,7 @@ private extension OnrampProvidersViewModel {
                 iconURL: provider.provider.imageURL,
                 formattedAmount: formattedAmount(state: provider.state),
                 state: state(state: provider.state),
-                badge: provider.isBest ? .bestRate : .none,
+                badge: badge(provider: provider),
                 isSelected: selectedProviderId == provider.provider.id,
                 action: { [weak self] in
                     self?.selectedProviderId = provider.provider.id
@@ -100,6 +102,18 @@ private extension OnrampProvidersViewModel {
                     self?.interactor.update(selectedProvider: provider)
                 }
             )
+        }
+    }
+
+    func badge(provider: OnrampProvider) -> OnrampProviderRowViewData.Badge? {
+        switch provider.attractiveType {
+        case .none:
+            return .none
+        case .best:
+            return .bestRate
+        case .loss(let percent):
+            let result = priceChangeFormatter.formatFractionalValue(percent, option: .express)
+            return .percent(result.formattedText, signType: result.signType)
         }
     }
 
@@ -119,17 +133,20 @@ private extension OnrampProvidersViewModel {
         case .idle, .loading:
             return nil
         case .notSupported(.currentPair):
-            // Will be update
-            return .unavailable(reason: "Unavailable for this pair")
-        case .notSupported(.paymentMethod):
-            // Will be update
-            return .unavailable(reason: "Unavailable for this payment method")
+            // It's not to be showed
+            return .unavailable(reason: Localization.expressProviderNotAvailable)
+        case .notSupported(.paymentMethod(let supported)):
+            let methods = supported.map(\.name).joined(separator: ", ")
+            return .availableForPaymentMethods(methods: Localization.onrampAvaiableWithPaymentMethods(methods))
         case .loaded:
+            // Will be updated
             return .available(estimatedTime: "5 min")
         case .restriction(.tooSmallAmount(let minAmount)):
             return .availableFromAmount(minAmount: Localization.onrampMinAmountRestriction(minAmount))
         case .restriction(.tooBigAmount(let maxAmount)):
             return .availableToAmount(maxAmount: Localization.onrampMaxAmountRestriction(maxAmount))
+        case .failed(let error as ExpressAPIError):
+            return .unavailable(reason: error.localizedMessage)
         case .failed(let error):
             return .unavailable(reason: error.localizedDescription)
         }
