@@ -37,6 +37,8 @@ struct BitcoinCashWalletAssembly: WalletManagerAssembly {
                             )
                         )
                     }
+                case .getBlock:
+                    partialResult.append(networkProviderAssembly.makeBlockBookUtxoProvider(with: input, for: .getBlock).eraseToAnyBitcoinNetworkProvider())
                 case .blockchair:
                     partialResult.append(
                         contentsOf: networkProviderAssembly.makeBlockchairNetworkProviders(endpoint: .bitcoinCash, with: input)
