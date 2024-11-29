@@ -51,6 +51,7 @@ private extension OnrampProvidersViewModel {
     func bind() {
         interactor
             .selectedProviderPublisher
+            .removeDuplicates()
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, provider in
@@ -60,6 +61,7 @@ private extension OnrampProvidersViewModel {
 
         interactor
             .paymentMethodPublisher
+            .removeDuplicates()
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, payment in
@@ -91,6 +93,8 @@ private extension OnrampProvidersViewModel {
         providersViewData = providers.map { provider in
             OnrampProviderRowViewData(
                 name: provider.provider.name,
+                // Need to set here to that the action works correctly
+                paymentMethodId: provider.paymentMethod.id,
                 iconURL: provider.provider.imageURL,
                 formattedAmount: formattedAmount(state: provider.state),
                 state: state(state: provider.state),
@@ -100,6 +104,7 @@ private extension OnrampProvidersViewModel {
                     self?.selectedProviderId = provider.provider.id
                     self?.updateProvidersView(providers: providers)
                     self?.interactor.update(selectedProvider: provider)
+                    self?.coordinator?.closeOnrampProviders()
                 }
             )
         }

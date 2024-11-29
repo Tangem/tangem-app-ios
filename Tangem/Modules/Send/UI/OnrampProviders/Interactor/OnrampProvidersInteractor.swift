@@ -70,6 +70,7 @@ extension CommonOnrampProvidersInteractor: OnrampProvidersInteractor {
         return Publishers
             .CombineLatest(input.onrampProvidersPublisher, paymentMethodPublisher)
             .compactMap { $0?.value?.select(for: $1)?.providers }
+            .removeDuplicates()
             .eraseToAnyPublisher()
     }
 
