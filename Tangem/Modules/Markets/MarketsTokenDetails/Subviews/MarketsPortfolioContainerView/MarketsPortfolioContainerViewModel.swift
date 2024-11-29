@@ -288,7 +288,13 @@ extension MarketsPortfolioContainerViewModel: MarketsPortfolioContextActionsDele
         switch action {
         case .buy:
             Analytics.log(event: .marketsChartButtonBuy, params: analyticsParams)
-            coordinator.openBuyCryptoIfPossible(for: walletModel, with: userWalletModel)
+
+            if FeatureProvider.isAvailable(.onramp) {
+                coordinator.openOnramp(for: walletModel, with: userWalletModel)
+            } else {
+                // Old code
+                coordinator.openBuyCryptoIfPossible(for: walletModel, with: userWalletModel)
+            }
         case .receive:
             Analytics.log(event: .marketsChartButtonReceive, params: analyticsParams)
             coordinator.openReceive(walletModel: walletModel)
