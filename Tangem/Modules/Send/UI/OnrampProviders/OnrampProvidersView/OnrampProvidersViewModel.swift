@@ -49,34 +49,18 @@ final class OnrampProvidersViewModel: ObservableObject {
 
 private extension OnrampProvidersViewModel {
     func bind() {
-        interactor
-            .selectedProviderPublisher
-            .removeDuplicates()
-            .withWeakCaptureOf(self)
-            .receive(on: DispatchQueue.main)
-            .sink { viewModel, provider in
-                viewModel.selectedProviderId = provider?.provider.id
-            }
-            .store(in: &bag)
-
-        interactor
-            .paymentMethodPublisher
-            .removeDuplicates()
-            .withWeakCaptureOf(self)
-            .receive(on: DispatchQueue.main)
-            .sink { viewModel, payment in
-                viewModel.updatePaymentView(payment: payment)
-            }
-            .store(in: &bag)
-
-        interactor
-            .providesPublisher
-            .withWeakCaptureOf(self)
-            .receive(on: DispatchQueue.main)
-            .sink { viewModel, providers in
-                viewModel.updateProvidersView(providers: providers)
-            }
-            .store(in: &bag)
+        Publishers.CombineLatest(
+            interactor.providesPublisher,
+            interactor.selectedProviderPublisher.compactMap { $0 }
+        )
+        .withWeakCaptureOf(self)
+        .receive(on: DispatchQueue.main)
+        .sink { viewModel, args in
+            let (providers, selected) = args
+            viewModel.updateProvidersView(providers: providers, selectedProviderId: selected.provider.id)
+            viewModel.updatePaymentView(payment: selected.paymentMethod)
+        }
+        .store(in: &bag)
     }
 
     func updatePaymentView(payment: OnrampPaymentMethod) {
@@ -89,7 +73,7 @@ private extension OnrampProvidersViewModel {
         )
     }
 
-    func updateProvidersView(providers: [OnrampProvider]) {
+    func updateProvidersView(providers: [OnrampProvider], selectedProviderId: String) {
         providersViewData = providers.map { provider in
             OnrampProviderRowViewData(
                 name: provider.provider.name,
@@ -101,8 +85,6 @@ private extension OnrampProvidersViewModel {
                 badge: badge(provider: provider),
                 isSelected: selectedProviderId == provider.provider.id,
                 action: { [weak self] in
-                    self?.selectedProviderId = provider.provider.id
-                    self?.updateProvidersView(providers: providers)
                     self?.interactor.update(selectedProvider: provider)
                     self?.coordinator?.closeOnrampProviders()
                 }
