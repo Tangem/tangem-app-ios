@@ -1,12 +1,15 @@
 "action_buttons_buy_empty_search_message" = "Can’t find your token? Go to the Market section on the main page and add it to your portfolio for purchase";
-"action_buttons_buy_navigation_bar_title" = "Buy crypto";
+"action_buttons_buy_navigation_bar_title" = "Buy";
 "action_buttons_sell_empty_search_message" = "Can’t find your token? Go to the Market section on the main page and add it to your portfolio for selling.";
-"action_buttons_sell_navigation_bar_title" = "Sell crypto";
+"action_buttons_sell_navigation_bar_title" = "Sell";
+"action_buttons_something_wrong_alert_title" = "";
 "action_buttons_swap_choose_token" = "Choose the Token";
 "action_buttons_swap_empty_search_message" = "Can’t find your token? Go to the Market section on the main page and add it to your portfolio for swapping.";
-"action_buttons_swap_navigation_bar_title" = "Swap crypto";
+"action_buttons_swap_navigation_bar_title" = "Swap";
 "action_buttons_swap_no_available_pair_notification_message" = "There are no available tokens to swap with the selected token. Please choose another one.";
 "action_buttons_swap_no_available_pair_notification_title" = "No available pair";
+"action_buttons_swap_no_tokens_added_alert_title" = "";
+"action_buttons_swap_not_enough_tokens_alert_title" = "";
 "action_buttons_you_want_to_receive" = "Choose the token you want to receive";
 "action_buttons_you_want_to_swap" = "Choose the token you want to swap";
 "add_custom_token_choose_network" = "Choose network";
@@ -564,6 +567,7 @@
 "onramp_settings_residence" = "Residence";
 "onramp_settings_residence_description" = "Please select the correct country to ensure accurate payment options and services.";
 "onramp_settings_title" = "Settings";
+"onramp_statuses_view_footer" = "You can check the transaction status from the token page.";
 "onramp_transaction_status_footer_text" = "You can close this screen and check the transaction status on the token details screen.";
 "onramp_via" = "Via";
 "organize_tokens_group" = "Group";
@@ -622,6 +626,10 @@
 "scan_card_settings_button" = "Scan card or ring";
 "scan_card_settings_message" = "Scan the card or ring to change its settings. The changes will impact only the card or ring you've scanned and will not affect other devices tied to your wallet.";
 "scan_card_settings_title" = "Get your Tangem ready!";
+"selling_insufficient_balance_alert_message" = "You don’t have enough funds in your balance to sell this cryptocurrency. Please deposit the desired asset to proceed.";
+"selling_insufficient_balance_alert_title" = "Insufficient Balance";
+"selling_regional_restriction_alert_message" = "Selling cryptocurrency is unavailable in your region at the moment. We’re actively working to bring this option to you soon—stay tuned!";
+"selling_regional_restriction_alert_title" = "Regional Restriction";
 "send_additional_field_already_included" = "Already included in the entered address";
 "send_alert_fee_too_high_text" = "Your commission amount is %@ times higher than the recommended amount. Please review and adjust your custom settings.";
 "send_alert_fee_too_low_text" = "You specified a commission below the recommended amount, which could cause a delay in your transaction. Continue?";
