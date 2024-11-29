@@ -275,7 +275,7 @@ private extension SolanaWalletManager {
 extension SolanaWalletManager: RentProvider {
     func minimalBalanceForRentExemption() -> AnyPublisher<Amount, Error> {
         let amountValue = Amount(with: wallet.blockchain, value: mainAccountRentExemption)
-        return CurrentValueSubject(amountValue).eraseToAnyPublisher()
+        return .justWithError(output: amountValue).eraseToAnyPublisher()
     }
 
     func rentAmount() -> AnyPublisher<Amount, Error> {
@@ -292,26 +292,9 @@ extension SolanaWalletManager: RentProvider {
     }
 }
 
-extension SolanaWalletManager: TransactionValidator {
-    func validate(amount: Amount, fee: Fee, destination: DestinationType) async throws {
-        try validateInternal(amount: amount, fee: fee)
-    }
-
-    func validate(amount: Amount, fee: Fee) throws {
-        try validateInternal(amount: amount, fee: fee)
-    }
-
-    private func validateInternal(amount: Amount, fee: Fee) throws {
-        if let balance = wallet.amounts[.coin] {
-            let minimalBalanceForRentExemptionValue = Amount(with: wallet.blockchain, value: mainAccountRentExemption)
-            let remainingBalance = balance.value - (amount.value + fee.amount.value)
-
-            if remainingBalance > 0, remainingBalance < minimalBalanceForRentExemptionValue.value {
-                throw ValidationError.remainingAmountIsLessThanRentExtemption(amount: minimalBalanceForRentExemptionValue)
-            }
-        }
-        // default implementation
-        try validateAmounts(amount: amount, fee: fee.amount)
+extension SolanaWalletManager: RentExtemptionRestrictable {
+    var minimalAmountForRentExemption: Amount {
+        Amount(with: wallet.blockchain, value: mainAccountRentExemption)
     }
 }
 
