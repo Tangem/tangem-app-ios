@@ -14,7 +14,6 @@ final class OnrampProvidersViewModel: ObservableObject {
     // MARK: - ViewState
 
     @Published var paymentViewData: OnrampProvidersPaymentViewData?
-    @Published var selectedProviderId: String?
     @Published var providersViewData: [OnrampProviderRowViewData] = []
 
     // MARK: - Dependencies
