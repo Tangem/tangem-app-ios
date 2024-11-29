@@ -636,6 +636,7 @@ public indirect enum Blockchain: Equatable, Hashable {
         case .veChain: return "VIP180"
         case .xdc: return "XRC20"
         case .hedera: return "HTS"
+        case .kaspa: return "KRC20"
         default:
             return nil
         }
@@ -653,7 +654,8 @@ public indirect enum Blockchain: Equatable, Hashable {
              .veChain,
              .hedera,
              .ton,
-             .cardano:
+             .cardano,
+             .kaspa:
             return true
         case _ where isEvm:
             return true
@@ -669,6 +671,34 @@ public indirect enum Blockchain: Equatable, Hashable {
             return false
         default:
             return canHandleTokens
+        }
+    }
+
+    public var hasMemo: Bool {
+        switch self {
+        case .stellar,
+             .binance,
+             .ton,
+             .cosmos,
+             .terraV1,
+             .terraV2,
+             .algorand,
+             .hedera,
+             .sei,
+             .internetComputer,
+             .casper:
+            true
+        default:
+            false
+        }
+    }
+
+    public var hasDestinationTag: Bool {
+        switch self {
+        case .xrp:
+            true
+        default:
+            false
         }
     }
 
@@ -722,10 +752,20 @@ public indirect enum Blockchain: Equatable, Hashable {
     // TODO: This property only for EVM for now. Refactor all other wallet managers
     var allowsFeeSelection: Bool {
         switch self {
-        case .telos:
+        case .telos, .xodex:
             return false
         default:
             return true
+        }
+    }
+
+    /// This parameter is used to process the commission parameter when sending the token
+    public var allowsZeroFeePaid: Bool {
+        switch self {
+        case .xodex:
+            return true
+        default:
+            return false
         }
     }
 }

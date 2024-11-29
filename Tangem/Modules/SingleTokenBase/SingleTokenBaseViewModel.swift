@@ -510,7 +510,7 @@ extension SingleTokenBaseViewModel {
                 return
             }
 
-            tokenRouter.openBuyCryptoIfPossible(walletModel: walletModel)
+            tokenRouter.openOnramp(walletModel: walletModel)
         } else {
             // Old code
             if !exchangeUtility.buyAvailable {

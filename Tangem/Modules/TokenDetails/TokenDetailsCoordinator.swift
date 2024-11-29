@@ -157,7 +157,11 @@ extension TokenDetailsCoordinator: PendingExpressTxStatusRoutable {
 
 extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
     func openReceiveScreen(tokenItem: TokenItem, addressInfos: [ReceiveAddressInfo]) {
-        receiveBottomSheetViewModel = .init(tokenItem: tokenItem, addressInfos: addressInfos)
+        receiveBottomSheetViewModel = .init(
+            tokenItem: tokenItem,
+            addressInfos: addressInfos,
+            hasMemo: tokenItem.blockchain.hasMemo
+        )
     }
 
     func openBuyCrypto(at url: URL, action: @escaping () -> Void) {
@@ -306,14 +310,8 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
     }
 
     func openOnramp(walletModel: WalletModel, userWalletModel: UserWalletModel) {
-        let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] navigationInfo in
+        let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] _ in
             self?.sendCoordinator = nil
-
-            if let navigationInfo {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                    self?.openFeeCurrency(for: navigationInfo.walletModel, userWalletModel: navigationInfo.userWalletModel)
-                }
-            }
         }
 
         let coordinator = SendCoordinator(dismissAction: dismissAction)
