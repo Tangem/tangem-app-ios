@@ -1,6 +1,10 @@
 name: Alpha - Build and Deploy
 
 on:
+  push:
+    branches:
+      - 'test/ci_cd_builder2_tests_xcode_16_1'
+
   workflow_dispatch:
     inputs:
       build_description:
