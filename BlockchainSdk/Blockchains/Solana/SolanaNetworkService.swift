@@ -196,7 +196,7 @@ class SolanaNetworkService {
             .withWeakCaptureOf(self)
             .flatMap { service, info in
                 service.minimalBalanceForRentExemption(dataLength: info.space ?? 0)
-                    .tryMap { rentExemption in
+                    .map { rentExemption in
                         let lamports = info.lamports
                         let accountInfo = SolanaMainAccountInfoResponse(
                             balance: lamports,
