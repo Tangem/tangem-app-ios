@@ -20,7 +20,7 @@ class OnrampCountryDetectionCoordinator: CoordinatorObject {
 
     @Published var onrampCountrySelectorViewModel: OnrampCountrySelectorViewModel?
 
-    private var options: Options!
+    private var options: Options?
 
     required init(dismissAction: @escaping Action<CloseOption?>, popToRootAction: @escaping Action<PopToRootOptions>) {
         self.dismissAction = dismissAction
@@ -51,6 +51,11 @@ extension OnrampCountryDetectionCoordinator {
 
 extension OnrampCountryDetectionCoordinator: OnrampCountryDetectionRoutable {
     func openChangeCountry() {
+        guard let options else {
+            assertionFailure("OnrampCountryDetectionCoordinator.Options not found")
+            return
+        }
+
         onrampCountrySelectorViewModel = OnrampCountrySelectorViewModel(
             repository: options.repository,
             dataRepository: options.dataRepository,
