@@ -20,12 +20,16 @@ public class ProviderItem {
         self.providers = providers
     }
 
-    public func hasProviders() -> Bool {
-        providers.filter { $0.canBeShow }.isNotEmpty
+    public func hasShowableProviders() -> Bool {
+        providers.filter { $0.isShowable }.isNotEmpty
     }
 
-    public func suggestProvider() -> OnrampProvider? {
-        providers.first(where: { $0.canBeSelected })
+    public func showableProvider() -> OnrampProvider? {
+        providers.first(where: { $0.isShowable })
+    }
+
+    public func selectableProvider() -> OnrampProvider? {
+        providers.first(where: { $0.isSelectable })
     }
 
     @discardableResult
@@ -35,12 +39,23 @@ public class ProviderItem {
         return providers
     }
 
-    /// Providers has to be already sorted
+    /// Providers will be sorted
     @discardableResult
-    public func updateBest() -> OnrampProvider? {
-        if let best = providers.first(where: { $0.isReadyToBuy }) {
-            best.update(isBest: true)
-            return best
+    public func updateAttractiveTypes() -> OnrampProvider? {
+        var bestQuote: Decimal?
+
+        sort().indexed().forEach { index, provider in
+            switch (index, provider.state) {
+            case (.zero, .loaded(let quote)):
+                provider.update(attractiveType: .best)
+                bestQuote = quote.expectedAmount
+
+            case (_, .loaded(let quote)) where bestQuote != nil:
+                let percent = quote.expectedAmount / bestQuote! - 1
+                provider.update(attractiveType: .loss(percent: percent))
+            case (_, _):
+                provider.update(attractiveType: .none)
+            }
         }
 
         return nil
@@ -50,10 +65,14 @@ public class ProviderItem {
         switch (lhs.state, rhs.state) {
         case (.loaded(let lhsQuote), .loaded(let rhsQuote)):
             return lhsQuote.expectedAmount > rhsQuote.expectedAmount
-        case (.restriction, _):
-            return true
-        case (_, .restriction):
+        // All cases which is not `loaded` have to be ordered after
+        case (_, .loaded):
             return false
+        // All cases which is `loaded` have to be ordered before `rhs`
+        // All cases which is `restriction` have to be ordered before `rhs`
+        // Exclude case where `rhs == .loaded`. This case processed above
+        case (.loaded, _), (.restriction, _):
+            return true
         default:
             return false
         }
