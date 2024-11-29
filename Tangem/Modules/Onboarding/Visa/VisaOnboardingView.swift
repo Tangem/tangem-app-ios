@@ -71,6 +71,8 @@ struct VisaOnboardingView: View {
         switch viewModel.currentStep {
         case .welcome:
             VisaOnboardingWelcomeView(viewModel: viewModel.welcomeViewModel)
+        case .accessCode:
+            VisaOnboardingAccessCodeSetupView(viewModel: viewModel.accessCodeSetupViewModel)
         case .saveUserWallet:
             UserWalletStorageAgreementView(
                 viewModel: viewModel.userWalletStorageAgreementViewModel,
@@ -90,6 +92,8 @@ struct VisaOnboardingView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     VisaOnboardingView(viewModel: .mock)
 }
+#endif // DEBUG

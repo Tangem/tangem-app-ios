@@ -35,6 +35,9 @@ struct MarketsTokenDetailsCoordinatorView: CoordinatorView {
             .iOS16UIKitSheet(item: $coordinator.expressCoordinator) {
                 ExpressCoordinatorView(coordinator: $0)
             }
+            .sheet(item: $coordinator.sendCoordinator) {
+                SendCoordinatorView(coordinator: $0)
+            }
             .detentBottomSheet(
                 item: $coordinator.tokenNetworkSelectorCoordinator,
                 detents: [.large],

@@ -40,6 +40,7 @@ class MarketsTokenDetailsViewModel: MarketsBaseViewModel {
     @Published private(set) var numberOfExchangesListedOn: Int?
 
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
+    @Published var fullDescriptionBottomSheetInfo: DescriptionBottomSheetInfo?
 
     // Private published properties used for calculation `price`, `priceChangeState` and `priceDate` properties
 
@@ -206,7 +207,7 @@ class MarketsTokenDetailsViewModel: MarketsBaseViewModel {
 
         Analytics.log(event: .marketsChartButtonReadMore, params: [.token: tokenInfo.symbol.uppercased()])
 
-        descriptionBottomSheetInfo = .init(
+        fullDescriptionBottomSheetInfo = .init(
             title: Localization.marketsTokenDetailsAboutTokenTitle(tokenInfo.name),
             description: fullDescription,
             showCloseButton: true
@@ -234,7 +235,7 @@ class MarketsTokenDetailsViewModel: MarketsBaseViewModel {
     }
 
     func onGenerateAITapAction() {
-        descriptionBottomSheetInfo = nil
+        fullDescriptionBottomSheetInfo = nil
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
             guard let self else { return }
@@ -265,7 +266,7 @@ private extension MarketsTokenDetailsViewModel {
 
             await setupFailedState()
 
-            sendBlocksAnalyticsErrors()
+            sendBlocksAnalyticsErrors(error)
 
             log("Failed to load detailed info. Reason: \(error)")
         }
@@ -465,11 +466,11 @@ private extension MarketsTokenDetailsViewModel {
         )
     }
 
-    func sendBlocksAnalyticsErrors() {
-        Analytics.log(event: .marketsChartDataError, params: [
-            .token: tokenInfo.symbol.uppercased(),
-            .source: Analytics.ParameterValue.blocks.rawValue,
-        ])
+    func sendBlocksAnalyticsErrors(_ error: Error) {
+        var params = error.marketsAnalyticsParams
+        params[.token] = tokenInfo.symbol.uppercased()
+        params[.source] = Analytics.ParameterValue.blocks.rawValue
+        Analytics.log(event: .marketsChartDataError, params: params)
     }
 
     func setupInsights(_ insights: MarketsTokenDetailsInsights?) {
@@ -515,6 +516,12 @@ extension MarketsTokenDetailsViewModel: MarketsTokenDetailsBottomSheetRouter {
 
 extension MarketsTokenDetailsViewModel: MarketsTokenDetailsSecurityScoreRoutable {
     func openSecurityScoreDetails(with providers: [MarketsTokenDetailsSecurityScore.Provider]) {
+        Analytics.log(
+            event: .marketsChartSecurityScoreInfo,
+            params: [
+                .token: tokenInfo.symbol.uppercased(),
+            ]
+        )
         securityScoreDetailsViewModel = MarketsTokenDetailsSecurityScoreDetailsFactory().makeViewModel(
             with: providers,
             routable: self
@@ -523,7 +530,14 @@ extension MarketsTokenDetailsViewModel: MarketsTokenDetailsSecurityScoreRoutable
 }
 
 extension MarketsTokenDetailsViewModel: MarketsTokenDetailsSecurityScoreDetailsRoutable {
-    func openSecurityAudit(at url: URL) {
+    func openSecurityAudit(at url: URL, providerName: String) {
+        Analytics.log(
+            event: .marketsChartSecurityScoreProviderClicked,
+            params: [
+                .token: tokenInfo.symbol.uppercased(),
+                .provider: providerName,
+            ]
+        )
         coordinator?.openURL(url)
     }
 }

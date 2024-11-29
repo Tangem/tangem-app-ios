@@ -88,6 +88,8 @@ public extension Blockchain {
         case .core: break
         case .canxium: break
         case .casper: break
+        case .chiliz: break
+        case .xodex: break
             // READ BELOW:
             //
             // Did you get a compilation error here? If so, add your new blockchain to the array below
@@ -169,6 +171,8 @@ public extension Blockchain {
             .core(testnet: false),
             .canxium,
             .casper(curve: .secp256k1, testnet: false),
+            .chiliz(testnet: false),
+            .xodex,
         ]
     }
 }

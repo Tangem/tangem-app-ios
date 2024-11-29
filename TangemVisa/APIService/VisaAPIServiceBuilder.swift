@@ -20,13 +20,8 @@ public struct VisaAPIServiceBuilder {
         return PayAPIService(isTestnet: isTestnet, additionalAPIHeaders: additionalAPIHeaders, provider: provider, logger: logger)
     }
 
+    // Requirements are changed so this function will be also changed, but for now it is used for testing purposes
     public func buildAuthorizationService(urlSessionConfiguration: URLSessionConfiguration, logger: VisaLogger) -> VisaAuthorizationService {
-        let logger = InternalLogger(logger: logger)
-        let provider = MoyaProvider<AuthorizationAPITarget>(session: Session(configuration: urlSessionConfiguration))
-
-        return CommonVisaAuthorizationService(
-            provider: provider,
-            logger: logger
-        )
+        return AuthorizationServiceBuilder().build(urlSessionConfiguration: urlSessionConfiguration, logger: logger)
     }
 }

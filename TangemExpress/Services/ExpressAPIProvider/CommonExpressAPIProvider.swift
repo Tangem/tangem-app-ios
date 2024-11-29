@@ -140,7 +140,7 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
 
     func onrampPaymentMethods() async throws -> [OnrampPaymentMethod] {
         let response = try await expressAPIService.onrampPaymentMethods()
-        let methods = response.map(expressAPIMapper.mapToOnrampPaymentMethod(response:))
+        let methods = response.compactMap(expressAPIMapper.mapToOnrampPaymentMethod(response:))
         return methods
     }
 
@@ -184,7 +184,7 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
             toExtraId: nil, // There is no memo on the client side
             redirectUrl: item.redirectSettings.successURL,
             language: item.redirectSettings.language,
-            theme: item.redirectSettings.theme,
+            theme: item.redirectSettings.theme.rawValue,
             requestId: requestId
         )
 
@@ -193,7 +193,9 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
         return data
     }
 
-    func onrampStatus(transactionId: String) async throws {
-        // TODO: https://tangem.atlassian.net/browse/IOS-8308
+    func onrampStatus(transactionId: String) async throws -> OnrampTransaction {
+        let request = ExpressDTO.Onramp.Status.Request(txId: transactionId)
+        let response = try await expressAPIService.onrampStatus(request: request)
+        return try expressAPIMapper.mapToOnrampTransaction(response: response)
     }
 }

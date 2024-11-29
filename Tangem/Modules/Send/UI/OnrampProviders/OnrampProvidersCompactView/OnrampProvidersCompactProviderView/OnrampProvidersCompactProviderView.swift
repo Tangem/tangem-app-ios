@@ -20,13 +20,7 @@ struct OnrampProvidersCompactProviderView: View {
 
     private var content: some View {
         HStack {
-            IconView(
-                url: data.iconURL,
-                size: CGSize(width: 36, height: 36),
-                cornerRadius: 0,
-                // Kingfisher shows a gray background even if it has a cached image
-                forceKingfisher: false
-            )
+            OnrampPaymentMethodIconView(url: data.iconURL)
 
             titleView
 
@@ -53,12 +47,18 @@ struct OnrampProvidersCompactProviderView: View {
         .lineLimit(1)
     }
 
+    @ViewBuilder
     private var badgeView: some View {
-        Text(Localization.expressProviderBestRate)
-            .style(Fonts.Bold.caption2, color: Colors.Text.primary2)
-            .padding(.vertical, 2)
-            .padding(.horizontal, 6)
-            .background(Colors.Icon.accent)
-            .cornerRadiusContinuous(6)
+        switch data.badge {
+        case .none:
+            EmptyView()
+        case .bestRate:
+            Text(Localization.expressProviderBestRate)
+                .style(Fonts.Bold.caption2, color: Colors.Text.primary2)
+                .padding(.vertical, 2)
+                .padding(.horizontal, 6)
+                .background(Colors.Icon.accent)
+                .cornerRadiusContinuous(6)
+        }
     }
 }

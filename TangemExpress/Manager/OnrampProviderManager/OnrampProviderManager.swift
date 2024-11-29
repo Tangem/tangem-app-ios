@@ -17,12 +17,12 @@ public protocol OnrampProviderManager {
     func makeOnrampQuotesRequestItem() throws -> OnrampQuotesRequestItem
 }
 
-public enum OnrampProviderManagerState: Hashable {
+public enum OnrampProviderManagerState {
     case idle
     case notSupported(NotSupported)
     case loading
     case restriction(Restriction)
-    case failed(error: String)
+    case failed(error: Error)
     case loaded(OnrampQuote)
 
     public var isSupported: Bool {
@@ -32,21 +32,43 @@ public enum OnrampProviderManagerState: Hashable {
         }
     }
 
-    public var isReadyToBuy: Bool {
-        switch self {
-        case .loaded: true
-        case .idle, .loading, .failed, .notSupported, .restriction: false
+    public enum Restriction: Hashable, CustomStringConvertible {
+        case tooSmallAmount(_ minAmount: String)
+        case tooBigAmount(_ maxAmount: String)
+
+        public var description: String {
+            switch self {
+            case .tooSmallAmount(let minAmount): "Too small amount: \(minAmount)"
+            case .tooBigAmount(let maxAmount): "Too big amount: \(maxAmount))"
+            }
         }
     }
 
-    public enum Restriction: Hashable {
-        case tooSmallAmount(_ minAmount: String)
-        case tooBigAmount(_ maxAmount: String)
-    }
-
-    public enum NotSupported: Hashable {
+    public enum NotSupported: Hashable, CustomStringConvertible {
         case currentPair
-        case paymentMethod
+        case paymentMethod(supportedMethods: [OnrampPaymentMethod])
+
+        public var description: String {
+            switch self {
+            case .currentPair: "Current pair"
+            case .paymentMethod: "Payment method"
+            }
+        }
+    }
+}
+
+// MARK: - CustomStringConvertible
+
+extension OnrampProviderManagerState: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .idle: "Idle"
+        case .notSupported(let type): "Not supported: \(type)"
+        case .loading: "Loading"
+        case .restriction(let restriction): "Restriction: \(restriction)"
+        case .failed(error: let error): "Failed: \(error)"
+        case .loaded(let quote): "Quote with amount: \(quote.expectedAmount)"
+        }
     }
 }
 

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Combine
 
 @discardableResult
 public func runTask(isDetached: Bool = false, code: @escaping () -> Void) -> Task<Void, Never> {
@@ -51,4 +52,33 @@ public func runTask<T: AnyObject>(
     }
 
     return isDetached ? Task.detached(operation: operation) : Task(operation: operation)
+}
+
+public extension Task where Success == Never, Failure == Never {
+    static func sleep(seconds: Double) async throws {
+        let duration = UInt64(abs(seconds)) * NSEC_PER_SEC
+        try await Task.sleep(nanoseconds: duration)
+    }
+}
+
+public extension Task where Failure == Error {
+    static func delayed(
+        withDelay delaySeconds: TimeInterval,
+        priority: TaskPriority? = nil,
+        operation: @escaping @Sendable () async throws -> Success
+    ) -> Task {
+        Task(priority: priority) {
+            if delaySeconds > 0 {
+                try await Task<Never, Never>.sleep(seconds: delaySeconds)
+            }
+            try Task<Never, Never>.checkCancellation()
+            return try await operation()
+        }
+    }
+}
+
+public extension Task {
+    func eraseToAnyCancellable() -> AnyCancellable {
+        return AnyCancellable(cancel)
+    }
 }

@@ -1,5 +1,5 @@
 {
-  "originHash" : "584ca60af0fbbc527d504d4d480a556058e05f97a79e92bf44c594618d31cc9a",
+  "originHash" : "c126783f6de9f6b5045f4b5c3001ebdaad9a1187942ac248486e962262627214",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -107,6 +107,15 @@
       "state" : {
         "revision" : "48d906f7a3eca66dd4cbc239f21fd829dfc9decf",
         "version" : "0.1.2-tangem4"
+      }
+    },
+    {
+      "identity" : "jwtdecode.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/auth0/JWTDecode.swift",
+      "state" : {
+        "revision" : "1e153ef009969543191970c66b7c60163c0b4a65",
+        "version" : "3.2.0"
       }
     },
     {
@@ -222,8 +231,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Soneso/stellar-ios-mac-sdk.git",
       "state" : {
-        "revision" : "952762a66ca49e0e28ba14a8dc5dbb72da361a95",
-        "version" : "2.5.4"
+        "revision" : "86c0926364d7a81fbc451b9b71df33dfb1bd28be",
+        "version" : "3.0.0"
       }
     },
     {

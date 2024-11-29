@@ -40,6 +40,7 @@ class MainCoordinator: CoordinatorObject {
     @Published var sendCoordinator: SendCoordinator? = nil
     @Published var expressCoordinator: ExpressCoordinator? = nil
     @Published var actionButtonsBuyCoordinator: ActionButtonsBuyCoordinator? = nil
+    @Published var actionButtonsSellCoordinator: ActionButtonsSellCoordinator? = nil
 
     // MARK: - Child view models
 
@@ -231,7 +232,11 @@ extension MainCoordinator: MultiWalletMainContentRoutable {
 
 extension MainCoordinator: SingleTokenBaseRoutable {
     func openReceiveScreen(tokenItem: TokenItem, addressInfos: [ReceiveAddressInfo]) {
-        receiveBottomSheetViewModel = .init(tokenItem: tokenItem, addressInfos: addressInfos)
+        receiveBottomSheetViewModel = .init(
+            tokenItem: tokenItem,
+            addressInfos: addressInfos,
+            hasMemo: tokenItem.blockchain.hasMemo
+        )
     }
 
     func openBuyCrypto(at url: URL, action: @escaping () -> Void) {
@@ -394,14 +399,8 @@ extension MainCoordinator: SingleTokenBaseRoutable {
     }
 
     func openOnramp(walletModel: WalletModel, userWalletModel: UserWalletModel) {
-        let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] navigationInfo in
+        let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] _ in
             self?.sendCoordinator = nil
-
-            if let navigationInfo {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                    self?.openFeeCurrency(for: navigationInfo.walletModel, userWalletModel: navigationInfo.userWalletModel)
-                }
-            }
         }
 
         let coordinator = SendCoordinator(dismissAction: dismissAction)
@@ -453,14 +452,13 @@ extension MainCoordinator: PushNotificationsPermissionRequestDelegate {
 
 // MARK: - Action buttons buy routable
 
-extension MainCoordinator: ActionButtonsBuyFlowRoutable, ActionButtonsBuyCryptoRoutable {
-    func openBuy(userWalletModel: UserWalletModel) {
+extension MainCoordinator: ActionButtonsBuyFlowRoutable {
+    func openBuy(userWalletModel: some UserWalletModel) {
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.actionButtonsBuyCoordinator = nil
         }
 
         let coordinator = ActionButtonsBuyCoordinator(
-            buyCryptoCoordinator: self,
             expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel),
             dismissAction: dismissAction
         )
@@ -469,18 +467,36 @@ extension MainCoordinator: ActionButtonsBuyFlowRoutable, ActionButtonsBuyCryptoR
 
         actionButtonsBuyCoordinator = coordinator
     }
-
-    func openBuyCrypto(from url: URL) {
-        openBuyCrypto(at: url) {
-            self.actionButtonsBuyCoordinator = nil
-        }
-    }
 }
 
 // MARK: - Action buttons sell routable
 
 extension MainCoordinator: ActionButtonsSellFlowRoutable {
-    func openSell() {}
+    func openSell(userWalletModel: some UserWalletModel) {
+        let dismissAction: Action<ActionButtonsSendToSellModel?> = { [weak self] model in
+            self?.actionButtonsSellCoordinator = nil
+
+            guard let model else { return }
+
+            self?.openSendToSell(
+                amountToSend: model.amountToSend,
+                destination: model.destination,
+                tag: model.tag,
+                userWalletModel: userWalletModel,
+                walletModel: model.walletModel
+            )
+        }
+
+        let coordinator = ActionButtonsSellCoordinator(
+            expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel),
+            dismissAction: dismissAction,
+            userWalletModel: userWalletModel
+        )
+
+        coordinator.start(with: .default)
+
+        actionButtonsSellCoordinator = coordinator
+    }
 }
 
 // MARK: - Action buttons swap routable

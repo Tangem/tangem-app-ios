@@ -11,7 +11,7 @@ import Foundation
 public struct ExpressAPIError: Decodable, LocalizedError, Error, Hashable {
     let code: Int?
     let description: String?
-    let value: Value?
+    public let value: Value?
 
     public var errorCode: Code {
         if let code, let codeCase = Code(rawValue: code) {
@@ -32,6 +32,16 @@ public extension ExpressAPIError {
         let minAmount: String?
         let maxAmount: String?
         let decimals: Int?
+        let fromAmount: String?
+        let fromAmountProvider: String?
+
+        public var roundUpAmount: Decimal? {
+            guard let fromAmountProvider, let decimals else {
+                return nil
+            }
+
+            return Decimal(string: fromAmountProvider).map { $0 / pow(10, decimals) }
+        }
 
         var amount: Decimal? {
             guard let amount = minAmount ?? maxAmount, let decimals else {
@@ -51,14 +61,21 @@ public extension ExpressAPIError {
         case forbiddenError = 2020
         case notFoundError = 2030
         case requestLoggerError = 2040
-
-        // ExchangeAdapter
-        case eaRequestError = 2110
-        case eaRequestTimeoutError = 2120
-        case eaInvalidAdapterResponse = 2130
+        case rateLimitError = 2050
 
         // CoreError
         case coreError = 2100
+
+        // External error
+        case externalServiceError = 2110
+        case externalServiceRequestError = 2111
+        case externalServiceRequestTimeoutError = 2112
+        case externalServiceInvalidAdapterResponse = 2113
+        case externalServiceRateLimit = 2114
+        case externalServiceBadGateWay = 2115
+        case eaRequestTimeoutError = 2120
+        case eaInvalidAdapterResponse = 2130
+
         case exchangeInternalError = 2200
         case exchangeProviderNotFoundError = 2210
         case exchangeProviderNotActiveError = 2220
@@ -71,6 +88,9 @@ public extension ExpressAPIError {
         case exchangeNotEnoughBalanceError = 2270
         case exchangeNotEnoughAllowanceError = 2280
         case exchangeInvalidDecimalsError = 2290
+        case exchangeUnsupportedRateType = 2300
+        case exchangeRoundUpError = 2320
+        case networkNotFound = 2330
 
         case exchangeTransactionNotFoundError = 2500
 

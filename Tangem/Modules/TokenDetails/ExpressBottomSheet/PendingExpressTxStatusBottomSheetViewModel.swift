@@ -8,16 +8,20 @@
 
 import Foundation
 import Combine
+import TangemExpress
 import UIKit
 
 class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable {
     var transactionID: String? {
-        pendingTransaction.transactionRecord.externalTxId
+        pendingTransaction.externalTxId
     }
 
     var animationDuration: TimeInterval {
         Constants.animationDuration
     }
+
+    let sheetTitle: String
+    let statusViewTitle: String
 
     let timeString: String
     let sourceTokenIconInfo: TokenIconInfo
@@ -28,7 +32,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     @Published var providerRowViewModel: ProviderRowViewModel
     @Published var sourceFiatAmountTextState: LoadableTextView.State = .loading
     @Published var destinationFiatAmountTextState: LoadableTextView.State = .loading
-    @Published var statusesList: [PendingExpressTransactionStatusRow.StatusRowData] = []
+    @Published var statusesList: [PendingExpressTxStatusRow.StatusRowData] = []
     @Published var currentStatusIndex = 0
     @Published var showGoToProviderHeaderButton = true
     @Published var notificationViewInputs: [NotificationViewInput] = []
@@ -36,7 +40,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     private let expressProviderFormatter = ExpressProviderFormatter(balanceFormatter: .init())
     private weak var pendingTransactionsManager: (any PendingExpressTransactionsManager)?
 
-    private let pendingTransaction: PendingExpressTransaction
+    private let pendingTransaction: PendingTransaction
     private let currentTokenItem: TokenItem
 
     private let balanceConverter = BalanceConverter()
@@ -47,11 +51,11 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     private weak var router: PendingExpressTxStatusRoutable?
     private var successToast: Toast<SuccessToast>?
     private var externalProviderTxURL: URL? {
-        pendingTransaction.transactionRecord.externalTxURL.flatMap { URL(string: $0) }
+        pendingTransaction.externalTxURL.flatMap { URL(string: $0) }
     }
 
     init(
-        pendingTransaction: PendingExpressTransaction,
+        pendingTransaction: PendingTransaction,
         currentTokenItem: TokenItem,
         pendingTransactionsManager: PendingExpressTransactionsManager,
         router: PendingExpressTxStatusRoutable
@@ -61,7 +65,26 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
         self.pendingTransactionsManager = pendingTransactionsManager
         self.router = router
 
-        let provider = pendingTransaction.transactionRecord.provider
+        let provider = pendingTransaction.provider
+        let iconBuilder = TokenIconInfoBuilder()
+
+        switch pendingTransaction.type {
+        case .swap(let source, let destination):
+            sheetTitle = Localization.expressExchangeStatusTitle
+            statusViewTitle = Localization.expressExchangeBy(provider.name)
+            sourceAmountText = balanceFormatter.formatCryptoBalance(source.amount, currencyCode: source.tokenItem.currencySymbol)
+            destinationAmountText = balanceFormatter.formatCryptoBalance(destination.amount, currencyCode: destination.tokenItem.currencySymbol)
+            sourceTokenIconInfo = iconBuilder.build(from: source.tokenItem, isCustom: source.isCustom)
+            destinationTokenIconInfo = iconBuilder.build(from: destination.tokenItem, isCustom: destination.isCustom)
+        case .onramp(let sourceAmount, let sourceCurrencySymbol, let destination):
+            sheetTitle = Localization.commonTransactionStatus
+            statusViewTitle = Localization.commonTransactionStatus
+            sourceAmountText = balanceFormatter.formatFiatBalance(sourceAmount, currencyCode: sourceCurrencySymbol)
+            destinationAmountText = balanceFormatter.formatCryptoBalance(destination.amount, currencyCode: destination.tokenItem.currencySymbol)
+            sourceTokenIconInfo = iconBuilder.build(from: sourceCurrencySymbol)
+            destinationTokenIconInfo = iconBuilder.build(from: destination.tokenItem, isCustom: destination.isCustom)
+        }
+
         providerRowViewModel = .init(
             provider: expressProviderFormatter.mapToProvider(provider: provider),
             titleFormat: .name,
@@ -75,19 +98,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
         dateFormatter.doesRelativeDateFormatting = true
         dateFormatter.dateStyle = .short
         dateFormatter.timeStyle = .short
-        timeString = dateFormatter.string(from: pendingTransaction.transactionRecord.date)
-
-        let sourceTokenTxInfo = pendingTransaction.transactionRecord.sourceTokenTxInfo
-        let sourceTokenItem = sourceTokenTxInfo.tokenItem
-        let destinationTokenTxInfo = pendingTransaction.transactionRecord.destinationTokenTxInfo
-        let destinationTokenItem = destinationTokenTxInfo.tokenItem
-
-        let iconInfoBuilder = TokenIconInfoBuilder()
-        sourceTokenIconInfo = iconInfoBuilder.build(from: sourceTokenItem, isCustom: sourceTokenTxInfo.isCustom)
-        destinationTokenIconInfo = iconInfoBuilder.build(from: destinationTokenItem, isCustom: destinationTokenTxInfo.isCustom)
-
-        sourceAmountText = balanceFormatter.formatCryptoBalance(sourceTokenTxInfo.amount, currencyCode: sourceTokenItem.currencySymbol)
-        destinationAmountText = balanceFormatter.formatCryptoBalance(destinationTokenTxInfo.amount, currencyCode: destinationTokenItem.currencySymbol)
+        timeString = dateFormatter.string(from: pendingTransaction.date)
 
         loadEmptyFiatRates()
         updateUI(with: pendingTransaction, delay: 0)
@@ -99,7 +110,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
             event: .tokenSwapStatusScreenOpened,
             params: [
                 .token: currentTokenItem.currencySymbol,
-                .provider: pendingTransaction.transactionRecord.provider.name,
+                .provider: pendingTransaction.provider.name,
             ]
         )
     }
@@ -138,8 +149,14 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     }
 
     private func loadEmptyFiatRates() {
-        loadRatesIfNeeded(stateKeyPath: \.sourceFiatAmountTextState, for: pendingTransaction.transactionRecord.sourceTokenTxInfo, on: self)
-        loadRatesIfNeeded(stateKeyPath: \.destinationFiatAmountTextState, for: pendingTransaction.transactionRecord.destinationTokenTxInfo, on: self)
+        switch pendingTransaction.type {
+        case .swap(let source, let destination):
+            loadRatesIfNeeded(stateKeyPath: \.sourceFiatAmountTextState, for: source, on: self)
+            loadRatesIfNeeded(stateKeyPath: \.destinationFiatAmountTextState, for: destination, on: self)
+        case .onramp(_, _, let destination):
+            sourceFiatAmountTextState = .noData
+            loadRatesIfNeeded(stateKeyPath: \.destinationFiatAmountTextState, for: destination, on: self)
+        }
     }
 
     private func loadRatesIfNeeded(
@@ -173,7 +190,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
             .withWeakCaptureOf(self)
             .map { viewModel, pendingTransactions in
                 guard let first = pendingTransactions.first(where: { tx in
-                    tx.transactionRecord.expressTransactionId == viewModel.pendingTransaction.transactionRecord.expressTransactionId
+                    tx.expressTransactionId == viewModel.pendingTransaction.expressTransactionId
                 }) else {
                     return (viewModel, nil)
                 }
@@ -181,7 +198,7 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
                 return (viewModel, first)
             }
             .receive(on: DispatchQueue.main)
-            .sink { (viewModel: PendingExpressTxStatusBottomSheetViewModel, pendingTx: PendingExpressTransaction?) in
+            .sink { (viewModel: PendingExpressTxStatusBottomSheetViewModel, pendingTx: PendingTransaction?) in
                 // If we've failed to find this transaction in manager it means that it was finished in either way on the provider side
                 // We can remove subscription and just display final state of transaction
                 guard let pendingTx else {
@@ -190,8 +207,8 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
                 }
 
                 // We will hide it via separate notification in case of refunded token
-                if pendingTx.transactionRecord.transactionStatus.isTerminated, pendingTx.transactionRecord.refundedTokenItem == nil {
-                    viewModel.hidePendingTx(expressTransactionId: pendingTx.transactionRecord.expressTransactionId)
+                if pendingTx.transactionStatus.isTerminated, pendingTx.refundedTokenItem == nil {
+                    viewModel.hidePendingTx(expressTransactionId: pendingTx.expressTransactionId)
                 }
 
                 viewModel.updateUI(with: pendingTx, delay: Constants.notificationAnimationDelay)
@@ -202,22 +219,22 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
         pendingTransactionsManager?.hideTransaction(with: expressTransactionId)
     }
 
-    private func updateUI(with pendingTransaction: PendingExpressTransaction, delay: TimeInterval) {
+    private func updateUI(with pendingTransaction: PendingTransaction, delay: TimeInterval) {
         let converter = PendingExpressTransactionsConverter()
         let (list, currentIndex) = converter.convertToStatusRowDataList(for: pendingTransaction)
 
         updateUI(
             statusesList: list,
             currentIndex: currentIndex,
-            currentStatus: pendingTransaction.transactionRecord.transactionStatus,
-            refundedTokenItem: pendingTransaction.transactionRecord.refundedTokenItem,
-            hasExternalURL: pendingTransaction.transactionRecord.externalTxURL != nil,
+            currentStatus: pendingTransaction.transactionStatus,
+            refundedTokenItem: pendingTransaction.refundedTokenItem,
+            hasExternalURL: pendingTransaction.externalTxURL != nil,
             delay: delay
         )
     }
 
     private func updateUI(
-        statusesList: [PendingExpressTransactionStatusRow.StatusRowData],
+        statusesList: [PendingExpressTxStatusRow.StatusRowData],
         currentIndex: Int,
         currentStatus: PendingExpressTransactionStatus,
         refundedTokenItem: TokenItem?,
@@ -316,7 +333,7 @@ extension PendingExpressTxStatusBottomSheetViewModel {
             openProvider()
 
         case .refunded(let tokenItem):
-            hidePendingTx(expressTransactionId: pendingTransaction.transactionRecord.expressTransactionId)
+            hidePendingTx(expressTransactionId: pendingTransaction.expressTransactionId)
             openCurrency(tokenItem: tokenItem)
 
         default:

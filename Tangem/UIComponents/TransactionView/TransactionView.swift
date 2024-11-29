@@ -20,42 +20,90 @@ struct TransactionView: View {
                 .background(viewModel.iconBackgroundColor)
                 .cornerRadiusContinuous(20)
 
-            HStack(spacing: 8) {
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack(spacing: 8) {
-                        Text(viewModel.name)
-                            .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
-
-                        if viewModel.inProgress {
-                            Assets.pendingTxIndicator.image
-                        }
-                    }
-
-                    if let localizeDestination = viewModel.localizeDestination {
-                        Text(localizeDestination)
-                            .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-                            .lineLimit(1)
-                            .truncationMode(.middle)
-                    }
-                }
-                .layoutPriority(1)
-
-                Spacer(minLength: 4)
-
-                VStack(alignment: .trailing, spacing: 4) {
-                    if let amount = viewModel.formattedAmount {
-                        SensitiveText(amount)
-                            .style(Fonts.Regular.subheadline, color: viewModel.amountColor)
-                    }
-
-                    Text(viewModel.subtitleText)
-                        .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-                }
-                .layoutPriority(2)
-            }
+            textContent
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 6)
+    }
+
+    @ViewBuilder
+    private var textContent: some View {
+        // we can use 2 row layout only when all the data is present
+        // otherwise left or right part needs to be vertically centered
+        if viewModel.localizeDestination != nil, viewModel.formattedAmount != nil {
+            twoRowsTextContent
+        } else {
+            twoColumnsTextContent
+        }
+    }
+
+    private var twoRowsTextContent: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: 8) {
+                name
+                Spacer()
+                amount
+            }
+
+            HStack(spacing: 6) {
+                description
+                Spacer()
+                subtitle
+            }
+        }
+    }
+
+    private var twoColumnsTextContent: some View {
+        HStack(spacing: 8) {
+            VStack(alignment: .leading, spacing: 4) {
+                name
+                description
+            }
+            .layoutPriority(1)
+
+            Spacer(minLength: 4)
+
+            VStack(alignment: .trailing, spacing: 4) {
+                amount
+                subtitle
+            }
+            .layoutPriority(2)
+        }
+    }
+
+    private var name: some View {
+        HStack(spacing: 8) {
+            Text(viewModel.name)
+                .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+
+            if viewModel.inProgress {
+                ProgressDots(style: .small)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var description: some View {
+        if let localizeDestination = viewModel.localizeDestination {
+            Text(localizeDestination)
+                .multilineTextAlignment(.leading)
+                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                .lineLimit(1)
+                .truncationMode(.middle)
+        }
+    }
+
+    @ViewBuilder
+    private var amount: some View {
+        if let amount = viewModel.formattedAmount {
+            SensitiveText(amount)
+                .style(Fonts.Regular.subheadline, color: viewModel.amountColor)
+        }
+    }
+
+    private var subtitle: some View {
+        Text(viewModel.subtitleText)
+            .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
     }
 }
 

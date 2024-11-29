@@ -120,7 +120,11 @@ extension MarketsTokenDetailsCoordinator {
             )
         }
 
-        receiveBottomSheetViewModel = .init(tokenItem: walletModel.tokenItem, addressInfos: infos)
+        receiveBottomSheetViewModel = .init(
+            tokenItem: walletModel.tokenItem,
+            addressInfos: infos,
+            hasMemo: walletModel.tokenItem.blockchain.hasMemo
+        )
     }
 
     func openBuyCryptoIfPossible(for walletModel: WalletModel, with userWalletModel: UserWalletModel) {
@@ -155,6 +159,21 @@ extension MarketsTokenDetailsCoordinator {
             dismissAction: dismissAction,
             popToRootAction: popToRootAction
         )
+    }
+
+    func openOnramp(for walletModel: WalletModel, with userWalletModel: UserWalletModel) {
+        let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] navigationInfo in
+            self?.sendCoordinator = nil
+        }
+
+        let coordinator = SendCoordinator(dismissAction: dismissAction)
+        let options = SendCoordinator.Options(
+            walletModel: walletModel,
+            userWalletModel: userWalletModel,
+            type: .onramp
+        )
+        coordinator.start(with: options)
+        sendCoordinator = coordinator
     }
 }
 

@@ -10,6 +10,7 @@ import SwiftUI
 
 struct OnrampRedirectingView: View {
     @ObservedObject var viewModel: OnrampRedirectingViewModel
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         ZStack {
@@ -19,9 +20,9 @@ struct OnrampRedirectingView: View {
         }
         .navigationTitle(Text(viewModel.title))
         .alert(item: $viewModel.alert) { $0.alert }
-        .task {
-            await viewModel.loadRedirectData()
-        }
+        .onAppear { viewModel.update(colorScheme: colorScheme) }
+        .onChange(of: colorScheme) { viewModel.update(colorScheme: $0) }
+        .task { await viewModel.loadRedirectData() }
     }
 
     private var content: some View {

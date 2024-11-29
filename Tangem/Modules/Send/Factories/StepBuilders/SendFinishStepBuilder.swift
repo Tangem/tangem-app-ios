@@ -18,6 +18,7 @@ struct SendFinishStepBuilder {
         actionType: SendFlowActionType,
         sendDestinationCompactViewModel: SendDestinationCompactViewModel?,
         sendAmountCompactViewModel: SendAmountCompactViewModel?,
+        onrampAmountCompactViewModel: OnrampAmountCompactViewModel?,
         stakingValidatorsCompactViewModel: StakingValidatorsCompactViewModel?,
         sendFeeCompactViewModel: SendFeeCompactViewModel?
     ) -> ReturnValue {
@@ -26,6 +27,7 @@ struct SendFinishStepBuilder {
             actionType: actionType,
             sendDestinationCompactViewModel: sendDestinationCompactViewModel,
             sendAmountCompactViewModel: sendAmountCompactViewModel,
+            onrampAmountCompactViewModel: onrampAmountCompactViewModel,
             stakingValidatorsCompactViewModel: stakingValidatorsCompactViewModel,
             sendFeeCompactViewModel: sendFeeCompactViewModel
         )
@@ -44,6 +46,7 @@ private extension SendFinishStepBuilder {
         actionType: SendFlowActionType,
         sendDestinationCompactViewModel: SendDestinationCompactViewModel?,
         sendAmountCompactViewModel: SendAmountCompactViewModel?,
+        onrampAmountCompactViewModel: OnrampAmountCompactViewModel?,
         stakingValidatorsCompactViewModel: StakingValidatorsCompactViewModel?,
         sendFeeCompactViewModel: SendFeeCompactViewModel?
     ) -> SendFinishViewModel {
@@ -52,6 +55,7 @@ private extension SendFinishStepBuilder {
             input: input,
             sendDestinationCompactViewModel: sendDestinationCompactViewModel,
             sendAmountCompactViewModel: sendAmountCompactViewModel,
+            onrampAmountCompactViewModel: onrampAmountCompactViewModel,
             stakingValidatorsCompactViewModel: stakingValidatorsCompactViewModel,
             sendFeeCompactViewModel: sendFeeCompactViewModel
         )

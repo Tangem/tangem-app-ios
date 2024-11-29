@@ -9,13 +9,23 @@
 import Foundation
 
 struct OnrampProviderRowViewData: Identifiable {
-    let id: String
+    var id: Int { hashValue }
+
     let name: String
     let iconURL: URL?
     let formattedAmount: String?
     let state: State?
-    let badge: Badge
+    let badge: Badge?
     let isSelected: Bool
+
+    var isTappable: Bool {
+        switch state {
+        case .available, .availableFromAmount, .availableToAmount:
+            return true
+        case .none, .availableForPaymentMethods, .unavailable:
+            return false
+        }
+    }
 
     let action: () -> Void
 }
@@ -25,6 +35,7 @@ extension OnrampProviderRowViewData {
         case available(estimatedTime: String)
         case availableFromAmount(minAmount: String)
         case availableToAmount(maxAmount: String)
+        case availableForPaymentMethods(methods: String)
         case unavailable(reason: String)
     }
 
@@ -42,10 +53,10 @@ extension OnrampProviderRowViewData: Hashable {
     }
 
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
         hasher.combine(name)
         hasher.combine(iconURL)
         hasher.combine(formattedAmount)
+        hasher.combine(state)
         hasher.combine(badge)
         hasher.combine(isSelected)
     }

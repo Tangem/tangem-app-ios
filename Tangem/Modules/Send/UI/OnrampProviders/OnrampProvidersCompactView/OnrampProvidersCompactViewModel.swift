@@ -9,53 +9,51 @@
 import Foundation
 import Combine
 import TangemExpress
+import TangemFoundation
 
 class OnrampProvidersCompactViewModel: ObservableObject {
     @Published private(set) var paymentState: PaymentState?
 
     weak var router: OnrampSummaryRoutable?
 
-    private weak var providersInput: OnrampProvidersInput?
-    private weak var paymentMethodInput: OnrampPaymentMethodsInput?
-
     private var bag: Set<AnyCancellable> = []
 
-    init(providersInput: OnrampProvidersInput, paymentMethodInput: OnrampPaymentMethodsInput) {
-        self.providersInput = providersInput
-        self.paymentMethodInput = paymentMethodInput
-
-        bind(providersInput: providersInput, paymentMethodInput: paymentMethodInput)
+    init(providersInput: OnrampProvidersInput) {
+        bind(providersInput: providersInput)
     }
 
-    func bind(providersInput: OnrampProvidersInput, paymentMethodInput: OnrampPaymentMethodsInput) {
-        Publishers.CombineLatest(
-            providersInput.selectedOnrampProviderPublisher,
-            paymentMethodInput.selectedOnrampPaymentMethodPublisher
-        )
-        .receive(on: DispatchQueue.main)
-        .sink { [weak self] provider, paymentMethod in
-            self?.updateView(provider: provider, paymentMethod: paymentMethod)
-        }
-        .store(in: &bag)
+    private func bind(providersInput: OnrampProvidersInput) {
+        providersInput
+            .selectedOnrampProviderPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] provider in
+                self?.updateView(provider: provider)
+            }
+            .store(in: &bag)
     }
 
-    func updateView(provider: LoadingValue<OnrampProvider>?, paymentMethod: OnrampPaymentMethod?) {
-        switch (provider, paymentMethod) {
-        case (.loading, _):
+    private func updateView(provider: LoadingResult<OnrampProvider, Never>?) {
+        switch (provider, provider?.value?.state) {
+        case (.loading, _), (_, .loading):
             paymentState = .loading
-        case (.none, _), (.failedToLoad, _), (_, .none):
-            paymentState = .none
-        case (.loaded(let provider), .some(let paymentMethod)):
+        case (.success(let provider), .loaded),
+             (.success(let provider), .restriction):
             paymentState = .loaded(
-                data: .init(
-                    iconURL: paymentMethod.image,
-                    paymentMethodName: paymentMethod.name,
-                    providerName: provider.provider.name,
-                    badge: .bestRate
-                ) { [weak self] in
-                    self?.router?.onrampStepRequestEditProvider()
-                }
+                data: makeOnrampProvidersCompactProviderViewData(provider: provider)
             )
+        case (.none, _), (.success, _):
+            paymentState = .none
+        }
+    }
+
+    private func makeOnrampProvidersCompactProviderViewData(provider: OnrampProvider) -> OnrampProvidersCompactProviderViewData {
+        OnrampProvidersCompactProviderViewData(
+            iconURL: provider.paymentMethod.image,
+            paymentMethodName: provider.paymentMethod.name,
+            providerName: provider.provider.name,
+            badge: provider.attractiveType == .best ? .bestRate : .none
+        ) { [weak self] in
+            self?.router?.onrampStepRequestEditProvider()
         }
     }
 }

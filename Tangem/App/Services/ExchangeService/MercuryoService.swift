@@ -285,8 +285,10 @@ private extension Blockchain {
              .energyWebX,
              .core,
              .canxium,
-             .casper:
-            // Did you get a compilation error here? If so, check whether the network is supported at
+             .casper,
+             .chiliz,
+             .xodex:
+            // Did you get a compilation error here? If so, check whether the network is supported at https://api.mercuryo.io/v1.6/lib/currencies
             return nil
         }
     }

@@ -240,11 +240,16 @@ struct TestnetAPINodeInfoProvider {
             return [
                 .init(url: URL(string: "https://testnet.phantom-rpc.com/rpc")!),
             ]
+        case .chiliz:
+            return [
+                .init(url: URL(string: "https://spicy-rpc.chiliz.com")!),
+                .init(url: URL(string: "https://chiliz-spicy.publicnode.com/")!),
+            ]
         // TODO: Refactor in IOS-6639
         case .bitcoin, .litecoin, .disChain, .rsk, .bitcoinCash, .binance, .cardano,
              .xrp, .ducatus, .tezos, .dogecoin, .solana, .kusama, .dash, .gnosis,
              .terraV1, .terraV2, .cronos, .octa, .playa3ullGames, .radiant, .joystream,
-             .bittensor, .internetComputer, .filecoin, .energyWebX, .canxium:
+             .bittensor, .internetComputer, .filecoin, .energyWebX, .canxium, .xodex:
             return nil
         }
     }

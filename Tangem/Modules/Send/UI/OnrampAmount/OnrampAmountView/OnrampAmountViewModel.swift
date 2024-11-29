@@ -14,8 +14,7 @@ import TangemFoundation
 class OnrampAmountViewModel: ObservableObject {
     @Published var fiatIconURL: URL?
     @Published var decimalNumberTextFieldViewModel: DecimalNumberTextField.ViewModel
-    @Published var alternativeAmount: String?
-    @Published var bottomInfoText: SendAmountViewModel.BottomInfoTextType?
+    @Published var bottomInfoText: (state: LoadableTextView.State, isError: Bool) = (.initialized, false)
     @Published var currentFieldOptions: SendDecimalNumberTextField.PrefixSuffixOptions?
     @Published var isLoading: Bool = false
 
@@ -25,8 +24,8 @@ class OnrampAmountViewModel: ObservableObject {
     private let interactor: OnrampAmountInteractor
     private weak var coordinator: OnrampAmountRoutable?
     private let prefixSuffixOptionsFactory: SendDecimalNumberTextField.PrefixSuffixOptionsFactory = .init()
+    private let formatter: BalanceFormatter
 
-    private var updatingAmountTask: Task<Void, Never>?
     private var bag: Set<AnyCancellable> = []
 
     init(
@@ -39,6 +38,7 @@ class OnrampAmountViewModel: ObservableObject {
         self.coordinator = coordinator
 
         decimalNumberTextFieldViewModel = .init(maximumFractionDigits: 2)
+        formatter = BalanceFormatter()
 
         bind()
     }
@@ -71,10 +71,12 @@ private extension OnrampAmountViewModel {
             .store(in: &bag)
 
         interactor
-            .errorPublisher
-            .map { $0.map { .error($0) } }
+            .bottomInfoPublisher
+            .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
-            .assign(to: \.bottomInfoText, on: self, ownership: .weak)
+            .sink { viewModel, bottomInfo in
+                viewModel.updateBottomInfoText(bottomInfo: bottomInfo)
+            }
             .store(in: &bag)
     }
 
@@ -83,6 +85,7 @@ private extension OnrampAmountViewModel {
         case .none:
             // Equal to loading state
             fiatIconURL = nil
+            currentFieldOptions = nil
             isLoading = true
 
         case .some(let currency):
@@ -91,28 +94,39 @@ private extension OnrampAmountViewModel {
             currentFieldOptions = prefixSuffixOptionsFactory.makeFiatOptions(
                 fiatCurrencyCode: currency.identity.code
             )
-            updateAlternativeAmount(amount: .none)
             isLoading = false
         }
     }
 
     func textFieldValueDidChanged(amount: Decimal?) {
-        updatingAmountTask?.cancel()
-        updatingAmountTask = TangemFoundation.runTask(in: self) { viewModel in
-            let amount = await viewModel.interactor.update(amount: amount)
+        interactor.update(fiat: amount)
+    }
 
-            await runOnMain {
-                viewModel.updateAlternativeAmount(amount: amount)
-            }
+    func updateBottomInfoText(bottomInfo: LoadingResult<Decimal, OnrampAmountInteractorBottomInfoError>?) {
+        switch bottomInfo {
+        case .loading:
+            bottomInfoText = (.loading, false)
+        case .success(let success):
+            bottomInfoText = (format(crypto: success), false)
+        case .failure(.noAvailableProviders):
+            bottomInfoText = (.loaded(text: Localization.onrampNoAvailableProviders), true)
+        case .failure(.tooSmallAmount(let minAmount)):
+            bottomInfoText = (.loaded(text: Localization.onrampMinAmountRestriction(minAmount)), true)
+        case .failure(.tooBigAmount(let maxAmount)):
+            bottomInfoText = (.loaded(text: Localization.onrampMaxAmountRestriction(maxAmount)), true)
+        case .none:
+            bottomInfoText = (.noData, false)
         }
     }
 
-    func updateAlternativeAmount(amount: SendAmount?) {
-        let amount = amount ?? SendAmount(type: .alternative(fiat: nil, crypto: 0))
-        alternativeAmount = amount.formatAlternative(
-            currencySymbol: tokenItem.currencySymbol,
-            trimFractions: false,
-            decimalCount: tokenItem.decimalCount
-        )
+    func format(crypto: Decimal) -> LoadableTextView.State {
+        let formatted = formatter.formatCryptoBalance(crypto, currencyCode: tokenItem.currencySymbol)
+
+        if crypto > 0 {
+            return .loaded(text: "\(AppConstants.tildeSign) \(formatted)")
+        }
+
+        // Like placeholder
+        return .loaded(text: formatted)
     }
 }

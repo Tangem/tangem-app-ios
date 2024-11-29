@@ -124,7 +124,9 @@ extension CoinType {
              .energyWebX,
              .core,
              .canxium,
-             .casper:
+             .casper,
+             .chiliz,
+             .xodex:
             // Blockchains that are not in WalletCore yet
             return nil
         }

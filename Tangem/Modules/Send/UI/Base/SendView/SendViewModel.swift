@@ -7,9 +7,10 @@
 //
 
 import Combine
-import SwiftUI
-import BlockchainSdk
 import TangemExpress
+import TangemFoundation
+import SwiftUI
+import struct BlockchainSdk.SendTxError
 
 protocol SendViewAlertPresenter: AnyObject {
     func showAlert(_ alert: AlertBinder)
@@ -27,6 +28,7 @@ final class SendViewModel: ObservableObject {
     @Published var transactionURL: URL?
 
     @Published var closeButtonDisabled = false
+    @Published var trailingButtonDisabled = false
     @Published var isUserInteractionDisabled = false
     @Published var mainButtonLoading: Bool = false
     @Published var actionIsAvailable: Bool = false
@@ -131,8 +133,6 @@ final class SendViewModel: ObservableObject {
         //    isKeyboardActive = true
         case (_, .amount):
             isKeyboardActive = true
-        case (_, .onramp):
-            isKeyboardActive = true
         default:
             break
         }
@@ -186,6 +186,7 @@ final class SendViewModel: ObservableObject {
 private extension SendViewModel {
     func performOnramp() {
         do {
+            isKeyboardActive = false
             let onrampRedirectingBuilder = try dataBuilder.onrampBuilder().makeDataForOnrampRedirecting()
             coordinator?.openOnrampRedirecting(onrampRedirectingBuilder: onrampRedirectingBuilder)
         } catch {
@@ -204,7 +205,7 @@ private extension SendViewModel {
 
     func performAction() {
         sendTask?.cancel()
-        sendTask = runTask(in: self) { viewModel in
+        sendTask = TangemFoundation.runTask(in: self) { viewModel in
             do {
                 let result = try await viewModel.interactor.action()
                 await viewModel.proceed(result: result)
@@ -293,6 +294,11 @@ private extension SendViewModel {
         interactor.actionInProcessing
             .receive(on: DispatchQueue.main)
             .assign(to: \.closeButtonDisabled, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        interactor.actionInProcessing
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.trailingButtonDisabled, on: self, ownership: .weak)
             .store(in: &bag)
 
         interactor.actionInProcessing

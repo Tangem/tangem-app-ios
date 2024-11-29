@@ -63,7 +63,9 @@ extension PublicKeyType {
              .cyber,
              .energyWebEVM,
              .core,
-             .canxium:
+             .canxium,
+             .xodex,
+             .chiliz:
             self = PublicKeyType.secp256k1Extended
         case .stellar,
              .ton,

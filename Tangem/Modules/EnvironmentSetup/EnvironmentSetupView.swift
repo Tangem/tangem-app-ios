@@ -38,6 +38,8 @@ struct EnvironmentSetupView: View {
 
                 demoCardIdControls
 
+                fcmControls
+
                 promotionProgramControls
             }
             .interContentPadding(8)
@@ -69,8 +71,30 @@ struct EnvironmentSetupView: View {
         .padding(.horizontal)
     }
 
+    private var fcmControls: some View {
+        VStack(spacing: 10) {
+            Text("FCM token")
+                .font(.headline)
+
+            VStack(spacing: 15) {
+                HStack {
+                    Text("FCM token: \(viewModel.fcmToken)")
+                        .font(.footnote)
+
+                    Button {
+                        viewModel.copyField(\.fcmToken)
+                    } label: {
+                        Image(systemName: "doc.on.doc")
+                            .foregroundColor(Color.blue)
+                    }
+                }
+            }
+        }
+        .padding(.horizontal)
+    }
+
     private var promotionProgramControls: some View {
-        VStack(spacing: 30) {
+        VStack(spacing: 10) {
             Text("PROMOTION PROGRAM")
                 .font(.headline)
 
@@ -79,7 +103,7 @@ struct EnvironmentSetupView: View {
                     Text("Current promo code: \(viewModel.currentPromoCode)")
 
                     Button {
-                        viewModel.copyCurrentPromoCode()
+                        viewModel.copyField(\.currentPromoCode)
                     } label: {
                         Image(systemName: "doc.on.doc")
                             .foregroundColor(Color.blue)

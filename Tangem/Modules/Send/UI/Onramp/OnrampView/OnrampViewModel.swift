@@ -14,20 +14,27 @@ class OnrampViewModel: ObservableObject, Identifiable {
     @Published private(set) var onrampAmountViewModel: OnrampAmountViewModel
     @Published private(set) var onrampProvidersCompactViewModel: OnrampProvidersCompactViewModel
 
+    @Published private(set) var notificationInputs: [NotificationViewInput] = []
+    @Published private(set) var notificationButtonIsLoading = false
+
     weak var router: OnrampSummaryRoutable?
 
     private let interactor: OnrampInteractor
+    private let notificationManager: NotificationManager
     private var bag: Set<AnyCancellable> = []
 
     init(
         onrampAmountViewModel: OnrampAmountViewModel,
         onrampProvidersCompactViewModel: OnrampProvidersCompactViewModel,
+        notificationManager: NotificationManager,
         interactor: OnrampInteractor
     ) {
         self.onrampAmountViewModel = onrampAmountViewModel
         self.onrampProvidersCompactViewModel = onrampProvidersCompactViewModel
-
+        self.notificationManager = notificationManager
         self.interactor = interactor
+
+        bind()
     }
 
     func openOnrampSettingsView() {
@@ -37,37 +44,21 @@ class OnrampViewModel: ObservableObject, Identifiable {
 
 // MARK: - Private
 
-/*
- // TODO: https://tangem.atlassian.net/browse/IOS-8310
- private extension OnrampViewModel {
-     func bind() {
-          interactor
-              .selectedQuotePublisher
-              .withWeakCaptureOf(self)
-              .receive(on: DispatchQueue.main)
-              .sink { viewModel, quote in
-                  viewModel.updateQuoteView(quote: quote)
-              }
-              .store(in: &bag)
-     }
+private extension OnrampViewModel {
+    func bind() {
+        notificationManager
+            .notificationPublisher
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.notificationInputs, on: self, ownership: .weak)
+            .store(in: &bag)
 
-     func updateQuoteView(quote: LoadingValue<OnrampQuote>?) {
-         switch quote {
-         case .none, .failedToLoad:
-             paymentState = .none
-         case .loading:
-             paymentState = .loading
-         case .loaded(let quote):
-             // TODO: Fill from quote
-             paymentState = .loaded(
-                 data: .init(iconURL: nil, paymentMethodName: "Card", providerName: "1Inch", badge: .bestRate) { [weak self] in
-                     self?.router?.onrampStepRequestEditProvider()
-                 }
-             )
-         }
-     }
- }
- */
+        interactor
+            .isLoadingPublisher
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.notificationButtonIsLoading, on: self, ownership: .weak)
+            .store(in: &bag)
+    }
+}
 
 // MARK: - SendStepViewAnimatable
 

@@ -12,7 +12,6 @@ import TangemExpress
 struct OnrampFlowBaseBuilder {
     let userWalletModel: UserWalletModel
     let walletModel: WalletModel
-    let sendAmountStepBuilder: SendAmountStepBuilder
     let onrampAmountBuilder: OnrampAmountBuilder
     let onrampStepBuilder: OnrampStepBuilder
     let sendFinishStepBuilder: SendFinishStepBuilder
@@ -24,6 +23,7 @@ struct OnrampFlowBaseBuilder {
         )
 
         let onrampModel = builder.makeOnrampModel(onrampManager: onrampManager, onrampRepository: onrampRepository)
+        let notificationManager = builder.makeOnrampNotificationManager(input: onrampModel, delegate: onrampModel)
 
         let providersBuilder = OnrampProvidersBuilder(
             io: (input: onrampModel, output: onrampModel),
@@ -32,8 +32,7 @@ struct OnrampFlowBaseBuilder {
         )
 
         let paymentMethodsBuilder = OnrampPaymentMethodsBuilder(
-            io: (input: onrampModel, output: onrampModel),
-            dataRepository: onrampDataRepository
+            io: (input: onrampModel, output: onrampModel)
         )
 
         let onrampRedirectingBuilder = OnrampRedirectingBuilder(
@@ -48,23 +47,26 @@ struct OnrampFlowBaseBuilder {
             coordinator: router
         )
 
-        let sendAmountCompactViewModel = sendAmountStepBuilder.makeSendAmountCompactViewModel(
-            input: onrampModel
-        )
-
         let onrampProvidersCompactViewModel = providersBuilder.makeOnrampProvidersCompactViewModel()
+        let onrampAmountCompactViewModel = onrampAmountBuilder.makeOnrampAmountCompactViewModel(
+            onrampAmountInput: onrampModel,
+            onrampProvidersInput: onrampModel
+        )
 
         let onramp = onrampStepBuilder.makeOnrampStep(
             io: (input: onrampModel, output: onrampModel),
+            providersInput: onrampModel,
             onrampAmountViewModel: onrampAmountViewModel,
-            onrampProvidersCompactViewModel: onrampProvidersCompactViewModel
+            onrampProvidersCompactViewModel: onrampProvidersCompactViewModel,
+            notificationManager: notificationManager
         )
 
         let finish = sendFinishStepBuilder.makeSendFinishStep(
             input: onrampModel,
             actionType: .onramp,
             sendDestinationCompactViewModel: .none,
-            sendAmountCompactViewModel: sendAmountCompactViewModel,
+            sendAmountCompactViewModel: .none,
+            onrampAmountCompactViewModel: onrampAmountCompactViewModel,
             stakingValidatorsCompactViewModel: .none,
             sendFeeCompactViewModel: .none
         )

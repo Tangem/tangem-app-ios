@@ -105,7 +105,9 @@ final class MainViewModel: ObservableObject {
 
     /// Handles `SwiftUI.View.onAppear(perform:)`.
     func onViewAppear() {
-        Analytics.log(.mainScreenOpened)
+        if !isLoggingOut {
+            Analytics.log(.mainScreenOpened)
+        }
 
         addPendingUserWalletModelsIfNeeded { [weak self] in
             self?.swipeDiscoveryHelper.scheduleSwipeDiscoveryIfNeeded()
@@ -199,7 +201,11 @@ final class MainViewModel: ObservableObject {
             return
         }
 
-        userWalletRepository.delete(userWalletModel.userWalletId, logoutIfNeeded: true)
+        userWalletRepository.delete(userWalletModel.userWalletId)
+
+        if userWalletRepository.models.isEmpty {
+            coordinator?.popToRoot()
+        }
     }
 
     // MARK: - User wallets pages management
@@ -358,7 +364,7 @@ final class MainViewModel: ObservableObject {
                 case .deleted(let userWalletIds):
                     // This model is alive for enough time to receive the "deleted" event
                     // after the last model has been removed and the application has been logged out
-                    if isLoggingOut == true {
+                    if userWalletRepository.models.isEmpty {
                         return
                     }
                     removePages(with: userWalletIds)

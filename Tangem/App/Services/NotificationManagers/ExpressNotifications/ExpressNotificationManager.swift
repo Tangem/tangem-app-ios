@@ -169,6 +169,7 @@ class ExpressNotificationManager {
              .cardanoInsufficientBalanceToSendToken,
              .notEnoughMana,
              .manaLimit,
+             .remainingAmountIsLessThanRentExtemption,
              .koinosInsufficientBalanceToSendKoin:
             event = .validationErrorEvent(event: validationErrorEvent, context: context)
         }
@@ -246,30 +247,6 @@ class ExpressNotificationManager {
             self?.delegate?.didTapNotification(with: id, action: actionType)
         }
         return input
-    }
-}
-
-extension ExpressAPIError {
-    var localizedTitle: String {
-        switch errorCode {
-        case .exchangeNotPossibleError:
-            Localization.warningExpressPairUnavailableTitle
-        default:
-            Localization.warningExpressRefreshRequiredTitle
-        }
-    }
-
-    var localizedMessage: String {
-        switch errorCode {
-        case .exchangeInternalError:
-            return Localization.expressErrorSwapUnavailable(errorCode.rawValue)
-        case .exchangeProviderNotActiveError, .exchangeProviderNotAvailableError, .exchangeProviderProviderInternalError:
-            return Localization.expressErrorSwapPairUnavailable(errorCode.rawValue)
-        case .exchangeNotPossibleError:
-            return Localization.warningExpressPairUnavailableMessage(errorCode.rawValue)
-        default:
-            return Localization.expressErrorCode(errorCode.localizedDescription)
-        }
     }
 }
 

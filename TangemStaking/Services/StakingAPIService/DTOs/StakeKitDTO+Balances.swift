@@ -20,6 +20,7 @@ extension StakeKitDTO {
             let integrationId: String?
 
             struct Balance: Decodable {
+                let accountAddress: String?
                 let groupId: String
                 let type: BalanceType
                 let amount: String

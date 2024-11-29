@@ -57,12 +57,12 @@ class WalletConnectViewModel: ObservableObject {
         }
     }
 
-    func readFromClipboard() throws -> WalletConnectRequestURI? {
+    func readFromClipboard() -> WalletConnectRequestURI? {
         guard let pasteboardValue = UIPasteboard.general.string else {
             return nil
         }
 
-        return try WalletConnectURLParser().parse(uriString: pasteboardValue)
+        return try? WalletConnectURLParser().parse(uriString: pasteboardValue)
     }
 
     func pasteFromClipboard() {
@@ -80,12 +80,7 @@ class WalletConnectViewModel: ObservableObject {
             return
         }
 
-        do {
-            pendingURI = try readFromClipboard()
-        } catch {
-            makeAlert(with: error.localizedDescription)
-            return
-        }
+        pendingURI = readFromClipboard()
 
         if pendingURI != nil {
             isActionSheetVisible = true

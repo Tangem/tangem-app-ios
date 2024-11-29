@@ -20,10 +20,13 @@ class SolanaWalletManager: BaseManager, WalletManager {
 
     var usePriorityFees = !NFCUtils.isPoorNfcQualityDevice
 
+    // It is taken into account in the calculation of the account rent commission for the sender
+    private var mainAccountRentExemption: Decimal = 0
+
     override func update(completion: @escaping (Result<Void, Error>) -> Void) {
         let transactionIDs = wallet.pendingTransactions.map { $0.hash }
 
-        cancellable = networkService.getInfo(accountId: wallet.address, tokens: cardTokens, transactionIDs: transactionIDs)
+        cancellable = networkService.getInfo(accountId: wallet.address, tokens: cardTokens)
             .sink { [weak self] in
                 switch $0 {
                 case .failure(let error):
@@ -38,6 +41,8 @@ class SolanaWalletManager: BaseManager, WalletManager {
     }
 
     private func updateWallet(info: SolanaAccountInfoResponse) {
+        mainAccountRentExemption = info.mainAccountRentExemption
+
         wallet.add(coinValue: info.balance)
 
         for cardToken in cardTokens {
@@ -46,9 +51,7 @@ class SolanaWalletManager: BaseManager, WalletManager {
             wallet.add(tokenValue: balance, for: cardToken)
         }
 
-        wallet.removePendingTransaction { hash in
-            info.confirmedTransactionIDs.contains(hash)
-        }
+        wallet.clearPendingTransaction()
     }
 }
 
@@ -75,6 +78,7 @@ extension SolanaWalletManager: TransactionSender {
                 let mapper = PendingTransactionRecordMapper()
                 let record = mapper.mapToPendingTransactionRecord(transaction: transaction, hash: hash)
                 wallet.addPendingTransaction(record)
+
                 return TransactionSendResult(hash: hash)
             }
             .eraseSendError()
@@ -99,9 +103,10 @@ extension SolanaWalletManager: TransactionSender {
                 .map { (feeForMessage: $0, feeParameters: feeParameters) }
             }
             .withWeakCaptureOf(self)
-            .map { walletManger, feeInfo -> [Fee] in
+            .map { walletManager, feeInfo -> [Fee] in
                 let totalFee = feeInfo.feeForMessage + feeInfo.feeParameters.accountCreationFee
-                let amount = Amount(with: walletManger.wallet.blockchain, type: .coin, value: totalFee)
+                let amount = Amount(with: walletManager.wallet.blockchain, type: .coin, value: totalFee)
+
                 return [Fee(amount, parameters: feeInfo.feeParameters)]
             }
             .eraseToAnyPublisher()
@@ -210,7 +215,7 @@ private extension SolanaWalletManager {
         let tokens: [Token] = amountType.token.map { [$0] } ?? []
 
         return networkService
-            .getInfo(accountId: destination, tokens: tokens, transactionIDs: [])
+            .getInfo(accountId: destination, tokens: tokens)
             .map { info in
                 switch amountType {
                 case .coin:
@@ -268,16 +273,8 @@ private extension SolanaWalletManager {
 
 extension SolanaWalletManager: RentProvider {
     func minimalBalanceForRentExemption() -> AnyPublisher<Amount, Error> {
-        networkService.minimalBalanceForRentExemption()
-            .tryMap { [weak self] balance in
-                guard let self = self else {
-                    throw WalletError.empty
-                }
-
-                let blockchain = wallet.blockchain
-                return Amount(with: blockchain, type: .coin, value: balance)
-            }
-            .eraseToAnyPublisher()
+        let amountValue = Amount(with: wallet.blockchain, value: mainAccountRentExemption)
+        return .justWithError(output: amountValue).eraseToAnyPublisher()
     }
 
     func rentAmount() -> AnyPublisher<Amount, Error> {
@@ -291,6 +288,12 @@ extension SolanaWalletManager: RentProvider {
                 return Amount(with: blockchain, type: .coin, value: fee)
             }
             .eraseToAnyPublisher()
+    }
+}
+
+extension SolanaWalletManager: RentExtemptionRestrictable {
+    var minimalAmountForRentExemption: Amount {
+        Amount(with: wallet.blockchain, value: mainAccountRentExemption)
     }
 }
 

@@ -21,13 +21,16 @@ struct OnrampStepBuilder {
 
     func makeOnrampStep(
         io: IO,
+        providersInput: some OnrampProvidersInput,
         onrampAmountViewModel: OnrampAmountViewModel,
-        onrampProvidersCompactViewModel: OnrampProvidersCompactViewModel
+        onrampProvidersCompactViewModel: OnrampProvidersCompactViewModel,
+        notificationManager: some NotificationManager
     ) -> ReturnValue {
-        let interactor = makeOnrampInteractor(io: io)
+        let interactor = makeOnrampInteractor(io: io, providersInput: providersInput)
         let viewModel = makeOnrampViewModel(
             onrampAmountViewModel: onrampAmountViewModel,
             onrampProvidersCompactViewModel: onrampProvidersCompactViewModel,
+            notificationManager: notificationManager,
             interactor: interactor
         )
         let step = OnrampStep(tokenItem: walletModel.tokenItem, viewModel: viewModel, interactor: interactor)
@@ -42,16 +45,18 @@ private extension OnrampStepBuilder {
     func makeOnrampViewModel(
         onrampAmountViewModel: OnrampAmountViewModel,
         onrampProvidersCompactViewModel: OnrampProvidersCompactViewModel,
+        notificationManager: some NotificationManager,
         interactor: OnrampInteractor
     ) -> OnrampViewModel {
         OnrampViewModel(
             onrampAmountViewModel: onrampAmountViewModel,
             onrampProvidersCompactViewModel: onrampProvidersCompactViewModel,
+            notificationManager: notificationManager,
             interactor: interactor
         )
     }
 
-    func makeOnrampInteractor(io: IO) -> OnrampInteractor {
-        CommonOnrampInteractor(input: io.input, output: io.output)
+    func makeOnrampInteractor(io: IO, providersInput: some OnrampProvidersInput) -> OnrampInteractor {
+        CommonOnrampInteractor(input: io.input, output: io.output, providersInput: providersInput)
     }
 }

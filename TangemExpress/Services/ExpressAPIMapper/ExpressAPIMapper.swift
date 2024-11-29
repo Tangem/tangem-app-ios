@@ -167,8 +167,14 @@ struct ExpressAPIMapper {
         return OnrampCountry(identity: identity, currency: currency, onrampAvailable: response.onrampAvailable)
     }
 
-    func mapToOnrampPaymentMethod(response: ExpressDTO.Onramp.PaymentMethod) -> OnrampPaymentMethod {
-        return OnrampPaymentMethod(id: response.id, name: response.name, image: URL(string: response.image))
+    func mapToOnrampPaymentMethod(response: ExpressDTO.Onramp.PaymentMethod) -> OnrampPaymentMethod? {
+        let method = OnrampPaymentMethod(id: response.id, name: response.name, image: response.image)
+
+        guard OnrampPaymentMethodsFilter().isSupported(paymentMethod: method) else {
+            return nil
+        }
+
+        return method
     }
 
     func mapToOnrampPair(response: ExpressDTO.Onramp.Pairs.Response) -> OnrampPair {
@@ -186,6 +192,8 @@ struct ExpressAPIMapper {
             throw ExpressAPIMapperError.mapToDecimalError(response.toAmount)
         }
 
+        toAmount /= pow(10, response.toDecimals)
+
         return OnrampQuote(expectedAmount: toAmount)
     }
 
@@ -194,17 +202,47 @@ struct ExpressAPIMapper {
         request: ExpressDTO.Onramp.Data.Request,
         response: ExpressDTO.Onramp.Data.Response
     ) throws -> OnrampRedirectData {
-        let redirectData: OnrampRedirectData = try exchangeDataDecoder.decode(
+        let codedData: ExpressDTO.Onramp.Data.CodedData = try exchangeDataDecoder.decode(
             txDetailsJson: response.dataJson,
             signature: response.signature
         )
 
-        guard request.requestId == redirectData.requestId else {
+        guard request.requestId == codedData.requestId else {
             throw ExpressAPIMapperError.requestIdNotEqual
         }
 
-        // TODO: https://tangem.atlassian.net/browse/IOS-8309
-        return redirectData
+        guard var fromAmount = Decimal(string: codedData.fromAmount) else {
+            throw ExpressAPIMapperError.mapToDecimalError(codedData.fromAmount)
+        }
+
+        fromAmount /= pow(10, 2)
+
+        return OnrampRedirectData(
+            txId: response.txId,
+            widgetUrl: codedData.widgetUrl,
+            fromAmount: fromAmount,
+            fromCurrencyCode: codedData.fromCurrencyCode,
+            externalTxId: codedData.externalTxId
+        )
+    }
+
+    func mapToOnrampTransaction(response: ExpressDTO.Onramp.Status.Response) throws -> OnrampTransaction {
+        guard var fromAmount = Decimal(string: response.fromAmount) else {
+            throw ExpressAPIMapperError.mapToDecimalError(response.fromAmount)
+        }
+
+        fromAmount /= pow(10, 2)
+
+        let toAmount = response.toAmount
+            .flatMap(Decimal.init)
+            .map { $0 / pow(10, response.toDecimals) }
+
+        return OnrampTransaction(
+            fromAmount: fromAmount,
+            toAmount: toAmount,
+            status: response.status,
+            externatTxURL: response.externalTxUrl
+        )
     }
 }
 

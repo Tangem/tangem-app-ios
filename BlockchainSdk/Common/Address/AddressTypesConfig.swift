@@ -90,7 +90,9 @@ struct AddressTypesConfig {
              .energyWebX,
              .core,
              .canxium,
-             .casper:
+             .casper,
+             .chiliz,
+             .xodex:
             return [.default]
         }
     }

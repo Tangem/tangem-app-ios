@@ -14,6 +14,8 @@ struct SendFinishView: View {
 
     var body: some View {
         GroupedScrollView(spacing: 14) {
+            FixedSpacer(height: 20)
+
             if viewModel.showHeader, let transactionTime = viewModel.transactionSentTime {
                 header(transactionTime: transactionTime)
             }
@@ -30,6 +32,13 @@ struct SendFinishView: View {
                 SendAmountCompactView(
                     viewModel: sendAmountCompactViewModel,
                     type: .enabled(),
+                    namespace: .init(id: namespace.id, names: namespace.names)
+                )
+            }
+
+            if let onrampAmountCompactViewModel = viewModel.onrampAmountCompactViewModel {
+                OnrampAmountCompactView(
+                    viewModel: onrampAmountCompactViewModel,
                     namespace: .init(id: namespace.id, names: namespace.names)
                 )
             }
@@ -57,21 +66,21 @@ struct SendFinishView: View {
 
     @ViewBuilder
     private func header(transactionTime: String) -> some View {
-        VStack(spacing: 0) {
+        VStack(spacing: 18) {
             Assets.inProgress.image
 
-            Text(Localization.sentTransactionSentTitle)
-                .style(Fonts.Bold.title3, color: Colors.Text.primary1)
-                .padding(.top, 18)
+            VStack(spacing: 6) {
+                Text(Localization.commonInProgress)
+                    .style(Fonts.Bold.title3, color: Colors.Text.primary1)
 
-            Text(transactionTime)
-                .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
-                .lineLimit(1)
-                .padding(.top, 6)
+                Text(transactionTime)
+                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                    .lineLimit(1)
+            }
         }
         .transition(.move(edge: .top).combined(with: .opacity))
-        .padding(.top, 24)
-        .padding(.bottom, 12)
+        .padding(.top, 4)
+        .padding(.bottom, 10)
     }
 }
 

@@ -231,6 +231,8 @@ extension Analytics {
         case tokenNoticeNetworkUnreachable = "[Token] Notice - Network Unreachable"
         case tokenNoticeNotEnoughFee = "[Token] Notice - Not Enough Fee"
         case tokenNoticeActionInactive = "[Token] Notice - Action Inactive"
+        case walletPromoButtonClicked = "[Main Screen] Note Promo Button"
+        case walletPromoAppear = "[Main Screen] Notice - Note Promo"
 
         // MARK: - BlockchainSdk exceptions
 
@@ -261,6 +263,7 @@ extension Analytics {
         case pushButtonAllow = "[Push] Button - Allow"
         case pushButtonPostpone = "[Push] Button - Later"
         case pushPermissionStatus = "[Push] Permission Status"
+        case pushNotificationOpened = "[Push] Push Notification Opened"
 
         // MARK: - Staking
 
@@ -309,6 +312,8 @@ extension Analytics {
         case marketsChartButtonSwap = "[Markets / Chart] Button - Swap"
         case marketsChartDataError = "[Markets / Chart] Data Error"
         case marketsChartExchangesScreenOpened = "[Markets / Chart] Exchanges Screen Opened"
+        case marketsChartSecurityScoreInfo = "[Markets / Chart] Security Score Info"
+        case marketsChartSecurityScoreProviderClicked = "[Markets / Chart] Security Score Provider Clicked"
 
         // MARK: - Manage Tokens
 
@@ -321,7 +326,7 @@ extension Analytics {
         case manageTokensSearched = "[Manage Tokens] Token Searched"
         case manageTokensWalletSelected = "[Manage Tokens] Wallet Selected"
 
-        // MARK: - Manange Tokens / Custom
+        // MARK: - Manage Tokens / Custom
 
         case manageTokensButtonCustomToken = "[Manage Tokens / Custom] Button - Custom Token"
         case manageTokensCustomTokenScreenOpened = "[Manage Tokens / Custom] Custom Token Screen Opened"
