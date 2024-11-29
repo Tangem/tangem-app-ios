@@ -27,6 +27,7 @@
 		0AC9EFF72CAE857C005F868F /* StakingSingleActionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC9EFF62CAE857C005F868F /* StakingSingleActionModel.swift */; };
 		0AC9EFF92CAE9B2C005F868F /* CommonStakingSingleActionStepsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC9EFF82CAE9B2C005F868F /* CommonStakingSingleActionStepsManager.swift */; };
 		0AD13F952C8AD76800C2EE16 /* CommonStakingAnalyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD13F942C8AD76800C2EE16 /* CommonStakingAnalyticsLogger.swift */; };
+		0AEA96BB2CEF8D9700395617 /* ReceiveNotificationEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEA96BA2CEF8D9700395617 /* ReceiveNotificationEvent.swift */; };
 		2D0E4F532A8D114E00001D8E /* GenericWalletManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0E4F522A8D114E00001D8E /* GenericWalletManagerFactory.swift */; };
 		2D1400CA2C43F79F00B75A42 /* MarketsPortfolioContextActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1400C82C43F4FD00B75A42 /* MarketsPortfolioContextActions.swift */; };
 		2D1400CE2C44090400B75A42 /* MarketsPortfolioContainerRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1400CD2C44090400B75A42 /* MarketsPortfolioContainerRoutable.swift */; };
@@ -3149,6 +3150,7 @@
 		0AC9EFF82CAE9B2C005F868F /* CommonStakingSingleActionStepsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonStakingSingleActionStepsManager.swift; sourceTree = "<group>"; };
 		0AD13F942C8AD76800C2EE16 /* CommonStakingAnalyticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonStakingAnalyticsLogger.swift; sourceTree = "<group>"; };
 		0AD9EF0E2CC2A9B600466191 /* UnstakingSendAmountValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnstakingSendAmountValidator.swift; sourceTree = "<group>"; };
+		0AEA96BA2CEF8D9700395617 /* ReceiveNotificationEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiveNotificationEvent.swift; sourceTree = "<group>"; };
 		0BE949936543D22F51E09DBD /* Pods-Tangem-TangemUITests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.release(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.release(alpha).xcconfig"; sourceTree = "<group>"; };
 		0F0F54769EDEAC846B6BF43B /* Pods_Tangem_TangemUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tangem_TangemUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		136B5829321AB7962F0F8960 /* Pods-TangemTests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.release(beta).xcconfig"; sourceTree = "<group>"; };
@@ -8903,6 +8905,7 @@
 				B0E7489B2A3C130B0015E3FC /* ReceiveBottomSheetView.swift */,
 				B0F7D7612A404907007FEB2E /* ReceiveBottomSheetViewModel.swift */,
 				B0F7D75D2A4048D5007FEB2E /* ReceiveAddressInfo.swift */,
+				0AEA96BA2CEF8D9700395617 /* ReceiveNotificationEvent.swift */,
 			);
 			path = ReceiveBottomSheetView;
 			sourceTree = "<group>";
@@ -17804,6 +17807,7 @@
 				B6DF90592CA302280099FED5 /* MainCoordinatorNavigationAssertion.swift in Sources */,
 				B09BB85F259A075600B92000 /* TangemButton.swift in Sources */,
 				B0DB73FC2A8CA28800F6376E /* UnlockUserWalletBottomSheetViewModel.swift in Sources */,
+				0AEA96BB2CEF8D9700395617 /* ReceiveNotificationEvent.swift in Sources */,
 				B03FF89E2B5E4FC000202EC0 /* AppVisaBalances.swift in Sources */,
 				B012A11D2AA617000079BAB4 /* UserWalletNotificationManager.swift in Sources */,
 				DA5CD0992A25F4F2008FD876 /* PromotionCoordinatorView.swift in Sources */,
