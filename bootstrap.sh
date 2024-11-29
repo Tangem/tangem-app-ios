@@ -11,11 +11,13 @@ usage() {
 	echo "  Options:"
 	echo
 	echo "    --skip-cocoapods        -  Skip pod install"
+    echo "    --skip-ruby             -  Skip Ruby install"
 	echo "    --update-submodule      -  Git submodule update with --remote option"
 	exit 1;
 }
 
 OPT_COCOAPODS=true
+OPT_RUBY=true
 OPT_SUBMODULE=false
 
 while test $# -gt 0
@@ -23,6 +25,9 @@ do
     case "$1" in
         --skip-cocoapods)
 			OPT_COCOAPODS=false
+            ;;
+        --skip-ruby)
+            OPT_RUBY=false
             ;;
         --update-submodule)
 			OPT_SUBMODULE=true
@@ -55,13 +60,15 @@ echo "🔄 Installing required Homebrew dependencies"
 HOMEBREW_NO_AUTO_UPDATE=1 brew bundle install --file=${BREWFILE}
 echo "✅ Required Homebrew dependencies succesfully installed"
 
-echo "🛠️ Installing Ruby version from '.ruby-version' file..."
-eval "$(rbenv init - bash)"
-RUBY_VERSION=$(cat .ruby-version)
-rbenv install "$RUBY_VERSION" --skip-existing
-rbenv local "$RUBY_VERSION"
-rbenv rehash
-echo "✅ Ruby version ${RUBY_VERSION} from '.ruby-version' file succesfully installed"
+if [ "$OPT_RUBY" = true ] ; then
+    echo "🛠️ Installing Ruby version from '.ruby-version' file..."
+    eval "$(rbenv init - bash)"
+    RUBY_VERSION=$(cat .ruby-version)
+    rbenv install "$RUBY_VERSION" --skip-existing
+    rbenv local "$RUBY_VERSION"
+    rbenv rehash
+    echo "✅ Ruby version ${RUBY_VERSION} from '.ruby-version' file succesfully installed"
+fi
 
 echo "🔄 Installing required Ruby gems"
 gem install bundler
