@@ -1,6 +1,5 @@
 #!/bin/sh
-
-set -eo pipefail
+# set -euo pipefail
 
 # Install "Command line tools" xcode-select --install
 # Install Homebrew -> https://brew.sh
@@ -45,30 +44,25 @@ else
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
-if [ "${CI}" = true ] ; then
-    MINTFILE="./Utilites/Mintfile@ci"
-    BREWFILE="./Utilites/Brewfile@ci"
+if which -a mint > /dev/null; then
+    echo "🟢 Mint installed. Skipping install"
 else
-    MINTFILE="./Utilites/Mintfile@local"
-    BREWFILE="./Utilites/Brewfile@local"
+    echo "🔴 Mint not installed. Start install"
+    brew install mint
 fi
 
-echo "🔄 Installing required Homebrew dependencies"
-brew bundle install --file=${BREWFILE}
-echo "✅ Required Homebrew dependencies succesfully installed"
+if which -a xcodes > /dev/null; then
+    echo "🟢 Xcodes installed. Skipping install"
+else
+    echo "🔴 Xcodes not installed. Start install"
+    brew install xcodes
+fi
 
-echo "🛠️ Installing Ruby version from '.ruby-version' file..."
-eval "$(rbenv init - bash)"
-RUBY_VERSION=$(cat .ruby-version)
-rbenv install "$RUBY_VERSION" --skip-existing
-rbenv local "$RUBY_VERSION"
-rbenv rehash
-echo "✅ Ruby version ${RUBY_VERSION} from '.ruby-version' file succesfully installed"
-
-echo "🔄 Installing required Ruby gems"
-gem install bundler
-bundle install
-echo "✅ Required Ruby gems succesfully installed"
+if [ "${CI}" = true ] ; then
+    MINTFILE="./Utilites/Mintfile@ci"
+else
+    MINTFILE="./Utilites/Mintfile@local"
+fi
 
 echo "🔄 Mint bootstrap dependencies"
 mint bootstrap --mintfile ${MINTFILE}
@@ -86,7 +80,7 @@ mint run swiftgen@6.6.2 config run --config swiftgen.yml
 
 if [ "$OPT_COCOAPODS" = true ] ; then
     echo "🚀 Running pod install"
-	bundle exec pod install --repo-update 
+	pod install --repo-update 
 fi
 
 if [ "$OPT_SUBMODULE" = true ] ; then
