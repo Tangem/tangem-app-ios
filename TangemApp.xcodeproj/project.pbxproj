@@ -2597,6 +2597,7 @@
 		EF661E3528C0ADC6005769E5 /* CommonError.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF661E3428C0ADC6005769E5 /* CommonError.swift */; };
 		EF666C262A2DF9EF0044986F /* BottomSheetModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF666C252A2DF9EF0044986F /* BottomSheetModifier.swift */; };
 		EF666C282A2DFA1C0044986F /* View+BottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF666C272A2DFA1C0044986F /* View+BottomSheet.swift */; };
+		EF68830E2CF8871500658644 /* OnrampPaymentMethodsFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF68830D2CF8871500658644 /* OnrampPaymentMethodsFilter.swift */; };
 		EF692A482951E7C8001F4B8A /* XCAssets+Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF692A462951E7C8001F4B8A /* XCAssets+Generated.swift */; };
 		EF692A492951E7C8001F4B8A /* Localizable+Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF692A472951E7C8001F4B8A /* Localizable+Generated.swift */; };
 		EF6961652CEE0BDD001EC00A /* OnrampNotificationEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6961642CEE0BD9001EC00A /* OnrampNotificationEvent.swift */; };
@@ -5771,6 +5772,7 @@
 		EF661E3428C0ADC6005769E5 /* CommonError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonError.swift; sourceTree = "<group>"; };
 		EF666C252A2DF9EF0044986F /* BottomSheetModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetModifier.swift; sourceTree = "<group>"; };
 		EF666C272A2DFA1C0044986F /* View+BottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+BottomSheet.swift"; sourceTree = "<group>"; };
+		EF68830D2CF8871500658644 /* OnrampPaymentMethodsFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPaymentMethodsFilter.swift; sourceTree = "<group>"; };
 		EF692A462951E7C8001F4B8A /* XCAssets+Generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCAssets+Generated.swift"; sourceTree = "<group>"; };
 		EF692A472951E7C8001F4B8A /* Localizable+Generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Localizable+Generated.swift"; sourceTree = "<group>"; };
 		EF6961642CEE0BD9001EC00A /* OnrampNotificationEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampNotificationEvent.swift; sourceTree = "<group>"; };
@@ -14496,6 +14498,14 @@
 			path = BottomSheet;
 			sourceTree = "<group>";
 		};
+		EF68830C2CF8870D00658644 /* OnrampPaymentMethodsFilter */ = {
+			isa = PBXGroup;
+			children = (
+				EF68830D2CF8871500658644 /* OnrampPaymentMethodsFilter.swift */,
+			);
+			path = OnrampPaymentMethodsFilter;
+			sourceTree = "<group>";
+		};
 		EF692A452951E600001F4B8A /* Generated */ = {
 			isa = PBXGroup;
 			children = (
@@ -14940,6 +14950,7 @@
 		EF9E29C32B4F0CCE00418559 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				EF68830C2CF8870D00658644 /* OnrampPaymentMethodsFilter */,
 				DC1D4C3F2C385F0C00B2A422 /* ExpressAnalyticsLogger */,
 				EF9E29C42B4F0CCE00418559 /* ExpressManagerMapper */,
 				EF9E29C62B4F0CCE00418559 /* ExpressProviderManagerFactory */,
@@ -19396,6 +19407,7 @@
 				DC1D4C432C38605800B2A422 /* CommonAnalyticsLogger.swift in Sources */,
 				EF1C27BE2CEF9F7A00592DA9 /* OnrampPreference.swift in Sources */,
 				EFD68F3B2CC3D7E600693C97 /* ExpressDTO+Onramp.swift in Sources */,
+				EF68830E2CF8871500658644 /* OnrampPaymentMethodsFilter.swift in Sources */,
 				EF9E2A392B4F0CD100418559 /* ExpressManagerSwappingPair.swift in Sources */,
 				EF9E2A262B4F0CD100418559 /* ExpressTransaction.swift in Sources */,
 				EF9E2A352B4F0CD100418559 /* CEXExpressProviderManager.swift in Sources */,
