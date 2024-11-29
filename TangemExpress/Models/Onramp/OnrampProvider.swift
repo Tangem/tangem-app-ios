@@ -12,7 +12,7 @@ public class OnrampProvider {
     public let provider: ExpressProvider
     public let paymentMethod: OnrampPaymentMethod
 
-    public private(set) var isBest: Bool = false
+    public private(set) var attractiveType: AttractiveType?
 
     private let manager: OnrampProviderManager
 
@@ -26,8 +26,22 @@ public class OnrampProvider {
         self.manager = manager
     }
 
-    func update(isBest: Bool) {
-        self.isBest = isBest
+    func update(attractiveType: AttractiveType?) {
+        self.attractiveType = attractiveType
+    }
+}
+
+public extension OnrampProvider {
+    enum AttractiveType: Hashable, CustomStringConvertible {
+        case best
+        case loss(percent: Decimal)
+
+        public var description: String {
+            switch self {
+            case .best: "Best"
+            case .loss(let percent): "Loss \(percent)"
+            }
+        }
     }
 }
 
@@ -40,25 +54,23 @@ extension OnrampProvider: OnrampProviderManager {
         state.isSupported
     }
 
-    public var isLoading: Bool {
+    /// Can be used for showing user
+    public var isShowable: Bool {
         switch state {
-        case .loading: true
-        case .idle, .loaded, .failed, .notSupported, .restriction: false
+        case .idle, .restriction, .loaded: true
+        case .loading, .failed, .notSupported: false
         }
     }
 
-    public var canBeShow: Bool {
+    /// Can be used as `_selectedProvider`
+    public var isSelectable: Bool {
         switch state {
-        case .restriction, .loaded: true
-        case .idle, .loading, .failed, .notSupported: false
+        case .idle, .loading, .restriction, .loaded, .failed: true
+        case .notSupported: false
         }
     }
 
-    public var canBeSelected: Bool {
-        error == nil
-    }
-
-    public var isReadyToBuy: Bool {
+    public var isSuccessfullyLoaded: Bool {
         switch state {
         case .loaded: true
         case .idle, .loading, .failed, .notSupported, .restriction: false
@@ -96,6 +108,7 @@ extension OnrampProvider: CustomStringConvertible {
             "provider": provider.name,
             "paymentMethod": paymentMethod.name,
             "manager.state": manager.state,
+            "attractiveType": attractiveType as Any,
         ])
     }
 }

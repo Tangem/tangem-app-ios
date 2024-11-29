@@ -46,7 +46,7 @@ public enum OnrampProviderManagerState {
 
     public enum NotSupported: Hashable, CustomStringConvertible {
         case currentPair
-        case paymentMethod
+        case paymentMethod(supportedMethods: [OnrampPaymentMethod])
 
         public var description: String {
             switch self {
