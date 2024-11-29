@@ -31,8 +31,8 @@ struct RefreshableScrollView<Content: View>: View {
             ScrollView(.vertical, showsIndicators: false) {
                 content
             }
-            .refreshable {
-                await refreshContainer.refreshAsync()
+            .refreshable { [weak refreshContainer] in
+                await refreshContainer?.refreshAsync()
             }
         } else {
             RefreshableScrollViewCompat(onRefresh: refreshContainer.onRefresh, content: content)

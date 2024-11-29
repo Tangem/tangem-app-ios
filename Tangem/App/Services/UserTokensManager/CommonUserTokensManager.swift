@@ -89,17 +89,15 @@ class CommonUserTokensManager {
 
     private func loadSwapAvailabilityStateIfNeeded(forceReload: Bool) {
         guard shouldLoadSwapAvailability else { return }
-
+        
         let converter = StorageEntryConverter()
         let tokenItems = converter.convertToTokenItem(userTokenListManager.userTokensList.entries)
-
-        TangemFoundation.runTask(in: self) { tokenManager in
-            tokenManager.expressAvailabilityProvider.updateExpressAvailability(
-                for: tokenItems,
-                forceReload: forceReload,
-                userWalletId: tokenManager.userWalletId.stringValue
-            )
-        }
+        
+        expressAvailabilityProvider.updateExpressAvailability(
+            for: tokenItems,
+            forceReload: forceReload,
+            userWalletId: userWalletId.stringValue
+        )
     }
 
     private func validateDerivation(for tokenItem: TokenItem) throws {

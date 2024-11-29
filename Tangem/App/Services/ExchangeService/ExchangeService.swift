@@ -28,7 +28,7 @@ enum ExchangeServiceState: Equatable {
     enum ExchangeServiceError: LocalizedError {
         case networkError
         case countryNotSupported
-        
+
         var localizedDescription: String {
             switch self {
             case .networkError:

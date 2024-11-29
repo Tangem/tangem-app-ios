@@ -157,7 +157,7 @@ private extension ActionButtonsViewModel {
             // TODO: Should be removed later
             swapActionButtonViewModel.updateState(
                 to: .disabled(
-                    message: Localization.actionButtonsSwapNotEnoughTokensAlertTitle 
+                    message: Localization.actionButtonsSwapNotEnoughTokensAlertTitle
                 )
             )
         }

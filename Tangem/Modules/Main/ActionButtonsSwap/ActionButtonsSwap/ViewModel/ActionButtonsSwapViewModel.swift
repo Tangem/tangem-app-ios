@@ -13,14 +13,7 @@ import Combine
 final class ActionButtonsSwapViewModel: ObservableObject {
     // MARK: Published property
 
-    @Published var sourceToken: ActionButtonsTokenSelectorItem? {
-        didSet {
-            if sourceToken == nil {
-                destinationTokenSelectorViewModel = nil
-                tokenSelectorState = .initial
-            }
-        }
-    }
+    @Published var sourceToken: ActionButtonsTokenSelectorItem?
 
     @Published var notificationInputs: [NotificationViewInput] = []
     @Published var destinationToken: ActionButtonsTokenSelectorItem?
@@ -114,6 +107,17 @@ final class ActionButtonsSwapViewModel: ObservableObject {
         // to fix 'jumping' animation bug
         makeNotificationPublisher { $1.count < $0.count }
             .assign(to: \.notificationInputs, on: self, ownership: .weak)
+            .store(in: &bag)
+        
+        $sourceToken
+            .receive(on: DispatchQueue.main)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, newValue in
+                if newValue == nil {
+                    viewModel.destinationTokenSelectorViewModel = nil
+                    viewModel.tokenSelectorState = .initial
+                }
+            }
             .store(in: &bag)
     }
 
