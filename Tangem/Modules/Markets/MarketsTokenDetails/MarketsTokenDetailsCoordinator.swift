@@ -120,7 +120,11 @@ extension MarketsTokenDetailsCoordinator {
             )
         }
 
-        receiveBottomSheetViewModel = .init(tokenItem: walletModel.tokenItem, addressInfos: infos)
+        receiveBottomSheetViewModel = .init(
+            tokenItem: walletModel.tokenItem,
+            addressInfos: infos,
+            hasMemo: walletModel.tokenItem.blockchain.hasMemo
+        )
     }
 
     func openBuyCryptoIfPossible(for walletModel: WalletModel, with userWalletModel: UserWalletModel) {
