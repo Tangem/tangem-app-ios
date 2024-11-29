@@ -21,6 +21,7 @@
 		0A7FF63D2C888D380072C2E8 /* StakingAnalyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FF63C2C888D380072C2E8 /* StakingAnalyticsLogger.swift */; };
 		0A81B3732BB2D24A0008F21C /* BlockchainURLSchemesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A81B3722BB2D24A0008F21C /* BlockchainURLSchemesParser.swift */; };
 		0A81B38E2BB3018E0008F21C /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 0A81B38D2BB3018E0008F21C /* ZIPFoundation */; };
+		0A94FAAB2CF9D25900FD6C2F /* RentExtemptionRestrictable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A94FAAA2CF9D25900FD6C2F /* RentExtemptionRestrictable.swift */; };
 		0AB5A4732C5267CB00491764 /* SegmentedPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB5A4722C5267CB00491764 /* SegmentedPicker.swift */; };
 		0ABC61152C410AFD00065EBA /* TweetNacl in Frameworks */ = {isa = PBXBuildFile; productRef = 0ABC61142C410AFD00065EBA /* TweetNacl */; };
 		0AC9EFF52CAE8515005F868F /* StakingSingleActionFlowBaseBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC9EFF42CAE8515005F868F /* StakingSingleActionFlowBaseBuilder.swift */; };
@@ -3145,6 +3146,7 @@
 		0A713CEF2CAA76530042FC27 /* CommonRestakingStepsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonRestakingStepsManager.swift; sourceTree = "<group>"; };
 		0A7FF63C2C888D380072C2E8 /* StakingAnalyticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingAnalyticsLogger.swift; sourceTree = "<group>"; };
 		0A81B3722BB2D24A0008F21C /* BlockchainURLSchemesParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockchainURLSchemesParser.swift; sourceTree = "<group>"; };
+		0A94FAAA2CF9D25900FD6C2F /* RentExtemptionRestrictable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RentExtemptionRestrictable.swift; sourceTree = "<group>"; };
 		0AB5A4722C5267CB00491764 /* SegmentedPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPicker.swift; sourceTree = "<group>"; };
 		0AC9EFF42CAE8515005F868F /* StakingSingleActionFlowBaseBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingSingleActionFlowBaseBuilder.swift; sourceTree = "<group>"; };
 		0AC9EFF62CAE857C005F868F /* StakingSingleActionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingSingleActionModel.swift; sourceTree = "<group>"; };
@@ -11030,6 +11032,7 @@
 			children = (
 				B62D3F042CBC79D900C2460E /* CardanoTransferRestrictable.swift */,
 				B62D3F052CBC79D900C2460E /* DustRestrictable.swift */,
+				0A94FAAA2CF9D25900FD6C2F /* RentExtemptionRestrictable.swift */,
 				B62D3F062CBC79D900C2460E /* FeeResourceRestrictable.swift */,
 				B62D3F072CBC79D900C2460E /* MaximumAmountRestrictable.swift */,
 				2DAB6B6E2CE28E8500B4A10C /* MinimumAmountRestrictable.swift */,
@@ -19160,6 +19163,7 @@
 				B62D425C2CBC79DB00C2460E /* AddressServiceFactory.swift in Sources */,
 				B62D40782CBC79DA00C2460E /* DecimalAddressConverter.swift in Sources */,
 				B62D40EB2CBC79DA00C2460E /* HederaTarget.swift in Sources */,
+				0A94FAAB2CF9D25900FD6C2F /* RentExtemptionRestrictable.swift in Sources */,
 				B62D3FFF2CBC79DA00C2460E /* OP_CHECKSEQUENCEVERIFY.swift in Sources */,
 				B62D421A2CBC79DB00C2460E /* XRPBase58.swift in Sources */,
 				B62D41E82CBC79DB00C2460E /* VeChainTransactionInfo.swift in Sources */,
