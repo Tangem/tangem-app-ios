@@ -255,7 +255,7 @@ private extension OnrampModel {
     func autoupdateTask() async throws {
         guard let selectedProvider = _selectedOnrampProvider.value?.value else {
             return
-        }
+        } 
 
         // Timeout to autoupdate
         try await Task.sleep(seconds: 10)
