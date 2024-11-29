@@ -178,6 +178,8 @@ private extension OnrampModel {
         let provider = try await onrampManager.setupQuotes(in: providersList(), amount: amount)
         try Task.checkCancellation()
         _selectedOnrampProvider.send(.success(provider))
+
+        try await autoupdateTask()
     }
 
     // MARK: - Payment method
@@ -248,6 +250,21 @@ private extension OnrampModel {
                 }
             }
         }
+    }
+
+    func autoupdateTask() async throws {
+        guard let selectedProvider = _selectedOnrampProvider.value?.value else {
+            return
+        }
+
+        // Timeout to autoupdate
+        try await Task.sleep(seconds: 10)
+
+        await selectedProvider.update()
+        _selectedOnrampProvider.send(.success(selectedProvider))
+
+        // Restart task
+        try await autoupdateTask()
     }
 }
 

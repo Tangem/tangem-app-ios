@@ -17,6 +17,9 @@ public protocol OnrampManager: Actor {
     /// The user changed the amount. We upload providers quotes
     func setupQuotes(in providers: ProvidersList, amount: Decimal?) async throws -> OnrampProvider
 
+    /// Reload quote in the provider
+    func setupQuotes(in provider: OnrampProvider) async -> OnrampProvider
+
     /// Reselect `paymentMethod` and sort providers according to it
     func suggestProvider(in providers: ProvidersList, paymentMethod: OnrampPaymentMethod) throws -> OnrampProvider
 

@@ -13,6 +13,9 @@ public protocol OnrampProviderManager {
     /// Update quotes for amount
     func update(amount: Decimal?) async
 
+    /// Update quotes
+    func update() async
+
     /// Build a request item with all fileds
     func makeOnrampQuotesRequestItem() throws -> OnrampQuotesRequestItem
 }

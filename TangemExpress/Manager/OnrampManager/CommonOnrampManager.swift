@@ -62,6 +62,11 @@ extension CommonOnrampManager: OnrampManager {
         return try proceedProviders(providers: providers)
     }
 
+    public func setupQuotes(in provider: OnrampProvider) async -> OnrampProvider {
+        await provider.update()
+        return provider
+    }
+
     public func suggestProvider(in providers: ProvidersList, paymentMethod: OnrampPaymentMethod) throws -> OnrampProvider {
         log(message: "Payment method was updated by user to: \(paymentMethod.name)")
 
