@@ -21,8 +21,10 @@ struct ActionButtonView<ViewModel: ActionButtonViewModel>: View {
             leadingItem
                 .frame(width: 20, height: 20)
             Text(viewModel.model.title)
-                .font(Fonts.Bold.subheadline)
-                .foregroundStyle(isDisabled ? Colors.Text.disabled : Colors.Text.primary1)
+                .style(
+                    Fonts.Bold.subheadline,
+                    color: isDisabled ? Colors.Text.disabled : Colors.Text.primary1
+                )
         }
         .frame(height: 34)
         .frame(maxWidth: .infinity)
@@ -34,7 +36,7 @@ struct ActionButtonView<ViewModel: ActionButtonViewModel>: View {
 
     @ViewBuilder
     private var leadingItem: some View {
-        switch viewModel.presentationState {
+        switch viewModel.viewState {
         case .initial, .idle, .disabled:
             buttonIcon
         case .loading:
@@ -52,6 +54,6 @@ struct ActionButtonView<ViewModel: ActionButtonViewModel>: View {
     private var progressView: some View {
         ProgressView()
             .tint(Colors.Icon.informative)
-            .animation(.default, value: viewModel.presentationState)
+            .animation(.default, value: viewModel.viewState)
     }
 }

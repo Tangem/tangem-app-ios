@@ -30,22 +30,18 @@ final class ActionButtonsSwapNotificationManager {
     private func setupNotifications(
         for state: ActionButtonsSwapViewModel.ActionButtonsTokenSelectorState
     ) {
-        var event: ActionButtonsNotificationEvent?
-
         switch state {
         case .refreshRequired(let title, let message):
-            event = .refreshRequired(
-                title: title,
-                message: message
+            makeNotification(
+                with: .refreshRequired(
+                    title: title,
+                    message: message
+                )
             )
         case .noAvailablePairs:
-            event = .noAvailablePairs
+            makeNotification(with: .noAvailablePairs)
         case .loaded, .loading, .initial, .readyToSwap:
             notificationInputsSubject.value = []
-        }
-
-        if let event {
-            makeNotification(with: event)
         }
     }
 

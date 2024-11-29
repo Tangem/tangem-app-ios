@@ -8,6 +8,12 @@
 
 import Combine
 
+enum ExpressAvailabilityUpdateState {
+    case updating
+    case updated
+    case failed(error: Error)
+}
+
 protocol ExpressAvailabilityProvider {
     var availabilityDidChangePublisher: AnyPublisher<Void, Never> { get }
     var expressAvailabilityUpdateState: AnyPublisher<ExpressAvailabilityUpdateState, Never> { get }

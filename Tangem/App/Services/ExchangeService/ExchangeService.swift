@@ -23,11 +23,20 @@ protocol ExchangeService: AnyObject, Initializable {
 enum ExchangeServiceState: Equatable {
     case initializing
     case initialized
-    case failed(FailReason)
+    case failed(ExchangeServiceError)
 
-    enum FailReason {
+    enum ExchangeServiceError: LocalizedError {
         case networkError
         case countryNotSupported
+        
+        var localizedDescription: String {
+            switch self {
+            case .networkError:
+                return Localization.actionButtonsSomethingWrongAlertTitle
+            case .countryNotSupported:
+                return Localization.sellingRegionalRestrictionAlertTitle
+            }
+        }
     }
 }
 

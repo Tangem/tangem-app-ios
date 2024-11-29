@@ -6,10 +6,10 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-import SwiftUI
+import Foundation
 
 protocol ActionButtonViewModel: ObservableObject, Identifiable {
-    var presentationState: ActionButtonPresentationState { get }
+    var viewState: ActionButtonState { get }
     var model: ActionButtonModel { get }
     var isDisabled: Bool { get }
     var alert: AlertBinder? { get set }
@@ -18,12 +18,12 @@ protocol ActionButtonViewModel: ObservableObject, Identifiable {
     func tap()
 
     @MainActor
-    func updateState(to state: ActionButtonPresentationState)
+    func updateState(to state: ActionButtonState)
 }
 
 extension ActionButtonViewModel {
     var isDisabled: Bool {
-        switch presentationState {
+        switch viewState {
         case .initial, .idle: false
         case .disabled, .loading: true
         }

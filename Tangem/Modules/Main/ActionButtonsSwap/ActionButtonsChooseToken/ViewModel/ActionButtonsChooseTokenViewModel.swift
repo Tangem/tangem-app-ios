@@ -9,8 +9,6 @@
 import Foundation
 
 final class ActionButtonsChooseTokenViewModel: ObservableObject {
-    @Published var selectedToken: ActionButtonsTokenSelectorItem?
-
     var title: String {
         switch field {
         case .source: Localization.swappingFromTitle
@@ -23,10 +21,6 @@ final class ActionButtonsChooseTokenViewModel: ObservableObject {
         case .source: Localization.actionButtonsYouWantToSwap
         case .destination: Localization.actionButtonsYouWantToReceive
         }
-    }
-
-    var isRemoveButtonVisible: Bool {
-        field == .source && selectedToken != nil
     }
 
     let field: Field

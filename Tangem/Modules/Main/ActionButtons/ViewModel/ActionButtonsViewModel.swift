@@ -74,6 +74,7 @@ final class ActionButtonsViewModel: ObservableObject {
 
     func refresh() {
         exchangeService.initialize()
+
         expressAvailabilityProvider.updateExpressAvailability(
             for: userWalletModel.walletModelsManager.walletModels.map(\.tokenItem),
             forceReload: true,
@@ -113,8 +114,9 @@ private extension ActionButtonsViewModel {
     func bindSwapAvailability() {
         expressAvailabilityProvider
             .expressAvailabilityUpdateState
-            .sink {
-                self.updateSwapButtonState($0)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, expressUpdateState in
+                viewModel.updateSwapButtonState(expressUpdateState)
             }
             .store(in: &bag)
     }
@@ -129,7 +131,7 @@ private extension ActionButtonsViewModel {
             case .failed:
                 // TODO: Should be removed later
                 viewModel.swapActionButtonViewModel.updateState(
-                    to: .disabled(message: "Что-то пошло не так, попробуйте позже.")
+                    to: .disabled(message: Localization.actionButtonsSomethingWrongAlertTitle)
                 )
             }
         }
@@ -137,7 +139,7 @@ private extension ActionButtonsViewModel {
 
     @MainActor
     func handleUpdatingExpressState() {
-        switch swapActionButtonViewModel.presentationState {
+        switch swapActionButtonViewModel.viewState {
         case .idle:
             swapActionButtonViewModel.updateState(to: .initial)
         case .disabled, .loading, .initial:
@@ -155,7 +157,7 @@ private extension ActionButtonsViewModel {
             // TODO: Should be removed later
             swapActionButtonViewModel.updateState(
                 to: .disabled(
-                    message: "Количество токенов в портфеле менее двух. Пожалуйста, добавьте еще один токен."
+                    message: Localization.actionButtonsSwapNotEnoughTokensAlertTitle 
                 )
             )
         }
@@ -168,8 +170,9 @@ private extension ActionButtonsViewModel {
     func bindExchangeAvailability() {
         exchangeService
             .sellInitializationPublisher
-            .sink {
-                self.updateSellButtonState($0)
+            .withWeakCaptureOf(self)
+            .sink { viewModel, exchangeServiceState in
+                viewModel.updateSellButtonState(exchangeServiceState)
             }
             .store(in: &bag)
     }
@@ -179,23 +182,15 @@ private extension ActionButtonsViewModel {
             switch exchangeServiceState {
             case .initializing: viewModel.sellActionButtonViewModel.updateState(to: .initial)
             case .initialized: viewModel.sellActionButtonViewModel.updateState(to: .idle)
-            case .failed(let reason): viewModel.handleFailedSellState(reason: reason)
+            case .failed(let error): viewModel.handleFailedSellState(error)
             }
         }
     }
 
     @MainActor
-    func handleFailedSellState(reason: ExchangeServiceState.FailReason) {
-        // TODO: Should be removed later
-        let message: String = {
-            switch reason {
-            case .networkError: "Что-то пошло не так, попробуйте позже."
-            case .countryNotSupported: "Покупка недоступна в вашем регионе."
-            }
-        }()
-
+    func handleFailedSellState(_ error: ExchangeServiceState.ExchangeServiceError) {
         sellActionButtonViewModel.updateState(
-            to: .disabled(message: message)
+            to: .disabled(message: error.localizedDescription)
         )
     }
 }

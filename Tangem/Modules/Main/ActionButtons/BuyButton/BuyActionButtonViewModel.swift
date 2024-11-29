@@ -12,8 +12,7 @@ import Foundation
 final class BuyActionButtonViewModel: ActionButtonViewModel {
     // MARK: Published property
 
-    @Published
-    private(set) var presentationState: ActionButtonPresentationState = .idle
+    @Published private(set) var viewState: ActionButtonState = .idle
 
     @Published var alert: AlertBinder? = nil
 
@@ -41,7 +40,7 @@ final class BuyActionButtonViewModel: ActionButtonViewModel {
 
     @MainActor
     func tap() {
-        switch presentationState {
+        switch viewState {
         case .loading, .disabled, .initial:
             break
         case .idle:
@@ -51,7 +50,7 @@ final class BuyActionButtonViewModel: ActionButtonViewModel {
     }
 
     @MainActor
-    func updateState(to state: ActionButtonPresentationState) {
-        presentationState = state
+    func updateState(to state: ActionButtonState) {
+        viewState = state
     }
 }

@@ -24,12 +24,6 @@ class CommonExpressAvailabilityProvider {
 
 // MARK: - ExpressAvailabilityProvider
 
-enum ExpressAvailabilityUpdateState {
-    case updating
-    case updated
-    case failed(error: Error)
-}
-
 extension CommonExpressAvailabilityProvider: ExpressAvailabilityProvider {
     var expressAvailabilityUpdateState: AnyPublisher<ExpressAvailabilityUpdateState, Never> {
         _cache

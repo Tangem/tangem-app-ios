@@ -13,6 +13,10 @@ struct ActionButtonsChooseTokenView: View {
 
     @Binding var selectedToken: ActionButtonsTokenSelectorItem?
 
+    private var isRemoveButtonVisible: Bool {
+        viewModel.field == .source && selectedToken != nil
+    }
+
     init(field: ActionButtonsChooseTokenViewModel.Field, selectedToken: Binding<ActionButtonsTokenSelectorItem?>) {
         _selectedToken = selectedToken
         _viewModel = StateObject(wrappedValue: .init(field: field))
@@ -27,9 +31,6 @@ struct ActionButtonsChooseTokenView: View {
         .padding(.init(top: 12, leading: 14, bottom: 12, trailing: 14))
         .background(Colors.Background.action)
         .cornerRadiusContinuous(14)
-        .onChange(of: selectedToken) { newValue in
-            viewModel.selectedToken = newValue
-        }
     }
 
     private var header: some View {
@@ -46,7 +47,7 @@ struct ActionButtonsChooseTokenView: View {
 
     @ViewBuilder
     private var removeSourceButton: some View {
-        if viewModel.isRemoveButtonVisible {
+        if isRemoveButtonVisible {
             Button(
                 action: { selectedToken = nil },
                 label: {

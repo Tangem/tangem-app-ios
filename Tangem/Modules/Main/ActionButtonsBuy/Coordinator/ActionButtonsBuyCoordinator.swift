@@ -57,7 +57,6 @@ extension ActionButtonsBuyCoordinator: ActionButtonsBuyRoutable {
     func openOnramp(walletModel: WalletModel) {
         let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] _ in
             self?.dismiss()
-            self?.sendCoordinator = nil
         }
 
         let coordinator = SendCoordinator(dismissAction: dismissAction)

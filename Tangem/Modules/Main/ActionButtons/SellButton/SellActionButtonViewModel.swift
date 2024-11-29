@@ -14,7 +14,7 @@ final class SellActionButtonViewModel: ActionButtonViewModel {
 
     @Published var alert: AlertBinder?
 
-    @Published private(set) var presentationState: ActionButtonPresentationState = .initial {
+    @Published private(set) var viewState: ActionButtonState = .initial {
         didSet {
             if oldValue == .loading {
                 scheduleLoadedAction()
@@ -46,11 +46,16 @@ final class SellActionButtonViewModel: ActionButtonViewModel {
         self.lastButtonTapped = lastButtonTapped
         self.userWalletModel = userWalletModel
 
+        bind()
+    }
+
+    func bind() {
         lastButtonTapped
             .receive(on: DispatchQueue.main)
-            .sink { model in
-                if model != self.model, self.isOpeningRequired {
-                    self.isOpeningRequired = false
+            .withWeakCaptureOf(self)
+            .sink { viewModel, model in
+                if model != viewModel.model, viewModel.isOpeningRequired {
+                    viewModel.isOpeningRequired = false
                 }
             }
             .store(in: &bag)
@@ -58,13 +63,13 @@ final class SellActionButtonViewModel: ActionButtonViewModel {
 
     @MainActor
     func tap() {
-        switch presentationState {
+        switch viewState {
         case .initial:
             handleInitialStateTap()
         case .loading:
             break
         case .disabled(let message):
-            alert = .init(title: "Ошибка", message: message)
+            alert = .init(title: "", message: message)
         case .idle:
             guard !isOpeningRequired else { return }
 
@@ -73,8 +78,8 @@ final class SellActionButtonViewModel: ActionButtonViewModel {
     }
 
     @MainActor
-    func updateState(to state: ActionButtonPresentationState) {
-        presentationState = state
+    func updateState(to state: ActionButtonState) {
+        viewState = state
     }
 
     @MainActor
@@ -89,7 +94,7 @@ final class SellActionButtonViewModel: ActionButtonViewModel {
 
 private extension SellActionButtonViewModel {
     func scheduleLoadedAction() {
-        switch presentationState {
+        switch viewState {
         case .disabled(let message): showScheduledAlert(with: message)
         case .idle: scheduledOpenSell()
         case .loading, .initial: break
@@ -106,7 +111,7 @@ private extension SellActionButtonViewModel {
     func showScheduledAlert(with message: String) {
         guard isOpeningRequired else { return }
 
-        alert = .init(title: "Ошибка", message: message)
+        alert = .init(title: "", message: message)
         isOpeningRequired = false
     }
 }
