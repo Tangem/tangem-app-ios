@@ -156,16 +156,16 @@ Options:
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 """
 lane :build_Beta do |options|
-  increment_version_number(version_number: options[:version])
-  increment_firebase_build_number(app_id: ENV["APP_ID_BETA"], build: options[:build])
+  #increment_version_number(version_number: options[:version])
+  #increment_firebase_build_number(app_id: ENV["APP_ID_BETA"], build: options[:build])
 
   build(
     export_method: "ad-hoc",
     scheme: BETA_SCHEME,
-    version: options[:version],
-    build: options[:build],
-    filename: options[:filename],
-    path: options[:path]
+    version: "dex",
+    build: "1",
+    filename: BETA_SCHEME,
+    path: BUILD_PATH
   )
 end
 
@@ -266,7 +266,28 @@ end
 
 private_lane :build do |options|
   clean_artifacts
-  app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+  
+  archive_app(
+    path: options[:path],
+    filename: options[:filename],
+    scheme: options[:scheme],
+    export_method: options[:export_method]
+  )
+  
+  dex(
+    path: options[:path],
+    filename: options[:filename]
+  )
+  
+  create_ipa(
+    path: options[:path],
+    filename: options[:filename],
+    scheme: options[:scheme],
+    export_method: options[:export_method]
+  )
+end
+
+private_lane :archive_app do |options|
   build_app(
     xcargs: "-allowProvisioningUpdates",
     output_directory: options[:path],
@@ -275,11 +296,35 @@ private_lane :build do |options|
     clean: true,
     silent: false,
     export_method: options[:export_method],
-    destination: "generic/platform=iOS",
+    skip_codesigning: false,
+    skip_package_ipa: true,
+    archive_path: "#{options[:path]}/#{options[:filename]}.xcarchive"
+  )
+end
+
+private_lane :dex do |options|
+  xcarchive_output_path = "'../#{options[:path]}#{options[:filename]}.xcarchive'" # Here no slash between path and filename because path has slash at the end
+      
+  sh("java -cp #{ENV["DEX_PROTECTOR_HOME"]}/dexprotector.jar com.licel.dexprotector.ios.ConsoleTask \
+      -configFile dex-config.xml \
+      #{xcarchive_output_path} \
+      #{xcarchive_output_path}")
+end
+
+private_lane :create_ipa do |options|
+  build_app(
+    xcargs: "-allowProvisioningUpdates",
+    output_directory: options[:path],
+    output_name: options[:filename],
+    scheme: options[:scheme],
+    export_method: options[:export_method],
+    export_team_id: CredentialsManager::AppfileConfig.try_fetch_value(:team_id),
     export_options: {
-      distributionBundleIdentifier: app_identifier,
       iCloudContainerEnvironment: "Production"
-    }
+    },
+    skip_build_archive: true,
+    skip_package_dependencies_resolution: false,
+    archive_path: "#{options[:path]}/#{options[:filename]}.xcarchive"
   )
 end
 

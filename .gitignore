@@ -68,6 +68,8 @@ Carthage/Build
 # Fastlane
 fastlane/test_output/
 fastlane/report.xml
+fastlane/.env
+fastlane/dex-config.xml
 
 # Generated
 Tangem/Resources/Generated/**.swift
