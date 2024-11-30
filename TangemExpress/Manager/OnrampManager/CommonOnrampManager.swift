@@ -63,13 +63,13 @@ extension CommonOnrampManager: OnrampManager {
     }
 
     public func suggestProvider(in providers: ProvidersList, paymentMethod: OnrampPaymentMethod) throws -> OnrampProvider {
-        log(message: "Payment method was updated by user to: \(paymentMethod)")
+        log(message: "Payment method was updated by user to: \(paymentMethod.name)")
 
         let providerItem = providers.select(for: paymentMethod)
-        let best = providerItem?.updateBest()
+        let best = providerItem?.updateAttractiveTypes()
         log(message: "The best provider was define to \(best as Any)")
 
-        guard let selectedProvider = providerItem?.suggestProvider() else {
+        guard let selectedProvider = providerItem?.showableProvider() else {
             throw OnrampManagerError.noProviderForPaymentMethod
         }
 
@@ -108,36 +108,47 @@ private extension CommonOnrampManager {
         log(message: "Start to find the best provider")
 
         for provider in providers {
-            let sorted = provider.sort()
-            log(message: "Providers for paymentMethod: \(provider.paymentMethod.name) was sorted to order: \(sorted)")
-
-            let best = provider.updateBest()
+            let best = provider.updateAttractiveTypes()
+            log(message: "Providers for paymentMethod: \(provider.paymentMethod.name) was sorted to order: \(provider.providers)")
             log(message: "The best provider was defined to \(best as Any)")
 
-            if let maxPriorityProvider = provider.suggestProvider() {
+            if let maxPriorityProvider = provider.showableProvider() {
                 log(message: "The selected provider is \(maxPriorityProvider)")
                 return maxPriorityProvider
             }
         }
 
         log(message: "We couldn't find any provider without error")
-        guard let suggestProvider = providers.first?.providers.first else {
-            throw OnrampManagerError.suggestedProviderNotFound
+        log(message: "Start the second search to find any provider to show user")
+
+        for provider in providers {
+            if let suggestProvider = provider.selectableProvider() {
+                log(message: "Then update selected provider to \(suggestProvider as Any)")
+                return suggestProvider
+            }
         }
 
-        log(message: "Then update selected provider to \(suggestProvider as Any)")
-        return suggestProvider
+        log(message: "We couldn't find any provider to suggest")
+        throw OnrampManagerError.suggestedProviderNotFound
     }
 
     func prepareProviders(item: OnrampPairRequestItem, supportedProviders: [OnrampPair.Provider]) async throws -> ProvidersList {
-        let providers = try await dataRepository.providers()
-        let paymentMethods = try await dataRepository.paymentMethods()
+        let providers = try await dataRepository.providers().toSet()
+        let paymentMethods = try await dataRepository.paymentMethods().toSet()
 
-        let supportedPaymentMethods = supportedProviders
-            .flatMap { $0.paymentMethods }
-            .compactMap { paymentMethodId in
-                paymentMethods.first(where: { $0.id == paymentMethodId })
+        let fullfilled: [ExpressProvider: [OnrampPaymentMethod]] = supportedProviders.reduce(into: [:]) { result, supportedProvider in
+            if let provider = providers.first(where: { $0.id == supportedProvider.id }) {
+                let paymentMethods = supportedProvider.paymentMethods.compactMap { paymentMethodId in
+                    paymentMethods.first(where: { $0.id == paymentMethodId })
+                }
+                result[provider] = paymentMethods
             }
+        }
+
+        let supportedPaymentMethods = fullfilled
+            .values
+            .flatMap { $0 }
+            .unique()
             // Sort payment methods to order which will suggest to user
             .sorted(by: { $0.type.priority > $1.type.priority })
 
@@ -150,11 +161,11 @@ private extension CommonOnrampManager {
                         item: item,
                         provider: provider,
                         paymentMethod: paymentMethod,
-                        supportedProviders: supportedProviders
+                        supportedProviders: supportedProviders,
+                        supportedPaymentMethods: fullfilled[provider] ?? []
                     )
                 )
             }
-
             return ProviderItem(paymentMethod: paymentMethod, providers: providers)
         }
 
@@ -167,7 +178,8 @@ private extension CommonOnrampManager {
         item: OnrampPairRequestItem,
         provider: ExpressProvider,
         paymentMethod: OnrampPaymentMethod,
-        supportedProviders: [OnrampPair.Provider]
+        supportedProviders: [OnrampPair.Provider],
+        supportedPaymentMethods: [OnrampPaymentMethod]
     ) -> OnrampProviderManager {
         let state: OnrampProviderManagerState = {
             guard let supportedProvider = supportedProviders.first(where: { $0.id == provider.id }) else {
@@ -176,7 +188,7 @@ private extension CommonOnrampManager {
 
             let isSupportedForPaymentMethods = supportedProvider.paymentMethods.contains { $0 == paymentMethod.id }
             guard isSupportedForPaymentMethods else {
-                return .notSupported(.paymentMethod)
+                return .notSupported(.paymentMethod(supportedMethods: supportedPaymentMethods))
             }
 
             return .idle
