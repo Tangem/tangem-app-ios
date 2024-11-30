@@ -116,6 +116,7 @@ jobs:
       filename: 'Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa'
       xcode_version_override: '${{ inputs.xcode_version_override }}'
     secrets:
+      FIREBASE_APP_ID: '${{ secrets.FIREBASE_APP_ID }}'
       GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT }}'
 
   deploy:
