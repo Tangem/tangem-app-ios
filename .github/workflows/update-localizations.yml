@@ -39,8 +39,9 @@ jobs:
       - name: Install Ruby
         uses: ruby/setup-ruby@a2bbe5b1b236842c1cb7dd11e8e3b51e0a616acc  # v1.202.0
 
-      - name: Bundle install
-        run: bundle install --jobs 4 --retry 3
+      # Skipping Ruby installation since it has been already installed by an action above
+      - name: Install required dependencies
+        run: ./bootstrap.sh --skip-ruby --skip-cocoapods
 
       - name: Fetch and update main app localizations
         if: ${{ github.event.inputs.update_app_localizations == 'true' }}
