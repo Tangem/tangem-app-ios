@@ -85,7 +85,7 @@ private extension CEXExpressProviderManager {
 
             let subtractFee = try subtractFee(request: request, estimatedFee: estimatedFee)
 
-            guard try isNotEnoughBalanceForSubtractFee(request: request, subtractFee: subtractFee) else {
+            guard try isEnoughAmountForSubtractFee(request: request, subtractFee: subtractFee) else {
                 // The amount of the request isn't enough after the fee has been subtracted
                 let quote = try await loadQuote(request: request)
                 return .restriction(.insufficientBalance(request.amount), quote: quote)
@@ -122,6 +122,10 @@ private extension CEXExpressProviderManager {
     }
 
     func makeSwappingPairRequest(request: ExpressManagerSwappingPairRequest, subtractFee: Decimal) throws -> ExpressManagerSwappingPairRequest {
+        guard subtractFee > 0 else {
+            return request
+        }
+
         let reducedAmount = request.amount - subtractFee
 
         guard reducedAmount > 0 else {
@@ -131,7 +135,7 @@ private extension CEXExpressProviderManager {
         return ExpressManagerSwappingPairRequest(pair: request.pair, amount: reducedAmount)
     }
 
-    func isNotEnoughBalanceForSubtractFee(request: ExpressManagerSwappingPairRequest, subtractFee: Decimal) throws -> Bool {
+    func isEnoughAmountForSubtractFee(request: ExpressManagerSwappingPairRequest, subtractFee: Decimal) throws -> Bool {
         request.amount > subtractFee
     }
 
