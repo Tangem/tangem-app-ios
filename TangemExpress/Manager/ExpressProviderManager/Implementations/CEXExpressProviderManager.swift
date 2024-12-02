@@ -77,8 +77,13 @@ private extension CEXExpressProviderManager {
             }
 
             let (estimatedFee, subtractFee, request) = try await subtractedFeeRequestIfNeeded(request: request)
-            let quote = try await loadQuote(request: request)
+            guard request.amount > 0 else {
+                // The amount of the request isn't enough after the fee has been subtracted
+                let quote = try await loadQuote(request: request)
+                return .restriction(.insufficientBalance(request.amount), quote: quote)
+            }
 
+            let quote = try await loadQuote(request: request)
             return .preview(.init(fee: estimatedFee, subtractFee: subtractFee, quote: quote))
 
         } catch let error as ExpressAPIError {
