@@ -28,7 +28,7 @@ extension CloreBlockBookConfig {
 
     func node(for blockchain: Blockchain) -> BlockBookNode {
         guard blockchain == .clore else {
-            assertionFailure("Any blockchains does not supported for this blockbook")
+            assertionFailure("Blockchain does not supported for this blockbook")
             return .init(rpcNode: "", restNode: "")
         }
 

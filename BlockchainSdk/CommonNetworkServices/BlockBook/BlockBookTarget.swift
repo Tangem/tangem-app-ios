@@ -98,7 +98,8 @@ extension BlockBookTarget {
         case fees(_ request: NodeRequest<Int>)
 
         /*
-         Use any method getFees request. Used for blockchains:
+         It is also a request to receive a fee for confirmation blocks.
+         Some blockchains use this method. Such blockchains:
             - CloreAI
          */
         case getFees(confirmationBlocks: Int)
