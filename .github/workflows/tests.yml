@@ -80,6 +80,6 @@ jobs:
 
     - name: Build BSDK example
       run: |
-        # The initialization of rbenv is required since Gihub Actions spawns each 'run' step in a separate process
+        # The initialization of rbenv is required before every `bundle` call since Gihub Actions spawns each 'run' step in a separate process
         eval "$(rbenv init - bash)"
         bundle exec fastlane check_bsdk_example_buildable

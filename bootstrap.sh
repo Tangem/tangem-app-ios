@@ -11,7 +11,7 @@ usage() {
 	echo "  Options:"
 	echo
 	echo "    --skip-cocoapods        -  Skip pod install"
-    echo "    --skip-ruby             -  Skip Ruby install"
+	echo "    --skip-ruby             -  Skip Ruby install"
 	echo "    --update-submodule      -  Git submodule update with --remote option"
 	exit 1;
 }
