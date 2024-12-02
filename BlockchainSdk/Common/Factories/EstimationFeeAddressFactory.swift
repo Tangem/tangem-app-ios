@@ -109,8 +109,7 @@ struct EstimationFeeAddressFactory {
         case .energyWebX:
             return "5CogUCbb5PYYbEHhDVGDN6JRRYBkd4sFRVc4wwP8oy5Su34Z"
         case .clore:
-            // TODO: - Need to request address
-            return ""
+            return "AJfAu7RJxiTowM9qVaTbVuS5JCPCpV3p7M"
         }
     }
 }
