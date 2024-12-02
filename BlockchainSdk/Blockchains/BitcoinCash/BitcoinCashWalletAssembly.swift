@@ -29,19 +29,39 @@ struct BitcoinCashWalletAssembly: WalletManagerAssembly {
             let providers: [AnyBitcoinNetworkProvider] = input.apiInfo.reduce(into: []) { partialResult, providerType in
                 switch providerType {
                 case .nowNodes:
-                    if let bitcoinCashAddressService = AddressServiceFactory(blockchain: input.blockchain).makeAddressService() as? BitcoinCashAddressService {
+                    if let addressService = AddressServiceFactory(
+                        blockchain: input.blockchain
+                    ).makeAddressService() as? BitcoinCashAddressService {
                         partialResult.append(
-                            networkProviderAssembly.makeBitcoinCashNowNodesNetworkProvider(
-                                input: input,
-                                bitcoinCashAddressService: bitcoinCashAddressService
-                            )
+                            networkProviderAssembly.makeBitcoinCashBlockBookUTXOProvider(
+                                with: input,
+                                for: .nowNodes,
+                                addressPrefixProvider: BitcoinCashAddressPrefixProvider(
+                                    addressService: addressService
+                                )
+                            ).eraseToAnyBitcoinNetworkProvider()
                         )
                     }
                 case .getBlock:
-                    partialResult.append(networkProviderAssembly.makeBlockBookUtxoProvider(with: input, for: .getBlock).eraseToAnyBitcoinNetworkProvider())
+                    if let addressService = AddressServiceFactory(
+                        blockchain: input.blockchain
+                    ).makeAddressService() as? BitcoinCashAddressService {
+                        partialResult.append(
+                            networkProviderAssembly.makeBitcoinCashBlockBookUTXOProvider(
+                                with: input,
+                                for: .getBlock,
+                                addressPrefixProvider: BitcoinCashAddressPrefixProvider(
+                                    addressService: addressService
+                                )
+                            ).eraseToAnyBitcoinNetworkProvider()
+                        )
+                    }
                 case .blockchair:
                     partialResult.append(
-                        contentsOf: networkProviderAssembly.makeBlockchairNetworkProviders(endpoint: .bitcoinCash, with: input)
+                        contentsOf: networkProviderAssembly.makeBlockchairNetworkProviders(
+                            endpoint: .bitcoinCash,
+                            with: input
+                        )
                     )
                 default:
                     return

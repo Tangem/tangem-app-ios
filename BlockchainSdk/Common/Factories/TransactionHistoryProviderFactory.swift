@@ -39,16 +39,37 @@ public struct TransactionHistoryProviderFactory {
              .dash:
             return UTXOTransactionHistoryProvider(
                 blockBookProviders: [
-                    networkAssembly.makeBlockBookUtxoProvider(with: input, for: .getBlock),
-                    networkAssembly.makeBlockBookUtxoProvider(with: input, for: .nowNodes),
+                    networkAssembly.makeBlockBookUTXOProvider(with: input, for: .getBlock),
+                    networkAssembly.makeBlockBookUTXOProvider(with: input, for: .nowNodes),
                 ],
                 mapper: UTXOTransactionHistoryMapper(blockchain: blockchain)
             )
         case .bitcoinCash:
+            var providers: [BlockBookUTXOProvider] = []
+            if let addressService = AddressServiceFactory(
+                blockchain: input.blockchain
+            ).makeAddressService() as? BitcoinCashAddressService {
+                let addressPrefixProvider = BitcoinCashAddressPrefixProvider(addressService: addressService)
+
+                providers.append(
+                    networkAssembly.makeBlockBookUTXOProvider(
+                        with: input,
+                        for: .nowNodes,
+                        addressPrefixProvider: addressPrefixProvider
+                    )
+                )
+
+                providers.append(
+                    networkAssembly.makeBlockBookUTXOProvider(
+                        with: input,
+                        for: .getBlock,
+                        addressPrefixProvider: addressPrefixProvider
+                    )
+                )
+            }
+
             return UTXOTransactionHistoryProvider(
-                blockBookProviders: [
-                    networkAssembly.makeBlockBookUtxoProvider(with: input, for: .nowNodes),
-                ],
+                blockBookProviders: providers,
                 mapper: UTXOTransactionHistoryMapper(blockchain: blockchain)
             )
         case .ethereum,
@@ -58,12 +79,12 @@ public struct TransactionHistoryProviderFactory {
              .avalanche,
              .arbitrum:
             return EthereumTransactionHistoryProvider(
-                blockBookProvider: networkAssembly.makeBlockBookUtxoProvider(with: input, for: .nowNodes),
+                blockBookProvider: networkAssembly.makeBlockBookUTXOProvider(with: input, for: .nowNodes),
                 mapper: EthereumTransactionHistoryMapper(blockchain: blockchain)
             )
         case .tron:
             return TronTransactionHistoryProvider(
-                blockBookProvider: networkAssembly.makeBlockBookUtxoProvider(with: input, for: .nowNodes),
+                blockBookProvider: networkAssembly.makeBlockBookUTXOProvider(with: input, for: .nowNodes),
                 mapper: TronTransactionHistoryMapper(blockchain: blockchain)
             )
         case .polygon:

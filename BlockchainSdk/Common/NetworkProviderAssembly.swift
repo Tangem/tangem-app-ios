@@ -17,40 +17,50 @@ protocol NetworkProviderAssemblyInput {
 
 struct NetworkProviderAssembly {
     // TODO: Refactor in IOS-6639
-    func makeBlockBookUtxoProvider(with input: NetworkProviderAssemblyInput, for type: BlockBookProviderType) -> BlockBookUtxoProvider {
+    func makeBlockBookUTXOProvider(
+        with input: NetworkProviderAssemblyInput,
+        for type: BlockBookProviderType,
+        addressPrefixProvider: AddressPrefixProvider? = nil
+    ) -> BlockBookUTXOProvider {
         switch type {
         case .nowNodes:
-            return BlockBookUtxoProvider(
+            return BlockBookUTXOProvider(
                 blockchain: input.blockchain,
                 blockBookConfig: NowNodesBlockBookConfig(
                     apiKeyHeaderName: Constants.nowNodesApiKeyHeaderName,
                     apiKeyHeaderValue: input.blockchainSdkConfig.nowNodesApiKey
                 ),
+                addressPrefixProvider: addressPrefixProvider,
                 networkConfiguration: input.networkConfig
             )
         case .getBlock:
-            return BlockBookUtxoProvider(
+            return BlockBookUTXOProvider(
                 blockchain: input.blockchain,
                 blockBookConfig: GetBlockBlockBookConfig(input.blockchainSdkConfig.getBlockCredentials),
+                addressPrefixProvider: addressPrefixProvider,
                 networkConfiguration: input.networkConfig
             )
         }
     }
 
     // TODO: Refactor in IOS-6639
-    func makeBitcoinCashNowNodesNetworkProvider(
-        input: NetworkProviderAssemblyInput,
-        bitcoinCashAddressService: BitcoinCashAddressService
+    func makeBitcoinCashBlockBookUTXOProvider(
+        with input: NetworkProviderAssemblyInput,
+        for type: BlockBookProviderType,
+        addressPrefixProvider: AddressPrefixProvider
     ) -> AnyBitcoinNetworkProvider {
-        return BitcoinCashNowNodesNetworkProvider(
-            blockBookUtxoProvider: makeBlockBookUtxoProvider(with: input, for: .nowNodes),
-            bitcoinCashAddressService: bitcoinCashAddressService
+        BitcoinCashBlockBookUTXOProvider(
+            blockBookUTXOProvider: makeBlockBookUTXOProvider(
+                with: input,
+                for: type,
+                addressPrefixProvider: addressPrefixProvider
+            )
         ).eraseToAnyBitcoinNetworkProvider()
     }
 
     // TODO: Refactor in IOS-6639
     func makeBlockcypherNetworkProvider(endpoint: BlockcypherEndpoint, with input: NetworkProviderAssemblyInput) -> BlockcypherNetworkProvider {
-        return BlockcypherNetworkProvider(
+        BlockcypherNetworkProvider(
             endpoint: endpoint,
             tokens: input.blockchainSdkConfig.blockcypherTokens,
             configuration: input.networkConfig

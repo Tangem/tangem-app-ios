@@ -1,5 +1,5 @@
 //
-//  BlockBookUtxoProvider.swift
+//  BlockBookUTXOProvider.swift
 //  BlockchainSdk
 //
 //  Created by Pavel Grechikhin on 18.11.2022.
@@ -11,7 +11,7 @@ import Combine
 import TangemFoundation
 
 /// Documentation: https://github.com/trezor/blockbook/blob/master/docs/api.md
-class BlockBookUtxoProvider {
+class BlockBookUTXOProvider {
     var host: String {
         "\(blockchain.currencySymbol.lowercased()).\(config.host)"
     }
@@ -20,13 +20,21 @@ class BlockBookUtxoProvider {
     private let config: BlockBookConfig
     private let provider: NetworkProvider<BlockBookTarget>
 
+    let addressPrefixProvider: AddressPrefixProvider?
+
     var decimalValue: Decimal {
         blockchain.decimalValue
     }
 
-    init(blockchain: Blockchain, blockBookConfig: BlockBookConfig, networkConfiguration: NetworkProviderConfiguration) {
+    init(
+        blockchain: Blockchain,
+        blockBookConfig: BlockBookConfig,
+        addressPrefixProvider: AddressPrefixProvider? = nil,
+        networkConfiguration: NetworkProviderConfiguration
+    ) {
         self.blockchain = blockchain
         config = blockBookConfig
+        self.addressPrefixProvider = addressPrefixProvider
         provider = NetworkProvider<BlockBookTarget>(configuration: networkConfiguration)
     }
 
@@ -34,11 +42,11 @@ class BlockBookUtxoProvider {
         address: String,
         parameters: BlockBookTarget.AddressRequestParameters
     ) -> AnyPublisher<BlockBookAddressResponse, Error> {
-        executeRequest(.address(address: address, parameters: parameters))
+        executeRequest(.address(address: addAddressPrefixIfNeeded(address), parameters: parameters))
     }
 
     func unspentTxData(address: String) -> AnyPublisher<[BlockBookUnspentTxResponse], Error> {
-        executeRequest(.utxo(address: address))
+        executeRequest(.utxo(address: addAddressPrefixIfNeeded(address)))
     }
 
     func getFeeRatePerByte(for confirmationBlocks: Int) -> AnyPublisher<Decimal, Error> {
@@ -117,5 +125,9 @@ class BlockBookUtxoProvider {
 
     private func target(for request: BlockBookTarget.Request) -> BlockBookTarget {
         BlockBookTarget(request: request, config: config, blockchain: blockchain)
+    }
+
+    private func addAddressPrefixIfNeeded(_ address: String) -> String {
+        addressPrefixProvider.flatMap { $0.addPrefixIfNeeded(address) } ?? address
     }
 }

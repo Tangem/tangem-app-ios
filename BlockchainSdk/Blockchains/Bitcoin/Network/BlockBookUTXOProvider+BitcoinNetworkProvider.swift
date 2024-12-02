@@ -1,5 +1,5 @@
 //
-//  BlockBookUtxoProvider+Netw.swift
+//  BlockBookUTXOProvider+Netw.swift
 //  BlockchainSdk
 //
 //  Created by Sergey Balashov on 26.07.2023.
@@ -13,7 +13,7 @@ import Combine
 
 // MARK: - BitcoinNetworkProvider
 
-extension BlockBookUtxoProvider: BitcoinNetworkProvider {
+extension BlockBookUTXOProvider: BitcoinNetworkProvider {
     var supportsTransactionPush: Bool { false }
 
     private var addressParameters: BlockBookTarget.AddressRequestParameters {
@@ -76,7 +76,7 @@ extension BlockBookUtxoProvider: BitcoinNetworkProvider {
 
 // MARK: - Mapping
 
-private extension BlockBookUtxoProvider {
+private extension BlockBookUTXOProvider {
     private func pendingTransactions(from transactions: [BlockBookAddressResponse.Transaction], address: String) -> [PendingTransaction] {
         transactions
             .filter {
@@ -156,6 +156,7 @@ private extension BlockBookUtxoProvider {
     }
 
     private func unspentOutputs(from utxos: [BlockBookUnspentTxResponse], transactions: [BlockBookAddressResponse.Transaction], address: String) -> [BitcoinUnspentOutput] {
+        let address = addressPrefixProvider?.addPrefixIfNeeded(address) ?? address
         let outputScript = transactions
             .compactMap { transaction in
                 transaction.compat.vout.first {
@@ -186,7 +187,7 @@ private extension BlockBookUtxoProvider {
     }
 }
 
-private extension BlockBookUtxoProvider {
+private extension BlockBookUTXOProvider {
     struct PendingTransactionInfo {
         let isIncoming: Bool
         let source: String
