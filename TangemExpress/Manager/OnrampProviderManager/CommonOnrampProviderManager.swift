@@ -93,6 +93,7 @@ private extension CommonOnrampProviderManager {
 // MARK: - OnrampProviderManager
 
 extension CommonOnrampProviderManager: OnrampProviderManager {
+    var amount: Decimal? { _amount }
     var state: OnrampProviderManagerState { _state }
 
     func update(amount: Decimal?) async {
