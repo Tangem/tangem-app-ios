@@ -58,6 +58,10 @@ struct SendFinishView: View {
                     namespace: .init(id: namespace.id, names: namespace.names)
                 )
             }
+
+            if let onrampStatusCompactViewModel = viewModel.onrampStatusCompactViewModel {
+                OnrampStatusCompactView(viewModel: onrampStatusCompactViewModel)
+            }
         }
         .onAppear(perform: viewModel.onAppear)
     }

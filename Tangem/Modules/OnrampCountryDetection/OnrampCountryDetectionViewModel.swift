@@ -54,7 +54,7 @@ final class OnrampCountryDetectionViewModel: ObservableObject, Identifiable {
             repository.updatePreference(country: country, currency: country.currency)
             coordinator?.dismissConfirmCountryView()
         case .notSupport:
-            coordinator?.dismiss()
+            coordinator?.dismissOnramp()
         }
     }
 }
@@ -62,7 +62,18 @@ final class OnrampCountryDetectionViewModel: ObservableObject, Identifiable {
 // MARK: - Private
 
 private extension OnrampCountryDetectionViewModel {
-    func bind() {}
+    func bind() {
+        repository
+            .preferencePublisher
+            // When user selected country we have to close bottom sheet
+            .first { !$0.isEmpty }
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, _ in
+                viewModel.coordinator?.dismissConfirmCountryView()
+            }
+            .store(in: &bag)
+    }
 }
 
 extension OnrampCountryDetectionViewModel {

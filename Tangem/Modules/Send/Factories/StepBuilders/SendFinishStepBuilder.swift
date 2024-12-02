@@ -20,7 +20,8 @@ struct SendFinishStepBuilder {
         sendAmountCompactViewModel: SendAmountCompactViewModel?,
         onrampAmountCompactViewModel: OnrampAmountCompactViewModel?,
         stakingValidatorsCompactViewModel: StakingValidatorsCompactViewModel?,
-        sendFeeCompactViewModel: SendFeeCompactViewModel?
+        sendFeeCompactViewModel: SendFeeCompactViewModel?,
+        onrampStatusCompactViewModel: OnrampStatusCompactViewModel?
     ) -> ReturnValue {
         let viewModel = makeSendFinishViewModel(
             input: input,
@@ -29,7 +30,8 @@ struct SendFinishStepBuilder {
             sendAmountCompactViewModel: sendAmountCompactViewModel,
             onrampAmountCompactViewModel: onrampAmountCompactViewModel,
             stakingValidatorsCompactViewModel: stakingValidatorsCompactViewModel,
-            sendFeeCompactViewModel: sendFeeCompactViewModel
+            sendFeeCompactViewModel: sendFeeCompactViewModel,
+            onrampStatusCompactViewModel: onrampStatusCompactViewModel
         )
 
         let step = SendFinishStep(viewModel: viewModel)
@@ -48,7 +50,8 @@ private extension SendFinishStepBuilder {
         sendAmountCompactViewModel: SendAmountCompactViewModel?,
         onrampAmountCompactViewModel: OnrampAmountCompactViewModel?,
         stakingValidatorsCompactViewModel: StakingValidatorsCompactViewModel?,
-        sendFeeCompactViewModel: SendFeeCompactViewModel?
+        sendFeeCompactViewModel: SendFeeCompactViewModel?,
+        onrampStatusCompactViewModel: OnrampStatusCompactViewModel?
     ) -> SendFinishViewModel {
         SendFinishViewModel(
             settings: .init(tokenItem: walletModel.tokenItem, actionType: actionType),
@@ -57,7 +60,8 @@ private extension SendFinishStepBuilder {
             sendAmountCompactViewModel: sendAmountCompactViewModel,
             onrampAmountCompactViewModel: onrampAmountCompactViewModel,
             stakingValidatorsCompactViewModel: stakingValidatorsCompactViewModel,
-            sendFeeCompactViewModel: sendFeeCompactViewModel
+            sendFeeCompactViewModel: sendFeeCompactViewModel,
+            onrampStatusCompactViewModel: onrampStatusCompactViewModel
         )
     }
 }

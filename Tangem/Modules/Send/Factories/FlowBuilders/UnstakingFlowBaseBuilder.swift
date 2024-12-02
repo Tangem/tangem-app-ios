@@ -65,7 +65,8 @@ struct UnstakingFlowBaseBuilder {
             sendAmountCompactViewModel: amount.compact,
             onrampAmountCompactViewModel: .none,
             stakingValidatorsCompactViewModel: .none,
-            sendFeeCompactViewModel: sendFeeCompactViewModel
+            sendFeeCompactViewModel: sendFeeCompactViewModel,
+            onrampStatusCompactViewModel: .none
         )
 
         let stepsManager = CommonUnstakingStepsManager(
