@@ -16,6 +16,7 @@ public protocol VisaRefreshTokenSaver: AnyObject {
 }
 
 protocol AuthorizationTokenHandler {
+    var accessToken: JWT? { get async }
     var containsAccessToken: Bool { get async }
     var authorizationHeader: String { get async throws }
     func setupTokens(_ tokens: VisaAuthorizationTokens) async throws
@@ -160,6 +161,10 @@ class CommonVisaAccessTokenHandler {
 }
 
 extension CommonVisaAccessTokenHandler: AuthorizationTokenHandler {
+    var accessToken: JWT? {
+        get async { await accessTokenHolder.tokens?.accessToken }
+    }
+
     var containsAccessToken: Bool {
         get async { await accessTokenHolder.tokens != nil }
     }

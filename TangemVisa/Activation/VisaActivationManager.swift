@@ -138,7 +138,8 @@ extension CommonVisaActivationManager: VisaActivationManager {
 private extension CommonVisaActivationManager {
     func startCardSession() async throws -> CardSession {
         if await authorizationTokenHandler.containsAccessToken {
-            log( "Access token exists, flow not implemented")
+            log("Access token exists, flow not implemented")
+            try await cardActivationOrderProvider.provideActivationOrderForSign()
             throw VisaActivationError.notImplemented
         } else {
             log("Authorization tokens not found, starting authorization process")

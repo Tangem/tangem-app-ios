@@ -8,6 +8,7 @@
 
 import Foundation
 import TangemSdk
+import Moya
 
 public struct VisaActivationManagerFactory {
     public init() {}
@@ -26,7 +27,14 @@ public struct VisaActivationManagerFactory {
             refreshTokenSaver: nil
         )
 
-        let customerInfoService = CommonCustomerInfoService(accessTokenProvider: tokenHandler)
+        let customerInfoService = CommonCustomerInfoService(
+            accessTokenProvider: tokenHandler,
+            apiService: APIService(
+                provider: MoyaProvider<CustomerInfoManagementAPITarget>(session: Session(configuration: urlSessionConfiguration)),
+                logger: internalLogger,
+                decoder: JSONDecoderFactory().makeCIMDecoder()
+            )
+        )
         let authorizationProcessor = CommonCardAuthorizationProcessor(
             tangemSdk: tangemSdk,
             authorizationService: authorizationService,
