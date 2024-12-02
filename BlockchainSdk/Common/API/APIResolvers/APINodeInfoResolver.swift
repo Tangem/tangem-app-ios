@@ -38,7 +38,7 @@ struct APINodeInfoResolver {
         case .adalite, .tangemRosetta:
             return CardanoAPIResolver()
                 .resolve(providerType: providerType, blockchain: blockchain)
-        case .tangemChia, .fireAcademy:
+        case .tangemChia, .fireAcademy, .tangemChia3:
             return ChiaAPIResolver(config: config)
                 .resolve(providerType: providerType, blockchain: blockchain)
         case .arkhiaHedera:
