@@ -95,12 +95,16 @@ private extension CommonOnrampProviderManager {
 extension CommonOnrampProviderManager: OnrampProviderManager {
     var state: OnrampProviderManagerState { _state }
 
-    func update() async {
-        await updateState()
-    }
+    func update(amount: OnrampUpdatingAmount) async {
+        switch amount {
+        case .clear:
+            _amount = nil
+        case .same:
+            break
+        case .update(amount: let amount):
+            _amount = amount
+        }
 
-    func update(amount: Decimal?) async {
-        _amount = amount
         await updateState()
     }
 

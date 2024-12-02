@@ -107,11 +107,7 @@ extension OnrampProvider: OnrampProviderManager {
         }
     }
 
-    public func update() async {
-        await manager.update()
-    }
-
-    public func update(amount: Decimal?) async {
+    public func update(amount: OnrampUpdatingAmount) async {
         await manager.update(amount: amount)
     }
 

@@ -56,15 +56,21 @@ extension CommonOnrampManager: OnrampManager {
 
     public func setupQuotes(in providers: ProvidersList, amount: Decimal?) async throws -> OnrampProvider {
         log(message: "Start update quotes")
-        try await updateQuotesInEachManager(providers: providers, amount: amount)
+        let updateAmount = amount.map { amount -> OnrampUpdatingAmount in
+            amount > 0 ? .update(amount: amount) : .clear
+        }
+        try await updateQuotesInEachManager(providers: providers, amount: updateAmount ?? .clear)
         log(message: "The quotes was updated")
 
         return try proceedProviders(providers: providers)
     }
 
-    public func setupQuotes(in provider: OnrampProvider) async -> OnrampProvider {
-        await provider.update()
-        return provider
+    public func setupQuotes(in providers: ProvidersList) async throws -> OnrampProvider {
+        log(message: "Start autoupdate quotes")
+        try await updateQuotesInEachManager(providers: providers, amount: .same)
+        log(message: "The quotes was autoupdated")
+
+        return try proceedProviders(providers: providers)
     }
 
     public func suggestProvider(in providers: ProvidersList, paymentMethod: OnrampPaymentMethod) throws -> OnrampProvider {
@@ -94,7 +100,7 @@ extension CommonOnrampManager: OnrampManager {
 // MARK: - Private
 
 private extension CommonOnrampManager {
-    func updateQuotesInEachManager(providers: ProvidersList, amount: Decimal?) async throws {
+    func updateQuotesInEachManager(providers: ProvidersList, amount: OnrampUpdatingAmount) async throws {
         if providers.isEmpty {
             throw OnrampManagerError.providersIsEmpty
         }

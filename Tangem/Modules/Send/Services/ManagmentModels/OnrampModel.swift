@@ -253,18 +253,24 @@ private extension OnrampModel {
     }
 
     func autoupdateTask() async throws {
-        guard let selectedProvider = _selectedOnrampProvider.value?.value else {
-            return
-        } 
+        try Task.checkCancellation()
 
         // Timeout to autoupdate
+
+        log("Start timer to autoupdate")
         try await Task.sleep(seconds: 10)
 
-        await selectedProvider.update()
-        _selectedOnrampProvider.send(.success(selectedProvider))
+        try Task.checkCancellation()
+        // we don't update the selected provider
+        log("Call autoupdate")
+        _ = try await onrampManager.setupQuotes(in: providersList())
 
         // Restart task
         try await autoupdateTask()
+    }
+
+    func log(_ message: String) {
+        AppLog.shared.debug("[\(TangemFoundation.objectDescription(self))] \(message)")
     }
 }
 
