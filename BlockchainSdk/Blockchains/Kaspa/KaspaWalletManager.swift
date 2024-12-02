@@ -270,7 +270,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
 
         guard let params = transaction.params as? KaspaKRC20.IncompleteTokenTransactionParams,
               // Here, we use fee, which is obtained from previously saved data and the hardcoded dust value
-              let feeParams = transaction.fee.parameters as? KaspaKRC20.RevealTransactionFeeParameter
+              let feeParams = transaction.fee.parameters as? KaspaKRC20.TokenTransactionFeeParams
         else {
             return .sendTxFail(error: WalletError.failedToBuildTx)
         }
@@ -490,7 +490,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             ),
             fee: Fee(
                 commitFeeAmount + revealFeeAmount,
-                parameters: KaspaKRC20.RevealTransactionFeeParameter(
+                parameters: KaspaKRC20.TokenTransactionFeeParams(
                     commitFee: commitFeeAmount,
                     revealFee: revealFeeAmount
                 )

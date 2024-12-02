@@ -229,14 +229,14 @@ extension KaspaTransactionBuilder {
         let resultCommit = try buildCommitTransactionKRC20(transaction: transaction, token: token)
 
         // Reveal
-        guard let revealFee = transaction.fee.parameters as? KaspaKRC20.RevealTransactionFeeParameter else {
+        guard let feeParams = transaction.fee.parameters as? KaspaKRC20.TokenTransactionFeeParams else {
             throw WalletError.failedToBuildTx
         }
 
         let resultReveal = try buildRevealTransaction(
             sourceAddress: transaction.sourceAddress,
             params: resultCommit.params,
-            fee: .init(revealFee.revealFee)
+            fee: .init(feeParams.revealFee)
         )
 
         return (
@@ -276,12 +276,12 @@ extension KaspaTransactionBuilder {
         if includeFee {
             // if the commission is included,
             // but the additional fee parameter KaspaKRC20.RevealTransactionFeeParameter is missing - it is impossible to build a transaction
-            guard let revealFeeParams = transaction.fee.parameters as? KaspaKRC20.RevealTransactionFeeParameter else {
+            guard let feeParams = transaction.fee.parameters as? KaspaKRC20.TokenTransactionFeeParams else {
                 throw WalletError.failedToBuildTx
             }
 
-            commitFeeAmount = revealFeeParams.commitFee
-            revealFeeAmount = revealFeeParams.revealFee
+            commitFeeAmount = feeParams.commitFee
+            revealFeeAmount = feeParams.revealFee
         } else {
             commitFeeAmount = transaction.fee.amount
             revealFeeAmount = nil

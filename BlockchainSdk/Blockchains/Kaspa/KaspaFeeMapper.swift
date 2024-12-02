@@ -53,7 +53,7 @@ struct KaspaFeeMapper {
 
             return Fee(
                 commitFeeAmount + revealFeeAmount,
-                parameters: KaspaKRC20.RevealTransactionFeeParameter(
+                parameters: KaspaKRC20.TokenTransactionFeeParams(
                     commitFee: commitFeeAmount,
                     revealFee: revealFeeAmount
                 )
