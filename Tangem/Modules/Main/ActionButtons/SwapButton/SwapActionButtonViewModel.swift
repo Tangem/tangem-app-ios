@@ -60,8 +60,8 @@ final class SwapActionButtonViewModel: ActionButtonViewModel {
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { viewModel, model in
-                if model != viewModel.model, self.isOpeningRequired {
-                    self.isOpeningRequired = false
+                if model != viewModel.model, viewModel.isOpeningRequired {
+                    viewModel.isOpeningRequired = false
                 }
             }
             .store(in: &bag)

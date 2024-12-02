@@ -18,7 +18,7 @@ enum ActionButtonModel: Hashable {
         case .buy:
             Localization.commonBuy
         case .swap:
-            Localization.commonSwap
+            Localization.commonExchange
         case .sell:
             Localization.commonSell
         }
