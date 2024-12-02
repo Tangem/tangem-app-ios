@@ -2601,6 +2601,8 @@
 		EF68830E2CF8871500658644 /* OnrampPaymentMethodsFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF68830D2CF8871500658644 /* OnrampPaymentMethodsFilter.swift */; };
 		EF6883122CF8B6C400658644 /* OnrampStatusCompactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6883112CF8B6C200658644 /* OnrampStatusCompactView.swift */; };
 		EF6883142CF8B8EC00658644 /* OnrampStatusCompactViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6883132CF8B8EC00658644 /* OnrampStatusCompactViewModel.swift */; };
+		EF6883092CF87DA300658644 /* OnrampCountryDetectionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6883082CF87DA300658644 /* OnrampCountryDetectionCoordinator.swift */; };
+		EF68830B2CF87DC000658644 /* OnrampCountryDetectionCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF68830A2CF87DC000658644 /* OnrampCountryDetectionCoordinatorView.swift */; };
 		EF692A482951E7C8001F4B8A /* XCAssets+Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF692A462951E7C8001F4B8A /* XCAssets+Generated.swift */; };
 		EF692A492951E7C8001F4B8A /* Localizable+Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF692A472951E7C8001F4B8A /* Localizable+Generated.swift */; };
 		EF6961652CEE0BDD001EC00A /* OnrampNotificationEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6961642CEE0BD9001EC00A /* OnrampNotificationEvent.swift */; };
@@ -5779,6 +5781,8 @@
 		EF68830D2CF8871500658644 /* OnrampPaymentMethodsFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPaymentMethodsFilter.swift; sourceTree = "<group>"; };
 		EF6883112CF8B6C200658644 /* OnrampStatusCompactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampStatusCompactView.swift; sourceTree = "<group>"; };
 		EF6883132CF8B8EC00658644 /* OnrampStatusCompactViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampStatusCompactViewModel.swift; sourceTree = "<group>"; };
+		EF6883082CF87DA300658644 /* OnrampCountryDetectionCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampCountryDetectionCoordinator.swift; sourceTree = "<group>"; };
+		EF68830A2CF87DC000658644 /* OnrampCountryDetectionCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampCountryDetectionCoordinatorView.swift; sourceTree = "<group>"; };
 		EF692A462951E7C8001F4B8A /* XCAssets+Generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCAssets+Generated.swift"; sourceTree = "<group>"; };
 		EF692A472951E7C8001F4B8A /* Localizable+Generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Localizable+Generated.swift"; sourceTree = "<group>"; };
 		EF6961642CEE0BD9001EC00A /* OnrampNotificationEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampNotificationEvent.swift; sourceTree = "<group>"; };
@@ -15677,6 +15681,8 @@
 		EFD68F2E2CC2D01B00693C97 /* OnrampCountryDetection */ = {
 			isa = PBXGroup;
 			children = (
+				EF68830A2CF87DC000658644 /* OnrampCountryDetectionCoordinatorView.swift */,
+				EF6883082CF87DA300658644 /* OnrampCountryDetectionCoordinator.swift */,
 				EFD68F2F2CC2D02300693C97 /* OnrampCountryDetectionView.swift */,
 				EFD68F312CC2D04400693C97 /* OnrampCountryDetectionViewModel.swift */,
 				EFD68F332CC2D29700693C97 /* OnrampCountryDetectionRoutable.swift */,
@@ -16747,6 +16753,7 @@
 				DAA0559928744E2400E4F7B9 /* MercuryoService.swift in Sources */,
 				B0BE7D952AC2EB580012D9EE /* ExpressAvailabilityProvider.swift in Sources */,
 				DAB5E334297E8CBF00A4E9CF /* AmountRoundingType.swift in Sources */,
+				EF68830B2CF87DC000658644 /* OnrampCountryDetectionCoordinatorView.swift in Sources */,
 				B0C4F77F26F0C0BF0086D815 /* TransitionWithoutOpacity.swift in Sources */,
 				B67E4C152CE01A8600983EA1 /* MarketsTokenDetailsSecurityScoreRatingViewData.swift in Sources */,
 				EF0DD7A32B02B5C00099527D /* ExpressFeeRowData.swift in Sources */,
@@ -18280,6 +18287,7 @@
 				B00307042AF0E1BA00C13BCA /* Analytics+WalletConnectDebugEvent.swift in Sources */,
 				B0431B47291A905A00F84DEF /* RoundedBackgroundModifier.swift in Sources */,
 				DC28917D2CD920FB00F57F59 /* BuyTokenSelectorStrings.swift in Sources */,
+				EF6883092CF87DA300658644 /* OnrampCountryDetectionCoordinator.swift in Sources */,
 				DA10101D2CDA4D7F00EE0D05 /* OnrampCountryView.swift in Sources */,
 				B6FB04EB2B1FF022000BB59E /* StatusBarStyleConfigurator+Environment.swift in Sources */,
 				B6E8BBFB2A2F209B0012E7D3 /* InfinityFrameModifier.swift in Sources */,
