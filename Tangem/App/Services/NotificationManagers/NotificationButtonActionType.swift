@@ -34,6 +34,7 @@ enum NotificationButtonActionType: Identifiable, Hashable {
     case addHederaTokenAssociation
     @available(*, unavailable, message: "Token trust lines support not implemented yet")
     case addTokenTrustline
+    case retryKaspaTokenTransaction
     case stake
     /// Rate the app
     case openFeedbackMail
@@ -72,6 +73,8 @@ enum NotificationButtonActionType: Identifiable, Hashable {
             return buttonTitle
         case .addHederaTokenAssociation:
             return Localization.warningHederaMissingTokenAssociationButtonTitle
+        case .retryKaspaTokenTransaction:
+            return Localization.alertButtonTryAgain
         case .stake:
             return Localization.commonStake
         case .openFeedbackMail:
@@ -91,7 +94,8 @@ enum NotificationButtonActionType: Identifiable, Hashable {
 
     var icon: MainButton.Icon? {
         switch self {
-        case .generateAddresses:
+        case .generateAddresses,
+             .retryKaspaTokenTransaction:
             return .trailing(Assets.tangemIcon)
         case .swap:
             return .leading(Assets.exchangeMini)
@@ -132,6 +136,7 @@ enum NotificationButtonActionType: Identifiable, Hashable {
              .reduceAmountBy,
              .reduceAmountTo,
              .addHederaTokenAssociation,
+             .retryKaspaTokenTransaction,
              .leaveAmount,
              .support,
              .stake,
