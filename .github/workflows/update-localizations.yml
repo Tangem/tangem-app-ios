@@ -48,9 +48,10 @@ jobs:
           LOKALISE_PROJECT_ID: ${{ secrets.LOKALISE_APP_PROJECT_ID }}
           LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_ACCESS_TOKEN }}
         run: |
-          ruby --version  # TODO: Remove
-          bundle --version  # TODO: Remove
-          bundle exec fastlane update_translations languages:${{ github.event.inputs.langs }} destination:${{ env.APP_LOCALIZATIONS_DESTINATION }}
+          bundle exec fastlane \
+          update_translations \
+          languages:${{ github.event.inputs.langs }} \
+          destination:${{ env.APP_LOCALIZATIONS_DESTINATION }}
 
       - name: Fetch and update BSDK localizations
         if: ${{ github.event.inputs.update_bsdk_localizations == 'true' }}
@@ -58,9 +59,10 @@ jobs:
           LOKALISE_PROJECT_ID: ${{ secrets.LOKALISE_BSDK_PROJECT_ID }}
           LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_ACCESS_TOKEN }}
         run: |
-          ruby --version  # TODO: Remove
-          bundle --version  # TODO: Remove
-          bundle exec fastlane update_translations languages:${{ github.event.inputs.langs }} destination:${{ env.BSDK_LOCALIZATIONS_DESTINATION }}
+          bundle exec fastlane \
+          update_translations \
+          languages:${{ github.event.inputs.langs }} \
+          destination:${{ env.BSDK_LOCALIZATIONS_DESTINATION }}
 
       - name: Push changes and open a pull-request
         env:
