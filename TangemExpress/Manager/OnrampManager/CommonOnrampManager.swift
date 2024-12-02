@@ -49,26 +49,15 @@ extension CommonOnrampManager: OnrampManager {
             return []
         }
 
-        // Fill the `_providers` with all possible options
+        // Return the `providers` with all possible options
         let providers = try await prepareProviders(item: item, supportedProviders: supportedProviders)
         return providers
     }
 
-    public func setupQuotes(in providers: ProvidersList, amount: Decimal?) async throws -> OnrampProvider {
-        log(message: "Start update quotes")
-        let updateAmount = amount.map { amount -> OnrampUpdatingAmount in
-            amount > 0 ? .update(amount: amount) : .clear
-        }
-        try await updateQuotesInEachManager(providers: providers, amount: updateAmount ?? .clear)
-        log(message: "The quotes was updated")
-
-        return try proceedProviders(providers: providers)
-    }
-
-    public func setupQuotes(in providers: ProvidersList) async throws -> OnrampProvider {
-        log(message: "Start autoupdate quotes")
-        try await updateQuotesInEachManager(providers: providers, amount: .same)
-        log(message: "The quotes was autoupdated")
+    public func setupQuotes(in providers: ProvidersList, amount: OnrampUpdatingAmount) async throws -> OnrampProvider {
+        log(message: "Start update quotes for amount: \(amount)")
+        try await updateQuotesInEachManager(providers: providers, amount: amount)
+        log(message: "The quotes was updated for amount: \(amount)")
 
         return try proceedProviders(providers: providers)
     }

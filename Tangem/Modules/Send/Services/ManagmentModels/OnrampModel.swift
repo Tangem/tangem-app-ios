@@ -159,7 +159,7 @@ private extension OnrampModel {
     }
 
     func updateQuotes(amount: Decimal?) async throws {
-        guard let amount else {
+        guard let amount, amount > 0 else {
             try await clearOnrampManager()
             return
         }
@@ -168,14 +168,14 @@ private extension OnrampModel {
     }
 
     func clearOnrampManager() async throws {
-        let provider = try await onrampManager.setupQuotes(in: providersList(), amount: .none)
+        let provider = try await onrampManager.setupQuotes(in: providersList(), amount: .clear)
         try Task.checkCancellation()
         _selectedOnrampProvider.send(.success(provider))
     }
 
-    func updateOnrampManager(amount: Decimal?) async throws {
+    func updateOnrampManager(amount: Decimal) async throws {
         _selectedOnrampProvider.send(.loading)
-        let provider = try await onrampManager.setupQuotes(in: providersList(), amount: amount)
+        let provider = try await onrampManager.setupQuotes(in: providersList(), amount: .update(amount: amount))
         try Task.checkCancellation()
         _selectedOnrampProvider.send(.success(provider))
 
@@ -263,7 +263,7 @@ private extension OnrampModel {
         try Task.checkCancellation()
         // we don't update the selected provider
         log("Call autoupdate")
-        _ = try await onrampManager.setupQuotes(in: providersList())
+        _ = try await onrampManager.setupQuotes(in: providersList(), amount: .same)
 
         // Restart task
         try await autoupdateTask()

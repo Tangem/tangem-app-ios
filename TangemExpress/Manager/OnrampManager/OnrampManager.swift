@@ -24,10 +24,9 @@ public protocol OnrampManager: Actor {
     func loadRedirectData(provider: OnrampProvider, redirectSettings: OnrampRedirectSettings) async throws -> OnrampRedirectData
 }
 
-
 // MARK: - OnrampUpdatingAmount
 
-public enum OnrampUpdatingAmount {
+public enum OnrampUpdatingAmount: Hashable, CustomStringConvertible {
     case clear
     case same
     case update(amount: Decimal)
