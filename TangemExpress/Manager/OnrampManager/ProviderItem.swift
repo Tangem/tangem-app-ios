@@ -76,8 +76,11 @@ public class ProviderItem {
         case (.restriction(let lhsRestriction), .restriction(let rhsRestriction)):
             let lhsDiff = (lhs.amount ?? 0) - (lhsRestriction.amount ?? 0)
             let rhsDiff = (rhs.amount ?? 0) - (rhsRestriction.amount ?? 0)
-
             return abs(lhsDiff) > abs(rhsDiff)
+        case (.restriction, _):
+            return true
+        case (_, .restriction):
+            return false
         default:
             return false
         }
