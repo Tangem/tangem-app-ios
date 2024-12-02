@@ -179,7 +179,10 @@ private extension OnrampModel {
         try Task.checkCancellation()
         _selectedOnrampProvider.send(.success(provider))
 
-        try await autoupdateTask()
+        // Do not start autoupdating for all error cases
+        if provider.isSuccessfullyLoaded {
+            try await autoupdateTask()
+        }
     }
 
     // MARK: - Payment method

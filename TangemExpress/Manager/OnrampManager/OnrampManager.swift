@@ -30,6 +30,14 @@ public enum OnrampUpdatingAmount: Hashable, CustomStringConvertible {
     case clear
     case same
     case update(amount: Decimal)
+
+    public var description: String {
+        switch self {
+        case .clear: "Clear"
+        case .same: "Same"
+        case .update(let amount): "Update to \(amount)"
+        }
+    }
 }
 
 // MARK: - OnrampManagerError
