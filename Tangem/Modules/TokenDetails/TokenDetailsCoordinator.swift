@@ -98,6 +98,8 @@ class TokenDetailsCoordinator: CoordinatorObject {
             coordinator: self,
             tokenRouter: tokenRouter
         )
+
+        notificationManager.interactionDelegate = tokenDetailsViewModel
     }
 }
 
