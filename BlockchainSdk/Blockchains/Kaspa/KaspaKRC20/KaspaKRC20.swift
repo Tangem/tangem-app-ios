@@ -56,8 +56,10 @@ enum KaspaKRC20 {
         let envelope: KaspaKRC20.Envelope
     }
 
+    @available(*, deprecated, message: "rename")
     struct RevealTransactionFeeParameter: FeeParameters {
-        let amount: Amount
+        let commitFee: Amount
+        let revealFee: Amount
     }
 
     struct Envelope: Codable {
