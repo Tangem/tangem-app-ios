@@ -14,7 +14,7 @@ import CombineExt
 
 class ReceiveBottomSheetViewModel: ObservableObject, Identifiable {
     let addressInfos: [ReceiveAddressInfo]
-    let networkWarningMessage: String
+    let memoWarningMessage: String?
 
     let id = UUID()
     let addressIndexUpdateNotifier = PassthroughSubject<Int, Never>()
@@ -34,16 +34,16 @@ class ReceiveBottomSheetViewModel: ObservableObject, Identifiable {
         Localization.receiveBottomSheetWarningMessageFull(tokenItem.currencySymbol)
     }
 
-    init(tokenItem: TokenItem, addressInfos: [ReceiveAddressInfo]) {
+    var currencySymbol: String {
+        tokenItem.currencySymbol
+    }
+
+    init(tokenItem: TokenItem, addressInfos: [ReceiveAddressInfo], hasMemo: Bool) {
         self.tokenItem = tokenItem
         iconURL = tokenItem.id != nil ? IconURLBuilder().tokenIconURL(id: tokenItem.id!) : nil
         self.addressInfos = addressInfos
 
-        networkWarningMessage = Localization.receiveBottomSheetWarningMessage(
-            tokenItem.name,
-            tokenItem.currencySymbol,
-            tokenItem.networkName
-        )
+        memoWarningMessage = hasMemo ? Localization.receiveBottomSheetNoMemoRequiredMessage : nil
 
         bind()
     }

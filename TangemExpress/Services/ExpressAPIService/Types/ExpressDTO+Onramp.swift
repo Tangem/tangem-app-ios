@@ -79,10 +79,10 @@ extension ExpressDTO {
                 let toAmount: String
                 let toDecimals: Int
                 let providerId: String
-                let minFromAmount: String
-                let maxFromAmount: String
-                let minToAmount: String
-                let maxToAmount: String
+                let minFromAmount: String?
+                let maxFromAmount: String?
+                let minToAmount: String?
+                let maxToAmount: String?
             }
         }
 

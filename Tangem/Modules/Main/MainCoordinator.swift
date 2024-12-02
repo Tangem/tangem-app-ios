@@ -232,7 +232,11 @@ extension MainCoordinator: MultiWalletMainContentRoutable {
 
 extension MainCoordinator: SingleTokenBaseRoutable {
     func openReceiveScreen(tokenItem: TokenItem, addressInfos: [ReceiveAddressInfo]) {
-        receiveBottomSheetViewModel = .init(tokenItem: tokenItem, addressInfos: addressInfos)
+        receiveBottomSheetViewModel = .init(
+            tokenItem: tokenItem,
+            addressInfos: addressInfos,
+            hasMemo: tokenItem.blockchain.hasMemo
+        )
     }
 
     func openBuyCrypto(at url: URL, action: @escaping () -> Void) {

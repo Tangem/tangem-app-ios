@@ -27,14 +27,13 @@ class SolanaNetworkService {
         self.hostProvider = hostProvider
     }
 
-    func getInfo(accountId: String, tokens: [Token], transactionIDs: [String]) -> AnyPublisher<SolanaAccountInfoResponse, Error> {
-        Publishers.Zip4(
+    func getInfo(accountId: String, tokens: [Token]) -> AnyPublisher<SolanaAccountInfoResponse, Error> {
+        Publishers.Zip3(
             mainAccountInfo(accountId: accountId),
             tokenAccountsInfo(accountId: accountId, programId: .tokenProgramId),
-            tokenAccountsInfo(accountId: accountId, programId: .token2022ProgramId),
-            confirmedTransactions(among: transactionIDs)
+            tokenAccountsInfo(accountId: accountId, programId: .token2022ProgramId)
         )
-        .tryMap { [weak self] mainAccount, splTokenAccounts, token2022Accounts, confirmedTransactionIDs in
+        .tryMap { [weak self] mainAccount, splTokenAccounts, token2022Accounts in
             guard let self = self else {
                 throw WalletError.empty
             }
@@ -43,8 +42,7 @@ class SolanaNetworkService {
             return mapInfo(
                 mainAccountInfo: mainAccount,
                 tokenAccountsInfo: tokenAccounts,
-                tokens: tokens,
-                confirmedTransactionIDs: confirmedTransactionIDs
+                tokens: tokens
             )
         }
         .eraseToAnyPublisher()
@@ -196,30 +194,17 @@ class SolanaNetworkService {
     private func mainAccountInfo(accountId: String) -> AnyPublisher<SolanaMainAccountInfoResponse, Error> {
         solanaSdk.api.getAccountInfo(account: accountId, decodedTo: AccountInfo.self)
             .withWeakCaptureOf(self)
-            .tryMap { service, info in
-                let lamports = info.lamports
-                let accountInfo = SolanaMainAccountInfoResponse(
-                    balance: lamports,
-                    accountExists: true,
-                    rentExemption: 0
-                )
-
-                return accountInfo
-
-                /*
-                 // TODO: - https://tangem.atlassian.net/browse/IOS-8538
-
-                 service.minimalBalanceForRentExemption(dataLength: info.space ?? 0)
-                     .tryMap { rentExemption in
-                         let lamports = info.lamports
-                         let accountInfo = SolanaMainAccountInfoResponse(
-                             balance: lamports,
-                             accountExists: true,
-                             rentExemption: rentExemption
-                         )
-                         return accountInfo
-                     }
-                 */
+            .flatMap { service, info in
+                service.minimalBalanceForRentExemption(dataLength: info.space ?? 0)
+                    .map { rentExemption in
+                        let lamports = info.lamports
+                        let accountInfo = SolanaMainAccountInfoResponse(
+                            balance: lamports,
+                            accountExists: true,
+                            rentExemption: rentExemption
+                        )
+                        return accountInfo
+                    }
             }
             .tryCatch { (error: Error) -> AnyPublisher<SolanaMainAccountInfoResponse, Error> in
                 if let solanaError = error as? SolanaError {
@@ -245,30 +230,10 @@ class SolanaNetworkService {
             .eraseToAnyPublisher()
     }
 
-    private func confirmedTransactions(among transactionIDs: [String]) -> AnyPublisher<[String], Error> {
-        guard !transactionIDs.isEmpty else {
-            return .justWithError(output: [])
-        }
-
-        return solanaSdk.api.getSignatureStatuses(pubkeys: transactionIDs)
-            .map { statuses in
-                zip(transactionIDs, statuses)
-                    .filter {
-                        guard let status = $0.1 else { return true }
-                        return status.confirmations == nil
-                    }
-                    .map {
-                        $0.0
-                    }
-            }
-            .eraseToAnyPublisher()
-    }
-
     private func mapInfo(
         mainAccountInfo: SolanaMainAccountInfoResponse,
         tokenAccountsInfo: [TokenAccount<AccountInfoData>],
-        tokens: [Token],
-        confirmedTransactionIDs: [String]
+        tokens: [Token]
     ) -> SolanaAccountInfoResponse {
         let balance = (Decimal(mainAccountInfo.balance) / blockchain.decimalValue).rounded(blockchain: blockchain)
         let accountExists = mainAccountInfo.accountExists
@@ -298,7 +263,6 @@ class SolanaNetworkService {
             balance: balance,
             accountExists: accountExists,
             tokensByMint: tokensByMint,
-            confirmedTransactionIDs: confirmedTransactionIDs,
             mainAccountRentExemption: mainAccountInfo.rentExemption
         )
     }
