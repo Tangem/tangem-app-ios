@@ -564,6 +564,7 @@
 "onramp_settings_residence" = "Residencia";
 "onramp_settings_residence_description" = "Seleccione el país correcto para garantizar opciones de pago y servicios precisos.";
 "onramp_settings_title" = "Ajustes";
+"onramp_statuses_view_footer" = "You can check the transaction status from the token page.";
 "onramp_transaction_status_footer_text" = "Puede comprobar el estado de la transacción desde la página del token";
 "onramp_via" = "Vía";
 "organize_tokens_group" = "Agrupar";
@@ -622,6 +623,10 @@
 "scan_card_settings_button" = "Escanee su tarjeta";
 "scan_card_settings_message" = "Escanee la tarjeta para cambiar sus ajustes. Los cambios afectarán solo a la tarjeta que has escaneado y no afectarán a otras tarjetas vinculadas a su billetera.";
 "scan_card_settings_title" = "¡Prepare su tarjeta!";
+"selling_insufficient_balance_alert_message" = "You don’t have enough funds in your balance to sell this cryptocurrency. Please deposit the desired asset to proceed.";
+"selling_insufficient_balance_alert_title" = "Insufficient Balance";
+"selling_regional_restriction_alert_message" = "Selling cryptocurrency is unavailable in your region at the moment. We’re actively working to bring this option to you soon—stay tuned!";
+"selling_regional_restriction_alert_title" = "Regional Restriction";
 "send_additional_field_already_included" = "Ya incluido en la dirección ingresada";
 "send_alert_fee_too_high_text" = "El monto de la comisión es %@ veces el monto recomendado. Asegúrese de que la configuración personalizada sea correcta.";
 "send_alert_fee_too_low_text" = "Ha especificado una comisión inferior a la cantidad recomendada, lo que podría provocar un retraso en su transacción. ¿Continuar?";

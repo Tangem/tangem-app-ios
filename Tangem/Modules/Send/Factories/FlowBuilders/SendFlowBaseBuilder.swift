@@ -65,7 +65,8 @@ struct SendFlowBaseBuilder {
             sendAmountCompactViewModel: amount.compact,
             onrampAmountCompactViewModel: .none,
             stakingValidatorsCompactViewModel: nil,
-            sendFeeCompactViewModel: fee.compact
+            sendFeeCompactViewModel: fee.compact,
+            onrampStatusCompactViewModel: .none
         )
 
         // We have to set dependicies here after all setups is completed

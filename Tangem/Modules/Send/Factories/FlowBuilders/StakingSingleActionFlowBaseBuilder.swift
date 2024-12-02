@@ -50,7 +50,8 @@ struct StakingSingleActionFlowBaseBuilder {
             sendAmountCompactViewModel: sendAmountCompactViewModel,
             onrampAmountCompactViewModel: .none,
             stakingValidatorsCompactViewModel: .none,
-            sendFeeCompactViewModel: sendFeeCompactViewModel
+            sendFeeCompactViewModel: sendFeeCompactViewModel,
+            onrampStatusCompactViewModel: .none
         )
 
         let stepsManager = CommonStakingSingleActionStepsManager(

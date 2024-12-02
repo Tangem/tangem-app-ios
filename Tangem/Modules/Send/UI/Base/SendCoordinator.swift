@@ -28,13 +28,13 @@ class SendCoordinator: CoordinatorObject {
 
     @Published var qrScanViewCoordinator: QRScanViewCoordinator?
     @Published var onrampProvidersCoordinator: OnrampProvidersCoordinator?
+    @Published var onrampCountryDetectionCoordinator: OnrampCountryDetectionCoordinator?
 
     // MARK: - Child view models
 
     @Published var mailViewModel: MailViewModel?
     @Published var expressApproveViewModel: ExpressApproveViewModel?
 
-    @Published var onrampCountryDetectionViewModel: OnrampCountryDetectionViewModel?
     @Published var onrampSettingsViewModel: OnrampSettingsViewModel?
     @Published var onrampCountrySelectorViewModel: OnrampCountrySelectorViewModel?
     @Published var onrampCurrencySelectorViewModel: OnrampCurrencySelectorViewModel?
@@ -141,12 +141,27 @@ extension SendCoordinator: SendRoutable {
 // MARK: - ExpressApproveRoutable
 
 extension SendCoordinator: OnrampRoutable {
-    func openOnrampCountryDetection(country: OnrampCountry, repository: OnrampRepository) {
-        onrampCountryDetectionViewModel = OnrampCountryDetectionViewModel(
-            country: country,
-            repository: repository,
-            coordinator: self
-        )
+    func openOnrampCountryDetection(country: OnrampCountry, repository: OnrampRepository, dataRepository: OnrampDataRepository) {
+        let coordinator = OnrampCountryDetectionCoordinator(dismissAction: { [weak self] option in
+            switch option {
+            case .none:
+                self?.onrampCountryDetectionCoordinator = nil
+            case .closeOnramp:
+                if #available(iOS 16, *) {
+                    self?.dismiss(with: nil)
+                } else {
+                    // On iOS 15 double dismiss doesn't work
+                    self?.onrampCountryDetectionCoordinator = nil
+
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                        self?.dismiss(with: nil)
+                    }
+                }
+            }
+        })
+
+        coordinator.start(with: .init(country: country, repository: repository, dataRepository: dataRepository))
+        onrampCountryDetectionCoordinator = coordinator
     }
 
     func openOnrampCountrySelector(repository: any OnrampRepository, dataRepository: any OnrampDataRepository) {
@@ -208,19 +223,6 @@ extension SendCoordinator: ExpressApproveRoutable {
 
     func userDidCancel() {
         expressApproveViewModel = nil
-    }
-}
-
-// MARK: - OnrampCountryDetectionRoutable
-
-extension SendCoordinator: OnrampCountryDetectionRoutable {
-    func openChangeCountry() {
-        onrampCountryDetectionViewModel = nil
-        rootViewModel?.openOnrampCountrySelectorView()
-    }
-
-    func dismissConfirmCountryView() {
-        onrampCountryDetectionViewModel = nil
     }
 }
 

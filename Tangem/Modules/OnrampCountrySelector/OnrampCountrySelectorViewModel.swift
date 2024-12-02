@@ -51,23 +51,20 @@ final class OnrampCountrySelectorViewModel: Identifiable, ObservableObject {
 
 private extension OnrampCountrySelectorViewModel {
     func bind() {
-        Publishers.CombineLatest(
-            countriesSubject,
-            $searchText
-        )
-        .withWeakCaptureOf(self)
-        .map { viewModel, data in
-            let (countries, searchText) = data
-            return .loaded(
-                viewModel.mapToCountriesViewData(
-                    countries: countries,
-                    searchText: searchText
+        Publishers.CombineLatest(countriesSubject, $searchText)
+            .withWeakCaptureOf(self)
+            .map { viewModel, data in
+                let (countries, searchText) = data
+                return .loaded(
+                    viewModel.mapToCountriesViewData(
+                        countries: countries,
+                        searchText: searchText
+                    )
                 )
-            )
-        }
-        .receive(on: DispatchQueue.main)
-        .assign(to: \.countries, on: self, ownership: .weak)
-        .store(in: &bag)
+            }
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.countries, on: self, ownership: .weak)
+            .store(in: &bag)
     }
 
     func mapToCountriesViewData(countries: [OnrampCountry], searchText: String) -> [OnrampCountryViewData] {
@@ -91,12 +88,6 @@ private extension OnrampCountrySelectorViewModel {
     }
 
     func updatePreference(country: OnrampCountry) {
-        // We have to save the currency in repository
-        // if we don't have one
-        if repository.preferenceCurrency == nil {
-            repository.updatePreference(country: country, currency: country.currency)
-        } else {
-            repository.updatePreference(country: country)
-        }
+        repository.updatePreference(country: country, currency: country.currency)
     }
 }

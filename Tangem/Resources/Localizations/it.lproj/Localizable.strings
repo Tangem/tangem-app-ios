@@ -564,6 +564,7 @@
 "onramp_settings_residence" = "Residence";
 "onramp_settings_residence_description" = "Please select the correct country to ensure accurate payment options and services.";
 "onramp_settings_title" = "Settings";
+"onramp_statuses_view_footer" = "You can check the transaction status from the token page.";
 "onramp_transaction_status_footer_text" = "You can close this screen and check the transaction status on the token details screen.";
 "onramp_via" = "Via";
 "organize_tokens_group" = "Group";
@@ -622,6 +623,10 @@
 "scan_card_settings_button" = "Scan card or ring";
 "scan_card_settings_message" = "Scan the card or ring to change its settings. The changes will impact only the card or ring you've scanned and will not affect other devices tied to your wallet.";
 "scan_card_settings_title" = "Get your Tangem ready!";
+"selling_insufficient_balance_alert_message" = "You don’t have enough funds in your balance to sell this cryptocurrency. Please deposit the desired asset to proceed.";
+"selling_insufficient_balance_alert_title" = "Insufficient Balance";
+"selling_regional_restriction_alert_message" = "Selling cryptocurrency is unavailable in your region at the moment. We’re actively working to bring this option to you soon—stay tuned!";
+"selling_regional_restriction_alert_title" = "Regional Restriction";
 "send_additional_field_already_included" = "Already included in the entered address";
 "send_alert_fee_too_high_text" = "Your commission amount is %@ times higher than the recommended amount. Please review and adjust your custom settings.";
 "send_alert_fee_too_low_text" = "You specified a commission below the recommended amount, which could cause a delay in your transaction. Continue?";

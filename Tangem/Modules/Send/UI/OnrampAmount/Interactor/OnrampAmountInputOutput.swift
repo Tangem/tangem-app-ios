@@ -13,6 +13,8 @@ import TangemFoundation
 protocol OnrampAmountInput: AnyObject {
     var fiatCurrency: LoadingResult<OnrampFiatCurrency, Never> { get }
     var fiatCurrencyPublisher: AnyPublisher<LoadingResult<OnrampFiatCurrency, Never>, Never> { get }
+
+    var amountPublisher: AnyPublisher<Decimal?, Never> { get }
 }
 
 protocol OnrampAmountOutput: AnyObject {

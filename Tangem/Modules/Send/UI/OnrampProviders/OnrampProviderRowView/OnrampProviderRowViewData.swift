@@ -12,11 +12,13 @@ struct OnrampProviderRowViewData: Identifiable {
     var id: Int { hashValue }
 
     let name: String
+    let paymentMethodId: String
     let iconURL: URL?
     let formattedAmount: String?
     let state: State?
     let badge: Badge?
     let isSelected: Bool
+    let action: () -> Void
 
     var isTappable: Bool {
         switch state {
@@ -26,8 +28,6 @@ struct OnrampProviderRowViewData: Identifiable {
             return false
         }
     }
-
-    let action: () -> Void
 }
 
 extension OnrampProviderRowViewData {
@@ -54,6 +54,7 @@ extension OnrampProviderRowViewData: Hashable {
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(name)
+        hasher.combine(paymentMethodId)
         hasher.combine(iconURL)
         hasher.combine(formattedAmount)
         hasher.combine(state)

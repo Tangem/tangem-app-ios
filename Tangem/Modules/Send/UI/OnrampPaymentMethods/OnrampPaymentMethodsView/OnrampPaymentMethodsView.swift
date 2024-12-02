@@ -22,6 +22,7 @@ struct OnrampPaymentMethodsView: View {
         }
         .background(Colors.Background.primary)
         .navigationTitle(Text(Localization.onrampPayWith))
+        .navigationBarTitleDisplayMode(.inline)
         .alert(item: $viewModel.alert, content: { $0.alert })
     }
 }
