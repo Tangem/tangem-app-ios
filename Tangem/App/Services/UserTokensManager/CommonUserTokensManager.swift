@@ -89,10 +89,10 @@ class CommonUserTokensManager {
 
     private func loadSwapAvailabilityStateIfNeeded(forceReload: Bool) {
         guard shouldLoadSwapAvailability else { return }
-        
+
         let converter = StorageEntryConverter()
         let tokenItems = converter.convertToTokenItem(userTokenListManager.userTokensList.entries)
-        
+
         expressAvailabilityProvider.updateExpressAvailability(
             for: tokenItems,
             forceReload: forceReload,

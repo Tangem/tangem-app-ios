@@ -108,7 +108,7 @@ final class ActionButtonsSwapViewModel: ObservableObject {
         makeNotificationPublisher { $1.count < $0.count }
             .assign(to: \.notificationInputs, on: self, ownership: .weak)
             .store(in: &bag)
-        
+
         $sourceToken
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)

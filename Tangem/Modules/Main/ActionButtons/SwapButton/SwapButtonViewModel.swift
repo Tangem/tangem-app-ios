@@ -41,8 +41,6 @@ final class SwapActionButtonViewModel: ActionButtonViewModel {
     private let lastButtonTapped: PassthroughSubject<ActionButtonModel, Never>
     private let userWalletModel: UserWalletModel
 
-    var clousure: () -> Void = {}
-
     init(
         model: ActionButtonModel,
         coordinator: some ActionButtonsSwapFlowRoutable,
