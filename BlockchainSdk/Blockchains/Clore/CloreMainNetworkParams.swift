@@ -10,7 +10,7 @@ import BitcoinCore
 
 /// You can find this constants in the class `CMainParams` from
 /// https://gitlab.com/cloreai-public/blockchain
-/// 
+///
 /// https://github.com/RavenProject/Ravencoin/blob/master/src/chainparams.cpp
 class CloreMainNetworkParams: INetwork {
     /// https://github.com/RavenProject/Ravencoin/blob/master/src/chainparams.cpp#L195
