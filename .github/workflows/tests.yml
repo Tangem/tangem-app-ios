@@ -58,20 +58,14 @@ jobs:
       run: ./bootstrap.sh --skip-ruby
 
     - name: Test SPM modules
-      run: |
-        ruby --version  # TODO: Remove
-        bundle --version  # TODO: Remove
-        bundle exec fastlane test_modules
+      run: bundle exec fastlane test_modules
 
     - name: Test host app
-      run: |
-        ruby --version  # TODO: Remove
-        bundle --version  # TODO: Remove
-        bundle exec fastlane test
+      run: bundle exec fastlane test
 
   check_bsdk_example_buildable:
     name: Check BSDK example project
-    runs-on: [self-hosted, builder2]  # This target requires code signing, so we use self-hosted runners
+    runs-on: [self-hosted, active]  # This target requires code signing, so we use self-hosted runners
     needs: check_if_pr_has_always_run_tests_label
     if: github.event.pull_request.draft == false || needs.check_if_pr_has_always_run_tests_label.outputs.has_always_run_tests_label == 'true'
     steps:
@@ -88,6 +82,4 @@ jobs:
       run: |
         # The initialization of rbenv is required since Gihub Actions spawns each 'run' step in a separate process
         eval "$(rbenv init - bash)"
-        ruby --version  # TODO: Remove
-        bundle --version  # TODO: Remove
         bundle exec fastlane check_bsdk_example_buildable

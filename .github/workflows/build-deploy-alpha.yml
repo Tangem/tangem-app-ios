@@ -119,7 +119,7 @@ jobs:
 
   error_notification:
     name: Error Notification
-    if: false # TODO: Remove
+    if: failure()
     uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8578_ci_cd_improvements
     needs:
       - prepare

@@ -324,20 +324,6 @@ private_lane :upload_dsyms do |options|
   )
 end
 
-private_lane :upload_firebase do |options|
-  filename = options[:name] + ".ipa"
-  path = BUILD_PATH + filename
-  release_notes = "#{options[:changelog]}\nGitHash: #{last_git_commit[:commit_hash]}"
-
-  firebase_app_distribution(
-    app: options[:app_id],
-    ipa_path: path,
-    groups: FIREBASE_TESTERS_GROUP,
-    firebase_cli_token: ENV["FIREBASE_CREDITIONAL_KEY"],
-    release_notes: release_notes
-  )
-end
-
 private_lane :upload_testflight do |options|
   filename = options[:name] + ".ipa"
   path = BUILD_PATH + filename
