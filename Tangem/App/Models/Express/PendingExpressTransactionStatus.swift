@@ -29,7 +29,7 @@ enum PendingExpressTransactionStatus: String, Equatable, Codable {
         case .awaitingHash: Localization.expressExchangeStatusWaitingTxHash
         case .confirming: Localization.expressExchangeStatusConfirming
         case .exchanging: Localization.expressExchangeStatusExchanging
-        case .buying: "Buying"
+        case .buying: Localization.expressExchangeStatusBuying
         case .sendingToUser: Localization.expressExchangeStatusSending
         case .done: Localization.commonDone
         case .failed, .unknown: Localization.expressExchangeStatusFailed
@@ -46,7 +46,7 @@ enum PendingExpressTransactionStatus: String, Equatable, Codable {
         case .awaitingHash: Localization.expressExchangeStatusWaitingTxHash
         case .confirming: Localization.expressExchangeStatusConfirmingActive
         case .exchanging: Localization.expressExchangeStatusExchangingActive
-        case .buying: "Buying..."
+        case .buying: Localization.expressExchangeStatusBuyingActive
         case .sendingToUser: Localization.expressExchangeStatusSendingActive
         case .done: Localization.commonDone
         case .failed, .unknown: Localization.expressExchangeStatusFailed
@@ -63,7 +63,7 @@ enum PendingExpressTransactionStatus: String, Equatable, Codable {
         case .awaitingHash: Localization.expressExchangeStatusWaitingTxHash
         case .confirming: Localization.expressExchangeStatusConfirmed
         case .exchanging: Localization.expressExchangeStatusExchanged
-        case .buying: "Bought"
+        case .buying: Localization.expressExchangeStatusBought
         case .sendingToUser: Localization.expressExchangeStatusSent
         case .done: Localization.commonDone
         case .failed, .unknown: Localization.expressExchangeStatusFailed
