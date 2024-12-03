@@ -34,7 +34,7 @@ class CommonAPIListProvider {
         do {
             log("Attempting to load API list from server")
 
-            let loadedList: APIListDTO = [:] // try await tangemApiService.loadAPIList()
+            let loadedList = try await tangemApiService.loadAPIList()
 
             try Task.checkCancellation()
 

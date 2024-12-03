@@ -38,7 +38,7 @@ extension BitcoinCashAddressService: AddressProvider {
         switch addressType {
         case .default:
             let address = try cashAddrService.makeAddress(from: publicKey.blockchainKey)
-            return PlainAddress(value: "bitcoincash:qz9qnd8e6c3f379wtr9fgjuks4493nresvj95f82sy", publicKey: publicKey, type: addressType)
+            return PlainAddress(value: address, publicKey: publicKey, type: addressType)
         case .legacy:
             let compressedKey = try Secp256k1Key(with: publicKey.blockchainKey).compress()
             let address = try legacyService.makeAddress(from: compressedKey).value

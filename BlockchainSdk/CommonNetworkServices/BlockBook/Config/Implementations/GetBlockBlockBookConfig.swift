@@ -37,9 +37,9 @@ extension GetBlockBlockBookConfig {
     func path(for request: BlockBookTarget.Request) -> String {
         switch request {
         case .fees:
-            return ""
+            return "/"
         default:
-            return "api/v2"
+            return "/api/v2"
         }
     }
 }
