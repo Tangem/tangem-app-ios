@@ -348,15 +348,13 @@ extension OnrampModel: OnrampRedirectingOutput {
             externalTxId: data.externalTxId
         )
 
+        onrampPendingTransactionsRepository
+            .onrampTransactionDidSend(txData, userWalletId: userWalletId)
+
         DispatchQueue.main.async {
             self.router?.openWebView(url: data.widgetUrl) { [weak self] in
-                guard let self else { return }
-                onrampPendingTransactionsRepository.onrampTransactionDidSend(
-                    txData,
-                    userWalletId: userWalletId
-                )
-                _transactionTime.send(Date())
-                router?.openFinishStep()
+                self?._transactionTime.send(Date())
+                self?.router?.openFinishStep()
             }
         }
     }
@@ -389,11 +387,7 @@ extension OnrampModel: SendFinishInput {
 extension OnrampModel: SendBaseInput {
     var actionInProcessing: AnyPublisher<Bool, Never> {
         Publishers
-            .Merge3(
-                _isLoading,
-                _currency.map { $0.isLoading },
-                _onrampProviders.compactMap { $0?.isLoading }
-            )
+            .Merge(_isLoading, _currency.map { $0.isLoading })
             .eraseToAnyPublisher()
     }
 }

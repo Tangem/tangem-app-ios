@@ -267,12 +267,22 @@ class WalletModel {
             .store(in: &bag)
 
         let filteredRate = _rate.filter { $0 != .loading }.removeDuplicates()
-        _state
-            .removeDuplicates()
-            .combineLatest(filteredRate, walletManager.walletPublisher)
-            .map { $0.0 }
-            .assign(to: \._walletDidChangePublisher.value, on: self, ownership: .weak)
-            .store(in: &bag)
+
+        if let stakingManager {
+            _state
+                .removeDuplicates()
+                .combineLatest(filteredRate, walletManager.walletPublisher, stakingManager.statePublisher)
+                .map { $0.0 }
+                .assign(to: \._walletDidChangePublisher.value, on: self, ownership: .weak)
+                .store(in: &bag)
+        } else {
+            _state
+                .removeDuplicates()
+                .combineLatest(filteredRate, walletManager.walletPublisher)
+                .map { $0.0 }
+                .assign(to: \._walletDidChangePublisher.value, on: self, ownership: .weak)
+                .store(in: &bag)
+        }
     }
 
     private func performHealthCheckIfNeeded(shouldPerform: Bool) {

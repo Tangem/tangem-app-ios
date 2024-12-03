@@ -38,6 +38,7 @@ extension Analytics {
         case backupScreenOpened = "[Onboarding / Backup] Backup Screen Opened"
         case backupStarted = "[Onboarding / Backup] Backup Started"
         case backupSkipped = "[Onboarding / Backup] Backup Skipped"
+        case backupNoticeCanceled = "[Onboarding / Backup] Notice - Backup Canceled"
         case settingAccessCodeStarted = "[Onboarding / Backup] Setting Access Code Started"
         case accessCodeEntered = "[Onboarding / Backup] Access Code Entered"
         case accessCodeReEntered = "[Onboarding / Backup] Access Code Re-entered"

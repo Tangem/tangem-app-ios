@@ -144,6 +144,7 @@ struct OnrampProviderRowView: View {
         ForEach([
             OnrampProviderRowViewData(
                 name: "1Inch",
+                paymentMethodId: "card",
                 iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/1INCH512.png"),
                 formattedAmount: "0,00453 BTC",
                 state: .available(estimatedTime: "5 min"),
@@ -153,6 +154,7 @@ struct OnrampProviderRowView: View {
             ),
             OnrampProviderRowViewData(
                 name: "Changenow",
+                paymentMethodId: "card",
                 iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/NOW512.png"),
                 formattedAmount: "0,00450 BTC",
                 state: .availableFromAmount(minAmount: "15 USD"),

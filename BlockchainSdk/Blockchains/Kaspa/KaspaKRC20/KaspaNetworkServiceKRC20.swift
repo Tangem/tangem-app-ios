@@ -13,11 +13,8 @@ class KaspaNetworkServiceKRC20: MultiNetworkProvider {
     let providers: [KaspaNetworkProviderKRC20]
     var currentProviderIndex: Int = 0
 
-    private let blockchain: Blockchain
-
-    init(providers: [KaspaNetworkProviderKRC20], blockchain: Blockchain) {
+    init(providers: [KaspaNetworkProviderKRC20]) {
         self.providers = providers
-        self.blockchain = blockchain
     }
 
     func balance(address: String, tokens: [Token]) -> AnyPublisher<[Token: Result<KaspaBalanceResponseKRC20, Error>], Error> {

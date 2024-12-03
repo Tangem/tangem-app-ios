@@ -49,8 +49,9 @@ struct TokenDetailsCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.modalWebViewModel) {
                 WebViewContainer(viewModel: $0)
             }
-            .iOS16UIKitSheet(item: $coordinator.expressCoordinator) {
-                ExpressCoordinatorView(coordinator: $0)
+            .iOS16UIKitSheet(item: $coordinator.expressCoordinator) { coordinator in
+                ExpressCoordinatorView(coordinator: coordinator)
+                    .expressNavigationView()
             }
 
         NavHolder()

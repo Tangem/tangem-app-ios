@@ -20,6 +20,7 @@ class SendFinishViewModel: ObservableObject, Identifiable {
     @Published var onrampAmountCompactViewModel: OnrampAmountCompactViewModel?
     @Published var stakingValidatorsCompactViewModel: StakingValidatorsCompactViewModel?
     @Published var sendFeeCompactViewModel: SendFeeCompactViewModel?
+    @Published var onrampStatusCompactViewModel: OnrampStatusCompactViewModel?
 
     private let actionType: SendFlowActionType
     private let tokenItem: TokenItem
@@ -33,7 +34,8 @@ class SendFinishViewModel: ObservableObject, Identifiable {
         sendAmountCompactViewModel: SendAmountCompactViewModel?,
         onrampAmountCompactViewModel: OnrampAmountCompactViewModel?,
         stakingValidatorsCompactViewModel: StakingValidatorsCompactViewModel?,
-        sendFeeCompactViewModel: SendFeeCompactViewModel?
+        sendFeeCompactViewModel: SendFeeCompactViewModel?,
+        onrampStatusCompactViewModel: OnrampStatusCompactViewModel?
     ) {
         tokenItem = settings.tokenItem
         actionType = settings.actionType
@@ -42,6 +44,7 @@ class SendFinishViewModel: ObservableObject, Identifiable {
         self.onrampAmountCompactViewModel = onrampAmountCompactViewModel
         self.stakingValidatorsCompactViewModel = stakingValidatorsCompactViewModel
         self.sendFeeCompactViewModel = sendFeeCompactViewModel
+        self.onrampStatusCompactViewModel = onrampStatusCompactViewModel
 
         bind(input: input)
     }

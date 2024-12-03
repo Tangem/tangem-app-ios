@@ -14,7 +14,6 @@ final class OnrampProvidersViewModel: ObservableObject {
     // MARK: - ViewState
 
     @Published var paymentViewData: OnrampProvidersPaymentViewData?
-    @Published var selectedProviderId: String?
     @Published var providersViewData: [OnrampProviderRowViewData] = []
 
     // MARK: - Dependencies
@@ -49,32 +48,18 @@ final class OnrampProvidersViewModel: ObservableObject {
 
 private extension OnrampProvidersViewModel {
     func bind() {
-        interactor
-            .selectedProviderPublisher
-            .withWeakCaptureOf(self)
-            .receive(on: DispatchQueue.main)
-            .sink { viewModel, provider in
-                viewModel.selectedProviderId = provider?.provider.id
-            }
-            .store(in: &bag)
-
-        interactor
-            .paymentMethodPublisher
-            .withWeakCaptureOf(self)
-            .receive(on: DispatchQueue.main)
-            .sink { viewModel, payment in
-                viewModel.updatePaymentView(payment: payment)
-            }
-            .store(in: &bag)
-
-        interactor
-            .providesPublisher
-            .withWeakCaptureOf(self)
-            .receive(on: DispatchQueue.main)
-            .sink { viewModel, providers in
-                viewModel.updateProvidersView(providers: providers)
-            }
-            .store(in: &bag)
+        Publishers.CombineLatest(
+            interactor.providesPublisher,
+            interactor.selectedProviderPublisher.compactMap { $0 }
+        )
+        .withWeakCaptureOf(self)
+        .receive(on: DispatchQueue.main)
+        .sink { viewModel, args in
+            let (providers, selected) = args
+            viewModel.updateProvidersView(providers: providers, selectedProviderId: selected.provider.id)
+            viewModel.updatePaymentView(payment: selected.paymentMethod)
+        }
+        .store(in: &bag)
     }
 
     func updatePaymentView(payment: OnrampPaymentMethod) {
@@ -87,19 +72,20 @@ private extension OnrampProvidersViewModel {
         )
     }
 
-    func updateProvidersView(providers: [OnrampProvider]) {
+    func updateProvidersView(providers: [OnrampProvider], selectedProviderId: String) {
         providersViewData = providers.map { provider in
             OnrampProviderRowViewData(
                 name: provider.provider.name,
+                // Need to set here to that the action works correctly
+                paymentMethodId: provider.paymentMethod.id,
                 iconURL: provider.provider.imageURL,
                 formattedAmount: formattedAmount(state: provider.state),
                 state: state(state: provider.state),
                 badge: badge(provider: provider),
                 isSelected: selectedProviderId == provider.provider.id,
                 action: { [weak self] in
-                    self?.selectedProviderId = provider.provider.id
-                    self?.updateProvidersView(providers: providers)
                     self?.interactor.update(selectedProvider: provider)
+                    self?.coordinator?.closeOnrampProviders()
                 }
             )
         }
@@ -142,9 +128,9 @@ private extension OnrampProvidersViewModel {
             // Will be updated
             return .available(estimatedTime: "5 min")
         case .restriction(.tooSmallAmount(let minAmount)):
-            return .availableFromAmount(minAmount: Localization.onrampMinAmountRestriction(minAmount))
+            return .availableFromAmount(minAmount: Localization.onrampProviderMinAmount(minAmount))
         case .restriction(.tooBigAmount(let maxAmount)):
-            return .availableToAmount(maxAmount: Localization.onrampMaxAmountRestriction(maxAmount))
+            return .availableToAmount(maxAmount: Localization.onrampProviderMaxAmount(maxAmount))
         case .failed(let error as ExpressAPIError):
             return .unavailable(reason: error.localizedMessage)
         case .failed(let error):

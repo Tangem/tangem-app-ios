@@ -31,6 +31,8 @@ public class OnrampProvider {
     }
 }
 
+// MARK: - AttractiveType
+
 public extension OnrampProvider {
     enum AttractiveType: Hashable, CustomStringConvertible {
         case best
@@ -42,6 +44,20 @@ public extension OnrampProvider {
             case .loss(let percent): "Loss \(percent)"
             }
         }
+    }
+}
+
+// MARK: - Hashable
+
+extension OnrampProvider: Hashable {
+    public static func == (lhs: OnrampProvider, rhs: OnrampProvider) -> Bool {
+        lhs.hashValue == rhs.hashValue
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(provider)
+        hasher.combine(paymentMethod)
+        hasher.combine(attractiveType)
     }
 }
 
