@@ -9,7 +9,7 @@
 import TangemExpress
 
 protocol OnrampRoutable {
-    func openOnrampCountryDetection(country: OnrampCountry, repository: OnrampRepository)
+    func openOnrampCountryDetection(country: OnrampCountry, repository: OnrampRepository, dataRepository: OnrampDataRepository)
     func openOnrampCountrySelector(repository: OnrampRepository, dataRepository: OnrampDataRepository)
     func openOnrampSettings(repository: OnrampRepository)
     func openOnrampCurrencySelector(repository: OnrampRepository, dataRepository: OnrampDataRepository)

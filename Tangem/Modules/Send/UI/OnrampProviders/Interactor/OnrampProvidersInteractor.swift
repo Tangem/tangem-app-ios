@@ -10,8 +10,6 @@ import Combine
 import TangemExpress
 
 protocol OnrampProvidersInteractor {
-    var paymentMethodPublisher: AnyPublisher<OnrampPaymentMethod, Never> { get }
-
     var selectedProviderPublisher: AnyPublisher<OnrampProvider?, Never> { get }
     var providesPublisher: AnyPublisher<[OnrampProvider], Never> { get }
 
@@ -37,18 +35,6 @@ class CommonOnrampProvidersInteractor {
 // MARK: - OnrampProvidersInteractor
 
 extension CommonOnrampProvidersInteractor: OnrampProvidersInteractor {
-    var paymentMethodPublisher: AnyPublisher<OnrampPaymentMethod, Never> {
-        guard let input = paymentMethodsInput else {
-            assertionFailure("OnrampProvidersInput not found")
-            return Empty().eraseToAnyPublisher()
-        }
-
-        return input
-            .selectedPaymentMethodPublisher
-            .compactMap { $0 }
-            .eraseToAnyPublisher()
-    }
-
     var selectedProviderPublisher: AnyPublisher<OnrampProvider?, Never> {
         guard let input else {
             assertionFailure("OnrampProvidersInput not found")
@@ -62,14 +48,18 @@ extension CommonOnrampProvidersInteractor: OnrampProvidersInteractor {
     }
 
     var providesPublisher: AnyPublisher<[OnrampProvider], Never> {
-        guard let input else {
+        guard let input, let paymentMethodsInput = paymentMethodsInput else {
             assertionFailure("OnrampAmountInput not found")
             return Empty().eraseToAnyPublisher()
         }
 
         return Publishers
-            .CombineLatest(input.onrampProvidersPublisher, paymentMethodPublisher)
+            .CombineLatest(
+                input.onrampProvidersPublisher,
+                paymentMethodsInput.selectedPaymentMethodPublisher.compactMap { $0 }
+            )
             .compactMap { $0?.value?.select(for: $1)?.providers }
+            .removeDuplicates()
             .eraseToAnyPublisher()
     }
 

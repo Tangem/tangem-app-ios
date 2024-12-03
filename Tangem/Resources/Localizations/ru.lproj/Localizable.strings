@@ -1,12 +1,15 @@
 "action_buttons_buy_empty_search_message" = "Не нашли свой токен? Перейдите в раздел «Рынок» на главной странице и добавьте его в свой портфель для покупки.";
-"action_buttons_buy_navigation_bar_title" = "Купить криптовалюту";
+"action_buttons_buy_navigation_bar_title" = "Купить";
 "action_buttons_sell_empty_search_message" = "Не нашли свой токен? Перейдите в раздел «Рынок» на главной странице и добавьте его в свой портфель для продажи.";
-"action_buttons_sell_navigation_bar_title" = "Продать криптовалюту";
+"action_buttons_sell_navigation_bar_title" = "Продать";
+"action_buttons_something_wrong_alert_message" = "";
 "action_buttons_swap_choose_token" = "Выберите токен";
 "action_buttons_swap_empty_search_message" = "Не нашли свой токен? Перейдите в раздел «Рынок» на главной странице и добавьте его в свой портфель для обмена.";
-"action_buttons_swap_navigation_bar_title" = "Обменять криптовалюту";
+"action_buttons_swap_navigation_bar_title" = "Обменять";
 "action_buttons_swap_no_available_pair_notification_message" = "Нет доступных вариантов для обмена с выбранным токеном, пожалуйста, выберите другой.";
 "action_buttons_swap_no_available_pair_notification_title" = "Нет доступных пар";
+"action_buttons_swap_no_tokens_added_alert_message" = "";
+"action_buttons_swap_not_enough_tokens_alert_message" = "";
 "action_buttons_you_want_to_receive" = "Выберите токен для получения";
 "action_buttons_you_want_to_swap" = "Выберите токен для обмена";
 "add_custom_token_choose_network" = "Выберите сеть";
@@ -261,6 +264,9 @@
 "express_exchange_notification_refund_title" = "Сумма была возвращена в %1$@ (%2$@ сети)";
 "express_exchange_notification_verification_text" = "Посетите сайт провайдера для проверки";
 "express_exchange_notification_verification_title" = "Провайдер запрашивает прохождение верификации";
+"express_exchange_status_bought" = "Bought";
+"express_exchange_status_buying" = "Buying";
+"express_exchange_status_buying_active" = "Buying...";
 "express_exchange_status_canceled" = "Отменен";
 "express_exchange_status_confirmed" = "Подтверждено";
 "express_exchange_status_confirming" = "Подтверждение";
@@ -564,6 +570,7 @@
 "onramp_settings_residence" = "Страна проживания";
 "onramp_settings_residence_description" = "Пожалуйста, укажите правильную страну, чтобы обеспечить точность доступных способов оплаты и услуг.";
 "onramp_settings_title" = "Настройки";
+"onramp_statuses_view_footer" = "You can check the transaction status from the token page.";
 "onramp_transaction_status_footer_text" = "Вы можете закрыть этот экран и проверить статус транзакции на экране информации о токене.";
 "onramp_via" = "Через";
 "organize_tokens_group" = "Группы";
@@ -622,6 +629,10 @@
 "scan_card_settings_button" = "Сканировать";
 "scan_card_settings_message" = "Отсканируйте карту или кольцо, чтобы изменить ее настройки. Изменения затронут только ту карту или кольцо, которые вы отсканировали, и не повлияют на другие устройства, привязанные к вашему кошельку.";
 "scan_card_settings_title" = "Приготовьте свой Tangem!";
+"selling_insufficient_balance_alert_message" = "На вашем балансе недостаточно средств для продажи этой криптовалюты. Пожалуйста, пополните нужный актив, чтобы продолжить.";
+"selling_insufficient_balance_alert_title" = "Недостаточно средств";
+"selling_regional_restriction_alert_message" = "Продажа криптовалюты в вашем регионе временно недоступна. Мы активно работаем над тем, чтобы добавить эту возможность. Следите за нашими новостями!";
+"selling_regional_restriction_alert_title" = "Региональные ограничения";
 "send_additional_field_already_included" = "Уже содержится во введенном адресе";
 "send_alert_fee_too_high_text" = "Сумма комиссии в %@ раз превышает рекомендованную. Убедитесь, что указанная комиссия верна.";
 "send_alert_fee_too_low_text" = "Вы указали комиссию ниже рекомендуемой, это может привести к задержке исполнения вашей транзакции. Продолжить?";

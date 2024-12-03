@@ -333,8 +333,8 @@ extension SendViewModel: OnrampModelRoutable {
     func openOnrampCountryBottomSheet(country: OnrampCountry) {
         do {
             let builder = try dataBuilder.onrampBuilder()
-            let repository = builder.makeDataForOnrampCountryBottomSheet()
-            coordinator?.openOnrampCountryDetection(country: country, repository: repository)
+            let (repository, dataRepository) = builder.makeDataForOnrampCountryBottomSheet()
+            coordinator?.openOnrampCountryDetection(country: country, repository: repository, dataRepository: dataRepository)
         } catch {
             alert = error.alertBinder
         }
@@ -378,7 +378,7 @@ extension SendViewModel: OnrampSummaryRoutable {
     func openOnrampSettingsView() {
         do {
             let builder = try dataBuilder.onrampBuilder()
-            let repository = builder.makeDataForOnrampCountryBottomSheet()
+            let (repository, _) = builder.makeDataForOnrampCountrySelectorView()
             coordinator?.openOnrampSettings(repository: repository)
         } catch {
             alert = error.alertBinder
