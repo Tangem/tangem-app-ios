@@ -130,14 +130,13 @@ final class TONTransactionBuilder {
             let jettonTransfer = try jettonTransfer(
                 amount: amount,
                 destination: destination,
-                jettonWalletAddress: jettonWalletAddress,
                 token: token,
                 params: params
             )
 
             transferMessage = try transfer(
-                amountValue: amount.value,
-                destination: destination,
+                amountValue: Constants.jettonTransferProcessingFee,
+                destination: jettonWalletAddress,
                 params: params,
                 jettonTransfer: jettonTransfer
             )
@@ -182,12 +181,10 @@ final class TONTransactionBuilder {
     /// - Parameters:
     ///   - amount: Amount transaction
     ///   - destination: Destination address transaction
-    ///   - jettonWalletAddress: Address of sender's jetton wallet
     /// - Returns: TheOpenNetworkTransfer message for Input transaction of TON blockchain
     private func jettonTransfer(
         amount: Amount,
         destination: String,
-        jettonWalletAddress: String,
         token: Token,
         params: TONTransactionParams?
     ) throws -> TheOpenNetworkJettonTransfer {
