@@ -8,7 +8,11 @@
 
 struct BitcoinCashAddressPrefixProvider {
     private let prefix = "bitcoincash:"
-    let addressService: BitcoinCashAddressService
+    private let addressService: BitcoinCashAddressService
+    
+    init(addressService: BitcoinCashAddressService) {
+        self.addressService = addressService
+    }
 }
 
 extension BitcoinCashAddressPrefixProvider: AddressPrefixProvider {
