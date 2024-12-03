@@ -27,12 +27,10 @@ extension TokenItemViewState {
             switch walletModel.stakingManagerState {
             case .loadingError(let error):
                 self = .networkError(error)
-            case .availableToStake, .staked:
+            case .availableToStake, .staked, .notEnabled, .temporaryUnavailable:
                 self = .loaded
             case .loading:
                 self = .loading
-            case .notEnabled, .temporaryUnavailable:
-                self = .networkError(StakingManagerError.stakingUnavailable)
             }
         }
     }

@@ -159,7 +159,7 @@ private extension CommonStakingManager {
              .loadingError,
              .notEnabled,
              .temporaryUnavailable:
-            balances = []
+            balances = nil
         }
     }
 
@@ -494,7 +494,6 @@ public enum StakingManagerError: LocalizedError {
     case stakingManagerStateNotSupportTransactionAction(action: StakingAction, state: StakingManagerState)
     case stakingManagerStateNotSupportEstimateFeeAction(action: StakingAction, state: StakingManagerState)
     case stakingManagerIsLoading
-    case stakingUnavailable
 
     public var errorDescription: String? {
         switch self {
@@ -504,8 +503,6 @@ public enum StakingManagerError: LocalizedError {
             "StakingManagerNotSupportTransactionAction \(action.type) state \(state.description)"
         case .stakingManagerIsLoading:
             "StakingManagerIsLoading"
-        case .stakingUnavailable:
-            "StakingUnavailable"
         }
     }
 }
