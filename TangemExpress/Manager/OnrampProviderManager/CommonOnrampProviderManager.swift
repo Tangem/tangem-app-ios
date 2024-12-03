@@ -101,7 +101,7 @@ extension CommonOnrampProviderManager: OnrampProviderManager {
             _amount = nil
         case .same:
             break
-        case .update(amount: let amount):
+        case .amount(let amount):
             _amount = amount
         }
 

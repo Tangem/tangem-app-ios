@@ -175,7 +175,7 @@ private extension OnrampModel {
 
     func updateOnrampManager(amount: Decimal) async throws {
         _selectedOnrampProvider.send(.loading)
-        let provider = try await onrampManager.setupQuotes(in: providersList(), amount: .update(amount: amount))
+        let provider = try await onrampManager.setupQuotes(in: providersList(), amount: .amount(amount))
         try Task.checkCancellation()
         _selectedOnrampProvider.send(.success(provider))
 
@@ -257,7 +257,7 @@ private extension OnrampModel {
 
     func autoupdateTask() async throws {
         guard _selectedOnrampProvider.value?.value?.isSuccessfullyLoaded == true else {
-            log("Selected provider hasn't loaded. Do not start autoupdate")
+            log("Selected provider has an error. Do not start autoupdate")
             return
         }
 
