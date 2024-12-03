@@ -180,7 +180,8 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
         switch action {
         case .buyCrypto:
             openBuyCrypto()
-        case .addHederaTokenAssociation:
+        case .addHederaTokenAssociation,
+             .retryKaspaTokenTransaction:
             fulfillAssetRequirements()
         case .stake:
             openStaking()
@@ -473,11 +474,7 @@ extension SingleTokenBaseViewModel {
     }
 
     private func isReceiveDisabled() -> Bool {
-        guard let assetRequirementsManager = walletModel.assetRequirementsManager else {
-            return false
-        }
-
-        return assetRequirementsManager.hasRequirements(for: amountType)
+        return !TokenInteractionAvailabilityProvider(walletModel: walletModel).isReceiveAvailable()
     }
 }
 

@@ -42,18 +42,14 @@ struct KaspaFeeMapper {
     func mapTokenFee(mass: Decimal, feeEstimate: KaspaFeeEstimateResponse) -> [Fee] {
         let buckets = buckets(from: feeEstimate)
 
-        let mass = mass
-
-        let fees = buckets.map { bucket in
+        return buckets.map { bucket in
             let feeRate = Decimal(bucket.feerate)
             let value = mass * feeRate / blockchain.decimalValue
-            let valueRevealFeeMock = KaspaKRC20.RevealTransactionMassConstant * feeRate / blockchain.decimalValue
+            let valueRevealFeeMock = KaspaKRC20.Constants.revealTransactionMass * feeRate / blockchain.decimalValue
             return Fee(
                 Amount(with: blockchain, value: value),
                 parameters: KaspaKRC20.RevealTransactionFeeParameter(amount: .init(with: blockchain, value: valueRevealFeeMock))
             )
         }
-
-        return fees
     }
 }

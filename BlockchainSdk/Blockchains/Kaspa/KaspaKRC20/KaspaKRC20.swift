@@ -21,8 +21,6 @@ struct KaspaIncompleteTokenTransactionStorageID: Hashable, Identifiable {
 }
 
 enum KaspaKRC20 {
-    static let RevealTransactionMassConstant: Decimal = 4100
-
     struct TransactionGroup {
         let kaspaCommitTransaction: KaspaTransaction
         let kaspaRevealTransaction: KaspaTransaction
@@ -35,7 +33,7 @@ enum KaspaKRC20 {
         let incompleteTransactionParams: KaspaKRC20.IncompleteTokenTransactionParams
     }
 
-    struct CommitTransction {
+    struct CommitTransaction {
         let transaction: KaspaTransaction
         let hashes: [Data]
         let redeemScript: KaspaKRC20.RedeemScript
@@ -51,7 +49,10 @@ enum KaspaKRC20 {
 
     struct IncompleteTokenTransactionParams: TransactionParams, Codable {
         let transactionId: String
-        let amount: UInt64
+        /// Original tx amount, as entered by user.
+        let amount: Decimal
+        /// Calculated tx amount, in atomic units of the asset.
+        let targetOutputAmount: UInt64
         let envelope: KaspaKRC20.Envelope
     }
 
@@ -115,5 +116,26 @@ enum KaspaKRC20 {
         var redeemScriptHash: Data {
             return OpCode.OP_HASH256.value.data + UInt8(32).data + data.hashBlake2b(outputLength: 32)! + OpCode.OP_EQUAL.value.data
         }
+    }
+
+    struct IncompleteTokenTransactionComparator {
+        func isIncompleteTokenTransaction(
+            _ incompleteTokenTransaction: IncompleteTokenTransactionParams,
+            equalTo transaction: Transaction
+        ) -> Bool {
+            return incompleteTokenTransaction.amount == transaction.amount.value
+                && incompleteTokenTransaction.envelope.to == transaction.destinationAddress
+        }
+    }
+
+    enum Error: Swift.Error {
+        case unableToFindIncompleteTokenTransaction
+        case invalidIncompleteTokenTransaction
+        case unableToBuildRevealTransaction
+    }
+
+    enum Constants {
+        static let revealTransactionMass: Decimal = 4100
+        static let revealTransactionSendDelay: TimeInterval = 2.0
     }
 }

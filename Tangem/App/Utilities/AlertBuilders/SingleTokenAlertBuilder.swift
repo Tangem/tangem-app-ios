@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SwiftUI
 import enum BlockchainSdk.AssetRequirementsCondition
 
 struct SingleTokenAlertBuilder {
@@ -20,10 +21,10 @@ struct SingleTokenAlertBuilder {
 
     func receiveAlert(for requirementsCondition: AssetRequirementsCondition?) -> AlertBinder? {
         switch requirementsCondition {
-        case .paidTransaction,
-             .paidTransactionWithFee:
+        case .paidTransactionWithFee(blockchain: .hedera, _, _):
             return AlertBinder(title: "", message: Localization.warningReceiveBlockedHederaTokenAssociationRequiredMessage)
-        case .none:
+        case .paidTransactionWithFee,
+             .none:
             break
         }
 
@@ -110,12 +111,12 @@ struct SingleTokenAlertBuilder {
         hasFeeCurrency: Bool
     ) -> AlertBinder? {
         switch requirementsCondition {
-        case .paidTransaction where !hasFeeCurrency:
+        case .paidTransactionWithFee(blockchain: .hedera, _, feeAmount: .none) where !hasFeeCurrency:
             return AlertBinder(
                 title: "",
                 message: Localization.warningHederaTokenAssociationNotEnoughHbarMessage(feeTokenItem.currencySymbol)
             )
-        case .paidTransactionWithFee(let feeAmount) where !hasFeeCurrency:
+        case .paidTransactionWithFee(blockchain: .hedera, _, .some(let feeAmount)) where !hasFeeCurrency:
             assert(
                 feeAmount.type == feeTokenItem.amountType,
                 "Incorrect fee token item received: expected '\(feeAmount.currencySymbol)', got '\(feeTokenItem.currencySymbol)'"
@@ -124,8 +125,7 @@ struct SingleTokenAlertBuilder {
                 title: "",
                 message: Localization.warningHederaTokenAssociationNotEnoughHbarMessage(feeTokenItem.currencySymbol)
             )
-        case .paidTransaction,
-             .paidTransactionWithFee,
+        case .paidTransactionWithFee,
              .none:
             break
         }
@@ -137,6 +137,17 @@ struct SingleTokenAlertBuilder {
         return .init(
             title: Localization.commonTransactionFailed,
             message: networkName + " " + error.localizedDescription
+        )
+    }
+
+    func fulfillAssetRequirementsDiscardedAlert(confirmationAction: @escaping () -> Void) -> AlertBinder {
+        return AlertBinder(
+            alert: Alert(
+                title: Text(Localization.commonWarning),
+                message: Text(Localization.warningKaspaUnfinishedTokenTransactionDiscardMessage),
+                primaryButton: .default(Text(Localization.commonNo)),
+                secondaryButton: .destructive(Text(Localization.commonYes), action: confirmationAction)
+            )
         )
     }
 }

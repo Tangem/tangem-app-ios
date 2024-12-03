@@ -20,6 +20,8 @@ struct ChiaAPIResolver {
         switch providerType {
         case .tangemChia:
             return .init(url: URL(string: "https://chia.tangem.com")!, keyInfo: keysInfo)
+        case .tangemChia3:
+            return .init(url: URL(string: "https://chia3.tangem.com")!, keyInfo: keysInfo)
         case .fireAcademy:
             return .init(url: URL(string: "https://kraken.fireacademy.io/leaflet")!, keyInfo: keysInfo)
         default:
