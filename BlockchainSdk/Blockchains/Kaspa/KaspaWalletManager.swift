@@ -104,21 +104,28 @@ final class KaspaWalletManager: BaseManager, WalletManager {
         }
     }
 
-    private func sendKaspaCoinTransaction(_ transaction: Transaction, signer: TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError> {
-        let kaspaTransaction: KaspaTransaction
-        let hashes: [Data]
-
-        do {
-            let result = try txBuilder.buildForSign(transaction)
-            kaspaTransaction = result.0
-            hashes = result.1
-        } catch {
-            return .sendTxFail(error: error)
-        }
-
-        return signer.sign(hashes: hashes, walletPublicKey: wallet.publicKey)
+    private func sendKaspaCoinTransaction(
+        _ transaction: Transaction,
+        signer: TransactionSigner
+    ) -> AnyPublisher<TransactionSendResult, SendTxError> {
+        return updateUnspentOutputs()
             .withWeakCaptureOf(self)
-            .tryMap { manager, signatures in
+            .tryMap { walletManager, _ in
+                return try walletManager.txBuilder.buildForSign(transaction)
+            }
+            .withWeakCaptureOf(self)
+            .flatMap { walletManager, input in
+                let (kaspaTransaction, hashes) = input
+                let walletPublicKey = walletManager.wallet.publicKey
+
+                return signer
+                    .sign(hashes: hashes, walletPublicKey: walletPublicKey)
+                    .map { (kaspaTransaction, $0) }
+            }
+            .withWeakCaptureOf(self)
+            .tryMap { manager, input in
+                let (kaspaTransaction, signatures) = input
+
                 return manager.txBuilder.buildForSend(transaction: kaspaTransaction, signatures: signatures)
             }
             .withWeakCaptureOf(self)
@@ -129,7 +136,6 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                     .networkService
                     .send(transaction: KaspaTransactionRequest(transaction: tx))
                     .mapSendError(tx: encodedRawTransactionData?.hexString.lowercased())
-                    .eraseToAnyPublisher()
             }
             .withWeakCaptureOf(self)
             .handleEvents(receiveOutput: { manager, response in
@@ -138,67 +144,75 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                 manager.wallet.addPendingTransaction(record)
             })
             .map { _, response in
-                TransactionSendResult(hash: response.transactionId)
+                return TransactionSendResult(hash: response.transactionId)
             }
             .eraseSendError()
             .eraseToAnyPublisher()
     }
 
-    private func sendKaspaTokenTransaction(_ transaction: Transaction, token: Token, signer: TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError> {
-        let txgroup: KaspaKRC20.TransactionGroup
-        let meta: KaspaKRC20.TransactionMeta
-
-        do {
-            let result = try txBuilder.buildForSendKRC20(transaction: transaction, token: token)
-            txgroup = result.0
-            meta = result.1
-        } catch {
-            return .sendTxFail(error: error)
-        }
-
-        return signer.sign(hashes: txgroup.hashesCommit + txgroup.hashesReveal, walletPublicKey: wallet.publicKey)
+    private func sendKaspaTokenTransaction(
+        _ transaction: Transaction,
+        token: Token,
+        signer: TransactionSigner
+    ) -> AnyPublisher<TransactionSendResult, SendTxError> {
+        return updateUnspentOutputs()
             .withWeakCaptureOf(self)
-            .map { manager, signatures in
+            .tryMap { walletManager, _ in
+                return try walletManager.txBuilder.buildForSignKRC20(transaction: transaction, token: token)
+            }
+            .withWeakCaptureOf(self)
+            .flatMap { walletManager, input in
+                let (txGroup, meta) = input
+                let walletPublicKey = walletManager.wallet.publicKey
+
+                return signer
+                    .sign(hashes: txGroup.hashesCommit + txGroup.hashesReveal, walletPublicKey: walletPublicKey)
+                    .map { (txGroup, meta, $0) }
+            }
+            .withWeakCaptureOf(self)
+            .map { manager, input in
                 // Build Commit & Reveal
-                let commitSignatures = Array(signatures[..<txgroup.hashesCommit.count])
-                let revealSignatures = Array(signatures[txgroup.hashesCommit.count...])
+                let (txGroup, meta, signatures) = input
+                let commitSignatures = Array(signatures[..<txGroup.hashesCommit.count])
+                let revealSignatures = Array(signatures[txGroup.hashesCommit.count...])
 
                 let commitTx = manager.txBuilder.buildForSend(
-                    transaction: txgroup.kaspaCommitTransaction,
+                    transaction: txGroup.kaspaCommitTransaction,
                     signatures: commitSignatures
                 )
                 let revealTx = manager.txBuilder.buildForSendReveal(
-                    transaction: txgroup.kaspaRevealTransaction,
+                    transaction: txGroup.kaspaRevealTransaction,
                     commitRedeemScript: meta.redeemScriptCommit,
                     signatures: revealSignatures
                 )
 
-                return (commitTx, revealTx)
+                return (commitTx, revealTx, meta)
             }
             .withWeakCaptureOf(self)
             .flatMap { manager, input in
                 // Send Commit
-                let (commitTx, revealTx) = input
+                let (commitTx, revealTx, meta) = input
                 let encodedRawTransactionData = try? JSONEncoder().encode(commitTx)
 
                 return manager.networkService
                     .send(transaction: KaspaTransactionRequest(transaction: commitTx))
                     .mapSendError(tx: encodedRawTransactionData?.hexString.lowercased())
-                    .mapToValue(revealTx)
-                    .eraseToAnyPublisher()
+                    .mapToValue((revealTx, meta))
             }
             .withWeakCaptureOf(self)
-            .asyncMap { manager, revealTx in
+            .asyncMap { manager, input in
                 // Store Commit
+                let (revealTx, meta) = input
                 await manager.store(incompleteTokenTransaction: meta.incompleteTransactionParams, for: token)
+
                 return revealTx
             }
-            .eraseToAnyPublisher()
             .delay(for: .seconds(KaspaKRC20.Constants.revealTransactionSendDelay), scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .flatMap { manager, revealTx in
                 // Send Reveal
                 let encodedRawTransactionData = try? JSONEncoder().encode(revealTx)
+
                 return manager
                     .networkService
                     .send(transaction: KaspaTransactionRequest(transaction: revealTx))
@@ -208,7 +222,6 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                         // can observe and handle it (e.g. display a notification)
                         manager?.wallet.setAssetRequirements()
                     })
-                    .eraseToAnyPublisher()
             }
             .withWeakCaptureOf(self)
             .handleEvents(receiveOutput: { manager, response in
@@ -217,6 +230,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             .asyncMap { manager, response in
                 // Delete Commit
                 await manager.removeIncompleteTokenTransaction(for: token)
+
                 return TransactionSendResult(hash: response.transactionId)
             }
             .eraseSendError()
@@ -397,6 +411,19 @@ final class KaspaWalletManager: BaseManager, WalletManager {
         wallet.removePendingTransaction { hash in
             confirmedTransactionHashes.contains(hash)
         }
+    }
+
+    /// A workaround for a badly designed Kaspa transaction builder, which has a stateful implementation
+    /// instead of a stateless one, and therefore its unspent outputs must always be manually updated
+    /// using this method before building a new Kaspa or KRC20 transaction.
+    private func updateUnspentOutputs() -> some Publisher<Void, Error> {
+        return networkService
+            .getUnspentOutputs(address: wallet.address)
+            .withWeakCaptureOf(self)
+            .handleEvents(receiveOutput: { walletManager, unspentOutputs in
+                walletManager.txBuilder.setUnspentOutputs(unspentOutputs)
+            })
+            .mapToVoid()
     }
 
     // MARK: - KRC20 Tokens management
