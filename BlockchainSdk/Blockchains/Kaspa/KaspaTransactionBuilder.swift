@@ -229,14 +229,14 @@ extension KaspaTransactionBuilder {
         let resultCommit = try buildCommitTransactionKRC20(transaction: transaction, token: token)
 
         // Reveal
-        guard let revealFee = transaction.fee.parameters as? KaspaKRC20.RevealTransactionFeeParameter else {
+        guard let feeParams = transaction.fee.parameters as? KaspaKRC20.TokenTransactionFeeParams else {
             throw WalletError.failedToBuildTx
         }
 
         let resultReveal = try buildRevealTransaction(
             sourceAddress: transaction.sourceAddress,
             params: resultCommit.params,
-            fee: .init(revealFee.amount)
+            fee: .init(feeParams.revealFee)
         )
 
         return (
@@ -268,22 +268,27 @@ extension KaspaTransactionBuilder {
             throw WalletError.failedToBuildTx
         }
 
-        // We determine the commission value for reveal transaction,
-        var revealFeeParams: KaspaKRC20.RevealTransactionFeeParameter?
+        let commitFeeAmount: Amount
+        let revealFeeAmount: Amount?
 
         // The includeFee flag determines whether we already know the commission value
         // or the method is called for preliminary calculation mass
         if includeFee {
             // if the commission is included,
             // but the additional fee parameter KaspaKRC20.RevealTransactionFeeParameter is missing - it is impossible to build a transaction
-            guard let revealFee = transaction.fee.parameters as? KaspaKRC20.RevealTransactionFeeParameter else {
+            guard let feeParams = transaction.fee.parameters as? KaspaKRC20.TokenTransactionFeeParams else {
                 throw WalletError.failedToBuildTx
             }
-            revealFeeParams = revealFee
+
+            commitFeeAmount = feeParams.commitFee
+            revealFeeAmount = feeParams.revealFee
+        } else {
+            commitFeeAmount = transaction.fee.amount
+            revealFeeAmount = nil
         }
 
         // if we don't know the commission, commission for reveal transaction will be set to zero
-        let feeEstimationRevealTransactionValue = ((revealFeeParams?.amount.value ?? 0) * blockchain.decimalValue).rounded()
+        let feeEstimationRevealTransactionValue = ((revealFeeAmount?.value ?? 0) * blockchain.decimalValue).rounded()
         let dust = (Decimal(0.2) * blockchain.decimalValue).rounded()
 
         let tokenAmount = transaction.amount.value * tokenDecimalValue
@@ -311,7 +316,7 @@ extension KaspaTransactionBuilder {
 
         // 2nd output of the Commit transaction, create it if we still have funds that need to be returned to the source address.
         // Change = all available funds - (dust + estimated reveal transaction fee + estimated commit transaction fee)
-        if let change = try change(amount: dust + feeEstimationRevealTransactionValue, fee: (transaction.fee.amount.value * blockchain.decimalValue).rounded(), unspentOutputs: unspentOutputs) {
+        if let change = try change(amount: dust + feeEstimationRevealTransactionValue, fee: (commitFeeAmount.value * blockchain.decimalValue).rounded(), unspentOutputs: unspentOutputs) {
             outputs.append(
                 KaspaOutput(
                     amount: change,
