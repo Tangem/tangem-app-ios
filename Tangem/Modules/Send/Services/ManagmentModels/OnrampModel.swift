@@ -256,9 +256,12 @@ private extension OnrampModel {
     }
 
     func autoupdateTask() async throws {
-        try Task.checkCancellation()
+        guard _selectedOnrampProvider.value?.value?.isSuccessfullyLoaded == true else {
+            log("Selected provider hasn't loaded. Do not start autoupdate")
+            return
+        }
 
-        // Timeout to autoupdate
+        try Task.checkCancellation()
 
         log("Start timer to autoupdate")
         try await Task.sleep(seconds: 10)
@@ -266,7 +269,19 @@ private extension OnrampModel {
         try Task.checkCancellation()
         // we don't update the selected provider
         log("Call autoupdate")
-        _ = try await onrampManager.setupQuotes(in: providersList(), amount: .same)
+        let providerForReselect = try await onrampManager.setupQuotes(in: providersList(), amount: .same)
+
+        // Check after reloading
+        guard _selectedOnrampProvider.value?.value?.isSuccessfullyLoaded == true else {
+            log("Selected provider has a error. Will update to \(providerForReselect)")
+            _selectedOnrampProvider.send(.success(providerForReselect))
+            try await autoupdateTask()
+            return
+        }
+
+        // Push the same provider to notify all listeners
+        _selectedOnrampProvider.resend()
+        _onrampProviders.resend()
 
         // Restart task
         try await autoupdateTask()
