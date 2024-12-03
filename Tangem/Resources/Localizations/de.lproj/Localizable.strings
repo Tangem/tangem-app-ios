@@ -2,14 +2,14 @@
 "action_buttons_buy_navigation_bar_title" = "Kaufen";
 "action_buttons_sell_empty_search_message" = "Du kannst Deinen Token nicht finden? Gehe zum Bereich „Markt“ auf der Hauptseite und fügen diesen zum verkaufen im Portfolio hinzu.";
 "action_buttons_sell_navigation_bar_title" = "Verkaufen";
-"action_buttons_something_wrong_alert_title" = "";
+"action_buttons_something_wrong_alert_message" = "";
 "action_buttons_swap_choose_token" = "Wähle den Token";
 "action_buttons_swap_empty_search_message" = "Du kannst Deinen Token nicht finden? Gehe zum Bereich „Markt“ auf der Hauptseite und fügen diesen zum tauschen im Portfolio hinzu.";
 "action_buttons_swap_navigation_bar_title" = "Tauschen";
 "action_buttons_swap_no_available_pair_notification_message" = "Es gibt keine verfügbaren Token, die mit dem ausgewählten Token getauscht werden können. Bitte wähle einen anderen.";
 "action_buttons_swap_no_available_pair_notification_title" = "Kein verfügbares Paar";
-"action_buttons_swap_no_tokens_added_alert_title" = "";
-"action_buttons_swap_not_enough_tokens_alert_title" = "";
+"action_buttons_swap_no_tokens_added_alert_message" = "";
+"action_buttons_swap_not_enough_tokens_alert_message" = "";
 "action_buttons_you_want_to_receive" = "Wähle den Token aus, den Du erhalten möchtest";
 "action_buttons_you_want_to_swap" = "Wähle den Token, den Du tauschen möchtest";
 "add_custom_token_choose_network" = "Netzwerk wählen";
@@ -264,6 +264,9 @@
 "express_exchange_notification_refund_title" = "Der Betrag wurde in %1$@ (%2$@ Netzwerk) zurückerstattet.";
 "express_exchange_notification_verification_text" = "Besuche die Website des Anbieters zur Überprüfung";
 "express_exchange_notification_verification_title" = "KYC-Überprüfung durch den Anbieter erforderlich";
+"express_exchange_status_bought" = "Bought";
+"express_exchange_status_buying" = "Buying";
+"express_exchange_status_buying_active" = "Buying...";
 "express_exchange_status_canceled" = "Abgebrochen";
 "express_exchange_status_confirmed" = "Bestätigt";
 "express_exchange_status_confirming" = "Bestätigen";
