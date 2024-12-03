@@ -16,6 +16,7 @@ struct SendFinishStepBuilder {
     func makeSendFinishStep(
         input: SendFinishInput,
         actionType: SendFlowActionType,
+        stakingValidator: String? = nil,
         sendDestinationCompactViewModel: SendDestinationCompactViewModel?,
         sendAmountCompactViewModel: SendAmountCompactViewModel?,
         onrampAmountCompactViewModel: OnrampAmountCompactViewModel?,
@@ -26,6 +27,7 @@ struct SendFinishStepBuilder {
         let viewModel = makeSendFinishViewModel(
             input: input,
             actionType: actionType,
+            stakingValidator: stakingValidator,
             sendDestinationCompactViewModel: sendDestinationCompactViewModel,
             sendAmountCompactViewModel: sendAmountCompactViewModel,
             onrampAmountCompactViewModel: onrampAmountCompactViewModel,
@@ -46,6 +48,7 @@ private extension SendFinishStepBuilder {
     func makeSendFinishViewModel(
         input: SendFinishInput,
         actionType: SendFlowActionType,
+        stakingValidator: String?,
         sendDestinationCompactViewModel: SendDestinationCompactViewModel?,
         sendAmountCompactViewModel: SendAmountCompactViewModel?,
         onrampAmountCompactViewModel: OnrampAmountCompactViewModel?,
@@ -54,7 +57,11 @@ private extension SendFinishStepBuilder {
         onrampStatusCompactViewModel: OnrampStatusCompactViewModel?
     ) -> SendFinishViewModel {
         SendFinishViewModel(
-            settings: .init(tokenItem: walletModel.tokenItem, actionType: actionType),
+            settings: .init(
+                stakingValidator: stakingValidator,
+                tokenItem: walletModel.tokenItem,
+                actionType: actionType
+            ),
             input: input,
             sendDestinationCompactViewModel: sendDestinationCompactViewModel,
             sendAmountCompactViewModel: sendAmountCompactViewModel,

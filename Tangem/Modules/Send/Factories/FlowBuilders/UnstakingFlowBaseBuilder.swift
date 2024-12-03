@@ -61,6 +61,7 @@ struct UnstakingFlowBaseBuilder {
         let finish = sendFinishStepBuilder.makeSendFinishStep(
             input: unstakingModel,
             actionType: actionType,
+            stakingValidator: action.validatorInfo?.name,
             sendDestinationCompactViewModel: .none,
             sendAmountCompactViewModel: amount.compact,
             onrampAmountCompactViewModel: .none,

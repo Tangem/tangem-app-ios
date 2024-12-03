@@ -55,6 +55,7 @@ struct RestakingFlowBaseBuilder {
         let finish = sendFinishStepBuilder.makeSendFinishStep(
             input: restakingModel,
             actionType: actionType,
+            stakingValidator: action.validatorInfo?.name,
             sendDestinationCompactViewModel: .none,
             sendAmountCompactViewModel: sendAmountCompactViewModel,
             onrampAmountCompactViewModel: .none,

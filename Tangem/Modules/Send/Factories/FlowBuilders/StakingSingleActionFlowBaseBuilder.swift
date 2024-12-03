@@ -46,6 +46,7 @@ struct StakingSingleActionFlowBaseBuilder {
         let finish = sendFinishStepBuilder.makeSendFinishStep(
             input: actionModel,
             actionType: actionType,
+            stakingValidator: action.validatorInfo?.name,
             sendDestinationCompactViewModel: .none,
             sendAmountCompactViewModel: sendAmountCompactViewModel,
             onrampAmountCompactViewModel: .none,
