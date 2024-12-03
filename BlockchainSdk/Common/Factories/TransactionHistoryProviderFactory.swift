@@ -45,31 +45,11 @@ public struct TransactionHistoryProviderFactory {
                 mapper: UTXOTransactionHistoryMapper(blockchain: blockchain)
             )
         case .bitcoinCash:
-            var providers: [BlockBookUTXOProvider] = []
-            if let addressService = AddressServiceFactory(
-                blockchain: input.blockchain
-            ).makeAddressService() as? BitcoinCashAddressService {
-                let addressPrefixProvider = BitcoinCashAddressPrefixProvider(addressService: addressService)
-
-                providers.append(
-                    networkAssembly.makeBlockBookUTXOProvider(
-                        with: input,
-                        for: .nowNodes,
-                        addressPrefixProvider: addressPrefixProvider
-                    )
-                )
-
-                providers.append(
-                    networkAssembly.makeBlockBookUTXOProvider(
-                        with: input,
-                        for: .getBlock,
-                        addressPrefixProvider: addressPrefixProvider
-                    )
-                )
-            }
-
             return UTXOTransactionHistoryProvider(
-                blockBookProviders: providers,
+                blockBookProviders: [
+                    networkAssembly.makeBlockBookUTXOProvider(with: input, for: .getBlock),
+                    networkAssembly.makeBlockBookUTXOProvider(with: input, for: .nowNodes),
+                ],
                 mapper: UTXOTransactionHistoryMapper(blockchain: blockchain)
             )
         case .ethereum,
