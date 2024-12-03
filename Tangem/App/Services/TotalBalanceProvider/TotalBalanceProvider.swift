@@ -71,7 +71,7 @@ private extension TotalBalanceProvider {
                     )
                 }
 
-                let hasLoadingWalletModels = walletModels.contains { $0.state.isLoading }
+                let hasLoadingWalletModels = walletModels.contains { $0.isLoading }
 
                 // We should wait for balance loading to complete
                 if hasLoadingWalletModels {
@@ -96,8 +96,9 @@ private extension TotalBalanceProvider {
             .mapToValue((walletModels, hasEntriesWithoutDerivation))
             .filter { walletModels, _ in
                 // We can still have loading items
-                walletModels.allConforms { !$0.state.isLoading }
+                walletModels.allConforms { !$0.isLoading }
             }
+            .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { balanceProvider, input in
                 let (walletModels, hasEntriesWithoutDerivation) = input
@@ -142,7 +143,7 @@ private extension TotalBalanceProvider {
                 hasCryptoError = true
             }
 
-            if !token.state.isSuccessfullyLoaded {
+            if !token.isSuccessfullyLoaded {
                 balance = nil
                 break
             }
