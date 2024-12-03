@@ -32,7 +32,7 @@ enum ExchangeServiceState: Equatable {
         var localizedDescription: String {
             switch self {
             case .networkError:
-                return Localization.actionButtonsSomethingWrongAlertTitle
+                return Localization.actionButtonsSomethingWrongAlertMessage
             case .countryNotSupported:
                 return Localization.sellingRegionalRestrictionAlertTitle
             }

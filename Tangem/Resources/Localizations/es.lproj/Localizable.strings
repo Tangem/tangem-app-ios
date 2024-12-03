@@ -2,14 +2,14 @@
 "action_buttons_buy_navigation_bar_title" = "Comprar";
 "action_buttons_sell_empty_search_message" = "¿No encuentra el token en su billetera? Consulte los mercados para encontrarlo y añadirlo a la venta";
 "action_buttons_sell_navigation_bar_title" = "Vender";
-"action_buttons_something_wrong_alert_title" = "";
+"action_buttons_something_wrong_alert_message" = "";
 "action_buttons_swap_choose_token" = "Elige el token";
 "action_buttons_swap_empty_search_message" = "¿No encuentras el token en tu billetera? Consulte los mercados para encontrarlo y agregarlo al intercambio";
 "action_buttons_swap_navigation_bar_title" = "Intercambiar";
 "action_buttons_swap_no_available_pair_notification_message" = "No hay tokens disponibles para intercambiar con el token seleccionado. Por favor elige otro.";
 "action_buttons_swap_no_available_pair_notification_title" = "No hay par disponible";
-"action_buttons_swap_no_tokens_added_alert_title" = "";
-"action_buttons_swap_not_enough_tokens_alert_title" = "";
+"action_buttons_swap_no_tokens_added_alert_message" = "";
+"action_buttons_swap_not_enough_tokens_alert_message" = "";
 "action_buttons_you_want_to_receive" = "Seleccione el token que desea recibir";
 "action_buttons_you_want_to_swap" = "Seleccione el token que desea intercambiar";
 "add_custom_token_choose_network" = "Elige red";
@@ -264,6 +264,9 @@
 "express_exchange_notification_refund_title" = "El monto fue reembolsado en %1$@ (red %2$@)";
 "express_exchange_notification_verification_text" = "Visite el sitio web del proveedor para la verificación";
 "express_exchange_notification_verification_title" = "Verificación KYC requerida por el proveedor";
+"express_exchange_status_bought" = "Bought";
+"express_exchange_status_buying" = "Buying";
+"express_exchange_status_buying_active" = "Buying...";
 "express_exchange_status_canceled" = "Cancelado";
 "express_exchange_status_confirmed" = "Confirmado";
 "express_exchange_status_confirming" = "Esperando confirmación";
