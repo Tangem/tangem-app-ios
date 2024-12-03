@@ -20,8 +20,6 @@ class BlockBookUTXOProvider {
     private let config: BlockBookConfig
     private let provider: NetworkProvider<BlockBookTarget>
 
-    private let addressPrefixProvider: AddressPrefixProvider?
-
     var decimalValue: Decimal {
         blockchain.decimalValue
     }
@@ -29,12 +27,10 @@ class BlockBookUTXOProvider {
     init(
         blockchain: Blockchain,
         blockBookConfig: BlockBookConfig,
-        addressPrefixProvider: AddressPrefixProvider? = nil,
         networkConfiguration: NetworkProviderConfiguration
     ) {
         self.blockchain = blockchain
         config = blockBookConfig
-        self.addressPrefixProvider = addressPrefixProvider
         provider = NetworkProvider<BlockBookTarget>(configuration: networkConfiguration)
     }
 
@@ -42,11 +38,11 @@ class BlockBookUTXOProvider {
         address: String,
         parameters: BlockBookTarget.AddressRequestParameters
     ) -> AnyPublisher<BlockBookAddressResponse, Error> {
-        executeRequest(.address(address: addAddressPrefixIfNeeded(address), parameters: parameters))
+        executeRequest(.address(address: address, parameters: parameters))
     }
 
     func unspentTxData(address: String) -> AnyPublisher<[BlockBookUnspentTxResponse], Error> {
-        executeRequest(.utxo(address: addAddressPrefixIfNeeded(address)))
+        executeRequest(.utxo(address: address))
     }
 
     func getFeeRatePerByte(for confirmationBlocks: Int) -> AnyPublisher<Decimal, Error> {
@@ -121,10 +117,6 @@ class BlockBookUTXOProvider {
         responseType: T.Type
     ) -> AnyPublisher<T, Error> {
         executeRequest(request)
-    }
-
-    func addAddressPrefixIfNeeded(_ address: String) -> String {
-        addressPrefixProvider.flatMap { $0.addPrefixIfNeeded(address) } ?? address
     }
 
     private func target(for request: BlockBookTarget.Request) -> BlockBookTarget {

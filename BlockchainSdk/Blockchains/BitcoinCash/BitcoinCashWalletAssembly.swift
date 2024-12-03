@@ -36,9 +36,7 @@ struct BitcoinCashWalletAssembly: WalletManagerAssembly {
                             networkProviderAssembly.makeBitcoinCashBlockBookUTXOProvider(
                                 with: input,
                                 for: .nowNodes,
-                                addressPrefixProvider: BitcoinCashAddressPrefixProvider(
-                                    addressService: addressService
-                                )
+                                bitcoinCashAddressService: addressService
                             ).eraseToAnyBitcoinNetworkProvider()
                         )
                     }
@@ -50,9 +48,7 @@ struct BitcoinCashWalletAssembly: WalletManagerAssembly {
                             networkProviderAssembly.makeBitcoinCashBlockBookUTXOProvider(
                                 with: input,
                                 for: .getBlock,
-                                addressPrefixProvider: BitcoinCashAddressPrefixProvider(
-                                    addressService: addressService
-                                )
+                                bitcoinCashAddressService: addressService
                             ).eraseToAnyBitcoinNetworkProvider()
                         )
                     }

@@ -19,8 +19,7 @@ struct NetworkProviderAssembly {
     // TODO: Refactor in IOS-6639
     func makeBlockBookUTXOProvider(
         with input: NetworkProviderAssemblyInput,
-        for type: BlockBookProviderType,
-        addressPrefixProvider: AddressPrefixProvider? = nil
+        for type: BlockBookProviderType
     ) -> BlockBookUTXOProvider {
         switch type {
         case .nowNodes:
@@ -30,14 +29,12 @@ struct NetworkProviderAssembly {
                     apiKeyHeaderName: Constants.nowNodesApiKeyHeaderName,
                     apiKeyHeaderValue: input.blockchainSdkConfig.nowNodesApiKey
                 ),
-                addressPrefixProvider: addressPrefixProvider,
                 networkConfiguration: input.networkConfig
             )
         case .getBlock:
             return BlockBookUTXOProvider(
                 blockchain: input.blockchain,
                 blockBookConfig: GetBlockBlockBookConfig(input.blockchainSdkConfig.getBlockCredentials),
-                addressPrefixProvider: addressPrefixProvider,
                 networkConfiguration: input.networkConfig
             )
         }
@@ -47,14 +44,14 @@ struct NetworkProviderAssembly {
     func makeBitcoinCashBlockBookUTXOProvider(
         with input: NetworkProviderAssemblyInput,
         for type: BlockBookProviderType,
-        addressPrefixProvider: AddressPrefixProvider
+        bitcoinCashAddressService: BitcoinCashAddressService
     ) -> AnyBitcoinNetworkProvider {
         BitcoinCashBlockBookUTXOProvider(
             blockBookUTXOProvider: makeBlockBookUTXOProvider(
                 with: input,
-                for: type,
-                addressPrefixProvider: addressPrefixProvider
-            )
+                for: type
+            ),
+            bitcoinCashAddressService: bitcoinCashAddressService
         ).eraseToAnyBitcoinNetworkProvider()
     }
 

@@ -21,8 +21,7 @@ extension BlockBookUTXOProvider: BitcoinNetworkProvider {
     }
 
     func getInfo(address: String) -> AnyPublisher<BitcoinResponse, Error> {
-        let address = addAddressPrefixIfNeeded(address)
-        return Publishers
+        Publishers
             .Zip(addressData(address: address, parameters: addressParameters), unspentTxData(address: address))
             .tryMap { [weak self] addressResponse, unspentTxResponse in
                 guard let self else {
@@ -62,8 +61,7 @@ extension BlockBookUTXOProvider: BitcoinNetworkProvider {
     }
 
     func getSignatureCount(address: String) -> AnyPublisher<Int, Error> {
-        let address = addAddressPrefixIfNeeded(address)
-        return addressData(address: address, parameters: addressParameters)
+        addressData(address: address, parameters: addressParameters)
             .tryMap { response in
                 let outgoingTxsCount = response.transactions?.filter { transaction in
                     return transaction.compat.vin.contains(where: { inputs in

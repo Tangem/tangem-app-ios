@@ -11,9 +11,11 @@ import Combine
 /// Adapter for existing BlockBookUTXOProvider
 final class BitcoinCashBlockBookUTXOProvider: BitcoinNetworkProvider {
     private let blockBookUTXOProvider: BlockBookUTXOProvider
+    private let bitcoinCashAddressService: BitcoinCashAddressService
 
-    init(blockBookUTXOProvider: BlockBookUTXOProvider) {
+    init(blockBookUTXOProvider: BlockBookUTXOProvider, bitcoinCashAddressService: BitcoinCashAddressService) {
         self.blockBookUTXOProvider = blockBookUTXOProvider
+        self.bitcoinCashAddressService = bitcoinCashAddressService
     }
 
     var host: String {
@@ -25,7 +27,7 @@ final class BitcoinCashBlockBookUTXOProvider: BitcoinNetworkProvider {
     }
 
     func getInfo(address: String) -> AnyPublisher<BitcoinResponse, Error> {
-        blockBookUTXOProvider.getInfo(address: address)
+        blockBookUTXOProvider.getInfo(address: addAddressPrefixIfNeeded(address))
     }
 
     func getFee() -> AnyPublisher<BitcoinFee, Error> {
@@ -60,6 +62,15 @@ final class BitcoinCashBlockBookUTXOProvider: BitcoinNetworkProvider {
     }
 
     func getSignatureCount(address: String) -> AnyPublisher<Int, Error> {
-        blockBookUTXOProvider.getSignatureCount(address: address)
+        blockBookUTXOProvider.getSignatureCount(address: addAddressPrefixIfNeeded(address))
+    }
+
+    private func addAddressPrefixIfNeeded(_ address: String) -> String {
+        if bitcoinCashAddressService.isLegacy(address) {
+            return address
+        } else {
+            let prefix = "bitcoincash:"
+            return address.hasPrefix(prefix) ? address : prefix + address
+        }
     }
 }
