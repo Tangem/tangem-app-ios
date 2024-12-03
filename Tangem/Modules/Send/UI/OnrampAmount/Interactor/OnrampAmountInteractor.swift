@@ -12,19 +12,21 @@ import TangemFoundation
 
 protocol OnrampAmountInteractor {
     var currencyPublisher: AnyPublisher<OnrampFiatCurrency?, Never> { get }
-    var selectedOnrampProviderPublisher: AnyPublisher<LoadingResult<OnrampProvider, Never>?, Never> { get }
-    var errorPublisher: AnyPublisher<String?, Never> { get }
+    var bottomInfoPublisher: AnyPublisher<LoadingResult<Decimal, OnrampAmountInteractorBottomInfoError>?, Never> { get }
 
     func update(fiat: Decimal?)
+}
+
+enum OnrampAmountInteractorBottomInfoError: Error {
+    case noAvailableProviders
+    case tooSmallAmount(_ minAmount: String)
+    case tooBigAmount(_ maxAmount: String)
 }
 
 class CommonOnrampAmountInteractor {
     private weak var input: OnrampAmountInput?
     private weak var output: OnrampAmountOutput?
     private weak var onrampProvidersInput: OnrampProvidersInput?
-
-    private var _error: CurrentValueSubject<String?, Never> = .init(nil)
-    private var bag: Set<AnyCancellable> = []
 
     init(
         input: OnrampAmountInput,
@@ -34,32 +36,6 @@ class CommonOnrampAmountInteractor {
         self.input = input
         self.output = output
         self.onrampProvidersInput = onrampProvidersInput
-
-        bind(onrampProvidersInput: onrampProvidersInput)
-    }
-}
-
-// MARK: - Private
-
-private extension CommonOnrampAmountInteractor {
-    func bind(onrampProvidersInput: OnrampProvidersInput) {
-        Publishers.CombineLatest(
-            onrampProvidersInput.onrampProvidersPublisher,
-            onrampProvidersInput.selectedOnrampProviderPublisher
-        ).map { providers, provider in
-            switch (providers, provider?.value?.state) {
-            case (.success(let providers), _) where !providers.hasProviders():
-                return Localization.onrampNoAvailableProviders
-            case (_, .restriction(.tooSmallAmount(let minAmount))):
-                return Localization.onrampMinAmountRestriction(minAmount)
-            case (_, .restriction(.tooBigAmount(let maxAmount))):
-                return Localization.onrampMaxAmountRestriction(maxAmount)
-            default:
-                return nil
-            }
-        }
-        .assign(to: \._error.value, on: self, ownership: .weak)
-        .store(in: &bag)
     }
 }
 
@@ -75,19 +51,46 @@ extension CommonOnrampAmountInteractor: OnrampAmountInteractor {
         return input.fiatCurrencyPublisher.map { $0.value }.eraseToAnyPublisher()
     }
 
-    var selectedOnrampProviderPublisher: AnyPublisher<LoadingResult<OnrampProvider, Never>?, Never> {
+    var bottomInfoPublisher: AnyPublisher<LoadingResult<Decimal, OnrampAmountInteractorBottomInfoError>?, Never> {
         guard let onrampProvidersInput else {
             assertionFailure("OnrampProvidersInput not found")
             return Empty().eraseToAnyPublisher()
         }
 
-        return onrampProvidersInput
-            .selectedOnrampProviderPublisher
-            .eraseToAnyPublisher()
-    }
+        let hasProviders = onrampProvidersInput
+            .onrampProvidersPublisher
+            .map { providers in
+                switch providers {
+                case .none, .loading, .failure:
+                    return false
+                case .success(let providers):
+                    return !providers.hasProviders()
+                }
+            }
 
-    var errorPublisher: AnyPublisher<String?, Never> {
-        _error.eraseToAnyPublisher()
+        return Publishers
+            .CombineLatest(hasProviders, onrampProvidersInput.selectedOnrampProviderPublisher)
+            .map { hasProviders, provider -> LoadingResult<Decimal, OnrampAmountInteractorBottomInfoError>? in
+                guard !hasProviders else {
+                    return .failure(.noAvailableProviders)
+                }
+
+                switch (provider, provider?.value?.state) {
+                case (_, .restriction(.tooSmallAmount(let minAmount))):
+                    return .failure(.tooSmallAmount(minAmount))
+                case (_, .restriction(.tooBigAmount(let maxAmount))):
+                    return .failure(.tooSmallAmount(maxAmount))
+                case (.none, _), (_, .idle):
+                    return .success(0) // placeholder
+                case (.loading, _), (_, .loading):
+                    return .loading
+                case (_, .loaded(let quote)):
+                    return .success(quote.expectedAmount)
+                case (_, .failed), (_, .notSupported), (_, .none):
+                    return nil
+                }
+            }
+            .eraseToAnyPublisher()
     }
 
     func update(fiat: Decimal?) {

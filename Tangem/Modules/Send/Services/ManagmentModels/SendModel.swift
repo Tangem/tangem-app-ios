@@ -362,6 +362,7 @@ extension SendModel: NotificationTapDelegate {
              .refresh,
              .goToProvider,
              .addHederaTokenAssociation,
+             .retryKaspaTokenTransaction,
              .stake,
              .openLink,
              .swap,

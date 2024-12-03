@@ -22,6 +22,7 @@ protocol SingleTokenRoutable {
     func openExplorer(at url: URL, for walletModel: WalletModel)
     func openMarketsTokenDetails(for tokenItem: TokenItem)
     func openInSafari(url: URL)
+    func openOnramp(walletModel: WalletModel)
 }
 
 final class SingleTokenRouter: SingleTokenRoutable {
@@ -62,6 +63,10 @@ final class SingleTokenRouter: SingleTokenRoutable {
         } else {
             openBuy(for: walletModel)
         }
+    }
+
+    func openOnramp(walletModel: WalletModel) {
+        coordinator?.openOnramp(walletModel: walletModel, userWalletModel: userWalletModel)
     }
 
     func openSend(walletModel: WalletModel) {
@@ -158,10 +163,7 @@ final class SingleTokenRouter: SingleTokenRoutable {
     }
 
     private func openBuy(for walletModel: WalletModel) {
-        if FeatureProvider.isAvailable(.onramp) {
-            coordinator?.openOnramp(walletModel: walletModel, userWalletModel: userWalletModel)
-            return
-        }
+        assert(!FeatureProvider.isAvailable(.onramp), "Use open openOnramp(for:) instead")
 
         let exchangeUtility = buildExchangeCryptoUtility(for: walletModel)
 

@@ -13,6 +13,8 @@ import BlockchainSdk
 import TangemStaking
 
 final class SingleTokenNotificationManager {
+    weak var interactionDelegate: SingleTokenNotificationManagerInteractionDelegate?
+
     private let analyticsService: NotificationsAnalyticsService = .init()
 
     private let walletModel: WalletModel
@@ -216,25 +218,71 @@ final class SingleTokenNotificationManager {
 
         guard
             !walletModel.hasPendingTransactions,
-            let assetRequirementsManager = walletModel.assetRequirementsManager,
-            assetRequirementsManager.hasRequirements(for: asset)
+            let assetRequirementsManager = walletModel.assetRequirementsManager
         else {
             return []
         }
 
         switch assetRequirementsManager.requirementsCondition(for: asset) {
-        case .paidTransaction:
-            return [.hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation(associationFee: nil))]
-        case .paidTransactionWithFee(let feeAmount):
-            let balanceFormatter = BalanceFormatter()
-            let associationFee = TokenNotificationEvent.UnfulfilledRequirementsConfiguration.HederaTokenAssociationFee(
-                formattedValue: balanceFormatter.formatDecimal(feeAmount.value),
-                currencySymbol: feeAmount.currencySymbol
+        case .paidTransactionWithFee(let blockchain, let transactionAmount, let feeAmount):
+            let configuration = makeUnfulfilledRequirementsConfiguration(
+                blockchain: blockchain,
+                transactionAmount: transactionAmount,
+                feeAmount: feeAmount
             )
-            return [.hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation(associationFee: associationFee))]
+            return [.hasUnfulfilledRequirements(configuration: configuration)]
         case .none:
             return []
         }
+    }
+
+    private func makeUnfulfilledRequirementsConfiguration(
+        blockchain: Blockchain,
+        transactionAmount: Amount?,
+        feeAmount: Amount?
+    ) -> TokenNotificationEvent.UnfulfilledRequirementsConfiguration {
+        switch blockchain {
+        case .hedera:
+            guard let feeAmount else {
+                return .missingHederaTokenAssociation(associationFee: nil)
+            }
+
+            let configurationData = makeRequirementsConfigurationData(from: feeAmount)
+
+            return .missingHederaTokenAssociation(
+                associationFee: .init(
+                    formattedValue: configurationData.formattedValue,
+                    currencySymbol: configurationData.currencySymbol
+                )
+            )
+        case .kaspa:
+            guard let transactionAmount else {
+                preconditionFailure("Tx amount is required for making unfulfilled requirements configuration for blockchain '\(blockchain.displayName)'")
+            }
+
+            let configurationData = makeRequirementsConfigurationData(from: transactionAmount)
+            let asset = transactionAmount.type
+
+            return .incompleteKaspaTokenTransaction(
+                revealTransaction: .init(
+                    formattedValue: configurationData.formattedValue,
+                    currencySymbol: configurationData.currencySymbol
+                ) { [weak walletModel] in
+                    walletModel?.assetRequirementsManager?.discardRequirements(for: asset)
+                }
+            )
+        default:
+            preconditionFailure("Unsupported blockchain '\(blockchain.displayName)', can't create unfulfilled requirements configuration")
+        }
+    }
+
+    private func makeRequirementsConfigurationData(
+        from amount: Amount
+    ) -> (formattedValue: String, currencySymbol: String) {
+        let balanceFormatter = BalanceFormatter()
+        let formattedValue = balanceFormatter.formatDecimal(amount.value)
+
+        return (formattedValue, amount.currencySymbol)
     }
 
     func makeStakingNotificationEvent() -> TokenNotificationEvent? {
@@ -246,6 +294,10 @@ final class SingleTokenNotificationManager {
         let apyFormatted = PercentFormatter().format(yield.rewardRateValues.max, option: .staking)
 
         return .staking(tokenIconInfo: tokenIconInfo, earnUpToFormatted: apyFormatted)
+    }
+
+    private func hideNotification(_ notification: NotificationViewInput) {
+        notificationInputsSubject.value.removeAll { $0 == notification }
     }
 }
 
@@ -266,7 +318,28 @@ extension SingleTokenNotificationManager: NotificationManager {
     }
 
     func dismissNotification(with id: NotificationViewId) {
-        notificationInputsSubject.value.removeAll(where: { $0.id == id })
+        guard let notification = notificationInputsSubject.value.first(where: { $0.id == id }) else {
+            return
+        }
+
+        if let event = notification.settings.event as? TokenNotificationEvent {
+            switch event {
+            case .hasUnfulfilledRequirements(.incompleteKaspaTokenTransaction(let revealTransaction)):
+                interactionDelegate?.confirmDiscardingUnfulfilledAssetRequirements(
+                    with: .incompleteKaspaTokenTransaction(revealTransaction: revealTransaction),
+                    confirmationAction: { [weak self] in
+                        revealTransaction.onTransactionDiscard()
+                        self?.hideNotification(notification)
+                    }
+                )
+                // Early exit since `hideNotification(_:)` is called inside `confirmationAction` callback
+                return
+            default:
+                break
+            }
+        }
+
+        hideNotification(notification)
     }
 }
 

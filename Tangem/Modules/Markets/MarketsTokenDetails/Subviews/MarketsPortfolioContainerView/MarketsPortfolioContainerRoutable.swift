@@ -12,4 +12,5 @@ protocol MarketsPortfolioContainerRoutable: AnyObject {
     func openReceive(walletModel: WalletModel)
     func openBuyCryptoIfPossible(for walletModel: WalletModel, with userWalletModel: UserWalletModel)
     func openExchange(for walletModel: WalletModel, with userWalletModel: UserWalletModel)
+    func openOnramp(for walletModel: WalletModel, with userWalletModel: UserWalletModel)
 }

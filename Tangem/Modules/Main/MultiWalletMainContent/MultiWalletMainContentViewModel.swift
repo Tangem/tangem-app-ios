@@ -143,7 +143,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
     }
 
     private func refreshActionButtonsData() {
-        actionButtonsViewModel?.fetchData()
+        actionButtonsViewModel?.refresh()
     }
 
     private func bind() {
@@ -364,7 +364,11 @@ extension MultiWalletMainContentViewModel {
             return
         }
 
-        tokenRouter.openBuyCryptoIfPossible(walletModel: walletModel)
+        if FeatureProvider.isAvailable(.onramp) {
+            tokenRouter.openOnramp(walletModel: walletModel)
+        } else {
+            tokenRouter.openBuyCryptoIfPossible(walletModel: walletModel)
+        }
     }
 
     private func openSell(for walletModel: WalletModel) {

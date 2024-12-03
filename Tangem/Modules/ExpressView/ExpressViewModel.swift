@@ -737,6 +737,7 @@ extension ExpressViewModel: NotificationTapDelegate {
              .refreshFee,
              .goToProvider,
              .addHederaTokenAssociation,
+             .retryKaspaTokenTransaction,
              .openLink,
              .stake,
              .openFeedbackMail,

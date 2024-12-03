@@ -212,3 +212,17 @@ extension TransactionValidator where Self: FeeResourceRestrictable {
         try validateFeeResource(amount: amount, fee: fee.amount)
     }
 }
+
+// MARK: - RentExtemptionRestrictable e.g. SolanaWalletManager
+
+extension TransactionValidator where Self: RentExtemptionRestrictable {
+    func validate(amount: Amount, fee: Fee, destination: DestinationType) async throws {
+        Log.debug("TransactionValidator \(self) doesn't checking destination. If you want it, make our own implementation")
+        try validate(amount: amount, fee: fee)
+    }
+
+    func validate(amount: Amount, fee: Fee) throws {
+        try validateAmounts(amount: amount, fee: fee.amount)
+        try validateRentExtemption(amount: amount, fee: fee.amount)
+    }
+}

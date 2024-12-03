@@ -22,12 +22,35 @@ struct TokenInteractionAvailabilityProvider {
     }
 
     func isContextMenuAvailable() -> Bool {
-        let hasRequirements = walletModel.assetRequirementsManager?.hasRequirements(for: walletModel.amountType) ?? false
-        return !hasRequirements && defaultInteractionAvailability()
+        guard let assetRequirementsManager = walletModel.assetRequirementsManager else {
+            return true
+        }
+
+        switch assetRequirementsManager.requirementsCondition(for: walletModel.amountType) {
+        case .paidTransactionWithFee(blockchain: .hedera, _, _):
+            return false
+        case .paidTransactionWithFee,
+             .none:
+            return defaultInteractionAvailability()
+        }
     }
 
     func isTokenDetailsAvailable() -> Bool {
         return defaultInteractionAvailability()
+    }
+
+    func isReceiveAvailable() -> Bool {
+        guard let assetRequirementsManager = walletModel.assetRequirementsManager else {
+            return true
+        }
+
+        switch assetRequirementsManager.requirementsCondition(for: walletModel.amountType) {
+        case .paidTransactionWithFee(blockchain: .hedera, _, _):
+            return false
+        case .paidTransactionWithFee,
+             .none:
+            return defaultInteractionAvailability()
+        }
     }
 
     private func defaultInteractionAvailability() -> Bool {
@@ -107,7 +130,8 @@ struct TokenInteractionAvailabilityProvider {
              .core,
              .canxium,
              .casper,
-             .chiliz:
+             .chiliz,
+             .xodex:
             // Checking that we have at least one valid (non-empty) address
             //
             // If necessary, add more specific conditions for newly added blockchains

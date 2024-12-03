@@ -9,21 +9,21 @@
 import Foundation
 
 final class ActionButtonsBuyViewModel: ObservableObject {
+    // MARK: - Dependencies
+
     @Injected(\.exchangeService) private var exchangeService: ExchangeService
 
-    let tokenSelectorViewModel: TokenSelectorViewModel<
-        ActionButtonsTokenSelectorItem,
-        ActionButtonsTokenSelectorItemBuilder
-    >
+    // MARK: - Child viewModel
+
+    let tokenSelectorViewModel: ActionButtonsTokenSelectorViewModel
+
+    // MARK: - Private property
 
     private weak var coordinator: ActionButtonsBuyRoutable?
 
     init(
         coordinator: some ActionButtonsBuyRoutable,
-        tokenSelectorViewModel: TokenSelectorViewModel<
-            ActionButtonsTokenSelectorItem,
-            ActionButtonsTokenSelectorItemBuilder
-        >
+        tokenSelectorViewModel: ActionButtonsTokenSelectorViewModel
     ) {
         self.coordinator = coordinator
         self.tokenSelectorViewModel = tokenSelectorViewModel
@@ -34,23 +34,12 @@ final class ActionButtonsBuyViewModel: ObservableObject {
         case .close:
             coordinator?.dismiss()
         case .didTapToken(let token):
-            guard let url = makeBuyUrl(from: token) else { return }
-
-            coordinator?.openBuyCrypto(at: url)
+            coordinator?.openOnramp(walletModel: token.walletModel)
         }
     }
-
-    private func makeBuyUrl(from token: ActionButtonsTokenSelectorItem) -> URL? {
-        let buyUrl = exchangeService.getBuyUrl(
-            currencySymbol: token.symbol,
-            amountType: token.walletModel.amountType,
-            blockchain: token.walletModel.blockchainNetwork.blockchain,
-            walletAddress: token.walletModel.defaultAddress
-        )
-
-        return buyUrl
-    }
 }
+
+// MARK: - Action
 
 extension ActionButtonsBuyViewModel {
     enum Action {

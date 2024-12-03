@@ -312,7 +312,7 @@ extension OnrampModel: OnrampPaymentMethodsInput {
 
     var paymentMethodsPublisher: AnyPublisher<[OnrampPaymentMethod], Never> {
         _onrampProviders.compactMap {
-            $0?.value?.filter { $0.hasProviders() }.map(\.paymentMethod)
+            $0?.value?.filter { $0.hasShowableProviders() }.map(\.paymentMethod)
         }.eraseToAnyPublisher()
     }
 }
@@ -348,15 +348,13 @@ extension OnrampModel: OnrampRedirectingOutput {
             externalTxId: data.externalTxId
         )
 
+        onrampPendingTransactionsRepository
+            .onrampTransactionDidSend(txData, userWalletId: userWalletId)
+
         DispatchQueue.main.async {
             self.router?.openWebView(url: data.widgetUrl) { [weak self] in
-                guard let self else { return }
-                onrampPendingTransactionsRepository.onrampTransactionDidSend(
-                    txData,
-                    userWalletId: userWalletId
-                )
-                _transactionTime.send(Date())
-                router?.openFinishStep()
+                self?._transactionTime.send(Date())
+                self?.router?.openFinishStep()
             }
         }
     }
@@ -367,7 +365,7 @@ extension OnrampModel: OnrampRedirectingOutput {
 extension OnrampModel: OnrampInput {
     var isValidToRedirectPublisher: AnyPublisher<Bool, Never> {
         _selectedOnrampProvider
-            .map { $0?.value?.isReadyToBuy ?? false }
+            .map { $0?.value?.isSuccessfullyLoaded ?? false }
             .eraseToAnyPublisher()
     }
 }
@@ -389,11 +387,7 @@ extension OnrampModel: SendFinishInput {
 extension OnrampModel: SendBaseInput {
     var actionInProcessing: AnyPublisher<Bool, Never> {
         Publishers
-            .Merge3(
-                _isLoading,
-                _currency.map { $0.isLoading },
-                _onrampProviders.compactMap { $0?.isLoading }
-            )
+            .Merge(_isLoading, _currency.map { $0.isLoading })
             .eraseToAnyPublisher()
     }
 }

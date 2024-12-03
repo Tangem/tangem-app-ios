@@ -16,6 +16,7 @@ struct OnrampProviderRowView: View {
             content
         }
         .buttonStyle(.plain)
+        .allowsHitTesting(data.isTappable)
     }
 
     private var content: some View {
@@ -59,6 +60,7 @@ struct OnrampProviderRowView: View {
             // Kingfisher shows a gray background even if it has a cached image
             forceKingfisher: false
         )
+        .opacity(data.isTappable ? 1 : 0.4)
     }
 
     private var topLineView: some View {
@@ -105,8 +107,10 @@ struct OnrampProviderRowView: View {
             EmptyView()
         case .available(let time):
             timeView(time: time)
-        case .availableFromAmount(let amount), .availableToAmount(let amount):
-            Text(amount)
+        case .availableFromAmount(let text),
+             .availableToAmount(let text),
+             .availableForPaymentMethods(let text):
+            Text(text)
                 .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
         case .unavailable(let reason):
             Text(reason)
@@ -140,6 +144,7 @@ struct OnrampProviderRowView: View {
         ForEach([
             OnrampProviderRowViewData(
                 name: "1Inch",
+                paymentMethodId: "card",
                 iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/1INCH512.png"),
                 formattedAmount: "0,00453 BTC",
                 state: .available(estimatedTime: "5 min"),
@@ -149,6 +154,7 @@ struct OnrampProviderRowView: View {
             ),
             OnrampProviderRowViewData(
                 name: "Changenow",
+                paymentMethodId: "card",
                 iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/NOW512.png"),
                 formattedAmount: "0,00450 BTC",
                 state: .availableFromAmount(minAmount: "15 USD"),
