@@ -21,6 +21,7 @@ extension BlockBookUTXOProvider: BitcoinNetworkProvider {
     }
 
     func getInfo(address: String) -> AnyPublisher<BitcoinResponse, Error> {
+        let address = addAddressPrefixIfNeeded(address)
         return Publishers
             .Zip(addressData(address: address, parameters: addressParameters), unspentTxData(address: address))
             .tryMap { [weak self] addressResponse, unspentTxResponse in
@@ -61,7 +62,8 @@ extension BlockBookUTXOProvider: BitcoinNetworkProvider {
     }
 
     func getSignatureCount(address: String) -> AnyPublisher<Int, Error> {
-        addressData(address: address, parameters: addressParameters)
+        let address = addAddressPrefixIfNeeded(address)
+        return addressData(address: address, parameters: addressParameters)
             .tryMap { response in
                 let outgoingTxsCount = response.transactions?.filter { transaction in
                     return transaction.compat.vin.contains(where: { inputs in
@@ -156,7 +158,6 @@ private extension BlockBookUTXOProvider {
     }
 
     private func unspentOutputs(from utxos: [BlockBookUnspentTxResponse], transactions: [BlockBookAddressResponse.Transaction], address: String) -> [BitcoinUnspentOutput] {
-        let address = addressPrefixProvider?.addPrefixIfNeeded(address) ?? address
         let outputScript = transactions
             .compactMap { transaction in
                 transaction.compat.vout.first {

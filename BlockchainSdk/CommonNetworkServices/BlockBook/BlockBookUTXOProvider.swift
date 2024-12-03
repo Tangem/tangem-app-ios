@@ -20,7 +20,7 @@ class BlockBookUTXOProvider {
     private let config: BlockBookConfig
     private let provider: NetworkProvider<BlockBookTarget>
 
-    let addressPrefixProvider: AddressPrefixProvider?
+    private let addressPrefixProvider: AddressPrefixProvider?
 
     var decimalValue: Decimal {
         blockchain.decimalValue
@@ -123,11 +123,11 @@ class BlockBookUTXOProvider {
         executeRequest(request)
     }
 
-    private func target(for request: BlockBookTarget.Request) -> BlockBookTarget {
-        BlockBookTarget(request: request, config: config, blockchain: blockchain)
+    func addAddressPrefixIfNeeded(_ address: String) -> String {
+        addressPrefixProvider.flatMap { $0.addPrefixIfNeeded(address) } ?? address
     }
 
-    private func addAddressPrefixIfNeeded(_ address: String) -> String {
-        addressPrefixProvider.flatMap { $0.addPrefixIfNeeded(address) } ?? address
+    private func target(for request: BlockBookTarget.Request) -> BlockBookTarget {
+        BlockBookTarget(request: request, config: config, blockchain: blockchain)
     }
 }
