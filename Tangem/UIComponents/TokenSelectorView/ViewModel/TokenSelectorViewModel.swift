@@ -18,6 +18,17 @@ final class TokenSelectorViewModel<
 
     @Published private(set) var viewState: ViewState = .empty
 
+    var isAvailableItemsBlockVisible: Bool {
+        guard
+            case .data(let availableItems, let unavailableItems) = viewState,
+            (availableItems.isEmpty && unavailableItems.isEmpty) || availableItems.isNotEmpty
+        else {
+            return false
+        }
+
+        return true
+    }
+
     let strings: TokenSelectorLocalizable
 
     private var availableWalletModels: [WalletModel] = []
@@ -50,10 +61,11 @@ final class TokenSelectorViewModel<
     private func bindWalletModels() {
         expressTokensListAdapter
             .walletModels()
+            .asyncMap { walletModels in
+                await self.tokenSorter.sortModels(walletModels: walletModels)
+            }
             .withWeakCaptureOf(self)
-            .sink { viewModel, walletModels in
-                let sortedWalletModels = viewModel.tokenSorter.sortModels(walletModels: walletModels)
-
+            .sink { viewModel, sortedWalletModels in
                 viewModel.availableWalletModels = sortedWalletModels.availableModels
                 viewModel.unavailableWalletModels = sortedWalletModels.unavailableModels
 
@@ -98,9 +110,9 @@ private extension TokenSelectorViewModel {
             .filter { filter(searchText, item: $0.tokenItem) }
             .map { tokenSelectorItemBuilder.map(from: $0, isDisabled: false) }
 
-        let unavailableTokenItems = unavailableWalletModels.map {
-            tokenSelectorItemBuilder.map(from: $0, isDisabled: true)
-        }
+        let unavailableTokenItems = unavailableWalletModels
+            .filter { filter(searchText, item: $0.tokenItem) }
+            .map { tokenSelectorItemBuilder.map(from: $0, isDisabled: true) }
 
         viewState = .data(availableTokens: availableTokenItems, unavailableTokens: unavailableTokenItems)
     }

@@ -10,31 +10,34 @@ import SwiftUI
 
 struct ActionButtonView<ViewModel: ActionButtonViewModel>: View {
     @ObservedObject var viewModel: ViewModel
+    @Environment(\.isEnabled) var isEnabled
+
+    private var isDisabled: Bool {
+        !isEnabled || viewModel.isDisabled
+    }
 
     var body: some View {
-        Button(
-            action: viewModel.tap,
-            label: {
-                HStack(spacing: 4) {
-                    leadingItem
-                        .frame(width: 20, height: 20)
-                    Text(viewModel.model.title)
-                        .font(Fonts.Bold.subheadline)
-                        .foregroundStyle(Colors.Text.primary1)
-                }
-            }
-        )
+        HStack(spacing: 4) {
+            leadingItem
+                .frame(width: 20, height: 20)
+            Text(viewModel.model.title)
+                .style(
+                    Fonts.Bold.subheadline,
+                    color: isDisabled ? Colors.Text.disabled : Colors.Text.primary1
+                )
+        }
         .frame(height: 34)
         .frame(maxWidth: .infinity)
         .background(Colors.Background.action)
         .cornerRadiusContinuous(10)
-        .disabled(viewModel.presentationState == .loading)
+        .onTapGesture(perform: viewModel.tap)
+        .bindAlert($viewModel.alert)
     }
 
     @ViewBuilder
     private var leadingItem: some View {
-        switch viewModel.presentationState {
-        case .initial, .idle:
+        switch viewModel.viewState {
+        case .initial, .idle, .disabled:
             buttonIcon
         case .loading:
             progressView
@@ -45,12 +48,12 @@ struct ActionButtonView<ViewModel: ActionButtonViewModel>: View {
         viewModel.model.icon.image
             .renderingMode(.template)
             .resizable()
-            .foregroundStyle(Colors.Icon.primary1)
+            .foregroundStyle(isDisabled ? Colors.Icon.inactive : Colors.Icon.primary1)
     }
 
     private var progressView: some View {
         ProgressView()
             .tint(Colors.Icon.informative)
-            .animation(.default, value: viewModel.presentationState)
+            .animation(.default, value: viewModel.viewState)
     }
 }
