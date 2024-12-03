@@ -2,14 +2,14 @@
 "action_buttons_buy_navigation_bar_title" = "Acheter";
 "action_buttons_sell_empty_search_message" = "Jeton non trouvé dans votre portefeuille ? Consultez les marchés pour le trouver et l'ajouter à la vente";
 "action_buttons_sell_navigation_bar_title" = "Vendre";
-"action_buttons_something_wrong_alert_title" = "";
+"action_buttons_something_wrong_alert_message" = "";
 "action_buttons_swap_choose_token" = "Choisissez le jeton";
 "action_buttons_swap_empty_search_message" = "Jeton non trouvé dans votre portefeuille ? Consultez les marchés pour le trouver et l'ajouter à l'échange";
 "action_buttons_swap_navigation_bar_title" = "Échanger";
 "action_buttons_swap_no_available_pair_notification_message" = "Il n'y a pas de token disponible pour échanger avec le token sélectionné. Veuillez en choisir un autre.";
 "action_buttons_swap_no_available_pair_notification_title" = "Aucune paire disponible";
-"action_buttons_swap_no_tokens_added_alert_title" = "";
-"action_buttons_swap_not_enough_tokens_alert_title" = "";
+"action_buttons_swap_no_tokens_added_alert_message" = "";
+"action_buttons_swap_not_enough_tokens_alert_message" = "";
 "action_buttons_you_want_to_receive" = "Sélectionnez le jeton que vous souhaitez recevoir";
 "action_buttons_you_want_to_swap" = "Sélectionnez le jeton que vous souhaitez échanger";
 "add_custom_token_choose_network" = "Choisissez le réseau";
@@ -264,6 +264,9 @@
 "express_exchange_notification_refund_title" = "Le montant a été remboursé en %1$@ (réseau %2$@)";
 "express_exchange_notification_verification_text" = "Visitez le site Web du fournisseur pour la vérification";
 "express_exchange_notification_verification_title" = "Vérification KYC requise par le fournisseur";
+"express_exchange_status_bought" = "Bought";
+"express_exchange_status_buying" = "Buying";
+"express_exchange_status_buying_active" = "Buying...";
 "express_exchange_status_canceled" = "Annulé";
 "express_exchange_status_confirmed" = "Confirmé";
 "express_exchange_status_confirming" = "En attente de confirmation";
