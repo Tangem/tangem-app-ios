@@ -84,6 +84,32 @@ private extension OnrampModel {
                 model.preferenceDidChange(country: preference.country, currency: preference.currency)
             }
             .store(in: &bag)
+
+        // Only for analytics
+        _selectedOnrampProvider
+            .compactMap { $0?.value }
+            .removeDuplicates()
+            .withWeakCaptureOf(self)
+            .sink { model, provider in
+                switch provider.state {
+                case .restriction(.tooSmallAmount):
+                    Analytics.log(.onrampErrorMinAmount)
+                case .restriction(.tooBigAmount):
+                    Analytics.log(.onrampErrorMaxAmount)
+                case .failed(let error as ExpressAPIError):
+                    Analytics.log(
+                        event: .onrampErrors,
+                        params: [
+                            .token: model.walletModel.tokenItem.currencySymbol,
+                            .provider: provider.provider.name,
+                            .errorCode: error.errorCode.rawValue.description,
+                        ]
+                    )
+                default:
+                    break
+                }
+            }
+            .store(in: &bag)
     }
 
     // MARK: - Providers list

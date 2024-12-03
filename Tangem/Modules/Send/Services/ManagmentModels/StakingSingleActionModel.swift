@@ -277,6 +277,16 @@ extension StakingSingleActionModel: SendSummaryInput, SendSummaryOutput {
     }
 }
 
+// MARK: - StakingValidatorsInput
+
+extension StakingSingleActionModel: StakingValidatorsInput {
+    var selectedValidator: ValidatorInfo? { action.validatorInfo }
+
+    var selectedValidatorPublisher: AnyPublisher<ValidatorInfo, Never> {
+        Just(action.validatorInfo).compactMap { $0 }.eraseToAnyPublisher()
+    }
+}
+
 // MARK: - SendFinishInput
 
 extension StakingSingleActionModel: SendFinishInput {

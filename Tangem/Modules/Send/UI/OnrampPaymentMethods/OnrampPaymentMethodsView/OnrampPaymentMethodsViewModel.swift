@@ -33,6 +33,10 @@ final class OnrampPaymentMethodsViewModel: ObservableObject {
 
         bind()
     }
+
+    func onAppear() {
+        Analytics.log(.onrampPaymentMethodScreenOpened)
+    }
 }
 
 // MARK: - Private

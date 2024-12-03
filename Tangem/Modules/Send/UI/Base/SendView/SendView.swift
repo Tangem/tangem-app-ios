@@ -45,6 +45,7 @@ struct SendView: View {
         })
         .onChange(of: viewModel.shouldShowDismissAlert) { interactiveDismissDisabled = $0 }
         .navigationBarHidden(true)
+        .onAppear(perform: viewModel.onAppear)
         .onDisappear(perform: viewModel.onDisappear)
     }
 
