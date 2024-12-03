@@ -30,10 +30,6 @@ class KaspaTransactionBuilder {
         return Amount(with: blockchain, value: Decimal(availableAmountInSatoshi) / blockchain.decimalValue)
     }
 
-    func unspentOutputsCount(for amount: Amount) -> Int {
-        return unspentOutputs.count
-    }
-
     func setUnspentOutputs(_ unspentOutputs: [BitcoinUnspentOutput]) {
         let sortedOutputs = unspentOutputs.sorted {
             $0.amount > $1.amount
@@ -224,7 +220,7 @@ extension KaspaTransactionBuilder {
         )
     }
 
-    func buildForSendKRC20(transaction: Transaction, token: Token) throws -> (KaspaKRC20.TransactionGroup, KaspaKRC20.TransactionMeta) {
+    func buildForSignKRC20(transaction: Transaction, token: Token) throws -> (KaspaKRC20.TransactionGroup, KaspaKRC20.TransactionMeta) {
         // Commit
         let resultCommit = try buildCommitTransactionKRC20(transaction: transaction, token: token)
 
@@ -233,7 +229,7 @@ extension KaspaTransactionBuilder {
             throw WalletError.failedToBuildTx
         }
 
-        let resultReveal = try buildRevealTransaction(
+        let resultReveal = try buildRevealTransactionKRC20(
             sourceAddress: transaction.sourceAddress,
             params: resultCommit.params,
             fee: .init(feeParams.revealFee)
@@ -253,7 +249,16 @@ extension KaspaTransactionBuilder {
         )
     }
 
-    public func buildCommitTransactionKRC20(transaction: Transaction, token: Token, includeFee: Bool = true) throws -> KaspaKRC20.CommitTransaction {
+    /// Just a proxy for external consumers.
+    func buildForSignRevealTransactionKRC20(
+        sourceAddress: String,
+        params: KaspaKRC20.IncompleteTokenTransactionParams,
+        fee: Fee
+    ) throws -> KaspaKRC20.RevealTransaction {
+        return try buildRevealTransactionKRC20(sourceAddress: sourceAddress, params: params, fee: fee)
+    }
+
+    private func buildCommitTransactionKRC20(transaction: Transaction, token: Token, includeFee: Bool = true) throws -> KaspaKRC20.CommitTransaction {
         let availableInputValue = availableAmount()
 
         // We check there are enough funds to cover the commission,
@@ -358,7 +363,11 @@ extension KaspaTransactionBuilder {
         )
     }
 
-    public func buildRevealTransaction(sourceAddress: String, params: KaspaKRC20.IncompleteTokenTransactionParams, fee: Fee) throws -> KaspaKRC20.RevealTransaction {
+    private func buildRevealTransactionKRC20(
+        sourceAddress: String,
+        params: KaspaKRC20.IncompleteTokenTransactionParams,
+        fee: Fee
+    ) throws -> KaspaKRC20.RevealTransaction {
         let sourceAddressScript = try scriptPublicKey(address: sourceAddress).hexString.lowercased()
         let redeemScript = KaspaKRC20.RedeemScript(publicKey: walletPublicKey.blockchainKey, envelope: params.envelope)
 
