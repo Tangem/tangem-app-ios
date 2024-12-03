@@ -15,7 +15,7 @@ struct OnrampStatusCompactView: View {
         VStack(spacing: 10) {
             statusesView
 
-            DefaultFooterView(Localization.onrampStatusesViewFooter)
+            DefaultFooterView(Localization.onrampTransactionStatusFooterText)
                 .padding(.horizontal, 14)
         }
     }
