@@ -69,7 +69,6 @@ public class ProviderItem {
         case (_, .loaded):
             return false
         // All cases which is `loaded` have to be ordered before `rhs`
-        // All cases which is `restriction` have to be ordered before `rhs`
         // Exclude case where `rhs == .loaded`. This case processed above
         case (.loaded, _):
             return true
