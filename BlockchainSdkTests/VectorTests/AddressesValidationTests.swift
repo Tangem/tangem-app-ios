@@ -36,11 +36,8 @@ class AddressesValidationTests: XCTestCase {
             let coin = try XCTUnwrap(CoinType(blockchain), "__INVALID_VECTOR__ CANNOT CREATE WALLET CORE COIN FOR BLOCKCHAIN '\(blockchain.displayName)'")
             let walletCoreAddressValidator: AddressValidator
 
-            if coin == .ton {
-                walletCoreAddressValidator = TonAddressService()
-            } else {
-                walletCoreAddressValidator = WalletCoreAddressService(coin: coin, publicKeyType: coin.publicKeyType)
-            }
+            walletCoreAddressValidator = WalletCoreAddressService(coin: coin, publicKeyType: coin.publicKeyType)
+
             let addressValidator = AddressServiceFactory(blockchain: blockchain).makeAddressService()
 
             vector.positive.forEach { vector in

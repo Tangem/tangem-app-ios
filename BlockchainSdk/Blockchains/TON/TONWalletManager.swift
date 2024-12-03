@@ -56,20 +56,41 @@ final class TONWalletManager: BaseManager, WalletManager {
     ) -> AnyPublisher<TransactionSendResult, SendTxError> {
         getJettonWalletAddressIfNeeded(for: transaction.sourceAddress, transactionType: transaction.amount.type)
             .receive(on: DispatchQueue.global())
-            .tryMap { [weak self] jettonWalletAddress -> String in
+            .tryMap { [weak self] jettonWalletAddress -> (TONTransactionInput, Data) in
                 guard let self else {
                     throw WalletError.failedToBuildTx
                 }
 
                 let params = transaction.params as? TONTransactionParams
 
-                let input = try txBuilder.buildForSign(
+                let transactionInput = TONTransactionInput(
                     amount: transaction.amount,
                     destination: transaction.destinationAddress,
+                    expireAt: createExpirationTimestampSecs(),
                     jettonWalletAddress: jettonWalletAddress,
                     params: params
                 )
-                return try buildTransaction(input: input, with: signer)
+
+                let hashForSign = try txBuilder.buildForSign(buildInput: transactionInput)
+
+                return (transactionInput, hashForSign.data)
+            }
+            .flatMap { transactionInput, hashForSign in
+                let signaturePublisher = signer.sign(hash: hashForSign, walletPublicKey: self.wallet.publicKey)
+                let transactionInputPublisher = Just(transactionInput).setFailureType(to: Error.self)
+
+                return Publishers.Zip(signaturePublisher, transactionInputPublisher)
+            }
+            .withWeakCaptureOf(self)
+            .tryMap { walletManager, input -> String in
+                let (signature, buildInput) = input
+
+                let dataForSend = try walletManager.txBuilder.buildForSend(
+                    buildInput: buildInput,
+                    signature: signature
+                )
+
+                return dataForSend
             }
             .flatMap { [weak self] message -> AnyPublisher<String, Error> in
                 guard let self else {
@@ -90,28 +111,6 @@ final class TONWalletManager: BaseManager, WalletManager {
             .eraseSendError()
             .eraseToAnyPublisher()
     }
-
-    func buildTransaction(input: TheOpenNetworkSigningInput, with signer: TransactionSigner? = nil) throws -> String {
-        let output: TheOpenNetworkSigningOutput
-
-        if let signer = signer {
-            guard let publicKey = PublicKey(tangemPublicKey: wallet.publicKey.blockchainKey, publicKeyType: CoinType.ton.publicKeyType) else {
-                throw WalletError.failedToBuildTx
-            }
-
-            let coreSigner = WalletCoreSigner(
-                sdkSigner: signer,
-                blockchainKey: publicKey.data,
-                walletPublicKey: wallet.publicKey,
-                curve: wallet.blockchain.curve
-            )
-            output = try AnySigner.signExternally(input: input, coin: .ton, signer: coreSigner)
-        } else {
-            output = AnySigner.sign(input: input, coin: .ton)
-        }
-
-        return try txBuilder.buildForSend(output: output)
-    }
 }
 
 // MARK: - TransactionFeeProvider
@@ -126,12 +125,17 @@ extension TONWalletManager: TransactionFeeProvider {
                     throw WalletError.failedToBuildTx
                 }
 
-                let input = try txBuilder.buildForSign(
+                let buildInput = TONTransactionInput(
                     amount: amount,
                     destination: destination,
-                    jettonWalletAddress: jettonWalletAddress
+                    expireAt: createExpirationTimestampSecs(),
+                    jettonWalletAddress: jettonWalletAddress,
+                    params: nil
                 )
-                return try buildTransaction(input: input)
+
+                let buildForSend = try txBuilder.buildForSend(buildInput: buildInput, signature: Data(repeating: 0, count: 64))
+
+                return buildForSend
             }
             .flatMap { [weak self] message -> AnyPublisher<[Fee], Error> in
                 guard let self else {
@@ -203,5 +207,15 @@ private extension TONWalletManager {
             amount.value += TONTransactionBuilder.Constants.jettonTransferProcessingFee
             return Fee(amount, parameters: fee.parameters)
         }
+    }
+
+    private func createExpirationTimestampSecs() -> UInt32 {
+        UInt32(Date().addingTimeInterval(TimeInterval(Constants.transactionLifetimeInMin * 60)).timeIntervalSince1970)
+    }
+}
+
+private extension TONWalletManager {
+    enum Constants {
+        static let transactionLifetimeInMin: Double = 1
     }
 }

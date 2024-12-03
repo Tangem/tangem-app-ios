@@ -1,5 +1,5 @@
 {
-  "originHash" : "c126783f6de9f6b5045f4b5c3001ebdaad9a1187942ac248486e962262627214",
+  "originHash" : "b796d346c304b065321a99b34c369a122bc40e2b40b490c34c5ecdfeea6509c6",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -464,8 +464,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/wallet-core-binaries-ios.git",
       "state" : {
-        "revision" : "954aa903bcf3899b9bb99267ff847f7967f12327",
-        "version" : "4.0.46-tangem3.1"
+        "revision" : "2d775a802749b40b216641450e54a1274bb5d12f"
       }
     },
     {
