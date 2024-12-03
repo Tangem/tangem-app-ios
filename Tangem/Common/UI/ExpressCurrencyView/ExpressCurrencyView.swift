@@ -31,11 +31,9 @@ struct ExpressCurrencyView<Content: View>: View {
         VStack(spacing: 6) {
             topContent
 
-            VStack(spacing: 4) {
-                mainContent
+            mainContent
 
-                bottomContent
-            }
+            bottomContent
         }
     }
 
@@ -61,7 +59,7 @@ struct ExpressCurrencyView<Content: View>: View {
                 EmptyView()
             case .loading:
                 SkeletonView()
-                    .frame(width: 72, height: 14)
+                    .frame(width: 72, height: 12)
                     .cornerRadius(3)
                     .padding(.vertical, 2)
             case .notAvailable:

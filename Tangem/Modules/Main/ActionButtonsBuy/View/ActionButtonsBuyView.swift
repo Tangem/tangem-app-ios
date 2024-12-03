@@ -13,30 +13,36 @@ struct ActionButtonsBuyView: View {
 
     var body: some View {
         content
-            .navigationTitle(Localization.commonBuy)
+            .navigationTitle(Localization.actionButtonsBuyNavigationBarTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     CloseButton(dismiss: { viewModel.handleViewAction(.close) })
                 }
             }
+            .transition(.opacity.animation(.easeInOut))
     }
 
     @ViewBuilder
     private var content: some View {
-        TokenSelectorView(
-            viewModel: viewModel.tokenSelectorViewModel,
-            tokenCellContent: { token in
-                ActionButtonsTokenSelectItemView(model: token) {
-                    viewModel.handleViewAction(.didTapToken(token))
+        ScrollView {
+            TokenSelectorView(
+                viewModel: viewModel.tokenSelectorViewModel,
+                tokenCellContent: { token in
+                    ActionButtonsTokenSelectItemView(model: token) {
+                        viewModel.handleViewAction(.didTapToken(token))
+                    }
+                    .padding(.vertical, 16)
+                },
+                emptySearchContent: {
+                    Text(viewModel.tokenSelectorViewModel.strings.emptySearchMessage)
+                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                        .multilineTextAlignment(.center)
+                        .animation(.default, value: viewModel.tokenSelectorViewModel.searchText)
                 }
-            },
-            emptySearchContent: {
-                Text(viewModel.tokenSelectorViewModel.strings.emptySearchMessage)
-                    .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-                    .multilineTextAlignment(.center)
-                    .animation(.default, value: viewModel.tokenSelectorViewModel.searchText)
-            }
-        )
+            )
+            .padding(.horizontal, 16)
+        }
+        .background(Colors.Background.tertiary.ignoresSafeArea(.all))
     }
 }

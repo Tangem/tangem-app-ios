@@ -6,6 +6,6 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-protocol ActionButtonsSellFlowRoutable {
+protocol ActionButtonsSellFlowRoutable: AnyObject {
     func openSell(userWalletModel: some UserWalletModel)
 }

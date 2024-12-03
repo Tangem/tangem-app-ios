@@ -6,65 +6,51 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-final class BuyActionButtonViewModel: ActionButtonViewModel {
-    @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
+import Combine
+import Foundation
 
-    private(set) var presentationState: ActionButtonPresentationState = .initial
+final class BuyActionButtonViewModel: ActionButtonViewModel {
+    // MARK: Published property
+
+    @Published private(set) var viewState: ActionButtonState = .idle
+
+    @Published var alert: AlertBinder? = nil
+
+    // MARK: Public property
 
     let model: ActionButtonModel
 
-    private var isBuyAvailable: Bool {
-        tangemApiService.geoIpRegionCode != LanguageCode.ru
-    }
+    // MARK: Private property
 
-    private let coordinator: ActionButtonsBuyFlowRoutable
+    private weak var coordinator: ActionButtonsBuyFlowRoutable?
+    private let lastButtonTapped: PassthroughSubject<ActionButtonModel, Never>
     private let userWalletModel: UserWalletModel
 
     init(
         model: ActionButtonModel,
+        lastButtonTapped: PassthroughSubject<ActionButtonModel, Never>,
         coordinator: some ActionButtonsBuyFlowRoutable,
         userWalletModel: some UserWalletModel
     ) {
         self.model = model
         self.coordinator = coordinator
+        self.lastButtonTapped = lastButtonTapped
         self.userWalletModel = userWalletModel
     }
 
     @MainActor
     func tap() {
-        switch presentationState {
-        case .initial:
-            updateState(to: .loading)
-        case .loading:
+        switch viewState {
+        case .loading, .disabled, .initial:
             break
         case .idle:
-            didTap()
+            lastButtonTapped.send(model)
+            coordinator?.openBuy(userWalletModel: userWalletModel)
         }
     }
 
     @MainActor
-    func updateState(to state: ActionButtonPresentationState) {
-        presentationState = state
-    }
-
-    private func didTap() {
-        if isBuyAvailable {
-            coordinator.openBuy(userWalletModel: userWalletModel)
-        } else {
-            openBanking()
-        }
-    }
-
-    private func openBanking() {
-        coordinator.openBankWarning(
-            confirmCallback: { [weak self] in
-                guard let self else { return }
-
-                coordinator.openBuy(userWalletModel: userWalletModel)
-            },
-            declineCallback: { [weak self] in
-                self?.coordinator.openP2PTutorial()
-            }
-        )
+    func updateState(to state: ActionButtonState) {
+        viewState = state
     }
 }

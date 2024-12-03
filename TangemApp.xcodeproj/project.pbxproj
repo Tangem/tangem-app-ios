@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		08D8B6D049E83C622B0B3865 /* Pods_Tangem_TangemUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F0F54769EDEAC846B6BF43B /* Pods_Tangem_TangemUITests.framework */; };
 		0A0DB6E82C479A6900003450 /* ActiveStakingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0DB6E72C479A6900003450 /* ActiveStakingView.swift */; };
 		0A0DB7582C48FB0000003450 /* RewardRateValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0DB7572C48FAFF00003450 /* RewardRateValues.swift */; };
 		0A0E01772C64AA79009E01F2 /* StakingSendAmountValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0E01762C64AA79009E01F2 /* StakingSendAmountValidator.swift */; };
@@ -162,7 +161,6 @@
 		2DFC27932C78E833009B247E /* TokenItemInfoProviderMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DFC278F2C78E833009B247E /* TokenItemInfoProviderMapper.swift */; };
 		2DFC27942C78E833009B247E /* TokenItemType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DFC27902C78E833009B247E /* TokenItemType.swift */; };
 		2DFC27962C78E881009B247E /* MarketsPortfolioTokenItemFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DFC27952C78E881009B247E /* MarketsPortfolioTokenItemFactory.swift */; };
-		4F00236C26F4689B6A741039 /* Pods_Tangem.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B1F5CE065E6BA27537C0E73 /* Pods_Tangem.framework */; };
 		5D00FCD1261738C5004626DE /* WalletConnectEthTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D00FCD0261738C5004626DE /* WalletConnectEthTransaction.swift */; };
 		5D06E040250A5D54004218D0 /* NSRegualrExpression+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D06E03F250A5D54004218D0 /* NSRegualrExpression+.swift */; };
 		5D09383225E7A9820049B8F0 /* Wallet+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D09383125E7A9820049B8F0 /* Wallet+.swift */; };
@@ -258,11 +256,13 @@
 		5DFCCB7824C389740014A293 /* CommonUserWalletModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCCB7724C389740014A293 /* CommonUserWalletModel.swift */; };
 		5DFCE54C274BDEE200C1B1A0 /* ResetToFactorySettingsTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCE54B274BDEE200C1B1A0 /* ResetToFactorySettingsTask.swift */; };
 		5DFE855724EF051400194106 /* Error+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFE855624EF051400194106 /* Error+.swift */; };
+		5EE13FAFE486B075BC306CE3 /* Pods_Tangem_TangemUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7427281EA9BA63F64B36B959 /* Pods_Tangem_TangemUITests.framework */; };
+		62CB18275B63BB8EDB1FD547 /* Pods_TangemTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B6A695B5ED4945330C18365 /* Pods_TangemTests.framework */; };
 		6563B8B92858B92A009A8A7D /* SupportChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6563B8B82858B92A009A8A7D /* SupportChatView.swift */; };
 		6596AD4928730F4900508D0A /* WarningBankCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6596AD4828730F4900508D0A /* WarningBankCardView.swift */; };
 		6596AD4B28738F0100508D0A /* WarningBankCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6596AD4A28738F0100508D0A /* WarningBankCardViewModel.swift */; };
 		65C9FCAE28644F9D00FDE63E /* DetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C9FCAD28644F9D00FDE63E /* DetailsView.swift */; };
-		AB5DE0569C12F3BDA9530564 /* Pods_TangemTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 740F3E19014FB5F75D949862 /* Pods_TangemTests.framework */; };
+		926DF40443D38FA2659B442E /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 		B002416F2C2441EF00416397 /* HideTokenAlertBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B002416E2C2441EF00416397 /* HideTokenAlertBuilder.swift */; };
 		B002654C2CE1F50000D969E0 /* OnboardingPinStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B002654B2CE1F4EB00D969E0 /* OnboardingPinStackView.swift */; };
 		B002654E2CE1F62F00D969E0 /* OnboardingPinViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B002654D2CE1F62F00D969E0 /* OnboardingPinViewModel.swift */; };
@@ -2107,6 +2107,7 @@
 		DC01329E299A786700B95145 /* testnet_tokens.json in Resources */ = {isa = PBXBuildFile; fileRef = 5DE552F527B418B400D7ADCD /* testnet_tokens.json */; };
 		DC0132A0299A7B8E00B95145 /* notReferralMock.json in Resources */ = {isa = PBXBuildFile; fileRef = B0332D3229251A4A00553AD9 /* notReferralMock.json */; };
 		DC0132A1299A7B8E00B95145 /* referralMock.json in Resources */ = {isa = PBXBuildFile; fileRef = B0332D3329251A4A00553AD9 /* referralMock.json */; };
+		DC038ECE2CF621C700AC5B45 /* ActionButtonsBuyFlowRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC038ECD2CF621C600AC5B45 /* ActionButtonsBuyFlowRoutable.swift */; };
 		DC04693A2B8E6BE400C785D1 /* SellActionURLHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0469392B8E6BE400C785D1 /* SellActionURLHelper.swift */; };
 		DC0A57D72822A3C80031BECC /* InjectionKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0A57D42822A3C80031BECC /* InjectionKey.swift */; };
 		DC0A57D82822A3C80031BECC /* InjectedValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0A57D52822A3C80031BECC /* InjectedValues.swift */; };
@@ -2181,7 +2182,6 @@
 		DC2891AB2CDAE93C00F57F59 /* BuyActionButtonViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891AA2CDAE93A00F57F59 /* BuyActionButtonViewModel.swift */; };
 		DC2891AD2CDAEF9E00F57F59 /* ActionButtonsBuyRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891AC2CDAEF9C00F57F59 /* ActionButtonsBuyRoutable.swift */; };
 		DC2891B12CDAF4E700F57F59 /* TokenAvailabilitySorter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891B02CDAF4E600F57F59 /* TokenAvailabilitySorter.swift */; };
-		DC2891B42CDB09A700F57F59 /* ActionButtonsBuyFlowRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891B32CDB09A600F57F59 /* ActionButtonsBuyFlowRoutable.swift */; };
 		DC2891B62CDB09CA00F57F59 /* ActionButtonsSwapFlowRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891B52CDB09C900F57F59 /* ActionButtonsSwapFlowRoutable.swift */; };
 		DC2891B82CDB09DE00F57F59 /* ActionButtonsSellFlowRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2891B72CDB09D000F57F59 /* ActionButtonsSellFlowRoutable.swift */; };
 		DC2911B22C623D1E00DF53CC /* SendTransactionDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2911B12C623D1E00DF53CC /* SendTransactionDispatcher.swift */; };
@@ -2255,6 +2255,9 @@
 		DC5DBBC9289B951600C21E35 /* DemoUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC5DBBC8289B951600C21E35 /* DemoUtil.swift */; };
 		DC5E6FDC2C906382008A98D0 /* AppLockController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC5E6FDB2C906382008A98D0 /* AppLockController.swift */; };
 		DC5E6FDE2C9063B6008A98D0 /* CommonAppLockController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC5E6FDD2C9063B6008A98D0 /* CommonAppLockController.swift */; };
+		DC60D0F02CEAFB9500FF6BA8 /* ActionButtonsSwapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC60D0EF2CEAFB9300FF6BA8 /* ActionButtonsSwapView.swift */; };
+		DC60D0F22CEAFBB100FF6BA8 /* ActionButtonsChooseTokenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC60D0F12CEAFBB000FF6BA8 /* ActionButtonsChooseTokenView.swift */; };
+		DC60D0F52CEAFC0C00FF6BA8 /* SwapActionButtonViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC60D0F42CEAFC0C00FF6BA8 /* SwapActionButtonViewModel.swift */; };
 		DC66BBE32858E7A600CDF765 /* WelcomeRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC66BBE22858E7A600CDF765 /* WelcomeRoutable.swift */; };
 		DC66BBE52858EB6300CDF765 /* OnboardingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC66BBE42858EB6300CDF765 /* OnboardingCoordinator.swift */; };
 		DC66BBE72858EBE400CDF765 /* OnboardingCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC66BBE62858EBE400CDF765 /* OnboardingCoordinatorView.swift */; };
@@ -2298,6 +2301,8 @@
 		DC77F2572CD6381D001B2929 /* CanxiumExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC77F2562CD63813001B2929 /* CanxiumExternalLinkProvider.swift */; };
 		DC7AC968292BD64D00580668 /* config_alpha.json in Resources */ = {isa = PBXBuildFile; fileRef = DC7AC967292BD64D00580668 /* config_alpha.json */; };
 		DC7AC96A292BE2C900580668 /* TangemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3F77DC24BF56DC00E8695B /* TangemTests.swift */; };
+		DC7C45672CF8B35000747589 /* ActionButtonsNotificationEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC7C45662CF8B35000747589 /* ActionButtonsNotificationEvent.swift */; };
+		DC7C45692CF8B36F00747589 /* ActionButtonsSwapNoficationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC7C45682CF8B36F00747589 /* ActionButtonsSwapNoficationManager.swift */; };
 		DC7D39EF29DFFBDC007BCD23 /* OnboardingStepsBuilderFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC7D39EE29DFFBDC007BCD23 /* OnboardingStepsBuilderFactory.swift */; };
 		DC7D39F329E00290007BCD23 /* SingleCardOnboardingStepsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC7D39F229E00290007BCD23 /* SingleCardOnboardingStepsBuilder.swift */; };
 		DC7D39F729E00635007BCD23 /* TwinOnboardingStepsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC7D39F629E00635007BCD23 /* TwinOnboardingStepsBuilder.swift */; };
@@ -2395,6 +2400,14 @@
 		DCF8972D28ACF8CA002A85F6 /* TangemSdkConfigFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF8972C28ACF8CA002A85F6 /* TangemSdkConfigFactory.swift */; };
 		DCFCA17528F4232F0037586C /* Array+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFCA17428F4232F0037586C /* Array+.swift */; };
 		DCFE143E294B31C00053106B /* AppPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFE143D294B31C00053106B /* AppPresenter.swift */; };
+		DCFEFE442CF07D94002DFE58 /* SwapTokenSelectorStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFEFE432CF07D93002DFE58 /* SwapTokenSelectorStrings.swift */; };
+		DCFEFE472CF080E5002DFE58 /* SwapSourceTokenAvailabilitySorter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFEFE462CF080E4002DFE58 /* SwapSourceTokenAvailabilitySorter.swift */; };
+		DCFEFE4A2CF081DD002DFE58 /* ActionButtonsSwapCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFEFE492CF081DC002DFE58 /* ActionButtonsSwapCoordinatorView.swift */; };
+		DCFEFE4C2CF08270002DFE58 /* ActionButtonsSwapCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFEFE4B2CF0826F002DFE58 /* ActionButtonsSwapCoordinator.swift */; };
+		DCFEFE4E2CF0834C002DFE58 /* ActionButtonsSwapRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFEFE4D2CF0834B002DFE58 /* ActionButtonsSwapRoutable.swift */; };
+		DCFEFE502CF08496002DFE58 /* SwapDestinationTokenAvailabilitySorter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFEFE4F2CF08494002DFE58 /* SwapDestinationTokenAvailabilitySorter.swift */; };
+		DCFEFE532CF08A1B002DFE58 /* ActionButtonsSwapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFEFE522CF08A1A002DFE58 /* ActionButtonsSwapViewModel.swift */; };
+		DCFEFE5A2CF5B49A002DFE58 /* ActionButtonsChooseTokenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFEFE592CF5B49A002DFE58 /* ActionButtonsChooseTokenViewModel.swift */; };
 		E9C17C5F291951BF00FDE4BC /* AnyPublisher+.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C17C5E291951BF00FDE4BC /* AnyPublisher+.swift */; };
 		EF0295592A9DCDEE000B2142 /* SensitiveText.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0295582A9DCDEE000B2142 /* SensitiveText.swift */; };
 		EF031A282C08E65A001535C9 /* StakingCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF031A272C08E65A001535C9 /* StakingCalculator.swift */; };
@@ -2951,6 +2964,7 @@
 		EFFC861328BCF6C500F863CE /* StorageEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFC861228BCF6C500F863CE /* StorageEntry.swift */; };
 		EFFE2CE928B8E0B300B9F279 /* UserWalletModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFE2CE828B8E0B300B9F279 /* UserWalletModel.swift */; };
 		EFFE2CEC28B8E1B000B9F279 /* CommonDerivationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFE2CEB28B8E1B000B9F279 /* CommonDerivationManager.swift */; };
+		F14F15C4F22C1D38068F29D7 /* Pods_Tangem.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CB02756881F38101C5F717F /* Pods_Tangem.framework */; };
 		F91094E32CC7E11600042E9E /* (null) in Sources */ = {isa = PBXBuildFile; };
 		F92DB9C72CD4C24800C16530 /* TangemModules in Frameworks */ = {isa = PBXBuildFile; productRef = F92DB9C62CD4C24800C16530 /* TangemModules */; };
 		F92DB9C92CD4C2F400C16530 /* TangemModules in Frameworks */ = {isa = PBXBuildFile; productRef = F92DB9C82CD4C2F400C16530 /* TangemModules */; };
@@ -3137,8 +3151,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		04AA141D96DF6EEC6163D9B4 /* Pods-Tangem.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.release(production).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.release(production).xcconfig"; sourceTree = "<group>"; };
-		071053424D6ADD2932A4E994 /* Pods-Tangem.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.debug(production).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.debug(production).xcconfig"; sourceTree = "<group>"; };
 		0A0DB6E72C479A6900003450 /* ActiveStakingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveStakingView.swift; sourceTree = "<group>"; };
 		0A0DB7572C48FAFF00003450 /* RewardRateValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardRateValues.swift; sourceTree = "<group>"; };
 		0A0E01762C64AA79009E01F2 /* StakingSendAmountValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingSendAmountValidator.swift; sourceTree = "<group>"; };
@@ -3146,6 +3158,7 @@
 		0A2A04DA2C91B167007EAE64 /* TronSendTransactionSummaryDescriptionBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TronSendTransactionSummaryDescriptionBuilder.swift; sourceTree = "<group>"; };
 		0A3BF9682C6CDAD900163492 /* AdditionalAddresses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdditionalAddresses.swift; sourceTree = "<group>"; };
 		0A3BF96A2C6CE96B00163492 /* StakingAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingAction.swift; sourceTree = "<group>"; };
+		0A7070BF7D121BD798379C71 /* Pods-Tangem-TangemUITests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.debug(production).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.debug(production).xcconfig"; sourceTree = "<group>"; };
 		0A713CEB2CAA6DA30042FC27 /* RestakingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestakingModel.swift; sourceTree = "<group>"; };
 		0A713CED2CAA73BF0042FC27 /* RestakingFlowBaseBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestakingFlowBaseBuilder.swift; sourceTree = "<group>"; };
 		0A713CEF2CAA76530042FC27 /* CommonRestakingStepsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonRestakingStepsManager.swift; sourceTree = "<group>"; };
@@ -3159,13 +3172,7 @@
 		0AD13F942C8AD76800C2EE16 /* CommonStakingAnalyticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonStakingAnalyticsLogger.swift; sourceTree = "<group>"; };
 		0AD9EF0E2CC2A9B600466191 /* UnstakingSendAmountValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnstakingSendAmountValidator.swift; sourceTree = "<group>"; };
 		0AEA96BA2CEF8D9700395617 /* ReceiveNotificationEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiveNotificationEvent.swift; sourceTree = "<group>"; };
-		0BE949936543D22F51E09DBD /* Pods-Tangem-TangemUITests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.release(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.release(alpha).xcconfig"; sourceTree = "<group>"; };
-		0F0F54769EDEAC846B6BF43B /* Pods_Tangem_TangemUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tangem_TangemUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		136B5829321AB7962F0F8960 /* Pods-TangemTests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.release(beta).xcconfig"; sourceTree = "<group>"; };
-		1614E516683321A25CDDF336 /* Pods-Tangem-TangemUITests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.release(production).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.release(production).xcconfig"; sourceTree = "<group>"; };
-		17315AEAFACFF76F975BB539 /* Pods-Tangem.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.debug(beta).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.debug(beta).xcconfig"; sourceTree = "<group>"; };
-		1A1E0F0323988A048B922E78 /* Pods_TangemFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangemFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		23A325EA25D2DC67038CF8D7 /* Pods-TangemUITests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemUITests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemUITests/Pods-TangemUITests.release(alpha).xcconfig"; sourceTree = "<group>"; };
+		27A75CE6E254D24B857D5F32 /* Pods-Tangem-TangemUITests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.release(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.release(alpha).xcconfig"; sourceTree = "<group>"; };
 		2D0E4F522A8D114E00001D8E /* GenericWalletManagerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericWalletManagerFactory.swift; sourceTree = "<group>"; };
 		2D1400C82C43F4FD00B75A42 /* MarketsPortfolioContextActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsPortfolioContextActions.swift; sourceTree = "<group>"; };
 		2D1400CD2C44090400B75A42 /* MarketsPortfolioContainerRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsPortfolioContainerRoutable.swift; sourceTree = "<group>"; };
@@ -3299,18 +3306,9 @@
 		2DFC278F2C78E833009B247E /* TokenItemInfoProviderMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenItemInfoProviderMapper.swift; sourceTree = "<group>"; };
 		2DFC27902C78E833009B247E /* TokenItemType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenItemType.swift; sourceTree = "<group>"; };
 		2DFC27952C78E881009B247E /* MarketsPortfolioTokenItemFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsPortfolioTokenItemFactory.swift; sourceTree = "<group>"; };
-		33ECB0D6351934688726187B /* Pods-TangemUITests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemUITests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemUITests/Pods-TangemUITests.release(beta).xcconfig"; sourceTree = "<group>"; };
-		34299E1AA8B77C9FD9FE515A /* Pods-TangemFoundation.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundation.release(production).xcconfig"; path = "Target Support Files/Pods-TangemFoundation/Pods-TangemFoundation.release(production).xcconfig"; sourceTree = "<group>"; };
-		34AA4F246DE3AC2C1D5332A5 /* Pods-TangemVisa-TangemVisaTests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa-TangemVisaTests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemVisa-TangemVisaTests/Pods-TangemVisa-TangemVisaTests.release(beta).xcconfig"; sourceTree = "<group>"; };
-		3657682202A687707B9EA3DB /* Pods-Tangem-TangemUITests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.debug(production).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.debug(production).xcconfig"; sourceTree = "<group>"; };
-		3C577F33B73BA1A57F60F06C /* Pods-TangemFoundation.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundation.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemFoundation/Pods-TangemFoundation.release(beta).xcconfig"; sourceTree = "<group>"; };
-		405CC8C9EB940A4FB19445BD /* Pods-Tangem.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.release(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.release(alpha).xcconfig"; sourceTree = "<group>"; };
-		4712A17B93D5DC8AAEE0372F /* Pods-TangemStaking-TangemStakingTests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStaking-TangemStakingTests.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemStaking-TangemStakingTests/Pods-TangemStaking-TangemStakingTests.debug(production).xcconfig"; sourceTree = "<group>"; };
-		4861575ACA94A7FE3EFB58A6 /* Pods-TangemTests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.release(alpha).xcconfig"; sourceTree = "<group>"; };
-		49109FE423D14714F57248CF /* Pods-TangemUITests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemUITests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemUITests/Pods-TangemUITests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
-		4B39BBF3E125E22AF0099486 /* Pods-TangemTests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
-		4E2EB2E5363272E4DA5F5CA6 /* Pods-TangemFoundationTests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundationTests.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemFoundationTests/Pods-TangemFoundationTests.debug(beta).xcconfig"; sourceTree = "<group>"; };
-		5A168C4F090FBAC6A3BF2815 /* Pods_TangemFoundationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangemFoundationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3CB02756881F38101C5F717F /* Pods_Tangem.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tangem.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5354FC46B29451086E3C799E /* Pods-Tangem-TangemUITests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.release(production).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.release(production).xcconfig"; sourceTree = "<group>"; };
+		5A25EFECB27322845E571AD9 /* Pods-TangemTests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.release(production).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.release(production).xcconfig"; sourceTree = "<group>"; };
 		5D00FCD0261738C5004626DE /* WalletConnectEthTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectEthTransaction.swift; sourceTree = "<group>"; };
 		5D011A262530E76000758010 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5D06E03F250A5D54004218D0 /* NSRegualrExpression+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSRegualrExpression+.swift"; sourceTree = "<group>"; };
@@ -3420,29 +3418,18 @@
 		5DFCCB7724C389740014A293 /* CommonUserWalletModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonUserWalletModel.swift; sourceTree = "<group>"; };
 		5DFCE54B274BDEE200C1B1A0 /* ResetToFactorySettingsTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetToFactorySettingsTask.swift; sourceTree = "<group>"; };
 		5DFE855624EF051400194106 /* Error+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+.swift"; sourceTree = "<group>"; };
-		5EBD3533F9B0948C4AE510B3 /* Pods-TangemUITests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemUITests.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemUITests/Pods-TangemUITests.debug(beta).xcconfig"; sourceTree = "<group>"; };
-		5EE9FDE9BFE1191207165858 /* Pods-TangemFoundation.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundation.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemFoundation/Pods-TangemFoundation.debug(alpha).xcconfig"; sourceTree = "<group>"; };
-		63C82F27C2016AD4C49A5415 /* Pods-Tangem-TangemUITests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.debug(beta).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.debug(beta).xcconfig"; sourceTree = "<group>"; };
 		6563B8B82858B92A009A8A7D /* SupportChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportChatView.swift; sourceTree = "<group>"; };
 		6596AD4828730F4900508D0A /* WarningBankCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WarningBankCardView.swift; sourceTree = "<group>"; };
 		6596AD4A28738F0100508D0A /* WarningBankCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WarningBankCardViewModel.swift; sourceTree = "<group>"; };
 		65C9FCAD28644F9D00FDE63E /* DetailsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailsView.swift; sourceTree = "<group>"; };
 		65C9FCB92869CC3E00FDE63E /* SupportChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportChatViewModel.swift; sourceTree = "<group>"; };
-		67BA511FDEE077DD36EAEF88 /* Pods-TangemFoundation.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundation.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemFoundation/Pods-TangemFoundation.release(alpha).xcconfig"; sourceTree = "<group>"; };
-		68DB71D736FA9CE6C9D6EB95 /* Pods-TangemVisa-TangemVisaTests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa-TangemVisaTests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemVisa-TangemVisaTests/Pods-TangemVisa-TangemVisaTests.release(alpha).xcconfig"; sourceTree = "<group>"; };
-		6B1F5CE065E6BA27537C0E73 /* Pods_Tangem.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tangem.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		71E97B5CDCD7274E02A001A0 /* Pods-TangemVisa-TangemVisaTests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa-TangemVisaTests.release(production).xcconfig"; path = "Target Support Files/Pods-TangemVisa-TangemVisaTests/Pods-TangemVisa-TangemVisaTests.release(production).xcconfig"; sourceTree = "<group>"; };
-		740F3E19014FB5F75D949862 /* Pods_TangemTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangemTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		860B4C6F3B19808809CC2D88 /* Pods-TangemFoundationTests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundationTests.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemFoundationTests/Pods-TangemFoundationTests.debug(production).xcconfig"; sourceTree = "<group>"; };
-		86E527EC6830840E0C0B688A /* Pods-TangemVisa-TangemVisaTests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa-TangemVisaTests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemVisa-TangemVisaTests/Pods-TangemVisa-TangemVisaTests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
-		8B0AC10235E97AD52C1E224F /* Pods-Tangem-TangemUITests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
-		8B700B584D4A835B6EA22786 /* Pods-TangemVisa-TangemVisaTests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa-TangemVisaTests.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemVisa-TangemVisaTests/Pods-TangemVisa-TangemVisaTests.debug(beta).xcconfig"; sourceTree = "<group>"; };
-		8B72D4FE4C9A7B898A91AD56 /* Pods-TangemFoundationTests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundationTests.release(production).xcconfig"; path = "Target Support Files/Pods-TangemFoundationTests/Pods-TangemFoundationTests.release(production).xcconfig"; sourceTree = "<group>"; };
-		945D0ECB3DAB73C19D8FD06E /* Pods-TangemFoundationTests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundationTests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemFoundationTests/Pods-TangemFoundationTests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
-		982CF9771BEAC83BA1762553 /* Pods-TangemTests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.debug(production).xcconfig"; sourceTree = "<group>"; };
-		9C59789A437B835E2E2246B6 /* Pods-Tangem.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.debug(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.debug(alpha).xcconfig"; sourceTree = "<group>"; };
-		A288F1BFECB803354ED21B38 /* Pods-TangemStaking-TangemStakingTests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStaking-TangemStakingTests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemStaking-TangemStakingTests/Pods-TangemStaking-TangemStakingTests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
-		AA73C4885132BD64B6BF8EDF /* Pods-Tangem-TangemUITests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.release(beta).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.release(beta).xcconfig"; sourceTree = "<group>"; };
+		65E341AB5689EBACC9C5B4C5 /* Pods-Tangem.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.debug(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.debug(alpha).xcconfig"; sourceTree = "<group>"; };
+		6BEBBDCC83FBF1B3DEB1938D /* Pods-Tangem.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.release(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.release(alpha).xcconfig"; sourceTree = "<group>"; };
+		7427281EA9BA63F64B36B959 /* Pods_Tangem_TangemUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tangem_TangemUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7B6A695B5ED4945330C18365 /* Pods_TangemTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangemTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9C48FD2EF6800EDD4F501415 /* Pods-TangemTests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.debug(beta).xcconfig"; sourceTree = "<group>"; };
+		AA6142B79AA4D10B88F93E65 /* Pods-Tangem-TangemUITests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
+		AE9C4031C86E6796CEEC5EAC /* Pods-Tangem.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.debug(beta).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.debug(beta).xcconfig"; sourceTree = "<group>"; };
 		B002416E2C2441EF00416397 /* HideTokenAlertBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideTokenAlertBuilder.swift; sourceTree = "<group>"; };
 		B002654B2CE1F4EB00D969E0 /* OnboardingPinStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPinStackView.swift; sourceTree = "<group>"; };
 		B002654D2CE1F62F00D969E0 /* OnboardingPinViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPinViewModel.swift; sourceTree = "<group>"; };
@@ -3924,7 +3911,8 @@
 		B0FE88802CB51FDB006F01F9 /* MarketsNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsNavigationBar.swift; sourceTree = "<group>"; };
 		B0FF12672C4A815600C81ED8 /* MainWindowSizeKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowSizeKey.swift; sourceTree = "<group>"; };
 		B0FF51C72C3C0FA800746705 /* MarketsTokenDetailsStatisticsRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenDetailsStatisticsRecordView.swift; sourceTree = "<group>"; };
-		B4168BD54C4E22ED50BC39F9 /* Pods-TangemStaking-TangemStakingTests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStaking-TangemStakingTests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemStaking-TangemStakingTests/Pods-TangemStaking-TangemStakingTests.release(beta).xcconfig"; sourceTree = "<group>"; };
+		B1205DB2110A12F88192D785 /* Pods-Tangem.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.debug(production).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.debug(production).xcconfig"; sourceTree = "<group>"; };
+		B38BFF18583A3DA8F39B46B8 /* Pods-TangemTests.debug(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.debug(alpha).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.debug(alpha).xcconfig"; sourceTree = "<group>"; };
 		B600F4CD2C50F6D2008E53FE /* NSCacheWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSCacheWrapper.swift; sourceTree = "<group>"; };
 		B600F4D02C50F714008E53FE /* MarketsHistoryChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsHistoryChartView.swift; sourceTree = "<group>"; };
 		B600F4D22C50F73D008E53FE /* MarketsHistoryChartViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsHistoryChartViewModel.swift; sourceTree = "<group>"; };
@@ -5068,15 +5056,10 @@
 		B6FF1EFD2A57E59100B208E4 /* Subject+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Subject+.swift"; sourceTree = "<group>"; };
 		B6FFADE92C5D67E900B43A56 /* DGCharts.ChartViewBase+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DGCharts.ChartViewBase+.swift"; sourceTree = "<group>"; };
 		B6FFADEB2C5D6DAE00B43A56 /* LineChartViewUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineChartViewUtility.swift; sourceTree = "<group>"; };
-		BA1429E6AA03A993E9096405 /* Pods-Tangem.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.release(beta).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.release(beta).xcconfig"; sourceTree = "<group>"; };
-		BA2AC80DA5268ACDCD5323B8 /* Pods-TangemFoundation.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundation.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemFoundation/Pods-TangemFoundation.debug(beta).xcconfig"; sourceTree = "<group>"; };
-		C0F0B2863FC391152BAA6B4D /* Pods-TangemStaking-TangemStakingTests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStaking-TangemStakingTests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemStaking-TangemStakingTests/Pods-TangemStaking-TangemStakingTests.release(alpha).xcconfig"; sourceTree = "<group>"; };
-		C907515EDBF8849C1725C692 /* Pods-TangemStaking-TangemStakingTests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStaking-TangemStakingTests.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemStaking-TangemStakingTests/Pods-TangemStaking-TangemStakingTests.debug(beta).xcconfig"; sourceTree = "<group>"; };
-		D036D895D505229822A53504 /* Pods-TangemTests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.release(production).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.release(production).xcconfig"; sourceTree = "<group>"; };
-		D09565E11379EAEF60B2C96F /* Pods-TangemFoundationTests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundationTests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemFoundationTests/Pods-TangemFoundationTests.release(alpha).xcconfig"; sourceTree = "<group>"; };
-		D17DFA6564FBD41BCEBC9986 /* Pods-TangemVisa-TangemVisaTests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemVisa-TangemVisaTests.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemVisa-TangemVisaTests/Pods-TangemVisa-TangemVisaTests.debug(production).xcconfig"; sourceTree = "<group>"; };
-		D30AB026316B780E65C29747 /* Pods-TangemStaking-TangemStakingTests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemStaking-TangemStakingTests.release(production).xcconfig"; path = "Target Support Files/Pods-TangemStaking-TangemStakingTests/Pods-TangemStaking-TangemStakingTests.release(production).xcconfig"; sourceTree = "<group>"; };
-		D3D76D8599608571681C7327 /* Pods-TangemUITests.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemUITests.release(production).xcconfig"; path = "Target Support Files/Pods-TangemUITests/Pods-TangemUITests.release(production).xcconfig"; sourceTree = "<group>"; };
+		B7D6773552F3F358F10DA782 /* Pods-TangemTests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.release(beta).xcconfig"; sourceTree = "<group>"; };
+		BB304A51BC6450CA32CA4966 /* Pods-Tangem-TangemUITests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.debug(beta).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.debug(beta).xcconfig"; sourceTree = "<group>"; };
+		BC4840E67E2F97502B2BA808 /* Pods-TangemTests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.debug(production).xcconfig"; sourceTree = "<group>"; };
+		D4273B24C5F5C2662192C99C /* Pods-TangemTests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.release(alpha).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.release(alpha).xcconfig"; sourceTree = "<group>"; };
 		DA070DE02ADD4F0F00F7C0E4 /* SprinklrSupportChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SprinklrSupportChatView.swift; sourceTree = "<group>"; };
 		DA070DE12ADD4F0F00F7C0E4 /* SprinklrSupportChatViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SprinklrSupportChatViewModel.swift; sourceTree = "<group>"; };
 		DA070DE42ADD4F6500F7C0E4 /* SprinklrConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SprinklrConfig.swift; sourceTree = "<group>"; };
@@ -5264,6 +5247,7 @@
 		DAF59CC72ACC4E37004FCA86 /* AlertFieldValidator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertFieldValidator.swift; sourceTree = "<group>"; };
 		DAF97FC82BAAF2CC006D9A44 /* Locale+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locale+.swift"; sourceTree = "<group>"; };
 		DAFD691527CDEB7F00B36C71 /* CombinedExchangeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinedExchangeService.swift; sourceTree = "<group>"; };
+		DC038ECD2CF621C600AC5B45 /* ActionButtonsBuyFlowRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsBuyFlowRoutable.swift; sourceTree = "<group>"; };
 		DC0469392B8E6BE400C785D1 /* SellActionURLHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellActionURLHelper.swift; sourceTree = "<group>"; };
 		DC0A57D42822A3C80031BECC /* InjectionKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InjectionKey.swift; sourceTree = "<group>"; };
 		DC0A57D52822A3C80031BECC /* InjectedValues.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InjectedValues.swift; sourceTree = "<group>"; };
@@ -5338,7 +5322,6 @@
 		DC2891AA2CDAE93A00F57F59 /* BuyActionButtonViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuyActionButtonViewModel.swift; sourceTree = "<group>"; };
 		DC2891AC2CDAEF9C00F57F59 /* ActionButtonsBuyRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsBuyRoutable.swift; sourceTree = "<group>"; };
 		DC2891B02CDAF4E600F57F59 /* TokenAvailabilitySorter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenAvailabilitySorter.swift; sourceTree = "<group>"; };
-		DC2891B32CDB09A600F57F59 /* ActionButtonsBuyFlowRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsBuyFlowRoutable.swift; sourceTree = "<group>"; };
 		DC2891B52CDB09C900F57F59 /* ActionButtonsSwapFlowRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsSwapFlowRoutable.swift; sourceTree = "<group>"; };
 		DC2891B72CDB09D000F57F59 /* ActionButtonsSellFlowRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsSellFlowRoutable.swift; sourceTree = "<group>"; };
 		DC2911B12C623D1E00DF53CC /* SendTransactionDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendTransactionDispatcher.swift; sourceTree = "<group>"; };
@@ -5415,6 +5398,9 @@
 		DC5DBBC8289B951600C21E35 /* DemoUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoUtil.swift; sourceTree = "<group>"; };
 		DC5E6FDB2C906382008A98D0 /* AppLockController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLockController.swift; sourceTree = "<group>"; };
 		DC5E6FDD2C9063B6008A98D0 /* CommonAppLockController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonAppLockController.swift; sourceTree = "<group>"; };
+		DC60D0EF2CEAFB9300FF6BA8 /* ActionButtonsSwapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsSwapView.swift; sourceTree = "<group>"; };
+		DC60D0F12CEAFBB000FF6BA8 /* ActionButtonsChooseTokenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsChooseTokenView.swift; sourceTree = "<group>"; };
+		DC60D0F42CEAFC0C00FF6BA8 /* SwapActionButtonViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapActionButtonViewModel.swift; sourceTree = "<group>"; };
 		DC66BBE22858E7A600CDF765 /* WelcomeRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeRoutable.swift; sourceTree = "<group>"; };
 		DC66BBE42858EB6300CDF765 /* OnboardingCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingCoordinator.swift; sourceTree = "<group>"; };
 		DC66BBE62858EBE400CDF765 /* OnboardingCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingCoordinatorView.swift; sourceTree = "<group>"; };
@@ -5458,6 +5444,8 @@
 		DC77F2542CD508D9001B2929 /* SUILabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SUILabel.swift; sourceTree = "<group>"; };
 		DC77F2562CD63813001B2929 /* CanxiumExternalLinkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanxiumExternalLinkProvider.swift; sourceTree = "<group>"; };
 		DC7AC967292BD64D00580668 /* config_alpha.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = config_alpha.json; path = "tangem-app-config/config_alpha.json"; sourceTree = SOURCE_ROOT; };
+		DC7C45662CF8B35000747589 /* ActionButtonsNotificationEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsNotificationEvent.swift; sourceTree = "<group>"; };
+		DC7C45682CF8B36F00747589 /* ActionButtonsSwapNoficationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsSwapNoficationManager.swift; sourceTree = "<group>"; };
 		DC7D39EE29DFFBDC007BCD23 /* OnboardingStepsBuilderFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStepsBuilderFactory.swift; sourceTree = "<group>"; };
 		DC7D39F229E00290007BCD23 /* SingleCardOnboardingStepsBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleCardOnboardingStepsBuilder.swift; sourceTree = "<group>"; };
 		DC7D39F629E00635007BCD23 /* TwinOnboardingStepsBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwinOnboardingStepsBuilder.swift; sourceTree = "<group>"; };
@@ -5562,8 +5550,16 @@
 		DCF8972C28ACF8CA002A85F6 /* TangemSdkConfigFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemSdkConfigFactory.swift; sourceTree = "<group>"; };
 		DCFCA17428F4232F0037586C /* Array+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+.swift"; sourceTree = "<group>"; };
 		DCFE143D294B31C00053106B /* AppPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPresenter.swift; sourceTree = "<group>"; };
-		E3B314B4E9F76052898EE269 /* Pods-TangemTests.debug(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemTests.debug(beta).xcconfig"; path = "Target Support Files/Pods-TangemTests/Pods-TangemTests.debug(beta).xcconfig"; sourceTree = "<group>"; };
-		E41571C8A3492645DEC301E5 /* Pods-TangemFoundationTests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundationTests.release(beta).xcconfig"; path = "Target Support Files/Pods-TangemFoundationTests/Pods-TangemFoundationTests.release(beta).xcconfig"; sourceTree = "<group>"; };
+		DCFEFE432CF07D93002DFE58 /* SwapTokenSelectorStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapTokenSelectorStrings.swift; sourceTree = "<group>"; };
+		DCFEFE462CF080E4002DFE58 /* SwapSourceTokenAvailabilitySorter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapSourceTokenAvailabilitySorter.swift; sourceTree = "<group>"; };
+		DCFEFE492CF081DC002DFE58 /* ActionButtonsSwapCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsSwapCoordinatorView.swift; sourceTree = "<group>"; };
+		DCFEFE4B2CF0826F002DFE58 /* ActionButtonsSwapCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsSwapCoordinator.swift; sourceTree = "<group>"; };
+		DCFEFE4D2CF0834B002DFE58 /* ActionButtonsSwapRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsSwapRoutable.swift; sourceTree = "<group>"; };
+		DCFEFE4F2CF08494002DFE58 /* SwapDestinationTokenAvailabilitySorter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapDestinationTokenAvailabilitySorter.swift; sourceTree = "<group>"; };
+		DCFEFE522CF08A1A002DFE58 /* ActionButtonsSwapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsSwapViewModel.swift; sourceTree = "<group>"; };
+		DCFEFE592CF5B49A002DFE58 /* ActionButtonsChooseTokenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsChooseTokenViewModel.swift; sourceTree = "<group>"; };
+		E0BC2F26247BB702D021BA01 /* Pods-Tangem.release(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.release(production).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.release(production).xcconfig"; sourceTree = "<group>"; };
+		E2DB7D67FBF5BFEE10B8B227 /* Pods-Tangem-TangemUITests.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.release(beta).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.release(beta).xcconfig"; sourceTree = "<group>"; };
 		E9C17C5E291951BF00FDE4BC /* AnyPublisher+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnyPublisher+.swift"; sourceTree = "<group>"; };
 		EF0295582A9DCDEE000B2142 /* SensitiveText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensitiveText.swift; sourceTree = "<group>"; };
 		EF031A272C08E65A001535C9 /* StakingCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingCalculator.swift; sourceTree = "<group>"; };
@@ -6131,14 +6127,13 @@
 		EFFC861228BCF6C500F863CE /* StorageEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEntry.swift; sourceTree = "<group>"; };
 		EFFE2CE828B8E0B300B9F279 /* UserWalletModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserWalletModel.swift; sourceTree = "<group>"; };
 		EFFE2CEB28B8E1B000B9F279 /* CommonDerivationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonDerivationManager.swift; sourceTree = "<group>"; };
-		F331D905EEAD64DFAAB0B61A /* Pods-TangemFoundation.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemFoundation.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemFoundation/Pods-TangemFoundation.debug(production).xcconfig"; sourceTree = "<group>"; };
-		F4916AA53286A77C171FB941 /* Pods-TangemUITests.debug(production).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemUITests.debug(production).xcconfig"; path = "Target Support Files/Pods-TangemUITests/Pods-TangemUITests.debug(production).xcconfig"; sourceTree = "<group>"; };
 		F99007012CD3E1C700DFE2D3 /* KaspaNetworkModelsKRC20.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KaspaNetworkModelsKRC20.swift; sourceTree = "<group>"; };
 		F99007022CD3E1C700DFE2D3 /* KaspaKRC20.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KaspaKRC20.swift; sourceTree = "<group>"; };
 		F99007032CD3E1C700DFE2D3 /* KaspaNetworkServiceKRC20.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KaspaNetworkServiceKRC20.swift; sourceTree = "<group>"; };
 		F99007042CD3E1C700DFE2D3 /* KaspaTargetKRC20.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KaspaTargetKRC20.swift; sourceTree = "<group>"; };
 		F99007052CD3E1C700DFE2D3 /* KaspaNetworkProviderKRC20.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KaspaNetworkProviderKRC20.swift; sourceTree = "<group>"; };
 		F990070B2CD3E1D800DFE2D3 /* KaspaUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KaspaUtils.swift; sourceTree = "<group>"; };
+		FD7055D44AB16184B984C9B0 /* Pods-Tangem.release(beta).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem.release(beta).xcconfig"; path = "Target Support Files/Pods-Tangem/Pods-Tangem.release(beta).xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -6166,8 +6161,9 @@
 				0A81B38E2BB3018E0008F21C /* ZIPFoundation in Frameworks */,
 				0ABC61152C410AFD00065EBA /* TweetNacl in Frameworks */,
 				B620FCA02C5D326D00AD0FD1 /* DGCharts in Frameworks */,
-				4F00236C26F4689B6A741039 /* Pods_Tangem.framework in Frameworks */,
 				DCB616E72CB3A63800BE4481 /* ReownWalletKit in Frameworks */,
+				926DF40443D38FA2659B442E /* (null) in Frameworks */,
+				F14F15C4F22C1D38068F29D7 /* Pods_Tangem.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6175,9 +6171,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AB5DE0569C12F3BDA9530564 /* Pods_TangemTests.framework in Frameworks */,
 				B63DFC4E2CD4EABB00720D9F /* TangemModules in Frameworks */,
 				B67E38C72CC7259B00D660EB /* TangemSdk in Frameworks */,
+				62CB18275B63BB8EDB1FD547 /* Pods_TangemTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6185,7 +6181,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				08D8B6D049E83C622B0B3865 /* Pods_Tangem_TangemUITests.framework in Frameworks */,
+				5EE13FAFE486B075BC306CE3 /* Pods_Tangem_TangemUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6768,11 +6764,9 @@
 				5DAC08832513917F00B73E8B /* CoreNFC.framework */,
 				B066822426564ADB00CB86CF /* Intents.framework */,
 				B066822F26564ADB00CB86CF /* IntentsUI.framework */,
-				6B1F5CE065E6BA27537C0E73 /* Pods_Tangem.framework */,
-				1A1E0F0323988A048B922E78 /* Pods_TangemFoundation.framework */,
-				5A168C4F090FBAC6A3BF2815 /* Pods_TangemFoundationTests.framework */,
-				740F3E19014FB5F75D949862 /* Pods_TangemTests.framework */,
-				0F0F54769EDEAC846B6BF43B /* Pods_Tangem_TangemUITests.framework */,
+				3CB02756881F38101C5F717F /* Pods_Tangem.framework */,
+				7427281EA9BA63F64B36B959 /* Pods_Tangem_TangemUITests.framework */,
+				7B6A695B5ED4945330C18365 /* Pods_TangemTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -7935,6 +7929,7 @@
 		B06C08442A73FB2C00D982BC /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				DC60D0ED2CEAFB6800FF6BA8 /* ActionButtonsSwap */,
 				DCE2F7CF2CE34B4100BDE145 /* ActionButtonsSell */,
 				DC2891622CD47E8F00F57F59 /* ActionButtonsBuy */,
 				DCBE4CEC2CC8C8D800855904 /* ActionButtons */,
@@ -12142,54 +12137,24 @@
 		BBA154748909F0AB4121528D /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				071053424D6ADD2932A4E994 /* Pods-Tangem.debug(production).xcconfig */,
-				17315AEAFACFF76F975BB539 /* Pods-Tangem.debug(beta).xcconfig */,
-				9C59789A437B835E2E2246B6 /* Pods-Tangem.debug(alpha).xcconfig */,
-				04AA141D96DF6EEC6163D9B4 /* Pods-Tangem.release(production).xcconfig */,
-				BA1429E6AA03A993E9096405 /* Pods-Tangem.release(beta).xcconfig */,
-				405CC8C9EB940A4FB19445BD /* Pods-Tangem.release(alpha).xcconfig */,
-				3657682202A687707B9EA3DB /* Pods-Tangem-TangemUITests.debug(production).xcconfig */,
-				63C82F27C2016AD4C49A5415 /* Pods-Tangem-TangemUITests.debug(beta).xcconfig */,
-				8B0AC10235E97AD52C1E224F /* Pods-Tangem-TangemUITests.debug(alpha).xcconfig */,
-				1614E516683321A25CDDF336 /* Pods-Tangem-TangemUITests.release(production).xcconfig */,
-				AA73C4885132BD64B6BF8EDF /* Pods-Tangem-TangemUITests.release(beta).xcconfig */,
-				0BE949936543D22F51E09DBD /* Pods-Tangem-TangemUITests.release(alpha).xcconfig */,
-				F331D905EEAD64DFAAB0B61A /* Pods-TangemFoundation.debug(production).xcconfig */,
-				BA2AC80DA5268ACDCD5323B8 /* Pods-TangemFoundation.debug(beta).xcconfig */,
-				5EE9FDE9BFE1191207165858 /* Pods-TangemFoundation.debug(alpha).xcconfig */,
-				34299E1AA8B77C9FD9FE515A /* Pods-TangemFoundation.release(production).xcconfig */,
-				3C577F33B73BA1A57F60F06C /* Pods-TangemFoundation.release(beta).xcconfig */,
-				67BA511FDEE077DD36EAEF88 /* Pods-TangemFoundation.release(alpha).xcconfig */,
-				860B4C6F3B19808809CC2D88 /* Pods-TangemFoundationTests.debug(production).xcconfig */,
-				4E2EB2E5363272E4DA5F5CA6 /* Pods-TangemFoundationTests.debug(beta).xcconfig */,
-				945D0ECB3DAB73C19D8FD06E /* Pods-TangemFoundationTests.debug(alpha).xcconfig */,
-				8B72D4FE4C9A7B898A91AD56 /* Pods-TangemFoundationTests.release(production).xcconfig */,
-				E41571C8A3492645DEC301E5 /* Pods-TangemFoundationTests.release(beta).xcconfig */,
-				D09565E11379EAEF60B2C96F /* Pods-TangemFoundationTests.release(alpha).xcconfig */,
-				982CF9771BEAC83BA1762553 /* Pods-TangemTests.debug(production).xcconfig */,
-				E3B314B4E9F76052898EE269 /* Pods-TangemTests.debug(beta).xcconfig */,
-				4B39BBF3E125E22AF0099486 /* Pods-TangemTests.debug(alpha).xcconfig */,
-				D036D895D505229822A53504 /* Pods-TangemTests.release(production).xcconfig */,
-				136B5829321AB7962F0F8960 /* Pods-TangemTests.release(beta).xcconfig */,
-				4861575ACA94A7FE3EFB58A6 /* Pods-TangemTests.release(alpha).xcconfig */,
-				D17DFA6564FBD41BCEBC9986 /* Pods-TangemVisa-TangemVisaTests.debug(production).xcconfig */,
-				8B700B584D4A835B6EA22786 /* Pods-TangemVisa-TangemVisaTests.debug(beta).xcconfig */,
-				86E527EC6830840E0C0B688A /* Pods-TangemVisa-TangemVisaTests.debug(alpha).xcconfig */,
-				71E97B5CDCD7274E02A001A0 /* Pods-TangemVisa-TangemVisaTests.release(production).xcconfig */,
-				34AA4F246DE3AC2C1D5332A5 /* Pods-TangemVisa-TangemVisaTests.release(beta).xcconfig */,
-				68DB71D736FA9CE6C9D6EB95 /* Pods-TangemVisa-TangemVisaTests.release(alpha).xcconfig */,
-				4712A17B93D5DC8AAEE0372F /* Pods-TangemStaking-TangemStakingTests.debug(production).xcconfig */,
-				C907515EDBF8849C1725C692 /* Pods-TangemStaking-TangemStakingTests.debug(beta).xcconfig */,
-				A288F1BFECB803354ED21B38 /* Pods-TangemStaking-TangemStakingTests.debug(alpha).xcconfig */,
-				D30AB026316B780E65C29747 /* Pods-TangemStaking-TangemStakingTests.release(production).xcconfig */,
-				B4168BD54C4E22ED50BC39F9 /* Pods-TangemStaking-TangemStakingTests.release(beta).xcconfig */,
-				C0F0B2863FC391152BAA6B4D /* Pods-TangemStaking-TangemStakingTests.release(alpha).xcconfig */,
-				F4916AA53286A77C171FB941 /* Pods-TangemUITests.debug(production).xcconfig */,
-				5EBD3533F9B0948C4AE510B3 /* Pods-TangemUITests.debug(beta).xcconfig */,
-				49109FE423D14714F57248CF /* Pods-TangemUITests.debug(alpha).xcconfig */,
-				D3D76D8599608571681C7327 /* Pods-TangemUITests.release(production).xcconfig */,
-				33ECB0D6351934688726187B /* Pods-TangemUITests.release(beta).xcconfig */,
-				23A325EA25D2DC67038CF8D7 /* Pods-TangemUITests.release(alpha).xcconfig */,
+				B1205DB2110A12F88192D785 /* Pods-Tangem.debug(production).xcconfig */,
+				AE9C4031C86E6796CEEC5EAC /* Pods-Tangem.debug(beta).xcconfig */,
+				65E341AB5689EBACC9C5B4C5 /* Pods-Tangem.debug(alpha).xcconfig */,
+				E0BC2F26247BB702D021BA01 /* Pods-Tangem.release(production).xcconfig */,
+				FD7055D44AB16184B984C9B0 /* Pods-Tangem.release(beta).xcconfig */,
+				6BEBBDCC83FBF1B3DEB1938D /* Pods-Tangem.release(alpha).xcconfig */,
+				0A7070BF7D121BD798379C71 /* Pods-Tangem-TangemUITests.debug(production).xcconfig */,
+				BB304A51BC6450CA32CA4966 /* Pods-Tangem-TangemUITests.debug(beta).xcconfig */,
+				5354FC46B29451086E3C799E /* Pods-Tangem-TangemUITests.release(production).xcconfig */,
+				BC4840E67E2F97502B2BA808 /* Pods-TangemTests.debug(production).xcconfig */,
+				9C48FD2EF6800EDD4F501415 /* Pods-TangemTests.debug(beta).xcconfig */,
+				B38BFF18583A3DA8F39B46B8 /* Pods-TangemTests.debug(alpha).xcconfig */,
+				5A25EFECB27322845E571AD9 /* Pods-TangemTests.release(production).xcconfig */,
+				B7D6773552F3F358F10DA782 /* Pods-TangemTests.release(beta).xcconfig */,
+				D4273B24C5F5C2662192C99C /* Pods-TangemTests.release(alpha).xcconfig */,
+				AA6142B79AA4D10B88F93E65 /* Pods-Tangem-TangemUITests.debug(alpha).xcconfig */,
+				E2DB7D67FBF5BFEE10B8B227 /* Pods-Tangem-TangemUITests.release(beta).xcconfig */,
+				27A75CE6E254D24B857D5F32 /* Pods-Tangem-TangemUITests.release(alpha).xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -12986,9 +12951,9 @@
 		DC283ABA2CCA61AB0043F7D2 /* Coordinator */ = {
 			isa = PBXGroup;
 			children = (
-				DC2891B32CDB09A600F57F59 /* ActionButtonsBuyFlowRoutable.swift */,
 				DC2891B72CDB09D000F57F59 /* ActionButtonsSellFlowRoutable.swift */,
 				DC2891B52CDB09C900F57F59 /* ActionButtonsSwapFlowRoutable.swift */,
+				DC038ECD2CF621C600AC5B45 /* ActionButtonsBuyFlowRoutable.swift */,
 			);
 			path = Coordinator;
 			sourceTree = "<group>";
@@ -12996,7 +12961,7 @@
 		DC2891622CD47E8F00F57F59 /* ActionButtonsBuy */ = {
 			isa = PBXGroup;
 			children = (
-				DC2891892CDA508800F57F59 /* Models */,
+				DC2891892CDA508800F57F59 /* Model */,
 				DC2891822CDA33FC00F57F59 /* ViewModel */,
 				DC2891812CD92DBA00F57F59 /* View */,
 				DC2891762CD4BF8700F57F59 /* Coordinator */,
@@ -13055,12 +13020,12 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		DC2891892CDA508800F57F59 /* Models */ = {
+		DC2891892CDA508800F57F59 /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				DC28917C2CD920F900F57F59 /* BuyTokenSelectorStrings.swift */,
 			);
-			path = Models;
+			path = Model;
 			sourceTree = "<group>";
 		};
 		DC2891A52CDAE90200F57F59 /* BuyButton */ = {
@@ -13171,6 +13136,32 @@
 			path = DefaultPickerRowView;
 			sourceTree = "<group>";
 		};
+		DC4328A62CF87FB1000BF72D /* View */ = {
+			isa = PBXGroup;
+			children = (
+				DCC05A5F2CD17DF6004CE6A4 /* TokenSelectorView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		DC4328A72CF87FB9000BF72D /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				DC28916A2CD4B30E00F57F59 /* TokenSelectorViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		DC4328A82CF87FBF000BF72D /* Interface */ = {
+			isa = PBXGroup;
+			children = (
+				DC2891B02CDAF4E600F57F59 /* TokenAvailabilitySorter.swift */,
+				DC28917A2CD9123900F57F59 /* TokenSelectorLocalizable.swift */,
+				DC28916C2CD4B3E800F57F59 /* TokenSelectorItemBuilder.swift */,
+			);
+			path = Interface;
+			sourceTree = "<group>";
+		};
 		DC51185D28609CA5004FB954 /* CardOperation */ = {
 			isa = PBXGroup;
 			children = (
@@ -13217,6 +13208,31 @@
 				DC5E6FDD2C9063B6008A98D0 /* CommonAppLockController.swift */,
 			);
 			path = AppLockController;
+			sourceTree = "<group>";
+		};
+		DC60D0ED2CEAFB6800FF6BA8 /* ActionButtonsSwap */ = {
+			isa = PBXGroup;
+			children = (
+				DCFEFE5B2CF5B52F002DFE58 /* ActionButtonsSwap */,
+				DCFEFE562CF5B47F002DFE58 /* ActionButtonsChooseToken */,
+			);
+			path = ActionButtonsSwap;
+			sourceTree = "<group>";
+		};
+		DC60D0EE2CEAFB8500FF6BA8 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				DC60D0EF2CEAFB9300FF6BA8 /* ActionButtonsSwapView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		DC60D0F32CEAFBFC00FF6BA8 /* SwapButton */ = {
+			isa = PBXGroup;
+			children = (
+				DC60D0F42CEAFC0C00FF6BA8 /* SwapActionButtonViewModel.swift */,
+			);
+			path = SwapButton;
 			sourceTree = "<group>";
 		};
 		DC66BBE12858DB1900CDF765 /* Welcome */ = {
@@ -13300,6 +13316,15 @@
 				DC45126F2BD1531B00DE6F94 /* CardScannerFactory.swift */,
 			);
 			path = CardScanner;
+			sourceTree = "<group>";
+		};
+		DC7C45652CF8B33B00747589 /* NotificationManager */ = {
+			isa = PBXGroup;
+			children = (
+				DC7C45682CF8B36F00747589 /* ActionButtonsSwapNoficationManager.swift */,
+				DC7C45662CF8B35000747589 /* ActionButtonsNotificationEvent.swift */,
+			);
+			path = NotificationManager;
 			sourceTree = "<group>";
 		};
 		DC7DA8152844E79700AD6DBD /* Navigation */ = {
@@ -13438,9 +13463,10 @@
 		DCBE4CEC2CC8C8D800855904 /* ActionButtons */ = {
 			isa = PBXGroup;
 			children = (
-				DCE2F7D82CE3513700BDE145 /* Builders */,
-				DCE2F7CB2CE34A4700BDE145 /* SellButton */,
 				DC2891A52CDAE90200F57F59 /* BuyButton */,
+				DCE2F7CB2CE34A4700BDE145 /* SellButton */,
+				DC60D0F32CEAFBFC00FF6BA8 /* SwapButton */,
+				DCE2F7D82CE3513700BDE145 /* Builders */,
 				DC28917E2CD92CD800F57F59 /* Models */,
 				DC283AB42CCA60940043F7D2 /* BaseActionButton */,
 				DC283ABA2CCA61AB0043F7D2 /* Coordinator */,
@@ -13453,11 +13479,9 @@
 		DCC05A5E2CD17DE6004CE6A4 /* TokenSelectorView */ = {
 			isa = PBXGroup;
 			children = (
-				DC2891B02CDAF4E600F57F59 /* TokenAvailabilitySorter.swift */,
-				DC28917A2CD9123900F57F59 /* TokenSelectorLocalizable.swift */,
-				DC28916C2CD4B3E800F57F59 /* TokenSelectorItemBuilder.swift */,
-				DC28916A2CD4B30E00F57F59 /* TokenSelectorViewModel.swift */,
-				DCC05A5F2CD17DF6004CE6A4 /* TokenSelectorView.swift */,
+				DC4328A82CF87FBF000BF72D /* Interface */,
+				DC4328A72CF87FB9000BF72D /* ViewModel */,
+				DC4328A62CF87FB1000BF72D /* View */,
 			);
 			path = TokenSelectorView;
 			sourceTree = "<group>";
@@ -13496,18 +13520,18 @@
 				DCE2F7D42CE350E000BDE145 /* View */,
 				DCE2F7D22CE350D000BDE145 /* Services */,
 				DCE2F7D12CE350C900BDE145 /* Coordinator */,
-				DCE2F7D02CE350C000BDE145 /* Models */,
+				DCE2F7D02CE350C000BDE145 /* Model */,
 			);
 			path = ActionButtonsSell;
 			sourceTree = "<group>";
 		};
-		DCE2F7D02CE350C000BDE145 /* Models */ = {
+		DCE2F7D02CE350C000BDE145 /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				DCE2F7F12CE7253300BDE145 /* ActionButtonsSendToSellModel.swift */,
 				DCE2F7D62CE350EF00BDE145 /* SellTokenSelectorStrings.swift */,
 			);
-			path = Models;
+			path = Model;
 			sourceTree = "<group>";
 		};
 		DCE2F7D12CE350C900BDE145 /* Coordinator */ = {
@@ -13591,6 +13615,79 @@
 				DCA21D932BA1C77A000A3C1A /* ValidationMode.swift */,
 			);
 			path = Validators;
+			sourceTree = "<group>";
+		};
+		DCFEFE422CF07D8C002DFE58 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				DCFEFE432CF07D93002DFE58 /* SwapTokenSelectorStrings.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		DCFEFE452CF080DC002DFE58 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				DCFEFE4F2CF08494002DFE58 /* SwapDestinationTokenAvailabilitySorter.swift */,
+				DCFEFE462CF080E4002DFE58 /* SwapSourceTokenAvailabilitySorter.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		DCFEFE482CF081D5002DFE58 /* Coordinator */ = {
+			isa = PBXGroup;
+			children = (
+				DCFEFE4D2CF0834B002DFE58 /* ActionButtonsSwapRoutable.swift */,
+				DCFEFE4B2CF0826F002DFE58 /* ActionButtonsSwapCoordinator.swift */,
+				DCFEFE492CF081DC002DFE58 /* ActionButtonsSwapCoordinatorView.swift */,
+			);
+			path = Coordinator;
+			sourceTree = "<group>";
+		};
+		DCFEFE512CF08A12002DFE58 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				DCFEFE522CF08A1A002DFE58 /* ActionButtonsSwapViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		DCFEFE562CF5B47F002DFE58 /* ActionButtonsChooseToken */ = {
+			isa = PBXGroup;
+			children = (
+				DCFEFE582CF5B48C002DFE58 /* ViewModel */,
+				DCFEFE572CF5B486002DFE58 /* View */,
+			);
+			path = ActionButtonsChooseToken;
+			sourceTree = "<group>";
+		};
+		DCFEFE572CF5B486002DFE58 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				DC60D0F12CEAFBB000FF6BA8 /* ActionButtonsChooseTokenView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		DCFEFE582CF5B48C002DFE58 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				DCFEFE592CF5B49A002DFE58 /* ActionButtonsChooseTokenViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		DCFEFE5B2CF5B52F002DFE58 /* ActionButtonsSwap */ = {
+			isa = PBXGroup;
+			children = (
+				DC7C45652CF8B33B00747589 /* NotificationManager */,
+				DCFEFE512CF08A12002DFE58 /* ViewModel */,
+				DCFEFE482CF081D5002DFE58 /* Coordinator */,
+				DCFEFE452CF080DC002DFE58 /* Service */,
+				DCFEFE422CF07D8C002DFE58 /* Model */,
+				DC60D0EE2CEAFB8500FF6BA8 /* View */,
+			);
+			path = ActionButtonsSwap;
 			sourceTree = "<group>";
 		};
 		EF031A262C08E64F001535C9 /* StakingCalculator */ = {
@@ -15902,7 +15999,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5D3F77EC24BF56DC00E8695B /* Build configuration list for PBXNativeTarget "Tangem" */;
 			buildPhases = (
-				E82499590BF2B4AA6C72FA3E /* [CP] Check Pods Manifest.lock */,
+				0CB0B4913E3ACDCA0EEA1C3A /* [CP] Check Pods Manifest.lock */,
 				EFA18E73290FBA1B00CF1AE4 /* Run SwiftFormat */,
 				DAD2B95229B60131000282F7 /* Sort strings */,
 				DC751ADF2ABB9EBB0039A4D2 /* Headers */,
@@ -15912,7 +16009,7 @@
 				B066823E26564ADB00CB86CF /* Embed Foundation Extensions */,
 				EF9E29632B4F0BB500418559 /* Embed Frameworks */,
 				B66EB7E92B7E15F2002484BF /* Remove duplicate signatures */,
-				4FD33571C955E1EFF8E83834 /* [CP] Embed Pods Frameworks */,
+				206D15AAEC454E2AB1C72AA1 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -15949,7 +16046,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5D3F77EF24BF56DC00E8695B /* Build configuration list for PBXNativeTarget "TangemTests" */;
 			buildPhases = (
-				B564608DF790C10DA1C07A51 /* [CP] Check Pods Manifest.lock */,
+				BE6789964A2F98DB5C8617ED /* [CP] Check Pods Manifest.lock */,
 				5D3F77D424BF56DC00E8695B /* Sources */,
 				5D3F77D524BF56DC00E8695B /* Frameworks */,
 				5D3F77D624BF56DC00E8695B /* Resources */,
@@ -15972,11 +16069,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5D3F77F224BF56DC00E8695B /* Build configuration list for PBXNativeTarget "TangemUITests" */;
 			buildPhases = (
-				5D58055BF0B032F83A5BFAFE /* [CP] Check Pods Manifest.lock */,
+				B1597881E1C86828578175C4 /* [CP] Check Pods Manifest.lock */,
 				5D3F77DF24BF56DC00E8695B /* Sources */,
 				5D3F77E024BF56DC00E8695B /* Frameworks */,
 				5D3F77E124BF56DC00E8695B /* Resources */,
-				E551D05F64007527CC513710 /* [CP] Embed Pods Frameworks */,
+				F706444DDA0D1A03011FAE6C /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -16486,7 +16583,29 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		4FD33571C955E1EFF8E83834 /* [CP] Embed Pods Frameworks */ = {
+		0CB0B4913E3ACDCA0EEA1C3A /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Tangem-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		206D15AAEC454E2AB1C72AA1 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -16503,7 +16622,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Tangem/Pods-Tangem-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		5D58055BF0B032F83A5BFAFE /* [CP] Check Pods Manifest.lock */ = {
+		B1597881E1C86828578175C4 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -16519,28 +16638,6 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-Tangem-TangemUITests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		B564608DF790C10DA1C07A51 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-TangemTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -16567,6 +16664,28 @@
 			shellScript = "#!/bin/bash\nset -e\n\n# Xcode 15 produces duplicate signatures for binary xcframeworks if they are referenced in other targets except the main app target\n# See https://developer.apple.com/forums/thread/733461 and https://github.com/CocoaPods/CocoaPods/issues/12022 for more info\n# Removing these duplicate signatures\nfind \"${BUILT_PRODUCTS_DIR}\" -type f -name \"*.signature\" -mindepth 2 -exec rm {} \\;\n";
 			showEnvVarsInLog = 0;
 		};
+		BE6789964A2F98DB5C8617ED /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-TangemTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		DAD2B95229B60131000282F7 /* Sort strings */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -16586,45 +16705,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"./Utilites/sort-strings.sh\"\n";
 		};
-		E551D05F64007527CC513710 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		E82499590BF2B4AA6C72FA3E /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Tangem-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		EFA18E73290FBA1B00CF1AE4 /* Run SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -16643,6 +16723,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "PATH=$PATH:/opt/homebrew/bin\n\nif [[ \"${CI}\" == \"true\" || \"${ENABLE_PREVIEWS}\" == \"YES\" ]]; then\n    exit 0\nfi\n\n# check if directory exists then add it to path\nif [ -d ~/.mint/bin ]; then\n    echo \"Adding ~/.mint/bin to PATH\"\n    export PATH=~/.mint/bin:$PATH\nelse\n    echo \"~/.mint/bin folder is missing\"\nfi\n\necho \"🚀 Running SwiftFormat\"\nmint run swiftformat@0.52.8 . --config .swiftformat\n";
+		};
+		F706444DDA0D1A03011FAE6C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -16888,6 +16985,7 @@
 				DAE4BB122CD796600020CE3F /* OnrampSettingsView.swift in Sources */,
 				EFA4E3872C3F046C008815AD /* ValidatorViewData.swift in Sources */,
 				DA4333322B5A5B880058D467 /* QRScanViewModel.swift in Sources */,
+				DCFEFE4E2CF0834C002DFE58 /* ActionButtonsSwapRoutable.swift in Sources */,
 				EF46621C2924DEEE00346B6C /* DefaultFooterView.swift in Sources */,
 				5D79D3152555ABE700650DD7 /* CardImageLoader.swift in Sources */,
 				B62C65D22C38D06B00189AD4 /* PushNotificationsPermissionRequestFlow.swift in Sources */,
@@ -16907,6 +17005,7 @@
 				EFBB77B22CCBE925002D4A10 /* OnrampSummaryRoutable.swift in Sources */,
 				B654B6422A8513D4002553F4 /* CardsInfoPagerAnimationFactory.swift in Sources */,
 				EFA9854F2947787F00D1FCB3 /* FeeFormatterMock.swift in Sources */,
+				DC60D0F02CEAFB9500FF6BA8 /* ActionButtonsSwapView.swift in Sources */,
 				EF4662362924DFAF00346B6C /* GroupedSection.swift in Sources */,
 				B0290CDF2CAED9AF008ABBD2 /* MarketsTokenDetailsExchangesListView+Skeletons.swift in Sources */,
 				EFB23F3C2CBE914D005A6719 /* OnrampFlowBaseBuilder.swift in Sources */,
@@ -17268,6 +17367,7 @@
 				2DFC27922C78E833009B247E /* TokenItemInfoProvider.swift in Sources */,
 				DC4512622BD0458000DE6F94 /* MockedCardScanner.swift in Sources */,
 				B0C4F76F26F08AB40086D815 /* TwinsOnboardingStep.swift in Sources */,
+				DCFEFE532CF08A1B002DFE58 /* ActionButtonsSwapViewModel.swift in Sources */,
 				B0A1BC152C296B6E00DECCFD /* MarketsTokenDetailsCoordinator.swift in Sources */,
 				EFF466E22AC709BE00ACC3EA /* BalanceTitleView.swift in Sources */,
 				DAAD053A2CE21B1600E53EF3 /* PendingExpressTxStatusView.swift in Sources */,
@@ -17410,6 +17510,7 @@
 				B0BF631B2A0D1C6F009EB975 /* TotalBalanceFormattingOptions.swift in Sources */,
 				DCC5C99A2C136C52001B970A /* PushNotificationsPermissionRequestViewModel.swift in Sources */,
 				DAB19D492B2C72A100DD08C4 /* AddCustomTokenViewModel.swift in Sources */,
+				DCFEFE502CF08496002DFE58 /* SwapDestinationTokenAvailabilitySorter.swift in Sources */,
 				DC3B49F42893E50700C207EA /* StoredUserWallet.swift in Sources */,
 				EF2FE4992C6B80560015940A /* AllowanceChecker.swift in Sources */,
 				EF8BE6C42CCB95D7001FBA2B /* OnrampRoutable.swift in Sources */,
@@ -17572,6 +17673,7 @@
 				EF2800F42CDD0C08002AEB9A /* OnrampRedirectingRoutable.swift in Sources */,
 				EF2800F52CDD0C08002AEB9A /* OnrampRedirectingViewModel.swift in Sources */,
 				B018FE612B0CD33400D8D31E /* ExpressNotificationManager.swift in Sources */,
+				DC60D0F52CEAFC0C00FF6BA8 /* SwapActionButtonViewModel.swift in Sources */,
 				EF5D83E42B0CADEE00516B5F /* ExpressTransactionBuilder.swift in Sources */,
 				DC0A57E82822AC410031BECC /* PersistentStorageProtocol.swift in Sources */,
 				EF7B9CF7286C702E004C33A9 /* CardSettingsCoordinatorView.swift in Sources */,
@@ -17640,6 +17742,7 @@
 				DCBC945D299404510050BC35 /* CommonAnalyticsContext.swift in Sources */,
 				B00371BE2A8A5E5900D77A4B /* FakeUserTokensManager.swift in Sources */,
 				DC261CA9292CF56600875E64 /* AuthCoordinatorView.swift in Sources */,
+				DC7C45672CF8B35000747589 /* ActionButtonsNotificationEvent.swift in Sources */,
 				DA76BF4A2CEF958700199317 /* OnrampPendingTransactionRecord.swift in Sources */,
 				2DB4EADC2C41938E00F9E860 /* MarketsPortfolioTokenItemViewModel.swift in Sources */,
 				DAA5E30328D21369003C0E80 /* BiometryLogoImage.swift in Sources */,
@@ -17917,11 +18020,13 @@
 				B66655732C6ECD91001E2C68 /* OverlayContentContainerProgress.swift in Sources */,
 				EFF034AC28B4B6ED00F70FF7 /* Publisher+TangemAPIError.swift in Sources */,
 				EF9F6F4428D499F600D6B190 /* LoadingValue.swift in Sources */,
+				DCFEFE472CF080E5002DFE58 /* SwapSourceTokenAvailabilitySorter.swift in Sources */,
 				EFE1812C292E30DF0072D80C /* OnboardingCardView.swift in Sources */,
 				2D2276602C0F0BEC006BB6A1 /* MarketsListDataFilterProvider.swift in Sources */,
 				5D3951672559A87E002CC452 /* CurrencySelectViewModel.swift in Sources */,
 				B06C083B2A73E0D400D982BC /* MainHeaderSubtitleProvider.swift in Sources */,
 				DA11F9852B2978CC0075F028 /* SendCustomFeeInputFieldModel.swift in Sources */,
+				DC038ECE2CF621C700AC5B45 /* ActionButtonsBuyFlowRoutable.swift in Sources */,
 				EF5D83DD2B0BBE3000516B5F /* LoadingProvidersRow.swift in Sources */,
 				DC51187A2860B704004FB954 /* AppCoordinator.swift in Sources */,
 				DCBDC9EB2CD14465003E76DD /* StoriesDelegateMock.swift in Sources */,
@@ -17936,6 +18041,7 @@
 				EF2801102CDE84CB002AEB9A /* OnrampRedirectingBuilder.swift in Sources */,
 				EF1E97FD2B03F93300D4B511 /* CommonExpressDestinationService.swift in Sources */,
 				5DA3A2F1251CB6CA009A8E08 /* SecurityModeView.swift in Sources */,
+				DC7C45692CF8B36F00747589 /* ActionButtonsSwapNoficationManager.swift in Sources */,
 				B6AA13782A2A37B100B53937 /* CardInfoPageTransactionDefaultCellPreviewView.swift in Sources */,
 				DC0A57EA2822AD6D0031BECC /* PersistentStorageKey.swift in Sources */,
 				B04CD34429122C8D001EA84A /* ReferralCoordinatorView.swift in Sources */,
@@ -17944,6 +18050,7 @@
 				DCDE745C2C1374AC00C19A23 /* WelcomeOnboardingTOSDelegate.swift in Sources */,
 				2DB648892C35877000DA100D /* MarketsSkeletonItemView.swift in Sources */,
 				B69E78782A69795D007E358A /* CardInfoPagePreviewConfig.swift in Sources */,
+				DCFEFE5A2CF5B49A002DFE58 /* ActionButtonsChooseTokenViewModel.swift in Sources */,
 				B0AF2DF82B1DF42D001A8696 /* PendingExpressTransaction.swift in Sources */,
 				DA6C752C292909B20070EEFD /* UserWalletRepositoryUtil.swift in Sources */,
 				DC295B4E2861D871006CB7B6 /* WalletConnectCoordinatorView.swift in Sources */,
@@ -18007,6 +18114,7 @@
 				DC7D39F329E00290007BCD23 /* SingleCardOnboardingStepsBuilder.swift in Sources */,
 				DC261CB5292CF6B700875E64 /* UncompletedBackupView.swift in Sources */,
 				B005ADA02ADFF83B008B6D1F /* View+AlertBinder.swift in Sources */,
+				DC60D0F22CEAFBB100FF6BA8 /* ActionButtonsChooseTokenView.swift in Sources */,
 				DA559C3C2B0261F400F59584 /* SendSummaryView.swift in Sources */,
 				B09381052B29E705001C11E4 /* VisaOnboardingStepsBuilder.swift in Sources */,
 				B0B2DF6026E1FD5400BC0934 /* AnimatedView.swift in Sources */,
@@ -18016,7 +18124,6 @@
 				65C9FCAE28644F9D00FDE63E /* DetailsView.swift in Sources */,
 				EF4535372976C1D80030639A /* FixedSpacer.swift in Sources */,
 				DA8C67292B0B44EF00E1C9B8 /* SendDestinationSummaryViewType.swift in Sources */,
-				DC2891B42CDB09A700F57F59 /* ActionButtonsBuyFlowRoutable.swift in Sources */,
 				B0E1D175257DE75D00A3AB98 /* CommonKeysManager.swift in Sources */,
 				EF0E1D932CE37DA4003D47AA /* OnrampProvidersRoutable.swift in Sources */,
 				EF0E1D942CE37DA4003D47AA /* OnrampProvidersCompactProviderView.swift in Sources */,
@@ -18067,6 +18174,7 @@
 				B0F318FB2A739418009F131E /* WalletPublicKeyDerivationStubs.swift in Sources */,
 				EFB932182C3EC18300C999E9 /* StakingValidatorsView.swift in Sources */,
 				B0B335D229FA89EE00E2082E /* BalanceFormatter.swift in Sources */,
+				DCFEFE4A2CF081DD002DFE58 /* ActionButtonsSwapCoordinatorView.swift in Sources */,
 				DC288C002C06553300FF94A0 /* ResetToFactoryService.swift in Sources */,
 				B6FECF4F2C4032930030A8A9 /* PushNotificationsPermissionManagerStub.swift in Sources */,
 				DC7D39FB29E02000007BCD23 /* TangemSdkDefaultFactory.swift in Sources */,
@@ -18083,6 +18191,7 @@
 				EFEE236A2BFE20860099917E /* StakingDetailsCoordinator.swift in Sources */,
 				EF0FBB742C53BE4A0095A6BD /* StakingValidatorsCompactViewModel.swift in Sources */,
 				EFEE236B2BFE20860099917E /* StakingDetailsCoordinatorView.swift in Sources */,
+				DCFEFE4C2CF08270002DFE58 /* ActionButtonsSwapCoordinator.swift in Sources */,
 				EFEE236C2BFE20860099917E /* StakingDetailsView.swift in Sources */,
 				B040FA342C3BCA00002C127B /* MarketsTokenDetailsInsightsView.swift in Sources */,
 				EFEE236D2BFE20860099917E /* StakingDetailsViewModel.swift in Sources */,
@@ -18156,6 +18265,7 @@
 				DCBC945F2994F9BF0050BC35 /* AnalyticsContextScope.swift in Sources */,
 				EFA4E3772C3EE785008815AD /* FakeStakingValidatorsInteractor.swift in Sources */,
 				B687286F2B7D48E90090C24F /* BlockchainAccountCreateParameters.swift in Sources */,
+				DCFEFE442CF07D94002DFE58 /* SwapTokenSelectorStrings.swift in Sources */,
 				B66913702C41958D0016B0EE /* OverlayContentContainerViewControllerAdapter.swift in Sources */,
 				EF031A7F2C0DD243001535C9 /* SendAmountConverter.swift in Sources */,
 				B0C4F77126F08C4D0086D815 /* TwinsOnboardingCardLayout.swift in Sources */,
@@ -19918,7 +20028,7 @@
 		};
 		5D3F77ED24BF56DC00E8695B /* Debug(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 071053424D6ADD2932A4E994 /* Pods-Tangem.debug(production).xcconfig */;
+			baseConfigurationReference = B1205DB2110A12F88192D785 /* Pods-Tangem.debug(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "$(inherited)";
@@ -19933,6 +20043,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Tangem/Preview Content\"";
 				DEVELOPMENT_TEAM = 4897UJ6D8C;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = Tangem/Configurations/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -20025,7 +20136,7 @@
 		};
 		5D3F77EE24BF56DC00E8695B /* Release(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 04AA141D96DF6EEC6163D9B4 /* Pods-Tangem.release(production).xcconfig */;
+			baseConfigurationReference = E0BC2F26247BB702D021BA01 /* Pods-Tangem.release(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "$(inherited)";
@@ -20039,6 +20150,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Tangem/Preview Content\"";
 				DEVELOPMENT_TEAM = 4897UJ6D8C;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = Tangem/Configurations/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -20130,7 +20242,7 @@
 		};
 		5D3F77F024BF56DC00E8695B /* Debug(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 982CF9771BEAC83BA1762553 /* Pods-TangemTests.debug(production).xcconfig */;
+			baseConfigurationReference = BC4840E67E2F97502B2BA808 /* Pods-TangemTests.debug(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -20156,7 +20268,7 @@
 		};
 		5D3F77F124BF56DC00E8695B /* Release(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D036D895D505229822A53504 /* Pods-TangemTests.release(production).xcconfig */;
+			baseConfigurationReference = 5A25EFECB27322845E571AD9 /* Pods-TangemTests.release(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -20183,7 +20295,7 @@
 		};
 		5D3F77F324BF56DC00E8695B /* Debug(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3657682202A687707B9EA3DB /* Pods-Tangem-TangemUITests.debug(production).xcconfig */;
+			baseConfigurationReference = 0A7070BF7D121BD798379C71 /* Pods-Tangem-TangemUITests.debug(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
@@ -20209,7 +20321,7 @@
 		};
 		5D3F77F424BF56DC00E8695B /* Release(production) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1614E516683321A25CDDF336 /* Pods-Tangem-TangemUITests.release(production).xcconfig */;
+			baseConfigurationReference = 5354FC46B29451086E3C799E /* Pods-Tangem-TangemUITests.release(production).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
@@ -22806,7 +22918,7 @@
 		};
 		EF2EFDD22865BC2900798051 /* Debug(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 17315AEAFACFF76F975BB539 /* Pods-Tangem.debug(beta).xcconfig */;
+			baseConfigurationReference = AE9C4031C86E6796CEEC5EAC /* Pods-Tangem.debug(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "$(inherited)";
@@ -22820,6 +22932,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Tangem/Preview Content\"";
 				DEVELOPMENT_TEAM = 4897UJ6D8C;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = Tangem/Configurations/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -22911,7 +23024,7 @@
 		};
 		EF2EFDD32865BC2900798051 /* Debug(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E3B314B4E9F76052898EE269 /* Pods-TangemTests.debug(beta).xcconfig */;
+			baseConfigurationReference = 9C48FD2EF6800EDD4F501415 /* Pods-TangemTests.debug(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -22937,7 +23050,7 @@
 		};
 		EF2EFDD42865BC2900798051 /* Debug(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 63C82F27C2016AD4C49A5415 /* Pods-Tangem-TangemUITests.debug(beta).xcconfig */;
+			baseConfigurationReference = BB304A51BC6450CA32CA4966 /* Pods-Tangem-TangemUITests.debug(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
@@ -23025,7 +23138,7 @@
 		};
 		EF2EFDD72865BC3400798051 /* Release(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BA1429E6AA03A993E9096405 /* Pods-Tangem.release(beta).xcconfig */;
+			baseConfigurationReference = FD7055D44AB16184B984C9B0 /* Pods-Tangem.release(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "$(inherited)";
@@ -23039,6 +23152,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Tangem/Preview Content\"";
 				DEVELOPMENT_TEAM = 4897UJ6D8C;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = Tangem/Configurations/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -23130,7 +23244,7 @@
 		};
 		EF2EFDD82865BC3400798051 /* Release(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 136B5829321AB7962F0F8960 /* Pods-TangemTests.release(beta).xcconfig */;
+			baseConfigurationReference = B7D6773552F3F358F10DA782 /* Pods-TangemTests.release(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -23157,7 +23271,7 @@
 		};
 		EF2EFDD92865BC3400798051 /* Release(beta) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AA73C4885132BD64B6BF8EDF /* Pods-Tangem-TangemUITests.release(beta).xcconfig */;
+			baseConfigurationReference = E2DB7D67FBF5BFEE10B8B227 /* Pods-Tangem-TangemUITests.release(beta).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
@@ -25195,7 +25309,7 @@
 		};
 		EFF5CF1028C795FA000EE8DB /* Debug(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9C59789A437B835E2E2246B6 /* Pods-Tangem.debug(alpha).xcconfig */;
+			baseConfigurationReference = 65E341AB5689EBACC9C5B4C5 /* Pods-Tangem.debug(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "$(inherited)";
@@ -25209,6 +25323,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Tangem/Preview Content\"";
 				DEVELOPMENT_TEAM = 4897UJ6D8C;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = Tangem/Configurations/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -25300,7 +25415,7 @@
 		};
 		EFF5CF1228C795FA000EE8DB /* Debug(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4B39BBF3E125E22AF0099486 /* Pods-TangemTests.debug(alpha).xcconfig */;
+			baseConfigurationReference = B38BFF18583A3DA8F39B46B8 /* Pods-TangemTests.debug(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -25326,7 +25441,7 @@
 		};
 		EFF5CF1328C795FA000EE8DB /* Debug(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8B0AC10235E97AD52C1E224F /* Pods-Tangem-TangemUITests.debug(alpha).xcconfig */;
+			baseConfigurationReference = AA6142B79AA4D10B88F93E65 /* Pods-Tangem-TangemUITests.debug(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
@@ -25414,7 +25529,7 @@
 		};
 		EFF5CF1528C7960C000EE8DB /* Release(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 405CC8C9EB940A4FB19445BD /* Pods-Tangem.release(alpha).xcconfig */;
+			baseConfigurationReference = 6BEBBDCC83FBF1B3DEB1938D /* Pods-Tangem.release(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "$(inherited)";
@@ -25428,6 +25543,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Tangem/Preview Content\"";
 				DEVELOPMENT_TEAM = 4897UJ6D8C;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = Tangem/Configurations/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -25519,7 +25635,7 @@
 		};
 		EFF5CF1728C7960C000EE8DB /* Release(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4861575ACA94A7FE3EFB58A6 /* Pods-TangemTests.release(alpha).xcconfig */;
+			baseConfigurationReference = D4273B24C5F5C2662192C99C /* Pods-TangemTests.release(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -25546,7 +25662,7 @@
 		};
 		EFF5CF1828C7960C000EE8DB /* Release(alpha) */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0BE949936543D22F51E09DBD /* Pods-Tangem-TangemUITests.release(alpha).xcconfig */;
+			baseConfigurationReference = 27A75CE6E254D24B857D5F32 /* Pods-Tangem-TangemUITests.release(alpha).xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";

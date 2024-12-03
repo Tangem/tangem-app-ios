@@ -27,6 +27,7 @@ class ExpressInteractor {
 
     private let userWalletId: String
     private let initialWallet: WalletModel
+    private let destinationWallet: WalletModel?
     private let expressManager: ExpressManager
     private let allowanceProvider: UpdatableAllowanceProvider
     private let feeProvider: ExpressFeeProvider
@@ -49,6 +50,7 @@ class ExpressInteractor {
     init(
         userWalletId: String,
         initialWallet: WalletModel,
+        destinationWallet: WalletModel?,
         expressManager: ExpressManager,
         allowanceProvider: UpdatableAllowanceProvider,
         feeProvider: ExpressFeeProvider,
@@ -62,6 +64,7 @@ class ExpressInteractor {
     ) {
         self.userWalletId = userWalletId
         self.initialWallet = initialWallet
+        self.destinationWallet = destinationWallet
         self.expressManager = expressManager
         self.allowanceProvider = allowanceProvider
         self.feeProvider = feeProvider
@@ -73,7 +76,19 @@ class ExpressInteractor {
         self.signer = signer
         self.logger = logger
 
-        _swappingPair = .init(SwappingPair(sender: initialWallet, destination: .loading))
+        _swappingPair = .init(
+            SwappingPair(
+                sender: initialWallet,
+                destination: { () -> LoadingValue<WalletModel> in
+                    if let destinationWallet {
+                        return .loaded(destinationWallet)
+                    }
+
+                    return .loading
+                }()
+            )
+        )
+
         initialLoading(wallet: initialWallet)
     }
 }
@@ -626,7 +641,7 @@ private extension ExpressInteractor {
 
     func initialLoading(wallet: WalletModel) {
         updateTask { interactor in
-            if let restriction = await interactor.loadDestination(wallet: wallet) {
+            if let restriction = await interactor.initialLoading(wallet: wallet) {
                 return .restriction(restriction, quote: .none)
             }
 
@@ -640,16 +655,19 @@ private extension ExpressInteractor {
         }
 
         let wallet = getSender()
-        return await loadDestination(wallet: wallet)
+        return await initialLoading(wallet: wallet)
     }
 
-    func loadDestination(wallet: WalletModel) async -> RestrictionType? {
-        _swappingPair.value.destination = .loading
-
+    func initialLoading(wallet: WalletModel) async -> RestrictionType? {
         do {
             try await expressRepository.updatePairs(for: wallet)
-            let destination = try await expressDestinationService.getDestination(source: wallet)
-            update(destination: destination)
+
+            if _swappingPair.value.destination.value == nil {
+                _swappingPair.value.destination = .loading
+                let destination = try await expressDestinationService.getDestination(source: wallet)
+                update(destination: destination)
+            }
+
             return nil
         } catch ExpressDestinationServiceError.destinationNotFound {
             Analytics.log(.swapNoticeNoAvailableTokensToSwap)

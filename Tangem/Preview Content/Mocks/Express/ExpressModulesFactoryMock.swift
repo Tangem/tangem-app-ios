@@ -180,6 +180,7 @@ private extension ExpressModulesFactoryMock {
         let interactor = ExpressInteractor(
             userWalletId: userWalletId,
             initialWallet: initialWalletModel,
+            destinationWallet: nil,
             expressManager: expressManager,
             allowanceProvider: allowanceProvider,
             feeProvider: expressFeeProvider,

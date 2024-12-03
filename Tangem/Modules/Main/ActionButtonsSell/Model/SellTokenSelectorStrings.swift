@@ -7,7 +7,7 @@
 //
 
 struct SellTokenSelectorStrings: TokenSelectorLocalizable {
-    let availableTokensListTitle = Localization.exchangeTokensAvailableTokensHeader
+    let availableTokensListTitle = Localization.tokensListAvailableToSellHeader
     let unavailableTokensListTitle = Localization.tokensListUnavailableToSellHeader
     let emptySearchMessage = Localization.actionButtonsSellEmptySearchMessage
     let emptyTokensMessage: String? = nil

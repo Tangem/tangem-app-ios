@@ -47,7 +47,7 @@ private struct MercuryoCryptoCurrency: Decodable {
 class MercuryoService {
     @Injected(\.keysManager) private var keysManager: KeysManager
 
-    @Published private var initialized = false
+    @Published private var initializeState: ExchangeServiceState = .initializing
 
     private var widgetId: String {
         keysManager.mercuryoWidgetId
@@ -73,7 +73,7 @@ class MercuryoService {
 }
 
 extension MercuryoService: ExchangeService {
-    var initializationPublisher: Published<Bool>.Publisher { $initialized }
+    var initializationPublisher: Published<ExchangeServiceState>.Publisher { $initializeState }
 
     var successCloseUrl: String { IncomingActionConstants.externalSuccessURL }
 
@@ -128,9 +128,11 @@ extension MercuryoService: ExchangeService {
     }
 
     func initialize() {
-        if initialized {
+        if initializeState == .initialized {
             return
         }
+
+        initializeState = .initializing
 
         let request = URLRequest(url: URL(string: "https://api.mercuryo.io/v1.6/lib/currencies")!)
 
@@ -145,10 +147,19 @@ extension MercuryoService: ExchangeService {
             .map(\.data)
             .decode(type: MercuryoCurrencyResponse.self, decoder: decoder)
             .withWeakCaptureOf(self)
-            .receiveValue { service, response in
-                service.cryptoCurrencies = response.data.config.cryptoCurrencies
-                service.initialized = true
-            }
+            .sink(
+                receiveCompletion: { [weak self] completion in
+                    switch completion {
+                    case .finished: break
+                    case .failure(let error):
+                        self?.initializeState = .failed(.networkError)
+                    }
+                },
+                receiveValue: { service, response in
+                    service.cryptoCurrencies = response.data.config.cryptoCurrencies
+                    service.initializeState = .initialized
+                }
+            )
             .store(in: &bag)
     }
 
