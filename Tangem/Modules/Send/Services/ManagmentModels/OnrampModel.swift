@@ -440,6 +440,10 @@ extension OnrampModel: SendBaseOutput {
         assertionFailure("OnrampModel doesn't support the send transaction action")
         throw TransactionDispatcherResult.Error.actionNotSupported
     }
+
+    func flowDidDisappear() {
+        task?.cancel()
+    }
 }
 
 // MARK: - OnrampNotificationManagerInput
