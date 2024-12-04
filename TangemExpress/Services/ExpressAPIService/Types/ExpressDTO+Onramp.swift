@@ -64,6 +64,7 @@ extension ExpressDTO {
                 let toNetwork: String
                 let paymentMethod: String
                 let countryCode: String
+                let fromPrecision: Int
                 let fromAmount: String
                 let toDecimals: Int
                 let providerId: String
@@ -96,6 +97,7 @@ extension ExpressDTO {
                 let paymentMethod: String
                 let countryCode: String
                 let fromAmount: String
+                let fromPrecision: Int
                 let toDecimals: Int
                 let providerId: String
                 let toAddress: String
@@ -119,6 +121,7 @@ extension ExpressDTO {
                 let paymentMethod: String
                 let countryCode: String
                 let fromAmount: String
+                let fromPrecision: Int
                 let toAmount: Decimal?
                 let providerId: String
                 let toAddress: String
@@ -151,6 +154,7 @@ extension ExpressDTO {
 
                 let fromCurrencyCode: String // Source currency
                 let fromAmount: String // Amount of the source currency
+                let fromPrecision: Int
 
                 // ToAsset information:
                 let toContractAddress: String
