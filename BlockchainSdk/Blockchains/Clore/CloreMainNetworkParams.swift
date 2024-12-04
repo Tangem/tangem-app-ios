@@ -46,25 +46,21 @@ class CloreMainNetworkParams: INetwork {
     /// pchMessageStart[3] = 0x4e; // N
     let magic: UInt32 = 0x5241564e
 
-    /// https://github.com/RavenProject/Ravencoin/blob/master/src/chainparams.cpp#L181
-    /// nDefaultPort = 8767;
-    let port: UInt32 = 8767
+    /// https://gitlab.com/cloreai-public/blockchain/-/blob/main/src/chainparams.cpp?ref_type=heads#L184
+    /// nDefaultPort = 8788;
+    let port: UInt32 = 8788
 
-    /// https://github.com/RavenProject/Ravencoin/blob/master/src/chainparams.cpp#L202
-    /// Raven BIP44 cointype in mainnet is '175'
-    /// nExtCoinType = 175;
-    let coinType: UInt32 = 175
+    /// CLORE Blockchain BIP44 cointype in mainnet is '1313'
+    /// nExtCoinType = 1313;
+    let coinType: UInt32 = 1313
 
     let sigHash: SigHashType = .bitcoinAll
 
-    /// https://github.com/RavenProject/Ravencoin/blob/master/src/chainparams.cpp#L191
-    /// vSeeds.emplace_back("seed-raven.bitactivate.com", false);
-    /// vSeeds.emplace_back("seed-raven.ravencoin.com", false);
-    /// vSeeds.emplace_back("seed-raven.ravencoin.org", false);
+    /// https://gitlab.com/cloreai-public/blockchain/-/blob/main/src/chainparams.cpp?ref_type=heads#L184
     let dnsSeeds = [
-        "seed-raven.bitactivate.com",
-        "seed-raven.ravencoin.com",
-        "seed-raven.ravencoin.org",
+        "seed.clore.ai",
+        "seed1.clore.ai",
+        "seed2.clore.ai",
     ]
 
     /// https://github.com/dashpay/dash/blob/master/src/policy/policy.h#L44
