@@ -7,6 +7,9 @@
 //
 
 public protocol OnrampProviderManager {
+    /// Get actual from amount
+    var amount: Decimal? { get }
+
     /// Get actual state
     var state: OnrampProviderManagerState { get }
 
@@ -35,6 +38,13 @@ public enum OnrampProviderManagerState {
     public enum Restriction: Hashable, CustomStringConvertible {
         case tooSmallAmount(_ minAmount: String)
         case tooBigAmount(_ maxAmount: String)
+
+        var amount: Decimal? {
+            switch self {
+            case .tooSmallAmount(let minAmount): Decimal(string: minAmount)
+            case .tooBigAmount(let maxAmount): Decimal(string: maxAmount)
+            }
+        }
 
         public var description: String {
             switch self {

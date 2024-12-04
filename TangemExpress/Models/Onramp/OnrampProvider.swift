@@ -65,6 +65,7 @@ extension OnrampProvider: Hashable {
 
 extension OnrampProvider: OnrampProviderManager {
     public var state: OnrampProviderManagerState { manager.state }
+    public var amount: Decimal? { manager.amount }
 
     public var isSupported: Bool {
         state.isSupported
