@@ -100,6 +100,10 @@
 		2D665C322CDCA3FC00C9BA85 /* CLValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D665C0B2CDCA3FC00C9BA85 /* CLValue.swift */; };
 		2D665C342CDCA46C00C9BA85 /* CasperNetworkResponse.Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D665C332CDCA46C00C9BA85 /* CasperNetworkResponse.Transaction.swift */; };
 		2D70C61D2B21E90A00BD1DAB /* MarketsAddCustomItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D70C61B2B21E90A00BD1DAB /* MarketsAddCustomItemView.swift */; };
+		2D8F9E742CF9B280007434A4 /* CloreMainNetworkParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8F9E712CF9B280007434A4 /* CloreMainNetworkParams.swift */; };
+		2D8F9E752CF9B280007434A4 /* CloreWalletAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8F9E722CF9B280007434A4 /* CloreWalletAssembly.swift */; };
+		2D8F9E762CF9B280007434A4 /* CloreExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8F9E702CF9B280007434A4 /* CloreExternalLinkProvider.swift */; };
+		2D8F9E782CF9B314007434A4 /* CloreBlockBookConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8F9E772CF9B314007434A4 /* CloreBlockBookConfig.swift */; };
 		2DA57BBF2CD650E900C890DF /* CasperWalletAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D616FE92CD1414000581EA6 /* CasperWalletAssembly.swift */; };
 		2DA57BC02CD650E900C890DF /* CasperExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D616FE82CD1414000581EA6 /* CasperExternalLinkProvider.swift */; };
 		2DA57BC12CD650E900C890DF /* CasperAddressUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D616FE72CD1414000581EA6 /* CasperAddressUtils.swift */; };
@@ -3252,6 +3256,10 @@
 		2D70C61B2B21E90A00BD1DAB /* MarketsAddCustomItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsAddCustomItemView.swift; sourceTree = "<group>"; };
 		2D788E7F2ADD657000E0884B /* WalletSelectorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletSelectorViewModel.swift; sourceTree = "<group>"; };
 		2D788E822ADD657000E0884B /* WalletSelectorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletSelectorView.swift; sourceTree = "<group>"; };
+		2D8F9E702CF9B280007434A4 /* CloreExternalLinkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloreExternalLinkProvider.swift; sourceTree = "<group>"; };
+		2D8F9E712CF9B280007434A4 /* CloreMainNetworkParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloreMainNetworkParams.swift; sourceTree = "<group>"; };
+		2D8F9E722CF9B280007434A4 /* CloreWalletAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloreWalletAssembly.swift; sourceTree = "<group>"; };
+		2D8F9E772CF9B314007434A4 /* CloreBlockBookConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloreBlockBookConfig.swift; sourceTree = "<group>"; };
 		2DA8AB112A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Analytics+BlockchainExceptionHandler.swift"; sourceTree = "<group>"; };
 		2DAB6B6E2CE28E8500B4A10C /* MinimumAmountRestrictable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimumAmountRestrictable.swift; sourceTree = "<group>"; };
 		2DB3614A2C14FBAB00BB1D38 /* SegmentedPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPickerView.swift; sourceTree = "<group>"; };
@@ -6561,6 +6569,16 @@
 				2D788E7F2ADD657000E0884B /* WalletSelectorViewModel.swift */,
 			);
 			path = WalletSelector;
+			sourceTree = "<group>";
+		};
+		2D8F9E732CF9B280007434A4 /* Clore */ = {
+			isa = PBXGroup;
+			children = (
+				2D8F9E702CF9B280007434A4 /* CloreExternalLinkProvider.swift */,
+				2D8F9E712CF9B280007434A4 /* CloreMainNetworkParams.swift */,
+				2D8F9E722CF9B280007434A4 /* CloreWalletAssembly.swift */,
+			);
+			path = Clore;
 			sourceTree = "<group>";
 		};
 		2DADFF9E2C98A9F30029F390 /* Tooltip */ = {
@@ -10765,6 +10783,7 @@
 				2D616FEB2CD1414000581EA6 /* Casper */,
 				B62D3C922CBC79D900C2460E /* Chia */,
 				2D2B9C262CE5174500D744C6 /* Chiliz */,
+				2D8F9E732CF9B280007434A4 /* Clore */,
 				B62D3CA42CBC79D900C2460E /* Cosmos */,
 				B62D3CA92CBC79D900C2460E /* Dash */,
 				B62D3CAE2CBC79D900C2460E /* Decimal */,
@@ -10793,8 +10812,8 @@
 				B62D3E592CBC79D900C2460E /* Tron */,
 				B62D3E792CBC79D900C2460E /* VeChain */,
 				B62D3E7D2CBC79D900C2460E /* XDC */,
-				B62D3EA82CBC79D900C2460E /* XRP */,
 				2D4C5E912CE7B676001346E4 /* Xodex */,
+				B62D3EA82CBC79D900C2460E /* XRP */,
 			);
 			path = Blockchains;
 			sourceTree = "<group>";
@@ -10802,6 +10821,7 @@
 		B62D3EAC2CBC79D900C2460E /* Implementations */ = {
 			isa = PBXGroup;
 			children = (
+				2D8F9E772CF9B314007434A4 /* CloreBlockBookConfig.swift */,
 				B62D3EAA2CBC79D900C2460E /* GetBlockBlockBookConfig.swift */,
 				B62D3EAB2CBC79D900C2460E /* NowNodesBlockBookConfig.swift */,
 			);
@@ -18844,6 +18864,9 @@
 				B62D407C2CBC79DA00C2460E /* DogecoinExternalLinkProvider.swift in Sources */,
 				B62D41A72CBC79DA00C2460E /* SuiFeeParameters.swift in Sources */,
 				B62D3FEC2CBC79DA00C2460E /* OP_CHECKSIG.swift in Sources */,
+				2D8F9E742CF9B280007434A4 /* CloreMainNetworkParams.swift in Sources */,
+				2D8F9E752CF9B280007434A4 /* CloreWalletAssembly.swift in Sources */,
+				2D8F9E762CF9B280007434A4 /* CloreExternalLinkProvider.swift in Sources */,
 				B62D41A42CBC79DA00C2460E /* SuiCoinObject.swift in Sources */,
 				B62D414C2CBC79DA00C2460E /* PolkadotAccountHealthInfo.swift in Sources */,
 				B62D40CB2CBC79DA00C2460E /* EthereumOptimisticRollupSmartContract.swift in Sources */,
@@ -19039,6 +19062,7 @@
 				B62D404E2CBC79DA00C2460E /* CardanoResponseMapper.swift in Sources */,
 				B62D40842CBC79DA00C2460E /* DucatusExternalLinkProvider.swift in Sources */,
 				B62D3FBA2CBC79DA00C2460E /* BinanceExternalLinkProvider.swift in Sources */,
+				2D8F9E782CF9B314007434A4 /* CloreBlockBookConfig.swift in Sources */,
 				B62D40512CBC79DA00C2460E /* CardanoUtil.swift in Sources */,
 				B62D424B2CBC79DB00C2460E /* OnfinalityAPIResolver.swift in Sources */,
 				B62D40342CBC79DA00C2460E /* BitcoinCashExternalLinkProvider.swift in Sources */,

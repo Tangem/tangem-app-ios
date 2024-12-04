@@ -42,16 +42,30 @@ class BlockBookUtxoProvider {
     }
 
     func getFeeRatePerByte(for confirmationBlocks: Int) -> AnyPublisher<Decimal, Error> {
-        executeRequest(
-            .fees(NodeRequest.estimateFeeRequest(confirmationBlocks: confirmationBlocks)),
-            responseType: BlockBookFeeResponse.self
-        )
-        .tryMap { [weak self] response in
-            guard let self else {
-                throw WalletError.empty
-            }
-            return try convertFeeRate(Decimal(response.result.feerate))
-        }.eraseToAnyPublisher()
+        let request: BlockBookTarget.Request
+
+        switch blockchain {
+        case .clore:
+            request = .getFees(confirmationBlocks: confirmationBlocks)
+
+            return executeRequest(request, responseType: BlockBookFeeResultResponse.self)
+                .withWeakCaptureOf(self)
+                .tryMap { provider, response in
+                    guard let decimalFeeResult = Decimal(stringValue: response.result) else {
+                        throw WalletError.failedToGetFee
+                    }
+
+                    return try provider.convertFeeRate(decimalFeeResult)
+                }.eraseToAnyPublisher()
+        default:
+            request = .fees(NodeRequest.estimateFeeRequest(confirmationBlocks: confirmationBlocks))
+
+            return executeRequest(request, responseType: BlockBookFeeRateResponse.self)
+                .withWeakCaptureOf(self)
+                .tryMap { provider, response in
+                    try provider.convertFeeRate(Decimal(response.result.feerate))
+                }.eraseToAnyPublisher()
+        }
     }
 
     func sendTransaction(hex: String) -> AnyPublisher<String, Error> {
