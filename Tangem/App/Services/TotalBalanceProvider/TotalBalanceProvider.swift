@@ -172,13 +172,14 @@ private extension TotalBalanceProvider {
         }
 
         Analytics.log(
-            .balanceLoaded,
+            event: .balanceLoaded,
             params: [
                 .balance: mapToBalanceParameterValue(
                     hasCryptoError: hasCryptoError,
                     hasError: hasError,
                     balance: balance
-                ),
+                ).rawValue,
+                .tokensCount: String(walletModels.count),
             ],
             limit: .userWalletSession(userWalletId: userWalletId)
         )
