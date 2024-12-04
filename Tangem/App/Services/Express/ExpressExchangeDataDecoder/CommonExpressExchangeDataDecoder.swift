@@ -29,6 +29,12 @@ struct CommonExpressExchangeDataDecoder: ExpressExchangeDataDecoder {
     }
 }
 
-enum ExpressExchangeDataDecoderError: Error {
+enum ExpressExchangeDataDecoderError: LocalizedError {
     case invalidSignature
+
+    var errorDescription: String? {
+        switch self {
+        case .invalidSignature: "Invalid signature"
+        }
+    }
 }

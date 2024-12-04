@@ -159,7 +159,7 @@ private extension OnrampModel {
     }
 
     func updateQuotes(amount: Decimal?) async throws {
-        guard let amount else {
+        guard let amount, amount > 0 else {
             try await clearOnrampManager()
             return
         }
@@ -168,16 +168,21 @@ private extension OnrampModel {
     }
 
     func clearOnrampManager() async throws {
-        let provider = try await onrampManager.setupQuotes(in: providersList(), amount: .none)
+        let provider = try await onrampManager.setupQuotes(in: providersList(), amount: .clear)
         try Task.checkCancellation()
         _selectedOnrampProvider.send(.success(provider))
     }
 
-    func updateOnrampManager(amount: Decimal?) async throws {
+    func updateOnrampManager(amount: Decimal) async throws {
         _selectedOnrampProvider.send(.loading)
-        let provider = try await onrampManager.setupQuotes(in: providersList(), amount: amount)
+        let provider = try await onrampManager.setupQuotes(in: providersList(), amount: .amount(amount))
         try Task.checkCancellation()
         _selectedOnrampProvider.send(.success(provider))
+
+        // Do not start autoupdating for all error cases
+        if provider.isSuccessfullyLoaded {
+            try await autoupdateTask()
+        }
     }
 
     // MARK: - Payment method
@@ -248,6 +253,42 @@ private extension OnrampModel {
                 }
             }
         }
+    }
+
+    func autoupdateTask() async throws {
+        guard _selectedOnrampProvider.value?.value?.isSuccessfullyLoaded == true else {
+            log("Selected provider has an error. Do not start autoupdate")
+            return
+        }
+
+        try Task.checkCancellation()
+
+        log("Start timer to autoupdate")
+        try await Task.sleep(seconds: 10)
+
+        try Task.checkCancellation()
+        // we don't update the selected provider
+        log("Call autoupdate")
+        let providerForReselect = try await onrampManager.setupQuotes(in: providersList(), amount: .same)
+
+        // Check after reloading
+        guard _selectedOnrampProvider.value?.value?.isSuccessfullyLoaded == true else {
+            log("Selected provider has a error. Will update to \(providerForReselect)")
+            _selectedOnrampProvider.send(.success(providerForReselect))
+            try await autoupdateTask()
+            return
+        }
+
+        // Push the same provider to notify all listeners
+        _selectedOnrampProvider.resend()
+        _onrampProviders.resend()
+
+        // Restart task
+        try await autoupdateTask()
+    }
+
+    func log(_ message: String) {
+        AppLog.shared.debug("[\(TangemFoundation.objectDescription(self))] \(message)")
     }
 }
 
@@ -398,6 +439,10 @@ extension OnrampModel: SendBaseOutput {
     func performAction() async throws -> TransactionDispatcherResult {
         assertionFailure("OnrampModel doesn't support the send transaction action")
         throw TransactionDispatcherResult.Error.actionNotSupported
+    }
+
+    func flowDidDisappear() {
+        task?.cancel()
     }
 }
 

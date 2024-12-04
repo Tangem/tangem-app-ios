@@ -37,7 +37,7 @@ struct PendingExpressTransactionsConverter {
 
             let state: PendingExpressTransactionView.State
             switch record.transactionStatus {
-            case .awaitingDeposit, .confirming, .exchanging, .sendingToUser, .done, .refunded:
+            case .awaitingDeposit, .confirming, .exchanging, .buying, .sendingToUser, .done, .refunded:
                 state = .inProgress
             case .failed, .canceled, .unknown, .paused:
                 state = .error
@@ -110,7 +110,7 @@ struct PendingExpressTransactionsConverter {
         case .refunded:
             // Refunded state is the final state and it can't be pending (with loader)
             state = isFinished ? .checkmark : .empty
-        case .awaitingDeposit, .confirming, .exchanging, .sendingToUser, .done, .canceled:
+        case .awaitingDeposit, .confirming, .exchanging, .buying, .sendingToUser, .done, .canceled:
             break
         }
 
