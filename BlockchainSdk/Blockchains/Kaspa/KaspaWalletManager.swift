@@ -149,7 +149,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
         let meta: KaspaKRC20.TransactionMeta
 
         do {
-            let result = try txBuilder.buildForSendKRC20(transaction: transaction, token: token)
+            let result = try txBuilder.buildForSignKRC20(transaction: transaction, token: token)
             txgroup = result.0
             meta = result.1
         } catch {
@@ -276,10 +276,10 @@ final class KaspaWalletManager: BaseManager, WalletManager {
         }
 
         do {
-            let result = try txBuilder.buildRevealTransaction(
+            let result = try txBuilder.buildForSignRevealTransactionKRC20(
                 sourceAddress: transaction.sourceAddress,
                 params: params,
-                fee: .init(feeParams.revealFee)
+                fee: Fee(feeParams.revealFee)
             )
 
             kaspaTransaction = result.transaction
@@ -483,7 +483,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
         let revealFeeAmount = Amount(with: blockchain, value: revealFee)
 
         return Transaction(
-            amount: .init(
+            amount: Amount(
                 with: blockchain,
                 type: .token(value: token),
                 value: transactionAmount
@@ -596,7 +596,7 @@ extension KaspaWalletManager: AssetRequirementsManager {
 
         return .paidTransactionWithFee(
             blockchain: wallet.blockchain,
-            transactionAmount: .init(with: token, value: incompleteTokenTransaction.amount),
+            transactionAmount: Amount(with: token, value: incompleteTokenTransaction.amount),
             feeAmount: nil
         )
     }
