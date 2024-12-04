@@ -63,7 +63,7 @@ final class TONWalletManager: BaseManager, WalletManager {
 
                 let params = transaction.params as? TONTransactionParams
 
-                let transactionInput = TONTransactionInput(
+                let buildInput = TONTransactionInput(
                     amount: transaction.amount,
                     destination: transaction.destinationAddress,
                     expireAt: createExpirationTimestampSecs(),
@@ -71,13 +71,15 @@ final class TONWalletManager: BaseManager, WalletManager {
                     params: params
                 )
 
-                let hashForSign = try txBuilder.buildForSign(buildInput: transactionInput)
+                let hashForSign = try txBuilder.buildForSign(buildInput: buildInput)
 
-                return (transactionInput, hashForSign.data)
+                return (buildInput, hashForSign.data)
             }
-            .flatMap { transactionInput, hashForSign in
-                let signaturePublisher = signer.sign(hash: hashForSign, walletPublicKey: self.wallet.publicKey)
-                let transactionInputPublisher = Just(transactionInput).setFailureType(to: Error.self)
+            .withWeakCaptureOf(self)
+            .flatMap { manager, input in
+                let (buildInput, hash) = input
+                let transactionInputPublisher = Just(buildInput).setFailureType(to: Error.self)
+                let signaturePublisher = signer.sign(hash: hash, walletPublicKey: manager.wallet.publicKey)
 
                 return Publishers.Zip(signaturePublisher, transactionInputPublisher)
             }
