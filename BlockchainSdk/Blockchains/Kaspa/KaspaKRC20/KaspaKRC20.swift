@@ -56,8 +56,11 @@ enum KaspaKRC20 {
         let envelope: KaspaKRC20.Envelope
     }
 
-    struct RevealTransactionFeeParameter: FeeParameters {
-        let amount: Amount
+    /// Contains the exact fee values for both commit and reveal KRC20 transactions,
+    /// whereas `Fee.amount` contains the cumulative fee value (the sum of commit and reveal fees).
+    struct TokenTransactionFeeParams: FeeParameters {
+        let commitFee: Amount
+        let revealFee: Amount
     }
 
     struct Envelope: Codable {

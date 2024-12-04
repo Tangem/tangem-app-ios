@@ -39,6 +39,9 @@ class LockedWalletMainContentViewModel: ObservableObject {
 
     var footerViewModel: MainFooterViewModel?
 
+    @Published
+    private(set) var actionButtonsViewModel: ActionButtonsViewModel?
+
     private(set) lazy var bottomSheetFooterViewModel = MainBottomSheetFooterViewModel()
 
     let isMultiWallet: Bool
@@ -59,6 +62,11 @@ class LockedWalletMainContentViewModel: ObservableObject {
         self.lockedUserWalletDelegate = lockedUserWalletDelegate
 
         contextData = userWalletModel.getAnalyticsContextData()
+
+        if FeatureProvider.isAvailable(.actionButtons), isMultiWallet {
+            actionButtonsViewModel = makeActionButtonsViewModel()
+        }
+
         Analytics.log(event: .mainNoticeWalletUnlock, params: contextData?.analyticsParams ?? [:])
     }
 
@@ -69,5 +77,17 @@ class LockedWalletMainContentViewModel: ObservableObject {
 
     private func openUnlockSheet() {
         lockedUserWalletDelegate?.openUnlockUserWalletBottomSheet(for: userWalletModel)
+    }
+}
+
+// MARK: - Action buttons
+
+private extension LockedWalletMainContentViewModel {
+    func makeActionButtonsViewModel() -> ActionButtonsViewModel? {
+        return .init(
+            coordinator: MainCoordinator(dismissAction: {}, popToRootAction: { _ in }),
+            expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel),
+            userWalletModel: userWalletModel
+        )
     }
 }

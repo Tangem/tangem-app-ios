@@ -12,6 +12,7 @@ import TangemStaking
 
 class StakingManagerMock: StakingManager {
     var state: StakingManagerState { .notEnabled }
+    var balances: [TangemStaking.StakingBalance]? = []
     var statePublisher: AnyPublisher<StakingManagerState, Never> { .just(output: state) }
     var allowanceAddress: String? { nil }
 

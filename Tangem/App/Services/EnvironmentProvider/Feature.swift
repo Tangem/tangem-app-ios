@@ -27,8 +27,8 @@ enum Feature: String, Hashable, CaseIterable {
         switch self {
         case .disableFirmwareVersionLimit: return .unspecified
         case .learnToEarn: return .unspecified
-        case .onramp: return .unspecified
-        case .actionButtons: return .unspecified
+        case .onramp: return .version("5.19")
+        case .actionButtons: return .version("5.19")
         }
     }
 }

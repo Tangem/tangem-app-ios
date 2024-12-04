@@ -6,18 +6,21 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-struct CommonBuyTokenAvailabilitySorter: TokenAvailabilitySorter {
-    @Injected(\.exchangeService) private var exchangeService: ExchangeService
+struct CommonBuyTokenAvailabilitySorter {
+    // MARK: - Dependencies
 
-    func sortModels(walletModels: [WalletModel]) -> (availableModels: [WalletModel], unavailableModels: [WalletModel]) {
+    @Injected(\.expressAvailabilityProvider)
+    private var expressAvailabilityProvider: ExpressAvailabilityProvider
+}
+
+// MARK: - TokenAvailabilitySorter
+
+extension CommonBuyTokenAvailabilitySorter: TokenAvailabilitySorter {
+    func sortModels(walletModels: [WalletModel]) async -> (availableModels: [WalletModel], unavailableModels: [WalletModel]) {
         walletModels.reduce(
             into: (availableModels: [WalletModel](), unavailableModels: [WalletModel]())
         ) { result, walletModel in
-            if exchangeService.canBuy(
-                walletModel.tokenItem.currencySymbol,
-                amountType: walletModel.amountType,
-                blockchain: walletModel.blockchainNetwork.blockchain
-            ) {
+            if expressAvailabilityProvider.canOnramp(tokenItem: walletModel.tokenItem) {
                 result.availableModels.append(walletModel)
             } else {
                 result.unavailableModels.append(walletModel)

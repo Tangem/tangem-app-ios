@@ -16,5 +16,6 @@ struct ActionButtonsTokenSelectorItem: Identifiable, Equatable {
     let balance: String
     let fiatBalance: String
     let isDisabled: Bool
+    let isLoading: Bool
     let walletModel: WalletModel
 }

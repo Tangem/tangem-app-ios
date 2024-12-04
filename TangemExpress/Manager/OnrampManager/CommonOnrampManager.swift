@@ -49,15 +49,15 @@ extension CommonOnrampManager: OnrampManager {
             return []
         }
 
-        // Fill the `_providers` with all possible options
+        // Return the `providers` with all possible options
         let providers = try await prepareProviders(item: item, supportedProviders: supportedProviders)
         return providers
     }
 
-    public func setupQuotes(in providers: ProvidersList, amount: Decimal?) async throws -> OnrampProvider {
-        log(message: "Start update quotes")
+    public func setupQuotes(in providers: ProvidersList, amount: OnrampUpdatingAmount) async throws -> OnrampProvider {
+        log(message: "Start update quotes for amount: \(amount)")
         try await updateQuotesInEachManager(providers: providers, amount: amount)
-        log(message: "The quotes was updated")
+        log(message: "The quotes was updated for amount: \(amount)")
 
         return try proceedProviders(providers: providers)
     }
@@ -89,7 +89,7 @@ extension CommonOnrampManager: OnrampManager {
 // MARK: - Private
 
 private extension CommonOnrampManager {
-    func updateQuotesInEachManager(providers: ProvidersList, amount: Decimal?) async throws {
+    func updateQuotesInEachManager(providers: ProvidersList, amount: OnrampUpdatingAmount) async throws {
         if providers.isEmpty {
             throw OnrampManagerError.providersIsEmpty
         }

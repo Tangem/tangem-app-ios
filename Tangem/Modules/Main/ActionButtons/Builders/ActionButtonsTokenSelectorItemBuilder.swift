@@ -18,6 +18,7 @@ struct ActionButtonsTokenSelectorItemBuilder: TokenSelectorItemBuilder {
             balance: walletModel.balance,
             fiatBalance: walletModel.fiatBalance,
             isDisabled: isDisabled,
+            isLoading: walletModel.state.isLoading,
             walletModel: walletModel
         )
     }

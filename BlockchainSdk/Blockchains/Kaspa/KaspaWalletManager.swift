@@ -270,7 +270,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
 
         guard let params = transaction.params as? KaspaKRC20.IncompleteTokenTransactionParams,
               // Here, we use fee, which is obtained from previously saved data and the hardcoded dust value
-              let feeParams = transaction.fee.parameters as? KaspaKRC20.RevealTransactionFeeParameter
+              let feeParams = transaction.fee.parameters as? KaspaKRC20.TokenTransactionFeeParams
         else {
             return .sendTxFail(error: WalletError.failedToBuildTx)
         }
@@ -279,7 +279,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             let result = try txBuilder.buildRevealTransaction(
                 sourceAddress: transaction.sourceAddress,
                 params: params,
-                fee: .init(feeParams.amount)
+                fee: .init(feeParams.revealFee)
             )
 
             kaspaTransaction = result.transaction
@@ -476,17 +476,25 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             return nil
         }
 
+        let blockchain = wallet.blockchain
         let transactionAmount = tokenValue / token.decimalValue
-        let fee = Decimal(incompleteTokenTransactionParams.targetOutputAmount) / wallet.blockchain.decimalValue - dustValue.value
-        let feeAmount = Amount(with: wallet.blockchain, value: fee)
+        let commitFeeAmount: Amount = .zeroCoin(for: blockchain) // The commit tx was already sent, therefore zero is used here
+        let revealFee = Decimal(incompleteTokenTransactionParams.targetOutputAmount) / blockchain.decimalValue - dustValue.value
+        let revealFeeAmount = Amount(with: blockchain, value: revealFee)
 
         return Transaction(
             amount: .init(
-                with: wallet.blockchain,
+                with: blockchain,
                 type: .token(value: token),
                 value: transactionAmount
             ),
-            fee: .init(feeAmount, parameters: KaspaKRC20.RevealTransactionFeeParameter(amount: feeAmount)),
+            fee: Fee(
+                commitFeeAmount + revealFeeAmount,
+                parameters: KaspaKRC20.TokenTransactionFeeParams(
+                    commitFee: commitFeeAmount,
+                    revealFee: revealFeeAmount
+                )
+            ),
             sourceAddress: defaultSourceAddress,
             destinationAddress: incompleteTokenTransactionParams.envelope.to,
             changeAddress: defaultSourceAddress,

@@ -16,4 +16,9 @@ protocol SendBaseInput: AnyObject {
 
 protocol SendBaseOutput: AnyObject {
     func performAction() async throws -> TransactionDispatcherResult
+    func flowDidDisappear()
+}
+
+extension SendBaseOutput {
+    func flowDidDisappear() {}
 }

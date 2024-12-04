@@ -11,6 +11,8 @@ import Combine
 
 public protocol StakingManager {
     var state: StakingManagerState { get }
+    var balances: [StakingBalance]? { get }
+
     var statePublisher: AnyPublisher<StakingManagerState, Never> { get }
     var allowanceAddress: String? { get }
 
@@ -47,12 +49,22 @@ public enum StakingManagerState: Hashable, CustomStringConvertible {
         }
     }
 
-    public var balances: [StakingBalance]? {
-        guard case .staked(let stakeInfo) = self else {
-            return nil
+    public var isLoading: Bool {
+        switch self {
+        case .loading:
+            return true
+        default:
+            return false
         }
+    }
 
-        return stakeInfo.balances
+    public var isSuccessfullyLoaded: Bool {
+        switch self {
+        case .staked, .availableToStake:
+            return true
+        default:
+            return false
+        }
     }
 
     public var description: String {
