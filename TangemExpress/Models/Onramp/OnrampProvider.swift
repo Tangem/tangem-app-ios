@@ -65,6 +65,7 @@ extension OnrampProvider: Hashable {
 
 extension OnrampProvider: OnrampProviderManager {
     public var state: OnrampProviderManagerState { manager.state }
+    public var amount: Decimal? { manager.amount }
 
     public var isSupported: Bool {
         state.isSupported
@@ -107,7 +108,7 @@ extension OnrampProvider: OnrampProviderManager {
         }
     }
 
-    public func update(amount: Decimal?) async {
+    public func update(amount: OnrampUpdatingAmount) async {
         await manager.update(amount: amount)
     }
 

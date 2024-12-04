@@ -70,6 +70,7 @@ final class UncompletedBackupViewModel: ObservableObject {
     }
 
     private func discardBackup() {
+        Analytics.log(.backupNoticeCanceled)
         backupHelper.discardIncompletedBackup()
         dismiss()
     }

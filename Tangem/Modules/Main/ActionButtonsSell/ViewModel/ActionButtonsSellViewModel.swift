@@ -11,19 +11,13 @@ import Foundation
 final class ActionButtonsSellViewModel: ObservableObject {
     @Injected(\.exchangeService) private var exchangeService: ExchangeService
 
-    let tokenSelectorViewModel: TokenSelectorViewModel<
-        ActionButtonsTokenSelectorItem,
-        ActionButtonsTokenSelectorItemBuilder
-    >
+    let tokenSelectorViewModel: ActionButtonsTokenSelectorViewModel
 
     private weak var coordinator: ActionButtonsSellRoutable?
 
     init(
         coordinator: some ActionButtonsSellRoutable,
-        tokenSelectorViewModel: TokenSelectorViewModel<
-            ActionButtonsTokenSelectorItem,
-            ActionButtonsTokenSelectorItemBuilder
-        >
+        tokenSelectorViewModel: ActionButtonsTokenSelectorViewModel
     ) {
         self.coordinator = coordinator
         self.tokenSelectorViewModel = tokenSelectorViewModel

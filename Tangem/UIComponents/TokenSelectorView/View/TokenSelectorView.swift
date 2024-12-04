@@ -46,7 +46,13 @@ struct TokenSelectorView<
         case .empty:
             emptyContent
         case .data(let availableTokens, let unavailableTokens):
-            GroupedScrollView(alignment: .leading, spacing: 14) {
+            LazyVStack(alignment: .leading, spacing: 14) {
+                CustomSearchBar(
+                    searchText: $viewModel.searchText,
+                    placeholder: Localization.commonSearch,
+                    style: .focused
+                )
+
                 availableSection(
                     title: viewModel.strings.availableTokensListTitle,
                     items: availableTokens
@@ -88,37 +94,24 @@ struct TokenSelectorView<
 private extension TokenSelectorView {
     @ViewBuilder
     func availableSection(title: String, items: [TokenModel]) -> some View {
-        if viewModel.searchText.isNotEmpty || items.isNotEmpty {
+        if viewModel.isAvailableItemsBlockVisible {
             GroupedSection(
                 items,
                 content: { item in
                     tokenCellContent(item)
                 },
                 header: {
-                    availableSectionHeader(title: title, itemsIsNotEmpty: items.isNotEmpty)
-                        .padding(.init(top: 12, leading: 0, bottom: 8, trailing: 0))
+                    DefaultHeaderView(title)
+                        .frame(height: 18)
+                        .padding(.init(top: 14, leading: 0, bottom: 10, trailing: 0))
                 },
                 emptyContent: {
                     emptySearchContent
-                        .padding(.init(top: 12, leading: 16, bottom: 12, trailing: 16))
+                        .padding(.vertical, 12)
+                        .frame(maxWidth: .infinity)
                 }
             )
             .settings(\.backgroundColor, Colors.Background.action)
-        }
-    }
-
-    func availableSectionHeader(title: String, itemsIsNotEmpty: Bool) -> some View {
-        VStack(alignment: .leading, spacing: 26) {
-            CustomSearchBar(
-                searchText: $viewModel.searchText,
-                placeholder: Localization.commonSearch,
-                style: .focused
-            )
-
-            if itemsIsNotEmpty {
-                DefaultHeaderView(title)
-                    .transition(.opacity.animation(.default))
-            }
         }
     }
 }
@@ -136,7 +129,8 @@ private extension TokenSelectorView {
                 },
                 header: {
                     DefaultHeaderView(title)
-                        .padding(.vertical, 12)
+                        .frame(height: 18)
+                        .padding(.init(top: 14, leading: 0, bottom: 10, trailing: 0))
                 }
             )
             .settings(\.backgroundColor, Colors.Background.action)

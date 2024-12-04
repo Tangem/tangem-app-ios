@@ -6,6 +6,6 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-protocol ActionButtonsSwapFlowRoutable {
-    func openSwap()
+protocol ActionButtonsSwapFlowRoutable: AnyObject {
+    func openSwap(userWalletModel: some UserWalletModel)
 }

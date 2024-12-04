@@ -32,8 +32,9 @@ struct MarketsTokenDetailsCoordinatorView: CoordinatorView {
             .sheet(item: $coordinator.mailViewModel) {
                 MailView(viewModel: $0)
             }
-            .iOS16UIKitSheet(item: $coordinator.expressCoordinator) {
-                ExpressCoordinatorView(coordinator: $0)
+            .iOS16UIKitSheet(item: $coordinator.expressCoordinator) { coordinator in
+                ExpressCoordinatorView(coordinator: coordinator)
+                    .expressNavigationView()
             }
             .sheet(item: $coordinator.sendCoordinator) {
                 SendCoordinatorView(coordinator: $0)

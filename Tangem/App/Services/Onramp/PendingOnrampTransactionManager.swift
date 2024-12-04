@@ -17,7 +17,7 @@ class CommonPendingOnrampTransactionsManager {
     private let walletModel: WalletModel
     private let expressAPIProvider: ExpressAPIProvider
 
-    private let pendingTransactionFactory = PendingExpressTransactionFactory()
+    private let pendingOnrampTransactionFactory = PendingOnrampTransactionFactory()
     private let pollingService: PollingService<PendingOnrampTransaction, PendingOnrampTransaction>
 
     private let pendingTransactionsSubject = CurrentValueSubject<[PendingOnrampTransaction], Never>([])
@@ -33,11 +33,11 @@ class CommonPendingOnrampTransactionsManager {
         expressAPIProvider = ExpressAPIProviderFactory().makeExpressAPIProvider(userId: userWalletId, logger: AppLog.shared)
 
         pollingService = PollingService(
-            request: { [expressAPIProvider, pendingTransactionFactory] prendinTransaction in
+            request: { [expressAPIProvider, pendingOnrampTransactionFactory] prendinTransaction in
                 do {
                     let record = prendinTransaction.transactionRecord
                     let onrampTransaction = try await expressAPIProvider.onrampStatus(transactionId: record.expressTransactionId)
-                    let pendingTransaction = pendingTransactionFactory.buildPendingOnrampTransaction(
+                    let pendingTransaction = pendingOnrampTransactionFactory.buildPendingOnrampTransaction(
                         currentOnrampTransaction: onrampTransaction,
                         for: record
                     )
@@ -66,7 +66,7 @@ class CommonPendingOnrampTransactionsManager {
             }
             .removeDuplicates()
             .map { transactions in
-                let factory = PendingExpressTransactionFactory()
+                let factory = PendingOnrampTransactionFactory()
                 let savedPendingTransactions = transactions.map(factory.buildPendingOnrampTransaction(for:))
                 return savedPendingTransactions
             }
