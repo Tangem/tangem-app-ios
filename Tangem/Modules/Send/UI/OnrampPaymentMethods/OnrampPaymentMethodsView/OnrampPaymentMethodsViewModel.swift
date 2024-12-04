@@ -14,7 +14,6 @@ import TangemFoundation
 final class OnrampPaymentMethodsViewModel: ObservableObject {
     // MARK: - ViewState
 
-    @Published var selectedPaymentMethod: String?
     @Published var paymentMethods: [OnrampPaymentMethodRowViewData] = []
     @Published var alert: AlertBinder?
 
@@ -40,36 +39,29 @@ final class OnrampPaymentMethodsViewModel: ObservableObject {
 
 private extension OnrampPaymentMethodsViewModel {
     func bind() {
-        interactor
-            .paymentMethodPublisher
-            .withWeakCaptureOf(self)
-            .receive(on: DispatchQueue.main)
-            .sink { viewModel, payment in
-                viewModel.selectedPaymentMethod = payment.id
-            }
-            .store(in: &bag)
-
-        interactor
-            .paymentMethodsPublisher
-            .withWeakCaptureOf(self)
-            .receive(on: DispatchQueue.main)
-            .sink { viewModel, paymentMethods in
-                viewModel.updateView(paymentMethods: paymentMethods)
-            }
-            .store(in: &bag)
+        Publishers.CombineLatest(
+            interactor.paymentMethodsPublisher.removeDuplicates(),
+            interactor.paymentMethodPublisher.removeDuplicates()
+        )
+        .withWeakCaptureOf(self)
+        .receive(on: DispatchQueue.main)
+        .sink { viewModel, args in
+            let (paymentMethods, payment) = args
+            viewModel.updateView(paymentMethods: paymentMethods, selectedPaymentMethod: payment)
+        }
+        .store(in: &bag)
     }
 
-    func updateView(paymentMethods methods: [OnrampPaymentMethod]) {
+    func updateView(paymentMethods methods: [OnrampPaymentMethod], selectedPaymentMethod: OnrampPaymentMethod) {
         paymentMethods = methods.map { method in
             OnrampPaymentMethodRowViewData(
                 id: method.id,
                 name: method.name,
                 iconURL: method.image,
-                isSelected: selectedPaymentMethod == method.id,
+                isSelected: selectedPaymentMethod.id == method.id,
                 action: { [weak self] in
-                    self?.selectedPaymentMethod = method.id
                     self?.interactor.update(selectedPaymentMethod: method)
-                    self?.updateView(paymentMethods: methods)
+                    self?.updateView(paymentMethods: methods, selectedPaymentMethod: method)
                     self?.coordinator?.closeOnrampPaymentMethodsView()
                 }
             )
