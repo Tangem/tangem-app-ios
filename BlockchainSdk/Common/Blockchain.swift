@@ -95,6 +95,7 @@ public indirect enum Blockchain: Equatable, Hashable {
     case casper(curve: EllipticCurve, testnet: Bool)
     case chiliz(testnet: Bool)
     case xodex
+    case clore
 
     public var isTestnet: Bool {
         switch self {
@@ -163,7 +164,8 @@ public indirect enum Blockchain: Equatable, Hashable {
              .filecoin,
              .energyWebX,
              .canxium,
-             .xodex:
+             .xodex,
+             .clore:
             return false
         case .stellar(_, let testnet),
              .hedera(_, let testnet),
@@ -264,7 +266,8 @@ public indirect enum Blockchain: Equatable, Hashable {
              .radiant,
              .internetComputer,
              .koinos,
-             .aptos:
+             .aptos,
+             .clore:
             return 8
         case .ethereum,
              .ethereumClassic,
@@ -484,6 +487,8 @@ public indirect enum Blockchain: Equatable, Hashable {
             return "CHZ"
         case .xodex:
             return "XODEX"
+        case .clore:
+            return "CLORE"
         }
     }
 
@@ -1031,6 +1036,7 @@ extension Blockchain: Codable {
         case .casper: return "casper-network"
         case .chiliz: return "chiliz"
         case .xodex: return "xodex"
+        case .clore: return "clore-ai"
         }
     }
 
@@ -1131,6 +1137,7 @@ extension Blockchain: Codable {
         case "casper-network": self = .casper(curve: curve, testnet: isTestnet)
         case "chiliz": self = .chiliz(testnet: isTestnet)
         case "xodex": self = .xodex
+        case "clore-ai": self = .clore
         default:
             throw BlockchainSdkError.decodingFailed
         }
@@ -1184,6 +1191,7 @@ public extension Blockchain {
         case "xtz": return .tezos(curve: curve)
         case "doge": return .dogecoin
         case "bsc": return .bsc(testnet: isTestnet)
+        case "clore-ai": return .clore
         // DO NOT ADD new blockchains here. This is legacy code and used only for Tangem Note and cards release before 4.12 firmware
         default: return nil
         }
@@ -1379,6 +1387,8 @@ private extension Blockchain {
             return "chiliz"
         case .xodex:
             return "xodex"
+        case .clore:
+            return "clore-ai"
         }
     }
 
@@ -1498,6 +1508,8 @@ extension Blockchain {
             return FilecoinWalletAssembly()
         case .casper:
             return CasperWalletAssembly()
+        case .clore:
+            return CloreWalletAssembly()
         }
     }
 }

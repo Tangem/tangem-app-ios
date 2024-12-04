@@ -434,6 +434,7 @@ private extension Blockchain {
         case .casper: return nil
         case .chiliz: return nil
         case .xodex: return nil
+        case .clore: return nil
             // Did you get a compilation error here? If so, check whether the network is supported at https://api.moonpay.com/v3/currencies
         }
     }
@@ -518,6 +519,7 @@ private extension Blockchain {
         case .casper: return nil
         case .chiliz: return nil
         case .xodex: return nil
+        case .clore: return nil
             // Did you get a compilation error here? If so, check whether the network is supported at https://api.moonpay.com/v3/currencies
         }
     }

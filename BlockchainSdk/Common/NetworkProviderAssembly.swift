@@ -34,6 +34,12 @@ struct NetworkProviderAssembly {
                 blockBookConfig: GetBlockBlockBookConfig(input.blockchainSdkConfig.getBlockCredentials),
                 networkConfiguration: input.networkConfig
             )
+        case .clore(let url):
+            return BlockBookUtxoProvider(
+                blockchain: input.blockchain,
+                blockBookConfig: CloreBlockBookConfig(urlNode: url),
+                networkConfiguration: input.networkConfig
+            )
         }
     }
 

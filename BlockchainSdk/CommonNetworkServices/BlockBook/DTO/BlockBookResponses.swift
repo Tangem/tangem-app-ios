@@ -191,12 +191,16 @@ struct BlockBookUnspentTxResponse: Decodable {
     let scriptPubKey: String?
 }
 
-struct BlockBookFeeResponse: Decodable {
+struct BlockBookFeeRateResponse: Decodable {
     struct Result: Decodable {
         let feerate: Double
     }
 
     let result: Result
+}
+
+struct BlockBookFeeResultResponse: Decodable {
+    let result: String
 }
 
 struct SendResponse: Decodable {
