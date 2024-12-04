@@ -278,77 +278,66 @@ final class KaspaWalletManager: BaseManager, WalletManager {
         token: Token,
         signer: TransactionSigner
     ) -> AnyPublisher<TransactionSendResult, SendTxError> {
-        return Deferred {
-            Future { promise in
-                if let params = transaction.params as? KaspaKRC20.IncompleteTokenTransactionParams,
-                   let feeParams = transaction.fee.parameters as? KaspaKRC20.TokenTransactionFeeParams {
-                    promise(.success((params, feeParams)))
-                } else {
-                    promise(.failure(WalletError.failedToBuildTx))
-                }
-            }
-        }
-        .withWeakCaptureOf(self)
-        .flatMap { walletManager, input in
-            return walletManager
-                .updateUnspentOutputs()
-                .mapToValue(input)
-        }
-        .withWeakCaptureOf(self)
-        .tryMap { walletManager, input in
-            let (params, feeParams) = input
+        let kaspaTransaction: KaspaTransaction
+        let commitRedeemScript: KaspaKRC20.RedeemScript
+        let hashes: [Data]
 
-            return try walletManager
-                .txBuilder
-                .buildForSignRevealTransactionKRC20(
-                    sourceAddress: transaction.sourceAddress,
-                    params: params,
-                    fee: Fee(feeParams.revealFee)
-                )
+        guard let params = transaction.params as? KaspaKRC20.IncompleteTokenTransactionParams,
+              // Here, we use fee, which is obtained from previously saved data and the hardcoded dust value
+              let feeParams = transaction.fee.parameters as? KaspaKRC20.TokenTransactionFeeParams
+        else {
+            return .sendTxFail(error: WalletError.failedToBuildTx)
         }
-        .withWeakCaptureOf(self)
-        .flatMap { walletManager, revealTransaction in
-            return signer
-                .sign(hashes: revealTransaction.hashes, walletPublicKey: walletManager.wallet.publicKey)
-                .map { (revealTransaction, $0) }
-        }
-        .withWeakCaptureOf(self)
-        .tryMap { manager, input in
-            let (revealTransaction, signatures) = input
 
-            return manager.txBuilder.buildForSendReveal(
-                transaction: revealTransaction.transaction,
-                commitRedeemScript: revealTransaction.redeemScript,
-                signatures: signatures
+        do {
+            let result = try txBuilder.buildRevealTransaction(
+                sourceAddress: transaction.sourceAddress,
+                params: params,
+                fee: .init(feeParams.revealFee)
             )
-        }
-        .withWeakCaptureOf(self)
-        .flatMap { manager, tx in
-            let encodedRawTransactionData = try? JSONEncoder().encode(tx)
 
-            return manager
-                .networkService
-                .send(transaction: KaspaTransactionRequest(transaction: tx))
-                .mapSendError(tx: encodedRawTransactionData?.hexString.lowercased())
-                .handleEvents(receiveFailure: { [weak manager] _ in
-                    // A failed reveal tx should trigger `wallet` update so the SDK consumer
-                    // can observe and handle it (e.g. display a notification)
-                    manager?.wallet.setAssetRequirements()
-                })
-                .eraseToAnyPublisher()
+            kaspaTransaction = result.transaction
+            hashes = result.hashes
+            commitRedeemScript = result.redeemScript
+        } catch {
+            return .sendTxFail(error: error)
         }
-        .withWeakCaptureOf(self)
-        .handleEvents(receiveOutput: { manager, response in
-            manager.handleSuccessfulRevealTokenTransaction(transaction, token: token, response: response)
-        })
-        .asyncMap { manager, response in
-            // Delete Commit
-            await manager.removeIncompleteTokenTransaction(for: token)
 
-            return TransactionSendResult(hash: response.transactionId)
-        }
-        .eraseSendError()
-        .eraseToAnyPublisher()
+        return signer.sign(hashes: hashes, walletPublicKey: wallet.publicKey)
+            .withWeakCaptureOf(self)
+            .tryMap { manager, signatures in
+                return manager.txBuilder.buildForSendReveal(
+                    transaction: kaspaTransaction,
+                    commitRedeemScript: commitRedeemScript,
+                    signatures: signatures
+                )
+            }
+            .withWeakCaptureOf(self)
+            .flatMap { manager, tx in
+                let encodedRawTransactionData = try? JSONEncoder().encode(tx)
+
+                return manager
+                    .networkService
+                    .send(transaction: KaspaTransactionRequest(transaction: tx))
+                    .mapSendError(tx: encodedRawTransactionData?.hexString.lowercased())
+                    .handleEvents(receiveFailure: { [weak manager] _ in
+                        // A failed reveal tx should trigger `wallet` update so the SDK consumer
+                        // can observe and handle it (e.g. display a notification)
+                        manager?.wallet.setAssetRequirements()
+                    })
+                    .eraseToAnyPublisher()
+            }
+            .withWeakCaptureOf(self)
+            .handleEvents(receiveOutput: { manager, response in
+                manager.handleSuccessfulRevealTokenTransaction(transaction, token: token, response: response)
+            })
+            .asyncMap { manager, response in
+                // Delete Commit
+                await manager.removeIncompleteTokenTransaction(for: token)
+                return TransactionSendResult(hash: response.transactionId)
+            }
+            .eraseSendError()
+            .eraseToAnyPublisher()
     }
 
     func getFee(amount: Amount, destination: String) -> AnyPublisher<[Fee], Error> {
