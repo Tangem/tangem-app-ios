@@ -91,13 +91,15 @@ extension SendCoordinator {
         case tokenDetails
         case stakingDetails
         case markets
+        case actionButtons
 
         var analytics: Analytics.ParameterValue {
             switch self {
-            case .main: return .main
-            case .tokenDetails: return .token
-            case .stakingDetails: return .token
-            case .markets: return .markets
+            case .main: .main
+            case .tokenDetails: .token
+            case .stakingDetails: .token
+            case .markets: .markets
+            case .actionButtons: .main
             }
         }
     }

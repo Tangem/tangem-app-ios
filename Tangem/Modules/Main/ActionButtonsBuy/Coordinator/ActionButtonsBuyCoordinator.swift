@@ -63,7 +63,8 @@ extension ActionButtonsBuyCoordinator: ActionButtonsBuyRoutable {
         let options = SendCoordinator.Options(
             walletModel: walletModel,
             userWalletModel: userWalletModel,
-            type: .onramp
+            type: .onramp,
+            source: .actionButtons
         )
         coordinator.start(with: options)
         sendCoordinator = coordinator
