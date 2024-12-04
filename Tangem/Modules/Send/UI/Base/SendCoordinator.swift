@@ -95,7 +95,7 @@ extension SendCoordinator {
 
         var analytics: Analytics.ParameterValue {
             switch self {
-            case .main: .main
+            case .main: .longTap
             case .tokenDetails: .token
             case .stakingDetails: .token
             case .markets: .markets
