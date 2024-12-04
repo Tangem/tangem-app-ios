@@ -215,7 +215,7 @@ struct ExpressAPIMapper {
             throw ExpressAPIMapperError.mapToDecimalError(codedData.fromAmount)
         }
 
-        fromAmount /= pow(10, 2)
+        fromAmount /= pow(10, codedData.fromPrecision)
 
         return OnrampRedirectData(
             txId: response.txId,
@@ -231,7 +231,7 @@ struct ExpressAPIMapper {
             throw ExpressAPIMapperError.mapToDecimalError(response.fromAmount)
         }
 
-        fromAmount /= pow(10, 2)
+        fromAmount /= pow(10, response.fromPrecision)
 
         let toAmount = response.toAmount
             .flatMap(Decimal.init)
