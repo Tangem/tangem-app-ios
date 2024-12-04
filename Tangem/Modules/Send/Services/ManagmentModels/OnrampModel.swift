@@ -61,6 +61,10 @@ class OnrampModel {
 
         bind()
     }
+
+    deinit {
+        log("deinit")
+    }
 }
 
 // MARK: - Bind
@@ -103,6 +107,15 @@ private extension OnrampModel {
                             .token: model.walletModel.tokenItem.currencySymbol,
                             .provider: provider.provider.name,
                             .errorCode: error.errorCode.rawValue.description,
+                        ]
+                    )
+                case .loaded:
+                    Analytics.log(
+                        event: .onrampProviderCalculated,
+                        params: [
+                            .token: model.walletModel.tokenItem.currencySymbol,
+                            .provider: provider.provider.name,
+                            .paymentMethod: provider.paymentMethod.name,
                         ]
                     )
                 default:

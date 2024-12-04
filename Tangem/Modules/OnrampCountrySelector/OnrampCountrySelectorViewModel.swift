@@ -32,9 +32,6 @@ final class OnrampCountrySelectorViewModel: Identifiable, ObservableObject {
 
         bind()
         loadCountries()
-    }
-
-    func onAppear() {
         Analytics.log(.onrampResidenceScreenOpened)
     }
 
