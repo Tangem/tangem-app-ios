@@ -89,6 +89,10 @@ final class SendViewModel: ObservableObject {
         bind(step: stepsManager.initialState.step)
     }
 
+    func onDisappear() {
+        interactor.viewDidDisappear()
+    }
+
     func userDidTapActionButton() {
         switch mainButtonType {
         case .next:

@@ -13,6 +13,7 @@ protocol SendBaseInteractor {
     var actionInProcessing: AnyPublisher<Bool, Never> { get }
 
     func action() async throws -> TransactionDispatcherResult
+    func viewDidDisappear()
 }
 
 class CommonSendBaseInteractor {
@@ -32,5 +33,9 @@ extension CommonSendBaseInteractor: SendBaseInteractor {
 
     func action() async throws -> TransactionDispatcherResult {
         try await output.performAction()
+    }
+
+    func viewDidDisappear() {
+        output.flowDidDisappear()
     }
 }

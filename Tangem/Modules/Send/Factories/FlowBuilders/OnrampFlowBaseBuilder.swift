@@ -75,7 +75,6 @@ struct OnrampFlowBaseBuilder {
         let stepsManager = CommonOnrampStepsManager(
             onrampStep: onramp.step,
             finishStep: finish,
-            coordinator: router,
             // If user already has saved country in the repository then the bottom sheet will not show
             // And we can show keyboard safely
             shouldActivateKeyboard: onrampRepository.preferenceCountry != nil
