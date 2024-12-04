@@ -35,7 +35,7 @@ struct OnrampStatusCompactView: View {
                     state: .empty
                 ),
                 .init(
-                    title: PendingExpressTransactionStatus.exchanging.activeStatusTitle,
+                    title: PendingExpressTransactionStatus.buying.activeStatusTitle,
                     state: .empty
                 ),
                 .init(

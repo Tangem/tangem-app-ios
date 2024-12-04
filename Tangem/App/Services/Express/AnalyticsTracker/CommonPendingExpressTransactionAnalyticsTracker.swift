@@ -41,7 +41,7 @@ extension CommonPendingExpressTransactionAnalyticsTracker {
     struct PendingExpressTransactionAnalyticsStatusMapper {
         func mapToAnalyticsStatus(pendingTxStatus: PendingExpressTransactionStatus) -> Analytics.ParameterValue {
             switch pendingTxStatus {
-            case .awaitingDeposit, .confirming, .exchanging, .sendingToUser:
+            case .awaitingDeposit, .confirming, .buying, .exchanging, .sendingToUser:
                 return .inProgress
             case .done:
                 return .done
