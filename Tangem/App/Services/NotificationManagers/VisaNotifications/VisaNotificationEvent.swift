@@ -14,11 +14,17 @@ enum VisaNotificationEvent: Hashable {
     case failedToLoadPaymentAccount
     case missingPublicKey
     case failedToGenerateAddress
+    case onboardingAccountActivationInfo
 }
 
 extension VisaNotificationEvent: NotificationEvent {
-    var title: NotificationView.Title {
-        .string("Error")
+    var title: NotificationView.Title? {
+        switch self {
+        case .missingRequiredBlockchain, .notValidBlockchain, .failedToLoadPaymentAccount, .missingPublicKey, .failedToGenerateAddress:
+            return .string("Error")
+        case .onboardingAccountActivationInfo:
+            return nil
+        }
     }
 
     var description: String? {
@@ -33,6 +39,8 @@ extension VisaNotificationEvent: NotificationEvent {
             return "Failed to find Public key in keys repository"
         case .failedToGenerateAddress:
             return "Failed to generate address with provided Public key"
+        case .onboardingAccountActivationInfo:
+            return "Please choose the wallet you started the registration process with to sign the transaction for creating your account on the Blockchain"
         }
     }
 
@@ -41,7 +49,12 @@ extension VisaNotificationEvent: NotificationEvent {
     }
 
     var icon: NotificationView.MessageIcon {
-        return .init(iconType: .image(Assets.redCircleWarning.image))
+        switch self {
+        case .missingRequiredBlockchain, .notValidBlockchain, .failedToLoadPaymentAccount, .missingPublicKey, .failedToGenerateAddress:
+            return .init(iconType: .image(Assets.redCircleWarning.image))
+        case .onboardingAccountActivationInfo:
+            return .init(iconType: .image(Assets.blueCircleWarning.image))
+        }
     }
 
     var severity: NotificationView.Severity {

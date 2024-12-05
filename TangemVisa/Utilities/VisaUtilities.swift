@@ -44,4 +44,12 @@ public struct VisaUtilities {
     public var visaBlockchain: Blockchain {
         .polygon(testnet: isTestnet)
     }
+
+    public var addressService: AddressService {
+        AddressServiceFactory(blockchain: visaBlockchain).makeAddressService()
+    }
+
+    public func visaDefaultDerivationPath(style: DerivationStyle) -> DerivationPath? {
+        visaBlockchain.derivationPath(for: style)
+    }
 }

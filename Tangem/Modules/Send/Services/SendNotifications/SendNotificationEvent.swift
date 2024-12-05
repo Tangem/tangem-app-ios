@@ -35,7 +35,7 @@ extension SendNotificationEvent: NotificationEvent {
         }
     }
 
-    var title: NotificationView.Title {
+    var title: NotificationView.Title? {
         switch self {
         case .networkFeeUnreachable:
             return .string(Localization.sendFeeUnreachableErrorTitle)
