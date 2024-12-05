@@ -9,10 +9,14 @@
 import SwiftUI
 
 struct MarketsNavigationBarTitle: View {
+    enum PriceVisibility: Equatable {
+        case hidden
+        case visible(opacity: CGFloat)
+    }
+
     struct State: Equatable {
-        let priceOpacity: CGFloat
-        let titleSpacing: CGFloat
-        let showPrice: Bool
+        let priceVisibility: PriceVisibility
+        let titleOffset: CGFloat
     }
 
     let tokenName: String
@@ -32,19 +36,19 @@ struct MarketsNavigationBarTitle: View {
                 .style(Fonts.Bold.body, color: Colors.Text.primary1)
                 .lineLimit(1)
                 .multilineTextAlignment(.center)
-                .animation(.easeInOut, value: state.titleSpacing)
+                .animation(.easeInOut, value: state.titleOffset)
 
             ZStack {
                 Spacer()
-                    .frame(height: state.titleSpacing)
-                    .animation(.easeInOut, value: state.titleSpacing)
-                if let price, state.showPrice {
+                    .frame(height: state.titleOffset)
+                    .animation(.easeInOut, value: state.titleOffset)
+                if let price, case .visible(let opacity) = state.priceVisibility {
                     Text(price)
                         .style(Fonts.Bold.caption1, color: Colors.Text.tertiary)
                         .lineLimit(1)
                         .multilineTextAlignment(.center)
-                        .opacity(state.priceOpacity)
-                        .animation(.default, value: state.priceOpacity)
+                        .opacity(opacity)
+                        .animation(.default, value: state.priceVisibility)
                 }
             }
         }

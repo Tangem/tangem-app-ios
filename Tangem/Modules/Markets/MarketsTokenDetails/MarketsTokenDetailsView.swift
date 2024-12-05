@@ -19,7 +19,8 @@ struct MarketsTokenDetailsView: View {
     @State private var isListContentObscured = false
 
     @StateObject private var scrollState = ScrollViewOffsetMapper.marketTokenDetails(
-        initialState: MarketsNavigationBarTitle.State(priceOpacity: 0, titleSpacing: 0, showPrice: false)
+        initialState: MarketsNavigationBarTitle.State(priceVisibility: .hidden, titleOffset: 0),
+        labelOffset: Constants.scrollViewContentTopInset + 16 // spacing inside ScrollView -> VStack
     )
 
     private var isDarkColorScheme: Bool { colorScheme == .dark }
@@ -60,6 +61,11 @@ struct MarketsTokenDetailsView: View {
                 .toolbar(content: {
                     ToolbarItem(placement: .principal) {
                         navigationBarTitle
+                    }
+
+                    // FIXME: hack to fix centering of principal toolbar item
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Spacer().frame(width: 24)
                     }
                 })
         } else {

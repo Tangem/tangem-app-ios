@@ -42,7 +42,7 @@ extension MarketsNavigationBar where Content == DefaultNavigationBarTitle {
     init(title: String, onBackButtonAction: @escaping () -> Void) {
         titleView = {
             DefaultNavigationBarTitle(
-                title: title,
+                title,
                 settings: .init(
                     font: Fonts.Bold.body,
                     color: Colors.Text.primary1,
@@ -55,10 +55,9 @@ extension MarketsNavigationBar where Content == DefaultNavigationBarTitle {
     }
 }
 
-// #Preview {
-//    MarketsNavigationBar(
-//        isMarketsSheetStyle: true,
-//        title: "Exchanges",
-//        onBackButtonAction: {}
-//    )
-// }
+#Preview {
+    MarketsNavigationBar(
+        title: "Exchanges",
+        onBackButtonAction: {}
+    )
+}

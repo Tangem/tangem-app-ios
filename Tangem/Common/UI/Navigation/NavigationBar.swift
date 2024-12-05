@@ -100,7 +100,7 @@ struct DefaultNavigationBarTitle: View {
     let title: String
     let settings: Settings
 
-    init(title: String, settings: Settings = .default) {
+    init(_ title: String, settings: Settings = .default) {
         self.title = title
         self.settings = settings
     }
@@ -202,7 +202,7 @@ extension NavigationBar where Title == DefaultNavigationBarTitle {
     ) {
         self.title = {
             DefaultNavigationBarTitle(
-                title: title,
+                title,
                 settings: settings.title
             )
         }

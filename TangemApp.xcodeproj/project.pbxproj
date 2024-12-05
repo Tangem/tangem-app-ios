@@ -29,7 +29,7 @@
 		0AD13F952C8AD76800C2EE16 /* CommonStakingAnalyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD13F942C8AD76800C2EE16 /* CommonStakingAnalyticsLogger.swift */; };
 		0AE3EE0B2D018CAE003BC687 /* ScrollViewOffsetMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE3EE0A2D018CAE003BC687 /* ScrollViewOffsetMapper.swift */; };
 		0AE3EE0D2D018D23003BC687 /* MarketsNavigationBarTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE3EE0C2D018D23003BC687 /* MarketsNavigationBarTitle.swift */; };
-		0AE3EE0F2D019593003BC687 /* MarketsScrollViewOffsetTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE3EE0E2D019593003BC687 /* MarketsScrollViewOffsetTracking.swift */; };
+		0AE3EE0F2D019593003BC687 /* MarketsTokenDetailsScrollState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE3EE0E2D019593003BC687 /* MarketsTokenDetailsScrollState.swift */; };
 		0AEA96BB2CEF8D9700395617 /* ReceiveNotificationEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEA96BA2CEF8D9700395617 /* ReceiveNotificationEvent.swift */; };
 		2D0E4F532A8D114E00001D8E /* GenericWalletManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0E4F522A8D114E00001D8E /* GenericWalletManagerFactory.swift */; };
 		2D1400CA2C43F79F00B75A42 /* MarketsPortfolioContextActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1400C82C43F4FD00B75A42 /* MarketsPortfolioContextActions.swift */; };
@@ -3180,7 +3180,7 @@
 		0AD9EF0E2CC2A9B600466191 /* UnstakingSendAmountValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnstakingSendAmountValidator.swift; sourceTree = "<group>"; };
 		0AE3EE0A2D018CAE003BC687 /* ScrollViewOffsetMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollViewOffsetMapper.swift; sourceTree = "<group>"; };
 		0AE3EE0C2D018D23003BC687 /* MarketsNavigationBarTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsNavigationBarTitle.swift; sourceTree = "<group>"; };
-		0AE3EE0E2D019593003BC687 /* MarketsScrollViewOffsetTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsScrollViewOffsetTracking.swift; sourceTree = "<group>"; };
+		0AE3EE0E2D019593003BC687 /* MarketsTokenDetailsScrollState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenDetailsScrollState.swift; sourceTree = "<group>"; };
 		0AEA96BA2CEF8D9700395617 /* ReceiveNotificationEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiveNotificationEvent.swift; sourceTree = "<group>"; };
 		27A75CE6E254D24B857D5F32 /* Pods-Tangem-TangemUITests.release(alpha).xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangem-TangemUITests.release(alpha).xcconfig"; path = "Target Support Files/Pods-Tangem-TangemUITests/Pods-Tangem-TangemUITests.release(alpha).xcconfig"; sourceTree = "<group>"; };
 		2D0E4F522A8D114E00001D8E /* GenericWalletManagerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericWalletManagerFactory.swift; sourceTree = "<group>"; };
@@ -8439,7 +8439,7 @@
 				B696AD0E2C61E015009632EF /* Helpers */,
 				B0AF9BFA2C32D01200EC5830 /* Subviews */,
 				B0A1BC102C296B5700DECCFD /* MarketsTokenDetailsView.swift */,
-				0AE3EE0E2D019593003BC687 /* MarketsScrollViewOffsetTracking.swift */,
+				0AE3EE0E2D019593003BC687 /* MarketsTokenDetailsScrollState.swift */,
 				B0A1BC122C296B6200DECCFD /* MarketsTokenDetailsViewModel.swift */,
 				B0A1BC142C296B6E00DECCFD /* MarketsTokenDetailsCoordinator.swift */,
 				B0A1BC162C296B7800DECCFD /* MarketsTokenDetailsCoordinatorView.swift */,
@@ -18092,7 +18092,7 @@
 				B0F79C6A2689AC56008C9B30 /* FileEncryptionUtility.swift in Sources */,
 				B6FECF512C4032930030A8A9 /* PushNotificationsAvailabilityProviderStub.swift in Sources */,
 				DC2AB6E72C08D9F80050796C /* WelcomeOnboardingTOSViewModel.swift in Sources */,
-				0AE3EE0F2D019593003BC687 /* MarketsScrollViewOffsetTracking.swift in Sources */,
+				0AE3EE0F2D019593003BC687 /* MarketsTokenDetailsScrollState.swift in Sources */,
 				DA76BF442CEF7C8800199317 /* CommonOnrampPendingTransactionRepository.swift in Sources */,
 				DA6C7528292613D00070EEFD /* UserWalletIdFactory.swift in Sources */,
 				DC3DCAD72A40AA4B00F72554 /* WalletModelsFactory.swift in Sources */,
