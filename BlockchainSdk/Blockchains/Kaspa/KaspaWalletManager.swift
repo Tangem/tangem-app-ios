@@ -137,7 +137,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                 manager.wallet.addPendingTransaction(record)
             })
             .map { _, response in
-                TransactionSendResult(hash: response.transactionId)
+                return TransactionSendResult(hash: response.transactionId)
             }
             .eraseSendError()
             .eraseToAnyPublisher()
@@ -196,6 +196,7 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             .flatMap { manager, revealTx in
                 // Send Reveal
                 let encodedRawTransactionData = try? JSONEncoder().encode(revealTx)
+
                 return manager
                     .networkService
                     .send(transaction: KaspaTransactionRequest(transaction: revealTx))
@@ -364,7 +365,6 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                 return feeMapper.mapTokenFee(mass: Decimal(mass.mass), feeEstimate: feeEstimate)
             }
             .eraseToAnyPublisher()
-
         default:
             return Result {
                 try txBuilder.buildForMassCalculation(transaction: transaction)
