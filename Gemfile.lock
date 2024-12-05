@@ -176,7 +176,7 @@ GEM
       xcodeproj (>= 1.13.0, < 2.0.0)
       xcpretty (~> 0.3.0)
       xcpretty-travis-formatter (>= 0.0.3, < 2.0.0)
-    fastlane-plugin-firebase_app_distribution (0.9.0)
+    fastlane-plugin-firebase_app_distribution (0.9.1)
       google-apis-firebaseappdistribution_v1 (~> 0.3.0)
       google-apis-firebaseappdistribution_v1alpha (~> 0.2.0)
     ffi (1.17.0)
@@ -231,7 +231,7 @@ GEM
       concurrent-ruby (~> 1.0)
     jmespath (1.6.2)
     json (2.8.2)
-    jwt (2.9.1)
+    jwt (2.9.3)
       base64
     logger (1.6.1)
     mini_magick (4.13.2)
