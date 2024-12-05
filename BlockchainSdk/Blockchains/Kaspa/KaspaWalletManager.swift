@@ -210,6 +210,8 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                             return .anyFail(error: WalletError.empty)
                         }
 
+                        // Both failed and successful reveal txs should trigger the update of the UTXOs state in tx builder,
+                        // therefore `wire` operator is used here
                         return manager.updateUnspentOutputs()
                     }
                     .mapSendError(tx: encodedRawTransactionData?.hexString.lowercased())
@@ -319,6 +321,8 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                             return .anyFail(error: WalletError.empty)
                         }
 
+                        // Both failed and successful reveal txs should trigger the update of the UTXOs state in tx builder,
+                        // therefore `wire` operator is used here
                         return manager.updateUnspentOutputs()
                     }
                     .mapSendError(tx: encodedRawTransactionData?.hexString.lowercased())
