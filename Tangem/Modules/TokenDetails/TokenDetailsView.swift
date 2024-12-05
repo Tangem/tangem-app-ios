@@ -11,7 +11,7 @@ import SwiftUI
 struct TokenDetailsView: View {
     @ObservedObject var viewModel: TokenDetailsViewModel
 
-    @StateObject private var scrollState = TokenDetailsScrollState(
+    @StateObject private var scrollState = ScrollViewOffsetMapper.tokenDetails(
         tokenIconSizeSettings: Constants.tokenIconSizeSettings,
         headerTopPadding: Constants.headerTopPadding
     )
@@ -102,7 +102,7 @@ struct TokenDetailsView: View {
                     ),
                     size: IconViewSizeSettings.tokenDetailsToolbar.iconSize
                 )
-                .opacity(scrollState.toolbarIconOpacity)
+                .opacity(scrollState.state)
             }
 
             ToolbarItem(placement: .navigationBarTrailing) { navbarTrailingButton }

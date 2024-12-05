@@ -18,6 +18,10 @@ struct MarketsTokenDetailsView: View {
     @State private var headerHeight: CGFloat = .zero
     @State private var isListContentObscured = false
 
+    @StateObject private var scrollState = ScrollViewOffsetMapper.marketTokenDetails(
+        initialState: MarketsNavigationBarTitle.State(priceOpacity: 0, titleSpacing: 0, showPrice: false)
+    )
+
     private var isDarkColorScheme: Bool { colorScheme == .dark }
 
     /// `UIColor` is used since `Color(uiColor:)` constructor loses Xcode color asset dark/light appearance setting.
@@ -35,10 +39,7 @@ struct MarketsTokenDetailsView: View {
     private let scrollViewFrameCoordinateSpaceName = UUID()
 
     var body: some View {
-        rootView
-            .if(!viewModel.isMarketsSheetStyle) { view in
-                view.navigationTitle(viewModel.tokenName)
-            }
+        rootViewWithTitle
             .onOverlayContentStateChange { [weak viewModel] state in
                 viewModel?.onOverlayContentStateChange(state)
             }
@@ -49,6 +50,21 @@ struct MarketsTokenDetailsView: View {
                 backgroundColor
                     .ignoresSafeArea(edges: .vertical)
             }
+            .onAppear(perform: scrollState.onViewAppear)
+    }
+
+    @ViewBuilder
+    private var rootViewWithTitle: some View {
+        if !viewModel.isMarketsSheetStyle {
+            rootView
+                .toolbar(content: {
+                    ToolbarItem(placement: .principal) {
+                        navigationBarTitle
+                    }
+                })
+        } else {
+            rootView
+        }
     }
 
     @ViewBuilder
@@ -56,15 +72,16 @@ struct MarketsTokenDetailsView: View {
         ZStack {
             scrollView
 
-            navigationBar
+            if viewModel.isMarketsSheetStyle {
+                navigationBar
+            }
         }
         .navigationBarTitleDisplayMode(.inline)
     }
 
     private var navigationBar: some View {
         MarketsNavigationBar(
-            isMarketsSheetStyle: viewModel.isMarketsSheetStyle,
-            title: viewModel.tokenName,
+            titleView: { navigationBarTitle },
             onBackButtonAction: viewModel.onBackButtonTap
         )
         .background(
@@ -77,6 +94,14 @@ struct MarketsTokenDetailsView: View {
         )
         .readGeometry(\.size.height, bindTo: $headerHeight)
         .infinityFrame(axis: .vertical, alignment: .top)
+    }
+
+    private var navigationBarTitle: some View {
+        MarketsNavigationBarTitle(
+            tokenName: viewModel.tokenName,
+            price: viewModel.price,
+            state: scrollState.state
+        )
     }
 
     @ViewBuilder
@@ -114,11 +139,11 @@ struct MarketsTokenDetailsView: View {
                     .transition(.opacity)
             }
             .padding(.top, Constants.scrollViewContentTopInset)
-            .if(viewModel.isMarketsSheetStyle) { view in
-                view
-                    .readContentOffset(inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName)) { contentOffset in
-                        isListContentObscured = contentOffset.y > Constants.scrollViewContentTopInset
-                    }
+            .readContentOffset(inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName)) { contentOffset in
+                scrollState.contentOffsetSubject.send(contentOffset)
+                if viewModel.isMarketsSheetStyle {
+                    isListContentObscured = contentOffset.y > Constants.scrollViewContentTopInset
+                }
             }
         }
         .opacity(viewModel.overlayContentHidingProgress)
