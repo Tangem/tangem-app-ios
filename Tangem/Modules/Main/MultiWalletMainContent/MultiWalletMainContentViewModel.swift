@@ -522,7 +522,7 @@ private extension TokenSectionsAdapter.Section {
 
 private extension MultiWalletMainContentViewModel {
     func makeActionButtonsViewModel() -> ActionButtonsViewModel? {
-        guard let coordinator else { return nil }
+        guard let coordinator, canManageTokens else { return nil }
 
         return .init(
             coordinator: coordinator,
