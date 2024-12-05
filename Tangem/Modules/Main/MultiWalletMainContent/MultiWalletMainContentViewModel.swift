@@ -359,14 +359,14 @@ extension MultiWalletMainContentViewModel {
     }
 
     private func openBuy(for walletModel: WalletModel) {
-        if let disabledLocalizedReason = userWalletModel.config.getDisabledLocalizedReason(for: .exchange) {
-            error = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
-            return
-        }
-
         if FeatureProvider.isAvailable(.onramp) {
             tokenRouter.openOnramp(walletModel: walletModel)
         } else {
+            if let disabledLocalizedReason = userWalletModel.config.getDisabledLocalizedReason(for: .exchange) {
+                error = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
+                return
+            }
+
             tokenRouter.openBuyCryptoIfPossible(walletModel: walletModel)
         }
     }

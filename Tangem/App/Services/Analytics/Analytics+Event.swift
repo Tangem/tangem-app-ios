@@ -338,5 +338,32 @@ extension Analytics {
         case manageTokensCustomTokenName = "[Manage Tokens / Custom] Custom Token Name"
         case manageTokensCustomTokenSymbol = "[Manage Tokens / Custom] Custom Token Symbol"
         case manageTokensCustomTokenDecimals = "[Manage Tokens / Custom] Custom Token Decimals"
+
+        // MARK: - Onramp
+
+        case onrampBuyScreenOpened = "[Onramp] Buy Screen Opened"
+        case onrampCurrencyScreenOpened = "[Onramp] Currency Screen Opened"
+        case onrampCurrencyChosen = "[Onramp] Currency Chosen"
+        case onrampButtonClose = "[Onramp] Button - Close"
+        case onrampOnrampSettingsScreenOpened = "[Onramp] Onramp Settings Screen Opened"
+        case onrampResidenceScreenOpened = "[Onramp] Residence Screen Opened"
+        case onrampResidenceChosen = "[Onramp] Residence Chosen"
+        case onrampResidenceConfirmScreen = "[Onramp] Residence Confirm Screen"
+        case onrampButtonChange = "[Onramp] Button - Change"
+        case onrampButtonConfirm = "[Onramp] Button - Confirm"
+        case onrampProvidersScreenOpened = "[Onramp] Providers Screen Opened"
+        case onrampProviderCalculated = "[Onramp] Provider Calculated"
+        case onrampPaymentMethodScreenOpened = "[Onramp] Payment Method Screen Opened"
+        case onrampMethodChosen = "[Onramp] Method Chosen"
+        case onrampProviderChosen = "[Onramp] Provider Chosen"
+        case onrampButtonBuy = "[Onramp] Button - Buy"
+        case onrampErrorMinAmount = "[Onramp] Error - Min Amount"
+        case onrampErrorMaxAmount = "[Onramp] Error - Max Amount"
+        case onrampErrors = "[Onramp] Errors"
+        case onrampBuyingInProgressScreenOpened = "[Onramp] Buying In Progress Screen Opened"
+        case onrampNoticeKYC = "[Onramp] Notice - KYC"
+        case onrampOnrampStatusOpened = "[Onramp] Onramp Status Opened"
+        case onrampButtonGoToProvider = "[Onramp] Button - Go To Provider"
+        case onrampOnrampStatus = "[Onramp] Onramp Status"
     }
 }
