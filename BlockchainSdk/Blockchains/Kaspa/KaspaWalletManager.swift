@@ -129,7 +129,6 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                     .networkService
                     .send(transaction: KaspaTransactionRequest(transaction: tx))
                     .mapSendError(tx: encodedRawTransactionData?.hexString.lowercased())
-                    .eraseToAnyPublisher()
             }
             .withWeakCaptureOf(self)
             .handleEvents(receiveOutput: { manager, response in
@@ -185,7 +184,6 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                     .send(transaction: KaspaTransactionRequest(transaction: commitTx))
                     .mapSendError(tx: encodedRawTransactionData?.hexString.lowercased())
                     .mapToValue(revealTx)
-                    .eraseToAnyPublisher()
             }
             .withWeakCaptureOf(self)
             .asyncMap { manager, revealTx in
@@ -193,7 +191,6 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                 await manager.store(incompleteTokenTransaction: meta.incompleteTransactionParams, for: token)
                 return revealTx
             }
-            .eraseToAnyPublisher()
             .delay(for: .seconds(KaspaKRC20.Constants.revealTransactionSendDelay), scheduler: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .flatMap { manager, revealTx in
@@ -207,7 +204,6 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                         // can observe and handle it (e.g. display a notification)
                         manager?.wallet.setAssetRequirements()
                     })
-                    .eraseToAnyPublisher()
                     .wire { [weak manager] () -> AnyPublisher<Void, Error> in
                         guard let manager else {
                             return .anyFail(error: WalletError.empty)
