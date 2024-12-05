@@ -344,6 +344,7 @@ private extension ExpressViewModel {
             .store(in: &bag)
 
         interactor.swappingPair
+            .dropFirst()
             .withWeakCaptureOf(self)
             .asyncMap { viewModel, pair -> Bool in
                 do {

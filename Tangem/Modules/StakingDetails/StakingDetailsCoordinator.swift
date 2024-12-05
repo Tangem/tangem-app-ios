@@ -102,7 +102,8 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
         coordinator.start(with: .init(
             walletModel: options.walletModel,
             userWalletModel: options.userWalletModel,
-            type: .staking(manager: options.manager)
+            type: .staking(manager: options.manager),
+            source: .stakingDetails
         ))
         sendCoordinator = coordinator
         Analytics.log(.stakingButtonStake, params: [.source: .stakeSourceStakeInfo])
@@ -146,7 +147,8 @@ extension StakingDetailsCoordinator: StakingDetailsRoutable {
         coordinator.start(with: .init(
             walletModel: options.walletModel,
             userWalletModel: options.userWalletModel,
-            type: sendType
+            type: sendType,
+            source: .stakingDetails
         ))
         sendCoordinator = coordinator
     }

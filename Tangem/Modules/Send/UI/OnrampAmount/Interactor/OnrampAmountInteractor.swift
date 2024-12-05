@@ -48,7 +48,7 @@ extension CommonOnrampAmountInteractor: OnrampAmountInteractor {
             return Empty().eraseToAnyPublisher()
         }
 
-        return input.fiatCurrencyPublisher.map { $0.value }.eraseToAnyPublisher()
+        return input.fiatCurrencyPublisher.eraseToAnyPublisher()
     }
 
     var bottomInfoPublisher: AnyPublisher<LoadingResult<Decimal, OnrampAmountInteractorBottomInfoError>?, Never> {

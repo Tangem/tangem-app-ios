@@ -187,6 +187,7 @@ extension Analytics {
         // MARK: - Onramp
 
         case onramp = "Onramp"
+        case markets = "Markets"
 
         // MARK: - Common
 

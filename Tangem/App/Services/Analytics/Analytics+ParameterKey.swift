@@ -94,5 +94,7 @@ extension Analytics {
 
         case walletForm = "WalletForm"
         case reason = "Reason"
+        case residence = "Residence"
+        case paymentMethod = "Payment Method"
     }
 }
