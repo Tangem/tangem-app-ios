@@ -92,7 +92,8 @@ struct AddressTypesConfig {
              .canxium,
              .casper,
              .chiliz,
-             .xodex:
+             .xodex,
+             .clore:
             return [.default]
         }
     }
