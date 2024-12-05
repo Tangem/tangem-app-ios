@@ -12,6 +12,7 @@ import TangemStaking
 struct UnstakingFlowBaseBuilder {
     let userWalletModel: UserWalletModel
     let walletModel: WalletModel
+    let source: SendCoordinator.Source
     let sendAmountStepBuilder: SendAmountStepBuilder
     let sendFeeStepBuilder: SendFeeStepBuilder
     let sendSummaryStepBuilder: SendSummaryStepBuilder
@@ -25,6 +26,10 @@ struct UnstakingFlowBaseBuilder {
         notificationManager.setupManager(with: unstakingModel)
 
         let actionType = builder.sendFlowActionType(actionType: action.type)
+        let sendFinishAnalyticsLogger = builder.makeStakingFinishAnalyticsLogger(
+            actionType: actionType,
+            stakingValidatorsInput: unstakingModel
+        )
 
         let io = (input: unstakingModel, output: unstakingModel)
 
@@ -60,7 +65,7 @@ struct UnstakingFlowBaseBuilder {
 
         let finish = sendFinishStepBuilder.makeSendFinishStep(
             input: unstakingModel,
-            actionType: actionType,
+            sendFinishAnalyticsLogger: sendFinishAnalyticsLogger,
             sendDestinationCompactViewModel: .none,
             sendAmountCompactViewModel: amount.compact,
             onrampAmountCompactViewModel: .none,
@@ -88,6 +93,7 @@ struct UnstakingFlowBaseBuilder {
             dataBuilder: builder.makeStakingBaseDataBuilder(input: unstakingModel),
             tokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem,
+            source: source,
             coordinator: router
         )
         stepsManager.set(output: viewModel)

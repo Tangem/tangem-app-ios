@@ -33,6 +33,10 @@ final class OnrampPaymentMethodsViewModel: ObservableObject {
 
         bind()
     }
+
+    func onAppear() {
+        Analytics.log(.onrampPaymentMethodScreenOpened)
+    }
 }
 
 // MARK: - Private
@@ -60,6 +64,10 @@ private extension OnrampPaymentMethodsViewModel {
                 iconURL: method.image,
                 isSelected: selectedPaymentMethod.id == method.id,
                 action: { [weak self] in
+                    Analytics.log(event: .onrampMethodChosen, params: [
+                        .paymentMethod: method.name,
+                    ])
+
                     self?.interactor.update(selectedPaymentMethod: method)
                     self?.updateView(paymentMethods: methods, selectedPaymentMethod: method)
                     self?.coordinator?.closeOnrampPaymentMethodsView()

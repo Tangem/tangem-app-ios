@@ -12,9 +12,9 @@ import TangemExpress
 final class OnrampCountryDetectionViewModel: ObservableObject, Identifiable {
     // MARK: - ViewState
 
-    let iconURL: URL?
-    let title: String
-    let style: Subtitle
+    var iconURL: URL? { country.identity.image }
+    var title: String { country.identity.name }
+    var style: Subtitle { country.onrampAvailable ? .info : .notSupport }
 
     var mainButtonTitle: String {
         style == .info ? Localization.commonConfirm : Localization.commonClose
@@ -33,10 +33,6 @@ final class OnrampCountryDetectionViewModel: ObservableObject, Identifiable {
         repository: OnrampRepository,
         coordinator: OnrampCountryDetectionRoutable
     ) {
-        iconURL = country.identity.image
-        title = country.identity.name
-        style = country.onrampAvailable ? .info : .notSupport
-
         self.country = country
         self.repository = repository
         self.coordinator = coordinator
@@ -44,13 +40,25 @@ final class OnrampCountryDetectionViewModel: ObservableObject, Identifiable {
         bind()
     }
 
+    func onAppear() {
+        Analytics.log(
+            event: .onrampResidenceConfirmScreen,
+            params: [.residence: country.identity.name]
+        )
+    }
+
     func didTapChangeButton() {
         coordinator?.openChangeCountry()
+        Analytics.log(.onrampButtonChange)
     }
 
     func didTapMainButton() {
         switch style {
         case .info:
+            Analytics.log(
+                event: .onrampButtonConfirm,
+                params: [.residence: country.identity.name]
+            )
             repository.updatePreference(country: country, currency: country.currency)
             coordinator?.dismissConfirmCountryView()
         case .notSupport:
