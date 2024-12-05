@@ -15,7 +15,7 @@ struct SendFinishStepBuilder {
 
     func makeSendFinishStep(
         input: SendFinishInput,
-        actionType: SendFlowActionType,
+        sendFinishAnalyticsLogger: SendFinishAnalyticsLogger,
         sendDestinationCompactViewModel: SendDestinationCompactViewModel?,
         sendAmountCompactViewModel: SendAmountCompactViewModel?,
         onrampAmountCompactViewModel: OnrampAmountCompactViewModel?,
@@ -25,7 +25,7 @@ struct SendFinishStepBuilder {
     ) -> ReturnValue {
         let viewModel = makeSendFinishViewModel(
             input: input,
-            actionType: actionType,
+            sendFinishAnalyticsLogger: sendFinishAnalyticsLogger,
             sendDestinationCompactViewModel: sendDestinationCompactViewModel,
             sendAmountCompactViewModel: sendAmountCompactViewModel,
             onrampAmountCompactViewModel: onrampAmountCompactViewModel,
@@ -45,7 +45,7 @@ struct SendFinishStepBuilder {
 private extension SendFinishStepBuilder {
     func makeSendFinishViewModel(
         input: SendFinishInput,
-        actionType: SendFlowActionType,
+        sendFinishAnalyticsLogger: SendFinishAnalyticsLogger,
         sendDestinationCompactViewModel: SendDestinationCompactViewModel?,
         sendAmountCompactViewModel: SendAmountCompactViewModel?,
         onrampAmountCompactViewModel: OnrampAmountCompactViewModel?,
@@ -54,8 +54,8 @@ private extension SendFinishStepBuilder {
         onrampStatusCompactViewModel: OnrampStatusCompactViewModel?
     ) -> SendFinishViewModel {
         SendFinishViewModel(
-            settings: .init(tokenItem: walletModel.tokenItem, actionType: actionType),
             input: input,
+            sendFinishAnalyticsLogger: sendFinishAnalyticsLogger,
             sendDestinationCompactViewModel: sendDestinationCompactViewModel,
             sendAmountCompactViewModel: sendAmountCompactViewModel,
             onrampAmountCompactViewModel: onrampAmountCompactViewModel,

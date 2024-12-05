@@ -39,6 +39,10 @@ final class OnrampProvidersViewModel: ObservableObject {
         bind()
     }
 
+    func onAppear() {
+        Analytics.log(.onrampProvidersScreenOpened)
+    }
+
     func closeView() {
         coordinator?.closeOnrampProviders()
     }
@@ -84,11 +88,20 @@ private extension OnrampProvidersViewModel {
                 badge: badge(provider: provider),
                 isSelected: selectedProviderId == provider.provider.id,
                 action: { [weak self] in
-                    self?.interactor.update(selectedProvider: provider)
-                    self?.coordinator?.closeOnrampProviders()
+                    self?.userDidSelect(provider: provider)
                 }
             )
         }
+    }
+
+    func userDidSelect(provider: OnrampProvider) {
+        Analytics.log(event: .onrampProviderChosen, params: [
+            .provider: provider.provider.name,
+            .token: tokenItem.currencySymbol,
+        ])
+
+        interactor.update(selectedProvider: provider)
+        coordinator?.closeOnrampProviders()
     }
 
     func badge(provider: OnrampProvider) -> OnrampProviderRowViewData.Badge? {
