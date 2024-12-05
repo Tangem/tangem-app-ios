@@ -202,13 +202,20 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                 return manager
                     .networkService
                     .send(transaction: KaspaTransactionRequest(transaction: revealTx))
-                    .mapSendError(tx: encodedRawTransactionData?.hexString.lowercased())
                     .handleEvents(receiveFailure: { [weak manager] _ in
                         // A failed reveal tx should trigger `wallet` update so the SDK consumer
                         // can observe and handle it (e.g. display a notification)
                         manager?.wallet.setAssetRequirements()
                     })
                     .eraseToAnyPublisher()
+                    .wire { [weak manager] () -> AnyPublisher<Void, Error> in
+                        guard let manager else {
+                            return .anyFail(error: WalletError.empty)
+                        }
+
+                        return manager.updateUnspentOutputs()
+                    }
+                    .mapSendError(tx: encodedRawTransactionData?.hexString.lowercased())
             }
             .withWeakCaptureOf(self)
             .handleEvents(receiveOutput: { manager, response in
@@ -305,13 +312,19 @@ final class KaspaWalletManager: BaseManager, WalletManager {
                 return manager
                     .networkService
                     .send(transaction: KaspaTransactionRequest(transaction: tx))
-                    .mapSendError(tx: encodedRawTransactionData?.hexString.lowercased())
                     .handleEvents(receiveFailure: { [weak manager] _ in
                         // A failed reveal tx should trigger `wallet` update so the SDK consumer
                         // can observe and handle it (e.g. display a notification)
                         manager?.wallet.setAssetRequirements()
                     })
-                    .eraseToAnyPublisher()
+                    .wire { [weak manager] () -> AnyPublisher<Void, Error> in
+                        guard let manager else {
+                            return .anyFail(error: WalletError.empty)
+                        }
+
+                        return manager.updateUnspentOutputs()
+                    }
+                    .mapSendError(tx: encodedRawTransactionData?.hexString.lowercased())
             }
             .withWeakCaptureOf(self)
             .handleEvents(receiveOutput: { manager, response in
@@ -397,6 +410,20 @@ final class KaspaWalletManager: BaseManager, WalletManager {
         wallet.removePendingTransaction { hash in
             confirmedTransactionHashes.contains(hash)
         }
+    }
+
+    /// A workaround for a badly designed Kaspa transaction builder, which has a stateful implementation
+    /// instead of a stateless one, and therefore its unspent outputs must always be manually updated
+    /// using this method before building a new Kaspa or KRC20 transaction.
+    private func updateUnspentOutputs() -> AnyPublisher<Void, Error> {
+        return networkService
+            .getUnspentOutputs(address: wallet.address)
+            .withWeakCaptureOf(self)
+            .handleEvents(receiveOutput: { walletManager, unspentOutputs in
+                walletManager.txBuilder.setUnspentOutputs(unspentOutputs)
+            })
+            .mapToVoid()
+            .eraseToAnyPublisher()
     }
 
     // MARK: - KRC20 Tokens management
