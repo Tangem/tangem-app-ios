@@ -231,7 +231,9 @@ class BlockchairNetworkProvider: BitcoinNetworkProvider {
         provider
             .requestPublisher(BlockchairTarget(type: type, apiKey: apiKey))
             .filterSuccessfulStatusAndRedirectCodes()
-            .mapSwiftyJSON()
+            .mapJSON()
+            .map { JSON($0) }
+            .eraseToAnyPublisher()
     }
 
     private func getTransactionDetails(from json: JSON) -> BlockchairTransactionDetailed? {

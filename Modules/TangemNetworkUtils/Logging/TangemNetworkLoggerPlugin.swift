@@ -26,7 +26,7 @@ extension TangemNetworkLoggerPlugin: PluginType {
     public func didReceive(_ result: Result<Moya.Response, MoyaError>, target: TargetType) {
         switch result {
         case .success(let response):
-            configuration.output(target, logNetworkResponse(response, target: target, isFromError: false))
+            configuration.output(target, logSuccessNetworkResponse(response, target: target))
         case .failure(let error):
             configuration.output(target, logNetworkError(error, target: target))
         }
@@ -36,83 +36,98 @@ extension TangemNetworkLoggerPlugin: PluginType {
 extension TangemNetworkLoggerPlugin {
     func logNetworkRequest(_ request: RequestType, target: TargetType, completion: @escaping ([String]) -> Void) {
         // Request presence check
-        guard let httpRequest = request.request,
-              let url = httpRequest.url else {
-            completion(["Invalid request for \(target)"])
+        guard let httpRequest = request.request else {
+            completion(["\(TangemNetworkLoggerConstants.networkPrefix) Invalid request ❌: \(target.requestDescription)"])
             return
         }
 
         // Adding log entries for each given log option
-        var output = [String]()
+        var output: [String] = []
 
-        output.append("Request: \(url)")
+        output.append("Request ➡️: \(target.requestDescription)")
 
         if configuration.logOptions.contains(.requestMethod),
            let httpMethod = httpRequest.httpMethod {
-            output.append("HTTP method: \(httpMethod)")
+            output.append("Method: \(httpMethod)")
         }
 
-        if configuration.logOptions.contains(.requestHeaders) {
+        if configuration.logOptions.contains(.requestMethod) {
             var allHeaders = request.sessionHeaders
+
             if let httpRequestHeaders = httpRequest.allHTTPHeaderFields {
                 allHeaders.merge(httpRequestHeaders) { $1 }
             }
-            output.append("headers: \(allHeaders.description)")
+
+            let headerKeys = allHeaders.keys.joined(separator: ",")
+
+            output.append("Headers: \(headerKeys)")
         }
 
-        if configuration.logOptions.contains(.requestBody) {
+        if configuration.logOptions.contains(.requestBody), target.shouldLogResponseBody {
             if let bodyStream = httpRequest.httpBodyStream {
-                output.append("body stream: \(bodyStream.description)")
+                output.append("Body stream: \(bodyStream.description)")
             }
 
             if let body = httpRequest.httpBody,
-               let bodyString = prettyPrint(data: body) {
-                output.append("body: \(bodyString)")
+               let bodyString = String(data: body, encoding: .utf8) {
+                output.append("Body: \(bodyString)")
             }
         }
 
-        completion(output)
+        completion([formatOutput(output)])
     }
 
-    func logNetworkResponse(_ response: Response, target: TargetType, isFromError: Bool) -> [String] {
+    func logSuccessNetworkResponse(_ response: Response, target: TargetType) -> [String] {
         // Adding log entries for each given log option
         var output = [String]()
 
         // Response presence check
-        if let httpResponse = response.response, let url = httpResponse.url {
-            output.append("Response: \(url)")
+        if response.response != nil {
+            output.append("Response ✅ \(response.statusCode): \(target.requestDescription)")
         } else {
-            output.append("Empty network response for \(target)")
+            output.append("Response empty ⚠ \(response.statusCode): \(target.requestDescription)")
         }
 
-        if (isFromError && configuration.logOptions.contains(.errorResponseBody))
-            || configuration.logOptions.contains(.successResponseBody) {
-            output.append("body: \(prettyPrint(data: response.data) ?? "## Cannot map data to String ##")")
+        if configuration.logOptions.contains(.successResponseBody),
+           target.shouldLogResponseBody,
+           let bodyString = String(data: response.data, encoding: .utf8) {
+            output.append("Body: \(bodyString)")
         }
 
-        return output
+        return [formatOutput(output)]
+    }
+
+    func logErrorNetworkResponse(_ response: Response, target: TargetType) -> [String] {
+        // Adding log entries for each given log option
+        var output = [String]()
+
+        // Response presence check
+        if response.response != nil {
+            output.append("Response ✅ \(response.statusCode): \(target.requestDescription)")
+        } else {
+            output.append("Response empty ⚠ \(response.statusCode): \(target.requestDescription)")
+        }
+
+        if configuration.logOptions.contains(.errorResponseBody),
+           let bodyString = String(data: response.data, encoding: .utf8) {
+            output.append("Body: \(bodyString)")
+        }
+
+        return [formatOutput(output)]
     }
 
     func logNetworkError(_ error: MoyaError, target: TargetType) -> [String] {
         // Some errors will still have a response, like errors due to Alamofire's HTTP code validation.
         if let moyaResponse = error.response {
-            return logNetworkResponse(moyaResponse, target: target, isFromError: true)
+            return logErrorNetworkResponse(moyaResponse, target: target)
         }
 
         // Errors without an HTTPURLResponse are those due to connectivity, time-out and such.
-        return ["Received error calling \(target) : \(error)"]
+        return [formatOutput(["Response error ❌: \(target.requestDescription) : \(error)"])]
     }
 
-    private func prettyPrint(data: Data) -> String? {
-        guard !data.isEmpty else { return nil }
-        if configuration.logOptions.contains(.prettyPrintJSON),
-           let json = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers),
-           JSONSerialization.isValidJSONObject(json),
-           let jsonData = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
-            return String(data: jsonData, encoding: .utf8)
-        } else {
-            return String(data: data, encoding: .utf8)
-        }
+    private func formatOutput(_ output: [String]) -> String {
+        return "\(TangemNetworkLoggerConstants.networkPrefix) \(output.joined(separator: "; "))"
     }
 }
 
@@ -172,9 +187,6 @@ public extension TangemNetworkLoggerPlugin.Configuration {
         /// The body of a response that is an error will be logged.
         public static let errorResponseBody: LogOptions = .init(rawValue: 1 << 5)
 
-        /// JSON output will be pretty printed
-        public static let prettyPrintJSON: LogOptions = .init(rawValue: 1 << 6)
-
         // Aggregate options
         /// Only basic components will be logged.
         public static let `default`: LogOptions = [requestMethod, requestHeaders]
@@ -185,7 +197,26 @@ public extension TangemNetworkLoggerPlugin.Configuration {
             requestBody,
             successResponseBody,
             errorResponseBody,
-            prettyPrintJSON,
         ]
+    }
+}
+
+// MARK: TargetType+
+
+private extension TargetType {
+    var requestDescription: String {
+        var description = ""
+
+        if let logConvertible = self as? TargetTypeLogConvertible {
+            description = logConvertible.requestDescription
+        } else {
+            description = path.isEmpty ? "❗️❗️❗️TargetTypeLogConvertible is missing" : path
+        }
+
+        return "\(baseURL.hostOrUnknown); Info: \(description)"
+    }
+
+    var shouldLogResponseBody: Bool {
+        (self as? TargetTypeLogConvertible)?.shouldLogResponseBody ?? true
     }
 }
