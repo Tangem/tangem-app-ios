@@ -11,6 +11,7 @@ import Combine
 import TangemStaking
 
 protocol StakingValidatorsInput: AnyObject {
+    var selectedValidator: ValidatorInfo? { get }
     var selectedValidatorPublisher: AnyPublisher<ValidatorInfo, Never> { get }
 }
 

@@ -25,6 +25,7 @@ struct OnrampCountryDetectionView: View {
         }
         .padding(.horizontal, 16)
         .background(Colors.Background.tertiary)
+        .onAppear(perform: viewModel.onAppear)
     }
 
     private var contentView: some View {

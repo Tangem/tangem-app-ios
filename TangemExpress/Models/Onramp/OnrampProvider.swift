@@ -57,6 +57,7 @@ extension OnrampProvider: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(provider)
         hasher.combine(paymentMethod)
+        hasher.combine(state.description)
         hasher.combine(attractiveType)
     }
 }
