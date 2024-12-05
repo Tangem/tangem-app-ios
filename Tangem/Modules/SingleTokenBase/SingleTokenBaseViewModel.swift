@@ -492,11 +492,6 @@ extension SingleTokenBaseViewModel {
     }
 
     func openBuyCrypto() {
-        if let disabledLocalizedReason = userWalletModel.config.getDisabledLocalizedReason(for: .exchange) {
-            alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
-            return
-        }
-
         if FeatureProvider.isAvailable(.onramp) {
             let alertBuilder = SingleTokenAlertBuilder()
             if let alertToDisplay = alertBuilder.buyAlert(
@@ -510,6 +505,11 @@ extension SingleTokenBaseViewModel {
             tokenRouter.openOnramp(walletModel: walletModel)
         } else {
             // Old code
+            if let disabledLocalizedReason = userWalletModel.config.getDisabledLocalizedReason(for: .exchange) {
+                alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
+                return
+            }
+
             if !exchangeUtility.buyAvailable {
                 alert = SingleTokenAlertBuilder().buyUnavailableAlert(for: walletModel.tokenItem)
                 return

@@ -12,13 +12,22 @@ import TangemExpress
 
 class CommonPendingOnrampTransactionsManager {
     @Injected(\.onrampPendingTransactionsRepository) private var onrampPendingTransactionsRepository: OnrampPendingTransactionRepository
+    @Injected(\.pendingExpressTransactionAnalayticsTracker) private var pendingExpressTransactionAnalyticsTracker: PendingExpressTransactionAnalyticsTracker
 
     private let userWalletId: String
     private let walletModel: WalletModel
     private let expressAPIProvider: ExpressAPIProvider
 
     private let pendingOnrampTransactionFactory = PendingOnrampTransactionFactory()
-    private let pollingService: PollingService<PendingOnrampTransaction, PendingOnrampTransaction>
+
+    private lazy var pollingService: PollingService<PendingOnrampTransaction, PendingOnrampTransaction> = PollingService(
+        request: { [weak self] pendingTransaction in
+            await self?.request(pendingTransaction: pendingTransaction)
+        },
+        shouldStopPolling: { $0.transactionRecord.transactionStatus.isTerminated },
+        hasChanges: { $0.transactionRecord.transactionStatus != $1.transactionRecord.transactionStatus },
+        pollingInterval: Constants.statusUpdateTimeout
+    )
 
     private let pendingTransactionsSubject = CurrentValueSubject<[PendingOnrampTransaction], Never>([])
     private var bag = Set<AnyCancellable>()
@@ -32,30 +41,34 @@ class CommonPendingOnrampTransactionsManager {
         self.walletModel = walletModel
         expressAPIProvider = ExpressAPIProviderFactory().makeExpressAPIProvider(userId: userWalletId, logger: AppLog.shared)
 
-        pollingService = PollingService(
-            request: { [expressAPIProvider, pendingOnrampTransactionFactory] prendinTransaction in
-                do {
-                    let record = prendinTransaction.transactionRecord
-                    let onrampTransaction = try await expressAPIProvider.onrampStatus(transactionId: record.expressTransactionId)
-                    let pendingTransaction = pendingOnrampTransactionFactory.buildPendingOnrampTransaction(
-                        currentOnrampTransaction: onrampTransaction,
-                        for: record
-                    )
-                    return pendingTransaction
-                } catch {
-                    return nil
-                }
-            },
-            shouldStopPolling: { $0.transactionRecord.transactionStatus.isTerminated },
-            hasChanges: { $0.transactionRecord.transactionStatus != $1.transactionRecord.transactionStatus },
-            pollingInterval: Constants.statusUpdateTimeout
-        )
-
         bind()
     }
 
     deinit {
         pollingService.cancelTask()
+    }
+
+    private func request(pendingTransaction: PendingOnrampTransaction) async -> PendingOnrampTransaction? {
+        do {
+            let record = pendingTransaction.transactionRecord
+            let onrampTransaction = try await expressAPIProvider.onrampStatus(transactionId: record.expressTransactionId)
+            let pendingTransaction = pendingOnrampTransactionFactory.buildPendingOnrampTransaction(
+                currentOnrampTransaction: onrampTransaction,
+                for: record
+            )
+
+            pendingExpressTransactionAnalyticsTracker.trackStatusForTransaction(
+                branch: .onramp,
+                transactionId: pendingTransaction.transactionRecord.expressTransactionId,
+                tokenSymbol: tokenItem.currencySymbol,
+                status: pendingTransaction.transactionRecord.transactionStatus,
+                provider: pendingTransaction.transactionRecord.provider
+            )
+
+            return pendingTransaction
+        } catch {
+            return nil
+        }
     }
 
     private func bind() {

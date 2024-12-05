@@ -25,6 +25,10 @@ final class OnrampSettingsViewModel: ObservableObject {
             .store(in: &bag)
     }
 
+    func onAppear() {
+        Analytics.log(.onrampOnrampSettingsScreenOpened)
+    }
+
     func onTapResidence() {
         coordinator?.openOnrampCountrySelector()
     }

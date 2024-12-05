@@ -305,6 +305,16 @@ extension UnstakingModel: SendFinishInput {
     }
 }
 
+// MARK: - StakingValidatorsInput
+
+extension UnstakingModel: StakingValidatorsInput {
+    var selectedValidator: ValidatorInfo? { stakingAction.validatorInfo }
+
+    var selectedValidatorPublisher: AnyPublisher<ValidatorInfo, Never> {
+        Just(stakingAction.validatorInfo).compactMap { $0 }.eraseToAnyPublisher()
+    }
+}
+
 // MARK: - SendBaseInput, SendBaseOutput
 
 extension UnstakingModel: SendBaseInput, SendBaseOutput {
