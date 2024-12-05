@@ -197,23 +197,6 @@ final class TONTransactionBuilder {
     }
 }
 
-// MARK: - Dummy Cases
-
-extension TONTransactionBuilder {
-    struct DummyInput {
-        let wallet: Wallet
-        let inputPrivateKey: Curve25519.Signing.PrivateKey
-        let sequenceNumber: Int
-    }
-
-    /// Use only dummy tested or any dummy cases!
-    static func makeDummyBuilder(with input: DummyInput) -> TONTransactionBuilder {
-        let txBuilder = TONTransactionBuilder(wallet: input.wallet)
-        txBuilder.sequenceNumber = input.sequenceNumber
-        return txBuilder
-    }
-}
-
 extension TONTransactionBuilder {
     enum Constants {
         static let jettonTransferProcessingFee: Decimal = 0.05 // used to cover token transfer fees, commonly used value after TON fee reduction, actual costs now are ~10 times less, excess is returned

@@ -19,15 +19,15 @@ final class TONWalletManager: BaseManager, WalletManager {
     // MARK: - Private Properties
 
     private let networkService: TONNetworkService
-    private let txBuilder: TONTransactionBuilder
+    private let transactionBuilder: TONTransactionBuilder
     private var isAvailable: Bool = true
     private var jettonWalletAddressCache: [Token: String] = [:]
 
     // MARK: - Init
 
-    init(wallet: Wallet, networkService: TONNetworkService) throws {
+    init(wallet: Wallet, transactionBuilder: TONTransactionBuilder, networkService: TONNetworkService) throws {
         self.networkService = networkService
-        txBuilder = .init(wallet: wallet)
+        self.transactionBuilder = transactionBuilder
         super.init(wallet: wallet)
     }
 
@@ -71,7 +71,7 @@ final class TONWalletManager: BaseManager, WalletManager {
                     params: params
                 )
 
-                let hashForSign = try txBuilder.buildForSign(buildInput: buildInput)
+                let hashForSign = try transactionBuilder.buildForSign(buildInput: buildInput)
 
                 return (buildInput, hashForSign.data)
             }
@@ -87,7 +87,7 @@ final class TONWalletManager: BaseManager, WalletManager {
             .tryMap { walletManager, input -> String in
                 let (signature, buildInput) = input
 
-                let dataForSend = try walletManager.txBuilder.buildForSend(
+                let dataForSend = try walletManager.transactionBuilder.buildForSend(
                     buildInput: buildInput,
                     signature: signature
                 )
@@ -135,7 +135,10 @@ extension TONWalletManager: TransactionFeeProvider {
                     params: nil
                 )
 
-                let buildForSend = try txBuilder.buildForSend(buildInput: buildInput, signature: Data(repeating: 0, count: 64))
+                let buildForSend = try transactionBuilder.buildForSend(
+                    buildInput: buildInput,
+                    signature: Data(repeating: 0, count: 64)
+                )
 
                 return buildForSend
             }
@@ -159,7 +162,7 @@ extension TONWalletManager: TransactionFeeProvider {
 
 private extension TONWalletManager {
     private func update(with info: TONWalletInfo, completion: @escaping (Result<Void, Error>) -> Void) {
-        if info.sequenceNumber != txBuilder.sequenceNumber {
+        if info.sequenceNumber != transactionBuilder.sequenceNumber {
             wallet.clearPendingTransaction()
         }
 
@@ -177,7 +180,7 @@ private extension TONWalletManager {
             }
         }
 
-        txBuilder.sequenceNumber = info.sequenceNumber
+        transactionBuilder.sequenceNumber = info.sequenceNumber
         isAvailable = info.isAvailable
         completion(.success(()))
     }
