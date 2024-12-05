@@ -98,10 +98,6 @@ extension CommonVisaActivationManager: VisaActivationManager {
             throw VisaActivationError.missingAccessCode
         }
 
-        // async version
-//        try await asyncActivation(accessCode: selectedAccessCode)
-
-        // old-style implementation
         try await taskActivation(accessCode: selectedAccessCode)
     }
 }
@@ -144,6 +140,7 @@ extension CommonVisaActivationManager: SignedAuthorizationChallengeDelegate {
                 }
 
                 let task = CardActivationTask(
+                    selectedAccessCode: accessCode,
                     activationInput: cardInput,
                     challengeToSign: authorizationChallenge,
                     orderToSign: nil,

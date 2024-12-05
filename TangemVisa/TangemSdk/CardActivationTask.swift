@@ -27,6 +27,7 @@ final class CardActivationTask: CardSessionRunnable {
     private weak var signedAuthorizationChallengeDelegate: SignedAuthorizationChallengeDelegate?
     private let logger: InternalLogger
 
+    private let selectedAccessCode: String
     private let activationInput: VisaCardActivationInput
     private let challengeToSign: String?
 
@@ -38,6 +39,7 @@ final class CardActivationTask: CardSessionRunnable {
     private var orderSubscription: AnyCancellable?
 
     init(
+        selectedAccessCode: String,
         activationInput: VisaCardActivationInput,
         challengeToSign: String?,
         orderToSign: String?,
@@ -45,6 +47,7 @@ final class CardActivationTask: CardSessionRunnable {
         signedAuthorizationChallengeDelegate: SignedAuthorizationChallengeDelegate,
         logger: InternalLogger
     ) {
+        self.selectedAccessCode = selectedAccessCode
         self.activationInput = activationInput
         self.challengeToSign = challengeToSign
         orderPublisher.send(orderToSign)
@@ -176,8 +179,6 @@ private extension CardActivationTask {
 // MARK: - Order signing
 
 private extension CardActivationTask {
-    func setupAccessCode(in session: CardSession, completion: @escaping CompletionHandler) {}
-
     func signOrderWithCard(in session: CardSession, orderToSign: String, completion: @escaping CompletionHandler) {
         let dataToSign = ActivationOrderGenerator().generateOrder(using: orderToSign)
 
@@ -233,6 +234,23 @@ private extension CardActivationTask {
             }
         }
     }
+
+    func setupAccessCode(
+        signResponse: VisaCardActivationResponse,
+        in session: CardSession,
+        completion: @escaping CompletionHandler
+    ) {
+        let setAccessCodeCommand = SetUserCodeCommand(accessCode: selectedAccessCode)
+        setAccessCodeCommand.run(in: session) { result in
+            switch result {
+            case .success:
+                completion(.success(signResponse))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
 }
 
 // MARK: - Order loading
