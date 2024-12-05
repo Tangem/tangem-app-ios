@@ -127,12 +127,12 @@ Options:
 - build: Build number
 - filename: Name of the resulting artefact (IPA file)
 - path: Path to binary
-- app_id: Firebase app id for incrementing the build version number and DSYM uploads
+- firebase_app_id: Firebase app id for incrementing the build version number and DSYM uploads
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 """
 lane :build_Alpha do |options|
   increment_version_number(version_number: options[:version])
-  increment_firebase_build_number(app_id: options[:app_id], build: options[:build])
+  increment_firebase_build_number(app_id: options[:firebase_app_id], build: options[:build])
 
   build(
     export_method: "ad-hoc",
@@ -143,7 +143,7 @@ lane :build_Alpha do |options|
     path: options[:path]
   )
 
-  upload_dsyms(app_id: options[:app_id], filename: options[:filename])
+  upload_dsyms(app_id: options[:firebase_app_id], filename: options[:filename])
 end
 
 desc """
@@ -153,12 +153,12 @@ Options:
 - build: Build number
 - filename: Name of the resulting artefact (IPA file)
 - path: Path to binary
-- app_id: Firebase app id for incrementing the build version number and DSYM uploads
+- firebase_app_id: Firebase app id for incrementing the build version number and DSYM uploads
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 """
 lane :build_Beta do |options|
   increment_version_number(version_number: options[:version])
-  increment_firebase_build_number(app_id: options[:app_id], build: options[:build])
+  increment_firebase_build_number(app_id: options[:firebase_app_id], build: options[:build])
 
   build(
     export_method: "ad-hoc",
@@ -169,7 +169,7 @@ lane :build_Beta do |options|
     path: options[:path]
   )
 
-  upload_dsyms(app_id: options[:app_id], filename: options[:filename])
+  upload_dsyms(app_id: options[:firebase_app_id], filename: options[:filename])
 end
 
 desc """
