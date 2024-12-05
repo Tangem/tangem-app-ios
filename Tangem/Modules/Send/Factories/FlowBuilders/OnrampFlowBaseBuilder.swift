@@ -12,6 +12,7 @@ import TangemExpress
 struct OnrampFlowBaseBuilder {
     let userWalletModel: UserWalletModel
     let walletModel: WalletModel
+    let source: SendCoordinator.Source
     let onrampAmountBuilder: OnrampAmountBuilder
     let onrampStepBuilder: OnrampStepBuilder
     let sendFinishStepBuilder: SendFinishStepBuilder
@@ -24,6 +25,7 @@ struct OnrampFlowBaseBuilder {
 
         let onrampModel = builder.makeOnrampModel(onrampManager: onrampManager, onrampRepository: onrampRepository)
         let notificationManager = builder.makeOnrampNotificationManager(input: onrampModel, delegate: onrampModel)
+        let sendFinishAnalyticsLogger = builder.makeOnrampFinishAnalyticsLogger(onrampProvidersInput: onrampModel)
 
         let providersBuilder = OnrampProvidersBuilder(
             io: (input: onrampModel, output: onrampModel),
@@ -63,7 +65,7 @@ struct OnrampFlowBaseBuilder {
 
         let finish = sendFinishStepBuilder.makeSendFinishStep(
             input: onrampModel,
-            actionType: .onramp,
+            sendFinishAnalyticsLogger: sendFinishAnalyticsLogger,
             sendDestinationCompactViewModel: .none,
             sendAmountCompactViewModel: .none,
             onrampAmountCompactViewModel: onrampAmountCompactViewModel,
@@ -97,6 +99,7 @@ struct OnrampFlowBaseBuilder {
             dataBuilder: dataBuilder,
             tokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem,
+            source: source,
             coordinator: router
         )
 
