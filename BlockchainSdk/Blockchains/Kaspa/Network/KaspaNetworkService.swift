@@ -59,7 +59,7 @@ class KaspaNetworkService: MultiNetworkProvider {
         }
     }
 
-    func send(transaction: KaspaTransactionRequest, isReveal: Bool) -> AnyPublisher<KaspaTransactionResponse, Error> {
+    func send(transaction: KaspaTransactionRequest) -> AnyPublisher<KaspaTransactionResponse, Error> {
         return providerPublisher {
             $0.send(transaction: transaction)
         }
