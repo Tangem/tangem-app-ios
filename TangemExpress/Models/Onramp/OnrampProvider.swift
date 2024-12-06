@@ -31,6 +31,8 @@ public class OnrampProvider {
     }
 }
 
+// MARK: - AttractiveType
+
 public extension OnrampProvider {
     enum AttractiveType: Hashable, CustomStringConvertible {
         case best
@@ -45,10 +47,26 @@ public extension OnrampProvider {
     }
 }
 
+// MARK: - Hashable
+
+extension OnrampProvider: Hashable {
+    public static func == (lhs: OnrampProvider, rhs: OnrampProvider) -> Bool {
+        lhs.hashValue == rhs.hashValue
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(provider)
+        hasher.combine(paymentMethod)
+        hasher.combine(state.description)
+        hasher.combine(attractiveType)
+    }
+}
+
 // MARK: - OnrampProviderManagerProxy
 
 extension OnrampProvider: OnrampProviderManager {
     public var state: OnrampProviderManagerState { manager.state }
+    public var amount: Decimal? { manager.amount }
 
     public var isSupported: Bool {
         state.isSupported
@@ -91,7 +109,7 @@ extension OnrampProvider: OnrampProviderManager {
         }
     }
 
-    public func update(amount: Decimal?) async {
+    public func update(amount: OnrampUpdatingAmount) async {
         await manager.update(amount: amount)
     }
 

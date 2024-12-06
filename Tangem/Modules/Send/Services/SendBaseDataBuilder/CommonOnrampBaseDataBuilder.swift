@@ -34,12 +34,12 @@ struct CommonOnrampBaseDataBuilder {
 // MARK: - OnrampBaseDataBuilder
 
 extension CommonOnrampBaseDataBuilder: OnrampBaseDataBuilder {
-    func makeDataForOnrampCountryBottomSheet() -> OnrampRepository {
-        onrampRepository
+    func makeDataForOnrampCountryBottomSheet() -> (repository: OnrampRepository, dataRepository: OnrampDataRepository) {
+        (repository: onrampRepository, dataRepository: onrampDataRepository)
     }
 
-    func makeDataForOnrampCountrySelectorView() -> (preferenceRepository: OnrampRepository, dataRepository: OnrampDataRepository) {
-        (preferenceRepository: onrampRepository, dataRepository: onrampDataRepository)
+    func makeDataForOnrampCountrySelectorView() -> (repository: OnrampRepository, dataRepository: OnrampDataRepository) {
+        (repository: onrampRepository, dataRepository: onrampDataRepository)
     }
 
     func makeDataForOnrampProvidersPaymentMethodsView() -> (providersBuilder: OnrampProvidersBuilder, paymentMethodsBuilder: OnrampPaymentMethodsBuilder) {

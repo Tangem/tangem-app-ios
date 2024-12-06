@@ -52,8 +52,10 @@ struct OnrampAmountView: View {
                     .resizable()
                     .frame(size: .init(bothDimensions: chevronSize))
                     .foregroundColor(Colors.Icon.informative)
+                    .hidden(viewModel.isLoading)
             }
         }
+        .disabled(viewModel.isLoading)
         .matchedGeometryEffect(id: namespace.names.tokenIcon, in: namespace.id)
     }
 

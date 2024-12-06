@@ -15,3 +15,9 @@ public struct OnrampPreference: Hashable {
         self.currency = currency
     }
 }
+
+public extension OnrampPreference {
+    var isEmpty: Bool {
+        country == nil && currency == nil
+    }
+}

@@ -21,12 +21,15 @@ extension DefaultTokenItemInfoProvider: TokenItemInfoProvider {
     var id: Int { walletModel.id }
 
     var tokenItemState: TokenItemViewState {
-        TokenItemViewState(walletModelState: walletModel.state)
+        TokenItemViewState(walletModel: walletModel)
     }
 
     var tokenItemStatePublisher: AnyPublisher<TokenItemViewState, Never> {
         walletModel.walletDidChangePublisher
-            .map(TokenItemViewState.init)
+            .withWeakCaptureOf(self)
+            .map { provider, _ in
+                TokenItemViewState(walletModel: provider.walletModel)
+            }
             .eraseToAnyPublisher()
     }
 

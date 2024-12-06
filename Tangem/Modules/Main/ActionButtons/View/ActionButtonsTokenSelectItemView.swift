@@ -26,10 +26,9 @@ struct ActionButtonsTokenSelectItemView: View {
 
             infoView
         }
-        .padding(.vertical, 16)
         .contentShape(Rectangle())
         .onTapGesture(perform: action)
-        .disabled(model.isDisabled)
+        .disabled(model.isDisabled || model.isLoading)
     }
 
     private var infoView: some View {
@@ -44,32 +43,40 @@ struct ActionButtonsTokenSelectItemView: View {
     private var topInfoView: some View {
         HStack(spacing: .zero) {
             Text(model.name)
+                .style(
+                    Fonts.Bold.subheadline,
+                    color: model.isDisabled ? Colors.Text.tertiary : Colors.Text.primary1
+                )
 
             Spacer(minLength: 4)
 
-            SensitiveText(model.fiatBalance)
+            LoadableTextView(
+                state: model.isLoading ? .loading : .loaded(text: model.fiatBalance),
+                font: Fonts.Bold.subheadline,
+                textColor: model.isDisabled ? Colors.Text.tertiary : Colors.Text.primary1,
+                loaderSize: .init(width: 40, height: 12),
+                isSensitiveText: true
+            )
         }
-        .style(
-            Fonts.Bold.subheadline,
-            color: model.isDisabled ? Colors.Text.tertiary : Colors.Text.primary1
-        )
     }
 
     private var bottomInfoView: some View {
         HStack(spacing: .zero) {
             Text(model.symbol)
                 .style(
-                    Fonts.Regular.footnote,
-                    color: model.isDisabled ? Colors.Text.tertiary : Colors.Text.primary1
+                    Fonts.Regular.caption1,
+                    color: Colors.Text.tertiary
                 )
 
             Spacer(minLength: 4)
 
-            SensitiveText(model.balance)
-                .style(
-                    Fonts.Regular.footnote,
-                    color: model.isDisabled ? Colors.Text.disabled : Colors.Text.tertiary
-                )
+            LoadableTextView(
+                state: model.isLoading ? .loading : .loaded(text: model.balance),
+                font: Fonts.Regular.caption1,
+                textColor: model.isDisabled ? Colors.Text.disabled : Colors.Text.tertiary,
+                loaderSize: .init(width: 40, height: 12),
+                isSensitiveText: true
+            )
         }
     }
 }

@@ -153,6 +153,7 @@ enum APIProvider: String {
     case tangemRosetta
     case fireAcademy
     case tangemChia
+    case tangemChia3
     case solana
     case kaspa
     case koinos
@@ -172,6 +173,7 @@ enum APIProvider: String {
         case .tangemRosetta: return .tangemRosetta
         case .fireAcademy: return .fireAcademy
         case .tangemChia: return .tangemChia
+        case .tangemChia3: return .tangemChia3
         case .solana: return .solana
         case .kaspa: return .kaspa
         case .koinos: return .koinos

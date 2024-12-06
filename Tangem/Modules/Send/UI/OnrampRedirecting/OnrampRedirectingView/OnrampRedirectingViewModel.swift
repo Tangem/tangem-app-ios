@@ -45,6 +45,10 @@ final class OnrampRedirectingViewModel: ObservableObject {
         self.coordinator = coordinator
     }
 
+    func onAppear() {
+        logOpening()
+    }
+
     func loadRedirectData() async {
         do {
             try await interactor.loadRedirectData(redirectSettings: makeOnrampRedirectSettings())
@@ -82,6 +86,22 @@ private extension OnrampRedirectingViewModel {
             successURL: IncomingActionConstants.externalSuccessURL,
             theme: theme,
             language: appLanguageCode
+        )
+    }
+
+    func logOpening() {
+        guard let provider = interactor.onrampProvider,
+              let request = try? provider.makeOnrampQuotesRequestItem() else {
+            return
+        }
+
+        Analytics.log(
+            event: .onrampButtonBuy,
+            params: [
+                .provider: provider.provider.name,
+                .currency: request.pairItem.fiatCurrency.identity.code,
+                .token: tokenItem.currencySymbol,
+            ]
         )
     }
 }

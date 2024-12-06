@@ -90,7 +90,7 @@ class XRPTransaction {
         // add account key to fields
         fields["SigningPubKey"] = publicKey as AnyObject
 
-        // serialize transation to binary
+        // serialize transaction to binary
         let blob = Serializer().serializeTx(tx: fields, forSigning: true)
 
         // add the transaction prefix to the blob

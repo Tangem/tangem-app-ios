@@ -53,13 +53,13 @@ struct SendCoordinatorView: CoordinatorView {
                 ExpressApproveView(viewModel: $0)
             }
             .bottomSheet(
-                item: $coordinator.onrampCountryDetectionViewModel,
+                item: $coordinator.onrampCountryDetectionCoordinator,
                 settings: .init(
                     backgroundColor: Colors.Background.tertiary,
                     hidingOption: .nonHideable
                 )
             ) {
-                OnrampCountryDetectionView(viewModel: $0)
+                OnrampCountryDetectionCoordinatorView(coordinator: $0)
             }
             .sheet(item: $coordinator.mailViewModel) {
                 MailView(viewModel: $0)

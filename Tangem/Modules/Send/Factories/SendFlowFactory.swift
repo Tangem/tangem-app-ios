@@ -12,10 +12,12 @@ import TangemStaking
 struct SendFlowFactory {
     private let userWalletModel: UserWalletModel
     private let walletModel: WalletModel
+    private let source: SendCoordinator.Source
 
-    init(userWalletModel: UserWalletModel, walletModel: WalletModel) {
+    init(userWalletModel: UserWalletModel, walletModel: WalletModel, source: SendCoordinator.Source) {
         self.userWalletModel = userWalletModel
         self.walletModel = walletModel
+        self.source = source
     }
 
     func makeSendViewModel(router: SendRoutable) -> SendViewModel {
@@ -29,6 +31,7 @@ struct SendFlowFactory {
         let baseBuilder = SendFlowBaseBuilder(
             userWalletModel: userWalletModel,
             walletModel: walletModel,
+            source: source,
             sendAmountStepBuilder: sendAmountStepBuilder,
             sendDestinationStepBuilder: sendDestinationStepBuilder,
             sendFeeStepBuilder: sendFeeStepBuilder,
@@ -51,6 +54,7 @@ struct SendFlowFactory {
         let baseBuilder = SellFlowBaseBuilder(
             userWalletModel: userWalletModel,
             walletModel: walletModel,
+            source: source,
             sendDestinationStepBuilder: sendDestinationStepBuilder,
             sendAmountStepBuilder: sendAmountStepBuilder,
             sendFeeStepBuilder: sendFeeStepBuilder,
@@ -73,6 +77,7 @@ struct SendFlowFactory {
         let baseBuilder = StakingFlowBaseBuilder(
             userWalletModel: userWalletModel,
             walletModel: walletModel,
+            source: source,
             sendAmountStepBuilder: sendAmountStepBuilder,
             stakingValidatorsStepBuilder: stakingValidatorsStepBuilder,
             sendFeeStepBuilder: sendFeeStepBuilder,
@@ -94,6 +99,7 @@ struct SendFlowFactory {
         let baseBuilder = UnstakingFlowBaseBuilder(
             userWalletModel: userWalletModel,
             walletModel: walletModel,
+            source: source,
             sendAmountStepBuilder: sendAmountStepBuilder,
             sendFeeStepBuilder: sendFeeStepBuilder,
             sendSummaryStepBuilder: sendSummaryStepBuilder,
@@ -115,6 +121,7 @@ struct SendFlowFactory {
         let baseBuilder = RestakingFlowBaseBuilder(
             userWalletModel: userWalletModel,
             walletModel: walletModel,
+            source: source,
             stakingValidatorsStepBuilder: stakingValidatorsStepBuilder,
             sendAmountStepBuilder: sendAmountStepBuilder,
             sendFeeStepBuilder: sendFeeStepBuilder,
@@ -136,6 +143,7 @@ struct SendFlowFactory {
         let baseBuilder = StakingSingleActionFlowBaseBuilder(
             userWalletModel: userWalletModel,
             walletModel: walletModel,
+            source: source,
             sendAmountStepBuilder: sendAmountStepBuilder,
             sendFeeStepBuilder: sendFeeStepBuilder,
             sendSummaryStepBuilder: sendSummaryStepBuilder,
@@ -155,6 +163,7 @@ struct SendFlowFactory {
         let baseBuilder = OnrampFlowBaseBuilder(
             userWalletModel: userWalletModel,
             walletModel: walletModel,
+            source: source,
             onrampAmountBuilder: onrampAmountBuilder,
             onrampStepBuilder: onrampStepBuilder,
             sendFinishStepBuilder: sendFinishStepBuilder,
