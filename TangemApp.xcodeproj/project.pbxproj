@@ -1666,7 +1666,6 @@
 		B62D43612CBC79E400C2460E /* VeChainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D431F2CBC79E300C2460E /* VeChainTests.swift */; };
 		B62D43622CBC79E400C2460E /* BigUInt+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D43212CBC79E300C2460E /* BigUInt+.swift */; };
 		B62D43632CBC79E400C2460E /* NSError+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D43222CBC79E300C2460E /* NSError+.swift */; };
-		B62D43642CBC79E400C2460E /* PrivateKeySigner+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D43232CBC79E300C2460E /* PrivateKeySigner+.swift */; };
 		B62D43652CBC79E400C2460E /* TWCurve+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D43242CBC79E300C2460E /* TWCurve+.swift */; };
 		B62D43662CBC79E400C2460E /* TWPublicKeyType+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D43252CBC79E300C2460E /* TWPublicKeyType+.swift */; };
 		B62D43672CBC79E400C2460E /* XCTAssert+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D43262CBC79E300C2460E /* XCTAssert+.swift */; };
@@ -4832,7 +4831,6 @@
 		B62D431F2CBC79E300C2460E /* VeChainTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VeChainTests.swift; sourceTree = "<group>"; };
 		B62D43212CBC79E300C2460E /* BigUInt+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BigUInt+.swift"; sourceTree = "<group>"; };
 		B62D43222CBC79E300C2460E /* NSError+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSError+.swift"; sourceTree = "<group>"; };
-		B62D43232CBC79E300C2460E /* PrivateKeySigner+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PrivateKeySigner+.swift"; sourceTree = "<group>"; };
 		B62D43242CBC79E300C2460E /* TWCurve+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TWCurve+.swift"; sourceTree = "<group>"; };
 		B62D43252CBC79E300C2460E /* TWPublicKeyType+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TWPublicKeyType+.swift"; sourceTree = "<group>"; };
 		B62D43262CBC79E300C2460E /* XCTAssert+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTAssert+.swift"; sourceTree = "<group>"; };
@@ -11526,7 +11524,6 @@
 			children = (
 				B62D43212CBC79E300C2460E /* BigUInt+.swift */,
 				B62D43222CBC79E300C2460E /* NSError+.swift */,
-				B62D43232CBC79E300C2460E /* PrivateKeySigner+.swift */,
 				B62D43242CBC79E300C2460E /* TWCurve+.swift */,
 				B62D43252CBC79E300C2460E /* TWPublicKeyType+.swift */,
 				B62D43262CBC79E300C2460E /* XCTAssert+.swift */,
@@ -19373,7 +19370,6 @@
 				B62D434C2CBC79E400C2460E /* PublicKeyDerivationAddressTests.swift in Sources */,
 				B62D435A2CBC79E400C2460E /* NEARTests.swift in Sources */,
 				B62D434F2CBC79E400C2460E /* SUITest.swift in Sources */,
-				B62D43642CBC79E400C2460E /* PrivateKeySigner+.swift in Sources */,
 				B62D43472CBC79E400C2460E /* TestVectorsUtility.swift in Sources */,
 				B62D433D2CBC79E400C2460E /* TronTests.swift in Sources */,
 				B62D435E2CBC79E400C2460E /* KoinosTransactionBuilderTests.swift in Sources */,
