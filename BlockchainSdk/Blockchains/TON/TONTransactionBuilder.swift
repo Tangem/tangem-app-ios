@@ -38,11 +38,6 @@ final class TONTransactionBuilder {
     // MARK: - Implementation
 
     /// Build input for sign transaction from Parameters
-    /// - Parameters:
-    ///   - amount: Amount transaction
-    ///   - destination: Destination address transaction
-    ///   - jettonWalletAddress: Address of jetton wallet, required for jetton transaction
-    /// - Returns: TheOpenNetworkSigningInput for sign transaction with external signer
     func buildForSign(buildInput: TONTransactionInput) throws -> TxCompilerPreSigningOutput {
         let input = try input(
             amount: buildInput.amount,
@@ -66,9 +61,6 @@ final class TONTransactionBuilder {
     }
 
     /// Build for send transaction obtain external message output
-    /// - Parameters:
-    ///   - output: TW output of message
-    /// - Returns: External message for TON blockchain
     func buildForSend(buildInput: TONTransactionInput, signature: Data) throws -> String {
         let input = try input(
             amount: buildInput.amount,
@@ -104,6 +96,7 @@ final class TONTransactionBuilder {
     ///   - amount: Amount transaction
     ///   - destination: Destination address transaction
     ///   - jettonWalletAddress: Address of jetton wallet, required for jetton transaction
+    ///   - expireAt: Date expired transaction .now + 60 default value
     /// - Returns: TheOpenNetworkSigningInput for sign transaction with external signer
     private func input(
         amount: Amount,
