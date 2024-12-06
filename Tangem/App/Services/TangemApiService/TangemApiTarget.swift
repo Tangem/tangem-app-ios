@@ -252,14 +252,11 @@ extension TangemApiTarget: TargetTypeLogConvertible {
 
     var shouldLogResponseBody: Bool {
         switch type {
-        case .currencies, .coins, .quotes, .apiList, .coinsList, .coinsHistoryChartPreview, .historyChart:
+        case .currencies, .coins, .quotes, .apiList, .coinsList, .coinsHistoryChartPreview, .historyChart, .tokenMarketsDetails, .tokenExchangesList:
             return false
         case .geo, .features, .getUserWalletTokens, .saveUserWalletTokens, .loadReferralProgramInfo, .participateInReferralProgram, .createAccount, .promotion, .validateNewUserPromotionEligibility, .validateOldUserPromotionEligibility, .awardNewUser, .awardOldUser, .resetAward:
             return true
 
-        // Markets requests
-        case .tokenMarketsDetails, .tokenExchangesList:
-            return true
         }
     }
 }
