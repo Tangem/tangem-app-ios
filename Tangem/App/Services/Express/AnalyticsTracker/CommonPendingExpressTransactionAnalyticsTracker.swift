@@ -8,6 +8,7 @@
 
 import Foundation
 import TangemFoundation
+import TangemExpress
 
 class CommonPendingExpressTransactionAnalyticsTracker: PendingExpressTransactionAnalyticsTracker {
     typealias PendingTransactionId = String
@@ -16,7 +17,8 @@ class CommonPendingExpressTransactionAnalyticsTracker: PendingExpressTransaction
     private var trackedStatuses: ThreadSafeContainer<[PendingTransactionId: Set<Analytics.ParameterValue>]> = .init([:])
 
     func trackStatusForTransaction(
-        with transactionId: PendingTransactionId,
+        branch: ExpressBranch,
+        transactionId: PendingTransactionId,
         tokenSymbol: String,
         status: PendingExpressTransactionStatus,
         provider: ExpressPendingTransactionRecord.Provider
@@ -27,11 +29,19 @@ class CommonPendingExpressTransactionAnalyticsTracker: PendingExpressTransaction
             return
         }
 
-        Analytics.log(event: .tokenSwapStatus, params: [
+        let params: [Analytics.ParameterKey: String] = [
             .token: tokenSymbol,
             .status: statusToTrack.rawValue,
             .provider: provider.name,
-        ])
+        ]
+
+        switch branch {
+        case .swap:
+            Analytics.log(event: .tokenSwapStatus, params: params)
+        case .onramp:
+            Analytics.log(event: .onrampOnrampStatus, params: params)
+        }
+
         trackedStatusesSet.insert(statusToTrack)
         trackedStatuses.mutate { $0[transactionId] = trackedStatusesSet }
     }

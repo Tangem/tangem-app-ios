@@ -21,7 +21,10 @@ struct OnrampRedirectingView: View {
         .navigationTitle(Text(viewModel.title))
         .navigationBarTitleDisplayMode(.inline)
         .alert(item: $viewModel.alert) { $0.alert }
-        .onAppear { viewModel.update(colorScheme: colorScheme) }
+        .onAppear {
+            viewModel.onAppear()
+            viewModel.update(colorScheme: colorScheme)
+        }
         .onChange(of: colorScheme) { viewModel.update(colorScheme: $0) }
         .task { await viewModel.loadRedirectData() }
     }

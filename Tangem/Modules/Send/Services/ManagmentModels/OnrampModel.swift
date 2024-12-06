@@ -21,7 +21,7 @@ protocol OnrampModelRoutable: AnyObject {
 class OnrampModel {
     // MARK: - Data
 
-    private let _currency: CurrentValueSubject<LoadingResult<OnrampFiatCurrency, Never>, Never>
+    private let _currency: CurrentValueSubject<LoadingResult<OnrampFiatCurrency, Error>, Never>
     private let _amount: CurrentValueSubject<Decimal?, Never> = .init(.none)
     private let _onrampProviders: CurrentValueSubject<LoadingResult<ProvidersList, Error>?, Never> = .init(.none)
     private let _selectedOnrampProvider: CurrentValueSubject<LoadingResult<OnrampProvider, Never>?, Never> = .init(.none)
@@ -61,6 +61,10 @@ class OnrampModel {
 
         bind()
     }
+
+    deinit {
+        log("deinit")
+    }
 }
 
 // MARK: - Bind
@@ -82,6 +86,41 @@ private extension OnrampModel {
             .withWeakCaptureOf(self)
             .sink { model, preference in
                 model.preferenceDidChange(country: preference.country, currency: preference.currency)
+            }
+            .store(in: &bag)
+
+        // Only for analytics
+        _selectedOnrampProvider
+            .compactMap { $0?.value }
+            .removeDuplicates()
+            .withWeakCaptureOf(self)
+            .sink { model, provider in
+                switch provider.state {
+                case .restriction(.tooSmallAmount):
+                    Analytics.log(.onrampErrorMinAmount)
+                case .restriction(.tooBigAmount):
+                    Analytics.log(.onrampErrorMaxAmount)
+                case .failed(let error as ExpressAPIError):
+                    Analytics.log(
+                        event: .onrampErrors,
+                        params: [
+                            .token: model.walletModel.tokenItem.currencySymbol,
+                            .provider: provider.provider.name,
+                            .errorCode: error.errorCode.rawValue.description,
+                        ]
+                    )
+                case .loaded:
+                    Analytics.log(
+                        event: .onrampProviderCalculated,
+                        params: [
+                            .token: model.walletModel.tokenItem.currencySymbol,
+                            .provider: provider.provider.name,
+                            .paymentMethod: provider.paymentMethod.name,
+                        ]
+                    )
+                default:
+                    break
+                }
             }
             .store(in: &bag)
     }
@@ -226,9 +265,7 @@ private extension OnrampModel {
                 router?.openOnrampCountryBottomSheet(country: country)
             }
         } catch {
-            await runOnMain {
-                alertPresenter?.showAlert(error.alertBinder)
-            }
+            _currency.send(.failure(error))
         }
     }
 }
@@ -299,12 +336,12 @@ extension OnrampModel: OnrampAmountInput {
         _amount.eraseToAnyPublisher()
     }
 
-    var fiatCurrency: LoadingResult<OnrampFiatCurrency, Never> {
-        _currency.value
+    var fiatCurrency: OnrampFiatCurrency? {
+        _currency.value.value
     }
 
-    var fiatCurrencyPublisher: AnyPublisher<LoadingResult<OnrampFiatCurrency, Never>, Never> {
-        _currency.eraseToAnyPublisher()
+    var fiatCurrencyPublisher: AnyPublisher<OnrampFiatCurrency?, Never> {
+        _currency.map { $0.value }.eraseToAnyPublisher()
     }
 }
 
@@ -450,17 +487,23 @@ extension OnrampModel: SendBaseOutput {
 
 extension OnrampModel: OnrampNotificationManagerInput {
     var errorPublisher: AnyPublisher<Error?, Never> {
+        let currencyErrorPublisher = _currency
+            .filter { !$0.isLoading }
+            .map { $0.error }
+
         let onrampProvidersErrorPublisher = _onrampProviders
             .compactMap { $0 }
             .filter { !$0.isLoading }
             .map { $0.error }
 
         let selectedOnrampProviderErrorPublisher = _selectedOnrampProvider
+            .compactMap { $0 }
             // Here we clear error on `loading` state
             // Because we have the LoadingView
             .map { $0?.value?.error }
 
-        return Publishers.Merge(
+        return Publishers.Merge3(
+            currencyErrorPublisher,
             onrampProvidersErrorPublisher,
             selectedOnrampProviderErrorPublisher
         )

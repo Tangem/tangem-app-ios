@@ -29,10 +29,8 @@ struct OnrampCurrencySelectorView: View {
 
             contentView
         }
-        .background(
-            Colors.Background.primary
-                .ignoresSafeArea()
-        )
+        .background(Colors.Background.primary.ignoresSafeArea())
+        .onAppear(perform: viewModel.onAppear)
     }
 }
 
