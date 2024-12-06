@@ -44,5 +44,6 @@ struct ActionButtonsBuyView: View {
             .padding(.horizontal, 16)
         }
         .background(Colors.Background.tertiary.ignoresSafeArea(.all))
+        .scrollDismissesKeyboardCompat(.immediately)
     }
 }
