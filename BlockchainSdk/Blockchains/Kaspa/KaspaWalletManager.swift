@@ -81,26 +81,40 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             return sendKaspaRevealTokenTransaction(transaction, token: token, signer: signer)
         case .token(let token):
             let comparator = KaspaKRC20.IncompleteTokenTransactionComparator()
+
+            // This `sendIncompleteKaspaTokenTransactionIfPossible` call attempts to re-send a cached incomplete
+            // token transaction (if one exists).
+            // Errors in searching, mapping, and building a new transaction from this cached incomplete transaction will
+            // result in sending a completely new token transaction (created from scratch) within the `tryCatch` block below.
             return sendIncompleteKaspaTokenTransactionIfPossible(
                 for: amountType,
                 signer: signer,
                 validator: { comparator.isIncompleteTokenTransaction($0, equalTo: transaction) }
             )
-            .tryCatch { [weak self] _ in
-                guard let self else {
-                    throw WalletError.empty
+            .tryCatch { [weak self] sendTxError in
+                guard
+                    let self,
+                    let underlyingError = sendTxError.error as? KaspaKRC20.Error
+                else {
+                    // Re-throw original error since we want to handle only `KaspaKRC20.Error` here
+                    throw sendTxError
                 }
 
-                // `sendIncompleteKaspaTokenTransactionIfPossible` call above attempts to re-send a cached incomplete
-                // token transaction if one exists.
-                // Any errors thrown from `sendIncompleteKaspaTokenTransactionIfAvailable` call will result in sending
-                // a new token transaction (created from scratch).
-                return sendKaspaTokenTransaction(transaction, token: token, signer: signer)
+                switch underlyingError {
+                case .unableToFindIncompleteTokenTransaction,
+                     .invalidIncompleteTokenTransaction,
+                     .unableToBuildRevealTransaction:
+                    return sendKaspaTokenTransaction(transaction, token: token, signer: signer)
+                }
             }
             .eraseSendError()
             .eraseToAnyPublisher()
-        case .coin, .reserve, .feeResource:
+        case .coin:
             return sendKaspaCoinTransaction(transaction, signer: signer)
+        case .reserve,
+             .feeResource:
+            // Not supported
+            return .anyFail(error: SendTxError(error: WalletError.failedToBuildTx))
         }
     }
 
