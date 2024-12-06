@@ -10,7 +10,16 @@ import Foundation
 import Combine
 import SwiftUI
 
-extension CurrentValueSubject {
+public extension CurrentValueSubject {
+    /// Resend the current `value`
+    func resend() {
+        send(value)
+    }
+}
+
+// MARK: - Binding
+
+public extension CurrentValueSubject {
     var asBinding: Binding<Output> {
         return Binding(
             get: { self.value },
@@ -19,7 +28,7 @@ extension CurrentValueSubject {
     }
 }
 
-extension Subject {
+public extension Subject {
     func asWriteOnlyBinding(_ defaultValue: Output) -> Binding<Output> {
         return Binding(
             get: { defaultValue },

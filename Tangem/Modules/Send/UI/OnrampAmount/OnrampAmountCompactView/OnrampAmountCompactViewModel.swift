@@ -56,7 +56,7 @@ private extension OnrampAmountCompactViewModel {
 
         onrampAmountInput
             .fiatCurrencyPublisher
-            .compactMap { $0.value }
+            .compactMap { $0 }
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, currency in

@@ -18,6 +18,8 @@ class CommonStakingManager {
     private let logger: Logger
     private let analyticsLogger: StakingAnalyticsLogger
 
+    private(set) var balances: [StakingBalance]?
+
     // MARK: Private
 
     private let _state = CurrentValueSubject<StakingManagerState, Never>(.loading)
@@ -144,6 +146,21 @@ private extension CommonStakingManager {
     func updateState(_ state: StakingManagerState) {
         log("Update state to \(state)")
         _state.send(state)
+        updateBalances(state)
+    }
+
+    func updateBalances(_ state: StakingManagerState) {
+        switch state {
+        case .loading:
+            break
+        case .staked(let stakeInfo):
+            balances = stakeInfo.balances
+        case .availableToStake,
+             .loadingError,
+             .notEnabled,
+             .temporaryUnavailable:
+            balances = nil
+        }
     }
 
     func state(balances: [StakingBalanceInfo], yield: YieldInfo, actions: [PendingAction]?) -> StakingManagerState {

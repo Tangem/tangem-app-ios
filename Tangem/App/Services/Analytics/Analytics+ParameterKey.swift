@@ -28,6 +28,7 @@ extension Analytics {
         case success
         case token = "Token"
         case tokens = "Tokens"
+        case tokensCount = "Tokens Count"
         case derivationPath = "Derivation Path"
         case derivation = "Derivation"
         case network = "Network"
@@ -93,5 +94,7 @@ extension Analytics {
 
         case walletForm = "WalletForm"
         case reason = "Reason"
+        case residence = "Residence"
+        case paymentMethod = "Payment Method"
     }
 }

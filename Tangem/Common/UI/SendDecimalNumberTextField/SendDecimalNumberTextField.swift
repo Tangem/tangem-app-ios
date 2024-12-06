@@ -128,6 +128,11 @@ struct SendDecimalNumberTextField: View {
 
                     Button {
                         isInputActive = false
+                        // HACK
+                        // Sometimes this toolbar can be showed on the sheet page
+                        // Which was presented by view which uses this `TextField`
+                        // Then we call `endEditing` to be sure that the keyboard will be closed
+                        UIApplication.shared.endEditing()
                     } label: {
                         Assets.hideKeyboard.image
                             .renderingMode(.template)

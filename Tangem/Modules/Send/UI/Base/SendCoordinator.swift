@@ -51,7 +51,11 @@ class SendCoordinator: CoordinatorObject {
     }
 
     func start(with options: Options) {
-        let factory = SendFlowFactory(userWalletModel: options.userWalletModel, walletModel: options.walletModel)
+        let factory = SendFlowFactory(
+            userWalletModel: options.userWalletModel,
+            walletModel: options.walletModel,
+            source: options.source
+        )
 
         switch options.type {
         case .send:
@@ -79,6 +83,25 @@ extension SendCoordinator {
         let walletModel: WalletModel
         let userWalletModel: UserWalletModel
         let type: SendType
+        let source: Source
+    }
+
+    enum Source {
+        case main
+        case tokenDetails
+        case stakingDetails
+        case markets
+        case actionButtons
+
+        var analytics: Analytics.ParameterValue {
+            switch self {
+            case .main: .longTap
+            case .tokenDetails: .token
+            case .stakingDetails: .token
+            case .markets: .markets
+            case .actionButtons: .main
+            }
+        }
     }
 }
 

@@ -57,6 +57,7 @@ extension OnrampProvider: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(provider)
         hasher.combine(paymentMethod)
+        hasher.combine(state.description)
         hasher.combine(attractiveType)
     }
 }
@@ -65,6 +66,7 @@ extension OnrampProvider: Hashable {
 
 extension OnrampProvider: OnrampProviderManager {
     public var state: OnrampProviderManagerState { manager.state }
+    public var amount: Decimal? { manager.amount }
 
     public var isSupported: Bool {
         state.isSupported
@@ -107,7 +109,7 @@ extension OnrampProvider: OnrampProviderManager {
         }
     }
 
-    public func update(amount: Decimal?) async {
+    public func update(amount: OnrampUpdatingAmount) async {
         await manager.update(amount: amount)
     }
 
