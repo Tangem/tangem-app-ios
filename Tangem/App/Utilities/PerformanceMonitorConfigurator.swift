@@ -9,12 +9,12 @@
 import Foundation
 import UIKit
 
-#if canImport(GDPerformanceView_Swift)
+#if ALPHA || BETA || DEBUG
 import GDPerformanceView_Swift
-#endif // canImport(GDPerformanceView_Swift)
+#endif // ALPHA || BETA || DEBUG
 
 enum PerformanceMonitorConfigurator {
-    #if canImport(GDPerformanceView_Swift)
+    #if ALPHA || BETA || DEBUG
     private static var performanceMonitorStyle: PerformanceMonitor.Style {
         return .custom(
             backgroundColor: UIColor.systemBackground,
@@ -25,7 +25,6 @@ enum PerformanceMonitorConfigurator {
             font: UIFont.systemFont(ofSize: 8.0)
         )
     }
-    #endif // canImport(GDPerformanceView_Swift)
 
     private static var isEnabledUsingLaunchArguments: Bool {
         return UserDefaults.standard.bool(forKey: "com.tangem.PerformanceMonitorEnabled")
@@ -34,14 +33,15 @@ enum PerformanceMonitorConfigurator {
     private static var isEnabledUsingFeatureToggle: Bool {
         return FeatureStorage.instance.isPerformanceMonitorEnabled
     }
+    #endif // ALPHA || BETA || DEBUG
 
     static func configureIfAvailable() {
-        #if canImport(GDPerformanceView_Swift)
+        #if ALPHA || BETA || DEBUG
         guard isEnabledUsingLaunchArguments || isEnabledUsingFeatureToggle else { return }
 
         PerformanceMonitor.shared().performanceViewConfigurator.options = [.performance, .device, .system, .memory]
         PerformanceMonitor.shared().performanceViewConfigurator.style = performanceMonitorStyle
         PerformanceMonitor.shared().start()
-        #endif // canImport(GDPerformanceView_Swift)
+        #endif // ALPHA || BETA || DEBUG
     }
 }

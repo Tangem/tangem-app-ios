@@ -7,7 +7,7 @@ PRODUCTION_SCHEME = "Tangem"
 BETA_SCHEME = "Tangem Beta"
 ALPHA_SCHEME = "Tangem Alpha"
 BSDK_EXAMPLE_SCHEME = "BlockchainSdkExample"
-WORKSPACE_NAME = "TangemApp.xcworkspace"
+PROJECT_NAME = "TangemApp.xcodeproj"
 FIREBASE_TESTERS_GROUP = "testers"
 
 before_all do |lane, options|
@@ -48,7 +48,7 @@ Options:
 """
 lane :test do
   run_tests(
-    workspace: WORKSPACE_NAME,
+    project: PROJECT_NAME,
     scheme: PRODUCTION_SCHEME,
     clean: true,
     code_coverage: true
@@ -113,7 +113,7 @@ A lane that builds a \"BlockchainSdkExample\" scheme without running or publishi
 lane :check_bsdk_example_buildable do |options|
   clear_derived_data  # Required otherwise raw xcodebuild doesn't work reliably
   xcodebuild(
-    workspace: WORKSPACE_NAME,
+    project: PROJECT_NAME,
     scheme: BSDK_EXAMPLE_SCHEME,
     xcargs: "-allowProvisioningUpdates",
     analyze: true
@@ -212,7 +212,13 @@ lane :refresh_dsyms do |options|
     version: options[:version],
     build_number: options[:build]
   )
-  upload_symbols_to_crashlytics(app_id: ENV["PRODUCTION_SCHEME"])
+
+  # Custom `binary_path` is required for SPM installations, see
+  # https://firebase.blog/posts/2021/09/uploading-dsym-files-to-crashlytics-with-fastlane/ for details
+  upload_symbols_to_crashlytics(
+    app_id: ENV["PRODUCTION_SCHEME"],
+    binary_path: "./Utilites/upload-symbols"
+  )
   clean_build_artifacts
 end
 
@@ -318,8 +324,11 @@ private_lane :upload_dsyms do |options|
   filename = options[:filename].chomp(".ipa")
   path = BUILD_PATH + filename + ".app.dSYM.zip"
 
+  # Custom `binary_path` is required for SPM installations, see
+  # https://firebase.blog/posts/2021/09/uploading-dsym-files-to-crashlytics-with-fastlane/ for details
   upload_symbols_to_crashlytics(
     app_id: options[:app_id],
+    binary_path: "./Utilites/upload-symbols",
     dsym_path: path
   )
 end
