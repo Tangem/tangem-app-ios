@@ -3,7 +3,7 @@
 "action_buttons_sell_empty_search_message" = "Токен не знайдено у вашому портфелі? Перевірте Ринки, щоб знайти та додати його для продажу";
 "action_buttons_sell_navigation_bar_title" = "Sell";
 "action_buttons_something_wrong_alert_message" = "The action is currently unavailable. Please try again later or refresh the data by swiping down on the screen.";
-"action_buttons_something_wrong_alert_title" = "";
+"action_buttons_something_wrong_alert_title" = "Button is unavailable";
 "action_buttons_swap_choose_token" = "Оберіть токен";
 "action_buttons_swap_empty_search_message" = "Токен не знайдено у вашому портфелі? Перевірте ринки, щоб знайти та додати його для обміну";
 "action_buttons_swap_navigation_bar_title" = "Swap";

@@ -3,7 +3,7 @@
 "action_buttons_sell_empty_search_message" = "Can’t find your token? Go to the Market section on the main page and add it to your portfolio for selling.";
 "action_buttons_sell_navigation_bar_title" = "Sell";
 "action_buttons_something_wrong_alert_message" = "The action is currently unavailable. Please try again later or refresh the data by swiping down on the screen.";
-"action_buttons_something_wrong_alert_title" = "";
+"action_buttons_something_wrong_alert_title" = "Button is unavailable";
 "action_buttons_swap_choose_token" = "Choose the Token";
 "action_buttons_swap_empty_search_message" = "Can’t find your token? Go to the Market section on the main page and add it to your portfolio for swapping.";
 "action_buttons_swap_navigation_bar_title" = "Swap";

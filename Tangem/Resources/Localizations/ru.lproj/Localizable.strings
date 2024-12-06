@@ -3,7 +3,7 @@
 "action_buttons_sell_empty_search_message" = "Не нашли свой токен? Перейдите в раздел «Рынок» на главной странице и добавьте его в свой портфель для продажи.";
 "action_buttons_sell_navigation_bar_title" = "Продать";
 "action_buttons_something_wrong_alert_message" = "Действие в данный момент недоступно, пожалуйста попробуйте позже или обновить данные, сделав свайп экрана вниз.";
-"action_buttons_something_wrong_alert_title" = "";
+"action_buttons_something_wrong_alert_title" = "Кнопка недоступна";
 "action_buttons_swap_choose_token" = "Выберите токен";
 "action_buttons_swap_empty_search_message" = "Не нашли свой токен? Перейдите в раздел «Рынок» на главной странице и добавьте его в свой портфель для обмена.";
 "action_buttons_swap_navigation_bar_title" = "Обменять";

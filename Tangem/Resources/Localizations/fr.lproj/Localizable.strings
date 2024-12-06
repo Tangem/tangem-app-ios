@@ -3,7 +3,7 @@
 "action_buttons_sell_empty_search_message" = "Jeton non trouvé dans votre portefeuille ? Consultez les marchés pour le trouver et l'ajouter à la vente";
 "action_buttons_sell_navigation_bar_title" = "Vendre";
 "action_buttons_something_wrong_alert_message" = "The action is currently unavailable. Please try again later or refresh the data by swiping down on the screen.";
-"action_buttons_something_wrong_alert_title" = "";
+"action_buttons_something_wrong_alert_title" = "Button is unavailable";
 "action_buttons_swap_choose_token" = "Choisissez le jeton";
 "action_buttons_swap_empty_search_message" = "Jeton non trouvé dans votre portefeuille ? Consultez les marchés pour le trouver et l'ajouter à l'échange";
 "action_buttons_swap_navigation_bar_title" = "Échanger";

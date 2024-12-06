@@ -3,7 +3,7 @@
 "action_buttons_sell_empty_search_message" = "¿No encuentra el token en su billetera? Consulte los mercados para encontrarlo y añadirlo a la venta";
 "action_buttons_sell_navigation_bar_title" = "Vender";
 "action_buttons_something_wrong_alert_message" = "The action is currently unavailable. Please try again later or refresh the data by swiping down on the screen.";
-"action_buttons_something_wrong_alert_title" = "";
+"action_buttons_something_wrong_alert_title" = "Button is unavailable";
 "action_buttons_swap_choose_token" = "Elige el token";
 "action_buttons_swap_empty_search_message" = "¿No encuentras el token en tu billetera? Consulte los mercados para encontrarlo y agregarlo al intercambio";
 "action_buttons_swap_navigation_bar_title" = "Intercambiar";
@@ -177,7 +177,7 @@
 "common_submit" = "Enviar";
 "common_success" = "Con éxito";
 "common_support" = "Soporte";
-"common_swap" = "Intercambiar";
+"common_swap" = "Swap";
 "common_terms_and_conditions" = "términos y condiciones";
 "common_terms_of_use" = "Condiciones de uso";
 "common_today" = "Hoy";
