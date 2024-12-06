@@ -109,8 +109,12 @@ final class KaspaWalletManager: BaseManager, WalletManager {
             }
             .eraseSendError()
             .eraseToAnyPublisher()
-        case .coin, .reserve, .feeResource:
+        case .coin:
             return sendKaspaCoinTransaction(transaction, signer: signer)
+        case .reserve,
+             .feeResource:
+            // Not supported
+            return .anyFail(error: SendTxError(error: WalletError.failedToBuildTx))
         }
     }
 
