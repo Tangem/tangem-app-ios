@@ -63,6 +63,8 @@ final class SellActionButtonViewModel: ActionButtonViewModel {
 
     @MainActor
     func tap() {
+        trackTapEvent()
+
         switch viewState {
         case .initial:
             handleInitialStateTap()

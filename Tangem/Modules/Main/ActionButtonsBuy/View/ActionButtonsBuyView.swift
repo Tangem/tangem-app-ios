@@ -21,6 +21,9 @@ struct ActionButtonsBuyView: View {
                 }
             }
             .transition(.opacity.animation(.easeInOut))
+            .onAppear {
+                viewModel.handleViewAction(.onAppear)
+            }
     }
 
     @ViewBuilder
