@@ -73,6 +73,12 @@ struct VisaOnboardingView: View {
             VisaOnboardingWelcomeView(viewModel: viewModel.welcomeViewModel)
         case .accessCode:
             VisaOnboardingAccessCodeSetupView(viewModel: viewModel.accessCodeSetupViewModel)
+        case .selectWalletForApprove:
+            VisaOnboardingActivationWalletSelectorView(viewModel: viewModel.walletSelectorViewModel)
+        case .approveUsingTangemWallet:
+            if let viewModel = viewModel.tangemWalletApproveViewModel {
+                VisaOnboardingTangemWalletConfirmationView(viewModel: viewModel)
+            }
         case .saveUserWallet:
             UserWalletStorageAgreementView(
                 viewModel: viewModel.userWalletStorageAgreementViewModel,

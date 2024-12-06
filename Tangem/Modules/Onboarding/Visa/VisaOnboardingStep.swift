@@ -9,6 +9,8 @@
 enum VisaOnboardingStep {
     case welcome
     case accessCode
+    case selectWalletForApprove
+    case approveUsingTangemWallet
 
     case saveUserWallet
     case pushNotifications
@@ -21,6 +23,10 @@ enum VisaOnboardingStep {
             return Localization.onboardingGettingStarted
         case .accessCode:
             return Localization.onboardingWalletInfoTitleThird
+        case .selectWalletForApprove:
+            return "Account activation"
+        case .approveUsingTangemWallet:
+            return "Wallet connection"
         case .saveUserWallet:
             return Localization.onboardingNavbarSaveWallet
         case .pushNotifications:

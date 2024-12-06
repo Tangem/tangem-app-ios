@@ -12,6 +12,8 @@ import TangemFoundation
 import TangemSdk
 
 public protocol VisaActivationManager: VisaAccessCodeValidator {
+    var targetApproveAddress: String? { get }
+
     func saveAccessCode(accessCode: String) throws
     func resetAccessCode()
     func setupRefreshTokenSaver(_ refreshTokenSaver: VisaRefreshTokenSaver)
@@ -65,6 +67,11 @@ final class CommonVisaActivationManager {
 }
 
 extension CommonVisaActivationManager: VisaActivationManager {
+    var targetApproveAddress: String? {
+        // TODO: Not implemented on backend
+        nil
+    }
+
     func validateAccessCode(accessCode: String) throws {
         guard accessCode.count >= 4 else {
             throw VisaAccessCodeValidationError.accessCodeIsTooShort

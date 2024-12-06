@@ -49,6 +49,10 @@ class VisaOnboardingViewModel: ObservableObject {
     )
 
     lazy var accessCodeSetupViewModel = VisaOnboardingAccessCodeSetupViewModel(accessCodeValidator: visaActivationManager, delegate: self)
+    lazy var walletSelectorViewModel = VisaOnboardingActivationWalletSelectorViewModel(delegate: self)
+    var tangemWalletApproveViewModel: VisaOnboardingTangemWalletConfirmationViewModel?
+
+    // MARK: - Computed properties
 
     var navigationBarTitle: String {
         currentStep.navigationTitle
@@ -90,14 +94,16 @@ class VisaOnboardingViewModel: ObservableObject {
 
     func backButtonAction() {
         switch currentStep {
-        case .welcome, .pushNotifications, .saveUserWallet:
-            alert = AlertBuilder.makeExitAlert(okAction: weakify(self, forFunction: VisaOnboardingViewModel.closeOnboarding))
+        case .welcome, .pushNotifications, .saveUserWallet, .selectWalletForApprove:
+            showCloseOnboardingAlert()
         case .accessCode:
             guard accessCodeSetupViewModel.goBack() else {
                 return
             }
 
             goToStep(.welcome)
+        case .approveUsingTangemWallet:
+            goToStep(.selectWalletForApprove)
         case .success:
             break
         }
@@ -128,14 +134,14 @@ class VisaOnboardingViewModel: ObservableObject {
     }
 }
 
+// MARK: - Steps navigation logic
+
 private extension VisaOnboardingViewModel {
     func goToNextStep() {
         switch currentStep {
         case .welcome:
             goToStep(.accessCode)
-        case .accessCode:
-            goToStep(.saveUserWallet)
-        case .saveUserWallet, .pushNotifications:
+        case .accessCode, .selectWalletForApprove, .approveUsingTangemWallet, .saveUserWallet, .pushNotifications:
             break
         case .success:
             closeOnboarding()
@@ -148,18 +154,15 @@ private extension VisaOnboardingViewModel {
             return
         }
 
-        withAnimation {
-            currentStep = step
+        DispatchQueue.main.async {
+            withAnimation {
+                self.currentStep = step
+            }
         }
     }
-
-    func saveAccessCode(_ code: String) {}
-
-    func closeOnboarding() {
-        userWalletRepository.updateSelection()
-        coordinator?.closeOnboarding()
-    }
 }
+
+// MARK: - Biometry delegate
 
 extension VisaOnboardingViewModel: UserWalletStorageAgreementRoutable {
     func didAgreeToSaveUserWallets() {
@@ -194,11 +197,15 @@ extension VisaOnboardingViewModel: UserWalletStorageAgreementRoutable {
     }
 }
 
+// MARK: - PushNotificationsPermissionRequestDelegate
+
 extension VisaOnboardingViewModel: PushNotificationsPermissionRequestDelegate {
     func didFinishPushNotificationOnboarding() {
         goToNextStep()
     }
 }
+
+// MARK: - AccessCodeSetupDelegate
 
 extension VisaOnboardingViewModel: VisaOnboardingAccessCodeSetupDelegate {
     /// We need to show alert in parent view, otherwise it won't be presented
@@ -221,6 +228,48 @@ private extension VisaOnboardingViewModel {
 
     @MainActor
     func navigateToApproveWalletSelection() {}
+}
+
+extension VisaOnboardingViewModel: VisaOnboardingWalletSelectorDelegate {
+    func useExternalWallet() {
+        // TODO: IOS-8574
+    }
+
+    func useTangemWallet() {
+        // Default value will be removed and guard check will be added, when backend finished implementation
+        let targetApproveAddress = visaActivationManager.targetApproveAddress ?? ""
+        tangemWalletApproveViewModel = .init(
+            targetWalletAddress: targetApproveAddress,
+            tangemSdk: TangemSdkDefaultFactory().makeTangemSdk(),
+            delegate: self,
+            dataProvider: self
+        )
+    }
+}
+
+extension VisaOnboardingViewModel: VisaOnboardingTangemWalletApproveDelegate {
+    func processSignedData(_ signedData: Data) async throws {
+        throw "Backend not ready... Even requirements"
+    }
+}
+
+extension VisaOnboardingViewModel: VisaOnboardingTangemWalletApproveDataProvider {
+    func loadDataToSign() async throws -> Data {
+        throw "Backend not ready... Even requirements"
+    }
+}
+
+// MARK: - Close onboarding funcs
+
+private extension VisaOnboardingViewModel {
+    func showCloseOnboardingAlert() {
+        alert = AlertBuilder.makeExitAlert(okAction: weakify(self, forFunction: VisaOnboardingViewModel.closeOnboarding))
+    }
+
+    func closeOnboarding() {
+        userWalletRepository.updateSelection()
+        coordinator?.closeOnboarding()
+    }
 }
 
 #if DEBUG
