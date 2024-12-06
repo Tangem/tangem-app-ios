@@ -94,8 +94,31 @@ private extension CardActivationTask {
     }
 
     func createWallet(in session: CardSession, completion: @escaping CompletionHandler) {
+        if let taskCancellationError {
+            completion(.failure(taskCancellationError))
+            return
+        }
 
-        // TODO: IOS-8569
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+
+        let utils = VisaUtilities(isTestnet: false)
+        if card.wallets.contains(where: { $0.curve == utils.mandatoryCurve }) {
+            createOTP(in: session, completion: completion)
+            return
+        }
+
+        let createWallet = CreateWalletTask(curve: utils.mandatoryCurve)
+        createWallet.run(in: session) { result in
+            switch result {
+            case .success:
+                self.createOTP(in: session, completion: completion)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
 
     func createOTP(in session: CardSession, completion: @escaping CompletionHandler) {
@@ -128,7 +151,15 @@ private extension CardActivationTask {
         in session: CardSession,
         completion: @escaping CompletionHandler
     ) {
-        // TODO: IOS-8569
+        let setAccessCodeCommand = SetUserCodeCommand(accessCode: selectedAccessCode)
+        setAccessCodeCommand.run(in: session) { result in
+            switch result {
+            case .success:
+                completion(.success(signResponse))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
 }
 
