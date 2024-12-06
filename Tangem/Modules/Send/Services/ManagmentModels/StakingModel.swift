@@ -334,6 +334,7 @@ extension StakingModel: SendAmountOutput {
 // MARK: - StakingValidatorsInput
 
 extension StakingModel: StakingValidatorsInput {
+    var selectedValidator: ValidatorInfo? { _selectedValidator.value.value }
     var selectedValidatorPublisher: AnyPublisher<TangemStaking.ValidatorInfo, Never> {
         _selectedValidator.compactMap { $0.value }.eraseToAnyPublisher()
     }

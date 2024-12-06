@@ -31,6 +31,7 @@ struct OnrampSettingsView: View {
         )
         .navigationBarTitle(Localization.onrampSettingsTitle, displayMode: .inline)
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear(perform: viewModel.onAppear)
     }
 
     private var rowView: some View {

@@ -32,6 +32,7 @@ final class OnrampCountrySelectorViewModel: Identifiable, ObservableObject {
 
         bind()
         loadCountries()
+        Analytics.log(.onrampResidenceScreenOpened)
     }
 
     func loadCountries() {
@@ -80,6 +81,11 @@ private extension OnrampCountrySelectorViewModel {
                 isAvailable: country.onrampAvailable,
                 isSelected: repository.preferenceCountry == country,
                 action: { [weak self] in
+                    Analytics.log(
+                        event: .onrampResidenceChosen,
+                        params: [.residence: country.identity.name]
+                    )
+
                     self?.updatePreference(country: country)
                     self?.coordinator?.dismissCountrySelector()
                 }
