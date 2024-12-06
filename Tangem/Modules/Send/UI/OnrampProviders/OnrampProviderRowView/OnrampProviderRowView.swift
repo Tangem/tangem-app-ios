@@ -61,6 +61,7 @@ struct OnrampProviderRowView: View {
             forceKingfisher: false
         )
         .opacity(data.isTappable ? 1 : 0.4)
+        .saturation(data.isTappable ? 1 : 0)
     }
 
     private var topLineView: some View {
@@ -103,10 +104,8 @@ struct OnrampProviderRowView: View {
     @ViewBuilder
     private var stateView: some View {
         switch data.state {
-        case .none:
+        case .none, .available:
             EmptyView()
-        case .available(let time):
-            timeView(time: time)
         case .availableFromAmount(let text),
              .availableToAmount(let text),
              .availableForPaymentMethods(let text):
@@ -147,7 +146,7 @@ struct OnrampProviderRowView: View {
                 paymentMethodId: "card",
                 iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/1INCH512.png"),
                 formattedAmount: "0,00453 BTC",
-                state: .available(estimatedTime: "5 min"),
+                state: .available,
                 badge: .bestRate,
                 isSelected: true,
                 action: {}
