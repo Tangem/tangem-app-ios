@@ -8,6 +8,7 @@
 
 import Foundation
 import WalletCore
+import TangemSdk
 import TangemFoundation
 
 class KaspaTransactionBuilder {
@@ -305,8 +306,11 @@ extension KaspaTransactionBuilder {
             ticker: token.contractAddress
         )
 
+        // Some older cards use uncompressed secp256k1 public keys, while Kaspa only works with compressed ones
+        let publicKey = try Secp256k1Key(with: walletPublicKey.blockchainKey).compress()
+
         // Create a RedeemScript for the 1st output of the Commit transaction, this is part of the KRC20 protocol
-        let redeemScript = KaspaKRC20.RedeemScript(publicKey: walletPublicKey.blockchainKey, envelope: envelope)
+        let redeemScript = KaspaKRC20.RedeemScript(publicKey: publicKey, envelope: envelope)
         let targetOutputAmount = dust.uint64Value + feeEstimationRevealTransactionValue.uint64Value
 
         // 1st output of the Commit transaction
@@ -368,8 +372,10 @@ extension KaspaTransactionBuilder {
         params: KaspaKRC20.IncompleteTokenTransactionParams,
         fee: Fee
     ) throws -> KaspaKRC20.RevealTransaction {
+        // Some older cards use uncompressed secp256k1 public keys, while Kaspa only works with compressed ones
+        let publicKey = try Secp256k1Key(with: walletPublicKey.blockchainKey).compress()
+        let redeemScript = KaspaKRC20.RedeemScript(publicKey: publicKey, envelope: params.envelope)
         let sourceAddressScript = try scriptPublicKey(address: sourceAddress).hexString.lowercased()
-        let redeemScript = KaspaKRC20.RedeemScript(publicKey: walletPublicKey.blockchainKey, envelope: params.envelope)
 
         let utxo = [
             BitcoinUnspentOutput(
