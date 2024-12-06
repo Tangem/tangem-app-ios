@@ -8,6 +8,7 @@
 
 import Foundation
 import WalletCore
+import TangemSdk
 import TangemFoundation
 
 class KaspaTransactionBuilder {
@@ -28,10 +29,6 @@ class KaspaTransactionBuilder {
         let inputs = unspentOutputs
         let availableAmountInSatoshi = inputs.reduce(0) { $0 + $1.amount }
         return Amount(with: blockchain, value: Decimal(availableAmountInSatoshi) / blockchain.decimalValue)
-    }
-
-    func unspentOutputsCount(for amount: Amount) -> Int {
-        return unspentOutputs.count
     }
 
     func setUnspentOutputs(_ unspentOutputs: [BitcoinUnspentOutput]) {
@@ -224,7 +221,7 @@ extension KaspaTransactionBuilder {
         )
     }
 
-    func buildForSendKRC20(transaction: Transaction, token: Token) throws -> (KaspaKRC20.TransactionGroup, KaspaKRC20.TransactionMeta) {
+    func buildForSignKRC20(transaction: Transaction, token: Token) throws -> (KaspaKRC20.TransactionGroup, KaspaKRC20.TransactionMeta) {
         // Commit
         let resultCommit = try buildCommitTransactionKRC20(transaction: transaction, token: token)
 
@@ -233,7 +230,7 @@ extension KaspaTransactionBuilder {
             throw WalletError.failedToBuildTx
         }
 
-        let resultReveal = try buildRevealTransaction(
+        let resultReveal = try buildRevealTransactionKRC20(
             sourceAddress: transaction.sourceAddress,
             params: resultCommit.params,
             fee: .init(feeParams.revealFee)
@@ -253,7 +250,16 @@ extension KaspaTransactionBuilder {
         )
     }
 
-    public func buildCommitTransactionKRC20(transaction: Transaction, token: Token, includeFee: Bool = true) throws -> KaspaKRC20.CommitTransaction {
+    /// Just a proxy for external consumers.
+    func buildForSignRevealTransactionKRC20(
+        sourceAddress: String,
+        params: KaspaKRC20.IncompleteTokenTransactionParams,
+        fee: Fee
+    ) throws -> KaspaKRC20.RevealTransaction {
+        return try buildRevealTransactionKRC20(sourceAddress: sourceAddress, params: params, fee: fee)
+    }
+
+    private func buildCommitTransactionKRC20(transaction: Transaction, token: Token, includeFee: Bool = true) throws -> KaspaKRC20.CommitTransaction {
         let availableInputValue = availableAmount()
 
         // We check there are enough funds to cover the commission,
@@ -300,8 +306,11 @@ extension KaspaTransactionBuilder {
             ticker: token.contractAddress
         )
 
+        // Some older cards use uncompressed secp256k1 public keys, while Kaspa only works with compressed ones
+        let publicKey = try Secp256k1Key(with: walletPublicKey.blockchainKey).compress()
+
         // Create a RedeemScript for the 1st output of the Commit transaction, this is part of the KRC20 protocol
-        let redeemScript = KaspaKRC20.RedeemScript(publicKey: walletPublicKey.blockchainKey, envelope: envelope)
+        let redeemScript = KaspaKRC20.RedeemScript(publicKey: publicKey, envelope: envelope)
         let targetOutputAmount = dust.uint64Value + feeEstimationRevealTransactionValue.uint64Value
 
         // 1st output of the Commit transaction
@@ -358,9 +367,15 @@ extension KaspaTransactionBuilder {
         )
     }
 
-    public func buildRevealTransaction(sourceAddress: String, params: KaspaKRC20.IncompleteTokenTransactionParams, fee: Fee) throws -> KaspaKRC20.RevealTransaction {
+    private func buildRevealTransactionKRC20(
+        sourceAddress: String,
+        params: KaspaKRC20.IncompleteTokenTransactionParams,
+        fee: Fee
+    ) throws -> KaspaKRC20.RevealTransaction {
+        // Some older cards use uncompressed secp256k1 public keys, while Kaspa only works with compressed ones
+        let publicKey = try Secp256k1Key(with: walletPublicKey.blockchainKey).compress()
+        let redeemScript = KaspaKRC20.RedeemScript(publicKey: publicKey, envelope: params.envelope)
         let sourceAddressScript = try scriptPublicKey(address: sourceAddress).hexString.lowercased()
-        let redeemScript = KaspaKRC20.RedeemScript(publicKey: walletPublicKey.blockchainKey, envelope: params.envelope)
 
         let utxo = [
             BitcoinUnspentOutput(
