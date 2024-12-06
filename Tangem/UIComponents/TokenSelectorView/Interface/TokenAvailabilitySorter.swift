@@ -7,5 +7,8 @@
 //
 
 protocol TokenAvailabilitySorter {
-    func sortModels(walletModels: [WalletModel]) -> (availableModels: [WalletModel], unavailableModels: [WalletModel])
+    func sortModels(walletModels: [WalletModel]) async -> (
+        availableModels: [WalletModel],
+        unavailableModels: [WalletModel]
+    )
 }

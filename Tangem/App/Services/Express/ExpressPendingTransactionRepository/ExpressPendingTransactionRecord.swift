@@ -83,6 +83,7 @@ extension ExpressPendingTransactionRecord {
         case cex
         case dex
         case dexBridge
+        case onramp
         case unknown
 
         static func type(from type: ExpressProviderType) -> ProviderType {
@@ -90,13 +91,14 @@ extension ExpressPendingTransactionRecord {
             case .dex: return .dex
             case .cex: return .cex
             case .dexBridge: return .dexBridge
-            case .onramp, .unknown: return .unknown
+            case .onramp: return .onramp
+            case .unknown: return .unknown
             }
         }
 
         var supportStatusTracking: Bool {
             switch self {
-            case .cex, .dexBridge:
+            case .cex, .dexBridge, .onramp:
                 return true
             case .dex, .unknown:
                 return false

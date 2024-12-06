@@ -54,7 +54,7 @@ struct SingleTokenAlertBuilder {
         switch tokenItemSwapState {
         case .unavailable:
             return buyUnavailableAlert(for: tokenItem)
-        case .loading, .failedToLoadInfo, .notLoaded:
+        case .notLoaded:
             return tryAgainLaterAlert
         case .available:
             return nil
@@ -70,7 +70,7 @@ struct SingleTokenAlertBuilder {
         switch tokenItemSwapState {
         case .unavailable:
             alert = notSupportedToken
-        case .loading, .failedToLoadInfo, .notLoaded:
+        case .notLoaded:
             alert = tryAgainLaterAlert
         case .available:
             if isCustom {

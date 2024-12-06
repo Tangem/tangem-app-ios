@@ -15,7 +15,7 @@ struct OnrampStatusCompactView: View {
         VStack(spacing: 10) {
             statusesView
 
-            DefaultFooterView(Localization.onrampStatusesViewFooter)
+            DefaultFooterView(Localization.onrampTransactionStatusFooterText)
                 .padding(.horizontal, 14)
         }
     }
@@ -35,7 +35,7 @@ struct OnrampStatusCompactView: View {
                     state: .empty
                 ),
                 .init(
-                    title: PendingExpressTransactionStatus.exchanging.activeStatusTitle,
+                    title: PendingExpressTransactionStatus.buying.activeStatusTitle,
                     state: .empty
                 ),
                 .init(

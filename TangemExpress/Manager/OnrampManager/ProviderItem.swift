@@ -69,10 +69,17 @@ public class ProviderItem {
         case (_, .loaded):
             return false
         // All cases which is `loaded` have to be ordered before `rhs`
-        // All cases which is `restriction` have to be ordered before `rhs`
         // Exclude case where `rhs == .loaded`. This case processed above
-        case (.loaded, _), (.restriction, _):
+        case (.loaded, _):
             return true
+        case (.restriction(let lhsRestriction), .restriction(let rhsRestriction)):
+            let lhsDiff = (lhs.amount ?? 0) - (lhsRestriction.amount ?? 0)
+            let rhsDiff = (rhs.amount ?? 0) - (rhsRestriction.amount ?? 0)
+            return abs(lhsDiff) > abs(rhsDiff)
+        case (.restriction, _):
+            return true
+        case (_, .restriction):
+            return false
         default:
             return false
         }

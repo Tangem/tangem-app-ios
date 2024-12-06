@@ -15,6 +15,7 @@ class CommonExpressModulesFactory {
 
     private let userWalletModel: UserWalletModel
     private let initialWalletModel: WalletModel
+    private let destinationWalletModel: WalletModel?
     private let expressAPIProviderFactory = ExpressAPIProviderFactory()
 
     // MARK: - Internal
@@ -28,6 +29,7 @@ class CommonExpressModulesFactory {
     init(inputModel: InputModel) {
         userWalletModel = inputModel.userWalletModel
         initialWalletModel = inputModel.initialWalletModel
+        destinationWalletModel = inputModel.destinationWalletModel
     }
 }
 
@@ -206,6 +208,7 @@ private extension CommonExpressModulesFactory {
         let interactor = ExpressInteractor(
             userWalletId: userWalletId,
             initialWallet: initialWalletModel,
+            destinationWallet: destinationWalletModel,
             expressManager: expressManager,
             allowanceProvider: allowanceProvider,
             feeProvider: expressFeeProvider,
@@ -241,5 +244,16 @@ extension CommonExpressModulesFactory {
     struct InputModel {
         let userWalletModel: UserWalletModel
         let initialWalletModel: WalletModel
+        let destinationWalletModel: WalletModel?
+
+        init(
+            userWalletModel: UserWalletModel,
+            initialWalletModel: WalletModel,
+            destinationWalletModel: WalletModel? = nil
+        ) {
+            self.userWalletModel = userWalletModel
+            self.initialWalletModel = initialWalletModel
+            self.destinationWalletModel = destinationWalletModel
+        }
     }
 }
