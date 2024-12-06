@@ -13,7 +13,7 @@ public enum CardAuthorizationProcessorError: Error {
     case invalidCardInput
     case networkError(Error)
 
-    var description: String {
+    public var description: String {
         switch self {
         case .authorizationChallengeNotFound:
             return "Authorization challenge request not found"

@@ -28,13 +28,7 @@ public struct VisaActivationManagerFactory {
 
         let customerInfoService = CommonCustomerInfoService(accessTokenProvider: tokenHandler)
         let authorizationProcessor = CommonCardAuthorizationProcessor(
-            tangemSdk: tangemSdk,
             authorizationService: authorizationService,
-            logger: internalLogger
-        )
-
-        let cardSetupHandler = CommonCardSetupHandler(
-            cardActivationInput: cardInput,
             logger: internalLogger
         )
 
@@ -50,7 +44,6 @@ public struct VisaActivationManagerFactory {
             authorizationTokenHandler: tokenHandler,
             tangemSdk: tangemSdk,
             authorizationProcessor: authorizationProcessor,
-            cardSetupHandler: cardSetupHandler,
             cardActivationOrderProvider: activationOrderProvider,
             logger: internalLogger
         )

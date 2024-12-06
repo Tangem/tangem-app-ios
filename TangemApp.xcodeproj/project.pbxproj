@@ -349,7 +349,6 @@
 		B03AEEB229596EBD00212267 /* WalletConnectV2MessageComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03AEEB129596EBD00212267 /* WalletConnectV2MessageComposer.swift */; };
 		B03C19A62CF071B500CCB4F1 /* VisaCardActivationInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03C19A52CF071B500CCB4F1 /* VisaCardActivationInput.swift */; };
 		B03C19A92CF075D600CCB4F1 /* CustomerInfoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03C19A82CF075D600CCB4F1 /* CustomerInfoService.swift */; };
-		B03C19B12CF0BFCC00CCB4F1 /* CardSetupHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03C19B02CF0BFCB00CCB4F1 /* CardSetupHandler.swift */; };
 		B03F19032C3D291100C93CFD /* AmountNotationSuffixFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03F19022C3D291100C93CFD /* AmountNotationSuffixFormatter.swift */; };
 		B03FF89E2B5E4FC000202EC0 /* AppVisaBalances.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03FF89D2B5E4FC000202EC0 /* AppVisaBalances.swift */; };
 		B03FF8A02B5E4FC700202EC0 /* AppVisaLimits.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03FF89F2B5E4FC700202EC0 /* AppVisaLimits.swift */; };
@@ -610,7 +609,6 @@
 		B0BA7BC526C4F96B00D7066F /* NonDismissableModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0BA7BC426C4F96B00D7066F /* NonDismissableModalView.swift */; };
 		B0BA7BC726C4F9A300D7066F /* OnboardingCircleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0BA7BC626C4F9A300D7066F /* OnboardingCircleButton.swift */; };
 		B0BA7BCB26C5684E00D7066F /* AddressQrBottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0BA7BCA26C5684E00D7066F /* AddressQrBottomSheetView.swift */; };
-		B0BB3A862CF46D5200631829 /* CardSessionRunnable+Async.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0BB3A852CF46D5200631829 /* CardSessionRunnable+Async.swift */; };
 		B0BB3A882CF472C800631829 /* CardAuthorizationProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0BB3A872CF472C800631829 /* CardAuthorizationProcessor.swift */; };
 		B0BB972A2B18653B00053954 /* ExpressInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0BB97292B18653B00053954 /* ExpressInteractor.swift */; };
 		B0BB972F2B18654300053954 /* CommonExpressPendingTransactionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0BB972C2B18654300053954 /* CommonExpressPendingTransactionRepository.swift */; };
@@ -670,7 +668,6 @@
 		B0D7F896295EDCBE00497139 /* ReferralErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D7F895295EDCBE00497139 /* ReferralErrors.swift */; };
 		B0D9FDCA2A9336920047A1C0 /* IconViewSizeSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D9FDC92A9336920047A1C0 /* IconViewSizeSettings.swift */; };
 		B0DB542F2CF47AF90069131C /* CardActivationOrderProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DB542E2CF47AF90069131C /* CardActivationOrderProvider.swift */; };
-		B0DB54312CF47B400069131C /* CardSetupTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DB54302CF47B400069131C /* CardSetupTask.swift */; };
 		B0DB73FC2A8CA28800F6376E /* UnlockUserWalletBottomSheetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DB73FB2A8CA28800F6376E /* UnlockUserWalletBottomSheetViewModel.swift */; };
 		B0DC03E92A9CB15600058AEB /* FakeUserWalletNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DC03E82A9CB15600058AEB /* FakeUserWalletNotificationManager.swift */; };
 		B0DC10CD2927505300BBE854 /* SwiftConcurrency+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DC10CC2927505300BBE854 /* SwiftConcurrency+.swift */; };
@@ -3520,7 +3517,6 @@
 		B03AEEB129596EBD00212267 /* WalletConnectV2MessageComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectV2MessageComposer.swift; sourceTree = "<group>"; };
 		B03C19A52CF071B500CCB4F1 /* VisaCardActivationInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisaCardActivationInput.swift; sourceTree = "<group>"; };
 		B03C19A82CF075D600CCB4F1 /* CustomerInfoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerInfoService.swift; sourceTree = "<group>"; };
-		B03C19B02CF0BFCB00CCB4F1 /* CardSetupHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSetupHandler.swift; sourceTree = "<group>"; };
 		B03F19022C3D291100C93CFD /* AmountNotationSuffixFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountNotationSuffixFormatter.swift; sourceTree = "<group>"; };
 		B03FF89D2B5E4FC000202EC0 /* AppVisaBalances.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVisaBalances.swift; sourceTree = "<group>"; };
 		B03FF89F2B5E4FC700202EC0 /* AppVisaLimits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVisaLimits.swift; sourceTree = "<group>"; };
@@ -3778,7 +3774,6 @@
 		B0BA7BC426C4F96B00D7066F /* NonDismissableModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonDismissableModalView.swift; sourceTree = "<group>"; };
 		B0BA7BC626C4F9A300D7066F /* OnboardingCircleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingCircleButton.swift; sourceTree = "<group>"; };
 		B0BA7BCA26C5684E00D7066F /* AddressQrBottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressQrBottomSheetView.swift; sourceTree = "<group>"; };
-		B0BB3A852CF46D5200631829 /* CardSessionRunnable+Async.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardSessionRunnable+Async.swift"; sourceTree = "<group>"; };
 		B0BB3A872CF472C800631829 /* CardAuthorizationProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardAuthorizationProcessor.swift; sourceTree = "<group>"; };
 		B0BB97292B18653B00053954 /* ExpressInteractor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpressInteractor.swift; sourceTree = "<group>"; };
 		B0BB972C2B18654300053954 /* CommonExpressPendingTransactionRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonExpressPendingTransactionRepository.swift; sourceTree = "<group>"; };
@@ -3839,7 +3834,6 @@
 		B0D7F895295EDCBE00497139 /* ReferralErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReferralErrors.swift; sourceTree = "<group>"; };
 		B0D9FDC92A9336920047A1C0 /* IconViewSizeSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconViewSizeSettings.swift; sourceTree = "<group>"; };
 		B0DB542E2CF47AF90069131C /* CardActivationOrderProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardActivationOrderProvider.swift; sourceTree = "<group>"; };
-		B0DB54302CF47B400069131C /* CardSetupTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSetupTask.swift; sourceTree = "<group>"; };
 		B0DB73FB2A8CA28800F6376E /* UnlockUserWalletBottomSheetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnlockUserWalletBottomSheetViewModel.swift; sourceTree = "<group>"; };
 		B0DC03E82A9CB15600058AEB /* FakeUserWalletNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeUserWalletNotificationManager.swift; sourceTree = "<group>"; };
 		B0DC10CC2927505300BBE854 /* SwiftConcurrency+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SwiftConcurrency+.swift"; sourceTree = "<group>"; };
@@ -7547,9 +7541,6 @@
 		B03C19AA2CF0857B00CCB4F1 /* TangemSdk */ = {
 			isa = PBXGroup;
 			children = (
-				B03C19B02CF0BFCB00CCB4F1 /* CardSetupHandler.swift */,
-				B0BB3A852CF46D5200631829 /* CardSessionRunnable+Async.swift */,
-				B0DB54302CF47B400069131C /* CardSetupTask.swift */,
 				B0A593542CF711A200C386EE /* CardActivationTask.swift */,
 			);
 			path = TangemSdk;
@@ -18325,10 +18316,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				B0A593552CF711A200C386EE /* CardActivationTask.swift in Sources */,
-				B0BB3A862CF46D5200631829 /* CardSessionRunnable+Async.swift in Sources */,
 				B0DE6EE92CDCFCC500254675 /* VisaAuthorizationModels.swift in Sources */,
 				B051451E2B59355E00EDAD1E /* VisaLimits.swift in Sources */,
-				B0DB54312CF47B400069131C /* CardSetupTask.swift in Sources */,
 				B051450C2B59344100EDAD1E /* GetPaymentAccountByCardMethod.swift in Sources */,
 				B05F19552BF3589C007E5552 /* GetTokenInfoMethod.swift in Sources */,
 				B05E36D52CDA418800CE44F2 /* JSONDecoderFactory.swift in Sources */,
@@ -18342,7 +18331,6 @@
 				B0BB3A882CF472C800631829 /* CardAuthorizationProcessor.swift in Sources */,
 				B051450E2B59346500EDAD1E /* GetTotalBalanceMethod.swift in Sources */,
 				B05145142B5934BB00EDAD1E /* VisaSmartContractRequest.swift in Sources */,
-				B03C19B12CF0BFCC00CCB4F1 /* CardSetupHandler.swift in Sources */,
 				B0A359AC2CE6FD7B0001499E /* AuthorizationServiceBuilder.swift in Sources */,
 				B0EC860A2CEE2524003E5B67 /* VisaActivationManagerFactory.swift in Sources */,
 				B0DE6EE72CDCFC7700254675 /* VisaAuthorizationAPIError.swift in Sources */,

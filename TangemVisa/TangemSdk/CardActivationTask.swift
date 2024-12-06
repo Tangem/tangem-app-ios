@@ -16,41 +16,41 @@ struct VisaCardActivationResponse {
     let rootOTP: Data
 }
 
-protocol SignedAuthorizationChallengeDelegate: AnyObject {
-    func challengeSigned(signedChallenge: Data, salt: Data, completion: @escaping (Result<Void, Error>) -> Void)
+protocol CardActivationTaskOrderProvider: AnyObject {
+    func getOrderForSignedChallenge(
+        signedAuthorizationChallenge: AttestCardKeyResponse,
+        completion: @escaping (Result<CardActivationOrder, Error>) -> Void
+    )
+    func getActivationOrder(completion: @escaping (Result<CardActivationOrder, Error>) -> Void)
 }
 
 final class CardActivationTask: CardSessionRunnable {
     typealias CompletionHandler = CompletionResult<VisaCardActivationResponse>
 
-    private weak var activationOrderProvider: CardActivationOrderProvider?
-    private weak var signedAuthorizationChallengeDelegate: SignedAuthorizationChallengeDelegate?
+    private weak var orderProvider: CardActivationTaskOrderProvider?
     private let logger: InternalLogger
 
+    private let selectedAccessCode: String
     private let activationInput: VisaCardActivationInput
     private let challengeToSign: String?
 
     private var taskCancellationError: TangemSdkError?
-    private var orderLoadingTask: Task<Void, Error>?
-    private var rootOTP: Data?
 
-    private var orderPublisher = CurrentValueSubject<String?, Never>(nil)
-    private var orderSubscription: AnyCancellable?
+    private var orderPublisher = CurrentValueSubject<CardActivationOrder?, Never>(nil)
 
     init(
+        selectedAccessCode: String,
         activationInput: VisaCardActivationInput,
         challengeToSign: String?,
-        orderToSign: String?,
-        activationOrderProvider: CardActivationOrderProvider,
-        signedAuthorizationChallengeDelegate: SignedAuthorizationChallengeDelegate,
+        delegate: CardActivationTaskOrderProvider,
         logger: InternalLogger
     ) {
+        self.selectedAccessCode = selectedAccessCode
         self.activationInput = activationInput
         self.challengeToSign = challengeToSign
-        orderPublisher.send(orderToSign)
+        orderPublisher.send(nil)
 
-        self.activationOrderProvider = activationOrderProvider
-        self.signedAuthorizationChallengeDelegate = signedAuthorizationChallengeDelegate
+        orderProvider = delegate
         self.logger = logger
     }
 
@@ -61,8 +61,15 @@ final class CardActivationTask: CardSessionRunnable {
         }
 
         guard card.cardId.caseInsensitiveCompare(activationInput.cardId) == .orderedSame else {
-            completion(.failure(.underlying(error: VisaCardActivationError.wrongCard)))
+            completion(.failure(.underlying(error: VisaActivationError.wrongCard)))
             return
+        }
+
+        if let challengeToSign {
+            let challengeDataToSign = Data(hexString: challengeToSign)
+            signAuthorizationChallenge(challengeToSign: challengeDataToSign, in: session, completion: completion)
+        } else {
+            getActivationOrder(in: session, completion: completion)
         }
     }
 
@@ -74,29 +81,12 @@ final class CardActivationTask: CardSessionRunnable {
 // MARK: - Card Activation Flow
 
 private extension CardActivationTask {
-    func signAuthorizationChallenge(in session: CardSession, completion: @escaping CompletionHandler) {
-        guard let challengeToSign else {
-            loadOrderChallenge()
-            createWallet(in: session, completion: completion)
-            return
-        }
-
-        let attestationCommand = AttestCardKeyCommand(challenge: Data(hexString: challengeToSign))
+    func signAuthorizationChallenge(challengeToSign: Data, in session: CardSession, completion: @escaping CompletionHandler) {
+        let attestationCommand = AttestCardKeyCommand(challenge: challengeToSign)
         attestationCommand.run(in: session) { result in
             switch result {
             case .success(let response):
-                self.signedAuthorizationChallengeDelegate?.challengeSigned(
-                    signedChallenge: response.cardSignature,
-                    salt: response.salt
-                ) { [weak self] result in
-                    switch result {
-                    case .success(let success):
-                        self?.loadOrderChallenge()
-                    case .failure(let error):
-                        self?.taskCancellationError = .underlying(error: error)
-                    }
-                }
-                self.createWallet(in: session, completion: completion)
+                self.processSignedAuthorizationChallenge(signResponse: response, in: session, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -104,97 +94,24 @@ private extension CardActivationTask {
     }
 
     func createWallet(in session: CardSession, completion: @escaping CompletionHandler) {
-        let utils = VisaUtilities(isTestnet: false)
 
-        if let taskCancellationError {
-            completion(.failure(taskCancellationError))
-            return
-        }
-
-        guard let card = session.environment.card else {
-            completion(.failure(.missingPreflightRead))
-            return
-        }
-
-        if card.wallets.contains(where: { $0.curve == utils.mandatoryCurve }) {
-            createOTP(in: session, completion: completion)
-            return
-        }
-
-        let createWallet = CreateWalletTask(curve: utils.mandatoryCurve)
-        createWallet.run(in: session) { result in
-            switch result {
-            case .success:
-                self.createOTP(in: session, completion: completion)
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
+        // TODO: IOS-8569
     }
 
     func createOTP(in session: CardSession, completion: @escaping CompletionHandler) {
-        if let taskCancellationError {
-            completion(.failure(taskCancellationError))
-            return
-        }
-
-        let generateCommand = GenerateOTPCommand()
-        generateCommand.run(in: session) { result in
-            switch result {
-            case .success(let response):
-                self.rootOTP = response.rootOTP
-                self.waitForOrder(in: session, completion: completion)
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
+        // TODO: IOS-8571
     }
 
     func waitForOrder(in session: CardSession, completion: @escaping CompletionHandler) {
-        if let taskCancellationError {
-            completion(.failure(taskCancellationError))
-            return
-        }
-
-        if let orderToSign = orderPublisher.value {
-            signOrderWithCard(in: session, orderToSign: orderToSign, completion: completion)
-        } else {
-            guard orderSubscription == nil else {
-                return
-            }
-
-            orderSubscription = orderPublisher
-                .compactMap { $0 }
-                .sink(receiveValue: { [weak self] orderToSign in
-                    self?.signOrderWithCard(in: session, orderToSign: orderToSign, completion: completion)
-                    self?.orderSubscription = nil
-                })
-        }
+        // TODO: IOS-8572
     }
 }
 
 // MARK: - Order signing
 
 private extension CardActivationTask {
-    func setupAccessCode(in session: CardSession, completion: @escaping CompletionHandler) {}
-
-    func signOrderWithCard(in session: CardSession, orderToSign: String, completion: @escaping CompletionHandler) {
-        let dataToSign = ActivationOrderGenerator().generateOrder(using: orderToSign)
-
-        let attestCardCommand = AttestCardKeyCommand(challenge: dataToSign)
-        attestCardCommand.run(in: session) { result in
-            switch result {
-            case .success(let response):
-                self.signOrderWithWallet(
-                    in: session,
-                    dataToSign: dataToSign,
-                    signedOrderByCard: response,
-                    completion: completion
-                )
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
+    func signOrderWithCard(in session: CardSession, orderToSign: Data, completion: @escaping CompletionHandler) {
+        // TODO: IOS-8572
     }
 
     func signOrderWithWallet(
@@ -203,76 +120,59 @@ private extension CardActivationTask {
         signedOrderByCard: AttestCardKeyResponse,
         completion: @escaping CompletionHandler
     ) {
-        guard let card = session.environment.card else {
-            completion(.failure(.missingPreflightRead))
-            return
-        }
+        // TODO: IOS-8572
+    }
 
-        let utils = VisaUtilities(isTestnet: false)
-        guard let wallet = card.wallets.first(where: { $0.curve == utils.mandatoryCurve }) else {
-            completion(.failure(.underlying(error: VisaCardActivationError.missingWallet)))
-            return
-        }
-
-        let signCommand = SignHashCommand(hash: dataToSign, walletPublicKey: wallet.publicKey)
-        signCommand.run(in: session) { result in
-            switch result {
-            case .success(let signResponse):
-                guard let rootOTP = self.rootOTP else {
-                    completion(.failure(.underlying(error: VisaCardActivationError.missingRootOTP)))
-                    return
-                }
-
-                completion(.success(.init(
-                    signedOrderByCard: signResponse.signature,
-                    signedOrderByWallet: signedOrderByCard.cardSignature,
-                    rootOTP: rootOTP
-                )))
-            case .failure(let error):
-                completion(.failure(.underlying(error: error)))
-            }
-        }
+    func setupAccessCode(
+        signResponse: VisaCardActivationResponse,
+        in session: CardSession,
+        completion: @escaping CompletionHandler
+    ) {
+        // TODO: IOS-8569
     }
 }
 
-// MARK: - Order loading
+// MARK: - Order loading related
 
 private extension CardActivationTask {
-    func loadOrderChallenge() {
-        guard orderLoadingTask == nil else {
-            log("Order loading task already in progress, no need to create another one")
+    func processSignedAuthorizationChallenge(
+        signResponse: AttestCardKeyResponse,
+        in session: CardSession,
+        completion: @escaping CompletionHandler
+    ) {
+        guard let orderProvider else {
+            let missingDelegateError = VisaActivationError.taskMissingDelegate
+            taskCancellationError = .underlying(error: missingDelegateError)
+            completion(.failure(.underlying(error: missingDelegateError)))
             return
         }
 
-        orderLoadingTask = Task { [weak self] in
-            guard let self else { return }
-
-            do {
-                guard let orderToSign = try await activationOrderProvider?.provideActivationOrderForSign() else {
-                    throw VisaCardActivationError.missingActivationOrderProvider
-                }
-
-                orderPublisher.send(orderToSign)
-            } catch {
-                log("Failed to get data. Cancelling task")
-                taskCancellationError = .underlying(error: error)
-            }
-
-            orderLoadingTask = nil
+        orderProvider.getOrderForSignedChallenge(signedAuthorizationChallenge: signResponse) { [weak self] result in
+            self?.processActivationOrder(result)
         }
+        createWallet(in: session, completion: completion)
     }
-}
 
-public enum VisaCardActivationError: String, Error {
-    case wrongCard
-    case missingOrderDataToSign
-    case missingWallet
-    case missingActivationOrderProvider
-    case missingRootOTP
-}
+    func getActivationOrder(in session: CardSession, completion: @escaping CompletionHandler) {
+        guard let orderProvider else {
+            let missingDelegateError = VisaActivationError.taskMissingDelegate
+            taskCancellationError = .underlying(error: missingDelegateError)
+            completion(.failure(.underlying(error: missingDelegateError)))
+            return
+        }
 
-struct ActivationOrderGenerator {
-    func generateOrder(using orderInfo: String) -> Data {
-        orderInfo.data(using: .utf8) ?? Data()
+        orderProvider.getActivationOrder { [weak self] result in
+            self?.processActivationOrder(result)
+        }
+        createWallet(in: session, completion: completion)
+    }
+
+    func processActivationOrder(_ result: Result<CardActivationOrder, Error>) {
+        switch result {
+        case .success(let activationOrder):
+            orderPublisher.send(activationOrder)
+        case .failure(let error):
+            taskCancellationError = .underlying(error: error)
+        }
     }
 }
