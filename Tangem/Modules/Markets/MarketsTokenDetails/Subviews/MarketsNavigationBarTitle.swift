@@ -36,12 +36,12 @@ struct MarketsNavigationBarTitle: View {
                 .style(Fonts.Bold.body, color: Colors.Text.primary1)
                 .lineLimit(1)
                 .multilineTextAlignment(.center)
-                .animation(.easeInOut, value: state.titleOffset)
+                .animation(animation, value: state.titleOffset)
 
             ZStack {
                 Spacer()
                     .frame(height: state.titleOffset)
-                    .animation(.easeInOut, value: state.titleOffset)
+                    .animation(animation, value: state.titleOffset)
                 if let price, case .visible(let opacity) = state.priceVisibility {
                     Text(price)
                         .style(Fonts.Bold.caption1, color: Colors.Text.tertiary)
@@ -52,5 +52,9 @@ struct MarketsNavigationBarTitle: View {
                 }
             }
         }
+    }
+
+    private var animation: Animation {
+        .easeIn(duration: 0.15) // reduced to minimize animation lag on fast scrolling
     }
 }
