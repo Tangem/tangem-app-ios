@@ -47,6 +47,14 @@ enum AlertBuilder {
         return alert
     }
 
+    static func makeActivatedCardAlertController(okAction: @escaping (() -> Void), supportAction: @escaping (() -> Void), cancelAction: @escaping (() -> Void)) -> UIAlertController {
+        let alert = UIAlertController(title: Localization.securityAlertTitle, message: Localization.walletBeenActivatedMessage, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: Localization.thisIsMyWalletTitle, style: .default, handler: { _ in okAction() }))
+        alert.addAction(UIAlertAction(title: Localization.commonSupport, style: .default, handler: { _ in supportAction() }))
+        alert.addAction(UIAlertAction(title: Localization.commonCancel, style: .cancel, handler: { _ in cancelAction() }))
+        return alert
+    }
+
     static func makeOkErrorAlert(message: String, okAction: @escaping (() -> Void) = {}) -> AlertBinder {
         .init(alert: Alert(
             title: Text(Localization.commonError),

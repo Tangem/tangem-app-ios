@@ -301,6 +301,7 @@
 "feedback_preface_scan_failed" = "Please tell us what card or ring do you have";
 "feedback_preface_support" = "Hi support team,";
 "feedback_preface_tx_failed" = "Please tell us more about your issue. Every small detail can help.";
+"feedback_subject_pre_activated_wallet" = "Previously activated wallet";
 "feedback_subject_rate_negative" = "My suggestions";
 "feedback_subject_scan_failed" = "Can't scan a card/ring";
 "feedback_subject_support" = "Feedback";
@@ -616,6 +617,7 @@
 "scan_card_settings_button" = "Scan card or ring";
 "scan_card_settings_message" = "Scan the card or ring to change its settings. The changes will impact only the card or ring you've scanned and will not affect other devices tied to your wallet.";
 "scan_card_settings_title" = "Get your Tangem ready!";
+"security_alert_title" = "Security Alert";
 "send_additional_field_already_included" = "Already included in the entered address";
 "send_alert_fee_too_high_text" = "Your commission amount is %@ times higher than the recommended amount. Please review and adjust your custom settings.";
 "send_alert_fee_too_low_text" = "You specified a commission below the recommended amount, which could cause a delay in your transaction. Continue?";
@@ -836,6 +838,7 @@
 "swapping_to_title" = "You receive";
 "swapping_token_list_title" = "Choose token";
 "swapping_token_not_available" = "not available";
+"this_is_my_wallet_title" = "This is my wallet";
 "toast_balances_hidden" = "Balances hidden";
 "toast_balances_shown" = "Balances shown";
 "toast_undo" = "Undo";
@@ -903,6 +906,7 @@
 "voice_over_open_card_details" = "Open device details";
 "voice_over_open_new_wallet_connect_session" = "Scan QR code to open new WalletConnect session";
 "wallet_balance_missing_derivation" = "Scan card or ring";
+"wallet_been_activated_message" = "This wallet has already been activated earlier.\nIf it was done not by you please contact support.\nTangem never sells wallets along with the pre-generated access code.";
 "wallet_connect_alert_sign_message" = "Requesting to sign a message.\n\n%@";
 "wallet_connect_bnb_sign_message" = "Dapp %1$@, requesting to\nsign BNB transaction.\n\n%2$@";
 "wallet_connect_bnb_trade_order_message" = "Trade order for %1$@\nPrice: %2$@\nAmount to receive: %3$@\nAmount to pay: %4$@";
