@@ -666,6 +666,8 @@ private extension ExpressInteractor {
                 _swappingPair.value.destination = .loading
                 let destination = try await expressDestinationService.getDestination(source: wallet)
                 update(destination: destination)
+            } else {
+                swappingPairDidChange()
             }
 
             return nil

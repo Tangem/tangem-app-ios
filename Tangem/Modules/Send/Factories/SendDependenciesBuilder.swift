@@ -260,6 +260,14 @@ struct SendDependenciesBuilder {
         CommonSendBaseDataBuilder(input: input, walletModel: walletModel, emailDataProvider: userWalletModel)
     }
 
+    func makeSendFinishAnalyticsLogger(sendFeeInput: SendFeeInput) -> SendFinishAnalyticsLogger {
+        CommonSendFinishAnalyticsLogger(
+            tokenItem: walletModel.tokenItem,
+            feeAnalyticsParameterBuilder: makeFeeAnalyticsParameterBuilder(),
+            sendFeeInput: sendFeeInput
+        )
+    }
+
     // MARK: - Staking
 
     func makeStakingModel(stakingManager: some StakingManager) -> StakingModel {
@@ -363,6 +371,17 @@ struct SendDependenciesBuilder {
         CommonStakingBaseDataBuilder(input: input, walletModel: walletModel, emailDataProvider: userWalletModel)
     }
 
+    func makeStakingFinishAnalyticsLogger(
+        actionType: SendFlowActionType,
+        stakingValidatorsInput: StakingValidatorsInput
+    ) -> SendFinishAnalyticsLogger {
+        StakingFinishAnalyticsLogger(
+            tokenItem: walletModel.tokenItem,
+            actionType: actionType,
+            stakingValidatorsInput: stakingValidatorsInput
+        )
+    }
+
     // MARK: - Onramp
 
     func makeOnrampModel(onrampManager: some OnrampManager, onrampRepository: OnrampRepository) -> OnrampModel {
@@ -416,5 +435,9 @@ struct SendDependenciesBuilder {
 
     func makeOnrampNotificationManager(input: OnrampNotificationManagerInput, delegate: NotificationTapDelegate) -> OnrampNotificationManager {
         CommonOnrampNotificationManager(input: input, delegate: delegate)
+    }
+
+    func makeOnrampFinishAnalyticsLogger(onrampProvidersInput: OnrampProvidersInput) -> SendFinishAnalyticsLogger {
+        OnrampFinishAnalyticsLogger(tokenItem: walletModel.tokenItem, onrampProvidersInput: onrampProvidersInput)
     }
 }
