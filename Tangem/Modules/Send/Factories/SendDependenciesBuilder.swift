@@ -384,11 +384,16 @@ struct SendDependenciesBuilder {
 
     // MARK: - Onramp
 
-    func makeOnrampModel(onrampManager: some OnrampManager, onrampRepository: OnrampRepository) -> OnrampModel {
+    func makeOnrampModel(
+        onrampManager: some OnrampManager,
+        onrampDataRepository: some OnrampDataRepository,
+        onrampRepository: some OnrampRepository
+    ) -> OnrampModel {
         OnrampModel(
             userWalletId: userWalletModel.userWalletId.stringValue,
             walletModel: walletModel,
             onrampManager: onrampManager,
+            onrampDataRepository: onrampDataRepository,
             onrampRepository: onrampRepository
         )
     }

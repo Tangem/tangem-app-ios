@@ -64,10 +64,6 @@ extension CommonOnrampRepository: OnrampRepository {
 
         preference.send(newPreference)
     }
-
-    var preferenceDidChangedPublisher: AnyPublisher<Void, Never> {
-        preference.map { _ in () }.eraseToAnyPublisher()
-    }
 }
 
 // MARK: - Mapping
