@@ -179,14 +179,14 @@ private extension ActionButtonsViewModel {
 
     func updateSellButtonState(_ exchangeServiceState: ExchangeServiceState) {
         TangemFoundation.runTask(in: self) { @MainActor viewModel in
-            
+
             if let disabledLocalizedReason = viewModel.userWalletModel.config.getDisabledLocalizedReason(
                 for: .exchange
             ) {
                 viewModel.sellActionButtonViewModel.updateState(to: .disabled(message: disabledLocalizedReason))
                 return
             }
-            
+
             switch exchangeServiceState {
             case .initializing: viewModel.sellActionButtonViewModel.updateState(to: .initial)
             case .initialized: viewModel.sellActionButtonViewModel.updateState(to: .idle)
