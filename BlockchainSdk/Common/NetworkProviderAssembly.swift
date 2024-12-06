@@ -38,7 +38,7 @@ struct NetworkProviderAssembly {
                 networkConfiguration: input.networkConfig
             )
         case .clore(let url):
-            return BlockBookUtxoProvider(
+            return BlockBookUTXOProvider(
                 blockchain: input.blockchain,
                 blockBookConfig: CloreBlockBookConfig(urlNode: url),
                 networkConfiguration: input.networkConfig
