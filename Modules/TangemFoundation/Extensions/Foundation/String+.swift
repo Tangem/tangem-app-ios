@@ -8,8 +8,12 @@
 
 import Foundation
 
-public extension String {
+public extension StringProtocol {
     func caseInsensitiveContains(_ other: some StringProtocol) -> Bool {
         return range(of: other, options: .caseInsensitive) != nil
+    }
+
+    func caseInsensitiveHasPrefix(_ prefix: String) -> Bool {
+        return range(of: prefix, options: [.anchored, .caseInsensitive]) != nil
     }
 }
