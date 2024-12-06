@@ -151,7 +151,7 @@ final class AuthViewModel: ObservableObject {
 
 extension AuthViewModel {
     func openMail() {
-        coordinator?.openMail(with: failedCardScanTracker, recipient: EmailConfig.default.recipient)
+        coordinator?.openMail(with: BaseDataCollector(), recipient: EmailConfig.default.recipient)
     }
 
     func openOnboarding(with input: OnboardingInput) {

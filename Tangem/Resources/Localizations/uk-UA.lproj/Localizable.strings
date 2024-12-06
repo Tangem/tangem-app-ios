@@ -301,6 +301,7 @@
 "feedback_preface_scan_failed" = "Розкажіть, будь ласка, яку картку або кільце ви маєте?";
 "feedback_preface_support" = "Привіт, команда підтримки,";
 "feedback_preface_tx_failed" = "Будь ласка, розкажіть нам більше про вашу проблему. Кожна дрібниця може допомогти.";
+"feedback_subject_pre_activated_wallet" = "Previously activated wallet";
 "feedback_subject_rate_negative" = "Мої пропозиції";
 "feedback_subject_scan_failed" = "Не вдається відсканувати картку/кільце";
 "feedback_subject_support" = "Звернення в підтримку";
@@ -616,6 +617,7 @@
 "scan_card_settings_button" = "Сканувати";
 "scan_card_settings_message" = "Відскануйте картку або кільце, щоб змінити її налаштування. Зміни торкнуться лише тої картки або кільця, які ви відсканували, і не вплинуть на інші пристрої, прив'язані до вашого гаманця.";
 "scan_card_settings_title" = "Підготуйте свій Tangem!";
+"security_alert_title" = "Security Alert";
 "send_additional_field_already_included" = "Вже включено до введеної адреси";
 "send_alert_fee_too_high_text" = "Сума комісії у %@ разів перевищує рекомендовану. Переконайтеся, що вказана комісія вірна.";
 "send_alert_fee_too_low_text" = "Ви вказали комісію нижче рекомендованої, це може спричинити затримку вашої транзакції. Продовжити?";
@@ -836,6 +838,7 @@
 "swapping_to_title" = "Ви отримаєте";
 "swapping_token_list_title" = "Оберіть токен";
 "swapping_token_not_available" = "недоступно";
+"this_is_my_wallet_title" = "This is my wallet";
 "toast_balances_hidden" = "Баланси приховано";
 "toast_balances_shown" = "Баланси показано";
 "toast_undo" = "Скасувати";
@@ -903,6 +906,7 @@
 "voice_over_open_card_details" = "Відкрити деталі пристрою";
 "voice_over_open_new_wallet_connect_session" = "Відскануйте QR-код, щоб відкрити новий сеанс WalletConnect";
 "wallet_balance_missing_derivation" = "Відскануйте картку або кільце";
+"wallet_been_activated_message" = "This wallet has already been activated earlier.\nIf it was done not by you please contact support.\nTangem never sells wallets along with the pre-generated access code.";
 "wallet_connect_alert_sign_message" = "Запит на підпис повідомлення.\n\n%@";
 "wallet_connect_bnb_sign_message" = "Dapp %1$@, запит на\nпідпис транзакції BNB.\n\n%2$@";
 "wallet_connect_bnb_trade_order_message" = "Торговий ордер на %1$@\nЦіна: %2$@\nСума до отримання: %3$@\nСума до сплати: %4$@";

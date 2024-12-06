@@ -8,11 +8,7 @@
 
 import Foundation
 
-class FailedCardScanTracker: EmailDataCollector, FailedScanTrackable {
-    var logData: Data? {
-        ("----------\n" + DeviceInfoProvider.info()).data(using: .utf8)
-    }
-
+class FailedCardScanTracker: FailedScanTrackable {
     var shouldDisplayAlert: Bool {
         numberOfFailedAttempts >= 2
     }
