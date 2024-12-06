@@ -212,7 +212,13 @@ lane :refresh_dsyms do |options|
     version: options[:version],
     build_number: options[:build]
   )
-  upload_symbols_to_crashlytics(app_id: ENV["PRODUCTION_SCHEME"])
+
+  # Custom `binary_path` is required for SPM installations, see
+  # https://firebase.blog/posts/2021/09/uploading-dsym-files-to-crashlytics-with-fastlane/ for details
+  upload_symbols_to_crashlytics(
+    app_id: ENV["PRODUCTION_SCHEME"],
+    binary_path: "./Utilites/upload-symbols"
+  )
   clean_build_artifacts
 end
 
@@ -318,8 +324,11 @@ private_lane :upload_dsyms do |options|
   filename = options[:filename].chomp(".ipa")
   path = BUILD_PATH + filename + ".app.dSYM.zip"
 
+  # Custom `binary_path` is required for SPM installations, see
+  # https://firebase.blog/posts/2021/09/uploading-dsym-files-to-crashlytics-with-fastlane/ for details
   upload_symbols_to_crashlytics(
     app_id: options[:app_id],
+    binary_path: "./Utilites/upload-symbols",
     dsym_path: path
   )
 end
