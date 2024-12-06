@@ -88,7 +88,6 @@ final class VisaOnboardingTangemWalletConfirmationViewModel: ObservableObject {
 
 private extension VisaOnboardingTangemWalletConfirmationViewModel {
     func signData(_ dataToSign: Data) async throws {
-
         let task = VisaCustomerWalletApproveTask(targetAddress: targetWalletAddress, approveData: dataToSign)
         let signResponse: SignHashResponse = try await withCheckedThrowingContinuation { continuation in
             tangemSdk.startSession(with: task) { result in
