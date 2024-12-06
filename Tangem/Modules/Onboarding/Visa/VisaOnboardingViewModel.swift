@@ -134,7 +134,7 @@ private extension VisaOnboardingViewModel {
         case .welcome:
             goToStep(.accessCode)
         case .accessCode:
-            break
+            goToStep(.saveUserWallet)
         case .saveUserWallet, .pushNotifications:
             break
         case .success:
@@ -211,6 +211,16 @@ extension VisaOnboardingViewModel: VisaOnboardingAccessCodeSetupDelegate {
         try visaActivationManager.saveAccessCode(accessCode: accessCode)
         try await visaActivationManager.startActivation()
     }
+}
+
+private extension VisaOnboardingViewModel {
+    func proceedToApproveWalletSelection() {
+        let searchUtility = VisaWalletPublicKeySearchUtility(isTestnet: false)
+        let unlockedUserWalletModels = userWalletRepository.models.filter { !$0.isUserWalletLocked }
+    }
+
+    @MainActor
+    func navigateToApproveWalletSelection() {}
 }
 
 #if DEBUG
