@@ -18,7 +18,7 @@ public enum VisaActivationError: Error {
     case taskMissingDelegate
     case underlyingError(Error)
 
-    var description: String {
+    public var description: String {
         switch self {
         case .notImplemented: return "Not implemented"
         case .missingAccessCode: return "Missing access code"
