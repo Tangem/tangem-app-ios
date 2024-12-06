@@ -79,6 +79,11 @@ extension ActionButtonsSwapCoordinator: ActionButtonsSwapRoutable {
             popToRootAction: popToRootAction
         )
     }
+
+    func dismiss() {
+        ActionButtonsAnalyticsService.trackCloseButtonTap(source: .swap)
+        dismissAction(())
+    }
 }
 
 // MARK: - Factory methods

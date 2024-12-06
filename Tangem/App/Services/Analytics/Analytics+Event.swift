@@ -1,5 +1,5 @@
 //
-//  AnalyticsEvent.swift
+//  Analytics+Event.swift
 //  Tangem
 //
 //  Created by Andrew Son on 24/10/22.
@@ -338,5 +338,20 @@ extension Analytics {
         case manageTokensCustomTokenName = "[Manage Tokens / Custom] Custom Token Name"
         case manageTokensCustomTokenSymbol = "[Manage Tokens / Custom] Custom Token Symbol"
         case manageTokensCustomTokenDecimals = "[Manage Tokens / Custom] Custom Token Decimals"
+
+        // MARK: - Action buttons
+
+        case actionButtonsBuyButton = "[Action Buttons] Button - Buy"
+        case actionButtonsSellButton = "[Action Buttons] Button - Sell"
+        case actionButtonsSwapButton = "[Action Buttons] Button - Swap"
+        case actionButtonsSwapScreenOpened = "[Action Buttons] Swap Screen Opened"
+        case actionButtonsBuyScreenOpened = "[Action Buttons] Buy Screen Opened"
+        case actionButtonsSellScreenOpened = "[Action Buttons] Sell Screen Opened"
+        case actionButtonsSellTokenClicked = "[Action Buttons] Sell Token Clicked"
+        case actionButtonsBuyTokenClicked = "[Action Buttons] Buy Token Clicked"
+        case actionButtonsSwapTokenClicked = "[Action Buttons] Swap Token Clicked"
+        case actionButtonsReceiveTokenClicked = "[Action Buttons] Receive Token Clicked"
+        case actionButtonsRemoveButtonClicked = "[Action Buttons] Remove Button Clicked"
+        case actionButtonsButtonClose = "[Action Buttons] Button - Close"
     }
 }

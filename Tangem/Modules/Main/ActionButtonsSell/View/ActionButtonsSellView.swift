@@ -20,6 +20,9 @@ struct ActionButtonsSellView: View {
                     CloseButton(dismiss: { viewModel.handleViewAction(.close) })
                 }
             }
+            .onAppear {
+                viewModel.handleViewAction(.onAppear)
+            }
     }
 
     @ViewBuilder

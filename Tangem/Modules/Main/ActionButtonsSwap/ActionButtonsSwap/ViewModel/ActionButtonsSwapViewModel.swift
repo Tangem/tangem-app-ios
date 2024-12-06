@@ -123,13 +123,12 @@ final class ActionButtonsSwapViewModel: ObservableObject {
 
     func handleViewAction(_ action: Action) {
         switch action {
-        case .close:
-            coordinator?.dismiss()
+        case .onAppear:
+            ActionButtonsAnalyticsService.trackScreenOpened(.swap)
         case .didTapToken(let token):
             Task { @MainActor in
                 if sourceToken == nil {
-                    sourceToken = token
-                    await updatePairs(for: token, userWalletModel: userWalletModel)
+                    await selectSourceToken(token)
                 } else {
                     selectDestinationToken(token)
                 }
@@ -159,7 +158,17 @@ final class ActionButtonsSwapViewModel: ObservableObject {
         }
     }
 
+    @MainActor
+    private func selectSourceToken(_ token: ActionButtonsTokenSelectorItem) async {
+        ActionButtonsAnalyticsService.trackTokenClicked(.swap, tokenSymbol: token.symbol)
+
+        sourceToken = token
+        await updatePairs(for: token, userWalletModel: userWalletModel)
+    }
+
     private func selectDestinationToken(_ token: ActionButtonsTokenSelectorItem) {
+        ActionButtonsAnalyticsService.trackReceiveTokenClicked(tokenSymbol: token.symbol)
+
         destinationToken = token
         tokenSelectorState = .readyToSwap
 
@@ -188,7 +197,7 @@ extension ActionButtonsSwapViewModel {
     }
 
     enum Action {
-        case close
+        case onAppear
         case didTapToken(ActionButtonsTokenSelectorItem)
     }
 }
