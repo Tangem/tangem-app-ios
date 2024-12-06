@@ -32,13 +32,37 @@ extension WalletModel {
         availableBalance.fiat
     }
 
+    var isSuccessfullyLoaded: Bool {
+        let isStakingSuccessfullyLoaded = stakingManager?.state.isSuccessfullyLoaded ?? true
+        return state.isSuccessfullyLoaded && isStakingSuccessfullyLoaded
+    }
+
+    var isLoading: Bool {
+        let isStakingLoading = stakingManager?.state.isLoading ?? false
+        return state.isLoading || isStakingLoading
+    }
+
     var totalBalance: Balance {
         let cryptoBalance: Decimal? = {
             switch (availableBalance.crypto, stakedBalance.crypto) {
-            case (.none, _): nil
-            // What we have to do if we have only blocked balance?
-            case (.some(let available), .none): available
-            case (.some(let available), .some(let blocked)): available + blocked
+            case (.none, _):
+                return nil
+            case (.some(let available), .none):
+                // staking unsupported
+                guard let stakingManager else {
+                    return available
+                }
+
+                // no staked balance
+                if stakingManager.state.isSuccessfullyLoaded {
+                    return available
+                }
+
+                // staking error
+                return nil
+
+            case (.some(let available), .some(let blocked)):
+                return available + blocked
             }
         }()
 
@@ -74,7 +98,7 @@ extension WalletModel {
     }
 
     var stakedRewards: Balance {
-        let rewardsToClaim = stakingManagerState.balances?.rewards().sum()
+        let rewardsToClaim = stakingManager?.balances?.rewards().sum()
         let fiatBalance: Decimal? = {
             guard let rewardsToClaim, let currencyId = tokenItem.currencyId else {
                 return nil
@@ -107,7 +131,7 @@ extension WalletModel {
     }
 
     private var stakedBalance: Balance {
-        let stakingBalance = stakingManagerState.balances?.blocked().sum()
+        let stakingBalance = stakingManager?.balances?.blocked().sum()
         let fiatBalance: Decimal? = {
             guard let stakingBalance, let currencyId = tokenItem.currencyId else {
                 return nil
@@ -120,7 +144,7 @@ extension WalletModel {
     }
 
     private var stakedWithPendingBalance: Balance {
-        let stakingBalance = stakingManagerState.balances?.stakes().sum()
+        let stakingBalance = stakingManager?.balances?.stakes().sum()
         let fiatBalance: Decimal? = {
             guard let stakingBalance, let currencyId = tokenItem.currencyId else {
                 return nil

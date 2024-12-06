@@ -11,7 +11,5 @@ import Foundation
 enum TokenItemExpressState: Hashable {
     case available
     case unavailable
-    case loading
-    case failedToLoadInfo(String)
     case notLoaded
 }

@@ -120,7 +120,11 @@ extension MarketsTokenDetailsCoordinator {
             )
         }
 
-        receiveBottomSheetViewModel = .init(tokenItem: walletModel.tokenItem, addressInfos: infos)
+        receiveBottomSheetViewModel = .init(
+            tokenItem: walletModel.tokenItem,
+            addressInfos: infos,
+            hasMemo: walletModel.tokenItem.blockchain.hasMemo
+        )
     }
 
     func openBuyCryptoIfPossible(for walletModel: WalletModel, with userWalletModel: UserWalletModel) {
@@ -166,7 +170,8 @@ extension MarketsTokenDetailsCoordinator {
         let options = SendCoordinator.Options(
             walletModel: walletModel,
             userWalletModel: userWalletModel,
-            type: .onramp
+            type: .onramp,
+            source: .markets
         )
         coordinator.start(with: options)
         sendCoordinator = coordinator

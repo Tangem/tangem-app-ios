@@ -21,6 +21,10 @@ extension Publisher {
         }
     }
 
+    func mapToValue<Value>(_ value: Value) -> Publishers.Map<Self, Value> {
+        map { _ in value }
+    }
+
     func mapToVoid() -> Publishers.Map<Self, Void> {
         map { _ in () }
     }

@@ -229,14 +229,14 @@ extension KaspaTransactionBuilder {
         let resultCommit = try buildCommitTransactionKRC20(transaction: transaction, token: token)
 
         // Reveal
-        guard let revealFee = transaction.fee.parameters as? KaspaKRC20.RevealTransactionFeeParameter else {
+        guard let feeParams = transaction.fee.parameters as? KaspaKRC20.TokenTransactionFeeParams else {
             throw WalletError.failedToBuildTx
         }
 
         let resultReveal = try buildRevealTransaction(
             sourceAddress: transaction.sourceAddress,
             params: resultCommit.params,
-            fee: .init(revealFee.amount)
+            fee: .init(feeParams.revealFee)
         )
 
         return (
@@ -253,7 +253,7 @@ extension KaspaTransactionBuilder {
         )
     }
 
-    public func buildCommitTransactionKRC20(transaction: Transaction, token: Token, includeFee: Bool = true) throws -> KaspaKRC20.CommitTransction {
+    public func buildCommitTransactionKRC20(transaction: Transaction, token: Token, includeFee: Bool = true) throws -> KaspaKRC20.CommitTransaction {
         let availableInputValue = availableAmount()
 
         // We check there are enough funds to cover the commission,
@@ -268,22 +268,27 @@ extension KaspaTransactionBuilder {
             throw WalletError.failedToBuildTx
         }
 
-        // We determine the commission value for reveal transaction,
-        var revealFeeParams: KaspaKRC20.RevealTransactionFeeParameter?
+        let commitFeeAmount: Amount
+        let revealFeeAmount: Amount?
 
         // The includeFee flag determines whether we already know the commission value
         // or the method is called for preliminary calculation mass
         if includeFee {
             // if the commission is included,
             // but the additional fee parameter KaspaKRC20.RevealTransactionFeeParameter is missing - it is impossible to build a transaction
-            guard let revealFee = transaction.fee.parameters as? KaspaKRC20.RevealTransactionFeeParameter else {
+            guard let feeParams = transaction.fee.parameters as? KaspaKRC20.TokenTransactionFeeParams else {
                 throw WalletError.failedToBuildTx
             }
-            revealFeeParams = revealFee
+
+            commitFeeAmount = feeParams.commitFee
+            revealFeeAmount = feeParams.revealFee
+        } else {
+            commitFeeAmount = transaction.fee.amount
+            revealFeeAmount = nil
         }
 
         // if we don't know the commission, commission for reveal transaction will be set to zero
-        let feeEstimationRevealTransactionValue = ((revealFeeParams?.amount.value ?? 0) * blockchain.decimalValue).rounded()
+        let feeEstimationRevealTransactionValue = ((revealFeeAmount?.value ?? 0) * blockchain.decimalValue).rounded()
         let dust = (Decimal(0.2) * blockchain.decimalValue).rounded()
 
         let tokenAmount = transaction.amount.value * tokenDecimalValue
@@ -299,7 +304,7 @@ extension KaspaTransactionBuilder {
         let redeemScript = KaspaKRC20.RedeemScript(publicKey: walletPublicKey.blockchainKey, envelope: envelope)
         let targetOutputAmount = dust.uint64Value + feeEstimationRevealTransactionValue.uint64Value
 
-        // 1st output of the Commit transction
+        // 1st output of the Commit transaction
         var outputs = [
             KaspaOutput(
                 amount: targetOutputAmount,
@@ -309,9 +314,9 @@ extension KaspaTransactionBuilder {
 
         let sourceAddressScript = try scriptPublicKey(address: transaction.sourceAddress).hexString.lowercased()
 
-        // 2nd output of the Commit transction, create it if we still have funds that need to be returned to the source address.
+        // 2nd output of the Commit transaction, create it if we still have funds that need to be returned to the source address.
         // Change = all available funds - (dust + estimated reveal transaction fee + estimated commit transaction fee)
-        if let change = try change(amount: dust + feeEstimationRevealTransactionValue, fee: (transaction.fee.amount.value * blockchain.decimalValue).rounded(), unspentOutputs: unspentOutputs) {
+        if let change = try change(amount: dust + feeEstimationRevealTransactionValue, fee: (commitFeeAmount.value * blockchain.decimalValue).rounded(), unspentOutputs: unspentOutputs) {
             outputs.append(
                 KaspaOutput(
                     amount: change,
@@ -320,7 +325,7 @@ extension KaspaTransactionBuilder {
             )
         }
 
-        // Build Commmit transaction
+        // Build Commit transaction
         let commitTransaction = KaspaTransaction(inputs: unspentOutputs, outputs: outputs)
 
         // Prepare hashes for signing
@@ -338,15 +343,16 @@ extension KaspaTransactionBuilder {
             throw WalletError.failedToBuildTx
         }
 
-        // Return CommitTransction structure, that includes IncompleteTokenTransactionParams to persist if the Reveal transaction fails
-        return KaspaKRC20.CommitTransction(
+        // Return CommitTransaction structure, that includes IncompleteTokenTransactionParams to persist if the Reveal transaction fails
+        return KaspaKRC20.CommitTransaction(
             transaction: commitTransaction,
             hashes: commitHashes,
             redeemScript: redeemScript,
             sourceAddress: transaction.sourceAddress,
             params: .init(
                 transactionId: txid.hexadecimal,
-                amount: targetOutputAmount,
+                amount: transaction.amount.value,
+                targetOutputAmount: targetOutputAmount,
                 envelope: envelope
             )
         )
@@ -357,7 +363,12 @@ extension KaspaTransactionBuilder {
         let redeemScript = KaspaKRC20.RedeemScript(publicKey: walletPublicKey.blockchainKey, envelope: params.envelope)
 
         let utxo = [
-            BitcoinUnspentOutput(transactionHash: params.transactionId, outputIndex: 0, amount: params.amount, outputScript: redeemScript.redeemScriptHash.hexadecimal),
+            BitcoinUnspentOutput(
+                transactionHash: params.transactionId,
+                outputIndex: 0,
+                amount: params.targetOutputAmount,
+                outputScript: redeemScript.redeemScriptHash.hexadecimal
+            ),
         ]
 
         let change = try change(amount: 0, fee: (fee.amount.value * blockchain.decimalValue).rounded(), unspentOutputs: utxo)!

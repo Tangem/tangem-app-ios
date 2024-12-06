@@ -52,7 +52,7 @@ private enum UtorgEndpoint: String {
 
 class UtorgService {
     @Injected(\.keysManager) var keysManager: KeysManager
-    @Published private var initialized: Bool = false
+    @Published private var initializeState: ExchangeServiceState = .initializing
 
     private var supportedCurrencies = [UtorgCurrency]()
     private let supportedBlockchains = SupportedBlockchains.all
@@ -84,7 +84,7 @@ class UtorgService {
 }
 
 extension UtorgService: ExchangeService {
-    var initializationPublisher: Published<Bool>.Publisher { $initialized }
+    var initializationPublisher: Published<ExchangeServiceState>.Publisher { $initializeState }
 
     var successCloseUrl: String { "https://success.tangem.com" }
 
@@ -129,7 +129,7 @@ extension UtorgService: ExchangeService {
     }
 
     func initialize() {
-        if initialized {
+        if initializeState == .initialized {
             return
         }
 
@@ -137,10 +137,11 @@ extension UtorgService: ExchangeService {
             guard let self else { return }
             do {
                 try await loadCurrencies()
-                initialized = true
+                initializeState = .initialized
                 try await setSuccessURL()
             } catch {
                 AppLog.shared.debug("[Utorg] Failed to initialize Utorg service. Error: \(error)")
+                initializeState = .failed(.networkError)
             }
         }
     }

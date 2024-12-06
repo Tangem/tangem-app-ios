@@ -15,21 +15,23 @@ struct SendFinishStepBuilder {
 
     func makeSendFinishStep(
         input: SendFinishInput,
-        actionType: SendFlowActionType,
+        sendFinishAnalyticsLogger: SendFinishAnalyticsLogger,
         sendDestinationCompactViewModel: SendDestinationCompactViewModel?,
         sendAmountCompactViewModel: SendAmountCompactViewModel?,
         onrampAmountCompactViewModel: OnrampAmountCompactViewModel?,
         stakingValidatorsCompactViewModel: StakingValidatorsCompactViewModel?,
-        sendFeeCompactViewModel: SendFeeCompactViewModel?
+        sendFeeCompactViewModel: SendFeeCompactViewModel?,
+        onrampStatusCompactViewModel: OnrampStatusCompactViewModel?
     ) -> ReturnValue {
         let viewModel = makeSendFinishViewModel(
             input: input,
-            actionType: actionType,
+            sendFinishAnalyticsLogger: sendFinishAnalyticsLogger,
             sendDestinationCompactViewModel: sendDestinationCompactViewModel,
             sendAmountCompactViewModel: sendAmountCompactViewModel,
             onrampAmountCompactViewModel: onrampAmountCompactViewModel,
             stakingValidatorsCompactViewModel: stakingValidatorsCompactViewModel,
-            sendFeeCompactViewModel: sendFeeCompactViewModel
+            sendFeeCompactViewModel: sendFeeCompactViewModel,
+            onrampStatusCompactViewModel: onrampStatusCompactViewModel
         )
 
         let step = SendFinishStep(viewModel: viewModel)
@@ -43,21 +45,23 @@ struct SendFinishStepBuilder {
 private extension SendFinishStepBuilder {
     func makeSendFinishViewModel(
         input: SendFinishInput,
-        actionType: SendFlowActionType,
+        sendFinishAnalyticsLogger: SendFinishAnalyticsLogger,
         sendDestinationCompactViewModel: SendDestinationCompactViewModel?,
         sendAmountCompactViewModel: SendAmountCompactViewModel?,
         onrampAmountCompactViewModel: OnrampAmountCompactViewModel?,
         stakingValidatorsCompactViewModel: StakingValidatorsCompactViewModel?,
-        sendFeeCompactViewModel: SendFeeCompactViewModel?
+        sendFeeCompactViewModel: SendFeeCompactViewModel?,
+        onrampStatusCompactViewModel: OnrampStatusCompactViewModel?
     ) -> SendFinishViewModel {
         SendFinishViewModel(
-            settings: .init(tokenItem: walletModel.tokenItem, actionType: actionType),
             input: input,
+            sendFinishAnalyticsLogger: sendFinishAnalyticsLogger,
             sendDestinationCompactViewModel: sendDestinationCompactViewModel,
             sendAmountCompactViewModel: sendAmountCompactViewModel,
             onrampAmountCompactViewModel: onrampAmountCompactViewModel,
             stakingValidatorsCompactViewModel: stakingValidatorsCompactViewModel,
-            sendFeeCompactViewModel: sendFeeCompactViewModel
+            sendFeeCompactViewModel: sendFeeCompactViewModel,
+            onrampStatusCompactViewModel: onrampStatusCompactViewModel
         )
     }
 }

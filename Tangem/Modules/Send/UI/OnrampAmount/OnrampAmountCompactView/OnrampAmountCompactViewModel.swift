@@ -46,8 +46,17 @@ class OnrampAmountCompactViewModel: ObservableObject {
 private extension OnrampAmountCompactViewModel {
     private func bind(onrampAmountInput: OnrampAmountInput, onrampProvidersInput: OnrampProvidersInput) {
         onrampAmountInput
+            .amountPublisher
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, amount in
+                viewModel.decimalNumberTextFieldViewModel.update(value: amount)
+            }
+            .store(in: &bag)
+
+        onrampAmountInput
             .fiatCurrencyPublisher
-            .compactMap { $0.value }
+            .compactMap { $0 }
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, currency in

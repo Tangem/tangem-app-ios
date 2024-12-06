@@ -170,7 +170,7 @@ struct ExpressAPIMapper {
     func mapToOnrampPaymentMethod(response: ExpressDTO.Onramp.PaymentMethod) -> OnrampPaymentMethod? {
         let method = OnrampPaymentMethod(id: response.id, name: response.name, image: response.image)
 
-        if method.type == .googlePay {
+        guard OnrampPaymentMethodsFilter().isSupported(paymentMethod: method) else {
             return nil
         }
 
@@ -215,7 +215,7 @@ struct ExpressAPIMapper {
             throw ExpressAPIMapperError.mapToDecimalError(codedData.fromAmount)
         }
 
-        fromAmount /= pow(10, 2)
+        fromAmount /= pow(10, codedData.fromPrecision)
 
         return OnrampRedirectData(
             txId: response.txId,
@@ -231,7 +231,7 @@ struct ExpressAPIMapper {
             throw ExpressAPIMapperError.mapToDecimalError(response.fromAmount)
         }
 
-        fromAmount /= pow(10, 2)
+        fromAmount /= pow(10, response.fromPrecision)
 
         let toAmount = response.toAmount
             .flatMap(Decimal.init)

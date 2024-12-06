@@ -28,12 +28,14 @@ struct OnrampProvidersView: View {
             }
         }
         .background(Colors.Background.primary)
+        .navigationBarHidden(true)
+        .onAppear(perform: viewModel.onAppear)
     }
 
     private var headerView: some View {
         BottomSheetHeaderView(
             title: Localization.expressChooseProvidersTitle,
-            subtitle: Localization.expressChooseProvidersSubtitle,
+            subtitle: Localization.onrampChooseProviderTitleHint,
             leading: {
                 CloseButton(dismiss: viewModel.closeView)
             }

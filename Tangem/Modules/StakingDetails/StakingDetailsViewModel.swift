@@ -79,7 +79,7 @@ final class StakingDetailsViewModel: ObservableObject {
 
     func onAppear() {
         refresh()
-        let balances = stakingManager.state.balances.flatMap { String($0.count) } ?? String(0)
+        let balances = stakingManager.balances.flatMap { String($0.count) } ?? String(0)
         Analytics.log(
             event: .stakingInfoScreenOpened,
             params: [

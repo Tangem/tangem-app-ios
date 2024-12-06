@@ -182,6 +182,18 @@ private extension CommonSendNotificationManager {
     }
 
     func updateFeeInclusionEvent(isFeeIncluded: Bool, feeCryptoValue: Decimal) {
+        let isAmountIsLessThanRentFeeNotificationVisible = notificationInputsSubject.value.contains(where: { input in
+            guard let event = input.settings.event as? ValidationErrorEvent else {
+                return false
+            }
+            if case .remainingAmountIsLessThanRentExtemption = event {
+                return true
+            }
+            return false
+        })
+        guard !isAmountIsLessThanRentFeeNotificationVisible else {
+            return
+        }
         if isFeeIncluded {
             let feeFiatValue = feeTokenItem.currencyId.flatMap { BalanceConverter().convertToFiat(feeCryptoValue, currencyId: $0) }
 
@@ -194,13 +206,17 @@ private extension CommonSendNotificationManager {
                 fiatAmountFormatted: fiatAmountFormatted
             ))
         } else {
-            hideAllNotification { event in
-                if case .feeWillBeSubtractFromSendingAmount = event {
-                    return true
-                }
+            hideFeeWillBeSubtractedNotification()
+        }
+    }
 
-                return false
+    private func hideFeeWillBeSubtractedNotification() {
+        hideAllNotification { event in
+            if case .feeWillBeSubtractFromSendingAmount = event {
+                return true
             }
+
+            return false
         }
     }
 }
@@ -234,6 +250,9 @@ private extension CommonSendNotificationManager {
             let validationErrorEvent = factory.mapToValidationErrorEvent(validationError)
 
             switch validationErrorEvent {
+            case .remainingAmountIsLessThanRentExtemption:
+                hideFeeWillBeSubtractedNotification()
+                fallthrough
             case .dustRestriction,
                  .insufficientBalance,
                  .insufficientBalanceForFee,
