@@ -61,7 +61,7 @@ class RestakingModel {
     }
 }
 
-// MARK: - UnstakingModelStateProvider
+// MARK: - RestakingModelStateProvider
 
 extension RestakingModel: RestakingModelStateProvider {
     var stakingAction: Action {
