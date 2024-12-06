@@ -37,6 +37,11 @@ struct APIKeysInfoProvider {
                 headerName: Constants.xApiKeyHeaderName,
                 headerValue: config.chiaTangemApiKeys.mainnetApiKey
             )
+        case .tangemChia3:
+            return .init(
+                headerName: Constants.xApiKeyHeaderName,
+                headerValue: config.chiaTangemApiKeys.mainnetApiKey
+            )
         case .fireAcademy:
             return .init(
                 headerName: Constants.xApiKeyHeaderName,

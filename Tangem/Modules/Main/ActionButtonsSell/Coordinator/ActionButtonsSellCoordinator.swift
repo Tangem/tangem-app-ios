@@ -43,10 +43,7 @@ final class ActionButtonsSellCoordinator: CoordinatorObject {
         )
     }
 
-    private func makeTokenSelectorViewModel() -> TokenSelectorViewModel<
-        ActionButtonsTokenSelectorItem,
-        ActionButtonsTokenSelectorItemBuilder
-    > {
+    private func makeTokenSelectorViewModel() -> ActionButtonsTokenSelectorViewModel {
         TokenSelectorViewModel(
             tokenSelectorItemBuilder: ActionButtonsTokenSelectorItemBuilder(),
             strings: SellTokenSelectorStrings(),

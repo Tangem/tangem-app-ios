@@ -41,6 +41,7 @@ class MainCoordinator: CoordinatorObject {
     @Published var expressCoordinator: ExpressCoordinator? = nil
     @Published var actionButtonsBuyCoordinator: ActionButtonsBuyCoordinator? = nil
     @Published var actionButtonsSellCoordinator: ActionButtonsSellCoordinator? = nil
+    @Published var actionButtonsSwapCoordinator: ActionButtonsSwapCoordinator? = nil
 
     // MARK: - Child view models
 
@@ -276,7 +277,8 @@ extension MainCoordinator: SingleTokenBaseRoutable {
         let options = SendCoordinator.Options(
             walletModel: walletModel,
             userWalletModel: userWalletModel,
-            type: .send
+            type: .send,
+            source: .main
         )
         coordinator.start(with: options)
         sendCoordinator = coordinator
@@ -301,7 +303,8 @@ extension MainCoordinator: SingleTokenBaseRoutable {
         let options = SendCoordinator.Options(
             walletModel: walletModel,
             userWalletModel: userWalletModel,
-            type: .sell(parameters: .init(amount: amountToSend.value, destination: destination, tag: tag))
+            type: .sell(parameters: .init(amount: amountToSend.value, destination: destination, tag: tag)),
+            source: .main
         )
         coordinator.start(with: options)
         sendCoordinator = coordinator
@@ -407,7 +410,8 @@ extension MainCoordinator: SingleTokenBaseRoutable {
         let options = SendCoordinator.Options(
             walletModel: walletModel,
             userWalletModel: userWalletModel,
-            type: .onramp
+            type: .onramp,
+            source: .main
         )
         coordinator.start(with: options)
         sendCoordinator = coordinator
@@ -460,7 +464,8 @@ extension MainCoordinator: ActionButtonsBuyFlowRoutable {
 
         let coordinator = ActionButtonsBuyCoordinator(
             expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel),
-            dismissAction: dismissAction
+            dismissAction: dismissAction,
+            userWalletModel: userWalletModel
         )
 
         coordinator.start(with: .default)
@@ -502,7 +507,21 @@ extension MainCoordinator: ActionButtonsSellFlowRoutable {
 // MARK: - Action buttons swap routable
 
 extension MainCoordinator: ActionButtonsSwapFlowRoutable {
-    func openSwap() {}
+    func openSwap(userWalletModel: some UserWalletModel) {
+        let dismissAction: Action<Void> = { [weak self] _ in
+            self?.actionButtonsSwapCoordinator = nil
+        }
+
+        let coordinator = ActionButtonsSwapCoordinator(
+            expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel),
+            userWalletModel: userWalletModel,
+            dismissAction: dismissAction
+        )
+
+        coordinator.start(with: .default)
+
+        actionButtonsSwapCoordinator = coordinator
+    }
 }
 
 extension MainCoordinator {

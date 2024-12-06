@@ -66,6 +66,7 @@ struct SupportedBlockchains {
         [
             .chiliz(testnet: false),
             .xodex,
+            .clore,
         ]
     }
 

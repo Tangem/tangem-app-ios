@@ -23,7 +23,7 @@ enum TONModels {
         /// State of wallet
         let accountState: AccountState
 
-        /// Sequence number transations
+        /// Sequence number transactions
         let seqno: Int?
 
         init(from decoder: Decoder) throws {

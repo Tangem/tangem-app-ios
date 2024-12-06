@@ -196,7 +196,7 @@ private extension StakingModel {
             return validateError
         }
 
-        let balances = stakingManager.state.balances ?? []
+        let balances = stakingManager.balances ?? []
         let hasPreviousStakeOnDifferentValidator = balances.contains { balance in
             balance.balanceType == .active && balance.validatorType.validator != validator
         }
@@ -334,6 +334,7 @@ extension StakingModel: SendAmountOutput {
 // MARK: - StakingValidatorsInput
 
 extension StakingModel: StakingValidatorsInput {
+    var selectedValidator: ValidatorInfo? { _selectedValidator.value.value }
     var selectedValidatorPublisher: AnyPublisher<TangemStaking.ValidatorInfo, Never> {
         _selectedValidator.compactMap { $0.value }.eraseToAnyPublisher()
     }

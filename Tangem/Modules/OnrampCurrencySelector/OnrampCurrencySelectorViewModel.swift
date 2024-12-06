@@ -39,6 +39,10 @@ final class OnrampCurrencySelectorViewModel: Identifiable, ObservableObject {
         loadCurrencies()
     }
 
+    func onAppear() {
+        Analytics.log(.onrampCurrencyScreenOpened)
+    }
+
     func loadCurrencies() {
         currencies = .loading
         TangemFoundation.runTask(in: self) { viewModel in
@@ -115,6 +119,8 @@ private extension OnrampCurrencySelectorViewModel {
             name: currency.identity.name,
             isSelected: repository.preferenceCurrency == currency,
             action: { [weak self] in
+                Analytics.log(event: .onrampCurrencyChosen, params: [.currency: currency.identity.code])
+
                 self?.repository.updatePreference(currency: currency)
                 self?.coordinator?.dismissCurrencySelector()
             }

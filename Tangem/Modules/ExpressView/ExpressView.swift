@@ -50,18 +50,6 @@ struct ExpressView: View {
         }
         .readGeometry(bindTo: $viewGeometryInfo)
         .ignoresSafeArea(.keyboard)
-        .navigationBarTitle(Text(Localization.commonSwap), displayMode: .inline)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    viewModel.didTapCloseButton()
-                } label: {
-                    Assets.crossBlack.image
-                        .renderingMode(.template)
-                        .foregroundColor(Colors.Icon.primary1)
-                }
-            }
-        }
         .alert(item: $viewModel.alert) { $0.alert }
         // For animate button below informationSection
         .animation(.easeInOut, value: viewModel.providerState?.id)
@@ -92,7 +80,7 @@ struct ExpressView: View {
 
             swappingButton
         }
-        .padding(.top, 8)
+        .padding(.top, 10)
     }
 
     @ViewBuilder

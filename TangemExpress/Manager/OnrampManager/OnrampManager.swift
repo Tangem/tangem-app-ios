@@ -15,7 +15,7 @@ public protocol OnrampManager: Actor {
     func setupProviders(request: OnrampPairRequestItem) async throws -> ProvidersList
 
     /// The user changed the amount. We upload providers quotes
-    func setupQuotes(in providers: ProvidersList, amount: Decimal?) async throws -> OnrampProvider
+    func setupQuotes(in providers: ProvidersList, amount: OnrampUpdatingAmount) async throws -> OnrampProvider
 
     /// Reselect `paymentMethod` and sort providers according to it
     func suggestProvider(in providers: ProvidersList, paymentMethod: OnrampPaymentMethod) throws -> OnrampProvider
@@ -23,6 +23,24 @@ public protocol OnrampManager: Actor {
     /// Load the data to perform the onramp action
     func loadRedirectData(provider: OnrampProvider, redirectSettings: OnrampRedirectSettings) async throws -> OnrampRedirectData
 }
+
+// MARK: - OnrampUpdatingAmount
+
+public enum OnrampUpdatingAmount: Hashable, CustomStringConvertible {
+    case clear
+    case same
+    case amount(Decimal)
+
+    public var description: String {
+        switch self {
+        case .clear: "Clear"
+        case .same: "Same"
+        case .amount(let amount): "Amount \(amount)"
+        }
+    }
+}
+
+// MARK: - OnrampManagerError
 
 public enum OnrampManagerError: LocalizedError {
     case noProviderForPaymentMethod

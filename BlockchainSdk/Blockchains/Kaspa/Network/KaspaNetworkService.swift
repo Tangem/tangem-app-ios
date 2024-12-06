@@ -22,24 +22,9 @@ class KaspaNetworkService: MultiNetworkProvider {
 
     func getInfo(address: String, unconfirmedTransactionHashes: [String]) -> AnyPublisher<KaspaAddressInfo, Error> {
         balance(address: address)
-            .zip(utxos(address: address), confirmedTransactionHashes(unconfirmedTransactionHashes))
-            .tryMap { [weak self] balance, utxos, confirmedTransactionHashes in
+            .zip(getUnspentOutputs(address: address), confirmedTransactionHashes(unconfirmedTransactionHashes))
+            .tryMap { [weak self] balance, unspentOutputs, confirmedTransactionHashes in
                 guard let self else { throw WalletError.empty }
-
-                let unspentOutputs: [BitcoinUnspentOutput] = utxos.compactMap {
-                    guard
-                        let amount = UInt64($0.utxoEntry.amount)
-                    else {
-                        return nil
-                    }
-
-                    return BitcoinUnspentOutput(
-                        transactionHash: $0.outpoint.transactionId,
-                        outputIndex: $0.outpoint.index,
-                        amount: amount,
-                        outputScript: $0.utxoEntry.scriptPublicKey.scriptPublicKey
-                    )
-                }
 
                 return KaspaAddressInfo(
                     balance: Decimal(integerLiteral: balance.balance) / blockchain.decimalValue,
@@ -50,8 +35,32 @@ class KaspaNetworkService: MultiNetworkProvider {
             .eraseToAnyPublisher()
     }
 
-    func send(transaction: KaspaTransactionRequest) -> AnyPublisher<KaspaTransactionResponse, Error> {
+    func getUnspentOutputs(address: String) -> AnyPublisher<[BitcoinUnspentOutput], Error> {
         providerPublisher {
+            $0.utxos(address: address)
+                .retry(2)
+                .map { utxos in
+                    return utxos.compactMap { utxo -> BitcoinUnspentOutput? in
+                        guard
+                            let amount = UInt64(utxo.utxoEntry.amount)
+                        else {
+                            return nil
+                        }
+
+                        return BitcoinUnspentOutput(
+                            transactionHash: utxo.outpoint.transactionId,
+                            outputIndex: utxo.outpoint.index,
+                            amount: amount,
+                            outputScript: utxo.utxoEntry.scriptPublicKey.scriptPublicKey
+                        )
+                    }
+                }
+                .eraseToAnyPublisher()
+        }
+    }
+
+    func send(transaction: KaspaTransactionRequest) -> AnyPublisher<KaspaTransactionResponse, Error> {
+        return providerPublisher {
             $0.send(transaction: transaction)
         }
     }
@@ -68,14 +77,6 @@ class KaspaNetworkService: MultiNetworkProvider {
     private func balance(address: String) -> AnyPublisher<KaspaBalanceResponse, Error> {
         providerPublisher {
             $0.balance(address: address)
-                .retry(2)
-                .eraseToAnyPublisher()
-        }
-    }
-
-    private func utxos(address: String) -> AnyPublisher<[KaspaUnspentOutputResponse], Error> {
-        providerPublisher {
-            $0.utxos(address: address)
                 .retry(2)
                 .eraseToAnyPublisher()
         }
