@@ -42,6 +42,7 @@ extension NowNodesBlockBookConfig {
              .ethereumPoW,
              .ethereumClassic,
              .avalanche,
+             .ravencoin,
              .tron:
             return BlockBookNode(
                 rpcNode: "https://\(prefix).\(host)",
