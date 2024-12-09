@@ -13,7 +13,7 @@ public struct VisaAuthChallengeResponse: Decodable {
     public let sessionId: String
 }
 
-public struct VisaAuthorizationTokens: Decodable {
+public struct VisaAuthorizationTokens: Codable {
     public let accessToken: String
     public let refreshToken: String
 
