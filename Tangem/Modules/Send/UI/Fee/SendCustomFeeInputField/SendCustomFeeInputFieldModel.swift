@@ -46,7 +46,6 @@ class SendCustomFeeInputFieldModel: ObservableObject, Identifiable {
         decimalNumberTextFieldViewModel = .init(maximumFractionDigits: fractionDigits)
 
         amountPublisher
-            .removeDuplicates()
             .withWeakCaptureOf(self)
             .sink { (self, amount) in
                 guard amount != self.decimalNumberTextFieldViewModel.value else { return }
