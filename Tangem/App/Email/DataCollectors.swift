@@ -34,6 +34,14 @@ private extension EmailDataCollector {
     }
 }
 
+// MARK: - BaseDataCollector
+
+struct BaseDataCollector: EmailDataCollector {
+    var logData: Data? {
+        ("----------\n" + DeviceInfoProvider.info()).data(using: .utf8)
+    }
+}
+
 // MARK: - NegativeFeedbackDataCollector
 
 struct NegativeFeedbackDataCollector: EmailDataCollector {

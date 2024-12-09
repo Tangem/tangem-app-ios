@@ -365,7 +365,7 @@ extension Analytics {
         case onrampOnrampStatusOpened = "[Onramp] Onramp Status Opened"
         case onrampButtonGoToProvider = "[Onramp] Button - Go To Provider"
         case onrampOnrampStatus = "[Onramp] Onramp Status"
-        
+
         // MARK: - Action buttons
 
         case actionButtonsBuyButton = "[Action Buttons] Button - Buy"
