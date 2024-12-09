@@ -79,7 +79,7 @@ extension TangemNetworkLoggerPlugin {
 
     func logSuccessNetworkResponse(_ response: Response, target: TargetType) -> [String] {
         // Adding log entries for each given log option
-        var output = [String]()
+        var output: [String] = []
 
         // Response presence check
         if response.response != nil {
@@ -99,7 +99,7 @@ extension TangemNetworkLoggerPlugin {
 
     func logErrorNetworkResponse(_ response: Response, target: TargetType) -> [String] {
         // Adding log entries for each given log option
-        var output = [String]()
+        var output: [String] = []
 
         // Response presence check
         if response.response != nil {
