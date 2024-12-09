@@ -3,6 +3,7 @@ require 'base64'
 default_platform(:ios)
 
 BUILD_PATH = "./fastlane/builds/"
+ANALYZE_ARCHIVE_UTIL_PATH = "./private-app-config/analyze_archive.sh" # TBD
 PRODUCTION_SCHEME = "Tangem"
 BETA_SCHEME = "Tangem Beta"
 ALPHA_SCHEME = "Tangem Alpha"
@@ -92,7 +93,13 @@ lane :release do |options|
   increment_version_number(version_number: options[:version])
   increment_testflight_build_number(version: options[:version], build: options[:build])
 
-  build(scheme: PRODUCTION_SCHEME, version: options[:version], filename: PRODUCTION_SCHEME, path: BUILD_PATH)
+  build(
+    scheme: PRODUCTION_SCHEME, 
+    version: options[:version], 
+    filename: PRODUCTION_SCHEME, 
+    path: BUILD_PATH,
+    analyze_archive: options[:analyze_archive]
+  )
   upload_dsyms(app_id: app_id, filename: PRODUCTION_SCHEME)
 
   upload_testflight(
@@ -140,7 +147,8 @@ lane :build_Alpha do |options|
     version: options[:version],
     build: options[:build],
     filename: options[:filename],
-    path: options[:path]
+    path: options[:path],
+    analyze_archive: options[:analyze_archive]
   )
 
   upload_dsyms(app_id: options[:firebase_app_id], filename: options[:filename])
@@ -166,7 +174,8 @@ lane :build_Beta do |options|
     version: options[:version],
     build: options[:build],
     filename: options[:filename],
-    path: options[:path]
+    path: options[:path],
+    analyze_archive: options[:analyze_archive]
   )
 
   upload_dsyms(app_id: options[:firebase_app_id], filename: options[:filename])
@@ -275,7 +284,59 @@ end
 
 private_lane :build do |options|
   clean_artifacts
-  app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+
+  if options[:analyze_archive] == true
+    build_and_analyze(
+      export_method: options[:export_method],
+      scheme: options[:scheme],
+      version: options[:version],
+      build: options[:build],
+      filename: options[:filename],
+      path: options[:path]
+    )
+  else
+    app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+    build_app(
+      xcargs: "-allowProvisioningUpdates",
+      output_directory: options[:path],
+      output_name: options[:filename],
+      scheme: options[:scheme],
+      clean: true,
+      silent: false,
+      export_method: options[:export_method],
+      destination: "generic/platform=iOS",
+      export_options: {
+        distributionBundleIdentifier: app_identifier,
+        iCloudContainerEnvironment: "Production"
+      }
+    )
+  end
+end
+
+private_lane :build_and_analyze do |options|  
+  xcarchive_path = File.expand_path("../" + options[:path] + options[:filename] + ".xcarchive")
+  analyze_archive_util_path = File.expand_path("../" + ANALYZE_ARCHIVE_UTIL_PATH)
+
+  archive_app(
+    path: options[:path],
+    filename: options[:filename],
+    scheme: options[:scheme],
+    export_method: options[:export_method],
+    xcarchive_path: xcarchive_path
+  )
+      
+  sh("#{analyze_archive_util_path} '#{xcarchive_path}'")
+  
+  create_ipa(
+    path: options[:path],
+    filename: options[:filename],
+    scheme: options[:scheme],
+    export_method: options[:export_method],
+    xcarchive_path: xcarchive_path
+  )
+end
+
+private_lane :archive_app do |options|
   build_app(
     xcargs: "-allowProvisioningUpdates",
     output_directory: options[:path],
@@ -284,11 +345,26 @@ private_lane :build do |options|
     clean: true,
     silent: false,
     export_method: options[:export_method],
-    destination: "generic/platform=iOS",
+    skip_codesigning: false,
+    skip_package_ipa: true,
+    archive_path: options[:xcarchive_path]
+  )
+end
+
+private_lane :create_ipa do |options|
+  build_app(
+    xcargs: "-allowProvisioningUpdates",
+    output_directory: options[:path],
+    output_name: options[:filename],
+    scheme: options[:scheme],
+    export_method: options[:export_method],
+    export_team_id: CredentialsManager::AppfileConfig.try_fetch_value(:team_id),
     export_options: {
-      distributionBundleIdentifier: app_identifier,
       iCloudContainerEnvironment: "Production"
-    }
+    },
+    skip_build_archive: true,
+    skip_package_dependencies_resolution: false,
+    archive_path: options[:xcarchive_path]
   )
 end
 
