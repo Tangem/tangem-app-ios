@@ -234,6 +234,11 @@ private extension OnrampModel {
             let provider = try await $0.onrampManager.suggestProvider(in: $0.providersList(), paymentMethod: method)
             try Task.checkCancellation()
             $0._selectedOnrampProvider.send(.success(provider))
+
+            // Do not start autoupdating for all error cases
+            if provider.isSuccessfullyLoaded {
+                try await $0.autoupdateTask()
+            }
         }
     }
 }
