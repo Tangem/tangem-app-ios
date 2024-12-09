@@ -8,7 +8,7 @@
 
 import Foundation
 import Moya
-import TangemFoundation
+import TangemNetworkUtils
 
 class StakeKitStakingAPIService: StakingAPIService {
     private let provider: MoyaProvider<StakeKitTarget>

@@ -8,32 +8,11 @@
 
 import Foundation
 import Moya
+import TangemNetworkUtils
 
 struct FilecoinTarget: TargetType {
-    enum FilecoinTargetType {
-        case getActorInfo(address: String)
-        case getEstimateMessageGas(message: FilecoinMessage)
-        case submitTransaction(signedMessage: FilecoinSignedMessage)
-
-        var method: String {
-            switch self {
-            case .getActorInfo:
-                "Filecoin.StateGetActor"
-            case .getEstimateMessageGas:
-                "Filecoin.GasEstimateMessageGas"
-            case .submitTransaction:
-                "Filecoin.MpoolPush"
-            }
-        }
-    }
-
     let node: NodeInfo
     let type: FilecoinTargetType
-
-    init(node: NodeInfo, _ type: FilecoinTargetType) {
-        self.node = node
-        self.type = type
-    }
 
     var baseURL: URL {
         node.url
@@ -82,10 +61,40 @@ struct FilecoinTarget: TargetType {
     }
 
     var headers: [String: String]?
+
+    init(node: NodeInfo, _ type: FilecoinTargetType) {
+        self.node = node
+        self.type = type
+    }
+}
+
+extension FilecoinTarget {
+    enum FilecoinTargetType {
+        case getActorInfo(address: String)
+        case getEstimateMessageGas(message: FilecoinMessage)
+        case submitTransaction(signedMessage: FilecoinSignedMessage)
+
+        var method: String {
+            switch self {
+            case .getActorInfo:
+                "Filecoin.StateGetActor"
+            case .getEstimateMessageGas:
+                "Filecoin.GasEstimateMessageGas"
+            case .submitTransaction:
+                "Filecoin.MpoolPush"
+            }
+        }
+    }
 }
 
 private extension FilecoinTarget {
     enum Constants {
         static let jsonRPCMethodId: Int = 1
+    }
+}
+
+extension FilecoinTarget: TargetTypeLogConvertible {
+    var requestDescription: String {
+        type.method
     }
 }

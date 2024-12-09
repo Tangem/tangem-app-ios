@@ -8,7 +8,6 @@
 
 import Foundation
 import Moya
-import class BlockchainSdk.TangemNetworkLoggerPlugin
 
 public struct TangemStakingFactory {
     public init() {}
@@ -31,14 +30,9 @@ public struct TangemStakingFactory {
 
     public func makeStakingAPIProvider(
         credential: StakingAPICredential,
-        configuration: URLSessionConfiguration
+        configuration: URLSessionConfiguration,
+        plugins: [PluginType]
     ) -> StakingAPIProvider {
-        let plugins: [PluginType] = [
-            TangemNetworkLoggerPlugin(configuration: .init(
-                output: TangemNetworkLoggerPlugin.tangemSdkLoggerOutput,
-                logOptions: .verbose
-            )),
-        ]
         let provider = MoyaProvider<StakeKitTarget>(session: Session(configuration: configuration), plugins: plugins)
         let service = StakeKitStakingAPIService(
             provider: provider,

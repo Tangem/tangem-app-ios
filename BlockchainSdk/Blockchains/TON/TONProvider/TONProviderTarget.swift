@@ -8,6 +8,7 @@
 
 import Foundation
 import Moya
+import TangemNetworkUtils
 
 struct TONProviderTarget: TargetType {
     // MARK: - Properties
@@ -103,5 +104,24 @@ extension TONProviderTarget {
         case sendBoc(message: String)
         case sendBocReturnHash(message: String)
         case runGetMethod(parameters: TONModels.RunGetMethodParameters)
+    }
+}
+
+extension TONProviderTarget: TargetTypeLogConvertible {
+    var requestDescription: String {
+        switch targetType {
+        case .getInfo:
+            "getInfo"
+        case .estimateFee:
+            "estimateFee"
+        case .getBalance:
+            "getBalance"
+        case .sendBoc:
+            "sendBoc"
+        case .sendBocReturnHash:
+            "sendBocReturnHash"
+        case .runGetMethod:
+            "runGetMethod"
+        }
     }
 }
