@@ -69,6 +69,8 @@ final class SwapActionButtonViewModel: ActionButtonViewModel {
 
     @MainActor
     func tap() {
+        trackTapEvent()
+
         switch viewState {
         case .initial:
             updateState(to: .loading)

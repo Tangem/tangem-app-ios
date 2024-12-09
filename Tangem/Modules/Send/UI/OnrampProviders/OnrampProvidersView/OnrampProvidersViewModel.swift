@@ -138,8 +138,7 @@ private extension OnrampProvidersViewModel {
             let methods = supported.map(\.name).joined(separator: ", ")
             return .availableForPaymentMethods(methods: Localization.onrampAvaiableWithPaymentMethods(methods))
         case .loaded:
-            // Will be updated
-            return .available(estimatedTime: "5 min")
+            return .available
         case .restriction(.tooSmallAmount(let minAmount)):
             return .availableFromAmount(minAmount: Localization.onrampProviderMinAmount(minAmount))
         case .restriction(.tooBigAmount(let maxAmount)):

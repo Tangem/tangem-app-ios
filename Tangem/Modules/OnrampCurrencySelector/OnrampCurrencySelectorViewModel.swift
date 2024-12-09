@@ -87,7 +87,7 @@ private extension OnrampCurrencySelectorViewModel {
             return .searched(
                 SearchUtil.search(
                     currencies,
-                    in: \.identity.name,
+                    in: \.identity.searchableText,
                     for: searchText
                 )
                 .map(mapToCurrencyViewData)
@@ -125,5 +125,11 @@ private extension OnrampCurrencySelectorViewModel {
                 self?.coordinator?.dismissCurrencySelector()
             }
         )
+    }
+}
+
+private extension OnrampIdentity {
+    var searchableText: String {
+        return "\(name) \(code)"
     }
 }
