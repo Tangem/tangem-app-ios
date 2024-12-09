@@ -117,7 +117,6 @@ private extension CustomKaspaFeeService {
     var amountPublisher: AnyPublisher<Decimal?, Never> {
         amount
             .compactMap { $0 }
-            .removeDuplicates()
             .eraseToAnyPublisher()
     }
 
