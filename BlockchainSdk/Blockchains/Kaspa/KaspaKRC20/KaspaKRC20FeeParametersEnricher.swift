@@ -29,11 +29,7 @@ public struct KaspaKRC20FeeParametersEnricher {
 
         // The value of the reveal tx is fixed and has a constant value, so we calculate the new value of the commit tx fee
         // as a remainder after subtracting the value of the reveal tx fee value from the total fee value
-        var newCommitTransactionFeeValue = customFee.amount.value - parameters.revealFee.value
-        if newCommitTransactionFeeValue < .zero {
-            newCommitTransactionFeeValue = .zero
-        }
-        commitTransactionFee.value = newCommitTransactionFeeValue
+        commitTransactionFee.value = max(customFee.amount.value - revealTransactionFee.value, .zero)
 
         let newFeeParameters = KaspaKRC20.TokenTransactionFeeParams(commitFee: commitTransactionFee, revealFee: revealTransactionFee)
         customFee = Fee(customFee.amount, parameters: newFeeParameters)
