@@ -132,7 +132,7 @@ extension WelcomeViewModel: StoriesDelegate {
     }
 
     func openMail() {
-        coordinator?.openMail(with: failedCardScanTracker, recipient: EmailConfig.default.recipient)
+        coordinator?.openMail(with: BaseDataCollector(), recipient: EmailConfig.default.recipient)
     }
 
     func openPromotion() {
