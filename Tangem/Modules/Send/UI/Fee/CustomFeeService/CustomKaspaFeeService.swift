@@ -82,6 +82,7 @@ class CustomKaspaFeeService {
     private func onFocusChanged(isSelected: Bool) {
         guard
             !isSelected,
+            tokenItem.isToken,
             let currentCustomFee = customFee.value,
             currentCustomFee.amount < initialCustomFee.amount
         else {
