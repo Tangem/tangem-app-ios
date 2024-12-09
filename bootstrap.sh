@@ -10,22 +10,17 @@ usage() {
 	echo
 	echo "  Options:"
 	echo
-	echo "    --skip-cocoapods        -  Skip pod install"
 	echo "    --skip-ruby             -  Skip Ruby install"
 	echo "    --update-submodule      -  Git submodule update with --remote option"
 	exit 1;
 }
 
-OPT_COCOAPODS=true
 OPT_RUBY=true
 OPT_SUBMODULE=false
 
 while test $# -gt 0
 do
     case "$1" in
-        --skip-cocoapods)
-			OPT_COCOAPODS=false
-            ;;
         --skip-ruby)
             OPT_RUBY=false
             ;;
@@ -88,11 +83,6 @@ fi
 
 echo "🚀 Running SwiftGen"
 mint run swiftgen@6.6.2 config run --config swiftgen.yml 
-
-if [ "$OPT_COCOAPODS" = true ] ; then
-    echo "🚀 Running pod install"
-	bundle exec pod install --repo-update 
-fi
 
 if [ "$OPT_SUBMODULE" = true ] ; then
     echo "🚀 Running submodule remote update"

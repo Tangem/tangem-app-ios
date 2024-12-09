@@ -26,7 +26,7 @@ public struct VisaActivationManagerFactory {
             refreshTokenSaver: nil
         )
 
-        let customerInfoService = CommonCustomerInfoService(accessTokenProvider: tokenHandler)
+        let customerInfoService = CommonCustomerInfoService(authorizationTokenHandler: tokenHandler)
         let authorizationProcessor = CommonCardAuthorizationProcessor(
             authorizationService: authorizationService,
             logger: internalLogger

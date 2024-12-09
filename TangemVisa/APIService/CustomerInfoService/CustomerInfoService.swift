@@ -11,10 +11,10 @@ import Foundation
 protocol CustomerInfoService {}
 
 class CommonCustomerInfoService {
-    private let accessTokenProvider: AuthorizationTokenHandler
+    private let authorizationTokenHandler: AuthorizationTokenHandler
 
-    init(accessTokenProvider: AuthorizationTokenHandler) {
-        self.accessTokenProvider = accessTokenProvider
+    init(authorizationTokenHandler: AuthorizationTokenHandler) {
+        self.authorizationTokenHandler = authorizationTokenHandler
     }
 }
 

@@ -41,7 +41,7 @@ jobs:
 
       # Skipping Ruby installation since it has been already installed by an action above
       - name: Install required dependencies
-        run: ./bootstrap.sh --skip-ruby --skip-cocoapods
+        run: ./bootstrap.sh --skip-ruby
 
       - name: Fetch and update main app localizations
         if: ${{ github.event.inputs.update_app_localizations == 'true' }}
