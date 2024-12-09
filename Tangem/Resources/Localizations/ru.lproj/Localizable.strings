@@ -313,6 +313,7 @@
 "feedback_preface_scan_failed" = "Скажите, пожалуйста, какая у вас карта или кольцо?";
 "feedback_preface_support" = "Привет, команда поддержки,";
 "feedback_preface_tx_failed" = "Пожалуйста, расскажите нам больше о вашей проблеме. Каждая маленькая деталь может помочь.";
+"feedback_subject_pre_activated_wallet" = "Previously activated wallet";
 "feedback_subject_rate_negative" = "Мои предложения";
 "feedback_subject_scan_failed" = "Не могу отсканировать карту/кольцо";
 "feedback_subject_support" = "Обращение в поддержку";
@@ -633,6 +634,7 @@
 "scan_card_settings_button" = "Сканировать";
 "scan_card_settings_message" = "Отсканируйте карту или кольцо, чтобы изменить ее настройки. Изменения затронут только ту карту или кольцо, которые вы отсканировали, и не повлияют на другие устройства, привязанные к вашему кошельку.";
 "scan_card_settings_title" = "Приготовьте свой Tangem!";
+"security_alert_title" = "Уведомление безопасности";
 "selling_insufficient_balance_alert_message" = "На вашем балансе недостаточно средств для продажи этой криптовалюты. Пожалуйста, пополните нужный актив, чтобы продолжить.";
 "selling_insufficient_balance_alert_title" = "Недостаточно средств";
 "selling_regional_restriction_alert_message" = "Продажа криптовалюты в вашем регионе временно недоступна. Мы активно работаем над тем, чтобы добавить эту возможность. Следите за нашими новостями!";
@@ -858,6 +860,7 @@
 "swapping_to_title" = "Вы получите";
 "swapping_token_list_title" = "Выберите токен";
 "swapping_token_not_available" = "не доступен";
+"this_is_my_wallet_title" = "Это мой кошелек";
 "toast_balances_hidden" = "Балансы скрыты";
 "toast_balances_shown" = "Балансы показаны";
 "toast_undo" = "Отменить";
@@ -928,6 +931,7 @@
 "voice_over_open_card_details" = "Открыть детали устройства";
 "voice_over_open_new_wallet_connect_session" = "Отсканируйте QR-код, чтобы открыть новую сессию WalletConnect";
 "wallet_balance_missing_derivation" = "Отсканируйте карту или кольцо";
+"wallet_been_activated_message" = "Этот кошелек уже был активирован ранее.\nЕсли это сделали не вы, свяжитесь со службой поддержки.\nTangem никогда не продает кошелек вместе с предустановленным кодом доступа.";
 "wallet_connect_alert_sign_message" = "Запрос на подпись сообщения.\n\n%@";
 "wallet_connect_bnb_sign_message" = "Dapp %1$@, запрос на\nподпись транзакции с BNB.\n\n%2$@";
 "wallet_connect_bnb_trade_order_message" = "Торговый ордер на %1$@\nЦена: %2$@\nСумма к получению: %3$@\nСумма к оплате: %4$@";
