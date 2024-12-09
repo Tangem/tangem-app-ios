@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import TangemFoundation
 
 struct DeviceInfoProvider {
     enum Subject: CaseIterable {
