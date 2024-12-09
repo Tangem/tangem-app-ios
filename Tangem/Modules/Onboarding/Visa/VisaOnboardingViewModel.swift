@@ -141,7 +141,9 @@ private extension VisaOnboardingViewModel {
         switch currentStep {
         case .welcome:
             goToStep(.accessCode)
-        case .accessCode, .selectWalletForApprove, .approveUsingTangemWallet, .saveUserWallet, .pushNotifications:
+        case .accessCode:
+            goToStep(.selectWalletForApprove)
+        case .selectWalletForApprove, .approveUsingTangemWallet, .saveUserWallet, .pushNotifications:
             break
         case .success:
             closeOnboarding()
@@ -149,14 +151,17 @@ private extension VisaOnboardingViewModel {
     }
 
     func goToStep(_ step: VisaOnboardingStep) {
-        guard steps.contains(step) else {
+        guard let stepIndex = steps.firstIndex(of: step) else {
             AppLog.shared.debug("Failed to find step \(step)")
             return
         }
 
+        let step = steps[stepIndex]
+
         DispatchQueue.main.async {
             withAnimation {
                 self.currentStep = step
+                self.currentProgress = CGFloat(stepIndex + 1) / CGFloat(self.steps.count)
             }
         }
     }
@@ -217,22 +222,43 @@ extension VisaOnboardingViewModel: VisaOnboardingAccessCodeSetupDelegate {
     func useSelectedCode(accessCode: String) async throws {
         try visaActivationManager.saveAccessCode(accessCode: accessCode)
         try await visaActivationManager.startActivation()
+        await proceedToApproveWalletSelection()
     }
 }
 
 private extension VisaOnboardingViewModel {
-    func proceedToApproveWalletSelection() {
-        let searchUtility = VisaWalletPublicKeySearchUtility(isTestnet: false)
-        let unlockedUserWalletModels = userWalletRepository.models.filter { !$0.isUserWalletLocked }
-    }
+    func proceedToApproveWalletSelection() async {
+        guard let targetAddress = visaActivationManager.targetApproveAddress else {
+            await showAlert(OnboardingError.missingTargetApproveAddress.alertBinder)
+            return
+        }
 
-    @MainActor
-    func navigateToApproveWalletSelection() {}
+        let searchUtility = VisaApprovePairSearchUtility(isTestnet: false)
+
+        guard
+            let approvePair = searchUtility.findApprovePair(
+                for: targetAddress,
+                userWalletModels: userWalletRepository.models
+            )
+        else {
+            goToNextStep()
+            return
+        }
+
+        tangemWalletApproveViewModel = .init(
+            targetWalletAddress: targetAddress,
+            delegate: self,
+            dataProvider: self,
+            approvePair: approvePair
+        )
+        goToStep(.approveUsingTangemWallet)
+    }
 }
 
 extension VisaOnboardingViewModel: VisaOnboardingWalletSelectorDelegate {
     func useExternalWallet() {
         // TODO: IOS-8574
+        alert = "TODO: IOS-8574".alertBinder
     }
 
     func useTangemWallet() {
@@ -240,10 +266,10 @@ extension VisaOnboardingViewModel: VisaOnboardingWalletSelectorDelegate {
         let targetApproveAddress = visaActivationManager.targetApproveAddress ?? ""
         tangemWalletApproveViewModel = .init(
             targetWalletAddress: targetApproveAddress,
-            tangemSdk: TangemSdkDefaultFactory().makeTangemSdk(),
             delegate: self,
             dataProvider: self
         )
+        goToStep(.approveUsingTangemWallet)
     }
 }
 
@@ -255,7 +281,8 @@ extension VisaOnboardingViewModel: VisaOnboardingTangemWalletApproveDelegate {
 
 extension VisaOnboardingViewModel: VisaOnboardingTangemWalletApproveDataProvider {
     func loadDataToSign() async throws -> Data {
-        throw "Backend not ready... Even requirements"
+//        throw "Backend not ready... Even requirements"
+        Data(hex: "01231543809154315741395431578392174938")
     }
 }
 
@@ -269,6 +296,19 @@ private extension VisaOnboardingViewModel {
     func closeOnboarding() {
         userWalletRepository.updateSelection()
         coordinator?.closeOnboarding()
+    }
+}
+
+private extension VisaOnboardingViewModel {
+    enum OnboardingError: String, LocalizedError {
+        case missingTargetApproveAddress
+
+        var localizedDescription: String {
+            switch self {
+            case .missingTargetApproveAddress:
+                return "Failed to find approve address. Please contact support"
+            }
+        }
     }
 }
 

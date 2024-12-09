@@ -1,5 +1,5 @@
 //
-//  VisaWalletPublicKeySearchUtility.swift
+//  VisaWalletPublicKeyUtility.swift
 //  TangemApp
 //
 //  Created by Andrew Son on 06.12.24.
@@ -10,19 +10,19 @@ import Foundation
 import TangemSdk
 import BlockchainSdk
 
-public struct VisaWalletPublicKeySearchUtility {
+public struct VisaWalletPublicKeyUtility {
     private let visaUtilities: VisaUtilities
 
     public init(isTestnet: Bool) {
         visaUtilities = .init(isTestnet: isTestnet)
     }
 
-    public func findPublicKey(targetAddress: String, derivationPath: DerivationPath?, on card: Card) throws (SearchError) -> Data {
-        if let derivationPath {
-            return try findKeyWithDerivation(targetAddress: targetAddress, derivationPath: derivationPath, on: card)
-        } else {
-            return try findKeyWithoutDerivation(targetAddress: targetAddress, on: card)
-        }
+    public func findPublicKeyWithDerivation(targetAddress: String, derivationPath: DerivationPath, on card: Card) throws (SearchError) -> Data {
+        return try findKeyWithDerivation(targetAddress: targetAddress, derivationPath: derivationPath, on: card)
+    }
+
+    public func findPublicKeyWithoutDerivation(targetAddress: String, on card: Card) throws (SearchError) -> Data {
+        return try findKeyWithoutDerivation(targetAddress: targetAddress, on: card)
     }
 
     public func validatePublicKey(targetAddress: String, publicKey: Data) throws (SearchError) {
@@ -68,38 +68,51 @@ public struct VisaWalletPublicKeySearchUtility {
     }
 
     private func findKeyWithoutDerivation(targetAddress: String, on card: Card) throws (SearchError) -> Data {
-        guard let wallet = card.wallets.first(where: { $0.curve == visaUtilities.visaBlockchain.curve }) else {
-            throw SearchError.missingWalletOnTargetCurve
-        }
+        let wallet = try findWalletOnVisaCurve(on: card)
 
         try validatePublicKey(targetAddress: targetAddress, publicKey: wallet.publicKey)
 
         return wallet.publicKey
     }
 
+    private func findKeyWithDerivation(targetAddress: String, derivationStyle: DerivationStyle, on card: Card) throws (SearchError) -> Data {
+        guard let derivationPath = visaUtilities.visaBlockchain.derivationPath(for: derivationStyle) else {
+            throw .failedToGenerateDerivationPath
+        }
+
+        return try findKeyWithDerivation(targetAddress: targetAddress, derivationPath: derivationPath, on: card)
+    }
+
     private func findKeyWithDerivation(targetAddress: String, derivationPath: DerivationPath, on card: Card) throws (SearchError) -> Data {
-        guard let wallets = card.wallets.first(where: { $0.curve == visaUtilities.visaBlockchain.curve }) else {
-            throw SearchError.missingWalletOnTargetCurve
+        let wallet = try findWalletOnVisaCurve(on: card)
+
+        guard let extendedPublicKey = wallet.derivedKeys.keys[derivationPath] else {
+            throw .missingDerivedKeys
         }
 
-        guard let targetWallet = wallets.derivedKeys.keys[derivationPath] else {
-            throw SearchError.missingDerivedKeys
-        }
+        try validateExtendedPublicKey(targetAddress: targetAddress, extendedPublicKey: extendedPublicKey, derivationPath: derivationPath)
 
-        try validateExtendedPublicKey(targetAddress: targetAddress, extendedPublicKey: targetWallet, derivationPath: derivationPath)
-
-        return targetWallet.publicKey
+        return extendedPublicKey.publicKey
     }
 
     private func validateCreatedAddress(targetAddress: String, createdAddress: any Address) throws (SearchError) {
         guard createdAddress.value == targetAddress else {
-            throw SearchError.addressesNotMatch
+            throw .addressesNotMatch
         }
+    }
+
+    private func findWalletOnVisaCurve(on card: Card) throws (SearchError) -> Card.Wallet {
+        guard let wallet = card.wallets.first(where: { $0.curve == visaUtilities.visaBlockchain.curve }) else {
+            throw .missingWalletOnTargetCurve
+        }
+
+        return wallet
     }
 }
 
-public extension VisaWalletPublicKeySearchUtility {
+public extension VisaWalletPublicKeyUtility {
     enum SearchError: Error {
+        case failedToGenerateDerivationPath
         case missingWalletOnTargetCurve
         case missingDerivedKeys
         case failedToGenerateAddress(Error)

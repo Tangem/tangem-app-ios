@@ -20,9 +20,8 @@ struct VisaOnboardingActivationWalletSelectorItemView: View {
             }
         } label: {
             HStack(spacing: 12) {
-                item.icon.image
+                item.icon
                     .frame(size: CGSize(bothDimensions: 36))
-                    .foregroundStyle(Colors.Icon.informative)
 
                 Text(item.title)
                     .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
@@ -31,7 +30,6 @@ struct VisaOnboardingActivationWalletSelectorItemView: View {
             }
             .padding(14)
         }
-        .background(Color.white.zIndex(1))
         .if(selected, transform: { view in
             view
                 .overlay(content: {
@@ -66,12 +64,17 @@ extension VisaOnboardingActivationWalletSelectorItemView {
             }
         }
 
-        var icon: ImageType {
+        @ViewBuilder
+        var icon: some View {
             switch self {
             case .otherWallet:
-                return Assets.wallet36
+                Assets.wallet36.image
+                    .renderingMode(.template)
+                    .foregroundStyle(Colors.Icon.informative)
             case .tangemWallet:
-                return Assets.tangemLogo
+                Assets.tangemIcon36.image
+                    .renderingMode(.template)
+                    .foregroundStyle(Colors.Icon.primary1)
             }
         }
     }

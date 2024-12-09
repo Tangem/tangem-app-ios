@@ -11,8 +11,7 @@ import SwiftUI
 struct VisaOnboardingTangemWalletConfirmationView: View {
     @ObservedObject var viewModel: VisaOnboardingTangemWalletConfirmationViewModel
 
-    private let cardImageAspectRatio: CGFloat = 1.591
-    private let imageToTextOffsetRatio: CGFloat = 0.169
+    private let cardImageAspectRatio: CGFloat = 1.894
 
     var body: some View {
         VStack(spacing: 0) {
@@ -22,9 +21,11 @@ struct VisaOnboardingTangemWalletConfirmationView: View {
 
             VStack(spacing: 14) {
                 Text("Prepare Tangem Wallet")
+                    .multilineTextAlignment(.center)
                     .style(Fonts.Bold.title1, color: Colors.Text.primary1)
 
-                Text("Prepare the Tangem card and tap to approve")
+                Text("Prepare the Tangem card and tap to approve.")
+                    .multilineTextAlignment(.center)
                     .style(Fonts.Regular.callout, color: Colors.Text.secondary)
                     .padding(.horizontal, 22)
             }
@@ -39,6 +40,7 @@ struct VisaOnboardingTangemWalletConfirmationView: View {
                 isLoading: viewModel.isLoading,
                 action: viewModel.approveAction
             )
+            .padding(.horizontal, 16)
         }
         .padding(.top, 44)
         .padding(.bottom, 10)
@@ -54,6 +56,6 @@ struct VisaOnboardingTangemWalletConfirmationView: View {
                 .frame(width: 38, height: 48)
         }
         .padding(.horizontal, 30)
-        .aspectRatio(cardImageAspectRatio, contentMode: .fill)
+        .aspectRatio(cardImageAspectRatio, contentMode: .fit)
     }
 }

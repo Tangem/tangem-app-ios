@@ -16,7 +16,7 @@ class VisaCustomerWalletApproveTask: CardSessionRunnable {
     private let approveData: Data
 
     private let visaUtilities = VisaUtilities(isTestnet: false)
-    private let pubKeySearchUtility = VisaWalletPublicKeySearchUtility(isTestnet: false)
+    private let pubKeySearchUtility = VisaWalletPublicKeyUtility(isTestnet: false)
 
     init(
         targetAddress: String,
@@ -27,6 +27,14 @@ class VisaCustomerWalletApproveTask: CardSessionRunnable {
     }
 
     func run(in session: CardSession, completion: @escaping TaskResult) {
+        guard
+            let card = session.environment.card,
+            !visaUtilities.batchId.contains(card.batchId)
+        else {
+            completion(.failure(.underlying(error: "Can't use Visa card for approve")))
+            return
+        }
+
         let scanCard = AppScanTask()
         scanCard.run(in: session) { result in
             switch result {
@@ -49,17 +57,13 @@ private extension VisaCustomerWalletApproveTask {
         }
 
         guard let derivationPath = visaUtilities.visaDefaultDerivationPath(style: derivationStyle) else {
-            // Is this possible?..
+            completion(.failure(.underlying(error: "Failed to generate derivation path with provided derivation style")))
             return
         }
 
         do {
-            let searchUtility = VisaWalletPublicKeySearchUtility(isTestnet: false)
-            let walletPublicKey = try searchUtility.findPublicKey(
-                targetAddress: targetAddress,
-                derivationPath: derivationPath,
-                on: scanResponse.card
-            )
+            let searchUtility = VisaWalletPublicKeyUtility(isTestnet: false)
+            let walletPublicKey = try searchUtility.findPublicKeyWithDerivation(targetAddress: targetAddress, derivationPath: derivationPath, on: scanResponse.card)
 
             signApproveData(
                 targetWalletPublicKey: walletPublicKey,
@@ -79,8 +83,8 @@ private extension VisaCustomerWalletApproveTask {
 
     func proceedApproveWithLegacyCard(card: Card, in session: CardSession, completion: @escaping TaskResult) {
         do {
-            let searchUtility = VisaWalletPublicKeySearchUtility(isTestnet: false)
-            let publicKey = try searchUtility.findPublicKey(targetAddress: targetAddress, derivationPath: nil, on: card)
+            let searchUtility = VisaWalletPublicKeyUtility(isTestnet: false)
+            let publicKey = try searchUtility.findPublicKeyWithoutDerivation(targetAddress: targetAddress, on: card)
             signApproveData(targetWalletPublicKey: publicKey, derivationPath: nil, in: session, completion: completion)
         } catch {
             completion(.failure(.underlying(error: error)))
@@ -127,6 +131,13 @@ private extension VisaCustomerWalletApproveTask {
             derivationPath: derivationPath
         )
 
-        signTask.run(in: session, completion: completion)
+        signTask.run(in: session) { result in
+            switch result {
+            case .success(let hashResponse):
+                completion(.success(hashResponse))
+            case .failure(let sdkError):
+                completion(.failure(sdkError))
+            }
+        }
     }
 }

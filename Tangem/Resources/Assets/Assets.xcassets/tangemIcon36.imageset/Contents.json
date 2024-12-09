@@ -1,15 +1,12 @@
 {
   "images" : [
     {
-      "filename" : "wallet36.pdf",
+      "filename" : "tangemIcon36.pdf",
       "idiom" : "universal"
     }
   ],
   "info" : {
     "author" : "xcode",
     "version" : 1
-  },
-  "properties" : {
-    "template-rendering-intent" : "template"
   }
 }

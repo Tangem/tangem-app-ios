@@ -15,6 +15,9 @@ import TangemVisa
 
 protocol VisaOnboardingTangemWalletApproveDelegate: AnyObject {
     func processSignedData(_ signedData: Data) async throws
+    /// We need to show alert in parent view, otherwise it won't be shown
+    @MainActor
+    func showAlert(_ alert: AlertBinder) async
 }
 
 protocol VisaOnboardingTangemWalletApproveDataProvider: AnyObject {
@@ -22,15 +25,19 @@ protocol VisaOnboardingTangemWalletApproveDataProvider: AnyObject {
 }
 
 final class VisaOnboardingTangemWalletConfirmationViewModel: ObservableObject {
-    typealias ApprovePair = (userWalletModel: UserWalletModel, walletModel: Wallet.PublicKey)
+    struct ApprovePair {
+        let cardId: String
+        let publicKey: Data
+        let derivationPath: DerivationPath?
+        let tangemSdk: TangemSdk
+    }
+
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
 
     @Published private(set) var isLoading: Bool = false
 
     private let targetWalletAddress: String
     private var approvePair: ApprovePair?
-
-    private let tangemSdk: TangemSdk
 
     private weak var delegate: VisaOnboardingTangemWalletApproveDelegate?
     private weak var dataProvider: VisaOnboardingTangemWalletApproveDataProvider?
@@ -39,30 +46,14 @@ final class VisaOnboardingTangemWalletConfirmationViewModel: ObservableObject {
 
     init(
         targetWalletAddress: String,
-        tangemSdk: TangemSdk,
         delegate: VisaOnboardingTangemWalletApproveDelegate,
-        dataProvider: VisaOnboardingTangemWalletApproveDataProvider
+        dataProvider: VisaOnboardingTangemWalletApproveDataProvider,
+        approvePair: ApprovePair? = nil
     ) {
+        self.approvePair = approvePair
         self.targetWalletAddress = targetWalletAddress
-        self.tangemSdk = tangemSdk
         self.delegate = delegate
         self.dataProvider = dataProvider
-    }
-
-    convenience init(
-        approvePair: ApprovePair,
-        targetWalletAddress: String,
-        tangemSdk: TangemSdk,
-        delegate: VisaOnboardingTangemWalletApproveDelegate,
-        dataProvider: VisaOnboardingTangemWalletApproveDataProvider
-    ) {
-        self.init(
-            targetWalletAddress: targetWalletAddress,
-            tangemSdk: tangemSdk,
-            delegate: delegate,
-            dataProvider: dataProvider
-        )
-        self.approvePair = approvePair
     }
 
     func approveAction() {
@@ -73,14 +64,24 @@ final class VisaOnboardingTangemWalletConfirmationViewModel: ObservableObject {
         approveCancellableTask = Task { [weak self] in
             guard let self else { return }
 
-            guard let dataToSign = try await dataProvider?.loadDataToSign() else {
-                approveCancellableTask = nil
-                return
+            do {
+                guard let dataToSign = try await dataProvider?.loadDataToSign() else {
+                    approveCancellableTask = nil
+                    return
+                }
+
+                try Task.checkCancellation()
+
+                if let approvePair {
+                    try await signDataWithTargetPair(approvePair, dataToSign: dataToSign)
+                } else {
+                    try await signData(dataToSign)
+                }
+            } catch {
+                if !error.isCancellationError {
+                    await delegate?.showAlert(error.alertBinder)
+                }
             }
-
-            try Task.checkCancellation()
-
-            try await signData(dataToSign)
 
             approveCancellableTask = nil
         }.eraseToAnyCancellable()
@@ -90,8 +91,25 @@ final class VisaOnboardingTangemWalletConfirmationViewModel: ObservableObject {
 private extension VisaOnboardingTangemWalletConfirmationViewModel {
     func signData(_ dataToSign: Data) async throws {
         let task = VisaCustomerWalletApproveTask(targetAddress: targetWalletAddress, approveData: dataToSign)
+        let tangemSdk = TangemSdkDefaultFactory().makeTangemSdk()
         let signResponse: SignHashResponse = try await withCheckedThrowingContinuation { continuation in
             tangemSdk.startSession(with: task) { result in
+                switch result {
+                case .success(let hashResponse):
+                    continuation.resume(returning: hashResponse)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+
+        try await delegate?.processSignedData(signResponse.signature)
+    }
+
+    func signDataWithTargetPair(_ approvePair: ApprovePair, dataToSign: Data) async throws {
+        let signHashTask = SignHashCommand(hash: dataToSign, walletPublicKey: approvePair.publicKey, derivationPath: approvePair.derivationPath)
+        let signResponse: SignHashResponse = try await withCheckedThrowingContinuation { continuation in
+            approvePair.tangemSdk.startSession(with: signHashTask, cardId: approvePair.cardId) { result in
                 switch result {
                 case .success(let hashResponse):
                     continuation.resume(returning: hashResponse)

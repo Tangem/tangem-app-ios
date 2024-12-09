@@ -9,6 +9,7 @@
 import Foundation
 import TangemSdk
 import BlockchainSdk
+import TangemVisa
 
 struct UserWalletConfigFactory {
     private let cardInfo: CardInfo
@@ -20,7 +21,7 @@ struct UserWalletConfigFactory {
     func makeConfig() -> UserWalletConfig {
         let isDemo = DemoUtil().isDemoCard(cardId: cardInfo.card.cardId)
         let isS2CCard = cardInfo.card.issuer.name.lowercased() == "start2coin"
-        let isVisa = cardInfo.card.batchId == "AE04"
+        let isVisa = VisaUtilities().batchId.contains(cardInfo.card.batchId)
 
         switch cardInfo.walletData {
         case .none:
