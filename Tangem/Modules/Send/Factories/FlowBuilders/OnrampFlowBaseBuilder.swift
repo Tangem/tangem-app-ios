@@ -23,7 +23,11 @@ struct OnrampFlowBaseBuilder {
             userWalletId: userWalletModel.userWalletId.stringValue
         )
 
-        let onrampModel = builder.makeOnrampModel(onrampManager: onrampManager, onrampRepository: onrampRepository)
+        let onrampModel = builder.makeOnrampModel(
+            onrampManager: onrampManager,
+            onrampDataRepository: onrampDataRepository,
+            onrampRepository: onrampRepository
+        )
         let notificationManager = builder.makeOnrampNotificationManager(input: onrampModel, delegate: onrampModel)
         let sendFinishAnalyticsLogger = builder.makeOnrampFinishAnalyticsLogger(onrampProvidersInput: onrampModel)
 

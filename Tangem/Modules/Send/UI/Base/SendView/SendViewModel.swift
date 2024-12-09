@@ -371,6 +371,7 @@ extension SendViewModel: SendModelRoutable {
 extension SendViewModel: OnrampModelRoutable {
     func openOnrampCountryBottomSheet(country: OnrampCountry) {
         do {
+            isKeyboardActive = false
             let builder = try dataBuilder.onrampBuilder()
             let (repository, dataRepository) = builder.makeDataForOnrampCountryBottomSheet()
             coordinator?.openOnrampCountryDetection(country: country, repository: repository, dataRepository: dataRepository)
