@@ -159,6 +159,7 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
             toNetwork: item.pairItem.destination.expressCurrency.network,
             paymentMethod: item.paymentMethod.id,
             countryCode: item.pairItem.country.identity.code,
+            fromPrecision: item.pairItem.fiatCurrency.precision,
             fromAmount: item.sourceAmountWEI(),
             toDecimals: item.pairItem.destination.decimalCount,
             providerId: item.providerInfo.id
@@ -178,6 +179,7 @@ extension CommonExpressAPIProvider: ExpressAPIProvider {
             paymentMethod: item.quotesItem.paymentMethod.id,
             countryCode: item.quotesItem.pairItem.country.identity.code,
             fromAmount: item.quotesItem.sourceAmountWEI(),
+            fromPrecision: item.quotesItem.pairItem.fiatCurrency.precision,
             toDecimals: item.quotesItem.pairItem.destination.decimalCount,
             providerId: item.quotesItem.providerInfo.id,
             toAddress: item.quotesItem.pairItem.destination.defaultAddress,

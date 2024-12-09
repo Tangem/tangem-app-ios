@@ -11,6 +11,7 @@ import Foundation
 struct SendFlowBaseBuilder {
     let userWalletModel: UserWalletModel
     let walletModel: WalletModel
+    let source: SendCoordinator.Source
     let sendAmountStepBuilder: SendAmountStepBuilder
     let sendDestinationStepBuilder: SendDestinationStepBuilder
     let sendFeeStepBuilder: SendFeeStepBuilder
@@ -22,6 +23,7 @@ struct SendFlowBaseBuilder {
         let notificationManager = builder.makeSendNotificationManager()
         let sendQRCodeService = builder.makeSendQRCodeService()
         let sendModel = builder.makeSendModel()
+        let sendFinishAnalyticsLogger = builder.makeSendFinishAnalyticsLogger(sendFeeInput: sendModel)
 
         let fee = sendFeeStepBuilder.makeFeeSendStep(
             io: (input: sendModel, output: sendModel),
@@ -60,12 +62,13 @@ struct SendFlowBaseBuilder {
 
         let finish = sendFinishStepBuilder.makeSendFinishStep(
             input: sendModel,
-            actionType: .send,
+            sendFinishAnalyticsLogger: sendFinishAnalyticsLogger,
             sendDestinationCompactViewModel: destination.compact,
             sendAmountCompactViewModel: amount.compact,
             onrampAmountCompactViewModel: .none,
             stakingValidatorsCompactViewModel: nil,
-            sendFeeCompactViewModel: fee.compact
+            sendFeeCompactViewModel: fee.compact,
+            onrampStatusCompactViewModel: .none
         )
 
         // We have to set dependicies here after all setups is completed
@@ -102,6 +105,7 @@ struct SendFlowBaseBuilder {
             dataBuilder: builder.makeSendBaseDataBuilder(input: sendModel),
             tokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem,
+            source: source,
             coordinator: router
         )
 

@@ -63,7 +63,8 @@ public struct AddressServiceFactory {
              .energyWebEVM,
              .core,
              .canxium,
-             .chiliz:
+             .chiliz,
+             .xodex:
             return EthereumAddressService()
         case .rsk:
             return RskAddressService()
@@ -143,6 +144,9 @@ public struct AddressServiceFactory {
             return PolkadotAddressService(network: .energyWebX(curve: curve))
         case .casper(let curve, _):
             return CasperAddressService(curve: curve)
+        case .clore:
+            let networkParams: INetwork = CloreMainNetworkParams()
+            return BitcoinLegacyAddressService(networkParams: networkParams)
         }
     }
 }

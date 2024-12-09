@@ -19,7 +19,7 @@ class SendRoutableMock: SendRoutable {
     func openQRScanner(with codeBinding: Binding<String>, networkName: String) {}
     func openFeeCurrency(for walletModel: WalletModel, userWalletModel: UserWalletModel) {}
     func openApproveView(settings: ExpressApproveViewModel.Settings, approveViewModelInput: any ApproveViewModelInput) {}
-    func openOnrampCountryDetection(country: OnrampCountry, repository: any OnrampRepository) {}
+    func openOnrampCountryDetection(country: OnrampCountry, repository: any OnrampRepository, dataRepository: any OnrampDataRepository) {}
     func openOnrampCountrySelector(repository: any OnrampRepository, dataRepository: any OnrampDataRepository) {}
     func openOnrampSettings(repository: any OnrampRepository) {}
     func openOnrampCurrencySelector(repository: any OnrampRepository, dataRepository: any OnrampDataRepository) {}

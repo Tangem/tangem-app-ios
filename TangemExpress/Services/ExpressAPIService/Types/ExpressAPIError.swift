@@ -11,7 +11,7 @@ import Foundation
 public struct ExpressAPIError: Decodable, LocalizedError, Error, Hashable {
     let code: Int?
     let description: String?
-    let value: Value?
+    public let value: Value?
 
     public var errorCode: Code {
         if let code, let codeCase = Code(rawValue: code) {
@@ -32,6 +32,16 @@ public extension ExpressAPIError {
         let minAmount: String?
         let maxAmount: String?
         let decimals: Int?
+        let fromAmount: String?
+        let fromAmountProvider: String?
+
+        public var roundUpAmount: Decimal? {
+            guard let fromAmountProvider, let decimals else {
+                return nil
+            }
+
+            return Decimal(string: fromAmountProvider).map { $0 / pow(10, decimals) }
+        }
 
         var amount: Decimal? {
             guard let amount = minAmount ?? maxAmount, let decimals else {
@@ -79,7 +89,7 @@ public extension ExpressAPIError {
         case exchangeNotEnoughAllowanceError = 2280
         case exchangeInvalidDecimalsError = 2290
         case exchangeUnsupportedRateType = 2300
-        case exchangeProviderRespondWithInvalidFromAmount = 2320
+        case exchangeRoundUpError = 2320
         case networkNotFound = 2330
 
         case exchangeTransactionNotFoundError = 2500

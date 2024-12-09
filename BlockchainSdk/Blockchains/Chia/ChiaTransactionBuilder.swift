@@ -90,7 +90,7 @@ final class ChiaTransactionBuilder {
         let aggregatedSignature = try BLSUtils().aggregate(signatures: signatures.map { $0.hexString })
 
         return ChiaSpendBundle(
-            aggregatedSignature: aggregatedSignature,
+            aggregatedSignature: aggregatedSignature.addHexPrefix(),
             coinSpends: coinSpends
         )
     }
@@ -122,7 +122,7 @@ final class ChiaTransactionBuilder {
         let coinSpends = unspentCoins.map {
             ChiaCoinSpend(
                 coin: $0,
-                puzzleReveal: ChiaPuzzleUtils().getPuzzleHash(from: walletPublicKey).hexString.lowercased(),
+                puzzleReveal: ChiaPuzzleUtils().getPuzzleHash(from: walletPublicKey).hexString.addHexPrefix().lowercased(),
                 solution: ""
             )
         }
@@ -132,10 +132,10 @@ final class ChiaTransactionBuilder {
         let changeCondition = try change != 0 ? createCoinCondition(for: source, with: change) : nil
 
         let solution: [ChiaCondition] = [sendCondition, changeCondition].compactMap { $0 }
-        coinSpends[0].solution = try solution.toSolution().hexString.lowercased()
+        coinSpends[0].solution = try solution.toSolution().hexString.addHexPrefix().lowercased()
 
         for coinSpend in coinSpends.dropFirst(1) {
-            coinSpend.solution = try [RemarkCondition()].toSolution().hexString.lowercased()
+            coinSpend.solution = try [RemarkCondition()].toSolution().hexString.addHexPrefix().lowercased()
         }
 
         return coinSpends

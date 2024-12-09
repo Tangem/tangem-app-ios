@@ -344,6 +344,7 @@ private extension ExpressViewModel {
             .store(in: &bag)
 
         interactor.swappingPair
+            .dropFirst()
             .withWeakCaptureOf(self)
             .asyncMap { viewModel, pair -> Bool in
                 do {
@@ -737,6 +738,7 @@ extension ExpressViewModel: NotificationTapDelegate {
              .refreshFee,
              .goToProvider,
              .addHederaTokenAssociation,
+             .retryKaspaTokenTransaction,
              .openLink,
              .stake,
              .openFeedbackMail,

@@ -21,7 +21,7 @@ protocol OnrampModelRoutable: AnyObject {
 class OnrampModel {
     // MARK: - Data
 
-    private let _currency: CurrentValueSubject<LoadingResult<OnrampFiatCurrency, Never>, Never>
+    private let _currency: CurrentValueSubject<LoadingResult<OnrampFiatCurrency, Error>, Never>
     private let _amount: CurrentValueSubject<Decimal?, Never> = .init(.none)
     private let _onrampProviders: CurrentValueSubject<LoadingResult<ProvidersList, Error>?, Never> = .init(.none)
     private let _selectedOnrampProvider: CurrentValueSubject<LoadingResult<OnrampProvider, Never>?, Never> = .init(.none)
@@ -61,6 +61,10 @@ class OnrampModel {
 
         bind()
     }
+
+    deinit {
+        log("deinit")
+    }
 }
 
 // MARK: - Bind
@@ -82,6 +86,41 @@ private extension OnrampModel {
             .withWeakCaptureOf(self)
             .sink { model, preference in
                 model.preferenceDidChange(country: preference.country, currency: preference.currency)
+            }
+            .store(in: &bag)
+
+        // Only for analytics
+        _selectedOnrampProvider
+            .compactMap { $0?.value }
+            .removeDuplicates()
+            .withWeakCaptureOf(self)
+            .sink { model, provider in
+                switch provider.state {
+                case .restriction(.tooSmallAmount):
+                    Analytics.log(.onrampErrorMinAmount)
+                case .restriction(.tooBigAmount):
+                    Analytics.log(.onrampErrorMaxAmount)
+                case .failed(let error as ExpressAPIError):
+                    Analytics.log(
+                        event: .onrampErrors,
+                        params: [
+                            .token: model.walletModel.tokenItem.currencySymbol,
+                            .provider: provider.provider.name,
+                            .errorCode: error.errorCode.rawValue.description,
+                        ]
+                    )
+                case .loaded:
+                    Analytics.log(
+                        event: .onrampProviderCalculated,
+                        params: [
+                            .token: model.walletModel.tokenItem.currencySymbol,
+                            .provider: provider.provider.name,
+                            .paymentMethod: provider.paymentMethod.name,
+                        ]
+                    )
+                default:
+                    break
+                }
             }
             .store(in: &bag)
     }
@@ -159,7 +198,7 @@ private extension OnrampModel {
     }
 
     func updateQuotes(amount: Decimal?) async throws {
-        guard let amount else {
+        guard let amount, amount > 0 else {
             try await clearOnrampManager()
             return
         }
@@ -168,16 +207,21 @@ private extension OnrampModel {
     }
 
     func clearOnrampManager() async throws {
-        let provider = try await onrampManager.setupQuotes(in: providersList(), amount: .none)
+        let provider = try await onrampManager.setupQuotes(in: providersList(), amount: .clear)
         try Task.checkCancellation()
         _selectedOnrampProvider.send(.success(provider))
     }
 
-    func updateOnrampManager(amount: Decimal?) async throws {
+    func updateOnrampManager(amount: Decimal) async throws {
         _selectedOnrampProvider.send(.loading)
-        let provider = try await onrampManager.setupQuotes(in: providersList(), amount: amount)
+        let provider = try await onrampManager.setupQuotes(in: providersList(), amount: .amount(amount))
         try Task.checkCancellation()
         _selectedOnrampProvider.send(.success(provider))
+
+        // Do not start autoupdating for all error cases
+        if provider.isSuccessfullyLoaded {
+            try await autoupdateTask()
+        }
     }
 
     // MARK: - Payment method
@@ -221,9 +265,7 @@ private extension OnrampModel {
                 router?.openOnrampCountryBottomSheet(country: country)
             }
         } catch {
-            await runOnMain {
-                alertPresenter?.showAlert(error.alertBinder)
-            }
+            _currency.send(.failure(error))
         }
     }
 }
@@ -249,6 +291,42 @@ private extension OnrampModel {
             }
         }
     }
+
+    func autoupdateTask() async throws {
+        guard _selectedOnrampProvider.value?.value?.isSuccessfullyLoaded == true else {
+            log("Selected provider has an error. Do not start autoupdate")
+            return
+        }
+
+        try Task.checkCancellation()
+
+        log("Start timer to autoupdate")
+        try await Task.sleep(seconds: 10)
+
+        try Task.checkCancellation()
+        // we don't update the selected provider
+        log("Call autoupdate")
+        let providerForReselect = try await onrampManager.setupQuotes(in: providersList(), amount: .same)
+
+        // Check after reloading
+        guard _selectedOnrampProvider.value?.value?.isSuccessfullyLoaded == true else {
+            log("Selected provider has a error. Will update to \(providerForReselect)")
+            _selectedOnrampProvider.send(.success(providerForReselect))
+            try await autoupdateTask()
+            return
+        }
+
+        // Push the same provider to notify all listeners
+        _selectedOnrampProvider.resend()
+        _onrampProviders.resend()
+
+        // Restart task
+        try await autoupdateTask()
+    }
+
+    func log(_ message: String) {
+        AppLog.shared.debug("[\(TangemFoundation.objectDescription(self))] \(message)")
+    }
 }
 
 // MARK: - OnrampAmountInput
@@ -258,12 +336,12 @@ extension OnrampModel: OnrampAmountInput {
         _amount.eraseToAnyPublisher()
     }
 
-    var fiatCurrency: LoadingResult<OnrampFiatCurrency, Never> {
-        _currency.value
+    var fiatCurrency: OnrampFiatCurrency? {
+        _currency.value.value
     }
 
-    var fiatCurrencyPublisher: AnyPublisher<LoadingResult<OnrampFiatCurrency, Never>, Never> {
-        _currency.eraseToAnyPublisher()
+    var fiatCurrencyPublisher: AnyPublisher<OnrampFiatCurrency?, Never> {
+        _currency.map { $0.value }.eraseToAnyPublisher()
     }
 }
 
@@ -312,7 +390,7 @@ extension OnrampModel: OnrampPaymentMethodsInput {
 
     var paymentMethodsPublisher: AnyPublisher<[OnrampPaymentMethod], Never> {
         _onrampProviders.compactMap {
-            $0?.value?.filter { $0.hasProviders() }.map(\.paymentMethod)
+            $0?.value?.filter { $0.hasShowableProviders() }.map(\.paymentMethod)
         }.eraseToAnyPublisher()
     }
 }
@@ -348,15 +426,13 @@ extension OnrampModel: OnrampRedirectingOutput {
             externalTxId: data.externalTxId
         )
 
+        onrampPendingTransactionsRepository
+            .onrampTransactionDidSend(txData, userWalletId: userWalletId)
+
         DispatchQueue.main.async {
             self.router?.openWebView(url: data.widgetUrl) { [weak self] in
-                guard let self else { return }
-                onrampPendingTransactionsRepository.onrampTransactionDidSend(
-                    txData,
-                    userWalletId: userWalletId
-                )
-                _transactionTime.send(Date())
-                router?.openFinishStep()
+                self?._transactionTime.send(Date())
+                self?.router?.openFinishStep()
             }
         }
     }
@@ -367,7 +443,7 @@ extension OnrampModel: OnrampRedirectingOutput {
 extension OnrampModel: OnrampInput {
     var isValidToRedirectPublisher: AnyPublisher<Bool, Never> {
         _selectedOnrampProvider
-            .map { $0?.value?.isReadyToBuy ?? false }
+            .map { $0?.value?.isSuccessfullyLoaded ?? false }
             .eraseToAnyPublisher()
     }
 }
@@ -389,11 +465,7 @@ extension OnrampModel: SendFinishInput {
 extension OnrampModel: SendBaseInput {
     var actionInProcessing: AnyPublisher<Bool, Never> {
         Publishers
-            .Merge3(
-                _isLoading,
-                _currency.map { $0.isLoading },
-                _onrampProviders.compactMap { $0?.isLoading }
-            )
+            .Merge(_isLoading, _currency.map { $0.isLoading })
             .eraseToAnyPublisher()
     }
 }
@@ -405,23 +477,33 @@ extension OnrampModel: SendBaseOutput {
         assertionFailure("OnrampModel doesn't support the send transaction action")
         throw TransactionDispatcherResult.Error.actionNotSupported
     }
+
+    func flowDidDisappear() {
+        task?.cancel()
+    }
 }
 
 // MARK: - OnrampNotificationManagerInput
 
 extension OnrampModel: OnrampNotificationManagerInput {
     var errorPublisher: AnyPublisher<Error?, Never> {
+        let currencyErrorPublisher = _currency
+            .filter { !$0.isLoading }
+            .map { $0.error }
+
         let onrampProvidersErrorPublisher = _onrampProviders
             .compactMap { $0 }
             .filter { !$0.isLoading }
             .map { $0.error }
 
         let selectedOnrampProviderErrorPublisher = _selectedOnrampProvider
+            .compactMap { $0 }
             // Here we clear error on `loading` state
             // Because we have the LoadingView
             .map { $0?.value?.error }
 
-        return Publishers.Merge(
+        return Publishers.Merge3(
+            currencyErrorPublisher,
             onrampProvidersErrorPublisher,
             selectedOnrampProviderErrorPublisher
         )

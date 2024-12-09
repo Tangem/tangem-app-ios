@@ -23,7 +23,7 @@ struct CardanoWalletAssembly: WalletManagerAssembly {
                 }
 
                 switch $0 {
-                case .getBlock, .tangemRosetta:
+                case .getBlock, .tangemRosetta, .nowNodes:
                     return RosettaNetworkProvider(
                         url: nodeInfo.url,
                         configuration: networkConfig,

@@ -49,10 +49,13 @@ jobs:
         submodules: true
         token: ${{ secrets.GH_MOBILE_PAT }}
 
-    - name: Bundle install
-      run: |
-        bundle config path vendor/bundle
-        bundle install --jobs 4 --retry 3
+    # When using Github runner images, the preferred way of setting the Ruby version is to use this official action instead of using rvm/rbenv
+    - name: Install Ruby
+      uses: ruby/setup-ruby@a2bbe5b1b236842c1cb7dd11e8e3b51e0a616acc  # v1.202.0
+
+    # Skipping Ruby installation since it has been already installed by an action above
+    - name: Install required dependencies
+      run: ./bootstrap.sh --skip-ruby
 
     - name: Test SPM modules
       run: bundle exec fastlane test_modules
@@ -72,10 +75,11 @@ jobs:
         submodules: true
         token: ${{ secrets.GH_MOBILE_PAT }}
 
-    - name: Bundle install
-      run: |
-        bundle config path vendor/bundle
-        bundle install --jobs 4 --retry 3
+    - name: Install required dependencies
+      run: ./bootstrap.sh
 
     - name: Build BSDK example
-      run: bundle exec fastlane check_bsdk_example_buildable
+      run: |
+        # The initialization of rbenv is required before every `bundle` call since Gihub Actions spawns each 'run' step in a separate process
+        eval "$(rbenv init - bash)"
+        bundle exec fastlane check_bsdk_example_buildable

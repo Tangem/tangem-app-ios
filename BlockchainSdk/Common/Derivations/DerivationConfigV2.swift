@@ -68,7 +68,8 @@ struct DerivationConfigV2: DerivationConfig {
              .energyWebEVM,
              .core,
              .canxium,
-             .chiliz:
+             .chiliz,
+             .xodex:
             return "m/44'/60'/0'/0/0"
         case .binance:
             return "m/44'/714'/0'/0/0"
@@ -132,6 +133,8 @@ struct DerivationConfigV2: DerivationConfig {
             return "m/44'/246'/0'/0'/0'"
         case .casper:
             return "m/44'/506'/0'/0/0"
+        case .clore:
+            return "m/44'/1313'/0'/0/0"
         }
     }
 }

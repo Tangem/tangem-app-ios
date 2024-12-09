@@ -51,7 +51,8 @@ struct DerivationConfigV1: DerivationConfig {
              .cyber,
              .blast,
              .canxium,
-             .chiliz:
+             .chiliz,
+             .xodex:
             return "m/44'/60'/0'/0/0"
         case .ethereumClassic:
             return "m/44'/61'/0'/0/0"
@@ -147,6 +148,8 @@ struct DerivationConfigV1: DerivationConfig {
             return "m/44'/1116'/0'/0/0"
         case .casper:
             return "m/44'/506'/0'/0/0"
+        case .clore:
+            return "m/44'/1313'/0'/0/0"
         }
     }
 }

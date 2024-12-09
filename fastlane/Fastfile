@@ -7,7 +7,7 @@ PRODUCTION_SCHEME = "Tangem"
 BETA_SCHEME = "Tangem Beta"
 ALPHA_SCHEME = "Tangem Alpha"
 BSDK_EXAMPLE_SCHEME = "BlockchainSdkExample"
-WORKSPACE_NAME = "TangemApp.xcworkspace"
+PROJECT_NAME = "TangemApp.xcodeproj"
 FIREBASE_TESTERS_GROUP = "testers"
 
 before_all do |lane, options|
@@ -19,10 +19,6 @@ before_all do |lane, options|
 
   if lanes_to_skip_bootstrap.include?(lane)
     next
-  end
-
-  Dir.chdir("..") do
-    sh("./bootstrap.sh")
   end
 
   # Xcode version overrides available only on CI
@@ -52,7 +48,7 @@ Options:
 """
 lane :test do
   run_tests(
-    workspace: WORKSPACE_NAME,
+    project: PROJECT_NAME,
     scheme: PRODUCTION_SCHEME,
     clean: true,
     code_coverage: true
@@ -91,12 +87,13 @@ Options:
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 """
 lane :release do |options|
+  app_id = ENV["APP_ID_PRODUCTION"]
   app_store_connect_api_key(duration: 1200, is_key_content_base64: true)
   increment_version_number(version_number: options[:version])
   increment_testflight_build_number(version: options[:version], build: options[:build])
 
   build(scheme: PRODUCTION_SCHEME, version: options[:version], filename: PRODUCTION_SCHEME, path: BUILD_PATH)
-  upload_dsyms(app_id: ENV["APP_ID_PRODUCTION"], name: PRODUCTION_SCHEME)
+  upload_dsyms(app_id: app_id, filename: PRODUCTION_SCHEME)
 
   upload_testflight(
     name: PRODUCTION_SCHEME,
@@ -116,7 +113,7 @@ A lane that builds a \"BlockchainSdkExample\" scheme without running or publishi
 lane :check_bsdk_example_buildable do |options|
   clear_derived_data  # Required otherwise raw xcodebuild doesn't work reliably
   xcodebuild(
-    workspace: WORKSPACE_NAME,
+    project: PROJECT_NAME,
     scheme: BSDK_EXAMPLE_SCHEME,
     xcargs: "-allowProvisioningUpdates",
     analyze: true
@@ -130,11 +127,12 @@ Options:
 - build: Build number
 - filename: Name of the resulting artefact (IPA file)
 - path: Path to binary
+- firebase_app_id: Firebase app id for incrementing the build version number and DSYM uploads
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 """
 lane :build_Alpha do |options|
   increment_version_number(version_number: options[:version])
-  increment_firebase_build_number(app_id: ENV["APP_ID_ALPHA"], build: options[:build])
+  increment_firebase_build_number(app_id: options[:firebase_app_id], build: options[:build])
 
   build(
     export_method: "ad-hoc",
@@ -144,6 +142,8 @@ lane :build_Alpha do |options|
     filename: options[:filename],
     path: options[:path]
   )
+
+  upload_dsyms(app_id: options[:firebase_app_id], filename: options[:filename])
 end
 
 desc """
@@ -153,11 +153,12 @@ Options:
 - build: Build number
 - filename: Name of the resulting artefact (IPA file)
 - path: Path to binary
+- firebase_app_id: Firebase app id for incrementing the build version number and DSYM uploads
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 """
 lane :build_Beta do |options|
   increment_version_number(version_number: options[:version])
-  increment_firebase_build_number(app_id: ENV["APP_ID_BETA"], build: options[:build])
+  increment_firebase_build_number(app_id: options[:firebase_app_id], build: options[:build])
 
   build(
     export_method: "ad-hoc",
@@ -167,6 +168,8 @@ lane :build_Beta do |options|
     filename: options[:filename],
     path: options[:path]
   )
+
+  upload_dsyms(app_id: options[:firebase_app_id], filename: options[:filename])
 end
 
 desc """
@@ -209,7 +212,13 @@ lane :refresh_dsyms do |options|
     version: options[:version],
     build_number: options[:build]
   )
-  upload_symbols_to_crashlytics(app_id: ENV["PRODUCTION_SCHEME"])
+
+  # Custom `binary_path` is required for SPM installations, see
+  # https://firebase.blog/posts/2021/09/uploading-dsym-files-to-crashlytics-with-fastlane/ for details
+  upload_symbols_to_crashlytics(
+    app_id: ENV["PRODUCTION_SCHEME"],
+    binary_path: "./Utilites/upload-symbols"
+  )
   clean_build_artifacts
 end
 
@@ -311,25 +320,16 @@ private_lane :increment_testflight_build_number do |options|
 end
 
 private_lane :upload_dsyms do |options|
-  filename = options[:name] + ".app.dSYM.zip"
-  path = BUILD_PATH + filename
+  # Strip the suffix if needed
+  filename = options[:filename].chomp(".ipa")
+  path = BUILD_PATH + filename + ".app.dSYM.zip"
+
+  # Custom `binary_path` is required for SPM installations, see
+  # https://firebase.blog/posts/2021/09/uploading-dsym-files-to-crashlytics-with-fastlane/ for details
   upload_symbols_to_crashlytics(
     app_id: options[:app_id],
+    binary_path: "./Utilites/upload-symbols",
     dsym_path: path
-  )
-end
-
-private_lane :upload_firebase do |options|
-  filename = options[:name] + ".ipa"
-  path = BUILD_PATH + filename
-  release_notes = "#{options[:changelog]}\nGitHash: #{last_git_commit[:commit_hash]}"
-
-  firebase_app_distribution(
-    app: options[:app_id],
-    ipa_path: path,
-    groups: FIREBASE_TESTERS_GROUP,
-    firebase_cli_token: ENV["FIREBASE_CREDITIONAL_KEY"],
-    release_notes: release_notes
   )
 end
 

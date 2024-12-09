@@ -10,24 +10,25 @@ import SwiftUI
 
 struct SendCoordinatorView: CoordinatorView {
     @ObservedObject var coordinator: SendCoordinator
-
-    init(coordinator: SendCoordinator) {
-        self.coordinator = coordinator
-    }
+    @State private var interactiveDismissDisabled: Bool = false
 
     var body: some View {
-        if let rootViewModel = coordinator.rootViewModel {
-            NavigationView {
-                ZStack {
-                    SendView(viewModel: rootViewModel, transitionService: .init())
-                        .navigationLinks(links)
-
-                    sheets
+        NavigationView {
+            ZStack {
+                if let rootViewModel = coordinator.rootViewModel {
+                    SendView(
+                        viewModel: rootViewModel,
+                        transitionService: .init(),
+                        interactiveDismissDisabled: $interactiveDismissDisabled
+                    )
+                    .navigationLinks(links)
                 }
+
+                sheets
             }
-            .tint(Colors.Text.primary1)
-            .interactiveDismissDisabled(rootViewModel.shouldShowDismissAlert)
         }
+        .tint(Colors.Text.primary1)
+        .interactiveDismissDisabled(interactiveDismissDisabled)
     }
 
     @ViewBuilder
@@ -52,13 +53,13 @@ struct SendCoordinatorView: CoordinatorView {
                 ExpressApproveView(viewModel: $0)
             }
             .bottomSheet(
-                item: $coordinator.onrampCountryDetectionViewModel,
+                item: $coordinator.onrampCountryDetectionCoordinator,
                 settings: .init(
                     backgroundColor: Colors.Background.tertiary,
                     hidingOption: .nonHideable
                 )
             ) {
-                OnrampCountryDetectionView(viewModel: $0)
+                OnrampCountryDetectionCoordinatorView(coordinator: $0)
             }
             .sheet(item: $coordinator.mailViewModel) {
                 MailView(viewModel: $0)

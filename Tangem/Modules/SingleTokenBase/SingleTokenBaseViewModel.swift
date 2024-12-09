@@ -180,7 +180,8 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
         switch action {
         case .buyCrypto:
             openBuyCrypto()
-        case .addHederaTokenAssociation:
+        case .addHederaTokenAssociation,
+             .retryKaspaTokenTransaction:
             fulfillAssetRequirements()
         case .stake:
             openStaking()
@@ -447,10 +448,6 @@ extension SingleTokenBaseViewModel {
 
     private func isBuyDisabled() -> Bool {
         if FeatureProvider.isAvailable(.onramp) {
-            if walletModel.isCustom {
-                return true
-            }
-
             return !expressAvailabilityProvider.canOnramp(tokenItem: walletModel.tokenItem)
         } else {
             return !exchangeUtility.buyAvailable
@@ -477,11 +474,7 @@ extension SingleTokenBaseViewModel {
     }
 
     private func isReceiveDisabled() -> Bool {
-        guard let assetRequirementsManager = walletModel.assetRequirementsManager else {
-            return false
-        }
-
-        return assetRequirementsManager.hasRequirements(for: amountType)
+        return !TokenInteractionAvailabilityProvider(walletModel: walletModel).isReceiveAvailable()
     }
 }
 
@@ -499,25 +492,24 @@ extension SingleTokenBaseViewModel {
     }
 
     func openBuyCrypto() {
-        if let disabledLocalizedReason = userWalletModel.config.getDisabledLocalizedReason(for: .exchange) {
-            alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
-            return
-        }
-
         if FeatureProvider.isAvailable(.onramp) {
             let alertBuilder = SingleTokenAlertBuilder()
             if let alertToDisplay = alertBuilder.buyAlert(
                 for: walletModel.tokenItem,
-                tokenItemSwapState: expressAvailabilityProvider.onrampState(for: walletModel.tokenItem),
-                isCustom: walletModel.isCustom
+                tokenItemSwapState: expressAvailabilityProvider.onrampState(for: walletModel.tokenItem)
             ) {
                 alert = alertToDisplay
                 return
             }
 
-            tokenRouter.openBuyCryptoIfPossible(walletModel: walletModel)
+            tokenRouter.openOnramp(walletModel: walletModel)
         } else {
             // Old code
+            if let disabledLocalizedReason = userWalletModel.config.getDisabledLocalizedReason(for: .exchange) {
+                alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
+                return
+            }
+
             if !exchangeUtility.buyAvailable {
                 alert = SingleTokenAlertBuilder().buyUnavailableAlert(for: walletModel.tokenItem)
                 return
