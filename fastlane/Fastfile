@@ -335,8 +335,9 @@ lane :deploy_testflight do |options|
   upload_to_testflight(
     api_key:api_key,
     skip_waiting_for_build_processing: true,
-    ipa: options[:binary_path],
+    ipa: options[:path],
     app_version: options[:version],
+    build_number: options[:build],
     changelog: options[:changelog]
   )
 end
