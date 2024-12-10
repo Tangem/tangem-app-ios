@@ -19,7 +19,7 @@ public struct VisaUtilities {
 
     public var batchId: [String] {
         [
-            "AF05",
+            "AE05",
         ]
     }
 

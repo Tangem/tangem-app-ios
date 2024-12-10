@@ -297,6 +297,7 @@
 "feedback_preface_scan_failed" = "請告訴我們你有什麼卡";
 "feedback_preface_support" = "嗨! 幫助團隊，";
 "feedback_preface_tx_failed" = "請告訴我們更多有關您的問題。提供任何細節都會帶來幫助";
+"feedback_subject_pre_activated_wallet" = "Previously activated wallet";
 "feedback_subject_rate_negative" = "我的建議";
 "feedback_subject_scan_failed" = "無法掃卡";
 "feedback_subject_support" = "反饋";
@@ -566,8 +567,11 @@
 "qr_scanner_camera_denied_settings_button" = "Settings";
 "qr_scanner_camera_denied_text" = "You have not given access to your camera";
 "qr_scanner_camera_denied_title" = "Camera access denied";
+"receive_bottom_sheet_no_memo_required_message" = "No memo required";
 "receive_bottom_sheet_warning_message" = "%1$@ (%2$@) on %3$@ network";
+"receive_bottom_sheet_warning_message_description" = "Sending any other currency will result in its irreversible loss.";
 "receive_bottom_sheet_warning_message_full" = "Send only %@ to this address. Sending any other currency will result in its irreversible loss.";
+"receive_bottom_sheet_warning_message_title" = "Send only %@ to this address.";
 "receive_token_description" = "Transfer funds from any wallet or exchange";
 "referral_button_participate" = "參與";
 "referral_error_failed_to_load_info" = "無法加載有關推薦計劃的消息。請稍後再試";
@@ -611,6 +615,7 @@
 "scan_card_settings_button" = "掃描卡片";
 "scan_card_settings_message" = "掃描卡片以更改其設置。這些更改只會影響您掃描過的卡，不會影響綁定到您錢包的其他卡。";
 "scan_card_settings_title" = "準備好您的卡!";
+"security_alert_title" = "Security Alert";
 "send_additional_field_already_included" = "Already included in the entered address";
 "send_alert_fee_too_high_text" = "Your commission amount is %@ times higher than the recommended amount. Please review and adjust your custom settings.";
 "send_alert_fee_too_low_text" = "You specified a commission below the recommended amount, which could cause a delay in your transaction. Continue?";
@@ -649,6 +654,7 @@
 "send_notification_fee_too_high_title" = "Custom fee is high";
 "send_notification_high_fee_text" = "Due to the peculiarities of the %1$@ network, the fee for transferring the entire balance is higher. To reduce the commission, you can leave %2$@.";
 "send_notification_high_fee_title" = "The fee is higher";
+"send_notification_invalid_amount_rent_fee" = "Your account balance cannot be lower than the rent fee. Please maintain at least %@ on your account or withdraw all funds.";
 "send_notification_invalid_amount_text" = "The included commission exceeds the transfer amount, leading to a negative value";
 "send_notification_invalid_amount_title" = "Invalid amount";
 "send_notification_invalid_minimum_amount_text" = "The minimum sending amount is %1$@. Please ensure that the remaining balance after sending will not be less than %2$@.";
@@ -831,6 +837,7 @@
 "swapping_to_title" = "You receive";
 "swapping_token_list_title" = "選擇代幣";
 "swapping_token_not_available" = "無法使用";
+"this_is_my_wallet_title" = "This is my wallet";
 "toast_balances_hidden" = "Balances hidden";
 "toast_balances_shown" = "Balances shown";
 "toast_undo" = "Undo";
@@ -897,6 +904,7 @@
 "voice_over_open_card_details" = "開啟卡片細節";
 "voice_over_open_new_wallet_connect_session" = "掃描二維碼打開新的 WalletConnect 鏈接";
 "wallet_balance_missing_derivation" = "掃描卡片";
+"wallet_been_activated_message" = "This wallet has already been activated earlier.\nIf it was done not by you please contact support.\nTangem never sells wallets along with the pre-generated access code.";
 "wallet_connect_alert_sign_message" = "請求籤署消息。%@";
 "wallet_connect_bnb_sign_message" = "Dapp %1$@，請求\n簽署 BNB 交易。\n%2$@";
 "wallet_connect_bnb_trade_order_message" = "%1$@ 的交易訂單\n價格： %2$@\n接收金額：%3$@\n支付數量： %4$@";

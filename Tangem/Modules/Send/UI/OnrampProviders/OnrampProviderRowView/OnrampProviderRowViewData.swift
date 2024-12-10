@@ -12,20 +12,30 @@ struct OnrampProviderRowViewData: Identifiable {
     var id: Int { hashValue }
 
     let name: String
+    let paymentMethodId: String
     let iconURL: URL?
     let formattedAmount: String?
     let state: State?
     let badge: Badge?
     let isSelected: Bool
-
     let action: () -> Void
+
+    var isTappable: Bool {
+        switch state {
+        case .available, .availableFromAmount, .availableToAmount:
+            return true
+        case .none, .availableForPaymentMethods, .unavailable:
+            return false
+        }
+    }
 }
 
 extension OnrampProviderRowViewData {
     enum State: Hashable {
-        case available(estimatedTime: String)
+        case available
         case availableFromAmount(minAmount: String)
         case availableToAmount(maxAmount: String)
+        case availableForPaymentMethods(methods: String)
         case unavailable(reason: String)
     }
 
@@ -44,6 +54,7 @@ extension OnrampProviderRowViewData: Hashable {
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(name)
+        hasher.combine(paymentMethodId)
         hasher.combine(iconURL)
         hasher.combine(formattedAmount)
         hasher.combine(state)

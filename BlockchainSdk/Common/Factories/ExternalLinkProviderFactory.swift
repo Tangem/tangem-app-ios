@@ -167,6 +167,10 @@ public struct ExternalLinkProviderFactory {
             return CasperExternalLinkProvider(isTestnet: isTestnet)
         case .chiliz:
             return ChilizExternalLinkProvider(isTestnet: isTestnet)
+        case .xodex:
+            return XodexExternalLinkProvider()
+        case .clore:
+            return CloreExternalLinkProvider()
         }
     }
 }

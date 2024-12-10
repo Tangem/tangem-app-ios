@@ -11,6 +11,7 @@ import SwiftUI
 struct SendView: View {
     @ObservedObject var viewModel: SendViewModel
     let transitionService: SendTransitionService
+    @Binding var interactiveDismissDisabled: Bool
 
     @Namespace private var namespace
     @FocusState private var focused: Bool
@@ -21,7 +22,7 @@ struct SendView: View {
     private let bottomGradientHeight: CGFloat = 150
 
     var body: some View {
-        VStack(spacing: 14) {
+        VStack(spacing: 10) {
             headerView
 
             ZStack(alignment: .bottom) {
@@ -38,12 +39,14 @@ struct SendView: View {
         .alert(item: $viewModel.alert) { $0.alert }
         .safeAreaInset(edge: .bottom) {
             bottomContainer
-                .animation(SendTransitionService.Constants.defaultAnimation, value: viewModel.showBackButton)
         }
         .onReceive(viewModel.$isKeyboardActive, perform: { isKeyboardActive in
             focused = isKeyboardActive
         })
+        .onChange(of: viewModel.shouldShowDismissAlert) { interactiveDismissDisabled = $0 }
         .navigationBarHidden(true)
+        .onAppear(perform: viewModel.onAppear)
+        .onDisappear(perform: viewModel.onDisappear)
     }
 
     @ViewBuilder
@@ -202,7 +205,7 @@ struct SendView: View {
 
                 MainButton(
                     title: viewModel.mainButtonType.title(action: viewModel.flowActionType),
-                    icon: viewModel.mainButtonType.icon,
+                    icon: viewModel.mainButtonType.icon(action: viewModel.flowActionType),
                     style: .primary,
                     size: .default,
                     isLoading: viewModel.mainButtonLoading,
@@ -210,6 +213,7 @@ struct SendView: View {
                     action: viewModel.userDidTapActionButton
                 )
             }
+            .animation(SendTransitionService.Constants.auxiliaryViewAnimation, value: viewModel.showBackButton)
         }
         .padding(.top, 8)
         .padding(.bottom, 14)

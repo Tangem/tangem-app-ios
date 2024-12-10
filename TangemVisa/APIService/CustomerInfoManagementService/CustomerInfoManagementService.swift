@@ -13,21 +13,21 @@ protocol CustomerInfoManagementService {
     func loadCustomerInfo(customerId: String) async throws -> CustomerResponse
 }
 
-class CommonCustomerInfoService {
+class CommonCustomerInfoManagementService {
     typealias CIMAPIService = APIService<CustomerInfoManagementAPITarget, VisaAPIError>
-    private let accessTokenProvider: AuthorizationTokenHandler
+    private let authorizationTokenHandler: AuthorizationTokenHandler
     private let apiService: CIMAPIService
 
     init(
-        accessTokenProvider: AuthorizationTokenHandler,
+        authorizationTokenHandler: AuthorizationTokenHandler,
         apiService: CIMAPIService
     ) {
-        self.accessTokenProvider = accessTokenProvider
+        self.authorizationTokenHandler = authorizationTokenHandler
         self.apiService = apiService
     }
 
     private func makeRequest(for target: CustomerInfoManagementAPITarget.Target) async throws -> CustomerInfoManagementAPITarget {
-        let authorizationToken = try await accessTokenProvider.authorizationHeader
+        let authorizationToken = try await authorizationTokenHandler.authorizationHeader
 
         return .init(
             authorizationToken: authorizationToken,
@@ -36,7 +36,7 @@ class CommonCustomerInfoService {
     }
 }
 
-extension CommonCustomerInfoService: CustomerInfoManagementService {
+extension CommonCustomerInfoManagementService: CustomerInfoManagementService {
     func loadCustomerInfo(customerId: String) async throws -> CustomerResponse {
         return try await apiService.request(
             makeRequest(for: .getCustomerInfo(customerId: customerId))

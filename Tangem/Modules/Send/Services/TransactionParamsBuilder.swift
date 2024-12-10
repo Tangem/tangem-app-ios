@@ -117,7 +117,9 @@ struct TransactionParamsBuilder {
              .energyWebX,
              .core,
              .canxium,
-             .chiliz:
+             .chiliz,
+             .xodex,
+             .clore:
             throw TransactionParamsBuilderError.extraIdNotSupported
         }
     }

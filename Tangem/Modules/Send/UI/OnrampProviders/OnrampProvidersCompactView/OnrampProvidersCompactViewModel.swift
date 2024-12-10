@@ -33,14 +33,15 @@ class OnrampProvidersCompactViewModel: ObservableObject {
     }
 
     private func updateView(provider: LoadingResult<OnrampProvider, Never>?) {
-        switch provider {
-        case .loading:
+        switch (provider, provider?.value?.state) {
+        case (.loading, _), (_, .loading):
             paymentState = .loading
-        case .success(let provider) where provider.canBeShow:
+        case (.success(let provider), .loaded),
+             (.success(let provider), .restriction):
             paymentState = .loaded(
                 data: makeOnrampProvidersCompactProviderViewData(provider: provider)
             )
-        case .none, .success:
+        case (.none, _), (.success, _):
             paymentState = .none
         }
     }
@@ -50,7 +51,7 @@ class OnrampProvidersCompactViewModel: ObservableObject {
             iconURL: provider.paymentMethod.image,
             paymentMethodName: provider.paymentMethod.name,
             providerName: provider.provider.name,
-            badge: provider.isBest ? .bestRate : .none
+            badge: provider.attractiveType == .best ? .bestRate : .none
         ) { [weak self] in
             self?.router?.onrampStepRequestEditProvider()
         }

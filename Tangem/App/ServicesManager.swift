@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import Firebase
+import FirebaseCore
 import BlockchainSdk
 import TangemStaking
 

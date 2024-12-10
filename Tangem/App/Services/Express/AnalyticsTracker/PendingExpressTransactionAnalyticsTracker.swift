@@ -7,10 +7,12 @@
 //
 
 import Foundation
+import TangemExpress
 
 protocol PendingExpressTransactionAnalyticsTracker {
     func trackStatusForTransaction(
-        with transactionId: String,
+        branch: ExpressBranch,
+        transactionId: String,
         tokenSymbol: String,
         status: PendingExpressTransactionStatus,
         provider: ExpressPendingTransactionRecord.Provider

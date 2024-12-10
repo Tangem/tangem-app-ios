@@ -27,28 +27,21 @@ public struct VisaActivationManagerFactory {
             refreshTokenSaver: nil
         )
 
-        let customerInfoService = CommonCustomerInfoService(
-            accessTokenProvider: tokenHandler,
-            apiService: APIService(
+        let customerInfoManagementService = CommonCustomerInfoManagementService(
+            authorizationTokenHandler: tokenHandler,
+            apiService: .init(
                 provider: MoyaProvider<CustomerInfoManagementAPITarget>(session: Session(configuration: urlSessionConfiguration)),
                 logger: internalLogger,
                 decoder: JSONDecoderFactory().makeCIMDecoder()
             )
         )
         let authorizationProcessor = CommonCardAuthorizationProcessor(
-            tangemSdk: tangemSdk,
             authorizationService: authorizationService,
             logger: internalLogger
         )
-
-        let cardSetupHandler = CommonCardSetupHandler(
-            cardActivationInput: cardInput,
-            logger: internalLogger
-        )
-
         let activationOrderProvider = CommonCardActivationOrderProvider(
             accessTokenProvider: tokenHandler,
-            customerInfoService: customerInfoService,
+            customerInfoManagementService: customerInfoManagementService,
             logger: internalLogger
         )
 
@@ -56,8 +49,8 @@ public struct VisaActivationManagerFactory {
             cardInput: cardInput,
             authorizationService: authorizationService,
             authorizationTokenHandler: tokenHandler,
+            tangemSdk: tangemSdk,
             authorizationProcessor: authorizationProcessor,
-            cardSetupHandler: cardSetupHandler,
             cardActivationOrderProvider: activationOrderProvider,
             logger: internalLogger
         )

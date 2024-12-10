@@ -37,20 +37,35 @@ struct ReceiveBottomSheetView: View {
 
                     Image(uiImage: info.addressQRImage)
                         .resizable()
-                        .aspectRatio(1.0, contentMode: .fit)
-                        .padding(.horizontal, 48)
+                        .frame(width: 220, height: 220)
                         .padding(.top, 18)
 
                     SUILabel(viewModel.stringForAddress(info.address))
                         .padding(.horizontal, 60)
                         .padding(.top, 20)
+                        .onTapGesture {
+                            viewModel.copyToClipboard()
+                        }
 
-                    Text(viewModel.warningMessageFull)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 44)
-                        .padding(.top, 12)
-                        .padding(.bottom, 28)
-                        .style(Fonts.Bold.caption1, color: Colors.Text.tertiary)
+                    if let memoWarningMessage = viewModel.memoWarningMessage {
+                        Text(memoWarningMessage)
+                            .padding(.top, 12)
+                            .style(Fonts.Bold.caption1, color: Colors.Text.tertiary)
+                    }
+
+                    NotificationView(
+                        input: .init(
+                            style: .plain,
+                            severity: .info,
+                            settings: .init(
+                                event: ReceiveNotificationEvent(currencySymbol: viewModel.currencySymbol),
+                                dismissAction: nil
+                            )
+                        )
+                    )
+                    .padding(.top, 12)
+                    .padding(.bottom, 28)
+                    .padding(.horizontal, 16)
                 }
             }
             .padding(.top, 24)
@@ -97,7 +112,8 @@ struct ReceiveBottomSheet_Previews: PreviewProvider {
                     localizedName: "legacy",
                     addressQRImage: QrCodeGenerator.generateQRCode(from: "18VEbRSEASi1npnXnoJ6pVVBrhT5zE6qRz")
                 ),
-            ]
+            ],
+            hasMemo: false
         )
     }
 
@@ -111,7 +127,8 @@ struct ReceiveBottomSheet_Previews: PreviewProvider {
                     localizedName: "default",
                     addressQRImage: QrCodeGenerator.generateQRCode(from: "0xEF08EA3531D219EDE813FB521e6D89220198bcB1")
                 ),
-            ]
+            ],
+            hasMemo: false
         )
     }
 

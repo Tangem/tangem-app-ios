@@ -56,6 +56,11 @@ class CommonRestakingStepsManager {
     }
 
     private func back() {
+        guard !stack.isEmpty else {
+            // Ignore double click
+            return
+        }
+
         stack.removeLast()
         let step = currentStep()
 

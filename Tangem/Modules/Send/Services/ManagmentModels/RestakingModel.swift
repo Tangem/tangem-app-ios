@@ -61,7 +61,7 @@ class RestakingModel {
     }
 }
 
-// MARK: - UnstakingModelStateProvider
+// MARK: - RestakingModelStateProvider
 
 extension RestakingModel: RestakingModelStateProvider {
     var stakingAction: Action {
@@ -252,6 +252,7 @@ extension RestakingModel: SendAmountOutput {
 // MARK: - StakingValidatorsInput
 
 extension RestakingModel: StakingValidatorsInput {
+    var selectedValidator: ValidatorInfo? { _selectedValidator.value.value }
     var selectedValidatorPublisher: AnyPublisher<TangemStaking.ValidatorInfo, Never> {
         _selectedValidator.compactMap { $0.value }.eraseToAnyPublisher()
     }

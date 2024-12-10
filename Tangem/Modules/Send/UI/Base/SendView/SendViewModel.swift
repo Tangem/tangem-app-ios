@@ -53,7 +53,7 @@ final class SendViewModel: ObservableObject {
     private let dataBuilder: SendGenericBaseDataBuilder
     private let tokenItem: TokenItem
     private let feeTokenItem: TokenItem
-
+    private let source: SendCoordinator.Source
     private weak var coordinator: SendRoutable?
 
     private var bag: Set<AnyCancellable> = []
@@ -69,6 +69,7 @@ final class SendViewModel: ObservableObject {
         dataBuilder: SendGenericBaseDataBuilder,
         tokenItem: TokenItem,
         feeTokenItem: TokenItem,
+        source: SendCoordinator.Source,
         coordinator: SendRoutable
     ) {
         self.interactor = interactor
@@ -78,6 +79,7 @@ final class SendViewModel: ObservableObject {
         self.tokenItem = tokenItem
         self.feeTokenItem = feeTokenItem
         self.dataBuilder = dataBuilder
+        self.source = source
         self.coordinator = coordinator
 
         step = stepsManager.initialState.step
@@ -87,6 +89,22 @@ final class SendViewModel: ObservableObject {
 
         bind()
         bind(step: stepsManager.initialState.step)
+    }
+
+    func onAppear() {
+        switch flowActionType {
+        case .onramp:
+            Analytics.log(event: .onrampBuyScreenOpened, params: [
+                .source: source.analytics.rawValue,
+                .token: tokenItem.currencySymbol,
+            ])
+        default:
+            break
+        }
+    }
+
+    func onDisappear() {
+        interactor.viewDidDisappear()
     }
 
     func userDidTapActionButton() {
@@ -139,16 +157,32 @@ final class SendViewModel: ObservableObject {
     }
 
     func dismiss() {
-        let source = step.type.analyticsSourceParameterValue
-        if flowActionType == .send {
+        switch flowActionType {
+        case .send:
             Analytics.log(.sendButtonClose, params: [
-                .source: source,
+                .source: step.type.analyticsSourceParameterValue,
                 .fromSummary: .affirmativeOrNegative(for: step.type.isSummary),
                 .valid: .affirmativeOrNegative(for: actionIsAvailable),
             ])
-        } else {
+        case .onramp:
+            Analytics.log(.onrampButtonClose)
+        case .approve,
+             .stake,
+             .unstake,
+             .claimRewards,
+             .restakeRewards,
+             .withdraw, .claimUnstaked,
+             .restake,
+             .unlockLocked,
+             .stakeLocked,
+             .vote,
+             .revoke,
+             .voteLocked,
+             .revote,
+             .rebond,
+             .migrate:
             Analytics.log(event: .stakingButtonCancel, params: [
-                .source: source.rawValue,
+                .source: step.type.analyticsSourceParameterValue.rawValue,
                 .token: tokenItem.currencySymbol,
             ])
         }
@@ -185,6 +219,11 @@ final class SendViewModel: ObservableObject {
 
 private extension SendViewModel {
     func performOnramp() {
+        if let disabledLocalizedReason = userWalletModel.config.getDisabledLocalizedReason(for: .exchange) {
+            alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
+            return
+        }
+
         do {
             isKeyboardActive = false
             let onrampRedirectingBuilder = try dataBuilder.onrampBuilder().makeDataForOnrampRedirecting()
@@ -332,9 +371,10 @@ extension SendViewModel: SendModelRoutable {
 extension SendViewModel: OnrampModelRoutable {
     func openOnrampCountryBottomSheet(country: OnrampCountry) {
         do {
+            isKeyboardActive = false
             let builder = try dataBuilder.onrampBuilder()
-            let repository = builder.makeDataForOnrampCountryBottomSheet()
-            coordinator?.openOnrampCountryDetection(country: country, repository: repository)
+            let (repository, dataRepository) = builder.makeDataForOnrampCountryBottomSheet()
+            coordinator?.openOnrampCountryDetection(country: country, repository: repository, dataRepository: dataRepository)
         } catch {
             alert = error.alertBinder
         }
@@ -378,7 +418,7 @@ extension SendViewModel: OnrampSummaryRoutable {
     func openOnrampSettingsView() {
         do {
             let builder = try dataBuilder.onrampBuilder()
-            let repository = builder.makeDataForOnrampCountryBottomSheet()
+            let (repository, _) = builder.makeDataForOnrampCountrySelectorView()
             coordinator?.openOnrampSettings(repository: repository)
         } catch {
             alert = error.alertBinder

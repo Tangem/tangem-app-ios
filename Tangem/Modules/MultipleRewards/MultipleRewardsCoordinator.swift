@@ -65,7 +65,8 @@ extension MultipleRewardsCoordinator: MultipleRewardsRoutable {
         coordinator.start(with: .init(
             walletModel: options.walletModel,
             userWalletModel: options.userWalletModel,
-            type: .stakingSingleAction(manager: options.manager, action: action)
+            type: .stakingSingleAction(manager: options.manager, action: action),
+            source: .stakingDetails
         ))
         sendCoordinator = coordinator
     }

@@ -65,6 +65,8 @@ struct SupportedBlockchains {
     private func testableBlockchains() -> Set<Blockchain> {
         [
             .chiliz(testnet: false),
+            .xodex,
+            .clore,
         ]
     }
 

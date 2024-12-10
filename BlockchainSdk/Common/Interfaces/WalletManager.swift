@@ -120,7 +120,14 @@ public protocol AddressResolver {
 public protocol AssetRequirementsManager {
     typealias Asset = Amount.AmountType
 
-    func hasRequirements(for asset: Asset) -> Bool
     func requirementsCondition(for asset: Asset) -> AssetRequirementsCondition?
     func fulfillRequirements(for asset: Asset, signer: any TransactionSigner) -> AnyPublisher<Void, Error>
+    /// - Note: The default implementation of this method does nothing.
+    func discardRequirements(for asset: Asset)
+}
+
+extension AssetRequirementsManager {
+    func discardRequirements(for asset: Asset) {
+        // No-op
+    }
 }

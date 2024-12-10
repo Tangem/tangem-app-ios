@@ -12,6 +12,7 @@ enum PendingExpressTransactionStatus: String, Equatable, Codable {
     case awaitingDeposit
     case awaitingHash
     case confirming
+    case buying
     case exchanging
     case sendingToUser
     case done
@@ -28,6 +29,7 @@ enum PendingExpressTransactionStatus: String, Equatable, Codable {
         case .awaitingHash: Localization.expressExchangeStatusWaitingTxHash
         case .confirming: Localization.expressExchangeStatusConfirming
         case .exchanging: Localization.expressExchangeStatusExchanging
+        case .buying: Localization.expressExchangeStatusBuying
         case .sendingToUser: Localization.expressExchangeStatusSending
         case .done: Localization.commonDone
         case .failed, .unknown: Localization.expressExchangeStatusFailed
@@ -44,6 +46,7 @@ enum PendingExpressTransactionStatus: String, Equatable, Codable {
         case .awaitingHash: Localization.expressExchangeStatusWaitingTxHash
         case .confirming: Localization.expressExchangeStatusConfirmingActive
         case .exchanging: Localization.expressExchangeStatusExchangingActive
+        case .buying: Localization.expressExchangeStatusBuyingActive
         case .sendingToUser: Localization.expressExchangeStatusSendingActive
         case .done: Localization.commonDone
         case .failed, .unknown: Localization.expressExchangeStatusFailed
@@ -60,6 +63,7 @@ enum PendingExpressTransactionStatus: String, Equatable, Codable {
         case .awaitingHash: Localization.expressExchangeStatusWaitingTxHash
         case .confirming: Localization.expressExchangeStatusConfirmed
         case .exchanging: Localization.expressExchangeStatusExchanged
+        case .buying: Localization.expressExchangeStatusBought
         case .sendingToUser: Localization.expressExchangeStatusSent
         case .done: Localization.commonDone
         case .failed, .unknown: Localization.expressExchangeStatusFailed
@@ -74,7 +78,7 @@ enum PendingExpressTransactionStatus: String, Equatable, Codable {
         switch self {
         case .done, .refunded, .canceled:
             return true
-        case .awaitingDeposit, .confirming, .exchanging, .sendingToUser, .failed, .verificationRequired, .awaitingHash, .unknown, .paused:
+        case .awaitingDeposit, .confirming, .exchanging, .buying, .sendingToUser, .failed, .verificationRequired, .awaitingHash, .unknown, .paused:
             return false
         }
     }

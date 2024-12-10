@@ -57,8 +57,16 @@ extension OnrampProvidersCoordinator: OnrampProvidersRoutable {
     func openOnrampPaymentMethods() {
         onrampPaymentMethodsViewModel = onrampPaymentMethodsBuilder.makeOnrampPaymentMethodsViewModel(coordinator: self)
     }
+
+    func closeOnrampProviders() {
+        dismiss()
+    }
 }
 
 // MARK: - OnrampPaymentMethodsRoutable
 
-extension OnrampProvidersCoordinator: OnrampPaymentMethodsRoutable {}
+extension OnrampProvidersCoordinator: OnrampPaymentMethodsRoutable {
+    func closeOnrampPaymentMethodsView() {
+        onrampPaymentMethodsViewModel = nil
+    }
+}

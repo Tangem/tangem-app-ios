@@ -57,7 +57,7 @@ struct EstimationFeeAddressFactory {
              .kava, .cronos, .telos, .octa, .shibarium, .disChain,
              .areon, .playa3ullGames, .pulsechain, .aurora, .manta,
              .zkSync, .moonbeam, .polygonZkEVM, .moonriver, .mantle,
-             .flare, .taraxa, .base, .blast, .cyber, .energyWebEVM, .core, .canxium, .chiliz:
+             .flare, .taraxa, .base, .blast, .cyber, .energyWebEVM, .core, .canxium, .chiliz, .xodex:
             return "0x52bb4012854f808CF9BAbd855e44E506dAf6C077"
         case .ethereumClassic:
             return "0xc49722a6f4Fe5A1347710dEAAa1fafF4c275689b"
@@ -108,6 +108,8 @@ struct EstimationFeeAddressFactory {
             return "sei1lhjvds604fvac32j4eygpr820lyc82dlfv0ea4"
         case .energyWebX:
             return "5CogUCbb5PYYbEHhDVGDN6JRRYBkd4sFRVc4wwP8oy5Su34Z"
+        case .clore:
+            return "AJfAu7RJxiTowM9qVaTbVuS5JCPCpV3p7M"
         }
     }
 }

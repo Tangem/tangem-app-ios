@@ -26,7 +26,7 @@ class SolanaWalletManager: BaseManager, WalletManager {
     override func update(completion: @escaping (Result<Void, Error>) -> Void) {
         let transactionIDs = wallet.pendingTransactions.map { $0.hash }
 
-        cancellable = networkService.getInfo(accountId: wallet.address, tokens: cardTokens, transactionIDs: transactionIDs)
+        cancellable = networkService.getInfo(accountId: wallet.address, tokens: cardTokens)
             .sink { [weak self] in
                 switch $0 {
                 case .failure(let error):
@@ -51,9 +51,7 @@ class SolanaWalletManager: BaseManager, WalletManager {
             wallet.add(tokenValue: balance, for: cardToken)
         }
 
-        wallet.removePendingTransaction { hash in
-            info.confirmedTransactionIDs.contains(hash)
-        }
+        wallet.clearPendingTransaction()
     }
 }
 
@@ -80,6 +78,7 @@ extension SolanaWalletManager: TransactionSender {
                 let mapper = PendingTransactionRecordMapper()
                 let record = mapper.mapToPendingTransactionRecord(transaction: transaction, hash: hash)
                 wallet.addPendingTransaction(record)
+
                 return TransactionSendResult(hash: hash)
             }
             .eraseSendError()
@@ -216,7 +215,7 @@ private extension SolanaWalletManager {
         let tokens: [Token] = amountType.token.map { [$0] } ?? []
 
         return networkService
-            .getInfo(accountId: destination, tokens: tokens, transactionIDs: [])
+            .getInfo(accountId: destination, tokens: tokens)
             .map { info in
                 switch amountType {
                 case .coin:
@@ -274,16 +273,8 @@ private extension SolanaWalletManager {
 
 extension SolanaWalletManager: RentProvider {
     func minimalBalanceForRentExemption() -> AnyPublisher<Amount, Error> {
-        networkService.minimalBalanceForRentExemption()
-            .tryMap { [weak self] balance in
-                guard let self = self else {
-                    throw WalletError.empty
-                }
-
-                let blockchain = wallet.blockchain
-                return Amount(with: blockchain, type: .coin, value: balance)
-            }
-            .eraseToAnyPublisher()
+        let amountValue = Amount(with: wallet.blockchain, value: mainAccountRentExemption)
+        return .justWithError(output: amountValue).eraseToAnyPublisher()
     }
 
     func rentAmount() -> AnyPublisher<Amount, Error> {
@@ -297,6 +288,12 @@ extension SolanaWalletManager: RentProvider {
                 return Amount(with: blockchain, type: .coin, value: fee)
             }
             .eraseToAnyPublisher()
+    }
+}
+
+extension SolanaWalletManager: RentExtemptionRestrictable {
+    var minimalAmountForRentExemption: Amount {
+        Amount(with: wallet.blockchain, value: mainAccountRentExemption)
     }
 }
 
@@ -331,31 +328,3 @@ extension SolanaWalletManager: StakeKitTransactionSender, StakeKitTransactionSen
         try await networkService.sendRaw(base64serializedTransaction: rawTransaction).async()
     }
 }
-
-/*
- // TODO: - https://tangem.atlassian.net/browse/IOS-8538
-
- // MARK: - MinimumBalanceRestrictable
-
- extension SolanaWalletManager: MinimumBalanceRestrictable {
-     var minimumBalance: Amount {
-         Amount(with: wallet.blockchain, value: mainAccountRentExemption)
-     }
-
-     // Required to determine the remaining rent when sending the token
-     func validateMinimumBalance(amount: Amount, fee: Amount) throws {
-         guard case .token = amount.type else {
-             return
-         }
-
-         guard let balance = wallet.amounts[.coin] else {
-             throw ValidationError.balanceNotFound
-         }
-
-         let remainderBalance = balance - fee
-         if remainderBalance < minimumBalance {
-             throw ValidationError.amountExceedsBalance
-         }
-     }
- }
- */

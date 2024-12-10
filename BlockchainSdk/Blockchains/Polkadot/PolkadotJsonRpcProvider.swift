@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import Moya
+import TangemNetworkUtils
 
 class PolkadotJsonRpcProvider: HostProvider {
     var host: String { node.url.hostOrUnknown }

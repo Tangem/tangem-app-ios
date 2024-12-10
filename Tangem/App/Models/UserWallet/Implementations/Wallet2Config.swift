@@ -235,6 +235,21 @@ extension Wallet2Config: UserWalletConfig {
         // CryptoCasey
         case "AF21", "AF22", "AF23":
             return cardsCount == 2 ? Assets.Cards.cryptoCaseySet2 : Assets.Cards.cryptoCaseySet3
+        // Konan
+        case "AF93":
+            return cardsCount == 2 ? Assets.Cards.konanDouble : Assets.Cards.konanTriple
+        // Kaspy
+        case "AF95":
+            return cardsCount == 2 ? Assets.Cards.kaspyDouble : Assets.Cards.kaspyTriple
+        // Kasper
+        case "AF96":
+            return cardsCount == 2 ? Assets.Cards.kasperDouble : Assets.Cards.kasperTriple
+        // BTC365
+        case "AF97":
+            return cardsCount == 2 ? Assets.Cards.btc365Double : Assets.Cards.btc365Triple
+        // Neiro on ETH
+        case "AF98":
+            return cardsCount == 2 ? Assets.Cards.neiroDouble : Assets.Cards.neiroTriple
         // Tangem Wallet 2.0
         default:
 

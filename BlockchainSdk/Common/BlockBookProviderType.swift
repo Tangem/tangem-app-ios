@@ -11,4 +11,5 @@ import Foundation
 enum BlockBookProviderType {
     case nowNodes
     case getBlock
+    case clore(URL)
 }

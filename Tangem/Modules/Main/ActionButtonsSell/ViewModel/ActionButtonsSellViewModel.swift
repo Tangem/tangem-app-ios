@@ -11,19 +11,13 @@ import Foundation
 final class ActionButtonsSellViewModel: ObservableObject {
     @Injected(\.exchangeService) private var exchangeService: ExchangeService
 
-    let tokenSelectorViewModel: TokenSelectorViewModel<
-        ActionButtonsTokenSelectorItem,
-        ActionButtonsTokenSelectorItemBuilder
-    >
+    let tokenSelectorViewModel: ActionButtonsTokenSelectorViewModel
 
     private weak var coordinator: ActionButtonsSellRoutable?
 
     init(
         coordinator: some ActionButtonsSellRoutable,
-        tokenSelectorViewModel: TokenSelectorViewModel<
-            ActionButtonsTokenSelectorItem,
-            ActionButtonsTokenSelectorItemBuilder
-        >
+        tokenSelectorViewModel: ActionButtonsTokenSelectorViewModel
     ) {
         self.coordinator = coordinator
         self.tokenSelectorViewModel = tokenSelectorViewModel
@@ -31,9 +25,14 @@ final class ActionButtonsSellViewModel: ObservableObject {
 
     func handleViewAction(_ action: Action) {
         switch action {
+        case .onAppear:
+            ActionButtonsAnalyticsService.trackScreenOpened(.sell)
         case .close:
+            ActionButtonsAnalyticsService.trackCloseButtonTap(source: .sell)
             coordinator?.dismiss()
         case .didTapToken(let token):
+            ActionButtonsAnalyticsService.trackTokenClicked(.sell, tokenSymbol: token.symbol)
+
             guard let url = makeSellUrl(from: token) else { return }
 
             coordinator?.openSellCrypto(at: url) { response in
@@ -91,6 +90,7 @@ private extension ActionButtonsSellViewModel {
 
 extension ActionButtonsSellViewModel {
     enum Action {
+        case onAppear
         case close
         case didTapToken(ActionButtonsTokenSelectorItem)
     }

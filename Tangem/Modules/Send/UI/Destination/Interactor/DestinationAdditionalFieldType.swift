@@ -30,19 +30,9 @@ enum SendDestinationAdditionalFieldType {
 
     static func type(for blockchain: Blockchain) -> SendDestinationAdditionalFieldType? {
         switch blockchain {
-        case .stellar,
-             .binance,
-             .ton,
-             .cosmos,
-             .terraV1,
-             .terraV2,
-             .algorand,
-             .hedera,
-             .sei,
-             .internetComputer,
-             .casper:
+        case let value where value.hasMemo:
             return .memo
-        case .xrp:
+        case let value where value.hasDestinationTag:
             return .destinationTag
         default:
             return .none

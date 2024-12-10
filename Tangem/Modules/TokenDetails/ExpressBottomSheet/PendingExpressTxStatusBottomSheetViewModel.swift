@@ -106,23 +106,32 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     }
 
     func onAppear() {
-        Analytics.log(
-            event: .tokenSwapStatusScreenOpened,
-            params: [
-                .token: currentTokenItem.currencySymbol,
-                .provider: pendingTransaction.provider.name,
-            ]
-        )
+        let params: [Analytics.ParameterKey: String] = [
+            .token: currentTokenItem.currencySymbol,
+            .provider: pendingTransaction.provider.name,
+        ]
+
+        switch pendingTransaction.type {
+        case .onramp:
+            Analytics.log(event: .onrampOnrampStatusOpened, params: params)
+        case .swap:
+            Analytics.log(event: .tokenSwapStatusScreenOpened, params: params)
+        }
     }
 
     func openProviderFromStatusHeader() {
-        Analytics.log(
-            event: .tokenButtonGoToProvider,
-            params: [
-                .token: currentTokenItem.currencySymbol,
-                .place: Analytics.ParameterValue.status.rawValue,
-            ]
-        )
+        let params: [Analytics.ParameterKey: String] = [
+            .token: currentTokenItem.currencySymbol,
+            .provider: pendingTransaction.provider.name,
+            .place: Analytics.ParameterValue.status.rawValue,
+        ]
+
+        switch pendingTransaction.type {
+        case .onramp:
+            Analytics.log(event: .onrampButtonGoToProvider, params: params)
+        case .swap:
+            Analytics.log(event: .tokenButtonGoToProvider, params: params)
+        }
 
         openProvider()
     }

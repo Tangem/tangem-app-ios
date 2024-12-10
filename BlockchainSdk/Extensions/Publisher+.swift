@@ -21,6 +21,10 @@ extension Publisher {
         }
     }
 
+    func mapToValue<Value>(_ value: Value) -> Publishers.Map<Self, Value> {
+        map { _ in value }
+    }
+
     func mapToVoid() -> Publishers.Map<Self, Void> {
         map { _ in () }
     }
@@ -117,6 +121,28 @@ extension Publisher where Failure == Error {
         mapError { error in
             SendTxErrorFactory().make(error: error)
         }
+    }
+}
+
+extension Publisher {
+    /// 'Inserts' the publisher produced by the `otherPublisherFactory` closure into the reactive stream,
+    /// for both successful and failed paths.
+    func wire<T, U>(otherPublisherFactory: @escaping () -> some Publisher<T, U>) -> some Publisher<Output, Failure> {
+        return self
+            .catch { error in
+                return otherPublisherFactory()
+                    .mapError { _ in
+                        return error // Replace errors from `otherPublisherFactory` with the original error
+                    }
+                    .flatMap { _ in
+                        return Fail(error: error) // Replace outputs from `otherPublisherFactory` with the original error
+                    }
+            }
+            .flatMap { output in
+                return otherPublisherFactory()
+                    .mapToValue(output) // Replace outputs from `otherPublisherFactory` with the original output
+                    .replaceError(with: output) // Replace errors from `otherPublisherFactory` with the original output
+            }
     }
 }
 

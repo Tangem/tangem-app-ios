@@ -20,45 +20,34 @@ class SendFinishViewModel: ObservableObject, Identifiable {
     @Published var onrampAmountCompactViewModel: OnrampAmountCompactViewModel?
     @Published var stakingValidatorsCompactViewModel: StakingValidatorsCompactViewModel?
     @Published var sendFeeCompactViewModel: SendFeeCompactViewModel?
+    @Published var onrampStatusCompactViewModel: OnrampStatusCompactViewModel?
 
-    private let actionType: SendFlowActionType
-    private let tokenItem: TokenItem
-    private var feeTypeAnalyticsParameter: Analytics.ParameterValue = .null
+    private var sendFinishAnalyticsLogger: SendFinishAnalyticsLogger
     private var bag: Set<AnyCancellable> = []
 
     init(
-        settings: Settings,
         input: SendFinishInput,
+        sendFinishAnalyticsLogger: SendFinishAnalyticsLogger,
         sendDestinationCompactViewModel: SendDestinationCompactViewModel?,
         sendAmountCompactViewModel: SendAmountCompactViewModel?,
         onrampAmountCompactViewModel: OnrampAmountCompactViewModel?,
         stakingValidatorsCompactViewModel: StakingValidatorsCompactViewModel?,
-        sendFeeCompactViewModel: SendFeeCompactViewModel?
+        sendFeeCompactViewModel: SendFeeCompactViewModel?,
+        onrampStatusCompactViewModel: OnrampStatusCompactViewModel?
     ) {
-        tokenItem = settings.tokenItem
-        actionType = settings.actionType
+        self.sendFinishAnalyticsLogger = sendFinishAnalyticsLogger
         self.sendDestinationCompactViewModel = sendDestinationCompactViewModel
         self.sendAmountCompactViewModel = sendAmountCompactViewModel
         self.onrampAmountCompactViewModel = onrampAmountCompactViewModel
         self.stakingValidatorsCompactViewModel = stakingValidatorsCompactViewModel
         self.sendFeeCompactViewModel = sendFeeCompactViewModel
+        self.onrampStatusCompactViewModel = onrampStatusCompactViewModel
 
         bind(input: input)
     }
 
     func onAppear() {
-        if let stakingAnalyticsAction = actionType.stakingAnalyticsAction {
-            Analytics.log(event: .stakingStakeInProgressScreenOpened, params: [
-                .validator: stakingValidatorsCompactViewModel?.selectedValidator?.name ?? "",
-                .token: tokenItem.currencySymbol,
-                .action: stakingAnalyticsAction.rawValue,
-            ])
-        } else {
-            Analytics.log(event: .sendTransactionSentScreenOpened, params: [
-                .token: tokenItem.currencySymbol,
-                .feeType: feeTypeAnalyticsParameter.rawValue,
-            ])
-        }
+        sendFinishAnalyticsLogger.onAppear()
 
         withAnimation(SendTransitionService.Constants.defaultAnimation) {
             showHeader = true
@@ -87,11 +76,4 @@ class SendFinishViewModel: ObservableObject, Identifiable {
 
 extension SendFinishViewModel: SendStepViewAnimatable {
     func viewDidChangeVisibilityState(_ state: SendStepVisibilityState) {}
-}
-
-extension SendFinishViewModel {
-    struct Settings {
-        let tokenItem: TokenItem
-        let actionType: SendFlowActionType
-    }
 }

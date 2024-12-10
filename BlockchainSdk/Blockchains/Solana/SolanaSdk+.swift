@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import SolanaSwift
+import TangemNetworkUtils
 
 extension Api {
     func getFees(

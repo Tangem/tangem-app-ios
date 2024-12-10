@@ -9,6 +9,7 @@
 import Foundation
 import Moya
 import TangemSdk
+import TangemNetworkUtils
 
 public struct NetworkProviderConfiguration {
     let logger: LoggerType
@@ -75,7 +76,7 @@ public extension URLSessionConfiguration {
     }()
 }
 
-// MARK: - Moya + TangemSdk
+// MARK: - TangemNetworkLoggerPlugin + TangemSdk
 
 public extension TangemNetworkLoggerPlugin {
     static func tangemSdkLoggerOutput(target: TargetType, items: [String]) {

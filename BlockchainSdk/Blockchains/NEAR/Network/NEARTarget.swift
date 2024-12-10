@@ -8,6 +8,7 @@
 
 import Foundation
 import Moya
+import TangemNetworkUtils
 
 struct NEARTarget {
     private static var encoder: JSONEncoder = {
@@ -129,5 +130,26 @@ extension NEARTarget: TargetType {
 private extension NEARTarget {
     enum Constants {
         static let jsonRPCMethodId: Int = 1
+    }
+}
+
+extension NEARTarget: TargetTypeLogConvertible {
+    var requestDescription: String {
+        switch target {
+        case .protocolConfig:
+            "protocolConfig"
+        case .gasPrice:
+            "gasPrice"
+        case .viewAccount:
+            "viewAccount"
+        case .viewAccessKey:
+            "viewAccessKey"
+        case .sendTransactionAsync:
+            "sendTransactionAsync"
+        case .sendTransactionAwait:
+            "sendTransactionAwait"
+        case .transactionStatus:
+            "transactionStatus"
+        }
     }
 }

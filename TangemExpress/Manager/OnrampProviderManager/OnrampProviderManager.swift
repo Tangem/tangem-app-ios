@@ -7,15 +7,20 @@
 //
 
 public protocol OnrampProviderManager {
+    /// Get actual from amount
+    var amount: Decimal? { get }
+
     /// Get actual state
     var state: OnrampProviderManagerState { get }
 
     /// Update quotes for amount
-    func update(amount: Decimal?) async
+    func update(amount: OnrampUpdatingAmount) async
 
     /// Build a request item with all fileds
     func makeOnrampQuotesRequestItem() throws -> OnrampQuotesRequestItem
 }
+
+// MARK: - OnrampProviderManagerState
 
 public enum OnrampProviderManagerState {
     case idle
@@ -36,6 +41,13 @@ public enum OnrampProviderManagerState {
         case tooSmallAmount(_ minAmount: String)
         case tooBigAmount(_ maxAmount: String)
 
+        var amount: Decimal? {
+            switch self {
+            case .tooSmallAmount(let minAmount): Decimal(string: minAmount)
+            case .tooBigAmount(let maxAmount): Decimal(string: maxAmount)
+            }
+        }
+
         public var description: String {
             switch self {
             case .tooSmallAmount(let minAmount): "Too small amount: \(minAmount)"
@@ -46,7 +58,7 @@ public enum OnrampProviderManagerState {
 
     public enum NotSupported: Hashable, CustomStringConvertible {
         case currentPair
-        case paymentMethod
+        case paymentMethod(supportedMethods: [OnrampPaymentMethod])
 
         public var description: String {
             switch self {
@@ -57,7 +69,7 @@ public enum OnrampProviderManagerState {
     }
 }
 
-// MARK: - CustomStringConvertible
+// MARK: - OnrampProviderManagerState + CustomStringConvertible
 
 extension OnrampProviderManagerState: CustomStringConvertible {
     public var description: String {
@@ -71,6 +83,8 @@ extension OnrampProviderManagerState: CustomStringConvertible {
         }
     }
 }
+
+// MARK: - OnrampProviderManagerError
 
 public enum OnrampProviderManagerError: LocalizedError {
     case objectReleased
