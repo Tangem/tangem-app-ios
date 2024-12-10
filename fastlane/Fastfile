@@ -3,7 +3,7 @@ require 'base64'
 default_platform(:ios)
 
 BUILD_PATH = "./fastlane/builds/"
-ANALYZE_ARCHIVE_UTIL_PATH = "./private-app-config/analyze_archive.sh" # TBD
+ANALYZE_ARCHIVE_UTIL_PATH = "./private-app-config/analyze_archive.sh"
 PRODUCTION_SCHEME = "Tangem"
 BETA_SCHEME = "Tangem Beta"
 ALPHA_SCHEME = "Tangem Alpha"
