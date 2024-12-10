@@ -59,7 +59,7 @@ class TONTests: XCTestCase {
 
         let buildForSign = try txBuilder.buildForSign(buildInput: buildInput)
 
-        XCTAssertEqual("2980e02f4d5e84dc9017abd504d9ac79189f821b525e890fe8034ad32edfc3c7".lowercased(), buildForSign.data.hexString.lowercased())
+        XCTAssertEqual("2980e02f4d5e84dc9017abd504d9ac79189f821b525e890fe8034ad32edfc3c7".lowercased(), buildForSign.hexString.lowercased())
 
         let expectedSignature = Data(hex: "d32e3e16841f2901afaa3ad2448896c8a4b0eb6b2fb7eb95ccd428cb4499be7c869926ce557323fd01f684407a75e9ef1e64bc004f2c7192c9bdc4b062198f03")
 
@@ -79,7 +79,7 @@ class TONTests: XCTestCase {
     // https://tonviewer.com/transaction/a274b0bd0f6a90c1296c8a7ee305488852e9335e47230dcee0d6495dcad71692
     func testCorrectTokenTransaction(curve: EllipticCurve) throws {
         let blockchain = Blockchain.ton(curve: curve, testnet: false)
-        let walletManager = makeWalletManager(blockchain: blockchain)
+        let walletManager = try makeWalletManager(blockchain: blockchain)
         let txBuilder = TONTransactionBuilder(wallet: walletManager.wallet)
 
         txBuilder.sequenceNumber = 5
