@@ -256,7 +256,6 @@ extension TangemApiTarget: TargetTypeLogConvertible {
             return false
         case .geo, .features, .getUserWalletTokens, .saveUserWalletTokens, .loadReferralProgramInfo, .participateInReferralProgram, .createAccount, .promotion, .validateNewUserPromotionEligibility, .validateOldUserPromotionEligibility, .awardNewUser, .awardOldUser, .resetAward:
             return true
-
         }
     }
 }
