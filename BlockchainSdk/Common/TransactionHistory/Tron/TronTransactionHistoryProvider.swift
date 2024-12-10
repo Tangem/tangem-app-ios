@@ -13,14 +13,14 @@ final class TronTransactionHistoryProvider<Mapper> where
     Mapper: TransactionHistoryMapper,
     Mapper: BlockBookTransactionHistoryTotalPageCountExtractor,
     Mapper.Response == BlockBookAddressResponse {
-    private let blockBookProvider: BlockBookUtxoProvider
+    private let blockBookProvider: BlockBookUTXOProvider
     private let mapper: Mapper
 
     private var page: TransactionHistoryIndexPage?
     private var totalPageCount: Int = 0
 
     init(
-        blockBookProvider: BlockBookUtxoProvider,
+        blockBookProvider: BlockBookUTXOProvider,
         mapper: Mapper
     ) {
         self.blockBookProvider = blockBookProvider

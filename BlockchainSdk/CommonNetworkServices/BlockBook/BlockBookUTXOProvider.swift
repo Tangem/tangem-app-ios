@@ -1,5 +1,5 @@
 //
-//  BlockBookUtxoProvider.swift
+//  BlockBookUTXOProvider.swift
 //  BlockchainSdk
 //
 //  Created by Pavel Grechikhin on 18.11.2022.
@@ -11,7 +11,7 @@ import Combine
 import TangemFoundation
 
 /// Documentation: https://github.com/trezor/blockbook/blob/master/docs/api.md
-class BlockBookUtxoProvider {
+class BlockBookUTXOProvider {
     var host: String {
         "\(blockchain.currencySymbol.lowercased()).\(config.host)"
     }
@@ -24,7 +24,11 @@ class BlockBookUtxoProvider {
         blockchain.decimalValue
     }
 
-    init(blockchain: Blockchain, blockBookConfig: BlockBookConfig, networkConfiguration: NetworkProviderConfiguration) {
+    init(
+        blockchain: Blockchain,
+        blockBookConfig: BlockBookConfig,
+        networkConfiguration: NetworkProviderConfiguration
+    ) {
         self.blockchain = blockchain
         config = blockBookConfig
         provider = NetworkProvider<BlockBookTarget>(configuration: networkConfiguration)
