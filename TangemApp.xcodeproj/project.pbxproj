@@ -12464,9 +12464,9 @@
 		DABCDA1A2D08F67000AB2C69 /* Fact0rn */ = {
 			isa = PBXGroup;
 			children = (
-				DABCDA1B2D08F68C00AB2C69 /* Fact0rnWalletAssembly.swift */,
 				DABCDA1D2D08F72A00AB2C69 /* Fact0rnExternalLinkProvider.swift */,
 				DABCDA1F2D08FA6B00AB2C69 /* Fact0rnAddressService.swift */,
+				DABCDA1B2D08F68C00AB2C69 /* Fact0rnWalletAssembly.swift */,
 			);
 			path = Fact0rn;
 			sourceTree = "<group>";

@@ -6,6 +6,8 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
+// TODO: [Fact0rn] Implement AddressService
+// https://tangem.atlassian.net/browse/IOS-8756
 struct Fact0rnAddressService {}
 
 // MARK: - AddressProvider
