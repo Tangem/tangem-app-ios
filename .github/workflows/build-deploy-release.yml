@@ -51,14 +51,16 @@ jobs:
 
   deploy:
     name: Tangem Release TestFlight
-    needs: [prepare, build]
     uses: tangem/actions/.github/workflows/deploy-testflight.yml@feature/IOS-8508_create_release_ci_cd  # TODO: Test only, switch to main
+    needs: 
+      - prepare
+      - build
     with:
-      stage: 'RC'
-      version: ${{ github.event.inputs.versionName }}
-      build_number: ${{ github.run_number }}
+      stage: '${{ needs.prepare.outputs.stage }}'
+      version: '${{ needs.prepare.outputs.version }}'
+      build_number: '${{ needs.prepare.outputs.build_number }}'
       changelog: '${{ inputs.build_description }}'
-      filename: 'Tangem-RC-${{ github.event.inputs.versionName }}(${{ github.run_number }}).ipa'
+      filename: 'Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa'
     secrets:
       ASC_KEY_ID: ${{ secrets.ASC_KEY_ID}}
       ASC_PRIVATE_KEY: ${{ secrets.ASC_PRIVATE_KEY}}
