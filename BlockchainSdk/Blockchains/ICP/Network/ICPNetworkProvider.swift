@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import IcpKit
+import TangemNetworkUtils
 
 struct ICPNetworkProvider: HostProvider {
     /// Blockchain API host

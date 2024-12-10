@@ -9,12 +9,14 @@
 import Foundation
 import TangemSdk
 import BlockchainSdk
+import TangemVisa
+import SwiftUI
 
 enum DefaultWalletData: Codable {
     case file(WalletData)
     case legacy(WalletData)
     case twin(WalletData, TwinData)
-    case visa(accessToken: String, refreshToken: String)
+    case visa(activationInput: VisaCardActivationInput, tokens: VisaAuthorizationTokens?)
     case none
 
     var twinData: TwinData? {
@@ -72,7 +74,8 @@ final class AppScanTask: CardSessionRunnable {
             return
         }
 
-        if FirmwareVersion.visaRange.contains(card.firmwareVersion.doubleValue) {
+        let visaUtils = VisaUtilities(isTestnet: false)
+        if FirmwareVersion.visaRange.contains(card.firmwareVersion.doubleValue), visaUtils.batchId.contains(card.batchId) {
             readVisaCard(session, completion)
             return
         }
@@ -290,11 +293,50 @@ final class AppScanTask: CardSessionRunnable {
         scanTask.run(in: session) { result in
             switch result {
             case .success:
-                self.complete(session, completion)
+                self.checkIfActivated(session, completion)
             case .failure(let error):
                 completion(.failure(error))
             }
         }
+    }
+
+    private func checkIfActivated(_ session: CardSession, _ completion: @escaping CompletionResult<AppScanTaskResponse>) {
+        guard let plainCard = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+
+        let card = CardDTO(card: plainCard)
+        let config = config(for: card)
+
+        if let seed = config.userWalletIdSeed {
+            let tokenItemsRepository = CommonTokenItemsRepository(key: UserWalletId(with: seed).stringValue)
+            if card.isAccessCodeSet, !tokenItemsRepository.containsFile {
+                session.pause()
+                session.viewDelegate.setState(.empty)
+                let alert = AlertBuilder.makeActivatedCardAlertController {
+                    self.complete(session, completion)
+                } supportAction: {
+                    let logsComposer = LogsComposer(infoProvider: BaseDataCollector())
+                    let mailViewModel = MailViewModel(
+                        logsComposer: logsComposer,
+                        recipient: EmailConfig.default.recipient,
+                        emailType: .activatedCard
+                    )
+                    let mailView = MailView(viewModel: mailViewModel)
+                    let controller = UIHostingController(rootView: mailView)
+                    AppPresenter.shared.show(controller)
+                    completion(.failure(.userCancelled))
+                } cancelAction: {
+                    completion(.failure(.userCancelled))
+                }
+
+                AppPresenter.shared.show(alert)
+                return
+            }
+        }
+
+        complete(session, completion)
     }
 
     private func complete(_ session: CardSession, _ completion: @escaping CompletionResult<AppScanTaskResponse>) {

@@ -36,5 +36,10 @@ extension InternalLogger {
         case apiService = "[Visa] [API Service]\n"
         case tokenInfoLoader = "[Visa] [TokenInfoLoader]:\n"
         case authorizationTokenHandler = "[Visa] [AuthorizationTokenHandler]: "
+        case activationManager = "[Visa] [ActivationManager]: "
+        case cardSetupHandler = "[Visa] [CardSetupHandler]: "
+        case cardActivationOrderProvider = "[Visa] [CommonCardActivationOrderProvider]: "
+        case cardAuthorizationProcessor = "[Visa] [CardAuthorizationProcessor]: "
+        case cardActivationTask = "[Visa] [CardActivationTask]: "
     }
 }

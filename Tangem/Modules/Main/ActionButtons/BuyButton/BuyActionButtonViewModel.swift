@@ -40,6 +40,8 @@ final class BuyActionButtonViewModel: ActionButtonViewModel {
 
     @MainActor
     func tap() {
+        trackTapEvent()
+
         switch viewState {
         case .loading, .disabled, .initial:
             break
