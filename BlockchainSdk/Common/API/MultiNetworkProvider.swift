@@ -10,6 +10,7 @@ import Foundation
 import Combine
 import Moya
 import TangemSdk
+import TangemNetworkUtils
 
 @available(iOS 13.0, *)
 protocol MultiNetworkProvider: AnyObject, HostProvider {
@@ -41,7 +42,9 @@ extension MultiNetworkProvider {
                 guard let self = self else { return .anyFail(error: error) }
 
                 if let moyaError = error as? MoyaError, case .statusCode(let resp) = moyaError {
-                    Log.network("Switchable publisher catched error: \(moyaError). Response message: \(String(describing: String(data: resp.data, encoding: .utf8)))")
+                    log("Error: \(moyaError). Message: \(String(describing: String(data: resp.data, encoding: .utf8)))")
+                } else {
+                    log("Error: \(error)")
                 }
 
                 if case WalletError.noAccount = error {
@@ -52,14 +55,12 @@ extension MultiNetworkProvider {
                     return .anyFail(error: error)
                 }
 
-                Log.network("Switchable publisher catched error: \(error)")
-
                 let beforeSwitchIfNeededHost = host
 
                 if let nextHost = switchProviderIfNeeded(for: currentHost) {
                     // Send event if api did switched by host value
                     if nextHost != beforeSwitchIfNeededHost {
-                        Log.network("Switching to next publisher on host: \(nextHost)")
+                        log("Next host: \(nextHost)")
 
                         ExceptionHandler.shared.handleAPISwitch(
                             currentHost: currentHost,
@@ -95,6 +96,10 @@ extension MultiNetworkProvider {
 
     private func resetProviders() {
         currentProviderIndex = 0
+    }
+
+    private func log(_ string: String) {
+        Log.network("\(TangemNetworkLoggerConstants.networkPrefix) \(TangemNetworkLoggerConstants.apiChange) 🔄 \(string)")
     }
 }
 

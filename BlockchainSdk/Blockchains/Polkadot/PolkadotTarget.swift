@@ -8,6 +8,7 @@
 
 import Foundation
 import Moya
+import TangemNetworkUtils
 
 enum PolkadotBlockhashType {
     case genesis
@@ -100,5 +101,11 @@ struct PolkadotTarget: TargetType {
         case .submitExtrinsic:
             return "author_submitExtrinsic"
         }
+    }
+}
+
+extension PolkadotTarget: TargetTypeLogConvertible {
+    var requestDescription: String {
+        rpcMethod
     }
 }

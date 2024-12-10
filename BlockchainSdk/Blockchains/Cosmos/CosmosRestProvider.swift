@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import Moya
+import TangemNetworkUtils
 
 class CosmosRestProvider: HostProvider {
     var host: String {

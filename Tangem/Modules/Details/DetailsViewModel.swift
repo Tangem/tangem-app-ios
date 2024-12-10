@@ -187,7 +187,7 @@ extension DetailsViewModel {
     func requestSupport() {
         Analytics.log(.requestSupport, params: [.source: .settings])
         failedCardScanTracker.resetCounter()
-        coordinator?.openMail(with: failedCardScanTracker, recipient: EmailConfig.default.recipient, emailType: .failedToScanCard)
+        coordinator?.openMail(with: BaseDataCollector(), recipient: EmailConfig.default.recipient, emailType: .failedToScanCard)
     }
 }
 

@@ -64,7 +64,7 @@ struct StakeKitTarget: Moya.TargetType {
             return "transactions/\(id)/submit"
         case .submitHash(let id, _):
             return "transactions/\(id)/submit_hash"
-        case .actions(let request):
+        case .actions:
             return "actions"
         }
     }
@@ -114,5 +114,20 @@ struct StakeKitTarget: Moya.TargetType {
 
     var headers: [String: String]? {
         ["X-API-KEY": apiKey]
+    }
+}
+
+extension StakeKitTarget: TargetTypeLogConvertible {
+    var requestDescription: String {
+        path
+    }
+
+    var shouldLogResponseBody: Bool {
+        switch target {
+        case .getYield:
+            return false
+        default:
+            return true
+        }
     }
 }

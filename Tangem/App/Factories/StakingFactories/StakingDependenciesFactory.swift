@@ -8,14 +8,25 @@
 
 import Foundation
 import TangemStaking
+import TangemNetworkUtils
+import BlockchainSdk
+import Moya
 
 class StakingDependenciesFactory {
     @Injected(\.keysManager) private var keysManager: KeysManager
 
     func makeStakingAPIProvider() -> StakingAPIProvider {
-        TangemStakingFactory().makeStakingAPIProvider(
+        let plugins: [PluginType] = [
+            TangemNetworkLoggerPlugin(configuration: .init(
+                output: TangemNetworkLoggerPlugin.tangemSdkLoggerOutput,
+                logOptions: .verbose
+            )),
+        ]
+
+        return TangemStakingFactory().makeStakingAPIProvider(
             credential: StakingAPICredential(apiKey: keysManager.stakeKitKey),
-            configuration: .defaultConfiguration
+            configuration: .defaultConfiguration,
+            plugins: plugins
         )
     }
 

@@ -39,6 +39,7 @@ class OnrampModel {
     private let userWalletId: String
     private let walletModel: WalletModel
     private let onrampManager: OnrampManager
+    private let onrampDataRepository: OnrampDataRepository
     private let onrampRepository: OnrampRepository
 
     private var task: Task<Void, Never>?
@@ -48,11 +49,13 @@ class OnrampModel {
         userWalletId: String,
         walletModel: WalletModel,
         onrampManager: OnrampManager,
+        onrampDataRepository: OnrampDataRepository,
         onrampRepository: OnrampRepository
     ) {
         self.userWalletId = userWalletId
         self.walletModel = walletModel
         self.onrampManager = onrampManager
+        self.onrampDataRepository = onrampDataRepository
         self.onrampRepository = onrampRepository
 
         _currency = .init(
@@ -248,8 +251,30 @@ private extension OnrampModel {
 
         // Update amount UI
         _currency.send(.success(currency))
+
         mainTask {
+            guard await $0.isCountryAvailable(country: country) else {
+                await $0.initiateCountryDefinition()
+                return
+            }
+
             await $0.updateProviders(country: country, currency: currency)
+        }
+    }
+
+    func isCountryAvailable(country: OnrampCountry) async -> Bool {
+        do {
+            let countries = try await onrampDataRepository.countries()
+            let country = countries.first(where: { $0.identity == country.identity })
+            let onrampAvailable = country?.onrampAvailable ?? false
+            if !onrampAvailable {
+                // Clear repo
+                onrampRepository.updatePreference(country: nil, currency: nil)
+            }
+            return onrampAvailable
+        } catch {
+            _currency.send(.failure(error))
+            return false
         }
     }
 

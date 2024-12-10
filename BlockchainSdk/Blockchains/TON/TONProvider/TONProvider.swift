@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import TonSwift
+import TangemNetworkUtils
 
 struct TONProvider: HostProvider {
     /// Blockchain API host

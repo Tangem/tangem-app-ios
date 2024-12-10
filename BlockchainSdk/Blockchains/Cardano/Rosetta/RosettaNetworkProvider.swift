@@ -10,6 +10,7 @@ import Foundation
 import Combine
 import Moya
 import SwiftCBOR
+import TangemNetworkUtils
 
 /// https://docs.cardano.org/cardano-components/cardano-rosetta/get-started-rosetta
 class RosettaNetworkProvider: CardanoNetworkProvider {
