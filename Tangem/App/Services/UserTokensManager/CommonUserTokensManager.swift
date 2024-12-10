@@ -18,7 +18,7 @@ class CommonUserTokensManager {
     let derivationManager: DerivationManager?
 
     private let userWalletId: UserWalletId
-    private let shouldLoadSwapAvailability: Bool
+    private let shouldLoadExpressAvailability: Bool
     private let userTokenListManager: UserTokenListManager
     private let walletModelsManager: WalletModelsManager
     private let derivationStyle: DerivationStyle?
@@ -32,7 +32,7 @@ class CommonUserTokensManager {
 
     init(
         userWalletId: UserWalletId,
-        shouldLoadSwapAvailability: Bool,
+        shouldLoadExpressAvailability: Bool,
         userTokenListManager: UserTokenListManager,
         walletModelsManager: WalletModelsManager,
         derivationStyle: DerivationStyle?,
@@ -41,7 +41,7 @@ class CommonUserTokensManager {
         longHashesSupported: Bool
     ) {
         self.userWalletId = userWalletId
-        self.shouldLoadSwapAvailability = shouldLoadSwapAvailability
+        self.shouldLoadExpressAvailability = shouldLoadExpressAvailability
         self.userTokenListManager = userTokenListManager
         self.walletModelsManager = walletModelsManager
         self.derivationStyle = derivationStyle
@@ -88,7 +88,7 @@ class CommonUserTokensManager {
     }
 
     private func loadSwapAvailabilityStateIfNeeded(forceReload: Bool) {
-        guard shouldLoadSwapAvailability else { return }
+        guard shouldLoadExpressAvailability else { return }
 
         let converter = StorageEntryConverter()
         let tokenItems = converter.convertToTokenItem(userTokenListManager.userTokensList.entries)

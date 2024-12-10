@@ -68,6 +68,7 @@ struct OnrampAmountView: View {
                 .minTextScale(SendAmountStep.Constants.amountMinTextScale)
                 .matchedGeometryEffect(id: namespace.names.amountCryptoText, in: namespace.id)
                 .skeletonable(isShown: viewModel.isLoading, width: 100, height: 28)
+                .disabled(viewModel.isLoading)
 
             LoadableTextView(
                 state: viewModel.bottomInfoText.state,
