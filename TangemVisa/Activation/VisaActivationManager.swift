@@ -137,39 +137,36 @@ extension CommonVisaActivationManager: CardActivationTaskOrderProvider {
 extension CommonVisaActivationManager {
     func taskActivation(accessCode: String) async throws (VisaActivationError) {
         do {
-//            var authorizationChallenge: String?
-//            if await !authorizationTokenHandler.containsAccessToken {
-//                authorizationChallenge = try await authorizationProcessor.getAuthorizationChallenge(for: cardInput)
-//            }
-//
-//            let task = CardActivationTask(
-//                selectedAccessCode: accessCode,
-//                activationInput: cardInput,
-//                challengeToSign: authorizationChallenge,
-//                delegate: self,
-//                logger: logger
-//            )
-//
-//            let activationResponse: VisaCardActivationResponse = try await withCheckedThrowingContinuation { [weak self] continuation in
-//                guard let self else {
-//                    continuation.resume(throwing: "Deinitialized")
-//                    return
-//                }
-//
-//                tangemSdk.startSession(with: task, cardId: cardInput.cardId) { result in
-//                    switch result {
-//                    case .success(let response):
-//                        continuation.resume(with: .success(response))
-//                    case .failure(let error):
-//                        continuation.resume(throwing: error)
-//                    }
-//                }
-//            }
-//
-//            log("Do something with activation response: \(activationResponse)")
+            var authorizationChallenge: String?
+            if await !authorizationTokenHandler.containsAccessToken {
+                authorizationChallenge = try await authorizationProcessor.getAuthorizationChallenge(for: cardInput)
+            }
 
-            // Temp solution while backend in development
-            targetApproveAddress = "0x9F65354e595284956599F2892fA4A4a87653D6E6"
+            let task = CardActivationTask(
+                selectedAccessCode: accessCode,
+                activationInput: cardInput,
+                challengeToSign: authorizationChallenge,
+                delegate: self,
+                logger: logger
+            )
+
+            let activationResponse: VisaCardActivationResponse = try await withCheckedThrowingContinuation { [weak self] continuation in
+                guard let self else {
+                    continuation.resume(throwing: "Deinitialized")
+                    return
+                }
+
+                tangemSdk.startSession(with: task, cardId: cardInput.cardId) { result in
+                    switch result {
+                    case .success(let response):
+                        continuation.resume(with: .success(response))
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                    }
+                }
+            }
+
+            log("Do something with activation response: \(activationResponse)")
         } catch let sdkError as TangemSdkError {
             if sdkError.isUserCancelled {
                 return

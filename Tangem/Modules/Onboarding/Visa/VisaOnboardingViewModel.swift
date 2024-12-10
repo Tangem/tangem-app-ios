@@ -25,6 +25,7 @@ class VisaOnboardingViewModel: ObservableObject {
     @Published var steps: [VisaOnboardingStep] = []
     @Published var currentStep: VisaOnboardingStep = .welcome
     @Published var alert: AlertBinder?
+    @Published var cardImage: Image?
 
     var navigationBarHeight: CGFloat { OnboardingLayoutConstants.navbarSize.height }
     var progressBarHeight: CGFloat { OnboardingLayoutConstants.progressBarHeight }
@@ -44,7 +45,7 @@ class VisaOnboardingViewModel: ObservableObject {
     lazy var welcomeViewModel: VisaOnboardingWelcomeViewModel = .init(
         activationState: .newActivation,
         userName: "World",
-        imagePublisher: nil,
+        imagePublisher: $cardImage,
         startActivationDelegate: weakify(self, forFunction: VisaOnboardingViewModel.goToNextStep)
     )
 
@@ -90,6 +91,8 @@ class VisaOnboardingViewModel: ObservableObject {
         if case .visa(let visaSteps) = input.steps {
             steps = visaSteps
         }
+
+        loadImage(input.cardInput.imageLoadInput)
     }
 
     func backButtonAction() {
@@ -131,6 +134,10 @@ class VisaOnboardingViewModel: ObservableObject {
             recipient: emailConfig.recipient,
             emailType: .appFeedback(subject: emailConfig.subject)
         )
+    }
+
+    private func log<T>(_ message: @autoclosure () -> T) {
+        AppLog.shared.debug("[VisaOnboardingViewModel] - \(message())")
     }
 }
 
@@ -296,6 +303,26 @@ private extension VisaOnboardingViewModel {
     func closeOnboarding() {
         userWalletRepository.updateSelection()
         coordinator?.closeOnboarding()
+    }
+}
+
+// MARK: - Image loading
+
+private extension VisaOnboardingViewModel {
+    func loadImage(_ imageLoadInput: OnboardingInput.ImageLoadInput) {
+        runTask(in: self, isDetached: false) { viewModel in
+            do {
+                let image = try await CardImageProvider(supportsOnlineImage: imageLoadInput.supportsOnlineImage)
+                    .loadImage(cardId: imageLoadInput.cardId, cardPublicKey: imageLoadInput.cardPublicKey)
+                    .map { $0.image }
+                    .async()
+                await runOnMain {
+                    viewModel.cardImage = image
+                }
+            } catch {
+                viewModel.log("Failed to load card image. Error: \(error)")
+            }
+        }
     }
 }
 

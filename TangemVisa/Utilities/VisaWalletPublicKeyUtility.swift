@@ -92,7 +92,7 @@ public struct VisaWalletPublicKeyUtility {
 
         try validateExtendedPublicKey(targetAddress: targetAddress, extendedPublicKey: extendedPublicKey, derivationPath: derivationPath)
 
-        return extendedPublicKey.publicKey
+        return wallet.publicKey
     }
 
     private func validateCreatedAddress(targetAddress: String, createdAddress: any Address) throws (SearchError) {

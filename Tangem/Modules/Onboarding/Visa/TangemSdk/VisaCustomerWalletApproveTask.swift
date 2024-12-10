@@ -138,6 +138,7 @@ private extension VisaCustomerWalletApproveTask {
             case .failure(let sdkError):
                 completion(.failure(sdkError))
             }
+            withExtendedLifetime(signTask) {}
         }
     }
 }

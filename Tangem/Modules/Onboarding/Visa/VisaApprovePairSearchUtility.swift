@@ -82,7 +82,7 @@ struct VisaApprovePairSearchUtility {
 
         try visaWalletPublicKeyUtility.validateExtendedPublicKey(targetAddress: targetAddress, extendedPublicKey: extendedPublicKey, derivationPath: derivationPath)
 
-        return extendedPublicKey.publicKey
+        return wallet.publicKey
     }
 
     private func findWalletOnVisaCurve(in cardDTO: CardDTO) throws (VisaWalletPublicKeyUtility.SearchError) -> CardDTO.Wallet {
