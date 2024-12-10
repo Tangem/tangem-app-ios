@@ -43,6 +43,7 @@ struct ReceiveBottomSheetView: View {
                     SUILabel(viewModel.stringForAddress(info.address))
                         .padding(.horizontal, 60)
                         .padding(.top, 20)
+                        .contentShape(Rectangle())
                         .onTapGesture {
                             viewModel.copyToClipboard()
                         }
