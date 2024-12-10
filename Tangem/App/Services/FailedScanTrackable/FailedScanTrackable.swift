@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol FailedScanTrackable: EmailDataCollector {
+protocol FailedScanTrackable {
     var numberOfFailedAttempts: Int { get }
     var shouldDisplayAlert: Bool { get }
 

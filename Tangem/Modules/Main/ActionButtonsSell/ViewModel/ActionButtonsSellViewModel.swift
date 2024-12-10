@@ -25,9 +25,14 @@ final class ActionButtonsSellViewModel: ObservableObject {
 
     func handleViewAction(_ action: Action) {
         switch action {
+        case .onAppear:
+            ActionButtonsAnalyticsService.trackScreenOpened(.sell)
         case .close:
+            ActionButtonsAnalyticsService.trackCloseButtonTap(source: .sell)
             coordinator?.dismiss()
         case .didTapToken(let token):
+            ActionButtonsAnalyticsService.trackTokenClicked(.sell, tokenSymbol: token.symbol)
+
             guard let url = makeSellUrl(from: token) else { return }
 
             coordinator?.openSellCrypto(at: url) { response in
@@ -85,6 +90,7 @@ private extension ActionButtonsSellViewModel {
 
 extension ActionButtonsSellViewModel {
     enum Action {
+        case onAppear
         case close
         case didTapToken(ActionButtonsTokenSelectorItem)
     }

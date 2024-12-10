@@ -313,6 +313,7 @@
 "feedback_preface_scan_failed" = "Por favor, díganos qué tarjeta tiene";
 "feedback_preface_support" = "Hola equipo de soporte,";
 "feedback_preface_tx_failed" = "Por favor, cuéntenos más sobre tu problema. Cada pequeño detalle puede ayudar.";
+"feedback_subject_pre_activated_wallet" = "Previously activated wallet";
 "feedback_subject_rate_negative" = "Mis recomendaciones";
 "feedback_subject_scan_failed" = "No se puede escanear una tarjeta";
 "feedback_subject_support" = "Comentarios";
@@ -633,6 +634,7 @@
 "scan_card_settings_button" = "Escanee su tarjeta";
 "scan_card_settings_message" = "Escanee la tarjeta para cambiar sus ajustes. Los cambios afectarán solo a la tarjeta que has escaneado y no afectarán a otras tarjetas vinculadas a su billetera.";
 "scan_card_settings_title" = "¡Prepare su tarjeta!";
+"security_alert_title" = "Security Alert";
 "selling_insufficient_balance_alert_message" = "No tiene fondos suficientes en su saldo para vender esta criptomoneda. Deposite el activo deseado para continuar.";
 "selling_insufficient_balance_alert_title" = "Saldo insuficiente";
 "selling_regional_restriction_alert_message" = "La venta de criptomonedas no está disponible en su región en este momento. Estamos trabajando activamente para ofrecerle esta opción pronto. ¡Manténgase conectado!";
@@ -858,6 +860,7 @@
 "swapping_to_title" = "Usted recibe";
 "swapping_token_list_title" = "Elige token";
 "swapping_token_not_available" = "no disponible";
+"this_is_my_wallet_title" = "This is my wallet";
 "toast_balances_hidden" = "Saldos ocultos";
 "toast_balances_shown" = "Saldos mostrados";
 "toast_undo" = "Cancelar";
@@ -928,6 +931,7 @@
 "voice_over_open_card_details" = "Abrir detalles del dispositivo";
 "voice_over_open_new_wallet_connect_session" = "Escanee el código QR para abrir una nueva sesión de WalletConnect";
 "wallet_balance_missing_derivation" = "Escanee la tarjeta o el anillo";
+"wallet_been_activated_message" = "This wallet has already been activated earlier.\nIf it was done not by you please contact support.\nTangem never sells wallets along with the pre-generated access code.";
 "wallet_connect_alert_sign_message" = "Solicitud para firmar un mensaje.\n\n%@";
 "wallet_connect_bnb_sign_message" = "Dapp %1$@, solicitando\nfirmar transacción BNB.\n\n%2$@";
 "wallet_connect_bnb_trade_order_message" = "Orden de intercambio por %1$@\nPrecio: %2$@\nCantidad a recibir: %3$@\nCantidad a pagar: %4$@";

@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import TangemNetworkUtils
 
 struct VeChainNetworkProvider {
     private let baseURL: URL
