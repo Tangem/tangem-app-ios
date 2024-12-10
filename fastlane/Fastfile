@@ -193,11 +193,16 @@ Options:
 """
 lane :build_RC do |options|
   build(
-    scheme: PRODUCTION_SCHEME, 
-    version: options[:version], 
-    filename: options[:filename], 
-    path: options[:path]
+    export_method: "app-store",
+    scheme: PRODUCTION_SCHEME,
+    version: options[:version],
+    build: options[:build],
+    filename: options[:filename],
+    path: options[:path],
+    analyze_archive: options[:analyze_archive]
   )
+
+  # TODO: Refresh DSYMS
 end
 
 desc """
