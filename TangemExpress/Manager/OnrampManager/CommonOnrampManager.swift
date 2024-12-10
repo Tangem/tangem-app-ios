@@ -69,7 +69,7 @@ extension CommonOnrampManager: OnrampManager {
         let best = providerItem?.updateAttractiveTypes()
         log(message: "The best provider was define to \(best as Any)")
 
-        guard let selectedProvider = providerItem?.showableProvider() else {
+        guard let selectedProvider = providerItem?.maxPriorityProvider() else {
             throw OnrampManagerError.noProviderForPaymentMethod
         }
 
@@ -112,8 +112,8 @@ private extension CommonOnrampManager {
             log(message: "Providers for paymentMethod: \(provider.paymentMethod.name) was sorted to order: \(provider.providers)")
             log(message: "The best provider was defined to \(best as Any)")
 
-            if let maxPriorityProvider = provider.showableProvider() {
-                log(message: "The selected provider is \(maxPriorityProvider)")
+            if let maxPriorityProvider = provider.maxPriorityProvider() {
+                log(message: "The selected max priority provider is \(maxPriorityProvider)")
                 return maxPriorityProvider
             }
         }
