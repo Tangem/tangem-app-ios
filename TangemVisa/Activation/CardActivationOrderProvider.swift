@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import JWTDecode
 
 protocol CardActivationOrderProvider: AnyObject {
     func provideActivationOrderForSign() async throws -> CardActivationOrder
@@ -20,18 +21,18 @@ struct CardActivationOrder {
 
 final class CommonCardActivationOrderProvider {
     private let accessTokenProvider: AuthorizationTokenHandler
-    private let customerInfoService: CustomerInfoService
+    private let customerInfoManagementService: CustomerInfoManagementService
     private let logger: InternalLogger
 
     private var orderLoadingTask: Task<Void, Error>?
 
     init(
         accessTokenProvider: AuthorizationTokenHandler,
-        customerInfoService: CustomerInfoService,
+        customerInfoManagementService: CustomerInfoManagementService,
         logger: InternalLogger
     ) {
         self.accessTokenProvider = accessTokenProvider
-        self.customerInfoService = customerInfoService
+        self.customerInfoManagementService = customerInfoManagementService
         self.logger = logger
     }
 
@@ -42,6 +43,16 @@ final class CommonCardActivationOrderProvider {
 
 extension CommonCardActivationOrderProvider: CardActivationOrderProvider {
     func provideActivationOrderForSign() async throws -> CardActivationOrder {
+        guard let accessToken = await accessTokenProvider.accessToken else {
+            throw VisaActivationError.missingAccessCode
+        }
+
+        guard let customerId = JWTTokenHelper().getCustomerID(from: accessToken) else {
+            throw VisaActivationError.missingCustomerId
+        }
+
+        let customerInfo = try await customerInfoManagementService.loadCustomerInfo(customerId: customerId)
+        log("Loaded customer info: \(customerInfo)")
         // TODO: IOS-8572
         try await Task.sleep(seconds: 5)
         let random = Int.random(in: 1 ... 2)
