@@ -11,6 +11,9 @@ import Foundation
 public enum VisaActivationError: Error {
     case notImplemented
     case missingAccessCode
+    case missingAccessToken
+    case missingActiveCardSession
+    case missingCustomerId
     case wrongCard
     case missingOrderDataToSign
     case missingWallet
@@ -18,8 +21,13 @@ public enum VisaActivationError: Error {
     case taskMissingDelegate
     case underlyingError(Error)
 
-    public var description: String {
+    var description: String {
         switch self {
+        case .notImplemented: return "Not implemented"
+        case .missingAccessCode: return "Missing access code"
+        case .missingAccessToken: return "Missing access token. Please authorize with your Visa card"
+        case .missingActiveCardSession: return "Failed to find active NFC session"
+        case .missingCustomerId: return "Missing essential data for Visa Activation. Contact to support"
         case .notImplemented: return "Not implemented"
         case .missingAccessCode: return "Missing access code"
         case .wrongCard: return "Wrong card tapped"
