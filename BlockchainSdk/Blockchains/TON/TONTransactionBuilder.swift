@@ -38,7 +38,7 @@ final class TONTransactionBuilder {
     // MARK: - Implementation
 
     /// Build input for sign transaction from Parameters
-    func buildForSign(buildInput: TONTransactionInput) throws -> TxCompilerPreSigningOutput {
+    func buildForSign(buildInput: TONTransactionInput) throws -> Data {
         let input = try input(
             amount: buildInput.amount,
             destination: buildInput.destination,
@@ -57,7 +57,7 @@ final class TONTransactionBuilder {
             throw NSError()
         }
 
-        return preSigningOutput
+        return preSigningOutput.data
     }
 
     /// Build for send transaction obtain external message output

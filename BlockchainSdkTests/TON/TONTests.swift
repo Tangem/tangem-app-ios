@@ -17,18 +17,18 @@ class TONTests: XCTestCase {
         rawRepresentation: Data(hexString: "0x85fca134b3fe3fd523d8b528608d803890e26c93c86dc3d97b8d59c7b3540c97")
     )
 
-    private func makeWalletManager(blockchain: BlockchainSdk.Blockchain) -> TONWalletManager {
+    private func makeWalletManager(blockchain: BlockchainSdk.Blockchain) throws -> TONWalletManager {
         let walletPubKey = privateKey.publicKey.rawRepresentation
 
         // UQASC4I5D3v_uqZdyBj6r9BwLE4JnIaQJUKhO6IlZbIwPj4G
-        let address = try! WalletCoreAddressService(coin: .ton).makeAddress(
+        let address = try WalletCoreAddressService(coin: .ton).makeAddress(
             for: .init(seedKey: walletPubKey, derivationType: .none),
             with: .default
         )
 
         let wallet = Wallet(blockchain: blockchain, addresses: [.default: address])
 
-        return try! .init(
+        return try .init(
             wallet: wallet,
             transactionBuilder: .init(wallet: wallet),
             networkService: TONNetworkService(providers: [], blockchain: blockchain)
@@ -46,7 +46,7 @@ class TONTests: XCTestCase {
     // https://tonscan.org/tx/77f72e4096f2ae315ff7b0906569f9aa450686b11a40e65c9adb8690587bffa4
     func testCorrectCoinTransaction(curve: EllipticCurve) throws {
         let blockchain = Blockchain.ton(curve: curve, testnet: false)
-        let walletManager = makeWalletManager(blockchain: blockchain)
+        let walletManager = try makeWalletManager(blockchain: blockchain)
         let txBuilder = TONTransactionBuilder(wallet: walletManager.wallet)
 
         let buildInput = TONTransactionInput(
@@ -103,7 +103,7 @@ class TONTests: XCTestCase {
 
         let buildForSign = try txBuilder.buildForSign(buildInput: buildInput)
 
-        XCTAssertEqual("876b5fe635e5d538edef9e16746b7de19c1384c46a41302a15f7243d38285f9c".lowercased(), buildForSign.data.hexString.lowercased())
+        XCTAssertEqual("876b5fe635e5d538edef9e16746b7de19c1384c46a41302a15f7243d38285f9c".lowercased(), buildForSign.hexString.lowercased())
 
         let expectedSignature = Data(hex: "6AAD07AEB57E99A528BF5EE5649EC4CEFF34F301E1C6502E25919855B47667CAE33B0D04E7E5D8082B998442EA1DC41D4277ACE8D02621187682DDD270067D08")
 

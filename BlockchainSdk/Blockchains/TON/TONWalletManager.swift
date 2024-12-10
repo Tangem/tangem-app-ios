@@ -73,15 +73,14 @@ final class TONWalletManager: BaseManager, WalletManager {
 
                 let hashForSign = try transactionBuilder.buildForSign(buildInput: buildInput)
 
-                return (buildInput, hashForSign.data)
+                return (buildInput, hashForSign)
             }
             .withWeakCaptureOf(self)
             .flatMap { manager, input in
                 let (buildInput, hash) = input
-                let transactionInputPublisher = Just(buildInput).setFailureType(to: Error.self)
-                let signaturePublisher = signer.sign(hash: hash, walletPublicKey: manager.wallet.publicKey)
 
-                return Publishers.Zip(signaturePublisher, transactionInputPublisher)
+                return signer.sign(hash: hash, walletPublicKey: manager.wallet.publicKey)
+                    .map { ($0, buildInput) }
             }
             .withWeakCaptureOf(self)
             .tryMap { walletManager, input -> String in
@@ -215,12 +214,12 @@ private extension TONWalletManager {
     }
 
     private func createExpirationTimestampSecs() -> UInt32 {
-        UInt32(Date().addingTimeInterval(TimeInterval(Constants.transactionLifetimeInMin * 60)).timeIntervalSince1970)
+        UInt32(Date().addingTimeInterval(Constants.transactionLifetimeInSec).timeIntervalSince1970)
     }
 }
 
 private extension TONWalletManager {
     enum Constants {
-        static let transactionLifetimeInMin: Double = 1
+        static let transactionLifetimeInSec: TimeInterval = 60
     }
 }
