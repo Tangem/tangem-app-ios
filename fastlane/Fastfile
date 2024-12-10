@@ -3,7 +3,7 @@ require 'base64'
 default_platform(:ios)
 
 BUILD_PATH = "./fastlane/builds/"
-ANALYZE_ARCHIVE_UTIL_PATH = "./private-app-config/analyze_archive.sh" # TBD
+ANALYZE_ARCHIVE_UTIL_PATH = "./private-app-config/analyze_archive.sh"
 PRODUCTION_SCHEME = "Tangem"
 BETA_SCHEME = "Tangem Beta"
 ALPHA_SCHEME = "Tangem Alpha"
@@ -86,6 +86,7 @@ Options:
 - build: optional build number
 - changelog: string for description archive
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+- analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
 """
 lane :release do |options|
   UI.warning("Deprecated, use `Create release` Github action instead")
@@ -138,6 +139,7 @@ Options:
 - path: Path to binary
 - firebase_app_id: Firebase app id for incrementing the build version number and DSYM uploads
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+- analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
 """
 lane :build_Alpha do |options|
   increment_version_number(version_number: options[:version])
@@ -165,6 +167,7 @@ Options:
 - path: Path to binary
 - firebase_app_id: Firebase app id for incrementing the build version number and DSYM uploads
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+- analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
 """
 lane :build_Beta do |options|
   increment_version_number(version_number: options[:version])

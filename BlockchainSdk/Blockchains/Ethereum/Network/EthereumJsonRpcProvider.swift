@@ -10,6 +10,7 @@ import Foundation
 import Combine
 import BigInt
 import Moya
+import TangemNetworkUtils
 
 class EthereumJsonRpcProvider: HostProvider {
     let url: URL

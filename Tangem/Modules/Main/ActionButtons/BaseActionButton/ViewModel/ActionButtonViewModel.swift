@@ -28,4 +28,8 @@ extension ActionButtonViewModel {
         case .disabled, .loading: true
         }
     }
+
+    func trackTapEvent() {
+        ActionButtonsAnalyticsService.trackActionButtonTap(button: model, state: viewState)
+    }
 }

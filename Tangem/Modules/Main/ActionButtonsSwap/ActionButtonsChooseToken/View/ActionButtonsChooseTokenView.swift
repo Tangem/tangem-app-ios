@@ -49,7 +49,13 @@ struct ActionButtonsChooseTokenView: View {
     private var removeSourceButton: some View {
         if isRemoveButtonVisible {
             Button(
-                action: { selectedToken = nil },
+                action: {
+                    if let selectedToken {
+                        ActionButtonsAnalyticsService.removeButtonClicked(tokenSymbol: selectedToken.symbol)
+                    }
+
+                    selectedToken = nil
+                },
                 label: {
                     Text(Localization.manageTokensRemove)
                         .style(Fonts.Regular.footnote, color: Colors.Text.accent)

@@ -10,6 +10,7 @@ import Foundation
 import stellarsdk
 import Combine
 import TangemFoundation
+import TangemNetworkUtils
 
 @available(iOS 13.0, *)
 class StellarNetworkProvider: HostProvider {

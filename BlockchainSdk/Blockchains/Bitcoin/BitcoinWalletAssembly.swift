@@ -19,13 +19,13 @@ struct BitcoinWalletAssembly: WalletManagerAssembly {
             let providers: [AnyBitcoinNetworkProvider] = input.apiInfo.reduce(into: []) { partialResult, providerType in
                 switch providerType {
                 case .nowNodes:
-                    partialResult.append(networkProviderAssembly.makeBlockBookUtxoProvider(with: input, for: .nowNodes).eraseToAnyBitcoinNetworkProvider())
+                    partialResult.append(networkProviderAssembly.makeBlockBookUTXOProvider(with: input, for: .nowNodes).eraseToAnyBitcoinNetworkProvider())
                 case .getBlock:
                     if input.blockchain.isTestnet {
                         break
                     }
 
-                    partialResult.append(networkProviderAssembly.makeBlockBookUtxoProvider(with: input, for: .getBlock).eraseToAnyBitcoinNetworkProvider())
+                    partialResult.append(networkProviderAssembly.makeBlockBookUTXOProvider(with: input, for: .getBlock).eraseToAnyBitcoinNetworkProvider())
                 case .blockchair:
                     partialResult.append(
                         contentsOf: networkProviderAssembly.makeBlockchairNetworkProviders(

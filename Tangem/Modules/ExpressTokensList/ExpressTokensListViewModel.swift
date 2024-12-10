@@ -9,6 +9,7 @@
 import Combine
 import SwiftUI
 import TangemExpress
+import TangemFoundation
 
 final class ExpressTokensListViewModel: ObservableObject, Identifiable {
     // MARK: - ViewState
@@ -36,6 +37,7 @@ final class ExpressTokensListViewModel: ObservableObject, Identifiable {
 
     // For Analytics
     private var selectedWallet: WalletModel?
+    private var updateTask: Task<Void, Never>?
 
     init(
         swapDirection: SwapDirection,
@@ -79,13 +81,8 @@ private extension ExpressTokensListViewModel {
     func bind() {
         expressTokensListAdapter.walletModels()
             .withWeakCaptureOf(self)
-            .asyncMap { viewModel, walletModels in
-                let availablePairs = await viewModel.loadAvailablePairs()
-                return (walletModels: walletModels, pairs: availablePairs)
-            }
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] walletModels, pairs in
-                self?.updateWalletModels(walletModels: walletModels, availableCurrencies: pairs)
+            .sink { viewModel, walletModels in
+                viewModel.updateAvailablePairs(walletModels: walletModels)
             }
             .store(in: &bag)
 
@@ -106,6 +103,19 @@ private extension ExpressTokensListViewModel {
                 self?.updateView(searchText: searchText)
             }
             .store(in: &bag)
+    }
+
+    func updateAvailablePairs(walletModels: [WalletModel]) {
+        updateTask?.cancel()
+        updateTask = TangemFoundation.runTask(in: self) { viewModel in
+            let availablePairs = await viewModel.loadAvailablePairs()
+            await runOnMain {
+                viewModel.updateWalletModels(
+                    walletModels: walletModels,
+                    availableCurrencies: availablePairs
+                )
+            }
+        }
     }
 
     func loadAvailablePairs() async -> [ExpressCurrency] {
