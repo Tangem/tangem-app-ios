@@ -32,7 +32,7 @@ struct RavencoinWalletAssembly: WalletManagerAssembly {
                 .resolveProviders(apiInfos: input.apiInfo) { nodeInfo, providerType in
                     switch providerType {
                     case .nowNodes:
-                        networkProviderAssembly.makeBlockBookUtxoProvider(
+                        networkProviderAssembly.makeBlockBookUTXOProvider(
                             with: input,
                             for: .nowNodes
                         ).eraseToAnyBitcoinNetworkProvider()
