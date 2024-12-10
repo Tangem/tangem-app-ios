@@ -110,6 +110,9 @@ struct EstimationFeeAddressFactory {
             return "5CogUCbb5PYYbEHhDVGDN6JRRYBkd4sFRVc4wwP8oy5Su34Z"
         case .clore:
             return "AJfAu7RJxiTowM9qVaTbVuS5JCPCpV3p7M"
+        case .fact0rn:
+            // TODO: [Fact0rn] Add estimation fee address
+            return ""
         }
     }
 }

@@ -2073,6 +2073,9 @@
 		DAB5E335297E8CBF00A4E9CF /* SignificantFractionDigitRounder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB5E333297E8CBF00A4E9CF /* SignificantFractionDigitRounder.swift */; };
 		DABA435427BFB63D00718AC6 /* WelcomeStoryPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABA435327BFB63D00718AC6 /* WelcomeStoryPage.swift */; };
 		DABA435627BFC41700718AC6 /* StoriesBottomButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABA435527BFC41700718AC6 /* StoriesBottomButtons.swift */; };
+		DABCDA1C2D08F68C00AB2C69 /* Fact0rnWalletAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABCDA1B2D08F68C00AB2C69 /* Fact0rnWalletAssembly.swift */; };
+		DABCDA1E2D08F72A00AB2C69 /* Fact0rnExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABCDA1D2D08F72A00AB2C69 /* Fact0rnExternalLinkProvider.swift */; };
+		DABCDA202D08FA6B00AB2C69 /* Fact0rnAddressService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABCDA1F2D08FA6B00AB2C69 /* Fact0rnAddressService.swift */; };
 		DABDF4132BDA2D7000CE475D /* AddressTextViewHeightModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABDF4122BDA2D7000CE475D /* AddressTextViewHeightModel.swift */; };
 		DAC208B32CDE4CBB0031001B /* AnyTransition+opacityLinear.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAC208B22CDE4CBB0031001B /* AnyTransition+opacityLinear.swift */; };
 		DAC37FBA2A2DFB730068F3ED /* PromotionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAC37FB92A2DFB730068F3ED /* PromotionView.swift */; };
@@ -5204,6 +5207,9 @@
 		DAB5E333297E8CBF00A4E9CF /* SignificantFractionDigitRounder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignificantFractionDigitRounder.swift; sourceTree = "<group>"; };
 		DABA435327BFB63D00718AC6 /* WelcomeStoryPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeStoryPage.swift; sourceTree = "<group>"; };
 		DABA435527BFC41700718AC6 /* StoriesBottomButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesBottomButtons.swift; sourceTree = "<group>"; };
+		DABCDA1B2D08F68C00AB2C69 /* Fact0rnWalletAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnWalletAssembly.swift; sourceTree = "<group>"; };
+		DABCDA1D2D08F72A00AB2C69 /* Fact0rnExternalLinkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnExternalLinkProvider.swift; sourceTree = "<group>"; };
+		DABCDA1F2D08FA6B00AB2C69 /* Fact0rnAddressService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnAddressService.swift; sourceTree = "<group>"; };
 		DABDF4122BDA2D7000CE475D /* AddressTextViewHeightModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressTextViewHeightModel.swift; sourceTree = "<group>"; };
 		DAC208B22CDE4CBB0031001B /* AnyTransition+opacityLinear.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnyTransition+opacityLinear.swift"; sourceTree = "<group>"; };
 		DAC37FB92A2DFB730068F3ED /* PromotionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromotionView.swift; sourceTree = "<group>"; };
@@ -10816,6 +10822,7 @@
 				B62D3CBD2CBC79D900C2460E /* Ducatus */,
 				B62D3D0A2CBC79D900C2460E /* Ethereum */,
 				B62D3D0E2CBC79D900C2460E /* EthereumOptimisticRollup */,
+				DABCDA1A2D08F67000AB2C69 /* Fact0rn */,
 				B62D3D1D2CBC79D900C2460E /* Filecoin */,
 				B62D3D3F2CBC79D900C2460E /* Hedera */,
 				B62D3D492CBC79D900C2460E /* ICP */,
@@ -12452,6 +12459,16 @@
 				B03574C72B1F876300118786 /* PendingExpressTxStatusRow.swift */,
 			);
 			path = Subviews;
+			sourceTree = "<group>";
+		};
+		DABCDA1A2D08F67000AB2C69 /* Fact0rn */ = {
+			isa = PBXGroup;
+			children = (
+				DABCDA1B2D08F68C00AB2C69 /* Fact0rnWalletAssembly.swift */,
+				DABCDA1D2D08F72A00AB2C69 /* Fact0rnExternalLinkProvider.swift */,
+				DABCDA1F2D08FA6B00AB2C69 /* Fact0rnAddressService.swift */,
+			);
+			path = Fact0rn;
 			sourceTree = "<group>";
 		};
 		DABDF4112BDA2D2100CE475D /* AddressView */ = {
@@ -18725,7 +18742,9 @@
 				B62D40552CBC79DA00C2460E /* ChiaCondition.swift in Sources */,
 				B62D42942CBC79DB00C2460E /* Lock.swift in Sources */,
 				B62D402B2CBC79DA00C2460E /* BlockBookUTXOProvider+BitcoinNetworkProvider.swift in Sources */,
+				DABCDA1E2D08F72A00AB2C69 /* Fact0rnExternalLinkProvider.swift in Sources */,
 				B62D40372CBC79DA00C2460E /* BitcoinCashBlockBookUTXOProvider.swift in Sources */,
+				DABCDA202D08FA6B00AB2C69 /* Fact0rnAddressService.swift in Sources */,
 				B62D42372CBC79DB00C2460E /* ElectrumDTO.swift in Sources */,
 				B62D402E2CBC79DA00C2460E /* BitcoinModels.swift in Sources */,
 				B62D40F92CBC79DA00C2460E /* ICPProviderTarget.swift in Sources */,
@@ -18892,6 +18911,7 @@
 				B62D425F2CBC79DB00C2460E /* EstimationFeeAddressFactory.swift in Sources */,
 				B62D42242CBC79DB00C2460E /* XRPWalletManager.swift in Sources */,
 				B62D41612CBC79DA00C2460E /* PolkadotBlockchainMeta.swift in Sources */,
+				DABCDA1C2D08F68C00AB2C69 /* Fact0rnWalletAssembly.swift in Sources */,
 				B62D3FF02CBC79DA00C2460E /* OP_HASH256.swift in Sources */,
 				B62D40F62CBC79DA00C2460E /* HederaWalletManager.swift in Sources */,
 				B62D40242CBC79DA00C2460E /* BitcoinScriptChunk.swift in Sources */,
