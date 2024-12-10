@@ -11,6 +11,15 @@ import SwiftUI
 struct OnrampProviderRowView: View {
     let data: OnrampProviderRowViewData
 
+    private var hasInfoBelowProviderName: Bool {
+        switch data.state {
+        case .none, .available:
+            false
+        case .availableFromAmount, .availableToAmount, .availableForPaymentMethods, .unavailable:
+            true
+        }
+    }
+
     var body: some View {
         Button(action: data.action) {
             content
@@ -23,17 +32,40 @@ struct OnrampProviderRowView: View {
         HStack(spacing: 12) {
             iconView
 
-            VStack(spacing: 2) {
-                topLineView
-
-                bottomLineView
+            // If we don't any view below provider name
+            if hasInfoBelowProviderName {
+                verticalLayout
+            } else {
+                horizontalLayout
             }
-            .lineLimit(1)
         }
+        .lineLimit(1)
         .padding(.vertical, 16)
         .padding(.horizontal, 14)
         .overlay { overlay }
         .contentShape(Rectangle())
+    }
+
+    @ViewBuilder
+    private var verticalLayout: some View {
+        VStack(spacing: 2) {
+            topLineView
+
+            bottomLineView
+        }
+        .lineLimit(1)
+    }
+
+    @ViewBuilder
+    private var horizontalLayout: some View {
+        HStack(spacing: .zero) {
+            Text(data.name)
+                .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
+
+            Spacer()
+
+            trailingView
+        }
     }
 
     @ViewBuilder
@@ -61,6 +93,7 @@ struct OnrampProviderRowView: View {
             forceKingfisher: false
         )
         .opacity(data.isTappable ? 1 : 0.4)
+        .saturation(data.isTappable ? 1 : 0)
     }
 
     private var topLineView: some View {
@@ -83,30 +116,44 @@ struct OnrampProviderRowView: View {
 
             Spacer()
 
-            switch data.badge {
-            case .none:
-                EmptyView()
-            case .percent(let text, let signType):
-                Text(text)
-                    .style(Fonts.Regular.subheadline, color: signType.textColor)
-            case .bestRate:
-                Text(Localization.expressProviderBestRate)
-                    .style(Fonts.Bold.caption2, color: Colors.Text.primary2)
-                    .padding(.vertical, 2)
-                    .padding(.horizontal, 6)
-                    .background(Colors.Icon.accent)
-                    .cornerRadiusContinuous(6)
+            badgeView
+        }
+    }
+
+    private var trailingView: some View {
+        VStack(alignment: .trailing, spacing: 2) {
+            if let formattedAmount = data.formattedAmount {
+                Text(formattedAmount)
+                    .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
             }
+
+            badgeView
+        }
+    }
+
+    @ViewBuilder
+    private var badgeView: some View {
+        switch data.badge {
+        case .none:
+            EmptyView()
+        case .percent(let text, let signType):
+            Text(text)
+                .style(Fonts.Regular.subheadline, color: signType.textColor)
+        case .bestRate:
+            Text(Localization.expressProviderBestRate)
+                .style(Fonts.Bold.caption2, color: Colors.Text.primary2)
+                .padding(.vertical, 2)
+                .padding(.horizontal, 6)
+                .background(Colors.Icon.accent)
+                .cornerRadiusContinuous(6)
         }
     }
 
     @ViewBuilder
     private var stateView: some View {
         switch data.state {
-        case .none:
+        case .none, .available:
             EmptyView()
-        case .available(let time):
-            timeView(time: time)
         case .availableFromAmount(let text),
              .availableToAmount(let text),
              .availableForPaymentMethods(let text):
@@ -147,7 +194,7 @@ struct OnrampProviderRowView: View {
                 paymentMethodId: "card",
                 iconURL: URL(string: "https://s3.eu-central-1.amazonaws.com/tangem.api/express/1INCH512.png"),
                 formattedAmount: "0,00453 BTC",
-                state: .available(estimatedTime: "5 min"),
+                state: .available,
                 badge: .bestRate,
                 isSelected: true,
                 action: {}

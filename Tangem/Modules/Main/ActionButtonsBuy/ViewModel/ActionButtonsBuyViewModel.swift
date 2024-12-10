@@ -31,9 +31,13 @@ final class ActionButtonsBuyViewModel: ObservableObject {
 
     func handleViewAction(_ action: Action) {
         switch action {
+        case .onAppear:
+            ActionButtonsAnalyticsService.trackScreenOpened(.buy)
         case .close:
+            ActionButtonsAnalyticsService.trackCloseButtonTap(source: .buy)
             coordinator?.dismiss()
         case .didTapToken(let token):
+            ActionButtonsAnalyticsService.trackTokenClicked(.buy, tokenSymbol: token.symbol)
             coordinator?.openOnramp(walletModel: token.walletModel)
         }
     }
@@ -43,6 +47,7 @@ final class ActionButtonsBuyViewModel: ObservableObject {
 
 extension ActionButtonsBuyViewModel {
     enum Action {
+        case onAppear
         case close
         case didTapToken(ActionButtonsTokenSelectorItem)
     }

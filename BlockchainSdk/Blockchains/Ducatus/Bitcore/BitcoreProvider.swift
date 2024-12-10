@@ -9,6 +9,7 @@
 import Foundation
 import Moya
 import Combine
+import TangemNetworkUtils
 
 class BitcoreProvider {
     private let provider: NetworkProvider<BitcoreTarget>

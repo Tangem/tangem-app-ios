@@ -32,7 +32,7 @@ struct OnrampProviderRowViewData: Identifiable {
 
 extension OnrampProviderRowViewData {
     enum State: Hashable {
-        case available(estimatedTime: String)
+        case available
         case availableFromAmount(minAmount: String)
         case availableToAmount(maxAmount: String)
         case availableForPaymentMethods(methods: String)
