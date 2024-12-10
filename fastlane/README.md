@@ -116,6 +116,10 @@ Options:
 - version: app version
 - build: optional build number
 - changelog: string for description archive
+- filename: Name of the resulting artefact (IPA file)
+- path: Path to binary
+- xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+- analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
 
 
 ### alpha
@@ -201,11 +205,12 @@ Options:
 
 This lane deploy binary to TestFLight
 Options:
-- asc_key_id: TBD
-- asc_issuer_id: TBD
-- asc_key: TBD
-- binary_path: TBD
-- version: TBD
+- asc_key_id: App Store Connect API Key ID
+- asc_issuer_id: App Store Connect API Key Issuer ID
+- asc_key: App Store Connect API Key (base64 content)
+- path: Path to binary
+- version: app version
+- build: build number
 - changelog: [optional] Changelog will be added to TestFlight release notes along with the last commit hash.
 
 
