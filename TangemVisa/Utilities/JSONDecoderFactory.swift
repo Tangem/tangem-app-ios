@@ -16,4 +16,12 @@ struct JSONDecoderFactory {
         decoder.dateDecodingStrategy = .iso8601WithFractionalSeconds
         return decoder
     }
+
+    func makeCIMDecoder() -> JSONDecoder {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        let dateFormatter = DateFormatter(dateFormat: "yyyy-MM-dd'T'HH:mm:ss.SSSSSSS")
+        decoder.dateDecodingStrategy = .formatted(dateFormatter)
+        return decoder
+    }
 }
