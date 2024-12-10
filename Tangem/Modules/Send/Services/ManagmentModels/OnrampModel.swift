@@ -278,8 +278,7 @@ private extension OnrampModel {
         _currency.send(.success(currency))
 
         mainTask {
-            guard await $0.isCountryAvailable(country: country) else {
-                await $0.initiateCountryDefinition()
+            guard await $0.checkCountryAvailability(country: country) else {
                 return
             }
 
@@ -287,16 +286,28 @@ private extension OnrampModel {
         }
     }
 
-    func isCountryAvailable(country: OnrampCountry) async -> Bool {
+    func checkCountryAvailability(country: OnrampCountry) async -> Bool {
         do {
             let countries = try await onrampDataRepository.countries()
-            let country = countries.first(where: { $0.identity == country.identity })
-            let onrampAvailable = country?.onrampAvailable ?? false
-            if !onrampAvailable {
-                // Clear repo
-                onrampRepository.updatePreference(country: nil, currency: nil)
+            guard let country = countries.first(where: { $0.identity == country.identity }) else {
+                // For some reasons country disappeared from list
+                // Try define again
+                await initiateCountryDefinition()
+                return false
             }
-            return onrampAvailable
+
+            if country.onrampAvailable {
+                // All good
+                return true
+            }
+
+            // Clear repo
+            onrampRepository.updatePreference(country: nil, currency: nil)
+            await runOnMain {
+                router?.openOnrampCountryBottomSheet(country: country)
+            }
+
+            return false
         } catch {
             _currency.send(.failure(error))
             return false
@@ -556,7 +567,11 @@ extension OnrampModel: OnrampNotificationManagerInput {
     func refreshError() {
         if case .failure = _currency.value {
             TangemFoundation.runTask(in: self) {
-                await $0.initiateCountryDefinition()
+                if let country = $0.onrampRepository.preferenceCountry {
+                    _ = await $0.checkCountryAvailability(country: country)
+                } else {
+                    await $0.initiateCountryDefinition()
+                }
             }
         }
 
