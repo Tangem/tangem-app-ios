@@ -147,6 +147,8 @@ public struct AddressServiceFactory {
         case .clore:
             let networkParams: INetwork = CloreMainNetworkParams()
             return BitcoinLegacyAddressService(networkParams: networkParams)
+        case .fact0rn:
+            return Fact0rnAddressService()
         }
     }
 }

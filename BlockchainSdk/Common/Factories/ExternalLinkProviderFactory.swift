@@ -171,6 +171,8 @@ public struct ExternalLinkProviderFactory {
             return XodexExternalLinkProvider()
         case .clore:
             return CloreExternalLinkProvider()
+        case .fact0rn:
+            return Fact0rnExternalLinkProvider()
         }
     }
 }
