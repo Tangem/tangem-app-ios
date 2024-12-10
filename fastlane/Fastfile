@@ -88,6 +88,8 @@ Options:
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 """
 lane :release do |options|
+  UI.warning("Deprecated, use `Create release` Github action instead")
+
   app_id = ENV["APP_ID_PRODUCTION"]
   app_store_connect_api_key(duration: 1200, is_key_content_base64: true)
   increment_version_number(version_number: options[:version])
@@ -179,6 +181,23 @@ lane :build_Beta do |options|
   )
 
   upload_dsyms(app_id: options[:firebase_app_id], filename: options[:filename])
+end
+
+desc """
+A lane that builds a \"Tangem\" scheme and uploads the archive to TestFlight for release.
+Using enviroment: Production
+Options:
+- version: app version
+- build: optional build number
+- changelog: string for description archive
+"""
+lane :build_RC do |options|
+  build(
+    scheme: PRODUCTION_SCHEME, 
+    version: options[:version], 
+    filename: options[:filename], 
+    path: options[:path]
+  )
 end
 
 desc """
@@ -280,6 +299,36 @@ lane :deploy_firebase do |options|
   # See https://github.com/orgs/community/discussions/13082#discussioncomment-6776428 for details
   encoded_release_url = Base64.strict_encode64(Base64.strict_encode64(release_url))
   sh("echo 'encoded_release_url=#{encoded_release_url}' >> $GITHUB_ENV")
+end
+
+desc """
+This lane deploy binary to TestFLight
+Options:
+- asc_key_id: TBD
+- asc_issuer_id: TBD
+- asc_key: TBD
+- binary_path: TBD
+- version: TBD
+- changelog: [optional] Changelog will be added to TestFlight release notes along with the last commit hash.
+"""
+lane :deploy_testflight do |options|
+  # Get AppStore API Key
+  api_key = app_store_connect_api_key(
+     key_id: options[:asc_key_id],
+     issuer_id: options[:asc_issuer_id],
+     key_content: options[:asc_key],
+     is_key_content_base64: true,
+     in_house: false # detecting this via ASC private key not currently supported
+  )
+
+  # Upload binary to TestFlight
+  upload_to_testflight(
+    api_key:api_key,
+    skip_waiting_for_build_processing: true,
+    ipa: options[:binary_path],
+    app_version: options[:version],
+    changelog: options[:changelog]
+  )
 end
 
 private_lane :build do |options|
@@ -410,6 +459,8 @@ private_lane :upload_dsyms do |options|
 end
 
 private_lane :upload_testflight do |options|
+  UI.warning("Deprecated, use `Create release` Github action instead")
+
   filename = options[:name] + ".ipa"
   path = BUILD_PATH + filename
   release_notes = "#{options[:changelog]}\nGitHash: #{last_git_commit[:commit_hash]}"

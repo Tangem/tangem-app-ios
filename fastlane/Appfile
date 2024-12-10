@@ -10,6 +10,10 @@ for_lane :build_Beta do
     app_identifier 'com.tangem.TangemBeta'
 end
 
+for_lane :build_RC do
+    app_identifier 'com.tangem.Tangem'
+end
+
 for_lane :release do
     app_identifier 'com.tangem.Tangem'
 end

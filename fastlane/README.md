@@ -100,6 +100,21 @@ Options:
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 
 
+### build_RC
+
+```sh
+[bundle exec] fastlane build_RC
+```
+
+
+A lane that builds a "Tangem" scheme and uploads the archive to TestFlight for release.
+Using enviroment: Production
+Options:
+- version: app version
+- build: optional build number
+- changelog: string for description archive
+
+
 ### alpha
 
 ```sh
@@ -172,6 +187,23 @@ Options:
 - path: Path to binary
 - firebase_token: Firebase CLI Token
 - changelog: [optional] Changelog will be added to Google Distribution release notes along with the last commit hash.
+
+
+### deploy_testflight
+
+```sh
+[bundle exec] fastlane deploy_testflight
+```
+
+
+This lane deploy binary to TestFLight
+Options:
+- asc_key_id: TBD
+- asc_issuer_id: TBD
+- asc_key: TBD
+- binary_path: TBD
+- version: TBD
+- changelog: [optional] Changelog will be added to TestFlight release notes along with the last commit hash.
 
 
 ----
