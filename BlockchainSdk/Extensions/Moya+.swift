@@ -87,6 +87,16 @@ extension MoyaProvider {
             }
         )
     }
+
+    /// Get cached response for provided target.
+    /// Limited to targets which provide the same URLRequest on different calls.
+    /// - Parameter target: request target
+    /// - Returns: response from urlCache
+    public func cachedResponse(for target: Target) -> CachedURLResponse? {
+        let endpoint = endpoint(target)
+        guard let urlRequest = try? endpoint.urlRequest() else { return nil }
+        return session.session.configuration.urlCache?.cachedResponse(for: urlRequest)
+    }
 }
 
 // MARK: - Auxiliary types

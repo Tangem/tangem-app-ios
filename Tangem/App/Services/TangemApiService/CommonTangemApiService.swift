@@ -47,6 +47,17 @@ class CommonTangemApiService {
         let target = TangemApiTarget(type: type, authData: authData)
         return try await provider.asyncRequest(target).mapAPIResponse(decoder: decoder)
     }
+
+    private func cachedResponse<T: Decodable>(
+        for type: TangemApiTarget.TargetType,
+        decoder: JSONDecoder = .init()
+    ) -> T? {
+        let target = TangemApiTarget(type: type, authData: authData)
+        guard let cachedURLResponse = provider.cachedResponse(for: target) else { return nil }
+
+        let moyaResponse = Response(statusCode: 200, data: cachedURLResponse.data)
+        return try? moyaResponse.mapAPIResponse(decoder: decoder)
+    }
 }
 
 // MARK: - TangemApiService
@@ -262,6 +273,10 @@ extension CommonTangemApiService: TangemApiService {
         requestModel: MarketsDTO.ExchangesRequest
     ) async throws -> MarketsDTO.ExchangesResponse {
         return try await request(for: .tokenExchangesList(requestModel), decoder: decoder)
+    }
+
+    func cachedTokenExchangesListDetails(requestModel: MarketsDTO.ExchangesRequest) -> MarketsDTO.ExchangesResponse? {
+        cachedResponse(for: .tokenExchangesList(requestModel), decoder: decoder)
     }
 
     // MARK: - Init

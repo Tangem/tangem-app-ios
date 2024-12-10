@@ -10,7 +10,7 @@ import Foundation
 import Combine
 
 class MarketsTokenDetailsExchangesListViewModel: MarketsBaseViewModel {
-    @Published var exchangesList: LoadingValue<[MarketsTokenDetailsExchangeItemInfo]> = .loading
+    @Published var exchangesList: LoadingValue<[MarketsTokenDetailsExchangeItemInfo]>
 
     /// For unknown reasons, the `@self` and `@identity` of our view change when push navigation is performed in other
     /// navigation controllers in the application (on the main screen for example), which causes the state of
@@ -19,6 +19,7 @@ class MarketsTokenDetailsExchangesListViewModel: MarketsBaseViewModel {
     ///
     /// Our view is initially presented when the sheet is expanded, hence the `1.0` initial value.
     @Published private(set) var overlayContentHidingInitialProgress = 1.0
+
     var isMarketsSheetStyle: Bool { presentationStyle == .marketsSheet }
     let numberOfExchangesListedOn: Int
     let onBackButtonAction: () -> Void
@@ -45,6 +46,12 @@ class MarketsTokenDetailsExchangesListViewModel: MarketsBaseViewModel {
         self.exchangesListLoader = exchangesListLoader
         self.onBackButtonAction = onBackButtonAction
 
+        if let cachedResponse = exchangesListLoader.cachedTokenExchangesListDetails(for: tokenId) {
+            exchangesList = .loaded(cachedResponse)
+        } else {
+            exchangesList = .loading
+        }
+
         super.init(overlayContentProgressInitialValue: 1.0)
     }
 
@@ -54,7 +61,7 @@ class MarketsTokenDetailsExchangesListViewModel: MarketsBaseViewModel {
     }
 
     func loadExchangesList() {
-        guard loadingCancellable == nil else {
+        guard loadingCancellable == nil, exchangesList.value == nil else {
             return
         }
 

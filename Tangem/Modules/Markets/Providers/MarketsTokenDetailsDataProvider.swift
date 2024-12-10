@@ -10,6 +10,7 @@ import Foundation
 
 protocol MarketsTokenExchangesListLoader {
     func loadExchangesList(for tokenId: TokenItemId) async throws -> [MarketsTokenDetailsExchangeItemInfo]
+    func cachedTokenExchangesListDetails(for tokenId: TokenItemId) -> [MarketsTokenDetailsExchangeItemInfo]?
 }
 
 struct MarketsTokenDetailsDataProvider {
@@ -44,8 +45,19 @@ struct MarketsTokenDetailsDataProvider {
 
 extension MarketsTokenDetailsDataProvider: MarketsTokenExchangesListLoader {
     func loadExchangesList(for tokenId: TokenItemId) async throws -> [MarketsTokenDetailsExchangeItemInfo] {
-        let result = try await tangemAPIService.loadTokenExchangesListDetails(requestModel: .init(tokenId: tokenId))
+        let response = try await tangemAPIService.loadTokenExchangesListDetails(requestModel: .init(tokenId: tokenId))
+        return mapExchangesResponse(response)
+    }
+
+    func cachedTokenExchangesListDetails(for tokenId: TokenItemId) -> [MarketsTokenDetailsExchangeItemInfo]? {
+        tangemAPIService.cachedTokenExchangesListDetails(requestModel: .init(tokenId: tokenId))
+            .flatMap(mapExchangesResponse(_:))?.nilIfEmpty
+    }
+
+    private func mapExchangesResponse(
+        _ response: MarketsDTO.ExchangesResponse
+    ) -> [MarketsTokenDetailsExchangeItemInfo] {
         let mapper = MarketsExchangesListMapper()
-        return mapper.mapListToItemInfo(result.exchanges)
+        return mapper.mapListToItemInfo(response.exchanges)
     }
 }
