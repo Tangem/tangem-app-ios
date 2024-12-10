@@ -133,8 +133,12 @@ private extension CommonOnrampManager {
     }
 
     func prepareProviders(item: OnrampPairRequestItem, supportedProviders: [OnrampPair.Provider]) async throws -> ProvidersList {
-        let providers = try await dataRepository.providers().toSet()
-        let paymentMethods = try await dataRepository.paymentMethods().toSet()
+        // Start two async requests
+        async let providersList = dataRepository.providers()
+        async let paymentMethodsList = dataRepository.paymentMethods()
+
+        let providers = try await providersList.toSet()
+        let paymentMethods = try await paymentMethodsList.toSet()
 
         let fullfilled: [ExpressProvider: [OnrampPaymentMethod]] = supportedProviders.reduce(into: [:]) { result, supportedProvider in
             if let provider = providers.first(where: { $0.id == supportedProvider.id }) {
