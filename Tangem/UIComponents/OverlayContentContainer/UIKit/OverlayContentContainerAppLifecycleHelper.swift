@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import class UIKit.UIApplication
 import Combine
 import CombineExt
 

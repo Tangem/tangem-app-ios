@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TangemSdk
 import BlockchainSdk
 
 public struct VisaUtilities {
@@ -14,6 +15,16 @@ public struct VisaUtilities {
 
     public init(isTestnet: Bool) {
         self.isTestnet = isTestnet
+    }
+
+    public var batchId: [String] {
+        [
+            "AE05",
+        ]
+    }
+
+    public var mandatoryCurve: EllipticCurve {
+        .secp256k1
     }
 
     public var tokenId: String {

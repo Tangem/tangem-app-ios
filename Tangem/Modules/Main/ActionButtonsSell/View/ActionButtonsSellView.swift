@@ -20,6 +20,9 @@ struct ActionButtonsSellView: View {
                     CloseButton(dismiss: { viewModel.handleViewAction(.close) })
                 }
             }
+            .onAppear {
+                viewModel.handleViewAction(.onAppear)
+            }
     }
 
     @ViewBuilder
@@ -43,5 +46,6 @@ struct ActionButtonsSellView: View {
             .padding(.horizontal, 16)
         }
         .background(Colors.Background.tertiary.ignoresSafeArea(.all))
+        .scrollDismissesKeyboardCompat(.immediately)
     }
 }

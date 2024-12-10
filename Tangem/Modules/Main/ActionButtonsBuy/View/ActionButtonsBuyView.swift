@@ -21,6 +21,9 @@ struct ActionButtonsBuyView: View {
                 }
             }
             .transition(.opacity.animation(.easeInOut))
+            .onAppear {
+                viewModel.handleViewAction(.onAppear)
+            }
     }
 
     @ViewBuilder
@@ -44,5 +47,6 @@ struct ActionButtonsBuyView: View {
             .padding(.horizontal, 16)
         }
         .background(Colors.Background.tertiary.ignoresSafeArea(.all))
+        .scrollDismissesKeyboardCompat(.immediately)
     }
 }

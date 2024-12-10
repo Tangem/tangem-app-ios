@@ -29,12 +29,20 @@ struct RavencoinWalletAssembly: WalletManagerAssembly {
 
             let blockchain = input.blockchain
             let providers: [AnyBitcoinNetworkProvider] = APIResolver(blockchain: blockchain, config: input.blockchainSdkConfig)
-                .resolveProviders(apiInfos: input.apiInfo) { nodeInfo, _ in
-                    RavencoinNetworkProvider(
-                        host: nodeInfo.link,
-                        provider: .init(configuration: input.networkConfig)
-                    )
-                    .eraseToAnyBitcoinNetworkProvider()
+                .resolveProviders(apiInfos: input.apiInfo) { nodeInfo, providerType in
+                    switch providerType {
+                    case .nowNodes:
+                        networkProviderAssembly.makeBlockBookUtxoProvider(
+                            with: input,
+                            for: .nowNodes
+                        ).eraseToAnyBitcoinNetworkProvider()
+                    default:
+                        RavencoinNetworkProvider(
+                            host: nodeInfo.link,
+                            provider: .init(configuration: input.networkConfig)
+                        )
+                        .eraseToAnyBitcoinNetworkProvider()
+                    }
                 }
 
             $0.networkService = BitcoinNetworkService(providers: providers)

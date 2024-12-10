@@ -8,43 +8,12 @@
 
 import Foundation
 import Moya
+import TangemNetworkUtils
 
 struct KoinosTarget: TargetType {
-    enum KoinosTargetType {
-        case getKoinBalance(args: String)
-        case getRc(address: String)
-        case getNonce(address: String)
-        case getResourceLimits
-        case submitTransaction(transaction: KoinosProtocol.Transaction)
-        case getTransactions(transactionIDs: [String])
-
-        var method: String {
-            switch self {
-            case .getKoinBalance:
-                "chain.read_contract"
-            case .getRc:
-                "chain.get_account_rc"
-            case .getNonce:
-                "chain.get_account_nonce"
-            case .getResourceLimits:
-                "chain.get_resource_limits"
-            case .submitTransaction:
-                "chain.submit_transaction"
-            case .getTransactions:
-                "transaction_store.get_transactions_by_id"
-            }
-        }
-    }
-
     let node: NodeInfo
     let type: KoinosTargetType
     let koinosNetworkParams: KoinosNetworkParams
-
-    init(node: NodeInfo, koinosNetworkParams: KoinosNetworkParams, _ type: KoinosTargetType) {
-        self.node = node
-        self.koinosNetworkParams = koinosNetworkParams
-        self.type = type
-    }
 
     var baseURL: URL {
         node.url
@@ -110,10 +79,50 @@ struct KoinosTarget: TargetType {
     }
 
     var headers: [String: String]?
+
+    init(node: NodeInfo, koinosNetworkParams: KoinosNetworkParams, _ type: KoinosTargetType) {
+        self.node = node
+        self.koinosNetworkParams = koinosNetworkParams
+        self.type = type
+    }
+}
+
+extension KoinosTarget {
+    enum KoinosTargetType {
+        case getKoinBalance(args: String)
+        case getRc(address: String)
+        case getNonce(address: String)
+        case getResourceLimits
+        case submitTransaction(transaction: KoinosProtocol.Transaction)
+        case getTransactions(transactionIDs: [String])
+
+        var method: String {
+            switch self {
+            case .getKoinBalance:
+                "chain.read_contract"
+            case .getRc:
+                "chain.get_account_rc"
+            case .getNonce:
+                "chain.get_account_nonce"
+            case .getResourceLimits:
+                "chain.get_resource_limits"
+            case .submitTransaction:
+                "chain.submit_transaction"
+            case .getTransactions:
+                "transaction_store.get_transactions_by_id"
+            }
+        }
+    }
 }
 
 private extension KoinosTarget {
     enum Constants {
         static let jsonRPCMethodId: Int = 1
+    }
+}
+
+extension KoinosTarget: TargetTypeLogConvertible {
+    var requestDescription: String {
+        type.method
     }
 }

@@ -9,6 +9,7 @@
 import Foundation
 import Moya
 import Combine
+import TangemNetworkUtils
 
 class AdaliteNetworkProvider: CardanoNetworkProvider {
     private let url: URL

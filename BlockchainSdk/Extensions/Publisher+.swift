@@ -124,6 +124,28 @@ extension Publisher where Failure == Error {
     }
 }
 
+extension Publisher {
+    /// 'Inserts' the publisher produced by the `otherPublisherFactory` closure into the reactive stream,
+    /// for both successful and failed paths.
+    func wire<T, U>(otherPublisherFactory: @escaping () -> some Publisher<T, U>) -> some Publisher<Output, Failure> {
+        return self
+            .catch { error in
+                return otherPublisherFactory()
+                    .mapError { _ in
+                        return error // Replace errors from `otherPublisherFactory` with the original error
+                    }
+                    .flatMap { _ in
+                        return Fail(error: error) // Replace outputs from `otherPublisherFactory` with the original error
+                    }
+            }
+            .flatMap { output in
+                return otherPublisherFactory()
+                    .mapToValue(output) // Replace outputs from `otherPublisherFactory` with the original output
+                    .replaceError(with: output) // Replace errors from `otherPublisherFactory` with the original output
+            }
+    }
+}
+
 // MARK: - Private implementation
 
 private extension Publishers {

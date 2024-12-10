@@ -48,7 +48,7 @@ class VisaOnboardingViewModel: ObservableObject {
         startActivationDelegate: weakify(self, forFunction: VisaOnboardingViewModel.goToNextStep)
     )
 
-    lazy var accessCodeSetupViewModel = VisaOnboardingAccessCodeSetupViewModel(delegate: self)
+    lazy var accessCodeSetupViewModel = VisaOnboardingAccessCodeSetupViewModel(accessCodeValidator: visaActivationManager, delegate: self)
 
     var navigationBarTitle: String {
         currentStep.navigationTitle
@@ -159,28 +159,6 @@ private extension VisaOnboardingViewModel {
         userWalletRepository.updateSelection()
         coordinator?.closeOnboarding()
     }
-
-    // This function will be updated in IOS-8509. Requirements for activation flow was reworked,
-    // so for now this function is for testing purposes
-    func startActivation() {
-        guard activationManagerTask == nil else {
-            print("Activation task already exists, skipping")
-            return
-        }
-
-        guard
-            case .cardInfo(let cardInfo) = input.cardInput,
-            case .visa(let accessToken, let refreshToken) = cardInfo.walletData
-        else {
-            print("Wrong onboarding input")
-            return
-        }
-
-        let authorizationTokens = VisaAuthorizationTokens(accessToken: accessToken, refreshToken: refreshToken)
-        activationManagerTask = runTask(in: self, isDetached: false) { viewModel in
-            try await viewModel.visaActivationManager.startActivation(authorizationTokens)
-        }.eraseToAnyCancellable()
-    }
 }
 
 extension VisaOnboardingViewModel: UserWalletStorageAgreementRoutable {
@@ -230,8 +208,8 @@ extension VisaOnboardingViewModel: VisaOnboardingAccessCodeSetupDelegate {
     }
 
     func useSelectedCode(accessCode: String) async throws {
-        try await Task.sleep(seconds: 5)
-        throw "Will be implemented later IOS-8509"
+        try visaActivationManager.saveAccessCode(accessCode: accessCode)
+        try await visaActivationManager.startActivation()
     }
 }
 
@@ -250,10 +228,18 @@ extension VisaOnboardingViewModel {
             onboardingStepsBuilderFactory: cardMockConfig,
             pushNotificationsInteractor: PushNotificationsInteractorMock()
         )
+        guard let cardInput = inputFactory.makeOnboardingInput() else {
+            fatalError("Failed to generate card input for visa onboarding")
+        }
 
         return .init(
-            input: inputFactory.makeOnboardingInput()!,
+            input: cardInput,
             visaActivationManager: VisaActivationManagerFactory().make(
+                cardInput: .init(
+                    cardId: cardMock.card.cardId,
+                    cardPublicKey: cardMock.card.cardPublicKey
+                ),
+                tangemSdk: TangemSdkDefaultFactory().makeTangemSdk(),
                 urlSessionConfiguration: .default,
                 logger: AppLog.shared
             ),

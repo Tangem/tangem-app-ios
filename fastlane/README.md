@@ -79,6 +79,7 @@ Options:
 - build: Build number
 - filename: Name of the resulting artefact (IPA file)
 - path: Path to binary
+- firebase_app_id: Firebase app id for incrementing the build version number and DSYM uploads
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 
 
@@ -95,6 +96,7 @@ Options:
 - build: Build number
 - filename: Name of the resulting artefact (IPA file)
 - path: Path to binary
+- firebase_app_id: Firebase app id for incrementing the build version number and DSYM uploads
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 
 

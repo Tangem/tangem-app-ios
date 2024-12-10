@@ -22,6 +22,9 @@ struct ActionButtonsSwapView: View {
             .padding(.top, 10)
             .background(Colors.Background.tertiary.ignoresSafeArea())
             .disabled(viewModel.tokenSelectorState == .loading)
+            .onAppear {
+                viewModel.handleViewAction(.onAppear)
+            }
     }
 
     private var content: some View {
