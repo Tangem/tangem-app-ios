@@ -122,38 +122,6 @@ Options:
 - analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
 
 
-### alpha
-
-```sh
-[bundle exec] fastlane alpha
-```
-
-
-A lane that builds a "Tangem Alpha" scheme and uploads the archive to Firebase for testing.
-Using enviroment: Test
-Options:
-- version: app version
-- build: optional build number
-- changelog: string for description archive
-- xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
-
-
-### beta
-
-```sh
-[bundle exec] fastlane beta
-```
-
-
-A lane that builds a "Tangem Beta" scheme and uploads the archive to Firebase for testing.
-Using enviroment: Production
-Options:
-- version: app version
-- build: optional build number
-- changelog: string for description archive
-- xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
-
-
 ### refresh_dsyms
 
 ```sh
