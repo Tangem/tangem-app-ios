@@ -16,13 +16,17 @@ struct OnrampFinishAnalyticsLogger: SendFinishAnalyticsLogger {
     }
 
     func onAppear() {
-        guard let provider = onrampProvidersInput?.selectedOnrampProvider?.provider else {
+        guard let provider = onrampProvidersInput?.selectedOnrampProvider,
+            let request = try? provider.makeOnrampQuotesRequestItem() else {
             return
         }
 
         Analytics.log(event: .onrampBuyingInProgressScreenOpened, params: [
             .token: tokenItem.currencySymbol,
-            .provider: provider.name,
+            .provider: provider.provider.name,
+            .paymentMethod: provider.paymentMethod.name,
+            .residence: request.pairItem.country.identity.name,
+            .currency: request.pairItem.fiatCurrency.identity.name,
         ])
     }
 }
