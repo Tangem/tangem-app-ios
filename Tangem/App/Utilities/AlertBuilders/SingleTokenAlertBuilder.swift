@@ -134,10 +134,7 @@ struct SingleTokenAlertBuilder {
     }
 
     func fulfillmentAssetRequirementsFailedAlert(error: Error, networkName: String) -> AlertBinder {
-        return .init(
-            title: Localization.commonTransactionFailed,
-            message: networkName + " " + error.localizedDescription
-        )
+        return .init(title: Localization.commonTransactionFailed, message: error.localizedDescription)
     }
 
     func fulfillAssetRequirementsDiscardedAlert(confirmationAction: @escaping () -> Void) -> AlertBinder {

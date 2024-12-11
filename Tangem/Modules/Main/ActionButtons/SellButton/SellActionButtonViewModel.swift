@@ -70,8 +70,8 @@ final class SellActionButtonViewModel: ActionButtonViewModel {
             handleInitialStateTap()
         case .loading:
             break
-        case .disabled(let message):
-            alert = .init(title: "", message: message)
+        case .restricted(let reason):
+            alert = .init(title: "", message: reason)
         case .idle:
             guard !isOpeningRequired else { return }
 
@@ -97,7 +97,7 @@ final class SellActionButtonViewModel: ActionButtonViewModel {
 private extension SellActionButtonViewModel {
     func scheduleLoadedAction() {
         switch viewState {
-        case .disabled(let message): showScheduledAlert(with: message)
+        case .restricted(let reason): showScheduledAlert(with: reason)
         case .idle: scheduledOpenSell()
         case .loading, .initial: break
         }

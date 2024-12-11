@@ -34,7 +34,7 @@ enum ExchangeServiceState: Equatable {
             case .networkError:
                 return Localization.actionButtonsSomethingWrongAlertMessage
             case .countryNotSupported:
-                return Localization.sellingRegionalRestrictionAlertTitle
+                return Localization.sellingRegionalRestrictionAlertMessage
             }
         }
     }
