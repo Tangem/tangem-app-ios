@@ -29,6 +29,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
+    /// Disable custom keyboards
+    func application(_ application: UIApplication, shouldAllowExtensionPointIdentifier extensionPointIdentifier: UIApplication.ExtensionPointIdentifier) -> Bool {
+        switch extensionPointIdentifier {
+        case UIApplication.ExtensionPointIdentifier.keyboard:
+            return false
+        default:
+            return true
+        }
+    }
+
     // MARK: UISceneSession Lifecycle
 
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {

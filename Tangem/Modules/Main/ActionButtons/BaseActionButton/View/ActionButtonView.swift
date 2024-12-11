@@ -13,7 +13,7 @@ struct ActionButtonView<ViewModel: ActionButtonViewModel>: View {
     @Environment(\.isEnabled) var isEnabled
 
     private var isDisabled: Bool {
-        !isEnabled || viewModel.isDisabled
+        !isEnabled
     }
 
     var body: some View {
@@ -37,7 +37,7 @@ struct ActionButtonView<ViewModel: ActionButtonViewModel>: View {
     @ViewBuilder
     private var leadingItem: some View {
         switch viewModel.viewState {
-        case .initial, .idle, .disabled:
+        case .initial, .idle, .restricted:
             buttonIcon
         case .loading:
             progressView
