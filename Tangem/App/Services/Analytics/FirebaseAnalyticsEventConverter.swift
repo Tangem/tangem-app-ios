@@ -11,10 +11,7 @@ import Regex
 
 /// See documentation for the `logEvent(_:parameters:)` method in `FIRAnalytics.h` for current Firebase Analytics limitations.
 enum FirebaseAnalyticsEventConverter {
-    /// The `\w` metacharacter matches word characters.
-    /// A word character is a character a-z, A-Z, 0-9, including _ (underscore).
-    private static let replacingPattern: StaticString = "[^\\w]"
-    private static let trimmingCharacterSet = CharacterSet(charactersIn: "_")
+    private static let trimmingCharacterSet = CharacterSet(charactersIn: Constants.wordSeparator)
 
     static func convert(event: String) -> String {
         return convert(string: event)
@@ -30,9 +27,9 @@ enum FirebaseAnalyticsEventConverter {
 
     private static func convert(string: String) -> String {
         return string
-            .replacingAll(matching: replacingPattern, with: "_")
+            .replacingAll(matching: Constants.replacingPattern, with: Constants.wordSeparator)
             .trimmingCharacters(in: trimmingCharacterSet)
-            .trim(toLength: 40)
+            .trim(toLength: Constants.firebaseEventNameMaxLength)
     }
 
     private static func convert(value: Any) -> Any {
@@ -42,10 +39,23 @@ enum FirebaseAnalyticsEventConverter {
         case let doubleValue as Double:
             return doubleValue
         case let stringValue as String:
-            return stringValue.trim(toLength: 100)
+            return stringValue.trim(toLength: Constants.firebaseEventValueMaxLength)
         default:
-            return String(describing: value).trim(toLength: 100)
+            return String(describing: value).trim(toLength: Constants.firebaseEventValueMaxLength)
         }
+    }
+}
+
+// MARK: - Constants
+
+private extension FirebaseAnalyticsEventConverter {
+    enum Constants {
+        /// The `\w` meta character matches word characters.
+        /// A word character is a character a-z, A-Z, 0-9, including _ (underscore).
+        static let replacingPattern: StaticString = "[^\\w]"
+        static let wordSeparator = "_"
+        static let firebaseEventNameMaxLength = 40
+        static let firebaseEventValueMaxLength = 100
     }
 }
 
