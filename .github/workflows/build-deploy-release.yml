@@ -46,6 +46,7 @@ jobs:
       path: 'fastlane/builds/'
       filename: 'Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa'
       xcode_version_override: '${{ inputs.xcode_version_override }}'
+      arm_runners_only: true
     secrets:
       GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT }}'
 
