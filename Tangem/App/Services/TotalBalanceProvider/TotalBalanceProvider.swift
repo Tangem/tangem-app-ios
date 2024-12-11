@@ -138,6 +138,10 @@ private extension TotalBalanceProvider {
         var allTokensBalancesIncluded = true
 
         for token in walletModels {
+            if case .binance = token.blockchainNetwork.blockchain {
+                continue
+            }
+
             if case .failed = token.state {
                 hasCryptoError = true
             }

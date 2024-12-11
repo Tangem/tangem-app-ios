@@ -951,7 +951,7 @@
 "warning_approval_in_progress_message" = "Das Genehmigungsverfahren ist derzeit im Gange und wird in Kürze abgeschlossen sein";
 "warning_approval_in_progress_title" = "Genehmigung läuft";
 "warning_backup_errors_message" = "Es scheint, dass die Aktivierung der Karte oder des Rings nicht korrekt abgeschlossen wurde. Dies kann an einem Problem mit dem NFC-Modul deines Gerätes oder an einem falschen Tippen der Karte oder Ring auf dein Gerät liegen. Bitte wende dich an unser Support-Team, um Unterstützung zu erhalten.";
-"warning_beacon_chain_retirement_content" = "Laut den Entwicklern des BNB-Netzes wird die Unterstützung für den BEP-2-Standard im Juni 2024 enden. Um den Verlust von Vermögenswerten mit diesem Standard zu vermeiden, konvertiere bitte in den BEP-20 Standard. Nutze gerne unseren Swap-Service, um sie auf das BNB Smart Chain Netzwerk zu übertragen.";
+"warning_beacon_chain_retirement_content" = "Am 3. Dezember 2024 wurde das BEP-2-Netzwerk auf Entscheidung der Netzwerkentwickler deaktiviert und wird nicht mehr unterstützt";
 "warning_beacon_chain_retirement_title" = "BNB Beacon Chain wird abgeschaltet";
 "warning_blocked_funds_for_fee_message" = "Bitte zahle ein paar %1$@ ein, um die Netzwerkgebühr zu decken";
 "warning_blocked_funds_for_fee_title" = "Unzureichende Mittel zur Deckung der Netzgebühr";
