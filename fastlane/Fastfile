@@ -432,16 +432,18 @@ private_lane :increment_firebase_build_number do |options|
     else
       latest_build_number = latest_release[:buildVersion].to_i
     end
-    increment_build_number({ build_number: latest_build_number + 1 })
+    increment_build_number(build_number: latest_build_number + 1)
   else
     increment_build_number(build_number: options[:build])
   end
 end
 
 private_lane :increment_testflight_build_number do |options|
+  UI.warning("Deprecated, use `Create release` Github action instead")
+
   if options[:build].nil?
     latest_build_number = latest_testflight_build_number(version: options[:version])
-    increment_build_number({ build_number: latest_build_number + 1 })
+    increment_build_number(build_number: latest_build_number + 1)
   else
     increment_build_number(build_number: options[:build])
   end
