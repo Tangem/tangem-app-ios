@@ -115,6 +115,15 @@ private extension OnrampModel {
                             .errorCode: error.errorCode.rawValue.description,
                         ]
                     )
+                case .failed(let error):
+                    Analytics.log(
+                        event: .onrampAppErrors,
+                        params: [
+                            .token: model.walletModel.tokenItem.currencySymbol,
+                            .provider: provider.provider.name,
+                            .errorDescription: error.localizedDescription,
+                        ]
+                    )
                 case .loaded:
                     Analytics.log(
                         event: .onrampProviderCalculated,
