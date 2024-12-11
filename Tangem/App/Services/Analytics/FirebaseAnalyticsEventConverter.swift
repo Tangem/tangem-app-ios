@@ -9,7 +9,8 @@
 import Foundation
 import Regex
 
-/// See documentation for the `logEvent(_:parameters:)` method in `FIRAnalytics.h` for current Firebase Analytics limitations.
+/// See the documentation for the `logEvent(_:parameters:)` method in the `FIRAnalytics.h` file for current
+/// Firebase Analytics limitations and reasons why this converter is required.
 enum FirebaseAnalyticsEventConverter {
     private static let trimmingCharacterSet = CharacterSet(charactersIn: Constants.wordSeparator)
 
