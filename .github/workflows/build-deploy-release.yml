@@ -3,7 +3,8 @@ name: Release - Build and Deploy
 on:
   push:
    branches:
-    - 'feature/IOS-8508_create_release_ci_cd' # TODO: Replace with release*
+    - 'feature/IOS-8508_create_release_ci_cd/releases/**' # TODO: Remove
+    #- 'releases/**' # TODO: Enable
   workflow_dispatch:
     inputs:
       build_description:
@@ -14,6 +15,14 @@ on:
         description: >
           Optional Xcode version override. Leave blank (default value) to use the default Xcode version; 
           pass a custom value (e.g. '16.0', '10.2.1', '11 Beta 7', '11.2 GM seed', etc) to use a different Xcode version for the build
+        type: string
+      build_version_override:
+        description: >
+          Optional build version override. Leave blank (default value) to use the default value derived from the branch name
+        type: string
+      build_number_override:
+        description: >
+          Optional build number override. Leave blank (default value) to use the latest value obtained from App Store Connect + 1
         type: string
 
 concurrency:
@@ -26,14 +35,20 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       stage: 'RC'
-      version: '5.19' # TODO: Test only, remove this constant
-      build_number: '1022'  # TODO: Obtain the next appstore build number
+      version: '${{ steps.get-release-version.outputs.result }}'
+      build_number: '${{ steps.get-build-number.outputs.result }}'
     steps:
-      - name: Test
-        id: test
+      - name: Get Release Version
+        id: get-release-version
         run: |
           echo '${{ vars.APP_NAME }}'
-          echo "result=1" >> $GITHUB_OUTPUT
+          echo "result=5.19" >> $GITHUB_OUTPUT
+
+      - name: Get Build Number
+        id: get-build-number
+        run: |
+          echo '${{ vars.APP_NAME }}'
+          echo "result=1023" >> $GITHUB_OUTPUT
 
   build:
     name: Tangem Release
