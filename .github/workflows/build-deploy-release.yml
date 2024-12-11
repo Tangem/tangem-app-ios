@@ -46,13 +46,14 @@ jobs:
         run: |
           if [[ -n "${BUILD_VERSION_OVERRIDE}" ]]; then
             # Use the build version value from user input (if any)
+            echo "Using the build version '${BUILD_VERSION_OVERRIDE}' derived from user input for this build"
             BUILD_VERSION="${BUILD_VERSION_OVERRIDE}"
-            echo "Using the build version '${BUILD_VERSION}' derived from user input for this build"
           elif [[ -n "${BRANCH_NAME}" ]]; then
             # Use the build version value from the branch name
-            BUILD_VERSION=$(echo "${BRANCH_NAME}" | rev | cut -d'/' -f1 | rev)
-            if [[ -n "${BUILD_VERSION}" ]]; then
-              echo "Using the build version '${BUILD_VERSION}' derived from branch name for this build"
+            PARSED_BUILD_VERSION=$(echo "${BRANCH_NAME}" | rev | cut -d'/' -f1 | rev)
+            if [[ -n "${PARSED_BUILD_VERSION}" ]]; then
+              echo "Using the build version '${PARSED_BUILD_VERSION}' derived from branch name for this build"
+              BUILD_VERSION="${PARSED_BUILD_VERSION}"
             else
               echo "Unable to obtain the build version from the branch name, can't process further"
               exit 2
@@ -62,6 +63,8 @@ jobs:
             echo "Unable to obtain the build version, can't process further"
             exit 1
           fi
+
+          echo "result=${BUILD_VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Get Build Number
         id: get-build-number
