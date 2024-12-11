@@ -199,7 +199,10 @@ class Analytics {
         for system in analyticsSystems {
             switch system {
             case .firebase:
-                FirebaseAnalytics.Analytics.logEvent(event, parameters: params)
+                FirebaseAnalytics.Analytics.logEvent(
+                    FirebaseAnalyticsEventConverter.convert(event: event),
+                    parameters: FirebaseAnalyticsEventConverter.convert(params: params)
+                )
             case .crashlytics:
                 let message = "\(event).\(params)"
                 Crashlytics.crashlytics().log(message)
