@@ -12,6 +12,7 @@ import FirebaseCrashlytics
 import BlockchainSdk
 import AmplitudeSwift
 import TangemSdk
+import TangemFoundation
 
 class Analytics {
     @Injected(\.analyticsContext) private static var analyticsContext: AnalyticsContext
@@ -199,10 +200,7 @@ class Analytics {
         for system in analyticsSystems {
             switch system {
             case .firebase:
-                FirebaseAnalytics.Analytics.logEvent(
-                    FirebaseAnalyticsEventConverter.convert(event: event),
-                    parameters: FirebaseAnalyticsEventConverter.convert(params: params)
-                )
+                Task.detached { await logFirebaseInternal(event, params: params) }
             case .crashlytics:
                 let message = "\(event).\(params)"
                 Crashlytics.crashlytics().log(message)
@@ -217,6 +215,15 @@ class Analytics {
             let logMessage = "Analytics event: \(event). Params: \(paramsString)"
             AppLog.shared.debug(logMessage)
         }
+    }
+
+    /// - Note: This method is asynchronous due to the need for additional event matching and processing.
+    private static func logFirebaseInternal(_ event: String, params: [String: Any]) async {
+        ensureNotOnMainQueue()
+
+        let convertedEvent = FirebaseAnalyticsEventConverter.convert(event: event)
+        let convertedParams = FirebaseAnalyticsEventConverter.convert(params: params)
+        FirebaseAnalytics.Analytics.logEvent(convertedEvent, parameters: convertedParams)
     }
 }
 
