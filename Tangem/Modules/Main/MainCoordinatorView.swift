@@ -122,6 +122,12 @@ struct MainCoordinatorView: CoordinatorView {
             ) {
                 PushNotificationsBottomSheetView(viewModel: $0)
             }
+            .bottomSheet(
+                item: $coordinator.pendingExpressTxStatusBottomSheetViewModel,
+                backgroundColor: Colors.Background.tertiary
+            ) {
+                PendingExpressTxStatusBottomSheetView(viewModel: $0)
+            }
 
         NavHolder()
             .requestAppStoreReviewCompat($coordinator.isAppStoreReviewRequested)
