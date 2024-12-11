@@ -1,55 +1,101 @@
-name: Create release
+name: Release - Build and Deploy
 
 on:
+  push:
+   branches:
+    - 'test/releases/**' # TODO: Remove
+    #- 'releases/**' # TODO: Enable
   workflow_dispatch:
     inputs:
-      versionName:
-        description: 'Name of version  (ie 1.3.0)'
-        required: true
-      versionType:
-        type: choice
-        description: 'Release or Hotfix'
-        required: true
-        options: 
-        - release
-        - hotfix
+      build_description:
+        description: >
+          Optional additional info about the build
+        type: string
+      xcode_version_override:
+        description: >
+          Optional Xcode version override. Leave blank (default value) to use the default Xcode version; 
+          pass a custom value (e.g. '16.0', '10.2.1', '11 Beta 7', '11.2 GM seed', etc) to use a different Xcode version for the build
+        type: string
+      build_version_override:
+        description: >
+          Optional build version override. Leave blank (default value) to use the default value derived from the branch name
+        type: string
+      build_number_override:
+        description: >
+          Optional build number override. Leave blank (default value) to use the latest value obtained from App Store Connect + 1
+        type: string
+
+concurrency:
+  group: '${{ github.workflow }} (${{ github.head_ref || github.ref_name }})'
+  cancel-in-progress: true
 
 jobs:
   prepare:
-    name: Prepare Release
-    uses: tangem/actions/.github/workflows/prepare-release.yml@main
-    with:
-      versionName: ${{ github.event.inputs.versionName }}
-      releaseType: ${{ github.event.inputs.versionType }}
-    secrets:
-      GH_MOBILE_PAT: ${{ secrets.GH_MOBILE_PAT}}
-      JIRA_BASE_URL: ${{ secrets.JIRA_URL }}
-      JIRA_USER_EMAIL: ${{ secrets.JIRA_USER }}
-      JIRA_API_TOKEN: ${{ secrets.JIRA_TOKEN }}
- 
+    name: Prepare information
+    runs-on: ubuntu-latest
+    outputs:
+      stage: 'RC'
+      version: '${{ steps.get-release-version.outputs.result }}'
+      build_number: '${{ steps.get-build-number.outputs.result }}'
+    steps:
+      - name: Get Release Version
+        id: get-release-version
+        env:
+          BUILD_VERSION_OVERRIDE: '${{ inputs.build_version_override }}'
+          BRANCH_NAME: '${{ github.head_ref || github.ref_name }}'
+        run: |
+          if [[ -n "${BUILD_VERSION_OVERRIDE}" ]]; then
+            # Use the build version value from user input (if any)
+            BUILD_VERSION="${BUILD_VERSION_OVERRIDE}"
+            echo "Using the build version '${BUILD_VERSION}' derived from user input for this build"
+          elif [[ -n "${BRANCH_NAME}" ]]; then
+            # Use the build version value from the branch name
+            BUILD_VERSION=$(echo "${BRANCH_NAME}" | rev | cut -d'/' -f1 | rev)
+            if [[ -n "${BUILD_VERSION}" ]]; then
+              echo "Using the build version '${BUILD_VERSION}' derived from branch name for this build"
+            else
+              echo "Unable to obtain the build version from the branch name, can't process further"
+              exit 2
+            fi
+          else
+            # No info about build version
+            echo "Unable to obtain the build version, can't process further"
+            exit 1
+          fi
+
+      - name: Get Build Number
+        id: get-build-number
+        run: |
+          echo '${{ vars.APP_NAME }}'
+          echo "result=1023" >> $GITHUB_OUTPUT
+
   build:
-    name: Tangem RC
+    name: Tangem Release
     needs: prepare
-    uses: tangem/actions/.github/workflows/build.yml@main
+    uses: tangem/actions/.github/workflows/build.yml@feature/IOS-8508_create_release_ci_cd  # TODO: Test only, switch to main
     with:
-      stage: ${{needs.prepare.outputs.stage}}
-      version: 'RC'
-      build_number: ${{needs.prepare.outputs.build_number}}
+      stage: '${{ needs.prepare.outputs.stage }}'
+      version: '${{ needs.prepare.outputs.version }}'
+      build_number: '${{ needs.prepare.outputs.build_number }}'
       path: 'fastlane/builds/'
-      filename: 'Tangem-${{needs.prepare.outputs.stage}}-${{needs.prepare.outputs.version}}(${{needs.prepare.outputs.build_number}}).ipa'
+      filename: 'Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa'
+      xcode_version_override: '${{ inputs.xcode_version_override }}'
+      arm_runners_only: true
     secrets:
-      GH_MOBILE_PAT: ${{ secrets.GH_MOBILE_PAT}}
+      GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT }}'
 
   deploy:
-    name: TestFlight
-    needs: [prepare, build]
-    uses: tangem/actions/.github/workflows/deploy-testflight.yml@main
+    name: Tangem Release TestFlight
+    uses: tangem/actions/.github/workflows/deploy-testflight.yml@feature/IOS-8508_create_release_ci_cd  # TODO: Test only, switch to main
+    needs: 
+      - prepare
+      - build
     with:
-      stage: 'RC'
-      version: ${{ github.event.inputs.versionName }}
-      build_number: ${{ github.run_number }}
-      changelog: ''
-      filename: 'Tangem-RC-${{ github.event.inputs.versionName }}(${{ github.run_number }}).ipa'
+      stage: '${{ needs.prepare.outputs.stage }}'
+      version: '${{ needs.prepare.outputs.version }}'
+      build_number: '${{ needs.prepare.outputs.build_number }}'
+      changelog: '${{ inputs.build_description }}'
+      filename: 'Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa'
     secrets:
       ASC_KEY_ID: ${{ secrets.ASC_KEY_ID}}
       ASC_PRIVATE_KEY: ${{ secrets.ASC_PRIVATE_KEY}}
@@ -59,32 +105,39 @@ jobs:
   notification:
     name: Deploy Notification
     if: false  # TODO: Test only, remove
-    needs: [prepare, deploy]
-    uses: tangem/actions/.github/workflows/notification.yml@main
-    with: 
-      channel: ${{vars.SLACK_CHANNEL_DEPLOYMENTS_IOS}}
+    uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8508_create_release_ci_cd # TODO: Test only, switch to main
+    needs:
+      - prepare
+      - build
+      - deploy
+    with:
+      channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
       status: 'success'
-      app_name: ${{vars.APP_RC}}
-      deploy_to: ${{vars.DEPLOYMENT_GOOGLE_DISTRIBUTION}}
-      version: ${{needs.prepare.outputs.version}}
-      build_number: ${{needs.prepare.outputs.build_number}}
-      changelog: ${{needs.prepare.outputs.changelog}}
+      app_name: '${{ vars.APP_BETA }}'
+      deploy_to: '${{ vars.DEPLOYMENT_GOOGLE_DISTRIBUTION }}'
+      version: '${{ needs.prepare.outputs.version }}'
+      build_number: '${{ needs.prepare.outputs.build_number }}'
+      changelog: '${{ needs.prepare.outputs.jira-issues-summary }}'
+      build_description: '${{ inputs.build_description }}'
+      encoded_release_url: '${{ needs.deploy.outputs.encoded_release_url }}'
     secrets:
-      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN}}
+      SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN }}'
 
   error_notification:
     name: Error Notification
     if: false  # TODO: Test only, remove
     #if: failure()
-    needs: [prepare, deploy]
-    uses: tangem/actions/.github/workflows/notification.yml@main
-    with: 
-      channel: ${{vars.SLACK_CHANNEL_DEPLOYMENTS_IOS}}
+    uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8508_create_release_ci_cd # TODO: Test only, switch to main
+    needs:
+      - prepare
+      - build
+    with:
+      channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
       status: 'error'
-      app_name: ${{vars.APP_RC}}
-      deploy_to: ${{vars.DEPLOYMENT_GOOGLE_DISTRIBUTION}}
-      version: ${{needs.prepare.outputs.version}}
-      build_number: ${{needs.prepare.outputs.build_number}}
-      changelog: ${{needs.prepare.outputs.changelog}}
+      app_name: '${{ vars.APP_BETA }}'
+      deploy_to: '${{ vars.DEPLOYMENT_GOOGLE_DISTRIBUTION }}'
+      version: '${{ needs.prepare.outputs.version }}'
+      build_number: '${{ needs.prepare.outputs.build_number }}'
+      changelog: '${{ needs.prepare.outputs.jira-issues-summary }}'
     secrets:
-      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN}}
+      SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN }}'
