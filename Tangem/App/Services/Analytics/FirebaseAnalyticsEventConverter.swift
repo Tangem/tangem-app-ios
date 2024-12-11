@@ -52,7 +52,7 @@ private extension FirebaseAnalyticsEventConverter {
     enum Constants {
         /// The `\w` meta character matches word characters.
         /// A word character is a character a-z, A-Z, 0-9, including _ (underscore).
-        static let replacingPattern: StaticString = "[^\\w]"
+        static let replacingPattern: StaticString = "[^\\w]+"
         static let wordSeparator = "_"
         static let firebaseEventNameMaxLength = 40
         static let firebaseEventValueMaxLength = 100
