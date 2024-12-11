@@ -67,6 +67,14 @@ final class PollingService<RequestData: Identifiable, ResponseData: Identifiable
             return
         }
 
+        // We have to remove result which is not contains in requests
+        // Because we don't need it anymore
+        resultSubject.send(
+            resultSubject.value.filter { result in
+                requests.contains(where: { $0.id == result.data.id })
+            }
+        )
+
         while !Task.isCancelled {
             let responses = await withTaskGroup(of: Response?.self) { [weak self] taskGroup in
                 for requestData in requests {
