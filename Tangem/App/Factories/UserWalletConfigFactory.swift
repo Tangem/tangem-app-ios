@@ -21,7 +21,10 @@ struct UserWalletConfigFactory {
     func makeConfig() -> UserWalletConfig {
         let isDemo = DemoUtil().isDemoCard(cardId: cardInfo.card.cardId)
         let isS2CCard = cardInfo.card.issuer.name.lowercased() == "start2coin"
-        let isVisa = VisaUtilities().batchId.contains(cardInfo.card.batchId)
+        let isVisa = VisaUtilities().isVisaCard(
+            firmwareVersion: cardInfo.card.firmwareVersion,
+            batchId: cardInfo.card.batchId
+        )
 
         switch cardInfo.walletData {
         case .none:
@@ -30,7 +33,7 @@ struct UserWalletConfigFactory {
                 return LegacyConfig(card: cardInfo.card, walletData: nil)
             }
 
-            if FirmwareVersion.visaRange.contains(cardInfo.card.firmwareVersion.doubleValue), isVisa {
+            if isVisa {
                 return VisaConfig(card: cardInfo.card)
             }
 

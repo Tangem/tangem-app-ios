@@ -74,7 +74,7 @@ final class AppScanTask: CardSessionRunnable {
         }
 
         let visaUtils = VisaUtilities(isTestnet: false)
-        if FirmwareVersion.visaRange.contains(card.firmwareVersion.doubleValue), visaUtils.batchId.contains(card.batchId) {
+        if visaUtils.isVisaCard(card) {
             readVisaCard(session, completion)
             return
         }

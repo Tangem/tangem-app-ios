@@ -17,7 +17,7 @@ public struct VisaUtilities {
         self.isTestnet = isTestnet
     }
 
-    public var batchId: [String] {
+    public var visaBatches: [String] {
         [
             "AE05",
         ]
@@ -51,5 +51,14 @@ public struct VisaUtilities {
 
     public func visaDefaultDerivationPath(style: DerivationStyle) -> DerivationPath? {
         visaBlockchain.derivationPath(for: style)
+    }
+
+    public func isVisaCard(_ card: Card) -> Bool {
+        return isVisaCard(firmwareVersion: card.firmwareVersion, batchId: card.batchId)
+    }
+
+    public func isVisaCard(firmwareVersion: FirmwareVersion, batchId: String) -> Bool {
+        return FirmwareVersion.visaRange.contains(firmwareVersion.doubleValue)
+            && visaBatches.contains(batchId)
     }
 }

@@ -33,7 +33,7 @@ class VisaCustomerWalletApproveTask: CardSessionRunnable {
     func run(in session: CardSession, completion: @escaping TaskResult) {
         guard
             let card = session.environment.card,
-            !visaUtilities.batchId.contains(card.batchId)
+            !visaUtilities.isVisaCard(card)
         else {
             completion(.failure(.underlying(error: "Can't use Visa card for approve")))
             return
