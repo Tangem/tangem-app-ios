@@ -26,6 +26,10 @@ class VisaCustomerWalletApproveTask: CardSessionRunnable {
         self.approveData = approveData
     }
 
+    deinit {
+        print("Deinit VisaCustomerWalletApproveTask")
+    }
+
     func run(in session: CardSession, completion: @escaping TaskResult) {
         guard
             let card = session.environment.card,
@@ -35,24 +39,21 @@ class VisaCustomerWalletApproveTask: CardSessionRunnable {
             return
         }
 
-        let scanCard = AppScanTask()
-        scanCard.run(in: session) { result in
-            switch result {
-            case .success(let response):
-                self.proceedApprove(scanResponse: response, in: session, completion: completion)
-            case .failure(let error):
-                completion(.failure(error))
-            }
+        if card.settings.isHDWalletAllowed {
+            proceedApprove(card: card, in: session, completion: completion)
+        } else {
+            proceedApproveWithLegacyCard(card: card, in: session, completion: completion)
         }
     }
 }
 
 private extension VisaCustomerWalletApproveTask {
-    func proceedApprove(scanResponse: AppScanTaskResponse, in session: CardSession, completion: @escaping TaskResult) {
-        let config = UserWalletConfigFactory(scanResponse.getCardInfo()).makeConfig()
+    func proceedApprove(card: Card, in session: CardSession, completion: @escaping TaskResult) {
+        let cardDTO = CardDTO(card: card)
+        let config = UserWalletConfigFactory(CardInfo(card: cardDTO, walletData: .none, name: "")).makeConfig()
 
         guard let derivationStyle = config.derivationStyle else {
-            proceedApproveWithLegacyCard(card: scanResponse.card, in: session, completion: completion)
+            proceedApproveWithLegacyCard(card: card, in: session, completion: completion)
             return
         }
 
@@ -61,44 +62,8 @@ private extension VisaCustomerWalletApproveTask {
             return
         }
 
-        do {
-            let searchUtility = VisaWalletPublicKeyUtility(isTestnet: false)
-            let walletPublicKey = try searchUtility.findPublicKeyWithDerivation(targetAddress: targetAddress, derivationPath: derivationPath, on: scanResponse.card)
-
-            signApproveData(
-                targetWalletPublicKey: walletPublicKey,
-                derivationPath: derivationPath,
-                in: session,
-                completion: completion
-            )
-        } catch {
-            switch error {
-            case .missingDerivedKeys:
-                deriveKeys(scanResponse: scanResponse, derivationPath: derivationPath, in: session, completion: completion)
-            default:
-                completion(.failure(.underlying(error: error)))
-            }
-        }
-    }
-
-    func proceedApproveWithLegacyCard(card: Card, in session: CardSession, completion: @escaping TaskResult) {
-        do {
-            let searchUtility = VisaWalletPublicKeyUtility(isTestnet: false)
-            let publicKey = try searchUtility.findPublicKeyWithoutDerivation(targetAddress: targetAddress, on: card)
-            signApproveData(targetWalletPublicKey: publicKey, derivationPath: nil, in: session, completion: completion)
-        } catch {
-            completion(.failure(.underlying(error: error)))
-        }
-    }
-
-    func deriveKeys(
-        scanResponse: AppScanTaskResponse,
-        derivationPath: DerivationPath,
-        in session: CardSession,
-        completion: @escaping TaskResult
-    ) {
         let targetCurve = visaUtilities.visaBlockchain.curve
-        guard let wallet = scanResponse.card.wallets.first(where: { $0.curve == targetCurve }) else {
+        guard let wallet = card.wallets.first(where: { $0.curve == targetCurve }) else {
             completion(.failure(.walletNotFound))
             return
         }
@@ -106,9 +71,9 @@ private extension VisaCustomerWalletApproveTask {
         let derivationTask = DeriveWalletPublicKeyTask(walletPublicKey: wallet.publicKey, derivationPath: derivationPath)
         derivationTask.run(in: session) { result in
             switch result {
-            case .success(let extendedPubKey):
+            case .success:
                 self.signApproveData(
-                    targetWalletPublicKey: extendedPubKey.publicKey,
+                    targetWalletPublicKey: wallet.publicKey,
                     derivationPath: derivationPath,
                     in: session,
                     completion: completion
@@ -116,6 +81,16 @@ private extension VisaCustomerWalletApproveTask {
             case .failure(let error):
                 completion(.failure(error))
             }
+        }
+    }
+
+    func proceedApproveWithLegacyCard(card: Card, in session: CardSession, completion: @escaping TaskResult) {
+        do {
+            let searchUtility = VisaWalletPublicKeyUtility(isTestnet: false)
+            let publicKey = try searchUtility.findKeyWithoutDerivation(targetAddress: targetAddress, on: card)
+            signApproveData(targetWalletPublicKey: publicKey, derivationPath: nil, in: session, completion: completion)
+        } catch {
+            completion(.failure(.underlying(error: error)))
         }
     }
 
@@ -134,11 +109,23 @@ private extension VisaCustomerWalletApproveTask {
         signTask.run(in: session) { result in
             switch result {
             case .success(let hashResponse):
-                completion(.success(hashResponse))
+                self.scanCard(hashResponse: hashResponse, in: session, completion: completion)
             case .failure(let sdkError):
                 completion(.failure(sdkError))
             }
-            withExtendedLifetime(signTask) {}
+        }
+    }
+
+    func scanCard(hashResponse: SignHashResponse, in session: CardSession, completion: @escaping TaskResult) {
+        let scanTask = ScanTask()
+
+        scanTask.run(in: session) { result in
+            switch result {
+            case .success:
+                completion(.success(hashResponse))
+            case .failure(let error):
+                completion(.failure(error))
+            }
         }
     }
 }

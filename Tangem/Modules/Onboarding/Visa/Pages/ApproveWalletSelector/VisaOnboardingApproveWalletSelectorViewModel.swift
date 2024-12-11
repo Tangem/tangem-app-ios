@@ -1,5 +1,5 @@
 //
-//  VisaOnboardingActivationWalletSelectorViewModel.swift
+//  VisaOnboardingApproveWalletSelectorView.swift
 //  Tangem
 //
 //  Created by Andrew Son on 02.12.24.
@@ -8,13 +8,13 @@
 
 import Combine
 
-protocol VisaOnboardingWalletSelectorDelegate: AnyObject {
+protocol VisaOnboardingApproveWalletSelectorDelegate: AnyObject {
     func useExternalWallet()
     func useTangemWallet()
 }
 
-final class VisaOnboardingActivationWalletSelectorViewModel: ObservableObject {
-    @Published private(set) var selectedOption: VisaOnboardingActivationWalletSelectorItemView.Option = .tangemWallet
+final class VisaOnboardingApproveWalletSelectorViewModel: ObservableObject {
+    @Published private(set) var selectedOption: VisaOnboardingApproveWalletSelectorItemView.Option = .tangemWallet
 
     let instructionNotificationInput: NotificationViewInput = .init(
         style: .plain,
@@ -22,13 +22,13 @@ final class VisaOnboardingActivationWalletSelectorViewModel: ObservableObject {
         settings: .init(event: VisaNotificationEvent.onboardingAccountActivationInfo, dismissAction: nil)
     )
 
-    private weak var delegate: VisaOnboardingWalletSelectorDelegate?
+    private weak var delegate: VisaOnboardingApproveWalletSelectorDelegate?
 
-    init(delegate: VisaOnboardingWalletSelectorDelegate) {
+    init(delegate: VisaOnboardingApproveWalletSelectorDelegate) {
         self.delegate = delegate
     }
 
-    func selectOption(_ option: VisaOnboardingActivationWalletSelectorItemView.Option) {
+    func selectOption(_ option: VisaOnboardingApproveWalletSelectorItemView.Option) {
         selectedOption = option
     }
 

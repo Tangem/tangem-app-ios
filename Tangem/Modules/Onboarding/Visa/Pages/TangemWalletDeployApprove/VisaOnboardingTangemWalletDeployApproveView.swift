@@ -1,5 +1,5 @@
 //
-//  VisaOnboardingTangemWalletConfirmationView.swift
+//  VisaOnboardingTangemWalletDeployApproveView.swift
 //  Tangem
 //
 //  Created by Andrew Son on 04.12.24.
@@ -8,8 +8,8 @@
 
 import SwiftUI
 
-struct VisaOnboardingTangemWalletConfirmationView: View {
-    @ObservedObject var viewModel: VisaOnboardingTangemWalletConfirmationViewModel
+struct VisaOnboardingTangemWalletDeployApproveView: View {
+    @ObservedObject var viewModel: VisaOnboardingTangemWalletDeployApproveViewModel
 
     private let cardImageAspectRatio: CGFloat = 1.894
 

@@ -167,6 +167,8 @@ extension CommonVisaActivationManager {
             }
 
             log("Do something with activation response: \(activationResponse)")
+
+            targetApproveAddress = "0x9F65354e595284956599F2892fA4A4a87653D6E6"
         } catch let sdkError as TangemSdkError {
             if sdkError.isUserCancelled {
                 return

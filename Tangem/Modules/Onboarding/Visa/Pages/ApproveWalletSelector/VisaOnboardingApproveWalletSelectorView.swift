@@ -1,5 +1,5 @@
 //
-//  VisaOnboardingActivationWalletSelectorView.swift
+//  VisaOnboardingApproveWalletSelectorView.swift
 //  Tangem
 //
 //  Created by Andrew Son on 02.12.24.
@@ -8,8 +8,8 @@
 
 import SwiftUI
 
-struct VisaOnboardingActivationWalletSelectorView: View {
-    @ObservedObject var viewModel: VisaOnboardingActivationWalletSelectorViewModel
+struct VisaOnboardingApproveWalletSelectorView: View {
+    @ObservedObject var viewModel: VisaOnboardingApproveWalletSelectorViewModel
 
     var body: some View {
         VStack(spacing: 0) {
@@ -32,8 +32,8 @@ struct VisaOnboardingActivationWalletSelectorView: View {
             Text("Choose wallet")
                 .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
 
-            ForEach(VisaOnboardingActivationWalletSelectorItemView.Option.allCases) { option in
-                VisaOnboardingActivationWalletSelectorItemView(
+            ForEach(VisaOnboardingApproveWalletSelectorItemView.Option.allCases) { option in
+                VisaOnboardingApproveWalletSelectorItemView(
                     item: option,
                     selected: viewModel.selectedOption == option,
                     tapAction: {

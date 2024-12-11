@@ -74,10 +74,10 @@ struct VisaOnboardingView: View {
         case .accessCode:
             VisaOnboardingAccessCodeSetupView(viewModel: viewModel.accessCodeSetupViewModel)
         case .selectWalletForApprove:
-            VisaOnboardingActivationWalletSelectorView(viewModel: viewModel.walletSelectorViewModel)
+            VisaOnboardingApproveWalletSelectorView(viewModel: viewModel.walletSelectorViewModel)
         case .approveUsingTangemWallet:
             if let viewModel = viewModel.tangemWalletApproveViewModel {
-                VisaOnboardingTangemWalletConfirmationView(viewModel: viewModel)
+                VisaOnboardingTangemWalletDeployApproveView(viewModel: viewModel)
             }
         case .saveUserWallet:
             UserWalletStorageAgreementView(

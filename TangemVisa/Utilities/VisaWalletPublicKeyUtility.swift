@@ -17,12 +17,24 @@ public struct VisaWalletPublicKeyUtility {
         visaUtilities = .init(isTestnet: isTestnet)
     }
 
-    public func findPublicKeyWithDerivation(targetAddress: String, derivationPath: DerivationPath, on card: Card) throws (SearchError) -> Data {
-        return try findKeyWithDerivation(targetAddress: targetAddress, derivationPath: derivationPath, on: card)
+    public func findKeyWithoutDerivation(targetAddress: String, on card: Card) throws (SearchError) -> Data {
+        let wallet = try findWalletOnVisaCurve(on: card)
+
+        try validatePublicKey(targetAddress: targetAddress, publicKey: wallet.publicKey)
+
+        return wallet.publicKey
     }
 
-    public func findPublicKeyWithoutDerivation(targetAddress: String, on card: Card) throws (SearchError) -> Data {
-        return try findKeyWithoutDerivation(targetAddress: targetAddress, on: card)
+    public func findKeyWithDerivation(targetAddress: String, derivationPath: DerivationPath, on card: Card) throws (SearchError) -> Data {
+        let wallet = try findWalletOnVisaCurve(on: card)
+
+        guard let extendedPublicKey = wallet.derivedKeys.keys[derivationPath] else {
+            throw .missingDerivedKeys
+        }
+
+        try validateExtendedPublicKey(targetAddress: targetAddress, extendedPublicKey: extendedPublicKey, derivationPath: derivationPath)
+
+        return wallet.publicKey
     }
 
     public func validatePublicKey(targetAddress: String, publicKey: Data) throws (SearchError) {
@@ -67,34 +79,6 @@ public struct VisaWalletPublicKeyUtility {
         try validateCreatedAddress(targetAddress: targetAddress, createdAddress: createdAddress)
     }
 
-    private func findKeyWithoutDerivation(targetAddress: String, on card: Card) throws (SearchError) -> Data {
-        let wallet = try findWalletOnVisaCurve(on: card)
-
-        try validatePublicKey(targetAddress: targetAddress, publicKey: wallet.publicKey)
-
-        return wallet.publicKey
-    }
-
-    private func findKeyWithDerivation(targetAddress: String, derivationStyle: DerivationStyle, on card: Card) throws (SearchError) -> Data {
-        guard let derivationPath = visaUtilities.visaBlockchain.derivationPath(for: derivationStyle) else {
-            throw .failedToGenerateDerivationPath
-        }
-
-        return try findKeyWithDerivation(targetAddress: targetAddress, derivationPath: derivationPath, on: card)
-    }
-
-    private func findKeyWithDerivation(targetAddress: String, derivationPath: DerivationPath, on card: Card) throws (SearchError) -> Data {
-        let wallet = try findWalletOnVisaCurve(on: card)
-
-        guard let extendedPublicKey = wallet.derivedKeys.keys[derivationPath] else {
-            throw .missingDerivedKeys
-        }
-
-        try validateExtendedPublicKey(targetAddress: targetAddress, extendedPublicKey: extendedPublicKey, derivationPath: derivationPath)
-
-        return wallet.publicKey
-    }
-
     private func validateCreatedAddress(targetAddress: String, createdAddress: any Address) throws (SearchError) {
         guard createdAddress.value == targetAddress else {
             throw .addressesNotMatch
@@ -117,6 +101,5 @@ public extension VisaWalletPublicKeyUtility {
         case missingDerivedKeys
         case failedToGenerateAddress(Error)
         case addressesNotMatch
-        case noDerivationPathForProvidedDerivationStyle
     }
 }

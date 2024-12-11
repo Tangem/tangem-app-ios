@@ -1,5 +1,5 @@
 //
-//  VisaOnboardingActivationWalletSelectorItemView.swift
+//  VisaOnboardingApproveWalletSelectorItemView.swift
 //  Tangem
 //
 //  Created by Andrew Son on 03.12.24.
@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct VisaOnboardingActivationWalletSelectorItemView: View {
+struct VisaOnboardingApproveWalletSelectorItemView: View {
     let item: Option
     let selected: Bool
     let tapAction: () -> Void
@@ -48,7 +48,7 @@ struct VisaOnboardingActivationWalletSelectorItemView: View {
     }
 }
 
-extension VisaOnboardingActivationWalletSelectorItemView {
+extension VisaOnboardingApproveWalletSelectorItemView {
     enum Option: String, Identifiable, Hashable, CaseIterable {
         case tangemWallet
         case otherWallet

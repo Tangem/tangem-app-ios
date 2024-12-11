@@ -50,8 +50,8 @@ class VisaOnboardingViewModel: ObservableObject {
     )
 
     lazy var accessCodeSetupViewModel = VisaOnboardingAccessCodeSetupViewModel(accessCodeValidator: visaActivationManager, delegate: self)
-    lazy var walletSelectorViewModel = VisaOnboardingActivationWalletSelectorViewModel(delegate: self)
-    var tangemWalletApproveViewModel: VisaOnboardingTangemWalletConfirmationViewModel?
+    lazy var walletSelectorViewModel = VisaOnboardingApproveWalletSelectorViewModel(delegate: self)
+    var tangemWalletApproveViewModel: VisaOnboardingTangemWalletDeployApproveViewModel?
 
     // MARK: - Computed properties
 
@@ -262,7 +262,7 @@ private extension VisaOnboardingViewModel {
     }
 }
 
-extension VisaOnboardingViewModel: VisaOnboardingWalletSelectorDelegate {
+extension VisaOnboardingViewModel: VisaOnboardingApproveWalletSelectorDelegate {
     func useExternalWallet() {
         // TODO: IOS-8574
         alert = "TODO: IOS-8574".alertBinder
@@ -282,14 +282,19 @@ extension VisaOnboardingViewModel: VisaOnboardingWalletSelectorDelegate {
 
 extension VisaOnboardingViewModel: VisaOnboardingTangemWalletApproveDelegate {
     func processSignedData(_ signedData: Data) async throws {
-        throw "Backend not ready... Even requirements"
+        /// Backend not ready... Even requirements. So right now we will return to Welcome Page
+        goToStep(.welcome)
     }
 }
 
 extension VisaOnboardingViewModel: VisaOnboardingTangemWalletApproveDataProvider {
     func loadDataToSign() async throws -> Data {
-//        throw "Backend not ready... Even requirements"
-        Data(hex: "01231543809154315741395431578392174938")
+        /// Backend not ready... Even requirements. So for now just generate random bytes with proper length for sign
+        /// Later all data will be requested from `VisaActivationManager`
+        let array = (0 ..< 32).map { _ -> UInt8 in
+            UInt8(arc4random_uniform(255))
+        }
+        return Data(array)
     }
 }
 
