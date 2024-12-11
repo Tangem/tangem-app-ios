@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension URL {
+public extension URL {
     var hostOrUnknown: String {
         host ?? "Unknown Host"
     }

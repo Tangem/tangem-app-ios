@@ -8,6 +8,7 @@
 
 import Foundation
 import Moya
+import TangemNetworkUtils
 
 struct CasperTarget: TargetType {
     // MARK: - Properties
@@ -78,5 +79,16 @@ private extension CasperTarget {
     enum Method: String, Encodable {
         case queryBalance = "query_balance"
         case putDeploy = "account_put_deploy"
+    }
+}
+
+extension CasperTarget: TargetTypeLogConvertible {
+    var requestDescription: String {
+        switch type {
+        case .getBalance:
+            return "getBalance"
+        case .putDeploy:
+            return "putDeploy"
+        }
     }
 }

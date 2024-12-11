@@ -26,11 +26,11 @@ struct LitecoinWalletAssembly: WalletManagerAssembly {
                 switch providerType {
                 case .nowNodes:
                     partialResult.append(
-                        networkProviderAssembly.makeBlockBookUtxoProvider(with: input, for: .nowNodes).eraseToAnyBitcoinNetworkProvider()
+                        networkProviderAssembly.makeBlockBookUTXOProvider(with: input, for: .nowNodes).eraseToAnyBitcoinNetworkProvider()
                     )
                 case .getBlock:
                     partialResult.append(
-                        networkProviderAssembly.makeBlockBookUtxoProvider(with: input, for: .getBlock).eraseToAnyBitcoinNetworkProvider()
+                        networkProviderAssembly.makeBlockBookUTXOProvider(with: input, for: .getBlock).eraseToAnyBitcoinNetworkProvider()
                     )
                 case .blockchair:
                     partialResult.append(

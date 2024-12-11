@@ -8,6 +8,7 @@
 
 import Foundation
 import Moya
+import TangemNetworkUtils
 
 struct EthereumTarget: TargetType {
     let targetType: EthereumTargetType
@@ -97,5 +98,11 @@ extension EthereumTarget {
 
         /// https://www.quicknode.com/docs/ethereum/eth_feeHistory
         case feeHistory
+    }
+}
+
+extension EthereumTarget: TargetTypeLogConvertible {
+    var requestDescription: String {
+        rpcMethod
     }
 }

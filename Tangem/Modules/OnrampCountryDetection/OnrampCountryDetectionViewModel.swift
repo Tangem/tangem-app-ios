@@ -73,6 +73,8 @@ private extension OnrampCountryDetectionViewModel {
     func bind() {
         repository
             .preferencePublisher
+            // Drop the initial value
+            .dropFirst()
             // When user selected country we have to close bottom sheet
             .first { !$0.isEmpty }
             .withWeakCaptureOf(self)

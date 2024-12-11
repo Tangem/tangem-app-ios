@@ -58,7 +58,7 @@ extension CommonOnrampProvidersInteractor: OnrampProvidersInteractor {
                 input.onrampProvidersPublisher,
                 paymentMethodsInput.selectedPaymentMethodPublisher.compactMap { $0 }
             )
-            .compactMap { $0?.value?.select(for: $1)?.providers }
+            .compactMap { $0?.value?.select(for: $1)?.providers.filter { $0.isShowable } }
             .removeDuplicates()
             .eraseToAnyPublisher()
     }

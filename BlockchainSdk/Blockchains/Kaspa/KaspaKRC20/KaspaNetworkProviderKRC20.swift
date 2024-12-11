@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import TangemNetworkUtils
 
 class KaspaNetworkProviderKRC20: HostProvider {
     var host: String {

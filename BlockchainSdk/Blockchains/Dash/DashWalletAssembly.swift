@@ -27,11 +27,33 @@ struct DashWalletAssembly: WalletManagerAssembly {
             let providers: [AnyBitcoinNetworkProvider] = input.apiInfo.reduce(into: []) { partialResult, providerType in
                 switch providerType {
                 case .nowNodes:
-                    partialResult.append(networkProviderAssembly.makeBlockBookUtxoProvider(with: input, for: .nowNodes).eraseToAnyBitcoinNetworkProvider())
+                    partialResult.append(
+                        networkProviderAssembly.makeBlockBookUTXOProvider(
+                            with: input,
+                            for: .nowNodes
+                        ).eraseToAnyBitcoinNetworkProvider()
+                    )
                 case .blockchair:
-                    partialResult.append(contentsOf: networkProviderAssembly.makeBlockchairNetworkProviders(endpoint: .dash, with: input))
+                    partialResult.append(
+                        contentsOf: networkProviderAssembly.makeBlockchairNetworkProviders(
+                            endpoint: .dash,
+                            with: input
+                        )
+                    )
                 case .blockcypher:
-                    partialResult.append(networkProviderAssembly.makeBlockcypherNetworkProvider(endpoint: .dash, with: input).eraseToAnyBitcoinNetworkProvider())
+                    partialResult.append(
+                        networkProviderAssembly.makeBlockcypherNetworkProvider(
+                            endpoint: .dash,
+                            with: input
+                        ).eraseToAnyBitcoinNetworkProvider()
+                    )
+                case .getBlock:
+                    partialResult.append(
+                        networkProviderAssembly.makeBlockBookUTXOProvider(
+                            with: input,
+                            for: .getBlock
+                        ).eraseToAnyBitcoinNetworkProvider()
+                    )
                 default:
                     return
                 }

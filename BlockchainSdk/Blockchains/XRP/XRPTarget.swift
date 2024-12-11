@@ -8,6 +8,7 @@
 
 import Foundation
 import Moya
+import TangemNetworkUtils
 
 struct XRPTarget: TargetType {
     private let node: NodeInfo
@@ -91,5 +92,22 @@ extension XRPTarget {
         case submit(tx: String)
         case fee
         case reserve
+    }
+}
+
+extension XRPTarget: TargetTypeLogConvertible {
+    var requestDescription: String {
+        switch target {
+        case .accountInfo:
+            "accountInfo"
+        case .unconfirmed:
+            "unconfirmed"
+        case .submit:
+            "submit"
+        case .fee:
+            "fee"
+        case .reserve:
+            "reserve"
+        }
     }
 }

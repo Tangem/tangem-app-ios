@@ -9,6 +9,7 @@
 import Foundation
 import BinanceChain
 import Combine
+import TangemNetworkUtils
 
 class BinanceNetworkService {
     let binance: BinanceChain
