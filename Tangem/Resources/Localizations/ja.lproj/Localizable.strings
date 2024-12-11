@@ -951,7 +951,7 @@
 "warning_approval_in_progress_message" = "許可付与のプロセスは現在進行中であり、まもなく完了する予定です。";
 "warning_approval_in_progress_title" = "承認中";
 "warning_backup_errors_message" = "カードまたはリングのアクティベーションが正しく完了しませんでした。デバイスのNFCモジュールに問題があるか、カードまたはリングをデバイスに正しくタップしていないことが原因かもしれません。サポートチームにお問い合わせください。";
-"warning_beacon_chain_retirement_content" = "BNBネットワーク開発者によると、BEP-2規格のサポートは2024年6月に終了します。この規格の資産を失わないために、BEP-20規格に変換してください。BNBスマートチェーンネットワークへ移行するには、Tangemのスワップサービスをご利用ください。";
+"warning_beacon_chain_retirement_content" = "2024年12月3日、BEP-2ネットワークはネットワーク開発者の決定により使用不能となり、サポートは終了しました。";
 "warning_beacon_chain_retirement_title" = "BNBビーコンチェーンは閉鎖されます。";
 "warning_blocked_funds_for_fee_message" = "ネットワーク手数料をカバーするために%1$@を入金してください";
 "warning_blocked_funds_for_fee_title" = "ネットワーク手数料をカバーする資金が不足しています";
