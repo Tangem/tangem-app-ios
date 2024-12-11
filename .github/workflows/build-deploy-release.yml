@@ -3,7 +3,7 @@ name: Release - Build and Deploy
 on:
   push:
    branches:
-    - 'feature/IOS-8508_create_release_ci_cd/releases/**' # TODO: Remove
+    - 'test/releases/**' # TODO: Remove
     #- 'releases/**' # TODO: Enable
   workflow_dispatch:
     inputs:
