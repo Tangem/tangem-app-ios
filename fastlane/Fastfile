@@ -201,6 +201,9 @@ Options:
 - analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
 """
 lane :build_RC do |options|
+  increment_version_number(version_number: options[:version])
+  increment_testflight_build_number(version: options[:version], build: options[:build])
+
   build(
     export_method: "app-store",
     scheme: PRODUCTION_SCHEME,
