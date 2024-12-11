@@ -40,9 +40,28 @@ jobs:
     steps:
       - name: Get Release Version
         id: get-release-version
+        env:
+          BUILD_VERSION_OVERRIDE: '${{ inputs.build_version_override }}'
+          BRANCH_NAME: '${{ github.head_ref || github.ref_name }}'
         run: |
-          echo '${{ vars.APP_NAME }}'
-          echo "result=5.19" >> $GITHUB_OUTPUT
+          if [[ -n "${BUILD_VERSION_OVERRIDE}" ]]; then
+            # Use the build version value from user input (if any)
+            BUILD_VERSION="${BUILD_VERSION_OVERRIDE}"
+            echo "Using the build version '${BUILD_VERSION}' derived from user input for this build"
+          elif [[ -n "${BRANCH_NAME}" ]]; then
+            # Use the build version value from the branch name
+            BUILD_VERSION=$(echo "${BRANCH_NAME}" | rev | cut -d'/' -f1 | rev)
+            if [[ -n "${BUILD_VERSION}" ]]; then
+              echo "Using the build version '${BUILD_VERSION}' derived from branch name for this build"
+            else
+              echo "Unable to obtain the build version from the branch name, can't process further"
+              exit 2
+            fi
+          else
+            # No info about build version
+            echo "Unable to obtain the build version, can't process further"
+            exit 1
+          fi
 
       - name: Get Build Number
         id: get-build-number
