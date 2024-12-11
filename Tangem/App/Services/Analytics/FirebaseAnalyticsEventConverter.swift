@@ -39,7 +39,7 @@ enum FirebaseAnalyticsEventConverter {
         switch value {
         case let intValue as Int:
             return intValue
-        case let doubleValue as Int:
+        case let doubleValue as Double:
             return doubleValue
         case let stringValue as String:
             return stringValue.trim(toLength: 100)
