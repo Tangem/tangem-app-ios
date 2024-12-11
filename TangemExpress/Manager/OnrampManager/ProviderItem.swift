@@ -41,13 +41,12 @@ public class ProviderItem {
         return providers
     }
 
-    /// Providers will be sorted
-    @discardableResult
-    public func updateAttractiveTypes() -> OnrampProvider? {
+    /// Providers will be sorted and their `attractiveType` will be updated
+    public func updateAttractiveTypes() {
         // Only if we have more than one providers with quote
         guard providers.filter(\.isSuccessfullyLoaded).count > 1 else {
             providers.forEach { $0.update(attractiveType: .none) }
-            return nil
+            return
         }
 
         var bestQuote: Decimal?
@@ -66,8 +65,6 @@ public class ProviderItem {
                 provider.update(attractiveType: .none)
             }
         }
-
-        return providers.first
     }
 
     private func sort(lhs: OnrampProvider, rhs: OnrampProvider) -> Bool {
