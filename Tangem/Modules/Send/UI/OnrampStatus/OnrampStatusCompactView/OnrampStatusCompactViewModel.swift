@@ -13,8 +13,6 @@ class OnrampStatusCompactViewModel: ObservableObject {
     @Published var statusesList: [PendingExpressTxStatusRow.StatusRowData] = []
 
     private let pendingTransactionsManager: PendingExpressTransactionsManager
-    private var expressTransactionId: String?
-
     private var bag: Set<AnyCancellable> = []
 
     init(input: OnrampStatusInput, pendingTransactionsManager: PendingExpressTransactionsManager) {
