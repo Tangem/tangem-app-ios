@@ -73,7 +73,7 @@ struct PendingExpressTransactionFactory {
     func buildPendingExpressTransaction(for transactionRecord: ExpressPendingTransactionRecord) -> PendingExpressTransaction {
         let statusesList: [PendingExpressTransactionStatus] = {
             switch transactionRecord.transactionStatus {
-            case .awaitingDeposit, .confirming, .exchanging, .buying, .sendingToUser, .done:
+            case .created, .awaitingDeposit, .confirming, .exchanging, .buying, .sendingToUser, .done:
                 return defaultStatusesList
             case .canceled:
                 return canceledStatusesList
