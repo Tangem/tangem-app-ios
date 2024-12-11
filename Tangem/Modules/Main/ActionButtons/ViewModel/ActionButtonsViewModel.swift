@@ -50,8 +50,8 @@ final class ActionButtonsViewModel: ObservableObject {
 
         buyActionButtonViewModel = BuyActionButtonViewModel(
             model: .buy,
-            lastButtonTapped: lastButtonTapped,
             coordinator: coordinator,
+            lastButtonTapped: lastButtonTapped,
             userWalletModel: userWalletModel
         )
 
@@ -77,7 +77,7 @@ final class ActionButtonsViewModel: ObservableObject {
 
         expressAvailabilityProvider.updateExpressAvailability(
             for: userWalletModel.walletModelsManager.walletModels.map(\.tokenItem),
-            forceReload: true,
+            forceReload: false,
             userWalletId: userWalletModel.userWalletId.stringValue
         )
     }
@@ -93,15 +93,19 @@ private extension ActionButtonsViewModel {
     }
 
     func bindWalletModels() {
-        expressTokensListAdapter
-            .walletModels()
-            .receive(on: DispatchQueue.main)
+        userWalletModel
+            .walletModelsManager
+            .walletModelsPublisher
             .withWeakCaptureOf(self)
             .sink { viewModel, walletModels in
-                viewModel.isButtonsDisabled = walletModels.isEmpty
-
-                if let currentSwapUpdateState = viewModel.currentSwapUpdateState {
-                    viewModel.updateSwapButtonState(currentSwapUpdateState)
+                TangemFoundation.runTask(in: self) { @MainActor viewModel in
+                    if walletModels.isEmpty {
+                        viewModel.buyActionButtonViewModel.updateState(to: .disabled)
+                        viewModel.sellActionButtonViewModel.updateState(to: .disabled)
+                        viewModel.swapActionButtonViewModel.updateState(to: .disabled)
+                    } else if let currentSwapUpdateState = viewModel.currentSwapUpdateState {
+                        viewModel.updateSwapButtonState(currentSwapUpdateState)
+                    }
                 }
             }
             .store(in: &bag)
@@ -129,8 +133,11 @@ private extension ActionButtonsViewModel {
             case .updating: viewModel.handleUpdatingExpressState()
             case .updated: viewModel.handleUpdatedSwapState()
             case .failed:
-                // TODO: Should be removed later
                 viewModel.swapActionButtonViewModel.updateState(
+                    to: .restricted(reason: Localization.actionButtonsSomethingWrongAlertMessage)
+                )
+
+                viewModel.buyActionButtonViewModel.updateState(
                     to: .restricted(reason: Localization.actionButtonsSomethingWrongAlertMessage)
                 )
             }
@@ -141,8 +148,9 @@ private extension ActionButtonsViewModel {
     func handleUpdatingExpressState() {
         switch swapActionButtonViewModel.viewState {
         case .idle:
-            swapActionButtonViewModel.updateState(to: .initial)
-        case .restricted, .loading, .initial:
+            swapActionButtonViewModel.updateState(to: .loading)
+            buyActionButtonViewModel.updateState(to: .loading)
+        case .restricted, .loading, .initial, .disabled:
             break
         }
     }
@@ -151,10 +159,11 @@ private extension ActionButtonsViewModel {
     func handleUpdatedSwapState() {
         let walletModels = userWalletModel.walletModelsManager.walletModels
 
+        buyActionButtonViewModel.updateState(to: .idle)
+
         if walletModels.count > 1 {
             swapActionButtonViewModel.updateState(to: .idle)
         } else {
-            // TODO: Should be removed later
             swapActionButtonViewModel.updateState(
                 to: .restricted(
                     reason: Localization.actionButtonsSwapNotEnoughTokensAlertMessage

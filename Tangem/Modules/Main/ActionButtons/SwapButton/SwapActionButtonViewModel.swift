@@ -21,6 +21,11 @@ final class SwapActionButtonViewModel: ActionButtonViewModel {
 
     @Published private(set) var viewState: ActionButtonState = .initial {
         didSet {
+            guard viewState != .initial else {
+                isOpeningRequired = false
+                return
+            }
+
             if oldValue == .loading {
                 scheduleLoadedAction()
             }
@@ -37,6 +42,7 @@ final class SwapActionButtonViewModel: ActionButtonViewModel {
 
     private weak var coordinator: ActionButtonsSwapFlowRoutable?
     private var bag: Set<AnyCancellable> = []
+    private var expressProviderState: ExpressAvailabilityUpdateState = .updating
 
     private let lastButtonTapped: PassthroughSubject<ActionButtonModel, Never>
     private let userWalletModel: UserWalletModel
@@ -65,6 +71,14 @@ final class SwapActionButtonViewModel: ActionButtonViewModel {
                 }
             }
             .store(in: &bag)
+
+        expressAvailabilityProvider
+            .expressAvailabilityUpdateState
+            .withWeakCaptureOf(self)
+            .sink { viewModel, state in
+                viewModel.expressProviderState = state
+            }
+            .store(in: &bag)
     }
 
     @MainActor
@@ -73,9 +87,8 @@ final class SwapActionButtonViewModel: ActionButtonViewModel {
 
         switch viewState {
         case .initial:
-            updateState(to: .loading)
-            isOpeningRequired = true
-        case .loading:
+            handleInitialStateTap()
+        case .loading, .disabled:
             break
         case .restricted(let reason):
             alert = .init(title: "", message: reason)
@@ -90,6 +103,38 @@ final class SwapActionButtonViewModel: ActionButtonViewModel {
     func updateState(to state: ActionButtonState) {
         viewState = state
     }
+
+    @MainActor
+    private func handleInitialStateTap() {
+        isOpeningRequired = false
+
+        switch expressProviderState {
+        case .updating: handleUpdatingStateTap()
+        case .updated: handleUpdatedStateTap()
+        case .failed(let error): handleFailedStateTap(reason: error.localizedDescription)
+        }
+    }
+}
+
+// MARK: Handle tap from initial state
+
+@MainActor
+private extension SwapActionButtonViewModel {
+    func handleUpdatingStateTap() {
+        updateState(to: .loading)
+        isOpeningRequired = true
+        lastButtonTapped.send(model)
+    }
+
+    func handleUpdatedStateTap() {
+        updateState(to: .idle)
+        tap()
+    }
+
+    func handleFailedStateTap(reason: String) {
+        updateState(to: .restricted(reason: reason))
+        tap()
+    }
 }
 
 // MARK: Handle loading completion
@@ -99,7 +144,7 @@ private extension SwapActionButtonViewModel {
         switch viewState {
         case .restricted(let reason): showScheduledAlert(with: reason)
         case .idle: scheduledOpenSwap()
-        case .loading, .initial: break
+        case .loading, .initial, .disabled: break
         }
     }
 

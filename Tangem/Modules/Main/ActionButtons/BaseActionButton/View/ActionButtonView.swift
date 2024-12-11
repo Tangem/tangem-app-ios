@@ -10,34 +10,37 @@ import SwiftUI
 
 struct ActionButtonView<ViewModel: ActionButtonViewModel>: View {
     @ObservedObject var viewModel: ViewModel
-    @Environment(\.isEnabled) var isEnabled
 
     private var isDisabled: Bool {
-        !isEnabled
+        viewModel.viewState == .disabled
     }
 
     var body: some View {
-        HStack(spacing: 4) {
-            leadingItem
-                .frame(width: 20, height: 20)
-            Text(viewModel.model.title)
-                .style(
-                    Fonts.Bold.subheadline,
-                    color: isDisabled ? Colors.Text.disabled : Colors.Text.primary1
-                )
-        }
-        .frame(height: 34)
-        .frame(maxWidth: .infinity)
-        .background(Colors.Background.action)
-        .cornerRadiusContinuous(10)
-        .onTapGesture(perform: viewModel.tap)
-        .bindAlert($viewModel.alert)
+        Button(
+            action: viewModel.tap,
+            label: {
+                HStack(spacing: 4) {
+                    leadingItem
+                        .frame(width: 20, height: 20)
+                    Text(viewModel.model.title)
+                        .style(
+                            Fonts.Bold.subheadline,
+                            color: isDisabled ? Colors.Text.disabled : Colors.Text.primary1
+                        )
+                }
+                .bindAlert($viewModel.alert)
+                .frame(height: 34)
+                .frame(maxWidth: .infinity)
+                .background(Colors.Background.action)
+                .cornerRadiusContinuous(10)
+            }
+        )
     }
 
     @ViewBuilder
     private var leadingItem: some View {
         switch viewModel.viewState {
-        case .initial, .idle, .restricted:
+        case .initial, .idle, .restricted, .disabled:
             buttonIcon
         case .loading:
             progressView
