@@ -741,6 +741,7 @@
 		B0F79C6A2689AC56008C9B30 /* FileEncryptionUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F79C692689AC56008C9B30 /* FileEncryptionUtility.swift */; };
 		B0F7D75E2A4048D5007FEB2E /* ReceiveAddressInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F7D75D2A4048D5007FEB2E /* ReceiveAddressInfo.swift */; };
 		B0F7D7622A404907007FEB2E /* ReceiveBottomSheetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F7D7612A404907007FEB2E /* ReceiveBottomSheetViewModel.swift */; };
+		B0F8E87C2D097EEC00458246 /* VisaOnboardingViewModelBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F8E87B2D097EEC00458246 /* VisaOnboardingViewModelBuilder.swift */; };
 		B0FAD00E26BAC51F00F45E88 /* CircledCheckmarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0FAD00D26BAC51F00F45E88 /* CircledCheckmarkView.swift */; };
 		B0FAD01226BAF35C00F45E88 /* FrameSizeModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0FAD01126BAF35C00F45E88 /* FrameSizeModifier.swift */; };
 		B0FAD27B2CA5386D00DD54EA /* MarketsTokenDetailsListedOnExchangesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0FAD27A2CA5386D00DD54EA /* MarketsTokenDetailsListedOnExchangesView.swift */; };
@@ -3935,6 +3936,7 @@
 		B0F79C692689AC56008C9B30 /* FileEncryptionUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileEncryptionUtility.swift; sourceTree = "<group>"; };
 		B0F7D75D2A4048D5007FEB2E /* ReceiveAddressInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiveAddressInfo.swift; sourceTree = "<group>"; };
 		B0F7D7612A404907007FEB2E /* ReceiveBottomSheetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiveBottomSheetViewModel.swift; sourceTree = "<group>"; };
+		B0F8E87B2D097EEC00458246 /* VisaOnboardingViewModelBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisaOnboardingViewModelBuilder.swift; sourceTree = "<group>"; };
 		B0FAD00D26BAC51F00F45E88 /* CircledCheckmarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircledCheckmarkView.swift; sourceTree = "<group>"; };
 		B0FAD01126BAF35C00F45E88 /* FrameSizeModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameSizeModifier.swift; sourceTree = "<group>"; };
 		B0FAD27A2CA5386D00DD54EA /* MarketsTokenDetailsListedOnExchangesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenDetailsListedOnExchangesView.swift; sourceTree = "<group>"; };
@@ -7846,6 +7848,7 @@
 				B05449CF2CCF8B7100983C78 /* VisaOnboardingViewModel.swift */,
 				B09B577A2D06F500008DBE1C /* VisaApprovePairSearchUtility.swift */,
 				B05449D12CCF8F2300983C78 /* VisaOnboardingStep.swift */,
+				B0F8E87B2D097EEC00458246 /* VisaOnboardingViewModelBuilder.swift */,
 			);
 			path = Visa;
 			sourceTree = "<group>";
@@ -17083,6 +17086,7 @@
 				EF7A072E2C2F0738003DED83 /* TransactionDispatcher.swift in Sources */,
 				DCC5C99C2C136D8F001B970A /* PushNotificationsPermissionRequestDelegate.swift in Sources */,
 				B0EA18AD2C465D860023B72A /* DescriptionBottomSheetView.swift in Sources */,
+				B0F8E87C2D097EEC00458246 /* VisaOnboardingViewModelBuilder.swift in Sources */,
 				DC0BA52A2CA2E112009D9233 /* CommonUserWalletModelFactory.swift in Sources */,
 				B04719012B4E7C4800444734 /* VisaBalancesLimitsBottomSheetViewModel.swift in Sources */,
 				DC70C0172B95EEC3002205BA /* FactorySettingsResetting.swift in Sources */,
