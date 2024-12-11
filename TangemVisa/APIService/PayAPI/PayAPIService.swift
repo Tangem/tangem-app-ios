@@ -35,7 +35,7 @@ struct PayAPIService {
 
 extension PayAPIService: VisaTransactionHistoryAPIService {
     func loadHistoryPage(request: VisaTransactionHistoryDTO.APIRequest) async throws -> VisaTransactionHistoryDTO {
-        try await apiService.request(.init(
+        return try await apiService.request(.init(
             isTestnet: isTestnet,
             target: .transactionHistory(request: request),
             additionalHeaders: additionalAPIHeaders
