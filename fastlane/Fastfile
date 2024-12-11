@@ -313,9 +313,15 @@ lane :deploy_testflight do |options|
      in_house: false # detecting this via ASC private key not currently supported
   )
 
+  # TODO: test only, remove
+  latest_testflight_build_number(api_key: api_key)
+  latest_build_version = lane_context[SharedValues::LATEST_TESTFLIGHT_VERSION]
+  latest_build_number = lane_context[SharedValues::LATEST_TESTFLIGHT_BUILD_NUMBER]
+  UI.important("The latest build number #{latest_build_number} of the latest version: #{latest_build_version}")
+
   # Upload binary to TestFlight
   upload_to_testflight(
-    api_key:api_key,
+    api_key: api_key,
     skip_waiting_for_build_processing: true,
     ipa: options[:path],
     app_version: options[:version],
