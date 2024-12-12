@@ -115,7 +115,6 @@ Using enviroment: Production
 Options:
 - version: app version
 - build: optional build number
-- changelog: string for description archive
 - filename: Name of the resulting artefact (IPA file)
 - path: Path to binary
 - firebase_app_id: Firebase app id for DSYM uploads
