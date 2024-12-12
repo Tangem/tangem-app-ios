@@ -73,6 +73,8 @@ jobs:
         env:
           BUILD_NUMBER_OVERRIDE: '${{ inputs.build_number_override }}'
           ASC_KEY_ID: '${{ secrets.ASC_KEY_ID }}'
+          ASC_ISSUER_ID: '${{ secrets.ASC_ISSUER_ID }}'
+          ASC_PRIVATE_KEY: '${{ secrets.ASC_PRIVATE_KEY }}'
         run: |
           # The initialization of rbenv is required before every `bundle` call since Gihub Actions spawns each 'run' step in a separate process
           eval "$(rbenv init - bash)"
@@ -82,8 +84,8 @@ jobs:
           build_version_override:"${BUILD_NUMBER_OVERRIDE}" \
           branch_name:"${BRANCH_NAME}" \
           key_id:"${ASC_KEY_ID}" \
-          issuer_id:"" \
-          key_content:""
+          issuer_id:"${ASC_ISSUER_ID}" \
+          key_content:"${ASC_PRIVATE_KEY}"
 
   build:
     name: Tangem Release
