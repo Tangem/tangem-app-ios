@@ -131,7 +131,7 @@ private extension ActionButtonsViewModel {
             case .failed:
                 // TODO: Should be removed later
                 viewModel.swapActionButtonViewModel.updateState(
-                    to: .disabled(message: Localization.actionButtonsSomethingWrongAlertMessage)
+                    to: .restricted(reason: Localization.actionButtonsSomethingWrongAlertMessage)
                 )
             }
         }
@@ -142,7 +142,7 @@ private extension ActionButtonsViewModel {
         switch swapActionButtonViewModel.viewState {
         case .idle:
             swapActionButtonViewModel.updateState(to: .initial)
-        case .disabled, .loading, .initial:
+        case .restricted, .loading, .initial:
             break
         }
     }
@@ -156,8 +156,8 @@ private extension ActionButtonsViewModel {
         } else {
             // TODO: Should be removed later
             swapActionButtonViewModel.updateState(
-                to: .disabled(
-                    message: Localization.actionButtonsSwapNotEnoughTokensAlertMessage
+                to: .restricted(
+                    reason: Localization.actionButtonsSwapNotEnoughTokensAlertMessage
                 )
             )
         }
@@ -183,7 +183,7 @@ private extension ActionButtonsViewModel {
             if let disabledLocalizedReason = viewModel.userWalletModel.config.getDisabledLocalizedReason(
                 for: .exchange
             ) {
-                viewModel.sellActionButtonViewModel.updateState(to: .disabled(message: disabledLocalizedReason))
+                viewModel.sellActionButtonViewModel.updateState(to: .restricted(reason: disabledLocalizedReason))
                 return
             }
 
@@ -198,7 +198,7 @@ private extension ActionButtonsViewModel {
     @MainActor
     func handleFailedSellState(_ error: ExchangeServiceState.ExchangeServiceError) {
         sellActionButtonViewModel.updateState(
-            to: .disabled(message: error.localizedDescription)
+            to: .restricted(reason: error.localizedDescription)
         )
     }
 }

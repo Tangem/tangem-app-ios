@@ -66,7 +66,7 @@ struct CommonUserWalletModelFactory {
 
         let userTokensManager = CommonUserTokensManager(
             userWalletId: userWalletId,
-            shouldLoadSwapAvailability: config.isFeatureVisible(.swapping),
+            shouldLoadExpressAvailability: config.isFeatureVisible(.swapping) || config.isFeatureVisible(.exchange),
             userTokenListManager: userTokenListManager,
             walletModelsManager: walletModelsManager,
             derivationStyle: config.derivationStyle,

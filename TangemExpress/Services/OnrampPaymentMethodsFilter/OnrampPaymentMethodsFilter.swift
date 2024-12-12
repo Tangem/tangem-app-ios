@@ -16,13 +16,12 @@ struct OnrampPaymentMethodsFilter {
         }
 
         if paymentMethod.type == .applePay {
-            // We have to specify `networks` because on devices that
-            // support making payments but don’t have any payment cards configured,
-            // the `canMakePayments()` method returns true because
+            // We cannot check if the user has an setup card
+            // because this requires the turning on of the "ApplePay" function
+            // In capabilities which gives us additional trouble
+            // The we use the `canMakePayments()` method which return flag about
             // the hardware and parental controls allow making payments
-            return PKPaymentAuthorizationViewController.canMakePayments(
-                usingNetworks: [.visa, .masterCard]
-            )
+            return PKPaymentAuthorizationViewController.canMakePayments()
         }
 
         return true

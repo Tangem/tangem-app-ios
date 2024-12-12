@@ -28,7 +28,7 @@ struct CustomFeeServiceFactory {
         }
 
         if case .kaspa = blockchain {
-            return CustomKaspaFeeService(feeTokenItem: walletModel.feeTokenItem)
+            return CustomKaspaFeeService(tokenItem: walletModel.tokenItem, feeTokenItem: walletModel.feeTokenItem)
         }
 
         if blockchain.isEvm {
