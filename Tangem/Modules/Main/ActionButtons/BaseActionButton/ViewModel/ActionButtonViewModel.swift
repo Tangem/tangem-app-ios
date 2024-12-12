@@ -11,7 +11,6 @@ import Foundation
 protocol ActionButtonViewModel: ObservableObject, Identifiable {
     var viewState: ActionButtonState { get }
     var model: ActionButtonModel { get }
-    var isDisabled: Bool { get }
     var alert: AlertBinder? { get set }
 
     @MainActor
@@ -22,13 +21,6 @@ protocol ActionButtonViewModel: ObservableObject, Identifiable {
 }
 
 extension ActionButtonViewModel {
-    var isDisabled: Bool {
-        switch viewState {
-        case .initial, .idle: false
-        case .disabled, .loading: true
-        }
-    }
-
     func trackTapEvent() {
         ActionButtonsAnalyticsService.trackActionButtonTap(button: model, state: viewState)
     }
