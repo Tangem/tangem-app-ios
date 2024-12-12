@@ -1,35 +1,11 @@
 //
-//  UIDevice+IPhoneModel.swift
-//  Tangem
+//  IPhoneModel.swift
+//  TangemFoundation
 //
 //  Created by Sergey Balashov on 21.04.2023.
 //  Copyright © 2023 Tangem AG. All rights reserved.
 //
-
-import UIKit
-
-public extension UIDevice {
-    var iPhoneModel: IPhoneModel? {
-        var systemInfo = utsname()
-        uname(&systemInfo)
-        let modelIdentifier = withUnsafePointer(to: &systemInfo.machine) {
-            $0.withMemoryRebound(to: CChar.self, capacity: 1) {
-                ptr in String(validatingUTF8: ptr)
-            }
-        }
-
-        guard let modelIdentifier = modelIdentifier else {
-            return nil
-        }
-
-        return IPhoneModel(identifier: modelIdentifier)
-    }
-
-    /// - Warning: Simple and naive, use with caution.
-    var hasHomeScreenIndicator: Bool {
-        return !UIApplication.safeAreaInsets.bottom.isZero
-    }
-}
+import Foundation
 
 public enum IPhoneModel {
     case iPhone6S
@@ -110,8 +86,20 @@ public enum IPhoneModel {
         }
     }
 
-    init?(identifier: String) {
-        switch identifier {
+    public init?() {
+        var systemInfo = utsname()
+        uname(&systemInfo)
+        let modelIdentifier = withUnsafePointer(to: &systemInfo.machine) {
+            $0.withMemoryRebound(to: CChar.self, capacity: 1) {
+                ptr in String(validatingUTF8: ptr)
+            }
+        }
+
+        guard let modelIdentifier = modelIdentifier else {
+            return nil
+        }
+
+        switch modelIdentifier {
         case "iPhone8,1": self = .iPhone6S
         case "iPhone8,2": self = .iPhone6SPlus
         case "iPhone8,4": self = .iPhoneSE

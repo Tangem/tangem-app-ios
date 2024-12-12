@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 import SwiftUI
-import TangemFoundation
+import TangemUIKitUtils
 
 struct RootViewControllerFactory {
     func makeRootViewController(for rootView: some View, window: UIWindow) -> UIViewController {

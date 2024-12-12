@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import TangemFoundation
+import TangemUIKitUtils
 
 struct EmptyMainFooterView: View {
     private var footerHeight: CGFloat {

@@ -8,6 +8,7 @@
 
 import Foundation
 import Moya
+import TangemFoundation
 
 public struct DeviceInfoPlugin: PluginType {
     private let deviceInfo: DeviceInfo

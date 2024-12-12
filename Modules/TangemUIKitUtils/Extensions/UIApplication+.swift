@@ -1,6 +1,6 @@
 //
 //  UIApplication+.swift
-//  TangemModules
+//  TangemUIKitUtils
 //
 //  Created by Alexander Osokin on 09.12.2024.
 //  Copyright © 2024 Tangem AG. All rights reserved.

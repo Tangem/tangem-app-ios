@@ -17,12 +17,12 @@ struct DeviceInfoProvider {
         case appVersion
 
         var payload: String {
-            let device = UIDevice.current
+            let device = DeviceInfo()
             switch self {
             case .deviceModel:
-                return device.iPhoneModel?.name ?? device.model
+                return IPhoneModel()?.name ?? UIDevice.current.model
             case .osVersion:
-                return [device.systemName, device.systemVersion].joined(separator: " ")
+                return [UIDevice.current.systemName, device.systemVersion].joined(separator: " ")
             case .appVersion:
                 return [
                     InfoDictionaryUtils.version.value() ?? "",
