@@ -18,6 +18,8 @@ before_all do |lane, options|
     :deploy_testflight,
     :upload_dsyms,
     :refresh_dsyms,
+    :get_release_version_number,
+    :get_release_build_number,
   ]
 
   if lanes_to_skip_bootstrap.include?(lane)
@@ -91,7 +93,7 @@ Options:
 - analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
 """
 lane :release do |options|
-  UI.warning("Deprecated, use `Create release` Github action instead")
+  UI.deprecated("Deprecated, use `Create release` Github action instead")
 
   app_id = ENV["APP_ID_PRODUCTION"]
   app_store_connect_api_key(duration: 1200, is_key_content_base64: true)
@@ -202,7 +204,7 @@ Options:
 """
 lane :build_RC do |options|
   increment_version_number(version_number: options[:version])
-  increment_testflight_build_number(version: options[:version], build: options[:build])
+  increment_build_number(build_number: options[:build])
 
   build(
     export_method: "app-store",
@@ -218,34 +220,42 @@ lane :build_RC do |options|
 end
 
 lane :get_release_version_number do |options|
-  semver_regex = /^\d+\.\d+\.\d+$/
+  semver_regex_1 = /^\d+\.\d+\.\d+$/
+  semver_regex_2 = /^\d+\.\d+$/
   build_version = ""
   build_version_source = ""
+  build_version_override = options[:build_version_override]
+  branch_name = options[:branch_name]
 
-  if not options[:build_version_override]&.empty?
-    build_version = options[:build_version_override]
+  if (not build_version_override.nil? and not build_version_override.empty?)
+    build_version = build_version_override
     build_version_source = "user input"
-  elsif not options[:branch_name]&.empty?
-    branch_name_components = options[:branch_name].split("/")
-    UI.user_error!("Invalid branch name '#{options[:branch_name]}', can't process further wth the build") unless parts.length > 1
+  elsif (not branch_name.nil? and not branch_name.empty?)
+    branch_name_components = branch_name.split("/")
+    UI.user_error!("Invalid branch name '#{branch_name}', can't process further wth the build") unless branch_name_components.length > 1
     build_version = branch_name_components[-1]
     build_version_source = "branch name"
   else
     UI.user_error!(
-      "Unable to derive the build version from 'build_version_override' or 'branch_name' " \
+      "Unable to derive the build version from either 'build_version_override' or 'branch_name' " \
       "lane arguments, can't process further wth the build"
     )
   end
 
-  UI.user_error!("Invalid build version format '#{build_version}', can't process further wth the build") unless !!(build_version =~ semver_regex)
-  UI.message("Using the build version '#{build_version}' derived from #{build_version_source} for this build")
-  sh("echo 'result=#{build_version}' >> $GITHUB_ENV")
+  UI.user_error!("Invalid build version format '#{build_version}', can't process further wth the build") unless !!(
+    (build_version =~ semver_regex_1) or (build_version =~ semver_regex_2)
+  )
+
+  UI.important("Using the build version '#{build_version}' derived from the #{build_version_source} for this build")
+  sh("echo 'release_version_number=#{build_version}' >> $GITHUB_ENV")
 end
 
 lane :get_release_build_number do |options|
+  build_number_regex = /^\d+$/
   build_number = ""
+  build_number_override = options[:build_number_override]
 
-  if not options[:build_number_override]&.empty?
+  if (not build_number_override.nil? and not build_number_override.empty?)
     build_number = options[:build_number_override]
   else
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
@@ -258,11 +268,16 @@ lane :get_release_build_number do |options|
     )
     # We don't specify a specific version while querying the App Store Connect API
     # for a build number because we use a single, global build number across all builds
-    build_number = latest_testflight_build_number(api_key: api_key, app_identifier: app_identifier)
+    latest_build_number = latest_testflight_build_number(api_key: api_key, app_identifier: app_identifier)
+    build_number = (latest_build_number + 1).to_s
   end
 
-  UI.message("Using the build number '#{build_number}' derived from App Store Connect for this build")
-  sh("echo 'result=#{build_number}' >> $GITHUB_ENV")
+  UI.user_error!("Invalid build number '#{build_number}', can't process further wth the build") unless !!(
+    build_number =~ build_number_regex
+  )
+
+  UI.important("Using the build number '#{build_number}' derived from App Store Connect for this build")
+  sh("echo 'release_build_number=#{build_number}' >> $GITHUB_ENV")
 end
 
 desc """
@@ -360,16 +375,6 @@ lane :deploy_testflight do |options|
      is_key_content_base64: false,
      in_house: false # detecting this via ASC private key not currently supported
   )
-
-  # TODO: test only, remove
-  latest_testflight_build_number(
-    api_key: api_key,
-    app_identifier: "com.tangem.Tangem"
-    # app_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
-  )
-  latest_build_version = lane_context[SharedValues::LATEST_TESTFLIGHT_VERSION]
-  latest_build_number = lane_context[SharedValues::LATEST_TESTFLIGHT_BUILD_NUMBER]
-  UI.important("The latest build number #{latest_build_number} of the latest version: #{latest_build_version}")
 
   # Upload binary to TestFlight
   upload_to_testflight(
@@ -487,7 +492,7 @@ private_lane :increment_firebase_build_number do |options|
 end
 
 private_lane :increment_testflight_build_number do |options|
-  UI.warning("Deprecated, use `Create release` Github action instead")
+  UI.deprecated("Deprecated, use `Create release` Github action instead")
 
   if options[:build].nil?
     latest_build_number = latest_testflight_build_number(version: options[:version])
@@ -512,7 +517,7 @@ private_lane :upload_dsyms do |options|
 end
 
 private_lane :upload_testflight do |options|
-  UI.warning("Deprecated, use `Create release` Github action instead")
+  UI.deprecated("Deprecated, use `Create release` Github action instead")
 
   filename = options[:name] + ".ipa"
   path = BUILD_PATH + filename

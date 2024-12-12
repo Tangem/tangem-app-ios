@@ -4,6 +4,7 @@ on:
   push:
    branches:
     - 'test/releases/**' # TODO: Remove
+    #- 'feature/IOS-8508_create_release_ci_cd' # TODO: Remove
     #- 'releases/**' # TODO: Enable
   workflow_dispatch:
     inputs:
@@ -33,10 +34,11 @@ jobs:
   prepare:
     name: Prepare information
     runs-on: macos-15
+    environment: 'RC'
     outputs:
       stage: 'RC'
-      version: '${{ steps.get-release-version.outputs.result }}'
-      build_number: '${{ steps.get-build-number.outputs.result }}'
+      version: '${{ env.release_version_number }}'
+      build_number: '${{ env.release_build_number }}'
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -70,17 +72,20 @@ jobs:
         id: get-build-number
         env:
           BUILD_NUMBER_OVERRIDE: '${{ inputs.build_number_override }}'
+          ASC_KEY_ID: '${{ secrets.ASC_KEY_ID }}'
+          ASC_ISSUER_ID: '${{ secrets.ASC_ISSUER_ID }}'
+          ASC_PRIVATE_KEY: '${{ secrets.ASC_PRIVATE_KEY }}'
         run: |
           # The initialization of rbenv is required before every `bundle` call since Gihub Actions spawns each 'run' step in a separate process
           eval "$(rbenv init - bash)"
 
           bundle exec fastlane \
           get_release_build_number \
-          build_version_override:"${BUILD_NUMBER_OVERRIDE}" \
+          build_number_override:"${BUILD_NUMBER_OVERRIDE}" \
           branch_name:"${BRANCH_NAME}" \
-          key_id:'${{ secrets.ASC_KEY_ID }}' \
-          issuer_id:'${{ secrets.ASC_ISSUER_ID }}' \
-          key_content:'${{ secrets.ASC_PRIVATE_KEY }}'
+          asc_key_id:"${ASC_KEY_ID}" \
+          asc_issuer_id:"${ASC_ISSUER_ID}" \
+          asc_key:"${ASC_PRIVATE_KEY}"
 
   build:
     name: Tangem Release
