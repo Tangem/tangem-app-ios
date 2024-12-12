@@ -83,9 +83,9 @@ jobs:
           get_release_build_number \
           build_version_override:"${BUILD_NUMBER_OVERRIDE}" \
           branch_name:"${BRANCH_NAME}" \
-          key_id:"${ASC_KEY_ID}" \
-          issuer_id:"${ASC_ISSUER_ID}" \
-          key_content:"${ASC_PRIVATE_KEY}"
+          asc_key_id:"${ASC_KEY_ID}" \
+          asc_issuer_id:"${ASC_ISSUER_ID}" \
+          asc_key:"${ASC_PRIVATE_KEY}"
 
   build:
     name: Tangem Release
