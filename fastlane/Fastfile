@@ -199,6 +199,7 @@ Options:
 - changelog: string for description archive
 - filename: Name of the resulting artefact (IPA file)
 - path: Path to binary
+- firebase_app_id: Firebase app id for DSYM uploads
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 - analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
 """
@@ -219,6 +220,12 @@ lane :build_RC do |options|
   # TODO: Refresh DSYMS
 end
 
+desc """
+A lane that creates the build version for the release using either user input or a branch name.
+Options:
+- build_version_override: Optional build version override (user input)
+- branch_name: Source branch name
+"""
 lane :get_release_version_number do |options|
   semver_regex_1 = /^\d+\.\d+\.\d+$/
   semver_regex_2 = /^\d+\.\d+$/
@@ -250,6 +257,14 @@ lane :get_release_version_number do |options|
   sh("echo 'release_version_number=#{build_version}' >> $GITHUB_ENV")
 end
 
+desc """
+A lane that creates the build number for the release using either user input or information from App Store Connect API.
+Options:
+- build_number_override: Optional build number override (user input)
+- asc_key_id: App Store Connect API Key ID
+- asc_issuer_id: App Store Connect API Key Issuer ID
+- asc_key: App Store Connect API Key (NOT in the base64 format)
+"""
 lane :get_release_build_number do |options|
   build_number_regex = /^\d+$/
   build_number = ""
@@ -360,7 +375,7 @@ This lane deploy binary to TestFLight
 Options:
 - asc_key_id: App Store Connect API Key ID
 - asc_issuer_id: App Store Connect API Key Issuer ID
-- asc_key: App Store Connect API Key (base64 content)
+- asc_key: App Store Connect API Key (NOT in the base64 format)
 - path: Path to binary
 - version: app version
 - build: build number
