@@ -24,6 +24,7 @@ final class SendViewModel: ObservableObject {
     @Published var flowActionType: SendFlowActionType
     @Published var showBackButton = false
     @Published var isKeyboardActive: Bool = false
+    @Published var isBottomOverlayVisible: Bool = true
 
     @Published var transactionURL: URL?
 
@@ -37,6 +38,7 @@ final class SendViewModel: ObservableObject {
 
     var title: String? { step.title }
     var subtitle: String? { step.subtitle }
+    var shouldShowBottomOverlay: Bool { step.shouldShowBottomOverlay }
 
     var closeButtonColor: Color {
         closeButtonDisabled ? Colors.Text.disabled : Colors.Text.primary1
