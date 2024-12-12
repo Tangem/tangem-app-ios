@@ -18,6 +18,8 @@ before_all do |lane, options|
     :deploy_testflight,
     :upload_dsyms,
     :refresh_dsyms,
+    :get_release_version_number,
+    :get_release_build_number,
   ]
 
   if lanes_to_skip_bootstrap.include?(lane)
@@ -242,11 +244,12 @@ lane :get_release_version_number do |options|
     (build_version =~ semver_regex_1) or (build_version =~ semver_regex_2)
   )
 
-  UI.message("Using the build version '#{build_version}' derived from #{build_version_source} for this build")
+  UI.message("Using the build version '#{build_version}' derived from the #{build_version_source} for this build")
   sh("echo 'result=#{build_version}' >> $GITHUB_ENV")
 end
 
 lane :get_release_build_number do |options|
+  build_number_regex = /^\d+$/
   build_number = ""
 
   if not options[:build_number_override]&.empty?
@@ -264,6 +267,10 @@ lane :get_release_build_number do |options|
     # for a build number because we use a single, global build number across all builds
     build_number = latest_testflight_build_number(api_key: api_key, app_identifier: app_identifier)
   end
+
+  UI.user_error!("Invalid build number name '#{build_number}', can't process further wth the build") unless !!(
+    build_number =~ build_number_regex
+  )
 
   UI.message("Using the build number '#{build_number}' derived from App Store Connect for this build")
   sh("echo 'result=#{build_number}' >> $GITHUB_ENV")
