@@ -81,7 +81,7 @@ jobs:
 
           bundle exec fastlane \
           get_release_build_number \
-          build_version_override:"${BUILD_NUMBER_OVERRIDE}" \
+          build_number_override:"${BUILD_NUMBER_OVERRIDE}" \
           branch_name:"${BRANCH_NAME}" \
           asc_key_id:"${ASC_KEY_ID}" \
           asc_issuer_id:"${ASC_ISSUER_ID}" \

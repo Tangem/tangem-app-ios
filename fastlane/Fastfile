@@ -268,8 +268,8 @@ lane :get_release_build_number do |options|
     )
     # We don't specify a specific version while querying the App Store Connect API
     # for a build number because we use a single, global build number across all builds
-    latest_testflight_build_number(api_key: api_key, app_identifier: app_identifier)
-    build_number = lane_context[SharedValues::LATEST_TESTFLIGHT_BUILD_NUMBER]
+    build_number = latest_testflight_build_number(api_key: api_key, app_identifier: app_identifier).to_s
+    # build_number = lane_context[SharedValues::LATEST_TESTFLIGHT_BUILD_NUMBER]
   end
 
   UI.user_error!("Invalid build number '#{build_number}', can't process further wth the build") unless !!(
