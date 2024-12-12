@@ -4,6 +4,7 @@ on:
   push:
    branches:
     - 'test/releases/**' # TODO: Remove
+    #- 'feature/IOS-8508_create_release_ci_cd' # TODO: Remove
     #- 'releases/**' # TODO: Enable
   workflow_dispatch:
     inputs:

@@ -218,7 +218,8 @@ lane :build_RC do |options|
 end
 
 lane :get_release_version_number do |options|
-  semver_regex = /^\d+\.\d+\.\d+$/
+  semver_regex_1 = /^\d+\.\d+\.\d+$/
+  semver_regex_2 = /^\d+\.\d+$/
   build_version = ""
   build_version_source = ""
 
@@ -237,7 +238,10 @@ lane :get_release_version_number do |options|
     )
   end
 
-  UI.user_error!("Invalid build version format '#{build_version}', can't process further wth the build") unless !!(build_version =~ semver_regex)
+  UI.user_error!("Invalid build version format '#{build_version}', can't process further wth the build") unless !!(
+    (build_version =~ semver_regex_1) or (build_version =~ semver_regex_2)
+  )
+
   UI.message("Using the build version '#{build_version}' derived from #{build_version_source} for this build")
   sh("echo 'result=#{build_version}' >> $GITHUB_ENV")
 end
