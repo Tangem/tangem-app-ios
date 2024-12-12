@@ -265,7 +265,8 @@ lane :get_release_build_number do |options|
     )
     # We don't specify a specific version while querying the App Store Connect API
     # for a build number because we use a single, global build number across all builds
-    build_number = latest_testflight_build_number(api_key: api_key, app_identifier: app_identifier)
+    latest_testflight_build_number(api_key: api_key, app_identifier: app_identifier)
+    build_number = lane_context[SharedValues::LATEST_TESTFLIGHT_BUILD_NUMBER]
   end
 
   UI.user_error!("Invalid build number '#{build_number}', can't process further wth the build") unless !!(
@@ -371,16 +372,6 @@ lane :deploy_testflight do |options|
      is_key_content_base64: false,
      in_house: false # detecting this via ASC private key not currently supported
   )
-
-  # TODO: test only, remove
-  latest_testflight_build_number(
-    api_key: api_key,
-    app_identifier: "com.tangem.Tangem"
-    # app_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
-  )
-  latest_build_version = lane_context[SharedValues::LATEST_TESTFLIGHT_VERSION]
-  latest_build_number = lane_context[SharedValues::LATEST_TESTFLIGHT_BUILD_NUMBER]
-  UI.important("The latest build number #{latest_build_number} of the latest version: #{latest_build_version}")
 
   # Upload binary to TestFlight
   upload_to_testflight(
