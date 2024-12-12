@@ -70,19 +70,19 @@ gem install bundler
 bundle install
 echo "✅ Required Ruby gems succesfully installed"
 
-echo "🔄 Mint bootstrap dependencies"
-mint bootstrap --mintfile ${MINTFILE}
-echo "✅ Dependencies succesfully installed"
+# echo "🔄 Mint bootstrap dependencies"
+# mint bootstrap --mintfile ${MINTFILE}
+# echo "✅ Dependencies succesfully installed"
 
-if [ "${CI}" = true ] ; then
-    echo "ℹ️ Skipping SwiftFormat"
-else
-    echo "🚀 Running SwiftFormat"
-    mint run swiftformat@0.52.8 . --config .swiftformat
-fi
+# if [ "${CI}" = true ] ; then
+#     echo "ℹ️ Skipping SwiftFormat"
+# else
+#     echo "🚀 Running SwiftFormat"
+#     mint run swiftformat@0.52.8 . --config .swiftformat
+# fi
 
-echo "🚀 Running SwiftGen"
-mint run swiftgen@6.6.2 config run --config swiftgen.yml 
+#echo "🚀 Running SwiftGen"
+#mint run swiftgen@6.6.2 config run --config swiftgen.yml 
 
 if [ "$OPT_SUBMODULE" = true ] ; then
     echo "🚀 Running submodule remote update"
