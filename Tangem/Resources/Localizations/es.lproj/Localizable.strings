@@ -3,7 +3,7 @@
 "action_buttons_sell_empty_search_message" = "¿No encuentra el token en su billetera? Consulte los mercados para encontrarlo y añadirlo a la venta";
 "action_buttons_sell_navigation_bar_title" = "Vender";
 "action_buttons_something_wrong_alert_message" = "The action is currently unavailable. Please try again later or refresh the data by swiping down on the screen.";
-"action_buttons_something_wrong_alert_title" = "";
+"action_buttons_something_wrong_alert_title" = "Button is unavailable";
 "action_buttons_swap_choose_token" = "Elige el token";
 "action_buttons_swap_empty_search_message" = "¿No encuentras el token en tu billetera? Consulte los mercados para encontrarlo y agregarlo al intercambio";
 "action_buttons_swap_navigation_bar_title" = "Intercambiar";
@@ -177,7 +177,7 @@
 "common_submit" = "Enviar";
 "common_success" = "Con éxito";
 "common_support" = "Soporte";
-"common_swap" = "Intercambiar";
+"common_swap" = "Swap";
 "common_terms_and_conditions" = "términos y condiciones";
 "common_terms_of_use" = "Condiciones de uso";
 "common_today" = "Hoy";
@@ -561,6 +561,7 @@
 "onramp_currency_other" = "Otras monedas";
 "onramp_currency_popular" = "Monedas Fiats Populares";
 "onramp_currency_search" = "Buscar por moneda";
+"onramp_legal" = "By using onramp functionality, you agree with provider’s %1$@ and %2$@";
 "onramp_max_amount_restriction" = "El monto de la compra no debe ser mayor a %@";
 "onramp_min_amount_restriction" = "La cantidad a comprar debe ser como mínimo %@";
 "onramp_no_available_providers" = "No hay proveedores disponibles para esta moneda";
@@ -976,7 +977,7 @@
 "warning_approval_in_progress_message" = "El proceso de obtención de permisos está actualmente en marcha y se completará pronto.";
 "warning_approval_in_progress_title" = "Aprobación en curso";
 "warning_backup_errors_message" = "Parece que la activación de la tarjeta no ha ido correctamente. Esto puede deberse a un problema con el módulo NFC de su dispositivo o a una mala conexión de la tarjeta de su dispositivo. Comuníquese con nuestro equipo de soporte para obtener ayuda.";
-"warning_beacon_chain_retirement_content" = "Según los desarrolladores de la red BNB, el soporte para el estándar BEP-2\nfinalizará en junio de 2024. Para evitar perder activos con este estándar, por favor conviértalos al estándar BEP-20. Usa nuestro servicio de swap para transferirlos a la red BNB Smart Chain.";
+"warning_beacon_chain_retirement_content" = "El 3 de diciembre de 2024, la red BEP-2 fue desactivada por decisión de los desarrolladores de la red y ya no es compatible";
 "warning_beacon_chain_retirement_title" = "BNB Beacon Chain se cerrará";
 "warning_blocked_funds_for_fee_message" = "Por favor deposite %1$@ para cubrir la tarifa de red";
 "warning_blocked_funds_for_fee_title" = "Fondos insuficientes para cubrir la tarifa de red";
