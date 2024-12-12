@@ -3,7 +3,7 @@
 "action_buttons_sell_empty_search_message" = "Токен не знайдено у вашому портфелі? Перевірте Ринки, щоб знайти та додати його для продажу";
 "action_buttons_sell_navigation_bar_title" = "Sell";
 "action_buttons_something_wrong_alert_message" = "The action is currently unavailable. Please try again later or refresh the data by swiping down on the screen.";
-"action_buttons_something_wrong_alert_title" = "";
+"action_buttons_something_wrong_alert_title" = "Button is unavailable";
 "action_buttons_swap_choose_token" = "Оберіть токен";
 "action_buttons_swap_empty_search_message" = "Токен не знайдено у вашому портфелі? Перевірте ринки, щоб знайти та додати його для обміну";
 "action_buttons_swap_navigation_bar_title" = "Swap";
@@ -561,6 +561,7 @@
 "onramp_currency_other" = "Інші валюти";
 "onramp_currency_popular" = "Популярні фіати";
 "onramp_currency_search" = "Пошук по валюті";
+"onramp_legal" = "By using onramp functionality, you agree with provider’s %1$@ and %2$@";
 "onramp_max_amount_restriction" = "Сума покупки не може бути більше ніж %@";
 "onramp_min_amount_restriction" = "Сума покупки повинна бути не менше %@";
 "onramp_no_available_providers" = "Для данної валюти немає доступних провайдерів";
@@ -635,7 +636,7 @@
 "scan_card_settings_message" = "Відскануйте картку або кільце, щоб змінити її налаштування. Зміни торкнуться лише тої картки або кільця, які ви відсканували, і не вплинуть на інші пристрої, прив'язані до вашого гаманця.";
 "scan_card_settings_title" = "Підготуйте свій Tangem!";
 "security_alert_title" = "Security Alert";
-"selling_insufficient_balance_alert_message" = "You don’t have enough funds in your balance to sell this cryptocurrency. Please deposit the desired asset to proceed.";
+"selling_insufficient_balance_alert_message" = "You don’t have enough funds in your balance to sell cryptocurrency. Please deposit the desired asset to proceed.";
 "selling_insufficient_balance_alert_title" = "Insufficient Balance";
 "selling_regional_restriction_alert_message" = "Selling cryptocurrency is unavailable in your region at the moment. We’re actively working to bring this option to you soon—stay tuned!";
 "selling_regional_restriction_alert_title" = "Regional Restriction";
@@ -976,7 +977,7 @@
 "warning_approval_in_progress_message" = "Процес підтвердження наразі триває і буде завершено найближчим часом";
 "warning_approval_in_progress_title" = "Підтвердження в процесі";
 "warning_backup_errors_message" = "Схоже, що активація карток або кільця була виконана неправильно. Це може бути пов'язано з проблемою з модулем NFC вашого пристрою або неправильним прикладанням картки або кільця до телефону. Будь ласка, зверніться за допомогою до нашої служби підтримки для уточнення деталей.";
-"warning_beacon_chain_retirement_content" = "За рішенням розробників мережі BNB стандарт BEP-2 перестане підтримуватись у червні 2024 року. Щоб не втратити свої активи, їх необхідно конвертувати у стандарт BEP-20. Використовуйте функцію обміну, щоб перевести їх у мережу BNB Smart Chain.";
+"warning_beacon_chain_retirement_content" = "3 грудня 2024 року мережу BEP-2 було відключено за рішенням розробників мережі, і вона більше не підтримується";
 "warning_beacon_chain_retirement_title" = "Відключення мережі BNB Beacon Chain";
 "warning_blocked_funds_for_fee_message" = "Будь ласка, поповніть рахунок на %1$@ для покриття комісії мережі";
 "warning_blocked_funds_for_fee_title" = "Недостатньо коштів для покриття комісії мережі";
