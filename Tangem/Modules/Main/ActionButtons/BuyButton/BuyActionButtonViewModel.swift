@@ -43,7 +43,7 @@ final class BuyActionButtonViewModel: ActionButtonViewModel {
         trackTapEvent()
 
         switch viewState {
-        case .loading, .disabled, .initial:
+        case .loading, .restricted, .initial:
             break
         case .idle:
             lastButtonTapped.send(model)

@@ -778,6 +778,7 @@
 		B620FCAE2C5D337900AD0FD1 /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = B620FCAD2C5D337900AD0FD1 /* DGCharts */; };
 		B6210DEF2A94708700F885D5 /* OrganizeTokensListFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6210DEE2A94708700F885D5 /* OrganizeTokensListFactory.swift */; };
 		B62238CF2CDDAED5003C07EC /* MarketsTokenDetailsSecurityScoreRatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62238CE2CDDAED5003C07EC /* MarketsTokenDetailsSecurityScoreRatingView.swift */; };
+		B62984A22D0702E6006A9D40 /* KaspaKRC20FeeParametersEnricher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62984A12D0702E6006A9D40 /* KaspaKRC20FeeParametersEnricher.swift */; };
 		B62C16792CBE095A00522683 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B62C16782CBE095A00522683 /* Alamofire */; };
 		B62C167B2CBE0A1E00522683 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B62C167A2CBE0A1E00522683 /* Alamofire */; };
 		B62C167D2CBE0A3D00522683 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B62C167C2CBE0A3D00522683 /* Alamofire */; };
@@ -3955,6 +3956,7 @@
 		B61D2A1F2B1947E6004F2C2D /* TokenDetailsScrollState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenDetailsScrollState.swift; sourceTree = "<group>"; };
 		B6210DEE2A94708700F885D5 /* OrganizeTokensListFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeTokensListFactory.swift; sourceTree = "<group>"; };
 		B62238CE2CDDAED5003C07EC /* MarketsTokenDetailsSecurityScoreRatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenDetailsSecurityScoreRatingView.swift; sourceTree = "<group>"; };
+		B62984A12D0702E6006A9D40 /* KaspaKRC20FeeParametersEnricher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KaspaKRC20FeeParametersEnricher.swift; sourceTree = "<group>"; };
 		B62C65C72C38D06A00189AD4 /* PushNotificationsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotificationsService.swift; sourceTree = "<group>"; };
 		B62C65C82C38D06A00189AD4 /* PushNotificationsHelpersFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotificationsHelpersFactory.swift; sourceTree = "<group>"; };
 		B62C65C92C38D06B00189AD4 /* PushNotificationsPermissionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotificationsPermissionManager.swift; sourceTree = "<group>"; };
@@ -15989,6 +15991,7 @@
 				F99007052CD3E1C700DFE2D3 /* KaspaNetworkProviderKRC20.swift */,
 				F99007032CD3E1C700DFE2D3 /* KaspaNetworkServiceKRC20.swift */,
 				F99007042CD3E1C700DFE2D3 /* KaspaTargetKRC20.swift */,
+				B62984A12D0702E6006A9D40 /* KaspaKRC20FeeParametersEnricher.swift */,
 			);
 			path = KaspaKRC20;
 			sourceTree = "<group>";
@@ -19328,6 +19331,7 @@
 				B62D401F2CBC79DA00C2460E /* OP_TOTALSTACK.swift in Sources */,
 				B62D421E2CBC79DB00C2460E /* XRPNetworkService.swift in Sources */,
 				B62D40B82CBC79DA00C2460E /* OptimismExternalLinkProvider.swift in Sources */,
+				B62984A22D0702E6006A9D40 /* KaspaKRC20FeeParametersEnricher.swift in Sources */,
 				B62D407D2CBC79DA00C2460E /* DogecoinNetworkParams.swift in Sources */,
 				B62D41352CBC79DA00C2460E /* NEARNetworkParams.Transaction.swift in Sources */,
 				B62D41652CBC79DA00C2460E /* PolkadotNetworkService.swift in Sources */,
