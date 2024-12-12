@@ -54,6 +54,7 @@ Options:
 - build: optional build number
 - changelog: string for description archive
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+- analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
 
 
 ### check_bsdk_example_buildable
@@ -81,6 +82,7 @@ Options:
 - path: Path to binary
 - firebase_app_id: Firebase app id for incrementing the build version number and DSYM uploads
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+- analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
 
 
 ### build_Beta
@@ -98,6 +100,7 @@ Options:
 - path: Path to binary
 - firebase_app_id: Firebase app id for incrementing the build version number and DSYM uploads
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+- analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
 
 
 ### alpha

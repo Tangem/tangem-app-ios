@@ -77,8 +77,8 @@ final class SwapActionButtonViewModel: ActionButtonViewModel {
             isOpeningRequired = true
         case .loading:
             break
-        case .disabled(let message):
-            alert = .init(title: "", message: message)
+        case .restricted(let reason):
+            alert = .init(title: "", message: reason)
         case .idle:
             guard !isOpeningRequired else { return }
 
@@ -97,7 +97,7 @@ final class SwapActionButtonViewModel: ActionButtonViewModel {
 private extension SwapActionButtonViewModel {
     func scheduleLoadedAction() {
         switch viewState {
-        case .disabled(let message): showScheduledAlert(with: message)
+        case .restricted(let reason): showScheduledAlert(with: reason)
         case .idle: scheduledOpenSwap()
         case .loading, .initial: break
         }

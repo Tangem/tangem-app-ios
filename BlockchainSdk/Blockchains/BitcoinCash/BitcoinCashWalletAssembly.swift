@@ -29,17 +29,35 @@ struct BitcoinCashWalletAssembly: WalletManagerAssembly {
             let providers: [AnyBitcoinNetworkProvider] = input.apiInfo.reduce(into: []) { partialResult, providerType in
                 switch providerType {
                 case .nowNodes:
-                    if let bitcoinCashAddressService = AddressServiceFactory(blockchain: input.blockchain).makeAddressService() as? BitcoinCashAddressService {
+                    if let addressService = AddressServiceFactory(
+                        blockchain: input.blockchain
+                    ).makeAddressService() as? BitcoinCashAddressService {
                         partialResult.append(
-                            networkProviderAssembly.makeBitcoinCashNowNodesNetworkProvider(
-                                input: input,
-                                bitcoinCashAddressService: bitcoinCashAddressService
-                            )
+                            networkProviderAssembly.makeBitcoinCashBlockBookUTXOProvider(
+                                with: input,
+                                for: .nowNodes,
+                                bitcoinCashAddressService: addressService
+                            ).eraseToAnyBitcoinNetworkProvider()
+                        )
+                    }
+                case .getBlock:
+                    if let addressService = AddressServiceFactory(
+                        blockchain: input.blockchain
+                    ).makeAddressService() as? BitcoinCashAddressService {
+                        partialResult.append(
+                            networkProviderAssembly.makeBitcoinCashBlockBookUTXOProvider(
+                                with: input,
+                                for: .getBlock,
+                                bitcoinCashAddressService: addressService
+                            ).eraseToAnyBitcoinNetworkProvider()
                         )
                     }
                 case .blockchair:
                     partialResult.append(
-                        contentsOf: networkProviderAssembly.makeBlockchairNetworkProviders(endpoint: .bitcoinCash, with: input)
+                        contentsOf: networkProviderAssembly.makeBlockchairNetworkProviders(
+                            endpoint: .bitcoinCash,
+                            with: input
+                        )
                     )
                 default:
                     return

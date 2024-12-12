@@ -8,30 +8,30 @@
 import Foundation
 import Combine
 
-/// Adapter for existing BlockBookUtxoProvider
-final class BitcoinCashNowNodesNetworkProvider: BitcoinNetworkProvider {
-    private let blockBookUtxoProvider: BlockBookUtxoProvider
+/// Adapter for existing BlockBookUTXOProvider
+final class BitcoinCashBlockBookUTXOProvider: BitcoinNetworkProvider {
+    private let blockBookUTXOProvider: BlockBookUTXOProvider
     private let bitcoinCashAddressService: BitcoinCashAddressService
 
-    init(blockBookUtxoProvider: BlockBookUtxoProvider, bitcoinCashAddressService: BitcoinCashAddressService) {
-        self.blockBookUtxoProvider = blockBookUtxoProvider
+    init(blockBookUTXOProvider: BlockBookUTXOProvider, bitcoinCashAddressService: BitcoinCashAddressService) {
+        self.blockBookUTXOProvider = blockBookUTXOProvider
         self.bitcoinCashAddressService = bitcoinCashAddressService
     }
 
     var host: String {
-        blockBookUtxoProvider.host
+        blockBookUTXOProvider.host
     }
 
     var supportsTransactionPush: Bool {
-        blockBookUtxoProvider.supportsTransactionPush
+        blockBookUTXOProvider.supportsTransactionPush
     }
 
     func getInfo(address: String) -> AnyPublisher<BitcoinResponse, Error> {
-        blockBookUtxoProvider.getInfo(address: addAddressPrefixIfNeeded(address))
+        blockBookUTXOProvider.getInfo(address: addAddressPrefixIfNeeded(address))
     }
 
     func getFee() -> AnyPublisher<BitcoinFee, Error> {
-        blockBookUtxoProvider.executeRequest(
+        blockBookUTXOProvider.executeRequest(
             .fees(NodeRequest.estimateFeeRequest(method: "estimatefee")),
             responseType: NodeEstimateFeeResponse.self
         )
@@ -40,7 +40,7 @@ final class BitcoinCashNowNodesNetworkProvider: BitcoinNetworkProvider {
                 throw WalletError.empty
             }
 
-            return try blockBookUtxoProvider.convertFeeRate(response.result)
+            return try blockBookUTXOProvider.convertFeeRate(response.result)
         }.map { fee in
             // fee for BCH is constant
             BitcoinFee(minimalSatoshiPerByte: fee, normalSatoshiPerByte: fee, prioritySatoshiPerByte: fee)
@@ -49,7 +49,7 @@ final class BitcoinCashNowNodesNetworkProvider: BitcoinNetworkProvider {
     }
 
     func send(transaction: String) -> AnyPublisher<String, Error> {
-        blockBookUtxoProvider.executeRequest(
+        blockBookUTXOProvider.executeRequest(
             .sendNode(NodeRequest.sendRequest(signedTransaction: transaction)),
             responseType: SendResponse.self
         )
@@ -58,11 +58,11 @@ final class BitcoinCashNowNodesNetworkProvider: BitcoinNetworkProvider {
     }
 
     func push(transaction: String) -> AnyPublisher<String, Error> {
-        blockBookUtxoProvider.push(transaction: transaction)
+        blockBookUTXOProvider.push(transaction: transaction)
     }
 
     func getSignatureCount(address: String) -> AnyPublisher<Int, Error> {
-        blockBookUtxoProvider.getSignatureCount(address: address)
+        blockBookUTXOProvider.getSignatureCount(address: addAddressPrefixIfNeeded(address))
     }
 
     private func addAddressPrefixIfNeeded(_ address: String) -> String {
