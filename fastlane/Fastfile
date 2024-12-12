@@ -227,7 +227,7 @@ lane :get_release_version_number do |options|
     build_version_source = "user input"
   elsif not options[:branch_name]&.empty?
     branch_name_components = options[:branch_name].split("/")
-    UI.user_error!("Invalid branch name '#{options[:branch_name]}', can't process further wth the build") unless parts.length > 1
+    UI.user_error!("Invalid branch name '#{options[:branch_name]}', can't process further wth the build") unless branch_name_components.length > 1
     build_version = branch_name_components[-1]
     build_version_source = "branch name"
   else
