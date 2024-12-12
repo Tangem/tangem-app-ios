@@ -13,14 +13,14 @@ import SafariServices
 
 protocol SafariManager {
     /// You should retain the handle in the coordionator always
-    func openURL(_ url: URL, configuration: SafariConfiguration, onDismiss: @escaping (URL) -> Void) -> SafariHandle
+    func openURL(_ url: URL, configuration: SafariConfiguration, onDismiss: @escaping (SafariManagerDismissReason) -> Void) -> SafariHandle
 
     /// For any calls without callback
     func openURL(_ url: URL, configuration: SafariConfiguration)
 }
 
 extension SafariManager {
-    func openURL(_ url: URL, configuration: SafariConfiguration = .init(), onDismiss: @escaping (URL) -> Void = { _ in }) -> SafariHandle {
+    func openURL(_ url: URL, configuration: SafariConfiguration = .init(), onDismiss: @escaping (SafariManagerDismissReason) -> Void = { _ in }) -> SafariHandle {
         openURL(url, configuration: configuration, onDismiss: onDismiss)
     }
 
@@ -32,6 +32,21 @@ extension SafariManager {
 // MARK: - SafariHandle
 
 protocol SafariHandle: AnyObject {}
+
+// MARK: - SafariManagerResult
+
+enum SafariManagerDismissReason: Hashable {
+    case success(URL)
+    case dismissButton
+    case swipe
+
+    var url: URL? {
+        switch self {
+        case .success(let url): url
+        case .dismissButton, .swipe: nil
+        }
+    }
+}
 
 // MARK: - Dependencies
 
@@ -48,12 +63,13 @@ extension InjectedValues {
 
 // MARK: - CommonSafariManager
 
-class CommonSafariManager: SafariManager {
+class CommonSafariManager: NSObject, SafariManager {
     @Injected(\.incomingActionManager) private var incomingActionManager: IncomingActionManaging
 
     private weak var context: SafariContext?
 
-    init() {
+    override init() {
+        super.init()
         incomingActionManager.becomeFirstResponder(self)
     }
 
@@ -65,12 +81,14 @@ class CommonSafariManager: SafariManager {
     func openURL(
         _ url: URL,
         configuration: SafariConfiguration,
-        onDismiss: @escaping (URL) -> Void
+        onDismiss: @escaping (SafariManagerDismissReason) -> Void
     ) -> SafariHandle {
         AppLog.shared.debug("Open URL: \(url)")
         let controller = SFSafariViewController(url: url)
         controller.modalPresentationStyle = .pageSheet
         controller.dismissButtonStyle = configuration.dismissButtonStyle.sfDismissButtonStyle
+        controller.delegate = self
+        controller.presentationController?.delegate = self
         let context = SafariContext(controller: controller, onDismiss: onDismiss)
         self.context = context
         AppPresenter.shared.show(controller)
@@ -80,13 +98,25 @@ class CommonSafariManager: SafariManager {
     func dismiss(with url: URL) {
         // already dismissed by user, but we received an url from Safari
         if context?.controller.presentingViewController == nil {
-            context?.onDismiss(url)
+            context?.onDismiss(.success(url))
             return
         }
 
         context?.controller.dismiss(animated: true, completion: { [weak self] in
-            self?.context?.onDismiss(url)
+            self?.context?.onDismiss(.success(url))
         })
+    }
+}
+
+// MARK: - SFSafariViewControllerDelegate, UIAdaptivePresentationControllerDelegate
+
+extension CommonSafariManager: SFSafariViewControllerDelegate, UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        context?.onDismiss(.swipe)
+    }
+
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        context?.onDismiss(.dismissButton)
     }
 }
 
@@ -107,9 +137,9 @@ extension CommonSafariManager: IncomingActionResponder {
 
 class SafariContext: SafariHandle {
     let controller: SFSafariViewController
-    let onDismiss: (URL) -> Void
+    let onDismiss: (SafariManagerDismissReason) -> Void
 
-    init(controller: SFSafariViewController, onDismiss: @escaping ((URL) -> Void)) {
+    init(controller: SFSafariViewController, onDismiss: @escaping ((SafariManagerDismissReason) -> Void)) {
         self.controller = controller
         self.onDismiss = onDismiss
     }

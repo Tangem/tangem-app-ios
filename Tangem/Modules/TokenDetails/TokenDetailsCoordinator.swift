@@ -152,9 +152,13 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
     func openBuyCrypto(at url: URL, action: @escaping () -> Void) {
         Analytics.log(.topupScreenOpened)
 
-        safariHandle = safariManager.openURL(url) { [weak self] _ in
+        safariHandle = safariManager.openURL(url) { [weak self] result in
             self?.safariHandle = nil
-            action()
+
+            switch result {
+            case .success: action()
+            case .swipe, .dismissButton: break
+            }
         }
     }
 
@@ -166,9 +170,10 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
     func openSellCrypto(at url: URL, action: @escaping (String) -> Void) {
         Analytics.log(.withdrawScreenOpened)
 
-        safariHandle = safariManager.openURL(url) { [weak self] closeURL in
+        safariHandle = safariManager.openURL(url) { [weak self] result in
             self?.safariHandle = nil
-            action(closeURL.absoluteString)
+
+            result.url.map { action($0.absoluteString) }
         }
     }
 

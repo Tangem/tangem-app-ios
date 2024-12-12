@@ -227,10 +227,10 @@ extension SendCoordinator: OnrampRoutable {
         onrampRedirectingViewModel = onrampRedirectingBuilder.makeOnrampRedirectingViewModel(coordinator: self)
     }
 
-    func openOnrampWebView(url: URL, success: @escaping () -> Void) {
-        safariHandle = safariManager.openURL(url) { [weak self] _ in
+    func openOnrampWebView(url: URL, dismiss: @escaping (SafariManagerDismissReason) -> Void) {
+        safariHandle = safariManager.openURL(url) { [weak self] reason in
             self?.safariHandle = nil
-            success()
+            dismiss(reason)
         }
 
         dismissOnrampRedirecting()

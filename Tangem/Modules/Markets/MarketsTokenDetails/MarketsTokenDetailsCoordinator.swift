@@ -197,11 +197,16 @@ extension MarketsTokenDetailsCoordinator {
     }
 
     func openBuyCrypto(at url: URL, with walletModel: WalletModel) {
-        safariHandle = safariManager.openURL(url) { [weak self] _ in
+        safariHandle = safariManager.openURL(url) { [weak self] result in
             self?.safariHandle = nil
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                walletModel.update(silent: true)
+            switch result {
+            case .success:
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    walletModel.update(silent: true)
+                }
+            case .swipe, .dismissButton:
+                break
             }
         }
     }

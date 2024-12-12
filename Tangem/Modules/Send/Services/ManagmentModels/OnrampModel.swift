@@ -14,7 +14,7 @@ import TangemFoundation
 protocol OnrampModelRoutable: AnyObject {
     func openOnrampCountryBottomSheet(country: OnrampCountry)
     func openOnrampCountrySelectorView()
-    func openWebView(url: URL, success: @escaping () -> Void)
+    func openWebView(url: URL, dismiss: @escaping (SafariManagerDismissReason) -> Void)
     func openFinishStep()
 }
 
@@ -479,11 +479,19 @@ extension OnrampModel: OnrampRedirectingOutput {
         onrampPendingTransactionsRepository
             .onrampTransactionDidSend(txData, userWalletId: userWalletId)
 
+        // Stop the autoupdating
+        stopTimer()
         DispatchQueue.main.async {
-            self.router?.openWebView(url: data.widgetUrl) { [weak self] in
-                self?._transactionTime.send(Date())
-                self?._expressTransactionId.send(data.txId)
-                self?.router?.openFinishStep()
+            self.router?.openWebView(url: data.widgetUrl) { [weak self] reason in
+                switch reason {
+                case .success:
+                    self?._transactionTime.send(Date())
+                    self?._expressTransactionId.send(data.txId)
+                    self?.router?.openFinishStep()
+                case .swipe, .dismissButton:
+                    // Restart autoupdating because user didn't completed buy
+                    self?.restartTimer()
+                }
             }
         }
     }

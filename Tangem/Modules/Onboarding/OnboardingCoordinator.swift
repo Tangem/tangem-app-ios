@@ -104,9 +104,13 @@ extension OnboardingCoordinator {
 
 extension OnboardingCoordinator: OnboardingTopupRoutable {
     func openCryptoShop(at url: URL, action: @escaping () -> Void) {
-        safariHandle = safariManager.openURL(url) { [weak self] _ in
+        safariHandle = safariManager.openURL(url) { [weak self] result in
             self?.safariHandle = nil
-            action()
+
+            switch result {
+            case .success: action()
+            case .swipe, .dismissButton: break
+            }
         }
     }
 
