@@ -139,6 +139,11 @@ private extension TotalBalanceProvider {
 
         for token in walletModels {
             if case .binance = token.blockchainNetwork.blockchain {
+                // case with single bnb token
+                if balance == nil {
+                    balance = 0
+                }
+
                 continue
             }
 
