@@ -1,5 +1,5 @@
 //
-//  OTPManager.swift
+//  OTPRepository.swift
 //  TangemVisa
 //
 //  Created by Andrew Son on 11.12.24.
@@ -9,14 +9,14 @@
 import Foundation
 import TangemSdk
 
-public protocol OTPManager: AnyObject {
+public protocol OTPRepository: AnyObject {
     func hasSavedOTP(cardId: String) throws -> Bool
     func getOTP(cardId: String) throws -> Data?
     func saveOTP(_ otp: Data, cardId: String) throws
     func removeOTP(cardId: String) throws
 }
 
-final class CommonOTPManager {
+final class CommonOTPRepository {
     let secureStorage = SecureStorage()
 
     private let otpStorageKeyPrefix = "tangem_visa_otp_"
@@ -26,7 +26,7 @@ final class CommonOTPManager {
     }
 }
 
-extension CommonOTPManager: OTPManager {
+extension CommonOTPRepository: OTPRepository {
     func hasSavedOTP(cardId: String) throws -> Bool {
         let otp = try getOTP(cardId: cardId)
         return otp != nil
