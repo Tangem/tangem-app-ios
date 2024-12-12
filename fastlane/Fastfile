@@ -235,7 +235,7 @@ lane :get_release_version_number do |options|
     build_version_source = "branch name"
   else
     UI.user_error!(
-      "Unable to derive the build version from `build_version_override` or `branch_name` " \
+      "Unable to derive the build version from 'build_version_override' or 'branch_name' " \
       "lane arguments, can't process further wth the build"
     )
   end
@@ -244,23 +244,32 @@ lane :get_release_version_number do |options|
     "Invalid build version format '#{build_version}', " \
     "can't process further wth the build" unless !!(build_version =~ semver_regex
   )
+
   UI.message("Using the build version '#{build_version}' derived from #{build_version_source} for this build")
+  sh("echo 'result=#{build_version}' >> $GITHUB_ENV")
 end
 
 lane :get_release_build_number do |options|
-  app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
-  api_key = app_store_connect_api_key(
-     key_id: options[:asc_key_id],
-     issuer_id: options[:asc_issuer_id],
-     key_content: options[:asc_key],
-     is_key_content_base64: false,
-     in_house: false # detecting this via ASC private key not currently supported
-  )
-  # We don't specify a particular version while querying App Store Connect API for the build number 
-  # because we use a single, global build number across all builds
-  build_number = latest_testflight_build_number(api_key: api_key, app_identifier: app_identifier)
+  build_number = ""
+
+  if not options[:build_number_override]&.empty?
+    build_number = options[:build_number_override]
+  else
+    app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+    api_key = app_store_connect_api_key(
+      key_id: options[:asc_key_id],
+      issuer_id: options[:asc_issuer_id],
+      key_content: options[:asc_key],
+      is_key_content_base64: false,
+      in_house: false # detecting this via ASC private key not currently supported
+    )
+    # We don't specify a specific version while querying the App Store Connect API
+    # for a build number because we use a single, global build number across all builds
+    build_number = latest_testflight_build_number(api_key: api_key, app_identifier: app_identifier)
+  end
 
   UI.message("Using the build number '#{build_number}' derived from App Store Connect for this build")
+  sh("echo 'result=#{build_number}' >> $GITHUB_ENV")
 end
 
 desc """
