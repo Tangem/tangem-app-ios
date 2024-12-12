@@ -174,7 +174,8 @@ private extension ExpressModulesFactoryMock {
             allowanceProvider: allowanceProvider,
             feeProvider: expressFeeProvider,
             expressRepository: expressRepository,
-            logger: logger
+            logger: logger,
+            analyticsLogger: ExpressAnalyticsLoggerMock()
         )
 
         let interactor = ExpressInteractor(

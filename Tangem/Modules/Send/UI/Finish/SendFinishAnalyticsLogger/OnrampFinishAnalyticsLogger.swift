@@ -17,7 +17,7 @@ struct OnrampFinishAnalyticsLogger: SendFinishAnalyticsLogger {
 
     func onAppear() {
         guard let provider = onrampProvidersInput?.selectedOnrampProvider,
-            let request = try? provider.makeOnrampQuotesRequestItem() else {
+              let request = try? provider.makeOnrampQuotesRequestItem() else {
             return
         }
 
