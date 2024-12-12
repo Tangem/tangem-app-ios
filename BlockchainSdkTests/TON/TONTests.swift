@@ -17,119 +17,98 @@ class TONTests: XCTestCase {
         rawRepresentation: Data(hexString: "0x85fca134b3fe3fd523d8b528608d803890e26c93c86dc3d97b8d59c7b3540c97")
     )
 
-    private func makeWalletManager(blockchain: BlockchainSdk.Blockchain) -> TONWalletManager {
+    private func makeWalletManager(blockchain: BlockchainSdk.Blockchain) throws -> TONWalletManager {
         let walletPubKey = privateKey.publicKey.rawRepresentation
-        let address = try! TonAddressService().makeAddress(
+
+        // UQASC4I5D3v_uqZdyBj6r9BwLE4JnIaQJUKhO6IlZbIwPj4G
+        let address = try WalletCoreAddressService(coin: .ton).makeAddress(
             for: .init(seedKey: walletPubKey, derivationType: .none),
             with: .default
         )
 
         let wallet = Wallet(blockchain: blockchain, addresses: [.default: address])
-        return try! .init(
+
+        return try .init(
             wallet: wallet,
+            transactionBuilder: .init(wallet: wallet),
             networkService: TONNetworkService(providers: [], blockchain: blockchain)
         )
     }
 
-    private func makeTransactionBuilder(wallet: BlockchainSdk.Wallet) -> TONTransactionBuilder {
-        return TONTransactionBuilder.makeDummyBuilder(
-            with: .init(
-                wallet: wallet,
-                inputPrivateKey: privateKey,
-                sequenceNumber: 0
-            )
+    func testCorrectCoinTransactionEd25519() throws {
+        try testCorrectCoinTransaction(curve: .ed25519)
+    }
+
+    func testCorrectCoinTransactionEd25519Slip0010() throws {
+        try testCorrectCoinTransaction(curve: .ed25519_slip0010)
+    }
+
+    // https://tonscan.org/tx/77f72e4096f2ae315ff7b0906569f9aa450686b11a40e65c9adb8690587bffa4
+    func testCorrectCoinTransaction(curve: EllipticCurve) throws {
+        let blockchain = Blockchain.ton(curve: curve, testnet: false)
+        let walletManager = try makeWalletManager(blockchain: blockchain)
+        let txBuilder = TONTransactionBuilder(wallet: walletManager.wallet)
+
+        let buildInput = TONTransactionInput(
+            amount: .init(with: blockchain, value: 0.05),
+            destination: "UQCFArsfuLucMirvHCyGyMkmIbQ26_BcFFG7mHfOxlVpF0Wv",
+            expireAt: 1733405859,
+            jettonWalletAddress: nil,
+            params: TONTransactionParams(memo: "123456")
         )
+
+        let buildForSign = try txBuilder.buildForSign(buildInput: buildInput)
+
+        XCTAssertEqual("2980e02f4d5e84dc9017abd504d9ac79189f821b525e890fe8034ad32edfc3c7".lowercased(), buildForSign.hexString.lowercased())
+
+        let expectedSignature = Data(hex: "d32e3e16841f2901afaa3ad2448896c8a4b0eb6b2fb7eb95ccd428cb4499be7c869926ce557323fd01f684407a75e9ef1e64bc004f2c7192c9bdc4b062198f03")
+
+        let buildForSend = try txBuilder.buildForSend(buildInput: buildInput, signature: expectedSignature)
+
+        XCTAssertEqual(buildForSend, "te6cckECGgEAA78AAkWIACQXBHIe9/91TLuQMfVfoOBYnBM5DSBKhUJ3RErLZGB8HgECAgE0AwQBnNMuPhaEHykBr6o60kSIlsiksOtrL7frlczUKMtEmb58hpkmzlVzI/0B9oRAenXp7x5kvABPLHGSyb3EsGIZjwMpqaMX/////wAAAAAAAwUBFP8A9KQT9LzyyAsGAFEAAAAAKamjF+Cz/Mz+AoPMD4wQXGi1aQqrjFwWkqho5V6sqDbId5CFQAFoQgBCgV2P3F3OGRV3jhZDZGSTENobdfguCijdzDvnYyq0i6AX14QAAAAAAAAAAAAAAAAAAQcCASAICQAUAAAAADEyMzQ1NgIBSAoLBPjygwjXGCDTH9Mf0x8C+CO78mTtRNDTH9Mf0//0BNFRQ7ryoVFRuvKiBfkBVBBk+RDyo/gAJKTIyx9SQMsfUjDL/1IQ9ADJ7VT4DwHTByHAAJ9sUZMg10qW0wfUAvsA6DDgIcAB4wAhwALjAAHAA5Ew4w0DpMjLHxLLH8v/DA0ODwLm0AHQ0wMhcbCSXwTgItdJwSCSXwTgAtMfIYIQcGx1Z70ighBkc3RyvbCSXwXgA/pAMCD6RAHIygfL/8nQ7UTQgQFA1yH0BDBcgQEI9ApvoTGzkl8H4AXTP8glghBwbHVnupI4MOMNA4IQZHN0crqSXwbjDRARAgEgEhMAbtIH+gDU1CL5AAXIygcVy//J0Hd0gBjIywXLAiLPFlAF+gIUy2sSzMzJc/sAyEAUgQEI9FHypwIAcIEBCNcY+gDTP8hUIEeBAQj0UfKnghBub3RlcHSAGMjLBcsCUAbPFlAE+gIUy2oSyx/LP8lz+wACAGyBAQjXGPoA0z8wUiSBAQj0WfKnghBkc3RycHSAGMjLBcsCUAXPFlAD+gITy2rLHxLLP8lz+wAACvQAye1UAHgB+gD0BDD4J28iMFAKoSG+8uBQghBwbHVngx6xcIAYUATLBSbPFlj6Ahn0AMtpF8sfUmDLPyDJgED7AAYAilAEgQEI9Fkw7UTQgQFA1yDIAc8W9ADJ7VQBcrCOI4IQZHN0coMesXCAGFAFywVQA88WI/oCE8tqyx/LP8mAQPsAkl8D4gIBIBQVAFm9JCtvaiaECAoGuQ+gIYRw1AgIR6STfSmRDOaQPp/5g3gSgBt4EBSJhxWfMYQCAVgWFwARuMl+1E0NcLH4AD2ynftRNCBAUDXIfQEMALIygfL/8nQAYEBCPQKb6ExgAgEgGBkAGa3OdqJoQCBrkOuF/8AAGa8d9qJoQBBrkOuFj8CNR4py")
     }
 
-    func testCorrectCoinTransactionEd25519() {
-        testCorrectCoinTransaction(curve: .ed25519)
+    func testCorrectTokenTransactionEd25519() throws {
+        try testCorrectTokenTransaction(curve: .ed25519)
     }
 
-    func testCorrectCoinTransactionEd25519Slip0010() {
-        testCorrectCoinTransaction(curve: .ed25519_slip0010)
+    func testCorrectTokenTransactionEd25519Slip0010() throws {
+        try testCorrectTokenTransaction(curve: .ed25519_slip0010)
     }
 
-    func testCorrectCoinTransaction(curve: EllipticCurve) {
-        do {
-            let blockchain = Blockchain.ton(curve: curve, testnet: true)
-            let walletManager = makeWalletManager(blockchain: blockchain)
-            let txBuilder = makeTransactionBuilder(wallet: walletManager.wallet)
-            let input = try txBuilder.buildForSign(
-                amount: .init(with: blockchain, value: 1),
-                destination: "EQAoDMgtvyuYaUj-iHjrb_yZiXaAQWSm4pG2K7rWTBj9eOC2"
-            )
+    // https://tonviewer.com/transaction/a274b0bd0f6a90c1296c8a7ee305488852e9335e47230dcee0d6495dcad71692
+    func testCorrectTokenTransaction(curve: EllipticCurve) throws {
+        let blockchain = Blockchain.ton(curve: curve, testnet: false)
+        let walletManager = try makeWalletManager(blockchain: blockchain)
+        let txBuilder = TONTransactionBuilder(wallet: walletManager.wallet)
 
-            XCTAssertEqual(
-                try! input.jsonString(),
-                "{\"privateKey\":\"hfyhNLP+P9Uj2LUoYI2AOJDibJPIbcPZe41Zx7NUDJc=\",\"transfer\":{\"walletVersion\":\"WALLET_V4_R2\",\"dest\":\"EQAoDMgtvyuYaUj-iHjrb_yZiXaAQWSm4pG2K7rWTBj9eOC2\",\"amount\":\"1000000000\",\"mode\":3}}"
-            )
+        txBuilder.sequenceNumber = 5
 
-            let output = try walletManager.buildTransaction(
-                input: input,
-                with: WalletCoreSignerTesterUtility(
-                    privateKey: privateKey,
-                    signatures: [
-                        Data(hex: "0c88f60571fae5ae341b1af5910e0c07bd5676726cd7775c85159b5542cecb0c5e3f291d5f69f4f2da012524211c064ec2fc5f7f0c62b1ea236d6165d1fc2c09"),
-                    ]
-                )
-            )
+        let token = Token(
+            name: "tether",
+            symbol: "Tether",
+            contractAddress: "EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs",
+            decimalCount: 6
+        )
 
-            XCTAssertEqual(output, "te6ccgICABoAAQAAA84AAAJFiAAkFwRyHvf/dUy7kDH1X6DgWJwTOQ0gSoVCd0RKy2RgfB4ABAABAZwMiPYFcfrlrjQbGvWRDgwHvVZ2cmzXd1yFFZtVQs7LDF4/KR1fafTy2gElJCEcBk7C/F9/DGKx6iNtYWXR/CwJKamjF/////8AAAAAAAMAAgFoQgAUBmQW35XMNKR/RDx1t/5MxLtAILJTcUjbFd1rJgx+vCHc1lAAAAAAAAAAAAAAAAAAAQADAAACATQABgAFAFEAAAAAKamjF+Cz/Mz+AoPMD4wQXGi1aQqrjFwWkqho5V6sqDbId5CFQAEU/wD0pBP0vPLICwAHAgEgAA0ACAT48oMI1xgg0x/TH9MfAvgju/Jk7UTQ0x/TH9P/9ATRUUO68qFRUbryogX5AVQQZPkQ8qP4ACSkyMsfUkDLH1Iwy/9SEPQAye1U+A8B0wchwACfbFGTINdKltMH1AL7AOgw4CHAAeMAIcAC4wABwAORMOMNA6TIyx8Syx/L/wAMAAsACgAJAAr0AMntVABsgQEI1xj6ANM/MFIkgQEI9Fnyp4IQZHN0cnB0gBjIywXLAlAFzxZQA/oCE8tqyx8Syz/Jc/sAAHCBAQjXGPoA0z/IVCBHgQEI9FHyp4IQbm90ZXB0gBjIywXLAlAGzxZQBPoCFMtqEssfyz/Jc/sAAgBu0gf6ANTUIvkABcjKBxXL/8nQd3SAGMjLBcsCIs8WUAX6AhTLaxLMzMlz+wDIQBSBAQj0UfKnAgIBSAAXAA4CASAAEAAPAFm9JCtvaiaECAoGuQ+gIYRw1AgIR6STfSmRDOaQPp/5g3gSgBt4EBSJhxWfMYQCASAAEgARABG4yX7UTQ1wsfgCAVgAFgATAgEgABUAFAAZrx32omhAEGuQ64WPwAAZrc52omhAIGuQ64X/wAA9sp37UTQgQFA1yH0BDACyMoHy//J0AGBAQj0Cm+hMYALm0AHQ0wMhcbCSXwTgItdJwSCSXwTgAtMfIYIQcGx1Z70ighBkc3RyvbCSXwXgA/pAMCD6RAHIygfL/8nQ7UTQgQFA1yH0BDBcgQEI9ApvoTGzkl8H4AXTP8glghBwbHVnupI4MOMNA4IQZHN0crqSXwbjDQAZABgAilAEgQEI9Fkw7UTQgQFA1yDIAc8W9ADJ7VQBcrCOI4IQZHN0coMesXCAGFAFywVQA88WI/oCE8tqyx/LP8mAQPsAkl8D4gB4AfoA9AQw+CdvIjBQCqEhvvLgUIIQcGx1Z4MesXCAGFAEywUmzxZY+gIZ9ADLaRfLH1Jgyz8gyYBA+wAG")
-        } catch {
-            XCTFail("Transaction build for sign is nil")
-        }
-    }
+        let amount = Amount(with: token, value: 0.1)
 
-    func testCorrectCoinWithMemoTransactionEd25519() {
-        testCorrectCoinWithMemoTransaction(curve: .ed25519)
-    }
+        let buildInput = TONTransactionInput(
+            amount: amount,
+            destination: "UQBzvZk8lobyrPW9Sf3vsXNYjpW-ixFqNtwyP9_RUkwLNeVx",
+            expireAt: 1733419000,
+            jettonWalletAddress: "UQBp_I7USZxSLmjcb6dMnQUtnmZbfWmpt5zdnolPsA-IaJ8l",
+            params: nil
+        )
 
-    func testCorrectCoinWithMemoTransactionEd25519Slip0010() {
-        testCorrectCoinWithMemoTransaction(curve: .ed25519_slip0010)
-    }
+        let buildForSign = try txBuilder.buildForSign(buildInput: buildInput)
 
-    func testCorrectCoinWithMemoTransaction(curve: EllipticCurve) {
-        do {
-            let blockchain = Blockchain.ton(curve: curve, testnet: true)
-            let walletManager = makeWalletManager(blockchain: blockchain)
-            let txBuilder = makeTransactionBuilder(wallet: walletManager.wallet)
+        XCTAssertEqual("876b5fe635e5d538edef9e16746b7de19c1384c46a41302a15f7243d38285f9c".lowercased(), buildForSign.hexString.lowercased())
 
-            let input = try txBuilder.buildForSign(
-                amount: .init(with: blockchain, value: 1),
-                destination: "EQAoDMgtvyuYaUj-iHjrb_yZiXaAQWSm4pG2K7rWTBj9eOC2",
-                params: .init(memo: "Hello world!")
-            )
+        let expectedSignature = Data(hex: "6AAD07AEB57E99A528BF5EE5649EC4CEFF34F301E1C6502E25919855B47667CAE33B0D04E7E5D8082B998442EA1DC41D4277ACE8D02621187682DDD270067D08")
 
-            XCTAssertEqual(
-                try! input.jsonString(),
-                "{\"privateKey\":\"hfyhNLP+P9Uj2LUoYI2AOJDibJPIbcPZe41Zx7NUDJc=\",\"transfer\":{\"walletVersion\":\"WALLET_V4_R2\",\"dest\":\"EQAoDMgtvyuYaUj-iHjrb_yZiXaAQWSm4pG2K7rWTBj9eOC2\",\"amount\":\"1000000000\",\"mode\":3,\"comment\":\"Hello world!\"}}"
-            )
+        let buildForSend = try txBuilder.buildForSend(buildInput: buildInput, signature: expectedSignature)
 
-            let output = try walletManager.buildTransaction(
-                input: input,
-                with: WalletCoreSignerTesterUtility(
-                    privateKey: privateKey,
-                    signatures: [
-                        Data(hex: "0c88f60571fae5ae341b1af5910e0c07bd5676726cd7775c85159b5542cecb0c5e3f291d5f69f4f2da012524211c064ec2fc5f7f0c62b1ea236d6165d1fc2c09"),
-                    ]
-                )
-            )
-
-            XCTAssertEqual(output, "te6ccgICABoAAQAAA94AAAJFiAAkFwRyHvf/dUy7kDH1X6DgWJwTOQ0gSoVCd0RKy2RgfB4ABAABAZwMiPYFcfrlrjQbGvWRDgwHvVZ2cmzXd1yFFZtVQs7LDF4/KR1fafTy2gElJCEcBk7C/F9/DGKx6iNtYWXR/CwJKamjF/////8AAAAAAAMAAgFoQgAUBmQW35XMNKR/RDx1t/5MxLtAILJTcUjbFd1rJgx+vCHc1lAAAAAAAAAAAAAAAAAAAQADACAAAAAASGVsbG8gd29ybGQhAgE0AAYABQBRAAAAACmpoxfgs/zM/gKDzA+MEFxotWkKq4xcFpKoaOVerKg2yHeQhUABFP8A9KQT9LzyyAsABwIBIAANAAgE+PKDCNcYINMf0x/THwL4I7vyZO1E0NMf0x/T//QE0VFDuvKhUVG68qIF+QFUEGT5EPKj+AAkpMjLH1JAyx9SMMv/UhD0AMntVPgPAdMHIcAAn2xRkyDXSpbTB9QC+wDoMOAhwAHjACHAAuMAAcADkTDjDQOkyMsfEssfy/8ADAALAAoACQAK9ADJ7VQAbIEBCNcY+gDTPzBSJIEBCPRZ8qeCEGRzdHJwdIAYyMsFywJQBc8WUAP6AhPLassfEss/yXP7AABwgQEI1xj6ANM/yFQgR4EBCPRR8qeCEG5vdGVwdIAYyMsFywJQBs8WUAT6AhTLahLLH8s/yXP7AAIAbtIH+gDU1CL5AAXIygcVy//J0Hd0gBjIywXLAiLPFlAF+gIUy2sSzMzJc/sAyEAUgQEI9FHypwICAUgAFwAOAgEgABAADwBZvSQrb2omhAgKBrkPoCGEcNQICEekk30pkQzmkD6f+YN4EoAbeBAUiYcVnzGEAgEgABIAEQARuMl+1E0NcLH4AgFYABYAEwIBIAAVABQAGa8d9qJoQBBrkOuFj8AAGa3OdqJoQCBrkOuF/8AAPbKd+1E0IEBQNch9AQwAsjKB8v/ydABgQEI9ApvoTGAC5tAB0NMDIXGwkl8E4CLXScEgkl8E4ALTHyGCEHBsdWe9IoIQZHN0cr2wkl8F4AP6QDAg+kQByMoHy//J0O1E0IEBQNch9AQwXIEBCPQKb6Exs5JfB+AF0z/IJYIQcGx1Z7qSODDjDQOCEGRzdHK6kl8G4w0AGQAYAIpQBIEBCPRZMO1E0IEBQNcgyAHPFvQAye1UAXKwjiOCEGRzdHKDHrFwgBhQBcsFUAPPFiP6AhPLassfyz/JgED7AJJfA+IAeAH6APQEMPgnbyIwUAqhIb7y4FCCEHBsdWeDHrFwgBhQBMsFJs8WWPoCGfQAy2kXyx9SYMs/IMmAQPsABg==")
-        } catch {
-            XCTFail("Transaction build for sign is nil")
-        }
-    }
-
-    func testAddressServiceFactoryCreateCorrectTonAddressService() {
-        EllipticCurve.allCases.forEach { curve in
-            let addressService = AddressServiceFactory(
-                blockchain: .ton(curve: curve, testnet: false)
-            ).makeAddressService()
-
-            XCTAssertTrue(
-                addressService is TonAddressService
-            )
-        }
+        XCTAssertEqual(buildForSend, "te6cckECBAEAAQQAAUWIACQXBHIe9/91TLuQMfVfoOBYnBM5DSBKhUJ3RErLZGB8DAEBnGqtB661fpmlKL9e5WSexM7/NPMB4cZQLiWRmFW0dmfK4zsNBOfl2AgrmYRC6h3EHUJ3rOjQJiEYdoLd0nAGfQgpqaMXZ1Hf+AAAAAUAAwIBaEIANP5HaiTOKRc0bjfTpk6Cls8zLb601NvObs9Ep9gHxDQgF9eEAAAAAAAAAAAAAAAAAAEDAKgPin6lAAAAAAAAAAAwGGoIAOd7MnktDeVZ63qT+99i5rEdK30WItRtuGR/v6KkmBZrAASC4I5D3v/uqZdyBj6r9BwLE4JnIaQJUKhO6IlZbIwPggKtrAfE")
     }
 }
