@@ -204,7 +204,7 @@ Options:
 """
 lane :build_RC do |options|
   increment_version_number(version_number: options[:version])
-  increment_testflight_build_number(version: options[:version], build: options[:build])
+  increment_build_number(build_number: options[:build])
 
   build(
     export_method: "app-store",
