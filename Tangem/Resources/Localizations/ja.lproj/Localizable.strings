@@ -978,7 +978,7 @@
 "warning_approval_in_progress_title" = "承認中";
 "warning_backup_errors_message" = "カードまたはリングのアクティベーションが正しく完了しませんでした。デバイスのNFCモジュールに問題があるか、カードまたはリングをデバイスに正しくタップしていないことが原因かもしれません。サポートチームにお問い合わせください。";
 "warning_beacon_chain_retirement_content" = "2024年12月3日、BEP-2ネットワークはネットワーク開発者の決定により使用不能となり、サポートは終了しました。";
-"warning_beacon_chain_retirement_title" = "BNBビーコンチェーンは閉鎖されました";
+"warning_beacon_chain_retirement_title" = "BNBビーコンチェーンは閉鎖されます。";
 "warning_blocked_funds_for_fee_message" = "ネットワーク手数料をカバーするために%1$@を入金してください";
 "warning_blocked_funds_for_fee_title" = "ネットワーク手数料をカバーする資金が不足しています";
 "warning_button_could_be_better" = "もっと良くなるはず";
