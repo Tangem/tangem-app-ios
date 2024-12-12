@@ -9,14 +9,14 @@
 import Foundation
 import TangemSdk
 
-public protocol OTPRepository: AnyObject {
+public protocol VisaOTPRepository: AnyObject {
     func hasSavedOTP(cardId: String) throws -> Bool
     func getOTP(cardId: String) throws -> Data?
     func saveOTP(_ otp: Data, cardId: String) throws
     func removeOTP(cardId: String) throws
 }
 
-final class CommonOTPRepository {
+final class CommonVisaOTPRepository {
     let secureStorage = SecureStorage()
 
     private let otpStorageKeyPrefix = "tangem_visa_otp_"
@@ -26,7 +26,7 @@ final class CommonOTPRepository {
     }
 }
 
-extension CommonOTPRepository: OTPRepository {
+extension CommonVisaOTPRepository: VisaOTPRepository {
     func hasSavedOTP(cardId: String) throws -> Bool {
         let otp = try getOTP(cardId: cardId)
         return otp != nil

@@ -537,7 +537,7 @@
 		B09721DC2AC466A400058675 /* CommonExpressAvailabilityProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09721DB2AC466A300058675 /* CommonExpressAvailabilityProvider.swift */; };
 		B097A3642C1067A8003CFD38 /* APIURLValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B097A3632C1067A8003CFD38 /* APIURLValidator.swift */; };
 		B097A3662C106AC1003CFD38 /* APIURLValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B097A3652C106AC1003CFD38 /* APIURLValidatorTests.swift */; };
-		B097B9242D09A642008A074F /* OTPRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B097B9232D09A642008A074F /* OTPRepository.swift */; };
+		B097B9242D09A642008A074F /* VisaOTPRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B097B9232D09A642008A074F /* VisaOTPRepository.swift */; };
 		B098DD4C29C46EC300D2D55B /* UIFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = B098DD4B29C46EC300D2D55B /* UIFonts.swift */; };
 		B098F39A2C0474E700F79989 /* ManageTokensAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B098F3992C0474E700F79989 /* ManageTokensAdapter.swift */; };
 		B098F3A02C04797C00F79989 /* OnboardingAddTokensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B098F39F2C04797C00F79989 /* OnboardingAddTokensView.swift */; };
@@ -3720,7 +3720,7 @@
 		B09721DB2AC466A300058675 /* CommonExpressAvailabilityProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonExpressAvailabilityProvider.swift; sourceTree = "<group>"; };
 		B097A3632C1067A8003CFD38 /* APIURLValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIURLValidator.swift; sourceTree = "<group>"; };
 		B097A3652C106AC1003CFD38 /* APIURLValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIURLValidatorTests.swift; sourceTree = "<group>"; };
-		B097B9232D09A642008A074F /* OTPRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OTPRepository.swift; sourceTree = "<group>"; };
+		B097B9232D09A642008A074F /* VisaOTPRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisaOTPRepository.swift; sourceTree = "<group>"; };
 		B098DD4B29C46EC300D2D55B /* UIFonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFonts.swift; sourceTree = "<group>"; };
 		B098F3992C0474E700F79989 /* ManageTokensAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageTokensAdapter.swift; sourceTree = "<group>"; };
 		B098F39F2C04797C00F79989 /* OnboardingAddTokensView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAddTokensView.swift; sourceTree = "<group>"; };
@@ -8159,7 +8159,7 @@
 				B0EC86092CEE2524003E5B67 /* VisaActivationManagerFactory.swift */,
 				B03C19A52CF071B500CCB4F1 /* VisaCardActivationInput.swift */,
 				B0DB542E2CF47AF90069131C /* CardActivationOrderProvider.swift */,
-				B097B9232D09A642008A074F /* OTPRepository.swift */,
+				B097B9232D09A642008A074F /* VisaOTPRepository.swift */,
 			);
 			path = Activation;
 			sourceTree = "<group>";
@@ -18507,7 +18507,7 @@
 				B099339D2B55196700240CDB /* VisaBridgeInteractor.swift in Sources */,
 				B0DE6EE52CDCF5A300254675 /* AuthorizationAPITarget.swift in Sources */,
 				B0A593532CF5D7A000C386EE /* CardAuthorizationProcessorError.swift in Sources */,
-				B097B9242D09A642008A074F /* OTPRepository.swift in Sources */,
+				B097B9242D09A642008A074F /* VisaOTPRepository.swift in Sources */,
 				B06C6D2A2CE48A1900B30325 /* AuthorizationTokensHandler.swift in Sources */,
 				B05145062B5933E000EDAD1E /* VisaUtilities.swift in Sources */,
 				B0A359AA2CE6FCA10001499E /* VisaAccessTokenHandlerError.swift in Sources */,

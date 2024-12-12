@@ -28,7 +28,7 @@ final class CardActivationTask: CardSessionRunnable {
     typealias CompletionHandler = CompletionResult<VisaCardActivationResponse>
 
     private weak var orderProvider: CardActivationTaskOrderProvider?
-    private weak var otpManager: OTPRepository?
+    private weak var otpManager: VisaOTPRepository?
     private let logger: InternalLogger
 
     private let selectedAccessCode: String
@@ -44,7 +44,7 @@ final class CardActivationTask: CardSessionRunnable {
         activationInput: VisaCardActivationInput,
         challengeToSign: String?,
         delegate: CardActivationTaskOrderProvider,
-        otpManager: OTPRepository,
+        otpManager: VisaOTPRepository,
         logger: InternalLogger
     ) {
         self.selectedAccessCode = selectedAccessCode
