@@ -32,45 +32,55 @@ concurrency:
 jobs:
   prepare:
     name: Prepare information
-    runs-on: ubuntu-latest
+    runs-on: macos-15
     outputs:
       stage: 'RC'
       version: '${{ steps.get-release-version.outputs.result }}'
       build_number: '${{ steps.get-build-number.outputs.result }}'
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+          token: ${{ secrets.GH_MOBILE_PAT }}
+
+      # When using Github runner images, the preferred way of setting the Ruby version is to use this official action instead of using rvm/rbenv
+      - name: Install Ruby
+        uses: ruby/setup-ruby@a2bbe5b1b236842c1cb7dd11e8e3b51e0a616acc  # v1.202.0
+
+      # Skipping Ruby installation since it has been already installed by an action above
+      - name: Install required dependencies
+        run: ./bootstrap.sh --skip-ruby
+
       - name: Get Release Version
         id: get-release-version
         env:
           BUILD_VERSION_OVERRIDE: '${{ inputs.build_version_override }}'
           BRANCH_NAME: '${{ github.head_ref || github.ref_name }}'
         run: |
-          if [[ -n "${BUILD_VERSION_OVERRIDE}" ]]; then
-            # Use the build version value from user input (if any)
-            echo "Using the build version '${BUILD_VERSION_OVERRIDE}' derived from user input for this build"
-            BUILD_VERSION="${BUILD_VERSION_OVERRIDE}"
-          elif [[ -n "${BRANCH_NAME}" ]]; then
-            # Use the build version value from the branch name
-            PARSED_BUILD_VERSION=$(echo "${BRANCH_NAME}" | rev | cut -d'/' -f1 | rev)
-            if [[ -n "${PARSED_BUILD_VERSION}" ]]; then
-              echo "Using the build version '${PARSED_BUILD_VERSION}' derived from branch name for this build"
-              BUILD_VERSION="${PARSED_BUILD_VERSION}"
-            else
-              echo "Unable to obtain the build version from the branch name, can't process further"
-              exit 2
-            fi
-          else
-            # No info about build version
-            echo "Unable to obtain the build version, can't process further"
-            exit 1
-          fi
+          # The initialization of rbenv is required before every `bundle` call since Gihub Actions spawns each 'run' step in a separate process
+          eval "$(rbenv init - bash)"
 
-          echo "result=${BUILD_VERSION}" >> "$GITHUB_OUTPUT"
+          bundle exec fastlane \
+          get_release_version_number \
+          build_version_override:"${BUILD_VERSION_OVERRIDE}" \
+          branch_name:"${BRANCH_NAME}"
 
       - name: Get Build Number
         id: get-build-number
+        env:
+          BUILD_NUMBER_OVERRIDE: '${{ inputs.build_number_override }}'
         run: |
-          echo '${{ vars.APP_NAME }}'
-          echo "result=1023" >> $GITHUB_OUTPUT
+          # The initialization of rbenv is required before every `bundle` call since Gihub Actions spawns each 'run' step in a separate process
+          eval "$(rbenv init - bash)"
+
+          bundle exec fastlane \
+          get_release_build_number \
+          build_version_override:"${BUILD_NUMBER_OVERRIDE}" \
+          branch_name:"${BRANCH_NAME}" \
+          key_id:'${{ secrets.ASC_KEY_ID }}' \
+          issuer_id:'${{ secrets.ASC_ISSUER_ID }}' \
+          key_content:'${{ secrets.ASC_PRIVATE_KEY }}'
 
   build:
     name: Tangem Release
@@ -100,10 +110,10 @@ jobs:
       changelog: '${{ inputs.build_description }}'
       filename: 'Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa'
     secrets:
-      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID}}
-      ASC_PRIVATE_KEY: ${{ secrets.ASC_PRIVATE_KEY}}
-      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID}}
-      GH_MOBILE_PAT: ${{ secrets.GH_MOBILE_PAT}}
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_PRIVATE_KEY: ${{ secrets.ASC_PRIVATE_KEY }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      GH_MOBILE_PAT: ${{ secrets.GH_MOBILE_PAT }}
 
   notification:
     name: Deploy Notification
