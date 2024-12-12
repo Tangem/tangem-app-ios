@@ -8,9 +8,13 @@
 
 import Foundation
 import TangemSdk
+import TangemVisa
 
 struct VisaOnboardingStepsBuilder {
+    private let cardId: String
     private let isPushNotificationsAvailable: Bool
+    private let isAccessCodeSet: Bool
+    private let activationStatus: VisaCardActivationStatus
 
     private var otherSteps: [VisaOnboardingStep] {
         var steps: [VisaOnboardingStep] = []
@@ -36,9 +40,15 @@ struct VisaOnboardingStepsBuilder {
     }
 
     init(
-        isPushNotificationsAvailable: Bool
+        cardId: String,
+        isPushNotificationsAvailable: Bool,
+        isAccessCodeSet: Bool,
+        activationStatus: VisaCardActivationStatus
     ) {
+        self.cardId = cardId
         self.isPushNotificationsAvailable = isPushNotificationsAvailable
+        self.isAccessCodeSet = isAccessCodeSet
+        self.activationStatus = activationStatus
     }
 }
 
@@ -46,11 +56,17 @@ extension VisaOnboardingStepsBuilder: OnboardingStepsBuilder {
     func buildOnboardingSteps() -> OnboardingSteps {
         var steps = [VisaOnboardingStep]()
 
-        steps.append(.welcome)
-        steps.append(.accessCode)
+        if activationStatus.isActivated {
+            steps.append(contentsOf: otherSteps)
+        } else {
+            steps.append(.welcome)
 
-        steps.append(contentsOf: approveSteps)
-        steps.append(contentsOf: otherSteps)
+            if !isAccessCodeSet {
+                steps.append(.accessCode)
+            }
+
+            steps.append(contentsOf: approveSteps + otherSteps)
+        }
 
         return .visa(steps)
     }

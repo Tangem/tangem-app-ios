@@ -10,24 +10,37 @@ import Foundation
 import Combine
 
 @discardableResult
-public func runTask(isDetached: Bool = false, code: @escaping () -> Void) -> Task<Void, Never> {
-    return isDetached ? Task.detached(operation: code) : Task(operation: code)
+public func runTask(
+    isDetached: Bool = false,
+    priority: TaskPriority? = nil,
+    code: @escaping () -> Void
+) -> Task<Void, Never> {
+    return isDetached ? Task.detached(priority: priority, operation: code) : Task(priority: priority, operation: code)
 }
 
 @discardableResult
-public func runTask(isDetached: Bool = false, code: @escaping () async -> Void) -> Task<Void, Never> {
-    return isDetached ? Task.detached(operation: code) : Task(operation: code)
+public func runTask(
+    isDetached: Bool = false,
+    priority: TaskPriority? = nil,
+    code: @escaping () async -> Void
+) -> Task<Void, Never> {
+    return isDetached ? Task.detached(priority: priority, operation: code) : Task(priority: priority, operation: code)
 }
 
 @discardableResult
-public func runTask(isDetached: Bool = false, code: @escaping () async throws -> Void) -> Task<Void, Error> {
-    return isDetached ? Task.detached(operation: code) : Task(operation: code)
+public func runTask(
+    isDetached: Bool = false,
+    priority: TaskPriority? = nil,
+    code: @escaping () async throws -> Void
+) -> Task<Void, Error> {
+    return isDetached ? Task.detached(priority: priority, operation: code) : Task(priority: priority, operation: code)
 }
 
 @discardableResult
 public func runTask<T: AnyObject>(
     in object: T,
     isDetached: Bool = false,
+    priority: TaskPriority? = nil,
     code: @escaping (_ input: T) async -> Void
 ) -> Task<Void, Never> {
     let operation = { [weak object] in
@@ -36,13 +49,14 @@ public func runTask<T: AnyObject>(
         await code(object)
     }
 
-    return isDetached ? Task.detached(operation: operation) : Task(operation: operation)
+    return isDetached ? Task.detached(priority: priority, operation: operation) : Task(priority: priority, operation: operation)
 }
 
 @discardableResult
 public func runTask<T: AnyObject>(
     in object: T,
     isDetached: Bool = false,
+    priority: TaskPriority? = nil,
     code: @escaping (_ input: T) async throws -> Void
 ) -> Task<Void, Error> {
     let operation = { [weak object] in
@@ -51,7 +65,7 @@ public func runTask<T: AnyObject>(
         try await code(object)
     }
 
-    return isDetached ? Task.detached(operation: operation) : Task(operation: operation)
+    return isDetached ? Task.detached(priority: priority, operation: operation) : Task(priority: priority, operation: operation)
 }
 
 public extension Task where Success == Never, Failure == Never {
