@@ -34,6 +34,7 @@ jobs:
   prepare:
     name: Prepare information
     runs-on: macos-15
+    environment: 'RC'
     outputs:
       stage: 'RC'
       version: '${{ steps.get-release-version.outputs.result }}'
@@ -71,6 +72,7 @@ jobs:
         id: get-build-number
         env:
           BUILD_NUMBER_OVERRIDE: '${{ inputs.build_number_override }}'
+          ASC_KEY_ID: '${{ secrets.ASC_KEY_ID }}'
         run: |
           # The initialization of rbenv is required before every `bundle` call since Gihub Actions spawns each 'run' step in a separate process
           eval "$(rbenv init - bash)"
@@ -79,9 +81,9 @@ jobs:
           get_release_build_number \
           build_version_override:"${BUILD_NUMBER_OVERRIDE}" \
           branch_name:"${BRANCH_NAME}" \
-          key_id:'${{ secrets.ASC_KEY_ID }}' \
-          issuer_id:'${{ secrets.ASC_ISSUER_ID }}' \
-          key_content:'${{ secrets.ASC_PRIVATE_KEY }}'
+          key_id:"${ASC_KEY_ID}" \
+          issuer_id:"" \
+          key_content:""
 
   build:
     name: Tangem Release
