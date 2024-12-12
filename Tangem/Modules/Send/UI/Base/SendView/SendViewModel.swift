@@ -24,7 +24,6 @@ final class SendViewModel: ObservableObject {
     @Published var flowActionType: SendFlowActionType
     @Published var showBackButton = false
     @Published var isKeyboardActive: Bool = false
-    @Published var isBottomOverlayVisible: Bool = true
 
     @Published var transactionURL: URL?
 
