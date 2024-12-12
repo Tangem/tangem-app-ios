@@ -37,8 +37,8 @@ jobs:
     environment: 'RC'
     outputs:
       stage: 'RC'
-      version: '${{ steps.get-release-version.outputs.result }}'
-      build_number: '${{ steps.get-build-number.outputs.result }}'
+      version: '${{ env.release_version_number }}'
+      build_number: '${{ env.release_build_number }}'
     steps:
       - name: Checkout
         uses: actions/checkout@v3
