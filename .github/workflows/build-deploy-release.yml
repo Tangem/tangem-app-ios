@@ -100,6 +100,7 @@ jobs:
       xcode_version_override: '${{ inputs.xcode_version_override }}'
       arm_runners_only: true
     secrets:
+      FIREBASE_APP_ID: '${{ secrets.FIREBASE_APP_ID }}'
       GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT }}'
 
   deploy:
