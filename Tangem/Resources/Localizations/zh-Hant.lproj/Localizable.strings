@@ -949,8 +949,8 @@
 "warning_approval_in_progress_message" = "The permission-granting process is currently underway and will be completed shortly";
 "warning_approval_in_progress_title" = "Approval in Progress";
 "warning_backup_errors_message" = "It seems that the card or ring activation was not completed correctly. This could be due to an issue with your device's NFC module or incorrect tapping of the card or ring to your device. Please contact our Support team for assistance.";
-"warning_beacon_chain_retirement_content" = "According to BNB network developers, support for the BEP-2 standard will end in June 2024. To avoid losing assets with this standard, please convert them to the BEP-20 standard. Use our swap service or third-party services to transfer funds to the BNB Smart Chain network.";
-"warning_beacon_chain_retirement_title" = "BNB Beacon Chain will shut down";
+"warning_beacon_chain_retirement_content" = "On December 3, 2024, the BEP-2 network was disabled by decision of the network developers and is no longer supported";
+"warning_beacon_chain_retirement_title" = "BNB Beacon Chain shut down";
 "warning_blocked_funds_for_fee_message" = "Please deposit some %1$@ to cover the network fee";
 "warning_blocked_funds_for_fee_title" = "Insufficient funds to cover the network fee";
 "warning_button_could_be_better" = "可以更好";
