@@ -196,9 +196,9 @@ Using enviroment: Production
 Options:
 - version: app version
 - build: optional build number
-- changelog: string for description archive
 - filename: Name of the resulting artefact (IPA file)
 - path: Path to binary
+- firebase_app_id: Firebase app id for DSYM uploads
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 - analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
 """
@@ -216,9 +216,15 @@ lane :build_RC do |options|
     analyze_archive: options[:analyze_archive]
   )
 
-  # TODO: Refresh DSYMS
+  upload_dsyms(app_id: options[:firebase_app_id], filename: options[:filename])
 end
 
+desc """
+A lane that creates the build version for the release using either user input or a branch name.
+Options:
+- build_version_override: Optional build version override (user input)
+- branch_name: Source branch name
+"""
 lane :get_release_version_number do |options|
   semver_regex_1 = /^\d+\.\d+\.\d+$/
   semver_regex_2 = /^\d+\.\d+$/
@@ -250,13 +256,21 @@ lane :get_release_version_number do |options|
   sh("echo 'release_version_number=#{build_version}' >> $GITHUB_ENV")
 end
 
+desc """
+A lane that creates the build number for the release using either user input or information from App Store Connect API.
+Options:
+- build_number_override: Optional build number override (user input)
+- asc_key_id: App Store Connect API Key ID
+- asc_issuer_id: App Store Connect API Key Issuer ID
+- asc_key: App Store Connect API Key (NOT in the base64 format)
+"""
 lane :get_release_build_number do |options|
   build_number_regex = /^\d+$/
   build_number = ""
   build_number_override = options[:build_number_override]
 
   if (not build_number_override.nil? and not build_number_override.empty?)
-    build_number = options[:build_number_override]
+    build_number = build_number_override
   else
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
     api_key = app_store_connect_api_key(
@@ -360,13 +374,22 @@ This lane deploy binary to TestFLight
 Options:
 - asc_key_id: App Store Connect API Key ID
 - asc_issuer_id: App Store Connect API Key Issuer ID
-- asc_key: App Store Connect API Key (base64 content)
+- asc_key: App Store Connect API Key (NOT in the base64 format)
 - path: Path to binary
 - version: app version
 - build: build number
 - changelog: [optional] Changelog will be added to TestFlight release notes along with the last commit hash.
 """
 lane :deploy_testflight do |options|
+  changelog = options[:changelog]
+  release_notes = ""
+
+  if (not changelog.nil? and not changelog.empty?)
+    release_notes = "#{changelog}\nGitHash: #{last_git_commit[:commit_hash]}"
+  else
+    release_notes = "GitHash: #{last_git_commit[:commit_hash]}"
+  end
+
   # Get AppStore API Key
   api_key = app_store_connect_api_key(
      key_id: options[:asc_key_id],
@@ -383,7 +406,7 @@ lane :deploy_testflight do |options|
     ipa: options[:path],
     app_version: options[:version],
     build_number: options[:build],
-    changelog: options[:changelog]
+    changelog: release_notes
   )
 end
 

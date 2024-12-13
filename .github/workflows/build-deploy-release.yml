@@ -4,7 +4,6 @@ on:
   push:
    branches:
     - 'test/releases/**' # TODO: Remove
-    #- 'feature/IOS-8508_create_release_ci_cd' # TODO: Remove
     #- 'releases/**' # TODO: Enable
   workflow_dispatch:
     inputs:
@@ -100,6 +99,7 @@ jobs:
       xcode_version_override: '${{ inputs.xcode_version_override }}'
       arm_runners_only: true
     secrets:
+      FIREBASE_APP_ID: '${{ secrets.FIREBASE_APP_ID }}'
       GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT }}'
 
   deploy:
@@ -122,7 +122,6 @@ jobs:
 
   notification:
     name: Deploy Notification
-    if: false  # TODO: Test only, remove
     uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8508_create_release_ci_cd # TODO: Test only, switch to main
     needs:
       - prepare
@@ -131,20 +130,17 @@ jobs:
     with:
       channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
       status: 'success'
-      app_name: '${{ vars.APP_BETA }}'
-      deploy_to: '${{ vars.DEPLOYMENT_GOOGLE_DISTRIBUTION }}'
+      app_name: '${{ vars.APP_RC }}'
+      deploy_to: '${{ vars.DEPLOYMENT_APPLE_TESTFLIGHT }}'
       version: '${{ needs.prepare.outputs.version }}'
       build_number: '${{ needs.prepare.outputs.build_number }}'
-      changelog: '${{ needs.prepare.outputs.jira-issues-summary }}'
       build_description: '${{ inputs.build_description }}'
-      encoded_release_url: '${{ needs.deploy.outputs.encoded_release_url }}'
     secrets:
       SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN }}'
 
   error_notification:
     name: Error Notification
-    if: false  # TODO: Test only, remove
-    #if: failure()
+    if: failure()
     uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8508_create_release_ci_cd # TODO: Test only, switch to main
     needs:
       - prepare
@@ -152,10 +148,9 @@ jobs:
     with:
       channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
       status: 'error'
-      app_name: '${{ vars.APP_BETA }}'
-      deploy_to: '${{ vars.DEPLOYMENT_GOOGLE_DISTRIBUTION }}'
+      app_name: '${{ vars.APP_RC }}'
+      deploy_to: '${{ vars.DEPLOYMENT_APPLE_TESTFLIGHT }}'
       version: '${{ needs.prepare.outputs.version }}'
       build_number: '${{ needs.prepare.outputs.build_number }}'
-      changelog: '${{ needs.prepare.outputs.jira-issues-summary }}'
     secrets:
       SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN }}'
