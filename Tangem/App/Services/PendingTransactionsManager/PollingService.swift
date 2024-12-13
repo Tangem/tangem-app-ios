@@ -16,7 +16,9 @@ final class PollingService<RequestData: Identifiable, ResponseData: Identifiable
         let hasChanges: Bool
     }
 
-    let resultPublisher: AnyPublisher<[Response], Never>
+    var resultPublisher: AnyPublisher<[Response], Never> {
+        resultSubject.dropFirst().eraseToAnyPublisher()
+    }
 
     private let request: (RequestData) async -> ResponseData?
     private let shouldStopPolling: (ResponseData) -> Bool
@@ -36,9 +38,6 @@ final class PollingService<RequestData: Identifiable, ResponseData: Identifiable
         self.shouldStopPolling = shouldStopPolling
         self.hasChanges = hasChanges
         self.pollingInterval = pollingInterval
-
-        resultPublisher = resultSubject
-            .eraseToAnyPublisher()
     }
 
     deinit {

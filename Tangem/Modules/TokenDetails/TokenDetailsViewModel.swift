@@ -14,8 +14,6 @@ import TangemExpress
 import TangemStaking
 
 final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
-    @Injected(\.expressPendingTransactionsRepository) private var expressPendingTxRepository: ExpressPendingTransactionRepository
-
     @Published var actionSheet: ActionSheetBinder?
     @Published var pendingExpressTransactions: [PendingExpressTransactionView.Info] = []
     @Published var bannerNotificationInputs: [NotificationViewInput] = []
@@ -243,7 +241,8 @@ private extension TokenDetailsViewModel {
         }
         .store(in: &bag)
 
-        pendingExpressTransactionsManager.pendingTransactionsPublisher
+        pendingExpressTransactionsManager
+            .pendingTransactionsPublisher
             .withWeakCaptureOf(self)
             .map { viewModel, pendingTxs in
                 let factory = PendingExpressTransactionsConverter()
