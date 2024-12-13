@@ -30,7 +30,8 @@ extension PublicKeyType {
              .filecoin,
              .sei,
              .casper,
-             .clore:
+             .clore,
+             .fact0rn:
             self = PublicKeyType.secp256k1
         case .ethereum,
              .bsc,

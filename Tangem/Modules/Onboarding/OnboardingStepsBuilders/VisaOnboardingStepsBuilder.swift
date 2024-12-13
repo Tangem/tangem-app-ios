@@ -28,6 +28,13 @@ struct VisaOnboardingStepsBuilder {
         return steps
     }
 
+    private var approveSteps: [VisaOnboardingStep] {
+        [
+            .selectWalletForApprove,
+            .approveUsingTangemWallet,
+        ]
+    }
+
     init(
         isPushNotificationsAvailable: Bool
     ) {
@@ -42,6 +49,7 @@ extension VisaOnboardingStepsBuilder: OnboardingStepsBuilder {
         steps.append(.welcome)
         steps.append(.accessCode)
 
+        steps.append(contentsOf: approveSteps)
         steps.append(contentsOf: otherSteps)
 
         return .visa(steps)

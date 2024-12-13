@@ -140,6 +140,8 @@ struct DerivationConfigV3: DerivationConfig {
             return "m/44'/506'/0'/0/0"
         case .clore:
             return "m/44'/1313'/0'/0/0"
+        case .fact0rn:
+            return "m/44'/42069'/0'/0/0"
         }
     }
 }

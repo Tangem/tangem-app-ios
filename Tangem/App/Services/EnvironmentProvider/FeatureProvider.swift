@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TangemFoundation
 
 /// Use this provider to check the availability of your feature
 enum FeatureProvider {

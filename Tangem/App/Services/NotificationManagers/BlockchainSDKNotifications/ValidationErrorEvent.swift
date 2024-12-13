@@ -32,7 +32,7 @@ enum ValidationErrorEvent: Hashable {
 }
 
 extension ValidationErrorEvent: NotificationEvent {
-    var title: NotificationView.Title {
+    var title: NotificationView.Title? {
         switch self {
         case .invalidNumber:
             return .string(Localization.commonError)

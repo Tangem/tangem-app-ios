@@ -12,6 +12,8 @@ import TangemFoundation
 import TangemSdk
 
 public protocol VisaActivationManager: VisaAccessCodeValidator {
+    var targetApproveAddress: String? { get }
+
     func saveAccessCode(accessCode: String) throws
     func resetAccessCode()
     func setupRefreshTokenSaver(_ refreshTokenSaver: VisaRefreshTokenSaver)
@@ -24,6 +26,7 @@ public protocol VisaAccessCodeValidator: AnyObject {
 }
 
 final class CommonVisaActivationManager {
+    public private(set) var targetApproveAddress: String?
     private var selectedAccessCode: String?
 
     private let authorizationService: VisaAuthorizationService
@@ -32,6 +35,7 @@ final class CommonVisaActivationManager {
 
     private let authorizationProcessor: CardAuthorizationProcessor
     private let cardActivationOrderProvider: CardActivationOrderProvider
+    private let otpRepository: VisaOTPRepository
 
     private let logger: InternalLogger
 
@@ -45,6 +49,7 @@ final class CommonVisaActivationManager {
         tangemSdk: TangemSdk,
         authorizationProcessor: CardAuthorizationProcessor,
         cardActivationOrderProvider: CardActivationOrderProvider,
+        otpRepository: VisaOTPRepository,
         logger: InternalLogger
     ) {
         self.cardInput = cardInput
@@ -55,6 +60,7 @@ final class CommonVisaActivationManager {
 
         self.authorizationProcessor = authorizationProcessor
         self.cardActivationOrderProvider = cardActivationOrderProvider
+        self.otpRepository = otpRepository
 
         self.logger = logger
     }
@@ -144,6 +150,7 @@ extension CommonVisaActivationManager {
                 activationInput: cardInput,
                 challengeToSign: authorizationChallenge,
                 delegate: self,
+                otpRepository: otpRepository,
                 logger: logger
             )
 
@@ -164,13 +171,8 @@ extension CommonVisaActivationManager {
             }
 
             log("Do something with activation response: \(activationResponse)")
-        } catch let sdkError as TangemSdkError {
-            if sdkError.isUserCancelled {
-                return
-            }
-
-            log("Failed to activate card. Tangem SDK Error: \(sdkError)")
-            throw .underlyingError(sdkError)
+            // TODO: - Remove after backend integration
+            targetApproveAddress = "0x9F65354e595284956599F2892fA4A4a87653D6E6"
         } catch {
             log("Failed to activate card. Generic error: \(error)")
             throw .underlyingError(error)
