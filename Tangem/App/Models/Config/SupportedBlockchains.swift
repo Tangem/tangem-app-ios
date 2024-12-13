@@ -63,10 +63,7 @@ struct SupportedBlockchains {
 
     /// Blockchains for test. They don't include in supported blockchains by default
     private func testableBlockchains() -> Set<Blockchain> {
-        [
-            .chiliz(testnet: false),
-            .xodex,
-        ]
+        []
     }
 
     private func mainnetBlockchains() -> Set<Blockchain> {
@@ -146,6 +143,8 @@ struct SupportedBlockchains {
             .core(testnet: false),
             .canxium,
             .casper(curve: .secp256k1, testnet: false),
+            .chiliz(testnet: false),
+            .xodex,
         ]
     }
 

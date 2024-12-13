@@ -3,7 +3,7 @@
 "action_buttons_sell_empty_search_message" = "Jeton non trouvé dans votre portefeuille ? Consultez les marchés pour le trouver et l'ajouter à la vente";
 "action_buttons_sell_navigation_bar_title" = "Vendre";
 "action_buttons_something_wrong_alert_message" = "The action is currently unavailable. Please try again later or refresh the data by swiping down on the screen.";
-"action_buttons_something_wrong_alert_title" = "";
+"action_buttons_something_wrong_alert_title" = "Button is unavailable";
 "action_buttons_swap_choose_token" = "Choisissez le jeton";
 "action_buttons_swap_empty_search_message" = "Jeton non trouvé dans votre portefeuille ? Consultez les marchés pour le trouver et l'ajouter à l'échange";
 "action_buttons_swap_navigation_bar_title" = "Échanger";
@@ -561,6 +561,7 @@
 "onramp_currency_other" = "Autres devises";
 "onramp_currency_popular" = "Devises Fiats Populaires";
 "onramp_currency_search" = "Recherche par devise";
+"onramp_legal" = "By using onramp functionality, you agree with provider’s %1$@ and %2$@";
 "onramp_max_amount_restriction" = "Le montant de l'achat ne doit pas dépasser %@";
 "onramp_min_amount_restriction" = "Le montant à acheter doit être au moins %@";
 "onramp_no_available_providers" = "Aucun fournisseur disponible pour cette devise";
@@ -976,7 +977,7 @@
 "warning_approval_in_progress_message" = "Le processus d'octroi des autorisations est actuellement en cours et sera bientôt terminé";
 "warning_approval_in_progress_title" = "Approbation en cours";
 "warning_backup_errors_message" = "Il semble que l'activation de la carte ne se soit pas déroulée correctement. Cela peut être dû à un problème avec le module NFC de votre appareil ou à une mauvaise connexion de la carte sur votre appareil. Veuillez contacter notre équipe de support pour obtenir de l’aide.";
-"warning_beacon_chain_retirement_content" = "Selon les développeurs du réseau BNB, le support de la norme BEP-2\nprendra fin en juin 2024. Pour éviter de perdre des actifs avec cette norme, veuillez les convertir à la norme BEP-20. Utilisez notre service de d'échange pour les transférer sur le réseau BNB Smart Chain.";
+"warning_beacon_chain_retirement_content" = "Le 3 décembre 2024, le réseau BEP-2 a été désactivé par décision des développeurs du réseau et n'est plus pris en charge";
 "warning_beacon_chain_retirement_title" = "BNB Beacon Chain va s'arrêter de fonctionner";
 "warning_blocked_funds_for_fee_message" = "Veuillez déposer environ %1$@ pour couvrir les frais de réseau";
 "warning_blocked_funds_for_fee_title" = "Fonds insuffisants pour couvrir les frais de réseau";
