@@ -12,6 +12,8 @@ import TangemFoundation
 import TangemSdk
 
 public protocol VisaActivationManager: VisaAccessCodeValidator {
+    var targetApproveAddress: String? { get }
+
     func saveAccessCode(accessCode: String) throws
     func resetAccessCode()
     func setupRefreshTokenSaver(_ refreshTokenSaver: VisaRefreshTokenSaver)
@@ -24,6 +26,7 @@ public protocol VisaAccessCodeValidator: AnyObject {
 }
 
 final class CommonVisaActivationManager {
+    public private(set) var targetApproveAddress: String?
     private var selectedAccessCode: String?
 
     private let authorizationService: VisaAuthorizationService
@@ -164,6 +167,8 @@ extension CommonVisaActivationManager {
             }
 
             log("Do something with activation response: \(activationResponse)")
+            // TODO: - Remove after backend integration
+            targetApproveAddress = "0x9F65354e595284956599F2892fA4A4a87653D6E6"
         } catch let sdkError as TangemSdkError {
             if sdkError.isUserCancelled {
                 return

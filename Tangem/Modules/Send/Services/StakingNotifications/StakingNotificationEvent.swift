@@ -46,7 +46,7 @@ extension StakingNotificationEvent: NotificationEvent {
         }
     }
 
-    var title: NotificationView.Title {
+    var title: NotificationView.Title? {
         switch self {
         case .approveTransactionInProgress: .string(Localization.warningExpressApprovalInProgressTitle)
         case .feeWillBeSubtractFromSendingAmount: .string(Localization.sendNetworkFeeWarningTitle)

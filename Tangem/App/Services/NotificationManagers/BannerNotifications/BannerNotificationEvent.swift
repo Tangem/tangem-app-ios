@@ -9,7 +9,7 @@
 import Foundation
 
 struct BannerNotificationEvent: NotificationEvent {
-    let title: NotificationView.Title
+    let title: NotificationView.Title?
     let description: String?
     let programName: PromotionProgramName
     let placement: BannerPromotionPlacement

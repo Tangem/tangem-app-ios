@@ -1,5 +1,5 @@
 {
-  "originHash" : "0361bd4787f3145b3afcc7bd203c29ef4e0a3c37160873528f70bfa18b6bf202",
+  "originHash" : "59ed0bd389d7bae4ae5b616ca56d3dd6a91e61b1670755a76e01afad290f42a5",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -626,8 +626,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/wallet-core-binaries-ios.git",
       "state" : {
-        "revision" : "954aa903bcf3899b9bb99267ff847f7967f12327",
-        "version" : "4.0.46-tangem3.1"
+        "revision" : "15923918d890a38bb7e8dd42887bf62c419ee48d",
+        "version" : "4.1.20-tangem2"
       }
     },
     {

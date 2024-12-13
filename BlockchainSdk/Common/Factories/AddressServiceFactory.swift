@@ -109,10 +109,9 @@ public struct AddressServiceFactory {
              .veChain,
              .internetComputer,
              .algorand,
-             .sei:
+             .sei,
+             .ton:
             return WalletCoreAddressService(blockchain: blockchain)
-        case .ton:
-            return TonAddressService()
         case .aptos:
             return AptosCoreAddressService()
         case .ducatus:

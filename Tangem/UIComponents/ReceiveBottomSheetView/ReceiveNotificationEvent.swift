@@ -17,7 +17,7 @@ extension ReceiveNotificationEvent: NotificationEvent {
         currencySymbol.hashValue
     }
 
-    var title: NotificationView.Title {
+    var title: NotificationView.Title? {
         .string(Localization.receiveBottomSheetWarningMessageTitle(currencySymbol))
     }
 
