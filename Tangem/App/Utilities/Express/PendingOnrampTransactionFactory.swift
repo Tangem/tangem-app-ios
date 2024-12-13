@@ -27,7 +27,9 @@ struct PendingOnrampTransactionFactory {
         var transactionRecord = transactionRecord
 
         switch currentOnrampTransaction.status {
-        case .created, .waitingForPayment:
+        case .created:
+            currentStatus = .created
+        case .waitingForPayment:
             currentStatus = .awaitingDeposit
         case .paymentProcessing, .paid:
             currentStatus = .confirming
@@ -66,7 +68,7 @@ struct PendingOnrampTransactionFactory {
     func buildPendingOnrampTransaction(for transactionRecord: OnrampPendingTransactionRecord) -> PendingOnrampTransaction {
         let statusesList: [PendingExpressTransactionStatus] = {
             switch transactionRecord.transactionStatus {
-            case .awaitingDeposit, .confirming, .exchanging, .buying, .sendingToUser, .done:
+            case .created, .awaitingDeposit, .confirming, .exchanging, .buying, .sendingToUser, .done:
                 return defaultStatusesList
             case .canceled:
                 return canceledStatusesList
