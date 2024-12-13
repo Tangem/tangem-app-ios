@@ -12,7 +12,6 @@ import FirebaseCrashlytics
 import BlockchainSdk
 import AmplitudeSwift
 import TangemSdk
-import TangemFoundation
 
 class Analytics {
     @Injected(\.analyticsContext) private static var analyticsContext: AnalyticsContext
@@ -23,6 +22,11 @@ class Analytics {
 
         return Amplitude(configuration: Configuration(apiKey: try! CommonKeysManager().amplitudeApiKey))
     }()
+
+    private static let firebaseLoggingQueue = DispatchQueue(
+        label: "com.tangem.Analytics.firebaseLoggingQueue",
+        target: .global(qos: .utility)
+    )
 
     private init() {}
 
@@ -200,7 +204,7 @@ class Analytics {
         for system in analyticsSystems {
             switch system {
             case .firebase:
-                Task.detached { await logFirebaseInternal(event, params: params) }
+                logFirebaseInternal(event, params: params)
             case .crashlytics:
                 let message = "\(event).\(params)"
                 Crashlytics.crashlytics().log(message)
@@ -217,13 +221,13 @@ class Analytics {
         }
     }
 
-    /// - Note: This method is asynchronous due to the need for additional event matching and processing.
-    private static func logFirebaseInternal(_ event: String, params: [String: Any]) async {
-        ensureNotOnMainQueue()
-
-        let convertedEvent = FirebaseAnalyticsEventConverter.convert(event: event)
-        let convertedParams = FirebaseAnalyticsEventConverter.convert(params: params)
-        FirebaseAnalytics.Analytics.logEvent(convertedEvent, parameters: convertedParams)
+    private static func logFirebaseInternal(_ event: String, params: [String: Any]) {
+        // Preform logging in an asynchronous fashion due to the need for additional event mapping and processing
+        firebaseLoggingQueue.async {
+            let convertedEvent = FirebaseAnalyticsEventConverter.convert(event: event)
+            let convertedParams = FirebaseAnalyticsEventConverter.convert(params: params)
+            FirebaseAnalytics.Analytics.logEvent(convertedEvent, parameters: convertedParams)
+        }
     }
 }
 
