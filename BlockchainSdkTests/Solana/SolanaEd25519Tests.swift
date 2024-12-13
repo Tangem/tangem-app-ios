@@ -24,7 +24,12 @@ final class SolanaEd25519Tests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        let solanaSdk = Solana(router: SolanaDummyNetworkRouter(), accountStorage: SolanaDummyAccountStorage())
+        let networkingRouter = SolanaDummyNetworkRouter(
+            endpoints: [.devnetSolana],
+            apiLogger: nil
+        )
+
+        let solanaSdk = Solana(router: networkingRouter, accountStorage: SolanaDummyAccountStorage())
         let service = AddressServiceFactory(blockchain: blockchain).makeAddressService()
 
         let address = try! service.makeAddress(from: walletPubKey)
@@ -50,7 +55,18 @@ final class SolanaEd25519Tests: XCTestCase {
             contractAddress: nil
         )
 
-        try await manager.send(transaction, signer: coinSigner).async()
+        do {
+            try await manager.send(transaction, signer: coinSigner).async()
+        } catch let sendTxError as SendTxError {
+            guard let castedError = sendTxError.error as? SolanaError else {
+                XCTFail("Wrong error returned from manager")
+                return
+            }
+
+            XCTAssertEqual(castedError.errorDescription, SolanaError.nullValue.errorDescription)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
     }
 
     func testTokenTransactionSize() async throws {
@@ -70,8 +86,17 @@ final class SolanaEd25519Tests: XCTestCase {
             changeAddress: manager.wallet.address
         )
 
-        let expected = expectation(description: "Waiting SOL for response")
+        do {
+            try await manager.send(transaction, signer: coinSigner).async()
+        } catch let sendTxError as SendTxError {
+            guard let castedError = sendTxError.error as? SolanaError else {
+                XCTFail("Wrong error returned from manager")
+                return
+            }
 
-        try await manager.send(transaction, signer: tokenSigner).async()
+            XCTAssertEqual(castedError.errorDescription, SolanaError.nullValue.errorDescription)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
     }
 }

@@ -1,5 +1,5 @@
 //
-//  SolanaDummyNetworkRouter.swift
+//  SolanaTestNetworkRouter.swift
 //  BlockchainSdkTests
 //
 //  Created by Alexander Skibin on 13.12.2024.
@@ -9,31 +9,10 @@
 import Foundation
 import SolanaSwift
 
-final class SolanaDummyNetworkRouter: SolanaRouter {
-    var endpoint: RPCEndpoint = .init(url: URL(string: "")!, urlWebSocket: URL(string: "")!, network: .testnet)
+final class SolanaDummyNetworkRouter: NetworkingRouter {
+    // MARK: - Override Implementation
 
-    private var host: String? { nil }
-    private var currentEndpointIndex = 0
-
-    // MARK: - Init
-
-    init() {}
-
-    func request<T: Decodable>(
-        method: HTTPMethod = .post,
-        bcMethod: String = #function,
-        parameters: [Encodable?] = [],
-        enableСontinuedRetry: Bool = true,
-        onComplete: @escaping (Result<T, Error>) -> Void
-    ) {
-        DispatchQueue.global().async {
-            onComplete(.failure(WorkaroundError.markSuccess))
-        }
-    }
-}
-
-extension SolanaDummyNetworkRouter {
-    enum WorkaroundError: Error {
-        case markSuccess
+    override func request<T>(method: HTTPMethod = .post, bcMethod: String = #function, parameters: [(any Encodable)?] = [], enableСontinuedRetry: Bool = true, onComplete: @escaping (Result<T, any Error>) -> Void) where T: Decodable {
+        onComplete(.failure(SolanaError.nullValue))
     }
 }

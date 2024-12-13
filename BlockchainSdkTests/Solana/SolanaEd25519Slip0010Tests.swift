@@ -24,7 +24,12 @@ final class SolanaEd25519Slip0010Tests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        let solanaSdk = Solana(router: SolanaDummyNetworkRouter(), accountStorage: SolanaDummyAccountStorage())
+        let networkingRouter = SolanaDummyNetworkRouter(
+            endpoints: [.devnetSolana],
+            apiLogger: nil
+        )
+
+        let solanaSdk = Solana(router: networkingRouter, accountStorage: SolanaDummyAccountStorage())
         let service = AddressServiceFactory(blockchain: blockchain).makeAddressService()
 
         let address = try! service.makeAddress(from: walletPubKey)
@@ -40,7 +45,7 @@ final class SolanaEd25519Slip0010Tests: XCTestCase {
         )
     }
 
-    func testCoinTransactionSize() {
+    func testCoinTransactionSize() async throws {
         let transaction = Transaction(
             amount: .zeroCoin(for: blockchain),
             fee: Fee(.zeroCoin(for: blockchain), parameters: feeParameters),
@@ -50,12 +55,21 @@ final class SolanaEd25519Slip0010Tests: XCTestCase {
             contractAddress: nil
         )
 
-        let expected = expectation(description: "Waiting for response")
+        do {
+            try await manager.send(transaction, signer: coinSigner).async()
+        } catch let sendTxError as SendTxError {
+            guard let castedError = sendTxError.error as? SolanaError else {
+                XCTFail("Wrong error returned from manager")
+                return
+            }
 
-        try await manager.send(transaction, signer: coinSigner).async()
+            XCTAssertEqual(castedError.errorDescription, SolanaError.nullValue.errorDescription)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
     }
 
-    func testTokenTransactionSize() {
+    func testTokenTransactionSize() async throws {
         let type: Amount.AmountType = .token(
             value: .init(
                 name: "My Token",
@@ -71,8 +85,18 @@ final class SolanaEd25519Slip0010Tests: XCTestCase {
             destinationAddress: "BmAzxn8WLYU3gEw79ATUdSUkMT53MeS5LjapBQB8gTPJ",
             changeAddress: manager.wallet.address
         )
-        let expected = expectation(description: "Waiting for response")
 
-        try await manager.send(transaction, signer: coinSigner).async()
+        do {
+            try await manager.send(transaction, signer: coinSigner).async()
+        } catch let sendTxError as SendTxError {
+            guard let castedError = sendTxError.error as? SolanaError else {
+                XCTFail("Wrong error returned from manager")
+                return
+            }
+
+            XCTAssertEqual(castedError.errorDescription, SolanaError.nullValue.errorDescription)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
     }
 }

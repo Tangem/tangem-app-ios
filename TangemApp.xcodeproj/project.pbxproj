@@ -101,6 +101,7 @@
 		2D665C312CDCA3FC00C9BA85 /* CLValueWrapperToJsonString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D665C0D2CDCA3FC00C9BA85 /* CLValueWrapperToJsonString.swift */; };
 		2D665C322CDCA3FC00C9BA85 /* CLValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D665C0B2CDCA3FC00C9BA85 /* CLValue.swift */; };
 		2D665C342CDCA46C00C9BA85 /* CasperNetworkResponse.Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D665C332CDCA46C00C9BA85 /* CasperNetworkResponse.Transaction.swift */; };
+		2D6E67E72D0C8CC6003B4D5C /* Solana+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6E67E62D0C8CC6003B4D5C /* Solana+.swift */; };
 		2D70C61D2B21E90A00BD1DAB /* MarketsAddCustomItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D70C61B2B21E90A00BD1DAB /* MarketsAddCustomItemView.swift */; };
 		2D8F9E742CF9B280007434A4 /* CloreMainNetworkParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8F9E712CF9B280007434A4 /* CloreMainNetworkParams.swift */; };
 		2D8F9E752CF9B280007434A4 /* CloreWalletAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8F9E722CF9B280007434A4 /* CloreWalletAssembly.swift */; };
@@ -3261,6 +3262,7 @@
 		2D665C1E2CDCA3FC00C9BA85 /* CLTypeSerializeHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLTypeSerializeHelper.swift; sourceTree = "<group>"; };
 		2D665C1F2CDCA3FC00C9BA85 /* DeploySerialization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeploySerialization.swift; sourceTree = "<group>"; };
 		2D665C332CDCA46C00C9BA85 /* CasperNetworkResponse.Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasperNetworkResponse.Transaction.swift; sourceTree = "<group>"; };
+		2D6E67E62D0C8CC6003B4D5C /* Solana+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Solana+.swift"; sourceTree = "<group>"; };
 		2D70C61B2B21E90A00BD1DAB /* MarketsAddCustomItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsAddCustomItemView.swift; sourceTree = "<group>"; };
 		2D788E7F2ADD657000E0884B /* WalletSelectorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletSelectorViewModel.swift; sourceTree = "<group>"; };
 		2D788E822ADD657000E0884B /* WalletSelectorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletSelectorView.swift; sourceTree = "<group>"; };
@@ -6598,6 +6600,7 @@
 			children = (
 				2D92E6562D0C2088008FDECF /* SolanaDummyNetworkRouter.swift */,
 				2D92E6532D0C1E9D008FDECF /* SolanaSignerTestUtility.swift */,
+				2D6E67E62D0C8CC6003B4D5C /* Solana+.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -19394,6 +19397,7 @@
 				B62D433C2CBC79E400C2460E /* TONTests.swift in Sources */,
 				B62D435C2CBC79E400C2460E /* KoinosAddressTests.swift in Sources */,
 				B62D43682CBC79E400C2460E /* XCTestCase+.swift in Sources */,
+				2D6E67E72D0C8CC6003B4D5C /* Solana+.swift in Sources */,
 				B62D434E2CBC79E400C2460E /* LitecoinTests.swift in Sources */,
 				B62D43572CBC79E400C2460E /* PolkadotTests.swift in Sources */,
 				B62D43392CBC79E400C2460E /* SeiAddressTests.swift in Sources */,
@@ -25749,8 +25753,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tangem/Solana.Swift.git";
 			requirement = {
-				kind = exactVersion;
-				version = "1.2.0-tangem12";
+				kind = revision;
+				revision = b6f596447b252c1bd86b8037b73a90a0fada2598;
 			};
 		};
 		B6DDDE732CF39079008DEA94 /* XCRemoteSwiftPackageReference "BlockiesSwift" */ = {
