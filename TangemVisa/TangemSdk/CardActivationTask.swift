@@ -28,7 +28,7 @@ final class CardActivationTask: CardSessionRunnable {
     typealias CompletionHandler = CompletionResult<VisaCardActivationResponse>
 
     private weak var orderProvider: CardActivationTaskOrderProvider?
-    private weak var otpManager: VisaOTPRepository?
+    private weak var otpRepository: VisaOTPRepository?
     private let logger: InternalLogger
 
     private let selectedAccessCode: String
@@ -44,7 +44,7 @@ final class CardActivationTask: CardSessionRunnable {
         activationInput: VisaCardActivationInput,
         challengeToSign: String?,
         delegate: CardActivationTaskOrderProvider,
-        otpManager: VisaOTPRepository,
+        otpRepository: VisaOTPRepository,
         logger: InternalLogger
     ) {
         self.selectedAccessCode = selectedAccessCode
@@ -53,7 +53,7 @@ final class CardActivationTask: CardSessionRunnable {
         orderPublisher.send(nil)
 
         orderProvider = delegate
-        self.otpManager = otpManager
+        self.otpRepository = otpRepository
         self.logger = logger
     }
 
@@ -135,13 +135,13 @@ private extension CardActivationTask {
             return
         }
 
-        guard let otpManager else {
-            completion(.failure(.underlying(error: VisaActivationError.missingOTPManager)))
+        guard let otpRepository else {
+            completion(.failure(.underlying(error: VisaActivationError.missingOTPRepository)))
             return
         }
 
         do {
-            if try otpManager.hasSavedOTP(cardId: card.cardId) {
+            if try otpRepository.hasSavedOTP(cardId: card.cardId) {
                 waitForOrder(in: session, completion: completion)
                 return
             }
@@ -154,7 +154,7 @@ private extension CardActivationTask {
             switch result {
             case .success(let otpResponse):
                 do {
-                    try otpManager.saveOTP(otpResponse.rootOTP, cardId: card.cardId)
+                    try otpRepository.saveOTP(otpResponse.rootOTP, cardId: card.cardId)
                 } catch {
                     self.log("Failed to save OTP in secure storage. Error: \(error)")
                 }
