@@ -169,20 +169,16 @@ extension DecimalNumberTextField {
         }
 
         var debouncedValuePublisher: AnyPublisher<Decimal?, Never> {
-            valuePublisher
-                .map { value in
-                    if value == nil {
-                        // Nil value will be emitted without debounce
-                        return Just(value).eraseToAnyPublisher()
-                    }
-
+            Publishers.Merge(
+                valuePublisher
+                    // Nil value will be emitted without debounce
+                    .filter { $0 == nil },
+                valuePublisher
+                    .filter { $0 != nil }
                     // But if have the value we will wait a bit
-                    return Just(value)
-                        .debounce(for: 0.5, scheduler: DispatchQueue.global())
-                        .eraseToAnyPublisher()
-                }
-                .switchToLatest()
-                .eraseToAnyPublisher()
+                    .debounce(for: 0.5, scheduler: DispatchQueue.global())
+            )
+            .eraseToAnyPublisher()
         }
 
         // Fileprivate
