@@ -106,6 +106,8 @@
 		2D8F9E752CF9B280007434A4 /* CloreWalletAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8F9E722CF9B280007434A4 /* CloreWalletAssembly.swift */; };
 		2D8F9E762CF9B280007434A4 /* CloreExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8F9E702CF9B280007434A4 /* CloreExternalLinkProvider.swift */; };
 		2D8F9E782CF9B314007434A4 /* CloreBlockBookConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8F9E772CF9B314007434A4 /* CloreBlockBookConfig.swift */; };
+		2D92E6542D0C1E9D008FDECF /* SolanaSignerTestUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D92E6532D0C1E9D008FDECF /* SolanaSignerTestUtility.swift */; };
+		2D92E6572D0C2088008FDECF /* SolanaDummyNetworkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D92E6562D0C2088008FDECF /* SolanaDummyNetworkRouter.swift */; };
 		2DA57BBF2CD650E900C890DF /* CasperWalletAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D616FE92CD1414000581EA6 /* CasperWalletAssembly.swift */; };
 		2DA57BC02CD650E900C890DF /* CasperExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D616FE82CD1414000581EA6 /* CasperExternalLinkProvider.swift */; };
 		2DA57BC12CD650E900C890DF /* CasperAddressUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D616FE72CD1414000581EA6 /* CasperAddressUtils.swift */; };
@@ -3266,6 +3268,8 @@
 		2D8F9E712CF9B280007434A4 /* CloreMainNetworkParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloreMainNetworkParams.swift; sourceTree = "<group>"; };
 		2D8F9E722CF9B280007434A4 /* CloreWalletAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloreWalletAssembly.swift; sourceTree = "<group>"; };
 		2D8F9E772CF9B314007434A4 /* CloreBlockBookConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloreBlockBookConfig.swift; sourceTree = "<group>"; };
+		2D92E6532D0C1E9D008FDECF /* SolanaSignerTestUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolanaSignerTestUtility.swift; sourceTree = "<group>"; };
+		2D92E6562D0C2088008FDECF /* SolanaDummyNetworkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolanaDummyNetworkRouter.swift; sourceTree = "<group>"; };
 		2DA8AB112A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Analytics+BlockchainExceptionHandler.swift"; sourceTree = "<group>"; };
 		2DAB6B6E2CE28E8500B4A10C /* MinimumAmountRestrictable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimumAmountRestrictable.swift; sourceTree = "<group>"; };
 		2DB3614A2C14FBAB00BB1D38 /* SegmentedPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPickerView.swift; sourceTree = "<group>"; };
@@ -6587,6 +6591,15 @@
 				2D8F9E722CF9B280007434A4 /* CloreWalletAssembly.swift */,
 			);
 			path = Clore;
+			sourceTree = "<group>";
+		};
+		2D92E6552D0C207D008FDECF /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				2D92E6562D0C2088008FDECF /* SolanaDummyNetworkRouter.swift */,
+				2D92E6532D0C1E9D008FDECF /* SolanaSignerTestUtility.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		2DADFF9E2C98A9F30029F390 /* Tooltip */ = {
@@ -11456,6 +11469,7 @@
 		B62D430B2CBC79E200C2460E /* Solana */ = {
 			isa = PBXGroup;
 			children = (
+				2D92E6552D0C207D008FDECF /* Utils */,
 				B62D43082CBC79E200C2460E /* SolanaEd25519Slip0010Tests.swift */,
 				B62D43092CBC79E200C2460E /* SolanaEd25519Tests.swift */,
 				B62D430A2CBC79E200C2460E /* SolanaStakeKitTransactionHelperTests.swift */,
@@ -19367,6 +19381,7 @@
 			files = (
 				B62D43462CBC79E400C2460E /* SS58Tests.swift in Sources */,
 				B62D436E2CBC79E400C2460E /* KaspaTests.swift in Sources */,
+				2D92E6542D0C1E9D008FDECF /* SolanaSignerTestUtility.swift in Sources */,
 				B62D434A2CBC79E400C2460E /* AddressesValidationTests.swift in Sources */,
 				B62D436F2CBC79E400C2460E /* FilecoinAddressTests.swift in Sources */,
 				B62D436A2CBC79E400C2460E /* CardanoTokenContractAddressServiceTests.swift in Sources */,
@@ -19385,6 +19400,7 @@
 				B62D43372CBC79E400C2460E /* ICPTests.swift in Sources */,
 				B62D436D2CBC79E400C2460E /* HederaTests.swift in Sources */,
 				B62D435D2CBC79E400C2460E /* KoinosMethodResponseDecodingTests.swift in Sources */,
+				2D92E6572D0C2088008FDECF /* SolanaDummyNetworkRouter.swift in Sources */,
 				B62D436B2CBC79E400C2460E /* RadiantTests.swift in Sources */,
 				B62D433F2CBC79E400C2460E /* AddressServiceManagerUtility.swift in Sources */,
 				B62D43622CBC79E400C2460E /* BigUInt+.swift in Sources */,
