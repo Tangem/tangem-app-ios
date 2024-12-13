@@ -9,6 +9,7 @@
 import Foundation
 import Moya
 import SwiftUI
+import TangemSdk
 
 extension Error {
     var detailedError: Error {
@@ -70,6 +71,8 @@ extension Error {
             return true
         case let urlError as URLError:
             return urlError.code == URLError.Code.cancelled
+        case let tangemSdkError as TangemSdkError:
+            return tangemSdkError.isUserCancelled
         default:
             return false
         }

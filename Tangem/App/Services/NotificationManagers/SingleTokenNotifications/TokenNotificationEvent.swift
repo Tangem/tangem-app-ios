@@ -44,7 +44,7 @@ enum TokenNotificationEvent: Hashable {
 }
 
 extension TokenNotificationEvent: NotificationEvent {
-    var title: NotificationView.Title {
+    var title: NotificationView.Title? {
         switch self {
         case .networkUnreachable:
             return .string(Localization.warningNetworkUnreachableTitle)
