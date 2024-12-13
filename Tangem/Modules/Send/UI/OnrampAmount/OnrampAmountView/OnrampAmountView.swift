@@ -77,6 +77,7 @@ struct OnrampAmountView: View {
                 loaderSize: CGSize(width: 80, height: 13),
                 lineLimit: 2
             )
+            .multilineTextAlignment(.center)
             .matchedGeometryEffect(id: namespace.names.amountFiatText, in: namespace.id)
         }
     }
