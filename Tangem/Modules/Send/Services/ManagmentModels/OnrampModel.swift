@@ -26,7 +26,8 @@ class OnrampModel {
     private let _onrampProviders: CurrentValueSubject<LoadingResult<ProvidersList, Error>?, Never> = .init(.none)
     private let _selectedOnrampProvider: CurrentValueSubject<LoadingResult<OnrampProvider, Never>?, Never> = .init(.none)
     private let _isLoading: CurrentValueSubject<Bool, Never> = .init(false)
-    private let _transactionTime = PassthroughSubject<Date?, Never>()
+    private let _transactionTime = PassthroughSubject<Date, Never>()
+    private let _expressTransactionId = PassthroughSubject<String, Never>()
 
     // MARK: - Dependencies
 
@@ -490,6 +491,7 @@ extension OnrampModel: OnrampRedirectingOutput {
         DispatchQueue.main.async {
             self.router?.openWebView(url: data.widgetUrl) { [weak self] in
                 self?._transactionTime.send(Date())
+                self?._expressTransactionId.send(data.txId)
                 self?.router?.openFinishStep()
             }
         }
@@ -514,7 +516,15 @@ extension OnrampModel: OnrampOutput {}
 
 extension OnrampModel: SendFinishInput {
     var transactionSentDate: AnyPublisher<Date, Never> {
-        _transactionTime.compactMap { $0 }.first().eraseToAnyPublisher()
+        _transactionTime.first().eraseToAnyPublisher()
+    }
+}
+
+// MARK: - OnrampStatusInput
+
+extension OnrampModel: OnrampStatusInput {
+    var expressTransactionId: AnyPublisher<String, Never> {
+        _expressTransactionId.first().eraseToAnyPublisher()
     }
 }
 
