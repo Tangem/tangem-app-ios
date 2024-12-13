@@ -8,6 +8,7 @@
 
 import Foundation
 import BackgroundTasks
+import TangemFoundation
 
 /// - Warning: Read-write access to all `@AppStorageCompat` or stored properties
 /// must be synchronized (e.g. by using `runOnMain(_:)` helper).

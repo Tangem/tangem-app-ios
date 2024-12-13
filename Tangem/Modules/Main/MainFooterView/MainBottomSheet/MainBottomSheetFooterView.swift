@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemUIKitUtils
 
 struct MainBottomSheetFooterView: View {
     @ObservedObject var viewModel: MainBottomSheetFooterViewModel

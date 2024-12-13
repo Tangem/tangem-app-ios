@@ -1,6 +1,6 @@
 //
 //  LoadingResult.swift
-//  TangemApp
+//  TangemFoundation
 //
 //  Created by Sergey Balashov on 21.11.2024.
 //  Copyright © 2024 Tangem AG. All rights reserved.

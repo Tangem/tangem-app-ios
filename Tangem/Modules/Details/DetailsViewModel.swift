@@ -10,6 +10,7 @@ import Foundation
 import SwiftUI
 import Combine
 import BlockchainSdk
+import TangemFoundation
 
 class DetailsViewModel: ObservableObject {
     // MARK: - Injected
