@@ -96,6 +96,7 @@ public indirect enum Blockchain: Equatable, Hashable {
     case chiliz(testnet: Bool)
     case xodex
     case clore
+    case fact0rn
 
     public var isTestnet: Bool {
         switch self {
@@ -165,7 +166,8 @@ public indirect enum Blockchain: Equatable, Hashable {
              .energyWebX,
              .canxium,
              .xodex,
-             .clore:
+             .clore,
+             .fact0rn:
             return false
         case .stellar(_, let testnet),
              .hedera(_, let testnet),
@@ -267,7 +269,8 @@ public indirect enum Blockchain: Equatable, Hashable {
              .internetComputer,
              .koinos,
              .aptos,
-             .clore:
+             .clore,
+             .fact0rn:
             return 8
         case .ethereum,
              .ethereumClassic,
@@ -489,6 +492,8 @@ public indirect enum Blockchain: Equatable, Hashable {
             return "XODEX"
         case .clore:
             return "CLORE"
+        case .fact0rn:
+            return "FACT"
         }
     }
 
@@ -1038,6 +1043,7 @@ extension Blockchain: Codable {
         case .chiliz: return "chiliz"
         case .xodex: return "xodex"
         case .clore: return "clore-ai"
+        case .fact0rn: return "fact0rn"
         }
     }
 
@@ -1139,6 +1145,7 @@ extension Blockchain: Codable {
         case "chiliz": self = .chiliz(testnet: isTestnet)
         case "xodex": self = .xodex
         case "clore-ai": self = .clore
+        case "fact0rn": self = .fact0rn
         default:
             throw BlockchainSdkError.decodingFailed
         }
@@ -1390,6 +1397,8 @@ private extension Blockchain {
             return "xodex"
         case .clore:
             return "clore-ai"
+        case .fact0rn:
+            return "fact0rn"
         }
     }
 
@@ -1511,6 +1520,8 @@ extension Blockchain {
             return CasperWalletAssembly()
         case .clore:
             return CloreWalletAssembly()
+        case .fact0rn:
+            return Fact0rnWalletAssembly()
         }
     }
 }
