@@ -170,7 +170,7 @@ extension DecimalNumberTextField {
 
         var debouncedValuePublisher: AnyPublisher<Decimal?, Never> {
             valuePublisher
-                .flatMapLatest { value in
+                .map { value in
                     if value == nil {
                         // Nil value will be emitted without debounce
                         return Just(value).eraseToAnyPublisher()
@@ -178,9 +178,10 @@ extension DecimalNumberTextField {
 
                     // But if have the value we will wait a bit
                     return Just(value)
-                        .delay(for: 0.5, scheduler: DispatchQueue.global())
+                        .debounce(for: 0.5, scheduler: DispatchQueue.global())
                         .eraseToAnyPublisher()
                 }
+                .switchToLatest()
                 .eraseToAnyPublisher()
         }
 
