@@ -106,15 +106,6 @@ private extension OnrampModel {
                     Analytics.log(.onrampErrorMinAmount)
                 case .restriction(.tooBigAmount):
                     Analytics.log(.onrampErrorMaxAmount)
-                case .failed(let error as ExpressAPIError):
-                    Analytics.log(
-                        event: .onrampErrors,
-                        params: [
-                            .token: model.walletModel.tokenItem.currencySymbol,
-                            .provider: provider.provider.name,
-                            .errorCode: error.errorCode.rawValue.description,
-                        ]
-                    )
                 case .loaded:
                     Analytics.log(
                         event: .onrampProviderCalculated,
