@@ -35,6 +35,8 @@ class OnrampStep {
 extension OnrampStep: SendStep {
     var title: String? { "\(Localization.commonBuy) \(tokenItem.name)" }
 
+    var shouldShowBottomOverlay: Bool { false }
+
     var type: SendStepType { .onramp(viewModel) }
 
     var sendStepViewAnimatable: any SendStepViewAnimatable { viewModel }

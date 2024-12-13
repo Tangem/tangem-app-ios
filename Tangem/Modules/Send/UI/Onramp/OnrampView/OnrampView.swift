@@ -15,20 +15,33 @@ struct OnrampView: View {
     let namespace: Namespace
 
     var body: some View {
-        GroupedScrollView(spacing: 14) {
-            OnrampAmountView(
-                viewModel: viewModel.onrampAmountViewModel,
-                namespace: .init(id: namespace.id, names: namespace.names)
-            )
+        ZStack(alignment: .bottom) {
+            GroupedScrollView(spacing: 14) {
+                OnrampAmountView(
+                    viewModel: viewModel.onrampAmountViewModel,
+                    namespace: .init(id: namespace.id, names: namespace.names)
+                )
 
-            OnrampProvidersCompactView(
-                viewModel: viewModel.onrampProvidersCompactViewModel
-            )
+                OnrampProvidersCompactView(
+                    viewModel: viewModel.onrampProvidersCompactViewModel
+                )
 
-            ForEach(viewModel.notificationInputs) { input in
-                NotificationView(input: input)
-                    .setButtonsLoadingState(to: viewModel.notificationButtonIsLoading)
+                ForEach(viewModel.notificationInputs) { input in
+                    NotificationView(input: input)
+                        .setButtonsLoadingState(to: viewModel.notificationButtonIsLoading)
+                }
             }
+
+            legalView
+        }
+    }
+
+    @ViewBuilder
+    private var legalView: some View {
+        if let legalText = viewModel.legalText {
+            Text(legalText)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 14)
         }
     }
 }

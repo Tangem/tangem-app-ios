@@ -16,6 +16,7 @@ class OnrampViewModel: ObservableObject, Identifiable {
 
     @Published private(set) var notificationInputs: [NotificationViewInput] = []
     @Published private(set) var notificationButtonIsLoading = false
+    @Published private(set) var legalText: AttributedString?
 
     weak var router: OnrampSummaryRoutable?
 
@@ -56,6 +57,14 @@ private extension OnrampViewModel {
             .isLoadingPublisher
             .receive(on: DispatchQueue.main)
             .assign(to: \.notificationButtonIsLoading, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        interactor
+            .selectedProviderPublisher
+            .removeDuplicates()
+            .compactMap { $0?.legalText(branch: .onramp) }
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.legalText, on: self, ownership: .weak)
             .store(in: &bag)
     }
 }

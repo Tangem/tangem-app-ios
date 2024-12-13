@@ -222,11 +222,13 @@ struct SendView: View {
 
     @ViewBuilder
     private var bottomOverlay: some View {
-        LinearGradient(colors: [backgroundColor.opacity(0), backgroundColor], startPoint: .top, endPoint: .bottom)
-            .ignoresSafeArea()
-            .frame(maxHeight: bottomGradientHeight)
-            .padding(.horizontal, 16)
-            .allowsHitTesting(false)
+        if viewModel.shouldShowBottomOverlay {
+            LinearGradient(colors: [backgroundColor.opacity(0), backgroundColor], startPoint: .top, endPoint: .bottom)
+                .ignoresSafeArea()
+                .frame(maxHeight: bottomGradientHeight)
+                .padding(.horizontal, 16)
+                .allowsHitTesting(false)
+        }
     }
 }
 
