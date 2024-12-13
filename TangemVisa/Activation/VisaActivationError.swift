@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum VisaActivationError: Error, LocalizedError {
+public enum VisaActivationError: LocalizedError {
     case notImplemented
     case missingAccessCode
     case missingAccessToken
