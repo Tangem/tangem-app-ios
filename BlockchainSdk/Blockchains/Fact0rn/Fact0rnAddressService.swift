@@ -39,6 +39,6 @@ extension Fact0rnAddressService {
     static func addressToScriptHash(address: String) throws -> String {
         let p2pkhScript = try addressToScript(address: address)
         let sha256Hash = p2pkhScript.scriptData.getSha256()
-        return sha256Hash.reversed().hex
+        return Data(sha256Hash.reversed()).hexString
     }
 }
