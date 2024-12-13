@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import TangemFoundation
 
 public class IncomingActionParser {
     @Injected(\.walletConnectService) private var walletConnectService: WalletConnectService
