@@ -720,7 +720,7 @@ class AddressesTests: XCTestCase {
 
     func testTON(curve: EllipticCurve) {
         let blockchain = Blockchain.ton(curve: curve, testnet: false)
-        let addressService = TonAddressService()
+        let addressService = WalletCoreAddressService(coin: .ton)
 
         let walletPubkey1 = Data(hex: "e7287a82bdcd3a5c2d0ee2150ccbc80d6a00991411fb44cd4d13cef46618aadb")
         let expectedAddress1 = "UQBqoh0pqy6zIksGZFMLdqV5Q2R7rzlTO0Durz6OnUgKrdpr"
@@ -748,7 +748,7 @@ class AddressesTests: XCTestCase {
     }
 
     func testTONValidateCorrectAddress() {
-        let addressService = TonAddressService()
+        let addressService = WalletCoreAddressService(coin: .ton)
 
         XCTAssertTrue(addressService.validate("UQBqoh0pqy6zIksGZFMLdqV5Q2R7rzlTO0Durz6OnUgKrdpr"))
         XCTAssertTrue(addressService.validate("UQAoDMgtvyuYaUj-iHjrb_yZiXaAQWSm4pG2K7rWTBj9eL1z"))

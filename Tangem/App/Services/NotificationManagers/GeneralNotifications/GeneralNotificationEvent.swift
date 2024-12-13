@@ -34,7 +34,7 @@ extension GeneralNotificationEvent: NotificationEvent {
         Localization.commonWarning
     }
 
-    var title: NotificationView.Title {
+    var title: NotificationView.Title? {
         switch self {
         case .rateApp:
             return .string(Localization.warningRateAppTitle)

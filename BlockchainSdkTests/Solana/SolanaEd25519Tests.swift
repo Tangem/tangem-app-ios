@@ -59,7 +59,7 @@ final class SolanaEd25519Tests: XCTestCase {
     private let network: RPCEndpoint = .devnetSolana
     private let walletPubKey = Data(hex: "B148CC30B144E8F214AE5754C753C40A9BF2A3359DB4246E03C6A2F61A82C282")
     private let address = "Cw3YcfqzRSa7xT7ecpR5E4FKDQU6aaxz5cWje366CZbf"
-    private let blockchain = Blockchain.solana(curve: .ed25519, testnet: true)
+    private let blockchain = Blockchain.solana(curve: .ed25519, testnet: false)
     private let feeParameters = SolanaFeeParameters(computeUnitLimit: nil, computeUnitPrice: nil, accountCreationFee: 0)
 
     private let coinSigner = CoinSigner()
@@ -67,7 +67,7 @@ final class SolanaEd25519Tests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        networkingRouter = .init(endpoints: [.testnetSolana], apiLogger: nil)
+        networkingRouter = .init(endpoints: [.mainnetBetaSolana], apiLogger: nil)
         solanaSdk = .init(router: networkingRouter, accountStorage: SolanaDummyAccountStorage())
         let service = AddressServiceFactory(blockchain: blockchain).makeAddressService()
 

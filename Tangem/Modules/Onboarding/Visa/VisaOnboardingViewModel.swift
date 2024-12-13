@@ -25,6 +25,7 @@ class VisaOnboardingViewModel: ObservableObject {
     @Published var steps: [VisaOnboardingStep] = []
     @Published var currentStep: VisaOnboardingStep = .welcome
     @Published var alert: AlertBinder?
+    @Published var cardImage: Image?
 
     var navigationBarHeight: CGFloat { OnboardingLayoutConstants.navbarSize.height }
     var progressBarHeight: CGFloat { OnboardingLayoutConstants.progressBarHeight }
@@ -44,11 +45,15 @@ class VisaOnboardingViewModel: ObservableObject {
     lazy var welcomeViewModel: VisaOnboardingWelcomeViewModel = .init(
         activationState: .newActivation,
         userName: "World",
-        imagePublisher: nil,
+        imagePublisher: $cardImage,
         startActivationDelegate: weakify(self, forFunction: VisaOnboardingViewModel.goToNextStep)
     )
 
     lazy var accessCodeSetupViewModel = VisaOnboardingAccessCodeSetupViewModel(accessCodeValidator: visaActivationManager, delegate: self)
+    lazy var walletSelectorViewModel = VisaOnboardingApproveWalletSelectorViewModel(delegate: self)
+    var tangemWalletApproveViewModel: VisaOnboardingTangemWalletDeployApproveViewModel?
+
+    // MARK: - Computed properties
 
     var navigationBarTitle: String {
         currentStep.navigationTitle
@@ -86,18 +91,22 @@ class VisaOnboardingViewModel: ObservableObject {
         if case .visa(let visaSteps) = input.steps {
             steps = visaSteps
         }
+
+        loadImage(input.cardInput.imageLoadInput)
     }
 
     func backButtonAction() {
         switch currentStep {
-        case .welcome, .pushNotifications, .saveUserWallet:
-            alert = AlertBuilder.makeExitAlert(okAction: weakify(self, forFunction: VisaOnboardingViewModel.closeOnboarding))
+        case .welcome, .pushNotifications, .saveUserWallet, .selectWalletForApprove:
+            showCloseOnboardingAlert()
         case .accessCode:
             guard accessCodeSetupViewModel.goBack() else {
                 return
             }
 
             goToStep(.welcome)
+        case .approveUsingTangemWallet:
+            goToStep(.selectWalletForApprove)
         case .success:
             break
         }
@@ -126,7 +135,13 @@ class VisaOnboardingViewModel: ObservableObject {
             emailType: .appFeedback(subject: emailConfig.subject)
         )
     }
+
+    private func log<T>(_ message: @autoclosure () -> T) {
+        AppLog.shared.debug("[VisaOnboardingViewModel] - \(message())")
+    }
 }
+
+// MARK: - Steps navigation logic
 
 private extension VisaOnboardingViewModel {
     func goToNextStep() {
@@ -134,8 +149,8 @@ private extension VisaOnboardingViewModel {
         case .welcome:
             goToStep(.accessCode)
         case .accessCode:
-            break
-        case .saveUserWallet, .pushNotifications:
+            goToStep(.selectWalletForApprove)
+        case .selectWalletForApprove, .approveUsingTangemWallet, .saveUserWallet, .pushNotifications:
             break
         case .success:
             closeOnboarding()
@@ -143,23 +158,23 @@ private extension VisaOnboardingViewModel {
     }
 
     func goToStep(_ step: VisaOnboardingStep) {
-        guard steps.contains(step) else {
+        guard let stepIndex = steps.firstIndex(of: step) else {
             AppLog.shared.debug("Failed to find step \(step)")
             return
         }
 
-        withAnimation {
-            currentStep = step
+        let step = steps[stepIndex]
+
+        DispatchQueue.main.async {
+            withAnimation {
+                self.currentStep = step
+                self.currentProgress = CGFloat(stepIndex + 1) / CGFloat(self.steps.count)
+            }
         }
     }
-
-    func saveAccessCode(_ code: String) {}
-
-    func closeOnboarding() {
-        userWalletRepository.updateSelection()
-        coordinator?.closeOnboarding()
-    }
 }
+
+// MARK: - Biometry delegate
 
 extension VisaOnboardingViewModel: UserWalletStorageAgreementRoutable {
     func didAgreeToSaveUserWallets() {
@@ -194,11 +209,15 @@ extension VisaOnboardingViewModel: UserWalletStorageAgreementRoutable {
     }
 }
 
+// MARK: - PushNotificationsPermissionRequestDelegate
+
 extension VisaOnboardingViewModel: PushNotificationsPermissionRequestDelegate {
     func didFinishPushNotificationOnboarding() {
         goToNextStep()
     }
 }
+
+// MARK: - AccessCodeSetupDelegate
 
 extension VisaOnboardingViewModel: VisaOnboardingAccessCodeSetupDelegate {
     /// We need to show alert in parent view, otherwise it won't be presented
@@ -210,6 +229,118 @@ extension VisaOnboardingViewModel: VisaOnboardingAccessCodeSetupDelegate {
     func useSelectedCode(accessCode: String) async throws {
         try visaActivationManager.saveAccessCode(accessCode: accessCode)
         try await visaActivationManager.startActivation()
+        await proceedToApproveWalletSelection()
+    }
+}
+
+private extension VisaOnboardingViewModel {
+    func proceedToApproveWalletSelection() async {
+        guard let targetAddress = visaActivationManager.targetApproveAddress else {
+            await showAlert(OnboardingError.missingTargetApproveAddress.alertBinder)
+            return
+        }
+
+        let searchUtility = VisaApprovePairSearchUtility(isTestnet: false)
+
+        guard
+            let approvePair = searchUtility.findApprovePair(
+                for: targetAddress,
+                userWalletModels: userWalletRepository.models
+            )
+        else {
+            goToNextStep()
+            return
+        }
+
+        tangemWalletApproveViewModel = .init(
+            targetWalletAddress: targetAddress,
+            delegate: self,
+            dataProvider: self,
+            approvePair: approvePair
+        )
+        goToStep(.approveUsingTangemWallet)
+    }
+}
+
+extension VisaOnboardingViewModel: VisaOnboardingApproveWalletSelectorDelegate {
+    func useExternalWallet() {
+        // TODO: IOS-8574
+        alert = "TODO: IOS-8574".alertBinder
+    }
+
+    func useTangemWallet() {
+        // Default value will be removed and guard check will be added, when backend finished implementation
+        let targetApproveAddress = visaActivationManager.targetApproveAddress ?? ""
+        tangemWalletApproveViewModel = .init(
+            targetWalletAddress: targetApproveAddress,
+            delegate: self,
+            dataProvider: self
+        )
+        goToStep(.approveUsingTangemWallet)
+    }
+}
+
+extension VisaOnboardingViewModel: VisaOnboardingTangemWalletApproveDelegate {
+    func processSignedData(_ signedData: Data) async throws {
+        /// Backend not ready... Even requirements. So right now we will return to Welcome Page
+        goToStep(.welcome)
+    }
+}
+
+extension VisaOnboardingViewModel: VisaOnboardingTangemWalletApproveDataProvider {
+    func loadDataToSign() async throws -> Data {
+        /// Backend not ready... Even requirements. So for now just generate random bytes with proper length for sign
+        /// Later all data will be requested from `VisaActivationManager`
+        let array = (0 ..< 32).map { _ -> UInt8 in
+            UInt8(arc4random_uniform(255))
+        }
+        return Data(array)
+    }
+}
+
+// MARK: - Close onboarding funcs
+
+private extension VisaOnboardingViewModel {
+    func showCloseOnboardingAlert() {
+        alert = AlertBuilder.makeExitAlert(okAction: weakify(self, forFunction: VisaOnboardingViewModel.closeOnboarding))
+    }
+
+    func closeOnboarding() {
+        userWalletRepository.updateSelection()
+        coordinator?.closeOnboarding()
+    }
+}
+
+// MARK: - Image loading
+
+private extension VisaOnboardingViewModel {
+    func loadImage(_ imageLoadInput: OnboardingInput.ImageLoadInput) {
+        runTask(in: self, isDetached: false) { viewModel in
+            do {
+                let image = try await CardImageProvider(supportsOnlineImage: imageLoadInput.supportsOnlineImage)
+                    .loadImage(cardId: imageLoadInput.cardId, cardPublicKey: imageLoadInput.cardPublicKey)
+                    .map { $0.image }
+                    .async()
+                await runOnMain {
+                    viewModel.cardImage = image
+                }
+            } catch {
+                viewModel.log("Failed to load card image. Error: \(error)")
+            }
+        }
+    }
+}
+
+private extension VisaOnboardingViewModel {
+    enum OnboardingError: String, LocalizedError {
+        case missingTargetApproveAddress
+
+        var localizedDescription: String {
+            switch self {
+            case .missingTargetApproveAddress:
+                return "Failed to find approve address. Please contact support"
+            }
+        }
     }
 }
 

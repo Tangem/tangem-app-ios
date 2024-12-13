@@ -185,12 +185,6 @@ struct TangemApiTarget: TargetType {
             headers["card_public_key"] = authData.cardPublicKey.hexString
         }
 
-        if let appVersion: String = InfoDictionaryUtils.version.value() {
-            headers["version"] = appVersion
-        }
-
-        headers["platform"] = "ios"
-
         return headers
     }
 }

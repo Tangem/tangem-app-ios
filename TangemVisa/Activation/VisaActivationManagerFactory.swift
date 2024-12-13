@@ -52,6 +52,7 @@ public struct VisaActivationManagerFactory {
             tangemSdk: tangemSdk,
             authorizationProcessor: authorizationProcessor,
             cardActivationOrderProvider: activationOrderProvider,
+            otpRepository: CommonVisaOTPRepository(),
             logger: internalLogger
         )
     }

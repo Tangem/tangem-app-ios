@@ -1,6 +1,6 @@
 //
 //  TangemNetworkLoggerPlugin.swift
-//  BlockchainSdk
+//  TangemNetworkUtils
 //
 //  Created by Dmitry Fedorov on 21.03.2024.
 //

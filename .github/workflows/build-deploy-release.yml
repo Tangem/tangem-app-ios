@@ -1,0 +1,155 @@
+name: Release - Build and Deploy
+
+on:
+  push:
+   branches:
+    - 'releases/**'
+  workflow_dispatch:
+    inputs:
+      build_description:
+        description: >
+          Optional additional info about the build
+        type: string
+      xcode_version_override:
+        description: >
+          Optional Xcode version override. Leave blank (default value) to use the default Xcode version; 
+          pass a custom value (e.g. '16.0', '10.2.1', '11 Beta 7', '11.2 GM seed', etc) to use a different Xcode version for the build
+        type: string
+      build_version_override:
+        description: >
+          Optional build version override. Leave blank (default value) to use the default value derived from the branch name
+        type: string
+      build_number_override:
+        description: >
+          Optional build number override. Leave blank (default value) to use the latest value obtained from App Store Connect + 1
+        type: string
+
+concurrency:
+  group: '${{ github.workflow }} (${{ github.head_ref || github.ref_name }})'
+  cancel-in-progress: true
+
+jobs:
+  prepare:
+    name: Prepare information
+    runs-on: macos-15
+    environment: 'RC'
+    outputs:
+      stage: 'RC'
+      version: '${{ env.release_version_number }}'
+      build_number: '${{ env.release_build_number }}'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+          token: ${{ secrets.GH_MOBILE_PAT }}
+
+      # When using Github runner images, the preferred way of setting the Ruby version is to use this official action instead of using rvm/rbenv
+      - name: Install Ruby
+        uses: ruby/setup-ruby@a2bbe5b1b236842c1cb7dd11e8e3b51e0a616acc  # v1.202.0
+
+      # Skipping Ruby installation since it has been already installed by an action above
+      - name: Install required dependencies
+        run: ./bootstrap.sh --skip-ruby
+
+      - name: Get Release Version
+        id: get-release-version
+        env:
+          BUILD_VERSION_OVERRIDE: '${{ inputs.build_version_override }}'
+          BRANCH_NAME: '${{ github.head_ref || github.ref_name }}'
+        run: |
+          # The initialization of rbenv is required before every `bundle` call since Gihub Actions spawns each 'run' step in a separate process
+          eval "$(rbenv init - bash)"
+
+          bundle exec fastlane \
+          get_release_version_number \
+          build_version_override:"${BUILD_VERSION_OVERRIDE}" \
+          branch_name:"${BRANCH_NAME}"
+
+      - name: Get Build Number
+        id: get-build-number
+        env:
+          BUILD_NUMBER_OVERRIDE: '${{ inputs.build_number_override }}'
+          ASC_KEY_ID: '${{ secrets.ASC_KEY_ID }}'
+          ASC_ISSUER_ID: '${{ secrets.ASC_ISSUER_ID }}'
+          ASC_PRIVATE_KEY: '${{ secrets.ASC_PRIVATE_KEY }}'
+        run: |
+          # The initialization of rbenv is required before every `bundle` call since Gihub Actions spawns each 'run' step in a separate process
+          eval "$(rbenv init - bash)"
+
+          bundle exec fastlane \
+          get_release_build_number \
+          build_number_override:"${BUILD_NUMBER_OVERRIDE}" \
+          branch_name:"${BRANCH_NAME}" \
+          asc_key_id:"${ASC_KEY_ID}" \
+          asc_issuer_id:"${ASC_ISSUER_ID}" \
+          asc_key:"${ASC_PRIVATE_KEY}"
+
+  build:
+    name: Tangem Release
+    needs: prepare
+    uses: tangem/actions/.github/workflows/build.yml@main
+    with:
+      stage: '${{ needs.prepare.outputs.stage }}'
+      version: '${{ needs.prepare.outputs.version }}'
+      build_number: '${{ needs.prepare.outputs.build_number }}'
+      path: 'fastlane/builds/'
+      filename: 'Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa'
+      xcode_version_override: '${{ inputs.xcode_version_override }}'
+      arm_runners_only: true
+    secrets:
+      FIREBASE_APP_ID: '${{ secrets.FIREBASE_APP_ID }}'
+      GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT }}'
+
+  deploy:
+    name: Tangem Release TestFlight
+    uses: tangem/actions/.github/workflows/deploy-testflight.yml@main
+    needs: 
+      - prepare
+      - build
+    with:
+      stage: '${{ needs.prepare.outputs.stage }}'
+      version: '${{ needs.prepare.outputs.version }}'
+      build_number: '${{ needs.prepare.outputs.build_number }}'
+      changelog: '${{ inputs.build_description }}'
+      filename: 'Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa'
+    secrets:
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_PRIVATE_KEY: ${{ secrets.ASC_PRIVATE_KEY }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      GH_MOBILE_PAT: ${{ secrets.GH_MOBILE_PAT }}
+
+  notification:
+    name: Deploy Notification
+    uses: tangem/actions/.github/workflows/notification.yml@main
+    needs:
+      - prepare
+      - build
+      - deploy
+    with:
+      channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
+      status: 'success'
+      app_name: '${{ vars.APP_RC }}'
+      deploy_to: '${{ vars.DEPLOYMENT_APPLE_TESTFLIGHT }}'
+      version: '${{ needs.prepare.outputs.version }}'
+      build_number: '${{ needs.prepare.outputs.build_number }}'
+      build_description: '${{ inputs.build_description }}'
+    secrets:
+      SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN }}'
+
+  error_notification:
+    name: Error Notification
+    if: failure()
+    uses: tangem/actions/.github/workflows/notification.yml@main
+    needs:
+      - prepare
+      - build
+    with:
+      channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
+      status: 'error'
+      app_name: '${{ vars.APP_RC }}'
+      deploy_to: '${{ vars.DEPLOYMENT_APPLE_TESTFLIGHT }}'
+      version: '${{ needs.prepare.outputs.version }}'
+      build_number: '${{ needs.prepare.outputs.build_number }}'
+    secrets:
+      SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN }}'
