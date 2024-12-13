@@ -53,20 +53,17 @@ class AppCoordinator: CoordinatorObject {
     }
 
     func start(with options: AppCoordinator.Options = .default) {
-        if options == .locked {
+        let startupProcessor = StartupProcessor()
+        let startupOption = startupProcessor.getStartupOption()
+
+        switch startupOption {
+        case .welcome where options == .locked,
+             .auth where options == .locked:
             setupLock()
 
             DispatchQueue.main.async {
                 self.tryUnlockWithBiometry()
             }
-
-            return
-        }
-
-        let startupProcessor = StartupProcessor()
-        let startupOption = startupProcessor.getStartupOption()
-
-        switch startupOption {
         case .welcome:
             setupWelcome()
         case .auth:
