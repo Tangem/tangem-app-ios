@@ -240,21 +240,6 @@ private extension TokenDetailsViewModel {
         }
         .store(in: &bag)
 
-        pendingExpressTransactionsManager
-            .pendingTransactionsPublisher
-            .withWeakCaptureOf(self)
-            .map { viewModel, pendingTxs in
-                let factory = PendingExpressTransactionsConverter()
-
-                return factory.convertToTokenDetailsPendingTxInfo(
-                    pendingTxs,
-                    tapAction: weakify(viewModel, forFunction: TokenDetailsViewModel.didTapPendingExpressTransaction(with:))
-                )
-            }
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.pendingExpressTransactions, on: self, ownership: .weak)
-            .store(in: &bag)
-
         bannerNotificationManager?.notificationPublisher
             .receive(on: DispatchQueue.main)
             .removeDuplicates()
