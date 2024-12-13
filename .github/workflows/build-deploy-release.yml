@@ -3,8 +3,7 @@ name: Release - Build and Deploy
 on:
   push:
    branches:
-    - 'test/releases/**' # TODO: Remove
-    #- 'releases/**' # TODO: Enable
+    - 'releases/**'
   workflow_dispatch:
     inputs:
       build_description:
