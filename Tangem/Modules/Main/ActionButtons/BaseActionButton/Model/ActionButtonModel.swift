@@ -40,5 +40,5 @@ enum ActionButtonState: Equatable {
     case initial
     case loading
     case idle
-    case disabled(message: String)
+    case restricted(reason: String)
 }

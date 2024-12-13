@@ -103,9 +103,7 @@ final class SendViewModel: ObservableObject {
         }
     }
 
-    func onDisappear() {
-        interactor.viewDidDisappear()
-    }
+    func onDisappear() {}
 
     func userDidTapActionButton() {
         switch mainButtonType {

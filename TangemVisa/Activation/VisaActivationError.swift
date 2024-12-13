@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum VisaActivationError: Error, LocalizedError {
+public enum VisaActivationError: LocalizedError {
     case notImplemented
     case missingAccessCode
     case missingAccessToken
@@ -19,7 +19,7 @@ public enum VisaActivationError: Error, LocalizedError {
     case missingWallet
     case missingRootOTP
     case taskMissingDelegate
-    case missingOTPManager
+    case missingOTPRepository
     case underlyingError(Error)
 
     public var errorDescription: String? {
@@ -34,7 +34,7 @@ public enum VisaActivationError: Error, LocalizedError {
         case .missingWallet: return "Failed to find wallet on card"
         case .missingRootOTP: return "Failed to find root OTP"
         case .taskMissingDelegate: return "Activation task wasn't setup properly"
-        case .missingOTPManager: return "Failed to find OTP manager"
+        case .missingOTPRepository: return "Failed to find OTP repository"
         case .underlyingError(let error):
             return "Underlying Visa Activation Error: \(error.localizedDescription)"
         }

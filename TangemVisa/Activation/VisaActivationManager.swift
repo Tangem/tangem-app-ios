@@ -35,7 +35,7 @@ final class CommonVisaActivationManager {
 
     private let authorizationProcessor: CardAuthorizationProcessor
     private let cardActivationOrderProvider: CardActivationOrderProvider
-    private let otpManager: VisaOTPRepository
+    private let otpRepository: VisaOTPRepository
 
     private let logger: InternalLogger
 
@@ -49,7 +49,7 @@ final class CommonVisaActivationManager {
         tangemSdk: TangemSdk,
         authorizationProcessor: CardAuthorizationProcessor,
         cardActivationOrderProvider: CardActivationOrderProvider,
-        otpManager: VisaOTPRepository,
+        otpRepository: VisaOTPRepository,
         logger: InternalLogger
     ) {
         self.cardInput = cardInput
@@ -60,7 +60,7 @@ final class CommonVisaActivationManager {
 
         self.authorizationProcessor = authorizationProcessor
         self.cardActivationOrderProvider = cardActivationOrderProvider
-        self.otpManager = otpManager
+        self.otpRepository = otpRepository
 
         self.logger = logger
     }
@@ -150,7 +150,7 @@ extension CommonVisaActivationManager {
                 activationInput: cardInput,
                 challengeToSign: authorizationChallenge,
                 delegate: self,
-                otpManager: otpManager,
+                otpRepository: otpRepository,
                 logger: logger
             )
 

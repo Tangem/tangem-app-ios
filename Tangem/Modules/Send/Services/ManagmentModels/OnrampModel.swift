@@ -43,6 +43,8 @@ class OnrampModel {
     private let onrampRepository: OnrampRepository
 
     private var task: Task<Void, Never>?
+    private var timerCancellable: AnyCancellable?
+
     private var bag: Set<AnyCancellable> = []
 
     init(
@@ -66,7 +68,7 @@ class OnrampModel {
     }
 
     deinit {
-        log("deinit")
+        log("Deinit")
     }
 }
 
@@ -126,6 +128,34 @@ private extension OnrampModel {
                 }
             }
             .store(in: &bag)
+
+        _selectedOnrampProvider
+            .withWeakCaptureOf(self)
+            .sink { model, provider in
+                let isSuccessfullyLoaded = provider?.value?.isSuccessfullyLoaded ?? false
+                isSuccessfullyLoaded ? model.restartTimer() : model.stopTimer()
+            }
+            .store(in: &bag)
+    }
+
+    // MARK: - Timer
+
+    func stopTimer() {
+        log("Stop timer")
+        timerCancellable?.cancel()
+    }
+
+    func restartTimer() {
+        log("Restart timer")
+        timerCancellable?.cancel()
+        timerCancellable = Just(())
+            .delay(for: 10, scheduler: DispatchQueue.global())
+            .sink(receiveCompletion: { [weak self] completion in
+                self?.log("Timer completion \(completion)")
+            }, receiveValue: { [weak self] _ in
+                self?.log("Timer will call autoupdate")
+                self?.autoupdate()
+            })
     }
 
     // MARK: - Providers list
@@ -220,11 +250,6 @@ private extension OnrampModel {
         let provider = try await onrampManager.setupQuotes(in: providersList(), amount: .amount(amount))
         try Task.checkCancellation()
         _selectedOnrampProvider.send(.success(provider))
-
-        // Do not start autoupdating for all error cases
-        if provider.isSuccessfullyLoaded {
-            try await autoupdateTask()
-        }
     }
 
     // MARK: - Payment method
@@ -253,8 +278,7 @@ private extension OnrampModel {
         _currency.send(.success(currency))
 
         mainTask {
-            guard await $0.isCountryAvailable(country: country) else {
-                await $0.initiateCountryDefinition()
+            guard await $0.checkCountryAvailability(country: country) else {
                 return
             }
 
@@ -262,16 +286,28 @@ private extension OnrampModel {
         }
     }
 
-    func isCountryAvailable(country: OnrampCountry) async -> Bool {
+    func checkCountryAvailability(country: OnrampCountry) async -> Bool {
         do {
             let countries = try await onrampDataRepository.countries()
-            let country = countries.first(where: { $0.identity == country.identity })
-            let onrampAvailable = country?.onrampAvailable ?? false
-            if !onrampAvailable {
-                // Clear repo
-                onrampRepository.updatePreference(country: nil, currency: nil)
+            guard let country = countries.first(where: { $0.identity == country.identity }) else {
+                // For some reasons country disappeared from list
+                // Try define again
+                await initiateCountryDefinition()
+                return false
             }
-            return onrampAvailable
+
+            if country.onrampAvailable {
+                // All good
+                return true
+            }
+
+            // Clear repo
+            onrampRepository.updatePreference(country: nil, currency: nil)
+            await runOnMain {
+                router?.openOnrampCountryBottomSheet(country: country)
+            }
+
+            return false
         } catch {
             _currency.send(.failure(error))
             return false
@@ -317,36 +353,33 @@ private extension OnrampModel {
         }
     }
 
+    func autoupdate() {
+        mainTask {
+            $0.log("Call autoupdate")
+            try await $0.autoupdateTask()
+            $0.log("Autoupdate is finish")
+        }
+    }
+
     func autoupdateTask() async throws {
         guard _selectedOnrampProvider.value?.value?.isSuccessfullyLoaded == true else {
             log("Selected provider has an error. Do not start autoupdate")
             return
         }
 
-        try Task.checkCancellation()
-
-        log("Start timer to autoupdate")
-        try await Task.sleep(seconds: 10)
-
-        try Task.checkCancellation()
-        // we don't update the selected provider
-        log("Call autoupdate")
         let providerForReselect = try await onrampManager.setupQuotes(in: providersList(), amount: .same)
+        try Task.checkCancellation()
 
         // Check after reloading
         guard _selectedOnrampProvider.value?.value?.isSuccessfullyLoaded == true else {
             log("Selected provider has a error. Will update to \(providerForReselect)")
             _selectedOnrampProvider.send(.success(providerForReselect))
-            try await autoupdateTask()
             return
         }
 
         // Push the same provider to notify all listeners
         _selectedOnrampProvider.resend()
         _onrampProviders.resend()
-
-        // Restart task
-        try await autoupdateTask()
     }
 
     func log(_ message: String) {
@@ -502,10 +535,6 @@ extension OnrampModel: SendBaseOutput {
         assertionFailure("OnrampModel doesn't support the send transaction action")
         throw TransactionDispatcherResult.Error.actionNotSupported
     }
-
-    func flowDidDisappear() {
-        task?.cancel()
-    }
 }
 
 // MARK: - OnrampNotificationManagerInput
@@ -538,7 +567,11 @@ extension OnrampModel: OnrampNotificationManagerInput {
     func refreshError() {
         if case .failure = _currency.value {
             TangemFoundation.runTask(in: self) {
-                await $0.initiateCountryDefinition()
+                if let country = $0.onrampRepository.preferenceCountry {
+                    _ = await $0.checkCountryAvailability(country: country)
+                } else {
+                    await $0.initiateCountryDefinition()
+                }
             }
         }
 

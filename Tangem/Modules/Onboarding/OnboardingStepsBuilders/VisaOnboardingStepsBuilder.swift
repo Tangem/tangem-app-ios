@@ -56,17 +56,17 @@ extension VisaOnboardingStepsBuilder: OnboardingStepsBuilder {
     func buildOnboardingSteps() -> OnboardingSteps {
         var steps = [VisaOnboardingStep]()
 
-        if activationStatus.isActivated {
-            steps.append(contentsOf: otherSteps)
-        } else {
+        if !activationStatus.isActivated {
             steps.append(.welcome)
 
             if !isAccessCodeSet {
                 steps.append(.accessCode)
             }
 
-            steps.append(contentsOf: approveSteps + otherSteps)
+            steps.append(contentsOf: approveSteps)
         }
+
+        steps.append(contentsOf: otherSteps)
 
         return .visa(steps)
     }
