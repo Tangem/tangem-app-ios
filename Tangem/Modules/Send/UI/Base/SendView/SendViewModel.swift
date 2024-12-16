@@ -392,8 +392,8 @@ extension SendViewModel: OnrampModelRoutable {
         }
     }
 
-    func openWebView(url: URL, success: @escaping () -> Void) {
-        coordinator?.openOnrampWebView(url: url, success: success)
+    func openOnrampWebView(url: URL, onDismiss: @escaping () -> Void, onSuccess: @escaping () -> Void) {
+        coordinator?.openOnrampWebView(url: url, onDismiss: onDismiss, onSuccess: onSuccess)
     }
 
     func openFinishStep() {

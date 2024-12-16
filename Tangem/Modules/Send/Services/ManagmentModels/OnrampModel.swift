@@ -14,7 +14,7 @@ import TangemFoundation
 protocol OnrampModelRoutable: AnyObject {
     func openOnrampCountryBottomSheet(country: OnrampCountry)
     func openOnrampCountrySelectorView()
-    func openWebView(url: URL, success: @escaping () -> Void)
+    func openOnrampWebView(url: URL, onDismiss: @escaping () -> Void, onSuccess: @escaping () -> Void)
     func openFinishStep()
 }
 
@@ -479,12 +479,15 @@ extension OnrampModel: OnrampRedirectingOutput {
         onrampPendingTransactionsRepository
             .onrampTransactionDidSend(txData, userWalletId: userWalletId)
 
+        stopTimer()
         DispatchQueue.main.async {
-            self.router?.openWebView(url: data.widgetUrl) { [weak self] in
+            self.router?.openOnrampWebView(url: data.widgetUrl, onDismiss: { [weak self] in
+                self?.restartTimer()
+            }, onSuccess: { [weak self] in
                 self?._transactionTime.send(Date())
                 self?._expressTransactionId.send(data.txId)
                 self?.router?.openFinishStep()
-            }
+            })
         }
     }
 }
