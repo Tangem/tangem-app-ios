@@ -2886,6 +2886,7 @@
 		EFC9900C2CD3A70C0098B7C8 /* OnrampPaymentMethodsInputOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC9900B2CD3A70C0098B7C8 /* OnrampPaymentMethodsInputOutput.swift */; };
 		EFC990172CD3CC9C0098B7C8 /* ExpressBranch.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC990162CD3CC9C0098B7C8 /* ExpressBranch.swift */; };
 		EFC9901A2CD4F0A90098B7C8 /* CommonOnrampProviderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC990192CD4F0A90098B7C8 /* CommonOnrampProviderManager.swift */; };
+		EFCC878D2D0C8496001CE862 /* ExpressMoreProvidersSoonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFCC878C2D0C8496001CE862 /* ExpressMoreProvidersSoonView.swift */; };
 		EFD0A14B2C9985CF0010E642 /* SendAmountModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD0A14A2C9985CD0010E642 /* SendAmountModifier.swift */; };
 		EFD143832CC550C000B5BA57 /* SendBaseDataBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD143822CC550BE00B5BA57 /* SendBaseDataBuilder.swift */; };
 		EFD143852CC5517E00B5BA57 /* CommonSendBaseDataBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD143842CC5517D00B5BA57 /* CommonSendBaseDataBuilder.swift */; };
@@ -6060,6 +6061,7 @@
 		EFC990162CD3CC9C0098B7C8 /* ExpressBranch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressBranch.swift; sourceTree = "<group>"; };
 		EFC990192CD4F0A90098B7C8 /* CommonOnrampProviderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonOnrampProviderManager.swift; sourceTree = "<group>"; };
 		EFCC66E028AA6FC500EC7757 /* UserTokenList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTokenList.swift; sourceTree = "<group>"; };
+		EFCC878C2D0C8496001CE862 /* ExpressMoreProvidersSoonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressMoreProvidersSoonView.swift; sourceTree = "<group>"; };
 		EFD0A14A2C9985CD0010E642 /* SendAmountModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendAmountModifier.swift; sourceTree = "<group>"; };
 		EFD143822CC550BE00B5BA57 /* SendBaseDataBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendBaseDataBuilder.swift; sourceTree = "<group>"; };
 		EFD143842CC5517D00B5BA57 /* CommonSendBaseDataBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonSendBaseDataBuilder.swift; sourceTree = "<group>"; };
@@ -14803,6 +14805,7 @@
 		EF729B672AF3E82C00D80205 /* ExpressProvidersSelectorView */ = {
 			isa = PBXGroup;
 			children = (
+				EFCC878C2D0C8496001CE862 /* ExpressMoreProvidersSoonView.swift */,
 				EF729B6C2AF3E86300D80205 /* ExpressProvidersSelectorView.swift */,
 				EF729B6D2AF3E86300D80205 /* ExpressProvidersSelectorViewModel.swift */,
 				EF729B6E2AF3E86300D80205 /* ExpressProvidersSelectorRoutable.swift */,
@@ -17784,6 +17787,7 @@
 				EF6600532B6D187600B65449 /* PendingTransactionsListView.swift in Sources */,
 				DA1D3B772B56C8A000247393 /* PhotoSelectorViewModel.swift in Sources */,
 				EFB999B42C3D9EC000F6A987 /* SellFlowBaseBuilder.swift in Sources */,
+				EFCC878D2D0C8496001CE862 /* ExpressMoreProvidersSoonView.swift in Sources */,
 				B0E0AF5D2996488100E52F7B /* TransactionHistoryMapper.swift in Sources */,
 				EF0FBB782C53BE630095A6BD /* SendFeeCompactView.swift in Sources */,
 				B63D4CAD2B2B8C6200DB2420 /* MutableCollection+.swift in Sources */,
