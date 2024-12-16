@@ -57,12 +57,14 @@ extension CommonOnrampManager: OnrampManager {
         return providers
     }
 
-    public func setupQuotes(in providers: ProvidersList, amount: OnrampUpdatingAmount) async throws -> OnrampProvider {
+    public func setupQuotes(in providers: ProvidersList, amount: OnrampUpdatingAmount) async throws -> (list: ProvidersList, provider: OnrampProvider) {
         log(message: "Start update quotes for amount: \(amount)")
         try await updateQuotesInEachManager(providers: providers, amount: amount)
         log(message: "The quotes was updated for amount: \(amount)")
 
-        return try proceedProviders(providers: providers)
+        let sorted = providers.sorted()
+        let suggestProvider = try suggestProvider(in: sorted)
+        return (list: sorted, provider: suggestProvider)
     }
 
     public func suggestProvider(in providers: ProvidersList, paymentMethod: OnrampPaymentMethod) throws -> OnrampProvider {
@@ -110,7 +112,7 @@ private extension CommonOnrampManager {
         }
     }
 
-    func proceedProviders(providers: ProvidersList) throws -> OnrampProvider {
+    func suggestProvider(in providers: ProvidersList) throws -> OnrampProvider {
         log(message: "Start to find the best provider")
 
         for provider in providers {
@@ -154,12 +156,7 @@ private extension CommonOnrampManager {
             }
         }
 
-        let supportedPaymentMethods = fullfilled
-            .values
-            .flatMap { $0 }
-            .unique()
-            // Sort payment methods to order which will suggest to user
-            .sorted(by: { $0.type.priority > $1.type.priority })
+        let supportedPaymentMethods = fullfilled.values.flatMap { $0 }.unique()
 
         let availableProviders: ProvidersList = supportedPaymentMethods.map { paymentMethod in
             let providers = providers.map { provider in
