@@ -244,19 +244,19 @@ extension MainCoordinator: SingleTokenBaseRoutable {
     func openBuyCrypto(at url: URL, action: @escaping () -> Void) {
         Analytics.log(.topupScreenOpened)
 
-        safariHandle = safariManager.openURL(url) { [weak self] _ in
+        safariHandle = safariManager.openURL(url, onSuccess: { [weak self] _ in
             self?.safariHandle = nil
             action()
-        }
+        })
     }
 
     func openSellCrypto(at url: URL, action: @escaping (String) -> Void) {
         Analytics.log(.withdrawScreenOpened)
 
-        safariHandle = safariManager.openURL(url) { [weak self] closeURL in
+        safariHandle = safariManager.openURL(url, onSuccess: { [weak self] closeURL in
             self?.safariHandle = nil
             action(closeURL.absoluteString)
-        }
+        })
     }
 
     func openSend(userWalletModel: UserWalletModel, walletModel: WalletModel) {
