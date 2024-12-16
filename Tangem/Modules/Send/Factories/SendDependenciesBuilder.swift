@@ -412,7 +412,8 @@ struct SendDependenciesBuilder {
             expressAPIProvider: apiProvider,
             onrampRepository: repository,
             dataRepository: dataRepository,
-            logger: AppLog.shared
+            logger: AppLog.shared,
+            analyticsLogger: CommonExpressAnalyticsLogger(tokenItem: walletModel.tokenItem)
         )
 
         return (

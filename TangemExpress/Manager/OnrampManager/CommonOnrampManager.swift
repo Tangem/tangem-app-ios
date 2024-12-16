@@ -13,17 +13,20 @@ public actor CommonOnrampManager {
     private let onrampRepository: OnrampRepository
     private let dataRepository: OnrampDataRepository
     private let logger: Logger
+    private let analyticsLogger: ExpressAnalyticsLogger
 
     public init(
         apiProvider: ExpressAPIProvider,
         onrampRepository: OnrampRepository,
         dataRepository: OnrampDataRepository,
-        logger: Logger
+        logger: Logger,
+        analyticsLogger: ExpressAnalyticsLogger
     ) {
         self.apiProvider = apiProvider
         self.onrampRepository = onrampRepository
         self.dataRepository = dataRepository
         self.logger = logger
+        self.analyticsLogger = analyticsLogger
     }
 }
 
@@ -202,9 +205,10 @@ private extension CommonOnrampManager {
 
         return CommonOnrampProviderManager(
             pairItem: item,
-            expressProviderId: provider.id,
+            expressProvider: provider,
             paymentMethodId: paymentMethod.id,
             apiProvider: apiProvider,
+            analyticsLogger: analyticsLogger,
             state: state
         )
     }
