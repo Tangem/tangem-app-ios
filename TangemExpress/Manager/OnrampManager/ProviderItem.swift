@@ -24,10 +24,12 @@ public class ProviderItem {
         providers.filter { $0.isShowable }.isNotEmpty
     }
 
-    public func showableProvider() -> OnrampProvider? {
-        providers.first(where: { $0.isShowable })
+    /// Provider which can be showed and selected
+    public func maxPriorityProvider() -> OnrampProvider? {
+        providers.first(where: { $0.isShowable && $0.isSelectable })
     }
 
+    /// Provider which can be selected by user
     public func selectableProvider() -> OnrampProvider? {
         providers.first(where: { $0.isSelectable })
     }
@@ -39,9 +41,14 @@ public class ProviderItem {
         return providers
     }
 
-    /// Providers will be sorted
-    @discardableResult
-    public func updateAttractiveTypes() -> OnrampProvider? {
+    /// Providers will be sorted and their `attractiveType` will be updated
+    public func updateAttractiveTypes() {
+        // Only if we have more than one providers with quote
+        guard providers.filter(\.isSuccessfullyLoaded).count > 1 else {
+            providers.forEach { $0.update(attractiveType: .none) }
+            return
+        }
+
         var bestQuote: Decimal?
 
         sort().indexed().forEach { index, provider in
@@ -53,12 +60,11 @@ public class ProviderItem {
             case (_, .loaded(let quote)) where bestQuote != nil:
                 let percent = quote.expectedAmount / bestQuote! - 1
                 provider.update(attractiveType: .loss(percent: percent))
+
             case (_, _):
                 provider.update(attractiveType: .none)
             }
         }
-
-        return nil
     }
 
     private func sort(lhs: OnrampProvider, rhs: OnrampProvider) -> Bool {

@@ -72,6 +72,7 @@ final class ActionButtonsViewModel: ObservableObject {
     }
 
     func refresh() {
+        // do nothing if already iniitialized
         exchangeService.initialize()
     }
 }

@@ -59,6 +59,11 @@ struct OnrampFlowBaseBuilder {
             onrampProvidersInput: onrampModel
         )
 
+        let onrampStatusCompactViewModel = OnrampStatusCompactViewModel(
+            input: onrampModel,
+            pendingTransactionsManager: builder.makePendingExpressTransactionsManager()
+        )
+
         let onramp = onrampStepBuilder.makeOnrampStep(
             io: (input: onrampModel, output: onrampModel),
             providersInput: onrampModel,
@@ -75,7 +80,7 @@ struct OnrampFlowBaseBuilder {
             onrampAmountCompactViewModel: onrampAmountCompactViewModel,
             stakingValidatorsCompactViewModel: .none,
             sendFeeCompactViewModel: .none,
-            onrampStatusCompactViewModel: .init()
+            onrampStatusCompactViewModel: onrampStatusCompactViewModel
         )
 
         let stepsManager = CommonOnrampStepsManager(

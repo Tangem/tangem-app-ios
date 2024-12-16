@@ -77,10 +77,6 @@ final class SingleTokenNotificationManager {
             events.append(.existentialDepositWarning(message: existentialWarning))
         }
 
-        if case .binance = walletModel.tokenItem.blockchain {
-            events.append(.bnbBeaconChainRetirement)
-        }
-
         let amounts = walletModel.wallet.amounts
         if case .koinos = walletModel.tokenItem.blockchain,
            let currentMana = amounts[.feeResource(.mana)]?.value,
@@ -161,13 +157,20 @@ final class SingleTokenNotificationManager {
 
     private func setupNetworkUnreachable() {
         let factory = NotificationsFactory()
-        notificationInputsSubject
-            .send([
-                factory.buildNotificationInput(
-                    for: TokenNotificationEvent.networkUnreachable(currencySymbol: walletModel.blockchainNetwork.blockchain.currencySymbol),
-                    dismissAction: weakify(self, forFunction: SingleTokenNotificationManager.dismissNotification(with:))
-                ),
+
+        if case .binance = walletModel.tokenItem.blockchain {
+            notificationInputsSubject.send([
+                factory.buildNotificationInput(for: TokenNotificationEvent.bnbBeaconChainRetirement),
             ])
+        } else {
+            notificationInputsSubject
+                .send([
+                    factory.buildNotificationInput(
+                        for: TokenNotificationEvent.networkUnreachable(currencySymbol: walletModel.blockchainNetwork.blockchain.currencySymbol),
+                        dismissAction: weakify(self, forFunction: SingleTokenNotificationManager.dismissNotification(with:))
+                    ),
+                ])
+        }
     }
 
     private func setupNoAccountNotification(with message: String) {

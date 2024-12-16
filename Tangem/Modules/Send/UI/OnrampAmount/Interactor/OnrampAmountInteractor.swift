@@ -79,7 +79,7 @@ extension CommonOnrampAmountInteractor: OnrampAmountInteractor {
                 case (_, .restriction(.tooSmallAmount(let minAmount))):
                     return .failure(.tooSmallAmount(minAmount))
                 case (_, .restriction(.tooBigAmount(let maxAmount))):
-                    return .failure(.tooSmallAmount(maxAmount))
+                    return .failure(.tooBigAmount(maxAmount))
                 case (.none, _), (_, .idle):
                     return .success(0) // placeholder
                 case (.loading, _), (_, .loading):

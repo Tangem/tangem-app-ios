@@ -13,6 +13,7 @@ import SwiftUI
 protocol SendStep {
     var title: String? { get }
     var subtitle: String? { get }
+    var shouldShowBottomOverlay: Bool { get }
 
     var type: SendStepType { get }
     var navigationTrailingViewType: SendStepNavigationTrailingViewType? { get }
@@ -28,6 +29,7 @@ protocol SendStep {
 
 extension SendStep {
     var subtitle: String? { .none }
+    var shouldShowBottomOverlay: Bool { true }
     var navigationTrailingViewType: SendStepNavigationTrailingViewType? { .none }
 
     func canBeClosed(continueAction: @escaping () -> Void) -> Bool {
