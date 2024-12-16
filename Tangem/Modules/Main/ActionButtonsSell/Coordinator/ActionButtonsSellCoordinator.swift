@@ -58,12 +58,12 @@ extension ActionButtonsSellCoordinator: ActionButtonsSellRoutable {
         at url: URL,
         makeSellToSendToModel: @escaping (String) -> ActionButtonsSendToSellModel?
     ) {
-        safariHandle = safariManager.openURL(url) { [weak self] closeURL in
+        safariHandle = safariManager.openURL(url, onSuccess: { [weak self] closeURL in
             let sendToSellModel = makeSellToSendToModel(closeURL.absoluteString)
 
             self?.safariHandle = nil
             self?.dismiss(with: sendToSellModel)
-        }
+        })
     }
 
     func dismiss() {

@@ -104,10 +104,10 @@ extension OnboardingCoordinator {
 
 extension OnboardingCoordinator: OnboardingTopupRoutable {
     func openCryptoShop(at url: URL, action: @escaping () -> Void) {
-        safariHandle = safariManager.openURL(url) { [weak self] _ in
+        safariHandle = safariManager.openURL(url, onSuccess: { [weak self] _ in
             self?.safariHandle = nil
             action()
-        }
+        })
     }
 
     func openBankWarning(confirmCallback: @escaping () -> Void, declineCallback: @escaping () -> Void) {
