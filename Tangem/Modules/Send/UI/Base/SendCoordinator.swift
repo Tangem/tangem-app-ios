@@ -161,7 +161,7 @@ extension SendCoordinator: SendRoutable {
     }
 }
 
-// MARK: - ExpressApproveRoutable
+// MARK: - OnrampRoutable
 
 extension SendCoordinator: OnrampRoutable {
     func openOnrampCountryDetection(country: OnrampCountry, repository: OnrampRepository, dataRepository: OnrampDataRepository) {
@@ -227,11 +227,11 @@ extension SendCoordinator: OnrampRoutable {
         onrampRedirectingViewModel = onrampRedirectingBuilder.makeOnrampRedirectingViewModel(coordinator: self)
     }
 
-    func openOnrampWebView(url: URL, success: @escaping () -> Void) {
-        safariHandle = safariManager.openURL(url) { [weak self] _ in
+    func openOnrampWebView(url: URL, onDismiss: @escaping () -> Void, onSuccess: @escaping () -> Void) {
+        safariHandle = safariManager.openURL(url, onDismiss: onDismiss, onSuccess: { [weak self] _ in
             self?.safariHandle = nil
-            success()
-        }
+            onSuccess()
+        })
 
         dismissOnrampRedirecting()
     }
