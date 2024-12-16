@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Combine
+import TangemFoundation
 
 class CommonTokenQuotesRepository {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
@@ -18,6 +19,7 @@ class CommonTokenQuotesRepository {
     private var _prices: CurrentValueSubject<[PriceItem: Decimal], Never> = .init([:])
     private var loadingQueue = PassthroughSubject<QueueItem, Never>()
     private var bag: Set<AnyCancellable> = []
+    private let lock = Lock(isRecursive: false)
 
     init() {
         bind()
@@ -84,13 +86,15 @@ extension CommonTokenQuotesRepository: TokenQuotesRepository {
 
 extension CommonTokenQuotesRepository: TokenQuotesRepositoryUpdater {
     func saveQuotes(_ quotes: [TokenQuote]) {
-        var current = _quotes.value
+        lock {
+            var current = _quotes.value
 
-        quotes.forEach { quote in
-            current[quote.currencyId] = quote
+            quotes.forEach { quote in
+                current[quote.currencyId] = quote
+            }
+
+            _quotes.send(current)
         }
-
-        _quotes.send(current)
     }
 }
 

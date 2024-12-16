@@ -73,13 +73,8 @@ final class ActionButtonsViewModel: ObservableObject {
     }
 
     func refresh() {
+        // do nothing if already iniitialized
         exchangeService.initialize()
-
-        expressAvailabilityProvider.updateExpressAvailability(
-            for: userWalletModel.walletModelsManager.walletModels.map(\.tokenItem),
-            forceReload: true,
-            userWalletId: userWalletModel.userWalletId.stringValue
-        )
     }
 }
 
