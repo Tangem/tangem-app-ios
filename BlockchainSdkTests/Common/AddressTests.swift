@@ -28,8 +28,6 @@ class AddressesTests: XCTestCase {
         let blockchain = Blockchain.bitcoin(testnet: false)
         let service = BitcoinAddressService(networkParams: BitcoinNetwork.mainnet.networkParams)
 
-        XCTAssertThrowsError(try service.makeAddress(from: edKey))
-
         let bech32_dec = try service.makeAddress(from: secpDecompressedKey, type: .default)
         let bech32_comp = try service.makeAddress(from: secpCompressedKey, type: .default)
         XCTAssertEqual(bech32_dec.value, bech32_comp.value)
@@ -43,11 +41,12 @@ class AddressesTests: XCTestCase {
         XCTAssertEqual(leg_dec.localizedName, leg_comp.localizedName)
         XCTAssertEqual(leg_dec.value, "1HTBz4DRWpDET1QNMqsWKJ39WyWcwPWexK")
         XCTAssertEqual(leg_comp.value, "1JjXGY5KEcbT35uAo6P9A7DebBn4DXnjdQ")
+
+        XCTAssertThrowsError(try service.makeAddress(from: edKey))
     }
 
     func testBtcTestnet() throws {
         let service = BitcoinAddressService(networkParams: BitcoinNetwork.testnet.networkParams)
-        XCTAssertThrowsError(try service.makeAddress(from: edKey))
 
         let bech32_dec = try service.makeAddress(from: secpDecompressedKey, type: .default)
         let bech32_comp = try service.makeAddress(from: secpCompressedKey, type: .default)
@@ -60,6 +59,8 @@ class AddressesTests: XCTestCase {
         XCTAssertEqual(leg_dec.localizedName, leg_comp.localizedName)
         XCTAssertEqual(leg_dec.value, "mwy9H7JQKqeVE7sz5Qqt9DFUNy7KtX7wHj") // TODO: validate with android
         XCTAssertEqual(leg_comp.value, "myFUZbAJ3e2hpCNnWfMWz2RyTBNm7vdnSQ") // TODO: validate with android
+
+        XCTAssertThrowsError(try service.makeAddress(from: edKey))
     }
 
     func testBtcTwin() throws {
@@ -400,7 +401,7 @@ class AddressesTests: XCTestCase {
 
     // MARK: - Dogecoin
 
-    func testDoge() throws {
+    func testDogeсoinAddressGeneration() throws {
         let blockchain = Blockchain.dogecoin
         let service = BitcoinLegacyAddressService(networkParams: DogecoinNetworkParams())
 
@@ -415,6 +416,18 @@ class AddressesTests: XCTestCase {
         try XCTAssertEqual(addressesUtility.makeTrustWalletAddress(publicKey: secpDecompressedKey, for: blockchain), addr_comp.value)
 
         XCTAssertThrowsError(try service.makeAddress(from: edKey))
+    }
+
+    func testDogeсoinAddressValidation() throws {
+        let addressService = BitcoinLegacyAddressService(networkParams: DogecoinNetworkParams())
+
+        XCTAssertTrue(addressService.validate("DDWSSN4qy1ccJ1CYgaB6HGs4Euknqb476q"))
+        XCTAssertTrue(addressService.validate("D6H6nVsCmsodv7SLQd1KpfsmkUKmhXhP3g"))
+        XCTAssertTrue(addressService.validate("DCGx73ispbchmXfNczfp9TtWfKtzgzgp8N"))
+
+        XCTAssertFalse(addressService.validate("DCGx73ispbchmXfNczfp9TtWfKtzgzgp"))
+        XCTAssertFalse(addressService.validate("CCGx73ispbchmXfNczfp9TtWfKtzgzgp8N"))
+        XCTAssertFalse(addressService.validate(""))
     }
 
     // MARK: - Tezos
@@ -704,45 +717,38 @@ class AddressesTests: XCTestCase {
 
     // MARK: - Dash
 
-    func testDashCompressedMainnet() throws {
-        // given
+    func testDashMainnetAddressGeneration() throws {
         let blockchain = Blockchain.dash(testnet: false)
-        let service = BitcoinLegacyAddressService(networkParams: DashMainNetworkParams())
-        let expectedAddress = "XtRN6njDCKp3C2VkeyhN1duSRXMkHPGLgH"
+        let addressService = BitcoinLegacyAddressService(networkParams: DashMainNetworkParams())
+
+        let compressedExpectedAddress = "XtRN6njDCKp3C2VkeyhN1duSRXMkHPGLgH"
+        let decompressedExpectedAddress = "Xs92pJsKUXRpbwzxDjBjApiwMK6JysNntG"
 
         // when
-        let address = try service.makeAddress(from: secpCompressedKey)
+        let compressedKeyAddress = try addressService.makeAddress(from: secpCompressedKey)
+        let decompressedKeyAddress = try addressService.makeAddress(from: secpDecompressedKey)
 
         // then
-        XCTAssertEqual(address.value, expectedAddress)
-        try XCTAssertEqual(addressesUtility.makeTrustWalletAddress(publicKey: secpCompressedKey, for: blockchain), address.value)
+        XCTAssertEqual(compressedKeyAddress.value, compressedExpectedAddress)
+        XCTAssertEqual(decompressedKeyAddress.value, decompressedExpectedAddress)
+
+        let addressUtility = try addressesUtility.makeTrustWalletAddress(publicKey: secpCompressedKey, for: blockchain)
+
+        try XCTAssertEqual(addressUtility, compressedKeyAddress.value)
+
+        XCTAssertThrowsError(try addressService.makeAddress(from: edKey))
     }
 
-    func testDashDecompressedMainnet() throws {
-        // given
-        let service = BitcoinLegacyAddressService(networkParams: DashMainNetworkParams())
-        let expectedAddress = "Xs92pJsKUXRpbwzxDjBjApiwMK6JysNntG"
+    func testDashAddressValidation() throws {
+        let addressService = BitcoinLegacyAddressService(networkParams: DashMainNetworkParams())
 
-        // when
-        let address = try service.makeAddress(from: secpDecompressedKey)
+        XCTAssertTrue(addressService.validate("XwrhJMJKUpP21KShxqv6YcaTQZfiZXdREQ"))
+        XCTAssertTrue(addressService.validate("XdDGLNAAXF91Da58hYwHqQmFEWPGTh3L8p"))
+        XCTAssertTrue(addressService.validate("XuRzigQHyJfvw35e281h5HPBqJ8HZjF8M4"))
 
-        // then
-        XCTAssertEqual(address.value, expectedAddress)
-    }
-
-    func testDashTestnet() throws {
-        // given
-        let service = BitcoinLegacyAddressService(networkParams: DashTestNetworkParams())
-        let expectedAddress = "yMfdoASh4QEM3zVpZqgXJ8St38X7VWnzp7"
-        let compressedKey = Data(
-            hexString: "021DCF0C1E183089515DF8C86DACE6DA08DC8E1232EA694388E49C3C66EB79A418"
-        )
-
-        // when
-        let address = try service.makeAddress(from: compressedKey)
-
-        // then
-        XCTAssertEqual(address.value, expectedAddress)
+        XCTAssertFalse(addressService.validate("RJRyWwFs9wTFGZg3JbrVriFbNfCug5tDeC"))
+        XCTAssertFalse(addressService.validate("XuRzigQHyJfvw35e281h5HPBqJ8"))
+        XCTAssertFalse(addressService.validate(""))
     }
 
     // MARK: - TON
@@ -1028,7 +1034,7 @@ class AddressesTests: XCTestCase {
         XCTAssertFalse(addressService.validate("9a4b6c1e2d8f3a5b7e8d9a1c3b2e4d5f6a7b8c9d0e1f2a3b4c5d6e7f8a4b6c1e2d8f3"))
     }
 
-    // MARK: - Decimal
+    // MARK: - Decimal (EVM)
 
     func testDecimalAddressService() throws {
         let walletPublicKey = Data(hexString: "04BAEC8CD3BA50FDFE1E8CF2B04B58E17041245341CD1F1C6B3A496B48956DB4C896A6848BCF8FCFC33B88341507DD25E5F4609386C68086C74CF472B86E5C3820"

@@ -378,5 +378,17 @@ https://developer.apple.com/documentation/foundation/jsondecoder/3766916-allowsj
             "0x",
             "0xa7bfcf5aa54d22e32f528b4ed0131eb157f65f2e04b79541d26a"
         ]
+    },
+    {
+        "blockchain": "dash",
+        "positive": [
+            "XtRN6njDCKp3C2VkeyhN1duSRXMkHPGLgH",
+            "Xs92pJsKUXRpbwzxDjBjApiwMK6JysNntG",
+            "XwrhJMJKUpP21KShxqv6YcaTQZfiZXdREQ"
+        ],
+        "negative": [
+            "XuRzigQHyJfvw35e281h5HPBqJ8",
+            ""
+        ]
     }
 ]
