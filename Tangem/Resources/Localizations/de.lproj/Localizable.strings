@@ -254,7 +254,7 @@
 "express_by_provider_placeholder" = "Zur Verfügung gestellt von %@";
 "express_cex_status_button_title" = "Status";
 "express_choose_providers_subtitle" = "Tangem bietet Token-Swaps über Drittanbieter gemäß den jeweiligen Bedingungen des jeweiligen Anbieters an.";
-"express_choose_providers_title" = "Anbieter wählen";
+"express_choose_providers_title" = "Anbieter";
 "express_error_code" = "Es ist ein Fehler aufgetreten. Code: %@";
 "express_error_provider_amount_roundup" = "Fehler %1$@. Der ausgewählte Anbieter kann die angegebene Transaktion nicht verarbeiten. Bitte runde den Wert auf %2$@ auf oder änder diesen.";
 "express_error_swap_pair_unavailable" = "Der gewählte Anbieter ist im Moment nicht verfügbar. Bitte versuche es später noch einmal. (Code: %@)";
@@ -561,7 +561,7 @@
 "onramp_currency_other" = "Andere Währungen";
 "onramp_currency_popular" = "Beliebte Fiats";
 "onramp_currency_search" = "Suche nach Währung";
-"onramp_legal" = "By using onramp functionality, you agree with provider’s %1$@ and %2$@";
+"onramp_legal" = "Durch die Nutzung der Onramp-Funktionalität stimmst Du den %1$@ und %2$@ des Anbieters zu.";
 "onramp_max_amount_restriction" = "Der Kaufbetrag sollte nicht höher sein als %@";
 "onramp_min_amount_restriction" = "Der zu kaufende Betrag muss mindestens %@ betragen";
 "onramp_no_available_providers" = "Keine verfügbaren Anbieter für diese Währung";
@@ -636,7 +636,7 @@
 "scan_card_settings_message" = "Scanne die Karte oder Ring, um ihre Einstellungen zu ändern. Die Änderungen wirken sich nur auf die von dir gescannte Karte oder Ring aus und haben keine Auswirkungen auf andere mit deiner Wallet verknüpften Geräte.";
 "scan_card_settings_title" = "Halte deine Karte oder Ring bereit!";
 "security_alert_title" = "Sicherheitswarnung";
-"selling_insufficient_balance_alert_message" = "Dein Konto verfügt nicht über genügend Guthaben, um diese Kryptowährung zu verkaufen. Bitte zahle den gewünschten Vermögenswert ein, um fortzufahren.";
+"selling_insufficient_balance_alert_message" = "Dein Konto verfügt nicht über ausreichend Guthaben, um Kryptowährungen zu verkaufen. Bitte zahle den gewünschten Vermögenswert ein, um fortzufahren.";
 "selling_insufficient_balance_alert_title" = "Unzureichendes Guthaben";
 "selling_regional_restriction_alert_message" = "Der Verkauf von Kryptowährung ist in Deiner Region derzeit nicht möglich. Wir arbeiten aktiv daran, Ihnen diese Option bald anzubieten – bleib dran!";
 "selling_regional_restriction_alert_title" = "Regionale Einschränkung";
