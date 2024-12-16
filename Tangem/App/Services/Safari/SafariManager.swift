@@ -25,13 +25,8 @@ protocol SafariManager {
 }
 
 extension SafariManager {
-    func openURL(
-        _ url: URL,
-        configuration: SafariConfiguration = .init(),
-        onDismiss: @escaping () -> Void = {},
-        onSuccess: @escaping (URL) -> Void = { _ in }
-    ) -> SafariHandle {
-        openURL(url, configuration: configuration, onDismiss: onDismiss, onSuccess: onSuccess)
+    func openURL(_ url: URL, configuration: SafariConfiguration = .init(), onSuccess: @escaping (URL) -> Void = { _ in }) -> SafariHandle {
+        openURL(url, configuration: configuration, onDismiss: {}, onSuccess: onSuccess)
     }
 
     func openURL(_ url: URL, configuration: SafariConfiguration = .init()) {

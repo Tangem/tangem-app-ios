@@ -228,7 +228,7 @@ extension SendCoordinator: OnrampRoutable {
     }
 
     func openOnrampWebView(url: URL, onDismiss: @escaping () -> Void, onSuccess: @escaping () -> Void) {
-        safariHandle = safariManager.openURL(url, onDismiss: onDismiss, onSuccess: { [weak self] _ in
+        safariHandle = safariManager.openURL(url, configuration: .init(), onDismiss: onDismiss, onSuccess: { [weak self] _ in
             self?.safariHandle = nil
             onSuccess()
         })
