@@ -11,7 +11,7 @@ enum OnrampNotificationEvent: Hashable {
 }
 
 extension OnrampNotificationEvent: NotificationEvent {
-    var title: NotificationView.Title {
+    var title: NotificationView.Title? {
         switch self {
         case .refreshRequired(let title, _):
             return .string(title)

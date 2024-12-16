@@ -16,7 +16,7 @@ enum WithdrawalNotificationEvent: Hashable {
 }
 
 extension WithdrawalNotificationEvent: NotificationEvent {
-    var title: NotificationView.Title {
+    var title: NotificationView.Title? {
         switch self {
         case .reduceAmountBecauseFeeIsTooHigh:
             return .string(Localization.sendNotificationHighFeeTitle)

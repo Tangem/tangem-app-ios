@@ -28,6 +28,7 @@ final class CardActivationTask: CardSessionRunnable {
     typealias CompletionHandler = CompletionResult<VisaCardActivationResponse>
 
     private weak var orderProvider: CardActivationTaskOrderProvider?
+    private weak var otpRepository: VisaOTPRepository?
     private let logger: InternalLogger
 
     private let selectedAccessCode: String
@@ -43,6 +44,7 @@ final class CardActivationTask: CardSessionRunnable {
         activationInput: VisaCardActivationInput,
         challengeToSign: String?,
         delegate: CardActivationTaskOrderProvider,
+        otpRepository: VisaOTPRepository,
         logger: InternalLogger
     ) {
         self.selectedAccessCode = selectedAccessCode
@@ -51,6 +53,7 @@ final class CardActivationTask: CardSessionRunnable {
         orderPublisher.send(nil)
 
         orderProvider = delegate
+        self.otpRepository = otpRepository
         self.logger = logger
     }
 
@@ -122,10 +125,48 @@ private extension CardActivationTask {
     }
 
     func createOTP(in session: CardSession, completion: @escaping CompletionHandler) {
-        // TODO: IOS-8571
+        if let taskCancellationError {
+            completion(.failure(taskCancellationError))
+            return
+        }
+
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+
+        guard let otpRepository else {
+            completion(.failure(.underlying(error: VisaActivationError.missingOTPRepository)))
+            return
+        }
+
+        do {
+            if try otpRepository.hasSavedOTP(cardId: card.cardId) {
+                waitForOrder(in: session, completion: completion)
+                return
+            }
+        } catch {
+            log("Failed to get saved OTP: \(error)")
+        }
+
+        let otpCommand = GenerateOTPCommand()
+        otpCommand.run(in: session) { result in
+            switch result {
+            case .success(let otpResponse):
+                do {
+                    try otpRepository.saveOTP(otpResponse.rootOTP, cardId: card.cardId)
+                } catch {
+                    self.log("Failed to save OTP in secure storage. Error: \(error)")
+                }
+                self.waitForOrder(in: session, completion: completion)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
 
     func waitForOrder(in session: CardSession, completion: @escaping CompletionHandler) {
+        completion(.failure(.underlying(error: VisaActivationError.notImplemented)))
         // TODO: IOS-8572
     }
 }
