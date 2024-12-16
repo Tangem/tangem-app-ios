@@ -232,15 +232,17 @@ private extension OnrampModel {
     }
 
     func clearOnrampManager() async throws {
-        let provider = try await onrampManager.setupQuotes(in: providersList(), amount: .clear)
+        let (list, provider) = try await onrampManager.setupQuotes(in: providersList(), amount: .clear)
         try Task.checkCancellation()
+        _onrampProviders.send(.success(list))
         _selectedOnrampProvider.send(.success(provider))
     }
 
     func updateOnrampManager(amount: Decimal) async throws {
         _selectedOnrampProvider.send(.loading)
-        let provider = try await onrampManager.setupQuotes(in: providersList(), amount: .amount(amount))
+        let (list, provider) = try await onrampManager.setupQuotes(in: providersList(), amount: .amount(amount))
         try Task.checkCancellation()
+        _onrampProviders.send(.success(list))
         _selectedOnrampProvider.send(.success(provider))
     }
 
@@ -359,13 +361,15 @@ private extension OnrampModel {
             return
         }
 
-        let providerForReselect = try await onrampManager.setupQuotes(in: providersList(), amount: .same)
+        // Save for possible reselect
+        let (list, provider) = try await onrampManager.setupQuotes(in: providersList(), amount: .same)
         try Task.checkCancellation()
 
         // Check after reloading
         guard _selectedOnrampProvider.value?.value?.isSuccessfullyLoaded == true else {
-            log("Selected provider has a error. Will update to \(providerForReselect)")
-            _selectedOnrampProvider.send(.success(providerForReselect))
+            log("Selected provider has a error. Will update to \(provider)")
+            _onrampProviders.send(.success(list))
+            _selectedOnrampProvider.send(.success(provider))
             return
         }
 
@@ -440,7 +444,7 @@ extension OnrampModel: OnrampPaymentMethodsInput {
 
     var paymentMethodsPublisher: AnyPublisher<[OnrampPaymentMethod], Never> {
         _onrampProviders.compactMap {
-            $0?.value?.filter { $0.hasShowableProviders() }.map(\.paymentMethod)
+            $0?.value?.filter { $0.hasSelectableProviders() }.map(\.paymentMethod)
         }.eraseToAnyPublisher()
     }
 }

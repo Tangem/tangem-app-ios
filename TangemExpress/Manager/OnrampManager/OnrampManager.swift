@@ -15,7 +15,7 @@ public protocol OnrampManager: Actor {
     func setupProviders(request: OnrampPairRequestItem) async throws -> ProvidersList
 
     /// The user changed the amount. We upload providers quotes
-    func setupQuotes(in providers: ProvidersList, amount: OnrampUpdatingAmount) async throws -> OnrampProvider
+    func setupQuotes(in providers: ProvidersList, amount: OnrampUpdatingAmount) async throws -> (list: ProvidersList, provider: OnrampProvider)
 
     /// Reselect `paymentMethod` and sort providers according to it
     func suggestProvider(in providers: ProvidersList, paymentMethod: OnrampPaymentMethod) throws -> OnrampProvider
