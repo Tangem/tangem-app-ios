@@ -10,10 +10,10 @@ import SwiftUI
 
 struct ExpressMoreProvidersSoonView: View {
     var body: some View {
-        VStack(alignment: .center, spacing: 4) {
+        VStack(spacing: 4) {
             Assets.expressMoreProvidersIcon.image
                 .renderingMode(.template)
-                .foregroundColor(Colors.Icon.inactive)
+                .foregroundStyle(Colors.Icon.inactive)
 
             Text(Localization.expressMoreProvidersSoon)
                 .style(Fonts.Regular.footnote, color: Colors.Icon.informative)
