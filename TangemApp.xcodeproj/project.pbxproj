@@ -1729,6 +1729,7 @@
 		B63DFC4E2CD4EABB00720D9F /* TangemModules in Frameworks */ = {isa = PBXBuildFile; productRef = B63DFC4D2CD4EABB00720D9F /* TangemModules */; };
 		B63FDB182A5F09F10080240F /* CardsInfoPagerFlexibleFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63FDB172A5F09F10080240F /* CardsInfoPagerFlexibleFooterView.swift */; };
 		B6421A8D2C9272800053DD8B /* MainBottomSheetHeaderViewModelDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6421A8C2C9272800053DD8B /* MainBottomSheetHeaderViewModelDelegate.swift */; };
+		B6438A0E2D091BE5009439CA /* FirebaseAnalyticsEventConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6438A0D2D091BE5009439CA /* FirebaseAnalyticsEventConverter.swift */; };
 		B643B8072B1965EA002DE401 /* PerformanceMonitorConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B643B8062B1965EA002DE401 /* PerformanceMonitorConfigurator.swift */; };
 		B64598FF2B59B4AC000FD73F /* RateAppAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64598FE2B59B4AC000FD73F /* RateAppAction.swift */; };
 		B645BF3E2C59239700D8A2A5 /* CommonMarketsHistoryChartProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B645BF3C2C59239700D8A2A5 /* CommonMarketsHistoryChartProvider.swift */; };
@@ -4903,6 +4904,7 @@
 		B63D4CAC2B2B8C6200DB2420 /* MutableCollection+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MutableCollection+.swift"; sourceTree = "<group>"; };
 		B63FDB172A5F09F10080240F /* CardsInfoPagerFlexibleFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardsInfoPagerFlexibleFooterView.swift; sourceTree = "<group>"; };
 		B6421A8C2C9272800053DD8B /* MainBottomSheetHeaderViewModelDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainBottomSheetHeaderViewModelDelegate.swift; sourceTree = "<group>"; };
+		B6438A0D2D091BE5009439CA /* FirebaseAnalyticsEventConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAnalyticsEventConverter.swift; sourceTree = "<group>"; };
 		B643B8062B1965EA002DE401 /* PerformanceMonitorConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceMonitorConfigurator.swift; sourceTree = "<group>"; };
 		B64598FC2B59A81D000FD73F /* MainViewPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewPage.swift; sourceTree = "<group>"; };
 		B64598FE2B59B4AC000FD73F /* RateAppAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateAppAction.swift; sourceTree = "<group>"; };
@@ -8863,6 +8865,7 @@
 				2D42AA582C6379DC006A2FD4 /* Analytics+Markets.swift */,
 				DC1D4C442C38616500B2A422 /* CommonExpressAnalyticsLogger.swift */,
 				0AD13F942C8AD76800C2EE16 /* CommonStakingAnalyticsLogger.swift */,
+				B6438A0D2D091BE5009439CA /* FirebaseAnalyticsEventConverter.swift */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -17580,6 +17583,7 @@
 				B6DF7E792AA95DBB007C92BD /* ListFooterOverlayShadowView.swift in Sources */,
 				B65C518C2B7FB1FA006E3C34 /* TangemBaseAPIError.swift in Sources */,
 				B05A13A329FB975400FB511A /* LoadableTextView.swift in Sources */,
+				B6438A0E2D091BE5009439CA /* FirebaseAnalyticsEventConverter.swift in Sources */,
 				DC8B159D2B681FE500DBBE9E /* PendingExpressTxStatusRoutable.swift in Sources */,
 				DC295B4A2861C4CB006CB7B6 /* DetailsCoordinatorView.swift in Sources */,
 				B012A1172AA5CDBD0079BAB4 /* NotificationEvent.swift in Sources */,
