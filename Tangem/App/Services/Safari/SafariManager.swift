@@ -69,13 +69,14 @@ class CommonSafariManager: NSObject, SafariManager {
     }
 
     func openURL(_ url: URL, configuration: SafariConfiguration) {
-        openURL(url, configuration: configuration) { _ in }
+        openURL(url, configuration: configuration, onDismiss: {}, onSuccess: { _ in })
     }
 
     @discardableResult
     func openURL(
         _ url: URL,
         configuration: SafariConfiguration,
+        onDismiss: @escaping () -> Void,
         onSuccess: @escaping (URL) -> Void
     ) -> SafariHandle {
         AppLog.shared.debug("Open URL: \(url)")
@@ -84,7 +85,7 @@ class CommonSafariManager: NSObject, SafariManager {
         controller.dismissButtonStyle = configuration.dismissButtonStyle.sfDismissButtonStyle
         controller.delegate = self
         controller.presentationController?.delegate = self
-        let context = SafariContext(controller: controller, onDismiss: {}, onSuccess: onSuccess)
+        let context = SafariContext(controller: controller, onDismiss: onDismiss, onSuccess: onSuccess)
         self.context = context
         AppPresenter.shared.show(controller)
         return context
