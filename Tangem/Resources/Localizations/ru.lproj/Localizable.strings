@@ -2,7 +2,7 @@
 "action_buttons_buy_navigation_bar_title" = "Купить";
 "action_buttons_sell_empty_search_message" = "Не нашли свой токен? Перейдите в раздел «Рынок» на главной странице и добавьте его в свой портфель для продажи.";
 "action_buttons_sell_navigation_bar_title" = "Продать";
-"action_buttons_something_wrong_alert_message" = "Действие в данный момент недоступно, пожалуйста попробуйте позже или обновить данные, сделав свайп экрана вниз.";
+"action_buttons_something_wrong_alert_message" = "Это действие в данный момент недоступно, пожалуйста попробуйте позже или обновите данные, сделав свайп экрана вниз.";
 "action_buttons_something_wrong_alert_title" = "Кнопка недоступна";
 "action_buttons_swap_choose_token" = "Выберите токен";
 "action_buttons_swap_empty_search_message" = "Не нашли свой токен? Перейдите в раздел «Рынок» на главной странице и добавьте его в свой портфель для обмена.";
@@ -254,7 +254,7 @@
 "express_by_provider_placeholder" = "Предоставлено %@";
 "express_cex_status_button_title" = "Статус";
 "express_choose_providers_subtitle" = "Tangem предоставляет доступ к обмену через сторонних поставщиков в соответствии с их правилами";
-"express_choose_providers_title" = "Выберите провайдера";
+"express_choose_providers_title" = "Провайдер";
 "express_error_code" = "Произошла ошибка. Код: %@";
 "express_error_provider_amount_roundup" = "Ошибка %1$@. Выбранный провайдер не может обработать указанную транзакцию. Округлите значение до %2$@ или измените его.";
 "express_error_swap_pair_unavailable" = "Выбранный провайдер недоступен для обмена. Попробуйте позже. (Код: %@)";
@@ -313,7 +313,7 @@
 "feedback_preface_scan_failed" = "Скажите, пожалуйста, какая у вас карта или кольцо?";
 "feedback_preface_support" = "Привет, команда поддержки,";
 "feedback_preface_tx_failed" = "Пожалуйста, расскажите нам больше о вашей проблеме. Каждая маленькая деталь может помочь.";
-"feedback_subject_pre_activated_wallet" = "Previously activated wallet";
+"feedback_subject_pre_activated_wallet" = "Ранее активированный кошелек";
 "feedback_subject_rate_negative" = "Мои предложения";
 "feedback_subject_scan_failed" = "Не могу отсканировать карту/кольцо";
 "feedback_subject_support" = "Обращение в поддержку";
@@ -561,17 +561,17 @@
 "onramp_currency_other" = "Другие валюты";
 "onramp_currency_popular" = "Популярные фиаты";
 "onramp_currency_search" = "Поиск по валюте";
-"onramp_legal" = "By using onramp functionality, you agree with provider’s %1$@ and %2$@";
+"onramp_legal" = "Пользуясь сервисом покупки, вы соглашаетесь с %1$@ и %2$@";
 "onramp_max_amount_restriction" = "Сумма покупки не может быть больше, чем %@";
 "onramp_min_amount_restriction" = "Сумма покупки должна составлять минимум %@";
 "onramp_no_available_providers" = "Нет доступных провайдеров для выбранной валюты";
 "onramp_pay_with" = "Оплата с";
 "onramp_provider_max_amount" = "Доступно до %@";
-"onramp_provider_min_amount" = "Доступно с %@";
+"onramp_provider_min_amount" = "Доступно от %@";
 "onramp_redirecting_to_provider_subtitle" = "Вы сможете продолжить транзакцию через сервис стороннего провайдера, %@";
 "onramp_redirecting_to_provider_title" = "Переход к %@...";
 "onramp_residency_bottomsheet_country_not_supported" = "Наши сервисы недоступны в данной стране";
-"onramp_residency_bottomsheet_title" = "Ваше местоположение определено как";
+"onramp_residency_bottomsheet_title" = "Ваше место жительства определено как";
 "onramp_settings_residence" = "Страна проживания";
 "onramp_settings_residence_description" = "Пожалуйста, укажите правильную страну, чтобы обеспечить точность доступных способов оплаты и услуг.";
 "onramp_settings_title" = "Настройки";

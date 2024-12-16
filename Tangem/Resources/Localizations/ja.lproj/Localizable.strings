@@ -254,7 +254,7 @@
 "express_by_provider_placeholder" = "提供元 %@";
 "express_cex_status_button_title" = "ステータス";
 "express_choose_providers_subtitle" = "Tangemは、各プロバイダーの条件に従って、サードパーティプロバイダーを介してトークンスワップを提供します。";
-"express_choose_providers_title" = "プロバイダーを選択";
+"express_choose_providers_title" = "プロバイダー";
 "express_error_code" = "エラーが発生しました。コード: %@";
 "express_error_provider_amount_roundup" = "エラー%1$@ 。選択したプロバイダーは指定された取引を処理できません。値を%2$@に切り上げるか、変更してください。";
 "express_error_swap_pair_unavailable" = "選択したプロバイダーは現在利用できません。しばらくしてからもう一度お試しください。(コード: %@ )";
@@ -561,7 +561,7 @@
 "onramp_currency_other" = "その他の通貨";
 "onramp_currency_popular" = "人気の法定通貨";
 "onramp_currency_search" = "通貨で検索";
-"onramp_legal" = "By using onramp functionality, you agree with provider’s %1$@ and %2$@";
+"onramp_legal" = "オンランプ機能を使用することにより、プロバイダの%1$@および%2$@に同意するものとします";
 "onramp_max_amount_restriction" = "買付金額は%@以下にしてください";
 "onramp_min_amount_restriction" = "買付金額は少なくとも%@である必要があります";
 "onramp_no_available_providers" = "この通貨で利用可能なプロバイダーはありません";
@@ -978,7 +978,7 @@
 "warning_approval_in_progress_title" = "承認中";
 "warning_backup_errors_message" = "カードまたはリングのアクティベーションが正しく完了しませんでした。デバイスのNFCモジュールに問題があるか、カードまたはリングをデバイスに正しくタップしていないことが原因かもしれません。サポートチームにお問い合わせください。";
 "warning_beacon_chain_retirement_content" = "2024年12月3日、BEP-2ネットワークはネットワーク開発者の決定により使用不能となり、サポートは終了しました。";
-"warning_beacon_chain_retirement_title" = "BNBビーコンチェーンは閉鎖されます。";
+"warning_beacon_chain_retirement_title" = "BNBビーコンチェーンは閉鎖されました";
 "warning_blocked_funds_for_fee_message" = "ネットワーク手数料をカバーするために%1$@を入金してください";
 "warning_blocked_funds_for_fee_title" = "ネットワーク手数料をカバーする資金が不足しています";
 "warning_button_could_be_better" = "もっと良くなるはず";

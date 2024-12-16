@@ -254,7 +254,7 @@
 "express_by_provider_placeholder" = "Provided by %@";
 "express_cex_status_button_title" = "Status";
 "express_choose_providers_subtitle" = "Tangem offers token swaps via 3rd-party providers according to each provider's terms";
-"express_choose_providers_title" = "Choose provider";
+"express_choose_providers_title" = "Provider";
 "express_error_code" = "An error occurred. Code: %@";
 "express_error_provider_amount_roundup" = "Error %1$@. The selected provider cannot process the specified transaction. Please round the value up to %2$@ or change it";
 "express_error_swap_pair_unavailable" = "Selected provider is unavailable at the moment. Please try again later. (Code: %@)";
