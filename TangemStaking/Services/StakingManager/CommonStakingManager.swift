@@ -202,7 +202,22 @@ private extension CommonStakingManager {
             case .unlockLocked:
                 modifyBalancesByStatus(balances: &balances, action: action, type: .locked)
             case .unstake:
-                modifyBalancesByStatus(balances: &balances, action: action, type: .active)
+                guard let index = balanceIndexByType(balances: balances, action: action, type: .active) else { return }
+                let balance = balances[index]
+                if balance.amount == action.amount {
+                    // full unstake, make existing staking in progress
+                    modifyBalancesByStatus(balances: &balances, action: action, type: .active)
+                } else {
+                    // partial unstake, reduce amount for existing staking, append new in progress block 
+                    modifyBalancesByStatus(
+                        balances: &balances,
+                        action: action,
+                        type: .active,
+                        reduceBalanceByActionAmount: true,
+                        makeInProgress: false
+                    )
+                    balances.append(mapToStakingBalance(action: action, yield: yield, balanceType: .active))
+                }
             default:
                 break // do nothing
             }
@@ -227,14 +242,15 @@ private extension CommonStakingManager {
     private func modifyBalancesByStatus(
         balances: inout [StakingBalance],
         action: PendingAction,
-        type: StakingBalanceType
+        type: StakingBalanceType,
+        reduceBalanceByActionAmount: Bool = false,
+        makeInProgress inProgress: Bool = true
     ) {
         guard let index = balanceIndexByType(balances: balances, action: action, type: type) else { return }
 
         let balance = balances[index]
 
-        // reduce amount of existing balance to avoid an attemp to unstake already unstaked
-        let amount = action.type == .unstake ? balance.amount - action.amount : balance.amount
+        let amount = reduceBalanceByActionAmount ? balance.amount - action.amount : balance.amount
 
         let updatedBalance = StakingBalance(
             item: balance.item,
@@ -242,7 +258,7 @@ private extension CommonStakingManager {
             accountAddress: balance.accountAddress,
             balanceType: balance.balanceType,
             validatorType: balance.validatorType,
-            inProgress: true,
+            inProgress: inProgress,
             actions: balance.actions
         )
 
