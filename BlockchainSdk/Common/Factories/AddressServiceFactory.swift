@@ -109,10 +109,9 @@ public struct AddressServiceFactory {
              .veChain,
              .internetComputer,
              .algorand,
-             .sei:
+             .sei,
+             .ton:
             return WalletCoreAddressService(blockchain: blockchain)
-        case .ton:
-            return TonAddressService()
         case .aptos:
             return AptosCoreAddressService()
         case .ducatus:
@@ -144,6 +143,11 @@ public struct AddressServiceFactory {
             return PolkadotAddressService(network: .energyWebX(curve: curve))
         case .casper(let curve, _):
             return CasperAddressService(curve: curve)
+        case .clore:
+            let networkParams: INetwork = CloreMainNetworkParams()
+            return BitcoinLegacyAddressService(networkParams: networkParams)
+        case .fact0rn:
+            return Fact0rnAddressService()
         }
     }
 }

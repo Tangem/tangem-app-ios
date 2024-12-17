@@ -32,14 +32,14 @@ class VisaOnboardingWelcomeViewModel: ObservableObject {
     init(
         activationState: State,
         userName: String,
-        imagePublisher: AnyPublisher<Image, Never>?,
+        imagePublisher: some Publisher<Image?, Never>,
         startActivationDelegate: @escaping () -> Void
     ) {
         self.activationState = activationState
         self.userName = userName
         self.startActivationDelegate = startActivationDelegate
         var cancellable: AnyCancellable?
-        cancellable = imagePublisher?
+        cancellable = imagePublisher
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { viewModel, image in

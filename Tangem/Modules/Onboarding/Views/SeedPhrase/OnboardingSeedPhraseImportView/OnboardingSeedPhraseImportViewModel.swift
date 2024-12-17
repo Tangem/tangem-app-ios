@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 import Combine
 import CombineExt
 import TangemSdk

@@ -54,6 +54,7 @@ Options:
 - build: optional build number
 - changelog: string for description archive
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+- analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
 
 
 ### check_bsdk_example_buildable
@@ -81,6 +82,7 @@ Options:
 - path: Path to binary
 - firebase_app_id: Firebase app id for incrementing the build version number and DSYM uploads
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+- analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
 
 
 ### build_Beta
@@ -98,38 +100,54 @@ Options:
 - path: Path to binary
 - firebase_app_id: Firebase app id for incrementing the build version number and DSYM uploads
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+- analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
 
 
-### alpha
+### build_RC
 
 ```sh
-[bundle exec] fastlane alpha
+[bundle exec] fastlane build_RC
 ```
 
 
-A lane that builds a "Tangem Alpha" scheme and uploads the archive to Firebase for testing.
-Using enviroment: Test
-Options:
-- version: app version
-- build: optional build number
-- changelog: string for description archive
-- xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
-
-
-### beta
-
-```sh
-[bundle exec] fastlane beta
-```
-
-
-A lane that builds a "Tangem Beta" scheme and uploads the archive to Firebase for testing.
+A lane that builds a "Tangem" scheme and uploads the archive to TestFlight for release.
 Using enviroment: Production
 Options:
 - version: app version
 - build: optional build number
-- changelog: string for description archive
+- filename: Name of the resulting artefact (IPA file)
+- path: Path to binary
+- firebase_app_id: Firebase app id for DSYM uploads
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+- analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
+
+
+### get_release_version_number
+
+```sh
+[bundle exec] fastlane get_release_version_number
+```
+
+
+A lane that creates the build version for the release using either user input or a branch name.
+Options:
+- build_version_override: Optional build version override (user input)
+- branch_name: Source branch name
+
+
+### get_release_build_number
+
+```sh
+[bundle exec] fastlane get_release_build_number
+```
+
+
+A lane that creates the build number for the release using either user input or information from App Store Connect API.
+Options:
+- build_number_override: Optional build number override (user input)
+- asc_key_id: App Store Connect API Key ID
+- asc_issuer_id: App Store Connect API Key Issuer ID
+- asc_key: App Store Connect API Key (NOT in the base64 format)
 
 
 ### refresh_dsyms
@@ -172,6 +190,24 @@ Options:
 - path: Path to binary
 - firebase_token: Firebase CLI Token
 - changelog: [optional] Changelog will be added to Google Distribution release notes along with the last commit hash.
+
+
+### deploy_testflight
+
+```sh
+[bundle exec] fastlane deploy_testflight
+```
+
+
+This lane deploy binary to TestFLight
+Options:
+- asc_key_id: App Store Connect API Key ID
+- asc_issuer_id: App Store Connect API Key Issuer ID
+- asc_key: App Store Connect API Key (NOT in the base64 format)
+- path: Path to binary
+- version: app version
+- build: build number
+- changelog: [optional] Changelog will be added to TestFlight release notes along with the last commit hash.
 
 
 ----

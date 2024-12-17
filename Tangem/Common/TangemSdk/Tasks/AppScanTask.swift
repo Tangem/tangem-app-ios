@@ -9,13 +9,14 @@
 import Foundation
 import TangemSdk
 import BlockchainSdk
+import TangemVisa
 import SwiftUI
 
 enum DefaultWalletData: Codable {
     case file(WalletData)
     case legacy(WalletData)
     case twin(WalletData, TwinData)
-    case visa(accessToken: String, refreshToken: String)
+    case visa(activationInput: VisaCardActivationInput, tokens: VisaAuthorizationTokens?)
     case none
 
     var twinData: TwinData? {
@@ -73,7 +74,8 @@ final class AppScanTask: CardSessionRunnable {
             return
         }
 
-        if FirmwareVersion.visaRange.contains(card.firmwareVersion.doubleValue) {
+        let visaUtils = VisaUtilities(isTestnet: false)
+        if visaUtils.isVisaCard(card) {
             readVisaCard(session, completion)
             return
         }

@@ -131,7 +131,9 @@ struct TokenInteractionAvailabilityProvider {
              .canxium,
              .casper,
              .chiliz,
-             .xodex:
+             .xodex,
+             .clore,
+             .fact0rn:
             // Checking that we have at least one valid (non-empty) address
             //
             // If necessary, add more specific conditions for newly added blockchains

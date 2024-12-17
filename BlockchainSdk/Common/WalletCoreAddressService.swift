@@ -16,9 +16,6 @@ struct WalletCoreAddressService {
     // MARK: - Init
 
     init(coin: CoinType, publicKeyType: PublicKeyType) {
-        guard coin != .ton else {
-            fatalError("Use TonAddress service instead")
-        }
         self.coin = coin
         self.publicKeyType = publicKeyType
     }

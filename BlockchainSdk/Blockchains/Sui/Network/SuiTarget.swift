@@ -8,6 +8,7 @@
 
 import Foundation
 import Moya
+import TangemNetworkUtils
 
 struct SuiTarget: TargetType {
     let baseURL: URL
@@ -62,5 +63,11 @@ extension SuiTarget {
                 return [AnyEncodable(transaction), AnyEncodable([signature])]
             }
         }
+    }
+}
+
+extension SuiTarget: TargetTypeLogConvertible {
+    var requestDescription: String {
+        request.method
     }
 }

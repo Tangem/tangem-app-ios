@@ -16,8 +16,10 @@ public protocol VisaRefreshTokenSaver: AnyObject {
 }
 
 protocol AuthorizationTokenHandler {
+    var accessToken: JWT? { get async }
+    var containsAccessToken: Bool { get async }
+    var authorizationHeader: String { get async throws }
     func setupTokens(_ tokens: VisaAuthorizationTokens) async throws
-    func authorizationHeader() async throws -> String
     func setupRefreshTokenSaver(_ refreshTokenSaver: VisaRefreshTokenSaver)
 }
 
@@ -79,7 +81,7 @@ class CommonVisaAccessTokenHandler {
 
     private func setupAccessTokenRefresher() async throws {
         log("Attempting to setup token refresher")
-        guard let jwtTokens = await accessTokenHolder.getTokens() else {
+        guard let jwtTokens = await accessTokenHolder.tokens else {
             throw VisaAccessTokenHandlerError.authorizationTokensNotFound
         }
 
@@ -124,7 +126,7 @@ class CommonVisaAccessTokenHandler {
         log("Scheduling token refresh job with interval: \(tokenRefreshTimeInterval)")
         scheduler.scheduleJob(interval: tokenRefreshTimeInterval, repeats: true) { [weak self] in
             self?.log("Access token is about to expire. Refreshing...")
-            guard let jwtTokens = await self?.accessTokenHolder.getTokens() else {
+            guard let jwtTokens = await self?.accessTokenHolder.tokens else {
                 self?.log("Failed to find access token. Canceling scheduled job.")
                 self?.scheduler.cancel()
                 return
@@ -159,19 +161,29 @@ class CommonVisaAccessTokenHandler {
 }
 
 extension CommonVisaAccessTokenHandler: AuthorizationTokenHandler {
+    var accessToken: JWT? {
+        get async { await accessTokenHolder.tokens?.accessToken }
+    }
+
+    var containsAccessToken: Bool {
+        get async { await accessTokenHolder.tokens != nil }
+    }
+
+    var authorizationHeader: String {
+        get async throws {
+            guard let jwtTokens = await accessTokenHolder.tokens else {
+                throw VisaAccessTokenHandlerError.missingAccessToken
+            }
+
+            return "Bearer \(jwtTokens.accessToken.string)"
+        }
+    }
+
     func setupTokens(_ tokens: VisaAuthorizationTokens) async throws {
         log("Setup new authorization tokens in token handler")
         try await accessTokenHolder.setTokens(authorizationTokens: tokens)
         /// We need to use `setupRefresherTask` to prevent blocking current task
         setupRefresherTask()
-    }
-
-    func authorizationHeader() async throws -> String {
-        guard let jwtTokens = await accessTokenHolder.getTokens() else {
-            throw VisaAccessTokenHandlerError.missingAccessToken
-        }
-
-        return "Bearer \(jwtTokens.accessToken.string)"
     }
 
     func setupRefreshTokenSaver(_ refreshTokenSaver: any VisaRefreshTokenSaver) {

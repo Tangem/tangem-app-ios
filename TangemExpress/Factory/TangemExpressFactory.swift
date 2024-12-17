@@ -9,7 +9,7 @@
 import Foundation
 import Moya
 import TangemSdk
-import BlockchainSdk
+import TangemNetworkUtils
 
 public struct TangemExpressFactory {
     public init() {}
@@ -75,7 +75,6 @@ public struct TangemExpressFactory {
 
     public func makeExpressAPIProvider(
         credential: ExpressAPICredential,
-        deviceInfo: ExpressDeviceInfo,
         configuration: URLSessionConfiguration,
         expressAPIType: ExpressAPIType,
         exchangeDataDecoder: ExpressExchangeDataDecoder,
@@ -88,7 +87,7 @@ public struct TangemExpressFactory {
                 sessionId: credential.sessionId,
                 refcode: credential.refcode
             ),
-            ExpressDeviceInfoPlugin(deviceInfo: deviceInfo),
+            DeviceInfoPlugin(),
             TangemNetworkLoggerPlugin(configuration: .init(
                 output: TangemNetworkLoggerPlugin.tangemSdkLoggerOutput,
                 logOptions: .verbose
@@ -114,16 +113,6 @@ public struct ExpressAPICredential {
         self.userId = userId
         self.sessionId = sessionId
         self.refcode = refcode
-    }
-}
-
-public struct ExpressDeviceInfo {
-    let platform: String
-    let version: String
-
-    public init(platform: String, version: String) {
-        self.platform = platform
-        self.version = version
     }
 }
 

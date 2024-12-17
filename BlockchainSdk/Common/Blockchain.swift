@@ -95,6 +95,8 @@ public indirect enum Blockchain: Equatable, Hashable {
     case casper(curve: EllipticCurve, testnet: Bool)
     case chiliz(testnet: Bool)
     case xodex
+    case clore
+    case fact0rn
 
     public var isTestnet: Bool {
         switch self {
@@ -163,7 +165,9 @@ public indirect enum Blockchain: Equatable, Hashable {
              .filecoin,
              .energyWebX,
              .canxium,
-             .xodex:
+             .xodex,
+             .clore,
+             .fact0rn:
             return false
         case .stellar(_, let testnet),
              .hedera(_, let testnet),
@@ -264,7 +268,9 @@ public indirect enum Blockchain: Equatable, Hashable {
              .radiant,
              .internetComputer,
              .koinos,
-             .aptos:
+             .aptos,
+             .clore,
+             .fact0rn:
             return 8
         case .ethereum,
              .ethereumClassic,
@@ -484,6 +490,10 @@ public indirect enum Blockchain: Equatable, Hashable {
             return "CHZ"
         case .xodex:
             return "XODEX"
+        case .clore:
+            return "CLORE"
+        case .fact0rn:
+            return "FACT"
         }
     }
 
@@ -890,6 +900,7 @@ public extension Blockchain {
         case .core: return false
         case .chiliz: return false
         case .xodex: return false
+        case .canxium: return true
         default:
             assertionFailure("Don't forget about evm here")
             return false
@@ -1031,6 +1042,8 @@ extension Blockchain: Codable {
         case .casper: return "casper-network"
         case .chiliz: return "chiliz"
         case .xodex: return "xodex"
+        case .clore: return "clore-ai"
+        case .fact0rn: return "fact0rn"
         }
     }
 
@@ -1131,6 +1144,8 @@ extension Blockchain: Codable {
         case "casper-network": self = .casper(curve: curve, testnet: isTestnet)
         case "chiliz": self = .chiliz(testnet: isTestnet)
         case "xodex": self = .xodex
+        case "clore-ai": self = .clore
+        case "fact0rn": self = .fact0rn
         default:
             throw BlockchainSdkError.decodingFailed
         }
@@ -1184,6 +1199,7 @@ public extension Blockchain {
         case "xtz": return .tezos(curve: curve)
         case "doge": return .dogecoin
         case "bsc": return .bsc(testnet: isTestnet)
+        case "clore-ai": return .clore
         // DO NOT ADD new blockchains here. This is legacy code and used only for Tangem Note and cards release before 4.12 firmware
         default: return nil
         }
@@ -1379,6 +1395,10 @@ private extension Blockchain {
             return "chiliz"
         case .xodex:
             return "xodex"
+        case .clore:
+            return "clore-ai"
+        case .fact0rn:
+            return "fact0rn"
         }
     }
 
@@ -1498,6 +1518,10 @@ extension Blockchain {
             return FilecoinWalletAssembly()
         case .casper:
             return CasperWalletAssembly()
+        case .clore:
+            return CloreWalletAssembly()
+        case .fact0rn:
+            return Fact0rnWalletAssembly()
         }
     }
 }

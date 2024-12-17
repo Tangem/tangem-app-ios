@@ -108,6 +108,12 @@ struct EstimationFeeAddressFactory {
             return "sei1lhjvds604fvac32j4eygpr820lyc82dlfv0ea4"
         case .energyWebX:
             return "5CogUCbb5PYYbEHhDVGDN6JRRYBkd4sFRVc4wwP8oy5Su34Z"
+        case .clore:
+            return "AJfAu7RJxiTowM9qVaTbVuS5JCPCpV3p7M"
+        case .fact0rn:
+            // TODO: [Fact0rn] Add estimation fee address
+            // https://tangem.atlassian.net/browse/IOS-8759
+            return ""
         }
     }
 }

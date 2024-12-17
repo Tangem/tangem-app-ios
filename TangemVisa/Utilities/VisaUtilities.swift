@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TangemSdk
 import BlockchainSdk
 
 public struct VisaUtilities {
@@ -14,6 +15,16 @@ public struct VisaUtilities {
 
     public init(isTestnet: Bool) {
         self.isTestnet = isTestnet
+    }
+
+    public var visaBatches: [String] {
+        [
+            "AE05",
+        ]
+    }
+
+    public var mandatoryCurve: EllipticCurve {
+        .secp256k1
     }
 
     public var tokenId: String {
@@ -32,5 +43,22 @@ public struct VisaUtilities {
 
     public var visaBlockchain: Blockchain {
         .polygon(testnet: isTestnet)
+    }
+
+    public var addressService: AddressService {
+        AddressServiceFactory(blockchain: visaBlockchain).makeAddressService()
+    }
+
+    public func visaDefaultDerivationPath(style: DerivationStyle) -> DerivationPath? {
+        visaBlockchain.derivationPath(for: style)
+    }
+
+    public func isVisaCard(_ card: Card) -> Bool {
+        return isVisaCard(firmwareVersion: card.firmwareVersion, batchId: card.batchId)
+    }
+
+    public func isVisaCard(firmwareVersion: FirmwareVersion, batchId: String) -> Bool {
+        return FirmwareVersion.visaRange.contains(firmwareVersion.doubleValue)
+            && visaBatches.contains(batchId)
     }
 }

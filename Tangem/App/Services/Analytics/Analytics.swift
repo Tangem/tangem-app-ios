@@ -23,6 +23,11 @@ class Analytics {
         return Amplitude(configuration: Configuration(apiKey: try! CommonKeysManager().amplitudeApiKey))
     }()
 
+    private static let firebaseLoggingQueue = DispatchQueue(
+        label: "com.tangem.Analytics.firebaseLoggingQueue",
+        target: .global(qos: .utility)
+    )
+
     private init() {}
 
     // MARK: - Scan
@@ -199,7 +204,7 @@ class Analytics {
         for system in analyticsSystems {
             switch system {
             case .firebase:
-                FirebaseAnalytics.Analytics.logEvent(event, parameters: params)
+                logFirebaseInternal(event, params: params)
             case .crashlytics:
                 let message = "\(event).\(params)"
                 Crashlytics.crashlytics().log(message)
@@ -213,6 +218,15 @@ class Analytics {
            let paramsString = String(data: data, encoding: .utf8)?.replacingOccurrences(of: ",\"", with: ", \"") {
             let logMessage = "Analytics event: \(event). Params: \(paramsString)"
             AppLog.shared.debug(logMessage)
+        }
+    }
+
+    private static func logFirebaseInternal(_ event: String, params: [String: Any]) {
+        // Preform logging in an asynchronous fashion due to the need for additional event mapping and processing
+        firebaseLoggingQueue.async {
+            let convertedEvent = FirebaseAnalyticsEventConverter.convert(event: event)
+            let convertedParams = FirebaseAnalyticsEventConverter.convert(params: params)
+            FirebaseAnalytics.Analytics.logEvent(convertedEvent, parameters: convertedParams)
         }
     }
 }

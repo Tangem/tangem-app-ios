@@ -12,12 +12,14 @@ import CombineExt
 import Moya
 import BlockchainSdk
 import TangemFoundation
+import TangemNetworkUtils
 
 class CommonTangemApiService {
     private let provider = TangemProvider<TangemApiTarget>(plugins: [
         CachePolicyPlugin(),
         TimeoutIntervalPlugin(),
-        TangemApiServiceLoggerPlugin(configuration: .init(
+        DeviceInfoPlugin(),
+        TangemNetworkLoggerPlugin(configuration: .init(
             output: TangemNetworkLoggerPlugin.tangemSdkLoggerOutput,
             logOptions: .verbose
         )),

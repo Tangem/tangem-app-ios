@@ -8,7 +8,7 @@
 
 import Foundation
 import Moya
-import TangemSdk
+import TangemNetworkUtils
 
 struct TangemApiTarget: TargetType {
     let type: TargetType
@@ -185,12 +185,6 @@ struct TangemApiTarget: TargetType {
             headers["card_public_key"] = authData.cardPublicKey.hexString
         }
 
-        if let appVersion: String = InfoDictionaryUtils.version.value() {
-            headers["version"] = appVersion
-        }
-
-        headers["platform"] = "ios"
-
         return headers
     }
 }
@@ -241,6 +235,21 @@ extension TangemApiTarget: CachePolicyProvider {
             return .reloadIgnoringLocalAndRemoteCacheData
         default:
             return .useProtocolCachePolicy
+        }
+    }
+}
+
+extension TangemApiTarget: TargetTypeLogConvertible {
+    var requestDescription: String {
+        path
+    }
+
+    var shouldLogResponseBody: Bool {
+        switch type {
+        case .currencies, .coins, .quotes, .apiList, .coinsList, .coinsHistoryChartPreview, .historyChart, .tokenMarketsDetails, .tokenExchangesList:
+            return false
+        case .geo, .features, .getUserWalletTokens, .saveUserWalletTokens, .loadReferralProgramInfo, .participateInReferralProgram, .createAccount, .promotion, .validateNewUserPromotionEligibility, .validateOldUserPromotionEligibility, .awardNewUser, .awardOldUser, .resetAward:
+            return true
         }
     }
 }

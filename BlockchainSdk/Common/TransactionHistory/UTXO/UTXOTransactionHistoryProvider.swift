@@ -13,11 +13,11 @@ final class UTXOTransactionHistoryProvider<Mapper>: MultiNetworkProvider where
     Mapper: TransactionHistoryMapper,
     Mapper.Response == BlockBookAddressResponse {
     var currentProviderIndex: Int = 0
-    var providers: [BlockBookUtxoProvider] {
+    var providers: [BlockBookUTXOProvider] {
         blockBookProviders
     }
 
-    private let blockBookProviders: [BlockBookUtxoProvider]
+    private let blockBookProviders: [BlockBookUTXOProvider]
     private let mapper: Mapper
 
     private var page: TransactionHistoryIndexPage?
@@ -25,7 +25,7 @@ final class UTXOTransactionHistoryProvider<Mapper>: MultiNetworkProvider where
     private var totalRecordsCount: Int = 0
 
     init(
-        blockBookProviders: [BlockBookUtxoProvider],
+        blockBookProviders: [BlockBookUTXOProvider],
         mapper: Mapper
     ) {
         self.blockBookProviders = blockBookProviders

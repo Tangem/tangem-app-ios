@@ -39,15 +39,16 @@ public struct TransactionHistoryProviderFactory {
              .dash:
             return UTXOTransactionHistoryProvider(
                 blockBookProviders: [
-                    networkAssembly.makeBlockBookUtxoProvider(with: input, for: .getBlock),
-                    networkAssembly.makeBlockBookUtxoProvider(with: input, for: .nowNodes),
+                    networkAssembly.makeBlockBookUTXOProvider(with: input, for: .getBlock),
+                    networkAssembly.makeBlockBookUTXOProvider(with: input, for: .nowNodes),
                 ],
                 mapper: UTXOTransactionHistoryMapper(blockchain: blockchain)
             )
         case .bitcoinCash:
             return UTXOTransactionHistoryProvider(
                 blockBookProviders: [
-                    networkAssembly.makeBlockBookUtxoProvider(with: input, for: .nowNodes),
+                    networkAssembly.makeBlockBookUTXOProvider(with: input, for: .getBlock),
+                    networkAssembly.makeBlockBookUTXOProvider(with: input, for: .nowNodes),
                 ],
                 mapper: UTXOTransactionHistoryMapper(blockchain: blockchain)
             )
@@ -58,12 +59,12 @@ public struct TransactionHistoryProviderFactory {
              .avalanche,
              .arbitrum:
             return EthereumTransactionHistoryProvider(
-                blockBookProvider: networkAssembly.makeBlockBookUtxoProvider(with: input, for: .nowNodes),
+                blockBookProvider: networkAssembly.makeBlockBookUTXOProvider(with: input, for: .nowNodes),
                 mapper: EthereumTransactionHistoryMapper(blockchain: blockchain)
             )
         case .tron:
             return TronTransactionHistoryProvider(
-                blockBookProvider: networkAssembly.makeBlockBookUtxoProvider(with: input, for: .nowNodes),
+                blockBookProvider: networkAssembly.makeBlockBookUTXOProvider(with: input, for: .nowNodes),
                 mapper: TronTransactionHistoryMapper(blockchain: blockchain)
             )
         case .polygon:

@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import TangemNetworkUtils
 
 class KaspaNetworkProvider: HostProvider {
     var host: String {

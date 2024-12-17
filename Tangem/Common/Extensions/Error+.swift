@@ -9,6 +9,8 @@
 import Foundation
 import Moya
 import SwiftUI
+import TangemSdk
+import TangemVisa
 
 extension Error {
     var detailedError: Error {
@@ -70,6 +72,18 @@ extension Error {
             return true
         case let urlError as URLError:
             return urlError.code == URLError.Code.cancelled
+        case let tangemSdkError as TangemSdkError:
+            return tangemSdkError.isUserCancelled
+        case let visaActivationError as VisaActivationError:
+            if case .underlyingError(let error) = visaActivationError {
+                if error is VisaActivationError {
+                    return false
+                }
+
+                return error.isCancellationError
+            }
+
+            return false
         default:
             return false
         }

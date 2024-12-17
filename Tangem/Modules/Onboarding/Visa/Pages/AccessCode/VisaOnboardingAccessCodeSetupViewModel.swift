@@ -10,6 +10,7 @@ import Foundation
 import SwiftUI
 import Combine
 import TangemFoundation
+import TangemVisa
 
 protocol VisaOnboardingAccessCodeSetupDelegate: AnyObject {
     /// We need to show alert in parent view, otherwise it won't be shown
@@ -30,10 +31,16 @@ class VisaOnboardingAccessCodeSetupViewModel: ObservableObject {
     private var selectedAccessCode: String = ""
     private var accessCodeInputSubscription: AnyCancellable?
 
+    private var accessCodeValidator: VisaAccessCodeValidator
     private weak var delegate: VisaOnboardingAccessCodeSetupDelegate?
 
-    init(delegate: VisaOnboardingAccessCodeSetupDelegate) {
+    init(
+        accessCodeValidator: VisaAccessCodeValidator,
+        delegate: VisaOnboardingAccessCodeSetupDelegate
+    ) {
+        self.accessCodeValidator = accessCodeValidator
         self.delegate = delegate
+
         bind()
     }
 
@@ -92,20 +99,20 @@ class VisaOnboardingAccessCodeSetupViewModel: ObservableObject {
         } catch let validationError as ValidationError {
             errorMessage = validationError.description
             isButtonDisabled = true
-            return
+        } catch let visaValidationError as VisaAccessCodeValidationError {
+            let appError = ValidationError(visaValidationError: visaValidationError)
+            errorMessage = appError.description
+            isButtonDisabled = true
         } catch {
             errorMessage = error.localizedDescription
             isButtonDisabled = true
-            return
         }
     }
 
     private func isAccessCodeValid(accessCode: String) throws {
         switch viewState {
         case .accessCode:
-            if accessCode.count < 4 {
-                throw ValidationError.accessCodeTooShort
-            }
+            try accessCodeValidator.validateAccessCode(accessCode: accessCode)
         case .repeatAccessCode:
             if accessCode != selectedAccessCode {
                 throw ValidationError.codesDoNotMatch
@@ -142,9 +149,11 @@ private extension VisaOnboardingAccessCodeSetupViewModel {
             do {
                 try await viewModel.delegate?.useSelectedCode(accessCode: viewModel.selectedAccessCode)
             } catch {
-                viewModel.log("Failed to use selected access code. Reason: \(error)")
-                /// We need to show alert in parent view, otherwise it won't be shown
-                await viewModel.delegate?.showAlert(error.alertBinder)
+                if !error.isCancellationError {
+                    viewModel.log("Failed to use selected access code. Reason: \(error)")
+                    /// We need to show alert in parent view, otherwise it won't be shown
+                    await viewModel.delegate?.showAlert(error.alertBinder)
+                }
             }
 
             await runOnMain {
@@ -164,6 +173,13 @@ extension VisaOnboardingAccessCodeSetupViewModel {
             switch self {
             case .accessCodeTooShort: return Localization.onboardingAccessCodeTooShort
             case .codesDoNotMatch: return Localization.onboardingAccessCodesDoesntMatch
+            }
+        }
+
+        init(visaValidationError: VisaAccessCodeValidationError) {
+            switch visaValidationError {
+            case .accessCodeIsTooShort:
+                self = .accessCodeTooShort
             }
         }
     }
