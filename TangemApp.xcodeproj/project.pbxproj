@@ -542,6 +542,7 @@
 		B097A3642C1067A8003CFD38 /* APIURLValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B097A3632C1067A8003CFD38 /* APIURLValidator.swift */; };
 		B097A3662C106AC1003CFD38 /* APIURLValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B097A3652C106AC1003CFD38 /* APIURLValidatorTests.swift */; };
 		B097B9242D09A642008A074F /* VisaOTPRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B097B9232D09A642008A074F /* VisaOTPRepository.swift */; };
+		B097B9262D0B23A4008A074F /* ActivatedVisaCardDummyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B097B9252D0B23A4008A074F /* ActivatedVisaCardDummyManager.swift */; };
 		B098DD4C29C46EC300D2D55B /* UIFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = B098DD4B29C46EC300D2D55B /* UIFonts.swift */; };
 		B098F39A2C0474E700F79989 /* ManageTokensAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B098F3992C0474E700F79989 /* ManageTokensAdapter.swift */; };
 		B098F3A02C04797C00F79989 /* OnboardingAddTokensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B098F39F2C04797C00F79989 /* OnboardingAddTokensView.swift */; };
@@ -3727,6 +3728,7 @@
 		B097A3632C1067A8003CFD38 /* APIURLValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIURLValidator.swift; sourceTree = "<group>"; };
 		B097A3652C106AC1003CFD38 /* APIURLValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIURLValidatorTests.swift; sourceTree = "<group>"; };
 		B097B9232D09A642008A074F /* VisaOTPRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisaOTPRepository.swift; sourceTree = "<group>"; };
+		B097B9252D0B23A4008A074F /* ActivatedVisaCardDummyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivatedVisaCardDummyManager.swift; sourceTree = "<group>"; };
 		B098DD4B29C46EC300D2D55B /* UIFonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFonts.swift; sourceTree = "<group>"; };
 		B098F3992C0474E700F79989 /* ManageTokensAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageTokensAdapter.swift; sourceTree = "<group>"; };
 		B098F39F2C04797C00F79989 /* OnboardingAddTokensView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAddTokensView.swift; sourceTree = "<group>"; };
@@ -7853,6 +7855,7 @@
 				B09B577A2D06F500008DBE1C /* VisaApprovePairSearchUtility.swift */,
 				B05449D12CCF8F2300983C78 /* VisaOnboardingStep.swift */,
 				B0F8E87B2D097EEC00458246 /* VisaOnboardingViewModelBuilder.swift */,
+				B097B9252D0B23A4008A074F /* ActivatedVisaCardDummyManager.swift */,
 			);
 			path = Visa;
 			sourceTree = "<group>";
@@ -18156,6 +18159,7 @@
 				B0A1BC132C296B6200DECCFD /* MarketsTokenDetailsViewModel.swift in Sources */,
 				DCBAF69D2A4AF0500029480A /* SimpleWalletManagerFactory.swift in Sources */,
 				DC4665A929895BA100EF97A5 /* WalletConnectURLParser.swift in Sources */,
+				B097B9262D0B23A4008A074F /* ActivatedVisaCardDummyManager.swift in Sources */,
 				B091D7482AA0DBA000ACB6E2 /* AppUtils.swift in Sources */,
 				EF661E3228C0ACD1005769E5 /* ScanCardWarningView.swift in Sources */,
 				2D5DCC2E2C3309F1000EE379 /* MarketsTokensNetworkSelectorItemView.swift in Sources */,

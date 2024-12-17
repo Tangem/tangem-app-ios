@@ -17,3 +17,35 @@ public struct VisaCardActivationInput: Equatable, Codable {
         self.cardPublicKey = cardPublicKey
     }
 }
+
+public enum VisaCardActivationStatus: Codable {
+    case activated(authTokens: VisaAuthorizationTokens)
+    case activationStarted(activationInput: VisaCardActivationInput, authTokens: VisaAuthorizationTokens)
+    case notStartedActivation(activationInput: VisaCardActivationInput)
+
+    public var authTokens: VisaAuthorizationTokens? {
+        switch self {
+        case .activated(let authTokens):
+            return authTokens
+        case .activationStarted(_, let authTokens):
+            return authTokens
+        case .notStartedActivation:
+            return nil
+        }
+    }
+
+    public var activationInput: VisaCardActivationInput? {
+        switch self {
+        case .activated:
+            return nil
+        case .activationStarted(let activationInput, _):
+            return activationInput
+        case .notStartedActivation(activationInput: let activationInput):
+            return activationInput
+        }
+    }
+
+    public var isActivated: Bool {
+        activationInput == nil
+    }
+}
