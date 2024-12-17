@@ -13,6 +13,7 @@ struct OnrampView: View {
 
     let transitionService: SendTransitionService
     let namespace: Namespace
+    @FocusState.Binding var keyboardActive: Bool
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -42,6 +43,8 @@ struct OnrampView: View {
             Text(legalText)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 14)
+                .hidden(keyboardActive)
+                .animation(.default, value: keyboardActive)
         }
     }
 }
