@@ -142,37 +142,37 @@ private extension CommonTokenQuotesRepository {
             })
             .store(in: &bag)
 
-        NotificationCenter.default
-            // We can't use didBecomeActive because of NFC interaction app state changes
-            .publisher(for: UIApplication.willEnterForegroundNotification)
-            // We need to add small delay in order to catch UserWalletRepository lock event
-            // If lock event occur - we can clear repository and no need to reload all saved items
-            .delay(for: 0.5, scheduler: DispatchQueue.main)
-            .withWeakCaptureOf(self)
-            .flatMap { repository, _ in
-                // Reload saved quotes
-                let idsToLoad: [String] = Array(repository.quotes.keys)
-                return repository.loadQuotes(currencyIds: idsToLoad)
-            }
-            .sink()
-            .store(in: &bag)
+//        NotificationCenter.default
+//            // We can't use didBecomeActive because of NFC interaction app state changes
+//            .publisher(for: UIApplication.willEnterForegroundNotification)
+//            // We need to add small delay in order to catch UserWalletRepository lock event
+//            // If lock event occur - we can clear repository and no need to reload all saved items
+//            .delay(for: 0.5, scheduler: DispatchQueue.main)
+//            .withWeakCaptureOf(self)
+//            .flatMap { repository, _ in
+//                // Reload saved quotes
+//                let idsToLoad: [String] = Array(repository.quotes.keys)
+//                return repository.loadQuotes(currencyIds: idsToLoad)
+//            }
+//            .sink()
+//            .store(in: &bag)
 
-        userWalletRepository.eventProvider
-            .filter {
-                if case .locked = $0 {
-                    return true
-                }
-
-                return false
-            }
-            // We need to postpone repository cleanup because currently all rows are depends on this data
-            // and logout logic is not triggering immediately, so on main screen missing values can appear
-            .delay(for: 0.5, scheduler: DispatchQueue.main)
-            .withWeakCaptureOf(self)
-            .sink { repository, _ in
-                repository.clearRepository()
-            }
-            .store(in: &bag)
+//        userWalletRepository.eventProvider
+//            .filter {
+//                if case .locked = $0 {
+//                    return true
+//                }
+//
+//                return false
+//            }
+//            // We need to postpone repository cleanup because currently all rows are depends on this data
+//            // and logout logic is not triggering immediately, so on main screen missing values can appear
+//            .delay(for: 0.5, scheduler: DispatchQueue.main)
+//            .withWeakCaptureOf(self)
+//            .sink { repository, _ in
+//                repository.clearRepository()
+//            }
+//            .store(in: &bag)
     }
 
     func loadAndSaveQuotes(currencyIds: [String]) -> AnyPublisher<[String: Decimal], Never> {
