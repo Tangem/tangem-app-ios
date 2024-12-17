@@ -106,10 +106,6 @@ class CommonPendingOnrampTransactionsManager {
             .sink { manager, transactions in
                 manager.pendingTransactionsSubject.send(transactions)
             }
-            .withWeakCaptureOf(self)
-            .sink { manager, transactions in
-                manager.pendingTransactionsSubject.send(transactions)
-            }
             .store(in: &bag)
 
         pollingService
