@@ -136,11 +136,19 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
             address: walletModel.wallet.address,
             amountType: walletModel.amountType
         )
+
+        let expressFactory = CommonExpressModulesFactory(
+            inputModel: .init(userWalletModel: model, initialWalletModel: walletModel)
+        )
+
+        let pendingTransactionsManager = expressFactory.makePendingExpressTransactionsManager()
+
         let viewModel = SingleWalletMainContentViewModel(
             userWalletModel: model,
             walletModel: walletModel,
             exchangeUtility: exchangeUtility,
             userWalletNotificationManager: userWalletNotificationManager,
+            pendingExpressTransactionsManager: pendingTransactionsManager,
             tokenNotificationManager: singleWalletNotificationManager,
             rateAppController: rateAppController,
             tokenRouter: tokenRouter,

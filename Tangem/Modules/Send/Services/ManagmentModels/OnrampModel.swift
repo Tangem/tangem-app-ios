@@ -14,7 +14,7 @@ import TangemFoundation
 protocol OnrampModelRoutable: AnyObject {
     func openOnrampCountryBottomSheet(country: OnrampCountry)
     func openOnrampCountrySelectorView()
-    func openWebView(url: URL, success: @escaping () -> Void)
+    func openOnrampWebView(url: URL, onDismiss: @escaping () -> Void, onSuccess: @escaping () -> Void)
     func openFinishStep()
 }
 
@@ -26,7 +26,8 @@ class OnrampModel {
     private let _onrampProviders: CurrentValueSubject<LoadingResult<ProvidersList, Error>?, Never> = .init(.none)
     private let _selectedOnrampProvider: CurrentValueSubject<LoadingResult<OnrampProvider, Never>?, Never> = .init(.none)
     private let _isLoading: CurrentValueSubject<Bool, Never> = .init(false)
-    private let _transactionTime = PassthroughSubject<Date?, Never>()
+    private let _transactionTime = PassthroughSubject<Date, Never>()
+    private let _expressTransactionId = PassthroughSubject<String, Never>()
 
     // MARK: - Dependencies
 
@@ -105,15 +106,6 @@ private extension OnrampModel {
                     Analytics.log(.onrampErrorMinAmount)
                 case .restriction(.tooBigAmount):
                     Analytics.log(.onrampErrorMaxAmount)
-                case .failed(let error as ExpressAPIError):
-                    Analytics.log(
-                        event: .onrampErrors,
-                        params: [
-                            .token: model.walletModel.tokenItem.currencySymbol,
-                            .provider: provider.provider.name,
-                            .errorCode: error.errorCode.rawValue.description,
-                        ]
-                    )
                 case .loaded:
                     Analytics.log(
                         event: .onrampProviderCalculated,
@@ -240,15 +232,17 @@ private extension OnrampModel {
     }
 
     func clearOnrampManager() async throws {
-        let provider = try await onrampManager.setupQuotes(in: providersList(), amount: .clear)
+        let (list, provider) = try await onrampManager.setupQuotes(in: providersList(), amount: .clear)
         try Task.checkCancellation()
+        _onrampProviders.send(.success(list))
         _selectedOnrampProvider.send(.success(provider))
     }
 
     func updateOnrampManager(amount: Decimal) async throws {
         _selectedOnrampProvider.send(.loading)
-        let provider = try await onrampManager.setupQuotes(in: providersList(), amount: .amount(amount))
+        let (list, provider) = try await onrampManager.setupQuotes(in: providersList(), amount: .amount(amount))
         try Task.checkCancellation()
+        _onrampProviders.send(.success(list))
         _selectedOnrampProvider.send(.success(provider))
     }
 
@@ -367,13 +361,15 @@ private extension OnrampModel {
             return
         }
 
-        let providerForReselect = try await onrampManager.setupQuotes(in: providersList(), amount: .same)
+        // Save for possible reselect
+        let (list, provider) = try await onrampManager.setupQuotes(in: providersList(), amount: .same)
         try Task.checkCancellation()
 
         // Check after reloading
         guard _selectedOnrampProvider.value?.value?.isSuccessfullyLoaded == true else {
-            log("Selected provider has a error. Will update to \(providerForReselect)")
-            _selectedOnrampProvider.send(.success(providerForReselect))
+            log("Selected provider has a error. Will update to \(provider)")
+            _onrampProviders.send(.success(list))
+            _selectedOnrampProvider.send(.success(provider))
             return
         }
 
@@ -448,7 +444,7 @@ extension OnrampModel: OnrampPaymentMethodsInput {
 
     var paymentMethodsPublisher: AnyPublisher<[OnrampPaymentMethod], Never> {
         _onrampProviders.compactMap {
-            $0?.value?.filter { $0.hasShowableProviders() }.map(\.paymentMethod)
+            $0?.value?.filter { $0.hasSelectableProviders() }.map(\.paymentMethod)
         }.eraseToAnyPublisher()
     }
 }
@@ -487,11 +483,15 @@ extension OnrampModel: OnrampRedirectingOutput {
         onrampPendingTransactionsRepository
             .onrampTransactionDidSend(txData, userWalletId: userWalletId)
 
+        stopTimer()
         DispatchQueue.main.async {
-            self.router?.openWebView(url: data.widgetUrl) { [weak self] in
+            self.router?.openOnrampWebView(url: data.widgetUrl, onDismiss: { [weak self] in
+                self?.restartTimer()
+            }, onSuccess: { [weak self] in
                 self?._transactionTime.send(Date())
+                self?._expressTransactionId.send(data.txId)
                 self?.router?.openFinishStep()
-            }
+            })
         }
     }
 }
@@ -514,7 +514,15 @@ extension OnrampModel: OnrampOutput {}
 
 extension OnrampModel: SendFinishInput {
     var transactionSentDate: AnyPublisher<Date, Never> {
-        _transactionTime.compactMap { $0 }.first().eraseToAnyPublisher()
+        _transactionTime.first().eraseToAnyPublisher()
+    }
+}
+
+// MARK: - OnrampStatusInput
+
+extension OnrampModel: OnrampStatusInput {
+    var expressTransactionId: AnyPublisher<String, Never> {
+        _expressTransactionId.first().eraseToAnyPublisher()
     }
 }
 

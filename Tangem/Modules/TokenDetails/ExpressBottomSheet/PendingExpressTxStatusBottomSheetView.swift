@@ -166,6 +166,7 @@ struct ExpressPendingTxStatusBottomSheetView_Preview: PreviewProvider {
         return .init(
             pendingTransaction: pendingTransaction.pendingTransaction,
             currentTokenItem: tokenItem,
+            userWalletModel: CommonUserWalletModel.mock!,
             pendingTransactionsManager: CommonPendingExpressTransactionsManager(
                 userWalletId: userWalletId,
                 walletModel: .mockETH,

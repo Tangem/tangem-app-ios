@@ -147,6 +147,8 @@ struct SupportedBlockchains {
             .core(testnet: false),
             .canxium,
             .casper(curve: .secp256k1, testnet: false),
+            .chiliz(testnet: false),
+            .xodex,
         ]
     }
 

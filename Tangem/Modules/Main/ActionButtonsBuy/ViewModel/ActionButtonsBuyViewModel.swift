@@ -38,8 +38,27 @@ final class ActionButtonsBuyViewModel: ObservableObject {
             coordinator?.dismiss()
         case .didTapToken(let token):
             ActionButtonsAnalyticsService.trackTokenClicked(.buy, tokenSymbol: token.symbol)
-            coordinator?.openOnramp(walletModel: token.walletModel)
+            openBuy(token)
         }
+    }
+
+    private func openBuy(_ token: ActionButtonsTokenSelectorItem) {
+        if FeatureProvider.isAvailable(.onramp) {
+            coordinator?.openOnramp(walletModel: token.walletModel)
+        } else if let buyUrl = makeBuyUrl(from: token) {
+            coordinator?.openBuyCrypto(at: buyUrl)
+        }
+    }
+
+    private func makeBuyUrl(from token: ActionButtonsTokenSelectorItem) -> URL? {
+        let buyUrl = exchangeService.getBuyUrl(
+            currencySymbol: token.symbol,
+            amountType: token.walletModel.amountType,
+            blockchain: token.walletModel.blockchainNetwork.blockchain,
+            walletAddress: token.walletModel.defaultAddress
+        )
+
+        return buyUrl
     }
 }
 

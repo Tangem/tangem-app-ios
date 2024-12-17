@@ -35,7 +35,14 @@ final class MultiWalletNotificationManager {
                     }
             }
             .sink { [weak self] walletModels in
-                let unreachableNetworks = walletModels.filter { $0.state.isBlockchainUnreachable }
+                let unreachableNetworks = walletModels.filter {
+                    if case .binance = $0.blockchainNetwork.blockchain {
+                        return false
+                    }
+
+                    return $0.state.isBlockchainUnreachable
+                }
+
                 guard !unreachableNetworks.isEmpty else {
                     self?.removeSomeNetworksUnreachable()
                     return
