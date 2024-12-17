@@ -94,7 +94,17 @@ class CommonPendingOnrampTransactionsManager {
         pollingService
             .resultPublisher
             .map { pendingTransactions in
-                pendingTransactions.map(\.data).sorted(by: \.transactionRecord.date)
+                pendingTransactions
+                    .map(\.data)
+                    .filter { transaction in
+                        // Don't show record with this status
+                        ![.created, .canceled, .paused].contains(transaction.pendingTransaction.transactionStatus)
+                    }
+                    .sorted(by: \.transactionRecord.date)
+            }
+            .withWeakCaptureOf(self)
+            .sink { manager, transactions in
+                manager.pendingTransactionsSubject.send(transactions)
             }
             .withWeakCaptureOf(self)
             .sink { manager, transactions in
@@ -121,11 +131,6 @@ class CommonPendingOnrampTransactionsManager {
                 return false
             }
 
-            // Don't show record with this status
-            guard ![.created, .canceled, .paused].contains(record.transactionStatus) else {
-                return false
-            }
-
             guard record.userWalletId == userWalletId else {
                 return false
             }
@@ -142,7 +147,9 @@ extension CommonPendingOnrampTransactionsManager: PendingExpressTransactionsMana
 
     var pendingTransactionsPublisher: AnyPublisher<[PendingTransaction], Never> {
         pendingTransactionsSubject
-            .map { $0.map(\.pendingTransaction) }
+            .map {
+                $0.map(\.pendingTransaction)
+            }
             .eraseToAnyPublisher()
     }
 
