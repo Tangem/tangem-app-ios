@@ -56,6 +56,8 @@ private extension CommonOnrampProviderManager {
             _state = .loading
             let quote = try await loadQuotes(amount: amount)
             _state = .loaded(quote)
+        } catch is CancellationError {
+            _state = .idle
         } catch let error as ExpressAPIError where error.errorCode == .exchangeTooSmallAmountError {
             guard let amount = error.value?.amount else {
                 _state = .failed(error: error)
