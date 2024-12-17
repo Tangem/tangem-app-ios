@@ -26,7 +26,7 @@ struct CommonExpressTokensListAdapter {
 extension CommonExpressTokensListAdapter: ExpressTokensListAdapter {
     func walletModels() -> AnyPublisher<[WalletModel], Never> {
         let sourcePublisherFactory = TokenSectionsSourcePublisherFactory()
-        let tokenSectionsSourcePublisher = sourcePublisherFactory.makeSourcePublisher(for: userWalletModel)
+        let tokenSectionsSourcePublisher = sourcePublisherFactory.makeLightSourcePublisher(for: userWalletModel)
 
         return adapter
             .organizedSections(from: tokenSectionsSourcePublisher, on: .global())

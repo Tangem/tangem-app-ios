@@ -33,4 +33,13 @@ struct TokenSectionsSourcePublisherFactory {
             walletModelsBalanceChangesPublisher,
         ].merge()
     }
+
+    func makeLightSourcePublisher(for userWalletModel: UserWalletModel) -> some Publisher<[WalletModel], Never> {
+        // The contents of the coins and tokens collection for the user wallet
+        return userWalletModel
+            .walletModelsManager
+            .walletModelsPublisher
+            .share(replay: 1)
+            .eraseToAnyPublisher()
+    }
 }
