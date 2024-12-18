@@ -24,19 +24,7 @@ class CardanoTransactionBuilder {
 
 extension CardanoTransactionBuilder {
     func update(outputs: [CardanoUnspentOutput]) {
-        self.outputs = outputs.filter { output in
-            let containsIncorrectAssetNameHex = output.assets.contains(where: { asset in
-                // We have to exclude assets with the incorrect hex name like `000de14064655f76696c6c69657273`
-                // Which fails to meet utf8 standards
-                String(data: Data(hexString: asset.assetNameHex), encoding: .utf8) == nil
-            })
-
-            if containsIncorrectAssetNameHex {
-                Log.debug("CardanoTransactionBuilder will exclude output: \(output)")
-            }
-
-            return !containsIncorrectAssetNameHex
-        }
+        self.outputs = outputs
     }
 
     func buildForSign(transaction: Transaction) throws -> Data {
