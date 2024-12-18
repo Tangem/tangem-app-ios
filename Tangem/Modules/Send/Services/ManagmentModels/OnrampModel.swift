@@ -277,14 +277,14 @@ private extension OnrampModel {
     }
 
     func updateProvidersThroughCountryAvailabilityChecking(country: OnrampCountry, currency: OnrampFiatCurrency) async {
-        guard await checkCountryAvailability(country: country) else {
+        guard await checkCountryAvailability(country: country, currency: currency) else {
             return
         }
 
         await updateProviders(country: country, currency: currency)
     }
 
-    func checkCountryAvailability(country: OnrampCountry) async -> Bool {
+    func checkCountryAvailability(country: OnrampCountry, currency: OnrampFiatCurrency) async -> Bool {
         do {
             let countries = try await onrampDataRepository.countries()
             guard let country = countries.first(where: { $0.identity == country.identity }) else {
@@ -296,6 +296,8 @@ private extension OnrampModel {
 
             if country.onrampAvailable {
                 // All good
+                // Reset `_currency` just in case when we set it to `.failure` below
+                _currency.send(.success(currency))
                 return true
             }
 
