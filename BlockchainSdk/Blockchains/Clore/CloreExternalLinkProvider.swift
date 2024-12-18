@@ -14,7 +14,7 @@ extension CloreExternalLinkProvider: ExternalLinkProvider {
     var testnetFaucetURL: URL? { nil }
 
     private var explorerBaseURL: String {
-        return "https://clore.cryptoscope.io"
+        return "https://clore.cryptoscope.io/"
     }
 
     func url(transaction hash: String) -> URL? {
