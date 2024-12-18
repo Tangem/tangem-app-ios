@@ -13,7 +13,7 @@ import CombineExt
 /// A factory that creates a so-called `source publisher` for use with `TokenSectionsAdapter.organizedSections(from:on:)`
 /// method as the source of truth for creating token sections.
 struct TokenSectionsSourcePublisherFactory {
-    func makeSourcePublisher(for userWalletModel: UserWalletModel) -> some Publisher<[WalletModel], Never> {
+    func makeSourcePublisherForMainScreen(for userWalletModel: UserWalletModel) -> some Publisher<[WalletModel], Never> {
         // The contents of the coins and tokens collection for the user wallet
         let walletModelsPublisher = userWalletModel
             .walletModelsManager
@@ -32,5 +32,15 @@ struct TokenSectionsSourcePublisherFactory {
             walletModelsPublisher,
             walletModelsBalanceChangesPublisher,
         ].merge()
+    }
+
+    /// Fix https://tangem.atlassian.net/browse/IOS-8671
+    func makeSourcePublisher(for userWalletModel: UserWalletModel) -> some Publisher<[WalletModel], Never> {
+        // The contents of the coins and tokens collection for the user wallet
+        return userWalletModel
+            .walletModelsManager
+            .walletModelsPublisher
+            .share(replay: 1)
+            .eraseToAnyPublisher()
     }
 }

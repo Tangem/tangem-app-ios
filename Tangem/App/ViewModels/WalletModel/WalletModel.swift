@@ -261,7 +261,6 @@ class WalletModel {
             .sink { [weak self] rate in
                 guard let self else { return }
 
-                AppLog.shared.debug("🔄 Quotes updated for \(self)")
                 _rate.send(.loaded(rate))
             }
             .store(in: &bag)

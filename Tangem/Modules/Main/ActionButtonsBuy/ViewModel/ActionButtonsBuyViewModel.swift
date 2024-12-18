@@ -51,13 +51,12 @@ final class ActionButtonsBuyViewModel: ObservableObject {
 
     private func openBuy(_ token: ActionButtonsTokenSelectorItem) {
         if
-            let disabledLocalizedReason = userWalletModel.config.getDisabledLocalizedReason (for: .exchange),
-            !FeatureProvider.isAvailable(.onramp)
-        {
+            let disabledLocalizedReason = userWalletModel.config.getDisabledLocalizedReason(for: .exchange),
+            !FeatureProvider.isAvailable(.onramp) {
             alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
             return
         }
-        
+
         ActionButtonsAnalyticsService.trackTokenClicked(.buy, tokenSymbol: token.symbol)
 
         if FeatureProvider.isAvailable(.onramp) {
