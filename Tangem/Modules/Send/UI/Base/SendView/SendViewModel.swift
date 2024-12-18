@@ -37,6 +37,7 @@ final class SendViewModel: ObservableObject {
 
     var title: String? { step.title }
     var subtitle: String? { step.subtitle }
+    var shouldShowBottomOverlay: Bool { step.shouldShowBottomOverlay }
 
     var closeButtonColor: Color {
         closeButtonDisabled ? Colors.Text.disabled : Colors.Text.primary1
@@ -391,8 +392,8 @@ extension SendViewModel: OnrampModelRoutable {
         }
     }
 
-    func openWebView(url: URL, success: @escaping () -> Void) {
-        coordinator?.openOnrampWebView(url: url, success: success)
+    func openOnrampWebView(url: URL, onDismiss: @escaping () -> Void, onSuccess: @escaping () -> Void) {
+        coordinator?.openOnrampWebView(url: url, onDismiss: onDismiss, onSuccess: onSuccess)
     }
 
     func openFinishStep() {

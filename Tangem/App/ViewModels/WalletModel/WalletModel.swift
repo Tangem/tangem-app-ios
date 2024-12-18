@@ -261,7 +261,6 @@ class WalletModel {
             .sink { [weak self] rate in
                 guard let self else { return }
 
-                AppLog.shared.debug("🔄 Quotes updated for \(self)")
                 _rate.send(.loaded(rate))
             }
             .store(in: &bag)
@@ -608,7 +607,7 @@ extension WalletModel {
 extension WalletModel {
     func updateStakingManagerState() -> AnyPublisher<Void, Never> {
         Future.async { [weak self] in
-            await self?._stakingManager?.updateState()
+            await self?._stakingManager?.updateState(loadActions: true)
         }
         // Here we have to skip the error to let the PTR to complete
         .replaceError(with: ())

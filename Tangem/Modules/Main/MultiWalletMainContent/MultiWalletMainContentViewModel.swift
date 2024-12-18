@@ -148,7 +148,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
 
     private func bind() {
         let sourcePublisherFactory = TokenSectionsSourcePublisherFactory()
-        let tokenSectionsSourcePublisher = sourcePublisherFactory.makeSourcePublisher(for: userWalletModel)
+        let tokenSectionsSourcePublisher = sourcePublisherFactory.makeSourcePublisherForMainScreen(for: userWalletModel)
 
         let organizedTokensSectionsPublisher = tokenSectionsAdapter
             .organizedSections(from: tokenSectionsSourcePublisher, on: mappingQueue)

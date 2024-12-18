@@ -10,9 +10,10 @@ class CommonOnrampProviderManager {
     // Dependencies
 
     private let pairItem: OnrampPairRequestItem
-    private let expressProviderId: String
+    private let expressProvider: ExpressProvider
     private let paymentMethodId: String
     private let apiProvider: ExpressAPIProvider
+    private let analyticsLogger: ExpressAnalyticsLogger
 
     // Private state
 
@@ -21,15 +22,17 @@ class CommonOnrampProviderManager {
 
     init(
         pairItem: OnrampPairRequestItem,
-        expressProviderId: String,
+        expressProvider: ExpressProvider,
         paymentMethodId: String,
         apiProvider: ExpressAPIProvider,
+        analyticsLogger: ExpressAnalyticsLogger,
         state: OnrampProviderManagerState
     ) {
         self.pairItem = pairItem
-        self.expressProviderId = expressProviderId
+        self.expressProvider = expressProvider
         self.paymentMethodId = paymentMethodId
         self.apiProvider = apiProvider
+        self.analyticsLogger = analyticsLogger
 
         _state = state
     }
@@ -53,11 +56,25 @@ private extension CommonOnrampProviderManager {
             _state = .loading
             let quote = try await loadQuotes(amount: amount)
             _state = .loaded(quote)
+        } catch is CancellationError {
+            _state = .idle
         } catch let error as ExpressAPIError where error.errorCode == .exchangeTooSmallAmountError {
-            _state = .restriction(.tooSmallAmount(formatAmount(amount: error.value?.amount)))
+            guard let amount = error.value?.amount else {
+                _state = .failed(error: error)
+                return
+            }
+            _state = .restriction(.tooSmallAmount(amount, formatted: formatAmount(amount: amount)))
         } catch let error as ExpressAPIError where error.errorCode == .exchangeTooBigAmountError {
-            _state = .restriction(.tooBigAmount(formatAmount(amount: error.value?.amount)))
+            guard let amount = error.value?.amount else {
+                _state = .failed(error: error)
+                return
+            }
+            _state = .restriction(.tooBigAmount(amount, formatted: formatAmount(amount: amount)))
+        } catch let error as ExpressAPIError {
+            analyticsLogger.logExpressAPIError(error, provider: expressProvider)
+            _state = .failed(error: error)
         } catch {
+            analyticsLogger.logAppError(error, provider: expressProvider)
             _state = .failed(error: error)
         }
     }
@@ -76,7 +93,7 @@ private extension CommonOnrampProviderManager {
         return OnrampQuotesRequestItem(
             pairItem: pairItem,
             paymentMethod: .init(id: paymentMethodId),
-            providerInfo: .init(id: expressProviderId),
+            providerInfo: .init(id: expressProvider.id),
             amount: amount
         )
     }

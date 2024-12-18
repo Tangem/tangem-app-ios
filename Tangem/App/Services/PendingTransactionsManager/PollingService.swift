@@ -16,7 +16,9 @@ final class PollingService<RequestData: Identifiable, ResponseData: Identifiable
         let hasChanges: Bool
     }
 
-    let resultPublisher: AnyPublisher<[Response], Never>
+    var resultPublisher: AnyPublisher<[Response], Never> {
+        resultSubject.dropFirst().eraseToAnyPublisher()
+    }
 
     private let request: (RequestData) async -> ResponseData?
     private let shouldStopPolling: (ResponseData) -> Bool
@@ -36,9 +38,6 @@ final class PollingService<RequestData: Identifiable, ResponseData: Identifiable
         self.shouldStopPolling = shouldStopPolling
         self.hasChanges = hasChanges
         self.pollingInterval = pollingInterval
-
-        resultPublisher = resultSubject
-            .eraseToAnyPublisher()
     }
 
     deinit {
@@ -67,6 +66,14 @@ final class PollingService<RequestData: Identifiable, ResponseData: Identifiable
         if requests.isEmpty {
             return
         }
+
+        // We have to remove result which is not contains in requests
+        // Because we don't need it anymore
+        resultSubject.send(
+            resultSubject.value.filter { result in
+                requests.contains(where: { $0.id == result.data.id })
+            }
+        )
 
         while !Task.isCancelled {
             let responses = await withTaskGroup(of: Response?.self) { [weak self] taskGroup in

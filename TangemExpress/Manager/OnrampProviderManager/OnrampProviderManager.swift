@@ -38,20 +38,20 @@ public enum OnrampProviderManagerState {
     }
 
     public enum Restriction: Hashable, CustomStringConvertible {
-        case tooSmallAmount(_ minAmount: String)
-        case tooBigAmount(_ maxAmount: String)
+        case tooSmallAmount(_ amount: Decimal, formatted: String)
+        case tooBigAmount(_ amount: Decimal, formatted: String)
 
-        var amount: Decimal? {
+        var amount: Decimal {
             switch self {
-            case .tooSmallAmount(let minAmount): Decimal(string: minAmount)
-            case .tooBigAmount(let maxAmount): Decimal(string: maxAmount)
+            case .tooSmallAmount(let amount, _): amount
+            case .tooBigAmount(let amount, _): amount
             }
         }
 
         public var description: String {
             switch self {
-            case .tooSmallAmount(let minAmount): "Too small amount: \(minAmount)"
-            case .tooBigAmount(let maxAmount): "Too big amount: \(maxAmount))"
+            case .tooSmallAmount(_, let formatted): "Too small amount: \(formatted)"
+            case .tooBigAmount(_, let formatted): "Too big amount: \(formatted))"
             }
         }
     }

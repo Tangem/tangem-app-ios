@@ -96,48 +96,6 @@ struct ExpressProviderFormatter {
             type: provider.type.title
         )
     }
-
-    func mapToLegalText(provider: ExpressProvider) -> AttributedString? {
-        let tos = Localization.commonTermsOfUse
-        let policy = Localization.commonPrivacyPolicy
-
-        func makeBaseAttributedString(for text: String) -> AttributedString {
-            var attributedString = AttributedString(text)
-            attributedString.font = Fonts.Regular.footnote
-            attributedString.foregroundColor = Colors.Text.tertiary
-            return attributedString
-        }
-
-        func formatLink(in attributedString: inout AttributedString, textToSearch: String, url: URL) {
-            guard let range = attributedString.range(of: textToSearch) else {
-                return
-            }
-
-            attributedString[range].link = url
-            attributedString[range].foregroundColor = Colors.Text.accent
-        }
-
-        if let termsOfUse = provider.termsOfUse, let privacyPolicy = provider.privacyPolicy {
-            var attributedString = makeBaseAttributedString(for: Localization.expressLegalTwoPlaceholders(tos, policy))
-            formatLink(in: &attributedString, textToSearch: tos, url: termsOfUse)
-            formatLink(in: &attributedString, textToSearch: policy, url: privacyPolicy)
-            return attributedString
-        }
-
-        if let termsOfUse = provider.termsOfUse {
-            var attributedString = makeBaseAttributedString(for: Localization.expressLegalOnePlaceholder(tos))
-            formatLink(in: &attributedString, textToSearch: tos, url: termsOfUse)
-            return attributedString
-        }
-
-        if let privacyPolicy = provider.privacyPolicy {
-            var attributedString = makeBaseAttributedString(for: Localization.expressLegalOnePlaceholder(policy))
-            formatLink(in: &attributedString, textToSearch: policy, url: privacyPolicy)
-            return attributedString
-        }
-
-        return nil
-    }
 }
 
 private extension ExpressProviderType {

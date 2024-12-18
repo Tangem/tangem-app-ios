@@ -139,10 +139,10 @@ private extension OnrampProvidersViewModel {
             return .availableForPaymentMethods(methods: Localization.onrampAvaiableWithPaymentMethods(methods))
         case .loaded:
             return .available
-        case .restriction(.tooSmallAmount(let minAmount)):
-            return .availableFromAmount(minAmount: Localization.onrampProviderMinAmount(minAmount))
-        case .restriction(.tooBigAmount(let maxAmount)):
-            return .availableToAmount(maxAmount: Localization.onrampProviderMaxAmount(maxAmount))
+        case .restriction(.tooSmallAmount(_, let formatted)):
+            return .availableFromAmount(minAmount: Localization.onrampProviderMinAmount(formatted))
+        case .restriction(.tooBigAmount(_, let formatted)):
+            return .availableToAmount(maxAmount: Localization.onrampProviderMaxAmount(formatted))
         case .failed(let error as ExpressAPIError):
             return .unavailable(reason: error.localizedMessage)
         case .failed(let error):

@@ -115,20 +115,7 @@ extension TokenDetailsCoordinator {
 
 // MARK: - TokenDetailsRoutable
 
-extension TokenDetailsCoordinator: TokenDetailsRoutable {
-    func openPendingExpressTransactionDetails(
-        for pendingTransaction: PendingTransaction,
-        tokenItem: TokenItem,
-        pendingTransactionsManager: PendingExpressTransactionsManager
-    ) {
-        pendingExpressTxStatusBottomSheetViewModel = PendingExpressTxStatusBottomSheetViewModel(
-            pendingTransaction: pendingTransaction,
-            currentTokenItem: tokenItem,
-            pendingTransactionsManager: pendingTransactionsManager,
-            router: self
-        )
-    }
-}
+extension TokenDetailsCoordinator: TokenDetailsRoutable {}
 
 // MARK: - PendingExpressTxStatusRoutable
 
@@ -137,12 +124,8 @@ extension TokenDetailsCoordinator: PendingExpressTxStatusRoutable {
         safariManager.openURL(url)
     }
 
-    func openCurrency(tokenItem: TokenItem) {
+    func openCurrency(tokenItem: TokenItem, userWalletModel: UserWalletModel) {
         pendingExpressTxStatusBottomSheetViewModel = nil
-
-        guard let userWalletModel = options?.userWalletModel else {
-            return
-        }
 
         // We don't have info about derivation here, so we have to find first non-custom walletModel.
         guard let walletModel = userWalletModel.walletModelsManager.walletModels.first(where: {
@@ -327,6 +310,21 @@ extension TokenDetailsCoordinator: SingleTokenBaseRoutable {
         )
         coordinator.start(with: options)
         sendCoordinator = coordinator
+    }
+
+    func openPendingExpressTransactionDetails(
+        pendingTransaction: PendingTransaction,
+        tokenItem: TokenItem,
+        userWalletModel: UserWalletModel,
+        pendingTransactionsManager: PendingExpressTransactionsManager
+    ) {
+        pendingExpressTxStatusBottomSheetViewModel = PendingExpressTxStatusBottomSheetViewModel(
+            pendingTransaction: pendingTransaction,
+            currentTokenItem: tokenItem,
+            userWalletModel: userWalletModel,
+            pendingTransactionsManager: pendingTransactionsManager,
+            router: self
+        )
     }
 }
 

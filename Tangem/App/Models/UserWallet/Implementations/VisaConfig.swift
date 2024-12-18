@@ -13,9 +13,11 @@ import TangemVisa
 
 struct VisaConfig: CardContainer {
     let card: CardDTO
+    let activationStatus: VisaCardActivationStatus
 
-    init(card: CardDTO) {
+    init(card: CardDTO, activationStatus: VisaCardActivationStatus) {
         self.card = card
+        self.activationStatus = activationStatus
     }
 
     private var defaultBlockchain: Blockchain {
@@ -87,7 +89,7 @@ extension VisaConfig: UserWalletConfig {
     func getFeatureAvailability(_ feature: UserWalletFeature) -> UserWalletFeature.Availability {
         switch feature {
         case .accessCode:
-            return .hidden
+            return .available
         case .passcode:
             return .hidden
         case .longTap:
@@ -148,4 +150,16 @@ extension VisaConfig: UserWalletConfig {
     }
 }
 
-extension VisaConfig: VisaCardOnboardingStepsBuilderFactory {}
+extension VisaConfig: VisaCardOnboardingStepsBuilderFactory {
+    func makeOnboardingStepsBuilder(
+        backupService: BackupService,
+        isPushNotificationsAvailable: Bool
+    ) -> OnboardingStepsBuilder {
+        return VisaOnboardingStepsBuilder(
+            cardId: card.cardId,
+            isPushNotificationsAvailable: isPushNotificationsAvailable,
+            isAccessCodeSet: card.isAccessCodeSet,
+            activationStatus: activationStatus
+        )
+    }
+}

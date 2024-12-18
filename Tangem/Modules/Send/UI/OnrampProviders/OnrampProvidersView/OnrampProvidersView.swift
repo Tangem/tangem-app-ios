@@ -26,6 +26,8 @@ struct OnrampProvidersView: View {
 
                 providersSection
             }
+
+            ExpressMoreProvidersSoonView()
         }
         .background(Colors.Background.primary)
         .navigationBarHidden(true)

@@ -45,7 +45,7 @@ final class CommonCardAuthorizationProcessor {
 extension CommonCardAuthorizationProcessor: CardAuthorizationProcessor {
     func getAuthorizationChallenge(for input: VisaCardActivationInput) async throws -> String {
         log("Attempting to load authorization challenge")
-        let challengeResponse = try await authorizationService.getAuthorizationChallenge(
+        let challengeResponse = try await authorizationService.getCardAuthorizationChallenge(
             cardId: input.cardId,
             cardPublicKey: input.cardPublicKey.hexString
         )
@@ -72,7 +72,7 @@ extension CommonCardAuthorizationProcessor: CardAuthorizationProcessor {
 
         log("Attempting to load access tokens for signed challenge")
         do {
-            let accessTokens = try await authorizationService.getAccessTokens(
+            let accessTokens = try await authorizationService.getAccessTokensForCardAuth(
                 signedChallenge: signedChallenge.hexString,
                 salt: salt.hexString,
                 sessionId: authorizationChallengeInput.sessionId

@@ -31,21 +31,9 @@ struct ExpressProvidersSelectorView: View {
             .backgroundColor(Colors.Background.action)
             .padding(.vertical, 10)
 
-            moreProvidersInformationView
+            ExpressMoreProvidersSoonView()
         }
         .padding(.horizontal, 16)
-    }
-
-    private var moreProvidersInformationView: some View {
-        VStack(alignment: .center, spacing: 4) {
-            Assets.expressMoreProvidersIcon.image
-                .renderingMode(.template)
-                .foregroundColor(Colors.Icon.inactive)
-
-            Text(Localization.expressMoreProvidersSoon)
-                .style(Fonts.Regular.footnote, color: Colors.Icon.informative)
-                .multilineTextAlignment(.center)
-        }
     }
 }
 

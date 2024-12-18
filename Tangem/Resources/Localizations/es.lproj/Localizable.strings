@@ -2,8 +2,8 @@
 "action_buttons_buy_navigation_bar_title" = "Comprar";
 "action_buttons_sell_empty_search_message" = "¿No encuentra el token en su billetera? Consulte los mercados para encontrarlo y añadirlo a la venta";
 "action_buttons_sell_navigation_bar_title" = "Vender";
-"action_buttons_something_wrong_alert_message" = "The action is currently unavailable. Please try again later or refresh the data by swiping down on the screen.";
-"action_buttons_something_wrong_alert_title" = "";
+"action_buttons_something_wrong_alert_message" = "La acción no está disponible actualmente. Inténtalo de nuevo más tarde o actualiza los datos deslizando el dedo hacia abajo en la pantalla.";
+"action_buttons_something_wrong_alert_title" = "Button is unavailable";
 "action_buttons_swap_choose_token" = "Elige el token";
 "action_buttons_swap_empty_search_message" = "¿No encuentras el token en tu billetera? Consulte los mercados para encontrarlo y agregarlo al intercambio";
 "action_buttons_swap_navigation_bar_title" = "Intercambiar";
@@ -177,7 +177,7 @@
 "common_submit" = "Enviar";
 "common_success" = "Con éxito";
 "common_support" = "Soporte";
-"common_swap" = "Intercambiar";
+"common_swap" = "Swap";
 "common_terms_and_conditions" = "términos y condiciones";
 "common_terms_of_use" = "Condiciones de uso";
 "common_today" = "Hoy";
@@ -313,7 +313,7 @@
 "feedback_preface_scan_failed" = "Por favor, díganos qué tarjeta tiene";
 "feedback_preface_support" = "Hola equipo de soporte,";
 "feedback_preface_tx_failed" = "Por favor, cuéntenos más sobre tu problema. Cada pequeño detalle puede ayudar.";
-"feedback_subject_pre_activated_wallet" = "Previously activated wallet";
+"feedback_subject_pre_activated_wallet" = "Billetera previamente activada";
 "feedback_subject_rate_negative" = "Mis recomendaciones";
 "feedback_subject_scan_failed" = "No se puede escanear una tarjeta";
 "feedback_subject_support" = "Comentarios";
@@ -561,6 +561,7 @@
 "onramp_currency_other" = "Otras monedas";
 "onramp_currency_popular" = "Monedas Fiats Populares";
 "onramp_currency_search" = "Buscar por moneda";
+"onramp_legal" = "Al utilizar la funcionalidad onramp, acepta %1$@ y %2$@ del proveedor.";
 "onramp_max_amount_restriction" = "El monto de la compra no debe ser mayor a %@";
 "onramp_min_amount_restriction" = "La cantidad a comprar debe ser como mínimo %@";
 "onramp_no_available_providers" = "No hay proveedores disponibles para esta moneda";
@@ -634,7 +635,7 @@
 "scan_card_settings_button" = "Escanee su tarjeta";
 "scan_card_settings_message" = "Escanee la tarjeta para cambiar sus ajustes. Los cambios afectarán solo a la tarjeta que has escaneado y no afectarán a otras tarjetas vinculadas a su billetera.";
 "scan_card_settings_title" = "¡Prepare su tarjeta!";
-"security_alert_title" = "Security Alert";
+"security_alert_title" = "Alerta de seguridad";
 "selling_insufficient_balance_alert_message" = "No tiene fondos suficientes en su saldo para vender esta criptomoneda. Deposite el activo deseado para continuar.";
 "selling_insufficient_balance_alert_title" = "Saldo insuficiente";
 "selling_regional_restriction_alert_message" = "La venta de criptomonedas no está disponible en su región en este momento. Estamos trabajando activamente para ofrecerle esta opción pronto. ¡Manténgase conectado!";
@@ -677,7 +678,7 @@
 "send_notification_fee_too_high_title" = "Los aranceles aduaneros son altos";
 "send_notification_high_fee_text" = "Debido a las peculiaridades de la red %1$@, la tarifa por transferir el saldo completo es más alta. Para reducir la comisión, puedes dejar %2$@.";
 "send_notification_high_fee_title" = "La tarifa es más alta";
-"send_notification_invalid_amount_rent_fee" = "Your account balance cannot be lower than the rent fee. Please maintain at least %1$@ on your account or withdraw all funds.";
+"send_notification_invalid_amount_rent_fee" = "Su saldo no puede ser inferior al monto del alquiler. Mantenga al menos %1$@ en su cuenta o retire todos los fondos.";
 "send_notification_invalid_amount_text" = "La comisión incluida excede el monto de la transferencia, lo que resulta en un valor negativo";
 "send_notification_invalid_amount_title" = "Cantidad no válida";
 "send_notification_invalid_minimum_amount_text" = "La cantidad mínima de envío es %1$@. Asegúrate de que el saldo restante después del envío no sea menor que %2$@.";
@@ -860,7 +861,7 @@
 "swapping_to_title" = "Usted recibe";
 "swapping_token_list_title" = "Elige token";
 "swapping_token_not_available" = "no disponible";
-"this_is_my_wallet_title" = "This is my wallet";
+"this_is_my_wallet_title" = "Esta es mi billetera";
 "toast_balances_hidden" = "Saldos ocultos";
 "toast_balances_shown" = "Saldos mostrados";
 "toast_undo" = "Cancelar";
@@ -931,7 +932,7 @@
 "voice_over_open_card_details" = "Abrir detalles del dispositivo";
 "voice_over_open_new_wallet_connect_session" = "Escanee el código QR para abrir una nueva sesión de WalletConnect";
 "wallet_balance_missing_derivation" = "Escanee la tarjeta o el anillo";
-"wallet_been_activated_message" = "This wallet has already been activated earlier.\nIf it was done not by you please contact support.\nTangem never sells wallets along with the pre-generated access code.";
+"wallet_been_activated_message" = "Esta billetera ya ha sido activada anteriormente.\nSi no fue usted quien lo hizo, comuníquese con el servicio de asistencia.\nTangem nunca vende billeteras junto con el código de acceso generado previamente.";
 "wallet_connect_alert_sign_message" = "Solicitud para firmar un mensaje.\n\n%@";
 "wallet_connect_bnb_sign_message" = "Dapp %1$@, solicitando\nfirmar transacción BNB.\n\n%2$@";
 "wallet_connect_bnb_trade_order_message" = "Orden de intercambio por %1$@\nPrecio: %2$@\nCantidad a recibir: %3$@\nCantidad a pagar: %4$@";
@@ -976,7 +977,7 @@
 "warning_approval_in_progress_message" = "El proceso de obtención de permisos está actualmente en marcha y se completará pronto.";
 "warning_approval_in_progress_title" = "Aprobación en curso";
 "warning_backup_errors_message" = "Parece que la activación de la tarjeta no ha ido correctamente. Esto puede deberse a un problema con el módulo NFC de su dispositivo o a una mala conexión de la tarjeta de su dispositivo. Comuníquese con nuestro equipo de soporte para obtener ayuda.";
-"warning_beacon_chain_retirement_content" = "Según los desarrolladores de la red BNB, el soporte para el estándar BEP-2\nfinalizará en junio de 2024. Para evitar perder activos con este estándar, por favor conviértalos al estándar BEP-20. Usa nuestro servicio de swap para transferirlos a la red BNB Smart Chain.";
+"warning_beacon_chain_retirement_content" = "El 3 de diciembre de 2024, la red BEP-2 fue desactivada por decisión de los desarrolladores de la red y ya no es compatible";
 "warning_beacon_chain_retirement_title" = "BNB Beacon Chain se cerrará";
 "warning_blocked_funds_for_fee_message" = "Por favor deposite %1$@ para cubrir la tarifa de red";
 "warning_blocked_funds_for_fee_title" = "Fondos insuficientes para cubrir la tarifa de red";

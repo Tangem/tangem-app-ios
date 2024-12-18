@@ -72,7 +72,8 @@ class CommonPendingOnrampTransactionsManager {
     }
 
     private func bind() {
-        onrampPendingTransactionsRepository.transactionsPublisher
+        onrampPendingTransactionsRepository
+            .transactionsPublisher
             .withWeakCaptureOf(self)
             .map { manager, txRecords in
                 manager.filterRelatedTokenTransactions(list: txRecords)
@@ -95,17 +96,23 @@ class CommonPendingOnrampTransactionsManager {
             .map { pendingTransactions in
                 pendingTransactions
                     .map(\.data)
-                    .sorted(by: \.id)
+                    .filter { transaction in
+                        // Don't show record with this status
+                        ![.created, .canceled, .paused].contains(transaction.pendingTransaction.transactionStatus)
+                    }
+                    .sorted(by: \.transactionRecord.date)
             }
-            .assign(to: \.pendingTransactionsSubject.value, on: self, ownership: .weak)
+            .withWeakCaptureOf(self)
+            .sink { manager, transactions in
+                manager.pendingTransactionsSubject.send(transactions)
+            }
             .store(in: &bag)
 
-        pollingService.resultPublisher
+        pollingService
+            .resultPublisher
             .map { responses in
                 responses.compactMap { result in
-                    result.hasChanges
-                        ? result.data.transactionRecord
-                        : nil
+                    result.hasChanges ? result.data.transactionRecord : nil
                 }
             }
             .sink { [onrampPendingTransactionsRepository] transactionsToUpdateInRepository in
