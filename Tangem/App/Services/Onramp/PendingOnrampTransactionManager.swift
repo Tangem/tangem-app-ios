@@ -94,7 +94,13 @@ class CommonPendingOnrampTransactionsManager {
         pollingService
             .resultPublisher
             .map { pendingTransactions in
-                pendingTransactions.map(\.data).sorted(by: \.transactionRecord.date)
+                pendingTransactions
+                    .map(\.data)
+                    .filter { transaction in
+                        // Don't show record with this status
+                        ![.created, .canceled, .paused].contains(transaction.pendingTransaction.transactionStatus)
+                    }
+                    .sorted(by: \.transactionRecord.date)
             }
             .withWeakCaptureOf(self)
             .sink { manager, transactions in
@@ -118,11 +124,6 @@ class CommonPendingOnrampTransactionsManager {
     private func filterRelatedTokenTransactions(list: [OnrampPendingTransactionRecord]) -> [OnrampPendingTransactionRecord] {
         list.filter { record in
             guard !record.isHidden else {
-                return false
-            }
-
-            // Don't show record with this status
-            guard ![.created, .canceled, .paused].contains(record.transactionStatus) else {
                 return false
             }
 
