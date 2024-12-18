@@ -157,7 +157,8 @@ struct SendView: View {
             OnrampView(
                 viewModel: onrampViewModel,
                 transitionService: transitionService,
-                namespace: .init(id: namespace, names: SendGeometryEffectNames())
+                namespace: .init(id: namespace, names: SendGeometryEffectNames()),
+                keyboardActive: $focused
             )
             .onAppear { [step = viewModel.step] in viewModel.onAppear(newStep: step) }
             .onDisappear { [step = viewModel.step] in viewModel.onDisappear(oldStep: step) }
