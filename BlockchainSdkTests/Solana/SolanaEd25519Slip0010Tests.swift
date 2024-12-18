@@ -59,13 +59,12 @@ final class SolanaEd25519Slip0010Tests: XCTestCase {
             try await manager.send(transaction, signer: coinSigner).async()
         } catch let sendTxError as SendTxError {
             guard let castedError = sendTxError.error as? SolanaError else {
-                XCTFail("Wrong error returned from manager")
-                return
+                throw Error.invalid
             }
 
             XCTAssertEqual(castedError.errorDescription, SolanaError.nullValue.errorDescription)
         } catch {
-            XCTFail(error.localizedDescription)
+            throw error
         }
     }
 
@@ -90,13 +89,22 @@ final class SolanaEd25519Slip0010Tests: XCTestCase {
             try await manager.send(transaction, signer: coinSigner).async()
         } catch let sendTxError as SendTxError {
             guard let castedError = sendTxError.error as? SolanaError else {
-                XCTFail("Wrong error returned from manager")
-                return
+                throw Error.invalid
             }
 
             XCTAssertEqual(castedError.errorDescription, SolanaError.nullValue.errorDescription)
         } catch {
-            XCTFail(error.localizedDescription)
+            throw error
+        }
+    }
+}
+
+extension SolanaEd25519Slip0010Tests {
+    enum Error: LocalizedError {
+        case invalid
+
+        var errorDescription: String? {
+            return "Wrong error returned from manager"
         }
     }
 }
