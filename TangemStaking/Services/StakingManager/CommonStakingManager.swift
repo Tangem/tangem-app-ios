@@ -198,24 +198,40 @@ private extension CommonStakingManager {
             case .stake, .vote, .voteLocked:
                 balances.append(mapToStakingBalance(action: action, yield: yield, balanceType: .active))
             case .withdraw:
-                modifyBalancesByStatus(balances: &balances, action: action, type: .unstaked)
+                modifyBalancesByStatus(
+                    balances: &balances,
+                    action: action,
+                    type: .unstaked,
+                    reduceBalanceByActionAmount: false,
+                    makeInProgress: true
+                )
             case .unlockLocked:
-                modifyBalancesByStatus(balances: &balances, action: action, type: .locked)
+                modifyBalancesByStatus(
+                    balances: &balances,
+                    action: action,
+                    type: .locked,
+                    reduceBalanceByActionAmount: false,
+                    makeInProgress: true
+                )
+            case .unstake where isFullAmountUnstaking(for: balances, action: action):
+                // make existing staking in progress
+                modifyBalancesByStatus(
+                    balances: &balances,
+                    action: action,
+                    type: .active,
+                    reduceBalanceByActionAmount: false,
+                    makeInProgress: true
+                )
             case .unstake:
-                if isFullAmountUnstaking(for: balances, action: action) {
-                    // make existing staking in progress
-                    modifyBalancesByStatus(balances: &balances, action: action, type: .active)
-                } else {
-                    // for partial unstake reduce amount of existing staking and append new in progress block
-                    modifyBalancesByStatus(
-                        balances: &balances,
-                        action: action,
-                        type: .active,
-                        reduceBalanceByActionAmount: true,
-                        makeInProgress: false
-                    )
-                    balances.append(mapToStakingBalance(action: action, yield: yield, balanceType: .active))
-                }
+                // for partial unstake reduce amount of existing staking and append new in progress block
+                modifyBalancesByStatus(
+                    balances: &balances,
+                    action: action,
+                    type: .active,
+                    reduceBalanceByActionAmount: true,
+                    makeInProgress: false
+                )
+                balances.append(mapToStakingBalance(action: action, yield: yield, balanceType: .active))
             default:
                 break // do nothing
             }
@@ -223,10 +239,10 @@ private extension CommonStakingManager {
 
         return balances
     }
-    
+
     private func isFullAmountUnstaking(for balances: [StakingBalance], action: PendingAction) -> Bool {
         guard let index = balanceIndexByType(balances: balances, action: action, type: .active) else {
-            Log.warning("Couldn't find corresponding staked balance for unstake action")
+            logger.debug("Couldn't find corresponding staked balance for unstake action")
             return false
         }
         let balance = balances[index]
@@ -250,8 +266,8 @@ private extension CommonStakingManager {
         balances: inout [StakingBalance],
         action: PendingAction,
         type: StakingBalanceType,
-        reduceBalanceByActionAmount: Bool = false,
-        makeInProgress inProgress: Bool = true
+        reduceBalanceByActionAmount: Bool,
+        makeInProgress inProgress: Bool
     ) {
         guard let index = balanceIndexByType(balances: balances, action: action, type: type) else { return }
 
