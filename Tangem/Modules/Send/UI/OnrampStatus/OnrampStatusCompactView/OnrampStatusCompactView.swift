@@ -23,26 +23,7 @@ struct OnrampStatusCompactView: View {
     private var statusesView: some View {
         PendingExpressTxStatusView(
             title: Localization.commonTransactionStatus,
-            statusesList:
-            // Hardcode statuses until it will be refactored
-            [
-                .init(
-                    title: PendingExpressTransactionStatus.awaitingDeposit.activeStatusTitle,
-                    state: .loader
-                ),
-                .init(
-                    title: PendingExpressTransactionStatus.confirming.activeStatusTitle,
-                    state: .empty
-                ),
-                .init(
-                    title: PendingExpressTransactionStatus.buying.activeStatusTitle,
-                    state: .empty
-                ),
-                .init(
-                    title: PendingExpressTransactionStatus.sendingToUser.activeStatusTitle,
-                    state: .empty
-                ),
-            ],
+            statusesList: viewModel.statusesList,
             showGoToProviderHeaderButton: false,
             openProviderAction: {}
         )

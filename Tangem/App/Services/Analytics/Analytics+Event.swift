@@ -360,6 +360,7 @@ extension Analytics {
         case onrampErrorMinAmount = "[Onramp] Error - Min Amount"
         case onrampErrorMaxAmount = "[Onramp] Error - Max Amount"
         case onrampErrors = "[Onramp] Errors"
+        case onrampAppErrors = "[Onramp] App Errors"
         case onrampBuyingInProgressScreenOpened = "[Onramp] Buying In Progress Screen Opened"
         case onrampNoticeKYC = "[Onramp] Notice - KYC"
         case onrampOnrampStatusOpened = "[Onramp] Onramp Status Opened"

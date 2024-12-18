@@ -23,6 +23,11 @@ protocol SingleTokenRoutable {
     func openMarketsTokenDetails(for tokenItem: TokenItem)
     func openInSafari(url: URL)
     func openOnramp(walletModel: WalletModel)
+    func openPendingExpressTransactionDetails(
+        pendingTransaction: PendingTransaction,
+        tokenItem: TokenItem,
+        pendingTransactionsManager: PendingExpressTransactionsManager
+    )
 }
 
 final class SingleTokenRouter: SingleTokenRoutable {
@@ -152,6 +157,15 @@ final class SingleTokenRouter: SingleTokenRoutable {
 
     func openInSafari(url: URL) {
         coordinator?.openInSafari(url: url)
+    }
+
+    func openPendingExpressTransactionDetails(pendingTransaction: PendingTransaction, tokenItem: TokenItem, pendingTransactionsManager: any PendingExpressTransactionsManager) {
+        coordinator?.openPendingExpressTransactionDetails(
+            pendingTransaction: pendingTransaction,
+            tokenItem: tokenItem,
+            userWalletModel: userWalletModel,
+            pendingTransactionsManager: pendingTransactionsManager
+        )
     }
 
     private func getTokenItemId(for tokenItem: TokenItem) -> TokenItemId? {

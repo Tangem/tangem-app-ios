@@ -139,6 +139,15 @@ private extension TotalBalanceProvider {
         var allTokensBalancesIncluded = true
 
         for token in walletModels {
+            if case .binance = token.blockchainNetwork.blockchain {
+                // case with single bnb token
+                if balance == nil {
+                    balance = 0
+                }
+
+                continue
+            }
+
             if case .failed = token.state {
                 hasCryptoError = true
             }

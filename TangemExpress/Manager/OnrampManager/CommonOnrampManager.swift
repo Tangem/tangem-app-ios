@@ -13,17 +13,20 @@ public actor CommonOnrampManager {
     private let onrampRepository: OnrampRepository
     private let dataRepository: OnrampDataRepository
     private let logger: Logger
+    private let analyticsLogger: ExpressAnalyticsLogger
 
     public init(
         apiProvider: ExpressAPIProvider,
         onrampRepository: OnrampRepository,
         dataRepository: OnrampDataRepository,
-        logger: Logger
+        logger: Logger,
+        analyticsLogger: ExpressAnalyticsLogger
     ) {
         self.apiProvider = apiProvider
         self.onrampRepository = onrampRepository
         self.dataRepository = dataRepository
         self.logger = logger
+        self.analyticsLogger = analyticsLogger
     }
 }
 
@@ -54,22 +57,27 @@ extension CommonOnrampManager: OnrampManager {
         return providers
     }
 
-    public func setupQuotes(in providers: ProvidersList, amount: OnrampUpdatingAmount) async throws -> OnrampProvider {
+    public func setupQuotes(in providers: ProvidersList, amount: OnrampUpdatingAmount) async throws -> (list: ProvidersList, provider: OnrampProvider) {
         log(message: "Start update quotes for amount: \(amount)")
         try await updateQuotesInEachManager(providers: providers, amount: amount)
         log(message: "The quotes was updated for amount: \(amount)")
 
-        return try proceedProviders(providers: providers)
+        let sorted = providers.sorted()
+        let suggestProvider = try suggestProvider(in: sorted)
+        return (list: sorted, provider: suggestProvider)
     }
 
     public func suggestProvider(in providers: ProvidersList, paymentMethod: OnrampPaymentMethod) throws -> OnrampProvider {
         log(message: "Payment method was updated by user to: \(paymentMethod.name)")
 
-        let providerItem = providers.select(for: paymentMethod)
-        let best = providerItem?.updateAttractiveTypes()
-        log(message: "The best provider was define to \(best as Any)")
+        guard let providerItem = providers.select(for: paymentMethod) else {
+            throw OnrampManagerError.noProviderForPaymentMethod
+        }
 
-        guard let selectedProvider = providerItem?.showableProvider() else {
+        providerItem.updateAttractiveTypes()
+        log(message: "Providers for paymentMethod: \(providerItem.paymentMethod.name) was sorted to order: \(providerItem.providers)")
+
+        guard let selectedProvider = providerItem.maxPriorityProvider() else {
             throw OnrampManagerError.noProviderForPaymentMethod
         }
 
@@ -104,16 +112,15 @@ private extension CommonOnrampManager {
         }
     }
 
-    func proceedProviders(providers: ProvidersList) throws -> OnrampProvider {
+    func suggestProvider(in providers: ProvidersList) throws -> OnrampProvider {
         log(message: "Start to find the best provider")
 
         for provider in providers {
-            let best = provider.updateAttractiveTypes()
+            provider.updateAttractiveTypes()
             log(message: "Providers for paymentMethod: \(provider.paymentMethod.name) was sorted to order: \(provider.providers)")
-            log(message: "The best provider was defined to \(best as Any)")
 
-            if let maxPriorityProvider = provider.showableProvider() {
-                log(message: "The selected provider is \(maxPriorityProvider)")
+            if let maxPriorityProvider = provider.maxPriorityProvider() {
+                log(message: "The selected max priority provider is \(maxPriorityProvider)")
                 return maxPriorityProvider
             }
         }
@@ -149,12 +156,7 @@ private extension CommonOnrampManager {
             }
         }
 
-        let supportedPaymentMethods = fullfilled
-            .values
-            .flatMap { $0 }
-            .unique()
-            // Sort payment methods to order which will suggest to user
-            .sorted(by: { $0.type.priority > $1.type.priority })
+        let supportedPaymentMethods = fullfilled.values.flatMap { $0 }.unique()
 
         let availableProviders: ProvidersList = supportedPaymentMethods.map { paymentMethod in
             let providers = providers.map { provider in
@@ -200,9 +202,10 @@ private extension CommonOnrampManager {
 
         return CommonOnrampProviderManager(
             pairItem: item,
-            expressProviderId: provider.id,
+            expressProvider: provider,
             paymentMethodId: paymentMethod.id,
             apiProvider: apiProvider,
+            analyticsLogger: analyticsLogger,
             state: state
         )
     }

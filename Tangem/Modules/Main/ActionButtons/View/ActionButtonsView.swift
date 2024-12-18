@@ -18,6 +18,5 @@ struct ActionButtonsView: View {
             ActionButtonView(viewModel: viewModel.sellActionButtonViewModel)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .disabled(viewModel.isButtonsDisabled)
     }
 }

@@ -13,15 +13,20 @@ import SafariServices
 
 protocol SafariManager {
     /// You should retain the handle in the coordionator always
-    func openURL(_ url: URL, configuration: SafariConfiguration, onDismiss: @escaping (URL) -> Void) -> SafariHandle
+    func openURL(
+        _ url: URL,
+        configuration: SafariConfiguration,
+        onDismiss: @escaping () -> Void,
+        onSuccess: @escaping (URL) -> Void
+    ) -> SafariHandle
 
     /// For any calls without callback
     func openURL(_ url: URL, configuration: SafariConfiguration)
 }
 
 extension SafariManager {
-    func openURL(_ url: URL, configuration: SafariConfiguration = .init(), onDismiss: @escaping (URL) -> Void = { _ in }) -> SafariHandle {
-        openURL(url, configuration: configuration, onDismiss: onDismiss)
+    func openURL(_ url: URL, configuration: SafariConfiguration = .init(), onSuccess: @escaping (URL) -> Void = { _ in }) -> SafariHandle {
+        openURL(url, configuration: configuration, onDismiss: {}, onSuccess: onSuccess)
     }
 
     func openURL(_ url: URL, configuration: SafariConfiguration = .init()) {
@@ -48,30 +53,34 @@ extension InjectedValues {
 
 // MARK: - CommonSafariManager
 
-class CommonSafariManager: SafariManager {
+class CommonSafariManager: NSObject, SafariManager {
     @Injected(\.incomingActionManager) private var incomingActionManager: IncomingActionManaging
 
     private weak var context: SafariContext?
 
-    init() {
+    override init() {
+        super.init()
         incomingActionManager.becomeFirstResponder(self)
     }
 
     func openURL(_ url: URL, configuration: SafariConfiguration) {
-        openURL(url, configuration: configuration) { _ in }
+        openURL(url, configuration: configuration, onDismiss: {}, onSuccess: { _ in })
     }
 
     @discardableResult
     func openURL(
         _ url: URL,
         configuration: SafariConfiguration,
-        onDismiss: @escaping (URL) -> Void
+        onDismiss: @escaping () -> Void,
+        onSuccess: @escaping (URL) -> Void
     ) -> SafariHandle {
         AppLog.shared.debug("Open URL: \(url)")
         let controller = SFSafariViewController(url: url)
         controller.modalPresentationStyle = .pageSheet
         controller.dismissButtonStyle = configuration.dismissButtonStyle.sfDismissButtonStyle
-        let context = SafariContext(controller: controller, onDismiss: onDismiss)
+        controller.delegate = self
+        controller.presentationController?.delegate = self
+        let context = SafariContext(controller: controller, onDismiss: onDismiss, onSuccess: onSuccess)
         self.context = context
         AppPresenter.shared.show(controller)
         return context
@@ -80,13 +89,25 @@ class CommonSafariManager: SafariManager {
     func dismiss(with url: URL) {
         // already dismissed by user, but we received an url from Safari
         if context?.controller.presentingViewController == nil {
-            context?.onDismiss(url)
+            context?.onSuccess(url)
             return
         }
 
         context?.controller.dismiss(animated: true, completion: { [weak self] in
-            self?.context?.onDismiss(url)
+            self?.context?.onSuccess(url)
         })
+    }
+}
+
+// MARK: - SFSafariViewControllerDelegate, UIAdaptivePresentationControllerDelegate
+
+extension CommonSafariManager: SFSafariViewControllerDelegate, UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        context?.onDismiss()
+    }
+
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        context?.onDismiss()
     }
 }
 
@@ -107,11 +128,13 @@ extension CommonSafariManager: IncomingActionResponder {
 
 class SafariContext: SafariHandle {
     let controller: SFSafariViewController
-    let onDismiss: (URL) -> Void
+    let onDismiss: () -> Void
+    let onSuccess: (URL) -> Void
 
-    init(controller: SFSafariViewController, onDismiss: @escaping ((URL) -> Void)) {
+    init(controller: SFSafariViewController, onDismiss: @escaping () -> Void, onSuccess: @escaping ((URL) -> Void)) {
         self.controller = controller
         self.onDismiss = onDismiss
+        self.onSuccess = onSuccess
     }
 }
 

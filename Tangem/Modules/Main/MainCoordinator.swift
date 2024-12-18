@@ -52,6 +52,7 @@ class MainCoordinator: CoordinatorObject {
     @Published var organizeTokensViewModel: OrganizeTokensViewModel?
     @Published var pushNotificationsViewModel: PushNotificationsPermissionRequestViewModel?
     @Published var visaTransactionDetailsViewModel: VisaTransactionDetailsViewModel?
+    @Published var pendingExpressTxStatusBottomSheetViewModel: PendingExpressTxStatusBottomSheetViewModel? = nil
 
     // MARK: - Helpers
 
@@ -416,6 +417,21 @@ extension MainCoordinator: SingleTokenBaseRoutable {
         coordinator.start(with: options)
         sendCoordinator = coordinator
     }
+
+    func openPendingExpressTransactionDetails(
+        pendingTransaction: PendingTransaction,
+        tokenItem: TokenItem,
+        userWalletModel: UserWalletModel,
+        pendingTransactionsManager: PendingExpressTransactionsManager
+    ) {
+        pendingExpressTxStatusBottomSheetViewModel = PendingExpressTxStatusBottomSheetViewModel(
+            pendingTransaction: pendingTransaction,
+            currentTokenItem: tokenItem,
+            userWalletModel: userWalletModel,
+            pendingTransactionsManager: pendingTransactionsManager,
+            router: self
+        )
+    }
 }
 
 // MARK: - OrganizeTokensRoutable protocol conformance
@@ -504,7 +520,7 @@ extension MainCoordinator: ActionButtonsSellFlowRoutable {
     }
 }
 
-// MARK: - Action buttons swap routable
+// MARK: - ActionButtonsSwapFlowRoutable
 
 extension MainCoordinator: ActionButtonsSwapFlowRoutable {
     func openSwap(userWalletModel: some UserWalletModel) {
@@ -521,6 +537,29 @@ extension MainCoordinator: ActionButtonsSwapFlowRoutable {
         coordinator.start(with: .default)
 
         actionButtonsSwapCoordinator = coordinator
+    }
+}
+
+// MARK: - PendingExpressTxStatusRoutable
+
+extension MainCoordinator: PendingExpressTxStatusRoutable {
+    func openURL(_ url: URL) {
+        safariManager.openURL(url)
+    }
+
+    func openCurrency(tokenItem: TokenItem, userWalletModel: UserWalletModel) {
+        pendingExpressTxStatusBottomSheetViewModel = nil
+
+        // We don't have info about derivation here, so we have to find first non-custom walletModel.
+        guard let walletModel = userWalletModel.walletModelsManager.walletModels.first(where: {
+            $0.tokenItem.blockchain == tokenItem.blockchain
+                && $0.tokenItem.token == tokenItem.token
+                && !$0.isCustom
+        }) else {
+            return
+        }
+
+        openTokenDetails(for: walletModel, userWalletModel: userWalletModel)
     }
 }
 

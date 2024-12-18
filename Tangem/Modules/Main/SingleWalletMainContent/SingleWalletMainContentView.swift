@@ -35,6 +35,11 @@ struct SingleWalletMainContentView: View {
                 tapAction: viewModel.openMarketsTokenDetails
             )
 
+            ForEach(viewModel.pendingExpressTransactions) { transactionInfo in
+                PendingExpressTransactionView(info: transactionInfo)
+                    .transition(.notificationTransition)
+            }
+
             PendingTransactionsListView(
                 items: viewModel.pendingTransactionViews,
                 exploreTransactionAction: viewModel.openTransactionExplorer
@@ -71,6 +76,7 @@ struct SingleWalletContentView_Preview: PreviewProvider {
             walletModel: userWalletModel.walletModelsManager.walletModels.first!,
             exchangeUtility: cryptoUtility,
             userWalletNotificationManager: FakeUserWalletNotificationManager(),
+            pendingExpressTransactionsManager: FakePendingExpressTransactionsManager(),
             tokenNotificationManager: FakeUserWalletNotificationManager(),
             rateAppController: RateAppControllerStub(),
             tokenRouter: SingleTokenRoutableMock(),

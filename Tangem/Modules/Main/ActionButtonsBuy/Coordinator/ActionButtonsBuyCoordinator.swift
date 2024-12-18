@@ -69,6 +69,13 @@ extension ActionButtonsBuyCoordinator: ActionButtonsBuyRoutable {
         coordinator.start(with: options)
         sendCoordinator = coordinator
     }
+
+    func openBuyCrypto(at url: URL) {
+        safariHandle = safariManager.openURL(url) { [weak self] _ in
+            self?.safariHandle = nil
+            self?.dismiss()
+        }
+    }
 }
 
 // MARK: - Options
