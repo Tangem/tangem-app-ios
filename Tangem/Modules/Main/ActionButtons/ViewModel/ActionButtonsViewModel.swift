@@ -183,7 +183,7 @@ private extension ActionButtonsViewModel {
 
             switch expressUpdateState {
             case .updating: viewModel.handleBuyUpdatingState()
-            case .updated: viewModel.buyActionButtonViewModel.updateState(to: .idle)
+            case .updated: viewModel.handleBuyUpdatedState()
             case .failed: viewModel.buyActionButtonViewModel.updateState(
                     to: .restricted(reason: Localization.actionButtonsSomethingWrongAlertMessage)
                 )
@@ -199,6 +199,13 @@ private extension ActionButtonsViewModel {
         case .restricted, .loading, .initial, .disabled:
             break
         }
+    }
+
+    @MainActor
+    func handleBuyUpdatedState() {
+        buyActionButtonViewModel.updateState(
+            to: userWalletModel.walletModelsManager.walletModels.isEmpty ? .disabled : .idle
+        )
     }
 }
 
@@ -241,16 +248,19 @@ private extension ActionButtonsViewModel {
 
     @MainActor
     func handleUpdatedSwapState() {
-        let walletModels = userWalletModel.walletModelsManager.walletModels
+        let walletModelsCount = userWalletModel.walletModelsManager.walletModels.count
 
-        if walletModels.count > 1 {
-            swapActionButtonViewModel.updateState(to: .idle)
-        } else {
+        switch walletModelsCount {
+        case 0:
+            swapActionButtonViewModel.updateState(to: .disabled)
+        case 1:
             swapActionButtonViewModel.updateState(
                 to: .restricted(
                     reason: Localization.actionButtonsSwapNotEnoughTokensAlertMessage
                 )
             )
+        default:
+            swapActionButtonViewModel.updateState(to: .idle)
         }
     }
 }
@@ -281,7 +291,7 @@ private extension ActionButtonsViewModel {
 
             switch exchangeServiceState {
             case .initializing: viewModel.handleSellUpdatingState()
-            case .initialized: viewModel.sellActionButtonViewModel.updateState(to: .idle)
+            case .initialized: viewModel.handleSellUpdatedState()
             case .failed(let error): viewModel.handleFailedSellState(error)
             }
         }
@@ -295,6 +305,13 @@ private extension ActionButtonsViewModel {
         case .restricted, .loading, .initial, .disabled:
             break
         }
+    }
+
+    @MainActor
+    func handleSellUpdatedState() {
+        sellActionButtonViewModel.updateState(
+            to: userWalletModel.walletModelsManager.walletModels.isEmpty ? .disabled : .idle
+        )
     }
 
     @MainActor
