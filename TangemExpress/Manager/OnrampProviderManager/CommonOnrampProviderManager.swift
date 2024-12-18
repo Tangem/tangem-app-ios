@@ -113,6 +113,10 @@ extension CommonOnrampProviderManager: OnrampProviderManager {
     var amount: Decimal? { _amount }
     var state: OnrampProviderManagerState { _state }
 
+    func update(supportedMethods: [OnrampPaymentMethod]) {
+        _state = .notSupported(.paymentMethod(supportedMethods: supportedMethods))
+    }
+
     func update(amount: OnrampUpdatingAmount) async {
         switch amount {
         case .clear:

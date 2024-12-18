@@ -13,6 +13,9 @@ public protocol OnrampProviderManager {
     /// Get actual state
     var state: OnrampProviderManagerState { get }
 
+    /// Update methods where this provider will be available
+    func update(supportedMethods: [OnrampPaymentMethod])
+
     /// Update quotes for amount
     func update(amount: OnrampUpdatingAmount) async
 

@@ -109,6 +109,10 @@ extension OnrampProvider: OnrampProviderManager {
         }
     }
 
+    public func update(supportedMethods: [OnrampPaymentMethod]) {
+        manager.update(supportedMethods: supportedMethods)
+    }
+
     public func update(amount: OnrampUpdatingAmount) async {
         await manager.update(amount: amount)
     }
