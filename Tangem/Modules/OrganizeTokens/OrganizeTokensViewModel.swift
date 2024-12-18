@@ -79,7 +79,7 @@ final class OrganizeTokensViewModel: ObservableObject, Identifiable {
         if didBind { return }
 
         let sourcePublisherFactory = TokenSectionsSourcePublisherFactory()
-        let tokenSectionsSourcePublisher = sourcePublisherFactory.makeSourcePublisher(for: userWalletModel)
+        let tokenSectionsSourcePublisher = sourcePublisherFactory.makeSourcePublisherForMainScreen(for: userWalletModel)
 
         let organizedTokensSectionsPublisher = tokenSectionsAdapter
             .organizedSections(from: tokenSectionsSourcePublisher, on: mappingQueue)
