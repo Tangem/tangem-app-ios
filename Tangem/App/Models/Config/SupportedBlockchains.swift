@@ -145,6 +145,7 @@ struct SupportedBlockchains {
             .casper(curve: .secp256k1, testnet: false),
             .chiliz(testnet: false),
             .xodex,
+            .clore,
         ]
     }
 
