@@ -50,23 +50,57 @@ struct VisaOnboardingStepsBuilder {
         self.isAccessCodeSet = isAccessCodeSet
         self.activationStatus = activationStatus
     }
+
+    private func buildSteps(for state: VisaCardActivationRemoteState) -> [VisaOnboardingStep] {
+        var steps = [VisaOnboardingStep]()
+        switch state {
+        case .cardWalletSignatureRequired:
+            steps.append(.welcomeBack(isAccessCodeSet: isAccessCodeSet))
+
+            if !isAccessCodeSet {
+                steps.append(.accessCode)
+            }
+
+            fallthrough
+        case .customerWalletSignatureRequired:
+            steps.append(contentsOf: approveSteps)
+            fallthrough
+        case .paymentAccountDeploying:
+            // TODO: IOS-8575
+            break
+        case .waitingPinCode:
+            // TODO: IOS-8572
+            break
+        case .waitingForActivationFinishing:
+            // TODO: IOS-8572
+            break
+        case .activated, .blockedForActivation:
+            // Card shouldn't be able to reach onboarding with this state. Anyway we don't need to add any steps
+            return []
+        }
+
+        return steps
+    }
 }
 
 extension VisaOnboardingStepsBuilder: OnboardingStepsBuilder {
     func buildOnboardingSteps() -> OnboardingSteps {
         var steps = [VisaOnboardingStep]()
 
-        if !activationStatus.isActivated {
-            steps.append(.welcome)
-
-            if !isAccessCodeSet {
-                steps.append(.accessCode)
-            }
-
-            steps.append(contentsOf: approveSteps)
+        switch activationStatus {
+        case .activated:
+            break
+        case .activationStarted(_, _, let activationRemoteState):
+            steps.append(contentsOf: buildSteps(for: activationRemoteState))
+        case .notStartedActivation:
+            steps.append(contentsOf: [.welcome, .accessCode] + approveSteps)
+        case .blocked:
+            return .visa([])
         }
 
         steps.append(contentsOf: otherSteps)
+
+        steps.append(.success)
 
         return .visa(steps)
     }

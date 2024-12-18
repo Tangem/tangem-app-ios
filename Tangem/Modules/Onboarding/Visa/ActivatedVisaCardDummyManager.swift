@@ -13,13 +13,19 @@ import TangemVisa
 class ActivatedVisaCardDummyManager: VisaActivationManager {
     var targetApproveAddress: String?
 
-    func saveAccessCode(accessCode: String) throws {}
+    var isAccessCodeSet: Bool { true }
+    var isContinuingActivation: Bool { true }
+    var activationStatus: TangemVisa.VisaCardActivationStatus {
+        .activated(authTokens: .init(accessToken: "", refreshToken: ""))
+    }
+
+    func saveAccessCode(accessCode: String) throws (TangemVisa.VisaAccessCodeValidationError) {}
+
+    func startActivation() async throws (TangemVisa.VisaActivationError) {}
+
+    func validateAccessCode(accessCode: String) throws (TangemVisa.VisaAccessCodeValidationError) {}
 
     func resetAccessCode() {}
 
     func setupRefreshTokenSaver(_ refreshTokenSaver: any TangemVisa.VisaRefreshTokenSaver) {}
-
-    func startActivation() async throws {}
-
-    func validateAccessCode(accessCode: String) throws {}
 }

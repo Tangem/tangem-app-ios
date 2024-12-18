@@ -6,8 +6,9 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-enum VisaOnboardingStep {
+enum VisaOnboardingStep: Equatable {
     case welcome
+    case welcomeBack(isAccessCodeSet: Bool)
     case accessCode
     case selectWalletForApprove
     case approveUsingTangemWallet
@@ -19,7 +20,7 @@ enum VisaOnboardingStep {
 
     var navigationTitle: String {
         switch self {
-        case .welcome:
+        case .welcome, .welcomeBack:
             return Localization.onboardingGettingStarted
         case .accessCode:
             return Localization.onboardingWalletInfoTitleThird

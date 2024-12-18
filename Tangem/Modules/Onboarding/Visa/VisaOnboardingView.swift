@@ -69,7 +69,7 @@ struct VisaOnboardingView: View {
     @ViewBuilder
     private var pageContent: some View {
         switch viewModel.currentStep {
-        case .welcome:
+        case .welcome, .welcomeBack:
             VisaOnboardingWelcomeView(viewModel: viewModel.welcomeViewModel)
         case .accessCode:
             VisaOnboardingAccessCodeSetupView(viewModel: viewModel.accessCodeSetupViewModel)
