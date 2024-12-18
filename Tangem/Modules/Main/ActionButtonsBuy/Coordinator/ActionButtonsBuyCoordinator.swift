@@ -45,8 +45,9 @@ final class ActionButtonsBuyCoordinator: CoordinatorObject {
 
     func start(with options: Options) {
         actionButtonsBuyViewModel = ActionButtonsBuyViewModel(
+            tokenSelectorViewModel: makeTokenSelectorViewModel(),
             coordinator: self,
-            tokenSelectorViewModel: makeTokenSelectorViewModel()
+            userWalletModel: userWalletModel
         )
     }
 }

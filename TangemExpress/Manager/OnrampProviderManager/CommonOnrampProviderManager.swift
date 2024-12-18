@@ -56,10 +56,20 @@ private extension CommonOnrampProviderManager {
             _state = .loading
             let quote = try await loadQuotes(amount: amount)
             _state = .loaded(quote)
+        } catch is CancellationError {
+            _state = .idle
         } catch let error as ExpressAPIError where error.errorCode == .exchangeTooSmallAmountError {
-            _state = .restriction(.tooSmallAmount(formatAmount(amount: error.value?.amount)))
+            guard let amount = error.value?.amount else {
+                _state = .failed(error: error)
+                return
+            }
+            _state = .restriction(.tooSmallAmount(amount, formatted: formatAmount(amount: amount)))
         } catch let error as ExpressAPIError where error.errorCode == .exchangeTooBigAmountError {
-            _state = .restriction(.tooBigAmount(formatAmount(amount: error.value?.amount)))
+            guard let amount = error.value?.amount else {
+                _state = .failed(error: error)
+                return
+            }
+            _state = .restriction(.tooBigAmount(amount, formatted: formatAmount(amount: amount)))
         } catch let error as ExpressAPIError {
             analyticsLogger.logExpressAPIError(error, provider: expressProvider)
             _state = .failed(error: error)

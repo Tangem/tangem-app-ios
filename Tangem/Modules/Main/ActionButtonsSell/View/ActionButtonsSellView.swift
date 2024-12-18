@@ -23,6 +23,7 @@ struct ActionButtonsSellView: View {
             .onAppear {
                 viewModel.handleViewAction(.onAppear)
             }
+            .bindAlert($viewModel.alert)
     }
 
     @ViewBuilder
