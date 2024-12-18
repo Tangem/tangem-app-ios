@@ -143,9 +143,7 @@ extension CommonPendingOnrampTransactionsManager: PendingExpressTransactionsMana
 
     var pendingTransactionsPublisher: AnyPublisher<[PendingTransaction], Never> {
         pendingTransactionsSubject
-            .map {
-                $0.map(\.pendingTransaction)
-            }
+            .map { $0.map(\.pendingTransaction) }
             .eraseToAnyPublisher()
     }
 
