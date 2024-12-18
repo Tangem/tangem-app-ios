@@ -9,5 +9,10 @@
 import Foundation
 
 public protocol ExpressAnalyticsLogger {
+    // Swap
     func bestProviderSelected(_ provider: ExpressAvailableProvider)
+
+    // Onramp
+    func logAppError(_ error: Error, provider: ExpressProvider)
+    func logExpressAPIError(_ error: ExpressAPIError, provider: ExpressProvider)
 }

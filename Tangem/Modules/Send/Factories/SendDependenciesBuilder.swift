@@ -412,7 +412,8 @@ struct SendDependenciesBuilder {
             expressAPIProvider: apiProvider,
             onrampRepository: repository,
             dataRepository: dataRepository,
-            logger: AppLog.shared
+            logger: AppLog.shared,
+            analyticsLogger: CommonExpressAnalyticsLogger(tokenItem: walletModel.tokenItem)
         )
 
         return (
@@ -444,5 +445,12 @@ struct SendDependenciesBuilder {
 
     func makeOnrampFinishAnalyticsLogger(onrampProvidersInput: OnrampProvidersInput) -> SendFinishAnalyticsLogger {
         OnrampFinishAnalyticsLogger(tokenItem: walletModel.tokenItem, onrampProvidersInput: onrampProvidersInput)
+    }
+
+    func makePendingExpressTransactionsManager() -> PendingExpressTransactionsManager {
+        CommonPendingOnrampTransactionsManager(
+            userWalletId: userWalletModel.userWalletId.stringValue,
+            walletModel: walletModel
+        )
     }
 }

@@ -21,10 +21,6 @@ final class ActionButtonsViewModel: ObservableObject {
     @Injected(\.expressAvailabilityProvider)
     private var expressAvailabilityProvider: ExpressAvailabilityProvider
 
-    // MARK: Published properties
-
-    @Published private(set) var isButtonsDisabled = false
-
     // MARK: Button ViewModels
 
     let buyActionButtonViewModel: BuyActionButtonViewModel
@@ -36,7 +32,10 @@ final class ActionButtonsViewModel: ObservableObject {
     private var bag = Set<AnyCancellable>()
     private let lastButtonTapped = PassthroughSubject<ActionButtonModel, Never>()
 
-    private var currentSwapUpdateState: ExpressAvailabilityUpdateState?
+    private var lastExpressUpdatingState: ExpressAvailabilityUpdateState?
+    private var lastSellInitializeState: ExchangeServiceState?
+    private var lastBuyInitializeState: ExchangeServiceState?
+
     private let expressTokensListAdapter: ExpressTokensListAdapter
     private let userWalletModel: UserWalletModel
 
@@ -50,8 +49,8 @@ final class ActionButtonsViewModel: ObservableObject {
 
         buyActionButtonViewModel = BuyActionButtonViewModel(
             model: .buy,
-            lastButtonTapped: lastButtonTapped,
             coordinator: coordinator,
+            lastButtonTapped: lastButtonTapped,
             userWalletModel: userWalletModel
         )
 
@@ -73,13 +72,8 @@ final class ActionButtonsViewModel: ObservableObject {
     }
 
     func refresh() {
+        // do nothing if already iniitialized
         exchangeService.initialize()
-
-        expressAvailabilityProvider.updateExpressAvailability(
-            for: userWalletModel.walletModelsManager.walletModels.map(\.tokenItem),
-            forceReload: true,
-            userWalletId: userWalletModel.userWalletId.stringValue
-        )
     }
 }
 
@@ -88,23 +82,123 @@ final class ActionButtonsViewModel: ObservableObject {
 private extension ActionButtonsViewModel {
     func bind() {
         bindWalletModels()
+        bindBuyAvailability()
         bindSwapAvailability()
-        bindExchangeAvailability()
+        bindSellAvailability()
     }
 
     func bindWalletModels() {
-        expressTokensListAdapter
-            .walletModels()
-            .receive(on: DispatchQueue.main)
+        userWalletModel
+            .walletModelsManager
+            .walletModelsPublisher
             .withWeakCaptureOf(self)
             .sink { viewModel, walletModels in
-                viewModel.isButtonsDisabled = walletModels.isEmpty
-
-                if let currentSwapUpdateState = viewModel.currentSwapUpdateState {
-                    viewModel.updateSwapButtonState(currentSwapUpdateState)
+                TangemFoundation.runTask(in: self) { @MainActor viewModel in
+                    if walletModels.isEmpty {
+                        viewModel.disabledAllButtons()
+                    } else {
+                        viewModel.restoreButtonsState()
+                    }
                 }
             }
             .store(in: &bag)
+    }
+
+    @MainActor
+    private func disabledAllButtons() {
+        buyActionButtonViewModel.updateState(to: .disabled)
+        sellActionButtonViewModel.updateState(to: .disabled)
+        swapActionButtonViewModel.updateState(to: .disabled)
+    }
+
+    @MainActor
+    private func restoreButtonsState() {
+        if let lastExpressUpdatingState {
+            updateSwapButtonState(lastExpressUpdatingState)
+
+            if FeatureProvider.isAvailable(.onramp) {
+                updateBuyButtonStateWithExpress(lastExpressUpdatingState)
+            }
+        }
+
+        if let lastSellInitializeState {
+            updateSellButtonState(lastSellInitializeState)
+        }
+
+        if let lastBuyInitializeState, !FeatureProvider.isAvailable(.onramp) {
+            updateBuyButtonStateWithMercuryo(lastBuyInitializeState)
+        }
+    }
+}
+
+// MARK: - Buy
+
+private extension ActionButtonsViewModel {
+    func bindBuyAvailability() {
+        expressAvailabilityProvider
+            .expressAvailabilityUpdateState
+            .withWeakCaptureOf(self)
+            .sink { viewModel, expressUpdateState in
+                if FeatureProvider.isAvailable(.onramp) {
+                    viewModel.updateBuyButtonStateWithExpress(expressUpdateState)
+                }
+            }
+            .store(in: &bag)
+
+        exchangeService
+            .buyInitializationPublisher
+            .withWeakCaptureOf(self)
+            .sink { viewModel, buyUpdateState in
+                if !FeatureProvider.isAvailable(.onramp) {
+                    viewModel.updateBuyButtonStateWithMercuryo(buyUpdateState)
+                }
+            }
+            .store(in: &bag)
+    }
+
+    func updateBuyButtonStateWithMercuryo(_ exchangeServiceState: ExchangeServiceState) {
+        TangemFoundation.runTask(in: self) { @MainActor viewModel in
+            viewModel.lastBuyInitializeState = exchangeServiceState
+
+            if let disabledLocalizedReason = viewModel.userWalletModel.config.getDisabledLocalizedReason(
+                for: .exchange
+            ) {
+                viewModel.buyActionButtonViewModel.updateState(to: .restricted(reason: disabledLocalizedReason))
+                return
+            }
+
+            switch exchangeServiceState {
+            case .initializing: viewModel.handleBuyUpdatingState()
+            case .initialized: viewModel.buyActionButtonViewModel.updateState(to: .idle)
+            case .failed(let error): viewModel.buyActionButtonViewModel.updateState(
+                    to: .restricted(reason: error.localizedDescription)
+                )
+            }
+        }
+    }
+
+    func updateBuyButtonStateWithExpress(_ expressUpdateState: ExpressAvailabilityUpdateState) {
+        TangemFoundation.runTask(in: self) { @MainActor viewModel in
+            viewModel.lastExpressUpdatingState = expressUpdateState
+
+            switch expressUpdateState {
+            case .updating: viewModel.handleBuyUpdatingState()
+            case .updated: viewModel.buyActionButtonViewModel.updateState(to: .idle)
+            case .failed: viewModel.buyActionButtonViewModel.updateState(
+                    to: .restricted(reason: Localization.actionButtonsSomethingWrongAlertMessage)
+                )
+            }
+        }
+    }
+
+    @MainActor
+    func handleBuyUpdatingState() {
+        switch buyActionButtonViewModel.viewState {
+        case .idle:
+            buyActionButtonViewModel.updateState(to: .initial)
+        case .restricted, .loading, .initial, .disabled:
+            break
+        }
     }
 }
 
@@ -123,14 +217,12 @@ private extension ActionButtonsViewModel {
 
     func updateSwapButtonState(_ expressUpdateState: ExpressAvailabilityUpdateState) {
         TangemFoundation.runTask(in: self) { @MainActor viewModel in
-            viewModel.currentSwapUpdateState = expressUpdateState
+            viewModel.lastExpressUpdatingState = expressUpdateState
 
             switch expressUpdateState {
             case .updating: viewModel.handleUpdatingExpressState()
             case .updated: viewModel.handleUpdatedSwapState()
-            case .failed:
-                // TODO: Should be removed later
-                viewModel.swapActionButtonViewModel.updateState(
+            case .failed: viewModel.swapActionButtonViewModel.updateState(
                     to: .restricted(reason: Localization.actionButtonsSomethingWrongAlertMessage)
                 )
             }
@@ -142,7 +234,7 @@ private extension ActionButtonsViewModel {
         switch swapActionButtonViewModel.viewState {
         case .idle:
             swapActionButtonViewModel.updateState(to: .initial)
-        case .restricted, .loading, .initial:
+        case .restricted, .loading, .initial, .disabled:
             break
         }
     }
@@ -154,7 +246,6 @@ private extension ActionButtonsViewModel {
         if walletModels.count > 1 {
             swapActionButtonViewModel.updateState(to: .idle)
         } else {
-            // TODO: Should be removed later
             swapActionButtonViewModel.updateState(
                 to: .restricted(
                     reason: Localization.actionButtonsSwapNotEnoughTokensAlertMessage
@@ -167,7 +258,7 @@ private extension ActionButtonsViewModel {
 // MARK: - Sell
 
 private extension ActionButtonsViewModel {
-    func bindExchangeAvailability() {
+    func bindSellAvailability() {
         exchangeService
             .sellInitializationPublisher
             .withWeakCaptureOf(self)
@@ -179,6 +270,7 @@ private extension ActionButtonsViewModel {
 
     func updateSellButtonState(_ exchangeServiceState: ExchangeServiceState) {
         TangemFoundation.runTask(in: self) { @MainActor viewModel in
+            viewModel.lastSellInitializeState = exchangeServiceState
 
             if let disabledLocalizedReason = viewModel.userWalletModel.config.getDisabledLocalizedReason(
                 for: .exchange
@@ -188,10 +280,20 @@ private extension ActionButtonsViewModel {
             }
 
             switch exchangeServiceState {
-            case .initializing: viewModel.sellActionButtonViewModel.updateState(to: .initial)
+            case .initializing: viewModel.handleSellUpdatingState()
             case .initialized: viewModel.sellActionButtonViewModel.updateState(to: .idle)
             case .failed(let error): viewModel.handleFailedSellState(error)
             }
+        }
+    }
+
+    @MainActor
+    func handleSellUpdatingState() {
+        switch sellActionButtonViewModel.viewState {
+        case .idle:
+            sellActionButtonViewModel.updateState(to: .initial)
+        case .restricted, .loading, .initial, .disabled:
+            break
         }
     }
 

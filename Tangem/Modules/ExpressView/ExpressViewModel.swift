@@ -596,11 +596,8 @@ private extension ExpressViewModel {
         case .idle, .loading(.full):
             legalText = nil
         case .restriction, .permissionRequired, .previewCEX, .readyToSwap:
-            runTask(in: self) { viewModel in
-                let text = await viewModel.interactor.getSelectedProvider().flatMap { provider in
-                    viewModel.expressProviderFormatter.mapToLegalText(provider: provider.provider)
-                }
-
+            TangemFoundation.runTask(in: self) { viewModel in
+                let text = await viewModel.interactor.getSelectedProvider()?.provider.legalText(branch: .swap)
                 await runOnMain {
                     viewModel.legalText = text
                 }

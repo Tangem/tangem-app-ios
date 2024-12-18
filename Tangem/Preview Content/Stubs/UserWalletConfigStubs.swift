@@ -33,6 +33,7 @@ struct UserWalletConfigStubs {
     )
 
     static var visaStub: UserWalletConfig = VisaConfig(
-        card: .init(card: CardMock.visa.card)
+        card: .init(card: CardMock.visa.card),
+        activationStatus: .activated(authTokens: .init(accessToken: "", refreshToken: ""))
     )
 }

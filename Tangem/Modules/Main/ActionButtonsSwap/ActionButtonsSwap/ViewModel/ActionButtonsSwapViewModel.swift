@@ -150,6 +150,11 @@ final class ActionButtonsSwapViewModel: ObservableObject {
             )
 
             tokenSelectorState = isNotAvailablePairs ? .noAvailablePairs : .loaded
+        } catch let error as ExpressAPIError {
+            tokenSelectorState = .refreshRequired(
+                title: error.localizedTitle,
+                message: error.localizedMessage
+            )
         } catch {
             tokenSelectorState = .refreshRequired(
                 title: Localization.commonError,

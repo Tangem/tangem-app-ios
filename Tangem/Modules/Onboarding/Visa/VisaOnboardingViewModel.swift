@@ -351,7 +351,11 @@ extension VisaOnboardingViewModel {
     static var mock: VisaOnboardingViewModel {
         let cardMock = CardMock.visa
         let visaUserWalletModelMock = CommonUserWalletModel.visaMock
-        let cardMockConfig = VisaConfig(card: cardMock.cardInfo.card)
+        let activationStatus = VisaCardActivationStatus.notStartedActivation(activationInput: .init(
+            cardId: cardMock.card.cardId,
+            cardPublicKey: cardMock.card.cardPublicKey
+        ))
+        let cardMockConfig = VisaConfig(card: cardMock.cardInfo.card, activationStatus: activationStatus)
         let inputFactory = OnboardingInputFactory(
             cardInfo: cardMock.cardInfo,
             userWalletModel: visaUserWalletModelMock,

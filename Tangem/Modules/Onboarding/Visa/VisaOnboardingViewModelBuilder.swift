@@ -11,14 +11,23 @@ import TangemVisa
 
 struct VisaOnboardingViewModelBuilder {
     func makeOnboardingViewModel(onboardingInput: OnboardingInput, coordinator: VisaOnboardingRoutable) -> VisaOnboardingViewModel {
-        let visaCardInput: VisaCardActivationInput
+        let visaActivationManager: VisaActivationManager
         switch onboardingInput.cardInput {
         case .cardId:
             fatalError("Invalid card input for Visa onboarding")
         case .cardInfo(let cardInfo):
             switch cardInfo.walletData {
-            case .visa(let activationInput, _):
-                visaCardInput = activationInput
+            case .visa(let activationStatus):
+                if let activationInput = activationStatus.activationInput {
+                    visaActivationManager = VisaActivationManagerFactory().make(
+                        cardInput: activationInput,
+                        tangemSdk: TangemSdkDefaultFactory().makeTangemSdk(),
+                        urlSessionConfiguration: .default,
+                        logger: AppLog.shared
+                    )
+                } else {
+                    visaActivationManager = ActivatedVisaCardDummyManager()
+                }
             default:
                 fatalError("Invalid card input for Visa onboarding")
             }
@@ -28,12 +37,7 @@ struct VisaOnboardingViewModelBuilder {
         }
         let model = VisaOnboardingViewModel(
             input: onboardingInput,
-            visaActivationManager: VisaActivationManagerFactory().make(
-                cardInput: visaCardInput,
-                tangemSdk: TangemSdkDefaultFactory().makeTangemSdk(),
-                urlSessionConfiguration: .default,
-                logger: AppLog.shared
-            ),
+            visaActivationManager: visaActivationManager,
             coordinator: coordinator
         )
 
