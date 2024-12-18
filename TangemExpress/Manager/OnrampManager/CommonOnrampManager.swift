@@ -86,11 +86,18 @@ extension CommonOnrampManager: OnrampManager {
     }
 
     public func loadRedirectData(provider: OnrampProvider, redirectSettings: OnrampRedirectSettings) async throws -> OnrampRedirectData {
-        let item = try provider.makeOnrampQuotesRequestItem()
-        let requestItem = OnrampRedirectDataRequestItem(quotesItem: item, redirectSettings: redirectSettings)
-        let data = try await apiProvider.onrampData(item: requestItem)
-
-        return data
+        do {
+            let item = try provider.makeOnrampQuotesRequestItem()
+            let requestItem = OnrampRedirectDataRequestItem(quotesItem: item, redirectSettings: redirectSettings)
+            let data = try await apiProvider.onrampData(item: requestItem)
+            return data
+        } catch let error as ExpressAPIError {
+            analyticsLogger.logExpressAPIError(error, provider: provider.provider)
+            throw error
+        } catch {
+            analyticsLogger.logAppError(error, provider: provider.provider)
+            throw error
+        }
     }
 }
 
