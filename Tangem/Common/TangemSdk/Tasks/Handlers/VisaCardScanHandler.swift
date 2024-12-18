@@ -169,12 +169,13 @@ class VisaCardScanHandler {
 
             let activationRemoteState = try await cardActivationStateProvider.loadCardActivationRemoteState(authorizationTokens: authorizationTokensResponse)
 
-            if activationRemoteState == .blockedForActivation {
+            switch activationRemoteState {
+            case .blockedForActivation:
                 throw VisaActivationError.blockedForActivation
-            }
-
-            if activationRemoteState == .activated {
+            case .activated:
                 throw VisaActivationError.invalidActivationState
+            default:
+                break
             }
 
             let activationInput = VisaCardActivationInput(cardId: card.cardId, cardPublicKey: card.cardPublicKey, isAccessCodeSet: card.isAccessCodeSet)
