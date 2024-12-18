@@ -272,15 +272,19 @@ private extension OnrampModel {
         _currency.send(.success(currency))
 
         mainTask {
-            guard await $0.checkCountryAvailability(country: country) else {
-                return
-            }
-
-            await $0.updateProviders(country: country, currency: currency)
+            await $0.updateProvidersThroughCountryAvailabilityChecking(country: country, currency: currency)
         }
     }
 
-    func checkCountryAvailability(country: OnrampCountry) async -> Bool {
+    func updateProvidersThroughCountryAvailabilityChecking(country: OnrampCountry, currency: OnrampFiatCurrency) async {
+        guard await checkCountryAvailability(country: country, currency: currency) else {
+            return
+        }
+
+        await updateProviders(country: country, currency: currency)
+    }
+
+    func checkCountryAvailability(country: OnrampCountry, currency: OnrampFiatCurrency) async -> Bool {
         do {
             let countries = try await onrampDataRepository.countries()
             guard let country = countries.first(where: { $0.identity == country.identity }) else {
@@ -292,6 +296,8 @@ private extension OnrampModel {
 
             if country.onrampAvailable {
                 // All good
+                // Reset `_currency` just in case when we set it to `.failure` below
+                _currency.send(.success(currency))
                 return true
             }
 
@@ -575,8 +581,9 @@ extension OnrampModel: OnrampNotificationManagerInput {
     func refreshError() {
         if case .failure = _currency.value {
             TangemFoundation.runTask(in: self) {
-                if let country = $0.onrampRepository.preferenceCountry {
-                    _ = await $0.checkCountryAvailability(country: country)
+                if let country = $0.onrampRepository.preferenceCountry,
+                   let currency = $0.onrampRepository.preferenceCurrency {
+                    await $0.updateProvidersThroughCountryAvailabilityChecking(country: country, currency: currency)
                 } else {
                     await $0.initiateCountryDefinition()
                 }
