@@ -202,13 +202,11 @@ private extension CommonStakingManager {
             case .unlockLocked:
                 modifyBalancesByStatus(balances: &balances, action: action, type: .locked)
             case .unstake:
-                guard let index = balanceIndexByType(balances: balances, action: action, type: .active) else { return }
-                let balance = balances[index]
-                if balance.amount == action.amount {
-                    // full unstake, make existing staking in progress
+                if isFullAmountUnstaking(for: balances, action: action) {
+                    // make existing staking in progress
                     modifyBalancesByStatus(balances: &balances, action: action, type: .active)
                 } else {
-                    // partial unstake, reduce amount for existing staking, append new in progress block 
+                    // for partial unstake reduce amount of existing staking and append new in progress block
                     modifyBalancesByStatus(
                         balances: &balances,
                         action: action,
@@ -224,6 +222,15 @@ private extension CommonStakingManager {
         }
 
         return balances
+    }
+    
+    private func isFullAmountUnstaking(for balances: [StakingBalance], action: PendingAction) -> Bool {
+        guard let index = balanceIndexByType(balances: balances, action: action, type: .active) else {
+            Log.warning("Couldn't find corresponding staked balance for unstake action")
+            return false
+        }
+        let balance = balances[index]
+        return balance.amount == action.amount
     }
 
     private func balanceIndexByType(
