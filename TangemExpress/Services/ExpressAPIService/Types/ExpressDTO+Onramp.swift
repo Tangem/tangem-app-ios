@@ -18,14 +18,14 @@ extension ExpressDTO {
         struct FiatCurrency: Decodable {
             let name: String
             let code: String
-            let image: String
+            let image: String?
             let precision: Int
         }
 
         struct Country: Decodable {
             let name: String
             let code: String
-            let image: String
+            let image: String?
             let alpha3: String?
             let continent: String?
             let defaultCurrency: FiatCurrency

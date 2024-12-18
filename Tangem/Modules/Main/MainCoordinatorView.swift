@@ -29,6 +29,13 @@ struct MainCoordinatorView: CoordinatorView {
         .onOverlayContentStateChange { [weak coordinator] state in
             if !state.isCollapsed {
                 coordinator?.hideMarketsTooltip()
+            } else {
+                // Workaround: If you open the markets screen, add a token, and return to the main page, the frames break and no longer align with the tap zone.
+                // https://tangem.atlassian.net/browse/IOS-8705
+                // https://forums.developer.apple.com/forums/thread/724598
+                if let vc = UIApplication.topViewController as? OverlayContentContainerViewController {
+                    vc.resetContentFrame()
+                }
             }
         }
         .onAppear {

@@ -13,6 +13,10 @@ final class ActionButtonsBuyViewModel: ObservableObject {
 
     @Injected(\.exchangeService) private var exchangeService: ExchangeService
 
+    // MARK: - Published properties
+
+    @Published var alert: AlertBinder?
+
     // MARK: - Child viewModel
 
     let tokenSelectorViewModel: ActionButtonsTokenSelectorViewModel
@@ -21,12 +25,16 @@ final class ActionButtonsBuyViewModel: ObservableObject {
 
     private weak var coordinator: ActionButtonsBuyRoutable?
 
+    private let userWalletModel: UserWalletModel
+
     init(
+        tokenSelectorViewModel: ActionButtonsTokenSelectorViewModel,
         coordinator: some ActionButtonsBuyRoutable,
-        tokenSelectorViewModel: ActionButtonsTokenSelectorViewModel
+        userWalletModel: some UserWalletModel
     ) {
-        self.coordinator = coordinator
         self.tokenSelectorViewModel = tokenSelectorViewModel
+        self.coordinator = coordinator
+        self.userWalletModel = userWalletModel
     }
 
     func handleViewAction(_ action: Action) {
@@ -37,12 +45,20 @@ final class ActionButtonsBuyViewModel: ObservableObject {
             ActionButtonsAnalyticsService.trackCloseButtonTap(source: .buy)
             coordinator?.dismiss()
         case .didTapToken(let token):
-            ActionButtonsAnalyticsService.trackTokenClicked(.buy, tokenSymbol: token.symbol)
             openBuy(token)
         }
     }
 
     private func openBuy(_ token: ActionButtonsTokenSelectorItem) {
+        if
+            let disabledLocalizedReason = userWalletModel.config.getDisabledLocalizedReason(for: .exchange),
+            !FeatureProvider.isAvailable(.onramp) {
+            alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
+            return
+        }
+
+        ActionButtonsAnalyticsService.trackTokenClicked(.buy, tokenSymbol: token.symbol)
+
         if FeatureProvider.isAvailable(.onramp) {
             coordinator?.openOnramp(walletModel: token.walletModel)
         } else if let buyUrl = makeBuyUrl(from: token) {

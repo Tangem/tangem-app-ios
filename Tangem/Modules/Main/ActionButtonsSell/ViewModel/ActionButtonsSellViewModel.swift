@@ -9,18 +9,32 @@
 import Foundation
 
 final class ActionButtonsSellViewModel: ObservableObject {
+    // MARK: - Dependencies
+
     @Injected(\.exchangeService) private var exchangeService: ExchangeService
+
+    // MARK: - Published properties
+
+    @Published var alert: AlertBinder?
+
+    // MARK: - Child ViewModel
 
     let tokenSelectorViewModel: ActionButtonsTokenSelectorViewModel
 
+    // MARK: - Private properties
+
     private weak var coordinator: ActionButtonsSellRoutable?
 
+    private let userWalletModel: UserWalletModel
+
     init(
+        tokenSelectorViewModel: ActionButtonsTokenSelectorViewModel,
         coordinator: some ActionButtonsSellRoutable,
-        tokenSelectorViewModel: ActionButtonsTokenSelectorViewModel
+        userWalletModel: some UserWalletModel
     ) {
-        self.coordinator = coordinator
         self.tokenSelectorViewModel = tokenSelectorViewModel
+        self.coordinator = coordinator
+        self.userWalletModel = userWalletModel
     }
 
     func handleViewAction(_ action: Action) {
@@ -31,13 +45,24 @@ final class ActionButtonsSellViewModel: ObservableObject {
             ActionButtonsAnalyticsService.trackCloseButtonTap(source: .sell)
             coordinator?.dismiss()
         case .didTapToken(let token):
-            ActionButtonsAnalyticsService.trackTokenClicked(.sell, tokenSymbol: token.symbol)
+            handleTapToken(token)
+        }
+    }
 
-            guard let url = makeSellUrl(from: token) else { return }
+    private func handleTapToken(_ token: ActionButtonsTokenSelectorItem) {
+        if let disabledLocalizedReason = userWalletModel.config.getDisabledLocalizedReason(
+            for: .exchange
+        ) {
+            alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
+            return
+        }
 
-            coordinator?.openSellCrypto(at: url) { response in
-                self.makeSendToSellModel(from: response, and: token.walletModel)
-            }
+        ActionButtonsAnalyticsService.trackTokenClicked(.sell, tokenSymbol: token.symbol)
+
+        guard let url = makeSellUrl(from: token) else { return }
+
+        coordinator?.openSellCrypto(at: url) { response in
+            self.makeSendToSellModel(from: response, and: token.walletModel)
         }
     }
 }
