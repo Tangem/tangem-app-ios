@@ -115,7 +115,12 @@ public extension ProvidersList {
         forEach { item in
             item.providers.forEach { provider in
                 if case .notSupported(.paymentMethod) = provider.state {
-                    let supportedMethods = filter { $0.providers.contains { $0.isSuccessfullyLoaded } }.map(\.paymentMethod)
+                    let supportedMethods = filter {
+                        $0.providers
+                            .filter { $0.provider == provider.provider }
+                            .contains { $0.isSuccessfullyLoaded }
+                    }
+                    .map(\.paymentMethod)
                     provider.update(supportedMethods: supportedMethods)
                 }
             }

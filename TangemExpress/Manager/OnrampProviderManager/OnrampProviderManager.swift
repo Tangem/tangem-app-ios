@@ -65,8 +65,10 @@ public enum OnrampProviderManagerState {
 
         public var description: String {
             switch self {
-            case .currentPair: "Current pair"
-            case .paymentMethod: "Payment method"
+            case .currentPair:
+                "Current pair"
+            case .paymentMethod(let supportedMethods):
+                "Supported only for methods for \(supportedMethods.map(\.name))"
             }
         }
     }
