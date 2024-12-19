@@ -12,11 +12,7 @@ import Combine
 import TangemFoundation
 import TangemVisa
 
-protocol VisaOnboardingAccessCodeSetupDelegate: AnyObject {
-    /// We need to show alert in parent view, otherwise it won't be shown
-    @MainActor
-    func showAlert(_ alert: AlertBinder) async
-
+protocol VisaOnboardingAccessCodeSetupDelegate: VisaOnboardingAlertPresenter {
     func useSelectedCode(accessCode: String) async throws
 
     func closeOnboarding()

@@ -12,6 +12,11 @@ import TangemSdk
 import TangemFoundation
 import TangemVisa
 
+protocol VisaOnboardingAlertPresenter: AnyObject {
+    @MainActor
+    func showAlert(_ alert: AlertBinder) async
+}
+
 protocol VisaOnboardingRoutable: AnyObject {
     func closeOnboarding()
     func openMail(with dataCollector: EmailDataCollector, recipient: String, emailType: EmailType)

@@ -10,11 +10,6 @@ import Foundation
 import Combine
 import TangemFoundation
 
-protocol VisaOnboardingAlertPresenter: AnyObject {
-    @MainActor
-    func showAlert(_ alert: AlertBinder) async
-}
-
 protocol VisaOnboardingInProgressDelegate: VisaOnboardingAlertPresenter {
     func canProceedOnboarding() async throws -> Bool
     @MainActor
