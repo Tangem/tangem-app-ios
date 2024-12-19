@@ -19,6 +19,7 @@ protocol AuthorizationTokenHandler {
     var accessToken: JWT? { get async }
     var containsAccessToken: Bool { get async }
     var authorizationHeader: String { get async throws }
+    var authorizationTokens: VisaAuthorizationTokens? { get async }
     func setupTokens(_ tokens: VisaAuthorizationTokens) async throws
     func setupRefreshTokenSaver(_ refreshTokenSaver: VisaRefreshTokenSaver)
 }
@@ -149,7 +150,7 @@ class CommonVisaAccessTokenHandler {
         }
 
         let visaTokens = try await tokenRefreshService.refreshAccessToken(refreshToken: refreshJWTToken.string)
-        let newJWTTokens = try AuthorizationTokensDecoderUtility().decodeAuthTokens(visaTokens)
+        let newJWTTokens = try AuthorizationTokensUtility().decodeAuthTokens(visaTokens)
 
         if newJWTTokens.accessToken.expired {
             throw VisaAccessTokenHandlerError.failedToUpdateAccessToken
@@ -175,7 +176,13 @@ extension CommonVisaAccessTokenHandler: AuthorizationTokenHandler {
                 throw VisaAccessTokenHandlerError.missingAccessToken
             }
 
-            return "Bearer \(jwtTokens.accessToken.string)"
+            return AuthorizationTokensUtility().getAuthorizationHeader(from: jwtTokens)
+        }
+    }
+
+    var authorizationTokens: VisaAuthorizationTokens? {
+        get async {
+            await accessTokenHolder.authorizationTokens
         }
     }
 

@@ -24,6 +24,7 @@ final class CommonCardActivationOrderProvider {
     private let customerInfoManagementService: CustomerInfoManagementService
     private let logger: InternalLogger
 
+    private var loadedOrder: CardActivationOrder?
     private var orderLoadingTask: Task<Void, Error>?
 
     init(
@@ -43,8 +44,12 @@ final class CommonCardActivationOrderProvider {
 
 extension CommonCardActivationOrderProvider: CardActivationOrderProvider {
     func provideActivationOrderForSign() async throws -> CardActivationOrder {
+        if let loadedOrder {
+            return loadedOrder
+        }
+
         guard let accessToken = await accessTokenProvider.accessToken else {
-            throw VisaActivationError.missingAccessCode
+            throw VisaActivationError.missingAccessToken
         }
 
         guard let customerId = JWTTokenHelper().getCustomerID(from: accessToken) else {
@@ -64,6 +69,11 @@ extension CommonCardActivationOrderProvider: CardActivationOrderProvider {
     }
 
     func provideActivationOrderForSign(completion: @escaping (Result<CardActivationOrder, any Error>) -> Void) {
+        if let loadedOrder {
+            completion(.success(loadedOrder))
+            return
+        }
+
         // TODO: IOS-8572
         if let orderLoadingTask {
             orderLoadingTask.cancel()

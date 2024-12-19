@@ -42,12 +42,33 @@ class VisaOnboardingViewModel: ObservableObject {
     }()
 
     // TODO: - Will be change later after clarification about authorization flow
-    lazy var welcomeViewModel: VisaOnboardingWelcomeViewModel = .init(
-        activationState: .newActivation,
-        userName: "World",
-        imagePublisher: $cardImage,
-        startActivationDelegate: weakify(self, forFunction: VisaOnboardingViewModel.goToNextStep)
-    )
+    lazy var welcomeViewModel: VisaOnboardingWelcomeViewModel = {
+        let activationState: VisaOnboardingWelcomeViewModel.State
+        let userName: String
+        switch visaActivationManager.activationStatus {
+        case .activated:
+            // This step shouldn't appeared for activated card. Only biometry, notification and success screen
+            activationState = .continueActivation
+            userName = "Uninvited guest"
+        case .activationStarted:
+            userName = "IOS-8572"
+            activationState = .continueActivation
+        case .notStartedActivation:
+            userName = "Visa Card"
+            activationState = .newActivation
+        case .blocked:
+            userName = "Blocked"
+            activationState = .newActivation
+        }
+
+        return .init(
+            activationState: activationState,
+            isAccessCodeSet: visaActivationManager.isAccessCodeSet,
+            userName: userName,
+            imagePublisher: $cardImage,
+            delegate: self
+        )
+    }()
 
     lazy var accessCodeSetupViewModel = VisaOnboardingAccessCodeSetupViewModel(accessCodeValidator: visaActivationManager, delegate: self)
     lazy var walletSelectorViewModel = VisaOnboardingApproveWalletSelectorViewModel(delegate: self)
@@ -90,6 +111,7 @@ class VisaOnboardingViewModel: ObservableObject {
 
         if case .visa(let visaSteps) = input.steps {
             steps = visaSteps
+            currentStep = visaSteps.first ?? .welcome
         }
 
         loadImage(input.cardInput.imageLoadInput)
@@ -97,7 +119,7 @@ class VisaOnboardingViewModel: ObservableObject {
 
     func backButtonAction() {
         switch currentStep {
-        case .welcome, .pushNotifications, .saveUserWallet, .selectWalletForApprove:
+        case .welcome, .welcomeBack, .pushNotifications, .saveUserWallet, .selectWalletForApprove:
             showCloseOnboardingAlert()
         case .accessCode:
             guard accessCodeSetupViewModel.goBack() else {
@@ -148,6 +170,13 @@ private extension VisaOnboardingViewModel {
         switch currentStep {
         case .welcome:
             goToStep(.accessCode)
+        case .welcomeBack(let isAccessCodeSet):
+            if isAccessCodeSet {
+                /// Should be decided in `proceedToApproveWalletSelection()`
+                break
+            } else {
+                goToStep(.accessCode)
+            }
         case .accessCode:
             goToStep(.selectWalletForApprove)
         case .selectWalletForApprove, .approveUsingTangemWallet, .saveUserWallet, .pushNotifications:
@@ -231,6 +260,22 @@ extension VisaOnboardingViewModel: VisaOnboardingAccessCodeSetupDelegate {
         try await visaActivationManager.startActivation()
         await proceedToApproveWalletSelection()
     }
+
+    func closeOnboarding() {
+        userWalletRepository.updateSelection()
+        coordinator?.closeOnboarding()
+    }
+}
+
+extension VisaOnboardingViewModel: VisaOnboardingWelcomeDelegate {
+    func openAccessCodeScreen() {
+        goToNextStep()
+    }
+
+    func continueActivation() async throws {
+        try await visaActivationManager.startActivation()
+        await proceedToApproveWalletSelection()
+    }
 }
 
 private extension VisaOnboardingViewModel {
@@ -248,7 +293,7 @@ private extension VisaOnboardingViewModel {
                 userWalletModels: userWalletRepository.models
             )
         else {
-            goToNextStep()
+            goToStep(.selectWalletForApprove)
             return
         }
 
@@ -304,11 +349,6 @@ private extension VisaOnboardingViewModel {
     func showCloseOnboardingAlert() {
         alert = AlertBuilder.makeExitAlert(okAction: weakify(self, forFunction: VisaOnboardingViewModel.closeOnboarding))
     }
-
-    func closeOnboarding() {
-        userWalletRepository.updateSelection()
-        coordinator?.closeOnboarding()
-    }
 }
 
 // MARK: - Image loading
@@ -353,7 +393,8 @@ extension VisaOnboardingViewModel {
         let visaUserWalletModelMock = CommonUserWalletModel.visaMock
         let activationStatus = VisaCardActivationStatus.notStartedActivation(activationInput: .init(
             cardId: cardMock.card.cardId,
-            cardPublicKey: cardMock.card.cardPublicKey
+            cardPublicKey: cardMock.card.cardPublicKey,
+            isAccessCodeSet: cardMock.cardInfo.card.isAccessCodeSet
         ))
         let cardMockConfig = VisaConfig(card: cardMock.cardInfo.card, activationStatus: activationStatus)
         let inputFactory = OnboardingInputFactory(
@@ -370,10 +411,7 @@ extension VisaOnboardingViewModel {
         return .init(
             input: cardInput,
             visaActivationManager: VisaActivationManagerFactory().make(
-                cardInput: .init(
-                    cardId: cardMock.card.cardId,
-                    cardPublicKey: cardMock.card.cardPublicKey
-                ),
+                initialActivationStatus: activationStatus,
                 tangemSdk: TangemSdkDefaultFactory().makeTangemSdk(),
                 urlSessionConfiguration: .default,
                 logger: AppLog.shared
