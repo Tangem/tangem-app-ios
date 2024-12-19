@@ -18,6 +18,8 @@ class OnrampStatusCompactViewModel: ObservableObject {
     init(input: OnrampStatusInput, pendingTransactionsManager: PendingExpressTransactionsManager) {
         self.pendingTransactionsManager = pendingTransactionsManager
 
+        // Fill the placeholder because the transaction may hasn't loaded yet
+        initialSetupView()
         bind(input: input)
     }
 }
@@ -44,5 +46,26 @@ private extension OnrampStatusCompactViewModel {
         let converter = PendingExpressTransactionsConverter()
         let (list, _) = converter.convertToStatusRowDataList(for: pendingTransaction)
         statusesList = list
+    }
+
+    func initialSetupView() {
+        statusesList = [
+            .init(
+                title: PendingExpressTransactionStatus.awaitingDeposit.activeStatusTitle,
+                state: .loader
+            ),
+            .init(
+                title: PendingExpressTransactionStatus.confirming.activeStatusTitle,
+                state: .empty
+            ),
+            .init(
+                title: PendingExpressTransactionStatus.buying.activeStatusTitle,
+                state: .empty
+            ),
+            .init(
+                title: PendingExpressTransactionStatus.sendingToUser.activeStatusTitle,
+                state: .empty
+            ),
+        ]
     }
 }
