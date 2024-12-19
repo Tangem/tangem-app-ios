@@ -24,7 +24,7 @@ class CommonPendingOnrampTransactionsManager {
         request: { [weak self] pendingTransaction in
             await self?.request(pendingTransaction: pendingTransaction)
         },
-        shouldStopPolling: { $0.transactionRecord.transactionStatus.isTerminated },
+        shouldStopPolling: { $0.transactionRecord.transactionStatus.isTerminated(branch: .onramp) },
         hasChanges: { $0.transactionRecord.transactionStatus != $1.transactionRecord.transactionStatus },
         pollingInterval: Constants.statusUpdateTimeout
     )
