@@ -9,9 +9,21 @@
 import Foundation
 import SwiftUI
 import Combine
+import TangemFoundation
+
+protocol VisaOnboardingWelcomeDelegate: AnyObject {
+    func openAccessCodeScreen()
+    func continueActivation() async throws
+    /// We need to show alert in parent view, otherwise it won't be presented
+    @MainActor
+    func showAlert(_ alert: AlertBinder) async
+}
 
 class VisaOnboardingWelcomeViewModel: ObservableObject {
     @Published var cardImage: Image?
+    @Published var isLoading: Bool = false
+
+    let isAccessCodeSet: Bool
 
     var title: String {
         activationState.greetingsText(userName: userName)
@@ -27,17 +39,19 @@ class VisaOnboardingWelcomeViewModel: ObservableObject {
 
     private let activationState: State
     private let userName: String
-    private let startActivationDelegate: (() -> Void)?
+    private weak var delegate: VisaOnboardingWelcomeDelegate?
 
     init(
         activationState: State,
+        isAccessCodeSet: Bool,
         userName: String,
         imagePublisher: some Publisher<Image?, Never>,
-        startActivationDelegate: @escaping () -> Void
+        delegate: VisaOnboardingWelcomeDelegate?
     ) {
         self.activationState = activationState
+        self.isAccessCodeSet = isAccessCodeSet
         self.userName = userName
-        self.startActivationDelegate = startActivationDelegate
+        self.delegate = delegate
         var cancellable: AnyCancellable?
         cancellable = imagePublisher
             .receive(on: DispatchQueue.main)
@@ -48,8 +62,33 @@ class VisaOnboardingWelcomeViewModel: ObservableObject {
             }
     }
 
-    func startActivationAction() {
-        startActivationDelegate?()
+    func mainButtonAction() {
+        switch activationState {
+        case .newActivation:
+            delegate?.openAccessCodeScreen()
+        case .continueActivation:
+            if isAccessCodeSet {
+                continueActivation()
+            } else {
+                delegate?.openAccessCodeScreen()
+            }
+        }
+    }
+
+    private func continueActivation() {
+        isLoading = true
+        runTask(in: self, isDetached: false) { viewModel in
+            do {
+                try await viewModel.delegate?.continueActivation()
+            } catch {
+                if !error.isCancellationError {
+                    await viewModel.delegate?.showAlert(error.alertBinder)
+                }
+            }
+            await runOnMain {
+                viewModel.isLoading = false
+            }
+        }
     }
 }
 

@@ -14,11 +14,13 @@ import TangemVisa
 class VisaCardScanHandler {
     typealias CompletionHandler = CompletionResult<DefaultWalletData>
     private let authorizationService: VisaAuthorizationService
+    private let cardActivationStateProvider: VisaCardActivationRemoteStateService
     private let visaUtilities = VisaUtilities()
 
     init() {
         let builder = VisaAPIServiceBuilder()
         authorizationService = builder.buildAuthorizationService(urlSessionConfiguration: .defaultConfiguration, logger: AppLog.shared)
+        cardActivationStateProvider = builder.buildCardActivationStatusService(urlSessionConfiguration: .defaultConfiguration, logger: AppLog.shared)
     }
 
     deinit {
@@ -34,7 +36,7 @@ class VisaCardScanHandler {
 
         let mandatoryCurve = visaUtilities.mandatoryCurve
         guard let wallet = card.wallets.first(where: { $0.curve == mandatoryCurve }) else {
-            let activationInput = VisaCardActivationInput(cardId: card.cardId, cardPublicKey: card.cardPublicKey)
+            let activationInput = VisaCardActivationInput(cardId: card.cardId, cardPublicKey: card.cardPublicKey, isAccessCodeSet: card.isAccessCodeSet)
             let activationStatus = VisaCardActivationStatus.notStartedActivation(activationInput: activationInput)
             completion(.success(.visa(activationStatus)))
             return
@@ -165,9 +167,22 @@ class VisaCardScanHandler {
             )
             log("Authorization tokens response: \(authorizationTokensResponse)")
 
-            let activationInput = VisaCardActivationInput(cardId: card.cardId, cardPublicKey: card.cardPublicKey)
+            let activationRemoteState = try await cardActivationStateProvider.loadCardActivationRemoteState(authorizationTokens: authorizationTokensResponse)
+
+            switch activationRemoteState {
+            case .blockedForActivation:
+                throw VisaActivationError.blockedForActivation
+            case .activated:
+                throw VisaActivationError.invalidActivationState
+            default:
+                break
+            }
+
+            let activationInput = VisaCardActivationInput(cardId: card.cardId, cardPublicKey: card.cardPublicKey, isAccessCodeSet: card.isAccessCodeSet)
             let visaWalletData = DefaultWalletData.visa(.activationStarted(
-                activationInput: activationInput, authTokens: authorizationTokensResponse
+                activationInput: activationInput,
+                authTokens: authorizationTokensResponse,
+                activationRemoteState: activationRemoteState
             ))
             completion(.success(visaWalletData))
         } catch let error as TangemSdkError {

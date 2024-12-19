@@ -14,7 +14,7 @@ public struct VisaActivationManagerFactory {
     public init() {}
 
     public func make(
-        cardInput: VisaCardActivationInput,
+        initialActivationStatus: VisaCardActivationStatus,
         tangemSdk: TangemSdk,
         urlSessionConfiguration: URLSessionConfiguration,
         logger: VisaLogger
@@ -30,7 +30,7 @@ public struct VisaActivationManagerFactory {
         let customerInfoManagementService = CommonCustomerInfoManagementService(
             authorizationTokenHandler: tokenHandler,
             apiService: .init(
-                provider: MoyaProvider<CustomerInfoManagementAPITarget>(session: Session(configuration: urlSessionConfiguration)),
+                provider: MoyaProviderBuilder().buildProvider(configuration: urlSessionConfiguration),
                 logger: internalLogger,
                 decoder: JSONDecoderFactory().makeCIMDecoder()
             )
@@ -46,7 +46,7 @@ public struct VisaActivationManagerFactory {
         )
 
         return CommonVisaActivationManager(
-            cardInput: cardInput,
+            initialActivationStatus: initialActivationStatus,
             authorizationService: authorizationService,
             authorizationTokenHandler: tokenHandler,
             tangemSdk: tangemSdk,
