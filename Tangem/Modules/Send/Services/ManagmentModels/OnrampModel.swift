@@ -249,9 +249,8 @@ private extension OnrampModel {
     // MARK: - Payment method
 
     func updatePaymentMethod(method: OnrampPaymentMethod) {
-        mainTask {
+        TangemFoundation.runTask(in: self) {
             let provider = try await $0.onrampManager.suggestProvider(in: $0.providersList(), paymentMethod: method)
-            try Task.checkCancellation()
             $0._selectedOnrampProvider.send(.success(provider))
         }
     }
