@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TangemExpress
 
 enum PendingExpressTransactionStatus: String, Equatable, Codable {
     case created
@@ -75,11 +76,24 @@ enum PendingExpressTransactionStatus: String, Equatable, Codable {
         }
     }
 
-    var isTerminated: Bool {
+    func isTerminated(branch: ExpressBranch) -> Bool {
         switch self {
-        case .done, .refunded, .canceled:
+        case .done,
+             .refunded,
+             .canceled,
+             .failed where branch == .onramp:
             return true
-        case .created, .awaitingDeposit, .confirming, .exchanging, .buying, .sendingToUser, .failed, .verificationRequired, .awaitingHash, .unknown, .paused:
+        case .created,
+             .awaitingDeposit,
+             .confirming,
+             .exchanging,
+             .buying,
+             .sendingToUser,
+             .failed,
+             .verificationRequired,
+             .awaitingHash,
+             .unknown,
+             .paused:
             return false
         }
     }

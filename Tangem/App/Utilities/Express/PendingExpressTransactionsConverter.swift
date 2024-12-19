@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TangemExpress
 
 struct PendingExpressTransactionsConverter {
     func convertToTokenDetailsPendingTxInfo(_ records: [PendingTransaction], tapAction: @escaping (String) -> Void) -> [PendingExpressTransactionView.Info] {
@@ -68,7 +69,8 @@ struct PendingExpressTransactionsConverter {
                 status: status,
                 currentStatusIndex: currentStatusIndex,
                 currentStatus: pendingTransaction.transactionStatus,
-                lastStatusIndex: statuses.count - 1
+                lastStatusIndex: statuses.count - 1,
+                branch: pendingTransaction.type.branch
             )
         }, currentStatusIndex)
     }
@@ -78,9 +80,10 @@ struct PendingExpressTransactionsConverter {
         status: PendingExpressTransactionStatus,
         currentStatusIndex: Int,
         currentStatus: PendingExpressTransactionStatus,
-        lastStatusIndex: Int
+        lastStatusIndex: Int,
+        branch: ExpressBranch
     ) -> PendingExpressTxStatusRow.StatusRowData {
-        let isFinished = currentStatus.isTerminated
+        let isFinished = currentStatus.isTerminated(branch: branch)
         if isFinished {
             // Always display cross for failed state
             // TODO: Refactor for clarity
