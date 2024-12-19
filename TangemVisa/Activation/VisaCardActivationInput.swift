@@ -53,7 +53,7 @@ public enum VisaCardActivationStatus: Codable {
     }
 }
 
-public enum VisaCardActivationRemoteState: String, Codable {
+public enum VisaCardActivationRemoteState: String, Codable, Equatable {
     case cardWalletSignatureRequired
     case customerWalletSignatureRequired
     case paymentAccountDeploying
