@@ -25,17 +25,11 @@ protocol AccessTokenRefreshService {
 }
 
 class CommonVisaAuthorizationService {
-    private let apiService: APIService<AuthorizationAPITarget, VisaAuthorizationAPIError>
+    typealias AuthorizationAPIService = APIService<AuthorizationAPITarget, VisaAuthorizationAPIError>
+    private let apiService: AuthorizationAPIService
 
-    init(
-        provider: MoyaProvider<AuthorizationAPITarget>,
-        logger: InternalLogger
-    ) {
-        apiService = .init(
-            provider: provider,
-            logger: logger,
-            decoder: JSONDecoderFactory().makePayAPIDecoder()
-        )
+    init(apiService: AuthorizationAPIService) {
+        self.apiService = apiService
     }
 }
 

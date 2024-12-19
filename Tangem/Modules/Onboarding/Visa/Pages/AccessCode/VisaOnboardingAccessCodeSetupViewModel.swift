@@ -18,6 +18,8 @@ protocol VisaOnboardingAccessCodeSetupDelegate: AnyObject {
     func showAlert(_ alert: AlertBinder) async
 
     func useSelectedCode(accessCode: String) async throws
+
+    func closeOnboarding()
 }
 
 class VisaOnboardingAccessCodeSetupViewModel: ObservableObject {
@@ -151,8 +153,7 @@ private extension VisaOnboardingAccessCodeSetupViewModel {
             } catch {
                 if !error.isCancellationError {
                     viewModel.log("Failed to use selected access code. Reason: \(error)")
-                    /// We need to show alert in parent view, otherwise it won't be shown
-                    await viewModel.delegate?.showAlert(error.alertBinder)
+                    await viewModel.showRetryAlert(for: error)
                 }
             }
 
@@ -161,6 +162,27 @@ private extension VisaOnboardingAccessCodeSetupViewModel {
                 viewModel.isButtonBusy = false
             }
         }
+    }
+
+    @MainActor
+    func showRetryAlert(for error: Error) async {
+        let alert = Alert(
+            title: Text(Localization.commonError),
+            message: Text("Failed to activate card. Error: \(error.localizedDescription)"),
+            primaryButton: .default(
+                Text(Localization.alertButtonTryAgain),
+                action: { [weak self] in
+                    self?.finishAccessCodeSetup()
+                }
+            ),
+            secondaryButton: .destructive(
+                Text("Cancel Activation"),
+                action: { [weak self] in
+                    self?.delegate?.closeOnboarding()
+                }
+            )
+        )
+        await delegate?.showAlert(AlertBinder(alert: alert))
     }
 }
 
