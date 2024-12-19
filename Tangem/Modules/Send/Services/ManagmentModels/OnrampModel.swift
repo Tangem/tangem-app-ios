@@ -14,7 +14,7 @@ import TangemFoundation
 protocol OnrampModelRoutable: AnyObject {
     func openOnrampCountryBottomSheet(country: OnrampCountry)
     func openOnrampCountrySelectorView()
-    func openOnrampWebView(url: URL, onDismiss: @escaping () -> Void, onSuccess: @escaping () -> Void)
+    func openOnrampWebView(url: URL, onDismiss: @escaping () -> Void, onSuccess: @escaping (URL) -> Void)
     func openFinishStep()
 }
 
@@ -255,6 +255,16 @@ private extension OnrampModel {
             $0._selectedOnrampProvider.send(.success(provider))
         }
     }
+
+    // MARK: - Redirect URL
+
+    func hasMerchantID(url: URL) -> Bool {
+        let components = URLComponents(string: url.absoluteString)
+        let items = components?.queryItems
+        let merchantTxId = items?.first(where: { $0.name == "merchant_transaction_id" })
+
+        return merchantTxId?.value != nil
+    }
 }
 
 // MARK: - Preference bindings
@@ -493,12 +503,23 @@ extension OnrampModel: OnrampRedirectingOutput {
         DispatchQueue.main.async {
             self.router?.openOnrampWebView(url: data.widgetUrl, onDismiss: { [weak self] in
                 self?.restartTimer()
-            }, onSuccess: { [weak self] in
-                self?._transactionTime.send(Date())
-                self?._expressTransactionId.send(data.txId)
-                self?.router?.openFinishStep()
+            }, onSuccess: { [weak self] url in
+                self?.proceedSuccess(txID: data.txId, url: url)
             })
         }
+    }
+
+    func proceedSuccess(txID: String, url: URL) {
+        guard hasMerchantID(url: url) else {
+            restartTimer()
+            // Do not open finish step
+            // Because we are not sure that onramp was successful
+            return
+        }
+
+        _transactionTime.send(Date())
+        _expressTransactionId.send(txID)
+        router?.openFinishStep()
     }
 }
 
