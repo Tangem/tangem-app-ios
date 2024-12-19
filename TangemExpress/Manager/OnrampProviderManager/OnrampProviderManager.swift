@@ -74,6 +74,25 @@ public enum OnrampProviderManagerState {
     }
 }
 
+// MARK: - OnrampProviderManagerState + Hashable
+
+extension OnrampProviderManagerState: Hashable {
+    public static func == (lhs: OnrampProviderManagerState, rhs: OnrampProviderManagerState) -> Bool {
+        lhs.hashValue == rhs.hashValue
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        switch self {
+        case .idle: hasher.combine("idle")
+        case .notSupported(let notSupported): hasher.combine(notSupported)
+        case .loading: hasher.combine("loading")
+        case .restriction(let restriction): hasher.combine(restriction)
+        case .failed(let error): hasher.combine(error.localizedDescription)
+        case .loaded(let onrampQuote): hasher.combine(onrampQuote)
+        }
+    }
+}
+
 // MARK: - OnrampProviderManagerState + CustomStringConvertible
 
 extension OnrampProviderManagerState: CustomStringConvertible {
