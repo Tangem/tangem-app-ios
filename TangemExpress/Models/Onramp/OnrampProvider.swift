@@ -57,7 +57,7 @@ extension OnrampProvider: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(provider)
         hasher.combine(paymentMethod)
-        hasher.combine(state.description)
+        hasher.combine(state)
         hasher.combine(attractiveType)
     }
 }
@@ -75,7 +75,8 @@ extension OnrampProvider: OnrampProviderManager {
     /// Can be used for showing user
     public var isShowable: Bool {
         switch state {
-        case .idle, .restriction, .loaded, .notSupported(.paymentMethod): true
+        case .idle, .restriction, .loaded: true
+        case .notSupported(.paymentMethod(let methods)) where !methods.isEmpty: true
         case .loading, .failed, .notSupported: false
         }
     }
@@ -107,6 +108,10 @@ extension OnrampProvider: OnrampProviderManager {
         case .failed(let error): error
         case .restriction, .loaded, .idle, .loading, .notSupported: nil
         }
+    }
+
+    public func update(supportedMethods: [OnrampPaymentMethod]) {
+        manager.update(supportedMethods: supportedMethods)
     }
 
     public func update(amount: OnrampUpdatingAmount) async {

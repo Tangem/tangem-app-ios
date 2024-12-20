@@ -110,4 +110,18 @@ public extension ProvidersList {
             }
         }
     }
+
+    func updateSupportedPaymentMethods() {
+        flatMap { $0.providers }.forEach { provider in
+            guard case .notSupported(.paymentMethod) = provider.state else {
+                return
+            }
+
+            let supportedMethods = flatMap { $0.providers }
+                .filter { $0.provider == provider.provider && $0.isSuccessfullyLoaded }
+                .map(\.paymentMethod)
+
+            provider.update(supportedMethods: supportedMethods)
+        }
+    }
 }
