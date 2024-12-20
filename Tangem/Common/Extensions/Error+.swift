@@ -22,11 +22,7 @@ extension Error {
     }
 
     var alertBinder: AlertBinder {
-        toBindable().alertBinder
-    }
-
-    var alertController: UIAlertController {
-        toBindable().alertController
+        toBindable().binder
     }
 
     private func toBindable() -> BindableError {
@@ -37,25 +33,19 @@ extension Error {
 // MARK: - BindableErrorWrapper
 
 private struct BindableErrorWrapper: BindableError {
+    var binder: AlertBinder {
+        return AlertBinder(alert: Alert(
+            title: Text(Localization.commonError),
+            message: Text(error.localizedDescription),
+            dismissButton: Alert.Button.default(Text(Localization.commonOk))
+        ))
+    }
+
     private let error: Error
 
     init(_ error: Error) {
         self.error = error
     }
-}
-
-extension BindableErrorWrapper: Error {
-    var localizedDescription: String { error.localizedDescription }
-}
-
-extension BindableErrorWrapper: LocalizedError {
-    var errorDescription: String? { (error as? LocalizedError)?.errorDescription }
-
-    var failureReason: String? { (error as? LocalizedError)?.failureReason }
-
-    var recoverySuggestion: String? { (error as? LocalizedError)?.recoverySuggestion }
-
-    var helpAnchor: String? { (error as? LocalizedError)?.helpAnchor }
 }
 
 extension Error {

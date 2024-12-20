@@ -192,6 +192,8 @@ extension Analytics {
 
         case onboardingSeedScreenCapture = "[Onboarding / Seed Phrase] Screen Capture"
 
+        case onboardingOfflineAttestationFailed = "[Onboarding] Offline Attestation Failed"
+
         // MARK: Express
 
         case tokenSwapStatus = "[Token] Swap Status"
