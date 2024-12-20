@@ -75,7 +75,8 @@ extension OnrampProvider: OnrampProviderManager {
     /// Can be used for showing user
     public var isShowable: Bool {
         switch state {
-        case .idle, .restriction, .loaded, .notSupported(.paymentMethod): true
+        case .idle, .restriction, .loaded: true
+        case .notSupported(.paymentMethod(let methods)) where !methods.isEmpty: true
         case .loading, .failed, .notSupported: false
         }
     }

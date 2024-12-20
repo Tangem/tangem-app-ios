@@ -80,7 +80,7 @@ extension OnrampProviderManagerState: Hashable {
     public static func == (lhs: OnrampProviderManagerState, rhs: OnrampProviderManagerState) -> Bool {
         lhs.hashValue == rhs.hashValue
     }
-    
+
     public func hash(into hasher: inout Hasher) {
         switch self {
         case .idle: hasher.combine("idle")
