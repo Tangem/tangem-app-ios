@@ -219,7 +219,8 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
                 }
 
                 // We will hide it via separate notification in case of refunded token
-                if pendingTx.transactionStatus.isTerminated, pendingTx.refundedTokenItem == nil {
+                if pendingTx.transactionStatus.isTerminated(branch: pendingTx.type.branch),
+                   pendingTx.refundedTokenItem == nil {
                     viewModel.hidePendingTx(expressTransactionId: pendingTx.expressTransactionId)
                 }
 

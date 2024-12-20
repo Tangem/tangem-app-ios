@@ -13,6 +13,9 @@ public protocol OnrampProviderManager {
     /// Get actual state
     var state: OnrampProviderManagerState { get }
 
+    /// Update methods where this provider will be available
+    func update(supportedMethods: [OnrampPaymentMethod])
+
     /// Update quotes for amount
     func update(amount: OnrampUpdatingAmount) async
 
@@ -62,9 +65,30 @@ public enum OnrampProviderManagerState {
 
         public var description: String {
             switch self {
-            case .currentPair: "Current pair"
-            case .paymentMethod: "Payment method"
+            case .currentPair:
+                "Current pair"
+            case .paymentMethod(let supportedMethods):
+                "Supported only for methods for \(supportedMethods.map(\.name))"
             }
+        }
+    }
+}
+
+// MARK: - OnrampProviderManagerState + Hashable
+
+extension OnrampProviderManagerState: Hashable {
+    public static func == (lhs: OnrampProviderManagerState, rhs: OnrampProviderManagerState) -> Bool {
+        lhs.hashValue == rhs.hashValue
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        switch self {
+        case .idle: hasher.combine("idle")
+        case .notSupported(let notSupported): hasher.combine(notSupported)
+        case .loading: hasher.combine("loading")
+        case .restriction(let restriction): hasher.combine(restriction)
+        case .failed(let error): hasher.combine(error.localizedDescription)
+        case .loaded(let onrampQuote): hasher.combine(onrampQuote)
         }
     }
 }

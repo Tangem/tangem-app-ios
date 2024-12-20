@@ -62,6 +62,7 @@ extension CommonOnrampManager: OnrampManager {
         try await updateQuotesInEachManager(providers: providers, amount: amount)
         log(message: "The quotes was updated for amount: \(amount)")
 
+        providers.updateSupportedPaymentMethods()
         let sorted = providers.sorted()
         let suggestProvider = try suggestProvider(in: sorted)
         return (list: sorted, provider: suggestProvider)
@@ -109,11 +110,10 @@ private extension CommonOnrampManager {
             throw OnrampManagerError.providersIsEmpty
         }
 
-        await withTaskGroup(of: Void.self) { [weak self] group in
+        await withTaskGroup(of: Void.self) { group in
             providers.flatMap { $0.providers }.forEach { provider in
                 _ = group.addTaskUnlessCancelled {
                     await provider.update(amount: amount)
-                    await self?.log(message: "Quotes was loaded in: \(provider)")
                 }
             }
         }
@@ -213,6 +213,7 @@ private extension CommonOnrampManager {
             paymentMethodId: paymentMethod.id,
             apiProvider: apiProvider,
             analyticsLogger: analyticsLogger,
+            logger: logger,
             state: state
         )
     }
