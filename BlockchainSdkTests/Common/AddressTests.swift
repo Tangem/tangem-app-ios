@@ -110,7 +110,7 @@ class AddressesTests: XCTestCase {
 
     // MARK: - Litecoin
 
-    func testLtc() throws {
+    func testLtcAddressGeeneration() throws {
         let blockchain = Blockchain.litecoin
         let service = BitcoinAddressService(networkParams: LitecoinNetworkParams())
 
@@ -129,6 +129,18 @@ class AddressesTests: XCTestCase {
         XCTAssertEqual(leg_dec.localizedName, leg_comp.localizedName)
         XCTAssertEqual(leg_dec.value, "Lbg9FGXFbUTHhp6XXyrobK6ujBsu7UE7ww")
         XCTAssertEqual(leg_comp.value, "LcxUXkP9KGqWHtbKyENSS8HQoQ9LK8DQLX")
+    }
+
+    func testLtcAddressValidation() throws {
+        let blockchain = Blockchain.litecoin
+        let addressService = BitcoinAddressService(networkParams: LitecoinNetworkParams())
+
+        XCTAssertTrue(addressService.validate("LMbRCidgQLz1kNA77gnUpLuiv2UL6Bc4Q2"))
+        XCTAssertTrue(addressService.validate("ltc1q5wmm9vrz55war9c0rgw26tv9un5fxnn7slyjpy"))
+        XCTAssertTrue(addressService.validate("MPmoY6RX3Y3HFjGEnFxyuLPCQdjvHwMEny"))
+        XCTAssertTrue(addressService.validate("LWjJD6H1QrMmCQ5QhBKMqvPqMzwYpJPv2M"))
+
+        XCTAssertFalse(addressService.validate("1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2"))
     }
 
     // MARK: - Stellar
@@ -225,7 +237,7 @@ class AddressesTests: XCTestCase {
 
     // MARK: - RSK
 
-    func testRsk() throws {
+    func testRskAddressGeneration() throws {
         let service = RskAddressService()
 
         let addr_dec = try service.makeAddress(from: secpDecompressedKey)
@@ -359,7 +371,7 @@ class AddressesTests: XCTestCase {
 
     // MARK: - XRP
 
-    func testXrpSecp() throws {
+    func testXrpSecpAddressGeneration() throws {
         let blockchain = Blockchain.xrp(curve: .secp256k1)
         let service = XRPAddressService(curve: .secp256k1)
 
@@ -378,15 +390,15 @@ class AddressesTests: XCTestCase {
         XCTAssertThrowsError(try service.makeAddress(from: edKey))
     }
 
-    func testXrpEd() throws {
-        try testXrpEd(curve: .ed25519)
+    func testXrpEdAddressGeeneration() throws {
+        try testXrpEdAddressGeneration(curve: .ed25519)
     }
 
-    func testXrpEdSlip0010() throws {
-        try testXrpEd(curve: .ed25519_slip0010)
+    func testXrpEdSlip0010AddressGeneration() throws {
+        try testXrpEdAddressGeneration(curve: .ed25519_slip0010)
     }
 
-    func testXrpEd(curve: EllipticCurve) throws {
+    func testXrpEdAddressGeneration(curve: EllipticCurve) throws {
         let service = XRPAddressService(curve: curve)
         let address = try service.makeAddress(from: edKey)
 
@@ -861,6 +873,8 @@ class AddressesTests: XCTestCase {
 
         XCTAssertTrue(addressService.validate(compAddress.value))
         XCTAssertTrue(addressService.validate(decompAddress.value))
+
+        XCTAssertThrowsError(try addressService.makeAddress(from: edKey))
     }
 
     // MARK: - Cosmos
@@ -869,6 +883,7 @@ class AddressesTests: XCTestCase {
         let addressService = WalletCoreAddressService(coin: .cosmos)
 
         let expectedAddress = "cosmos1c2zwqqucrqvvtyxfn78ajm8w2sgyjf5emztyek"
+
         XCTAssertEqual(expectedAddress, try addressService.makeAddress(from: secpCompressedKey).value)
         XCTAssertEqual(expectedAddress, try addressService.makeAddress(from: secpDecompressedKey).value)
 
@@ -944,6 +959,9 @@ class AddressesTests: XCTestCase {
         XCTAssertFalse(addressService.validate("txch14gxuvfmw2xdxqnws5agt3ma483wktd2lrzwvpj3f"))
         XCTAssertFalse(addressService.validate("txch1rpu5dtkfkn48dv5dmpl00hd86t8jqvskswv8vlqz2nlucrrysxfscxm96667d233ms"))
         XCTAssertFalse(addressService.validate("xch1lhfzlt7tz8whecqnnrha4kcxgfk9ct77j0aq0a844766fpjfv2rsp9wgas"))
+
+        XCTAssertThrowsError(try addressService.makeAddress(from: secpCompressedKey))
+        XCTAssertThrowsError(try addressService.makeAddress(from: edKey))
     }
 
     // MARK: - NEAR
@@ -1046,6 +1064,8 @@ class AddressesTests: XCTestCase {
         let expectedAddress = "d01ccmkx4edg5t3unp9egyp3dzwthtlts2m320gh9"
 
         XCTAssertEqual(plainAddress.value, expectedAddress)
+
+        XCTAssertThrowsError(try addressService.makeAddress(from: edKey))
     }
 
     func testDecimalValidateCorrectAddressWithChecksum() throws {
@@ -1149,10 +1169,24 @@ class AddressesTests: XCTestCase {
         let expectedAddress = "ADIYK65L3XR5ODNNCUIQVEET455L56MRKJHRBX5GU4TZI2752QIWK4UL5A"
 
         XCTAssertNoThrow(try addressService.makeAddress(from: publicKey))
+
         XCTAssertThrowsError(try addressService.makeAddress(from: secpCompressedKey))
         XCTAssertThrowsError(try addressService.makeAddress(from: secpDecompressedKey))
 
         XCTAssertEqual(address, expectedAddress)
+    }
+
+    func testAlgorandAddressAnyCurve() throws {
+        let slipAddressServiceFactory = AddressServiceFactory(blockchain: .algorand(curve: .ed25519_slip0010, testnet: false))
+        let addressServiceFactory = AddressServiceFactory(blockchain: .algorand(curve: .ed25519, testnet: false))
+
+        let addressService = addressServiceFactory.makeAddressService()
+        let clipAddressService = addressServiceFactory.makeAddressService()
+
+        let address = try addressService.makeAddress(from: edKey).value
+        let slipAddress = try addressService.makeAddress(from: edKey).value
+
+        XCTAssertEqual(address, slipAddress)
     }
 
     func testAlgorandAddressValidation() throws {
@@ -1193,6 +1227,19 @@ class AddressesTests: XCTestCase {
         XCTAssertThrowsError(try addressService.makeAddress(from: secpDecompressedKey))
 
         XCTAssertEqual(address, expectedAddress)
+    }
+
+    func testAptosAddressAnyCurve() throws {
+        let slipAddressServiceFactory = AddressServiceFactory(blockchain: .aptos(curve: .ed25519_slip0010, testnet: false))
+        let addressServiceFactory = AddressServiceFactory(blockchain: .aptos(curve: .ed25519, testnet: false))
+
+        let addressService = addressServiceFactory.makeAddressService()
+        let clipAddressService = addressServiceFactory.makeAddressService()
+
+        let address = try addressService.makeAddress(from: edKey).value
+        let slipAddress = try addressService.makeAddress(from: edKey).value
+
+        XCTAssertEqual(address, slipAddress)
     }
 
     func testAptosAddressValidation() throws {
