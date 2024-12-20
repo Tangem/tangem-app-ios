@@ -13,7 +13,7 @@ struct CardActivationRemoteStateTarget: TargetType {
     let target: Target
     let authorizationToken: String
 
-    var baseURL: URL { URL(string: "https://bff.tangem.com")! }
+    var baseURL: URL { URL(string: "https://bff.tangem.com/")! }
 
     var path: String {
         switch target {

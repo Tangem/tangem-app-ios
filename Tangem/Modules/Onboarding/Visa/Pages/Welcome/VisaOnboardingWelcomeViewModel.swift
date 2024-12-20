@@ -11,12 +11,9 @@ import SwiftUI
 import Combine
 import TangemFoundation
 
-protocol VisaOnboardingWelcomeDelegate: AnyObject {
+protocol VisaOnboardingWelcomeDelegate: VisaOnboardingAlertPresenter {
     func openAccessCodeScreen()
     func continueActivation() async throws
-    /// We need to show alert in parent view, otherwise it won't be presented
-    @MainActor
-    func showAlert(_ alert: AlertBinder) async
 }
 
 class VisaOnboardingWelcomeViewModel: ObservableObject {

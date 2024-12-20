@@ -66,14 +66,11 @@ struct VisaOnboardingStepsBuilder {
             steps.append(contentsOf: approveSteps)
             fallthrough
         case .paymentAccountDeploying:
-            // TODO: IOS-8575
-            break
+            steps.append(contentsOf: [.inProgress, .pinSelection])
         case .waitingPinCode:
-            // TODO: IOS-8572
-            break
+            steps.append(contentsOf: [.pinSelection, .inProgress])
         case .waitingForActivationFinishing:
-            // TODO: IOS-8572
-            break
+            steps.append(.inProgress)
         case .activated, .blockedForActivation:
             // Card shouldn't be able to reach onboarding with this state. Anyway we don't need to add any steps
             return []

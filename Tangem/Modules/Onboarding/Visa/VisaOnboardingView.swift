@@ -28,6 +28,7 @@ struct VisaOnboardingView: View {
                     .transition(.opacity)
             }
         }
+        .background(Colors.Background.primary)
         .alert(item: $viewModel.alert) { $0.alert }
     }
 
@@ -79,6 +80,12 @@ struct VisaOnboardingView: View {
             if let viewModel = viewModel.tangemWalletApproveViewModel {
                 VisaOnboardingTangemWalletDeployApproveView(viewModel: viewModel)
             }
+        case .inProgress:
+            if let viewModel = viewModel.inProgressViewModel {
+                VisaOnboardingInProgressView(viewModel: viewModel)
+            }
+        case .pinSelection:
+            OnboardingPinView(viewModel: viewModel.pinSelectionViewModel)
         case .saveUserWallet:
             UserWalletStorageAgreementView(
                 viewModel: viewModel.userWalletStorageAgreementViewModel,

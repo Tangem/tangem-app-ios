@@ -13,11 +13,8 @@ import TangemSdk
 import BlockchainSdk
 import TangemVisa
 
-protocol VisaOnboardingTangemWalletApproveDelegate: AnyObject {
+protocol VisaOnboardingTangemWalletApproveDelegate: VisaOnboardingAlertPresenter {
     func processSignedData(_ signedData: Data) async throws
-    /// We need to show alert in parent view, otherwise it won't be shown
-    @MainActor
-    func showAlert(_ alert: AlertBinder) async
 }
 
 protocol VisaOnboardingTangemWalletApproveDataProvider: AnyObject {

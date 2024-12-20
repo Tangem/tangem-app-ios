@@ -16,12 +16,16 @@ public protocol VisaActivationManager: VisaAccessCodeValidator {
     var isAccessCodeSet: Bool { get }
     var isContinuingActivation: Bool { get }
     var activationStatus: VisaCardActivationStatus { get }
+    var activationRemoteState: VisaCardActivationRemoteState { get }
 
     func saveAccessCode(accessCode: String) throws (VisaAccessCodeValidationError)
     func resetAccessCode()
     func setupRefreshTokenSaver(_ refreshTokenSaver: VisaRefreshTokenSaver)
 
     func startActivation() async throws (VisaActivationError)
+    func refreshActivationRemoteState() async throws (VisaActivationError) -> VisaCardActivationRemoteState
+
+    func setPINCode(_ pinCode: String) async throws (VisaActivationError)
 }
 
 public protocol VisaAccessCodeValidator: AnyObject {
@@ -33,6 +37,19 @@ final class CommonVisaActivationManager {
 
     public private(set) var targetApproveAddress: String?
 
+    public var activationRemoteState: VisaCardActivationRemoteState {
+        switch activationStatus {
+        case .activated:
+            return .activated
+        case .activationStarted(_, _, let activationRemoteState):
+            return activationRemoteState
+        case .notStartedActivation:
+            return .cardWalletSignatureRequired
+        case .blocked:
+            return .blockedForActivation
+        }
+    }
+
     private var selectedAccessCode: String?
 
     private let authorizationService: VisaAuthorizationService
@@ -41,6 +58,7 @@ final class CommonVisaActivationManager {
 
     private let authorizationProcessor: CardAuthorizationProcessor
     private let cardActivationOrderProvider: CardActivationOrderProvider
+    private let cardActivationRemoteStateService: VisaCardActivationRemoteStateService
     private let otpRepository: VisaOTPRepository
 
     private let logger: InternalLogger
@@ -58,6 +76,7 @@ final class CommonVisaActivationManager {
         tangemSdk: TangemSdk,
         authorizationProcessor: CardAuthorizationProcessor,
         cardActivationOrderProvider: CardActivationOrderProvider,
+        cardActivationRemoteStateService: VisaCardActivationRemoteStateService,
         otpRepository: VisaOTPRepository,
         logger: InternalLogger
     ) {
@@ -69,6 +88,7 @@ final class CommonVisaActivationManager {
 
         self.authorizationProcessor = authorizationProcessor
         self.cardActivationOrderProvider = cardActivationOrderProvider
+        self.cardActivationRemoteStateService = cardActivationRemoteStateService
         self.otpRepository = otpRepository
 
         self.logger = logger
@@ -135,6 +155,50 @@ extension CommonVisaActivationManager: VisaActivationManager {
         case .blocked:
             throw .blockedForActivation
         }
+    }
+
+    func refreshActivationRemoteState() async throws (VisaActivationError) -> VisaCardActivationRemoteState {
+        guard let authorizationTokens = await authorizationTokenHandler.authorizationTokens else {
+            throw .missingAccessToken
+        }
+
+        guard let cardInput else {
+            throw .invalidActivationState
+        }
+
+        let loadedState: VisaCardActivationRemoteState
+        do {
+            try await Task.sleep(seconds: 3)
+            loadedState = try await cardActivationRemoteStateService.loadCardActivationRemoteState(authorizationTokens: authorizationTokens)
+        } catch {
+            throw .underlyingError(error)
+        }
+
+        guard loadedState != activationRemoteState else {
+            return loadedState
+        }
+
+        updateActivationStatus(
+            toState: loadedState,
+            using: cardInput,
+            authorizationTokens: authorizationTokens
+        )
+
+        return loadedState
+    }
+
+    func setPINCode(_ pinCode: String) async throws (VisaActivationError) {
+        guard
+            let cardInput,
+            let authorizationTokens = await authorizationTokenHandler.authorizationTokens
+        else {
+            throw .missingAccessToken
+        }
+
+        // TODO: IOS-8572 implement saving pin code on issuer
+        try? await Task.sleep(seconds: 3)
+
+        updateActivationStatus(toState: .waitingForActivationFinishing, using: cardInput, authorizationTokens: authorizationTokens)
     }
 }
 
@@ -220,7 +284,16 @@ private extension CommonVisaActivationManager {
                 cardPublicKey: activationInput.cardPublicKey,
                 isAccessCodeSet: true
             )
-            await updateActivationStatus(toState: .cardWalletSignatureRequired, using: newInput)
+
+            guard let tokens = await authorizationTokenHandler.authorizationTokens else {
+                throw VisaActivationError.missingAccessToken
+            }
+
+            updateActivationStatus(
+                toState: .cardWalletSignatureRequired,
+                using: newInput,
+                authorizationTokens: tokens
+            )
 
             try await handleCardActivation(using: activationResponse)
         } catch {
@@ -295,8 +368,12 @@ private extension CommonVisaActivationManager {
 }
 
 private extension CommonVisaActivationManager {
-    func updateActivationStatus(toState state: VisaCardActivationRemoteState, using input: VisaCardActivationInput) async {
-        guard let authorizationTokens = await authorizationTokenHandler.authorizationTokens else {
+    func updateActivationStatus(
+        toState state: VisaCardActivationRemoteState,
+        using input: VisaCardActivationInput,
+        authorizationTokens: VisaAuthorizationTokens?
+    ) {
+        guard let authorizationTokens else {
             activationStatus = .notStartedActivation(activationInput: input)
             return
         }
