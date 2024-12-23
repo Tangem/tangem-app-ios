@@ -126,7 +126,8 @@ extension CoinType {
              .canxium,
              .casper,
              .chiliz,
-             .xodex:
+             .xodex,
+             .clore:
             // Blockchains that are not in WalletCore yet
             return nil
         }

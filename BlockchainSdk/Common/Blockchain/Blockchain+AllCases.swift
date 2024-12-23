@@ -90,6 +90,7 @@ public extension Blockchain {
         case .casper: break
         case .chiliz: break
         case .xodex: break
+        case .clore: break
             // READ BELOW:
             //
             // Did you get a compilation error here? If so, add your new blockchain to the array below
@@ -173,6 +174,7 @@ public extension Blockchain {
             .casper(curve: .secp256k1, testnet: false),
             .chiliz(testnet: false),
             .xodex,
+            .clore,
         ]
     }
 }
