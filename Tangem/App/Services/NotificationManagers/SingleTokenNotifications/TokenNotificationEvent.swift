@@ -278,7 +278,7 @@ extension TokenNotificationEvent {
         case .notEnoughFeeForTransaction: return .tokenNoticeNotEnoughFee
         case .bnbBeaconChainRetirement: return nil
         case .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation): return nil
-        case .hasUnfulfilledRequirements(configuration: .incompleteKaspaTokenTransaction): return nil
+        case .hasUnfulfilledRequirements(configuration: .incompleteKaspaTokenTransaction): return .tokenNoticeRevealTransaction
         case .staking: return nil
         case .manaLevel: return nil
         case .maticMigration: return nil
@@ -309,4 +309,22 @@ extension TokenNotificationEvent {
 
     /// Determine if analytics event should be sent only once and tracked by service
     var isOneShotAnalyticsEvent: Bool { false }
+
+    var analyticsEventWhenDismissAction: Analytics.Event? {
+        switch self {
+        case .hasUnfulfilledRequirements(configuration: .incompleteKaspaTokenTransaction): return .tokenButtonRevealCancel
+        default:
+            // Now used only incompleteKaspaTokenTransaction
+            return nil
+        }
+    }
+
+    var analyticsEventWhenMainAction: Analytics.Event? {
+        switch self {
+        case .hasUnfulfilledRequirements(configuration: .incompleteKaspaTokenTransaction): return .tokenButtonRevealTryAgain
+        default:
+            // Now used only incompleteKaspaTokenTransaction
+            return nil
+        }
+    }
 }
