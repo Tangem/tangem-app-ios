@@ -116,21 +116,13 @@ final class SingleTokenNotificationManager {
 
         events += makeAssetRequirementsNotificationEvents()
 
-        let inputs = events.map { event in
+        let inputs = events.map {
             factory.buildNotificationInput(
-                for: event,
+                for: $0,
                 buttonAction: { [weak self] id, actionType in
-                    if let analyticsEvent = event.analyticsEventWhenMainAction {
-                        Analytics.log(event: analyticsEvent, params: event.analyticsParams)
-                    }
-
                     self?.delegate?.didTapNotification(with: id, action: actionType)
                 },
                 dismissAction: { [weak self] id in
-                    if let analyticsEvent = event.analyticsEventWhenDismissAction {
-                        Analytics.log(event: analyticsEvent, params: event.analyticsParams)
-                    }
-
                     self?.dismissNotification(with: id)
                 }
             )
@@ -340,6 +332,10 @@ extension SingleTokenNotificationManager: NotificationManager {
         }
 
         if let event = notification.settings.event as? TokenNotificationEvent {
+            if let analyticsEvent = event.analyticsEventWhenDismissAction {
+                Analytics.log(event: analyticsEvent, params: event.analyticsParams)
+            }
+
             switch event {
             case .hasUnfulfilledRequirements(.incompleteKaspaTokenTransaction(let revealTransaction)):
                 interactionDelegate?.confirmDiscardingUnfulfilledAssetRequirements(

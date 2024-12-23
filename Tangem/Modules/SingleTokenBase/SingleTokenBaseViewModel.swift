@@ -183,9 +183,10 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
         switch action {
         case .buyCrypto:
             openBuyCrypto()
-        case .addHederaTokenAssociation,
-             .retryKaspaTokenTransaction:
-            fulfillAssetRequirements()
+        case .addHederaTokenAssociation:
+            fulfillAssetRequirements(with: .buttonAddTokenTrustline)
+        case .retryKaspaTokenTransaction:
+            fulfillAssetRequirements(with: .tokenButtonRevealTryAgain)
         case .stake:
             openStaking()
         case .empty:
@@ -204,12 +205,12 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
             }
     }
 
-    private func fulfillAssetRequirements() {
+    private func fulfillAssetRequirements(with analyticsEvent: Analytics.Event) {
         func sendAnalytics(isSuccessful: Bool) {
             let status: Analytics.ParameterValue = isSuccessful ? .sent : .error
 
             Analytics.log(
-                event: .buttonAddTokenTrustline,
+                event: analyticsEvent,
                 params: [
                     .token: walletModel.tokenItem.currencySymbol,
                     .blockchain: blockchain.displayName,
