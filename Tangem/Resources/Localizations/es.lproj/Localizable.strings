@@ -55,6 +55,8 @@
 "balance_hidden_do_not_show_button" = "No mostrar de nuevo";
 "balance_hidden_got_it_button" = "Entendido";
 "balance_hidden_title" = "Los saldos están ocultos";
+"beta_mode_warning_message" = "According to the blockchain developers, Kaspa tokens are currently in beta. Stay tuned for updates!";
+"beta_mode_warning_title" = "Beta Mode ";
 "biometry_touch_id_reason" = "Touch ID se utiliza para guardar sus tarjetas en la app";
 "button_start_backup_process" = "Iniciar proceso de backup";
 "buy_token_description" = "Utilice una tarjeta bancaria u otros métodos de pago";
@@ -827,7 +829,7 @@
 "staking_vote_locked" = "Votar";
 "staking_withdraw" = "Retirar";
 "staking_your_stakes" = "Sus stakes";
-"story_awe_description" = "Almacene sus activos crypto de forma segura manteniendo las claves privadas contenidas en su tarjeta";
+"story_awe_description" = "Almacene sus criptomonedas de forma segura manteniendo las claves privadas almacenadas en su tarjeta";
 "story_awe_title" = "Billetera de hardware revolucionaria";
 "story_backup_description" = "Hasta 3 tarjetas físicas o anillos por billetera";
 "story_backup_title" = "Backup ultra seguro";
