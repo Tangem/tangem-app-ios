@@ -515,33 +515,30 @@ extension Error {
     var marketsAnalyticsParams: [Analytics.ParameterKey: String] {
         var analyticsParams = [Analytics.ParameterKey: String]()
 
-        if let error = self as? LocalizedError {
-            analyticsParams[.errorMessage] = error.localizedDescription
-        }
-
-        analyticsParams[.errorCode] = marketsErrorCode()
-        analyticsParams[.errorType] = marketsErrorType().rawValue
+        analyticsParams[.errorMessage] = (self as? LocalizedError)?.localizedDescription
+        analyticsParams[.errorCode] = marketsErrorCode(for: self)
+        analyticsParams[.errorType] = marketsErrorType(for: self).rawValue
 
         return analyticsParams
     }
 
-    private func marketsErrorCode() -> String {
+    private func marketsErrorCode(for: Error) -> String {
         if let moyaError = self as? MoyaError,
            case .statusCode(let response) = moyaError {
             return String(response.statusCode)
         } else {
-            return Analytics.ParameterValue.marketsErrorCodeNotHTTPError.rawValue
+            return Analytics.ParameterValue.marketsErrorCodeIsNotHTTPError.rawValue
         }
     }
 
-    private func marketsErrorType() -> Analytics.ParameterValue {
+    private func marketsErrorType(for error: Error) -> Analytics.ParameterValue {
         switch self {
         case let moyaError as MoyaError:
             switch moyaError {
             case .statusCode:
                 return .marketsErrorTypeHTTP
             case .underlying(let underlyingMoyaError, _):
-                return marketsErrorType(fromUnderlyingMoyaError: underlyingMoyaError)
+                return marketsErrorType(forUnderlyingMoyaError: underlyingMoyaError)
             default:
                 return .marketsErrorTypeNetwork
             }
@@ -552,7 +549,7 @@ extension Error {
         }
     }
 
-    private func marketsErrorType(fromUnderlyingMoyaError error: Error) -> Analytics.ParameterValue {
+    private func marketsErrorType(forUnderlyingMoyaError error: Error) -> Analytics.ParameterValue {
         if let afError = error as? AFError,
            case .sessionTaskFailed(let urlError as URLError) = afError,
            urlError.code == .timedOut {

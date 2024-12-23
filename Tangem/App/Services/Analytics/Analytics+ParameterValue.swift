@@ -186,7 +186,7 @@ extension Analytics {
 
         // MARK: - Markets
 
-        case marketsErrorCodeNotHTTPError = "Is not http error"
+        case marketsErrorCodeIsNotHTTPError = "Is not http error"
 
         case marketsErrorTypeHTTP = "Http"
         case marketsErrorTypeTimeout = "Timeout"
