@@ -111,9 +111,9 @@ final class SingleTokenNotificationManager {
 
         events += makeAssetRequirementsNotificationEvents()
 
-        let inputs = events.map { event in
+        let inputs = events.map {
             factory.buildNotificationInput(
-                for: event,
+                for: $0,
                 buttonAction: { [weak self] id, actionType in
                     self?.delegate?.didTapNotification(with: id, action: actionType)
                 },
