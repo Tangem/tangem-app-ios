@@ -23,7 +23,7 @@ final class SuiNetworkProvider: HostProvider {
     }
 
     func getBalance(address: String, coin: String, cursor: String?) -> AnyPublisher<SuiGetCoins, Error> {
-        requestPublisher(for: .getBalance(address: address, coin: coin, cursor: cursor))
+        requestPublisher(for: .getBalance(address: address, cursor: cursor))
     }
 
     func getReferenceGasPrice() -> AnyPublisher<SuiReferenceGasPrice, Error> {

@@ -43,7 +43,7 @@ class SuiWalletManager: BaseManager, WalletManager {
             SuiCoinObject.from($0)
         }
 
-        let totalBalance = objects.reduce(into: Decimal(0)) { partialResult, coin in
+        let totalBalance = objects.filter({ $0.coinType == SUIUtils.CoinType.sui.string }).reduce(into: Decimal(0)) { partialResult, coin in
             partialResult += coin.balance
         }
 
@@ -51,6 +51,14 @@ class SuiWalletManager: BaseManager, WalletManager {
 
         if coinValue != wallet.amounts[.coin]?.value {
             wallet.clearPendingTransaction()
+        }
+        
+        for token in cardTokens {
+            let tokenBalance = objects.filter({ $0.coinType == token.contractAddress }).reduce(into: Decimal(0)) { partialResult, coin in
+                partialResult += coin.balance
+            }
+            let decimalTokenBalance = tokenBalance / token.decimalValue
+            wallet.add(tokenValue: decimalTokenBalance, for: token)
         }
 
         wallet.add(coinValue: coinValue)
