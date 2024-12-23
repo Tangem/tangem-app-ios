@@ -325,13 +325,4 @@ extension TokenNotificationEvent {
 
     /// Determine if analytics event should be sent only once and tracked by service
     var isOneShotAnalyticsEvent: Bool { false }
-
-    var analyticsEventWhenDismissAction: Analytics.Event? {
-        switch self {
-        case .hasUnfulfilledRequirements(configuration: .incompleteKaspaTokenTransaction): return .tokenButtonRevealCancel
-        default:
-            // Now used only incompleteKaspaTokenTransaction
-            return nil
-        }
-    }
 }

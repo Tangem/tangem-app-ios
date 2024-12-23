@@ -332,12 +332,10 @@ extension SingleTokenNotificationManager: NotificationManager {
         }
 
         if let event = notification.settings.event as? TokenNotificationEvent {
-            if let analyticsEvent = event.analyticsEventWhenDismissAction {
-                Analytics.log(event: analyticsEvent, params: event.analyticsParams)
-            }
-
             switch event {
             case .hasUnfulfilledRequirements(.incompleteKaspaTokenTransaction(let revealTransaction)):
+                Analytics.log(event: .tokenButtonRevealCancel, params: event.analyticsParams)
+
                 interactionDelegate?.confirmDiscardingUnfulfilledAssetRequirements(
                     with: .incompleteKaspaTokenTransaction(revealTransaction: revealTransaction),
                     confirmationAction: { [weak self] in
