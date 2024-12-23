@@ -277,7 +277,8 @@ final class SingleTokenNotificationManager {
             return .incompleteKaspaTokenTransaction(
                 revealTransaction: .init(
                     formattedValue: configurationData.formattedValue,
-                    currencySymbol: configurationData.currencySymbol
+                    currencySymbol: configurationData.currencySymbol,
+                    blockchainName: blockchain.displayName
                 ) { [weak walletModel] in
                     walletModel?.assetRequirementsManager?.discardRequirements(for: asset)
                 }

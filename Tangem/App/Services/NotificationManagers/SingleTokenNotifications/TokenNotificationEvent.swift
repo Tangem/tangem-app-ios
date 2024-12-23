@@ -245,6 +245,10 @@ extension TokenNotificationEvent {
         struct KaspaTokenRevealTransaction: Hashable {
             let formattedValue: String
             let currencySymbol: String
+
+            /// Use for only analytics parameter value
+            let blockchainName: String
+
             let onTransactionDiscard: () -> Void
 
             static func == (lhs: Self, rhs: Self) -> Bool {
@@ -294,7 +298,7 @@ extension TokenNotificationEvent {
         case .someNetworksUnreachable(let networks):
             return [.tokens: networks.joined(separator: ", ")]
         case .hasUnfulfilledRequirements(configuration: .incompleteKaspaTokenTransaction(let revealTransaction)):
-            return [.token: revealTransaction.currencySymbol]
+            return [.token: revealTransaction.currencySymbol, .blockchain: revealTransaction.blockchainName]
         case .rentFee,
              .noAccount,
              .existentialDepositWarning,
