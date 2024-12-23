@@ -46,8 +46,8 @@ extension DEXExpressProviderManager: ExpressProviderManager {
         _state
     }
 
-    func update(request: ExpressManagerSwappingPairRequest, approvePolicy: ExpressApprovePolicy) async {
-        let state = await getState(request: request, approvePolicy: approvePolicy)
+    func update(request: ExpressManagerSwappingPairRequest) async {
+        let state = await getState(request: request)
         log("Update to \(state)")
         _state = state
     }
@@ -64,12 +64,12 @@ extension DEXExpressProviderManager: ExpressProviderManager {
 // MARK: - Private
 
 private extension DEXExpressProviderManager {
-    func getState(request: ExpressManagerSwappingPairRequest, approvePolicy: ExpressApprovePolicy) async -> ExpressProviderManagerState {
+    func getState(request: ExpressManagerSwappingPairRequest) async -> ExpressProviderManagerState {
         do {
             let item = mapper.makeExpressSwappableItem(request: request, providerId: provider.id, providerType: provider.type)
             let quote = try await expressAPIProvider.exchangeQuote(item: item)
 
-            if let restriction = await checkRestriction(request: request, quote: quote, approvePolicy: approvePolicy) {
+            if let restriction = await checkRestriction(request: request, quote: quote) {
                 return restriction
             }
 
@@ -96,7 +96,7 @@ private extension DEXExpressProviderManager {
         }
     }
 
-    func checkRestriction(request: ExpressManagerSwappingPairRequest, quote: ExpressQuote, approvePolicy: ExpressApprovePolicy) async -> ExpressProviderManagerState? {
+    func checkRestriction(request: ExpressManagerSwappingPairRequest, quote: ExpressQuote) async -> ExpressProviderManagerState? {
         // Check Balance
         do {
             let sourceBalance = try request.pair.source.getBalance()
@@ -118,14 +118,14 @@ private extension DEXExpressProviderManager {
         // Check Permission
         if let spender = quote.allowanceContract {
             do {
-                let allowanceState = try await allowanceProvider.allowanceState(request: request, spender: spender, policy: approvePolicy)
+                let allowanceState = try await allowanceProvider.allowanceState(request: request, spender: spender)
 
                 switch allowanceState {
                 case .enoughAllowance:
                     break
                 case .permissionRequired(let approveData):
                     return .permissionRequired(
-                        .init(policy: approvePolicy, data: approveData, quote: quote)
+                        .init(policy: request.approvePolicy, data: approveData, quote: quote)
                     )
                 case .approveTransactionInProgress:
                     return .restriction(.approveTransactionInProgress(spender: spender), quote: quote)
@@ -172,24 +172,25 @@ private extension DEXExpressProviderManager {
             throw ExpressProviderError.transactionDataNotFound
         }
 
-        var fee = try await feeProvider.getFee(
+        var variants = try await feeProvider.getFee(
             amount: .dex(txValue: data.txValue, txData: txData),
             destination: data.destinationAddress
         )
 
         try Task.checkCancellation()
         if let otherNativeFee = data.otherNativeFee {
-            fee = include(otherNativeFee: otherNativeFee, in: fee)
+            variants = include(otherNativeFee: otherNativeFee, in: variants)
             log("The fee was increased by otherNativeFee \(otherNativeFee)")
         }
 
         // better to make the quote from the data
         let quoteData = ExpressQuote(fromAmount: data.fromAmount, expectAmount: data.toAmount, allowanceContract: quote.allowanceContract)
+        let fee = ExpressFee(option: request.feeOption, variants: variants)
         return .init(fee: fee, data: data, quote: quoteData)
     }
 
-    func include(otherNativeFee: Decimal, in fee: ExpressFee) -> ExpressFee {
-        switch fee {
+    func include(otherNativeFee: Decimal, in variants: ExpressFee.Variants) -> ExpressFee.Variants {
+        switch variants {
         case .single(let fee):
             return .single(add(value: otherNativeFee, to: fee))
         case .double(let market, let fast):

@@ -22,7 +22,7 @@ actor CommonExpressManager {
 
     private var _pair: ExpressManagerSwappingPair?
     private var _approvePolicy: ExpressApprovePolicy = .unlimited
-    private var _feeOption: ExpressFeeOption = .market
+    private var _feeOption: ExpressFee.Option = .market
     private var _amount: Decimal?
 
     private var allProviders: [ExpressAvailableProvider] = []
@@ -66,10 +66,6 @@ extension CommonExpressManager: ExpressManager {
         return allProviders
     }
 
-    func getApprovePolicy() -> ExpressApprovePolicy {
-        return _approvePolicy
-    }
-
     func updatePair(pair: ExpressManagerSwappingPair) async throws -> ExpressManagerState {
         assert(pair.source.expressCurrency != pair.destination.expressCurrency, "Pair has equal currencies")
         _pair = pair
@@ -101,11 +97,11 @@ extension CommonExpressManager: ExpressManager {
         _approvePolicy = approvePolicy
 
         let request = try makeRequest()
-        await selectedProvider?.manager.update(request: request, approvePolicy: _approvePolicy)
+        await selectedProvider?.manager.update(request: request)
         return try await selectedProviderState()
     }
 
-    func update(feeOption: ExpressFeeOption) async throws -> ExpressManagerState {
+    func update(feeOption: ExpressFee.Option) async throws -> ExpressManagerState {
         guard _feeOption != feeOption else {
             log("ExpressFeeOption already is \(feeOption)")
             return try await selectedProviderState()
@@ -114,7 +110,7 @@ extension CommonExpressManager: ExpressManager {
         _feeOption = feeOption
 
         let request = try makeRequest()
-        await selectedProvider?.manager.update(request: request, approvePolicy: _approvePolicy)
+        await selectedProvider?.manager.update(request: request)
         return try await selectedProviderState()
     }
 
@@ -153,7 +149,7 @@ private extension CommonExpressManager {
         }
 
         let request = try makeRequest()
-        await updateStatesInProviders(request: request, approvePolicy: _approvePolicy)
+        await updateStatesInProviders(request: request)
 
         try Task.checkCancellation()
 
@@ -282,7 +278,7 @@ private extension CommonExpressManager {
         return nil
     }
 
-    func updateStatesInProviders(request: ExpressManagerSwappingPairRequest, approvePolicy: ExpressApprovePolicy) async {
+    func updateStatesInProviders(request: ExpressManagerSwappingPairRequest) async {
         let providers = availableProviders.map { $0.provider.name }.joined(separator: ", ")
         log("Start a parallel updating in providers: \(providers) with request \(request)")
 
@@ -290,7 +286,7 @@ private extension CommonExpressManager {
         await withTaskGroup(of: Void.self) { [weak self] taskGroup in
             await self?.availableProviders.forEach { provider in
                 taskGroup.addTask {
-                    await provider.manager.update(request: request, approvePolicy: approvePolicy)
+                    await provider.manager.update(request: request)
                 }
             }
         }
@@ -308,11 +304,17 @@ private extension CommonExpressManager {
             throw ExpressManagerError.amountNotFound
         }
 
-        return ExpressManagerSwappingPairRequest(pair: pair, amount: amount, feeOption: _feeOption)
+        return ExpressManagerSwappingPairRequest(
+            pair: pair,
+            amount: amount,
+            feeOption: _feeOption,
+            approvePolicy: _approvePolicy
+        )
     }
 
     func clearCache() {
         selectedProvider = nil
+        _feeOption = .market
     }
 }
 

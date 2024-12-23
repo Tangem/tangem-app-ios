@@ -106,7 +106,7 @@ final class ExpressViewModel: ObservableObject {
     }
 
     func userDidTapPriceChangeInfoButton(isBigLoss: Bool) {
-        runTask(in: self) { [weak self] viewModel in
+        TangemFoundation.runTask(in: self) { [weak self] viewModel in
             guard
                 let selectedProvider = await viewModel.interactor.getSelectedProvider()?.provider,
                 let tokenItemSymbol = viewModel.interactor.getDestination()?.tokenItem.currencySymbol
@@ -221,16 +221,16 @@ private extension ExpressViewModel {
     }
 
     func openApproveView() {
-        guard case .permissionRequired = interactor.getState() else {
+        guard case .permissionRequired(let permissionRequired, _) = interactor.getState() else {
             return
         }
 
-        runTask(in: self) { viewModel in
+        TangemFoundation.runTask(in: self) { viewModel in
             guard let selectedProvider = await viewModel.interactor.getSelectedProvider()?.provider else {
                 return
             }
 
-            let selectedPolicy = await viewModel.interactor.getApprovePolicy()
+            let selectedPolicy = permissionRequired.policy
             await runOnMain {
                 viewModel.coordinator?.presentApproveView(provider: selectedProvider, selectedPolicy: selectedPolicy)
             }
@@ -533,15 +533,15 @@ private extension ExpressViewModel {
         }
     }
 
-    func updateExpressFeeRowViewModel(fees: [FeeOption: Fee]) {
-        guard let fee = fees[interactor.getFeeOption()]?.amount.value else {
+    func updateExpressFeeRowViewModel(fees: ExpressInteractor.Fees) {
+        guard let fee = try? fees.selectedFee().amount.value else {
             expressFeeRowViewModel = nil
             return
         }
 
         var action: (() -> Void)?
         // If fee is one option then don't open selector
-        if fees.count > 1 {
+        if !fees.isFixed {
             action = weakify(self, forFunction: ExpressViewModel.openFeeSelectorView)
         }
 
@@ -679,7 +679,7 @@ private extension ExpressViewModel {
 
         stopTimer()
         mainButtonIsLoading = true
-        runTask(in: self) { root in
+        TangemFoundation.runTask(in: self) { root in
             do {
                 let sentTransactionData = try await root.interactor.send()
 

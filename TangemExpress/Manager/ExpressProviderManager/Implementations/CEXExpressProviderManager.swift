@@ -43,7 +43,7 @@ extension CEXExpressProviderManager: ExpressProviderManager {
         _state
     }
 
-    func update(request: ExpressManagerSwappingPairRequest, approvePolicy _: ExpressApprovePolicy) async {
+    func update(request: ExpressManagerSwappingPairRequest) async {
         let state = await getState(request: request)
         log("Update to \(state)")
         _state = state
@@ -93,7 +93,8 @@ private extension CEXExpressProviderManager {
 
             let previewDataRequest = try makeSwappingPairRequest(request: request, subtractFee: subtractFee)
             let quote = try await loadQuote(request: previewDataRequest)
-            return .preview(.init(fee: estimatedFee, subtractFee: subtractFee, quote: quote))
+            let fee = ExpressFee(option: request.feeOption, variants: estimatedFee)
+            return .preview(.init(fee: fee, subtractFee: subtractFee, quote: quote))
 
         } catch let error as ExpressAPIError {
             guard let amount = error.value?.amount else {
@@ -132,7 +133,12 @@ private extension CEXExpressProviderManager {
             throw ExpressManagerError.notEnoughAmountToSubtractFee
         }
 
-        return ExpressManagerSwappingPairRequest(pair: request.pair, amount: reducedAmount, feeOption: request.feeOption)
+        return ExpressManagerSwappingPairRequest(
+            pair: request.pair,
+            amount: reducedAmount,
+            feeOption: request.feeOption,
+            approvePolicy: request.approvePolicy
+        )
     }
 
     func isEnoughAmountToSubtractFee(request: ExpressManagerSwappingPairRequest, subtractFee: Decimal) throws -> Bool {
@@ -146,7 +152,7 @@ private extension CEXExpressProviderManager {
         return isNotEnoughBalanceForSwapping
     }
 
-    func subtractFee(request: ExpressManagerSwappingPairRequest, estimatedFee: ExpressFee) throws -> Decimal {
+    func subtractFee(request: ExpressManagerSwappingPairRequest, estimatedFee: ExpressFee.Variants) throws -> Decimal {
         // The fee's subtraction needed only for fee currency
         guard request.pair.source.isFeeCurrency else {
             return 0
