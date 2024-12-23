@@ -55,6 +55,8 @@
 "balance_hidden_do_not_show_button" = "Больше не показывать";
 "balance_hidden_got_it_button" = "Понятно";
 "balance_hidden_title" = "Балансы скрыты";
+"beta_mode_warning_message" = "Согласно информации от разработчиков сети, токены Kaspa находятся в режиме бета. Следите за обновлениями!";
+"beta_mode_warning_title" = "Бета режим";
 "biometry_touch_id_reason" = "Touch ID используется для сохранения карт и колец в приложении";
 "button_start_backup_process" = "Начать резервное копирование";
 "buy_token_description" = "Используйте банковскую карту или другие методы оплаты";
@@ -215,7 +217,7 @@
 "custom_token_network_input_not_selected" = "Не выбрано";
 "custom_token_network_input_title" = "Сеть";
 "custom_token_network_selector_title" = "Сеть";
-"custom_token_subtitle" = "Вы можете добавить токен в ручную, если он не поддерживается Tangem";
+"custom_token_subtitle" = "Вы можете добавить токен вручную, если он не поддерживается Tangem";
 "custom_token_token_symbol_input_placeholder" = "Например, USDC";
 "custom_token_token_symbol_input_title" = "Символ";
 "custom_token_token_symbol_input_title_old" = "Символ токена";

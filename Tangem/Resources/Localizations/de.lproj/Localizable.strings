@@ -55,6 +55,8 @@
 "balance_hidden_do_not_show_button" = "Nicht mehr anzeigen";
 "balance_hidden_got_it_button" = "Verstanden";
 "balance_hidden_title" = "Guthaben sind ausgeblendet";
+"beta_mode_warning_message" = "According to the blockchain developers, Kaspa tokens are currently in beta. Stay tuned for updates!";
+"beta_mode_warning_title" = "Beta Mode";
 "biometry_touch_id_reason" = "Touch ID wird zum Speichern deiner Karten oder Ringe in der App verwendet";
 "button_start_backup_process" = "Backup-Prozess starten";
 "buy_token_description" = "Verwende eine Bankkarte oder eine andere Zahlungsmethode";
