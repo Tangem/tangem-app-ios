@@ -488,7 +488,7 @@ private extension ExpressInteractor {
 
 private extension ExpressInteractor {
     func sendDEXTransaction(state: ReadyToSwapState, provider: ExpressProvider) async throws -> TransactionSendResultState {
-        let fee = try state.fees.selectedFee() // selectedFee(fees: state.fees)
+        let fee = try state.fees.selectedFee()
         let sender = getSender()
         let transaction = try await expressTransactionBuilder.makeTransaction(wallet: sender, data: state.data, fee: fee)
 
@@ -500,7 +500,7 @@ private extension ExpressInteractor {
     }
 
     func sendCEXTransaction(state: PreviewCEXState, provider: ExpressProvider) async throws -> TransactionSendResultState {
-        let fee = try state.fees.selectedFee() // selectedFee(fees: state.fees)
+        let fee = try state.fees.selectedFee()
         let sender = getSender()
         let data = try await expressManager.requestData()
 

@@ -516,13 +516,13 @@ private extension ExpressViewModel {
         switch state {
         case .restriction(.notEnoughAmountForTxValue(let estimatedFee), _):
             // Signle estimated fee just for UI
-            updateExpressFeeRowViewModel(fee: .success(estimatedFee), action: nil)
+            updateExpressFeeRowViewModel(fees: .loading)
         case .restriction(.notEnoughAmountForFee(let state), _):
-            updateExpressFeeRowViewModel(fees: state.fees)
+            updateExpressFeeRowViewModel(fees: .success(state.fees))
         case .previewCEX(let state, _):
-            updateExpressFeeRowViewModel(fees: state.fees)
+            updateExpressFeeRowViewModel(fees: .success(state.fees))
         case .readyToSwap(let state, _):
-            updateExpressFeeRowViewModel(fees: state.fees)
+            updateExpressFeeRowViewModel(fees: .success(state.fees))
         case .loading(.fee):
             updateExpressFeeRowViewModel(fee: .loading, action: nil)
         case .idle, .restriction, .loading(.full), .permissionRequired:
@@ -533,37 +533,34 @@ private extension ExpressViewModel {
         }
     }
 
-    func updateExpressFeeRowViewModel(fees: ExpressInteractor.Fees) {
-        guard let fee = try? fees.selectedFee().amount.value else {
-            expressFeeRowViewModel = nil
-            return
-        }
-
-        var action: (() -> Void)?
-        // If fee is one option then don't open selector
-        if !fees.isFixed {
-            action = weakify(self, forFunction: ExpressViewModel.openFeeSelectorView)
-        }
-
-        updateExpressFeeRowViewModel(fee: .success(fee), action: action)
-    }
-
-    func updateExpressFeeRowViewModel(fee: LoadingResult<Decimal, Never>, action: (() -> Void)?) {
-        switch fee {
+    func updateExpressFeeRowViewModel(fees: LoadingResult<ExpressInteractor.Fees, Never>) {
+        switch fees {
         case .loading:
-            expressFeeRowViewModel = ExpressFeeRowData(
-                title: Localization.commonNetworkFeeTitle, subtitle: .loading, action: action
-            )
+            updateExpressFeeRowViewModel(fee: .loading, action: nil)
+        case .success(let fees):
+            guard let fee = try? fees.selectedFee().amount.value else {
+                expressFeeRowViewModel = nil
+                return
+            }
 
-        case .success(let fee):
+            var action: (() -> Void)?
+            // If fee is one option then don't open selector
+            if !fees.isFixed {
+                action = weakify(self, forFunction: ExpressViewModel.openFeeSelectorView)
+            }
+
             let tokenItem = interactor.getSender().feeTokenItem
             let formattedFee = feeFormatter.format(fee: fee, tokenItem: tokenItem)
-            expressFeeRowViewModel = ExpressFeeRowData(
-                title: Localization.commonNetworkFeeTitle,
-                subtitle: .loaded(text: formattedFee),
-                action: action
-            )
+            updateExpressFeeRowViewModel(fee: .loaded(text: formattedFee), action: action)
         }
+    }
+
+    func updateExpressFeeRowViewModel(fee: LoadableTextView.State, action: (() -> Void)?) {
+        expressFeeRowViewModel = ExpressFeeRowData(
+            title: Localization.commonNetworkFeeTitle,
+            subtitle: fee,
+            action: action
+        )
     }
 
     func updateMainButton(state: ExpressInteractor.State) {

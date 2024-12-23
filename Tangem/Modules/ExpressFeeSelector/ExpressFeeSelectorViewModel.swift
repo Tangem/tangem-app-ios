@@ -42,7 +42,7 @@ final class ExpressFeeSelectorViewModel: ObservableObject, Identifiable {
         expressInteractor.state
             // Don't update the view when reloading
             // Because fees can be empty
-            .filter { !$0.fees.fees.isEmpty }
+            .filter { !$0.fees.isEmpty }
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, state in
