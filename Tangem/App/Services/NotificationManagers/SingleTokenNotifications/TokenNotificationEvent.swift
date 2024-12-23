@@ -322,13 +322,4 @@ extension TokenNotificationEvent {
             return nil
         }
     }
-
-    var analyticsEventWhenMainAction: Analytics.Event? {
-        switch self {
-        case .hasUnfulfilledRequirements(configuration: .incompleteKaspaTokenTransaction): return .tokenButtonRevealTryAgain
-        default:
-            // Now used only incompleteKaspaTokenTransaction
-            return nil
-        }
-    }
 }

@@ -19,8 +19,6 @@ protocol NotificationEvent: Identifiable {
     var buttonAction: NotificationButtonAction? { get }
     // TODO: Discuss analytics refactoring, probably we should combine all related data into single struct
     var analyticsEvent: Analytics.Event? { get }
-    var analyticsEventWhenDismissAction: Analytics.Event? { get }
-    var analyticsEventWhenMainAction: Analytics.Event? { get }
     var analyticsParams: [Analytics.ParameterKey: String] { get }
     /// Determine if analytics event should be sent only once and tracked by service
     var isOneShotAnalyticsEvent: Bool { get }
@@ -31,9 +29,4 @@ extension NotificationEvent where Self: Hashable {
     var id: NotificationViewId {
         hashValue
     }
-}
-
-extension NotificationEvent {
-    var analyticsEventWhenDismissAction: Analytics.Event? { nil }
-    var analyticsEventWhenMainAction: Analytics.Event? { nil }
 }
