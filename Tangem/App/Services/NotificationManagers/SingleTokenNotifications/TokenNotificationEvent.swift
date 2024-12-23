@@ -21,6 +21,7 @@ enum TokenNotificationEvent: Hashable {
     case staking(tokenIconInfo: TokenIconInfo, earnUpToFormatted: String)
     case manaLevel(currentMana: String, maxMana: String)
     case maticMigration
+    case kaspaTokensBeta
 
     static func event(
         for reason: TransactionSendAvailabilityProvider.SendingRestrictions,
@@ -70,6 +71,8 @@ extension TokenNotificationEvent: NotificationEvent {
             return .string(Localization.koinosManaLevelTitle)
         case .maticMigration:
             return .string(Localization.warningMaticMigrationTitle)
+        case .kaspaTokensBeta:
+            return .string("")
         }
     }
 
@@ -115,6 +118,8 @@ extension TokenNotificationEvent: NotificationEvent {
             return Localization.koinosManaLevelDescription(currentMana, maxMana)
         case .maticMigration:
             return Localization.warningMaticMigrationMessage
+        case .kaspaTokensBeta:
+            return nil
         }
     }
 
@@ -127,7 +132,8 @@ extension TokenNotificationEvent: NotificationEvent {
              .noAccount,
              .bnbBeaconChainRetirement,
              .manaLevel,
-             .maticMigration:
+             .maticMigration,
+             .kaspaTokensBeta:
             return .secondary
         // One white notification will be added later
         case .notEnoughFeeForTransaction,
@@ -143,7 +149,8 @@ extension TokenNotificationEvent: NotificationEvent {
         case .networkUnreachable,
              .someNetworksUnreachable,
              .bnbBeaconChainRetirement,
-             .maticMigration:
+             .maticMigration,
+             .kaspaTokensBeta:
             return .init(iconType: .image(Assets.attention.image))
         case .rentFee, .noAccount, .existentialDepositWarning, .manaLevel:
             return .init(iconType: .image(Assets.blueCircleWarning.image))
@@ -165,7 +172,8 @@ extension TokenNotificationEvent: NotificationEvent {
              .existentialDepositWarning,
              .staking,
              .manaLevel,
-             .maticMigration:
+             .maticMigration,
+             .kaspaTokensBeta:
             return .info
         case .networkUnreachable,
              .someNetworksUnreachable,
@@ -191,7 +199,8 @@ extension TokenNotificationEvent: NotificationEvent {
              .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation),
              .staking,
              .manaLevel,
-             .maticMigration:
+             .maticMigration,
+             .kaspaTokensBeta:
             return false
         }
     }
@@ -206,7 +215,8 @@ extension TokenNotificationEvent: NotificationEvent {
              .noAccount,
              .bnbBeaconChainRetirement,
              .manaLevel,
-             .maticMigration:
+             .maticMigration,
+             .kaspaTokensBeta:
             return nil
         case .notEnoughFeeForTransaction(let configuration):
             let eventConfig = configuration.eventConfiguration
@@ -286,6 +296,7 @@ extension TokenNotificationEvent {
         case .staking: return nil
         case .manaLevel: return nil
         case .maticMigration: return nil
+        case .kaspaTokensBeta: return nil
         }
     }
 
@@ -306,7 +317,8 @@ extension TokenNotificationEvent {
              .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation),
              .staking,
              .manaLevel,
-             .maticMigration:
+             .maticMigration,
+             .kaspaTokensBeta:
             return [:]
         }
     }
