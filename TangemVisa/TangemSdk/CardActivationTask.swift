@@ -10,9 +10,8 @@ import Foundation
 import Combine
 import TangemSdk
 
-struct VisaCardActivationResponse {
-    let signedOrderByCard: Data
-    let signedOrderByWallet: Data
+struct CardActivationResponse {
+    let signedActivationOrder: SignedActivationOrder
     let rootOTP: Data
 }
 
@@ -25,9 +24,10 @@ protocol CardActivationTaskOrderProvider: AnyObject {
 }
 
 final class CardActivationTask: CardSessionRunnable {
-    typealias CompletionHandler = CompletionResult<VisaCardActivationResponse>
+    typealias CompletionHandler = CompletionResult<CardActivationResponse>
 
     private weak var orderProvider: CardActivationTaskOrderProvider?
+    private weak var otpRepository: VisaOTPRepository?
     private let logger: InternalLogger
 
     private let selectedAccessCode: String
@@ -43,6 +43,7 @@ final class CardActivationTask: CardSessionRunnable {
         activationInput: VisaCardActivationInput,
         challengeToSign: String?,
         delegate: CardActivationTaskOrderProvider,
+        otpRepository: VisaOTPRepository,
         logger: InternalLogger
     ) {
         self.selectedAccessCode = selectedAccessCode
@@ -51,6 +52,7 @@ final class CardActivationTask: CardSessionRunnable {
         orderPublisher.send(nil)
 
         orderProvider = delegate
+        self.otpRepository = otpRepository
         self.logger = logger
     }
 
@@ -122,10 +124,48 @@ private extension CardActivationTask {
     }
 
     func createOTP(in session: CardSession, completion: @escaping CompletionHandler) {
-        // TODO: IOS-8571
+        if let taskCancellationError {
+            completion(.failure(taskCancellationError))
+            return
+        }
+
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+
+        guard let otpRepository else {
+            completion(.failure(.underlying(error: VisaActivationError.missingOTPRepository)))
+            return
+        }
+
+        do {
+            if let otp = try otpRepository.getOTP(cardId: card.cardId) {
+                waitForOrder(rootOTP: otp, in: session, completion: completion)
+                return
+            }
+        } catch {
+            log("Failed to get saved OTP: \(error)")
+        }
+
+        let otpCommand = GenerateOTPCommand()
+        otpCommand.run(in: session) { result in
+            switch result {
+            case .success(let otpResponse):
+                do {
+                    try otpRepository.saveOTP(otpResponse.rootOTP, cardId: card.cardId)
+                } catch {
+                    self.log("Failed to save OTP in secure storage. Error: \(error)")
+                }
+                self.waitForOrder(rootOTP: otpResponse.rootOTP, in: session, completion: completion)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
 
-    func waitForOrder(in session: CardSession, completion: @escaping CompletionHandler) {
+    func waitForOrder(rootOTP: Data, in session: CardSession, completion: @escaping CompletionHandler) {
+        completion(.failure(.underlying(error: VisaActivationError.notImplemented)))
         // TODO: IOS-8572
     }
 }
@@ -133,24 +173,59 @@ private extension CardActivationTask {
 // MARK: - Order signing
 
 private extension CardActivationTask {
-    func signOrderWithCard(in session: CardSession, orderToSign: Data, completion: @escaping CompletionHandler) {
-        // TODO: IOS-8572
+    func signOrder(orderToSign: Data, in session: CardSession, completion: @escaping CompletionHandler) {
+        let signOrderTask = SignActivationOrderTask(orderToSign: orderToSign)
+
+        signOrderTask.run(in: session, completion: { result in
+            switch result {
+            case .success(let signedOrder):
+                self.handleSignedActivationOrder(signedOrder, in: session, completion: completion)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+
+            withExtendedLifetime(signOrderTask) {}
+        })
     }
 
-    func signOrderWithWallet(
+    func handleSignedActivationOrder(
+        _ signedOrder: SignedActivationOrder,
         in session: CardSession,
-        dataToSign: Data,
-        signedOrderByCard: AttestCardKeyResponse,
         completion: @escaping CompletionHandler
     ) {
-        // TODO: IOS-8572
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+
+        do {
+            guard let otp = try otpRepository?.getOTP(cardId: card.cardId) else {
+                completion(.failure(.underlying(error: VisaActivationError.missingRootOTP)))
+                return
+            }
+
+            let cardActivationResponse = CardActivationResponse(signedActivationOrder: signedOrder, rootOTP: otp)
+            setupAccessCode(signResponse: cardActivationResponse, in: session, completion: completion)
+        } catch {
+            completion(.failure(.underlying(error: error)))
+        }
     }
 
     func setupAccessCode(
-        signResponse: VisaCardActivationResponse,
+        signResponse: CardActivationResponse,
         in session: CardSession,
         completion: @escaping CompletionHandler
     ) {
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+
+        if card.isAccessCodeSet {
+            completion(.success(signResponse))
+            return
+        }
+
         let setAccessCodeCommand = SetUserCodeCommand(accessCode: selectedAccessCode)
         setAccessCodeCommand.run(in: session) { result in
             switch result {

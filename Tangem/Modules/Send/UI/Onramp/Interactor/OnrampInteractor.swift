@@ -10,6 +10,8 @@ import Combine
 import TangemExpress
 
 protocol OnrampInteractor: AnyObject {
+    var selectedProviderPublisher: AnyPublisher<ExpressProvider?, Never> { get }
+
     var isLoadingPublisher: AnyPublisher<Bool, Never> { get }
     var isValidPublisher: AnyPublisher<Bool, Never> { get }
 }
@@ -33,6 +35,18 @@ class CommonOnrampInteractor {
 // MARK: - OnrampInteractor
 
 extension CommonOnrampInteractor: OnrampInteractor {
+    var selectedProviderPublisher: AnyPublisher<ExpressProvider?, Never> {
+        guard let providersInput else {
+            assertionFailure("OnrampProvidersInput not found")
+            return Empty().eraseToAnyPublisher()
+        }
+
+        return providersInput
+            .selectedOnrampProviderPublisher
+            .map { $0?.value?.provider }
+            .eraseToAnyPublisher()
+    }
+
     var isValidPublisher: AnyPublisher<Bool, Never> {
         guard let input else {
             assertionFailure("OnrampInput not found")

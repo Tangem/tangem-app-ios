@@ -6,13 +6,17 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
+import TangemFoundation
+
 class CommonOnrampProviderManager {
     // Dependencies
 
     private let pairItem: OnrampPairRequestItem
-    private let expressProviderId: String
+    private let expressProvider: ExpressProvider
     private let paymentMethodId: String
     private let apiProvider: ExpressAPIProvider
+    private let analyticsLogger: ExpressAnalyticsLogger
+    private let logger: Logger
 
     // Private state
 
@@ -21,15 +25,19 @@ class CommonOnrampProviderManager {
 
     init(
         pairItem: OnrampPairRequestItem,
-        expressProviderId: String,
+        expressProvider: ExpressProvider,
         paymentMethodId: String,
         apiProvider: ExpressAPIProvider,
+        analyticsLogger: ExpressAnalyticsLogger,
+        logger: Logger,
         state: OnrampProviderManagerState
     ) {
         self.pairItem = pairItem
-        self.expressProviderId = expressProviderId
+        self.expressProvider = expressProvider
         self.paymentMethodId = paymentMethodId
         self.apiProvider = apiProvider
+        self.analyticsLogger = analyticsLogger
+        self.logger = logger
 
         _state = state
     }
@@ -45,20 +53,40 @@ private extension CommonOnrampProviderManager {
 
         guard let amount = _amount else {
             // If amount is nil clear manager
-            _state = .idle
+            update(state: .idle)
             return
         }
 
         do {
-            _state = .loading
+            if case .idle = _state {
+                update(state: .loading)
+            }
             let quote = try await loadQuotes(amount: amount)
-            _state = .loaded(quote)
+            update(state: .loaded(quote))
+        } catch is CancellationError {
+            update(state: .idle)
         } catch let error as ExpressAPIError where error.errorCode == .exchangeTooSmallAmountError {
-            _state = .restriction(.tooSmallAmount(formatAmount(amount: error.value?.amount)))
+            guard let amount = error.value?.amount else {
+                update(state: .failed(error: error))
+                return
+            }
+
+            let formatted = formatAmount(amount: amount)
+            update(state: .restriction(.tooSmallAmount(amount, formatted: formatted)))
         } catch let error as ExpressAPIError where error.errorCode == .exchangeTooBigAmountError {
-            _state = .restriction(.tooBigAmount(formatAmount(amount: error.value?.amount)))
+            guard let amount = error.value?.amount else {
+                update(state: .failed(error: error))
+                return
+            }
+
+            let formatted = formatAmount(amount: amount)
+            update(state: .restriction(.tooBigAmount(amount, formatted: formatted)))
+        } catch let error as ExpressAPIError {
+            analyticsLogger.logExpressAPIError(error, provider: expressProvider)
+            update(state: .failed(error: error))
         } catch {
-            _state = .failed(error: error)
+            analyticsLogger.logAppError(error, provider: expressProvider)
+            update(state: .failed(error: error))
         }
     }
 
@@ -76,7 +104,7 @@ private extension CommonOnrampProviderManager {
         return OnrampQuotesRequestItem(
             pairItem: pairItem,
             paymentMethod: .init(id: paymentMethodId),
-            providerInfo: .init(id: expressProviderId),
+            providerInfo: .init(id: expressProvider.id),
             amount: amount
         )
     }
@@ -88,6 +116,11 @@ private extension CommonOnrampProviderManager {
 
         return "\(amount) \(pairItem.fiatCurrency.identity.code)"
     }
+
+    func update(state: OnrampProviderManagerState) {
+        logger.debug("[\(self)] state was updated")
+        _state = state
+    }
 }
 
 // MARK: - OnrampProviderManager
@@ -95,6 +128,10 @@ private extension CommonOnrampProviderManager {
 extension CommonOnrampProviderManager: OnrampProviderManager {
     var amount: Decimal? { _amount }
     var state: OnrampProviderManagerState { _state }
+
+    func update(supportedMethods: [OnrampPaymentMethod]) {
+        update(state: .notSupported(.paymentMethod(supportedMethods: supportedMethods)))
+    }
 
     func update(amount: OnrampUpdatingAmount) async {
         switch amount {
@@ -115,5 +152,17 @@ extension CommonOnrampProviderManager: OnrampProviderManager {
         }
 
         return try makeOnrampSwappableItem(amount: amount)
+    }
+}
+
+// MARK: - CustomStringConvertible
+
+extension CommonOnrampProviderManager: CustomStringConvertible {
+    public var description: String {
+        objectDescription(self, userInfo: [
+            "provider": expressProvider.name,
+            "payment": paymentMethodId,
+            "state": state,
+        ])
     }
 }

@@ -62,31 +62,7 @@ class OnboardingCoordinator: CoordinatorObject {
             onDismissalAttempt = model.backButtonAction
             viewState = .wallet(model)
         case .visa:
-            let visaCardInput: VisaCardActivationInput
-            switch input.cardInput {
-            case .cardId:
-                fatalError("Invalid card input for Visa onboarding")
-            case .cardInfo(let cardInfo):
-                switch cardInfo.walletData {
-                case .visa(let activationInput, _):
-                    visaCardInput = activationInput
-                default:
-                    fatalError("Invalid card input for Visa onboarding")
-                }
-            case .userWalletModel(let userWalletModel):
-                // TODO: IOS-8588
-                fatalError("Invalid onboarding input for Visa")
-            }
-            let model = VisaOnboardingViewModel(
-                input: input,
-                visaActivationManager: VisaActivationManagerFactory().make(
-                    cardInput: visaCardInput,
-                    tangemSdk: TangemSdkDefaultFactory().makeTangemSdk(),
-                    urlSessionConfiguration: .default,
-                    logger: AppLog.shared
-                ),
-                coordinator: self
-            )
+            let model = VisaOnboardingViewModelBuilder().makeOnboardingViewModel(onboardingInput: input, coordinator: self)
             onDismissalAttempt = model.backButtonAction
             viewState = .visa(model)
         }

@@ -1,6 +1,6 @@
 //
 //  TangemNetworkLoggerConstants.swift
-//  TangemModules
+//  TangemNetworkUtils
 //
 //  Created by Alexander Osokin on 05.12.2024.
 //  Copyright © 2024 Tangem AG. All rights reserved.

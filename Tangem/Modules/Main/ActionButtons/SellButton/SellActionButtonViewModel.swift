@@ -10,17 +10,16 @@ import Combine
 import Foundation
 
 final class SellActionButtonViewModel: ActionButtonViewModel {
+    // MARK: Dependencies
+
+    @Injected(\.exchangeService)
+    private var exchangeService: CombinedExchangeService
+
     // MARK: Published properties
 
     @Published var alert: AlertBinder?
 
-    @Published private(set) var viewState: ActionButtonState = .initial {
-        didSet {
-            if oldValue == .loading {
-                scheduleLoadedAction()
-            }
-        }
-    }
+    @Published private(set) var viewState: ActionButtonState = .initial
 
     @Published private var isOpeningRequired = false
 
@@ -32,6 +31,8 @@ final class SellActionButtonViewModel: ActionButtonViewModel {
 
     private weak var coordinator: ActionButtonsSellFlowRoutable?
     private var bag: Set<AnyCancellable> = []
+    private var exchangeServiceState: ExchangeServiceState = .initializing
+
     private let lastButtonTapped: PassthroughSubject<ActionButtonModel, Never>
     private let userWalletModel: UserWalletModel
 
@@ -49,6 +50,60 @@ final class SellActionButtonViewModel: ActionButtonViewModel {
         bind()
     }
 
+    @MainActor
+    func tap() {
+        trackTapEvent()
+
+        switch viewState {
+        case .initial:
+            handleInitialStateTap()
+        case .loading, .disabled:
+            break
+        case .restricted(let reason):
+            alert = .init(title: "", message: reason)
+        case .idle:
+            coordinator?.openSell(userWalletModel: userWalletModel)
+        }
+    }
+
+    @MainActor
+    func updateState(to state: ActionButtonState) {
+        viewState = state
+    }
+}
+
+// MARK: Handle state
+
+@MainActor
+private extension SellActionButtonViewModel {
+    func handleInitializingStateTap() {
+        updateState(to: .loading)
+        isOpeningRequired = true
+        lastButtonTapped.send(model)
+    }
+
+    func handleInitializedStateTap() {
+        updateState(to: .idle)
+        tap()
+    }
+
+    func handleFailedStateTap(reason: String) {
+        updateState(to: .restricted(reason: reason))
+        tap()
+    }
+
+    private func handleInitialStateTap() {
+        switch exchangeServiceState {
+        case .initializing: handleInitializingStateTap()
+        case .initialized: handleInitializedStateTap()
+        case .failed(let error): handleFailedStateTap(reason: error.localizedDescription)
+        }
+    }
+}
+
+// MARK: Bind
+
+private extension SellActionButtonViewModel {
     func bind() {
         lastButtonTapped
             .receive(on: DispatchQueue.main)
@@ -59,36 +114,31 @@ final class SellActionButtonViewModel: ActionButtonViewModel {
                 }
             }
             .store(in: &bag)
-    }
 
-    @MainActor
-    func tap() {
-        trackTapEvent()
+        exchangeService
+            .sellInitializationPublisher
+            .withWeakCaptureOf(self)
+            .sink { viewModel, state in
+                viewModel.exchangeServiceState = state
+            }
+            .store(in: &bag)
 
-        switch viewState {
-        case .initial:
-            handleInitialStateTap()
-        case .loading:
-            break
-        case .disabled(let message):
-            alert = .init(title: "", message: message)
-        case .idle:
-            guard !isOpeningRequired else { return }
+        $viewState
+            .receive(on: DispatchQueue.main)
+            .withPrevious()
+            .sink { [weak self] oldValue, newValue in
+                guard let self else { return }
 
-            coordinator?.openSell(userWalletModel: userWalletModel)
-        }
-    }
+                guard newValue != .initial else {
+                    isOpeningRequired = false
+                    return
+                }
 
-    @MainActor
-    func updateState(to state: ActionButtonState) {
-        viewState = state
-    }
-
-    @MainActor
-    private func handleInitialStateTap() {
-        updateState(to: .loading)
-        isOpeningRequired = true
-        lastButtonTapped.send(model)
+                if oldValue == .loading {
+                    scheduleLoadedAction()
+                }
+            }
+            .store(in: &bag)
     }
 }
 
@@ -97,9 +147,9 @@ final class SellActionButtonViewModel: ActionButtonViewModel {
 private extension SellActionButtonViewModel {
     func scheduleLoadedAction() {
         switch viewState {
-        case .disabled(let message): showScheduledAlert(with: message)
+        case .restricted(let reason): showScheduledAlert(with: reason)
         case .idle: scheduledOpenSell()
-        case .loading, .initial: break
+        case .loading, .initial, .disabled: break
         }
     }
 

@@ -8,9 +8,16 @@
 
 import Foundation
 import Combine
+import UIKit
+import TangemFoundation
+
+protocol OnboardingPinSelectionDelegate: VisaOnboardingAlertPresenter {
+    func useSelectedPin(pinCode: String) async throws
+}
 
 class OnboardingPinViewModel: ObservableObject {
     @Published var pinCode: String = ""
+    @Published var isLoading: Bool = false
 
     let pinCodeLength = 4
 
@@ -19,17 +26,28 @@ class OnboardingPinViewModel: ObservableObject {
             pinCode.allSatisfy(\.isWholeNumber)
     }
 
-    private let pinCodeSaver: SavePinCode
+    private weak var delegate: OnboardingPinSelectionDelegate?
 
-    init(pinCodeSaver: @escaping SavePinCode) {
-        self.pinCodeSaver = pinCodeSaver
+    init(delegate: OnboardingPinSelectionDelegate?) {
+        self.delegate = delegate
     }
 
     func submitPinCodeAction() {
-        pinCodeSaver(pinCode)
-    }
-}
+        isLoading = true
+        UIApplication.shared.endEditing()
+        let selectedPinCode = pinCode
+        runTask(in: self, isDetached: false) { viewModel in
+            do {
+                try await viewModel.delegate?.useSelectedPin(pinCode: selectedPinCode)
+            } catch {
+                if !error.isCancellationError {
+                    await viewModel.delegate?.showAlert(error.alertBinder)
+                }
+            }
 
-extension OnboardingPinViewModel {
-    typealias SavePinCode = (String) -> Void
+            await runOnMain {
+                viewModel.isLoading = false
+            }
+        }
+    }
 }

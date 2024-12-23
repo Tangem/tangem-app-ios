@@ -51,9 +51,14 @@ struct VisaOnboardingWelcomeView: View {
 
                 Spacer()
 
-                MainButton(title: viewModel.activationButtonTitle, action: viewModel.startActivationAction)
-                    .padding(.bottom, 10)
-                    .padding(.horizontal, 16)
+                MainButton(
+                    title: viewModel.activationButtonTitle,
+                    icon: viewModel.isAccessCodeSet ? .trailing(Assets.tangemIcon) : nil,
+                    isLoading: viewModel.isLoading,
+                    action: viewModel.mainButtonAction
+                )
+                .padding(.bottom, 10)
+                .padding(.horizontal, 16)
             }
         }
     }
@@ -62,8 +67,9 @@ struct VisaOnboardingWelcomeView: View {
 #Preview {
     VisaOnboardingWelcomeView(viewModel: .init(
         activationState: .newActivation,
+        isAccessCodeSet: false,
         userName: "World",
-        imagePublisher: nil,
-        startActivationDelegate: {}
+        imagePublisher: Just(nil),
+        delegate: nil
     ))
 }

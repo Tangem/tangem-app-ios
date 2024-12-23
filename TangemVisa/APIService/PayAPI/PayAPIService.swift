@@ -19,17 +19,11 @@ struct PayAPIService {
     init(
         isTestnet: Bool,
         additionalAPIHeaders: [String: String],
-        provider: MoyaProvider<PayAPITarget>,
-        logger: InternalLogger
+        apiService: APIService<PayAPITarget, VisaAPIError>
     ) {
         self.isTestnet = isTestnet
         self.additionalAPIHeaders = additionalAPIHeaders
-
-        apiService = .init(
-            provider: provider,
-            logger: logger,
-            decoder: JSONDecoderFactory().makePayAPIDecoder()
-        )
+        self.apiService = apiService
     }
 }
 

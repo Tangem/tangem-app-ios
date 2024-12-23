@@ -110,6 +110,8 @@ struct NotificationView: View {
                 case .attributed(let attributedString):
                     Text(attributedString)
                         .fixedSize(horizontal: false, vertical: true)
+                case .none:
+                    EmptyView()
                 }
 
                 if let description = settings.event.description {

@@ -13,11 +13,13 @@ struct OnrampPaymentMethodsView: View {
 
     var body: some View {
         GroupedScrollView(spacing: 0) {
-            ForEach(viewModel.paymentMethods) {
-                OnrampPaymentMethodRowView(data: $0)
+            ForEach(viewModel.paymentMethods) { paymentMethod in
+                OnrampPaymentMethodRowView(data: paymentMethod)
 
-                Separator(height: .minimal, color: Colors.Stroke.primary)
-                    .padding(.leading, 62)
+                if paymentMethod.id != viewModel.paymentMethods.last?.id {
+                    Separator(height: .minimal, color: Colors.Stroke.primary)
+                        .padding(.leading, 62)
+                }
             }
         }
         .background(Colors.Background.primary)

@@ -39,7 +39,7 @@ struct CustomerInfoManagementAPITarget: TargetType {
 
     var headers: [String: String]? {
         [
-            "Authorization": authorizationToken,
+            VisaConstants.authorizationHeaderKey: authorizationToken,
             "Content-Type": "application/json",
         ]
     }

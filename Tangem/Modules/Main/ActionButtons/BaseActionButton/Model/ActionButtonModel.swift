@@ -18,7 +18,7 @@ enum ActionButtonModel: Hashable {
         case .buy:
             Localization.commonBuy
         case .swap:
-            Localization.commonExchange
+            Localization.commonSwap
         case .sell:
             Localization.commonSell
         }
@@ -40,5 +40,6 @@ enum ActionButtonState: Equatable {
     case initial
     case loading
     case idle
-    case disabled(message: String)
+    case restricted(reason: String)
+    case disabled
 }

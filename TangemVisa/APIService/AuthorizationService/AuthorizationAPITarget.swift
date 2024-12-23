@@ -20,16 +20,20 @@ struct AuthorizationAPITarget: TargetType {
 
     var path: String {
         switch target {
-        case .generateNonceByCID:
+        case .generateNonceByCID, .generateNonceForWallet:
             return "auth/clients/\(clientId)/nonce-challenge"
-        case .getAccessToken, .refreshAccessToken:
+        case .getAccessTokenForCardAuth, .refreshAccessToken, .getAccessTokenForWalletAuth:
             return "auth/protocol/openid-connect/token"
         }
     }
 
     var method: Moya.Method {
         switch target {
-        case .generateNonceByCID, .refreshAccessToken, .getAccessToken:
+        case .generateNonceByCID,
+             .generateNonceForWallet,
+             .refreshAccessToken,
+             .getAccessTokenForCardAuth,
+             .getAccessTokenForWalletAuth:
             return .post
         }
     }
@@ -41,11 +45,19 @@ struct AuthorizationAPITarget: TargetType {
         case .generateNonceByCID(let cid, let cardPublicKey):
             params[.cardId] = cid
             params[.cardPublicKey] = cardPublicKey
-        case .getAccessToken(let signature, let salt, let sessionId):
+        case .generateNonceForWallet(let cid, let walletPublicKey):
+            params[.cardId] = cid
+            params[.walletPublicKey] = walletPublicKey
+        case .getAccessTokenForCardAuth(let signature, let salt, let sessionId):
             params[.clientId] = clientId
             params[.sessionId] = sessionId
             params[.signature] = signature
             params[.salt] = salt
+            params[.grantType] = GrantType.password.rawValue
+        case .getAccessTokenForWalletAuth(let signature, let sessionId):
+            params[.clientId] = clientId
+            params[.sessionId] = sessionId
+            params[.signature] = signature
             params[.grantType] = GrantType.password.rawValue
         case .refreshAccessToken(let refreshToken):
             params[.clientId] = clientId
@@ -66,7 +78,9 @@ struct AuthorizationAPITarget: TargetType {
 extension AuthorizationAPITarget {
     enum Target {
         case generateNonceByCID(cid: String, cardPublicKey: String)
-        case getAccessToken(signature: String, salt: String, sessionId: String)
+        case generateNonceForWallet(cid: String, walletPublicKey: String)
+        case getAccessTokenForCardAuth(signature: String, salt: String, sessionId: String)
+        case getAccessTokenForWalletAuth(signature: String, sessionId: String)
         case refreshAccessToken(refreshToken: String)
     }
 }
@@ -75,6 +89,7 @@ private extension AuthorizationAPITarget {
     enum ParameterKey: String {
         case cardId = "card_id"
         case cardPublicKey = "card_public_key"
+        case walletPublicKey = "wallet_public_key"
         case customerId = "customer_id"
         case refreshToken = "refresh_token"
         case sessionId = "session_id"

@@ -10,7 +10,7 @@ import Foundation
 
 protocol NotificationEvent: Identifiable {
     var id: NotificationViewId { get }
-    var title: NotificationView.Title { get }
+    var title: NotificationView.Title? { get }
     var description: String? { get }
     var colorScheme: NotificationView.ColorScheme { get }
     var icon: NotificationView.MessageIcon { get }
