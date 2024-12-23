@@ -509,18 +509,56 @@ private extension MarketsListDataProvider.Event {
 }
 
 import Moya
+import Alamofire
 
 extension Error {
     var marketsAnalyticsParams: [Analytics.ParameterKey: String] {
         var analyticsParams = [Analytics.ParameterKey: String]()
+
         if let error = self as? LocalizedError {
-            analyticsParams[.errorDescription] = error.localizedDescription
+            analyticsParams[.errorMessage] = error.localizedDescription
         }
 
-        if let error = self as? MoyaError {
-            analyticsParams[.errorCode] = error.response.flatMap { String($0.statusCode) }
-        }
+        analyticsParams[.errorCode] = marketsErrorCode()
+        analyticsParams[.errorType] = marketsErrorType().rawValue
 
         return analyticsParams
+    }
+
+    private func marketsErrorCode() -> String {
+        if let moyaError = self as? MoyaError,
+           case .statusCode(let response) = moyaError {
+            return String(response.statusCode)
+        } else {
+            return Analytics.ParameterValue.marketsErrorCodeNotHTTPError.rawValue
+        }
+    }
+
+    private func marketsErrorType() -> Analytics.ParameterValue {
+        switch self {
+        case let moyaError as MoyaError:
+            switch moyaError {
+            case .statusCode:
+                return .marketsErrorTypeHTTP
+            case .underlying(let underlyingMoyaError, _):
+                return marketsErrorType(fromUnderlyingMoyaError: underlyingMoyaError)
+            default:
+                return .marketsErrorTypeNetwork
+            }
+        case _ as MarketsTokenHistoryChartMapper.ParsingError:
+            return .custom
+        default:
+            return .unknown
+        }
+    }
+
+    private func marketsErrorType(fromUnderlyingMoyaError error: Error) -> Analytics.ParameterValue {
+        if let afError = error as? AFError,
+           case .sessionTaskFailed(let urlError as URLError) = afError,
+           urlError.code == .timedOut {
+            return .marketsErrorTypeTimeout
+        }
+
+        return .marketsErrorTypeNetwork
     }
 }
