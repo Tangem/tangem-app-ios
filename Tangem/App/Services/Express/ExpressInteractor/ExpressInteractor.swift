@@ -190,8 +190,19 @@ extension ExpressInteractor {
     func updateFeeOption(option: FeeOption) {
         feeOption.mutate { $0 = option }
 
+        let expressFeeOption: ExpressFeeOption = {
+            switch option {
+            case .market, .custom, .slow: .market
+            case .fast: .fast
+            }
+        }()
+
+        updateState(.loading(type: .full))
         updateTask { interactor in
-            try await interactor.feeOptionDidChange()
+            let state = try await interactor.expressManager.update(feeOption: expressFeeOption)
+            return try await interactor.mapState(state: state)
+
+//            try await interactor.feeOptionDidChange()
         }
     }
 }
@@ -561,51 +572,52 @@ private extension ExpressInteractor {
             return try await interactor.mapState(state: state)
         }
     }
+    /*
+     func feeOptionDidChange() async throws -> State {
+         switch getState() {
+         case .idle:
+             return .idle
+         case .loading(let type):
+             return .loading(type: type)
+         case .permissionRequired(let state, let quote):
+             let state: State = .permissionRequired(state, quote: quote)
 
-    func feeOptionDidChange() async throws -> State {
-        switch getState() {
-        case .idle:
-            return .idle
-        case .loading(let type):
-            return .loading(type: type)
-        case .permissionRequired(let state, let quote):
-            let state: State = .permissionRequired(state, quote: quote)
+             guard try await hasEnoughBalanceForFee(fees: state.fees, amount: quote.fromAmount) else {
+                 return .restriction(.notEnoughAmountForFee(state), quote: quote)
+             }
 
-            guard try await hasEnoughBalanceForFee(fees: state.fees, amount: quote.fromAmount) else {
-                return .restriction(.notEnoughAmountForFee(state), quote: quote)
-            }
+             return state
+         case .restriction(.notEnoughAmountForFee(let returnState), let quote):
+             guard let amount = quote?.fromAmount else {
+                 throw ExpressManagerError.amountNotFound
+             }
 
-            return state
-        case .restriction(.notEnoughAmountForFee(let returnState), let quote):
-            guard let amount = quote?.fromAmount else {
-                throw ExpressManagerError.amountNotFound
-            }
+             guard try await hasEnoughBalanceForFee(fees: returnState.fees, amount: amount) else {
+                 return .restriction(.notEnoughAmountForFee(returnState), quote: quote)
+             }
 
-            guard try await hasEnoughBalanceForFee(fees: returnState.fees, amount: amount) else {
-                return .restriction(.notEnoughAmountForFee(returnState), quote: quote)
-            }
+             return returnState
+         case .previewCEX(let state, let quote):
+             let state: State = .previewCEX(state, quote: quote)
 
-            return returnState
-        case .previewCEX(let state, let quote):
-            let state: State = .previewCEX(state, quote: quote)
+             guard try await hasEnoughBalanceForFee(fees: state.fees, amount: quote.fromAmount) else {
+                 return .restriction(.notEnoughAmountForFee(state), quote: quote)
+             }
 
-            guard try await hasEnoughBalanceForFee(fees: state.fees, amount: quote.fromAmount) else {
-                return .restriction(.notEnoughAmountForFee(state), quote: quote)
-            }
+             return state
+         case .readyToSwap(let state, let quote):
+             let state: State = .readyToSwap(state, quote: quote)
 
-            return state
-        case .readyToSwap(let state, let quote):
-            let state: State = .readyToSwap(state, quote: quote)
+             guard try await hasEnoughBalanceForFee(fees: state.fees, amount: quote.fromAmount) else {
+                 return .restriction(.notEnoughAmountForFee(state), quote: quote)
+             }
 
-            guard try await hasEnoughBalanceForFee(fees: state.fees, amount: quote.fromAmount) else {
-                return .restriction(.notEnoughAmountForFee(state), quote: quote)
-            }
-
-            return state
-        case .restriction:
-            throw ExpressInteractorError.transactionDataNotFound
-        }
-    }
+             return state
+         case .restriction:
+             throw ExpressInteractorError.transactionDataNotFound
+         }
+     }
+     */
 }
 
 // MARK: - Helpers
@@ -873,6 +885,7 @@ extension ExpressInteractor {
     enum RefreshType {
         case full
         case refreshRates
+        case fee
     }
 
     enum RestrictionType {

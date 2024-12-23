@@ -29,8 +29,12 @@ struct ExpressFeeRowView: View {
                 Text(viewModel.title)
                     .style(Fonts.Regular.footnote, color: Colors.Text.secondary)
 
-                Text(viewModel.subtitle)
-                    .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)
+                LoadableTextView(
+                    state: viewModel.subtitle,
+                    font: Fonts.Regular.subheadline,
+                    textColor: Colors.Text.primary1,
+                    loaderSize: CGSize(width: 100, height: 15)
+                )
             }
 
             Spacer()
@@ -48,12 +52,12 @@ struct ExpressFeeRowView: View {
     GroupedSection([
         ExpressFeeRowData(
             title: "Fee",
-            subtitle: "0.117 MATIC (0.14 $)",
+            subtitle: .loaded(text: "0.117 MATIC (0.14 $)"),
             action: {}
         ),
         ExpressFeeRowData(
             title: "Fee",
-            subtitle: "0.117 MATIC (0.14 $)",
+            subtitle: .loaded(text: "0.117 MATIC (0.14 $)"),
             action: nil
         ),
     ]) {

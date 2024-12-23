@@ -132,7 +132,7 @@ private extension CEXExpressProviderManager {
             throw ExpressManagerError.notEnoughAmountToSubtractFee
         }
 
-        return ExpressManagerSwappingPairRequest(pair: request.pair, amount: reducedAmount)
+        return ExpressManagerSwappingPairRequest(pair: request.pair, amount: reducedAmount, feeOption: request.feeOption)
     }
 
     func isEnoughAmountToSubtractFee(request: ExpressManagerSwappingPairRequest, subtractFee: Decimal) throws -> Bool {
@@ -153,7 +153,7 @@ private extension CEXExpressProviderManager {
         }
 
         let balance = try request.pair.source.getBalance()
-        let fee = estimatedFee.fastest.amount.value
+        let fee = estimatedFee.fee(option: request.feeOption).amount.value
         let fullAmount = request.amount + fee
 
         // If we don't have enough balance

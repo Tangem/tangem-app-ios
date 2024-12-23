@@ -26,12 +26,16 @@ public enum ExpressFee {
     case single(Fee)
     case double(market: Fee, fast: Fee)
 
-    var fastest: Fee {
-        switch self {
-        case .single(let fee):
-            return fee
-        case .double(_, let fast):
-            return fast
+    func fee(option: ExpressFeeOption) -> Fee {
+        switch (self, option) {
+        case (.double(_, let fast), .fast): fast
+        case (.double(let market, _), .market): market
+        case (.single(let fee), _): fee
         }
     }
+}
+
+public enum ExpressFeeOption: Hashable {
+    case market
+    case fast
 }

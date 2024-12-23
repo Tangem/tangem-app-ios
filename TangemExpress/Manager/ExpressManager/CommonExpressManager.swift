@@ -22,6 +22,7 @@ actor CommonExpressManager {
 
     private var _pair: ExpressManagerSwappingPair?
     private var _approvePolicy: ExpressApprovePolicy = .unlimited
+    private var _feeOption: ExpressFeeOption = .market
     private var _amount: Decimal?
 
     private var allProviders: [ExpressAvailableProvider] = []
@@ -98,6 +99,19 @@ extension CommonExpressManager: ExpressManager {
         }
 
         _approvePolicy = approvePolicy
+
+        let request = try makeRequest()
+        await selectedProvider?.manager.update(request: request, approvePolicy: _approvePolicy)
+        return try await selectedProviderState()
+    }
+
+    func update(feeOption: ExpressFeeOption) async throws -> ExpressManagerState {
+        guard _feeOption != feeOption else {
+            log("ExpressFeeOption already is \(feeOption)")
+            return try await selectedProviderState()
+        }
+
+        _feeOption = feeOption
 
         let request = try makeRequest()
         await selectedProvider?.manager.update(request: request, approvePolicy: _approvePolicy)
@@ -294,7 +308,7 @@ private extension CommonExpressManager {
             throw ExpressManagerError.amountNotFound
         }
 
-        return ExpressManagerSwappingPairRequest(pair: pair, amount: amount)
+        return ExpressManagerSwappingPairRequest(pair: pair, amount: amount, feeOption: _feeOption)
     }
 
     func clearCache() {
