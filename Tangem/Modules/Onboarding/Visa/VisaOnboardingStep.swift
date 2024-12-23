@@ -13,6 +13,9 @@ enum VisaOnboardingStep: Equatable {
     case selectWalletForApprove
     case approveUsingTangemWallet
 
+    case inProgress
+    case pinSelection
+
     case saveUserWallet
     case pushNotifications
 
@@ -28,6 +31,10 @@ enum VisaOnboardingStep: Equatable {
             return "Account activation"
         case .approveUsingTangemWallet:
             return "Wallet connection"
+        case .inProgress:
+            return Localization.commonInProgress
+        case .pinSelection:
+            return "PIN code"
         case .saveUserWallet:
             return Localization.onboardingNavbarSaveWallet
         case .pushNotifications:

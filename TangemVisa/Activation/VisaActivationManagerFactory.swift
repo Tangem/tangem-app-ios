@@ -21,7 +21,16 @@ public struct VisaActivationManagerFactory {
     ) -> VisaActivationManager {
         let internalLogger = InternalLogger(logger: logger)
         let authorizationService = AuthorizationServiceBuilder().build(urlSessionConfiguration: urlSessionConfiguration, logger: logger)
+
+        let accessTokenHolder: AccessTokenHolder
+        if case .activationStarted(_, let authorizationTokens, _) = initialActivationStatus {
+            accessTokenHolder = .init(authorizationTokens: authorizationTokens)
+        } else {
+            accessTokenHolder = .init()
+        }
+
         let tokenHandler = CommonVisaAccessTokenHandler(
+            accessTokenHolder: accessTokenHolder,
             tokenRefreshService: authorizationService,
             logger: internalLogger,
             refreshTokenSaver: nil
@@ -44,6 +53,10 @@ public struct VisaActivationManagerFactory {
             customerInfoManagementService: customerInfoManagementService,
             logger: internalLogger
         )
+        let cardActivationRemoteStateService = VisaAPIServiceBuilder().buildCardActivationStatusService(
+            urlSessionConfiguration: urlSessionConfiguration,
+            logger: logger
+        )
 
         return CommonVisaActivationManager(
             initialActivationStatus: initialActivationStatus,
@@ -52,6 +65,7 @@ public struct VisaActivationManagerFactory {
             tangemSdk: tangemSdk,
             authorizationProcessor: authorizationProcessor,
             cardActivationOrderProvider: activationOrderProvider,
+            cardActivationRemoteStateService: cardActivationRemoteStateService,
             otpRepository: CommonVisaOTPRepository(),
             logger: internalLogger
         )

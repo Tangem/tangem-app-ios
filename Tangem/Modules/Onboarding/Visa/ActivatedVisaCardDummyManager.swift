@@ -19,6 +19,10 @@ class ActivatedVisaCardDummyManager: VisaActivationManager {
         .activated(authTokens: .init(accessToken: "", refreshToken: ""))
     }
 
+    var activationRemoteState: VisaCardActivationRemoteState {
+        .activated
+    }
+
     func saveAccessCode(accessCode: String) throws (TangemVisa.VisaAccessCodeValidationError) {}
 
     func startActivation() async throws (TangemVisa.VisaActivationError) {}
@@ -28,4 +32,10 @@ class ActivatedVisaCardDummyManager: VisaActivationManager {
     func resetAccessCode() {}
 
     func setupRefreshTokenSaver(_ refreshTokenSaver: any TangemVisa.VisaRefreshTokenSaver) {}
+
+    func refreshActivationRemoteState() async throws (TangemVisa.VisaActivationError) -> TangemVisa.VisaCardActivationRemoteState {
+        .activated
+    }
+
+    func setPINCode(_ pinCode: String) async throws (TangemVisa.VisaActivationError) {}
 }

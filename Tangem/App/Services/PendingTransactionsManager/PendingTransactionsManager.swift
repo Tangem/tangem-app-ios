@@ -12,6 +12,13 @@ import TangemExpress
 enum PendingTransactionType {
     case swap(source: ExpressPendingTransactionRecord.TokenTxInfo, destination: ExpressPendingTransactionRecord.TokenTxInfo)
     case onramp(sourceAmount: Decimal, sourceCurrencySymbol: String, destination: ExpressPendingTransactionRecord.TokenTxInfo)
+
+    var branch: ExpressBranch {
+        switch self {
+        case .swap: .swap
+        case .onramp: .onramp
+        }
+    }
 }
 
 struct PendingTransaction {

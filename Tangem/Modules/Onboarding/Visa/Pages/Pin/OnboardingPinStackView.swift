@@ -9,6 +9,7 @@ import SwiftUI
 
 struct OnboardingPinStackView: View {
     let maxDigits: Int
+    let isDisabled: Bool
 
     @Binding var pinText: String
 
@@ -57,6 +58,7 @@ struct OnboardingPinStackView: View {
             placeholder: "",
             maxCount: maxDigits
         )
+        .disabled(isDisabled)
     }
 
     private func getDigit(_ index: Int) -> String {
@@ -80,6 +82,6 @@ struct OnboardingPinStackView_Previews: PreviewProvider {
     @State static var pinText: String = ""
 
     static var previews: some View {
-        OnboardingPinStackView(maxDigits: 4, pinText: $pinText)
+        OnboardingPinStackView(maxDigits: 4, isDisabled: false, pinText: $pinText)
     }
 }

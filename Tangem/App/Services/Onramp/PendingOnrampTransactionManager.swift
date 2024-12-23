@@ -24,7 +24,7 @@ class CommonPendingOnrampTransactionsManager {
         request: { [weak self] pendingTransaction in
             await self?.request(pendingTransaction: pendingTransaction)
         },
-        shouldStopPolling: { $0.transactionRecord.transactionStatus.isTerminated },
+        shouldStopPolling: { $0.transactionRecord.transactionStatus.isTerminated(branch: .onramp) },
         hasChanges: { $0.transactionRecord.transactionStatus != $1.transactionRecord.transactionStatus },
         pollingInterval: Constants.statusUpdateTimeout
     )
@@ -94,13 +94,7 @@ class CommonPendingOnrampTransactionsManager {
         pollingService
             .resultPublisher
             .map { pendingTransactions in
-                pendingTransactions
-                    .map(\.data)
-                    .filter { transaction in
-                        // Don't show record with this status
-                        ![.created, .canceled, .paused].contains(transaction.pendingTransaction.transactionStatus)
-                    }
-                    .sorted(by: \.transactionRecord.date)
+                pendingTransactions.map(\.data).sorted(by: \.transactionRecord.date)
             }
             .withWeakCaptureOf(self)
             .sink { manager, transactions in

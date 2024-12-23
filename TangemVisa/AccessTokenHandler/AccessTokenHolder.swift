@@ -24,6 +24,14 @@ actor AccessTokenHolder {
         }
     }
 
+    init(authorizationTokens: VisaAuthorizationTokens? = nil) {
+        if let authorizationTokens,
+           let decodedTokens = try? AuthorizationTokensUtility().decodeAuthTokens(authorizationTokens) {
+            jwtTokens = decodedTokens
+        }
+        authTokens = authorizationTokens
+    }
+
     func setTokens(_ tokens: DecodedAuthorizationJWTTokens) async {
         jwtTokens = tokens
     }
