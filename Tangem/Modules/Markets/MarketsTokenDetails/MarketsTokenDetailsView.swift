@@ -62,11 +62,6 @@ struct MarketsTokenDetailsView: View {
                     ToolbarItem(placement: .principal) {
                         navigationBarTitle
                     }
-
-                    // FIXME: hack to fix centering of principal toolbar item
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Spacer().frame(width: 24)
-                    }
                 })
         } else {
             rootView

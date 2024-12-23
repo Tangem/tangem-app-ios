@@ -34,24 +34,36 @@ struct MarketsNavigationBarTitle: View {
         VStack(spacing: 0) {
             Text(tokenName)
                 .style(Fonts.Bold.body, color: Colors.Text.primary1)
+                .fixedSize(horizontal: false, vertical: true)
                 .lineLimit(1)
                 .multilineTextAlignment(.center)
+                .minimumScaleFactor(0.6)
                 .animation(animation, value: state.titleOffset)
 
-            ZStack {
-                Spacer()
+            if let price {
+                priceText(price)
+                    .opacity(0)
                     .frame(height: state.titleOffset)
                     .animation(animation, value: state.titleOffset)
-                if let price, case .visible(let opacity) = state.priceVisibility {
-                    Text(price)
-                        .style(Fonts.Bold.caption1, color: Colors.Text.tertiary)
-                        .lineLimit(1)
-                        .multilineTextAlignment(.center)
-                        .opacity(opacity)
-                        .animation(.default, value: state.priceVisibility)
-                }
+                    .overlay {
+                        if case .visible(let opacity) = state.priceVisibility {
+                            priceText(price)
+                                .opacity(opacity)
+                                .animation(.default, value: state.priceVisibility)
+                        }
+                    }
             }
         }
+    }
+
+    @ViewBuilder
+    private func priceText(_ text: String) -> some View {
+        Text(text)
+            .style(Fonts.Bold.caption1, color: Colors.Text.tertiary)
+            .fixedSize(horizontal: false, vertical: true)
+            .lineLimit(1)
+            .multilineTextAlignment(.center)
+            .minimumScaleFactor(0.6)
     }
 
     private var animation: Animation {
