@@ -9,13 +9,8 @@
 import SwiftUI
 
 struct MarketsNavigationBarTitle: View {
-    enum PriceVisibility: Equatable {
-        case hidden
-        case visible(opacity: CGFloat)
-    }
-
     struct State: Equatable {
-        let priceVisibility: PriceVisibility
+        let priceOpacity: CGFloat?
         let titleOffset: CGFloat
     }
 
@@ -41,22 +36,25 @@ struct MarketsNavigationBarTitle: View {
                 .animation(animation, value: state.titleOffset)
 
             if let price {
-                priceText(price)
-                    .opacity(0)
-                    .frame(height: state.titleOffset)
-                    .animation(animation, value: state.titleOffset)
+                pricePlaceholder(price)
                     .overlay {
-                        if case .visible(let opacity) = state.priceVisibility {
+                        if let opacity = state.priceOpacity {
                             priceText(price)
                                 .opacity(opacity)
-                                .animation(.default, value: state.priceVisibility)
+                                .animation(.default, value: state.priceOpacity)
                         }
                     }
             }
         }
     }
 
-    @ViewBuilder
+    private func pricePlaceholder(_ text: String) -> some View {
+        priceText(text)
+            .opacity(0)
+            .frame(height: state.titleOffset)
+            .animation(animation, value: state.titleOffset)
+    }
+
     private func priceText(_ text: String) -> some View {
         Text(text)
             .style(Fonts.Bold.caption1, color: Colors.Text.tertiary)

@@ -8,47 +8,47 @@
 
 import SwiftUI
 
-extension ScrollViewOffsetMapper where T == MarketsNavigationBarTitle.State {
+extension ScrollViewOffsetHandler where T == MarketsNavigationBarTitle.State {
     static func marketTokenDetails(initialState: MarketsNavigationBarTitle.State, labelOffset: CGFloat) -> Self {
         self.init(initialState: initialState) { contentOffset in
-            let startAppearingOffset = labelOffset + Constants.additionalOffset
+            let startAppearingOffset = labelOffset + MarketsTokenDetailsConstants.additionalOffset
 
             let titleOffset: CGFloat
 
             if contentOffset.y > startAppearingOffset {
                 titleOffset = clamp(
-                    (contentOffset.y - startAppearingOffset) / Constants.moveSpeedRatio,
+                    (contentOffset.y - startAppearingOffset) / MarketsTokenDetailsConstants.moveSpeedRatio,
                     min: 0.0,
-                    max: Constants.maxTitleOffset
+                    max: MarketsTokenDetailsConstants.maxTitleOffset
                 )
             } else {
                 titleOffset = 0
             }
 
-            guard titleOffset > Constants.minPriceDisplayOffset else {
+            guard titleOffset > MarketsTokenDetailsConstants.minPriceDisplayOffset else {
                 return MarketsNavigationBarTitle.State(
-                    priceVisibility: .hidden,
+                    priceOpacity: nil,
                     titleOffset: titleOffset
                 )
             }
 
-            guard titleOffset <= Constants.maxTitleOffset else {
+            guard titleOffset <= MarketsTokenDetailsConstants.maxTitleOffset else {
                 return MarketsNavigationBarTitle.State(
-                    priceVisibility: .hidden,
-                    titleOffset: Constants.maxTitleOffset
+                    priceOpacity: nil,
+                    titleOffset: MarketsTokenDetailsConstants.maxTitleOffset
                 )
             }
 
-            let priceOpacity = (titleOffset - Constants.minPriceDisplayOffset) / (Constants.maxTitleOffset - Constants.minPriceDisplayOffset)
+            let priceOpacity = (titleOffset - MarketsTokenDetailsConstants.minPriceDisplayOffset) / (MarketsTokenDetailsConstants.maxTitleOffset - MarketsTokenDetailsConstants.minPriceDisplayOffset)
 
             return MarketsNavigationBarTitle.State(
-                priceVisibility: .visible(opacity: priceOpacity),
+                priceOpacity: priceOpacity,
                 titleOffset: titleOffset
             )
         }
     }
 
-    enum Constants {
+    enum MarketsTokenDetailsConstants {
         static let maxTitleOffset: CGFloat = 16
         static let additionalOffset: CGFloat = 12
         static let moveSpeedRatio: CGFloat = 2 // resulting title label offset change speed is twice as slow as contentOffset

@@ -18,9 +18,9 @@ struct MarketsTokenDetailsView: View {
     @State private var headerHeight: CGFloat = .zero
     @State private var isListContentObscured = false
 
-    @StateObject private var scrollState = ScrollViewOffsetMapper.marketTokenDetails(
-        initialState: MarketsNavigationBarTitle.State(priceVisibility: .hidden, titleOffset: 0),
-        labelOffset: Constants.scrollViewContentTopInset + 16 // spacing inside ScrollView -> VStack
+    @StateObject private var scrollState = ScrollViewOffsetHandler.marketTokenDetails(
+        initialState: MarketsNavigationBarTitle.State(priceOpacity: nil, titleOffset: 0),
+        labelOffset: Constants.scrollViewContentTopInset + Constants.scrollViewVerticalPadding
     )
 
     private var isDarkColorScheme: Bool { colorScheme == .dark }
@@ -101,14 +101,19 @@ struct MarketsTokenDetailsView: View {
         MarketsNavigationBarTitle(
             tokenName: viewModel.tokenName,
             price: viewModel.price,
-            state: scrollState.state
+            state: viewModel.overlayContentProgress > 0
+                ? scrollState.state
+                : MarketsNavigationBarTitle.State(
+                    priceOpacity: 1,
+                    titleOffset: ScrollViewOffsetHandler.MarketsTokenDetailsConstants.maxTitleOffset
+                )
         )
     }
 
     @ViewBuilder
     private var scrollView: some View {
         ScrollView(showsIndicators: false) {
-            VStack(alignment: .center, spacing: 16) {
+            VStack(alignment: .center, spacing: Constants.scrollViewVerticalPadding) {
                 // Using plain old overlay + dummy `Color.clear` spacer in the scroll view due to the buggy
                 // `safeAreaInset(edge:alignment:spacing:content:)` iOS 15+ API which has both layout and touch-handling issues
                 Color.clear
@@ -344,6 +349,7 @@ private extension MarketsTokenDetailsView {
     enum Constants {
         static let chartHeight: CGFloat = 200.0
         static let scrollViewContentTopInset = 14.0
+        static let scrollViewVerticalPadding = 16.0
         static let blockHorizontalPadding: CGFloat = 16.0
         static let priceLabelSizeMeasureText = "1234.0"
     }

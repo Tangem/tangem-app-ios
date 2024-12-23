@@ -1,5 +1,5 @@
 //
-//  ScrollViewOffsetMapper.swift
+//  ScrollViewOffsetHandler.swift
 //  TangemApp
 //
 //  Created by Dmitry Fedorov on 05.12.2024.
@@ -9,7 +9,7 @@
 import SwiftUI
 import Combine
 
-final class ScrollViewOffsetMapper<T: Equatable>: ObservableObject {
+final class ScrollViewOffsetHandler<T: Equatable>: ObservableObject {
     @Published private(set) var state: T
 
     var contentOffsetSubject: some Subject<CGPoint, Never> { _contentOffsetSubject }

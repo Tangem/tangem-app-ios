@@ -11,7 +11,7 @@ import SwiftUI
 struct TokenDetailsView: View {
     @ObservedObject var viewModel: TokenDetailsViewModel
 
-    @StateObject private var scrollState = ScrollViewOffsetMapper.tokenDetails(
+    @StateObject private var scrollState = ScrollViewOffsetHandler.tokenDetails(
         tokenIconSizeSettings: Constants.tokenIconSizeSettings,
         headerTopPadding: Constants.headerTopPadding
     )

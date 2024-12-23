@@ -10,7 +10,7 @@ import Foundation
 import Combine
 import CombineExt
 
-extension ScrollViewOffsetMapper where T == Double {
+extension ScrollViewOffsetHandler where T == Double {
     static func tokenDetails(tokenIconSizeSettings: IconViewSizeSettings, headerTopPadding: CGFloat) -> Self {
         self.init(initialState: .zero) { contentOffset in
             let iconHeight = tokenIconSizeSettings.iconSize.height
