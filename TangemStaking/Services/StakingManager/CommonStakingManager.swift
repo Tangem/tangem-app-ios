@@ -195,7 +195,12 @@ private extension CommonStakingManager {
 
         processingActions.forEach { action in
             switch action.type {
-            case .stake, .vote, .voteLocked:
+            case .voteLocked:
+                if let lockedBalanceIndex = balanceIndexByType(balances: balances, action: action, type: .locked) {
+                    balances.remove(at: lockedBalanceIndex)
+                }
+                fallthrough
+            case .stake, .vote:
                 balances.append(mapToStakingBalance(action: action, yield: yield, balanceType: .active))
             case .withdraw:
                 modifyBalancesByStatus(
