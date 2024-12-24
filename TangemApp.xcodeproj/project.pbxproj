@@ -25810,7 +25810,7 @@
 			repositoryURL = "https://github.com/Tangem/tangem-sdk-ios.git";
 			requirement = {
 				kind = revision;
-				revision = f09ed00d81556183dc6265d5a82e836768341646;
+				revision = 1e78d5768e887d8ec514d98cabfde9bfdc068146;
 			};
 		};
 		B68E1F882CBC44910043E598 /* XCRemoteSwiftPackageReference "hedera-sdk-swift" */ = {
