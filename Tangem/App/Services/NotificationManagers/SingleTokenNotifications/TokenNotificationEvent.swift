@@ -72,7 +72,7 @@ extension TokenNotificationEvent: NotificationEvent {
         case .maticMigration:
             return .string(Localization.warningMaticMigrationTitle)
         case .kaspaTokensBeta:
-            return .string("")
+            return .string(Localization.betaModeWarningTitle)
         }
     }
 
@@ -119,7 +119,7 @@ extension TokenNotificationEvent: NotificationEvent {
         case .maticMigration:
             return Localization.warningMaticMigrationMessage
         case .kaspaTokensBeta:
-            return nil
+            return Localization.betaModeWarningMessage
         }
     }
 
