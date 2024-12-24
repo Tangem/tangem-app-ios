@@ -540,7 +540,7 @@ extension Error {
             case .underlying(let underlyingMoyaError, _):
                 return marketsErrorType(forUnderlyingMoyaError: underlyingMoyaError)
             default:
-                return .marketsErrorTypeNetwork
+                return .unknown
             }
         case _ as MarketsTokenHistoryChartMapper.ParsingError:
             return .custom
