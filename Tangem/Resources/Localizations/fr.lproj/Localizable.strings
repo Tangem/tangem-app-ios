@@ -55,6 +55,8 @@
 "balance_hidden_do_not_show_button" = "Ne plus afficher";
 "balance_hidden_got_it_button" = "Compris";
 "balance_hidden_title" = "Les soldes sont masqués";
+"beta_mode_warning_message" = "According to the blockchain developers, Kaspa tokens are currently in beta. Stay tuned for updates!";
+"beta_mode_warning_title" = "Beta Mode";
 "biometry_touch_id_reason" = "Touch ID est utilisé pour enregistrer vos cartes dans l'application";
 "button_start_backup_process" = "Démarrer le processus de sauvegarde";
 "buy_token_description" = "Utilisez une carte bancaire ou d'autres moyens de paiement";
@@ -555,7 +557,7 @@
 "onboarding_wallet_info_title_second" = "Cartes identiques";
 "onboarding_wallet_info_title_third" = "Code d'accès";
 "onramp_avaiable_with_payment_methods" = "Disponible avec %@";
-"onramp_choose_provider_title_hint" = "Buying crypto in Tangem is powered by third-party providers on their terms.";
+"onramp_choose_provider_title_hint" = "L'achat de crypto-monnaies sur Tangem est assuré par des fournisseurs tiers selon leurs conditions.";
 "onramp_country_search" = "Recherche par pays";
 "onramp_country_unavailable" = "Indisponible";
 "onramp_currency_other" = "Autres devises";
