@@ -533,17 +533,15 @@ extension Error {
 
     private func marketsErrorType(for error: Error) -> Analytics.ParameterValue {
         switch self {
-        case let moyaError as MoyaError:
-            switch moyaError {
-            case .statusCode:
-                return .marketsErrorTypeHTTP
-            case .underlying(let underlyingMoyaError, _):
-                return marketsErrorType(forUnderlyingMoyaError: underlyingMoyaError)
-            default:
-                return .unknown
-            }
         case _ as MarketsTokenHistoryChartMapper.ParsingError:
             return .custom
+        case let moyaError as MoyaError where moyaError.isStatusCodeError:
+            return .marketsErrorTypeHTTP
+        case let moyaError as MoyaError:
+            guard let underlyingError = moyaError.underlyingError else {
+                fallthrough
+            }
+            return marketsErrorType(forUnderlyingMoyaError: underlyingError)
         default:
             return .unknown
         }
@@ -557,5 +555,21 @@ extension Error {
         }
 
         return .marketsErrorTypeNetwork
+    }
+}
+
+private extension MoyaError {
+    var underlyingError: Error? {
+        switch self {
+        case .underlying(let error, _): error
+        default: nil
+        }
+    }
+
+    var isStatusCodeError: Bool {
+        switch self {
+        case .statusCode: true
+        default: false
+        }
     }
 }
