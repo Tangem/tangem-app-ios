@@ -269,7 +269,8 @@ final class SingleTokenNotificationManager {
             return .incompleteKaspaTokenTransaction(
                 revealTransaction: .init(
                     formattedValue: configurationData.formattedValue,
-                    currencySymbol: configurationData.currencySymbol
+                    currencySymbol: configurationData.currencySymbol,
+                    blockchainName: blockchain.displayName
                 ) { [weak walletModel] in
                     walletModel?.assetRequirementsManager?.discardRequirements(for: asset)
                 }
@@ -328,6 +329,8 @@ extension SingleTokenNotificationManager: NotificationManager {
         if let event = notification.settings.event as? TokenNotificationEvent {
             switch event {
             case .hasUnfulfilledRequirements(.incompleteKaspaTokenTransaction(let revealTransaction)):
+                Analytics.log(event: .tokenButtonRevealCancel, params: event.analyticsParams)
+                
                 interactionDelegate?.confirmDiscardingUnfulfilledAssetRequirements(
                     with: .incompleteKaspaTokenTransaction(revealTransaction: revealTransaction),
                     confirmationAction: { [weak self] in
