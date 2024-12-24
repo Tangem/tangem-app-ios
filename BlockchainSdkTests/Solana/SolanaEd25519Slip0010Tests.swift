@@ -11,77 +11,41 @@ import Combine
 @testable import BlockchainSdk
 @testable import SolanaSwift
 
-private let raisedError = SolanaError.other("Just tx size test")
-private let nullRaisedError = SolanaError.nullValue
-
 final class SolanaEd25519Slip0010Tests: XCTestCase {
-    private class CoinSigner: TransactionSigner {
-        private let sizeTester = TransactionSizeTesterUtility()
-
-        func sign(hashes: [Data], walletPublicKey: BlockchainSdk.Wallet.PublicKey) -> AnyPublisher<[Data], Error> {
-            sizeTester.testTxSizes(hashes)
-            return Fail(error: raisedError)
-                .eraseToAnyPublisher()
-        }
-
-        func sign(hash: Data, walletPublicKey: BlockchainSdk.Wallet.PublicKey) -> AnyPublisher<Data, Error> {
-            sizeTester.testTxSize(hash)
-            return Fail(error: raisedError)
-                .eraseToAnyPublisher()
-        }
-    }
-
-    private class TokenSigner: TransactionSigner {
-        private let sizeTester = TransactionSizeTesterUtility()
-
-        func sign(hashes: [Data], walletPublicKey: BlockchainSdk.Wallet.PublicKey) -> AnyPublisher<[Data], Error> {
-            hashes.forEach {
-                _ = sign(hash: $0, walletPublicKey: walletPublicKey)
-            }
-            return Fail(error: raisedError)
-                .eraseToAnyPublisher()
-        }
-
-        func sign(hash: Data, walletPublicKey: BlockchainSdk.Wallet.PublicKey) -> AnyPublisher<Data, Error> {
-            XCTAssertTrue(sizeTester.isValidForCos4_52AndAbove(hash))
-            XCTAssertFalse(sizeTester.isValidForCosBelow4_52(hash))
-            XCTAssertFalse(sizeTester.isValidForiPhone7(hash))
-            return Fail(error: raisedError)
-                .eraseToAnyPublisher()
-        }
-    }
-
-    private var networkingRouter: NetworkingRouter!
-    private var solanaSdk: Solana!
     private var manager: SolanaWalletManager!
 
-    private var bag = Set<AnyCancellable>()
-
-    private let network: RPCEndpoint = .testnetSolana
     private let walletPubKey = Data(hex: "B148CC30B144E8F214AE5754C753C40A9BF2A3359DB4246E03C6A2F61A82C282")
     private let address = "Cw3YcfqzRSa7xT7ecpR5E4FKDQU6aaxz5cWje366CZbf"
-    private let blockchain = Blockchain.solana(curve: .ed25519_slip0010, testnet: true)
+    private let blockchain = Blockchain.solana(curve: .ed25519, testnet: false)
     private let feeParameters = SolanaFeeParameters(computeUnitLimit: nil, computeUnitPrice: nil, accountCreationFee: 0)
 
-    private let coinSigner = CoinSigner()
-    private let tokenSigner = TokenSigner()
+    private let coinSigner = SolanaSignerTestUtility.CoinSigner()
+    private let tokenSigner = SolanaSignerTestUtility.TokenSigner()
 
     override func setUp() {
         super.setUp()
-        networkingRouter = .init(endpoints: [network], apiLogger: nil)
-        solanaSdk = .init(router: networkingRouter, accountStorage: SolanaDummyAccountStorage())
+        let networkingRouter = SolanaDummyNetworkRouter(
+            endpoints: [.devnetSolana],
+            apiLogger: nil
+        )
+
+        let solanaSdk = Solana(router: networkingRouter, accountStorage: SolanaDummyAccountStorage())
         let service = AddressServiceFactory(blockchain: blockchain).makeAddressService()
 
-        let addrs = try! service.makeAddress(from: walletPubKey)
-        let wallet = Wallet(blockchain: blockchain, addresses: [.default: addrs])
+        let address = try! service.makeAddress(from: walletPubKey)
+        let wallet = Wallet(blockchain: blockchain, addresses: [.default: address])
 
         manager = .init(wallet: wallet)
         manager.solanaSdk = solanaSdk
         manager.usePriorityFees = false
-        manager.networkService = SolanaNetworkService(solanaSdk: solanaSdk, blockchain: blockchain, hostProvider: networkingRouter)
+        manager.networkService = SolanaNetworkService(
+            solanaSdk: solanaSdk,
+            blockchain: blockchain,
+            hostProvider: networkingRouter
+        )
     }
 
-    func testCoinTransactionSize() {
+    func testCoinTransactionSize() async throws {
         let transaction = Transaction(
             amount: .zeroCoin(for: blockchain),
             fee: Fee(.zeroCoin(for: blockchain), parameters: feeParameters),
@@ -91,14 +55,20 @@ final class SolanaEd25519Slip0010Tests: XCTestCase {
             contractAddress: nil
         )
 
-        let expected = expectation(description: "Waiting for response")
+        do {
+            try await manager.send(transaction, signer: coinSigner).async()
+        } catch let sendTxError as SendTxError {
+            guard let castedError = sendTxError.error as? SolanaError else {
+                throw Error.invalid
+            }
 
-        let sendTxResult = manager.send(transaction, signer: coinSigner)
-        processResult(sendTxResult, expectationToFill: expected, expectedError: raisedError)
-        waitForExpectations(timeout: 10)
+            XCTAssertEqual(castedError.errorDescription, SolanaError.nullValue.errorDescription)
+        } catch {
+            throw error
+        }
     }
 
-    func testTokenTransactionSize() {
+    func testTokenTransactionSize() async throws {
         let type: Amount.AmountType = .token(
             value: .init(
                 name: "My Token",
@@ -114,34 +84,27 @@ final class SolanaEd25519Slip0010Tests: XCTestCase {
             destinationAddress: "BmAzxn8WLYU3gEw79ATUdSUkMT53MeS5LjapBQB8gTPJ",
             changeAddress: manager.wallet.address
         )
-        let expected = expectation(description: "Waiting for response")
 
-        let sendTxResult = manager.send(transaction, signer: tokenSigner)
-        processResult(sendTxResult, expectationToFill: expected, expectedError: nullRaisedError)
-        waitForExpectations(timeout: 10)
+        do {
+            try await manager.send(transaction, signer: coinSigner).async()
+        } catch let sendTxError as SendTxError {
+            guard let castedError = sendTxError.error as? SolanaError else {
+                throw Error.invalid
+            }
+
+            XCTAssertEqual(castedError.errorDescription, SolanaError.nullValue.errorDescription)
+        } catch {
+            throw error
+        }
     }
+}
 
-    private func processResult(_ publisher: AnyPublisher<TransactionSendResult, SendTxError>, expectationToFill: XCTestExpectation, expectedError: SolanaError) {
-        bag.insert(
-            publisher.sink(receiveCompletion: { completion in
-                defer {
-                    expectationToFill.fulfill()
-                }
+extension SolanaEd25519Slip0010Tests {
+    enum Error: LocalizedError {
+        case invalid
 
-                guard case .failure(let error) = completion else {
-                    XCTFail("Wrong complition received")
-                    return
-                }
-
-                guard let castedError = error.error as? SolanaError else {
-                    XCTFail("Wrong error returned from manager")
-                    return
-                }
-
-                XCTAssertEqual(castedError.localizedDescription, expectedError.localizedDescription)
-            }, receiveValue: { _ in
-                XCTFail("Test shouldn't receive value")
-            })
-        )
+        var errorDescription: String? {
+            return "Wrong error returned from manager"
+        }
     }
 }

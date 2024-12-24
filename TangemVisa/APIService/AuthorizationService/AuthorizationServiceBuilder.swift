@@ -11,11 +11,11 @@ import Moya
 struct AuthorizationServiceBuilder {
     func build(urlSessionConfiguration: URLSessionConfiguration, logger: VisaLogger) -> CommonVisaAuthorizationService {
         let logger = InternalLogger(logger: logger)
-        let provider = MoyaProvider<AuthorizationAPITarget>(session: Session(configuration: urlSessionConfiguration))
 
-        return CommonVisaAuthorizationService(
-            provider: provider,
-            logger: logger
-        )
+        return CommonVisaAuthorizationService(apiService: .init(
+            provider: MoyaProviderBuilder().buildProvider(configuration: urlSessionConfiguration),
+            logger: logger,
+            decoder: JSONDecoderFactory().makePayAPIDecoder()
+        ))
     }
 }

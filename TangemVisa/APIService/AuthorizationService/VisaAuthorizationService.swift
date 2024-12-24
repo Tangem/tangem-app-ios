@@ -10,8 +10,14 @@ import Foundation
 import Moya
 
 public protocol VisaAuthorizationService {
-    func getAuthorizationChallenge(cardId: String, cardPublicKey: String) async throws -> VisaAuthChallengeResponse
-    func getAccessTokens(signedChallenge: String, salt: String, sessionId: String) async throws -> VisaAuthorizationTokens
+    func getCardAuthorizationChallenge(cardId: String, cardPublicKey: String) async throws -> VisaAuthChallengeResponse
+    func getWalletAuthorizationChallenge(cardId: String, walletPublicKey: String) async throws -> VisaAuthChallengeResponse
+    func getAccessTokensForCardAuth(
+        signedChallenge: String,
+        salt: String,
+        sessionId: String
+    ) async throws -> VisaAuthorizationTokens
+    func getAccessTokensForWalletAuth(signedChallenge: String, sessionId: String) async throws -> VisaAuthorizationTokens?
 }
 
 protocol AccessTokenRefreshService {
@@ -19,30 +25,40 @@ protocol AccessTokenRefreshService {
 }
 
 class CommonVisaAuthorizationService {
-    private let apiService: APIService<AuthorizationAPITarget, VisaAuthorizationAPIError>
+    typealias AuthorizationAPIService = APIService<AuthorizationAPITarget, VisaAuthorizationAPIError>
+    private let apiService: AuthorizationAPIService
 
-    init(
-        provider: MoyaProvider<AuthorizationAPITarget>,
-        logger: InternalLogger
-    ) {
-        apiService = .init(
-            provider: provider,
-            logger: logger,
-            decoder: JSONDecoderFactory().makePayAPIDecoder()
-        )
+    init(apiService: AuthorizationAPIService) {
+        self.apiService = apiService
     }
 }
 
 extension CommonVisaAuthorizationService: VisaAuthorizationService {
-    func getAuthorizationChallenge(cardId: String, cardPublicKey: String) async throws -> VisaAuthChallengeResponse {
+    func getCardAuthorizationChallenge(cardId: String, cardPublicKey: String) async throws -> VisaAuthChallengeResponse {
         try await apiService.request(.init(
             target: .generateNonceByCID(cid: cardId, cardPublicKey: cardPublicKey)
         ))
     }
 
-    func getAccessTokens(signedChallenge: String, salt: String, sessionId: String) async throws -> VisaAuthorizationTokens {
+    func getWalletAuthorizationChallenge(cardId: String, walletPublicKey: String) async throws -> VisaAuthChallengeResponse {
         try await apiService.request(.init(
-            target: .getAccessToken(signature: signedChallenge, salt: salt, sessionId: sessionId)
+            target: .generateNonceForWallet(cid: cardId, walletPublicKey: walletPublicKey)
+        ))
+    }
+
+    func getAccessTokensForCardAuth(
+        signedChallenge: String,
+        salt: String,
+        sessionId: String
+    ) async throws -> VisaAuthorizationTokens {
+        try await apiService.request(.init(
+            target: .getAccessTokenForCardAuth(signature: signedChallenge, salt: salt, sessionId: sessionId)
+        ))
+    }
+
+    func getAccessTokensForWalletAuth(signedChallenge: String, sessionId: String) async throws -> VisaAuthorizationTokens? {
+        try await apiService.request(.init(
+            target: .getAccessTokenForWalletAuth(signature: signedChallenge, sessionId: sessionId)
         ))
     }
 }

@@ -68,14 +68,16 @@ struct OnrampAmountView: View {
                 .minTextScale(SendAmountStep.Constants.amountMinTextScale)
                 .matchedGeometryEffect(id: namespace.names.amountCryptoText, in: namespace.id)
                 .skeletonable(isShown: viewModel.isLoading, width: 100, height: 28)
+                .disabled(viewModel.isLoading)
 
             LoadableTextView(
                 state: viewModel.bottomInfoText.state,
                 font: Fonts.Regular.footnote,
                 textColor: viewModel.bottomInfoText.isError ? Colors.Text.warning : Colors.Text.tertiary,
-                loaderSize: CGSize(width: 80, height: 13)
+                loaderSize: CGSize(width: 80, height: 13),
+                lineLimit: 2
             )
-            .lineLimit(2)
+            .multilineTextAlignment(.center)
             .matchedGeometryEffect(id: namespace.names.amountFiatText, in: namespace.id)
         }
     }

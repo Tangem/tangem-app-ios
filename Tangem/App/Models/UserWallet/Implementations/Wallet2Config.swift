@@ -214,11 +214,11 @@ extension Wallet2Config: UserWalletConfig {
         // Kaspa reseller
         case "AF31":
             return cardsCount == 2 ? Assets.Cards.kaspaResellerDouble : Assets.Cards.kaspaResellerTriple
-        // Lemon, Aqua, Grapefruit
-        case "AF40", "AF41", "AF42":
+        // Vivid: Lemon, Aqua, Grapefruit
+        case "AF40", "AF41", "AF42", "AF75", "AF76", "AF77":
             return Assets.Cards.lemonAquaGrapefruit
         // Peach, Air, Glass
-        case "AF43", "AF44", "AF45":
+        case "AF43", "AF44", "AF45", "AF78", "AF79", "AF80":
             return Assets.Cards.peachAirGlass
         // Kaspa Mint
         case "AF73":

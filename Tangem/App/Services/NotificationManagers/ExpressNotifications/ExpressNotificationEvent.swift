@@ -40,7 +40,7 @@ enum ExpressNotificationEvent: Hashable {
 }
 
 extension ExpressNotificationEvent: NotificationEvent {
-    var title: NotificationView.Title {
+    var title: NotificationView.Title? {
         switch self {
         case .permissionNeeded:
             return .string(Localization.expressProviderPermissionNeeded)

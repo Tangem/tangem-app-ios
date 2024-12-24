@@ -12,7 +12,7 @@ import Combine
 final class EthereumTransactionHistoryProvider<Mapper> where
     Mapper: TransactionHistoryMapper,
     Mapper.Response == BlockBookAddressResponse {
-    private let blockBookProvider: BlockBookUtxoProvider
+    private let blockBookProvider: BlockBookUTXOProvider
     private let mapper: Mapper
 
     private var page: TransactionHistoryIndexPage?
@@ -20,7 +20,7 @@ final class EthereumTransactionHistoryProvider<Mapper> where
     private var totalRecordsCount: Int = 0
 
     init(
-        blockBookProvider: BlockBookUtxoProvider,
+        blockBookProvider: BlockBookUTXOProvider,
         mapper: Mapper
     ) {
         self.blockBookProvider = blockBookProvider

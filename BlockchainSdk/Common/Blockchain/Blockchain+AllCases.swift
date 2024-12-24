@@ -91,6 +91,7 @@ public extension Blockchain {
         case .chiliz: break
         case .xodex: break
         case .clore: break
+        case .fact0rn: break
             // READ BELOW:
             //
             // Did you get a compilation error here? If so, add your new blockchain to the array below
@@ -175,6 +176,7 @@ public extension Blockchain {
             .chiliz(testnet: false),
             .xodex,
             .clore,
+            .fact0rn,
         ]
     }
 }

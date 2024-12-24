@@ -22,11 +22,13 @@ class CommonAppLockController {
 
 extension CommonAppLockController: AppLockController {
     var isLocked: Bool {
-        userWalletRepository.isLocked || minimizedAppTimer.elapsed
+        minimizedAppTimer.elapsed
     }
 
     func sceneDidEnterBackground() {
-        minimizedAppTimer.start()
+        if !userWalletRepository.isLocked {
+            minimizedAppTimer.start()
+        }
     }
 
     func sceneWillEnterForeground() {

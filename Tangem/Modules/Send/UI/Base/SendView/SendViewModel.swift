@@ -37,6 +37,7 @@ final class SendViewModel: ObservableObject {
 
     var title: String? { step.title }
     var subtitle: String? { step.subtitle }
+    var shouldShowBottomOverlay: Bool { step.shouldShowBottomOverlay }
 
     var closeButtonColor: Color {
         closeButtonDisabled ? Colors.Text.disabled : Colors.Text.primary1
@@ -103,9 +104,7 @@ final class SendViewModel: ObservableObject {
         }
     }
 
-    func onDisappear() {
-        interactor.viewDidDisappear()
-    }
+    func onDisappear() {}
 
     func userDidTapActionButton() {
         switch mainButtonType {
@@ -393,8 +392,8 @@ extension SendViewModel: OnrampModelRoutable {
         }
     }
 
-    func openWebView(url: URL, success: @escaping () -> Void) {
-        coordinator?.openOnrampWebView(url: url, success: success)
+    func openOnrampWebView(url: URL, onDismiss: @escaping () -> Void, onSuccess: @escaping (URL) -> Void) {
+        coordinator?.openOnrampWebView(url: url, onDismiss: onDismiss, onSuccess: onSuccess)
     }
 
     func openFinishStep() {

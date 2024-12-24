@@ -3,6 +3,7 @@ require 'base64'
 default_platform(:ios)
 
 BUILD_PATH = "./fastlane/builds/"
+ANALYZE_ARCHIVE_UTIL_PATH = "../private-app-config/analyze_archive.sh"
 PRODUCTION_SCHEME = "Tangem"
 BETA_SCHEME = "Tangem Beta"
 ALPHA_SCHEME = "Tangem Alpha"
@@ -14,7 +15,11 @@ before_all do |lane, options|
   lanes_to_skip_bootstrap = [
     :update_translations,
     :deploy_firebase,
+    :deploy_testflight,
+    :upload_dsyms,
     :refresh_dsyms,
+    :get_release_version_number,
+    :get_release_build_number,
   ]
 
   if lanes_to_skip_bootstrap.include?(lane)
@@ -85,14 +90,23 @@ Options:
 - build: optional build number
 - changelog: string for description archive
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+- analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
 """
 lane :release do |options|
+  UI.deprecated("Deprecated, use `Create release` Github action instead")
+
   app_id = ENV["APP_ID_PRODUCTION"]
   app_store_connect_api_key(duration: 1200, is_key_content_base64: true)
   increment_version_number(version_number: options[:version])
   increment_testflight_build_number(version: options[:version], build: options[:build])
 
-  build(scheme: PRODUCTION_SCHEME, version: options[:version], filename: PRODUCTION_SCHEME, path: BUILD_PATH)
+  build(
+    scheme: PRODUCTION_SCHEME, 
+    version: options[:version], 
+    filename: PRODUCTION_SCHEME, 
+    path: BUILD_PATH,
+    analyze_archive: options[:analyze_archive]
+  )
   upload_dsyms(app_id: app_id, filename: PRODUCTION_SCHEME)
 
   upload_testflight(
@@ -129,6 +143,7 @@ Options:
 - path: Path to binary
 - firebase_app_id: Firebase app id for incrementing the build version number and DSYM uploads
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+- analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
 """
 lane :build_Alpha do |options|
   increment_version_number(version_number: options[:version])
@@ -140,7 +155,8 @@ lane :build_Alpha do |options|
     version: options[:version],
     build: options[:build],
     filename: options[:filename],
-    path: options[:path]
+    path: options[:path],
+    analyze_archive: options[:analyze_archive]
   )
 
   upload_dsyms(app_id: options[:firebase_app_id], filename: options[:filename])
@@ -155,6 +171,7 @@ Options:
 - path: Path to binary
 - firebase_app_id: Firebase app id for incrementing the build version number and DSYM uploads
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+- analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
 """
 lane :build_Beta do |options|
   increment_version_number(version_number: options[:version])
@@ -166,36 +183,115 @@ lane :build_Beta do |options|
     version: options[:version],
     build: options[:build],
     filename: options[:filename],
-    path: options[:path]
+    path: options[:path],
+    analyze_archive: options[:analyze_archive]
   )
 
   upload_dsyms(app_id: options[:firebase_app_id], filename: options[:filename])
 end
 
 desc """
-A lane that builds a \"Tangem Alpha\" scheme and uploads the archive to Firebase for testing.
-Using enviroment: Test
-Options:
-- version: app version
-- build: optional build number
-- changelog: string for description archive
-- xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
-"""
-lane :alpha do |options|
-  UI.error("Use `Alpha - Build and Deploy` Github action instead")
-end
-
-desc """
-A lane that builds a \"Tangem Beta\" scheme and uploads the archive to Firebase for testing.
+A lane that builds a \"Tangem\" scheme and uploads the archive to TestFlight for release.
 Using enviroment: Production
 Options:
 - version: app version
 - build: optional build number
-- changelog: string for description archive
+- filename: Name of the resulting artefact (IPA file)
+- path: Path to binary
+- firebase_app_id: Firebase app id for DSYM uploads
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
+- analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
 """
-lane :beta do |options|
-  UI.error("Use `Beta - Build and Deploy` Github action instead")
+lane :build_RC do |options|
+  increment_version_number(version_number: options[:version])
+  increment_build_number(build_number: options[:build])
+
+  build(
+    export_method: "app-store",
+    scheme: PRODUCTION_SCHEME,
+    version: options[:version],
+    build: options[:build],
+    filename: options[:filename],
+    path: options[:path],
+    analyze_archive: options[:analyze_archive]
+  )
+
+  upload_dsyms(app_id: options[:firebase_app_id], filename: options[:filename])
+end
+
+desc """
+A lane that creates the build version for the release using either user input or a branch name.
+Options:
+- build_version_override: Optional build version override (user input)
+- branch_name: Source branch name
+"""
+lane :get_release_version_number do |options|
+  semver_regex_1 = /^\d+\.\d+\.\d+$/
+  semver_regex_2 = /^\d+\.\d+$/
+  build_version = ""
+  build_version_source = ""
+  build_version_override = options[:build_version_override]
+  branch_name = options[:branch_name]
+
+  if (not build_version_override.nil? and not build_version_override.empty?)
+    build_version = build_version_override
+    build_version_source = "user input"
+  elsif (not branch_name.nil? and not branch_name.empty?)
+    branch_name_components = branch_name.split("/")
+    UI.user_error!("Invalid branch name '#{branch_name}', can't process further wth the build") unless branch_name_components.length > 1
+    build_version = branch_name_components[-1]
+    build_version_source = "branch name"
+  else
+    UI.user_error!(
+      "Unable to derive the build version from either 'build_version_override' or 'branch_name' " \
+      "lane arguments, can't process further wth the build"
+    )
+  end
+
+  UI.user_error!("Invalid build version format '#{build_version}', can't process further wth the build") unless !!(
+    (build_version =~ semver_regex_1) or (build_version =~ semver_regex_2)
+  )
+
+  UI.important("Using the build version '#{build_version}' derived from the #{build_version_source} for this build")
+  sh("echo 'release_version_number=#{build_version}' >> $GITHUB_ENV")
+end
+
+desc """
+A lane that creates the build number for the release using either user input or information from App Store Connect API.
+Options:
+- build_number_override: Optional build number override (user input)
+- asc_key_id: App Store Connect API Key ID
+- asc_issuer_id: App Store Connect API Key Issuer ID
+- asc_key: App Store Connect API Key (NOT in the base64 format)
+"""
+lane :get_release_build_number do |options|
+  build_number_regex = /^\d+$/
+  build_number = ""
+  build_number_override = options[:build_number_override]
+
+  if (not build_number_override.nil? and not build_number_override.empty?)
+    build_number = build_number_override
+  else
+    app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+    api_key = app_store_connect_api_key(
+      key_id: options[:asc_key_id],
+      issuer_id: options[:asc_issuer_id],
+      key_content: options[:asc_key],
+      is_key_content_base64: false,
+      in_house: false # detecting this via ASC private key not currently supported
+    )
+    # We don't specify a specific version while querying the App Store Connect API
+    # for a build number because we use a single, global build number across all builds
+    latest_build_number = latest_testflight_build_number(api_key: api_key, app_identifier: app_identifier)
+    build_number = (latest_build_number + 1).to_s
+  end
+
+  UI.user_error!("Invalid build number '#{build_number}', can't process further wth the build") unless !!(
+    build_number =~ build_number_regex
+  )
+
+  UI.important("Using the build number '#{build_number}' derived from App Store Connect for this build")
+  sh("echo 'release_build_number=#{build_number}' >> $GITHUB_ENV")
 end
 
 desc """
@@ -273,10 +369,105 @@ lane :deploy_firebase do |options|
   sh("echo 'encoded_release_url=#{encoded_release_url}' >> $GITHUB_ENV")
 end
 
+desc """
+This lane deploy binary to TestFLight
+Options:
+- asc_key_id: App Store Connect API Key ID
+- asc_issuer_id: App Store Connect API Key Issuer ID
+- asc_key: App Store Connect API Key (NOT in the base64 format)
+- path: Path to binary
+- version: app version
+- build: build number
+- changelog: [optional] Changelog will be added to TestFlight release notes along with the last commit hash.
+"""
+lane :deploy_testflight do |options|
+  changelog = options[:changelog]
+  release_notes = ""
+
+  if (not changelog.nil? and not changelog.empty?)
+    release_notes = "#{changelog}\nGitHash: #{last_git_commit[:commit_hash]}"
+  else
+    release_notes = "GitHash: #{last_git_commit[:commit_hash]}"
+  end
+
+  # Get AppStore API Key
+  api_key = app_store_connect_api_key(
+     key_id: options[:asc_key_id],
+     issuer_id: options[:asc_issuer_id],
+     key_content: options[:asc_key],
+     is_key_content_base64: false,
+     in_house: false # detecting this via ASC private key not currently supported
+  )
+
+  # Upload binary to TestFlight
+  upload_to_testflight(
+    api_key: api_key,
+    skip_waiting_for_build_processing: true,
+    ipa: options[:path],
+    app_version: options[:version],
+    build_number: options[:build],
+    changelog: release_notes
+  )
+end
+
 private_lane :build do |options|
   clean_artifacts
-  app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+
+  if options[:analyze_archive] == true
+    build_and_analyze(
+      export_method: options[:export_method],
+      scheme: options[:scheme],
+      version: options[:version],
+      build: options[:build],
+      filename: options[:filename],
+      path: options[:path]
+    )
+  else
+    app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+    build_app(
+      project: PROJECT_NAME,
+      xcargs: "-allowProvisioningUpdates",
+      output_directory: options[:path],
+      output_name: options[:filename],
+      scheme: options[:scheme],
+      clean: true,
+      silent: false,
+      export_method: options[:export_method],
+      destination: "generic/platform=iOS",
+      export_options: {
+        distributionBundleIdentifier: app_identifier,
+        iCloudContainerEnvironment: "Production"
+      }
+    )
+  end
+end
+
+private_lane :build_and_analyze do |options|  
+  xcarchive_path = File.expand_path("../" + options[:path] + options[:filename] + ".xcarchive")
+  analyze_archive_util_path = File.expand_path("../" + ANALYZE_ARCHIVE_UTIL_PATH)
+
+  archive_app(
+    path: options[:path],
+    filename: options[:filename],
+    scheme: options[:scheme],
+    export_method: options[:export_method],
+    xcarchive_path: xcarchive_path
+  )
+      
+  sh("#{analyze_archive_util_path} '#{xcarchive_path}'")
+  
+  create_ipa(
+    path: options[:path],
+    filename: options[:filename],
+    scheme: options[:scheme],
+    export_method: options[:export_method],
+    xcarchive_path: xcarchive_path
+  )
+end
+
+private_lane :archive_app do |options|
   build_app(
+    project: PROJECT_NAME,
     xcargs: "-allowProvisioningUpdates",
     output_directory: options[:path],
     output_name: options[:filename],
@@ -284,11 +475,27 @@ private_lane :build do |options|
     clean: true,
     silent: false,
     export_method: options[:export_method],
-    destination: "generic/platform=iOS",
+    skip_codesigning: false,
+    skip_package_ipa: true,
+    archive_path: options[:xcarchive_path]
+  )
+end
+
+private_lane :create_ipa do |options|
+  build_app(
+    project: PROJECT_NAME,
+    xcargs: "-allowProvisioningUpdates",
+    output_directory: options[:path],
+    output_name: options[:filename],
+    scheme: options[:scheme],
+    export_method: options[:export_method],
+    export_team_id: CredentialsManager::AppfileConfig.try_fetch_value(:team_id),
     export_options: {
-      distributionBundleIdentifier: app_identifier,
       iCloudContainerEnvironment: "Production"
-    }
+    },
+    skip_build_archive: true,
+    skip_package_dependencies_resolution: false,
+    archive_path: options[:xcarchive_path]
   )
 end
 
@@ -304,16 +511,18 @@ private_lane :increment_firebase_build_number do |options|
     else
       latest_build_number = latest_release[:buildVersion].to_i
     end
-    increment_build_number({ build_number: latest_build_number + 1 })
+    increment_build_number(build_number: latest_build_number + 1)
   else
     increment_build_number(build_number: options[:build])
   end
 end
 
 private_lane :increment_testflight_build_number do |options|
+  UI.deprecated("Deprecated, use `Create release` Github action instead")
+
   if options[:build].nil?
     latest_build_number = latest_testflight_build_number(version: options[:version])
-    increment_build_number({ build_number: latest_build_number + 1 })
+    increment_build_number(build_number: latest_build_number + 1)
   else
     increment_build_number(build_number: options[:build])
   end
@@ -334,6 +543,8 @@ private_lane :upload_dsyms do |options|
 end
 
 private_lane :upload_testflight do |options|
+  UI.deprecated("Deprecated, use `Create release` Github action instead")
+
   filename = options[:name] + ".ipa"
   path = BUILD_PATH + filename
   release_notes = "#{options[:changelog]}\nGitHash: #{last_git_commit[:commit_hash]}"

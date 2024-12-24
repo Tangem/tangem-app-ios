@@ -18,6 +18,7 @@ class CommonTangemApiService {
     private let provider = TangemProvider<TangemApiTarget>(plugins: [
         CachePolicyPlugin(),
         TimeoutIntervalPlugin(),
+        DeviceInfoPlugin(),
         TangemNetworkLoggerPlugin(configuration: .init(
             output: TangemNetworkLoggerPlugin.tangemSdkLoggerOutput,
             logOptions: .verbose

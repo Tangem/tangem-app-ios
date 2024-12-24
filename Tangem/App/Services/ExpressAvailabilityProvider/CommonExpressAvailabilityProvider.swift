@@ -16,25 +16,26 @@ class CommonExpressAvailabilityProvider {
     fileprivate typealias CurrenciesSet = Set<ExpressCurrency>
 
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
+    @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
 
-    private let _cache: CurrentValueSubject<LoadingResult<Availability, Error>?, Never> = .init(.none)
+    private let _state: CurrentValueSubject<ExpressAvailabilityUpdateState, Never> = .init(.updating)
+    private let _cache: CurrentValueSubject<Availability, Never> = .init([:])
 
-    init() {}
+    private var loadingQueue = PassthroughSubject<QueueItem, Never>()
+    private let lock = Lock(isRecursive: false)
+    private var bag: Set<AnyCancellable> = []
+    private var apiProvider: ExpressAPIProvider?
+
+    init() {
+        bind()
+    }
 }
 
 // MARK: - ExpressAvailabilityProvider
 
 extension CommonExpressAvailabilityProvider: ExpressAvailabilityProvider {
     var expressAvailabilityUpdateState: AnyPublisher<ExpressAvailabilityUpdateState, Never> {
-        _cache
-            .compactMap { state in
-                return switch state {
-                case .loading, .none: .updating
-                case .success: .updated
-                case .failure(let error): .failed(error: error)
-                }
-            }
-            .eraseToAnyPublisher()
+        _state.eraseToAnyPublisher()
     }
 
     var availabilityDidChangePublisher: AnyPublisher<Void, Never> {
@@ -42,7 +43,7 @@ extension CommonExpressAvailabilityProvider: ExpressAvailabilityProvider {
     }
 
     func swapState(for tokenItem: TokenItem) -> TokenItemExpressState {
-        _cache.value?.value?[tokenItem.expressCurrency]?.swap ?? .notLoaded
+        _cache.value[tokenItem.expressCurrency]?.swap ?? .notLoaded
     }
 
     func canSwap(tokenItem: TokenItem) -> Bool {
@@ -50,7 +51,7 @@ extension CommonExpressAvailabilityProvider: ExpressAvailabilityProvider {
     }
 
     func onrampState(for tokenItem: TokenItem) -> TokenItemExpressState {
-        _cache.value?.value?[tokenItem.expressCurrency]?.onramp ?? .notLoaded
+        _cache.value[tokenItem.expressCurrency]?.onramp ?? .notLoaded
     }
 
     func canOnramp(tokenItem: TokenItem) -> Bool {
@@ -58,25 +59,48 @@ extension CommonExpressAvailabilityProvider: ExpressAvailabilityProvider {
     }
 
     func updateExpressAvailability(for items: [TokenItem], forceReload: Bool, userWalletId: String) {
+        _state.send(.updating)
+        makeApiProviderIfNeeded(userWalletId: userWalletId)
         let currencies = prepareCurrenciesSet(items: items, forceReload: forceReload)
-        _cache.send(.loading)
-
-        TangemFoundation.runTask(in: self) { provider in
-            do {
-                let apiProvider = ExpressAPIProviderFactory().makeExpressAPIProvider(userId: userWalletId, logger: AppLog.shared)
-                let availabilityStates = try await provider.loadAvailabilityStates(currencies: currencies, provider: apiProvider)
-                provider.save(states: availabilityStates)
-            } catch {
-                provider._cache.send(.failure(error))
-            }
-        }
+        let item = QueueItem(currencies: currencies)
+        loadingQueue.send(item)
     }
 }
 
 // MARK: - Private
 
 private extension CommonExpressAvailabilityProvider {
-    func loadAvailabilityStates(currencies: CurrenciesSet, provider: ExpressAPIProvider) async throws -> Availability {
+    func bind() {
+        loadingQueue
+            .collect(debouncedTime: 0.5, scheduler: DispatchQueue.global())
+            .withWeakCaptureOf(self)
+            .sink(receiveValue: { provider, queueItems in
+
+                let allCurrencies: CurrenciesSet = queueItems.reduce(into: []) { result, queueItem in
+                    let joined = result.union(queueItem.currencies)
+                    result = joined
+                }
+
+                provider.loadAndSave(currencies: allCurrencies)
+            })
+            .store(in: &bag)
+    }
+
+    func loadAndSave(currencies: CurrenciesSet) {
+        TangemFoundation.runTask(in: self) { provider in
+            do {
+                let availabilityStates = try await provider.loadAvailabilityStates(currencies: currencies)
+                provider.save(states: availabilityStates)
+                provider._state.send(.updated)
+            } catch {
+                AppLog.shared.error("Failed to load availability states: \(error)")
+                provider._state.send(.failed(error: error))
+            }
+        }
+    }
+
+    func loadAvailabilityStates(currencies: CurrenciesSet) async throws -> Availability {
+        let provider = try getApiProvider()
         let assets = try await provider.assets(currencies: currencies)
 
         return assets.reduce(into: [:]) { result, asset in
@@ -87,20 +111,16 @@ private extension CommonExpressAvailabilityProvider {
         }
     }
 
-    func buildFailedStates(currencies: CurrenciesSet, state: TokenItemExpressState) -> Availability {
-        currencies.reduce(into: [:]) { result, item in
-            result[item] = .init(swap: state, onramp: state)
-        }
-    }
-
     func save(states: Availability) {
-        var items = _cache.value?.value ?? [:]
+        lock {
+            var items = _cache.value
 
-        states.forEach { key, value in
-            items.updateValue(value, forKey: key)
+            states.forEach { key, value in
+                items.updateValue(value, forKey: key)
+            }
+
+            _cache.send(items)
         }
-
-        _cache.send(.success(items))
     }
 
     func prepareCurrenciesSet(items: [TokenItem], forceReload: Bool) -> CurrenciesSet {
@@ -110,7 +130,7 @@ private extension CommonExpressAvailabilityProvider {
 
         let itemsToRequest = items.filter {
             // If `forceReload` flag is true we need to force reload state for all items
-            return _cache.value?.value?[$0.expressCurrency] == nil || forceReload
+            return _cache.value[$0.expressCurrency] == nil || forceReload
         }
 
         // This mean that all requesting items in blockchains that currently not available for swap
@@ -121,11 +141,40 @@ private extension CommonExpressAvailabilityProvider {
 
         return itemsToRequest.map { $0.expressCurrency }.toSet()
     }
+
+    func getApiProvider() throws -> ExpressAPIProvider {
+        guard let apiProvider else {
+            throw Error.providerNotCreated
+        }
+
+        return apiProvider
+    }
+
+    func makeApiProviderIfNeeded(userWalletId: String) {
+        guard apiProvider == nil else {
+            return
+        }
+
+        let provider = ExpressAPIProviderFactory().makeExpressAPIProvider(userId: userWalletId, logger: AppLog.shared)
+        apiProvider = provider
+    }
 }
 
 private extension CommonExpressAvailabilityProvider {
     struct AvailabilityState: Hashable {
         let swap: TokenItemExpressState
         let onramp: TokenItemExpressState
+    }
+}
+
+private extension CommonExpressAvailabilityProvider {
+    struct QueueItem {
+        let currencies: CurrenciesSet
+    }
+}
+
+private extension CommonExpressAvailabilityProvider {
+    enum Error: Swift.Error {
+        case providerNotCreated
     }
 }

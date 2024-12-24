@@ -14,14 +14,23 @@ public struct VisaActivationManagerFactory {
     public init() {}
 
     public func make(
-        cardInput: VisaCardActivationInput,
+        initialActivationStatus: VisaCardActivationStatus,
         tangemSdk: TangemSdk,
         urlSessionConfiguration: URLSessionConfiguration,
         logger: VisaLogger
     ) -> VisaActivationManager {
         let internalLogger = InternalLogger(logger: logger)
         let authorizationService = AuthorizationServiceBuilder().build(urlSessionConfiguration: urlSessionConfiguration, logger: logger)
+
+        let accessTokenHolder: AccessTokenHolder
+        if case .activationStarted(_, let authorizationTokens, _) = initialActivationStatus {
+            accessTokenHolder = .init(authorizationTokens: authorizationTokens)
+        } else {
+            accessTokenHolder = .init()
+        }
+
         let tokenHandler = CommonVisaAccessTokenHandler(
+            accessTokenHolder: accessTokenHolder,
             tokenRefreshService: authorizationService,
             logger: internalLogger,
             refreshTokenSaver: nil
@@ -30,7 +39,7 @@ public struct VisaActivationManagerFactory {
         let customerInfoManagementService = CommonCustomerInfoManagementService(
             authorizationTokenHandler: tokenHandler,
             apiService: .init(
-                provider: MoyaProvider<CustomerInfoManagementAPITarget>(session: Session(configuration: urlSessionConfiguration)),
+                provider: MoyaProviderBuilder().buildProvider(configuration: urlSessionConfiguration),
                 logger: internalLogger,
                 decoder: JSONDecoderFactory().makeCIMDecoder()
             )
@@ -44,14 +53,20 @@ public struct VisaActivationManagerFactory {
             customerInfoManagementService: customerInfoManagementService,
             logger: internalLogger
         )
+        let cardActivationRemoteStateService = VisaAPIServiceBuilder().buildCardActivationStatusService(
+            urlSessionConfiguration: urlSessionConfiguration,
+            logger: logger
+        )
 
         return CommonVisaActivationManager(
-            cardInput: cardInput,
+            initialActivationStatus: initialActivationStatus,
             authorizationService: authorizationService,
             authorizationTokenHandler: tokenHandler,
             tangemSdk: tangemSdk,
             authorizationProcessor: authorizationProcessor,
             cardActivationOrderProvider: activationOrderProvider,
+            cardActivationRemoteStateService: cardActivationRemoteStateService,
+            otpRepository: CommonVisaOTPRepository(),
             logger: internalLogger
         )
     }

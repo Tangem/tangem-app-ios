@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemUIKitUtils
 
 struct CustomSearchBar: View {
     @Binding var searchText: String

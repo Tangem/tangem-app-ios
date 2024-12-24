@@ -413,10 +413,8 @@ extension KaspaTransactionBuilder {
         let amountCharged = transactionAmount + feeAmount
         if fullAmount > amountCharged {
             return fullAmount - amountCharged
-        } else if fullAmount == amountCharged {
-            return nil
-        } else {
-            throw WalletError.failedToBuildTx
         }
+
+        return nil
     }
 }

@@ -16,7 +16,7 @@ enum DefaultWalletData: Codable {
     case file(WalletData)
     case legacy(WalletData)
     case twin(WalletData, TwinData)
-    case visa(activationInput: VisaCardActivationInput, tokens: VisaAuthorizationTokens?)
+    case visa(VisaCardActivationStatus)
     case none
 
     var twinData: TwinData? {
@@ -75,7 +75,7 @@ final class AppScanTask: CardSessionRunnable {
         }
 
         let visaUtils = VisaUtilities(isTestnet: false)
-        if FirmwareVersion.visaRange.contains(card.firmwareVersion.doubleValue), visaUtils.batchId.contains(card.batchId) {
+        if visaUtils.isVisaCard(card) {
             readVisaCard(session, completion)
             return
         }
@@ -233,7 +233,7 @@ final class AppScanTask: CardSessionRunnable {
             switch result {
             case .success(let success):
                 self.walletData = success
-                self.readExtra(session: session, completion: completion)
+                self.runScanTask(session, completion)
             case .failure(let error):
                 completion(.failure(error))
             }
