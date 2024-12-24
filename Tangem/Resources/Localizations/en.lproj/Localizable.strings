@@ -55,6 +55,8 @@
 "balance_hidden_do_not_show_button" = "Don't show again";
 "balance_hidden_got_it_button" = "Got it";
 "balance_hidden_title" = "Balances are hidden";
+"beta_mode_warning_message" = "According to the blockchain developers, Kaspa tokens are currently in beta. Stay tuned for updates!";
+"beta_mode_warning_title" = "Beta Mode";
 "biometry_touch_id_reason" = "Touch ID is used to save your cards and rings in the app";
 "button_start_backup_process" = "Start backup process";
 "buy_token_description" = "Use a bank card or other payment methods";
