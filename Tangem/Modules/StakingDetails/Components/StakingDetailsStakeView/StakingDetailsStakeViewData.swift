@@ -24,6 +24,8 @@ struct StakingDetailsStakeViewData: Identifiable {
         switch subtitleType {
         case .none:
             return nil
+        case .locked where inProgress:
+            return nil
         case .locked(let hasVoteLocked) where hasVoteLocked:
             return string(Localization.stakingTapToUnlockOrVote)
         case .locked:
