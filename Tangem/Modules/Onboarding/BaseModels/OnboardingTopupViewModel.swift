@@ -65,7 +65,7 @@ class OnboardingTopupViewModel<Step: OnboardingStep, Coordinator: OnboardingTopu
                 case .noAccount(let message, _):
                     AppLog.shared.debug(message)
                     fallthrough
-                case .idle:
+                case .loaded:
                     if shouldGoToNextStep,
                        !walletModel.isEmptyIncludingPendingIncomingTxs,
                        !walletModel.isZeroAmount {

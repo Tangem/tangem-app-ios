@@ -261,7 +261,7 @@ private extension TokenDetailsViewModel {
         switch walletModelState {
         case .created, .loading:
             balances.send(.loading)
-        case .idle, .noAccount:
+        case .loaded, .noAccount:
             balances.send(.loaded(.init(all: walletModel.allBalanceFormatted, available: walletModel.availableBalanceFormatted)))
         case .failed(let message):
             balances.send(.failedToLoad(error: message))
