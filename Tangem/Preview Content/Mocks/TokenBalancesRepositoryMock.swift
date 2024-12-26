@@ -9,11 +9,7 @@
 import Foundation
 
 struct TokenBalancesRepositoryMock: TokenBalancesRepository {
-    func availableBalance(tokenItem: TokenItem) -> CachedBalance? { .none }
+    func balance(address: String, type: CachedBalanceType) -> CachedBalance? { .none }
 
-    func stakingBalance(tokenItem: TokenItem) -> CachedBalance? { .none }
-
-    func storeAvailable(balance: CachedBalance, for tokenItem: TokenItem) {}
-
-    func storeStaking(balance: CachedBalance, for tokenItem: TokenItem) {}
+    func store(balance: CachedBalance, for address: String, type: CachedBalanceType) {}
 }

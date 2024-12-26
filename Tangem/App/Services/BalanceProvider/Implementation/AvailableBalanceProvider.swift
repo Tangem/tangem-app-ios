@@ -49,14 +49,15 @@ extension AvailableBalanceProvider: TokenBalanceProvider {
 
 private extension AvailableBalanceProvider {
     func storeBalance(balance: Decimal) {
-        tokenBalancesRepository.storeAvailable(
+        tokenBalancesRepository.store(
             balance: .init(balance: balance, date: .now),
-            for: walletModel.tokenItem
+            for: walletModel.defaultAddress,
+            type: .available
         )
     }
 
     func cachedBalance() -> TokenBalanceType.Cached? {
-        tokenBalancesRepository.availableBalance(tokenItem: walletModel.tokenItem).map {
+        tokenBalancesRepository.balance(address: walletModel.defaultAddress, type: .available).map {
             .init(balance: $0.balance, date: $0.date)
         }
     }

@@ -9,14 +9,17 @@
 import Foundation
 
 protocol TokenBalancesRepository {
-    func availableBalance(tokenItem: TokenItem) -> CachedBalance?
-    func stakingBalance(tokenItem: TokenItem) -> CachedBalance?
+    func balance(address: String, type: CachedBalanceType) -> CachedBalance?
 
-    func storeAvailable(balance: CachedBalance, for tokenItem: TokenItem)
-    func storeStaking(balance: CachedBalance, for tokenItem: TokenItem)
+    func store(balance: CachedBalance, for address: String, type: CachedBalanceType)
 }
 
-struct CachedBalance: Hashable {
+struct CachedBalance: Hashable, Codable {
     let balance: Decimal
     let date: Date
+}
+
+enum CachedBalanceType: String, Hashable, Codable {
+    case available
+    case staked
 }

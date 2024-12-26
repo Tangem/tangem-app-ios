@@ -15,7 +15,7 @@ class CommonTokenBalancesRepository {
 
     private let userWalletId: String
     private let balances: CurrentValueSubject<[String: StoredBalance], Never> = .init([:])
-    private let lockQueue = DispatchQueue(label: "com.tangem.TokenBalancesRepository.lockQueue")
+    private let lock = Lock(isRecursive: false)
 
     init(userWalletId: String) {
         self.userWalletId = userWalletId
@@ -27,30 +27,15 @@ class CommonTokenBalancesRepository {
 // MARK: - TokenBalancesRepository
 
 extension CommonTokenBalancesRepository: TokenBalancesRepository {
-    func availableBalance(tokenItem: TokenItem) -> CachedBalance? {
-        let key = StoredBalanceKey(userWalletId: userWalletId, tokenItem: tokenItem, type: .available).key
+    func balance(address: String, type: CachedBalanceType) -> CachedBalance? {
+        let key = StoredBalanceKey(address: address, type: type).key
         return balances.value[key].map { mapToCachedBalance(balance: $0) }
     }
 
-    func stakingBalance(tokenItem: TokenItem) -> CachedBalance? {
-        let key = StoredBalanceKey(userWalletId: userWalletId, tokenItem: tokenItem, type: .staked).key
-        return balances.value[key].map { mapToCachedBalance(balance: $0) }
-    }
-
-    func storeStaking(balance: CachedBalance, for tokenItem: TokenItem) {
-        let key = StoredBalanceKey(userWalletId: userWalletId, tokenItem: tokenItem, type: .staked).key
+    func store(balance: CachedBalance, for address: String, type: CachedBalanceType) {
+        let key = StoredBalanceKey(address: address, type: type).key
         let storedBalance = mapToStoredBalance(balance: balance)
         log("Store balance: \(storedBalance) for: \(key)")
-
-        balances.value[key] = storedBalance
-        save()
-    }
-
-    func storeAvailable(balance: CachedBalance, for tokenItem: TokenItem) {
-        let key = StoredBalanceKey(userWalletId: userWalletId, tokenItem: tokenItem, type: .available).key
-        let storedBalance = mapToStoredBalance(balance: balance)
-        log("Store balance: \(storedBalance) for: \(key)")
-
         balances.value[key] = storedBalance
         save()
     }
@@ -90,7 +75,7 @@ private extension CommonTokenBalancesRepository {
     }
 
     func save() {
-        lockQueue.sync {
+        lock.withLock {
             do {
                 try storage.store(value: balances.value, for: .cachedBalances)
             } catch {
@@ -107,16 +92,15 @@ private extension CommonTokenBalancesRepository {
 
 private extension CommonTokenBalancesRepository {
     struct StoredBalanceKey: Hashable, Codable, CustomStringConvertible {
-        let userWalletId: String
-        let tokenItem: TokenItem
-        let type: StoredBalanceType
+        let address: String
+        let type: CachedBalanceType
 
         var key: String {
-            "\(userWalletId)_\(tokenItem.name)_\(type)"
+            "\(type)_\(address)"
         }
 
         var description: String {
-            "\(tokenItem.name) / \(type)"
+            "\(type) / \(address.prefix(4))...\(address.suffix(4))"
         }
     }
 
@@ -126,18 +110,6 @@ private extension CommonTokenBalancesRepository {
 
         var description: String {
             "\(balance) / \(date.formatted(date: .abbreviated, time: .shortened))"
-        }
-    }
-
-    enum StoredBalanceType: Hashable, Codable, CustomStringConvertible {
-        case available
-        case staked
-
-        var description: String {
-            switch self {
-            case .available: "available"
-            case .staked: "staked"
-            }
         }
     }
 }
