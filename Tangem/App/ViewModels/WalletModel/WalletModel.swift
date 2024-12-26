@@ -24,7 +24,14 @@ class WalletModel {
 
     /// Listen for fiat and balance changes. This publisher will not be called if the is nothing changed. Use `update(silent:)` for waiting for update
     var walletDidChangePublisher: AnyPublisher<WalletModel.State, Never> {
-        _walletDidChangePublisher.eraseToAnyPublisher()
+        Publishers.CombineLatest4(
+            _state.removeDuplicates(),
+            _rate.filter { !$0.isLoading }.removeDuplicates(),
+            walletManager.walletPublisher,
+            stakingManagerStatePublisher
+        )
+        .map { $0.0 }
+        .eraseToAnyPublisher()
     }
 
     var state: State {
@@ -260,24 +267,6 @@ class WalletModel {
                 self?._rate.send(.success(rate.map { .actual($0) }))
             }
             .store(in: &bag)
-
-        let filteredRate = _rate.filter { $0 != .loading }.removeDuplicates()
-
-        if let stakingManager {
-            _state
-                .removeDuplicates()
-                .combineLatest(filteredRate, walletManager.walletPublisher, stakingManager.statePublisher)
-                .map { $0.0 }
-                .assign(to: \._walletDidChangePublisher.value, on: self, ownership: .weak)
-                .store(in: &bag)
-        } else {
-            _state
-                .removeDuplicates()
-                .combineLatest(filteredRate, walletManager.walletPublisher)
-                .map { $0.0 }
-                .assign(to: \._walletDidChangePublisher.value, on: self, ownership: .weak)
-                .store(in: &bag)
-        }
     }
 
     private func performHealthCheckIfNeeded(shouldPerform: Bool) {
