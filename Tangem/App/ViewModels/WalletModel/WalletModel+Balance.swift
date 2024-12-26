@@ -165,6 +165,40 @@ extension WalletModel {
 }
 
 extension WalletModel {
+    // MARK: - Crypto
+
+    var availableBalanceProvider: TokenBalanceProvider {
+        AvailableBalanceProvider(walletModel: self, tokenBalancesRepository: tokenBalancesRepository)
+    }
+
+    var stakingBalanceProvider: TokenBalanceProvider {
+        StakingBalanceProvider(walletModel: self, tokenBalancesRepository: tokenBalancesRepository)
+    }
+
+    var combineBalanceProvider: TokenBalanceProvider {
+        CombineBalanceProvider(
+            walletModel: self,
+            availableBalanceProvider: availableBalanceProvider,
+            stakingBalanceProvider: stakingBalanceProvider
+        )
+    }
+
+    // MARK: - Fiat
+
+    var availableFiatBalanceProvider: TokenBalanceProvider {
+        FiatBalanceProvider(walletModel: self, cryptoBalanceProvider: availableBalanceProvider)
+    }
+
+    var stakingFiatBalanceProvider: TokenBalanceProvider {
+        FiatBalanceProvider(walletModel: self, cryptoBalanceProvider: stakingBalanceProvider)
+    }
+
+    var combineFiatBalanceProvider: TokenBalanceProvider {
+        FiatBalanceProvider(walletModel: self, cryptoBalanceProvider: combineBalanceProvider)
+    }
+}
+
+extension WalletModel {
     struct Balance: Hashable {
         let crypto, fiat: Decimal?
     }
