@@ -14,7 +14,7 @@ class CommonTokenBalancesRepository {
     @Injected(\.persistentStorage) private var storage: PersistentStorageProtocol
 
     private let userWalletId: String
-    private let balances: CurrentValueSubject<[StoredBalance], Never> = .init([])
+    private let balances: CurrentValueSubject<[String: StoredBalance], Never> = .init([:])
     private let lockQueue = DispatchQueue(label: "com.tangem.TokenBalancesRepository.lockQueue")
 
     init(userWalletId: String) {
@@ -28,47 +28,50 @@ class CommonTokenBalancesRepository {
 
 extension CommonTokenBalancesRepository: TokenBalancesRepository {
     func availableBalance(tokenItem: TokenItem) -> CachedBalance? {
-        balances.value
-            .first(where: { filter(balance: $0, for: tokenItem, type: .available) })
-            .map { mapToCachedBalance(balance: $0) }
+        let key = StoredBalanceKey(userWalletId: userWalletId, tokenItem: tokenItem, type: .available).key
+        return balances.value[key].map { mapToCachedBalance(balance: $0) }
     }
 
     func stakingBalance(tokenItem: TokenItem) -> CachedBalance? {
-        balances.value
-            .first(where: { filter(balance: $0, for: tokenItem, type: .staked) })
-            .map { mapToCachedBalance(balance: $0) }
+        let key = StoredBalanceKey(userWalletId: userWalletId, tokenItem: tokenItem, type: .staked).key
+        return balances.value[key].map { mapToCachedBalance(balance: $0) }
     }
 
     func storeStaking(balance: CachedBalance, for tokenItem: TokenItem) {
-        var balances = balances.value
-        balances.append(mapToStoredBalance(item: tokenItem, balance: balance, type: .staked))
-        self.balances.send(balances)
+        let key = StoredBalanceKey(userWalletId: userWalletId, tokenItem: tokenItem, type: .staked).key
+        let storedBalance = mapToStoredBalance(balance: balance)
+        log("Store balance: \(storedBalance) for: \(key)")
+
+        balances.value[key] = storedBalance
         save()
     }
 
     func storeAvailable(balance: CachedBalance, for tokenItem: TokenItem) {
-        var balances = balances.value
-        balances.append(mapToStoredBalance(item: tokenItem, balance: balance, type: .available))
-        self.balances.send(balances)
+        let key = StoredBalanceKey(userWalletId: userWalletId, tokenItem: tokenItem, type: .available).key
+        let storedBalance = mapToStoredBalance(balance: balance)
+        log("Store balance: \(storedBalance) for: \(key)")
+
+        balances.value[key] = storedBalance
         save()
     }
 }
 
+// MARK: - CustomStringConvertible
+
 extension CommonTokenBalancesRepository: CustomStringConvertible {
     var description: String {
-        TangemFoundation.objectDescription(self)
+        TangemFoundation.objectDescription(self, userInfo: [
+            "cachedBalancesCount": balances.value.count,
+            "userWalletId": "\(userWalletId.prefix(4))...\(userWalletId.suffix(4))",
+        ])
     }
 }
 
 // MARK: - Private
 
 private extension CommonTokenBalancesRepository {
-    func filter(balance: StoredBalance, for item: TokenItem, type: StoredBalanceType) -> Bool {
-        balance.userWalletId == userWalletId && balance.tokenItem == item && balance.type == type
-    }
-
-    func mapToStoredBalance(item: TokenItem, balance: CachedBalance, type: StoredBalanceType) -> StoredBalance {
-        .init(userWalletId: userWalletId, tokenItem: item, balance: balance.balance, type: type, date: balance.date)
+    func mapToStoredBalance(balance: CachedBalance) -> StoredBalance {
+        .init(balance: balance.balance, date: balance.date)
     }
 
     func mapToCachedBalance(balance: StoredBalance) -> CachedBalance {
@@ -77,8 +80,9 @@ private extension CommonTokenBalancesRepository {
 
     func loadBalances() {
         do {
-            let cached: [StoredBalance]? = try storage.value(for: .cachedBalances)
-            balances.send(cached ?? [])
+            let cached: [String: StoredBalance]? = try storage.value(for: .cachedBalances)
+            log("Load balances \(String(describing: cached))")
+            balances.send(cached ?? [:])
         } catch {
             log("Load balances error \(error.localizedDescription)")
             AppLog.shared.error(error)
@@ -102,16 +106,38 @@ private extension CommonTokenBalancesRepository {
 }
 
 private extension CommonTokenBalancesRepository {
-    struct StoredBalance: Hashable, Codable {
+    struct StoredBalanceKey: Hashable, Codable, CustomStringConvertible {
         let userWalletId: String
         let tokenItem: TokenItem
-        let balance: Decimal
         let type: StoredBalanceType
-        let date: Date
+
+        var key: String {
+            "\(userWalletId)_\(tokenItem.name)_\(type)"
+        }
+
+        var description: String {
+            "\(tokenItem.name) / \(type)"
+        }
     }
 
-    enum StoredBalanceType: Hashable, Codable {
+    struct StoredBalance: Hashable, Codable, CustomStringConvertible {
+        let balance: Decimal
+        let date: Date
+
+        var description: String {
+            "\(balance) / \(date.formatted(date: .abbreviated, time: .shortened))"
+        }
+    }
+
+    enum StoredBalanceType: Hashable, Codable, CustomStringConvertible {
         case available
         case staked
+
+        var description: String {
+            switch self {
+            case .available: "available"
+            case .staked: "staked"
+            }
+        }
     }
 }

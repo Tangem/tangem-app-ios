@@ -71,8 +71,13 @@ extension FiatBalanceProvider {
             return .failure(.none)
 
         // There is one value is loading
-        case (_, .loading), (.loading, _):
-            return .loading(nil) // TODO: Add cache
+        case (.loading, _), (_, .loading(.none)):
+            return .loading(.none)
+
+        // Has some rate but only cached value
+        case (.success(.some(let rate)), .loading(.some(let cached))):
+            let fiat = cached.balance * rate
+            return .failure(.init(balance: fiat, date: cached.date))
 
         // Has some rate but only cached value
         case (.success(.some(let rate)), .failure(.some(let cached))):

@@ -64,7 +64,12 @@ private extension CombineBalanceProvider {
         case (.empty, _):
             return .empty(.noData)
 
-        // There is one of them is loading -> loading
+        // Both is loading and both have a cache -> loading with cache
+        case (.loading(.some(let available)), .loading(.some(let staking))):
+            let cached = available.balance + staking.balance
+            return .loading(.init(balance: cached, date: available.date))
+
+        // There is one of them is loading without cached -> loading without cache
         case (.loading, _), (_, .loading):
             return .loading(nil)
 
@@ -72,11 +77,16 @@ private extension CombineBalanceProvider {
         case (.loaded(let balance), .empty):
             return .loaded(balance)
 
-        // There is one of them is failure -> show error
+        // Both is failure and both have a cache -> failure with cache
+        case (.failure(.some(let available)), .failure(.some(let staking))):
+            let cached = available.balance + staking.balance
+            return .failure(.init(balance: cached, date: available.date))
+
+        // There is one of them is failure without cached -> show error
         case (.failure, _), (_, .failure):
             return .failure(nil)
 
-        // There is both is loaded -> show sum
+        // There is both is loaded -> show loaded with sum
         case (.loaded(let available), .loaded(let staking)):
             return .loaded(available + staking)
         }

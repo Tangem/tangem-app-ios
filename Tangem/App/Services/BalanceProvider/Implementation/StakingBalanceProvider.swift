@@ -49,14 +49,14 @@ extension StakingBalanceProvider: TokenBalanceProvider {
 
 extension StakingBalanceProvider {
     func storeBalance(balance: Decimal) {
-        tokenBalancesRepository.storeAvailable(
+        tokenBalancesRepository.storeStaking(
             balance: .init(balance: balance, date: .now),
             for: walletModel.tokenItem
         )
     }
 
     func cachedBalance() -> TokenBalanceType.Cached? {
-        tokenBalancesRepository.availableBalance(tokenItem: walletModel.tokenItem).map {
+        tokenBalancesRepository.stakingBalance(tokenItem: walletModel.tokenItem).map {
             .init(balance: $0.balance, date: $0.date)
         }
     }
