@@ -55,8 +55,6 @@ private extension AvailableTokenBalanceProvider {
         switch state {
         case .created:
             return .empty(.noData)
-        case .noDerivation:
-            return .empty(.noDerivation)
         case .loading:
             return .loading(nil)
         case .loaded(let balance):

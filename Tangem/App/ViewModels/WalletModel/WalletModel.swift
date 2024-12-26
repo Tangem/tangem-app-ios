@@ -20,11 +20,6 @@ class WalletModel {
 
     private(set) lazy var walletModelId: WalletModel.Id = .init(tokenItem: tokenItem)
 
-    /// Listen for fiat and balance changes. This publisher will not be called if the is nothing changed. Use `update(silent:)` for waiting for update
-    var walletDidChangePublisher: AnyPublisher<WalletModel.State, Never> {
-        _walletDidChangePublisher.eraseToAnyPublisher()
-    }
-
     var state: State {
         _state.value
     }
@@ -207,7 +202,7 @@ class WalletModel {
     private var bag = Set<AnyCancellable>()
     private var updatePublisher: PassthroughSubject<State, Never>?
     private var updateQueue = DispatchQueue(label: "walletModel_update_queue")
-    private var _walletDidChangePublisher: CurrentValueSubject<State, Never> = .init(.created)
+
     private var _state: CurrentValueSubject<State, Never> = .init(.created)
     private lazy var _rate: CurrentValueSubject<Rate, Never> = .init(.loading(cached: quotesRepository.quote(for: tokenItem)))
 
@@ -262,24 +257,6 @@ class WalletModel {
                 self?.updateQuote(quote: quote)
             }
             .store(in: &bag)
-
-        let filteredRate = _rate.filter { !$0.isLoading }.removeDuplicates()
-
-        if let stakingManager {
-            _state
-                .removeDuplicates()
-                .combineLatest(filteredRate, walletManager.walletPublisher, stakingManager.statePublisher)
-                .map { $0.0 }
-                .assign(to: \._walletDidChangePublisher.value, on: self, ownership: .weak)
-                .store(in: &bag)
-        } else {
-            _state
-                .removeDuplicates()
-                .combineLatest(filteredRate, walletManager.walletPublisher)
-                .map { $0.0 }
-                .assign(to: \._walletDidChangePublisher.value, on: self, ownership: .weak)
-                .store(in: &bag)
-        }
     }
 
     private func performHealthCheckIfNeeded(shouldPerform: Bool) {

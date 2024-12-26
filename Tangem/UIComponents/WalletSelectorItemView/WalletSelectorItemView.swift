@@ -53,12 +53,10 @@ struct WalletSelectorItemView: View {
                 Text(AppConstants.dotSign)
                     .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
 
-                LoadableTextView(
+                LoadableTokenBalanceView(
                     state: viewModel.balanceState,
-                    font: Fonts.Regular.caption1,
-                    textColor: Colors.Text.tertiary,
-                    loaderSize: CGSize(width: 40, height: 12),
-                    isSensitiveText: true
+                    style: .init(font: Fonts.Regular.caption1, textColor: Colors.Text.tertiary),
+                    loader: .init(size: CGSize(width: 40, height: 12))
                 )
             }
             .lineLimit(1)

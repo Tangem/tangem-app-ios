@@ -149,16 +149,10 @@ struct OrganizeTokensListFactory {
     }
 
     private func fiatBalance(for walletModel: WalletModel) -> LoadableTextView.State {
-        guard walletModel.rate.quote != nil else { return .noData }
-
-        let state = TokenItemViewState(walletModel: walletModel)
-        switch state {
-        case .notLoaded, .loaded, .noAccount, .noDerivation:
-            return .loaded(text: walletModel.allBalanceFormatted.fiat)
-        case .loading:
-            return .loading
-        case .networkError:
-            return .noData
+        switch walletModel.combineFiatBalanceProvider.formattedBalanceType {
+        case .failure: .noData
+        case .loading: .loading
+        case .loaded(let value): .loaded(text: value)
         }
     }
 }

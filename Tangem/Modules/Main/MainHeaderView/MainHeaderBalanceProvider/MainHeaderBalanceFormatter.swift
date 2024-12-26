@@ -12,6 +12,13 @@ protocol MainHeaderBalanceFormatter {
     func formatBalance(balance: Decimal?, currencyCode: String) -> AttributedString
 }
 
+extension MainHeaderBalanceFormatter {
+    /// The `currencyCode` is  `AppSettings.shared.selectedCurrencyCode`
+    func formatBalance(balance: Decimal?) -> AttributedString {
+        formatBalance(balance: balance, currencyCode: AppSettings.shared.selectedCurrencyCode)
+    }
+}
+
 struct CommonMainHeaderBalanceFormatter: MainHeaderBalanceFormatter {
     func formatBalance(balance: Decimal?, currencyCode: String) -> AttributedString {
         let balanceFormatter = BalanceFormatter()
