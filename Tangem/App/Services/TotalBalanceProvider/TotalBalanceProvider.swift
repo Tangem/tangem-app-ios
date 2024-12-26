@@ -164,7 +164,7 @@ private extension TotalBalanceProvider {
                 allTokensBalancesIncluded = false
             }
 
-            if token.rateFormatted.isEmpty {
+            if token.rate.value == nil {
                 // Just show warning for custom tokens
                 if token.isCustom {
                     hasError = true
